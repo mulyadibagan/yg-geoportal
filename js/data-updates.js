@@ -48,13 +48,15 @@
       keys.every(key => valuesMatch(props[key],target[key]));
   }
 
-  function toDirectDriveUrl(url) {
-    const match = String(url || "").match(/\/d\/([^/]+)/);
-    return match
-      ? "https://drive.google.com/thumbnail?id=" + match[1] + "&sz=w1000"
-      : url;
-  }
+function toDirectDriveUrl(url){
+    const id = String(url).match(/\/d\/([^/]+)/);
 
+    if(id){
+        return "https://lh3.googleusercontent.com/d/" + id[1];
+    }
+
+    return url;
+}
   function buildUpdatedPopup(feature, layerLabel) {
     const props = feature.properties || {};
     const photos = Array.isArray(props._ygPhotos) ? props._ygPhotos : [];
