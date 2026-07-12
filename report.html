@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+  <meta name="description" content="Form pelaporan lapangan dan perbaikan data YG GeoPortal."/>
+  <title>Kirim Laporan | YG GeoPortal</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <link rel="stylesheet" href="css/report.css"/>
+</head>
+<body>
+<main class="report-shell">
+  <section class="report-hero">
+    <span class="badge">COMMUNITY MONITORING</span>
+    <h1>Kirim Laporan Lapangan</h1>
+    <p>Kirim foto kegiatan, usulan perbaikan informasi, titik baru, atau hasil monitoring. Semua laporan diperiksa oleh Yayasan Gambut sebelum dipublikasikan.</p>
+  </section>
+
+  <div class="notice">
+    <strong>Proses verifikasi</strong>
+    <span>Laporan tidak langsung muncul di WebGIS. Tim Yayasan Gambut akan memeriksa data, lokasi, dan foto terlebih dahulu.</span>
+  </div>
+
+  <form id="report-form" method="post" target="submit-frame" action="https://script.google.com/macros/s/AKfycbxeGTDZXkR0DyLZmBHTq2M-52Iu4dTTGpH164S7sYHg8qPzvffobC6-r-TBLVHMT3HU-A/exec">
+    <section class="card">
+      <h2>1. Jenis laporan</h2>
+      <div class="choice-grid">
+        <label><input type="radio" name="reportTypeUI" value="Tambah Foto Kegiatan" required><span>📷 Tambah Foto</span></label>
+        <label><input type="radio" name="reportTypeUI" value="Perbaikan Informasi"><span>✏️ Perbaikan Informasi</span></label>
+        <label><input type="radio" name="reportTypeUI" value="Titik Baru"><span>📍 Titik Baru</span></label>
+        <label><input type="radio" name="reportTypeUI" value="Area/Poligon Baru"><span>🗺️ Area Baru</span></label>
+        <label><input type="radio" name="reportTypeUI" value="Monitoring"><span>🌱 Monitoring</span></label>
+        <label><input type="radio" name="reportTypeUI" value="Kebakaran"><span>🔥 Kebakaran</span></label>
+        <label><input type="radio" name="reportTypeUI" value="Abrasi"><span>🌊 Abrasi</span></label>
+        <label><input type="radio" name="reportTypeUI" value="Biodiversitas"><span>🦜 Biodiversitas</span></label>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>2. Informasi pelapor</h2>
+      <div class="form-grid">
+        <label class="field"><span>Nama lengkap *</span><input id="name" required></label>
+        <label class="field"><span>Instansi atau kelompok</span><input id="organization"></label>
+        <label class="field"><span>Email</span><input id="email" type="email"></label>
+        <label class="field"><span>Nomor HP/WhatsApp</span><input id="phone" type="tel"></label>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>3. Lokasi laporan</h2>
+      <div class="form-grid">
+        <label class="field"><span>Provinsi</span><input id="province" value="Riau"></label>
+        <label class="field"><span>Kabupaten/Kota</span><input id="regency"></label>
+        <label class="field"><span>Kecamatan</span><input id="district"></label>
+        <label class="field"><span>Desa/Kelurahan</span><input id="village"></label>
+        <label class="field span-2"><span>Nama lokasi atau objek</span><input id="location-name" placeholder="Contoh: Nursery Sepahat"></label>
+      </div>
+
+      <div class="location-actions">
+        <button id="get-location" type="button">📍 Ambil Lokasi Saya</button>
+        <span>atau klik langsung pada peta</span>
+      </div>
+
+      <div id="location-map"></div>
+
+      <div class="coordinate-grid">
+        <label class="field"><span>Latitude</span><input id="latitude" readonly></label>
+        <label class="field"><span>Longitude</span><input id="longitude" readonly></label>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>4. Detail laporan</h2>
+      <div class="form-grid">
+        <label class="field span-2"><span>Judul laporan *</span><input id="title" required placeholder="Contoh: Monitoring mangrove Juli 2026"></label>
+        <label class="field"><span>Tanggal kegiatan</span><input id="activity-date" type="date"></label>
+        <label class="field span-2"><span>Deskripsi *</span><textarea id="description" rows="6" required></textarea></label>
+        <label class="field span-2"><span>Informasi lama yang dianggap salah</span><textarea id="old-information" rows="3"></textarea></label>
+        <label class="field span-2"><span>Informasi perbaikan yang diusulkan</span><textarea id="proposed-information" rows="3"></textarea></label>
+        <label class="field span-2"><span>Tautan dokumen pendukung</span><input id="document-url" type="url" placeholder="Google Drive atau laporan PDF"></label>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>5. Foto kegiatan</h2>
+      <p class="help">Maksimal 5 foto. Foto diperkecil otomatis agar lebih mudah dikirim dari telepon seluler.</p>
+      <label class="upload-button">
+        <input id="images" type="file" accept="image/*" multiple>
+        <span>📷 Pilih Foto</span>
+      </label>
+      <div id="preview" class="preview"></div>
+    </section>
+
+    <label class="agreement">
+      <input id="agreement" type="checkbox" required>
+      <span>Saya menyatakan bahwa informasi dan foto yang dikirim benar serta dapat diverifikasi oleh Yayasan Gambut.</span>
+    </label>
+
+    <input id="payload" name="payload" type="hidden">
+
+    <div class="submit-row">
+      <button id="submit-button" type="submit">Kirim Laporan</button>
+      <span id="submit-status"></span>
+    </div>
+  </form>
+
+  <iframe id="submit-frame" name="submit-frame" hidden></iframe>
+
+  <section id="success" class="success" hidden>
+    <strong>Laporan berhasil dikirim.</strong>
+    <span>Status laporan: <b>Menunggu Verifikasi</b>.</span>
+    <button id="send-another" type="button">Kirim laporan lain</button>
+  </section>
+</main>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="js/report.js"></script>
+</body>
+</html>
