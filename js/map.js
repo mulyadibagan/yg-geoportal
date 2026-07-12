@@ -51,6 +51,7 @@
   const layerObjects = {};
   const allBounds = L.latLngBounds([]);
   const searchable = [];
+  let searchIndex = [];
   let success = 0;
   let failed = 0;
 
@@ -208,9 +209,12 @@
   }
 
   Promise.allSettled(CONFIG.map(loadLayer)).then(() => {
+    searchIndex = buildSearchIndex();
+
     if (allBounds.isValid()) {
       map.fitBounds(allBounds, { padding: [24, 24] });
     }
+
     requestAnimationFrame(() => map.invalidateSize(true));
     setTimeout(() => map.invalidateSize(true), 300);
     setTimeout(() => map.invalidateSize(true), 1000);
@@ -430,7 +434,11 @@
     const normalizedQuery = normalizeSearchText(query);
     const words = normalizedQuery.split(" ").filter(Boolean);
 
-    return buildSearchIndex()
+    if (!searchIndex.length) {
+      searchIndex = buildSearchIndex();
+    }
+
+    return searchIndex
       .filter(item => {
         return words.every(word => item.text.includes(word));
       })
@@ -561,4 +569,12 @@
   });
 
   window.YG_MAP = { map, fitAll, layerObjects };
+
+  window.YG_SEARCH = {
+    rebuild: function() {
+      searchIndex = buildSearchIndex();
+      return searchIndex.length;
+    },
+    search: runIntegratedSearch
+  };
 })();
