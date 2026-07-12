@@ -6,7 +6,7 @@
   <title>Kirim Laporan | YG GeoPortal</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css">
-  <link rel="stylesheet" href="css/report-v2.css">
+  <link rel="stylesheet" href="css/report-v3.css">
 </head>
 <body>
 <main class="report-shell">
@@ -70,10 +70,33 @@
       </div>
 
       <div id="polygon-tools" hidden>
-        <div class="location-actions">
-          <button id="start-polygon" type="button">🗺️ Mulai Gambar Poligon</button>
-          <button id="clear-geometry" class="secondary" type="button">Hapus Gambar</button>
-          <span>Klik beberapa sudut area, lalu klik titik pertama untuk menyelesaikan.</span>
+        <div class="area-methods">
+          <span class="area-method-title">Pilih metode area</span>
+          <label class="area-method-option">
+            <input id="area-method-draw" name="areaMethod" type="radio" value="draw" checked>
+            <span>✏️ Gambar Poligon di Peta</span>
+          </label>
+          <label class="area-method-option">
+            <input id="area-method-kml" name="areaMethod" type="radio" value="kml">
+            <span>📂 Upload File KML</span>
+          </label>
+        </div>
+
+        <div id="draw-area-tools">
+          <div class="location-actions">
+            <button id="start-polygon" type="button">🗺️ Mulai Gambar Poligon</button>
+            <button id="clear-geometry" class="secondary" type="button">Hapus Gambar</button>
+            <span>Klik beberapa sudut area, lalu klik titik pertama untuk menyelesaikan.</span>
+          </div>
+        </div>
+
+        <div id="kml-area-tools" hidden>
+          <label class="kml-upload">
+            <input id="kml-file" type="file" accept=".kml,application/vnd.google-earth.kml+xml">
+            <span>📂 Pilih File KML</span>
+          </label>
+          <div id="kml-status" class="kml-status">Belum ada file KML dipilih.</div>
+          <button id="remove-kml" class="secondary kml-remove" type="button" hidden>Hapus KML</button>
         </div>
       </div>
 
@@ -153,6 +176,7 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
-<script src="js/report-v2.js"></script>
+<script src="https://unpkg.com/@tmcw/togeojson@5.8.1/dist/togeojson.umd.js"></script>
+<script src="js/report-v3.js"></script>
 </body>
 </html>
