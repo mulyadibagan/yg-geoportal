@@ -244,39 +244,311 @@
     alert("Lokasi tidak dapat ditemukan. Pastikan izin lokasi browser aktif.");
   });
 
+  // =========================================================
+  // PENCARIAN LOKASI TERINTEGRASI
+  // =========================================================
   const searchInput = document.getElementById("search-input");
+  const searchButton = document.getElementById("search-button");
+  const searchContainer = searchInput?.closest(".search");
 
-  function searchLocation() {
-    const query = searchInput.value.trim().toLowerCase();
-    if (query.length < 2) return;
+  let searchResults = document.getElementById("yg-search-results");
 
-    const result = searchable.find(item => item.text.includes(query));
+  if (searchContainer && !searchResults) {
+    searchResults = document.createElement("div");
+    searchResults.id = "yg-search-results";
+    searchResults.className = "yg-search-results";
+    searchResults.hidden = true;
+    searchContainer.appendChild(searchResults);
+  }
 
-    if (!result) {
-      searchInput.style.borderColor = "#c62828";
-      return;
-    }
+  function normalizeSearchText(value) {
+    return String(value ?? "")
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
 
-    searchInput.style.borderColor = "#079cde";
+  function getFeatureTitle(feature, fallbackLabel) {
+    const props = feature?.properties || {};
+    const preferredKeys = [
+      "NAMOBJ",
+      "NAMA_DESA",
+      "WADMKD",
+      "Desa",
+      "desa",
+      "Nama",
+      "NAMA",
+      "Kegiatan",
+      "KEGIATAN",
+      "title",
+      "locationName"
+    ];
 
-    if (!map.hasLayer(result.parent)) result.parent.addTo(map);
+    for (const key of preferredKeys) {
+      const value = props[key];
 
-    if (result.layer.getLatLng) {
-      map.setView(result.layer.getLatLng(), 15);
-    } else if (result.layer.getBounds) {
-      const bounds = result.layer.getBounds();
-      if (bounds?.isValid()) {
-        map.fitBounds(bounds, { padding: [35, 35], maxZoom: 15 });
+      if (
+        value !== null &&
+        typeof value !== "undefined" &&
+        String(value).trim()
+      ) {
+        return String(value).trim();
       }
     }
 
-    result.layer.openPopup();
+    const firstValue = Object.values(props).find(value =>
+      value !== null &&
+      typeof value !== "undefined" &&
+      typeof value !== "object" &&
+      String(value).trim()
+    );
+
+    return firstValue ? String(firstValue).trim() : fallbackLabel;
+  }
+
+  function getLayerLabel(layerId) {
+    const config = CONFIG.find(item => item.id === layerId);
+    return config ? config.label : layerId.replace(/_/g, " ");
+  }
+
+  function buildSearchIndex() {
+    const index = [];
+
+    Object.entries(layerObjects).forEach(([layerId, parentLayer]) => {
+      if (!parentLayer || typeof parentLayer.eachLayer !== "function") return;
+
+      const layerLabel = getLayerLabel(layerId);
+
+      parentLayer.eachLayer(featureLayer => {
+        const feature = featureLayer.feature || {};
+        const props = feature.properties || {};
+
+        const searchableText = [
+          layerLabel,
+          ...Object.keys(props),
+          ...Object.values(props)
+        ]
+          .filter(value => value !== null && typeof value !== "undefined")
+          .join(" ");
+
+        index.push({
+          text: normalizeSearchText(searchableText),
+          title: getFeatureTitle(feature, layerLabel),
+          layerLabel,
+          layerId,
+          parent: parentLayer,
+          layer: featureLayer
+        });
+      });
+    });
+
+    if (
+      window.YG_COMMUNITY_LAYER &&
+      !layerObjects.community_reports &&
+      typeof window.YG_COMMUNITY_LAYER.eachLayer === "function"
+    ) {
+      window.YG_COMMUNITY_LAYER.eachLayer(featureLayer => {
+        const feature = featureLayer.feature || {};
+        const props = feature.properties || {};
+
+        index.push({
+          text: normalizeSearchText(
+            "Laporan Masyarakat Terverifikasi " +
+            Object.values(props).filter(Boolean).join(" ")
+          ),
+          title: getFeatureTitle(feature, "Laporan Masyarakat"),
+          layerLabel: "Laporan Masyarakat Terverifikasi",
+          layerId: "community_reports",
+          parent: window.YG_COMMUNITY_LAYER,
+          layer: featureLayer
+        });
+      });
+    }
+
+    return index;
+  }
+
+  function closeSearchResults() {
+    if (!searchResults) return;
+
+    searchResults.hidden = true;
+    searchResults.innerHTML = "";
+  }
+
+  function activateSearchLayer(item) {
+    if (!map.hasLayer(item.parent)) {
+      item.parent.addTo(map);
+    }
+
+    const checkbox = document.querySelector(
+      `[data-layer-id="${item.layerId}"]`
+    );
+
+    if (checkbox) checkbox.checked = true;
+  }
+
+  function focusSearchResult(item) {
+    activateSearchLayer(item);
+
+    if (typeof item.layer.getLatLng === "function") {
+      map.setView(item.layer.getLatLng(), 16);
+    } else if (typeof item.layer.getBounds === "function") {
+      const bounds = item.layer.getBounds();
+
+      if (bounds && bounds.isValid && bounds.isValid()) {
+        map.fitBounds(bounds, {
+          padding: [35, 35],
+          maxZoom: 16
+        });
+      }
+    }
+
+    if (typeof item.layer.openPopup === "function") {
+      window.setTimeout(() => item.layer.openPopup(), 150);
+    }
+
+    if (searchInput) {
+      searchInput.value = item.title;
+      searchInput.classList.remove("search-error");
+      searchInput.classList.add("search-success");
+    }
+
+    const statusText = document.getElementById("status-text");
+
+    if (statusText) {
+      statusText.textContent =
+        `Lokasi ditemukan: ${item.title} — ${item.layerLabel}`;
+    }
+
+    closeSearchResults();
     window.YG_UI?.closeMobileSidebar();
   }
 
-  document.getElementById("search-button")?.addEventListener("click", searchLocation);
+  function findSearchResults(query) {
+    const normalizedQuery = normalizeSearchText(query);
+    const words = normalizedQuery.split(" ").filter(Boolean);
+
+    return buildSearchIndex()
+      .filter(item => {
+        return words.every(word => item.text.includes(word));
+      })
+      .sort((a, b) => {
+        const titleA = normalizeSearchText(a.title);
+        const titleB = normalizeSearchText(b.title);
+
+        const rankA =
+          titleA === normalizedQuery
+            ? 0
+            : titleA.startsWith(normalizedQuery)
+              ? 1
+              : 2;
+
+        const rankB =
+          titleB === normalizedQuery
+            ? 0
+            : titleB.startsWith(normalizedQuery)
+              ? 1
+              : 2;
+
+        return rankA - rankB || titleA.localeCompare(titleB);
+      });
+  }
+
+  function renderSearchResults(results, originalQuery) {
+    if (!searchResults) return;
+
+    searchResults.innerHTML = "";
+
+    if (!results.length) {
+      const empty = document.createElement("div");
+      empty.className = "yg-search-empty";
+      empty.textContent = `Lokasi "${originalQuery}" tidak ditemukan.`;
+
+      searchResults.appendChild(empty);
+      searchResults.hidden = false;
+
+      searchInput?.classList.remove("search-success");
+      searchInput?.classList.add("search-error");
+      return;
+    }
+
+    results.slice(0, 10).forEach(item => {
+      const resultButton = document.createElement("button");
+      resultButton.type = "button";
+      resultButton.className = "yg-search-result";
+
+      const title = document.createElement("strong");
+      const subtitle = document.createElement("span");
+
+      title.textContent = item.title;
+      subtitle.textContent = item.layerLabel;
+
+      resultButton.appendChild(title);
+      resultButton.appendChild(subtitle);
+
+      resultButton.addEventListener("click", () => {
+        focusSearchResult(item);
+      });
+
+      searchResults.appendChild(resultButton);
+    });
+
+    searchResults.hidden = false;
+    searchInput?.classList.remove("search-error");
+  }
+
+  function runIntegratedSearch(event) {
+    event?.preventDefault();
+    event?.stopPropagation();
+
+    const query = searchInput?.value.trim() || "";
+
+    if (query.length < 2) {
+      searchInput?.classList.add("search-error");
+      return;
+    }
+
+    const results = findSearchResults(query);
+
+    if (results.length === 1) {
+      focusSearchResult(results[0]);
+      return;
+    }
+
+    renderSearchResults(results, query);
+  }
+
+  searchButton?.addEventListener("click", runIntegratedSearch);
+
   searchInput?.addEventListener("keydown", event => {
-    if (event.key === "Enter") searchLocation();
+    if (event.key === "Enter") {
+      runIntegratedSearch(event);
+    }
+
+    if (event.key === "Escape") {
+      closeSearchResults();
+    }
+  });
+
+  searchInput?.addEventListener("input", () => {
+    searchInput.classList.remove("search-error", "search-success");
+
+    const query = searchInput.value.trim();
+
+    if (query.length < 2) {
+      closeSearchResults();
+      return;
+    }
+
+    renderSearchResults(findSearchResults(query), query);
+  });
+
+  document.addEventListener("click", event => {
+    if (searchContainer && !searchContainer.contains(event.target)) {
+      closeSearchResults();
+    }
   });
 
   window.addEventListener("resize", () => {
