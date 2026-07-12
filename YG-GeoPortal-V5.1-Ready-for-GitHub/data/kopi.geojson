@@ -1,0 +1,14 @@
+{
+"type": "FeatureCollection",
+"name": "kopi",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "Id": 0, "Kabupaten": "Bengkalis", "Kecamatan": "BandarLaksamana", "Desa": "Temiang", "X": 101.922302, "Y": 1.478432, "Tahun": "2021", "Keterangan": "Demplot" }, "geometry": { "type": "Point", "coordinates": [ 101.922302492170274, 1.478431941190144 ] } },
+{ "type": "Feature", "properties": { "Id": 0, "Kabupaten": "Bengkalis", "Kecamatan": "BandarLaksamana", "Desa": "Temiang", "X": 101.943521, "Y": 1.471189, "Tahun": null, "Keterangan": "Rumah Bibit Kopi" }, "geometry": { "type": "Point", "coordinates": [ 101.943520509311725, 1.471189422964447 ] } },
+{ "type": "Feature", "properties": { "Id": 0, "Kabupaten": "Bengkalis", "Kecamatan": "Bengkalis", "Desa": "Pematang Duku", "X": 102.298846, "Y": 1.44456, "Tahun": "2025", "Keterangan": "Rumah Bibit Kopi" }, "geometry": { "type": "Point", "coordinates": [ 102.298845641105842, 1.44455994887212 ] } },
+{ "type": "Feature", "properties": { "Id": 0, "Kabupaten": "Siak", "Kecamatan": "Sungai Apit", "Desa": "Tanjung Kuras", "X": 102.16176, "Y": 1.16124, "Tahun": null, "Keterangan": "Rumah Bibit Kopi" }, "geometry": { "type": "Point", "coordinates": [ 102.161760000634501, 1.161240002538091 ] } },
+{ "type": "Feature", "properties": { "Id": 0, "Kabupaten": "Siak", "Kecamatan": "Sungai Apit", "Desa": "Tanjung Kuras", "X": 102.166648, "Y": 1.161615, "Tahun": "2025", "Keterangan": "Demplot" }, "geometry": { "type": "Point", "coordinates": [ 102.1666475498956, 1.161614571296824 ] } },
+{ "type": "Feature", "properties": { "Id": 0, "Kabupaten": "Bengkalis", "Kecamatan": "BandarLaksamana", "Desa": "Temiang", "X": 101.943035, "Y": 1.471771, "Tahun": "2025", "Keterangan": "Demplot" }, "geometry": { "type": "Point", "coordinates": [ 101.943035001580213, 1.471770796764969 ] } },
+{ "type": "Feature", "properties": { "Id": 0, "Kabupaten": null, "Kecamatan": null, "Desa": null, "X": 0.0, "Y": 0.0, "Tahun": null, "Keterangan": null }, "geometry": { "type": "Point", "coordinates": [ 101.366706266747357, 0.959249105275574 ] } }
+]
+}

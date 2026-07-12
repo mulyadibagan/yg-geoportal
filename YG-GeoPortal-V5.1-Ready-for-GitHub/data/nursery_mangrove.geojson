@@ -1,0 +1,8 @@
+{
+"type": "FeatureCollection",
+"name": "nursery_mangrove",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "Id": 5, "Kabupaten": "Siak", "Kecamatan": "Sungai Apit", "Desa": "Tanjung Kuras", "X": 102.167861, "Y": 1.197278, "Ket": null, "Tahun": null }, "geometry": { "type": "Point", "coordinates": [ 102.167861111111122, 1.197277778570933 ] } }
+]
+}
