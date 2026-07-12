@@ -3,8 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-  <meta name="description" content="YG GeoPortal - peta interaktif Yayasan Gambut berbasis OpenStreetMap."/>
-  <title>YG GeoPortal V6</title>
+  <title>YG GeoPortal V7</title>
   <link rel="icon" href="assets/logo-yayasan-gambut.png"/>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
   <link rel="stylesheet" href="css/app.css"/>
@@ -16,7 +15,7 @@
       <img src="assets/logo-yayasan-gambut.png" alt="Logo Yayasan Gambut"/>
       <span><strong>YG GeoPortal</strong><span>WebGIS Yayasan Gambut</span></span>
     </a>
-    <div class="header-actions">
+    <div class="header-nav">
       <a href="index.html">Beranda</a>
       <button id="desktop-panel" type="button">☰ Panel</button>
       <a class="primary" href="webgis.html">WebGIS</a>
@@ -27,9 +26,9 @@
 <div class="app-shell" id="app-shell">
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-inner">
-      <div class="intro-card">
+      <div class="sidebar-hero">
         <strong>Peta Program Yayasan Gambut</strong>
-        <p>Data spasial restorasi gambut, mangrove, pencegahan kebakaran, infrastruktur pesisir, dan livelihood.</p>
+        <p>Restorasi gambut, mangrove, pencegahan kebakaran, infrastruktur pesisir, dan livelihood.</p>
       </div>
 
       <section class="panel">
@@ -160,12 +159,12 @@
   <main class="map-area" id="map-area">
     <div id="map"></div>
 
-    <div class="map-toolbar">
-      <div class="map-card">
-        <strong>YG GeoPortal V6</strong>
-        <span>OpenStreetMap • Provinsi Riau</span>
+    <div class="map-top">
+      <div class="map-title">
+        <strong>YG GeoPortal V7</strong>
+        <span>Peta Jalan / Citra Satelit • Provinsi Riau</span>
       </div>
-      <div class="map-tools">
+      <div class="map-actions">
         <button id="map-panel" type="button">☰ <span>Panel</span></button>
         <button id="fullscreen" type="button">⛶ <span>Fullscreen</span></button>
       </div>

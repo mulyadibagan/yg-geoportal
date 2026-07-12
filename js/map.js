@@ -34,15 +34,17 @@
     }
   );
 
-  const baseMaps = {
-    "Peta Jalan": osm,
-    "Citra Satelit": satellite
-  };
-
-  L.control.layers(baseMaps, null, {
-    position: "topright",
-    collapsed: false
-  }).addTo(map);
+  L.control.layers(
+    {
+      "Peta Jalan": osm,
+      "Citra Satelit": satellite
+    },
+    null,
+    {
+      position: "topright",
+      collapsed: false
+    }
+  ).addTo(map);
 
   L.control.scale({ imperial: false, position: "bottomleft" }).addTo(map);
 
