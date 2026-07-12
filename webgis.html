@@ -2,179 +2,182 @@
 <html lang="id">
 <head>
   <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <meta name="description" content="Peta interaktif program Yayasan Gambut berbasis OpenStreetMap."/>
-  <title>WebGIS Profesional | YG GeoPortal</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+  <meta name="description" content="YG GeoPortal - peta interaktif Yayasan Gambut berbasis OpenStreetMap."/>
+  <title>YG GeoPortal V6</title>
   <link rel="icon" href="assets/logo-yayasan-gambut.png"/>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/app.css"/>
 </head>
-<body class="webgis-body">
-<header class="site-header">
+<body>
+<header class="app-header">
   <div class="header-inner">
     <a class="brand" href="index.html">
       <img src="assets/logo-yayasan-gambut.png" alt="Logo Yayasan Gambut"/>
       <span><strong>YG GeoPortal</strong><span>WebGIS Yayasan Gambut</span></span>
     </a>
-    <nav class="nav">
+    <div class="header-actions">
       <a href="index.html">Beranda</a>
+      <button id="desktop-panel" type="button">☰ Panel</button>
       <a class="primary" href="webgis.html">WebGIS</a>
-    </nav>
+    </div>
   </div>
 </header>
 
-<div class="webgis-shell" id="webgis-shell">
+<div class="app-shell" id="app-shell">
   <aside class="sidebar" id="sidebar">
-    <div class="sidebar-content">
-      <div class="panel-hero">
+    <div class="sidebar-inner">
+      <div class="intro-card">
         <strong>Peta Program Yayasan Gambut</strong>
-        <span>Jelajahi data spasial restorasi gambut, mangrove, pencegahan kebakaran, dan livelihood.</span>
+        <p>Data spasial restorasi gambut, mangrove, pencegahan kebakaran, infrastruktur pesisir, dan livelihood.</p>
       </div>
 
-      <section class="panel-section">
-        <h2 class="panel-title">Cari lokasi <small>nama desa atau kegiatan</small></h2>
-        <div class="search-box">
-          <input id="search" type="search" placeholder="Sepahat, Temiang, FDRS..."/>
-          <button id="search-button" type="button" aria-label="Cari">⌕</button>
+      <section class="panel">
+        <h2 class="panel-title">Cari lokasi <small>desa atau kegiatan</small></h2>
+        <div class="search">
+          <input id="search-input" type="search" placeholder="Sepahat, Temiang, FDRS..."/>
+          <button id="search-button" type="button">⌕</button>
         </div>
       </section>
 
-      <section class="panel-section">
+      <section class="panel">
         <h2 class="panel-title">Dashboard</h2>
-        <div class="sidebar-stats">
-          <div class="sidebar-stat"><strong>13</strong><span>Desa intervensi</span></div>
-          <div class="sidebar-stat"><strong>7.81 ha</strong><span>Area mangrove</span></div>
-          <div class="sidebar-stat"><strong>8</strong><span>Lokasi FDRS</span></div>
-          <div class="sidebar-stat"><strong>11</strong><span>Sekat kanal</span></div>
+        <div class="stats">
+          <div class="stat"><strong>13</strong><span>Desa intervensi</span></div>
+          <div class="stat"><strong>7.81 ha</strong><span>Area mangrove</span></div>
+          <div class="stat"><strong>8</strong><span>Lokasi FDRS</span></div>
+          <div class="stat"><strong>11</strong><span>Sekat kanal</span></div>
         </div>
       </section>
 
-      <section class="panel-section">
+      <section class="panel">
         <h2 class="panel-title">Layer data <small>aktif/nonaktif</small></h2>
         <div class="layer-list">
-      <div class="layer-item">
-        <input type="checkbox" id="layer-desa_intervensi" data-layer-id="desa_intervensi" checked/>
-        <span class="layer-swatch" style="background:#2e7d32"></span>
+      <div class="layer-row">
+        <input id="layer-desa_intervensi" data-layer-id="desa_intervensi" type="checkbox" checked/>
+        <span class="swatch" style="background:#2e7d32"></span>
         <label for="layer-desa_intervensi">Batas Desa Intervensi</label>
-        <span class="layer-count">13</span>
+        <span class="count">13</span>
       </div>
-      <div class="layer-item">
-        <input type="checkbox" id="layer-apo" data-layer-id="apo" checked/>
-        <span class="layer-swatch" style="background:#d32f2f"></span>
+      <div class="layer-row">
+        <input id="layer-apo" data-layer-id="apo" type="checkbox" checked/>
+        <span class="swatch" style="background:#d32f2f"></span>
         <label for="layer-apo">Alat Pemecah Ombak (APO)</label>
-        <span class="layer-count">2</span>
+        <span class="count">2</span>
       </div>
-      <div class="layer-item">
-        <input type="checkbox" id="layer-area_mangrove" data-layer-id="area_mangrove" checked/>
-        <span class="layer-swatch" style="background:#00796b"></span>
+      <div class="layer-row">
+        <input id="layer-area_mangrove" data-layer-id="area_mangrove" type="checkbox" checked/>
+        <span class="swatch" style="background:#00796b"></span>
         <label for="layer-area_mangrove">Area Penanaman Mangrove</label>
-        <span class="layer-count">34</span>
+        <span class="count">34</span>
       </div>
-      <div class="layer-item">
-        <input type="checkbox" id="layer-titik_desa" data-layer-id="titik_desa" />
-        <span class="layer-swatch" style="background:#1565c0"></span>
+      <div class="layer-row">
+        <input id="layer-titik_desa" data-layer-id="titik_desa" type="checkbox" />
+        <span class="swatch" style="background:#1565c0"></span>
         <label for="layer-titik_desa">Titik Desa Intervensi</label>
-        <span class="layer-count">13</span>
+        <span class="count">13</span>
       </div>
-      <div class="layer-item">
-        <input type="checkbox" id="layer-kopi" data-layer-id="kopi" checked/>
-        <span class="layer-swatch" style="background:#6d4c41"></span>
+      <div class="layer-row">
+        <input id="layer-kopi" data-layer-id="kopi" type="checkbox" checked/>
+        <span class="swatch" style="background:#6d4c41"></span>
         <label for="layer-kopi">Distribusi Lahan Kopi</label>
-        <span class="layer-count">7</span>
+        <span class="count">7</span>
       </div>
-      <div class="layer-item">
-        <input type="checkbox" id="layer-fdrs" data-layer-id="fdrs" checked/>
-        <span class="layer-swatch" style="background:#e65100"></span>
+      <div class="layer-row">
+        <input id="layer-fdrs" data-layer-id="fdrs" type="checkbox" checked/>
+        <span class="swatch" style="background:#e65100"></span>
         <label for="layer-fdrs">Pembangunan FDRS</label>
-        <span class="layer-count">8</span>
+        <span class="count">8</span>
       </div>
-      <div class="layer-item">
-        <input type="checkbox" id="layer-sekat_kanal" data-layer-id="sekat_kanal" checked/>
-        <span class="layer-swatch" style="background:#00838f"></span>
+      <div class="layer-row">
+        <input id="layer-sekat_kanal" data-layer-id="sekat_kanal" type="checkbox" checked/>
+        <span class="swatch" style="background:#00838f"></span>
         <label for="layer-sekat_kanal">Pembangunan Sekat Kanal</label>
-        <span class="layer-count">11</span>
+        <span class="count">11</span>
       </div>
-      <div class="layer-item">
-        <input type="checkbox" id="layer-nursery_mangrove" data-layer-id="nursery_mangrove" checked/>
-        <span class="layer-swatch" style="background:#8fa600"></span>
+      <div class="layer-row">
+        <input id="layer-nursery_mangrove" data-layer-id="nursery_mangrove" type="checkbox" checked/>
+        <span class="swatch" style="background:#8fa600"></span>
         <label for="layer-nursery_mangrove">Rumah Pembibitan Mangrove</label>
-        <span class="layer-count">1</span>
+        <span class="count">1</span>
       </div></div>
       </section>
 
-      <section class="panel-section">
+      <section class="panel">
         <h2 class="panel-title">Legenda</h2>
-        <div class="legend-list">
-      <div class="legend-row">
-        <span class="legend-symbol " style="background:#2e7d32"></span>
+        <div class="legend">
+      <div class="legend-item">
+        <span class="legend-mark" style="background:#2e7d32"></span>
         <span>Batas Desa Intervensi</span>
       </div>
-      <div class="legend-row">
-        <span class="legend-symbol " style="background:#d32f2f"></span>
+      <div class="legend-item">
+        <span class="legend-mark" style="background:#d32f2f"></span>
         <span>Alat Pemecah Ombak (APO)</span>
       </div>
-      <div class="legend-row">
-        <span class="legend-symbol " style="background:#00796b"></span>
+      <div class="legend-item">
+        <span class="legend-mark" style="background:#00796b"></span>
         <span>Area Penanaman Mangrove</span>
       </div>
-      <div class="legend-row">
-        <span class="legend-symbol point" style="background:#1565c0"></span>
+      <div class="legend-item">
+        <span class="legend-mark point" style="background:#1565c0"></span>
         <span>Titik Desa Intervensi</span>
       </div>
-      <div class="legend-row">
-        <span class="legend-symbol point" style="background:#6d4c41"></span>
+      <div class="legend-item">
+        <span class="legend-mark point" style="background:#6d4c41"></span>
         <span>Distribusi Lahan Kopi</span>
       </div>
-      <div class="legend-row">
-        <span class="legend-symbol point" style="background:#e65100"></span>
+      <div class="legend-item">
+        <span class="legend-mark point" style="background:#e65100"></span>
         <span>Pembangunan FDRS</span>
       </div>
-      <div class="legend-row">
-        <span class="legend-symbol point" style="background:#00838f"></span>
+      <div class="legend-item">
+        <span class="legend-mark point" style="background:#00838f"></span>
         <span>Pembangunan Sekat Kanal</span>
       </div>
-      <div class="legend-row">
-        <span class="legend-symbol point" style="background:#8fa600"></span>
+      <div class="legend-item">
+        <span class="legend-mark point" style="background:#8fa600"></span>
         <span>Rumah Pembibitan Mangrove</span>
       </div></div>
       </section>
 
-      <section class="panel-section">
+      <section class="panel">
         <h2 class="panel-title">Kontrol peta</h2>
-        <div class="sidebar-actions">
+        <div class="controls">
           <button class="primary" id="fit-all" type="button">Tampilkan semua</button>
           <button id="locate-me" type="button">Lokasi saya</button>
           <button class="wide" id="reset-map" type="button">Reset tampilan</button>
         </div>
-        <div class="load-status" id="load-status">
+        <div class="status" id="status-box">
           <span class="status-dot"></span>
-          <span id="load-status-text">Memuat layer data...</span>
+          <span id="status-text">Memuat layer...</span>
         </div>
       </section>
     </div>
   </aside>
 
-  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+  <div class="overlay" id="overlay"></div>
 
-  <main class="map-wrap">
+  <main class="map-area" id="map-area">
+    <div id="map"></div>
+
     <div class="map-toolbar">
-      <div class="map-heading">
-        <strong>YG GeoPortal</strong>
+      <div class="map-card">
+        <strong>YG GeoPortal V6</strong>
         <span>OpenStreetMap • Provinsi Riau</span>
       </div>
       <div class="map-tools">
-        <button id="toggle-sidebar" type="button" title="Tampilkan/sembunyikan panel">☰ <span>Panel</span></button>
-        <button id="fullscreen-map" type="button" title="Layar penuh">⛶ <span>Fullscreen</span></button>
+        <button id="map-panel" type="button">☰ <span>Panel</span></button>
+        <button id="fullscreen" type="button">⛶ <span>Fullscreen</span></button>
       </div>
     </div>
 
-    <div id="map" role="application" aria-label="Peta interaktif Yayasan Gambut"></div>
-    <div class="map-credit">Data spasial Yayasan Gambut • Basemap © OpenStreetMap contributors</div>
-    <button class="mobile-toggle" id="mobile-toggle" type="button" aria-label="Buka panel">☰</button>
+    <button class="mobile-fab" id="mobile-panel" type="button">☰</button>
   </main>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="js/app.js"></script>
+<script src="js/config.js"></script>
+<script src="js/map.js"></script>
+<script src="js/ui.js"></script>
 </body>
 </html>
