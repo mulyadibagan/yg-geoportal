@@ -6,7 +6,7 @@
   <title>Kirim Laporan | YG GeoPortal</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css">
-  <link rel="stylesheet" href="css/report-v5.css">
+  <link rel="stylesheet" href="css/report-v6.css">
 </head>
 <body>
 <main class="report-shell">
@@ -129,8 +129,8 @@
         <label class="field span-2"><span>Deskripsi *</span><textarea id="description" rows="6" required></textarea></label>
       </div>
 
-      <div id="correction-fields" class="conditional-subsection" hidden>
-        <h3>Pilih data WebGIS yang akan diperbaiki</h3>
+      <div id="existing-feature-fields" class="conditional-subsection" hidden>
+        <h3 id="existing-feature-title">Pilih data WebGIS</h3>
 
         <div class="correction-selector">
           <label class="field">
@@ -154,17 +154,22 @@
           </button>
         </div>
 
-        <h3>Data yang diperbaiki</h3>
-        <div class="form-grid">
-          <label class="field span-2">
-            <span>Informasi lama yang dianggap salah *</span>
-            <textarea id="old-information" rows="7" readonly></textarea>
-          </label>
-          <label class="field span-2">
-            <span>Informasi perbaikan yang diusulkan *</span>
+        <div id="correction-detail-fields" hidden>
+          <h3>Atribut objek yang dapat diperbarui</h3>
+          <p class="help">Isi hanya nilai yang ingin diubah. Kolom yang dibiarkan kosong tidak akan diperbarui.</p>
+          <div id="editable-attributes" class="editable-attributes"></div>
+
+          <label class="field span-2 correction-note-field">
+            <span>Catatan atau alasan perbaikan *</span>
             <textarea id="proposed-information" rows="5"></textarea>
           </label>
         </div>
+
+        <div id="photo-target-note" class="photo-target-note" hidden>
+          Foto yang dipilih pada bagian Dokumentasi akan ditambahkan ke objek WebGIS ini setelah diverifikasi admin.
+        </div>
+
+        <textarea id="old-information" hidden></textarea>
       </div>
 
       <label class="field document-field">
@@ -210,6 +215,6 @@
 <script src="https://unpkg.com/jszip@3.10.1/dist/jszip.min.js"></script>
 <script src="https://unpkg.com/@tmcw/togeojson@5.8.1/dist/togeojson.umd.js"></script>
 <script src="js/config.js"></script>
-<script src="js/report-v5.js"></script>
+<script src="js/report-v6.js"></script>
 </body>
 </html>
