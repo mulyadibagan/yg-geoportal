@@ -348,3 +348,123 @@ button{cursor:pointer}
     display:none;
   }
 }
+
+
+/* =========================================================
+   V9.1 CLEAN EMBED MODE
+   Blogger supplies the public header; the map app fills iframe.
+========================================================= */
+:root{
+  --header-h:0px;
+  --sidebar-w:320px;
+}
+
+html,
+body{
+  width:100%;
+  height:100%;
+  overflow:hidden;
+}
+
+.app-header{
+  display:none!important;
+}
+
+.app-shell{
+  position:fixed!important;
+  inset:0!important;
+  grid-template-columns:var(--sidebar-w) minmax(0,1fr)!important;
+}
+
+.app-shell.collapsed{
+  grid-template-columns:0 minmax(0,1fr)!important;
+}
+
+.sidebar{
+  height:100%!important;
+}
+
+.sidebar-inner{
+  padding:12px!important;
+}
+
+.sidebar-hero{
+  margin-bottom:10px!important;
+  padding:13px!important;
+}
+
+.map-area{
+  height:100%!important;
+}
+
+.map-top{
+  top:10px!important;
+  left:auto!important;
+  right:10px!important;
+  width:auto!important;
+  justify-content:flex-end!important;
+}
+
+.map-title{
+  display:none!important;
+}
+
+.map-actions{
+  border-radius:10px!important;
+}
+
+.leaflet-control-zoom{
+  margin-top:10px!important;
+  margin-left:10px!important;
+}
+
+.leaflet-control-layers{
+  margin-top:62px!important;
+  margin-right:10px!important;
+}
+
+.leaflet-control-layers-expanded{
+  min-width:132px;
+}
+
+@media(max-width:760px){
+  :root{
+    --header-h:0px;
+  }
+
+  .app-shell{
+    position:fixed!important;
+    inset:0!important;
+    display:block!important;
+  }
+
+  .sidebar{
+    top:0!important;
+    bottom:0!important;
+    width:min(88vw,330px)!important;
+  }
+
+  .overlay{
+    inset:0!important;
+  }
+
+  .map-area{
+    position:absolute!important;
+    inset:0!important;
+  }
+
+  .map-top{
+    top:8px!important;
+    right:8px!important;
+  }
+
+  .leaflet-control-layers{
+    margin-top:58px!important;
+    margin-right:8px!important;
+  }
+
+  .leaflet-control-zoom{
+    margin-top:8px!important;
+    margin-left:8px!important;
+  }
+}
