@@ -6,7 +6,7 @@
   <title>Kirim Laporan | YG GeoPortal</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css">
-  <link rel="stylesheet" href="css/report-v4.css">
+  <link rel="stylesheet" href="css/report-v5.css">
 </head>
 <body>
 <main class="report-shell">
@@ -130,10 +130,40 @@
       </div>
 
       <div id="correction-fields" class="conditional-subsection" hidden>
+        <h3>Pilih data WebGIS yang akan diperbaiki</h3>
+
+        <div class="correction-selector">
+          <label class="field">
+            <span>Layer data *</span>
+            <select id="correction-layer">
+              <option value="">Pilih layer...</option>
+            </select>
+          </label>
+
+          <div class="correction-instruction">
+            Setelah memilih layer, klik titik atau poligon pada peta di bagian
+            <b>Tentukan lokasi</b>.
+          </div>
+
+          <div id="selected-feature-summary" class="selected-feature-summary">
+            Belum ada objek WebGIS dipilih.
+          </div>
+
+          <button id="clear-selected-feature" class="clear-selected-feature" type="button" hidden>
+            Batalkan pilihan objek
+          </button>
+        </div>
+
         <h3>Data yang diperbaiki</h3>
         <div class="form-grid">
-          <label class="field span-2"><span>Informasi lama yang dianggap salah *</span><textarea id="old-information" rows="4"></textarea></label>
-          <label class="field span-2"><span>Informasi perbaikan yang diusulkan *</span><textarea id="proposed-information" rows="4"></textarea></label>
+          <label class="field span-2">
+            <span>Informasi lama yang dianggap salah *</span>
+            <textarea id="old-information" rows="7" readonly></textarea>
+          </label>
+          <label class="field span-2">
+            <span>Informasi perbaikan yang diusulkan *</span>
+            <textarea id="proposed-information" rows="5"></textarea>
+          </label>
         </div>
       </div>
 
@@ -179,6 +209,7 @@
 <script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
 <script src="https://unpkg.com/jszip@3.10.1/dist/jszip.min.js"></script>
 <script src="https://unpkg.com/@tmcw/togeojson@5.8.1/dist/togeojson.umd.js"></script>
-<script src="js/report-v4.js"></script>
+<script src="js/config.js"></script>
+<script src="js/report-v5.js"></script>
 </body>
 </html>
