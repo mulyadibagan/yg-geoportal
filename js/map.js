@@ -26,6 +26,24 @@
     }
   ).addTo(map);
 
+  const satellite = L.tileLayer(
+    "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+    {
+      maxZoom: 19,
+      attribution: "Tiles &copy; Esri"
+    }
+  );
+
+  const baseMaps = {
+    "Peta Jalan": osm,
+    "Citra Satelit": satellite
+  };
+
+  L.control.layers(baseMaps, null, {
+    position: "topright",
+    collapsed: false
+  }).addTo(map);
+
   L.control.scale({ imperial: false, position: "bottomleft" }).addTo(map);
 
   const layerObjects = {};
