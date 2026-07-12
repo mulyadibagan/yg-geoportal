@@ -6,7 +6,7 @@
   <title>Kirim Laporan | YG GeoPortal</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css">
-  <link rel="stylesheet" href="css/report-v3.css">
+  <link rel="stylesheet" href="css/report-v4.css">
 </head>
 <body>
 <main class="report-shell">
@@ -92,11 +92,12 @@
 
         <div id="kml-area-tools" hidden>
           <label class="kml-upload">
-            <input id="kml-file" type="file" accept=".kml,application/vnd.google-earth.kml+xml">
-            <span>📂 Pilih File KML</span>
+            <input id="spatial-file" type="file" accept=".kml,.kmz,.geojson,.json,application/vnd.google-earth.kml+xml,application/vnd.google-earth.kmz,application/geo+json,application/json">
+            <span>📂 Pilih KML / KMZ / GeoJSON</span>
           </label>
-          <div id="kml-status" class="kml-status">Belum ada file KML dipilih.</div>
-          <button id="remove-kml" class="secondary kml-remove" type="button" hidden>Hapus KML</button>
+          <div id="kml-status" class="kml-status">Belum ada file spasial dipilih.</div>
+<div class="spatial-format-note">Format: KML, KMZ, GeoJSON, atau JSON. Hanya Polygon/MultiPolygon yang diterima.</div>
+          <button id="remove-spatial" class="secondary kml-remove" type="button" hidden>Hapus File</button>
         </div>
       </div>
 
@@ -176,7 +177,8 @@
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
+<script src="https://unpkg.com/jszip@3.10.1/dist/jszip.min.js"></script>
 <script src="https://unpkg.com/@tmcw/togeojson@5.8.1/dist/togeojson.umd.js"></script>
-<script src="js/report-v3.js"></script>
+<script src="js/report-v4.js"></script>
 </body>
 </html>
