@@ -335,3 +335,16 @@ button{cursor:pointer}
   .leaflet-control-layers{margin-top:58px!important}
   .leaflet-control-zoom{margin-top:58px!important}
 }
+
+
+/* V9 branding cleanup */
+.header-nav a[href*="github"],
+.brand[href*="github"]{
+  display:none!important;
+}
+@media(max-width:760px){
+  .header-nav a[href*="webgisyg.blogspot.com/"]:not(.primary),
+  .header-nav a[href*="yayasangambut.org"]{
+    display:none;
+  }
+}
