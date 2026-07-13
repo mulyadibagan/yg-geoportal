@@ -6,7 +6,7 @@
   <title>Kirim Laporan | YG GeoPortal</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css">
-  <link rel="stylesheet" href="css/report-v6.css">
+  <link rel="stylesheet" href="css/report-v6.css?v=20260713-3">
 </head>
 <body>
 <main class="report-shell">
@@ -172,6 +172,90 @@
         <textarea id="old-information" hidden></textarea>
       </div>
 
+
+      <div id="monitoring-fields" class="conditional-subsection monitoring-fields" hidden>
+        <h3>Data monitoring objek</h3>
+        <p class="help">Pilih objek WebGIS terlebih dahulu. Isian akan menyesuaikan jenis objek yang dipilih.</p>
+
+        <div class="form-grid">
+          <label class="field"><span>Jenis monitoring *</span>
+            <select id="monitoring-type">
+              <option value="">Pilih jenis monitoring...</option>
+              <option value="Penanaman Mangrove">Penanaman Mangrove</option>
+              <option value="Hutan Mangrove">Hutan Mangrove</option>
+              <option value="Tinggi Muka Air/FDRS">Tinggi Muka Air/FDRS</option>
+              <option value="Sekat Kanal">Sekat Kanal</option>
+              <option value="APO">Alat Pemecah Ombak (APO)</option>
+              <option value="Pembibitan">Pembibitan</option>
+              <option value="Agroforestri/Kopi">Agroforestri/Kopi</option>
+              <option value="Monitoring Umum">Monitoring Umum</option>
+            </select>
+          </label>
+          <label class="field"><span>Kondisi umum *</span>
+            <select id="monitoring-condition">
+              <option value="">Pilih kondisi...</option>
+              <option value="Sangat Baik">Sangat Baik</option>
+              <option value="Baik">Baik</option>
+              <option value="Sedang">Sedang</option>
+              <option value="Rusak Ringan">Rusak Ringan</option>
+              <option value="Rusak Berat">Rusak Berat</option>
+              <option value="Tidak Ditemukan">Tidak Ditemukan</option>
+            </select>
+          </label>
+        </div>
+
+        <div id="monitoring-mangrove-fields" class="monitoring-type-panel" hidden>
+          <h4>Indikator penanaman/hutan mangrove</h4>
+          <div class="form-grid">
+            <label class="field"><span>Survival (%)</span><input id="monitoring-survival" type="number" min="0" max="100" step="0.1"></label>
+            <label class="field"><span>Jumlah hidup</span><input id="monitoring-alive" type="number" min="0" step="1"></label>
+            <label class="field"><span>Jumlah mati/rusak</span><input id="monitoring-dead" type="number" min="0" step="1"></label>
+            <label class="field"><span>Luas terpantau (ha)</span><input id="monitoring-area" type="number" min="0" step="0.01"></label>
+            <label class="field"><span>Tinggi rata-rata (cm)</span><input id="monitoring-height" type="number" min="0" step="0.1"></label>
+            <label class="field"><span>Sedimentasi (cm)</span><input id="monitoring-sediment" type="number" step="0.1"></label>
+          </div>
+        </div>
+
+        <div id="monitoring-fdrs-fields" class="monitoring-type-panel" hidden>
+          <h4>FDRS dan water table pelampung</h4>
+          <div class="fdrs-note"><b>Standar pencatatan:</b> 0 cm sejajar permukaan tanah; nilai negatif berarti muka air berada di bawah permukaan gambut. Contoh: −32 cm.</div>
+          <div class="form-grid">
+            <label class="field"><span>Tinggi muka air (cm) *</span><input id="monitoring-water-table" type="number" max="20" min="-300" step="0.1" placeholder="Contoh: -32"></label>
+            <label class="field"><span>Kondisi water table pelampung *</span>
+              <select id="monitoring-float-condition">
+                <option value="">Pilih kondisi...</option>
+                <option value="Baik dan terbaca">Baik dan terbaca</option>
+                <option value="Pelampung tersangkut">Pelampung tersangkut</option>
+                <option value="Skala sulit dibaca">Skala sulit dibaca</option>
+                <option value="Pipa miring">Pipa miring</option>
+                <option value="Pipa rusak">Pipa rusak</option>
+                <option value="Pelampung hilang">Pelampung hilang</option>
+                <option value="Perlu pembersihan">Perlu pembersihan</option>
+              </select>
+            </label>
+            <label class="field"><span>Cuaca saat monitoring</span><select id="monitoring-weather"><option value="">Pilih cuaca...</option><option>Cerah</option><option>Berawan</option><option>Hujan ringan</option><option>Hujan lebat</option></select></label>
+            <label class="field"><span>Hujan 24 jam terakhir</span><select id="monitoring-rain"><option value="">Tidak diketahui</option><option>Tidak ada</option><option>Ringan</option><option>Sedang</option><option>Lebat</option></select></label>
+            <label class="field"><span>Kondisi lahan/kanal</span><select id="monitoring-site-wetness"><option value="">Pilih kondisi...</option><option>Tergenang</option><option>Basah</option><option>Lembap</option><option>Kering</option><option>Sangat kering</option></select></label>
+            <label class="field"><span>Indikasi kebakaran/kekeringan</span><select id="monitoring-fire-risk"><option value="Tidak ada">Tidak ada</option><option>Perlu dipantau</option><option>Ada indikasi</option></select></label>
+          </div>
+          <div id="water-table-preview" class="water-table-preview">Masukkan tinggi muka air untuk melihat status otomatis.</div>
+        </div>
+
+        <div id="monitoring-infrastructure-fields" class="monitoring-type-panel" hidden>
+          <h4>Indikator infrastruktur</h4>
+          <div class="form-grid">
+            <label class="field"><span>Status fungsi</span><select id="monitoring-function"><option value="">Pilih status...</option><option>Berfungsi baik</option><option>Berfungsi sebagian</option><option>Tidak berfungsi</option><option>Rusak</option><option>Hilang</option></select></label>
+            <label class="field"><span>Panjang/bagian terpantau</span><input id="monitoring-length" placeholder="Contoh: 100 m"></label>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <label class="field span-2"><span>Ancaman/masalah</span><input id="monitoring-threats" placeholder="Contoh: abrasi, sampah, penebangan, hama"></label>
+          <label class="field span-2"><span>Temuan monitoring *</span><textarea id="monitoring-notes" rows="5" placeholder="Jelaskan perubahan kondisi dan hasil pengamatan."></textarea></label>
+          <label class="field span-2"><span>Rekomendasi/tindak lanjut</span><textarea id="monitoring-follow-up" rows="4" placeholder="Contoh: penyulaman, pembersihan, perbaikan, monitoring ulang."></textarea></label>
+        </div>
+      </div>
+
       <label class="field document-field">
         <span>Tautan dokumen pendukung</span>
         <input id="document-url" type="url" placeholder="Google Drive atau laporan PDF">
@@ -215,6 +299,6 @@
 <script src="https://unpkg.com/jszip@3.10.1/dist/jszip.min.js"></script>
 <script src="https://unpkg.com/@tmcw/togeojson@5.8.1/dist/togeojson.umd.js"></script>
 <script src="js/config.js"></script>
-<script src="js/report-v6.js"></script>
+<script src="js/report-v6.js?v=20260713-3"></script>
 </body>
 </html>

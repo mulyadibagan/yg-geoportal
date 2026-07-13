@@ -26,11 +26,11 @@
   var correctionLayersLoaded = false;
 
   var pointTypes = [
-    'Titik Baru','Monitoring','Kebakaran','Abrasi','Biodiversitas'
+    'Titik Baru','Kebakaran','Abrasi','Biodiversitas'
   ];
 
   var existingFeatureTypes = [
-    'Tambah Foto Kegiatan','Perbaikan Informasi'
+    'Tambah Foto Kegiatan','Perbaikan Informasi','Monitoring'
   ];
 
   var map = L.map('location-map').setView([1.15,101.95],8);
@@ -60,6 +60,8 @@
     var existingFeatureFields = document.getElementById('existing-feature-fields');
     var oldInformation = document.getElementById('old-information');
     var proposedInformation = document.getElementById('proposed-information');
+    var monitoringFields = document.getElementById('monitoring-fields');
+    if(monitoringFields) monitoringFields.hidden = type !== 'Monitoring';
     var guidance = document.getElementById('type-guidance');
     var geometryHelp = document.getElementById('geometry-help');
 
@@ -105,9 +107,10 @@
       document.getElementById('photo-target-note').hidden =
         type !== 'Tambah Foto Kegiatan';
 
-      guidance.textContent =
-        type === 'Tambah Foto Kegiatan'
-          ? 'Pilih layer dan objek WebGIS yang akan menerima foto baru.'
+      guidance.textContent = type === 'Tambah Foto Kegiatan'
+        ? 'Pilih layer dan objek WebGIS yang akan menerima foto baru.'
+        : type === 'Monitoring'
+          ? 'Pilih objek WebGIS yang sudah ada, lalu isi indikator monitoring sesuai jenisnya.'
           : 'Pilih layer, lalu klik titik atau poligon WebGIS yang informasinya ingin diperbaiki.';
 
       geometryHelp.textContent =
@@ -941,6 +944,71 @@
     statusText.textContent = compressedImages.length + ' foto siap dikirim.';
   });
 
+  function monitoringValue(id){
+    var el = document.getElementById(id);
+    return el ? String(el.value || '').trim() : '';
+  }
+
+  function collectMonitoringData(){
+    return {
+      monitoringType:monitoringValue('monitoring-type'),
+      condition:monitoringValue('monitoring-condition'),
+      survivalPercent:monitoringValue('monitoring-survival'),
+      aliveCount:monitoringValue('monitoring-alive'),
+      deadOrDamagedCount:monitoringValue('monitoring-dead'),
+      monitoredAreaHa:monitoringValue('monitoring-area'),
+      averageHeightCm:monitoringValue('monitoring-height'),
+      sedimentationCm:monitoringValue('monitoring-sediment'),
+      waterTableCm:monitoringValue('monitoring-water-table'),
+      floatCondition:monitoringValue('monitoring-float-condition'),
+      weather:monitoringValue('monitoring-weather'),
+      rainLast24Hours:monitoringValue('monitoring-rain'),
+      siteWetness:monitoringValue('monitoring-site-wetness'),
+      fireRisk:monitoringValue('monitoring-fire-risk'),
+      functionStatus:monitoringValue('monitoring-function'),
+      monitoredLength:monitoringValue('monitoring-length'),
+      threats:monitoringValue('monitoring-threats'),
+      notes:monitoringValue('monitoring-notes'),
+      followUp:monitoringValue('monitoring-follow-up')
+    };
+  }
+
+  function updateMonitoringPanels(){
+    var type = monitoringValue('monitoring-type');
+    var mangrove = document.getElementById('monitoring-mangrove-fields');
+    var fdrs = document.getElementById('monitoring-fdrs-fields');
+    var infra = document.getElementById('monitoring-infrastructure-fields');
+    if(mangrove) mangrove.hidden = ['Penanaman Mangrove','Hutan Mangrove','Pembibitan','Agroforestri/Kopi'].indexOf(type) === -1;
+    if(fdrs) fdrs.hidden = type !== 'Tinggi Muka Air/FDRS';
+    if(infra) infra.hidden = ['Sekat Kanal','APO'].indexOf(type) === -1;
+  }
+
+  var monitoringTypeSelect = document.getElementById('monitoring-type');
+  if(monitoringTypeSelect){
+    monitoringTypeSelect.addEventListener('change',updateMonitoringPanels);
+  }
+
+  var waterTableInput = document.getElementById('monitoring-water-table');
+  if(waterTableInput){
+    waterTableInput.addEventListener('input',function(){
+      var preview = document.getElementById('water-table-preview');
+      var n = Number(this.value);
+      preview.className = 'water-table-preview';
+      if(this.value === '' || !isFinite(n)){
+        preview.textContent = 'Masukkan tinggi muka air untuk melihat status otomatis.';
+      }else if(n >= -20){
+        preview.textContent = 'Status otomatis: Sangat basah.';
+        preview.classList.add('wet');
+      }else if(n >= -40){
+        preview.textContent = 'Status otomatis: Perlu dipantau.';
+        preview.classList.add('normal');
+      }else{
+        preview.textContent = 'Status otomatis: Waspada kering.';
+        preview.classList.add('dry');
+      }
+    });
+  }
+
   form.addEventListener('submit',function(event){
     event.preventDefault();
 
@@ -985,6 +1053,32 @@
       }
     }
 
+    if(selectedType === 'Monitoring'){
+      var monitorDataValidation = collectMonitoringData();
+      if(!monitorDataValidation.monitoringType){
+        alert('Pilih jenis monitoring.');
+        return;
+      }
+      if(!monitorDataValidation.condition){
+        alert('Pilih kondisi umum objek.');
+        return;
+      }
+      if(!monitorDataValidation.notes){
+        alert('Isi temuan monitoring.');
+        return;
+      }
+      if(monitorDataValidation.monitoringType === 'Tinggi Muka Air/FDRS'){
+        if(monitorDataValidation.waterTableCm === ''){
+          alert('Isi tinggi muka air hasil pembacaan water table pelampung.');
+          return;
+        }
+        if(!monitorDataValidation.floatCondition){
+          alert('Pilih kondisi water table pelampung.');
+          return;
+        }
+      }
+    }
+
     if(selectedType === 'Tambah Foto Kegiatan' && !compressedImages.length){
       alert('Pilih minimal satu foto untuk ditambahkan.');
       return;
@@ -1007,7 +1101,9 @@
       activityDate:value('activity-date'),
       description:value('description'),
       oldInformation:value('old-information'),
-      proposedInformation:value('proposed-information'),
+      proposedInformation:selectedType === 'Monitoring'
+        ? JSON.stringify(collectMonitoringData())
+        : value('proposed-information'),
       documentUrl:value('document-url'),
       geometryType:geometryGeoJSON ? geometryGeoJSON.type : '',
       geometryGeoJSON:geometryGeoJSON ? JSON.stringify(geometryGeoJSON) : '',
@@ -1022,7 +1118,9 @@
         : '',
       proposedChanges:selectedType === 'Perbaikan Informasi'
         ? JSON.stringify(collectProposedChanges())
-        : '',
+        : selectedType === 'Monitoring'
+          ? JSON.stringify({monitoring:collectMonitoringData()})
+          : '',
       images:compressedImages
     };
 
@@ -1044,6 +1142,16 @@
       submissionStarted = false;
     },600);
   });
+
+  var requestedType = new URLSearchParams(window.location.search).get('type');
+  if(requestedType && requestedType.toLowerCase() === 'monitoring'){
+    var monitoringRadio = document.querySelector('input[name="reportTypeUI"][value="Monitoring"]');
+    if(monitoringRadio){
+      monitoringRadio.checked = true;
+      selectedType = 'Monitoring';
+      configureFormByType('Monitoring');
+    }
+  }
 
   document.getElementById('send-another').addEventListener('click',function(){
     form.reset();
