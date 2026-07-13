@@ -1011,36 +1011,99 @@
     }
   }
 
-  imageInput.addEventListener('change',async function(){
-    var files = Array.from(this.files || []).slice(0,5);
-    compressedImages = [];
+  function renderPhotoPreview(){
     preview.innerHTML = '';
-    statusText.textContent = files.length ? 'Memproses foto...' : '';
+
+    compressedImages.forEach(function(photo,index){
+      var figure = document.createElement('figure');
+      var image = document.createElement('img');
+      var caption = document.createElement('small');
+      var removeButton = document.createElement('button');
+
+      image.src = photo.dataUrl;
+      image.alt = photo.name || ('Foto ' + (index + 1));
+
+      caption.textContent =
+        'Foto ' + (index + 1) +
+        (photo.name ? ' · ' + photo.name : '');
+
+      removeButton.type = 'button';
+      removeButton.className = 'remove-preview-photo';
+      removeButton.setAttribute('aria-label','Hapus foto ' + (index + 1));
+      removeButton.textContent = '×';
+
+      removeButton.addEventListener('click',function(){
+        compressedImages.splice(index,1);
+        renderPhotoPreview();
+      });
+
+      figure.appendChild(image);
+      figure.appendChild(caption);
+      figure.appendChild(removeButton);
+      preview.appendChild(figure);
+    });
+
+    if(compressedImages.length){
+      statusText.textContent =
+        compressedImages.length +
+        ' dari 5 foto siap dikirim. Anda dapat memilih foto lagi.';
+    }else{
+      statusText.textContent = '';
+    }
+  }
+
+  imageInput.addEventListener('change',async function(){
+    var selectedFiles = Array.from(this.files || []);
+    var availableSlots = Math.max(0,5 - compressedImages.length);
+    var files = selectedFiles.slice(0,availableSlots);
+
+    if(!availableSlots){
+      statusText.textContent =
+        'Maksimal 5 foto. Hapus salah satu foto untuk menggantinya.';
+      this.value = '';
+      return;
+    }
+
+    if(!files.length){
+      this.value = '';
+      return;
+    }
+
+    statusText.textContent =
+      'Memproses ' + files.length + ' foto...';
 
     for(var i=0;i<files.length;i++){
       try{
         var dataUrl = await compressImage(files[i],1400,0.72);
+
         compressedImages.push({
           name:files[i].name,
           type:'image/jpeg',
           dataUrl:dataUrl
         });
 
-        var figure = document.createElement('figure');
-        var image = document.createElement('img');
-        var caption = document.createElement('small');
-        image.src = dataUrl;
-        image.alt = files[i].name;
-        caption.textContent = files[i].name;
-        figure.appendChild(image);
-        figure.appendChild(caption);
-        preview.appendChild(figure);
+        renderPhotoPreview();
       }catch(error){
         console.error(error);
+        statusText.textContent =
+          'Salah satu foto gagal diproses. Silakan pilih ulang.';
       }
     }
 
-    statusText.textContent = compressedImages.length + ' foto siap dikirim.';
+    /*
+      Kosongkan input agar pengguna smartphone bisa menekan
+      "Pilih Foto" lagi dan menambahkan foto berikutnya.
+      Foto yang sudah diproses tetap tersimpan di compressedImages.
+    */
+    this.value = '';
+
+    if(selectedFiles.length > availableSlots){
+      statusText.textContent =
+        'Hanya ' + availableSlots +
+        ' foto yang ditambahkan karena batas maksimal 5 foto.';
+    }else{
+      renderPhotoPreview();
+    }
   });
 
   function monitoringValue(id){
