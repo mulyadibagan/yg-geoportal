@@ -21,24 +21,59 @@
     });
   }
 
+  function normalizePhotoUrl(url) {
+    const value = String(url || "").trim();
+    if (!value) return "";
+
+    const patterns = [
+      /drive\.google\.com\/file\/d\/([A-Za-z0-9_-]+)/,
+      /[?&]id=([A-Za-z0-9_-]+)/
+    ];
+
+    for (let i = 0; i < patterns.length; i += 1) {
+      const match = value.match(patterns[i]);
+      if (match && match[1]) {
+        return "https://drive.google.com/thumbnail?id=" +
+          encodeURIComponent(match[1]) + "&sz=w1000";
+      }
+    }
+
+    return value;
+  }
+
   function buildPopup(properties) {
-    const photos = Array.isArray(properties.photos) ? properties.photos : [];
-    let links = "";
+    const photos = Array.isArray(properties.photos)
+      ? properties.photos.filter(Boolean)
+      : [];
 
-    photos.forEach(function(url, index) {
-      links +=
-        '<a class="community-photo-link" href="' +
-        escapeHtml(url) +
-        '" target="_blank" rel="noopener">Foto ' +
-        (index + 1) +
-        "</a>";
-    });
+    let gallery = "";
 
+    if (photos.length) {
+      const items = photos.map(function(url, index) {
+        const imageUrl = normalizePhotoUrl(url);
+        return (
+          '<button type="button" class="community-photo-thumb" ' +
+          'data-community-photo="' + escapeHtml(imageUrl) + '" ' +
+          'data-community-photo-number="' + (index + 1) + '">' +
+            '<img src="' + escapeHtml(imageUrl) + '" alt="Foto dokumentasi ' + (index + 1) + '" loading="lazy">' +
+            '<span>Foto ' + (index + 1) + '</span>' +
+          '</button>'
+        );
+      }).join("");
+
+      gallery =
+        '<div class="community-photo-section">' +
+          '<div class="community-photo-title"><b>Dokumentasi</b><span>' + photos.length + ' foto</span></div>' +
+          '<div class="community-photo-grid">' + items + '</div>' +
+        '</div>';
+    }
+
+    let documentLink = "";
     if (properties.documentUrl) {
-      links +=
-        '<a class="community-photo-link" href="' +
+      documentLink =
+        '<a class="community-document-link" href="' +
         escapeHtml(properties.documentUrl) +
-        '" target="_blank" rel="noopener">Dokumen</a>';
+        '" target="_blank" rel="noopener noreferrer">Lihat dokumen pendukung</a>';
     }
 
     const location = [
@@ -57,14 +92,10 @@
         '<div class="community-popup-body">' +
           '<div><b>Jenis</b><span>' + escapeHtml(properties.reportType || "-") + '</span></div>' +
           '<div><b>Lokasi</b><span>' + escapeHtml(location || "-") + '</span></div>' +
-          '<div><b>Tanggal</b><span>' +
-            escapeHtml(properties.activityDate || properties.receivedAt || "-") +
-          '</span></div>' +
-          '<div><b>Pelapor</b><span>' +
-            escapeHtml(properties.organization || properties.reporterName || "-") +
-          '</span></div>' +
+          '<div><b>Tanggal</b><span>' + escapeHtml(properties.activityDate || properties.receivedAt || "-") + '</span></div>' +
+          '<div><b>Pelapor</b><span>' + escapeHtml(properties.organization || properties.reporterName || "-") + '</span></div>' +
           '<p>' + escapeHtml(properties.description || "-") + '</p>' +
-          (links ? '<div class="community-popup-links">' + links + '</div>' : '') +
+          gallery + documentLink +
         '</div>' +
       '</div>'
     );
@@ -278,4 +309,63 @@
   };
 
   document.head.appendChild(script);
+
+  function installGalleryStyles() {
+    if (document.getElementById("yg-community-gallery-style")) return;
+    const style = document.createElement("style");
+    style.id = "yg-community-gallery-style";
+    style.textContent = `
+      .community-photo-section{margin-top:12px;padding-top:10px;border-top:1px solid #e6ebe8}
+      .community-photo-title{display:flex!important;align-items:center;justify-content:space-between;border:0!important;padding:0 0 8px!important}
+      .community-photo-title b{font-size:12px}.community-photo-title span{font-size:9px;color:#7b1fa2;background:#f2e7f7;padding:3px 7px;border-radius:20px}
+      .community-photo-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+      .community-photo-thumb{position:relative;height:95px;padding:0;border:0;border-radius:10px;overflow:hidden;background:#edf1ef;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.14)}
+      .community-photo-thumb:only-child{grid-column:1/-1;height:155px}
+      .community-photo-thumb img{display:block;width:100%;height:100%;object-fit:cover}
+      .community-photo-thumb span{position:absolute;right:6px;bottom:6px;padding:3px 6px;border-radius:5px;background:rgba(0,0,0,.62);color:#fff;font-size:8px;font-weight:800}
+      .community-document-link{display:block;margin-top:10px;padding:9px;border-radius:9px;background:#f2e7f7;color:#6f168c!important;text-align:center;font-size:10px;font-weight:800;text-decoration:none}
+      .yg-photo-lightbox{position:fixed;inset:0;z-index:999999;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,.9)}
+      .yg-photo-lightbox.open{display:flex}.yg-photo-lightbox img{max-width:96vw;max-height:86vh;object-fit:contain;border-radius:10px;background:#fff}
+      .yg-photo-lightbox button{position:absolute;top:14px;right:14px;width:42px;height:42px;border:0;border-radius:50%;background:#fff;color:#6f168c;font-size:28px;cursor:pointer}
+      @media(max-width:600px){.community-photo-thumb{height:86px}.community-photo-thumb:only-child{height:140px}}
+    `;
+    document.head.appendChild(style);
+  }
+
+  function ensureLightbox() {
+    let box = document.getElementById("yg-photo-lightbox");
+    if (box) return box;
+    box = document.createElement("div");
+    box.id = "yg-photo-lightbox";
+    box.className = "yg-photo-lightbox";
+    box.innerHTML = '<button type="button" aria-label="Tutup">×</button><img alt="Dokumentasi kegiatan">';
+    document.body.appendChild(box);
+    box.addEventListener("click", function(event) {
+      if (event.target === box || event.target.tagName === "BUTTON") {
+        box.classList.remove("open");
+        box.querySelector("img").src = "";
+      }
+    });
+    return box;
+  }
+
+  document.addEventListener("click", function(event) {
+    const button = event.target.closest("[data-community-photo]");
+    if (!button) return;
+    event.preventDefault();
+    event.stopPropagation();
+    const box = ensureLightbox();
+    box.querySelector("img").src = button.getAttribute("data-community-photo");
+    box.classList.add("open");
+  });
+
+  document.addEventListener("keydown", function(event) {
+    if (event.key === "Escape") {
+      const box = document.getElementById("yg-photo-lightbox");
+      if (box) box.classList.remove("open");
+    }
+  });
+
+  installGalleryStyles();
+
 })();
