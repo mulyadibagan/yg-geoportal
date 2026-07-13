@@ -2,6 +2,19 @@
   "use strict";
 
   const CONFIG = window.YG_LAYER_CONFIG || [];
+
+  // Menambahkan layer Kawasan Hutan SK 903 secara otomatis
+  if (!CONFIG.find(c => c.id === "kawasan_hutan_sk_903")) {
+    CONFIG.push({
+      id: "kawasan_hutan_sk_903",
+      label: "Kawasan Hutan",
+      color: "#455a64",
+      type: "polygon",
+      visible: true,
+      url: "kawasan_hutan_sk_903.geojson"
+    });
+  }
+
   const DEFAULT_CENTER = [1.15, 101.95];
   const DEFAULT_ZOOM = 8;
 
@@ -146,7 +159,8 @@
 
   async function loadLayer(config) {
     try {
-      const response = await fetch(`data/${config.id}.geojson`, { cache: "no-store" });
+      const layerUrl = config.url ? config.url : `data/${config.id}.geojson`;
+      const response = await fetch(layerUrl, { cache: "no-store" });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
       const data = await response.json();
