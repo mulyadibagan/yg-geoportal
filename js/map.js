@@ -1,4 +1,3 @@
-
 (() => {
   "use strict";
 
@@ -154,13 +153,48 @@
       let geoLayer;
 
       geoLayer = L.geoJSON(data, {
-        style: () => ({
-          color: config.color,
-          fillColor: config.color,
-          fillOpacity: config.type === "line" ? 0.10 : 0.24,
-          weight: config.type === "line" ? 4 : 2.2,
-          opacity: 0.95
-        }),
+        style: (feature) => {
+          // Warna default dari config
+          let layerColor = config.color;
+          let layerFillOpacity = config.type === "line" ? 0.10 : 0.24;
+          let layerWeight = config.type === "line" ? 4 : 2.2;
+
+          // Pengecekan khusus untuk Kawasan Hutan (misalnya dari layer dengan ID tertentu)
+          // Asumsi config.id 'kawasan_hutan' atau cek jika properti 'Fungsi' tersedia
+          if (feature.properties && feature.properties.Fungsi) {
+            switch (String(feature.properties.Fungsi).toUpperCase()) {
+              case 'HL': // Hutan Lindung
+                layerColor = '#2E7D32'; // Hijau tua
+                break;
+              case 'KSA/KPA': // Kawasan Suaka Alam / Pelestarian Alam
+                layerColor = '#6A1B9A'; // Ungu
+                break;
+              case 'HP': // Hutan Produksi Tetap
+                layerColor = '#D84315'; // Merah bata
+                break;
+              case 'HPT': // Hutan Produksi Terbatas
+                layerColor = '#F9A825'; // Kuning gelap
+                break;
+              case 'HPK': // Hutan Produksi yang dapat Dikonversi
+                layerColor = '#FBC02D'; // Kuning
+                break;
+              case 'APL': // Area Penggunaan Lain
+                layerColor = '#9E9E9E'; // Abu-abu
+                break;
+            }
+            // Sedikit pertebal opacity untuk kawasan hutan agar lebih jelas
+            layerFillOpacity = 0.6;
+            layerWeight = 1.5;
+          }
+
+          return {
+            color: layerColor,
+            fillColor: layerColor,
+            fillOpacity: layerFillOpacity,
+            weight: layerWeight,
+            opacity: 0.95
+          };
+        },
         pointToLayer: (feature, latlng) => L.circleMarker(latlng, {
           radius: 7,
           fillColor: config.color,
