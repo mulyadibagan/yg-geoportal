@@ -54,5 +54,12 @@ window.YG_LAYER_CONFIG = [
     "color": "#8fa600",
     "type": "point",
     "visible": true
+  },
+  {
+    "id": "kawasan_hutan_sk_903",
+    "label": "Kawasan Hutan SK 903",
+    "color": "#455a64",
+    "type": "polygon",
+    "visible": false
   }
 ];
