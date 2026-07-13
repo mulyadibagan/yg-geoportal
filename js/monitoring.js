@@ -8,6 +8,27 @@
 
   function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
   function parseJSON(v){if(!v)return{};if(typeof v==='object')return v;try{return JSON.parse(v);}catch(e){return{};}}
+  function parsePhotos(v){
+    if(Array.isArray(v)) return v.filter(Boolean).map(String);
+    if(!v) return [];
+    if(typeof v==='string'){
+      var parsed=parseJSON(v);
+      if(Array.isArray(parsed)) return parsed.filter(Boolean).map(String);
+      return v.split(/[\n,]+/).map(function(x){return x.trim();}).filter(function(x){return /^https?:\/\//i.test(x);});
+    }
+    return [];
+  }
+  function featureProps(p){
+    var fp=parseJSON(p.targetFeatureProperties);
+    return fp&&typeof fp==='object'?fp:{};
+  }
+  function pick(obj,keys){
+    for(var i=0;i<keys.length;i++){
+      var value=obj[keys[i]];
+      if(value!==undefined&&value!==null&&String(value).trim()!=='') return value;
+    }
+    return '';
+  }
   function dateValue(v){var d=new Date(v||0);return isNaN(d.getTime())?new Date(0):d;}
   function fmtDate(v){var d=dateValue(v);return d.getTime()?d.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}):'—';}
   function has(v){return v!==undefined&&v!==null&&v!==''&&!(typeof v==='number'&&isNaN(v));}
@@ -36,26 +57,40 @@
     return{key:'baik',label:m.condition||p.condition||'Baik/normal'};
   }
   function normalize(feature,index){
-    var p=feature.properties||{};
-    if(String(p.reportType||'').toLowerCase()!=='monitoring')return null;
+    var p=feature&&feature.properties?feature.properties:(feature||{});
+    var reportType=String(p.reportType||p.type||p.jenisLaporan||'').toLowerCase();
+    if(reportType!=='monitoring' && reportType.indexOf('monitor')===-1) return null;
+
     var m=parseJSON(p.proposedInformation);
-    if(!Object.keys(m).length)m=parseJSON(p.proposedChanges).monitoring||{};
-    var title=p.locationName||p.targetObjectName||p.title||'Objek monitoring';
-    var objectId=p.targetObjectId||((p.targetSourceType||'program_layer')+'|'+(p.targetLayerId||'monitoring')+'|'+title.toLowerCase().trim());
+    if(!Object.keys(m).length){
+      var changes=parseJSON(p.proposedChanges);
+      m=parseJSON(changes.monitoring||changes);
+    }
+
+    var fp=featureProps(p);
+    var title=p.targetObjectName||p.locationName||pick(fp,['name','Name','nama','NAMA','title','judul','locationName'])||p.title||'Objek monitoring';
+    var directId=p.targetObjectId||p.monitoringObjectId||p.objectId||'';
+    var objectId=directId||((p.targetSourceType||'program_layer')+'|'+(p.targetLayerId||m.monitoringType||'monitoring')+'|'+String(title).toLowerCase().trim());
     var type=typeOf(p,m);
+    var location=[
+      p.village||pick(fp,['village','desa','Desa','DESA_KELURAHAN']),
+      p.district||pick(fp,['district','kecamatan','Kecamatan','KECAMATAN']),
+      p.regency||pick(fp,['regency','kabupaten','Kabupaten','KAB_KOTA'])
+    ].filter(Boolean).join(', ');
+
     return{
-      id:p.monitoringId||p.reportId||index,
-      objectId:objectId,
+      id:p.monitoringId||p.reportId||p.id||index,
+      objectId:String(objectId),
       sourceType:p.targetSourceType||'program_layer',
       layerId:p.targetLayerId||'',
-      title:title,
+      title:String(title),
       type:type,
-      date:p.activityDate||p.receivedAt||p.verifiedAt,
-      location:[p.village,p.district,p.regency].filter(Boolean).join(', '),
-      description:p.description||m.notes||'',
-      recommendation:m.recommendation||p.recommendation||'',
+      date:p.activityDate||m.monitoringDate||p.receivedAt||p.verifiedAt||p.timestamp,
+      location:location,
+      description:p.description||m.notes||m.findings||'',
+      recommendation:m.recommendation||m.followUp||p.recommendation||'',
       threats:m.threats||p.threats||'',
-      photos:Array.isArray(p.photos)?p.photos:[],
+      photos:parsePhotos(p.photos||p.photoUrls||p.images),
       documentUrl:p.documentUrl||'',
       props:p,
       metrics:m,
@@ -152,7 +187,12 @@
     return'<div class="timeline">'+g.history.map(function(r){var m=r.metrics||{},items=[];metricDefs(r.type).forEach(function(d){if(has(m[d[0]]))items.push('<span><b>'+esc(d[1])+':</b> '+esc(m[d[0]])+(d[2]?' '+esc(d[2]):'')+'</span>');});return'<article class="timeline-item"><time>'+esc(fmtDate(r.date))+'</time><div class="timeline-body"><div class="timeline-metrics">'+items.join('')+'</div><p>'+esc(r.description||m.notes||'Tidak ada catatan.')+'</p>'+(r.recommendation?'<p><b>Tindak lanjut:</b> '+esc(r.recommendation)+'</p>':'')+'</div></article>';}).join('')+'</div>';
   }
   function photosHTML(g){
-    var sections=g.history.map(function(r){if(!r.photos||!r.photos.length)return'';return'<section class="photo-period"><h3>'+esc(fmtDate(r.date))+'</h3><div class="photo-grid">'+r.photos.map(function(u,i){return'<a href="'+esc(u)+'" target="_blank" rel="noopener"><img src="'+esc(u)+'" alt="Dokumentasi '+esc(r.title)+' foto '+(i+1)+'" loading="lazy"></a>';}).join('')+'</div></section>';}).filter(Boolean);
+    var sections=g.history.map(function(r){
+      if(!r.photos||!r.photos.length)return'';
+      return'<section class="photo-period"><h3>'+esc(fmtDate(r.date))+'</h3><div class="photo-grid">'+r.photos.map(function(u,i){
+        return'<button class="monitor-photo-trigger" type="button" data-photo-url="'+esc(u)+'" data-photo-title="'+esc(r.title)+'" aria-label="Buka dokumentasi '+esc(r.title)+' foto '+(i+1)+'"><img src="'+esc(u)+'" alt="Dokumentasi '+esc(r.title)+' foto '+(i+1)+'" loading="lazy"><span>Perbesar</span></button>';
+      }).join('')+'</div></section>';
+    }).filter(Boolean);
     return sections.length?sections.join(''):'<div class="empty">Belum ada foto monitoring.</div>';
   }
   function openDetail(key){
@@ -168,7 +208,15 @@
     var modal=document.getElementById('detail-modal');modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.classList.add('modal-open');
   }
 
-  window[CALLBACK]=function(data){var features=data&&Array.isArray(data.features)?data.features:[];records=features.map(normalize).filter(Boolean);groups=groupData(records);stats();filters();render();};
+  window[CALLBACK]=function(data){
+    var features=[];
+    if(data&&Array.isArray(data.features)) features=data.features;
+    else if(Array.isArray(data)) features=data;
+    else if(data&&Array.isArray(data.records)) features=data.records;
+    records=features.map(normalize).filter(Boolean);
+    groups=groupData(records);
+    stats();filters();render();
+  };
   ['monitor-search','monitor-type','monitor-status','monitor-sort'].forEach(function(id){document.getElementById(id).addEventListener(id==='monitor-search'?'input':'change',render);});
   document.addEventListener('click',function(e){
     var d=e.target.closest('[data-detail]');if(d)openDetail(d.getAttribute('data-detail'));
@@ -177,5 +225,17 @@
     if(e.target.closest('[data-close-modal]')){var m=document.getElementById('detail-modal');m.classList.remove('open');m.setAttribute('aria-hidden','true');document.body.classList.remove('modal-open');}
   });
   document.addEventListener('keydown',function(e){if(e.key==='Escape'){var close=document.querySelector('[data-close-modal]');if(close)close.click();}});
-  var script=document.createElement('script');script.src=API+'&callback='+CALLBACK+'&t='+Date.now();script.async=true;script.onerror=function(){list.innerHTML='<div class="empty">Data monitoring belum dapat dimuat. Periksa koneksi atau endpoint Apps Script.</div>';};document.head.appendChild(script);
+  var loadTimer=window.setTimeout(function(){
+    if(!records.length && list && /Memuat/.test(list.textContent)){
+      list.innerHTML='<div class="empty">Data monitoring belum dapat dimuat. Muat ulang halaman atau periksa endpoint Apps Script.</div>';
+    }
+  },20000);
+  var script=document.createElement('script');
+  script.src=API+'&callback='+CALLBACK+'&t='+Date.now();
+  script.async=true;
+  script.onerror=function(){
+    window.clearTimeout(loadTimer);
+    list.innerHTML='<div class="empty">Data monitoring belum dapat dimuat. Periksa koneksi atau endpoint Apps Script.</div>';
+  };
+  document.head.appendChild(script);
 })();
