@@ -2,6 +2,13 @@
 (function(){
   'use strict';
 
+  var COMMUNITY_LAYER_ID = 'community_reports';
+  var COMMUNITY_LAYER_LABEL = 'Laporan Masyarakat Terverifikasi';
+  var COMMUNITY_LAYER_COLOR = '#7b1fa2';
+  var COMMUNITY_API = 'https://script.google.com/macros/s/AKfycbxeGTDZXkR0DyLZmBHTq2M-52Iu4dTTGpH164S7sYHg8qPzvffobC6-r-TBLVHMT3HU-A/exec?page=public-reports';
+  var communityDataCache = null;
+  var communityDataPromise = null;
+
   var form = document.getElementById('report-form');
   var imageInput = document.getElementById('images');
   var preview = document.getElementById('preview');
@@ -154,6 +161,69 @@
       option.textContent = layerConfig.label;
       select.appendChild(option);
     });
+
+    var communityOption = document.createElement('option');
+    communityOption.value = COMMUNITY_LAYER_ID;
+    communityOption.textContent = COMMUNITY_LAYER_LABEL;
+    select.appendChild(communityOption);
+  }
+
+  function loadCommunityReports(){
+    if(communityDataCache) return Promise.resolve(communityDataCache);
+    if(communityDataPromise) return communityDataPromise;
+
+    communityDataPromise = new Promise(function(resolve,reject){
+      var callbackName = 'ygReportCommunityCallback_' + Date.now();
+      var script = document.createElement('script');
+      var timer = window.setTimeout(function(){
+        cleanup();
+        reject(new Error('Waktu pemuatan laporan masyarakat habis.'));
+      },15000);
+
+      function cleanup(){
+        window.clearTimeout(timer);
+        try{ delete window[callbackName]; }catch(e){ window[callbackName] = undefined; }
+        if(script.parentNode) script.parentNode.removeChild(script);
+      }
+
+      window[callbackName] = function(data){
+        cleanup();
+        if(!data || data.type !== 'FeatureCollection'){
+          reject(new Error('Format laporan masyarakat tidak valid.'));
+          return;
+        }
+        communityDataCache = data;
+        resolve(data);
+      };
+
+      script.onerror = function(){
+        cleanup();
+        reject(new Error('Laporan masyarakat gagal dimuat.'));
+      };
+      script.src = COMMUNITY_API + '&callback=' + callbackName + '&t=' + Date.now();
+      script.async = true;
+      document.head.appendChild(script);
+    }).catch(function(error){
+      communityDataPromise = null;
+      throw error;
+    });
+
+    return communityDataPromise;
+  }
+
+  function makeObjectId(feature,config){
+    var p = feature && feature.properties ? feature.properties : {};
+    var direct = p.objectId || p.monitoringObjectId || p.reportId || p.id || p.ID || p.OBJECTID || p.FID;
+    if(direct !== undefined && direct !== null && String(direct).trim() !== ''){
+      return String(config.id) + ':' + String(direct).trim();
+    }
+
+    var name = getCorrectionFeatureName(feature,config.label).toLowerCase().trim();
+    var geom = feature && feature.geometry ? JSON.stringify(feature.geometry) : '';
+    var hash = 0;
+    var raw = config.id + '|' + name + '|' + geom;
+    for(var i=0;i<raw.length;i++) hash = ((hash << 5) - hash + raw.charCodeAt(i)) | 0;
+    return String(config.id) + ':auto:' + Math.abs(hash);
   }
 
   async function loadCorrectionLayer(layerId){
@@ -174,8 +244,18 @@
       return item.id === layerId;
     });
 
+    if(layerId === COMMUNITY_LAYER_ID){
+      config = {
+        id: COMMUNITY_LAYER_ID,
+        label: COMMUNITY_LAYER_LABEL,
+        color: COMMUNITY_LAYER_COLOR,
+        type: 'mixed',
+        sourceType: 'community_report'
+      };
+    }
+
     if(!config){
-      alert('Konfigurasi layer tidak ditemukan.');
+      alert('Konfigurasi layer tidak ditemukan. Pastikan layer baru sudah terdaftar di js/config.js.');
       return;
     }
 
@@ -184,15 +264,16 @@
     summary.textContent = 'Memuat layer ' + config.label + '...';
 
     try{
-      var response = await fetch('data/' + config.id + '.geojson', {
-        cache:'no-store'
-      });
+      var data;
 
-      if(!response.ok){
-        throw new Error('HTTP ' + response.status);
+      if(config.id === COMMUNITY_LAYER_ID){
+        data = await loadCommunityReports();
+      }else{
+        var dataPath = config.url || config.dataUrl || config.file || ('data/' + config.id + '.geojson');
+        var response = await fetch(dataPath, {cache:'no-store'});
+        if(!response.ok) throw new Error('HTTP ' + response.status + ' untuk ' + dataPath);
+        data = await response.json();
       }
-
-      var data = await response.json();
 
       correctionLayerGroup = L.geoJSON(data,{
         style:function(){
@@ -251,6 +332,8 @@
     selectedCorrectionFeature = {
       layerId:config.id,
       layerLabel:config.label,
+      sourceType:config.sourceType || 'program_layer',
+      objectId:makeObjectId(feature,config),
       feature:feature
     };
 
@@ -281,6 +364,22 @@
 
     document.getElementById('old-information').value = oldText;
     document.getElementById('location-name').value = featureName;
+
+    var fp = feature.properties || {};
+    var fieldMap = {
+      province:['province','provinsi','Provinsi','PROVINSI'],
+      regency:['regency','kabupaten','Kabupaten','kab_kota','KAB_KOTA'],
+      district:['district','kecamatan','Kecamatan','KECAMATAN'],
+      village:['village','desa','Desa','kelurahan','DESA_KELURAHAN']
+    };
+    Object.keys(fieldMap).forEach(function(id){
+      var el = document.getElementById(id);
+      if(!el || el.value.trim()) return;
+      var keys = fieldMap[id];
+      for(var k=0;k<keys.length;k++){
+        if(fp[keys[k]]){ el.value = fp[keys[k]]; break; }
+      }
+    });
 
     if(selectedType === 'Perbaikan Informasi'){
       buildEditableAttributes(feature.properties || {});
@@ -958,6 +1057,7 @@
       deadOrDamagedCount:monitoringValue('monitoring-dead'),
       monitoredAreaHa:monitoringValue('monitoring-area'),
       averageHeightCm:monitoringValue('monitoring-height'),
+      averageDiameterCm:monitoringValue('monitoring-diameter'),
       sedimentationCm:monitoringValue('monitoring-sediment'),
       waterTableCm:monitoringValue('monitoring-water-table'),
       floatCondition:monitoringValue('monitoring-float-condition'),
@@ -978,7 +1078,7 @@
     var mangrove = document.getElementById('monitoring-mangrove-fields');
     var fdrs = document.getElementById('monitoring-fdrs-fields');
     var infra = document.getElementById('monitoring-infrastructure-fields');
-    if(mangrove) mangrove.hidden = ['Penanaman Mangrove','Hutan Mangrove','Pembibitan','Agroforestri/Kopi'].indexOf(type) === -1;
+    if(mangrove) mangrove.hidden = ['Penanaman Mangrove','Hutan Mangrove','Restorasi Hutan','Restorasi Gambut','Pembibitan','Agroforestri/Kopi'].indexOf(type) === -1;
     if(fdrs) fdrs.hidden = type !== 'Tinggi Muka Air/FDRS';
     if(infra) infra.hidden = ['Sekat Kanal','APO'].indexOf(type) === -1;
   }
@@ -1112,6 +1212,12 @@
         : '',
       targetLayerLabel:selectedCorrectionFeature
         ? selectedCorrectionFeature.layerLabel
+        : '',
+      targetSourceType:selectedCorrectionFeature
+        ? selectedCorrectionFeature.sourceType
+        : '',
+      targetObjectId:selectedCorrectionFeature
+        ? selectedCorrectionFeature.objectId
         : '',
       targetFeatureProperties:selectedCorrectionFeature
         ? JSON.stringify(selectedCorrectionFeature.feature.properties || {})
