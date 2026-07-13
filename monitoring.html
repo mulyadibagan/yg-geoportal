@@ -3,52 +3,103 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="description" content="Dashboard hasil monitoring lapangan Yayasan Gambut.">
   <title>Dashboard Monitoring | YG GeoPortal</title>
   <link rel="icon" href="assets/logo-yayasan-gambut.png">
-  <link rel="stylesheet" href="css/monitoring.css?v=20260713-10">
+  <link rel="stylesheet" href="css/monitoring.css?v=20260713-20">
+  <link rel="stylesheet" href="css/monitoring-photo.css?v=20260713-1">
 </head>
 <body>
-<header class="monitor-header">
-  <a class="brand" href="webgis.html"><img src="assets/logo-yayasan-gambut.png" alt="Logo Yayasan Gambut"><span><strong>YG GeoPortal</strong><small>Dashboard Monitoring</small></span></a>
-  <nav><a href="webgis.html">Buka Peta</a><a class="primary" href="report.html?type=monitoring">Kirim Monitoring</a></nav>
-</header>
-<main class="dashboard-shell">
-  <section class="hero">
-    <span class="eyebrow">DATA TERVERIFIKASI</span>
-    <h1>Monitoring Program Yayasan Gambut</h1>
-    <p>Kompilasi hasil monitoring penanaman mangrove, hutan mangrove, tinggi muka air gambut/FDRS, sekat kanal, APO, pembibitan, dan kegiatan lapangan lainnya.</p>
-  </section>
+  <header class="monitor-header">
+    <a class="brand" href="index.html">
+      <img src="assets/logo-yayasan-gambut.png" alt="Logo Yayasan Gambut">
+      <span><strong>YG GeoPortal</strong><small>Dashboard Monitoring</small></span>
+    </a>
+    <nav>
+      <a href="webgis.html">Buka Peta</a>
+      <a class="primary" href="report.html?type=monitoring">Kirim Monitoring</a>
+    </nav>
+  </header>
 
-  <section class="summary-grid" aria-label="Ringkasan monitoring">
-    <article><span>Total monitoring</span><strong id="stat-total">0</strong><small>hasil terverifikasi</small></article>
-    <article><span>Objek dipantau</span><strong id="stat-objects">0</strong><small>lokasi/objek unik</small></article>
-    <article><span>Perlu tindak lanjut</span><strong id="stat-action">0</strong><small>status waspada/bermasalah</small></article>
-    <article><span>Monitoring terbaru</span><strong id="stat-latest">—</strong><small>tanggal pembaruan</small></article>
-  </section>
+  <main class="dashboard-shell">
+    <section class="hero">
+      <span class="eyebrow">DATA TERVERIFIKASI</span>
+      <h1>Monitoring Program Yayasan Gambut</h1>
+      <p>Kompilasi hasil monitoring penanaman mangrove, hutan mangrove, restorasi hutan, tinggi muka air gambut/FDRS, sekat kanal, APO, pembibitan, dan kegiatan lapangan lainnya.</p>
+    </section>
 
-  <section class="toolbar">
-    <label class="search"><span>Cari</span><input id="monitor-search" type="search" placeholder="Nama lokasi, desa, atau jenis monitoring"></label>
-    <label><span>Jenis monitoring</span><select id="monitor-type"><option value="">Semua jenis</option></select></label>
-    <label><span>Kondisi</span><select id="monitor-status"><option value="">Semua kondisi</option><option value="baik">Baik/normal</option><option value="waspada">Perlu dipantau</option><option value="masalah">Perlu tindak lanjut</option></select></label>
-    <label><span>Urutkan</span><select id="monitor-sort"><option value="latest">Terbaru</option><option value="name">Nama lokasi</option><option value="risk">Prioritas tindak lanjut</option></select></label>
-  </section>
+    <section class="summary-grid" aria-label="Ringkasan monitoring">
+      <article><span>Total monitoring</span><strong id="stat-total">0</strong><small>hasil terverifikasi</small></article>
+      <article><span>Objek dipantau</span><strong id="stat-objects">0</strong><small>lokasi/objek unik</small></article>
+      <article><span>Perlu tindak lanjut</span><strong id="stat-action">0</strong><small>status waspada/bermasalah</small></article>
+      <article><span>Monitoring terbaru</span><strong id="stat-latest">—</strong><small>tanggal pembaruan</small></article>
+    </section>
 
-  <section class="category-strip" id="category-strip"></section>
+    <section class="toolbar" aria-label="Filter monitoring">
+      <label>Cari
+        <input id="monitor-search" type="search" placeholder="Nama objek, lokasi, atau jenis monitoring">
+      </label>
+      <label>Jenis monitoring
+        <select id="monitor-type"><option value="">Semua jenis</option></select>
+      </label>
+      <label>Kondisi
+        <select id="monitor-status">
+          <option value="">Semua kondisi</option>
+          <option value="baik">Baik/normal</option>
+          <option value="waspada">Perlu dipantau</option>
+          <option value="masalah">Perlu tindak lanjut</option>
+        </select>
+      </label>
+      <label>Urutkan
+        <select id="monitor-sort">
+          <option value="latest">Terbaru</option>
+          <option value="name">Nama lokasi</option>
+          <option value="risk">Prioritas tindak lanjut</option>
+        </select>
+      </label>
+    </section>
 
-  <section class="content-grid">
-    <div>
-      <div class="section-heading"><div><span class="eyebrow">RINGKASAN PER OBJEK</span><h2>Lokasi monitoring</h2></div><span id="result-count">0 objek</span></div>
-      <div id="monitor-list" class="monitor-list"><div class="loading">Memuat data monitoring…</div></div>
-    </div>
-    <aside>
-      <section class="side-card action-card"><div class="section-heading compact"><div><span class="eyebrow">PRIORITAS</span><h2>Perlu tindak lanjut</h2></div></div><div id="action-list" class="action-list"><p>Belum ada data.</p></div></section>
-      <section class="side-card"><h2>Standar FDRS YG</h2><p>FDRS menggunakan <b>water table pelampung</b>, bukan sensor elektronik. Nilai muka air dicatat manual saat kunjungan dan status dashboard dihitung otomatis.</p><div class="water-legend"><span><i class="wet"></i>0 s.d. −20 cm: sangat basah</span><span><i class="normal"></i>−21 s.d. −40 cm: perlu dipantau</span><span><i class="dry"></i>di bawah −40 cm: waspada kering</span></div></section>
-    </aside>
-  </section>
-</main>
+    <div class="category-strip" id="category-strip"></div>
 
-<div id="detail-modal" class="modal" aria-hidden="true"><div class="modal-backdrop" data-close-modal></div><section class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="detail-title"><button class="modal-close" type="button" data-close-modal aria-label="Tutup">×</button><div id="detail-content"></div></section></div>
-<script src="js/monitoring.js?v=20260713-10"></script>
+    <section class="content-grid">
+      <div>
+        <div class="section-heading">
+          <div><span class="eyebrow">RINGKASAN PER OBJEK</span><h2>Lokasi monitoring</h2></div>
+          <span id="result-count">0 objek</span>
+        </div>
+        <div class="monitor-list" id="monitor-list">
+          <div class="loading">Memuat data monitoring…</div>
+        </div>
+      </div>
+
+      <aside>
+        <section class="side-card">
+          <span class="eyebrow">PRIORITAS</span>
+          <h2>Perlu tindak lanjut</h2>
+          <div class="action-list" id="action-list"><p>Belum ada data.</p></div>
+        </section>
+
+        <section class="side-card">
+          <h2>Standar FDRS YG</h2>
+          <p>FDRS menggunakan water table pelampung, bukan sensor elektronik. Nilai muka air dicatat manual saat kunjungan dan status dashboard dihitung otomatis.</p>
+          <div class="water-legend">
+            <span><i class="wet"></i>0 s.d. −20 cm: sangat basah</span>
+            <span><i class="normal"></i>−21 s.d. −40 cm: perlu dipantau</span>
+            <span><i class="dry"></i>di bawah −40 cm: waspada kering</span>
+          </div>
+        </section>
+      </aside>
+    </section>
+  </main>
+
+  <div class="modal" id="detail-modal" aria-hidden="true">
+    <div class="modal-backdrop" data-close-modal></div>
+    <section class="modal-panel" role="dialog" aria-modal="true" aria-label="Detail monitoring">
+      <button class="modal-close" type="button" data-close-modal aria-label="Tutup">×</button>
+      <div id="detail-content"></div>
+    </section>
+  </div>
+
+  <script src="js/monitoring.js?v=20260713-20"></script>
+  <script src="js/monitoring-photo.js?v=20260713-1"></script>
 </body>
 </html>
