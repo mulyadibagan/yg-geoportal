@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="description" content="Form monitoring lapangan YG GeoPortal.">
+  <title>Monitoring Lapangan | YG GeoPortal</title>
+  <link rel="icon" href="assets/logo-yayasan-gambut.png">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="css/monitoring.css?v=20260713-1">
+</head>
+<body>
+<main class="monitor-shell">
+  <section class="monitor-hero">
+    <span class="badge">MONITORING LAPANGAN</span>
+    <h1>Perbarui kondisi lokasi program</h1>
+    <p>Pilih objek yang sudah ada di WebGIS, isi hasil pemantauan, dan unggah dokumentasi terbaru. Data akan diperiksa Yayasan Gambut sebelum dipublikasikan.</p>
+  </section>
+
+  <div class="notice">
+    <strong>Untuk objek yang sudah terpetakan</strong>
+    <span>Gunakan halaman Kirim Laporan apabila lokasi atau kegiatan belum tersedia di WebGIS.</span>
+  </div>
+
+  <form id="monitor-form" method="post" target="submit-frame" action="https://script.google.com/macros/s/AKfycbxeGTDZXkR0DyLZmBHTq2M-52Iu4dTTGpH164S7sYHg8qPzvffobC6-r-TBLVHMT3HU-A/exec">
+    <section class="card">
+      <h2>1. Pilih objek WebGIS</h2>
+      <div class="form-grid">
+        <label class="field span-2">
+          <span>Layer data *</span>
+          <select id="target-layer" required>
+            <option value="">Pilih layer...</option>
+          </select>
+        </label>
+      </div>
+      <p class="help">Pilih layer, lalu klik titik atau poligon yang akan dimonitor pada peta.</p>
+      <div id="monitor-map"></div>
+      <div id="selected-object" class="selected-object">Belum ada objek dipilih.</div>
+      <button id="clear-object" class="secondary" type="button" hidden>Batalkan pilihan objek</button>
+    </section>
+
+    <section class="card">
+      <h2>2. Informasi monitoring</h2>
+      <div class="form-grid">
+        <label class="field"><span>Tanggal monitoring *</span><input id="monitor-date" type="date" required></label>
+        <label class="field"><span>Nama petugas *</span><input id="name" required></label>
+        <label class="field"><span>Instansi/kelompok</span><input id="organization"></label>
+        <label class="field"><span>Nomor HP/WhatsApp</span><input id="phone" type="tel"></label>
+        <label class="field"><span>Email</span><input id="email" type="email"></label>
+        <label class="field"><span>Metode monitoring</span>
+          <select id="method">
+            <option value="Observasi lapangan">Observasi lapangan</option>
+            <option value="Pengukuran langsung">Pengukuran langsung</option>
+            <option value="Drone/citra udara">Drone/citra udara</option>
+            <option value="Wawancara masyarakat">Wawancara masyarakat</option>
+            <option value="Lainnya">Lainnya</option>
+          </select>
+        </label>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>3. Kondisi terkini</h2>
+      <div class="condition-grid">
+        <label><input type="radio" name="condition" value="Sangat Baik" required><span>🟢 Sangat Baik</span></label>
+        <label><input type="radio" name="condition" value="Baik"><span>🟢 Baik</span></label>
+        <label><input type="radio" name="condition" value="Sedang"><span>🟡 Sedang</span></label>
+        <label><input type="radio" name="condition" value="Rusak Ringan"><span>🟠 Rusak Ringan</span></label>
+        <label><input type="radio" name="condition" value="Rusak Berat"><span>🔴 Rusak Berat</span></label>
+        <label><input type="radio" name="condition" value="Hilang/Tidak Ditemukan"><span>⚫ Tidak Ditemukan</span></label>
+      </div>
+
+      <div class="form-grid metrics">
+        <label class="field"><span>Persentase keberhasilan/survival (%)</span><input id="survival" type="number" min="0" max="100" step="0.1" placeholder="Contoh: 82"></label>
+        <label class="field"><span>Jumlah hidup/berfungsi</span><input id="alive" type="number" min="0" step="1"></label>
+        <label class="field"><span>Jumlah mati/rusak</span><input id="dead" type="number" min="0" step="1"></label>
+        <label class="field"><span>Luas terpantau (ha)</span><input id="area" type="number" min="0" step="0.01"></label>
+      </div>
+
+      <h3>Ancaman atau masalah yang ditemukan</h3>
+      <div class="check-grid" id="threats">
+        <label><input type="checkbox" value="Abrasi"><span>Abrasi</span></label>
+        <label><input type="checkbox" value="Gelombang/angin kuat"><span>Gelombang/angin kuat</span></label>
+        <label><input type="checkbox" value="Kebakaran"><span>Kebakaran</span></label>
+        <label><input type="checkbox" value="Banjir/genangan"><span>Banjir/genangan</span></label>
+        <label><input type="checkbox" value="Hama/penyakit"><span>Hama/penyakit</span></label>
+        <label><input type="checkbox" value="Sampah/pencemaran"><span>Sampah/pencemaran</span></label>
+        <label><input type="checkbox" value="Penebangan/gangguan manusia"><span>Gangguan manusia</span></label>
+        <label><input type="checkbox" value="Tidak ada ancaman"><span>Tidak ada ancaman</span></label>
+      </div>
+
+      <label class="field full"><span>Temuan dan catatan lapangan *</span><textarea id="notes" rows="6" required placeholder="Jelaskan kondisi, perubahan sejak monitoring sebelumnya, kerusakan, kebutuhan tindak lanjut, dan informasi penting lainnya."></textarea></label>
+      <label class="field full"><span>Rekomendasi/tindak lanjut</span><textarea id="follow-up" rows="4" placeholder="Contoh: penyulaman 600 bibit, perbaikan struktur, pembersihan sampah, monitoring ulang dalam 30 hari."></textarea></label>
+    </section>
+
+    <section class="card">
+      <h2>4. Lokasi petugas saat monitoring</h2>
+      <div class="location-row">
+        <button id="get-location" type="button">📍 Ambil Lokasi Saya</button>
+        <span id="location-status">Koordinat petugas belum direkam.</span>
+      </div>
+      <div class="form-grid">
+        <label class="field"><span>Latitude</span><input id="latitude" inputmode="decimal"></label>
+        <label class="field"><span>Longitude</span><input id="longitude" inputmode="decimal"></label>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>5. Dokumentasi terbaru</h2>
+      <p class="help">Unggah 1–5 foto kondisi terbaru. Foto akan dikompresi sebelum dikirim.</p>
+      <label class="upload-button"><input id="images" type="file" accept="image/*" multiple><span>📷 Pilih Foto</span></label>
+      <div id="preview" class="preview"></div>
+      <label class="field full document"><span>Tautan dokumen/video pendukung</span><input id="document-url" type="url" placeholder="Google Drive, YouTube, atau PDF"></label>
+    </section>
+
+    <label class="agreement"><input id="agreement" type="checkbox" required><span>Saya menyatakan data monitoring ini benar dan dapat diverifikasi oleh Yayasan Gambut.</span></label>
+    <input id="payload" name="payload" type="hidden">
+    <div class="submit-row"><button id="submit-button" type="submit">Kirim Monitoring</button><span id="submit-status"></span></div>
+  </form>
+
+  <iframe id="submit-frame" name="submit-frame" hidden></iframe>
+  <section id="success" class="success" hidden>
+    <strong>Monitoring berhasil dikirim.</strong>
+    <span>Status: <b>Menunggu Verifikasi</b>.</span>
+    <button id="send-another" type="button">Kirim monitoring lain</button>
+  </section>
+</main>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="js/config.js?v=20260713-1"></script>
+<script src="js/monitoring.js?v=20260713-1"></script>
+</body>
+</html>
