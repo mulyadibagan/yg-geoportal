@@ -249,16 +249,26 @@
     function cleanPhotoList(value) {
       if (!value) return [];
 
-      if (Array.isArray(value)) {
-        return value
-          .map(item => String(item || "").trim())
-          .filter(Boolean);
-      }
+      const rawItems = Array.isArray(value)
+        ? value
+        : String(value).split(/\r?\n|,\s*(?=https?:\/\/)/);
 
-      return String(value)
-        .split(/\r?\n|,\s*(?=https?:\/\/)/)
-        .map(item => item.trim())
-        .filter(Boolean);
+      return rawItems
+        .map(item => normalizePhotoUrl(item))
+        .filter(item => {
+          if (!item) return false;
+
+          /*
+           * Nama file lokal seperti "FDRS_sepahat 2023.JPG"
+           * tidak boleh dijadikan tautan GitHub Pages karena akan 404.
+           * Foto program yang sudah diverifikasi akan tersedia melalui
+           * props._ygPhotos dari data-updates.js.
+           */
+          return (
+            /^https?:\/\//i.test(item) ||
+            /^[A-Za-z0-9_-]{20,}$/.test(item)
+          );
+        });
     }
 
     let rows = "";
@@ -418,6 +428,7 @@
     }
 
     const photos = [
+      ...cleanPhotoList(props._ygPhotos),
       ...cleanPhotoList(props.photos),
       ...cleanPhotoList(props.Foto),
       ...cleanPhotoList(props.Foto_2)
