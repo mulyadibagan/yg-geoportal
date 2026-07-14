@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <meta name="description" content="YG GeoPortal - portal data spasial Yayasan Gambut."/>
+  <meta name="description" content="YG GeoPortal - dashboard data spasial Yayasan Gambut berbasis Master Database."/>
   <title>YG GeoPortal | Yayasan Gambut</title>
   <link rel="icon" href="assets/logo-yayasan-gambut.png"/>
   <link rel="stylesheet" href="css/app.css"/>
-  <link rel="stylesheet" href="css/dashboard-database.css?v=20260714-1"/>
+  <link rel="stylesheet" href="css/dashboard-v3.css?v=20260714-1"/>
 </head>
 <body>
 <header class="site-header">
@@ -19,62 +19,81 @@
     <nav class="nav">
       <a href="index.html">Beranda</a>
       <a href="webgis.html">WebGIS</a>
-      <a href="#program">Program</a>
-      <a href="https://yayasangambut.org" target="_blank" rel="noopener">Tentang YG</a>
+      <a href="report.html">Kirim Laporan</a>
+      <a href="monitoring.html">Monitoring</a>
       <a class="primary" href="webgis.html">Buka Peta</a>
     </nav>
   </div>
 </header>
 
 <main class="container">
-  <section class="hero">
+  <section class="hero dashboard-hero">
     <div class="hero-main">
-      <div class="eyebrow">PORTAL DATA SPASIAL YAYASAN GAMBUT</div>
-      <h1>Data spasial untuk restorasi yang transparan dan kolaboratif</h1>
-      <p>Jelajahi lokasi program gambut, mangrove, FDRS, sekat kanal, nursery, infrastruktur pesisir, dan pemberdayaan masyarakat di Provinsi Riau.</p>
+      <div class="eyebrow">MASTER DATABASE WEBGIS YAYASAN GAMBUT</div>
+      <h1>Dashboard spasial yang diperbarui langsung dari database</h1>
+      <p>Objek program, batas intervensi, infrastruktur, laporan masyarakat, dan data monitoring disatukan sebagai dasar pengambilan keputusan.</p>
       <div class="hero-actions">
         <a class="btn btn-light" href="webgis.html">🗺️ Buka WebGIS</a>
-        <a class="btn btn-outline" href="https://yayasangambut.org" target="_blank" rel="noopener">Tentang Yayasan Gambut</a>
+        <a class="btn btn-outline" href="monitoring.html">📊 Dashboard Monitoring</a>
       </div>
+      <div class="database-note" id="dashboard-updated">Menghubungkan ke Master Database…</div>
     </div>
+
     <div class="stat-grid">
-      <div class="stat"><strong id="stat-villages">13</strong><span>Desa terdata</span></div>
-      <div class="stat"><strong id="stat-objects">89</strong><span>Objek WebGIS aktif</span></div>
-      <div class="stat"><strong id="stat-area">—</strong><span>Total luas terpetakan</span></div>
-      <div class="stat"><strong id="stat-planted">—</strong><span>Jumlah tanaman tercatat</span></div>
+      <div class="stat"><strong id="dash-objects">—</strong><span>Objek aktif</span></div>
+      <div class="stat"><strong id="dash-villages">—</strong><span>Desa terdata</span></div>
+      <div class="stat"><strong id="dash-mangrove-area">—</strong><span>Area mangrove</span></div>
+      <div class="stat"><strong id="dash-reports">—</strong><span>Objek laporan masyarakat</span></div>
     </div>
   </section>
 
-
-  <section class="dashboard-category-panel">
-    <h2>Ringkasan objek per kategori</h2>
-    <div class="dashboard-category-list" id="dashboard-category-list">
-      <div class="dashboard-category-row">
-        <span>Memuat data master…</span><strong>—</strong>
+  <section class="section dashboard-panel">
+    <div class="section-head">
+      <div>
+        <h2>Ringkasan objek per kategori</h2>
+        <p>Dihitung otomatis dari objek aktif dalam Master Database.</p>
       </div>
     </div>
-    <p class="dashboard-live-note" id="dashboard-generated">
-      Menghubungkan dashboard ke Master Database WebGIS YG…
-    </p>
+    <div class="category-grid" id="category-grid">
+      <div class="dashboard-loading">Memuat kategori…</div>
+    </div>
   </section>
 
-  <section class="section" id="program">
-    <div class="section-head"><div><h2>Program yang tersedia</h2><p>Layer utama yang dapat dijelajahi melalui YG GeoPortal.</p></div></div>
-    <div class="program-grid">
-      <article class="program-card"><span class="icon">🌊</span><h3>Restorasi Mangrove</h3><p>Area penanaman, nursery, dan alat pemecah ombak.</p></article>
-      <article class="program-card"><span class="icon">🔥</span><h3>Pencegahan Kebakaran</h3><p>Lokasi FDRS dan intervensi berbasis masyarakat.</p></article>
-      <article class="program-card"><span class="icon">💧</span><h3>Restorasi Gambut</h3><p>Lokasi sekat kanal dan pemulihan hidrologi gambut.</p></article>
-      <article class="program-card"><span class="icon">☕</span><h3>Livelihood Berkelanjutan</h3><p>Distribusi kopi Liberika dan penghidupan ramah gambut.</p></article>
+  <section class="section dashboard-panel">
+    <div class="section-head">
+      <div>
+        <h2>Ringkasan wilayah dan program</h2>
+        <p>Lokasi dengan jumlah objek terbanyak.</p>
+      </div>
+    </div>
+    <div class="dashboard-columns">
+      <div>
+        <h3>Objek per desa</h3>
+        <div class="ranking-list" id="village-ranking"></div>
+      </div>
+      <div>
+        <h3>Objek per layer</h3>
+        <div class="ranking-list" id="layer-ranking"></div>
+      </div>
     </div>
   </section>
 
   <section class="section cta">
-    <div><h2>Jelajahi peta interaktif</h2><p>Aktifkan layer, cari lokasi, dan klik objek peta untuk melihat atribut data.</p></div>
+    <div>
+      <h2>Jelajahi objek secara spasial</h2>
+      <p>Aktifkan layer, cari lokasi, dan buka atribut setiap objek langsung dari database.</p>
+    </div>
     <a href="webgis.html">Buka WebGIS Sekarang</a>
   </section>
 </main>
 
-<footer class="site-footer"><div class="footer-inner"><span>© Yayasan Gambut</span><span>Data spasial untuk transparansi, pembelajaran, dan kolaborasi.</span></div></footer>
-  <script src="js/dashboard-database.js?v=20260714-1"></script>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span>© Yayasan Gambut</span>
+    <span>Data spasial untuk transparansi, pembelajaran, dan kolaborasi.</span>
+  </div>
+</footer>
+
+<script src="js/dashboard-v3.js?v=20260714-1"></script>
 </body>
 </html>
