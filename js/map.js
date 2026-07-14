@@ -2,19 +2,14 @@
   "use strict";
 
   const CONFIG = window.YG_LAYER_CONFIG || [];
-
-  // Menambahkan layer Kawasan Hutan SK 903 secara otomatis
-  if (!CONFIG.find(c => c.id === "kawasan_hutan_sk_903")) {
-    CONFIG.push({
-      id: "kawasan_hutan_sk_903",
-      label: "Kawasan Hutan",
-      color: "#455a64",
-      type: "polygon",
-      visible: true,
-      url: "kawasan_hutan_sk_903.geojson"
-    });
-  }
-
+  const MASTER_OBJECTS_API = "https://script.google.com/macros/s/AKfycbxeGTDZXkR0DyLZmBHTq2M-52Iu4dTTGpH164S7sYHg8qPzvffobC6-r-TBLVHMT3HU-A/exec?page=objects";
+  const DATABASE_COLORS = [
+    "#00796b", "#1565c0", "#e65100", "#7b1fa2",
+    "#2e7d32", "#c62828", "#6d4c41", "#00838f",
+    "#8fa600", "#455a64", "#ad1457", "#5e35b1"
+  ];
+  let databaseFeaturesByLayer = Object.create(null);
+  let databaseSourceReady = false;
   const DEFAULT_CENTER = [1.15, 101.95];
   const DEFAULT_ZOOM = 8;
 
@@ -138,6 +133,186 @@
       </div>`;
   }
 
+
+  function geometryTypeToConfigType(geometryType) {
+    const value = String(geometryType || "");
+    if (value.includes("Point")) return "point";
+    if (value.includes("Line")) return "line";
+    return "polygon";
+  }
+
+  function colorForLayer(layerId) {
+    let hash = 0;
+    const value = String(layerId || "");
+    for (let index = 0; index < value.length; index += 1) {
+      hash = ((hash << 5) - hash) + value.charCodeAt(index);
+      hash |= 0;
+    }
+    return DATABASE_COLORS[Math.abs(hash) % DATABASE_COLORS.length];
+  }
+
+  function appendDynamicLayerUi(config, count) {
+    const layerList = document.querySelector(".layer-list");
+    const legend = document.querySelector(".legend");
+
+    if (
+      layerList &&
+      !document.querySelector('[data-layer-id="' + config.id + '"]')
+    ) {
+      const row = document.createElement("div");
+      row.className = "layer-row database-layer-row";
+      row.innerHTML =
+        '<input id="layer-' + escapeHtml(config.id) +
+          '" data-layer-id="' + escapeHtml(config.id) +
+          '" type="checkbox"' + (config.visible ? " checked" : "") + '>' +
+        '<span class="swatch" style="background:' +
+          escapeHtml(config.color) + '"></span>' +
+        '<label for="layer-' + escapeHtml(config.id) + '">' +
+          escapeHtml(config.label) + '</label>' +
+        '<span class="count">' + Number(count || 0) + '</span>';
+      layerList.appendChild(row);
+    }
+
+    if (
+      legend &&
+      !document.getElementById("legend-db-" + config.id)
+    ) {
+      const item = document.createElement("div");
+      item.className = "legend-item";
+      item.id = "legend-db-" + config.id;
+      item.innerHTML =
+        '<span class="legend-mark ' +
+          (config.type === "point" ? "point" : "") +
+          '" style="background:' + escapeHtml(config.color) + '"></span>' +
+        '<span>' + escapeHtml(config.label) + '</span>';
+      legend.appendChild(item);
+    }
+  }
+
+  function updateLayerUiCount(layerId, count) {
+    const checkbox = document.querySelector(
+      '[data-layer-id="' + layerId + '"]'
+    );
+    const row = checkbox && checkbox.closest(".layer-row");
+    const countElement = row && row.querySelector(".count");
+    if (countElement) countElement.textContent = String(count);
+  }
+
+  function loadMasterDatabase() {
+    return new Promise((resolve, reject) => {
+      const callbackName =
+        "ygMasterObjectsCallback_" + Date.now();
+
+      const script = document.createElement("script");
+      const timeout = window.setTimeout(() => {
+        cleanup();
+        reject(new Error("Waktu pemuatan database habis."));
+      }, 25000);
+
+      function cleanup() {
+        window.clearTimeout(timeout);
+        try { delete window[callbackName]; } catch (error) {}
+        script.remove();
+      }
+
+      window[callbackName] = data => {
+        cleanup();
+
+        if (
+          !data ||
+          data.type !== "FeatureCollection" ||
+          !Array.isArray(data.features)
+        ) {
+          reject(new Error("Respons database bukan FeatureCollection."));
+          return;
+        }
+
+        databaseFeaturesByLayer = Object.create(null);
+
+        data.features.forEach(feature => {
+          const properties = feature.properties || {};
+          const layerId =
+            properties.Layer_ID ||
+            properties.layerId ||
+            "lainnya";
+
+          if (!databaseFeaturesByLayer[layerId]) {
+            databaseFeaturesByLayer[layerId] = [];
+          }
+
+          databaseFeaturesByLayer[layerId].push(feature);
+        });
+
+        Object.keys(databaseFeaturesByLayer).forEach((layerId, index) => {
+          if (CONFIG.some(item => item.id === layerId)) return;
+
+          const firstFeature = databaseFeaturesByLayer[layerId][0] || {};
+          const props = firstFeature.properties || {};
+
+          const dynamicConfig = {
+            id: layerId,
+            label:
+              props.Layer_Label ||
+              props.Kategori ||
+              layerId.replace(/_/g, " "),
+            color: colorForLayer(layerId),
+            type: geometryTypeToConfigType(
+              firstFeature.geometry && firstFeature.geometry.type
+            ),
+            visible: layerId === "community_reports"
+          };
+
+          CONFIG.push(dynamicConfig);
+          appendDynamicLayerUi(
+            dynamicConfig,
+            databaseFeaturesByLayer[layerId].length
+          );
+        });
+
+        databaseSourceReady = true;
+        resolve(data);
+      };
+
+      script.onerror = () => {
+        cleanup();
+        reject(new Error("Endpoint database tidak dapat diakses."));
+      };
+
+      script.src =
+        MASTER_OBJECTS_API +
+        "&callback=" +
+        encodeURIComponent(callbackName) +
+        "&t=" +
+        Date.now();
+
+      script.async = true;
+      document.head.appendChild(script);
+    });
+  }
+
+  async function getLayerFeatureCollection(config) {
+    const databaseFeatures =
+      databaseFeaturesByLayer[config.id];
+
+    if (databaseFeatures && databaseFeatures.length) {
+      return {
+        type: "FeatureCollection",
+        features: databaseFeatures
+      };
+    }
+
+    const response = await fetch(
+      "data/" + config.id + ".geojson",
+      { cache: "no-store" }
+    );
+
+    if (!response.ok) {
+      throw new Error("HTTP " + response.status);
+    }
+
+    return response.json();
+  }
+
   function updateStatus() {
     const box = document.getElementById("status-box");
     const text = document.getElementById("status-text");
@@ -159,11 +334,7 @@
 
   async function loadLayer(config) {
     try {
-      const layerUrl = config.url ? config.url : `data/${config.id}.geojson`;
-      const response = await fetch(layerUrl, { cache: "no-store" });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
-      const data = await response.json();
+      const data = await getLayerFeatureCollection(config);
       let geoLayer;
 
       geoLayer = L.geoJSON(data, {
@@ -230,6 +401,10 @@
       });
 
       layerObjects[config.id] = geoLayer;
+      updateLayerUiCount(
+        config.id,
+        Array.isArray(data.features) ? data.features.length : 0
+      );
       if (config.visible) geoLayer.addTo(map);
 
       const bounds = geoLayer.getBounds();
@@ -256,7 +431,7 @@
     }
   }
 
-  Promise.allSettled(CONFIG.map(loadLayer)).then(() => {
+  function finishMapInitialization() {
     searchIndex = buildSearchIndex();
 
     if (allBounds.isValid()) {
@@ -266,7 +441,18 @@
     requestAnimationFrame(() => map.invalidateSize(true));
     setTimeout(() => map.invalidateSize(true), 300);
     setTimeout(() => map.invalidateSize(true), 1000);
-  });
+  }
+
+  loadMasterDatabase()
+    .catch(error => {
+      console.warn(
+        "Database OBJECTS gagal dimuat; menggunakan GeoJSON GitHub sebagai cadangan.",
+        error
+      );
+      databaseSourceReady = false;
+    })
+    .then(() => Promise.allSettled(CONFIG.map(loadLayer)))
+    .then(finishMapInitialization);
 
   function fitAll() {
     if (allBounds.isValid()) map.fitBounds(allBounds, { padding: [24, 24] });
