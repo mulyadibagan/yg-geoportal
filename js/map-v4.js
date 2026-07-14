@@ -38,7 +38,7 @@
       id: "gambut_bbsdlp_2019",
       label: "Peta Gambut BBSDLP 2019",
       file: "data/Gambut_BBSDLP_2019.geojson",
-      color: "#7b1fa2",
+      color: "#6a4a3a",
       count: 736,
       type: "peat"
     }
