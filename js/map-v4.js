@@ -547,16 +547,16 @@
 
     const colors = {
       "APL": "#FFFFFF",
-      "HPK": "#FF5EFF",
-      "HPT": "#8AF200",
-      "HP": "#FFFF00",
-      "HL": "#02AD00",
-      "CA": "#AD3FFF",
-      "KSA/KPA": "#AD3FFF",
-      "TN": "##AD3FFF",
-      "SM": "#AD3FFF",
-      "SA": "#AD3FFF",
-      "TWA": "#AD3FFF"
+      "HPK": "#FEA9A9",
+      "HPT": "#C0FEA7",
+      "HP": "#FEFEAA",
+      "HL": "#7BFB00",
+      "CA": "#C589FE",
+      "KSA/KPA": "#C589FE",
+      "TN": "#C589FE",
+      "SM": "#C589FE",
+      "SA": "#C589FE",
+      "TWA": "#C589FE"
     };
 
     return colors[key] || "#78909c";
