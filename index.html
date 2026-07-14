@@ -8,6 +8,14 @@
   <link rel="icon" href="assets/logo-yayasan-gambut.png"/>
   <link rel="stylesheet" href="css/app.css"/>
   <link rel="stylesheet" href="css/dashboard-v3.css?v=20260714-1"/>
+  <meta name="theme-color" content="#079cde">
+  <meta name="application-name" content="YG GeoPortal">
+  <meta name="apple-mobile-web-app-title" content="YG GeoPortal">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="manifest.webmanifest?v=20260714-1">
+  <link rel="apple-touch-icon" href="assets/logo-yayasan-gambut-192.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/logo-yayasan-gambut-192.png">
 </head>
 <body>
 <header class="site-header">
@@ -35,6 +43,7 @@
       <div class="hero-actions">
         <a class="btn btn-light" href="webgis.html">🗺️ Buka WebGIS</a>
         <a class="btn btn-outline" href="monitoring.html">📊 Dashboard Monitoring</a>
+        <button class="btn btn-outline" type="button" data-install-app hidden>📲 Pasang Aplikasi</button>
       </div>
       <div class="database-note" id="dashboard-updated">Menghubungkan ke Master Database…</div>
     </div>
@@ -95,5 +104,6 @@
 </footer>
 
 <script src="js/dashboard-v3.js?v=20260714-1"></script>
+  <script src="js/pwa.js?v=20260714-1"></script>
 </body>
 </html>
