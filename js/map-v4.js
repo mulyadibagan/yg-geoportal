@@ -24,6 +24,29 @@
     "#ef6c00", "#6a1b9a", "#00897b", "#37474f"
   ];
 
+
+  const REFERENCE_LAYERS = {
+    kawasan_hutan_sk_903: {
+      id: "kawasan_hutan_sk_903",
+      label: "Kawasan Hutan SK 903",
+      file: "data/kawasan_hutan_sk_903.geojson",
+      color: "#455a64",
+      count: 4185,
+      type: "forest"
+    },
+    gambut_bbsdlp_2019: {
+      id: "gambut_bbsdlp_2019",
+      label: "Peta Gambut BBSDLP 2019",
+      file: "data/Gambut_BBSDLP_2019.geojson",
+      color: "#7b1fa2",
+      count: 736,
+      type: "peat"
+    }
+  };
+
+  const referenceLayerObjects = {};
+  const referenceLayerState = {};
+
   const map = L.map("map", {
     zoomControl: true,
     preferCanvas: true
@@ -167,8 +190,8 @@
         'title="Buka foto resolusi penuh">' +
         '<img src="' + escapeHtml(thumbnailUrl) + '" ' +
           'loading="lazy" alt="Foto ' + (index + 1) + '" ' +
-          'onerror="this.style.display=\\'none\\';' +
-          'this.nextElementSibling.style.display=\\'flex\\';">' +
+          'onerror="this.style.display=&quot;none&quot;;' +
+          'this.nextElementSibling.style.display=&quot;flex&quot;;">' +
         '<span class="yg-photo-fallback" style="display:none">' +
           'Buka Foto ' + (index + 1) +
         '</span>' +
@@ -507,12 +530,256 @@
     if (config.visible) group.addTo(map);
   }
 
+
+  function forestColor(value) {
+    const key = String(value || "").toUpperCase();
+
+    const colors = {
+      "APL": "#d9d9d9",
+      "HPK": "#f9a825",
+      "HPT": "#7cb342",
+      "HP": "#43a047",
+      "HL": "#1b5e20",
+      "CA": "#6a1b9a",
+      "KSA/KPA": "#8e24aa",
+      "TN": "#00897b",
+      "SM": "#5e35b1",
+      "SA": "#3949ab",
+      "TWA": "#00acc1"
+    };
+
+    return colors[key] || "#78909c";
+  }
+
+  function peatColor(value) {
+    const text = String(value || "");
+
+    if (text.indexOf(">700") !== -1) return "#4a148c";
+    if (text.indexOf("500-<700") !== -1) return "#6a1b9a";
+    if (text.indexOf("300-<500") !== -1) return "#8e24aa";
+    if (text.indexOf("200-<300") !== -1) return "#ab47bc";
+    if (text.indexOf("100-<200") !== -1) return "#ce93d8";
+    if (text.indexOf("50-<100") !== -1) return "#e1bee7";
+
+    return "#b39ddb";
+  }
+
+  function referenceStyle(config, feature) {
+    const props = feature.properties || {};
+
+    if (config.type === "forest") {
+      const color = forestColor(props.fungsi);
+
+      return {
+        color: color,
+        weight: 0.8,
+        opacity: 0.85,
+        fillColor: color,
+        fillOpacity: 0.23
+      };
+    }
+
+    const color = peatColor(props.KELAS_GBT || props.KETEBALAN);
+
+    return {
+      color: color,
+      weight: 0.7,
+      opacity: 0.8,
+      fillColor: color,
+      fillOpacity: 0.20
+    };
+  }
+
+  function referencePopup(config, feature) {
+    const props = feature.properties || {};
+    let rows = "";
+
+    function item(label, value) {
+      if (
+        value === null ||
+        value === undefined ||
+        String(value).trim() === ""
+      ) {
+        return "";
+      }
+
+      return (
+        '<div class="popup-row">' +
+          '<b>' + escapeHtml(label) + '</b>' +
+          '<span>' + escapeHtml(value) + '</span>' +
+        '</div>'
+      );
+    }
+
+    if (config.type === "forest") {
+      rows += item("Fungsi kawasan", props.fungsi || "Belum terisi");
+      rows += item("Sumber", "Kawasan Hutan SK 903");
+    } else {
+      rows += item("Kabupaten/Kota", props.KABKOT || props.KK);
+      rows += item("Kelas gambut", props.KELAS_GBT);
+      rows += item("Ketebalan", props.KETEBALAN);
+      rows += item("Jenis tanah utama", props.JNTNH1);
+      rows += item("pH", props.pH);
+      rows += item("Substratum", props.SUBSTRATUM);
+      rows += item("Tahun", props.TAHUN || 2019);
+    }
+
+    return (
+      '<div class="popup-card">' +
+        '<div class="popup-head" style="background:' +
+          escapeHtml(config.color) + '">' +
+          '<strong>' + escapeHtml(config.label) + '</strong>' +
+          '<span>Layer referensi — tidak dihitung dalam dashboard</span>' +
+        '</div>' +
+        '<div class="popup-body">' + rows + '</div>' +
+      '</div>'
+    );
+  }
+
+  async function loadReferenceLayer(layerId) {
+    const config = REFERENCE_LAYERS[layerId];
+
+    if (!config) {
+      throw new Error("Konfigurasi layer referensi tidak ditemukan.");
+    }
+
+    if (referenceLayerObjects[layerId]) {
+      return referenceLayerObjects[layerId];
+    }
+
+    if (referenceLayerState[layerId] === "loading") {
+      return null;
+    }
+
+    referenceLayerState[layerId] = "loading";
+    setStatus("Memuat " + config.label + "…", false);
+
+    const response = await fetch(
+      config.file + "?v=20260714-ref1",
+      {
+        cache: "force-cache"
+      }
+    );
+
+    if (!response.ok) {
+      referenceLayerState[layerId] = "error";
+      throw new Error("HTTP " + response.status);
+    }
+
+    const data = await response.json();
+
+    if (
+      !data ||
+      data.type !== "FeatureCollection" ||
+      !Array.isArray(data.features)
+    ) {
+      referenceLayerState[layerId] = "error";
+      throw new Error("GeoJSON referensi tidak valid.");
+    }
+
+    const layer = L.geoJSON(data, {
+      style: feature => referenceStyle(config, feature),
+      onEachFeature: (feature, leafletLayer) => {
+        leafletLayer.bindPopup(
+          referencePopup(config, feature),
+          { maxWidth: 360 }
+        );
+      }
+    });
+
+    referenceLayerObjects[layerId] = layer;
+    referenceLayerState[layerId] = "ready";
+
+    setStatus(
+      config.label + " berhasil dimuat (" +
+      new Intl.NumberFormat("id-ID").format(data.features.length) +
+      " fitur)",
+      false
+    );
+
+    return layer;
+  }
+
+  function appendReferenceControls(list, legend) {
+    const title = document.createElement("div");
+    title.className = "yg-layer-section-title";
+    title.textContent = "DATA REFERENSI";
+    list.appendChild(title);
+
+    Object.keys(REFERENCE_LAYERS).forEach(layerId => {
+      const config = REFERENCE_LAYERS[layerId];
+
+      const row = document.createElement("div");
+      row.className = "layer-row reference-layer-row";
+      row.innerHTML =
+        '<input id="layer-' + escapeHtml(layerId) +
+        '" data-reference-layer-id="' + escapeHtml(layerId) +
+        '" type="checkbox">' +
+        '<span class="swatch" style="background:' +
+          escapeHtml(config.color) + '"></span>' +
+        '<label for="layer-' + escapeHtml(layerId) + '">' +
+          escapeHtml(config.label) + '</label>' +
+        '<span class="count">' +
+          new Intl.NumberFormat("id-ID").format(config.count) +
+        '</span>';
+
+      list.appendChild(row);
+
+      const checkbox = row.querySelector("input");
+
+      checkbox.addEventListener("change", async event => {
+        checkbox.disabled = true;
+
+        try {
+          if (event.target.checked) {
+            const layer = await loadReferenceLayer(layerId);
+
+            if (layer) {
+              layer.addTo(map);
+            }
+          } else {
+            const layer = referenceLayerObjects[layerId];
+
+            if (layer && map.hasLayer(layer)) {
+              map.removeLayer(layer);
+            }
+          }
+        } catch (error) {
+          console.error("Layer referensi gagal dimuat:", layerId, error);
+          event.target.checked = false;
+          setStatus(
+            config.label + " gagal dimuat: " + error.message,
+            true
+          );
+        } finally {
+          checkbox.disabled = false;
+        }
+      });
+
+      const legendItem = document.createElement("div");
+      legendItem.className = "legend-item";
+      legendItem.innerHTML =
+        '<span class="legend-mark" style="background:' +
+          escapeHtml(config.color) + '"></span>' +
+        '<span>' + escapeHtml(config.label) + '</span>';
+
+      legend.appendChild(legendItem);
+    });
+
+    const programTitle = document.createElement("div");
+    programTitle.className = "yg-layer-section-title yg-program-title";
+    programTitle.textContent = "PROGRAM & LAPORAN YG";
+    list.appendChild(programTitle);
+  }
+
   function renderLayerControls(groups) {
     const list = document.getElementById("layer-list");
     const legend = document.getElementById("legend");
 
     list.innerHTML = "";
     legend.innerHTML = "";
+
+    appendReferenceControls(list, legend);
 
     Object.keys(groups)
       .sort((a, b) =>
@@ -837,6 +1104,7 @@
     map: map,
     layerObjects: layerObjects,
     searchItems: searchItems,
+    referenceLayerObjects: referenceLayerObjects,
     get rawFeatures() {
       return rawFeatures;
     }
