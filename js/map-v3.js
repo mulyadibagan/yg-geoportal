@@ -212,50 +212,75 @@
     });
   }
 
-  function createLayer(layerId, features) {   const config = configFor(layerId, features[0]);    /*    * Buat GeoJSON layer terlebih dahulu.    * Jangan memakai geoLayer di dalam onEachFeature saat konstruksi,    * karena variabel tersebut belum selesai diinisialisasi.    */   const geoLayer = L.geoJSON(     {       type: "FeatureCollection",       features: features     },     {       style: function () {         return geometryStyle(config);       },        pointToLayer: function (_feature, latlng) {         return pointLayer(config, latlng);       }     }   );    /*    * Setelah geoLayer selesai dibuat, baru pasang popup    * dan masukkan setiap objek ke indeks pencarian.    */   geoLayer.eachLayer(function (layer) {     const feature = layer.feature;      if (!feature) {       return;     }      layer.bindPopup(       buildPopup(feature, config),       {         maxWidth: 380       }     );      const props = feature.properties || {};      const searchText = [       getObjectName(feature),       config.label,       props.Object_ID,       props.Kategori,       props.Program,       props.Kabupaten,       props.Kecamatan,       props.Desa,       props.WADMKD,       props.WADMKC,       props.WADMKK,       props.description     ]       .filter(Boolean)       .join(" ")       .toLowerCase();      searchItems.push({       text: searchText,       label: getObjectName(feature),       meta: [         props.Desa || props.WADMKD,         config.label       ]         .filter(Boolean)         .join(" · "),       layer: layer,       parent: geoLayer     });   });    layerObjects[layerId] = geoLayer;    const bounds = geoLayer.getBounds();    if (bounds.isValid()) {     allBounds.extend(bounds);   }    if (config.visible) {     geoLayer.addTo(map);   } }
+  function createLayer(layerId, features) {
     const config = configFor(layerId, features[0]);
 
     const geoLayer = L.geoJSON(
-      { type: "FeatureCollection", features },
       {
-        style: () => geometryStyle(config),
-        pointToLayer: (_feature, latlng) => pointLayer(config, latlng),
-        onEachFeature: (feature, layer) => {
-          layer.bindPopup(buildPopup(feature, config), { maxWidth: 380 });
-
-          const props = feature.properties || {};
-          const searchText = [
-            getObjectName(feature),
-            config.label,
-            props.Object_ID,
-            props.Kategori,
-            props.Program,
-            props.Kabupaten,
-            props.Kecamatan,
-            props.Desa,
-            props.WADMKD,
-            props.WADMKC,
-            props.WADMKK,
-            props.description
-          ].filter(Boolean).join(" ").toLowerCase();
-
-          searchItems.push({
-            text: searchText,
-            label: getObjectName(feature),
-            meta: [props.Desa || props.WADMKD, config.label].filter(Boolean).join(" · "),
-            layer,
-            parent: geoLayer
-          });
+        type: "FeatureCollection",
+        features: features
+      },
+      {
+        style: function () {
+          return geometryStyle(config);
+        },
+        pointToLayer: function (_feature, latlng) {
+          return pointLayer(config, latlng);
         }
       }
     );
 
+    geoLayer.eachLayer(function (layer) {
+      const feature = layer.feature;
+      if (!feature) return;
+
+      layer.bindPopup(buildPopup(feature, config), {
+        maxWidth: 380
+      });
+
+      const props = feature.properties || {};
+      const searchText = [
+        getObjectName(feature),
+        config.label,
+        props.Object_ID,
+        props.Kategori,
+        props.Program,
+        props.Kabupaten,
+        props.Kecamatan,
+        props.Desa,
+        props.WADMKD,
+        props.WADMKC,
+        props.WADMKK,
+        props.description
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+
+      searchItems.push({
+        text: searchText,
+        label: getObjectName(feature),
+        meta: [
+          props.Desa || props.WADMKD,
+          config.label
+        ]
+          .filter(Boolean)
+          .join(" · "),
+        layer: layer,
+        parent: geoLayer
+      });
+    });
+
     layerObjects[layerId] = geoLayer;
 
     const bounds = geoLayer.getBounds();
-    if (bounds.isValid()) allBounds.extend(bounds);
+    if (bounds.isValid()) {
+      allBounds.extend(bounds);
+    }
 
-    if (config.visible) geoLayer.addTo(map);
+    if (config.visible) {
+      geoLayer.addTo(map);
+    }
   }
 
   function renderLayerControls(groups) {
