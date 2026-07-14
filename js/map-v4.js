@@ -306,22 +306,23 @@
       );
     } else {
       rows += row(
-        "Lokasi",
-        [
-          valueOf(["Desa", "WADMKD"]),
-          valueOf(["Kecamatan", "WADMKC"]),
-          valueOf(["Kabupaten", "WADMKK"])
-        ].filter(Boolean).join(", ")
+        "No",
+        valueOf(["No", "NO", "Id", "ID"])
       );
 
       rows += row(
-        "Program",
-        valueOf(["Program"])
+        "Kabupaten",
+        valueOf(["Kabupaten", "WADMKK"])
       );
 
       rows += row(
-        "Fase",
-        valueOf(["Fase"])
+        "Kecamatan",
+        valueOf(["Kecamatan", "WADMKC"])
+      );
+
+      rows += row(
+        "Desa",
+        valueOf(["Desa", "WADMKD"])
       );
 
       rows += row(
@@ -330,25 +331,13 @@
       );
 
       rows += row(
-        "Luas",
-        valueOf(["Luas_Ha"]),
-        "ha"
+        "Nama objek",
+        valueOf(["Nama_Objek", "Nama", "Lokasi"])
       );
 
       rows += row(
-        "Panjang",
-        valueOf(["Panjang_M"]),
-        "m"
-      );
-
-      rows += row(
-        "Jumlah",
-        valueOf(["Jumlah_Tanam", "Jumlah"])
-      );
-
-      rows += row(
-        "Keterangan",
-        valueOf(["Ket", "Keterangan", "description"])
+        "Kategori",
+        valueOf(["Kategori", "Layer_Label"])
       );
     }
 
