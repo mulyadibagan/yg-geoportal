@@ -51,7 +51,13 @@
     zoomControl: true,
     preferCanvas: true
   }).setView(DEFAULT_VIEW, DEFAULT_ZOOM);
-
+// Scale Bar
+L.control.scale({
+    position: 'bottomleft',   // kiri bawah
+    metric: true,             // meter & kilometer
+    imperial: false,          // sembunyikan mil & feet
+    maxWidth: 150
+}).addTo(map);
   const baseMaps = {
     "OpenStreetMap": L.tileLayer(
       "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
