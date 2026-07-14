@@ -85,6 +85,31 @@
 }
 </style>
 
+
+<style id="yg-photo-fallback-style">
+.yg-v3-gallery a{
+  position:relative;
+  display:block;
+  min-height:92px;
+  overflow:hidden;
+  border-radius:8px;
+  background:#eef3f0;
+}
+.yg-v3-gallery a.yg-photo-failed{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:92px;
+  border:1px dashed #9aaca3;
+  color:#087653;
+  font-size:12px;
+  font-weight:700;
+  text-decoration:none;
+}
+.yg-v3-gallery a.yg-photo-failed::after{
+  content:attr(data-label);
+}
+</style>
 </head>
 <body>
 <div class="app-shell" id="app-shell">
@@ -170,7 +195,7 @@
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="js/map-v4.js?v=20260714-6"></script>
+<script src="js/map-v4.js?v=20260714-7"></script>
 <script src="js/ui.js"></script>
 </body>
 </html>

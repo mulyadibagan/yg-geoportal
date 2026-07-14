@@ -111,16 +111,36 @@
 
   function photoThumb(url) {
     const id = driveId(url);
-    return id
-      ? "https://drive.google.com/thumbnail?id=" + encodeURIComponent(id) + "&sz=w800"
-      : url;
+
+    if (!id) return String(url || "");
+
+    /*
+     * Sumber pertama untuk thumbnail Google Drive.
+     * File harus memiliki akses: siapa saja yang memiliki link.
+     */
+    return "https://lh3.googleusercontent.com/d/" +
+      encodeURIComponent(id) +
+      "=w900";
+  }
+
+  function photoThumbFallback(url) {
+    const id = driveId(url);
+
+    if (!id) return String(url || "");
+
+    return "https://drive.google.com/thumbnail?id=" +
+      encodeURIComponent(id) +
+      "&sz=w900";
   }
 
   function photoOriginal(url) {
     const id = driveId(url);
+
     return id
-      ? "https://drive.google.com/file/d/" + encodeURIComponent(id) + "/view"
-      : url;
+      ? "https://drive.google.com/file/d/" +
+        encodeURIComponent(id) +
+        "/view"
+      : String(url || "");
   }
 
   function buildPopup(feature, config) {
@@ -356,7 +376,9 @@
           '<a href="' + escapeHtml(photoOriginal(url)) +
           '" target="_blank" rel="noopener" title="Buka foto resolusi penuh">' +
           '<img src="' + escapeHtml(photoThumb(url)) +
-          '" loading="lazy" alt="Foto ' + (index + 1) + '">' +
+          '" data-fallback="' + escapeHtml(photoThumbFallback(url)) +
+          '" loading="lazy" alt="Foto ' + (index + 1) + '" ' +
+          'onerror="if(!this.dataset.tried){this.dataset.tried=\'1\';this.src=this.dataset.fallback;}else{this.style.display=\'none\';this.parentElement.classList.add(\'yg-photo-failed\');this.parentElement.setAttribute(\'data-label\',\'Buka Foto ' + (index + 1) + '\');}">' +
           '</a>'
         ).join("") +
         '</div>';
