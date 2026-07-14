@@ -10,6 +10,7 @@
     desa_intervensi: { label: "Batas Desa Intervensi", color: "#2e7d32", visible: true },
     apo: { label: "Alat Pemecah Ombak (APO)", color: "#d32f2f", visible: true },
     area_mangrove: { label: "Area Penanaman Mangrove", color: "#00796b", visible: true },
+    monitoring_reports: { label: "Hasil Monitoring Terverifikasi", color: "#f9a825", visible: true },
     titik_desa: { label: "Titik Desa Intervensi", color: "#1565c0", visible: false },
     kopi: { label: "Distribusi Lahan Kopi", color: "#6d4c41", visible: true },
     fdrs: { label: "FDRS / Water Table", color: "#e65100", visible: true },
@@ -216,71 +217,46 @@
     const config = configFor(layerId, features[0]);
 
     const geoLayer = L.geoJSON(
+      { type: "FeatureCollection", features },
       {
-        type: "FeatureCollection",
-        features: features
-      },
-      {
-        style: function () {
-          return geometryStyle(config);
-        },
-        pointToLayer: function (_feature, latlng) {
-          return pointLayer(config, latlng);
+        style: () => geometryStyle(config),
+        pointToLayer: (_feature, latlng) => pointLayer(config, latlng),
+        onEachFeature: (feature, layer) => {
+          layer.bindPopup(buildPopup(feature, config), { maxWidth: 380 });
+
+          const props = feature.properties || {};
+          const searchText = [
+            getObjectName(feature),
+            config.label,
+            props.Object_ID,
+            props.Kategori,
+            props.Program,
+            props.Kabupaten,
+            props.Kecamatan,
+            props.Desa,
+            props.WADMKD,
+            props.WADMKC,
+            props.WADMKK,
+            props.description
+          ].filter(Boolean).join(" ").toLowerCase();
+
+          searchItems.push({
+            text: searchText,
+            label: getObjectName(feature),
+            meta: [props.Desa || props.WADMKD, config.label].filter(Boolean).join(" · "),
+            layer,
+            parent: geoLayer
+          });
         }
       }
     );
 
-    geoLayer.eachLayer(function (layer) {
-      const feature = layer.feature;
-      if (!feature) return;
-
-      layer.bindPopup(buildPopup(feature, config), {
-        maxWidth: 380
-      });
-
-      const props = feature.properties || {};
-      const searchText = [
-        getObjectName(feature),
-        config.label,
-        props.Object_ID,
-        props.Kategori,
-        props.Program,
-        props.Kabupaten,
-        props.Kecamatan,
-        props.Desa,
-        props.WADMKD,
-        props.WADMKC,
-        props.WADMKK,
-        props.description
-      ]
-        .filter(Boolean)
-        .join(" ")
-        .toLowerCase();
-
-      searchItems.push({
-        text: searchText,
-        label: getObjectName(feature),
-        meta: [
-          props.Desa || props.WADMKD,
-          config.label
-        ]
-          .filter(Boolean)
-          .join(" · "),
-        layer: layer,
-        parent: geoLayer
-      });
-    });
-
     layerObjects[layerId] = geoLayer;
 
     const bounds = geoLayer.getBounds();
-    if (bounds.isValid()) {
-      allBounds.extend(bounds);
-    }
+    if (bounds.isValid()) allBounds.extend(bounds);
 
-    if (config.visible) {
-      geoLayer.addTo(map);
-    }
+    if (config.visible) geoLayer.addTo(map);
   }
 
   function renderLayerControls(groups) {
