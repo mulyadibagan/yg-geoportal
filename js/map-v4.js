@@ -546,17 +546,17 @@
     const key = String(value || "").toUpperCase();
 
     const colors = {
-      "APL": "#d9d9d9",
-      "HPK": "#f9a825",
-      "HPT": "#7cb342",
-      "HP": "#43a047",
-      "HL": "#1b5e20",
-      "CA": "#6a1b9a",
-      "KSA/KPA": "#8e24aa",
-      "TN": "#00897b",
-      "SM": "#5e35b1",
-      "SA": "#3949ab",
-      "TWA": "#00acc1"
+      "APL": "#FFFFFF",
+      "HPK": "#FF5EFF",
+      "HPT": "#8AF200",
+      "HP": "#FFFF00",
+      "HL": "#02AD00",
+      "CA": "#AD3FFF",
+      "KSA/KPA": "#AD3FFF",
+      "TN": "##AD3FFF",
+      "SM": "#AD3FFF",
+      "SA": "#AD3FFF",
+      "TWA": "#AD3FFF"
     };
 
     return colors[key] || "#78909c";
