@@ -86,30 +86,40 @@
 </style>
 
 
-<style id="yg-photo-fallback-style">
-.yg-v3-gallery a{
-  position:relative;
-  display:block;
-  min-height:92px;
-  overflow:hidden;
-  border-radius:8px;
-  background:#eef3f0;
+<style id="yg-photo-fix">
+.yg-v3-gallery{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px;
+  padding:10px 12px 14px;
 }
-.yg-v3-gallery a.yg-photo-failed{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  min-height:92px;
-  border:1px dashed #9aaca3;
+.yg-photo-card{
+  display:block;
+  min-height:110px;
+  overflow:hidden;
+  border:1px solid #d7e4de;
+  border-radius:10px;
+  background:#f2f7f4;
   color:#087653;
-  font-size:12px;
-  font-weight:700;
   text-decoration:none;
 }
-.yg-v3-gallery a.yg-photo-failed::after{
-  content:attr(data-label);
+.yg-photo-card img{
+  display:block;
+  width:100%;
+  height:120px;
+  object-fit:cover;
+}
+.yg-photo-fallback{
+  min-height:110px;
+  align-items:center;
+  justify-content:center;
+  padding:12px;
+  text-align:center;
+  font-weight:800;
+  color:#087653;
 }
 </style>
+
 </head>
 <body>
 <div class="app-shell" id="app-shell">
@@ -195,7 +205,7 @@
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="js/map-v4.js?v=20260714-7"></script>
+<script src="js/map-v4.js?v=20260714-8"></script>
 <script src="js/ui.js"></script>
 </body>
 </html>

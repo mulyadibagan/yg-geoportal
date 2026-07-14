@@ -101,46 +101,79 @@
     return layerConfigs[layerId];
   }
 
+  function normalizePhotoUrl(value) {
+    return String(value || "")
+      .trim()
+      .replace(/^["']+|["']+$/g, "")
+      .replace(/&amp;/g, "&");
+  }
+
   function driveId(url) {
-    const text = String(url || "");
-    const match =
-      text.match(/\/d\/([A-Za-z0-9_-]+)/) ||
-      text.match(/[?&]id=([A-Za-z0-9_-]+)/);
-    return match ? match[1] : "";
+    const text = normalizePhotoUrl(url);
+
+    const patterns = [
+      /\/file\/d\/([A-Za-z0-9_-]+)/i,
+      /\/d\/([A-Za-z0-9_-]+)/i,
+      /[?&]id=([A-Za-z0-9_-]+)/i,
+      /\/uc\?(?:[^#]*&)?id=([A-Za-z0-9_-]+)/i,
+      /\/thumbnail\?(?:[^#]*&)?id=([A-Za-z0-9_-]+)/i
+    ];
+
+    for (let i = 0; i < patterns.length; i += 1) {
+      const match = text.match(patterns[i]);
+      if (match) return match[1];
+    }
+
+    if (/^[A-Za-z0-9_-]{20,}$/.test(text)) {
+      return text;
+    }
+
+    return "";
   }
 
   function photoThumb(url) {
-    const id = driveId(url);
+    const cleanUrl = normalizePhotoUrl(url);
+    const id = driveId(cleanUrl);
 
-    if (!id) return String(url || "");
-
-    /*
-     * Sumber pertama untuk thumbnail Google Drive.
-     * File harus memiliki akses: siapa saja yang memiliki link.
-     */
-    return "https://lh3.googleusercontent.com/d/" +
-      encodeURIComponent(id) +
-      "=w900";
-  }
-
-  function photoThumbFallback(url) {
-    const id = driveId(url);
-
-    if (!id) return String(url || "");
-
-    return "https://drive.google.com/thumbnail?id=" +
-      encodeURIComponent(id) +
-      "&sz=w900";
+    return id
+      ? "https://drive.google.com/thumbnail?id=" +
+          encodeURIComponent(id) +
+          "&sz=w1000"
+      : cleanUrl;
   }
 
   function photoOriginal(url) {
-    const id = driveId(url);
+    const cleanUrl = normalizePhotoUrl(url);
+    const id = driveId(cleanUrl);
 
     return id
       ? "https://drive.google.com/file/d/" +
-        encodeURIComponent(id) +
-        "/view"
-      : String(url || "");
+          encodeURIComponent(id) +
+          "/view?usp=sharing"
+      : cleanUrl;
+  }
+
+  function photoGalleryItem(url, index) {
+    const cleanUrl = normalizePhotoUrl(url);
+    const originalUrl = photoOriginal(cleanUrl);
+    const thumbnailUrl = photoThumb(cleanUrl);
+
+    if (!originalUrl) return "";
+
+    return (
+      '<a class="yg-photo-card" ' +
+        'href="' + escapeHtml(originalUrl) + '" ' +
+        'target="_blank" rel="noopener noreferrer" ' +
+        'title="Buka foto resolusi penuh">' +
+        '<img src="' + escapeHtml(thumbnailUrl) + '" ' +
+          'loading="lazy" alt="Foto ' + (index + 1) + '" ' +
+          'onerror="this.style.display=\\'none\\';' +
+          'this.nextElementSibling.style.display=\\'flex\\';">' +
+        '<span class="yg-photo-fallback" style="display:none">' +
+          'Buka Foto ' + (index + 1) +
+        '</span>' +
+      '</a>'
+    );
   }
 
   function buildPopup(feature, config) {
@@ -372,15 +405,7 @@
     if (photos.length) {
       gallery =
         '<div class="yg-v3-gallery">' +
-        photos.map((url, index) =>
-          '<a href="' + escapeHtml(photoOriginal(url)) +
-          '" target="_blank" rel="noopener" title="Buka foto resolusi penuh">' +
-          '<img src="' + escapeHtml(photoThumb(url)) +
-          '" data-fallback="' + escapeHtml(photoThumbFallback(url)) +
-          '" loading="lazy" alt="Foto ' + (index + 1) + '" ' +
-          'onerror="if(!this.dataset.tried){this.dataset.tried=\'1\';this.src=this.dataset.fallback;}else{this.style.display=\'none\';this.parentElement.classList.add(\'yg-photo-failed\');this.parentElement.setAttribute(\'data-label\',\'Buka Foto ' + (index + 1) + '\');}">' +
-          '</a>'
-        ).join("") +
+        photos.map((url, index) => photoGalleryItem(url, index)).join("") +
         '</div>';
     }
 
