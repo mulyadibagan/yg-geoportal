@@ -7,7 +7,7 @@
   <link rel="icon" href="assets/logo-yayasan-gambut.png">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="https://unpkg.com/@geoman-io/leaflet-geoman-free@2.18.0/dist/leaflet-geoman.css">
-  <link rel="stylesheet" href="css/polygon-editor.css?v=20260714-1">
+  <link rel="stylesheet" href="css/polygon-editor.css?v=20260714-21">
   <meta name="theme-color" content="#087653">
 </head>
 <body>
@@ -138,6 +138,16 @@
     </section>
   </main>
 
+
+  <div id="save-overlay" class="save-overlay" hidden>
+    <div class="save-dialog" role="status" aria-live="polite">
+      <span class="save-spinner" aria-hidden="true"></span>
+      <strong id="save-overlay-title">Menyimpan perubahan…</strong>
+      <p id="save-overlay-text">Mengirim data ke Master Database dan memeriksa hasil penyimpanan.</p>
+      <button id="save-overlay-close" type="button" class="secondary" hidden>Tutup</button>
+    </div>
+  </div>
+
   <iframe id="save-frame" name="save-frame" hidden></iframe>
   <form id="save-form" method="post" target="save-frame" action="https://script.google.com/macros/s/AKfycbxeGTDZXkR0DyLZmBHTq2M-52Iu4dTTGpH164S7sYHg8qPzvffobC6-r-TBLVHMT3HU-A/exec" hidden>
     <input name="action" value="update-master-object">
@@ -154,6 +164,6 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://unpkg.com/@geoman-io/leaflet-geoman-free@2.18.0/dist/leaflet-geoman.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@turf/turf@7.2.0/turf.min.js"></script>
-  <script src="js/polygon-editor.js?v=20260714-1"></script>
+  <script src="js/polygon-editor.js?v=20260714-21"></script>
 </body>
 </html>

@@ -24,12 +24,20 @@
   let selectedLayer = null;
   let originalFeature = null;
   let editing = false;
+  let saveInProgress = false;
+  let saveTimer = null;
+  let savePollTimer = null;
+  let pendingSave = null;
 
   const list = document.getElementById("object-list");
   const form = document.getElementById("object-form");
   const status = document.getElementById("status");
   const layerFilter = document.getElementById("layer-filter");
   const searchInput = document.getElementById("search-object");
+  const saveOverlay = document.getElementById("save-overlay");
+  const saveOverlayTitle = document.getElementById("save-overlay-title");
+  const saveOverlayText = document.getElementById("save-overlay-text");
+  const saveOverlayClose = document.getElementById("save-overlay-close");
 
   function esc(value) {
     return String(value == null ? "" : value).replace(/[&<>"']/g, char => ({
@@ -368,27 +376,217 @@
     };
   }
 
+
+  function stableStringify(value) {
+    if (value === null || typeof value !== "object") {
+      return JSON.stringify(value);
+    }
+
+    if (Array.isArray(value)) {
+      return "[" + value.map(stableStringify).join(",") + "]";
+    }
+
+    return "{" + Object.keys(value).sort().map(key =>
+      JSON.stringify(key) + ":" + stableStringify(value[key])
+    ).join(",") + "}";
+  }
+
+  function comparableObjectData(data) {
+    return {
+      objectId: data.objectId || "",
+      objectName: data.objectName || "",
+      category: data.category || "",
+      status: data.status || "",
+      program: data.program || "",
+      phase: data.phase || "",
+      year: String(data.year || ""),
+      province: data.province || "",
+      regency: data.regency || "",
+      district: data.district || "",
+      village: data.village || "",
+      areaHa: data.areaHa === "" ? "" : Number(data.areaHa || 0),
+      lengthM: data.lengthM === "" ? "" : Number(data.lengthM || 0),
+      plantedCount: data.plantedCount === "" ? "" : Number(data.plantedCount || 0),
+      geometry: data.geometry || null
+    };
+  }
+
+  function featureComparable(feature) {
+    const p = props(feature);
+    return {
+      objectId: p.Object_ID || "",
+      objectName: p.Nama_Objek || "",
+      category: p.Kategori || "",
+      status: p.Status_Objek || "",
+      program: p.Program || "",
+      phase: p.Fase || "",
+      year: String(p.Tahun || ""),
+      province: p.Provinsi || "",
+      regency: p.Kabupaten || "",
+      district: p.Kecamatan || "",
+      village: p.Desa || "",
+      areaHa: p.Luas_Ha === "" ? "" : Number(p.Luas_Ha || 0),
+      lengthM: p.Panjang_M === "" ? "" : Number(p.Panjang_M || 0),
+      plantedCount: p.Jumlah_Tanam === "" ? "" : Number(p.Jumlah_Tanam || 0),
+      geometry: feature.geometry || null
+    };
+  }
+
+  function showSaveOverlay(title, text, allowClose) {
+    saveOverlayTitle.textContent = title;
+    saveOverlayText.textContent = text;
+    saveOverlayClose.hidden = !allowClose;
+    saveOverlay.hidden = false;
+  }
+
+  function hideSaveOverlay() {
+    saveOverlay.hidden = true;
+  }
+
+  function clearSaveTimers() {
+    if (saveTimer) clearTimeout(saveTimer);
+    if (savePollTimer) clearTimeout(savePollTimer);
+    saveTimer = null;
+    savePollTimer = null;
+  }
+
+  function finishSaveSuccess(revision) {
+    if (!saveInProgress) return;
+
+    saveInProgress = false;
+    pendingSave = null;
+    clearSaveTimers();
+    document.body.classList.remove("is-saving");
+
+    const suffix = revision ? " Revisi " + revision + "." : "";
+    setStatus("Berhasil disimpan ke Master Database." + suffix, "ok");
+    showSaveOverlay(
+      "Berhasil disimpan",
+      "Perubahan telah masuk ke sheet OBJECTS dan riwayatnya dicatat di CHANGE_LOG." + suffix,
+      true
+    );
+
+    document.getElementById("change-reason").value = "";
+    loadObjects();
+  }
+
+  function finishSaveError(message) {
+    if (!saveInProgress) return;
+
+    saveInProgress = false;
+    pendingSave = null;
+    clearSaveTimers();
+    document.body.classList.remove("is-saving");
+
+    const text = message || "Penyimpanan belum dapat diverifikasi.";
+    setStatus(text, "error");
+    showSaveOverlay("Penyimpanan gagal", text, true);
+  }
+
+  async function verifySavedObject(attempt) {
+    if (!saveInProgress || !pendingSave) return;
+
+    try {
+      const result = await callbackLoad(api + "?page=objects");
+      const features = Array.isArray(result.features) ? result.features : [];
+      const match = features.find(feature =>
+        String(props(feature).Object_ID || "") === String(pendingSave.objectId)
+      );
+
+      if (match) {
+        const revision = Number(props(match).Revision || 0);
+        const revisionAdvanced = revision > pendingSave.beforeRevision;
+        const dataMatches =
+          stableStringify(featureComparable(match)) === pendingSave.fingerprint;
+
+        if (revisionAdvanced || dataMatches) {
+          finishSaveSuccess(revision);
+          return;
+        }
+      }
+    } catch (error) {
+      console.warn("Verifikasi simpan belum berhasil:", error);
+    }
+
+    if (attempt >= 12) {
+      finishSaveError(
+        "Permintaan sudah dikirim, tetapi hasilnya belum terlihat di Master Database. " +
+        "Buka Apps Script → Eksekusi untuk melihat detail doPost, lalu tekan Muat ulang."
+      );
+      return;
+    }
+
+    saveOverlayText.textContent =
+      "Menunggu Master Database diperbarui… pemeriksaan " + (attempt + 1) + " dari 12.";
+
+    savePollTimer = setTimeout(() => verifySavedObject(attempt + 1), 2500);
+  }
+
+  function beginSaveVerification(data) {
+    const beforeRevision = Number(props(selectedFeature).Revision || 0);
+
+    pendingSave = {
+      objectId: data.objectId,
+      beforeRevision: beforeRevision,
+      fingerprint: stableStringify(comparableObjectData(data))
+    };
+
+    saveInProgress = true;
+    document.body.classList.add("is-saving");
+    setStatus("Menyimpan perubahan ke Master Database…", "saving");
+    showSaveOverlay(
+      "Menyimpan perubahan…",
+      "Mengirim data ke Apps Script dan memeriksa perubahan pada sheet OBJECTS.",
+      false
+    );
+
+    clearSaveTimers();
+
+    saveTimer = setTimeout(() => {
+      verifySavedObject(0);
+    }, 1800);
+  }
+
   function saveObject(event) {
     event.preventDefault();
-    if (!selectedFeature) return;
+
+    if (saveInProgress || !selectedFeature) return;
     if (editing) finishEdit();
 
     const token = document.getElementById("admin-token").value.trim();
     const reason = document.getElementById("change-reason").value.trim();
 
-    if (!token) return setStatus("Token admin wajib diisi.", "error");
-    if (!reason) return setStatus("Alasan perubahan wajib diisi.", "error");
+    if (!token) {
+      setStatus("Token admin wajib diisi.", "error");
+      return;
+    }
+
+    if (!reason) {
+      setStatus("Alasan perubahan wajib diisi.", "error");
+      return;
+    }
 
     const data = buildObjectData();
+
     if (!data.objectId || !data.objectName || !data.geometry) {
-      return setStatus("Object ID, nama objek, dan geometri wajib tersedia.", "error");
+      setStatus(
+        "Object ID, nama objek, dan geometri wajib tersedia.",
+        "error"
+      );
+      return;
     }
 
     document.getElementById("post-token").value = token;
     document.getElementById("post-object-data").value = JSON.stringify(data);
     document.getElementById("post-reason").value = reason;
-    setStatus("Menyimpan perubahan ke Master Database…");
-    document.getElementById("save-form").submit();
+
+    beginSaveVerification(data);
+
+    try {
+      document.getElementById("save-form").submit();
+    } catch (error) {
+      finishSaveError("Form tidak dapat dikirim: " + error.message);
+    }
   }
 
   function cancelChanges() {
@@ -435,20 +633,46 @@
   form.addEventListener("submit", saveObject);
 
   window.addEventListener("message", event => {
-    const result = event.data || {};
-    if (result.source !== "YG_MASTER_OBJECT_EDITOR") return;
+    let result = event.data || {};
+
+    if (typeof result === "string") {
+      try {
+        result = JSON.parse(result);
+      } catch (error) {
+        return;
+      }
+    }
+
+    if (
+      !result ||
+      result.source !== "YG_MASTER_OBJECT_EDITOR"
+    ) {
+      return;
+    }
 
     if (result.ok) {
-      setStatus(
-        "Berhasil disimpan. Revisi " + (result.revision || "") +
-        (result.created ? " (objek baru)" : ""),
-        "ok"
-      );
-      loadObjects();
+      finishSaveSuccess(Number(result.revision || 0));
     } else {
-      setStatus(result.message || "Gagal menyimpan objek.", "error");
+      finishSaveError(
+        result.message || "Apps Script menolak penyimpanan objek."
+      );
     }
   });
+
+  saveOverlayClose.addEventListener("click", hideSaveOverlay);
+
+  document.getElementById("save-frame").addEventListener("load", () => {
+    if (!saveInProgress) return;
+
+    /*
+     * Load iframe hanya menandakan respons Apps Script sudah selesai.
+     * Verifikasi akhir tetap dilakukan lewat endpoint OBJECTS karena
+     * respons lintas domain dapat dibatasi browser.
+     */
+    saveOverlayText.textContent =
+      "Respons Apps Script diterima. Memeriksa perubahan pada Master Database…";
+  });
+
 
   map.whenReady(() => setTimeout(() => map.invalidateSize(true), 100));
   loadObjects();
