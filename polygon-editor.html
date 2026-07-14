@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Editor Polygon | YG GeoPortal</title>
+  <link rel="icon" href="assets/logo-yayasan-gambut.png">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="https://unpkg.com/@geoman-io/leaflet-geoman-free@2.18.0/dist/leaflet-geoman.css">
+  <link rel="stylesheet" href="css/polygon-editor.css?v=20260714-1">
+  <meta name="theme-color" content="#087653">
+</head>
+<body>
+  <header class="editor-header">
+    <a href="index.html" class="back">← Dashboard</a>
+    <div>
+      <h1>Editor Polygon YG</h1>
+      <p>Edit geometri dan atribut langsung pada Master Database.</p>
+    </div>
+    <a href="webgis.html" class="map-link">Buka WebGIS</a>
+  </header>
+
+  <main class="shell">
+    <section class="access-card">
+      <label>Token admin
+        <input id="admin-token" type="password" autocomplete="off" placeholder="Masukkan token admin">
+      </label>
+      <label>Alasan perubahan
+        <input id="change-reason" type="text" maxlength="180" placeholder="Contoh: Koreksi batas polygon hasil pengecekan lapangan">
+      </label>
+      <button id="reload-data" class="secondary" type="button">Muat ulang</button>
+      <span id="status" aria-live="polite">Memuat Master Database…</span>
+    </section>
+
+    <section class="workspace">
+      <aside class="object-panel">
+        <div class="filters">
+          <label>Layer
+            <select id="layer-filter"><option value="">Semua layer program</option></select>
+          </label>
+          <label>Cari objek
+            <input id="search-object" type="search" placeholder="Nama, ID, desa…">
+          </label>
+        </div>
+        <div id="object-summary" class="summary">—</div>
+        <div id="object-list" class="object-list"></div>
+      </aside>
+
+      <section class="map-panel">
+        <div id="map"></div>
+        <div class="map-actions">
+          <button id="fit-object" type="button" class="secondary" disabled>Fokus objek</button>
+          <button id="start-edit" type="button" disabled>Edit geometri</button>
+          <button id="finish-edit" type="button" class="success" disabled>Selesai edit</button>
+          <button id="reset-geometry" type="button" class="danger" disabled>Kembalikan geometri</button>
+        </div>
+      </section>
+
+      <section class="form-panel">
+        <div id="empty-state" class="empty-state">
+          Pilih objek dari daftar untuk mulai mengedit.
+        </div>
+
+        <form id="object-form" hidden>
+          <div class="form-title">
+            <div>
+              <span id="selected-layer-label">Layer</span>
+              <h2 id="selected-object-name">Objek</h2>
+            </div>
+            <span id="geometry-type" class="badge">—</span>
+          </div>
+
+          <div class="metrics">
+            <div><small>Luas hasil geometri</small><strong id="calculated-area">—</strong></div>
+            <div><small>Revisi</small><strong id="revision-number">—</strong></div>
+          </div>
+
+          <div class="form-grid">
+            <label>Object ID
+              <input name="objectId" readonly>
+            </label>
+            <label>Nama objek
+              <input name="objectName" required>
+            </label>
+            <label>Kategori
+              <input name="category">
+            </label>
+            <label>Status
+              <select name="status">
+                <option value="Aktif">Aktif</option>
+                <option value="Tidak Aktif">Tidak Aktif</option>
+                <option value="Arsip">Arsip</option>
+              </select>
+            </label>
+            <label>Program
+              <input name="program">
+            </label>
+            <label>Fase
+              <input name="phase">
+            </label>
+            <label>Tahun
+              <input name="year">
+            </label>
+            <label>Provinsi
+              <input name="province">
+            </label>
+            <label>Kabupaten
+              <input name="regency">
+            </label>
+            <label>Kecamatan
+              <input name="district">
+            </label>
+            <label>Desa
+              <input name="village">
+            </label>
+            <label>Luas tersimpan (ha)
+              <input name="areaHa" type="number" step="any">
+            </label>
+            <label>Panjang (m)
+              <input name="lengthM" type="number" step="any">
+            </label>
+            <label>Jumlah tanam
+              <input name="plantedCount" type="number" step="1">
+            </label>
+          </div>
+
+          <div class="save-actions">
+            <button id="save-object" type="submit">Simpan ke Master Database</button>
+            <button id="cancel-object" type="button" class="secondary">Batalkan perubahan</button>
+          </div>
+
+          <details>
+            <summary>Geometry GeoJSON</summary>
+            <pre id="geometry-json"></pre>
+          </details>
+        </form>
+      </section>
+    </section>
+  </main>
+
+  <iframe id="save-frame" name="save-frame" hidden></iframe>
+  <form id="save-form" method="post" target="save-frame" action="https://script.google.com/macros/s/AKfycbxeGTDZXkR0DyLZmBHTq2M-52Iu4dTTGpH164S7sYHg8qPzvffobC6-r-TBLVHMT3HU-A/exec" hidden>
+    <input name="action" value="update-master-object">
+    <input name="token" id="post-token">
+    <input name="objectData" id="post-object-data">
+    <input name="reason" id="post-reason">
+  </form>
+
+  <script>
+    window.YG_POLYGON_EDITOR_CONFIG = {
+      api: "https://script.google.com/macros/s/AKfycbxeGTDZXkR0DyLZmBHTq2M-52Iu4dTTGpH164S7sYHg8qPzvffobC6-r-TBLVHMT3HU-A/exec"
+    };
+  </script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/@geoman-io/leaflet-geoman-free@2.18.0/dist/leaflet-geoman.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@turf/turf@7.2.0/turf.min.js"></script>
+  <script src="js/polygon-editor.js?v=20260714-1"></script>
+</body>
+</html>
