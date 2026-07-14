@@ -24,12 +24,19 @@
   let selectedLayer = null;
   let originalFeature = null;
   let editing = false;
+  let saveInProgress = false;
+  let pendingSave = null;
+  let savePollTimer = null;
 
   const list = document.getElementById("object-list");
   const form = document.getElementById("object-form");
   const status = document.getElementById("status");
   const layerFilter = document.getElementById("layer-filter");
   const searchInput = document.getElementById("search-object");
+  const saveOverlay = document.getElementById("save-overlay");
+  const saveOverlayTitle = document.getElementById("save-overlay-title");
+  const saveOverlayText = document.getElementById("save-overlay-text");
+  const saveOverlayClose = document.getElementById("save-overlay-close");
 
   function esc(value) {
     return String(value == null ? "" : value).replace(/[&<>"']/g, char => ({
@@ -369,31 +376,158 @@
   }
 
 
-  function verifySaveEndpoint() {
-    const saveForm = document.getElementById("save-form");
-    const formUrl = saveForm ? String(saveForm.action || "") : "";
-    const apiUrl = String(api || "");
-
-    if (!formUrl || !apiUrl) {
-      throw new Error("URL Apps Script belum tersedia.");
-    }
-
-    if (formUrl !== apiUrl) {
-      throw new Error(
-        "URL simpan dan URL API berbeda. Muat ulang halaman dengan cache baru."
-      );
-    }
-
-    if (!/\/exec(?:$|\?)/.test(formUrl)) {
-      throw new Error("URL Apps Script harus berakhir dengan /exec.");
-    }
-
-    return formUrl;
+  function stableStringify(value) {
+    if (value === null || typeof value !== "object") return JSON.stringify(value);
+    if (Array.isArray(value)) return "[" + value.map(stableStringify).join(",") + "]";
+    return "{" + Object.keys(value).sort().map(key =>
+      JSON.stringify(key) + ":" + stableStringify(value[key])
+    ).join(",") + "}";
   }
 
-  function saveObject(event) {
+  function comparableObjectData(data) {
+    return {
+      objectId: data.objectId || "",
+      objectName: data.objectName || "",
+      category: data.category || "",
+      status: data.status || "",
+      program: data.program || "",
+      phase: data.phase || "",
+      year: String(data.year || ""),
+      province: data.province || "",
+      regency: data.regency || "",
+      district: data.district || "",
+      village: data.village || "",
+      areaHa: data.areaHa === "" ? "" : Number(data.areaHa || 0),
+      lengthM: data.lengthM === "" ? "" : Number(data.lengthM || 0),
+      plantedCount: data.plantedCount === "" ? "" : Number(data.plantedCount || 0),
+      geometry: data.geometry || null
+    };
+  }
+
+  function featureComparable(feature) {
+    const p = props(feature);
+    return {
+      objectId: p.Object_ID || "",
+      objectName: p.Nama_Objek || "",
+      category: p.Kategori || "",
+      status: p.Status_Objek || "",
+      program: p.Program || "",
+      phase: p.Fase || "",
+      year: String(p.Tahun || ""),
+      province: p.Provinsi || "",
+      regency: p.Kabupaten || "",
+      district: p.Kecamatan || "",
+      village: p.Desa || "",
+      areaHa: p.Luas_Ha === "" ? "" : Number(p.Luas_Ha || 0),
+      lengthM: p.Panjang_M === "" ? "" : Number(p.Panjang_M || 0),
+      plantedCount: p.Jumlah_Tanam === "" ? "" : Number(p.Jumlah_Tanam || 0),
+      geometry: feature.geometry || null
+    };
+  }
+
+  function showSaveOverlay(title, text, allowClose) {
+    saveOverlayTitle.textContent = title;
+    saveOverlayText.textContent = text;
+    saveOverlayClose.hidden = !allowClose;
+    saveOverlay.hidden = false;
+  }
+
+  function hideSaveOverlay() {
+    saveOverlay.hidden = true;
+  }
+
+  function finishSaveSuccess(revision) {
+    saveInProgress = false;
+    pendingSave = null;
+    if (savePollTimer) clearTimeout(savePollTimer);
+    document.body.classList.remove("is-saving");
+
+    const suffix = revision ? " Revisi " + revision + "." : "";
+    setStatus("Berhasil disimpan ke Master Database." + suffix, "ok");
+    showSaveOverlay(
+      "Berhasil disimpan",
+      "Perubahan sudah masuk ke OBJECTS dan dicatat di CHANGE_LOG." + suffix,
+      true
+    );
+    document.getElementById("change-reason").value = "";
+    loadObjects();
+  }
+
+  function finishSaveError(message) {
+    saveInProgress = false;
+    pendingSave = null;
+    if (savePollTimer) clearTimeout(savePollTimer);
+    document.body.classList.remove("is-saving");
+    setStatus(message, "error");
+    showSaveOverlay("Penyimpanan gagal", message, true);
+  }
+
+  async function verifySavedObject(attempt) {
+    if (!saveInProgress || !pendingSave) return;
+
+    try {
+      const result = await callbackLoad(api + "?page=objects");
+      const features = Array.isArray(result.features) ? result.features : [];
+      const match = features.find(feature =>
+        String(props(feature).Object_ID || "") === String(pendingSave.objectId)
+      );
+
+      if (match) {
+        const revision = Number(props(match).Revision || 0);
+        const dataMatches =
+          stableStringify(featureComparable(match)) === pendingSave.fingerprint;
+
+        if (revision > pendingSave.beforeRevision || dataMatches) {
+          finishSaveSuccess(revision);
+          return;
+        }
+      }
+    } catch (error) {
+      console.warn("Verifikasi simpan:", error);
+    }
+
+    if (attempt >= 15) {
+      finishSaveError(
+        "Permintaan POST telah dikirim, tetapi perubahan belum terlihat setelah 45 detik. " +
+        "Periksa Apps Script → Eksekusi untuk baris doPost berjenis Aplikasi Web."
+      );
+      return;
+    }
+
+    saveOverlayText.textContent =
+      "POST sudah dikirim. Memeriksa Master Database… (" + (attempt + 1) + "/15)";
+
+    savePollTimer = setTimeout(() => verifySavedObject(attempt + 1), 3000);
+  }
+
+  async function sendSaveRequest(data, token, reason) {
+    const body = new URLSearchParams();
+    body.set("action", "update-master-object");
+    body.set("token", token);
+    body.set("reason", reason);
+    body.set("objectData", JSON.stringify(data));
+
+    /*
+     * no-cors memang menghasilkan respons opaque, tetapi memastikan POST
+     * dapat dikirim dari GitHub Pages ke Apps Script. Hasilnya diverifikasi
+     * melalui endpoint JSONP page=objects.
+     */
+    await fetch(api, {
+      method: "POST",
+      mode: "no-cors",
+      cache: "no-store",
+      redirect: "follow",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
+      },
+      body: body.toString()
+    });
+  }
+
+  async function saveObject(event) {
     event.preventDefault();
-    if (!selectedFeature) return;
+
+    if (saveInProgress || !selectedFeature) return;
     if (editing) finishEdit();
 
     const token = document.getElementById("admin-token").value.trim();
@@ -403,22 +537,37 @@
     if (!reason) return setStatus("Alasan perubahan wajib diisi.", "error");
 
     const data = buildObjectData();
+
     if (!data.objectId || !data.objectName || !data.geometry) {
-      return setStatus("Object ID, nama objek, dan geometri wajib tersedia.", "error");
+      return setStatus(
+        "Object ID, nama objek, dan geometri wajib tersedia.",
+        "error"
+      );
     }
 
-    document.getElementById("post-token").value = token;
-    document.getElementById("post-object-data").value = JSON.stringify(data);
-    document.getElementById("post-reason").value = reason;
+    pendingSave = {
+      objectId: data.objectId,
+      beforeRevision: Number(props(selectedFeature).Revision || 0),
+      fingerprint: stableStringify(comparableObjectData(data))
+    };
+
+    saveInProgress = true;
+    document.body.classList.add("is-saving");
+    setStatus("Mengirim POST ke Apps Script…", "saving");
+    showSaveOverlay(
+      "Mengirim perubahan…",
+      "Mengirim POST langsung ke deployment Apps Script.",
+      false
+    );
 
     try {
-      const endpoint = verifySaveEndpoint();
-      const saveForm = document.getElementById("save-form");
-      saveForm.action = endpoint;
-      setStatus("Menyimpan perubahan ke Master Database…");
-      saveForm.submit();
+      await sendSaveRequest(data, token, reason);
+      setStatus("POST dikirim. Memverifikasi Master Database…", "saving");
+      saveOverlayText.textContent =
+        "POST sudah dikirim. Menunggu perubahan muncul di OBJECTS…";
+      setTimeout(() => verifySavedObject(0), 1800);
     } catch (error) {
-      setStatus("Form tidak dapat dikirim: " + error.message, "error");
+      finishSaveError("POST gagal dikirim: " + error.message);
     }
   }
 
@@ -465,21 +614,8 @@
   });
   form.addEventListener("submit", saveObject);
 
-  window.addEventListener("message", event => {
-    const result = event.data || {};
-    if (result.source !== "YG_MASTER_OBJECT_EDITOR") return;
 
-    if (result.ok) {
-      setStatus(
-        "Berhasil disimpan. Revisi " + (result.revision || "") +
-        (result.created ? " (objek baru)" : ""),
-        "ok"
-      );
-      loadObjects();
-    } else {
-      setStatus(result.message || "Gagal menyimpan objek.", "error");
-    }
-  });
+  saveOverlayClose.addEventListener("click", hideSaveOverlay);
 
   map.whenReady(() => setTimeout(() => map.invalidateSize(true), 100));
   loadObjects();
