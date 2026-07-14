@@ -3,13 +3,87 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
-  <meta name="description" content="Peta interaktif program Yayasan Gambut berbasis Master Database WebGIS YG."/>
   <title>Peta Interaktif Yayasan Gambut</title>
   <link rel="icon" href="assets/logo-yayasan-gambut.png"/>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
   <link rel="stylesheet" href="css/app.css"/>
-  <link rel="stylesheet" href="css/dashboard-actions.css"/>
-  <link rel="stylesheet" href="css/webgis-v3.css?v=20260714-1"/>
+<link rel="stylesheet" href="css/dashboard-actions.css"/>
+
+<style id="yg-integrated-search-style">
+.search{
+  position:relative;
+  z-index:60;
+}
+
+.yg-search-results{
+  position:absolute;
+  top:calc(100% + 7px);
+  left:0;
+  right:0;
+  max-height:320px;
+  overflow:auto;
+  border:1px solid #d7e4de;
+  border-radius:11px;
+  background:#fff;
+  box-shadow:0 14px 30px rgba(20,70,52,.18);
+  z-index:3000;
+}
+
+.yg-search-result{
+  display:flex;
+  width:100%;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:2px;
+  padding:10px 12px;
+  border:0;
+  border-bottom:1px solid #edf2ef;
+  border-radius:0;
+  background:#fff;
+  color:#26342f;
+  text-align:left;
+  cursor:pointer;
+}
+
+.yg-search-result:last-child{
+  border-bottom:0;
+}
+
+.yg-search-result:hover,
+.yg-search-result:focus{
+  background:#eaf8fd;
+  outline:none;
+}
+
+.yg-search-result strong{
+  color:#4c1d0b;
+  font-size:11px;
+  line-height:1.3;
+}
+
+.yg-search-result span{
+  color:#6d7b76;
+  font-size:9px;
+}
+
+.yg-search-empty{
+  padding:13px;
+  color:#a22b2b;
+  font-size:10px;
+  line-height:1.4;
+}
+
+#search-input.search-error{
+  border-color:#c62828!important;
+  box-shadow:0 0 0 3px rgba(198,40,40,.10)!important;
+}
+
+#search-input.search-success{
+  border-color:#16834f!important;
+  box-shadow:0 0 0 3px rgba(22,131,79,.10)!important;
+}
+</style>
+
 </head>
 <body>
 <div class="app-shell" id="app-shell">
@@ -17,49 +91,115 @@
     <div class="sidebar-inner">
       <div class="sidebar-hero">
         <strong>Peta Program Yayasan Gambut</strong>
-        <p>Data langsung dari Master Database WebGIS YG: restorasi gambut, mangrove, pencegahan kebakaran, infrastruktur pesisir, livelihood, dan laporan masyarakat.</p>
-        <small id="database-updated">Menghubungkan ke database…</small>
+        <p>Restorasi gambut, mangrove, pencegahan kebakaran, infrastruktur pesisir, dan livelihood.</p>
       </div>
 
       <section class="panel">
-        <h2 class="panel-title">Cari lokasi <small>objek, desa, atau kegiatan</small></h2>
+        <h2 class="panel-title">Cari lokasi <small>desa atau kegiatan</small></h2>
         <div class="search">
-          <input id="search-input" type="search" placeholder="Sepahat, Buruk Bakul, FDRS..."/>
-          <button id="search-button" type="button" aria-label="Cari">⌕</button>
-          <div class="yg-search-results" id="search-results" hidden></div>
+          <input id="search-input" type="search" placeholder="Sepahat, Temiang, FDRS..."/>
+          <button id="search-button" type="button">⌕</button>
         </div>
       </section>
 
       <section class="panel">
-        <h2 class="panel-title">Dashboard data langsung</h2>
+        <h2 class="panel-title">Dashboard</h2>
         <div class="stats">
-          <div class="stat" data-focus-layer="desa_intervensi">
-            <strong id="stat-villages">—</strong><span>Desa terdata</span>
-          </div>
-          <div class="stat" data-focus-layer="area_mangrove">
-            <strong id="stat-mangrove-area">—</strong><span>Area mangrove</span>
-          </div>
-          <div class="stat" data-focus-layer="fdrs">
-            <strong id="stat-fdrs">—</strong><span>Lokasi FDRS</span>
-          </div>
-          <div class="stat" data-focus-layer="sekat_kanal">
-            <strong id="stat-canal-blocks">—</strong><span>Sekat kanal</span>
-          </div>
+          <div class="stat"><strong>13</strong><span>Desa intervensi</span></div>
+          <div class="stat"><strong>7.81 ha</strong><span>Area mangrove</span></div>
+          <div class="stat"><strong>8</strong><span>Lokasi FDRS</span></div>
+          <div class="stat"><strong>11</strong><span>Sekat kanal</span></div>
         </div>
       </section>
 
       <section class="panel">
         <h2 class="panel-title">Layer data <small>aktif/nonaktif</small></h2>
-        <div class="layer-list" id="layer-list">
-          <div class="yg-loading-row">Memuat layer dari database…</div>
-        </div>
+        <div class="layer-list">
+      <div class="layer-row">
+        <input id="layer-desa_intervensi" data-layer-id="desa_intervensi" type="checkbox" checked/>
+        <span class="swatch" style="background:#2e7d32"></span>
+        <label for="layer-desa_intervensi">Batas Desa Intervensi</label>
+        <span class="count">13</span>
+      </div>
+      <div class="layer-row">
+        <input id="layer-apo" data-layer-id="apo" type="checkbox" checked/>
+        <span class="swatch" style="background:#d32f2f"></span>
+        <label for="layer-apo">Alat Pemecah Ombak (APO)</label>
+        <span class="count">2</span>
+      </div>
+      <div class="layer-row">
+        <input id="layer-area_mangrove" data-layer-id="area_mangrove" type="checkbox" checked/>
+        <span class="swatch" style="background:#00796b"></span>
+        <label for="layer-area_mangrove">Area Penanaman Mangrove</label>
+        <span class="count">34</span>
+      </div>
+      <div class="layer-row">
+        <input id="layer-titik_desa" data-layer-id="titik_desa" type="checkbox" />
+        <span class="swatch" style="background:#1565c0"></span>
+        <label for="layer-titik_desa">Titik Desa Intervensi</label>
+        <span class="count">13</span>
+      </div>
+      <div class="layer-row">
+        <input id="layer-kopi" data-layer-id="kopi" type="checkbox" checked/>
+        <span class="swatch" style="background:#6d4c41"></span>
+        <label for="layer-kopi">Distribusi Lahan Kopi</label>
+        <span class="count">7</span>
+      </div>
+      <div class="layer-row">
+        <input id="layer-fdrs" data-layer-id="fdrs" type="checkbox" checked/>
+        <span class="swatch" style="background:#e65100"></span>
+        <label for="layer-fdrs">Pembangunan FDRS</label>
+        <span class="count">8</span>
+      </div>
+      <div class="layer-row">
+        <input id="layer-sekat_kanal" data-layer-id="sekat_kanal" type="checkbox" checked/>
+        <span class="swatch" style="background:#00838f"></span>
+        <label for="layer-sekat_kanal">Pembangunan Sekat Kanal</label>
+        <span class="count">11</span>
+      </div>
+      <div class="layer-row">
+        <input id="layer-nursery_mangrove" data-layer-id="nursery_mangrove" type="checkbox" checked/>
+        <span class="swatch" style="background:#8fa600"></span>
+        <label for="layer-nursery_mangrove">Rumah Pembibitan Mangrove</label>
+        <span class="count">1</span>
+      </div></div>
       </section>
 
       <section class="panel">
         <h2 class="panel-title">Legenda</h2>
-        <div class="legend" id="legend">
-          <div class="yg-loading-row">Menyiapkan legenda…</div>
-        </div>
+        <div class="legend">
+      <div class="legend-item">
+        <span class="legend-mark" style="background:#2e7d32"></span>
+        <span>Batas Desa Intervensi</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-mark" style="background:#d32f2f"></span>
+        <span>Alat Pemecah Ombak (APO)</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-mark" style="background:#00796b"></span>
+        <span>Area Penanaman Mangrove</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-mark point" style="background:#1565c0"></span>
+        <span>Titik Desa Intervensi</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-mark point" style="background:#6d4c41"></span>
+        <span>Distribusi Lahan Kopi</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-mark point" style="background:#e65100"></span>
+        <span>Pembangunan FDRS</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-mark point" style="background:#00838f"></span>
+        <span>Pembangunan Sekat Kanal</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-mark point" style="background:#8fa600"></span>
+        <span>Rumah Pembibitan Mangrove</span>
+      </div></div>
       </section>
 
       <section class="panel">
@@ -71,7 +211,7 @@
         </div>
         <div class="status" id="status-box">
           <span class="status-dot"></span>
-          <span id="status-text">Memuat database objek…</span>
+          <span id="status-text">Memuat layer...</span>
         </div>
       </section>
     </div>
@@ -81,18 +221,25 @@
 
   <main class="map-area" id="map-area">
     <div id="map"></div>
+
     <div class="map-top">
+
       <div class="map-actions">
         <button id="map-panel" type="button">☰ <span>Panel</span></button>
         <button id="fullscreen" type="button">⛶ <span>Fullscreen</span></button>
       </div>
     </div>
+
     <button class="mobile-fab" id="mobile-panel" type="button">☰</button>
   </main>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="js/map-v3.js?v=20260714-5"></script>
+<script src="js/config.js"></script>
+<script src="js/map.js"></script>
 <script src="js/ui.js"></script>
+<script src="js/community.js?v=20260713-2"></script>
+<script src="js/dashboard-actions.js"></script>
+<script src="js/data-updates.js"></script>
 </body>
 </html>
