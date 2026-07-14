@@ -391,9 +391,23 @@
       groups[layerId].push(feature);
     });
 
-    Object.keys(groups).forEach(layerId => createLayer(layerId, groups[layerId]));
-    renderLayerControls(groups);
     updateStats(rawFeatures);
+
+    const validGroups = {};
+    Object.keys(groups).forEach(layerId => {
+      try {
+        createLayer(layerId, groups[layerId]);
+        validGroups[layerId] = groups[layerId];
+      } catch (error) {
+        console.error(
+          "Layer gagal diproses:",
+          layerId,
+          error
+        );
+      }
+    });
+
+    renderLayerControls(validGroups);
 
     if (allBounds.isValid()) {
       map.fitBounds(allBounds, { padding: [24, 24], maxZoom: 13 });
@@ -414,13 +428,86 @@
 
   window[CALLBACK] = initialize;
 
-  const script = document.createElement("script");
-  script.src = API + "&callback=" + CALLBACK + "&t=" + Date.now();
-  script.async = true;
-  script.onerror = () => {
-    setStatus("Master Database gagal dimuat. Periksa deployment Apps Script.", true);
-  };
-  document.head.appendChild(script);
+  function loadByJsonp() {
+    return new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      const timer = window.setTimeout(() => {
+        script.remove();
+        reject(new Error("JSONP tidak memberi respons dalam 30 detik."));
+      }, 30000);
+
+      window[CALLBACK] = data => {
+        window.clearTimeout(timer);
+        script.remove();
+        resolve(data);
+      };
+
+      script.src =
+        API +
+        "&callback=" +
+        encodeURIComponent(CALLBACK) +
+        "&t=" +
+        Date.now();
+      script.async = true;
+      script.onerror = () => {
+        window.clearTimeout(timer);
+        script.remove();
+        reject(new Error("Script JSONP gagal dimuat."));
+      };
+
+      document.head.appendChild(script);
+    });
+  }
+
+  async function loadDatabase() {
+    setStatus("Mengambil objek dari Master Database…", false);
+
+    try {
+      const response = await fetch(API + "&t=" + Date.now(), {
+        method: "GET",
+        cache: "no-store",
+        redirect: "follow"
+      });
+
+      if (!response.ok) {
+        throw new Error("HTTP " + response.status);
+      }
+
+      const data = await response.json();
+      initialize(data);
+      return;
+    } catch (fetchError) {
+      console.warn("Fetch database gagal, mencoba JSONP.", fetchError);
+    }
+
+    try {
+      const data = await loadByJsonp();
+      initialize(data);
+    } catch (jsonpError) {
+      console.error("Master Database gagal dimuat.", jsonpError);
+      setStatus(
+        "Database gagal dimuat: " + jsonpError.message,
+        true
+      );
+
+      const updated = document.getElementById("database-updated");
+      if (updated) {
+        updated.textContent =
+          "Koneksi database gagal. Buka Console browser untuk detail.";
+      }
+    }
+  }
+
+  window.addEventListener("error", event => {
+    console.error("WebGIS v3 error:", event.error || event.message);
+    setStatus(
+      "Peta gagal memproses data: " +
+      (event.message || "kesalahan JavaScript"),
+      true
+    );
+  });
+
+  loadDatabase();
 
   document.getElementById("search-input").addEventListener("input", event => renderSearch(event.target.value));
   document.getElementById("search-button").addEventListener("click", () => {
