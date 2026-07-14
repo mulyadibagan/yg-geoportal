@@ -125,69 +125,265 @@
 
   function buildPopup(feature, config) {
     const props = feature.properties || {};
-    const hidden = new Set([
-      "geometry", "Source_Layer", "Source_Type", "Status_Objek",
-      "Revision", "X", "Y", "OBJECTID", "FID", "FID_1"
-    ]);
 
-    const preferred = [
-      "Object_ID", "Nama_Objek", "Kategori", "Program", "Fase", "Tahun",
-      "Kabupaten", "Kecamatan", "Desa", "Luas_Ha", "Panjang_M",
-      "Jumlah_Tanam", "Monitoring_ID", "Monitoring_Type", "Kondisi",
-      "Survival", "Jumlah_Hidup", "Jumlah_Mati_Rusak",
-      "Luas_Terpantau_Ha", "Tinggi_Rata_Rata_Cm",
-      "Diameter_Rata_Rata_Cm", "Sedimentasi_Cm", "Water_Table_Cm",
-      "Ancaman", "Temuan", "Tindak_Lanjut", "activityDate", "description"
-    ];
+    const isMonitoring =
+      config.id === "monitoring_reports" ||
+      props.Source_Type === "monitoring_report";
 
-    const keys = [];
-    preferred.forEach(key => {
-      if (Object.prototype.hasOwnProperty.call(props, key)) keys.push(key);
-    });
-    Object.keys(props).forEach(key => {
-      if (!keys.includes(key)) keys.push(key);
-    });
+    const isCommunity =
+      config.id === "community_reports" ||
+      props.Source_Type === "community_report";
+
+    function valueOf(keys) {
+      for (let i = 0; i < keys.length; i += 1) {
+        const value = props[keys[i]];
+
+        if (
+          value !== null &&
+          value !== undefined &&
+          String(value).trim() !== ""
+        ) {
+          return value;
+        }
+      }
+
+      return "";
+    }
+
+    function row(label, value, suffix) {
+      if (
+        value === null ||
+        value === undefined ||
+        String(value).trim() === ""
+      ) {
+        return "";
+      }
+
+      return (
+        '<div class="popup-row">' +
+          '<b>' + escapeHtml(label) + '</b>' +
+          '<span>' +
+            escapeHtml(value) +
+            (suffix ? " " + escapeHtml(suffix) : "") +
+          '</span>' +
+        '</div>'
+      );
+    }
+
+    function cleanPhotoList(value) {
+      if (!value) return [];
+
+      if (Array.isArray(value)) {
+        return value
+          .map(item => String(item || "").trim())
+          .filter(Boolean);
+      }
+
+      return String(value)
+        .split(/\r?\n|,\s*(?=https?:\/\/)/)
+        .map(item => item.trim())
+        .filter(Boolean);
+    }
 
     let rows = "";
-    keys.forEach(key => {
-      const value = props[key];
-      if (
-        hidden.has(key) ||
-        value === null ||
-        value === "" ||
-        typeof value === "undefined" ||
-        typeof value === "object"
-      ) return;
 
-      const label = key
-        .replace(/_/g, " ")
-        .replace(/\b\w/g, char => char.toUpperCase());
+    if (isMonitoring) {
+      rows += row(
+        "Lokasi",
+        [
+          valueOf(["Desa"]),
+          valueOf(["Kecamatan"]),
+          valueOf(["Kabupaten"])
+        ].filter(Boolean).join(", ")
+      );
 
-      rows +=
-        '<div class="popup-row"><b>' + escapeHtml(label) +
-        '</b><span>' + escapeHtml(value) + '</span></div>';
-    });
+      rows += row(
+        "Tanggal",
+        valueOf(["activityDate", "Tanggal", "publishedAt"])
+      );
 
-    const photos = Array.isArray(props.photos)
-      ? props.photos
-      : [props.Foto, props.Foto_2].filter(Boolean);
+      rows += row(
+        "Jenis monitoring",
+        valueOf(["Monitoring_Type", "monitoringType", "Kategori"])
+      );
+
+      rows += row(
+        "Kondisi",
+        valueOf(["Kondisi", "condition"])
+      );
+
+      rows += row(
+        "Survival",
+        valueOf(["Survival", "survivalPercent"]),
+        "%"
+      );
+
+      rows += row(
+        "Hidup",
+        valueOf(["Jumlah_Hidup", "aliveCount"])
+      );
+
+      rows += row(
+        "Mati/rusak",
+        valueOf(["Jumlah_Mati_Rusak", "deadOrDamagedCount"])
+      );
+
+      rows += row(
+        "Luas terpantau",
+        valueOf(["Luas_Terpantau_Ha", "monitoredAreaHa", "Luas_Ha"]),
+        "ha"
+      );
+
+      rows += row(
+        "Tinggi rata-rata",
+        valueOf(["Tinggi_Rata_Rata_Cm", "averageHeightCm"]),
+        "cm"
+      );
+
+      rows += row(
+        "Diameter rata-rata",
+        valueOf(["Diameter_Rata_Rata_Cm", "averageDiameterCm"]),
+        "cm"
+      );
+
+      rows += row(
+        "Sedimentasi",
+        valueOf(["Sedimentasi_Cm", "sedimentationCm"]),
+        "cm"
+      );
+
+      rows += row(
+        "Water table",
+        valueOf(["Water_Table_Cm", "waterTableCm"]),
+        "cm"
+      );
+
+      rows += row(
+        "Temuan",
+        valueOf(["Temuan", "notes", "description"])
+      );
+
+      rows += row(
+        "Tindak lanjut",
+        valueOf(["Tindak_Lanjut", "followUp"])
+      );
+    } else if (isCommunity) {
+      rows += row(
+        "Jenis laporan",
+        valueOf(["reportType", "Kategori"])
+      );
+
+      rows += row(
+        "Tanggal",
+        valueOf(["activityDate", "publishedAt"])
+      );
+
+      rows += row(
+        "Lokasi",
+        [
+          valueOf(["Desa"]),
+          valueOf(["Kecamatan"]),
+          valueOf(["Kabupaten"])
+        ].filter(Boolean).join(", ")
+      );
+
+      rows += row(
+        "Judul",
+        valueOf(["title", "Nama_Objek"])
+      );
+
+      rows += row(
+        "Deskripsi",
+        valueOf(["description"])
+      );
+
+      rows += row(
+        "Pelapor/kelompok",
+        [
+          valueOf(["reporterName"]),
+          valueOf(["organization"])
+        ].filter(Boolean).join(" · ")
+      );
+    } else {
+      rows += row(
+        "Lokasi",
+        [
+          valueOf(["Desa", "WADMKD"]),
+          valueOf(["Kecamatan", "WADMKC"]),
+          valueOf(["Kabupaten", "WADMKK"])
+        ].filter(Boolean).join(", ")
+      );
+
+      rows += row(
+        "Program",
+        valueOf(["Program"])
+      );
+
+      rows += row(
+        "Fase",
+        valueOf(["Fase"])
+      );
+
+      rows += row(
+        "Tahun",
+        valueOf(["Tahun"])
+      );
+
+      rows += row(
+        "Luas",
+        valueOf(["Luas_Ha"]),
+        "ha"
+      );
+
+      rows += row(
+        "Panjang",
+        valueOf(["Panjang_M"]),
+        "m"
+      );
+
+      rows += row(
+        "Jumlah",
+        valueOf(["Jumlah_Tanam", "Jumlah"])
+      );
+
+      rows += row(
+        "Keterangan",
+        valueOf(["Ket", "Keterangan", "description"])
+      );
+    }
+
+    const photos = [
+      ...cleanPhotoList(props.photos),
+      ...cleanPhotoList(props.Foto),
+      ...cleanPhotoList(props.Foto_2)
+    ].filter((url, index, array) => array.indexOf(url) === index);
 
     let gallery = "";
+
     if (photos.length) {
       gallery =
         '<div class="yg-v3-gallery">' +
         photos.map((url, index) =>
           '<a href="' + escapeHtml(photoOriginal(url)) +
-          '" target="_blank" rel="noopener">' +
+          '" target="_blank" rel="noopener" title="Buka foto resolusi penuh">' +
           '<img src="' + escapeHtml(photoThumb(url)) +
-          '" loading="lazy" alt="Foto ' + (index + 1) + '"></a>'
+          '" loading="lazy" alt="Foto ' + (index + 1) + '">' +
+          '</a>'
         ).join("") +
+        '</div>';
+    }
+
+    if (!rows) {
+      rows =
+        '<div class="popup-row">' +
+          '<span>Belum ada informasi rinci.</span>' +
         '</div>';
     }
 
     return (
       '<div class="popup-card">' +
-        '<div class="popup-head" style="background:' + escapeHtml(config.color) + '">' +
+        '<div class="popup-head" style="background:' +
+          escapeHtml(config.color) + '">' +
           '<strong>' + escapeHtml(getObjectName(feature)) + '</strong>' +
           '<span>' + escapeHtml(config.label) + '</span>' +
         '</div>' +
