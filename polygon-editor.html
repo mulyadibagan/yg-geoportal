@@ -7,7 +7,7 @@
   <link rel="icon" href="assets/logo-yayasan-gambut.png">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="https://unpkg.com/@geoman-io/leaflet-geoman-free@2.18.0/dist/leaflet-geoman.css">
-  <link rel="stylesheet" href="css/polygon-editor.css?v=20260714-21">
+  <link rel="stylesheet" href="css/polygon-editor.css?v=20260714-22">
   <meta name="theme-color" content="#087653">
 </head>
 <body>
@@ -138,16 +138,6 @@
     </section>
   </main>
 
-
-  <div id="save-overlay" class="save-overlay" hidden>
-    <div class="save-dialog" role="status" aria-live="polite">
-      <span class="save-spinner" aria-hidden="true"></span>
-      <strong id="save-overlay-title">Menyimpan perubahan…</strong>
-      <p id="save-overlay-text">Mengirim data ke Master Database dan memeriksa hasil penyimpanan.</p>
-      <button id="save-overlay-close" type="button" class="secondary" hidden>Tutup</button>
-    </div>
-  </div>
-
   <iframe id="save-frame" name="save-frame" hidden></iframe>
   <form id="save-form" method="post" target="save-frame" action="https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec" hidden>
     <input name="action" value="update-master-object">
@@ -157,13 +147,18 @@
   </form>
 
   <script>
-    window.YG_POLYGON_EDITOR_CONFIG = {
-      api: "https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec"
-    };
+    (function () {
+      var apiUrl = "https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec";
+      window.YG_POLYGON_EDITOR_CONFIG = { api: apiUrl };
+      window.addEventListener("DOMContentLoaded", function () {
+        var saveForm = document.getElementById("save-form");
+        if (saveForm) saveForm.action = apiUrl;
+      });
+    })();
   </script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://unpkg.com/@geoman-io/leaflet-geoman-free@2.18.0/dist/leaflet-geoman.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@turf/turf@7.2.0/turf.min.js"></script>
-  <script src="js/polygon-editor.js?v=20260714-21"></script>
+  <script src="js/polygon-editor.js?v=20260714-22"></script>
 </body>
 </html>
