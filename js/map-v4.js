@@ -1026,23 +1026,76 @@ L.control.scale({
   }
 
   async function loadDatabase() {
-    setStatus("Mengambil objek dari Master Database…", false);
+  setStatus("Mengambil objek dari Master Database…", false);
+
+  try {
+    // 1. Ambil data dari Google Apps Script
+    const response = await fetch(API + "&t=" + Date.now(), {
+      method: "GET",
+      cache: "no-store",
+      redirect: "follow"
+    });
+
+    if (!response.ok) throw new Error("HTTP " + response.status);
+
+    const data = await response.json();
+
+    // 2. Ambil GeoJSON area mangrove
+    const mangroveResponse = await fetch("data/area_mangrove.geojson?v=" + Date.now());
+
+    if (!mangroveResponse.ok) {
+      console.warn("area_mangrove.geojson tidak ditemukan");
+    } else {
+
+      const mangrove = await mangroveResponse.json();
+
+      if (
+        mangrove &&
+        mangrove.type === "FeatureCollection" &&
+        Array.isArray(mangrove.features)
+      ) {
+
+        // Tambahkan Layer_ID bila belum ada
+        mangrove.features.forEach(f => {
+          if (!f.properties) f.properties = {};
+
+          if (!f.properties.Layer_ID) {
+            f.properties.Layer_ID = "area_mangrove";
+          }
+
+          if (!f.properties.Layer_Label) {
+            f.properties.Layer_Label = "Area Penanaman Mangrove";
+          }
+
+          if (!f.properties.Nama_Objek) {
+            f.properties.Nama_Objek = "Area Penanaman Mangrove";
+          }
+        });
+
+        // Gabungkan dengan data dari API
+        data.features = [
+          ...(data.features || []),
+          ...mangrove.features
+        ];
+      }
+    }
+
+    initialize(data);
+    return;
+
+  } catch (fetchError) {
+
+    console.warn("Fetch gagal, mencoba JSONP.", fetchError);
 
     try {
-      const response = await fetch(API + "&t=" + Date.now(), {
-        method: "GET",
-        cache: "no-store",
-        redirect: "follow"
-      });
-
-      if (!response.ok) throw new Error("HTTP " + response.status);
-
-      const data = await response.json();
+      const data = await loadByJsonp();
       initialize(data);
-      return;
-    } catch (fetchError) {
-      console.warn("Fetch gagal, mencoba JSONP.", fetchError);
+    } catch (jsonpError) {
+      console.error("Master Database gagal dimuat.", jsonpError);
+      setStatus("Database gagal dimuat: " + jsonpError.message, true);
     }
+  }
+}
 
     try {
       const data = await loadByJsonp();
