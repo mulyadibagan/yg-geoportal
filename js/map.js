@@ -291,18 +291,12 @@
   }
 
   async function getLayerFeatureCollection(config) {
-    const databaseFeatures =
-      databaseFeaturesByLayer[config.id];
 
-    if (databaseFeatures && databaseFeatures.length) {
-      return {
-        type: "FeatureCollection",
-        features: databaseFeatures
-      };
-    }
+  // Khusus layer mangrove, selalu baca dari file GeoJSON GitHub
+  if (config.id === "area_mangrove") {
 
     const response = await fetch(
-      "data/" + config.id + ".geojson",
+      "data/area_mangrove.geojson?t=" + Date.now(),
       { cache: "no-store" }
     );
 
@@ -312,6 +306,28 @@
 
     return response.json();
   }
+
+  // Layer lain tetap menggunakan database jika tersedia
+  const databaseFeatures = databaseFeaturesByLayer[config.id];
+
+  if (databaseFeatures && databaseFeatures.length) {
+    return {
+      type: "FeatureCollection",
+      features: databaseFeatures
+    };
+  }
+
+  const response = await fetch(
+    "data/" + config.id + ".geojson?t=" + Date.now(),
+    { cache: "no-store" }
+  );
+
+  if (!response.ok) {
+    throw new Error("HTTP " + response.status);
+  }
+
+  return response.json();
+}
 
   function updateStatus() {
     const box = document.getElementById("status-box");
