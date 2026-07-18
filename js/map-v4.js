@@ -1026,6 +1026,7 @@ L.control.scale({
   }
 
   async function loadDatabase() {
+	  console.log("LOADDATABASE VERSI BARU");
   setStatus("Mengambil objek dari Master Database…", false);
 
   try {
