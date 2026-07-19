@@ -35,8 +35,11 @@
       button.hidden = true;
     });
   });
+
+  if (document.getElementById("report-form")) {
+    const rulesScript = document.createElement("script");
+    rulesScript.src = "js/report-photo-rules.js?v=20260720-1";
+    rulesScript.async = true;
+    document.head.appendChild(rulesScript);
+  }
 })();
-
-
-
-
