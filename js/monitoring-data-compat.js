@@ -130,12 +130,33 @@
     return String(value || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
   }
 
-  function objectKeys(properties) {
-    var p = properties || {};
-    var id = String(p.targetObjectId || '').trim();
-    var name = keyText(p.targetObjectName || p.locationName || p.title || '');
-    var layer = keyText(p.targetLayerId || p.targetLayerLabel || '');
-    return { id: id, nameLayer: name + '|' + layer, name: name };
+  function geometryKey(geometry) {
+    if (!geometry || !geometry.type || typeof geometry.coordinates === 'undefined') return '';
+    try { return JSON.stringify({ type: geometry.type, coordinates: geometry.coordinates }); }
+    catch (error) { return ''; }
+  }
+
+  function objectKeys(feature) {
+    var p = feature && feature.properties ? feature.properties : {};
+    return {
+      id: String(p.targetObjectId || '').trim(),
+      name: keyText(p.targetObjectName || p.locationName || p.title || ''),
+      layer: keyText(p.targetLayerId || ''),
+      geometry: geometryKey(feature && feature.geometry)
+    };
+  }
+
+  function sameObject(targetKeys, sourceKeys) {
+    if (targetKeys.id || sourceKeys.id) {
+      return !!targetKeys.id && !!sourceKeys.id && targetKeys.id === sourceKeys.id;
+    }
+
+    return !!targetKeys.layer &&
+      !!targetKeys.name &&
+      !!targetKeys.geometry &&
+      targetKeys.layer === sourceKeys.layer &&
+      targetKeys.name === sourceKeys.name &&
+      targetKeys.geometry === sourceKeys.geometry;
   }
 
   function mergePhotoUpdates(reportData, updateData) {
@@ -146,18 +167,13 @@
 
     reportFeatures.forEach(function (feature) {
       var target = feature.properties || {};
-      var targetKeys = objectKeys(target);
+      var targetKeys = objectKeys(feature);
       var merged = Array.isArray(target.photos) ? target.photos.slice() : [];
 
       updateFeatures.forEach(function (updateFeature) {
         var source = updateFeature.properties || {};
         if (String(source.reportType || '').toLowerCase() !== 'tambah foto kegiatan') return;
-        var sourceKeys = objectKeys(source);
-        var matches =
-          (targetKeys.id && sourceKeys.id && targetKeys.id === sourceKeys.id) ||
-          (targetKeys.nameLayer !== '|' && targetKeys.nameLayer === sourceKeys.nameLayer) ||
-          (targetKeys.name && targetKeys.name === sourceKeys.name);
-        if (!matches) return;
+        if (!sameObject(targetKeys, objectKeys(updateFeature))) return;
         (source.photos || []).forEach(function (url) { pushUnique(merged, url); });
       });
 
