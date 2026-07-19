@@ -1,5 +1,21 @@
 # YG GeoPortal V6
 
+## WebGIS v2 (generasi baru)
+
+Versi generasi baru tersedia terpisah di [`v2/index.html`](v2/index.html) agar
+WebGIS lama tetap aman. Jalankan repository melalui web server lokal lalu buka
+`/v2/`.
+
+Fitur utama:
+
+- antarmuka peta penuh yang responsif untuk desktop dan mobile;
+- pencarian terpadu seluruh objek spasial (`Ctrl/Cmd + K`);
+- layer program dan layer referensi yang dipisahkan;
+- layer referensi besar dimuat secara lazy;
+- ringkasan cakupan program dan jumlah objek aktif;
+- panel detail atribut dan fokus lokasi;
+- basemap jalan/satelit, geolokasi, skala, dan layar penuh.
+
 ## Perubahan utama
 - Struktur peta modular: config.js, map.js, ui.js
 - Peta memakai layout absolut penuh sehingga tidak kosong atau terpotong

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#123c2e">
+  <title>YG GeoPortal — WebGIS v2</title>
+  <link rel="icon" href="../assets/logo-yayasan-gambut-192.png">
+  <link rel="preconnect" href="https://unpkg.com">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app" id="app">
+    <header class="topbar">
+      <a class="brand" href="../index.html" aria-label="Kembali ke beranda">
+        <span class="brand-mark"><img src="../assets/logo-yayasan-gambut-192.png" alt=""></span>
+        <span><strong>YG GeoPortal</strong><small>WebGIS v2</small></span>
+      </a>
+      <div class="topbar-center">
+        <button class="search-trigger" id="search-trigger" type="button" aria-haspopup="dialog">
+          <span class="icon">⌕</span><span>Cari desa, program, atau lokasi…</span><kbd>Ctrl K</kbd>
+        </button>
+      </div>
+      <nav class="top-actions" aria-label="Aksi peta">
+        <button class="icon-button" id="locate-button" type="button" title="Lokasi saya" aria-label="Lokasi saya">◎</button>
+        <button class="icon-button" id="fullscreen-button" type="button" title="Layar penuh" aria-label="Layar penuh">⛶</button>
+        <button class="primary-button" id="layers-mobile-button" type="button"><span>Layer</span><b id="active-layer-count">0</b></button>
+      </nav>
+    </header>
+
+    <main class="workspace">
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-scroll">
+          <section class="intro-card">
+            <span class="eyebrow">Peta dampak program</span>
+            <h1>Memantau bentang alam, dari data menuju aksi.</h1>
+            <p>Jelajahi kerja Yayasan Gambut untuk ekosistem gambut, mangrove, pesisir, dan masyarakat.</p>
+            <div class="data-state"><i id="data-dot"></i><span id="data-status">Menyiapkan data spasial…</span></div>
+          </section>
+
+          <section class="section" aria-labelledby="summary-title">
+            <div class="section-heading"><div><span class="eyebrow">Ringkasan</span><h2 id="summary-title">Cakupan program</h2></div><button class="text-button" id="fit-button" type="button">Lihat semua</button></div>
+            <div class="metrics">
+              <button class="metric" type="button" data-focus="desa_intervensi"><strong id="metric-villages">—</strong><span>Desa intervensi</span></button>
+              <button class="metric" type="button" data-focus="area_mangrove"><strong id="metric-mangrove">—</strong><span>Area mangrove</span></button>
+              <button class="metric" type="button" data-focus="fdrs"><strong id="metric-fdrs">—</strong><span>Lokasi FDRS</span></button>
+              <button class="metric" type="button" data-focus="sekat_kanal"><strong id="metric-canal">—</strong><span>Sekat kanal</span></button>
+            </div>
+          </section>
+
+          <section class="section" aria-labelledby="program-title">
+            <div class="section-heading"><div><span class="eyebrow">Data utama</span><h2 id="program-title">Layer program</h2></div><button class="text-button" id="toggle-programs" type="button">Matikan semua</button></div>
+            <div class="layer-list" id="program-layers"></div>
+          </section>
+
+          <section class="section" aria-labelledby="reference-title">
+            <div class="section-heading"><div><span class="eyebrow">Konteks wilayah</span><h2 id="reference-title">Layer referensi</h2></div></div>
+            <p class="section-note">Layer besar dimuat hanya saat diaktifkan agar peta tetap ringan.</p>
+            <div class="layer-list" id="reference-layers"></div>
+          </section>
+
+          <footer class="sidebar-footer">Data Yayasan Gambut · Basemap © OpenStreetMap & Esri</footer>
+        </div>
+      </aside>
+
+      <section class="map-stage" aria-label="Peta interaktif">
+        <div id="map"></div>
+        <div class="map-badge"><i></i><span id="visible-feature-count">0 objek tampil</span></div>
+        <div class="zoom-readout" id="zoom-readout">Zoom 9</div>
+        <button class="mobile-sheet-handle" id="mobile-sheet-handle" type="button"><span></span>Jelajahi data</button>
+      </section>
+
+      <aside class="detail-panel" id="detail-panel" aria-hidden="true">
+        <button class="detail-close" id="detail-close" type="button" aria-label="Tutup detail">×</button>
+        <div class="detail-cover" id="detail-cover"><span id="detail-category">Objek program</span></div>
+        <div class="detail-content">
+          <span class="eyebrow" id="detail-layer">Layer</span>
+          <h2 id="detail-title">Detail lokasi</h2>
+          <div class="detail-fields" id="detail-fields"></div>
+          <button class="secondary-button" id="detail-zoom" type="button">Fokus ke lokasi</button>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <div class="search-dialog" id="search-dialog" hidden>
+    <button class="search-backdrop" type="button" data-close-search aria-label="Tutup pencarian"></button>
+    <section class="search-box" role="dialog" aria-modal="true" aria-labelledby="search-title">
+      <label class="search-input-wrap"><span>⌕</span><input id="search-input" type="search" autocomplete="off" placeholder="Ketik nama desa, kabupaten, atau program…" aria-label="Cari lokasi"><kbd>Esc</kbd></label>
+      <div class="search-caption"><strong id="search-title">Pencarian seluruh data</strong><span>Pilih hasil untuk membuka lokasinya di peta</span></div>
+      <div class="search-results" id="search-results"></div>
+    </section>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
