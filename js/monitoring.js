@@ -19,14 +19,8 @@
     var m=s.match(/\/file\/d\/([A-Za-z0-9_-]+)/i)||s.match(/[?&]id=([A-Za-z0-9_-]+)/i);
     return m?m[1]:'';
   }
-  function thumb(url){
-    var id=driveId(url);
-    return id?'https://drive.google.com/thumbnail?id='+encodeURIComponent(id)+'&sz=w1200':url;
-  }
-  function original(url){
-    var id=driveId(url);
-    return id?'https://drive.google.com/file/d/'+encodeURIComponent(id)+'/view':url;
-  }
+  function thumb(url){var id=driveId(url);return id?'https://drive.google.com/thumbnail?id='+encodeURIComponent(id)+'&sz=w1200':url;}
+  function original(url){var id=driveId(url);return id?'https://drive.google.com/file/d/'+encodeURIComponent(id)+'/view':url;}
   function cleanPhotos(value){
     if(!value)return[];
     if(typeof value==='string'){
@@ -84,8 +78,10 @@
       type:type,
       date:p.activityDate||p.publishedAt||p.verifiedAt||p.receivedAt,
       location:[p.village,p.district,p.regency].filter(Boolean).join(', '),
-      description:p.description||m.notes||'',
-      recommendation:m.recommendation||p.recommendation||'',
+      reporter:p.name||p.reporterName||p.createdBy||p.organization||'',
+      organization:p.organization||'',
+      description:m.notes||p.description||'',
+      recommendation:m.followUp||m.recommendation||p.recommendation||'',
       photos:cleanPhotos(p.photos),
       metrics:m,
       status:statusOf(p,m,type)
@@ -119,7 +115,7 @@
     var out=[];
     metricDefs(r.type).forEach(function(d){if(has(r.metrics[d[0]]))out.push([d[1],String(r.metrics[d[0]])+(d[2]?' '+d[2]:'')]);});
     if(!out.length)out.push(['Kondisi',r.status.label]);
-    out.push(['Riwayat',r.historyCount+' kali']);
+    if(has(r.historyCount))out.push(['Riwayat',r.historyCount+' kali']);
     return out.slice(0,limit||4);
   }
 
@@ -174,20 +170,32 @@
   function overviewHTML(g){
     var r=g.latest;r.historyCount=g.history.length;
     var all=metricItems(r,12).filter(function(x){return x[0]!=='Riwayat';});
-    return'<div class="profile-summary">'+all.map(function(x){return'<div><span>'+esc(x[0])+'</span><strong>'+esc(x[1])+'</strong></div>';}).join('')+'</div>'+
+    var latestPhoto=r.photos.length?'<a class="latest-photo" href="'+esc(original(r.photos[0]))+'" target="_blank" rel="noopener"><img src="'+esc(thumb(r.photos[0]))+'" alt="Foto monitoring terbaru '+esc(r.title)+'"></a>':'';
+    return latestPhoto+'<div class="profile-summary">'+all.map(function(x){return'<div><span>'+esc(x[0])+'</span><strong>'+esc(x[1])+'</strong></div>';}).join('')+'</div>'+
       '<div class="detail-notes"><section><h3>Temuan terakhir</h3><p>'+esc(r.description||'Belum ada catatan temuan.')+'</p></section><section><h3>Rekomendasi/tindak lanjut</h3><p>'+esc(r.recommendation||'Belum ada rekomendasi.')+'</p></section></div>';
   }
 
+  function historyMetricsHTML(r){
+    var items=metricItems(r,8).filter(function(x){return x[0]!=='Riwayat';});
+    return items.length?'<div class="timeline-metrics">'+items.map(function(x){return'<span><small>'+esc(x[0])+'</small><b>'+esc(x[1])+'</b></span>';}).join('')+'</div>':'';
+  }
+
   function historyHTML(g){
-    return'<div class="timeline">'+g.history.map(function(r){
-      return'<article class="timeline-item"><time>'+esc(fmtDate(r.date))+'</time><div class="timeline-body"><p>'+esc(r.description||'Tidak ada catatan.')+'</p></div></article>';
+    return'<div class="timeline">'+g.history.map(function(r,index){
+      var by=r.reporter?'<span class="timeline-reporter">👤 '+esc(r.reporter)+(r.organization?' · '+esc(r.organization):'')+'</span>':'';
+      var photos=r.photos.length?'<button class="timeline-photo-count" data-tab-jump="photos" type="button">📷 '+r.photos.length+' foto</button>':'<span class="timeline-no-photo">Tanpa foto</span>';
+      return'<article class="timeline-item '+(index===0?'latest':'')+'"><time>'+esc(fmtDate(r.date))+'</time><div class="timeline-body">'+
+        '<div class="timeline-heading"><span class="status '+r.status.key+'">'+esc(r.status.label)+'</span>'+photos+'</div>'+
+        historyMetricsHTML(r)+by+'<p>'+esc(r.description||'Tidak ada catatan temuan.')+'</p>'+
+        (r.recommendation?'<div class="timeline-follow-up"><b>Tindak lanjut:</b> '+esc(r.recommendation)+'</div>':'')+
+      '</div></article>';
     }).join('')+'</div>';
   }
 
   function photosHTML(g){
     var sections=g.history.map(function(r){
       if(!r.photos.length)return'';
-      return'<section class="photo-period"><h3>'+esc(fmtDate(r.date))+'</h3><div class="photo-grid">'+r.photos.map(function(u,i){
+      return'<section class="photo-period"><h3>'+esc(fmtDate(r.date))+(r.reporter?' · '+esc(r.reporter):'')+'</h3><div class="photo-grid">'+r.photos.map(function(u,i){
         return'<a href="'+esc(original(u))+'" target="_blank" rel="noopener"><img src="'+esc(thumb(u))+'" alt="Dokumentasi '+esc(r.title)+' foto '+(i+1)+'" loading="lazy"></a>';
       }).join('')+'</div></section>';
     }).filter(Boolean);
@@ -199,7 +207,7 @@
     var r=g.latest;
     document.getElementById('detail-content').innerHTML=
       '<div class="profile-head"><div><span class="type-label">'+esc(r.type.toUpperCase())+'</span><h2>'+esc(r.title)+'</h2><p class="location">'+esc(r.location||'Lokasi belum dicantumkan')+'</p></div><div class="profile-meta"><span class="status '+r.status.key+'">'+esc(r.status.label)+'</span><small>'+g.history.length+' kali monitoring</small><small>Terakhir '+esc(fmtDate(r.date))+'</small></div></div>'+
-      '<div class="detail-tabs"><button class="active" data-tab="overview" type="button">Ringkasan</button><button data-tab="history" type="button">Riwayat</button><button data-tab="photos" type="button">Foto</button></div>'+
+      '<div class="detail-tabs"><button class="active" data-tab="overview" type="button">Ringkasan</button><button data-tab="history" type="button">Riwayat ('+g.history.length+')</button><button data-tab="photos" type="button">Foto ('+g.history.reduce(function(n,x){return n+x.photos.length;},0)+')</button></div>'+
       '<div class="tab-panel active" data-panel="overview">'+overviewHTML(g)+'</div>'+
       '<div class="tab-panel" data-panel="history">'+historyHTML(g)+'</div>'+
       '<div class="tab-panel" data-panel="photos">'+photosHTML(g)+'</div>';
@@ -226,6 +234,13 @@
     if(chip){
       document.querySelectorAll('.category-chip').forEach(function(c){c.classList.remove('active');});
       chip.classList.add('active');document.getElementById('monitor-type').value=chip.getAttribute('data-type');render();
+    }
+    var jump=e.target.closest('[data-tab-jump]');
+    if(jump){
+      var detail=jump.closest('#detail-content');
+      var target=jump.getAttribute('data-tab-jump');
+      detail.querySelectorAll('[data-tab]').forEach(function(x){x.classList.toggle('active',x.getAttribute('data-tab')===target);});
+      detail.querySelectorAll('[data-panel]').forEach(function(x){x.classList.toggle('active',x.getAttribute('data-panel')===target);});
     }
     var tab=e.target.closest('[data-tab]');
     if(tab){
