@@ -1073,9 +1073,22 @@ L.control.scale({
           }
         });
 
-        // Gabungkan dengan data dari API
+        /*
+         * Gunakan GeoJSON lokal sebagai satu-satunya sumber layer mangrove.
+         * Poligon area_mangrove lama dari Master Database dikeluarkan agar
+         * tidak bertumpuk dengan poligon resmi, termasuk area 3 ha.
+         */
+        const nonMangroveFeatures = (data.features || []).filter(feature => {
+          const props = feature && feature.properties || {};
+          const layerId = String(
+            props.Layer_ID || props.Source_Layer || ""
+          ).trim().toLowerCase();
+
+          return layerId !== "area_mangrove";
+        });
+
         data.features = [
-          ...(data.features || []),
+          ...nonMangroveFeatures,
           ...mangrove.features
         ];
       }
@@ -1171,4 +1184,5 @@ L.control.scale({
 
   loadDatabase();
 })();
+
 
