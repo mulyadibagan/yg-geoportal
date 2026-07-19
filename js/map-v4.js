@@ -1251,29 +1251,59 @@ L.control.scale({
           nonMangroveFeatures
         );
 
+        /*
+         * Batas monitoring 3 ha dipromosikan menjadi poligon resmi
+         * Area Penanaman Mangrove. Objek monitoring aslinya dikeluarkan
+         * agar tidak muncul lagi sebagai garis kuning putus-putus.
+         */
+        const visibleNonMangroveFeatures = monitoring3Ha
+          ? nonMangroveFeatures.filter(feature => feature !== monitoring3Ha)
+          : nonMangroveFeatures;
+
         const officialMangroveFeatures = mangrove.features.filter(feature => {
+          if (!monitoring3Ha) return true;
+
           const props = feature && feature.properties || {};
           const village = String(props.Desa || "")
             .trim()
             .toLowerCase();
-          const phase = String(props.Tahun || "")
-            .trim()
-            .toLowerCase();
 
-          const obsoleteOverlap =
-            monitoring3Ha &&
+          const overlapsOfficial3Ha =
             village === "kelapa pati" &&
-            phase === "phase ii" &&
             geometriesIntersect(
               feature.geometry,
               monitoring3Ha.geometry
             );
 
-          return !obsoleteOverlap;
+          return !overlapsOfficial3Ha;
         });
 
+        if (monitoring3Ha) {
+          const monitoringProps = monitoring3Ha.properties || {};
+
+          officialMangroveFeatures.push({
+            type: "Feature",
+            properties: {
+              ...monitoringProps,
+              Layer_ID: "area_mangrove",
+              Source_Layer: "area_mangrove",
+              Source_Type: "program_object",
+              Layer_Label: "Area Penanaman Mangrove",
+              Nama_Objek: "Area Penanaman Mangrove – Kelapa Pati (3 ha)",
+              Desa: "Kelapa Pati",
+              Tahun: "Phase III",
+              Luas_Ha: numericArea(
+                monitoringProps.Luas_Terpantau_Ha ??
+                monitoringProps.monitoredAreaHa ??
+                monitoringProps.Luas_Ha
+              )
+            },
+            geometry: monitoring3Ha.geometry
+          });
+        }
+
         data.features = [
-          ...nonMangroveFeatures,
+          ...visibleNonMangroveFeatures,
           ...officialMangroveFeatures
         ];
       }
@@ -1369,6 +1399,7 @@ L.control.scale({
 
   loadDatabase();
 })();
+
 
 
 
