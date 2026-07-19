@@ -7,43 +7,32 @@
 
   function cleanUrl(value) {
     if (value == null) return '';
-
     if (typeof value === 'object') {
       value = value.url || value.webViewLink || value.downloadUrl || value.src || value.link || value.fileUrl || '';
     }
-
     value = String(value).trim();
-    if (!value || !/^https?:\/\//i.test(value)) return '';
-    return value;
+    return value && /^https?:\/\//i.test(value) ? value : '';
   }
 
   function normalizePhotos(value) {
     var parsed = value;
-
     if (typeof parsed === 'string') {
       var text = parsed.trim();
       if (!text) return [];
-
       try {
         parsed = JSON.parse(text);
       } catch (error) {
-        /* Google Drive URLs in the sheet are commonly separated by spaces. */
         parsed = text.match(/https?:\/\/[^\s,;|]+/gi) || text.split(/[\n,;|]+/);
       }
     }
-
     if (!Array.isArray(parsed)) parsed = [parsed];
-
-    return parsed
-      .map(cleanUrl)
-      .filter(function (url, index, list) {
-        return url && list.indexOf(url) === index;
-      });
+    return parsed.map(cleanUrl).filter(function (url, index, list) {
+      return url && list.indexOf(url) === index;
+    });
   }
 
   function findPhotos(properties) {
     properties = properties || {};
-
     var candidates = [
       properties.photos,
       properties.photoUrls,
@@ -53,39 +42,31 @@
       properties.dokumentasiFoto,
       properties.foto,
       properties.imageUrls,
-      properties.images
+      properties.images,
+      properties.photoLinks,
+      properties.tautanFoto
     ];
-
     var result = [];
     candidates.forEach(function (candidate) {
       normalizePhotos(candidate).forEach(function (url) {
         if (result.indexOf(url) === -1) result.push(url);
       });
     });
-
     return result;
   }
 
   function parseObject(value) {
     if (!value) return {};
     if (typeof value === 'object') return value;
-    try {
-      return JSON.parse(value);
-    } catch (error) {
-      return {};
-    }
+    try { return JSON.parse(value); } catch (error) { return {}; }
   }
 
   function getObjectId(properties) {
     properties = properties || {};
     var changes = parseObject(properties.proposedChanges);
     var information = parseObject(properties.proposedInformation);
-
     return String(
-      properties.targetObjectId ||
-      changes.targetObjectId ||
-      information.targetObjectId ||
-      ''
+      properties.targetObjectId || changes.targetObjectId || information.targetObjectId || ''
     ).trim();
   }
 
@@ -94,51 +75,53 @@
     var changes = parseObject(properties.proposedChanges);
     var layer = properties.targetLayerId || changes.targetLayerId || '';
     var title = properties.targetObjectName || properties.locationName || changes.targetObjectName || properties.title || '';
-
-    return (String(layer).trim().toLowerCase() + '|' + String(title).trim().toLowerCase());
+    return String(layer).trim().toLowerCase() + '|' + String(title).trim().toLowerCase();
   }
 
-  function normalizeMainFeatures(data) {
-    var features = data && Array.isArray(data.features) ? data.features : [];
-
-    features.forEach(function (feature) {
-      var properties = feature && feature.properties;
-      if (!properties) return;
-      properties.photos = findPhotos(properties);
-    });
-
-    return features;
+  function reportType(properties) {
+    return String((properties || {}).reportType || '').trim().toLowerCase();
   }
 
-  function mergePhotoUpdates(mainData, updatesData) {
-    var mainFeatures = normalizeMainFeatures(mainData);
-    var updateFeatures = updatesData && Array.isArray(updatesData.features) ? updatesData.features : [];
+  function mergeAllPhotoSources(mainData, extraData) {
+    mainData = mainData || { features: [] };
+    var allMain = Array.isArray(mainData.features) ? mainData.features : [];
+    var extra = extraData && Array.isArray(extraData.features) ? extraData.features : [];
+    var monitoringFeatures = [];
+    var photoFeatures = [];
     var byId = {};
     var byFallback = {};
 
-    mainFeatures.forEach(function (feature) {
+    allMain.forEach(function (feature) {
       var properties = feature && feature.properties;
       if (!properties) return;
+      var type = reportType(properties);
+      if (type === 'monitoring') monitoringFeatures.push(feature);
+      else if (/foto/.test(type)) photoFeatures.push(feature);
+    });
 
+    extra.forEach(function (feature) {
+      var properties = feature && feature.properties;
+      if (properties && findPhotos(properties).length) photoFeatures.push(feature);
+    });
+
+    monitoringFeatures.forEach(function (feature) {
+      var properties = feature.properties;
+      properties.photos = findPhotos(properties);
       var objectId = getObjectId(properties);
       var key = fallbackKey(properties);
-
       if (objectId) byId[objectId] = properties;
       if (key !== '|') byFallback[key] = properties;
     });
 
-    updateFeatures.forEach(function (feature) {
+    photoFeatures.forEach(function (feature) {
       var properties = feature && feature.properties;
       if (!properties) return;
-
       var photos = findPhotos(properties);
       if (!photos.length) return;
-
       var objectId = getObjectId(properties);
       var target = objectId ? byId[objectId] : null;
       if (!target) target = byFallback[fallbackKey(properties)];
       if (!target) return;
-
       var combined = findPhotos(target);
       photos.forEach(function (url) {
         if (combined.indexOf(url) === -1) combined.push(url);
@@ -146,7 +129,7 @@
       target.photos = combined;
     });
 
-    mainData.features = mainFeatures;
+    mainData.features = monitoringFeatures;
     return mainData;
   }
 
@@ -165,28 +148,20 @@
       done(data || { features: [] });
     }
 
-    window[jsonpCallback] = function (data) {
-      finish(data);
-    };
-
+    window[jsonpCallback] = finish;
     script.async = true;
     script.src = updatesEndpoint + '&callback=' + encodeURIComponent(jsonpCallback) + '&t=' + Date.now();
-    script.onerror = function () {
-      finish({ features: [] });
-    };
-
-    timer = window.setTimeout(function () {
-      finish({ features: [] });
-    }, 12000);
-
+    script.onerror = function () { finish({ features: [] }); };
+    timer = window.setTimeout(function () { finish({ features: [] }); }, 5000);
     document.head.appendChild(script);
   }
 
   if (typeof originalCallback !== 'function') return;
 
   window[callbackName] = function (data) {
+    var immediate = mergeAllPhotoSources(data || { features: [] }, { features: [] });
     loadUpdates(function (updatesData) {
-      originalCallback(mergePhotoUpdates(data || { features: [] }, updatesData));
+      originalCallback(mergeAllPhotoSources(immediate, updatesData));
     });
   };
 })();
