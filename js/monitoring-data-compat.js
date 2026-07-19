@@ -15,6 +15,47 @@
     return '';
   }
 
+  function normalizeDateValue(value) {
+    if (value === undefined || value === null || value === '') return '';
+    if (value instanceof Date) return value.toISOString();
+
+    if (typeof value === 'number' && isFinite(value)) {
+      if (value > 100000000000) return new Date(value).toISOString();
+      if (value > 1000000000) return new Date(value * 1000).toISOString();
+      if (value > 20000 && value < 100000) {
+        return new Date(Date.UTC(1899, 11, 30) + value * 86400000).toISOString();
+      }
+    }
+
+    var text = String(value).trim();
+    if (!text) return '';
+
+    var indo = text.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})(?:[ T](\d{1,2}):(\d{2})(?::(\d{2}))?)?$/);
+    if (indo) {
+      var day = Number(indo[1]);
+      var month = Number(indo[2]);
+      var year = Number(indo[3]);
+      var hour = Number(indo[4] || 0);
+      var minute = Number(indo[5] || 0);
+      var second = Number(indo[6] || 0);
+      var parsedIndo = new Date(year, month - 1, day, hour, minute, second);
+      if (
+        parsedIndo.getFullYear() === year &&
+        parsedIndo.getMonth() === month - 1 &&
+        parsedIndo.getDate() === day
+      ) return parsedIndo.toISOString();
+    }
+
+    var isoDate = text.match(/^(\d{4})-(\d{1,2})-(\d{1,2})(?:[ T].*)?$/);
+    if (isoDate) {
+      var parsedIso = new Date(Number(isoDate[1]), Number(isoDate[2]) - 1, Number(isoDate[3]));
+      if (!isNaN(parsedIso.getTime())) return parsedIso.toISOString();
+    }
+
+    var direct = new Date(text);
+    return isNaN(direct.getTime()) ? text : direct.toISOString();
+  }
+
   function collectPhotoValues(value, output) {
     if (value === undefined || value === null || value === '') return;
 
@@ -61,13 +102,12 @@
   function normalizeProperties(properties) {
     var p = properties && typeof properties === 'object' ? properties : {};
 
-    if (!p.activityDate) {
-      p.activityDate = firstValue(p, [
-        'monitoringDate', 'activity_date', 'monitoring_date', 'tanggalKegiatan',
-        'tanggalMonitoring', 'date', 'reportDate', 'eventDate', 'publishedAt',
-        'verifiedAt', 'receivedAt', 'createdAt', 'timestamp'
-      ]);
-    }
+    var rawDate = p.activityDate || firstValue(p, [
+      'monitoringDate', 'activity_date', 'monitoring_date', 'tanggalKegiatan',
+      'tanggalMonitoring', 'date', 'reportDate', 'eventDate', 'publishedAt',
+      'verifiedAt', 'receivedAt', 'createdAt', 'timestamp'
+    ]);
+    if (rawDate) p.activityDate = normalizeDateValue(rawDate);
 
     var photos = [];
     [
@@ -135,7 +175,6 @@
       }
     });
   } catch (error) {
-    // Fallback untuk browser lama.
     var timer = window.setInterval(function () {
       var original = window[callbackName];
       if (typeof original !== 'function' || original.__ygCompatWrapped) return;
