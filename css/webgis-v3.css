@@ -60,3 +60,19 @@
   object-fit:cover;
   border-radius:7px;
 }
+
+/* WebGIS tidak memakai header global: gunakan seluruh tinggi viewport. */
+body.webgis-page .app-shell{
+  inset:0;
+}
+
+@media(max-width:760px){
+  body.webgis-page .sidebar{
+    top:0;
+  }
+
+  body.webgis-page .overlay{
+    inset:0;
+  }
+}
+

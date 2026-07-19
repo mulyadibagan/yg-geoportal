@@ -23,7 +23,7 @@
       return;
     }
 
-    shell.classList.toggle("sidebar-collapsed");
+    shell.classList.toggle("collapsed");
     setTimeout(() => window.YG_MAP?.map.invalidateSize(true), 260);
   }
 
@@ -43,3 +43,4 @@
 
   window.YG_UI = { openMobileSidebar, closeMobileSidebar, togglePanel };
 })();
+
