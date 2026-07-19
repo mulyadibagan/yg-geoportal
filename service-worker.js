@@ -1,4 +1,4 @@
-const CACHE_NAME = "yg-geoportal-v4-20260719-kelapa-pati-3ha-corrected3";
+const CACHE_NAME = "yg-geoportal-v4-20260719-kelapa-pati-2parts-corrected4";
 
 const STATIC_ASSETS = [
   "./",
@@ -14,7 +14,7 @@ const STATIC_ASSETS = [
   "./css/monitoring.css",
   "./css/report.css",
   "./js/pwa.js",
-  "./js/map-v4.js?v=20260719-kelapa-pati-3ha-corrected3"
+  "./js/map-v4.js?v=20260719-kelapa-pati-2parts-corrected4"
 ];
 
 self.addEventListener("install", event => {
@@ -88,5 +88,6 @@ self.addEventListener("fetch", event => {
     })
   );
 });
+
 
 

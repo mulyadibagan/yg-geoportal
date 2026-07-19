@@ -1303,26 +1303,11 @@ L.control.scale({
           ? nonMangroveFeatures.filter(feature => feature !== monitoring3Ha)
           : nonMangroveFeatures;
 
-        const officialMangroveFeatures = mangrove.features.map(feature => {
-          const props = feature && feature.properties || {};
-          const village = String(props.Desa || "")
-            .trim()
-            .toLowerCase();
-          const phase = String(props.Tahun || "")
-            .trim()
-            .toLowerCase();
-
-          /*
-           * Objek Phase III Kelapa Pati tersimpan sebagai MultiPolygon.
-           * Pertahankan hanya bidang terbesar; komponen kecil yang bertabrakan
-           * tidak lagi digambar.
-           */
-          if (village === "kelapa pati" && phase === "phase iii") {
-            return keepLargestPolygonPart(feature);
-          }
-
-          return feature;
-        });
+        /*
+         * GeoJSON hasil penyuntingan GIS menjadi sumber geometri resmi.
+         * Semua bagian yang masih ada di file dipertahankan apa adanya.
+         */
+        const officialMangroveFeatures = mangrove.features;
 
         data.features = [
           ...visibleNonMangroveFeatures,
@@ -1421,6 +1406,7 @@ L.control.scale({
 
   loadDatabase();
 })();
+
 
 
 
