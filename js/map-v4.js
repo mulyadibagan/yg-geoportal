@@ -1098,20 +1098,6 @@ L.control.scale({
   }
 }
 
-    try {
-      const data = await loadByJsonp();
-      initialize(data);
-    } catch (jsonpError) {
-      console.error("Master Database gagal dimuat.", jsonpError);
-      setStatus("Database gagal dimuat: " + jsonpError.message, true);
-
-      const updated = document.getElementById("database-updated");
-      if (updated) {
-        updated.textContent =
-          "Koneksi database gagal. Buka Console browser untuk detail.";
-      }
-    }
-  }
 
   const searchInput = document.getElementById("search-input");
   const searchButton = document.getElementById("search-button");
@@ -1185,3 +1171,4 @@ L.control.scale({
 
   loadDatabase();
 })();
+
