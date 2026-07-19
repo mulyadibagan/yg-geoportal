@@ -1,4 +1,4 @@
-const CACHE_NAME = "yg-geoportal-v4-20260720-monitoring-photo-rules2";
+const CACHE_NAME = "yg-geoportal-v4-20260720-monitoring-date-fix1";
 
 const STATIC_ASSETS = [
   "./",
@@ -11,13 +11,17 @@ const STATIC_ASSETS = [
   "./assets/logo-yayasan-gambut-512.png",
   "./css/app.css",
   "./css/webgis-v3.css",
-  "./css/monitoring.css",
+  "./css/monitoring.css?v=20260720-103",
+  "./css/monitoring-v1-fix.css?v=20260720-103",
   "./css/report.css",
   "./css/report-v6.css?v=20260713-40",
   "./js/config.js",
   "./js/report-v6.js?v=20260713-40",
   "./js/report-photo-rules.js?v=20260720-2",
-  "./js/pwa.js?v=20260714-1",
+  "./js/monitoring-data-compat.js?v=20260720-2",
+  "./js/monitoring.js?v=20260720-103",
+  "./js/monitoring-photo.js?v=20260720-103",
+  "./js/pwa.js?v=20260720-103",
   "./js/map-v4.js?v=20260719-shapefile-authoritative-corrected5"
 ];
 
@@ -47,10 +51,6 @@ self.addEventListener("fetch", event => {
 
   if (request.method !== "GET") return;
 
-  /*
-   * Data API Apps Script harus selalu segar.
-   * Jangan simpan respons monitoring/objek ke cache.
-   */
   if (
     url.hostname === "script.google.com" ||
     url.hostname === "script.googleusercontent.com"
