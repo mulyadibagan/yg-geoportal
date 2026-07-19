@@ -41,6 +41,10 @@
     }
   });
 
+  const layerOrderScript = document.createElement("script");
+  layerOrderScript.src = "js/layer-order-v1.js?v=20260720-1";
+  layerOrderScript.async = true;
+  document.head.appendChild(layerOrderScript);
+
   window.YG_UI = { openMobileSidebar, closeMobileSidebar, togglePanel };
 })();
-
