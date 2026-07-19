@@ -47,6 +47,16 @@
     try { return JSON.parse(text); } catch (error) { return value; }
   }
 
+  function pushUnique(output, url) {
+    url = String(url || '').trim().replace(/[.,]+$/, '');
+    if (/^https?:\/\//i.test(url) && output.indexOf(url) === -1) output.push(url);
+  }
+
+  function driveViewUrl(fileId) {
+    var id = String(fileId || '').trim();
+    return /^[A-Za-z0-9_-]{20,}$/.test(id) ? 'https://drive.google.com/file/d/' + encodeURIComponent(id) + '/view' : '';
+  }
+
   function collectUrls(value, output, depth) {
     if (value === undefined || value === null || value === '' || depth > 8) return;
     value = parseMaybeJSON(value);
@@ -55,19 +65,24 @@
       return;
     }
     if (typeof value === 'object') {
-      var direct = firstValue(value, ['url','webViewLink','webContentLink','fileUrl','photoUrl','imageUrl','src','link','downloadUrl']);
+      var direct = firstValue(value, [
+        'url','webViewLink','webContentLink','fileUrl','photoUrl','imageUrl','src','link',
+        'downloadUrl','viewUrl','downloadLink','thumbnailUrl','secureUrl'
+      ]);
       if (direct) collectUrls(direct, output, depth + 1);
+
+      var fileId = firstValue(value, ['fileId','driveFileId','googleDriveId','googleFileId']);
+      if (!fileId && firstValue(value, ['mimeType','filename','fileName','name'])) fileId = value.id;
+      if (fileId) pushUnique(output, driveViewUrl(fileId));
+
       Object.keys(value).forEach(function (key) {
         if (/foto|photo|image|dokumentasi|documentation|attachment|lampiran|file/i.test(key)) collectUrls(value[key], output, depth + 1);
       });
       return;
     }
     var text = String(value).trim();
-    var urls = text.match(/https?:\/\/[^\s,;|"'<>\]\)]+/gi) || [];
-    urls.forEach(function (url) {
-      url = url.replace(/[.,]+$/, '');
-      if (output.indexOf(url) === -1) output.push(url);
-    });
+    var urls = text.match(/https?:\/\/[^\s,;|"'< >\]\)]+/gi) || [];
+    urls.forEach(function (url) { pushUnique(output, url); });
   }
 
   function restorePhotos(p) {
