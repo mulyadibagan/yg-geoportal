@@ -40,8 +40,8 @@
   background:transparent;
   color:#fff;
 }
-.latest-photo{display:block;margin:0 0 18px;border-radius:16px;overflow:hidden;background:#eef3f0}
-.latest-photo img{display:block;width:100%;max-height:360px;object-fit:cover}
+.latest-photo{display:block;margin:0 0 18px;border-radius:18px;overflow:hidden;background:#eef3f0;box-shadow:0 8px 24px rgba(19,63,50,.12)}
+.latest-photo img{display:block;width:100%;height:clamp(220px,42vw,420px);object-fit:cover}
 .timeline-item.latest .timeline-body{border-color:#11865d;box-shadow:0 0 0 2px rgba(17,134,93,.08)}
 .timeline-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
 .timeline-heading .status{font-size:11px}
@@ -53,7 +53,28 @@
 .timeline-metrics b{color:#173f32;font-size:14px}
 .timeline-reporter{display:block;margin:8px 0;color:#527066;font-size:12px}
 .timeline-follow-up{margin-top:10px;padding:10px 12px;border-left:3px solid #d9a11b;background:#fff8df;border-radius:8px;color:#6b4b00;font-size:13px;line-height:1.5}
-.photo-period h3{font-size:14px;color:#38534a}
+.photo-period{margin:0 0 22px}
+.photo-period h3{margin:0 0 10px;font-size:14px;color:#38534a}
+.photo-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.yg-monitor-photo-button{position:relative;display:block;width:100%;padding:0;border:0;border-radius:15px;overflow:hidden;background:#eaf0ed;cursor:zoom-in;aspect-ratio:4/3;box-shadow:0 5px 16px rgba(18,58,46,.10)}
+.yg-monitor-photo-button img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .2s ease}
+.yg-monitor-photo-button:active img{transform:scale(1.03)}
+.yg-monitor-photo-badge{position:absolute;right:8px;bottom:8px;padding:5px 8px;border-radius:999px;background:rgba(7,68,48,.82);color:#fff;font-size:10px;font-weight:800;line-height:1}
+.yg-monitor-photo-error{object-fit:contain;padding:18px;background:#edf2ef}
+.yg-monitor-photo-lightbox{position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;padding:18px}
+.yg-monitor-photo-lightbox.open{display:flex}
+.yg-monitor-photo-backdrop{position:absolute;inset:0;background:rgba(4,19,14,.92)}
+.yg-monitor-photo-dialog{position:relative;z-index:1;width:min(100%,1050px);max-height:94vh;display:flex;flex-direction:column;border-radius:18px;overflow:hidden;background:#07130f;box-shadow:0 24px 80px rgba(0,0,0,.45)}
+.yg-monitor-photo-stage{position:relative;display:flex;align-items:center;justify-content:center;min-height:240px;max-height:78vh;background:#07130f}
+.yg-monitor-photo-stage img{display:block;max-width:100%;max-height:78vh;object-fit:contain}
+.yg-monitor-photo-loading{padding:40px 20px;color:#fff;text-align:center}
+.yg-monitor-photo-close,.yg-monitor-photo-nav{position:absolute;z-index:3;border:0;border-radius:999px;background:rgba(255,255,255,.9);color:#173f32;box-shadow:0 4px 16px rgba(0,0,0,.25)}
+.yg-monitor-photo-close{top:10px;right:10px;width:42px;height:42px;font-size:28px}
+.yg-monitor-photo-nav{top:50%;width:44px;height:44px;transform:translateY(-50%);font-size:34px;line-height:1}
+.yg-monitor-photo-prev{left:10px}.yg-monitor-photo-next{right:10px}
+.yg-monitor-photo-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;background:#fff;color:#24483d;font-size:13px}
+.yg-monitor-photo-open{color:#087451;font-weight:800;text-decoration:none}
+body.yg-monitor-photo-opened{overflow:hidden}
 @media(max-width:700px){
   .dashboard-shell{
     width:min(100% - 18px,1240px);
@@ -97,4 +118,13 @@
   }
   .timeline-heading{align-items:flex-start;flex-direction:column}
   .timeline-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .latest-photo img{height:240px}
+  .photo-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .yg-monitor-photo-button{border-radius:12px;aspect-ratio:1/1}
+  .yg-monitor-photo-lightbox{padding:0}
+  .yg-monitor-photo-dialog{width:100%;height:100%;max-height:none;border-radius:0;justify-content:center}
+  .yg-monitor-photo-stage{min-height:0;max-height:none;flex:1}
+  .yg-monitor-photo-stage img{max-height:calc(100vh - 66px);width:100%;object-fit:contain}
+  .yg-monitor-photo-footer{min-height:66px;padding:12px 14px}
+  .yg-monitor-photo-nav{width:40px;height:40px;font-size:30px}
 }
