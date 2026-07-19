@@ -4,7 +4,7 @@
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
       navigator.serviceWorker
-        .register("./service-worker.js?v=20260719-shapefile-authoritative-corrected5")
+        .register("./service-worker.js?v=20260720-monitoring-photo-rules2")
         .catch(error => console.warn("Service worker gagal:", error));
     });
   }
@@ -38,8 +38,8 @@
 
   if (document.getElementById("report-form")) {
     const rulesScript = document.createElement("script");
-    rulesScript.src = "js/report-photo-rules.js?v=20260720-1";
-    rulesScript.async = true;
+    rulesScript.src = "js/report-photo-rules.js?v=20260720-2";
+    rulesScript.async = false;
     document.head.appendChild(rulesScript);
   }
 })();
