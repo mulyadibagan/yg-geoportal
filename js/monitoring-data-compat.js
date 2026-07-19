@@ -70,11 +70,9 @@
         'downloadUrl','viewUrl','downloadLink','thumbnailUrl','secureUrl'
       ]);
       if (direct) collectUrls(direct, output, depth + 1);
-
       var fileId = firstValue(value, ['fileId','driveFileId','googleDriveId','googleFileId']);
       if (!fileId && firstValue(value, ['mimeType','filename','fileName','name'])) fileId = value.id;
       if (fileId) pushUnique(output, driveViewUrl(fileId));
-
       Object.keys(value).forEach(function (key) {
         if (/foto|photo|image|dokumentasi|documentation|attachment|lampiran|file/i.test(key)) collectUrls(value[key], output, depth + 1);
       });
@@ -112,6 +110,36 @@
     return p;
   }
 
+  function objectKey(p) {
+    var direct = firstValue(p, ['targetObjectId','objectId','featureId','targetFeatureId']);
+    if (direct) return 'id|' + String(direct).trim().toLowerCase();
+    var layer = firstValue(p, ['targetLayerId','layerId','targetLayerLabel']);
+    var title = firstValue(p, ['locationName','targetObjectName','title','objectName','location']);
+    return 'fallback|' + String(layer || '').trim().toLowerCase() + '|' + String(title || '').trim().toLowerCase();
+  }
+
+  function mergeRelatedPhotoReports(features) {
+    var photoMap = {};
+    features.forEach(function (feature) {
+      var p = feature.properties || {};
+      var reportType = String(p.reportType || '').trim().toLowerCase();
+      if (reportType === 'monitoring' || !Array.isArray(p.photos) || !p.photos.length) return;
+      var key = objectKey(p);
+      if (!photoMap[key]) photoMap[key] = [];
+      p.photos.forEach(function (url) { pushUnique(photoMap[key], url); });
+    });
+
+    features.forEach(function (feature) {
+      var p = feature.properties || {};
+      if (String(p.reportType || '').trim().toLowerCase() !== 'monitoring') return;
+      var related = photoMap[objectKey(p)] || [];
+      if (!related.length) return;
+      var merged = Array.isArray(p.photos) ? p.photos.slice() : [];
+      related.forEach(function (url) { pushUnique(merged, url); });
+      p.photos = merged;
+    });
+  }
+
   function normalizePayload(data) {
     if (!data || typeof data !== 'object') return data;
     var features = Array.isArray(data.features) ? data.features : Array.isArray(data.updates) ? data.updates : Array.isArray(data.reports) ? data.reports : [];
@@ -123,6 +151,7 @@
       }
       return { type: 'Feature', properties: normalizeProperties(item && item.properties ? item.properties : item || {}), geometry: item && item.geometry ? item.geometry : null };
     });
+    mergeRelatedPhotoReports(data.features);
     return data;
   }
 
