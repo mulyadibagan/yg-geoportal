@@ -3,6 +3,7 @@
 
   var API='https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec?page=public-reports';
   var CALLBACK='ygMonitoringDashboardCallback';
+  var UPDATES_API='https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec?page=public-updates';
   var EDIT_OBJECT_URL='https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec?page=edit-object';
   var records=[],groups=[];
   var list=document.getElementById('monitor-list');
@@ -169,7 +170,29 @@
     var modal=document.getElementById('detail-modal');modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.classList.add('modal-open');
   }
 
-  window[CALLBACK]=function(data){var features=data&&Array.isArray(data.features)?data.features:[];records=features.map(normalize).filter(Boolean);groups=groupData(records);stats();filters();render();};
+  function cleanPhotos(value){
+    if(!value)return[];
+    if(typeof value==='string'){try{value=JSON.parse(value);}catch(error){value=value.match(/https?:\/\/[^\s,;|]+/gi)||[];}}
+    if(!Array.isArray(value))value=[value];
+    return value.map(function(item){if(item&&typeof item==='object')item=item.url||item.webViewLink||item.fileUrl||item.src||'';return String(item||'').trim();}).filter(function(url,index,list){return /^https?:\/\//i.test(url)&&list.indexOf(url)===index;});
+  }
+  function updateProps(item){return item&&item.properties?item.properties:(item||{});}
+  function objectIdOf(p){var changes=parseJSON(p.proposedChanges);return String(p.targetObjectId||changes.targetObjectId||'').trim();}
+  function fallbackOf(p){var changes=parseJSON(p.proposedChanges);var layer=p.targetLayerId||changes.targetLayerId||'';var name=p.targetObjectName||p.locationName||changes.targetObjectName||p.title||'';return String(layer).trim().toLowerCase()+'|'+String(name).trim().toLowerCase();}
+  function mergeUpdates(data,updatesData){
+    var features=data&&Array.isArray(data.features)?data.features:[],extras=[];
+    if(updatesData){if(Array.isArray(updatesData.features))extras=updatesData.features;else if(Array.isArray(updatesData.updates))extras=updatesData.updates;}
+    var byId={},byFallback={};
+    features.forEach(function(feature){var p=feature.properties||{};if(String(p.reportType||'').toLowerCase()!=='monitoring')return;p.photos=cleanPhotos(p.photos);var id=objectIdOf(p),fallback=fallbackOf(p);if(id)byId[id]=p;if(fallback!=='|')byFallback[fallback]=p;});
+    extras.forEach(function(item){var p=updateProps(item),photos=cleanPhotos(p.photos);if(!photos.length)return;var target=byId[objectIdOf(p)]||byFallback[fallbackOf(p)];if(!target)return;var combined=cleanPhotos(target.photos);photos.forEach(function(url){if(combined.indexOf(url)===-1)combined.push(url);});target.photos=combined;});
+    return features;
+  }
+  function applyData(data,updatesData){var features=mergeUpdates(data,updatesData);records=features.map(normalize).filter(Boolean);groups=groupData(records);stats();filters();render();}
+  window[CALLBACK]=function(data){
+    var updateCallback='ygMonitoringUpdates_'+Date.now()+'_'+Math.floor(Math.random()*100000),updateScript=document.createElement('script'),finished=false,timer;
+    function finish(updatesData){if(finished)return;finished=true;window.clearTimeout(timer);try{delete window[updateCallback];}catch(error){window[updateCallback]=undefined;}if(updateScript.parentNode)updateScript.parentNode.removeChild(updateScript);applyData(data,updatesData||{features:[]});}
+    window[updateCallback]=finish;updateScript.async=true;updateScript.src=UPDATES_API+'&callback='+encodeURIComponent(updateCallback)+'&t='+Date.now();updateScript.onerror=function(){finish({features:[]});};timer=window.setTimeout(function(){finish({features:[]});},10000);document.head.appendChild(updateScript);
+  };
   ['monitor-search','monitor-type','monitor-status','monitor-sort'].forEach(function(id){document.getElementById(id).addEventListener(id==='monitor-search'?'input':'change',render);});
   document.addEventListener('click',function(e){
     var d=e.target.closest('[data-detail]');if(d)openDetail(d.getAttribute('data-detail'));
