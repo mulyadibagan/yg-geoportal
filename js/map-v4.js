@@ -1025,6 +1025,166 @@ L.control.scale({
     });
   }
 
+  function geometryPolygons(geometry) {
+    if (!geometry || !Array.isArray(geometry.coordinates)) return [];
+
+    if (geometry.type === "Polygon") {
+      return [geometry.coordinates];
+    }
+
+    if (geometry.type === "MultiPolygon") {
+      return geometry.coordinates;
+    }
+
+    return [];
+  }
+
+  function pointOnSegment(point, start, end) {
+    const cross =
+      (point[1] - start[1]) * (end[0] - start[0]) -
+      (point[0] - start[0]) * (end[1] - start[1]);
+
+    if (Math.abs(cross) > 1e-12) return false;
+
+    return (
+      point[0] >= Math.min(start[0], end[0]) - 1e-12 &&
+      point[0] <= Math.max(start[0], end[0]) + 1e-12 &&
+      point[1] >= Math.min(start[1], end[1]) - 1e-12 &&
+      point[1] <= Math.max(start[1], end[1]) + 1e-12
+    );
+  }
+
+  function pointInRing(point, ring) {
+    let inside = false;
+
+    for (let i = 0, j = ring.length - 1; i < ring.length; j = i, i += 1) {
+      const start = ring[j];
+      const end = ring[i];
+
+      if (pointOnSegment(point, start, end)) return true;
+
+      const crosses =
+        (end[1] > point[1]) !== (start[1] > point[1]) &&
+        point[0] <
+          ((start[0] - end[0]) * (point[1] - end[1])) /
+            (start[1] - end[1]) +
+          end[0];
+
+      if (crosses) inside = !inside;
+    }
+
+    return inside;
+  }
+
+  function pointInPolygon(point, polygon) {
+    if (!polygon.length || !pointInRing(point, polygon[0])) return false;
+
+    for (let i = 1; i < polygon.length; i += 1) {
+      if (pointInRing(point, polygon[i])) return false;
+    }
+
+    return true;
+  }
+
+  function segmentOrientation(a, b, c) {
+    const value =
+      (b[1] - a[1]) * (c[0] - b[0]) -
+      (b[0] - a[0]) * (c[1] - b[1]);
+
+    if (Math.abs(value) < 1e-12) return 0;
+    return value > 0 ? 1 : 2;
+  }
+
+  function segmentsIntersect(a, b, c, d) {
+    const o1 = segmentOrientation(a, b, c);
+    const o2 = segmentOrientation(a, b, d);
+    const o3 = segmentOrientation(c, d, a);
+    const o4 = segmentOrientation(c, d, b);
+
+    if (o1 !== o2 && o3 !== o4) return true;
+    if (o1 === 0 && pointOnSegment(c, a, b)) return true;
+    if (o2 === 0 && pointOnSegment(d, a, b)) return true;
+    if (o3 === 0 && pointOnSegment(a, c, d)) return true;
+    if (o4 === 0 && pointOnSegment(b, c, d)) return true;
+
+    return false;
+  }
+
+  function ringsIntersect(first, second) {
+    for (let i = 1; i < first.length; i += 1) {
+      for (let j = 1; j < second.length; j += 1) {
+        if (
+          segmentsIntersect(
+            first[i - 1],
+            first[i],
+            second[j - 1],
+            second[j]
+          )
+        ) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  function polygonsIntersect(first, second) {
+    if (!first.length || !second.length) return false;
+
+    if (ringsIntersect(first[0], second[0])) return true;
+    if (pointInPolygon(first[0][0], second)) return true;
+    if (pointInPolygon(second[0][0], first)) return true;
+
+    return false;
+  }
+
+  function geometriesIntersect(firstGeometry, secondGeometry) {
+    const firstPolygons = geometryPolygons(firstGeometry);
+    const secondPolygons = geometryPolygons(secondGeometry);
+
+    return firstPolygons.some(first =>
+      secondPolygons.some(second => polygonsIntersect(first, second))
+    );
+  }
+
+  function numericArea(value) {
+    const normalized = String(value == null ? "" : value)
+      .replace(",", ".")
+      .match(/-?\d+(?:\.\d+)?/);
+
+    return normalized ? Number(normalized[0]) : NaN;
+  }
+
+  function findKelapaPatiMonitoring3Ha(features) {
+    return (features || []).find(feature => {
+      const props = feature && feature.properties || {};
+      const layerId = String(
+        props.Layer_ID || props.Source_Layer || ""
+      ).trim().toLowerCase();
+      const sourceType = String(props.Source_Type || "")
+        .trim()
+        .toLowerCase();
+      const village = String(
+        props.Desa || props.WADMKD || ""
+      ).trim().toLowerCase();
+      const area = numericArea(
+        props.Luas_Terpantau_Ha ??
+        props.monitoredAreaHa ??
+        props.Luas_Ha
+      );
+
+      return (
+        (layerId === "monitoring_reports" ||
+          sourceType === "monitoring_report") &&
+        village === "kelapa pati" &&
+        area >= 2.5 &&
+        area <= 3.5 &&
+        geometryPolygons(feature.geometry).length > 0
+      );
+    });
+  }
+
   async function loadDatabase() {
 	  console.log("LOADDATABASE VERSI BARU");
   setStatus("Mengambil objek dari Master Database…", false);
@@ -1087,9 +1247,34 @@ L.control.scale({
           return layerId !== "area_mangrove";
         });
 
+        const monitoring3Ha = findKelapaPatiMonitoring3Ha(
+          nonMangroveFeatures
+        );
+
+        const officialMangroveFeatures = mangrove.features.filter(feature => {
+          const props = feature && feature.properties || {};
+          const village = String(props.Desa || "")
+            .trim()
+            .toLowerCase();
+          const phase = String(props.Tahun || "")
+            .trim()
+            .toLowerCase();
+
+          const obsoleteOverlap =
+            monitoring3Ha &&
+            village === "kelapa pati" &&
+            phase === "phase ii" &&
+            geometriesIntersect(
+              feature.geometry,
+              monitoring3Ha.geometry
+            );
+
+          return !obsoleteOverlap;
+        });
+
         data.features = [
           ...nonMangroveFeatures,
-          ...mangrove.features
+          ...officialMangroveFeatures
         ];
       }
     }
@@ -1184,5 +1369,6 @@ L.control.scale({
 
   loadDatabase();
 })();
+
 
 
