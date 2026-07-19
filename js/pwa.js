@@ -4,7 +4,7 @@
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
       navigator.serviceWorker
-        .register("./service-worker.js?v=20260720-monitoring-photo-rules2")
+        .register("./service-worker.js?v=20260720-monitoring-date-fix1")
         .catch(error => console.warn("Service worker gagal:", error));
     });
   }
