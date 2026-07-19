@@ -1,0 +1,84 @@
+/* Penyempurnaan tampilan Dashboard Monitoring V1 di dalam Blogger */
+.monitor-header{display:none!important}
+.dashboard-shell{padding-top:20px}
+.hero.hero-compact{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:24px;
+  padding:24px 28px;
+}
+.hero.hero-compact h1{
+  margin:6px 0 8px;
+  max-width:700px;
+  font-size:clamp(28px,4vw,46px);
+}
+.hero.hero-compact p{
+  max-width:760px;
+  line-height:1.5;
+}
+.hero-actions{
+  display:flex;
+  flex-direction:column;
+  gap:9px;
+  flex:0 0 auto;
+}
+.hero-button{
+  display:inline-flex;
+  min-width:170px;
+  align-items:center;
+  justify-content:center;
+  padding:11px 15px;
+  border-radius:11px;
+  background:#fff;
+  color:#0c6949;
+  font-weight:850;
+  text-decoration:none;
+}
+.hero-button.secondary{
+  border:1px solid rgba(255,255,255,.55);
+  background:transparent;
+  color:#fff;
+}
+@media(max-width:700px){
+  .dashboard-shell{
+    width:min(100% - 18px,1240px);
+    padding-top:12px;
+  }
+  .hero.hero-compact{
+    display:block;
+    padding:20px;
+    border-radius:18px;
+  }
+  .hero.hero-compact h1{
+    font-size:34px;
+    line-height:1.05;
+  }
+  .hero.hero-compact p{
+    font-size:15px;
+    line-height:1.5;
+  }
+  .hero-actions{
+    flex-direction:row;
+    margin-top:16px;
+  }
+  .hero-button{
+    min-width:0;
+    flex:1;
+    padding:10px 8px;
+    font-size:14px;
+  }
+  .summary-grid{
+    margin-top:12px;
+  }
+  .summary-grid article{
+    min-height:132px;
+  }
+  .summary-grid article strong{
+    font-size:28px;
+    line-height:1.05;
+  }
+  #stat-latest{
+    font-size:23px;
+  }
+}
