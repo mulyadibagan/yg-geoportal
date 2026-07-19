@@ -1,4 +1,4 @@
-const CACHE_NAME = "yg-geoportal-v4-20260719-shapefile-authoritative-corrected5";
+const CACHE_NAME = "yg-geoportal-v4-20260720-monitoring-photo-rules2";
 
 const STATIC_ASSETS = [
   "./",
@@ -13,7 +13,11 @@ const STATIC_ASSETS = [
   "./css/webgis-v3.css",
   "./css/monitoring.css",
   "./css/report.css",
-  "./js/pwa.js",
+  "./css/report-v6.css?v=20260713-40",
+  "./js/config.js",
+  "./js/report-v6.js?v=20260713-40",
+  "./js/report-photo-rules.js?v=20260720-2",
+  "./js/pwa.js?v=20260714-1",
   "./js/map-v4.js?v=20260719-shapefile-authoritative-corrected5"
 ];
 
@@ -88,7 +92,3 @@ self.addEventListener("fetch", event => {
     })
   );
 });
-
-
-
-
