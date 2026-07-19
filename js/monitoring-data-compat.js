@@ -127,7 +127,9 @@
   }
 
   function keyText(value) {
-    return String(value || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+    return String(value || '')
+      .toLowerCase()
+      .normalize ? String(value || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, ' ').trim() : String(value || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
   }
 
   function geometryKey(geometry) {
@@ -141,22 +143,25 @@
     return {
       id: String(p.targetObjectId || '').trim(),
       name: keyText(p.targetObjectName || p.locationName || p.title || ''),
-      layer: keyText(p.targetLayerId || ''),
+      layer: keyText(p.targetLayerId || p.layerId || p.layer || ''),
       geometry: geometryKey(feature && feature.geometry)
     };
   }
 
   function sameObject(targetKeys, sourceKeys) {
-    if (targetKeys.id || sourceKeys.id) {
-      return !!targetKeys.id && !!sourceKeys.id && targetKeys.id === sourceKeys.id;
-    }
+    if (!targetKeys || !sourceKeys) return false;
 
-    return !!targetKeys.layer &&
-      !!targetKeys.name &&
-      !!targetKeys.geometry &&
-      targetKeys.layer === sourceKeys.layer &&
-      targetKeys.name === sourceKeys.name &&
-      targetKeys.geometry === sourceKeys.geometry;
+    // Layer wajib sama agar foto mangrove tidak pernah bercampur dengan
+    // FDRS, sekat kanal, APO, atau jenis objek lain.
+    if (!targetKeys.layer || !sourceKeys.layer || targetKeys.layer !== sourceKeys.layer) return false;
+
+    // Nama objek yang sudah dinormalisasi menjadi identitas utama untuk
+    // data lama karena targetObjectId dapat berubah saat geometri direvisi.
+    if (targetKeys.name && sourceKeys.name) return targetKeys.name === sourceKeys.name;
+
+    // Fallback aman hanya untuk data lama yang benar-benar tidak memiliki nama.
+    if (targetKeys.id && sourceKeys.id) return targetKeys.id === sourceKeys.id;
+    return !!targetKeys.geometry && targetKeys.geometry === sourceKeys.geometry;
   }
 
   function mergePhotoUpdates(reportData, updateData) {
@@ -168,13 +173,14 @@
     reportFeatures.forEach(function (feature) {
       var target = feature.properties || {};
       var targetKeys = objectKeys(feature);
-      var merged = Array.isArray(target.photos) ? target.photos.slice() : [];
+      var merged = [];
+      (Array.isArray(target.photos) ? target.photos : []).forEach(function (url) { pushUnique(merged, url); });
 
       updateFeatures.forEach(function (updateFeature) {
         var source = updateFeature.properties || {};
-        if (String(source.reportType || '').toLowerCase() !== 'tambah foto kegiatan') return;
+        if (keyText(source.reportType || '') !== 'tambah foto kegiatan') return;
         if (!sameObject(targetKeys, objectKeys(updateFeature))) return;
-        (source.photos || []).forEach(function (url) { pushUnique(merged, url); });
+        (Array.isArray(source.photos) ? source.photos : []).forEach(function (url) { pushUnique(merged, url); });
       });
 
       target.photos = merged;
