@@ -2,7 +2,9 @@
   'use strict';
 
   var callbackName = 'ygMonitoringDashboardCallback';
+  var updatesCallbackName = 'ygMonitoringPhotoUpdatesCallback';
   var assignedCallback = null;
+  var BASE = 'https://script.google.com/macros/s/AKfycbxeGTDZXkR0DyLZmBHTq2M-52Iu4dTTGpH164S7sYHg8qPzvffobC6-r-TBLVHMT3HU-A/exec';
 
   function firstValue(object, keys) {
     if (!object || typeof object !== 'object') return '';
@@ -110,36 +112,6 @@
     return p;
   }
 
-  function objectKey(p) {
-    var direct = firstValue(p, ['targetObjectId','objectId','featureId','targetFeatureId']);
-    if (direct) return 'id|' + String(direct).trim().toLowerCase();
-    var layer = firstValue(p, ['targetLayerId','layerId','targetLayerLabel']);
-    var title = firstValue(p, ['locationName','targetObjectName','title','objectName','location']);
-    return 'fallback|' + String(layer || '').trim().toLowerCase() + '|' + String(title || '').trim().toLowerCase();
-  }
-
-  function mergeRelatedPhotoReports(features) {
-    var photoMap = {};
-    features.forEach(function (feature) {
-      var p = feature.properties || {};
-      var reportType = String(p.reportType || '').trim().toLowerCase();
-      if (reportType === 'monitoring' || !Array.isArray(p.photos) || !p.photos.length) return;
-      var key = objectKey(p);
-      if (!photoMap[key]) photoMap[key] = [];
-      p.photos.forEach(function (url) { pushUnique(photoMap[key], url); });
-    });
-
-    features.forEach(function (feature) {
-      var p = feature.properties || {};
-      if (String(p.reportType || '').trim().toLowerCase() !== 'monitoring') return;
-      var related = photoMap[objectKey(p)] || [];
-      if (!related.length) return;
-      var merged = Array.isArray(p.photos) ? p.photos.slice() : [];
-      related.forEach(function (url) { pushUnique(merged, url); });
-      p.photos = merged;
-    });
-  }
-
   function normalizePayload(data) {
     if (!data || typeof data !== 'object') return data;
     var features = Array.isArray(data.features) ? data.features : Array.isArray(data.updates) ? data.updates : Array.isArray(data.reports) ? data.reports : [];
@@ -151,22 +123,86 @@
       }
       return { type: 'Feature', properties: normalizeProperties(item && item.properties ? item.properties : item || {}), geometry: item && item.geometry ? item.geometry : null };
     });
-    mergeRelatedPhotoReports(data.features);
     return data;
+  }
+
+  function keyText(value) {
+    return String(value || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  }
+
+  function objectKeys(properties) {
+    var p = properties || {};
+    var id = String(p.targetObjectId || '').trim();
+    var name = keyText(p.targetObjectName || p.locationName || p.title || '');
+    var layer = keyText(p.targetLayerId || p.targetLayerLabel || '');
+    return { id: id, nameLayer: name + '|' + layer, name: name };
+  }
+
+  function mergePhotoUpdates(reportData, updateData) {
+    var reports = normalizePayload(reportData);
+    var updates = normalizePayload(updateData);
+    var reportFeatures = reports && Array.isArray(reports.features) ? reports.features : [];
+    var updateFeatures = updates && Array.isArray(updates.features) ? updates.features : [];
+
+    reportFeatures.forEach(function (feature) {
+      var target = feature.properties || {};
+      var targetKeys = objectKeys(target);
+      var merged = Array.isArray(target.photos) ? target.photos.slice() : [];
+
+      updateFeatures.forEach(function (updateFeature) {
+        var source = updateFeature.properties || {};
+        if (String(source.reportType || '').toLowerCase() !== 'tambah foto kegiatan') return;
+        var sourceKeys = objectKeys(source);
+        var matches =
+          (targetKeys.id && sourceKeys.id && targetKeys.id === sourceKeys.id) ||
+          (targetKeys.nameLayer !== '|' && targetKeys.nameLayer === sourceKeys.nameLayer) ||
+          (targetKeys.name && targetKeys.name === sourceKeys.name);
+        if (!matches) return;
+        (source.photos || []).forEach(function (url) { pushUnique(merged, url); });
+      });
+
+      target.photos = merged;
+      feature.properties = target;
+    });
+
+    return reports;
+  }
+
+  function deliverWithUpdates(reportData) {
+    var completed = false;
+    function finish(data) {
+      if (completed) return;
+      completed = true;
+      try { delete window[updatesCallbackName]; } catch (error) { window[updatesCallbackName] = undefined; }
+      assignedCallback(normalizePayload(data));
+    }
+
+    window[updatesCallbackName] = function (updateData) {
+      finish(mergePhotoUpdates(reportData, updateData));
+    };
+
+    var script = document.createElement('script');
+    script.src = BASE + '?page=public-updates&callback=' + updatesCallbackName + '&t=' + Date.now();
+    script.async = true;
+    script.onerror = function () { finish(reportData); };
+    document.head.appendChild(script);
+    window.setTimeout(function () { finish(reportData); }, 8000);
   }
 
   try {
     Object.defineProperty(window, callbackName, {
       configurable: true,
       enumerable: true,
-      get: function () { return assignedCallback ? function (data) { assignedCallback(normalizePayload(data)); } : undefined; },
+      get: function () {
+        return assignedCallback ? function (data) { deliverWithUpdates(data); } : undefined;
+      },
       set: function (fn) { assignedCallback = typeof fn === 'function' ? fn : null; }
     });
   } catch (error) {
     var timer = window.setInterval(function () {
       var original = window[callbackName];
       if (typeof original !== 'function' || original.__ygCompatWrapped) return;
-      var wrapped = function (data) { original(normalizePayload(data)); };
+      var wrapped = function (data) { assignedCallback = original; deliverWithUpdates(data); };
       wrapped.__ygCompatWrapped = true;
       window[callbackName] = wrapped;
       window.clearInterval(timer);
