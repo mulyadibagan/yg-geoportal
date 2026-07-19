@@ -1,4 +1,4 @@
-const CACHE_NAME = "yg-geoportal-v4-20260714-1";
+const CACHE_NAME = "yg-geoportal-v4-20260719-kelapa-pati-3ha-final2";
 
 const STATIC_ASSETS = [
   "./",
@@ -13,7 +13,8 @@ const STATIC_ASSETS = [
   "./css/webgis-v3.css",
   "./css/monitoring.css",
   "./css/report.css",
-  "./js/pwa.js"
+  "./js/pwa.js",
+  "./js/map-v4.js?v=20260719-kelapa-pati-3ha-final2"
 ];
 
 self.addEventListener("install", event => {
@@ -87,3 +88,4 @@ self.addEventListener("fetch", event => {
     })
   );
 });
+
