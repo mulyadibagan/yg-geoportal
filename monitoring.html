@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>Dashboard Monitoring | YG GeoPortal</title>
   <link rel="icon" href="assets/logo-yayasan-gambut.png">
-  <link rel="stylesheet" href="css/monitoring.css?v=20260720-1">
+  <link rel="stylesheet" href="css/monitoring.css?v=20260720-100">
+  <link rel="stylesheet" href="css/monitoring-v1-fix.css?v=20260720-100">
   <meta name="theme-color" content="#079cde">
   <meta name="application-name" content="YG GeoPortal">
   <meta name="apple-mobile-web-app-title" content="YG GeoPortal">
@@ -16,29 +17,24 @@
   <link rel="icon" type="image/png" sizes="192x192" href="assets/logo-yayasan-gambut-192.png">
 </head>
 <body>
-  <header class="monitor-header">
-    <a class="brand" href="index.html">
-      <img src="assets/logo-yayasan-gambut.png" alt="Logo Yayasan Gambut">
-      <span><strong>YG GeoPortal</strong><small>Dashboard Monitoring</small></span>
-    </a>
-    <nav>
-      <a href="webgis.html">Buka Peta</a>
-      <a class="primary" href="report.html?type=monitoring">Kirim Monitoring</a>
-    </nav>
-  </header>
-
   <main class="dashboard-shell">
-    <section class="hero">
-      <span class="eyebrow">DATA TERVERIFIKASI</span>
-      <h1>Monitoring Program Yayasan Gambut</h1>
-      <p>Kompilasi hasil monitoring penanaman mangrove, hutan mangrove, restorasi hutan, tinggi muka air gambut/FDRS, sekat kanal, APO, pembibitan, dan kegiatan lapangan lainnya.</p>
+    <section class="hero hero-compact">
+      <div>
+        <span class="eyebrow">DATA TERVERIFIKASI</span>
+        <h1>Monitoring Program Yayasan Gambut</h1>
+        <p>Ringkasan monitoring mangrove, gambut, FDRS, sekat kanal, APO, pembibitan, dan kegiatan lapangan lainnya.</p>
+      </div>
+      <div class="hero-actions">
+        <a class="hero-button" href="report.html?type=monitoring">Kirim Monitoring</a>
+        <a class="hero-button secondary" href="webgis.html">Buka Peta</a>
+      </div>
     </section>
 
     <section class="summary-grid" aria-label="Ringkasan monitoring">
       <article><span>Total monitoring</span><strong id="stat-total">0</strong><small>hasil terverifikasi</small></article>
       <article><span>Objek dipantau</span><strong id="stat-objects">0</strong><small>lokasi/objek unik</small></article>
-      <article><span>Perlu tindak lanjut</span><strong id="stat-action">0</strong><small>status waspada/bermasalah</small></article>
-      <article><span>Monitoring terbaru</span><strong id="stat-latest">—</strong><small>tanggal pembaruan</small></article>
+      <article><span>Perlu tindak lanjut</span><strong id="stat-action">0</strong><small>status waspada/permasalah</small></article>
+      <article><span>Monitoring terbaru</span><strong id="stat-latest">—</strong><small>tanggal kegiatan terbaru</small></article>
     </section>
 
     <section class="toolbar" aria-label="Filter monitoring">
@@ -87,7 +83,7 @@
 
         <section class="side-card">
           <h2>Standar FDRS YG</h2>
-          <p>FDRS menggunakan water table pelampung, bukan sensor elektronik. Nilai muka air dicatat manual saat kunjungan dan status dashboard dihitung otomatis.</p>
+          <p>FDRS menggunakan water table pelampung. Nilai muka air dicatat saat kunjungan dan status dihitung otomatis.</p>
           <div class="water-legend">
             <span><i class="wet"></i>0 s.d. −20 cm: sangat basah</span>
             <span><i class="normal"></i>−21 s.d. −40 cm: perlu dipantau</span>
@@ -106,9 +102,8 @@
     </section>
   </div>
 
-  <script src="js/monitoring-endpoint-fix.js?v=20260720-1"></script>
-  <script src="js/monitoring.js?v=20260720-5"></script>
-  <script src="js/monitoring-photo.js?v=20260720-1"></script>
-  <script src="js/pwa.js?v=20260714-1"></script>
+  <script src="js/monitoring.js?v=20260720-100"></script>
+  <script src="js/monitoring-photo.js?v=20260720-100"></script>
+  <script src="js/pwa.js?v=20260720-100"></script>
 </body>
 </html>
