@@ -56,77 +56,14 @@
     return isNaN(direct.getTime()) ? text : direct.toISOString();
   }
 
-  function collectPhotoValues(value, output) {
-    if (value === undefined || value === null || value === '') return;
-
-    if (Array.isArray(value)) {
-      value.forEach(function (item) {
-        collectPhotoValues(item, output);
-      });
-      return;
-    }
-
-    if (typeof value === 'object') {
-      var direct = firstValue(value, [
-        'url', 'webViewLink', 'webContentLink', 'fileUrl', 'photoUrl',
-        'imageUrl', 'src', 'link', 'downloadUrl'
-      ]);
-      if (direct) collectPhotoValues(direct, output);
-      else Object.keys(value).forEach(function (key) {
-        collectPhotoValues(value[key], output);
-      });
-      return;
-    }
-
-    var text = String(value).trim();
-    if (!text) return;
-
-    try {
-      var parsed = JSON.parse(text);
-      if (parsed !== text) {
-        collectPhotoValues(parsed, output);
-        return;
-      }
-    } catch (error) {
-      // Nilai bukan JSON; lanjutkan sebagai teks biasa.
-    }
-
-    var urls = text.match(/https?:\/\/[^\s,;|"'<>]+/gi);
-    if (urls && urls.length) {
-      urls.forEach(function (url) {
-        if (output.indexOf(url) === -1) output.push(url);
-      });
-    }
-  }
-
   function normalizeProperties(properties) {
     var p = properties && typeof properties === 'object' ? properties : {};
-
     var rawDate = p.activityDate || firstValue(p, [
       'monitoringDate', 'activity_date', 'monitoring_date', 'tanggalKegiatan',
       'tanggalMonitoring', 'date', 'reportDate', 'eventDate', 'publishedAt',
       'verifiedAt', 'receivedAt', 'createdAt', 'timestamp'
     ]);
     if (rawDate) p.activityDate = normalizeDateValue(rawDate);
-
-    var photos = [];
-    [
-      'photos', 'photoUrls', 'photoURLs', 'photoLinks', 'images', 'imageUrls',
-      'documentationPhotos', 'documentation', 'attachments', 'files',
-      'dokumentasiFoto', 'foto', 'fotoUrls', 'uploadedPhotos'
-    ].forEach(function (key) {
-      collectPhotoValues(p[key], photos);
-    });
-
-    if (!photos.length) {
-      Object.keys(p).forEach(function (key) {
-        if (/foto|photo|image|dokumentasi|attachment/i.test(key)) {
-          collectPhotoValues(p[key], photos);
-        }
-      });
-    }
-
-    if (photos.length) p.photos = photos;
     return p;
   }
 
@@ -141,16 +78,13 @@
           ? data.reports
           : [];
 
-    if (!Array.isArray(data.features) && features.length) {
-      data.features = features;
-    }
+    if (!Array.isArray(data.features) && features.length) data.features = features;
 
     data.features = (data.features || []).map(function (item) {
       if (item && item.type === 'Feature') {
         item.properties = normalizeProperties(item.properties || {});
         return item;
       }
-
       return {
         type: 'Feature',
         properties: normalizeProperties(item && item.properties ? item.properties : item || {}),
