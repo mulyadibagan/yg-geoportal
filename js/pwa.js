@@ -4,7 +4,7 @@
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
       navigator.serviceWorker
-        .register("./service-worker.js?v=20260719-kelapa-pati-3ha-final2")
+        .register("./service-worker.js?v=20260719-kelapa-pati-3ha-corrected3")
         .catch(error => console.warn("Service worker gagal:", error));
     });
   }
@@ -36,4 +36,5 @@
     });
   });
 })();
+
 

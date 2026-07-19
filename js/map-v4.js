@@ -1156,6 +1156,50 @@ L.control.scale({
     return normalized ? Number(normalized[0]) : NaN;
   }
 
+  function ringSurface(ring) {
+    let surface = 0;
+
+    for (let i = 0, j = ring.length - 1; i < ring.length; j = i, i += 1) {
+      surface +=
+        (ring[j][0] * ring[i][1]) -
+        (ring[i][0] * ring[j][1]);
+    }
+
+    return Math.abs(surface / 2);
+  }
+
+  function keepLargestPolygonPart(feature) {
+    if (
+      !feature ||
+      !feature.geometry ||
+      feature.geometry.type !== "MultiPolygon" ||
+      !Array.isArray(feature.geometry.coordinates)
+    ) {
+      return feature;
+    }
+
+    const polygons = feature.geometry.coordinates;
+    if (!polygons.length) return feature;
+
+    const largest = polygons.reduce((best, polygon) => {
+      const surface = polygon && polygon[0]
+        ? ringSurface(polygon[0])
+        : 0;
+
+      return surface > best.surface
+        ? { polygon: polygon, surface: surface }
+        : best;
+    }, { polygon: polygons[0], surface: -1 });
+
+    return {
+      ...feature,
+      geometry: {
+        type: "Polygon",
+        coordinates: largest.polygon
+      }
+    };
+  }
+
   function findKelapaPatiMonitoring3Ha(features) {
     return (features || []).find(feature => {
       const props = feature && feature.properties || {};
@@ -1252,55 +1296,33 @@ L.control.scale({
         );
 
         /*
-         * Batas monitoring 3 ha dipromosikan menjadi poligon resmi
-         * Area Penanaman Mangrove. Objek monitoring aslinya dikeluarkan
-         * agar tidak muncul lagi sebagai garis kuning putus-putus.
+         * Poligon monitoring kuning tidak ditampilkan sebagai layer terpisah.
+         * Area penanaman resmi tetap berasal dari GeoJSON mangrove.
          */
         const visibleNonMangroveFeatures = monitoring3Ha
           ? nonMangroveFeatures.filter(feature => feature !== monitoring3Ha)
           : nonMangroveFeatures;
 
-        const officialMangroveFeatures = mangrove.features.filter(feature => {
-          if (!monitoring3Ha) return true;
-
+        const officialMangroveFeatures = mangrove.features.map(feature => {
           const props = feature && feature.properties || {};
           const village = String(props.Desa || "")
             .trim()
             .toLowerCase();
+          const phase = String(props.Tahun || "")
+            .trim()
+            .toLowerCase();
 
-          const overlapsOfficial3Ha =
-            village === "kelapa pati" &&
-            geometriesIntersect(
-              feature.geometry,
-              monitoring3Ha.geometry
-            );
+          /*
+           * Objek Phase III Kelapa Pati tersimpan sebagai MultiPolygon.
+           * Pertahankan hanya bidang terbesar; komponen kecil yang bertabrakan
+           * tidak lagi digambar.
+           */
+          if (village === "kelapa pati" && phase === "phase iii") {
+            return keepLargestPolygonPart(feature);
+          }
 
-          return !overlapsOfficial3Ha;
+          return feature;
         });
-
-        if (monitoring3Ha) {
-          const monitoringProps = monitoring3Ha.properties || {};
-
-          officialMangroveFeatures.push({
-            type: "Feature",
-            properties: {
-              ...monitoringProps,
-              Layer_ID: "area_mangrove",
-              Source_Layer: "area_mangrove",
-              Source_Type: "program_object",
-              Layer_Label: "Area Penanaman Mangrove",
-              Nama_Objek: "Area Penanaman Mangrove – Kelapa Pati (3 ha)",
-              Desa: "Kelapa Pati",
-              Tahun: "Phase III",
-              Luas_Ha: numericArea(
-                monitoringProps.Luas_Terpantau_Ha ??
-                monitoringProps.monitoredAreaHa ??
-                monitoringProps.Luas_Ha
-              )
-            },
-            geometry: monitoring3Ha.geometry
-          });
-        }
 
         data.features = [
           ...visibleNonMangroveFeatures,
@@ -1399,6 +1421,7 @@ L.control.scale({
 
   loadDatabase();
 })();
+
 
 
 
