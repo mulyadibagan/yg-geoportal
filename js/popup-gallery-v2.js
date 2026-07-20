@@ -21,6 +21,28 @@
     });
   }
 
+  function mediaKey(url) {
+    var text = clean(url)
+      .replace(/&amp;/g, '&')
+      .replace(/^["']+|["']+$/g, '');
+    var patterns = [
+      /\/file\/d\/([A-Za-z0-9_-]+)/i,
+      /\/d\/([A-Za-z0-9_-]+)/i,
+      /[?&]id=([A-Za-z0-9_-]+)/i
+    ];
+
+    for (var i = 0; i < patterns.length; i += 1) {
+      var match = text.match(patterns[i]);
+      if (match) return 'drive:' + match[1];
+    }
+
+    /*
+     * URL non-Drive sering berbeda hanya pada parameter cache/thumbnail.
+     * Abaikan query dan fragment agar satu berkas tidak dihitung dua kali.
+     */
+    return text.split(/[?#]/)[0].replace(/\/+$/, '').toLowerCase();
+  }
+
   function readItems(source) {
     var seen = {};
     return Array.prototype.map.call(
@@ -29,7 +51,7 @@
         var image = card.querySelector('img');
         var full = clean(card.getAttribute('href'));
         var thumb = clean(image && image.getAttribute('src')) || full;
-        var key = full || thumb;
+        var key = mediaKey(full || thumb);
         if (!key || seen[key]) return null;
         seen[key] = true;
         return {
