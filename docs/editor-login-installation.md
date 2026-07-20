@@ -67,12 +67,21 @@ Gunakan versi terbaru di:
 Fungsi tersebut menerima sesi login, masih menerima token admin lama sebagai
 jalur pemulihan, dan mencatat email pengguna yang melakukan perubahan.
 
-## 4. Deployment
+## 4. Ganti `PolygonEditorBackend.gs`
+
+Ganti seluruh isi file tersebut dengan:
+
+`apps-script/PolygonEditorBackend-login.gs`
+
+Handler lama memeriksa `ADMIN_TOKEN` sebelum memanggil Database Engine. Versi
+baru meneruskan sesi login ke `updateMasterObject`, tempat sesi diverifikasi.
+
+## 5. Deployment
 
 Simpan project, lalu **Terapkan → Kelola deployment → Edit → Versi baru**.
 Gunakan deployment yang sama agar URL WebGIS tidak berubah.
 
-## 5. Pengujian
+## 6. Pengujian
 
 1. Buka `polygon-editor.html` pada branch `develop`.
 2. Pastikan layar login tampil dan kolom token tidak ada.
