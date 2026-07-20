@@ -1,24 +1,35 @@
 (() => {
   "use strict";
 
+  const API = "https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec?page=objects";
   const DEFAULT_VIEW = [1.25, 102.05];
   const DEFAULT_ZOOM = 9;
   const LAYERS = [
-    { id: "desa_intervensi", label: "Desa Intervensi", caption: "Batas wilayah program", color: "#2f7d4c", type: "polygon", visible: true },
-    { id: "area_mangrove", label: "Penanaman Mangrove", caption: "Area rehabilitasi pesisir", color: "#168b78", type: "polygon", visible: true },
+    { id: "desa_intervensi", label: "Desa Intervensi", caption: "Batas wilayah program", color: "#2f7d4c", type: "polygon", visible: true, staticFile: "desa_intervensi.geojson" },
+    { id: "area_mangrove", label: "Penanaman Mangrove", caption: "Area rehabilitasi pesisir resmi", color: "#168b78", type: "polygon", visible: true, staticFile: "area_mangrove.geojson" },
     { id: "apo", label: "Pemecah Ombak", caption: "Infrastruktur perlindungan pesisir", color: "#d05b45", type: "line", visible: true },
+    { id: "monitoring_reports", label: "Monitoring Terverifikasi", caption: "Hasil pemantauan lapangan", color: "#f9a825", type: "polygon", visible: true },
+    { id: "community_reports", label: "Laporan Masyarakat", caption: "Laporan publik terverifikasi", color: "#7b1fa2", type: "point", visible: true },
+    { id: "forest_land_restoration", label: "Restorasi Hutan & Lahan", caption: "Lokasi pemulihan ekosistem", color: "#388e3c", type: "polygon", visible: true },
+    { id: "nursery_coffee", label: "Rumah Pembibitan Kopi", caption: "Pembibitan tanaman lahan gambut", color: "#795548", type: "point", visible: true },
+    { id: "information_signs", label: "Plang Informasi", caption: "Informasi dan perlindungan kawasan", color: "#5e35b1", type: "point", visible: true },
+    { id: "supporting_infrastructure", label: "Infrastruktur Pendukung", caption: "Sarana pendukung program", color: "#546e7a", type: "point", visible: true },
+    { id: "area_kopi", label: "Wilayah Penanaman Kopi", caption: "Area agroforestri dan kopi", color: "#8e5a2b", type: "polygon", visible: true, staticFile: "area_kopi.geojson" },
+    { id: "kopi", label: "Distribusi Kopi", caption: "Penguatan ekonomi masyarakat", color: "#79573d", type: "point", visible: true },
     { id: "fdrs", label: "FDRS / Water Table", caption: "Pemantauan risiko kebakaran", color: "#e58a3d", type: "point", visible: true },
     { id: "sekat_kanal", label: "Sekat Kanal", caption: "Infrastruktur pembasahan gambut", color: "#16829a", type: "point", visible: true },
     { id: "nursery_mangrove", label: "Pembibitan Mangrove", caption: "Rumah bibit masyarakat", color: "#91a83f", type: "point", visible: true },
-    { id: "kopi", label: "Lahan Kopi", caption: "Penguatan ekonomi masyarakat", color: "#79573d", type: "point", visible: true },
     { id: "titik_desa", label: "Titik Desa", caption: "Pusat desa intervensi", color: "#397ac2", type: "point", visible: false }
   ];
   const REFERENCES = [
     { id: "kawasan_hutan_sk_903", file: "kawasan_hutan_sk_903.geojson", label: "Kawasan Hutan SK 903", caption: "Referensi fungsi kawasan", color: "#56645f", type: "polygon" },
-    { id: "gambut_bbsdlp_2019", file: "Gambut_BBSDLP_2019.geojson", label: "Peta Gambut BBSDLP 2019", caption: "Referensi sebaran gambut", color: "#6d4c3d", type: "polygon" }
+    { id: "gambut_bbsdlp_2019", file: "Gambut_BBSDLP_2019.geojson", label: "Peta Gambut BBSDLP 2019", caption: "Referensi sebaran gambut", color: "#6d4c3d", type: "polygon" },
+    { id: "iuphhk_ht_2014", file: "IUPHHK_HT_2014.geojson", label: "IUPHHK-HT 2014", caption: "Referensi perizinan pemanfaatan hutan", color: "#c62828", type: "polygon" },
+    { id: "perhutanan_sosial_riau", file: "PERHUTANAN_SOSIAL_RIAU.geojson", label: "Perhutanan Sosial Riau", caption: "Referensi akses kelola masyarakat", color: "#00897b", type: "polygon" }
   ];
   const allConfigs = [...LAYERS, ...REFERENCES];
-  const state = { layers: new Map(), features: [], bounds: L.latLngBounds([]), selected: null, loading: 0 };
+  const state = { layers: new Map(), features: [], bounds: L.latLngBounds([]), selected: null, loading: 0, databaseUpdated: "" };
+  let masterDataPromise = null;
 
   const map = L.map("map", { preferCanvas: true, zoomControl: true, minZoom: 5 }).setView(DEFAULT_VIEW, DEFAULT_ZOOM);
   const baseMaps = {
@@ -35,7 +46,7 @@
   const hiddenKey = key => /^(OBJECTID|FID|FID_1|SRS_ID|Shape_|KODE_|X$|Y$|Id$|No$)/i.test(key);
   const featureName = feature => {
     const p = feature.properties || {};
-    return p.Nama_Objek || p.title || p.NAMOBJ || p.NAMA_DESA || p.Desa || p.WADMKD || p.Keterangan || "Objek program";
+    return p.Nama_Objek || p.title || p.NAMA_PRH || p.NAMA_HKM || p.NAMOBJ || p.NAMA_DESA || p.Desa || p.WADMKD || p.Keterangan || "Objek program";
   };
 
   function layerRow(config, reference = false) {
@@ -79,6 +90,13 @@
     $("detail-title").textContent = item.name;
     $("detail-cover").style.setProperty("--detail-color", item.config.color);
     const rows = Object.entries(p).filter(([key, value]) => !hiddenKey(key) && value !== null && value !== "" && typeof value !== "undefined").slice(0, 14);
+    const knownArea = Number(p.Luas_Ha || p.LUAS_HA || p.LUAS_POLI || p.LUAS_UKURA || 0);
+    const calculatedArea = geometryAreaHa(item.feature.geometry);
+    if ((!Number.isFinite(knownArea) || knownArea <= 0) && calculatedArea > 0) {
+      rows.push(["Luas_Poligon_Otomatis_Ha", new Intl.NumberFormat("id-ID", {
+        maximumFractionDigits: 2
+      }).format(calculatedArea)]);
+    }
     $("detail-fields").innerHTML = rows.length ? rows.map(([key, value]) => `<div class="detail-row"><b>${escapeHtml(cleanLabel(key))}</b><span>${escapeHtml(value)}</span></div>`).join("") : '<div class="detail-row"><span>Informasi atribut belum tersedia.</span></div>';
     $("detail-panel").classList.add("open");
     $("detail-panel").setAttribute("aria-hidden", "false");
@@ -92,6 +110,82 @@
     else if (layer.getBounds && layer.getBounds().isValid()) map.fitBounds(layer.getBounds(), { padding: [45, 45], maxZoom: 15 });
   }
 
+  async function loadMasterData() {
+    if (!masterDataPromise) {
+      masterDataPromise = fetch(API + "&t=" + Date.now(), {
+        cache: "no-store",
+        redirect: "follow"
+      }).then(response => {
+        if (!response.ok) throw new Error("Master Database HTTP " + response.status);
+        return response.json();
+      }).then(data => {
+        if (!data || !Array.isArray(data.features)) {
+          throw new Error("Format Master Database tidak valid");
+        }
+        state.databaseUpdated = data.updatedAt || data.lastUpdated || "";
+        return data;
+      });
+    }
+    return masterDataPromise;
+  }
+
+  function layerIdOf(feature) {
+    const p = feature && feature.properties || {};
+    return String(p.Layer_ID || p.Source_Layer || "").trim().toLowerCase();
+  }
+
+  async function dataFor(config) {
+    const reference = REFERENCES.some(item => item.id === config.id);
+    if (reference || config.staticFile) {
+      const file = reference ? config.file : config.staticFile;
+      const response = await fetch("../data/" + file + "?v=20260721-v2", {
+        cache: "no-store"
+      });
+      if (!response.ok) throw new Error("HTTP " + response.status);
+      return response.json();
+    }
+
+    const database = await loadMasterData();
+    return {
+      type: "FeatureCollection",
+      features: database.features.filter(feature =>
+        layerIdOf(feature) === config.id
+      )
+    };
+  }
+
+  function ringAreaSquareMeters(ring) {
+    if (!Array.isArray(ring) || ring.length < 3) return 0;
+    const radius = 6378137;
+    const radians = Math.PI / 180;
+    let area = 0;
+    for (let index = 0; index < ring.length; index += 1) {
+      const current = ring[index];
+      const next = ring[(index + 1) % ring.length];
+      if (!current || !next) continue;
+      area += (next[0] - current[0]) * radians *
+        (2 + Math.sin(current[1] * radians) + Math.sin(next[1] * radians));
+    }
+    return Math.abs(area * radius * radius / 2);
+  }
+
+  function polygonAreaSquareMeters(rings) {
+    if (!Array.isArray(rings) || !rings.length) return 0;
+    return Math.max(0, ringAreaSquareMeters(rings[0]) -
+      rings.slice(1).reduce((sum, ring) => sum + ringAreaSquareMeters(ring), 0));
+  }
+
+  function geometryAreaHa(geometry) {
+    if (!geometry || !Array.isArray(geometry.coordinates)) return 0;
+    const squareMeters = geometry.type === "Polygon"
+      ? polygonAreaSquareMeters(geometry.coordinates)
+      : geometry.type === "MultiPolygon"
+        ? geometry.coordinates.reduce((sum, polygon) =>
+            sum + polygonAreaSquareMeters(polygon), 0)
+        : 0;
+    return squareMeters / 10000;
+  }
+
   async function loadLayer(config, shouldShow = config.visible) {
     if (state.layers.has(config.id)) {
       const existing = state.layers.get(config.id);
@@ -103,9 +197,10 @@
     state.loading += 1;
     setStatus();
     try {
-      const response = await fetch(`../data/${config.file || `${config.id}.geojson`}`, { cache: "no-store" });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const data = await response.json();
+      const data = await dataFor(config);
+      if (!data || !Array.isArray(data.features)) {
+        throw new Error("GeoJSON tidak valid");
+      }
       let geoLayer;
       geoLayer = L.geoJSON(data, {
         style: () => styleFor(config),
