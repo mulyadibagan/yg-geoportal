@@ -4,9 +4,6 @@
   const API = "https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec?page=objects";
   const DEFAULT_VIEW = [1.25, 102.05];
   const DEFAULT_ZOOM = 9;
-  const MAPBOX_PUBLIC_TOKEN = String(
-    window.YG_MAP_CONFIG && window.YG_MAP_CONFIG.mapboxPublicToken || ""
-  ).trim();
 
   const STYLE = {
     desa_intervensi: { label: "Batas Desa Intervensi", color: "#2e7d32", visible: true },
@@ -90,18 +87,6 @@ L.control.scale({
       }
     )
   };
-
-  if (MAPBOX_PUBLIC_TOKEN) {
-    baseMaps["Mapbox Satellite"] = L.tileLayer(
-      "https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.jpg90?access_token={accessToken}",
-      {
-        accessToken: MAPBOX_PUBLIC_TOKEN,
-        maxNativeZoom: 18,
-        maxZoom: 20,
-        attribution: "Imagery &copy; Mapbox"
-      }
-    );
-  }
 
   baseMaps.OpenStreetMap.addTo(map);
   L.control.layers(baseMaps, null, { position: "topright" }).addTo(map);
