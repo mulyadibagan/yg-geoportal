@@ -313,6 +313,7 @@
 
   function showFeature(feature, options) {
     options = options || {};
+    map.pm.disableDraw();
     if (selectedLayer) {
       map.removeLayer(selectedLayer);
       selectedLayer = null;
@@ -339,6 +340,12 @@
     fillForm();
     toggleButtons(true);
     renderList();
+    if (window.innerWidth <= 1200) {
+      setStatus(
+        "Objek dipilih. Klik “Edit atribut objek” untuk membuka seluruh atribut.",
+        "ok"
+      );
+    }
   }
 
   function editableLeafletLayer() {
@@ -796,6 +803,7 @@
   }
 
   function toggleButtons(hasSelection) {
+    document.getElementById("open-attributes").disabled = !hasSelection;
     document.getElementById("fit-object").disabled = !hasSelection;
     document.getElementById("start-edit").disabled = !hasSelection || editing;
     document.getElementById("finish-edit").disabled = !hasSelection || !editing;
@@ -923,6 +931,20 @@
   searchInput.addEventListener("input", applyFilter);
   document.getElementById("reload-data").addEventListener("click", loadObjects);
   document.getElementById("new-object").addEventListener("click", beginCreateObject);
+  document.getElementById("open-attributes").addEventListener("click", () => {
+    if (!selectedFeature) {
+      setStatus("Pilih objek dari daftar terlebih dahulu.", "error");
+      return;
+    }
+    document.querySelector(".form-panel").scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+    const objectNameInput = form.elements.objectName;
+    if (objectNameInput) {
+      setTimeout(() => objectNameInput.focus({ preventScroll: true }), 450);
+    }
+  });
   document.getElementById("start-edit").addEventListener("click", startEdit);
   document.getElementById("finish-edit").addEventListener("click", finishEdit);
   document.getElementById("reset-geometry").addEventListener("click", resetGeometry);

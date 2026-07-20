@@ -6,10 +6,11 @@ button,input,select{font:inherit}
 .editor-header .back,.editor-header .map-link{color:var(--green);font-weight:850;text-decoration:none}
 .editor-header div{flex:1}.editor-header h1{margin:0;font-size:22px}.editor-header p{margin:2px 0;color:var(--muted);font-size:12px}
 .shell{width:min(1800px,calc(100% - 24px));margin:12px auto}
-.access-card{display:grid;grid-template-columns:minmax(280px,1.2fr) minmax(150px,.55fr) auto auto minmax(180px,.75fr);gap:10px;align-items:end;padding:13px;border:1px solid var(--line);border-radius:14px;background:#fff}
+.access-card{display:grid;grid-template-columns:minmax(260px,1.2fr) minmax(140px,.55fr) auto auto auto minmax(150px,.7fr);gap:10px;align-items:end;padding:13px;border:1px solid var(--line);border-radius:14px;background:#fff}
 label{display:flex;flex-direction:column;gap:5px;color:#53645b;font-size:11px;font-weight:800}
 input,select{width:100%;padding:10px;border:1px solid #cbdcd3;border-radius:9px;background:#fff}
 button{padding:10px 13px;border:0;border-radius:9px;background:var(--green);color:#fff;font-weight:850;cursor:pointer}
+.attribute-button{background:#075f46}
 button:disabled{opacity:.45;cursor:not-allowed}.secondary{border:1px solid #cbdcd3;background:#fff;color:#375047}.success{background:#16865f}.danger{background:#fff1ef;color:var(--danger);border:1px solid #efc4be}
 #status{align-self:center;color:var(--muted);font-size:12px;font-weight:750}.status-ok{color:var(--green)!important}.status-error{color:var(--danger)!important}
 .workspace{display:grid;grid-template-columns:330px minmax(500px,1fr) 430px;gap:12px;margin-top:12px;height:calc(100vh - 177px);min-height:620px}
@@ -28,7 +29,7 @@ button:disabled{opacity:.45;cursor:not-allowed}.secondary{border:1px solid #cbdc
 .attribute-editor textarea{width:100%;margin:8px 0;padding:10px;border:1px solid #cbdcd3;border-radius:9px;background:#14231d;color:#d5eee3;font:10px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;resize:vertical}
 pre{max-height:220px;overflow:auto;padding:10px;border-radius:9px;background:#14231d;color:#d5eee3;font-size:9px}
 .leaflet-pm-toolbar .button-container{font-size:14px}
-@media(max-width:1200px){.workspace{grid-template-columns:300px 1fr;height:auto}.form-panel{grid-column:1/-1;max-height:none}.map-panel{min-height:650px}}
+@media(max-width:1200px){.workspace{grid-template-columns:300px 1fr;height:auto}.form-panel{grid-column:1/-1;max-height:none;min-height:420px}.map-panel{min-height:650px}.attribute-button{box-shadow:0 0 0 3px rgba(8,118,83,.12)}}
 @media(max-width:760px){.editor-header{gap:10px;padding:11px}.editor-header p{display:none}.shell{width:100%;margin:0}.access-card,.workspace{grid-template-columns:1fr;border-radius:0}.workspace{height:auto}.object-panel{max-height:360px}.map-panel{min-height:560px}.form-grid{grid-template-columns:1fr}.form-panel{border-radius:0}.access-card{align-items:stretch}.map-link{display:none}}
 
 
