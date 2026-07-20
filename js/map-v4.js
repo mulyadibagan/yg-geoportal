@@ -4,6 +4,9 @@
   const API = "https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec?page=objects";
   const DEFAULT_VIEW = [1.25, 102.05];
   const DEFAULT_ZOOM = 9;
+  const MAPBOX_PUBLIC_TOKEN = String(
+    window.YG_MAP_CONFIG && window.YG_MAP_CONFIG.mapboxPublicToken || ""
+  ).trim();
 
   const STYLE = {
     desa_intervensi: { label: "Batas Desa Intervensi", color: "#2e7d32", visible: true },
@@ -76,11 +79,29 @@ L.control.scale({
     "Satelit": L.tileLayer(
       "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
       {
-        maxZoom: 19,
+        /*
+         * Sebagian lokasi pedesaan tidak memiliki tile Esri pada zoom 18–19.
+         * Leaflet memperbesar tile zoom 17 secara digital sehingga pengguna
+         * tetap dapat zoom tanpa mendapat tile "Map data not yet available".
+         */
+        maxNativeZoom: 17,
+        maxZoom: 20,
         attribution: "Tiles &copy; Esri"
       }
     )
   };
+
+  if (MAPBOX_PUBLIC_TOKEN) {
+    baseMaps["Mapbox Satellite"] = L.tileLayer(
+      "https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.jpg90?access_token={accessToken}",
+      {
+        accessToken: MAPBOX_PUBLIC_TOKEN,
+        maxNativeZoom: 18,
+        maxZoom: 20,
+        attribution: "Imagery &copy; Mapbox"
+      }
+    );
+  }
 
   baseMaps.OpenStreetMap.addTo(map);
   L.control.layers(baseMaps, null, { position: "topright" }).addTo(map);
