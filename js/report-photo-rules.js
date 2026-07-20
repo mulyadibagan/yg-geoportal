@@ -34,8 +34,12 @@
 
   function decoratePreview() {
     const figures = Array.from(preview.querySelectorAll("figure"));
+    const type = selectedReportType();
     const isMangroveBeforeAfter =
-      selectedReportType() === "Tambah Foto Kegiatan" &&
+      (
+        type === "Tambah Foto Kegiatan" ||
+        type === "Replanting/Penyulaman Mangrove"
+      ) &&
       layerSelect.value === "area_mangrove";
 
     figures.forEach((figure, index) => {
@@ -73,7 +77,13 @@
       box.innerHTML =
         "<b>Foto wajib:</b> setiap laporan monitoring harus memiliki minimal 1 foto lapangan.";
       box.classList.add("required");
-    } else if (type === "Tambah Foto Kegiatan" && layerId === "area_mangrove") {
+    } else if (
+      (
+        type === "Tambah Foto Kegiatan" ||
+        type === "Replanting/Penyulaman Mangrove"
+      ) &&
+      layerId === "area_mangrove"
+    ) {
       box.innerHTML =
         "<b>Foto before–after wajib:</b> unggah minimal 2 foto. " +
         "Foto pertama harus kondisi <b>sebelum (BEFORE)</b> dan foto kedua kondisi <b>sesudah (AFTER)</b>. " +
@@ -114,14 +124,17 @@
       }
 
       if (
-        type === "Tambah Foto Kegiatan" &&
+        (
+          type === "Tambah Foto Kegiatan" ||
+          type === "Replanting/Penyulaman Mangrove"
+        ) &&
         layerSelect.value === "area_mangrove" &&
         count < 2
       ) {
         event.preventDefault();
         event.stopImmediatePropagation();
         alert(
-          "Penambahan foto Area Penanaman Mangrove wajib memiliki minimal 2 foto: " +
+          "Kegiatan pada Area Penanaman Mangrove wajib memiliki minimal 2 foto: " +
           "foto pertama BEFORE (sebelum) dan foto kedua AFTER (sesudah)."
         );
         imageInput.scrollIntoView({ behavior: "smooth", block: "center" });

@@ -38,7 +38,8 @@
   ];
 
   var existingFeatureTypes = [
-    'Tambah Foto Kegiatan','Perbaikan Informasi','Monitoring'
+    'Tambah Foto Kegiatan','Perbaikan Informasi','Monitoring',
+    'Replanting/Penyulaman Mangrove'
   ];
 
   /*
@@ -50,6 +51,7 @@
     'Titik Baru',
     'Area/Poligon Baru',
     'Monitoring',
+    'Replanting/Penyulaman Mangrove',
     'Kebakaran',
     'Abrasi',
     'Biodiversitas'
@@ -95,6 +97,9 @@
     var proposedInformation = document.getElementById('proposed-information');
     var monitoringFields = document.getElementById('monitoring-fields');
     if(monitoringFields) monitoringFields.hidden = type !== 'Monitoring';
+    var replantingFields = document.getElementById('replanting-fields');
+    if(replantingFields) replantingFields.hidden =
+      type !== 'Replanting/Penyulaman Mangrove';
     var guidance = document.getElementById('type-guidance');
     var geometryHelp = document.getElementById('geometry-help');
 
@@ -132,16 +137,23 @@
       document.getElementById('existing-feature-title').textContent =
         type === 'Tambah Foto Kegiatan'
           ? 'Pilih objek WebGIS untuk penambahan foto'
-          : 'Pilih objek WebGIS yang akan diperbaiki';
+          : type === 'Replanting/Penyulaman Mangrove'
+            ? 'Pilih area penanaman mangrove yang akan direplanting'
+            : type === 'Monitoring'
+              ? 'Pilih objek WebGIS yang akan dimonitor'
+              : 'Pilih objek WebGIS yang akan diperbaiki';
 
       document.getElementById('correction-detail-fields').hidden =
         type !== 'Perbaikan Informasi';
 
       document.getElementById('photo-target-note').hidden =
-        type !== 'Tambah Foto Kegiatan';
+        ['Tambah Foto Kegiatan','Replanting/Penyulaman Mangrove']
+          .indexOf(type) === -1;
 
       guidance.textContent = type === 'Tambah Foto Kegiatan'
         ? 'Pilih layer dan objek WebGIS yang akan menerima foto baru.'
+        : type === 'Replanting/Penyulaman Mangrove'
+          ? 'Pilih polygon penanaman mangrove lama, isi data penyulaman, lalu unggah foto BEFORE dan AFTER.'
         : type === 'Monitoring'
           ? 'Pilih objek WebGIS yang sudah ada, lalu isi indikator monitoring sesuai jenisnya.'
           : 'Pilih layer, lalu klik titik atau poligon WebGIS yang informasinya ingin diperbaiki.';
@@ -1165,6 +1177,18 @@
     };
   }
 
+  function collectReplantingData(){
+    return {
+      activityType:'Replanting/Penyulaman Mangrove',
+      replantedCount:monitoringValue('replanting-count'),
+      species:monitoringValue('replanting-species'),
+      replantedAreaHa:monitoringValue('replanting-area'),
+      reason:monitoringValue('replanting-reason'),
+      notes:monitoringValue('replanting-notes'),
+      photoStages:['BEFORE','AFTER']
+    };
+  }
+
   function updateMonitoringPanels(){
     var type = monitoringValue('monitoring-type');
     var mangrove = document.getElementById('monitoring-mangrove-fields');
@@ -1277,6 +1301,48 @@
       }
     }
 
+    if(selectedType === 'Replanting/Penyulaman Mangrove'){
+      var replantingDataValidation = collectReplantingData();
+      if(
+        !replantingDataValidation.replantedCount ||
+        Number(replantingDataValidation.replantedCount) < 1
+      ){
+        alert('Isi jumlah bibit replanting minimal 1 bibit.');
+        return;
+      }
+      if(!replantingDataValidation.species){
+        alert('Isi jenis mangrove atau bibit yang digunakan.');
+        return;
+      }
+      if(
+        !replantingDataValidation.replantedAreaHa ||
+        Number(replantingDataValidation.replantedAreaHa) <= 0
+      ){
+        alert('Isi luas area replanting lebih dari 0 ha.');
+        return;
+      }
+      if(!replantingDataValidation.reason){
+        alert('Pilih penyebab replanting.');
+        return;
+      }
+      if(!replantingDataValidation.notes){
+        alert('Isi catatan pelaksanaan replanting.');
+        return;
+      }
+      if(
+        !selectedCorrectionFeature ||
+        selectedCorrectionFeature.layerId !== 'area_mangrove'
+      ){
+        alert('Replanting harus terhubung ke objek pada layer Area Penanaman Mangrove.');
+        return;
+      }
+      if(compressedImages.length < 2){
+        alert('Replanting wajib memiliki minimal dua foto: BEFORE (sebelum) dan AFTER (sesudah).');
+        imageInput.scrollIntoView({behavior:'smooth',block:'center'});
+        return;
+      }
+    }
+
     if(
       photoRequiredTypes.indexOf(selectedType) !== -1 &&
       compressedImages.length < 1
@@ -1322,7 +1388,9 @@
       oldInformation:value('old-information'),
       proposedInformation:selectedType === 'Monitoring'
         ? JSON.stringify(collectMonitoringData())
-        : value('proposed-information'),
+        : selectedType === 'Replanting/Penyulaman Mangrove'
+          ? JSON.stringify(collectReplantingData())
+          : value('proposed-information'),
       documentUrl:value('document-url'),
       geometryType:geometryGeoJSON ? geometryGeoJSON.type : '',
       geometryGeoJSON:geometryGeoJSON ? JSON.stringify(geometryGeoJSON) : '',
@@ -1345,7 +1413,9 @@
         ? JSON.stringify(collectProposedChanges())
         : selectedType === 'Monitoring'
           ? JSON.stringify({monitoring:collectMonitoringData()})
-          : '',
+          : selectedType === 'Replanting/Penyulaman Mangrove'
+            ? JSON.stringify({replanting:collectReplantingData()})
+            : '',
       images:compressedImages
     };
 

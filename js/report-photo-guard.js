@@ -25,6 +25,7 @@
       "Titik Baru",
       "Area/Poligon Baru",
       "Monitoring",
+      "Replanting/Penyulaman Mangrove",
       "Kebakaran",
       "Abrasi",
       "Biodiversitas"

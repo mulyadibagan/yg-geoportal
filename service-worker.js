@@ -1,4 +1,4 @@
-const CACHE_NAME = "yg-geoportal-v4-20260720-edge-refresh1";
+const CACHE_NAME = "yg-geoportal-v4-20260720-replanting1";
 
 const STATIC_ASSETS = [
   "./",
@@ -16,9 +16,9 @@ const STATIC_ASSETS = [
   "./css/report.css",
   "./css/report-v6.css?v=20260713-40",
   "./js/config.js",
-  "./js/report-v6.js?v=20260720-photo-lock1",
-  "./js/report-photo-rules.js?v=20260720-photo-lock1",
-  "./js/report-photo-guard.js?v=20260720-photo-lock1",
+  "./js/report-v6.js?v=20260720-replanting1",
+  "./js/report-photo-rules.js?v=20260720-replanting1",
+  "./js/report-photo-guard.js?v=20260720-replanting1",
   "./js/monitoring-data-compat.js?v=20260720-edge-refresh1",
   "./js/monitoring.js?v=20260720-edge-refresh1",
   "./js/monitoring-photo.js?v=20260720-edge-refresh1",
