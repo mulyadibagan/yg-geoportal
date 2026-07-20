@@ -77,7 +77,6 @@ body{overflow-x:hidden}
   background:#fff;
   box-shadow:0 12px 32px rgba(20,70,52,.08);
 }
-.stat-grid .stat:first-child{grid-column:1/-1}
 .stat-grid .stat strong{
   display:block;
   color:#076b9c;

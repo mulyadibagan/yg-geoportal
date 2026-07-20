@@ -167,6 +167,7 @@
     });
 
     const regencies = new Set();
+    const villages = new Set();
     const programs = {};
     const programLayers = {};
     const regencyCounts = {};
@@ -179,6 +180,9 @@
       const regency = firstValue(props, [
         "Kabupaten", "Kab_Kota", "KAB_KOTA", "WADMKK", "regency"
       ]);
+      const village = firstValue(props, [
+        "Desa", "WADMKD", "village"
+      ]);
       const program = programOf(props, layerId);
 
       if (regency) {
@@ -186,6 +190,7 @@
         if (!regencyCounts[regency]) regencyCounts[regency] = { count: 0 };
         regencyCounts[regency].count += 1;
       }
+      if (village) villages.add(village.toLowerCase());
 
       if (program) {
         increment(programs, program);
@@ -203,6 +208,7 @@
     });
 
     document.getElementById("dash-regencies").textContent = formatNumber(regencies.size);
+    document.getElementById("dash-villages").textContent = formatNumber(villages.size);
     document.getElementById("dash-mangrove-area").textContent =
       formatNumber(mangroveArea, 2) + " ha";
     document.getElementById("dash-reports").textContent = formatNumber(reports);
