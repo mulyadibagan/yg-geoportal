@@ -89,59 +89,41 @@
     loginStatus.textContent = message || "";
   }
 
-  function postForAuthResult(action, fields) {
-    return new Promise((resolve, reject) => {
-      const requestId = "yg-auth-" + Date.now() + "-" + Math.random().toString(36).slice(2);
-      const iframeName = "yg-auth-frame-" + Date.now();
-      const iframe = document.createElement("iframe");
-      const postForm = document.createElement("form");
-      let finished = false;
+  async function postAuthRequest(action, fields) {
+    const requestId =
+      "yg-auth-" + Date.now() + "-" +
+      Math.random().toString(36).slice(2) +
+      Math.random().toString(36).slice(2);
+    const body = new URLSearchParams(
+      Object.assign({ action: action, requestId: requestId }, fields || {})
+    );
 
-      iframe.name = iframeName;
-      iframe.hidden = true;
-      postForm.method = "POST";
-      postForm.action = api;
-      postForm.target = iframeName;
-      postForm.hidden = true;
-
-      const values = Object.assign({ action: action, requestId: requestId }, fields || {});
-      Object.keys(values).forEach(key => {
-        const input = document.createElement("input");
-        input.type = "hidden";
-        input.name = key;
-        input.value = values[key] == null ? "" : String(values[key]);
-        postForm.appendChild(input);
-      });
-
-      function cleanup() {
-        window.removeEventListener("message", onMessage);
-        iframe.remove();
-        postForm.remove();
-      }
-
-      function finish(callback) {
-        if (finished) return;
-        finished = true;
-        clearTimeout(timer);
-        cleanup();
-        callback();
-      }
-
-      function onMessage(event) {
-        const data = event.data;
-        if (!data || data.source !== "yg-editor-auth" || data.requestId !== requestId) return;
-        finish(() => data.ok ? resolve(data) : reject(new Error(data.message || "Login gagal.")));
-      }
-
-      const timer = setTimeout(() => {
-        finish(() => reject(new Error("Waktu login habis. Periksa deployment Apps Script.")));
-      }, 30000);
-
-      window.addEventListener("message", onMessage);
-      document.body.appendChild(iframe);
-      document.body.appendChild(postForm);
-      postForm.submit();
+    await fetch(api, {
+      method: "POST",
+      mode: "no-cors",
+      cache: "no-store",
+      redirect: "follow",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
+      },
+      body: body.toString()
     });
+
+    if (action === "editor-logout") return { ok: true };
+
+    for (let attempt = 0; attempt < 30; attempt += 1) {
+      await new Promise(resolve => setTimeout(resolve, attempt ? 700 : 350));
+      const result = await callbackLoad(
+        api + "?page=editor-auth-result&requestId=" +
+        encodeURIComponent(requestId)
+      );
+
+      if (result && result.pending) continue;
+      if (result && result.ok) return result;
+      throw new Error(result && result.message || "Login gagal.");
+    }
+
+    throw new Error("Waktu login habis. Periksa deployment Apps Script.");
   }
 
   async function loginEditor(event) {
@@ -150,7 +132,7 @@
     loginStatus.textContent = "Memeriksa akun...";
 
     try {
-      const result = await postForAuthResult("editor-login", {
+      const result = await postAuthRequest("editor-login", {
         username: document.getElementById("login-username").value.trim(),
         password: document.getElementById("login-password").value
       });
@@ -174,7 +156,7 @@
     clearSession("Anda sudah keluar.");
     if (!token) return;
     try {
-      await postForAuthResult("editor-logout", { sessionToken: token });
+      await postAuthRequest("editor-logout", { sessionToken: token });
     } catch (error) {
       console.warn("Logout backend:", error);
     }

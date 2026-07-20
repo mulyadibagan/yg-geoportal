@@ -29,34 +29,33 @@ function handleEditorAuthPost_(e) {
 
   try {
     if (action === 'editor-login') {
-      return editorLoginResponse_(
-        requestId,
-        clean_(params.username).toLowerCase(),
-        String(params.password || '')
-      );
+      const result = createEditorLoginResult_(
+          requestId,
+          clean_(params.username).toLowerCase(),
+          String(params.password || '')
+        );
+      storeEditorAuthResult_(requestId, result);
+      return editorAuthAccepted_();
     }
 
     if (action === 'editor-logout') {
       deleteEditorSession_(clean_(params.sessionToken));
-      return editorAuthHtml_({
-        ok: true,
-        source: 'yg-editor-auth',
-        requestId: requestId
-      });
+      return editorAuthAccepted_();
     }
 
     throw new Error('Aksi autentikasi tidak dikenal.');
   } catch (error) {
-    return editorAuthHtml_({
+    const result = {
       ok: false,
-      source: 'yg-editor-auth',
       requestId: requestId,
       message: error.message || 'Autentikasi gagal.'
-    });
+    };
+    if (requestId) storeEditorAuthResult_(requestId, result);
+    return editorAuthAccepted_();
   }
 }
 
-function editorLoginResponse_(requestId, username, password) {
+function createEditorLoginResult_(requestId, username, password) {
   const user = EDITOR_USERS[username];
   const suppliedHash = hashEditorPassword_(username, password);
 
@@ -85,15 +84,49 @@ function editorLoginResponse_(requestId, username, password) {
     JSON.stringify(session)
   );
 
-  return editorAuthHtml_({
+  return {
     ok: true,
-    source: 'yg-editor-auth',
     requestId: requestId,
     sessionToken: sessionToken,
     username: username,
     role: user.role,
     expiresAt: expiresAt
-  });
+  };
+}
+
+function getEditorAuthResult_(requestId) {
+  const cleanRequestId = clean_(requestId).replace(/[^a-zA-Z0-9_-]/g, '');
+  if (!cleanRequestId) return { ok: false, message: 'Request ID tidak valid.' };
+
+  const properties = PropertiesService.getScriptProperties();
+  const key = editorAuthResultKey_(cleanRequestId);
+  const raw = properties.getProperty(key);
+  if (!raw) return { pending: true };
+
+  properties.deleteProperty(key);
+  try {
+    const result = JSON.parse(raw);
+    if (Date.now() - Number(result.createdAt || 0) > 60000) {
+      return { ok: false, message: 'Permintaan login telah kedaluwarsa.' };
+    }
+    delete result.createdAt;
+    return result;
+  } catch (error) {
+    return { ok: false, message: 'Hasil login tidak valid.' };
+  }
+}
+
+function storeEditorAuthResult_(requestId, result) {
+  if (!requestId) return;
+  const stored = Object.assign({ createdAt: Date.now() }, result);
+  PropertiesService.getScriptProperties().setProperty(
+    editorAuthResultKey_(requestId),
+    JSON.stringify(stored)
+  );
+}
+
+function editorAuthResultKey_(requestId) {
+  return 'EDITOR_LOGIN_RESULT_' + requestId;
 }
 
 function assertEditorCredential_(credential) {
@@ -181,11 +214,8 @@ function constantTimeEquals_(left, right) {
   return difference === 0;
 }
 
-function editorAuthHtml_(payload) {
-  const json = JSON.stringify(payload).replace(/</g, '\\u003c');
-  return HtmlService.createHtmlOutput(
-    '<!doctype html><meta charset="utf-8"><script>' +
-    'window.top.postMessage(' + json + ', "*");' +
-    '<\/script>'
-  ).setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+function editorAuthAccepted_() {
+  return ContentService
+    .createTextOutput(JSON.stringify({ ok: true, accepted: true }))
+    .setMimeType(ContentService.MimeType.JSON);
 }

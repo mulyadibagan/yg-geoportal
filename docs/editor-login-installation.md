@@ -37,6 +37,27 @@ if (action === 'update-master-object') {
 }
 ```
 
+Tambahkan juga rute hasil login di `doGet(e)` sebelum rute `page === 'objects'`:
+
+```javascript
+if (page === 'editor-auth-result') {
+  const result = getEditorAuthResult_(params.requestId || '');
+  const json = JSON.stringify(result);
+
+  if (callback && /^[a-zA-Z_$][0-9a-zA-Z_$\.]*$/.test(callback)) {
+    return ContentService
+      .createTextOutput(callback + '(' + json + ');')
+      .setMimeType(ContentService.MimeType.JAVASCRIPT);
+  }
+
+  return ContentService
+    .createTextOutput(json)
+    .setMimeType(ContentService.MimeType.JSON);
+}
+```
+
+Versi `Kode-final-login-editor.gs` sudah memiliki kedua rute tersebut.
+
 ## 3. Ganti fungsi `updateMasterObject`
 
 Gunakan versi terbaru di:
@@ -59,4 +80,3 @@ Gunakan deployment yang sama agar URL WebGIS tidak berubah.
 4. Edit objek uji lalu simpan.
 5. Pastikan `CHANGE_LOG` mencatat email akun yang login.
 6. Klik **Keluar** dan pastikan editor kembali terkunci.
-
