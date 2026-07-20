@@ -1,4 +1,4 @@
-const CACHE_NAME = "yg-geoportal-v4-20260720-mangrove-shp1";
+const CACHE_NAME = "yg-geoportal-v4-20260720-mangrove-align1";
 
 const STATIC_ASSETS = [
   "./",
@@ -23,7 +23,7 @@ const STATIC_ASSETS = [
   "./js/monitoring.js?v=20260720-edge-refresh1",
   "./js/monitoring-photo.js?v=20260720-edge-refresh1",
   "./js/pwa.js?v=20260720-edge-refresh1",
-  "./js/map-v4.js?v=20260720-mangrove-shp1"
+  "./js/map-v4.js?v=20260720-mangrove-align1"
 ];
 
 self.addEventListener("install", event => {

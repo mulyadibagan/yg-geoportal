@@ -1268,33 +1268,179 @@ L.control.scale({
     };
   }
 
-  function findKelapaPatiMonitoring3Ha(features) {
-    return (features || []).find(feature => {
-      const props = feature && feature.properties || {};
-      const layerId = String(
-        props.Layer_ID || props.Source_Layer || ""
-      ).trim().toLowerCase();
-      const sourceType = String(props.Source_Type || "")
-        .trim()
-        .toLowerCase();
-      const village = String(
-        props.Desa || props.WADMKD || ""
-      ).trim().toLowerCase();
-      const area = numericArea(
-        props.Luas_Terpantau_Ha ??
-        props.monitoredAreaHa ??
-        props.Luas_Ha
-      );
+  function normalizedMatchValue(value) {
+    return String(value == null ? "" : value)
+      .trim()
+      .toLowerCase()
+      .replace(/[–—]/g, "-")
+      .replace(/\s+/g, " ");
+  }
 
-      return (
-        (layerId === "monitoring_reports" ||
-          sourceType === "monitoring_report") &&
-        village === "kelapa pati" &&
-        area >= 2.5 &&
-        area <= 3.5 &&
-        geometryPolygons(feature.geometry).length > 0
-      );
+  function phaseValue(value) {
+    const match = normalizedMatchValue(value).match(
+      /\b(?:phase|fase)\s*(i{1,3}|iv|v|\d+)\b/i
+    );
+    return match ? match[1].toLowerCase() : "";
+  }
+
+  function isMangroveMonitoringFeature(feature) {
+    const props = feature && feature.properties || {};
+    const layerId = normalizedMatchValue(
+      props.Layer_ID || props.Source_Layer
+    );
+    const sourceType = normalizedMatchValue(props.Source_Type);
+    const monitoringType = normalizedMatchValue(
+      props.Monitoring_Type || props.monitoringType || props.Kategori
+    );
+
+    return (
+      (layerId === "monitoring_reports" ||
+        sourceType === "monitoring_report") &&
+      monitoringType.includes("mangrove")
+    );
+  }
+
+  function matchOfficialMangroveFeature(monitoring, officialFeatures) {
+    const props = monitoring && monitoring.properties || {};
+    const village = normalizedMatchValue(
+      props.Desa || props.WADMKD || props.targetObjectName
+    );
+    const monitoringName = [
+      props.Nama_Objek,
+      props.targetObjectName,
+      props.locationName,
+      props.title
+    ].filter(Boolean).join(" ");
+    const monitoringPhase = phaseValue(monitoringName);
+    const monitoredArea = numericArea(
+      props.Luas_Terpantau_Ha ??
+      props.monitoredAreaHa ??
+      props.Luas_Ha
+    );
+
+    let candidates = (officialFeatures || []).filter(feature => {
+      const officialProps = feature && feature.properties || {};
+      return normalizedMatchValue(officialProps.Desa) === village;
     });
+
+    if (!candidates.length) return null;
+
+    if (monitoringPhase) {
+      const samePhase = candidates.filter(feature => {
+        const officialProps = feature && feature.properties || {};
+        return phaseValue(
+          officialProps.Ket || officialProps.Nama_Objek
+        ) === monitoringPhase;
+      });
+      if (samePhase.length) candidates = samePhase;
+    }
+
+    if (Number.isFinite(monitoredArea)) {
+      candidates.sort((first, second) => {
+        const firstArea = numericArea(
+          first && first.properties && first.properties.Luas_Ha
+        );
+        const secondArea = numericArea(
+          second && second.properties && second.properties.Luas_Ha
+        );
+        return (
+          Math.abs(firstArea - monitoredArea) -
+          Math.abs(secondArea - monitoredArea)
+        );
+      });
+    }
+
+    /*
+     * Fase yang sama merupakan pengenal kuat untuk laporan lama.
+     * Tanpa fase, luas harus cukup dekat agar laporan tidak tertaut
+     * ke plot lain yang kebetulan berada di desa yang sama.
+     */
+    const selected = candidates[0] || null;
+    if (!selected || monitoringPhase || !Number.isFinite(monitoredArea)) {
+      return selected;
+    }
+
+    const selectedArea = numericArea(
+      selected.properties && selected.properties.Luas_Ha
+    );
+    const difference = Math.abs(selectedArea - monitoredArea);
+    const tolerance = Math.max(0.05, monitoredArea * 0.1);
+    return difference <= tolerance ? selected : null;
+  }
+
+  function mergeOfficialMangroveData(data, mangrove) {
+    if (
+      !data ||
+      !Array.isArray(data.features) ||
+      !mangrove ||
+      mangrove.type !== "FeatureCollection" ||
+      !Array.isArray(mangrove.features)
+    ) {
+      return data;
+    }
+
+    mangrove.features.forEach(feature => {
+      if (!feature.properties) feature.properties = {};
+      if (!feature.properties.Layer_ID) {
+        feature.properties.Layer_ID = "area_mangrove";
+      }
+      if (!feature.properties.Layer_Label) {
+        feature.properties.Layer_Label = "Area Penanaman Mangrove";
+      }
+      if (!feature.properties.Nama_Objek) {
+        feature.properties.Nama_Objek = "Area Penanaman Mangrove";
+      }
+    });
+
+    const nonMangroveFeatures = data.features.filter(feature => {
+      const props = feature && feature.properties || {};
+      const layerId = normalizedMatchValue(
+        props.Layer_ID || props.Source_Layer
+      );
+      return layerId !== "area_mangrove";
+    });
+
+    /*
+     * Laporan monitoring menyimpan geometri saat laporan dibuat.
+     * Setelah tim GIS memperbaiki SHP, properti laporan tetap dipakai,
+     * sedangkan bentuk pada peta mengikuti objek resmi terbaru.
+     */
+    const alignedFeatures = nonMangroveFeatures.map(feature => {
+      if (!isMangroveMonitoringFeature(feature)) return feature;
+
+      const official = matchOfficialMangroveFeature(
+        feature,
+        mangrove.features
+      );
+      if (!official) return feature;
+
+      const officialProps = official.properties || {};
+      return {
+        ...feature,
+        geometry: JSON.parse(JSON.stringify(official.geometry)),
+        properties: {
+          ...(feature.properties || {}),
+          Target_Object_ID_Current: officialProps.Object_ID || "",
+          Target_Object_Name_Current: officialProps.Nama_Objek || "",
+          Geometry_Source: "area_mangrove_latest"
+        }
+      };
+    });
+
+    data.features = [
+      ...alignedFeatures,
+      ...mangrove.features
+    ];
+    return data;
+  }
+
+  async function loadOfficialMangrove() {
+    const response = await fetch(
+      "data/area_mangrove.geojson?v=" + Date.now(),
+      { cache: "no-store" }
+    );
+    if (!response.ok) throw new Error("HTTP " + response.status);
+    return response.json();
   }
 
   async function loadDatabase() {
@@ -1313,75 +1459,12 @@ L.control.scale({
 
     const data = await response.json();
 
-    // 2. Ambil GeoJSON area mangrove
-    const mangroveResponse = await fetch("data/area_mangrove.geojson?v=" + Date.now());
-
-    if (!mangroveResponse.ok) {
-      console.warn("area_mangrove.geojson tidak ditemukan");
-    } else {
-
-      const mangrove = await mangroveResponse.json();
-
-      if (
-        mangrove &&
-        mangrove.type === "FeatureCollection" &&
-        Array.isArray(mangrove.features)
-      ) {
-
-        // Tambahkan Layer_ID bila belum ada
-        mangrove.features.forEach(f => {
-          if (!f.properties) f.properties = {};
-
-          if (!f.properties.Layer_ID) {
-            f.properties.Layer_ID = "area_mangrove";
-          }
-
-          if (!f.properties.Layer_Label) {
-            f.properties.Layer_Label = "Area Penanaman Mangrove";
-          }
-
-          if (!f.properties.Nama_Objek) {
-            f.properties.Nama_Objek = "Area Penanaman Mangrove";
-          }
-        });
-
-        /*
-         * Gunakan GeoJSON lokal sebagai satu-satunya sumber layer mangrove.
-         * Poligon area_mangrove lama dari Master Database dikeluarkan agar
-         * tidak bertumpuk dengan poligon resmi, termasuk area 3 ha.
-         */
-        const nonMangroveFeatures = (data.features || []).filter(feature => {
-          const props = feature && feature.properties || {};
-          const layerId = String(
-            props.Layer_ID || props.Source_Layer || ""
-          ).trim().toLowerCase();
-
-          return layerId !== "area_mangrove";
-        });
-
-        const monitoring3Ha = findKelapaPatiMonitoring3Ha(
-          nonMangroveFeatures
-        );
-
-        /*
-         * Poligon monitoring kuning tidak ditampilkan sebagai layer terpisah.
-         * Area penanaman resmi tetap berasal dari GeoJSON mangrove.
-         */
-        const visibleNonMangroveFeatures = monitoring3Ha
-          ? nonMangroveFeatures.filter(feature => feature !== monitoring3Ha)
-          : nonMangroveFeatures;
-
-        /*
-         * GeoJSON hasil penyuntingan GIS menjadi sumber geometri resmi.
-         * Semua bagian yang masih ada di file dipertahankan apa adanya.
-         */
-        const officialMangroveFeatures = mangrove.features;
-
-        data.features = [
-          ...visibleNonMangroveFeatures,
-          ...officialMangroveFeatures
-        ];
-      }
+    // 2. Selaraskan geometri laporan dengan SHP mangrove resmi terbaru.
+    try {
+      const mangrove = await loadOfficialMangrove();
+      mergeOfficialMangroveData(data, mangrove);
+    } catch (mangroveError) {
+      console.warn("area_mangrove.geojson tidak dapat dimuat", mangroveError);
     }
 
     initialize(data);
@@ -1393,6 +1476,15 @@ L.control.scale({
 
     try {
       const data = await loadByJsonp();
+      try {
+        const mangrove = await loadOfficialMangrove();
+        mergeOfficialMangroveData(data, mangrove);
+      } catch (mangroveError) {
+        console.warn(
+          "area_mangrove.geojson tidak dapat dimuat melalui jalur cadangan",
+          mangroveError
+        );
+      }
       initialize(data);
     } catch (jsonpError) {
       console.error("Master Database gagal dimuat.", jsonpError);
