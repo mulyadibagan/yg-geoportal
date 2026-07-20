@@ -127,6 +127,27 @@ L.control.scale({
     return props.Nama_Objek || props.title || props.NAMOBJ || props.Desa || props.WADMKD || "Objek WebGIS";
   }
 
+  function getDonor(props) {
+    const source = props || {};
+    const keys = [
+      "Donor", "Nama_Donor", "Funding_Source",
+      "donor", "nama_donor", "funding_source"
+    ];
+
+    for (let index = 0; index < keys.length; index += 1) {
+      const value = source[keys[index]];
+      if (
+        value !== null &&
+        value !== undefined &&
+        String(value).trim() !== ""
+      ) {
+        return String(value).trim();
+      }
+    }
+
+    return "";
+  }
+
   function normalizeVerifiedCommunityAssets(feature) {
     const props = feature && feature.properties || {};
     const layerId = String(
@@ -577,11 +598,6 @@ L.control.scale({
       );
 
       rows += row(
-        "Donor",
-        valueOf(["Donor", "Nama_Donor", "Funding_Source"])
-      );
-
-      rows += row(
         "Proyek",
         valueOf(["Nama_Proyek", "Project_Name", "Proyek"])
       );
@@ -591,6 +607,8 @@ L.control.scale({
         valueOf(["Project_ID", "Kode_Proyek"])
       );
     }
+
+    rows += row("Donor", getDonor(props) || "Belum diisi");
 
     const photos = [
       ...cleanPhotoList(props._ygPhotos),
@@ -731,6 +749,7 @@ L.control.scale({
     searchItems.push({
       text: searchText,
       label: getObjectName(feature),
+      donorMissing: !getDonor(props),
       meta: [props.Desa || props.WADMKD, config.label].filter(Boolean).join(" · "),
       layer: layer,
       parent: parent
@@ -1097,6 +1116,7 @@ L.control.scale({
   function renderSearch(query) {
     const results = document.getElementById("search-results");
     const value = String(query || "").trim().toLowerCase();
+    const missingDonorQuery = value === "__donor_missing__";
 
     if (!value) {
       results.hidden = true;
@@ -1105,8 +1125,10 @@ L.control.scale({
     }
 
     const matches = searchItems
-      .filter(item => item.text.includes(value))
-      .slice(0, 12);
+      .filter(item =>
+        missingDonorQuery ? item.donorMissing : item.text.includes(value)
+      )
+      .slice(0, missingDonorQuery ? 100 : 12);
 
     if (!matches.length) {
       results.innerHTML = '<div class="yg-search-empty">Objek tidak ditemukan.</div>';
@@ -1178,8 +1200,16 @@ L.control.scale({
     const layerId = String(params.get("layer") || "").trim();
     const village = String(params.get("village") || "").trim();
     const search = String(params.get("search") || "").trim();
+    const donor = String(params.get("donor") || "").trim().toLowerCase();
 
     if (layerId && showLayerFromDashboard(layerId)) return;
+
+    if (donor === "missing") {
+      const input = document.getElementById("search-input");
+      if (input) input.value = "Donor belum diisi";
+      renderSearch("__donor_missing__");
+      return;
+    }
 
     if (village) {
       const normalizedVillage = village.toLowerCase();

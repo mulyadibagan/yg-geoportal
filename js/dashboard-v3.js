@@ -91,7 +91,7 @@
       aramco: "Aramco Asia Singapore",
       "aramco asia singapore": "Aramco Asia Singapore"
     };
-    return aliases[normalized] || donor;
+    return aliases[normalized] || donor || "Donor belum diisi";
   }
 
   function donorSearchTerm(donor) {
@@ -261,8 +261,11 @@
     document.getElementById("donor-grid").innerHTML = donorEntries.length
       ? donorEntries.map(([name, count]) => {
           const programCount = Object.keys(donorPrograms[name] || {}).length;
+          const donorUrl = name === "Donor belum diisi"
+            ? mapUrl({ donor: "missing" })
+            : mapUrl({ search: donorSearchTerm(name) });
           return '<a class="category-card dashboard-link" href="' +
-            escapeHtml(mapUrl({ search: donorSearchTerm(name) })) + '">' +
+            escapeHtml(donorUrl) + '">' +
             '<span>' + escapeHtml(name) + '</span>' +
             '<strong>' + formatNumber(count) + '</strong>' +
             '<small>' + formatNumber(programCount) +
