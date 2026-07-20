@@ -95,6 +95,18 @@
             <label>Program
               <input name="program">
             </label>
+            <label>Donor / sumber pendanaan
+              <input name="donor" placeholder="Contoh: Aramco, GEC, Darwin Initiative">
+            </label>
+            <label>Nama proyek
+              <input name="projectName" placeholder="Nama proyek atau hibah">
+            </label>
+            <label>Kode proyek
+              <input name="projectId" placeholder="Contoh: YG-ARAMCO-2026">
+            </label>
+            <label>Nomor perjanjian
+              <input name="agreementNumber" placeholder="Nomor kontrak/MoU (opsional)">
+            </label>
             <label>Fase
               <input name="phase">
             </label>
@@ -123,6 +135,18 @@
               <input name="plantedCount" type="number" step="1">
             </label>
           </div>
+
+          <details class="attribute-editor">
+            <summary>Edit seluruh atribut objek</summary>
+            <p>
+              Atribut teknis tambahan dapat diedit sebagai JSON. Object_ID, identitas
+              layer, dan riwayat revisi tetap dilindungi oleh sistem.
+            </p>
+            <textarea id="all-properties-json" rows="14" spellcheck="false"></textarea>
+            <button id="apply-properties-json" type="button" class="secondary">
+              Terapkan atribut JSON
+            </button>
+          </details>
 
           <div class="save-actions">
             <button id="save-object" type="submit">Simpan ke Master Database</button>
@@ -157,6 +181,6 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://unpkg.com/@geoman-io/leaflet-geoman-free@2.18.0/dist/leaflet-geoman.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@turf/turf@7.2.0/turf.min.js"></script>
-  <script src="js/polygon-editor.js?v=20260720-31"></script>
+  <script src="js/polygon-editor.js?v=20260720-donor1"></script>
 </body>
 </html>

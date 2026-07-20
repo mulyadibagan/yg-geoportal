@@ -37,6 +37,7 @@
   const saveOverlayTitle = document.getElementById("save-overlay-title");
   const saveOverlayText = document.getElementById("save-overlay-text");
   const saveOverlayClose = document.getElementById("save-overlay-close");
+  const allPropertiesJson = document.getElementById("all-properties-json");
 
   function esc(value) {
     return String(value == null ? "" : value).replace(/[&<>"']/g, char => ({
@@ -298,6 +299,10 @@
       category: ["Kategori"],
       status: ["Status_Objek"],
       program: ["Program"],
+      donor: ["Donor", "Nama_Donor", "Funding_Source"],
+      projectName: ["Nama_Proyek", "Project_Name", "Proyek"],
+      projectId: ["Project_ID", "Kode_Proyek"],
+      agreementNumber: ["Nomor_Perjanjian", "Agreement_Number"],
       phase: ["Fase"],
       year: ["Tahun"],
       province: ["Provinsi"],
@@ -323,6 +328,7 @@
     document.getElementById("revision-number").textContent = p.Revision || 0;
     document.getElementById("geometry-json").textContent =
       JSON.stringify(selectedFeature.geometry, null, 2);
+    allPropertiesJson.value = JSON.stringify(p, null, 2);
     updateMetrics();
   }
 
@@ -333,6 +339,8 @@
     const fields = {
       Object_ID: "objectId", Nama_Objek: "objectName", Kategori: "category",
       Status_Objek: "status", Program: "program", Fase: "phase", Tahun: "year",
+      Donor: "donor", Nama_Proyek: "projectName", Project_ID: "projectId",
+      Nomor_Perjanjian: "agreementNumber",
       Provinsi: "province", Kabupaten: "regency", Kecamatan: "district",
       Desa: "village", Luas_Ha: "areaHa", Panjang_M: "lengthM",
       Jumlah_Tanam: "plantedCount"
@@ -360,6 +368,10 @@
       sourceType: p.Source_Type || "program_layer",
       sourceReportId: p.Source_Report_ID || "",
       program: p.Program || "",
+      donor: p.Donor || "",
+      projectName: p.Nama_Proyek || "",
+      projectId: p.Project_ID || "",
+      agreementNumber: p.Nomor_Perjanjian || "",
       phase: p.Fase || "",
       year: p.Tahun || "",
       province: p.Provinsi || "Riau",
@@ -391,6 +403,10 @@
       category: data.category || "",
       status: data.status || "",
       program: data.program || "",
+      donor: data.donor || "",
+      projectName: data.projectName || "",
+      projectId: data.projectId || "",
+      agreementNumber: data.agreementNumber || "",
       phase: data.phase || "",
       year: String(data.year || ""),
       province: data.province || "",
@@ -412,6 +428,10 @@
       category: p.Kategori || "",
       status: p.Status_Objek || "",
       program: p.Program || "",
+      donor: p.Donor || "",
+      projectName: p.Nama_Proyek || "",
+      projectId: p.Project_ID || "",
+      agreementNumber: p.Nomor_Perjanjian || "",
       phase: p.Fase || "",
       year: String(p.Tahun || ""),
       province: p.Provinsi || "",
@@ -577,6 +597,50 @@
     setStatus("Perubahan dibatalkan.", "ok");
   }
 
+  function applyPropertiesJson() {
+    if (!selectedFeature) return;
+
+    let nextProperties;
+    try {
+      nextProperties = JSON.parse(allPropertiesJson.value);
+    } catch (error) {
+      setStatus("JSON atribut tidak valid: " + error.message, "error");
+      return;
+    }
+
+    if (!nextProperties || Array.isArray(nextProperties) ||
+        typeof nextProperties !== "object") {
+      setStatus("Atribut JSON harus berupa satu objek.", "error");
+      return;
+    }
+
+    const current = props(selectedFeature);
+    const protectedValues = {
+      Object_ID: current.Object_ID,
+      Layer_ID: current.Layer_ID,
+      Layer_Label: current.Layer_Label,
+      Source_Layer: current.Source_Layer,
+      Source_Type: current.Source_Type,
+      Source_Report_ID: current.Source_Report_ID,
+      Revision: current.Revision,
+      Created_At: current.Created_At,
+      Created_By: current.Created_By
+    };
+
+    Object.keys(protectedValues).forEach(key => {
+      if (protectedValues[key] !== undefined) {
+        nextProperties[key] = protectedValues[key];
+      }
+    });
+
+    selectedFeature.properties = nextProperties;
+    fillForm();
+    setStatus(
+      "Seluruh atribut diterapkan secara lokal. Periksa lalu simpan ke Master Database.",
+      "ok"
+    );
+  }
+
   function clearSelection() {
     if (selectedLayer) map.removeLayer(selectedLayer);
     selectedLayer = null;
@@ -607,6 +671,8 @@
   document.getElementById("finish-edit").addEventListener("click", finishEdit);
   document.getElementById("reset-geometry").addEventListener("click", resetGeometry);
   document.getElementById("cancel-object").addEventListener("click", cancelChanges);
+  document.getElementById("apply-properties-json")
+    .addEventListener("click", applyPropertiesJson);
   document.getElementById("fit-object").addEventListener("click", () => {
     if (!selectedLayer) return;
     const bounds = selectedLayer.getBounds();

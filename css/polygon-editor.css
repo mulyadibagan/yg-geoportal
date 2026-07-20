@@ -22,6 +22,10 @@ button:disabled{opacity:.45;cursor:not-allowed}.secondary{border:1px solid #cbdc
 .form-title{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.form-title span{color:var(--green);font-size:10px;font-weight:900}.form-title h2{margin:3px 0 12px;font-size:19px}.badge{padding:6px 9px;border-radius:999px;background:#e8f6f0}
 .metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}.metrics div{padding:10px;border-radius:10px;background:#f2f8f5}.metrics small{display:block;color:var(--muted)}.metrics strong{font-size:16px}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.save-actions{display:flex;gap:8px;margin:15px 0}
+.attribute-editor{margin-top:14px;padding:12px;border:1px solid var(--line);border-radius:11px;background:#f7faf8}
+.attribute-editor summary{cursor:pointer;color:var(--green);font-size:12px;font-weight:900}
+.attribute-editor p{color:var(--muted);font-size:11px;line-height:1.5}
+.attribute-editor textarea{width:100%;margin:8px 0;padding:10px;border:1px solid #cbdcd3;border-radius:9px;background:#14231d;color:#d5eee3;font:10px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;resize:vertical}
 pre{max-height:220px;overflow:auto;padding:10px;border-radius:9px;background:#14231d;color:#d5eee3;font-size:9px}
 .leaflet-pm-toolbar .button-container{font-size:14px}
 @media(max-width:1200px){.workspace{grid-template-columns:300px 1fr;height:auto}.form-panel{grid-column:1/-1;max-height:none}.map-panel{min-height:650px}}

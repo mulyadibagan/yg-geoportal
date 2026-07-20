@@ -569,6 +569,21 @@ L.control.scale({
         "Kategori",
         valueOf(["Kategori", "Layer_Label"])
       );
+
+      rows += row(
+        "Donor",
+        valueOf(["Donor", "Nama_Donor", "Funding_Source"])
+      );
+
+      rows += row(
+        "Proyek",
+        valueOf(["Nama_Proyek", "Project_Name", "Proyek"])
+      );
+
+      rows += row(
+        "Kode proyek",
+        valueOf(["Project_ID", "Kode_Proyek"])
+      );
     }
 
     const photos = [
@@ -690,6 +705,11 @@ L.control.scale({
       props.Object_ID,
       props.Kategori,
       props.Program,
+      props.Donor,
+      props.Nama_Donor,
+      props.Nama_Proyek,
+      props.Project_Name,
+      props.Project_ID,
       props.Kabupaten,
       props.Kecamatan,
       props.Desa,
