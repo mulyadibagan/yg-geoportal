@@ -8,7 +8,7 @@
   <link rel="icon" href="../assets/logo-yayasan-gambut-192.png">
   <link rel="preconnect" href="https://unpkg.com">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="styles.css?v=20260721-v2-baseline2">
+  <link rel="stylesheet" href="styles.css?v=20260721-v2-system1">
 </head>
 <body>
   <div class="app" id="app">
@@ -60,6 +60,16 @@
             <p class="section-note">Geometri mengikuti SHP resmi; atribut, donor, laporan, dan monitoring diselaraskan dari Master Database.</p>
           </section>
 
+          <section class="section" aria-labelledby="system-title">
+            <div class="section-heading"><div><span class="eyebrow">Sistem terpadu</span><h2 id="system-title">Alur pengelolaan</h2></div></div>
+            <div class="module-grid">
+              <a class="module-link" href="../report.html"><strong>Kirim laporan</strong><span>Data lapangan dan usulan objek</span></a>
+              <a class="module-link" href="../monitoring.html"><strong>Monitoring</strong><span>Pemantauan objek dan tindak lanjut</span></a>
+              <a class="module-link admin" href="../object-manager.html"><strong>Object Manager</strong><span>Verifikasi dan pengelolaan internal</span></a>
+            </div>
+            <p class="section-note">Alur status: Menunggu Verifikasi → Terverifikasi atau Ditolak → Sudah Menjadi Objek.</p>
+          </section>
+
           <section class="section" aria-labelledby="program-title">
             <div class="section-heading"><div><span class="eyebrow">Data utama</span><h2 id="program-title">Layer program</h2></div><button class="text-button" id="toggle-programs" type="button">Matikan semua</button></div>
             <div class="layer-list" id="program-layers"></div>
@@ -107,6 +117,6 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="app.js?v=20260721-v2-baseline2"></script>
+  <script src="app.js?v=20260721-v2-system1"></script>
 </body>
 </html>
