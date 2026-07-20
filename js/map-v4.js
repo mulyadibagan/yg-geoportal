@@ -46,6 +46,22 @@
       color: "#6a4a3a",
       count: 736,
       type: "peat"
+    },
+    iuphhk_ht_2014: {
+      id: "iuphhk_ht_2014",
+      label: "IUPHHK-HT 2014",
+      file: "data/IUPHHK_HT_2014.geojson",
+      color: "#c62828",
+      count: null,
+      type: "concession"
+    },
+    perhutanan_sosial_riau: {
+      id: "perhutanan_sosial_riau",
+      label: "Perhutanan Sosial Riau",
+      file: "data/PERHUTANAN_SOSIAL_RIAU.geojson",
+      color: "#00897b",
+      count: null,
+      type: "social_forestry"
     }
   };
 
@@ -834,14 +850,24 @@ L.control.scale({
       };
     }
 
-    const color = peatColor(props.KELAS_GBT || props.KETEBALAN);
+    if (config.type === "peat") {
+      const color = peatColor(props.KELAS_GBT || props.KETEBALAN);
+
+      return {
+        color: color,
+        weight: 0.7,
+        opacity: 0.8,
+        fillColor: color,
+        fillOpacity: 0.20
+      };
+    }
 
     return {
-      color: color,
-      weight: 0.7,
-      opacity: 0.8,
-      fillColor: color,
-      fillOpacity: 0.20
+      color: config.color,
+      weight: 0.9,
+      opacity: 0.9,
+      fillColor: config.color,
+      fillOpacity: config.type === "social_forestry" ? 0.26 : 0.16
     };
   }
 
@@ -869,7 +895,7 @@ L.control.scale({
     if (config.type === "forest") {
       rows += item("Fungsi kawasan", props.fungsi || "Belum terisi");
       rows += item("Sumber", "Kawasan Hutan SK 903");
-    } else {
+    } else if (config.type === "peat") {
       rows += item("Kabupaten/Kota", props.KABKOT || props.KK);
       rows += item("Kelas gambut", props.KELAS_GBT);
       rows += item("Ketebalan", props.KETEBALAN);
@@ -877,6 +903,36 @@ L.control.scale({
       rows += item("pH", props.pH);
       rows += item("Substratum", props.SUBSTRATUM);
       rows += item("Tahun", props.TAHUN || 2019);
+    } else {
+      const preferredFields = [
+        ["Nama", ["NAMA", "Nama", "NAMOBJ", "NAMA_IZIN", "NAMA_SKEMA"]],
+        ["Pemegang izin/Kelompok", ["PEMEGANG", "PEMEGANG_I", "KTH", "KELOMPOK"]],
+        ["Skema", ["SKEMA", "JENIS_PS", "POLA"]],
+        ["Nomor SK", ["NO_SK", "NOSK", "SK"]],
+        ["Kabupaten/Kota", ["KABKOT", "KABUPATEN", "WADMKK"]],
+        ["Kecamatan", ["KECAMATAN", "WADMKC"]],
+        ["Luas (ha)", ["LUAS", "LUAS_HA", "Luas_Ha"]],
+        ["Tahun", ["TAHUN", "Tahun"]]
+      ];
+      const used = new Set();
+
+      preferredFields.forEach(([label, keys]) => {
+        const key = keys.find(candidate =>
+          Object.prototype.hasOwnProperty.call(props, candidate) &&
+          props[candidate] !== null &&
+          String(props[candidate]).trim() !== ""
+        );
+        if (key) {
+          rows += item(label, props[key]);
+          used.add(key);
+        }
+      });
+
+      if (!rows) {
+        Object.keys(props).slice(0, 8).forEach(key => {
+          if (!used.has(key)) rows += item(key, props[key]);
+        });
+      }
     }
 
     return (
@@ -910,7 +966,7 @@ L.control.scale({
     setStatus("Memuat " + config.label + "…", false);
 
     const response = await fetch(
-      config.file + "?v=20260714-ref1",
+      config.file + "?v=20260721-ref2",
       {
         cache: "force-cache"
       }
@@ -944,6 +1000,15 @@ L.control.scale({
 
     referenceLayerObjects[layerId] = layer;
     referenceLayerState[layerId] = "ready";
+    config.count = data.features.length;
+
+    const countElement = document.querySelector(
+      '[data-reference-count-id="' + layerId + '"]'
+    );
+    if (countElement) {
+      countElement.textContent =
+        new Intl.NumberFormat("id-ID").format(config.count);
+    }
 
     setStatus(
       config.label + " berhasil dimuat (" +
@@ -974,8 +1039,11 @@ L.control.scale({
           escapeHtml(config.color) + '"></span>' +
         '<label for="layer-' + escapeHtml(layerId) + '">' +
           escapeHtml(config.label) + '</label>' +
-        '<span class="count">' +
-          new Intl.NumberFormat("id-ID").format(config.count) +
+        '<span class="count" data-reference-count-id="' +
+          escapeHtml(layerId) + '">' +
+          (Number.isFinite(config.count)
+            ? new Intl.NumberFormat("id-ID").format(config.count)
+            : "—") +
         '</span>';
 
       list.appendChild(row);
