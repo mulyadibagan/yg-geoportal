@@ -4,7 +4,7 @@
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
       navigator.serviceWorker
-        .register("./service-worker.js?v=20260720-edge-refresh1", {
+        .register("./service-worker.js?v=20260720-photo-worker2", {
           updateViaCache: "none"
         })
         .then(registration => registration.update())
@@ -12,7 +12,7 @@
     });
 
     navigator.serviceWorker.addEventListener("controllerchange", () => {
-      const reloadKey = "yg-sw-edge-refresh1";
+      const reloadKey = "yg-sw-photo-worker2";
       if (sessionStorage.getItem(reloadKey)) return;
       sessionStorage.setItem(reloadKey, "done");
       window.location.reload();
@@ -48,12 +48,12 @@
 
   if (document.getElementById("report-form")) {
     const rulesScript = document.createElement("script");
-    rulesScript.src = "js/report-photo-rules.js?v=20260720-area-photo-optional1";
+    rulesScript.src = "js/report-photo-rules.js?v=20260720-photo-loop-fix1";
     rulesScript.async = false;
     document.head.appendChild(rulesScript);
 
     const guardScript = document.createElement("script");
-    guardScript.src = "js/report-photo-guard.js?v=20260720-area-photo-optional1";
+    guardScript.src = "js/report-photo-guard.js?v=20260720-photo-loop-fix1";
     guardScript.async = false;
     document.head.appendChild(guardScript);
   }

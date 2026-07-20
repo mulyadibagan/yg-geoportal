@@ -159,7 +159,11 @@
     decoratePreview();
   });
 
-  observer.observe(preview, { childList: true, subtree: true });
+  /*
+   * Cukup amati penambahan/penghapusan kartu foto langsung. Mengamati seluruh
+   * subtree membuat perubahan teks badge memicu observer-nya sendiri berulang.
+   */
+  observer.observe(preview, { childList: true, subtree: false });
 
   const style = document.createElement("style");
   style.textContent = `

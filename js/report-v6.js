@@ -1898,18 +1898,12 @@
   }
 
   function compressImage(file,maxDimension,quality){
-    if(
-      typeof window.Worker === 'function' &&
-      typeof window.createImageBitmap === 'function'
-    ){
-      return compressImageInWorker(file,maxDimension,quality)
-        .catch(function(error){
-          console.warn(
-            'Pemrosesan foto latar belakang tidak tersedia; menggunakan cadangan.',
-            error
-          );
-          return compressImageOnPage(file,maxDimension,quality);
-        });
+    if(typeof window.Worker === 'function'){
+      /*
+       * Jangan kembali ke kompresi halaman utama ketika worker gagal.
+       * Kegagalan yang terlihat lebih aman daripada membekukan seluruh form.
+       */
+      return compressImageInWorker(file,maxDimension,quality);
     }
 
     return compressImageOnPage(file,maxDimension,quality);
@@ -1918,7 +1912,7 @@
   function compressImageInWorker(file,maxDimension,quality){
     return new Promise(function(resolve,reject){
       var worker = new Worker(
-        'js/report-image-worker.js?v=20260720-photo-worker1'
+        'js/report-image-worker.js?v=20260720-photo-worker2'
       );
 
       worker.onerror = function(event){
