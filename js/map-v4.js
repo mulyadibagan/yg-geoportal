@@ -572,28 +572,48 @@ L.control.scale({
     const geometryType = String(
       feature && feature.geometry && feature.geometry.type || ""
     );
-    const objectId = String(
-      props.Object_ID ||
-      props.objectId ||
-      props.OBJECTID ||
-      props.ID ||
+    const monitoringTargetObjectId = String(
+      props.Target_Object_ID_Current ||
+      props.targetObjectId ||
+      props.Target_Object_ID ||
       ""
     ).trim();
+    const monitoringTargetLayerId = String(
+      props.Target_Layer_ID_Current ||
+      props.targetLayerId ||
+      props.Target_Layer_ID ||
+      ""
+    ).trim();
+    const objectId = isMonitoring
+      ? monitoringTargetObjectId
+      : String(
+          props.Object_ID ||
+          props.objectId ||
+          props.OBJECTID ||
+          props.ID ||
+          ""
+        ).trim();
+    const actionLayerId = isMonitoring
+      ? monitoringTargetLayerId
+      : config.id;
     const canSendMonitoring =
       ["Polygon", "MultiPolygon"].includes(geometryType) &&
-      config.id !== "monitoring_reports" &&
       config.id !== "community_reports" &&
-      Boolean(objectId);
+      Boolean(objectId) &&
+      Boolean(actionLayerId);
+    const monitoringActionLabel = isMonitoring
+      ? "Kirim Monitoring Lagi"
+      : "Kirim Monitoring";
     const monitoringAction = canSendMonitoring
       ? (
           '<div class="yg-popup-actions">' +
             '<a class="yg-popup-monitoring-link" href="report.html?' +
               'type=monitoring&amp;layer=' +
-              encodeURIComponent(config.id) +
+              encodeURIComponent(actionLayerId) +
               '&amp;object=' +
               encodeURIComponent(objectId) +
             '">' +
-              'Kirim Monitoring' +
+              monitoringActionLabel +
             '</a>' +
           '</div>'
         )
@@ -1508,6 +1528,7 @@ L.control.scale({
           ...(feature.properties || {}),
           Target_Object_ID_Current: officialProps.Object_ID || "",
           Target_Object_Name_Current: officialProps.Nama_Objek || "",
+          Target_Layer_ID_Current: "area_mangrove",
           Geometry_Source: "area_mangrove_latest"
         }
       };

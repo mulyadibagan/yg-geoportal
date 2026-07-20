@@ -1,4 +1,4 @@
-const CACHE_NAME = "yg-geoportal-v4-20260720-popup-monitoring1";
+const CACHE_NAME = "yg-geoportal-v4-20260720-popup-monitoring2";
 
 const STATIC_ASSETS = [
   "./",
@@ -23,8 +23,8 @@ const STATIC_ASSETS = [
   "./js/monitoring.js?v=20260720-edge-refresh1",
   "./js/monitoring-photo.js?v=20260720-edge-refresh1",
   "./js/pwa.js?v=20260720-edge-refresh1",
-  "./js/i18n.js?v=20260720-popup-monitoring1",
-  "./js/map-v4.js?v=20260720-popup-monitoring1"
+  "./js/i18n.js?v=20260720-popup-monitoring2",
+  "./js/map-v4.js?v=20260720-popup-monitoring2"
 ];
 
 self.addEventListener("install", event => {
