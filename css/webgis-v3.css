@@ -47,62 +47,131 @@
 .stats .stat:hover{transform:translateY(-1px);box-shadow:0 8px 18px rgba(20,70,52,.08)}
 .popup-body{max-height:min(62vh,520px);overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
 
-/*
- * Galeri popup dibuat dua baris dan bergeser horizontal. Dengan demikian,
- * foto kelima dan seterusnya tidak lagi terpotong oleh batas bawah popup.
- */
-.yg-v3-gallery{
-  display:grid!important;
-  grid-template-rows:repeat(2,120px)!important;
-  grid-auto-flow:column!important;
-  grid-auto-columns:calc((100% - 8px)/2)!important;
-  grid-template-columns:none!important;
-  gap:8px!important;
+/* Gallery V2: satu panggung utama dan thumbnail seragam. */
+.yg-popup-gallery-v2{
   width:100%;
-  overflow-x:auto!important;
-  overflow-y:hidden!important;
-  padding:10px 12px 14px!important;
-  scroll-snap-type:x proximity;
-  overscroll-behavior-x:contain;
-  -webkit-overflow-scrolling:touch;
-  scrollbar-width:thin;
+  padding:10px 12px 14px;
+  border-top:1px solid #edf2ef;
   box-sizing:border-box;
 }
-.yg-photo-card{
-  display:block!important;
-  width:100%!important;
-  min-width:0!important;
-  min-height:0!important;
-  height:120px!important;
-  overflow:hidden!important;
-  border:1px solid #d7e4de!important;
-  border-radius:10px!important;
-  background:#f2f7f4!important;
-  color:#087653!important;
-  text-decoration:none!important;
-  scroll-snap-align:start;
-  box-sizing:border-box;
+.yg-popup-gallery-v2__stage{
+  position:relative;
+  display:block;
+  width:100%;
+  aspect-ratio:16/10;
+  padding:0;
+  overflow:hidden;
+  border:0;
+  border-radius:12px;
+  background:#e8efeb;
+  cursor:zoom-in;
 }
-.yg-photo-card img,.yg-v3-gallery img{
-  display:block!important;
-  width:100%!important;
-  height:100%!important;
-  min-width:0!important;
-  object-fit:cover!important;
-  border-radius:0!important;
-}
-.yg-photo-fallback{
+.yg-popup-gallery-v2__stage img{
+  display:block;
   width:100%;
   height:100%;
-  min-height:0!important;
+  object-fit:contain;
+  background:#16221e;
+}
+.yg-popup-gallery-v2__count{
+  position:absolute;
+  right:9px;
+  bottom:9px;
+  padding:5px 8px;
+  border-radius:999px;
+  background:rgba(0,0,0,.68);
+  color:#fff;
+  font-size:9px;
+  font-weight:850;
+}
+.yg-popup-gallery-v2__thumbs{
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:6px;
+  width:100%;
+  margin-top:7px;
+  overflow:visible;
+}
+.yg-popup-gallery-v2__thumb{
+  display:block;
+  width:100%;
+  aspect-ratio:1/1;
+  min-width:0;
+  padding:0;
+  overflow:hidden;
+  border:2px solid transparent;
+  border-radius:8px;
+  background:#e8efeb;
+  cursor:pointer;
+}
+.yg-popup-gallery-v2__thumb.is-active{
+  border-color:#087653;
+  box-shadow:0 0 0 1px rgba(8,118,83,.18);
+}
+.yg-popup-gallery-v2__thumb img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+.yg-popup-gallery-v2__empty{
+  display:flex;
   align-items:center;
   justify-content:center;
-  padding:12px;
+  height:100%;
+  padding:18px;
+  color:#52665e;
   text-align:center;
-  font-weight:800;
-  color:#087653;
-  box-sizing:border-box;
+  font-size:10px;
+  font-weight:750;
 }
+.yg-gallery-lightbox{
+  position:fixed;
+  inset:0;
+  z-index:1000000;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+  background:rgba(3,12,9,.94);
+}
+.yg-gallery-lightbox.is-open{display:flex}
+.yg-gallery-lightbox__image{
+  display:block;
+  max-width:calc(100vw - 100px);
+  max-height:calc(100vh - 90px);
+  object-fit:contain;
+}
+.yg-gallery-lightbox__close,
+.yg-gallery-lightbox__nav{
+  position:absolute;
+  z-index:2;
+  display:grid;
+  place-items:center;
+  padding:0;
+  border:0;
+  border-radius:999px;
+  background:rgba(255,255,255,.92);
+  color:#143c30;
+  cursor:pointer;
+  box-shadow:0 5px 20px rgba(0,0,0,.3);
+}
+.yg-gallery-lightbox__close{top:14px;right:14px;width:44px;height:44px;font-size:28px}
+.yg-gallery-lightbox__nav{top:50%;width:46px;height:46px;transform:translateY(-50%);font-size:32px}
+.yg-gallery-lightbox__prev{left:16px}.yg-gallery-lightbox__next{right:16px}
+.yg-gallery-lightbox__counter{
+  position:absolute;
+  bottom:16px;
+  left:50%;
+  transform:translateX(-50%);
+  padding:6px 11px;
+  border-radius:999px;
+  background:rgba(255,255,255,.92);
+  color:#143c30;
+  font-size:11px;
+  font-weight:800;
+}
+body.yg-gallery-lightbox-open{overflow:hidden}
 
 /* WebGIS tidak memakai header global: gunakan seluruh tinggi viewport. */
 body.webgis-page .app-shell{
@@ -122,13 +191,11 @@ body.webgis-page .app-shell{
     max-height:min(58vh,470px);
   }
 
-  .yg-v3-gallery{
-    grid-template-rows:repeat(2,112px)!important;
-    grid-auto-columns:calc((100% - 8px)/2)!important;
-    padding:10px 10px 14px!important;
-  }
-
-  .yg-photo-card{
-    height:112px!important;
-  }
+  .yg-popup-gallery-v2{padding:9px 10px 12px}
+  .yg-popup-gallery-v2__stage{aspect-ratio:4/3}
+  .yg-popup-gallery-v2__thumbs{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
+  .yg-gallery-lightbox{padding:0}
+  .yg-gallery-lightbox__image{max-width:100vw;max-height:100vh}
+  .yg-gallery-lightbox__nav{width:40px;height:40px;font-size:28px}
+  .yg-gallery-lightbox__prev{left:8px}.yg-gallery-lightbox__next{right:8px}
 }
