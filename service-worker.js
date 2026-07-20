@@ -1,4 +1,4 @@
-const CACHE_NAME = "yg-geoportal-v4-20260720-replanting1";
+const CACHE_NAME = "yg-geoportal-v4-20260720-search-nursery1";
 
 const STATIC_ASSETS = [
   "./",
@@ -9,8 +9,8 @@ const STATIC_ASSETS = [
   "./assets/logo-yayasan-gambut.png",
   "./assets/logo-yayasan-gambut-192.png",
   "./assets/logo-yayasan-gambut-512.png",
-  "./css/app.css",
-  "./css/webgis-v3.css",
+  "./css/app.css?v=20260720-search-nursery1",
+  "./css/webgis-v3.css?v=20260720-search-nursery1",
   "./css/monitoring.css?v=20260720-103",
   "./css/monitoring-v1-fix.css?v=20260720-103",
   "./css/report.css",
@@ -23,7 +23,7 @@ const STATIC_ASSETS = [
   "./js/monitoring.js?v=20260720-edge-refresh1",
   "./js/monitoring-photo.js?v=20260720-edge-refresh1",
   "./js/pwa.js?v=20260720-edge-refresh1",
-  "./js/map-v4.js?v=20260719-shapefile-authoritative-corrected5"
+  "./js/map-v4.js?v=20260720-search-nursery1"
 ];
 
 self.addEventListener("install", event => {

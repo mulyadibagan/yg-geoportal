@@ -15,7 +15,7 @@
     kopi: { label: "Distribusi Lahan Kopi", color: "#6d4c41", visible: true },
     fdrs: { label: "FDRS / Water Table", color: "#e65100", visible: true },
     sekat_kanal: { label: "Sekat Kanal", color: "#00838f", visible: true },
-    nursery_mangrove: { label: "Pembibitan Mangrove", color: "#8fa600", visible: true },
+    nursery_mangrove: { label: "Rumah Pembibitan Mangrove", color: "#8fa600", visible: true },
     kawasan_hutan_sk_903: { label: "Kawasan Hutan SK 903", color: "#455a64", visible: false }
   };
 
@@ -114,6 +114,54 @@ L.control.scale({
   function getObjectName(feature) {
     const props = feature.properties || {};
     return props.Nama_Objek || props.title || props.NAMOBJ || props.Desa || props.WADMKD || "Objek WebGIS";
+  }
+
+  function normalizeCommunityNurseryFeature(feature) {
+    const props = feature && feature.properties || {};
+    const layerId = String(
+      props.Layer_ID || props.Source_Layer || ""
+    ).trim().toLowerCase();
+    const geometryType = String(
+      feature && feature.geometry && feature.geometry.type || ""
+    );
+
+    if (layerId !== "community_reports" || geometryType !== "Point") {
+      return feature;
+    }
+
+    const identity = [
+      props.title,
+      props.locationName,
+      props.Nama_Objek,
+      props.description,
+      props.reportType
+    ].filter(Boolean).join(" ").toLowerCase();
+
+    /*
+     * Dua rumah bibit mangrove lama sudah diverifikasi sebagai laporan
+     * masyarakat. Tampilkan sebagai objek operasional pada layer nursery,
+     * tetapi pertahankan reportId dan atribut aslinya untuk audit.
+     * Nursery kopi Temiang sengaja tidak dipindahkan ke layer mangrove.
+     */
+    const isMangroveNursery =
+      identity.includes("nursery sepahat") ||
+      identity.includes("rumah bibit sepahat") ||
+      identity.includes("rumah bibit kelapa pati");
+
+    if (!isMangroveNursery) return feature;
+
+    props.Layer_ID = "nursery_mangrove";
+    props.Source_Layer = "nursery_mangrove";
+    props.Layer_Label = "Rumah Pembibitan Mangrove";
+    props.Kategori = "Pembibitan Mangrove";
+    props.Nama_Objek =
+      props.locationName ||
+      props.title ||
+      props.Nama_Objek ||
+      "Rumah Pembibitan Mangrove";
+    props.Source_Type = "verified_community_nursery";
+
+    return feature;
   }
 
   function getLayerConfig(layerId, feature) {
@@ -947,7 +995,9 @@ L.control.scale({
       return;
     }
 
-    rawFeatures = data.features.filter(feature => feature && feature.geometry);
+    rawFeatures = data.features
+      .filter(feature => feature && feature.geometry)
+      .map(normalizeCommunityNurseryFeature);
     const groups = {};
 
     rawFeatures.forEach(feature => {

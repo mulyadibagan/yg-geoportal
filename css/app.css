@@ -130,7 +130,7 @@ button{cursor:pointer}
   outline:none;
 }
 .search input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(7,156,222,.12)}
-.search button{
+.search > button{
   position:absolute;
   top:4px;
   right:4px;
