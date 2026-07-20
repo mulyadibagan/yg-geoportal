@@ -195,6 +195,87 @@
     return String(p.Layer_ID || p.Source_Layer || "").trim().toLowerCase();
   }
 
+  function normalizedValue(value) {
+    return String(value == null ? "" : value).trim().toLowerCase();
+  }
+
+  function numericValue(value) {
+    const match = String(value == null ? "" : value)
+      .replace(",", ".").match(/-?\d+(?:\.\d+)?/);
+    return match ? Number(match[0]) : NaN;
+  }
+
+  function enrichOfficialData(config, official, database) {
+    if (!official || !Array.isArray(official.features) ||
+        !database || !Array.isArray(database.features)) return official;
+
+    const candidates = database.features.filter(feature =>
+      layerIdOf(feature) === config.id
+    );
+
+    official.features.forEach(feature => {
+      const p = feature.properties || (feature.properties = {});
+      const objectId = normalizedValue(p.Object_ID || p.OBJECTID);
+      const reportId = normalizedValue(p.Source_Report_ID);
+      let match = candidates.find(candidate => {
+        const cp = candidate.properties || {};
+        return objectId && normalizedValue(
+          cp.Object_ID || cp.OBJECTID || cp.Master_Object_ID
+        ) === objectId;
+      });
+
+      if (!match && reportId) {
+        match = candidates.find(candidate => {
+          const cp = candidate.properties || {};
+          return normalizedValue(
+            cp.Source_Report_ID || cp.reportId || cp.Report_ID
+          ) === reportId;
+        });
+      }
+
+      if (!match) {
+        const village = normalizedValue(p.Desa || p.WADMKD || p.NAMA_DESA);
+        const year = normalizedValue(p.Tahun || p.TAHUN);
+        const area = numericValue(
+          p.Luas_Ha || p.LUAS_HA || p.LUAS_POLI || p.LUAS_UKURA
+        );
+        const ranked = candidates.map(candidate => {
+          const cp = candidate.properties || {};
+          const candidateVillage = normalizedValue(
+            cp.Desa || cp.WADMKD || cp.NAMA_DESA
+          );
+          const candidateYear = normalizedValue(cp.Tahun || cp.TAHUN);
+          const candidateArea = numericValue(
+            cp.Luas_Ha || cp.LUAS_HA || cp.LUAS_POLI || cp.LUAS_UKURA
+          );
+          if (!village || candidateVillage !== village) return null;
+          if (year && candidateYear && year !== candidateYear) return null;
+          return {
+            feature: candidate,
+            difference: Number.isFinite(area) && Number.isFinite(candidateArea)
+              ? Math.abs(area - candidateArea)
+              : Number.MAX_SAFE_INTEGER
+          };
+        }).filter(Boolean).sort((a, b) => a.difference - b.difference);
+        match = ranked.length ? ranked[0].feature : null;
+      }
+
+      if (match) {
+        feature.properties = {
+          ...(match.properties || {}),
+          ...p,
+          Master_Object_ID: (match.properties || {}).Object_ID ||
+            p.Master_Object_ID || ""
+        };
+      }
+
+      feature.properties.Layer_ID = config.id;
+      feature.properties.Source_Layer = config.id;
+    });
+
+    return official;
+  }
+
   async function dataFor(config) {
     const reference = REFERENCES.some(item => item.id === config.id);
     if (reference || config.staticFile) {
@@ -203,7 +284,17 @@
         cache: "no-store"
       });
       if (!response.ok) throw new Error("HTTP " + response.status);
-      return response.json();
+      const data = await response.json();
+
+      if (!reference && config.staticFile) {
+        try {
+          const database = await loadMasterData();
+          return enrichOfficialData(config, data, database);
+        } catch (error) {
+          console.warn("Atribut Master Database tidak dapat digabungkan", error);
+        }
+      }
+      return data;
     }
 
     const database = await loadMasterData();
@@ -310,13 +401,36 @@
     $("metric-villages").textContent = featureCount("desa_intervensi").toLocaleString("id-ID") || "—";
     $("metric-fdrs").textContent = featureCount("fdrs").toLocaleString("id-ID") || "—";
     $("metric-canal").textContent = featureCount("sekat_kanal").toLocaleString("id-ID") || "—";
-    const mangrove = state.features.filter(item => item.config.id === "area_mangrove");
+    const programFeatures = state.features.filter(item =>
+      !REFERENCES.some(reference => reference.id === item.config.id)
+    );
+    const mangrove = programFeatures.filter(item =>
+      item.config.id === "area_mangrove"
+    );
     const area = mangrove.reduce((sum, item) => {
       const p = item.feature.properties || {};
       const value = Number(p.Luas_Ha || p.LUAS_HA || p.luas_ha || 0);
       return sum + (Number.isFinite(value) ? value : 0);
     }, 0);
-    $("metric-mangrove").textContent = area > 0 ? `${new Intl.NumberFormat("id-ID", { maximumFractionDigits: 0 }).format(area)} ha` : featureCount("area_mangrove").toLocaleString("id-ID") || "—";
+    $("metric-mangrove").textContent = area > 0 ? `${new Intl.NumberFormat("id-ID", { maximumFractionDigits: 2 }).format(area)} ha` : featureCount("area_mangrove").toLocaleString("id-ID") || "—";
+
+    const donors = new Set();
+    const districts = new Set();
+    programFeatures.forEach(item => {
+      const p = item.feature.properties || {};
+      const donor = p.Donor || p.Nama_Donor || p.Funding_Source;
+      const district = p.Kabupaten || p.WADMKK || p.NAMA_KAB;
+      if (donor) donors.add(normalizedValue(donor));
+      if (district) districts.add(normalizedValue(district));
+    });
+    if ($("metric-objects")) $("metric-objects").textContent =
+      programFeatures.length.toLocaleString("id-ID");
+    if ($("metric-donors")) $("metric-donors").textContent =
+      donors.size.toLocaleString("id-ID");
+    if ($("metric-districts")) $("metric-districts").textContent =
+      districts.size.toLocaleString("id-ID");
+    if ($("metric-monitoring")) $("metric-monitoring").textContent =
+      featureCount("monitoring_reports").toLocaleString("id-ID");
   }
 
   function updateVisibleCount() {
