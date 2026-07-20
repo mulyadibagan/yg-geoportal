@@ -33,6 +33,7 @@
   const state = { layers: new Map(), features: [], bounds: L.latLngBounds([]), selected: null, loading: 0, databaseUpdated: "" };
   let masterDataPromise = null;
   let publicUpdatesPromise = null;
+  let baselinePolicyPromise = null;
 
   const map = L.map("map", { preferCanvas: true, zoomControl: true, minZoom: 5 }).setView(DEFAULT_VIEW, DEFAULT_ZOOM);
   const baseMaps = {
@@ -222,6 +223,92 @@
     return String(p.Layer_ID || p.Source_Layer || "").trim().toLowerCase();
   }
 
+  async function loadBaselinePolicy() {
+    if (!baselinePolicyPromise) {
+      baselinePolicyPromise = fetch("baseline-policy.json?v=20260721-1", {
+        cache: "no-store"
+      }).then(response => {
+        if (!response.ok) throw new Error("Baseline policy HTTP " + response.status);
+        return response.json();
+      }).catch(error => {
+        console.warn("Baseline policy menggunakan aturan aman bawaan", error);
+        return {
+          public_policy: {
+            exclude_statuses: [
+              "menunggu verifikasi", "ditolak", "draft",
+              "rejected", "pending verification"
+            ]
+          }
+        };
+      });
+    }
+    return baselinePolicyPromise;
+  }
+
+  function stableHash(value) {
+    let hash = 2166136261;
+    const text = String(value || "");
+    for (let index = 0; index < text.length; index += 1) {
+      hash ^= text.charCodeAt(index);
+      hash = Math.imul(hash, 16777619);
+    }
+    return (hash >>> 0).toString(36).toUpperCase();
+  }
+
+  function identityFor(feature, layerId) {
+    const p = feature && feature.properties || {};
+    const sourceId = p.Object_ID || p.Master_Object_ID ||
+      p.Source_Report_ID || p.reportId || p.Report_ID ||
+      p.OBJECTID || p.FID;
+    if (sourceId !== null && sourceId !== undefined &&
+        String(sourceId).trim() !== "") {
+      return layerId + ":" + normalizedValue(sourceId);
+    }
+    return layerId + ":legacy:" + stableHash(
+      JSON.stringify(feature.geometry || {}) + "|" + featureName(feature)
+    );
+  }
+
+  async function applyBaselinePolicy(data, config) {
+    if (!data || !Array.isArray(data.features)) return data;
+    const reference = REFERENCES.some(item => item.id === config.id);
+    if (reference) return data;
+
+    const policy = await loadBaselinePolicy();
+    const excluded = new Set(
+      (policy.public_policy && policy.public_policy.exclude_statuses || [])
+        .map(normalizedValue)
+    );
+    const unique = new Map();
+
+    data.features.forEach(feature => {
+      if (!feature || !feature.geometry) return;
+      const p = feature.properties || (feature.properties = {});
+      const status = normalizedValue(
+        p.Status_Verifikasi || p.Verification_Status ||
+        p.Status_Laporan || p.Status
+      );
+      if (status && excluded.has(status)) return;
+
+      const identity = identityFor(feature, config.id);
+      if (!p.Object_ID) {
+        p.Object_ID = "LEGACY-" + config.id.toUpperCase() + "-" +
+          identity.split(":").pop().toUpperCase();
+        p.Object_ID_Status = "Generated from baseline; requires admin confirmation";
+      }
+      p.Layer_ID = config.id;
+      p.Source_Layer = config.id;
+      p.Data_Source = config.staticFile
+        ? "Official SHP / GeoJSON + Master Database"
+        : "Master Database";
+      p.Publication_Status = status || "legacy baseline";
+      unique.set(identity, feature);
+    });
+
+    data.features = [...unique.values()];
+    return data;
+  }
+
   async function loadPublicUpdates() {
     if (!publicUpdatesPromise) {
       publicUpdatesPromise = fetch(UPDATES_API + "&t=" + Date.now(), {
@@ -394,21 +481,26 @@
         try {
           const database = await loadMasterData();
           const enriched = enrichOfficialData(config, data, database);
-          return applyPublishedUpdates(enriched, config.id);
+          return applyBaselinePolicy(
+            await applyPublishedUpdates(enriched, config.id), config
+          );
         } catch (error) {
           console.warn("Atribut Master Database tidak dapat digabungkan", error);
         }
       }
-      return reference ? data : applyPublishedUpdates(data, config.id);
+      return reference ? data : applyBaselinePolicy(
+        await applyPublishedUpdates(data, config.id), config
+      );
     }
 
     const database = await loadMasterData();
-    return applyPublishedUpdates({
+    const prepared = await applyPublishedUpdates({
       type: "FeatureCollection",
       features: database.features.filter(feature =>
         layerIdOf(feature) === config.id
       )
     }, config.id);
+    return applyBaselinePolicy(prepared, config);
   }
 
   function ringAreaSquareMeters(ring) {
