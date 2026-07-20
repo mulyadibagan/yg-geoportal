@@ -35,6 +35,13 @@ window.YG_LAYER_CONFIG = [
     "visible": true
   },
   {
+    "id": "area_kopi",
+    "label": "Wilayah Penanaman Kopi",
+    "color": "#8e5a2b",
+    "type": "polygon",
+    "visible": true
+  },
+  {
     "id": "fdrs",
     "label": "Pembangunan FDRS",
     "color": "#e65100",

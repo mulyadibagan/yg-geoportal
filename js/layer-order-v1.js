@@ -7,6 +7,7 @@
     "area_mangrove",
     "nursery_mangrove",
     "apo",
+    "area_kopi",
     "kopi",
     "fdrs",
     "sekat_kanal",

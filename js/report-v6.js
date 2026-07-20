@@ -803,7 +803,9 @@
   function buildEditableAttributes(properties,layerId){
     var container = document.getElementById('editable-attributes');
     container.innerHTML = '';
-    var isCoffeeLayer = layerId === 'kopi';
+    var isCoffeeLayer =
+      layerId === 'kopi' ||
+      layerId === 'area_kopi';
     var coffeeKeys = coffeeEditableFields.map(function(field){
       return field.key;
     });
@@ -1628,7 +1630,10 @@
 
       if(
         selectedCorrectionFeature &&
-        selectedCorrectionFeature.layerId === 'kopi'
+        (
+          selectedCorrectionFeature.layerId === 'kopi' ||
+          selectedCorrectionFeature.layerId === 'area_kopi'
+        )
       ){
         if(
           proposedChanges.Jumlah_Tanam !== undefined &&

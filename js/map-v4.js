@@ -17,6 +17,7 @@
     supporting_infrastructure: { label: "Infrastruktur Pendukung", color: "#546e7a", visible: true },
     titik_desa: { label: "Titik Desa Intervensi", color: "#1565c0", visible: false },
     kopi: { label: "Distribusi Lahan Kopi", color: "#6d4c41", visible: true },
+    area_kopi: { label: "Wilayah Penanaman Kopi", color: "#8e5a2b", visible: true },
     fdrs: { label: "FDRS / Water Table", color: "#e65100", visible: true },
     sekat_kanal: { label: "Sekat Kanal", color: "#00838f", visible: true },
     nursery_mangrove: { label: "Rumah Pembibitan Mangrove", color: "#8fa600", visible: true },
@@ -507,6 +508,11 @@ L.control.scale({
       );
 
       rows += row(
+        "Object ID",
+        valueOf(["Object_ID", "objectId", "OBJECTID"])
+      );
+
+      rows += row(
         "Kabupaten",
         valueOf(["Kabupaten", "WADMKK"])
       );
@@ -541,6 +547,18 @@ L.control.scale({
         "Jumlah bibit",
         valueOf(["Jumlah_Bib", "Jumlah_Bibit", "Jumlah_Tanam"])
       );
+
+      if (config.id === "area_kopi") {
+        rows += row(
+          "Pemilik lahan",
+          valueOf(["Pemilik_Lahan"])
+        );
+
+        rows += row(
+          "Tumpang sari",
+          valueOf(["Tumpang_Sari", "Tumpang_Sari_Lainnya"])
+        );
+      }
 
       rows += row(
         "Nama objek",
@@ -1542,9 +1560,70 @@ L.control.scale({
     return data;
   }
 
+  function mergeOfficialCoffeeAreas(data, coffeeAreas) {
+    if (
+      !data ||
+      !Array.isArray(data.features) ||
+      !coffeeAreas ||
+      coffeeAreas.type !== "FeatureCollection" ||
+      !Array.isArray(coffeeAreas.features)
+    ) {
+      return data;
+    }
+
+    const sourceReportIds = new Set();
+
+    coffeeAreas.features.forEach(feature => {
+      if (!feature.properties) feature.properties = {};
+
+      feature.properties.Layer_ID = "area_kopi";
+      feature.properties.Source_Layer = "area_kopi";
+      feature.properties.Layer_Label = "Wilayah Penanaman Kopi";
+      feature.properties.Kategori =
+        feature.properties.Kategori || "Agroforestri/Kopi";
+
+      if (feature.properties.Source_Report_ID) {
+        sourceReportIds.add(
+          normalizedMatchValue(feature.properties.Source_Report_ID)
+        );
+      }
+    });
+
+    /*
+     * Satu laporan Area/Poligon Baru dapat berisi MultiPolygon. Setelah
+     * diverifikasi tim GIS, laporan sumber diganti pada peta oleh setiap
+     * Polygon resmi dengan Object_ID permanen agar dapat dipilih dan
+     * diperbarui secara terpisah.
+     */
+    const retainedFeatures = data.features.filter(feature => {
+      const props = feature && feature.properties || {};
+      const reportId = normalizedMatchValue(
+        props.reportId || props.Report_ID || props.Source_Report_ID
+      );
+
+      return !sourceReportIds.has(reportId);
+    });
+
+    data.features = [
+      ...retainedFeatures,
+      ...coffeeAreas.features
+    ];
+
+    return data;
+  }
+
   async function loadOfficialMangrove() {
     const response = await fetch(
       "data/area_mangrove.geojson?v=" + Date.now(),
+      { cache: "no-store" }
+    );
+    if (!response.ok) throw new Error("HTTP " + response.status);
+    return response.json();
+  }
+
+  async function loadOfficialCoffeeAreas() {
+    const response = await fetch(
+      "data/area_kopi.geojson?v=" + Date.now(),
       { cache: "no-store" }
     );
     if (!response.ok) throw new Error("HTTP " + response.status);
@@ -1575,6 +1654,13 @@ L.control.scale({
       console.warn("area_mangrove.geojson tidak dapat dimuat", mangroveError);
     }
 
+    try {
+      const coffeeAreas = await loadOfficialCoffeeAreas();
+      mergeOfficialCoffeeAreas(data, coffeeAreas);
+    } catch (coffeeAreaError) {
+      console.warn("area_kopi.geojson tidak dapat dimuat", coffeeAreaError);
+    }
+
     initialize(data);
     return;
 
@@ -1591,6 +1677,15 @@ L.control.scale({
         console.warn(
           "area_mangrove.geojson tidak dapat dimuat melalui jalur cadangan",
           mangroveError
+        );
+      }
+      try {
+        const coffeeAreas = await loadOfficialCoffeeAreas();
+        mergeOfficialCoffeeAreas(data, coffeeAreas);
+      } catch (coffeeAreaError) {
+        console.warn(
+          "area_kopi.geojson tidak dapat dimuat melalui jalur cadangan",
+          coffeeAreaError
         );
       }
       initialize(data);

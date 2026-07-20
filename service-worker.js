@@ -1,4 +1,4 @@
-const CACHE_NAME = "yg-geoportal-v4-20260720-audit1";
+const CACHE_NAME = "yg-geoportal-v4-20260720-area-kopi1";
 
 const STATIC_ASSETS = [
   "./",
@@ -9,14 +9,15 @@ const STATIC_ASSETS = [
   "./assets/logo-yayasan-gambut.png",
   "./assets/logo-yayasan-gambut-192.png",
   "./assets/logo-yayasan-gambut-512.png",
+  "./data/area_kopi.geojson",
   "./css/app.css?v=20260720-search-nursery1",
   "./css/webgis-v3.css?v=20260720-popup-monitoring1",
   "./css/monitoring.css?v=20260720-103",
   "./css/monitoring-v1-fix.css?v=20260720-104",
   "./css/report.css",
   "./css/report-v6.css?v=20260720-photo-worker2",
-  "./js/config.js",
-  "./js/report-v6.js?v=20260720-photo-worker2",
+  "./js/config.js?v=20260720-area-kopi1",
+  "./js/report-v6.js?v=20260720-area-kopi1",
   "./js/report-image-worker.js?v=20260720-photo-worker2",
   "./js/report-photo-rules.js?v=20260720-photo-loop-fix1",
   "./js/report-photo-guard.js?v=20260720-photo-loop-fix1",
@@ -25,7 +26,8 @@ const STATIC_ASSETS = [
   "./js/monitoring-photo.js?v=20260720-edge-refresh1",
   "./js/pwa.js?v=20260720-edge-refresh1",
   "./js/i18n.js?v=20260720-popup-monitoring2",
-  "./js/map-v4.js?v=20260720-popup-monitoring3"
+  "./js/map-v4.js?v=20260720-area-kopi1",
+  "./js/layer-order-v1.js?v=20260720-area-kopi1"
 ];
 
 self.addEventListener("install", event => {

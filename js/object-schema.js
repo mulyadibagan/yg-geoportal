@@ -39,6 +39,15 @@ window.YG_OBJECT_SCHEMA = {
       "url": "data/kopi.geojson"
     },
     {
+      "id": "area_kopi",
+      "label": "Wilayah Penanaman Kopi",
+      "category": "Agroforestri/Kopi",
+      "prefix": "KOPI-PLOT",
+      "include": true,
+      "unit": "ha",
+      "url": "data/area_kopi.geojson"
+    },
+    {
       "id": "nursery_mangrove",
       "label": "Rumah Pembibitan Mangrove",
       "category": "Pembibitan Mangrove",
