@@ -185,7 +185,7 @@ function editorAuthHtml_(payload) {
   const json = JSON.stringify(payload).replace(/</g, '\\u003c');
   return HtmlService.createHtmlOutput(
     '<!doctype html><meta charset="utf-8"><script>' +
-    'parent.postMessage(' + json + ', "*");' +
+    'window.top.postMessage(' + json + ', "*");' +
     '<\/script>'
   ).setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
