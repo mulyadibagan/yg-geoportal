@@ -140,6 +140,9 @@
     });
 
     document.documentElement.lang = currentLanguage;
+    document.title = currentLanguage === "en"
+      ? "Yayasan Gambut Interactive Map"
+      : "Peta Interaktif Yayasan Gambut";
     document.querySelectorAll("[data-lang]").forEach(button => {
       const active = button.getAttribute("data-lang") === currentLanguage;
       button.classList.toggle("active", active);
