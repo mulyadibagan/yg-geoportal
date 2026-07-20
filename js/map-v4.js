@@ -473,6 +473,22 @@ L.control.scale({
       );
 
       rows += row(
+        "Fase/keterangan",
+        valueOf(["Ket", "Keterangan"])
+      );
+
+      rows += row(
+        "Luas",
+        valueOf(["Luas_Ha"]),
+        "ha"
+      );
+
+      rows += row(
+        "Jumlah bibit",
+        valueOf(["Jumlah_Bib", "Jumlah_Bibit", "Jumlah_Tanam"])
+      );
+
+      rows += row(
         "Nama objek",
         valueOf(["Nama_Objek", "Nama", "Lokasi"])
       );
@@ -556,6 +572,8 @@ L.control.scale({
       props.WADMKC,
       props.WADMKK,
       props.Monitoring_Type,
+      props.Ket,
+      props.Jumlah_Bib,
       props.description
     ].filter(Boolean).join(" ").toLowerCase();
 

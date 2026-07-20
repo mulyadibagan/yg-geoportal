@@ -1,5 +1,12 @@
 {
   "type": "FeatureCollection",
+  "name": "area_mangrove",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  },
   "features": [
     {
       "type": "Feature",
@@ -8,12 +15,17 @@
         "Kabupaten": "Bengkalis",
         "Kecamatan": "Bukit Batu",
         "Desa": "Sepahat",
-        "Ket": null,
+        "Ket": "Phase III",
         "Tahun": "2025",
         "Luas_Ha": 2.0205065504,
+        "Jumlah_Bib": 4000.0,
+        "Object_ID": "MANGROVE-SEPAHAT-PHASE-III-2025-001",
+        "Nama_Objek": "Penanaman Mangrove ? Sepahat ? Phase III",
+        "Kategori": "Penanaman Mangrove",
         "Layer_ID": "area_mangrove",
         "Layer_Label": "Area Penanaman Mangrove",
-        "Nama_Objek": "Area Penanaman Mangrove"
+        "Source_Layer": "area_mangrove",
+        "Status_Objek": "Aktif"
       },
       "geometry": {
         "type": "Polygon",
@@ -50,12 +62,17 @@
         "Kabupaten": "Bengkalis",
         "Kecamatan": "Bukit Batu",
         "Desa": "Buruk Bakul",
-        "Ket": null,
+        "Ket": "Phase III",
         "Tahun": "2025",
         "Luas_Ha": 0.0603217541365,
+        "Jumlah_Bib": 236.0,
+        "Object_ID": "MANGROVE-BURUK-BAKUL-PHASE-III-2025-001",
+        "Nama_Objek": "Penanaman Mangrove ? Buruk Bakul ? Phase III ? Plot 1",
+        "Kategori": "Penanaman Mangrove",
         "Layer_ID": "area_mangrove",
         "Layer_Label": "Area Penanaman Mangrove",
-        "Nama_Objek": "Area Penanaman Mangrove"
+        "Source_Layer": "area_mangrove",
+        "Status_Objek": "Aktif"
       },
       "geometry": {
         "type": "Polygon",
@@ -120,12 +137,17 @@
         "Kabupaten": "Bengkalis",
         "Kecamatan": "Bukit Batu",
         "Desa": "Buruk Bakul",
-        "Ket": null,
+        "Ket": "Phase III",
         "Tahun": "2025",
         "Luas_Ha": 1.70039682201,
+        "Jumlah_Bib": 3164.0,
+        "Object_ID": "MANGROVE-BURUK-BAKUL-PHASE-III-2025-002",
+        "Nama_Objek": "Penanaman Mangrove ? Buruk Bakul ? Phase III ? Plot 2",
+        "Kategori": "Penanaman Mangrove",
         "Layer_ID": "area_mangrove",
         "Layer_Label": "Area Penanaman Mangrove",
-        "Nama_Objek": "Area Penanaman Mangrove"
+        "Source_Layer": "area_mangrove",
+        "Status_Objek": "Aktif"
       },
       "geometry": {
         "type": "Polygon",
@@ -338,12 +360,17 @@
         "Kabupaten": "Bengkalis",
         "Kecamatan": "Bukit Batu",
         "Desa": "Buruk Bakul",
-        "Ket": null,
+        "Ket": "Phase III",
         "Tahun": "2025",
         "Luas_Ha": 0.303436428554,
+        "Jumlah_Bib": 600.0,
+        "Object_ID": "MANGROVE-BURUK-BAKUL-PHASE-III-2025-003",
+        "Nama_Objek": "Penanaman Mangrove ? Buruk Bakul ? Phase III ? Plot 3",
+        "Kategori": "Penanaman Mangrove",
         "Layer_ID": "area_mangrove",
         "Layer_Label": "Area Penanaman Mangrove",
-        "Nama_Objek": "Area Penanaman Mangrove"
+        "Source_Layer": "area_mangrove",
+        "Status_Objek": "Aktif"
       },
       "geometry": {
         "type": "Polygon",
@@ -384,12 +411,17 @@
         "Kabupaten": "Siak",
         "Kecamatan": "Sungai Apit",
         "Desa": "Tanjung Kuras",
-        "Ket": null,
+        "Ket": "Phase III",
         "Tahun": "2026",
         "Luas_Ha": 0.658564329621,
+        "Jumlah_Bib": 1200.0,
+        "Object_ID": "MANGROVE-TANJUNG-KURAS-PHASE-III-2026-001",
+        "Nama_Objek": "Penanaman Mangrove ? Tanjung Kuras ? Phase III",
+        "Kategori": "Penanaman Mangrove",
         "Layer_ID": "area_mangrove",
         "Layer_Label": "Area Penanaman Mangrove",
-        "Nama_Objek": "Area Penanaman Mangrove"
+        "Source_Layer": "area_mangrove",
+        "Status_Objek": "Aktif"
       },
       "geometry": {
         "type": "Polygon",
@@ -478,12 +510,17 @@
         "Kabupaten": "Bengkalis",
         "Kecamatan": "Bukit Batu",
         "Desa": "Buruk Bakul",
-        "Ket": null,
-        "Tahun": "Phase I",
-        "Luas_Ha": 0.607093770412,
+        "Ket": "Phase I",
+        "Tahun": "2023",
+        "Luas_Ha": 1.20709377041,
+        "Jumlah_Bib": 1000.0,
+        "Object_ID": "MANGROVE-BURUK-BAKUL-PHASE-I-2023-001",
+        "Nama_Objek": "Penanaman Mangrove ? Buruk Bakul ? Phase I ? Plot 1",
+        "Kategori": "Penanaman Mangrove",
         "Layer_ID": "area_mangrove",
         "Layer_Label": "Area Penanaman Mangrove",
-        "Nama_Objek": "Area Penanaman Mangrove"
+        "Source_Layer": "area_mangrove",
+        "Status_Objek": "Aktif"
       },
       "geometry": {
         "type": "Polygon",
@@ -520,12 +557,17 @@
         "Kabupaten": "Bengkalis",
         "Kecamatan": "Bukit Batu",
         "Desa": "Buruk Bakul",
-        "Ket": null,
-        "Tahun": "Phase I",
-        "Luas_Ha": 1.06937857169,
+        "Ket": "Phase I",
+        "Tahun": "2023",
+        "Luas_Ha": 1.16937857169,
+        "Jumlah_Bib": 5280.0,
+        "Object_ID": "MANGROVE-BURUK-BAKUL-PHASE-I-2023-002",
+        "Nama_Objek": "Penanaman Mangrove ? Buruk Bakul ? Phase I ? Plot 2",
+        "Kategori": "Penanaman Mangrove",
         "Layer_ID": "area_mangrove",
         "Layer_Label": "Area Penanaman Mangrove",
-        "Nama_Objek": "Area Penanaman Mangrove"
+        "Source_Layer": "area_mangrove",
+        "Status_Objek": "Aktif"
       },
       "geometry": {
         "type": "Polygon",
@@ -626,12 +668,17 @@
         "Kabupaten": "Bengkalis",
         "Kecamatan": "Bukit Batu",
         "Desa": "Buruk Bakul",
-        "Ket": null,
-        "Tahun": "Phase I",
+        "Ket": "Phase I",
+        "Tahun": "2023",
         "Luas_Ha": 0.216560361801,
+        "Jumlah_Bib": 200.0,
+        "Object_ID": "MANGROVE-BURUK-BAKUL-PHASE-I-2023-003",
+        "Nama_Objek": "Penanaman Mangrove ? Buruk Bakul ? Phase I ? Plot 3",
+        "Kategori": "Penanaman Mangrove",
         "Layer_ID": "area_mangrove",
         "Layer_Label": "Area Penanaman Mangrove",
-        "Nama_Objek": "Area Penanaman Mangrove"
+        "Source_Layer": "area_mangrove",
+        "Status_Objek": "Aktif"
       },
       "geometry": {
         "type": "Polygon",
@@ -672,12 +719,17 @@
         "Kabupaten": "Bengkalis",
         "Kecamatan": "Bukit Batu",
         "Desa": "Buruk Bakul",
-        "Ket": null,
-        "Tahun": "Phase I",
-        "Luas_Ha": 0.409043898085,
+        "Ket": "Phase I",
+        "Tahun": "2023",
+        "Luas_Ha": 1.20904389809,
+        "Jumlah_Bib": 5280.0,
+        "Object_ID": "MANGROVE-BURUK-BAKUL-PHASE-I-2023-004",
+        "Nama_Objek": "Penanaman Mangrove ? Buruk Bakul ? Phase I ? Plot 4",
+        "Kategori": "Penanaman Mangrove",
         "Layer_ID": "area_mangrove",
         "Layer_Label": "Area Penanaman Mangrove",
-        "Nama_Objek": "Area Penanaman Mangrove"
+        "Source_Layer": "area_mangrove",
+        "Status_Objek": "Aktif"
       },
       "geometry": {
         "type": "Polygon",
@@ -718,12 +770,17 @@
         "Kabupaten": "Bengkalis",
         "Kecamatan": "Bukit Batu",
         "Desa": "Buruk Bakul",
-        "Ket": null,
-        "Tahun": "Phase I",
+        "Ket": "Phase I",
+        "Tahun": "2023",
         "Luas_Ha": 0.215926343207,
+        "Jumlah_Bib": 1000.0,
+        "Object_ID": "MANGROVE-BURUK-BAKUL-PHASE-I-2023-005",
+        "Nama_Objek": "Penanaman Mangrove ? Buruk Bakul ? Phase I ? Plot 5",
+        "Kategori": "Penanaman Mangrove",
         "Layer_ID": "area_mangrove",
         "Layer_Label": "Area Penanaman Mangrove",
-        "Nama_Objek": "Area Penanaman Mangrove"
+        "Source_Layer": "area_mangrove",
+        "Status_Objek": "Aktif"
       },
       "geometry": {
         "type": "Polygon",
@@ -760,12 +817,17 @@
         "Kabupaten": "Bengkalis",
         "Kecamatan": "Bukit Batu",
         "Desa": "Buruk Bakul",
-        "Ket": null,
-        "Tahun": "Phase I",
+        "Ket": "Phase I",
+        "Tahun": "2023",
         "Luas_Ha": 0.201588531396,
+        "Jumlah_Bib": 1100.0,
+        "Object_ID": "MANGROVE-BURUK-BAKUL-PHASE-I-2023-006",
+        "Nama_Objek": "Penanaman Mangrove ? Buruk Bakul ? Phase I ? Plot 6",
+        "Kategori": "Penanaman Mangrove",
         "Layer_ID": "area_mangrove",
         "Layer_Label": "Area Penanaman Mangrove",
-        "Nama_Objek": "Area Penanaman Mangrove"
+        "Source_Layer": "area_mangrove",
+        "Status_Objek": "Aktif"
       },
       "geometry": {
         "type": "Polygon",
@@ -802,12 +864,17 @@
         "Kabupaten": "Bengkalis",
         "Kecamatan": "Bukit Batu",
         "Desa": "Buruk Bakul",
-        "Ket": null,
-        "Tahun": "Phase II",
-        "Luas_Ha": 0.831453744155,
+        "Ket": "Phase II",
+        "Tahun": "2024",
+        "Luas_Ha": 1.02145374416,
+        "Jumlah_Bib": 10200.0,
+        "Object_ID": "MANGROVE-BURUK-BAKUL-PHASE-II-2024-001",
+        "Nama_Objek": "Penanaman Mangrove ? Buruk Bakul ? Phase II",
+        "Kategori": "Penanaman Mangrove",
         "Layer_ID": "area_mangrove",
         "Layer_Label": "Area Penanaman Mangrove",
-        "Nama_Objek": "Area Penanaman Mangrove"
+        "Source_Layer": "area_mangrove",
+        "Status_Objek": "Aktif"
       },
       "geometry": {
         "type": "Polygon",
@@ -844,12 +911,17 @@
         "Kabupaten": "Bengkalis",
         "Kecamatan": "Bengkalis",
         "Desa": "Kelapa Pati",
-        "Ket": null,
-        "Tahun": "Phase II",
+        "Ket": "Phase II",
+        "Tahun": "2025",
         "Luas_Ha": 0.00563662264742,
+        "Jumlah_Bib": 353.0,
+        "Object_ID": "MANGROVE-KELAPA-PATI-PHASE-II-2025-001",
+        "Nama_Objek": "Penanaman Mangrove ? Kelapa Pati ? Phase II ? Plot 1",
+        "Kategori": "Penanaman Mangrove",
         "Layer_ID": "area_mangrove",
         "Layer_Label": "Area Penanaman Mangrove",
-        "Nama_Objek": "Area Penanaman Mangrove"
+        "Source_Layer": "area_mangrove",
+        "Status_Objek": "Aktif"
       },
       "geometry": {
         "type": "Polygon",
@@ -954,12 +1026,17 @@
         "Kabupaten": "Bengkalis",
         "Kecamatan": "Bengkalis",
         "Desa": "Kelapa Pati",
-        "Ket": null,
-        "Tahun": "Phase II",
+        "Ket": "Phase II",
+        "Tahun": "2025",
         "Luas_Ha": 0.0137317439554,
+        "Jumlah_Bib": 306.0,
+        "Object_ID": "MANGROVE-KELAPA-PATI-PHASE-II-2025-002",
+        "Nama_Objek": "Penanaman Mangrove ? Kelapa Pati ? Phase II ? Plot 2",
+        "Kategori": "Penanaman Mangrove",
         "Layer_ID": "area_mangrove",
         "Layer_Label": "Area Penanaman Mangrove",
-        "Nama_Objek": "Area Penanaman Mangrove"
+        "Source_Layer": "area_mangrove",
+        "Status_Objek": "Aktif"
       },
       "geometry": {
         "type": "Polygon",
@@ -1116,12 +1193,17 @@
         "Kabupaten": "Bengkalis",
         "Kecamatan": "Bengkalis",
         "Desa": "Kelapa Pati",
-        "Ket": null,
-        "Tahun": "Phase II",
+        "Ket": "Phase II",
+        "Tahun": "2025",
         "Luas_Ha": 0.0139825478457,
+        "Jumlah_Bib": 270.0,
+        "Object_ID": "MANGROVE-KELAPA-PATI-PHASE-II-2025-003",
+        "Nama_Objek": "Penanaman Mangrove ? Kelapa Pati ? Phase II ? Plot 3",
+        "Kategori": "Penanaman Mangrove",
         "Layer_ID": "area_mangrove",
         "Layer_Label": "Area Penanaman Mangrove",
-        "Nama_Objek": "Area Penanaman Mangrove"
+        "Source_Layer": "area_mangrove",
+        "Status_Objek": "Aktif"
       },
       "geometry": {
         "type": "Polygon",
@@ -1218,174 +1300,17 @@
         "Kabupaten": "Bengkalis",
         "Kecamatan": "Bengkalis",
         "Desa": "Kelapa Pati",
-        "Ket": null,
-        "Tahun": "Phase II",
-        "Luas_Ha": 0.0148199720634,
-        "Layer_ID": "area_mangrove",
-        "Layer_Label": "Area Penanaman Mangrove",
-        "Nama_Objek": "Area Penanaman Mangrove"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              102.08227281222366,
-              1.4886850443181927
-            ],
-            [
-              102.08226332421404,
-              1.4887001586950492
-            ],
-            [
-              102.08226319817162,
-              1.4887001931438342
-            ],
-            [
-              102.08226327095143,
-              1.4887002435422627
-            ],
-            [
-              102.08226531027086,
-              1.4887016537759636
-            ],
-            [
-              102.0822877282558,
-              1.488715921835912
-            ],
-            [
-              102.0823442671617,
-              1.4887244472221495
-            ],
-            [
-              102.08239937038289,
-              1.4887253257470918
-            ],
-            [
-              102.0824834509228,
-              1.488727119579217
-            ],
-            [
-              102.08261455407347,
-              1.4887259788656384
-            ],
-            [
-              102.08267535415168,
-              1.4887244590869595
-            ],
-            [
-              102.08271515320855,
-              1.488720368294479
-            ],
-            [
-              102.08273406186686,
-              1.488718424745779
-            ],
-            [
-              102.08274137209276,
-              1.4887176733555743
-            ],
-            [
-              102.08279320349587,
-              1.4887154896080905
-            ],
-            [
-              102.08282354522969,
-              1.4887142112573726
-            ],
-            [
-              102.08285821608746,
-              1.488710337995249
-            ],
-            [
-              102.08288812880717,
-              1.488700734775706
-            ],
-            [
-              102.08292402140565,
-              1.488676736939004
-            ],
-            [
-              102.08291453944604,
-              1.4886613845293049
-            ],
-            [
-              102.08288028312232,
-              1.4886842883498572
-            ],
-            [
-              102.08285446081368,
-              1.4886925783778957
-            ],
-            [
-              102.08282217777017,
-              1.4886961848842852
-            ],
-            [
-              102.08274008339482,
-              1.4886996436626978
-            ],
-            [
-              102.08267421751066,
-              1.4887064137636234
-            ],
-            [
-              102.08261425355869,
-              1.4887079126411975
-            ],
-            [
-              102.08248356359715,
-              1.48870904975742
-            ],
-            [
-              102.08239970283057,
-              1.4887072606126395
-            ],
-            [
-              102.08234574599713,
-              1.488706400363949
-            ],
-            [
-              102.08229412986017,
-              1.48869861727116
-            ],
-            [
-              102.08227448930842,
-              1.4886861121191988
-            ],
-            [
-              102.0822744007045,
-              1.4886859851112393
-            ],
-            [
-              102.08227291457557,
-              1.4886847621874157
-            ],
-            [
-              102.08227286180605,
-              1.4886850758873476
-            ],
-            [
-              102.08227281222366,
-              1.4886850443181927
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "Id": 0,
-        "Kabupaten": "Bengkalis",
-        "Kecamatan": "Bengkalis",
-        "Desa": "Kelapa Pati",
-        "Ket": null,
-        "Tahun": "Phase II",
+        "Ket": "Phase II",
+        "Tahun": "2025",
         "Luas_Ha": 0.00954548710091,
+        "Jumlah_Bib": 400.0,
+        "Object_ID": "MANGROVE-KELAPA-PATI-PHASE-II-2025-004",
+        "Nama_Objek": "Penanaman Mangrove ? Kelapa Pati ? Phase II ? Plot 4",
+        "Kategori": "Penanaman Mangrove",
         "Layer_ID": "area_mangrove",
         "Layer_Label": "Area Penanaman Mangrove",
-        "Nama_Objek": "Area Penanaman Mangrove"
+        "Source_Layer": "area_mangrove",
+        "Status_Objek": "Aktif"
       },
       "geometry": {
         "type": "Polygon",
@@ -1498,12 +1423,17 @@
         "Kabupaten": "Bengkalis",
         "Kecamatan": "Bengkalis",
         "Desa": "Kelapa Pati",
-        "Ket": null,
-        "Tahun": "Phase II",
+        "Ket": "Phase II",
+        "Tahun": "2025",
         "Luas_Ha": 0.0158511023817,
+        "Jumlah_Bib": 219.0,
+        "Object_ID": "MANGROVE-KELAPA-PATI-PHASE-II-2025-005",
+        "Nama_Objek": "Penanaman Mangrove ? Kelapa Pati ? Phase II ? Plot 5",
+        "Kategori": "Penanaman Mangrove",
         "Layer_ID": "area_mangrove",
         "Layer_Label": "Area Penanaman Mangrove",
-        "Nama_Objek": "Area Penanaman Mangrove"
+        "Source_Layer": "area_mangrove",
+        "Status_Objek": "Aktif"
       },
       "geometry": {
         "type": "Polygon",
@@ -1644,56 +1574,263 @@
         "Kabupaten": "Bengkalis",
         "Kecamatan": "Bengkalis",
         "Desa": "Kelapa Pati",
-        "Ket": null,
-        "Tahun": "Phase II",
-        "Luas_Ha": 0.00300187792167,
+        "Ket": "Phase II",
+        "Tahun": "2025",
+        "Luas_Ha": 0.0438547786235,
+        "Jumlah_Bib": 1000.0,
+        "Object_ID": "MANGROVE-KELAPA-PATI-PHASE-II-2025-006",
+        "Nama_Objek": "Penanaman Mangrove ? Kelapa Pati ? Phase II ? Plot 6",
+        "Kategori": "Penanaman Mangrove",
         "Layer_ID": "area_mangrove",
         "Layer_Label": "Area Penanaman Mangrove",
-        "Nama_Objek": "Area Penanaman Mangrove"
+        "Source_Layer": "area_mangrove",
+        "Status_Objek": "Aktif"
       },
       "geometry": {
-        "type": "Polygon",
+        "type": "MultiPolygon",
         "coordinates": [
           [
             [
-              102.08293453088588,
-              1.4887874345678926
-            ],
+              [
+                102.08334632935151,
+                1.4888178805356915
+              ],
+              [
+                102.08320329887817,
+                1.4888046934617023
+              ],
+              [
+                102.08307086974725,
+                1.4887910289008346
+              ],
+              [
+                102.08307086537013,
+                1.4887910759258034
+              ],
+              [
+                102.08306998298315,
+                1.488800628147942
+              ],
+              [
+                102.08307080112604,
+                1.4887908614967955
+              ],
+              [
+                102.08302340471585,
+                1.4887828633112008
+              ],
+              [
+                102.0829700591841,
+                1.48877721270361
+              ],
+              [
+                102.08293955480912,
+                1.4887717050283982
+              ],
+              [
+                102.08293453088595,
+                1.4887874345679961
+              ],
+              [
+                102.08293403395993,
+                1.4887890648511188
+              ],
+              [
+                102.08296753106777,
+                1.4887951128746977
+              ],
+              [
+                102.08302097834991,
+                1.4888007742591185
+              ],
+              [
+                102.08306928783611,
+                1.488808926526076
+              ],
+              [
+                102.08306929018175,
+                1.488808898525349
+              ],
+              [
+                102.08307805658251,
+                1.488809953233499
+              ],
+              [
+                102.08307809209401,
+                1.488809937005783
+              ],
+              [
+                102.08320156432524,
+                1.48882267735587
+              ],
+              [
+                102.08334456273445,
+                1.488835861471216
+              ],
+              [
+                102.08346380966907,
+                1.488848600975757
+              ],
+              [
+                102.0836068153601,
+                1.4888670436560574
+              ],
+              [
+                102.08369757329302,
+                1.4888884282535741
+              ],
+              [
+                102.08379023194817,
+                1.488910288220211
+              ],
+              [
+                102.08387575871228,
+                1.4889273776835807
+              ],
+              [
+                102.0839327978324,
+                1.4889540683643645
+              ],
+              [
+                102.08395943927525,
+                1.4889831921419159
+              ],
+              [
+                102.08396273145758,
+                1.4890047617519713
+              ],
+              [
+                102.08398043267476,
+                1.4890017303704326
+              ],
+              [
+                102.08397635371057,
+                1.4889750059498965
+              ],
+              [
+                102.08394359515404,
+                1.488939195091973
+              ],
+              [
+                102.08388137149171,
+                1.4889100783738627
+              ],
+              [
+                102.08379402997957,
+                1.4888926262967743
+              ],
+              [
+                102.083701668392,
+                1.4888708364123886
+              ],
+              [
+                102.08361001106533,
+                1.4888492398959556
+              ],
+              [
+                102.08346589848782,
+                1.488830654463925
+              ],
+              [
+                102.08334632935151,
+                1.4888178805356915
+              ]
+            ]
+          ],
+          [
             [
-              102.08293403395993,
-              1.4887890648509818
-            ],
-            [
-              102.08296753106778,
-              1.4887951128745631
-            ],
-            [
-              102.0830209783499,
-              1.4888007742591145
-            ],
-            [
-              102.08306928783607,
-              1.4888089265260742
-            ],
-            [
-              102.08307080112598,
-              1.4887908614966876
-            ],
-            [
-              102.08302340471585,
-              1.4887828633112017
-            ],
-            [
-              102.08297005918403,
-              1.4887772127036225
-            ],
-            [
-              102.08293955480913,
-              1.4887717050282716
-            ],
-            [
-              102.08293453088588,
-              1.4887874345678926
+              [
+                102.0831911858819,
+                1.4888513437817323
+              ],
+              [
+                102.08306043944208,
+                1.488841517261335
+              ],
+              [
+                102.08305938296894,
+                1.488859556329544
+              ],
+              [
+                102.08306463471092,
+                1.4888599510351241
+              ],
+              [
+                102.08307233577898,
+                1.48886052982499
+              ],
+              [
+                102.0831894630964,
+                1.4888693327696387
+              ],
+              [
+                102.08337592493564,
+                1.4888915085290364
+              ],
+              [
+                102.08352526521548,
+                1.4889069912941295
+              ],
+              [
+                102.08362876882438,
+                1.4889287186127262
+              ],
+              [
+                102.08378030250617,
+                1.4889542339408877
+              ],
+              [
+                102.08381893977304,
+                1.4889646971910793
+              ],
+              [
+                102.08386954106032,
+                1.4889834539964113
+              ],
+              [
+                102.08389819974639,
+                1.4890064614165794
+              ],
+              [
+                102.08390488611451,
+                1.4890193149989273
+              ],
+              [
+                102.08392023702083,
+                1.4890098687295676
+              ],
+              [
+                102.08391235146462,
+                1.4889947098799325
+              ],
+              [
+                102.08387846869158,
+                1.4889675085205454
+              ],
+              [
+                102.08382451222332,
+                1.48894750147565
+              ],
+              [
+                102.08378412533659,
+                1.4889365583433687
+              ],
+              [
+                102.08363208438857,
+                1.4889109575987618
+              ],
+              [
+                102.08352802534131,
+                1.4888891136816937
+              ],
+              [
+                102.08337789838919,
+                1.4888735493561853
+              ],
+              [
+                102.0831911858819,
+                1.4888513437817323
+              ]
             ]
           ]
         ]
@@ -1706,120 +1843,241 @@
         "Kabupaten": "Bengkalis",
         "Kecamatan": "Bengkalis",
         "Desa": "Kelapa Pati",
-        "Ket": null,
-        "Tahun": "Phase II",
-        "Luas_Ha": 0.02121468216,
+        "Ket": "Phase II",
+        "Tahun": "2025",
+        "Luas_Ha": 0.0221658818646,
+        "Jumlah_Bib": 559.0,
+        "Object_ID": "MANGROVE-KELAPA-PATI-PHASE-II-2025-007",
+        "Nama_Objek": "Penanaman Mangrove ? Kelapa Pati ? Phase II ? Plot 7",
+        "Kategori": "Penanaman Mangrove",
         "Layer_ID": "area_mangrove",
         "Layer_Label": "Area Penanaman Mangrove",
-        "Nama_Objek": "Area Penanaman Mangrove"
+        "Source_Layer": "area_mangrove",
+        "Status_Objek": "Aktif"
       },
       "geometry": {
         "type": "Polygon",
         "coordinates": [
           [
             [
-              102.0830780920941,
-              1.4888099370057848
+              102.08285821608757,
+              1.4887103379953146
             ],
             [
-              102.08320156432525,
-              1.4888226773558642
+              102.08288812880716,
+              1.4887007347757617
             ],
             [
-              102.08334456273437,
-              1.488835861471149
+              102.08291926380184,
+              1.4886799178790966
             ],
             [
-              102.08346380966904,
-              1.4888486009757045
+              102.08292448528056,
+              1.4886765764700272
             ],
             [
-              102.08360681536013,
-              1.4888670436560194
+              102.08295079514312,
+              1.4886551225662856
             ],
             [
-              102.083697573293,
-              1.4888884282535326
+              102.08297831151026,
+              1.4886302249697678
             ],
             [
-              102.08379023194807,
-              1.4889102882201974
+              102.0830176727024,
+              1.488583320176474
             ],
             [
-              102.08387575871228,
-              1.4889273776834728
+              102.08305749495247,
+              1.4885263755873552
             ],
             [
-              102.08393279783233,
-              1.488954068364278
+              102.08310661195054,
+              1.4884706090668942
             ],
             [
-              102.08395943927523,
-              1.48898319214178
+              102.0831067977241,
+              1.4884705472162523
             ],
             [
-              102.08396273145755,
-              1.4890047617519777
+              102.08314932055396,
+              1.488434926311811
             ],
             [
-              102.08398043267474,
-              1.4890017303704624
+              102.08314810409718,
+              1.4884335020736899
             ],
             [
-              102.0839763537106,
-              1.4889750059497757
+              102.08314707414894,
+              1.4884322962014949
             ],
             [
-              102.08394359515401,
-              1.4889391950918462
+              102.08313767025493,
+              1.4884212860412163
             ],
             [
-              102.08388137149171,
-              1.4889100783738791
+              102.08313761614426,
+              1.4884212226878049
             ],
             [
-              102.08379402997946,
-              1.4888926262967246
+              102.08309535715011,
+              1.4884566083503614
             ],
             [
-              102.08370166839187,
-              1.488870836412406
+              102.08309526232978,
+              1.4884567020088184
             ],
             [
-              102.08361001106532,
-              1.4888492398959985
+              102.08309336460866,
+              1.4884584277639874
             ],
             [
-              102.08346589848772,
-              1.4888306544639966
+              102.08304339231711,
+              1.4885151484978678
             ],
             [
-              102.08334632935149,
-              1.4888178805356092
+              102.08300344613156,
+              1.4885722703093052
             ],
             [
-              102.08320329887812,
-              1.4888046934616224
+              102.08296539101855,
+              1.4886176187109754
             ],
             [
-              102.08307086974716,
-              1.4887910289007864
+              102.08293913461404,
+              1.488641376256453
             ],
             [
-              102.08307086537008,
-              1.48879107592567
+              102.08291455892146,
+              1.4886614160619729
             ],
             [
-              102.08306921978897,
-              1.4888088900561758
+              102.08291453944616,
+              1.4886613845293368
             ],
             [
-              102.08307805658252,
-              1.4888099532335635
+              102.08288028312234,
+              1.488684288349873
             ],
             [
-              102.0830780920941,
-              1.4888099370057848
+              102.08285446081379,
+              1.4886925783778793
+            ],
+            [
+              102.0828221777702,
+              1.4886961848843043
+            ],
+            [
+              102.08274008339481,
+              1.4886996436628124
+            ],
+            [
+              102.08267421751066,
+              1.4887064137637367
+            ],
+            [
+              102.0826142535588,
+              1.488707912641189
+            ],
+            [
+              102.08248356359718,
+              1.4887090497573467
+            ],
+            [
+              102.08239970283068,
+              1.4887072606127276
+            ],
+            [
+              102.0823457459972,
+              1.4887064003639239
+            ],
+            [
+              102.08229412986026,
+              1.4886986172712113
+            ],
+            [
+              102.08227448930847,
+              1.4886861121192396
+            ],
+            [
+              102.08227440070453,
+              1.488685985111374
+            ],
+            [
+              102.08227291457558,
+              1.4886847621873471
+            ],
+            [
+              102.08227286180608,
+              1.4886850758873607
+            ],
+            [
+              102.08227281222372,
+              1.4886850443181174
+            ],
+            [
+              102.08226332421401,
+              1.4887001586950532
+            ],
+            [
+              102.08226319817174,
+              1.4887001931438135
+            ],
+            [
+              102.08226327095156,
+              1.4887002435422119
+            ],
+            [
+              102.08226531027088,
+              1.4887016537761042
+            ],
+            [
+              102.08228772825584,
+              1.488715921835933
+            ],
+            [
+              102.08234426716183,
+              1.4887244472221823
+            ],
+            [
+              102.08239937038286,
+              1.4887253257471684
+            ],
+            [
+              102.0824834509229,
+              1.4887271195792664
+            ],
+            [
+              102.08261455407347,
+              1.4887259788656024
+            ],
+            [
+              102.08267535415166,
+              1.4887244590869955
+            ],
+            [
+              102.08271515320854,
+              1.4887203682945938
+            ],
+            [
+              102.08273406186697,
+              1.488718424745798
+            ],
+            [
+              102.08274137209281,
+              1.488717673355552
+            ],
+            [
+              102.08279320349584,
+              1.4887154896081256
+            ],
+            [
+              102.08282354522976,
+              1.4887142112573883
+            ],
+            [
+              102.08285821608757,
+              1.4887103379953146
             ]
           ]
         ]
@@ -1832,240 +2090,17 @@
         "Kabupaten": "Bengkalis",
         "Kecamatan": "Bengkalis",
         "Desa": "Kelapa Pati",
-        "Ket": null,
-        "Tahun": "Phase II",
-        "Luas_Ha": 0.0196385810638,
-        "Layer_ID": "area_mangrove",
-        "Layer_Label": "Area Penanaman Mangrove",
-        "Nama_Objek": "Area Penanaman Mangrove"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              102.08306463471085,
-              1.4888599510351026
-            ],
-            [
-              102.08307233577887,
-              1.4888605298249706
-            ],
-            [
-              102.08318946309637,
-              1.4888693327695441
-            ],
-            [
-              102.08337592493561,
-              1.488891508529045
-            ],
-            [
-              102.08352526521534,
-              1.4889069912941222
-            ],
-            [
-              102.08362876882434,
-              1.4889287186126063
-            ],
-            [
-              102.08378030250606,
-              1.4889542339408732
-            ],
-            [
-              102.08381893977305,
-              1.488964697190955
-            ],
-            [
-              102.08386954106031,
-              1.488983453996337
-            ],
-            [
-              102.0838981997464,
-              1.4890064614165919
-            ],
-            [
-              102.08390488611438,
-              1.4890193149988427
-            ],
-            [
-              102.08392023702082,
-              1.4890098687295137
-            ],
-            [
-              102.08391235146453,
-              1.4889947098798415
-            ],
-            [
-              102.08387846869148,
-              1.4889675085205973
-            ],
-            [
-              102.08382451222319,
-              1.4889475014755116
-            ],
-            [
-              102.08378412533656,
-              1.4889365583433598
-            ],
-            [
-              102.08363208438853,
-              1.4889109575986623
-            ],
-            [
-              102.08352802534132,
-              1.4888891136815916
-            ],
-            [
-              102.08337789838924,
-              1.4888735493562089
-            ],
-            [
-              102.08319118588177,
-              1.488851343781698
-            ],
-            [
-              102.08306043944206,
-              1.4888415172612641
-            ],
-            [
-              102.08305938296894,
-              1.4888595563294043
-            ],
-            [
-              102.08306463471085,
-              1.4888599510351026
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "Id": 0,
-        "Kabupaten": "Bengkalis",
-        "Kecamatan": "Bengkalis",
-        "Desa": "Kelapa Pati",
-        "Ket": null,
-        "Tahun": "Phase II",
-        "Luas_Ha": 0.00734590981611,
-        "Layer_ID": "area_mangrove",
-        "Layer_Label": "Area Penanaman Mangrove",
-        "Nama_Objek": "Area Penanaman Mangrove"
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [
-              102.08291926380171,
-              1.488679917879022
-            ],
-            [
-              102.0829244852805,
-              1.4886765764699845
-            ],
-            [
-              102.08295079514308,
-              1.488655122566167
-            ],
-            [
-              102.08297831151019,
-              1.488630224969816
-            ],
-            [
-              102.08301767270248,
-              1.4885833201764125
-            ],
-            [
-              102.08305749495237,
-              1.4885263755872697
-            ],
-            [
-              102.08310661195061,
-              1.4884706090668036
-            ],
-            [
-              102.08310679772404,
-              1.4884705472162312
-            ],
-            [
-              102.08314932055394,
-              1.4884349263117622
-            ],
-            [
-              102.08314810409703,
-              1.488433502073576
-            ],
-            [
-              102.08314707414884,
-              1.488432296201356
-            ],
-            [
-              102.08313767025484,
-              1.4884212860410926
-            ],
-            [
-              102.08313761614414,
-              1.4884212226877964
-            ],
-            [
-              102.08309535714999,
-              1.488456608350429
-            ],
-            [
-              102.08309526232975,
-              1.488456702008768
-            ],
-            [
-              102.0830933646086,
-              1.4884584277639423
-            ],
-            [
-              102.08304339231697,
-              1.4885151484977521
-            ],
-            [
-              102.08300344613149,
-              1.4885722703092361
-            ],
-            [
-              102.08296539101846,
-              1.4886176187109201
-            ],
-            [
-              102.08293913461395,
-              1.488641376256366
-            ],
-            [
-              102.08291455892125,
-              1.4886614160619536
-            ],
-            [
-              102.08292402140565,
-              1.488676736939004
-            ],
-            [
-              102.08291926380171,
-              1.488679917879022
-            ]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "Id": 0,
-        "Kabupaten": "Bengkalis",
-        "Kecamatan": "Bengkalis",
-        "Desa": "Kelapa Pati",
-        "Ket": null,
-        "Tahun": "Phase II",
+        "Ket": "Phase II",
+        "Tahun": "2025",
         "Luas_Ha": 0.017941054277,
+        "Jumlah_Bib": 533.0,
+        "Object_ID": "MANGROVE-KELAPA-PATI-PHASE-II-2025-008",
+        "Nama_Objek": "Penanaman Mangrove ? Kelapa Pati ? Phase II ? Plot 8",
+        "Kategori": "Penanaman Mangrove",
         "Layer_ID": "area_mangrove",
         "Layer_Label": "Area Penanaman Mangrove",
-        "Nama_Objek": "Area Penanaman Mangrove"
+        "Source_Layer": "area_mangrove",
+        "Status_Objek": "Aktif"
       },
       "geometry": {
         "type": "Polygon",
@@ -2142,12 +2177,17 @@
         "Kabupaten": "Bengkalis",
         "Kecamatan": "Bengkalis",
         "Desa": "Kelapa Pati",
-        "Ket": null,
-        "Tahun": "Phase II",
+        "Ket": "Phase II",
+        "Tahun": "2025",
         "Luas_Ha": 0.0192711822679,
+        "Jumlah_Bib": 1085.0,
+        "Object_ID": "MANGROVE-KELAPA-PATI-PHASE-II-2025-009",
+        "Nama_Objek": "Penanaman Mangrove ? Kelapa Pati ? Phase II ? Plot 9",
+        "Kategori": "Penanaman Mangrove",
         "Layer_ID": "area_mangrove",
         "Layer_Label": "Area Penanaman Mangrove",
-        "Nama_Objek": "Area Penanaman Mangrove"
+        "Source_Layer": "area_mangrove",
+        "Status_Objek": "Aktif"
       },
       "geometry": {
         "type": "Polygon",
@@ -2292,12 +2332,17 @@
         "Kabupaten": "Bengkalis",
         "Kecamatan": "Bengkalis",
         "Desa": "Kelapa Pati",
-        "Ket": null,
-        "Tahun": "Phase II",
+        "Ket": "Phase II",
+        "Tahun": "2025",
         "Luas_Ha": 0.0127431299574,
+        "Jumlah_Bib": 300.0,
+        "Object_ID": "MANGROVE-KELAPA-PATI-PHASE-II-2025-010",
+        "Nama_Objek": "Penanaman Mangrove ? Kelapa Pati ? Phase II ? Plot 10",
+        "Kategori": "Penanaman Mangrove",
         "Layer_ID": "area_mangrove",
         "Layer_Label": "Area Penanaman Mangrove",
-        "Nama_Objek": "Area Penanaman Mangrove"
+        "Source_Layer": "area_mangrove",
+        "Status_Objek": "Aktif"
       },
       "geometry": {
         "type": "Polygon",
@@ -2402,922 +2447,994 @@
         "Kabupaten": "Bengkalis",
         "Kecamatan": "Bengkalis",
         "Desa": "Kelapa Pati",
-        "Ket": null,
-        "Tahun": "Phase III",
+        "Ket": "Phase III",
+        "Tahun": "2026",
         "Luas_Ha": 3.010734,
+        "Jumlah_Bib": 5370.0,
+        "Object_ID": "MANGROVE-KELAPA-PATI-PHASE-III-2026-001",
+        "Nama_Objek": "Penanaman Mangrove ? Kelapa Pati ? Phase III ? Plot 1",
+        "Kategori": "Penanaman Mangrove",
         "Layer_ID": "area_mangrove",
         "Layer_Label": "Area Penanaman Mangrove",
-        "Nama_Objek": "Area Penanaman Mangrove"
+        "Source_Layer": "area_mangrove",
+        "Status_Objek": "Aktif"
       },
       "geometry": {
-        "type": "MultiPolygon",
+        "type": "Polygon",
         "coordinates": [
           [
             [
-              [
-                102.08267149686687,
-                1.487247579005765
-              ],
-              [
-                102.08282701308953,
-                1.4872103109797707
-              ],
-              [
-                102.08288995765894,
-                1.487213807841282
-              ],
-              [
-                102.08302296870215,
-                1.4872184012639629
-              ],
-              [
-                102.08332696874226,
-                1.487210802734867
-              ],
-              [
-                102.08377520245176,
-                1.4871833362689009
-              ],
-              [
-                102.0837744284757,
-                1.4871743328932818
-              ],
-              [
-                102.08370375675396,
-                1.4871786634567155
-              ],
-              [
-                102.08369493344661,
-                1.4871792041239786
-              ],
-              [
-                102.08344013379013,
-                1.4871948175100278
-              ],
-              [
-                102.08332658439979,
-                1.4872017754797258
-              ],
-              [
-                102.08302301122542,
-                1.4872093633365673
-              ],
-              [
-                102.08289035901394,
-                1.4872047823047796
-              ],
-              [
-                102.08282620402666,
-                1.4872012181983056
-              ],
-              [
-                102.0826703562868,
-                1.4872385656681113
-              ],
-              [
-                102.08254085494725,
-                1.4872411175318514
-              ],
-              [
-                102.08233688011853,
-                1.4872378240730681
-              ],
-              [
-                102.08218141180423,
-                1.4872308769608933
-              ],
-              [
-                102.08192559008363,
-                1.4872204600587127
-              ],
-              [
-                102.08188793724892,
-                1.487222881577185
-              ],
-              [
-                102.08184017443995,
-                1.4872172272731443
-              ],
-              [
-                102.08179641177233,
-                1.4871981024244552
-              ],
-              [
-                102.08168860037456,
-                1.4870993139835829
-              ],
-              [
-                102.08160813978654,
-                1.4870007578055446
-              ],
-              [
-                102.08152228763363,
-                1.486894260858564
-              ],
-              [
-                102.08148048267724,
-                1.4868499086522846
-              ],
-              [
-                102.08147414163582,
-                1.4868563081045634
-              ],
-              [
-                102.08151553569034,
-                1.4869002243714362
-              ],
-              [
-                102.08160118627617,
-                1.4870064712798177
-              ],
-              [
-                102.08168207675546,
-                1.4871055540308946
-              ],
-              [
-                102.0817914698794,
-                1.4872057918188923
-              ],
-              [
-                102.08183781217323,
-                1.4872260439970937
-              ],
-              [
-                102.08188769717358,
-                1.487231949532296
-              ],
-              [
-                102.08192569515076,
-                1.4872295058166751
-              ],
-              [
-                102.0821810312596,
-                1.4872399029427246
-              ],
-              [
-                102.08233660897265,
-                1.4872468549420443
-              ],
-              [
-                102.08254087081697,
-                1.487250153033267
-              ],
-              [
-                102.08267149686687,
-                1.487247579005765
-              ]
+              102.07983857100015,
+              1.4868786630001978
+            ],
+            [
+              102.07985142800027,
+              1.4868637680000916
+            ],
+            [
+              102.07985938000019,
+              1.486870525000029
+            ],
+            [
+              102.07987126400013,
+              1.4868812170001888
+            ],
+            [
+              102.0798816620001,
+              1.4868844840000293
+            ],
+            [
+              102.07988909000017,
+              1.4868853750002131
+            ],
+            [
+              102.07990216200017,
+              1.4868853750002131
+            ],
+            [
+              102.07990988700021,
+              1.4868844840000293
+            ],
+            [
+              102.07992295900021,
+              1.4868827020000595
+            ],
+            [
+              102.07994316200023,
+              1.4868821080002022
+            ],
+            [
+              102.0799573068025,
+              1.4868848368928411
+            ],
+            [
+              102.0799185427316,
+              1.4868706860061707
+            ],
+            [
+              102.07991834851987,
+              1.486864163958387
+            ],
+            [
+              102.07993809719386,
+              1.4868575083459632
+            ],
+            [
+              102.07996002722018,
+              1.4868448554672113
+            ],
+            [
+              102.07996073895129,
+              1.4868444448227365
+            ],
+            [
+              102.07996718280407,
+              1.4868227177593667
+            ],
+            [
+              102.0799736387076,
+              1.486809676979533
+            ],
+            [
+              102.07999522858591,
+              1.486816162949708
+            ],
+            [
+              102.08000497661249,
+              1.486842210862335
+            ],
+            [
+              102.08001686365901,
+              1.48685522586743
+            ],
+            [
+              102.08003414357415,
+              1.4868660605902164
+            ],
+            [
+              102.08006112452529,
+              1.4868703662786515
+            ],
+            [
+              102.0800859483806,
+              1.4868746759009923
+            ],
+            [
+              102.08011615365854,
+              1.486869203051242
+            ],
+            [
+              102.08014635441668,
+              1.4868604734106157
+            ],
+            [
+              102.08016467716908,
+              1.4868452450596124
+            ],
+            [
+              102.08016788101372,
+              1.4868213498488103
+            ],
+            [
+              102.08019268075856,
+              1.4868082832944083
+            ],
+            [
+              102.08020778219424,
+              1.486805004373423
+            ],
+            [
+              102.08023475801156,
+              1.486804966467048
+            ],
+            [
+              102.08024986787689,
+              1.4868071170347434
+            ],
+            [
+              102.08026713634479,
+              1.486810350469284
+            ],
+            [
+              102.080287635167,
+              1.48680814986335
+            ],
+            [
+              102.08030920997243,
+              1.4868037759452477
+            ],
+            [
+              102.08033509323081,
+              1.4867939664723622
+            ],
+            [
+              102.08035449859665,
+              1.48678199339912
+            ],
+            [
+              102.08037606737378,
+              1.4867732758893908
+            ],
+            [
+              102.08040087615353,
+              1.4867667256270352
+            ],
+            [
+              102.08041706199981,
+              1.4867667028818232
+            ],
+            [
+              102.08044403390028,
+              1.486764493179578
+            ],
+            [
+              102.0804569767298,
+              1.4867601313916339
+            ],
+            [
+              102.08048285847599,
+              1.4867492351180545
+            ],
+            [
+              102.08049902685002,
+              1.486737267498313
+            ],
+            [
+              102.0805110739916,
+              1.4867172356204605
+            ],
+            [
+              102.08051192379628,
+              1.4867158225729895
+            ],
+            [
+              102.08050913734166,
+              1.4867140058178734
+            ],
+            [
+              102.08050763968828,
+              1.486711172115747
+            ],
+            [
+              102.08051193201175,
+              1.4867057573629836
+            ],
+            [
+              102.08051190489175,
+              1.4866862102996379
+            ],
+            [
+              102.08050618608519,
+              1.4866747405005185
+            ],
+            [
+              102.08050541283421,
+              1.4866731886237972
+            ],
+            [
+              102.08049353242853,
+              1.486665603115398
+            ],
+            [
+              102.08048381694078,
+              1.4866623590677364
+            ],
+            [
+              102.08048056488593,
+              1.4866515046383597
+            ],
+            [
+              102.08048055132718,
+              1.486641731558052
+            ],
+            [
+              102.08048700722611,
+              1.4866286907840731
+            ],
+            [
+              102.08050208756526,
+              1.486610209295577
+            ],
+            [
+              102.0805032657156,
+              1.4866097191004997
+            ],
+            [
+              102.08052042085478,
+              1.4866025813319084
+            ],
+            [
+              102.08053119274041,
+              1.4865895353974565
+            ],
+            [
+              102.08053225304866,
+              1.486575416305925
+            ],
+            [
+              102.08054734694565,
+              1.4865667078982483
+            ],
+            [
+              102.08057324074213,
+              1.4865644997144045
+            ],
+            [
+              102.08059372750444,
+              1.4865536119296507
+            ],
+            [
+              102.08060558139721,
+              1.48654273537187
+            ],
+            [
+              102.08061743830416,
+              1.4865340315132585
+            ],
+            [
+              102.08062869400663,
+              1.4865259168750526
+            ],
+            [
+              102.08063253008424,
+              1.4865231513097115
+            ],
+            [
+              102.08065989189714,
+              1.4865102535343908
+            ],
+            [
+              102.08066487977607,
+              1.4865079023545036
+            ],
+            [
+              102.08068106260339,
+              1.4865057078162636
+            ],
+            [
+              102.08069616704324,
+              1.4865046006928537
+            ],
+            [
+              102.08071558384546,
+              1.486500229810872
+            ],
+            [
+              102.08072743321708,
+              1.4864860955617019
+            ],
+            [
+              102.08073496208596,
+              1.486468710588099
+            ],
+            [
+              102.08075436984706,
+              1.486457823417993
+            ],
+            [
+              102.08077270614541,
+              1.4864523681552555
+            ],
+            [
+              102.08079535752984,
+              1.4864469068292578
+            ],
+            [
+              102.08082031820067,
+              1.4864456756405957
+            ],
+            [
+              102.08082049679882,
+              1.4864455029194232
+            ],
+            [
+              102.08084063000024,
+              1.4864122020002242
+            ],
+            [
+              102.08085657800012,
+              1.4864035749999402
+            ],
+            [
+              102.0808782210002,
+              1.4863903500001925
+            ],
+            [
+              102.08089871800024,
+              1.48637368500016
+            ],
+            [
+              102.08090968500017,
+              1.4863350430001674
+            ],
+            [
+              102.08092886840615,
+              1.48630898866827
+            ],
+            [
+              102.08095560988664,
+              1.4863246373234915
+            ],
+            [
+              102.08102678508374,
+              1.4863590029476086
+            ],
+            [
+              102.08105837150555,
+              1.4863404001470713
+            ],
+            [
+              102.08109787568043,
+              1.4863323910306576
+            ],
+            [
+              102.08111889528624,
+              1.4862925934609734
+            ],
+            [
+              102.08112674315737,
+              1.4862528144001885
+            ],
+            [
+              102.08112405364142,
+              1.4862130501455795
+            ],
+            [
+              102.08112893935191,
+              1.486204664544914
+            ],
+            [
+              102.08112452189152,
+              1.486200849944737
+            ],
+            [
+              102.0811362051532,
+              1.4861609637478068
+            ],
+            [
+              102.08114121082588,
+              1.486123627798861
+            ],
+            [
+              102.081161409488,
+              1.4860998442452455
+            ],
+            [
+              102.08116978298932,
+              1.4860591103568481
+            ],
+            [
+              102.08120007481938,
+              1.4860183447725035
+            ],
+            [
+              102.08122868464108,
+              1.4859809756654272
+            ],
+            [
+              102.08127580730667,
+              1.4859198262831228
+            ],
+            [
+              102.08130608176373,
+              1.4858671835955874
+            ],
+            [
+              102.08134476738093,
+              1.485800955356865
+            ],
+            [
+              102.08139355232913,
+              1.4857228358025054
+            ],
+            [
+              102.0814221159821,
+              1.4856515310746659
+            ],
+            [
+              102.08144731326666,
+              1.485585321794872
+            ],
+            [
+              102.08146913275709,
+              1.4855140265464115
+            ],
+            [
+              102.08149767434378,
+              1.4854274515192287
+            ],
+            [
+              102.08150941713967,
+              1.4853850154080988
+            ],
+            [
+              102.0815059984505,
+              1.485351085417733
+            ],
+            [
+              102.08151102296267,
+              1.485327323194042
+            ],
+            [
+              102.08154574164877,
+              1.4852843989883695
+            ],
+            [
+              102.08154688904489,
+              1.4852792331794262
+            ],
+            [
+              102.08154137300022,
+              1.4851829196043695
+            ],
+            [
+              102.08138918320361,
+              1.4851287469772387
+            ],
+            [
+              102.08036254857439,
+              1.4861178464897762
+            ],
+            [
+              102.08035610664615,
+              1.486131049882431
+            ],
+            [
+              102.0802612234412,
+              1.4862178069028573
+            ],
+            [
+              102.08015419199705,
+              1.4863133772303172
+            ],
+            [
+              102.08007533689295,
+              1.4863803202374015
+            ],
+            [
+              102.08007807865994,
+              1.4863824273882642
+            ],
+            [
+              102.08001868929307,
+              1.4864376638848853
+            ],
+            [
+              102.07998226900781,
+              1.4864745326722186
+            ],
+            [
+              102.07996534586312,
+              1.4864872782840735
+            ],
+            [
+              102.0797938453947,
+              1.4866467880463006
+            ],
+            [
+              102.07974107797463,
+              1.4866958661592093
+            ],
+            [
+              102.07969595925942,
+              1.4867378303378587
+            ],
+            [
+              102.07965720966052,
+              1.4867738707062017
+            ],
+            [
+              102.07944069842512,
+              1.4869752442739923
+            ],
+            [
+              102.07967188650997,
+              1.4871588654273182
+            ],
+            [
+              102.0797817642233,
+              1.4872020243234942
+            ],
+            [
+              102.07978275914923,
+              1.4872026000366532
+            ],
+            [
+              102.07978283411359,
+              1.4872026361043709
+            ],
+            [
+              102.07997338657788,
+              1.4872611370952313
+            ],
+            [
+              102.08008711408957,
+              1.4872960589505055
+            ],
+            [
+              102.08012297743562,
+              1.4873115065203137
+            ],
+            [
+              102.0801237547081,
+              1.4873118413182738
+            ],
+            [
+              102.0802992864725,
+              1.487387448833033
+            ],
+            [
+              102.08030641706694,
+              1.4873708666913217
+            ],
+            [
+              102.0800942205804,
+              1.4872794614119016
+            ],
+            [
+              102.08009417030564,
+              1.4872794446624198
+            ],
+            [
+              102.08009235541783,
+              1.4872787803341225
+            ],
+            [
+              102.0799838402441,
+              1.4872454565855264
+            ],
+            [
+              102.07989278533574,
+              1.4872174958341589
+            ],
+            [
+              102.07987794600012,
+              1.4871836080002936
+            ],
+            [
+              102.07987410100026,
+              1.48715110500018
+            ],
+            [
+              102.0798864150002,
+              1.4871252730001743
+            ],
+            [
+              102.07989780400021,
+              1.4871166520000543
+            ],
+            [
+              102.07991204400031,
+              1.4871089830000415
+            ],
+            [
+              102.07992532300023,
+              1.4870936660001348
+            ],
+            [
+              102.07993005200018,
+              1.4870783620002612
+            ],
+            [
+              102.0799433260002,
+              1.4870592210002087
+            ],
+            [
+              102.07993665800018,
+              1.4870468010002469
+            ],
+            [
+              102.07991668800014,
+              1.4870324870001355
+            ],
+            [
+              102.07989767100025,
+              1.4870210410000482
+            ],
+            [
+              102.07987293200028,
+              1.4869933480001691
+            ],
+            [
+              102.07984818600016,
+              1.4869608750002499
+            ],
+            [
+              102.07983580600023,
+              1.4869398580001985
+            ],
+            [
+              102.07983482000031,
+              1.486914044000173
+            ],
+            [
+              102.07983859100017,
+              1.4868930050002973
+            ],
+            [
+              102.07983857100015,
+              1.4868786630001978
             ]
-          ],
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Id": 0,
+        "Kabupaten": "Bengkalis",
+        "Kecamatan": "Bengkalis",
+        "Desa": "Kelapa Pati",
+        "Ket": "Phase III",
+        "Tahun": "2026",
+        "Luas_Ha": 0.015682,
+        "Jumlah_Bib": 100.0,
+        "Object_ID": "MANGROVE-KELAPA-PATI-PHASE-III-2026-002",
+        "Nama_Objek": "Penanaman Mangrove ? Kelapa Pati ? Phase III ? Plot 2",
+        "Kategori": "Penanaman Mangrove",
+        "Layer_ID": "area_mangrove",
+        "Layer_Label": "Area Penanaman Mangrove",
+        "Source_Layer": "area_mangrove",
+        "Status_Objek": "Aktif"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
           [
             [
-              [
-                102.07971258453917,
-                1.4868017534499804
-              ],
-              [
-                102.07972544154227,
-                1.4867868584497526
-              ],
-              [
-                102.079733393542,
-                1.4867936154515173
-              ],
-              [
-                102.07974527754156,
-                1.4868043074545296
-              ],
-              [
-                102.07975567554199,
-                1.4868075744561176
-              ],
-              [
-                102.07976310354255,
-                1.486808465457368
-              ],
-              [
-                102.07977617554369,
-                1.486808465459064
-              ],
-              [
-                102.07978390054448,
-                1.486807574459806
-              ],
-              [
-                102.07979697254582,
-                1.4868057924612998
-              ],
-              [
-                102.0798171755476,
-                1.4868051984640143
-              ],
-              [
-                102.0798313203507,
-                1.486807927358811
-              ],
-              [
-                102.07979255627838,
-                1.4867937764654142
-              ],
-              [
-                102.07979236206747,
-                1.486787254416803
-              ],
-              [
-                102.07981211074396,
-                1.4867805988061595
-              ],
-              [
-                102.07983404077378,
-                1.4867679459287686
-              ],
-              [
-                102.07983475250501,
-                1.4867675352843128
-              ],
-              [
-                102.0798411963611,
-                1.4867458082191756
-              ],
-              [
-                102.07984765226686,
-                1.486732767438624
-              ],
-              [
-                102.07986924214616,
-                1.4867392534124149
-              ],
-              [
-                102.0798789901702,
-                1.4867653013294146
-              ],
-              [
-                102.07989087721607,
-                1.4867783163376362
-              ],
-              [
-                102.07990815713127,
-                1.4867891510639402
-              ],
-              [
-                102.07993513808414,
-                1.4867934567564223
-              ],
-              [
-                102.07995996194099,
-                1.4867977663825225
-              ],
-              [
-                102.07999016722218,
-                1.4867922935360456
-              ],
-              [
-                102.08002036798396,
-                1.4867835638982831
-              ],
-              [
-                102.08003869073988,
-                1.4867683355478654
-              ],
-              [
-                102.08004189458788,
-                1.4867444403346273
-              ],
-              [
-                102.08006669433648,
-                1.4867313737819
-              ],
-              [
-                102.08008179577385,
-                1.4867280948624946
-              ],
-              [
-                102.08010877159344,
-                1.4867280569595973
-              ],
-              [
-                102.08012388145978,
-                1.4867302075295417
-              ],
-              [
-                102.08014114992874,
-                1.4867334409666888
-              ],
-              [
-                102.08016164875295,
-                1.4867312403631667
-              ],
-              [
-                102.08018322356077,
-                1.486726866447368
-              ],
-              [
-                102.08020910682258,
-                1.4867170569766734
-              ],
-              [
-                102.08022851219158,
-                1.4867050839045033
-              ],
-              [
-                102.08025008097167,
-                1.4866963663965544
-              ],
-              [
-                102.08027488975436,
-                1.4866898161366546
-              ],
-              [
-                102.08029107560202,
-                1.4866897933935281
-              ],
-              [
-                102.08031804750503,
-                1.4866875836945461
-              ],
-              [
-                102.08033099033621,
-                1.486683221907775
-              ],
-              [
-                102.08035687208599,
-                1.486672325636287
-              ],
-              [
-                102.08037304046292,
-                1.4866603580172215
-              ],
-              [
-                102.0803850876081,
-                1.4866403261384946
-              ],
-              [
-                102.08038593741301,
-                1.486638913090989
-              ],
-              [
-                102.08038315095841,
-                1.4866370963352922
-              ],
-              [
-                102.08038165330525,
-                1.486634262632611
-              ],
-              [
-                102.08038594562979,
-                1.4866288478797618
-              ],
-              [
-                102.08038591851228,
-                1.4866093008140806
-              ],
-              [
-                102.08038019970672,
-                1.4865978310128543
-              ],
-              [
-                102.08037942645589,
-                1.4865962791358485
-              ],
-              [
-                102.08036754605017,
-                1.4865886936249832
-              ],
-              [
-                102.08035783056205,
-                1.4865854495756519
-              ],
-              [
-                102.0803545785083,
-                1.4865745951445877
-              ],
-              [
-                102.0803545649508,
-                1.486564822063081
-              ],
-              [
-                102.08036102085195,
-                1.4865517812883922
-              ],
-              [
-                102.08037610119473,
-                1.4865332997996443
-              ],
-              [
-                102.08037727934526,
-                1.4865328096046766
-              ],
-              [
-                102.0803944344868,
-                1.4865256718374547
-              ],
-              [
-                102.080405206375,
-                1.4865126259028443
-              ],
-              [
-                102.08040626668515,
-                1.4864985068097456
-              ],
-              [
-                102.08042136058455,
-                1.486489798403007
-              ],
-              [
-                102.0804472543835,
-                1.4864875902222814
-              ],
-              [
-                102.08046774114894,
-                1.4864767024389105
-              ],
-              [
-                102.08047959504412,
-                1.48646582588135
-              ],
-              [
-                102.08049145195316,
-                1.4864571220232283
-              ],
-              [
-                102.08050270765766,
-                1.4864490073855143
-              ],
-              [
-                102.08050654373594,
-                1.4864462418203601
-              ],
-              [
-                102.08053390555278,
-                1.4864333440470456
-              ],
-              [
-                102.08053889343245,
-                1.486430992867522
-              ],
-              [
-                102.08055507626139,
-                1.4864287983311393
-              ],
-              [
-                102.08057018070268,
-                1.486427691209592
-              ],
-              [
-                102.08058959750711,
-                1.486423320329578
-              ],
-              [
-                102.08060144688154,
-                1.4864091860802922
-              ],
-              [
-                102.08060897575328,
-                1.486391801105593
-              ],
-              [
-                102.08062838351744,
-                1.4863809139367175
-              ],
-              [
-                102.08064671981803,
-                1.4863754586756885
-              ],
-              [
-                102.08066937120506,
-                1.4863699973519962
-              ],
-              [
-                102.08069433187816,
-                1.4863687661664187
-              ],
-              [
-                102.08069451047635,
-                1.48636859344527
-              ],
-              [
-                102.08071464368376,
-                1.4863352925246893
-              ],
-              [
-                102.0807305916861,
-                1.4863266655254748
-              ],
-              [
-                102.08075223468968,
-                1.4863134405269434
-              ],
-              [
-                102.0807727316936,
-                1.486296775527595
-              ],
-              [
-                102.08078369869943,
-                1.4862581335244145
-              ],
-              [
-                102.08080288211036,
-                1.4862320791918842
-              ],
-              [
-                102.08082962359111,
-                1.4862477278524744
-              ],
-              [
-                102.0809007987898,
-                1.486282093489961
-              ],
-              [
-                102.08093238521667,
-                1.4862634906913221
-              ],
-              [
-                102.0809718893959,
-                1.4862554815791027
-              ],
-              [
-                102.08099290900861,
-                1.4862156840074112
-              ],
-              [
-                102.08100075688553,
-                1.4861759049428607
-              ],
-              [
-                102.08099806737445,
-                1.4861361406831548
-              ],
-              [
-                102.08100295308644,
-                1.4861277550821226
-              ],
-              [
-                102.08099853562615,
-                1.486123940480909
-              ],
-              [
-                102.08101021889398,
-                1.4860840542807223
-              ],
-              [
-                102.08101522457186,
-                1.4860467183279606
-              ],
-              [
-                102.08103542323876,
-                1.4860229347741203
-              ],
-              [
-                102.081043796746,
-                1.4859822008819554
-              ],
-              [
-                102.08107408858388,
-                1.4859414352966793
-              ],
-              [
-                102.08110269841279,
-                1.4859040661888572
-              ],
-              [
-                102.08114982109021,
-                1.485842916805359
-              ],
-              [
-                102.08118009555659,
-                1.485790274115474
-              ],
-              [
-                102.08121878118558,
-                1.485724045873866
-              ],
-              [
-                102.08126756614796,
-                1.485645926316477
-              ],
-              [
-                102.0812961298125,
-                1.4855746215838412
-              ],
-              [
-                102.08132132710769,
-                1.4855084122994129
-              ],
-              [
-                102.08134314660914,
-                1.4854371170452776
-              ],
-              [
-                102.08137168820936,
-                1.4853505420114215
-              ],
-              [
-                102.08138343101172,
-                1.4853081058967816
-              ],
-              [
-                102.08138001232662,
-                1.4852741759018822
-              ],
-              [
-                102.08138503684228,
-                1.485250413676001
-              ],
-              [
-                102.08141975553681,
-                1.4852074894697256
-              ],
-              [
-                102.08142090293367,
-                1.4852023236603047
-              ],
-              [
-                102.08141538690093,
-                1.4851060100730014
-              ],
-              [
-                102.08126319709844,
-                1.485051837419578
-              ],
-              [
-                102.08023656225544,
-                1.486040936916757
-              ],
-              [
-                102.08023012032494,
-                1.4860541403101644
-              ],
-              [
-                102.08013523710083,
-                1.4861408973286214
-              ],
-              [
-                102.08002820563536,
-                1.4862364676535786
-              ],
-              [
-                102.07994935051599,
-                1.4863034106583706
-              ],
-              [
-                102.07995209228295,
-                1.4863055178098836
-              ],
-              [
-                102.07989270290398,
-                1.4863607543053536
-              ],
-              [
-                102.07985628261092,
-                1.4863976230923432
-              ],
-              [
-                102.07983935946315,
-                1.4864103687035368
-              ],
-              [
-                102.07966785895977,
-                1.4865698784624888
-              ],
-              [
-                102.07961509152894,
-                1.4866189565744157
-              ],
-              [
-                102.07956997280452,
-                1.486660920752194
-              ],
-              [
-                102.07953122319773,
-                1.4866969611198073
-              ],
-              [
-                102.07931471191816,
-                1.4868983346834737
-              ],
-              [
-                102.07954589999889,
-                1.4870819558888755
-              ],
-              [
-                102.07965577771593,
-                1.4871251148045261
-              ],
-              [
-                102.07965677264187,
-                1.4871256905179042
-              ],
-              [
-                102.07965684760622,
-                1.4871257265856141
-              ],
-              [
-                102.07984740007909,
-                1.4871842276083167
-              ],
-              [
-                102.07996112759585,
-                1.4872191494825635
-              ],
-              [
-                102.07999699094293,
-                1.4872345970588816
-              ],
-              [
-                102.07999776821542,
-                1.4872349318570164
-              ],
-              [
-                102.08017329998489,
-                1.487310539403668
-              ],
-              [
-                102.08018043058208,
-                1.487293957260916
-              ],
-              [
-                102.07996823408942,
-                1.4872025519429057
-              ],
-              [
-                102.07996818381466,
-                1.4872025351934364
-              ],
-              [
-                102.07996636892679,
-                1.4872018708648196
-              ],
-              [
-                102.07985785374818,
-                1.487168547098098
-              ],
-              [
-                102.07976679883575,
-                1.4871405863315248
-              ],
-              [
-                102.07975195950323,
-                1.487106698491674
-              ],
-              [
-                102.07974811450723,
-                1.487074195487147
-              ],
-              [
-                102.07976042851153,
-                1.4870483634857026
-              ],
-              [
-                102.07977181751362,
-                1.487039742486
-              ],
-              [
-                102.07978605751588,
-                1.4870320734869586
-              ],
-              [
-                102.0797993365189,
-                1.487016756486934
-              ],
-              [
-                102.07980406552122,
-                1.4870014524858384
-              ],
-              [
-                102.07981733952481,
-                1.4869823114852139
-              ],
-              [
-                102.07981067152583,
-                1.4869698914828857
-              ],
-              [
-                102.07979070152595,
-                1.4869555774784844
-              ],
-              [
-                102.07977168452595,
-                1.4869441314745373
-              ],
-              [
-                102.07974694552745,
-                1.486916438468141
-              ],
-              [
-                102.0797221995294,
-                1.4868839654611017
-              ],
-              [
-                102.07970981953113,
-                1.4868629484569262
-              ],
-              [
-                102.07970883353445,
-                1.4868371344536633
-              ],
-              [
-                102.07971260453733,
-                1.4868160954518117
-              ],
-              [
-                102.07971258453917,
-                1.4868017534499804
-              ]
+              102.08145886485448,
+              1.4888431962270943
+            ],
+            [
+              102.0814420911135,
+              1.4888220658851878
+            ],
+            [
+              102.08142859175933,
+              1.4888046777647332
+            ],
+            [
+              102.0814181786676,
+              1.4887912649680288
+            ],
+            [
+              102.08143055170922,
+              1.488758036870422
+            ],
+            [
+              102.08138839562525,
+              1.4887425267110075
+            ],
+            [
+              102.0813673208529,
+              1.4887991235099207
+            ],
+            [
+              102.08140687261783,
+              1.4888500689730222
+            ],
+            [
+              102.0814229198752,
+              1.4888702841428767
+            ],
+            [
+              102.08144297101921,
+              1.4888990703310583
+            ],
+            [
+              102.08144805774333,
+              1.4889102359938988
+            ],
+            [
+              102.0814501230891,
+              1.488914769550945
+            ],
+            [
+              102.08145447181192,
+              1.4889243152563267
+            ],
+            [
+              102.08149519979855,
+              1.4889053324290558
+            ],
+            [
+              102.08149170972672,
+              1.4888976715134277
+            ],
+            [
+              102.08148206826519,
+              1.4888765079307404
+            ],
+            [
+              102.08145886485448,
+              1.4888431962270943
             ]
-          ],
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Id": 0,
+        "Kabupaten": "Bengkalis",
+        "Kecamatan": "Bengkalis",
+        "Desa": "Kelapa Pati",
+        "Ket": "Phase III",
+        "Tahun": "2026",
+        "Luas_Ha": 0.011192,
+        "Jumlah_Bib": 300.0,
+        "Object_ID": "MANGROVE-KELAPA-PATI-PHASE-III-2026-003",
+        "Nama_Objek": "Penanaman Mangrove ? Kelapa Pati ? Phase III ? Plot 3",
+        "Kategori": "Penanaman Mangrove",
+        "Layer_ID": "area_mangrove",
+        "Layer_Label": "Area Penanaman Mangrove",
+        "Source_Layer": "area_mangrove",
+        "Status_Objek": "Aktif"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
           [
             [
-              [
-                102.08130260518463,
-                1.4887277686521492
-              ],
-              [
-                102.08133287827735,
-                1.4887662871230776
-              ],
-              [
-                102.0814879639525,
-                1.4886673680062872
-              ],
-              [
-                102.08146207541988,
-                1.4886262509117372
-              ],
-              [
-                102.08130260518463,
-                1.4887277686521492
-              ]
+              102.08142859175933,
+              1.4888046777647332
+            ],
+            [
+              102.08145886485448,
+              1.4888431962270943
+            ],
+            [
+              102.08161395050382,
+              1.4887442771019437
+            ],
+            [
+              102.08158806196809,
+              1.4887031600156888
+            ],
+            [
+              102.08142859175933,
+              1.4888046777647332
             ]
-          ],
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Id": 0,
+        "Kabupaten": "Bengkalis",
+        "Kecamatan": "Bengkalis",
+        "Desa": "Kelapa Pati",
+        "Ket": "Phase III",
+        "Tahun": "2025",
+        "Luas_Ha": 0.027424,
+        "Jumlah_Bib": 500.0,
+        "Object_ID": "MANGROVE-KELAPA-PATI-PHASE-III-2025-001",
+        "Nama_Objek": "Penanaman Mangrove ? Kelapa Pati ? Phase III",
+        "Kategori": "Penanaman Mangrove",
+        "Layer_ID": "area_mangrove",
+        "Layer_Label": "Area Penanaman Mangrove",
+        "Source_Layer": "area_mangrove",
+        "Status_Objek": "Aktif"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
           [
             [
-              [
-                102.08133287827735,
-                1.4887662871230776
-              ],
-              [
-                102.08131610453769,
-                1.4887451567764445
-              ],
-              [
-                102.08130260518463,
-                1.4887277686521492
-              ],
-              [
-                102.08129219209376,
-                1.4887143558524831
-              ],
-              [
-                102.08130456514067,
-                1.4886811277525007
-              ],
-              [
-                102.08126240905516,
-                1.488665617585756
-              ],
-              [
-                102.08124133427373,
-                1.488722214388687
-              ],
-              [
-                102.08128088603544,
-                1.4887731598630263
-              ],
-              [
-                102.08129693329158,
-                1.4887933750374098
-              ],
-              [
-                102.08131698443358,
-                1.4888221612316337
-              ],
-              [
-                102.08132207115666,
-                1.4888333268964833
-              ],
-              [
-                102.08132413650203,
-                1.4888378604543673
-              ],
-              [
-                102.08132848522399,
-                1.4888474061614247
-              ],
-              [
-                102.0813692132165,
-                1.4888284233371851
-              ],
-              [
-                102.08136572314537,
-                1.4888207624201941
-              ],
-              [
-                102.08135608168574,
-                1.488799598833714
-              ],
-              [
-                102.08133287827735,
-                1.4887662871230776
-              ]
+              102.08279748313555,
+              1.4873244881171104
+            ],
+            [
+              102.0829529993403,
+              1.4872872200753022
+            ],
+            [
+              102.08301594390485,
+              1.4872907169282144
+            ],
+            [
+              102.08314895493743,
+              1.4872953103329678
+            ],
+            [
+              102.08345295495087,
+              1.487287711765191
+            ],
+            [
+              102.083901188619,
+              1.4872602452440447
+            ],
+            [
+              102.08390041464185,
+              1.4872512418696147
+            ],
+            [
+              102.08382974292664,
+              1.487255572441768
+            ],
+            [
+              102.08382091962011,
+              1.4872561131101065
+            ],
+            [
+              102.08356611998715,
+              1.4872717265275242
+            ],
+            [
+              102.08345257060728,
+              1.4872786845111818
+            ],
+            [
+              102.08314899745955,
+              1.4872862724066636
+            ],
+            [
+              102.08301634525867,
+              1.4872816913926954
+            ],
+            [
+              102.08295219027633,
+              1.487278127295042
+            ],
+            [
+              102.08279634255445,
+              1.4873154747807007
+            ],
+            [
+              102.08266684122617,
+              1.4873180266610007
+            ],
+            [
+              102.08246286641423,
+              1.4873147332291978
+            ],
+            [
+              102.08230739811216,
+              1.4873077861381034
+            ],
+            [
+              102.0820515764118,
+              1.48729736927055
+            ],
+            [
+              102.08201392358058,
+              1.4872997907935996
+            ],
+            [
+              102.08196616077493,
+              1.4872941364964731
+            ],
+            [
+              102.08192239810853,
+              1.487275011655754
+            ],
+            [
+              102.08181458670714,
+              1.4871762232407946
+            ],
+            [
+              102.08173412611325,
+              1.4870776670850319
+            ],
+            [
+              102.08164827395387,
+              1.4869711701619508
+            ],
+            [
+              102.08160646899529,
+              1.4869268179664346
+            ],
+            [
+              102.08160012795526,
+              1.4869332174187662
+            ],
+            [
+              102.08164152201192,
+              1.4869771336749977
+            ],
+            [
+              102.08172717260419,
+              1.4870833805595112
+            ],
+            [
+              102.0818080630894,
+              1.4871824632882067
+            ],
+            [
+              102.08191745621701,
+              1.487282701049935
+            ],
+            [
+              102.08196379850955,
+              1.4873029532196824
+            ],
+            [
+              102.08201368350643,
+              1.4873088587476673
+            ],
+            [
+              102.0820516814801,
+              1.4873064150273763
+            ],
+            [
+              102.08230701756872,
+              1.4873168121189337
+            ],
+            [
+              102.08246259526953,
+              1.487323764097141
+            ],
+            [
+              102.08266685709702,
+              1.4873270621613415
+            ],
+            [
+              102.08279748313555,
+              1.4873244881171104
             ]
           ]
         ]
@@ -3325,4 +3442,3 @@
     }
   ]
 }
-
