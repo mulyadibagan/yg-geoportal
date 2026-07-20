@@ -82,10 +82,20 @@
   }
 
   function donorOf(props) {
-    return firstValue(props, [
+    const donor = firstValue(props, [
       "Donor", "Nama_Donor", "Funding_Source",
       "donor", "nama_donor", "funding_source"
     ]);
+    const normalized = donor.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+    const aliases = {
+      aramco: "Aramco Asia Singapore",
+      "aramco asia singapore": "Aramco Asia Singapore"
+    };
+    return aliases[normalized] || donor;
+  }
+
+  function donorSearchTerm(donor) {
+    return donor === "Aramco Asia Singapore" ? "Aramco" : donor;
   }
 
   function mapUrl(params) {
@@ -252,7 +262,7 @@
       ? donorEntries.map(([name, count]) => {
           const programCount = Object.keys(donorPrograms[name] || {}).length;
           return '<a class="category-card dashboard-link" href="' +
-            escapeHtml(mapUrl({ search: name })) + '">' +
+            escapeHtml(mapUrl({ search: donorSearchTerm(name) })) + '">' +
             '<span>' + escapeHtml(name) + '</span>' +
             '<strong>' + formatNumber(count) + '</strong>' +
             '<small>' + formatNumber(programCount) +
