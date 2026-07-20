@@ -1,7 +1,9 @@
 (() => {
   "use strict";
 
-  const API = "https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec?page=objects";
+  const API_ROOT = "https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec";
+  const API = API_ROOT + "?page=objects";
+  const UPDATES_API = API_ROOT + "?page=public-updates";
   const DEFAULT_VIEW = [1.25, 102.05];
   const DEFAULT_ZOOM = 9;
   const LAYERS = [
@@ -30,6 +32,7 @@
   const allConfigs = [...LAYERS, ...REFERENCES];
   const state = { layers: new Map(), features: [], bounds: L.latLngBounds([]), selected: null, loading: 0, databaseUpdated: "" };
   let masterDataPromise = null;
+  let publicUpdatesPromise = null;
 
   const map = L.map("map", { preferCanvas: true, zoomControl: true, minZoom: 5 }).setView(DEFAULT_VIEW, DEFAULT_ZOOM);
   const baseMaps = {
@@ -195,6 +198,83 @@
     return String(p.Layer_ID || p.Source_Layer || "").trim().toLowerCase();
   }
 
+  async function loadPublicUpdates() {
+    if (!publicUpdatesPromise) {
+      publicUpdatesPromise = fetch(UPDATES_API + "&t=" + Date.now(), {
+        cache: "no-store",
+        redirect: "follow"
+      }).then(response => {
+        if (!response.ok) throw new Error("Pembaruan publik HTTP " + response.status);
+        return response.json();
+      }).then(data => Array.isArray(data.updates) ? data.updates : [])
+        .catch(error => {
+          console.warn("Pembaruan publik belum dapat dimuat", error);
+          return [];
+        });
+    }
+    return publicUpdatesPromise;
+  }
+
+  function updateMatchesFeature(update, feature) {
+    const target = update.targetFeatureProperties || {};
+    const props = feature && feature.properties || {};
+    const preferred = [
+      "Object_ID", "No", "OBJECTID", "Id", "ID",
+      "NAMOBJ", "NAMA_DESA", "Desa", "Tahun", "Nama", "NAMA"
+    ];
+    const keys = preferred.filter(key =>
+      Object.prototype.hasOwnProperty.call(target, key) &&
+      Object.prototype.hasOwnProperty.call(props, key)
+    );
+    if (keys.length) {
+      return keys.every(key =>
+        normalizedValue(target[key]) === normalizedValue(props[key])
+      );
+    }
+    const fallback = Object.keys(target).filter(key =>
+      Object.prototype.hasOwnProperty.call(props, key) &&
+      target[key] !== null && typeof target[key] !== "object"
+    ).slice(0, 4);
+    return fallback.length > 0 && fallback.every(key =>
+      normalizedValue(target[key]) === normalizedValue(props[key])
+    );
+  }
+
+  async function applyPublishedUpdates(data, layerId) {
+    if (!data || !Array.isArray(data.features)) return data;
+    const updates = await loadPublicUpdates();
+
+    updates.filter(update =>
+      normalizedValue(update.targetLayerId) === normalizedValue(layerId)
+    ).forEach(update => {
+      const feature = data.features.find(candidate =>
+        updateMatchesFeature(update, candidate)
+      );
+      if (!feature) return;
+      const props = feature.properties || (feature.properties = {});
+
+      if (normalizedValue(update.reportType) === "perbaikan informasi") {
+        Object.assign(props, update.proposedChanges || {});
+      }
+
+      const photos = Array.isArray(update.photos) ? update.photos : [];
+      props._ygPhotos = [...new Set([
+        ...(Array.isArray(props._ygPhotos) ? props._ygPhotos : []),
+        ...photos
+      ].filter(Boolean))];
+
+      if (update.note) {
+        props._ygUpdateNotes = [...new Set([
+          ...(Array.isArray(props._ygUpdateNotes) ? props._ygUpdateNotes : []),
+          update.note
+        ])];
+      }
+      props.Last_Verified_Report_ID = update.reportId || "";
+    });
+
+    return data;
+  }
+
   function normalizedValue(value) {
     return String(value == null ? "" : value).trim().toLowerCase();
   }
@@ -289,21 +369,22 @@
       if (!reference && config.staticFile) {
         try {
           const database = await loadMasterData();
-          return enrichOfficialData(config, data, database);
+          const enriched = enrichOfficialData(config, data, database);
+          return applyPublishedUpdates(enriched, config.id);
         } catch (error) {
           console.warn("Atribut Master Database tidak dapat digabungkan", error);
         }
       }
-      return data;
+      return reference ? data : applyPublishedUpdates(data, config.id);
     }
 
     const database = await loadMasterData();
-    return {
+    return applyPublishedUpdates({
       type: "FeatureCollection",
       features: database.features.filter(feature =>
         layerIdOf(feature) === config.id
       )
-    };
+    }, config.id);
   }
 
   function ringAreaSquareMeters(ring) {
