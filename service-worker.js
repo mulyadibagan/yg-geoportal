@@ -1,4 +1,4 @@
-const CACHE_NAME = "yg-geoportal-v4-20260720-area-no-photo1";
+const CACHE_NAME = "yg-geoportal-v4-20260720-photo-worker1";
 
 const STATIC_ASSETS = [
   "./",
@@ -14,9 +14,10 @@ const STATIC_ASSETS = [
   "./css/monitoring.css?v=20260720-103",
   "./css/monitoring-v1-fix.css?v=20260720-103",
   "./css/report.css",
-  "./css/report-v6.css?v=20260720-direct-layer1",
+  "./css/report-v6.css?v=20260720-photo-worker1",
   "./js/config.js",
-  "./js/report-v6.js?v=20260720-area-no-photo1",
+  "./js/report-v6.js?v=20260720-photo-worker1",
+  "./js/report-image-worker.js?v=20260720-photo-worker1",
   "./js/report-photo-rules.js?v=20260720-area-photo-optional1",
   "./js/report-photo-guard.js?v=20260720-area-photo-optional1",
   "./js/monitoring-data-compat.js?v=20260720-edge-refresh1",

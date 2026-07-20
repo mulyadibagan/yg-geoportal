@@ -1898,6 +1898,60 @@
   }
 
   function compressImage(file,maxDimension,quality){
+    if(
+      typeof window.Worker === 'function' &&
+      typeof window.createImageBitmap === 'function'
+    ){
+      return compressImageInWorker(file,maxDimension,quality)
+        .catch(function(error){
+          console.warn(
+            'Pemrosesan foto latar belakang tidak tersedia; menggunakan cadangan.',
+            error
+          );
+          return compressImageOnPage(file,maxDimension,quality);
+        });
+    }
+
+    return compressImageOnPage(file,maxDimension,quality);
+  }
+
+  function compressImageInWorker(file,maxDimension,quality){
+    return new Promise(function(resolve,reject){
+      var worker = new Worker(
+        'js/report-image-worker.js?v=20260720-photo-worker1'
+      );
+
+      worker.onerror = function(event){
+        worker.terminate();
+        reject(new Error(event.message || 'Worker foto gagal dijalankan.'));
+      };
+
+      worker.onmessage = function(event){
+        var result = event.data || {};
+        worker.terminate();
+
+        if(!result.ok || !result.blob){
+          reject(new Error(result.error || 'Foto gagal diproses.'));
+          return;
+        }
+
+        var reader = new FileReader();
+        reader.onerror = reject;
+        reader.onload = function(){
+          resolve(reader.result);
+        };
+        reader.readAsDataURL(result.blob);
+      };
+
+      worker.postMessage({
+        file:file,
+        maxDimension:maxDimension,
+        quality:quality
+      });
+    });
+  }
+
+  function compressImageOnPage(file,maxDimension,quality){
     return new Promise(function(resolve,reject){
       var reader = new FileReader();
       reader.onerror = reject;
