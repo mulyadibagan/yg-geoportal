@@ -892,14 +892,85 @@ L.control.scale({
       );
     }
 
-    function areaValue(value) {
-      const number = Number(value);
-      if (!Number.isFinite(number) || number <= 0) {
-        return "Belum tersedia";
-      }
+    function formatArea(value) {
       return new Intl.NumberFormat("id-ID", {
         maximumFractionDigits: 2
-      }).format(number);
+      }).format(value);
+    }
+
+    function areaValue(value) {
+      const number = Number(value);
+      return Number.isFinite(number) && number > 0
+        ? formatArea(number)
+        : "Belum tersedia";
+    }
+
+    function ringAreaSquareMeters(ring) {
+      if (!Array.isArray(ring) || ring.length < 3) return 0;
+
+      const radius = 6378137;
+      const toRadians = Math.PI / 180;
+      let area = 0;
+
+      for (let index = 0; index < ring.length; index += 1) {
+        const current = ring[index];
+        const next = ring[(index + 1) % ring.length];
+        if (!current || !next) continue;
+
+        area +=
+          (next[0] - current[0]) * toRadians *
+          (2 + Math.sin(current[1] * toRadians) +
+          Math.sin(next[1] * toRadians));
+      }
+
+      return Math.abs(area * radius * radius / 2);
+    }
+
+    function polygonAreaSquareMeters(rings) {
+      if (!Array.isArray(rings) || !rings.length) return 0;
+
+      let area = ringAreaSquareMeters(rings[0]);
+      for (let index = 1; index < rings.length; index += 1) {
+        area -= ringAreaSquareMeters(rings[index]);
+      }
+      return Math.max(0, area);
+    }
+
+    function geometryAreaHa(geometry) {
+      if (!geometry || !Array.isArray(geometry.coordinates)) return 0;
+
+      let squareMeters = 0;
+      if (geometry.type === "Polygon") {
+        squareMeters = polygonAreaSquareMeters(geometry.coordinates);
+      } else if (geometry.type === "MultiPolygon") {
+        squareMeters = geometry.coordinates.reduce(
+          (total, polygon) => total + polygonAreaSquareMeters(polygon),
+          0
+        );
+      }
+
+      return squareMeters / 10000;
+    }
+
+    function polygonAreaValue(value) {
+      const sourceArea = Number(value);
+      if (Number.isFinite(sourceArea) && sourceArea > 0) {
+        return {
+          label: "Luas poligon (ha)",
+          value: formatArea(sourceArea)
+        };
+      }
+
+      const calculatedArea = geometryAreaHa(feature.geometry);
+      return calculatedArea > 0
+        ? {
+            label: "Luas poligon otomatis (ha)",
+            value: formatArea(calculatedArea)
+          }
+        : {
+            label: "Luas poligon (ha)",
+            value: "Belum tersedia"
+          };
     }
 
     if (config.type === "forest") {
@@ -918,7 +989,8 @@ L.control.scale({
       rows += item("Nomor SK", props.SK_PBH || props.SK_LAMA);
       rows += item("Tanggal SK", props.TGL_PBH || props.TGL_LAMA);
       rows += item("Luas izin (ha)", areaValue(props.LUAS_HA));
-      rows += item("Luas poligon (ha)", areaValue(props.LUAS_UKURA));
+      const concessionArea = polygonAreaValue(props.LUAS_UKURA);
+      rows += item(concessionArea.label, concessionArea.value);
       rows += item("Kabupaten/Kota", props.KAB_KOTA);
       rows += item("Distrik", props.DISTRIK);
     } else if (config.type === "social_forestry") {
@@ -927,7 +999,8 @@ L.control.scale({
       rows += item("Nomor izin", props.NO_IUPHKM);
       rows += item("Tanggal izin", props.TGL_IUPHKM);
       rows += item("Luas izin (ha)", areaValue(props.L_IUPHKM));
-      rows += item("Luas poligon (ha)", areaValue(props.LUAS_POLI));
+      const socialForestryArea = polygonAreaValue(props.LUAS_POLI);
+      rows += item(socialForestryArea.label, socialForestryArea.value);
       rows += item("Desa", props.NAMA_DESA);
       rows += item("Kecamatan", props.NAMA_KEC);
       rows += item("Kabupaten", props.NAMA_KAB);
