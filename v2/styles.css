@@ -7,3 +7,28 @@
 @media(max-width:900px){:root{--top:64px}.topbar{grid-template-columns:1fr auto}.topbar-center{position:absolute;left:68px;right:128px;padding:0}.brand{padding:0 12px}.brand>span:last-child{display:none}.top-actions{padding-right:10px}.icon-button{display:none}.primary-button{display:flex}.workspace{display:block}.sidebar{position:absolute;z-index:1100;left:10px;right:10px;bottom:10px;height:min(66vh,560px);border:0;border-radius:22px;box-shadow:var(--shadow);transform:translateY(calc(100% + 24px));transition:transform .3s ease}.sidebar.open{transform:none}.sidebar-scroll{padding:14px}.intro-card{display:none}.map-stage{position:absolute;inset:0}.map-badge{bottom:76px}.zoom-readout{display:none}.mobile-sheet-handle{position:absolute;z-index:750;left:50%;bottom:16px;display:flex;align-items:center;gap:8px;height:44px;padding:0 16px;border:0;border-radius:99px;background:var(--forest);color:#fff;box-shadow:var(--shadow);font-size:10px;font-weight:850;transform:translateX(-50%)}.mobile-sheet-handle span{width:9px;height:9px;border-radius:50%;background:var(--lime)}.detail-panel{position:absolute;top:auto;left:10px;right:10px;bottom:10px;width:auto;max-height:72vh;transform:translateY(calc(100% + 30px))}.detail-panel.open{transform:none}.leaflet-control-zoom{margin-top:14px!important}}
 @media(max-width:560px){.search-trigger{justify-content:center;width:43px;padding:0}.search-trigger span:nth-child(2),.search-trigger kbd{display:none}.topbar-center{left:auto;right:111px;width:43px}.brand strong{font-size:14px}.search-box{margin-top:12px;max-height:calc(100% - 24px)}.search-caption span{display:none}.metrics{gap:6px}.detail-row{grid-template-columns:92px 1fr}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+
+
+.detail-gallery{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px;
+  margin:14px 0;
+}
+.detail-gallery[hidden]{display:none}
+.detail-gallery a{
+  display:block;
+  overflow:hidden;
+  min-height:96px;
+  border-radius:12px;
+  background:#e8efeb;
+  box-shadow:inset 0 0 0 1px rgba(18,60,46,.08);
+}
+.detail-gallery img{
+  display:block;
+  width:100%;
+  height:112px;
+  object-fit:cover;
+  transition:transform .2s ease;
+}
+.detail-gallery a:hover img{transform:scale(1.03)}
