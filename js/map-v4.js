@@ -11,10 +11,10 @@
     area_mangrove: { label: "Area Penanaman Mangrove", color: "#00796b", visible: true },
     monitoring_reports: { label: "Hasil Monitoring Terverifikasi", color: "#f9a825", visible: true },
     community_reports: { label: "Laporan Masyarakat Terverifikasi", color: "#7b1fa2", visible: true },
-    forest_land_restoration: { label: "Restorasi Hutan & Lahan / Forest & Land Restoration", color: "#388e3c", visible: true },
-    nursery_coffee: { label: "Rumah Pembibitan Kopi / Coffee Nursery", color: "#795548", visible: true },
-    information_signs: { label: "Plang Informasi & Perlindungan / Information & Protection Signage", color: "#5e35b1", visible: true },
-    supporting_infrastructure: { label: "Infrastruktur Pendukung / Supporting Infrastructure", color: "#546e7a", visible: true },
+    forest_land_restoration: { label: "Restorasi Hutan & Lahan", color: "#388e3c", visible: true },
+    nursery_coffee: { label: "Rumah Pembibitan Kopi", color: "#795548", visible: true },
+    information_signs: { label: "Plang Informasi & Perlindungan", color: "#5e35b1", visible: true },
+    supporting_infrastructure: { label: "Infrastruktur Pendukung", color: "#546e7a", visible: true },
     titik_desa: { label: "Titik Desa Intervensi", color: "#1565c0", visible: false },
     kopi: { label: "Distribusi Lahan Kopi", color: "#6d4c41", visible: true },
     fdrs: { label: "FDRS / Water Table", color: "#e65100", visible: true },
@@ -156,14 +156,14 @@ L.control.scale({
     ) {
       target = {
         id: "supporting_infrastructure",
-        label: "Infrastruktur Pendukung / Supporting Infrastructure",
+        label: "Infrastruktur Pendukung",
         category: "Infrastruktur Pendukung Program",
         sourceType: "verified_supporting_infrastructure"
       };
     } else if (identity.includes("plang")) {
       target = {
         id: "information_signs",
-        label: "Plang Informasi & Perlindungan / Information & Protection Signage",
+        label: "Plang Informasi & Perlindungan",
         category: "Plang Informasi dan Perlindungan",
         sourceType: "verified_information_sign"
       };
@@ -174,7 +174,7 @@ L.control.scale({
     ) {
       target = {
         id: "nursery_mangrove",
-        label: "Rumah Pembibitan Mangrove / Mangrove Nursery",
+        label: "Rumah Pembibitan Mangrove",
         category: "Pembibitan Mangrove",
         sourceType: "verified_community_mangrove_nursery"
       };
@@ -185,7 +185,7 @@ L.control.scale({
     ) {
       target = {
         id: "nursery_coffee",
-        label: "Rumah Pembibitan Kopi / Coffee Nursery",
+        label: "Rumah Pembibitan Kopi",
         category: "Pembibitan Kopi",
         sourceType: "verified_coffee_nursery"
       };
@@ -195,7 +195,7 @@ L.control.scale({
     ) {
       target = {
         id: "forest_land_restoration",
-        label: "Restorasi Hutan & Lahan / Forest & Land Restoration",
+        label: "Restorasi Hutan & Lahan",
         category: "Restorasi Hutan dan Lahan",
         sourceType: "verified_forest_land_restoration"
       };
