@@ -52,7 +52,6 @@
   var photoRequiredTypes = [
     'Tambah Foto Kegiatan',
     'Titik Baru',
-    'Area/Poligon Baru',
     'Monitoring',
     'Replanting/Penyulaman Mangrove',
     'Kebakaran',
@@ -1442,20 +1441,29 @@
       return;
     }
 
+    /* Sembunyikan hasil pengiriman sebelumnya ketika laporan baru diedit. */
+    success.hidden = true;
     setImagesProcessing(true);
-    statusText.textContent =
-      'Memproses ' + files.length + ' foto...';
 
     try{
       for(var i=0;i<files.length;i++){
+        statusText.textContent =
+          'Memproses foto ' + (i + 1) + ' dari ' + files.length + '...';
+
+        /* Beri browser kesempatan menggambar status sebelum pekerjaan foto. */
+        await yieldToBrowser();
+
         try{
-          var dataUrl = await compressImage(files[i],1400,0.72);
+          var dataUrl = await compressImage(files[i],1280,0.7);
 
           compressedImages.push({
             name:files[i].name,
             type:'image/jpeg',
             dataUrl:dataUrl
           });
+
+          /* Hindari beberapa foto besar diproses dalam satu frame panjang. */
+          await yieldToBrowser();
         }catch(error){
           console.error(error);
           statusText.textContent =
@@ -1805,6 +1813,7 @@
     };
 
     document.getElementById('payload').value = JSON.stringify(payload);
+    success.hidden = true;
     submitButton.disabled = true;
     submitButton.textContent = 'Mengirim...';
     statusText.textContent = 'Mohon tunggu. Data dan foto sedang dikirim.';
@@ -1891,12 +1900,45 @@
           var canvas = document.createElement('canvas');
           canvas.width = Math.round(image.width*scale);
           canvas.height = Math.round(image.height*scale);
-          canvas.getContext('2d').drawImage(image,0,0,canvas.width,canvas.height);
-          resolve(canvas.toDataURL('image/jpeg',quality));
+          var context = canvas.getContext('2d',{alpha:false});
+          context.drawImage(image,0,0,canvas.width,canvas.height);
+
+          /*
+           * toDataURL memblokir halaman ketika foto kamera berukuran besar.
+           * toBlob melakukan encoding secara asinkron agar form tetap responsif.
+           */
+          canvas.toBlob(function(blob){
+            if(!blob){
+              reject(new Error('Foto gagal dikompresi.'));
+              return;
+            }
+
+            var blobReader = new FileReader();
+            blobReader.onerror = reject;
+            blobReader.onload = function(){
+              resolve(blobReader.result);
+              canvas.width = 1;
+              canvas.height = 1;
+              image.src = '';
+            };
+            blobReader.readAsDataURL(blob);
+          },'image/jpeg',quality);
         };
         image.src = reader.result;
       };
       reader.readAsDataURL(file);
+    });
+  }
+
+  function yieldToBrowser(){
+    return new Promise(function(resolve){
+      if(typeof window.requestAnimationFrame === 'function'){
+        window.requestAnimationFrame(function(){
+          window.setTimeout(resolve,0);
+        });
+      }else{
+        window.setTimeout(resolve,0);
+      }
     });
   }
 

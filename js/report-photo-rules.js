@@ -18,7 +18,9 @@
   }
 
   function requiresPhoto(type) {
-    return type && type !== "Perbaikan Informasi";
+    return type &&
+      type !== "Perbaikan Informasi" &&
+      type !== "Area/Poligon Baru";
   }
 
   function ensureRuleBox() {

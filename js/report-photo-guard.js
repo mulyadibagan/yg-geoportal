@@ -23,7 +23,6 @@
     return [
       "Tambah Foto Kegiatan",
       "Titik Baru",
-      "Area/Poligon Baru",
       "Monitoring",
       "Replanting/Penyulaman Mangrove",
       "Kebakaran",
