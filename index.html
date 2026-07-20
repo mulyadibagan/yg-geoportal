@@ -50,7 +50,7 @@
 
     <div class="stat-grid">
       <a class="stat dashboard-link" href="webgis.html" aria-label="Lihat semua objek aktif"><strong id="dash-objects">—</strong><span>Objek aktif</span></a>
-      <a class="stat dashboard-link" href="webgis.html?layer=desa_intervensi" aria-label="Lihat desa terdata"><strong id="dash-villages">—</strong><span>Desa terdata</span></a>
+      <a class="stat dashboard-link" href="webgis.html?layer=desa_intervensi" aria-label="Lihat kabupaten terdata"><strong id="dash-regencies">—</strong><span>Kabupaten terdata</span></a>
       <a class="stat dashboard-link" href="webgis.html?layer=area_mangrove" aria-label="Lihat area mangrove"><strong id="dash-mangrove-area">—</strong><span>Area mangrove</span></a>
       <a class="stat dashboard-link" href="webgis.html?layer=community_reports" aria-label="Lihat laporan masyarakat"><strong id="dash-reports">—</strong><span>Objek laporan masyarakat</span></a>
     </div>
@@ -59,26 +59,26 @@
   <section class="section dashboard-panel">
     <div class="section-head">
       <div>
-        <h2>Ringkasan objek per kategori</h2>
-        <p>Dihitung otomatis dari objek aktif dalam Master Database.</p>
+        <h2>Kluster program Yayasan Gambut</h2>
+        <p>Objek program aktif dikelompokkan berdasarkan program; layer administrasi ditampilkan terpisah.</p>
       </div>
     </div>
     <div class="category-grid" id="category-grid">
-      <div class="dashboard-loading">Memuat kategori…</div>
+      <div class="dashboard-loading">Memuat kluster program…</div>
     </div>
   </section>
 
   <section class="section dashboard-panel">
     <div class="section-head">
       <div>
-        <h2>Ringkasan wilayah dan program</h2>
-        <p>Lokasi dengan jumlah objek terbanyak.</p>
+        <h2>Ringkasan administrasi dan data teknis</h2>
+        <p>Sebaran objek berdasarkan kabupaten serta layer sumber.</p>
       </div>
     </div>
     <div class="dashboard-columns">
       <div>
-        <h3>Objek per desa</h3>
-        <div class="ranking-list" id="village-ranking"></div>
+        <h3>Objek per kabupaten</h3>
+        <div class="ranking-list" id="regency-ranking"></div>
       </div>
       <div>
         <h3>Objek per layer</h3>
@@ -103,7 +103,7 @@
   </div>
 </footer>
 
-<script src="js/dashboard-v3.js?v=20260720-live-links1"></script>
-  <script src="js/pwa.js?v=20260714-1"></script>
+<script src="js/dashboard-v3.js?v=20260720-program-dashboard2"></script>
+  <script src="js/pwa.js?v=20260720-program-dashboard1"></script>
 </body>
 </html>

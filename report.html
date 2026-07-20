@@ -6,6 +6,7 @@
   <title>Kirim Laporan | YG GeoPortal</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css">
+  <link rel="stylesheet" href="css/site-brand.css?v=20260720-program-dashboard1">
   <link rel="stylesheet" href="css/report-v6.css?v=20260720-photo-worker2">
   <meta name="theme-color" content="#079cde">
   <meta name="application-name" content="YG GeoPortal">
@@ -17,6 +18,20 @@
   <link rel="icon" type="image/png" sizes="192x192" href="assets/logo-yayasan-gambut-192.png">
 </head>
 <body>
+<header class="yg-page-header">
+  <div class="yg-page-header__inner">
+    <a class="yg-page-brand" href="index.html">
+      <img src="assets/logo-yayasan-gambut.png" alt="Logo Yayasan Gambut">
+      <span><strong>YG GeoPortal</strong>WebGIS Yayasan Gambut</span>
+    </a>
+    <nav class="yg-page-nav" aria-label="Navigasi utama">
+      <a href="index.html">Beranda</a>
+      <a href="webgis.html">WebGIS</a>
+      <a href="report.html" aria-current="page">Kirim Laporan</a>
+      <a href="monitoring.html">Monitoring</a>
+    </nav>
+  </div>
+</header>
 <main class="report-shell">
   <section class="report-hero">
     <span class="badge">COMMUNITY MONITORING</span>
@@ -338,6 +353,6 @@
 <script src="https://unpkg.com/@tmcw/togeojson@5.8.1/dist/togeojson.umd.js"></script>
 <script src="js/config.js?v=20260720-area-kopi1"></script>
 <script src="js/report-v6.js?v=20260720-endpoint1"></script>
-  <script src="js/pwa.js?v=20260720-photo-worker2"></script>
+  <script src="js/pwa.js?v=20260720-program-dashboard1"></script>
 </body>
 </html>

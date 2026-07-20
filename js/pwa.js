@@ -4,7 +4,7 @@
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
       navigator.serviceWorker
-        .register("./service-worker.js?v=20260720-photo-worker2", {
+        .register("./service-worker.js?v=20260720-program-dashboard1", {
           updateViaCache: "none"
         })
         .then(registration => registration.update())
@@ -12,7 +12,7 @@
     });
 
     navigator.serviceWorker.addEventListener("controllerchange", () => {
-      const reloadKey = "yg-sw-photo-worker2";
+      const reloadKey = "yg-sw-program-dashboard1";
       if (sessionStorage.getItem(reloadKey)) return;
       sessionStorage.setItem(reloadKey, "done");
       window.location.reload();

@@ -24,6 +24,57 @@
     return String(props.Layer_ID || props.Source_Layer || "").trim();
   }
 
+  function firstValue(props, keys) {
+    for (const key of keys) {
+      const value = String(props[key] == null ? "" : props[key]).trim();
+      if (value) return value;
+    }
+    return "";
+  }
+
+  function programOf(props, layerId) {
+    if (layerId === "desa_intervensi" || layerId === "titik_desa") return "";
+
+    const explicit = firstValue(props, [
+      "Program", "Nama_Program", "Program_Name", "program", "program_name"
+    ]);
+    if (explicit) {
+      const aliases = {
+        mangrove: "Restorasi Mangrove",
+        "penanaman mangrove": "Restorasi Mangrove",
+        "restorasi mangrove": "Restorasi Mangrove",
+        gambut: "Restorasi Gambut",
+        "restorasi gambut": "Restorasi Gambut",
+        fdrs: "Pencegahan Kebakaran",
+        "pencegahan kebakaran": "Pencegahan Kebakaran",
+        kopi: "Agroforestri & Kopi Liberika",
+        agroforestri: "Agroforestri & Kopi Liberika",
+        "agroforestri/kopi": "Agroforestri & Kopi Liberika",
+        "kopi liberika": "Agroforestri & Kopi Liberika"
+      };
+      return aliases[explicit.toLowerCase()] || explicit;
+    }
+
+    const programByLayer = {
+      area_mangrove: "Restorasi Mangrove",
+      nursery_mangrove: "Restorasi Mangrove",
+      persemaian_mangrove: "Restorasi Mangrove",
+      apo: "Restorasi Mangrove",
+      fdrs: "Pencegahan Kebakaran",
+      fire: "Pencegahan Kebakaran",
+      kebakaran: "Pencegahan Kebakaran",
+      sekat_kanal: "Restorasi Gambut",
+      gambut: "Restorasi Gambut",
+      area_kopi: "Agroforestri & Kopi Liberika",
+      kopi: "Agroforestri & Kopi Liberika",
+      nursery_kopi: "Agroforestri & Kopi Liberika",
+      community_reports: "Laporan Masyarakat",
+      monitoring_reports: "Monitoring Program",
+    };
+    if (programByLayer[layerId]) return programByLayer[layerId];
+    return firstValue(props, ["Kategori", "Layer_Label"]) || "Program Lainnya";
+  }
+
   function increment(map, key) {
     const label = String(key || "").trim();
     if (!label) return;
@@ -115,31 +166,35 @@
       return String(props.Status_Objek || "Aktif").toLowerCase() !== "nonaktif";
     });
 
-    const villages = new Set();
-    const categories = {};
-    const categoryLayers = {};
+    const regencies = new Set();
+    const programs = {};
+    const programLayers = {};
     const layers = {};
-    const villageCounts = {};
+    const regencyCounts = {};
     let mangroveArea = 0;
     let reports = 0;
 
     active.forEach(feature => {
       const props = feature.properties || {};
       const layerId = layerIdOf(feature);
-      const village = props.Desa || props.WADMKD || props.village;
-      const category = props.Kategori || props.Layer_Label || "Lainnya";
+      const regency = firstValue(props, [
+        "Kabupaten", "Kab_Kota", "KAB_KOTA", "WADMKK", "regency"
+      ]);
+      const program = programOf(props, layerId);
       const layerLabel = props.Layer_Label || layerId || "Lainnya";
 
-      if (village) {
-        villages.add(String(village).trim().toLowerCase());
-        if (!villageCounts[village]) villageCounts[village] = { count: 0 };
-        villageCounts[village].count += 1;
+      if (regency) {
+        regencies.add(regency.toLowerCase());
+        if (!regencyCounts[regency]) regencyCounts[regency] = { count: 0 };
+        regencyCounts[regency].count += 1;
       }
 
-      increment(categories, category);
-      if (!categoryLayers[category]) categoryLayers[category] = {};
-      categoryLayers[category][layerId] =
-        (categoryLayers[category][layerId] || 0) + 1;
+      if (program) {
+        increment(programs, program);
+        if (!programLayers[program]) programLayers[program] = {};
+        programLayers[program][layerId] =
+          (programLayers[program][layerId] || 0) + 1;
+      }
 
       if (!layers[layerLabel]) layers[layerLabel] = { count: 0, layerId };
       layers[layerLabel].count += 1;
@@ -153,15 +208,15 @@
     });
 
     document.getElementById("dash-objects").textContent = formatNumber(active.length);
-    document.getElementById("dash-villages").textContent = formatNumber(villages.size);
+    document.getElementById("dash-regencies").textContent = formatNumber(regencies.size);
     document.getElementById("dash-mangrove-area").textContent =
       formatNumber(mangroveArea, 2) + " ha";
     document.getElementById("dash-reports").textContent = formatNumber(reports);
 
-    document.getElementById("category-grid").innerHTML = Object.entries(categories)
+    document.getElementById("category-grid").innerHTML = Object.entries(programs)
       .sort((a, b) => b[1] - a[1])
       .map(([name, count]) => {
-        const layerEntries = Object.entries(categoryLayers[name] || {})
+        const layerEntries = Object.entries(programLayers[name] || {})
           .sort((a, b) => b[1] - a[1]);
         const layerId = layerEntries.length ? layerEntries[0][0] : "";
         return '<a class="category-card dashboard-link" href="' +
@@ -173,9 +228,9 @@
       }).join("");
 
     renderRanking(
-      "village-ranking",
-      villageCounts,
-      name => mapUrl({ village: name })
+      "regency-ranking",
+      regencyCounts,
+      name => mapUrl({ search: name })
     );
     renderRanking(
       "layer-ranking",

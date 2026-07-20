@@ -1,4 +1,4 @@
-const CACHE_NAME = "yg-geoportal-v4-20260720-dashboard-layout1";
+const CACHE_NAME = "yg-geoportal-v4-20260720-program-dashboard1";
 
 const STATIC_ASSETS = [
   "./",
@@ -11,6 +11,7 @@ const STATIC_ASSETS = [
   "./assets/logo-yayasan-gambut-512.png",
   "./data/area_kopi.geojson",
   "./css/app.css?v=20260720-search-nursery1",
+  "./css/site-brand.css?v=20260720-program-dashboard1",
   "./css/webgis-v3.css?v=20260720-popup-monitoring1",
   "./css/monitoring.css?v=20260720-103",
   "./css/monitoring-v1-fix.css?v=20260720-104",
@@ -24,7 +25,7 @@ const STATIC_ASSETS = [
   "./js/monitoring-data-compat.js?v=20260720-endpoint1",
   "./js/monitoring.js?v=20260720-endpoint1",
   "./js/monitoring-photo.js?v=20260720-edge-refresh1",
-  "./js/pwa.js?v=20260720-edge-refresh1",
+  "./js/pwa.js?v=20260720-program-dashboard1",
   "./js/i18n.js?v=20260720-popup-monitoring2",
   "./js/map-v4.js?v=20260720-dashboard-links1",
   "./js/layer-order-v1.js?v=20260720-area-kopi1"
