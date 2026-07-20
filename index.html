@@ -7,7 +7,7 @@
   <title>YG GeoPortal | Yayasan Gambut</title>
   <link rel="icon" href="assets/logo-yayasan-gambut.png"/>
   <link rel="stylesheet" href="css/app.css"/>
-  <link rel="stylesheet" href="css/dashboard-v3.css?v=20260714-1"/>
+  <link rel="stylesheet" href="css/dashboard-v3.css?v=20260720-live-links1"/>
   <meta name="theme-color" content="#079cde">
   <meta name="application-name" content="YG GeoPortal">
   <meta name="apple-mobile-web-app-title" content="YG GeoPortal">
@@ -49,10 +49,10 @@
     </div>
 
     <div class="stat-grid">
-      <div class="stat"><strong id="dash-objects">—</strong><span>Objek aktif</span></div>
-      <div class="stat"><strong id="dash-villages">—</strong><span>Desa terdata</span></div>
-      <div class="stat"><strong id="dash-mangrove-area">—</strong><span>Area mangrove</span></div>
-      <div class="stat"><strong id="dash-reports">—</strong><span>Objek laporan masyarakat</span></div>
+      <a class="stat dashboard-link" href="webgis.html" aria-label="Lihat semua objek aktif"><strong id="dash-objects">—</strong><span>Objek aktif</span></a>
+      <a class="stat dashboard-link" href="webgis.html?layer=desa_intervensi" aria-label="Lihat desa terdata"><strong id="dash-villages">—</strong><span>Desa terdata</span></a>
+      <a class="stat dashboard-link" href="webgis.html?layer=area_mangrove" aria-label="Lihat area mangrove"><strong id="dash-mangrove-area">—</strong><span>Area mangrove</span></a>
+      <a class="stat dashboard-link" href="webgis.html?layer=community_reports" aria-label="Lihat laporan masyarakat"><strong id="dash-reports">—</strong><span>Objek laporan masyarakat</span></a>
     </div>
   </section>
 
@@ -103,7 +103,7 @@
   </div>
 </footer>
 
-<script src="js/dashboard-v3.js?v=20260720-endpoint1"></script>
+<script src="js/dashboard-v3.js?v=20260720-live-links1"></script>
   <script src="js/pwa.js?v=20260714-1"></script>
 </body>
 </html>
