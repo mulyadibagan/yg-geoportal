@@ -252,7 +252,6 @@
           escapeHtml(mapUrl({ layer: layerId })) + '">' +
           '<span>' + escapeHtml(name) + '</span>' +
           '<strong>' + formatNumber(count) + '</strong>' +
-          '<small>objek aktif</small>' +
         '</a>';
       }).join("");
 
