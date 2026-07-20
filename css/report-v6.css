@@ -320,9 +320,50 @@
   font-size:11px;
 }
 
+.object-picker-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:9px;
+  margin:12px 0 10px;
+}
+
+.object-picker-actions button{
+  min-height:42px;
+  padding:10px 14px;
+  border-radius:10px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.object-picker-primary{
+  border:0;
+  background:#087653;
+  color:#fff;
+}
+
+.object-picker-secondary{
+  border:1px solid #b9d0c5;
+  background:#fff;
+  color:#245244;
+}
+
+.object-picker-status{
+  margin-bottom:10px;
+  padding:10px 12px;
+  border-radius:9px;
+  background:#edf7f2;
+  color:#49635a;
+  font-size:11px;
+  line-height:1.5;
+}
+
 @media(max-width:720px){
   .editable-attribute-row{
     grid-template-columns:1fr;
+  }
+
+  .object-picker-actions button{
+    width:100%;
   }
 }
 

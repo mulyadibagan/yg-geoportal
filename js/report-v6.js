@@ -32,6 +32,9 @@
   var correctionFeatureLayer = null;
   var selectedCorrectionFeature = null;
   var correctionLayersLoaded = false;
+  var deepLinkSelectionPending = Boolean(
+    new URLSearchParams(window.location.search).get('object')
+  );
 
   var pointTypes = [
     'Titik Baru','Kebakaran','Abrasi','Biodiversitas'
@@ -151,12 +154,12 @@
           .indexOf(type) === -1;
 
       guidance.textContent = type === 'Tambah Foto Kegiatan'
-        ? 'Pilih layer dan objek WebGIS yang akan menerima foto baru.'
+        ? 'Layer operasional tampil otomatis. Klik objek WebGIS yang akan menerima foto baru.'
         : type === 'Replanting/Penyulaman Mangrove'
-          ? 'Pilih polygon penanaman mangrove lama, isi data penyulaman, lalu unggah foto BEFORE dan AFTER.'
+          ? 'Area Penanaman Mangrove tampil otomatis. Klik polygon, isi data penyulaman, lalu unggah foto BEFORE dan AFTER.'
         : type === 'Monitoring'
-          ? 'Pilih objek WebGIS yang sudah ada, lalu isi indikator monitoring sesuai jenisnya.'
-          : 'Pilih layer, lalu klik titik atau poligon WebGIS yang informasinya ingin diperbaiki.';
+          ? 'Area Penanaman Mangrove tampil otomatis. Klik polygon yang akan dimonitor.'
+          : 'Layer operasional tampil otomatis. Klik titik, garis, atau poligon yang informasinya ingin diperbaiki.';
 
       geometryHelp.textContent =
         'Objek yang dipilih akan disorot dan dikirim bersama laporan.';
@@ -175,13 +178,65 @@
       correctionLayersLoaded = true;
       document.getElementById('correction-layer')
         .addEventListener('change',function(){
-          loadCorrectionLayer(this.value);
+          if(this.value === '__all_operational__'){
+            loadAllCorrectionLayers();
+          }else{
+            loadCorrectionLayer(this.value);
+          }
         });
 
       document.getElementById('clear-selected-feature')
         .addEventListener('click',function(){
           clearSelectedCorrectionFeature();
         });
+
+      document.getElementById('open-object-picker')
+        .addEventListener('click',function(){
+          if(
+            selectedType === 'Monitoring' ||
+            selectedType === 'Replanting/Penyulaman Mangrove'
+          ){
+            document.getElementById('correction-layer').value =
+              'area_mangrove';
+            loadCorrectionLayer('area_mangrove');
+          }else{
+            document.getElementById('correction-layer').value =
+              '__all_operational__';
+            loadAllCorrectionLayers();
+          }
+        });
+
+      document.getElementById('load-layer-only')
+        .addEventListener('click',function(){
+          var selectedLayerId =
+            document.getElementById('correction-layer').value;
+          if(!selectedLayerId){
+            alert('Pilih layer yang ingin dimuat.');
+            return;
+          }
+          if(selectedLayerId === '__all_operational__'){
+            loadAllCorrectionLayers();
+          }else{
+            loadCorrectionLayer(selectedLayerId);
+          }
+        });
+    }
+
+    if(deepLinkSelectionPending){
+      setTimeout(function(){ map.invalidateSize(true); },180);
+      return;
+    }
+
+    if(
+      selectedType === 'Monitoring' ||
+      selectedType === 'Replanting/Penyulaman Mangrove'
+    ){
+      document.getElementById('correction-layer').value = 'area_mangrove';
+      loadCorrectionLayer('area_mangrove');
+    }else{
+      document.getElementById('correction-layer').value =
+        '__all_operational__';
+      loadAllCorrectionLayers();
     }
 
     setTimeout(function(){ map.invalidateSize(true); },180);
@@ -192,6 +247,11 @@
     if(select.options.length > 1) return;
 
     var config = window.YG_LAYER_CONFIG || [];
+
+    var allOption = document.createElement('option');
+    allOption.value = '__all_operational__';
+    allOption.textContent = 'Semua layer operasional';
+    select.appendChild(allOption);
 
     config.forEach(function(layerConfig){
       var option = document.createElement('option');
@@ -396,6 +456,155 @@
       console.error(error);
       summary.className = 'selected-feature-summary error';
       summary.textContent = 'Layer gagal dimuat: ' + error.message;
+    }
+  }
+
+  function operationalCorrectionConfigs(){
+    var excluded = [
+      'desa_intervensi',
+      'titik_desa',
+      'kawasan_hutan_sk_903'
+    ];
+    var configs = (window.YG_LAYER_CONFIG || []).filter(function(config){
+      return config.visible !== false &&
+        excluded.indexOf(config.id) === -1;
+    });
+
+    configs.push({
+      id:COMMUNITY_LAYER_ID,
+      label:COMMUNITY_LAYER_LABEL,
+      color:COMMUNITY_LAYER_COLOR,
+      type:'mixed',
+      sourceType:'community_report'
+    });
+    return configs;
+  }
+
+  async function loadAllCorrectionLayers(){
+    clearSelectedCorrectionFeature();
+
+    if(correctionLayerGroup){
+      map.removeLayer(correctionLayerGroup);
+      correctionLayerGroup = null;
+    }
+
+    var summary = document.getElementById('selected-feature-summary');
+    var pickerStatus = document.getElementById('object-picker-status');
+    summary.className = 'selected-feature-summary';
+    summary.textContent = 'Memuat semua layer operasional...';
+    if(pickerStatus){
+      pickerStatus.textContent =
+        'Memuat layer operasional. Setelah tampil, klik objek pada peta.';
+    }
+
+    correctionLayerGroup = L.featureGroup().addTo(map);
+    var loadedCount = 0;
+    var failedLabels = [];
+
+    await Promise.all(
+      operationalCorrectionConfigs().map(async function(config){
+        try{
+          var data;
+          if(config.id === COMMUNITY_LAYER_ID){
+            data = await loadCommunityReports();
+            data = {
+              type:'FeatureCollection',
+              features:(data.features || []).filter(function(feature){
+                var properties = feature && feature.properties || {};
+                var reportType = String(
+                  properties.reportType || properties.Jenis_Laporan || ''
+                ).trim().toLowerCase();
+                return [
+                  'monitoring',
+                  'perbaikan informasi',
+                  'tambah foto kegiatan'
+                ].indexOf(reportType) === -1;
+              })
+            };
+          }else{
+            var dataPath =
+              config.url ||
+              config.dataUrl ||
+              config.file ||
+              ('data/' + config.id + '.geojson');
+            var response = await fetch(dataPath,{cache:'no-store'});
+            if(!response.ok){
+              throw new Error(
+                'HTTP ' + response.status + ' untuk ' + dataPath
+              );
+            }
+            data = await response.json();
+          }
+
+          var layerGroup = L.geoJSON(data,{
+            style:function(){
+              return {
+                color:config.color,
+                fillColor:config.color,
+                fillOpacity:0.22,
+                weight:3,
+                opacity:0.95
+              };
+            },
+            pointToLayer:function(feature,latlng){
+              return L.circleMarker(latlng,{
+                radius:9,
+                fillColor:config.color,
+                color:'#ffffff',
+                weight:2,
+                fillOpacity:0.96
+              });
+            },
+            onEachFeature:function(feature,layer){
+              layer.on('click',function(event){
+                if(event && event.originalEvent){
+                  L.DomEvent.stopPropagation(event);
+                }
+                selectExistingFeature(feature,layer,config);
+              });
+
+              layer.bindTooltip(
+                getCorrectionFeatureName(feature,config.label),
+                {sticky:true,direction:'top'}
+              );
+            }
+          });
+
+          layerGroup.addTo(correctionLayerGroup);
+          loadedCount += 1;
+        }catch(error){
+          console.warn('Layer gagal dimuat:',config.id,error);
+          failedLabels.push(config.label);
+        }
+      })
+    );
+
+    var bounds = correctionLayerGroup.getBounds();
+    if(bounds && bounds.isValid()){
+      map.fitBounds(bounds,{padding:[24,24],maxZoom:12});
+    }
+
+    if(!loadedCount){
+      summary.className = 'selected-feature-summary error';
+      summary.textContent = 'Semua layer operasional gagal dimuat.';
+      if(pickerStatus){
+        pickerStatus.textContent =
+          'Layer belum dapat dimuat. Periksa koneksi internet.';
+      }
+      return;
+    }
+
+    summary.textContent =
+      loadedCount +
+      ' layer operasional dimuat. Klik objek yang ingin dipilih.';
+    if(pickerStatus){
+      pickerStatus.textContent =
+        'Layer sudah tampil. Klik titik, garis, atau poligon yang diinginkan.' +
+        (
+          failedLabels.length
+            ? ' Gagal dimuat: ' + failedLabels.join(', ') + '.'
+            : ''
+        );
     }
   }
 
@@ -1628,7 +1837,10 @@
       if(requestedLayer && requestedObject){
         var correctionLayerSelect = document.getElementById('correction-layer');
         correctionLayerSelect.value = requestedLayer;
-        loadCorrectionLayer(requestedLayer,requestedObject);
+        loadCorrectionLayer(requestedLayer,requestedObject)
+          .finally(function(){
+            deepLinkSelectionPending = false;
+          });
       }
     }
   }
