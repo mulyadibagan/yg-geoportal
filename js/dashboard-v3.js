@@ -252,7 +252,7 @@
           escapeHtml(mapUrl({ layer: layerId })) + '">' +
           '<span>' + escapeHtml(name) + '</span>' +
           '<strong>' + formatNumber(count) + '</strong>' +
-          '<small>objek aktif · klik untuk melihat peta</small>' +
+          '<small>objek aktif</small>' +
         '</a>';
       }).join("");
 
@@ -266,7 +266,7 @@
             '<span>' + escapeHtml(name) + '</span>' +
             '<strong>' + formatNumber(count) + '</strong>' +
             '<small>' + formatNumber(programCount) +
-              ' program · klik untuk melihat peta</small>' +
+              ' program</small>' +
           '</a>';
         }).join("")
       : '<div class="dashboard-empty">Data donor belum diisi pada objek aktif.</div>';

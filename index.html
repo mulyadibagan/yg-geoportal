@@ -39,13 +39,12 @@
     <div class="hero-main">
       <div class="eyebrow">MASTER DATABASE WEBGIS YAYASAN GAMBUT</div>
       <h1>Dashboard spasial yang diperbarui langsung dari database</h1>
-      <p>Objek program, batas intervensi, infrastruktur, laporan masyarakat, dan data monitoring disatukan sebagai dasar pengambilan keputusan.</p>
       <div class="hero-actions">
         <a class="btn btn-light" href="webgis.html">🗺️ Buka WebGIS</a>
         <a class="btn btn-outline" href="monitoring.html">📊 Dashboard Monitoring</a>
         <button class="btn btn-outline" type="button" data-install-app hidden>📲 Pasang Aplikasi</button>
       </div>
-      <div class="database-note" id="dashboard-updated">Menghubungkan ke Master Database…</div>
+      <div id="dashboard-updated" hidden></div>
     </div>
 
     <div class="stat-grid">
@@ -60,7 +59,6 @@
     <div class="section-head">
       <div>
         <h2>Kluster program Yayasan Gambut</h2>
-        <p>Objek program aktif dikelompokkan berdasarkan program; layer administrasi ditampilkan terpisah.</p>
       </div>
     </div>
     <div class="category-grid" id="category-grid">
@@ -72,7 +70,6 @@
     <div class="section-head">
       <div>
         <h2>Kluster donor</h2>
-        <p>Objek aktif dikelompokkan berdasarkan donor yang tercatat di Master Database.</p>
       </div>
     </div>
     <div class="category-grid" id="donor-grid">
@@ -84,22 +81,13 @@
     <div class="section-head">
       <div>
         <h2>Ringkasan administrasi kabupaten</h2>
-        <p>Sebaran objek program berdasarkan kabupaten.</p>
       </div>
     </div>
     <div>
-      <h3>Objek per kabupaten</h3>
       <div class="ranking-list" id="regency-ranking"></div>
     </div>
   </section>
 
-  <section class="section cta">
-    <div>
-      <h2>Jelajahi objek secara spasial</h2>
-      <p>Aktifkan layer, cari lokasi, dan buka atribut setiap objek langsung dari database.</p>
-    </div>
-    <a href="webgis.html">Buka WebGIS Sekarang</a>
-  </section>
 </main>
 
 <footer class="site-footer">
@@ -109,7 +97,7 @@
   </div>
 </footer>
 
-<script src="js/dashboard-v3.js?v=20260720-donor-dashboard2"></script>
-  <script src="js/pwa.js?v=20260720-program-dashboard1"></script>
+<script src="js/dashboard-v3.js?v=20260720-dashboard-clean1"></script>
+  <script src="js/pwa.js?v=20260720-dashboard-clean1"></script>
 </body>
 </html>
