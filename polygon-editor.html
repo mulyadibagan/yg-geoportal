@@ -7,7 +7,7 @@
   <link rel="icon" href="assets/logo-yayasan-gambut.png">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="https://unpkg.com/@geoman-io/leaflet-geoman-free@2.18.0/dist/leaflet-geoman.css">
-  <link rel="stylesheet" href="css/polygon-editor.css?v=20260714-30">
+  <link rel="stylesheet" href="css/polygon-editor.css?v=20260720-31">
   <meta name="theme-color" content="#087653">
 </head>
 <body>
@@ -137,6 +137,18 @@
       </section>
     </section>
   </main>
+
+  <div id="save-overlay" class="save-overlay" hidden>
+    <section class="save-dialog" role="status" aria-live="polite">
+      <span class="save-spinner" aria-hidden="true"></span>
+      <strong id="save-overlay-title">Menyimpan perubahan</strong>
+      <p id="save-overlay-text">Mohon tunggu.</p>
+      <button id="save-overlay-close" type="button" class="secondary" hidden>
+        Tutup
+      </button>
+    </section>
+  </div>
+
 <script>
     window.YG_POLYGON_EDITOR_CONFIG = {
       api: "https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec"
@@ -145,6 +157,6 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://unpkg.com/@geoman-io/leaflet-geoman-free@2.18.0/dist/leaflet-geoman.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@turf/turf@7.2.0/turf.min.js"></script>
-  <script src="js/polygon-editor.js?v=20260714-30"></script>
+  <script src="js/polygon-editor.js?v=20260720-31"></script>
 </body>
 </html>

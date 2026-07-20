@@ -1,4 +1,4 @@
-const CACHE_NAME = "yg-geoportal-v4-20260720-photo-worker2";
+const CACHE_NAME = "yg-geoportal-v4-20260720-audit1";
 
 const STATIC_ASSETS = [
   "./",
@@ -12,7 +12,7 @@ const STATIC_ASSETS = [
   "./css/app.css?v=20260720-search-nursery1",
   "./css/webgis-v3.css?v=20260720-popup-monitoring1",
   "./css/monitoring.css?v=20260720-103",
-  "./css/monitoring-v1-fix.css?v=20260720-103",
+  "./css/monitoring-v1-fix.css?v=20260720-104",
   "./css/report.css",
   "./css/report-v6.css?v=20260720-photo-worker2",
   "./js/config.js",
