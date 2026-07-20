@@ -1,4 +1,4 @@
-const CACHE_NAME = "yg-geoportal-v4-20260720-monitoring-date-fix1";
+const CACHE_NAME = "yg-geoportal-v4-20260720-photo-lock1";
 
 const STATIC_ASSETS = [
   "./",
@@ -16,12 +16,13 @@ const STATIC_ASSETS = [
   "./css/report.css",
   "./css/report-v6.css?v=20260713-40",
   "./js/config.js",
-  "./js/report-v6.js?v=20260713-40",
-  "./js/report-photo-rules.js?v=20260720-2",
+  "./js/report-v6.js?v=20260720-photo-lock1",
+  "./js/report-photo-rules.js?v=20260720-photo-lock1",
+  "./js/report-photo-guard.js?v=20260720-photo-lock1",
   "./js/monitoring-data-compat.js?v=20260720-2",
   "./js/monitoring.js?v=20260720-103",
   "./js/monitoring-photo.js?v=20260720-103",
-  "./js/pwa.js?v=20260720-103",
+  "./js/pwa.js?v=20260720-photo-lock1",
   "./js/map-v4.js?v=20260719-shapefile-authoritative-corrected5"
 ];
 

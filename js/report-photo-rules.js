@@ -17,6 +17,10 @@
     return preview.querySelectorAll("figure").length;
   }
 
+  function requiresPhoto(type) {
+    return type && type !== "Perbaikan Informasi";
+  }
+
   function ensureRuleBox() {
     let box = document.getElementById("yg-photo-rule-box");
     if (box) return box;
@@ -75,9 +79,13 @@
         "Foto pertama harus kondisi <b>sebelum (BEFORE)</b> dan foto kedua kondisi <b>sesudah (AFTER)</b>. " +
         "Gunakan sudut pengambilan yang sama atau semirip mungkin.";
       box.classList.add("before-after");
+    } else if (requiresPhoto(type)) {
+      box.innerHTML =
+        "<b>Foto wajib:</b> laporan ini harus memiliki minimal 1 foto yang jelas dan relevan.";
+      box.classList.add("required");
     } else {
       box.innerHTML =
-        "Maksimal 5 foto. Pastikan foto jelas, relevan, dan sesuai dengan objek yang dipilih.";
+        "Foto bersifat opsional untuk koreksi atribut. Maksimal 5 foto.";
     }
 
     decoratePreview();
@@ -93,6 +101,14 @@
         event.preventDefault();
         event.stopImmediatePropagation();
         alert("Laporan monitoring wajib memiliki minimal 1 foto lapangan.");
+        imageInput.scrollIntoView({ behavior: "smooth", block: "center" });
+        return;
+      }
+
+      if (requiresPhoto(type) && count < 1) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        alert("Jenis laporan ini wajib memiliki minimal 1 foto lapangan.");
         imageInput.scrollIntoView({ behavior: "smooth", block: "center" });
         return;
       }

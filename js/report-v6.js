@@ -18,6 +18,7 @@
   var submitFrame = document.getElementById('submit-frame');
 
   var compressedImages = [];
+  var imagesProcessing = false;
   var selectedType = '';
   var geometryType = '';
   var geometryGeoJSON = null;
@@ -39,6 +40,31 @@
   var existingFeatureTypes = [
     'Tambah Foto Kegiatan','Perbaikan Informasi','Monitoring'
   ];
+
+  /*
+   * Semua laporan lapangan wajib membawa bukti foto. Perbaikan Informasi
+   * dikecualikan karena dapat berupa koreksi atribut administratif.
+   */
+  var photoRequiredTypes = [
+    'Tambah Foto Kegiatan',
+    'Titik Baru',
+    'Area/Poligon Baru',
+    'Monitoring',
+    'Kebakaran',
+    'Abrasi',
+    'Biodiversitas'
+  ];
+
+  function setImagesProcessing(processing){
+    imagesProcessing = Boolean(processing);
+    if(imagesProcessing){
+      submitButton.disabled = true;
+      submitButton.textContent = 'Memproses foto...';
+    }else if(!submissionStarted){
+      submitButton.disabled = false;
+      submitButton.textContent = 'Kirim Laporan';
+    }
+  }
 
   var map = L.map('location-map').setView([1.15,101.95],8);
   var street = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
@@ -1069,25 +1095,28 @@
       return;
     }
 
+    setImagesProcessing(true);
     statusText.textContent =
       'Memproses ' + files.length + ' foto...';
 
-    for(var i=0;i<files.length;i++){
-      try{
-        var dataUrl = await compressImage(files[i],1400,0.72);
+    try{
+      for(var i=0;i<files.length;i++){
+        try{
+          var dataUrl = await compressImage(files[i],1400,0.72);
 
-        compressedImages.push({
-          name:files[i].name,
-          type:'image/jpeg',
-          dataUrl:dataUrl
-        });
-
-        renderPhotoPreview();
-      }catch(error){
-        console.error(error);
-        statusText.textContent =
-          'Salah satu foto gagal diproses. Silakan pilih ulang.';
+          compressedImages.push({
+            name:files[i].name,
+            type:'image/jpeg',
+            dataUrl:dataUrl
+          });
+        }catch(error){
+          console.error(error);
+          statusText.textContent =
+            'Salah satu foto gagal diproses. Silakan pilih ulang.';
+        }
       }
+    }finally{
+      setImagesProcessing(false);
     }
 
     /*
@@ -1175,6 +1204,12 @@
   form.addEventListener('submit',function(event){
     event.preventDefault();
 
+    if(imagesProcessing){
+      alert('Foto masih diproses. Tunggu sampai muncul tulisan foto siap dikirim.');
+      imageInput.scrollIntoView({behavior:'smooth',block:'center'});
+      return;
+    }
+
     if(!selectedType){
       alert('Pilih jenis laporan.');
       return;
@@ -1242,8 +1277,29 @@
       }
     }
 
-    if(selectedType === 'Tambah Foto Kegiatan' && !compressedImages.length){
-      alert('Pilih minimal satu foto untuk ditambahkan.');
+    if(
+      photoRequiredTypes.indexOf(selectedType) !== -1 &&
+      compressedImages.length < 1
+    ){
+      alert(
+        'Jenis laporan ' + selectedType +
+        ' wajib memiliki minimal satu foto yang sudah siap dikirim.'
+      );
+      imageInput.scrollIntoView({behavior:'smooth',block:'center'});
+      return;
+    }
+
+    if(
+      selectedType === 'Tambah Foto Kegiatan' &&
+      selectedCorrectionFeature &&
+      selectedCorrectionFeature.layerId === 'area_mangrove' &&
+      compressedImages.length < 2
+    ){
+      alert(
+        'Tambah Foto Area Penanaman Mangrove wajib memiliki minimal dua foto: ' +
+        'BEFORE (sebelum) dan AFTER (sesudah).'
+      );
+      imageInput.scrollIntoView({behavior:'smooth',block:'center'});
       return;
     }
 

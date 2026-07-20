@@ -4,7 +4,7 @@
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
       navigator.serviceWorker
-        .register("./service-worker.js?v=20260720-monitoring-photo-guard1")
+        .register("./service-worker.js?v=20260720-photo-lock1")
         .catch(error => console.warn("Service worker gagal:", error));
     });
   }
@@ -38,12 +38,12 @@
 
   if (document.getElementById("report-form")) {
     const rulesScript = document.createElement("script");
-    rulesScript.src = "js/report-photo-rules.js?v=20260720-2";
+    rulesScript.src = "js/report-photo-rules.js?v=20260720-photo-lock1";
     rulesScript.async = false;
     document.head.appendChild(rulesScript);
 
     const guardScript = document.createElement("script");
-    guardScript.src = "js/report-photo-guard.js?v=20260720-1";
+    guardScript.src = "js/report-photo-guard.js?v=20260720-photo-lock1";
     guardScript.async = false;
     document.head.appendChild(guardScript);
   }

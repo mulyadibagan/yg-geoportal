@@ -19,6 +19,18 @@
     return preview.querySelectorAll("figure").length;
   }
 
+  function requiresPhoto(type) {
+    return [
+      "Tambah Foto Kegiatan",
+      "Titik Baru",
+      "Area/Poligon Baru",
+      "Monitoring",
+      "Kebakaran",
+      "Abrasi",
+      "Biodiversitas"
+    ].indexOf(type) !== -1;
+  }
+
   function setProcessing(value) {
     processing = Boolean(value);
     if (processing) {
@@ -55,10 +67,10 @@
       return;
     }
 
-    if (reportType() === "Monitoring" && photoCount() < 1) {
+    if (requiresPhoto(reportType()) && photoCount() < 1) {
       event.preventDefault();
       event.stopImmediatePropagation();
-      alert("Laporan monitoring wajib memiliki minimal 1 foto lapangan.");
+      alert("Jenis laporan ini wajib memiliki minimal 1 foto lapangan.");
       input.scrollIntoView({ behavior: "smooth", block: "center" });
       return;
     }
