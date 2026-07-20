@@ -57,6 +57,115 @@ function toDirectDriveUrl(url){
 
     return url;
 }
+
+  function objectName(properties) {
+    const props = properties || {};
+    return normalize(
+      props.targetObjectName ||
+      props.locationName ||
+      props.Nama_Objek ||
+      props.Nama ||
+      props.Lokasi ||
+      props.title ||
+      ""
+    );
+  }
+
+  function targetLayer(properties) {
+    const props = properties || {};
+    return normalize(
+      props.targetLayerId ||
+      props.Layer_ID ||
+      props.Source_Layer ||
+      props.layerId ||
+      ""
+    );
+  }
+
+  function uniquePhotos(values) {
+    const seen = new Set();
+    return (values || []).filter(url => {
+      const text = String(url || "").trim();
+      const driveMatch = text.match(
+        /\/file\/d\/([A-Za-z0-9_-]+)|[?&]id=([A-Za-z0-9_-]+)/
+      );
+      const key = driveMatch
+        ? "drive:" + (driveMatch[1] || driveMatch[2])
+        : text.split(/[?#]/)[0].replace(/\/+$/, "").toLowerCase();
+      if (!text || seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }
+
+  function monitoringGallery(photos) {
+    if (!photos.length) return "";
+    return (
+      '<div class="yg-v3-gallery yg-monitoring-update-gallery">' +
+        photos.map((url,index) =>
+          '<a class="yg-photo-card" href="' + escapeHtml(url) +
+          '" target="_blank" rel="noopener noreferrer">' +
+            '<img src="' + escapeHtml(toDirectDriveUrl(url)) +
+            '" alt="Foto monitoring ' + (index + 1) +
+            '" loading="lazy">' +
+          '</a>'
+        ).join("") +
+      '</div>'
+    );
+  }
+
+  function syncMonitoringPhotos(update) {
+    if (
+      normalize(update.reportType) !== "tambah foto kegiatan" ||
+      !Array.isArray(update.photos) ||
+      !update.photos.length
+    ) {
+      return;
+    }
+
+    const mapApi = window.YG_MAP;
+    const monitoringGroup = mapApi && mapApi.layerObjects
+      ? mapApi.layerObjects.monitoring_reports
+      : null;
+    if (!monitoringGroup || typeof monitoringGroup.eachLayer !== "function") {
+      return;
+    }
+
+    const updateLayer = targetLayer(update);
+    const updateName = objectName(update);
+    if (!updateLayer || !updateName) return;
+
+    monitoringGroup.eachLayer(layer => {
+      const props = layer && layer.feature && layer.feature.properties || {};
+      if (
+        targetLayer(props) !== updateLayer ||
+        objectName(props) !== updateName
+      ) {
+        return;
+      }
+
+      props._ygPhotos = uniquePhotos(
+        (Array.isArray(props._ygPhotos) ? props._ygPhotos : [])
+          .concat(update.photos)
+      );
+
+      if (!layer.getPopup || !layer.getPopup()) return;
+      const popup = layer.getPopup();
+      let content = String(popup.getContent() || "");
+      const gallery = monitoringGallery(props._ygPhotos);
+
+      content = content.replace(
+        /<div class="yg-v3-gallery yg-monitoring-update-gallery">[\s\S]*?<\/div>/,
+        ""
+      );
+      content = content.replace(
+        /(<\/div>\s*<\/div>\s*)$/,
+        gallery + "$1"
+      );
+      popup.setContent(content);
+    });
+  }
+
   function buildUpdatedPopup(feature, layerLabel) {
     const props = feature.properties || {};
     const photos = Array.isArray(props._ygPhotos) ? props._ygPhotos : [];
@@ -149,6 +258,8 @@ function toDirectDriveUrl(url){
   }
 
   function applyUpdate(update) {
+    syncMonitoringPhotos(update);
+
     const mapApi = window.YG_MAP;
     const parent = mapApi && mapApi.layerObjects
       ? mapApi.layerObjects[update.targetLayerId]
