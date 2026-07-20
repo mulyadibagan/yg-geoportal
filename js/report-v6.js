@@ -102,6 +102,15 @@
     var replantingFields = document.getElementById('replanting-fields');
     if(replantingFields) replantingFields.hidden =
       type !== 'Replanting/Penyulaman Mangrove';
+    var photoSection = document.getElementById('photo-section');
+    var isNewArea = type === 'Area/Poligon Baru';
+    if(photoSection) photoSection.hidden = isNewArea;
+    if(isNewArea && compressedImages.length){
+      compressedImages = [];
+      imageInput.value = '';
+      renderPhotoPreview();
+      setImagesProcessing(false);
+    }
     var guidance = document.getElementById('type-guidance');
     var geometryHelp = document.getElementById('geometry-help');
 
