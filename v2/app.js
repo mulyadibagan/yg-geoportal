@@ -2,253 +2,360 @@
   "use strict";
 
   const DEFAULT_VIEW = [1.25, 102.05];
-  const DEFAULT_ZOOM = 9;
   const LAYERS = [
-    { id: "desa_intervensi", label: "Desa Intervensi", caption: "Batas wilayah program", color: "#2f7d4c", type: "polygon", visible: true },
-    { id: "area_mangrove", label: "Penanaman Mangrove", caption: "Area rehabilitasi pesisir", color: "#168b78", type: "polygon", visible: true },
-    { id: "apo", label: "Pemecah Ombak", caption: "Infrastruktur perlindungan pesisir", color: "#d05b45", type: "line", visible: true },
-    { id: "fdrs", label: "FDRS / Water Table", caption: "Pemantauan risiko kebakaran", color: "#e58a3d", type: "point", visible: true },
-    { id: "sekat_kanal", label: "Sekat Kanal", caption: "Infrastruktur pembasahan gambut", color: "#16829a", type: "point", visible: true },
-    { id: "nursery_mangrove", label: "Pembibitan Mangrove", caption: "Rumah bibit masyarakat", color: "#91a83f", type: "point", visible: true },
-    { id: "kopi", label: "Lahan Kopi", caption: "Penguatan ekonomi masyarakat", color: "#79573d", type: "point", visible: true },
-    { id: "titik_desa", label: "Titik Desa", caption: "Pusat desa intervensi", color: "#397ac2", type: "point", visible: false }
+    { id: "area_mangrove", label: "Area Penanaman Mangrove", program: "mangrove", color: "#078a72", type: "polygon", visible: true },
+    { id: "area_kopi", label: "Wilayah Penanaman Kopi", program: "livelihood", color: "#76513b", type: "polygon", visible: true },
+    { id: "kopi", label: "Titik Kopi Liberika", program: "livelihood", color: "#9b6a44", type: "point", visible: true },
+    { id: "apo", label: "Alat Pemecah Ombak", program: "mangrove", color: "#d55743", type: "line", visible: true },
+    { id: "nursery_mangrove", label: "Rumah Pembibitan", program: "mangrove", color: "#86a437", type: "point", visible: true },
+    { id: "fdrs", label: "FDRS", program: "fire", color: "#e47f2c", type: "point", visible: true },
+    { id: "sekat_kanal", label: "Sekat Kanal", program: "peatland", color: "#1687a0", type: "point", visible: true },
+    { id: "desa_intervensi", label: "Wilayah Intervensi", program: "administration", color: "#377d4c", type: "polygon", visible: false },
+    { id: "titik_desa", label: "Titik Lokasi", program: "administration", color: "#3e79bd", type: "point", visible: false }
   ];
-  const REFERENCES = [
-    { id: "kawasan_hutan_sk_903", file: "kawasan_hutan_sk_903.geojson", label: "Kawasan Hutan SK 903", caption: "Referensi fungsi kawasan", color: "#56645f", type: "polygon" },
-    { id: "gambut_bbsdlp_2019", file: "Gambut_BBSDLP_2019.geojson", label: "Peta Gambut BBSDLP 2019", caption: "Referensi sebaran gambut", color: "#6d4c3d", type: "polygon" }
-  ];
-  const allConfigs = [...LAYERS, ...REFERENCES];
-  const state = { layers: new Map(), features: [], bounds: L.latLngBounds([]), selected: null, loading: 0 };
 
-  const map = L.map("map", { preferCanvas: true, zoomControl: true, minZoom: 5 }).setView(DEFAULT_VIEW, DEFAULT_ZOOM);
+  const PROGRAMS = {
+    mangrove: { label: "Restorasi Mangrove", caption: "Pesisir dan konservasi mangrove" },
+    peatland: { label: "Restorasi Gambut", caption: "Pembasahan dan perlindungan gambut" },
+    fire: { label: "Pencegahan Kebakaran", caption: "Pemantauan risiko karhutla" },
+    livelihood: { label: "Penghidupan Berkelanjutan", caption: "Agroforestri dan usaha masyarakat" },
+    administration: { label: "Administrasi", caption: "Konteks wilayah" }
+  };
+
+  const CATALOG = {
+    donors: [
+      { id: "aramco-asia-singapore", name: "Aramco Asia Singapore", aliases: ["Aramco", "AAS"] },
+      { id: "ppcf", name: "Pan Pacific Conservation Foundation", aliases: ["PPCF"] }
+    ],
+    projects: [
+      { id: "aramco-mangrove-p1", name: "Community-Based Mangrove Protection and Planting — Phase 1", program: "mangrove", donor: "aramco-asia-singapore", period: "Juni 2023–Mei 2024", places: ["Buruk Bakul"] },
+      { id: "aramco-mangrove-p2", name: "Community-Based Mangrove Protection and Planting — Phase 2", program: "mangrove", donor: "aramco-asia-singapore", period: "Juni 2024–Mei 2025", places: ["Buruk Bakul", "Kelapa Pati"] },
+      { id: "aramco-mangrove-p3", name: "Community-Based Mangrove Protection and Planting — Phase 3", program: "mangrove", donor: "aramco-asia-singapore", period: "2025–2026", places: ["Sepahat", "Tanjung Kuras"] }
+    ],
+    sources: [
+      { type: "Baseline", title: "Final Baseline Mangrove 2024", scope: "Buruk Bakul dan Kelapa Pati" },
+      { type: "Project report", title: "Aramco Phase 1 Final Report", scope: "Juni 2023–Mei 2024" },
+      { type: "Project report", title: "Aramco Phase 2 Final Report", scope: "Juni 2024–Mei 2025" },
+      { type: "Operations", title: "Restorasi Yayasan Gambut", scope: "12 kelompok data operasional" },
+      { type: "Publication", title: "Annual Report 2025", scope: "Capaian dan dokumentasi" }
+    ],
+    monitoring: {
+      "buruk bakul": [
+        { project: "Phase 1", period: "2023–2024", survival: "bervariasi per sub-lokasi", note: "Monitoring komunitas dan replanting" },
+        { project: "Phase 2 · Tambak Udang", period: "2024–2025", survival: "100%", note: "8.566 bibit dilaporkan tumbuh" },
+        { project: "Phase 2 · Wave Breaker", period: "2025", survival: "25,3%", note: "Mortalitas dipengaruhi teritip dan genangan" }
+      ],
+      "kelapa pati": [
+        { project: "Phase 2", period: "2024–2025", survival: "±99%", note: "4.992 dari 5.025 bibit dilaporkan hidup" }
+      ]
+    }
+  };
+
+  const state = {
+    mapLayers: new Map(),
+    records: [],
+    bounds: L.latLngBounds([]),
+    selected: null,
+    filters: { program: "", donor: "", regency: "" },
+    loaded: 0
+  };
+
+  const $ = id => document.getElementById(id);
+  const esc = value => String(value ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+  const normalize = value => String(value || "").normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+  const getFirst = (p, keys) => keys.map(key => p[key]).find(value => value !== undefined && value !== null && String(value).trim() !== "") || "";
+  const getName = p => getFirst(p, ["Nama_Objek", "NAMA_OBJEK", "title", "Nama", "NAMOBJ", "NAMA_DESA", "Desa", "WADMKD", "Keterangan"]) || "Objek program";
+  const getVillage = p => getFirst(p, ["Desa", "desa", "Village", "village", "WADMKD", "NAMA_DESA"]);
+  const getRegency = p => getFirst(p, ["Kabupaten", "kabupaten", "Regency", "regency", "WADMKK", "KABUPATEN"]);
+  const getDonor = p => getFirst(p, ["Donor", "donor", "Funder", "funder", "Pendana", "pendana"]);
+  const cleanLabel = key => ({
+    Object_ID: "Object UUID", OBJECT_ID: "Object UUID", Nama_Objek: "Nama objek", WADMKD: "Desa",
+    WADMKC: "Kecamatan", WADMKK: "Kabupaten", Tahun: "Tahun", Luas_Ha: "Luas",
+    Jumlah_Bibit: "Jumlah bibit", Fase: "Fase", Keterangan: "Keterangan", Donor: "Donor"
+  }[key] || key.replace(/_/g, " "));
+  const hiddenKey = key => /^(OBJECTID|FID|FID_1|SRS_ID|Shape_|KODE_|X$|Y$|No$|No_)$/i.test(key);
+
+  function stableUuid(layerId, properties, index) {
+    const existing = getFirst(properties, ["Object_ID", "OBJECT_ID", "object_id", "UUID", "uuid", "id"]);
+    if (existing) return String(existing);
+    const seed = `${layerId}|${getName(properties)}|${getVillage(properties)}|${index}`;
+    let hash = 2166136261;
+    for (let i = 0; i < seed.length; i += 1) hash = Math.imul(hash ^ seed.charCodeAt(i), 16777619);
+    return `YG-${layerId.toUpperCase().replace(/[^A-Z0-9]/g, "-")}-${(hash >>> 0).toString(16).padStart(8, "0").toUpperCase()}`;
+  }
+
+  function donorFor(record) {
+    const direct = getDonor(record.properties);
+    if (direct) return CATALOG.donors.find(d => [d.name, ...d.aliases].some(alias => normalize(alias) === normalize(direct)))?.id || normalize(direct);
+    const village = normalize(record.village);
+    const project = CATALOG.projects.find(item => item.program === record.config.program && item.places.some(place => normalize(place) === village));
+    return project?.donor || "";
+  }
+
+  function projectFor(record) {
+    const village = normalize(record.village);
+    const phase = normalize(getFirst(record.properties, ["Fase", "fase", "Phase", "phase", "Keterangan"]));
+    return CATALOG.projects.find(item => item.program === record.config.program
+      && item.places.some(place => normalize(place) === village)
+      && (!phase || normalize(item.name).includes(phase.replace("fase", "phase")))) || null;
+  }
+
+  const map = L.map("map", { preferCanvas: true, zoomControl: true, minZoom: 5 }).setView(DEFAULT_VIEW, 9);
   const baseMaps = {
     "Peta jalan": L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "© OpenStreetMap" }),
-    "Satelit": L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", { maxZoom: 19, attribution: "Tiles © Esri" })
+    "Satelit Esri": L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", { maxZoom: 19, attribution: "Tiles © Esri" })
   };
-  baseMaps["Peta jalan"].addTo(map);
+  baseMaps["Satelit Esri"].addTo(map);
   L.control.layers(baseMaps, null, { position: "topright" }).addTo(map);
   L.control.scale({ imperial: false, position: "bottomright" }).addTo(map);
 
-  const $ = id => document.getElementById(id);
-  const escapeHtml = value => String(value ?? "").replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]);
-  const cleanLabel = key => ({ NAMOBJ: "Nama desa", WADMKD: "Desa", WADMKC: "Kecamatan", WADMKK: "Kabupaten", WADMPR: "Provinsi", Luas_Ha: "Luas", Panjang_M: "Panjang", Ket: "Keterangan", Keterangan: "Keterangan", Tahun: "Tahun", Desa: "Desa", Kabupaten: "Kabupaten", Kecamatan: "Kecamatan" }[key] || key.replace(/_/g, " "));
-  const hiddenKey = key => /^(OBJECTID|FID|FID_1|SRS_ID|Shape_|KODE_|X$|Y$|Id$|No$)/i.test(key);
-  const featureName = feature => {
-    const p = feature.properties || {};
-    return p.Nama_Objek || p.title || p.NAMOBJ || p.NAMA_DESA || p.Desa || p.WADMKD || p.Keterangan || "Objek program";
-  };
-
-  function layerRow(config, reference = false) {
-    return `<div class="layer-item" style="--layer:${config.color}">
-      <span class="layer-symbol"><i class="${config.type}"></i></span>
-      <span class="layer-copy"><strong>${escapeHtml(config.label)}</strong><small>${escapeHtml(config.caption)}</small></span>
-      <label class="switch" title="Aktifkan ${escapeHtml(config.label)}"><input type="checkbox" data-layer="${config.id}" ${config.visible ? "checked" : ""}><span></span></label>
-    </div>`;
+  function renderLayerList() {
+    $("program-layers").innerHTML = LAYERS.map(config => `<label class="layer-item" style="--layer:${config.color}">
+      <span class="layer-symbol ${config.type}"></span>
+      <span><strong>${esc(config.label)}</strong><small>${esc(PROGRAMS[config.program].label)}</small></span>
+      <input type="checkbox" data-layer="${config.id}" ${config.visible ? "checked" : ""}>
+      <i></i>
+    </label>`).join("");
   }
 
-  $("program-layers").innerHTML = LAYERS.map(config => layerRow(config)).join("");
-  $("reference-layers").innerHTML = REFERENCES.map(config => layerRow(config, true)).join("");
-
   function styleFor(config) {
-    return { color: config.color, fillColor: config.color, fillOpacity: config.type === "line" ? 0.08 : 0.23, weight: config.type === "line" ? 4 : 1.8, opacity: 0.92 };
+    return { color: config.color, fillColor: config.color, fillOpacity: config.type === "line" ? 0.08 : 0.24, weight: config.type === "line" ? 4 : 2, opacity: 0.95 };
   }
 
   function pointFor(config, latlng) {
     return L.circleMarker(latlng, { radius: 7, color: "#fff", weight: 2, fillColor: config.color, fillOpacity: 0.96 });
   }
 
-  function addSearchFeature(feature, leafletLayer, parentLayer, config) {
-    const properties = feature.properties || {};
-    state.features.push({
-      name: String(featureName(feature)),
-      text: `${config.label} ${Object.values(properties).join(" ")}`.toLowerCase(),
-      feature, leafletLayer, parentLayer, config
-    });
-  }
-
-  function openFeature(item) {
-    if (!map.hasLayer(item.parentLayer)) {
-      item.parentLayer.addTo(map);
-      const input = document.querySelector(`[data-layer="${item.config.id}"]`);
-      if (input) input.checked = true;
-    }
-    state.selected = item;
-    const p = item.feature.properties || {};
-    $("detail-category").textContent = item.config.caption;
-    $("detail-layer").textContent = item.config.label;
-    $("detail-title").textContent = item.name;
-    $("detail-cover").style.setProperty("--detail-color", item.config.color);
-    const rows = Object.entries(p).filter(([key, value]) => !hiddenKey(key) && value !== null && value !== "" && typeof value !== "undefined").slice(0, 14);
-    $("detail-fields").innerHTML = rows.length ? rows.map(([key, value]) => `<div class="detail-row"><b>${escapeHtml(cleanLabel(key))}</b><span>${escapeHtml(value)}</span></div>`).join("") : '<div class="detail-row"><span>Informasi atribut belum tersedia.</span></div>';
-    $("detail-panel").classList.add("open");
-    $("detail-panel").setAttribute("aria-hidden", "false");
-    focusLayer(item.leafletLayer);
-    closeSearch();
-    closeMobileSidebar();
-  }
-
-  function focusLayer(layer) {
-    if (layer.getLatLng) map.setView(layer.getLatLng(), 15);
-    else if (layer.getBounds && layer.getBounds().isValid()) map.fitBounds(layer.getBounds(), { padding: [45, 45], maxZoom: 15 });
-  }
-
-  async function loadLayer(config, shouldShow = config.visible) {
-    if (state.layers.has(config.id)) {
-      const existing = state.layers.get(config.id);
-      if (shouldShow && !map.hasLayer(existing)) existing.addTo(map);
-      return existing;
-    }
-    const input = document.querySelector(`[data-layer="${config.id}"]`);
-    if (input) input.disabled = true;
-    state.loading += 1;
-    setStatus();
+  async function loadLayer(config) {
     try {
-      const response = await fetch(`../data/${config.file || `${config.id}.geojson`}`, { cache: "no-store" });
+      const response = await fetch(`../data/${config.id}.geojson`, { cache: "no-store" });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
-      let geoLayer;
-      geoLayer = L.geoJSON(data, {
+      let group;
+      group = L.geoJSON(data, {
         style: () => styleFor(config),
         pointToLayer: (_feature, latlng) => pointFor(config, latlng),
-        onEachFeature: (feature, featureLayer) => {
-          const item = { name: featureName(feature), feature, leafletLayer: featureLayer, parentLayer: null, config };
-          featureLayer.on("click", () => openFeature({ ...item, parentLayer: geoLayer }));
-          featureLayer.on("mouseover", event => { if (event.target.setStyle) event.target.setStyle({ weight: config.type === "line" ? 6 : 3, fillOpacity: 0.36 }); });
-          featureLayer.on("mouseout", event => { if (geoLayer.resetStyle) geoLayer.resetStyle(event.target); });
-          addSearchFeature(feature, featureLayer, geoLayer, config);
+        onEachFeature: (feature, leafletLayer) => {
+          const properties = feature.properties || {};
+          const record = {
+            uuid: stableUuid(config.id, properties, state.records.length),
+            name: getName(properties), village: getVillage(properties), regency: getRegency(properties),
+            properties, feature, leafletLayer, group: null, config
+          };
+          record.donor = donorFor(record);
+          record.project = projectFor(record);
+          record.search = normalize([record.name, record.village, record.regency, config.label, PROGRAMS[config.program].label, record.project?.name, donorName(record.donor), ...Object.values(properties)].join(" "));
+          state.records.push(record);
+          leafletLayer.on("click", () => openRecord({ ...record, group }));
         }
       });
-      state.layers.set(config.id, geoLayer);
-      const bounds = geoLayer.getBounds();
-      if (bounds.isValid() && !REFERENCES.some(item => item.id === config.id)) state.bounds.extend(bounds);
-      if (shouldShow) geoLayer.addTo(map);
-      if (input) input.checked = shouldShow;
-      updateMetrics();
-      return geoLayer;
+      state.mapLayers.set(config.id, group);
+      group.eachLayer(layer => {
+        const record = state.records.find(item => item.leafletLayer === layer);
+        if (record) record.group = group;
+      });
+      if (config.visible) group.addTo(map);
+      const bounds = group.getBounds();
+      if (bounds.isValid()) state.bounds.extend(bounds);
     } catch (error) {
       console.error(`Gagal memuat ${config.id}`, error);
-      if (input) { input.checked = false; input.closest(".layer-item").title = "Layer gagal dimuat"; }
-      toast(`Layer ${config.label} gagal dimuat`);
-      throw error;
+      document.querySelector(`[data-layer="${config.id}"]`)?.closest(".layer-item")?.classList.add("error");
     } finally {
-      state.loading -= 1;
-      if (input) input.disabled = false;
-      setStatus();
-      updateVisibleCount();
+      state.loaded += 1;
+      $("data-status").textContent = state.loaded === LAYERS.length ? `${state.records.length} objek siap dijelajahi` : `Memuat layer ${state.loaded} dari ${LAYERS.length}…`;
     }
   }
 
-  function setStatus() {
-    const loaded = state.layers.size;
-    const text = state.loading ? `Memuat ${state.loading} layer…` : `${loaded} layer siap dijelajahi`;
-    $("data-status").textContent = text;
-    $("data-dot").parentElement.classList.toggle("ready", state.loading === 0 && loaded > 0);
+  function donorName(id) {
+    return CATALOG.donors.find(item => item.id === id)?.name || id || "";
   }
 
-  function featureCount(id) {
-    const layer = state.layers.get(id);
-    return layer ? layer.getLayers().length : 0;
+  function passesFilters(record) {
+    return (!state.filters.program || record.config.program === state.filters.program)
+      && (!state.filters.donor || record.donor === state.filters.donor)
+      && (!state.filters.regency || normalize(record.regency) === state.filters.regency);
   }
 
-  function updateMetrics() {
-    $("metric-villages").textContent = featureCount("desa_intervensi").toLocaleString("id-ID") || "—";
-    $("metric-fdrs").textContent = featureCount("fdrs").toLocaleString("id-ID") || "—";
-    $("metric-canal").textContent = featureCount("sekat_kanal").toLocaleString("id-ID") || "—";
-    const mangrove = state.features.filter(item => item.config.id === "area_mangrove");
-    const area = mangrove.reduce((sum, item) => {
-      const p = item.feature.properties || {};
-      const value = Number(p.Luas_Ha || p.LUAS_HA || p.luas_ha || 0);
+  function applyFilters() {
+    state.records.forEach(record => {
+      const visible = passesFilters(record);
+      if (record.leafletLayer.setStyle) record.leafletLayer.setStyle({ opacity: visible ? 0.95 : 0.08, fillOpacity: visible ? (record.config.type === "line" ? 0.08 : 0.24) : 0.02 });
+      if (record.leafletLayer.setRadius) record.leafletLayer.setRadius(visible ? 7 : 3);
+      record.leafletLayer.options.interactive = visible;
+    });
+    updateDashboard();
+    renderSearch($("search-input").value);
+  }
+
+  function updateDashboard() {
+    const filtered = state.records.filter(passesFilters);
+    $("metric-objects").textContent = filtered.length.toLocaleString("id-ID");
+    $("metric-projects").textContent = new Set(filtered.map(r => r.project?.id).filter(Boolean)).size.toLocaleString("id-ID");
+    $("metric-donors").textContent = new Set(filtered.map(r => r.donor).filter(Boolean)).size.toLocaleString("id-ID");
+    const area = filtered.filter(r => r.config.id === "area_mangrove").reduce((sum, record) => {
+      const value = Number(getFirst(record.properties, ["Luas_Ha", "LUAS_HA", "luas_ha", "Luas", "luas"]) || 0);
       return sum + (Number.isFinite(value) ? value : 0);
     }, 0);
-    $("metric-mangrove").textContent = area > 0 ? `${new Intl.NumberFormat("id-ID", { maximumFractionDigits: 0 }).format(area)} ha` : featureCount("area_mangrove").toLocaleString("id-ID") || "—";
+    $("metric-area").textContent = area ? `${new Intl.NumberFormat("id-ID", { maximumFractionDigits: 2 }).format(area)} ha` : "—";
+    const visible = filtered.filter(record => map.hasLayer(state.mapLayers.get(record.config.id))).length;
+    $("visible-count").textContent = `${visible.toLocaleString("id-ID")} objek tampil`;
+    $("active-count").textContent = [...state.mapLayers.values()].filter(layer => map.hasLayer(layer)).length;
   }
 
-  function updateVisibleCount() {
-    let count = 0;
-    state.layers.forEach(layer => { if (map.hasLayer(layer)) count += layer.getLayers().length; });
-    $("visible-feature-count").textContent = `${count.toLocaleString("id-ID")} objek tampil`;
-    const active = [...state.layers.values()].filter(layer => map.hasLayer(layer)).length;
-    $("active-layer-count").textContent = active;
+  function populateFilters() {
+    const options = (items, value, label) => items.map(item => `<option value="${esc(value(item))}">${esc(label(item))}</option>`).join("");
+    $("program-filter").insertAdjacentHTML("beforeend", options(Object.entries(PROGRAMS).filter(([id]) => id !== "administration"), ([id]) => id, ([, p]) => p.label));
+    $("donor-filter").insertAdjacentHTML("beforeend", options(CATALOG.donors, d => d.id, d => d.name));
+    const regencies = [...new Set(state.records.map(r => r.regency).filter(Boolean))].sort((a, b) => a.localeCompare(b, "id"));
+    $("regency-filter").insertAdjacentHTML("beforeend", options(regencies, r => normalize(r), r => r));
   }
 
-  document.addEventListener("change", async event => {
-    const input = event.target.closest("[data-layer]");
-    if (!input) return;
-    const config = allConfigs.find(item => item.id === input.dataset.layer);
-    if (!config) return;
-    if (input.checked) {
-      try { await loadLayer(config, true); } catch (_) { input.checked = false; }
-    } else {
-      const layer = state.layers.get(config.id);
-      if (layer) map.removeLayer(layer);
+  function renderSources() {
+    $("source-summary").innerHTML = CATALOG.sources.slice(0, 4).map(source => `<div><b>${esc(source.type)}</b><span>${esc(source.title)}</span></div>`).join("")
+      + `<small>${CATALOG.sources.length} sumber inti tercatat · setiap nilai V2 menyimpan asal datanya.</small>`;
+  }
+
+  function openRecord(record) {
+    state.selected = record;
+    $("detail-program").textContent = PROGRAMS[record.config.program].label;
+    $("detail-title").textContent = record.name;
+    $("detail-location").textContent = [record.village, record.regency].filter(Boolean).join(", ") || "Lokasi belum dilengkapi";
+    document.querySelectorAll("[data-tab]").forEach(button => button.classList.toggle("active", button.dataset.tab === "overview"));
+    renderDetail("overview");
+    $("detail-panel").classList.add("open");
+    $("detail-panel").setAttribute("aria-hidden", "false");
+    $("monitor-link").hidden = record.config.id !== "area_mangrove";
+    if (!record.group || !map.hasLayer(record.group)) {
+      const group = state.mapLayers.get(record.config.id);
+      if (group) group.addTo(map);
     }
-    updateVisibleCount();
-  });
+    focusRecord(record);
+    closeSearch();
+    closeMobilePanel();
+  }
+
+  function renderDetail(tab) {
+    const record = state.selected;
+    if (!record) return;
+    if (tab === "overview") {
+      const donor = donorName(record.donor) || "Belum diisi";
+      const rows = [
+        ["Object UUID", record.uuid],
+        ["Program", PROGRAMS[record.config.program].label],
+        ["Proyek", record.project?.name || "Belum ditautkan"],
+        ["Donor", donor],
+        ...Object.entries(record.properties).filter(([key, value]) => !hiddenKey(key) && value !== "" && value !== null && value !== undefined).slice(0, 10).map(([key, value]) => [cleanLabel(key), value])
+      ];
+      $("detail-body").innerHTML = `<div class="data-quality ${record.donor ? "complete" : ""}"><b>${record.donor ? "Identitas donor tersedia" : "Data donor belum diisi"}</b><span>${record.donor ? "Objek sudah dapat dikelompokkan dalam portofolio donor." : "Lengkapi donor melalui editor objek agar masuk ke kluster donor."}</span></div>
+        <div class="detail-fields">${rows.map(([key, value]) => `<div><b>${esc(key)}</b><span>${esc(value)}</span></div>`).join("")}</div>`;
+    } else if (tab === "monitoring") {
+      const events = CATALOG.monitoring[normalize(record.village)] || [];
+      $("detail-body").innerHTML = events.length ? `<div class="timeline">${events.map(event => `<article><i></i><div><small>${esc(event.period)}</small><b>${esc(event.project)}</b><strong>Survival ${esc(event.survival)}</strong><p>${esc(event.note)}</p></div></article>`).join("")}</div>` : emptyState("Belum ada monitoring terstruktur", "Monitoring baru akan terhubung ke UUID objek ini.");
+    } else if (tab === "media") {
+      $("detail-body").innerHTML = emptyState("Media belum dimigrasikan", "Foto dari laporan dan kegiatan akan ditautkan ke objek, kegiatan, atau monitoring tanpa duplikasi.");
+    } else {
+      const related = CATALOG.sources.filter(source => normalize(`${source.title} ${source.scope}`).includes(normalize(record.village)) || source.type === "Operations");
+      $("detail-body").innerHTML = `<div class="source-list">${(related.length ? related : CATALOG.sources.slice(0, 2)).map(source => `<article><span>${esc(source.type)}</span><b>${esc(source.title)}</b><small>${esc(source.scope)}</small></article>`).join("")}</div>`;
+    }
+  }
+
+  function emptyState(title, copy) {
+    return `<div class="empty-state"><span>◎</span><b>${esc(title)}</b><p>${esc(copy)}</p></div>`;
+  }
+
+  function focusRecord(record) {
+    const layer = record.leafletLayer;
+    if (layer.getLatLng) map.setView(layer.getLatLng(), 16);
+    else if (layer.getBounds && layer.getBounds().isValid()) map.fitBounds(layer.getBounds(), { padding: [48, 48], maxZoom: 16 });
+  }
 
   function renderSearch(query = "") {
-    const normalized = query.trim().toLowerCase();
-    const matches = state.features.filter(item => !normalized || item.text.includes(normalized)).slice(0, 30);
-    $("search-results").innerHTML = matches.length ? matches.map((item, index) => `<button class="search-result${index === 0 ? " active" : ""}" type="button" data-search-index="${state.features.indexOf(item)}" style="--result-color:${item.config.color}"><i class="search-result-dot"></i><span><strong>${escapeHtml(item.name)}</strong><small>${escapeHtml(item.config.label)}</small></span><em>Lihat →</em></button>`).join("") : `<div class="search-empty">Tidak ada lokasi yang cocok dengan “${escapeHtml(query)}”.</div>`;
+    const term = normalize(query);
+    const matches = state.records.filter(record => passesFilters(record) && (!term || record.search.includes(term))).slice(0, 40);
+    $("search-total").textContent = `${matches.length} hasil`;
+    $("search-results").innerHTML = matches.length ? matches.map(record => `<button type="button" data-uuid="${esc(record.uuid)}" style="--result:${record.config.color}"><i></i><span><strong>${esc(record.name)}</strong><small>${esc([record.village, PROGRAMS[record.config.program].label, donorName(record.donor)].filter(Boolean).join(" · "))}</small></span><em>Lihat →</em></button>`).join("") : `<div class="search-empty">Tidak ada data yang sesuai.</div>`;
   }
 
   function openSearch() {
     $("search-dialog").hidden = false;
     renderSearch($("search-input").value);
-    setTimeout(() => $("search-input").focus(), 30);
+    setTimeout(() => $("search-input").focus(), 20);
   }
   function closeSearch() { $("search-dialog").hidden = true; }
-  $("search-trigger").addEventListener("click", openSearch);
-  document.querySelector("[data-close-search]").addEventListener("click", closeSearch);
+  function closeDetail() { $("detail-panel").classList.remove("open"); $("detail-panel").setAttribute("aria-hidden", "true"); }
+  function closeMobilePanel() { $("sidebar").classList.remove("open"); }
+
+  renderLayerList();
+  renderSources();
+
+  document.addEventListener("change", event => {
+    if (event.target.matches("[data-layer]")) {
+      const layer = state.mapLayers.get(event.target.dataset.layer);
+      if (layer) event.target.checked ? layer.addTo(map) : map.removeLayer(layer);
+      updateDashboard();
+    }
+    if (event.target.id === "program-filter") state.filters.program = event.target.value;
+    if (event.target.id === "donor-filter") state.filters.donor = event.target.value;
+    if (event.target.id === "regency-filter") state.filters.regency = event.target.value;
+    if (event.target.matches("#program-filter,#donor-filter,#regency-filter")) applyFilters();
+  });
+
+  document.querySelectorAll("[data-tab]").forEach(button => button.addEventListener("click", () => {
+    document.querySelectorAll("[data-tab]").forEach(item => item.classList.toggle("active", item === button));
+    renderDetail(button.dataset.tab);
+  }));
+  $("search-open").addEventListener("click", openSearch);
+  document.querySelector("[data-search-close]").addEventListener("click", closeSearch);
   $("search-input").addEventListener("input", event => renderSearch(event.target.value));
   $("search-results").addEventListener("click", event => {
-    const button = event.target.closest("[data-search-index]");
-    if (button) openFeature(state.features[Number(button.dataset.searchIndex)]);
+    const button = event.target.closest("[data-uuid]");
+    if (button) openRecord(state.records.find(record => record.uuid === button.dataset.uuid));
   });
+  $("detail-close").addEventListener("click", closeDetail);
+  $("detail-zoom").addEventListener("click", () => state.selected && focusRecord(state.selected));
+  $("fit-all").addEventListener("click", () => state.bounds.isValid() && map.fitBounds(state.bounds, { padding: [28, 28], maxZoom: 11 }));
+  $("reset-filter").addEventListener("click", () => {
+    state.filters = { program: "", donor: "", regency: "" };
+    ["program-filter", "donor-filter", "regency-filter"].forEach(id => $(id).value = "");
+    applyFilters();
+  });
+  $("toggle-layers").addEventListener("click", event => {
+    const anyVisible = [...state.mapLayers.values()].some(layer => map.hasLayer(layer));
+    state.mapLayers.forEach((layer, id) => {
+      anyVisible ? map.removeLayer(layer) : layer.addTo(map);
+      const input = document.querySelector(`[data-layer="${id}"]`);
+      if (input) input.checked = !anyVisible;
+    });
+    event.currentTarget.textContent = anyVisible ? "Aktifkan semua" : "Matikan semua";
+    updateDashboard();
+  });
+  $("locate").addEventListener("click", () => map.locate({ setView: true, maxZoom: 16, enableHighAccuracy: true }));
+  map.on("locationfound", e => L.circleMarker(e.latlng, { radius: 8, color: "#fff", weight: 3, fillColor: "#0b5d47", fillOpacity: 1 }).addTo(map).bindPopup("Lokasi Anda").openPopup());
+  map.on("locationerror", () => toast("Lokasi tidak tersedia. Periksa izin browser."));
+  $("fullscreen").addEventListener("click", async () => {
+    try { document.fullscreenElement ? await document.exitFullscreen() : await document.documentElement.requestFullscreen(); } catch (_) { toast("Mode layar penuh tidak tersedia."); }
+  });
+  ["mobile-panel", "map-panel-trigger"].forEach(id => $(id).addEventListener("click", () => $("sidebar").classList.toggle("open")));
   document.addEventListener("keydown", event => {
     if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") { event.preventDefault(); openSearch(); }
     if (event.key === "Escape") { closeSearch(); closeDetail(); }
-    if (event.key === "Enter" && !$("search-dialog").hidden) document.querySelector(".search-result")?.click();
   });
-
-  function closeDetail() { $("detail-panel").classList.remove("open"); $("detail-panel").setAttribute("aria-hidden", "true"); }
-  $("detail-close").addEventListener("click", closeDetail);
-  $("detail-zoom").addEventListener("click", () => state.selected && focusLayer(state.selected.leafletLayer));
-  $("fit-button").addEventListener("click", () => state.bounds.isValid() ? map.fitBounds(state.bounds, { padding: [30, 30] }) : map.setView(DEFAULT_VIEW, DEFAULT_ZOOM));
-  document.querySelectorAll("[data-focus]").forEach(button => button.addEventListener("click", async () => {
-    const config = allConfigs.find(item => item.id === button.dataset.focus);
-    const layer = await loadLayer(config, true);
-    if (layer.getBounds().isValid()) map.fitBounds(layer.getBounds(), { padding: [35, 35], maxZoom: 13 });
-    updateVisibleCount();
-  }));
-  $("toggle-programs").addEventListener("click", () => {
-    const visible = LAYERS.some(config => { const layer = state.layers.get(config.id); return layer && map.hasLayer(layer); });
-    LAYERS.forEach(config => {
-      const layer = state.layers.get(config.id);
-      const input = document.querySelector(`[data-layer="${config.id}"]`);
-      if (layer) visible ? map.removeLayer(layer) : layer.addTo(map);
-      if (input && layer) input.checked = !visible;
-    });
-    $("toggle-programs").textContent = visible ? "Aktifkan semua" : "Matikan semua";
-    updateVisibleCount();
-  });
-  $("locate-button").addEventListener("click", () => map.locate({ setView: true, maxZoom: 15, enableHighAccuracy: true }));
-  map.on("locationfound", event => L.circleMarker(event.latlng, { radius: 8, color: "#fff", weight: 3, fillColor: "#123c2e", fillOpacity: 1 }).addTo(map).bindPopup("Lokasi Anda").openPopup());
-  map.on("locationerror", () => toast("Lokasi tidak tersedia. Periksa izin lokasi browser."));
-  $("fullscreen-button").addEventListener("click", async () => { try { if (!document.fullscreenElement) await document.documentElement.requestFullscreen(); else await document.exitFullscreen(); } catch (_) { toast("Mode layar penuh tidak tersedia"); } });
-  map.on("zoomend", () => $("zoom-readout").textContent = `Zoom ${map.getZoom()}`);
-
-  function toggleMobileSidebar() { $("sidebar").classList.toggle("open"); }
-  function closeMobileSidebar() { $("sidebar").classList.remove("open"); }
-  $("layers-mobile-button").addEventListener("click", toggleMobileSidebar);
-  $("mobile-sheet-handle").addEventListener("click", toggleMobileSidebar);
 
   let toastTimer;
-  function toast(message) { clearTimeout(toastTimer); $("toast").textContent = message; $("toast").classList.add("show"); toastTimer = setTimeout(() => $("toast").classList.remove("show"), 2800); }
+  function toast(message) {
+    clearTimeout(toastTimer);
+    $("toast").textContent = message;
+    $("toast").classList.add("show");
+    toastTimer = setTimeout(() => $("toast").classList.remove("show"), 2800);
+  }
 
-  Promise.allSettled(LAYERS.map(config => loadLayer(config, config.visible))).then(() => {
+  Promise.allSettled(LAYERS.map(loadLayer)).then(() => {
+    populateFilters();
+    applyFilters();
     if (state.bounds.isValid()) map.fitBounds(state.bounds, { padding: [28, 28], maxZoom: 11 });
-    setTimeout(() => map.invalidateSize(), 120);
-    updateVisibleCount();
+    $("data-status").textContent = `${state.records.length} objek dari ${LAYERS.length} layer siap dijelajahi`;
+    document.querySelector(".sync-state").classList.add("ready");
     renderSearch();
+    setTimeout(() => map.invalidateSize(), 100);
   });
 })();
