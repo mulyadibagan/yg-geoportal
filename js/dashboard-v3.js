@@ -81,6 +81,13 @@
     map[label] = (map[label] || 0) + 1;
   }
 
+  function donorOf(props) {
+    return firstValue(props, [
+      "Donor", "Nama_Donor", "Funding_Source",
+      "donor", "nama_donor", "funding_source"
+    ]);
+  }
+
   function mapUrl(params) {
     return "webgis.html?" + new URLSearchParams(params).toString();
   }
@@ -170,6 +177,8 @@
     const villages = new Set();
     const programs = {};
     const programLayers = {};
+    const donors = {};
+    const donorPrograms = {};
     const regencyCounts = {};
     let mangroveArea = 0;
     let reports = 0;
@@ -184,6 +193,7 @@
         "Desa", "WADMKD", "village"
       ]);
       const program = programOf(props, layerId);
+      const donor = donorOf(props);
 
       if (regency) {
         regencies.add(regency.toLowerCase());
@@ -197,6 +207,15 @@
         if (!programLayers[program]) programLayers[program] = {};
         programLayers[program][layerId] =
           (programLayers[program][layerId] || 0) + 1;
+      }
+
+      if (donor) {
+        increment(donors, donor);
+        if (!donorPrograms[donor]) donorPrograms[donor] = {};
+        if (program) {
+          donorPrograms[donor][program] =
+            (donorPrograms[donor][program] || 0) + 1;
+        }
       }
 
       if (layerId === "area_mangrove") {
@@ -226,6 +245,21 @@
           '<small>objek aktif · klik untuk melihat peta</small>' +
         '</a>';
       }).join("");
+
+    const donorEntries = Object.entries(donors)
+      .sort((a, b) => b[1] - a[1]);
+    document.getElementById("donor-grid").innerHTML = donorEntries.length
+      ? donorEntries.map(([name, count]) => {
+          const programCount = Object.keys(donorPrograms[name] || {}).length;
+          return '<a class="category-card dashboard-link" href="' +
+            escapeHtml(mapUrl({ search: name })) + '">' +
+            '<span>' + escapeHtml(name) + '</span>' +
+            '<strong>' + formatNumber(count) + '</strong>' +
+            '<small>' + formatNumber(programCount) +
+              ' program · klik untuk melihat peta</small>' +
+          '</a>';
+        }).join("")
+      : '<div class="dashboard-empty">Data donor belum diisi pada objek aktif.</div>';
 
     renderRanking(
       "regency-ranking",
