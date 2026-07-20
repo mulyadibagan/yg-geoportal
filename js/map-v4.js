@@ -903,36 +903,29 @@ L.control.scale({
       rows += item("pH", props.pH);
       rows += item("Substratum", props.SUBSTRATUM);
       rows += item("Tahun", props.TAHUN || 2019);
+    } else if (config.type === "concession") {
+      rows += item("Pemegang izin", props.NAMA_PRH);
+      rows += item("Nomor SK", props.SK_PBH || props.SK_LAMA);
+      rows += item("Tanggal SK", props.TGL_PBH || props.TGL_LAMA);
+      rows += item("Luas izin (ha)", props.LUAS_HA);
+      rows += item("Luas poligon (ha)", props.LUAS_UKURA);
+      rows += item("Kabupaten/Kota", props.KAB_KOTA);
+      rows += item("Distrik", props.DISTRIK);
+    } else if (config.type === "social_forestry") {
+      rows += item("Kelompok/Hutan Desa", props.NAMA_HKM);
+      rows += item("Skema", props.Ket);
+      rows += item("Nomor izin", props.NO_IUPHKM);
+      rows += item("Tanggal izin", props.TGL_IUPHKM);
+      rows += item("Luas izin (ha)", props.L_IUPHKM);
+      rows += item("Luas poligon (ha)", props.LUAS_POLI);
+      rows += item("Desa", props.NAMA_DESA);
+      rows += item("Kecamatan", props.NAMA_KEC);
+      rows += item("Kabupaten", props.NAMA_KAB);
+      rows += item("Provinsi", props.NAMA_PROV);
     } else {
-      const preferredFields = [
-        ["Nama", ["NAMA", "Nama", "NAMOBJ", "NAMA_IZIN", "NAMA_SKEMA"]],
-        ["Pemegang izin/Kelompok", ["PEMEGANG", "PEMEGANG_I", "KTH", "KELOMPOK"]],
-        ["Skema", ["SKEMA", "JENIS_PS", "POLA"]],
-        ["Nomor SK", ["NO_SK", "NOSK", "SK"]],
-        ["Kabupaten/Kota", ["KABKOT", "KABUPATEN", "WADMKK"]],
-        ["Kecamatan", ["KECAMATAN", "WADMKC"]],
-        ["Luas (ha)", ["LUAS", "LUAS_HA", "Luas_Ha"]],
-        ["Tahun", ["TAHUN", "Tahun"]]
-      ];
-      const used = new Set();
-
-      preferredFields.forEach(([label, keys]) => {
-        const key = keys.find(candidate =>
-          Object.prototype.hasOwnProperty.call(props, candidate) &&
-          props[candidate] !== null &&
-          String(props[candidate]).trim() !== ""
-        );
-        if (key) {
-          rows += item(label, props[key]);
-          used.add(key);
-        }
+      Object.keys(props).slice(0, 8).forEach(key => {
+        rows += item(key, props[key]);
       });
-
-      if (!rows) {
-        Object.keys(props).slice(0, 8).forEach(key => {
-          if (!used.has(key)) rows += item(key, props[key]);
-        });
-      }
     }
 
     return (
