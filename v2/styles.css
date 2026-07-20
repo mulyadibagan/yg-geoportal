@@ -32,3 +32,32 @@
   transition:transform .2s ease;
 }
 .detail-gallery a:hover img{transform:scale(1.03)}
+
+
+.module-grid{
+  display:grid;
+  gap:8px;
+}
+.module-link{
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+  padding:11px 12px;
+  border:1px solid rgba(18,60,46,.12);
+  border-radius:12px;
+  background:#fff;
+  color:#123c2e;
+  text-decoration:none;
+  transition:border-color .18s ease,transform .18s ease,box-shadow .18s ease;
+}
+.module-link:hover{
+  transform:translateY(-1px);
+  border-color:#2f7d4c;
+  box-shadow:0 8px 20px rgba(18,60,46,.09);
+}
+.module-link strong{font-size:12px}
+.module-link span{font-size:10px;color:#63736c;line-height:1.35}
+.module-link.admin{
+  border-style:dashed;
+  background:#f5f8f6;
+}
