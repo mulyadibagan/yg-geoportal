@@ -68,6 +68,7 @@
       "Jenis laporan": "Report type",
       "Titik Baru": "New Location",
       "Buka Foto": "Open Photo",
+      "Kirim Monitoring": "Submit Monitoring",
       "Objek tidak ditemukan.": "No matching object found.",
       "Menghubungkan ke Master Database…": "Connecting to the Master Database…",
       "Memuat layer dari database…": "Loading layers from the database…",

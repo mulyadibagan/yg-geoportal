@@ -48,6 +48,33 @@
 .stats .stat{cursor:pointer}
 .stats .stat:hover{transform:translateY(-1px);box-shadow:0 8px 18px rgba(20,70,52,.08)}
 .popup-body{max-height:min(62vh,520px);overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.yg-popup-actions{
+  position:sticky;
+  bottom:0;
+  padding:10px 12px 12px;
+  border-top:1px solid #e4ece8;
+  background:linear-gradient(to bottom,rgba(255,255,255,.92),#fff 24%);
+}
+.yg-popup-monitoring-link{
+  display:flex;
+  min-height:38px;
+  align-items:center;
+  justify-content:center;
+  padding:8px 12px;
+  border-radius:10px;
+  background:#087653;
+  color:#fff!important;
+  font-size:11px;
+  font-weight:850;
+  text-decoration:none!important;
+  box-shadow:0 5px 14px rgba(8,118,83,.2);
+}
+.yg-popup-monitoring-link:hover,
+.yg-popup-monitoring-link:focus{
+  background:#065f43;
+  outline:2px solid rgba(8,118,83,.24);
+  outline-offset:2px;
+}
 
 /* Gallery V2: satu panggung utama dan thumbnail seragam. */
 .yg-popup-gallery-v2{

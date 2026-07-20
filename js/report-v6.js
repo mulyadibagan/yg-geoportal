@@ -264,7 +264,7 @@
     return String(config.id) + ':auto:' + Math.abs(hash);
   }
 
-  async function loadCorrectionLayer(layerId){
+  async function loadCorrectionLayer(layerId, preferredObjectId){
     clearSelectedCorrectionFeature();
 
     if(correctionLayerGroup){
@@ -313,6 +313,11 @@
         data = await response.json();
       }
 
+      var preferredSelection = null;
+      var normalizedPreferredObjectId = String(
+        preferredObjectId || ''
+      ).trim();
+
       correctionLayerGroup = L.geoJSON(data,{
         style:function(){
           return {
@@ -333,6 +338,31 @@
           });
         },
         onEachFeature:function(feature,layer){
+          var featureProperties = feature && feature.properties
+            ? feature.properties
+            : {};
+          var directObjectId = String(
+            featureProperties.Object_ID ||
+            featureProperties.objectId ||
+            featureProperties.OBJECTID ||
+            featureProperties.ID ||
+            ''
+          ).trim();
+          var generatedObjectId = makeObjectId(feature,config);
+
+          if(
+            normalizedPreferredObjectId &&
+            (
+              directObjectId === normalizedPreferredObjectId ||
+              generatedObjectId === normalizedPreferredObjectId
+            )
+          ){
+            preferredSelection = {
+              feature:feature,
+              layer:layer
+            };
+          }
+
           layer.on('click',function(event){
             if(event && event.originalEvent){
               L.DomEvent.stopPropagation(event);
@@ -346,6 +376,14 @@
           );
         }
       }).addTo(map);
+
+      if(preferredSelection){
+        selectExistingFeature(
+          preferredSelection.feature,
+          preferredSelection.layer,
+          config
+        );
+      }
 
       var bounds = correctionLayerGroup.getBounds();
       if(bounds && bounds.isValid()){
@@ -1442,13 +1480,22 @@
     },600);
   });
 
-  var requestedType = new URLSearchParams(window.location.search).get('type');
+  var requestedParams = new URLSearchParams(window.location.search);
+  var requestedType = requestedParams.get('type');
   if(requestedType && requestedType.toLowerCase() === 'monitoring'){
     var monitoringRadio = document.querySelector('input[name="reportTypeUI"][value="Monitoring"]');
     if(monitoringRadio){
       monitoringRadio.checked = true;
       selectedType = 'Monitoring';
       configureFormByType('Monitoring');
+
+      var requestedLayer = requestedParams.get('layer');
+      var requestedObject = requestedParams.get('object');
+      if(requestedLayer && requestedObject){
+        var correctionLayerSelect = document.getElementById('correction-layer');
+        correctionLayerSelect.value = requestedLayer;
+        loadCorrectionLayer(requestedLayer,requestedObject);
+      }
     }
   }
 

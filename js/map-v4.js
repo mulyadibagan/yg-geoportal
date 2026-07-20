@@ -569,6 +569,36 @@ L.control.scale({
         '</div>';
     }
 
+    const geometryType = String(
+      feature && feature.geometry && feature.geometry.type || ""
+    );
+    const objectId = String(
+      props.Object_ID ||
+      props.objectId ||
+      props.OBJECTID ||
+      props.ID ||
+      ""
+    ).trim();
+    const canSendMonitoring =
+      ["Polygon", "MultiPolygon"].includes(geometryType) &&
+      config.id !== "monitoring_reports" &&
+      config.id !== "community_reports" &&
+      Boolean(objectId);
+    const monitoringAction = canSendMonitoring
+      ? (
+          '<div class="yg-popup-actions">' +
+            '<a class="yg-popup-monitoring-link" href="report.html?' +
+              'type=monitoring&amp;layer=' +
+              encodeURIComponent(config.id) +
+              '&amp;object=' +
+              encodeURIComponent(objectId) +
+            '">' +
+              'Kirim Monitoring' +
+            '</a>' +
+          '</div>'
+        )
+      : "";
+
     if (!rows) {
       rows =
         '<div class="popup-row">' +
@@ -583,7 +613,9 @@ L.control.scale({
           '<strong>' + escapeHtml(getObjectName(feature)) + '</strong>' +
           '<span>' + escapeHtml(config.label) + '</span>' +
         '</div>' +
-        '<div class="popup-body">' + rows + gallery + '</div>' +
+        '<div class="popup-body">' +
+          rows + gallery + monitoringAction +
+        '</div>' +
       '</div>'
     );
   }

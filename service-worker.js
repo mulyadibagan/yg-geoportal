@@ -1,4 +1,4 @@
-const CACHE_NAME = "yg-geoportal-v4-20260720-mangrove-names1";
+const CACHE_NAME = "yg-geoportal-v4-20260720-popup-monitoring1";
 
 const STATIC_ASSETS = [
   "./",
@@ -10,20 +10,21 @@ const STATIC_ASSETS = [
   "./assets/logo-yayasan-gambut-192.png",
   "./assets/logo-yayasan-gambut-512.png",
   "./css/app.css?v=20260720-search-nursery1",
-  "./css/webgis-v3.css?v=20260720-search-nursery1",
+  "./css/webgis-v3.css?v=20260720-popup-monitoring1",
   "./css/monitoring.css?v=20260720-103",
   "./css/monitoring-v1-fix.css?v=20260720-103",
   "./css/report.css",
   "./css/report-v6.css?v=20260713-40",
   "./js/config.js",
-  "./js/report-v6.js?v=20260720-replanting1",
+  "./js/report-v6.js?v=20260720-popup-monitoring1",
   "./js/report-photo-rules.js?v=20260720-replanting1",
   "./js/report-photo-guard.js?v=20260720-replanting1",
   "./js/monitoring-data-compat.js?v=20260720-edge-refresh1",
   "./js/monitoring.js?v=20260720-edge-refresh1",
   "./js/monitoring-photo.js?v=20260720-edge-refresh1",
   "./js/pwa.js?v=20260720-edge-refresh1",
-  "./js/map-v4.js?v=20260720-mangrove-align1"
+  "./js/i18n.js?v=20260720-popup-monitoring1",
+  "./js/map-v4.js?v=20260720-popup-monitoring1"
 ];
 
 self.addEventListener("install", event => {
