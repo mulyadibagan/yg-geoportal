@@ -71,3 +71,21 @@ Alur ini memerlukan endpoint Apps Script khusus untuk membuat objek. Fitur tamba
 objek tidak boleh diaktifkan di produksi hanya dengan mengandalkan fungsi update,
 karena fungsi update harus tetap menolak Object ID yang belum terdaftar.
 
+## Catatan DatabaseEngine.gs saat ini
+
+Fungsi `upsertMasterObject_()` yang sekarang digunakan sudah dapat menambahkan
+Object ID baru ke `OBJECTS`. Agar audit trail membedakan penambahan dan revisi,
+ganti fungsi `updateMasterObject()` menggunakan:
+
+`apps-script/DatabaseEngine-updateMasterObject.gs`
+
+Tambahkan juga layer berikut ke `MASTER_LAYER_CONFIG` jika belum ada:
+
+```javascript
+{
+  id: 'area_kopi',
+  label: 'Wilayah Penanaman Kopi',
+  category: 'Agroforestri/Kopi',
+  file: 'data/area_kopi.geojson'
+}
+```

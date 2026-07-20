@@ -3,6 +3,15 @@
 
   const config = window.YG_POLYGON_EDITOR_CONFIG || {};
   const api = config.api;
+  const editableLayerDefinitions = [
+    { id: "area_mangrove", label: "Area Penanaman Mangrove", category: "Penanaman Mangrove" },
+    { id: "area_kopi", label: "Wilayah Penanaman Kopi", category: "Agroforestri/Kopi" },
+    { id: "kopi", label: "Distribusi Lahan Kopi", category: "Agroforestri/Kopi" },
+    { id: "nursery_mangrove", label: "Rumah Pembibitan Mangrove", category: "Pembibitan Mangrove" },
+    { id: "fdrs", label: "FDRS / Water Table", category: "FDRS" },
+    { id: "sekat_kanal", label: "Sekat Kanal", category: "Sekat Kanal" },
+    { id: "apo", label: "Alat Pemecah Ombak (APO)", category: "APO" }
+  ];
   const map = L.map("map", { preferCanvas: true }).setView([1.2, 102.1], 8);
 
   const road = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -24,6 +33,7 @@
   let selectedLayer = null;
   let originalFeature = null;
   let editing = false;
+  let creatingNew = false;
   let saveInProgress = false;
   let pendingSave = null;
   let savePollTimer = null;
@@ -121,6 +131,7 @@
 
   function buildLayerFilter() {
     const layers = new Map();
+    editableLayerDefinitions.forEach(layer => layers.set(layer.id, layer.label));
     objects.forEach(feature => {
       const p = props(feature);
       const id = p.Layer_ID || p.Source_Layer || "lainnya";
@@ -187,14 +198,16 @@
     };
   }
 
-  function showFeature(feature) {
+  function showFeature(feature, options) {
+    options = options || {};
     if (selectedLayer) {
       map.removeLayer(selectedLayer);
       selectedLayer = null;
     }
 
     selectedFeature = clone(feature);
-    originalFeature = clone(feature);
+    creatingNew = Boolean(options.newObject);
+    originalFeature = creatingNew ? null : clone(feature);
 
     selectedLayer = L.geoJSON(selectedFeature, {
       style: () => layerStyle(selectedFeature),
@@ -294,6 +307,8 @@
   function fillForm() {
     const p = props(selectedFeature);
     const mapping = {
+      layerId: ["Layer_ID", "Source_Layer"],
+      layerLabel: ["Layer_Label"],
       objectId: ["Object_ID"],
       objectName: ["Nama_Objek"],
       category: ["Kategori"],
@@ -354,6 +369,11 @@
         p[key] = String(value || "").trim();
       }
     });
+
+    p.Layer_ID = String(form.elements.layerId.value || p.Layer_ID || "").trim();
+    p.Layer_Label = String(form.elements.layerLabel.value || p.Layer_Label || "").trim();
+    p.Source_Layer = p.Layer_ID;
+    p.Source_Type = p.Source_Type || "program_layer";
   }
 
   function buildObjectData() {
@@ -470,6 +490,7 @@
       true
     );
     document.getElementById("change-reason").value = "";
+    creatingNew = false;
     loadObjects();
   }
 
@@ -592,6 +613,11 @@
   }
 
   function cancelChanges() {
+    if (creatingNew) {
+      clearSelection();
+      setStatus("Penambahan objek dibatalkan.", "ok");
+      return;
+    }
     if (!originalFeature) return;
     showFeature(originalFeature);
     setStatus("Perubahan dibatalkan.", "ok");
@@ -646,6 +672,7 @@
     selectedLayer = null;
     selectedFeature = null;
     originalFeature = null;
+    creatingNew = false;
     form.hidden = true;
     document.getElementById("empty-state").hidden = false;
     toggleButtons(false);
@@ -658,6 +685,117 @@
     document.getElementById("reset-geometry").disabled = !hasSelection;
   }
 
+  function slugId(value) {
+    return String(value || "")
+      .toUpperCase()
+      .replace(/[^A-Z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 30);
+  }
+
+  function createObjectId(layerId) {
+    const prefix = slugId(layerId || "OBJECT");
+    const stamp = Date.now().toString(36).toUpperCase();
+    let candidate = "YG-" + prefix + "-" + stamp;
+    let suffix = 1;
+    const used = new Set(objects.map(feature => String(props(feature).Object_ID || "")));
+
+    while (used.has(candidate)) {
+      candidate = "YG-" + prefix + "-" + stamp + "-" + suffix;
+      suffix += 1;
+    }
+    return candidate;
+  }
+
+  function selectedLayerDefinition() {
+    const layerId = layerFilter.value;
+    if (!layerId) return null;
+
+    const option = layerFilter.options[layerFilter.selectedIndex];
+    const sample = objects.find(feature => {
+      const p = props(feature);
+      return (p.Layer_ID || p.Source_Layer || "") === layerId;
+    });
+    const sampleProps = props(sample);
+
+    const registered = editableLayerDefinitions.find(layer => layer.id === layerId);
+
+    return {
+      id: layerId,
+      label: registered
+        ? registered.label
+        : (option ? option.textContent : layerId.replace(/_/g, " ")),
+      category: sampleProps.Kategori ||
+        (registered ? registered.category : (option ? option.textContent : layerId)),
+      program: sampleProps.Program || ""
+    };
+  }
+
+  function beginCreateObject() {
+    if (saveInProgress) return;
+
+    const layerDefinition = selectedLayerDefinition();
+    if (!layerDefinition) {
+      setStatus("Pilih satu layer tujuan sebelum menambah objek.", "error");
+      layerFilter.focus();
+      return;
+    }
+
+    const geometryType = document.getElementById("new-geometry-type").value;
+    const drawType = {
+      Point: "Marker",
+      LineString: "Line",
+      Polygon: "Polygon"
+    }[geometryType];
+
+    clearSelection();
+    map.pm.enableDraw(drawType, {
+      snappable: true,
+      allowSelfIntersection: false,
+      finishOn: geometryType === "LineString" ? "dblclick" : undefined
+    });
+
+    setStatus(
+      "Gambar " + geometryType + " baru pada peta untuk layer " +
+      layerDefinition.label + ".",
+      "saving"
+    );
+  }
+
+  function finishCreateObject(event) {
+    const layerDefinition = selectedLayerDefinition();
+    if (!layerDefinition || !event.layer) return;
+
+    const geoJson = event.layer.toGeoJSON();
+    map.removeLayer(event.layer);
+    map.pm.disableDraw();
+
+    const objectId = createObjectId(layerDefinition.id);
+    const feature = {
+      type: "Feature",
+      geometry: geoJson.geometry,
+      properties: {
+        Object_ID: objectId,
+        Layer_ID: layerDefinition.id,
+        Layer_Label: layerDefinition.label,
+        Source_Layer: layerDefinition.id,
+        Source_Type: "program_layer",
+        Nama_Objek: "Objek baru " + layerDefinition.label,
+        Kategori: layerDefinition.category,
+        Program: layerDefinition.program,
+        Status_Objek: "Aktif",
+        Provinsi: "Riau",
+        Created_At: new Date().toISOString()
+      }
+    };
+
+    showFeature(feature, { newObject: true });
+    setStatus(
+      "Geometri objek baru siap. Lengkapi nama, donor, proyek, dan lokasi lalu simpan.",
+      "ok"
+    );
+  }
+
   list.addEventListener("click", event => {
     const button = event.target.closest("[data-index]");
     if (!button) return;
@@ -667,6 +805,7 @@
   layerFilter.addEventListener("change", applyFilter);
   searchInput.addEventListener("input", applyFilter);
   document.getElementById("reload-data").addEventListener("click", loadObjects);
+  document.getElementById("new-object").addEventListener("click", beginCreateObject);
   document.getElementById("start-edit").addEventListener("click", startEdit);
   document.getElementById("finish-edit").addEventListener("click", finishEdit);
   document.getElementById("reset-geometry").addEventListener("click", resetGeometry);
@@ -679,10 +818,12 @@
     if (bounds.isValid()) map.fitBounds(bounds, { padding: [35, 35], maxZoom: 18 });
   });
   form.addEventListener("submit", saveObject);
+  map.on("pm:create", finishCreateObject);
 
 
   saveOverlayClose.addEventListener("click", hideSaveOverlay);
 
   map.whenReady(() => setTimeout(() => map.invalidateSize(true), 100));
+  buildLayerFilter();
   loadObjects();
 })();

@@ -7,7 +7,7 @@
   <link rel="icon" href="assets/logo-yayasan-gambut.png">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="https://unpkg.com/@geoman-io/leaflet-geoman-free@2.18.0/dist/leaflet-geoman.css">
-  <link rel="stylesheet" href="css/polygon-editor.css?v=20260720-31">
+  <link rel="stylesheet" href="css/polygon-editor.css?v=20260720-objectcreate1">
   <meta name="theme-color" content="#087653">
 </head>
 <body>
@@ -28,6 +28,14 @@
       <label>Alasan perubahan
         <input id="change-reason" type="text" maxlength="180" placeholder="Contoh: Koreksi batas polygon hasil pengecekan lapangan">
       </label>
+      <label>Jenis objek baru
+        <select id="new-geometry-type">
+          <option value="Polygon">Polygon/area</option>
+          <option value="Point">Titik</option>
+          <option value="LineString">Garis</option>
+        </select>
+      </label>
+      <button id="new-object" type="button">+ Tambah objek</button>
       <button id="reload-data" class="secondary" type="button">Muat ulang</button>
       <span id="status" aria-live="polite">Memuat Master Database…</span>
     </section>
@@ -76,6 +84,12 @@
           </div>
 
           <div class="form-grid">
+            <label>Layer ID
+              <input name="layerId" readonly>
+            </label>
+            <label>Nama layer
+              <input name="layerLabel" readonly>
+            </label>
             <label>Object ID
               <input name="objectId" readonly>
             </label>
@@ -181,6 +195,6 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://unpkg.com/@geoman-io/leaflet-geoman-free@2.18.0/dist/leaflet-geoman.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@turf/turf@7.2.0/turf.min.js"></script>
-  <script src="js/polygon-editor.js?v=20260720-donor1"></script>
+  <script src="js/polygon-editor.js?v=20260720-objectcreate1"></script>
 </body>
 </html>

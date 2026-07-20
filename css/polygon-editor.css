@@ -6,7 +6,7 @@ button,input,select{font:inherit}
 .editor-header .back,.editor-header .map-link{color:var(--green);font-weight:850;text-decoration:none}
 .editor-header div{flex:1}.editor-header h1{margin:0;font-size:22px}.editor-header p{margin:2px 0;color:var(--muted);font-size:12px}
 .shell{width:min(1800px,calc(100% - 24px));margin:12px auto}
-.access-card{display:grid;grid-template-columns:minmax(220px,.8fr) minmax(320px,1.4fr) auto minmax(180px,.8fr);gap:10px;align-items:end;padding:13px;border:1px solid var(--line);border-radius:14px;background:#fff}
+.access-card{display:grid;grid-template-columns:minmax(190px,.7fr) minmax(280px,1.2fr) minmax(150px,.55fr) auto auto minmax(180px,.75fr);gap:10px;align-items:end;padding:13px;border:1px solid var(--line);border-radius:14px;background:#fff}
 label{display:flex;flex-direction:column;gap:5px;color:#53645b;font-size:11px;font-weight:800}
 input,select{width:100%;padding:10px;border:1px solid #cbdcd3;border-radius:9px;background:#fff}
 button{padding:10px 13px;border:0;border-radius:9px;background:var(--green);color:#fff;font-weight:850;cursor:pointer}
