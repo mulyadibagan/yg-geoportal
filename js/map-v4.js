@@ -1524,6 +1524,54 @@ L.control.scale({
       return data;
     }
 
+    const databaseMangroveFeatures = data.features.filter(feature => {
+      const props = feature && feature.properties || {};
+      const layerId = normalizedMatchValue(
+        props.Layer_ID || props.Source_Layer
+      );
+      return layerId === "area_mangrove";
+    });
+
+    function findDatabaseMangrove(officialFeature) {
+      const officialProps = officialFeature && officialFeature.properties || {};
+      const officialId = normalizedMatchValue(officialProps.Object_ID);
+      const exact = databaseMangroveFeatures.find(feature =>
+        normalizedMatchValue(
+          feature && feature.properties && feature.properties.Object_ID
+        ) === officialId
+      );
+      if (exact) return exact;
+
+      const officialVillage = normalizedMatchValue(officialProps.Desa);
+      const officialYear = normalizedMatchValue(officialProps.Tahun);
+      const officialArea = numericArea(officialProps.Luas_Ha);
+      if (!officialVillage || !officialYear || !Number.isFinite(officialArea)) {
+        return null;
+      }
+
+      const candidates = databaseMangroveFeatures
+        .map(feature => {
+          const props = feature && feature.properties || {};
+          const area = numericArea(props.Luas_Ha);
+          if (
+            normalizedMatchValue(props.Desa) !== officialVillage ||
+            normalizedMatchValue(props.Tahun) !== officialYear ||
+            !Number.isFinite(area)
+          ) {
+            return null;
+          }
+          return { feature, difference: Math.abs(area - officialArea) };
+        })
+        .filter(Boolean)
+        .sort((left, right) => left.difference - right.difference);
+
+      if (!candidates.length) return null;
+      const tolerance = Math.max(0.0005, officialArea * 0.001);
+      return candidates[0].difference <= tolerance
+        ? candidates[0].feature
+        : null;
+    }
+
     mangrove.features.forEach(feature => {
       if (!feature.properties) feature.properties = {};
       if (!feature.properties.Layer_ID) {
@@ -1534,6 +1582,32 @@ L.control.scale({
       }
       if (!feature.properties.Nama_Objek) {
         feature.properties.Nama_Objek = "Area Penanaman Mangrove";
+      }
+
+      const databaseFeature = findDatabaseMangrove(feature);
+      const databaseProps = databaseFeature && databaseFeature.properties || {};
+      [
+        "Donor",
+        "Nama_Proyek",
+        "Project_ID",
+        "Nomor_Perjanjian",
+        "Program",
+        "Status_Objek",
+        "Revision",
+        "Updated_At",
+        "Updated_By"
+      ].forEach(key => {
+        if (
+          databaseProps[key] !== undefined &&
+          databaseProps[key] !== null &&
+          String(databaseProps[key]).trim() !== ""
+        ) {
+          feature.properties[key] = databaseProps[key];
+        }
+      });
+
+      if (databaseProps.Object_ID) {
+        feature.properties.Master_Object_ID = databaseProps.Object_ID;
       }
     });
 
