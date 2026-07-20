@@ -110,6 +110,66 @@
     else if (layer.getBounds && layer.getBounds().isValid()) map.fitBounds(layer.getBounds(), { padding: [45, 45], maxZoom: 15 });
   }
 
+  function normalizeVerifiedCommunityAsset(feature) {
+    const props = feature && feature.properties || {};
+    const layerId = String(props.Layer_ID || props.Source_Layer || "")
+      .trim().toLowerCase();
+    const geometryType = String(
+      feature && feature.geometry && feature.geometry.type || ""
+    );
+    if (layerId !== "community_reports" || geometryType !== "Point") {
+      return feature;
+    }
+
+    const identity = [
+      props.title, props.locationName, props.Nama_Objek,
+      props.description, props.reportType
+    ].filter(Boolean).join(" ").toLowerCase();
+
+    let target = null;
+    if (
+      identity.includes("menara tampung air") ||
+      identity.includes("tower air") ||
+      identity.includes("pendopo")
+    ) {
+      target = ["supporting_infrastructure", "Infrastruktur Pendukung",
+        "Infrastruktur Pendukung Program"];
+    } else if (identity.includes("plang")) {
+      target = ["information_signs", "Plang Informasi & Perlindungan",
+        "Plang Informasi dan Perlindungan"];
+    } else if (
+      identity.includes("nursery sepahat") ||
+      identity.includes("rumah bibit sepahat") ||
+      identity.includes("rumah bibit kelapa pati")
+    ) {
+      target = ["nursery_mangrove", "Rumah Pembibitan Mangrove",
+        "Pembibitan Mangrove"];
+    } else if (
+      identity.includes("nursery ktwmj") ||
+      identity.includes("rumah bibit kopi") ||
+      identity.includes("nursery kopi")
+    ) {
+      target = ["nursery_coffee", "Rumah Pembibitan Kopi",
+        "Pembibitan Kopi"];
+    } else if (
+      identity.includes("restorasi hutan adat imbo putui") ||
+      identity.includes("lokasi pup 2")
+    ) {
+      target = ["forest_land_restoration", "Restorasi Hutan & Lahan",
+        "Restorasi Hutan dan Lahan"];
+    }
+
+    if (!target) return feature;
+    props.Audit_Source_Layer = props.Layer_ID || props.Source_Layer;
+    props.Layer_ID = target[0];
+    props.Source_Layer = target[0];
+    props.Layer_Label = target[1];
+    props.Kategori = target[2];
+    props.Nama_Objek = props.locationName || props.title ||
+      props.Nama_Objek || target[2];
+    return feature;
+  }
+
   async function loadMasterData() {
     if (!masterDataPromise) {
       masterDataPromise = fetch(API + "&t=" + Date.now(), {
@@ -123,6 +183,7 @@
           throw new Error("Format Master Database tidak valid");
         }
         state.databaseUpdated = data.updatedAt || data.lastUpdated || "";
+        data.features = data.features.map(normalizeVerifiedCommunityAsset);
         return data;
       });
     }
