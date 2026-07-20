@@ -1303,6 +1303,10 @@
 
     if(selectedType === 'Replanting/Penyulaman Mangrove'){
       var replantingDataValidation = collectReplantingData();
+      if(!value('activity-date')){
+        alert('Isi tanggal kegiatan replanting.');
+        return;
+      }
       if(
         !replantingDataValidation.replantedCount ||
         Number(replantingDataValidation.replantedCount) < 1
