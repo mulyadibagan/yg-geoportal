@@ -1,0 +1,105 @@
+{
+  "schema_version": "2.0.0",
+  "effective_date": "2026-07-21",
+  "system": "YG GeoPortal V2",
+  "principles": {
+    "permanent_object_id": true,
+    "preserve_source_report_id": true,
+    "preserve_audit_trail": true,
+    "public_verified_data_only": true,
+    "reference_layers_excluded_from_program_totals": true,
+    "calculations_require_methodology": true,
+    "bilingual_public_portal": true
+  },
+  "source_precedence": {
+    "geometry": [
+      "official_shp_geojson",
+      "verified_geometry_revision",
+      "master_database_geometry",
+      "submitted_report_geometry"
+    ],
+    "attributes": [
+      "verified_correction",
+      "master_database",
+      "official_shp_attributes",
+      "submitted_report"
+    ],
+    "media": [
+      "verified_public_update",
+      "master_database",
+      "submitted_report"
+    ],
+    "monitoring": [
+      "verified_monitoring",
+      "master_database"
+    ]
+  },
+  "workflow": [
+    "Menunggu Verifikasi",
+    "Terverifikasi",
+    "Ditolak",
+    "Sudah Menjadi Objek"
+  ],
+  "public_policy": {
+    "exclude_statuses": [
+      "menunggu verifikasi",
+      "ditolak",
+      "draft",
+      "rejected",
+      "pending verification"
+    ],
+    "include_blank_legacy_status": true
+  },
+  "identity": {
+    "primary_key": "Object_ID",
+    "fallback_keys": [
+      "Master_Object_ID",
+      "Source_Report_ID",
+      "reportId",
+      "OBJECTID"
+    ],
+    "duplicate_scope": [
+      "Layer_ID",
+      "Object_ID"
+    ]
+  },
+  "geometry": {
+    "supported": [
+      "Point",
+      "MultiPoint",
+      "LineString",
+      "MultiLineString",
+      "Polygon",
+      "MultiPolygon"
+    ],
+    "area_unit": "ha",
+    "length_unit": "m",
+    "auto_calculate_missing_polygon_area": true,
+    "never_overwrite_official_geometry": true
+  },
+  "integrations": {
+    "master_database": "page=objects",
+    "verified_updates": "page=public-updates",
+    "public_report": "../report.html",
+    "monitoring": "../monitoring.html",
+    "object_manager": "../object-manager.html"
+  },
+  "reference_layers": [
+    "kawasan_hutan_sk_903",
+    "gambut_bbsdlp_2019",
+    "iuphhk_ht_2014",
+    "perhutanan_sosial_riau"
+  ],
+  "governance": {
+    "roles": [
+      "public",
+      "field_reporter",
+      "verifier",
+      "gis_editor",
+      "administrator"
+    ],
+    "revision_required_for_geometry_change": true,
+    "updated_at_required_for_admin_change": true,
+    "updated_by_required_for_admin_change": true
+  }
+}
