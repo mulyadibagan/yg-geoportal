@@ -458,7 +458,7 @@
     });
 
     if(selectedType === 'Perbaikan Informasi'){
-      buildEditableAttributes(feature.properties || {});
+      buildEditableAttributes(feature.properties || {},config.id);
     }
 
     var summary = document.getElementById('selected-feature-summary');
@@ -491,46 +491,134 @@
       typeof value !== 'object';
   }
 
-  function buildEditableAttributes(properties){
+  var coffeeEditableFields = [
+    {
+      key:'Jumlah_Tanam',
+      label:'Jumlah tanaman kopi',
+      type:'number',
+      min:'0',
+      step:'1',
+      placeholder:'Masukkan jumlah tanaman kopi'
+    },
+    {
+      key:'Pemilik_Lahan',
+      label:'Pemilik lahan',
+      type:'text',
+      placeholder:'Masukkan nama pemilik atau pengelola lahan'
+    },
+    {
+      key:'Luas_Lahan_Ha',
+      label:'Luas lahan (ha)',
+      type:'number',
+      min:'0',
+      step:'0.01',
+      placeholder:'Contoh: 1.25'
+    },
+    {
+      key:'Tumpang_Sari',
+      label:'Jenis tumpang sari',
+      type:'select',
+      options:[
+        ['','Pilih jenis tumpang sari'],
+        ['Tidak Ada','Tidak ada'],
+        ['Kelapa Sawit','Kelapa sawit'],
+        ['Karet','Karet'],
+        ['Tanaman Lain','Tanaman lain'],
+        ['Campuran','Campuran']
+      ]
+    },
+    {
+      key:'Tanaman_Lain',
+      label:'Tanaman lain',
+      type:'text',
+      placeholder:'Isi jika memilih Tanaman Lain atau Campuran'
+    }
+  ];
+
+  function appendEditableAttributeRow(container,definition,currentValue){
+    var row = document.createElement('div');
+    row.className = 'editable-attribute-row';
+
+    var oldBox = document.createElement('div');
+    oldBox.className = 'editable-old-value';
+
+    var label = document.createElement('strong');
+    label.textContent = definition.label || definition.key;
+
+    var oldValue = document.createElement('span');
+    oldValue.textContent =
+      currentValue !== null &&
+      currentValue !== undefined &&
+      String(currentValue).trim() !== ''
+        ? String(currentValue)
+        : 'Belum diisi';
+
+    oldBox.appendChild(label);
+    oldBox.appendChild(oldValue);
+
+    var input;
+    if(definition.type === 'select'){
+      input = document.createElement('select');
+      (definition.options || []).forEach(function(optionDefinition){
+        var option = document.createElement('option');
+        option.value = optionDefinition[0];
+        option.textContent = optionDefinition[1];
+        input.appendChild(option);
+      });
+    }else{
+      input = document.createElement('input');
+      input.type = definition.type || 'text';
+      if(definition.min !== undefined) input.min = definition.min;
+      if(definition.step !== undefined) input.step = definition.step;
+      input.placeholder =
+        definition.placeholder ||
+        'Nilai baru (biarkan kosong jika tidak diubah)';
+    }
+
+    input.className = 'editable-new-value';
+    input.dataset.attributeKey = definition.key;
+
+    row.appendChild(oldBox);
+    row.appendChild(input);
+    container.appendChild(row);
+  }
+
+  function buildEditableAttributes(properties,layerId){
     var container = document.getElementById('editable-attributes');
     container.innerHTML = '';
-
-    var keys = Object.keys(properties).filter(function(key){
-      return isEditableAttribute(key,properties[key]);
+    var isCoffeeLayer = layerId === 'kopi';
+    var coffeeKeys = coffeeEditableFields.map(function(field){
+      return field.key;
     });
 
-    if(!keys.length){
+    var keys = Object.keys(properties).filter(function(key){
+      return isEditableAttribute(key,properties[key]) &&
+        (!isCoffeeLayer || coffeeKeys.indexOf(key) === -1);
+    });
+
+    if(!keys.length && !isCoffeeLayer){
       container.innerHTML =
         '<div class="no-editable-attributes">Tidak ada atribut yang dapat diedit.</div>';
       return;
     }
 
     keys.forEach(function(key){
-      var row = document.createElement('div');
-      row.className = 'editable-attribute-row';
-
-      var oldBox = document.createElement('div');
-      oldBox.className = 'editable-old-value';
-
-      var label = document.createElement('strong');
-      label.textContent = key;
-
-      var oldValue = document.createElement('span');
-      oldValue.textContent = String(properties[key]);
-
-      oldBox.appendChild(label);
-      oldBox.appendChild(oldValue);
-
-      var input = document.createElement('input');
-      input.type = 'text';
-      input.className = 'editable-new-value';
-      input.dataset.attributeKey = key;
-      input.placeholder = 'Nilai baru (biarkan kosong jika tidak diubah)';
-
-      row.appendChild(oldBox);
-      row.appendChild(input);
-      container.appendChild(row);
+      appendEditableAttributeRow(
+        container,
+        {key:key,label:key,type:'text'},
+        properties[key]
+      );
     });
+
+    if(isCoffeeLayer){
+      coffeeEditableFields.forEach(function(field){
+        appendEditableAttributeRow(
+          container,
+          field,
+          properties[field.key]
+        );
+      });
+    }
   }
 
   function collectProposedChanges(){
@@ -1310,6 +1398,52 @@
       if(!document.getElementById('proposed-information').value.trim()){
         alert('Isi catatan atau alasan perbaikan.');
         return;
+      }
+
+      if(
+        selectedCorrectionFeature &&
+        selectedCorrectionFeature.layerId === 'kopi'
+      ){
+        if(
+          proposedChanges.Jumlah_Tanam !== undefined &&
+          (
+            !Number.isInteger(Number(proposedChanges.Jumlah_Tanam)) ||
+            Number(proposedChanges.Jumlah_Tanam) < 0
+          )
+        ){
+          alert('Jumlah tanaman kopi harus berupa bilangan bulat 0 atau lebih.');
+          return;
+        }
+
+        if(
+          proposedChanges.Luas_Lahan_Ha !== undefined &&
+          (
+            !isFinite(Number(proposedChanges.Luas_Lahan_Ha)) ||
+            Number(proposedChanges.Luas_Lahan_Ha) <= 0
+          )
+        ){
+          alert('Luas lahan harus berupa angka lebih dari 0 hektare.');
+          return;
+        }
+
+        if(
+          ['Tanaman Lain','Campuran'].indexOf(
+            proposedChanges.Tumpang_Sari
+          ) !== -1
+        ){
+          var currentCoffeeProperties =
+            selectedCorrectionFeature.feature.properties || {};
+          var otherPlantName =
+            proposedChanges.Tanaman_Lain ||
+            currentCoffeeProperties.Tanaman_Lain ||
+            '';
+          if(!String(otherPlantName).trim()){
+            alert(
+              'Isi nama tanaman lain untuk jenis tumpang sari yang dipilih.'
+            );
+            return;
+          }
+        }
       }
     }
 
