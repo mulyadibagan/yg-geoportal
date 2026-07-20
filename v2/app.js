@@ -46,7 +46,16 @@
   const $ = id => document.getElementById(id);
   const escapeHtml = value => String(value ?? "").replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]);
   const cleanLabel = key => ({ NAMOBJ: "Nama desa", WADMKD: "Desa", WADMKC: "Kecamatan", WADMKK: "Kabupaten", WADMPR: "Provinsi", Luas_Ha: "Luas", Panjang_M: "Panjang", Ket: "Keterangan", Keterangan: "Keterangan", Tahun: "Tahun", Desa: "Desa", Kabupaten: "Kabupaten", Kecamatan: "Kecamatan" }[key] || key.replace(/_/g, " "));
-  const hiddenKey = key => /^(OBJECTID|FID|FID_1|SRS_ID|Shape_|KODE_|X$|Y$|Id$|No$)/i.test(key);
+  const hiddenKey = key => /^(OBJECTID|FID|FID_1|SRS_ID|Shape_|KODE_|X$|Y$|Id$|No$|_yg|Last_Verified_Report_ID)/i.test(key);
+  function directPhotoUrl(url) {
+    const text = String(url || "");
+    const match = text.match(/\/d\/([A-Za-z0-9_-]+)/) ||
+      text.match(/[?&]id=([A-Za-z0-9_-]+)/);
+    return match
+      ? "https://lh3.googleusercontent.com/d/" + match[1]
+      : text;
+  }
+
   const featureName = feature => {
     const p = feature.properties || {};
     return p.Nama_Objek || p.title || p.NAMA_PRH || p.NAMA_HKM || p.NAMOBJ || p.NAMA_DESA || p.Desa || p.WADMKD || p.Keterangan || "Objek program";
@@ -101,6 +110,21 @@
       }).format(calculatedArea)]);
     }
     $("detail-fields").innerHTML = rows.length ? rows.map(([key, value]) => `<div class="detail-row"><b>${escapeHtml(cleanLabel(key))}</b><span>${escapeHtml(value)}</span></div>`).join("") : '<div class="detail-row"><span>Informasi atribut belum tersedia.</span></div>';
+
+    const photoCandidates = [
+      ...(Array.isArray(p._ygPhotos) ? p._ygPhotos : []),
+      p.Foto, p.Foto_1, p.Foto_2, p.Photo, p.photoUrl
+    ].filter(Boolean);
+    const photos = [...new Set(photoCandidates.map(String))];
+    if ($("detail-gallery")) {
+      $("detail-gallery").innerHTML = photos.length
+        ? photos.map((url, index) =>
+            `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer"><img src="${escapeHtml(directPhotoUrl(url))}" alt="Dokumentasi ${index + 1}" loading="lazy"></a>`
+          ).join("")
+        : "";
+      $("detail-gallery").hidden = photos.length === 0;
+    }
+
     $("detail-panel").classList.add("open");
     $("detail-panel").setAttribute("aria-hidden", "false");
     focusLayer(item.leafletLayer);
