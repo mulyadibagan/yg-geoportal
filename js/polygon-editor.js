@@ -37,6 +37,8 @@
   let saveInProgress = false;
   let pendingSave = null;
   let savePollTimer = null;
+  let editorSession = null;
+  const sessionStorageKey = "ygEditorSessionV1";
 
   const list = document.getElementById("object-list");
   const form = document.getElementById("object-form");
@@ -48,6 +50,135 @@
   const saveOverlayText = document.getElementById("save-overlay-text");
   const saveOverlayClose = document.getElementById("save-overlay-close");
   const allPropertiesJson = document.getElementById("all-properties-json");
+  const loginScreen = document.getElementById("login-screen");
+  const loginForm = document.getElementById("login-form");
+  const loginStatus = document.getElementById("login-status");
+  const loginSubmit = document.getElementById("login-submit");
+  const editorUser = document.getElementById("editor-user");
+
+  function readStoredSession() {
+    try {
+      const stored = JSON.parse(sessionStorage.getItem(sessionStorageKey) || "null");
+      if (!stored || !stored.token || !stored.username || !stored.expiresAt) return null;
+      if (Number(stored.expiresAt) <= Date.now()) {
+        sessionStorage.removeItem(sessionStorageKey);
+        return null;
+      }
+      return stored;
+    } catch (error) {
+      sessionStorage.removeItem(sessionStorageKey);
+      return null;
+    }
+  }
+
+  function activateSession(session) {
+    editorSession = session;
+    sessionStorage.setItem(sessionStorageKey, JSON.stringify(session));
+    editorUser.textContent = "Login: " + session.username;
+    loginScreen.hidden = true;
+    document.body.classList.remove("auth-pending");
+    setTimeout(() => map.invalidateSize(true), 80);
+  }
+
+  function clearSession(message) {
+    editorSession = null;
+    sessionStorage.removeItem(sessionStorageKey);
+    editorUser.textContent = "";
+    loginScreen.hidden = false;
+    document.body.classList.add("auth-pending");
+    loginStatus.textContent = message || "";
+  }
+
+  function postForAuthResult(action, fields) {
+    return new Promise((resolve, reject) => {
+      const requestId = "yg-auth-" + Date.now() + "-" + Math.random().toString(36).slice(2);
+      const iframeName = "yg-auth-frame-" + Date.now();
+      const iframe = document.createElement("iframe");
+      const postForm = document.createElement("form");
+      let finished = false;
+
+      iframe.name = iframeName;
+      iframe.hidden = true;
+      postForm.method = "POST";
+      postForm.action = api;
+      postForm.target = iframeName;
+      postForm.hidden = true;
+
+      const values = Object.assign({ action: action, requestId: requestId }, fields || {});
+      Object.keys(values).forEach(key => {
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.name = key;
+        input.value = values[key] == null ? "" : String(values[key]);
+        postForm.appendChild(input);
+      });
+
+      function cleanup() {
+        window.removeEventListener("message", onMessage);
+        iframe.remove();
+        postForm.remove();
+      }
+
+      function finish(callback) {
+        if (finished) return;
+        finished = true;
+        clearTimeout(timer);
+        cleanup();
+        callback();
+      }
+
+      function onMessage(event) {
+        const data = event.data;
+        if (!data || data.source !== "yg-editor-auth" || data.requestId !== requestId) return;
+        finish(() => data.ok ? resolve(data) : reject(new Error(data.message || "Login gagal.")));
+      }
+
+      const timer = setTimeout(() => {
+        finish(() => reject(new Error("Waktu login habis. Periksa deployment Apps Script.")));
+      }, 30000);
+
+      window.addEventListener("message", onMessage);
+      document.body.appendChild(iframe);
+      document.body.appendChild(postForm);
+      postForm.submit();
+    });
+  }
+
+  async function loginEditor(event) {
+    event.preventDefault();
+    loginSubmit.disabled = true;
+    loginStatus.textContent = "Memeriksa akun...";
+
+    try {
+      const result = await postForAuthResult("editor-login", {
+        username: document.getElementById("login-username").value.trim(),
+        password: document.getElementById("login-password").value
+      });
+      activateSession({
+        token: result.sessionToken,
+        username: result.username,
+        expiresAt: Number(result.expiresAt)
+      });
+      loginForm.reset();
+      loginStatus.textContent = "";
+      loadObjects();
+    } catch (error) {
+      loginStatus.textContent = error.message;
+    } finally {
+      loginSubmit.disabled = false;
+    }
+  }
+
+  async function logoutEditor() {
+    const token = editorSession && editorSession.token;
+    clearSession("Anda sudah keluar.");
+    if (!token) return;
+    try {
+      await postForAuthResult("editor-logout", { sessionToken: token });
+    } catch (error) {
+      console.warn("Logout backend:", error);
+    }
+  }
 
   function esc(value) {
     return String(value == null ? "" : value).replace(/[&<>"']/g, char => ({
@@ -541,10 +672,11 @@
     savePollTimer = setTimeout(() => verifySavedObject(attempt + 1), 3000);
   }
 
-  async function sendSaveRequest(data, token, reason) {
+  async function sendSaveRequest(data, sessionToken, reason) {
     const body = new URLSearchParams();
     body.set("action", "update-master-object");
-    body.set("token", token);
+    body.set("token", sessionToken);
+    body.set("sessionToken", sessionToken);
     body.set("reason", reason);
     body.set("objectData", JSON.stringify(data));
 
@@ -571,10 +703,13 @@
     if (saveInProgress || !selectedFeature) return;
     if (editing) finishEdit();
 
-    const token = document.getElementById("admin-token").value.trim();
     const reason = document.getElementById("change-reason").value.trim();
 
-    if (!token) return setStatus("Token admin wajib diisi.", "error");
+    if (!editorSession || !editorSession.token ||
+        Number(editorSession.expiresAt) <= Date.now()) {
+      clearSession("Sesi berakhir. Silakan login kembali.");
+      return;
+    }
     if (!reason) return setStatus("Alasan perubahan wajib diisi.", "error");
 
     const data = buildObjectData();
@@ -602,7 +737,7 @@
     );
 
     try {
-      await sendSaveRequest(data, token, reason);
+      await sendSaveRequest(data, editorSession.token, reason);
       setStatus("POST dikirim. Memverifikasi Master Database…", "saving");
       saveOverlayText.textContent =
         "POST sudah dikirim. Menunggu perubahan muncul di OBJECTS…";
@@ -822,8 +957,16 @@
 
 
   saveOverlayClose.addEventListener("click", hideSaveOverlay);
+  loginForm.addEventListener("submit", loginEditor);
+  document.getElementById("logout-editor").addEventListener("click", logoutEditor);
 
   map.whenReady(() => setTimeout(() => map.invalidateSize(true), 100));
   buildLayerFilter();
-  loadObjects();
+  const storedSession = readStoredSession();
+  if (storedSession) {
+    activateSession(storedSession);
+    loadObjects();
+  } else {
+    clearSession("");
+  }
 })();

@@ -9,7 +9,7 @@
  * - Identitas sistem pada Properties_JSON diselaraskan dengan kolom OBJECTS.
  */
 function updateMasterObject(token, objectData, reason) {
-  assertAdmin_(token);
+  const editor = assertEditorCredential_(token);
   ensureMasterDatabaseSheets_();
 
   if (!objectData || typeof objectData !== 'object') {
@@ -91,6 +91,6 @@ function updateMasterObject(token, objectData, reason) {
     reason: clean_(reason) || (
       isCreate ? 'Penambahan objek baru' : 'Revisi data objek'
     ),
-    changedBy: ADMIN_EMAIL
+    changedBy: editor.email || editor.username
   });
 }

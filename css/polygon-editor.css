@@ -6,7 +6,7 @@ button,input,select{font:inherit}
 .editor-header .back,.editor-header .map-link{color:var(--green);font-weight:850;text-decoration:none}
 .editor-header div{flex:1}.editor-header h1{margin:0;font-size:22px}.editor-header p{margin:2px 0;color:var(--muted);font-size:12px}
 .shell{width:min(1800px,calc(100% - 24px));margin:12px auto}
-.access-card{display:grid;grid-template-columns:minmax(190px,.7fr) minmax(280px,1.2fr) minmax(150px,.55fr) auto auto minmax(180px,.75fr);gap:10px;align-items:end;padding:13px;border:1px solid var(--line);border-radius:14px;background:#fff}
+.access-card{display:grid;grid-template-columns:minmax(280px,1.2fr) minmax(150px,.55fr) auto auto minmax(180px,.75fr);gap:10px;align-items:end;padding:13px;border:1px solid var(--line);border-radius:14px;background:#fff}
 label{display:flex;flex-direction:column;gap:5px;color:#53645b;font-size:11px;font-weight:800}
 input,select{width:100%;padding:10px;border:1px solid #cbdcd3;border-radius:9px;background:#fff}
 button{padding:10px 13px;border:0;border-radius:9px;background:var(--green);color:#fff;font-weight:850;cursor:pointer}
@@ -52,3 +52,18 @@ pre{max-height:220px;overflow:auto;padding:10px;border-radius:9px;background:#14
 @keyframes yg-spin{to{transform:rotate(360deg)}}
 body.is-saving button{pointer-events:none;opacity:.55}
 .status-saving{color:#8a5a00!important}
+.editor-account{display:flex!important;flex:0 0 auto!important;align-items:center;gap:9px}
+.editor-account #editor-user{color:var(--muted);font-size:11px;font-weight:800}
+.editor-account button{padding:8px 10px}
+.login-screen{position:fixed;inset:0;z-index:100000;display:grid;place-items:center;padding:18px;background:linear-gradient(145deg,#e8f4ef,#d7ebe3)}
+.login-screen[hidden]{display:none!important}
+.login-card{display:grid;gap:14px;width:min(430px,100%);padding:28px;border:1px solid var(--line);border-radius:20px;background:#fff;box-shadow:0 28px 80px rgba(9,62,45,.2)}
+.login-card img{width:72px;height:72px;object-fit:contain}
+.login-card h1{margin:3px 0 5px;color:var(--dark);font-size:25px}
+.login-card p{margin:0;color:var(--muted);font-size:12px;line-height:1.5}
+.login-card .login-eyebrow{color:var(--green);font-size:10px;font-weight:950;letter-spacing:.12em}
+.login-card label{font-size:12px}
+.login-card input{padding:12px}
+.login-card button{padding:12px}
+.login-status{min-height:18px!important;color:var(--danger)!important;font-weight:750}
+body.auth-pending .editor-header,body.auth-pending .shell{visibility:hidden}

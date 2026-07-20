@@ -7,24 +7,45 @@
   <link rel="icon" href="assets/logo-yayasan-gambut.png">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="https://unpkg.com/@geoman-io/leaflet-geoman-free@2.18.0/dist/leaflet-geoman.css">
-  <link rel="stylesheet" href="css/polygon-editor.css?v=20260720-objectcreate1">
+  <link rel="stylesheet" href="css/polygon-editor.css?v=20260720-editor-login1">
   <meta name="theme-color" content="#087653">
 </head>
-<body>
+<body class="auth-pending">
+  <section id="login-screen" class="login-screen">
+    <form id="login-form" class="login-card">
+      <img src="assets/logo-yayasan-gambut.png" alt="Yayasan Gambut">
+      <div>
+        <span class="login-eyebrow">AKSES TERBATAS</span>
+        <h1>Login Editor WebGIS</h1>
+        <p>Masuk menggunakan akun editor yang diberikan oleh administrator.</p>
+      </div>
+      <label>Username
+        <input id="login-username" name="username" autocomplete="username" required>
+      </label>
+      <label>Password
+        <input id="login-password" name="password" type="password"
+          autocomplete="current-password" required>
+      </label>
+      <button id="login-submit" type="submit">Masuk ke Editor</button>
+      <p id="login-status" class="login-status" aria-live="polite"></p>
+    </form>
+  </section>
+
   <header class="editor-header">
     <a href="index.html" class="back">← Dashboard</a>
     <div>
       <h1>Editor Polygon YG</h1>
       <p>Edit geometri dan atribut langsung pada Master Database.</p>
     </div>
-    <a href="webgis.html" class="map-link">Buka WebGIS</a>
+    <div class="editor-account">
+      <span id="editor-user"></span>
+      <button id="logout-editor" type="button" class="secondary">Keluar</button>
+      <a href="webgis.html" class="map-link">Buka WebGIS</a>
+    </div>
   </header>
 
   <main class="shell">
     <section class="access-card">
-      <label>Token admin
-        <input id="admin-token" type="password" autocomplete="off" placeholder="Masukkan token admin">
-      </label>
       <label>Alasan perubahan
         <input id="change-reason" type="text" maxlength="180" placeholder="Contoh: Koreksi batas polygon hasil pengecekan lapangan">
       </label>
@@ -195,6 +216,6 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://unpkg.com/@geoman-io/leaflet-geoman-free@2.18.0/dist/leaflet-geoman.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@turf/turf@7.2.0/turf.min.js"></script>
-  <script src="js/polygon-editor.js?v=20260720-objectcreate1"></script>
+  <script src="js/polygon-editor.js?v=20260720-editor-login1"></script>
 </body>
 </html>
