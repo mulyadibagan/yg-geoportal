@@ -4,8 +4,18 @@
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
       navigator.serviceWorker
-        .register("./service-worker.js?v=20260720-photo-lock1")
+        .register("./service-worker.js?v=20260720-edge-refresh1", {
+          updateViaCache: "none"
+        })
+        .then(registration => registration.update())
         .catch(error => console.warn("Service worker gagal:", error));
+    });
+
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      const reloadKey = "yg-sw-edge-refresh1";
+      if (sessionStorage.getItem(reloadKey)) return;
+      sessionStorage.setItem(reloadKey, "done");
+      window.location.reload();
     });
   }
 

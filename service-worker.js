@@ -1,4 +1,4 @@
-const CACHE_NAME = "yg-geoportal-v4-20260720-photo-lock1";
+const CACHE_NAME = "yg-geoportal-v4-20260720-edge-refresh1";
 
 const STATIC_ASSETS = [
   "./",
@@ -19,10 +19,10 @@ const STATIC_ASSETS = [
   "./js/report-v6.js?v=20260720-photo-lock1",
   "./js/report-photo-rules.js?v=20260720-photo-lock1",
   "./js/report-photo-guard.js?v=20260720-photo-lock1",
-  "./js/monitoring-data-compat.js?v=20260720-2",
-  "./js/monitoring.js?v=20260720-103",
-  "./js/monitoring-photo.js?v=20260720-103",
-  "./js/pwa.js?v=20260720-photo-lock1",
+  "./js/monitoring-data-compat.js?v=20260720-edge-refresh1",
+  "./js/monitoring.js?v=20260720-edge-refresh1",
+  "./js/monitoring-photo.js?v=20260720-edge-refresh1",
+  "./js/pwa.js?v=20260720-edge-refresh1",
   "./js/map-v4.js?v=20260719-shapefile-authoritative-corrected5"
 ];
 
@@ -73,6 +73,31 @@ self.addEventListener("fetch", event => {
             cached || caches.match("./index.html")
           )
         )
+    );
+    return;
+  }
+
+  /*
+   * JavaScript dan CSS harus mengutamakan jaringan. Ini mencegah Edge/PWA
+   * terus menjalankan bundle lama setelah rilis GitHub Pages terbaru.
+   * Cache hanya menjadi cadangan ketika perangkat benar-benar offline.
+   */
+  if (
+    request.destination === "script" ||
+    request.destination === "style" ||
+    url.pathname.endsWith(".js") ||
+    url.pathname.endsWith(".css")
+  ) {
+    event.respondWith(
+      fetch(request, { cache: "no-store" })
+        .then(response => {
+          if (response && response.ok && url.origin === self.location.origin) {
+            const copy = response.clone();
+            caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
+          }
+          return response;
+        })
+        .catch(() => caches.match(request))
     );
     return;
   }
