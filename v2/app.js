@@ -29,6 +29,29 @@
     { id: "iuphhk_ht_2014", file: "IUPHHK_HT_2014.geojson", label: "IUPHHK-HT 2014", caption: "Referensi perizinan pemanfaatan hutan", color: "#c62828", type: "polygon" },
     { id: "perhutanan_sosial_riau", file: "PERHUTANAN_SOSIAL_RIAU.geojson", label: "Perhutanan Sosial Riau", caption: "Referensi akses kelola masyarakat", color: "#00897b", type: "polygon" }
   ];
+  const EN_LAYER = {
+    desa_intervensi: ["Intervention Villages", "Programme administrative boundaries"],
+    area_mangrove: ["Mangrove Planting", "Official coastal rehabilitation areas"],
+    apo: ["Wave Breakers", "Coastal protection infrastructure"],
+    monitoring_reports: ["Verified Monitoring", "Field monitoring results"],
+    community_reports: ["Community Reports", "Verified public reports"],
+    forest_land_restoration: ["Forest & Land Restoration", "Ecosystem recovery sites"],
+    nursery_coffee: ["Coffee Nursery", "Peatland plant nursery"],
+    information_signs: ["Information Signs", "Area information and protection"],
+    supporting_infrastructure: ["Supporting Infrastructure", "Programme supporting facilities"],
+    area_kopi: ["Coffee Planting Areas", "Coffee and agroforestry areas"],
+    kopi: ["Coffee Distribution", "Community livelihood strengthening"],
+    fdrs: ["FDRS / Water Table", "Fire-risk monitoring"],
+    sekat_kanal: ["Canal Blocks", "Peatland rewetting infrastructure"],
+    nursery_mangrove: ["Mangrove Nursery", "Community seedling nurseries"],
+    titik_desa: ["Village Points", "Intervention village centres"],
+    kawasan_hutan_sk_903: ["Forest Estate SK 903", "Forest-function reference"],
+    gambut_bbsdlp_2019: ["BBSDLP Peat Map 2019", "Peat-distribution reference"],
+    iuphhk_ht_2014: ["IUPHHK-HT 2014", "Forest-utilisation licence reference"],
+    perhutanan_sosial_riau: ["Riau Social Forestry", "Community forest access reference"]
+  };
+  let currentLanguage = localStorage.getItem("yg-v2-language") === "en" ? "en" : "id";
+
   const allConfigs = [...LAYERS, ...REFERENCES];
   const state = { layers: new Map(), features: [], bounds: L.latLngBounds([]), selected: null, loading: 0, databaseUpdated: "" };
   let masterDataPromise = null;
@@ -62,16 +85,30 @@
     return p.Nama_Objek || p.title || p.NAMA_PRH || p.NAMA_HKM || p.NAMOBJ || p.NAMA_DESA || p.Desa || p.WADMKD || p.Keterangan || "Objek program";
   };
 
-  function layerRow(config, reference = false) {
+  function layerText(config) {
+    const english = EN_LAYER[config.id];
+    return currentLanguage === "en" && english
+      ? { label: english[0], caption: english[1] }
+      : { label: config.label, caption: config.caption };
+  }
+
+  function layerRow(config) {
+    const localized = layerText(config);
+    const existing = state.layers.get(config.id);
+    const checked = existing ? map.hasLayer(existing) : Boolean(config.visible);
     return `<div class="layer-item" style="--layer:${config.color}">
       <span class="layer-symbol"><i class="${config.type}"></i></span>
-      <span class="layer-copy"><strong>${escapeHtml(config.label)}</strong><small>${escapeHtml(config.caption)}</small></span>
-      <label class="switch" title="Aktifkan ${escapeHtml(config.label)}"><input type="checkbox" data-layer="${config.id}" ${config.visible ? "checked" : ""}><span></span></label>
+      <span class="layer-copy"><strong>${escapeHtml(localized.label)}</strong><small>${escapeHtml(localized.caption)}</small></span>
+      <label class="switch" title="${currentLanguage === "en" ? "Enable" : "Aktifkan"} ${escapeHtml(localized.label)}"><input type="checkbox" data-layer="${config.id}" ${checked ? "checked" : ""}><span></span></label>
     </div>`;
   }
 
-  $("program-layers").innerHTML = LAYERS.map(config => layerRow(config)).join("");
-  $("reference-layers").innerHTML = REFERENCES.map(config => layerRow(config, true)).join("");
+  function renderLayerControls() {
+    $("program-layers").innerHTML = LAYERS.map(layerRow).join("");
+    $("reference-layers").innerHTML = REFERENCES.map(layerRow).join("");
+  }
+
+  renderLayerControls();
 
   function styleFor(config) {
     return { color: config.color, fillColor: config.color, fillOpacity: config.type === "line" ? 0.08 : 0.23, weight: config.type === "line" ? 4 : 1.8, opacity: 0.92 };
@@ -584,7 +621,9 @@
 
   function setStatus() {
     const loaded = state.layers.size;
-    const text = state.loading ? `Memuat ${state.loading} layer…` : `${loaded} layer siap dijelajahi`;
+    const text = currentLanguage === "en"
+      ? (state.loading ? `Loading ${state.loading} layers…` : `${loaded} layers ready to explore`)
+      : (state.loading ? `Memuat ${state.loading} layer…` : `${loaded} layer siap dijelajahi`);
     $("data-status").textContent = text;
     $("data-dot").parentElement.classList.toggle("ready", state.loading === 0 && loaded > 0);
   }
@@ -633,7 +672,7 @@
   function updateVisibleCount() {
     let count = 0;
     state.layers.forEach(layer => { if (map.hasLayer(layer)) count += layer.getLayers().length; });
-    $("visible-feature-count").textContent = `${count.toLocaleString("id-ID")} objek tampil`;
+    $("visible-feature-count").textContent = currentLanguage === "en" ? `${count.toLocaleString("en-US")} visible objects` : `${count.toLocaleString("id-ID")} objek tampil`;
     const active = [...state.layers.values()].filter(layer => map.hasLayer(layer)).length;
     $("active-layer-count").textContent = active;
   }
@@ -708,6 +747,48 @@
   function closeMobileSidebar() { $("sidebar").classList.remove("open"); }
   $("layers-mobile-button").addEventListener("click", toggleMobileSidebar);
   $("mobile-sheet-handle").addEventListener("click", toggleMobileSidebar);
+
+  function setText(selector, idText, enText) {
+    const element = document.querySelector(selector);
+    if (element) element.textContent = currentLanguage === "en" ? enText : idText;
+  }
+
+  function applyLanguage() {
+    document.documentElement.lang = currentLanguage;
+    $("language-button").textContent = currentLanguage === "en" ? "ID" : "EN";
+    $("language-button").title = currentLanguage === "en" ? "Bahasa Indonesia" : "English";
+    setText(".intro-card .eyebrow", "Peta dampak program", "Programme impact map");
+    setText(".intro-card h1", "Memantau bentang alam, dari data menuju aksi.", "Monitoring landscapes, from data to action.");
+    setText(".intro-card p", "Jelajahi kerja Yayasan Gambut untuk ekosistem gambut, mangrove, pesisir, dan masyarakat.", "Explore Yayasan Gambut's work across peatlands, mangroves, coasts and communities.");
+    setText("#summary-title", "Cakupan program", "Programme coverage");
+    setText("#baseline-title", "Kualitas dan cakupan data", "Data quality and coverage");
+    setText("#system-title", "Alur pengelolaan", "Management workflow");
+    setText("#program-title", "Layer program", "Programme layers");
+    setText("#reference-title", "Layer referensi", "Reference layers");
+    setText("#fit-button", "Lihat semua", "View all");
+    setText("#toggle-programs", "Matikan semua", "Turn all off");
+    setText("#metric-villages + span", "Desa intervensi", "Intervention villages");
+    setText("#metric-mangrove + span", "Area mangrove", "Mangrove area");
+    setText("#metric-fdrs + span", "Lokasi FDRS", "FDRS locations");
+    setText("#metric-canal + span", "Sekat kanal", "Canal blocks");
+    setText("#metric-objects + span", "Objek program", "Programme objects");
+    setText("#metric-districts + span", "Kabupaten terdata", "Regencies covered");
+    setText("#metric-donors + span", "Donor/mitra", "Donors/partners");
+    setText("#metric-monitoring + span", "Monitoring terverifikasi", "Verified monitoring");
+    const search = $("search-input");
+    if (search) search.placeholder = currentLanguage === "en" ? "Search villages, programmes or locations…" : "Cari desa, program, atau lokasi…";
+    renderLayerControls();
+    setStatus();
+    updateVisibleCount();
+  }
+
+  $("language-button").addEventListener("click", () => {
+    currentLanguage = currentLanguage === "id" ? "en" : "id";
+    localStorage.setItem("yg-v2-language", currentLanguage);
+    applyLanguage();
+    renderSearch($("search-input").value);
+  });
+  applyLanguage();
 
   let toastTimer;
   function toast(message) { clearTimeout(toastTimer); $("toast").textContent = message; $("toast").classList.add("show"); toastTimer = setTimeout(() => $("toast").classList.remove("show"), 2800); }
