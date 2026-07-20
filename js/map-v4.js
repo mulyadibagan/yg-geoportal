@@ -599,6 +599,7 @@ L.control.scale({
     const canSendMonitoring =
       ["Polygon", "MultiPolygon"].includes(geometryType) &&
       config.id !== "community_reports" &&
+      actionLayerId === "area_mangrove" &&
       Boolean(objectId) &&
       Boolean(actionLayerId);
     const monitoringActionLabel = isMonitoring
