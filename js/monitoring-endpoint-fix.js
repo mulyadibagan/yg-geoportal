@@ -2,7 +2,7 @@
   'use strict';
 
   var OLD_ID = 'AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg';
-  var NEW_ID = 'AKfycbxeGTDZXkR0DyLZmBHTq2M-52Iu4dTTGpH164S7sYHg8qPzvffobC6-r-TBLVHMT3HU-A';
+  var NEW_ID = 'AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg';
   var originalAppendChild = Element.prototype.appendChild;
 
   Element.prototype.appendChild = function (node) {

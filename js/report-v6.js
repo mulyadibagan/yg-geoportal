@@ -5,7 +5,7 @@
   var COMMUNITY_LAYER_ID = 'community_reports';
   var COMMUNITY_LAYER_LABEL = 'Laporan Masyarakat Terverifikasi';
   var COMMUNITY_LAYER_COLOR = '#7b1fa2';
-  var COMMUNITY_API = 'https://script.google.com/macros/s/AKfycbxeGTDZXkR0DyLZmBHTq2M-52Iu4dTTGpH164S7sYHg8qPzvffobC6-r-TBLVHMT3HU-A/exec?page=public-reports';
+  var COMMUNITY_API = 'https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec?page=public-reports';
   var communityDataCache = null;
   var communityDataPromise = null;
 

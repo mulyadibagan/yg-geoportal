@@ -2,7 +2,7 @@
   "use strict";
 
   const CONFIG = window.YG_LAYER_CONFIG || [];
-  const MASTER_OBJECTS_API = "https://script.google.com/macros/s/AKfycbxeGTDZXkR0DyLZmBHTq2M-52Iu4dTTGpH164S7sYHg8qPzvffobC6-r-TBLVHMT3HU-A/exec?page=objects";
+  const MASTER_OBJECTS_API = "https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec?page=objects";
   const DATABASE_COLORS = [
     "#00796b", "#1565c0", "#e65100", "#7b1fa2",
     "#2e7d32", "#c62828", "#6d4c41", "#00838f",

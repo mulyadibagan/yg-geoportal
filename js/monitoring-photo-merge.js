@@ -3,7 +3,7 @@
 
   var REPORTS_CALLBACK = 'ygMonitoringDashboardCallback';
   var UPDATES_CALLBACK = 'ygMonitoringPhotoUpdatesCallback';
-  var UPDATES_API = 'https://script.google.com/macros/s/AKfycbxeGTDZXkR0DyLZmBHTq2M-52Iu4dTTGpH164S7sYHg8qPzvffobC6-r-TBLVHMT3HU-A/exec?page=public-updates';
+  var UPDATES_API = 'https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec?page=public-updates';
   var originalCallback = window[REPORTS_CALLBACK];
   var pendingReports = null;
   var updatesReady = false;

@@ -1,7 +1,7 @@
 (function(){
   'use strict';
 
-  var BASE='https://script.google.com/macros/s/AKfycbxeGTDZXkR0DyLZmBHTq2M-52Iu4dTTGpH164S7sYHg8qPzvffobC6-r-TBLVHMT3HU-A/exec';
+  var BASE='https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec';
   var API=BASE+'?page=public-reports';
   var CALLBACK='ygMonitoringDashboardCallback';
   var records=[],groups=[];

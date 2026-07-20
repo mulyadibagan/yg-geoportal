@@ -4,7 +4,7 @@
   var callbackName = 'ygMonitoringDashboardCallback';
   var updatesCallbackName = 'ygMonitoringPhotoUpdatesCallback';
   var assignedCallback = null;
-  var BASE = 'https://script.google.com/macros/s/AKfycbxeGTDZXkR0DyLZmBHTq2M-52Iu4dTTGpH164S7sYHg8qPzvffobC6-r-TBLVHMT3HU-A/exec';
+  var BASE = 'https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec';
 
   function firstValue(object, keys) {
     if (!object || typeof object !== 'object') return '';
