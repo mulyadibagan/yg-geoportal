@@ -892,6 +892,16 @@ L.control.scale({
       );
     }
 
+    function areaValue(value) {
+      const number = Number(value);
+      if (!Number.isFinite(number) || number <= 0) {
+        return "Belum tersedia";
+      }
+      return new Intl.NumberFormat("id-ID", {
+        maximumFractionDigits: 2
+      }).format(number);
+    }
+
     if (config.type === "forest") {
       rows += item("Fungsi kawasan", props.fungsi || "Belum terisi");
       rows += item("Sumber", "Kawasan Hutan SK 903");
@@ -907,8 +917,8 @@ L.control.scale({
       rows += item("Pemegang izin", props.NAMA_PRH);
       rows += item("Nomor SK", props.SK_PBH || props.SK_LAMA);
       rows += item("Tanggal SK", props.TGL_PBH || props.TGL_LAMA);
-      rows += item("Luas izin (ha)", props.LUAS_HA);
-      rows += item("Luas poligon (ha)", props.LUAS_UKURA);
+      rows += item("Luas izin (ha)", areaValue(props.LUAS_HA));
+      rows += item("Luas poligon (ha)", areaValue(props.LUAS_UKURA));
       rows += item("Kabupaten/Kota", props.KAB_KOTA);
       rows += item("Distrik", props.DISTRIK);
     } else if (config.type === "social_forestry") {
@@ -916,8 +926,8 @@ L.control.scale({
       rows += item("Skema", props.Ket);
       rows += item("Nomor izin", props.NO_IUPHKM);
       rows += item("Tanggal izin", props.TGL_IUPHKM);
-      rows += item("Luas izin (ha)", props.L_IUPHKM);
-      rows += item("Luas poligon (ha)", props.LUAS_POLI);
+      rows += item("Luas izin (ha)", areaValue(props.L_IUPHKM));
+      rows += item("Luas poligon (ha)", areaValue(props.LUAS_POLI));
       rows += item("Desa", props.NAMA_DESA);
       rows += item("Kecamatan", props.NAMA_KEC);
       rows += item("Kabupaten", props.NAMA_KAB);
