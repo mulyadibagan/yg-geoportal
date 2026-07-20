@@ -168,6 +168,17 @@ L.control.scale({
         sourceType: "verified_information_sign"
       };
     } else if (
+      identity.includes("nursery sepahat") ||
+      identity.includes("rumah bibit sepahat") ||
+      identity.includes("rumah bibit kelapa pati")
+    ) {
+      target = {
+        id: "nursery_mangrove",
+        label: "Rumah Pembibitan Mangrove / Mangrove Nursery",
+        category: "Pembibitan Mangrove",
+        sourceType: "verified_community_mangrove_nursery"
+      };
+    } else if (
       identity.includes("nursery ktwmj") ||
       identity.includes("rumah bibit kopi") ||
       identity.includes("nursery kopi")
