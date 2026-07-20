@@ -7,7 +7,7 @@
   <title>YG GeoPortal | Yayasan Gambut</title>
   <link rel="icon" href="assets/logo-yayasan-gambut.png"/>
   <link rel="stylesheet" href="css/style.css?v=20260720-dashboard-layout1"/>
-  <link rel="stylesheet" href="css/dashboard-v3.css?v=20260720-dashboard-layout1"/>
+  <link rel="stylesheet" href="css/dashboard-v3.css?v=20260720-dashboard-layout2"/>
   <meta name="theme-color" content="#079cde">
   <meta name="application-name" content="YG GeoPortal">
   <meta name="apple-mobile-web-app-title" content="YG GeoPortal">
@@ -49,7 +49,6 @@
     </div>
 
     <div class="stat-grid">
-      <a class="stat dashboard-link" href="webgis.html" aria-label="Lihat semua objek aktif"><strong id="dash-objects">—</strong><span>Objek aktif</span></a>
       <a class="stat dashboard-link" href="webgis.html?layer=desa_intervensi" aria-label="Lihat kabupaten terdata"><strong id="dash-regencies">—</strong><span>Kabupaten terdata</span></a>
       <a class="stat dashboard-link" href="webgis.html?layer=area_mangrove" aria-label="Lihat area mangrove"><strong id="dash-mangrove-area">—</strong><span>Area mangrove</span></a>
       <a class="stat dashboard-link" href="webgis.html?layer=community_reports" aria-label="Lihat laporan masyarakat"><strong id="dash-reports">—</strong><span>Objek laporan masyarakat</span></a>
@@ -71,19 +70,13 @@
   <section class="section dashboard-panel">
     <div class="section-head">
       <div>
-        <h2>Ringkasan administrasi dan data teknis</h2>
-        <p>Sebaran objek berdasarkan kabupaten serta layer sumber.</p>
+        <h2>Ringkasan administrasi kabupaten</h2>
+        <p>Sebaran objek program berdasarkan kabupaten.</p>
       </div>
     </div>
-    <div class="dashboard-columns">
-      <div>
-        <h3>Objek per kabupaten</h3>
-        <div class="ranking-list" id="regency-ranking"></div>
-      </div>
-      <div>
-        <h3>Objek per layer</h3>
-        <div class="ranking-list" id="layer-ranking"></div>
-      </div>
+    <div>
+      <h3>Objek per kabupaten</h3>
+      <div class="ranking-list" id="regency-ranking"></div>
     </div>
   </section>
 
@@ -103,7 +96,7 @@
   </div>
 </footer>
 
-<script src="js/dashboard-v3.js?v=20260720-program-dashboard2"></script>
+<script src="js/dashboard-v3.js?v=20260720-program-dashboard3"></script>
   <script src="js/pwa.js?v=20260720-program-dashboard1"></script>
 </body>
 </html>

@@ -169,7 +169,6 @@
     const regencies = new Set();
     const programs = {};
     const programLayers = {};
-    const layers = {};
     const regencyCounts = {};
     let mangroveArea = 0;
     let reports = 0;
@@ -181,7 +180,6 @@
         "Kabupaten", "Kab_Kota", "KAB_KOTA", "WADMKK", "regency"
       ]);
       const program = programOf(props, layerId);
-      const layerLabel = props.Layer_Label || layerId || "Lainnya";
 
       if (regency) {
         regencies.add(regency.toLowerCase());
@@ -196,9 +194,6 @@
           (programLayers[program][layerId] || 0) + 1;
       }
 
-      if (!layers[layerLabel]) layers[layerLabel] = { count: 0, layerId };
-      layers[layerLabel].count += 1;
-
       if (layerId === "area_mangrove") {
         mangroveArea += Number(props.Luas_Ha || props.Luas || 0);
       }
@@ -207,7 +202,6 @@
       }
     });
 
-    document.getElementById("dash-objects").textContent = formatNumber(active.length);
     document.getElementById("dash-regencies").textContent = formatNumber(regencies.size);
     document.getElementById("dash-mangrove-area").textContent =
       formatNumber(mangroveArea, 2) + " ha";
@@ -232,16 +226,9 @@
       regencyCounts,
       name => mapUrl({ search: name })
     );
-    renderRanking(
-      "layer-ranking",
-      layers,
-      (_name, item) => mapUrl({ layer: item.layerId })
-    );
-
     document.getElementById("dashboard-updated").textContent =
       "Sumber: Master Database + layer resmi WebGIS · " +
-      formatNumber(active.length) +
-      " objek aktif · diperbarui " +
+      "diperbarui " +
       new Date(data.generatedAt || Date.now()).toLocaleString("id-ID");
   }
 
