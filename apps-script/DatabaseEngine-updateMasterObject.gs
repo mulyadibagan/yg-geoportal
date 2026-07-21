@@ -61,6 +61,20 @@ function updateMasterObject(token, objectData, reason) {
     objectData.agreementNumber || properties.Nomor_Perjanjian
   );
 
+  /*
+   * Nilai capaian di kolom OBJECTS dan Properties_JSON harus identik.
+   * Luas_Ha adalah luas resmi yang diisi editor dan dipakai dashboard.
+   * Jangan menghitung ulang nilai ini dari geometry: geometry dapat berubah
+   * presisinya saat dikonversi, sedangkan luas resmi dapat berasal dari hasil
+   * pengukuran/validasi lapangan.
+   */
+  const areaHa = numberOrBlank_(objectData.areaHa);
+  const lengthM = numberOrBlank_(objectData.lengthM);
+  const plantedCount = numberOrBlank_(objectData.plantedCount);
+  properties.Luas_Ha = areaHa;
+  properties.Panjang_M = lengthM;
+  properties.Jumlah_Tanam = plantedCount;
+
   const object = {
     objectId: objectId,
     layerId: layerId,
@@ -76,9 +90,9 @@ function updateMasterObject(token, objectData, reason) {
     regency: clean_(objectData.regency),
     district: clean_(objectData.district),
     village: clean_(objectData.village),
-    areaHa: numberOrBlank_(objectData.areaHa),
-    lengthM: numberOrBlank_(objectData.lengthM),
-    plantedCount: numberOrBlank_(objectData.plantedCount),
+    areaHa: areaHa,
+    lengthM: lengthM,
+    plantedCount: plantedCount,
     status: status,
     geometry: geometry,
     properties: properties

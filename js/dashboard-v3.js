@@ -498,7 +498,16 @@
         if (layerId === "area_kopi" || /restorasi gambut|agroforestri/.test(text)) {
           programmeMetrics.peat.area += area;
         }
-        if (!isNursery && /kopi|coffee/.test(text)) programmeMetrics.peat.coffee += seedlings;
+        // Titik penanaman kopi resmi disimpan pada layer `kopi`, sedangkan
+        // Pematang Duku disimpan sebagai `area_kopi`. Jumlahkan keduanya,
+        // tetapi abaikan rumah bibit agar stok persemaian tidak dianggap
+        // sebagai bibit yang sudah ditanam.
+        if (
+          !isNursery &&
+          (layerId === "kopi" || layerId === "area_kopi" || /kopi|coffee/.test(text))
+        ) {
+          programmeMetrics.peat.coffee += seedlings;
+        }
         programmeMetrics.peat.forest += forestSeedlings;
         if (layerId === "sekat_kanal") programmeMetrics.peat.canals += 1;
         if (layerId === "fdrs" || layerId === "sekat_kanal") programmeMetrics.peat.fireInfra += 1;

@@ -624,9 +624,9 @@
       area === "" ? "Bukan polygon" :
       new Intl.NumberFormat("id-ID", { maximumFractionDigits: 4 }).format(area) + " ha";
 
-    if (area !== "" && form.elements.areaHa && editing) {
-      form.elements.areaHa.value = area.toFixed(6);
-    }
+    // Luas hasil geometry hanya menjadi pembanding. Nilai Luas_Ha yang
+    // tersimpan adalah angka resmi dari editor dan tidak boleh ditimpa
+    // otomatis ketika titik polygon digeser.
   }
 
   function fillForm() {
@@ -843,7 +843,10 @@
         const dataMatches =
           stableStringify(featureComparable(match)) === pendingSave.fingerprint;
 
-        if (revision > pendingSave.beforeRevision || dataMatches) {
+        // Revisi saja belum membuktikan nilai yang diminta benar-benar
+        // tersimpan. Sukses hanya jika atribut dan geometry yang dibaca dari
+        // endpoint OBJECTS sama dengan data yang baru dikirim.
+        if (dataMatches) {
           finishSaveSuccess(revision);
           return;
         }
