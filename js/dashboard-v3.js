@@ -199,6 +199,20 @@
     return feature;
   }
 
+  function applyExternalCanalBlockDonorPolicy(feature) {
+    const props = feature && feature.properties || {};
+    const layerId = layerIdOf(feature).toLowerCase();
+    const village = firstValue(props, [
+      "Desa", "WADMKD", "NAMA_DESA", "village", "locationName"
+    ]).toLowerCase();
+
+    if (layerId === "sekat_kanal" && !village.includes("pematang duku")) {
+      props.Donor = "Global Environment Centre";
+      props.Donor_Cluster = "Global Environment Centre";
+    }
+    return feature;
+  }
+
   async function renderDashboard(data) {
     if (!data || data.type !== "FeatureCollection" || !Array.isArray(data.features)) {
       document.getElementById("dashboard-updated").textContent =
@@ -208,7 +222,8 @@
 
     const mergedFeatures = (await mergeOfficialLayers(data.features))
       .map(applyPematangDukuDonorPolicy)
-      .map(applyAramcoCoastalAssetPolicy);
+      .map(applyAramcoCoastalAssetPolicy)
+      .map(applyExternalCanalBlockDonorPolicy);
     const active = mergedFeatures.filter(feature => {
       if (!feature || !feature.geometry) return false;
       const props = feature.properties || {};
