@@ -624,7 +624,10 @@ L.control.scale({
       );
     }
 
-    rows += row("Donor", getDonor(props) || "Belum diisi");
+    // Batas administrasi bukan objek program dan tidak memiliki donor.
+    if (config.id !== "desa_intervensi") {
+      rows += row("Donor", getDonor(props) || "Belum diisi");
+    }
 
     const photos = [
       ...cleanPhotoList(props._ygPhotos),

@@ -13,6 +13,11 @@
   function fmtDate(v){var d=dateValue(v);return d.getTime()?d.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}):'—';}
   function has(v){return v!==undefined&&v!==null&&v!==''&&!(typeof v==='number'&&isNaN(v));}
   function num(v){var n=Number(v);return isFinite(n)?n:null;}
+  function keyText(v){
+    var text=String(v||'').toLowerCase();
+    if(text.normalize)text=text.normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+    return text.replace(/[^a-z0-9]+/g,' ').trim();
+  }
 
   function driveId(url){
     var s=String(url||'');
@@ -69,7 +74,13 @@
     var m=parseJSON(p.proposedInformation);
     if(!Object.keys(m).length)m=parseJSON(p.proposedChanges).monitoring||{};
     var title=p.locationName||p.targetObjectName||p.title||'Objek monitoring';
-    var objectId=p.targetObjectId||((p.targetSourceType||'program_layer')+'|'+(p.targetLayerId||'monitoring')+'|'+title.toLowerCase().trim());
+    // ID lama dapat berubah ketika geometri diperbarui. Layer dan nama objek
+    // menjadi kunci stabil untuk menyatukan seluruh kunjungan objek yang sama.
+    var layerKey=keyText(p.targetLayerId||p.targetLayerLabel||m.monitoringType||'monitoring');
+    var nameKey=keyText(p.targetObjectName||p.locationName||p.title||title);
+    var objectId=(layerKey&&nameKey)
+      ? layerKey+'|'+nameKey
+      : (p.targetObjectId||((p.targetSourceType||'program_layer')+'|'+(p.targetLayerId||'monitoring')+'|'+keyText(title)));
     var type=typeOf(p,m);
     return{
       id:p.monitoringId||p.reportId||index,
@@ -202,13 +213,47 @@
     return sections.length?sections.join(''):'<div class="empty">Belum ada foto monitoring.</div>';
   }
 
+  function chartSVG(history,definition){
+    var chronological=history.slice().sort(function(a,b){return dateValue(a.date)-dateValue(b.date);});
+    var points=chronological.map(function(r){
+      var raw=r.metrics[definition[0]];
+      return{date:r.date,value:has(raw)?num(raw):null};
+    })
+      .filter(function(point){return point.value!==null;});
+    if(points.length<2)return'';
+    var width=720,height=250,left=52,right=24,top=25,bottom=48;
+    var values=points.map(function(point){return point.value;});
+    var min=Math.min.apply(null,values),max=Math.max.apply(null,values);
+    if(min===max){min=Math.max(0,min-1);max+=1;}
+    var range=max-min;
+    function x(index){return left+index*(width-left-right)/(points.length-1);}
+    function y(value){return top+(max-value)*(height-top-bottom)/range;}
+    var line=points.map(function(point,index){return x(index)+','+y(point.value);}).join(' ');
+    var marks=points.map(function(point,index){
+      return'<circle cx="'+x(index)+'" cy="'+y(point.value)+'" r="6"></circle>'+
+        '<text x="'+x(index)+'" y="'+(y(point.value)-12)+'" text-anchor="middle">'+esc(point.value+(definition[2]?' '+definition[2]:''))+'</text>'+
+        '<text x="'+x(index)+'" y="'+(height-17)+'" text-anchor="middle">'+esc(fmtDate(point.date))+'</text>';
+    }).join('');
+    return'<article class="chart-card"><div class="chart-heading"><h3>'+esc(definition[1])+'</h3><strong>'+esc(points[points.length-1].value+(definition[2]?' '+definition[2]:''))+'</strong></div>'+
+      '<div class="chart-wrap"><svg viewBox="0 0 '+width+' '+height+'" role="img" aria-label="Grafik perubahan '+esc(definition[1])+'">'+
+      '<line class="axis" x1="'+left+'" y1="'+(height-bottom)+'" x2="'+(width-right)+'" y2="'+(height-bottom)+'"></line>'+
+      '<polyline class="trend-line" points="'+line+'"></polyline>'+marks+'</svg></div></article>';
+  }
+
+  function chartsHTML(g){
+    if(g.history.length<2)return'<div class="chart-empty">Grafik perubahan tersedia setelah minimal dua kali monitoring.</div>';
+    var charts=metricDefs(g.latest.type).map(function(definition){return chartSVG(g.history,definition);}).filter(Boolean);
+    return charts.length?'<div class="charts-grid">'+charts.join('')+'</div>':'<div class="chart-empty">Belum ada metrik yang sama pada sedikitnya dua kunjungan.</div>';
+  }
+
   function openDetail(key){
     var g=groups.find(function(x){return x.key===key;});if(!g)return;
     var r=g.latest;
     document.getElementById('detail-content').innerHTML=
       '<div class="profile-head"><div><span class="type-label">'+esc(r.type.toUpperCase())+'</span><h2>'+esc(r.title)+'</h2><p class="location">'+esc(r.location||'Lokasi belum dicantumkan')+'</p></div><div class="profile-meta"><span class="status '+r.status.key+'">'+esc(r.status.label)+'</span><small>'+g.history.length+' kali monitoring</small><small>Terakhir '+esc(fmtDate(r.date))+'</small></div></div>'+
-      '<div class="detail-tabs"><button class="active" data-tab="overview" type="button">Ringkasan</button><button data-tab="history" type="button">Riwayat ('+g.history.length+')</button><button data-tab="photos" type="button">Foto ('+g.history.reduce(function(n,x){return n+x.photos.length;},0)+')</button></div>'+
+      '<div class="detail-tabs"><button class="active" data-tab="overview" type="button">Ringkasan</button><button data-tab="charts" type="button">Grafik perubahan</button><button data-tab="history" type="button">Riwayat ('+g.history.length+')</button><button data-tab="photos" type="button">Foto ('+g.history.reduce(function(n,x){return n+x.photos.length;},0)+')</button></div>'+
       '<div class="tab-panel active" data-panel="overview">'+overviewHTML(g)+'</div>'+
+      '<div class="tab-panel" data-panel="charts">'+chartsHTML(g)+'</div>'+
       '<div class="tab-panel" data-panel="history">'+historyHTML(g)+'</div>'+
       '<div class="tab-panel" data-panel="photos">'+photosHTML(g)+'</div>';
     var modal=document.getElementById('detail-modal');
