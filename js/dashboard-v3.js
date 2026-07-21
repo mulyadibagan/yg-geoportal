@@ -175,6 +175,19 @@
     return merged;
   }
 
+  function applyPematangDukuDonorPolicy(feature) {
+    const props = feature && feature.properties || {};
+    const village = firstValue(props, [
+      "Desa", "WADMKD", "NAMA_DESA", "village", "locationName"
+    ]).toLowerCase();
+
+    if (village.includes("pematang duku")) {
+      props.Donor = "Pan Pacific Conservation Foundation";
+      props.Donor_Cluster = "Pan Pacific Conservation Foundation";
+    }
+    return feature;
+  }
+
   async function renderDashboard(data) {
     if (!data || data.type !== "FeatureCollection" || !Array.isArray(data.features)) {
       document.getElementById("dashboard-updated").textContent =
@@ -182,7 +195,8 @@
       return;
     }
 
-    const mergedFeatures = await mergeOfficialLayers(data.features);
+    const mergedFeatures = (await mergeOfficialLayers(data.features))
+      .map(applyPematangDukuDonorPolicy);
     const active = mergedFeatures.filter(feature => {
       if (!feature || !feature.geometry) return false;
       const props = feature.properties || {};
