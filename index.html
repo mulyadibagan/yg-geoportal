@@ -7,7 +7,7 @@
   <title>YG GeoPortal | Yayasan Gambut</title>
   <link rel="icon" href="assets/logo-yayasan-gambut.png"/>
   <link rel="stylesheet" href="css/style.css?v=20260720-dashboard-layout1"/>
-  <link rel="stylesheet" href="css/dashboard-v3.css?v=20260721-home-professional1"/>
+  <link rel="stylesheet" href="css/dashboard-v3.css?v=20260721-ppcf-dashboard1"/>
   <meta name="theme-color" content="#079cde">
   <meta name="application-name" content="YG GeoPortal">
   <meta name="apple-mobile-web-app-title" content="YG GeoPortal">
@@ -92,6 +92,33 @@
 
 </main>
 
+<div class="funding-modal" id="ppcf-dashboard" hidden>
+  <button class="funding-backdrop" type="button" data-close-ppcf aria-label="Tutup dashboard PPCF"></button>
+  <section class="funding-dialog" role="dialog" aria-modal="true" aria-labelledby="ppcf-title">
+    <button class="funding-close" type="button" data-close-ppcf aria-label="Tutup">×</button>
+    <header class="funding-hero">
+      <span class="funding-badge">MITRA PENDANAAN</span>
+      <h2 id="ppcf-title">Pan Pacific Conservation Foundation (PPCF)</h2>
+      <div class="funding-meta"><span><b>Periode</b>2025–2026</span><span><b>Lokasi</b>Desa Pematang Duku, Kabupaten Bengkalis</span></div>
+    </header>
+    <div class="funding-content">
+      <div class="funding-heading"><div><span>Ringkasan capaian</span><h3>Output proyek PPCF</h3></div><p>Klik indikator untuk melihat lokasi atau informasi pendukung.</p></div>
+      <div class="funding-indicators">
+        <a href="webgis.html?village=Pematang+Duku" class="funding-indicator"><i>📍</i><strong>1</strong><span>Lokasi Program</span></a>
+        <a href="webgis.html?layer=area_kopi&amp;village=Pematang+Duku" class="funding-indicator"><i>🌱</i><strong>3,6 ha</strong><span>Restorasi Gambut &amp; Agroforestri</span></a>
+        <a href="webgis.html?layer=area_kopi&amp;village=Pematang+Duku" class="funding-indicator"><i>🌿</i><strong>4.000</strong><span>Bibit Ditanam</span></a>
+        <a href="webgis.html?layer=kopi&amp;village=Pematang+Duku" class="funding-indicator"><i>🌱</i><strong>4.500</strong><span>Bibit di Persemaian</span></a>
+        <a href="webgis.html?layer=sekat_kanal&amp;village=Pematang+Duku" class="funding-indicator"><i>💧</i><strong>4</strong><span>Sekat Kanal</span></a>
+        <a href="webgis.html?layer=fdrs&amp;village=Pematang+Duku" class="funding-indicator"><i>🔥</i><strong>3</strong><span>FDRS</span></a>
+        <button type="button" class="funding-indicator" data-ppcf-detail="training"><i>👨‍🌾</i><strong>119</strong><span>Peserta Pelatihan</span></button>
+        <button type="button" class="funding-indicator" data-ppcf-detail="market"><i>🤝</i><strong>1</strong><span>Kemitraan Pasar Kopi</span></button>
+        <a href="https://yayasangambut.org/wp-content/uploads/2026/02/Buku_Panduan-Pengelolaan-Lahan-Gambut-Berkelanjutan-Berbasis-Masyarakat.pdf" target="_blank" rel="noopener" class="funding-indicator"><i>📘</i><strong>1</strong><span>Buku Panduan</span></a>
+      </div>
+      <div class="funding-detail" id="ppcf-detail" hidden></div>
+    </div>
+  </section>
+</div>
+
 <footer class="site-footer">
   <div class="footer-inner">
     <span>© Yayasan Gambut</span>
@@ -99,7 +126,7 @@
   </div>
 </footer>
 
-<script src="js/dashboard-v3.js?v=20260721-home-professional1"></script>
+<script src="js/dashboard-v3.js?v=20260721-ppcf-dashboard1"></script>
   <script src="js/pwa.js?v=20260720-program-clean1"></script>
 </body>
 </html>
