@@ -7,7 +7,7 @@
   <title>YG GeoPortal | Yayasan Gambut</title>
   <link rel="icon" href="assets/logo-yayasan-gambut.png"/>
   <link rel="stylesheet" href="css/style.css?v=20260720-dashboard-layout1"/>
-  <link rel="stylesheet" href="css/dashboard-v3.css?v=20260721-ppcf-dashboard1"/>
+  <link rel="stylesheet" href="css/dashboard-v3.css?v=20260721-aramco-dashboard1"/>
   <meta name="theme-color" content="#079cde">
   <meta name="application-name" content="YG GeoPortal">
   <meta name="apple-mobile-web-app-title" content="YG GeoPortal">
@@ -92,6 +92,42 @@
 
 </main>
 
+<div class="funding-modal" id="aramco-dashboard" hidden>
+  <button class="funding-backdrop" type="button" data-close-aramco aria-label="Tutup dashboard Aramco"></button>
+  <section class="funding-dialog funding-dialog-aramco" role="dialog" aria-modal="true" aria-labelledby="aramco-title">
+    <button class="funding-close" type="button" data-close-aramco aria-label="Tutup">×</button>
+    <header class="funding-hero">
+      <span class="funding-badge">MITRA PENDANAAN</span>
+      <h2 id="aramco-title">Aramco Asia Singapore</h2>
+      <div class="funding-meta funding-meta-aramco">
+        <span><b>Periode Program</b>2023 – Sekarang</span>
+        <span><b>Wilayah Program</b>Buruk Bakul • Kelapa Pati • Sepahat • Tanjung Kuras</span>
+      </div>
+    </header>
+    <div class="funding-content">
+      <div class="funding-heading"><div><span>Ringkasan dampak</span><h3>Capaian program Aramco</h3></div><p>Klik indikator untuk memfilter data dan menuju lokasi terkait.</p></div>
+      <div class="funding-indicators">
+        <a href="webgis.html?donor=aramco&amp;layer=area_mangrove" class="funding-indicator"><i>🌱</i><strong>42.545</strong><span>Pohon Mangrove Ditanam</span></a>
+        <a href="webgis.html?donor=aramco" class="funding-indicator"><i>📍</i><strong>4</strong><span>Desa Program</span></a>
+        <a href="webgis.html?donor=aramco&amp;layer=area_mangrove" class="funding-indicator"><i>🌿</i><strong>13,1 ha</strong><span>Restorasi Mangrove</span></a>
+        <button type="button" class="funding-indicator" data-aramco-detail="nursery"><i>🌱</i><strong>4</strong><span>Rumah Bibit Mangrove</span></button>
+        <button type="button" class="funding-indicator" data-aramco-detail="wave"><i>🌊</i><strong>300 m</strong><span>Hybrid Engineering (Wave Breaker)</span></button>
+        <a href="webgis.html?donor=aramco" class="funding-indicator"><i>👥</i><strong>1.200+</strong><span>Peserta Kegiatan</span></a>
+        <a href="webgis.html?donor=aramco&amp;layer=monitoring_reports" class="funding-indicator"><i>📊</i><strong>100+</strong><span>Monitoring Lapangan</span></a>
+      </div>
+      <div class="funding-detail" id="aramco-detail" hidden></div>
+      <section class="funding-timeline" aria-labelledby="aramco-timeline-title">
+        <div class="funding-heading"><div><span>Perjalanan program</span><h3 id="aramco-timeline-title">Timeline Program</h3></div></div>
+        <div class="funding-timeline-grid">
+          <article><b>Fase 1</b><strong>2023–2024</strong><p>Buruk Bakul</p><ul><li>10.420 pohon</li><li>2,65 ha</li><li>100 m Wave Breaker</li><li>1 Rumah Bibit</li></ul></article>
+          <article><b>Fase 2</b><strong>2024–2025</strong><p>Buruk Bakul • Kelapa Pati</p><ul><li>15.225 pohon</li><li>1,45 ha</li><li>200 m Wave Breaker (akumulasi)</li><li>2 Rumah Bibit</li></ul></article>
+          <article><b>Fase 3</b><strong>2025–2026</strong><p>Buruk Bakul • Kelapa Pati • Sepahat • Tanjung Kuras</p><ul><li>Target 18.000 pohon</li><li>Target 9 ha</li><li>4 Rumah Bibit (akumulasi)</li><li>300 m Wave Breaker (akumulasi)</li><li>Pelatihan dan monitoring lapangan</li><li>Pengembangan mata pencaharian masyarakat</li></ul></article>
+        </div>
+      </section>
+    </div>
+  </section>
+</div>
+
 <div class="funding-modal" id="ppcf-dashboard" hidden>
   <button class="funding-backdrop" type="button" data-close-ppcf aria-label="Tutup dashboard PPCF"></button>
   <section class="funding-dialog" role="dialog" aria-modal="true" aria-labelledby="ppcf-title">
@@ -126,7 +162,7 @@
   </div>
 </footer>
 
-<script src="js/dashboard-v3.js?v=20260721-ppcf-gec-dashboard1"></script>
+<script src="js/dashboard-v3.js?v=20260721-aramco-dashboard1"></script>
   <script src="js/pwa.js?v=20260720-program-clean1"></script>
 </body>
 </html>

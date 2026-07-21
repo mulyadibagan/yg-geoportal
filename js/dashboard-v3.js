@@ -329,8 +329,12 @@
       }).join("");
 
     const ppcfName = "Pan Pacific Conservation Foundation (PPCF)";
+    const aramcoName = "Aramco Asia Singapore";
     const donorEntries = Object.entries(donors)
       .sort((a, b) => b[1] - a[1]);
+    if (!donorEntries.some(([name]) => name === aramcoName)) {
+      donorEntries.unshift([aramcoName, 0]);
+    }
     if (!donorEntries.some(([name]) => name === ppcfName)) {
       donorEntries.unshift([ppcfName, 0]);
     }
@@ -343,6 +347,14 @@
               '<span>' + escapeHtml(name) + '</span>' +
               '<strong>2025\u20132026</strong>' +
               '<small>Pematang Duku \u00b7 lihat ringkasan output proyek</small>' +
+            '</button>';
+          }
+          if (name === "Aramco Asia Singapore") {
+            return '<button class="category-card dashboard-link funding-card" type="button" data-open-aramco>' +
+              '<i class="category-icon" aria-hidden="true">🌿</i>' +
+              '<span>' + escapeHtml(name) + '</span>' +
+              '<strong>2023–Sekarang</strong>' +
+              '<small>4 desa · lihat ringkasan dampak program</small>' +
             '</button>';
           }
           const donorUrl = mapUrl({ search: donorSearchTerm(name) });
@@ -386,19 +398,37 @@
 
   const ppcfDashboard = document.getElementById("ppcf-dashboard");
   const ppcfDetail = document.getElementById("ppcf-detail");
+  const aramcoDashboard = document.getElementById("aramco-dashboard");
+  const aramcoDetail = document.getElementById("aramco-detail");
   const ppcfDetails = {
     training: '<h4>Pelatihan PPCF</h4><div class="funding-detail-grid"><article><strong>69 peserta</strong><span>Pelatihan pengelolaan gambut berkelanjutan dan pertanian tanpa bakar · 7 Agustus 2025</span></article><article><strong>50 peserta</strong><span>Pelatihan agroforestri kopi Liberika, termasuk 13 perempuan · 19 Desember 2025</span></article></div>',
     market: '<h4>Kemitraan pasar kopi</h4><p>MoU antara Kelompok Tani Ketiau Jaya dan Suvarnabhumi Coffee ditandatangani pada 20 Januari 2026. Suvarnabhumi Coffee bertindak sebagai calon pembeli utama kopi Liberika sesuai mutu, harga, dan kapasitas pasokan yang disepakati.</p><a href="webgis.html?layer=kopi&amp;village=Pematang+Duku">Lihat lokasi kelompok tani →</a>'
   };
+  const aramcoDetails = {
+    nursery: '<h4>Rumah Bibit Mangrove</h4><p>Pilih desa untuk langsung menuju lokasi rumah bibit di peta.</p><div class="funding-location-grid"><a href="webgis.html?layer=nursery_mangrove&amp;village=Buruk+Bakul">Desa Buruk Bakul <span>→</span></a><a href="webgis.html?layer=nursery_mangrove&amp;village=Kelapa+Pati">Desa Kelapa Pati <span>→</span></a><a href="webgis.html?layer=nursery_mangrove&amp;village=Sepahat">Desa Sepahat <span>→</span></a><a href="webgis.html?layer=nursery_mangrove&amp;village=Tanjung+Kuras">Desa Tanjung Kuras <span>→</span></a></div>',
+    wave: '<h4>Hybrid Engineering (Wave Breaker)</h4><p>Pilih segmen untuk melakukan zoom ke lokasi di peta.</p><div class="funding-location-grid"><a href="webgis.html?layer=apo&amp;village=Buruk+Bakul"><b>200 meter</b> – Desa Buruk Bakul <span>→</span></a><a href="webgis.html?layer=apo&amp;village=Kelapa+Pati"><b>100 meter</b> – Desa Kelapa Pati <span>→</span></a></div>'
+  };
+  function openFundingDashboard(dashboard) {
+    dashboard.hidden = false;
+    document.body.classList.add("modal-open");
+  }
+  function closeFundingDashboard(dashboard, detail) {
+    dashboard.hidden = true;
+    if (detail) detail.hidden = true;
+    document.body.classList.remove("modal-open");
+  }
   document.addEventListener("click", event => {
     if (event.target.closest("[data-open-ppcf]")) {
-      ppcfDashboard.hidden = false;
-      document.body.classList.add("modal-open");
+      openFundingDashboard(ppcfDashboard);
+    }
+    if (event.target.closest("[data-open-aramco]")) {
+      openFundingDashboard(aramcoDashboard);
     }
     if (event.target.closest("[data-close-ppcf]")) {
-      ppcfDashboard.hidden = true;
-      ppcfDetail.hidden = true;
-      document.body.classList.remove("modal-open");
+      closeFundingDashboard(ppcfDashboard, ppcfDetail);
+    }
+    if (event.target.closest("[data-close-aramco]")) {
+      closeFundingDashboard(aramcoDashboard, aramcoDetail);
     }
     const detailButton = event.target.closest("[data-ppcf-detail]");
     if (detailButton) {
@@ -406,11 +436,20 @@
       ppcfDetail.hidden = false;
       ppcfDetail.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }
+    const aramcoDetailButton = event.target.closest("[data-aramco-detail]");
+    if (aramcoDetailButton) {
+      aramcoDetail.innerHTML = aramcoDetails[aramcoDetailButton.dataset.aramcoDetail] || "";
+      aramcoDetail.hidden = false;
+      aramcoDetail.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
   });
   document.addEventListener("keydown", event => {
-    if (event.key === "Escape" && !ppcfDashboard.hidden) {
-      ppcfDashboard.hidden = true;
-      document.body.classList.remove("modal-open");
+    if (event.key !== "Escape") return;
+    if (!ppcfDashboard.hidden) {
+      closeFundingDashboard(ppcfDashboard, ppcfDetail);
+    }
+    if (!aramcoDashboard.hidden) {
+      closeFundingDashboard(aramcoDashboard, aramcoDetail);
     }
   });
 })();
