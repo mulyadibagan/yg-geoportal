@@ -3,8 +3,13 @@
 
   var BASE='https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec';
   var API=BASE+'?page=public-reports';
+  var OBJECTS_API=BASE+'?page=objects';
   var CALLBACK='ygMonitoringDashboardCallback';
-  var records=[],groups=[];
+  var OBJECTS_CALLBACK='ygMonitoringObjectsCallback';
+var LEGACY_OBJECT_ALIASES={
+  'area_mangrove:auto:1281388060':'MANGROVE-KELAPA-PATI-PHASE-III-2026-001'
+};
+  var records=[],groups=[],masterObjects=[];
   var list=document.getElementById('monitor-list');
 
   function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
@@ -85,6 +90,59 @@
     return isFinite(bounds[0])?bounds.map(function(v){return v.toFixed(5);}).join(','):'';
   }
 
+  function permanentId(value){
+    var id=String(value||'').trim();
+    if(!id||/:auto:/i.test(id)||/^MONITORING-/i.test(id))return'';
+    return id;
+  }
+
+  function normalizeMaster(feature){
+    var p=feature&&feature.properties||{};
+    var id=permanentId(p.Object_ID||p.OBJECT_ID||p.objectId);
+    if(!id)return null;
+    var area=Number(String(p.Luas_Ha||p.Luas||p.areaHa||p.luas_ha||'').replace(',','.'));
+    return{
+      id:id,
+      layer:keyText(p.Source_Layer||p.Layer_ID||p.layerId||p.Kategori),
+      name:keyText(p.Nama_Objek||p.objectName||p.Nama||p.name),
+      village:keyText(p.Desa||p.WADMKD||p.village),
+      area:isFinite(area)&&area>0?area:null,
+      bounds:geometryKey(feature&&feature.geometry)
+    };
+  }
+
+  function resolveMasterObject(p,targetProperties,feature,title,targetArea){
+    var legacyId=String(p.targetObjectId||'').trim();
+    if(LEGACY_OBJECT_ALIASES[legacyId])return LEGACY_OBJECT_ALIASES[legacyId];
+    var direct=permanentId(
+      targetProperties.Object_ID||targetProperties.OBJECT_ID||targetProperties.objectId||p.Object_ID
+    );
+    if(direct&&masterObjects.some(function(object){return object.id===direct;}))return direct;
+
+    var layer=keyText(p.targetLayerId||p.targetLayerLabel||targetProperties.Source_Layer||targetProperties.Layer_ID);
+    var village=keyText(p.village||targetProperties.Desa||targetProperties.WADMKD);
+    var name=keyText(p.targetObjectName||p.locationName||title);
+    var bounds=geometryKey(feature&&feature.geometry);
+    var candidates=masterObjects.filter(function(object){
+      if(layer&&object.layer&&object.layer!==layer)return false;
+      if(village&&object.village&&object.village!==village)return false;
+      return true;
+    });
+
+    var exactBounds=candidates.filter(function(object){return bounds&&object.bounds===bounds;});
+    if(exactBounds.length===1)return exactBounds[0].id;
+
+    if(isFinite(targetArea)&&targetArea>0){
+      var exactArea=candidates.filter(function(object){
+        return object.area!==null&&Math.abs(object.area-targetArea)<=Math.max(0.0002,targetArea*0.001);
+      });
+      if(exactArea.length===1)return exactArea[0].id;
+    }
+
+    var exactName=candidates.filter(function(object){return name&&object.name===name;});
+    return exactName.length===1?exactName[0].id:'';
+  }
+
   function normalize(feature,index){
     var p=feature&&feature.properties||{};
     if(String(p.reportType||'').toLowerCase()!=='monitoring')return null;
@@ -97,9 +155,9 @@
     var layerKey=keyText(p.targetLayerId||p.targetLayerLabel||m.monitoringType||'monitoring');
     var nameKey=keyText(p.targetObjectName||p.locationName||p.title||title);
     var targetProperties=parseJSON(p.targetFeatureProperties);
-    var masterObjectId=targetProperties.Object_ID||targetProperties.OBJECT_ID||targetProperties.objectId||'';
     var rawArea=targetProperties.Luas_Ha||targetProperties.Luas||targetProperties.areaHa||targetProperties.luas_ha;
     var targetArea=Number(String(rawArea==null?'':rawArea).replace(',','.'));
+    var masterObjectId=resolveMasterObject(p,targetProperties,feature,title,targetArea);
     var areaKey=isFinite(targetArea)&&targetArea>0?targetArea.toFixed(4):'';
     var boundsKey=geometryKey(feature&&feature.geometry);
     var spatialKey=[layerKey,nameKey,areaKey,boundsKey].filter(Boolean).join('|');
@@ -132,7 +190,7 @@
     return Object.keys(map).map(function(k){
       var history=map[k].sort(function(a,b){return dateValue(b.date)-dateValue(a.date);});
       var masterObjectId=history.map(function(r){return r.masterObjectId;}).filter(Boolean)[0]||'';
-      var objectCode=masterObjectId||history[0].legacyObjectId||'';
+      var objectCode=masterObjectId||'';
       return{key:k,latest:history[0],history:history,objectCode:objectCode};
     });
   }
@@ -297,6 +355,10 @@
   }
 
   window[CALLBACK]=applyData;
+  window[OBJECTS_CALLBACK]=function(data){
+    masterObjects=(data&&Array.isArray(data.features)?data.features:[]).map(normalizeMaster).filter(Boolean);
+    loadReportsScript();
+  };
 
   ['monitor-search','monitor-type','monitor-status','monitor-sort'].forEach(function(id){
     document.getElementById(id).addEventListener(id==='monitor-search'?'input':'change',render);
@@ -332,9 +394,17 @@
     if(e.key==='Escape'){var close=document.querySelector('[data-close-modal]');if(close)close.click();}
   });
 
-  var script=document.createElement('script');
-  script.src=API+'&callback='+CALLBACK+'&t='+Date.now();
-  script.async=true;
-  script.onerror=function(){list.innerHTML='<div class="empty">Data monitoring belum dapat dimuat. Periksa koneksi atau endpoint Apps Script.</div>';};
-  document.head.appendChild(script);
+  function loadReportsScript(){
+    var script=document.createElement('script');
+    script.src=API+'&callback='+CALLBACK+'&t='+Date.now();
+    script.async=true;
+    script.onerror=function(){list.innerHTML='<div class="empty">Data monitoring belum dapat dimuat. Periksa koneksi atau endpoint Apps Script.</div>';};
+    document.head.appendChild(script);
+  }
+
+  var objectsScript=document.createElement('script');
+  objectsScript.src=OBJECTS_API+'&callback='+OBJECTS_CALLBACK+'&t='+Date.now();
+  objectsScript.async=true;
+  objectsScript.onerror=function(){masterObjects=[];loadReportsScript();};
+  document.head.appendChild(objectsScript);
 })();
