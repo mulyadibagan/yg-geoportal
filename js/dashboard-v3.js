@@ -19,6 +19,40 @@
       .format(Number(value || 0));
   }
 
+  function numericValue(props, keys) {
+    const raw = firstValue(props || {}, keys);
+    if (!raw) return 0;
+    const normalized = raw.replace(/\s+/g, "")
+      .replace(/\.(?=\d{3}(?:\D|$))/g, "")
+      .replace(",", ".").replace(/[^0-9.-]/g, "");
+    const value = Number(normalized);
+    return Number.isFinite(value) ? value : 0;
+  }
+
+  function sumProperties(features, keys) {
+    return features.reduce((total, feature) =>
+      total + numericValue((feature && feature.properties) || {}, keys), 0);
+  }
+
+  function officialMetric(mappedValue, reportValue) {
+    const mapped = Number(mappedValue || 0);
+    const report = Number(reportValue || 0);
+    if (mapped <= 0) return report;
+    return report > 0 && mapped > report ? report : mapped;
+  }
+
+  function progressFromSnapshot(mappedValue, baselineValue, snapshotValue) {
+    const mapped = Number(mappedValue || 0);
+    const baseline = Number(baselineValue || 0);
+    const snapshot = Number(snapshotValue || 0);
+    return baseline + Math.max(0, mapped - snapshot);
+  }
+
+  function setMetric(id, value, digits = 0, suffix = "") {
+    const element = document.getElementById(id);
+    if (element) element.textContent = formatNumber(value, digits) + suffix;
+  }
+
   function layerIdOf(feature) {
     const props = feature.properties || {};
     return String(props.Layer_ID || props.Source_Layer || "").trim();
@@ -308,6 +342,94 @@
         reports += 1;
       }
     });
+
+    // WebGIS adalah sumber utama. Laporan menjadi fallback bila belum ada
+    // data spasial dan menjadi batas resmi bila jumlah WebGIS lebih besar.
+    const assetsFor = donor => active.filter(feature =>
+      donorOf((feature && feature.properties) || {}) === donor
+    );
+    const layerAssets = (features, ids) => {
+      const allowed = new Set(ids.map(id => id.toLowerCase()));
+      return features.filter(feature =>
+        allowed.has(layerIdOf(feature).toLowerCase())
+      );
+    };
+    const villageCount = features => new Set(features.map(feature =>
+      firstValue((feature && feature.properties) || {}, [
+        "Desa", "WADMKD", "NAMA_DESA", "village", "locationName"
+      ]).toLowerCase()
+    ).filter(Boolean)).size;
+
+    const aramcoAssets = assetsFor("Aramco Asia Singapore");
+    // Seluruh layer resmi area_mangrove merupakan cakupan Aramco. Ambil
+    // langsung dari layer agar polygon lama tanpa atribut Donor tetap dihitung.
+    const aramcoMangrove = layerAssets(active, ["area_mangrove"]);
+    const aramcoProgrammeAssets = [...aramcoAssets, ...aramcoMangrove];
+    const aramcoNurseries = layerAssets(aramcoAssets, [
+      "nursery_mangrove", "persemaian_mangrove"
+    ]);
+    const aramcoWave = layerAssets(aramcoAssets, ["apo"]);
+    const aramcoMonitoring = layerAssets(aramcoAssets, ["monitoring_reports"]);
+    setMetric("aramco-tree-count", officialMetric(sumProperties(aramcoMangrove,
+      ["Jumlah_Bibit", "Jumlah bibit", "jumlah_bibit", "Pohon"]), 42545));
+    setMetric("aramco-village-count",
+      officialMetric(villageCount(aramcoProgrammeAssets), 4));
+    const aramcoMappedArea = sumProperties(aramcoMangrove,
+      ["Luas_Ha", "Luas", "luas_ha"]);
+    // Baseline resmi dikunci. Snapshot 13,2240266364 ha mewakili seluruh
+    // polygon yang sudah ada saat baseline 13,1 ha ditetapkan. Hanya tambahan
+    // luas setelah snapshot ini yang menambah angka dashboard.
+    setMetric("aramco-area-count", progressFromSnapshot(
+      aramcoMappedArea, 13.1, 13.2240266364
+    ), 2, " ha");
+    // Empat rumah bibit adalah baseline resmi; objek kelima dan seterusnya
+    // yang masuk WebGIS akan menaikkan angka secara otomatis.
+    setMetric("aramco-nursery-count", Math.max(4, aramcoNurseries.length));
+    setMetric("aramco-wave-count", officialMetric(sumProperties(aramcoWave,
+      ["Panjang_m", "Panjang", "panjang_m", "Length_m"]), 300), 0, " m");
+    setMetric("aramco-monitoring-count",
+      officialMetric(aramcoMonitoring.length, 100));
+    setMetric("aramco-participant-count", officialMetric(0, 1200), 0, "+");
+
+    const ppcfAssets = assetsFor("Pan Pacific Conservation Foundation (PPCF)");
+    const ppcfCoffeeAreas = layerAssets(ppcfAssets, ["area_kopi"]);
+    const ppcfCoffee = layerAssets(ppcfAssets, ["kopi", "nursery_kopi"]);
+    const ppcfCanals = layerAssets(ppcfAssets, ["sekat_kanal"]);
+    const ppcfFdrs = layerAssets(ppcfAssets, ["fdrs"]);
+    setMetric("ppcf-location-count", officialMetric(villageCount(ppcfAssets), 1));
+    setMetric("ppcf-area-count", officialMetric(sumProperties(ppcfCoffeeAreas,
+      ["Luas_Ha", "Luas", "luas_ha"]), 3.6), 2, " ha");
+    setMetric("ppcf-planted-count", officialMetric(sumProperties(ppcfCoffeeAreas,
+      ["Jumlah_Bibit", "Jumlah bibit", "jumlah_bibit", "Bibit_Ditanam"]), 4000));
+    setMetric("ppcf-nursery-seedling-count", officialMetric(sumProperties(ppcfCoffee,
+      ["Jumlah_Bibit", "Jumlah bibit", "jumlah_bibit", "Bibit"]), 4500));
+    setMetric("ppcf-canal-count", officialMetric(ppcfCanals.length, 4));
+    setMetric("ppcf-fdrs-count", officialMetric(ppcfFdrs.length, 3));
+
+    const gecAssets = assetsFor("Global Environment Centre");
+    const gecCanals = layerAssets(gecAssets, ["sekat_kanal"]);
+    const gecFdrs = layerAssets(gecAssets, ["fdrs"]);
+    const officialGecCanals = officialMetric(gecCanals.length, 7);
+    const officialGecFdrs = officialMetric(gecFdrs.length, 5);
+    setMetric("gec-canal-count", officialGecCanals);
+    setMetric("gec-fdrs-count", officialGecFdrs);
+
+    const fdrsVillages = [...new Set(gecFdrs.map(feature =>
+      firstValue((feature && feature.properties) || {}, [
+        "Desa", "WADMKD", "NAMA_DESA", "village", "locationName"
+      ])
+    ).filter(Boolean))].sort((a, b) => a.localeCompare(b, "id"));
+    gecDetails.fdrs = '<h4>Fire Danger Rating System (FDRS)</h4>' +
+      '<p>' + formatNumber(officialGecFdrs) +
+      ' unit FDRS aktif terpetakan di WebGIS. Pilih lokasi untuk melihat titiknya.</p>' +
+      '<div class="funding-location-grid">' +
+      fdrsVillages.map(village =>
+        '<a href="' + escapeHtml(mapUrl({
+          donor: "Global Environment Centre",
+          layer: "fdrs",
+          village
+        })) + '">' + escapeHtml(village) + ' <span>→</span></a>'
+      ).join("") + '</div>';
 
     document.getElementById("dash-regencies").textContent = formatNumber(regencies.size);
     document.getElementById("dash-villages").textContent = formatNumber(villages.size);

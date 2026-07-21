@@ -110,15 +110,15 @@
       </div>
     </header>
     <div class="funding-content">
-      <div class="funding-heading"><div><span>Ringkasan dampak</span><h3>Capaian program Aramco</h3></div><p>Klik indikator untuk memfilter data dan menuju lokasi terkait.</p></div>
+      <div class="funding-heading"><div><span>Ringkasan dampak</span><h3>Capaian program Aramco</h3></div><p>Data WebGIS menjadi acuan utama dan divalidasi terhadap laporan program.</p></div>
       <div class="funding-indicators">
-        <a href="webgis.html?donor=aramco&amp;layer=area_mangrove" class="funding-indicator"><i>🌱</i><strong>42.545</strong><span>Pohon Mangrove Ditanam</span></a>
-        <a href="webgis.html?donor=aramco" class="funding-indicator"><i>📍</i><strong>4</strong><span>Desa Program</span></a>
-        <a href="webgis.html?donor=aramco&amp;layer=area_mangrove" class="funding-indicator"><i>🌿</i><strong>13,1 ha</strong><span>Restorasi Mangrove</span></a>
-        <button type="button" class="funding-indicator" data-aramco-detail="nursery"><i>🌱</i><strong>4</strong><span>Rumah Bibit Mangrove</span></button>
-        <button type="button" class="funding-indicator" data-aramco-detail="wave"><i>🌊</i><strong>300 m</strong><span>Hybrid Engineering (Wave Breaker)</span></button>
-        <a href="webgis.html?donor=aramco" class="funding-indicator"><i>👥</i><strong>1.200+</strong><span>Peserta Kegiatan</span></a>
-        <a href="webgis.html?donor=aramco&amp;layer=monitoring_reports" class="funding-indicator"><i>📊</i><strong>100+</strong><span>Monitoring Lapangan</span></a>
+        <a href="webgis.html?donor=aramco&amp;layer=area_mangrove" class="funding-indicator"><i>🌱</i><strong id="aramco-tree-count">42.545</strong><span>Pohon Mangrove Ditanam</span></a>
+        <a href="webgis.html?donor=aramco" class="funding-indicator"><i>📍</i><strong id="aramco-village-count">4</strong><span>Desa Program</span></a>
+        <a href="webgis.html?donor=aramco&amp;layer=area_mangrove" class="funding-indicator"><i>🌿</i><strong id="aramco-area-count">13,1 ha</strong><span>Restorasi Mangrove</span></a>
+        <button type="button" class="funding-indicator" data-aramco-detail="nursery"><i>🌱</i><strong id="aramco-nursery-count">4</strong><span>Rumah Bibit Mangrove</span></button>
+        <button type="button" class="funding-indicator" data-aramco-detail="wave"><i>🌊</i><strong id="aramco-wave-count">300 m</strong><span>Hybrid Engineering (Wave Breaker)</span></button>
+        <a href="webgis.html?donor=aramco" class="funding-indicator"><i>👥</i><strong id="aramco-participant-count">1.200+</strong><span>Peserta Kegiatan</span></a>
+        <a href="webgis.html?donor=aramco&amp;layer=monitoring_reports" class="funding-indicator"><i>📊</i><strong id="aramco-monitoring-count">100+</strong><span>Monitoring Lapangan</span></a>
       </div>
       <div class="funding-detail" id="aramco-detail" hidden></div>
       <section class="funding-timeline" aria-labelledby="aramco-timeline-title">
@@ -143,14 +143,14 @@
       <div class="funding-meta"><span><b>Periode</b>2025–2026</span><span><b>Lokasi</b>Desa Pematang Duku, Kabupaten Bengkalis</span></div>
     </header>
     <div class="funding-content">
-      <div class="funding-heading"><div><span>Ringkasan capaian</span><h3>Output proyek PPCF</h3></div><p>Klik indikator untuk melihat lokasi atau informasi pendukung.</p></div>
+      <div class="funding-heading"><div><span>Ringkasan capaian</span><h3>Output proyek PPCF</h3></div><p>Data WebGIS menjadi acuan utama dan divalidasi terhadap laporan program.</p></div>
       <div class="funding-indicators">
-        <a href="webgis.html?village=Pematang+Duku" class="funding-indicator"><i>📍</i><strong>1</strong><span>Lokasi Program</span></a>
-        <a href="webgis.html?layer=area_kopi&amp;village=Pematang+Duku" class="funding-indicator"><i>🌱</i><strong>3,6 ha</strong><span>Restorasi Gambut &amp; Agroforestri</span></a>
-        <a href="webgis.html?layer=area_kopi&amp;village=Pematang+Duku" class="funding-indicator"><i>🌿</i><strong>4.000</strong><span>Bibit Ditanam</span></a>
-        <a href="webgis.html?layer=kopi&amp;village=Pematang+Duku" class="funding-indicator"><i>🌱</i><strong>4.500</strong><span>Bibit di Persemaian</span></a>
-        <a href="webgis.html?layer=sekat_kanal&amp;village=Pematang+Duku" class="funding-indicator"><i>💧</i><strong>4</strong><span>Sekat Kanal</span></a>
-        <a href="webgis.html?layer=fdrs&amp;village=Pematang+Duku" class="funding-indicator"><i>🔥</i><strong>3</strong><span>FDRS</span></a>
+        <a href="webgis.html?village=Pematang+Duku" class="funding-indicator"><i>📍</i><strong id="ppcf-location-count">1</strong><span>Lokasi Program</span></a>
+        <a href="webgis.html?layer=area_kopi&amp;village=Pematang+Duku" class="funding-indicator"><i>🌱</i><strong id="ppcf-area-count">3,6 ha</strong><span>Restorasi Gambut &amp; Agroforestri</span></a>
+        <a href="webgis.html?layer=area_kopi&amp;village=Pematang+Duku" class="funding-indicator"><i>🌿</i><strong id="ppcf-planted-count">4.000</strong><span>Bibit Ditanam</span></a>
+        <a href="webgis.html?layer=kopi&amp;village=Pematang+Duku" class="funding-indicator"><i>🌱</i><strong id="ppcf-nursery-seedling-count">4.500</strong><span>Bibit di Persemaian</span></a>
+        <a href="webgis.html?layer=sekat_kanal&amp;village=Pematang+Duku" class="funding-indicator"><i>💧</i><strong id="ppcf-canal-count">4</strong><span>Sekat Kanal</span></a>
+        <a href="webgis.html?layer=fdrs&amp;village=Pematang+Duku" class="funding-indicator"><i>🔥</i><strong id="ppcf-fdrs-count">3</strong><span>FDRS</span></a>
         <button type="button" class="funding-indicator" data-ppcf-detail="training"><i>👨‍🌾</i><strong>119</strong><span>Peserta Pelatihan</span></button>
         <button type="button" class="funding-indicator" data-ppcf-detail="market"><i>🤝</i><strong>1</strong><span>Kemitraan Pasar Kopi</span></button>
         <a href="https://yayasangambut.org/wp-content/uploads/2026/02/Buku_Panduan-Pengelolaan-Lahan-Gambut-Berkelanjutan-Berbasis-Masyarakat.pdf" target="_blank" rel="noopener" class="funding-indicator"><i>📘</i><strong>1</strong><span>Buku Panduan</span></a>
@@ -173,10 +173,10 @@
       </div>
     </header>
     <div class="funding-content">
-      <div class="funding-heading"><div><span>Ringkasan capaian</span><h3>Program Pengelolaan Gambut Berkelanjutan</h3></div><p>Klik indikator untuk melihat lokasi atau informasi pendukung.</p></div>
+      <div class="funding-heading"><div><span>Ringkasan capaian</span><h3>Program Pengelolaan Gambut Berkelanjutan</h3></div><p>Data terpetakan dihitung dari WebGIS; indikator lainnya dilengkapi dari laporan final.</p></div>
       <div class="funding-indicators">
-        <a href="webgis.html?donor=Global+Environment+Centre&amp;layer=sekat_kanal" class="funding-indicator"><i>💧</i><strong>7</strong><span>Sekat Kanal</span></a>
-        <button type="button" class="funding-indicator" data-gec-detail="fdrs"><i>🔥</i><strong>2</strong><span>FDRS Terlaporkan</span></button>
+        <a href="webgis.html?donor=Global+Environment+Centre&amp;layer=sekat_kanal" class="funding-indicator"><i>💧</i><strong id="gec-canal-count">7</strong><span>Sekat Kanal Terpetakan</span></a>
+        <button type="button" class="funding-indicator" data-gec-detail="fdrs"><i>🔥</i><strong id="gec-fdrs-count">5</strong><span>FDRS Terpetakan</span></button>
         <button type="button" class="funding-indicator" data-gec-detail="coffee"><i>🌱</i><strong>3.400</strong><span>Bibit Kopi Ditanam</span></button>
         <a href="webgis.html?layer=kopi&amp;village=Pencing+Bekulo" class="funding-indicator"><i>🌿</i><strong>2.000</strong><span>Bibit di Persemaian</span></a>
         <button type="button" class="funding-indicator" data-gec-detail="training"><i>👥</i><strong>72</strong><span>Peserta Pelatihan</span></button>
@@ -202,7 +202,7 @@
   </div>
 </footer>
 
-<script src="js/dashboard-v3.js?v=20260721-gec-dashboard1"></script>
+<script src="js/dashboard-v3.js?v=20260721-aramco-baseline1"></script>
   <script src="js/i18n.js?v=20260721-gec-dashboard1"></script>
   <script src="js/pwa.js?v=20260720-program-clean1"></script>
 </body>
