@@ -259,7 +259,10 @@
       const program = programOf(props, layerId);
       const donor = donorOf(props);
 
-      if (regency) {
+      // Pekanbaru saat ini bukan wilayah cakupan program lapangan.
+      // Objeknya tetap tersedia di database dan WebGIS, tetapi tidak dihitung
+      // pada ringkasan wilayah cakupan di halaman beranda.
+      if (regency && regency.toLowerCase() !== "pekanbaru") {
         regencies.add(regency.toLowerCase());
         if (!regencyCounts[regency]) regencyCounts[regency] = { count: 0 };
         regencyCounts[regency].count += 1;
