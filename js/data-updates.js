@@ -20,9 +20,43 @@
     return normalize(actual) === normalize(expected);
   }
 
+  function parseObject(value) {
+    if (value && typeof value === "object") return value;
+    if (typeof value !== "string" || !value.trim()) return {};
+    try { return JSON.parse(value); } catch (error) { return {}; }
+  }
+
+  function objectId(properties) {
+    const props = properties || {};
+    const target = parseObject(props.targetFeatureProperties);
+    const changes = parseObject(props.proposedChanges);
+    const values = [
+      target.Object_ID, target.Target_Object_ID_Current,
+      target.Target_Object_ID, target.objectId, target.OBJECTID,
+      props.Object_ID, props.Target_Object_ID_Current,
+      props.Target_Object_ID, props.objectId, props.OBJECTID,
+      changes.Object_ID, changes.Target_Object_ID_Current,
+      changes.Target_Object_ID, changes.objectId, changes.OBJECTID,
+      changes.targetObjectId, props.targetObjectId
+    ];
+    const value = values.find(item =>
+      item !== null && item !== undefined && String(item).trim()
+    );
+    return normalize(value || "");
+  }
+
   function featureMatches(feature, update) {
     const props = feature.properties || {};
     const target = update.targetFeatureProperties || {};
+
+    // Unggahan baru membawa Object_ID permanen di targetFeatureProperties.
+    // Jika ID tersedia, jangan pernah jatuh kembali ke nama/No/desa karena
+    // beberapa polygon dapat memiliki atribut lama yang sama.
+    const expectedObjectId = objectId(update);
+    if (expectedObjectId) {
+      const actualObjectId = objectId(props);
+      return !!actualObjectId && actualObjectId === expectedObjectId;
+    }
 
     const preferredKeys = [
       "No","OBJECTID","Id","ID","NAMOBJ","NAMA_DESA",
@@ -131,16 +165,17 @@ function toDirectDriveUrl(url){
       return;
     }
 
+    const updateId = objectId(update);
     const updateLayer = targetLayer(update);
     const updateName = objectName(update);
-    if (!updateLayer || !updateName) return;
+    if (!updateId && (!updateLayer || !updateName)) return;
 
     monitoringGroup.eachLayer(layer => {
       const props = layer && layer.feature && layer.feature.properties || {};
-      if (
-        targetLayer(props) !== updateLayer ||
-        objectName(props) !== updateName
-      ) {
+      const matches = updateId
+        ? objectId(props) === updateId
+        : targetLayer(props) === updateLayer && objectName(props) === updateName;
+      if (!matches) {
         return;
       }
 
@@ -205,6 +240,10 @@ function toDirectDriveUrl(url){
     let rows = "";
 
     rows += row("No", valueOf(["No", "NO", "Id", "ID"]));
+    rows += row("Object ID", valueOf([
+      "Object_ID", "Target_Object_ID_Current", "Target_Object_ID",
+      "objectId", "OBJECTID"
+    ]));
     rows += row("Kabupaten", valueOf(["Kabupaten", "WADMKK"]));
     rows += row("Kecamatan", valueOf(["Kecamatan", "WADMKC"]));
     rows += row("Desa", valueOf(["Desa", "WADMKD"]));

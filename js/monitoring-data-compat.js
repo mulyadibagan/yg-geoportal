@@ -140,8 +140,18 @@
 
   function objectKeys(feature) {
     var p = feature && feature.properties ? feature.properties : {};
+    var target = parseMaybeJSON(p.targetFeatureProperties) || {};
+    var changes = parseMaybeJSON(p.proposedChanges) || {};
     return {
-      id: String(p.targetObjectId || '').trim(),
+      id: keyText(
+        target.Object_ID || target.Target_Object_ID_Current ||
+        target.Target_Object_ID || target.objectId || target.OBJECTID ||
+        p.Object_ID || p.Target_Object_ID_Current || p.Target_Object_ID ||
+        p.objectId || p.OBJECTID || changes.Object_ID ||
+        changes.Target_Object_ID_Current || changes.Target_Object_ID ||
+        changes.objectId || changes.OBJECTID || changes.targetObjectId ||
+        p.targetObjectId || ''
+      ),
       name: keyText(p.targetObjectName || p.locationName || p.title || ''),
       layer: keyText(p.targetLayerId || p.layerId || p.layer || ''),
       geometry: geometryKey(feature && feature.geometry)
@@ -151,6 +161,11 @@
   function sameObject(targetKeys, sourceKeys) {
     if (!targetKeys || !sourceKeys) return false;
 
+    // Unggahan baru yang memiliki ID hanya boleh masuk ke objek yang sama.
+    if (sourceKeys.id) {
+      return !!targetKeys.id && targetKeys.id === sourceKeys.id;
+    }
+
     // Layer wajib sama agar foto mangrove tidak pernah bercampur dengan
     // FDRS, sekat kanal, APO, atau jenis objek lain.
     if (!targetKeys.layer || !sourceKeys.layer || targetKeys.layer !== sourceKeys.layer) return false;
@@ -159,8 +174,7 @@
     // data lama karena targetObjectId dapat berubah saat geometri direvisi.
     if (targetKeys.name && sourceKeys.name) return targetKeys.name === sourceKeys.name;
 
-    // Fallback aman hanya untuk data lama yang benar-benar tidak memiliki nama.
-    if (targetKeys.id && sourceKeys.id) return targetKeys.id === sourceKeys.id;
+    // Fallback aman hanya untuk data lama yang benar-benar tidak memiliki ID.
     return !!targetKeys.geometry && targetKeys.geometry === sourceKeys.geometry;
   }
 
