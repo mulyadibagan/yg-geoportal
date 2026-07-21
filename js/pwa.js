@@ -1,10 +1,22 @@
 (() => {
   "use strict";
 
+  /*
+   * data-updates.js dimuat lebih dahulu dan menyiapkan callback JSONP.
+   * Muat koreksi target segera setelahnya agar foto lama FDRS, sekat kanal,
+   * dan objek program kembali dicocokkan ke Object ID sasaran yang benar.
+   */
+  if (document.querySelector('script[src*="data-updates.js"]')) {
+    const targetFixScript = document.createElement("script");
+    targetFixScript.src = "js/public-update-target-fix.js?v=20260721-legacy-photo1";
+    targetFixScript.async = false;
+    document.head.appendChild(targetFixScript);
+  }
+
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
       navigator.serviceWorker
-        .register("./service-worker.js?v=20260721-object-id1", {
+        .register("./service-worker.js?v=20260721-legacy-photo1", {
           updateViaCache: "none"
         })
         .then(registration => registration.update())
@@ -12,7 +24,7 @@
     });
 
     navigator.serviceWorker.addEventListener("controllerchange", () => {
-      const reloadKey = "yg-sw-object-id1";
+      const reloadKey = "yg-sw-legacy-photo1";
       if (sessionStorage.getItem(reloadKey)) return;
       sessionStorage.setItem(reloadKey, "done");
       window.location.reload();
