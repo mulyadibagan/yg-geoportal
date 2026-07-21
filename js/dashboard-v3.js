@@ -568,8 +568,8 @@
     // Empat rumah bibit adalah baseline resmi; objek kelima dan seterusnya
     // yang masuk WebGIS akan menaikkan angka secara otomatis.
     setMetric("aramco-nursery-count", Math.max(4, aramcoNurseries.length));
-    setMetric("aramco-wave-count", officialMetric(sumProperties(aramcoWave,
-      ["Panjang_m", "Panjang", "panjang_m", "Length_m"]), 300), 0, " m");
+    setMetric("aramco-wave-count", Math.max(300, sumProperties(aramcoWave,
+      ["Panjang_m", "Panjang", "panjang_m", "Length_m"])), 0, " m");
     setMetric("aramco-monitoring-count",
       officialMetric(aramcoMonitoring.length, 100));
     setMetric("aramco-participant-count", officialMetric(0, 1200), 0, "+");
@@ -635,7 +635,7 @@
           ["Luas Restorasi", programmeMetrics.mangrove.area, " ha", 2],
           ["Pohon Mangrove Ditanam", programmeMetrics.mangrove.seedlings],
           ["Rumah Bibit", programmeMetrics.mangrove.nurseries],
-          ["Hybrid Engineering", programmeMetrics.mangrove.wave, " m"],
+          ["Hybrid Engineering", Math.max(300, programmeMetrics.mangrove.wave), " m"],
           ["Desa Program", programmeMetrics.mangrove.villages.size]
         ]
       },
@@ -785,7 +785,7 @@
   };
   const aramcoDetails = {
     nursery: '<h4>Rumah Bibit Mangrove</h4><p>Pilih desa untuk langsung menuju lokasi rumah bibit di peta.</p><div class="funding-location-grid"><a href="webgis.html?layer=nursery_mangrove&amp;village=Buruk+Bakul">Desa Buruk Bakul <span>→</span></a><a href="webgis.html?layer=nursery_mangrove&amp;village=Kelapa+Pati">Desa Kelapa Pati <span>→</span></a><a href="webgis.html?layer=nursery_mangrove&amp;village=Sepahat">Desa Sepahat <span>→</span></a><a href="webgis.html?layer=nursery_mangrove&amp;village=Tanjung+Kuras">Desa Tanjung Kuras <span>→</span></a></div>',
-    wave: '<h4>Hybrid Engineering (Wave Breaker)</h4><p>Pilih segmen untuk melakukan zoom ke lokasi di peta.</p><div class="funding-location-grid"><a href="webgis.html?layer=apo&amp;village=Buruk+Bakul"><b>200 meter</b> – Desa Buruk Bakul <span>→</span></a><a href="webgis.html?layer=apo&amp;village=Kelapa+Pati"><b>100 meter</b> – Desa Kelapa Pati <span>→</span></a></div>'
+    wave: '<h4>Hybrid Engineering (Wave Breaker)</h4><p>Pilih segmen untuk melakukan zoom ke lokasi di peta.</p><div class="funding-location-grid"><a href="webgis.html?layer=apo&amp;village=Buruk+Bakul"><b>200 meter</b> – Desa Buruk Bakul <span>→</span></a><a href="webgis.html?layer=apo&amp;village=Tanjung+Kuras"><b>100 meter</b> – Desa Tanjung Kuras <span>→</span></a></div>'
   };
   const gecDetails = {
     fdrs: '<h4>Fire Danger Rating System (FDRS)</h4><p>Pilih lokasi untuk melihat titik FDRS yang tercantum dalam laporan program 2024.</p><div class="funding-location-grid"><a href="webgis.html?layer=fdrs&amp;village=Tanjung+Kuras">Tanjung Kuras <span>→</span></a><a href="webgis.html?layer=fdrs&amp;village=Simpang+Ayam">Simpang Ayam <span>→</span></a></div>',
