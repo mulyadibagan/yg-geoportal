@@ -242,6 +242,7 @@
     const reportId = String(
       props.reportId || props.Report_ID || props.Source_Report_ID || ""
     ).trim().toUpperCase();
+    const objectId = String(props.Object_ID || "").trim().toUpperCase();
     const identity = [
       props.title, props.locationName, props.Nama_Objek,
       props.description, props.Keterangan
@@ -261,10 +262,12 @@
     if (identity.includes("plang restorasi hutan adat imbo putui") ||
         identity.includes("restorasi hutan adat imbo putui") ||
         identity.includes("lokasi pup 2") ||
-        reportId === "COMMUNITY-YG-20260713-192917-711") {
+        reportId === "COMMUNITY-YG-20260713-192917-711" ||
+        objectId === "COMMUNITY-YG-20260713-192917-711") {
       donor = "Aliansi Kolibri";
     }
-    if (reportId === "COMMUNITY-YG-20260716-163039-924") {
+    if (reportId === "COMMUNITY-YG-20260716-163039-924" ||
+        objectId === "COMMUNITY-YG-20260716-163039-924") {
       donor = "Aramco Asia Singapore";
     }
     if (donor) {

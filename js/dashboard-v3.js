@@ -276,6 +276,7 @@
     const reportId = firstValue(props, [
       "reportId", "Report_ID", "Source_Report_ID"
     ]).toUpperCase();
+    const objectId = firstValue(props, ["Object_ID"]).toUpperCase();
     const identity = [
       props.title, props.locationName, props.Nama_Objek,
       props.description, props.Keterangan
@@ -295,10 +296,12 @@
     if (identity.includes("plang restorasi hutan adat imbo putui") ||
         identity.includes("restorasi hutan adat imbo putui") ||
         identity.includes("lokasi pup 2") ||
-        reportId === "COMMUNITY-YG-20260713-192917-711") {
+        reportId === "COMMUNITY-YG-20260713-192917-711" ||
+        objectId === "COMMUNITY-YG-20260713-192917-711") {
       donor = "Aliansi Kolibri";
     }
-    if (reportId === "COMMUNITY-YG-20260716-163039-924") {
+    if (reportId === "COMMUNITY-YG-20260716-163039-924" ||
+        objectId === "COMMUNITY-YG-20260716-163039-924") {
       donor = "Aramco Asia Singapore";
     }
     if (donor) {
@@ -511,6 +514,7 @@
     const ppcfName = "Pan Pacific Conservation Foundation (PPCF)";
     const aramcoName = "Aramco Asia Singapore";
     const gecName = "Global Environment Centre";
+    const kolibriName = "Aliansi Kolibri";
     const donorEntries = Object.entries(donors)
       .sort((a, b) => b[1] - a[1]);
     if (!donorEntries.some(([name]) => name === aramcoName)) {
@@ -521,6 +525,9 @@
     }
     if (!donorEntries.some(([name]) => name === gecName)) {
       donorEntries.push([gecName, 0]);
+    }
+    if (!donorEntries.some(([name]) => name === kolibriName)) {
+      donorEntries.push([kolibriName, 0]);
     }
     document.getElementById("donor-grid").innerHTML = donorEntries.length
       ? donorEntries.map(([name, count]) => {
@@ -547,6 +554,14 @@
               '<span>' + escapeHtml(name) + '</span>' +
               '<strong>2021–2025</strong>' +
               '<small>Bengkalis &amp; Siak · lihat ringkasan program</small>' +
+            '</button>';
+          }
+          if (name === "Aliansi Kolibri") {
+            return '<button class="category-card dashboard-link funding-card" type="button" data-open-kolibri>' +
+              '<i class="category-icon" aria-hidden="true">Aliansi Kolibri</i>' +
+              '<span>' + escapeHtml(name) + '</span>' +
+              '<strong>2025\u20132026</strong>' +
+              '<small>Imbo Putui \u00b7 lihat ringkasan program</small>' +
             '</button>';
           }
           const donorUrl = mapUrl({ search: donorSearchTerm(name) });
@@ -594,6 +609,7 @@
   const aramcoDetail = document.getElementById("aramco-detail");
   const gecDashboard = document.getElementById("gec-dashboard");
   const gecDetail = document.getElementById("gec-detail");
+  const kolibriDashboard = document.getElementById("kolibri-dashboard");
   const ppcfDetails = {
     training: '<h4>Pelatihan PPCF</h4><div class="funding-detail-grid"><article><strong>69 peserta</strong><span>Pelatihan pengelolaan gambut berkelanjutan dan pertanian tanpa bakar · 7 Agustus 2025</span></article><article><strong>50 peserta</strong><span>Pelatihan agroforestri kopi Liberika, termasuk 13 perempuan · 19 Desember 2025</span></article></div>',
     market: '<h4>Kemitraan pasar kopi</h4><p>MoU antara Kelompok Tani Ketiau Jaya dan Suvarnabhumi Coffee ditandatangani pada 20 Januari 2026. Suvarnabhumi Coffee bertindak sebagai calon pembeli utama kopi Liberika sesuai mutu, harga, dan kapasitas pasokan yang disepakati.</p><a href="webgis.html?layer=kopi&amp;village=Pematang+Duku">Lihat lokasi kelompok tani →</a>'
@@ -626,6 +642,9 @@
     if (event.target.closest("[data-open-gec]")) {
       openFundingDashboard(gecDashboard);
     }
+    if (event.target.closest("[data-open-kolibri]")) {
+      openFundingDashboard(kolibriDashboard);
+    }
     if (event.target.closest("[data-close-ppcf]")) {
       closeFundingDashboard(ppcfDashboard, ppcfDetail);
     }
@@ -634,6 +653,9 @@
     }
     if (event.target.closest("[data-close-gec]")) {
       closeFundingDashboard(gecDashboard, gecDetail);
+    }
+    if (event.target.closest("[data-close-kolibri]")) {
+      closeFundingDashboard(kolibriDashboard);
     }
     const detailButton = event.target.closest("[data-ppcf-detail]");
     if (detailButton) {
@@ -664,6 +686,9 @@
     }
     if (!gecDashboard.hidden) {
       closeFundingDashboard(gecDashboard, gecDetail);
+    }
+    if (!kolibriDashboard.hidden) {
+      closeFundingDashboard(kolibriDashboard);
     }
   });
 })();
