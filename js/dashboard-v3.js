@@ -346,7 +346,7 @@
               '<i class="category-icon" aria-hidden="true">🤝</i>' +
               '<span>' + escapeHtml(name) + '</span>' +
               '<strong>2025\u20132026</strong>' +
-              '<small>Pematang Duku \u00b7 lihat ringkasan output proyek</small>' +
+              '<small>Pematang Duku \u00b7 lihat ringkasan program</small>' +
             '</button>';
           }
           if (name === "Aramco Asia Singapore") {
@@ -354,7 +354,7 @@
               '<i class="category-icon" aria-hidden="true">🌿</i>' +
               '<span>' + escapeHtml(name) + '</span>' +
               '<strong>2023–Sekarang</strong>' +
-              '<small>4 desa · lihat ringkasan dampak program</small>' +
+              '<small>4 desa · lihat ringkasan program</small>' +
             '</button>';
           }
           const donorUrl = mapUrl({ search: donorSearchTerm(name) });
