@@ -72,6 +72,31 @@
     zoomControl: true,
     preferCanvas: true
   }).setView(DEFAULT_VIEW, DEFAULT_ZOOM);
+
+  /*
+   * Urutan visual tidak boleh bergantung pada urutan data dari API.
+   * Setiap keluarga layer mendapat pane sendiri agar batas administrasi
+   * tetap terlihat, sementara monitoring dan titik lapangan tidak tertutup
+   * oleh polygon program yang dimuat sesudahnya.
+   */
+  const MAP_PANES = {
+    boundary: "yg-boundary-pane",
+    program: "yg-program-pane",
+    points: "yg-points-pane",
+    community: "yg-community-pane",
+    monitoring: "yg-monitoring-pane"
+  };
+
+  [
+    [MAP_PANES.boundary, 390],
+    [MAP_PANES.program, 410],
+    [MAP_PANES.points, 430],
+    [MAP_PANES.community, 450],
+    [MAP_PANES.monitoring, 470]
+  ].forEach(([name, zIndex]) => {
+    const pane = map.createPane(name);
+    pane.style.zIndex = String(zIndex);
+  });
   
 // Scale Bar
 L.control.scale({
@@ -143,8 +168,18 @@ L.control.scale({
     return props.Nama_Objek || props.title || props.NAMOBJ || props.Desa || props.WADMKD || "Objek WebGIS";
   }
 
-  function getDonor(props) {
-    const source = props || {};
+  function getDonor(props, visited) {
+    const source = props && typeof props === "object" ? props : {};
+    const seen = visited || new Set();
+
+    /*
+     * Data lama dapat menyimpan atribut target secara bertingkat. Hindari
+     * membaca objek yang sama berulang kali dan jangan membuat objek kosong
+     * baru sebagai kandidat, karena itu menyebabkan rekursi tanpa akhir pada
+     * objek yang memang belum memiliki donor.
+     */
+    if (seen.has(source)) return "";
+    seen.add(source);
     const keys = [
       "Donor", "Nama_Donor", "Funding_Source",
       "donor", "nama_donor", "funding_source"
@@ -161,16 +196,27 @@ L.control.scale({
       }
     }
 
-    let nested = source.targetFeatureProperties || source.proposedChanges || {};
-    if (typeof nested === "string") {
-      try {
-        nested = JSON.parse(nested);
-      } catch (error) {
-        nested = {};
+    const nestedCandidates = [
+      source.targetFeatureProperties,
+      source.proposedChanges
+    ];
+
+    for (let index = 0; index < nestedCandidates.length; index += 1) {
+      let nested = nestedCandidates[index];
+      if (!nested) continue;
+
+      if (typeof nested === "string") {
+        try {
+          nested = JSON.parse(nested);
+        } catch (error) {
+          continue;
+        }
       }
-    }
-    if (nested && typeof nested === "object" && nested !== source) {
-      return getDonor(nested);
+
+      if (nested && typeof nested === "object" && nested !== source) {
+        const donor = getDonor(nested, seen);
+        if (donor) return donor;
+      }
     }
 
     return "";
@@ -729,20 +775,34 @@ L.control.scale({
     );
   }
 
+  function paneFor(config, feature) {
+    if (config.id === "desa_intervensi") return MAP_PANES.boundary;
+    if (config.id === "monitoring_reports") return MAP_PANES.monitoring;
+    if (config.id === "community_reports") return MAP_PANES.community;
+
+    const geometryType = String(
+      feature && feature.geometry && feature.geometry.type || ""
+    );
+    if (/Point$/.test(geometryType)) return MAP_PANES.points;
+    return MAP_PANES.program;
+  }
+
   function styleFor(config) {
     const monitoring = config.id === "monitoring_reports";
+    const boundary = config.id === "desa_intervensi";
     return {
       color: config.color,
-      weight: monitoring ? 4 : 2.5,
-      opacity: 0.95,
+      weight: monitoring ? 4 : (boundary ? 3 : 2.5),
+      opacity: 1,
       dashArray: monitoring ? "8 5" : null,
       fillColor: config.color,
-      fillOpacity: monitoring ? 0.12 : 0.2
+      fillOpacity: monitoring ? 0.12 : (boundary ? 0.025 : 0.2)
     };
   }
 
-  function pointFor(config, latlng) {
+  function pointFor(config, latlng, pane) {
     return L.circleMarker(latlng, {
+      pane: pane,
       radius: config.id === "monitoring_reports" ? 9 : 7,
       fillColor: config.color,
       color: "#ffffff",
@@ -794,9 +854,11 @@ L.control.scale({
 
     features.forEach(feature => {
       try {
+        const pane = paneFor(config, feature);
         const single = L.geoJSON(feature, {
+          pane: pane,
           style: () => styleFor(config),
-          pointToLayer: (_feature, latlng) => pointFor(config, latlng)
+          pointToLayer: (_feature, latlng) => pointFor(config, latlng, pane)
         });
 
         single.eachLayer(layer => {
