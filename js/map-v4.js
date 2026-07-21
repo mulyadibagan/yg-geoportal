@@ -1694,8 +1694,26 @@ L.control.scale({
       return;
     }
 
+    const permanentReportIds = new Set(data.features.map(feature => {
+      const p = feature && feature.properties || {};
+      const layerId = String(p.Layer_ID || p.Source_Layer || "").toLowerCase();
+      return layerId !== "community_reports"
+        ? String(p.Source_Report_ID || "").trim()
+        : "";
+    }).filter(Boolean));
+
     rawFeatures = data.features
-      .filter(feature => feature && feature.geometry)
+      .filter(feature => {
+        if (!feature || !feature.geometry) return false;
+        const p = feature.properties || {};
+        const layerId = String(p.Layer_ID || p.Source_Layer || "").toLowerCase();
+        const reportId = String(p.reportId || p.Report_ID || "").trim();
+        return !(
+          layerId === "community_reports" &&
+          reportId &&
+          permanentReportIds.has(reportId)
+        );
+      })
       .map(normalizeVerifiedCommunityAssets)
       .map(applyPematangDukuDonorPolicy)
       .map(applyAramcoCoastalAssetPolicy)
