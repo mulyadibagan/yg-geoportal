@@ -1415,7 +1415,7 @@ L.control.scale({
     return feature;
   }
 
-  function applyExternalCanalBlockDonorPolicy(feature) {
+  function applyExternalPeatInfrastructureDonorPolicy(feature) {
     const props = feature && feature.properties || {};
     const layerId = String(
       props.Layer_ID || props.Source_Layer || ""
@@ -1425,7 +1425,8 @@ L.control.scale({
       props.village, props.locationName
     ].filter(Boolean).join(" ").trim().toLowerCase();
 
-    if (layerId === "sekat_kanal" && !village.includes("pematang duku")) {
+    if ((layerId === "sekat_kanal" || layerId === "fdrs") &&
+        !village.includes("pematang duku")) {
       props.Donor = "Global Environment Centre";
       props.Donor_Cluster = "Global Environment Centre";
     }
@@ -1443,7 +1444,7 @@ L.control.scale({
       .map(normalizeVerifiedCommunityAssets)
       .map(applyPematangDukuDonorPolicy)
       .map(applyAramcoCoastalAssetPolicy)
-      .map(applyExternalCanalBlockDonorPolicy);
+      .map(applyExternalPeatInfrastructureDonorPolicy);
     const groups = {};
 
     rawFeatures.forEach(feature => {
