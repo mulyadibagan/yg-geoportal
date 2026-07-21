@@ -160,6 +160,41 @@
   </section>
 </div>
 
+<div class="funding-modal" id="gec-dashboard" hidden>
+  <button class="funding-backdrop" type="button" data-close-gec aria-label="Tutup dashboard GEC"></button>
+  <section class="funding-dialog funding-dialog-gec" role="dialog" aria-modal="true" aria-labelledby="gec-title">
+    <button class="funding-close" type="button" data-close-gec aria-label="Tutup">×</button>
+    <header class="funding-hero">
+      <span class="funding-badge">MITRA PENDANAAN</span>
+      <h2 id="gec-title">Global Environment Centre</h2>
+      <div class="funding-meta">
+        <span><b>Periode Program</b>2021–2025</span>
+        <span><b>Wilayah Program</b>Kabupaten Bengkalis • Kabupaten Siak</span>
+      </div>
+    </header>
+    <div class="funding-content">
+      <div class="funding-heading"><div><span>Ringkasan capaian</span><h3>Program Pengelolaan Gambut Berkelanjutan</h3></div><p>Klik indikator untuk melihat lokasi atau informasi pendukung.</p></div>
+      <div class="funding-indicators">
+        <a href="webgis.html?donor=Global+Environment+Centre&amp;layer=sekat_kanal" class="funding-indicator"><i>💧</i><strong>7</strong><span>Sekat Kanal</span></a>
+        <button type="button" class="funding-indicator" data-gec-detail="fdrs"><i>🔥</i><strong>2</strong><span>FDRS Terlaporkan</span></button>
+        <button type="button" class="funding-indicator" data-gec-detail="coffee"><i>🌱</i><strong>3.400</strong><span>Bibit Kopi Ditanam</span></button>
+        <a href="webgis.html?layer=kopi&amp;village=Pencing+Bekulo" class="funding-indicator"><i>🌿</i><strong>2.000</strong><span>Bibit di Persemaian</span></a>
+        <button type="button" class="funding-indicator" data-gec-detail="training"><i>👥</i><strong>72</strong><span>Peserta Pelatihan</span></button>
+        <a href="https://drive.google.com/file/d/1Z5YUJV8O8bX-OPgJgShtGq4Ibkr79Lhm/view?usp=sharing" target="_blank" rel="noopener" class="funding-indicator"><i>📘</i><strong>1</strong><span>Panduan Budidaya Kopi Liberika</span></a>
+      </div>
+      <div class="funding-detail" id="gec-detail" hidden></div>
+      <section class="funding-timeline" aria-labelledby="gec-timeline-title">
+        <div class="funding-heading"><div><span>Perjalanan program</span><h3 id="gec-timeline-title">Timeline Program</h3></div></div>
+        <div class="funding-timeline-grid">
+          <article><b>Infrastruktur historis</b><strong>2021–2023</strong><p>Sepahat • Temiang</p><ul><li>Sekat kanal tercatat di GIS sejak 2021</li><li>Penguatan pembasahan gambut berbasis masyarakat</li><li>Perluasan infrastruktur ke Temiang dan Sepahat</li></ul></article>
+          <article><b>Fase program</b><strong>2024</strong><p>Temiang • Tanjung Kuras • Buruk Bakul • Simpang Ayam</p><ul><li>2.000 bibit kopi Liberika ditanam</li><li>22 peserta pelatihan pembibitan kopi</li><li>2 sekat kanal dibangun</li><li>2 FDRS dipasang</li></ul></article>
+          <article><b>Fase program</b><strong>2025</strong><p>Temiang • Tanjung Kuras • Pencing Bekulo • Buruk Bakul</p><ul><li>1.400 bibit kopi Liberika ditanam</li><li>2.000 bibit dikembangkan di persemaian</li><li>50 peserta pelatihan pemeliharaan kopi</li><li>1 sekat kanal dan 1 buku panduan</li></ul></article>
+        </div>
+      </section>
+    </div>
+  </section>
+</div>
+
 <footer class="site-footer">
   <div class="footer-inner">
     <span>© Yayasan Gambut</span>
@@ -167,8 +202,8 @@
   </div>
 </footer>
 
-<script src="js/dashboard-v3.js?v=20260721-aramco-dashboard1"></script>
-  <script src="js/i18n.js?v=20260721-all-pages1"></script>
+<script src="js/dashboard-v3.js?v=20260721-gec-dashboard1"></script>
+  <script src="js/i18n.js?v=20260721-gec-dashboard1"></script>
   <script src="js/pwa.js?v=20260720-program-clean1"></script>
 </body>
 </html>

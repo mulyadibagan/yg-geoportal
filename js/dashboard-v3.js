@@ -349,6 +349,7 @@
 
     const ppcfName = "Pan Pacific Conservation Foundation (PPCF)";
     const aramcoName = "Aramco Asia Singapore";
+    const gecName = "Global Environment Centre";
     const donorEntries = Object.entries(donors)
       .sort((a, b) => b[1] - a[1]);
     if (!donorEntries.some(([name]) => name === aramcoName)) {
@@ -356,6 +357,9 @@
     }
     if (!donorEntries.some(([name]) => name === ppcfName)) {
       donorEntries.unshift([ppcfName, 0]);
+    }
+    if (!donorEntries.some(([name]) => name === gecName)) {
+      donorEntries.push([gecName, 0]);
     }
     document.getElementById("donor-grid").innerHTML = donorEntries.length
       ? donorEntries.map(([name, count]) => {
@@ -374,6 +378,14 @@
               '<span>' + escapeHtml(name) + '</span>' +
               '<strong>2023–Sekarang</strong>' +
               '<small>4 desa · lihat ringkasan program</small>' +
+            '</button>';
+          }
+          if (name === "Global Environment Centre") {
+            return '<button class="category-card dashboard-link funding-card" type="button" data-open-gec>' +
+              '<i class="category-icon" aria-hidden="true">💧</i>' +
+              '<span>' + escapeHtml(name) + '</span>' +
+              '<strong>2021–2025</strong>' +
+              '<small>Bengkalis &amp; Siak · lihat ringkasan program</small>' +
             '</button>';
           }
           const donorUrl = mapUrl({ search: donorSearchTerm(name) });
@@ -419,6 +431,8 @@
   const ppcfDetail = document.getElementById("ppcf-detail");
   const aramcoDashboard = document.getElementById("aramco-dashboard");
   const aramcoDetail = document.getElementById("aramco-detail");
+  const gecDashboard = document.getElementById("gec-dashboard");
+  const gecDetail = document.getElementById("gec-detail");
   const ppcfDetails = {
     training: '<h4>Pelatihan PPCF</h4><div class="funding-detail-grid"><article><strong>69 peserta</strong><span>Pelatihan pengelolaan gambut berkelanjutan dan pertanian tanpa bakar · 7 Agustus 2025</span></article><article><strong>50 peserta</strong><span>Pelatihan agroforestri kopi Liberika, termasuk 13 perempuan · 19 Desember 2025</span></article></div>',
     market: '<h4>Kemitraan pasar kopi</h4><p>MoU antara Kelompok Tani Ketiau Jaya dan Suvarnabhumi Coffee ditandatangani pada 20 Januari 2026. Suvarnabhumi Coffee bertindak sebagai calon pembeli utama kopi Liberika sesuai mutu, harga, dan kapasitas pasokan yang disepakati.</p><a href="webgis.html?layer=kopi&amp;village=Pematang+Duku">Lihat lokasi kelompok tani →</a>'
@@ -426,6 +440,11 @@
   const aramcoDetails = {
     nursery: '<h4>Rumah Bibit Mangrove</h4><p>Pilih desa untuk langsung menuju lokasi rumah bibit di peta.</p><div class="funding-location-grid"><a href="webgis.html?layer=nursery_mangrove&amp;village=Buruk+Bakul">Desa Buruk Bakul <span>→</span></a><a href="webgis.html?layer=nursery_mangrove&amp;village=Kelapa+Pati">Desa Kelapa Pati <span>→</span></a><a href="webgis.html?layer=nursery_mangrove&amp;village=Sepahat">Desa Sepahat <span>→</span></a><a href="webgis.html?layer=nursery_mangrove&amp;village=Tanjung+Kuras">Desa Tanjung Kuras <span>→</span></a></div>',
     wave: '<h4>Hybrid Engineering (Wave Breaker)</h4><p>Pilih segmen untuk melakukan zoom ke lokasi di peta.</p><div class="funding-location-grid"><a href="webgis.html?layer=apo&amp;village=Buruk+Bakul"><b>200 meter</b> – Desa Buruk Bakul <span>→</span></a><a href="webgis.html?layer=apo&amp;village=Kelapa+Pati"><b>100 meter</b> – Desa Kelapa Pati <span>→</span></a></div>'
+  };
+  const gecDetails = {
+    fdrs: '<h4>Fire Danger Rating System (FDRS)</h4><p>Pilih lokasi untuk melihat titik FDRS yang tercantum dalam laporan program 2024.</p><div class="funding-location-grid"><a href="webgis.html?layer=fdrs&amp;village=Tanjung+Kuras">Tanjung Kuras <span>→</span></a><a href="webgis.html?layer=fdrs&amp;village=Simpang+Ayam">Simpang Ayam <span>→</span></a></div>',
+    coffee: '<h4>Penanaman Kopi Liberika</h4><p>Pilih lokasi untuk melihat data lapangan penanaman kopi.</p><div class="funding-location-grid"><a href="webgis.html?layer=kopi&amp;village=Temiang"><b>1.700 bibit</b> – Temiang <span>→</span></a><a href="webgis.html?layer=kopi&amp;village=Tanjung+Kuras"><b>1.100 bibit</b> – Tanjung Kuras <span>→</span></a><a href="webgis.html?layer=kopi&amp;village=Buruk+Bakul"><b>600 bibit</b> – Buruk Bakul <span>→</span></a></div>',
+    training: '<h4>Pelatihan Program GEC</h4><div class="funding-detail-grid"><article><strong>22 peserta</strong><span>Pelatihan pembibitan kopi Liberika · Temiang · 28 Oktober 2024</span></article><article><strong>50 peserta</strong><span>Pelatihan pemeliharaan dan panen kopi Liberika · Temiang · 29 Oktober 2025</span></article></div>'
   };
   function openFundingDashboard(dashboard) {
     dashboard.hidden = false;
@@ -443,11 +462,17 @@
     if (event.target.closest("[data-open-aramco]")) {
       openFundingDashboard(aramcoDashboard);
     }
+    if (event.target.closest("[data-open-gec]")) {
+      openFundingDashboard(gecDashboard);
+    }
     if (event.target.closest("[data-close-ppcf]")) {
       closeFundingDashboard(ppcfDashboard, ppcfDetail);
     }
     if (event.target.closest("[data-close-aramco]")) {
       closeFundingDashboard(aramcoDashboard, aramcoDetail);
+    }
+    if (event.target.closest("[data-close-gec]")) {
+      closeFundingDashboard(gecDashboard, gecDetail);
     }
     const detailButton = event.target.closest("[data-ppcf-detail]");
     if (detailButton) {
@@ -461,6 +486,12 @@
       aramcoDetail.hidden = false;
       aramcoDetail.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }
+    const gecDetailButton = event.target.closest("[data-gec-detail]");
+    if (gecDetailButton) {
+      gecDetail.innerHTML = gecDetails[gecDetailButton.dataset.gecDetail] || "";
+      gecDetail.hidden = false;
+      gecDetail.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
   });
   document.addEventListener("keydown", event => {
     if (event.key !== "Escape") return;
@@ -469,6 +500,9 @@
     }
     if (!aramcoDashboard.hidden) {
       closeFundingDashboard(aramcoDashboard, aramcoDetail);
+    }
+    if (!gecDashboard.hidden) {
+      closeFundingDashboard(gecDashboard, gecDetail);
     }
   });
 })();
