@@ -4,6 +4,11 @@ WebGIS V2 adalah fondasi integrasi data Yayasan Gambut. Versi ini berjalan
 terpisah dari WebGIS V1 agar operasional produksi tetap aman selama proses
 migrasi.
 
+Dashboard donor PPCF menghubungkan capaian Final Report Pematang Duku
+2025–2026 dengan bukti objek lapangan. Sekat kanal, FDRS, titik kegiatan,
+dan polygon kopi dihitung ulang dari GeoJSON; angka yang hanya tersedia pada
+laporan diberi label sumber, sedangkan perbedaan luas diberi tanda rekonsiliasi.
+
 ## Tujuan
 
 - Satu identitas permanen untuk setiap objek spasial.
@@ -64,4 +69,3 @@ ke tabel `SOURCE_RECORD` tanpa mengubah antarmuka.
 
 Jalankan server statis dari root repository, lalu buka `/v2/`. Halaman tidak
 boleh dibuka langsung melalui `file://` karena data GeoJSON dimuat lewat HTTP.
-

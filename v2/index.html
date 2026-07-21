@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://unpkg.com">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="donor-dashboard.css">
 </head>
 <body>
   <div class="app-shell">
@@ -59,6 +60,11 @@
           </section>
 
           <section class="panel-section">
+            <div class="section-title"><div><span class="eyebrow">Akuntabilitas proyek</span><h2>Dashboard donor</h2></div></div>
+            <div class="donor-cards" id="donor-cards"></div>
+          </section>
+
+          <section class="panel-section">
             <div class="section-title"><div><span class="eyebrow">Peta tematik</span><h2>Layer program</h2></div><button class="link-button" id="toggle-layers" type="button">Matikan semua</button></div>
             <div class="layer-list" id="program-layers"></div>
           </section>
@@ -94,6 +100,12 @@
           <button class="secondary-button" id="detail-zoom" type="button">Fokus di peta</button>
           <a class="primary-link" id="monitor-link" href="../report.html?type=monitoring">Kirim monitoring</a>
         </div>
+      </aside>
+
+      <aside class="donor-panel" id="donor-panel" aria-hidden="true">
+        <button class="detail-close" id="donor-close" type="button" aria-label="Tutup">×</button>
+        <div class="donor-hero"><span id="donor-code">DONOR</span><h2 id="donor-title">Portofolio donor</h2><p id="donor-period">Periode proyek</p></div>
+        <div class="donor-body" id="donor-body"></div>
       </aside>
     </main>
   </div>

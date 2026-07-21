@@ -30,15 +30,33 @@
     projects: [
       { id: "aramco-mangrove-p1", name: "Community-Based Mangrove Protection and Planting — Phase 1", program: "mangrove", donor: "aramco-asia-singapore", period: "Juni 2023–Mei 2024", places: ["Buruk Bakul"] },
       { id: "aramco-mangrove-p2", name: "Community-Based Mangrove Protection and Planting — Phase 2", program: "mangrove", donor: "aramco-asia-singapore", period: "Juni 2024–Mei 2025", places: ["Buruk Bakul", "Kelapa Pati"] },
-      { id: "aramco-mangrove-p3", name: "Community-Based Mangrove Protection and Planting — Phase 3", program: "mangrove", donor: "aramco-asia-singapore", period: "2025–2026", places: ["Sepahat", "Tanjung Kuras"] }
+      { id: "aramco-mangrove-p3", name: "Community-Based Mangrove Protection and Planting — Phase 3", program: "mangrove", donor: "aramco-asia-singapore", period: "2025–2026", places: ["Sepahat", "Tanjung Kuras"] },
+      { id: "ppcf-pematang-duku", name: "Sustainable Agriculture Promotion in Peatland Areas to Prevent Palm Oil Expansion", program: "livelihood", donor: "ppcf", period: "April 2025–Maret 2026", places: ["Pematang Duku"] }
     ],
     sources: [
       { type: "Baseline", title: "Final Baseline Mangrove 2024", scope: "Buruk Bakul dan Kelapa Pati" },
       { type: "Project report", title: "Aramco Phase 1 Final Report", scope: "Juni 2023–Mei 2024" },
       { type: "Project report", title: "Aramco Phase 2 Final Report", scope: "Juni 2024–Mei 2025" },
       { type: "Operations", title: "Restorasi Yayasan Gambut", scope: "12 kelompok data operasional" },
-      { type: "Publication", title: "Annual Report 2025", scope: "Capaian dan dokumentasi" }
+      { type: "Publication", title: "Annual Report 2025", scope: "Capaian dan dokumentasi" },
+      { type: "Final report", title: "PPCF Final Report Pematang Duku Bengkalis (2025–2026)", scope: "Pematang Duku · April 2025–Maret 2026" }
     ],
+    donorDashboards: {
+      ppcf: {
+        code: "PPCF", title: "Pematang Duku Peatland & Livelihood Programme", period: "April 2025–Maret 2026",
+        location: "Desa Pematang Duku, Kabupaten Bengkalis", budget: "SGD 49.920 disetujui · SGD 37.450 diterima",
+        outputs: [
+          { title: "Sekat kanal", achieved: "4", target: "4 unit", layer: "sekat_kanal", evidence: "hybrid", note: "Empat lokasi lapangan cocok dengan koordinat pada laporan." },
+          { title: "FDRS operasional", achieved: "3", target: "3 unit", layer: "fdrs", evidence: "hybrid", note: "Tiga papan risiko kebakaran tercatat pada data lapangan." },
+          { title: "Bibit ditanam", achieved: "4.000", target: "4.000 bibit", evidence: "report", note: "2.500 kopi Liberika dan 1.500 Geronggang." },
+          { title: "Luas penanaman", achieved: "3,6 ha", target: "Realisasi laporan", layer: "area_kopi", evidence: "reconcile", note: "Luas polygon lapangan dihitung otomatis untuk rekonsiliasi." },
+          { title: "Rumah pembibitan", achieved: "1", target: "1 unit", layer: "kopi", evidence: "partial", note: ">4.500 bibit; klasifikasi objek pembibitan perlu dilengkapi." },
+          { title: "Pelatihan tanpa bakar", achieved: "69", target: "50 peserta", evidence: "report", note: "Nilai post-test rata-rata 8,96/10." },
+          { title: "Petani agroforestri", achieved: "50", target: "50 petani", evidence: "report", note: "Termasuk 13 perempuan." },
+          { title: "Usaha & pasar", achieved: "2", target: "1 usaha + 1 MoU", evidence: "report", note: "Mesin pulper dan MoU Suvarnabhumi Coffee." }
+        ]
+      }
+    },
     monitoring: {
       "buruk bakul": [
         { project: "Phase 1", period: "2023–2024", survival: "bervariasi per sub-lokasi", note: "Monitoring komunitas dan replanting" },
@@ -88,6 +106,7 @@
     const direct = getDonor(record.properties);
     if (direct) return CATALOG.donors.find(d => [d.name, ...d.aliases].some(alias => normalize(alias) === normalize(direct)))?.id || normalize(direct);
     const village = normalize(record.village);
+    if (village === "pematang duku" && ["area_kopi", "kopi", "sekat_kanal", "fdrs"].includes(record.config.id)) return "ppcf";
     const project = CATALOG.projects.find(item => item.program === record.config.program && item.places.some(place => normalize(place) === village));
     return project?.donor || "";
   }
@@ -95,6 +114,7 @@
   function projectFor(record) {
     const village = normalize(record.village);
     const phase = normalize(getFirst(record.properties, ["Fase", "fase", "Phase", "phase", "Keterangan"]));
+    if (village === "pematang duku" && ["area_kopi", "kopi", "sekat_kanal", "fdrs"].includes(record.config.id)) return CATALOG.projects.find(item => item.id === "ppcf-pematang-duku");
     return CATALOG.projects.find(item => item.program === record.config.program
       && item.places.some(place => normalize(place) === village)
       && (!phase || normalize(item.name).includes(phase.replace("fase", "phase")))) || null;
@@ -215,6 +235,28 @@
       + `<small>${CATALOG.sources.length} sumber inti tercatat · setiap nilai V2 menyimpan asal datanya.</small>`;
   }
 
+  function renderDonorCards() {
+    $("donor-cards").innerHTML = CATALOG.donors.map(donor => `<button type="button" data-donor-dashboard="${esc(donor.id)}"><span>${esc(donor.id === "ppcf" ? "PPCF" : "AAS")}</span><strong>${esc(donor.name)}</strong><small>Lihat output proyek →</small></button>`).join("");
+  }
+
+  const fieldRecordsFor = (donorId, layerId) => state.records.filter(record => record.donor === donorId && (!layerId || record.config.id === layerId));
+
+  function openDonorDashboard(donorId) {
+    const dashboard = CATALOG.donorDashboards[donorId];
+    if (!dashboard) { state.filters.donor = donorId; $("donor-filter").value = donorId; applyFilters(); toast("Portofolio donor difilter pada peta."); return; }
+    $("donor-code").textContent = dashboard.code;
+    $("donor-title").textContent = dashboard.title;
+    $("donor-period").textContent = `${dashboard.period} · ${dashboard.location}`;
+    const mappedArea = fieldRecordsFor(donorId, "area_kopi").reduce((sum, record) => sum + (Number(getFirst(record.properties, ["Luas_Ha", "LUAS_HA", "luas_ha", "Luas"])) || 0), 0);
+    const outputCards = dashboard.outputs.map(output => {
+      const fieldCount = output.layer ? fieldRecordsFor(donorId, output.layer).length : 0;
+      const validation = output.evidence === "report" ? "Sumber: laporan final" : output.evidence === "reconcile" ? `Peta: ${new Intl.NumberFormat("id-ID", { maximumFractionDigits: 2 }).format(mappedArea)} ha · perlu rekonsiliasi` : output.evidence === "partial" ? `${fieldCount} objek terkait · klasifikasi perlu dilengkapi` : `${fieldCount} objek lapangan terhubung`;
+      return `<article class="output-card ${esc(output.evidence)}"><div><span>${esc(output.title)}</span><strong>${esc(output.achieved)}</strong><small>dari ${esc(output.target)}</small></div><p>${esc(output.note)}</p><em>${esc(validation)}</em></article>`;
+    }).join("");
+    $("donor-body").innerHTML = `<div class="donor-summary"><div><span>Proyek</span><strong>${esc(CATALOG.projects.find(project => project.donor === donorId)?.name || dashboard.title)}</strong></div><div><span>Pembiayaan</span><strong>${esc(dashboard.budget)}</strong></div></div><div class="evidence-legend"><span><i class="field"></i>Data lapangan</span><span><i class="report"></i>Laporan final</span><span><i class="reconcile"></i>Perlu rekonsiliasi</span></div><div class="output-grid">${outputCards}</div><div class="reconciliation"><b>Catatan kualitas data</b><p>Laporan menyebut realisasi penanaman 3,6 ha, sedangkan polygon lapangan saat ini berjumlah ${new Intl.NumberFormat("id-ID", { maximumFractionDigits: 2 }).format(mappedArea)} ha. Kedua nilai ditampilkan agar tim dapat memeriksa dan menyelaraskannya.</p></div>`;
+    $("donor-panel").classList.add("open"); $("donor-panel").setAttribute("aria-hidden", "false");
+  }
+
   function openRecord(record) {
     state.selected = record;
     $("detail-program").textContent = PROGRAMS[record.config.program].label;
@@ -287,6 +329,7 @@
 
   renderLayerList();
   renderSources();
+  renderDonorCards();
 
   document.addEventListener("change", event => {
     if (event.target.matches("[data-layer]")) {
@@ -312,6 +355,8 @@
     if (button) openRecord(state.records.find(record => record.uuid === button.dataset.uuid));
   });
   $("detail-close").addEventListener("click", closeDetail);
+  $("donor-close").addEventListener("click", () => { $("donor-panel").classList.remove("open"); $("donor-panel").setAttribute("aria-hidden", "true"); });
+  $("donor-cards").addEventListener("click", event => { const button = event.target.closest("[data-donor-dashboard]"); if (button) openDonorDashboard(button.dataset.donorDashboard); });
   $("detail-zoom").addEventListener("click", () => state.selected && focusRecord(state.selected));
   $("fit-all").addEventListener("click", () => state.bounds.isValid() && map.fitBounds(state.bounds, { padding: [28, 28], maxZoom: 11 }));
   $("reset-filter").addEventListener("click", () => {
