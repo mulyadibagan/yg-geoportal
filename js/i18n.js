@@ -336,7 +336,7 @@
         .replace(/^Terakhir\s+/, "Latest ")
         .replace(/\s+kali monitoring$/, " monitoring visits")
         .replace(/\s+riwayat$/, " records")
-        .replace(/^Perlu dipantau\s+Â·\s+/, "Needs monitoring · ")
+        .replace(/^Perlu dipantau\s+·\s+/, "Needs monitoring · ")
         .replace(/^(\d{4})[–-]Sekarang$/, "$1–Present")
         .replace(/^(\d+)\s+desa\s*\u00b7\s*lihat ringkasan program$/, "$1 villages · view programme summary")
         .replace(/^Pematang Duku\s*\u00b7\s*lihat ringkasan program$/, "Pematang Duku · view programme summary")
