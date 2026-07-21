@@ -1608,6 +1608,49 @@ L.control.scale({
     return feature;
   }
 
+  function applyRequestedDonorCorrections(feature) {
+    const props = feature && feature.properties || {};
+    const layerId = String(
+      props.Layer_ID || props.Source_Layer || ""
+    ).trim().toLowerCase();
+    const reportId = String(
+      props.reportId || props.Report_ID || props.Source_Report_ID || ""
+    ).trim().toUpperCase();
+    const identity = [
+      props.title, props.locationName, props.Nama_Objek,
+      props.description, props.Keterangan
+    ].filter(Boolean).join(" ").toLowerCase();
+    let donor = "";
+
+    if (layerId === "kopi") donor = "Global Environment Centre";
+    if (identity.includes("rumah jemur semi permanen kopi liberika")) {
+      donor = "Yayasan Penabulu";
+    }
+    if (identity.includes("menara tampung air nursery ktwmj")) {
+      donor = "Yayasan Penabulu";
+    }
+    if (!identity.includes("menara tampung air") &&
+        (identity.includes("nursery ktwmj desa temiang") ||
+        identity.includes("nursery ktwmj"))) {
+      donor = "Global Environment Centre";
+    }
+    if (identity.includes("plang restorasi hutan adat imbo putui") ||
+        identity.includes("restorasi hutan adat imbo putui") ||
+        identity.includes("lokasi pup 2") ||
+        reportId === "COMMUNITY-YG-20260713-192917-711") {
+      donor = "Aliansi Kolibri";
+    }
+    if (reportId === "COMMUNITY-YG-20260716-163039-924") {
+      donor = "Aramco Asia Singapore";
+    }
+
+    if (donor) {
+      props.Donor = donor;
+      props.Donor_Cluster = donor;
+    }
+    return feature;
+  }
+
   function initialize(data) {
     if (!data || data.type !== "FeatureCollection" || !Array.isArray(data.features)) {
       setStatus("Respons database tidak valid.", true);
@@ -1619,7 +1662,8 @@ L.control.scale({
       .map(normalizeVerifiedCommunityAssets)
       .map(applyPematangDukuDonorPolicy)
       .map(applyAramcoCoastalAssetPolicy)
-      .map(applyExternalPeatInfrastructureDonorPolicy);
+      .map(applyExternalPeatInfrastructureDonorPolicy)
+      .map(applyRequestedDonorCorrections);
     const groups = {};
 
     rawFeatures.forEach(feature => {
@@ -2103,6 +2147,9 @@ L.control.scale({
       if (!official) return feature;
 
       const officialProps = official.properties || {};
+      const inheritedDonor =
+        getDonor(feature.properties || {}) ||
+        getDonor(officialProps);
       return {
         ...feature,
         geometry: JSON.parse(JSON.stringify(official.geometry)),
@@ -2111,7 +2158,9 @@ L.control.scale({
           Target_Object_ID_Current: officialProps.Object_ID || "",
           Target_Object_Name_Current: officialProps.Nama_Objek || "",
           Target_Layer_ID_Current: "area_mangrove",
-          Geometry_Source: "area_mangrove_latest"
+          Geometry_Source: "area_mangrove_latest",
+          Donor: inheritedDonor,
+          Donor_Cluster: inheritedDonor
         }
       };
     });

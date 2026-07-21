@@ -235,6 +235,45 @@
     return feature;
   }
 
+  function applyRequestedDonorCorrections(feature) {
+    const props = feature && feature.properties || {};
+    const layerId = String(props.Layer_ID || props.Source_Layer || "")
+      .trim().toLowerCase();
+    const reportId = String(
+      props.reportId || props.Report_ID || props.Source_Report_ID || ""
+    ).trim().toUpperCase();
+    const identity = [
+      props.title, props.locationName, props.Nama_Objek,
+      props.description, props.Keterangan
+    ].filter(Boolean).join(" ").toLowerCase();
+    let donor = "";
+
+    if (layerId === "kopi") donor = "Global Environment Centre";
+    if (identity.includes("rumah jemur semi permanen kopi liberika") ||
+        identity.includes("menara tampung air nursery ktwmj")) {
+      donor = "Yayasan Penabulu";
+    }
+    if (!identity.includes("menara tampung air") &&
+        (identity.includes("nursery ktwmj desa temiang") ||
+        identity.includes("nursery ktwmj"))) {
+      donor = "Global Environment Centre";
+    }
+    if (identity.includes("plang restorasi hutan adat imbo putui") ||
+        identity.includes("restorasi hutan adat imbo putui") ||
+        identity.includes("lokasi pup 2") ||
+        reportId === "COMMUNITY-YG-20260713-192917-711") {
+      donor = "Aliansi Kolibri";
+    }
+    if (reportId === "COMMUNITY-YG-20260716-163039-924") {
+      donor = "Aramco Asia Singapore";
+    }
+    if (donor) {
+      props.Donor = donor;
+      props.Donor_Cluster = donor;
+    }
+    return feature;
+  }
+
   async function loadMasterData() {
     if (!masterDataPromise) {
       masterDataPromise = fetch(API + "&t=" + Date.now(), {
@@ -248,7 +287,9 @@
           throw new Error("Format Master Database tidak valid");
         }
         state.databaseUpdated = data.updatedAt || data.lastUpdated || "";
-        data.features = data.features.map(normalizeVerifiedCommunityAsset);
+        data.features = data.features
+          .map(normalizeVerifiedCommunityAsset)
+          .map(applyRequestedDonorCorrections);
         return data;
       });
     }

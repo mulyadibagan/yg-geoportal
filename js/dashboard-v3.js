@@ -270,6 +270,44 @@
     return feature;
   }
 
+  function applyRequestedDonorCorrections(feature) {
+    const props = feature && feature.properties || {};
+    const layerId = layerIdOf(feature).toLowerCase();
+    const reportId = firstValue(props, [
+      "reportId", "Report_ID", "Source_Report_ID"
+    ]).toUpperCase();
+    const identity = [
+      props.title, props.locationName, props.Nama_Objek,
+      props.description, props.Keterangan
+    ].filter(Boolean).join(" ").toLowerCase();
+    let donor = "";
+
+    if (layerId === "kopi") donor = "Global Environment Centre";
+    if (identity.includes("rumah jemur semi permanen kopi liberika") ||
+        identity.includes("menara tampung air nursery ktwmj")) {
+      donor = "Yayasan Penabulu";
+    }
+    if (!identity.includes("menara tampung air") &&
+        (identity.includes("nursery ktwmj desa temiang") ||
+        identity.includes("nursery ktwmj"))) {
+      donor = "Global Environment Centre";
+    }
+    if (identity.includes("plang restorasi hutan adat imbo putui") ||
+        identity.includes("restorasi hutan adat imbo putui") ||
+        identity.includes("lokasi pup 2") ||
+        reportId === "COMMUNITY-YG-20260713-192917-711") {
+      donor = "Aliansi Kolibri";
+    }
+    if (reportId === "COMMUNITY-YG-20260716-163039-924") {
+      donor = "Aramco Asia Singapore";
+    }
+    if (donor) {
+      props.Donor = donor;
+      props.Donor_Cluster = donor;
+    }
+    return feature;
+  }
+
   async function renderDashboard(data) {
     if (!data || data.type !== "FeatureCollection" || !Array.isArray(data.features)) {
       document.getElementById("dashboard-updated").textContent =
@@ -280,7 +318,8 @@
     const mergedFeatures = (await mergeOfficialLayers(data.features))
       .map(applyPematangDukuDonorPolicy)
       .map(applyAramcoCoastalAssetPolicy)
-      .map(applyExternalPeatInfrastructureDonorPolicy);
+      .map(applyExternalPeatInfrastructureDonorPolicy)
+      .map(applyRequestedDonorCorrections);
     const active = mergedFeatures.filter(feature => {
       if (!feature || !feature.geometry) return false;
       const props = feature.properties || {};
