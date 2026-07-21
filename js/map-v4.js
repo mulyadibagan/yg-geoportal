@@ -1844,6 +1844,14 @@ L.control.scale({
         }
       });
 
+      /*
+       * Kebijakan kluster V1: seluruh Area Penanaman Mangrove
+       * merupakan bagian dari dukungan Aramco Asia Singapore.
+       * Nilai ini mengatasi donor kosong maupun alias donor lama.
+       */
+      feature.properties.Donor = "Aramco Asia Singapore";
+      feature.properties.Donor_Cluster = "Aramco Asia Singapore";
+
       if (databaseProps.Object_ID) {
         feature.properties.Master_Object_ID = databaseProps.Object_ID;
       }
