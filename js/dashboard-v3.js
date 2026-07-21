@@ -50,7 +50,30 @@
 
   function setMetric(id, value, digits = 0, suffix = "") {
     const element = document.getElementById(id);
-    if (element) element.textContent = formatNumber(value, digits) + suffix;
+    if (!element) return;
+    if (!Number.isFinite(Number(value))) {
+      element.textContent = "Data belum tersedia";
+      return;
+    }
+    animateCounter(element, Number(value), digits, suffix);
+  }
+
+  function animateCounter(element, value, digits = 0, suffix = "") {
+    const reduceMotion = window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion || value === 0) {
+      element.textContent = formatNumber(value, digits) + suffix;
+      return;
+    }
+    const startedAt = performance.now();
+    const duration = 650;
+    function frame(now) {
+      const progress = Math.min(1, (now - startedAt) / duration);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      element.textContent = formatNumber(value * eased, digits) + suffix;
+      if (progress < 1) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
   }
 
   function layerIdOf(feature) {
@@ -64,6 +87,40 @@
       if (value) return value;
     }
     return "";
+  }
+
+  function numericFrom(props, keys) {
+    for (const key of keys) {
+      const value = numericValue(props || {}, [key]);
+      if (Number.isFinite(value) && value !== 0) return value;
+    }
+    return 0;
+  }
+
+  function normalizedText(props) {
+    return [
+      firstValue(props, ["Nama_Objek", "title", "locationName"]),
+      firstValue(props, ["Kategori", "Layer_Label", "reportType"]),
+      firstValue(props, ["Program", "Nama_Program"]),
+      firstValue(props, ["description", "Ket", "Keterangan"])
+    ].join(" ").toLowerCase();
+  }
+
+  function featureIdentity(feature, index) {
+    const props = (feature && feature.properties) || {};
+    return firstValue(props, [
+      "Object_ID", "objectId", "Target_Object_ID", "reportId", "Monitoring_ID"
+    ]) || [layerIdOf(feature), normalizedText(props), index].join("|");
+  }
+
+  function uniqueFeatures(features) {
+    const seen = new Set();
+    return features.filter((feature, index) => {
+      const identity = featureIdentity(feature, index).toLowerCase();
+      if (seen.has(identity)) return false;
+      seen.add(identity);
+      return true;
+    });
   }
 
   function programOf(props, layerId) {
@@ -323,11 +380,13 @@
       .map(applyAramcoCoastalAssetPolicy)
       .map(applyExternalPeatInfrastructureDonorPolicy)
       .map(applyRequestedDonorCorrections);
-    const active = mergedFeatures.filter(feature => {
+    const active = uniqueFeatures(mergedFeatures.filter(feature => {
       if (!feature || !feature.geometry) return false;
       const props = feature.properties || {};
-      return String(props.Status_Objek || "Aktif").toLowerCase() !== "nonaktif";
-    });
+      const status = String(props.Status_Objek || props.status || "Aktif").toLowerCase();
+      return !["nonaktif", "ditolak", "menunggu verifikasi", "perlu perbaikan"]
+        .includes(status);
+    }));
 
     const regencies = new Set();
     const villages = new Set();
@@ -336,8 +395,14 @@
     const donors = {};
     const donorPrograms = {};
     const regencyCounts = {};
-    let mangroveArea = 0;
-    let reports = 0;
+    let restorationArea = 0;
+    let plantedSeedlings = 0;
+    const programmeMetrics = {
+      mangrove: { area: 0, seedlings: 0, nurseries: 0, wave: 0, villages: new Set() },
+      peat: { area: 0, coffee: 0, forest: 0, canals: 0, rewetting: 0, fireInfra: 0, nurseries: 0 },
+      mineral: { area: 0, seedlings: 0, towers: 0, signs: 0, plots: 0 },
+      capacity: { trainings: 0, participants: 0, villages: new Set(), groups: new Set() }
+    };
 
     active.forEach(feature => {
       const props = feature.properties || {};
@@ -350,6 +415,33 @@
       ]);
       const program = programOf(props, layerId);
       const donor = donorOf(props);
+      const text = normalizedText(props);
+      const area = numericFrom(props, [
+        "Luas_Ha", "Luas", "luas_ha", "Area_Ha", "Restoration_Area_Ha"
+      ]);
+      const seedlings = numericFrom(props, [
+        "Jumlah_Bib", "Jumlah_Bibit", "Jumlah_Tanam", "Bibit_Ditanam",
+        "Pohon_Ditanam", "jumlah_bibit", "jumlah_tanam"
+      ]);
+      const forestSeedlings = numericFrom(props, [
+        "Bibit_Hutan_MPTS", "Jumlah_Bibit_Hutan", "Jumlah_MPTS", "Forest_MPTS_Seedlings"
+      ]);
+      const participants = numericFrom(props, [
+        "Jumlah_Peserta", "Peserta", "Participants", "participant_count"
+      ]);
+      const isNursery = /nursery|rumah bibit|pembibitan|persemaian/.test(text);
+      const isMangrove = layerId === "area_mangrove" ||
+        layerId === "apo" || layerId === "nursery_mangrove" ||
+        layerId === "persemaian_mangrove" || text.includes("mangrove") ||
+        (isNursery && !/kopi|coffee|ktwmj/.test(text));
+      const isPeat = ["area_kopi", "kopi", "nursery_kopi", "sekat_kanal", "fdrs"]
+        .includes(layerId) || /gambut|peat|agroforestri|kopi/.test(text);
+      const isMineral = /hutan adat|hutan desa|imbo putui|lahan mineral|plot ukur permanen|\bpup\b/.test(text);
+      const isCapacity = /pelatihan|peningkatan kapasitas|workshop|sosialisasi|pendampingan/.test(text) || participants > 0;
+      const isAdministrative = ["desa_intervensi", "titik_desa"].includes(layerId);
+      const isObservation = ["monitoring_reports", "fdrs"].includes(layerId) ||
+        (layerId === "community_reports" && area <= 0 && seedlings <= 0 &&
+          !isMineral && !isCapacity && !isNursery);
 
       // Pekanbaru saat ini bukan wilayah cakupan program lapangan.
       // Objeknya tetap tersedia di database dan WebGIS, tetapi tidak dihitung
@@ -377,11 +469,53 @@
         }
       }
 
-      if (layerId === "area_mangrove") {
-        mangroveArea += Number(props.Luas_Ha || props.Luas || 0);
+      if (!isAdministrative && !isObservation && !isNursery) {
+        restorationArea += area;
+        plantedSeedlings += seedlings;
       }
-      if (layerId === "community_reports" || props.Source_Type === "community_report") {
-        reports += 1;
+
+      if (isMangrove) {
+        if (layerId === "area_mangrove") {
+          programmeMetrics.mangrove.area += area;
+          programmeMetrics.mangrove.seedlings += seedlings;
+        }
+        if (isNursery) programmeMetrics.mangrove.nurseries += 1;
+        if (layerId === "apo" || /wave breaker|hybrid engineering|pemecah ombak/.test(text)) {
+          programmeMetrics.mangrove.wave += numericFrom(props,
+            ["Panjang_M", "Panjang_m", "Panjang", "Length_m"]);
+        }
+        if (village) programmeMetrics.mangrove.villages.add(village.toLowerCase());
+      }
+
+      if (isPeat) {
+        if (layerId === "area_kopi" || /restorasi gambut|agroforestri/.test(text)) {
+          programmeMetrics.peat.area += area;
+        }
+        if (!isNursery && /kopi|coffee/.test(text)) programmeMetrics.peat.coffee += seedlings;
+        programmeMetrics.peat.forest += forestSeedlings;
+        if (layerId === "sekat_kanal") programmeMetrics.peat.canals += 1;
+        if (layerId === "fdrs" || layerId === "sekat_kanal") programmeMetrics.peat.fireInfra += 1;
+        if (isNursery) programmeMetrics.peat.nurseries += 1;
+        programmeMetrics.peat.rewetting += numericFrom(props,
+          ["Luas_Rewetting_Ha", "Rewetting_Area_Ha", "Area_Rewetting"]);
+      }
+
+      if (isMineral) {
+        programmeMetrics.mineral.area += area;
+        programmeMetrics.mineral.seedlings += seedlings;
+        if (/menara air|tower air|water tower/.test(text)) programmeMetrics.mineral.towers += 1;
+        if (/plang restorasi|restoration sign/.test(text)) programmeMetrics.mineral.signs += 1;
+        if (/plot ukur permanen|\bpup\b/.test(text)) programmeMetrics.mineral.plots += 1;
+      }
+
+      if (isCapacity) {
+        programmeMetrics.capacity.trainings += 1;
+        programmeMetrics.capacity.participants += participants;
+        if (village) programmeMetrics.capacity.villages.add(village.toLowerCase());
+        const group = firstValue(props, [
+          "Kelompok", "Nama_Kelompok", "Community_Group", "organization"
+        ]);
+        if (group) programmeMetrics.capacity.groups.add(group.toLowerCase());
       }
     });
 
@@ -473,43 +607,76 @@
         })) + '">' + escapeHtml(village) + ' <span>→</span></a>'
       ).join("") + '</div>';
 
-    document.getElementById("dash-regencies").textContent = formatNumber(regencies.size);
-    document.getElementById("dash-villages").textContent = formatNumber(villages.size);
-    document.getElementById("dash-mangrove-area").textContent =
-      formatNumber(mangroveArea, 2) + " ha";
-    document.getElementById("dash-reports").textContent = formatNumber(reports);
+    setMetric("dash-restoration-area", restorationArea, 2, " ha");
+    setMetric("dash-seedlings-planted", plantedSeedlings);
+    setMetric("dash-regencies", regencies.size);
+    setMetric("dash-villages", villages.size);
 
-    const programCategories = [
-      "Restorasi Mangrove",
-      "Restorasi Gambut",
-      "Agroforestri & Kopi Liberika",
-      "Pencegahan Kebakaran",
-      "Monitoring Lapangan",
-      "Laporan Masyarakat"
+    const displayMetric = (value, suffix = "", digits = 0) =>
+      Number(value) > 0 ? formatNumber(value, digits) + suffix : "Data belum tersedia";
+    const metricRows = rows => rows.map(row =>
+      '<li><span>' + escapeHtml(row[0]) + '</span><strong>' +
+      escapeHtml(displayMetric(row[1], row[2] || "", row[3] || 0)) +
+      '</strong></li>'
+    ).join("");
+    const programmeCards = [
+      {
+        name: "Restorasi Mangrove",
+        icon: "🌊",
+        url: mapUrl({ layers: "area_mangrove,nursery_mangrove,apo" }),
+        rows: [
+          ["Luas Restorasi", programmeMetrics.mangrove.area, " ha", 2],
+          ["Pohon Mangrove Ditanam", programmeMetrics.mangrove.seedlings],
+          ["Rumah Bibit", programmeMetrics.mangrove.nurseries],
+          ["Hybrid Engineering", programmeMetrics.mangrove.wave, " m"],
+          ["Desa Program", programmeMetrics.mangrove.villages.size]
+        ]
+      },
+      {
+        name: "Restorasi Gambut",
+        icon: "🌿",
+        url: mapUrl({ layers: "area_kopi,kopi,sekat_kanal,fdrs" }),
+        rows: [
+          ["Luas Gambut / Agroforestri", programmeMetrics.peat.area, " ha", 2],
+          ["Bibit Kopi Ditanam", programmeMetrics.peat.coffee],
+          ["Bibit Pohon Hutan & MPTS", programmeMetrics.peat.forest],
+          ["Sekat Kanal", programmeMetrics.peat.canals],
+          ["Estimasi Area Rewetting", programmeMetrics.peat.rewetting, " ha", 2],
+          ["Infrastruktur Pencegahan Kebakaran", programmeMetrics.peat.fireInfra],
+          ["Rumah Bibit", programmeMetrics.peat.nurseries]
+        ]
+      },
+      {
+        name: "Restorasi Lahan Mineral",
+        icon: "🌳",
+        url: mapUrl({ layer: "community_reports", search: "Imbo Putui" }),
+        rows: [
+          ["Luas Restorasi", programmeMetrics.mineral.area, " ha", 2],
+          ["Bibit Ditanam", programmeMetrics.mineral.seedlings],
+          ["Menara Air", programmeMetrics.mineral.towers],
+          ["Plang Restorasi", programmeMetrics.mineral.signs],
+          ["Plot Ukur Permanen", programmeMetrics.mineral.plots]
+        ]
+      },
+      {
+        name: "Peningkatan Kapasitas",
+        icon: "👥",
+        url: mapUrl({ search: "Pelatihan" }),
+        rows: [
+          ["Pelatihan", programmeMetrics.capacity.trainings],
+          ["Peserta", programmeMetrics.capacity.participants],
+          ["Desa Terlibat", programmeMetrics.capacity.villages.size],
+          ["Kelompok Masyarakat Didampingi", programmeMetrics.capacity.groups.size]
+        ]
+      }
     ];
-    const programIcons = {
-      "Restorasi Mangrove": "🌊",
-      "Restorasi Gambut": "💧",
-      "Agroforestri & Kopi Liberika": "☕",
-      "Pencegahan Kebakaran": "🔥",
-      "Monitoring Lapangan": "📍",
-      "Laporan Masyarakat": "📋"
-    };
-    document.getElementById("category-grid").innerHTML = programCategories
-      .map(name => [name, programs[name] || 0])
-      .sort((a, b) => b[1] - a[1])
-      .map(([name, count]) => {
-        const layerEntries = Object.entries(programLayers[name] || {})
-          .sort((a, b) => b[1] - a[1]);
-        const layerId = layerEntries.length ? layerEntries[0][0] : "";
-        return '<a class="category-card dashboard-link" href="' +
-          escapeHtml(mapUrl({ layer: layerId })) + '">' +
-          '<i class="category-icon" aria-hidden="true">' +
-            escapeHtml(programIcons[name] || "•") + '</i>' +
-          '<span>' + escapeHtml(name) + '</span>' +
-          '<strong>' + formatNumber(count) + '</strong>' +
-        '</a>';
-      }).join("");
+    document.getElementById("category-grid").innerHTML = programmeCards.map(card =>
+      '<a class="programme-card dashboard-link" href="' + escapeHtml(card.url) + '">' +
+        '<header><i aria-hidden="true">' + card.icon + '</i><h3>' +
+        escapeHtml(card.name) + '</h3><span aria-hidden="true">→</span></header>' +
+        '<ul>' + metricRows(card.rows) + '</ul>' +
+      '</a>'
+    ).join("");
 
     const ppcfName = "Pan Pacific Conservation Foundation (PPCF)";
     const aramcoName = "Aramco Asia Singapore";
@@ -575,11 +742,6 @@
         }).join("")
       : '<div class="dashboard-empty">Belum ada data</div>';
 
-    renderRanking(
-      "regency-ranking",
-      regencyCounts,
-      name => mapUrl({ search: name })
-    );
     document.getElementById("dashboard-updated").textContent =
       "Sumber: Master Database + layer resmi WebGIS · " +
       "diperbarui " +

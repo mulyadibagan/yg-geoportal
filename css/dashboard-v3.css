@@ -109,9 +109,45 @@ body.modal-open{overflow:hidden}
 }
 .category-grid{
   display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
+  grid-template-columns:repeat(2,minmax(0,1fr));
   gap:16px;
 }
+.programme-card{
+  display:flex;
+  min-height:360px;
+  flex-direction:column;
+  padding:26px;
+  border:1px solid #dce7e1;
+  border-radius:18px;
+  background:#f4f8f6;
+}
+.programme-card header{
+  display:grid;
+  grid-template-columns:48px 1fr auto;
+  align-items:center;
+  gap:14px;
+  padding-bottom:20px;
+  border-bottom:1px solid #dce7e1;
+}
+.programme-card header i{
+  display:grid;
+  width:48px;
+  height:48px;
+  place-items:center;
+  border-radius:14px;
+  background:#fff;
+  font-size:23px;
+  font-style:normal;
+  box-shadow:0 7px 18px rgba(8,118,83,.08);
+}
+.programme-card h3{margin:0;color:#38180b;font-size:21px;line-height:1.25}
+.programme-card header>span{color:#087653;font-size:23px;font-weight:800}
+.programme-card ul{display:grid;gap:0;margin:8px 0 0;padding:0;list-style:none}
+.programme-card li{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:12px 0;border-bottom:1px solid #e0e9e4}
+.programme-card li:last-child{border-bottom:0}
+.programme-card li span{color:#61736b;font-size:13px;line-height:1.35}
+.programme-card li strong{color:#087653;font-size:15px;text-align:right;line-height:1.35}
+.programme-card:hover,.programme-card:focus-visible{background:#edf7f2}
 .category-card{
   display:flex;
   min-height:170px;
@@ -251,6 +287,8 @@ body.modal-open{overflow:hidden}
   .stat-grid{gap:8px}
   .stat-grid .stat{padding:16px;border-radius:14px}
   .category-grid,.dashboard-columns{grid-template-columns:1fr}
+  .programme-card{min-height:0;padding:20px}
+  .programme-card li{align-items:flex-start}
   .category-card{min-height:145px}
   .funding-modal{padding:10px}.funding-dialog{margin:0;border-radius:20px}.funding-hero{padding:32px 22px 26px}.funding-meta{grid-template-columns:1fr}.funding-content{padding:25px 18px 30px}.funding-heading{align-items:flex-start;flex-direction:column}.funding-indicators,.funding-detail-grid{grid-template-columns:1fr}.funding-indicator{min-height:100px}
   .funding-location-grid{grid-template-columns:1fr}

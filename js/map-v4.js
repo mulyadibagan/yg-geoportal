@@ -1452,9 +1452,28 @@ L.control.scale({
   function applyInitialDashboardLink() {
     const params = new URLSearchParams(window.location.search);
     const layerId = String(params.get("layer") || "").trim();
+    const layerIds = String(params.get("layers") || "")
+      .split(",").map(value => value.trim()).filter(Boolean);
     const village = String(params.get("village") || "").trim();
     const search = String(params.get("search") || "").trim();
     const donor = String(params.get("donor") || "").trim().toLowerCase();
+
+    if (layerIds.length) {
+      const bounds = L.latLngBounds([]);
+      layerIds.forEach(id => {
+        const layer = layerObjects[id];
+        if (!layer) return;
+        if (!map.hasLayer(layer)) layer.addTo(map);
+        const checkbox = document.getElementById("layer-" + id);
+        if (checkbox) checkbox.checked = true;
+        const layerBounds = layer.getBounds();
+        if (layerBounds.isValid()) bounds.extend(layerBounds);
+      });
+      if (bounds.isValid()) {
+        map.fitBounds(bounds, { padding: [30, 30], maxZoom: 15 });
+      }
+      return;
+    }
 
     if (donor && donor !== "missing") {
       const donorTerm = donor === "aramco" ? "aramco asia singapore" : donor;
