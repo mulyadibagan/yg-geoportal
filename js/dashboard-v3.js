@@ -199,14 +199,15 @@
     return feature;
   }
 
-  function applyExternalCanalBlockDonorPolicy(feature) {
+  function applyExternalPeatInfrastructureDonorPolicy(feature) {
     const props = feature && feature.properties || {};
     const layerId = layerIdOf(feature).toLowerCase();
     const village = firstValue(props, [
       "Desa", "WADMKD", "NAMA_DESA", "village", "locationName"
     ]).toLowerCase();
 
-    if (layerId === "sekat_kanal" && !village.includes("pematang duku")) {
+    if ((layerId === "sekat_kanal" || layerId === "fdrs") &&
+        !village.includes("pematang duku")) {
       props.Donor = "Global Environment Centre";
       props.Donor_Cluster = "Global Environment Centre";
     }
@@ -223,7 +224,7 @@
     const mergedFeatures = (await mergeOfficialLayers(data.features))
       .map(applyPematangDukuDonorPolicy)
       .map(applyAramcoCoastalAssetPolicy)
-      .map(applyExternalCanalBlockDonorPolicy);
+      .map(applyExternalPeatInfrastructureDonorPolicy);
     const active = mergedFeatures.filter(feature => {
       if (!feature || !feature.geometry) return false;
       const props = feature.properties || {};
