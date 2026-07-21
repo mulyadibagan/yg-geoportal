@@ -148,6 +148,17 @@ function toDirectDriveUrl(url){
     });
   }
 
+  function isAdministrativePhotoNote(note) {
+    const text = normalize(note).replace(/[^a-z0-9]+/g, " ").trim();
+    return [
+      "tambah foto",
+      "tambahkan foto",
+      "penambahan foto",
+      "update foto",
+      "update photo"
+    ].includes(text);
+  }
+
   function monitoringGallery(photos) {
     if (!photos.length) return "";
     return (
@@ -380,7 +391,11 @@ function toDirectDriveUrl(url){
         ? props._ygUpdateNotes
         : [];
 
-      if (update.note && props._ygUpdateNotes.indexOf(update.note) === -1) {
+      if (
+        update.note &&
+        !isAdministrativePhotoNote(update.note) &&
+        props._ygUpdateNotes.indexOf(update.note) === -1
+      ) {
         props._ygUpdateNotes.push(update.note);
       }
 
