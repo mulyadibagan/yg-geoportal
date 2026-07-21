@@ -45,6 +45,10 @@
     return normalize(value || "");
   }
 
+  function isLegacyAutoId(value) {
+    return /:auto:/i.test(String(value || ""));
+  }
+
   function featureMatches(feature, update) {
     const props = feature.properties || {};
     const target = update.targetFeatureProperties || {};
@@ -55,7 +59,19 @@
     const expectedObjectId = objectId(update);
     if (expectedObjectId) {
       const actualObjectId = objectId(props);
-      return !!actualObjectId && actualObjectId === expectedObjectId;
+      if (actualObjectId === expectedObjectId) return true;
+
+      // Laporan lama menyimpan ID hasil hash `layer:auto:*`. Setelah objek
+      // memperoleh Object_ID permanen, hash tersebut tidak lagi sama. Hanya
+      // ID lama yang boleh jatuh kembali ke pencocokan atribut; dua ID
+      // permanen yang berbeda harus tetap dianggap sebagai objek berbeda.
+      if (
+        actualObjectId &&
+        !isLegacyAutoId(actualObjectId) &&
+        !isLegacyAutoId(expectedObjectId)
+      ) {
+        return false;
+      }
     }
 
     const preferredKeys = [
@@ -398,7 +414,7 @@ function toDirectDriveUrl(url){
     const status = document.getElementById("status-text");
     if (status && appliedUpdates.length) {
       status.textContent =
-        "Layer berhasil dimuat • " + appliedUpdates.length +
+        "Layer berhasil dimuat â€¢ " + appliedUpdates.length +
         " pembaruan publik diterapkan";
     }
   }
@@ -461,3 +477,4 @@ function toDirectDriveUrl(url){
   script.async = true;
   document.head.appendChild(script);
 })();
+
