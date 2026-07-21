@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <meta name="description" content="YG GeoPortal - dashboard data spasial Yayasan Gambut berbasis Master Database."/>
+  <meta name="description" content="Platform Data Spasial Yayasan Gambut untuk pengelolaan lahan basah, gambut, mangrove, dan ekosistem lainnya secara berkelanjutan."/>
   <title>YG GeoPortal | Yayasan Gambut</title>
   <link rel="icon" href="assets/logo-yayasan-gambut.png"/>
   <link rel="stylesheet" href="css/style.css?v=20260720-dashboard-layout1"/>
-  <link rel="stylesheet" href="css/dashboard-v3.css?v=20260720-dashboard-layout2"/>
+  <link rel="stylesheet" href="css/dashboard-v3.css?v=20260721-home-professional1"/>
   <meta name="theme-color" content="#079cde">
   <meta name="application-name" content="YG GeoPortal">
   <meta name="apple-mobile-web-app-title" content="YG GeoPortal">
@@ -26,10 +26,10 @@
     </a>
     <nav class="nav">
       <a href="index.html">Beranda</a>
-      <a href="webgis.html">WebGIS</a>
-      <a href="report.html">Kirim Laporan</a>
-      <a href="monitoring.html">Monitoring</a>
-      <a class="primary" href="webgis.html">Buka Peta</a>
+      <a href="webgis.html">Peta Interaktif</a>
+      <a href="report.html">Laporkan Temuan</a>
+      <a href="monitoring.html">Dashboard Monitoring</a>
+      <a class="primary" href="webgis.html">Jelajahi Peta</a>
     </nav>
   </div>
 </header>
@@ -37,10 +37,12 @@
 <main class="container">
   <section class="hero dashboard-hero">
     <div class="hero-main">
-      <div class="eyebrow">MASTER DATABASE WEBGIS YAYASAN GAMBUT</div>
-      <h1>Dashboard spasial yang diperbarui langsung dari database</h1>
+      <div class="eyebrow">PLATFORM DATA SPASIAL RESMI YAYASAN GAMBUT</div>
+      <h1>Platform Data Spasial Yayasan Gambut</h1>
+      <p class="hero-description">Menyajikan informasi spasial yang terverifikasi untuk mendukung pengelolaan lahan basah, gambut, mangrove, dan ekosistem lainnya secara berkelanjutan melalui restorasi, rehabilitasi, pemantauan lapangan, pemberdayaan masyarakat, serta kemitraan strategis yang berbasis data.</p>
+      <p class="hero-tagline">Menghubungkan data spasial, pemantauan lapangan, dan pelaporan masyarakat dalam satu platform untuk mendukung pengelolaan lahan basah dan ekosistem yang berkelanjutan.</p>
       <div class="hero-actions">
-        <a class="btn btn-light" href="webgis.html">🗺️ Buka WebGIS</a>
+        <a class="btn btn-light" href="webgis.html">🗺️ Jelajahi Peta</a>
         <a class="btn btn-outline" href="monitoring.html">📊 Dashboard Monitoring</a>
         <button class="btn btn-outline" type="button" data-install-app hidden>📲 Pasang Aplikasi</button>
       </div>
@@ -48,39 +50,39 @@
     </div>
 
     <div class="stat-grid">
-      <a class="stat dashboard-link" href="webgis.html?layer=desa_intervensi" aria-label="Lihat kabupaten terdata"><strong id="dash-regencies">—</strong><span>Kabupaten terdata</span></a>
-      <a class="stat dashboard-link" href="webgis.html?layer=desa_intervensi" aria-label="Lihat desa terdata"><strong id="dash-villages">—</strong><span>Desa terdata</span></a>
-      <a class="stat dashboard-link" href="webgis.html?layer=area_mangrove" aria-label="Lihat area mangrove"><strong id="dash-mangrove-area">—</strong><span>Area mangrove</span></a>
-      <a class="stat dashboard-link" href="webgis.html?layer=community_reports" aria-label="Lihat laporan masyarakat"><strong id="dash-reports">—</strong><span>Objek laporan masyarakat</span></a>
+      <a class="stat dashboard-link" href="webgis.html?layer=desa_intervensi" aria-label="Lihat kabupaten cakupan"><strong id="dash-regencies">—</strong><span>Kabupaten Cakupan</span></a>
+      <a class="stat dashboard-link" href="webgis.html?layer=desa_intervensi" aria-label="Lihat desa dampingan"><strong id="dash-villages">—</strong><span>Desa Dampingan</span></a>
+      <a class="stat dashboard-link" href="webgis.html?layer=area_mangrove" aria-label="Lihat luas restorasi mangrove"><strong id="dash-mangrove-area">—</strong><span>Luas Restorasi Mangrove</span></a>
+      <a class="stat dashboard-link" href="webgis.html?layer=community_reports" aria-label="Lihat laporan masyarakat terverifikasi"><strong id="dash-reports">—</strong><span>Laporan Masyarakat Terverifikasi</span></a>
     </div>
   </section>
 
   <section class="section dashboard-panel">
     <div class="section-head">
       <div>
-        <h2>Kluster program Yayasan Gambut</h2>
+        <h2>Program Yayasan Gambut</h2>
       </div>
     </div>
     <div class="category-grid" id="category-grid">
-      <div class="dashboard-loading">Memuat kluster program…</div>
+      <div class="dashboard-loading">Memuat program…</div>
     </div>
   </section>
 
   <section class="section dashboard-panel">
     <div class="section-head">
       <div>
-        <h2>Kluster donor</h2>
+        <h2>Mitra Pendanaan</h2>
       </div>
     </div>
     <div class="category-grid" id="donor-grid">
-      <div class="dashboard-loading">Memuat kluster donor…</div>
+      <div class="dashboard-loading">Memuat mitra pendanaan…</div>
     </div>
   </section>
 
   <section class="section dashboard-panel">
     <div class="section-head">
       <div>
-        <h2>Ringkasan administrasi kabupaten</h2>
+        <h2>Wilayah Cakupan Program</h2>
       </div>
     </div>
     <div>
@@ -97,7 +99,7 @@
   </div>
 </footer>
 
-<script src="js/dashboard-v3.js?v=20260720-program-clean1"></script>
+<script src="js/dashboard-v3.js?v=20260721-home-professional1"></script>
   <script src="js/pwa.js?v=20260720-program-clean1"></script>
 </body>
 </html>

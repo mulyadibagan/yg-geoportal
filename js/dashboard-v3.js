@@ -50,7 +50,10 @@
         kopi: "Agroforestri & Kopi Liberika",
         agroforestri: "Agroforestri & Kopi Liberika",
         "agroforestri/kopi": "Agroforestri & Kopi Liberika",
-        "kopi liberika": "Agroforestri & Kopi Liberika"
+        "kopi liberika": "Agroforestri & Kopi Liberika",
+        "monitoring program": "Monitoring Lapangan",
+        "monitoring lapangan": "Monitoring Lapangan",
+        "laporan masyarakat": "Laporan Masyarakat"
       };
       return aliases[explicit.toLowerCase()] || explicit;
     }
@@ -69,7 +72,7 @@
       kopi: "Agroforestri & Kopi Liberika",
       nursery_kopi: "Agroforestri & Kopi Liberika",
       community_reports: "Laporan Masyarakat",
-      monitoring_reports: "Monitoring Program",
+      monitoring_reports: "Monitoring Lapangan",
     };
     if (programByLayer[layerId]) return programByLayer[layerId];
     return firstValue(props, ["Kategori", "Layer_Label"]) || "Program Lainnya";
@@ -91,7 +94,7 @@
       aramco: "Aramco Asia Singapore",
       "aramco asia singapore": "Aramco Asia Singapore"
     };
-    return aliases[normalized] || donor || "Donor belum diisi";
+    return aliases[normalized] || donor;
   }
 
   function donorSearchTerm(donor) {
@@ -242,7 +245,24 @@
       formatNumber(mangroveArea, 2) + " ha";
     document.getElementById("dash-reports").textContent = formatNumber(reports);
 
-    document.getElementById("category-grid").innerHTML = Object.entries(programs)
+    const programCategories = [
+      "Restorasi Mangrove",
+      "Restorasi Gambut",
+      "Agroforestri & Kopi Liberika",
+      "Pencegahan Kebakaran",
+      "Monitoring Lapangan",
+      "Laporan Masyarakat"
+    ];
+    const programIcons = {
+      "Restorasi Mangrove": "🌊",
+      "Restorasi Gambut": "💧",
+      "Agroforestri & Kopi Liberika": "☕",
+      "Pencegahan Kebakaran": "🔥",
+      "Monitoring Lapangan": "📍",
+      "Laporan Masyarakat": "📋"
+    };
+    document.getElementById("category-grid").innerHTML = programCategories
+      .map(name => [name, programs[name] || 0])
       .sort((a, b) => b[1] - a[1])
       .map(([name, count]) => {
         const layerEntries = Object.entries(programLayers[name] || {})
@@ -250,6 +270,8 @@
         const layerId = layerEntries.length ? layerEntries[0][0] : "";
         return '<a class="category-card dashboard-link" href="' +
           escapeHtml(mapUrl({ layer: layerId })) + '">' +
+          '<i class="category-icon" aria-hidden="true">' +
+            escapeHtml(programIcons[name] || "•") + '</i>' +
           '<span>' + escapeHtml(name) + '</span>' +
           '<strong>' + formatNumber(count) + '</strong>' +
         '</a>';
@@ -260,9 +282,7 @@
     document.getElementById("donor-grid").innerHTML = donorEntries.length
       ? donorEntries.map(([name, count]) => {
           const programCount = Object.keys(donorPrograms[name] || {}).length;
-          const donorUrl = name === "Donor belum diisi"
-            ? mapUrl({ donor: "missing" })
-            : mapUrl({ search: donorSearchTerm(name) });
+          const donorUrl = mapUrl({ search: donorSearchTerm(name) });
           return '<a class="category-card dashboard-link" href="' +
             escapeHtml(donorUrl) + '">' +
             '<span>' + escapeHtml(name) + '</span>' +
@@ -271,7 +291,7 @@
               ' program</small>' +
           '</a>';
         }).join("")
-      : '<div class="dashboard-empty">Data donor belum diisi pada objek aktif.</div>';
+      : '<div class="dashboard-empty">Belum ada data</div>';
 
     renderRanking(
       "regency-ranking",
