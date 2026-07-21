@@ -24,7 +24,8 @@
       /\/file\/d\/([A-Za-z0-9_-]+)/i,
       /\/d\/([A-Za-z0-9_-]+)/i,
       /[?&]id=([A-Za-z0-9_-]+)/i,
-      /\/thumbnail\?(?:[^#]*&)?id=([A-Za-z0-9_-]+)/i
+      /\/thumbnail\?(?:[^#]*&)?id=([A-Za-z0-9_-]+)/i,
+      /\/uc\?(?:[^#]*&)?id=([A-Za-z0-9_-]+)/i
     ];
 
     for (let index = 0; index < patterns.length; index += 1) {
@@ -38,10 +39,7 @@
   function splitValues(value) {
     if (!value) return [];
     if (Array.isArray(value)) return value.flatMap(splitValues);
-
-    if (typeof value === "object") {
-      return Object.values(value).flatMap(splitValues);
-    }
+    if (typeof value === "object") return Object.values(value).flatMap(splitValues);
 
     return String(value)
       .split(/\r?\n|\s*;\s*|,\s*(?=https?:\/\/|[A-Za-z0-9_-]{20,}$)/)
@@ -49,44 +47,28 @@
       .filter(Boolean);
   }
 
-  function isImageFilename(value) {
-    return /\.(?:jpe?g|png|webp|gif)(?:[?#].*)?$/i.test(value);
-  }
-
-  function candidates(value) {
+  function imageUrl(value) {
     const clean = normalize(value);
     const id = driveId(clean);
 
     if (id) {
-      return [
-        "https://drive.google.com/thumbnail?id=" + encodeURIComponent(id) + "&sz=w1200",
-        "https://lh3.googleusercontent.com/d/" + encodeURIComponent(id)
-      ];
+      return "https://drive.google.com/thumbnail?id=" +
+        encodeURIComponent(id) + "&sz=w1200";
     }
 
-    if (/^https?:\/\//i.test(clean)) return [clean];
-    if (!isImageFilename(clean)) return [];
-
-    const encoded = clean.split("/").map(encodeURIComponent).join("/");
-    if (clean.includes("/")) return [encoded];
-
-    return [
-      "assets/photos/" + encoded,
-      "assets/images/" + encoded,
-      "images/" + encoded,
-      "photos/" + encoded,
-      encoded
-    ];
+    return /^https?:\/\//i.test(clean) ? clean : "";
   }
 
   function originalUrl(value) {
     const clean = normalize(value);
     const id = driveId(clean);
+
     if (id) {
       return "https://drive.google.com/file/d/" +
         encodeURIComponent(id) + "/view?usp=sharing";
     }
-    return /^https?:\/\//i.test(clean) ? clean : candidates(clean)[0] || "";
+
+    return /^https?:\/\//i.test(clean) ? clean : "";
   }
 
   function collectPhotos(properties) {
@@ -107,16 +89,18 @@
     nestedSources.forEach(source => {
       keys.forEach(key => {
         splitValues(source && source[key]).forEach(value => {
-          const imageCandidates = candidates(value);
-          if (!imageCandidates.length) return;
+          const src = imageUrl(value);
+          const href = originalUrl(value);
+          if (!src || !href) return;
 
           const id = driveId(value);
           const dedupeKey = id
             ? "drive:" + id
             : normalize(value).split(/[?#]/)[0].toLowerCase();
           if (seen.has(dedupeKey)) return;
+
           seen.add(dedupeKey);
-          result.push({ value, imageCandidates });
+          result.push({ src, href });
         });
       });
     });
@@ -136,41 +120,16 @@
 
   function galleryHtml(photos) {
     return '<div class="yg-v3-gallery yg-object-photo-fix-gallery">' +
-      photos.map((photo, index) => {
-        const serialized = photo.imageCandidates.map(encodeURIComponent).join("|");
-        return '<a class="yg-photo-card" href="' +
-          escapeHtml(originalUrl(photo.value)) +
-          '" target="_blank" rel="noopener noreferrer" title="Buka foto">' +
-          '<img src="' + escapeHtml(photo.imageCandidates[0]) +
-          '" data-yg-photo-candidates="' + escapeHtml(serialized) +
-          '" data-yg-photo-index="0" loading="lazy" alt="Foto ' +
-          (index + 1) + '">' +
-          '<span class="yg-photo-fallback" style="display:none">Buka Foto ' +
-          (index + 1) + '</span></a>';
-      }).join("") +
+      photos.map((photo, index) =>
+        '<a class="yg-photo-card" href="' + escapeHtml(photo.href) +
+        '" target="_blank" rel="noopener noreferrer" title="Buka foto">' +
+        '<img src="' + escapeHtml(photo.src) +
+        '" loading="lazy" alt="Foto ' + (index + 1) +
+        '" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\';">' +
+        '<span class="yg-photo-fallback" style="display:none">Buka Foto ' +
+        (index + 1) + '</span></a>'
+      ).join("") +
       "</div>";
-  }
-
-  function activateFallbacks(container) {
-    container.querySelectorAll("img[data-yg-photo-candidates]").forEach(image => {
-      image.addEventListener("error", () => {
-        const list = String(image.dataset.ygPhotoCandidates || "")
-          .split("|")
-          .filter(Boolean)
-          .map(decodeURIComponent);
-        const nextIndex = Number(image.dataset.ygPhotoIndex || 0) + 1;
-
-        if (nextIndex < list.length) {
-          image.dataset.ygPhotoIndex = String(nextIndex);
-          image.src = list[nextIndex];
-          return;
-        }
-
-        image.style.display = "none";
-        const fallback = image.nextElementSibling;
-        if (fallback) fallback.style.display = "flex";
-      });
-    });
   }
 
   function enhancePopup(event) {
@@ -188,7 +147,6 @@
     if (!photos.length) return;
 
     body.insertAdjacentHTML("beforeend", galleryHtml(photos));
-    activateFallbacks(body);
   }
 
   function attach() {
@@ -196,6 +154,7 @@
       window.setTimeout(attach, 300);
       return;
     }
+
     window.YG_MAP.map.on("popupopen", enhancePopup);
   }
 
