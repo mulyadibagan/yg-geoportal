@@ -1,4 +1,4 @@
-const CACHE_NAME = "yg-geoportal-v4-20260720-program-clean1";
+const CACHE_NAME = "yg-geoportal-v4-20260721-monitoring-group1";
 
 const STATIC_ASSETS = [
   "./",
@@ -24,7 +24,7 @@ const STATIC_ASSETS = [
   "./js/report-photo-rules.js?v=20260720-photo-loop-fix1",
   "./js/report-photo-guard.js?v=20260720-photo-loop-fix1",
   "./js/monitoring-data-compat.js?v=20260720-endpoint1",
-  "./js/monitoring.js?v=20260720-endpoint1",
+  "./js/monitoring.js?v=20260721-history-chart1",
   "./js/monitoring-photo.js?v=20260720-edge-refresh1",
   "./js/dashboard-v3.js?v=20260720-program-clean1",
   "./js/pwa.js?v=20260720-program-clean1",
@@ -69,7 +69,7 @@ self.addEventListener("fetch", event => {
 
   if (request.mode === "navigate") {
     event.respondWith(
-      fetch(request)
+      fetch(request, { cache: "no-store" })
         .then(response => {
           const copy = response.clone();
           caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
