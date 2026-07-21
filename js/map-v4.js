@@ -666,6 +666,21 @@ L.control.scale({
         valueOf(["Jumlah_Bib", "Jumlah_Bibit", "Jumlah_Tanam"])
       );
 
+      rows += row(
+        "Jenis pohon",
+        valueOf(["Jenis_Pohon", "Jenis_Tanaman"])
+      );
+
+      rows += row(
+        "Riwayat penanaman",
+        valueOf(["Riwayat_Penanaman"])
+      );
+
+      rows += row(
+        "Status koordinat",
+        valueOf(["Koordinat_Status"])
+      );
+
       if (config.id === "area_kopi") {
         rows += row(
           "Pemilik lahan",
@@ -2246,6 +2261,79 @@ L.control.scale({
     return data;
   }
 
+  function mergeOfficialCoffeePoints(data, coffeePoints) {
+    if (
+      !data ||
+      !Array.isArray(data.features) ||
+      !coffeePoints ||
+      coffeePoints.type !== "FeatureCollection" ||
+      !Array.isArray(coffeePoints.features)
+    ) {
+      return data;
+    }
+
+    const databaseCoffee = data.features.filter(feature => {
+      const props = feature && feature.properties || {};
+      return normalizedMatchValue(
+        props.Layer_ID || props.Source_Layer
+      ) === "kopi";
+    });
+
+    coffeePoints.features.forEach(feature => {
+      if (!feature.properties) feature.properties = {};
+      const props = feature.properties;
+      const objectId = normalizedMatchValue(props.Object_ID);
+      const databaseFeature = databaseCoffee.find(candidate =>
+        normalizedMatchValue(
+          candidate && candidate.properties && candidate.properties.Object_ID
+        ) === objectId
+      );
+      const databaseProps = databaseFeature && databaseFeature.properties || {};
+
+      props.Layer_ID = "kopi";
+      props.Source_Layer = "kopi";
+      props.Layer_Label = "Lokasi Penanaman Kopi";
+      props.Kategori = props.Kategori || "Agroforestri/Kopi";
+
+      [
+        "Donor",
+        "Nama_Proyek",
+        "Project_ID",
+        "Nomor_Perjanjian",
+        "Program",
+        "Status_Objek",
+        "Revision",
+        "Updated_At",
+        "Updated_By"
+      ].forEach(key => {
+        if (
+          databaseProps[key] !== undefined &&
+          databaseProps[key] !== null &&
+          String(databaseProps[key]).trim() !== ""
+        ) {
+          props[key] = databaseProps[key];
+        }
+      });
+
+      if (!getDonor(props)) {
+        props.Donor = "Global Environment Centre";
+      }
+      props.Donor_Cluster = getDonor(props);
+    });
+
+    data.features = [
+      ...data.features.filter(feature => {
+        const props = feature && feature.properties || {};
+        return normalizedMatchValue(
+          props.Layer_ID || props.Source_Layer
+        ) !== "kopi";
+      }),
+      ...coffeePoints.features
+    ];
+
+    return data;
+  }
+
   async function loadOfficialMangrove() {
     const response = await fetch(
       "data/area_mangrove.geojson?v=" + Date.now(),
@@ -2258,6 +2346,15 @@ L.control.scale({
   async function loadOfficialCoffeeAreas() {
     const response = await fetch(
       "data/area_kopi.geojson?v=" + Date.now(),
+      { cache: "no-store" }
+    );
+    if (!response.ok) throw new Error("HTTP " + response.status);
+    return response.json();
+  }
+
+  async function loadOfficialCoffeePoints() {
+    const response = await fetch(
+      "data/kopi.geojson?v=" + Date.now(),
       { cache: "no-store" }
     );
     if (!response.ok) throw new Error("HTTP " + response.status);
@@ -2295,6 +2392,13 @@ L.control.scale({
       console.warn("area_kopi.geojson tidak dapat dimuat", coffeeAreaError);
     }
 
+    try {
+      const coffeePoints = await loadOfficialCoffeePoints();
+      mergeOfficialCoffeePoints(data, coffeePoints);
+    } catch (coffeePointError) {
+      console.warn("kopi.geojson tidak dapat dimuat", coffeePointError);
+    }
+
     initialize(data);
     return;
 
@@ -2320,6 +2424,15 @@ L.control.scale({
         console.warn(
           "area_kopi.geojson tidak dapat dimuat melalui jalur cadangan",
           coffeeAreaError
+        );
+      }
+      try {
+        const coffeePoints = await loadOfficialCoffeePoints();
+        mergeOfficialCoffeePoints(data, coffeePoints);
+      } catch (coffeePointError) {
+        console.warn(
+          "kopi.geojson tidak dapat dimuat melalui jalur cadangan",
+          coffeePointError
         );
       }
       initialize(data);

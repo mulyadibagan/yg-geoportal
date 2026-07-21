@@ -5,7 +5,8 @@
   const CALLBACK = "ygDashboardV3Callback";
   const OFFICIAL_LAYERS = [
     { id: "area_mangrove", url: "data/area_mangrove.geojson" },
-    { id: "area_kopi", url: "data/area_kopi.geojson" }
+    { id: "area_kopi", url: "data/area_kopi.geojson" },
+    { id: "kopi", url: "data/kopi.geojson" }
   ];
 
   function escapeHtml(value) {
@@ -254,10 +255,16 @@
             Status_Objek: (feature.properties || {}).Status_Objek || "Aktif",
             Donor: source.id === "area_mangrove"
               ? "Aramco Asia Singapore"
-              : (feature.properties || {}).Donor,
+              : source.id === "kopi"
+                ? ((feature.properties || {}).Donor || "Global Environment Centre")
+                : (feature.properties || {}).Donor,
             Donor_Cluster: source.id === "area_mangrove"
               ? "Aramco Asia Singapore"
-              : (feature.properties || {}).Donor_Cluster
+              : source.id === "kopi"
+                ? ((feature.properties || {}).Donor_Cluster ||
+                  (feature.properties || {}).Donor ||
+                  "Global Environment Centre")
+                : (feature.properties || {}).Donor_Cluster
           }
         }));
 
