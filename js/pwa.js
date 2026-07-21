@@ -4,7 +4,7 @@
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
       navigator.serviceWorker
-        .register("./service-worker.js?v=20260721-spatial-history1", {
+        .register("./service-worker.js?v=20260721-object-id1", {
           updateViaCache: "none"
         })
         .then(registration => registration.update())
@@ -12,7 +12,7 @@
     });
 
     navigator.serviceWorker.addEventListener("controllerchange", () => {
-      const reloadKey = "yg-sw-spatial-history1";
+      const reloadKey = "yg-sw-object-id1";
       if (sessionStorage.getItem(reloadKey)) return;
       sessionStorage.setItem(reloadKey, "done");
       window.location.reload();

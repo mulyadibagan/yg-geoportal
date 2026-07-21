@@ -97,6 +97,7 @@
     var layerKey=keyText(p.targetLayerId||p.targetLayerLabel||m.monitoringType||'monitoring');
     var nameKey=keyText(p.targetObjectName||p.locationName||p.title||title);
     var targetProperties=parseJSON(p.targetFeatureProperties);
+    var masterObjectId=targetProperties.Object_ID||targetProperties.OBJECT_ID||targetProperties.objectId||'';
     var rawArea=targetProperties.Luas_Ha||targetProperties.Luas||targetProperties.areaHa||targetProperties.luas_ha;
     var targetArea=Number(String(rawArea==null?'':rawArea).replace(',','.'));
     var areaKey=isFinite(targetArea)&&targetArea>0?targetArea.toFixed(4):'';
@@ -109,6 +110,8 @@
     return{
       id:p.monitoringId||p.reportId||index,
       objectId:objectId,
+      masterObjectId:masterObjectId,
+      legacyObjectId:p.targetObjectId||'',
       title:title,
       type:type,
       date:p.activityDate||p.publishedAt||p.verifiedAt||p.receivedAt,
@@ -128,7 +131,9 @@
     items.forEach(function(r){(map[r.objectId]||(map[r.objectId]=[])).push(r);});
     return Object.keys(map).map(function(k){
       var history=map[k].sort(function(a,b){return dateValue(b.date)-dateValue(a.date);});
-      return{key:k,latest:history[0],history:history};
+      var masterObjectId=history.map(function(r){return r.masterObjectId;}).filter(Boolean)[0]||'';
+      var objectCode=masterObjectId||history[0].legacyObjectId||'';
+      return{key:k,latest:history[0],history:history,objectCode:objectCode};
     });
   }
 
@@ -161,7 +166,7 @@
     var sort=document.getElementById('monitor-sort').value;
     var filtered=groups.filter(function(g){
       var r=g.latest;
-      return(!q||(r.title+' '+r.location+' '+r.type).toLowerCase().indexOf(q)>-1)&&(!type||r.type===type)&&(!status||r.status.key===status);
+      return(!q||(r.title+' '+r.location+' '+r.type+' '+g.objectCode).toLowerCase().indexOf(q)>-1)&&(!type||r.type===type)&&(!status||r.status.key===status);
     });
     filtered.sort(function(a,b){
       if(sort==='name')return a.latest.title.localeCompare(b.latest.title);
@@ -174,7 +179,7 @@
       var r=g.latest;r.historyCount=g.history.length;
       var metrics=metricItems(r,4).map(function(x){return'<div class="metric"><span>'+esc(x[0])+'</span><strong>'+esc(x[1])+'</strong></div>';}).join('');
       return'<article class="monitor-card">'+
-        '<div class="card-top"><div><span class="type-label">'+esc(r.type.toUpperCase())+'</span><h3>'+esc(r.title)+'</h3><span class="location">'+esc(r.location||'Lokasi belum dicantumkan')+'</span></div><span class="status '+r.status.key+'">'+esc(r.status.label)+'</span></div>'+
+        '<div class="card-top"><div><span class="type-label">'+esc(r.type.toUpperCase())+'</span><h3>'+esc(r.title)+'</h3><span class="location">'+esc(r.location||'Lokasi belum dicantumkan')+'</span>'+(g.objectCode?'<span class="object-code">ID objek: '+esc(g.objectCode)+'</span>':'')+'</div><span class="status '+r.status.key+'">'+esc(r.status.label)+'</span></div>'+
         '<div class="metric-grid">'+metrics+'</div>'+
         '<div class="card-actions"><small>Terakhir '+esc(fmtDate(r.date))+' · '+g.history.length+' riwayat</small><button class="link" data-detail="'+esc(g.key)+'" type="button">Lihat perkembangan →</button></div>'+
       '</article>';
@@ -274,7 +279,7 @@
     var g=groups.find(function(x){return x.key===key;});if(!g)return;
     var r=g.latest;
     document.getElementById('detail-content').innerHTML=
-      '<div class="profile-head"><div><span class="type-label">'+esc(r.type.toUpperCase())+'</span><h2>'+esc(r.title)+'</h2><p class="location">'+esc(r.location||'Lokasi belum dicantumkan')+'</p></div><div class="profile-meta"><span class="status '+r.status.key+'">'+esc(r.status.label)+'</span><small>'+g.history.length+' kali monitoring</small><small>Terakhir '+esc(fmtDate(r.date))+'</small></div></div>'+
+      '<div class="profile-head"><div><span class="type-label">'+esc(r.type.toUpperCase())+'</span><h2>'+esc(r.title)+'</h2><p class="location">'+esc(r.location||'Lokasi belum dicantumkan')+'</p>'+(g.objectCode?'<span class="object-code">ID objek: '+esc(g.objectCode)+'</span>':'')+'</div><div class="profile-meta"><span class="status '+r.status.key+'">'+esc(r.status.label)+'</span><small>'+g.history.length+' kali monitoring</small><small>Terakhir '+esc(fmtDate(r.date))+'</small></div></div>'+
       '<div class="detail-tabs"><button class="active" data-tab="overview" type="button">Ringkasan</button><button data-tab="charts" type="button">Grafik perubahan</button><button data-tab="history" type="button">Riwayat ('+g.history.length+')</button><button data-tab="photos" type="button">Foto ('+g.history.reduce(function(n,x){return n+x.photos.length;},0)+')</button></div>'+
       '<div class="tab-panel active" data-panel="overview">'+overviewHTML(g)+'</div>'+
       '<div class="tab-panel" data-panel="charts">'+chartsHTML(g)+'</div>'+
