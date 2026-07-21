@@ -429,7 +429,7 @@ function toDirectDriveUrl(url){
     const status = document.getElementById("status-text");
     if (status && appliedUpdates.length) {
       status.textContent =
-        "Layer berhasil dimuat â€¢ " + appliedUpdates.length +
+        "Layer berhasil dimuat • " + appliedUpdates.length +
         " pembaruan publik diterapkan";
     }
   }
