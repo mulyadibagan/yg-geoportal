@@ -218,6 +218,19 @@ function toDirectDriveUrl(url){
       valueOf(["Kategori", "Layer_Label", "layerLabel"]) || layerLabel
     );
 
+    const donorAliases = {
+      "GEC": "Global Environment Centre",
+      "PPCF": "Pan Pacific Conservation Foundation",
+      "ARAMCO": "Aramco Asia Singapore"
+    };
+    const donorValue = valueOf([
+      "Donor", "Donor_Cluster", "Nama_Donor", "Funding_Source",
+      "donor", "nama_donor", "funding_source"
+    ]);
+    const donorCode = String(valueOf(["Ket"]) || "").trim().toUpperCase();
+    const donor = donorValue || donorAliases[donorCode] || "";
+    rows += row("Donor", donor);
+
     let gallery = "";
     if (photos.length) {
       gallery =
