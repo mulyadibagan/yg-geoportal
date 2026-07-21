@@ -1,4 +1,4 @@
-const CACHE_NAME = "yg-geoportal-v4-20260721-object-id1";
+const CACHE_NAME = "yg-geoportal-v4-20260721-mangrove-area1";
 
 const STATIC_ASSETS = [
   "./",
@@ -93,7 +93,8 @@ self.addEventListener("fetch", event => {
     request.destination === "script" ||
     request.destination === "style" ||
     url.pathname.endsWith(".js") ||
-    url.pathname.endsWith(".css")
+    url.pathname.endsWith(".css") ||
+    url.pathname.endsWith(".geojson")
   ) {
     event.respondWith(
       fetch(request, { cache: "no-store" })
