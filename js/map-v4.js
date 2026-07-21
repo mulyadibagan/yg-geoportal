@@ -1388,6 +1388,20 @@ L.control.scale({
     }
   }
 
+  function applyPematangDukuDonorPolicy(feature) {
+    const props = feature && feature.properties || {};
+    const village = [
+      props.Desa, props.WADMKD, props.NAMA_DESA,
+      props.village, props.locationName
+    ].filter(Boolean).join(" ").trim().toLowerCase();
+
+    if (village.includes("pematang duku")) {
+      props.Donor = "Pan Pacific Conservation Foundation";
+      props.Donor_Cluster = "Pan Pacific Conservation Foundation";
+    }
+    return feature;
+  }
+
   function initialize(data) {
     if (!data || data.type !== "FeatureCollection" || !Array.isArray(data.features)) {
       setStatus("Respons database tidak valid.", true);
@@ -1396,7 +1410,8 @@ L.control.scale({
 
     rawFeatures = data.features
       .filter(feature => feature && feature.geometry)
-      .map(normalizeVerifiedCommunityAssets);
+      .map(normalizeVerifiedCommunityAssets)
+      .map(applyPematangDukuDonorPolicy);
     const groups = {};
 
     rawFeatures.forEach(feature => {
