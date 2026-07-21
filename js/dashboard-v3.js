@@ -188,6 +188,17 @@
     return feature;
   }
 
+  function applyAramcoCoastalAssetPolicy(feature) {
+    const props = feature && feature.properties || {};
+    const layerId = layerIdOf(feature).toLowerCase();
+
+    if (layerId === "nursery_mangrove" || layerId === "apo") {
+      props.Donor = "Aramco Asia Singapore";
+      props.Donor_Cluster = "Aramco Asia Singapore";
+    }
+    return feature;
+  }
+
   async function renderDashboard(data) {
     if (!data || data.type !== "FeatureCollection" || !Array.isArray(data.features)) {
       document.getElementById("dashboard-updated").textContent =
@@ -196,7 +207,8 @@
     }
 
     const mergedFeatures = (await mergeOfficialLayers(data.features))
-      .map(applyPematangDukuDonorPolicy);
+      .map(applyPematangDukuDonorPolicy)
+      .map(applyAramcoCoastalAssetPolicy);
     const active = mergedFeatures.filter(feature => {
       if (!feature || !feature.geometry) return false;
       const props = feature.properties || {};
