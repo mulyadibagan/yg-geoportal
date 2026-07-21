@@ -193,7 +193,8 @@
 
   function callbackLoad(url) {
     return new Promise((resolve, reject) => {
-      const callback = "ygPolygonEditor_" + Date.now();
+      const callback = "ygPolygonEditor_" + Date.now() + "_" +
+        Math.random().toString(36).slice(2);
       const script = document.createElement("script");
       const timer = setTimeout(() => {
         cleanup();
