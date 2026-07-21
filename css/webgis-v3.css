@@ -228,3 +228,31 @@ body.webgis-page .app-shell{
   .yg-gallery-lightbox__nav{width:40px;height:40px;font-size:28px}
   .yg-gallery-lightbox__prev{left:8px}.yg-gallery-lightbox__next{right:8px}
 }
+.yg-point-hit-marker {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  display: flex;
+  height: 40px;
+  justify-content: center;
+  width: 40px;
+}
+
+.yg-point-dot {
+  background: var(--yg-point-color, #078b78);
+  border: 2px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 1px 4px rgba(16, 42, 36, 0.35);
+  display: block;
+  height: var(--yg-point-size, 14px);
+  pointer-events: none;
+  width: var(--yg-point-size, 14px);
+}
+
+.yg-point-hit-marker:hover .yg-point-dot,
+.yg-point-hit-marker:focus .yg-point-dot {
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.7),
+    0 2px 7px rgba(16, 42, 36, 0.45);
+  transform: scale(1.12);
+}

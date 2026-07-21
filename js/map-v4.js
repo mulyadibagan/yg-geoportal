@@ -97,7 +97,24 @@
     const pane = map.createPane(name);
     pane.style.zIndex = String(zIndex);
   });
-  
+
+  /*
+   * Canvas memenuhi seluruh pane sehingga pane yang lebih tinggi dapat
+   * menangkap klik di area kosong dan menutup marker di bawahnya. SVG hanya
+   * interaktif pada bentuk yang benar-benar tergambar.
+   */
+  const vectorRenderers = {};
+
+  function vectorRendererFor(pane) {
+    if (!vectorRenderers[pane]) {
+      vectorRenderers[pane] = L.svg({
+        pane: pane,
+        padding: 0.5
+      });
+    }
+    return vectorRenderers[pane];
+  }
+
 // Scale Bar
 L.control.scale({
     position: 'bottomleft',   // kiri bawah
@@ -801,14 +818,28 @@ L.control.scale({
   }
 
   function pointFor(config, latlng, pane) {
-    return L.circleMarker(latlng, {
+    const visibleSize = config.id === "monitoring_reports" ? 18 : 14;
+
+    /*
+     * Marker HTML memberi setiap titik sasaran klik 40 x 40 piksel.
+     * Lingkaran yang terlihat tetap kecil sehingga peta tidak menjadi penuh,
+     * tetapi FDRS dan infrastruktur tetap mudah dibuka di desktop maupun HP.
+     */
+    return L.marker(latlng, {
       pane: pane,
-      radius: config.id === "monitoring_reports" ? 9 : 7,
-      fillColor: config.color,
-      color: "#ffffff",
-      weight: 2,
-      opacity: 1,
-      fillOpacity: 0.96
+      interactive: true,
+      bubblingMouseEvents: false,
+      keyboard: true,
+      icon: L.divIcon({
+        className: "yg-point-hit-marker",
+        html:
+          '<span class="yg-point-dot" style="--yg-point-color:' +
+          escapeHtml(config.color) +
+          ";--yg-point-size:" + visibleSize + 'px"></span>',
+        iconSize: [40, 40],
+        iconAnchor: [20, 20],
+        popupAnchor: [0, -16]
+      })
     });
   }
 
@@ -857,6 +888,7 @@ L.control.scale({
         const pane = paneFor(config, feature);
         const single = L.geoJSON(feature, {
           pane: pane,
+          renderer: vectorRendererFor(pane),
           style: () => styleFor(config),
           pointToLayer: (_feature, latlng) => pointFor(config, latlng, pane)
         });
