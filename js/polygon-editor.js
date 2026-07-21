@@ -222,22 +222,116 @@
     });
   }
 
+  function slugIdPart(value, fallback) {
+    const slug = String(value || "")
+      .toUpperCase()
+      .replace(/[^A-Z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 28);
+    return slug || fallback || "NA";
+  }
+
+  function verifiedProgramAsset(feature, usedIds) {
+    if (!feature || !feature.geometry || feature.geometry.type !== "Point") return null;
+    const candidate = clone(feature);
+    const p = props(candidate);
+    const sourceLayer = String(p.Layer_ID || p.Source_Layer || "community_reports").toLowerCase();
+    if (sourceLayer !== "community_reports") return null;
+
+    const identity = [
+      p.title, p.locationName, p.Nama_Objek, p.description, p.reportType
+    ].filter(Boolean).join(" ").toLowerCase();
+
+    let target = null;
+    if (/menara tampung air|tower air|pendopo/.test(identity)) {
+      target = ["supporting_infrastructure", "Infrastruktur Pendukung", "Infrastruktur Pendukung Program", "INFRA"];
+    } else if (identity.includes("plang")) {
+      target = ["information_signs", "Plang Informasi & Perlindungan", "Plang Informasi dan Perlindungan", "SIGN"];
+    } else if (/nursery sepahat|rumah bibit sepahat|rumah bibit kelapa pati/.test(identity)) {
+      target = ["nursery_mangrove", "Rumah Pembibitan Mangrove", "Pembibitan Mangrove", "NURSERY"];
+    } else if (/nursery ktwmj|rumah bibit kopi|nursery kopi/.test(identity)) {
+      target = ["nursery_coffee", "Rumah Pembibitan Kopi", "Pembibitan Kopi", "COFFEE-NURSERY"];
+    } else if (/restorasi hutan adat imbo putui|lokasi pup 2/.test(identity)) {
+      target = ["forest_land_restoration", "Restorasi Hutan & Lahan", "Restorasi Hutan dan Lahan", "RESTORATION"];
+    }
+    if (!target) return null;
+
+    const reportId = String(p.reportId || p.Report_ID || "").trim();
+    if (!reportId) return null;
+    const location = p.Desa || p.locationName || p.targetObjectName || p.title;
+    const year = p.Tahun || String(p.activityDate || "").match(/\b(20\d{2})\b/)?.[1] || "NA";
+    const reportToken = reportId.split("-").slice(-2).join("-");
+    const base = [
+      target[3],
+      slugIdPart(location, "LOCATION"),
+      slugIdPart(year, "NA"),
+      slugIdPart(reportToken, "REPORT")
+    ].join("-");
+    let objectId = base;
+    let sequence = 1;
+    while (usedIds.has(objectId)) {
+      sequence += 1;
+      objectId = base + "-" + String(sequence).padStart(3, "0");
+    }
+    usedIds.add(objectId);
+
+    p.Audit_Source_Layer = sourceLayer;
+    p.Source_Report_ID = reportId;
+    p.Object_ID = objectId;
+    p.Layer_ID = target[0];
+    p.Source_Layer = target[0];
+    p.Layer_Label = target[1];
+    p.Kategori = target[2];
+    p.Nama_Objek = p.locationName || p.title || target[1];
+    p.Source_Type = "verified_report_asset";
+    p.Status_Objek = p.Status_Objek || "Aktif";
+    p.Provinsi = p.Provinsi || "Riau";
+    p._ygPendingSync = true;
+    return candidate;
+  }
+
   async function loadObjects() {
     setStatus("Memuat Master Database…");
     clearSelection();
 
     try {
-      collection = await callbackLoad(api + "?page=objects");
-      objects = (collection.features || []).filter(feature => {
+      const results = await Promise.all([
+        callbackLoad(api + "?page=objects"),
+        callbackLoad(api + "?page=public-reports").catch(() => ({ features: [] }))
+      ]);
+      collection = results[0];
+      const reportCollection = results[1] || { features: [] };
+      const permanentObjects = (collection.features || []).filter(feature => {
         const p = props(feature);
         const id = p.Layer_ID || p.Source_Layer || "";
         return feature.geometry &&
           !["monitoring_reports", "community_reports", "kawasan_hutan_sk_903", "gambut_bbsdlp_2019"].includes(id);
       });
 
+      const sourceReports = new Set(permanentObjects.map(feature =>
+        String(props(feature).Source_Report_ID || "").trim()
+      ).filter(Boolean));
+      const usedIds = new Set(permanentObjects.map(feature =>
+        String(props(feature).Object_ID || "").trim()
+      ).filter(Boolean));
+      const pendingAssets = (reportCollection.features || [])
+        .filter(feature => {
+          const reportId = String(
+            props(feature).reportId || props(feature).Report_ID || ""
+          ).trim();
+          return reportId && !sourceReports.has(reportId);
+        })
+        .map(feature => verifiedProgramAsset(feature, usedIds))
+        .filter(Boolean);
+
+      objects = permanentObjects.concat(pendingAssets);
       buildLayerFilter();
       applyFilter();
-      setStatus(objects.length + " objek program siap diedit.", "ok");
+      setStatus(
+        permanentObjects.length + " objek permanen · " +
+        pendingAssets.length + " aset terverifikasi belum disinkronkan.",
+        "ok"
+      );
     } catch (error) {
       setStatus(error.message, "error");
     }
@@ -294,7 +388,8 @@
       return '<button class="object-item' + (active ? " active" : "") +
         '" type="button" data-index="' + index + '">' +
         '<strong>' + esc(objectName(feature)) + '</strong>' +
-        '<span>' + esc(id) + ' · ' + esc(p.Desa || "") + '</span>' +
+        '<span>' + (p._ygPendingSync ? 'Belum disinkronkan · ' : '') +
+        esc(id) + ' · ' + esc(p.Desa || p.locationName || "") + '</span>' +
         '</button>';
     }).join("") || '<p style="padding:14px">Tidak ada objek.</p>';
 
