@@ -1415,6 +1415,23 @@ L.control.scale({
     return feature;
   }
 
+  function applyExternalCanalBlockDonorPolicy(feature) {
+    const props = feature && feature.properties || {};
+    const layerId = String(
+      props.Layer_ID || props.Source_Layer || ""
+    ).trim().toLowerCase();
+    const village = [
+      props.Desa, props.WADMKD, props.NAMA_DESA,
+      props.village, props.locationName
+    ].filter(Boolean).join(" ").trim().toLowerCase();
+
+    if (layerId === "sekat_kanal" && !village.includes("pematang duku")) {
+      props.Donor = "Global Environment Centre";
+      props.Donor_Cluster = "Global Environment Centre";
+    }
+    return feature;
+  }
+
   function initialize(data) {
     if (!data || data.type !== "FeatureCollection" || !Array.isArray(data.features)) {
       setStatus("Respons database tidak valid.", true);
@@ -1425,7 +1442,8 @@ L.control.scale({
       .filter(feature => feature && feature.geometry)
       .map(normalizeVerifiedCommunityAssets)
       .map(applyPematangDukuDonorPolicy)
-      .map(applyAramcoCoastalAssetPolicy);
+      .map(applyAramcoCoastalAssetPolicy)
+      .map(applyExternalCanalBlockDonorPolicy);
     const groups = {};
 
     rawFeatures.forEach(feature => {
