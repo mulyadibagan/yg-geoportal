@@ -291,6 +291,63 @@
     return candidate;
   }
 
+  function mergeOfficialMangroveObjects(masterObjects, officialCollection) {
+    if (
+      !officialCollection ||
+      officialCollection.type !== "FeatureCollection" ||
+      !Array.isArray(officialCollection.features)
+    ) {
+      return masterObjects;
+    }
+
+    const masterMangrove = new Map();
+    const nonMangrove = [];
+    masterObjects.forEach(feature => {
+      const p = props(feature);
+      const layerId = String(p.Layer_ID || p.Source_Layer || "").toLowerCase();
+      if (layerId === "area_mangrove" && p.Object_ID) {
+        masterMangrove.set(String(p.Object_ID), feature);
+      } else {
+        nonMangrove.push(feature);
+      }
+    });
+
+    const administrativeKeys = [
+      "Donor", "Donor_Cluster", "Nama_Proyek", "Project_ID",
+      "Nomor_Perjanjian", "Program", "Status_Objek", "Revision",
+      "Created_At", "Created_By", "Updated_At", "Updated_By",
+      "Source_Report_ID"
+    ];
+
+    const officialMangrove = officialCollection.features
+      .filter(feature => feature && feature.geometry && props(feature).Object_ID)
+      .map(feature => {
+        const official = clone(feature);
+        const p = props(official);
+        const master = masterMangrove.get(String(p.Object_ID));
+        const masterProps = props(master);
+        administrativeKeys.forEach(key => {
+          if (
+            masterProps[key] !== undefined &&
+            masterProps[key] !== null &&
+            String(masterProps[key]).trim() !== ""
+          ) {
+            p[key] = masterProps[key];
+          }
+        });
+        p.Layer_ID = "area_mangrove";
+        p.Source_Layer = "area_mangrove";
+        p.Layer_Label = p.Layer_Label || "Area Penanaman Mangrove";
+        p.Kategori = p.Kategori || "Penanaman Mangrove";
+        p.Source_Type = masterProps.Source_Type || "official_github_layer";
+        p._ygOfficialGeometry = true;
+        if (!master) p._ygPendingSync = true;
+        return official;
+      });
+
+    return nonMangrove.concat(officialMangrove);
+  }
+
   async function loadObjects() {
     setStatus("Memuat Master Database…");
     clearSelection();
@@ -298,16 +355,26 @@
     try {
       const results = await Promise.all([
         callbackLoad(api + "?page=objects"),
-        callbackLoad(api + "?page=public-reports").catch(() => ({ features: [] }))
+        callbackLoad(api + "?page=public-reports").catch(() => ({ features: [] })),
+        fetch("data/area_mangrove.geojson?t=" + Date.now(), {
+          cache: "no-store"
+        }).then(response => {
+          if (!response.ok) throw new Error("HTTP " + response.status);
+          return response.json();
+        }).catch(() => ({ type: "FeatureCollection", features: [] }))
       ]);
       collection = results[0];
       const reportCollection = results[1] || { features: [] };
-      const permanentObjects = (collection.features || []).filter(feature => {
+      let permanentObjects = (collection.features || []).filter(feature => {
         const p = props(feature);
         const id = p.Layer_ID || p.Source_Layer || "";
         return feature.geometry &&
           !["monitoring_reports", "community_reports", "kawasan_hutan_sk_903", "gambut_bbsdlp_2019"].includes(id);
       });
+      permanentObjects = mergeOfficialMangroveObjects(
+        permanentObjects,
+        results[2]
+      );
 
       const sourceReports = new Set(permanentObjects.map(feature =>
         String(props(feature).Source_Report_ID || "").trim()
