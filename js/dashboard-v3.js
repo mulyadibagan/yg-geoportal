@@ -50,7 +50,10 @@
         kopi: "Agroforestri & Kopi Liberika",
         agroforestri: "Agroforestri & Kopi Liberika",
         "agroforestri/kopi": "Agroforestri & Kopi Liberika",
-        "kopi liberika": "Agroforestri & Kopi Liberika"
+        "kopi liberika": "Agroforestri & Kopi Liberika",
+        "monitoring program": "Monitoring Lapangan",
+        "monitoring lapangan": "Monitoring Lapangan",
+        "laporan masyarakat": "Laporan Masyarakat"
       };
       return aliases[explicit.toLowerCase()] || explicit;
     }
@@ -69,7 +72,7 @@
       kopi: "Agroforestri & Kopi Liberika",
       nursery_kopi: "Agroforestri & Kopi Liberika",
       community_reports: "Laporan Masyarakat",
-      monitoring_reports: "Monitoring Program",
+      monitoring_reports: "Monitoring Lapangan",
     };
     if (programByLayer[layerId]) return programByLayer[layerId];
     return firstValue(props, ["Kategori", "Layer_Label"]) || "Program Lainnya";
@@ -89,9 +92,12 @@
     const normalized = donor.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
     const aliases = {
       aramco: "Aramco Asia Singapore",
-      "aramco asia singapore": "Aramco Asia Singapore"
+      "aramco asia singapore": "Aramco Asia Singapore",
+      ppcf: "Pan Pacific Conservation Foundation (PPCF)",
+      "pan pacific conservation foundation": "Pan Pacific Conservation Foundation (PPCF)",
+      "pan pacific conservation foundation ppcf": "Pan Pacific Conservation Foundation (PPCF)"
     };
-    return aliases[normalized] || donor || "Donor belum diisi";
+    return aliases[normalized] || donor;
   }
 
   function donorSearchTerm(donor) {
@@ -290,7 +296,24 @@
       formatNumber(mangroveArea, 2) + " ha";
     document.getElementById("dash-reports").textContent = formatNumber(reports);
 
-    document.getElementById("category-grid").innerHTML = Object.entries(programs)
+    const programCategories = [
+      "Restorasi Mangrove",
+      "Restorasi Gambut",
+      "Agroforestri & Kopi Liberika",
+      "Pencegahan Kebakaran",
+      "Monitoring Lapangan",
+      "Laporan Masyarakat"
+    ];
+    const programIcons = {
+      "Restorasi Mangrove": "🌊",
+      "Restorasi Gambut": "💧",
+      "Agroforestri & Kopi Liberika": "☕",
+      "Pencegahan Kebakaran": "🔥",
+      "Monitoring Lapangan": "📍",
+      "Laporan Masyarakat": "📋"
+    };
+    document.getElementById("category-grid").innerHTML = programCategories
+      .map(name => [name, programs[name] || 0])
       .sort((a, b) => b[1] - a[1])
       .map(([name, count]) => {
         const layerEntries = Object.entries(programLayers[name] || {})
@@ -298,19 +321,31 @@
         const layerId = layerEntries.length ? layerEntries[0][0] : "";
         return '<a class="category-card dashboard-link" href="' +
           escapeHtml(mapUrl({ layer: layerId })) + '">' +
+          '<i class="category-icon" aria-hidden="true">' +
+            escapeHtml(programIcons[name] || "•") + '</i>' +
           '<span>' + escapeHtml(name) + '</span>' +
           '<strong>' + formatNumber(count) + '</strong>' +
         '</a>';
       }).join("");
 
+    const ppcfName = "Pan Pacific Conservation Foundation (PPCF)";
     const donorEntries = Object.entries(donors)
       .sort((a, b) => b[1] - a[1]);
+    if (!donorEntries.some(([name]) => name === ppcfName)) {
+      donorEntries.unshift([ppcfName, 0]);
+    }
     document.getElementById("donor-grid").innerHTML = donorEntries.length
       ? donorEntries.map(([name, count]) => {
           const programCount = Object.keys(donorPrograms[name] || {}).length;
-          const donorUrl = name === "Donor belum diisi"
-            ? mapUrl({ donor: "missing" })
-            : mapUrl({ search: donorSearchTerm(name) });
+          if (name === "Pan Pacific Conservation Foundation (PPCF)") {
+            return '<button class="category-card dashboard-link funding-card" type="button" data-open-ppcf>' +
+              '<i class="category-icon" aria-hidden="true">🤝</i>' +
+              '<span>' + escapeHtml(name) + '</span>' +
+              '<strong>2025\u20132026</strong>' +
+              '<small>Pematang Duku \u00b7 lihat ringkasan output proyek</small>' +
+            '</button>';
+          }
+          const donorUrl = mapUrl({ search: donorSearchTerm(name) });
           return '<a class="category-card dashboard-link" href="' +
             escapeHtml(donorUrl) + '">' +
             '<span>' + escapeHtml(name) + '</span>' +
@@ -319,7 +354,7 @@
               ' program</small>' +
           '</a>';
         }).join("")
-      : '<div class="dashboard-empty">Data donor belum diisi pada objek aktif.</div>';
+      : '<div class="dashboard-empty">Belum ada data</div>';
 
     renderRanking(
       "regency-ranking",
@@ -348,4 +383,34 @@
       "Master Database belum dapat dimuat. Periksa deployment Apps Script.";
   };
   document.head.appendChild(script);
+
+  const ppcfDashboard = document.getElementById("ppcf-dashboard");
+  const ppcfDetail = document.getElementById("ppcf-detail");
+  const ppcfDetails = {
+    training: '<h4>Pelatihan PPCF</h4><div class="funding-detail-grid"><article><strong>69 peserta</strong><span>Pelatihan pengelolaan gambut berkelanjutan dan pertanian tanpa bakar · 7 Agustus 2025</span></article><article><strong>50 peserta</strong><span>Pelatihan agroforestri kopi Liberika, termasuk 13 perempuan · 19 Desember 2025</span></article></div>',
+    market: '<h4>Kemitraan pasar kopi</h4><p>MoU antara Kelompok Tani Ketiau Jaya dan Suvarnabhumi Coffee ditandatangani pada 20 Januari 2026. Suvarnabhumi Coffee bertindak sebagai calon pembeli utama kopi Liberika sesuai mutu, harga, dan kapasitas pasokan yang disepakati.</p><a href="webgis.html?layer=kopi&amp;village=Pematang+Duku">Lihat lokasi kelompok tani →</a>'
+  };
+  document.addEventListener("click", event => {
+    if (event.target.closest("[data-open-ppcf]")) {
+      ppcfDashboard.hidden = false;
+      document.body.classList.add("modal-open");
+    }
+    if (event.target.closest("[data-close-ppcf]")) {
+      ppcfDashboard.hidden = true;
+      ppcfDetail.hidden = true;
+      document.body.classList.remove("modal-open");
+    }
+    const detailButton = event.target.closest("[data-ppcf-detail]");
+    if (detailButton) {
+      ppcfDetail.innerHTML = ppcfDetails[detailButton.dataset.ppcfDetail] || "";
+      ppcfDetail.hidden = false;
+      ppcfDetail.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+  });
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && !ppcfDashboard.hidden) {
+      ppcfDashboard.hidden = true;
+      document.body.classList.remove("modal-open");
+    }
+  });
 })();

@@ -765,6 +765,7 @@ L.control.scale({
     searchItems.push({
       text: searchText,
       label: getObjectName(feature),
+      layerId: config.id,
       donorMissing: !getDonor(props),
       meta: [props.Desa || props.WADMKD, config.label].filter(Boolean).join(" · "),
       layer: layer,
@@ -1345,6 +1346,36 @@ L.control.scale({
     const village = String(params.get("village") || "").trim();
     const search = String(params.get("search") || "").trim();
     const donor = String(params.get("donor") || "").trim().toLowerCase();
+
+    if (layerId && village) {
+      const normalizedVillage = village.toLowerCase();
+      const matches = searchItems.filter(item =>
+        item.layerId === layerId && item.text.includes(normalizedVillage)
+      );
+      const bounds = L.latLngBounds([]);
+
+      matches.forEach(item => {
+        if (item.parent && !map.hasLayer(item.parent)) item.parent.addTo(map);
+        if (item.layer && typeof item.layer.getBounds === "function") {
+          const itemBounds = item.layer.getBounds();
+          if (itemBounds.isValid()) bounds.extend(itemBounds);
+        } else if (item.layer && typeof item.layer.getLatLng === "function") {
+          bounds.extend(item.layer.getLatLng());
+        }
+      });
+
+      const checkbox = document.getElementById("layer-" + layerId);
+      if (checkbox) checkbox.checked = true;
+      const input = document.getElementById("search-input");
+      if (input) input.value = village;
+      renderSearch(village);
+      if (bounds.isValid()) {
+        map.fitBounds(bounds, { padding: [30, 30], maxZoom: 17 });
+      } else {
+        showLayerFromDashboard(layerId);
+      }
+      return;
+    }
 
     if (layerId && showLayerFromDashboard(layerId)) return;
 

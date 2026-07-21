@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <meta name="description" content="YG GeoPortal - dashboard data spasial Yayasan Gambut berbasis Master Database."/>
+  <meta name="description" content="Platform Data Spasial Yayasan Gambut untuk pengelolaan lahan basah, gambut, mangrove, dan ekosistem lainnya secara berkelanjutan."/>
   <title>YG GeoPortal | Yayasan Gambut</title>
   <link rel="icon" href="assets/logo-yayasan-gambut.png"/>
   <link rel="stylesheet" href="css/style.css?v=20260720-dashboard-layout1"/>
-  <link rel="stylesheet" href="css/dashboard-v3.css?v=20260720-dashboard-layout2"/>
+  <link rel="stylesheet" href="css/dashboard-v3.css?v=20260721-ppcf-dashboard1"/>
   <meta name="theme-color" content="#079cde">
   <meta name="application-name" content="YG GeoPortal">
   <meta name="apple-mobile-web-app-title" content="YG GeoPortal">
@@ -26,10 +26,10 @@
     </a>
     <nav class="nav">
       <a href="index.html">Beranda</a>
-      <a href="webgis.html">WebGIS</a>
-      <a href="report.html">Kirim Laporan</a>
-      <a href="monitoring.html">Monitoring</a>
-      <a class="primary" href="webgis.html">Buka Peta</a>
+      <a href="webgis.html">Peta Interaktif</a>
+      <a href="report.html">Laporkan Temuan</a>
+      <a href="monitoring.html">Dashboard Monitoring</a>
+      <a class="primary" href="webgis.html">Jelajahi Peta</a>
     </nav>
   </div>
 </header>
@@ -37,10 +37,12 @@
 <main class="container">
   <section class="hero dashboard-hero">
     <div class="hero-main">
-      <div class="eyebrow">MASTER DATABASE WEBGIS YAYASAN GAMBUT</div>
-      <h1>Dashboard spasial yang diperbarui langsung dari database</h1>
+      <div class="eyebrow">PLATFORM DATA SPASIAL RESMI YAYASAN GAMBUT</div>
+      <h1>Platform Data Spasial Yayasan Gambut</h1>
+      <p class="hero-description">Menyajikan informasi spasial yang terverifikasi untuk mendukung pengelolaan lahan basah, gambut, mangrove, dan ekosistem lainnya secara berkelanjutan melalui restorasi, rehabilitasi, pemantauan lapangan, pemberdayaan masyarakat, serta kemitraan strategis yang berbasis data.</p>
+      <p class="hero-tagline">Menghubungkan data spasial, pemantauan lapangan, dan pelaporan masyarakat dalam satu platform untuk mendukung pengelolaan lahan basah dan ekosistem yang berkelanjutan.</p>
       <div class="hero-actions">
-        <a class="btn btn-light" href="webgis.html">🗺️ Buka WebGIS</a>
+        <a class="btn btn-light" href="webgis.html">🗺️ Jelajahi Peta</a>
         <a class="btn btn-outline" href="monitoring.html">📊 Dashboard Monitoring</a>
         <button class="btn btn-outline" type="button" data-install-app hidden>📲 Pasang Aplikasi</button>
       </div>
@@ -48,39 +50,39 @@
     </div>
 
     <div class="stat-grid">
-      <a class="stat dashboard-link" href="webgis.html?layer=desa_intervensi" aria-label="Lihat kabupaten terdata"><strong id="dash-regencies">—</strong><span>Kabupaten terdata</span></a>
-      <a class="stat dashboard-link" href="webgis.html?layer=desa_intervensi" aria-label="Lihat desa terdata"><strong id="dash-villages">—</strong><span>Desa terdata</span></a>
-      <a class="stat dashboard-link" href="webgis.html?layer=area_mangrove" aria-label="Lihat area mangrove"><strong id="dash-mangrove-area">—</strong><span>Area mangrove</span></a>
-      <a class="stat dashboard-link" href="webgis.html?layer=community_reports" aria-label="Lihat laporan masyarakat"><strong id="dash-reports">—</strong><span>Objek laporan masyarakat</span></a>
+      <a class="stat dashboard-link" href="webgis.html?layer=desa_intervensi" aria-label="Lihat kabupaten cakupan"><strong id="dash-regencies">—</strong><span>Kabupaten Cakupan</span></a>
+      <a class="stat dashboard-link" href="webgis.html?layer=desa_intervensi" aria-label="Lihat desa dampingan"><strong id="dash-villages">—</strong><span>Desa Dampingan</span></a>
+      <a class="stat dashboard-link" href="webgis.html?layer=area_mangrove" aria-label="Lihat luas restorasi mangrove"><strong id="dash-mangrove-area">—</strong><span>Luas Restorasi Mangrove</span></a>
+      <a class="stat dashboard-link" href="webgis.html?layer=community_reports" aria-label="Lihat laporan masyarakat terverifikasi"><strong id="dash-reports">—</strong><span>Laporan Masyarakat Terverifikasi</span></a>
     </div>
   </section>
 
   <section class="section dashboard-panel">
     <div class="section-head">
       <div>
-        <h2>Kluster program Yayasan Gambut</h2>
+        <h2>Program Yayasan Gambut</h2>
       </div>
     </div>
     <div class="category-grid" id="category-grid">
-      <div class="dashboard-loading">Memuat kluster program…</div>
+      <div class="dashboard-loading">Memuat program…</div>
     </div>
   </section>
 
   <section class="section dashboard-panel">
     <div class="section-head">
       <div>
-        <h2>Kluster donor</h2>
+        <h2>Mitra Pendanaan</h2>
       </div>
     </div>
     <div class="category-grid" id="donor-grid">
-      <div class="dashboard-loading">Memuat kluster donor…</div>
+      <div class="dashboard-loading">Memuat mitra pendanaan…</div>
     </div>
   </section>
 
   <section class="section dashboard-panel">
     <div class="section-head">
       <div>
-        <h2>Ringkasan administrasi kabupaten</h2>
+        <h2>Wilayah Cakupan Program</h2>
       </div>
     </div>
     <div>
@@ -90,6 +92,33 @@
 
 </main>
 
+<div class="funding-modal" id="ppcf-dashboard" hidden>
+  <button class="funding-backdrop" type="button" data-close-ppcf aria-label="Tutup dashboard PPCF"></button>
+  <section class="funding-dialog" role="dialog" aria-modal="true" aria-labelledby="ppcf-title">
+    <button class="funding-close" type="button" data-close-ppcf aria-label="Tutup">×</button>
+    <header class="funding-hero">
+      <span class="funding-badge">MITRA PENDANAAN</span>
+      <h2 id="ppcf-title">Pan Pacific Conservation Foundation (PPCF)</h2>
+      <div class="funding-meta"><span><b>Periode</b>2025–2026</span><span><b>Lokasi</b>Desa Pematang Duku, Kabupaten Bengkalis</span></div>
+    </header>
+    <div class="funding-content">
+      <div class="funding-heading"><div><span>Ringkasan capaian</span><h3>Output proyek PPCF</h3></div><p>Klik indikator untuk melihat lokasi atau informasi pendukung.</p></div>
+      <div class="funding-indicators">
+        <a href="webgis.html?village=Pematang+Duku" class="funding-indicator"><i>📍</i><strong>1</strong><span>Lokasi Program</span></a>
+        <a href="webgis.html?layer=area_kopi&amp;village=Pematang+Duku" class="funding-indicator"><i>🌱</i><strong>3,6 ha</strong><span>Restorasi Gambut &amp; Agroforestri</span></a>
+        <a href="webgis.html?layer=area_kopi&amp;village=Pematang+Duku" class="funding-indicator"><i>🌿</i><strong>4.000</strong><span>Bibit Ditanam</span></a>
+        <a href="webgis.html?layer=kopi&amp;village=Pematang+Duku" class="funding-indicator"><i>🌱</i><strong>4.500</strong><span>Bibit di Persemaian</span></a>
+        <a href="webgis.html?layer=sekat_kanal&amp;village=Pematang+Duku" class="funding-indicator"><i>💧</i><strong>4</strong><span>Sekat Kanal</span></a>
+        <a href="webgis.html?layer=fdrs&amp;village=Pematang+Duku" class="funding-indicator"><i>🔥</i><strong>3</strong><span>FDRS</span></a>
+        <button type="button" class="funding-indicator" data-ppcf-detail="training"><i>👨‍🌾</i><strong>119</strong><span>Peserta Pelatihan</span></button>
+        <button type="button" class="funding-indicator" data-ppcf-detail="market"><i>🤝</i><strong>1</strong><span>Kemitraan Pasar Kopi</span></button>
+        <a href="https://yayasangambut.org/wp-content/uploads/2026/02/Buku_Panduan-Pengelolaan-Lahan-Gambut-Berkelanjutan-Berbasis-Masyarakat.pdf" target="_blank" rel="noopener" class="funding-indicator"><i>📘</i><strong>1</strong><span>Buku Panduan</span></a>
+      </div>
+      <div class="funding-detail" id="ppcf-detail" hidden></div>
+    </div>
+  </section>
+</div>
+
 <footer class="site-footer">
   <div class="footer-inner">
     <span>© Yayasan Gambut</span>
@@ -97,7 +126,7 @@
   </div>
 </footer>
 
-<script src="js/dashboard-v3.js?v=20260721-gec-peat-infrastructure1"></script>
+<script src="js/dashboard-v3.js?v=20260721-ppcf-gec-dashboard1"></script>
   <script src="js/pwa.js?v=20260720-program-clean1"></script>
 </body>
 </html>
