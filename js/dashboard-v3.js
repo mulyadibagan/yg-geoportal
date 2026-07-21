@@ -138,7 +138,13 @@
             ...(feature.properties || {}),
             Layer_ID: source.id,
             Source_Layer: source.id,
-            Status_Objek: (feature.properties || {}).Status_Objek || "Aktif"
+            Status_Objek: (feature.properties || {}).Status_Objek || "Aktif",
+            Donor: source.id === "area_mangrove"
+              ? "Aramco Asia Singapore"
+              : (feature.properties || {}).Donor,
+            Donor_Cluster: source.id === "area_mangrove"
+              ? "Aramco Asia Singapore"
+              : (feature.properties || {}).Donor_Cluster
           }
         }));
 
