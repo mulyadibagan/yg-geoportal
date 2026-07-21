@@ -68,18 +68,42 @@
     return{key:'baik',label:m.condition||p.condition||'Baik/normal'};
   }
 
+  function geometryKey(geometry){
+    var bounds=[Infinity,Infinity,-Infinity,-Infinity];
+    function visit(value){
+      if(!Array.isArray(value))return;
+      if(value.length>=2&&typeof value[0]==='number'&&typeof value[1]==='number'){
+        bounds[0]=Math.min(bounds[0],value[0]);
+        bounds[1]=Math.min(bounds[1],value[1]);
+        bounds[2]=Math.max(bounds[2],value[0]);
+        bounds[3]=Math.max(bounds[3],value[1]);
+        return;
+      }
+      value.forEach(visit);
+    }
+    visit(geometry&&geometry.coordinates);
+    return isFinite(bounds[0])?bounds.map(function(v){return v.toFixed(5);}).join(','):'';
+  }
+
   function normalize(feature,index){
     var p=feature&&feature.properties||{};
     if(String(p.reportType||'').toLowerCase()!=='monitoring')return null;
     var m=parseJSON(p.proposedInformation);
     if(!Object.keys(m).length)m=parseJSON(p.proposedChanges).monitoring||{};
     var title=p.locationName||p.targetObjectName||p.title||'Objek monitoring';
-    // ID lama dapat berubah ketika geometri diperbarui. Layer dan nama objek
-    // menjadi kunci stabil untuk menyatukan seluruh kunjungan objek yang sama.
+    // ID lama dapat berubah karena perbedaan presisi koordinat. Namun nama
+    // yang sama dapat dimiliki beberapa polygon, sehingga identitas riwayat
+    // juga memakai luas dan batas geometri target.
     var layerKey=keyText(p.targetLayerId||p.targetLayerLabel||m.monitoringType||'monitoring');
     var nameKey=keyText(p.targetObjectName||p.locationName||p.title||title);
-    var objectId=(layerKey&&nameKey)
-      ? layerKey+'|'+nameKey
+    var targetProperties=parseJSON(p.targetFeatureProperties);
+    var rawArea=targetProperties.Luas_Ha||targetProperties.Luas||targetProperties.areaHa||targetProperties.luas_ha;
+    var targetArea=Number(String(rawArea==null?'':rawArea).replace(',','.'));
+    var areaKey=isFinite(targetArea)&&targetArea>0?targetArea.toFixed(4):'';
+    var boundsKey=geometryKey(feature&&feature.geometry);
+    var spatialKey=[layerKey,nameKey,areaKey,boundsKey].filter(Boolean).join('|');
+    var objectId=(layerKey&&nameKey&&(areaKey||boundsKey))
+      ? spatialKey
       : (p.targetObjectId||((p.targetSourceType||'program_layer')+'|'+(p.targetLayerId||'monitoring')+'|'+keyText(title)));
     var type=typeOf(p,m);
     return{
