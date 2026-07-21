@@ -85,10 +85,26 @@
   }
 
   function donorOf(props) {
-    const donor = firstValue(props, [
+    let donor = firstValue(props, [
       "Donor", "Nama_Donor", "Funding_Source",
       "donor", "nama_donor", "funding_source"
     ]);
+    if (!donor) {
+      let nested = props && (
+        props.targetFeatureProperties || props.proposedChanges
+      );
+      if (typeof nested === "string") {
+        try {
+          nested = JSON.parse(nested);
+        } catch (error) {
+          nested = {};
+        }
+      }
+      donor = firstValue(nested || {}, [
+        "Donor", "Nama_Donor", "Funding_Source",
+        "donor", "nama_donor", "funding_source"
+      ]);
+    }
     const normalized = donor.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
     const aliases = {
       aramco: "Aramco Asia Singapore",

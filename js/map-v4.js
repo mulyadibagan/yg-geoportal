@@ -161,6 +161,18 @@ L.control.scale({
       }
     }
 
+    let nested = source.targetFeatureProperties || source.proposedChanges || {};
+    if (typeof nested === "string") {
+      try {
+        nested = JSON.parse(nested);
+      } catch (error) {
+        nested = {};
+      }
+    }
+    if (nested && typeof nested === "object" && nested !== source) {
+      return getDonor(nested);
+    }
+
     return "";
   }
 

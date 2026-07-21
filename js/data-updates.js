@@ -223,10 +223,26 @@ function toDirectDriveUrl(url){
       "PPCF": "Pan Pacific Conservation Foundation",
       "ARAMCO": "Aramco Asia Singapore"
     };
-    const donorValue = valueOf([
+    let donorValue = valueOf([
       "Donor", "Donor_Cluster", "Nama_Donor", "Funding_Source",
       "donor", "nama_donor", "funding_source"
     ]);
+    if (!donorValue) {
+      let nested = props.targetFeatureProperties ||
+        props.proposedChanges || {};
+      if (typeof nested === "string") {
+        try {
+          nested = JSON.parse(nested);
+        } catch (error) {
+          nested = {};
+        }
+      }
+      donorValue = [
+        "Donor", "Donor_Cluster", "Nama_Donor", "Funding_Source",
+        "donor", "nama_donor", "funding_source"
+      ].map(key => nested && nested[key])
+        .find(value => value !== null && value !== undefined && String(value).trim()) || "";
+    }
     const donorCode = String(valueOf(["Ket"]) || "").trim().toUpperCase();
     const donor = donorValue || donorAliases[donorCode] || "";
     rows += row("Donor", donor);

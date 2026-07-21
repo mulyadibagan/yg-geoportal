@@ -99,6 +99,12 @@
     var proposedInformation = document.getElementById('proposed-information');
     var monitoringFields = document.getElementById('monitoring-fields');
     if(monitoringFields) monitoringFields.hidden = type !== 'Monitoring';
+    var newObjectDonorFields = document.getElementById('new-object-donor-fields');
+    var donorInput = document.getElementById('donor');
+    var needsNewObjectDonor =
+      type === 'Titik Baru' || type === 'Area/Poligon Baru';
+    if(newObjectDonorFields) newObjectDonorFields.hidden = !needsNewObjectDonor;
+    if(donorInput) donorInput.required = needsNewObjectDonor;
     var replantingFields = document.getElementById('replanting-fields');
     if(replantingFields) replantingFields.hidden =
       type !== 'Replanting/Penyulaman Mangrove';
@@ -1593,6 +1599,19 @@
       return;
     }
 
+    var isNewObjectReport =
+      selectedType === 'Titik Baru' ||
+      selectedType === 'Area/Poligon Baru';
+    var newObjectDonor = value('donor');
+    if(isNewObjectReport && !newObjectDonor){
+      alert('Isi mitra pendanaan/donor untuk objek baru.');
+      document.getElementById('donor').scrollIntoView({
+        behavior:'smooth',
+        block:'center'
+      });
+      return;
+    }
+
     if(selectedType === 'Area/Poligon Baru'){
       if(
         !geometryGeoJSON ||
@@ -1815,14 +1834,27 @@
         : '',
       targetFeatureProperties:selectedCorrectionFeature
         ? JSON.stringify(selectedCorrectionFeature.feature.properties || {})
-        : '',
+        : isNewObjectReport
+          ? JSON.stringify({
+              Donor:newObjectDonor,
+              Donor_Cluster:newObjectDonor,
+              Nama_Donor:newObjectDonor
+            })
+          : '',
       proposedChanges:selectedType === 'Perbaikan Informasi'
         ? JSON.stringify(collectProposedChanges())
         : selectedType === 'Monitoring'
           ? JSON.stringify({monitoring:collectMonitoringData()})
           : selectedType === 'Replanting/Penyulaman Mangrove'
             ? JSON.stringify({replanting:collectReplantingData()})
-            : '',
+            : isNewObjectReport
+              ? JSON.stringify({
+                  Donor:newObjectDonor,
+                  Donor_Cluster:newObjectDonor,
+                  Nama_Donor:newObjectDonor
+                })
+              : '',
+      donor:isNewObjectReport ? newObjectDonor : '',
       images:compressedImages
     };
 
