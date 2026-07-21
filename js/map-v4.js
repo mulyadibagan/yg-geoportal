@@ -1402,6 +1402,19 @@ L.control.scale({
     return feature;
   }
 
+  function applyAramcoCoastalAssetPolicy(feature) {
+    const props = feature && feature.properties || {};
+    const layerId = String(
+      props.Layer_ID || props.Source_Layer || ""
+    ).trim().toLowerCase();
+
+    if (layerId === "nursery_mangrove" || layerId === "apo") {
+      props.Donor = "Aramco Asia Singapore";
+      props.Donor_Cluster = "Aramco Asia Singapore";
+    }
+    return feature;
+  }
+
   function initialize(data) {
     if (!data || data.type !== "FeatureCollection" || !Array.isArray(data.features)) {
       setStatus("Respons database tidak valid.", true);
@@ -1411,7 +1424,8 @@ L.control.scale({
     rawFeatures = data.features
       .filter(feature => feature && feature.geometry)
       .map(normalizeVerifiedCommunityAssets)
-      .map(applyPematangDukuDonorPolicy);
+      .map(applyPematangDukuDonorPolicy)
+      .map(applyAramcoCoastalAssetPolicy);
     const groups = {};
 
     rawFeatures.forEach(feature => {
