@@ -31,6 +31,7 @@
   let filtered = [];
   let selectedFeature = null;
   let selectedLayer = null;
+  let overviewLayer = null;
   let originalFeature = null;
   let editing = false;
   let creatingNew = false;
@@ -282,6 +283,7 @@
     });
 
     renderList();
+    renderOverview(Boolean(layerValue) || (!selectedFeature && !query));
   }
 
   function renderList() {
@@ -298,6 +300,46 @@
 
     document.getElementById("object-summary").textContent =
       filtered.length + " objek ditampilkan";
+  }
+
+  function overviewStyle(feature) {
+    const type = feature.geometry && feature.geometry.type || "";
+    return {
+      color: "#3f7563",
+      weight: type.includes("Polygon") ? 2 : 2,
+      fillColor: "#62a88d",
+      fillOpacity: type.includes("Polygon") ? 0.12 : 0.65,
+      radius: 6,
+      opacity: 0.75
+    };
+  }
+
+  function renderOverview(fitToResults) {
+    if (overviewLayer) {
+      map.removeLayer(overviewLayer);
+      overviewLayer = null;
+    }
+
+    overviewLayer = L.geoJSON(filtered, {
+      style: overviewStyle,
+      pointToLayer: (_feature, latlng) =>
+        L.circleMarker(latlng, overviewStyle(_feature)),
+      onEachFeature: (feature, layer) => {
+        layer.bindTooltip(objectName(feature), { sticky: true });
+        layer.on("click", () => showFeature(feature));
+      }
+    }).addTo(map);
+
+    if (typeof overviewLayer.bringToBack === "function") {
+      overviewLayer.bringToBack();
+    }
+
+    if (fitToResults && filtered.length) {
+      const bounds = overviewLayer.getBounds();
+      if (bounds.isValid()) {
+        map.fitBounds(bounds, { padding: [28, 28], maxZoom: 13 });
+      }
+    }
   }
 
   function layerStyle(feature) {
