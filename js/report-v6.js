@@ -1596,7 +1596,7 @@
     return new Promise(function(resolve,reject){
       var reader = new FileReader();
       reader.onload = function(){ resolve(reader.result); };
-      reader.onerror = function(){ reject(new Error('PDF gagal dibaca.')); };
+      reader.onerror = function(){ reject(new Error('Dokumen gagal dibaca.')); };
       reader.readAsDataURL(file);
     });
   }
@@ -1626,26 +1626,24 @@
     capacityDocumentInput.addEventListener('change',async function(){
       var files = Array.from(this.files || []);
       var accepted = [];
-      var currentBytes = capacityDocuments.reduce(function(total,item){
-        return total + Number(item.size || 0);
-      },0);
-
       files.forEach(function(file){
-        var isPdf = file.type === 'application/pdf' || /\.pdf$/i.test(file.name);
-        if(!isPdf){ alert(file.name + ' bukan file PDF.'); return; }
-        if(file.size > 8 * 1024 * 1024){
-          alert(file.name + ' melebihi batas 8 MB.'); return;
+        var isSupported = [
+          'application/pdf',
+          'application/vnd.ms-powerpoint',
+          'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+        ].indexOf(file.type) !== -1 || /\.(pdf|ppt|pptx)$/i.test(file.name);
+        if(!isSupported){
+          alert(file.name + ' bukan file PDF, PPT, atau PPTX.'); return;
         }
-        if(capacityDocuments.length + accepted.length >= 10) return;
-        if(currentBytes + file.size > 25 * 1024 * 1024){
-          alert('Total PDF tidak boleh melebihi 25 MB.'); return;
+        if(file.size > 25 * 1024 * 1024){
+          alert(file.name + ' melebihi batas 25 MB.'); return;
         }
-        currentBytes += file.size;
+        if(capacityDocuments.length + accepted.length >= 6) return;
         accepted.push(file);
       });
 
-      if(files.length > accepted.length && capacityDocuments.length + accepted.length >= 10){
-        alert('Maksimal 10 PDF untuk satu kegiatan.');
+      if(files.length > accepted.length && capacityDocuments.length + accepted.length >= 6){
+        alert('Maksimal 6 file materi untuk satu kegiatan.');
       }
       if(!accepted.length){ this.value = ''; return; }
 
@@ -1656,8 +1654,8 @@
           var dataUrl = await readFileAsDataUrl(file);
           capacityDocuments.push({
             name:file.name,
-            type:'application/pdf',
-            mimeType:'application/pdf',
+            type:file.type || 'application/octet-stream',
+            mimeType:file.type || 'application/octet-stream',
             size:file.size,
             dataUrl:dataUrl
           });
@@ -1665,7 +1663,7 @@
           await yieldToBrowser();
         }
       }catch(error){
-        alert(error.message || 'PDF gagal diproses.');
+        alert(error.message || 'Dokumen gagal diproses.');
       }finally{
         setCapacityDocumentsProcessing(false);
         this.value = '';
