@@ -854,7 +854,7 @@
             return '<button class="category-card dashboard-link funding-card" type="button" data-open-aramco>' +
               '<i class="category-icon" aria-hidden="true">🌿</i>' +
               '<span>' + escapeHtml(name) + '</span>' +
-              '<strong>2023–Sekarang</strong>' +
+              '<strong>2023–2026</strong>' +
               '<small>4 desa · lihat ringkasan program</small>' +
             '</button>';
           }
