@@ -49,6 +49,19 @@
     return /:auto:/i.test(String(value || ""));
   }
 
+  function canonicalMangroveObjectId(value) {
+    const text = normalize(value).replace(/_/g, "-");
+    if (text.indexOf("mangrove-") !== 0) return text;
+
+    /*
+     * ID area mangrove lama belum menyertakan tahun, misalnya
+     * MANGROVE-BURUK-BAKUL-PHASE-I-001. ID permanen terbaru menyisipkan
+     * tahun sebelum nomor plot. Bentuk kanonik ini membuat foto lama tetap
+     * melekat pada plot yang sama tanpa mencampur foto antar-plot.
+     */
+    return text.replace(/-(20\d{2})-(\d{3})$/, "-$2");
+  }
+
   function numeric(value) {
     const number = Number(String(value == null ? "" : value).replace(",", "."));
     return Number.isFinite(number) ? number : NaN;
@@ -172,6 +185,13 @@
     if (expectedObjectId) {
       const actualObjectId = objectId(props);
       if (actualObjectId && actualObjectId === expectedObjectId) return true;
+      if (
+        actualObjectId &&
+        canonicalMangroveObjectId(actualObjectId) ===
+          canonicalMangroveObjectId(expectedObjectId)
+      ) {
+        return true;
+      }
       if (!isLegacyAutoId(expectedObjectId)) return false;
       return legacyPhotoMatches(feature, update, target);
     }

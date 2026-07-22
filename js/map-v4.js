@@ -904,12 +904,40 @@ L.control.scale({
         const single = L.geoJSON(feature, {
           pane: pane,
           renderer: vectorRendererFor(pane),
+          interactive: true,
+          bubblingMouseEvents: false,
           style: () => styleFor(config),
           pointToLayer: (_feature, latlng) => pointFor(config, latlng, pane)
         });
 
         single.eachLayer(layer => {
           layer.bindPopup(buildPopup(feature, config), { maxWidth: 400 });
+
+          /*
+           * Buka popup secara eksplisit. Pada beberapa browser, objek SVG yang
+           * saling bertumpuk dapat menerima event tetapi popup bawaan Leaflet
+           * tidak selalu terbuka. Handler ini membuat polygon, garis, dan titik
+           * tetap dapat diklik tanpa mengubah urutan maupun bentuk layer.
+           */
+          layer.on("click", event => {
+            if (event && event.originalEvent) {
+              L.DomEvent.stopPropagation(event.originalEvent);
+            }
+            layer.openPopup(event && event.latlng ? event.latlng : undefined);
+          });
+
+          layer.on("add", () => {
+            if (layer._path) {
+              layer._path.style.pointerEvents = "auto";
+              layer._path.setAttribute("tabindex", "0");
+              layer._path.setAttribute("role", "button");
+              layer._path.setAttribute(
+                "aria-label",
+                "Buka informasi " + getObjectName(feature)
+              );
+            }
+          });
+
           addFeatureToSearch(feature, layer, group, config);
           group.addLayer(layer);
         });
@@ -1988,6 +2016,67 @@ L.control.scale({
     return match ? match[1].toLowerCase() : "";
   }
 
+  function canonicalMangroveObjectId(value) {
+    const normalized = normalizedMatchValue(value);
+    if (!normalized || normalized.indexOf("mangrove-") !== 0) return "";
+
+    /*
+     * ID legacy belum menyimpan tahun, misalnya:
+     * MANGROVE-BURUK-BAKUL-PHASE-I-004
+     * ID permanennya menjadi:
+     * MANGROVE-BURUK-BAKUL-PHASE-I-2023-004
+     * Keduanya mewakili plot yang sama, sehingga tahun diabaikan hanya untuk
+     * keperluan rekonsiliasi. Nomor plot tetap wajib sama.
+     */
+    return normalized.replace(/-\d{4}-(\d{3})$/, "-$1");
+  }
+
+  function monitoringTargetObjectId(props) {
+    let targetProperties = props.targetFeatureProperties ||
+      props.Target_Feature_Properties || {};
+    let changes = props.proposedChanges || props.Proposed_Changes_JSON || {};
+
+    try {
+      if (typeof targetProperties === "string") {
+        targetProperties = JSON.parse(targetProperties);
+      }
+    } catch (error) {
+      targetProperties = {};
+    }
+    try {
+      if (typeof changes === "string") changes = JSON.parse(changes);
+    } catch (error) {
+      changes = {};
+    }
+
+    const storedTargetId = String(
+      props.Target_Object_ID_Current ||
+      props.targetObjectId ||
+      props.Target_Object_ID ||
+      targetProperties.Object_ID ||
+      targetProperties.objectId ||
+      changes.Target_Object_ID_Current ||
+      changes.targetObjectId ||
+      changes.Target_Object_ID ||
+      ""
+    ).trim();
+
+    /*
+     * Koreksi terverifikasi untuk satu laporan lama yang tersimpan memakai
+     * identitas polygon yang keliru. Batasi berdasarkan ID laporan agar
+     * monitoring Phase I lain tidak ikut dipindahkan.
+     */
+    const reportId = String(
+      props.reportId || props.Source_Report_ID || props.Monitoring_ID || ""
+    ).trim();
+    const verifiedReportTargets = {
+      "YG-20260717-210140-375":
+        "MANGROVE-BURUK-BAKUL-PHASE-III-2025-001"
+    };
+
+    return verifiedReportTargets[reportId] || storedTargetId;
+  }
+
   function isMangroveMonitoringFeature(feature) {
     const props = feature && feature.properties || {};
     const layerId = normalizedMatchValue(
@@ -2007,6 +2096,32 @@ L.control.scale({
 
   function matchOfficialMangroveFeature(monitoring, officialFeatures) {
     const props = monitoring && monitoring.properties || {};
+    const targetObjectId = monitoringTargetObjectId(props);
+    const normalizedTargetId = normalizedMatchValue(targetObjectId);
+    const canonicalTargetId = canonicalMangroveObjectId(targetObjectId);
+
+    if (normalizedTargetId) {
+      const idMatch = (officialFeatures || []).find(feature => {
+        const officialId = feature && feature.properties &&
+          feature.properties.Object_ID;
+        return (
+          normalizedMatchValue(officialId) === normalizedTargetId ||
+          (
+            canonicalTargetId &&
+            canonicalMangroveObjectId(officialId) === canonicalTargetId
+          )
+        );
+      });
+      if (idMatch) return idMatch;
+
+      /*
+       * ID mangrove eksplisit tidak boleh dialihkan ke plot lain. Jika ID
+       * tersebut belum ada pada daftar resmi, pertahankan geometri laporan
+       * sampai relasinya dikoreksi oleh editor.
+       */
+      if (normalizedTargetId.indexOf("mangrove-") === 0) return null;
+    }
+
     const village = normalizedMatchValue(
       props.Desa || props.WADMKD || props.targetObjectName
     );
@@ -2056,13 +2171,19 @@ L.control.scale({
     }
 
     /*
-     * Fase yang sama merupakan pengenal kuat untuk laporan lama.
-     * Tanpa fase, luas harus cukup dekat agar laporan tidak tertaut
-     * ke plot lain yang kebetulan berada di desa yang sama.
+     * Desa dan fase hanya dipakai sebagai kandidat untuk laporan lama.
+     * Keduanya tidak cukup untuk memilih satu polygon karena satu fase
+     * dapat memiliki beberapa plot.
      */
     const selected = candidates[0] || null;
-    if (!selected || monitoringPhase || !Number.isFinite(monitoredArea)) {
-      return selected;
+    if (!selected) return null;
+
+    /*
+     * Desa + fase saja tidak cukup karena satu fase dapat memiliki banyak
+     * plot. Tanpa luas yang valid, hanya satu kandidat yang boleh dipilih.
+     */
+    if (!Number.isFinite(monitoredArea)) {
+      return candidates.length === 1 ? selected : null;
     }
 
     const selectedArea = numericArea(
@@ -2070,7 +2191,17 @@ L.control.scale({
     );
     const difference = Math.abs(selectedArea - monitoredArea);
     const tolerance = Math.max(0.05, monitoredArea * 0.1);
-    return difference <= tolerance ? selected : null;
+    if (difference > tolerance) return null;
+
+    const equallyClose = candidates.filter(feature => {
+      const area = numericArea(
+        feature && feature.properties && feature.properties.Luas_Ha
+      );
+      return Math.abs(
+        Math.abs(area - monitoredArea) - difference
+      ) < 1e-9;
+    });
+    return equallyClose.length === 1 ? selected : null;
   }
 
   function mergeOfficialMangroveData(data, mangrove) {
@@ -2084,13 +2215,40 @@ L.control.scale({
       return data;
     }
 
-    const databaseMangroveFeatures = data.features.filter(feature => {
+    function isDatabaseMangroveFeature(feature) {
       const props = feature && feature.properties || {};
       const layerId = normalizedMatchValue(
         props.Layer_ID || props.Source_Layer
       );
-      return layerId === "area_mangrove";
-    });
+      const objectId = normalizedMatchValue(
+        props.Object_ID || props.objectId
+      );
+      const category = normalizedMatchValue(
+        props.Kategori || props.Category || props.category
+      );
+      const reportType = normalizedMatchValue(
+        props.reportType || props.Jenis_Laporan
+      );
+
+      /*
+       * OBJECTS lama tidak selalu memiliki Layer_ID/Source_Layer, tetapi ID
+       * permanen/legacy dan kategorinya tetap menandai area mangrove. Semua
+       * objek master lama ini harus diganti oleh GeoJSON resmi terbaru agar
+       * polygon, luas, jumlah bibit, dan ID tidak kembali ke versi sebelum
+       * rekonsiliasi. Laporan monitoring tetap dipertahankan.
+       */
+      if (reportType) return false;
+      return (
+        layerId === "area_mangrove" ||
+        objectId.indexOf("mangrove-") === 0 ||
+        category === "penanaman mangrove" ||
+        category === "mangrove planting"
+      );
+    }
+
+    const databaseMangroveFeatures = data.features.filter(
+      isDatabaseMangroveFeature
+    );
 
     function findDatabaseMangrove(officialFeature) {
       const officialProps = officialFeature && officialFeature.properties || {};
@@ -2155,25 +2313,13 @@ L.control.scale({
         officialObjectId && databaseObjectId === officialObjectId;
 
       /*
-       * Geometry dan atribut dasar mangrove selalu berasal dari GeoJSON resmi
-       * hasil revisi GIS. OBJECTS hanya boleh melengkapi nilai resmi yang telah
-       * disunting melalui editor untuk Object ID permanen yang sama. Geometry
-       * lama di OBJECTS tidak boleh mengembalikan bentuk polygon sebelum revisi.
+       * Geometry dan atribut capaian mangrove selalu berasal dari GeoJSON resmi
+       * hasil rekonsiliasi laporan. OBJECTS hanya melengkapi metadata donor dan
+       * proyek untuk Object ID permanen yang sama. Nilai lama di OBJECTS tidak
+       * boleh mengembalikan polygon atau angka capaian sebelum rekonsiliasi.
        */
       if (exactMasterObject) {
         feature.properties.Geometry_Source = "official_mangrove_geojson";
-        [
-          "Luas_Ha", "Jumlah_Tanam", "Jumlah_Bib", "Jumlah_Bibit",
-          "Panjang_M"
-        ].forEach(key => {
-          if (
-            databaseProps[key] !== undefined &&
-            databaseProps[key] !== null &&
-            String(databaseProps[key]).trim() !== ""
-          ) {
-            feature.properties[key] = databaseProps[key];
-          }
-        });
       }
       [
         "Donor",
@@ -2208,13 +2354,9 @@ L.control.scale({
       }
     });
 
-    const nonMangroveFeatures = data.features.filter(feature => {
-      const props = feature && feature.properties || {};
-      const layerId = normalizedMatchValue(
-        props.Layer_ID || props.Source_Layer
-      );
-      return layerId !== "area_mangrove";
-    });
+    const nonMangroveFeatures = data.features.filter(
+      feature => !isDatabaseMangroveFeature(feature)
+    );
 
     /*
      * Laporan monitoring menyimpan geometri saat laporan dibuat.

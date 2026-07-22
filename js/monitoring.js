@@ -7,6 +7,7 @@
   var CALLBACK='ygMonitoringDashboardCallback';
   var OBJECTS_CALLBACK='ygMonitoringObjectsCallback';
 var LEGACY_OBJECT_ALIASES={
+  'area_mangrove:auto:374024597':'MANGROVE-BURUK-BAKUL-PHASE-III-2025-001',
   'area_mangrove:auto:1281388060':'MANGROVE-KELAPA-PATI-PHASE-III-2026-001'
 };
   var records=[],groups=[],masterObjects=[];

@@ -568,11 +568,10 @@
       officialMetric(villageCount(aramcoProgrammeAssets), 4));
     const aramcoMappedArea = sumProperties(aramcoMangrove,
       ["Luas_Ha", "Luas", "luas_ha"]);
-    // Baseline resmi dikunci. Snapshot 13,2240266364 ha mewakili seluruh
-    // polygon yang sudah ada saat baseline 13,1 ha ditetapkan. Hanya tambahan
-    // luas setelah snapshot ini yang menambah angka dashboard.
+    // Baseline laporan tetap 13,1 ha. Snapshot mengikuti hasil rekonsiliasi
+    // atribut 26 polygon; hanya penambahan setelah snapshot yang menambah angka.
     setMetric("aramco-area-count", progressFromSnapshot(
-      aramcoMappedArea, 13.1, 13.2240266364
+      aramcoMappedArea, 13.1, 13.235
     ), 2, " ha");
     // Empat rumah bibit adalah baseline resmi; objek kelima dan seterusnya
     // yang masuk WebGIS akan menaikkan angka secara otomatis.
