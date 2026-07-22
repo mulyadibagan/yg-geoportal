@@ -21,9 +21,24 @@
   }
 
   function numericValue(props, keys) {
-    const raw = firstValue(props || {}, keys);
-    if (!raw) return 0;
-    const normalized = raw.replace(/\s+/g, "")
+    let raw = "";
+    for (const key of keys) {
+      if (props && props[key] !== null && props[key] !== undefined &&
+          String(props[key]).trim() !== "") {
+        raw = props[key];
+        break;
+      }
+    }
+    if (raw === "") return 0;
+
+    // Nilai numerik dari GeoJSON harus dipertahankan apa adanya. Sebelumnya
+    // 0.971 diubah menjadi teks lalu titiknya dianggap pemisah ribuan,
+    // sehingga terbaca sebagai 971 hektare.
+    if (typeof raw === "number") {
+      return Number.isFinite(raw) ? raw : 0;
+    }
+
+    const normalized = String(raw).replace(/\s+/g, "")
       .replace(/\.(?=\d{3}(?:\D|$))/g, "")
       .replace(",", ".").replace(/[^0-9.-]/g, "");
     const value = Number(normalized);
@@ -405,7 +420,7 @@
     let restorationArea = 0;
     let plantedSeedlings = 0;
     const programmeMetrics = {
-      mangrove: { area: 0, seedlings: 0, nurseries: 0, wave: 0, villages: new Set() },
+      mangrove: { area: 0, seedlings: 0, nurseries: new Set(), wave: 0, villages: new Set() },
       peat: { area: 0, coffee: 0, forest: 0, canals: 0, rewetting: 0, fireInfra: 0, nurseries: 0 },
       mineral: { area: 0, seedlings: 0, towers: 0, signs: 0, plots: 0 },
       capacity: { trainings: 0, participants: 0, villages: new Set(), groups: new Set() }
@@ -486,7 +501,18 @@
           programmeMetrics.mangrove.area += area;
           programmeMetrics.mangrove.seedlings += seedlings;
         }
-        if (isNursery) programmeMetrics.mangrove.nurseries += 1;
+        if (isNursery) {
+          // Satu rumah bibit dapat hadir sebagai objek Master Database dan
+          // sebagai laporan masyarakat terverifikasi. Hitung lokasi unik agar
+          // aset yang sama tidak tampil dua kali pada dashboard.
+          const nurseryVillage = village.toLowerCase() ||
+            (["buruk bakul", "kelapa pati", "sepahat", "tanjung kuras"]
+              .find((name) => text.includes(name)) || "");
+          const nurseryKey = nurseryVillage || firstValue(props, [
+            "Object_ID", "objectId", "Nama_Objek", "objectName", "title"
+          ]).toLowerCase();
+          if (nurseryKey) programmeMetrics.mangrove.nurseries.add(nurseryKey);
+        }
         if (layerId === "apo" || /wave breaker|hybrid engineering|pemecah ombak/.test(text)) {
           programmeMetrics.mangrove.wave += numericFrom(props,
             ["Panjang_M", "Panjang_m", "Panjang", "Length_m"]);
@@ -642,7 +668,7 @@
         rows: [
           ["Luas Restorasi", programmeMetrics.mangrove.area, " ha", 2],
           ["Pohon Mangrove Ditanam", programmeMetrics.mangrove.seedlings],
-          ["Rumah Bibit", programmeMetrics.mangrove.nurseries],
+          ["Rumah Bibit", Math.max(4, programmeMetrics.mangrove.nurseries.size)],
           ["Hybrid Engineering", Math.max(300, programmeMetrics.mangrove.wave), " m"],
           ["Desa Program", programmeMetrics.mangrove.villages.size]
         ]
