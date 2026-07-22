@@ -9,6 +9,8 @@
   <link rel="stylesheet" href="css/monitoring.css?v=20260721-object-id1">
   <link rel="stylesheet" href="css/monitoring-v1-fix.css?v=20260720-104">
   <link rel="stylesheet" href="css/language-switcher.css?v=20260721-all-pages1">
+  <link rel="stylesheet" href="css/capacity-building.css?v=20260722-capacity2">
+  <style>.capacity-documents{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.capacity-document{display:inline-flex;align-items:center;padding:10px 13px;border-radius:9px;background:#eef7f3;color:#087a58;font-weight:700;text-decoration:none}.capacity-document:hover{background:#dff1e9}</style>
   <meta name="theme-color" content="#079cde">
   <meta name="application-name" content="YG GeoPortal">
   <meta name="apple-mobile-web-app-title" content="YG GeoPortal">
@@ -49,6 +51,13 @@
         <a class="hero-button secondary" href="webgis.html">Buka Peta</a>
       </div>
     </section>
+
+    <nav class="dashboard-view-tabs" aria-label="Jenis dashboard">
+      <button class="active" type="button" data-dashboard-view="monitoring">Monitoring Lapangan</button>
+      <button type="button" data-dashboard-view="capacity">Peningkatan Kapasitas</button>
+    </nav>
+
+    <div id="monitoring-view">
 
     <section class="summary-grid" aria-label="Ringkasan monitoring">
       <article><span>Total monitoring</span><strong id="stat-total">0</strong><small>hasil terverifikasi</small></article>
@@ -103,6 +112,26 @@
 
       </aside>
     </section>
+    </div>
+
+    <section id="capacity-view" class="capacity-view" hidden>
+      <div class="capacity-heading">
+        <div><span class="eyebrow">DATA KEGIATAN TERVERIFIKASI</span><h2>Peningkatan Kapasitas</h2></div>
+        <a class="capacity-add" href="report.html?type=capacity">+ Tambah kegiatan</a>
+      </div>
+      <div class="capacity-stats" aria-label="Ringkasan peningkatan kapasitas">
+        <article><span>Kegiatan</span><strong id="capacity-stat-activities">0</strong></article>
+        <article><span>Total peserta</span><strong id="capacity-stat-participants">0</strong></article>
+        <article><span>Perempuan</span><strong id="capacity-stat-women">0</strong></article>
+        <article><span>Pemuda terlibat</span><strong id="capacity-stat-youth">0</strong></article>
+      </div>
+      <div class="capacity-toolbar">
+        <label>Cari kegiatan<input id="capacity-search" type="search" placeholder="Nama, lokasi, kelompok, atau topik"></label>
+        <label>Tahun<select id="capacity-year"><option value="">Semua tahun</option></select></label>
+        <label>Kabupaten<select id="capacity-regency"><option value="">Semua kabupaten</option></select></label>
+      </div>
+      <div id="capacity-list" class="capacity-list"><div class="loading">Memuat kegiatan…</div></div>
+    </section>
   </main>
 
   <div class="modal" id="detail-modal" aria-hidden="true">
@@ -116,6 +145,7 @@
   <script src="js/monitoring-data-compat.js?v=20260721-object-photo1"></script>
   <script src="js/monitoring.js?v=20260721-fdrs-conditional1"></script>
   <script src="js/monitoring-photo.js?v=20260720-edge-refresh1"></script>
+  <script src="js/capacity-building.js?v=20260722-capacity3"></script>
   <script src="js/i18n.js?v=20260721-all-pages1"></script>
   <script src="js/pwa.js?v=20260721-object-id1"></script>
 </body>

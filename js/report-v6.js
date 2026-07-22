@@ -19,6 +19,10 @@
 
   var compressedImages = [];
   var imagesProcessing = false;
+  var capacityDocumentInput = document.getElementById('capacity-documents');
+  var capacityDocumentList = document.getElementById('capacity-document-list');
+  var capacityDocuments = [];
+  var capacityDocumentsProcessing = false;
   var selectedType = '';
   var geometryType = '';
   var geometryGeoJSON = null;
@@ -35,9 +39,11 @@
   var deepLinkSelectionPending = Boolean(
     new URLSearchParams(window.location.search).get('object')
   );
+  var reverseGeocodeTimer = null;
+  var reverseGeocodeSequence = 0;
 
   var pointTypes = [
-    'Titik Baru','Kebakaran','Abrasi','Biodiversitas'
+    'Titik Baru','Kebakaran','Abrasi','Biodiversitas','Capacity Building'
   ];
 
   var existingFeatureTypes = [
@@ -56,7 +62,8 @@
     'Replanting/Penyulaman Mangrove',
     'Kebakaran',
     'Abrasi',
-    'Biodiversitas'
+    'Biodiversitas',
+    'Capacity Building'
   ];
 
   function setImagesProcessing(processing){
@@ -64,7 +71,18 @@
     if(imagesProcessing){
       submitButton.disabled = true;
       submitButton.textContent = 'Memproses foto...';
-    }else if(!submissionStarted){
+    }else if(!capacityDocumentsProcessing && !submissionStarted){
+      submitButton.disabled = false;
+      submitButton.textContent = 'Kirim Laporan';
+    }
+  }
+
+  function setCapacityDocumentsProcessing(processing){
+    capacityDocumentsProcessing = Boolean(processing);
+    if(capacityDocumentsProcessing){
+      submitButton.disabled = true;
+      submitButton.textContent = 'Memproses PDF...';
+    }else if(!imagesProcessing && !submissionStarted){
       submitButton.disabled = false;
       submitButton.textContent = 'Kirim Laporan';
     }
@@ -99,6 +117,18 @@
     var proposedInformation = document.getElementById('proposed-information');
     var monitoringFields = document.getElementById('monitoring-fields');
     if(monitoringFields) monitoringFields.hidden = type !== 'Monitoring';
+    var capacityFields = document.getElementById('capacity-building-fields');
+    if(capacityFields) capacityFields.hidden = type !== 'Capacity Building';
+    var documentLabel = document.getElementById('document-label');
+    var documentHelp = document.getElementById('document-help');
+    var documentUrl = document.getElementById('document-url');
+    if(documentLabel) documentLabel.textContent =
+      'Tautan dokumen pendukung (opsional)';
+    if(documentHelp) documentHelp.textContent =
+      'Gunakan jika dokumen sudah tersedia melalui tautan publik.';
+    if(documentUrl) documentUrl.placeholder = type === 'Capacity Building'
+      ? 'Tautan Google Drive atau PDF materi pelatihan'
+      : 'Tautan Google Drive atau PDF';
     var newObjectDonorFields = document.getElementById('new-object-donor-fields');
     var donorInput = document.getElementById('donor');
     var needsNewObjectDonor =
@@ -142,7 +172,9 @@
       geometryType = 'Point';
       guidance.textContent = type === 'Titik Baru'
         ? 'Tempatkan satu titik baru dengan GPS atau klik peta.'
-        : 'Tentukan titik lokasi kegiatan atau kejadian.';
+        : type === 'Capacity Building'
+          ? 'Tentukan titik lokasi pelatihan atau kegiatan peningkatan kapasitas.'
+          : 'Tentukan titik lokasi kegiatan atau kejadian.';
       geometryHelp.textContent = 'Gunakan GPS atau klik satu titik pada peta. Marker dapat digeser.';
     }else if(existingFeatureTypes.indexOf(type) !== -1){
       geometrySection.hidden = false;
@@ -952,6 +984,53 @@
       .replace(/'/g,'&#39;');
   }
 
+  function cleanAdministrativeName(value,prefixPattern){
+    var result = String(value || '').trim();
+    return prefixPattern ? result.replace(prefixPattern,'').trim() : result;
+  }
+
+  function scheduleAdministrationLookup(lat,lng){
+    var status = document.getElementById('admin-location-status');
+    clearTimeout(reverseGeocodeTimer);
+    var sequence = ++reverseGeocodeSequence;
+    if(status) status.textContent = 'Mengenali administrasi lokasi dari titik peta...';
+    reverseGeocodeTimer = setTimeout(function(){
+      var url = 'https://nominatim.openstreetmap.org/reverse?format=jsonv2' +
+        '&lat=' + encodeURIComponent(lat) +
+        '&lon=' + encodeURIComponent(lng) +
+        '&zoom=18&addressdetails=1&accept-language=id';
+      fetch(url,{headers:{'Accept':'application/json'}})
+        .then(function(response){
+          if(!response.ok) throw new Error('Lokasi tidak ditemukan');
+          return response.json();
+        })
+        .then(function(result){
+          if(sequence !== reverseGeocodeSequence) return;
+          var address = result.address || {};
+          var province = address.state || address.province || '';
+          var regency = address.city || address.county || address.municipality || '';
+          var district = address.city_district || address.district || address.suburb || '';
+          var village = address.village || address.town || address.hamlet || address.quarter || '';
+          regency = cleanAdministrativeName(regency,/^(Kabupaten|Kota)\s+/i);
+          district = cleanAdministrativeName(district,/^Kecamatan\s+/i);
+          village = cleanAdministrativeName(village,/^(Desa|Kelurahan)\s+/i);
+          if(province) document.getElementById('province').value = province;
+          if(regency) document.getElementById('regency').value = regency;
+          if(district) document.getElementById('district').value = district;
+          if(village) document.getElementById('village').value = village;
+          if(status){
+            status.textContent = (regency || district || village)
+              ? 'Administrasi lokasi diperbarui otomatis. Silakan periksa sebelum mengirim.'
+              : 'Koordinat tersimpan, tetapi administrasi belum dikenali. Silakan isi manual.';
+          }
+        })
+        .catch(function(){
+          if(sequence !== reverseGeocodeSequence) return;
+          if(status) status.textContent = 'Koordinat tersimpan, tetapi administrasi belum dapat dikenali. Silakan isi manual.';
+        });
+    },400);
+  }
+
   function setPoint(lat,lng,zoom){
     if(polygonLayer){
       map.removeLayer(polygonLayer);
@@ -977,6 +1056,7 @@
     document.getElementById('longitude').value = Number(lng).toFixed(7);
     updateGeometrySummary();
     map.setView([lat,lng],zoom || 15);
+    scheduleAdministrationLookup(lat,lng);
   }
 
   map.on('click',function(event){
@@ -1507,6 +1587,92 @@
     }
   });
 
+  function formatFileSize(bytes){
+    if(bytes < 1024 * 1024) return Math.ceil(bytes / 1024) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+  }
+
+  function readFileAsDataUrl(file){
+    return new Promise(function(resolve,reject){
+      var reader = new FileReader();
+      reader.onload = function(){ resolve(reader.result); };
+      reader.onerror = function(){ reject(new Error('PDF gagal dibaca.')); };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function renderCapacityDocuments(){
+    if(!capacityDocumentList) return;
+    capacityDocumentList.innerHTML = '';
+    capacityDocuments.forEach(function(documentFile,index){
+      var item = document.createElement('div');
+      var name = document.createElement('strong');
+      var remove = document.createElement('button');
+      item.className = 'capacity-document-item';
+      name.textContent = documentFile.name + ' · ' + formatFileSize(documentFile.size);
+      remove.type = 'button';
+      remove.textContent = 'Hapus';
+      remove.addEventListener('click',function(){
+        capacityDocuments.splice(index,1);
+        renderCapacityDocuments();
+      });
+      item.appendChild(name);
+      item.appendChild(remove);
+      capacityDocumentList.appendChild(item);
+    });
+  }
+
+  if(capacityDocumentInput){
+    capacityDocumentInput.addEventListener('change',async function(){
+      var files = Array.from(this.files || []);
+      var accepted = [];
+      var currentBytes = capacityDocuments.reduce(function(total,item){
+        return total + Number(item.size || 0);
+      },0);
+
+      files.forEach(function(file){
+        var isPdf = file.type === 'application/pdf' || /\.pdf$/i.test(file.name);
+        if(!isPdf){ alert(file.name + ' bukan file PDF.'); return; }
+        if(file.size > 8 * 1024 * 1024){
+          alert(file.name + ' melebihi batas 8 MB.'); return;
+        }
+        if(capacityDocuments.length + accepted.length >= 10) return;
+        if(currentBytes + file.size > 25 * 1024 * 1024){
+          alert('Total PDF tidak boleh melebihi 25 MB.'); return;
+        }
+        currentBytes += file.size;
+        accepted.push(file);
+      });
+
+      if(files.length > accepted.length && capacityDocuments.length + accepted.length >= 10){
+        alert('Maksimal 10 PDF untuk satu kegiatan.');
+      }
+      if(!accepted.length){ this.value = ''; return; }
+
+      setCapacityDocumentsProcessing(true);
+      try{
+        for(var i=0;i<accepted.length;i++){
+          var file = accepted[i];
+          var dataUrl = await readFileAsDataUrl(file);
+          capacityDocuments.push({
+            name:file.name,
+            type:'application/pdf',
+            mimeType:'application/pdf',
+            size:file.size,
+            dataUrl:dataUrl
+          });
+          renderCapacityDocuments();
+          await yieldToBrowser();
+        }
+      }catch(error){
+        alert(error.message || 'PDF gagal diproses.');
+      }finally{
+        setCapacityDocumentsProcessing(false);
+        this.value = '';
+      }
+    });
+  }
+
   function monitoringValue(id){
     var el = document.getElementById(id);
     return el ? String(el.value || '').trim() : '';
@@ -1549,6 +1715,27 @@
     };
   }
 
+  function collectCapacityBuildingData(){
+    var male = Number(monitoringValue('capacity-male') || 0);
+    var female = Number(monitoringValue('capacity-female') || 0);
+    var youthMale = Number(monitoringValue('capacity-youth-male') || 0);
+    var youthFemale = Number(monitoringValue('capacity-youth-female') || 0);
+    return {
+      maleParticipants:male,
+      femaleParticipants:female,
+      totalParticipants:male + female,
+      youthMale:youthMale,
+      youthFemale:youthFemale,
+      youthTotal:youthMale + youthFemale,
+      youthAgeRange:monitoringValue('capacity-youth-age'),
+      communityGroup:monitoringValue('capacity-group'),
+      participantTarget:monitoringValue('capacity-target'),
+      partnerOrResourcePerson:monitoringValue('capacity-partner'),
+      topic:monitoringValue('capacity-topic'),
+      youthRole:monitoringValue('capacity-youth-role')
+    };
+  }
+
   function updateMonitoringPanels(){
     var type = monitoringValue('monitoring-type');
     var mangrove = document.getElementById('monitoring-mangrove-fields');
@@ -1588,9 +1775,10 @@
   form.addEventListener('submit',function(event){
     event.preventDefault();
 
-    if(imagesProcessing){
-      alert('Foto masih diproses. Tunggu sampai muncul tulisan foto siap dikirim.');
-      imageInput.scrollIntoView({behavior:'smooth',block:'center'});
+    if(imagesProcessing || capacityDocumentsProcessing){
+      alert('Foto atau PDF masih diproses. Tunggu sampai semua file siap dikirim.');
+      (capacityDocumentsProcessing ? capacityDocumentInput : imageInput)
+        .scrollIntoView({behavior:'smooth',block:'center'});
       return;
     }
 
@@ -1769,6 +1957,29 @@
       }
     }
 
+    if(selectedType === 'Capacity Building'){
+      var capacityDataValidation = collectCapacityBuildingData();
+      if(!value('activity-date')){
+        alert('Isi tanggal kegiatan peningkatan kapasitas.');
+        return;
+      }
+      if(capacityDataValidation.totalParticipants < 1){
+        alert('Isi jumlah peserta laki-laki dan/atau perempuan.');
+        return;
+      }
+      if(
+        capacityDataValidation.youthMale > capacityDataValidation.maleParticipants ||
+        capacityDataValidation.youthFemale > capacityDataValidation.femaleParticipants
+      ){
+        alert('Jumlah pemuda tidak boleh melebihi jumlah peserta menurut jenis kelamin.');
+        return;
+      }
+      if(!capacityDataValidation.participantTarget || !capacityDataValidation.partnerOrResourcePerson || !capacityDataValidation.topic){
+        alert('Isi sasaran peserta, mitra/narasumber, dan topik pelatihan.');
+        return;
+      }
+    }
+
     if(
       photoRequiredTypes.indexOf(selectedType) !== -1 &&
       compressedImages.length < 1
@@ -1816,6 +2027,8 @@
         ? JSON.stringify(collectMonitoringData())
         : selectedType === 'Replanting/Penyulaman Mangrove'
           ? JSON.stringify(collectReplantingData())
+          : selectedType === 'Capacity Building'
+            ? JSON.stringify(collectCapacityBuildingData())
           : value('proposed-information'),
       documentUrl:value('document-url'),
       geometryType:geometryGeoJSON ? geometryGeoJSON.type : '',
@@ -1847,6 +2060,8 @@
           ? JSON.stringify({monitoring:collectMonitoringData()})
           : selectedType === 'Replanting/Penyulaman Mangrove'
             ? JSON.stringify({replanting:collectReplantingData()})
+            : selectedType === 'Capacity Building'
+              ? JSON.stringify({capacityBuilding:collectCapacityBuildingData()})
             : isNewObjectReport
               ? JSON.stringify({
                   Donor:newObjectDonor,
@@ -1855,7 +2070,8 @@
                 })
               : '',
       donor:isNewObjectReport ? newObjectDonor : '',
-      images:compressedImages
+      images:compressedImages,
+      documents:selectedType === 'Capacity Building' ? capacityDocuments : []
     };
 
     document.getElementById('payload').value = JSON.stringify(payload);
@@ -1899,12 +2115,22 @@
       }
     }
   }
+  if(requestedType && ['capacity','capacity-building'].indexOf(requestedType.toLowerCase()) !== -1){
+    var capacityRadio = document.querySelector('input[name="reportTypeUI"][value="Capacity Building"]');
+    if(capacityRadio){
+      capacityRadio.checked = true;
+      selectedType = 'Capacity Building';
+      configureFormByType('Capacity Building');
+    }
+  }
 
   document.getElementById('send-another').addEventListener('click',function(){
     form.reset();
     selectedType = '';
     geometryType = '';
     compressedImages = [];
+    capacityDocuments = [];
+    renderCapacityDocuments();
     preview.innerHTML = '';
     resetGeometry();
     document.getElementById('geometry-section').hidden = true;

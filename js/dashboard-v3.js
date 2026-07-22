@@ -3,6 +3,8 @@
 
   const API = "https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec?page=objects";
   const CALLBACK = "ygDashboardV3Callback";
+  const CAPACITY_BASELINE_URL = "data/capacity-building.json?v=20260722-3";
+  const PUBLIC_REPORTS_API = API.replace("?page=objects", "?page=public-reports");
   const OFFICIAL_LAYERS = [
     { id: "area_mangrove", url: "data/area_mangrove.geojson" },
     { id: "area_kopi", url: "data/area_kopi.geojson" },
@@ -111,6 +113,103 @@
       if (Number.isFinite(value) && value !== 0) return value;
     }
     return 0;
+  }
+
+  function parseObject(value) {
+    if (!value) return {};
+    if (typeof value === "object" && !Array.isArray(value)) return value;
+    try {
+      const parsed = JSON.parse(value);
+      return parsed && typeof parsed === "object" ? parsed : {};
+    } catch (error) {
+      return {};
+    }
+  }
+
+  function jsonp(url) {
+    return new Promise((resolve, reject) => {
+      const callback = "ygCapacitySummary" + Date.now() + Math.floor(Math.random() * 1000);
+      const script = document.createElement("script");
+      const separator = url.includes("?") ? "&" : "?";
+      const cleanup = () => {
+        delete window[callback];
+        script.remove();
+      };
+      window[callback] = data => {
+        cleanup();
+        resolve(data);
+      };
+      script.onerror = () => {
+        cleanup();
+        reject(new Error("Data peningkatan kapasitas tidak dapat dimuat."));
+      };
+      script.src = url + separator + "callback=" + callback + "&t=" + Date.now();
+      document.head.appendChild(script);
+    });
+  }
+
+  function capacityRecordFromFeature(feature) {
+    const props = (feature && feature.properties) || {};
+    const proposed = parseObject(props.proposedChanges);
+    const information = parseObject(props.proposedInformation);
+    const details = proposed.capacityBuilding || information.capacityBuilding ||
+      (Object.keys(proposed).length ? proposed : information);
+    return {
+      id: firstValue(props, ["reportId", "Object_ID"]),
+      name: firstValue(props, ["title", "Nama_Objek"]),
+      date: firstValue(props, ["activityDate", "publishedAt"]),
+      location: firstValue(props, ["locationName", "Desa", "village"]),
+      village: firstValue(props, ["Desa", "village"]),
+      male: numericFrom(details, ["maleParticipants", "male"]),
+      female: numericFrom(details, ["femaleParticipants", "female"]),
+      group: firstValue(details, ["communityGroup", "group"]),
+      target: firstValue(details, ["participantTarget", "target"])
+    };
+  }
+
+  function capacityVillage(record) {
+    const explicit = String(record.village || "").trim();
+    if (explicit) return explicit;
+    const first = String(record.location || "").split(",")[0].trim();
+    // Beberapa baseline menulis lokasi kelembagaan (HKm/KTH) sebelum nama
+    // desa. Satukan keduanya agar Siarang Arang tidak dihitung dua kali.
+    if (/siarang arang/i.test(first)) return "Siarang Arang";
+    if (/^kantor bupati/i.test(first)) return "";
+    return first;
+  }
+
+  async function loadCapacitySummary() {
+    let baseline = [];
+    let live = [];
+    try {
+      const response = await fetch(CAPACITY_BASELINE_URL, { cache: "no-store" });
+      if (response.ok) baseline = await response.json();
+    } catch (error) {}
+    try {
+      const reports = await jsonp(PUBLIC_REPORTS_API);
+      live = ((reports && reports.features) || [])
+        .filter(feature => firstValue((feature && feature.properties) || {}, ["reportType"]) === "Capacity Building")
+        .map(capacityRecordFromFeature);
+    } catch (error) {}
+
+    const seen = new Set();
+    const records = baseline.concat(live).filter(record => {
+      const key = String(record.id || [record.name, record.date, record.location].join("|")).trim();
+      if (!key || seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+    const villages = new Set();
+    const groups = new Set();
+    let participants = 0;
+    records.forEach(record => {
+      participants += Number(record.male || 0) + Number(record.female || 0);
+      const village = capacityVillage(record);
+      if (village) villages.add(village.toLowerCase());
+      const group = String(record.group || record.target || "").trim();
+      if (group) groups.add(group.toLowerCase());
+    });
+    return { loaded: records.length > 0, trainings: records.length, participants, villages, groups };
   }
 
   function normalizedText(props) {
@@ -397,6 +496,7 @@
       return;
     }
 
+    const capacitySummary = await loadCapacitySummary();
     const mergedFeatures = (await mergeOfficialLayers(data.features))
       .map(applyPematangDukuDonorPolicy)
       .map(applyAramcoCoastalAssetPolicy)
@@ -425,6 +525,9 @@
       mineral: { area: 0, seedlings: 0, towers: 0, signs: 0, plots: 0 },
       capacity: { trainings: 0, participants: 0, villages: new Set(), groups: new Set() }
     };
+    if (capacitySummary.loaded) {
+      programmeMetrics.capacity = capacitySummary;
+    }
 
     active.forEach(feature => {
       const props = feature.properties || {};
@@ -550,7 +653,7 @@
         if (/plot ukur permanen|\bpup\b/.test(text)) programmeMetrics.mineral.plots += 1;
       }
 
-      if (isCapacity) {
+      if (isCapacity && !capacitySummary.loaded) {
         programmeMetrics.capacity.trainings += 1;
         programmeMetrics.capacity.participants += participants;
         if (village) programmeMetrics.capacity.villages.add(village.toLowerCase());
