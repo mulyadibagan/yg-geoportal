@@ -2031,7 +2031,28 @@ L.control.scale({
     return normalized.replace(/-\d{4}-(\d{3})$/, "-$1");
   }
 
-  function monitoringTargetObjectId(props) {
+  const VERIFIED_MONITORING_TARGETS = Object.freeze({
+    "YG-20260713-202057-344": [
+      "MANGROVE-BURUK-BAKUL-PHASE-II-2024-001"
+    ],
+    "YG-20260713-230541-911": [
+      "MANGROVE-SEPAHAT-PHASE-III-2025-001"
+    ],
+    "YG-20260717-205241-378": [
+      "MANGROVE-KELAPA-PATI-PHASE-III-2026-001"
+    ],
+    "YG-20260717-210140-375": [
+      "MANGROVE-BURUK-BAKUL-PHASE-III-2025-001"
+    ],
+    "YG-20260717-211305-543": [
+      "MANGROVE-BURUK-BAKUL-PHASE-III-2025-002"
+    ],
+    "YG-20260721-012602-224": [
+      "MANGROVE-SEPAHAT-PHASE-III-2025-001"
+    ]
+  });
+
+  function monitoringTargetObjectIds(props) {
     let targetProperties = props.targetFeatureProperties ||
       props.Target_Feature_Properties || {};
     let changes = props.proposedChanges || props.Proposed_Changes_JSON || {};
@@ -2061,20 +2082,22 @@ L.control.scale({
       ""
     ).trim();
 
-    /*
-     * Koreksi terverifikasi untuk satu laporan lama yang tersimpan memakai
-     * identitas polygon yang keliru. Batasi berdasarkan ID laporan agar
-     * monitoring Phase I lain tidak ikut dipindahkan.
-     */
     const reportId = String(
       props.reportId || props.Source_Report_ID || props.Monitoring_ID || ""
     ).trim();
-    const verifiedReportTargets = {
-      "YG-20260717-210140-375":
-        "MANGROVE-BURUK-BAKUL-PHASE-III-2025-001"
-    };
 
-    return verifiedReportTargets[reportId] || storedTargetId;
+    if (VERIFIED_MONITORING_TARGETS[reportId]) {
+      return VERIFIED_MONITORING_TARGETS[reportId].slice();
+    }
+
+    /*
+     * ID area_mangrove:auto:* berasal dari geometry lama dan tidak permanen.
+     * Jangan pernah menebak penggantinya dari nama desa, fase, atau luas:
+     * satu fase dapat terdiri dari beberapa plot dan tebakan dapat berubah
+     * setiap kali SHP diperbarui.
+     */
+    if (!canonicalMangroveObjectId(storedTargetId)) return [];
+    return [storedTargetId];
   }
 
   function isMangroveMonitoringFeature(feature) {
@@ -2094,14 +2117,15 @@ L.control.scale({
     );
   }
 
-  function matchOfficialMangroveFeature(monitoring, officialFeatures) {
+  function matchOfficialMangroveFeatures(monitoring, officialFeatures) {
     const props = monitoring && monitoring.properties || {};
-    const targetObjectId = monitoringTargetObjectId(props);
-    const normalizedTargetId = normalizedMatchValue(targetObjectId);
-    const canonicalTargetId = canonicalMangroveObjectId(targetObjectId);
+    const targetObjectIds = monitoringTargetObjectIds(props);
+    if (!targetObjectIds.length) return [];
 
-    if (normalizedTargetId) {
-      const idMatch = (officialFeatures || []).find(feature => {
+    const matches = targetObjectIds.map(targetObjectId => {
+      const normalizedTargetId = normalizedMatchValue(targetObjectId);
+      const canonicalTargetId = canonicalMangroveObjectId(targetObjectId);
+      return (officialFeatures || []).find(feature => {
         const officialId = feature && feature.properties &&
           feature.properties.Object_ID;
         return (
@@ -2112,96 +2136,28 @@ L.control.scale({
           )
         );
       });
-      if (idMatch) return idMatch;
+    });
+    return matches.every(Boolean) ? matches : [];
+  }
 
-      /*
-       * ID mangrove eksplisit tidak boleh dialihkan ke plot lain. Jika ID
-       * tersebut belum ada pada daftar resmi, pertahankan geometri laporan
-       * sampai relasinya dikoreksi oleh editor.
-       */
-      if (normalizedTargetId.indexOf("mangrove-") === 0) return null;
+  function combinedOfficialMangroveGeometry(features) {
+    if (features.length === 1) {
+      return JSON.parse(JSON.stringify(features[0].geometry));
     }
 
-    const village = normalizedMatchValue(
-      props.Desa || props.WADMKD || props.targetObjectName
-    );
-    const monitoringName = [
-      props.Nama_Objek,
-      props.targetObjectName,
-      props.locationName,
-      props.title
-    ].filter(Boolean).join(" ");
-    const monitoringPhase = phaseValue(monitoringName);
-    const monitoredArea = numericArea(
-      props.Luas_Terpantau_Ha ??
-      props.monitoredAreaHa ??
-      props.Luas_Ha
-    );
-
-    let candidates = (officialFeatures || []).filter(feature => {
-      const officialProps = feature && feature.properties || {};
-      return normalizedMatchValue(officialProps.Desa) === village;
+    const coordinates = [];
+    features.forEach(feature => {
+      const geometry = feature && feature.geometry;
+      if (!geometry) return;
+      if (geometry.type === "Polygon") coordinates.push(geometry.coordinates);
+      if (geometry.type === "MultiPolygon") {
+        coordinates.push(...geometry.coordinates);
+      }
     });
 
-    if (!candidates.length) return null;
-
-    if (monitoringPhase) {
-      const samePhase = candidates.filter(feature => {
-        const officialProps = feature && feature.properties || {};
-        return phaseValue(
-          officialProps.Ket || officialProps.Nama_Objek
-        ) === monitoringPhase;
-      });
-      if (samePhase.length) candidates = samePhase;
-    }
-
-    if (Number.isFinite(monitoredArea)) {
-      candidates.sort((first, second) => {
-        const firstArea = numericArea(
-          first && first.properties && first.properties.Luas_Ha
-        );
-        const secondArea = numericArea(
-          second && second.properties && second.properties.Luas_Ha
-        );
-        return (
-          Math.abs(firstArea - monitoredArea) -
-          Math.abs(secondArea - monitoredArea)
-        );
-      });
-    }
-
-    /*
-     * Desa dan fase hanya dipakai sebagai kandidat untuk laporan lama.
-     * Keduanya tidak cukup untuk memilih satu polygon karena satu fase
-     * dapat memiliki beberapa plot.
-     */
-    const selected = candidates[0] || null;
-    if (!selected) return null;
-
-    /*
-     * Desa + fase saja tidak cukup karena satu fase dapat memiliki banyak
-     * plot. Tanpa luas yang valid, hanya satu kandidat yang boleh dipilih.
-     */
-    if (!Number.isFinite(monitoredArea)) {
-      return candidates.length === 1 ? selected : null;
-    }
-
-    const selectedArea = numericArea(
-      selected.properties && selected.properties.Luas_Ha
-    );
-    const difference = Math.abs(selectedArea - monitoredArea);
-    const tolerance = Math.max(0.05, monitoredArea * 0.1);
-    if (difference > tolerance) return null;
-
-    const equallyClose = candidates.filter(feature => {
-      const area = numericArea(
-        feature && feature.properties && feature.properties.Luas_Ha
-      );
-      return Math.abs(
-        Math.abs(area - monitoredArea) - difference
-      ) < 1e-9;
-    });
-    return equallyClose.length === 1 ? selected : null;
+    return coordinates.length
+      ? { type: "MultiPolygon", coordinates }
+      : null;
   }
 
   function mergeOfficialMangroveData(data, mangrove) {
@@ -2363,32 +2319,46 @@ L.control.scale({
      * Setelah tim GIS memperbaiki SHP, properti laporan tetap dipakai,
      * sedangkan bentuk pada peta mengikuti objek resmi terbaru.
      */
-    const alignedFeatures = nonMangroveFeatures.map(feature => {
-      if (!isMangroveMonitoringFeature(feature)) return feature;
+    const alignedFeatures = nonMangroveFeatures.flatMap(feature => {
+      if (!isMangroveMonitoringFeature(feature)) return [feature];
 
-      const official = matchOfficialMangroveFeature(
+      const officialTargets = matchOfficialMangroveFeatures(
         feature,
         mangrove.features
       );
-      if (!official) return feature;
+      /*
+       * Jangan tampilkan geometry lama jika relasi permanennya belum valid.
+       * Lebih aman menyembunyikan satu laporan yang perlu direkonsiliasi
+       * daripada menampilkan monitoring pada polygon yang salah.
+       */
+      if (!officialTargets.length) return [];
 
-      const officialProps = official.properties || {};
+      const geometry = combinedOfficialMangroveGeometry(officialTargets);
+      if (!geometry) return [];
+
+      const officialProps = officialTargets[0].properties || {};
+      const permanentIds = officialTargets.map(target =>
+        target.properties && target.properties.Object_ID || ""
+      ).filter(Boolean);
       const inheritedDonor =
         getDonor(feature.properties || {}) ||
         getDonor(officialProps);
-      return {
+      return [{
         ...feature,
-        geometry: JSON.parse(JSON.stringify(official.geometry)),
+        geometry,
         properties: {
           ...(feature.properties || {}),
-          Target_Object_ID_Current: officialProps.Object_ID || "",
-          Target_Object_Name_Current: officialProps.Nama_Objek || "",
+          Target_Object_ID_Current: permanentIds.join(" | "),
+          Target_Object_IDs_Current: permanentIds,
+          Target_Object_Name_Current: officialTargets.length === 1
+            ? officialProps.Nama_Objek || ""
+            : "Gabungan plot monitoring Fase III",
           Target_Layer_ID_Current: "area_mangrove",
-          Geometry_Source: "area_mangrove_latest",
+          Geometry_Source: "permanent_monitoring_registry",
           Donor: inheritedDonor,
           Donor_Cluster: inheritedDonor
         }
-      };
+      }];
     });
 
     data.features = [
