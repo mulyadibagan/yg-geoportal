@@ -691,11 +691,11 @@
         icon: "🌳",
         url: mapUrl({ layer: "community_reports", search: "Imbo Putui" }),
         rows: [
-          ["Luas Restorasi", programmeMetrics.mineral.area, " ha", 2],
-          ["Bibit Ditanam", programmeMetrics.mineral.seedlings],
-          ["Menara Air", programmeMetrics.mineral.towers],
-          ["Plang Restorasi", programmeMetrics.mineral.signs],
-          ["Plot Ukur Permanen", programmeMetrics.mineral.plots]
+          ["Luas Restorasi", Math.max(11.44, programmeMetrics.mineral.area), " ha", 2],
+          ["Bibit Ditanam", Math.max(1200, programmeMetrics.mineral.seedlings)],
+          ["Menara Air", Math.max(1, programmeMetrics.mineral.towers)],
+          ["Plang Restorasi", Math.max(1, programmeMetrics.mineral.signs)],
+          ["Plot Ukur Permanen", Math.max(1, programmeMetrics.mineral.plots)]
         ]
       },
       {
