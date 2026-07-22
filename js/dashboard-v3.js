@@ -588,17 +588,16 @@
     ]);
     const aramcoWave = layerAssets(aramcoAssets, ["apo"]);
     const aramcoMonitoring = layerAssets(aramcoAssets, ["monitoring_reports"]);
-    setMetric("aramco-tree-count", officialMetric(sumProperties(aramcoMangrove,
-      ["Jumlah_Bibit", "Jumlah bibit", "jumlah_bibit", "Pohon"]), 42545));
+    const aramcoMappedTrees = sumProperties(aramcoMangrove,
+      ["Jumlah_Bib", "Jumlah_Bibit", "Jumlah bibit", "jumlah_bibit", "Jumlah_Tanam", "Pohon"]);
+    setMetric("aramco-tree-count", Math.max(42545, aramcoMappedTrees));
     setMetric("aramco-village-count",
       officialMetric(villageCount(aramcoProgrammeAssets), 4));
     const aramcoMappedArea = sumProperties(aramcoMangrove,
       ["Luas_Ha", "Luas", "luas_ha"]);
-    // Baseline laporan tetap 13,1 ha. Snapshot mengikuti hasil rekonsiliasi
-    // atribut 26 polygon; hanya penambahan setelah snapshot yang menambah angka.
-    setMetric("aramco-area-count", progressFromSnapshot(
-      aramcoMappedArea, 13.1, 13.235
-    ), 2, " ha");
+    // Laporan 13,1 ha menjadi nilai minimum. Atribut resmi polygon menjadi
+    // sumber utama sehingga setiap revisi atau penambahan langsung tersinkron.
+    setMetric("aramco-area-count", Math.max(13.1, aramcoMappedArea), 2, " ha");
     // Empat rumah bibit adalah baseline resmi; objek kelima dan seterusnya
     // yang masuk WebGIS akan menaikkan angka secara otomatis.
     setMetric("aramco-nursery-count", Math.max(4, aramcoNurseries.length));
