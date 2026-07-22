@@ -43,7 +43,7 @@
   var reverseGeocodeSequence = 0;
 
   var pointTypes = [
-    'Titik Baru','Kebakaran','Abrasi','Biodiversitas','Capacity Building'
+    'Titik Baru','Kebakaran','Abrasi','Biodiversitas'
   ];
 
   var existingFeatureTypes = [
@@ -152,7 +152,16 @@
 
     existingFeatureFields.hidden = existingFeatureTypes.indexOf(type) === -1;
 
-    if(type === 'Area/Poligon Baru'){
+    if(type === 'Capacity Building'){
+      geometrySection.hidden = true;
+      pointTools.hidden = true;
+      polygonTools.hidden = true;
+      pointCoordinates.hidden = true;
+      geometryType = '';
+      guidance.textContent =
+        'Data pelatihan akan ditampilkan pada Dashboard Peningkatan Kapasitas. Titik koordinat tidak diperlukan.';
+      geometryHelp.textContent = '';
+    }else if(type === 'Area/Poligon Baru'){
       geometrySection.hidden = false;
       pointTools.hidden = true;
       polygonTools.hidden = false;
@@ -172,9 +181,7 @@
       geometryType = 'Point';
       guidance.textContent = type === 'Titik Baru'
         ? 'Tempatkan satu titik baru dengan GPS atau klik peta.'
-        : type === 'Capacity Building'
-          ? 'Tentukan titik lokasi pelatihan atau kegiatan peningkatan kapasitas.'
-          : 'Tentukan titik lokasi kegiatan atau kejadian.';
+        : 'Tentukan titik lokasi kegiatan atau kejadian.';
       geometryHelp.textContent = 'Gunakan GPS atau klik satu titik pada peta. Marker dapat digeser.';
     }else if(existingFeatureTypes.indexOf(type) !== -1){
       geometrySection.hidden = false;

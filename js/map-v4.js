@@ -1732,8 +1732,16 @@ L.control.scale({
 
     rawFeatures = data.features
       .filter(feature => {
-        if (!feature || !feature.geometry) return false;
+        if (!feature) return false;
         const p = feature.properties || {};
+        const reportType = String(
+          p.reportType || p.Jenis_Laporan || p.Report_Type || ""
+        ).trim().toLowerCase();
+        if (reportType === "capacity building" ||
+            reportType === "peningkatan kapasitas") {
+          return false;
+        }
+        if (!feature.geometry) return false;
         const layerId = String(p.Layer_ID || p.Source_Layer || "").toLowerCase();
         const reportId = String(p.reportId || p.Report_ID || "").trim();
         return !(
