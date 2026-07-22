@@ -2146,6 +2146,35 @@ L.control.scale({
 
       const databaseFeature = findDatabaseMangrove(feature);
       const databaseProps = databaseFeature && databaseFeature.properties || {};
+
+      const officialObjectId = normalizedMatchValue(
+        feature.properties.Object_ID
+      );
+      const databaseObjectId = normalizedMatchValue(databaseProps.Object_ID);
+      const exactMasterObject =
+        officialObjectId && databaseObjectId === officialObjectId;
+
+      /*
+       * Geometry dan atribut dasar mangrove selalu berasal dari GeoJSON resmi
+       * hasil revisi GIS. OBJECTS hanya boleh melengkapi nilai resmi yang telah
+       * disunting melalui editor untuk Object ID permanen yang sama. Geometry
+       * lama di OBJECTS tidak boleh mengembalikan bentuk polygon sebelum revisi.
+       */
+      if (exactMasterObject) {
+        feature.properties.Geometry_Source = "official_mangrove_geojson";
+        [
+          "Luas_Ha", "Jumlah_Tanam", "Jumlah_Bib", "Jumlah_Bibit",
+          "Panjang_M"
+        ].forEach(key => {
+          if (
+            databaseProps[key] !== undefined &&
+            databaseProps[key] !== null &&
+            String(databaseProps[key]).trim() !== ""
+          ) {
+            feature.properties[key] = databaseProps[key];
+          }
+        });
+      }
       [
         "Donor",
         "Nama_Proyek",

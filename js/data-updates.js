@@ -3,7 +3,7 @@
 
   const API = "https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec?page=public-updates";
   const CALLBACK = "ygPublishedUpdatesCallback";
-  const appliedUpdates = [];
+  const appliedUpdates = new Set();
 
   function escapeHtml(value) {
     return String(value == null ? "" : value).replace(/[&<>"']/g, char => ({
@@ -49,9 +49,121 @@
     return /:auto:/i.test(String(value || ""));
   }
 
+  function numeric(value) {
+    const number = Number(String(value == null ? "" : value).replace(",", "."));
+    return Number.isFinite(number) ? number : NaN;
+  }
+
+  function yearValue(value) {
+    const match = String(value == null ? "" : value).match(/\b(20\d{2})\b/);
+    return match ? match[1] : "";
+  }
+
+  function phaseValue(properties) {
+    const props = properties || {};
+    const value = props.Fase || props.Ket || props.Keterangan || props.Tahun || "";
+    const match = String(value).match(/phase\s*(i{1,3}|iv|v|\d+)/i);
+    return match ? normalize(match[0]).replace(/\s+/g, " ") : "";
+  }
+
+  function ringContainsPoint(ring, point) {
+    if (!Array.isArray(ring) || ring.length < 3 || !point) return false;
+    let inside = false;
+    for (let index = 0, previous = ring.length - 1; index < ring.length; previous = index++) {
+      const currentPoint = ring[index];
+      const previousPoint = ring[previous];
+      if (!Array.isArray(currentPoint) || !Array.isArray(previousPoint)) continue;
+      const intersects =
+        (currentPoint[1] > point[1]) !== (previousPoint[1] > point[1]) &&
+        point[0] <
+          ((previousPoint[0] - currentPoint[0]) *
+            (point[1] - currentPoint[1])) /
+            (previousPoint[1] - currentPoint[1]) +
+            currentPoint[0];
+      if (intersects) inside = !inside;
+    }
+    return inside;
+  }
+
+  function geometryCenter(geometry) {
+    if (!geometry || !Array.isArray(geometry.coordinates)) return null;
+    let ring = null;
+    if (geometry.type === "Polygon") ring = geometry.coordinates[0];
+    if (geometry.type === "MultiPolygon") ring = geometry.coordinates[0] && geometry.coordinates[0][0];
+    if (!Array.isArray(ring) || !ring.length) return null;
+    const valid = ring.filter(point =>
+      Array.isArray(point) && Number.isFinite(Number(point[0])) && Number.isFinite(Number(point[1]))
+    );
+    if (!valid.length) return null;
+    return [
+      valid.reduce((sum, point) => sum + Number(point[0]), 0) / valid.length,
+      valid.reduce((sum, point) => sum + Number(point[1]), 0) / valid.length
+    ];
+  }
+
+  function geometryContainsPoint(geometry, point) {
+    if (!geometry || !point || !Array.isArray(geometry.coordinates)) return false;
+    if (geometry.type === "Polygon") {
+      return ringContainsPoint(geometry.coordinates[0], point);
+    }
+    if (geometry.type === "MultiPolygon") {
+      return geometry.coordinates.some(polygon =>
+        Array.isArray(polygon) && ringContainsPoint(polygon[0], point)
+      );
+    }
+    return false;
+  }
+
+  function legacyPhotoMatches(feature, update, target) {
+    const props = feature.properties || {};
+    if (normalize(update.reportType) !== "tambah foto kegiatan") return false;
+
+    const actualLayer = targetLayer(props);
+    const expectedLayer = targetLayer(update);
+    if (!actualLayer || actualLayer !== expectedLayer) return false;
+
+    const actualVillage = normalize(props.Desa || props.desa || props.WADMKD);
+    const expectedVillage = normalize(
+      target.Desa || target.desa || update.locationName || update.targetObjectName
+    );
+    if (!actualVillage || !expectedVillage || actualVillage !== expectedVillage) {
+      return false;
+    }
+
+    /*
+     * Laporan lama memakai ID :auto: yang berubah ketika polygon direvisi.
+     * Jika pusat geometry laporan lama berada tepat di dalam satu polygon
+     * resmi yang baru, foto boleh diwariskan ke polygon tersebut. Cara ini
+     * memulihkan foto lama tanpa menggabungkan seluruh foto satu desa.
+     */
+    const legacyCenter = geometryCenter(update.geometry);
+    if (legacyCenter && geometryContainsPoint(feature.geometry, legacyCenter)) {
+      return true;
+    }
+
+    const expectedYear = yearValue(target.Tahun);
+    const actualYear = yearValue(props.Tahun);
+    if (expectedYear && actualYear !== expectedYear) return false;
+
+    const expectedPhase = phaseValue(target);
+    const actualPhase = phaseValue(props);
+    if (expectedPhase && actualPhase !== expectedPhase) return false;
+
+    const expectedArea = numeric(
+      target.Luas_Ha || target.Luas || target.Luas_Lahan_Ha
+    );
+    const actualArea = numeric(props.Luas_Ha || props.Luas || props.Luas_Lahan_Ha);
+    if (!Number.isFinite(expectedArea) || !Number.isFinite(actualArea)) {
+      return false;
+    }
+
+    const tolerance = Math.max(0.05, expectedArea * 0.1);
+    return Math.abs(actualArea - expectedArea) <= tolerance;
+  }
+
   function featureMatches(feature, update) {
     const props = feature.properties || {};
-    const target = update.targetFeatureProperties || {};
+    const target = parseObject(update.targetFeatureProperties);
 
     // Unggahan baru membawa Object_ID permanen di targetFeatureProperties.
     // Jika ID tersedia, jangan pernah jatuh kembali ke nama/No/desa karena
@@ -59,19 +171,9 @@
     const expectedObjectId = objectId(update);
     if (expectedObjectId) {
       const actualObjectId = objectId(props);
-      if (actualObjectId === expectedObjectId) return true;
-
-      // Laporan lama menyimpan ID hasil hash `layer:auto:*`. Setelah objek
-      // memperoleh Object_ID permanen, hash tersebut tidak lagi sama. Hanya
-      // ID lama yang boleh jatuh kembali ke pencocokan atribut; dua ID
-      // permanen yang berbeda harus tetap dianggap sebagai objek berbeda.
-      if (
-        actualObjectId &&
-        !isLegacyAutoId(actualObjectId) &&
-        !isLegacyAutoId(expectedObjectId)
-      ) {
-        return false;
-      }
+      if (actualObjectId && actualObjectId === expectedObjectId) return true;
+      if (!isLegacyAutoId(expectedObjectId)) return false;
+      return legacyPhotoMatches(feature, update, target);
     }
 
     const preferredKeys = [
@@ -275,6 +377,18 @@ function toDirectDriveUrl(url){
     rows += row("Kecamatan", valueOf(["Kecamatan", "WADMKC"]));
     rows += row("Desa", valueOf(["Desa", "WADMKD"]));
     rows += row("Tahun", valueOf(["Tahun"]));
+    rows += row("Fase/keterangan", valueOf(["Fase", "Ket", "Keterangan"]));
+    rows += row("Luas", (() => {
+      const value = valueOf(["Luas_Ha", "Luas", "Luas_Lahan_Ha"]);
+      return value === "" ? "" : value + " ha";
+    })());
+    rows += row("Jumlah bibit", valueOf([
+      "Jumlah_Tanam", "Jumlah_Bib", "Jumlah_Bibit", "Bibit_Ditanam"
+    ]));
+    rows += row("Panjang", (() => {
+      const value = valueOf(["Panjang_M", "Panjang", "Panjang_m"]);
+      return value === "" ? "" : value + " m";
+    })());
     rows += row(
       "Nama objek",
       valueOf(["Nama_Objek", "Nama", "Lokasi", "NAMOBJ"])
@@ -340,8 +454,10 @@ function toDirectDriveUrl(url){
     return (
       '<div class="popup-card yg-compact-updated-popup">' +
         '<div class="popup-head yg-updated-popup-head">' +
-          '<strong>' + escapeHtml(layerLabel) + '</strong>' +
-          '<span>Data diperbarui melalui verifikasi publik</span>' +
+          '<strong>' + escapeHtml(
+            valueOf(["Nama_Objek", "Nama", "Lokasi", "NAMOBJ"]) || layerLabel
+          ) + '</strong>' +
+          '<span>' + escapeHtml(layerLabel) + '</span>' +
         '</div>' +
         '<div class="popup-body yg-updated-popup-body">' +
           rows +
@@ -350,6 +466,40 @@ function toDirectDriveUrl(url){
         '</div>' +
       '</div>'
     );
+  }
+
+  function updatePhotoGalleryOnly(layer, photos) {
+    if (!layer || !layer.getPopup || !layer.getPopup()) return;
+
+    const popup = layer.getPopup();
+    let content = String(popup.getContent() || "");
+    const gallery = photos.length
+      ? '<div class="yg-update-gallery">' +
+        photos.map((url, index) =>
+          '<a href="' + escapeHtml(url) +
+          '" target="_blank" rel="noopener noreferrer">' +
+          '<img src="' + escapeHtml(toDirectDriveUrl(url)) +
+          '" alt="Foto ' + (index + 1) +
+          '" loading="lazy"></a>'
+        ).join("") +
+        '</div>'
+      : "";
+
+    /*
+     * Tambah Foto Kegiatan hanya memperbarui galeri. Seluruh HTML atribut
+     * yang sudah dibentuk dari objek master dipertahankan apa adanya agar
+     * No, Object ID, wilayah, tahun, fase, luas, jumlah bibit, nama objek,
+     * kategori, dan donor tidak pernah diganti oleh snapshot laporan foto.
+     */
+    content = content.replace(
+      /<div class="yg-update-gallery">[\s\S]*?<\/div>/,
+      ""
+    );
+    content = content.replace(
+      /(<\/div>\s*<\/div>\s*)$/,
+      gallery + "$1"
+    );
+    popup.setContent(content);
   }
 
   function applyUpdate(update) {
@@ -391,7 +541,10 @@ function toDirectDriveUrl(url){
         ? props._ygUpdateNotes
         : [];
 
+      // Tambah Foto hanya memperkaya galeri. Deskripsi/catatan laporan foto
+      // tidak boleh menggantikan atau mengubah informasi objek utama.
       if (
+        normalize(update.reportType) !== "tambah foto kegiatan" &&
         update.note &&
         !isAdministrativePhotoNote(update.note) &&
         props._ygUpdateNotes.indexOf(update.note) === -1
@@ -399,12 +552,19 @@ function toDirectDriveUrl(url){
         props._ygUpdateNotes.push(update.note);
       }
 
-      layer.bindPopup(
-        buildUpdatedPopup(layer.feature,update.targetLayerLabel || update.targetLayerId),
-        {maxWidth:360}
-      );
+      if (normalize(update.reportType) === "tambah foto kegiatan") {
+        updatePhotoGalleryOnly(layer, uniquePhotos(props._ygPhotos));
+      } else {
+        layer.bindPopup(
+          buildUpdatedPopup(
+            layer.feature,
+            update.targetLayerLabel || update.targetLayerId
+          ),
+          {maxWidth:360}
+        );
+      }
 
-      appliedUpdates.push(update.reportId);
+      if (update.reportId) appliedUpdates.add(update.reportId);
     });
 
     return matched;
@@ -419,6 +579,7 @@ function toDirectDriveUrl(url){
     let remaining = 0;
 
     (data.updates || []).forEach(update => {
+      if (update.reportId && appliedUpdates.has(update.reportId)) return;
       if (!applyUpdate(update)) remaining++;
     });
 
@@ -427,9 +588,9 @@ function toDirectDriveUrl(url){
     }
 
     const status = document.getElementById("status-text");
-    if (status && appliedUpdates.length) {
+    if (status && appliedUpdates.size) {
       status.textContent =
-        "Layer berhasil dimuat • " + appliedUpdates.length +
+        "Layer berhasil dimuat • " + appliedUpdates.size +
         " pembaruan publik diterapkan";
     }
   }
