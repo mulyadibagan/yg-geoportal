@@ -1,37 +1,36 @@
 # YG GeoPortal V6
 
-## WebGIS v2 (generasi baru)
+## WebGIS
 
-Versi generasi baru tersedia terpisah di [`v2/index.html`](v2/index.html) agar
-WebGIS lama tetap aman. Jalankan repository melalui web server lokal lalu buka
-`/v2/`.
+Aplikasi pemetaan web interaktif untuk memantau program Yayasan Gambut di wilayah gambut, mangrove, pesisir, dan komunitas.
 
-Fitur utama:
+## Fitur Utama
 
-- antarmuka peta penuh yang responsif untuk desktop dan mobile;
-- pencarian terpadu seluruh objek spasial (`Ctrl/Cmd + K`);
-- layer program dan layer referensi yang dipisahkan;
-- layer referensi besar dimuat secara lazy;
-- ringkasan cakupan program dan jumlah objek aktif;
-- panel detail atribut dan fokus lokasi;
-- basemap jalan/satelit, geolokasi, skala, dan layar penuh.
+- Antarmuka peta responsif untuk desktop dan mobile
+- Pencarian terpadu objek spasial
+- Layer program dan layer referensi terpisah
+- Ringkasan cakupan program dan jumlah objek aktif
+- Panel detail atribut dan fokus lokasi
+- Basemap jalan/satelit, geolokasi, skala, dan layar penuh
+- Offline support (PWA)
 
-## Perubahan utama
+## Perubahan Utama
+
 - Struktur peta modular: config.js, map.js, ui.js
-- Peta memakai layout absolut penuh sehingga tidak kosong atau terpotong
+- Peta memakai layout absolut penuh
 - Sidebar desktop dapat diciutkan
 - Sidebar mobile memakai overlay
 - Popup profesional
 - Dashboard, legenda, pencarian, lokasi pengguna, fullscreen
-- Tetap menggunakan OpenStreetMap gratis
+- Menggunakan OpenStreetMap gratis
 
-## Cara memperbarui GitHub
-1. Ekstrak ZIP.
-2. Upload seluruh isi folder ke root repository `yg-geoportal`.
-3. Setujui penggantian file lama.
-4. Commit changes.
-5. Tunggu GitHub Pages 1–2 menit.
-6. Buka:
-   https://mulyadibagan.github.io/yg-geoportal/webgis.html?v=6
+## Cara Memperbarui GitHub
+
+1. Ekstrak ZIP file
+2. Upload seluruh isi folder ke root repository `yg-geoportal`
+3. Setujui penggantian file lama
+4. Commit changes
+5. Tunggu GitHub Pages 1–2 menit
+6. Akses: https://mulyadibagan.github.io/yg-geoportal/webgis.html?v=6
 
 Blogger tidak perlu diubah karena iframe mengambil halaman GitHub yang sama.
