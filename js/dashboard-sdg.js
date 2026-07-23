@@ -368,6 +368,18 @@
   document.addEventListener('DOMContentLoaded', () => {
     // Give dashboard-v3.js a moment to calculate and expose the stats
     setTimeout(() => renderSdgDashboard('sdg-dashboard-container'), 200);
-    setTimeout(() => renderClimateImpactDashboard('climate-dashboard-container'), 200);
+
+    const renderClimateWhenReady = (attempt = 0) => {
+      const stats = window.YG_DASHBOARD_STATS || {};
+      const cardsReady = document.querySelectorAll('#category-grid .programme-card li strong').length > 0;
+      const statsReady = Number(stats.mangroveArea || 0) > 0 || Number(stats.totalRestorationArea || 0) > 0;
+      if (!cardsReady && !statsReady && attempt < 30) {
+        setTimeout(() => renderClimateWhenReady(attempt + 1), 150);
+        return;
+      }
+      renderClimateImpactDashboard('climate-dashboard-container');
+    };
+
+    renderClimateWhenReady();
   });
 })();
