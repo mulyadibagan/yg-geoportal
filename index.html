@@ -65,10 +65,10 @@
     </div>
 
     <div class="stat-grid">
-      <a class="stat dashboard-link" href="webgis.html?search=Restorasi" aria-label="Lihat seluruh area restorasi"><strong id="dash-restoration-area">—</strong><span>Luas Restorasi (ha)</span></a>
-      <a class="stat dashboard-link" href="webgis.html?search=Penanaman" aria-label="Lihat seluruh lokasi penanaman"><strong id="dash-seedlings-planted">—</strong><span>Bibit Tertanam</span></a>
-      <a class="stat dashboard-link" href="webgis.html?layer=desa_intervensi" aria-label="Lihat kabupaten cakupan"><strong id="dash-regencies">—</strong><span>Kabupaten Cakupan</span></a>
-      <a class="stat dashboard-link" href="webgis.html?layer=desa_intervensi" aria-label="Lihat desa cakupan"><strong id="dash-villages">—</strong><span>Desa Cakupan</span></a>
+      <a class="stat dashboard-link" href="webgis.html?search=Restorasi" aria-label="Lihat seluruh area restorasi"><strong id="dash-restoration-area">28,98 ha</strong><span>Luas Restorasi (ha)</span></a>
+      <a class="stat dashboard-link" href="webgis.html?search=Penanaman" aria-label="Lihat seluruh lokasi penanaman"><strong id="dash-seedlings-planted">62.415</strong><span>Bibit Tertanam</span></a>
+      <a class="stat dashboard-link" href="webgis.html?layer=desa_intervensi" aria-label="Lihat kabupaten cakupan"><strong id="dash-regencies">4</strong><span>Kabupaten Cakupan</span></a>
+      <a class="stat dashboard-link" href="webgis.html?layer=desa_intervensi" aria-label="Lihat desa cakupan"><strong id="dash-villages">15</strong><span>Desa Cakupan</span></a>
     </div>
   </section>
 
@@ -78,8 +78,48 @@
         <h2 data-editable-id="section-achievements-title">Capaian Program</h2>
       </div>
     </div>
-    <div class="category-grid" id="category-grid">
-      <div class="dashboard-loading">Memuat capaian program…</div>
+    <div class="category-grid" id="category-grid" aria-live="polite">
+      <a class="programme-card dashboard-link" href="webgis.html?layers=area_mangrove%2Cnursery_mangrove%2Capo">
+        <header><i aria-hidden="true">🌊</i><h3>Restorasi Mangrove</h3><span aria-hidden="true">→</span></header>
+        <ul>
+          <li><span>Luas Restorasi</span><strong>13,24 ha</strong></li>
+          <li><span>Pohon Mangrove Ditanam</span><strong>43.915</strong></li>
+          <li><span>Rumah Bibit</span><strong>5</strong></li>
+          <li><span>Hybrid Engineering</span><strong>300 m</strong></li>
+          <li><span>Desa Program</span><strong>4</strong></li>
+        </ul>
+      </a>
+      <a class="programme-card dashboard-link" href="webgis.html?layers=area_kopi%2Ckopi%2Csekat_kanal%2Cfdrs">
+        <header><i aria-hidden="true">🌿</i><h3>Restorasi Gambut</h3><span aria-hidden="true">→</span></header>
+        <ul>
+          <li><span>Luas Gambut / Agroforestri</span><strong>4,3 ha</strong></li>
+          <li><span>Bibit Kopi Ditanam</span><strong>13.000</strong></li>
+          <li><span>Bibit Pohon Hutan &amp; MPTS</span><strong>4.300</strong></li>
+          <li><span>Sekat Kanal</span><strong>11</strong></li>
+          <li><span>Estimasi Area Rewetting</span><strong>550 ha</strong></li>
+          <li><span>Infrastruktur Pencegahan Kebakaran</span><strong>19</strong></li>
+          <li><span>Rumah Bibit</span><strong>6</strong></li>
+        </ul>
+      </a>
+      <a class="programme-card dashboard-link" href="webgis.html?layer=community_reports&amp;search=Imbo+Putui">
+        <header><i aria-hidden="true">🌳</i><h3>Restorasi Lahan Mineral</h3><span aria-hidden="true">→</span></header>
+        <ul>
+          <li><span>Luas Restorasi</span><strong>11,44 ha</strong></li>
+          <li><span>Bibit Ditanam</span><strong>1.200</strong></li>
+          <li><span>Menara Air</span><strong>1</strong></li>
+          <li><span>Plang Restorasi</span><strong>2</strong></li>
+          <li><span>Plot Ukur Permanen</span><strong>1</strong></li>
+        </ul>
+      </a>
+      <a class="programme-card dashboard-link" href="webgis.html?search=Pelatihan">
+        <header><i aria-hidden="true">👥</i><h3>Peningkatan Kapasitas</h3><span aria-hidden="true">→</span></header>
+        <ul>
+          <li><span>Pelatihan</span><strong>19</strong></li>
+          <li><span>Peserta</span><strong>821</strong></li>
+          <li><span>Desa Terlibat</span><strong>8</strong></li>
+          <li><span>Kelompok Masyarakat Didampingi</span><strong>14</strong></li>
+        </ul>
+      </a>
     </div>
   </section>
 
@@ -89,8 +129,31 @@
         <h2 data-editable-id="section-funding-title">Mitra Pendanaan</h2>
       </div>
     </div>
-    <div class="category-grid" id="donor-grid">
-      <div class="dashboard-loading">Memuat mitra pendanaan…</div>
+    <div class="category-grid" id="donor-grid" aria-live="polite">
+      <button class="category-card dashboard-link funding-card" type="button" data-open-aramco>
+        <i class="category-icon" aria-hidden="true">🌿</i><span>Aramco Asia Singapore</span>
+        <strong>2023–2026</strong><small>4 desa · lihat ringkasan program</small>
+      </button>
+      <button class="category-card dashboard-link funding-card" type="button" data-open-gec>
+        <i class="category-icon" aria-hidden="true">💧</i><span>Global Environment Centre</span>
+        <strong>2021 - Sekarang</strong><small>Bengkalis &amp; Siak · lihat ringkasan program</small>
+      </button>
+      <button class="category-card dashboard-link funding-card" type="button" data-open-ppcf>
+        <i class="category-icon" aria-hidden="true">🤝</i><span>Pan Pacific Conservation Foundation (PPCF)</span>
+        <strong>2025–2026</strong><small>Pematang Duku · lihat ringkasan program</small>
+      </button>
+      <button class="category-card dashboard-link funding-card" type="button" data-open-kolibri>
+        <i class="category-icon" aria-hidden="true"></i><span>Aliansi Kolibri</span>
+        <strong>2025–2026</strong><small>Imbo Putui · lihat ringkasan program</small>
+      </button>
+      <button class="category-card dashboard-link funding-card funding-card-penabulu" type="button" data-open-penabulu>
+        <i class="category-icon" aria-hidden="true"></i>
+        <span class="funding-penabulu-name">Yayasan Penabulu</span>
+        <strong class="funding-penabulu-period">2025–2026</strong>
+        <p class="funding-penabulu-summary">Strengthening women-led Liberica coffee enterprises and improving peatland ecosystem resilience through sustainable community-based livelihoods in Temiang Village, Riau.</p>
+        <small class="funding-penabulu-badge">Active Programme</small>
+        <span class="funding-penabulu-cta">View Dashboard</span>
+      </button>
     </div>
   </section>
 
