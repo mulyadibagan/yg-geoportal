@@ -771,9 +771,23 @@ L.control.scale({
     const monitoringActionLabel = isMonitoring
       ? "Kirim Monitoring Lagi"
       : "Kirim Monitoring";
-    const monitoringAction = canSendMonitoring
-      ? (
-          '<div class="yg-popup-actions">' +
+    const canAddPhoto =
+      !["desa_intervensi", "community_reports"].includes(config.id) &&
+      Boolean(objectId) &&
+      Boolean(actionLayerId);
+    const actionLinks = [
+      canAddPhoto
+        ? (
+            '<a class="yg-popup-monitoring-link" href="report.html?' +
+              'type=photo&amp;layer=' +
+              encodeURIComponent(actionLayerId) +
+              '&amp;object=' +
+              encodeURIComponent(objectId) +
+            '">Tambah Foto</a>'
+          )
+        : "",
+      canSendMonitoring
+        ? (
             '<a class="yg-popup-monitoring-link" href="report.html?' +
               'type=monitoring&amp;layer=' +
               encodeURIComponent(actionLayerId) +
@@ -781,9 +795,12 @@ L.control.scale({
               encodeURIComponent(objectId) +
             '">' +
               monitoringActionLabel +
-            '</a>' +
-          '</div>'
-        )
+            '</a>'
+          )
+        : ""
+    ].filter(Boolean).join("");
+    const monitoringAction = actionLinks
+      ? '<div class="yg-popup-actions">' + actionLinks + '</div>'
       : "";
 
     if (!rows) {
