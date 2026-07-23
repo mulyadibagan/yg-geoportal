@@ -810,6 +810,22 @@ L.control.scale({
         '</div>';
     }
 
+    let sdgHtml = "";
+    if (config.id === "sekat_kanal") {
+      const sdgIds = [13, 15];
+      let sdgIconsHtml = "";
+      sdgIds.forEach(id => {
+        const localSdgIcon = `assets/sdg-icons/sdg-${id}.svg`;
+        sdgIconsHtml += `<img src="${localSdgIcon}" alt="SDG ${id}" title="SDG ${id}" style="width:40px; height:40px;" onerror="this.onerror=null;this.replaceWith(document.createTextNode('SDG ${id}'));">`;
+      });
+      sdgHtml = `
+        <div class="popup-row" style="margin-top:5px; padding-top:5px; border-top:1px solid #f0f0f0;">
+          <b>Kontribusi SDGs</b>
+          <span style="display:flex; gap:6px; padding-top:2px;">${sdgIconsHtml}</span>
+        </div>
+      `;
+    }
+
     return (
       '<div class="popup-card">' +
         '<div class="popup-head" style="background:' +
@@ -818,7 +834,7 @@ L.control.scale({
           '<span>' + escapeHtml(config.label) + '</span>' +
         '</div>' +
         '<div class="popup-body">' +
-          rows + gallery + monitoringAction +
+          rows + gallery + sdgHtml + monitoringAction +
         '</div>' +
       '</div>'
     );
