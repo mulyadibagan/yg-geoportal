@@ -1784,6 +1784,32 @@
     };
   }
 
+  function calculateEstimatedPeatRewettingArea(unitCount){
+    var count = Number(unitCount);
+    if(!Number.isFinite(count) || count < 0){
+      count = 11;
+    }
+
+    return count * 50;
+  }
+
+  function updateEstimatedPeatRewettingAreaElement(elementId, unitCount){
+    var id = typeof elementId === 'string' && elementId.trim()
+      ? elementId.trim()
+      : 'estimated-rewetting-area';
+
+    var element = document.getElementById(id);
+    if(!element){
+      return;
+    }
+
+    var areaHa = calculateEstimatedPeatRewettingArea(unitCount);
+    element.textContent = areaHa.toLocaleString('id-ID') + ' ha';
+  }
+
+  window.calculateEstimatedPeatRewettingArea = calculateEstimatedPeatRewettingArea;
+  window.updateEstimatedPeatRewettingAreaElement = updateEstimatedPeatRewettingAreaElement;
+
   function updateMonitoringPanels(){
     var type = monitoringValue('monitoring-type');
     var mangrove = document.getElementById('monitoring-mangrove-fields');
