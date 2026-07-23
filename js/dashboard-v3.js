@@ -200,6 +200,80 @@
     });
   }
 
+  const sdgContributions = [
+    {
+      goal: 1,
+      title: 'Tanpa Kemiskinan',
+      contribution: 'Program peningkatan mata pencaharian berkelanjutan dan agroforestri kopi liberika untuk meningkatkan pendapatan masyarakat.',
+      icon: 'assets/sdg-icons/sdg-1.png'
+    },
+    {
+      goal: 2,
+      title: 'Tanpa Kelaparan',
+      contribution: 'Agroforestri dan kebun kopi mendukung ketahanan pangan lokal dan diversifikasi sumber makanan.',
+      icon: 'assets/sdg-icons/sdg-2.png'
+    },
+    {
+      goal: 6,
+      title: 'Air Bersih dan Sanitasi Layak',
+      contribution: 'Restorasi gambut dan pembangunan sekat kanal menjaga kualitas dan ketersediaan air bersih.',
+      icon: 'assets/sdg-icons/sdg-6.png'
+    },
+    {
+      goal: 8,
+      title: 'Pekerjaan Layak dan Pertumbuhan Ekonomi',
+      contribution: 'Menciptakan lapangan kerja hijau melalui kegiatan restorasi, pembibitan, dan pemantauan.',
+      icon: 'assets/sdg-icons/sdg-8.png'
+    },
+    {
+      goal: 11,
+      title: 'Kota dan Permukiman Berkelanjutan',
+      contribution: 'Infrastruktur pencegahan kebakaran dan abrasi (APO) melindungi permukiman pesisir dan desa.',
+      icon: 'assets/sdg-icons/sdg-11.png'
+    },
+    {
+      goal: 13,
+      title: 'Penanganan Perubahan Iklim',
+      contribution: 'Restorasi gambut dan mangrove menyerap karbon dalam jumlah besar dan mengurangi emisi gas rumah kaca.',
+      icon: 'assets/sdg-icons/sdg-13.png'
+    },
+    {
+      goal: 14,
+      title: 'Ekosistem Lautan',
+      contribution: 'Restorasi mangrove dan pembangunan APO melindungi garis pantai dan keanekaragaman hayati laut.',
+      icon: 'assets/sdg-icons/sdg-14.png'
+    },
+    {
+      goal: 15,
+      title: 'Ekosistem Daratan',
+      contribution: 'Restorasi hutan dan lahan gambut, serta perlindungan biodiversitas di area program.',
+      icon: 'assets/sdg-icons/sdg-15.png'
+    },
+    {
+      goal: 17,
+      title: 'Kemitraan untuk Mencapai Tujuan',
+      contribution: 'Berkolaborasi dengan mitra pendanaan, pemerintah, dan masyarakat untuk mencapai tujuan bersama.',
+      icon: 'assets/sdg-icons/sdg-17.png'
+    }
+  ];
+
+  function renderSdgDashboard(containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    const cardsHtml = sdgContributions.map(item => `
+      <div class="sdg-card">
+        <div class="sdg-card-icon" aria-hidden="true">
+          <img src="${item.icon}" alt="" loading="lazy" decoding="async">
+        </div>
+        <div class="sdg-card-content">
+          <h4 class="sdg-card-title"><span class="sdg-number">SDG ${item.goal}</span>${item.title}</h4>
+          <p class="sdg-card-contribution">${item.contribution}</p>
+        </div>
+      </div>
+    `).join('');
+    container.innerHTML = `<div class="sdg-grid">${cardsHtml}</div>`;
+  }
+
   function capacityRecordFromFeature(feature) {
     const props = (feature && feature.properties) || {};
     const proposed = parseObject(props.proposedChanges);
@@ -1138,7 +1212,7 @@
           const programCount = Object.keys(donorPrograms[name] || {}).length;
           if (name === "Pan Pacific Conservation Foundation (PPCF)") {
             return '<button class="category-card dashboard-link funding-card" type="button" data-open-ppcf>' +
-              '<i class="category-icon" aria-hidden="true">🤝</i>' +
+              '<i class="category-icon" aria-hidden="true">🤝</i>' + // PPCF
               '<span>' + escapeHtml(name) + '</span>' +
               '<strong>2025\u20132026</strong>' +
               '<small>Pematang Duku \u00b7 lihat ringkasan program</small>' +
@@ -1146,7 +1220,7 @@
           }
           if (name === "Aramco Asia Singapore") {
             return '<button class="category-card dashboard-link funding-card" type="button" data-open-aramco>' +
-              '<i class="category-icon" aria-hidden="true">🌿</i>' +
+              '<i class="category-icon" aria-hidden="true">🌿</i>' + // Aramco
               '<span>' + escapeHtml(name) + '</span>' +
               '<strong>2023–2026</strong>' +
               '<small>4 desa · lihat ringkasan program</small>' +
@@ -1154,7 +1228,7 @@
           }
           if (name === "Global Environment Centre") {
             return '<button class="category-card dashboard-link funding-card" type="button" data-open-gec>' +
-              '<i class="category-icon" aria-hidden="true">💧</i>' +
+              '<i class="category-icon" aria-hidden="true">💧</i>' + // GEC
               '<span>' + escapeHtml(name) + '</span>' +
               '<strong>2021 - Sekarang</strong>' +
               '<small>Bengkalis &amp; Siak · lihat ringkasan program</small>' +
@@ -1162,7 +1236,7 @@
           }
           if (name === "Aliansi Kolibri") {
             return '<button class="category-card dashboard-link funding-card" type="button" data-open-kolibri>' +
-              '<i class="category-icon" aria-hidden="true"></i>' +
+              '<i class="category-icon" aria-hidden="true">🐦</i>' + // Kolibri
               '<span>' + escapeHtml(name) + '</span>' +
               '<strong>2025\u20132026</strong>' +
               '<small>Imbo Putui \u00b7 lihat ringkasan program</small>' +
@@ -1170,7 +1244,7 @@
           }
           if (name === "Yayasan Penabulu") {
             return '<button class="category-card dashboard-link funding-card funding-card-penabulu" type="button" data-open-penabulu>' +
-              '<i class="category-icon" aria-hidden="true"></i>' +
+              '<img src="https://upload.wikimedia.org/wikipedia/commons/e/ed/Sustainable_Development_Goals_logo-full.png" class="category-icon penabulu-sdg-icon" alt="SDGs Logo">' +
               '<span class="funding-penabulu-name">' + escapeHtml(name) + '</span>' +
               '<strong class="funding-penabulu-period">2025–2026</strong>' +
               '<p class="funding-penabulu-summary">Strengthening women-led Liberica coffee enterprises and improving peatland ecosystem resilience through sustainable community-based livelihoods in Temiang Village, Riau.</p>' +
@@ -1189,6 +1263,8 @@
       : '<div class="dashboard-empty">Belum ada data</div>';
 
     hydratePenabuluPhotos(active);
+
+    renderSdgDashboard('sdg-dashboard-container');
 
     document.getElementById("dashboard-updated").textContent =
       "Sumber: Master Database + layer resmi WebGIS · " +
@@ -1213,14 +1289,6 @@
   };
   document.head.appendChild(script);
 
-  const ppcfDashboard = document.getElementById("ppcf-dashboard");
-  const ppcfDetail = document.getElementById("ppcf-detail");
-  const aramcoDashboard = document.getElementById("aramco-dashboard");
-  const aramcoDetail = document.getElementById("aramco-detail");
-  const gecDashboard = document.getElementById("gec-dashboard");
-  const gecDetail = document.getElementById("gec-detail");
-  const kolibriDashboard = document.getElementById("kolibri-dashboard");
-  const penabuluDashboard = document.getElementById("penabulu-dashboard");
   const ppcfDetails = {
     training: '<h4>Pelatihan PPCF</h4><div class="funding-detail-grid"><article><strong>69 peserta</strong><span>Pelatihan pengelolaan gambut berkelanjutan dan pertanian tanpa bakar · 7 Agustus 2025</span></article><article><strong>50 peserta</strong><span>Pelatihan agroforestri kopi Liberika, termasuk 13 perempuan · 19 Desember 2025</span></article></div>',
     market: '<h4>Kemitraan pasar kopi</h4><p>MoU antara Kelompok Tani Ketiau Jaya dan Suvarnabhumi Coffee ditandatangani pada 20 Januari 2026. Suvarnabhumi Coffee bertindak sebagai calon pembeli utama kopi Liberika sesuai mutu, harga, dan kapasitas pasokan yang disepakati.</p><a href="webgis.html?layer=kopi&amp;village=Pematang+Duku">Lihat lokasi kelompok tani →</a>'
@@ -1234,6 +1302,15 @@
     coffee: '<h4>Penanaman Kopi Liberika</h4><p>Pilih lokasi untuk melihat data lapangan penanaman kopi.</p><div class="funding-location-grid"><a href="webgis.html?layer=kopi&amp;village=Temiang"><b>1.700 bibit</b> – Temiang <span>→</span></a><a href="webgis.html?layer=kopi&amp;village=Tanjung+Kuras"><b>1.100 bibit</b> – Tanjung Kuras <span>→</span></a><a href="webgis.html?layer=kopi&amp;village=Buruk+Bakul"><b>600 bibit</b> – Buruk Bakul <span>→</span></a></div>',
     training: '<h4>Pelatihan Program GEC</h4><div class="funding-detail-grid"><article><strong>22 peserta</strong><span>Pelatihan pembibitan kopi Liberika · Temiang · 28 Oktober 2024</span></article><article><strong>50 peserta</strong><span>Pelatihan pemeliharaan dan panen kopi Liberika · Temiang · 29 Oktober 2025</span></article></div>'
   };
+
+  const ppcfDashboard = document.getElementById("ppcf-dashboard");
+  const ppcfDetail = document.getElementById("ppcf-detail");
+  const aramcoDashboard = document.getElementById("aramco-dashboard");
+  const aramcoDetail = document.getElementById("aramco-detail");
+  const gecDashboard = document.getElementById("gec-dashboard");
+  const gecDetail = document.getElementById("gec-detail");
+  const kolibriDashboard = document.getElementById("kolibri-dashboard");
+  const penabuluDashboard = document.getElementById("penabulu-dashboard");
   function openFundingDashboard(dashboard) {
     dashboard.hidden = false;
     document.body.classList.add("modal-open");
