@@ -1039,8 +1039,20 @@
     const totalPlantedSeedlings = programmeMetrics.mangrove.seedlings +
       programmeMetrics.peat.coffee + programmeMetrics.peat.forest +
       mineralSeedlings;
+    const nurseryCount = programmeMetrics.mangrove.nurseries.size + programmeMetrics.peat.nurseries;
+    const monitoringReports = layerAssets(active, ["monitoring_reports"]).length;
+    const fdrsUnits = layerAssets(active, ["fdrs"]).length;
 
     window.YG_DASHBOARD_STATS = {
+      mangroveArea: programmeMetrics.mangrove.area,
+      peatArea: programmeMetrics.peat.area,
+      mineralArea: mineralArea,
+      rewettingArea: peatRewettingArea,
+      canalBlocks: programmeMetrics.peat.canals,
+      fdrsUnits: fdrsUnits,
+      nurseryCount: nurseryCount,
+      monitoringReports: monitoringReports,
+      trainingSessions: programmeMetrics.capacity.trainings,
       totalRestorationArea: totalRestorationArea,
       totalPlantedSeedlings: totalPlantedSeedlings,
       rewettingArea: peatRewettingArea,
