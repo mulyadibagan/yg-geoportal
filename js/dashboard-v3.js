@@ -210,18 +210,19 @@
   }
 
   async function loadCapacitySummary() {
-    let baseline = [];
-    let live = [];
-    try {
-      const response = await fetch(CAPACITY_BASELINE_URL, { cache: "no-store" });
-      if (response.ok) baseline = await response.json();
-    } catch (error) {}
-    try {
-      const reports = await jsonp(PUBLIC_REPORTS_API);
-      live = ((reports && reports.features) || [])
+    const [baselineResult, reportsResult] = await Promise.allSettled([
+      fetch(CAPACITY_BASELINE_URL).then(response =>
+        response.ok ? response.json() : []
+      ),
+      jsonp(PUBLIC_REPORTS_API)
+    ]);
+    const baseline = baselineResult.status === "fulfilled" &&
+      Array.isArray(baselineResult.value) ? baselineResult.value : [];
+    const reports = reportsResult.status === "fulfilled"
+      ? reportsResult.value : null;
+    const live = ((reports && reports.features) || [])
         .filter(feature => firstValue((feature && feature.properties) || {}, ["reportType"]) === "Capacity Building")
         .map(capacityRecordFromFeature);
-    } catch (error) {}
 
     const seen = new Set();
     const records = baseline.concat(live).filter(record => {
@@ -381,15 +382,21 @@
 
   async function mergeOfficialLayers(features) {
     let merged = features.slice();
-
-    for (const source of OFFICIAL_LAYERS) {
+    const layerResults = await Promise.all(OFFICIAL_LAYERS.map(async source => {
       try {
-        const response = await fetch(source.url + "?t=" + Date.now(), {
-          cache: "no-store"
-        });
+        const response = await fetch(source.url);
         if (!response.ok) throw new Error("HTTP " + response.status);
-        const data = await response.json();
-        if (!data || !Array.isArray(data.features)) continue;
+        return { source, data: await response.json() };
+      } catch (error) {
+        console.warn("Layer resmi dashboard gagal dimuat:", source.id, error);
+        return { source, data: null };
+      }
+    }));
+
+    for (const result of layerResults) {
+      const source = result.source;
+      const data = result.data;
+      if (!data || !Array.isArray(data.features)) continue;
 
         const official = data.features.map(feature => ({
           ...feature,
@@ -431,10 +438,7 @@
         } else {
           merged = merged.filter(feature => layerIdOf(feature) !== source.id);
         }
-        merged.push(...official);
-      } catch (error) {
-        console.warn("Layer resmi dashboard gagal dimuat:", source.id, error);
-      }
+      merged.push(...official);
     }
 
     return merged;
@@ -796,8 +800,15 @@
       ? programmeMetrics.peat.forest
       : revisedPeatForestSeedlings;
 
-    setMetric("dash-restoration-area", restorationArea, 2, " ha");
-    setMetric("dash-seedlings-planted", plantedSeedlings);
+    const mineralArea = Math.max(11.44, programmeMetrics.mineral.area);
+    const mineralSeedlings = Math.max(1200, programmeMetrics.mineral.seedlings);
+    const totalRestorationArea = programmeMetrics.mangrove.area +
+      programmeMetrics.peat.area + mineralArea;
+    const totalPlantedSeedlings = programmeMetrics.mangrove.seedlings +
+      programmeMetrics.peat.coffee + programmeMetrics.peat.forest +
+      mineralSeedlings;
+    setMetric("dash-restoration-area", totalRestorationArea, 2, " ha");
+    setMetric("dash-seedlings-planted", totalPlantedSeedlings);
     setMetric("dash-rewetting-area", peatRewettingArea, 0, " ha");
     setMetric("dash-regencies", regencies.size);
     setMetric("dash-villages", villages.size);
@@ -915,7 +926,7 @@
           }
           if (name === "Aliansi Kolibri") {
             return '<button class="category-card dashboard-link funding-card" type="button" data-open-kolibri>' +
-              '<i class="category-icon" aria-hidden="true">Aliansi Kolibri</i>' +
+              '<i class="category-icon" aria-hidden="true"></i>' +
               '<span>' + escapeHtml(name) + '</span>' +
               '<strong>2025\u20132026</strong>' +
               '<small>Imbo Putui \u00b7 lihat ringkasan program</small>' +
@@ -925,9 +936,8 @@
           return '<a class="category-card dashboard-link" href="' +
             escapeHtml(donorUrl) + '">' +
             '<span>' + escapeHtml(name) + '</span>' +
-            '<strong>' + formatNumber(count) + '</strong>' +
-            '<small>' + formatNumber(programCount) +
-              ' program</small>' +
+            '<strong>' + formatNumber(count) + ' objek terpetakan</strong>' +
+            '<small>' + formatNumber(programCount) + ' program</small>' +
           '</a>';
         }).join("")
       : '<div class="dashboard-empty">Belum ada data</div>';
