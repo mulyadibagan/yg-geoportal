@@ -1,0 +1,15 @@
+<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin Konten | YG GeoPortal</title><link rel="stylesheet" href="css/content-admin.css?v=20260722-1"></head>
+<body><main class="content-admin">
+  <section class="admin-head"><div><small>YG GEOPORTAL</small><h1>Admin Konten V1</h1><p>Kelola narasi beranda dan logo mitra pendanaan.</p></div><a class="button secondary" href="index.html">Lihat Beranda</a></section>
+  <section id="loginPanel" class="admin-card login-box"><h2>Login Editor</h2><div class="field"><label>Username</label><input id="username" autocomplete="username"></div><div class="field"><label>Password</label><input id="password" type="password" autocomplete="current-password"></div><div class="actions"><button id="loginButton" class="button">Masuk</button></div><div id="loginStatus" class="status"></div></section>
+  <section id="editorPanel" hidden>
+    <div class="admin-lock">🔒 Statistik otomatis dikunci. Luas, bibit, monitoring, dan angka WebGIS tidak dapat diubah dari halaman ini.</div>
+    <section class="admin-card"><h2>Narasi Beranda</h2><div class="admin-grid">
+      <div class="field field-wide"><label>Label atas</label><input data-field="heroEyebrow"></div><div class="field field-wide"><label>Judul utama</label><input data-field="heroTitle"></div>
+      <div class="field field-wide"><label>Deskripsi</label><textarea data-field="heroDescription"></textarea></div><div class="field field-wide"><label>Tagline</label><textarea data-field="heroTagline"></textarea></div>
+      <div class="field"><label>Judul program</label><input data-field="programTitle"></div><div class="field"><label>Judul mitra</label><input data-field="fundingTitle"></div><div class="field"><label>Judul wilayah</label><input data-field="coverageTitle"></div>
+    </div></section>
+    <section class="admin-card"><h2>Logo Mitra Pendanaan</h2><p>Masukkan URL gambar publik. Data program dan angka mitra tetap berasal dari database.</p><div id="logoFields"></div></section>
+    <div class="actions"><button id="saveButton" class="button">Simpan & Publikasikan</button><button id="logoutButton" class="button secondary">Keluar</button></div><div id="saveStatus" class="status"></div>
+  </section>
+</main><script src="js/content-admin.js?v=20260722-1"></script></body></html>
