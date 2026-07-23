@@ -494,7 +494,8 @@
 
   window.YG_I18N = {
     get language() { return currentLanguage; },
-    setLanguage
+  setLanguage,
+  translateElement: translateTree
   };
 
   if (document.readyState === "loading") {

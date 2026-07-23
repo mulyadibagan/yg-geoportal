@@ -272,6 +272,10 @@
       </div>
     `).join('');
     container.innerHTML = `<div class="sdg-grid">${cardsHtml}</div>`;
+
+    if (window.YG_I18N && typeof window.YG_I18N.translateElement === "function") {
+      window.YG_I18N.translateElement(container);
+    }
   }
 
   function capacityRecordFromFeature(feature) {
