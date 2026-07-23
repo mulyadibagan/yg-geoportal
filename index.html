@@ -68,7 +68,7 @@
     <div class="stat-grid stat-grid-6">
       <a class="stat dashboard-link" href="webgis.html?search=Restorasi" aria-label="Lihat seluruh area restorasi"><strong id="dash-restoration-area">-</strong><span>Luas Restorasi (ha)</span></a>
       <a class="stat dashboard-link" href="webgis.html?search=Penanaman" aria-label="Lihat seluruh lokasi penanaman"><strong id="dash-seedlings-planted">-</strong><span>Bibit Tertanam</span></a>
-      <a class="stat dashboard-link" href="webgis.html?layer=sekat_kanal" aria-label="Lihat estimasi area rewetting"><strong id="dash-rewetting-area">-</strong><span>Estimasi Rewetting (ha)</span></a>
+      <a class="stat dashboard-link" href="webgis.html?layers=area_mangrove%2Carea_kopi%2Ckopi" aria-label="Lihat area revegetasi"><strong id="dash-revegetation-area">-</strong><span>Luas Revegetasi (ha)</span><small>Mangrove · gambut/agroforestri · lahan mineral</small></a>
       <a class="stat dashboard-link" href="webgis.html?search=Pelatihan" aria-label="Lihat data peserta pelatihan"><strong id="dash-participants">-</strong><span>Total Peserta</span></a>
       <a class="stat dashboard-link" href="webgis.html?layer=desa_intervensi" aria-label="Lihat kabupaten cakupan"><strong id="dash-regencies">-</strong><span>Kabupaten</span></a>
       <a class="stat dashboard-link" href="webgis.html?layer=desa_intervensi" data-open-village-detail aria-label="Lihat rincian desa cakupan"><strong id="dash-villages">-</strong><span>Desa Cakupan</span></a>
@@ -458,14 +458,14 @@
   </div>
 </footer>
 
-<script src="js/dashboard-v3.js?v=20260723-climate-stats6"></script>
-  <script src="js/dashboard-sdg.js?v=20260723-climate-stats6"></script>
+<script src="js/dashboard-v3.js?v=20260723-v1-carbon-final"></script>
+  <script src="js/dashboard-sdg.js?v=20260723-v1-carbon-final"></script>
   <script src="https://unpkg.com/pell/dist/pell.min.js"></script>
   <script src="js/auth.js?v=1"></script>
   <script src="js/inline-editor.js?v=1"></script>
   <script src="js/i18n.js?v=20260723-stat-card-translation"></script>
   <script src="js/content-config.js?v=20260723-content-admin1"></script>
-  <script src="js/pwa.js?v=20260723-layout-hotfix"></script>
+  <script src="js/pwa.js?v=20260723-v1-carbon-final"></script>
   <script>
     (function() {
       function formatNumber(value, digits) {
@@ -581,6 +581,7 @@
       }
 
       function renderClimateFallback() {
+        if (window.YG_CLIMATE_DASHBOARD_READY) return;
         const container = document.getElementById('climate-dashboard-container');
         if (!container) return;
 

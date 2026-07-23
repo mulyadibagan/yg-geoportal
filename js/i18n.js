@@ -158,6 +158,8 @@
       "Peserta": "Participants",
       "Total Peserta": "Total Participants",
       "Estimasi Rewetting (ha)": "Estimated Rewetting (ha)",
+      "Luas Revegetasi (ha)": "Revegetation Area (ha)",
+      "Mangrove · gambut/agroforestri · lahan mineral": "Mangrove · peat/agroforestry · mineral land",
       "Desa Terlibat": "Villages Involved",
       "Kelompok Masyarakat Didampingi": "Supported Community Groups",
       "Data belum tersedia": "Data not yet available",

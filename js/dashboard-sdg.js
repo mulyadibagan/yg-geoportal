@@ -1,5 +1,6 @@
 (function() {
   'use strict';
+  window.YG_CLIMATE_DASHBOARD_READY = true;
 
   const style = document.createElement('style');
   style.textContent = `
@@ -130,12 +131,7 @@
     const mangroveArea = Number(stats.mangroveArea || readCardMetric(0, english ? 'Restoration Area' : 'Luas Restorasi'));
     const peatArea = Number(stats.peatArea || readCardMetric(1, english ? 'Peatland / Agroforestry Area' : 'Luas Gambut / Agroforestri'));
     const mineralArea = Number(stats.mineralArea || readCardMetric(2, english ? 'Restoration Area' : 'Luas Restorasi'));
-    const rewettingArea = Number(stats.rewettingArea || readCardMetric(1, english ? 'Estimated Rewetting Area' : 'Estimasi Area Rewetting') || readTextMetric('#dash-rewetting-area'));
-    const canalBlocks = Number(stats.canalBlocks || readCardMetric(1, english ? 'Canal Blocks' : 'Sekat Kanal'));
-    const fdrsUnits = Number(stats.fdrsUnits || readTextMetric('#gec-fdrs-count') || readTextMetric('#ppcf-fdrs-count'));
-    const nurseryCount = Number(stats.nurseryCount || readTextMetric('#aramco-nursery-count') || readCardMetric(0, english ? 'Nurseries' : 'Rumah Bibit'));
-    const monitoringReports = Number(stats.monitoringReports || readTextMetric('#aramco-monitoring-count'));
-    const trainingSessions = Number(stats.trainingSessions || readCardMetric(3, english ? 'Training Sessions' : 'Pelatihan'));
+    const rewettingArea = Number(stats.rewettingArea || readCardMetric(1, english ? 'Estimated Rewetting Area' : 'Estimasi Area Rewetting') || 550);
     const methodology = english ? 'IPCC 2006 Guidelines + 2013 Wetlands Supplement (conservative proxy)' : 'IPCC 2006 Guidelines + 2013 Wetlands Supplement (proxy konservatif)';
 
     // Koefisien proxy konservatif untuk visualisasi kebijakan.
@@ -144,17 +140,13 @@
       mangroveAbsorption: 31.6,
       peatAbsorption: 20.0,
       mineralAbsorption: 5.0,
-      rewettingReduction: 35.0,
-      canalBlockReduction: 2.0,
-      fdrsReduction: 1.0
+      rewettingReduction: 35.0
     };
 
     const absorptionEstimate = (mangroveArea * factors.mangroveAbsorption) +
       (peatArea * factors.peatAbsorption) +
       (mineralArea * factors.mineralAbsorption);
-    const reductionEstimate = (rewettingArea * factors.rewettingReduction) +
-      (canalBlocks * factors.canalBlockReduction) +
-      (fdrsUnits * factors.fdrsReduction);
+    const reductionEstimate = rewettingArea * factors.rewettingReduction;
     const totalEstimate = absorptionEstimate + reductionEstimate || 1;
     const absorptionShare = Math.round((absorptionEstimate / totalEstimate) * 100);
     const reductionShare = 100 - absorptionShare;
@@ -165,7 +157,7 @@
         value: mangroveArea,
         unit: "ha",
         note: english ? 'Direct activity input for removals' : 'Input aktivitas langsung untuk penyerapan',
-        hint: english ? 'Land area used in removals proxy' : 'Luas lahan untuk proxy penyerapan',
+        hint: english ? 'Polygon area plus coffee planting points converted at 3 × 3 m spacing' : 'Luas poligon ditambah titik tanam kopi dengan jarak 3 × 3 m',
         group: "penyerapan"
       },
       {
@@ -185,51 +177,11 @@
         group: "penyerapan"
       },
       {
-        label: english ? 'Rewetting area' : 'Area rewetting',
+        label: english ? 'Measured rewetting area' : 'Area rewetting terukur',
         value: rewettingArea,
         unit: "ha",
-        note: english ? 'Direct activity input for avoided emissions' : 'Input aktivitas langsung untuk pengurangan emisi',
-        hint: english ? 'Hydrological intervention used in avoided emissions proxy' : 'Intervensi hidrologi untuk proxy pengurangan',
-        group: "pengurangan"
-      },
-      {
-        label: english ? 'Canal blocks' : 'Sekat kanal',
-        value: canalBlocks,
-        unit: "unit",
-        note: english ? 'Direct activity input for avoided emissions' : 'Input aktivitas langsung untuk pengurangan emisi',
-        hint: english ? 'Hydrological intervention count' : 'Jumlah intervensi hidrologi',
-        group: "pengurangan"
-      },
-      {
-        label: english ? 'FDRS units' : 'Unit FDRS',
-        value: fdrsUnits,
-        unit: "unit",
-        note: english ? 'Direct activity input for avoided emissions' : 'Input aktivitas langsung untuk pengurangan emisi',
-        hint: english ? 'Fire-risk management infrastructure' : 'Infrastruktur pengelolaan risiko kebakaran',
-        group: "pengurangan"
-      },
-      {
-        label: english ? 'Nursery locations' : 'Lokasi nursery',
-        value: nurseryCount,
-        unit: english ? 'locations' : 'lokasi',
-        note: english ? 'Supports future removals through planting scale-up' : 'Mendukung penyerapan di masa depan lewat skala penanaman',
-        hint: english ? 'Planting capacity support' : 'Dukungan kapasitas penanaman',
-        group: "penyerapan"
-      },
-      {
-        label: english ? 'Field monitoring reports' : 'Laporan monitoring lapangan',
-        value: monitoringReports,
-        unit: english ? 'reports' : 'laporan',
-        note: english ? 'Supporting quality data' : 'Data pendukung kualitas',
-        hint: english ? 'MRV / monitoring, reporting, and verification support' : 'Dukungan MRV / monitoring, reporting, and verification',
-        group: "pengurangan"
-      },
-      {
-        label: english ? 'Community training sessions' : 'Sesi pelatihan masyarakat',
-        value: trainingSessions,
-        unit: english ? 'sessions' : 'sesi',
-        note: english ? 'Supporting implementation data' : 'Data pendukung implementasi',
-        hint: english ? 'Capacity-building evidence' : 'Bukti peningkatan kapasitas',
+        note: english ? 'Consolidated outcome of canal-block interventions' : 'Hasil terkonsolidasi dari intervensi sekat kanal',
+        hint: english ? 'Canal blocks and FDRS are not credited separately' : 'Sekat kanal dan FDRS tidak dikreditkan terpisah',
         group: "pengurangan"
       }
     ];
@@ -279,7 +231,7 @@
             <strong title="${english ? 'Annual proxy estimate' : 'Estimasi proksi tahunan'}">${formatNumber(reductionEstimate, 1)} tCO2e/yr*</strong>
           </div>
           <div class="climate-bar"><span style="width:${reductionShare}%"></span></div>
-          <p class="climate-card-caption">${english ? 'Conservative proxy estimate using international land-sector reporting guidance for rewetting, canal blocks, and FDRS. Monitoring and training are shown as supporting implementation data.' : 'Estimasi proksi konservatif menggunakan panduan pelaporan sektor lahan internasional untuk rewetting, sekat kanal, dan FDRS. Monitoring dan pelatihan ditampilkan sebagai data pendukung implementasi.'}</p>
+          <p class="climate-card-caption">${english ? 'Proxy estimate based only on measured rewetting area. The 550 ha outcome already represents canal-block interventions; canal blocks and FDRS receive no separate carbon credit.' : 'Estimasi proksi hanya berdasarkan luas rewetting terukur. Capaian 550 ha sudah mewakili intervensi sekat kanal; sekat kanal dan FDRS tidak memperoleh kredit karbon terpisah.'}</p>
           <div class="climate-source-list">${renderRows('pengurangan')}</div>
         </article>
       </div>
@@ -395,5 +347,9 @@
 
     renderClimateWhenReady();
     window.addEventListener('yg:languagechange', () => renderClimateWhenReady());
+  });
+
+  window.addEventListener('yg:dashboardstatsready', () => {
+    renderClimateImpactDashboard('climate-dashboard-container');
   });
 })();
