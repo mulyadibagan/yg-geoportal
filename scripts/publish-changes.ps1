@@ -44,19 +44,43 @@ if ($behind -gt 0) {
   throw "Branch lokal tertinggal $behind commit dari origin/$Branch. Sinkronkan dulu sebelum push."
 }
 
+# Get a list of all changed files for the conflict marker check
 $changedFiles = @(
   $pending |
     Where-Object { -not [string]::IsNullOrWhiteSpace($_) } |
     ForEach-Object {
-      if ($_.Length -ge 4) {
-        $_.Substring(3).Trim()
+      $line = $_
+      $fileName = $line.Substring(3).Trim()
+      # For renames (e.g., "R  old -> new"), extract both old and new paths
+      if ($line.StartsWith("R")) {
+        $fileName -split ' -> '
+      } else {
+        $fileName
       }
     } |
     Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
 ) | Select-Object -Unique
 
-$blockedPattern = '(?i)(^|[\\/])\.env(\..+)?$|\.pem$|\.key$|id_rsa|id_dsa|credentials|secret'
-$blockedFiles = @($changedFiles | Where-Object { $_ -match $blockedPattern })
+# Get a list of files to check for sensitive content, excluding deletions.
+$filesToCheckForBlock = @(
+    $pending |
+    # Exclude lines for deleted files. Status for deletion is 'D ' (staged) or ' D' (unstaged).
+    Where-Object { -not [string]::IsNullOrWhiteSpace($_) -and $_.Substring(0, 1) -ne 'D' -and $_.Substring(1, 1) -ne 'D' } |
+    ForEach-Object {
+        $line = $_
+        $fileName = $line.Substring(3).Trim()
+        # For renames (e.g., "R  old -> new"), check only the new path.
+        if ($line.StartsWith("R")) {
+            ($fileName -split ' -> ')[1]
+        } else {
+            $fileName
+        }
+    } |
+    Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
+) | Select-Object -Unique
+
+$blockedPattern = '(?i)(^|[\\/])\.env(\..+)?$|\.pem$|\.key$|id_rsa|id_dsa|credentials|secret|tmp-.*\.txt$|\.tmp$'
+$blockedFiles = @($filesToCheckForBlock | Where-Object { $_ -match $blockedPattern })
 if ($blockedFiles.Count -gt 0) {
   Write-Host "[CHECK] File sensitif terdeteksi:"
   $blockedFiles | ForEach-Object { Write-Host " - $_" }
