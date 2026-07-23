@@ -1,4 +1,4 @@
-const CACHE_NAME = "yg-geoportal-v4-20260723-popup-add-photo1";
+const CACHE_NAME = "yg-geoportal-v4-20260723-popup-add-photo2";
 
 const STATIC_ASSETS = [
   "./",
@@ -19,7 +19,7 @@ const STATIC_ASSETS = [
   "./css/report.css",
   "./css/report-v6.css?v=20260720-photo-worker2",
   "./js/config.js?v=20260720-area-kopi1",
-  "./js/report-v6.js?v=20260723-popup-add-photo1",
+  "./js/report-v6.js?v=20260723-popup-add-photo2",
   "./js/report-image-worker.js?v=20260720-photo-worker2",
   "./js/report-photo-rules.js?v=20260720-photo-loop-fix1",
   "./js/report-photo-guard.js?v=20260720-photo-loop-fix1",
