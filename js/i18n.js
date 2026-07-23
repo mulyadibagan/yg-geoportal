@@ -428,20 +428,22 @@
     translating = true;
     try {
       const dictionary = dictionaries[currentLanguage] || {};
-      const walker = document.createTreeWalker(element, Node.TEXT_NODE);
-      let node;
-      while ((node = walker.nextNode())) {
-        const nodeValue = node.nodeValue;
-        if (typeof nodeValue !== "string") continue;
-        const text = nodeValue.trim();
-        if (text && dictionary[text]) {
-          node.nodeValue = nodeValue.replace(text, dictionary[text]);
-        } else if (text && currentLanguage === "id" && reverse[text]) {
-          node.nodeValue = nodeValue.replace(text, reverse[text]);
-        } else if (text) {
-          node.nodeValue = translateDynamic(nodeValue, currentLanguage);
-        }
-      }
+      const parents = [element, ...element.querySelectorAll("*")];
+      parents.forEach(parent => {
+        Array.from(parent.childNodes || []).forEach(node => {
+          if (node.nodeType !== 3) return;
+          const nodeValue = node.nodeValue;
+          if (typeof nodeValue !== "string") return;
+          const text = nodeValue.trim();
+          if (text && dictionary[text]) {
+            node.nodeValue = nodeValue.replace(text, dictionary[text]);
+          } else if (text && currentLanguage === "id" && reverse[text]) {
+            node.nodeValue = nodeValue.replace(text, reverse[text]);
+          } else if (text) {
+            node.nodeValue = translateDynamic(nodeValue, currentLanguage);
+          }
+        });
+      });
       element.querySelectorAll("[placeholder]").forEach(el => {
         const placeholder = el.getAttribute("placeholder");
         if (typeof placeholder !== "string") return;
