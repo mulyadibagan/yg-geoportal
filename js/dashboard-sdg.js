@@ -372,7 +372,7 @@
     const renderClimateWhenReady = (attempt = 0) => {
       const stats = window.YG_DASHBOARD_STATS || {};
       const cardsReady = document.querySelectorAll('#category-grid .programme-card li strong').length > 0;
-      const statsReady = Number(stats.mangroveArea || 0) > 0 || Number(stats.totalRestorationArea || 0) > 0;
+      const statsReady = Object.prototype.hasOwnProperty.call(stats, 'mangroveArea') || cardsReady;
       if (!cardsReady && !statsReady && attempt < 30) {
         setTimeout(() => renderClimateWhenReady(attempt + 1), 150);
         return;
