@@ -159,6 +159,14 @@ var LEGACY_OBJECT_ALIASES={
     var rawArea=targetProperties.Luas_Ha||targetProperties.Luas||targetProperties.areaHa||targetProperties.luas_ha;
     var targetArea=Number(String(rawArea==null?'':rawArea).replace(',','.'));
     var masterObjectId=resolveMasterObject(p,targetProperties,feature,title,targetArea);
+    // Koreksi rekaman Kelapa Pati berdasarkan catatan lapangan tervalidasi:
+    // 3.330 bibit, sekitar 600 mati, dan survival sekitar 82%.
+    if(masterObjectId==='MANGROVE-KELAPA-PATI-PHASE-III-2026-001'||
+       LEGACY_OBJECT_ALIASES[String(p.targetObjectId||'').trim()]==='MANGROVE-KELAPA-PATI-PHASE-III-2026-001'){
+      m.aliveCount=2730;
+      m.deadOrDamagedCount=600;
+      m.survivalPercent=82;
+    }
     var areaKey=isFinite(targetArea)&&targetArea>0?targetArea.toFixed(4):'';
     var boundsKey=geometryKey(feature&&feature.geometry);
     var spatialKey=[layerKey,nameKey,areaKey,boundsKey].filter(Boolean).join('|');
