@@ -25,6 +25,29 @@
     minZoom: 6
   }).setView(DEFAULT_CENTER, DEFAULT_ZOOM);
 
+  const REFERENCE_LAYERS = {
+    kawasan_hutan_sk_903: {
+      id: "kawasan_hutan_sk_903",
+      label: "Kawasan Hutan SK 903",
+      file: "data/kawasan_hutan_sk_903.geojson",
+      color: "#455a64",
+      count: 4185,
+      type: "forest"
+    },
+    gambut_bbsdlp_2019: {
+      id: "gambut_bbsdlp_2019",
+      label: "Peta Gambut BBSDLP 2019",
+      file: "data/Gambut_BBSDLP_2019.geojson",
+      color: "#6a4a3a",
+      count: 736,
+      type: "peat"
+    }
+  };
+
+  const referenceLayerObjects = {};
+  const referenceLayerState = {};
+
+
   const osm = L.tileLayer(
     "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
     {
@@ -164,7 +187,7 @@
       row.innerHTML =
         '<input id="layer-' + escapeHtml(config.id) +
           '" data-layer-id="' + escapeHtml(config.id) +
-          '" type="checkbox"' + (config.visible ? " checked" : "") + '>' +
+          '" type="checkbox" checked>' +
         '<span class="swatch" style="background:' +
           escapeHtml(config.color) + '"></span>' +
         '<label for="layer-' + escapeHtml(config.id) + '">' +
@@ -187,6 +210,202 @@
         '<span>' + escapeHtml(config.label) + '</span>';
       legend.appendChild(item);
     }
+  }
+
+  function forestColor(value) {
+    const key = String(value || "").toUpperCase();
+
+    const colors = {
+      "APL": "#FFFFFF",
+      "HPK": "#FEA9A9",
+      "HPT": "#C0FEA7",
+      "HP": "#FEFEAA",
+      "HL": "#7BFB00",
+      "CA": "#C589FE",
+      "KSA/KPA": "#C589FE",
+      "TN": "#C589FE",
+      "SM": "#C589FE",
+      "SA": "#C589FE",
+      "TWA": "#C589FE"
+    };
+
+    return colors[key] || "#78909c";
+  }
+
+  function peatColor(value) {
+    const text = String(value || "");
+
+    if (text.indexOf(">700") !== -1) return "#4a148c";
+    if (text.indexOf("500-<700") !== -1) return "#6a1b9a";
+    if (text.indexOf("300-<500") !== -1) return "#8e24aa";
+    if (text.indexOf("200-<300") !== -1) return "#ab47bc";
+    if (text.indexOf("100-<200") !== -1) return "#ce93d8";
+    if (text.indexOf("50-<100") !== -1) return "#e1bee7";
+
+    return "#b39ddb";
+  }
+
+  function referenceStyle(config, feature) {
+    const props = feature.properties || {};
+
+    if (config.type === "forest") {
+      const color = forestColor(props.fungsi);
+
+      return {
+        color: color,
+        weight: 0.8,
+        opacity: 0.85,
+        fillColor: color,
+        fillOpacity: 0.23
+      };
+    }
+
+    if (config.type === "peat") {
+      const color = peatColor(props.KELAS_GBT || props.KETEBALAN);
+
+      return {
+        color: color,
+        weight: 0.7,
+        opacity: 0.8,
+        fillColor: color,
+        fillOpacity: 0.20
+      };
+    }
+
+    return {
+      color: config.color,
+      weight: 0.9,
+      opacity: 0.9,
+      fillColor: config.color,
+      fillOpacity: config.type === "social_forestry" ? 0.26 : 0.16
+    };
+  }
+
+  function referencePopup(config, feature) {
+    const props = feature.properties || {};
+    let rows = "";
+
+    function item(label, value) {
+      if (
+        value === null ||
+        value === undefined ||
+        String(value).trim() === ""
+      ) {
+        return "";
+      }
+
+      return (
+        '<div class="popup-row">' +
+          '<b>' + escapeHtml(label) + '</b>' +
+          '<span>' + escapeHtml(value) + '</span>' +
+        '</div>'
+      );
+    }
+
+    if (config.type === "forest") {
+      rows += item("Fungsi kawasan", props.fungsi || "Belum terisi");
+      rows += item("Sumber", "Kawasan Hutan SK 903");
+    } else if (config.type === "peat") {
+      rows += item("Kabupaten/Kota", props.KABKOT || props.KK);
+      rows += item("Kelas gambut", props.KELAS_GBT);
+      rows += item("Ketebalan", props.KETEBALAN);
+    } else {
+      Object.keys(props).slice(0, 8).forEach(key => {
+        rows += item(key, props[key]);
+      });
+    }
+
+    return (
+      '<div class="popup-card">' +
+        '<div class="popup-head" style="background:' +
+          escapeHtml(config.color) + '">' +
+          '<strong>' + escapeHtml(config.label) + '</strong>' +
+          '<span>Layer referensi — tidak dihitung dalam dashboard</span>' +
+        '</div>' +
+        '<div class="popup-body">' + rows + '</div>' +
+      '</div>'
+    );
+  }
+
+  async function loadReferenceLayer(layerId) {
+    const config = REFERENCE_LAYERS[layerId];
+    if (!config) throw new Error("Konfigurasi layer referensi tidak ditemukan.");
+    if (referenceLayerObjects[layerId]) return referenceLayerObjects[layerId];
+    if (referenceLayerState[layerId] === "loading") return null;
+
+    referenceLayerState[layerId] = "loading";
+    updateStatus();
+
+    const response = await fetch(config.file + "?v=20260721-ref2", { cache: "force-cache" });
+    if (!response.ok) {
+      referenceLayerState[layerId] = "error";
+      throw new Error("HTTP " + response.status);
+    }
+
+    const data = await response.json();
+    if (!data || data.type !== "FeatureCollection" || !Array.isArray(data.features)) {
+      referenceLayerState[layerId] = "error";
+      throw new Error("GeoJSON referensi tidak valid.");
+    }
+
+    const layer = L.geoJSON(data, {
+      style: feature => referenceStyle(config, feature),
+      onEachFeature: (feature, leafletLayer) => {
+        leafletLayer.bindPopup(referencePopup(config, feature), { maxWidth: 360 });
+      }
+    });
+
+    referenceLayerObjects[layerId] = layer;
+    referenceLayerState[layerId] = "ready";
+    config.count = data.features.length;
+
+    const countElement = document.querySelector('[data-reference-count-id="' + layerId + '"]');
+    if (countElement) countElement.textContent = new Intl.NumberFormat("id-ID").format(config.count);
+
+    updateStatus();
+    return layer;
+  }
+
+  function appendReferenceControls(list, legend) {
+    Object.keys(REFERENCE_LAYERS).forEach(layerId => {
+      const config = REFERENCE_LAYERS[layerId];
+      const row = document.createElement("div");
+      row.className = "layer-row reference-layer-row";
+      row.innerHTML =
+        '<input id="layer-' + escapeHtml(layerId) + '" data-reference-layer-id="' + escapeHtml(layerId) + '" type="checkbox">' +
+        '<span class="swatch" style="background:' + escapeHtml(config.color) + '"></span>' +
+        '<label for="layer-' + escapeHtml(layerId) + '">' + escapeHtml(config.label) + '</label>' +
+        '<span class="count" data-reference-count-id="' + escapeHtml(layerId) + '">' +
+        (Number.isFinite(config.count) ? new Intl.NumberFormat("id-ID").format(config.count) : "…") +
+        '</span>';
+      list.appendChild(row);
+
+      const checkbox = row.querySelector("input");
+      checkbox.addEventListener("change", async event => {
+        checkbox.disabled = true;
+        try {
+          if (event.target.checked) {
+            const layer = await loadReferenceLayer(layerId);
+            if (layer) layer.addTo(map);
+          } else {
+            const layer = referenceLayerObjects[layerId];
+            if (layer && map.hasLayer(layer)) map.removeLayer(layer);
+          }
+        } catch (error) {
+          console.error("Layer referensi gagal dimuat:", layerId, error);
+          event.target.checked = false;
+        } finally {
+          checkbox.disabled = false;
+        }
+      });
+
+      const legendItem = document.createElement("div");
+      legendItem.className = "legend-item";
+      legendItem.innerHTML =
+        '<span class="legend-mark" style="background:' + escapeHtml(config.color) + '"></span>' +
+        '<span>' + escapeHtml(config.label) + '</span>';
+      legend.appendChild(legendItem);
+    });
   }
 
   function updateLayerUiCount(layerId, count) {
@@ -337,49 +556,16 @@
       const data = await getLayerFeatureCollection(config);
       let geoLayer;
 
-      geoLayer = L.geoJSON(data, {
-        style: (feature) => {
-          // Warna default dari config
-          let layerColor = config.color;
-          let layerFillOpacity = config.type === "line" ? 0.10 : 0.24;
-          let layerWeight = config.type === "line" ? 4 : 2.2;
+      const filteredData = { ...data };
 
-          // Pengecekan khusus untuk Kawasan Hutan (misalnya dari layer dengan ID tertentu)
-          // Asumsi config.id 'kawasan_hutan' atau cek jika properti 'Fungsi' tersedia
-          if (feature.properties && feature.properties.Fungsi) {
-            switch (String(feature.properties.Fungsi).toUpperCase()) {
-              case 'HL': // Hutan Lindung
-                layerColor = '#2E7D32'; // Hijau tua
-                break;
-              case 'KSA/KPA': // Kawasan Suaka Alam / Pelestarian Alam
-                layerColor = '#6A1B9A'; // Ungu
-                break;
-              case 'HP': // Hutan Produksi Tetap
-                layerColor = '#D84315'; // Merah bata
-                break;
-              case 'HPT': // Hutan Produksi Terbatas
-                layerColor = '#F9A825'; // Kuning gelap
-                break;
-              case 'HPK': // Hutan Produksi yang dapat Dikonversi
-                layerColor = '#FBC02D'; // Kuning
-                break;
-              case 'APL': // Area Penggunaan Lain
-                layerColor = '#9E9E9E'; // Abu-abu
-                break;
-            }
-            // Sedikit pertebal opacity untuk kawasan hutan agar lebih jelas
-            layerFillOpacity = 0.6;
-            layerWeight = 1.5;
-          }
-
-          return {
-            color: layerColor,
-            fillColor: layerColor,
-            fillOpacity: layerFillOpacity,
-            weight: layerWeight,
-            opacity: 0.95
-          };
-        },
+      geoLayer = L.geoJSON(filteredData, {
+        style: () => ({
+          color: config.color,
+          fillColor: config.color,
+          fillOpacity: config.type === "line" ? 0.10 : 0.24,
+          weight: config.type === "line" ? 4 : 2.2,
+          opacity: 0.95
+        }),
         pointToLayer: (feature, latlng) => L.circleMarker(latlng, {
           radius: 7,
           fillColor: config.color,

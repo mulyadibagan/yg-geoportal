@@ -136,9 +136,6 @@
       "Program Yayasan Gambut": "Yayasan Gambut Programmes",
       "Capaian Program": "Programme Achievements",
       "Mitra Pendanaan": "Funding Partners",
-      "Penyerapan & Pengurangan Emisi": "Carbon Removal & Emission Reduction",
-      "Estimasi diturunkan dari data WebGIS yang sudah ada, tanpa tabel baru.": "Estimates are derived from existing WebGIS data, with no new tables.",
-      "Data yang berkontribusi: area restorasi mangrove, area restorasi gambut/agroforestri, bibit tertanam, rumah bibit, sekat kanal, FDRS, monitoring lapangan, pelatihan masyarakat, dan dokumentasi kegiatan.": "Contributing data: mangrove restoration area, peatland/agroforestry restoration area, seedlings planted, nurseries, canal blocks, FDRS, field monitoring, community training, and activity documentation.",
       "MITRA PENDANAAN": "FUNDING PARTNER",
       "Wilayah Cakupan Program": "Programme Coverage Areas",
       "Restorasi Mangrove": "Mangrove Restoration",
@@ -362,9 +359,10 @@
       "Memuat layer dari database…": "Loading layers from the database…",
       "Menyiapkan legenda…": "Preparing legend…",
       "Mengambil objek dari Master Database…": "Retrieving objects from the Master Database…"
-    }
+    },
+    id: {}
   };
-
+  if (dictionaries.en) dictionaries.en["Cetak Peta"] = "Print Map";
   const reverse = Object.fromEntries(
     Object.entries(dictionaries.en).map(([id, en]) => [en, id])
   );
@@ -400,134 +398,70 @@
         .replace(/^PENANAMAN MANGROVE$/, "MANGROVE PLANTING")
         .replace(/^(\d+) objek terpetakan$/, "$1 mapped objects");
     }
-
     return text
       .replace(/^Source: Master Database/, "Sumber: Master Database")
       .replace(/official WebGIS layers/g, "layer resmi WebGIS")
       .replace(/updated/g, "diperbarui")
-      .replace(/ objects · updated /, " objek · diperbarui ")
-      .replace(/^Layers loaded/, "Layer berhasil dimuat")
-      .replace(/ public updates applied$/, " pembaruan publik diterapkan")
-      .replace(/^Retrieving objects from the Master Database/, "Mengambil objek dari Master Database")
-      .replace(/ objects loaded from the Master Database$/, " objek dari Master Database berhasil dimuat")
-      .replace(/^Object ID:\s*/, "ID objek: ")
-      .replace(/^Latest\s+/, "Terakhir ")
-      .replace(/\s+monitoring visits$/, " kali monitoring")
-      .replace(/\s+records$/, " riwayat")
-      .replace(/^Needs monitoring\s+·\s+/, "Perlu dipantau · ")
-      .replace(/^(\d{4})[–-]Present$/, "$1–Sekarang")
-      .replace(/^(\d+)\s+villages\s*\u00b7\s*view programme summary$/, "$1 desa · lihat ringkasan program")
-      .replace(/^Pematang Duku\s*\u00b7\s*view programme summary$/, "Pematang Duku · lihat ringkasan program")
-      .replace(/^(\d+)\s+programmes?$/, "$1 program")
-      .replace(/^(\d[\d.]*)\s+trees$/, "$1 pohon")
-      .replace(/^Target:\s+(\d[\d.]*)\s+trees$/, "Target $1 pohon")
-      .replace(/Wave Breaker \(cumulative\)$/, "Wave Breaker (akumulasi)")
-      .replace(/^(\d+) objects$/, "$1 objek")
-      .replace(/^Mangrove Planting \((\d+)\)$/, "Penanaman Mangrove ($1)")
-      .replace(/^MANGROVE PLANTING$/, "PENANAMAN MANGROVE")
-      .replace(/^(\d+) mapped objects$/, "$1 objek terpetakan");
+      .replace(/ objects · updated /g, " objek · diperbarui ");
   }
 
-  function translateText(text, language) {
-    const trimmed = text.trim();
-    if (!trimmed) return text;
-    const dictionary = language === "en" ? dictionaries.en : reverse;
-    const translated = dictionary[trimmed] || translateDynamic(trimmed, language);
-    if (translated === trimmed) return text;
-    return text.replace(trimmed, translated);
-  }
-
-  function translateTree(root) {
-    if (translating || !root) return;
+  function translateElement(element) {
+    if (!element || translating) return;
     translating = true;
-
-    const elements = root.nodeType === 1
-      ? [root, ...root.querySelectorAll("*")]
-      : [];
-
-    elements.forEach(element => {
-      if (["SCRIPT", "STYLE", "NOSCRIPT"].includes(element.tagName)) return;
-
-      Array.from(element.childNodes).forEach(node => {
-        if (node.nodeType === Node.TEXT_NODE) {
-          node.nodeValue = translateText(node.nodeValue || "", currentLanguage);
-        }
-      });
-
-      if (element.hasAttribute("placeholder")) {
-        const placeholder = element.getAttribute("placeholder");
-        const placeholders = {
-          "Sepahat, Temiang, FDRS...": "Search Sepahat, Temiang, FDRS...",
-          "Nama objek, lokasi, atau jenis monitoring": "Object name, location, or monitoring type",
-          "Contoh: Nursery Sepahat": "Example: Sepahat Nursery",
-          "Google Drive atau laporan PDF": "Google Drive or PDF report"
-        };
-        const placeholderReverse = Object.fromEntries(
-          Object.entries(placeholders).map(([id, en]) => [en, id])
-        );
-        const replacement = currentLanguage === "en"
-          ? placeholders[placeholder]
-          : placeholderReverse[placeholder];
-        if (replacement) element.setAttribute("placeholder", replacement);
+    const dictionary = dictionaries[currentLanguage] || {};
+    const walker = document.createTreeWalker(element, Node.TEXT_NODE);
+    let node;
+    while ((node = walker.nextNode())) {
+      const text = node.nodeValue.trim();
+      if (text && dictionary[text]) {
+        node.nodeValue = node.nodeValue.replace(text, dictionary[text]);
+      } else if (text && currentLanguage === "id" && reverse[text]) {
+        node.nodeValue = node.nodeValue.replace(text, reverse[text]);
+      } else if (text) {
+        node.nodeValue = translateDynamic(node.nodeValue, currentLanguage);
+      }
+    }
+    element.querySelectorAll("[placeholder]").forEach(el => {
+      const text = el.getAttribute("placeholder").trim();
+      if (text && dictionary[text]) {
+        el.setAttribute("placeholder", dictionary[text]);
+      } else if (text && currentLanguage === "id" && reverse[text]) {
+        el.setAttribute("placeholder", reverse[text]);
       }
     });
-
-    document.documentElement.lang = currentLanguage;
-    const page = (location.pathname.split("/").pop() || "index.html").toLowerCase();
-    const titles = {
-      "index.html": ["YG GeoPortal | Yayasan Gambut", "Yayasan Gambut Spatial Data Platform"],
-      "webgis.html": ["Peta Interaktif Yayasan Gambut", "Yayasan Gambut Interactive Map"],
-      "report.html": ["Kirim Laporan | YG GeoPortal", "Submit Report | YG GeoPortal"],
-      "monitoring.html": ["Dashboard Monitoring | YG GeoPortal", "Monitoring Dashboard | YG GeoPortal"]
-    };
-    if (titles[page]) document.title = titles[page][currentLanguage === "en" ? 1 : 0];
-    document.querySelectorAll("[data-lang]").forEach(button => {
-      const active = button.getAttribute("data-lang") === currentLanguage;
-      button.classList.toggle("active", active);
-      button.setAttribute("aria-pressed", String(active));
-    });
-
     translating = false;
   }
 
   function setLanguage(language) {
-    currentLanguage = language === "en" ? "en" : "id";
-    localStorage.setItem(STORAGE_KEY, currentLanguage);
-    translateTree(document.body);
-    window.dispatchEvent(new CustomEvent("yg:languagechange", {
-      detail: { language: currentLanguage }
-    }));
+    if (language !== "en" && language !== "id") return;
+    currentLanguage = language;
+    localStorage.setItem(STORAGE_KEY, language);
+    document.documentElement.lang = language;
+    document.querySelectorAll("[data-lang]").forEach(button => {
+      const isPressed = button.dataset.lang === language;
+      button.setAttribute("aria-pressed", String(isPressed));
+      button.classList.toggle("active", isPressed);
+    });
+    translateElement(document.body);
   }
 
   document.addEventListener("click", event => {
     const button = event.target.closest("[data-lang]");
-    if (!button) return;
-    setLanguage(button.getAttribute("data-lang"));
+    if (button) setLanguage(button.dataset.lang);
   });
 
-  const observer = new MutationObserver(records => {
-    records.forEach(record => {
-      record.addedNodes.forEach(node => {
-        if (node.nodeType === 1) translateTree(node);
-        if (node.nodeType === 3 && node.parentElement) translateTree(node.parentElement);
-      });
-    });
+  document.addEventListener("DOMContentLoaded", () => {
+    setLanguage(currentLanguage);
+    new MutationObserver(() => translateElement(document.body))
+      .observe(document.body, { childList: true, subtree: true });
   });
-
-  function initialize() {
-    translateTree(document.body);
-    observer.observe(document.body, { childList: true, subtree: true });
-  }
 
   window.YG_I18N = {
-    get language() { return currentLanguage; },
-  setLanguage,
-  translateElement: translateTree
+    t: function(text) {
+      const dictionary = dictionaries[currentLanguage] || {};
+      return dictionary[text] || text;
+    },
+    setLanguage: setLanguage,
+    translateElement: translateElement
   };
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initialize, { once: true });
-  } else {
-    initialize();
-  }
 })();
