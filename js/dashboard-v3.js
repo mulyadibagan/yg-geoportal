@@ -84,6 +84,27 @@
     animateCounter(element, Number(value), digits, suffix);
   }
 
+  function setText(id, value) {
+    const element = document.getElementById(id);
+    if (!element) return;
+    element.textContent = value;
+  }
+
+  function setStateBadge(id, stateText, stateClass) {
+    const element = document.getElementById(id);
+    if (!element) return;
+    element.textContent = stateText;
+    element.classList.remove("state-in-progress", "state-completed");
+    if (stateClass) element.classList.add(stateClass);
+  }
+
+  function compactSentence(value, limit = 170) {
+    const raw = String(value || "").replace(/\s+/g, " ").trim();
+    if (!raw) return "";
+    if (raw.length <= limit) return raw;
+    return raw.slice(0, limit - 1).trimEnd() + "…";
+  }
+
   function animateCounter(element, value, digits = 0, suffix = "") {
     const reduceMotion = window.matchMedia &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -360,6 +381,83 @@
 
   function mapUrl(params) {
     return "webgis.html?" + new URLSearchParams(params).toString();
+  }
+
+  function toPhotoList(value) {
+    if (!value) return [];
+    if (Array.isArray(value)) {
+      return value.map(item => String(item || "").trim()).filter(Boolean);
+    }
+    const raw = String(value).trim();
+    if (!raw) return [];
+    if (raw.startsWith("{") && raw.endsWith("}")) {
+      return raw.slice(1, -1).split(",").map(item =>
+        item.trim().replace(/^"|"$/g, "")
+      ).filter(Boolean);
+    }
+    return raw.split(",").map(item => item.trim()).filter(Boolean);
+  }
+
+  function toPreviewImage(url) {
+    const raw = String(url || "").trim();
+    if (!raw) return "";
+    const match = raw.match(/\/d\/([^/]+)/);
+    if (match && match[1]) {
+      return "https://drive.google.com/thumbnail?id=" +
+        encodeURIComponent(match[1]) + "&sz=w1600";
+    }
+    return raw;
+  }
+
+  function featureText(feature) {
+    const props = (feature && feature.properties) || {};
+    return [
+      firstValue(props, ["Nama_Objek", "title", "locationName"]),
+      firstValue(props, ["description", "Keterangan", "Ket"]),
+      firstValue(props, ["Desa", "village"]),
+      firstValue(props, ["Donor", "Donor_Cluster"])
+    ].join(" ").toLowerCase();
+  }
+
+  function findFeaturePhoto(features, includeTerms) {
+    const terms = includeTerms.map(term => term.toLowerCase());
+    const hit = features.find(feature => {
+      const text = featureText(feature);
+      return terms.every(term => text.includes(term));
+    });
+    if (!hit) return "";
+    const props = hit.properties || {};
+    const photos = toPhotoList(props.photos || props.Photos || props.photo || props.image);
+    return photos.length ? toPreviewImage(photos[0]) : "";
+  }
+
+  function setPhotoSlot(slotName, url) {
+    if (!url) return;
+    const node = document.querySelector('[data-penabulu-photo-slot="' + slotName + '"]');
+    if (!node) return;
+    node.src = url;
+  }
+
+  function hydratePenabuluPhotos(features) {
+    const penabuluWaterTowerPinned = "https://drive.google.com/thumbnail?id=1QyL6V-1Nw0s1OjPbjBoav4dPYa8_Mb7a&sz=w1000";
+    const penabuluSopPinned = "https://drive.google.com/thumbnail?id=1h1S-K3MLPEHKNHazOUjzSRN5kEh_9o8E&sz=w1200";
+    const dryingHouse = findFeaturePhoto(features, ["rumah jemur", "temiang"]);
+    const waterTower = penabuluWaterTowerPinned ||
+      findFeaturePhoto(features, ["menara", "temiang"]);
+    const nursery = findFeaturePhoto(features, ["nursery", "temiang"]);
+
+    setPhotoSlot("drying-house", dryingHouse);
+    setPhotoSlot("gallery-drying-house", dryingHouse);
+
+    setPhotoSlot("water-system", waterTower);
+    setPhotoSlot("gallery-water-tower", waterTower);
+    setPhotoSlot("sop", penabuluSopPinned);
+    setPhotoSlot("gallery-sop", penabuluSopPinned);
+
+    // Sampai foto khusus tersedia di data peta, gunakan foto lapangan terdekat.
+    setPhotoSlot("micro-mill", nursery || dryingHouse);
+    setPhotoSlot("gallery-micro-mill", nursery || dryingHouse);
+    setPhotoSlot("gallery-women-group", nursery || dryingHouse);
   }
 
   function renderRanking(elementId, data, linkBuilder, limit = 8) {
@@ -789,6 +887,138 @@
         })) + '">' + escapeHtml(village) + ' <span>→</span></a>'
       ).join("") + '</div>';
 
+    const isGec2026 = feature => {
+      const props = (feature && feature.properties) || {};
+      const donorName = donorOf(props);
+
+      const programme = firstValue(props, [
+        "Programme", "programme", "Program", "program",
+        "Nama_Program", "Program_Name", "program_name"
+      ]).toLowerCase();
+      const reportType = firstValue(props, ["reportType", "Report_Type"]).toLowerCase();
+      const village = firstValue(props, [
+        "Desa", "WADMKD", "NAMA_DESA", "village", "locationName"
+      ]).toLowerCase();
+      const yearValue = firstValue(props, [
+        "programme_year", "Programme_Year", "program_year",
+        "Program_Year", "Tahun", "Year", "year"
+      ]).toLowerCase();
+      const text = normalizedText(props);
+
+      const hasGecDonor = donorName === "Global Environment Centre" ||
+        /global environment centre|\bgec\b/.test(text);
+      const byProgrammeField = /gec\s*2026|sustainable peatland management|community livelihood strengthening/.test(programme);
+      const byYearField = /(^|\D)2026(\D|$)/.test(yearValue);
+      const byYearSignal = byYearField || /(^|\D)2026(\D|$)/.test(text);
+      const byTextFallback = /2026/.test(text) && /gec|global environment centre/.test(text);
+      const byCapacityVillageFallback =
+        byYearSignal &&
+        /capacity building|pelatihan|training/.test(reportType + " " + text) &&
+        /pedekik|temiang|dayun/.test(village + " " + text) &&
+        /kopi|coffee|nursery|gambut|peat|tmat|fdrs|sekat kanal|agroforestri/.test(text);
+
+      return (hasGecDonor && (byProgrammeField || byYearField || byTextFallback)) ||
+        byCapacityVillageFallback;
+    };
+
+    const gec2026Assets = uniqueFeatures(active.filter(isGec2026));
+    const coffee2026Features = gec2026Assets.filter(feature => {
+      const layerId = layerIdOf(feature).toLowerCase();
+      const text = normalizedText((feature && feature.properties) || {});
+      return layerId === "area_kopi" || /kopi|coffee|agroforestri|agroforestry/.test(text);
+    });
+    const coffeeArea2026 = sumProperties(coffee2026Features, [
+      "Luas_Ha", "Luas", "luas_ha", "Area_Ha", "Restoration_Area_Ha"
+    ]);
+    const canal2026 = layerAssets(gec2026Assets, ["sekat_kanal"]).length;
+    const fdrs2026 = layerAssets(gec2026Assets, ["fdrs"]).length;
+    const nurseryVillages2026 = new Set(
+      gec2026Assets.filter(feature => {
+        const layerId = layerIdOf(feature).toLowerCase();
+        const text = normalizedText((feature && feature.properties) || {});
+        return layerId === "nursery_kopi" ||
+          (text.includes("nursery") && (text.includes("pelatihan") || text.includes("training")));
+      }).map(feature => firstValue((feature && feature.properties) || {}, [
+        "Desa", "WADMKD", "NAMA_DESA", "village", "locationName"
+      ]).toLowerCase()).filter(Boolean)
+    );
+    const nursery2026 = nurseryVillages2026.size;
+
+    const training2026 = gec2026Assets.filter(feature => {
+      const props = (feature && feature.properties) || {};
+      const text = normalizedText(props);
+      const reportType = firstValue(props, ["reportType", "Report_Type"]).toLowerCase();
+      return /capacity building|pelatihan|training/.test(reportType + " " + text);
+    }).sort((a, b) => {
+      const aDate = firstValue((a && a.properties) || {}, ["activityDate", "publishedAt"]);
+      const bDate = firstValue((b && b.properties) || {}, ["activityDate", "publishedAt"]);
+      return String(bDate).localeCompare(String(aDate), "id");
+    });
+
+    setText("gec2026-progress-coffee", formatNumber(coffeeArea2026, 1) + " / 3.0 ha");
+    setText("gec2026-progress-canal", formatNumber(canal2026) + " / 3");
+    setText("gec2026-progress-fdrs", formatNumber(fdrs2026) + " / 3");
+    setText("gec2026-progress-nursery", formatNumber(nursery2026) + " / 2 villages");
+
+    const outreachSignals = gec2026Assets.filter(feature => {
+      const text = normalizedText((feature && feature.properties) || {});
+      return /video|campaign|outreach|komunikasi|website|publikasi|publication/.test(text);
+    }).length;
+    const auditSignals = gec2026Assets.filter(feature => {
+      const text = normalizedText((feature && feature.properties) || {});
+      return /audit/.test(text);
+    }).length;
+
+    const statusOf = (value, target) => {
+      if (value >= target) return { text: "Completed", cls: "state-completed" };
+      if (value > 0) return { text: "In Progress", cls: "state-in-progress" };
+      return { text: "Planned", cls: "" };
+    };
+    const nurseryStatus = statusOf(nursery2026, 2);
+    const coffeeStatus = statusOf(coffeeArea2026, 3);
+    const canalStatus = statusOf(canal2026, 3);
+    const fdrsStatus = statusOf(fdrs2026, 3);
+    const outreachStatus = statusOf(outreachSignals, 1);
+    const auditStatus = statusOf(auditSignals, 1);
+
+    setStateBadge("gec2026-status-nursery", nurseryStatus.text, nurseryStatus.cls);
+    setStateBadge("gec2026-status-coffee", coffeeStatus.text, coffeeStatus.cls);
+    setStateBadge("gec2026-status-canal", canalStatus.text, canalStatus.cls);
+    setStateBadge("gec2026-status-fdrs", fdrsStatus.text, fdrsStatus.cls);
+    setStateBadge("gec2026-status-outreach", outreachStatus.text, outreachStatus.cls);
+    setStateBadge("gec2026-status-audit", auditStatus.text, auditStatus.cls);
+
+    if (training2026.length) {
+      const latest = training2026[0].properties || {};
+      const village = firstValue(latest, ["Desa", "WADMKD", "village"]);
+      const date = firstValue(latest, ["activityDate", "publishedAt"]);
+      const title = firstValue(latest, ["title", "Nama_Objek"]) || "Capacity Building";
+      const description = compactSentence(firstValue(latest, ["description", "Keterangan", "Ket"]), 180);
+      setText("gec2026-update-title", title);
+      const metaParts = [];
+      if (village) metaParts.push(village);
+      if (date) metaParts.push(date);
+      setText("gec2026-update-meta", (metaParts.join(" · ") + (description ? " · " + description : "")).trim());
+
+      const nurseryPhotoNode = document.getElementById("gec2026-nursery-photo");
+      const nurseryBriefNode = document.getElementById("gec2026-nursery-brief");
+      const photos = toPhotoList(latest.photos || latest.Photos || latest.photo || latest.image);
+      const photoUrl = photos.length ? toPreviewImage(photos[0]) : "";
+      if (nurseryPhotoNode && photoUrl) {
+        nurseryPhotoNode.src = photoUrl;
+      }
+
+      const participantMatch = String(latest.description || "").match(/(\d+)\s+peserta/i);
+      const participantText = participantMatch ? participantMatch[1] + " peserta" : "Peserta terdata";
+      const briefParts = [];
+      if (village) briefParts.push(village);
+      if (date) briefParts.push(date);
+      briefParts.push(participantText);
+      if (nurseryBriefNode) {
+        nurseryBriefNode.textContent = "Pelatihan pembibitan kopi Liberika: " + briefParts.join(" · ");
+      }
+    }
+
     const estimatedPeatRewettingArea = calculateEstimatedPeatRewettingArea(programmeMetrics.peat.canals);
     const peatRewettingArea = programmeMetrics.peat.rewetting > 0
       ? programmeMetrics.peat.rewetting
@@ -883,6 +1113,7 @@
     const aramcoName = "Aramco Asia Singapore";
     const gecName = "Global Environment Centre";
     const kolibriName = "Aliansi Kolibri";
+    const penabuluName = "Yayasan Penabulu";
     const donorEntries = Object.entries(donors)
       .sort((a, b) => b[1] - a[1]);
     if (!donorEntries.some(([name]) => name === aramcoName)) {
@@ -896,6 +1127,9 @@
     }
     if (!donorEntries.some(([name]) => name === kolibriName)) {
       donorEntries.push([kolibriName, 0]);
+    }
+    if (!donorEntries.some(([name]) => name === penabuluName)) {
+      donorEntries.push([penabuluName, 0]);
     }
     document.getElementById("donor-grid").innerHTML = donorEntries.length
       ? donorEntries.map(([name, count]) => {
@@ -920,7 +1154,7 @@
             return '<button class="category-card dashboard-link funding-card" type="button" data-open-gec>' +
               '<i class="category-icon" aria-hidden="true">💧</i>' +
               '<span>' + escapeHtml(name) + '</span>' +
-              '<strong>2021–2025</strong>' +
+              '<strong>2021 - Sekarang</strong>' +
               '<small>Bengkalis &amp; Siak · lihat ringkasan program</small>' +
             '</button>';
           }
@@ -932,6 +1166,16 @@
               '<small>Imbo Putui \u00b7 lihat ringkasan program</small>' +
             '</button>';
           }
+          if (name === "Yayasan Penabulu") {
+            return '<button class="category-card dashboard-link funding-card funding-card-penabulu" type="button" data-open-penabulu>' +
+              '<i class="category-icon" aria-hidden="true"></i>' +
+              '<span class="funding-penabulu-name">' + escapeHtml(name) + '</span>' +
+              '<strong class="funding-penabulu-period">2025–2026</strong>' +
+              '<p class="funding-penabulu-summary">Strengthening women-led Liberica coffee enterprises and improving peatland ecosystem resilience through sustainable community-based livelihoods in Temiang Village, Riau.</p>' +
+              '<small class="funding-penabulu-badge">Active Programme</small>' +
+              '<span class="funding-penabulu-cta">View Dashboard</span>' +
+            '</button>';
+          }
           const donorUrl = mapUrl({ search: donorSearchTerm(name) });
           return '<a class="category-card dashboard-link" href="' +
             escapeHtml(donorUrl) + '">' +
@@ -941,6 +1185,8 @@
           '</a>';
         }).join("")
       : '<div class="dashboard-empty">Belum ada data</div>';
+
+    hydratePenabuluPhotos(active);
 
     document.getElementById("dashboard-updated").textContent =
       "Sumber: Master Database + layer resmi WebGIS · " +
@@ -972,6 +1218,7 @@
   const gecDashboard = document.getElementById("gec-dashboard");
   const gecDetail = document.getElementById("gec-detail");
   const kolibriDashboard = document.getElementById("kolibri-dashboard");
+  const penabuluDashboard = document.getElementById("penabulu-dashboard");
   const ppcfDetails = {
     training: '<h4>Pelatihan PPCF</h4><div class="funding-detail-grid"><article><strong>69 peserta</strong><span>Pelatihan pengelolaan gambut berkelanjutan dan pertanian tanpa bakar · 7 Agustus 2025</span></article><article><strong>50 peserta</strong><span>Pelatihan agroforestri kopi Liberika, termasuk 13 perempuan · 19 Desember 2025</span></article></div>',
     market: '<h4>Kemitraan pasar kopi</h4><p>MoU antara Kelompok Tani Ketiau Jaya dan Suvarnabhumi Coffee ditandatangani pada 20 Januari 2026. Suvarnabhumi Coffee bertindak sebagai calon pembeli utama kopi Liberika sesuai mutu, harga, dan kapasitas pasokan yang disepakati.</p><a href="webgis.html?layer=kopi&amp;village=Pematang+Duku">Lihat lokasi kelompok tani →</a>'
@@ -1007,6 +1254,9 @@
     if (event.target.closest("[data-open-kolibri]")) {
       openFundingDashboard(kolibriDashboard);
     }
+    if (event.target.closest("[data-open-penabulu]")) {
+      openFundingDashboard(penabuluDashboard);
+    }
     if (event.target.closest("[data-close-ppcf]")) {
       closeFundingDashboard(ppcfDashboard, ppcfDetail);
     }
@@ -1018,6 +1268,9 @@
     }
     if (event.target.closest("[data-close-kolibri]")) {
       closeFundingDashboard(kolibriDashboard);
+    }
+    if (event.target.closest("[data-close-penabulu]")) {
+      closeFundingDashboard(penabuluDashboard);
     }
     const detailButton = event.target.closest("[data-ppcf-detail]");
     if (detailButton) {
@@ -1051,6 +1304,9 @@
     }
     if (!kolibriDashboard.hidden) {
       closeFundingDashboard(kolibriDashboard);
+    }
+    if (!penabuluDashboard.hidden) {
+      closeFundingDashboard(penabuluDashboard);
     }
   });
 })();
