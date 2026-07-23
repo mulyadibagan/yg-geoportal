@@ -1,0 +1,29 @@
+name: Windows Auto Sync
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: windows-auto-sync-main
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    name: Sync Server Repo
+    runs-on:
+      - self-hosted
+      - windows
+    steps:
+      - name: Run sync script on server working copy
+        shell: powershell
+        env:
+          DEPLOY_PATH: ${{ vars.DEPLOY_PATH }}
+          DEPLOY_BRANCH: main
+        run: |
+          if ([string]::IsNullOrWhiteSpace($env:DEPLOY_PATH)) {
+            throw "Repository variable DEPLOY_PATH belum diisi. Isi di Settings > Secrets and variables > Actions > Variables."
+          }
+          powershell -ExecutionPolicy Bypass -File ".\\scripts\\sync-repo.ps1" -RepoPath "$env:DEPLOY_PATH" -Branch "$env:DEPLOY_BRANCH"
