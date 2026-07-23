@@ -94,15 +94,43 @@
     if (!container) return;
 
     const stats = window.YG_DASHBOARD_STATS || {};
-    const mangroveArea = Number(stats.mangroveArea || 0);
-    const peatArea = Number(stats.peatArea || 0);
-    const mineralArea = Number(stats.mineralArea || 0);
-    const rewettingArea = Number(stats.rewettingArea || 0);
-    const canalBlocks = Number(stats.canalBlocks || 0);
-    const fdrsUnits = Number(stats.fdrsUnits || 0);
-    const nurseryCount = Number(stats.nurseryCount || 0);
-    const monitoringReports = Number(stats.monitoringReports || 0);
-    const trainingSessions = Number(stats.trainingSessions || 0);
+    const cards = Array.from(document.querySelectorAll('#category-grid .programme-card'));
+
+    function parseMetricNumber(value) {
+      const raw = String(value == null ? '' : value).replace(/\s+/g, ' ').trim();
+      if (!raw) return 0;
+      const normalized = raw
+        .replace(/\./g, '')
+        .replace(',', '.')
+        .replace(/[^0-9.-]/g, '');
+      const number = Number(normalized);
+      return Number.isFinite(number) ? number : 0;
+    }
+
+    function readCardMetric(cardIndex, labelText) {
+      const card = cards[cardIndex];
+      if (!card) return 0;
+      const items = Array.from(card.querySelectorAll('li'));
+      const match = items.find(item => item.textContent.toLowerCase().includes(labelText.toLowerCase()));
+      if (!match) return 0;
+      const strong = match.querySelector('strong');
+      return parseMetricNumber(strong ? strong.textContent : match.textContent);
+    }
+
+    function readTextMetric(selector) {
+      const element = document.querySelector(selector);
+      return element ? parseMetricNumber(element.textContent) : 0;
+    }
+
+    const mangroveArea = Number(stats.mangroveArea || readCardMetric(0, 'Luas Restorasi'));
+    const peatArea = Number(stats.peatArea || readCardMetric(1, 'Luas Gambut / Agroforestri'));
+    const mineralArea = Number(stats.mineralArea || readCardMetric(2, 'Luas Restorasi'));
+    const rewettingArea = Number(stats.rewettingArea || readCardMetric(1, 'Estimasi Area Rewetting') || readTextMetric('#dash-rewetting-area'));
+    const canalBlocks = Number(stats.canalBlocks || readCardMetric(1, 'Sekat Kanal'));
+    const fdrsUnits = Number(stats.fdrsUnits || readTextMetric('#gec-fdrs-count') || readTextMetric('#ppcf-fdrs-count'));
+    const nurseryCount = Number(stats.nurseryCount || readTextMetric('#aramco-nursery-count') || readCardMetric(0, 'Rumah Bibit'));
+    const monitoringReports = Number(stats.monitoringReports || readTextMetric('#aramco-monitoring-count'));
+    const trainingSessions = Number(stats.trainingSessions || readCardMetric(3, 'Pelatihan'));
     const methodology = 'IPCC 2006 Guidelines + 2013 Wetlands Supplement (conservative proxy)';
 
     // Koefisien proxy konservatif untuk visualisasi kebijakan.
