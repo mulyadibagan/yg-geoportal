@@ -80,6 +80,7 @@
       "🗺️ Jelajahi Peta": "🗺️ Explore the Map",
       "Buka Peta": "Open Map",
       "Pasang Aplikasi": "Install App",
+      "📲 Pasang Aplikasi": "📲 Install App",
       "PLATFORM DATA SPASIAL RESMI YAYASAN GAMBUT": "OFFICIAL SPATIAL DATA PLATFORM OF YAYASAN GAMBUT",
       "Platform Data Spasial Yayasan Gambut": "Yayasan Gambut Spatial Data Platform",
       "Menyajikan informasi spasial yang terverifikasi untuk mendukung pengelolaan lahan basah, gambut, mangrove, dan ekosistem lainnya secara berkelanjutan melalui restorasi, rehabilitasi, pemantauan lapangan, pemberdayaan masyarakat, serta kemitraan strategis yang berbasis data.": "Providing verified spatial information to support the sustainable management of wetlands, peatlands, mangroves, and other ecosystems through restoration, rehabilitation, field monitoring, community empowerment, and data-driven strategic partnerships.",
@@ -349,6 +350,7 @@
         .replace(/Wave Breaker \(akumulasi\)$/, "Wave Breaker (cumulative)")
         .replace(/^(\d+) objek$/, "$1 objects")
         .replace(/^Penanaman Mangrove \((\d+)\)$/, "Mangrove Planting ($1)")
+        .replace(/^PENANAMAN MANGROVE$/, "MANGROVE PLANTING")
         .replace(/^(\d+) objek terpetakan$/, "$1 mapped objects");
     }
 
@@ -375,6 +377,7 @@
       .replace(/Wave Breaker \(cumulative\)$/, "Wave Breaker (akumulasi)")
       .replace(/^(\d+) objects$/, "$1 objek")
       .replace(/^Mangrove Planting \((\d+)\)$/, "Penanaman Mangrove ($1)")
+      .replace(/^MANGROVE PLANTING$/, "PENANAMAN MANGROVE")
       .replace(/^(\d+) mapped objects$/, "$1 objek terpetakan");
   }
 
