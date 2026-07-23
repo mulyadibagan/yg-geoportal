@@ -1716,6 +1716,49 @@ L.control.scale({
     return feature;
   }
 
+  function dedupeNormalizedFeatures(features) {
+    const seenObjectIds = new Set();
+    const seenMangroveNurseries = new Set();
+
+    return (features || []).filter(feature => {
+      const props = feature && feature.properties || {};
+      const layerId = normalizedMatchValue(
+        props.Layer_ID || props.Source_Layer
+      );
+      const objectId = normalizedMatchValue(
+        props.Object_ID || props.objectId || props.OBJECTID
+      );
+
+      if (layerId === "nursery_mangrove") {
+        const village = normalizedMatchValue(
+          props.Desa || props.desa || props.WADMKD
+        );
+        const name = normalizedMatchValue(
+          props.Nama_Objek || props.title || props.locationName
+        );
+        const nurseryKey = village
+          ? "village:" + village
+          : name
+            ? "name:" + name
+            : objectId
+              ? "object:" + objectId
+              : "";
+
+        if (nurseryKey) {
+          if (seenMangroveNurseries.has(nurseryKey)) return false;
+          seenMangroveNurseries.add(nurseryKey);
+        }
+      }
+
+      if (objectId) {
+        if (seenObjectIds.has(objectId)) return false;
+        seenObjectIds.add(objectId);
+      }
+
+      return true;
+    });
+  }
+
   function initialize(data) {
     if (!data || data.type !== "FeatureCollection" || !Array.isArray(data.features)) {
       setStatus("Respons database tidak valid.", true);
@@ -1730,7 +1773,7 @@ L.control.scale({
         : "";
     }).filter(Boolean));
 
-    rawFeatures = data.features
+    rawFeatures = dedupeNormalizedFeatures(data.features
       .filter(feature => {
         if (!feature) return false;
         const p = feature.properties || {};
@@ -1754,7 +1797,7 @@ L.control.scale({
       .map(applyPematangDukuDonorPolicy)
       .map(applyAramcoCoastalAssetPolicy)
       .map(applyExternalPeatInfrastructureDonorPolicy)
-      .map(applyRequestedDonorCorrections);
+      .map(applyRequestedDonorCorrections));
     const groups = {};
 
     rawFeatures.forEach(feature => {
