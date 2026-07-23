@@ -62,6 +62,11 @@
     return text.replace(/-(20\d{2})-(\d{3})$/, "-$2");
   }
 
+  function hasMangroveYearSegment(value) {
+    const text = normalize(value).replace(/_/g, "-");
+    return text.indexOf("mangrove-") === 0 && /-(20\d{2})-(\d{3})$/.test(text);
+  }
+
   function numeric(value) {
     const number = Number(String(value == null ? "" : value).replace(",", "."));
     return Number.isFinite(number) ? number : NaN;
@@ -185,8 +190,12 @@
     if (expectedObjectId) {
       const actualObjectId = objectId(props);
       if (actualObjectId && actualObjectId === expectedObjectId) return true;
+      const exactMangroveIdsOnBothSides =
+        hasMangroveYearSegment(actualObjectId) &&
+        hasMangroveYearSegment(expectedObjectId);
       if (
         actualObjectId &&
+        !exactMangroveIdsOnBothSides &&
         canonicalMangroveObjectId(actualObjectId) ===
           canonicalMangroveObjectId(expectedObjectId)
       ) {
