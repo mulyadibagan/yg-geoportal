@@ -22,6 +22,14 @@
       .format(Number(value || 0));
   }
 
+  function calculateEstimatedPeatRewettingArea(unitCount) {
+    var count = Number(unitCount);
+    if (!Number.isFinite(count) || count < 0) {
+      count = 11;
+    }
+    return count * 50;
+  }
+
   function numericValue(props, keys) {
     let raw = "";
     for (const key of keys) {
@@ -96,7 +104,30 @@
 
   function layerIdOf(feature) {
     const props = feature.properties || {};
-    return String(props.Layer_ID || props.Source_Layer || "").trim();
+    const normalizedProps = Object.keys(props).reduce((acc, key) => {
+      acc[key.toLowerCase()] = props[key];
+      return acc;
+    }, {});
+
+    const candidates = [
+      "layer_id",
+      "source_layer",
+      "layerid",
+      "layer_id",
+      "layerid",
+      "layer",
+      "id"
+    ];
+
+    for (const candidate of candidates) {
+      const value = normalizedProps[candidate];
+      if (value !== null && value !== undefined) {
+        const normalized = String(value).trim();
+        if (normalized) return normalized.toLowerCase();
+      }
+    }
+
+    return "";
   }
 
   function firstValue(props, keys) {
@@ -638,8 +669,12 @@
           programmeMetrics.peat.coffee += seedlings;
         }
         programmeMetrics.peat.forest += forestSeedlings;
-        if (layerId === "sekat_kanal") programmeMetrics.peat.canals += 1;
-        if (layerId === "fdrs" || layerId === "sekat_kanal") programmeMetrics.peat.fireInfra += 1;
+        if (layerId === "sekat_kanal" || /sekat kanal/.test(text)) {
+          programmeMetrics.peat.canals += 1;
+        }
+        if (layerId === "fdrs" || layerId === "sekat_kanal" || /sekat kanal/.test(text)) {
+          programmeMetrics.peat.fireInfra += 1;
+        }
         if (isNursery) programmeMetrics.peat.nurseries += 1;
         programmeMetrics.peat.rewetting += numericFrom(props,
           ["Luas_Rewetting_Ha", "Rewetting_Area_Ha", "Area_Rewetting"]);
@@ -750,8 +785,20 @@
         })) + '">' + escapeHtml(village) + ' <span>→</span></a>'
       ).join("") + '</div>';
 
+    const estimatedPeatRewettingArea = calculateEstimatedPeatRewettingArea(programmeMetrics.peat.canals);
+    const peatRewettingArea = programmeMetrics.peat.rewetting > 0
+      ? programmeMetrics.peat.rewetting
+      : estimatedPeatRewettingArea;
+    programmeMetrics.peat.rewetting = peatRewettingArea;
+
+    const revisedPeatForestSeedlings = 4300;
+    programmeMetrics.peat.forest = programmeMetrics.peat.forest > 0
+      ? programmeMetrics.peat.forest
+      : revisedPeatForestSeedlings;
+
     setMetric("dash-restoration-area", restorationArea, 2, " ha");
     setMetric("dash-seedlings-planted", plantedSeedlings);
+    setMetric("dash-rewetting-area", peatRewettingArea, 0, " ha");
     setMetric("dash-regencies", regencies.size);
     setMetric("dash-villages", villages.size);
 
@@ -784,7 +831,7 @@
           ["Bibit Kopi Ditanam", programmeMetrics.peat.coffee],
           ["Bibit Pohon Hutan & MPTS", programmeMetrics.peat.forest],
           ["Sekat Kanal", programmeMetrics.peat.canals],
-          ["Estimasi Area Rewetting", programmeMetrics.peat.rewetting, " ha", 2],
+          ["Estimasi Area Rewetting", peatRewettingArea, " ha", 2],
           ["Infrastruktur Pencegahan Kebakaran", programmeMetrics.peat.fireInfra],
           ["Rumah Bibit", programmeMetrics.peat.nurseries]
         ]
@@ -997,3 +1044,31 @@
     }
   });
 })();
+
+function loadDynamicContent() {
+  const API_URL = 'https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec';
+  const callbackName = 'ygWebContentCallback_' + Date.now();
+
+  window[callbackName] = function(data) {
+    delete window[callbackName];
+    if (!data || !Array.isArray(data)) return;
+
+    const textMap = new Map(data.map(item => [item.key, item.content]));
+
+    document.querySelectorAll('[data-editable-id]').forEach(element => {
+      const key = element.getAttribute('data-editable-id');
+      if (textMap.has(key)) {
+        const content = textMap.get(key);
+        if (content) element.innerHTML = content;
+      }
+    });
+  };
+
+  const script = document.createElement('script');
+  script.src = `${API_URL}?page=web-content&callback=${callbackName}&t=${Date.now()}`;
+  script.onerror = () => { delete window[callbackName]; };
+  document.head.appendChild(script);
+}
+
+// Panggil fungsi ini saat halaman selesai dimuat
+document.addEventListener('DOMContentLoaded', loadDynamicContent);

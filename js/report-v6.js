@@ -66,26 +66,19 @@
     'Capacity Building'
   ];
 
-  function setImagesProcessing(processing){
-    imagesProcessing = Boolean(processing);
-    if(imagesProcessing){
+  function setProcessingState(state, message) {
+    var isProcessing = Object.values(state).some(Boolean);
+    if (isProcessing) {
       submitButton.disabled = true;
-      submitButton.textContent = 'Memproses foto...';
-    }else if(!capacityDocumentsProcessing && !submissionStarted){
+      submitButton.textContent = message;
+    } else if (!submissionStarted) {
       submitButton.disabled = false;
       submitButton.textContent = 'Kirim Laporan';
     }
   }
 
-  function setCapacityDocumentsProcessing(processing){
-    capacityDocumentsProcessing = Boolean(processing);
-    if(capacityDocumentsProcessing){
-      submitButton.disabled = true;
-      submitButton.textContent = 'Memproses PDF...';
-    }else if(!imagesProcessing && !submissionStarted){
-      submitButton.disabled = false;
-      submitButton.textContent = 'Kirim Laporan';
-    }
+  function updateProcessingStatus() {
+    setProcessingState({ imagesProcessing, capacityDocumentsProcessing }, imagesProcessing ? 'Memproses foto...' : 'Memproses PDF...');
   }
 
   var map = L.map('location-map').setView([1.15,101.95],8);
@@ -131,10 +124,12 @@
       : 'Tautan Google Drive atau PDF';
     var newObjectDonorFields = document.getElementById('new-object-donor-fields');
     var donorInput = document.getElementById('donor');
+    var forestFields = document.getElementById('new-object-forest-fields');
     var needsNewObjectDonor =
       type === 'Titik Baru' || type === 'Area/Poligon Baru';
     if(newObjectDonorFields) newObjectDonorFields.hidden = !needsNewObjectDonor;
     if(donorInput) donorInput.required = needsNewObjectDonor;
+    if(forestFields) forestFields.hidden = !needsNewObjectDonor;
     var replantingFields = document.getElementById('replanting-fields');
     if(replantingFields) replantingFields.hidden =
       type !== 'Replanting/Penyulaman Mangrove';
@@ -145,7 +140,7 @@
       compressedImages = [];
       imageInput.value = '';
       renderPhotoPreview();
-      setImagesProcessing(false);
+      imagesProcessing = false; updateProcessingStatus();
     }
     var guidance = document.getElementById('type-guidance');
     var geometryHelp = document.getElementById('geometry-help');
@@ -1547,35 +1542,32 @@
 
     /* Sembunyikan hasil pengiriman sebelumnya ketika laporan baru diedit. */
     success.hidden = true;
-    setImagesProcessing(true);
+    imagesProcessing = true;
+    updateProcessingStatus();
 
     try{
-      for(var i=0;i<files.length;i++){
-        statusText.textContent =
-          'Memproses foto ' + (i + 1) + ' dari ' + files.length + '...';
-
-        /* Beri browser kesempatan menggambar status sebelum pekerjaan foto. */
-        await yieldToBrowser();
-
-        try{
-          var dataUrl = await compressImage(files[i],1280,0.7);
-
+      statusText.textContent = 'Memproses ' + files.length + ' foto...';
+      var compressionPromises = files.map(function(file) {
+        return compressImage(file, 1280, 0.7).then(function(dataUrl) {
           compressedImages.push({
-            name:files[i].name,
-            type:'image/jpeg',
-            dataUrl:dataUrl
+            name: file.name,
+            type: 'image/jpeg',
+            dataUrl: dataUrl
           });
-
-          /* Hindari beberapa foto besar diproses dalam satu frame panjang. */
-          await yieldToBrowser();
-        }catch(error){
+        }).catch(function(error) {
           console.error(error);
           statusText.textContent =
             'Salah satu foto gagal diproses. Silakan pilih ulang.';
-        }
-      }
+        });
+      });
+
+      await Promise.all(compressionPromises);
+
     }finally{
-      setImagesProcessing(false);
+      imagesProcessing = false;
+      updateProcessingStatus();
+      /* Pastikan status kembali normal jika tidak ada proses lain */
+      if (!capacityDocumentsProcessing) submitButton.textContent = 'Kirim Laporan';
     }
 
     /*
@@ -1654,7 +1646,8 @@
       }
       if(!accepted.length){ this.value = ''; return; }
 
-      setCapacityDocumentsProcessing(true);
+      capacityDocumentsProcessing = true;
+      updateProcessingStatus();
       try{
         for(var i=0;i<accepted.length;i++){
           var file = accepted[i];
@@ -1672,7 +1665,9 @@
       }catch(error){
         alert(error.message || 'Dokumen gagal diproses.');
       }finally{
-        setCapacityDocumentsProcessing(false);
+        capacityDocumentsProcessing = false;
+        updateProcessingStatus();
+        if (!imagesProcessing) submitButton.textContent = 'Kirim Laporan';
         this.value = '';
       }
     });
@@ -1702,6 +1697,7 @@
       fireRisk:monitoringValue('monitoring-fire-risk'),
       functionStatus:monitoringValue('monitoring-function'),
       monitoredLength:monitoringValue('monitoring-length'),
+      canalUnits:monitoringValue('monitoring-canal-units'),
       threats:monitoringValue('monitoring-threats'),
       notes:monitoringValue('monitoring-notes'),
       followUp:monitoringValue('monitoring-follow-up')
@@ -1749,11 +1745,51 @@
     if(mangrove) mangrove.hidden = ['Penanaman Mangrove','Hutan Mangrove','Restorasi Hutan','Restorasi Gambut','Pembibitan','Agroforestri/Kopi'].indexOf(type) === -1;
     if(fdrs) fdrs.hidden = type !== 'Tinggi Muka Air/FDRS';
     if(infra) infra.hidden = ['Sekat Kanal','APO'].indexOf(type) === -1;
+
+    if(type === 'Sekat Kanal' && canalUnitInput){
+      var currentValue = Number(canalUnitInput.value);
+      if(!Number.isFinite(currentValue) || currentValue <= 0){
+        canalUnitInput.value = 11;
+      }
+      updateReportRewettingEstimate();
+    }
   }
 
   var monitoringTypeSelect = document.getElementById('monitoring-type');
   if(monitoringTypeSelect){
     monitoringTypeSelect.addEventListener('change',updateMonitoringPanels);
+  }
+
+  var canalUnitInput = document.getElementById('monitoring-canal-units');
+  var rewettingEstimateNote = document.getElementById('rewetting-estimate-note');
+  function updateReportRewettingEstimate(){
+    var units = canalUnitInput ? Number(canalUnitInput.value) : NaN;
+    if(!Number.isFinite(units) || units < 0){
+      units = 11;
+      if(canalUnitInput){
+        canalUnitInput.value = units;
+      }
+    }
+
+    if(canalUnitInput){
+      canalUnitInput.classList.toggle('input-error', units === 0);
+    }
+
+    if(rewettingEstimateNote){
+      if(units === 0){
+        rewettingEstimateNote.textContent = 'Perhatian: 0 unit sekat kanal menghasilkan estimasi 0 ha. Pastikan jumlah unit benar.';
+      }else if(!Number.isFinite(units) || units < 0){
+        rewettingEstimateNote.textContent = 'Masukkan jumlah unit sekat kanal untuk menghitung perkiraan luas rewetting.';
+      }else{
+        rewettingEstimateNote.textContent = 'Masukkan jumlah unit sekat kanal untuk menghitung perkiraan luas rewetting.';
+      }
+    }
+
+    updateEstimatedPeatRewettingAreaElement('rewetting-estimate', units);
+  }
+  if(canalUnitInput){
+    canalUnitInput.addEventListener('input',updateReportRewettingEstimate);
+    updateReportRewettingEstimate();
   }
 
   var waterTableInput = document.getElementById('monitoring-water-table');
@@ -1819,6 +1855,9 @@
         return;
       }
     }
+
+    var forestSeedlingsCount = value('forest-seedlings-count');
+    var forestSeedlingsSpecies = value('forest-seedlings-species');
 
     if(existingFeatureTypes.indexOf(selectedType) !== -1){
       if(!selectedCorrectionFeature || !geometryGeoJSON){
@@ -1903,6 +1942,14 @@
       if(!monitorDataValidation.notes){
         alert('Isi temuan monitoring.');
         return;
+      }
+      if(monitorDataValidation.monitoringType === 'Sekat Kanal'){
+        var canalUnits = Number(monitorDataValidation.canalUnits);
+        if(!Number.isFinite(canalUnits) || canalUnits <= 0){
+          alert('Isi jumlah unit sekat kanal lebih dari 0 untuk monitoring Sekat Kanal.');
+          document.getElementById('monitoring-canal-units').focus();
+          return;
+        }
       }
       if(monitorDataValidation.monitoringType === 'Tinggi Muka Air/FDRS'){
         if(monitorDataValidation.waterTableCm === ''){
@@ -2075,6 +2122,8 @@
                 })
               : '',
       donor:isNewObjectReport ? newObjectDonor : '',
+      forestSeedlingsCount:forestSeedlingsCount,
+      forestSeedlingsSpecies:forestSeedlingsSpecies,
       images:compressedImages,
       documents:selectedType === 'Capacity Building' ? capacityDocuments : []
     };

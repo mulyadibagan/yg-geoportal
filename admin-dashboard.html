@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Admin Dashboard | YG GeoPortal</title>
+  <link rel="icon" href="assets/logo-yayasan-gambut.png"/>
+  <link rel="stylesheet" href="css/site-brand.css?v=20260720-program-dashboard1"/>
+  <link rel="stylesheet" href="css/dashboard-v3.css?v=20260722-funding-logo1"/>
+  <link rel="stylesheet" href="css/admin-dashboard.css?v=20260722-admin1"/>
+  <link rel="stylesheet" href="css/language-switcher.css?v=20260721-all-pages1"/>
+  <meta name="theme-color" content="#079cde">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html">
+        <img src="assets/logo-yayasan-gambut.png" alt="Logo Yayasan Gambut"/>
+        <span><strong>YG GeoPortal</strong><span>Admin Dashboard</span></span>
+      </a>
+      <nav class="nav">
+        <a href="index.html">Beranda</a>
+        <a href="monitoring.html">Monitoring</a>
+        <a href="object-manager.html">Object Manager</a>
+        <a class="primary" href="report.html">Kirim Laporan</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="dashboard-shell admin-shell">
+    <section class="hero hero-compact">
+      <div class="hero-main">
+        <div class="eyebrow">DASHBOARD ADMIN</div>
+        <h1>Statistik Pengunjung dan Konten Dinamis</h1>
+        <p class="hero-description">Lihat ringkasan kunjungan dan kelola teks yang tidak terhubung langsung dengan data spasial atau dataset utama.</p>
+        <p class="hero-tagline">Konten yang disimpan di browser dapat diuji di sini, lalu dikembangkan ke backend bila dibutuhkan.</p>
+      </div>
+    </section>
+
+    <section class="summary-grid admin-summary-grid" aria-label="Statistik admin">
+      <article>
+        <span>Total kunjungan</span>
+        <strong id="stat-total-visits">0</strong>
+        <small>Berdasarkan jumlah rekaman di browser</small>
+      </article>
+      <article>
+        <span>Kunjungan hari ini</span>
+        <strong id="stat-today-visits">0</strong>
+        <small>Kunjungan yang tercatat hari ini</small>
+      </article>
+      <article>
+        <span>Blok teks tersimpan</span>
+        <strong id="stat-text-blocks">0</strong>
+        <small>Konten teks bebas yang dapat disunting</small>
+      </article>
+      <article>
+        <span>Update terakhir</span>
+        <strong id="stat-last-updated">—</strong>
+        <small>Waktu perubahan terakhir</small>
+      </article>
+    </section>
+
+    <section class="admin-panel">
+      <div class="admin-column admin-column--wide">
+        <div class="section-heading">
+          <div><span class="eyebrow">Statistik Pengunjung</span><h2>Ringkasan kunjungan</h2></div>
+        </div>
+        <div class="admin-card">
+          <div class="admin-action-row">
+            <button id="log-visit" type="button" class="btn btn-outline">Catat kunjungan baru</button>
+            <button id="reset-stats" type="button" class="btn btn-light">Reset statistik</button>
+          </div>
+          <div class="admin-list" id="visit-history"></div>
+        </div>
+      </div>
+
+      <div class="admin-column admin-column--narrow">
+        <div class="section-heading">
+          <div><span class="eyebrow">Konten Teks</span><h2>Kelola teks bebas</h2></div>
+        </div>
+        <div class="admin-card">
+          <form id="text-block-form">
+            <label>Judul kunci
+              <input id="text-block-key" type="text" placeholder="contoh: hero-tagline" required>
+            </label>
+            <label>Nama tampilan
+              <input id="text-block-label" type="text" placeholder="contoh: Hero tagline">
+            </label>
+            <label>Isi teks
+              <textarea id="text-block-content" rows="5" placeholder="Masukkan teks bebas..." required></textarea>
+            </label>
+            <div class="admin-action-row">
+              <button type="submit" class="btn btn-outline">Simpan teks</button>
+              <button id="clear-form" type="button" class="btn btn-light">Bersihkan</button>
+            </div>
+          </form>
+        </div>
+        <div class="admin-card admin-card--list">
+          <h3>Daftar blok teks</h3>
+          <div id="text-block-list"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/admin-dashboard.js?v=20260722-admin1"></script>
+</body>
+</html>

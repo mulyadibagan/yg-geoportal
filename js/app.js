@@ -49,30 +49,23 @@ function hiddenField(key){
 }
 
 function popupHtml(feature,config){
-  const props=feature.properties||{};
-  let html=`<div class="popup-card">
-    <div class="popup-head" style="background:${config.color}">
-      <strong>${escapeHtml(config.label)}</strong>
-      <span>Data spasial Yayasan Gambut</span>
-    </div>
-    <div class="popup-grid">`;
+  const props = feature.properties || {};
+  const rows = Object.entries(props)
+    .filter(([key, value]) => value !== null && value !== "" && typeof value !== "undefined" && !hiddenField(key))
+    .map(([key, value]) => `
+      <div class="popup-row">
+        <b>${escapeHtml(prettyKey(key))}</b>
+        <span>${escapeHtml(value)}</span>
+      </div>`
+    ).join("");
 
-  let visibleRows=0;
-  Object.keys(props).forEach(key=>{
-    const value=props[key];
-    if(value===null||value===""||typeof value==="undefined"||hiddenField(key))return;
-    visibleRows++;
-    html+=`<div class="popup-row">
-      <b>${escapeHtml(prettyKey(key))}</b>
-      <span>${escapeHtml(value)}</span>
+  return `<div class="popup-card">
+      <div class="popup-head" style="background:${config.color}">
+        <strong>${escapeHtml(config.label)}</strong>
+        <span>Data spasial Yayasan Gambut</span>
+      </div>
+      <div class="popup-grid">${rows || '<div class="popup-row"><span>Informasi atribut belum tersedia.</span></div>'}</div>
     </div>`;
-  });
-
-  if(!visibleRows){
-    html+=`<div class="popup-row"><span>Informasi atribut belum tersedia.</span></div>`;
-  }
-
-  return html+"</div></div>";
 }
 
 function updateLoadStatus(){

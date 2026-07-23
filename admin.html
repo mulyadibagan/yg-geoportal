@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Admin Dashboard | YG GeoPortal</title>
+  <link rel="stylesheet" href="css/site-brand.css?v=20260720-program-dashboard1">
+  <link rel="stylesheet" href="css/monitoring.css?v=20260721-object-id1">
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      --bg: #eef4f1;
+      --card: #ffffff;
+      --text: #25332e;
+      --muted: #556560;
+      --border: #dce7e1;
+      --border-soft: rgba(220,231,225,0.7);
+      --green: #087653;
+      --green-dark: #0d5a3a;
+      --blue: #079cde;
+      --shadow-soft: 0 18px 45px rgba(0,0,0,0.08);
+      --radius: 18px;
+    }
+
+    body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--text); }
+    .admin-shell { max-width: 1040px; margin: 2.5rem auto; padding: 24px; }
+
+    .login-screen {
+      max-width: 520px;
+      margin: 4rem auto;
+      border-radius: var(--radius);
+      border: 1px solid var(--border-soft);
+      padding: 36px 32px;
+      background: var(--card);
+      box-shadow: var(--shadow-soft);
+    }
+    .login-brand { display: grid; gap: 1rem; place-items: center; text-align: center; margin-bottom: 1.5rem; }
+    .login-brand img { width: 84px; height: auto; border-radius: 16px; box-shadow: 0 18px 45px rgba(0,0,0,0.08); }
+    .login-brand h1 { margin: 0; font-size: 2rem; color: var(--text); }
+    .login-brand p { margin: 0; color: var(--muted); font-size: 0.98rem; line-height: 1.6; }
+
+    .login-screen .field { display: grid; gap: 0.55rem; margin-bottom: 1.1rem; }
+    .login-screen .field span { color: var(--muted); font-size: 0.94rem; font-weight: 700; }
+    .login-screen input { width: 100%; padding: 0.95rem 1rem; border-radius: 12px; border: 1px solid var(--border); background: #fff; color: var(--text); font-size: 1rem; }
+    .login-screen input:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 3px rgba(8,118,83,0.12); }
+    .login-screen button { width: 100%; padding: 0.95rem 1rem; border: 0; border-radius: 12px; background: var(--green); color: #fff; font-weight: 700; font-size: 1rem; cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .login-screen button:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 12px 24px rgba(8,118,83,0.18); }
+    .login-screen button:disabled { opacity: 0.7; cursor: not-allowed; }
+    #login-status { margin-top: 1rem; color: #c62828; font-size: 0.95rem; min-height: 1.25rem; }
+
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      padding: 1.4rem 1.5rem;
+      border-radius: 20px;
+      border: 1px solid var(--border-soft);
+      box-shadow: var(--shadow-soft);
+      background: var(--card);
+    }
+    .admin-header .brand { display: flex; align-items: center; gap: 1rem; }
+    .admin-header .brand img { width: 60px; height: auto; border-radius: 16px; }
+    .admin-header h1 { margin: 0; font-size: 1.9rem; }
+    .admin-header p { margin: 0.35rem 0 0; color: var(--muted); }
+    .admin-header button { background: transparent; border: 1px solid #c62828; color: #c62828; border-radius: 12px; padding: 0.85rem 1rem; cursor: pointer; font-weight: 700; }
+    .admin-header button:hover { background: rgba(198,40,40,0.08); }
+
+    .admin-nav { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; }
+    .admin-nav a { display: block; padding: 1.5rem; border-radius: 20px; text-decoration: none; color: var(--text); border: 1px solid var(--border-soft); background: var(--card); box-shadow: 0 16px 30px rgba(0,0,0,0.05); transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .admin-nav a:hover { transform: translateY(-3px); box-shadow: 0 20px 38px rgba(0,0,0,0.1); }
+    .admin-nav strong { display: block; margin-bottom: 0.65rem; font-size: 1.15rem; color: var(--green); }
+    .admin-nav span { display: block; color: var(--muted); line-height: 1.6; font-size: 0.95rem; }
+
+    @media (max-width: 700px) {
+      .admin-shell { padding: 18px; }
+      .login-screen { margin: 2rem auto; padding: 28px; }
+      .admin-header { flex-direction: column; align-items: stretch; }
+      .admin-nav { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body class="auth-pending">
+
+<div id="login-screen">
+  <div class="login-brand">
+    <img src="assets/logo-yayasan-gambut.png" alt="Logo Yayasan Gambut">
+    <div>
+      <h1>Admin Login</h1>
+      <p>Masuk untuk mengelola dashboard, konten web, dan data geospasial.</p>
+    </div>
+  </div>
+  <form id="login-form">
+    <label class="field">
+      <span>Username</span>
+      <input id="login-username" type="text" required>
+    </label>
+    <label class="field">
+      <span>Password</span>
+      <input id="login-password" type="password" required>
+    </label>
+    <button id="login-submit" type="submit">Login</button>
+    <div id="login-status"></div>
+  </form>
+</div>
+
+<main id="admin-dashboard" class="admin-shell" hidden>
+  <div class="admin-header">
+    <div class="brand">
+      <img src="assets/logo-yayasan-gambut.png" alt="Logo Yayasan Gambut">
+      <div>
+        <h1>Admin Dashboard</h1>
+        <p>Selamat datang, <span id="editor-user"></span>!</p>
+      </div>
+    </div>
+    <button id="logout-editor">Keluar</button>
+  </div>
+
+  <nav class="admin-nav">
+    <a href="https://analytics.google.com/" target="_blank" rel="noopener">
+      <strong>Statistik Pengunjung</strong>
+      <span>Lihat data traffic, demografi, dan perilaku pengunjung di Google Analytics.</span>
+    </a>
+    <a href="polygon-editor.html" target="_blank">
+      <strong>Editor Data Peta</strong>
+      <span>Tambah atau perbarui atribut dan geometri objek spasial di Master Database.</span>
+    </a>
+    <a href="admin-content.html">
+      <strong>Editor Konten Web</strong>
+      <span>Ubah judul, deskripsi, dan teks lain di halaman publik.</span>
+    </a>
+    <a href="monitoring.html" target="_blank">
+      <strong>Lihat Dashboard Monitoring</strong>
+      <span>Tinjau hasil monitoring lapangan yang sudah terverifikasi.</span>
+    </a>
+  </nav>
+</main>
+
+<script src="js/auth.js?v=1"></script>
+<script src="js/admin.js?v=1"></script>
+
+</body>
+</html>

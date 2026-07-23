@@ -222,10 +222,11 @@ var LEGACY_OBJECT_ALIASES={
     var q=document.getElementById('monitor-search').value.toLowerCase();
     var type=document.getElementById('monitor-type').value;
     var status=document.getElementById('monitor-status').value;
+    var year=document.getElementById('monitor-year').value;
     var sort=document.getElementById('monitor-sort').value;
     var filtered=groups.filter(function(g){
       var r=g.latest;
-      return(!q||(r.title+' '+r.location+' '+r.type+' '+g.objectCode).toLowerCase().indexOf(q)>-1)&&(!type||r.type===type)&&(!status||r.status.key===status);
+      return(!q||(r.title+' '+r.location+' '+r.type+' '+g.objectCode).toLowerCase().indexOf(q)>-1)&&(!type||r.type===type)&&(!status||r.status.key===status)&&(!year||dateValue(r.date).getFullYear()===Number(year));
     });
     filtered.sort(function(a,b){
       if(sort==='name')return a.latest.title.localeCompare(b.latest.title);
@@ -264,6 +265,83 @@ var LEGACY_OBJECT_ALIASES={
       var n=groups.filter(function(g){return g.latest.type===t;}).length;
       return'<button class="category-chip" data-type="'+esc(t)+'">'+esc(t)+' ('+n+')</button>';
     }).join('');
+    var years=Object.keys(records.reduce(function(acc,r){
+      var d=dateValue(r.date);
+      if(d.getTime())acc[d.getFullYear()]=true;
+      return acc;
+    },{})).map(Number).sort(function(a,b){return b-a;});
+    document.getElementById('monitor-year').innerHTML='<option value="">Semua tahun</option>'+years.map(function(y){return'<option value="'+esc(y)+'">'+esc(y)+'</option>';}).join('');
+  }
+
+  function buildMonitoringCsv(items){
+    function csvEscape(value){
+      var text=value==null?'':String(value);
+      if(/["\r\n,]/.test(text))text='"'+text.replace(/"/g,'""')+'"';
+      return text;
+    }
+    var rows=[['Tanggal','Tahun','Jenis','Nama objek','Lokasi','Pelapor','Organisasi','Kondisi','Rekomendasi','Catatan','Metrics','Foto']];
+    items.forEach(function(r){
+      var date=dateValue(r.date);
+      rows.push([
+        date.getTime()?date.toISOString().slice(0,10):'',
+        date.getTime()?date.getFullYear():'',
+        r.type,
+        r.title,
+        r.location,
+        r.reporter,
+        r.organization,
+        r.status.label,
+        r.recommendation,
+        r.description,
+        JSON.stringify(r.metrics),
+        r.photos.join('; ')
+      ].map(csvEscape));
+    });
+    return rows.map(function(row){return row.join(',');}).join('\r\n');
+  }
+
+  function buildMonitoringJson(items){
+    return JSON.stringify(items.map(function(r){
+      return {
+        tanggal:r.date||'',
+        tahun:dateValue(r.date).getTime()?dateValue(r.date).getFullYear():null,
+        jenis:r.type,
+        nama_objek:r.title,
+        lokasi:r.location,
+        pelapor:r.reporter,
+        organisasi:r.organization,
+        kondisi:r.status.label,
+        rekomendasi:r.recommendation,
+        catatan:r.description,
+        metrics:r.metrics,
+        foto:r.photos
+      };
+    }),null,2);
+  }
+
+  function downloadFile(filename, content, type){
+    var blob=new Blob([content],{type:type});
+    var url=URL.createObjectURL(blob);
+    var anchor=document.createElement('a');
+    anchor.href=url;
+    anchor.download=filename;
+    document.body.appendChild(anchor);
+    anchor.click();
+    document.body.removeChild(anchor);
+    URL.revokeObjectURL(url);
+  }
+
+  function getSelectedYear(){
+    var year=document.getElementById('monitor-year').value;
+    return year?Number(year):null;
+  }
+
+  function recordsForSelectedYear(){
+    var year=getSelectedYear();
+    return year?records.filter(function(r){
+      var d=dateValue(r.date);
+      return d.getTime()&&d.getFullYear()===year;
+    }):records.slice();
   }
 
   function overviewHTML(g){
@@ -361,8 +439,25 @@ var LEGACY_OBJECT_ALIASES={
     loadReportsScript();
   };
 
-  ['monitor-search','monitor-type','monitor-status','monitor-sort'].forEach(function(id){
+  ['monitor-search','monitor-type','monitor-status','monitor-sort','monitor-year'].forEach(function(id){
     document.getElementById(id).addEventListener(id==='monitor-search'?'input':'change',render);
+  });
+
+  document.getElementById('download-monitor-data').addEventListener('click',function(){
+    var items=recordsForSelectedYear();
+    if(!items.length){
+      window.alert('Tidak ada data monitoring untuk diunduh pada tahun yang dipilih.');
+      return;
+    }
+    var year=getSelectedYear();
+    var format=document.getElementById('monitor-download-format').value;
+    if(format==='json'){
+      var filename='monitoring-'+(year||'semua')+'.json';
+      downloadFile(filename,buildMonitoringJson(items),'application/json;charset=utf-8;');
+      return;
+    }
+    var filename='monitoring-'+(year||'semua')+'.csv';
+    downloadFile(filename,buildMonitoringCsv(items),'text/csv;charset=utf-8;');
   });
 
   document.addEventListener('click',function(e){

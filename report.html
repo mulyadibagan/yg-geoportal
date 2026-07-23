@@ -53,16 +53,16 @@
     <section class="card">
       <h2>1. Pilih jenis laporan</h2>
       <div class="choice-grid">
-        <label><input type="radio" name="reportTypeUI" value="Tambah Foto Kegiatan" required><span>📷 Tambah Foto</span></label>
-        <label><input type="radio" name="reportTypeUI" value="Perbaikan Informasi"><span>✏️ Perbaikan Informasi</span></label>
-        <label><input type="radio" name="reportTypeUI" value="Titik Baru"><span>📍 Titik Baru</span></label>
-        <label><input type="radio" name="reportTypeUI" value="Area/Poligon Baru"><span>🗺️ Area Baru</span></label>
-        <label><input type="radio" name="reportTypeUI" value="Monitoring"><span>🌱 Monitoring</span></label>
-        <label><input type="radio" name="reportTypeUI" value="Replanting/Penyulaman Mangrove"><span>🌿 Replanting</span></label>
-        <label><input type="radio" name="reportTypeUI" value="Kebakaran"><span>🔥 Kebakaran</span></label>
-        <label><input type="radio" name="reportTypeUI" value="Abrasi"><span>🌊 Abrasi</span></label>
-        <label><input type="radio" name="reportTypeUI" value="Biodiversitas"><span>🦜 Biodiversitas</span></label>
-        <label><input type="radio" name="reportTypeUI" value="Capacity Building"><span>👥 Peningkatan Kapasitas</span></label>
+        <label><input type="radio" name="reportTypeUI" value="Tambah Foto Kegiatan" required><span><span class="choice-icon">📷</span> Tambah Foto</span></label>
+        <label><input type="radio" name="reportTypeUI" value="Perbaikan Informasi"><span><span class="choice-icon">✏️</span> Perbaikan Informasi</span></label>
+        <label><input type="radio" name="reportTypeUI" value="Titik Baru"><span><span class="choice-icon">📍</span> Titik Baru</span></label>
+        <label><input type="radio" name="reportTypeUI" value="Area/Poligon Baru"><span><span class="choice-icon">🗺️</span> Area Baru</span></label>
+        <label><input type="radio" name="reportTypeUI" value="Monitoring"><span><span class="choice-icon">🌱</span> Monitoring</span></label>
+        <label><input type="radio" name="reportTypeUI" value="Replanting/Penyulaman Mangrove"><span><span class="choice-icon">🌿</span> Replanting</span></label>
+        <label><input type="radio" name="reportTypeUI" value="Kebakaran"><span><span class="choice-icon">🔥</span> Kebakaran</span></label>
+        <label><input type="radio" name="reportTypeUI" value="Abrasi"><span><span class="choice-icon">🌊</span> Abrasi</span></label>
+        <label><input type="radio" name="reportTypeUI" value="Biodiversitas"><span><span class="choice-icon">🦜</span> Biodiversitas</span></label>
+        <label><input type="radio" name="reportTypeUI" value="Capacity Building"><span><span class="choice-icon">👥</span> Peningkatan Kapasitas</span></label>
       </div>
       <p id="type-guidance" class="type-guidance">Pilih jenis laporan untuk menampilkan isian yang sesuai.</p>
     </section>
@@ -173,6 +173,15 @@
               <option value="Global Environment Centre"></option>
             </datalist>
           </label>
+        </div>
+      </div>
+
+      <div id="new-object-forest-fields" class="conditional-subsection" hidden>
+        <h3>Atribut Pohon Hutan (opsional)</h3>
+        <p class="help">Isi hanya jika laporan titik baru atau area baru berisi penanaman pohon hutan. Kolom ini tidak wajib.</p>
+        <div class="form-grid">
+          <label class="field"><span>Jumlah bibit pohon hutan</span><input id="forest-seedlings-count" type="number" min="0" step="1" placeholder="Contoh: 4300"></label>
+          <label class="field span-2"><span>Jenis/pohon hutan</span><input id="forest-seedlings-species" placeholder="Contoh: Alstonia scholaris"></label>
         </div>
       </div>
 
@@ -300,6 +309,10 @@
           <div class="form-grid">
             <label class="field"><span>Status fungsi</span><select id="monitoring-function"><option value="">Pilih status...</option><option>Berfungsi baik</option><option>Berfungsi sebagian</option><option>Tidak berfungsi</option><option>Rusak</option><option>Hilang</option></select></label>
             <label class="field"><span>Panjang/bagian terpantau</span><input id="monitoring-length" placeholder="Contoh: 100 m"></label>
+            <label class="field"><span>Jumlah unit sekat kanal</span><input id="monitoring-canal-units" type="number" min="0" step="1" placeholder="11"></label>
+            <label class="field span-2"><span>Estimasi Area Rewetting</span><strong id="rewetting-estimate">550 ha</strong>
+              <div id="rewetting-estimate-note" class="help">Masukkan jumlah unit sekat kanal untuk menghitung perkiraan luas rewetting.</div>
+            </label>
           </div>
         </div>
 
@@ -320,12 +333,12 @@
           <label class="field"><span>Penyebab replanting *</span>
             <select id="replanting-reason">
               <option value="">Pilih penyebab...</option>
-              <option>Kematian bibit</option>
-              <option>Abrasi/gelombang</option>
-              <option>Hama atau penyakit</option>
-              <option>Sampah/aktivitas manusia</option>
-              <option>Kondisi substrat</option>
-              <option>Lainnya</option>
+              <option value="Kematian bibit">Kematian bibit</option>
+              <option value="Abrasi/gelombang">Abrasi/gelombang</option>
+              <option value="Hama atau penyakit">Hama atau penyakit</option>
+              <option value="Sampah/aktivitas manusia">Sampah/aktivitas manusia</option>
+              <option value="Kondisi substrat">Kondisi substrat</option>
+              <option value="Lainnya">Lainnya</option>
             </select>
           </label>
           <label class="field span-2"><span>Catatan pelaksanaan *</span><textarea id="replanting-notes" rows="4" placeholder="Jelaskan bagian yang disulam, metode, kondisi lapangan, dan tindak lanjut."></textarea></label>

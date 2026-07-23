@@ -2313,6 +2313,14 @@ L.control.scale({
       feature.properties.Donor = "Aramco Asia Singapore";
       feature.properties.Donor_Cluster = "Aramco Asia Singapore";
 
+      // Pastikan donor tetap diterapkan meskipun objek tidak ada di master DB
+      if (!getDonor(feature.properties)) {
+        feature.properties.Donor = "Aramco Asia Singapore";
+      }
+      if (!feature.properties.Donor_Cluster) {
+        feature.properties.Donor_Cluster = "Aramco Asia Singapore";
+      }
+
       if (databaseProps.Object_ID) {
         feature.properties.Master_Object_ID = databaseProps.Object_ID;
       }
@@ -2683,10 +2691,3 @@ L.control.scale({
 
   loadDatabase();
 })();
-
-
-
-
-
-
-

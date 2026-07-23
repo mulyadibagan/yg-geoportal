@@ -92,9 +92,8 @@ self.addEventListener("fetch", event => {
   if (
     request.destination === "script" ||
     request.destination === "style" ||
-    url.pathname.endsWith(".js") ||
-    url.pathname.endsWith(".css") ||
-    url.pathname.endsWith(".geojson")
+    url.pathname.endsWith(".js") || // JavaScript files
+    url.pathname.endsWith(".css") // CSS files
   ) {
     event.respondWith(
       fetch(request, { cache: "no-store" })
