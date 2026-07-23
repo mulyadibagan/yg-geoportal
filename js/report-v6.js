@@ -6,6 +6,7 @@
   var COMMUNITY_LAYER_LABEL = 'Laporan Masyarakat Terverifikasi';
   var COMMUNITY_LAYER_COLOR = '#7b1fa2';
   var COMMUNITY_API = 'https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec?page=public-reports';
+  var OBJECTS_API = 'https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec?page=objects';
   var communityDataCache = null;
   var communityDataPromise = null;
 
@@ -419,6 +420,52 @@
         var response = await fetch(dataPath, {cache:'no-store'});
         if(!response.ok) throw new Error('HTTP ' + response.status + ' untuk ' + dataPath);
         data = await response.json();
+
+        /*
+         * Tautan dari popup membawa Object ID Master Database. GeoJSON statis
+         * dapat tertinggal saat objek baru sudah dipublikasikan, jadi gabungkan
+         * objek layer terbaru sebelum mencoba memilih sasaran.
+         */
+        if(preferredObjectId){
+          try{
+            var masterResponse = await fetch(
+              OBJECTS_API + '&t=' + Date.now(),
+              {cache:'no-store',redirect:'follow'}
+            );
+            if(masterResponse.ok){
+              var masterData = await masterResponse.json();
+              var masterFeatures = masterData && Array.isArray(masterData.features)
+                ? masterData.features.filter(function(feature){
+                    var properties = feature && feature.properties || {};
+                    return String(
+                      properties.Layer_ID || properties.Source_Layer || ''
+                    ).trim() === config.id;
+                  })
+                : [];
+              var mergedFeatures = Array.isArray(data.features)
+                ? data.features.slice()
+                : [];
+              masterFeatures.forEach(function(feature){
+                var properties = feature && feature.properties || {};
+                var objectId = String(
+                  properties.Object_ID || properties.objectId || ''
+                ).trim();
+                var alreadyIncluded = mergedFeatures.some(function(existing){
+                  var existingProperties = existing && existing.properties || {};
+                  return objectId && String(
+                    existingProperties.Object_ID ||
+                    existingProperties.objectId ||
+                    ''
+                  ).trim() === objectId;
+                });
+                if(!alreadyIncluded) mergedFeatures.push(feature);
+              });
+              data = {type:'FeatureCollection',features:mergedFeatures};
+            }
+          }catch(masterError){
+            console.warn('Master Database tidak dapat digabungkan ke pemilih objek.',masterError);
+          }
+        }
       }
 
       var preferredSelection = null;
