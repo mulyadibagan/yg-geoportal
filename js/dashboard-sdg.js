@@ -84,6 +84,48 @@
     }
   ];
 
+  function formatNumber(value, digits = 0) {
+    return new Intl.NumberFormat("id-ID", { maximumFractionDigits: digits })
+      .format(Number(value || 0));
+  }
+
+  function showSdgModal(sdg) {
+    const modalContainer = document.getElementById('sdg-modal-container');
+    if (!modalContainer || !sdg) return;
+
+    const modalHtml = `
+      <div class="sdg-modal" role="dialog" aria-modal="true" aria-labelledby="sdg-modal-title">
+        <div class="sdg-modal-overlay"></div>
+        <div class="sdg-modal-content">
+          <button class="sdg-modal-close" aria-label="Tutup">×</button>
+          <div class="sdg-modal-header">
+            <img src="${sdg.icon}" alt="" loading="lazy" decoding="async">
+            <h3 id="sdg-modal-title"><span class="sdg-number">SDG ${sdg.goal}</span>${sdg.title}</h3>
+          </div>
+          <div class="sdg-modal-body">
+            ${sdg.contribution}
+          </div>
+        </div>
+      </div>
+    `;
+    modalContainer.innerHTML = modalHtml;
+    document.body.classList.add('sdg-modal-open');
+
+    const close = () => {
+      modalContainer.innerHTML = '';
+      document.body.classList.remove('sdg-modal-open');
+    };
+
+    modalContainer.querySelector('.sdg-modal-close').addEventListener('click', close);
+    modalContainer.querySelector('.sdg-modal-overlay').addEventListener('click', close);
+    document.addEventListener('keydown', function onKeydown(e) {
+      if (e.key === 'Escape') {
+        close();
+        document.removeEventListener('keydown', onKeydown);
+      }
+    });
+  }
+
   /**
    * Renders the SDG contribution cards into the specified container.
    * @param {string} containerId - The ID of the HTML element to render the cards in.
@@ -95,24 +137,51 @@
       return;
     }
 
+    const stats = window.YG_DASHBOARD_STATS;
+    if (stats) {
+      const sdg6 = sdgContributions.find(s => s.goal === 6);
+      if (sdg6) {
+        sdg6.contribution = `<ul><li>Menjaga kualitas air melalui restorasi ekosistem gambut.</li><li>Membangun sekat kanal untuk menaikkan muka air tanah (estimasi <strong>${formatNumber(stats.rewettingArea, 0)} ha</strong> area terbasahkan).</li><li>Pemasangan unit FDRS untuk pemantauan tinggi muka air.</li></ul>`;
+      }
+      const sdg13 = sdgContributions.find(s => s.goal === 13);
+      if (sdg13) {
+        sdg13.contribution = `<ul><li>Menyerap dan menyimpan karbon melalui restorasi <strong>${formatNumber(stats.totalRestorationArea, 2)} ha</strong> lahan.</li><li>Mengurangi emisi dengan mencegah dekomposisi gambut melalui pembasahan kembali (estimasi <strong>${formatNumber(stats.rewettingArea, 0)} ha</strong>).</li><li>Mempromosikan pertanian tanpa bakar.</li></ul>`;
+      }
+      const sdg15 = sdgContributions.find(s => s.goal === 15);
+      if (sdg15) {
+        sdg15.contribution = `<ul><li>Restorasi ekosistem gambut dan mangrove seluas <strong>${formatNumber(stats.totalRestorationArea, 2)} ha</strong>.</li><li>Rehabilitasi lahan dengan menanam <strong>${formatNumber(stats.totalPlantedSeedlings)} bibit</strong> pohon.</li><li>Perlindungan keanekaragaman hayati di Hutan Adat Imbo Putui.</li></ul>`;
+      }
+    }
+
     const cardsHtml = sdgContributions.map(item => `
-      <div class="sdg-card">
+      <button type="button" class="sdg-card" data-sdg-goal="${item.goal}">
         <div class="sdg-card-icon" aria-hidden="true">
           <img src="${item.icon}" alt="" loading="lazy" decoding="async">
         </div>
         <div class="sdg-card-content">
           <h4 class="sdg-card-title"><span class="sdg-number">SDG ${item.goal}</span>${item.title}</h4>
-          <div class="sdg-card-contribution">${item.contribution}</div>
         </div>
-      </div>
+      </button>
     `).join('');
 
-    container.innerHTML = `<div class="sdg-grid">${cardsHtml}</div>`;
+    container.innerHTML = `<div class="sdg-grid">${cardsHtml}</div><div id="sdg-modal-container"></div>`;
+
+    container.addEventListener('click', function(event) {
+      const card = event.target.closest('[data-sdg-goal]');
+      if (card) {
+        const goal = parseInt(card.dataset.sdgGoal, 10);
+        const sdg = sdgContributions.find(s => s.goal === goal);
+        showSdgModal(sdg);
+      }
+    });
 
     if (window.YG_I18N && typeof window.YG_I18N.translateElement === 'function') {
       window.YG_I18N.translateElement(container);
     }
   }
 
-  document.addEventListener('DOMContentLoaded', () => renderSdgDashboard('sdg-dashboard-container'));
+  document.addEventListener('DOMContentLoaded', () => {
+    // Give dashboard-v3.js a moment to calculate and expose the stats
+    setTimeout(() => renderSdgDashboard('sdg-dashboard-container'), 200);
+  });
 })();

@@ -1040,6 +1040,15 @@
       programmeMetrics.peat.coffee + programmeMetrics.peat.forest +
       mineralSeedlings;
 
+    window.YG_DASHBOARD_STATS = {
+      totalRestorationArea: totalRestorationArea,
+      totalPlantedSeedlings: totalPlantedSeedlings,
+      rewettingArea: peatRewettingArea,
+      participants: programmeMetrics.capacity.participants,
+      regencies: regencies.size,
+      villages: villages.size
+    };
+
     setMetric("dash-restoration-area", totalRestorationArea, 2);
     setMetric("dash-seedlings-planted", totalPlantedSeedlings);
     setMetric("dash-rewetting-area", peatRewettingArea, 0);

@@ -12,6 +12,16 @@
   border: 1px solid var(--border);
   border-radius: 14px;
   background: var(--card);
+  cursor: pointer;
+  transition: all .2s ease;
+  text-align: left;
+  width: 100%;
+}
+
+.sdg-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(20, 70, 52, .1);
+  border-color: #c4d9ce;
 }
 
 .sdg-card-icon {
@@ -39,7 +49,7 @@
 }
 
 .sdg-card-title {
-  margin: 0 0 8px;
+  margin: 0;
   font-size: 16px;
   font-weight: 800;
   color: var(--brown);
@@ -61,6 +71,94 @@
   color: var(--text);
 }
 
+.sdg-modal-open {
+  overflow: hidden;
+}
+
+.sdg-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.sdg-modal-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(22, 51, 41, .6);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+.sdg-modal-content {
+  position: relative;
+  width: 100%;
+  max-width: 640px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: var(--bg);
+  border-radius: 20px;
+  box-shadow: 0 20px 50px -10px rgba(0,0,0,.3);
+}
+
+.sdg-modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(0,0,0,.1);
+  color: #fff;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.sdg-modal-header {
+  padding: 40px 40px 24px;
+  background: var(--card);
+  text-align: center;
+}
+
+.sdg-modal-header img {
+  display: block;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 20px;
+  border-radius: 16px;
+}
+
+.sdg-modal-header h3 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--brown);
+}
+
+.sdg-modal-body {
+  padding: 24px 40px 40px;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.sdg-modal-body ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.sdg-modal-body li + li {
+  margin-top: 8px;
+}
+
 @media (max-width: 640px) {
   .sdg-grid {
     grid-template-columns: 1fr;
@@ -75,5 +173,23 @@
     flex-basis: 72px;
     width: 72px;
     min-width: 72px;
+  }
+  
+  .sdg-modal {
+    padding: 0;
+    align-items: stretch;
+  }
+  
+  .sdg-modal-content {
+    border-radius: 0;
+    max-height: none;
+  }
+
+  .sdg-modal-header {
+    padding: 32px 24px 20px;
+  }
+
+  .sdg-modal-body {
+    padding: 20px 24px 32px;
   }
 }
