@@ -13,7 +13,8 @@
       props.Object_ID || props.objectId || props.OBJECTID
     );
     if (!objectId) return "";
-\n    return objectId;
+
+    return objectId;
   }
 
   function deduplicateFeatures(data) {
