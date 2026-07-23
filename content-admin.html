@@ -1,15 +1,957 @@
-<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin Konten | YG GeoPortal</title><link rel="stylesheet" href="css/content-admin.css?v=20260722-1"></head>
-<body><main class="content-admin">
-  <section class="admin-head"><div><small>YG GEOPORTAL</small><h1>Admin Konten V1</h1><p>Kelola narasi beranda dan logo mitra pendanaan.</p></div><a class="button secondary" href="index.html">Lihat Beranda</a></section>
-  <section id="loginPanel" class="admin-card login-box"><h2>Login Editor</h2><div class="field"><label>Username</label><input id="username" autocomplete="username"></div><div class="field"><label>Password</label><input id="password" type="password" autocomplete="current-password"></div><div class="actions"><button id="loginButton" class="button">Masuk</button></div><div id="loginStatus" class="status"></div></section>
-  <section id="editorPanel" hidden>
-    <div class="admin-lock">🔒 Statistik otomatis dikunci. Luas, bibit, monitoring, dan angka WebGIS tidak dapat diubah dari halaman ini.</div>
-    <section class="admin-card"><h2>Narasi Beranda</h2><div class="admin-grid">
-      <div class="field field-wide"><label>Label atas</label><input data-field="heroEyebrow"></div><div class="field field-wide"><label>Judul utama</label><input data-field="heroTitle"></div>
-      <div class="field field-wide"><label>Deskripsi</label><textarea data-field="heroDescription"></textarea></div><div class="field field-wide"><label>Tagline</label><textarea data-field="heroTagline"></textarea></div>
-      <div class="field"><label>Judul program</label><input data-field="programTitle"></div><div class="field"><label>Judul mitra</label><input data-field="fundingTitle"></div><div class="field"><label>Judul wilayah</label><input data-field="coverageTitle"></div>
-    </div></section>
-    <section class="admin-card"><h2>Logo Mitra Pendanaan</h2><p>Masukkan URL gambar publik. Data program dan angka mitra tetap berasal dari database.</p><div id="logoFields"></div></section>
-    <div class="actions"><button id="saveButton" class="button">Simpan & Publikasikan</button><button id="logoutButton" class="button secondary">Keluar</button></div><div id="saveStatus" class="status"></div>
-  </section>
-</main><script src="js/content-admin.js?v=20260722-1"></script></body></html>
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Konten & Statistik | Admin YG GeoPortal</title>
+  <link rel="stylesheet" href="css/site-brand.css?v=20260720-program-dashboard1">
+  <link rel="stylesheet" href="css/style.css?v=20260720-dashboard-layout1">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="https://unpkg.com/@geoman-io/leaflet-geoman-free@2.18.0/dist/leaflet-geoman.css">
+  <style>
+    .admin-page { background: var(--bg); }
+    .admin-container { display: grid; grid-template-columns: 1fr; padding: 24px 16px; max-width: 1200px; margin: 0 auto; gap: 24px; }
+    
+    .hero.dashboard-hero {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #076b9c, #079cde);
+      color: #fff;
+      padding: 48px 32px;
+      border-radius: 18px;
+      box-shadow: 0 18px 45px rgba(7, 156, 222, 0.18);
+      margin-bottom: 16px;
+    }
+    .hero.dashboard-hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(255,255,255,.18), transparent 30%);
+      pointer-events: none;
+      opacity: 0.6;
+    }
+    .hero-main { position: relative; z-index: 1; max-width: 700px; }
+    .hero.dashboard-hero h1 { margin: 0 0 16px 0; font-size: clamp(2.4rem, 3.2vw, 3.8rem); line-height: 1.03; font-weight: 900; }
+    .hero-description, .hero-tagline { margin: 0; opacity: 0.94; font-size: 1rem; line-height: 1.75; }
+    .hero-tagline { margin-top: 12px; color: rgba(255,255,255,.85); }
+    .hero.dashboard-hero a { color: #fff; text-decoration: none; opacity: 0.94; transition: opacity 0.2s; }
+    .hero.dashboard-hero a:hover { opacity: 1; text-decoration: underline; }
+    .section.dashboard-panel { padding: 28px; border-radius: 20px; background: #fff; border: 1px solid rgba(220,231,225,0.6); box-shadow: 0 14px 36px rgba(20,70,52,0.08); }
+    .section-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
+    .section-head h2 { margin: 0; font-size: 1.25rem; color: var(--brown); }
+    .section-head p { margin: 4px 0 0; color: var(--muted); font-size: 0.95rem; line-height: 1.6; max-width: 70ch; }
+
+    .content-grid { display: grid; grid-template-columns: 1fr 360px; gap: 24px; }
+    
+    .editor-form { display: none; order: 1; }
+    .preview-section { display: flex; flex-direction: column; gap: 16px; order: 1; }
+    .stats-sidebar { order: 2; }
+    
+    /* Enhanced Text Editor Styling */
+    .section.dashboard-panel {
+      transition: all 0.3s ease;
+    }
+    
+    .text-editor-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding: 16px;
+      background: linear-gradient(135deg, rgba(7, 156, 222, 0.08), rgba(8, 118, 83, 0.08));
+      border-radius: 12px;
+      border: 1.5px solid rgba(7, 156, 222, 0.15);
+    }
+    
+    .text-editor-header .current-editing {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--blue);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    
+    .text-editor-header .current-editing-id {
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      background: rgba(7, 156, 222, 0.15);
+      padding: 4px 10px;
+      border-radius: 6px;
+      color: var(--blue);
+      font-size: 12px;
+      margin-left: 6px;
+    }
+    
+    .form-group {
+      margin-bottom: 16px;
+      transition: all 0.2s ease;
+    }
+    
+    .form-group.active {
+      background: rgba(7, 156, 222, 0.05);
+      padding: 12px;
+      border-radius: 10px;
+      border-left: 3px solid var(--blue);
+      margin-left: -12px;
+      padding-left: calc(12px - 3px);
+    }
+    
+    .form-group label { 
+      display: block; 
+      font-weight: 700; 
+      margin-bottom: 8px; 
+      font-size: 12px; 
+      color: var(--brown); 
+      text-transform: uppercase; 
+      letter-spacing: 0.05em;
+      transition: color 0.2s;
+    }
+    
+    .form-group.active label {
+      color: var(--blue);
+    }
+    
+    .form-group input, .form-group textarea { 
+      width: 100%; 
+      padding: 12px 14px; 
+      border: 2px solid var(--border);
+      border-radius: 10px; 
+      font-size: 14px;
+      background: #fff;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+    
+    .form-group input:focus, .form-group textarea:focus { 
+      outline: none;
+      border-color: var(--blue);
+      box-shadow: 0 0 0 4px rgba(7, 156, 222, 0.12), inset 0 0 0 1px rgba(7, 156, 222, 0.15);
+      background: rgba(7, 156, 222, 0.02);
+    }
+    
+    .form-group textarea { 
+      resize: vertical; 
+      min-height: 160px;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+    
+    .form-actions { 
+      display: flex; 
+      gap: 12px; 
+      flex-wrap: wrap;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      margin-top: 20px;
+    }
+    
+    .btn {
+      padding: 11px 20px;
+      border: 0;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 13px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    
+    .btn:hover { 
+      transform: translateY(-2px); 
+      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    }
+    
+    .btn:active {
+      transform: translateY(0);
+    }
+    
+    .btn-primary { 
+      background: linear-gradient(135deg, var(--green), #065c3a);
+      color: #fff;
+    }
+    
+    .btn-primary:hover { 
+      background: linear-gradient(135deg, #0d5a3a, #054a2f);
+    }
+    
+    .btn-secondary { 
+      background: var(--blue); 
+      color: #fff;
+    }
+    
+    .btn-secondary:hover { 
+      background: #0679b0;
+    }
+    
+    .btn-outline { 
+      background: transparent; 
+      border: 2px solid var(--border); 
+      color: var(--text);
+    }
+    
+    .btn-outline:hover { 
+      border-color: var(--blue); 
+      color: var(--blue);
+      background: rgba(7, 156, 222, 0.06);
+    }
+    
+    .btn-small { padding: 7px 12px; font-size: 12px; }
+    
+    .preview-hero {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #076b9c, #079cde);
+      color: #fff;
+      padding: 48px 32px;
+      border-radius: 18px;
+      box-shadow: 0 20px 48px rgba(7, 156, 222, 0.22);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+    
+    .preview-hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(255,255,255,.2), transparent 30%);
+      pointer-events: none;
+      opacity: 0.7;
+    }
+    
+    .preview-hero > * { position: relative; z-index: 1; }
+    
+    .preview-hero .eyebrow {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.88);
+      margin: 0 0 16px 0;
+    }
+    
+    .preview-hero h2 {
+      margin: 0 0 16px 0;
+      font-size: 2.4rem;
+      line-height: 1.15;
+      font-weight: 900;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    
+    .preview-hero p {
+      margin: 12px 0;
+      font-size: 15px;
+      line-height: 1.7;
+      opacity: 0.95;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.15);
+    }
+    
+    .preview-text {
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      padding: 14px;
+      margin: -14px;
+      border-radius: 10px;
+      position: relative;
+      border: 1px solid transparent;
+    }
+    
+    .preview-text::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border: 2px dashed rgba(255,255,255,0);
+      border-radius: 8px;
+      transition: border-color 0.25s;
+      pointer-events: none;
+    }
+    
+    .preview-text:hover {
+      background: rgba(255,255,255,0.15);
+      transform: translateX(3px);
+    }
+    
+    .preview-text:hover::before {
+      border-color: rgba(255,255,255,0.3);
+    }
+    
+    .preview-text:active {
+      background: rgba(255,255,255,0.25);
+      transform: translateX(0);
+    }
+    
+    .preview-text.selected {
+      background: rgba(255,223,0,0.25) !important;
+      border: 2px solid rgba(255,223,0,0.6) !important;
+      box-shadow: 0 0 0 3px rgba(255,223,0,0.2), inset 0 0 0 1px rgba(255,223,0,0.4);
+      transform: scale(1.01);
+    }
+    
+    .preview-text.selected::before {
+      border-color: rgba(255,223,0,0.5) !important;
+      border-style: solid;
+    }
+    
+    .preview-hint {
+      font-size: 9px;
+      color: rgba(255,255,255,0.6);
+      margin-top: 3px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    
+    .preview-text:hover .preview-hint {
+      opacity: 1;
+    }
+    
+    .preview-text.selected .preview-hint {
+      opacity: 1;
+      color: rgba(255,223,0,0.9);
+    }
+    
+    .preview-text.editing {
+      background: rgba(7, 156, 222, 0.15) !important;
+      border: 2px solid var(--blue) !important;
+      box-shadow: 0 0 0 4px rgba(7, 156, 222, 0.15), inset 0 0 0 1px rgba(7, 156, 222, 0.3) !important;
+      outline: none;
+      padding: 16px;
+      cursor: text;
+    }
+    
+    .preview-text.editing::before {
+      border-color: var(--blue) !important;
+      border-style: solid;
+    }
+    
+    .preview-text.editing:focus {
+      box-shadow: 0 0 0 4px rgba(7, 156, 222, 0.2), inset 0 0 0 2px rgba(7, 156, 222, 0.4) !important;
+    }
+    
+    .edit-toolbar {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+      padding: 12px;
+      background: rgba(7, 156, 222, 0.1);
+      border-radius: 10px;
+      justify-content: flex-end;
+    }
+    
+    .edit-btn {
+      padding: 8px 16px;
+      font-size: 12px;
+      font-weight: 700;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .edit-btn-save {
+      background: var(--green);
+      color: #fff;
+    }
+    
+    .edit-btn-save:hover {
+      background: #0d5a3a;
+    }
+    
+    .edit-btn-cancel {
+      background: transparent;
+      border: 1.5px solid var(--border);
+      color: var(--text);
+    }
+    
+    .edit-btn-cancel:hover {
+      border-color: var(--blue);
+      color: var(--blue);
+      background: rgba(7, 156, 222, 0.06);
+    }
+    
+    .preview-section .section.dashboard-panel {
+      background: rgba(255,255,255,0.95);
+      border: 1px solid rgba(220,231,225,0.8);
+    }
+    
+    .card, .section.dashboard-panel { 
+      background: var(--card);
+      border-radius: 14px;
+      padding: 24px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(220, 231, 225, 0.4);
+    }
+    
+    .section.dashboard-panel { padding: 28px; }
+    .card-header, .section-head { margin-bottom: 20px; }
+    .card-title, .section-head h2 { margin: 0 0 8px 0; font-size: 1.3rem; font-weight: 900; color: var(--text); }
+    .card-subtitle, .section-head p { margin: 0; font-size: 0.95rem; color: var(--muted); line-height: 1.6; }
+    
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-weight: 700; margin-bottom: 8px; font-size: 12px; color: var(--brown); text-transform: uppercase; letter-spacing: 0.05em; }
+    .form-group input, .form-group textarea { 
+      width: 100%; 
+      padding: 10px 12px; 
+      border: 1.5px solid var(--border);
+      border-radius: 10px; 
+      font-size: 14px;
+      background: #fff;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      font-family: inherit;
+    }
+    .form-group input:focus, .form-group textarea:focus { 
+      outline: none;
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(7, 156, 222, 0.1);
+    }
+    .form-group textarea { resize: vertical; min-height: 120px; }
+
+    .form-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn {
+      padding: 10px 16px;
+      border: 0;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 13px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .btn-primary { background: var(--green); color: #fff; }
+    .btn-primary:hover { background: #0d5a3a; }
+    .btn-secondary { background: var(--blue); color: #fff; }
+    .btn-secondary:hover { background: var(--blue-dark); }
+    .btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--text); }
+    .btn-outline:hover { border-color: var(--blue); color: var(--blue); }
+    .btn-small { padding: 7px 12px; font-size: 12px; }
+
+    .text-blocks-list { display: flex; flex-direction: column; gap: 12px; }
+    .text-block-item {
+      padding: 16px;
+      background: var(--soft);
+      border-radius: 12px;
+      border-left: 3px solid var(--green);
+      transition: all 0.2s;
+    }
+    .text-block-item:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    .text-block-key { font-weight: 900; color: var(--brown); font-size: 13px; margin: 0 0 6px 0; font-family: monospace; }
+    .text-block-label { font-weight: 700; color: var(--text); margin: 0 0 4px 0; font-size: 14px; }
+    .text-block-content { margin: 8px 0 0 0; color: var(--muted); font-size: 13px; line-height: 1.5; max-height: 80px; overflow: hidden; }
+    .text-block-actions { display: flex; gap: 6px; margin-top: 10px; }
+
+    .sidebar-section {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(220, 231, 225, 0.4);
+    }
+    .sidebar-section.section-spacing { margin-top: 20px; }
+    .sidebar-section h3 { margin: 0 0 16px 0; font-size: 16px; font-weight: 900; color: var(--text); }
+    .muted-note { margin: 0 0 16px 0; font-size: 12px; color: var(--muted); }
+    .section-spacing { margin-top: 24px; }
+    .panel-compact { padding: 20px; }
+    .input-full { width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 10px; }
+    .placeholder-state { padding: 16px; text-align: center; color: var(--muted); font-size: 12px; }
+    .column-gap-16 { display: flex; flex-direction: column; gap: 16px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .textarea-small { min-height: 60px; }
+    .dynamic-properties-grid { display: grid; gap: 10px; margin-top: 14px; }
+    .hidden { display: none !important; }
+    .btn.full-width { width: 100%; justify-content: center; }
+
+    .tab-navigation {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 24px;
+      padding: 12px 14px;
+      border-radius: 18px;
+      background: var(--card);
+      border: 1px solid rgba(220, 231, 225, 0.85);
+      box-shadow: 0 14px 35px rgba(20, 70, 52, 0.05);
+    }
+    .tab-button {
+      padding: 12px 18px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      border-radius: 14px;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    .tab-button:hover {
+      background: rgba(7, 156, 222, 0.1);
+      color: var(--text);
+    }
+    .tab-button.active {
+      color: var(--green);
+      background: rgba(7, 156, 222, 0.14);
+      border-color: rgba(7, 156, 222, 0.2);
+      box-shadow: 0 10px 24px rgba(7, 156, 222, 0.08);
+    }
+
+    .tab-pane { display: none; padding-top: 8px; }
+    .tab-pane.active { display: block; }
+
+    /* Polygon Editor */
+    #polygon-map {
+      width: 100%;
+      height: 500px;
+      border-radius: 12px;
+      border: 1.5px solid var(--border);
+      margin-bottom: 16px;
+    }
+
+    .polygon-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      align-items: start;
+      margin-bottom: 16px;
+    }
+
+    .polygon-object-list {
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      max-height: 400px;
+      overflow-y: auto;
+      background: var(--soft);
+      min-height: 260px;
+    }
+
+    .polygon-object-item {
+      padding: 12px;
+      border-bottom: 1px solid rgba(220, 231, 225, 0.4);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .polygon-form {
+      padding: 0;
+      border: none;
+      background: transparent;
+    }
+
+    .polygon-form h4 {
+      margin: 0 0 14px 0;
+      font-size: 1rem;
+      font-weight: 900;
+      color: var(--text);
+    }
+
+    .polygon-object-item:last-child { border-bottom: 0; }
+    .polygon-object-item:hover { background: rgba(7, 156, 222, 0.08); }
+    .polygon-object-item.selected { background: rgba(22, 131, 79, 0.1); border-left: 3px solid var(--green); }
+
+    .polygon-object-name { font-weight: 700; color: var(--text); font-size: 13px; margin-bottom: 3px; }
+    .polygon-object-meta { color: var(--muted); font-size: 11px; }
+
+    .polygon-form {
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      background: var(--soft);
+    }
+
+    .polygon-form .form-group { margin-bottom: 12px; }
+
+    .polygon-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+
+    .map-status {
+      padding: 12px;
+      background: rgba(7, 156, 222, 0.05);
+      border: 1px solid rgba(7, 156, 222, 0.2);
+      border-radius: 10px;
+      font-size: 12px;
+      color: var(--text);
+      margin-bottom: 16px;
+    }
+
+    .stat-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 20px; }
+    .stat-card {
+      padding: 16px;
+      background: linear-gradient(135deg, rgba(7, 156, 222, 0.05), rgba(22, 131, 79, 0.05));
+      border-radius: 12px;
+      border: 1px solid rgba(7, 156, 222, 0.1);
+      text-align: center;
+    }
+    .stat-value { display: block; font-size: 28px; font-weight: 900; color: var(--blue); margin-bottom: 4px; }
+    .stat-label { display: block; font-size: 12px; color: var(--muted); font-weight: 600; }
+
+    .empty-state { 
+      text-align: center; 
+      padding: 32px 24px; 
+      color: var(--muted);
+      background: var(--soft);
+      border-radius: 12px;
+    }
+    .empty-state p { margin: 0; font-size: 13px; }
+    .history-note { font-size: 12px; }
+    .history-entry {
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(220, 231, 225, 0.4);
+      font-size: 12px;
+    }
+    .history-entry:last-child { border-bottom: 0; }
+    .history-entry-title {
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 2px;
+    }
+    .history-entry-time { color: var(--muted); font-size: 11px; }
+    .list-status {
+      padding: 16px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .list-error {
+      padding: 16px;
+      color: var(--red);
+      font-size: 12px;
+    }
+
+    @media (max-width: 1200px) {
+      .content-grid { grid-template-columns: 1fr; }
+      .stats-sidebar { margin-top: 24px; }
+    }
+
+    @media (max-width: 600px) {
+      .admin-container { padding: 16px; gap: 16px; }
+      .form-actions { flex-direction: column; }
+      .btn { width: 100%; justify-content: center; }
+      .content-grid { gap: 16px; }
+    }
+  </style>
+</head>
+<body class="admin-page">
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="index.html">
+      <img src="assets/logo-yayasan-gambut.png" alt="Logo Yayasan Gambut">
+      <span>
+        <strong>Admin YG GeoPortal</strong>
+        <span>Kelola konten & statistik</span>
+      </span>
+    </a>
+    <nav class="nav">
+      <a href="admin.html">← Dashboard</a>
+    </nav>
+  </div>
+</header>
+
+<main class="admin-page">
+  <div class="admin-container">
+    <section class="hero dashboard-hero">
+      <div class="hero-main">
+        <div class="eyebrow">ADMIN PANEL</div>
+        <h1>Konten & Statistik</h1>
+        <p class="hero-description">Kelola blok teks yang ditampilkan di halaman publik dan edit polygon/geometri objek spasial.</p>
+      </div>
+    </section>
+
+    <!-- Tab Navigation -->
+    <div class="tab-navigation">
+      <button type="button" class="tab-button active" data-tab="text-editor">📝 Editor Teks</button>
+      <button type="button" class="tab-button" data-tab="polygon-editor">🗺️ Editor Polygon</button>
+    </div>
+
+    <!-- Text Editor Tab -->
+    <div id="text-editor" class="tab-pane active">
+      <div class="content-grid">
+      <!-- Kolom Utama: Editor Form -->
+      <section class="editor-form">
+        <section class="section dashboard-panel">
+          <div class="section-head">
+            <div>
+              <h2>📝 Editor Konten Teks</h2>
+              <p>Klik teks di halaman preview, atau isi form di bawah untuk mengubah konten.</p>
+            </div>
+          </div>
+          
+          <form id="text-block-form" style="padding: 20px; background: linear-gradient(to bottom, rgba(7, 156, 222, 0.02), transparent); border-radius: 12px; margin: -20px; margin-top: 0; border-top: 2px solid rgba(7, 156, 222, 0.1);">
+            <div class="form-group">
+              <label for="text-block-key">ID Unik (Kunci)</label>
+              <input id="text-block-key" type="text" placeholder="cth: hero-description" required>
+            </div>
+            <div class="form-group">
+              <label for="text-block-label">Label (untuk admin)</label>
+              <input id="text-block-label" type="text" placeholder="cth: Deskripsi di Halaman Utama">
+            </div>
+            <div class="form-group">
+              <label for="text-block-content">Isi Teks</label>
+              <textarea id="text-block-content" placeholder="Tulis konten teks di sini..." required></textarea>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">💾 Simpan Teks</button>
+              <button type="button" id="clear-form" class="btn btn-outline">↻ Bersihkan</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="section dashboard-panel section-spacing">
+          <div class="section-head">
+            <div>
+              <h2>📋 Daftar Blok Teks</h2>
+              <p>Semua blok teks yang telah disimpan</p>
+            </div>
+          </div>
+          <div id="text-block-list" class="text-blocks-list">
+            <div class="empty-state"><p>Memuat blok teks...</p></div>
+          </div>
+        </section>
+      </section>
+
+      <!-- Kolom Preview: Pratinjau Halaman Publik -->
+      <section class="preview-section">
+        <section class="section dashboard-panel">
+          <div class="section-head">
+            <div>
+              <h2>👁️ Pratinjau</h2>
+              <p>Klik elemen untuk mengedit</p>
+            </div>
+          </div>
+          <div class="preview-hero">
+            <div class="eyebrow">OFFICIAL SPATIAL DATA PLATFORM OF YAYASAN GAMBUT</div>
+            <h2 class="preview-text" data-editable-id="hero-title">
+              Yayasan Gambut Spatial Data Platform
+              <div class="preview-hint">Klik untuk edit</div>
+            </h2>
+            <p class="preview-text" data-editable-id="hero-description">
+              Providing verified spatial information to support the sustainable management of wetlands, peatlands, mangroves, and other ecosystems through restoration, rehabilitation, field monitoring, community empowerment, and data-driven strategic partnerships.
+              <div class="preview-hint">Klik untuk edit</div>
+            </p>
+            <p class="preview-text" data-editable-id="hero-tagline" style="margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.2);">
+              Connecting spatial data, field monitoring, and community reporting in one platform to support sustainable wetland and ecosystem management.
+              <div class="preview-hint">Klik untuk edit</div>
+            </p>
+          </div>
+          
+          <div style="padding: 16px; background: rgba(7,156,222,0.04); border-radius: 12px; border: 1px solid rgba(7,156,222,0.15); margin-top: 16px;">
+            <h3 style="margin: 0 0 12px 0; font-size: 16px; font-weight: 700; color: var(--text);">
+              <span class="preview-text" data-editable-id="section-achievements-title">Capaian Program<div class="preview-hint" style="color: var(--blue);">Klik untuk edit</div></span>
+            </h3>
+          </div>
+          
+          <div style="padding: 16px; background: rgba(7,156,222,0.04); border-radius: 12px; border: 1px solid rgba(7,156,222,0.15); margin-top: 12px;">
+            <h3 style="margin: 0 0 12px 0; font-size: 16px; font-weight: 700; color: var(--text);">
+              <span class="preview-text" data-editable-id="section-funding-title">Mitra Pendanaan<div class="preview-hint" style="color: var(--blue);">Klik untuk edit</div></span>
+            </h3>
+          </div>
+        </section>
+      </section>
+
+      <!-- Kolom Samping: Info & Statistik -->
+      <aside class="stats-sidebar">
+        <div class="sidebar-section">
+          <h3>📊 Statistik (Lokal)</h3>
+          <p class="muted-note">Disimpan di browser untuk demonstrasi</p>
+          <div class="stat-grid">
+            <div class="stat-card">
+              <span class="stat-value" id="stat-total-visits">0</span>
+              <span class="stat-label">Total Kunjungan</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-value" id="stat-today-visits">0</span>
+              <span class="stat-label">Hari Ini</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-value" id="stat-text-blocks">0</span>
+              <span class="stat-label">Blok Teks</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-value" id="stat-last-updated">-</span>
+              <span class="stat-label">Update Terakhir</span>
+            </div>
+          </div>
+          <div class="form-actions vertical">
+            <button id="log-visit" type="button" class="btn btn-secondary full-width">📍 Catat Kunjungan</button>
+            <button id="reset-stats" type="button" class="btn btn-outline full-width">🔄 Reset</button>
+          </div>
+        </div>
+
+        <div class="sidebar-section section-spacing">
+          <h3>📅 Riwayat Terbaru</h3>
+          <div id="visit-history">
+            <div class="empty-state"><p class="muted-note">Memuat riwayat...</p></div>
+          </div>
+        </div>
+      </aside>
+      </div>
+    </div>
+
+    <!-- Polygon Editor Tab -->
+    <div id="polygon-editor" class="tab-pane">
+      <section class="section dashboard-panel">
+        <div class="section-head">
+          <div>
+            <h2>🗺️ Editor Polygon/Geometri</h2>
+            <p>Edit dan buat geometri baru (polygon, point, line) untuk objek spasial.</p>
+          </div>
+        </div>
+        
+        <div class="map-status">
+          📌 <strong>Petunjuk:</strong> Pilih layer dan objek dari daftar, kemudian gunakan alat menggambar untuk mengedit geometri. Klik tombol "Selesai Edit" untuk menyimpan.
+        </div>
+
+        <div class="polygon-section">
+          <!-- Daftar Objek -->
+          <div>
+            <section class="section dashboard-panel panel-compact">
+              <div class="section-head">
+                <div>
+                  <h2>Pilih Objek</h2>
+                  <p>Pilih layer dan objek dari daftar untuk mengedit atribut atau geometri.</p>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="polygon-layer-filter">Pilih Layer</label>
+                <select id="polygon-layer-filter" class="input-full">
+                  <option value="">-- Semua Layer Program --</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="polygon-search">Cari Objek</label>
+                <input id="polygon-search" class="input-full" type="search" placeholder="Nama, ID, desa...">
+              </div>
+              <div class="polygon-object-list" id="polygon-object-list">
+                <div class="placeholder-state">
+                  Memuat daftar objek...
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <!-- Form & Peta -->
+          <div class="column-gap-16">
+            <div id="polygon-map"></div>
+            <section class="section dashboard-panel panel-compact">
+              <div class="section-head">
+                <div>
+                  <h2>Atribut Objek</h2>
+                  <p>Perbarui informasi objek, lalu edit geometri pada peta.</p>
+                </div>
+              </div>
+              <div class="polygon-form">
+                <h4>Detil Atribut</h4>
+                <form id="polygon-object-form">
+                <div class="form-group">
+                  <label for="polygon-object-id">Object ID</label>
+                  <input id="polygon-object-id" type="text" readonly>
+                </div>
+                <div class="form-group">
+                  <label for="polygon-name">Nama Objek</label>
+                  <input id="polygon-name" type="text" placeholder="Nama..." required>
+                </div>
+                <div class="form-group">
+                  <label for="polygon-description">Deskripsi</label>
+                  <textarea id="polygon-description" class="textarea-small" placeholder="Deskripsi objek..."></textarea>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="polygon-category">Kategori</label>
+                    <input id="polygon-category" type="text" placeholder="Mangrove Planting">
+                  </div>
+                  <div class="form-group">
+                    <label for="polygon-donor">Donor</label>
+                    <input id="polygon-donor" type="text" placeholder="Aramco Asia Singapore">
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="polygon-program">Program</label>
+                    <input id="polygon-program" type="text" placeholder="Program name">
+                  </div>
+                  <div class="form-group">
+                    <label for="polygon-project-name">Project Name</label>
+                    <input id="polygon-project-name" type="text" placeholder="Nama proyek">
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="polygon-project-id">Project ID</label>
+                    <input id="polygon-project-id" type="text" placeholder="Contoh: YG-ARAMCO-2026">
+                  </div>
+                  <div class="form-group">
+                    <label for="polygon-agreement-number">Agreement Number</label>
+                    <input id="polygon-agreement-number" type="text" placeholder="Nomor kontrak/MoU">
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="polygon-phase">Fase/keterangan</label>
+                    <input id="polygon-phase" type="text" placeholder="Phase I">
+                  </div>
+                  <div class="form-group">
+                    <label for="polygon-year">Tahun</label>
+                    <input id="polygon-year" type="number" placeholder="2023">
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="polygon-regency">Kabupaten</label>
+                    <input id="polygon-regency" type="text" placeholder="Bengkalis">
+                  </div>
+                  <div class="form-group">
+                    <label for="polygon-district">Kecamatan</label>
+                    <input id="polygon-district" type="text" placeholder="Bukit Batu">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="polygon-village">Desa</label>
+                  <input id="polygon-village" type="text" placeholder="Buruk Bakul">
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="polygon-area">Luas (ha)</label>
+                    <input id="polygon-area" type="number" step="any" placeholder="0.25">
+                  </div>
+                  <div class="form-group">
+                    <label for="polygon-planted-count">Jumlah bibit</label>
+                    <input id="polygon-planted-count" type="number" placeholder="1000">
+                  </div>
+                </div>
+                <div id="polygon-attributes-dynamic" class="dynamic-properties-grid"></div>
+                <div class="form-group">
+                  <label for="polygon-change-reason">Alasan Perubahan</label>
+                  <input id="polygon-change-reason" type="text" placeholder="Contoh: Koreksi batas hasil pengecekan lapangan" maxlength="180">
+                </div>
+              </form>
+              <div class="polygon-actions">
+                <button type="button" class="btn btn-secondary" id="polygon-start-edit">✎ Mulai Edit</button>
+                <button type="button" class="btn btn-primary hidden" id="polygon-save-edit">💾 Simpan Perubahan</button>
+                <button type="button" class="btn btn-outline hidden" id="polygon-cancel-edit">✕ Batal Edit</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="js/auth.js?v=1"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/@geoman-io/leaflet-geoman-free@2.18.0/dist/leaflet-geoman.min.js"></script>
+<script src="js/config.js?v=20260720-area-kopi1"></script>
+<script src="js/admin-dashboard.js"></script>
+
+</body>
+</html>
