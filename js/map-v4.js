@@ -2529,6 +2529,13 @@ L.control.scale({
         props.Layer_ID || props.Source_Layer
       ) === "kopi";
     });
+    const officialCoffeeIds = new Set(
+      coffeePoints.features
+        .map(feature => normalizedMatchValue(
+          feature && feature.properties && feature.properties.Object_ID
+        ))
+        .filter(Boolean)
+    );
 
     coffeePoints.features.forEach(feature => {
       if (!feature.properties) feature.properties = {};
@@ -2572,6 +2579,20 @@ L.control.scale({
       props.Donor_Cluster = getDonor(props);
     });
 
+    /*
+     * GeoJSON resmi menggantikan objek master hanya jika Object_ID-nya sama.
+     * Titik baru yang dibuat melalui Polygon Editor belum tentu sudah masuk ke
+     * kopi.geojson, sehingga harus tetap diambil dari Master Database agar
+     * langsung terlihat di WebGIS.
+     */
+    const newDatabaseCoffee = databaseCoffee.filter(feature => {
+      const props = feature && feature.properties || {};
+      const objectId = normalizedMatchValue(
+        props.Object_ID || props.objectId
+      );
+      return !objectId || !officialCoffeeIds.has(objectId);
+    });
+
     data.features = [
       ...data.features.filter(feature => {
         const props = feature && feature.properties || {};
@@ -2579,6 +2600,7 @@ L.control.scale({
           props.Layer_ID || props.Source_Layer
         ) !== "kopi";
       }),
+      ...newDatabaseCoffee,
       ...coffeePoints.features
     ];
 
