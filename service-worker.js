@@ -1,4 +1,4 @@
-const CACHE_NAME = "yg-geoportal-v4-20260723-popup-add-photo2";
+const CACHE_NAME = "yg-geoportal-v4-20260723-edge-photo-fix1";
 
 const STATIC_ASSETS = [
   "./",
@@ -27,9 +27,11 @@ const STATIC_ASSETS = [
   "./js/monitoring.js?v=20260721-object-id1",
   "./js/monitoring-photo.js?v=20260720-edge-refresh1",
   "./js/dashboard-v3.js?v=20260720-program-clean1",
-  "./js/pwa.js?v=20260720-program-clean1",
+  "./js/pwa.js?v=20260723-edge-photo-fix1",
   "./js/i18n.js?v=20260720-popup-monitoring2",
   "./js/map-v4.js?v=20260723-popup-add-photo1",
+  "./js/data-updates.js?v=20260723-photo-matchfix1",
+  "./js/public-update-target-fix.js?v=20260721-legacy-photo1",
   "./js/layer-order-v1.js?v=20260720-area-kopi1"
 ];
 

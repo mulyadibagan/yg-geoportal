@@ -16,7 +16,7 @@
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
       navigator.serviceWorker
-        .register("./service-worker.js?v=20260721-legacy-photo1", {
+        .register("./service-worker.js?v=20260723-edge-photo-fix1", {
           updateViaCache: "none"
         })
         .then(registration => registration.update())
@@ -24,7 +24,7 @@
     });
 
     navigator.serviceWorker.addEventListener("controllerchange", () => {
-      const reloadKey = "yg-sw-legacy-photo1";
+      const reloadKey = "yg-sw-edge-photo-fix1";
       if (sessionStorage.getItem(reloadKey)) return;
       sessionStorage.setItem(reloadKey, "done");
       window.location.reload();
