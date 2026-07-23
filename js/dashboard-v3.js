@@ -441,6 +441,7 @@
   function hydratePenabuluPhotos(features) {
     const penabuluWaterTowerPinned = "https://drive.google.com/thumbnail?id=1QyL6V-1Nw0s1OjPbjBoav4dPYa8_Mb7a&sz=w1000";
     const penabuluSopPinned = "https://drive.google.com/thumbnail?id=1h1S-K3MLPEHKNHazOUjzSRN5kEh_9o8E&sz=w1200";
+    const penabuluWomenGroupPinned = "https://drive.google.com/thumbnail?id=1DTCCNQnzs31pohWySwQKonmexcrIy9sX&sz=w1600";
     const dryingHouse = findFeaturePhoto(features, ["rumah jemur", "temiang"]);
     const waterTower = penabuluWaterTowerPinned ||
       findFeaturePhoto(features, ["menara", "temiang"]);
@@ -457,7 +458,7 @@
     // Sampai foto khusus tersedia di data peta, gunakan foto lapangan terdekat.
     setPhotoSlot("micro-mill", nursery || dryingHouse);
     setPhotoSlot("gallery-micro-mill", nursery || dryingHouse);
-    setPhotoSlot("gallery-women-group", nursery || dryingHouse);
+    setPhotoSlot("gallery-women-group", penabuluWomenGroupPinned || nursery || dryingHouse);
   }
 
   function renderRanking(elementId, data, linkBuilder, limit = 8) {
