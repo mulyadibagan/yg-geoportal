@@ -2150,12 +2150,20 @@
 
   var requestedParams = new URLSearchParams(window.location.search);
   var requestedType = requestedParams.get('type');
-  if(requestedType && requestedType.toLowerCase() === 'monitoring'){
-    var monitoringRadio = document.querySelector('input[name="reportTypeUI"][value="Monitoring"]');
-    if(monitoringRadio){
-      monitoringRadio.checked = true;
-      selectedType = 'Monitoring';
-      configureFormByType('Monitoring');
+  var requestedExistingType = {
+    monitoring: 'Monitoring',
+    photo: 'Tambah Foto Kegiatan',
+    'add-photo': 'Tambah Foto Kegiatan'
+  }[String(requestedType || '').toLowerCase()];
+
+  if(requestedExistingType){
+    var requestedTypeRadio = document.querySelector(
+      'input[name="reportTypeUI"][value="' + requestedExistingType + '"]'
+    );
+    if(requestedTypeRadio){
+      requestedTypeRadio.checked = true;
+      selectedType = requestedExistingType;
+      configureFormByType(requestedExistingType);
 
       var requestedLayer = requestedParams.get('layer');
       var requestedObject = requestedParams.get('object');
@@ -2166,6 +2174,8 @@
           .finally(function(){
             deepLinkSelectionPending = false;
           });
+      }else{
+        deepLinkSelectionPending = false;
       }
     }
   }
