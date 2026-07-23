@@ -369,7 +369,23 @@
     Object.entries(dictionaries.en).map(([id, en]) => [en, id])
   );
 
-  let currentLanguage = localStorage.getItem(STORAGE_KEY) === "en" ? "en" : "id";
+  function readStoredLanguage() {
+    try {
+      return window.localStorage && window.localStorage.getItem(STORAGE_KEY);
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function storeLanguage(language) {
+    try {
+      if (window.localStorage) window.localStorage.setItem(STORAGE_KEY, language);
+    } catch (error) {
+      // Language switching must still work when storage is unavailable.
+    }
+  }
+
+  let currentLanguage = readStoredLanguage() === "en" ? "en" : "id";
   let translating = false;
 
   function translateDynamic(text, language) {
@@ -444,7 +460,7 @@
   function setLanguage(language) {
     if (language !== "en" && language !== "id") return;
     currentLanguage = language;
-    localStorage.setItem(STORAGE_KEY, language);
+    storeLanguage(language);
     document.documentElement.lang = language;
     document.querySelectorAll("[data-lang]").forEach(button => {
       const isPressed = button.dataset.lang === language;
@@ -452,6 +468,9 @@
       button.classList.toggle("active", isPressed);
     });
     translateElement(document.body);
+    window.dispatchEvent(new CustomEvent("yg:languagechange", {
+      detail: { language: currentLanguage }
+    }));
   }
 
   document.addEventListener("click", event => {
@@ -466,6 +485,9 @@
   });
 
   window.YG_I18N = {
+    get language() {
+      return currentLanguage;
+    },
     t: function(text) {
       const dictionary = dictionaries[currentLanguage] || {};
       return dictionary[text] || text;
