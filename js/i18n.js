@@ -410,28 +410,35 @@
   function translateElement(element) {
     if (!element || translating) return;
     translating = true;
-    const dictionary = dictionaries[currentLanguage] || {};
-    const walker = document.createTreeWalker(element, Node.TEXT_NODE);
-    let node;
-    while ((node = walker.nextNode())) {
-      const text = node.nodeValue.trim();
-      if (text && dictionary[text]) {
-        node.nodeValue = node.nodeValue.replace(text, dictionary[text]);
-      } else if (text && currentLanguage === "id" && reverse[text]) {
-        node.nodeValue = node.nodeValue.replace(text, reverse[text]);
-      } else if (text) {
-        node.nodeValue = translateDynamic(node.nodeValue, currentLanguage);
+    try {
+      const dictionary = dictionaries[currentLanguage] || {};
+      const walker = document.createTreeWalker(element, Node.TEXT_NODE);
+      let node;
+      while ((node = walker.nextNode())) {
+        const nodeValue = node.nodeValue;
+        if (typeof nodeValue !== "string") continue;
+        const text = nodeValue.trim();
+        if (text && dictionary[text]) {
+          node.nodeValue = nodeValue.replace(text, dictionary[text]);
+        } else if (text && currentLanguage === "id" && reverse[text]) {
+          node.nodeValue = nodeValue.replace(text, reverse[text]);
+        } else if (text) {
+          node.nodeValue = translateDynamic(nodeValue, currentLanguage);
+        }
       }
+      element.querySelectorAll("[placeholder]").forEach(el => {
+        const placeholder = el.getAttribute("placeholder");
+        if (typeof placeholder !== "string") return;
+        const text = placeholder.trim();
+        if (text && dictionary[text]) {
+          el.setAttribute("placeholder", dictionary[text]);
+        } else if (text && currentLanguage === "id" && reverse[text]) {
+          el.setAttribute("placeholder", reverse[text]);
+        }
+      });
+    } finally {
+      translating = false;
     }
-    element.querySelectorAll("[placeholder]").forEach(el => {
-      const text = el.getAttribute("placeholder").trim();
-      if (text && dictionary[text]) {
-        el.setAttribute("placeholder", dictionary[text]);
-      } else if (text && currentLanguage === "id" && reverse[text]) {
-        el.setAttribute("placeholder", reverse[text]);
-      }
-    });
-    translating = false;
   }
 
   function setLanguage(language) {
