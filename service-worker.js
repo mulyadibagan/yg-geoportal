@@ -1,4 +1,4 @@
-const CACHE_NAME = "yg-geoportal-v4-20260723-edge-photo-fix1";
+const CACHE_NAME = "yg-geoportal-v4-20260723-layout-hotfix";
 
 const STATIC_ASSETS = [
   "./",
@@ -8,31 +8,7 @@ const STATIC_ASSETS = [
   "./report.html",
   "./assets/logo-yayasan-gambut.png",
   "./assets/logo-yayasan-gambut-192.png",
-  "./assets/logo-yayasan-gambut-512.png",
-  "./data/area_kopi.geojson",
-  "./css/app.css?v=20260720-search-nursery1",
-  "./css/site-brand.css?v=20260720-program-dashboard1",
-  "./css/dashboard-v3.css?v=20260720-dashboard-layout2",
-  "./css/webgis-v3.css?v=20260720-popup-monitoring1",
-  "./css/monitoring.css?v=20260721-object-id1",
-  "./css/monitoring-v1-fix.css?v=20260720-104",
-  "./css/report.css",
-  "./css/report-v6.css?v=20260720-photo-worker2",
-  "./js/config.js?v=20260720-area-kopi1",
-  "./js/report-v6.js?v=20260723-popup-add-photo2",
-  "./js/report-image-worker.js?v=20260720-photo-worker2",
-  "./js/report-photo-rules.js?v=20260720-photo-loop-fix1",
-  "./js/report-photo-guard.js?v=20260720-photo-loop-fix1",
-  "./js/monitoring-data-compat.js?v=20260720-endpoint1",
-  "./js/monitoring.js?v=20260721-object-id1",
-  "./js/monitoring-photo.js?v=20260720-edge-refresh1",
-  "./js/dashboard-v3.js?v=20260720-program-clean1",
-  "./js/pwa.js?v=20260723-edge-photo-fix1",
-  "./js/i18n.js?v=20260720-popup-monitoring2",
-  "./js/map-v4.js?v=20260723-popup-add-photo1",
-  "./js/data-updates.js?v=20260723-photo-matchfix1",
-  "./js/public-update-target-fix.js?v=20260721-legacy-photo1",
-  "./js/layer-order-v1.js?v=20260720-area-kopi1"
+  "./assets/logo-yayasan-gambut-512.png"
 ];
 
 self.addEventListener("install", event => {

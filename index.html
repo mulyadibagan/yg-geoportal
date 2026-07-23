@@ -7,7 +7,7 @@
   <title>YG GeoPortal | Yayasan Gambut</title>
   <link rel="icon" href="assets/logo-yayasan-gambut.png"/>
   <link rel="stylesheet" href="css/style.css?v=20260723-revert-layout"/>
-  <link rel="stylesheet" href="css/dashboard-v3.css?v=20260723-revert-layout"/>
+  <link rel="stylesheet" href="css/dashboard-v3.css?v=20260723-cards-fix1"/>
   <link rel="stylesheet" href="css/language-switcher.css?v=20260721-all-pages1"/>
   <link rel="stylesheet" href="css/dashboard-sdg.css?v=20260723-official-sdg1"/>
   <link rel="stylesheet" href="https://unpkg.com/pell/dist/pell.min.css">
@@ -65,11 +65,13 @@
       <div id="dashboard-updated" hidden></div>
     </div>
 
-    <div class="stat-grid">
+    <div class="stat-grid stat-grid-6">
       <a class="stat dashboard-link" href="webgis.html?search=Restorasi" aria-label="Lihat seluruh area restorasi"><strong id="dash-restoration-area">-</strong><span>Luas Restorasi (ha)</span></a>
       <a class="stat dashboard-link" href="webgis.html?search=Penanaman" aria-label="Lihat seluruh lokasi penanaman"><strong id="dash-seedlings-planted">-</strong><span>Bibit Tertanam</span></a>
-      <a class="stat dashboard-link" href="webgis.html?layer=desa_intervensi" aria-label="Lihat kabupaten cakupan"><strong id="dash-regencies">-</strong><span>Kabupaten Cakupan</span></a>
-      <a class="stat dashboard-link" href="webgis.html?layer=desa_intervensi" aria-label="Lihat desa cakupan"><strong id="dash-villages">-</strong><span>Desa Cakupan</span></a>
+      <a class="stat dashboard-link" href="webgis.html?layer=sekat_kanal" aria-label="Lihat estimasi area rewetting"><strong id="dash-rewetting-area">-</strong><span>Estimasi Rewetting (ha)</span></a>
+      <a class="stat dashboard-link" href="webgis.html?search=Pelatihan" aria-label="Lihat data peserta pelatihan"><strong id="dash-participants">-</strong><span>Total Peserta</span></a>
+      <a class="stat dashboard-link" href="webgis.html?layer=desa_intervensi" aria-label="Lihat kabupaten cakupan"><strong id="dash-regencies">-</strong><span>Kabupaten</span></a>
+      <a class="stat dashboard-link" href="webgis.html?layer=desa_intervensi" aria-label="Lihat desa cakupan"><strong id="dash-villages">-</strong><span>Desa</span></a>
     </div>
   </section>
 
@@ -126,9 +128,7 @@
         <i class="category-icon" aria-hidden="true"></i>
         <span class="funding-penabulu-name">Yayasan Penabulu</span>
         <strong class="funding-penabulu-period">2025–2026</strong>
-        <p class="funding-penabulu-summary">Strengthening women-led Liberica coffee enterprises and improving peatland ecosystem resilience through sustainable community-based livelihoods in Temiang Village, Riau.</p>
-        <small class="funding-penabulu-badge">Active Programme</small>
-        <span class="funding-penabulu-cta">View Dashboard</span>
+        <small>Temiang Village · lihat ringkasan program</small>
       </button>
     </div>
   </section>
@@ -421,13 +421,13 @@
   </div>
 </footer>
 
-<script src="js/dashboard-v3.js?v=20260723-final-translation"></script>
-  <script src="js/dashboard-sdg.js?v=20260723-final-translation"></script>
+<script src="js/dashboard-v3.js?v=20260723-layout-hotfix"></script>
+  <script src="js/dashboard-sdg.js?v=20260723-layout-hotfix"></script>
   <script src="https://unpkg.com/pell/dist/pell.min.js"></script>
   <script src="js/auth.js?v=1"></script>
   <script src="js/inline-editor.js?v=1"></script>
-  <script src="js/i18n.js?v=20260723-final-translation"></script>
+  <script src="js/i18n.js?v=20260723-stat-card-translation"></script>
   <script src="js/content-config.js?v=20260723-content-admin1"></script>
-  <script src="js/pwa.js?v=20260723-edge-photo-fix1"></script>
+  <script src="js/pwa.js?v=20260723-layout-hotfix"></script>
 </body>
 </html>

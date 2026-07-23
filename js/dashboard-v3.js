@@ -1042,6 +1042,8 @@
 
     setMetric("dash-restoration-area", totalRestorationArea, 2);
     setMetric("dash-seedlings-planted", totalPlantedSeedlings);
+    setMetric("dash-rewetting-area", peatRewettingArea, 0);
+    setMetric("dash-participants", programmeMetrics.capacity.participants);
     setMetric("dash-regencies", regencies.size);
     setMetric("dash-villages", villages.size);
 
@@ -1173,9 +1175,7 @@
               '<i class="category-icon" aria-hidden="true">🌍</i>' +
               '<span class="funding-penabulu-name">' + escapeHtml(name) + '</span>' +
               '<strong class="funding-penabulu-period">2025–2026</strong>' +
-              '<p class="funding-penabulu-summary">Strengthening women-led Liberica coffee enterprises and improving peatland ecosystem resilience through sustainable community-based livelihoods in Temiang Village, Riau.</p>' +
-              '<small class="funding-penabulu-badge">Active Programme</small>' +
-              '<span class="funding-penabulu-cta">View Dashboard</span>' +
+              '<small>Temiang Village \u00b7 lihat ringkasan program</small>' +
             '</button>';
           }
           const donorUrl = mapUrl({ search: donorSearchTerm(name) });

@@ -14,17 +14,30 @@
   }
 
   if ("serviceWorker" in navigator) {
+    // Don't register service worker on localhost to avoid caching issues during development.
+    if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+      console.log('PWA Service Worker tidak diaktifkan di lingkungan development.');
+      navigator.serviceWorker.getRegistrations().then(function(registrations) {
+        for (const registration of registrations) {
+          registration.unregister();
+          console.log('Service worker lama dihapus untuk development.');
+        }
+      });
+      return;
+    }
+
     window.addEventListener("load", () => {
       navigator.serviceWorker
-        .register("./service-worker.js?v=20260723-edge-photo-fix1", {
-          updateViaCache: "none"
+        .register("./service-worker.js?v=20260723-layout-hotfix")
+        .then(registration => {
+          console.log("Service worker terdaftar:", registration);
+          registration.update();
         })
-        .then(registration => registration.update())
-        .catch(error => console.warn("Service worker gagal:", error));
+        .catch(error => console.warn("Pendaftaran service worker gagal:", error));
     });
 
     navigator.serviceWorker.addEventListener("controllerchange", () => {
-      const reloadKey = "yg-sw-edge-photo-fix1";
+      const reloadKey = "yg-sw-layout-hotfix";
       if (sessionStorage.getItem(reloadKey)) return;
       sessionStorage.setItem(reloadKey, "done");
       window.location.reload();

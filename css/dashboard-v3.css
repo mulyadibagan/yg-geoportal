@@ -8,7 +8,7 @@ body.modal-open{overflow:hidden}
 }
 .hero{
   display:grid;
-  grid-template-columns:minmax(0,1.55fr) minmax(360px,.75fr);
+  grid-template-columns:minmax(0,1.55fr) minmax(360px,550px);
   gap:24px;
   margin-bottom:28px;
 }
@@ -67,8 +67,11 @@ body.modal-open{overflow:hidden}
 .btn-outline:hover{background:rgba(255,255,255,.12)}
 .stat-grid{
   display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
+  grid-template-columns:repeat(3,minmax(0,1fr));
   gap:14px;
+}
+.stat-grid.stat-grid-6{
+  grid-template-columns:repeat(2,minmax(0,1fr));
 }
 .stat-grid .stat{
   min-width:0;
@@ -101,7 +104,7 @@ body.modal-open{overflow:hidden}
   font-size:12px;
 }
 .dashboard-panel{
-  padding:32px;
+  padding:26px;
   border:1px solid #dce7e1;
   border-radius:20px;
   background:#fff;
@@ -110,43 +113,46 @@ body.modal-open{overflow:hidden}
 .category-grid{
   display:grid;
   grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:16px;
+  gap:14px;
+}
+#category-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr));
 }
 .programme-card{
   display:flex;
-  min-height:360px;
+  min-height:0;
   flex-direction:column;
-  padding:26px;
+  padding:20px;
   border:1px solid #dce7e1;
-  border-radius:18px;
+  border-radius:16px;
   background:#f4f8f6;
 }
 .programme-card header{
   display:grid;
-  grid-template-columns:48px 1fr auto;
+  grid-template-columns:42px 1fr auto;
   align-items:center;
-  gap:14px;
-  padding-bottom:20px;
+  gap:12px;
+  padding-bottom:14px;
   border-bottom:1px solid #dce7e1;
 }
 .programme-card header i{
   display:grid;
-  width:48px;
-  height:48px;
+  width:42px;
+  height:42px;
   place-items:center;
-  border-radius:14px;
+  border-radius:12px;
   background:#fff;
-  font-size:23px;
+  font-size:20px;
   font-style:normal;
   box-shadow:0 7px 18px rgba(8,118,83,.08);
 }
-.programme-card h3{margin:0;color:#38180b;font-size:21px;line-height:1.25}
-.programme-card header>span{color:#087653;font-size:23px;font-weight:800}
-.programme-card ul{display:grid;gap:0;margin:8px 0 0;padding:0;list-style:none}
-.programme-card li{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:12px 0;border-bottom:1px solid #e0e9e4}
+.programme-card h3{margin:0;color:#38180b;font-size:19px;line-height:1.25}
+.programme-card header>span{color:#087653;font-size:20px;font-weight:800}
+.programme-card ul{display:grid;gap:0;margin:4px 0 0;padding:0;list-style:none}
+.programme-card li{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:9px 0;border-bottom:1px solid #e0e9e4}
 .programme-card li:last-child{border-bottom:0}
-.programme-card li span{color:#61736b;font-size:13px;line-height:1.35}
-.programme-card li strong{color:#087653;font-size:15px;text-align:right;line-height:1.35}
+.programme-card li span{color:#61736b;font-size:12px;line-height:1.35}
+.programme-card li strong{color:#087653;font-size:14px;text-align:right;line-height:1.3}
 .programme-card:hover,.programme-card:focus-visible{background:#edf7f2}
 .category-card{
   display:flex;
@@ -271,9 +277,13 @@ body.modal-open{overflow:hidden}
   color:#6b7974;
   font-size:12px;
 }
+@media(min-width:1200px){
+  #category-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
 @media(max-width:900px){
   .hero{grid-template-columns:1fr}
   .hero-main{min-height:auto}
+  .stat-grid.stat-grid-6{grid-template-columns:repeat(3,minmax(0,1fr))}
   .category-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .stat-grid .stat{min-height:155px}
   .funding-indicators{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -286,9 +296,10 @@ body.modal-open{overflow:hidden}
   .hero-main h1{font-size:36px}
   .hero-main p{font-size:14px}
   .stat-grid{gap:8px}
+  .stat-grid.stat-grid-6{grid-template-columns:repeat(2,minmax(0,1fr))}
   .stat-grid .stat{padding:16px;border-radius:14px}
   .category-grid,.dashboard-columns{grid-template-columns:1fr}
-  .programme-card{min-height:0;padding:20px}
+  .programme-card{padding:16px}
   .programme-card li{align-items:flex-start}
   .category-card{min-height:145px}
   .funding-modal{padding:10px}.funding-dialog{margin:0;border-radius:20px}.funding-hero{padding:32px 22px 26px}.funding-meta{grid-template-columns:1fr}.funding-content{padding:25px 18px 30px}.funding-heading{align-items:flex-start;flex-direction:column}.funding-indicators,.funding-detail-grid{grid-template-columns:1fr}.funding-indicator{min-height:100px}
@@ -297,6 +308,9 @@ body.modal-open{overflow:hidden}
   .section-head h2{font-size:23px}
   .cta{align-items:flex-start;flex-direction:column}
   .footer-inner{flex-direction:column}
+}
+@media(max-width:430px){
+  .stat-grid.stat-grid-6{grid-template-columns:1fr}
 }
 .funding-card-penabulu{align-items:flex-start;gap:8px}
 .funding-card-penabulu .category-icon{background-image:url("../assets/funding-penabulu.png")}
@@ -397,3 +411,65 @@ body.modal-open{overflow:hidden}
 .content-partner-logo{display:block;width:100%;height:84px;margin:0 0 18px;padding:10px;border-radius:12px;background:#fff;object-fit:contain}
 .content-admin-link{color:inherit;text-decoration:none}
 .content-admin-link:hover{text-decoration:underline}
+
+/* Funding Partners: uniform card system */
+#donor-grid{
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:14px;
+}
+#donor-grid .funding-card{
+  display:flex;
+  min-height:240px;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:6px;
+  padding:18px;
+  border:1px solid #dce7e1;
+  border-radius:16px;
+  background:#f4f8f6;
+  box-shadow:0 10px 24px rgba(20,70,52,.07);
+}
+#donor-grid .funding-card .category-icon{
+  width:100%;
+  height:78px;
+  margin-bottom:8px;
+  border-radius:10px;
+  padding:10px 14px;
+}
+#donor-grid .funding-card>span{
+  color:#23443a;
+  font-size:16px;
+  font-weight:800;
+  line-height:1.35;
+}
+#donor-grid .funding-card>strong{
+  margin-top:2px;
+  color:#087653;
+  font-size:14px;
+  font-weight:800;
+}
+#donor-grid .funding-card>small{
+  margin-top:auto;
+  padding-top:10px;
+  border-top:1px solid #dce7e1;
+  color:#667a72;
+  font-size:12px;
+  line-height:1.45;
+}
+#donor-grid .funding-card-penabulu{gap:8px}
+#donor-grid .funding-card-penabulu .funding-penabulu-period{font-size:14px!important}
+#donor-grid .funding-card-penabulu .funding-penabulu-summary{
+  margin:2px 0 0;
+  min-height:54px;
+  font-size:12px;
+  -webkit-line-clamp:3;
+}
+#donor-grid .funding-card-penabulu .funding-penabulu-badge{margin-top:auto}
+#donor-grid .funding-card-penabulu .funding-penabulu-cta{width:100%;margin-top:4px}
+
+@media(max-width:1100px){
+  #donor-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:680px){
+  #donor-grid .funding-card{min-height:220px;padding:16px}
+}

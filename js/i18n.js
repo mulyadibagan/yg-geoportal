@@ -156,6 +156,8 @@
       "Plot Ukur Permanen": "Permanent Sample Plots",
       "Pelatihan": "Training Sessions",
       "Peserta": "Participants",
+      "Total Peserta": "Total Participants",
+      "Estimasi Rewetting (ha)": "Estimated Rewetting (ha)",
       "Desa Terlibat": "Villages Involved",
       "Kelompok Masyarakat Didampingi": "Supported Community Groups",
       "Data belum tersedia": "Data not yet available",
