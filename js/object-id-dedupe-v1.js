@@ -13,11 +13,7 @@
       props.Object_ID || props.objectId || props.OBJECTID
     );
     if (!objectId) return "";
-
-    const layerId = normalized(
-      props.Layer_ID || props.Source_Layer || props.Layer_Label
-    );
-    return layerId + "::" + objectId;
+\n    return objectId;
   }
 
   function deduplicateFeatures(data) {
