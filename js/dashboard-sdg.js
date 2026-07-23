@@ -89,6 +89,163 @@
       .format(Number(value || 0));
   }
 
+  function renderClimateImpactDashboard(containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    const stats = window.YG_DASHBOARD_STATS || {};
+    const mangroveArea = Number(stats.mangroveArea || 0);
+    const peatArea = Number(stats.peatArea || 0);
+    const mineralArea = Number(stats.mineralArea || 0);
+    const rewettingArea = Number(stats.rewettingArea || 0);
+    const canalBlocks = Number(stats.canalBlocks || 0);
+    const fdrsUnits = Number(stats.fdrsUnits || 0);
+    const nurseryCount = Number(stats.nurseryCount || 0);
+    const monitoringReports = Number(stats.monitoringReports || 0);
+    const trainingSessions = Number(stats.trainingSessions || 0);
+    const methodology = 'IPCC 2006 Guidelines + 2013 Wetlands Supplement (conservative proxy)';
+
+    // Koefisien proxy konservatif untuk visualisasi kebijakan.
+    // Jika tersedia faktor emisi resmi per lokasi, nilai ini dapat diganti.
+    const factors = {
+      mangroveAbsorption: 31.6,
+      peatAbsorption: 20.0,
+      mineralAbsorption: 5.0,
+      rewettingReduction: 35.0,
+      canalBlockReduction: 2.0,
+      fdrsReduction: 1.0
+    };
+
+    const absorptionEstimate = (mangroveArea * factors.mangroveAbsorption) +
+      (peatArea * factors.peatAbsorption) +
+      (mineralArea * factors.mineralAbsorption);
+    const reductionEstimate = (rewettingArea * factors.rewettingReduction) +
+      (canalBlocks * factors.canalBlockReduction) +
+      (fdrsUnits * factors.fdrsReduction);
+    const totalEstimate = absorptionEstimate + reductionEstimate || 1;
+    const absorptionShare = Math.round((absorptionEstimate / totalEstimate) * 100);
+    const reductionShare = 100 - absorptionShare;
+
+    const directSources = [
+      {
+        label: "Mangrove restoration area",
+        value: mangroveArea,
+        unit: "ha",
+        note: "Direct activity input for removals",
+        hint: "Land area used in removals proxy / Luas lahan untuk proxy penyerapan",
+        group: "penyerapan"
+      },
+      {
+        label: "Peatland / agroforestry restoration",
+        value: peatArea,
+        unit: "ha",
+        note: "Direct activity input for removals",
+        hint: "Land area used in removals proxy / Luas lahan untuk proxy penyerapan",
+        group: "penyerapan"
+      },
+      {
+        label: "Mineral land rehabilitation",
+        value: mineralArea,
+        unit: "ha",
+        note: "Direct activity input for removals",
+        hint: "Land area used in removals proxy / Luas lahan untuk proxy penyerapan",
+        group: "penyerapan"
+      },
+      {
+        label: "Rewetting area",
+        value: rewettingArea,
+        unit: "ha",
+        note: "Direct activity input for avoided emissions",
+        hint: "Hydrological intervention used in avoided emissions proxy / Intervensi hidrologi untuk proxy pengurangan",
+        group: "pengurangan"
+      },
+      {
+        label: "Canal blocks",
+        value: canalBlocks,
+        unit: "unit",
+        note: "Direct activity input for avoided emissions",
+        hint: "Hydrological intervention count / Jumlah intervensi hidrologi",
+        group: "pengurangan"
+      },
+      {
+        label: "FDRS units",
+        value: fdrsUnits,
+        unit: "unit",
+        note: "Direct activity input for avoided emissions",
+        hint: "Fire-risk management infrastructure / Infrastruktur pengelolaan risiko kebakaran",
+        group: "pengurangan"
+      },
+      {
+        label: "Nursery locations",
+        value: nurseryCount,
+        unit: "lokasi",
+        note: "Supports future removals through planting scale-up",
+        hint: "Planting capacity support / Dukungan kapasitas penanaman",
+        group: "penyerapan"
+      },
+      {
+        label: "Field monitoring reports",
+        value: monitoringReports,
+        unit: "laporan",
+        note: "Supporting quality data",
+        hint: "MRV / monitoring, reporting, and verification support",
+        group: "pengurangan"
+      },
+      {
+        label: "Community training sessions",
+        value: trainingSessions,
+        unit: "sesi",
+        note: "Supporting implementation data",
+        hint: "Capacity-building evidence / Bukti peningkatan kapasitas",
+        group: "pengurangan"
+      }
+    ];
+
+    const supportingSources = [
+      "Seedlings planted / bibit tertanam",
+      "Field monitoring / monitoring lapangan",
+      "Community training / pelatihan masyarakat",
+      "Documentation / dokumentasi kegiatan",
+      "Publications / publikasi program"
+    ];
+
+    const renderRows = group => directSources
+      .filter(item => item.group === group)
+      .map(item => `
+        <div class="climate-source-row">
+          <div class="climate-source-label">
+            <strong title="${item.hint}">${item.label}</strong>
+            <small>${item.note}</small>
+          </div>
+          <div class="climate-source-value">${formatNumber(item.value, item.unit === 'ha' ? 2 : 0)} ${item.unit}</div>
+        </div>
+      `).join('');
+
+    container.innerHTML = `
+      <div class="climate-grid">
+        <article class="climate-card climate-card-absorb">
+          <div class="climate-card-head">
+            <span>Gross removals / Penyerapan</span>
+            <strong title="Annual proxy estimate / Estimasi proksi tahunan">${formatNumber(absorptionEstimate, 1)} tCO2e/yr*</strong>
+          </div>
+          <div class="climate-bar"><span style="width:${absorptionShare}%"></span></div>
+          <p class="climate-card-caption">Conservative proxy estimate using international land-sector reporting guidance for mangrove restoration, peatland/agroforestry restoration, and mineral land rehabilitation.</p>
+          <div class="climate-source-list">${renderRows('penyerapan')}</div>
+        </article>
+        <article class="climate-card climate-card-reduce">
+          <div class="climate-card-head">
+            <span>Avoided emissions / Pengurangan</span>
+            <strong title="Annual proxy estimate / Estimasi proksi tahunan">${formatNumber(reductionEstimate, 1)} tCO2e/yr*</strong>
+          </div>
+          <div class="climate-bar"><span style="width:${reductionShare}%"></span></div>
+          <p class="climate-card-caption">Conservative proxy estimate using international land-sector reporting guidance for rewetting, canal blocks, and FDRS. Monitoring and training are shown as supporting implementation data.</p>
+          <div class="climate-source-list">${renderRows('pengurangan')}</div>
+        </article>
+      </div>
+      <div class="climate-footnote"><strong>Methodology:</strong> ${methodology}. Data contributors: ${supportingSources.join(', ')}. Replace the proxy coefficients with site-specific emission factors if/when those become available.</div>
+    `;
+  }
+
   function showSdgModal(sdg) {
     const modalContainer = document.getElementById('sdg-modal-container');
     if (!modalContainer || !sdg) return;
@@ -183,5 +340,6 @@
   document.addEventListener('DOMContentLoaded', () => {
     // Give dashboard-v3.js a moment to calculate and expose the stats
     setTimeout(() => renderSdgDashboard('sdg-dashboard-container'), 200);
+    setTimeout(() => renderClimateImpactDashboard('climate-dashboard-container'), 200);
   });
 })();
