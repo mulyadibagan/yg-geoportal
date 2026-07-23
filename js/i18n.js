@@ -277,6 +277,9 @@
       "Cari": "Search",
       "Semua jenis": "All types",
       "Semua kondisi": "All conditions",
+      "Semua tahun": "All years",
+      "Semua kabupaten": "All regencies",
+      "Unduh Monitoring": "Download Monitoring Data",
       "Urutkan": "Sort",
       "Terbaru": "Newest",
       "Terlama": "Oldest",
@@ -344,7 +347,9 @@
         .replace(/^(\d[\d.]*)\s+pohon$/, "$1 trees")
         .replace(/^Target\s+(\d[\d.]*)\s+pohon$/, "Target: $1 trees")
         .replace(/Wave Breaker \(akumulasi\)$/, "Wave Breaker (cumulative)")
-        .replace(/^(\d+) objek$/, "$1 objects");
+        .replace(/^(\d+) objek$/, "$1 objects")
+        .replace(/^Penanaman Mangrove \((\d+)\)$/, "Mangrove Planting ($1)")
+        .replace(/^(\d+) objek terpetakan$/, "$1 mapped objects");
     }
 
     return text
@@ -368,7 +373,9 @@
       .replace(/^(\d[\d.]*)\s+trees$/, "$1 pohon")
       .replace(/^Target:\s+(\d[\d.]*)\s+trees$/, "Target $1 pohon")
       .replace(/Wave Breaker \(cumulative\)$/, "Wave Breaker (akumulasi)")
-      .replace(/^(\d+) objects$/, "$1 objek");
+      .replace(/^(\d+) objects$/, "$1 objek")
+      .replace(/^Mangrove Planting \((\d+)\)$/, "Penanaman Mangrove ($1)")
+      .replace(/^(\d+) mapped objects$/, "$1 objek terpetakan");
   }
 
   function translateText(text, language) {
