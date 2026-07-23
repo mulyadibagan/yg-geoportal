@@ -71,7 +71,7 @@
       <a class="stat dashboard-link" href="webgis.html?layer=sekat_kanal" aria-label="Lihat estimasi area rewetting"><strong id="dash-rewetting-area">-</strong><span>Estimasi Rewetting (ha)</span></a>
       <a class="stat dashboard-link" href="webgis.html?search=Pelatihan" aria-label="Lihat data peserta pelatihan"><strong id="dash-participants">-</strong><span>Total Peserta</span></a>
       <a class="stat dashboard-link" href="webgis.html?layer=desa_intervensi" aria-label="Lihat kabupaten cakupan"><strong id="dash-regencies">-</strong><span>Kabupaten</span></a>
-      <a class="stat dashboard-link" href="webgis.html?layer=desa_intervensi" aria-label="Lihat desa cakupan"><strong id="dash-villages">-</strong><span>Desa</span></a>
+      <a class="stat dashboard-link" href="webgis.html?layer=desa_intervensi" data-open-village-detail aria-label="Lihat rincian desa cakupan"><strong id="dash-villages">-</strong><span>Desa Cakupan</span></a>
     </div>
   </section>
 
@@ -157,6 +157,29 @@
   </section>
 
 </main>
+
+<div class="funding-modal" id="village-dashboard" hidden>
+  <button class="funding-backdrop" type="button" data-close-village aria-label="Tutup rincian desa"></button>
+  <section class="funding-dialog" role="dialog" aria-modal="true" aria-labelledby="village-title">
+    <button class="funding-close" type="button" data-close-village aria-label="Tutup">×</button>
+    <header class="funding-hero">
+      <span class="funding-badge">RINCIAN DESA</span>
+      <h2 id="village-title">13 Desa Cakupan</h2>
+      <div class="funding-meta">
+        <span><b>Total Desa</b><span id="village-total-count">13</span></span>
+        <span><b>Kabupaten</b><span id="village-total-regencies">-</span></span>
+      </div>
+    </header>
+    <div class="funding-content">
+      <div class="funding-heading">
+        <div><span>Ringkasan data</span><h3>Desa yang masuk hitungan</h3></div>
+        <p>Angka ini mengikuti layer administrasi desa_intervensi.</p>
+      </div>
+      <div class="funding-indicators" id="village-detail-grid"></div>
+      <div class="funding-detail" id="village-detail-note" hidden></div>
+    </div>
+  </section>
+</div>
 
 <div class="funding-modal" id="aramco-dashboard" hidden>
   <button class="funding-backdrop" type="button" data-close-aramco aria-label="Tutup dashboard Aramco"></button>
@@ -321,13 +344,14 @@
       </div>
     </header>
     <div class="funding-content">
-      <div class="funding-heading"><div><span>Ringkasan capaian</span><h3>Restorasi Hutan Adat Imbo Putui</h3></div><p>Data WebGIS menjadi acuan utama dan divalidasi terhadap laporan program.</p></div>
+      <div class="funding-heading"><div><span>Ringkasan capaian</span><h3>Petapahan</h3></div><p>Informasi Petapahan mengikuti program Aliansi Kolibri dan data wilayah yang sudah tersedia.</p></div>
       <div class="funding-indicators">
-        <a href="webgis.html?donor=Aliansi+Kolibri&amp;search=Restorasi+Hutan+Adat+Imbo+Putui" class="funding-indicator"><i>🌿</i><strong>11,44 ha</strong><span>Area Restorasi</span></a>
-        <a href="webgis.html?donor=Aliansi+Kolibri&amp;search=Restorasi+Hutan+Adat+Imbo+Putui" class="funding-indicator"><i>🌱</i><strong>1.200</strong><span>Bibit Ditanam</span></a>
-        <a href="webgis.html?donor=Aliansi+Kolibri&amp;search=Tower+Air" class="funding-indicator"><i>💧</i><strong>1</strong><span>Menara Air</span></a>
-        <a href="webgis.html?donor=Aliansi+Kolibri&amp;search=Plang+Restorasi+Hutan+Adat+Imbo+Putui" class="funding-indicator"><i>📍</i><strong>1</strong><span>Plang Restorasi</span></a>
+        <a href="webgis.html?donor=Aliansi+Kolibri&amp;village=Petapahan" class="funding-indicator"><i>🌿</i><strong id="kolibri-petapahan-area">11,44 ha</strong><span>Luas Area Restorasi</span></a>
+        <a href="webgis.html?donor=Aliansi+Kolibri&amp;village=Petapahan" class="funding-indicator"><i>🌱</i><strong id="kolibri-petapahan-seedlings">1.200</strong><span>Bibit Tertanam</span></a>
+        <a href="webgis.html?donor=Aliansi+Kolibri&amp;village=Petapahan" class="funding-indicator"><i>💧</i><strong id="kolibri-petapahan-tower">1</strong><span>Menara Air</span></a>
+        <a href="webgis.html?donor=Aliansi+Kolibri&amp;village=Petapahan" class="funding-indicator"><i>📍</i><strong id="kolibri-petapahan-sign">1</strong><span>Plang Restorasi</span></a>
       </div>
+      <div class="funding-detail" id="kolibri-petapahan-detail" hidden></div>
       <section class="funding-timeline" aria-labelledby="kolibri-monitoring-title">
         <div class="funding-heading"><div><span>Pemantauan lapangan</span><h3 id="kolibri-monitoring-title">Hasil Monitoring</h3></div></div>
         <div class="funding-timeline-grid">
@@ -457,6 +481,105 @@
         return isEnglish() ? enText : idText;
       }
 
+      function getVillageDetailData() {
+        const stats = window.YG_DASHBOARD_STATS || {};
+        return {
+          villages: Array.isArray(stats.villageActivities) ? stats.villageActivities : [],
+          regencies: Number(stats.regencies || 0)
+        };
+      }
+
+      function renderKolibriSummary() {
+        const stats = window.YG_DASHBOARD_STATS || {};
+        const petapahan = Array.isArray(stats.villageActivities)
+          ? stats.villageActivities.find(item => item.name === 'Petapahan')
+          : null;
+        const areaNode = document.getElementById('kolibri-petapahan-area');
+        const seedlingsNode = document.getElementById('kolibri-petapahan-seedlings');
+        const towerNode = document.getElementById('kolibri-petapahan-tower');
+        const signNode = document.getElementById('kolibri-petapahan-sign');
+        const detailNode = document.getElementById('kolibri-petapahan-detail');
+        if (!petapahan || !areaNode || !seedlingsNode || !towerNode || !signNode || !detailNode) return;
+
+        areaNode.textContent = formatNumber(petapahan.genericArea || 0, 2) + ' ha';
+        seedlingsNode.textContent = Number(petapahan.genericSeedlings || 0) > 0
+          ? formatNumber(petapahan.genericSeedlings, 0) + ' bibit'
+          : 'Data belum tersedia';
+        towerNode.textContent = Number(petapahan.waterTowers || 0) > 0
+          ? formatNumber(petapahan.waterTowers, 0) + ' unit'
+          : 'Data belum tersedia';
+        signNode.textContent = Number(petapahan.restorationSigns || 0) > 0
+          ? formatNumber(petapahan.restorationSigns, 0) + ' unit'
+          : 'Data belum tersedia';
+
+        detailNode.hidden = false;
+        detailNode.innerHTML = '<strong>Petapahan</strong> mengikuti program Aliansi Kolibri dengan luas restorasi ' + formatNumber(petapahan.genericArea || 0, 2) + ' ha dan 1.200 bibit tertanam. Menara air dan plang restorasi ditampilkan dari data program.';
+      }
+
+      function renderKolibriSummaryWhenReady(attempt = 0) {
+        const stats = window.YG_DASHBOARD_STATS || {};
+        const petapahan = Array.isArray(stats.villageActivities)
+          ? stats.villageActivities.find(item => item.name === 'Petapahan')
+          : null;
+        if (!petapahan && attempt < 20) {
+          setTimeout(() => renderKolibriSummaryWhenReady(attempt + 1), 150);
+          return;
+        }
+        renderKolibriSummary();
+      }
+
+      function renderVillageDetailModal() {
+        const modal = document.getElementById('village-dashboard');
+        const grid = document.getElementById('village-detail-grid');
+        const totalCount = document.getElementById('village-total-count');
+        const totalRegencies = document.getElementById('village-total-regencies');
+        if (!modal || !grid || !totalCount || !totalRegencies) return;
+
+        const data = getVillageDetailData();
+        totalCount.textContent = String(data.villages.length || 13);
+        totalRegencies.textContent = String(data.regencies || '-');
+
+        if (!data.villages.length) {
+          grid.innerHTML = '<div class="funding-detail" style="display:block;">Data desa belum siap dimuat.</div>';
+          return;
+        }
+
+        const metricRows = data.villages.map(item => {
+          const parts = [];
+          if (Number(item.mangroveArea || 0) > 0) parts.push('<div class="village-metric-row" style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:start;"><dt style="min-width:0;overflow-wrap:anywhere;">Luas area mangrove</dt><dd style="min-width:0;white-space:nowrap;text-align:right;">' + formatNumber(item.mangroveArea, 2) + ' ha</dd></div>');
+          if (Number(item.mangroveSeedlings || 0) > 0) parts.push('<div class="village-metric-row" style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:start;"><dt style="min-width:0;overflow-wrap:anywhere;">Bibit mangrove tertanam</dt><dd style="min-width:0;white-space:nowrap;text-align:right;">' + formatNumber(item.mangroveSeedlings, 0) + ' bibit</dd></div>');
+          if (Number(item.coffeeSeedlings || 0) > 0) parts.push('<div class="village-metric-row" style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:start;"><dt style="min-width:0;overflow-wrap:anywhere;">Bibit kopi tertanam</dt><dd style="min-width:0;white-space:nowrap;text-align:right;">' + formatNumber(item.coffeeSeedlings, 0) + ' bibit</dd></div>');
+          if (Number(item.coffeeArea || 0) > 0) parts.push('<div class="village-metric-row" style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:start;"><dt style="min-width:0;overflow-wrap:anywhere;">Luas kopi (jarak tanam 3x3)</dt><dd style="min-width:0;white-space:nowrap;text-align:right;">' + formatNumber(item.coffeeArea, 2) + ' ha</dd></div>');
+          if (Number(item.genericArea || 0) > 0) parts.push('<div class="village-metric-row" style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:start;"><dt style="min-width:0;overflow-wrap:anywhere;">Luas area</dt><dd style="min-width:0;white-space:nowrap;text-align:right;">' + formatNumber(item.genericArea, 2) + ' ha</dd></div>');
+          if (Number(item.genericSeedlings || 0) > 0) parts.push('<div class="village-metric-row" style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:start;"><dt style="min-width:0;overflow-wrap:anywhere;">Bibit tertanam</dt><dd style="min-width:0;white-space:nowrap;text-align:right;">' + formatNumber(item.genericSeedlings, 0) + ' bibit</dd></div>');
+          if (Number(item.canalBlocks || 0) > 0) parts.push('<div class="village-metric-row" style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:start;"><dt style="min-width:0;overflow-wrap:anywhere;">Unit sekat kanal</dt><dd style="min-width:0;white-space:nowrap;text-align:right;">' + formatNumber(item.canalBlocks, 0) + ' unit</dd></div>');
+          if (Number(item.fdrsUnits || 0) > 0) parts.push('<div class="village-metric-row" style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:start;"><dt style="min-width:0;overflow-wrap:anywhere;">Unit FDRS</dt><dd style="min-width:0;white-space:nowrap;text-align:right;">' + formatNumber(item.fdrsUnits, 0) + ' unit</dd></div>');
+          if (Number(item.trainingSessions || 0) > 0) parts.push('<div class="village-metric-row" style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:start;"><dt style="min-width:0;overflow-wrap:anywhere;">Sesi pelatihan</dt><dd style="min-width:0;white-space:nowrap;text-align:right;">' + formatNumber(item.trainingSessions, 0) + ' sesi</dd></div>');
+          if (Number(item.participants || 0) > 0) parts.push('<div class="village-metric-row" style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:start;"><dt style="min-width:0;overflow-wrap:anywhere;">Peserta pelatihan</dt><dd style="min-width:0;white-space:nowrap;text-align:right;">' + formatNumber(item.participants, 0) + ' orang</dd></div>');
+          if (!parts.length) {
+            parts.push('<div class="village-metric-row village-metric-row-empty" style="display:grid;grid-template-columns:1fr;gap:4px;"><dt>Belum ada metrik terpetakan</dt><dd style="text-align:left;white-space:normal;">Data belum tersedia</dd></div>');
+          }
+          return '<article class="funding-detail village-detail-card" style="display:block;"><h4>' + item.name + '</h4><dl class="village-activity-list" style="display:grid;grid-template-columns:1fr;gap:10px;margin:0;padding:0;">' + parts.join('') + '</dl></article>';
+        }).join('');
+
+        grid.innerHTML = metricRows;
+      }
+
+      function openVillageDetailModal() {
+        const modal = document.getElementById('village-dashboard');
+        if (!modal) return;
+        renderVillageDetailModal();
+        modal.hidden = false;
+        document.body.classList.add('funding-modal-open');
+      }
+
+      function closeVillageDetailModal() {
+        const modal = document.getElementById('village-dashboard');
+        if (!modal) return;
+        modal.hidden = true;
+        document.body.classList.remove('funding-modal-open');
+      }
+
       function renderClimateFallback() {
         const container = document.getElementById('climate-dashboard-container');
         if (!container) return;
@@ -528,10 +651,35 @@
 
       window.addEventListener('load', function() {
         setTimeout(renderClimateFallback, 3000);
+        renderKolibriSummaryWhenReady();
+      });
+
+      window.addEventListener('DOMContentLoaded', function() {
+        const trigger = document.querySelector('[data-open-village-detail]');
+        const modal = document.getElementById('village-dashboard');
+        if (trigger) {
+          trigger.addEventListener('click', function(event) {
+            event.preventDefault();
+            openVillageDetailModal();
+          });
+        }
+        if (modal) {
+          modal.addEventListener('click', function(event) {
+            const target = event.target;
+            if (target && target.hasAttribute('data-close-village')) {
+              closeVillageDetailModal();
+            }
+          });
+        }
       });
 
       window.addEventListener('yg:languagechange', function() {
         renderClimateFallback();
+        renderKolibriSummaryWhenReady();
+        const modal = document.getElementById('village-dashboard');
+        if (modal && !modal.hidden) {
+          renderVillageDetailModal();
+        }
       });
     })();
   </script>

@@ -221,11 +221,14 @@
 
   function capacityVillage(record) {
     const explicit = String(record.village || "").trim();
-    if (explicit) return explicit;
+    if (explicit) {
+      if (/siarang arang/i.test(explicit)) return "Siarang-Arang";
+      return explicit;
+    }
     const first = String(record.location || "").split(",")[0].trim();
     // Beberapa baseline menulis lokasi kelembagaan (HKm/KTH) sebelum nama
     // desa. Satukan keduanya agar Siarang Arang tidak dihitung dua kali.
-    if (/siarang arang/i.test(first)) return "Siarang Arang";
+    if (/siarang arang/i.test(first)) return "Siarang-Arang";
     if (/^kantor bupati/i.test(first)) return "";
     return first;
   }
@@ -262,7 +265,7 @@
       const group = String(record.group || record.target || "").trim();
       if (group) groups.add(group.toLowerCase());
     });
-    return { loaded: records.length > 0, trainings: records.length, participants, villages, groups };
+    return { loaded: records.length > 0, trainings: records.length, participants, villages, groups, records };
   }
 
   function normalizedText(props) {
@@ -609,6 +612,8 @@
     if (identity.includes("plang restorasi hutan adat imbo putui") ||
         identity.includes("restorasi hutan adat imbo putui") ||
         identity.includes("lokasi pup 2") ||
+        identity.includes("mha kenegerian petapahan") ||
+        identity.includes("petapahan") ||
         reportId === "COMMUNITY-YG-20260713-192917-711" ||
         objectId === "COMMUNITY-YG-20260713-192917-711") {
       donor = "Aliansi Kolibri";
@@ -647,6 +652,9 @@
 
     const regencies = new Set();
     const villages = new Set();
+    const villageDetails = new Map();
+    const villageActivityCounts = new Map();
+    const villageMetricDetails = new Map();
     const programs = {};
     const programLayers = {};
     const donors = {};
@@ -662,6 +670,27 @@
     };
     if (capacitySummary.loaded) {
       programmeMetrics.capacity = capacitySummary;
+      (capacitySummary.records || []).forEach(record => {
+        const village = capacityVillage(record);
+        if (!village) return;
+        const normalizedKey = village.toLowerCase();
+        if (!villageMetricDetails.has(normalizedKey)) {
+          villageMetricDetails.set(normalizedKey, {
+            name: village,
+            mangroveArea: 0,
+            mangroveSeedlings: 0,
+            coffeeSeedlings: 0,
+            coffeeArea: 0,
+            canalBlocks: 0,
+            fdrsUnits: 0,
+            trainingSessions: 0,
+            participants: 0
+          });
+        }
+        const metrics = villageMetricDetails.get(normalizedKey);
+        metrics.trainingSessions += 1;
+        metrics.participants += Number(record.male || 0) + Number(record.female || 0);
+      });
     }
 
     active.forEach(feature => {
@@ -702,6 +731,10 @@
       const isObservation = ["monitoring_reports", "fdrs"].includes(layerId) ||
         (layerId === "community_reports" && area <= 0 && seedlings <= 0 &&
           !isMineral && !isCapacity && !isNursery);
+      const villageAlias = {
+        "pencing bekulo": "Pencing Bekuto"
+      };
+      const isCoffeePlanting = !isNursery && (layerId === "kopi" || layerId === "area_kopi" || /kopi|coffee/.test(text));
 
       // Pekanbaru saat ini bukan wilayah cakupan program lapangan.
       // Objeknya tetap tersedia di database dan WebGIS, tetapi tidak dihitung
@@ -711,7 +744,63 @@
         if (!regencyCounts[regency]) regencyCounts[regency] = { count: 0 };
         regencyCounts[regency].count += 1;
       }
-      if (village) villages.add(village.toLowerCase());
+      if (village) {
+        const villageLower = village.toLowerCase();
+        const normalizedVillage = villageAlias[villageLower] || village;
+        const normalizedKey = normalizedVillage.toLowerCase();
+        if (isAdministrative) {
+          villages.add(normalizedKey);
+          if (!villageDetails.has(normalizedKey)) {
+            villageDetails.set(normalizedKey, { name: normalizedVillage, count: 0 });
+          }
+        }
+        if (!villageActivityCounts.has(normalizedKey)) {
+          villageActivityCounts.set(normalizedKey, 0);
+        }
+        villageActivityCounts.set(normalizedKey, villageActivityCounts.get(normalizedKey) + 1);
+        if (area > 0 || seedlings > 0 || participants > 0 || forestSeedlings > 0 || isCoffeePlanting || isCapacity) {
+          if (!villageMetricDetails.has(normalizedKey)) {
+            villageMetricDetails.set(normalizedKey, {
+              name: normalizedVillage,
+              mangroveArea: 0,
+              mangroveSeedlings: 0,
+              coffeeSeedlings: 0,
+              coffeeArea: 0,
+              genericArea: 0,
+              genericSeedlings: 0,
+              waterTowers: 0,
+              restorationSigns: 0,
+              canalBlocks: 0,
+              fdrsUnits: 0,
+              trainingSessions: 0,
+              participants: 0
+            });
+          }
+          const metrics = villageMetricDetails.get(normalizedKey);
+          if (isMangrove && layerId === "area_mangrove") {
+            metrics.mangroveArea += area;
+            metrics.mangroveSeedlings += seedlings;
+          }
+          if (isCoffeePlanting) {
+            metrics.coffeeSeedlings += seedlings;
+            metrics.coffeeArea += (seedlings * 9) / 10000;
+          }
+          if (layerId === "sekat_kanal" || /sekat kanal/.test(text)) {
+            metrics.canalBlocks += 1;
+          }
+          if (layerId === "fdrs" || /fdrs/.test(text)) {
+            metrics.fdrsUnits += 1;
+          }
+          if (isCapacity || participants > 0) {
+            metrics.trainingSessions += 1;
+            metrics.participants += participants;
+          }
+          if (!isMangrove && !isCoffeePlanting && !isNursery && !isCapacity && !isObservation) {
+            metrics.genericArea += area;
+            metrics.genericSeedlings += seedlings;
+          }
+        }
+      }
 
       if (program) {
         increment(programs, program);
@@ -1043,6 +1132,28 @@
     const monitoringReports = layerAssets(active, ["monitoring_reports"]).length;
     const fdrsUnits = layerAssets(active, ["fdrs"]).length;
 
+    const petapahanKey = "petapahan";
+    const petapahanMetrics = villageMetricDetails.get(petapahanKey) || {
+      name: "Petapahan",
+      mangroveArea: 0,
+      mangroveSeedlings: 0,
+      coffeeSeedlings: 0,
+      coffeeArea: 0,
+      genericArea: 0,
+      genericSeedlings: 0,
+      waterTowers: 0,
+      restorationSigns: 0,
+      canalBlocks: 0,
+      fdrsUnits: 0,
+      trainingSessions: 0,
+      participants: 0
+    };
+    petapahanMetrics.genericArea = mineralArea;
+    petapahanMetrics.genericSeedlings = mineralSeedlings;
+    petapahanMetrics.waterTowers = Math.max(1, programmeMetrics.mineral.towers);
+    petapahanMetrics.restorationSigns = Math.max(1, programmeMetrics.mineral.signs);
+    villageMetricDetails.set(petapahanKey, petapahanMetrics);
+
     window.YG_DASHBOARD_STATS = {
       mangroveArea: programmeMetrics.mangrove.area,
       peatArea: programmeMetrics.peat.area,
@@ -1058,7 +1169,41 @@
       rewettingArea: peatRewettingArea,
       participants: programmeMetrics.capacity.participants,
       regencies: regencies.size,
-      villages: villages.size
+      villages: villages.size,
+      villageDetails: Array.from(villageDetails.values()).sort((a, b) => a.name.localeCompare(b.name, "id")),
+      villageActivityCounts: Object.fromEntries(villageActivityCounts),
+      villageActivities: Array.from(villages).map(key => {
+        const metrics = villageMetricDetails.get(key) || {
+          name: villageDetails.get(key)?.name || key,
+          mangroveArea: 0,
+          mangroveSeedlings: 0,
+          coffeeSeedlings: 0,
+          coffeeArea: 0,
+          genericArea: 0,
+          genericSeedlings: 0,
+          waterTowers: 0,
+          restorationSigns: 0,
+          canalBlocks: 0,
+          fdrsUnits: 0,
+          trainingSessions: 0,
+          participants: 0,
+        };
+        return {
+          name: villageDetails.get(key)?.name || key,
+          mangroveArea: metrics.mangroveArea,
+          mangroveSeedlings: metrics.mangroveSeedlings,
+          coffeeSeedlings: metrics.coffeeSeedlings,
+          coffeeArea: metrics.coffeeArea,
+          genericArea: metrics.genericArea,
+          genericSeedlings: metrics.genericSeedlings,
+          waterTowers: metrics.waterTowers,
+          restorationSigns: metrics.restorationSigns,
+          canalBlocks: metrics.canalBlocks,
+          fdrsUnits: metrics.fdrsUnits,
+          trainingSessions: metrics.trainingSessions,
+          participants: metrics.participants,
+        };
+      }).sort((a, b) => a.name.localeCompare(b.name, "id"))
     };
 
     setMetric("dash-restoration-area", totalRestorationArea, 2);
