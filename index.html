@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="css/style.css?v=20260723-revert-layout"/>
   <link rel="stylesheet" href="css/dashboard-v3.css?v=20260723-cards-fix1"/>
   <link rel="stylesheet" href="css/language-switcher.css?v=20260721-all-pages1"/>
-  <link rel="stylesheet" href="css/dashboard-sdg.css?v=20260723-official-sdg1"/>
+  <link rel="stylesheet" href="css/dashboard-sdg.css?v=20260724-carbon-method1"/>
   <link rel="stylesheet" href="https://unpkg.com/pell/dist/pell.min.css">
   <meta name="theme-color" content="#079cde">
   <meta name="application-name" content="YG GeoPortal">
@@ -86,7 +86,102 @@
     <div id="climate-dashboard-container">
       <div class="dashboard-loading">Memuat dampak iklim...</div>
     </div>
-    <p class="climate-note">Data yang berkontribusi: area restorasi mangrove, area restorasi gambut/agroforestri, bibit tertanam, rumah bibit, sekat kanal, FDRS, monitoring lapangan, pelatihan masyarakat, dan dokumentasi kegiatan.</p>
+  </section>
+
+  <section class="section dashboard-panel baseline-panel" aria-labelledby="baseline-title" hidden>
+    <div class="section-head">
+      <div>
+        <span class="baseline-kicker">Pengembangan data karbon</span>
+        <h2 id="baseline-title">Baseline Ekologis dan Kontribusi Program</h2>
+        <p>Baseline menunjukkan kondisi dan status lahan tempat program bekerja. Kontribusi program menunjukkan luas intervensi yang digunakan dalam estimasi awal penyerapan dan pengurangan emisi. Luas baseline tidak dihitung sebagai capaian program.</p>
+      </div>
+    </div>
+
+    <h3 class="baseline-subtitle">Data baseline yang dianalisis</h3>
+    <div class="baseline-context-grid">
+      <article>
+        <span>Unit analisis</span>
+        <h3>Desa dengan kegiatan aktif</h3>
+        <strong>180.410,23 ha</strong>
+        <p>Layer desa intervensi digunakan untuk membatasi analisis pada wilayah yang memiliki kegiatan program aktif.</p>
+        <small>Basis: <code>desa_intervensi</code> + lokasi kegiatan</small>
+      </article>
+      <article>
+        <span>Baseline gambut</span>
+        <h3>Sebaran dan karakteristik gambut</h3>
+        <strong>113.830,30 ha</strong>
+        <p>Overlay mengidentifikasi keberadaan gambut, kelas ketebalan, pH, dan substratum pada wilayah kegiatan.</p>
+        <small>Basis: BBSDLP 2019</small>
+      </article>
+      <article>
+        <span>Baseline status kawasan hutan</span>
+        <h3>Kawasan hutan dalam desa analisis</h3>
+        <strong>180.392,62 ha</strong>
+        <p>Overlay membaca status kawasan; angka ini bukan luas tutupan pohon aktual. Di dalamnya terdapat konteks IUPHHK-HT 42.066,09 ha dan Perhutanan Sosial 2.071,32 ha yang dapat saling beririsan.</p>
+        <small>Basis: SK.903, IUPHHK-HT 2014, Perhutanan Sosial Riau</small>
+      </article>
+      <article>
+        <span>Data mangrove tersedia</span>
+        <h3>Footprint kegiatan mangrove</h3>
+        <strong>13,235 ha</strong>
+        <p>Atribut lapangan menjadi nilai pelaporan. Luas geometri terhitung 10,446 ha disimpan sebagai temuan QA, bukan pengganti atribut tervalidasi.</p>
+        <small>Basis: area mangrove, tahun kegiatan, dan dokumentasi lapangan</small>
+      </article>
+    </div>
+    <p class="baseline-context-note">Hasil overlay dipakai untuk validasi jenis lahan, penentuan baseline, dan pemilihan faktor emisi. Luas keseluruhan gambut, mangrove, atau kawasan hutan tidak otomatis menjadi kontribusi karbon program.</p>
+
+    <h3 class="baseline-subtitle contribution-subtitle">Kontribusi program yang dihitung saat ini</h3>
+    <div class="baseline-source-grid">
+      <article>
+        <span>Penyerapan</span>
+        <h3>Restorasi mangrove</h3>
+        <strong>13,24 ha</strong>
+        <p>Bersumber dari atribut luas area penanaman mangrove aktif.</p>
+      </article>
+      <article>
+        <span>Penyerapan</span>
+        <h3>Restorasi gambut / agroforestri</h3>
+        <strong>13,75 ha</strong>
+        <p>Gabungan area penanaman kopi dan ekuivalen luas titik penanaman yang tidak dihitung ganda.</p>
+      </article>
+      <article>
+        <span>Penyerapan</span>
+        <h3>Rehabilitasi lahan mineral</h3>
+        <strong>11,44 ha</strong>
+        <p>Bersumber dari luas kegiatan rehabilitasi di Petapahan.</p>
+      </article>
+      <article>
+        <span>Pengurangan emisi</span>
+        <h3>Estimasi area rewetting</h3>
+        <strong>550 ha</strong>
+        <p>Estimasi awal berdasarkan 11 sekat kanal aktif × 50 ha; belum merupakan luas hasil delineasi hidrologis.</p>
+      </article>
+    </div>
+
+    <div class="baseline-roadmap">
+      <div>
+        <span class="baseline-status is-current">Data tersedia</span>
+        <h3>Baseline spasial</h3>
+        <p>Desa aktif telah dibandingkan dengan data gambut dan status kawasan dari sumber yang tersedia.</p>
+      </div>
+      <div>
+        <span class="baseline-status is-current">Data tersedia</span>
+        <h3>Data aktivitas program</h3>
+        <p>Lokasi, luas, tahun, jenis intervensi, bibit, sekat kanal, FDRS, dan dokumentasi lapangan.</p>
+      </div>
+      <div>
+        <span class="baseline-status is-progress">Tahap berikutnya</span>
+        <h3>Monitoring perubahan</h3>
+        <p>Membandingkan baseline dengan pertumbuhan vegetasi, perubahan tutupan, tinggi muka air gambut, dan keberhasilan rehabilitasi.</p>
+      </div>
+      <div>
+        <span class="baseline-status is-pending">Belum tersedia</span>
+        <h3>Faktor emisi spesifik lokasi</h3>
+        <p>Mengganti koefisien proksi setelah faktor lokal, periode pelaporan, ketidakpastian, dan hasil verifikasi tersedia.</p>
+      </div>
+    </div>
+
+    <p class="baseline-note"><strong>Kontribusi saat ini:</strong> luas intervensi 13,24 ha mangrove, 13,75 ha gambut/agroforestri, dan 11,44 ha lahan mineral mendukung estimasi penyerapan bruto 750,5 tCO2e/tahun. Estimasi rewetting 550 ha mendukung estimasi emisi terhindar 19.250 tCO2e/tahun. Angka ini akan berubah jika luas kegiatan, hasil overlay baseline, data monitoring, delineasi rewetting, atau faktor emisi diperbarui.</p>
   </section>
 
   <section class="section dashboard-panel">

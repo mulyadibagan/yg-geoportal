@@ -94,6 +94,28 @@
       .format(Number(value || 0));
   }
 
+  function renderMangroveCandidateScenarios() {
+    const stats = window.YG_DASHBOARD_STATS || {};
+    const area = Number(stats.mangroveArea || 13.235);
+    const factors = {
+      low: 336.923309406876,
+      mid: 632.934642992067,
+      high: 848.948998866642
+    };
+    const values = {
+      'carbon-candidate-low': area * factors.low,
+      'carbon-candidate-mid': area * factors.mid,
+      'carbon-candidate-high': area * factors.high
+    };
+
+    Object.entries(values).forEach(([id, value]) => {
+      const node = document.getElementById(id);
+      if (node) node.textContent = formatNumber(value, 2);
+    });
+    const areaNode = document.getElementById('carbon-candidate-area');
+    if (areaNode) areaNode.textContent = formatNumber(area, 3) + ' ha';
+  }
+
   function renderClimateImpactDashboard(containerId) {
     const container = document.getElementById(containerId);
     if (!container) return;
@@ -157,7 +179,7 @@
         value: mangroveArea,
         unit: "ha",
         note: english ? 'Direct activity input for removals' : 'Input aktivitas langsung untuk penyerapan',
-        hint: english ? 'Polygon area plus coffee planting points converted at 3 × 3 m spacing' : 'Luas poligon ditambah titik tanam kopi dengan jarak 3 × 3 m',
+        hint: english ? 'Sum of validated Luas_Ha field attributes' : 'Penjumlahan atribut lapangan Luas_Ha yang tervalidasi',
         group: "penyerapan"
       },
       {
@@ -165,7 +187,7 @@
         value: peatArea,
         unit: "ha",
         note: english ? 'Direct activity input for removals' : 'Input aktivitas langsung untuk penyerapan',
-        hint: english ? 'Land area used in removals proxy' : 'Luas lahan untuk proxy penyerapan',
+        hint: english ? 'Unique coffee polygons plus planting points converted at 3 × 3 m spacing' : 'Poligon kopi unik ditambah titik tanam yang dikonversi dengan jarak 3 × 3 m',
         group: "penyerapan"
       },
       {
@@ -177,11 +199,11 @@
         group: "penyerapan"
       },
       {
-        label: english ? 'Measured rewetting area' : 'Area rewetting terukur',
+        label: english ? 'Estimated rewetting area' : 'Estimasi area rewetting',
         value: rewettingArea,
         unit: "ha",
-        note: english ? 'Consolidated outcome of canal-block interventions' : 'Hasil terkonsolidasi dari intervensi sekat kanal',
-        hint: english ? 'Canal blocks and FDRS are not credited separately' : 'Sekat kanal dan FDRS tidak dikreditkan terpisah',
+        note: english ? 'Project assumption: 50 ha per active canal block' : 'Asumsi proyek: 50 ha per sekat kanal aktif',
+        hint: english ? '11 canal blocks × 50 ha; target water table ≤40 cm below ground' : '11 sekat kanal × 50 ha; target muka air ≤40 cm di bawah permukaan',
         group: "pengurangan"
       }
     ];
@@ -216,27 +238,52 @@
 
     container.innerHTML = `
       <div class="climate-grid">
-        <article class="climate-card climate-card-absorb">
-          <div class="climate-card-head">
-            <span>${english ? 'Gross removals / Carbon removals' : 'Penyerapan bruto / Gross removals'}</span>
-            <strong title="${english ? 'Annual proxy estimate' : 'Estimasi proksi tahunan'}">${formatNumber(absorptionEstimate, 1)} tCO2e/yr*</strong>
+        <details class="climate-card climate-card-absorb">
+          <summary>
+            <div class="climate-card-head">
+              <span>${english ? 'Gross removals per year' : 'Penyerapan bruto per tahun'}</span>
+              <strong title="${english ? 'Annual proxy estimate' : 'Estimasi proksi tahunan'}">${formatNumber(absorptionEstimate, 1)} tCO2e/yr*</strong>
+            </div>
+            <div class="climate-bar"><span style="width:${absorptionShare}%"></span></div>
+            <small class="climate-open-hint">${english ? 'Select to view data sources and baseline' : 'Klik untuk melihat sumber data dan baseline'}</small>
+          </summary>
+          <div class="climate-expanded">
+            <p class="climate-card-caption">${english ? 'Current estimate uses the agreed programme activity areas. Ecological baseline areas validate land context and are not counted as programme achievements.' : 'Estimasi saat ini menggunakan luas kegiatan program yang telah disepakati. Luas baseline ekologis memvalidasi konteks lahan dan tidak dihitung sebagai capaian program.'}</p>
+            <div class="climate-source-list">${renderRows('penyerapan')}</div>
+            <div class="climate-baseline-brief">
+              <strong>${english ? 'Baseline context' : 'Konteks baseline'}</strong>
+              <span>${english ? 'Analysis unit — intervention villages: 180,410.23 ha' : 'Unit analisis — desa intervensi: 180.410,23 ha'}</span>
+              <span>${english ? 'Peat in intervention villages: 113,830.30 ha' : 'Gambut dalam desa analisis: 113.830,30 ha'}</span>
+              <span>${english ? 'Forest-estate status: 180,392.62 ha (not actual tree cover)' : 'Status kawasan hutan: 180.392,62 ha (bukan tutupan pohon aktual)'}</span>
+              <span>${english ? 'Mangrove programme footprint: 13.235 ha validated attribute' : 'Footprint kegiatan mangrove: atribut tervalidasi 13,235 ha'}</span>
+            </div>
+            <p class="climate-detail-note"><strong>${english ? 'Supporting data:' : 'Data pendukung:'}</strong> ${supportingSources.join(', ')}.</p>
+            <p class="climate-detail-note"><strong>${english ? 'Living estimate:' : 'Estimasi berkembang:'}</strong> ${english ? 'recalculated when intervention villages, programme activities, monitoring data, baseline overlays, or emission factors change.' : 'dihitung ulang ketika desa intervensi, kegiatan program, data monitoring, hasil overlay baseline, atau faktor emisi berubah.'}</p>
           </div>
-          <div class="climate-bar"><span style="width:${absorptionShare}%"></span></div>
-          <p class="climate-card-caption">${english ? 'Conservative proxy estimate using international land-sector reporting guidance for mangrove restoration, peatland/agroforestry restoration, and mineral land rehabilitation.' : 'Estimasi proksi konservatif menggunakan panduan pelaporan sektor lahan internasional untuk restorasi mangrove, restorasi gambut/agroforestri, dan rehabilitasi lahan mineral.'}</p>
-          <div class="climate-source-list">${renderRows('penyerapan')}</div>
-        </article>
-        <article class="climate-card climate-card-reduce">
-          <div class="climate-card-head">
-            <span>${english ? 'Avoided emissions / Emission reductions' : 'Emisi terhindar / Avoided emissions'}</span>
-            <strong title="${english ? 'Annual proxy estimate' : 'Estimasi proksi tahunan'}">${formatNumber(reductionEstimate, 1)} tCO2e/yr*</strong>
+        </details>
+        <details class="climate-card climate-card-reduce">
+          <summary>
+            <div class="climate-card-head">
+              <span>${english ? 'Emission reductions per year' : 'Pengurangan emisi per tahun'}</span>
+              <strong title="${english ? 'Annual proxy estimate' : 'Estimasi proksi tahunan'}">${formatNumber(reductionEstimate, 1)} tCO2e/yr*</strong>
+            </div>
+            <div class="climate-bar"><span style="width:${reductionShare}%"></span></div>
+            <small class="climate-open-hint">${english ? 'Select to view the rewetting basis' : 'Klik untuk melihat basis rewetting'}</small>
+          </summary>
+          <div class="climate-expanded">
+            <p class="climate-card-caption">${english ? 'Agreed project basis: 11 active canal blocks × 50 ha = 550 ha estimated rewetting area. The target water table is no deeper than 40 cm below ground.' : 'Basis proyek yang disepakati: 11 sekat kanal aktif × 50 ha = estimasi area rewetting 550 ha. Target muka air tanah tidak lebih dalam dari 40 cm di bawah permukaan.'}</p>
+            <div class="climate-source-list">${renderRows('pengurangan')}</div>
+            <div class="climate-baseline-brief">
+              <strong>${english ? 'Important distinction' : 'Pembedaan penting'}</strong>
+              <span>${english ? 'The 113,830.30 ha peat baseline is ecological context, not rewetting credited to the programme.' : 'Baseline gambut 113.830,30 ha adalah konteks ekologis, bukan luas rewetting yang dikreditkan kepada program.'}</span>
+              <span>${english ? 'Canal blocks and FDRS receive no separate carbon credit.' : 'Sekat kanal dan FDRS tidak memperoleh kredit karbon terpisah.'}</span>
+            </div>
+            <p class="climate-detail-note"><strong>${english ? 'Living estimate:' : 'Estimasi berkembang:'}</strong> ${english ? 'recalculated when canal blocks, intervention villages, water-table monitoring, rewetting delineation, or emission factors change.' : 'dihitung ulang ketika sekat kanal, desa intervensi, monitoring muka air, delineasi rewetting, atau faktor emisi berubah.'}</p>
           </div>
-          <div class="climate-bar"><span style="width:${reductionShare}%"></span></div>
-          <p class="climate-card-caption">${english ? 'Proxy estimate based only on measured rewetting area. The 550 ha outcome already represents canal-block interventions; canal blocks and FDRS receive no separate carbon credit.' : 'Estimasi proksi hanya berdasarkan luas rewetting terukur. Capaian 550 ha sudah mewakili intervensi sekat kanal; sekat kanal dan FDRS tidak memperoleh kredit karbon terpisah.'}</p>
-          <div class="climate-source-list">${renderRows('pengurangan')}</div>
-        </article>
+        </details>
       </div>
-      <div class="climate-footnote"><strong>${english ? 'Methodology:' : 'Metodologi:'}</strong> ${methodology}. ${english ? 'Data contributors:' : 'Kontributor data:'} ${supportingSources.join(', ')}. ${english ? 'Replace the proxy coefficients with site-specific emission factors if/when those become available.' : 'Ganti koefisien proksi dengan faktor emisi spesifik lokasi jika/ketika tersedia.'}</div>
     `;
+    renderMangroveCandidateScenarios();
   }
 
   function showSdgModal(sdg) {
