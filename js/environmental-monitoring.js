@@ -19,6 +19,8 @@
   var analytics={villages:{},socialForestry:{}};
   var attached=new WeakSet();
   var currentAnalysisContext=null;
+  var manualReportSnapshotDataUrl="";
+  var manualReportSnapshotContextKey="";
 
   function esc(value){
     return String(value==null?"":value).replace(/[&<>"']/g,function(c){
@@ -208,9 +210,28 @@
     element.id="yg-village-analytics";
     element.className="yg-village-analytics";
     element.hidden=true;
-    element.innerHTML='<header class="yg-va-head"><div><h2 id="yg-va-title">Analitik areal</h2><p id="yg-va-subtitle"></p></div><div class="yg-va-actions"><button class="yg-va-download" type="button" id="yg-va-download">Unduh laporan</button><button class="yg-va-close" type="button" aria-label="Tutup">×</button></div></header><div class="yg-va-body" id="yg-va-body"></div>';
+    element.innerHTML='<header class="yg-va-head"><div><h2 id="yg-va-title">Analitik areal</h2><p id="yg-va-subtitle"></p></div><div class="yg-va-actions"><button class="yg-va-snapshot" type="button" id="yg-va-snapshot">Pilih snapshot</button><button class="yg-va-download" type="button" id="yg-va-download">Unduh laporan</button><button class="yg-va-close" type="button" aria-label="Tutup">×</button></div></header><input id="yg-va-snapshot-input" type="file" accept="image/png,image/jpeg,image/webp" hidden><div class="yg-va-body" id="yg-va-body"></div>';
     document.getElementById("map-area").appendChild(element);
     element.querySelector(".yg-va-close").addEventListener("click",function(){element.hidden=true;});
+    element.querySelector("#yg-va-snapshot").addEventListener("click",function(){
+      var input=element.querySelector("#yg-va-snapshot-input");
+      if(input){input.click();}
+    });
+    element.querySelector("#yg-va-snapshot-input").addEventListener("change",function(event){
+      var file=event&&event.target&&event.target.files&&event.target.files[0];
+      if(!file||!currentAnalysisContext){return;}
+      var reader=new FileReader();
+      reader.onload=function(){
+        manualReportSnapshotDataUrl=String(reader.result||"");
+        manualReportSnapshotContextKey=currentAnalysisContext.analysisKey||"";
+        var snapshotButton=document.getElementById("yg-va-snapshot");
+        if(snapshotButton){snapshotButton.textContent="Snapshot siap";}
+      };
+      reader.onerror=function(){
+        alert("Gagal membaca file snapshot. Pilih ulang gambar PNG/JPG.");
+      };
+      reader.readAsDataURL(file);
+    });
     element.querySelector("#yg-va-download").addEventListener("click",function(){
       downloadAnalysisReport();
     });
@@ -245,6 +266,13 @@
 
   function nowLabel(){
     return new Date().toLocaleString("id-ID",{dateStyle:"medium",timeStyle:"short"});
+  }
+
+  function imageFormatFromDataUrl(dataUrl){
+    var value=String(dataUrl||"").toLowerCase();
+    if(value.indexOf("data:image/png")===0){return "PNG";}
+    if(value.indexOf("data:image/webp")===0){return "WEBP";}
+    return "JPEG";
   }
 
   function cloneFeature(feature){
@@ -613,11 +641,29 @@
     try{
       var jsPDF=window.jspdf.jsPDF;
       var doc=new jsPDF({orientation:"portrait",unit:"mm",format:"a4"});
-      var mapSnapshot=await captureReportMapImage(context);
+      var mapSnapshot=null;
+      if(
+        manualReportSnapshotDataUrl&&
+        manualReportSnapshotContextKey&&
+        manualReportSnapshotContextKey===context.analysisKey
+      ){
+        mapSnapshot={
+          image:manualReportSnapshotDataUrl,
+          center:null,
+          zoom:"Manual snapshot",
+          legend:reportLegendItems(),
+          isFallback:false,
+          isManual:true,
+          format:imageFormatFromDataUrl(manualReportSnapshotDataUrl)
+        };
+      }else{
+        mapSnapshot=await captureReportMapImage(context);
+      }
       if(!mapSnapshot){
         mapSnapshot=renderSchematicMapData(context);
       }
       var mapImage=mapSnapshot&&mapSnapshot.image;
+      var mapFormat=mapSnapshot&&mapSnapshot.format||imageFormatFromDataUrl(mapImage);
       var logoImage=await loadLogoDataUrl();
       var margin=12;
       var y=12;
@@ -664,7 +710,7 @@
       y+=3;
 
       if(mapImage){
-        doc.addImage(mapImage,"JPEG",margin,y,186,88);
+        doc.addImage(mapImage,mapFormat,margin,y,186,88);
         y+=92;
       }else{
         doc.setFontSize(9);
@@ -700,6 +746,16 @@
         doc.setTextColor(114,82,0);
         doc.text(
           "Catatan peta: browser membatasi capture tile, laporan memakai peta skematik polygon terpilih.",
+          margin,
+          Math.min(294,y+15)
+        );
+      }
+
+      if(mapSnapshot&&mapSnapshot.isManual){
+        doc.setFontSize(8);
+        doc.setTextColor(12,84,96);
+        doc.text(
+          "Catatan peta: laporan memakai snapshot manual yang dipilih pengguna.",
           margin,
           Math.min(294,y+15)
         );
@@ -823,8 +879,15 @@
       info:info,
       record:record,
       layerId:layerId,
-      pendingAdministrativeAnalytics:pendingAdministrativeAnalytics
+      pendingAdministrativeAnalytics:pendingAdministrativeAnalytics,
+      analysisKey:[info.type,info.key].join("|")
     };
+    if(manualReportSnapshotContextKey!==currentAnalysisContext.analysisKey){
+      manualReportSnapshotDataUrl="";
+      manualReportSnapshotContextKey="";
+      var snapshotButton=document.getElementById("yg-va-snapshot");
+      if(snapshotButton){snapshotButton.textContent="Pilih snapshot";}
+    }
     document.getElementById("yg-va-body").innerHTML=
       '<div class="yg-va-grid">'+
       kpi(kpis[0][0],kpis[0][1])+
