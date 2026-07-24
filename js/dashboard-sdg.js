@@ -36,6 +36,12 @@
       icon: 'assets/sdg-icons/sdg-2.png'
     },
     {
+      goal: 4,
+      title: 'Pendidikan Berkualitas',
+      contribution: '<ul><li>Pelatihan pembibitan, restorasi, agroforestri, pengolahan kopi, dan pertanian tanpa bakar.</li><li>Peningkatan kapasitas kelompok masyarakat dalam pemantauan ekosistem.</li><li>Penyusunan panduan dan materi pembelajaran berbasis pengalaman lapangan.</li></ul>',
+      icon: 'https://www.un.org/sustainabledevelopment/wp-content/uploads/sites/3/2016/01/S_SDG_Icons-01-04.jpg'
+    },
+    {
       goal: 5,
       title: 'Kesetaraan Gender',
       contribution: '<ul><li>Mendorong partisipasi perempuan dalam pengambilan keputusan di tingkat desa.</li><li>Mendukung kewirausahaan perempuan melalui kelompok tani kopi Liberika.</li><li>Memastikan keterlibatan perempuan dalam semua sesi pelatihan dan kegiatan.</li></ul>',
@@ -54,10 +60,22 @@
       icon: 'assets/sdg-icons/sdg-8.png'
     },
     {
+      goal: 10,
+      title: 'Berkurangnya Kesenjangan',
+      contribution: '<ul><li>Mendorong partisipasi kelompok rentan dan penyandang disabilitas dalam kegiatan lingkungan.</li><li>Mendukung kepemimpinan inklusif dalam kelompok masyarakat pesisir.</li><li>Salah satu kelompok mangrove di Sepahat dipimpin oleh penyandang disabilitas dan berperan aktif dalam pengelolaan restorasi mangrove.</li></ul>',
+      icon: 'https://www.un.org/sustainabledevelopment/wp-content/uploads/sites/3/2016/01/S_SDG_Icons-01-10.jpg'
+    },
+    {
       goal: 11,
       title: 'Kota dan Permukiman Berkelanjutan',
       contribution: '<ul><li>Pembangunan hybrid engineering (APO) untuk melindungi garis pantai dan permukiman.</li><li>Pemasangan sistem peringatan dini kebakaran (FDRS).</li><li>Peningkatan kapasitas masyarakat dalam pencegahan kebakaran lahan.</li></ul>',
       icon: 'assets/sdg-icons/sdg-11.png'
+    },
+    {
+      goal: 12,
+      title: 'Konsumsi dan Produksi yang Bertanggung Jawab',
+      contribution: '<ul><li>Pengembangan kopi Liberika dan produk lokal melalui praktik produksi berkelanjutan.</li><li>Penerapan pertanian tanpa bakar dan agroforestri ramah gambut.</li><li>Peningkatan pengolahan pascapanen, SOP produksi, kualitas produk, dan pemanfaatan sumber daya lokal secara bertanggung jawab.</li></ul>',
+      icon: 'https://www.un.org/sustainabledevelopment/wp-content/uploads/sites/3/2016/01/S_SDG_Icons-01-12.jpg'
     },
     {
       goal: 13,
@@ -76,6 +94,12 @@
       title: 'Ekosistem Daratan',
       contribution: '<ul><li>Restorasi ekosistem gambut hidrologis melalui pembangunan sekat kanal.</li><li>Rehabilitasi lahan dengan penanaman pohon hutan dan MPTS.</li><li>Perlindungan keanekaragaman hayati di Hutan Adat Imbo Putui.</li></ul>',
       icon: 'assets/sdg-icons/sdg-15.png'
+    },
+    {
+      goal: 16,
+      title: 'Perdamaian, Keadilan dan Kelembagaan yang Tangguh',
+      contribution: '<ul><li>Penguatan kapasitas KTH, KUPS, kelompok perempuan, dan kelompok pengelola mangrove.</li><li>Mendukung penyusunan rencana kerja perhutanan sosial dan pengambilan keputusan partisipatif.</li><li>Mendorong kolaborasi masyarakat dengan pemerintah desa, Balai PSKL, perguruan tinggi, dan mitra program.</li></ul>',
+      icon: 'https://www.un.org/sustainabledevelopment/wp-content/uploads/sites/3/2016/01/S_SDG_Icons-01-16.jpg'
     },
     {
       goal: 17,
