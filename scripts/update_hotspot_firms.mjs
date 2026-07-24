@@ -361,7 +361,8 @@ async function main() {
   });
 
   if (!activeSources.length) {
-    throw new Error("Tidak ada source FIRMS aktif yang overlap dengan periode 5 tahun terakhir.");
+    console.warn("[FIRMS] Tidak ada source FIRMS aktif yang overlap dengan periode 5 tahun terakhir. Lewati pembaruan data.");
+    return;
   }
 
   const yearIndexByValue = new Map();
