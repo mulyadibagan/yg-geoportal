@@ -295,7 +295,7 @@
   }
 
   function programOf(props, layerId) {
-    if (layerId === "desa_intervensi" || layerId === "titik_desa") return "";
+    if (layerId === "desa_intervensi") return "";
 
     const explicit = firstValue(props, [
       "Program", "Nama_Program", "Program_Name", "program", "program_name"
@@ -727,7 +727,7 @@
         .includes(layerId) || /gambut|peat|agroforestri|kopi/.test(text);
       const isMineral = /hutan adat|hutan desa|imbo putui|lahan mineral|plot ukur permanen|\bpup\b/.test(text);
       const isCapacity = /pelatihan|peningkatan kapasitas|workshop|sosialisasi|pendampingan/.test(text) || participants > 0;
-      const isAdministrative = ["desa_intervensi", "titik_desa"].includes(layerId);
+      const isAdministrative = ["desa_intervensi"].includes(layerId);
       const isObservation = ["monitoring_reports", "fdrs"].includes(layerId) ||
         (layerId === "community_reports" && area <= 0 && seedlings <= 0 &&
           !isMineral && !isCapacity && !isNursery);

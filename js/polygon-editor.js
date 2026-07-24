@@ -6,7 +6,7 @@
   const editableLayerDefinitions = [
     { id: "area_mangrove", label: "Area Penanaman Mangrove", category: "Penanaman Mangrove" },
     { id: "area_kopi", label: "Wilayah Penanaman Kopi", category: "Agroforestri/Kopi" },
-    { id: "kopi", label: "Distribusi Lahan Kopi", category: "Agroforestri/Kopi" },
+    { id: "kopi", label: "Titik Tanam Kopi", category: "Agroforestri/Kopi" },
     { id: "nursery_mangrove", label: "Rumah Pembibitan Mangrove", category: "Pembibitan Mangrove" },
     { id: "fdrs", label: "FDRS / Water Table", category: "FDRS" },
     { id: "sekat_kanal", label: "Sekat Kanal", category: "Sekat Kanal" },

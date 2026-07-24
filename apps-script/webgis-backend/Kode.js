@@ -326,6 +326,8 @@ if (action === 'content-save') {
 function getAdminDashboardData(token) {
   assertAdmin_(token);
 
+  const targetLayerOptions = getAdminTargetLayerOptions_();
+
   const sheet = getSheet_();
 
   if (!sheet || sheet.getLastRow() < 2) {
@@ -338,7 +340,8 @@ function getAdminDashboardData(token) {
         revision: 0,
         published: 0
       },
-      reports: []
+      reports: [],
+      targetLayerOptions: targetLayerOptions
     };
   }
 
@@ -397,11 +400,26 @@ function getAdminDashboardData(token) {
       revision: reports.filter(r => r.status === 'Perlu Perbaikan').length,
       published: reports.filter(r => r.status === 'Sudah Dipublikasikan').length
     },
-    reports: reports
+    reports: reports,
+    targetLayerOptions: targetLayerOptions
   };
 }
 
-function updateReportStatus(token, rowNumber, newStatus, adminNote) {
+function getAdminTargetLayerOptions_() {
+  return [
+    { id: 'area_mangrove', label: 'Area Penanaman Mangrove', types: ['Polygon', 'MultiPolygon'] },
+    { id: 'area_kopi', label: 'Wilayah Penanaman Kopi', types: ['Polygon', 'MultiPolygon'] },
+    { id: 'area_agroforestry', label: 'Area Agroforestry', types: ['Polygon', 'MultiPolygon'] },
+    { id: 'apo', label: 'Alat Pemecah Ombak (APO)', types: ['LineString', 'MultiLineString'] },
+    { id: 'kopi', label: 'Titik Tanam Kopi', types: ['Point', 'MultiPoint'] },
+    { id: 'nursery_mangrove', label: 'Rumah Pembibitan Mangrove', types: ['Point', 'MultiPoint'] },
+    { id: 'fdrs', label: 'FDRS / Water Table', types: ['Point', 'MultiPoint'] },
+    { id: 'sekat_kanal', label: 'Sekat Kanal', types: ['Point', 'MultiPoint'] },
+    { id: 'kolam_ikan', label: 'Titik Kolam Ikan', types: ['Point', 'MultiPoint'] }
+  ];
+}
+
+function updateReportStatus(token, rowNumber, newStatus, adminNote, targetLayerId, targetLayerLabel) {
   assertAdmin_(token);
 
   const allowedStatuses = [
@@ -434,8 +452,35 @@ function updateReportStatus(token, rowNumber, newStatus, adminNote) {
     throw new Error('Baris laporan tidak valid.');
   }
 
+  const reportType = clean_(sheet.getRange(rowNumber, 2).getDisplayValue());
+  const isMonitoring = reportType === 'Monitoring';
+  const requiresTargetLayer = (
+    reportType === 'Titik Baru' ||
+    reportType === 'Area/Poligon Baru' ||
+    reportType === 'Kebakaran' ||
+    reportType === 'Biodiversitas' ||
+    reportType === 'Abrasi'
+  );
+
+  const nextTargetLayerId = clean_(targetLayerId);
+  const nextTargetLayerLabel = clean_(targetLayerLabel);
+
   if (newStatus === 'Sudah Dipublikasikan') {
+    if (!isMonitoring && requiresTargetLayer && !nextTargetLayerId) {
+      throw new Error('Pilih layer target sebelum publikasi.');
+    }
+    if (!isMonitoring && nextTargetLayerId) {
+      sheet.getRange(rowNumber, 29).setValue(nextTargetLayerId);
+      sheet.getRange(rowNumber, 30).setValue(
+        nextTargetLayerLabel || nextTargetLayerId
+      );
+    }
     validateReportForPublication_(sheet, rowNumber);
+  } else if (!isMonitoring && nextTargetLayerId) {
+    sheet.getRange(rowNumber, 29).setValue(nextTargetLayerId);
+    sheet.getRange(rowNumber, 30).setValue(
+      nextTargetLayerLabel || nextTargetLayerId
+    );
   }
 
   const now = new Date();
@@ -963,7 +1008,50 @@ function validateReportForPublication_(sheet, rowNumber) {
   }
 
   requireAnyGeometryOrPoint_(geometry, latitude, longitude);
+
+  if (reportType === 'Monitoring') {
+    return true;
+  }
+
+  const effectiveGeometryType = geometry
+    ? geometry.type
+    : 'Point';
+
+  validateTargetLayerCompatibility_(targetLayerId, effectiveGeometryType);
   return true;
+}
+
+function validateTargetLayerCompatibility_(targetLayerId, geometryType) {
+  const layer = clean_(targetLayerId);
+  const geom = clean_(geometryType);
+  if (!layer || !geom) return;
+
+  const pointLayers = {
+    kopi: true,
+    nursery_mangrove: true,
+    fdrs: true,
+    sekat_kanal: true
+  };
+  const lineLayers = {
+    apo: true
+  };
+  const polygonLayers = {
+    area_mangrove: true,
+    area_kopi: true,
+    desa_intervensi: true
+  };
+
+  if (pointLayers[layer] && ['Point', 'MultiPoint'].indexOf(geom) === -1) {
+    throw new Error('Layer target ' + layer + ' hanya menerima geometri titik.');
+  }
+
+  if (lineLayers[layer] && ['LineString', 'MultiLineString'].indexOf(geom) === -1) {
+    throw new Error('Layer target ' + layer + ' hanya menerima geometri garis.');
+  }
+
+  if (polygonLayers[layer] && ['Polygon', 'MultiPolygon'].indexOf(geom) === -1) {
+    throw new Error('Layer target ' + layer + ' hanya menerima geometri area/poligon.');
+  }
 }
 
 function requirePointLocation_(geometry, latitude, longitude) {

@@ -20,8 +20,7 @@
     { id: "kopi", label: "Distribusi Kopi", caption: "Penguatan ekonomi masyarakat", color: "#79573d", type: "point", visible: true },
     { id: "fdrs", label: "FDRS / Water Table", caption: "Pemantauan risiko kebakaran", color: "#e58a3d", type: "point", visible: true },
     { id: "sekat_kanal", label: "Sekat Kanal", caption: "Infrastruktur pembasahan gambut", color: "#16829a", type: "point", visible: true },
-    { id: "nursery_mangrove", label: "Pembibitan Mangrove", caption: "Rumah bibit masyarakat", color: "#91a83f", type: "point", visible: true },
-    { id: "titik_desa", label: "Titik Desa", caption: "Pusat desa intervensi", color: "#397ac2", type: "point", visible: false }
+    { id: "nursery_mangrove", label: "Pembibitan Mangrove", caption: "Rumah bibit masyarakat", color: "#91a83f", type: "point", visible: true }
   ];
   const REFERENCES = [
     { id: "kawasan_hutan_sk_903", file: "kawasan_hutan_sk_903.geojson", label: "Kawasan Hutan SK 903", caption: "Referensi fungsi kawasan", color: "#56645f", type: "polygon" },
@@ -44,7 +43,6 @@
     fdrs: ["FDRS / Water Table", "Fire-risk monitoring"],
     sekat_kanal: ["Canal Blocks", "Peatland rewetting infrastructure"],
     nursery_mangrove: ["Mangrove Nursery", "Community seedling nurseries"],
-    titik_desa: ["Village Points", "Intervention village centres"],
     kawasan_hutan_sk_903: ["Forest Estate SK 903", "Forest-function reference"],
     gambut_bbsdlp_2019: ["BBSDLP Peat Map 2019", "Peat-distribution reference"],
     iuphhk_ht_2014: ["IUPHHK-HT 2014", "Forest-utilisation licence reference"],

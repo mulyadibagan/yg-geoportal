@@ -10,8 +10,7 @@
     "area_kopi",
     "kopi",
     "fdrs",
-    "sekat_kanal",
-    "titik_desa"
+    "sekat_kanal"
   ];
 
   const ADMIN_REFERENCE_IDS = new Set([

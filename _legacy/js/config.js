@@ -21,13 +21,6 @@ window.YG_LAYER_CONFIG = [
     "visible": true
   },
   {
-    "id": "titik_desa",
-    "label": "Titik Desa Intervensi",
-    "color": "#1565c0",
-    "type": "point",
-    "visible": false
-  },
-  {
     "id": "kopi",
     "label": "Distribusi Lahan Kopi",
     "color": "#6d4c41",

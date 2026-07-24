@@ -11,7 +11,6 @@
     apo: { label: "Alat Pemecah Ombak (APO)", color: "#d32f2f", visible: true },
     area_mangrove: { label: "Area Penanaman Mangrove", color: "#00796b", visible: true },
     monitoring_reports: { label: "Hasil Monitoring Terverifikasi", color: "#f9a825", visible: true },
-    titik_desa: { label: "Titik Desa Intervensi", color: "#1565c0", visible: false },
     kopi: { label: "Distribusi Lahan Kopi", color: "#6d4c41", visible: true },
     fdrs: { label: "FDRS / Water Table", color: "#e65100", visible: true },
     sekat_kanal: { label: "Sekat Kanal", color: "#00838f", visible: true },

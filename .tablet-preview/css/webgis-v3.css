@@ -240,14 +240,25 @@ body.webgis-page .app-shell{
 }
 
 .yg-point-dot {
+  align-items: center;
   background: var(--yg-point-color, #078b78);
   border: 2px solid #fff;
   border-radius: 50%;
   box-shadow: 0 1px 4px rgba(16, 42, 36, 0.35);
-  display: block;
+  display: inline-flex;
   height: var(--yg-point-size, 14px);
+  justify-content: center;
   pointer-events: none;
   width: var(--yg-point-size, 14px);
+}
+
+.yg-point-dot__symbol {
+  color: #fff;
+  font-size: max(8px, calc(var(--yg-point-size, 14px) * 0.52));
+  font-weight: 800;
+  line-height: 1;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.22);
+  transform: translateY(-0.2px);
 }
 
 .yg-point-hit-marker:hover .yg-point-dot,
