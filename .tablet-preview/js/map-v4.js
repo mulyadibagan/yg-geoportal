@@ -1250,13 +1250,20 @@ L.control.scale({
       throw new Error("GeoJSON referensi tidak valid.");
     }
 
+    const isInteractiveReference =
+      config.type === "social_forestry" ||
+      config.type === "village_boundary";
+
     const layer = L.geoJSON(data, {
+      interactive: isInteractiveReference,
       style: feature => referenceStyle(config, feature),
       onEachFeature: (feature, leafletLayer) => {
-        leafletLayer.bindPopup(
-          referencePopup(config, feature),
-          { maxWidth: 360 }
-        );
+        if (isInteractiveReference) {
+          leafletLayer.bindPopup(
+            referencePopup(config, feature),
+            { maxWidth: 360 }
+          );
+        }
       }
     });
 
