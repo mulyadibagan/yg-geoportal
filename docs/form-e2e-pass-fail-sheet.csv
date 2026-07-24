@@ -1,7 +1,7 @@
 No,Skenario,Langkah Singkat,Kriteria Lulus,Status (PASS/FAIL),Catatan
 1,Submit dasar berhasil masuk sheet,"Kirim 1 laporan sederhana","UI sukses, row baru masuk sheet, status Menunggu Verifikasi",,
-2,Field mineral/gambut tersimpan benar,"Titik Baru/Area Baru isi bibit hutan + pilih Jenis lahan=Mineral","Target Feature Properties dan Proposed Changes JSON memuat Jenis_Lahan_Penanaman=Mineral",,
-3,Validasi field lahan berjalan,"Isi jumlah/jenis bibit hutan tanpa pilih jenis lahan","Submit diblokir dengan alert validasi",,
+2,Field kategori ekosistem tersimpan benar,"Titik Baru/Area Baru pilih Kategori ekosistem=Lahan Mineral","Target Feature Properties dan Proposed Changes JSON memuat Kategori_Ekosistem=Lahan Mineral",,
+3,Validasi kategori ekosistem berjalan,"Pilih Titik Baru/Area Baru tanpa memilih kategori ekosistem","Submit diblokir dengan alert validasi",,
 4,Tambah Foto Kegiatan,"Pilih objek WebGIS + upload foto (mangrove minimal 2)","Submit sukses, metadata target terisi",,
 5,Perbaikan Informasi,"Pilih objek + isi minimal 1 atribut baru + catatan","old/new info + proposed changes tersimpan",,
 6,Titik Baru,"Pilih titik + isi wajib + foto","Geometri Point + lat/long tersimpan",,

@@ -25,17 +25,17 @@ Skenario A: Titik Baru dengan atribut pohon hutan
 
 1. Pilih jenis laporan: Titik Baru.
 2. Isi donor.
-3. Isi Jumlah bibit pohon hutan (contoh: 1200).
-4. Isi Jenis/pohon hutan (contoh: Alstonia scholaris).
-5. Pilih Jenis lahan penanaman: Mineral (bukan gambut).
+3. Pilih Kategori ekosistem area baru: Lahan Mineral.
+4. Isi Jumlah bibit pohon hutan (contoh: 1200).
+5. Isi Jenis/pohon hutan (contoh: Alstonia scholaris).
 6. Lengkapi titik, judul, deskripsi, dan 1 foto.
 7. Submit.
 
 Expected:
 
 1. Laporan berhasil dikirim.
-2. Di sheet, kolom Target Feature Properties memuat:
-   - Jenis_Lahan_Penanaman: Mineral
+3. Di sheet, kolom Target Feature Properties memuat:
+   - Kategori_Ekosistem: Lahan Mineral
    - Jumlah_Bibit_Hutan: 1200
    - Jenis_Bibit_Hutan: Alstonia scholaris
 3. Di sheet, kolom Proposed Changes JSON memuat key yang sama.
@@ -43,13 +43,13 @@ Expected:
 Skenario B: Validasi wajib pilih jenis lahan
 
 1. Pilih Titik Baru.
-2. Isi Jumlah bibit atau Jenis bibit.
-3. Jangan pilih Jenis lahan penanaman.
+2. Isi donor dan data wajib lainnya.
+3. Jangan pilih Kategori ekosistem area baru.
 4. Submit.
 
 Expected:
 
-1. Muncul alert validasi yang meminta memilih jenis lahan penanaman.
+1. Muncul alert validasi yang meminta memilih kategori ekosistem objek baru.
 2. Form tidak terkirim.
 
 ## 4. Uji Semua Tipe Form
@@ -189,7 +189,7 @@ Expected:
 Expected:
 
 1. Data terbit sesuai tipe.
-2. Atribut baru Jenis_Lahan_Penanaman ikut terbawa untuk laporan objek baru saat ada nilainya.
+2. Atribut baru Kategori_Ekosistem/Jenis_Ekosistem ikut terbawa untuk laporan objek baru.
 
 ## 6. Kriteria Lulus
 

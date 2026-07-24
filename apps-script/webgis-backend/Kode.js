@@ -712,11 +712,6 @@ function buildStoredProposedChanges_(data) {
     stored.Program = mapEcosystemToProgramme_(normalizedEcosystemType);
   }
 
-  const normalizedForestLandType = normalizeForestLandType_(data.forestLandType);
-  if (normalizedForestLandType) {
-    stored.Jenis_Lahan_Penanaman = normalizedForestLandType;
-  }
-
   const normalizedForestSeedlingCount = normalizeNonNegativeInteger_(
     data.forestSeedlingsCount
   );
@@ -769,13 +764,6 @@ function buildTargetFeaturePropertiesForStorage_(data) {
     }
   }
 
-  const normalizedForestLandType = normalizeForestLandType_(
-    data && data.forestLandType
-  );
-  if (normalizedForestLandType && !clean_(properties.Jenis_Lahan_Penanaman)) {
-    properties.Jenis_Lahan_Penanaman = normalizedForestLandType;
-  }
-
   const normalizedForestSeedlingCount = normalizeNonNegativeInteger_(
     data && data.forestSeedlingsCount
   );
@@ -794,23 +782,6 @@ function buildTargetFeaturePropertiesForStorage_(data) {
   }
 
   return JSON.stringify(properties);
-}
-
-function normalizeForestLandType_(value) {
-  const text = clean_(value).toLowerCase();
-  if (!text) {
-    return '';
-  }
-
-  if (text === 'mineral' || text.indexOf('bukan gambut') !== -1) {
-    return 'Mineral';
-  }
-
-  if (text === 'gambut') {
-    return 'Gambut';
-  }
-
-  return 'Campuran/Tidak Pasti';
 }
 
 function normalizeNewObjectEcosystemType_(value) {
@@ -1330,13 +1301,16 @@ function validateIncomingPayload_(data) {
     }
   }
 
-  if (data.reportType === 'Area/Poligon Baru') {
+  if (
+    data.reportType === 'Titik Baru' ||
+    data.reportType === 'Area/Poligon Baru'
+  ) {
     const ecosystemType = normalizeNewObjectEcosystemType_(
       data.newObjectEcosystem
     );
     if (!ecosystemType) {
       throw new Error(
-        'Kategori ekosistem area baru wajib dipilih (Mangrove/Gambut/Lahan Mineral).'
+        'Kategori ekosistem objek baru wajib dipilih (Mangrove/Gambut/Lahan Mineral).'
       );
     }
   }

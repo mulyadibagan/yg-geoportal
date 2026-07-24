@@ -31,14 +31,14 @@ Versi deploy Apps Script: __________
 - Status: ____
 - Catatan: ____
 
-### 2) Field mineral/gambut tersimpan benar
-- Langkah: Titik Baru/Area Baru isi bibit hutan + pilih Jenis lahan penanaman = Mineral.
-- Lulus jika: ada `Jenis_Lahan_Penanaman=Mineral` di Target Feature Properties dan Proposed Changes JSON.
+### 2) Field kategori ekosistem tersimpan benar
+- Langkah: Titik Baru/Area Baru pilih Kategori ekosistem = Lahan Mineral.
+- Lulus jika: ada `Kategori_Ekosistem=Lahan Mineral` di Target Feature Properties dan Proposed Changes JSON.
 - Status: ____
 - Catatan: ____
 
-### 3) Validasi field lahan berjalan
-- Langkah: isi jumlah/jenis bibit hutan tapi kosongkan Jenis lahan penanaman.
+### 3) Validasi kategori ekosistem berjalan
+- Langkah: pilih Titik Baru/Area Baru lalu kosongkan Kategori ekosistem.
 - Lulus jika: submit diblokir dengan alert validasi.
 - Status: ____
 - Catatan: ____

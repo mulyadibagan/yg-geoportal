@@ -99,6 +99,15 @@
     });
   });
 
+  var ecosystemTypeInput = document.getElementById('new-object-ecosystem');
+  if(ecosystemTypeInput){
+    ecosystemTypeInput.addEventListener('change',function(){
+      if(selectedType){
+        configureFormByType(selectedType);
+      }
+    });
+  }
+
   function configureFormByType(type){
     resetGeometry();
 
@@ -132,7 +141,7 @@
     if(newObjectDonorFields) newObjectDonorFields.hidden = !needsNewObjectDonor;
     if(donorInput) donorInput.required = needsNewObjectDonor;
     if(newObjectEcosystemInput) newObjectEcosystemInput.required =
-      type === 'Area/Poligon Baru';
+      needsNewObjectDonor;
     if(forestFields) forestFields.hidden = !needsNewObjectDonor;
     var replantingFields = document.getElementById('replanting-fields');
     if(replantingFields) replantingFields.hidden =
@@ -1794,7 +1803,7 @@
     return '';
   }
 
-  function buildNewObjectAttributes(donor, ecosystemType, forestSeedlingsCount, forestSeedlingsSpecies, forestLandType){
+  function buildNewObjectAttributes(donor, ecosystemType, forestSeedlingsCount, forestSeedlingsSpecies){
     var attributes = {
       Donor:donor,
       Donor_Cluster:donor,
@@ -1812,9 +1821,6 @@
     }
     if(forestSeedlingsSpecies){
       attributes.Jenis_Bibit_Hutan = forestSeedlingsSpecies;
-    }
-    if(forestLandType){
-      attributes.Jenis_Lahan_Penanaman = forestLandType;
     }
 
     return attributes;
@@ -1967,24 +1973,10 @@
 
     var forestSeedlingsCount = value('forest-seedlings-count');
     var forestSeedlingsSpecies = value('forest-seedlings-species');
-    var forestLandType = value('forest-land-type');
     var newObjectEcosystem = value('new-object-ecosystem');
 
-    if(
-      isNewObjectReport &&
-      (forestSeedlingsCount || forestSeedlingsSpecies) &&
-      !forestLandType
-    ){
-      alert('Pilih jenis lahan penanaman (mineral/gambut) untuk data pohon hutan.');
-      document.getElementById('forest-land-type').scrollIntoView({
-        behavior:'smooth',
-        block:'center'
-      });
-      return;
-    }
-
-    if(selectedType === 'Area/Poligon Baru' && !newObjectEcosystem){
-      alert('Pilih kategori ekosistem area baru (mangrove/gambut/lahan mineral).');
+    if(isNewObjectReport && !newObjectEcosystem){
+      alert('Pilih kategori ekosistem objek baru (mangrove/gambut/lahan mineral).');
       document.getElementById('new-object-ecosystem').scrollIntoView({
         behavior:'smooth',
         block:'center'
@@ -2196,8 +2188,7 @@
           newObjectDonor,
           newObjectEcosystem,
           forestSeedlingsCount,
-          forestSeedlingsSpecies,
-          forestLandType
+          forestSeedlingsSpecies
         )
       : null;
 
@@ -2260,7 +2251,6 @@
       newObjectEcosystem:isNewObjectReport ? newObjectEcosystem : '',
       forestSeedlingsCount:forestSeedlingsCount,
       forestSeedlingsSpecies:forestSeedlingsSpecies,
-      forestLandType:forestLandType,
       images:compressedImages,
       documents:selectedType === 'Capacity Building' ? capacityDocuments : []
     };

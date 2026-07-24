@@ -17,14 +17,14 @@ Tujuan: validasi cepat bahwa field baru mineral/gambut dan aturan form kritikal 
 - Judul: Uji cepat form
 - Deskripsi: Uji otomatisasi/manual 3 skenario prioritas
 
-## Skenario 1: Titik Baru + Lahan Mineral (harus SUKSES)
+## Skenario 1: Titik Baru + Kategori Lahan Mineral (harus SUKSES)
 
 Langkah:
 1. Pilih jenis laporan: Titik Baru.
 2. Isi Mitra pendanaan/donor: Aramco Asia Singapore.
-3. Isi Jumlah bibit pohon hutan: 1200.
-4. Isi Jenis/pohon hutan: Alstonia scholaris.
-5. Pilih Jenis lahan penanaman: Mineral (bukan gambut).
+3. Pilih Kategori ekosistem area baru: Lahan Mineral.
+4. Isi Jumlah bibit pohon hutan: 1200.
+5. Isi Jenis/pohon hutan: Alstonia scholaris.
 6. Tentukan titik di peta (klik sekali).
 7. Upload 1 foto.
 8. Submit.
@@ -33,23 +33,22 @@ Expected:
 1. Muncul pesan sukses di UI.
 2. Row baru masuk sheet.
 3. Di kolom Target Feature Properties ada:
-   - Jenis_Lahan_Penanaman: Mineral
+   - Kategori_Ekosistem: Lahan Mineral
    - Jumlah_Bibit_Hutan: 1200
    - Jenis_Bibit_Hutan: Alstonia scholaris
 4. Di kolom Proposed Changes JSON ada key yang sama.
 
-## Skenario 2: Validasi Lahan Kosong (harus GAGAL TERKONTROL)
+## Skenario 2: Validasi Kategori Ekosistem Kosong (harus GAGAL TERKONTROL)
 
 Langkah:
 1. Pilih jenis laporan: Titik Baru.
 2. Isi donor.
-3. Isi Jumlah bibit pohon hutan: 500.
-4. Biarkan Jenis lahan penanaman kosong.
-5. Tentukan titik, isi field wajib, upload 1 foto.
+3. Biarkan Kategori ekosistem area baru kosong.
+4. Tentukan titik, isi field wajib, upload 1 foto.
 6. Submit.
 
 Expected:
-1. Alert validasi muncul: wajib pilih jenis lahan penanaman.
+1. Alert validasi muncul: wajib pilih kategori ekosistem objek baru.
 2. Submit dibatalkan.
 3. Tidak ada row baru masuk sheet.
 
