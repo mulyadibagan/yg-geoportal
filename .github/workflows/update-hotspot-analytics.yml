@@ -1,0 +1,56 @@
+name: Update Hotspot Analytics
+
+on:
+  schedule:
+    - cron: "15 0 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: hotspot-analytics-main
+  cancel-in-progress: false
+
+jobs:
+  update:
+    name: Refresh VIIRS analytics data
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Update hotspot metrics
+        env:
+          FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
+          FIRMS_SOURCES: VIIRS_SNPP_SP,VIIRS_NOAA20_SP,VIIRS_SNPP_NRT,VIIRS_NOAA20_NRT,VIIRS_NOAA21_NRT
+          FIRMS_VILLAGE_GEOJSON: ${{ vars.FIRMS_VILLAGE_GEOJSON }}
+        run: |
+          if [ -z "$FIRMS_MAP_KEY" ]; then
+            echo "FIRMS_MAP_KEY belum diset di GitHub Secrets."
+            exit 1
+          fi
+          if [ -z "$FIRMS_VILLAGE_GEOJSON" ]; then
+            FIRMS_VILLAGE_GEOJSON="data/desa_intervensi.geojson"
+          fi
+          node scripts/update_hotspot_firms.mjs
+
+      - name: Commit and push if changed
+        run: |
+          if git diff --quiet -- data/village-forest-analytics.json; then
+            echo "No hotspot data changes to commit."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/village-forest-analytics.json
+          git commit -m "chore(data): auto-update FIRMS hotspot analytics"
+          git push origin HEAD:main
