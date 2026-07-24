@@ -19,6 +19,9 @@ const FIRMS_SOURCES = (process.env.FIRMS_SOURCES || "VIIRS_SNPP_SP,VIIRS_NOAA20_
   .map((x) => x.trim())
   .filter(Boolean);
 const CHUNK_DAYS = 5;
+const REQUEST_TIMEOUT_MS = Number(process.env.FIRMS_TIMEOUT_MS || 90000);
+const REQUEST_MAX_ATTEMPTS = Number(process.env.FIRMS_RETRY_ATTEMPTS || 4);
+const REQUEST_RETRY_BASE_MS = Number(process.env.FIRMS_RETRY_BASE_MS || 1200);
 const API_ROOT = "https://firms.modaps.eosdis.nasa.gov/api";
 
 if (!FIRMS_KEY) {
@@ -60,32 +63,65 @@ function daysBetween(a, b) {
   return Math.floor((a.getTime() - b.getTime()) / 86400000);
 }
 
-function requestText(url) {
+function wait(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function isRetryableStatus(statusCode) {
+  return statusCode === 408 || statusCode === 429 || (statusCode >= 500 && statusCode <= 599);
+}
+
+function requestTextOnce(url) {
   return new Promise((resolve, reject) => {
-    https
-      .get(
-        url,
-        {
-          headers: {
-            "User-Agent": "YG-GeoPortal/1.0"
-          }
-        },
-        (response) => {
-          let body = "";
-          response.on("data", (chunk) => {
-            body += chunk;
-          });
-          response.on("end", () => {
-            if ((response.statusCode || 0) < 200 || (response.statusCode || 0) >= 300) {
-              reject(new Error(`HTTP ${response.statusCode}: ${body.slice(0, 250)}`));
-              return;
-            }
-            resolve(body);
-          });
+    const request = https.get(
+      url,
+      {
+        headers: {
+          "User-Agent": "YG-GeoPortal/1.0"
         }
-      )
-      .on("error", reject);
+      },
+      (response) => {
+        let body = "";
+        response.on("data", (chunk) => {
+          body += chunk;
+        });
+        response.on("end", () => {
+          const statusCode = response.statusCode || 0;
+          if (statusCode < 200 || statusCode >= 300) {
+            const error = new Error(`HTTP ${statusCode}: ${body.slice(0, 250)}`);
+            error.statusCode = statusCode;
+            reject(error);
+            return;
+          }
+          resolve(body);
+        });
+      }
+    );
+    request.setTimeout(REQUEST_TIMEOUT_MS, () => {
+      request.destroy(new Error(`Request timeout after ${REQUEST_TIMEOUT_MS}ms`));
+    });
+    request.on("error", reject);
   });
+}
+
+async function requestText(url) {
+  let lastError = null;
+  for (let attempt = 1; attempt <= REQUEST_MAX_ATTEMPTS; attempt += 1) {
+    try {
+      return await requestTextOnce(url);
+    } catch (error) {
+      lastError = error;
+      const statusCode = Number(error && error.statusCode);
+      const retryable = isRetryableStatus(statusCode) || statusCode === 0 || Number.isNaN(statusCode);
+      if (!retryable || attempt >= REQUEST_MAX_ATTEMPTS) {
+        throw error;
+      }
+      const backoffMs = REQUEST_RETRY_BASE_MS * Math.pow(2, attempt - 1);
+      console.warn(`[FIRMS] Retry ${attempt}/${REQUEST_MAX_ATTEMPTS - 1} after error: ${error.message}`);
+      await wait(backoffMs);
+    }
+  }
+  throw lastError;
 }
 
 async function getSourceAvailability(source) {
@@ -347,7 +383,13 @@ async function main() {
 
     for (let index = 0; index < chunks.length; index += 1) {
       const chunk = chunks[index];
-      const csv = await fetchAreaCsv(sourceInfo.source, villageBounds, toIsoDate(chunk.end));
+      let csv = "";
+      try {
+        csv = await fetchAreaCsv(sourceInfo.source, villageBounds, toIsoDate(chunk.end));
+      } catch (error) {
+        console.warn(`[FIRMS] Lewati chunk ${sourceInfo.source} ${toIsoDate(chunk.start)}..${toIsoDate(chunk.end)}: ${error.message}`);
+        continue;
+      }
       const points = parseFirmsCsv(csv).filter((point) => {
         const d = parseIsoDate(point.date);
         return d >= chunk.start && d <= chunk.end;
