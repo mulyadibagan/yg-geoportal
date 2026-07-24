@@ -30,6 +30,42 @@
     return isFinite(n)?n:0;
   }
 
+  function ringAreaSquareMeters(ring){
+    if(!Array.isArray(ring)||ring.length<3){return 0;}
+    var toRadians=Math.PI/180;
+    var radius=6378137;
+    var area=0;
+    for(var i=0;i<ring.length;i+=1){
+      var current=ring[i];
+      var next=ring[(i+1)%ring.length];
+      if(!Array.isArray(current)||!Array.isArray(next)){continue;}
+      area+=(next[0]-current[0])*toRadians*(2+Math.sin(current[1]*toRadians)+Math.sin(next[1]*toRadians));
+    }
+    return Math.abs(area*radius*radius/2);
+  }
+
+  function polygonAreaSquareMeters(rings){
+    if(!Array.isArray(rings)||!rings.length){return 0;}
+    var area=ringAreaSquareMeters(rings[0]);
+    for(var i=1;i<rings.length;i+=1){
+      area-=ringAreaSquareMeters(rings[i]);
+    }
+    return Math.max(0,area);
+  }
+
+  function geometryAreaHa(geometry){
+    if(!geometry||!Array.isArray(geometry.coordinates)){return 0;}
+    var squareMeters=0;
+    if(geometry.type==="Polygon"){
+      squareMeters=polygonAreaSquareMeters(geometry.coordinates);
+    }else if(geometry.type==="MultiPolygon"){
+      squareMeters=geometry.coordinates.reduce(function(total,polygon){
+        return total+polygonAreaSquareMeters(polygon);
+      },0);
+    }
+    return squareMeters/10000;
+  }
+
   function analysisKeyValue(value){
     if(typeof value==="number"&&Number.isInteger(value)){return value.toFixed(1);}
     return String(value==null?"":value);
@@ -43,12 +79,14 @@
 
   function unitInfo(feature,layerId){
     var p=feature&&feature.properties||{};
+    var areaFromAttributes=number(p.Luas_Ha||p.Area_Ha||p.areaHa||p.LUASWH);
+    var areaFromGeometry=geometryAreaHa(feature&&feature.geometry);
     if(layerId==="perhutanan_sosial_riau"){
       return {
         type:"socialForestry",
         title:p.NAMA_HKM||p.NAMA_DESA||p.NAMA_KEC||"Perhutanan sosial",
         subtitle:"Tutupan hutan dan hotspot dalam areal perhutanan sosial",
-        area:number(p.LUAS_POLI||p.L_IUPHKM||p.LUAS_HA),
+        area:number(p.LUAS_POLI||p.L_IUPHKM||p.LUAS_HA)||areaFromGeometry,
         key:analysisKeyValue(p.OBJECTID||p.ID||p.NO_IUPHKM||p.SK||
           [p.NAMA_HKM,p.NAMA_DESA,p.NAMA_KAB].filter(Boolean).join("|")).trim().toLowerCase()
       };
@@ -57,7 +95,7 @@
       type:"villages",
       title:p.WADMKD||p.Desa||p.NAMOBJ||p.Nama_Desa||"Desa intervensi",
       subtitle:"Tutupan hutan dan hotspot dalam batas desa",
-      area:number(p.Luas_Ha||p.Area_Ha||p.areaHa||p.LUASWH),
+      area:areaFromAttributes||areaFromGeometry,
       key:String(p.Village_ID||p.VILLAGE_ID||p.Kode_Desa||p.KODE_DESA||
         [p.WADMKD||p.Desa,p.WADMKC||p.Kecamatan,p.WADMKK||p.Kabupaten].filter(Boolean).join("|")).trim().toLowerCase()
     };

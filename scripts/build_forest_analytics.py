@@ -1,5 +1,6 @@
 import concurrent.futures
 import json
+import os
 import time
 import urllib.error
 import urllib.parse
@@ -13,6 +14,15 @@ from shapely.ops import unary_union
 ROOT = Path(__file__).resolve().parents[1]
 GEOSTORE_URL = "https://production-api.globalforestwatch.org/geostore"
 ANALYSIS_URL = "https://production-api.globalforestwatch.org/umd-loss-gain"
+VILLAGE_GEOJSON_FILES = [
+    Path(path.strip())
+    for path in (
+        os.getenv("FOREST_VILLAGE_GEOJSON")
+        or os.getenv("FIRMS_VILLAGE_GEOJSON")
+        or "data/desa_intervensi.geojson"
+    ).split(",")
+    if path.strip()
+]
 
 
 def request_json(url, payload=None, attempts=4):
@@ -114,12 +124,18 @@ def analyze(item):
 
 def load_items():
     items = []
-    with (ROOT / "data" / "desa_intervensi.geojson").open(encoding="utf-8") as source:
-        villages = json.load(source)
-    for feature in villages.get("features", []):
-        properties = feature.get("properties") or {}
-        name = text(properties.get("WADMKD") or properties.get("Desa") or properties.get("NAMOBJ"))
-        items.append(("villages", village_key(properties), name, feature))
+    seen_village_keys = set()
+    for relative_path in VILLAGE_GEOJSON_FILES:
+        with (ROOT / relative_path).open(encoding="utf-8") as source:
+            villages = json.load(source)
+        for feature in villages.get("features", []):
+            properties = feature.get("properties") or {}
+            key = village_key(properties)
+            if not key or key in seen_village_keys:
+                continue
+            seen_village_keys.add(key)
+            name = text(properties.get("WADMKD") or properties.get("Desa") or properties.get("NAMOBJ"))
+            items.append(("villages", key, name, feature))
 
     with (ROOT / "data" / "PERHUTANAN_SOSIAL_RIAU.geojson").open(encoding="utf-8") as source:
         social_forestry = json.load(source)
