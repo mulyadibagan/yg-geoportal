@@ -1,0 +1,688 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta name="description" content="Platform Data Spasial Yayasan Gambut untuk pengelolaan lahan basah, gambut, mangrove, dan ekosistem lainnya secara berkelanjutan."/>
+  <title>YG GeoPortal | Yayasan Gambut</title>
+  <link rel="icon" href="assets/logo-yayasan-gambut.png"/>
+  <link rel="stylesheet" href="css/style.css?v=20260723-revert-layout"/>
+  <link rel="stylesheet" href="css/dashboard-v3.css?v=20260723-cards-fix1"/>
+  <link rel="stylesheet" href="css/language-switcher.css?v=20260721-all-pages1"/>
+  <link rel="stylesheet" href="css/dashboard-sdg.css?v=20260723-official-sdg1"/>
+  <link rel="stylesheet" href="https://unpkg.com/pell/dist/pell.min.css">
+  <meta name="theme-color" content="#079cde">
+  <meta name="application-name" content="YG GeoPortal">
+  <meta name="apple-mobile-web-app-title" content="YG GeoPortal">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="manifest.webmanifest?v=20260714-1">
+  <link rel="apple-touch-icon" href="assets/logo-yayasan-gambut-192.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/logo-yayasan-gambut-192.png">
+
+  <!-- Google Analytics - Ganti G-XXXXXXXXXX dengan ID Anda -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="index.html">
+      <img src="assets/logo-yayasan-gambut.png" alt="Logo Yayasan Gambut"/>
+      <span><strong>YG GeoPortal</strong><span>WebGIS Yayasan Gambut</span></span>
+    </a>
+    <nav class="nav">
+      <a href="index.html">Beranda</a>
+      <a href="webgis.html">Peta Interaktif</a>
+      <a href="report.html">Laporkan Temuan</a>
+      <a href="monitoring.html">Dashboard Monitoring</a>
+      <a class="primary" href="webgis.html">Jelajahi Peta</a>
+      <span class="yg-public-language-switcher" role="group" aria-label="Pilihan bahasa / Language selection">
+        <button type="button" data-lang="id" aria-pressed="true">ID</button>
+        <button type="button" data-lang="en" aria-pressed="false">EN</button>
+      </span>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <section class="hero dashboard-hero">
+    <div class="hero-main">
+      <div class="eyebrow" data-editable-id="hero-eyebrow">PLATFORM DATA SPASIAL RESMI YAYASAN GAMBUT</div>
+      <h1 data-editable-id="hero-title">Platform Data Spasial Yayasan Gambut</h1>
+      <p class="hero-description" data-editable-id="hero-description">Menyajikan informasi spasial yang terverifikasi untuk mendukung pengelolaan lahan basah, gambut, mangrove, dan ekosistem lainnya secara berkelanjutan melalui restorasi, rehabilitasi, pemantauan lapangan, pemberdayaan masyarakat, serta kemitraan strategis yang berbasis data.</p>
+      <p class="hero-tagline" data-editable-id="hero-tagline">Menghubungkan data spasial, pemantauan lapangan, dan pelaporan masyarakat dalam satu platform untuk mendukung pengelolaan lahan basah dan ekosistem yang berkelanjutan.</p>
+      <div class="hero-actions">
+        <a class="btn btn-light" href="webgis.html">🗺️ Jelajahi Peta</a>
+        <a class="btn btn-outline" href="monitoring.html">📊 Dashboard Monitoring</a>
+        <button class="btn btn-outline" type="button" data-install-app hidden>📲 Pasang Aplikasi</button>
+      </div>
+      <div id="dashboard-updated" hidden></div>
+    </div>
+
+    <div class="stat-grid stat-grid-6">
+      <a class="stat dashboard-link" href="webgis.html?search=Restorasi" aria-label="Lihat seluruh area restorasi"><strong id="dash-restoration-area">-</strong><span>Luas Restorasi (ha)</span></a>
+      <a class="stat dashboard-link" href="webgis.html?search=Penanaman" aria-label="Lihat seluruh lokasi penanaman"><strong id="dash-seedlings-planted">-</strong><span>Bibit Tertanam</span></a>
+      <a class="stat dashboard-link" href="webgis.html?layers=area_mangrove%2Carea_kopi%2Ckopi" aria-label="Lihat area revegetasi"><strong id="dash-revegetation-area">-</strong><span>Luas Revegetasi (ha)</span><small>Mangrove · gambut/agroforestri · lahan mineral</small></a>
+      <a class="stat dashboard-link" href="webgis.html?search=Pelatihan" aria-label="Lihat data peserta pelatihan"><strong id="dash-participants">-</strong><span>Total Peserta</span></a>
+      <a class="stat dashboard-link" href="webgis.html?layer=desa_intervensi" aria-label="Lihat kabupaten cakupan"><strong id="dash-regencies">-</strong><span>Kabupaten</span></a>
+      <a class="stat dashboard-link" href="webgis.html?layer=desa_intervensi" data-open-village-detail aria-label="Lihat rincian desa cakupan"><strong id="dash-villages">-</strong><span>Desa Cakupan</span></a>
+    </div>
+  </section>
+
+  <section class="section dashboard-panel climate-panel">
+    <div class="section-head">
+      <div>
+        <h2>Penyerapan &amp; Pengurangan Emisi</h2>
+        <p>Estimasi diturunkan dari data WebGIS yang sudah ada, tanpa tabel baru.</p>
+      </div>
+    </div>
+    <div id="climate-dashboard-container">
+      <div class="dashboard-loading">Memuat dampak iklim...</div>
+    </div>
+    <p class="climate-note">Data yang berkontribusi: area restorasi mangrove, area restorasi gambut/agroforestri, bibit tertanam, rumah bibit, sekat kanal, FDRS, monitoring lapangan, pelatihan masyarakat, dan dokumentasi kegiatan.</p>
+  </section>
+
+  <section class="section dashboard-panel">
+    <div class="section-head">
+      <div>
+        <h2 data-editable-id="section-achievements-title">Capaian Program</h2>
+      </div>
+    </div>
+    <div class="category-grid" id="category-grid" aria-live="polite">
+      <a class="programme-card dashboard-link" href="webgis.html?layers=area_mangrove%2Cnursery_mangrove%2Capo">
+        <header><i aria-hidden="true">🌊</i><h3>Restorasi Mangrove</h3><span aria-hidden="true">→</span></header>
+        <ul><li><span>Memuat data...</span></li></ul>
+      </a>
+      <a class="programme-card dashboard-link" href="webgis.html?layers=area_kopi%2Ckopi%2Csekat_kanal%2Cfdrs">
+        <header><i aria-hidden="true">🌿</i><h3>Restorasi Gambut</h3><span aria-hidden="true">→</span></header>
+        <ul><li><span>Memuat data...</span></li></ul>
+      </a>
+      <a class="programme-card dashboard-link" href="webgis.html?layer=community_reports&amp;search=Imbo+Putui">
+        <header><i aria-hidden="true">🌳</i><h3>Restorasi Lahan Mineral</h3><span aria-hidden="true">→</span></header>
+        <ul><li><span>Memuat data...</span></li></ul>
+      </a>
+      <a class="programme-card dashboard-link" href="webgis.html?search=Pelatihan">
+        <header><i aria-hidden="true">👥</i><h3>Peningkatan Kapasitas</h3><span aria-hidden="true">→</span></header>
+        <ul><li><span>Memuat data...</span></li></ul>
+      </a>
+    </div>
+  </section>
+
+  <section class="section dashboard-panel">
+    <div class="section-head">
+      <div>
+        <h2 data-editable-id="section-funding-title">Mitra Pendanaan</h2>
+      </div>
+    </div>
+    <div class="category-grid" id="donor-grid" aria-live="polite">
+      <button class="category-card dashboard-link funding-card" type="button" data-open-aramco>
+        <i class="category-icon" aria-hidden="true">🌿</i><span>Aramco Asia Singapore</span>
+        <strong>2023–2026</strong><small>4 desa · lihat ringkasan program</small>
+      </button>
+      <button class="category-card dashboard-link funding-card" type="button" data-open-gec>
+        <i class="category-icon" aria-hidden="true">💧</i><span>Global Environment Centre</span>
+        <strong>2021 - Sekarang</strong><small>Bengkalis &amp; Siak · lihat ringkasan program</small>
+      </button>
+      <button class="category-card dashboard-link funding-card" type="button" data-open-ppcf>
+        <i class="category-icon" aria-hidden="true">🤝</i><span>Pan Pacific Conservation Foundation (PPCF)</span>
+        <strong>2025–2026</strong><small>Pematang Duku · lihat ringkasan program</small>
+      </button>
+      <button class="category-card dashboard-link funding-card" type="button" data-open-kolibri>
+        <i class="category-icon" aria-hidden="true"></i><span>Aliansi Kolibri</span>
+        <strong>2025–2026</strong><small>Imbo Putui · lihat ringkasan program</small>
+      </button>
+      <button class="category-card dashboard-link funding-card funding-card-penabulu" type="button" data-open-penabulu>
+        <i class="category-icon" aria-hidden="true"></i>
+        <span class="funding-penabulu-name">Yayasan Penabulu</span>
+        <strong class="funding-penabulu-period">2025–2026</strong>
+        <small>Temiang Village · lihat ringkasan program</small>
+      </button>
+    </div>
+  </section>
+
+  <section class="section-container">
+    <div class="container">
+      <h2 class="section-title">Kontribusi Kami terhadap SDGs</h2>
+      <p class="section-subtitle">Semua kegiatan kami dirancang untuk mendukung pencapaian Tujuan Pembangunan Berkelanjutan.</p>
+      <div id="sdg-dashboard-container">
+        <div class="dashboard-loading">Memuat kontribusi SDGs...</div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<div class="funding-modal" id="village-dashboard" hidden>
+  <button class="funding-backdrop" type="button" data-close-village aria-label="Tutup rincian desa"></button>
+  <section class="funding-dialog" role="dialog" aria-modal="true" aria-labelledby="village-title">
+    <button class="funding-close" type="button" data-close-village aria-label="Tutup">×</button>
+    <header class="funding-hero">
+      <span class="funding-badge">RINCIAN DESA</span>
+      <h2 id="village-title">13 Desa Cakupan</h2>
+      <div class="funding-meta">
+        <span><b>Total Desa</b><span id="village-total-count">13</span></span>
+        <span><b>Kabupaten</b><span id="village-total-regencies">-</span></span>
+      </div>
+    </header>
+    <div class="funding-content">
+      <div class="funding-heading">
+        <div><span>Ringkasan data</span><h3>Desa yang masuk hitungan</h3></div>
+        <p>Angka ini mengikuti layer administrasi desa_intervensi.</p>
+      </div>
+      <div class="funding-indicators" id="village-detail-grid"></div>
+      <div class="funding-detail" id="village-detail-note" hidden></div>
+    </div>
+  </section>
+</div>
+
+<div class="funding-modal" id="aramco-dashboard" hidden>
+  <button class="funding-backdrop" type="button" data-close-aramco aria-label="Tutup dashboard Aramco"></button>
+  <section class="funding-dialog funding-dialog-aramco" role="dialog" aria-modal="true" aria-labelledby="aramco-title">
+    <button class="funding-close" type="button" data-close-aramco aria-label="Tutup">×</button>
+    <header class="funding-hero">
+      <span class="funding-badge">MITRA PENDANAAN</span>
+      <h2 id="aramco-title">Aramco Asia Singapore</h2>
+      <div class="funding-meta funding-meta-aramco">
+        <span><b>Periode Program</b>2023 – 2026</span>
+        <span><b>Wilayah Program</b>Buruk Bakul • Kelapa Pati • Sepahat • Tanjung Kuras</span>
+      </div>
+    </header>
+    <div class="funding-content">
+      <div class="funding-heading"><div><span>Ringkasan dampak</span><h3>Capaian program Aramco</h3></div><p>Data WebGIS menjadi acuan utama dan divalidasi terhadap laporan program.</p></div>
+      <div class="funding-indicators">
+        <a href="webgis.html?donor=aramco&amp;layer=area_mangrove" class="funding-indicator"><i>🌱</i><strong id="aramco-tree-count">42.545</strong><span>Pohon Mangrove Ditanam</span></a>
+        <a href="webgis.html?donor=aramco" class="funding-indicator"><i>📍</i><strong id="aramco-village-count">4</strong><span>Desa Program</span></a>
+        <a href="webgis.html?donor=aramco&amp;layer=area_mangrove" class="funding-indicator"><i>🌿</i><strong id="aramco-area-count">13,1 ha</strong><span>Restorasi Mangrove</span></a>
+        <button type="button" class="funding-indicator" data-aramco-detail="nursery"><i>🌱</i><strong id="aramco-nursery-count">4</strong><span>Rumah Bibit Mangrove</span></button>
+        <button type="button" class="funding-indicator" data-aramco-detail="wave"><i>🌊</i><strong id="aramco-wave-count">300 m</strong><span>Hybrid Engineering (Wave Breaker)</span></button>
+        <a href="webgis.html?donor=aramco" class="funding-indicator"><i>👥</i><strong id="aramco-participant-count">1.200+</strong><span>Peserta Kegiatan</span></a>
+        <a href="webgis.html?donor=aramco&amp;layer=monitoring_reports" class="funding-indicator"><i>📊</i><strong id="aramco-monitoring-count">100+</strong><span>Monitoring Lapangan</span></a>
+      </div>
+      <div class="funding-detail" id="aramco-detail" hidden></div>
+      <section class="funding-timeline" aria-labelledby="aramco-timeline-title">
+        <div class="funding-heading"><div><span>Perjalanan program</span><h3 id="aramco-timeline-title">Timeline Program</h3></div></div>
+        <div class="funding-timeline-grid">
+          <article><b>Fase 1</b><strong>2023–2024</strong><p>Buruk Bakul</p><ul><li>10.420 pohon</li><li>2,65 ha</li><li>100 m Wave Breaker</li><li>1 Rumah Bibit</li></ul></article>
+          <article><b>Fase 2</b><strong>2024–2025</strong><p>Buruk Bakul • Kelapa Pati</p><ul><li>15.225 pohon</li><li>1,45 ha</li><li>200 m Wave Breaker (akumulasi)</li><li>2 Rumah Bibit</li></ul></article>
+          <article><b>Fase 3</b><strong>2025–2026</strong><p>Buruk Bakul • Kelapa Pati • Sepahat • Tanjung Kuras</p><ul><li>Target 18.000 pohon</li><li>Target 9 ha</li><li>4 Rumah Bibit (akumulasi)</li><li>300 m Wave Breaker (akumulasi)</li><li>Pelatihan dan monitoring lapangan</li><li>Pengembangan mata pencaharian masyarakat</li></ul></article>
+        </div>
+      </section>
+    </div>
+  </section>
+</div>
+
+<div class="funding-modal" id="ppcf-dashboard" hidden>
+  <button class="funding-backdrop" type="button" data-close-ppcf aria-label="Tutup dashboard PPCF"></button>
+  <section class="funding-dialog" role="dialog" aria-modal="true" aria-labelledby="ppcf-title">
+    <button class="funding-close" type="button" data-close-ppcf aria-label="Tutup">×</button>
+    <header class="funding-hero">
+      <span class="funding-badge">MITRA PENDANAAN</span>
+      <h2 id="ppcf-title">Pan Pacific Conservation Foundation (PPCF)</h2>
+      <div class="funding-meta"><span><b>Periode</b>2025–2026</span><span><b>Lokasi</b>Desa Pematang Duku, Kabupaten Bengkalis</span></div>
+    </header>
+    <div class="funding-content">
+      <div class="funding-heading"><div><span>Ringkasan capaian</span><h3>Output proyek PPCF</h3></div><p>Data WebGIS menjadi acuan utama dan divalidasi terhadap laporan program.</p></div>
+      <div class="funding-indicators">
+        <a href="webgis.html?village=Pematang+Duku" class="funding-indicator"><i>📍</i><strong id="ppcf-location-count">1</strong><span>Lokasi Program</span></a>
+        <a href="webgis.html?layer=area_kopi&amp;village=Pematang+Duku" class="funding-indicator"><i>🌱</i><strong id="ppcf-area-count">3,6 ha</strong><span>Restorasi Gambut &amp; Agroforestri</span></a>
+        <a href="webgis.html?layer=area_kopi&amp;village=Pematang+Duku" class="funding-indicator"><i>🌿</i><strong id="ppcf-planted-count">4.000</strong><span>Bibit Ditanam</span></a>
+        <a href="webgis.html?layer=kopi&amp;village=Pematang+Duku" class="funding-indicator"><i>🌱</i><strong id="ppcf-nursery-seedling-count">4.500</strong><span>Bibit di Persemaian</span></a>
+        <a href="webgis.html?layer=sekat_kanal&amp;village=Pematang+Duku" class="funding-indicator"><i>💧</i><strong id="ppcf-canal-count">4</strong><span>Sekat Kanal</span></a>
+        <a href="webgis.html?layer=fdrs&amp;village=Pematang+Duku" class="funding-indicator"><i>🔥</i><strong id="ppcf-fdrs-count">3</strong><span>FDRS</span></a>
+        <button type="button" class="funding-indicator" data-ppcf-detail="training"><i>👨‍🌾</i><strong>119</strong><span>Peserta Pelatihan</span></button>
+        <button type="button" class="funding-indicator" data-ppcf-detail="market"><i>🤝</i><strong>1</strong><span>Kemitraan Pasar Kopi</span></button>
+        <a href="https://yayasangambut.org/wp-content/uploads/2026/02/Buku_Panduan-Pengelolaan-Lahan-Gambut-Berkelanjutan-Berbasis-Masyarakat.pdf" target="_blank" rel="noopener" class="funding-indicator"><i>📘</i><strong>1</strong><span>Buku Panduan</span></a>
+      </div>
+      <div class="funding-detail" id="ppcf-detail" hidden></div>
+    </div>
+  </section>
+</div>
+
+<div class="funding-modal" id="gec-dashboard" hidden>
+  <button class="funding-backdrop" type="button" data-close-gec aria-label="Tutup dashboard GEC"></button>
+  <section class="funding-dialog funding-dialog-gec" role="dialog" aria-modal="true" aria-labelledby="gec-title">
+    <button class="funding-close" type="button" data-close-gec aria-label="Tutup">×</button>
+    <header class="funding-hero">
+      <span class="funding-badge">MITRA PENDANAAN</span>
+      <h2 id="gec-title">Global Environment Centre</h2>
+      <div class="funding-meta">
+        <span><b>Periode Program</b>2021–2025</span>
+        <span><b>Wilayah Program</b>Kabupaten Bengkalis • Kabupaten Siak</span>
+      </div>
+    </header>
+    <div class="funding-content">
+      <div class="funding-heading"><div><span>Ringkasan capaian</span><h3>Program Pengelolaan Gambut Berkelanjutan</h3></div><p>Data terpetakan dihitung dari WebGIS; indikator lainnya dilengkapi dari laporan final.</p></div>
+      <div class="funding-indicators">
+        <a href="webgis.html?donor=Global+Environment+Centre&amp;layer=sekat_kanal" class="funding-indicator"><i>💧</i><strong id="gec-canal-count">7</strong><span>Sekat Kanal Terpetakan</span></a>
+        <button type="button" class="funding-indicator" data-gec-detail="fdrs"><i>🔥</i><strong id="gec-fdrs-count">5</strong><span>FDRS Terpetakan</span></button>
+        <button type="button" class="funding-indicator" data-gec-detail="coffee"><i>🌱</i><strong>3.400</strong><span>Bibit Kopi Ditanam</span></button>
+        <a href="webgis.html?layer=kopi&amp;village=Pencing+Bekulo" class="funding-indicator"><i>🌿</i><strong>2.000</strong><span>Bibit di Persemaian</span></a>
+        <button type="button" class="funding-indicator" data-gec-detail="training"><i>👥</i><strong>72</strong><span>Peserta Pelatihan</span></button>
+        <a href="https://drive.google.com/file/d/1Z5YUJV8O8bX-OPgJgShtGq4Ibkr79Lhm/view?usp=sharing" target="_blank" rel="noopener" class="funding-indicator"><i>📘</i><strong>1</strong><span>Panduan Budidaya Kopi Liberika</span></a>
+      </div>
+      <div class="funding-detail" id="gec-detail" hidden></div>
+      <section class="funding-timeline" aria-labelledby="gec-timeline-title">
+        <div class="funding-heading"><div><span>Perjalanan program</span><h3 id="gec-timeline-title">Timeline Program</h3></div></div>
+        <div class="funding-timeline-grid">
+          <article><b>Infrastruktur historis</b><strong>2021–2023</strong><p>Sepahat • Temiang</p><ul><li>Sekat kanal tercatat di GIS sejak 2021</li><li>Penguatan pembasahan gambut berbasis masyarakat</li><li>Perluasan infrastruktur ke Temiang dan Sepahat</li></ul></article>
+          <article><b>Fase program</b><strong>2024</strong><p>Temiang • Tanjung Kuras • Buruk Bakul • Simpang Ayam</p><ul><li>2.000 bibit kopi Liberika ditanam</li><li>22 peserta pelatihan pembibitan kopi</li><li>2 sekat kanal dibangun</li><li>2 FDRS dipasang</li></ul></article>
+          <article><b>Fase program</b><strong>2025</strong><p>Temiang • Tanjung Kuras • Pencing Bekulo • Buruk Bakul</p><ul><li>1.400 bibit kopi Liberika ditanam</li><li>2.000 bibit dikembangkan di persemaian</li><li>50 peserta pelatihan pemeliharaan kopi</li><li>1 sekat kanal dan 1 buku panduan</li></ul></article>
+        </div>
+      </section>
+
+      <section class="gec2026-section" aria-labelledby="gec2026-title">
+        <div class="funding-heading"><div><span>Current Programme (2026–2027)</span><h3 id="gec2026-title">Sustainable Peatland Management and Community Livelihood Strengthening</h3></div></div>
+        <article class="gec2026-project-card">
+          <p><b>Duration</b>May 2026 – February 2027</p>
+          <div class="gec2026-coverage"><b>Coverage</b><ul><li>Pedekik (Bengkalis)</li><li>Temiang (Bengkalis)</li><li>Dayun (Siak)</li></ul></div>
+        </article>
+
+        <div class="gec2026-target-grid" aria-label="Target Programme 2026">
+          <article><h4>🌱 Coffee Agroforestry</h4><p>3 ha target</p></article>
+          <article><h4>🌿 Nursery Training</h4><p>2 villages</p></article>
+          <article><h4>💧 Canal Blocks</h4><p>3 units</p></article>
+          <article><h4>🔥 FDRS Boards</h4><p>3 units</p></article>
+          <article><h4>🎥 Campaign Video</h4><p>1</p></article>
+          <article><h4>🌐 Website Support</h4><p>12 months</p></article>
+          <article><h4>📊 Financial Audit</h4><p>1 annual audit</p></article>
+        </div>
+
+        <div class="funding-heading"><div><span>Auto from WebGIS Database</span><h3>Interactive Progress</h3></div></div>
+        <div class="gec2026-progress-grid">
+          <article><h4>Coffee Agroforestry</h4><p id="gec2026-progress-coffee">0.0 / 3.0 ha</p></article>
+          <article><h4>Canal Blocks</h4><p id="gec2026-progress-canal">0 / 3</p></article>
+          <article><h4>FDRS</h4><p id="gec2026-progress-fdrs">0 / 3</p></article>
+          <article><h4>Nursery Training</h4><p id="gec2026-progress-nursery">1 / 2 villages</p></article>
+        </div>
+
+        <article class="gec2026-update-card" aria-live="polite">
+          <h4>Latest Field Update</h4>
+          <p id="gec2026-update-title">Liberica Coffee Seedling and Nursery Training – Pedekik Village</p>
+          <small id="gec2026-update-meta">Pedekik · 17/07/2026 · Pelatihan Penyemaian dan Pembibitan Kopi Liberika · 36 peserta</small>
+        </article>
+
+        <a class="gec2026-map-btn" href="webgis.html?donor=Global+Environment+Centre&amp;programme=GEC+2026&amp;programme_year=2026&amp;layers=nursery_kopi,kopi,sekat_kanal,fdrs,tmat,capacity_building,publications">View Programme 2026 on Map</a>
+
+        <div class="funding-heading"><div><span>Milestone status</span><h3>Timeline (2026–2027)</h3></div></div>
+        <ul class="gec2026-timeline">
+          <li class="gec2026-timeline-nursery">
+            <img id="gec2026-nursery-photo" src="https://drive.google.com/thumbnail?id=16zQudghnkHr0h3YFLTMErjO1Q-mufNoy&amp;sz=w1600" alt="Dokumentasi Nursery Training Pedekik" loading="lazy"/>
+            <div class="gec2026-timeline-copy">
+              <span>Nursery Training</span>
+              <small id="gec2026-nursery-brief">Pelatihan pembibitan kopi Liberika: Pedekik · 17/07/2026 · 36 peserta</small>
+            </div>
+            <strong id="gec2026-status-nursery" class="state-in-progress">In Progress</strong>
+          </li>
+          <li><span>Coffee Agroforestry</span><strong id="gec2026-status-coffee">Planned</strong></li>
+          <li><span>Canal Block Construction</span><strong id="gec2026-status-canal">Planned</strong></li>
+          <li><span>FDRS Installation</span><strong id="gec2026-status-fdrs">Planned</strong></li>
+          <li><span>Communication &amp; Outreach</span><strong id="gec2026-status-outreach">Planned</strong></li>
+          <li><span>Financial Audit</span><strong id="gec2026-status-audit">Planned</strong></li>
+        </ul>
+      </section>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="funding-modal" id="kolibri-dashboard" hidden>
+  <button class="funding-backdrop" type="button" data-close-kolibri aria-label="Tutup dashboard Aliansi Kolibri"></button>
+  <section class="funding-dialog" role="dialog" aria-modal="true" aria-labelledby="kolibri-title">
+    <button class="funding-close" type="button" data-close-kolibri aria-label="Tutup">×</button>
+    <header class="funding-hero">
+      <span class="funding-badge">MITRA PENDANAAN</span>
+      <h2 id="kolibri-title">Aliansi Kolibri</h2>
+      <div class="funding-meta">
+        <span><b>Periode Program</b>Mei 2025–Juni 2026</span>
+        <span><b>Wilayah Program</b>Desa Petapahan, Kecamatan Tapung, Kabupaten Kampar</span>
+      </div>
+    </header>
+    <div class="funding-content">
+      <div class="funding-heading"><div><span>Ringkasan capaian</span><h3>Petapahan</h3></div><p>Informasi Petapahan mengikuti program Aliansi Kolibri dan data wilayah yang sudah tersedia.</p></div>
+      <div class="funding-indicators">
+        <a href="webgis.html?donor=Aliansi+Kolibri&amp;village=Petapahan" class="funding-indicator"><i>🌿</i><strong id="kolibri-petapahan-area">11,44 ha</strong><span>Luas Area Restorasi</span></a>
+        <a href="webgis.html?donor=Aliansi+Kolibri&amp;village=Petapahan" class="funding-indicator"><i>🌱</i><strong id="kolibri-petapahan-seedlings">1.200</strong><span>Bibit Tertanam</span></a>
+        <a href="webgis.html?donor=Aliansi+Kolibri&amp;village=Petapahan" class="funding-indicator"><i>💧</i><strong id="kolibri-petapahan-tower">1</strong><span>Menara Air</span></a>
+        <a href="webgis.html?donor=Aliansi+Kolibri&amp;village=Petapahan" class="funding-indicator"><i>📍</i><strong id="kolibri-petapahan-sign">1</strong><span>Plang Restorasi</span></a>
+      </div>
+      <div class="funding-detail" id="kolibri-petapahan-detail" hidden></div>
+      <section class="funding-timeline" aria-labelledby="kolibri-monitoring-title">
+        <div class="funding-heading"><div><span>Pemantauan lapangan</span><h3 id="kolibri-monitoring-title">Hasil Monitoring</h3></div></div>
+        <div class="funding-timeline-grid">
+          <article><b>Monitoring I</b><strong>Januari 2026</strong><p>Penilaian awal pertumbuhan dan keberhasilan tanaman di area restorasi.</p><ul><li>PUP 1: 98,07% hidup</li><li>PUP 2: 84,61% hidup</li></ul></article>
+          <article><b>Penyulaman</b><strong>25 bibit</strong><p>Penyulaman dilakukan pada PUP 1 untuk mengganti tanaman yang tidak bertahan.</p><ul><li>Keberhasilan penyulaman: 100%</li></ul></article>
+          <article><b>Monitoring II</b><strong>2–3 Juni 2026</strong><p>Pemantauan lanjutan untuk melihat perkembangan tanaman dan kebutuhan tindak lanjut.</p><ul><li>Terhubung dengan objek restorasi di WebGIS</li></ul></article>
+        </div>
+      </section>
+    </div>
+  </section>
+</div>
+
+<div class="funding-modal" id="penabulu-dashboard" hidden>
+  <button class="funding-backdrop" type="button" data-close-penabulu aria-label="Tutup dashboard Penabulu"></button>
+  <section class="funding-dialog funding-dialog-penabulu" role="dialog" aria-modal="true" aria-labelledby="penabulu-title">
+    <button class="funding-close" type="button" data-close-penabulu aria-label="Tutup">×</button>
+    <header class="funding-hero funding-hero-penabulu">
+      <span class="funding-badge">MITRA PENDANAAN</span>
+      <img class="funding-penabulu-logo" src="assets/funding-penabulu.png" alt="Logo Yayasan Penabulu"/>
+      <h2 id="penabulu-title">Yayasan Penabulu</h2>
+      <div class="funding-meta funding-meta-penabulu">
+        <span><b>Project Period</b>2025–2026</span>
+        <span><b>Project Location</b>Temiang Village, Riau</span>
+      </div>
+      <p class="funding-penabulu-summary-modal">Strengthening women-led Liberica coffee enterprises and improving peatland ecosystem resilience through sustainable community-based livelihoods in Temiang Village, Riau.</p>
+      <div class="funding-penabulu-hero-actions">
+        <small class="funding-penabulu-status">Status: Active Programme</small>
+        <a class="funding-penabulu-map-btn" href="webgis.html?donor=Penabulu&amp;village=Temiang&amp;layers=kopi,nursery_kopi,community_reports,sekat_kanal,tmat,fdrs">View on Map</a>
+      </div>
+    </header>
+    <div class="funding-content">
+      <section aria-labelledby="penabulu-stats-title">
+        <div class="funding-heading"><div><span>Impact dashboard</span><h3 id="penabulu-stats-title">Dashboard Statistics</h3></div></div>
+        <div class="funding-indicators funding-indicators-penabulu">
+          <a href="webgis.html?donor=Penabulu&amp;village=Temiang" class="funding-indicator"><i>📍</i><strong>1</strong><span>Village</span></a>
+          <a href="webgis.html?donor=Penabulu&amp;village=Temiang" class="funding-indicator"><i>👩</i><strong>27</strong><span>Women Beneficiaries</span></a>
+          <a href="webgis.html?donor=Penabulu&amp;layer=nursery_kopi&amp;village=Temiang" class="funding-indicator"><i>🌱</i><strong>10,000</strong><span>Coffee Seedlings</span></a>
+          <a href="webgis.html?donor=Penabulu&amp;search=Coffee+Pulper&amp;village=Temiang" class="funding-indicator"><i>☕</i><strong>1</strong><span>Community Micro-mill</span></a>
+          <a href="webgis.html?donor=Penabulu&amp;search=Rumah+Jemur&amp;village=Temiang" class="funding-indicator"><i>🏠</i><strong>1</strong><span>Coffee Drying House</span></a>
+          <a href="webgis.html?donor=Penabulu&amp;search=Tower+Air&amp;village=Temiang" class="funding-indicator"><i>💧</i><strong>1</strong><span>Water Tower</span></a>
+          <a href="webgis.html?donor=Penabulu&amp;layer=sekat_kanal&amp;village=Temiang" class="funding-indicator"><i>🚧</i><strong>2</strong><span>Canal Blocks</span></a>
+          <a href="webgis.html?donor=Penabulu&amp;layers=tmat,fdrs&amp;village=Temiang" class="funding-indicator"><i>🔥</i><strong>2</strong><span>Hydrology &amp; Fire Monitoring Points</span></a>
+        </div>
+      </section>
+
+      <section class="penabulu-section" aria-labelledby="penabulu-outputs-title">
+        <div class="funding-heading"><div><span>Focus on outputs &amp; impacts</span><h3 id="penabulu-outputs-title">Featured Project Outputs</h3></div></div>
+        <div class="penabulu-output-grid">
+          <article class="penabulu-output-card">
+            <div class="penabulu-output-photo"><img data-penabulu-photo-slot="drying-house" alt="Rumah jemur" loading="lazy"/></div>
+            <h4>Coffee Drying House</h4>
+            <small>Status: Completed</small>
+          </article>
+          <article class="penabulu-output-card">
+            <div class="penabulu-output-photo"><img data-penabulu-photo-slot="micro-mill" alt="Mesin pengupas kopi" loading="lazy"/></div>
+            <h4>Community Micro-mill</h4>
+            <small>Status: Installed &amp; Operational</small>
+          </article>
+          <article class="penabulu-output-card">
+            <div class="penabulu-output-photo"><img data-penabulu-photo-slot="sop" alt="Pelatihan SOP" loading="lazy"/></div>
+            <h4>Operational SOP</h4>
+            <small>Status: Implemented</small>
+          </article>
+          <article class="penabulu-output-card">
+            <div class="penabulu-output-photo"><img data-penabulu-photo-slot="water-system" alt="Tower air" loading="lazy"/></div>
+            <h4>Water Supply System</h4>
+            <small>Status: Operational</small>
+          </article>
+        </div>
+      </section>
+
+      <section class="penabulu-section" aria-labelledby="penabulu-timeline-title">
+        <div class="funding-heading"><div><span>Delivery progress</span><h3 id="penabulu-timeline-title">Progress Timeline</h3></div></div>
+        <ul class="penabulu-timeline-list">
+          <li class="done">✅ Coffee Drying House</li>
+          <li class="done">✅ Coffee Pulper Installation</li>
+          <li class="done">✅ SOP Development</li>
+          <li class="ongoing">🟡 Nursery Production</li>
+          <li class="ongoing">🟡 Marketing Development</li>
+          <li class="ongoing">🟡 Canal Block Improvement</li>
+          <li class="ongoing">🟡 Hydrology Monitoring</li>
+        </ul>
+      </section>
+
+      <section class="penabulu-section" aria-labelledby="penabulu-gallery-title">
+        <div class="funding-heading"><div><span>Documentation</span><h3 id="penabulu-gallery-title">Photo Gallery</h3></div></div>
+        <div class="penabulu-gallery-grid">
+          <figure class="penabulu-gallery-item"><div class="penabulu-gallery-photo"><img data-penabulu-photo-slot="gallery-drying-house" alt="Rumah jemur" loading="lazy"/></div><figcaption>Rumah jemur</figcaption></figure>
+          <figure class="penabulu-gallery-item"><div class="penabulu-gallery-photo"><img data-penabulu-photo-slot="gallery-micro-mill" alt="Mesin pengupas kopi" loading="lazy"/></div><figcaption>Mesin pengupas kopi</figcaption></figure>
+          <figure class="penabulu-gallery-item"><div class="penabulu-gallery-photo"><img data-penabulu-photo-slot="gallery-sop" alt="Penyusunan SOP" loading="lazy"/></div><figcaption>Penyusunan SOP</figcaption></figure>
+          <figure class="penabulu-gallery-item"><div class="penabulu-gallery-photo"><img data-penabulu-photo-slot="gallery-water-tower" alt="Tower air" loading="lazy"/></div><figcaption>Tower air</figcaption></figure>
+          <figure class="penabulu-gallery-item"><div class="penabulu-gallery-photo"><img data-penabulu-photo-slot="gallery-women-group" alt="Kegiatan kelompok perempuan" loading="lazy"/></div><figcaption>Kegiatan kelompok perempuan</figcaption></figure>
+        </div>
+      </section>
+    </div>
+  </section>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span>© Yayasan Gambut</span>
+    <span>Data spasial untuk transparansi, pembelajaran, dan kolaborasi.</span>
+    <a class="content-admin-link" href="content-admin.html">Admin Konten</a>
+  </div>
+</footer>
+
+<script src="js/dashboard-v3.js?v=20260723-v1-carbon-final"></script>
+  <script src="js/dashboard-sdg.js?v=20260723-v1-carbon-final"></script>
+  <script src="https://unpkg.com/pell/dist/pell.min.js"></script>
+  <script src="js/auth.js?v=1"></script>
+  <script src="js/inline-editor.js?v=1"></script>
+  <script src="js/i18n.js?v=20260723-null-safe1"></script>
+  <script src="js/content-config.js?v=20260723-content-admin1"></script>
+  <script src="js/pwa.js?v=20260723-v1-carbon-final"></script>
+  <script>
+    (function() {
+      function formatNumber(value, digits) {
+        return new Intl.NumberFormat('id-ID', { maximumFractionDigits: digits || 0 })
+          .format(Number(value || 0));
+      }
+
+      function isEnglish() {
+        return window.YG_I18N && window.YG_I18N.language === 'en';
+      }
+
+      function t(idText, enText) {
+        return isEnglish() ? enText : idText;
+      }
+
+      function getVillageDetailData() {
+        const stats = window.YG_DASHBOARD_STATS || {};
+        return {
+          villages: Array.isArray(stats.villageActivities) ? stats.villageActivities : [],
+          regencies: Number(stats.regencies || 0)
+        };
+      }
+
+      function renderKolibriSummary() {
+        const stats = window.YG_DASHBOARD_STATS || {};
+        const petapahan = Array.isArray(stats.villageActivities)
+          ? stats.villageActivities.find(item => item.name === 'Petapahan')
+          : null;
+        const areaNode = document.getElementById('kolibri-petapahan-area');
+        const seedlingsNode = document.getElementById('kolibri-petapahan-seedlings');
+        const towerNode = document.getElementById('kolibri-petapahan-tower');
+        const signNode = document.getElementById('kolibri-petapahan-sign');
+        const detailNode = document.getElementById('kolibri-petapahan-detail');
+        if (!petapahan || !areaNode || !seedlingsNode || !towerNode || !signNode || !detailNode) return;
+
+        areaNode.textContent = formatNumber(petapahan.genericArea || 0, 2) + ' ha';
+        seedlingsNode.textContent = Number(petapahan.genericSeedlings || 0) > 0
+          ? formatNumber(petapahan.genericSeedlings, 0) + ' bibit'
+          : 'Data belum tersedia';
+        towerNode.textContent = Number(petapahan.waterTowers || 0) > 0
+          ? formatNumber(petapahan.waterTowers, 0) + ' unit'
+          : 'Data belum tersedia';
+        signNode.textContent = Number(petapahan.restorationSigns || 0) > 0
+          ? formatNumber(petapahan.restorationSigns, 0) + ' unit'
+          : 'Data belum tersedia';
+
+        detailNode.hidden = false;
+        detailNode.innerHTML = '<strong>Petapahan</strong> mengikuti program Aliansi Kolibri dengan luas restorasi ' + formatNumber(petapahan.genericArea || 0, 2) + ' ha dan 1.200 bibit tertanam. Menara air dan plang restorasi ditampilkan dari data program.';
+      }
+
+      function renderKolibriSummaryWhenReady(attempt = 0) {
+        const stats = window.YG_DASHBOARD_STATS || {};
+        const petapahan = Array.isArray(stats.villageActivities)
+          ? stats.villageActivities.find(item => item.name === 'Petapahan')
+          : null;
+        if (!petapahan && attempt < 20) {
+          setTimeout(() => renderKolibriSummaryWhenReady(attempt + 1), 150);
+          return;
+        }
+        renderKolibriSummary();
+      }
+
+      function renderVillageDetailModal() {
+        const modal = document.getElementById('village-dashboard');
+        const grid = document.getElementById('village-detail-grid');
+        const totalCount = document.getElementById('village-total-count');
+        const totalRegencies = document.getElementById('village-total-regencies');
+        if (!modal || !grid || !totalCount || !totalRegencies) return;
+
+        const data = getVillageDetailData();
+        totalCount.textContent = String(data.villages.length || 13);
+        totalRegencies.textContent = String(data.regencies || '-');
+
+        if (!data.villages.length) {
+          grid.innerHTML = '<div class="funding-detail" style="display:block;">Data desa belum siap dimuat.</div>';
+          return;
+        }
+
+        const metricRows = data.villages.map(item => {
+          const parts = [];
+          if (Number(item.mangroveArea || 0) > 0) parts.push('<div class="village-metric-row" style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:start;"><dt style="min-width:0;overflow-wrap:anywhere;">Luas area mangrove</dt><dd style="min-width:0;white-space:nowrap;text-align:right;">' + formatNumber(item.mangroveArea, 2) + ' ha</dd></div>');
+          if (Number(item.mangroveSeedlings || 0) > 0) parts.push('<div class="village-metric-row" style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:start;"><dt style="min-width:0;overflow-wrap:anywhere;">Bibit mangrove tertanam</dt><dd style="min-width:0;white-space:nowrap;text-align:right;">' + formatNumber(item.mangroveSeedlings, 0) + ' bibit</dd></div>');
+          if (Number(item.coffeeSeedlings || 0) > 0) parts.push('<div class="village-metric-row" style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:start;"><dt style="min-width:0;overflow-wrap:anywhere;">Bibit kopi tertanam</dt><dd style="min-width:0;white-space:nowrap;text-align:right;">' + formatNumber(item.coffeeSeedlings, 0) + ' bibit</dd></div>');
+          if (Number(item.coffeeArea || 0) > 0) parts.push('<div class="village-metric-row" style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:start;"><dt style="min-width:0;overflow-wrap:anywhere;">Luas kopi (jarak tanam 3x3)</dt><dd style="min-width:0;white-space:nowrap;text-align:right;">' + formatNumber(item.coffeeArea, 2) + ' ha</dd></div>');
+          if (Number(item.genericArea || 0) > 0) parts.push('<div class="village-metric-row" style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:start;"><dt style="min-width:0;overflow-wrap:anywhere;">Luas area</dt><dd style="min-width:0;white-space:nowrap;text-align:right;">' + formatNumber(item.genericArea, 2) + ' ha</dd></div>');
+          if (Number(item.genericSeedlings || 0) > 0) parts.push('<div class="village-metric-row" style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:start;"><dt style="min-width:0;overflow-wrap:anywhere;">Bibit tertanam</dt><dd style="min-width:0;white-space:nowrap;text-align:right;">' + formatNumber(item.genericSeedlings, 0) + ' bibit</dd></div>');
+          if (Number(item.canalBlocks || 0) > 0) parts.push('<div class="village-metric-row" style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:start;"><dt style="min-width:0;overflow-wrap:anywhere;">Unit sekat kanal</dt><dd style="min-width:0;white-space:nowrap;text-align:right;">' + formatNumber(item.canalBlocks, 0) + ' unit</dd></div>');
+          if (Number(item.fdrsUnits || 0) > 0) parts.push('<div class="village-metric-row" style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:start;"><dt style="min-width:0;overflow-wrap:anywhere;">Unit FDRS</dt><dd style="min-width:0;white-space:nowrap;text-align:right;">' + formatNumber(item.fdrsUnits, 0) + ' unit</dd></div>');
+          if (Number(item.trainingSessions || 0) > 0) parts.push('<div class="village-metric-row" style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:start;"><dt style="min-width:0;overflow-wrap:anywhere;">Sesi pelatihan</dt><dd style="min-width:0;white-space:nowrap;text-align:right;">' + formatNumber(item.trainingSessions, 0) + ' sesi</dd></div>');
+          if (Number(item.participants || 0) > 0) parts.push('<div class="village-metric-row" style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:start;"><dt style="min-width:0;overflow-wrap:anywhere;">Peserta pelatihan</dt><dd style="min-width:0;white-space:nowrap;text-align:right;">' + formatNumber(item.participants, 0) + ' orang</dd></div>');
+          if (!parts.length) {
+            parts.push('<div class="village-metric-row village-metric-row-empty" style="display:grid;grid-template-columns:1fr;gap:4px;"><dt>Belum ada metrik terpetakan</dt><dd style="text-align:left;white-space:normal;">Data belum tersedia</dd></div>');
+          }
+          return '<article class="funding-detail village-detail-card" style="display:block;"><h4>' + item.name + '</h4><dl class="village-activity-list" style="display:grid;grid-template-columns:1fr;gap:10px;margin:0;padding:0;">' + parts.join('') + '</dl></article>';
+        }).join('');
+
+        grid.innerHTML = metricRows;
+      }
+
+      function openVillageDetailModal() {
+        const modal = document.getElementById('village-dashboard');
+        if (!modal) return;
+        renderVillageDetailModal();
+        modal.hidden = false;
+        document.body.classList.add('funding-modal-open');
+      }
+
+      function closeVillageDetailModal() {
+        const modal = document.getElementById('village-dashboard');
+        if (!modal) return;
+        modal.hidden = true;
+        document.body.classList.remove('funding-modal-open');
+      }
+
+      function renderClimateFallback() {
+        if (window.YG_CLIMATE_DASHBOARD_READY) return;
+        const container = document.getElementById('climate-dashboard-container');
+        if (!container) return;
+
+        const stats = window.YG_DASHBOARD_STATS || {};
+        const mangroveArea = Number(stats.mangroveArea || 0);
+        const peatArea = Number(stats.peatArea || 0);
+        const mineralArea = Number(stats.mineralArea || 0);
+        const rewettingArea = Number(stats.rewettingArea || 0);
+        const canalBlocks = Number(stats.canalBlocks || 0);
+        const fdrsUnits = Number(stats.fdrsUnits || 0);
+        const nurseryCount = Number(stats.nurseryCount || 0);
+        const monitoringReports = Number(stats.monitoringReports || 0);
+        const trainingSessions = Number(stats.trainingSessions || 0);
+        const english = isEnglish();
+
+        const factors = {
+          mangroveAbsorption: 31.6,
+          peatAbsorption: 20.0,
+          mineralAbsorption: 5.0,
+          rewettingReduction: 35.0,
+          canalBlockReduction: 2.0,
+          fdrsReduction: 1.0
+        };
+
+        const absorptionEstimate = (mangroveArea * factors.mangroveAbsorption) +
+          (peatArea * factors.peatAbsorption) +
+          (mineralArea * factors.mineralAbsorption);
+        const reductionEstimate = (rewettingArea * factors.rewettingReduction) +
+          (canalBlocks * factors.canalBlockReduction) +
+          (fdrsUnits * factors.fdrsReduction);
+        const totalEstimate = absorptionEstimate + reductionEstimate || 1;
+        const absorptionShare = Math.round((absorptionEstimate / totalEstimate) * 100);
+        const reductionShare = 100 - absorptionShare;
+
+        const directSources = [
+          { label: t('Area restorasi mangrove', 'Mangrove restoration area'), value: mangroveArea, unit: 'ha', note: t('Input aktivitas langsung untuk penyerapan', 'Direct activity input for removals'), hint: t('Luas lahan untuk proxy penyerapan', 'Land area used in removals proxy'), group: 'penyerapan' },
+          { label: t('Restorasi gambut / agroforestri', 'Peatland / agroforestry restoration'), value: peatArea, unit: 'ha', note: t('Input aktivitas langsung untuk penyerapan', 'Direct activity input for removals'), hint: t('Luas lahan untuk proxy penyerapan', 'Land area used in removals proxy'), group: 'penyerapan' },
+          { label: t('Rehabilitasi lahan mineral', 'Mineral land rehabilitation'), value: mineralArea, unit: 'ha', note: t('Input aktivitas langsung untuk penyerapan', 'Direct activity input for removals'), hint: t('Luas lahan untuk proxy penyerapan', 'Land area used in removals proxy'), group: 'penyerapan' },
+          { label: t('Area rewetting', 'Rewetting area'), value: rewettingArea, unit: 'ha', note: t('Input aktivitas langsung untuk pengurangan emisi', 'Direct activity input for avoided emissions'), hint: t('Intervensi hidrologi untuk proxy pengurangan', 'Hydrological intervention used in avoided emissions proxy'), group: 'pengurangan' },
+          { label: t('Sekat kanal', 'Canal blocks'), value: canalBlocks, unit: 'unit', note: t('Input aktivitas langsung untuk pengurangan emisi', 'Direct activity input for avoided emissions'), hint: t('Jumlah intervensi hidrologi', 'Hydrological intervention count'), group: 'pengurangan' },
+          { label: t('Unit FDRS', 'FDRS units'), value: fdrsUnits, unit: 'unit', note: t('Input aktivitas langsung untuk pengurangan emisi', 'Direct activity input for avoided emissions'), hint: t('Infrastruktur pengelolaan risiko kebakaran', 'Fire-risk management infrastructure'), group: 'pengurangan' },
+          { label: t('Lokasi nursery', 'Nursery locations'), value: nurseryCount, unit: t('lokasi', 'locations'), note: t('Mendukung penyerapan di masa depan lewat skala penanaman', 'Supports future removals through planting scale-up'), hint: t('Dukungan kapasitas penanaman', 'Planting capacity support'), group: 'penyerapan' },
+          { label: t('Laporan monitoring lapangan', 'Field monitoring reports'), value: monitoringReports, unit: t('laporan', 'reports'), note: t('Data pendukung kualitas', 'Supporting quality data'), hint: t('Dukungan MRV / monitoring, reporting, and verification', 'MRV / monitoring, reporting, and verification support'), group: 'pengurangan' },
+          { label: t('Sesi pelatihan masyarakat', 'Community training sessions'), value: trainingSessions, unit: t('sesi', 'sessions'), note: t('Data pendukung implementasi', 'Supporting implementation data'), hint: t('Bukti peningkatan kapasitas', 'Capacity-building evidence'), group: 'pengurangan' }
+        ];
+
+        const rowMarkup = group => directSources.filter(item => item.group === group).map(item =>
+          '<div class="climate-source-row"><div class="climate-source-label"><strong title="' + item.hint + '">' + item.label + '</strong><small>' + item.note + '</small></div><div class="climate-source-value">' + formatNumber(item.value, item.unit === 'ha' ? 2 : 0) + ' ' + item.unit + '</div></div>'
+        ).join('');
+
+        container.innerHTML = '' +
+          '<div class="climate-grid">' +
+            '<article class="climate-card climate-card-absorb">' +
+              '<div class="climate-card-head"><span>' + t('Penyerapan bruto / Gross removals', 'Gross removals / Absorptions') + '</span><strong>' + formatNumber(absorptionEstimate, 1) + ' tCO2e/yr*</strong></div>' +
+              '<div class="climate-bar"><span style="width:' + absorptionShare + '%"></span></div>' +
+              '<p class="climate-card-caption">' + t('Estimasi proksi konservatif menggunakan panduan pelaporan sektor lahan internasional untuk restorasi mangrove, restorasi gambut/agroforestri, dan rehabilitasi lahan mineral.', 'Conservative proxy estimate using international land-sector reporting guidance for mangrove restoration, peatland/agroforestry restoration, and mineral land rehabilitation.') + '</p>' +
+              '<div class="climate-source-list">' + rowMarkup('penyerapan') + '</div>' +
+            '</article>' +
+            '<article class="climate-card climate-card-reduce">' +
+              '<div class="climate-card-head"><span>' + t('Emisi terhindar / Avoided emissions', 'Avoided emissions / Reductions') + '</span><strong>' + formatNumber(reductionEstimate, 1) + ' tCO2e/yr*</strong></div>' +
+              '<div class="climate-bar"><span style="width:' + reductionShare + '%"></span></div>' +
+              '<p class="climate-card-caption">' + t('Estimasi proksi konservatif menggunakan panduan pelaporan sektor lahan internasional untuk rewetting, sekat kanal, dan FDRS. Monitoring dan pelatihan ditampilkan sebagai data pendukung implementasi.', 'Conservative proxy estimate using international land-sector reporting guidance for rewetting, canal blocks, and FDRS. Monitoring and training are shown as supporting implementation data.') + '</p>' +
+              '<div class="climate-source-list">' + rowMarkup('pengurangan') + '</div>' +
+            '</article>' +
+          '</div>' +
+          '<div class="climate-footnote"><strong>' + t('Metodologi:', 'Methodology:') + '</strong> ' + t('IPCC 2006 Guidelines + 2013 Wetlands Supplement (proxy konservatif). Kontributor data: bibit tertanam, monitoring lapangan, pelatihan masyarakat, dokumentasi kegiatan, publikasi program. Ganti koefisien proksi dengan faktor emisi spesifik lokasi jika/ketika tersedia.', 'IPCC 2006 Guidelines + 2013 Wetlands Supplement (conservative proxy). Data contributors: Seedlings planted / bibit tertanam, Field monitoring / monitoring lapangan, Community training / pelatihan masyarakat, Documentation / dokumentasi kegiatan, Publications / publikasi program. Replace the proxy coefficients with site-specific emission factors if/when those become available.') + '</div>';
+      }
+
+      window.addEventListener('load', function() {
+        setTimeout(renderClimateFallback, 3000);
+        renderKolibriSummaryWhenReady();
+      });
+
+      window.addEventListener('DOMContentLoaded', function() {
+        const trigger = document.querySelector('[data-open-village-detail]');
+        const modal = document.getElementById('village-dashboard');
+        if (trigger) {
+          trigger.addEventListener('click', function(event) {
+            event.preventDefault();
+            openVillageDetailModal();
+          });
+        }
+        if (modal) {
+          modal.addEventListener('click', function(event) {
+            const target = event.target;
+            if (target && target.hasAttribute('data-close-village')) {
+              closeVillageDetailModal();
+            }
+          });
+        }
+      });
+
+      window.addEventListener('yg:languagechange', function() {
+        renderClimateFallback();
+        renderKolibriSummaryWhenReady();
+        const modal = document.getElementById('village-dashboard');
+        if (modal && !modal.hidden) {
+          renderVillageDetailModal();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+  <title>Peta Interaktif Yayasan Gambut</title>
+  <link rel="icon" href="assets/logo-yayasan-gambut.png"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <link rel="stylesheet" href="css/app.css?v=20260720-search-nursery1"/>
+<link rel="stylesheet" href="css/webgis-v3.css?v=20260720-popup-monitoring1"/>
+
+<style id="yg-integrated-search-style">
+.search{
+  position:relative;
+  z-index:60;
+}
+
+.yg-search-results{
+  position:absolute;
+  top:calc(100% + 7px);
+  left:0;
+  right:0;
+  max-height:320px;
+  overflow:auto;
+  border:1px solid #d7e4de;
+  border-radius:11px;
+  background:#fff;
+  box-shadow:0 14px 30px rgba(20,70,52,.18);
+  z-index:3000;
+}
+
+.yg-search-result{
+  display:flex;
+  width:100%;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:2px;
+  padding:10px 12px;
+  border:0;
+  border-bottom:1px solid #edf2ef;
+  border-radius:0;
+  background:#fff;
+  color:#26342f;
+  text-align:left;
+  cursor:pointer;
+}
+
+.yg-search-result:last-child{
+  border-bottom:0;
+}
+
+.yg-search-result:hover,
+.yg-search-result:focus{
+  background:#eaf8fd;
+  outline:none;
+}
+
+.yg-search-result strong{
+  color:#4c1d0b;
+  font-size:11px;
+  line-height:1.3;
+}
+
+.yg-search-result span{
+  color:#6d7b76;
+  font-size:9px;
+}
+
+.yg-search-empty{
+  padding:13px;
+  color:#a22b2b;
+  font-size:10px;
+  line-height:1.4;
+}
+
+#search-input.search-error{
+  border-color:#c62828!important;
+  box-shadow:0 0 0 3px rgba(198,40,40,.10)!important;
+}
+
+#search-input.search-success{
+  border-color:#16834f!important;
+  box-shadow:0 0 0 3px rgba(22,131,79,.10)!important;
+}
+</style>
+
+
+<style id="yg-reference-layer-style">
+.yg-layer-section-title{
+  margin:10px 0 7px;
+  padding:8px 10px;
+  border-radius:8px;
+  background:#eef4f1;
+  color:#355248;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:.08em;
+}
+.yg-layer-section-title.yg-program-title{
+  margin-top:14px;
+  background:#e8f5f0;
+  color:#087653;
+}
+.reference-layer-row{
+  background:#fbfcfb;
+}
+.reference-layer-row input:disabled{
+  cursor:wait;
+}
+.reference-layer-row label{
+  font-weight:700;
+}
+</style>
+
+<style id="yg-language-style">
+.yg-language-switcher{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  margin-top:10px;
+  padding:4px 6px;
+  border:1px solid rgba(255,255,255,.42);
+  border-radius:999px;
+  background:rgba(255,255,255,.13);
+}
+.yg-language-switcher button{
+  min-width:32px;
+  padding:4px 7px;
+  border:0;
+  border-radius:999px;
+  background:transparent;
+  color:rgba(255,255,255,.78);
+  font:800 10px/1 system-ui,sans-serif;
+  letter-spacing:.06em;
+  cursor:pointer;
+}
+.yg-language-switcher button.active{
+  background:#fff;
+  color:#087653;
+  box-shadow:0 2px 7px rgba(0,0,0,.16);
+}
+.yg-language-switcher span{
+  color:rgba(255,255,255,.46);
+  font-size:9px;
+}
+</style>
+
+  <meta name="theme-color" content="#079cde">
+  <meta name="application-name" content="YG GeoPortal">
+  <meta name="apple-mobile-web-app-title" content="YG GeoPortal">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="manifest.webmanifest?v=20260714-1">
+  <link rel="apple-touch-icon" href="assets/logo-yayasan-gambut-192.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/logo-yayasan-gambut-192.png">
+  <link rel="stylesheet" href="css/site-brand.css?v=20260720-home-logo1">
+</head>
+<body class="webgis-page">
+<div class="app-shell" id="app-shell">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-inner">
+      <div class="sidebar-hero">
+        <a class="yg-sidebar-brand" href="index.html" aria-label="Kembali ke dashboard utama">
+          <img src="assets/logo-yayasan-gambut.png" alt="Logo Yayasan Gambut">
+          <strong>Peta Program Yayasan Gambut</strong>
+        </a>
+        <p>Restorasi gambut, mangrove, pencegahan kebakaran, infrastruktur pesisir, dan livelihood.</p>
+        <small id="database-updated">Menghubungkan ke Master Database…</small>
+        <div class="yg-language-switcher" role="group" aria-label="Pilihan bahasa / Language selection">
+          <button type="button" data-lang="id" aria-pressed="true">ID</button>
+          <span aria-hidden="true">|</span>
+          <button type="button" data-lang="en" aria-pressed="false">EN</button>
+        </div>
+      </div>
+
+      <section class="panel">
+        <h2 class="panel-title">Cari lokasi <small>desa atau kegiatan</small></h2>
+        <div class="search">
+          <input id="search-input" type="search" placeholder="Sepahat, Temiang, FDRS..."/>
+          <button id="search-button" type="button">⌕</button>
+          <div class="yg-search-results" id="search-results" hidden></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2 class="panel-title">Layer data <small>aktif/nonaktif</small></h2>
+        <div class="layer-list" id="layer-list">
+          <div class="yg-loading-row">Memuat layer dari database…</div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2 class="panel-title">Legenda</h2>
+        <div class="legend" id="legend">
+          <div class="yg-loading-row">Menyiapkan legenda…</div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2 class="panel-title">Kontrol peta</h2>
+        <div class="controls">
+          <button class="primary" id="fit-all" type="button">Tampilkan semua</button>
+          <button id="locate-me" type="button">Lokasi saya</button>
+          <button class="wide" id="reset-map" type="button">Reset tampilan</button>
+        </div>
+        <div class="status" id="status-box">
+          <span class="status-dot"></span>
+          <span id="status-text">Mengambil objek dari Master Database…</span>
+        </div>
+      </section>
+    </div>
+  </aside>
+
+  <div class="overlay" id="overlay"></div>
+
+  <main class="map-area" id="map-area">
+    <div id="map"></div>
+
+    <div class="map-top">
+
+      <div class="map-actions">
+        <button id="map-panel" type="button">☰ <span>Panel</span></button>
+        <button id="fullscreen" type="button">⛶ <span>Fullscreen</span></button>
+      </div>
+    </div>
+
+    <button class="mobile-fab" id="mobile-panel" type="button">☰</button>
+  </main>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="js/i18n.js?v=20260723-null-safe1"></script>
+<script src="js/map-v4.js?v=20260723-editor-points1"></script>
+<script src="js/popup-gallery-v2.js?v=20260720-gallery-v2-dedupe1"></script>
+<script src="js/ui.js?v=20260720-layer-order2"></script>
+<script src="js/data-updates.js?v=20260723-photo-matchfix1"></script>
+<script src="js/layer-order-v1.js?v=20260720-area-kopi1"></script>
+<script src="js/pwa.js?v=20260723-edge-photo-fix1"></script>
+</body>
+</html>
+

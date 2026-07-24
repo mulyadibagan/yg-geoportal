@@ -99,14 +99,32 @@
     });
   });
 
+  var ecosystemTypeInput = document.getElementById('new-object-ecosystem');
+  if(ecosystemTypeInput){
+    ecosystemTypeInput.addEventListener('change',function(){
+      if(selectedType){
+        configureFormByType(selectedType);
+      }
+    });
+  }
+
   function configureFormByType(type){
     resetGeometry();
 
     var geometrySection = document.getElementById('geometry-section');
+    var geometryTitle = document.getElementById('geometry-title');
     var pointTools = document.getElementById('point-tools');
     var polygonTools = document.getElementById('polygon-tools');
     var pointCoordinates = document.getElementById('point-coordinates');
     var existingFeatureFields = document.getElementById('existing-feature-fields');
+    var locationMap = document.getElementById('location-map');
+    if(
+      existingFeatureFields &&
+      locationMap &&
+      existingFeatureFields.parentNode !== geometrySection
+    ){
+      geometrySection.insertBefore(existingFeatureFields,locationMap);
+    }
     var oldInformation = document.getElementById('old-information');
     var proposedInformation = document.getElementById('proposed-information');
     var monitoringFields = document.getElementById('monitoring-fields');
@@ -125,11 +143,14 @@
       : 'Tautan Google Drive atau PDF';
     var newObjectDonorFields = document.getElementById('new-object-donor-fields');
     var donorInput = document.getElementById('donor');
+    var newObjectEcosystemInput = document.getElementById('new-object-ecosystem');
     var forestFields = document.getElementById('new-object-forest-fields');
     var needsNewObjectDonor =
       type === 'Titik Baru' || type === 'Area/Poligon Baru';
     if(newObjectDonorFields) newObjectDonorFields.hidden = !needsNewObjectDonor;
     if(donorInput) donorInput.required = needsNewObjectDonor;
+    if(newObjectEcosystemInput) newObjectEcosystemInput.required =
+      needsNewObjectDonor;
     if(forestFields) forestFields.hidden = !needsNewObjectDonor;
     var replantingFields = document.getElementById('replanting-fields');
     if(replantingFields) replantingFields.hidden =
@@ -149,6 +170,7 @@
     existingFeatureFields.hidden = existingFeatureTypes.indexOf(type) === -1;
 
     if(type === 'Capacity Building'){
+      if(geometryTitle) geometryTitle.textContent = '4. Tentukan lokasi';
       geometrySection.hidden = true;
       pointTools.hidden = true;
       polygonTools.hidden = true;
@@ -158,6 +180,7 @@
         'Data pelatihan akan ditampilkan pada Dashboard Peningkatan Kapasitas. Titik koordinat tidak diperlukan.';
       geometryHelp.textContent = '';
     }else if(type === 'Area/Poligon Baru'){
+      if(geometryTitle) geometryTitle.textContent = '4. Tentukan lokasi';
       geometrySection.hidden = false;
       pointTools.hidden = true;
       polygonTools.hidden = false;
@@ -170,6 +193,7 @@
       guidance.textContent = 'Pilih menggambar poligon langsung atau upload file KML.';
       geometryHelp.textContent = 'Area wajib berupa Polygon atau MultiPolygon yang valid.';
     }else if(pointTypes.indexOf(type) !== -1){
+      if(geometryTitle) geometryTitle.textContent = '4. Tentukan lokasi';
       geometrySection.hidden = false;
       pointTools.hidden = false;
       polygonTools.hidden = true;
@@ -180,6 +204,7 @@
         : 'Tentukan titik lokasi kegiatan atau kejadian.';
       geometryHelp.textContent = 'Gunakan GPS atau klik satu titik pada peta. Marker dapat digeser.';
     }else if(existingFeatureTypes.indexOf(type) !== -1){
+      if(geometryTitle) geometryTitle.textContent = '4. Pilih objek WebGIS';
       geometrySection.hidden = false;
       pointTools.hidden = true;
       polygonTools.hidden = true;
@@ -207,7 +232,7 @@
         : type === 'Replanting/Penyulaman Mangrove'
           ? 'Area Penanaman Mangrove tampil otomatis. Klik polygon, isi data penyulaman, lalu unggah foto BEFORE dan AFTER.'
         : type === 'Monitoring'
-          ? 'Area Penanaman Mangrove tampil otomatis. Klik polygon yang akan dimonitor.'
+          ? 'Pilih layer data terlebih dahulu, muat layer, lalu klik objek (titik/garis/poligon) yang akan dimonitor.'
           : 'Layer operasional tampil otomatis. Klik titik, garis, atau poligon yang informasinya ingin diperbaiki.';
 
       geometryHelp.textContent =
@@ -227,6 +252,14 @@
       correctionLayersLoaded = true;
       document.getElementById('correction-layer')
         .addEventListener('change',function(){
+          if(
+            selectedType === 'Monitoring' &&
+            this.value === '__all_operational__'
+          ){
+            alert('Monitoring menggunakan satu layer spesifik. Pilih layer data terlebih dahulu.');
+            this.value = '';
+            return;
+          }
           if(this.value === '__all_operational__'){
             loadAllCorrectionLayers();
           }else{
@@ -241,13 +274,22 @@
 
       document.getElementById('open-object-picker')
         .addEventListener('click',function(){
-          if(
-            selectedType === 'Monitoring' ||
-            selectedType === 'Replanting/Penyulaman Mangrove'
-          ){
+          if(selectedType === 'Replanting/Penyulaman Mangrove'){
             document.getElementById('correction-layer').value =
               'area_mangrove';
             loadCorrectionLayer('area_mangrove');
+          }else if(selectedType === 'Monitoring'){
+            var selectedLayerId =
+              document.getElementById('correction-layer').value;
+            if(!selectedLayerId){
+              alert('Pilih layer data monitoring terlebih dahulu.');
+              return;
+            }
+            if(selectedLayerId === '__all_operational__'){
+              alert('Untuk monitoring, pilih satu layer spesifik terlebih dahulu.');
+              return;
+            }
+            loadCorrectionLayer(selectedLayerId);
           }else{
             document.getElementById('correction-layer').value =
               '__all_operational__';
@@ -264,6 +306,10 @@
             return;
           }
           if(selectedLayerId === '__all_operational__'){
+            if(selectedType === 'Monitoring'){
+              alert('Untuk monitoring, pilih satu layer spesifik terlebih dahulu.');
+              return;
+            }
             loadAllCorrectionLayers();
           }else{
             loadCorrectionLayer(selectedLayerId);
@@ -276,12 +322,26 @@
       return;
     }
 
-    if(
-      selectedType === 'Monitoring' ||
-      selectedType === 'Replanting/Penyulaman Mangrove'
-    ){
+    if(selectedType === 'Replanting/Penyulaman Mangrove'){
       document.getElementById('correction-layer').value = 'area_mangrove';
       loadCorrectionLayer('area_mangrove');
+    }else if(selectedType === 'Monitoring'){
+      document.getElementById('correction-layer').value = '';
+      clearSelectedCorrectionFeature();
+      if(correctionLayerGroup){
+        map.removeLayer(correctionLayerGroup);
+        correctionLayerGroup = null;
+      }
+      var summary = document.getElementById('selected-feature-summary');
+      if(summary){
+        summary.className = 'selected-feature-summary';
+        summary.textContent = 'Pilih layer data monitoring, lalu klik "Pilih/Ganti Objek di Peta".';
+      }
+      var pickerStatus = document.getElementById('object-picker-status');
+      if(pickerStatus){
+        pickerStatus.textContent =
+          'Monitoring: pilih layer data terlebih dahulu, kemudian muat layer dan klik objek pada peta.';
+      }
     }else{
       document.getElementById('correction-layer').value =
         '__all_operational__';
@@ -1784,6 +1844,36 @@
     };
   }
 
+  function ecosystemProgrammeLabel(ecosystemType){
+    if(ecosystemType === 'Mangrove') return 'Restorasi Mangrove';
+    if(ecosystemType === 'Gambut') return 'Restorasi Gambut';
+    if(ecosystemType === 'Lahan Mineral') return 'Restorasi Lahan Mineral';
+    return '';
+  }
+
+  function buildNewObjectAttributes(donor, ecosystemType, forestSeedlingsCount, forestSeedlingsSpecies){
+    var attributes = {
+      Donor:donor,
+      Donor_Cluster:donor,
+      Nama_Donor:donor
+    };
+
+    if(ecosystemType){
+      attributes.Kategori_Ekosistem = ecosystemType;
+      attributes.Jenis_Ekosistem = ecosystemType;
+      attributes.Program = ecosystemProgrammeLabel(ecosystemType);
+    }
+
+    if(forestSeedlingsCount !== ''){
+      attributes.Jumlah_Bibit_Hutan = forestSeedlingsCount;
+    }
+    if(forestSeedlingsSpecies){
+      attributes.Jenis_Bibit_Hutan = forestSeedlingsSpecies;
+    }
+
+    return attributes;
+  }
+
   function calculateEstimatedPeatRewettingArea(unitCount){
     var count = Number(unitCount);
     if(!Number.isFinite(count) || count < 0){
@@ -1931,6 +2021,16 @@
 
     var forestSeedlingsCount = value('forest-seedlings-count');
     var forestSeedlingsSpecies = value('forest-seedlings-species');
+    var newObjectEcosystem = value('new-object-ecosystem');
+
+    if(isNewObjectReport && !newObjectEcosystem){
+      alert('Pilih kategori ekosistem objek baru (mangrove/gambut/lahan mineral).');
+      document.getElementById('new-object-ecosystem').scrollIntoView({
+        behavior:'smooth',
+        block:'center'
+      });
+      return;
+    }
 
     if(existingFeatureTypes.indexOf(selectedType) !== -1){
       if(!selectedCorrectionFeature || !geometryGeoJSON){
@@ -2131,6 +2231,15 @@
       return;
     }
 
+    var newObjectAttributes = isNewObjectReport
+      ? buildNewObjectAttributes(
+          newObjectDonor,
+          newObjectEcosystem,
+          forestSeedlingsCount,
+          forestSeedlingsSpecies
+        )
+      : null;
+
     var payload = {
       reportType:selectedType,
       name:value('name'),
@@ -2173,11 +2282,7 @@
       targetFeatureProperties:selectedCorrectionFeature
         ? JSON.stringify(selectedCorrectionFeature.feature.properties || {})
         : isNewObjectReport
-          ? JSON.stringify({
-              Donor:newObjectDonor,
-              Donor_Cluster:newObjectDonor,
-              Nama_Donor:newObjectDonor
-            })
+          ? JSON.stringify(newObjectAttributes)
           : '',
       proposedChanges:selectedType === 'Perbaikan Informasi'
         ? JSON.stringify(collectProposedChanges())
@@ -2188,13 +2293,10 @@
             : selectedType === 'Capacity Building'
               ? JSON.stringify({capacityBuilding:collectCapacityBuildingData()})
             : isNewObjectReport
-              ? JSON.stringify({
-                  Donor:newObjectDonor,
-                  Donor_Cluster:newObjectDonor,
-                  Nama_Donor:newObjectDonor
-                })
+              ? JSON.stringify(newObjectAttributes)
               : '',
       donor:isNewObjectReport ? newObjectDonor : '',
+      newObjectEcosystem:isNewObjectReport ? newObjectEcosystem : '',
       forestSeedlingsCount:forestSeedlingsCount,
       forestSeedlingsSpecies:forestSeedlingsSpecies,
       images:compressedImages,

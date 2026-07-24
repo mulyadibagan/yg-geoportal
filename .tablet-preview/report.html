@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Kirim Laporan | YG GeoPortal</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css">
+  <link rel="stylesheet" href="css/site-brand.css?v=20260720-program-dashboard1">
+  <link rel="stylesheet" href="css/report-v6.css?v=20260720-photo-worker2">
+  <link rel="stylesheet" href="css/language-switcher.css?v=20260721-all-pages1">
+  <meta name="theme-color" content="#079cde">
+  <meta name="application-name" content="YG GeoPortal">
+  <meta name="apple-mobile-web-app-title" content="YG GeoPortal">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="manifest.webmanifest?v=20260714-1">
+  <link rel="apple-touch-icon" href="assets/logo-yayasan-gambut-192.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/logo-yayasan-gambut-192.png">
+</head>
+<body>
+<header class="yg-page-header">
+  <div class="yg-page-header__inner">
+    <a class="yg-page-brand" href="index.html">
+      <img src="assets/logo-yayasan-gambut.png" alt="Logo Yayasan Gambut">
+      <span><strong>YG GeoPortal</strong>WebGIS Yayasan Gambut</span>
+    </a>
+    <nav class="yg-page-nav" aria-label="Navigasi utama">
+      <a href="index.html">Beranda</a>
+      <a href="webgis.html">WebGIS</a>
+      <a href="report.html" aria-current="page">Kirim Laporan</a>
+      <a href="monitoring.html">Monitoring</a>
+      <span class="yg-public-language-switcher" role="group" aria-label="Pilihan bahasa / Language selection">
+        <button type="button" data-lang="id" aria-pressed="true">ID</button>
+        <button type="button" data-lang="en" aria-pressed="false">EN</button>
+      </span>
+    </nav>
+  </div>
+</header>
+<main class="report-shell">
+  <section class="report-hero">
+    <span class="badge">COMMUNITY MONITORING</span>
+    <h1>Kirim Laporan Lapangan</h1>
+    <p>Jenis laporan menentukan data dan bentuk lokasi yang harus diisi. Laporan akan diverifikasi oleh Yayasan Gambut sebelum dipublikasikan.</p>
+  </section>
+
+  <div class="notice">
+    <strong>Proses verifikasi</strong>
+    <span>Data, lokasi, geometri, dan foto diperiksa terlebih dahulu sebelum muncul di WebGIS.</span>
+  </div>
+
+  <form id="report-form" method="post" target="submit-frame" action="https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec">
+    <section class="card">
+      <h2>1. Pilih jenis laporan</h2>
+      <div class="choice-grid">
+        <label><input type="radio" name="reportTypeUI" value="Tambah Foto Kegiatan" required><span><span class="choice-icon">📷</span> Tambah Foto</span></label>
+        <label><input type="radio" name="reportTypeUI" value="Perbaikan Informasi"><span><span class="choice-icon">✏️</span> Perbaikan Informasi</span></label>
+        <label><input type="radio" name="reportTypeUI" value="Titik Baru"><span><span class="choice-icon">📍</span> Titik Baru</span></label>
+        <label><input type="radio" name="reportTypeUI" value="Area/Poligon Baru"><span><span class="choice-icon">🗺️</span> Area Baru</span></label>
+        <label><input type="radio" name="reportTypeUI" value="Monitoring"><span><span class="choice-icon">🌱</span> Monitoring</span></label>
+        <label><input type="radio" name="reportTypeUI" value="Replanting/Penyulaman Mangrove"><span><span class="choice-icon">🌿</span> Replanting</span></label>
+        <label><input type="radio" name="reportTypeUI" value="Kebakaran"><span><span class="choice-icon">🔥</span> Kebakaran</span></label>
+        <label><input type="radio" name="reportTypeUI" value="Abrasi"><span><span class="choice-icon">🌊</span> Abrasi</span></label>
+        <label><input type="radio" name="reportTypeUI" value="Biodiversitas"><span><span class="choice-icon">🦜</span> Biodiversitas</span></label>
+        <label><input type="radio" name="reportTypeUI" value="Capacity Building"><span><span class="choice-icon">👥</span> Peningkatan Kapasitas</span></label>
+      </div>
+      <p id="type-guidance" class="type-guidance">Pilih jenis laporan untuk menampilkan isian yang sesuai.</p>
+    </section>
+
+    <section class="card">
+      <h2>2. Informasi pelapor</h2>
+      <div class="form-grid">
+        <label class="field"><span>Nama lengkap *</span><input id="name" required></label>
+        <label class="field"><span>Instansi atau kelompok</span><input id="organization"></label>
+        <label class="field"><span>Email</span><input id="email" type="email"></label>
+        <label class="field"><span>Nomor HP/WhatsApp</span><input id="phone" type="tel"></label>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>3. Administrasi lokasi</h2>
+      <div class="form-grid">
+        <label class="field"><span>Provinsi</span><input id="province" value="Riau"></label>
+        <label class="field"><span>Kabupaten/Kota</span><input id="regency"></label>
+        <label class="field"><span>Kecamatan</span><input id="district"></label>
+        <label class="field"><span>Desa/Kelurahan</span><input id="village"></label>
+        <label class="field span-2"><span>Nama lokasi atau objek</span><input id="location-name" placeholder="Contoh: Nursery Sepahat"></label>
+      </div>
+      <p id="admin-location-status" class="help" aria-live="polite">Administrasi dapat diisi manual atau dikenali otomatis setelah titik lokasi diterapkan.</p>
+    </section>
+
+    <section id="geometry-section" class="card conditional" hidden>
+      <h2 id="geometry-title">4. Tentukan lokasi</h2>
+      <p id="geometry-help" class="help"></p>
+
+      <div id="point-tools" hidden>
+        <div class="location-actions">
+          <button id="get-location" type="button">📍 Ambil Lokasi Saya</button>
+          <span>atau klik satu titik pada peta</span>
+        </div>
+      </div>
+
+      <div id="polygon-tools" hidden>
+        <div class="area-methods">
+          <span class="area-method-title">Pilih metode area</span>
+          <label class="area-method-option">
+            <input id="area-method-draw" name="areaMethod" type="radio" value="draw" checked>
+            <span>✏️ Gambar Poligon di Peta</span>
+          </label>
+          <label class="area-method-option">
+            <input id="area-method-kml" name="areaMethod" type="radio" value="kml">
+            <span>📂 Upload File KML</span>
+          </label>
+        </div>
+
+        <div id="draw-area-tools">
+          <div class="location-actions">
+            <button id="start-polygon" type="button">🗺️ Mulai Gambar Poligon</button>
+            <button id="clear-geometry" class="secondary" type="button">Hapus Gambar</button>
+            <span>Klik beberapa sudut area, lalu klik titik pertama untuk menyelesaikan.</span>
+          </div>
+        </div>
+
+        <div id="kml-area-tools" hidden>
+          <label class="kml-upload">
+            <input id="spatial-file" type="file" accept=".kml,.kmz,.geojson,.json,application/vnd.google-earth.kml+xml,application/vnd.google-earth.kmz,application/geo+json,application/json">
+            <span>📂 Pilih KML / KMZ / GeoJSON</span>
+          </label>
+          <div id="kml-status" class="kml-status">Belum ada file spasial dipilih.</div>
+<div class="spatial-format-note">Format: KML, KMZ, GeoJSON, atau JSON. Hanya Polygon/MultiPolygon yang diterima.</div>
+          <button id="remove-spatial" class="secondary kml-remove" type="button" hidden>Hapus File</button>
+        </div>
+      </div>
+
+      <div id="location-map"></div>
+
+      <div id="point-coordinates" class="coordinate-grid" hidden>
+        <label class="field">
+          <span>Latitude</span>
+          <input id="latitude" inputmode="decimal" placeholder="Contoh: 1.5562522">
+        </label>
+        <label class="field">
+          <span>Longitude</span>
+          <input id="longitude" inputmode="decimal" placeholder="Contoh: 101.8804072">
+        </label>
+        <div class="coordinate-actions span-2">
+          <button id="apply-coordinate" type="button">Terapkan Koordinat</button>
+          <span id="coordinate-message">Gunakan titik desimal, bukan pemisah ribuan.</span>
+        </div>
+      </div>
+
+      <div id="geometry-summary" class="geometry-summary">Belum ada geometri dipilih.</div>
+    </section>
+
+    <section class="card">
+      <h2>5. Detail laporan</h2>
+      <div class="form-grid">
+        <label class="field span-2"><span>Judul laporan *</span><input id="title" required></label>
+        <label class="field"><span>Tanggal kegiatan</span><input id="activity-date" type="date"></label>
+        <label class="field span-2"><span>Deskripsi *</span><textarea id="description" rows="6" required></textarea></label>
+      </div>
+
+      <div id="new-object-donor-fields" class="conditional-subsection" hidden>
+        <h3>Informasi mitra pendanaan</h3>
+        <p class="help">Pilih nama yang tersedia atau ketik nama donor baru. Wajib diisi agar objek dapat dikelompokkan setelah dipublikasikan.</p>
+        <div class="form-grid">
+          <label class="field span-2">
+            <span>Mitra pendanaan/donor *</span>
+            <input id="donor" list="donor-options" placeholder="Contoh: Aramco Asia Singapore">
+            <datalist id="donor-options">
+              <option value="Aramco Asia Singapore"></option>
+              <option value="Pan Pacific Conservation Foundation (PPCF)"></option>
+              <option value="Global Environment Centre"></option>
+            </datalist>
+          </label>
+          <label class="field span-2">
+            <span>Kategori ekosistem area baru *</span>
+            <select id="new-object-ecosystem">
+              <option value="">Pilih kategori ekosistem...</option>
+              <option value="Mangrove">Mangrove</option>
+              <option value="Gambut">Gambut</option>
+              <option value="Lahan Mineral">Lahan Mineral</option>
+            </select>
+            <small class="help">Wajib untuk laporan Area/Poligon Baru agar admin bisa verifikasi klasifikasi program.</small>
+          </label>
+        </div>
+      </div>
+
+      <div id="new-object-forest-fields" class="conditional-subsection" hidden>
+        <h3>Atribut Pohon Hutan (opsional)</h3>
+        <p class="help">Isi hanya jika laporan titik baru atau area baru berisi penanaman pohon hutan. Kolom ini tidak wajib.</p>
+        <div class="form-grid">
+          <label class="field"><span>Jumlah bibit pohon hutan</span><input id="forest-seedlings-count" type="number" min="0" step="1" placeholder="Contoh: 4300"></label>
+          <label class="field span-2"><span>Jenis/pohon hutan</span><input id="forest-seedlings-species" placeholder="Contoh: Alstonia scholaris"></label>
+        </div>
+      </div>
+
+      <div id="existing-feature-fields" class="conditional-subsection" hidden>
+        <h3 id="existing-feature-title">Pilih data WebGIS</h3>
+
+        <div class="correction-selector">
+          <label class="field">
+            <span>Layer data *</span>
+            <select id="correction-layer">
+              <option value="">Pilih layer...</option>
+            </select>
+          </label>
+
+          <div class="correction-instruction">
+            Klik <b>Pilih/Ganti Objek di Peta</b>, kemudian klik langsung titik, garis, atau poligon yang benar. Objek yang dipilih akan disorot kuning dan seluruh atributnya otomatis masuk ke laporan.
+          </div>
+
+          <div class="object-picker-actions">
+            <button id="open-object-picker" class="object-picker-primary" type="button">🗺️ Pilih/Ganti Objek di Peta</button>
+            <button id="load-layer-only" class="object-picker-secondary" type="button">Muat layer yang dipilih saja</button>
+          </div>
+
+          <div id="object-picker-status" class="object-picker-status">Belum memilih objek. Anda dapat memuat semua layer lalu klik objek langsung pada peta.</div>
+
+          <div id="selected-feature-summary" class="selected-feature-summary">
+            Belum ada objek WebGIS dipilih.
+          </div>
+
+          <button id="clear-selected-feature" class="clear-selected-feature" type="button" hidden>
+            Batalkan pilihan objek
+          </button>
+        </div>
+
+        <div id="correction-detail-fields" hidden>
+          <h3>Atribut objek yang dapat diperbarui</h3>
+          <p class="help">Isi hanya nilai yang ingin diubah. Kolom yang dibiarkan kosong tidak akan diperbarui.</p>
+          <div id="editable-attributes" class="editable-attributes"></div>
+
+          <label class="field span-2 correction-note-field">
+            <span>Catatan atau alasan perbaikan *</span>
+            <textarea id="proposed-information" rows="5"></textarea>
+          </label>
+        </div>
+
+        <div id="photo-target-note" class="photo-target-note" hidden>
+          Foto yang dipilih pada bagian Dokumentasi akan ditambahkan ke objek WebGIS ini setelah diverifikasi admin.
+        </div>
+
+        <textarea id="old-information" hidden></textarea>
+      </div>
+
+
+      <div id="monitoring-fields" class="conditional-subsection monitoring-fields" hidden>
+        <h3>Data monitoring objek</h3>
+        <p class="help">Pilih layer data monitoring terlebih dahulu, lalu klik objek WebGIS pada peta. Isian akan menyesuaikan jenis objek yang dipilih.</p>
+
+        <div class="form-grid">
+          <label class="field"><span>Jenis monitoring *</span>
+            <select id="monitoring-type">
+              <option value="">Pilih jenis monitoring...</option>
+              <option value="Penanaman Mangrove">Penanaman Mangrove</option>
+              <option value="Hutan Mangrove">Hutan Mangrove</option>
+              <option value="Tinggi Muka Air/FDRS">Tinggi Muka Air/FDRS</option>
+              <option value="Sekat Kanal">Sekat Kanal</option>
+              <option value="APO">Alat Pemecah Ombak (APO)</option>
+              <option value="Pembibitan">Pembibitan</option>
+              <option value="Agroforestri/Kopi">Agroforestri/Kopi</option>
+              <option value="Monitoring Umum">Monitoring Umum</option>
+            </select>
+          </label>
+          <label class="field"><span>Kondisi umum *</span>
+            <select id="monitoring-condition">
+              <option value="">Pilih kondisi...</option>
+              <option value="Sangat Baik">Sangat Baik</option>
+              <option value="Baik">Baik</option>
+              <option value="Sedang">Sedang</option>
+              <option value="Rusak Ringan">Rusak Ringan</option>
+              <option value="Rusak Berat">Rusak Berat</option>
+              <option value="Tidak Ditemukan">Tidak Ditemukan</option>
+            </select>
+          </label>
+        </div>
+
+        <div id="monitoring-mangrove-fields" class="monitoring-type-panel" hidden>
+          <h4>Indikator penanaman/hutan mangrove</h4>
+          <div class="form-grid">
+            <label class="field"><span>Survival (%)</span><input id="monitoring-survival" type="number" min="0" max="100" step="0.1"></label>
+            <label class="field"><span>Jumlah hidup</span><input id="monitoring-alive" type="number" min="0" step="1"></label>
+            <label class="field"><span>Jumlah mati/rusak</span><input id="monitoring-dead" type="number" min="0" step="1"></label>
+            <label class="field"><span>Luas terpantau (ha)</span><input id="monitoring-area" type="number" min="0" step="0.01"></label>
+            <label class="field"><span>Tinggi rata-rata (cm)</span><input id="monitoring-height" type="number" min="0" step="0.1"></label>
+            <label class="field"><span>Diameter batang rata-rata (cm)</span><input id="monitoring-diameter" type="number" min="0" step="0.01"></label>
+            <label class="field"><span>Sedimentasi (cm)</span><input id="monitoring-sediment" type="number" step="0.1"></label>
+          </div>
+        </div>
+
+        <div id="monitoring-fdrs-fields" class="monitoring-type-panel" hidden>
+          <h4>FDRS dan water table pelampung</h4>
+          <div class="fdrs-note"><b>Standar pencatatan:</b> 0 cm sejajar permukaan tanah; nilai negatif berarti muka air berada di bawah permukaan gambut. Contoh: −32 cm.</div>
+          <div class="form-grid">
+            <label class="field"><span>Tinggi muka air (cm) *</span><input id="monitoring-water-table" type="number" max="20" min="-300" step="0.1" placeholder="Contoh: -32"></label>
+            <label class="field"><span>Kondisi water table pelampung *</span>
+              <select id="monitoring-float-condition">
+                <option value="">Pilih kondisi...</option>
+                <option value="Baik dan terbaca">Baik dan terbaca</option>
+                <option value="Pelampung tersangkut">Pelampung tersangkut</option>
+                <option value="Skala sulit dibaca">Skala sulit dibaca</option>
+                <option value="Pipa miring">Pipa miring</option>
+                <option value="Pipa rusak">Pipa rusak</option>
+                <option value="Pelampung hilang">Pelampung hilang</option>
+                <option value="Perlu pembersihan">Perlu pembersihan</option>
+              </select>
+            </label>
+            <label class="field"><span>Cuaca saat monitoring</span><select id="monitoring-weather"><option value="">Pilih cuaca...</option><option>Cerah</option><option>Berawan</option><option>Hujan ringan</option><option>Hujan lebat</option></select></label>
+            <label class="field"><span>Hujan 24 jam terakhir</span><select id="monitoring-rain"><option value="">Tidak diketahui</option><option>Tidak ada</option><option>Ringan</option><option>Sedang</option><option>Lebat</option></select></label>
+            <label class="field"><span>Kondisi lahan/kanal</span><select id="monitoring-site-wetness"><option value="">Pilih kondisi...</option><option>Tergenang</option><option>Basah</option><option>Lembap</option><option>Kering</option><option>Sangat kering</option></select></label>
+            <label class="field"><span>Indikasi kebakaran/kekeringan</span><select id="monitoring-fire-risk"><option value="Tidak ada">Tidak ada</option><option>Perlu dipantau</option><option>Ada indikasi</option></select></label>
+          </div>
+          <div id="water-table-preview" class="water-table-preview">Masukkan tinggi muka air untuk melihat status otomatis.</div>
+        </div>
+
+        <div id="monitoring-infrastructure-fields" class="monitoring-type-panel" hidden>
+          <h4>Indikator infrastruktur</h4>
+          <div class="form-grid">
+            <label class="field"><span>Status fungsi</span><select id="monitoring-function"><option value="">Pilih status...</option><option>Berfungsi baik</option><option>Berfungsi sebagian</option><option>Tidak berfungsi</option><option>Rusak</option><option>Hilang</option></select></label>
+            <label class="field"><span>Panjang/bagian terpantau</span><input id="monitoring-length" placeholder="Contoh: 100 m"></label>
+            <label class="field"><span>Jumlah unit sekat kanal</span><input id="monitoring-canal-units" type="number" min="0" step="1" placeholder="11"></label>
+            <label class="field span-2"><span>Estimasi Area Rewetting</span><strong id="rewetting-estimate">550 ha</strong>
+              <div id="rewetting-estimate-note" class="help">Masukkan jumlah unit sekat kanal untuk menghitung perkiraan luas rewetting.</div>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <label class="field span-2"><span>Ancaman/masalah</span><input id="monitoring-threats" placeholder="Contoh: abrasi, sampah, penebangan, hama"></label>
+          <label class="field span-2"><span>Temuan monitoring *</span><textarea id="monitoring-notes" rows="5" placeholder="Jelaskan perubahan kondisi dan hasil pengamatan."></textarea></label>
+          <label class="field span-2"><span>Rekomendasi/tindak lanjut</span><textarea id="monitoring-follow-up" rows="4" placeholder="Contoh: penyulaman, pembersihan, perbaikan, monitoring ulang."></textarea></label>
+        </div>
+      </div>
+
+      <div id="replanting-fields" class="conditional-subsection monitoring-fields" hidden>
+        <h3>Data replanting/penyulaman mangrove</h3>
+        <p class="help">Pilih polygon penanaman mangrove lama. Data tanam awal tidak akan ditimpa; kegiatan ini disimpan sebagai riwayat baru pada objek tersebut.</p>
+        <div class="form-grid">
+          <label class="field"><span>Jumlah bibit replanting *</span><input id="replanting-count" type="number" min="1" step="1"></label>
+          <label class="field"><span>Jenis mangrove/bibit *</span><input id="replanting-species" placeholder="Contoh: Rhizophora mucronata"></label>
+          <label class="field"><span>Luas area replanting (ha) *</span><input id="replanting-area" type="number" min="0.01" step="0.01"></label>
+          <label class="field"><span>Penyebab replanting *</span>
+            <select id="replanting-reason">
+              <option value="">Pilih penyebab...</option>
+              <option value="Kematian bibit">Kematian bibit</option>
+              <option value="Abrasi/gelombang">Abrasi/gelombang</option>
+              <option value="Hama atau penyakit">Hama atau penyakit</option>
+              <option value="Sampah/aktivitas manusia">Sampah/aktivitas manusia</option>
+              <option value="Kondisi substrat">Kondisi substrat</option>
+              <option value="Lainnya">Lainnya</option>
+            </select>
+          </label>
+          <label class="field span-2"><span>Catatan pelaksanaan *</span><textarea id="replanting-notes" rows="4" placeholder="Jelaskan bagian yang disulam, metode, kondisi lapangan, dan tindak lanjut."></textarea></label>
+        </div>
+      </div>
+
+      <div id="capacity-building-fields" class="conditional-subsection" hidden>
+        <h3>Data peningkatan kapasitas</h3>
+        <p class="help"><b>Total peserta = total laki-laki + total perempuan.</b> Data pemuda adalah bagian dari total peserta tersebut, sehingga tidak dijumlahkan kembali.</p>
+        <div class="form-grid">
+          <label class="field"><span>Total peserta laki-laki *</span><input id="capacity-male" type="number" min="0" step="1"></label>
+          <label class="field"><span>Total peserta perempuan *</span><input id="capacity-female" type="number" min="0" step="1"></label>
+          <label class="field"><span>Dari total tersebut: pemuda laki-laki</span><input id="capacity-youth-male" type="number" min="0" step="1"></label>
+          <label class="field"><span>Dari total tersebut: pemuda perempuan</span><input id="capacity-youth-female" type="number" min="0" step="1"></label>
+          <label class="field"><span>Rentang usia pemuda</span><input id="capacity-youth-age" placeholder="Contoh: 16–30 tahun"></label>
+          <label class="field"><span>Kelompok/komunitas</span><input id="capacity-group" placeholder="Nama kelompok yang terlibat"></label>
+          <label class="field span-2"><span>Sasaran peserta *</span><input id="capacity-target" placeholder="Kelompok tani, perempuan, pelajar, dan lainnya"></label>
+          <label class="field span-2"><span>Mitra/narasumber *</span><input id="capacity-partner" placeholder="Instansi atau nama narasumber"></label>
+          <label class="field span-2"><span>Topik/materi pelatihan *</span><textarea id="capacity-topic" rows="4"></textarea></label>
+          <label class="field span-2"><span>Peran/keterlibatan pemuda</span><textarea id="capacity-youth-role" rows="3" placeholder="Peserta, fasilitator, dokumentasi, atau tindak lanjut"></textarea></label>
+          <div class="field span-2 capacity-document-upload">
+            <span>Materi pelatihan (PDF/PPT)</span>
+            <label class="upload-button document-upload-button">
+              <input id="capacity-documents" type="file" accept="application/pdf,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,.pdf,.ppt,.pptx" multiple>
+              <span>📄 Pilih PDF atau PPT</span>
+            </label>
+            <small class="help">Maksimal 6 file. Ukuran maksimal 25 MB per PDF, PPT, atau PPTX.</small>
+            <div id="capacity-document-list" class="capacity-document-list" aria-live="polite"></div>
+          </div>
+        </div>
+      </div>
+
+      <label class="field document-field">
+        <span id="document-label">Tautan dokumen pendukung (opsional)</span>
+        <input id="document-url" type="url" placeholder="Tautan Google Drive atau PDF">
+        <small id="document-help" class="help">Gunakan jika dokumen sudah tersedia melalui tautan publik.</small>
+      </label>
+    </section>
+
+    <section id="photo-section" class="card">
+      <h2>6. Dokumentasi foto</h2>
+      <p class="help"><b>Foto wajib untuk laporan lapangan, kecuali Area/Poligon Baru.</b> Tambah Foto Area Penanaman Mangrove dan Replanting/Penyulaman wajib 2 foto: BEFORE dan AFTER. Maksimal 5 foto.</p>
+      <label class="upload-button">
+        <input id="images" type="file" accept="image/*" multiple>
+        <span>📷 Pilih Foto</span>
+      </label>
+      <div id="preview" class="preview"></div>
+    </section>
+
+    <label class="agreement">
+      <input id="agreement" type="checkbox" required>
+      <span>Saya menyatakan informasi, lokasi, geometri, dan foto (jika ada) yang dikirim dapat diverifikasi oleh Yayasan Gambut.</span>
+    </label>
+
+    <input id="payload" name="payload" type="hidden">
+
+    <div class="submit-row">
+      <button id="submit-button" type="submit">Kirim Laporan</button>
+      <span id="submit-status"></span>
+    </div>
+  </form>
+
+  <iframe id="submit-frame" name="submit-frame" hidden></iframe>
+
+  <section id="success" class="success" hidden>
+    <strong>Laporan berhasil dikirim.</strong>
+    <span>Status: <b>Menunggu Verifikasi</b>.</span>
+    <button id="send-another" type="button">Kirim laporan lain</button>
+  </section>
+</main>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
+<script src="https://unpkg.com/jszip@3.10.1/dist/jszip.min.js"></script>
+<script src="https://unpkg.com/@tmcw/togeojson@5.8.1/dist/togeojson.umd.js"></script>
+<script src="js/config.js?v=20260720-area-kopi1"></script>
+<script src="js/report-v6.js?v=20260723-submit-hotfix1"></script>
+  <script src="js/i18n.js?v=20260723-null-safe1"></script>
+  <script src="js/pwa.js?v=20260723-edge-photo-fix1"></script>
+</body>
+</html>
