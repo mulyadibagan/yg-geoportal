@@ -81,6 +81,7 @@
    */
   const MAP_PANES = {
     boundary: "yg-boundary-pane",
+    reference: "yg-reference-pane",
     program: "yg-program-pane",
     points: "yg-points-pane",
     community: "yg-community-pane",
@@ -89,6 +90,7 @@
 
   [
     [MAP_PANES.boundary, 390],
+    [MAP_PANES.reference, 400],
     [MAP_PANES.program, 410],
     [MAP_PANES.points, 430],
     [MAP_PANES.community, 450],
@@ -1251,12 +1253,32 @@ L.control.scale({
     }
 
     const layer = L.geoJSON(data, {
+      pane: MAP_PANES.reference,
+      renderer: vectorRendererFor(MAP_PANES.reference),
+      /*
+       * Jangan memakai renderer Canvas bawaan map untuk layer referensi.
+       * Elemen Canvas memenuhi seluruh peta dan dapat menahan klik yang
+       * seharusnya diterima batas desa di pane bawah. SVG hanya menangkap
+       * klik tepat pada geometri yang tergambar.
+       */
+      interactive: config.type === "social_forestry",
+      bubblingMouseEvents: false,
       style: feature => referenceStyle(config, feature),
       onEachFeature: (feature, leafletLayer) => {
-        leafletLayer.bindPopup(
-          referencePopup(config, feature),
-          { maxWidth: 360 }
-        );
+        if (config.type === "social_forestry") {
+          leafletLayer.bindPopup(
+            referencePopup(config, feature),
+            { maxWidth: 360 }
+          );
+          leafletLayer.on("click", event => {
+            if (event && event.originalEvent) {
+              L.DomEvent.stopPropagation(event.originalEvent);
+            }
+            leafletLayer.openPopup(
+              event && event.latlng ? event.latlng : undefined
+            );
+          });
+        }
       }
     });
 
