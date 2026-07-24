@@ -33,7 +33,6 @@
 }
 .yg-va-head h2{margin:0;font-size:16px}.yg-va-head p{margin:3px 0 0;font-size:10px}
 .yg-va-actions{display:flex;align-items:flex-start;gap:8px}
-.yg-va-snapshot,
 .yg-va-download{
   height:32px;
   padding:0 10px;
@@ -43,9 +42,6 @@
   color:#fff;
   font:700 10px/1 Arial,sans-serif;
   cursor:pointer;
-}
-.yg-va-snapshot{
-  background:rgba(255,255,255,.08);
 }
 .yg-va-download[disabled]{opacity:.7;cursor:wait}
 .yg-va-close{width:32px;height:32px;padding:0;border:1px solid rgba(255,255,255,.5);background:transparent;color:#fff}
