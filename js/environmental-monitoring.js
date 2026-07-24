@@ -527,6 +527,78 @@
     return y;
   }
 
+  function annualLossRows(record){
+    var annual=record&&(record.annualLossHa||record.annual_loss_ha)||{};
+    var entries=Array.isArray(annual)
+      ? annual.map(function(item){
+          return [String(item&&item.year||""),Number(item&&item.value)||0];
+        })
+      : Object.keys(annual).map(function(year){
+          return [String(year),Number(annual[year])||0];
+        });
+    entries=entries.filter(function(item){return /^\d{4}$/.test(item[0]);});
+    entries.sort(function(a,b){return Number(a[0])-Number(b[0]);});
+    return entries;
+  }
+
+  function referenceRows(record,areaHa){
+    var values=record&&record.referenceAreasHa;
+    if(!values){return [];}
+    var rows=[
+      ["Kawasan hutan",Number(values.forestEstate)||0],
+      ["Lahan gambut",Number(values.peat)||0],
+      ["IUPHHK-HT",Number(values.concession)||0],
+      ["Perhutanan sosial",Number(values.socialForestry)||0]
+    ];
+    return rows.map(function(item){
+      var percent=areaHa>0?(item[1]/areaHa*100):0;
+      return [item[0],item[1],percent];
+    });
+  }
+
+  function hotspotYearlyRows(record){
+    var yearly=record&&record.hotspotYearly5y;
+    var rows=[];
+    if(Array.isArray(yearly)){
+      rows=yearly.map(function(item){
+        return [String(item&&item.year||""),Number(item&&item.count)||0];
+      }).filter(function(item){return /^\d{4}$/.test(item[0]);});
+      rows.sort(function(a,b){return Number(a[0])-Number(b[0]);});
+    }
+    return rows;
+  }
+
+  function mm(value){
+    return Number(value).toLocaleString("id-ID",{maximumFractionDigits:2});
+  }
+
+  function drawTwoColumnTable(doc,startY,margin,leftTitle,rightTitle,rows,leftWidth,rightWidth,rowHeight){
+    var y=startY;
+    var lw=leftWidth||90;
+    var rw=rightWidth||90;
+    var rh=rowHeight||6;
+    doc.setDrawColor(220,231,225);
+    doc.setFillColor(242,247,244);
+    doc.rect(margin,y,lw,rh,"FD");
+    doc.rect(margin+lw,y,rw,rh,"FD");
+    doc.setFontSize(8);
+    doc.setTextColor(56,72,67);
+    doc.text(leftTitle,margin+2,y+4);
+    doc.text(rightTitle,margin+lw+2,y+4);
+    y+=rh;
+
+    rows.forEach(function(row){
+      doc.rect(margin,y,lw,rh);
+      doc.rect(margin+lw,y,rw,rh);
+      doc.setFontSize(8.5);
+      doc.setTextColor(28,44,39);
+      doc.text(String(row[0]),margin+2,y+4);
+      doc.text(String(row[1]),margin+lw+2,y+4);
+      y+=rh;
+    });
+    return y+2;
+  }
+
   async function downloadAnalysisReport(){
     var context=currentAnalysisContext;
     if(!context){return;}
@@ -640,6 +712,98 @@
         margin,
         295
       );
+
+      doc.addPage();
+      var detailY=14;
+      doc.setFillColor(7,95,73);
+      doc.rect(0,0,210,18,"F");
+      doc.setTextColor(255,255,255);
+      doc.setFontSize(13);
+      doc.text("Detail Analisis: "+context.info.title,margin,12);
+
+      detailY=24;
+      doc.setTextColor(28,44,39);
+      doc.setFontSize(11);
+      doc.text("Kehilangan tutupan hutan per tahun",margin,detailY);
+      detailY+=4;
+      var annualRows=annualLossRows(context.record);
+      if(annualRows.length){
+        detailY=drawTwoColumnTable(
+          doc,
+          detailY,
+          margin,
+          "Tahun",
+          "Kehilangan (ha)",
+          annualRows.map(function(item){return [item[0],mm(item[1])];}),
+          90,
+          96,
+          6
+        );
+      }else{
+        doc.setFontSize(9);
+        doc.setTextColor(114,82,0);
+        doc.text("Statistik tahunan belum dihitung untuk areal ini.",margin,detailY+4);
+        detailY+=10;
+      }
+
+      doc.setTextColor(28,44,39);
+      doc.setFontSize(11);
+      doc.text("Luas irisan layer referensi",margin,detailY+2);
+      detailY+=6;
+      var refRows=referenceRows(context.record,Number(context.info.area)||0);
+      if(refRows.length){
+        detailY=drawTwoColumnTable(
+          doc,
+          detailY,
+          margin,
+          "Layer referensi",
+          "Luas (ha) | Persen",
+          refRows.map(function(item){
+            return [item[0],mm(item[1])+" | "+item[2].toLocaleString("id-ID",{maximumFractionDigits:1})+"%"];
+          }),
+          90,
+          96,
+          6
+        );
+      }else{
+        doc.setFontSize(9);
+        doc.setTextColor(114,82,0);
+        doc.text("Irisan layer referensi belum dihitung untuk areal ini.",margin,detailY+4);
+        detailY+=10;
+      }
+
+      doc.setTextColor(28,44,39);
+      doc.setFontSize(11);
+      doc.text("Ringkasan hotspot",margin,detailY+2);
+      detailY+=6;
+      var hotspotRows=[
+        ["Hotspot 7 hari",String(context.record&&context.record.hotspot7d!=null?context.record.hotspot7d:0)],
+        ["Hotspot 30 hari",String(context.record&&context.record.hotspot30d!=null?context.record.hotspot30d:0)]
+      ];
+      detailY=drawTwoColumnTable(doc,detailY,margin,"Periode","Jumlah titik",hotspotRows,90,96,6);
+
+      doc.setTextColor(28,44,39);
+      doc.setFontSize(11);
+      doc.text("Total hotspot per tahun (5 tahun terakhir)",margin,detailY+2);
+      detailY+=6;
+      var yearlyHotspot=hotspotYearlyRows(context.record);
+      if(yearlyHotspot.length){
+        detailY=drawTwoColumnTable(
+          doc,
+          detailY,
+          margin,
+          "Tahun",
+          "Jumlah titik",
+          yearlyHotspot.map(function(item){return [item[0],String(item[1])];}),
+          90,
+          96,
+          6
+        );
+      }else{
+        doc.setFontSize(9);
+        doc.setTextColor(114,82,0);
+        doc.text("Data hotspot tahunan belum tersedia untuk areal ini.",margin,detailY+4);
+      }
 
       var filename="laporan-"+fileNameSafe(context.info.title)+"-"+
         new Date().toISOString().slice(0,10)+".pdf";
