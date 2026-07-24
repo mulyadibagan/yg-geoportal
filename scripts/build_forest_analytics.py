@@ -1,13 +1,19 @@
 import concurrent.futures
 import datetime
 import json
+import math
 import os
+import tempfile
 import time
 import urllib.error
 import urllib.parse
 import urllib.request
 from pathlib import Path
 
+import numpy as np
+import rasterio
+from pyproj import Geod
+from rasterio.mask import mask
 from shapely import force_2d
 from shapely.geometry import mapping, shape
 from shapely.ops import unary_union
@@ -16,10 +22,11 @@ ROOT = Path(__file__).resolve().parents[1]
 GEOSTORE_URL = "https://production-api.globalforestwatch.org/geostore"
 ANALYSIS_URL = "https://production-api.globalforestwatch.org/umd-loss-gain"
 GFW_DATASET_URL = "https://data-api.globalforestwatch.org/dataset/umd_tree_cover_loss"
-GFW_API_KEY = os.getenv("GFW_API_KEY", "").strip()
 LOSS_WINDOW_YEARS = 10
 LOSS_DATASET_VERSION = None
 LOSS_END_YEAR = None
+HANSEN_TILE_FILES = {}
+GEOD = Geod(ellps="WGS84")
 VILLAGE_GEOJSON_FILES = [
     Path(path.strip())
     for path in (
@@ -50,36 +57,85 @@ def request_json(url, payload=None, attempts=4, extra_headers=None):
             time.sleep(2 ** attempt)
 
 
-def analyze_annual_loss(geometry):
+def tile_name(latitude, longitude):
+    lat_suffix = "N" if latitude >= 0 else "S"
+    lon_suffix = "E" if longitude >= 0 else "W"
+    return f"{abs(latitude):02d}{lat_suffix}_{abs(longitude):03d}{lon_suffix}"
+
+
+def geometry_tiles(geometry):
+    min_x, min_y, max_x, max_y = shape(geometry).bounds
+    lon_start = math.floor(min_x / 10) * 10
+    lon_end = math.floor((max_x - 1e-10) / 10) * 10
+    lat_top = math.ceil(max_y / 10) * 10
+    lat_bottom = math.ceil((min_y + 1e-10) / 10) * 10
+    return [
+        tile_name(latitude, longitude)
+        for latitude in range(lat_top, lat_bottom - 1, -10)
+        for longitude in range(lon_start, lon_end + 1, 10)
+    ]
+
+
+def pixel_area_ha(transform, row):
+    left = transform.c
+    right = left + transform.a
+    top = transform.f + row * transform.e
+    bottom = top + transform.e
+    area, _ = GEOD.polygon_area_perimeter(
+        [left, right, right, left],
+        [top, top, bottom, bottom],
+    )
+    return abs(area) / 10000
+
+
+def analyze_hansen_rasters(geometry):
     window_end_year = datetime.datetime.now(datetime.timezone.utc).year
     loss_start_year = window_end_year - LOSS_WINDOW_YEARS + 1
-    sql = (
-        "SELECT umd_tree_cover_loss__year, "
-        "SUM(area__ha) AS loss_ha "
-        "FROM results "
-        "WHERE umd_tree_cover_density_2000__threshold = 30 "
-        f"AND umd_tree_cover_loss__year BETWEEN {loss_start_year} AND {LOSS_END_YEAR} "
-        "GROUP BY umd_tree_cover_loss__year "
-        "ORDER BY umd_tree_cover_loss__year"
-    )
-    result = request_json(
-        f"{GFW_DATASET_URL}/{LOSS_DATASET_VERSION}/query/json",
-        {"sql": sql, "geometry": geometry},
-        extra_headers={"x-api-key": GFW_API_KEY},
-    )
-    rows = result.get("data") or []
     annual = {
         str(year): (0.0 if year <= LOSS_END_YEAR else None)
         for year in range(loss_start_year, window_end_year + 1)
     }
-    for row in rows:
-        year = row.get("umd_tree_cover_loss__year")
-        if year is None:
+    baseline = 0.0
+    total_loss = 0.0
+    for tile in geometry_tiles(geometry):
+        files = HANSEN_TILE_FILES.get(tile)
+        if not files:
             continue
-        year = str(int(year))
-        if year in annual:
-            annual[year] = round(float(row.get("loss_ha") or 0), 2)
-    return annual
+        with rasterio.open(files["treecover2000"]) as cover_source:
+            cover, transform = mask(
+                cover_source,
+                [geometry],
+                crop=True,
+                filled=True,
+                nodata=0,
+            )
+        with rasterio.open(files["lossyear"]) as loss_source:
+            loss, loss_transform = mask(
+                loss_source,
+                [geometry],
+                crop=True,
+                filled=True,
+                nodata=0,
+            )
+        if cover.shape != loss.shape or transform != loss_transform:
+            raise RuntimeError(f"Grid Hansen tidak sejajar untuk tile {tile}.")
+        cover = cover[0]
+        loss = loss[0]
+        forest_mask = cover >= 30
+        for row in range(cover.shape[0]):
+            area_ha = pixel_area_ha(transform, row)
+            baseline += int(np.count_nonzero(forest_mask[row])) * area_ha
+            row_loss = loss[row][forest_mask[row]]
+            total_loss += int(np.count_nonzero(row_loss > 0)) * area_ha
+            for year in range(loss_start_year, min(LOSS_END_YEAR, window_end_year) + 1):
+                year_code = year - 2000
+                count = int(np.count_nonzero(row_loss == year_code))
+                annual[str(year)] += count * area_ha
+    annual = {
+        year: (round(value, 2) if value is not None else None)
+        for year, value in annual.items()
+    }
+    return round(baseline, 2), round(total_loss, 2), annual
 
 
 def latest_loss_dataset():
@@ -111,6 +167,30 @@ def latest_loss_dataset():
     if not years:
         raise RuntimeError("Tahun terbaru dataset GFW tidak dapat diidentifikasi.")
     return version, max(years)
+
+
+def download_hansen_tiles(items, target_dir):
+    needed_tiles = sorted(
+        {
+            tile
+            for item in items
+            for tile in geometry_tiles(mapping(force_2d(shape(item[3]["geometry"]))))
+        }
+    )
+    dataset_tag = f"GFC-{LOSS_END_YEAR}-{LOSS_DATASET_VERSION}"
+    base_url = (
+        "https://storage.googleapis.com/earthenginepartners-hansen/"
+        f"{dataset_tag}"
+    )
+    for tile in needed_tiles:
+        HANSEN_TILE_FILES[tile] = {}
+        for layer in ("treecover2000", "lossyear"):
+            filename = f"Hansen_{dataset_tag}_{layer}_{tile}.tif"
+            target = Path(target_dir) / filename
+            print(f"Download {layer} {tile}", flush=True)
+            urllib.request.urlretrieve(f"{base_url}/{filename}", target)
+            HANSEN_TILE_FILES[tile][layer] = target
+    return needed_tiles
 
 
 def text(value):
@@ -177,9 +257,8 @@ def analyze(item):
     )
     result = request_json(f"{ANALYSIS_URL}?{query}")
     values = result["data"]["attributes"]
-    annual = analyze_annual_loss(geometry_2d)
-    total_loss = round(sum(float(value or 0) for value in annual.values()), 2)
-    baseline = round(float(values.get("treeExtent") or 0), 2)
+    raster_baseline, total_loss, annual = analyze_hansen_rasters(geometry_2d)
+    baseline = raster_baseline
     gain = round(float(values.get("gain") or 0), 2)
     current = round(max(0, baseline - total_loss + gain), 2)
     return collection, key, {
@@ -189,7 +268,7 @@ def analyze(item):
         "currentForestHa": current,
         "totalLossHa": total_loss,
         "gainHa": gain,
-        "annualLossHa": {year: round(float(value or 0), 2) for year, value in annual.items()},
+        "annualLossHa": annual,
     }
 
 
@@ -233,11 +312,6 @@ def load_items():
 
 def main():
     global LOSS_DATASET_VERSION, LOSS_END_YEAR
-    if not GFW_API_KEY:
-        raise RuntimeError(
-            "GFW_API_KEY belum diset. Builder menolak menghasilkan nilai 0 palsu "
-            "untuk tahun yang belum tersedia dari sumber resmi."
-        )
     LOSS_DATASET_VERSION, LOSS_END_YEAR = latest_loss_dataset()
     window_end_year = datetime.datetime.now(datetime.timezone.utc).year
     loss_start_year = window_end_year - LOSS_WINDOW_YEARS + 1
@@ -247,43 +321,46 @@ def main():
         f"data through {LOSS_END_YEAR}",
         flush=True,
     )
-    output = {
-        "schemaVersion": 2,
-        "generatedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-        "method": {
-            "forestDefinition": "Hansen tree cover extent with canopy density at or above 30 percent",
-            "baselineYear": 2000,
-            "lossPeriod": f"{loss_start_year}-{window_end_year}",
-            "lossWindowYears": LOSS_WINDOW_YEARS,
-            "lossWindowEndYear": window_end_year,
-            "lossDataThroughYear": LOSS_END_YEAR,
-            "lossDatasetVersion": f"umd_tree_cover_loss {LOSS_DATASET_VERSION}",
-            "currentForestFormula": "baselineForestHa - totalLossHa + gainHa",
-            "areaUnit": "ha",
-            "source": "Global Forest Watch / Hansen Global Forest Change",
-        },
-        "villages": {},
-        "socialForestry": {},
-        "errors": [],
-    }
     items = load_items()
-    completed = 0
-    with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
-        future_map = {executor.submit(analyze, item): item for item in items}
-        for future in concurrent.futures.as_completed(future_map):
-            item = future_map[future]
-            try:
-                collection, key, record = future.result()
-                output[collection][key] = record
-            except Exception as error:
-                output["errors"].append(
-                    {"collection": item[0], "key": item[1], "name": item[2], "error": str(error)}
-                )
-            completed += 1
-            print(f"{completed}/{len(items)} {item[0]} {item[2]}", flush=True)
+    with tempfile.TemporaryDirectory(prefix="yg-hansen-") as raster_dir:
+        tiles = download_hansen_tiles(items, raster_dir)
+        print(f"Hansen tiles: {', '.join(tiles)}", flush=True)
+        output = {
+            "schemaVersion": 2,
+            "generatedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "method": {
+                "forestDefinition": "Hansen tree cover extent with canopy density at or above 30 percent",
+                "baselineYear": 2000,
+                "lossPeriod": f"{loss_start_year}-{window_end_year}",
+                "lossWindowYears": LOSS_WINDOW_YEARS,
+                "lossWindowEndYear": window_end_year,
+                "lossDataThroughYear": LOSS_END_YEAR,
+                "lossDatasetVersion": f"umd_tree_cover_loss {LOSS_DATASET_VERSION}",
+                "currentForestFormula": "baselineForestHa - totalLossHa + gainHa",
+                "areaUnit": "ha",
+                "source": "Hansen/UMD/Google/USGS/NASA public raster download",
+            },
+            "villages": {},
+            "socialForestry": {},
+            "errors": [],
+        }
+        completed = 0
+        with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
+            future_map = {executor.submit(analyze, item): item for item in items}
+            for future in concurrent.futures.as_completed(future_map):
+                item = future_map[future]
+                try:
+                    collection, key, record = future.result()
+                    output[collection][key] = record
+                except Exception as error:
+                    output["errors"].append(
+                        {"collection": item[0], "key": item[1], "name": item[2], "error": str(error)}
+                    )
+                completed += 1
+                print(f"{completed}/{len(items)} {item[0]} {item[2]}", flush=True)
 
-    target = ROOT / "data" / "village-forest-analytics.json"
-    target.write_text(json.dumps(output, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        target = ROOT / "data" / "village-forest-analytics.json"
+        target.write_text(json.dumps(output, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(
         f"Wrote {len(output['villages'])} villages and "
         f"{len(output['socialForestry'])} social-forestry areas; "
