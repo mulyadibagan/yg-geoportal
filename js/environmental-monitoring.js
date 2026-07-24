@@ -18,6 +18,7 @@
   };
   var analytics={villages:{},socialForestry:{}};
   var attached=new WeakSet();
+  var currentAnalysisContext=null;
 
   function esc(value){
     return String(value==null?"":value).replace(/[&<>"']/g,function(c){
@@ -207,32 +208,179 @@
     element.id="yg-village-analytics";
     element.className="yg-village-analytics";
     element.hidden=true;
-    element.innerHTML='<header class="yg-va-head"><div><h2 id="yg-va-title">Analitik areal</h2><p id="yg-va-subtitle"></p></div><button class="yg-va-close" type="button" aria-label="Tutup">×</button></header><div class="yg-va-body" id="yg-va-body"></div>';
+    element.innerHTML='<header class="yg-va-head"><div><h2 id="yg-va-title">Analitik areal</h2><p id="yg-va-subtitle"></p></div><div class="yg-va-actions"><button class="yg-va-download" type="button" id="yg-va-download">Unduh laporan</button><button class="yg-va-close" type="button" aria-label="Tutup">×</button></div></header><div class="yg-va-body" id="yg-va-body"></div>';
     document.getElementById("map-area").appendChild(element);
     element.querySelector(".yg-va-close").addEventListener("click",function(){element.hidden=true;});
+    element.querySelector("#yg-va-download").addEventListener("click",function(){
+      downloadAnalysisReport();
+    });
     return element;
   }
 
-  function showAnalysis(feature,layerId){
-    var element=panel(),info=unitInfo(feature,layerId),record=recordFor(info);
-    var pendingAdministrativeAnalytics=!record&&layerId==="batas_administrasi_desa_riau";
+  function reportKpis(info,record,pendingAdministrativeAnalytics){
     var baseline=record&&Number(record.baselineForestHa);
     var current=record&&Number(record.currentForestHa);
     var loss=record&&Number(record.totalLossHa);
     var gain=record&&Number(record.gainHa);
     var percent=current!=null&&isFinite(current)&&info.area>0?current/info.area*100:NaN;
+    return [
+      ["Luas areal",formatHa(info.area)],
+      ["Tutupan baseline",pendingAdministrativeAnalytics?"Sedang diproses":formatHa(baseline)],
+      ["Estimasi tutupan 2025",pendingAdministrativeAnalytics?"Sedang diproses":formatHa(current)],
+      ["Tutupan areal",isFinite(percent)?percent.toLocaleString("id-ID",{maximumFractionDigits:1})+"%":(pendingAdministrativeAnalytics?"Sedang diproses":"Belum dihitung")],
+      ["Kehilangan total",pendingAdministrativeAnalytics?"Sedang diproses":formatHa(loss)],
+      ["Pertambahan/pemulihan",pendingAdministrativeAnalytics?"Sedang diproses":formatHa(gain)],
+      ["Hotspot 7 hari",record&&record.hotspot7d!=null?String(record.hotspot7d):(pendingAdministrativeAnalytics?"Sedang diproses":"Lihat layer")],
+      ["Hotspot 30 hari",record&&record.hotspot30d!=null?String(record.hotspot30d):(pendingAdministrativeAnalytics?"Sedang diproses":"Belum dihitung")]
+    ];
+  }
+
+  function fileNameSafe(text){
+    return String(text||"laporan")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g,"-")
+      .replace(/^-+|-+$/g,"")
+      .slice(0,80)||"laporan";
+  }
+
+  function nowLabel(){
+    return new Date().toLocaleString("id-ID",{dateStyle:"medium",timeStyle:"short"});
+  }
+
+  async function captureMapImage(){
+    var mapNode=document.getElementById("map");
+    if(!mapNode||typeof window.html2canvas!=="function"){return null;}
+    try{
+      var canvas=await window.html2canvas(mapNode,{
+        useCORS:true,
+        allowTaint:true,
+        logging:false,
+        scale:1,
+        backgroundColor:"#f2f7f4"
+      });
+      return canvas.toDataURL("image/jpeg",0.86);
+    }catch(error){
+      console.warn("Gagal menangkap snapshot peta",error);
+      return null;
+    }
+  }
+
+  async function downloadAnalysisReport(){
+    var context=currentAnalysisContext;
+    if(!context){return;}
+    if(!window.jspdf||!window.jspdf.jsPDF){
+      alert("Generator PDF belum siap. Muat ulang halaman lalu coba lagi.");
+      return;
+    }
+
+    var button=document.getElementById("yg-va-download");
+    if(button){button.disabled=true;button.textContent="Menyiapkan...";}
+
+    try{
+      var jsPDF=window.jspdf.jsPDF;
+      var doc=new jsPDF({orientation:"portrait",unit:"mm",format:"a4"});
+      var mapImage=await captureMapImage();
+      var margin=12;
+      var y=12;
+
+      doc.setFillColor(7,95,73);
+      doc.rect(0,0,210,30,"F");
+      doc.setTextColor(255,255,255);
+      doc.setFontSize(16);
+      doc.text("Laporan Analisis Wilayah",margin,12);
+      doc.setFontSize(10);
+      doc.text(context.info.title,margin,19);
+      doc.text("Dibuat: "+nowLabel(),margin,25);
+
+      y=36;
+      doc.setTextColor(28,44,39);
+      doc.setFontSize(10);
+      doc.text("Ringkasan",margin,y);
+      y+=4;
+
+      var kpis=reportKpis(context.info,context.record,context.pendingAdministrativeAnalytics);
+      for(var i=0;i<kpis.length;i+=1){
+        var col=i%2;
+        var row=Math.floor(i/2);
+        var x=margin+(col*94);
+        var boxY=y+(row*12);
+        doc.setDrawColor(220,231,225);
+        doc.rect(x,boxY,90,10);
+        doc.setFontSize(8);
+        doc.setTextColor(88,104,99);
+        doc.text(kpis[i][0],x+2,boxY+3.5);
+        doc.setFontSize(10);
+        doc.setTextColor(7,95,73);
+        doc.text(String(kpis[i][1]),x+2,boxY+7.8);
+      }
+
+      y+=50;
+      doc.setFontSize(10);
+      doc.setTextColor(28,44,39);
+      doc.text("Layout peta",margin,y);
+      y+=3;
+
+      if(mapImage){
+        doc.addImage(mapImage,"JPEG",margin,y,186,105);
+        y+=110;
+      }else{
+        doc.setFontSize(9);
+        doc.setTextColor(114,82,0);
+        doc.text("Snapshot peta tidak tersedia pada browser ini.",margin,y+6);
+        y+=12;
+      }
+
+      var api=window.YG_MAP;
+      if(api&&api.map){
+        var center=api.map.getCenter();
+        var zoom=api.map.getZoom();
+        doc.setFontSize(8);
+        doc.setTextColor(88,104,99);
+        doc.text(
+          "Pusat peta: "+center.lat.toFixed(5)+", "+center.lng.toFixed(5)+" | Zoom: "+zoom,
+          margin,
+          Math.min(288,y+6)
+        );
+      }
+
+      doc.setFontSize(8);
+      doc.setTextColor(88,104,99);
+      doc.text(
+        "Sumber: NASA FIRMS/VIIRS, Global Forest Watch/Hansen, dan data spasial internal YG.",
+        margin,
+        293
+      );
+
+      var filename="laporan-"+fileNameSafe(context.info.title)+"-"+
+        new Date().toISOString().slice(0,10)+".pdf";
+      doc.save(filename);
+    }finally{
+      if(button){button.disabled=false;button.textContent="Unduh laporan";}
+    }
+  }
+
+  function showAnalysis(feature,layerId){
+    var element=panel(),info=unitInfo(feature,layerId),record=recordFor(info);
+    var pendingAdministrativeAnalytics=!record&&layerId==="batas_administrasi_desa_riau";
+    var kpis=reportKpis(info,record,pendingAdministrativeAnalytics);
     document.getElementById("yg-va-title").textContent=info.title;
     document.getElementById("yg-va-subtitle").textContent=info.subtitle;
+    currentAnalysisContext={
+      info:info,
+      record:record,
+      layerId:layerId,
+      pendingAdministrativeAnalytics:pendingAdministrativeAnalytics
+    };
     document.getElementById("yg-va-body").innerHTML=
       '<div class="yg-va-grid">'+
-      kpi("Luas areal",formatHa(info.area))+
-      kpi("Tutupan baseline",pendingAdministrativeAnalytics?"Sedang diproses":formatHa(baseline))+
-      kpi("Estimasi tutupan 2025",pendingAdministrativeAnalytics?"Sedang diproses":formatHa(current))+
-      kpi("Tutupan areal",isFinite(percent)?percent.toLocaleString("id-ID",{maximumFractionDigits:1})+"%":(pendingAdministrativeAnalytics?"Sedang diproses":"Belum dihitung"))+
-      kpi("Kehilangan total",pendingAdministrativeAnalytics?"Sedang diproses":formatHa(loss))+
-      kpi("Pertambahan/pemulihan",pendingAdministrativeAnalytics?"Sedang diproses":formatHa(gain))+
-      kpi("Hotspot 7 hari",record&&record.hotspot7d!=null?record.hotspot7d:(pendingAdministrativeAnalytics?"Sedang diproses":"Lihat layer"))+
-      kpi("Hotspot 30 hari",record&&record.hotspot30d!=null?record.hotspot30d:(pendingAdministrativeAnalytics?"Sedang diproses":"Belum dihitung"))+
+      kpi(kpis[0][0],kpis[0][1])+
+      kpi(kpis[1][0],kpis[1][1])+
+      kpi(kpis[2][0],kpis[2][1])+
+      kpi(kpis[3][0],kpis[3][1])+
+      kpi(kpis[4][0],kpis[4][1])+
+      kpi(kpis[5][0],kpis[5][1])+
+      kpi(kpis[6][0],kpis[6][1])+
+      kpi(kpis[7][0],kpis[7][1])+
       '</div><section class="yg-va-section"><h3>Kehilangan tutupan hutan per tahun</h3>'+bars(record)+'</section>'+
       '<section class="yg-va-section"><h3>Luas irisan layer referensi</h3>'+referenceMetrics(record)+referenceBars(record,info.area)+'</section>'+
       '<section class="yg-va-section"><h3>Ringkasan hotspot</h3>'+hotspotSummaryBars(record)+'</section>'+
