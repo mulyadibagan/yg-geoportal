@@ -62,6 +62,15 @@
       color: "#00897b",
       count: null,
       type: "social_forestry"
+    },
+    rbi_administrasi_desa: {
+      id: "rbi_administrasi_desa",
+      label: "RBI Administrasi Desa",
+      file: "data/rbi_administrasi_desa.geojson",
+      color: "#1e88e5",
+      count: null,
+      type: "village_boundary",
+      section: "administrative"
     }
   };
 
