@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: hotspot-analytics-main
+  group: village-analytics-main
   cancel-in-progress: false
 
 jobs:
@@ -31,14 +31,12 @@ jobs:
         env:
           FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
           FIRMS_SOURCES: VIIRS_SNPP_SP,VIIRS_NOAA20_SP,VIIRS_SNPP_NRT,VIIRS_NOAA20_NRT,VIIRS_NOAA21_NRT
-          FIRMS_VILLAGE_GEOJSON: ${{ vars.FIRMS_VILLAGE_GEOJSON }}
+          FIRMS_VILLAGE_GEOJSON: data/desa_intervensi.geojson
+          FIRMS_PS_GEOJSON: data/PERHUTANAN_SOSIAL_RIAU.geojson
         run: |
           if [ -z "$FIRMS_MAP_KEY" ]; then
             echo "FIRMS_MAP_KEY belum diset di GitHub Secrets."
             exit 1
-          fi
-          if [ -z "$FIRMS_VILLAGE_GEOJSON" ]; then
-            FIRMS_VILLAGE_GEOJSON="data/desa_intervensi.geojson"
           fi
           node scripts/update_hotspot_firms.mjs
 
@@ -46,6 +44,18 @@ jobs:
         run: |
           if git diff --quiet -- data/village-forest-analytics.json; then
             echo "No hotspot data changes to commit."
+            exit 0
+          fi
+
+          cp data/village-forest-analytics.json /tmp/hotspot-results.json
+          git restore data/village-forest-analytics.json
+          git pull --rebase origin main
+          node scripts/merge_hotspot_results.mjs \
+            /tmp/hotspot-results.json \
+            data/village-forest-analytics.json
+
+          if git diff --quiet -- data/village-forest-analytics.json; then
+            echo "Latest main already contains these hotspot results."
             exit 0
           fi
 

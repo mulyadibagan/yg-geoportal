@@ -209,6 +209,17 @@
     return '<div class="yg-va-trend">'+content+'</div>';
   }
 
+  function hotspotStatusNote(){
+    var viirs=analytics&&analytics.viirs;
+    if(!viirs||!viirs.updatedAt){
+      return '<div class="yg-va-note">Data hotspot analitik belum pernah diperbarui dari NASA FIRMS.</div>';
+    }
+    if(viirs.status==="partial"){
+      return '<div class="yg-va-note">Data NASA FIRMS bersifat parsial karena sebagian rentang waktu gagal diambil. Nilai tidak boleh dianggap sebagai total lengkap.</div>';
+    }
+    return "";
+  }
+
   function panel(){
     var element=document.getElementById("yg-village-analytics");
     if(element){return element;}
@@ -755,7 +766,7 @@
       kpi(kpis[7][0],kpis[7][1])+
       '</div><section class="yg-va-section"><h3>Kehilangan tutupan hutan per tahun</h3>'+bars(record)+'</section>'+
       '<section class="yg-va-section"><h3>Luas irisan layer referensi</h3>'+referenceMetrics(record)+referenceBars(record,info.area)+'</section>'+
-      '<section class="yg-va-section"><h3>Ringkasan hotspot</h3>'+hotspotSummaryBars(record)+'</section>'+
+      '<section class="yg-va-section"><h3>Ringkasan hotspot</h3>'+hotspotSummaryBars(record)+hotspotStatusNote()+'</section>'+
       '<section class="yg-va-section"><h3>Total hotspot per tahun (5 tahun terakhir)</h3>'+hotspotYearlyBars(record)+'</section>'+
       (!record?'<div class="yg-va-note" style="margin-top:12px">'+(pendingAdministrativeAnalytics?"Data analisis untuk desa ini sedang diproses otomatis dan akan terisi bertahap setelah pipeline selesai.":"Angka luas hutan memerlukan analisis raster per polygon. Sistem tidak mengestimasi angka dari gambar tile.")+'</div>':"")+
       '<div class="yg-va-source">Sumber: NASA FIRMS/VIIRS melalui GFW dan Global Forest Watch/Hansen. Hotspot adalah anomali panas, bukan konfirmasi kebakaran.</div>';

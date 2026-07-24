@@ -7,7 +7,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: rebuild-full-village-analytics-main
+  group: village-analytics-main
   cancel-in-progress: false
 
 jobs:
@@ -37,11 +37,8 @@ jobs:
 
       - name: Build forest analytics and reference intersections
         env:
-          FOREST_VILLAGE_GEOJSON: ${{ vars.FIRMS_VILLAGE_GEOJSON }}
+          FOREST_VILLAGE_GEOJSON: data/desa_intervensi.geojson
         run: |
-          if [ -z "$FOREST_VILLAGE_GEOJSON" ]; then
-            FOREST_VILLAGE_GEOJSON="data/desa_intervensi.geojson"
-          fi
           python scripts/build_forest_analytics.py
           python scripts/build_reference_intersections.py
 
@@ -49,14 +46,12 @@ jobs:
         env:
           FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
           FIRMS_SOURCES: VIIRS_SNPP_SP,VIIRS_NOAA20_SP,VIIRS_SNPP_NRT,VIIRS_NOAA20_NRT,VIIRS_NOAA21_NRT
-          FIRMS_VILLAGE_GEOJSON: ${{ vars.FIRMS_VILLAGE_GEOJSON }}
+          FIRMS_VILLAGE_GEOJSON: data/desa_intervensi.geojson
+          FIRMS_PS_GEOJSON: data/PERHUTANAN_SOSIAL_RIAU.geojson
         run: |
           if [ -z "$FIRMS_MAP_KEY" ]; then
             echo "FIRMS_MAP_KEY belum diset di GitHub Secrets."
             exit 1
-          fi
-          if [ -z "$FIRMS_VILLAGE_GEOJSON" ]; then
-            FIRMS_VILLAGE_GEOJSON="data/desa_intervensi.geojson"
           fi
           node scripts/update_hotspot_firms.mjs
 

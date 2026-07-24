@@ -12,8 +12,13 @@ const VILLAGE_GEOJSON_FILES = (process.env.FIRMS_VILLAGE_GEOJSON || "data/desa_i
   .map((x) => x.trim())
   .filter(Boolean)
   .map((relativePath) => path.join(ROOT, relativePath));
+const PS_GEOJSON_FILE = path.join(
+  ROOT,
+  process.env.FIRMS_PS_GEOJSON || "data/PERHUTANAN_SOSIAL_RIAU.geojson"
+);
 
 const FIRMS_KEY = process.env.FIRMS_MAP_KEY || "";
+const DRY_RUN = process.env.FIRMS_DRY_RUN === "1";
 const FIRMS_SOURCES = (process.env.FIRMS_SOURCES || "VIIRS_SNPP_SP,VIIRS_NOAA20_SP,VIIRS_SNPP_NRT,VIIRS_NOAA20_NRT,VIIRS_NOAA21_NRT")
   .split(",")
   .map((x) => x.trim())
@@ -24,7 +29,7 @@ const REQUEST_MAX_ATTEMPTS = Number(process.env.FIRMS_RETRY_ATTEMPTS || 4);
 const REQUEST_RETRY_BASE_MS = Number(process.env.FIRMS_RETRY_BASE_MS || 1200);
 const API_ROOT = "https://firms.modaps.eosdis.nasa.gov/api";
 
-if (!FIRMS_KEY) {
+if (!FIRMS_KEY && !DRY_RUN) {
   throw new Error("FIRMS_MAP_KEY belum diset. Buat key di https://firms.modaps.eosdis.nasa.gov/api/map_key lalu set env FIRMS_MAP_KEY.");
 }
 
@@ -57,6 +62,41 @@ function villageName(properties) {
     properties.Desa ||
     properties.NAMOBJ ||
     properties.Nama_Desa
+  );
+}
+
+function analysisKeyValue(value) {
+  if (typeof value === "number" && Number.isInteger(value)) {
+    return value.toFixed(1);
+  }
+  return text(value);
+}
+
+function socialKey(properties) {
+  const stable =
+    properties.OBJECTID ||
+    properties.ID ||
+    properties.NO_IUPHKM ||
+    properties.SK;
+  if (stable) {
+    return analysisKeyValue(stable).toLowerCase();
+  }
+  return [
+    text(properties.NAMA_HKM),
+    text(properties.NAMA_DESA),
+    text(properties.NAMA_KAB)
+  ]
+    .filter(Boolean)
+    .join("|")
+    .toLowerCase();
+}
+
+function socialName(properties) {
+  return text(
+    properties.NAMA_HKM ||
+    properties.NAMA_DESA ||
+    properties.NAMA_KEC ||
+    "Perhutanan sosial"
   );
 }
 
@@ -242,6 +282,12 @@ function combineBounds(items) {
   );
 }
 
+function combineGeometryBounds(geometries) {
+  return combineBounds(geometries.map((geometry) => ({
+    bounds: geometryBounds(geometry)
+  })));
+}
+
 function overlapsBBox(a, b) {
   return !(a.maxX < b.minX || a.minX > b.maxX || a.maxY < b.minY || a.minY > b.maxY);
 }
@@ -261,6 +307,8 @@ function parseFirmsCsv(csvText) {
   const latIndex = header.findIndex((h) => h === "latitude");
   const lonIndex = header.findIndex((h) => h === "longitude");
   const dateIndex = header.findIndex((h) => h === "acq_date");
+  const timeIndex = header.findIndex((h) => h === "acq_time");
+  const satelliteIndex = header.findIndex((h) => h === "satellite");
   if (latIndex < 0 || lonIndex < 0 || dateIndex < 0) {
     return [];
   }
@@ -270,7 +318,9 @@ function parseFirmsCsv(csvText) {
     return {
       lat: Number(cols[latIndex]),
       lon: Number(cols[lonIndex]),
-      date: cols[dateIndex]
+      date: cols[dateIndex],
+      time: timeIndex >= 0 ? text(cols[timeIndex]).padStart(4, "0") : "",
+      satellite: satelliteIndex >= 0 ? text(cols[satelliteIndex]) : ""
     };
   }).filter((row) => Number.isFinite(row.lat) && Number.isFinite(row.lon) && /^\d{4}-\d{2}-\d{2}$/.test(row.date));
 }
@@ -335,25 +385,90 @@ async function loadVillageBoundaryItems() {
   return Array.from(byKey.values());
 }
 
+async function loadSocialForestryItems() {
+  const parsed = JSON.parse(await readFile(PS_GEOJSON_FILE, "utf-8"));
+  const byKey = new Map();
+  let featureCount = 0;
+  for (const feature of parsed.features || []) {
+    const properties = feature.properties || {};
+    const geometry = feature.geometry;
+    if (!hasPolygonGeometry(geometry)) {
+      continue;
+    }
+    const key = socialKey(properties);
+    if (!key) {
+      continue;
+    }
+    featureCount += 1;
+    if (!byKey.has(key)) {
+      byKey.set(key, {
+        collection: "socialForestry",
+        key,
+        name: socialName(properties),
+        geometries: []
+      });
+    }
+    byKey.get(key).geometries.push(geometry);
+  }
+  const items = Array.from(byKey.values()).map((item) => ({
+    ...item,
+    bounds: combineGeometryBounds(item.geometries)
+  }));
+  return { items, featureCount };
+}
+
+function pointInUnit(point, unit) {
+  return unit.geometries.some((geometry) => pointInGeometry(point, geometry));
+}
+
 async function main() {
   const analytics = JSON.parse(await readFile(ANALYTICS_PATH, "utf-8"));
-  const villageItems = await loadVillageBoundaryItems();
+  const rawVillageItems = await loadVillageBoundaryItems();
+  const villageItems = rawVillageItems.map((item) => ({
+    ...item,
+    collection: "villages",
+    geometries: [item.geometry]
+  }));
+  const social = await loadSocialForestryItems();
+  const allItems = [...villageItems, ...social.items];
+  const unitItems = allItems.filter(
+    (item) => analytics?.[item.collection]?.[item.key]
+  );
+  const unmatchedItems = allItems.filter(
+    (item) => !analytics?.[item.collection]?.[item.key]
+  );
   if (!villageItems.length) {
     throw new Error("Tidak ada geometri desa polygon yang valid dari FIRMS_VILLAGE_GEOJSON.");
   }
+  if (!social.items.length) {
+    throw new Error("Tidak ada geometri perhutanan sosial yang valid.");
+  }
+  if (unmatchedItems.length) {
+    console.warn(
+      `[FIRMS] Lewati ${unmatchedItems.length} unit tanpa record analitik; tidak membuat record baru.`
+    );
+  }
 
-  const villageBounds = combineBounds(villageItems);
+  console.log(
+    `[FIRMS] Target units: matched=${unitItems.length}; unmatched=${unmatchedItems.length}; ` +
+    `villages=${villageItems.length}; PS features=${social.featureCount}; PS units=${social.items.length}`
+  );
+  if (DRY_RUN) {
+    return;
+  }
+
+  const analysisBounds = combineBounds(unitItems);
   const now = new Date();
   const currentYear = now.getUTCFullYear();
   const yearlyStart = new Date(Date.UTC(currentYear - 4, 0, 1));
 
-  const villageStats = {};
-  for (const village of villageItems) {
-    villageStats[village.key] = {
+  const unitStats = new Map();
+  for (const unit of unitItems) {
+    unitStats.set(`${unit.collection}|${unit.key}`, {
       hotspot7d: 0,
       hotspot30d: 0,
       hotspotYearly5y: initYearRows(currentYear)
-    };
+    });
   }
 
   const availability = [];
@@ -371,8 +486,7 @@ async function main() {
   });
 
   if (!activeSources.length) {
-    console.warn("[FIRMS] Tidak ada source FIRMS aktif yang overlap dengan periode 5 tahun terakhir. Lewati update.");
-    return;
+    throw new Error("Tidak ada source FIRMS aktif yang overlap dengan periode 5 tahun terakhir.");
   }
 
   const yearIndexByValue = new Map();
@@ -380,6 +494,8 @@ async function main() {
     yearIndexByValue.set(currentYear - 4 + i, i);
   }
 
+  const seenDetections = new Set();
+  const skippedChunks = [];
   for (const sourceInfo of activeSources) {
     const availableStart = parseIsoDate(sourceInfo.minDate);
     const availableEnd = parseIsoDate(sourceInfo.maxDate);
@@ -396,14 +512,33 @@ async function main() {
       const chunk = chunks[index];
       let csv = "";
       try {
-        csv = await fetchAreaCsv(sourceInfo.source, villageBounds, toIsoDate(chunk.end));
+        csv = await fetchAreaCsv(sourceInfo.source, analysisBounds, toIsoDate(chunk.end));
       } catch (error) {
         console.warn(`[FIRMS] Lewati chunk ${sourceInfo.source} ${toIsoDate(chunk.start)}..${toIsoDate(chunk.end)}: ${error.message}`);
+        skippedChunks.push({
+          source: sourceInfo.source,
+          start: toIsoDate(chunk.start),
+          end: toIsoDate(chunk.end),
+          error: String(error.message || error)
+        });
         continue;
       }
       const points = parseFirmsCsv(csv).filter((point) => {
         const d = parseIsoDate(point.date);
         return d >= chunk.start && d <= chunk.end;
+      }).filter((point) => {
+        const detectionKey = [
+          point.date,
+          point.time,
+          point.satellite,
+          point.lat.toFixed(5),
+          point.lon.toFixed(5)
+        ].join("|");
+        if (seenDetections.has(detectionKey)) {
+          return false;
+        }
+        seenDetections.add(detectionKey);
+        return true;
       });
 
       for (const point of points) {
@@ -411,8 +546,8 @@ async function main() {
         const pointDate = parseIsoDate(point.date);
         const pointYear = pointDate.getUTCFullYear();
 
-        for (const village of villageItems) {
-          if (!overlapsBBox(village.bounds, {
+        for (const unit of unitItems) {
+          if (!overlapsBBox(unit.bounds, {
             minX: point.lon,
             minY: point.lat,
             maxX: point.lon,
@@ -420,11 +555,11 @@ async function main() {
           })) {
             continue;
           }
-          if (!pointInGeometry(pointCoord, village.geometry)) {
+          if (!pointInUnit(pointCoord, unit)) {
             continue;
           }
 
-          const target = villageStats[village.key];
+          const target = unitStats.get(`${unit.collection}|${unit.key}`);
           const ageDays = daysBetween(now, pointDate);
           if (ageDays >= 0 && ageDays <= 6) {
             target.hotspot7d += 1;
@@ -444,53 +579,40 @@ async function main() {
     }
   }
 
-  if (!analytics.villages || typeof analytics.villages !== "object") {
-    analytics.villages = {};
-  }
-
   let updated = 0;
-  let created = 0;
-  const villageByKey = new Map(villageItems.map((item) => [item.key, item]));
-
-  for (const [key, metrics] of Object.entries(villageStats)) {
-    const existing = analytics.villages[key];
-    if (!existing) {
-      const source = villageByKey.get(key);
-      analytics.villages[key] = {
-        name: source && source.name ? source.name : key,
-        village: source && source.name ? source.name : key,
-        baselineForestHa: null,
-        currentForestHa: null,
-        totalLossHa: null,
-        gainHa: null,
-        annualLossHa: {},
-        referenceAreasHa: null,
-        hotspot7d: 0,
-        hotspot30d: 0,
-        hotspot90d: null,
-        hotspotYearly5y: initYearRows(currentYear)
-      };
-      created += 1;
-    }
-
-    analytics.villages[key].hotspot7d = metrics.hotspot7d;
-    analytics.villages[key].hotspot30d = metrics.hotspot30d;
-    analytics.villages[key].hotspot90d = null;
-    analytics.villages[key].hotspotYearly5y = metrics.hotspotYearly5y;
+  for (const unit of unitItems) {
+    const metrics = unitStats.get(`${unit.collection}|${unit.key}`);
+    const target = analytics[unit.collection][unit.key];
+    target.hotspot7d = metrics.hotspot7d;
+    target.hotspot30d = metrics.hotspot30d;
+    target.hotspot90d = null;
+    target.hotspotYearly5y = metrics.hotspotYearly5y;
     updated += 1;
   }
 
   analytics.viirs = {
-    source: "NASA FIRMS area API (point-in-polygon from village geometry)",
+    source: "NASA FIRMS area API (point-in-polygon)",
     providers: activeSources.map((item) => item.source),
     updatedAt: new Date().toISOString(),
     periodDays: [7, 30],
     yearlyTrendYears: 5,
-    notes: "Counts are derived from FIRMS points intersecting village polygons."
+    status: skippedChunks.length ? "partial" : "complete",
+    skippedChunks,
+    units: {
+      villages: villageItems.length,
+      socialForestryFeatures: social.featureCount,
+      socialForestryUnits: social.items.length,
+      updated: updated
+    },
+    notes: "Counts are deduplicated and derived from FIRMS points intersecting village and social-forestry polygons."
   };
 
   await writeFile(ANALYTICS_PATH, `${JSON.stringify(analytics, null, 2)}\n`, "utf-8");
-  console.log(`[FIRMS] Updated villages: ${updated}, created villages: ${created}`);
+  console.log(
+    `[FIRMS] Updated units: ${updated}; villages=${villageItems.length}; ` +
+    `PS features=${social.featureCount}; PS units=${social.items.length}; ` +
+    `skipped chunks=${skippedChunks.length}`
+  );
 }
 
 main().catch((error) => {
