@@ -243,10 +243,86 @@
     return '<label><input type="checkbox" data-env="'+id+'"> '+esc(label)+'</label>';
   }
 
+  function indonesiaClip(map,pane){
+    var namespace="http://www.w3.org/2000/svg";
+    var svg=document.createElementNS(namespace,"svg");
+    var definitions=document.createElementNS(namespace,"defs");
+    var clip=document.createElementNS(namespace,"clipPath");
+    var path=document.createElementNS(namespace,"path");
+    var geometry=null,scheduled=false;
+    clip.id="yg-indonesia-environment-clip";
+    clip.setAttribute("clipPathUnits","userSpaceOnUse");
+    path.setAttribute("clip-rule","evenodd");
+    clip.appendChild(path);
+    definitions.appendChild(clip);
+    svg.appendChild(definitions);
+    svg.setAttribute("aria-hidden","true");
+    svg.style.cssText="position:absolute;width:0;height:0;overflow:hidden";
+    document.getElementById("map").appendChild(svg);
+    pane.style.clipPath="url(#"+clip.id+")";
+    pane.style.webkitClipPath="url(#"+clip.id+")";
+    pane.style.visibility="hidden";
+
+    function ringPath(ring){
+      return ring.map(function(coordinate,index){
+        var point=map.latLngToLayerPoint([coordinate[1],coordinate[0]]);
+        return (index?"L":"M")+point.x.toFixed(1)+" "+point.y.toFixed(1);
+      }).join("")+"Z";
+    }
+
+    function geometryPath(value){
+      if(!value){return "";}
+      if(value.type==="Polygon"){
+        return value.coordinates.map(ringPath).join("");
+      }
+      if(value.type==="MultiPolygon"){
+        return value.coordinates.map(function(polygon){
+          return polygon.map(ringPath).join("");
+        }).join("");
+      }
+      return "";
+    }
+
+    function redraw(){
+      scheduled=false;
+      if(!geometry){return;}
+      path.setAttribute("d",geometryPath(geometry));
+      pane.style.visibility="visible";
+    }
+
+    function schedule(){
+      if(scheduled){return;}
+      scheduled=true;
+      requestAnimationFrame(redraw);
+    }
+
+    map.on("move zoom resize",schedule);
+    return fetch("data/indonesia-boundary.geojson?v=20260724-1")
+      .then(function(response){
+        if(!response.ok){throw new Error("HTTP "+response.status);}
+        return response.json();
+      })
+      .then(function(data){
+        geometry=data&&data.features&&data.features[0]&&data.features[0].geometry;
+        if(!geometry){throw new Error("Geometri Indonesia tidak tersedia");}
+        redraw();
+      })
+      .catch(function(error){
+        pane.style.visibility="hidden";
+        console.warn("Layer lingkungan dinonaktifkan karena batas Indonesia gagal dimuat",error);
+      });
+  }
+
   function init(){
     var api=window.YG_MAP;
     if(!api||!api.map){setTimeout(init,250);return;}
     var map=api.map;
+    var environmentPane=map.createPane("yg-indonesia-environment-pane");
+    environmentPane.style.zIndex="385";
+    environmentPane.style.width="100%";
+    environmentPane.style.height="100%";
+    indonesiaClip(map,environmentPane);
+    GRID_OPTIONS.pane="yg-indonesia-environment-pane";
     map.on("layeradd",function(event){attachDiscovered(event.layer);});
     map.eachLayer(function(layer){attachDiscovered(layer);});
     var viirs=L.vectorGrid.protobuf(viirsUrl(),Object.assign({},GRID_OPTIONS,{
