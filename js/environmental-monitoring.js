@@ -292,6 +292,100 @@
     return items;
   }
 
+  function geometryRings(geometry){
+    if(!geometry||!Array.isArray(geometry.coordinates)){return [];}
+    if(geometry.type==="Polygon"){
+      return geometry.coordinates.filter(function(r){return Array.isArray(r)&&r.length>=3;});
+    }
+    if(geometry.type==="MultiPolygon"){
+      return geometry.coordinates.reduce(function(all,polygon){
+        if(!Array.isArray(polygon)){return all;}
+        polygon.forEach(function(ring){
+          if(Array.isArray(ring)&&ring.length>=3){all.push(ring);}
+        });
+        return all;
+      },[]);
+    }
+    return [];
+  }
+
+  function renderSchematicMapData(context){
+    var geometry=context&&context.feature&&context.feature.geometry;
+    var rings=geometryRings(geometry);
+    if(!rings.length){return null;}
+
+    var width=1280;
+    var height=720;
+    var padding=60;
+    var canvas=document.createElement("canvas");
+    canvas.width=width;
+    canvas.height=height;
+    var ctx=canvas.getContext("2d");
+    if(!ctx){return null;}
+
+    ctx.fillStyle="#eef5f1";
+    ctx.fillRect(0,0,width,height);
+
+    var minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
+    rings.forEach(function(ring){
+      ring.forEach(function(coord){
+        var x=Number(coord&&coord[0]);
+        var y=Number(coord&&coord[1]);
+        if(!isFinite(x)||!isFinite(y)){return;}
+        if(x<minX){minX=x;} if(x>maxX){maxX=x;}
+        if(y<minY){minY=y;} if(y>maxY){maxY=y;}
+      });
+    });
+    if(!isFinite(minX)||!isFinite(minY)||!isFinite(maxX)||!isFinite(maxY)){return null;}
+
+    var rangeX=Math.max(1e-9,maxX-minX);
+    var rangeY=Math.max(1e-9,maxY-minY);
+    var scale=Math.min((width-padding*2)/rangeX,(height-padding*2)/rangeY);
+    var offsetX=(width-rangeX*scale)/2;
+    var offsetY=(height-rangeY*scale)/2;
+    function px(coord){return offsetX+(Number(coord[0])-minX)*scale;}
+    function py(coord){return height-(offsetY+(Number(coord[1])-minY)*scale);}
+
+    ctx.strokeStyle="#d8e6de";
+    ctx.lineWidth=1;
+    for(var gx=padding;gx<=width-padding;gx+=80){
+      ctx.beginPath();ctx.moveTo(gx,padding);ctx.lineTo(gx,height-padding);ctx.stroke();
+    }
+    for(var gy=padding;gy<=height-padding;gy+=80){
+      ctx.beginPath();ctx.moveTo(padding,gy);ctx.lineTo(width-padding,gy);ctx.stroke();
+    }
+
+    ctx.fillStyle="rgba(13,110,253,0.18)";
+    ctx.strokeStyle="#0d6efd";
+    ctx.lineWidth=4;
+    rings.forEach(function(ring,index){
+      ctx.beginPath();
+      ring.forEach(function(coord,i){
+        var x=px(coord),y=py(coord);
+        if(i===0){ctx.moveTo(x,y);} else {ctx.lineTo(x,y);} 
+      });
+      ctx.closePath();
+      if(index===0){ctx.fill("evenodd");}
+      ctx.stroke();
+    });
+
+    ctx.fillStyle="#0b4f8f";
+    ctx.font="700 28px Arial";
+    ctx.fillText("Peta fokus wilayah terpilih",padding,40);
+    ctx.font="18px Arial";
+    ctx.fillStyle="#496057";
+    ctx.fillText(context&&context.info&&context.info.title?String(context.info.title):"Wilayah",padding,66);
+
+    var center={lat:(minY+maxY)/2,lng:(minX+maxX)/2};
+    return {
+      image:canvas.toDataURL("image/jpeg",0.9),
+      center:center,
+      zoom:"N/A (schematic)",
+      legend:reportLegendItems(),
+      isFallback:true
+    };
+  }
+
   function blobToDataUrl(blob){
     return new Promise(function(resolve,reject){
       var reader=new FileReader();
@@ -387,11 +481,12 @@
         image:canvas.toDataURL("image/jpeg",0.86),
         center:center,
         zoom:zoom,
-        legend:reportLegendItems()
+        legend:reportLegendItems(),
+        isFallback:false
       };
     }catch(error){
       console.warn("Gagal menangkap snapshot peta",error);
-      return null;
+      return renderSchematicMapData(context);
     }finally{
       try{reportMap.remove();}catch(_error){}
       try{base.remove();}catch(_error){}
@@ -447,6 +542,9 @@
       var jsPDF=window.jspdf.jsPDF;
       var doc=new jsPDF({orientation:"portrait",unit:"mm",format:"a4"});
       var mapSnapshot=await captureReportMapImage(context);
+      if(!mapSnapshot){
+        mapSnapshot=renderSchematicMapData(context);
+      }
       var mapImage=mapSnapshot&&mapSnapshot.image;
       var logoImage=await loadLogoDataUrl();
       var margin=12;
@@ -503,7 +601,7 @@
         y+=12;
       }
 
-      y=drawReportLegend(doc,mapSnapshot&&mapSnapshot.legend,y,margin);
+      y=drawReportLegend(doc,mapSnapshot&&mapSnapshot.legend||reportLegendItems(),y,margin);
 
       if(mapSnapshot&&mapSnapshot.center){
         doc.setFontSize(8);
@@ -522,6 +620,16 @@
           "Status: sebagian indikator sedang diproses otomatis pada pipeline analitik.",
           margin,
           Math.min(291,y+11)
+        );
+      }
+
+      if(mapSnapshot&&mapSnapshot.isFallback){
+        doc.setFontSize(8);
+        doc.setTextColor(114,82,0);
+        doc.text(
+          "Catatan peta: browser membatasi capture tile, laporan memakai peta skematik polygon terpilih.",
+          margin,
+          Math.min(294,y+15)
         );
       }
 
