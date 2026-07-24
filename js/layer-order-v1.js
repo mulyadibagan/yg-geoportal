@@ -14,6 +14,10 @@
     "titik_desa"
   ];
 
+  const ADMIN_REFERENCE_IDS = new Set([
+    "batas_administrasi_desa_riau"
+  ]);
+
   function getProgramRow(list, layerId) {
     return list.querySelector(
       '.layer-row input[data-layer-id="' + layerId + '"]'
@@ -35,6 +39,14 @@
     const villageBoundary = getProgramRow(list, "desa_intervensi");
     const referenceRows = Array.from(
       list.querySelectorAll(".reference-layer-row")
+    );
+    const administrativeReferenceRows = referenceRows.filter(row => {
+      const referenceId = row.querySelector("input[data-reference-layer-id]")
+        ?.getAttribute("data-reference-layer-id");
+      return ADMIN_REFERENCE_IDS.has(referenceId || "");
+    });
+    const generalReferenceRows = referenceRows.filter(
+      row => !administrativeReferenceRows.includes(row)
     );
 
     if (!monitoring || !villageBoundary) return false;
@@ -64,12 +76,13 @@
 
     orderedRows.forEach(row => list.appendChild(row));
 
-    if (referenceRows.length) {
+    if (generalReferenceRows.length) {
       list.appendChild(makeTitle("DATA REFERENSI", "yg-reference-title"));
-      referenceRows.forEach(row => list.appendChild(row));
+      generalReferenceRows.forEach(row => list.appendChild(row));
     }
 
     list.appendChild(makeTitle("BATAS ADMINISTRASI", "yg-boundary-title"));
+    administrativeReferenceRows.forEach(row => list.appendChild(row));
     list.appendChild(villageBoundary);
 
     monitoring.classList.add("yg-priority-monitoring-row");
@@ -89,7 +102,7 @@
       /monitoring/i.test(item.textContent || "")
     );
     const villageBoundary = items.find(item =>
-      /batas desa/i.test(item.textContent || "")
+      /batas desa intervensi/i.test(item.textContent || "")
     );
 
     if (monitoring) legend.prepend(monitoring);
