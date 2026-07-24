@@ -247,6 +247,51 @@
     return new Date().toLocaleString("id-ID",{dateStyle:"medium",timeStyle:"short"});
   }
 
+  function cloneFeature(feature){
+    try{return JSON.parse(JSON.stringify(feature||{}));}
+    catch(_error){return feature||{};}
+  }
+
+  function activeEnvironmentLayerIds(){
+    var nodes=document.querySelectorAll('.yg-env-control input[data-env]:checked');
+    return Array.prototype.slice.call(nodes).map(function(node){
+      return String(node.getAttribute("data-env")||"").trim();
+    }).filter(Boolean);
+  }
+
+  function activeReferenceLegendRows(){
+    var nodes=document.querySelectorAll('.reference-layer-row input[data-reference-layer-id]:checked');
+    return Array.prototype.slice.call(nodes).map(function(node){
+      var row=node.closest('.reference-layer-row');
+      if(!row){return null;}
+      var label=row.querySelector('label');
+      var swatch=row.querySelector('.swatch');
+      return {
+        label:label?String(label.textContent||"").trim():"Layer referensi",
+        color:swatch?window.getComputedStyle(swatch).backgroundColor:"#4f6b61"
+      };
+    }).filter(Boolean);
+  }
+
+  function reportLegendItems(){
+    var items=[
+      {label:"Batas wilayah terpilih",color:"#0d6efd"}
+    ];
+    var envLabels={
+      hotspot:{label:"Hotspot NASA VIIRS (30 hari)",color:"#ff4d2e"},
+      cover:{label:"Tutupan lahan Indonesia 2017",color:"#6a8f5f"},
+      loss:{label:"Kehilangan tutupan",color:"#e65100"},
+      alerts:{label:"Alert perubahan terbaru",color:"#8b1d1d"}
+    };
+    activeEnvironmentLayerIds().forEach(function(id){
+      if(envLabels[id]){items.push(envLabels[id]);}
+    });
+
+    var references=activeReferenceLegendRows();
+    references.forEach(function(item){items.push(item);});
+    return items;
+  }
+
   function blobToDataUrl(blob){
     return new Promise(function(resolve,reject){
       var reader=new FileReader();
@@ -268,10 +313,69 @@
     }
   }
 
-  async function captureMapImage(){
-    var mapNode=document.getElementById("map");
-    if(!mapNode||typeof window.html2canvas!=="function"){return null;}
+  async function captureReportMapImage(context){
+    if(!context||!context.feature||typeof window.html2canvas!=="function"){return null;}
+    var mapNode=document.createElement("div");
+    mapNode.style.cssText=[
+      "position:fixed",
+      "left:-20000px",
+      "top:0",
+      "width:1280px",
+      "height:720px",
+      "z-index:-1",
+      "background:#f2f7f4"
+    ].join(";");
+    document.body.appendChild(mapNode);
+
+    var reportMap=L.map(mapNode,{
+      zoomControl:false,
+      attributionControl:false,
+      preferCanvas:true,
+      dragging:false,
+      scrollWheelZoom:false,
+      doubleClickZoom:false,
+      boxZoom:false,
+      keyboard:false,
+      tap:false,
+      touchZoom:false
+    }).setView([1.2,102.1],8);
+
+    var base=L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
+      maxZoom:19,
+      crossOrigin:true
+    }).addTo(reportMap);
+
+    var env=activeEnvironmentLayerIds();
+    if(env.indexOf("cover")>=0){
+      L.tileLayer(GFW.cover,{opacity:.55,maxZoom:18,crossOrigin:true}).addTo(reportMap);
+    }
+    if(env.indexOf("loss")>=0){
+      L.tileLayer(GFW.loss,{opacity:.7,maxZoom:18,crossOrigin:true}).addTo(reportMap);
+    }
+    if(env.indexOf("alerts")>=0){
+      L.tileLayer(GFW.alerts,{opacity:.75,maxZoom:18,crossOrigin:true}).addTo(reportMap);
+    }
+
+    var selected=L.geoJSON(cloneFeature(context.feature),{
+      style:function(){
+        return {
+          color:"#0d6efd",
+          weight:3,
+          fillColor:"#0d6efd",
+          fillOpacity:.16
+        };
+      }
+    }).addTo(reportMap);
+
+    var bounds=selected.getBounds();
+    if(bounds&&bounds.isValid()){
+      reportMap.fitBounds(bounds,{padding:[45,45],maxZoom:13});
+    }
+
     try{
+      await new Promise(function(resolve){window.setTimeout(resolve,2200);});
+      var center=reportMap.getCenter();
+      var zoom=reportMap.getZoom();
       var canvas=await window.html2canvas(mapNode,{
         useCORS:true,
         allowTaint:true,
@@ -279,11 +383,53 @@
         scale:1,
         backgroundColor:"#f2f7f4"
       });
-      return canvas.toDataURL("image/jpeg",0.86);
+      return {
+        image:canvas.toDataURL("image/jpeg",0.86),
+        center:center,
+        zoom:zoom,
+        legend:reportLegendItems()
+      };
     }catch(error){
       console.warn("Gagal menangkap snapshot peta",error);
       return null;
+    }finally{
+      try{reportMap.remove();}catch(_error){}
+      try{base.remove();}catch(_error){}
+      mapNode.remove();
     }
+  }
+
+  function drawReportLegend(doc,legendItems,startY,margin){
+    if(!legendItems||!legendItems.length){return startY;}
+    var y=startY;
+    doc.setFontSize(10);
+    doc.setTextColor(28,44,39);
+    doc.text("Legenda laporan",margin,y);
+    y+=4;
+
+    legendItems.forEach(function(item){
+      if(y>287){return;}
+      var label=String(item&&item.label||"Layer");
+      var color=String(item&&item.color||"#4f6b61");
+      var rgb=[79,107,97];
+      var match=color.match(/\d+/g);
+      if(match&&match.length>=3){
+        rgb=[Number(match[0])||79,Number(match[1])||107,Number(match[2])||97];
+      }else if(/^#([a-f0-9]{6})$/i.test(color)){
+        rgb=[
+          parseInt(color.slice(1,3),16),
+          parseInt(color.slice(3,5),16),
+          parseInt(color.slice(5,7),16)
+        ];
+      }
+      doc.setFillColor(rgb[0],rgb[1],rgb[2]);
+      doc.rect(margin,y-2.7,4,4,"F");
+      doc.setFontSize(8.5);
+      doc.setTextColor(56,72,67);
+      doc.text(label,margin+6,y);
+      y+=5.3;
+    });
+    return y;
   }
 
   async function downloadAnalysisReport(){
@@ -300,7 +446,8 @@
     try{
       var jsPDF=window.jspdf.jsPDF;
       var doc=new jsPDF({orientation:"portrait",unit:"mm",format:"a4"});
-      var mapImage=await captureMapImage();
+      var mapSnapshot=await captureReportMapImage(context);
+      var mapImage=mapSnapshot&&mapSnapshot.image;
       var logoImage=await loadLogoDataUrl();
       var margin=12;
       var y=12;
@@ -347,8 +494,8 @@
       y+=3;
 
       if(mapImage){
-        doc.addImage(mapImage,"JPEG",margin,y,186,105);
-        y+=110;
+        doc.addImage(mapImage,"JPEG",margin,y,186,88);
+        y+=92;
       }else{
         doc.setFontSize(9);
         doc.setTextColor(114,82,0);
@@ -356,16 +503,15 @@
         y+=12;
       }
 
-      var api=window.YG_MAP;
-      if(api&&api.map){
-        var center=api.map.getCenter();
-        var zoom=api.map.getZoom();
+      y=drawReportLegend(doc,mapSnapshot&&mapSnapshot.legend,y,margin);
+
+      if(mapSnapshot&&mapSnapshot.center){
         doc.setFontSize(8);
         doc.setTextColor(88,104,99);
         doc.text(
-          "Pusat peta: "+center.lat.toFixed(5)+", "+center.lng.toFixed(5)+" | Zoom: "+zoom,
+          "Pusat peta: "+mapSnapshot.center.lat.toFixed(5)+", "+mapSnapshot.center.lng.toFixed(5)+" | Zoom: "+mapSnapshot.zoom,
           margin,
-          Math.min(288,y+6)
+          Math.min(291,y+6)
         );
       }
 
