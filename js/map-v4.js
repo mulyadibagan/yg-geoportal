@@ -1261,6 +1261,10 @@ L.control.scale({
       throw new Error("GeoJSON referensi tidak valid.");
     }
 
+    const isInteractiveReference =
+      config.type === "social_forestry" ||
+      config.type === "village_boundary";
+
     const layer = L.geoJSON(data, {
       pane: MAP_PANES.reference,
       renderer: vectorRendererFor(MAP_PANES.reference),
@@ -1270,11 +1274,11 @@ L.control.scale({
        * seharusnya diterima batas desa di pane bawah. SVG hanya menangkap
        * klik tepat pada geometri yang tergambar.
        */
-      interactive: config.type === "social_forestry",
+      interactive: isInteractiveReference,
       bubblingMouseEvents: false,
       style: feature => referenceStyle(config, feature),
       onEachFeature: (feature, leafletLayer) => {
-        if (config.type === "social_forestry") {
+        if (isInteractiveReference) {
           leafletLayer.bindPopup(
             referencePopup(config, feature),
             { maxWidth: 360 }
