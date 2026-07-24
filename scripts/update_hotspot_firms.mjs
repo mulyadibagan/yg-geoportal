@@ -51,6 +51,15 @@ function villageKey(properties) {
     .toLowerCase();
 }
 
+function villageName(properties) {
+  return text(
+    properties.WADMKD ||
+    properties.Desa ||
+    properties.NAMOBJ ||
+    properties.Nama_Desa
+  );
+}
+
 function toIsoDate(date) {
   return date.toISOString().slice(0, 10);
 }
@@ -316,6 +325,7 @@ async function loadVillageBoundaryItems() {
       }
       byKey.set(key, {
         key,
+        name: villageName(properties),
         geometry,
         bounds: geometryBounds(geometry)
       });
@@ -434,11 +444,35 @@ async function main() {
     }
   }
 
+  if (!analytics.villages || typeof analytics.villages !== "object") {
+    analytics.villages = {};
+  }
+
   let updated = 0;
+  let created = 0;
+  const villageByKey = new Map(villageItems.map((item) => [item.key, item]));
+
   for (const [key, metrics] of Object.entries(villageStats)) {
-    if (!analytics.villages || !analytics.villages[key]) {
-      continue;
+    const existing = analytics.villages[key];
+    if (!existing) {
+      const source = villageByKey.get(key);
+      analytics.villages[key] = {
+        name: source && source.name ? source.name : key,
+        village: source && source.name ? source.name : key,
+        baselineForestHa: null,
+        currentForestHa: null,
+        totalLossHa: null,
+        gainHa: null,
+        annualLossHa: {},
+        referenceAreasHa: null,
+        hotspot7d: 0,
+        hotspot30d: 0,
+        hotspot90d: null,
+        hotspotYearly5y: initYearRows(currentYear)
+      };
+      created += 1;
     }
+
     analytics.villages[key].hotspot7d = metrics.hotspot7d;
     analytics.villages[key].hotspot30d = metrics.hotspot30d;
     analytics.villages[key].hotspot90d = null;
@@ -456,7 +490,7 @@ async function main() {
   };
 
   await writeFile(ANALYTICS_PATH, `${JSON.stringify(analytics, null, 2)}\n`, "utf-8");
-  console.log(`[FIRMS] Updated villages: ${updated}`);
+  console.log(`[FIRMS] Updated villages: ${updated}, created villages: ${created}`);
 }
 
 main().catch((error) => {
