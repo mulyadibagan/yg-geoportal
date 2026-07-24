@@ -215,6 +215,7 @@
 
   function showAnalysis(feature,layerId){
     var element=panel(),info=unitInfo(feature,layerId),record=recordFor(info);
+    var pendingAdministrativeAnalytics=!record&&layerId==="batas_administrasi_desa_riau";
     var baseline=record&&Number(record.baselineForestHa);
     var current=record&&Number(record.currentForestHa);
     var loss=record&&Number(record.totalLossHa);
@@ -225,18 +226,18 @@
     document.getElementById("yg-va-body").innerHTML=
       '<div class="yg-va-grid">'+
       kpi("Luas areal",formatHa(info.area))+
-      kpi("Tutupan baseline",formatHa(baseline))+
-      kpi("Estimasi tutupan 2025",formatHa(current))+
-      kpi("Tutupan areal",isFinite(percent)?percent.toLocaleString("id-ID",{maximumFractionDigits:1})+"%":"Belum dihitung")+
-      kpi("Kehilangan total",formatHa(loss))+
-      kpi("Pertambahan/pemulihan",formatHa(gain))+
-      kpi("Hotspot 7 hari",record&&record.hotspot7d!=null?record.hotspot7d:"Lihat layer")+
-      kpi("Hotspot 30 hari",record&&record.hotspot30d!=null?record.hotspot30d:"Belum dihitung")+
+      kpi("Tutupan baseline",pendingAdministrativeAnalytics?"Sedang diproses":formatHa(baseline))+
+      kpi("Estimasi tutupan 2025",pendingAdministrativeAnalytics?"Sedang diproses":formatHa(current))+
+      kpi("Tutupan areal",isFinite(percent)?percent.toLocaleString("id-ID",{maximumFractionDigits:1})+"%":(pendingAdministrativeAnalytics?"Sedang diproses":"Belum dihitung"))+
+      kpi("Kehilangan total",pendingAdministrativeAnalytics?"Sedang diproses":formatHa(loss))+
+      kpi("Pertambahan/pemulihan",pendingAdministrativeAnalytics?"Sedang diproses":formatHa(gain))+
+      kpi("Hotspot 7 hari",record&&record.hotspot7d!=null?record.hotspot7d:(pendingAdministrativeAnalytics?"Sedang diproses":"Lihat layer"))+
+      kpi("Hotspot 30 hari",record&&record.hotspot30d!=null?record.hotspot30d:(pendingAdministrativeAnalytics?"Sedang diproses":"Belum dihitung"))+
       '</div><section class="yg-va-section"><h3>Kehilangan tutupan hutan per tahun</h3>'+bars(record)+'</section>'+
       '<section class="yg-va-section"><h3>Luas irisan layer referensi</h3>'+referenceMetrics(record)+referenceBars(record,info.area)+'</section>'+
       '<section class="yg-va-section"><h3>Ringkasan hotspot</h3>'+hotspotSummaryBars(record)+'</section>'+
       '<section class="yg-va-section"><h3>Total hotspot per tahun (5 tahun terakhir)</h3>'+hotspotYearlyBars(record)+'</section>'+
-      (!record?'<div class="yg-va-note" style="margin-top:12px">Angka luas hutan memerlukan analisis raster per polygon. Sistem tidak mengestimasi angka dari gambar tile.</div>':"")+
+      (!record?'<div class="yg-va-note" style="margin-top:12px">'+(pendingAdministrativeAnalytics?"Data analisis untuk desa ini sedang diproses otomatis dan akan terisi bertahap setelah pipeline selesai.":"Angka luas hutan memerlukan analisis raster per polygon. Sistem tidak mengestimasi angka dari gambar tile.")+'</div>':"")+
       '<div class="yg-va-source">Sumber: NASA FIRMS/VIIRS melalui GFW dan Global Forest Watch/Hansen. Hotspot adalah anomali panas, bukan konfirmasi kebakaran.</div>';
     element.hidden=false;
   }
