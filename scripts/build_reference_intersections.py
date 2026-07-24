@@ -28,7 +28,14 @@ REFERENCES = {
 
 
 def load_geojson(name):
-    with (ROOT / "data" / name).open(encoding="utf-8") as source:
+    candidate = Path(name)
+    if candidate.is_absolute():
+        source_path = candidate
+    elif candidate.parts and candidate.parts[0] == "data":
+        source_path = ROOT / candidate
+    else:
+        source_path = ROOT / "data" / candidate
+    with source_path.open(encoding="utf-8") as source:
         return json.load(source)
 
 
