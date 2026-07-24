@@ -20,11 +20,23 @@ VILLAGE_GEOJSON_FILES = [
 ]
 
 REFERENCES = {
-    "forestEstate": ("kawasan_hutan_sk_903.geojson", "Kawasan hutan SK 903"),
     "peat": ("Gambut_BBSDLP_2019.geojson", "Lahan gambut BBSDLP 2019"),
     "concession": ("IUPHHK_HT_2014.geojson", "IUPHHK-HT 2014"),
     "socialForestry": ("PERHUTANAN_SOSIAL_RIAU.geojson", "Perhutanan sosial"),
 }
+
+FOREST_FUNCTIONS = {
+    "apl": {"APL"},
+    "productionForest": {"HP", "HPT", "HPK"},
+    "protectionForest": {"HL"},
+    "conservation": {"CA", "KSA/KPA", "TN", "SM", "SA", "TWA"},
+}
+FOREST_ESTATE_VALUES = set().union(
+    FOREST_FUNCTIONS["productionForest"],
+    FOREST_FUNCTIONS["protectionForest"],
+    FOREST_FUNCTIONS["conservation"],
+)
+KNOWN_FOREST_VALUES = FOREST_ESTATE_VALUES | FOREST_FUNCTIONS["apl"]
 
 
 def load_geojson(name):
@@ -57,6 +69,43 @@ def build_index(file_name):
         except Exception:
             continue
     return geometries, STRtree(geometries)
+
+
+def dissolved_index(geometries):
+    if not geometries:
+        return [], STRtree([])
+    dissolved = unary_union(geometries)
+    if not dissolved.is_valid:
+        dissolved = dissolved.buffer(0)
+    parts = [dissolved] if not dissolved.is_empty else []
+    return parts, STRtree(parts)
+
+
+def build_forest_function_indexes():
+    data = load_geojson("kawasan_hutan_sk_903.geojson")
+    grouped = {key: [] for key in FOREST_FUNCTIONS}
+    grouped["forestEstate"] = []
+    grouped["unclassifiedForestFunction"] = []
+    for feature in data.get("features", []):
+        try:
+            geometry = projected_geometry(feature)
+            if geometry.is_empty:
+                continue
+            value = str((feature.get("properties") or {}).get("fungsi") or "").strip()
+            if value in FOREST_ESTATE_VALUES:
+                grouped["forestEstate"].append(geometry)
+            if value not in KNOWN_FOREST_VALUES:
+                grouped["unclassifiedForestFunction"].append(geometry)
+            for key, accepted_values in FOREST_FUNCTIONS.items():
+                if value in accepted_values:
+                    grouped[key].append(geometry)
+                    break
+        except Exception:
+            continue
+    return {
+        key: dissolved_index(geometries)
+        for key, geometries in grouped.items()
+    }
 
 
 def village_key(properties):
@@ -154,7 +203,8 @@ def process_multiple_village_files(file_names, analytics, indexes):
 def main():
     target = ROOT / "data" / "village-forest-analytics.json"
     analytics = json.loads(target.read_text(encoding="utf-8"))
-    indexes = {}
+    print("Indexing fungsi kawasan hutan SK 903", flush=True)
+    indexes = build_forest_function_indexes()
     for key, (file_name, label) in REFERENCES.items():
         print(f"Indexing {label}", flush=True)
         indexes[key] = build_index(file_name)
@@ -173,6 +223,17 @@ def main():
     analytics["referenceLayers"] = {
         key: {"label": label, "file": file_name}
         for key, (file_name, label) in REFERENCES.items()
+    }
+    analytics["referenceLayers"]["forestEstate"] = {
+        "label": "Kawasan hutan SK 903",
+        "file": "kawasan_hutan_sk_903.geojson",
+        "attribute": "fungsi",
+        "groups": {
+            "apl": sorted(FOREST_FUNCTIONS["apl"]),
+            "productionForest": sorted(FOREST_FUNCTIONS["productionForest"]),
+            "protectionForest": sorted(FOREST_FUNCTIONS["protectionForest"]),
+            "conservation": sorted(FOREST_FUNCTIONS["conservation"]),
+        },
     }
     target.write_text(
         json.dumps(analytics, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"

@@ -141,7 +141,11 @@
       return '<div class="yg-va-note">Irisan layer referensi belum dihitung untuk areal ini.</div>';
     }
     return '<div class="yg-va-grid">'+
-      kpi("Kawasan hutan",formatHa(values.forestEstate))+
+      kpi("APL",formatHa(values.apl))+
+      kpi("Hutan produksi",formatHa(values.productionForest))+
+      kpi("Hutan lindung",formatHa(values.protectionForest))+
+      kpi("Kawasan konservasi",formatHa(values.conservation))+
+      kpi("Total kawasan hutan",formatHa(values.forestEstate))+
       kpi("Lahan gambut",formatHa(values.peat))+
       kpi("IUPHHK-HT",formatHa(values.concession))+
       kpi("Perhutanan sosial",formatHa(values.socialForestry))+
@@ -152,7 +156,11 @@
     var values=record&&record.referenceAreasHa;
     if(!values||!totalArea){return "";}
     var rows=[
-      ["Kawasan hutan",values.forestEstate,"#455a64"],
+      ["APL",values.apl,"#c7a66a"],
+      ["Hutan produksi",values.productionForest,"#6f8f4e"],
+      ["Hutan lindung",values.protectionForest,"#2e7d32"],
+      ["Konservasi",values.conservation,"#00695c"],
+      ["Total kawasan hutan",values.forestEstate,"#455a64"],
       ["Gambut",values.peat,"#6a4a3a"],
       ["IUPHHK-HT",values.concession,"#c62828"],
       ["Perhutanan sosial",values.socialForestry,"#00897b"]
@@ -486,7 +494,11 @@
     var values=record&&record.referenceAreasHa;
     if(!values){return [];}
     var rows=[
-      ["Kawasan hutan",Number(values.forestEstate)||0],
+      ["APL",Number(values.apl)||0],
+      ["Hutan produksi",Number(values.productionForest)||0],
+      ["Hutan lindung",Number(values.protectionForest)||0],
+      ["Kawasan konservasi",Number(values.conservation)||0],
+      ["Total kawasan hutan",Number(values.forestEstate)||0],
       ["Lahan gambut",Number(values.peat)||0],
       ["IUPHHK-HT",Number(values.concession)||0],
       ["Perhutanan sosial",Number(values.socialForestry)||0]
