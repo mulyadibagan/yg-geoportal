@@ -15,8 +15,7 @@
     nursery_coffee: { label: "Rumah Pembibitan Kopi", color: "#795548", visible: true },
     information_signs: { label: "Plang Informasi & Perlindungan", color: "#5e35b1", visible: true },
     supporting_infrastructure: { label: "Infrastruktur Pendukung", color: "#546e7a", visible: true },
-    titik_desa: { label: "Titik Desa Intervensi", color: "#1565c0", visible: false },
-    kopi: { label: "Distribusi Lahan Kopi", color: "#6d4c41", visible: true },
+    kopi: { label: "Titik Tanam Kopi", color: "#6d4c41", visible: true },
     area_kopi: { label: "Wilayah Penanaman Kopi", color: "#8e5a2b", visible: true },
     fdrs: { label: "FDRS / Water Table", color: "#e65100", visible: true },
     sekat_kanal: { label: "Sekat Kanal", color: "#00838f", visible: true },
@@ -28,6 +27,8 @@
     "#ad1457", "#5e35b1", "#0277bd", "#558b2f",
     "#ef6c00", "#6a1b9a", "#00897b", "#37474f"
   ];
+
+  const HIDDEN_LAYER_IDS = new Set(["titik_desa"]);
 
 
   const REFERENCE_LAYERS = {
@@ -76,6 +77,44 @@
 
   const referenceLayerObjects = {};
   const referenceLayerState = {};
+  let referenceCountsPreloaded = false;
+
+  async function preloadReferenceCounts() {
+    if (referenceCountsPreloaded) return;
+    referenceCountsPreloaded = true;
+
+    await Promise.all(Object.keys(REFERENCE_LAYERS).map(async layerId => {
+      const config = REFERENCE_LAYERS[layerId];
+      if (Number.isFinite(config.count)) return;
+
+      try {
+        const response = await fetch(
+          config.file + "?v=20260721-ref2",
+          { cache: "force-cache" }
+        );
+        if (!response.ok) return;
+
+        const data = await response.json();
+        if (
+          !data ||
+          data.type !== "FeatureCollection" ||
+          !Array.isArray(data.features)
+        ) {
+          return;
+        }
+
+        config.count = data.features.length;
+        const countText = new Intl.NumberFormat("id-ID").format(config.count);
+        document
+          .querySelectorAll('[data-reference-count-id="' + layerId + '"]')
+          .forEach(element => {
+            element.textContent = countText;
+          });
+      } catch (_error) {
+        // Keep placeholder dash when count fetch fails.
+      }
+    }));
+  }
 
   const map = L.map("map", {
     zoomControl: true,
@@ -290,6 +329,17 @@ L.control.scale({
         category: "Infrastruktur Pendukung Program",
         sourceType: "verified_supporting_infrastructure"
       };
+    } else if (
+      identity.includes("nursery ktwmj") ||
+      identity.includes("rumah bibit kopi") ||
+      identity.includes("nursery kopi")
+    ) {
+      target = {
+        id: "nursery_coffee",
+        label: "Rumah Pembibitan Kopi",
+        category: "Pembibitan Kopi",
+        sourceType: "verified_coffee_nursery"
+      };
     } else if (identity.includes("plang")) {
       target = {
         id: "information_signs",
@@ -307,17 +357,6 @@ L.control.scale({
         label: "Rumah Pembibitan Mangrove",
         category: "Pembibitan Mangrove",
         sourceType: "verified_community_mangrove_nursery"
-      };
-    } else if (
-      identity.includes("nursery ktwmj") ||
-      identity.includes("rumah bibit kopi") ||
-      identity.includes("nursery kopi")
-    ) {
-      target = {
-        id: "nursery_coffee",
-        label: "Rumah Pembibitan Kopi",
-        category: "Pembibitan Kopi",
-        sourceType: "verified_coffee_nursery"
       };
     } else if (
       identity.includes("restorasi hutan adat imbo putui") ||
@@ -876,8 +915,25 @@ L.control.scale({
     };
   }
 
+  function pointSymbolFor(layerId) {
+    const symbols = {
+      monitoring_reports: "M",
+      community_reports: "L",
+      nursery_mangrove: "N",
+      nursery_coffee: "K",
+      kopi: "K",
+      fdrs: "F",
+      sekat_kanal: "S",
+      supporting_infrastructure: "I",
+      information_signs: "P"
+    };
+
+    return symbols[layerId] || "•";
+  }
+
   function pointFor(config, latlng, pane) {
     const visibleSize = config.id === "monitoring_reports" ? 18 : 14;
+    const symbol = pointSymbolFor(config.id);
 
     /*
      * Marker HTML memberi setiap titik sasaran klik 40 x 40 piksel.
@@ -894,7 +950,10 @@ L.control.scale({
         html:
           '<span class="yg-point-dot" style="--yg-point-color:' +
           escapeHtml(config.color) +
-          ";--yg-point-size:" + visibleSize + 'px"></span>',
+          ";--yg-point-size:" + visibleSize +
+          'px"><span class="yg-point-dot__symbol">' +
+          escapeHtml(symbol) +
+          '</span></span>',
         iconSize: [40, 40],
         iconAnchor: [20, 20],
         popupAnchor: [0, -16]
@@ -1318,6 +1377,16 @@ L.control.scale({
   }
 
   function appendReferenceControls(list, legend) {
+    const canRenderLegend = Boolean(legend);
+
+    function appendLegendSectionTitle(text) {
+      if (!canRenderLegend) return;
+      const title = document.createElement("div");
+      title.className = "legend-section-title";
+      title.textContent = text;
+      legend.appendChild(title);
+    }
+
     function appendReferenceSection(sectionTitle, layerIds) {
       if (!layerIds.length) return;
 
@@ -1325,6 +1394,7 @@ L.control.scale({
       title.className = "yg-layer-section-title";
       title.textContent = sectionTitle;
       list.appendChild(title);
+      appendLegendSectionTitle(sectionTitle);
 
       layerIds.forEach(layerId => {
       const config = REFERENCE_LAYERS[layerId];
@@ -1380,13 +1450,15 @@ L.control.scale({
       });
 
       const legendItem = document.createElement("div");
-      legendItem.className = "legend-item";
-      legendItem.innerHTML =
-        '<span class="legend-mark" style="background:' +
-          escapeHtml(config.color) + '"></span>' +
-        '<span>' + escapeHtml(config.label) + '</span>';
+      if (canRenderLegend) {
+        legendItem.className = "legend-item";
+        legendItem.innerHTML =
+          '<span class="legend-mark area" style="--yg-legend-color:' +
+            escapeHtml(config.color) + '"></span>' +
+          '<span>' + escapeHtml(config.label) + '</span>';
 
-      legend.appendChild(legendItem);
+        legend.appendChild(legendItem);
+      }
       });
     }
 
@@ -1409,11 +1481,17 @@ L.control.scale({
   function renderLayerControls(groups) {
     const list = document.getElementById("layer-list");
     const legend = document.getElementById("legend");
+    const legendPanel = legend && legend.closest(".panel");
 
     list.innerHTML = "";
-    legend.innerHTML = "";
+    if (legend) legend.innerHTML = "";
 
-    appendReferenceControls(list, legend);
+    if (legendPanel) {
+      legendPanel.hidden = true;
+    }
+
+    appendReferenceControls(list, null);
+    preloadReferenceCounts();
 
     Object.keys(groups)
       .sort((a, b) =>
@@ -1423,8 +1501,14 @@ L.control.scale({
         )
       )
       .forEach(layerId => {
+        if (HIDDEN_LAYER_IDS.has(layerId)) return;
         const config = getLayerConfig(layerId, groups[layerId][0]);
         const count = groups[layerId].length;
+        const geometryType =
+          groups[layerId][0].geometry &&
+          groups[layerId][0].geometry.type || "";
+        const isPoint = geometryType.includes("Point");
+        const symbol = isPoint ? pointSymbolFor(layerId) : "";
 
         const row = document.createElement("div");
         row.className = "layer-row";
@@ -1432,7 +1516,12 @@ L.control.scale({
           '<input id="layer-' + escapeHtml(layerId) +
           '" data-layer-id="' + escapeHtml(layerId) +
           '" type="checkbox"' + (config.visible ? " checked" : "") + '>' +
-          '<span class="swatch" style="background:' + escapeHtml(config.color) + '"></span>' +
+          '<span class="swatch ' + (isPoint ? "point" : "area") +
+          '" style="--yg-swatch-color:' + escapeHtml(config.color) + '">' +
+            (isPoint
+              ? '<span class="swatch-symbol">' + escapeHtml(symbol) + '</span>'
+              : "") +
+          '</span>' +
           '<label for="layer-' + escapeHtml(layerId) + '">' + escapeHtml(config.label) + '</label>' +
           '<span class="count">' + count + '</span>';
 
@@ -1445,19 +1534,6 @@ L.control.scale({
           else map.removeLayer(layer);
         });
 
-        const legendItem = document.createElement("div");
-        legendItem.className = "legend-item";
-        const geometryType =
-          groups[layerId][0].geometry &&
-          groups[layerId][0].geometry.type || "";
-        const pointClass = geometryType.includes("Point") ? " point" : "";
-
-        legendItem.innerHTML =
-          '<span class="legend-mark' + pointClass +
-          '" style="background:' + escapeHtml(config.color) + '"></span>' +
-          '<span>' + escapeHtml(config.label) + '</span>';
-
-        legend.appendChild(legendItem);
       });
   }
 
@@ -1765,9 +1841,23 @@ L.control.scale({
       props.title, props.locationName, props.Nama_Objek,
       props.description, props.Keterangan
     ].filter(Boolean).join(" ").toLowerCase();
+    const hasExistingDonor = Boolean(
+      String(
+        props.Donor ||
+        props.Donor_Cluster ||
+        props.Nama_Donor ||
+        props.Funding_Source ||
+        ""
+      ).trim()
+    );
     let donor = "";
 
-    if (layerId === "kopi") donor = "Global Environment Centre";
+    if (objectId === "YG-KOPI-MRXLKJCH") {
+      donor = "Badan Pengelola Dana Perkebunan";
+    }
+    if (!donor && layerId === "kopi" && !hasExistingDonor) {
+      donor = "Global Environment Centre";
+    }
     if (identity.includes("rumah jemur semi permanen kopi liberika")) {
       donor = "Yayasan Penabulu";
     }
@@ -1884,6 +1974,7 @@ L.control.scale({
 
     rawFeatures.forEach(feature => {
       const layerId = getLayerId(feature);
+      if (HIDDEN_LAYER_IDS.has(layerId)) return;
       if (!groups[layerId]) groups[layerId] = [];
       groups[layerId].push(feature);
     });
@@ -2590,6 +2681,8 @@ L.control.scale({
       if (!feature.properties) feature.properties = {};
       const props = feature.properties;
       const objectId = normalizedMatchValue(props.Object_ID);
+      const isTanjungKurasCoffeeNursery =
+        objectId === "kopi-tanjung-kuras-na-001";
       const databaseFeature = databaseCoffee.find(candidate =>
         normalizedMatchValue(
           candidate && candidate.properties && candidate.properties.Object_ID
@@ -2597,10 +2690,17 @@ L.control.scale({
       );
       const databaseProps = databaseFeature && databaseFeature.properties || {};
 
-      props.Layer_ID = "kopi";
-      props.Source_Layer = "kopi";
-      props.Layer_Label = "Lokasi Penanaman Kopi";
-      props.Kategori = props.Kategori || "Agroforestri/Kopi";
+      if (isTanjungKurasCoffeeNursery) {
+        props.Layer_ID = "nursery_coffee";
+        props.Source_Layer = "nursery_coffee";
+        props.Layer_Label = "Rumah Pembibitan Kopi";
+        props.Kategori = "Pembibitan Kopi";
+      } else {
+        props.Layer_ID = "kopi";
+        props.Source_Layer = "kopi";
+        props.Layer_Label = "Titik Tanam Kopi";
+        props.Kategori = props.Kategori || "Agroforestri/Kopi";
+      }
 
       [
         "Donor",

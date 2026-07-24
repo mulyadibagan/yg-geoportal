@@ -5,7 +5,7 @@
   const dashboardActions = [
     {
       match: "desa intervensi",
-      layerIds: ["desa_intervensi", "titik_desa"],
+      layerIds: ["desa_intervensi"],
       message: "Menampilkan 13 desa intervensi"
     },
     {

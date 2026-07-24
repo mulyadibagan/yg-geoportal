@@ -21,8 +21,7 @@ const MASTER_LAYER_CONFIG = [
   { id: 'nursery_mangrove', label: 'Pembibitan Mangrove', category: 'Pembibitan', file: 'data/nursery_mangrove.geojson' },
   { id: 'kopi', label: 'Distribusi Lahan Kopi', category: 'Agroforestri/Kopi', file: 'data/kopi.geojson' },
   { id: 'area_kopi', label: 'Wilayah Penanaman Kopi', category: 'Agroforestri/Kopi', file: 'data/area_kopi.geojson' },
-  { id: 'desa_intervensi', label: 'Batas Desa Intervensi', category: 'Wilayah Intervensi', file: 'data/desa_intervensi.geojson' },
-  { id: 'titik_desa', label: 'Titik Desa Intervensi', category: 'Titik Desa', file: 'data/titik_desa.geojson' }
+  { id: 'desa_intervensi', label: 'Batas Desa Intervensi', category: 'Wilayah Intervensi', file: 'data/desa_intervensi.geojson' }
 ];
 
 const OBJECT_HEADERS = [
@@ -161,13 +160,18 @@ function syncPublishedCommunityReportsToObjects() {
         ? proposedChanges.monitoring
         : {};
 
+    const selectedTargetLayerId =
+      clean_(proposedChanges.targetLayerId || row[28]);
+    const selectedTargetLayerLabel =
+      clean_(proposedChanges.targetLayerLabel || row[29]);
+
     const layerId = isMonitoring
       ? 'monitoring_reports'
-      : 'community_reports';
+      : (selectedTargetLayerId || 'community_reports');
 
     const layerLabel = isMonitoring
       ? 'Hasil Monitoring Terverifikasi'
-      : 'Laporan Masyarakat Terverifikasi';
+      : (selectedTargetLayerLabel || selectedTargetLayerId || 'Laporan Masyarakat Terverifikasi');
 
     const sourceType = isMonitoring
       ? 'monitoring_report'
@@ -231,8 +235,8 @@ function syncPublishedCommunityReportsToObjects() {
       Temuan: isMonitoring ? clean_(monitoringData.notes) : '',
       Tindak_Lanjut: isMonitoring ? clean_(monitoringData.followUp) : '',
       Target_Object_ID: clean_(proposedChanges.targetObjectId),
-      Target_Layer_ID: clean_(proposedChanges.targetLayerId || row[28]),
-      Target_Layer_Label: clean_(proposedChanges.targetLayerLabel || row[29])
+      Target_Layer_ID: selectedTargetLayerId,
+      Target_Layer_Label: selectedTargetLayerLabel
     });
 
     const object = {
@@ -380,13 +384,18 @@ function getWebGisObjectsFeatureCollection_() {
           ? proposedChanges.monitoring
           : {};
 
+      const selectedTargetLayerId =
+        clean_(proposedChanges.targetLayerId || row[28]);
+      const selectedTargetLayerLabel =
+        clean_(proposedChanges.targetLayerLabel || row[29]);
+
       const layerId = isMonitoring
         ? 'monitoring_reports'
-        : 'community_reports';
+        : (selectedTargetLayerId || 'community_reports');
 
       const layerLabel = isMonitoring
         ? 'Hasil Monitoring Terverifikasi'
-        : 'Laporan Masyarakat Terverifikasi';
+        : (selectedTargetLayerLabel || selectedTargetLayerId || 'Laporan Masyarakat Terverifikasi');
 
       const monitoringType = clean_(
         monitoringData.monitoringType ||

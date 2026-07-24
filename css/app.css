@@ -164,14 +164,73 @@ button{cursor:pointer}
   border-radius:8px;
 }
 .layer-row input{width:15px;height:15px;accent-color:var(--blue)}
-.swatch{width:10px;height:10px;border-radius:50%}
+.swatch{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:12px;
+  height:12px;
+  color:#fff;
+  font-size:8px;
+  font-weight:800;
+  line-height:1;
+}
+.swatch.point{
+  border-radius:50%;
+  background:var(--yg-swatch-color);
+  border:1.6px solid #fff;
+  box-shadow:0 0 0 1px rgba(0,0,0,.2);
+}
+.swatch.area{
+  width:13px;
+  height:9px;
+  border-radius:2px;
+  border:1.6px solid var(--yg-swatch-color);
+  background:var(--yg-swatch-color);
+  background:color-mix(in srgb, var(--yg-swatch-color) 32%, #ffffff);
+}
+.swatch-symbol{transform:translateY(-0.2px)}
 .layer-row label{font-size:10px;font-weight:750;line-height:1.3}
 .count{min-width:24px;padding:2px 5px;border-radius:999px;background:#f3f7f5;color:var(--muted);font-size:8px;text-align:center}
 
-.legend{display:grid;gap:6px}
-.legend-item{display:flex;align-items:center;gap:7px;color:#4f5d58;font-size:9px}
-.legend-mark{width:19px;height:8px;border-radius:999px}
-.legend-mark.point{width:10px;height:10px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.15)}
+.legend{display:grid;gap:8px;max-height:390px;overflow:auto;padding-right:2px}
+.legend-section-title{
+  margin:4px 0 0;
+  padding:4px 0 2px;
+  border-top:1px solid #e2ece6;
+  color:#476057;
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:.08em;
+}
+.legend-section-title:first-child{margin-top:0;padding-top:0;border-top:0}
+.legend-item{display:flex;align-items:flex-start;gap:8px;color:#42564f;font-size:10px;line-height:1.28}
+.legend-item span:last-child{flex:1;word-break:break-word}
+.legend-mark{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}
+.legend-mark.area{
+  width:19px;
+  height:9px;
+  border-radius:3px;
+  border:1.6px solid var(--yg-legend-color);
+  background:var(--yg-legend-color);
+  background:color-mix(in srgb, var(--yg-legend-color) 32%, #ffffff);
+}
+.legend-mark.point{
+  width:14px;
+  height:14px;
+  margin-top:1px;
+  border-radius:50%;
+  border:2px solid #fff;
+  background:var(--yg-legend-color);
+  box-shadow:0 0 0 1px rgba(0,0,0,.15);
+}
+.legend-mark__symbol{
+  color:#fff;
+  font-size:8px;
+  font-weight:800;
+  line-height:1;
+  transform:translateY(-0.2px);
+}
 
 .controls{display:grid;grid-template-columns:1fr 1fr;gap:6px}
 .controls button{

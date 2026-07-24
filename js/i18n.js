@@ -77,6 +77,7 @@
       "Infrastruktur Pendukung": "Supporting Infrastructure",
       "Alat Pemecah Ombak (APO)": "Wave Attenuation Structures",
       "Distribusi Lahan Kopi": "Coffee Cultivation Areas",
+      "Titik Tanam Kopi": "Coffee Planting Points",
       "FDRS / Water Table": "FDRS / Water Table",
       "Sekat Kanal": "Canal Blocks",
       "Titik Desa Intervensi": "Programme Villages",

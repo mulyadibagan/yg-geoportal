@@ -617,7 +617,6 @@
   function operationalCorrectionConfigs(){
     var excluded = [
       'desa_intervensi',
-      'titik_desa',
       'kawasan_hutan_sk_903'
     ];
     var configs = (window.YG_LAYER_CONFIG || []).filter(function(config){

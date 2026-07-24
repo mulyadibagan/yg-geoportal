@@ -31,7 +31,7 @@ window.YG_OBJECT_SCHEMA = {
     },
     {
       "id": "kopi",
-      "label": "Distribusi Lahan Kopi",
+      "label": "Titik Tanam Kopi",
       "category": "Agroforestri/Kopi",
       "prefix": "KOPI",
       "include": true,
@@ -73,15 +73,6 @@ window.YG_OBJECT_SCHEMA = {
       "include": false,
       "unit": "desa",
       "url": "data/desa_intervensi.geojson"
-    },
-    {
-      "id": "titik_desa",
-      "label": "Titik Desa Intervensi",
-      "category": "Administrasi",
-      "prefix": "TITIKDESA",
-      "include": false,
-      "unit": "desa",
-      "url": "data/titik_desa.geojson"
     },
     {
       "id": "kawasan_hutan_sk_903",
