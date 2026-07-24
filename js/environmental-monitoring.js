@@ -296,8 +296,8 @@
       requestAnimationFrame(redraw);
     }
 
-    map.on("move zoom resize",schedule);
-    return fetch("data/indonesia-boundary.geojson?v=20260724-1")
+    map.on("move moveend zoom zoomend viewreset resize",schedule);
+    return fetch("data/indonesia-boundary.geojson?v=20260724-2")
       .then(function(response){
         if(!response.ok){throw new Error("HTTP "+response.status);}
         return response.json();
