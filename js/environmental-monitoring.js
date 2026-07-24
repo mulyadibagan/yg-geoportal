@@ -121,6 +121,33 @@
     return '<div class="yg-va-kpi"><span>'+esc(label)+'</span><strong>'+esc(value)+'</strong></div>';
   }
 
+  function forestLossThroughYear(){
+    var year=Number(analytics&&analytics.method&&analytics.method.lossDataThroughYear);
+    return isFinite(year)&&year>=2001?year:2019;
+  }
+
+  function recentForestLossEntries(entries){
+    var endYear=(new Date()).getFullYear();
+    var startYear=endYear-9;
+    var byYear={};
+    entries.forEach(function(item){byYear[String(item[0])]=item[1];});
+    var rows=[];
+    for(var year=startYear;year<=endYear;year+=1){
+      rows.push([
+        String(year),
+        year<=forestLossThroughYear()&&Object.prototype.hasOwnProperty.call(byYear,String(year))
+          ?byYear[String(year)]
+          :null
+      ]);
+    }
+    return rows;
+  }
+
+  function forestLossPeriodLabel(){
+    var endYear=(new Date()).getFullYear();
+    return "Kehilangan tutupan hutan 10 tahun terbaru ("+(endYear-9)+"–"+endYear+")";
+  }
+
   function bars(record){
     var annual=record&&(record.annualLossHa||record.annual_loss_ha)||{};
     var entries=Array.isArray(annual)
@@ -128,8 +155,12 @@
       : Object.keys(annual).map(function(year){return [year,annual[year]];});
     if(!entries.length){return '<div class="yg-va-note">Statistik tahunan belum dihitung untuk areal ini.</div>';}
     entries.sort(function(a,b){return Number(a[0])-Number(b[0]);});
+    entries=recentForestLossEntries(entries);
     var max=Math.max.apply(null,entries.map(function(x){return Number(x[1])||0;}))||1;
     return entries.map(function(x){
+      if(x[1]==null){
+        return '<div class="yg-va-bar"><span>'+esc(x[0])+'</span><div class="yg-va-track"></div><strong>Data belum tersedia</strong></div>';
+      }
       var value=Number(x[1])||0;
       return '<div class="yg-va-bar"><span>'+esc(x[0])+'</span><div class="yg-va-track"><div class="yg-va-fill" style="width:'+(value/max*100).toFixed(1)+'%"></div></div><strong>'+value.toLocaleString("id-ID",{maximumFractionDigits:1})+' ha</strong></div>';
     }).join("");
@@ -245,7 +276,7 @@
     return [
       ["Luas areal",formatHa(info.area)],
       ["Tutupan baseline",pendingAdministrativeAnalytics?"Sedang diproses":formatHa(baseline)],
-      ["Estimasi tutupan 2025",pendingAdministrativeAnalytics?"Sedang diproses":formatHa(current)],
+      ["Estimasi indikatif tutupan "+forestLossThroughYear(),pendingAdministrativeAnalytics?"Sedang diproses":formatHa(current)],
       ["Tutupan areal",isFinite(percent)?percent.toLocaleString("id-ID",{maximumFractionDigits:1})+"%":(pendingAdministrativeAnalytics?"Sedang diproses":"Belum dihitung")],
       ["Kehilangan total",pendingAdministrativeAnalytics?"Sedang diproses":formatHa(loss)],
       ["Pertambahan/pemulihan",pendingAdministrativeAnalytics?"Sedang diproses":formatHa(gain)],
@@ -498,6 +529,11 @@
         });
     entries=entries.filter(function(item){return /^\d{4}$/.test(item[0]);});
     entries.sort(function(a,b){return Number(a[0])-Number(b[0]);});
+    entries=recentForestLossEntries(entries);
+    var throughYear=forestLossThroughYear();
+    entries=entries.map(function(item){
+      return Number(item[0])>throughYear?[item[0],null]:item;
+    });
     return entries;
   }
 
@@ -653,7 +689,7 @@
       detailY=24;
       doc.setTextColor(28,44,39);
       doc.setFontSize(11);
-      doc.text("Kehilangan tutupan hutan per tahun",margin,detailY);
+      doc.text(forestLossPeriodLabel(),margin,detailY);
       detailY+=4;
       var annualRows=annualLossRows(context.record);
       if(annualRows.length){
@@ -663,7 +699,9 @@
           margin,
           "Tahun",
           "Kehilangan (ha)",
-          annualRows.map(function(item){return [item[0],mm(item[1])];}),
+          annualRows.map(function(item){
+            return [item[0],item[1]==null?"Data belum tersedia":mm(item[1])];
+          }),
           90,
           96,
           6
@@ -764,7 +802,7 @@
       kpi(kpis[5][0],kpis[5][1])+
       kpi(kpis[6][0],kpis[6][1])+
       kpi(kpis[7][0],kpis[7][1])+
-      '</div><section class="yg-va-section"><h3>Kehilangan tutupan hutan per tahun</h3>'+bars(record)+'</section>'+
+      '</div><section class="yg-va-section"><h3>'+forestLossPeriodLabel()+'</h3>'+bars(record)+'</section>'+
       '<section class="yg-va-section"><h3>Luas irisan layer referensi</h3>'+referenceMetrics(record)+referenceBars(record,info.area)+'</section>'+
       '<section class="yg-va-section"><h3>Ringkasan hotspot</h3>'+hotspotSummaryBars(record)+hotspotStatusNote()+'</section>'+
       '<section class="yg-va-section"><h3>Total hotspot per tahun (5 tahun terakhir)</h3>'+hotspotYearlyBars(record)+'</section>'+

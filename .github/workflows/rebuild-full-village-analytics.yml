@@ -38,7 +38,12 @@ jobs:
       - name: Build forest analytics and reference intersections
         env:
           FOREST_VILLAGE_GEOJSON: data/desa_intervensi.geojson
+          GFW_API_KEY: ${{ secrets.GFW_API_KEY }}
         run: |
+          if [ -z "$GFW_API_KEY" ]; then
+            echo "GFW_API_KEY belum diset di GitHub Secrets."
+            exit 1
+          fi
           python scripts/build_forest_analytics.py
           python scripts/build_reference_intersections.py
 

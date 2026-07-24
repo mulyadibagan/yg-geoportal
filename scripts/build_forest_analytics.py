@@ -1,4 +1,5 @@
 import concurrent.futures
+import datetime
 import json
 import os
 import time
@@ -14,6 +15,11 @@ from shapely.ops import unary_union
 ROOT = Path(__file__).resolve().parents[1]
 GEOSTORE_URL = "https://production-api.globalforestwatch.org/geostore"
 ANALYSIS_URL = "https://production-api.globalforestwatch.org/umd-loss-gain"
+GFW_DATASET_URL = "https://data-api.globalforestwatch.org/dataset/umd_tree_cover_loss"
+GFW_API_KEY = os.getenv("GFW_API_KEY", "").strip()
+LOSS_WINDOW_YEARS = 10
+LOSS_DATASET_VERSION = None
+LOSS_END_YEAR = None
 VILLAGE_GEOJSON_FILES = [
     Path(path.strip())
     for path in (
@@ -25,9 +31,11 @@ VILLAGE_GEOJSON_FILES = [
 ]
 
 
-def request_json(url, payload=None, attempts=4):
+def request_json(url, payload=None, attempts=4, extra_headers=None):
     body = None
     headers = {"Accept": "application/json", "User-Agent": "YG-GeoPortal/1.0"}
+    if extra_headers:
+        headers.update(extra_headers)
     if payload is not None:
         body = json.dumps(payload, separators=(",", ":")).encode("utf-8")
         headers["Content-Type"] = "application/json"
@@ -40,6 +48,69 @@ def request_json(url, payload=None, attempts=4):
             if attempt == attempts - 1:
                 raise
             time.sleep(2 ** attempt)
+
+
+def analyze_annual_loss(geometry):
+    window_end_year = datetime.datetime.now(datetime.timezone.utc).year
+    loss_start_year = window_end_year - LOSS_WINDOW_YEARS + 1
+    sql = (
+        "SELECT umd_tree_cover_loss__year, "
+        "SUM(area__ha) AS loss_ha "
+        "FROM results "
+        "WHERE umd_tree_cover_density_2000__threshold = 30 "
+        f"AND umd_tree_cover_loss__year BETWEEN {loss_start_year} AND {LOSS_END_YEAR} "
+        "GROUP BY umd_tree_cover_loss__year "
+        "ORDER BY umd_tree_cover_loss__year"
+    )
+    result = request_json(
+        f"{GFW_DATASET_URL}/{LOSS_DATASET_VERSION}/query/json",
+        {"sql": sql, "geometry": geometry},
+        extra_headers={"x-api-key": GFW_API_KEY},
+    )
+    rows = result.get("data") or []
+    annual = {
+        str(year): (0.0 if year <= LOSS_END_YEAR else None)
+        for year in range(loss_start_year, window_end_year + 1)
+    }
+    for row in rows:
+        year = row.get("umd_tree_cover_loss__year")
+        if year is None:
+            continue
+        year = str(int(year))
+        if year in annual:
+            annual[year] = round(float(row.get("loss_ha") or 0), 2)
+    return annual
+
+
+def latest_loss_dataset():
+    dataset = request_json(GFW_DATASET_URL).get("data") or {}
+    versions = dataset.get("versions") or []
+
+    def version_parts(value):
+        try:
+            return tuple(int(part) for part in value.lstrip("v").split("."))
+        except ValueError:
+            return ()
+
+    version = max(versions, key=version_parts)
+    fields = request_json(f"{GFW_DATASET_URL}/{version}/fields").get("data") or []
+    year_field = next(
+        (
+            field
+            for field in fields
+            if field.get("pixel_meaning") == "umd_tree_cover_loss__year"
+        ),
+        None,
+    )
+    rows = ((year_field or {}).get("values_table") or {}).get("rows") or []
+    years = [
+        int(row["meaning"])
+        for row in rows
+        if str(row.get("meaning", "")).isdigit()
+    ]
+    if not years:
+        raise RuntimeError("Tahun terbaru dataset GFW tidak dapat diidentifikasi.")
+    return version, max(years)
 
 
 def text(value):
@@ -106,7 +177,7 @@ def analyze(item):
     )
     result = request_json(f"{ANALYSIS_URL}?{query}")
     values = result["data"]["attributes"]
-    annual = values.get("loss") or {}
+    annual = analyze_annual_loss(geometry_2d)
     total_loss = round(sum(float(value or 0) for value in annual.values()), 2)
     baseline = round(float(values.get("treeExtent") or 0), 2)
     gain = round(float(values.get("gain") or 0), 2)
@@ -161,13 +232,32 @@ def load_items():
 
 
 def main():
+    global LOSS_DATASET_VERSION, LOSS_END_YEAR
+    if not GFW_API_KEY:
+        raise RuntimeError(
+            "GFW_API_KEY belum diset. Builder menolak menghasilkan nilai 0 palsu "
+            "untuk tahun yang belum tersedia dari sumber resmi."
+        )
+    LOSS_DATASET_VERSION, LOSS_END_YEAR = latest_loss_dataset()
+    window_end_year = datetime.datetime.now(datetime.timezone.utc).year
+    loss_start_year = window_end_year - LOSS_WINDOW_YEARS + 1
+    print(
+        f"GFW tree-cover loss {LOSS_DATASET_VERSION}; "
+        f"rolling window {loss_start_year}-{window_end_year}; "
+        f"data through {LOSS_END_YEAR}",
+        flush=True,
+    )
     output = {
         "schemaVersion": 2,
         "generatedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "method": {
             "forestDefinition": "Hansen tree cover extent with canopy density at or above 30 percent",
             "baselineYear": 2000,
-            "lossPeriod": "2001-2025",
+            "lossPeriod": f"{loss_start_year}-{window_end_year}",
+            "lossWindowYears": LOSS_WINDOW_YEARS,
+            "lossWindowEndYear": window_end_year,
+            "lossDataThroughYear": LOSS_END_YEAR,
+            "lossDatasetVersion": f"umd_tree_cover_loss {LOSS_DATASET_VERSION}",
             "currentForestFormula": "baselineForestHa - totalLossHa + gainHa",
             "areaUnit": "ha",
             "source": "Global Forest Watch / Hansen Global Forest Change",
