@@ -69,7 +69,8 @@
       file: "data/rbi_administrasi_desa.geojson",
       color: "#1e88e5",
       count: null,
-      type: "village_boundary"
+      type: "village_boundary",
+      section: "administrative"
     }
   };
 
@@ -1313,12 +1314,15 @@ L.control.scale({
   }
 
   function appendReferenceControls(list, legend) {
-    const title = document.createElement("div");
-    title.className = "yg-layer-section-title";
-    title.textContent = "DATA REFERENSI";
-    list.appendChild(title);
+    function appendReferenceSection(sectionTitle, layerIds) {
+      if (!layerIds.length) return;
 
-    Object.keys(REFERENCE_LAYERS).forEach(layerId => {
+      const title = document.createElement("div");
+      title.className = "yg-layer-section-title";
+      title.textContent = sectionTitle;
+      list.appendChild(title);
+
+      layerIds.forEach(layerId => {
       const config = REFERENCE_LAYERS[layerId];
 
       const row = document.createElement("div");
@@ -1379,7 +1383,18 @@ L.control.scale({
         '<span>' + escapeHtml(config.label) + '</span>';
 
       legend.appendChild(legendItem);
-    });
+      });
+    }
+
+    const administrativeLayerIds = Object.keys(REFERENCE_LAYERS).filter(layerId =>
+      REFERENCE_LAYERS[layerId].section === "administrative"
+    );
+    const referenceLayerIds = Object.keys(REFERENCE_LAYERS).filter(layerId =>
+      REFERENCE_LAYERS[layerId].section !== "administrative"
+    );
+
+    appendReferenceSection("BATAS ADMINISTRASI", administrativeLayerIds);
+    appendReferenceSection("DATA REFERENSI", referenceLayerIds);
 
     const programTitle = document.createElement("div");
     programTitle.className = "yg-layer-section-title yg-program-title";
