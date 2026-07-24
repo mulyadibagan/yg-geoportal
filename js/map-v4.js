@@ -63,10 +63,10 @@
       count: null,
       type: "social_forestry"
     },
-    rbi_administrasi_desa: {
-      id: "rbi_administrasi_desa",
-      label: "RBI Administrasi Desa",
-      file: "data/rbi_administrasi_desa.geojson",
+    batas_administrasi_desa_riau: {
+      id: "batas_administrasi_desa_riau",
+      label: "Batas Administrasi Desa Riau",
+      file: "data/batas_administrasi_desa_riau.geojson",
       color: "#1e88e5",
       count: null,
       type: "village_boundary",
