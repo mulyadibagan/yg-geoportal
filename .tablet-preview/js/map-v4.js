@@ -1311,6 +1311,7 @@ L.control.scale({
 
     const isInteractiveReference =
       config.type === "social_forestry" ||
+      config.type === "concession" ||
       config.type === "village_boundary";
 
     const layer = L.geoJSON(data, {
