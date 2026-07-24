@@ -57,7 +57,7 @@
       type:"villages",
       title:p.WADMKD||p.Desa||p.NAMOBJ||p.Nama_Desa||"Desa intervensi",
       subtitle:"Tutupan hutan dan hotspot dalam batas desa",
-      area:number(p.Luas_Ha||p.Area_Ha||p.areaHa),
+      area:number(p.Luas_Ha||p.Area_Ha||p.areaHa||p.LUASWH),
       key:String(p.Village_ID||p.VILLAGE_ID||p.Kode_Desa||p.KODE_DESA||
         [p.WADMKD||p.Desa,p.WADMKC||p.Kecamatan,p.WADMKK||p.Kabupaten].filter(Boolean).join("|")).trim().toLowerCase()
     };
@@ -225,6 +225,7 @@
     if(!api){return;}
     attachGroup(api.layerObjects&&api.layerObjects.desa_intervensi,"desa_intervensi");
     attachGroup(api.referenceLayerObjects&&api.referenceLayerObjects.perhutanan_sosial_riau,"perhutanan_sosial_riau");
+    attachGroup(api.referenceLayerObjects&&api.referenceLayerObjects.batas_administrasi_desa_riau,"batas_administrasi_desa_riau");
   }
 
   function detectedLayerId(feature){
