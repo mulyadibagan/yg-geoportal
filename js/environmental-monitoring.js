@@ -247,6 +247,27 @@
     return new Date().toLocaleString("id-ID",{dateStyle:"medium",timeStyle:"short"});
   }
 
+  function blobToDataUrl(blob){
+    return new Promise(function(resolve,reject){
+      var reader=new FileReader();
+      reader.onload=function(){resolve(String(reader.result||""));};
+      reader.onerror=function(){reject(reader.error||new Error("Gagal membaca blob"));};
+      reader.readAsDataURL(blob);
+    });
+  }
+
+  async function loadLogoDataUrl(){
+    try{
+      var response=await fetch("assets/logo-yayasan-gambut.png",{cache:"no-store"});
+      if(!response.ok){return null;}
+      var blob=await response.blob();
+      return await blobToDataUrl(blob);
+    }catch(error){
+      console.warn("Logo tidak dapat dimuat untuk laporan",error);
+      return null;
+    }
+  }
+
   async function captureMapImage(){
     var mapNode=document.getElementById("map");
     if(!mapNode||typeof window.html2canvas!=="function"){return null;}
@@ -280,17 +301,22 @@
       var jsPDF=window.jspdf.jsPDF;
       var doc=new jsPDF({orientation:"portrait",unit:"mm",format:"a4"});
       var mapImage=await captureMapImage();
+      var logoImage=await loadLogoDataUrl();
       var margin=12;
       var y=12;
 
       doc.setFillColor(7,95,73);
       doc.rect(0,0,210,30,"F");
+      if(logoImage){
+        doc.addImage(logoImage,"PNG",176,5,24,19);
+      }
       doc.setTextColor(255,255,255);
       doc.setFontSize(16);
       doc.text("Laporan Analisis Wilayah",margin,12);
       doc.setFontSize(10);
       doc.text(context.info.title,margin,19);
-      doc.text("Dibuat: "+nowLabel(),margin,25);
+      doc.text("Diproduksi oleh Yayasan Gambut",margin,24);
+      doc.text("Dibuat: "+nowLabel(),margin,28);
 
       y=36;
       doc.setTextColor(28,44,39);
@@ -343,12 +369,22 @@
         );
       }
 
+      if(context.pendingAdministrativeAnalytics){
+        doc.setFontSize(8);
+        doc.setTextColor(114,82,0);
+        doc.text(
+          "Status: sebagian indikator sedang diproses otomatis pada pipeline analitik.",
+          margin,
+          Math.min(291,y+11)
+        );
+      }
+
       doc.setFontSize(8);
       doc.setTextColor(88,104,99);
       doc.text(
-        "Sumber: NASA FIRMS/VIIRS, Global Forest Watch/Hansen, dan data spasial internal YG.",
+        "Sumber data: NASA FIRMS/VIIRS, Global Forest Watch (Hansen GFC), dan data spasial internal Yayasan Gambut.",
         margin,
-        293
+        295
       );
 
       var filename="laporan-"+fileNameSafe(context.info.title)+"-"+
