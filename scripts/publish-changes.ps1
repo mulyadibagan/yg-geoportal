@@ -6,7 +6,13 @@ param(
   [string]$Message = "",
 
   [Parameter(Mandatory = $false)]
-  [string]$Branch = "main"
+  [string]$Branch = "main",
+
+  [Parameter(Mandatory = $false)]
+  [switch]$DeployAppsScript,
+
+  [Parameter(Mandatory = $false)]
+  [string]$AppsScriptDeploymentId = ""
 )
 
 $ErrorActionPreference = "Stop"
@@ -124,3 +130,23 @@ Write-Host "[PUBLISH] Selesai. Status terbaru:"
 git status -sb
 Write-Host "[PUBLISH] Commit terbaru:"
 git log --oneline -n 3
+
+if ($DeployAppsScript) {
+  $deployScript = Join-Path $PSScriptRoot "deploy-apps-script.ps1"
+  if (-not (Test-Path $deployScript)) {
+    throw "Script deploy Apps Script tidak ditemukan: $deployScript"
+  }
+
+  Write-Host "[PUBLISH] Menjalankan deploy Apps Script otomatis..."
+  $deployParams = @{
+    ProjectDir = (Join-Path $repoPath "apps-script\webgis-backend")
+    VersionDescription = "publish $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')"
+    DeploymentDescription = "publish $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')"
+  }
+
+  if (-not [string]::IsNullOrWhiteSpace($AppsScriptDeploymentId)) {
+    $deployParams.DeploymentId = $AppsScriptDeploymentId
+  }
+
+  & $deployScript @deployParams
+}

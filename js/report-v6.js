@@ -125,11 +125,14 @@
       : 'Tautan Google Drive atau PDF';
     var newObjectDonorFields = document.getElementById('new-object-donor-fields');
     var donorInput = document.getElementById('donor');
+    var newObjectEcosystemInput = document.getElementById('new-object-ecosystem');
     var forestFields = document.getElementById('new-object-forest-fields');
     var needsNewObjectDonor =
       type === 'Titik Baru' || type === 'Area/Poligon Baru';
     if(newObjectDonorFields) newObjectDonorFields.hidden = !needsNewObjectDonor;
     if(donorInput) donorInput.required = needsNewObjectDonor;
+    if(newObjectEcosystemInput) newObjectEcosystemInput.required =
+      type === 'Area/Poligon Baru';
     if(forestFields) forestFields.hidden = !needsNewObjectDonor;
     var replantingFields = document.getElementById('replanting-fields');
     if(replantingFields) replantingFields.hidden =
@@ -1784,6 +1787,39 @@
     };
   }
 
+  function ecosystemProgrammeLabel(ecosystemType){
+    if(ecosystemType === 'Mangrove') return 'Restorasi Mangrove';
+    if(ecosystemType === 'Gambut') return 'Restorasi Gambut';
+    if(ecosystemType === 'Lahan Mineral') return 'Restorasi Lahan Mineral';
+    return '';
+  }
+
+  function buildNewObjectAttributes(donor, ecosystemType, forestSeedlingsCount, forestSeedlingsSpecies, forestLandType){
+    var attributes = {
+      Donor:donor,
+      Donor_Cluster:donor,
+      Nama_Donor:donor
+    };
+
+    if(ecosystemType){
+      attributes.Kategori_Ekosistem = ecosystemType;
+      attributes.Jenis_Ekosistem = ecosystemType;
+      attributes.Program = ecosystemProgrammeLabel(ecosystemType);
+    }
+
+    if(forestSeedlingsCount !== ''){
+      attributes.Jumlah_Bibit_Hutan = forestSeedlingsCount;
+    }
+    if(forestSeedlingsSpecies){
+      attributes.Jenis_Bibit_Hutan = forestSeedlingsSpecies;
+    }
+    if(forestLandType){
+      attributes.Jenis_Lahan_Penanaman = forestLandType;
+    }
+
+    return attributes;
+  }
+
   function calculateEstimatedPeatRewettingArea(unitCount){
     var count = Number(unitCount);
     if(!Number.isFinite(count) || count < 0){
@@ -1931,6 +1967,30 @@
 
     var forestSeedlingsCount = value('forest-seedlings-count');
     var forestSeedlingsSpecies = value('forest-seedlings-species');
+    var forestLandType = value('forest-land-type');
+    var newObjectEcosystem = value('new-object-ecosystem');
+
+    if(
+      isNewObjectReport &&
+      (forestSeedlingsCount || forestSeedlingsSpecies) &&
+      !forestLandType
+    ){
+      alert('Pilih jenis lahan penanaman (mineral/gambut) untuk data pohon hutan.');
+      document.getElementById('forest-land-type').scrollIntoView({
+        behavior:'smooth',
+        block:'center'
+      });
+      return;
+    }
+
+    if(selectedType === 'Area/Poligon Baru' && !newObjectEcosystem){
+      alert('Pilih kategori ekosistem area baru (mangrove/gambut/lahan mineral).');
+      document.getElementById('new-object-ecosystem').scrollIntoView({
+        behavior:'smooth',
+        block:'center'
+      });
+      return;
+    }
 
     if(existingFeatureTypes.indexOf(selectedType) !== -1){
       if(!selectedCorrectionFeature || !geometryGeoJSON){
@@ -2131,6 +2191,16 @@
       return;
     }
 
+    var newObjectAttributes = isNewObjectReport
+      ? buildNewObjectAttributes(
+          newObjectDonor,
+          newObjectEcosystem,
+          forestSeedlingsCount,
+          forestSeedlingsSpecies,
+          forestLandType
+        )
+      : null;
+
     var payload = {
       reportType:selectedType,
       name:value('name'),
@@ -2173,11 +2243,7 @@
       targetFeatureProperties:selectedCorrectionFeature
         ? JSON.stringify(selectedCorrectionFeature.feature.properties || {})
         : isNewObjectReport
-          ? JSON.stringify({
-              Donor:newObjectDonor,
-              Donor_Cluster:newObjectDonor,
-              Nama_Donor:newObjectDonor
-            })
+          ? JSON.stringify(newObjectAttributes)
           : '',
       proposedChanges:selectedType === 'Perbaikan Informasi'
         ? JSON.stringify(collectProposedChanges())
@@ -2188,15 +2254,13 @@
             : selectedType === 'Capacity Building'
               ? JSON.stringify({capacityBuilding:collectCapacityBuildingData()})
             : isNewObjectReport
-              ? JSON.stringify({
-                  Donor:newObjectDonor,
-                  Donor_Cluster:newObjectDonor,
-                  Nama_Donor:newObjectDonor
-                })
+              ? JSON.stringify(newObjectAttributes)
               : '',
       donor:isNewObjectReport ? newObjectDonor : '',
+      newObjectEcosystem:isNewObjectReport ? newObjectEcosystem : '',
       forestSeedlingsCount:forestSeedlingsCount,
       forestSeedlingsSpecies:forestSeedlingsSpecies,
+      forestLandType:forestLandType,
       images:compressedImages,
       documents:selectedType === 'Capacity Building' ? capacityDocuments : []
     };
