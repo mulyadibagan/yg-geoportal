@@ -1,4 +1,5 @@
 import json
+import os
 from pathlib import Path
 
 from pyproj import Transformer
@@ -8,6 +9,15 @@ from shapely.strtree import STRtree
 
 ROOT = Path(__file__).resolve().parents[1]
 PROJECT = Transformer.from_crs("EPSG:4326", "EPSG:6933", always_xy=True).transform
+VILLAGE_GEOJSON_FILES = [
+    path.strip()
+    for path in (
+        os.getenv("FOREST_VILLAGE_GEOJSON")
+        or os.getenv("FIRMS_VILLAGE_GEOJSON")
+        or "data/desa_intervensi.geojson"
+    ).split(",")
+    if path.strip()
+]
 
 REFERENCES = {
     "forestEstate": ("kawasan_hutan_sk_903.geojson", "Kawasan hutan SK 903"),
@@ -127,6 +137,13 @@ def process_units(file_name, collection, key_function, analytics, indexes, group
     return count
 
 
+def process_multiple_village_files(file_names, analytics, indexes):
+    total = 0
+    for file_name in file_names:
+        total += process_units(file_name, "villages", village_key, analytics, indexes)
+    return total
+
+
 def main():
     target = ROOT / "data" / "village-forest-analytics.json"
     analytics = json.loads(target.read_text(encoding="utf-8"))
@@ -135,8 +152,8 @@ def main():
         print(f"Indexing {label}", flush=True)
         indexes[key] = build_index(file_name)
 
-    villages = process_units(
-        "desa_intervensi.geojson", "villages", village_key, analytics, indexes
+    villages = process_multiple_village_files(
+        VILLAGE_GEOJSON_FILES, analytics, indexes
     )
     social = process_units(
         "PERHUTANAN_SOSIAL_RIAU.geojson",
