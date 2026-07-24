@@ -230,7 +230,9 @@
   function detectedLayerId(feature){
     var p=feature&&feature.properties||{};
     if(p.NO_IUPHKM||p.NAMA_HKM||p.L_IUPHKM){return "perhutanan_sosial_riau";}
-    if((p.WADMKD||p.Desa)&&(p.Luas_Ha||p.UUPP||p.Village_ID)){return "desa_intervensi";}
+    if(p.Village_ID||p.VILLAGE_ID||p.Kode_Desa||p.KODE_DESA){
+      return "desa_intervensi";
+    }
     return "";
   }
 
