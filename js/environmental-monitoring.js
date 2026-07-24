@@ -6,6 +6,16 @@
     loss:"https://tiles.globalforestwatch.org/umd_tree_cover_loss/latest/dynamic/{z}/{x}/{y}.png?render_type=true_color&tree_cover_density_threshold=30",
     alerts:"https://tiles.globalforestwatch.org/gfw_integrated_dist_alerts/latest/dynamic/{z}/{x}/{y}.png?alert_confidence=high&render_type=true_color&tree_cover_density_threshold=30"
   };
+  var INDONESIA_BOUNDS=L.latLngBounds(
+    L.latLng(-11.25,94.5),
+    L.latLng(6.3,141.5)
+  );
+  var GRID_OPTIONS={
+    bounds:INDONESIA_BOUNDS,
+    updateWhenIdle:true,
+    updateWhenZooming:false,
+    keepBuffer:1
+  };
   var analytics={villages:{},socialForestry:{}};
   var attached=new WeakSet();
 
@@ -239,13 +249,13 @@
     var map=api.map;
     map.on("layeradd",function(event){attachDiscovered(event.layer);});
     map.eachLayer(function(layer){attachDiscovered(layer);});
-    var viirs=L.vectorGrid.protobuf(viirsUrl(),{
+    var viirs=L.vectorGrid.protobuf(viirsUrl(),Object.assign({},GRID_OPTIONS,{
       interactive:true,
       maxNativeZoom:14,
       vectorTileLayerStyles:{
         nasa_viirs_fire_alerts:{radius:5,color:"#8b1d1d",weight:1,fill:true,fillColor:"#ff4d2e",fillOpacity:.85}
       }
-    });
+    }));
     viirs.on("click",function(event){
       var props=event.layer&&event.layer.properties||{};
       L.popup().setLatLng(event.latlng).setContent(
@@ -256,9 +266,9 @@
     });
     environmentalControl(map,{
       hotspot:viirs,
-      cover:L.tileLayer(GFW.cover,{opacity:.55,maxZoom:18,attribution:"Global Forest Watch"}),
-      loss:L.tileLayer(GFW.loss,{opacity:.7,maxZoom:18,attribution:"Global Forest Watch / UMD"}),
-      alerts:L.tileLayer(GFW.alerts,{opacity:.75,maxZoom:18,attribution:"Global Forest Watch"})
+      cover:L.tileLayer(GFW.cover,Object.assign({},GRID_OPTIONS,{opacity:.55,maxZoom:18,attribution:"Global Forest Watch"})),
+      loss:L.tileLayer(GFW.loss,Object.assign({},GRID_OPTIONS,{opacity:.7,maxZoom:18,attribution:"Global Forest Watch / UMD"})),
+      alerts:L.tileLayer(GFW.alerts,Object.assign({},GRID_OPTIONS,{opacity:.75,maxZoom:18,attribution:"Global Forest Watch"}))
     });
     window.YG_ENVIRONMENTAL_MONITORING={
       map:map,
