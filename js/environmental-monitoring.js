@@ -125,10 +125,41 @@
     }).join("");
   }
 
-  function hotspotBar(record){
-    if(!record||record.hotspot7d==null){return "";}
-    var value=Number(record.hotspot7d)||0;
-    return '<div class="yg-va-bar"><span>7 hari</span><div class="yg-va-track"><div class="yg-va-fill" style="width:'+(value?100:0)+'%;background:#ff4d2e"></div></div><strong>'+value+' titik</strong></div>';
+  function hotspotSummaryBars(record){
+    var v7=Number(record&&record.hotspot7d)||0;
+    var v30=Number(record&&record.hotspot30d)||0;
+    var max=Math.max(v7,v30,1);
+    return '<div class="yg-va-trend">'+
+      '<div class="yg-va-bar yg-va-bar-trend"><span>7 hari</span><div class="yg-va-track"><div class="yg-va-fill" style="width:'+(v7/max*100).toFixed(1)+'%;background:#ff4d2e"></div></div><strong>'+v7+' titik</strong></div>'+
+      '<div class="yg-va-bar yg-va-bar-trend"><span>30 hari</span><div class="yg-va-track"><div class="yg-va-fill" style="width:'+(v30/max*100).toFixed(1)+'%;background:#ff4d2e"></div></div><strong>'+v30+' titik</strong></div>'+
+      '</div>';
+  }
+
+  function hotspotYearlyBars(record){
+    var yearly=record&&record.hotspotYearly5y;
+    var rows=[];
+    if(Array.isArray(yearly)&&yearly.length){
+      rows=yearly
+        .map(function(item){
+          return {
+            year:String(item&&item.year||""),
+            count:Number(item&&item.count)||0
+          };
+        })
+        .filter(function(item){return /^\d{4}$/.test(item.year);});
+    }
+    if(!rows.length){
+      var nowYear=(new Date()).getFullYear();
+      for(var year=nowYear-4;year<=nowYear;year+=1){
+        rows.push({year:String(year),count:0});
+      }
+    }
+    rows.sort(function(a,b){return Number(a.year)-Number(b.year);});
+    var max=Math.max.apply(null,rows.map(function(item){return item.count;}))||1;
+    var content=rows.map(function(item){
+      return '<div class="yg-va-bar yg-va-bar-trend"><span>'+esc(item.year)+'</span><div class="yg-va-track"><div class="yg-va-fill" style="width:'+(item.count/max*100).toFixed(1)+'%;background:#ff4d2e"></div></div><strong>'+item.count+' titik</strong></div>';
+    }).join("");
+    return '<div class="yg-va-trend">'+content+'</div>';
   }
 
   function panel(){
@@ -162,10 +193,11 @@
       kpi("Kehilangan total",formatHa(loss))+
       kpi("Pertambahan/pemulihan",formatHa(gain))+
       kpi("Hotspot 7 hari",record&&record.hotspot7d!=null?record.hotspot7d:"Lihat layer")+
-      kpi("Hotspot 30 hari","Lihat layer")+
+      kpi("Hotspot 30 hari",record&&record.hotspot30d!=null?record.hotspot30d:"Belum dihitung")+
       '</div><section class="yg-va-section"><h3>Kehilangan tutupan hutan per tahun</h3>'+bars(record)+'</section>'+
       '<section class="yg-va-section"><h3>Luas irisan layer referensi</h3>'+referenceMetrics(record)+referenceBars(record,info.area)+'</section>'+
-      '<section class="yg-va-section"><h3>Ringkasan hotspot</h3>'+hotspotBar(record)+'<div class="yg-va-note">Angka 7 hari dihitung dari NASA VIIRS per polygon. Layer peta menampilkan deteksi panas hingga 30 hari.</div></section>'+
+      '<section class="yg-va-section"><h3>Ringkasan hotspot</h3>'+hotspotSummaryBars(record)+'</section>'+
+      '<section class="yg-va-section"><h3>Total hotspot per tahun (5 tahun terakhir)</h3>'+hotspotYearlyBars(record)+'</section>'+
       (!record?'<div class="yg-va-note" style="margin-top:12px">Angka luas hutan memerlukan analisis raster per polygon. Sistem tidak mengestimasi angka dari gambar tile.</div>':"")+
       '<div class="yg-va-source">Sumber: NASA FIRMS/VIIRS melalui GFW dan Global Forest Watch/Hansen. Hotspot adalah anomali panas, bukan konfirmasi kebakaran.</div>';
     element.hidden=false;
