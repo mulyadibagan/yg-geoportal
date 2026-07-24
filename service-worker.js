@@ -1,4 +1,4 @@
-const CACHE_NAME = "yg-geoportal-v4-20260724-riau-admin-v2";
+const CACHE_NAME = "yg-geoportal-v4-20260724-legend-cache-refresh1";
 
 const STATIC_ASSETS = [
   "./",

@@ -28,7 +28,7 @@
 
     window.addEventListener("load", () => {
       navigator.serviceWorker
-        .register("./service-worker.js?v=20260723-layout-hotfix")
+        .register("./service-worker.js?v=20260724-legend-cache-refresh1")
         .then(registration => {
           console.log("Service worker terdaftar:", registration);
           registration.update();
@@ -37,7 +37,7 @@
     });
 
     navigator.serviceWorker.addEventListener("controllerchange", () => {
-      const reloadKey = "yg-sw-layout-hotfix";
+      const reloadKey = "yg-sw-legend-cache-refresh1";
       if (sessionStorage.getItem(reloadKey)) return;
       sessionStorage.setItem(reloadKey, "done");
       window.location.reload();
