@@ -39,7 +39,7 @@
       goal: 4,
       title: 'Pendidikan Berkualitas',
       contribution: '<ul><li>Pelatihan pembibitan, restorasi, agroforestri, pengolahan kopi, dan pertanian tanpa bakar.</li><li>Peningkatan kapasitas kelompok masyarakat dalam pemantauan ekosistem.</li><li>Penyusunan panduan dan materi pembelajaran berbasis pengalaman lapangan.</li></ul>',
-      icon: 'https://www.un.org/sustainabledevelopment/wp-content/uploads/sites/3/2016/01/S_SDG_Icons-01-04.jpg'
+      icon: 'https://sdgs.un.org/sites/default/files/goals/E_SDG_Icons-04.jpg'
     },
     {
       goal: 5,
@@ -63,7 +63,7 @@
       goal: 10,
       title: 'Berkurangnya Kesenjangan',
       contribution: '<ul><li>Mendorong partisipasi kelompok rentan dan penyandang disabilitas dalam kegiatan lingkungan.</li><li>Mendukung kepemimpinan inklusif dalam kelompok masyarakat pesisir.</li><li>Salah satu kelompok mangrove di Sepahat dipimpin oleh penyandang disabilitas dan berperan aktif dalam pengelolaan restorasi mangrove.</li></ul>',
-      icon: 'https://www.un.org/sustainabledevelopment/wp-content/uploads/sites/3/2016/01/S_SDG_Icons-01-10.jpg'
+      icon: 'https://sdgs.un.org/sites/default/files/goals/E_SDG_Icons-10.jpg'
     },
     {
       goal: 11,
@@ -75,7 +75,7 @@
       goal: 12,
       title: 'Konsumsi dan Produksi yang Bertanggung Jawab',
       contribution: '<ul><li>Pengembangan kopi Liberika dan produk lokal melalui praktik produksi berkelanjutan.</li><li>Penerapan pertanian tanpa bakar dan agroforestri ramah gambut.</li><li>Peningkatan pengolahan pascapanen, SOP produksi, kualitas produk, dan pemanfaatan sumber daya lokal secara bertanggung jawab.</li></ul>',
-      icon: 'https://www.un.org/sustainabledevelopment/wp-content/uploads/sites/3/2016/01/S_SDG_Icons-01-12.jpg'
+      icon: 'https://sdgs.un.org/sites/default/files/goals/E_SDG_Icons-12.jpg'
     },
     {
       goal: 13,
@@ -99,7 +99,7 @@
       goal: 16,
       title: 'Perdamaian, Keadilan dan Kelembagaan yang Tangguh',
       contribution: '<ul><li>Penguatan kapasitas KTH, KUPS, kelompok perempuan, dan kelompok pengelola mangrove.</li><li>Mendukung penyusunan rencana kerja perhutanan sosial dan pengambilan keputusan partisipatif.</li><li>Mendorong kolaborasi masyarakat dengan pemerintah desa, Balai PSKL, perguruan tinggi, dan mitra program.</li></ul>',
-      icon: 'https://www.un.org/sustainabledevelopment/wp-content/uploads/sites/3/2016/01/S_SDG_Icons-01-16.jpg'
+      icon: 'https://sdgs.un.org/sites/default/files/goals/E_SDG_Icons-16.jpg'
     },
     {
       goal: 17,
