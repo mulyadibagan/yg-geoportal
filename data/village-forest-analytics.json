@@ -36,14 +36,17 @@
       "referenceAreasHa": {
         "apl": 1144.5,
         "productionForest": 1661.66,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 1661.66,
         "unclassifiedForestFunction": 3.73,
         "peat": 1590.68,
-        "concession": 923.0,
+        "concession": 923,
         "socialForestry": 26.01
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "pedekik|bengkalis|bengkalis": {
       "name": "Pedekik",
@@ -51,7 +54,7 @@
       "baselineForestHa": 1999.77,
       "currentForestHa": 1011.46,
       "totalLossHa": 1295.31,
-      "gainHa": 307.0,
+      "gainHa": 307,
       "annualLossHa": {
         "2017": 22.76,
         "2018": 16.53,
@@ -67,14 +70,17 @@
       "referenceAreasHa": {
         "apl": 2018.32,
         "productionForest": 5.71,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 5.71,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 1914.89,
-        "concession": 0.0,
-        "socialForestry": 0.0
-      }
+        "concession": 0,
+        "socialForestry": 0
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "sepahat|bandar laksamana|bengkalis": {
       "name": "Sepahat",
@@ -98,14 +104,17 @@
       "referenceAreasHa": {
         "apl": 2750.32,
         "productionForest": 7326.3,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 7326.3,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 8984.05,
         "concession": 1714.46,
-        "socialForestry": 0.0
-      }
+        "socialForestry": 0
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "temiang|bandar laksamana|bengkalis": {
       "name": "Temiang",
@@ -120,7 +129,7 @@
         "2019": 12.07,
         "2020": 9.92,
         "2021": 22.69,
-        "2022": 11.0,
+        "2022": 11,
         "2023": 40.68,
         "2024": 52.99,
         "2025": 30.92,
@@ -129,21 +138,24 @@
       "referenceAreasHa": {
         "apl": 350.02,
         "productionForest": 5882.31,
-        "protectionForest": 0.0,
+        "protectionForest": 0,
         "conservation": 11606.65,
         "forestEstate": 17488.96,
         "unclassifiedForestFunction": 8.47,
         "peat": 17401.52,
         "concession": 2388.33,
-        "socialForestry": 0.0
-      }
+        "socialForestry": 0
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "simpang ayam|bengkalis|bengkalis": {
       "name": "Simpang Ayam",
       "geostoreId": "670fae52d3ead36d446f6937c853d468",
       "baselineForestHa": 1821.44,
       "currentForestHa": 1374.17,
-      "totalLossHa": 869.0,
+      "totalLossHa": 869,
       "gainHa": 421.73,
       "annualLossHa": {
         "2017": 20.69,
@@ -154,20 +166,23 @@
         "2022": 11.69,
         "2023": 13.84,
         "2024": 14.46,
-        "2025": 10.0,
+        "2025": 10,
         "2026": null
       },
       "referenceAreasHa": {
         "apl": 1759.83,
         "productionForest": 128.6,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 128.6,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 1104.61,
-        "concession": 0.0,
-        "socialForestry": 0.0
-      }
+        "concession": 0,
+        "socialForestry": 0
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "kelapa pati|bengkalis|bengkalis": {
       "name": "Kelapa Pati",
@@ -191,14 +206,17 @@
       "referenceAreasHa": {
         "apl": 342.32,
         "productionForest": 1.91,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 1.91,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 0.21,
-        "concession": 0.0,
-        "socialForestry": 0.0
-      }
+        "concession": 0,
+        "socialForestry": 0
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "penampi|bengkalis|bengkalis": {
       "name": "Penampi",
@@ -222,14 +240,17 @@
       "referenceAreasHa": {
         "apl": 674.57,
         "productionForest": 89.42,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 89.42,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 585.16,
-        "concession": 0.0,
-        "socialForestry": 0.0
-      }
+        "concession": 0,
+        "socialForestry": 0
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "tanjung kuras|sungai apit|siak": {
       "name": "Tanjung Kuras",
@@ -253,14 +274,17 @@
       "referenceAreasHa": {
         "apl": 1320.11,
         "productionForest": 514.55,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 514.55,
         "unclassifiedForestFunction": 468.18,
-        "peat": 0.0,
-        "concession": 0.0,
-        "socialForestry": 0.0
-      }
+        "peat": 0,
+        "concession": 0,
+        "socialForestry": 0
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "buruk bakul|bukit batu|bengkalis": {
       "name": "Buruk Bakul",
@@ -284,14 +308,17 @@
       "referenceAreasHa": {
         "apl": 4212.52,
         "productionForest": 2550.21,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 2550.21,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 6476.94,
         "concession": 323.7,
-        "socialForestry": 0.0
-      }
+        "socialForestry": 0
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "pencing bekuto|kandis|siak": {
       "name": "Pencing Bekuto",
@@ -315,14 +342,17 @@
       "referenceAreasHa": {
         "apl": 1663.15,
         "productionForest": 4662.62,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 4662.62,
         "unclassifiedForestFunction": 21.74,
         "peat": 4080.25,
         "concession": 0.19,
-        "socialForestry": 0.0
-      }
+        "socialForestry": 0
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "dayun|siak|siak": {
       "name": "Dayun",
@@ -346,14 +376,17 @@
       "referenceAreasHa": {
         "apl": 16710.22,
         "productionForest": 32732.79,
-        "protectionForest": 0.0,
+        "protectionForest": 0,
         "conservation": 30021.71,
         "forestEstate": 62754.5,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 63981.75,
         "concession": 28632.89,
         "socialForestry": 1359.18
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "siarang-arang|pujud|rokan hilir": {
       "name": "Siarang-Arang",
@@ -378,13 +411,16 @@
         "apl": 3360.35,
         "productionForest": 12258.78,
         "protectionForest": 4.18,
-        "conservation": 0.0,
+        "conservation": 0,
         "forestEstate": 12262.96,
         "unclassifiedForestFunction": 256.1,
         "peat": 4039.29,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 434.38
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "petapahan|tapung|kampar": {
       "name": "Petapahan",
@@ -408,14 +444,17 @@
       "referenceAreasHa": {
         "apl": 26527.18,
         "productionForest": 7360.07,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 7360.07,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 3670.95,
         "concession": 8109.65,
         "socialForestry": 251.75
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     }
   },
   "socialForestry": {
@@ -430,25 +469,28 @@
         "2017": 1.77,
         "2018": 0.85,
         "2019": 5.15,
-        "2020": 0.0,
+        "2020": 0,
         "2021": 0.85,
-        "2022": 0.0,
-        "2023": 0.0,
+        "2022": 0,
+        "2023": 0,
         "2024": 0.23,
         "2025": 0.15,
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 461.13,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 461.13,
         "unclassifiedForestFunction": 15.12,
-        "peat": 0.0,
-        "concession": 0.0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 476.26
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "3794.0": {
       "name": "KTH MANGROVE BERKAH USAHA",
@@ -456,15 +498,15 @@
       "baselineForestHa": 117.22,
       "currentForestHa": 86.07,
       "totalLossHa": 31.15,
-      "gainHa": 0.0,
+      "gainHa": 0,
       "annualLossHa": {
-        "2017": 0.0,
-        "2018": 0.0,
-        "2019": 0.0,
+        "2017": 0,
+        "2018": 0,
+        "2019": 0,
         "2020": 0.62,
         "2021": 5.92,
         "2022": 4.92,
-        "2023": 0.0,
+        "2023": 0,
         "2024": 3.85,
         "2025": 0.23,
         "2026": null
@@ -472,14 +514,17 @@
       "referenceAreasHa": {
         "apl": 0.25,
         "productionForest": 121.09,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 121.09,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 10.24,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 123.65
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "3795.0": {
       "name": "KTH BANGKIT BERSAMA",
@@ -487,14 +532,14 @@
       "baselineForestHa": 176.13,
       "currentForestHa": 156.59,
       "totalLossHa": 19.54,
-      "gainHa": 0.0,
+      "gainHa": 0,
       "annualLossHa": {
-        "2017": 0.0,
-        "2018": 0.0,
-        "2019": 1.0,
+        "2017": 0,
+        "2018": 0,
+        "2019": 1,
         "2020": 2.77,
-        "2021": 0.0,
-        "2022": 0.0,
+        "2021": 0,
+        "2022": 0,
         "2023": 1.77,
         "2024": 0.23,
         "2025": 0.85,
@@ -503,14 +548,17 @@
       "referenceAreasHa": {
         "apl": 0.16,
         "productionForest": 183.21,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 183.21,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 9.26,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 183.49
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "3796.0": {
       "name": "KTH PULAU MANDIRI",
@@ -521,27 +569,30 @@
       "gainHa": 0.92,
       "annualLossHa": {
         "2017": 3.92,
-        "2018": 0.0,
-        "2019": 0.0,
-        "2020": 0.0,
+        "2018": 0,
+        "2019": 0,
+        "2020": 0,
         "2021": 0.85,
-        "2022": 0.0,
-        "2023": 0.0,
-        "2024": 0.0,
-        "2025": 0.0,
+        "2022": 0,
+        "2023": 0,
+        "2024": 0,
+        "2025": 0,
         "2026": null
       },
       "referenceAreasHa": {
         "apl": 0.2,
         "productionForest": 274.82,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 274.82,
         "unclassifiedForestFunction": 0.47,
         "peat": 81.51,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 275.49
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "3798.0": {
       "name": "GAPOKTAN TAMBUSAI UTARA",
@@ -563,16 +614,19 @@
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 1065.34,
         "protectionForest": 495.53,
-        "conservation": 0.0,
+        "conservation": 0,
         "forestEstate": 1560.87,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
-        "concession": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 1560.87
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "3947.0": {
       "name": "KTH KUALA PLAJAU",
@@ -580,30 +634,33 @@
       "baselineForestHa": 80.3,
       "currentForestHa": 2.54,
       "totalLossHa": 78.76,
-      "gainHa": 1.0,
+      "gainHa": 1,
       "annualLossHa": {
-        "2017": 0.0,
-        "2018": 0.0,
-        "2019": 0.0,
-        "2020": 0.0,
-        "2021": 0.0,
-        "2022": 0.0,
-        "2023": 0.0,
-        "2024": 0.0,
-        "2025": 0.0,
+        "2017": 0,
+        "2018": 0,
+        "2019": 0,
+        "2020": 0,
+        "2021": 0,
+        "2022": 0,
+        "2023": 0,
+        "2024": 0,
+        "2025": 0,
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 26.37,
         "protectionForest": 58.48,
-        "conservation": 0.0,
+        "conservation": 0,
         "forestEstate": 84.86,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
-        "concession": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 84.86
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "3971.0": {
       "name": "KTH LUBUK KEBUN",
@@ -614,27 +671,30 @@
       "gainHa": 107.63,
       "annualLossHa": {
         "2017": 0.08,
-        "2018": 0.0,
-        "2019": 0.0,
+        "2018": 0,
+        "2019": 0,
         "2020": 0.92,
-        "2021": 0.0,
-        "2022": 0.0,
-        "2023": 0.0,
-        "2024": 0.0,
-        "2025": 0.0,
+        "2021": 0,
+        "2022": 0,
+        "2023": 0,
+        "2024": 0,
+        "2025": 0,
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 119.44,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 119.44,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
-        "concession": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 119.44
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "3891.0": {
       "name": "KOPERASI HARAPAN BARU",
@@ -652,7 +712,7 @@
         "2022": 3.23,
         "2023": 10.39,
         "2024": 5.46,
-        "2025": 5.0,
+        "2025": 5,
         "2026": null
       },
       "referenceAreasHa": {
@@ -661,11 +721,14 @@
         "protectionForest": 373.58,
         "conservation": 1.53,
         "forestEstate": 602.35,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
-        "concession": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 603.65
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "3978.0": {
       "name": "KT SIPANG JAYA",
@@ -687,16 +750,19 @@
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
-        "productionForest": 0.0,
+        "apl": 0,
+        "productionForest": 0,
         "protectionForest": 1702.76,
-        "conservation": 0.0,
+        "conservation": 0,
         "forestEstate": 1702.76,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
-        "concession": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 1702.76
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "3970.0": {
       "name": "KTH SEI PETAPUSAN",
@@ -707,58 +773,64 @@
       "gainHa": 484.1,
       "annualLossHa": {
         "2017": 3.38,
-        "2018": 0.0,
+        "2018": 0,
         "2019": 4.85,
         "2020": 1.85,
         "2021": 10.46,
         "2022": 0.77,
         "2023": 0.69,
-        "2024": 1.0,
+        "2024": 1,
         "2025": 1.92,
         "2026": null
       },
       "referenceAreasHa": {
         "apl": 0.3,
         "productionForest": 757.66,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 757.66,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
         "concession": 0.27,
         "socialForestry": 758.29
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "4033.0": {
       "name": "KTH TANI MEKAR",
       "geostoreId": "f1ed5d745cfd24bf6760db95d740b160",
       "baselineForestHa": 734.39,
       "currentForestHa": 701.24,
-      "totalLossHa": 35.0,
+      "totalLossHa": 35,
       "gainHa": 1.85,
       "annualLossHa": {
-        "2017": 3.0,
-        "2018": 0.0,
+        "2017": 3,
+        "2018": 0,
         "2019": 4.31,
         "2020": 9.62,
         "2021": 1.77,
         "2022": 11.62,
         "2023": 1.62,
-        "2024": 0.0,
+        "2024": 0,
         "2025": 0.15,
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 734.56,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 734.56,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 734.56,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 734.56
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "4093.0": {
       "name": "KOPERASI UNIT DESA PENARIKAN JAYA",
@@ -769,12 +841,12 @@
       "gainHa": 1236.28,
       "annualLossHa": {
         "2017": 0.15,
-        "2018": 0.0,
+        "2018": 0,
         "2019": 0.62,
         "2020": 0.54,
         "2021": 2.23,
-        "2022": 0.0,
-        "2023": 0.0,
+        "2022": 0,
+        "2023": 0,
         "2024": 0.15,
         "2025": 0.54,
         "2026": null
@@ -782,14 +854,17 @@
       "referenceAreasHa": {
         "apl": 0.84,
         "productionForest": 1344.07,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 1344.07,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 321.47,
         "concession": 95.42,
         "socialForestry": 1344.91
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "4284.0": {
       "name": "KOPERASI KOTO INTUOK",
@@ -800,27 +875,30 @@
       "gainHa": 47.24,
       "annualLossHa": {
         "2017": 1.31,
-        "2018": 0.0,
+        "2018": 0,
         "2019": 1.15,
         "2020": 0.62,
-        "2021": 0.0,
-        "2022": 2.0,
+        "2021": 0,
+        "2022": 2,
         "2023": 0.08,
         "2024": 0.23,
         "2025": 13.46,
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 1565.65,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 1565.65,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
         "concession": 54.09,
         "socialForestry": 1565.65
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "4127.0": {
       "name": "KTH DESA SITUGAL",
@@ -831,27 +909,30 @@
       "gainHa": 82.47,
       "annualLossHa": {
         "2017": 0.08,
-        "2018": 0.0,
-        "2019": 0.0,
+        "2018": 0,
+        "2019": 0,
         "2020": 1.46,
         "2021": 0.23,
         "2022": 0.08,
-        "2023": 0.0,
-        "2024": 0.0,
-        "2025": 0.0,
+        "2023": 0,
+        "2024": 0,
+        "2025": 0,
         "2026": null
       },
       "referenceAreasHa": {
         "apl": 0.42,
         "productionForest": 106.63,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 106.63,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
         "concession": 0.02,
         "socialForestry": 107.1
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "4313.0": {
       "name": "KT ALAM MAHLIGAI",
@@ -876,13 +957,16 @@
         "apl": 0.27,
         "productionForest": 2606.21,
         "protectionForest": 0.56,
-        "conservation": 0.0,
+        "conservation": 0,
         "forestEstate": 2606.76,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
-        "concession": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 2669.43
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "4312.0": {
       "name": "KOPERASI AINUL ZAHROH",
@@ -907,13 +991,16 @@
         "apl": 0.18,
         "productionForest": 2993.44,
         "protectionForest": 0.67,
-        "conservation": 0.0,
+        "conservation": 0,
         "forestEstate": 2994.05,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
-        "concession": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 2994.24
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "4650.0": {
       "name": "KTH MAJU BERSAMA",
@@ -929,22 +1016,25 @@
         "2020": 2.85,
         "2021": 2.38,
         "2022": 1.08,
-        "2023": 7.0,
+        "2023": 7,
         "2024": 1.77,
         "2025": 27.62,
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 1944.51,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 1944.51,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
         "concession": 3.38,
         "socialForestry": 1944.51
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "4283.0": {
       "name": "KT DESA TERATAK BARU",
@@ -955,27 +1045,30 @@
       "gainHa": 135.24,
       "annualLossHa": {
         "2017": 0.46,
-        "2018": 0.0,
-        "2019": 0.0,
+        "2018": 0,
+        "2019": 0,
         "2020": 5.31,
-        "2021": 0.0,
+        "2021": 0,
         "2022": 0.08,
-        "2023": 0.0,
-        "2024": 0.0,
-        "2025": 0.0,
+        "2023": 0,
+        "2024": 0,
+        "2025": 0,
         "2026": null
       },
       "referenceAreasHa": {
         "apl": 0.02,
         "productionForest": 235.78,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 235.78,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
-        "concession": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 235.78
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "4931.0": {
       "name": "KTH PELITA BANGLAS SEJAHTERA",
@@ -986,27 +1079,30 @@
       "gainHa": 0.23,
       "annualLossHa": {
         "2017": 0.31,
-        "2018": 0.0,
-        "2019": 0.0,
-        "2020": 0.0,
+        "2018": 0,
+        "2019": 0,
+        "2020": 0,
         "2021": 0.23,
         "2022": 0.31,
-        "2023": 0.0,
-        "2024": 0.0,
-        "2025": 0.0,
+        "2023": 0,
+        "2024": 0,
+        "2025": 0,
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 642.32,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 642.32,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 8.52,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 642.32
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "4930.0": {
       "name": "KTH CIPTA KARYA BERSAMA",
@@ -1017,27 +1113,30 @@
       "gainHa": 1.77,
       "annualLossHa": {
         "2017": 12.92,
-        "2018": 2.0,
-        "2019": 5.0,
+        "2018": 2,
+        "2019": 5,
         "2020": 4.62,
         "2021": 6.08,
         "2022": 2.38,
         "2023": 2.23,
         "2024": 1.38,
-        "2025": 2.0,
+        "2025": 2,
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 228.47,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 228.47,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 43.83,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 228.8
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "4932.0": {
       "name": "KT BUNGA BUNGUR SEJAHTERA",
@@ -1045,30 +1144,33 @@
       "baselineForestHa": 175.68,
       "currentForestHa": 174.37,
       "totalLossHa": 1.31,
-      "gainHa": 0.0,
+      "gainHa": 0,
       "annualLossHa": {
-        "2017": 0.0,
-        "2018": 0.0,
-        "2019": 0.0,
-        "2020": 0.0,
-        "2021": 0.0,
-        "2022": 0.0,
-        "2023": 0.0,
-        "2024": 0.0,
-        "2025": 0.0,
+        "2017": 0,
+        "2018": 0,
+        "2019": 0,
+        "2020": 0,
+        "2021": 0,
+        "2022": 0,
+        "2023": 0,
+        "2024": 0,
+        "2025": 0,
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 179.97,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 179.97,
         "unclassifiedForestFunction": 0.99,
-        "peat": 0.0,
+        "peat": 0,
         "concession": 1.32,
         "socialForestry": 180.83
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "4934.0": {
       "name": "GAPOKTAN KARYA BERSAMA",
@@ -1076,30 +1178,33 @@
       "baselineForestHa": 126.61,
       "currentForestHa": 126.38,
       "totalLossHa": 0.23,
-      "gainHa": 0.0,
+      "gainHa": 0,
       "annualLossHa": {
-        "2017": 0.0,
-        "2018": 0.0,
-        "2019": 0.0,
-        "2020": 0.0,
-        "2021": 0.0,
-        "2022": 0.0,
-        "2023": 0.0,
-        "2024": 0.0,
-        "2025": 0.0,
+        "2017": 0,
+        "2018": 0,
+        "2019": 0,
+        "2020": 0,
+        "2021": 0,
+        "2022": 0,
+        "2023": 0,
+        "2024": 0,
+        "2025": 0,
         "2026": null
       },
       "referenceAreasHa": {
         "apl": 0.08,
         "productionForest": 127.25,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 127.25,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 3.02,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 127.33
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "4935.0": {
       "name": "KT MANGROVE FORMULA",
@@ -1107,30 +1212,33 @@
       "baselineForestHa": 77.15,
       "currentForestHa": 66.07,
       "totalLossHa": 11.08,
-      "gainHa": 0.0,
+      "gainHa": 0,
       "annualLossHa": {
         "2017": 1.15,
         "2018": 2.08,
         "2019": 0.15,
-        "2020": 0.0,
+        "2020": 0,
         "2021": 0.23,
-        "2022": 0.0,
-        "2023": 0.0,
-        "2024": 0.0,
-        "2025": 0.0,
+        "2022": 0,
+        "2023": 0,
+        "2024": 0,
+        "2025": 0,
         "2026": null
       },
       "referenceAreasHa": {
         "apl": 0.41,
         "productionForest": 78.6,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 78.6,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 5.63,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 79.1
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "4933.0": {
       "name": "KOPERASI BANAU BISA MAJU",
@@ -1142,7 +1250,7 @@
       "annualLossHa": {
         "2017": 7.23,
         "2018": 1.77,
-        "2019": 0.0,
+        "2019": 0,
         "2020": 0.31,
         "2021": 0.15,
         "2022": 2.54,
@@ -1154,14 +1262,17 @@
       "referenceAreasHa": {
         "apl": 0.65,
         "productionForest": 546.12,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 546.12,
         "unclassifiedForestFunction": 1.71,
         "peat": 5.52,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 548.88
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "4936.0": {
       "name": "KTH SUBUR MAKMUR",
@@ -1169,30 +1280,33 @@
       "baselineForestHa": 263.15,
       "currentForestHa": 257.84,
       "totalLossHa": 5.31,
-      "gainHa": 0.0,
+      "gainHa": 0,
       "annualLossHa": {
         "2017": 0.77,
-        "2018": 0.0,
-        "2019": 0.0,
-        "2020": 0.0,
-        "2021": 0.0,
+        "2018": 0,
+        "2019": 0,
+        "2020": 0,
+        "2021": 0,
         "2022": 0.15,
-        "2023": 0.0,
-        "2024": 0.0,
+        "2023": 0,
+        "2024": 0,
         "2025": 0.23,
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 264.75,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 264.75,
         "unclassifiedForestFunction": 0.06,
         "peat": 8.91,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 264.82
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "4937.0": {
       "name": "KT BINTANG TIMUR",
@@ -1202,59 +1316,65 @@
       "totalLossHa": 7.46,
       "gainHa": 3.85,
       "annualLossHa": {
-        "2017": 0.0,
-        "2018": 0.0,
-        "2019": 0.0,
-        "2020": 0.0,
-        "2021": 0.0,
-        "2022": 0.0,
-        "2023": 0.0,
-        "2024": 0.0,
-        "2025": 0.0,
+        "2017": 0,
+        "2018": 0,
+        "2019": 0,
+        "2020": 0,
+        "2021": 0,
+        "2022": 0,
+        "2023": 0,
+        "2024": 0,
+        "2025": 0,
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 188.14,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 188.14,
         "unclassifiedForestFunction": 0.48,
         "peat": 28.35,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 188.62
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "4938.0": {
       "name": "KTH PERANAP LESTARI",
       "geostoreId": "edf208dd0d3d775a547eea4b0bcdeec7",
-      "baselineForestHa": 660.0,
+      "baselineForestHa": 660,
       "currentForestHa": 112.61,
-      "totalLossHa": 645.0,
+      "totalLossHa": 645,
       "gainHa": 97.61,
       "annualLossHa": {
-        "2017": 0.0,
+        "2017": 0,
         "2018": 0.15,
         "2019": 2.38,
-        "2020": 3.0,
-        "2021": 0.0,
-        "2022": 0.0,
-        "2023": 0.0,
+        "2020": 3,
+        "2021": 0,
+        "2022": 0,
+        "2023": 0,
         "2024": 0.08,
         "2025": 0.46,
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 660.51,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 660.51,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 660.51,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 660.51
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "4940.0": {
       "name": "KTH PUTRA ASLI TENAN",
@@ -1264,12 +1384,12 @@
       "totalLossHa": 6.23,
       "gainHa": 0.38,
       "annualLossHa": {
-        "2017": 0.0,
-        "2018": 0.0,
-        "2019": 0.0,
+        "2017": 0,
+        "2018": 0,
+        "2019": 0,
         "2020": 0.62,
-        "2021": 0.0,
-        "2022": 0.0,
+        "2021": 0,
+        "2022": 0,
         "2023": 0.38,
         "2024": 0.46,
         "2025": 0.08,
@@ -1278,14 +1398,17 @@
       "referenceAreasHa": {
         "apl": 0.02,
         "productionForest": 338.74,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 338.74,
         "unclassifiedForestFunction": 0.89,
         "peat": 10.33,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 339.77
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "4939.0": {
       "name": "KTH LESTARI ALAM",
@@ -1297,26 +1420,29 @@
       "annualLossHa": {
         "2017": 0.15,
         "2018": 2.69,
-        "2019": 0.0,
-        "2020": 0.0,
-        "2021": 0.0,
-        "2022": 0.0,
-        "2023": 0.0,
-        "2024": 0.0,
-        "2025": 0.0,
+        "2019": 0,
+        "2020": 0,
+        "2021": 0,
+        "2022": 0,
+        "2023": 0,
+        "2024": 0,
+        "2025": 0,
         "2026": null
       },
       "referenceAreasHa": {
         "apl": 0.96,
         "productionForest": 259.13,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 259.13,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 64.66,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 261.28
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "4941.0": {
       "name": "KTH PUTRA ASLI KUNDUR",
@@ -1326,28 +1452,31 @@
       "totalLossHa": 10.77,
       "gainHa": 0.15,
       "annualLossHa": {
-        "2017": 0.0,
-        "2018": 0.0,
+        "2017": 0,
+        "2018": 0,
         "2019": 1.54,
         "2020": 2.08,
         "2021": 0.54,
         "2022": 0.77,
-        "2023": 0.0,
-        "2024": 0.0,
-        "2025": 0.0,
+        "2023": 0,
+        "2024": 0,
+        "2025": 0,
         "2026": null
       },
       "referenceAreasHa": {
         "apl": 0.34,
         "productionForest": 151.29,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 151.29,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 0.44,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 151.55
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "4942.0": {
       "name": "KTH TERUS JAYA",
@@ -1355,61 +1484,67 @@
       "baselineForestHa": 165.23,
       "currentForestHa": 159.15,
       "totalLossHa": 6.08,
-      "gainHa": 0.0,
+      "gainHa": 0,
       "annualLossHa": {
-        "2017": 0.0,
-        "2018": 0.0,
-        "2019": 0.0,
+        "2017": 0,
+        "2018": 0,
+        "2019": 0,
         "2020": 2.46,
-        "2021": 2.0,
-        "2022": 0.0,
-        "2023": 0.0,
-        "2024": 0.0,
-        "2025": 0.0,
+        "2021": 2,
+        "2022": 0,
+        "2023": 0,
+        "2024": 0,
+        "2025": 0,
         "2026": null
       },
       "referenceAreasHa": {
         "apl": 0.19,
         "productionForest": 167.1,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 167.1,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
-        "concession": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 168.84
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "4947.0": {
       "name": "KT BAKTI RAYA LUKIT",
       "geostoreId": "1bee111035aab536590b07cf2c3c9cc5",
       "baselineForestHa": 121.23,
-      "currentForestHa": 58.0,
-      "totalLossHa": 69.0,
+      "currentForestHa": 58,
+      "totalLossHa": 69,
       "gainHa": 5.77,
       "annualLossHa": {
         "2017": 0.46,
         "2018": 0.15,
-        "2019": 0.0,
+        "2019": 0,
         "2020": 0.08,
         "2021": 3.77,
         "2022": 0.38,
         "2023": 0.92,
-        "2024": 0.0,
+        "2024": 0,
         "2025": 0.31,
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 121.16,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 121.16,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 121.16,
         "concession": 2.01,
         "socialForestry": 121.16
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "4943.0": {
       "name": "KTH RIMBUN JAYA",
@@ -1417,30 +1552,33 @@
       "baselineForestHa": 168.15,
       "currentForestHa": 157.23,
       "totalLossHa": 10.92,
-      "gainHa": 0.0,
+      "gainHa": 0,
       "annualLossHa": {
-        "2017": 0.0,
-        "2018": 0.0,
-        "2019": 0.0,
+        "2017": 0,
+        "2018": 0,
+        "2019": 0,
         "2020": 0.15,
         "2021": 1.92,
         "2022": 0.08,
-        "2023": 0.0,
-        "2024": 0.0,
-        "2025": 0.0,
+        "2023": 0,
+        "2024": 0,
+        "2025": 0,
         "2026": null
       },
       "referenceAreasHa": {
         "apl": 0.17,
         "productionForest": 172.52,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 172.52,
         "unclassifiedForestFunction": 0.38,
         "peat": 7.88,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 173.38
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "4948.0": {
       "name": "KTH BUNGUR MANGROVE LESTARI",
@@ -1452,38 +1590,41 @@
       "annualLossHa": {
         "2017": 0.38,
         "2018": 0.46,
-        "2019": 0.0,
+        "2019": 0,
         "2020": 0.23,
         "2021": 0.08,
-        "2022": 1.0,
-        "2023": 0.0,
-        "2024": 0.0,
-        "2025": 0.0,
+        "2022": 1,
+        "2023": 0,
+        "2024": 0,
+        "2025": 0,
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 167.44,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 167.44,
         "unclassifiedForestFunction": 0.74,
         "peat": 10.05,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 168.06
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "4944.0": {
       "name": "KTH TUAH SONDE",
       "geostoreId": "b08f419d6f802fe5db00d96be75945d2",
       "baselineForestHa": 654.19,
       "currentForestHa": 638.19,
-      "totalLossHa": 16.0,
-      "gainHa": 0.0,
+      "totalLossHa": 16,
+      "gainHa": 0,
       "annualLossHa": {
         "2017": 3.46,
         "2018": 0.23,
-        "2019": 0.0,
+        "2019": 0,
         "2020": 0.92,
         "2021": 0.31,
         "2022": 2.46,
@@ -1493,16 +1634,19 @@
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 661.68,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 661.68,
         "unclassifiedForestFunction": 4.96,
         "peat": 30.78,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 1332.16
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "4969.0": {
       "name": "KTH TALANG MAMAK SEJAHTERA",
@@ -1524,16 +1668,19 @@
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 1077.87,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 1077.87,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
-        "concession": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 1077.87
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "sk.8494/menlhk-pskl/pkps/psl.0/12/2021": {
       "name": "KTH ALAM HIJAU",
@@ -1541,30 +1688,33 @@
       "baselineForestHa": 20.23,
       "currentForestHa": 0.54,
       "totalLossHa": 19.69,
-      "gainHa": 0.0,
+      "gainHa": 0,
       "annualLossHa": {
-        "2017": 0.0,
-        "2018": 0.0,
-        "2019": 0.0,
-        "2020": 0.0,
-        "2021": 0.0,
-        "2022": 0.0,
-        "2023": 0.0,
-        "2024": 0.0,
-        "2025": 0.0,
+        "2017": 0,
+        "2018": 0,
+        "2019": 0,
+        "2020": 0,
+        "2021": 0,
+        "2022": 0,
+        "2023": 0,
+        "2024": 0,
+        "2025": 0,
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
-        "productionForest": 0.0,
+        "apl": 0,
+        "productionForest": 0,
         "protectionForest": 20.07,
-        "conservation": 0.0,
+        "conservation": 0,
         "forestEstate": 20.07,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 20.07,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 20.07
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "4949.0": {
       "name": "KTH PERMATA SODOR LESTARI",
@@ -1575,27 +1725,30 @@
       "gainHa": 0.08,
       "annualLossHa": {
         "2017": 3.69,
-        "2018": 0.0,
-        "2019": 0.0,
+        "2018": 0,
+        "2019": 0,
         "2020": 0.08,
         "2021": 0.54,
         "2022": 0.38,
-        "2023": 0.0,
-        "2024": 0.0,
+        "2023": 0,
+        "2024": 0,
         "2025": 4.38,
         "2026": null
       },
       "referenceAreasHa": {
         "apl": 0.01,
         "productionForest": 450.64,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 450.64,
         "unclassifiedForestFunction": 1.14,
         "peat": 9.82,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 452.22
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "sk.2860/menlhk-pskl/pkps/psl.0/3/2022": {
       "name": "KTH LALANG JAYA ABADI",
@@ -1609,24 +1762,27 @@
         "2018": 2.69,
         "2019": 5.85,
         "2020": 1.15,
-        "2021": 0.0,
+        "2021": 0,
         "2022": 0.54,
         "2023": 2.85,
         "2024": 24.39,
-        "2025": 0.0,
+        "2025": 0,
         "2026": null
       },
       "referenceAreasHa": {
         "apl": 0.44,
         "productionForest": 690.62,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 690.62,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 401.25,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 691.06
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "sk.8812/menlhk-pskl/pkps/psl.0/12/2021": {
       "name": "KTH BINA SEJAHTERA",
@@ -1636,28 +1792,31 @@
       "totalLossHa": 9.15,
       "gainHa": 0.38,
       "annualLossHa": {
-        "2017": 0.0,
-        "2018": 0.0,
-        "2019": 0.0,
+        "2017": 0,
+        "2018": 0,
+        "2019": 0,
         "2020": 0.08,
-        "2021": 0.0,
-        "2022": 0.0,
-        "2023": 0.0,
-        "2024": 0.0,
-        "2025": 0.0,
+        "2021": 0,
+        "2022": 0,
+        "2023": 0,
+        "2024": 0,
+        "2025": 0,
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 9.5,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 9.5,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 9.5,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 9.5
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "sk.5760/menlhk-pskl/pkps/psl.0/9/2021": {
       "name": "KTH MANDIRI SEJAHTERA",
@@ -1668,10 +1827,10 @@
       "gainHa": 954.21,
       "annualLossHa": {
         "2017": 0.15,
-        "2018": 0.0,
-        "2019": 0.0,
-        "2020": 0.0,
-        "2021": 0.0,
+        "2018": 0,
+        "2019": 0,
+        "2020": 0,
+        "2021": 0,
         "2022": 0.08,
         "2023": 0.31,
         "2024": 8.23,
@@ -1679,16 +1838,19 @@
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 980.97,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 980.97,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 980.97,
         "concession": 2.66,
         "socialForestry": 980.97
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "sk.2861/menlhk-pskl/pkps/psl.0/3/2022": {
       "name": "KTH PULAU MUDA SEJAHTERA",
@@ -1703,23 +1865,26 @@
         "2019": 0.08,
         "2020": 0.15,
         "2021": 1.23,
-        "2022": 0.0,
+        "2022": 0,
         "2023": 0.23,
         "2024": 4.08,
-        "2025": 0.0,
+        "2025": 0,
         "2026": null
       },
       "referenceAreasHa": {
         "apl": 1.57,
         "productionForest": 616.84,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 616.84,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 618.5,
         "concession": 0.65,
         "socialForestry": 618.5
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "sk.5136/menlhk-pskl/pkps/psl.0/6/2022": {
       "name": "KTH RAMBAHAN",
@@ -1729,28 +1894,31 @@
       "totalLossHa": 314.72,
       "gainHa": 245.33,
       "annualLossHa": {
-        "2017": 0.0,
+        "2017": 0,
         "2018": 0.23,
         "2019": 0.08,
         "2020": 0.08,
         "2021": 2.54,
         "2022": 3.31,
         "2023": 3.15,
-        "2024": 0.0,
-        "2025": 0.0,
+        "2024": 0,
+        "2025": 0,
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 352.56,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 352.56,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
         "concession": 6.12,
         "socialForestry": 352.82
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "sk.5543/menlhk-pskl/pkps/psl.0/6/2022": {
       "name": "SIMPANG IV KOTO",
@@ -1762,26 +1930,29 @@
       "annualLossHa": {
         "2017": 2.08,
         "2018": 14.92,
-        "2019": 17.0,
+        "2019": 17,
         "2020": 0.23,
         "2021": 64.47,
         "2022": 126.32,
         "2023": 128.55,
-        "2024": 48.0,
+        "2024": 48,
         "2025": 15.77,
         "2026": null
       },
       "referenceAreasHa": {
         "apl": 0.01,
         "productionForest": 708.87,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 708.87,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
-        "concession": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 708.87
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "4945.0": {
       "name": "KTH MANGROVE MERANTI LESTARI",
@@ -1805,14 +1976,17 @@
       "referenceAreasHa": {
         "apl": 2.99,
         "productionForest": 1025.33,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 1025.33,
         "unclassifiedForestFunction": 0.66,
         "peat": 25.5,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 1031.11
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "sk.5143/menlhk-pskl/pkps/psl.0/6/2022": {
       "name": "KTH PLAMBOYAN",
@@ -1824,8 +1998,8 @@
       "annualLossHa": {
         "2017": 0.62,
         "2018": 0.15,
-        "2019": 0.0,
-        "2020": 0.0,
+        "2019": 0,
+        "2020": 0,
         "2021": 0.15,
         "2022": 0.15,
         "2023": 0.77,
@@ -1836,14 +2010,17 @@
       "referenceAreasHa": {
         "apl": 11.08,
         "productionForest": 167.22,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 167.22,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 178.29,
         "concession": 2.33,
         "socialForestry": 178.29
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "sk.5138/menlhk-pskl/pkps/psl.0/6/2022": {
       "name": "KTH MEGATANI SEJAHTERA",
@@ -1867,14 +2044,17 @@
       "referenceAreasHa": {
         "apl": 0.46,
         "productionForest": 4399.35,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 4399.35,
         "unclassifiedForestFunction": 0.27,
-        "peat": 0.0,
-        "concession": 0.0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 4400.33
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "sk.4989/menlhk-pskl/pkps/psl.0/6/2022": {
       "name": "KTH RIMBA PEGANG MAKMUR",
@@ -1884,28 +2064,31 @@
       "totalLossHa": 709.67,
       "gainHa": 25.92,
       "annualLossHa": {
-        "2017": 9.0,
+        "2017": 9,
         "2018": 4.85,
         "2019": 4.54,
         "2020": 0.38,
         "2021": 0.54,
-        "2022": 15.0,
+        "2022": 15,
         "2023": 69.54,
         "2024": 56.31,
         "2025": 59.16,
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 894.72,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 894.72,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
-        "concession": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 900.79
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "sk.4988/menlhk-pskl/pkps/psl.0/6/2022": {
       "name": "KTH KUBANG JAYA",
@@ -1917,26 +2100,29 @@
       "annualLossHa": {
         "2017": 0.23,
         "2018": 1.46,
-        "2019": 0.0,
-        "2020": 0.0,
-        "2021": 0.0,
-        "2022": 0.0,
-        "2023": 0.0,
+        "2019": 0,
+        "2020": 0,
+        "2021": 0,
+        "2022": 0,
+        "2023": 0,
         "2024": 9.15,
         "2025": 2.23,
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
-        "productionForest": 0.0,
+        "apl": 0,
+        "productionForest": 0,
         "protectionForest": 322.13,
-        "conservation": 0.0,
+        "conservation": 0,
         "forestEstate": 322.13,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
-        "concession": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 322.13
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "sk.5145/menlhk-pskl/pkps/psl.0/6/2022": {
       "name": "KTH PENDALIAN MADANI",
@@ -1944,30 +2130,33 @@
       "baselineForestHa": 482.19,
       "currentForestHa": 452.34,
       "totalLossHa": 29.85,
-      "gainHa": 0.0,
+      "gainHa": 0,
       "annualLossHa": {
-        "2017": 0.0,
-        "2018": 0.0,
+        "2017": 0,
+        "2018": 0,
         "2019": 0.38,
         "2020": 0.46,
         "2021": 0.31,
         "2022": 1.46,
         "2023": 14.16,
-        "2024": 0.0,
+        "2024": 0,
         "2025": 10.31,
         "2026": null
       },
       "referenceAreasHa": {
         "apl": 0.31,
         "productionForest": 482.52,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 482.52,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
-        "concession": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 483.21
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "sk.4987/menlhk-pskl/pkps/psl.0/6/2022": {
       "name": "KTH SAGU MAKMUR",
@@ -1979,26 +2168,29 @@
       "annualLossHa": {
         "2017": 4.08,
         "2018": 0.69,
-        "2019": 0.0,
+        "2019": 0,
         "2020": 3.08,
         "2021": 4.31,
-        "2022": 0.0,
-        "2023": 0.0,
+        "2022": 0,
+        "2023": 0,
         "2024": 1.85,
         "2025": 2.54,
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 140.05,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 140.05,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 140.05,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 140.05
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "sk.5214/menlhk-pskl/pkps/psl.0/5/2023": {
       "name": "KTH AKIT MAJU",
@@ -2009,27 +2201,30 @@
       "gainHa": 16.99,
       "annualLossHa": {
         "2017": 0.62,
-        "2018": 0.0,
+        "2018": 0,
         "2019": 0.08,
-        "2020": 0.0,
-        "2021": 0.0,
-        "2022": 0.0,
-        "2023": 0.0,
-        "2024": 0.0,
+        "2020": 0,
+        "2021": 0,
+        "2022": 0,
+        "2023": 0,
+        "2024": 0,
         "2025": 0.08,
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 985.5,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 985.5,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 985.5,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 985.5
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "3968.0": {
       "name": "KTH PEDULI LINGKUNGAN",
@@ -2053,14 +2248,17 @@
       "referenceAreasHa": {
         "apl": 1.76,
         "productionForest": 1200.99,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 1200.99,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
-        "concession": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 1204.73
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "sk.5826/menlhk-pskl/pkps/psl.0/6/2023": {
       "name": "KTH LESTARI PANTAI",
@@ -2068,30 +2266,33 @@
       "baselineForestHa": 174.3,
       "currentForestHa": 168.99,
       "totalLossHa": 5.31,
-      "gainHa": 0.0,
+      "gainHa": 0,
       "annualLossHa": {
-        "2017": 0.0,
-        "2018": 0.0,
-        "2019": 0.0,
+        "2017": 0,
+        "2018": 0,
+        "2019": 0,
         "2020": 3.62,
         "2021": 0.15,
         "2022": 0.54,
-        "2023": 0.0,
-        "2024": 0.0,
-        "2025": 0.0,
+        "2023": 0,
+        "2024": 0,
+        "2025": 0,
         "2026": null
       },
       "referenceAreasHa": {
         "apl": 0.32,
         "productionForest": 181.25,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 181.25,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
-        "concession": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 182.24
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "sk.5827/menlhk-pskl/pkps/psl.0/6/2023": {
       "name": "KOPERASI JASA RIMBA MUTIARA",
@@ -2106,23 +2307,26 @@
         "2019": 68.38,
         "2020": 2.54,
         "2021": 3.77,
-        "2022": 20.0,
+        "2022": 20,
         "2023": 0.77,
         "2024": 0.92,
-        "2025": 0.0,
+        "2025": 0,
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 1561.36,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 1561.36,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 1561.36,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 1561.36
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "sk.7721/menlhk-pskl/pkps/psl.0/7/2023": {
       "name": "KTH MAJU BERSAMA",
@@ -2132,28 +2336,31 @@
       "totalLossHa": 546.16,
       "gainHa": 11.15,
       "annualLossHa": {
-        "2017": 0.0,
-        "2018": 0.0,
-        "2019": 0.0,
+        "2017": 0,
+        "2018": 0,
+        "2019": 0,
         "2020": 0.08,
-        "2021": 0.0,
-        "2022": 0.0,
-        "2023": 0.0,
-        "2024": 0.0,
-        "2025": 0.0,
+        "2021": 0,
+        "2022": 0,
+        "2023": 0,
+        "2024": 0,
+        "2025": 0,
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 584.55,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 584.55,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 584.55,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 584.55
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "sk.6223/menlhk-pskl/pkps/psl.0/6/2023": {
       "name": "KOPERASI BUMI MANGROVE SEJAHTERA",
@@ -2164,10 +2371,10 @@
       "gainHa": 0.23,
       "annualLossHa": {
         "2017": 8.38,
-        "2018": 4.0,
+        "2018": 4,
         "2019": 0.38,
         "2020": 0.38,
-        "2021": 0.0,
+        "2021": 0,
         "2022": 2.69,
         "2023": 6.69,
         "2024": 10.46,
@@ -2177,14 +2384,17 @@
       "referenceAreasHa": {
         "apl": 0.87,
         "productionForest": 567.17,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 567.17,
         "unclassifiedForestFunction": 1.9,
         "peat": 41.76,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 569.96
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "sk.7398/menlhk-pskl/pkps/psl.0/7/2023": {
       "name": "KTH SIARANG-ARANG",
@@ -2194,28 +2404,31 @@
       "totalLossHa": 147.36,
       "gainHa": 0.08,
       "annualLossHa": {
-        "2017": 1.0,
-        "2018": 0.0,
-        "2019": 0.0,
+        "2017": 1,
+        "2018": 0,
+        "2019": 0,
         "2020": 2.46,
         "2021": 1.69,
-        "2022": 0.0,
-        "2023": 0.0,
-        "2024": 5.0,
+        "2022": 0,
+        "2023": 0,
+        "2024": 5,
         "2025": 120.52,
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 602.61,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 602.61,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
-        "concession": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 602.61
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "sk.8552/menlhk-pskl/pkps/psl.0/8/2023": {
       "name": "KTH BAKAU JAYA DELIMA",
@@ -2227,26 +2440,29 @@
       "annualLossHa": {
         "2017": 3.54,
         "2018": 0.38,
-        "2019": 0.0,
+        "2019": 0,
         "2020": 0.69,
-        "2021": 0.0,
-        "2022": 0.0,
-        "2023": 0.0,
-        "2024": 0.0,
+        "2021": 0,
+        "2022": 0,
+        "2023": 0,
+        "2024": 0,
         "2025": 0.38,
         "2026": null
       },
       "referenceAreasHa": {
         "apl": 0.45,
-        "productionForest": 89.0,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
-        "forestEstate": 89.0,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
-        "concession": 0.0,
+        "productionForest": 89,
+        "protectionForest": 0,
+        "conservation": 0,
+        "forestEstate": 89,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 89.66
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "sk.8684/menlhk-pskl/pkps/psl.0/12/2021": {
       "name": "KTH CEMERLANG",
@@ -2256,28 +2472,31 @@
       "totalLossHa": 11.31,
       "gainHa": 0.77,
       "annualLossHa": {
-        "2017": 0.0,
-        "2018": 0.0,
-        "2019": 0.0,
-        "2020": 0.0,
-        "2021": 0.0,
-        "2022": 0.0,
-        "2023": 0.0,
-        "2024": 0.0,
-        "2025": 0.0,
+        "2017": 0,
+        "2018": 0,
+        "2019": 0,
+        "2020": 0,
+        "2021": 0,
+        "2022": 0,
+        "2023": 0,
+        "2024": 0,
+        "2025": 0,
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 12.89,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 12.89,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 12.89,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 12.89
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "sk.9864/menlhk-pskl/pkps/psl.0/9/2023": {
       "name": "KTH MAKMUR PESISIR",
@@ -2287,11 +2506,11 @@
       "totalLossHa": 75.26,
       "gainHa": 0.23,
       "annualLossHa": {
-        "2017": 0.0,
-        "2018": 0.0,
-        "2019": 0.0,
+        "2017": 0,
+        "2018": 0,
+        "2019": 0,
         "2020": 1.46,
-        "2021": 0.0,
+        "2021": 0,
         "2022": 4.61,
         "2023": 7.3,
         "2024": 31.14,
@@ -2299,16 +2518,19 @@
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 153.86,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 153.86,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
-        "concession": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 154.85
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "sk.916 tahun 2024": {
       "name": "KOPERASI OKAN BOLADANG JAYA",
@@ -2316,11 +2538,11 @@
       "baselineForestHa": 2009.54,
       "currentForestHa": 1199.79,
       "totalLossHa": 809.75,
-      "gainHa": 0.0,
+      "gainHa": 0,
       "annualLossHa": {
         "2017": 14.54,
         "2018": 8.77,
-        "2019": 7.0,
+        "2019": 7,
         "2020": 4.15,
         "2021": 132.01,
         "2022": 107.39,
@@ -2330,16 +2552,19 @@
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 2010.34,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 2010.34,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
-        "concession": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 2010.34
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "sk.9863/menlhk-pskl/pkps/psl.0/9/2023": {
       "name": "KTH MAKMUR JAYA BERSAMA",
@@ -2349,11 +2574,11 @@
       "totalLossHa": 46.44,
       "gainHa": 0.69,
       "annualLossHa": {
-        "2017": 0.0,
+        "2017": 0,
         "2018": 1.92,
         "2019": 0.31,
         "2020": 0.08,
-        "2021": 0.0,
+        "2021": 0,
         "2022": 0.08,
         "2023": 2.69,
         "2024": 0.15,
@@ -2361,16 +2586,19 @@
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 198.18,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 198.18,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
-        "concession": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 198.94
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "sk.5729 tahun 2024": {
       "name": "KTH SICUPAK MAKMUR",
@@ -2383,7 +2611,7 @@
         "2017": 2.85,
         "2018": 2.38,
         "2019": 4.46,
-        "2020": 0.0,
+        "2020": 0,
         "2021": 0.08,
         "2022": 0.92,
         "2023": 25.31,
@@ -2392,16 +2620,19 @@
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
-        "productionForest": 0.0,
+        "apl": 0,
+        "productionForest": 0,
         "protectionForest": 571.27,
-        "conservation": 0.0,
+        "conservation": 0,
         "forestEstate": 571.27,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
-        "concession": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 571.27
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "40.0": {
       "name": "Dumai Kota",
@@ -2409,30 +2640,33 @@
       "baselineForestHa": 13.38,
       "currentForestHa": 10.46,
       "totalLossHa": 3.92,
-      "gainHa": 1.0,
+      "gainHa": 1,
       "annualLossHa": {
         "2017": 1.92,
-        "2018": 0.0,
-        "2019": 0.0,
-        "2020": 0.0,
-        "2021": 0.0,
-        "2022": 0.0,
-        "2023": 0.0,
-        "2024": 0.0,
-        "2025": 0.0,
+        "2018": 0,
+        "2019": 0,
+        "2020": 0,
+        "2021": 0,
+        "2022": 0,
+        "2023": 0,
+        "2024": 0,
+        "2025": 0,
         "2026": null
       },
       "referenceAreasHa": {
         "apl": 0.16,
         "productionForest": 25.06,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 25.06,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
-        "concession": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 25.21
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "4048.0": {
       "name": "KTH BAGAN BESAR JAYA",
@@ -2442,28 +2676,31 @@
       "totalLossHa": 27.76,
       "gainHa": 26.07,
       "annualLossHa": {
-        "2017": 0.0,
+        "2017": 0,
         "2018": 0.08,
-        "2019": 0.0,
+        "2019": 0,
         "2020": 0.23,
-        "2021": 2.0,
+        "2021": 2,
         "2022": 11.07,
-        "2023": 0.0,
-        "2024": 0.0,
-        "2025": 0.0,
+        "2023": 0,
+        "2024": 0,
+        "2025": 0,
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 47.1,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 47.1,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 47.1,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 47.1
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "11509 tahun 2024": {
       "name": "KOPERASI IKATAN KELUARGA RANTAU BAIS MAJU",
@@ -2480,21 +2717,24 @@
         "2021": 9.23,
         "2022": 0.23,
         "2023": 10.31,
-        "2024": 13.0,
+        "2024": 13,
         "2025": 6.61,
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 1729.58,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 1729.58,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 1729.58,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 1729.58
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "3458.0": {
       "name": "KOPERASI PETUAH NEGERI HILIR",
@@ -2506,8 +2746,8 @@
       "annualLossHa": {
         "2017": 25.91,
         "2018": 33.29,
-        "2019": 0.0,
-        "2020": 3.0,
+        "2019": 0,
+        "2020": 3,
         "2021": 14.99,
         "2022": 10.84,
         "2023": 53.66,
@@ -2516,16 +2756,19 @@
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 861.78,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 861.78,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
-        "concession": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 861.78
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "4042.0": {
       "name": "KTH BANGUN MEKAR JAYA",
@@ -2533,30 +2776,33 @@
       "baselineForestHa": 67.98,
       "currentForestHa": 33.22,
       "totalLossHa": 34.76,
-      "gainHa": 0.0,
+      "gainHa": 0,
       "annualLossHa": {
         "2017": 2.77,
         "2018": 0.08,
-        "2019": 0.0,
+        "2019": 0,
         "2020": 0.08,
         "2021": 15.84,
         "2022": 1.31,
-        "2023": 0.0,
-        "2024": 0.0,
+        "2023": 0,
+        "2024": 0,
         "2025": 2.08,
         "2026": null
       },
       "referenceAreasHa": {
         "apl": 0.01,
         "productionForest": 68.63,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 68.63,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
-        "concession": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 68.64
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "10767 tahun 2024": {
       "name": "KTH PEDULI PESISIR",
@@ -2568,8 +2814,8 @@
       "annualLossHa": {
         "2017": 1.69,
         "2018": 1.69,
-        "2019": 0.0,
-        "2020": 0.0,
+        "2019": 0,
+        "2020": 0,
         "2021": 2.46,
         "2022": 5.38,
         "2023": 1.15,
@@ -2580,45 +2826,51 @@
       "referenceAreasHa": {
         "apl": 67.93,
         "productionForest": 575.84,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 575.84,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 61.15,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 644.33
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "sk.4248/menlhk-pskl/pkps/psl.0/7/2020": {
       "name": "KTH REMAI GEMILANG",
       "geostoreId": "68026389043624c55ba340fede148bc3",
       "baselineForestHa": 214.69,
-      "currentForestHa": 207.0,
+      "currentForestHa": 207,
       "totalLossHa": 7.69,
-      "gainHa": 0.0,
+      "gainHa": 0,
       "annualLossHa": {
-        "2017": 0.0,
-        "2018": 0.0,
+        "2017": 0,
+        "2018": 0,
         "2019": 1.31,
         "2020": 1.23,
         "2021": 0.31,
-        "2022": 0.0,
-        "2023": 0.0,
+        "2022": 0,
+        "2023": 0,
         "2024": 0.77,
         "2025": 0.15,
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 216.07,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 216.07,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
-        "concession": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 216.59
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "2331.0": {
       "name": "KOPERASI KONSUMEN SRI BINA DAERAH",
@@ -2642,14 +2894,17 @@
       "referenceAreasHa": {
         "apl": 0.13,
         "productionForest": 3457.24,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 3457.24,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 3457.34,
         "concession": 3131.33,
         "socialForestry": 3458.52
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "2350.0": {
       "name": "KTH BAROKAH",
@@ -2659,28 +2914,31 @@
       "totalLossHa": 645.99,
       "gainHa": 68.67,
       "annualLossHa": {
-        "2017": 0.0,
+        "2017": 0,
         "2018": 0.23,
         "2019": 0.38,
-        "2020": 0.0,
-        "2021": 0.0,
-        "2022": 0.0,
+        "2020": 0,
+        "2021": 0,
+        "2022": 0,
         "2023": 0.69,
         "2024": 1.38,
-        "2025": 0.0,
+        "2025": 0,
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 659.56,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 659.56,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 232.38,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 659.56
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "sk.7429/menlhk-pskl/pkps/psl.0/12/2020": {
       "name": "KTH MAJU BERSAMA",
@@ -2694,24 +2952,27 @@
         "2018": 1.23,
         "2019": 0.08,
         "2020": 0.23,
-        "2021": 1.0,
+        "2021": 1,
         "2022": 0.54,
         "2023": 0.15,
-        "2024": 0.0,
-        "2025": 0.0,
+        "2024": 0,
+        "2025": 0,
         "2026": null
       },
       "referenceAreasHa": {
         "apl": 0.19,
         "productionForest": 389.38,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 389.38,
         "unclassifiedForestFunction": 0.35,
         "peat": 1.03,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 390.21
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "4045.0": {
       "name": "KTH TELUK NIBUNG BARU",
@@ -2719,30 +2980,33 @@
       "baselineForestHa": 167.8,
       "currentForestHa": 146.57,
       "totalLossHa": 21.23,
-      "gainHa": 0.0,
+      "gainHa": 0,
       "annualLossHa": {
-        "2017": 0.0,
+        "2017": 0,
         "2018": 0.15,
-        "2019": 0.0,
-        "2020": 0.0,
-        "2021": 0.0,
-        "2022": 0.0,
-        "2023": 0.0,
+        "2019": 0,
+        "2020": 0,
+        "2021": 0,
+        "2022": 0,
+        "2023": 0,
         "2024": 0.08,
-        "2025": 18.0,
+        "2025": 18,
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 167.51,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 167.51,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
-        "concession": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 167.52
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "4014.0": {
       "name": "KTH KETAM PUTIH MAKMUR JAYA BAKAU",
@@ -2750,14 +3014,14 @@
       "baselineForestHa": 35.84,
       "currentForestHa": 30.07,
       "totalLossHa": 5.77,
-      "gainHa": 0.0,
+      "gainHa": 0,
       "annualLossHa": {
         "2017": 0.31,
         "2018": 0.54,
-        "2019": 0.0,
-        "2020": 0.0,
-        "2021": 0.0,
-        "2022": 0.0,
+        "2019": 0,
+        "2020": 0,
+        "2021": 0,
+        "2022": 0,
         "2023": 0.15,
         "2024": 2.92,
         "2025": 1.69,
@@ -2766,14 +3030,17 @@
       "referenceAreasHa": {
         "apl": 0.1,
         "productionForest": 36.23,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 36.23,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
-        "concession": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 36.34
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "3981.0": {
       "name": "KTH SWADAYA MANDIRI BAKAU",
@@ -2781,14 +3048,14 @@
       "baselineForestHa": 34.3,
       "currentForestHa": 30.61,
       "totalLossHa": 3.69,
-      "gainHa": 0.0,
+      "gainHa": 0,
       "annualLossHa": {
-        "2017": 0.0,
-        "2018": 0.0,
-        "2019": 0.0,
+        "2017": 0,
+        "2018": 0,
+        "2019": 0,
         "2020": 0.23,
-        "2021": 0.0,
-        "2022": 0.0,
+        "2021": 0,
+        "2022": 0,
         "2023": 0.15,
         "2024": 0.46,
         "2025": 1.08,
@@ -2797,14 +3064,17 @@
       "referenceAreasHa": {
         "apl": 0.06,
         "productionForest": 34.27,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 34.27,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 5.66,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 34.32
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "3980.0": {
       "name": "GAPOKTAN DESA PALKUN",
@@ -2828,14 +3098,17 @@
       "referenceAreasHa": {
         "apl": 0.04,
         "productionForest": 479.83,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 479.83,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 479.98,
         "concession": 274.32,
         "socialForestry": 479.98
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "4135.0": {
       "name": "KTH KARYA MEDANG JAYA",
@@ -2843,13 +3116,13 @@
       "baselineForestHa": 77.27,
       "currentForestHa": 59.66,
       "totalLossHa": 17.61,
-      "gainHa": 0.0,
+      "gainHa": 0,
       "annualLossHa": {
         "2017": 0.15,
-        "2018": 0.0,
-        "2019": 0.0,
+        "2018": 0,
+        "2019": 0,
         "2020": 0.08,
-        "2021": 0.0,
+        "2021": 0,
         "2022": 0.31,
         "2023": 6.38,
         "2024": 4.77,
@@ -2859,14 +3132,17 @@
       "referenceAreasHa": {
         "apl": 0.23,
         "productionForest": 77.28,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 77.28,
         "unclassifiedForestFunction": 0.18,
-        "peat": 0.0,
-        "concession": 0.0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 77.72
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "3564.0": {
       "name": "KTH BANDAR YAMAN",
@@ -2876,28 +3152,31 @@
       "totalLossHa": 2.85,
       "gainHa": 0.38,
       "annualLossHa": {
-        "2017": 0.0,
-        "2018": 0.0,
+        "2017": 0,
+        "2018": 0,
         "2019": 0.08,
-        "2020": 0.0,
+        "2020": 0,
         "2021": 0.31,
-        "2022": 0.0,
-        "2023": 0.0,
-        "2024": 0.0,
-        "2025": 0.0,
+        "2022": 0,
+        "2023": 0,
+        "2024": 0,
+        "2025": 0,
         "2026": null
       },
       "referenceAreasHa": {
         "apl": 0.36,
         "productionForest": 71.58,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 71.58,
         "unclassifiedForestFunction": 0.38,
-        "peat": 0.0,
-        "concession": 0.0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 72.4
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "3493.0": {
       "name": "KTH CENAKU JAYA",
@@ -2919,16 +3198,19 @@
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 592.24,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 592.24,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
-        "concession": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 592.24
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "2634.0": {
       "name": "KTH GAMBUT BERKAH",
@@ -2938,10 +3220,10 @@
       "totalLossHa": 36.85,
       "gainHa": 2.54,
       "annualLossHa": {
-        "2017": 0.0,
-        "2018": 0.0,
-        "2019": 0.0,
-        "2020": 0.0,
+        "2017": 0,
+        "2018": 0,
+        "2019": 0,
+        "2020": 0,
         "2021": 2.62,
         "2022": 1.69,
         "2023": 2.69,
@@ -2950,16 +3232,19 @@
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 778.56,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 778.56,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 778.56,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 778.56
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "3625.0": {
       "name": "KTH LAKSAMANA URAI KAPAS",
@@ -2970,27 +3255,30 @@
       "gainHa": 3.92,
       "annualLossHa": {
         "2017": 1.15,
-        "2018": 0.0,
-        "2019": 1.0,
+        "2018": 0,
+        "2019": 1,
         "2020": 3.38,
         "2021": 1.62,
         "2022": 0.23,
         "2023": 4.62,
-        "2024": 7.0,
+        "2024": 7,
         "2025": 0.77,
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 666.54,
-        "protectionForest": 0.0,
+        "protectionForest": 0,
         "conservation": 0.39,
         "forestEstate": 666.93,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
-        "concession": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 666.96
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "4001.0": {
       "name": "KTH BERKAH BERSAMA",
@@ -3005,23 +3293,26 @@
         "2019": 0.54,
         "2020": 0.08,
         "2021": 0.08,
-        "2022": 0.0,
-        "2023": 0.0,
-        "2024": 0.0,
-        "2025": 0.0,
+        "2022": 0,
+        "2023": 0,
+        "2024": 0,
+        "2025": 0,
         "2026": null
       },
       "referenceAreasHa": {
         "apl": 0.05,
         "productionForest": 900.68,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 900.68,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 900.72,
         "concession": 0.03,
         "socialForestry": 900.72
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "2933.0": {
       "name": "KT KEPAU BARU LESTARI",
@@ -3045,14 +3336,17 @@
       "referenceAreasHa": {
         "apl": 1.16,
         "productionForest": 1495.77,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 1495.77,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 1496.67,
         "concession": 16.06,
         "socialForestry": 1496.67
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "2178.0": {
       "name": "KTH WAHANA RIMBA BESTARI",
@@ -3062,59 +3356,65 @@
       "totalLossHa": 204.92,
       "gainHa": 23.46,
       "annualLossHa": {
-        "2017": 0.0,
-        "2018": 0.0,
+        "2017": 0,
+        "2018": 0,
         "2019": 0.54,
-        "2020": 0.0,
+        "2020": 0,
         "2021": 0.31,
-        "2022": 1.0,
+        "2022": 1,
         "2023": 0.08,
-        "2024": 0.0,
-        "2025": 0.0,
+        "2024": 0,
+        "2025": 0,
         "2026": null
       },
       "referenceAreasHa": {
         "apl": 0.02,
         "productionForest": 1.04,
         "protectionForest": 427.82,
-        "conservation": 0.0,
+        "conservation": 0,
         "forestEstate": 428.87,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 428.89,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 428.89
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "3936.0": {
       "name": "KTH SELAT MANDIRI",
       "geostoreId": "35cbab802ab9cca34ebdb4f0551b5f00",
-      "baselineForestHa": 51.0,
+      "baselineForestHa": 51,
       "currentForestHa": 49.31,
       "totalLossHa": 1.69,
-      "gainHa": 0.0,
+      "gainHa": 0,
       "annualLossHa": {
-        "2017": 0.0,
-        "2018": 0.0,
-        "2019": 0.0,
-        "2020": 0.0,
+        "2017": 0,
+        "2018": 0,
+        "2019": 0,
+        "2020": 0,
         "2021": 0.23,
         "2022": 0.08,
-        "2023": 0.0,
-        "2024": 0.0,
-        "2025": 0.0,
+        "2023": 0,
+        "2024": 0,
+        "2025": 0,
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 50.93,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 50.93,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
-        "concession": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 50.94
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "3656.0": {
       "name": "KTH WANA LESTARI KAMPAR KIRI",
@@ -3122,9 +3422,9 @@
       "baselineForestHa": 3901.2,
       "currentForestHa": 2838.47,
       "totalLossHa": 1068.73,
-      "gainHa": 6.0,
+      "gainHa": 6,
       "annualLossHa": {
-        "2017": 19.0,
+        "2017": 19,
         "2018": 41.16,
         "2019": 2.23,
         "2020": 5.62,
@@ -3136,16 +3436,19 @@
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 3055.93,
         "protectionForest": 846.72,
         "conservation": 0.54,
         "forestEstate": 3903.14,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
-        "concession": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 3903.23
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "3903.0": {
       "name": "KTH MAJU BERSAMA",
@@ -3158,25 +3461,28 @@
         "2017": 61.15,
         "2018": 0.54,
         "2019": 3.69,
-        "2020": 0.0,
+        "2020": 0,
         "2021": 1.92,
         "2022": 3.15,
         "2023": 5.08,
-        "2024": 0.0,
+        "2024": 0,
         "2025": 15.23,
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 415.61,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 415.61,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
-        "concession": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 415.61
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "2280.0": {
       "name": "KT MAJU JAYA",
@@ -3189,7 +3495,7 @@
         "2017": 0.23,
         "2018": 0.54,
         "2019": 0.38,
-        "2020": 0.0,
+        "2020": 0,
         "2021": 0.69,
         "2022": 3.23,
         "2023": 5.31,
@@ -3198,16 +3504,19 @@
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 1350.51,
-        "protectionForest": 0.0,
+        "protectionForest": 0,
         "conservation": 0.18,
         "forestEstate": 1350.69,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 1350.69,
         "concession": 770.83,
         "socialForestry": 1350.69
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "55.0": {
       "name": "MHA Kenegerian Petapahan",
@@ -3217,12 +3526,12 @@
       "totalLossHa": 17.23,
       "gainHa": 4.46,
       "annualLossHa": {
-        "2017": 1.0,
-        "2018": 0.0,
-        "2019": 0.0,
+        "2017": 1,
+        "2018": 0,
+        "2019": 0,
         "2020": 0.15,
         "2021": 0.08,
-        "2022": 0.0,
+        "2022": 0,
         "2023": 1.08,
         "2024": 0.92,
         "2025": 1.85,
@@ -3230,15 +3539,18 @@
       },
       "referenceAreasHa": {
         "apl": 251.75,
-        "productionForest": 0.0,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
-        "forestEstate": 0.0,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
-        "concession": 0.0,
+        "productionForest": 0,
+        "protectionForest": 0,
+        "conservation": 0,
+        "forestEstate": 0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 251.75
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "sk.10346/menlhk-pskl/pkps/psl.0/9/2023": {
       "name": "KTH SUNGAI BOBAK",
@@ -3252,24 +3564,27 @@
         "2018": 0.23,
         "2019": 7.39,
         "2020": 0.85,
-        "2021": 0.0,
+        "2021": 0,
         "2022": 3.62,
-        "2023": 0.0,
+        "2023": 0,
         "2024": 1.85,
         "2025": 2.77,
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 936.47,
-        "protectionForest": 0.0,
+        "protectionForest": 0,
         "conservation": 1.59,
         "forestEstate": 937.99,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 937.05,
         "concession": 110.42,
         "socialForestry": 937.99
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "54.0": {
       "name": "Hutan Adat Ghimbo Bonca Lida dan Ghimbo Pomuan",
@@ -3279,9 +3594,9 @@
       "totalLossHa": 6.39,
       "gainHa": 0.54,
       "annualLossHa": {
-        "2017": 0.0,
-        "2018": 0.0,
-        "2019": 0.0,
+        "2017": 0,
+        "2018": 0,
+        "2019": 0,
         "2020": 0.08,
         "2021": 0.46,
         "2022": 0.08,
@@ -3292,15 +3607,18 @@
       },
       "referenceAreasHa": {
         "apl": 156.82,
-        "productionForest": 0.0,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
-        "forestEstate": 0.0,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
-        "concession": 0.0,
+        "productionForest": 0,
+        "protectionForest": 0,
+        "conservation": 0,
+        "forestEstate": 0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 156.82
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "2018.0": {
       "name": "Kepau Baru",
@@ -3313,56 +3631,62 @@
         "2017": 0.92,
         "2018": 1.08,
         "2019": 0.23,
-        "2020": 0.0,
+        "2020": 0,
         "2021": 0.38,
         "2022": 1.08,
-        "2023": 0.0,
+        "2023": 0,
         "2024": 1.54,
         "2025": 0.38,
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 879.11,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 879.11,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 879.11,
         "concession": 879.11,
         "socialForestry": 879.11
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "sk.11578 tahun 2025": {
       "name": "Kelemantan",
       "geostoreId": "984ed7e5b6fd77adc476b90ec448ccbd",
       "baselineForestHa": 882.33,
-      "currentForestHa": 33.0,
+      "currentForestHa": 33,
       "totalLossHa": 854.94,
       "gainHa": 5.61,
       "annualLossHa": {
-        "2017": 0.0,
-        "2018": 0.0,
-        "2019": 0.0,
-        "2020": 0.0,
+        "2017": 0,
+        "2018": 0,
+        "2019": 0,
+        "2020": 0,
         "2021": 10.84,
-        "2022": 0.0,
-        "2023": 0.0,
+        "2022": 0,
+        "2023": 0,
         "2024": 0.08,
-        "2025": 0.0,
+        "2025": 0,
         "2026": null
       },
       "referenceAreasHa": {
         "apl": 0.19,
         "productionForest": 882.43,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 882.43,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 882.46,
         "concession": 784.37,
         "socialForestry": 883.65
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "2193.0": {
       "name": "Rambah Tengah Barat",
@@ -3384,16 +3708,19 @@
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 1852.72,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 1852.72,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
-        "concession": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 1852.72
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "2192.0": {
       "name": "Pemandang",
@@ -3417,14 +3744,17 @@
       "referenceAreasHa": {
         "apl": 3.72,
         "productionForest": 7976.59,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 7976.59,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
-        "concession": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 7981.33
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "2019.0": {
       "name": "Lukun",
@@ -3446,16 +3776,19 @@
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 2454.48,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 2454.48,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 2454.48,
         "concession": 2383.46,
         "socialForestry": 2454.48
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "2189.0": {
       "name": "Sungai Salak",
@@ -3470,7 +3803,7 @@
         "2019": 39.31,
         "2020": 33.54,
         "2021": 64.85,
-        "2022": 125.0,
+        "2022": 125,
         "2023": 178.77,
         "2024": 80.08,
         "2025": 151.47,
@@ -3479,14 +3812,17 @@
       "referenceAreasHa": {
         "apl": 0.24,
         "productionForest": 2404.93,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 2404.93,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
-        "concession": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 2405.17
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "2188.0": {
       "name": "Sei Kuning",
@@ -3501,7 +3837,7 @@
         "2019": 3.15,
         "2020": 14.23,
         "2021": 11.69,
-        "2022": 19.0,
+        "2022": 19,
         "2023": 61.54,
         "2024": 22.77,
         "2025": 32.93,
@@ -3509,15 +3845,18 @@
       },
       "referenceAreasHa": {
         "apl": 0.12,
-        "productionForest": 0.0,
+        "productionForest": 0,
         "protectionForest": 1061.92,
-        "conservation": 0.0,
+        "conservation": 0,
         "forestEstate": 1061.92,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
-        "concession": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 1062.04
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "2187.0": {
       "name": "Pendalian",
@@ -3541,14 +3880,17 @@
       "referenceAreasHa": {
         "apl": 0.5,
         "productionForest": 1784.03,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 1784.03,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
-        "concession": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 1790.91
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "2061.0": {
       "name": "Serapung",
@@ -3570,16 +3912,19 @@
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 1971.56,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 1971.56,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 1971.56,
         "concession": 70.42,
         "socialForestry": 1971.56
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "2060.0": {
       "name": "Segamai",
@@ -3589,34 +3934,37 @@
       "totalLossHa": 33.77,
       "gainHa": 6.31,
       "annualLossHa": {
-        "2017": 0.0,
+        "2017": 0,
         "2018": 6.54,
-        "2019": 0.0,
-        "2020": 0.0,
+        "2019": 0,
+        "2020": 0,
         "2021": 0.31,
-        "2022": 0.0,
-        "2023": 0.0,
+        "2022": 0,
+        "2023": 0,
         "2024": 0.31,
         "2025": 0.31,
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 2268.06,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 2268.06,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 2268.06,
         "concession": 10.22,
         "socialForestry": 2268.06
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "2024.0": {
       "name": "Tanjung Sari",
       "geostoreId": "f3a87eb479f735478f9d106652b13cf9",
       "baselineForestHa": 797.94,
-      "currentForestHa": 317.0,
+      "currentForestHa": 317,
       "totalLossHa": 496.09,
       "gainHa": 15.15,
       "annualLossHa": {
@@ -3634,14 +3982,17 @@
       "referenceAreasHa": {
         "apl": 0.31,
         "productionForest": 799.85,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 799.85,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 800.54,
         "concession": 508.93,
         "socialForestry": 800.54
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "2023.0": {
       "name": "Sungai Tohot Barat",
@@ -3665,14 +4016,17 @@
       "referenceAreasHa": {
         "apl": 0.57,
         "productionForest": 1480.03,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 1480.03,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 1439.11,
         "concession": 1202.14,
-        "socialForestry": 1481.0
-      }
+        "socialForestry": 1481
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "2022.0": {
       "name": "Sungai Tohor",
@@ -3683,7 +4037,7 @@
       "gainHa": 65.46,
       "annualLossHa": {
         "2017": 13.85,
-        "2018": 8.0,
+        "2018": 8,
         "2019": 6.69,
         "2020": 9.31,
         "2021": 95.61,
@@ -3696,14 +4050,17 @@
       "referenceAreasHa": {
         "apl": 0.3,
         "productionForest": 2937.05,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 2937.05,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 2938.08,
         "concession": 2601.68,
         "socialForestry": 2938.08
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "2021.0": {
       "name": "Sendanu Darul Ihsan",
@@ -3715,26 +4072,29 @@
       "annualLossHa": {
         "2017": 2.23,
         "2018": 0.77,
-        "2019": 0.0,
-        "2020": 0.0,
+        "2019": 0,
+        "2020": 0,
         "2021": 0.38,
         "2022": 0.15,
         "2023": 0.08,
-        "2024": 0.0,
+        "2024": 0,
         "2025": 0.08,
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 668.8,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 668.8,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 668.82,
         "concession": 609.82,
         "socialForestry": 668.82
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "2020.0": {
       "name": "Nipah Sendanu",
@@ -3746,57 +4106,63 @@
       "annualLossHa": {
         "2017": 6.54,
         "2018": 0.77,
-        "2019": 0.0,
-        "2020": 0.0,
-        "2021": 0.0,
+        "2019": 0,
+        "2020": 0,
+        "2021": 0,
         "2022": 0.23,
-        "2023": 0.0,
-        "2024": 2.0,
+        "2023": 0,
+        "2024": 2,
         "2025": 1.31,
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 856.85,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 856.85,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 856.85,
         "concession": 742.43,
         "socialForestry": 856.85
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "2252.0": {
       "name": "Teluk Lanus",
       "geostoreId": "0f81abf05808f46f040a4a13e9e4facc",
       "baselineForestHa": 3434.24,
-      "currentForestHa": 3321.0,
+      "currentForestHa": 3321,
       "totalLossHa": 200.78,
       "gainHa": 87.54,
       "annualLossHa": {
         "2017": 17.69,
-        "2018": 0.0,
+        "2018": 0,
         "2019": 0.38,
-        "2020": 0.0,
-        "2021": 0.0,
+        "2020": 0,
+        "2021": 0,
         "2022": 4.54,
         "2023": 0.77,
-        "2024": 0.0,
-        "2025": 0.0,
+        "2024": 0,
+        "2025": 0,
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 3574.55,
-        "protectionForest": 0.0,
+        "protectionForest": 0,
         "conservation": 2.91,
         "forestEstate": 3576.71,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 3439.99,
         "concession": 1032.07,
         "socialForestry": 3576.71
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "2320.0": {
       "name": "Tanjung Melayu",
@@ -3806,28 +4172,31 @@
       "totalLossHa": 10.23,
       "gainHa": 0.54,
       "annualLossHa": {
-        "2017": 7.0,
-        "2018": 0.0,
-        "2019": 0.0,
-        "2020": 0.0,
-        "2021": 0.0,
+        "2017": 7,
+        "2018": 0,
+        "2019": 0,
+        "2020": 0,
+        "2021": 0,
         "2022": 0.08,
-        "2023": 0.0,
-        "2024": 0.0,
-        "2025": 0.0,
+        "2023": 0,
+        "2024": 0,
+        "2025": 0,
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 1276.75,
         "protectionForest": 89.2,
-        "conservation": 0.0,
+        "conservation": 0,
         "forestEstate": 1365.95,
         "unclassifiedForestFunction": 1.96,
         "peat": 14.33,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 1368.51
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "2274.0": {
       "name": "Kelurahan Sapat",
@@ -3849,16 +4218,19 @@
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 710.62,
         "protectionForest": 3552.83,
-        "conservation": 0.0,
+        "conservation": 0,
         "forestEstate": 4263.45,
         "unclassifiedForestFunction": 9.94,
         "peat": 2.46,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 4275.89
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "2272.0": {
       "name": "Sungai Piyai",
@@ -3874,22 +4246,25 @@
         "2020": 15.46,
         "2021": 1.38,
         "2022": 0.85,
-        "2023": 2.0,
+        "2023": 2,
         "2024": 1.69,
         "2025": 1.85,
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 298.17,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 298.17,
         "unclassifiedForestFunction": 0.71,
         "peat": 0.16,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 299.03
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "2275.0": {
       "name": "Perigi Raja",
@@ -3907,20 +4282,23 @@
         "2022": 0.15,
         "2023": 1.77,
         "2024": 0.08,
-        "2025": 0.0,
+        "2025": 0,
         "2026": null
       },
       "referenceAreasHa": {
         "apl": 0.12,
         "productionForest": 51.22,
         "protectionForest": 1691.53,
-        "conservation": 0.0,
+        "conservation": 0,
         "forestEstate": 1742.75,
         "unclassifiedForestFunction": 3.23,
         "peat": 10.03,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 1747.3
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "2381.0": {
       "name": "Pangkalan Gondai",
@@ -3942,16 +4320,19 @@
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 9201.24,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 9201.24,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
-        "concession": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 9201.24
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "2228.0": {
       "name": "Gunung Sahilan",
@@ -3973,16 +4354,19 @@
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 2938.69,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 2938.69,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
         "concession": 12.06,
         "socialForestry": 2938.69
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "2421.0": {
       "name": "Kenegarian Pangkalan Kapas",
@@ -3993,27 +4377,30 @@
       "gainHa": 18.46,
       "annualLossHa": {
         "2017": 10.77,
-        "2018": 0.0,
+        "2018": 0,
         "2019": 1.38,
         "2020": 11.23,
         "2021": 0.77,
-        "2022": 0.0,
+        "2022": 0,
         "2023": 7.39,
         "2024": 3.08,
         "2025": 1.92,
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 5165.82,
         "protectionForest": 0.33,
         "conservation": 6.13,
         "forestEstate": 5172.15,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
-        "concession": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 5203.83
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "2943.0": {
       "name": "Kampung Rawa Mekar Jaya",
@@ -4030,21 +4417,24 @@
         "2021": 23.46,
         "2022": 8.15,
         "2023": 5.31,
-        "2024": 12.0,
+        "2024": 12,
         "2025": 23.23,
         "2026": null
       },
       "referenceAreasHa": {
         "apl": 0.49,
         "productionForest": 3427.92,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 3427.92,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 3428.42,
         "concession": 0.03,
         "socialForestry": 3428.42
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "2941.0": {
       "name": "Muara Dua",
@@ -4066,16 +4456,19 @@
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 427.29,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 427.29,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 427.29,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 427.29
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "2942.0": {
       "name": "Sungai Linau",
@@ -4090,23 +4483,26 @@
         "2019": 0.31,
         "2020": 4.77,
         "2021": 2.62,
-        "2022": 19.0,
+        "2022": 19,
         "2023": 30.15,
         "2024": 14.61,
         "2025": 65.22,
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 5852.1,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 5852.1,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 5852.1,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 5852.1
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "sk.10976/menlhk-pskl/pkps/psl.0/9/2023": {
       "name": "Tanjung alai",
@@ -4119,7 +4515,7 @@
         "2017": 2.62,
         "2018": 3.69,
         "2019": 0.15,
-        "2020": 0.0,
+        "2020": 0,
         "2021": 0.46,
         "2022": 0.31,
         "2023": 12.77,
@@ -4128,16 +4524,19 @@
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 96.91,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 96.91,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
-        "concession": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 110.6
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "sk.9848/menlhk-pskl/pkps/psl.0/9/2023": {
       "name": "Bantan Air",
@@ -4147,28 +4546,31 @@
       "totalLossHa": 90.98,
       "gainHa": 4.85,
       "annualLossHa": {
-        "2017": 0.0,
+        "2017": 0,
         "2018": 0.08,
-        "2019": 0.0,
-        "2020": 0.0,
-        "2021": 0.0,
-        "2022": 0.0,
-        "2023": 0.0,
-        "2024": 0.0,
-        "2025": 0.0,
+        "2019": 0,
+        "2020": 0,
+        "2021": 0,
+        "2022": 0,
+        "2023": 0,
+        "2024": 0,
+        "2025": 0,
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 98.12,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 98.12,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 98.12,
         "concession": 92.28,
         "socialForestry": 98.12
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "sk.9850/menlhk-pskl/pkps/psl.0/9/2023": {
       "name": "Ulu Pulau",
@@ -4178,28 +4580,31 @@
       "totalLossHa": 218.26,
       "gainHa": 24.38,
       "annualLossHa": {
-        "2017": 0.0,
-        "2018": 0.0,
+        "2017": 0,
+        "2018": 0,
         "2019": 1.08,
-        "2020": 0.0,
-        "2021": 0.0,
-        "2022": 0.0,
-        "2023": 0.0,
-        "2024": 0.0,
-        "2025": 0.0,
+        "2020": 0,
+        "2021": 0,
+        "2022": 0,
+        "2023": 0,
+        "2024": 0,
+        "2025": 0,
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 281.33,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 281.33,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 281.33,
         "concession": 280.98,
         "socialForestry": 281.33
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "sk.9862/menlhk-pskl/pkps/psl.0/9/2023": {
       "name": "Rantau Kasih",
@@ -4214,23 +4619,26 @@
         "2019": 7.77,
         "2020": 2.46,
         "2021": 9.85,
-        "2022": 1.0,
+        "2022": 1,
         "2023": 13.92,
         "2024": 20.77,
         "2025": 4.54,
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
+        "apl": 0,
         "productionForest": 1555.25,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 1555.25,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
         "concession": 463.96,
         "socialForestry": 1555.25
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "sk.9847/menlhk-pskl/pkps/psl.0/9/2023": {
       "name": "Bantan Tengah",
@@ -4254,14 +4662,17 @@
       "referenceAreasHa": {
         "apl": 0.65,
         "productionForest": 141.75,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 141.75,
         "unclassifiedForestFunction": 0.17,
         "peat": 46.55,
         "concession": 46.55,
         "socialForestry": 142.36
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "11610 tahun 2024": {
       "name": "Teluk Pambang",
@@ -4277,22 +4688,25 @@
         "2020": 9.77,
         "2021": 90.75,
         "2022": 2.15,
-        "2023": 1.0,
-        "2024": 0.0,
+        "2023": 1,
+        "2024": 0,
         "2025": 2.23,
         "2026": null
       },
       "referenceAreasHa": {
         "apl": 1.66,
         "productionForest": 964.02,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 964.02,
         "unclassifiedForestFunction": 1.06,
         "peat": 5.12,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 967.23
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "sk.9849/menlhk-pskl/pkps/psl.0/9/2023": {
       "name": "Sekodi",
@@ -4305,25 +4719,28 @@
         "2017": 0.54,
         "2018": 3.92,
         "2019": 4.92,
-        "2020": 8.0,
+        "2020": 8,
         "2021": 10.31,
         "2022": 2.23,
         "2023": 0.77,
-        "2024": 0.0,
+        "2024": 0,
         "2025": 2.31,
         "2026": null
       },
       "referenceAreasHa": {
         "apl": 1.4,
         "productionForest": 563.99,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 563.99,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 181.59,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 568.67
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "3568.0": {
       "name": "Sungai Luar",
@@ -4333,13 +4750,13 @@
       "totalLossHa": 2.08,
       "gainHa": 0.08,
       "annualLossHa": {
-        "2017": 0.0,
+        "2017": 0,
         "2018": 0.08,
-        "2019": 0.0,
-        "2020": 0.0,
-        "2021": 0.0,
-        "2022": 0.0,
-        "2023": 0.0,
+        "2019": 0,
+        "2020": 0,
+        "2021": 0,
+        "2022": 0,
+        "2023": 0,
         "2024": 0.08,
         "2025": 1.77,
         "2026": null
@@ -4347,14 +4764,17 @@
       "referenceAreasHa": {
         "apl": 0.11,
         "productionForest": 146.23,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 146.23,
         "unclassifiedForestFunction": 0.58,
-        "peat": 0.0,
-        "concession": 0.0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 147.04
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "2066.0": {
       "name": "Concong Dalam",
@@ -4364,28 +4784,31 @@
       "totalLossHa": 0.69,
       "gainHa": 0.62,
       "annualLossHa": {
-        "2017": 0.0,
-        "2018": 0.0,
-        "2019": 0.0,
-        "2020": 0.0,
-        "2021": 0.0,
-        "2022": 0.0,
-        "2023": 0.0,
-        "2024": 0.0,
-        "2025": 0.0,
+        "2017": 0,
+        "2018": 0,
+        "2019": 0,
+        "2020": 0,
+        "2021": 0,
+        "2022": 0,
+        "2023": 0,
+        "2024": 0,
+        "2025": 0,
         "2026": null
       },
       "referenceAreasHa": {
         "apl": 1.65,
         "productionForest": 29.27,
         "protectionForest": 538.99,
-        "conservation": 0.0,
+        "conservation": 0,
         "forestEstate": 568.26,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
-        "concession": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 569.76
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "3587.0": {
       "name": "Kampung Baru",
@@ -4400,23 +4823,26 @@
         "2019": 1.23,
         "2020": 6.54,
         "2021": 1.54,
-        "2022": 4.0,
+        "2022": 4,
         "2023": 0.62,
         "2024": 0.23,
-        "2025": 1.0,
+        "2025": 1,
         "2026": null
       },
       "referenceAreasHa": {
         "apl": 0.05,
         "productionForest": 1167.9,
         "protectionForest": 405.56,
-        "conservation": 0.0,
+        "conservation": 0,
         "forestEstate": 1573.47,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
-        "concession": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 1575.94
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "2080.0": {
       "name": "Muara Bio",
@@ -4427,10 +4853,10 @@
       "gainHa": 0.31,
       "annualLossHa": {
         "2017": 2.69,
-        "2018": 0.0,
+        "2018": 0,
         "2019": 3.31,
-        "2020": 0.0,
-        "2021": 0.0,
+        "2020": 0,
+        "2021": 0,
         "2022": 2.85,
         "2023": 6.31,
         "2024": 0.92,
@@ -4439,15 +4865,18 @@
       },
       "referenceAreasHa": {
         "apl": 0.02,
-        "productionForest": 0.0,
+        "productionForest": 0,
         "protectionForest": 167.88,
         "conservation": 0.71,
         "forestEstate": 168.6,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
-        "concession": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 168.63
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "2677.0": {
       "name": "Kuala Gaung",
@@ -4459,26 +4888,29 @@
       "annualLossHa": {
         "2017": 0.46,
         "2018": 0.23,
-        "2019": 0.0,
-        "2020": 0.0,
-        "2021": 0.0,
-        "2022": 0.0,
-        "2023": 0.0,
-        "2024": 0.0,
+        "2019": 0,
+        "2020": 0,
+        "2021": 0,
+        "2022": 0,
+        "2023": 0,
+        "2024": 0,
         "2025": 0.31,
         "2026": null
       },
       "referenceAreasHa": {
         "apl": 0.01,
         "productionForest": 564.26,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 564.26,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
-        "concession": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 564.67
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "3582.0": {
       "name": "Panglima Raja",
@@ -4503,13 +4935,16 @@
         "apl": 0.29,
         "productionForest": 2070.13,
         "protectionForest": 1965.06,
-        "conservation": 0.0,
+        "conservation": 0,
         "forestEstate": 4035.19,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 715.26,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 4038.43
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "2071.0": {
       "name": "Sungai Bela",
@@ -4534,13 +4969,16 @@
         "apl": 0.14,
         "productionForest": 1939.86,
         "protectionForest": 1524.92,
-        "conservation": 0.0,
+        "conservation": 0,
         "forestEstate": 3464.16,
-        "unclassifiedForestFunction": 0.0,
+        "unclassifiedForestFunction": 0,
         "peat": 668.91,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 3466.47
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "2165.0": {
       "name": "Sikebau Jaya",
@@ -4548,30 +4986,33 @@
       "baselineForestHa": 10.15,
       "currentForestHa": 6.61,
       "totalLossHa": 3.54,
-      "gainHa": 0.0,
+      "gainHa": 0,
       "annualLossHa": {
-        "2017": 0.0,
-        "2018": 0.0,
+        "2017": 0,
+        "2018": 0,
         "2019": 0.23,
         "2020": 0.54,
-        "2021": 0.0,
-        "2022": 0.0,
+        "2021": 0,
+        "2022": 0,
         "2023": 0.85,
         "2024": 1.46,
-        "2025": 0.0,
+        "2025": 0,
         "2026": null
       },
       "referenceAreasHa": {
-        "apl": 0.0,
-        "productionForest": 0.0,
+        "apl": 0,
+        "productionForest": 0,
         "protectionForest": 10.63,
-        "conservation": 0.0,
+        "conservation": 0,
         "forestEstate": 10.63,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 0.0,
-        "concession": 0.0,
+        "unclassifiedForestFunction": 0,
+        "peat": 0,
+        "concession": 0,
         "socialForestry": 10.63
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     },
     "3962.0": {
       "name": "Tenggayun Raya",
@@ -4587,22 +5028,25 @@
         "2020": 1.38,
         "2021": 0.62,
         "2022": 2.46,
-        "2023": 3.0,
-        "2024": 1.0,
+        "2023": 3,
+        "2024": 1,
         "2025": 1.69,
         "2026": null
       },
       "referenceAreasHa": {
         "apl": 0.36,
         "productionForest": 930.74,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
+        "protectionForest": 0,
+        "conservation": 0,
         "forestEstate": 930.74,
         "unclassifiedForestFunction": 6.55,
         "peat": 33.07,
-        "concession": 0.0,
+        "concession": 0,
         "socialForestry": 1603.16
-      }
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     }
   },
   "errors": [],
@@ -4645,5 +5089,48 @@
         ]
       }
     }
+  },
+  "viirs": {
+    "source": "NASA FIRMS area API (point-in-polygon)",
+    "providers": [
+      "VIIRS_SNPP_NRT"
+    ],
+    "updatedAt": "2026-07-25T00:04:14.024Z",
+    "recentUpdatedAt": "2026-07-25T00:04:14.024Z",
+    "historyUpdatedAt": null,
+    "mode": "recent",
+    "periodDays": [
+      7,
+      30
+    ],
+    "yearlyTrendYears": 5,
+    "status": "partial",
+    "skippedChunks": [
+      {
+        "source": "VIIRS_SNPP_NRT",
+        "start": "2026-06-26",
+        "end": "2026-07-05",
+        "error": "HTTP 400: Invalid day range. Expects [1..5]."
+      },
+      {
+        "source": "VIIRS_SNPP_NRT",
+        "start": "2026-07-06",
+        "end": "2026-07-15",
+        "error": "HTTP 400: Invalid day range. Expects [1..5]."
+      },
+      {
+        "source": "VIIRS_SNPP_NRT",
+        "start": "2026-07-16",
+        "end": "2026-07-24",
+        "error": "HTTP 400: Invalid day range. Expects [1..5]."
+      }
+    ],
+    "units": {
+      "villages": 13,
+      "socialForestryFeatures": 149,
+      "socialForestryUnits": 135,
+      "updated": 148
+    },
+    "notes": "Counts are deduplicated and derived from FIRMS points intersecting village and social-forestry polygons."
   }
 }
