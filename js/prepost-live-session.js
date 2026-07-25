@@ -10,11 +10,28 @@
   function esc(v){ return text(v).replace(/[&<>"']/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
   function num(v){ var n = Number(v); return Number.isFinite(n) ? n : 0; }
   function pct(v){ return num(v).toLocaleString('id-ID',{maximumFractionDigits:1}) + '%'; }
+  function parseLegacyDateTime(v){
+    var m = text(v).match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})(?:\s+(\d{1,2}):(\d{2})(?::(\d{2}))?)?$/);
+    if(!m) return null;
+    var day = Number(m[1]);
+    var month = Number(m[2]);
+    var year = Number(m[3]);
+    var hour = Number(m[4] || 0);
+    var minute = Number(m[5] || 0);
+    var second = Number(m[6] || 0);
+    if(!day || !month || !year) return null;
+    return new Date(Date.UTC(year, month - 1, day, hour - 7, minute, second));
+  }
   function formatDateTime(v){
     var value = text(v);
     if(!value) return '-';
     var dt = new Date(value);
-    return isNaN(dt.getTime()) ? value : dt.toLocaleString('id-ID');
+    if(isNaN(dt.getTime())){
+      dt = parseLegacyDateTime(value);
+    }
+    return dt && !isNaN(dt.getTime())
+      ? dt.toLocaleString('id-ID',{ timeZone:'Asia/Jakarta', hour12:false })
+      : value;
   }
 
   function jsonp(url,prefix){
@@ -80,7 +97,9 @@
     var session = detail.session || {};
     if(titleNode) titleNode.textContent = session.title || session.sessionId || 'Live Session';
     if(metaNode) metaNode.textContent = [session.activityDate, session.location || session.village, session.facilitator].filter(Boolean).join(' | ');
-    if(generatedNode) generatedNode.textContent = 'Data dibuat: ' + (detail.generatedAt ? new Date(detail.generatedAt).toLocaleString('id-ID') : '-');
+    if(generatedNode) generatedNode.textContent = 'Data dibuat: ' + (detail.generatedAt
+      ? new Date(detail.generatedAt).toLocaleString('id-ID',{ timeZone:'Asia/Jakarta', hour12:false })
+      : '-');
   }
 
   function applySummary(detail){

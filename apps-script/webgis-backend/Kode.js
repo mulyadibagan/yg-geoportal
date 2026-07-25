@@ -2077,6 +2077,18 @@ function parseDate_(value) {
     : date;
 }
 
+function normalizeDateTimeForApi_(value) {
+  if (value instanceof Date && !isNaN(value.getTime())) {
+    return value.toISOString();
+  }
+
+  const raw = clean_(value);
+  if (!raw) return '';
+
+  const parsed = new Date(raw);
+  return isNaN(parsed.getTime()) ? raw : parsed.toISOString();
+}
+
 function clean_(value) {
   return value === null ||
     value === undefined
@@ -2554,7 +2566,7 @@ function parseResponseRow_(row) {
     answers: answers,
     totalScore: Number(row[totalScoreIndex]) || 0,
     sourceChannel: clean_(row[sourceIndex]) || 'web',
-    submittedAt: clean_(row[submittedIndex])
+    submittedAt: normalizeDateTimeForApi_(row[submittedIndex])
   };
 }
 
@@ -2583,7 +2595,7 @@ function allResponseRows_() {
   if (sheet.getLastRow() < 2) return [];
   return sheet
     .getRange(2, 1, sheet.getLastRow() - 1, 13)
-    .getDisplayValues()
+    .getValues()
     .map(parseResponseRow_)
     .filter(function(item) { return !!item.responseId; });
 }
@@ -3161,6 +3173,11 @@ function handlePrepostSubmitResponsePost_(e) {
       ? (totalScore / questionCount) * 100
       : 0;
     const sheet = getPrepostResponseSheet_();
+    const submittedAt = Utilities.formatDate(
+      new Date(),
+      'Asia/Jakarta',
+      "yyyy-MM-dd'T'HH:mm:ssXXX"
+    );
 
     sheet.appendRow([
       createPrepostId_('RSP'),
@@ -3175,7 +3192,7 @@ function handlePrepostSubmitResponsePost_(e) {
       JSON.stringify(answers),
       totalScore,
       clean_(data.sourceChannel) || 'web',
-      new Date()
+      submittedAt
     ]);
 
     return prepostResponse_({
