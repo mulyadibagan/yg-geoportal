@@ -7,6 +7,7 @@
   var COMMUNITY_LAYER_COLOR = '#7b1fa2';
   var COMMUNITY_API = 'https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec?page=public-reports';
   var OBJECTS_API = 'https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec?page=objects';
+  var DUPLICATE_CANDIDATES_API = 'https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec?page=duplicate-candidates';
   var PREPOST_API = 'https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec';
   var communityDataCache = null;
   var communityDataPromise = null;
@@ -43,6 +44,11 @@
   var correctionFeatureLayer = null;
   var selectedCorrectionFeature = null;
   var correctionLayersLoaded = false;
+  var newPointReferenceGroup = null;
+  var newPointReferenceCandidates = [];
+  var nearbyDuplicateCandidates = [];
+  var newPointReferenceSequence = 0;
+  var activeObjectsPromise = null;
   var deepLinkSelectionPending = Boolean(
     new URLSearchParams(window.location.search).get('object')
   );
@@ -162,7 +168,11 @@
     if(newPointTypeFields) newPointTypeFields.hidden = type !== 'Titik Baru';
     if(newPointTypeInput) newPointTypeInput.required = type === 'Titik Baru';
     if(forestFields) forestFields.hidden = true;
-    if(type === 'Titik Baru') updateNewPointTypeFields();
+    if(type === 'Titik Baru'){
+      updateNewPointTypeFields();
+    }else{
+      clearNewPointReferenceLayer();
+    }
     var replantingFields = document.getElementById('replanting-fields');
     if(replantingFields) replantingFields.hidden =
       type !== 'Replanting/Penyulaman Mangrove';
@@ -1301,6 +1311,7 @@
     updateGeometrySummary();
     map.setView([lat,lng],zoom || 15);
     scheduleAdministrationLookup(lat,lng);
+    updateNearbyDuplicateWarning(Number(lat),Number(lng));
   }
 
   map.on('click',function(event){
@@ -1685,6 +1696,7 @@
       kmlLayer = null;
     }
     geometryGeoJSON = null;
+    clearNearbyDuplicateWarning();
     document.getElementById('latitude').value = '';
     document.getElementById('longitude').value = '';
     updateGeometrySummary();
@@ -2032,6 +2044,248 @@
     }[layerId] || '';
   }
 
+  function newPointFeatureLayerId(feature){
+    var properties = feature && feature.properties || {};
+    return String(
+      properties.Layer_ID ||
+      properties.Source_Layer ||
+      properties.targetLayerId ||
+      ''
+    ).trim();
+  }
+
+  function newPointFeatureName(feature, fallback){
+    var properties = feature && feature.properties || {};
+    return String(
+      properties.Nama_Objek ||
+      properties.Nama ||
+      properties.name ||
+      properties.title ||
+      properties.locationName ||
+      fallback ||
+      'Objek tanpa nama'
+    ).trim();
+  }
+
+  function pointCoordinatesFromFeature(feature){
+    var geometry = feature && feature.geometry;
+    if(!geometry || geometry.type !== 'Point' || !Array.isArray(geometry.coordinates)){
+      return null;
+    }
+    var longitude = Number(geometry.coordinates[0]);
+    var latitude = Number(geometry.coordinates[1]);
+    return Number.isFinite(latitude) && Number.isFinite(longitude)
+      ? {lat:latitude,lng:longitude}
+      : null;
+  }
+
+  function distanceMeters(lat1,lng1,lat2,lng2){
+    var radius = 6371000;
+    var toRadians = Math.PI / 180;
+    var dLat = (lat2 - lat1) * toRadians;
+    var dLng = (lng2 - lng1) * toRadians;
+    var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * toRadians) * Math.cos(lat2 * toRadians) *
+      Math.sin(dLng / 2) * Math.sin(dLng / 2);
+    return radius * 2 * Math.atan2(Math.sqrt(a),Math.sqrt(1 - a));
+  }
+
+  function clearNearbyDuplicateWarning(){
+    nearbyDuplicateCandidates = [];
+    var panel = document.getElementById('new-point-reference-panel');
+    var confirmation = document.getElementById('nearby-duplicate-confirmation');
+    var checkbox = document.getElementById('confirm-nearby-duplicate');
+    if(panel) panel.classList.remove('warning','error');
+    if(confirmation) confirmation.hidden = true;
+    if(checkbox) checkbox.checked = false;
+  }
+
+  function updateNearbyDuplicateWarning(lat,lng){
+    if(selectedType !== 'Titik Baru') return;
+
+    clearNearbyDuplicateWarning();
+    nearbyDuplicateCandidates = newPointReferenceCandidates
+      .map(function(candidate){
+        return Object.assign({},candidate,{
+          distance:distanceMeters(
+            lat,lng,candidate.coordinates.lat,candidate.coordinates.lng
+          )
+        });
+      })
+      .filter(function(candidate){ return candidate.distance <= 25; })
+      .sort(function(a,b){ return a.distance - b.distance; });
+
+    if(!nearbyDuplicateCandidates.length) return;
+
+    var nearest = nearbyDuplicateCandidates[0];
+    var panel = document.getElementById('new-point-reference-panel');
+    var status = document.getElementById('new-point-reference-status');
+    var confirmation = document.getElementById('nearby-duplicate-confirmation');
+    if(panel) panel.classList.add('warning');
+    if(status){
+      status.textContent =
+        'Peringatan: ada ' + nearbyDuplicateCandidates.length +
+        ' objek sejenis dalam radius 25 m. Objek terdekat "' +
+        nearest.name + '" berjarak sekitar ' +
+        Math.max(1,Math.round(nearest.distance)) +
+        ' m (' + nearest.statusLabel + ').';
+    }
+    if(confirmation) confirmation.hidden = false;
+  }
+
+  function clearNewPointReferenceLayer(){
+    newPointReferenceSequence += 1;
+    if(newPointReferenceGroup){
+      map.removeLayer(newPointReferenceGroup);
+      newPointReferenceGroup = null;
+    }
+    newPointReferenceCandidates = [];
+    clearNearbyDuplicateWarning();
+    var panel = document.getElementById('new-point-reference-panel');
+    if(panel) panel.hidden = true;
+  }
+
+  function loadActiveObjects(){
+    if(activeObjectsPromise) return activeObjectsPromise;
+    activeObjectsPromise = fetch(
+      OBJECTS_API + '&t=' + Date.now(),
+      {cache:'no-store',redirect:'follow'}
+    ).then(function(response){
+      if(!response.ok) throw new Error('HTTP ' + response.status);
+      return response.json();
+    }).catch(function(error){
+      activeObjectsPromise = null;
+      throw error;
+    });
+    return activeObjectsPromise;
+  }
+
+  function loadNewPointReferenceLayer(layerId){
+    var sequence = ++newPointReferenceSequence;
+    if(newPointReferenceGroup){
+      map.removeLayer(newPointReferenceGroup);
+      newPointReferenceGroup = null;
+    }
+    newPointReferenceCandidates = [];
+    clearNearbyDuplicateWarning();
+
+    var panel = document.getElementById('new-point-reference-panel');
+    var status = document.getElementById('new-point-reference-status');
+    if(!panel || !status) return;
+    panel.hidden = false;
+    panel.classList.remove('warning','error');
+
+    if(!layerId){
+      status.textContent =
+        'Pilih jenis titik untuk memuat data WebGIS yang sudah ada.';
+      return;
+    }
+
+    status.textContent =
+      'Memuat data ' + newPointLayerLabel(layerId) +
+      ' yang sudah ada dan yang sedang diverifikasi...';
+
+    Promise.all([
+      loadActiveObjects(),
+      fetch(
+        DUPLICATE_CANDIDATES_API + '&layerId=' +
+        encodeURIComponent(layerId) + '&t=' + Date.now(),
+        {cache:'no-store',redirect:'follow'}
+      ).then(function(response){
+        if(!response.ok) throw new Error('HTTP ' + response.status);
+        return response.json();
+      }).catch(function(error){
+        console.warn('Data pending belum dapat dimuat.',error);
+        return {type:'FeatureCollection',features:[],pendingUnavailable:true};
+      })
+    ]).then(function(results){
+      if(sequence !== newPointReferenceSequence) return;
+
+      var activeFeatures = results[0] && Array.isArray(results[0].features)
+        ? results[0].features
+        : [];
+      var pendingFeatures = results[1] && Array.isArray(results[1].features)
+        ? results[1].features
+        : [];
+
+      var candidates = [];
+      activeFeatures.forEach(function(feature){
+        if(newPointFeatureLayerId(feature) !== layerId) return;
+        var coordinates = pointCoordinatesFromFeature(feature);
+        if(!coordinates) return;
+        candidates.push({
+          feature:feature,
+          coordinates:coordinates,
+          name:newPointFeatureName(feature,newPointLayerLabel(layerId)),
+          status:'published',
+          statusLabel:'data aktif'
+        });
+      });
+      pendingFeatures.forEach(function(feature){
+        if(newPointFeatureLayerId(feature) !== layerId) return;
+        var coordinates = pointCoordinatesFromFeature(feature);
+        if(!coordinates) return;
+        candidates.push({
+          feature:feature,
+          coordinates:coordinates,
+          name:newPointFeatureName(feature,newPointLayerLabel(layerId)),
+          status:'pending',
+          statusLabel:'menunggu verifikasi'
+        });
+      });
+
+      newPointReferenceCandidates = candidates;
+      newPointReferenceGroup = L.featureGroup();
+      candidates.forEach(function(candidate){
+        var color = candidate.status === 'pending' ? '#f39c12' : '#1976d2';
+        var point = L.circleMarker(candidate.coordinates,{
+          radius:8,
+          color:'#ffffff',
+          weight:2,
+          fillColor:color,
+          fillOpacity:0.95
+        });
+        point.bindPopup(
+          '<strong>' + escapeCorrectionHtml(candidate.name) + '</strong>' +
+          '<br>' + escapeCorrectionHtml(newPointLayerLabel(layerId)) +
+          '<br>Status: ' + escapeCorrectionHtml(candidate.statusLabel)
+        );
+        point.on('click',function(event){
+          if(event && event.originalEvent){
+            L.DomEvent.stopPropagation(event);
+          }
+        });
+        newPointReferenceGroup.addLayer(point);
+      });
+      newPointReferenceGroup.addTo(map);
+
+      var publishedCount = candidates.filter(function(candidate){
+        return candidate.status === 'published';
+      }).length;
+      var pendingCount = candidates.length - publishedCount;
+      status.textContent =
+        'Ditemukan ' + publishedCount + ' data aktif dan ' +
+        pendingCount + ' data menunggu verifikasi. ' +
+        (results[1] && results[1].pendingUnavailable
+          ? 'Data pending sedang tidak tersedia. '
+          : '') +
+        'Klik titik untuk melihat informasi.';
+
+      if(geometryGeoJSON && geometryGeoJSON.type === 'Point'){
+        updateNearbyDuplicateWarning(
+          Number(geometryGeoJSON.coordinates[1]),
+          Number(geometryGeoJSON.coordinates[0])
+        );
+      }
+    }).catch(function(error){
+      if(sequence !== newPointReferenceSequence) return;
+      console.error(error);
+      panel.classList.add('error');
+      status.textContent =
+        'Data pembanding belum dapat dimuat. Periksa koneksi lalu pilih ulang jenis titik.';
+    });
+  }
+
   function updateNewPointTypeFields(){
     var pointType = value('new-point-type');
     var forestFields = document.getElementById('new-object-forest-fields');
@@ -2039,6 +2293,9 @@
       forestFields.hidden =
         selectedType !== 'Titik Baru' ||
         pointType !== 'titik_penanaman';
+    }
+    if(selectedType === 'Titik Baru'){
+      loadNewPointReferenceLayer(pointType);
     }
   }
 
@@ -2257,6 +2514,21 @@
         alert('Tentukan titik lokasi terlebih dahulu.');
         return;
       }
+    }
+
+    if(
+      selectedType === 'Titik Baru' &&
+      nearbyDuplicateCandidates.length &&
+      !document.getElementById('confirm-nearby-duplicate').checked
+    ){
+      alert(
+        'Ada objek sejenis dalam radius 25 meter. Periksa titik pada peta dan konfirmasikan bahwa objek ini berbeda.'
+      );
+      document.getElementById('new-point-reference-panel').scrollIntoView({
+        behavior:'smooth',
+        block:'center'
+      });
+      return;
     }
 
     var forestSeedlingsCount = value('forest-seedlings-count');
@@ -2638,6 +2910,19 @@
       plantingParticipantsYouth:plantingDetails.youthParticipants,
       plantingParticipantsYoungWomen:plantingDetails.youngWomenParticipants,
       plantingParticipantGroups:plantingDetails.participantGroups,
+      duplicateCheckAcknowledged:selectedType === 'Titik Baru' &&
+        nearbyDuplicateCandidates.length
+        ? document.getElementById('confirm-nearby-duplicate').checked
+        : false,
+      nearbyDuplicateCandidates:selectedType === 'Titik Baru'
+        ? nearbyDuplicateCandidates.slice(0,5).map(function(candidate){
+            return {
+              name:candidate.name,
+              status:candidate.statusLabel,
+              distanceMeters:Math.round(candidate.distance)
+            };
+          })
+        : [],
       supportSessionId:selectedType === 'Capacity Building'
         ? monitoringValue('capacity-session-id')
         : '',

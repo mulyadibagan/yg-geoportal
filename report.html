@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css">
   <link rel="stylesheet" href="css/site-brand.css?v=20260720-program-dashboard1">
-  <link rel="stylesheet" href="css/report-v6.css?v=20260720-photo-worker2">
+  <link rel="stylesheet" href="css/report-v6.css?v=20260725-duplicate-check1">
   <link rel="stylesheet" href="css/language-switcher.css?v=20260721-all-pages1">
   <meta name="theme-color" content="#079cde">
   <meta name="application-name" content="YG GeoPortal">
@@ -133,6 +133,20 @@
       </div>
 
       <div id="location-map"></div>
+
+      <div id="new-point-reference-panel" class="new-point-reference-panel" hidden>
+        <div id="new-point-reference-status">
+          Pilih jenis titik untuk memuat data WebGIS yang sudah ada.
+        </div>
+        <div class="new-point-reference-legend">
+          <span><i class="published"></i> Data aktif</span>
+          <span><i class="pending"></i> Menunggu verifikasi</span>
+        </div>
+        <label id="nearby-duplicate-confirmation" class="nearby-duplicate-confirmation" hidden>
+          <input id="confirm-nearby-duplicate" type="checkbox">
+          <span>Saya sudah memeriksa objek terdekat dan memastikan titik ini merupakan objek berbeda.</span>
+        </label>
+      </div>
 
       <div id="point-coordinates" class="coordinate-grid" hidden>
         <label class="field">
@@ -493,7 +507,7 @@
 <script src="https://unpkg.com/jszip@3.10.1/dist/jszip.min.js"></script>
 <script src="https://unpkg.com/@tmcw/togeojson@5.8.1/dist/togeojson.umd.js"></script>
 <script src="js/config.js?v=20260725-mangrove-point1"></script>
-<script src="js/report-v6.js?v=20260725-photo-fallback1"></script>
+<script src="js/report-v6.js?v=20260725-duplicate-check1"></script>
   <script src="js/i18n.js?v=20260724-official-website1"></script>
   <script src="js/pwa.js?v=20260725-photo-simple1"></script>
 </body>

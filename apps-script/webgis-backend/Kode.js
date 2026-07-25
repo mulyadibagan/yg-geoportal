@@ -133,6 +133,13 @@ if (page === 'content-save-result') {
       .setMimeType(ContentService.MimeType.JSON);
   }
 
+  if (page === 'duplicate-candidates') {
+    return jsonOrJsonpResponse_(
+      getPendingDuplicateCandidates_(params.layerId),
+      callback
+    );
+  }
+
   if (page === 'dashboard-summary') {
     const result = getDashboardSummaryV2_();
     const json = JSON.stringify(result);
@@ -280,8 +287,6 @@ if (action === 'content-save') {
     // Normalisasi metadata tambahan agar frontend lama/baru tetap kompatibel.
     const normalizedTargetFeatureProperties =
       buildTargetFeaturePropertiesForStorage_(data);
-    const normalizedProposedChanges =
-      buildStoredProposedChanges_(data);
 
     const geometry = parseGeometry_(data.geometryGeoJSON);
     validateGeometryForIncomingReport_(data.reportType, geometry);
@@ -296,6 +301,18 @@ if (action === 'content-save') {
 
     const sheet = getOrCreateSheet_();
     ensureExtendedColumns_(sheet);
+    const serverDuplicate = findNearbyPendingDuplicate_(
+      sheet,
+      data.reportType,
+      data.targetLayerId,
+      geometry,
+      25
+    );
+    if (serverDuplicate) {
+      data.serverDuplicateWarning = serverDuplicate;
+    }
+    const normalizedProposedChanges =
+      buildStoredProposedChanges_(data);
 
     const reportId = createReportId_();
     const photoUrls = saveImages_(data.images || [], reportId);
@@ -374,6 +391,164 @@ if (action === 'content-save') {
       '</p>'
     );
   }
+}
+
+function getPendingDuplicateCandidates_(requestedLayerId) {
+  const layerId = clean_(requestedLayerId);
+  const collection = {
+    type: 'FeatureCollection',
+    generatedAt: new Date().toISOString(),
+    features: []
+  };
+
+  if (!layerId) return collection;
+
+  const sheet = getOrCreateSheet_();
+  ensureExtendedColumns_(sheet);
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 2) return collection;
+
+  const rows = sheet.getRange(2, 1, lastRow - 1, 32).getValues();
+  const visibleStatuses = {
+    'Menunggu Verifikasi': true,
+    'Perlu Perbaikan': true,
+    'Disetujui': true
+  };
+
+  rows.forEach(function(row) {
+    if (clean_(row[1]) !== 'Titik Baru') return;
+    if (!visibleStatuses[clean_(row[21])]) return;
+    if (clean_(row[28]) !== layerId) return;
+
+    let geometry = null;
+    try {
+      geometry = parseGeometry_(row[27]);
+    } catch (error) {
+      return;
+    }
+    if (!geometry || geometry.type !== 'Point') return;
+
+    collection.features.push({
+      type: 'Feature',
+      geometry: geometry,
+      properties: {
+        Layer_ID: layerId,
+        Layer_Label: clean_(row[29]),
+        Nama_Objek: clean_(row[16]) || clean_(row[11]) || 'Titik baru',
+        title: clean_(row[11]),
+        status: clean_(row[21]),
+        activityDate: formatPublicDate_(row[13]),
+        submittedAt: formatPublicDate_(row[2])
+      }
+    });
+  });
+
+  return collection;
+}
+
+function findNearbyPendingDuplicate_(
+  sheet,
+  reportType,
+  targetLayerId,
+  geometry,
+  radiusMeters
+) {
+  if (
+    clean_(reportType) !== 'Titik Baru' ||
+    !geometry ||
+    geometry.type !== 'Point'
+  ) {
+    return null;
+  }
+
+  const layerId = clean_(targetLayerId);
+  const longitude = Number(geometry.coordinates[0]);
+  const latitude = Number(geometry.coordinates[1]);
+  if (
+    !layerId ||
+    !Number.isFinite(latitude) ||
+    !Number.isFinite(longitude)
+  ) {
+    return null;
+  }
+
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 2) return null;
+
+  const rows = sheet.getRange(2, 1, lastRow - 1, 32).getValues();
+  const activeStatuses = {
+    'Menunggu Verifikasi': true,
+    'Perlu Perbaikan': true,
+    'Disetujui': true
+  };
+  let nearest = null;
+
+  rows.forEach(function(row) {
+    if (clean_(row[1]) !== 'Titik Baru') return;
+    if (!activeStatuses[clean_(row[21])]) return;
+    if (clean_(row[28]) !== layerId) return;
+
+    let candidateGeometry = null;
+    try {
+      candidateGeometry = parseGeometry_(row[27]);
+    } catch (error) {
+      return;
+    }
+    if (!candidateGeometry || candidateGeometry.type !== 'Point') return;
+
+    const candidateLongitude = Number(candidateGeometry.coordinates[0]);
+    const candidateLatitude = Number(candidateGeometry.coordinates[1]);
+    if (
+      !Number.isFinite(candidateLatitude) ||
+      !Number.isFinite(candidateLongitude)
+    ) {
+      return;
+    }
+
+    const distance = pointDistanceMeters_(
+      latitude,
+      longitude,
+      candidateLatitude,
+      candidateLongitude
+    );
+    if (distance > radiusMeters) return;
+    if (!nearest || distance < nearest.distanceMeters) {
+      nearest = {
+        reportId: clean_(row[0]),
+        objectName: clean_(row[16]) || clean_(row[11]) || 'Titik baru',
+        status: clean_(row[21]),
+        distanceMeters: Math.round(distance)
+      };
+    }
+  });
+
+  return nearest;
+}
+
+function pointDistanceMeters_(lat1, lng1, lat2, lng2) {
+  const radius = 6371000;
+  const toRadians = Math.PI / 180;
+  const dLat = (lat2 - lat1) * toRadians;
+  const dLng = (lng2 - lng1) * toRadians;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1 * toRadians) *
+      Math.cos(lat2 * toRadians) *
+      Math.sin(dLng / 2) *
+      Math.sin(dLng / 2);
+  return radius * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+function formatPublicDate_(value) {
+  if (!value) return '';
+  const date = value instanceof Date ? value : new Date(value);
+  return Number.isNaN(date.getTime())
+    ? ''
+    : Utilities.formatDate(
+        date,
+        Session.getScriptTimeZone() || 'Asia/Jakarta',
+        'yyyy-MM-dd'
+      );
 }
 
 function getAdminDashboardData(token) {
@@ -804,6 +979,21 @@ function buildStoredProposedChanges_(data) {
   }
   if (clean_(data.locationName)) {
     stored.targetObjectName = clean_(data.locationName);
+  }
+  if (
+    data.serverDuplicateWarning &&
+    typeof data.serverDuplicateWarning === 'object'
+  ) {
+    stored.Potensi_Duplikat = {
+      reportId: clean_(data.serverDuplicateWarning.reportId),
+      objectName: clean_(data.serverDuplicateWarning.objectName),
+      status: clean_(data.serverDuplicateWarning.status),
+      distanceMeters: Number(
+        data.serverDuplicateWarning.distanceMeters || 0
+      )
+    };
+    stored.Duplikat_Dikonfirmasi_Pelapor =
+      Boolean(data.duplicateCheckAcknowledged);
   }
 
   const normalizedEcosystemType = normalizeNewObjectEcosystemType_(
