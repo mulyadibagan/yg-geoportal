@@ -17,6 +17,11 @@
     keepBuffer:1
   };
   var analytics={villages:{},socialForestry:{}};
+  var administrativeManifest=null;
+  var administrativeManifestPromise=null;
+  var administrativeShardPromises={};
+  var unavailableAdministrativeKeys={};
+  var activeAdministrativeKey="";
   var attached=new WeakSet();
   var currentAnalysisContext=null;
 
@@ -109,6 +114,34 @@
     return Object.keys(records).map(function(k){return records[k];}).find(function(item){
       return normalizedName(item.name||item.village||"")===title;
     })||null;
+  }
+
+  function loadAdministrativeRecord(key){
+    if(!administrativeManifestPromise){
+      administrativeManifestPromise=fetch("data/administrative-village-analytics/manifest.json?v="+Date.now())
+        .then(function(response){
+          if(!response.ok){throw new Error("Manifest analisis desa belum tersedia");}
+          return response.json();
+        })
+        .then(function(manifest){
+          administrativeManifest=manifest;
+          return manifest;
+        });
+    }
+    return administrativeManifestPromise.then(function(manifest){
+      var shard=manifest.index&&manifest.index[key];
+      if(shard==null){return null;}
+      if(!administrativeShardPromises[shard]){
+        administrativeShardPromises[shard]=fetch("data/administrative-village-analytics/"+shard+".json?v="+encodeURIComponent(manifest.generatedAt||""))
+          .then(function(response){
+            if(!response.ok){throw new Error("Shard analisis desa tidak tersedia");}
+            return response.json();
+          });
+      }
+      return administrativeShardPromises[shard].then(function(records){
+        return records[key]||null;
+      });
+    });
   }
 
   function normalizedName(value){
@@ -782,6 +815,35 @@
 
   function showAnalysis(feature,layerId){
     var element=panel(),info=unitInfo(feature,layerId),record=recordFor(info);
+    if(!record&&layerId==="batas_administrasi_desa_riau"&&!unavailableAdministrativeKeys[info.key]){
+      activeAdministrativeKey=info.key;
+      document.getElementById("yg-va-title").textContent=info.title;
+      document.getElementById("yg-va-subtitle").textContent=info.subtitle;
+      document.getElementById("yg-va-body").innerHTML=
+        '<div class="yg-va-note">Memuat analisis desa…</div>';
+      element.hidden=false;
+      loadAdministrativeRecord(info.key).then(function(loaded){
+        if(activeAdministrativeKey!==info.key){return;}
+        if(loaded){
+          analytics.villages[info.key]=loaded;
+          if(administrativeManifest){
+            analytics.method=administrativeManifest.method||analytics.method;
+            analytics.viirs=administrativeManifest.viirs||analytics.viirs;
+            analytics.referenceLayers=administrativeManifest.referenceLayers||analytics.referenceLayers;
+          }
+        }else{
+          unavailableAdministrativeKeys[info.key]=true;
+        }
+        showAnalysis(feature,layerId);
+      }).catch(function(error){
+        if(activeAdministrativeKey!==info.key){return;}
+        console.warn("Analisis desa gagal dimuat",error);
+        document.getElementById("yg-va-body").innerHTML=
+          '<div class="yg-va-note">Data analisis desa belum tersedia. Jalankan pipeline analisis seluruh desa.</div>';
+      });
+      return;
+    }
+    activeAdministrativeKey=layerId==="batas_administrasi_desa_riau"?info.key:"";
     var pendingAdministrativeAnalytics=!record&&layerId==="batas_administrasi_desa_riau";
     var kpis=reportKpis(info,record,pendingAdministrativeAnalytics);
     document.getElementById("yg-va-title").textContent=info.title;

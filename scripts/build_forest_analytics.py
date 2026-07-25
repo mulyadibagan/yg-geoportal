@@ -36,6 +36,11 @@ VILLAGE_GEOJSON_FILES = [
     ).split(",")
     if path.strip()
 ]
+ANALYTICS_TARGET = ROOT / os.getenv(
+    "FOREST_ANALYTICS_OUTPUT", "data/village-forest-analytics.json"
+)
+INCLUDE_SOCIAL_FORESTRY = os.getenv("FOREST_INCLUDE_SOCIAL_FORESTRY", "1") != "0"
+INCLUDE_LEGACY_GAIN = os.getenv("FOREST_INCLUDE_LEGACY_GAIN", "1") != "0"
 
 
 def request_json(url, payload=None, attempts=4, extra_headers=None):
@@ -263,25 +268,27 @@ def social_forestry_key(properties):
 def analyze(item):
     collection, key, name, feature = item
     geometry_2d = mapping(force_2d(shape(feature["geometry"])))
-    geostore = request_json(
-        GEOSTORE_URL,
-        {"geojson": {"type": "Feature", "properties": {}, "geometry": geometry_2d}},
-    )
-    geostore_id = geostore["data"]["id"]
-    query = urllib.parse.urlencode(
-        {
-            "period": "2001-01-01,2025-12-31",
-            "geostore": geostore_id,
-            "aggregate_values": "false",
-            "thresh": "30",
-        }
-    )
-    result = request_json(f"{ANALYSIS_URL}?{query}")
-    values = result["data"]["attributes"]
+    geostore_id = None
+    gain = None
+    if INCLUDE_LEGACY_GAIN:
+        geostore = request_json(
+            GEOSTORE_URL,
+            {"geojson": {"type": "Feature", "properties": {}, "geometry": geometry_2d}},
+        )
+        geostore_id = geostore["data"]["id"]
+        query = urllib.parse.urlencode(
+            {
+                "period": "2001-01-01,2025-12-31",
+                "geostore": geostore_id,
+                "aggregate_values": "false",
+                "thresh": "30",
+            }
+        )
+        result = request_json(f"{ANALYSIS_URL}?{query}")
+        gain = round(float(result["data"]["attributes"].get("gain") or 0), 2)
     raster_baseline, total_loss, annual = analyze_hansen_rasters(geometry_2d)
     baseline = raster_baseline
-    gain = round(float(values.get("gain") or 0), 2)
-    current = round(max(0, baseline - total_loss + gain), 2)
+    current = round(max(0, baseline - total_loss + (gain or 0)), 2)
     return collection, key, {
         "name": name,
         "geostoreId": geostore_id,
@@ -295,19 +302,34 @@ def analyze(item):
 
 def load_items():
     items = []
-    seen_village_keys = set()
+    grouped_villages = {}
     for relative_path in VILLAGE_GEOJSON_FILES:
         with (ROOT / relative_path).open(encoding="utf-8") as source:
             villages = json.load(source)
         for feature in villages.get("features", []):
             properties = feature.get("properties") or {}
             key = village_key(properties)
-            if not key or key in seen_village_keys:
+            if not key:
                 continue
-            seen_village_keys.add(key)
             name = text(properties.get("WADMKD") or properties.get("Desa") or properties.get("NAMOBJ"))
-            items.append(("villages", key, name, feature))
+            group = grouped_villages.setdefault(key, {"name": name, "geometries": []})
+            group["geometries"].append(shape(feature["geometry"]))
+    for key, group in grouped_villages.items():
+        items.append(
+            (
+                "villages",
+                key,
+                group["name"],
+                {
+                    "type": "Feature",
+                    "properties": {},
+                    "geometry": mapping(unary_union(group["geometries"])),
+                },
+            )
+        )
 
+    if not INCLUDE_SOCIAL_FORESTRY:
+        return items
     with (ROOT / "data" / "PERHUTANAN_SOSIAL_RIAU.geojson").open(encoding="utf-8") as source:
         social_forestry = json.load(source)
     grouped = {}
@@ -357,7 +379,12 @@ def main():
                 "lossWindowEndYear": window_end_year,
                 "lossDataThroughYear": LOSS_END_YEAR,
                 "lossDatasetVersion": f"umd_tree_cover_loss {LOSS_DATASET_VERSION}",
-                "currentForestFormula": "baselineForestHa - totalLossHa + gainHa",
+                "currentForestFormula": (
+                    "baselineForestHa - totalLossHa + gainHa"
+                    if INCLUDE_LEGACY_GAIN
+                    else "baselineForestHa - totalLossHa"
+                ),
+                "gainIncluded": INCLUDE_LEGACY_GAIN,
                 "areaUnit": "ha",
                 "source": "Hansen/UMD/Google/USGS/NASA public raster download",
             },
@@ -380,7 +407,8 @@ def main():
                 completed += 1
                 print(f"{completed}/{len(items)} {item[0]} {item[2]}", flush=True)
 
-        target = ROOT / "data" / "village-forest-analytics.json"
+        target = ANALYTICS_TARGET
+        target.parent.mkdir(parents=True, exist_ok=True)
         preserve_hotspot_metrics(output, target)
         target.write_text(json.dumps(output, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(

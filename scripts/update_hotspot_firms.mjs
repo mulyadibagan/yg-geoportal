@@ -6,7 +6,10 @@ import { fileURLToPath } from "node:url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const ROOT = path.resolve(__dirname, "..");
-const ANALYTICS_PATH = path.join(ROOT, "data", "village-forest-analytics.json");
+const ANALYTICS_PATH = path.join(
+  ROOT,
+  process.env.FIRMS_ANALYTICS_OUTPUT || "data/village-forest-analytics.json"
+);
 const VILLAGE_GEOJSON_FILES = (process.env.FIRMS_VILLAGE_GEOJSON || "data/desa_intervensi.geojson")
   .split(",")
   .map((x) => x.trim())
@@ -16,6 +19,7 @@ const PS_GEOJSON_FILE = path.join(
   ROOT,
   process.env.FIRMS_PS_GEOJSON || "data/PERHUTANAN_SOSIAL_RIAU.geojson"
 );
+const INCLUDE_SOCIAL_FORESTRY = process.env.FIRMS_INCLUDE_SOCIAL_FORESTRY !== "0";
 
 const FIRMS_KEY = process.env.FIRMS_MAP_KEY || "";
 const DRY_RUN = process.env.FIRMS_DRY_RUN === "1";
@@ -371,19 +375,20 @@ async function loadVillageBoundaryItems() {
         continue;
       }
       const key = villageKey(properties);
-      if (!key || byKey.has(key)) {
+      if (!key) {
         continue;
       }
-      byKey.set(key, {
-        key,
-        name: villageName(properties),
-        geometry,
-        bounds: geometryBounds(geometry)
-      });
+      if (!byKey.has(key)) {
+        byKey.set(key, { key, name: villageName(properties), geometries: [] });
+      }
+      byKey.get(key).geometries.push(geometry);
     }
   }
 
-  return Array.from(byKey.values());
+  return Array.from(byKey.values()).map((item) => ({
+    ...item,
+    bounds: combineGeometryBounds(item.geometries)
+  }));
 }
 
 async function loadSocialForestryItems() {
@@ -430,10 +435,11 @@ async function main() {
   const rawVillageItems = await loadVillageBoundaryItems();
   const villageItems = rawVillageItems.map((item) => ({
     ...item,
-    collection: "villages",
-    geometries: [item.geometry]
+    collection: "villages"
   }));
-  const social = await loadSocialForestryItems();
+  const social = INCLUDE_SOCIAL_FORESTRY
+    ? await loadSocialForestryItems()
+    : { items: [], featureCount: 0 };
   const allItems = [...villageItems, ...social.items];
   const unitItems = allItems.filter(
     (item) => analytics?.[item.collection]?.[item.key]
@@ -444,7 +450,7 @@ async function main() {
   if (!villageItems.length) {
     throw new Error("Tidak ada geometri desa polygon yang valid dari FIRMS_VILLAGE_GEOJSON.");
   }
-  if (!social.items.length) {
+  if (INCLUDE_SOCIAL_FORESTRY && !social.items.length) {
     throw new Error("Tidak ada geometri perhutanan sosial yang valid.");
   }
   if (unmatchedItems.length) {

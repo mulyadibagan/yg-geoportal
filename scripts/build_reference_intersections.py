@@ -18,6 +18,11 @@ VILLAGE_GEOJSON_FILES = [
     ).split(",")
     if path.strip()
 ]
+ANALYTICS_TARGET = ROOT / os.getenv(
+    "FOREST_ANALYTICS_OUTPUT", "data/village-forest-analytics.json"
+)
+INCLUDE_SOCIAL_FORESTRY = os.getenv("FOREST_INCLUDE_SOCIAL_FORESTRY", "1") != "0"
+GROUP_VILLAGE_PARTS = os.getenv("FOREST_GROUP_VILLAGE_PARTS", "0") == "1"
 
 REFERENCES = {
     "peat": ("Gambut_BBSDLP_2019.geojson", "Lahan gambut BBSDLP 2019"),
@@ -194,6 +199,10 @@ def process_units(file_name, collection, key_function, analytics, indexes, group
 
 
 def process_multiple_village_files(file_names, analytics, indexes):
+    if GROUP_VILLAGE_PARTS:
+        return process_units(
+            file_names[0], "villages", village_key, analytics, indexes, group_parts=True
+        )
     total = 0
     for file_name in file_names:
         total += process_units(file_name, "villages", village_key, analytics, indexes)
@@ -201,7 +210,7 @@ def process_multiple_village_files(file_names, analytics, indexes):
 
 
 def main():
-    target = ROOT / "data" / "village-forest-analytics.json"
+    target = ANALYTICS_TARGET
     analytics = json.loads(target.read_text(encoding="utf-8"))
     print("Indexing fungsi kawasan hutan SK 903", flush=True)
     indexes = build_forest_function_indexes()
@@ -212,14 +221,16 @@ def main():
     villages = process_multiple_village_files(
         VILLAGE_GEOJSON_FILES, analytics, indexes
     )
-    social = process_units(
-        "PERHUTANAN_SOSIAL_RIAU.geojson",
-        "socialForestry",
-        social_key,
-        analytics,
-        indexes,
-        group_parts=True,
-    )
+    social = 0
+    if INCLUDE_SOCIAL_FORESTRY:
+        social = process_units(
+            "PERHUTANAN_SOSIAL_RIAU.geojson",
+            "socialForestry",
+            social_key,
+            analytics,
+            indexes,
+            group_parts=True,
+        )
     analytics["referenceLayers"] = {
         key: {"label": label, "file": file_name}
         for key, (file_name, label) in REFERENCES.items()
