@@ -2255,8 +2255,10 @@ function buildPrepostUrls_(sessionId) {
 }
 
 function parseSessionRow_(row) {
+  const sessionId = clean_(row[0]);
+  const generatedUrls = sessionId ? buildPrepostUrls_(sessionId) : {};
   return {
-    sessionId: clean_(row[0]),
+    sessionId: sessionId,
     title: clean_(row[1]),
     activityDate: clean_(row[2]),
     location: clean_(row[3]),
@@ -2265,10 +2267,10 @@ function parseSessionRow_(row) {
     donor: clean_(row[6]),
     targetParticipants: Number(row[7]) || 0,
     status: clean_(row[8]) || 'active',
-    preFormUrl: clean_(row[9]),
-    postFormUrl: clean_(row[10]),
-    preQrUrl: clean_(row[11]),
-    postQrUrl: clean_(row[12]),
+    preFormUrl: clean_(row[9]) || generatedUrls.preFormUrl || '',
+    postFormUrl: clean_(row[10]) || generatedUrls.postFormUrl || '',
+    preQrUrl: generatedUrls.preQrUrl || clean_(row[11]),
+    postQrUrl: generatedUrls.postQrUrl || clean_(row[12]),
     createdByEmail: clean_(row[13]),
     createdAt: clean_(row[14]),
     updatedAt: clean_(row[15])
