@@ -126,6 +126,10 @@
     }).join('');
   }
 
+  function buildLiveSessionDetailUrl(sessionId) {
+    return 'prepost-live-session.html?session=' + encodeURIComponent(text(sessionId));
+  }
+
   function liveRecord(feature) {
     var p = feature.properties || {};
     var info = parse(p.proposedInformation);
@@ -337,8 +341,10 @@
       var ageHtml = renderBreakdownInline(summary.postDemographics && summary.postDemographics.ageCategory, 'Belum ada data umur');
       var delegateHtml = renderBreakdownInline(summary.postDemographics && summary.postDemographics.delegate, 'Belum ada data utusan');
 
+      var detailUrl = buildLiveSessionDetailUrl(session.sessionId || '');
+
       return '' +
-        '<article class="prepost-session-card">' +
+        '<article class="prepost-session-card prepost-session-card--clickable" data-session-id="' + esc(session.sessionId || '') + '" tabindex="0" role="link" aria-label="Buka detail live session ' + esc(session.title || session.sessionId || 'sesi') + '">' +
           '<div class="prepost-session-card__head">' +
             '<h4>' + esc(session.title || session.sessionId || 'Sesi') + '</h4>' +
             '<span>' + esc(session.activityDate || '-') + '</span>' +
@@ -360,12 +366,41 @@
             '<p><strong>Utusan lembaga</strong>' + delegateHtml + '</p>' +
           '</div>' +
           '<div class="prepost-session-card__links">' +
+            (session.sessionId ? '<a class="prepost-session-card__detail-link" href="' + esc(detailUrl) + '">Buka live session</a>' : '') +
             (session.preFormUrl ? '<a href="' + esc(session.preFormUrl) + '" target="_blank" rel="noopener noreferrer">Link pre-test</a>' : '') +
             (session.postFormUrl ? '<a href="' + esc(session.postFormUrl) + '" target="_blank" rel="noopener noreferrer">Link post-test</a>' : '') +
             (session.postQrUrl ? '<a href="' + esc(session.postQrUrl) + '" target="_blank" rel="noopener noreferrer">QR post-test</a>' : '') +
           '</div>' +
         '</article>';
     }).join('');
+  }
+
+  function initPrepostSessionCardNavigation() {
+    var list = document.getElementById('prepost-session-list');
+    if (!list || list.dataset.navBound) return;
+
+    function goToDetail(card) {
+      var id = text(card && card.getAttribute('data-session-id'));
+      if (!id) return;
+      window.location.href = buildLiveSessionDetailUrl(id);
+    }
+
+    list.addEventListener('click', function (event) {
+      if (event.target && event.target.closest && event.target.closest('a')) return;
+      var card = event.target && event.target.closest ? event.target.closest('.prepost-session-card--clickable') : null;
+      if (!card) return;
+      goToDetail(card);
+    });
+
+    list.addEventListener('keydown', function (event) {
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      var card = event.target && event.target.closest ? event.target.closest('.prepost-session-card--clickable') : null;
+      if (!card) return;
+      event.preventDefault();
+      goToDetail(card);
+    });
+
+    list.dataset.navBound = '1';
   }
 
   function renderManageSessionOptions(sessions) {
@@ -769,6 +804,7 @@
 
   document.addEventListener('DOMContentLoaded', function () {
     initTabs();
+    initPrepostSessionCardNavigation();
 
     ['capacity-search', 'capacity-year', 'capacity-regency'].forEach(function (id) {
       var node = document.getElementById(id);

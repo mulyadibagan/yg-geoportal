@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Live Session Pre/Post Test | YG GeoPortal</title>
+  <link rel="stylesheet" href="css/prepost-live-session.css?v=20260725-1">
+</head>
+<body>
+  <main class="live-shell">
+    <header class="live-header">
+      <a class="live-back" href="monitoring.html">Kembali ke Monitoring</a>
+      <div class="live-brand">
+        <img src="assets/logo-yayasan-gambut.png" alt="Logo Yayasan Gambut">
+        <span>Yayasan Gambut</span>
+      </div>
+      <span class="live-badge">Live Session</span>
+      <h1 id="live-title">Memuat sesi...</h1>
+      <p id="live-meta">Mohon tunggu, data sesi sedang dimuat.</p>
+    </header>
+
+    <section class="live-card">
+      <h2>Ringkasan Evaluasi</h2>
+      <div class="live-stats">
+        <article><span>Pre responden</span><strong id="live-pre">0</strong></article>
+        <article><span>Post responden</span><strong id="live-post">0</strong></article>
+        <article><span>Rata-rata pre</span><strong id="live-pre-pct">0%</strong></article>
+        <article><span>Rata-rata post</span><strong id="live-post-pct">0%</strong></article>
+        <article><span>Gain poin</span><strong id="live-gain-pct">0</strong></article>
+        <article><span>Cakupan target</span><strong id="live-completion">0%</strong></article>
+      </div>
+      <div id="live-links" class="live-links"></div>
+      <p id="live-generated" class="live-generated">-</p>
+    </section>
+
+    <section class="live-card">
+      <h2>Demografi Post-Test</h2>
+      <div class="live-breakdowns">
+        <article>
+          <h3>Gender</h3>
+          <div id="live-gender" class="breakdown-chips"></div>
+        </article>
+        <article>
+          <h3>Kategori umur</h3>
+          <div id="live-age" class="breakdown-chips"></div>
+        </article>
+        <article>
+          <h3>Utusan lembaga</h3>
+          <div id="live-delegate" class="breakdown-chips"></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="live-card">
+      <h2>Bank Soal Sesi</h2>
+      <div class="live-question-columns">
+        <section>
+          <h3 id="live-pre-title">Pre-test (0 soal)</h3>
+          <div id="live-pre-questions" class="question-list"></div>
+        </section>
+        <section>
+          <h3 id="live-post-title">Post-test (0 soal)</h3>
+          <div id="live-post-questions" class="question-list"></div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/prepost-live-session.js?v=20260725-1"></script>
+</body>
+</html>
