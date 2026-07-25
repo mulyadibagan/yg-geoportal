@@ -2238,7 +2238,7 @@ function createPrepostId_(prefix) {
 }
 
 function prepostAppBaseUrl_() {
-  return 'https://mulyadibagan.github.io/yg-geoportal/prepost-test.html';
+  return 'https://webgisyg.id/prepost-test.html';
 }
 
 function buildPrepostUrls_(sessionId) {
@@ -2271,10 +2271,10 @@ function parseSessionRow_(row) {
     donor: clean_(row[6]),
     targetParticipants: Number(row[7]) || 0,
     status: clean_(row[8]) || 'active',
-    preFormUrl: clean_(row[9]) || generatedUrls.preFormUrl || '',
-    postFormUrl: clean_(row[10]) || generatedUrls.postFormUrl || '',
-    preQrUrl: generatedUrls.preQrUrl || clean_(row[11]),
-    postQrUrl: generatedUrls.postQrUrl || clean_(row[12]),
+    preFormUrl: generatedUrls.preFormUrl || clean_(row[9]) || '',
+    postFormUrl: generatedUrls.postFormUrl || clean_(row[10]) || '',
+    preQrUrl: generatedUrls.preQrUrl || clean_(row[11]) || '',
+    postQrUrl: generatedUrls.postQrUrl || clean_(row[12]) || '',
     createdByEmail: clean_(row[13]),
     createdAt: clean_(row[14]),
     updatedAt: clean_(row[15])
