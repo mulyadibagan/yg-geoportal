@@ -3,6 +3,10 @@
 
   const API = "https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec?page=objects";
   const CALLBACK = "ygDashboardV3Callback";
+  const DASHBOARD_CACHE_KEY = "ygDashboardV3Cache_v2";
+  const DASHBOARD_CACHE_MAX_AGE_MS = 1000 * 60 * 60 * 24 * 7;
+  const DASHBOARD_REQUEST_TIMEOUT_MS = 18000;
+  const DASHBOARD_REQUEST_MAX_ATTEMPTS = 3;
   const CAPACITY_BASELINE_URL = "data/capacity-building.json?v=20260722-3";
   const PUBLIC_REPORTS_API = API.replace("?page=objects", "?page=public-reports");
   const OFFICIAL_LAYERS = [
@@ -15,6 +19,95 @@
     return String(value == null ? "" : value).replace(/[&<>"']/g, char => ({
       "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
     })[char]);
+  }
+
+  function setDashboardUpdatedMessage(message) {
+    const node = document.getElementById("dashboard-updated");
+    if (!node) return;
+    node.textContent = message;
+  }
+
+  function readDashboardCache() {
+    try {
+      const raw = window.localStorage.getItem(DASHBOARD_CACHE_KEY);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      if (!parsed || typeof parsed !== "object") return null;
+      if (!parsed.data || typeof parsed.data !== "object") return null;
+      const savedAt = Number(parsed.savedAt || 0);
+      if (!Number.isFinite(savedAt) || savedAt <= 0) return null;
+      if (Date.now() - savedAt > DASHBOARD_CACHE_MAX_AGE_MS) return null;
+      return {
+        data: parsed.data,
+        savedAt: savedAt
+      };
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function writeDashboardCache(data) {
+    try {
+      window.localStorage.setItem(DASHBOARD_CACHE_KEY, JSON.stringify({
+        savedAt: Date.now(),
+        data: data
+      }));
+    } catch (error) {
+      // Ignore storage quota/private mode failures.
+    }
+  }
+
+  function requestDashboardDataOnce(attempt) {
+    return new Promise((resolve, reject) => {
+      const callback = CALLBACK + "_" + Date.now() + "_" + Math.floor(Math.random() * 1000);
+      const script = document.createElement("script");
+      const timer = window.setTimeout(() => {
+        cleanup();
+        reject(new Error("Dashboard request timeout"));
+      }, DASHBOARD_REQUEST_TIMEOUT_MS);
+
+      function cleanup() {
+        window.clearTimeout(timer);
+        try {
+          delete window[callback];
+        } catch (error) {
+          window[callback] = undefined;
+        }
+        if (script.parentNode) {
+          script.parentNode.removeChild(script);
+        }
+      }
+
+      window[callback] = data => {
+        cleanup();
+        if (!data || typeof data !== "object") {
+          reject(new Error("Dashboard response is empty"));
+          return;
+        }
+        resolve(data);
+      };
+
+      script.onerror = () => {
+        cleanup();
+        reject(new Error("Dashboard script failed to load"));
+      };
+
+      script.async = true;
+      script.src = API + "&callback=" + callback + "&t=" + Date.now() + "&attempt=" + attempt;
+      document.head.appendChild(script);
+    });
+  }
+
+  async function requestDashboardDataWithRetry() {
+    let lastError = null;
+    for (let attempt = 1; attempt <= DASHBOARD_REQUEST_MAX_ATTEMPTS; attempt += 1) {
+      try {
+        return await requestDashboardDataOnce(attempt);
+      } catch (error) {
+        lastError = error;
+      }
+    }
+    throw lastError || new Error("Dashboard request failed");
   }
 
   function formatNumber(value, digits = 0) {
@@ -1373,22 +1466,34 @@
       new Date(data.generatedAt || Date.now()).toLocaleString("id-ID");
   }
 
-  window[CALLBACK] = data => {
-    renderDashboard(data).catch(error => {
+  async function initDashboardData() {
+    try {
+      const data = await requestDashboardDataWithRetry();
+      await renderDashboard(data);
+      writeDashboardCache(data);
+    } catch (error) {
       console.error(error);
-      document.getElementById("dashboard-updated").textContent =
-        "Dashboard belum dapat disusun. Muat ulang halaman.";
-    });
-  };
+      const cached = readDashboardCache();
+      if (cached && cached.data) {
+        try {
+          await renderDashboard(cached.data);
+          setDashboardUpdatedMessage(
+            "Sumber: data cadangan perangkat (offline fallback) "+
+            "- sinkron terakhir " +
+            new Date(cached.savedAt).toLocaleString("id-ID")
+          );
+          return;
+        } catch (renderError) {
+          console.error(renderError);
+        }
+      }
+      setDashboardUpdatedMessage(
+        "Data dashboard belum dapat dimuat di perangkat ini. Cek koneksi/DNS/AdBlock lalu muat ulang."
+      );
+    }
+  }
 
-  const script = document.createElement("script");
-  script.src = API + "&callback=" + CALLBACK + "&t=" + Date.now();
-  script.async = true;
-  script.onerror = function() {
-    document.getElementById("dashboard-updated").textContent =
-      "Master Database belum dapat dimuat. Periksa deployment Apps Script.";
-  };
-  document.head.appendChild(script);
+  initDashboardData();
 
   const ppcfDetails = {
     training: '<h4>Pelatihan PPCF</h4><div class="funding-detail-grid"><article><strong>69 peserta</strong><span>Pelatihan pengelolaan gambut berkelanjutan dan pertanian tanpa bakar · 7 Agustus 2025</span></article><article><strong>50 peserta</strong><span>Pelatihan agroforestri kopi Liberika, termasuk 13 perempuan · 19 Desember 2025</span></article></div>',

@@ -39,13 +39,13 @@
       goal: 4,
       title: 'Pendidikan Berkualitas',
       contribution: '<ul><li>Pelatihan pembibitan, restorasi, agroforestri, pengolahan kopi, dan pertanian tanpa bakar.</li><li>Peningkatan kapasitas kelompok masyarakat dalam pemantauan ekosistem.</li><li>Penyusunan panduan dan materi pembelajaran berbasis pengalaman lapangan.</li></ul>',
-      icon: 'https://sdgs.un.org/sites/default/files/goals/E_SDG_Icons-04.jpg'
+      icon: 'assets/sdg-icons/sdg-4.jpg'
     },
     {
       goal: 5,
       title: 'Kesetaraan Gender',
       contribution: '<ul><li>Mendorong partisipasi perempuan dalam pengambilan keputusan di tingkat desa.</li><li>Mendukung kewirausahaan perempuan melalui kelompok tani kopi Liberika.</li><li>Memastikan keterlibatan perempuan dalam semua sesi pelatihan dan kegiatan.</li></ul>',
-      icon: 'https://www.un.org/sustainabledevelopment/wp-content/uploads/sites/3/2016/01/S_SDG_Icons-01-05.jpg'
+      icon: 'assets/sdg-icons/sdg-5.jpg'
     },
     {
       goal: 6,
@@ -63,7 +63,7 @@
       goal: 10,
       title: 'Berkurangnya Kesenjangan',
       contribution: '<ul><li>Mendorong partisipasi kelompok rentan dan penyandang disabilitas dalam kegiatan lingkungan.</li><li>Mendukung kepemimpinan inklusif dalam kelompok masyarakat pesisir.</li><li>Salah satu kelompok mangrove di Sepahat dipimpin oleh penyandang disabilitas dan berperan aktif dalam pengelolaan restorasi mangrove.</li></ul>',
-      icon: 'https://sdgs.un.org/sites/default/files/goals/E_SDG_Icons-10.jpg'
+      icon: 'assets/sdg-icons/sdg-10.jpg'
     },
     {
       goal: 11,
@@ -75,7 +75,7 @@
       goal: 12,
       title: 'Konsumsi dan Produksi yang Bertanggung Jawab',
       contribution: '<ul><li>Pengembangan kopi Liberika dan produk lokal melalui praktik produksi berkelanjutan.</li><li>Penerapan pertanian tanpa bakar dan agroforestri ramah gambut.</li><li>Peningkatan pengolahan pascapanen, SOP produksi, kualitas produk, dan pemanfaatan sumber daya lokal secara bertanggung jawab.</li></ul>',
-      icon: 'https://sdgs.un.org/sites/default/files/goals/E_SDG_Icons-12.jpg'
+      icon: 'assets/sdg-icons/sdg-12.jpg'
     },
     {
       goal: 13,
@@ -99,7 +99,7 @@
       goal: 16,
       title: 'Perdamaian, Keadilan dan Kelembagaan yang Tangguh',
       contribution: '<ul><li>Penguatan kapasitas KTH, KUPS, kelompok perempuan, dan kelompok pengelola mangrove.</li><li>Mendukung penyusunan rencana kerja perhutanan sosial dan pengambilan keputusan partisipatif.</li><li>Mendorong kolaborasi masyarakat dengan pemerintah desa, Balai PSKL, perguruan tinggi, dan mitra program.</li></ul>',
-      icon: 'https://sdgs.un.org/sites/default/files/goals/E_SDG_Icons-16.jpg'
+      icon: 'assets/sdg-icons/sdg-16.jpg'
     },
     {
       goal: 17,
