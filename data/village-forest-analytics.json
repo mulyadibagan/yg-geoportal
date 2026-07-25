@@ -5095,8 +5095,8 @@
     "providers": [
       "VIIRS_SNPP_NRT"
     ],
-    "updatedAt": "2026-07-25T00:04:14.024Z",
-    "recentUpdatedAt": "2026-07-25T00:04:14.024Z",
+    "updatedAt": "2026-07-25T00:08:18.160Z",
+    "recentUpdatedAt": "2026-07-25T00:08:18.160Z",
     "historyUpdatedAt": null,
     "mode": "recent",
     "periodDays": [
@@ -5104,27 +5104,8 @@
       30
     ],
     "yearlyTrendYears": 5,
-    "status": "partial",
-    "skippedChunks": [
-      {
-        "source": "VIIRS_SNPP_NRT",
-        "start": "2026-06-26",
-        "end": "2026-07-05",
-        "error": "HTTP 400: Invalid day range. Expects [1..5]."
-      },
-      {
-        "source": "VIIRS_SNPP_NRT",
-        "start": "2026-07-06",
-        "end": "2026-07-15",
-        "error": "HTTP 400: Invalid day range. Expects [1..5]."
-      },
-      {
-        "source": "VIIRS_SNPP_NRT",
-        "start": "2026-07-16",
-        "end": "2026-07-24",
-        "error": "HTTP 400: Invalid day range. Expects [1..5]."
-      }
-    ],
+    "status": "complete",
+    "skippedChunks": [],
     "units": {
       "villages": 13,
       "socialForestryFeatures": 149,
