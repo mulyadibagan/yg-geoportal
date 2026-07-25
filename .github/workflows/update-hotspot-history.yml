@@ -32,7 +32,7 @@ jobs:
           FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
           FIRMS_SOURCES: VIIRS_SNPP_SP
           FIRMS_MODE: history
-          FIRMS_CHUNK_DAYS: 10
+          FIRMS_CHUNK_DAYS: 5
           FIRMS_VILLAGE_GEOJSON: data/desa_intervensi.geojson
           FIRMS_PS_GEOJSON: data/PERHUTANAN_SOSIAL_RIAU.geojson
         run: |

@@ -24,7 +24,7 @@ const FIRMS_SOURCES = (process.env.FIRMS_SOURCES || "VIIRS_SNPP_SP,VIIRS_NOAA20_
   .split(",")
   .map((x) => x.trim())
   .filter(Boolean);
-const CHUNK_DAYS = Number(process.env.FIRMS_CHUNK_DAYS || 10);
+const CHUNK_DAYS = Number(process.env.FIRMS_CHUNK_DAYS || 5);
 const REQUEST_TIMEOUT_MS = Number(process.env.FIRMS_TIMEOUT_MS || 90000);
 const REQUEST_MAX_ATTEMPTS = Number(process.env.FIRMS_RETRY_ATTEMPTS || 4);
 const REQUEST_RETRY_BASE_MS = Number(process.env.FIRMS_RETRY_BASE_MS || 1200);
