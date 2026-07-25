@@ -7,6 +7,7 @@
   var COMMUNITY_LAYER_COLOR = '#7b1fa2';
   var COMMUNITY_API = 'https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec?page=public-reports';
   var OBJECTS_API = 'https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec?page=objects';
+  var PREPOST_API = 'https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec';
   var communityDataCache = null;
   var communityDataPromise = null;
 
@@ -22,8 +23,12 @@
   var imagesProcessing = false;
   var capacityDocumentInput = document.getElementById('capacity-documents');
   var capacityDocumentList = document.getElementById('capacity-document-list');
+  var capacitySessionSelect = document.getElementById('capacity-session-id');
+  var capacitySessionSummaryNode = document.getElementById('capacity-session-summary');
   var capacityDocuments = [];
   var capacityDocumentsProcessing = false;
+  var capacitySessionOptionsLoaded = false;
+  var selectedCapacitySessionSummary = null;
   var selectedType = '';
   var geometryType = '';
   var geometryGeoJSON = null;
@@ -170,6 +175,7 @@
     existingFeatureFields.hidden = existingFeatureTypes.indexOf(type) === -1;
 
     if(type === 'Capacity Building'){
+      loadCapacityEvidenceSessions();
       if(geometryTitle) geometryTitle.textContent = '4. Tentukan lokasi';
       geometrySection.hidden = true;
       pointTools.hidden = true;
@@ -416,6 +422,130 @@
     });
 
     return communityDataPromise;
+  }
+
+  function jsonpRequest(url, prefix){
+    return new Promise(function(resolve,reject){
+      var callbackName = (prefix || 'ygReportCallback_') + Date.now();
+      var script = document.createElement('script');
+      var timer = window.setTimeout(function(){
+        cleanup();
+        reject(new Error('Waktu pemuatan data habis.'));
+      },15000);
+
+      function cleanup(){
+        window.clearTimeout(timer);
+        try{ delete window[callbackName]; }catch(e){ window[callbackName] = undefined; }
+        if(script.parentNode) script.parentNode.removeChild(script);
+      }
+
+      window[callbackName] = function(data){
+        cleanup();
+        resolve(data);
+      };
+
+      script.onerror = function(){
+        cleanup();
+        reject(new Error('Data gagal dimuat.'));
+      };
+
+      script.src = url + (url.indexOf('?') === -1 ? '?' : '&') +
+        'callback=' + callbackName + '&t=' + Date.now();
+      script.async = true;
+      document.head.appendChild(script);
+    });
+  }
+
+  function capacityEvidenceText(summary){
+    if(!summary) return '';
+    return 'Pre: ' + Number(summary.preRespondents || 0).toLocaleString('id-ID') +
+      ' | Post: ' + Number(summary.postRespondents || 0).toLocaleString('id-ID') +
+      ' | Rata-rata pre: ' + Number(summary.preAvgScore || 0).toLocaleString('id-ID') +
+      ' | Rata-rata post: ' + Number(summary.postAvgScore || 0).toLocaleString('id-ID') +
+      ' | Gain: ' + Number(summary.gainScore || 0).toLocaleString('id-ID');
+  }
+
+  function renderCapacitySessionSummary(summary){
+    if(!capacitySessionSummaryNode) return;
+    if(!summary){
+      capacitySessionSummaryNode.style.display = 'none';
+      capacitySessionSummaryNode.textContent = '';
+      return;
+    }
+    capacitySessionSummaryNode.style.display = 'block';
+    capacitySessionSummaryNode.innerHTML =
+      '<strong>Ringkasan evidence pre/post test</strong><br>' +
+      capacityEvidenceText(summary);
+  }
+
+  async function loadCapacitySessionDetail(sessionId){
+    if(!sessionId){
+      selectedCapacitySessionSummary = null;
+      renderCapacitySessionSummary(null);
+      return;
+    }
+
+    try{
+      var detail = await jsonpRequest(
+        PREPOST_API + '?page=prepost-session-detail&sessionId=' +
+          encodeURIComponent(sessionId),
+        'ygCapacitySessionDetail_'
+      );
+      if(!detail || detail.ok === false){
+        selectedCapacitySessionSummary = null;
+        renderCapacitySessionSummary(null);
+        return;
+      }
+      selectedCapacitySessionSummary = {
+        sessionId: sessionId,
+        preRespondents: Number((detail.summary || {}).preRespondents || 0),
+        postRespondents: Number((detail.summary || {}).postRespondents || 0),
+        preAvgScore: Number((detail.summary || {}).preAvgScore || 0),
+        postAvgScore: Number((detail.summary || {}).postAvgScore || 0),
+        gainScore: Number((detail.summary || {}).gainScore || 0),
+        gainPercent: Number((detail.summary || {}).gainPercent || 0),
+        completionRate: Number((detail.summary || {}).completionRate || 0)
+      };
+      renderCapacitySessionSummary(selectedCapacitySessionSummary);
+    }catch(error){
+      selectedCapacitySessionSummary = null;
+      renderCapacitySessionSummary(null);
+    }
+  }
+
+  async function loadCapacityEvidenceSessions(){
+    if(!capacitySessionSelect) return;
+    if(capacitySessionOptionsLoaded) return;
+
+    capacitySessionSelect.innerHTML =
+      '<option value="">Memuat sesi...</option>';
+
+    try{
+      var data = await jsonpRequest(
+        PREPOST_API + '?page=prepost-sessions&status=active',
+        'ygCapacitySessions_'
+      );
+      var sessions = Array.isArray(data && data.sessions) ? data.sessions : [];
+      capacitySessionSelect.innerHTML =
+        '<option value="">Pilih sesi (opsional)</option>';
+
+      sessions.forEach(function(item){
+        var session = item.session || {};
+        var summary = item.summary || {};
+        var option = document.createElement('option');
+        option.value = session.sessionId || '';
+        option.textContent =
+          (session.title || session.sessionId || 'Sesi') +
+          ' | Post ' + Number(summary.postRespondents || 0).toLocaleString('id-ID');
+        capacitySessionSelect.appendChild(option);
+      });
+
+      capacitySessionOptionsLoaded = true;
+    }catch(error){
+      capacitySessionSelect.innerHTML =
+        '<option value="">Sesi tidak tersedia</option>';
+      capacitySessionOptionsLoaded = false;
+    }
   }
 
   function makeObjectId(feature,config){
@@ -1837,9 +1967,12 @@
       youthAgeRange:monitoringValue('capacity-youth-age'),
       communityGroup:monitoringValue('capacity-group'),
       participantTarget:monitoringValue('capacity-target'),
+      donor:monitoringValue('capacity-donor'),
       partnerOrResourcePerson:monitoringValue('capacity-partner'),
       topic:monitoringValue('capacity-topic'),
-      youthRole:monitoringValue('capacity-youth-role')
+      youthRole:monitoringValue('capacity-youth-role'),
+      supportSessionId:monitoringValue('capacity-session-id'),
+      supportTestSummary:selectedCapacitySessionSummary || null
     };
   }
 
@@ -2198,8 +2331,8 @@
         alert('Jumlah pemuda tidak boleh melebihi jumlah peserta menurut jenis kelamin.');
         return;
       }
-      if(!capacityDataValidation.participantTarget || !capacityDataValidation.partnerOrResourcePerson || !capacityDataValidation.topic){
-        alert('Isi sasaran peserta, mitra/narasumber, dan topik pelatihan.');
+      if(!capacityDataValidation.participantTarget || !capacityDataValidation.donor || !capacityDataValidation.partnerOrResourcePerson || !capacityDataValidation.topic){
+        alert('Isi sasaran peserta, donor, mitra/narasumber, dan topik pelatihan.');
         return;
       }
     }
@@ -2239,6 +2372,14 @@
         )
       : null;
 
+    var capacityData = selectedType === 'Capacity Building'
+      ? collectCapacityBuildingData()
+      : null;
+
+    var capacityEvidence = selectedType === 'Capacity Building'
+      ? (capacityData.supportTestSummary || null)
+      : null;
+
     var payload = {
       reportType:selectedType,
       name:value('name'),
@@ -2261,7 +2402,7 @@
         : selectedType === 'Replanting/Penyulaman Mangrove'
           ? JSON.stringify(collectReplantingData())
           : selectedType === 'Capacity Building'
-            ? JSON.stringify(collectCapacityBuildingData())
+            ? JSON.stringify(capacityData)
           : value('proposed-information'),
       documentUrl:value('document-url'),
       geometryType:geometryGeoJSON ? geometryGeoJSON.type : '',
@@ -2290,14 +2431,45 @@
           : selectedType === 'Replanting/Penyulaman Mangrove'
             ? JSON.stringify({replanting:collectReplantingData()})
             : selectedType === 'Capacity Building'
-              ? JSON.stringify({capacityBuilding:collectCapacityBuildingData()})
+              ? JSON.stringify({
+                  capacityBuilding:capacityData,
+                  supportTest:capacityEvidence
+                })
             : isNewObjectReport
               ? JSON.stringify(newObjectAttributes)
               : '',
-      donor:isNewObjectReport ? newObjectDonor : '',
+      donor:isNewObjectReport
+        ? newObjectDonor
+        : selectedType === 'Capacity Building'
+          ? capacityData.donor
+          : '',
       newObjectEcosystem:isNewObjectReport ? newObjectEcosystem : '',
       forestSeedlingsCount:forestSeedlingsCount,
       forestSeedlingsSpecies:forestSeedlingsSpecies,
+      supportSessionId:selectedType === 'Capacity Building'
+        ? monitoringValue('capacity-session-id')
+        : '',
+      supportPreRespondents:capacityEvidence
+        ? Number(capacityEvidence.preRespondents || 0)
+        : '',
+      supportPostRespondents:capacityEvidence
+        ? Number(capacityEvidence.postRespondents || 0)
+        : '',
+      supportPreAvg:capacityEvidence
+        ? Number(capacityEvidence.preAvgScore || 0)
+        : '',
+      supportPostAvg:capacityEvidence
+        ? Number(capacityEvidence.postAvgScore || 0)
+        : '',
+      supportGain:capacityEvidence
+        ? Number(capacityEvidence.gainScore || 0)
+        : '',
+      supportGainPercent:capacityEvidence
+        ? Number(capacityEvidence.gainPercent || 0)
+        : '',
+      supportEvidenceStatus:selectedType === 'Capacity Building'
+        ? (capacityEvidence ? 'Lengkap' : 'Belum Lengkap')
+        : '',
       images:compressedImages,
       documents:selectedType === 'Capacity Building' ? capacityDocuments : []
     };
@@ -2362,12 +2534,24 @@
     }
   }
 
+  if(capacitySessionSelect){
+    capacitySessionSelect.addEventListener('change',function(){
+      loadCapacitySessionDetail(this.value);
+    });
+  }
+
   document.getElementById('send-another').addEventListener('click',function(){
     form.reset();
     selectedType = '';
     geometryType = '';
     compressedImages = [];
     capacityDocuments = [];
+    selectedCapacitySessionSummary = null;
+    capacitySessionOptionsLoaded = false;
+    if(capacitySessionSelect){
+      capacitySessionSelect.innerHTML = '<option value="">Pilih sesi (opsional)</option>';
+    }
+    renderCapacitySessionSummary(null);
     renderCapacityDocuments();
     preview.innerHTML = '';
     resetGeometry();

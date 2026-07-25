@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="css/monitoring.css?v=20260721-object-id1">
   <link rel="stylesheet" href="css/monitoring-v1-fix.css?v=20260720-104">
   <link rel="stylesheet" href="css/language-switcher.css?v=20260721-all-pages1">
-  <link rel="stylesheet" href="css/capacity-building.css?v=20260722-capacity2">
+  <link rel="stylesheet" href="css/capacity-building.css?v=20260725-capacity8">
   <style>.capacity-documents{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.capacity-document{display:inline-flex;align-items:center;padding:10px 13px;border-radius:9px;background:#eef7f3;color:#087a58;font-weight:700;text-decoration:none}.capacity-document:hover{background:#dff1e9}</style>
   <meta name="theme-color" content="#079cde">
   <meta name="application-name" content="YG GeoPortal">
@@ -143,6 +143,82 @@
         <label>Tahun<select id="capacity-year"><option value="">Semua tahun</option></select></label>
         <label>Kabupaten<select id="capacity-regency"><option value="">Semua kabupaten</option></select></label>
       </div>
+
+      <section class="capacity-prepost" aria-label="Evaluasi pre dan post test">
+        <div class="capacity-prepost__head">
+          <div>
+            <span class="eyebrow">EVALUASI LIVE</span>
+            <h3>Pre/Post Test Capacity Building</h3>
+          </div>
+          <button id="prepost-refresh" type="button" class="capacity-prepost__refresh">Refresh data</button>
+        </div>
+        <div class="capacity-prepost__stats">
+          <article><span>Sesi aktif</span><strong id="prepost-stat-sessions">0</strong></article>
+          <article><span>Responden pre-test</span><strong id="prepost-stat-pre">0</strong></article>
+          <article><span>Responden post-test</span><strong id="prepost-stat-post">0</strong></article>
+          <article><span>Rata-rata gain</span><strong id="prepost-stat-gain">0</strong></article>
+        </div>
+        <div id="prepost-session-list" class="prepost-session-list"><div class="loading">Memuat sesi pre/post test...</div></div>
+      </section>
+
+      <section class="capacity-prepost capacity-prepost-manage" aria-label="Pengelolaan sesi pre/post test">
+        <div class="capacity-prepost__head">
+          <div>
+            <span class="eyebrow">UNTUK STAFF YG</span>
+            <h3>Buat sesi dan pertanyaan</h3>
+          </div>
+        </div>
+        <div class="capacity-prepost__form-grid">
+          <label>Email official staff
+            <input id="prepost-staff-email" type="email" placeholder="nama@yayasangambut.org">
+          </label>
+          <label>Nama sesi
+            <input id="prepost-session-title" type="text" placeholder="Contoh: Pelatihan Kopi Liberika Temiang">
+          </label>
+          <label>Tanggal kegiatan
+            <input id="prepost-session-date" type="date">
+          </label>
+          <label>Target peserta
+            <input id="prepost-session-target" type="number" min="0" step="1" placeholder="30">
+          </label>
+          <label>Lokasi
+            <input id="prepost-session-location" type="text" placeholder="Desa Temiang">
+          </label>
+          <label>Fasilitator
+            <input id="prepost-session-facilitator" type="text" placeholder="Tim Capacity Building YG">
+          </label>
+        </div>
+        <div class="capacity-prepost__actions">
+          <button id="prepost-create-session" type="button">Buat sesi</button>
+          <span id="prepost-create-status">Gunakan email official Yayasan Gambut untuk mengelola sesi.</span>
+        </div>
+        <hr style="border:none;border-top:1px solid #d9e7e1;margin:16px 0">
+        <div class="capacity-prepost__form-grid">
+          <label>Session ID
+            <input id="prepost-question-session" type="text" placeholder="Contoh: SESS-20260725-101500-123">
+          </label>
+          <label>Fase
+            <select id="prepost-question-phase">
+              <option value="pre">Pre-test</option>
+              <option value="post">Post-test</option>
+            </select>
+          </label>
+          <label>Skor maksimal
+            <input id="prepost-question-max" type="number" min="0" step="1" value="5">
+          </label>
+          <label style="grid-column:1/-1">Pertanyaan
+            <input id="prepost-question-text" type="text" placeholder="Contoh: Seberapa paham Anda tentang topik ini?">
+          </label>
+          <label style="grid-column:1/-1">Pilihan jawaban (format: label:skor, pisahkan dengan koma)
+            <input id="prepost-question-options" type="text" placeholder="Sangat paham:5, Paham:4, Cukup:3, Kurang:2, Tidak paham:1">
+          </label>
+        </div>
+        <div class="capacity-prepost__actions">
+          <button id="prepost-create-question" type="button">Tambah pertanyaan</button>
+          <span id="prepost-question-status">Gunakan Session ID dari hasil pembuatan sesi.</span>
+        </div>
+      </section>
+
       <div id="capacity-list" class="capacity-list"><div class="loading">Memuat kegiatan…</div></div>
     </section>
   </main>
@@ -158,7 +234,7 @@
   <script src="js/monitoring-data-compat.js?v=20260721-object-photo1"></script>
   <script src="js/monitoring.js?v=20260723-audit-fixes1"></script>
   <script src="js/monitoring-photo.js?v=20260720-edge-refresh1"></script>
-  <script src="js/capacity-building.js?v=20260725-capacity7"></script>
+  <script src="js/capacity-building.js?v=20260725-capacity8"></script>
   <script src="js/i18n.js?v=20260724-official-website1"></script>
   <script src="js/pwa.js?v=20260723-edge-photo-fix1"></script>
 </body>

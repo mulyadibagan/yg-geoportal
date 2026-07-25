@@ -7,6 +7,10 @@ const NOTIFICATION_EMAILS = [
   'zamharier@yayasangambut.org'
 ];
 const ADMIN_TOKEN = 'We612IBwjWpyxg-Jw7cf0u9eqlw-6DNn';
+const OFFICIAL_EMAIL_DOMAIN = 'yayasangambut.org';
+const PREPOST_SESSION_SHEET = 'TEST_SESSIONS';
+const PREPOST_QUESTION_SHEET = 'TEST_QUESTIONS';
+const PREPOST_RESPONSE_SHEET = 'TEST_RESPONSES';
 
 /*
   Struktur kolom:
@@ -180,6 +184,27 @@ if (page === 'content-save-result') {
       .setMimeType(ContentService.MimeType.JSON);
   }
 
+  if (page === 'prepost-sessions') {
+    return jsonOrJsonpResponse_(
+      getPrepostSessions_(params),
+      callback
+    );
+  }
+
+  if (page === 'prepost-session-detail') {
+    return jsonOrJsonpResponse_(
+      getPrepostSessionDetail_(params.sessionId),
+      callback
+    );
+  }
+
+  if (page === 'prepost-live-summary') {
+    return jsonOrJsonpResponse_(
+      getPrepostLiveSummary_(params),
+      callback
+    );
+  }
+
   return ContentService
     .createTextOutput(JSON.stringify({
       ok: true,
@@ -206,6 +231,23 @@ if (action === 'content-save') {
     if (action === 'update-master-object') {
       return handleMasterObjectEditorPost_(e);
     }
+
+    if (action === 'prepost-create-session') {
+      return handlePrepostCreateSessionPost_(e);
+    }
+
+    if (action === 'prepost-update-session') {
+      return handlePrepostUpdateSessionPost_(e);
+    }
+
+    if (action === 'prepost-create-question') {
+      return handlePrepostCreateQuestionPost_(e);
+    }
+
+    if (action === 'prepost-submit-response') {
+      return handlePrepostSubmitResponsePost_(e);
+    }
+
     if (
   e &&
   e.parameter &&
@@ -2040,4 +2082,681 @@ function mergeDocumentUrls_(existingValue, uploadedUrls) {
     });
 
   return values;
+}
+
+function jsonOrJsonpResponse_(result, callback) {
+  const json = JSON.stringify(result);
+
+  if (callback && /^[a-zA-Z_$][0-9a-zA-Z_$\.]*$/.test(callback)) {
+    return ContentService
+      .createTextOutput(callback + '(' + json + ');')
+      .setMimeType(ContentService.MimeType.JAVASCRIPT);
+  }
+
+  return ContentService
+    .createTextOutput(json)
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function prepostResponse_(payload) {
+  return ContentService
+    .createTextOutput(JSON.stringify(payload))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function prepostErrorResponse_(message) {
+  return prepostResponse_({
+    ok: false,
+    error: clean_(message) || 'Permintaan tidak valid.'
+  });
+}
+
+function parsePostPayload_(e) {
+  if (!e || !e.parameter || !e.parameter.payload) {
+    throw new Error('Payload tidak ditemukan.');
+  }
+  return JSON.parse(e.parameter.payload);
+}
+
+function isOfficialEmail_(value) {
+  const email = clean_(value).toLowerCase();
+  return email.indexOf('@') > 0 &&
+    email.endsWith('@' + OFFICIAL_EMAIL_DOMAIN);
+}
+
+function assertOfficialEmail_(value) {
+  if (!isOfficialEmail_(value)) {
+    throw new Error(
+      'Akses dibatasi untuk email resmi Yayasan Gambut (' +
+      OFFICIAL_EMAIL_DOMAIN + ').'
+    );
+  }
+}
+
+function getOrCreatePrepostSheet_(name, headers) {
+  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+  let sheet = spreadsheet.getSheetByName(name);
+
+  if (!sheet) {
+    sheet = spreadsheet.insertSheet(name);
+  }
+
+  if (sheet.getMaxColumns() < headers.length) {
+    sheet.insertColumnsAfter(
+      sheet.getMaxColumns(),
+      headers.length - sheet.getMaxColumns()
+    );
+  }
+
+  const currentHeaders = sheet
+    .getRange(1, 1, 1, headers.length)
+    .getDisplayValues()[0];
+
+  headers.forEach(function(header, index) {
+    if (clean_(currentHeaders[index]) !== header) {
+      sheet.getRange(1, index + 1).setValue(header);
+    }
+  });
+
+  sheet.setFrozenRows(1);
+  sheet.getRange(1, 1, 1, headers.length)
+    .setBackground('#0a6f52')
+    .setFontColor('#ffffff')
+    .setFontWeight('bold')
+    .setWrap(true);
+
+  return sheet;
+}
+
+function getPrepostSessionSheet_() {
+  return getOrCreatePrepostSheet_(PREPOST_SESSION_SHEET, [
+    'Session ID',
+    'Title',
+    'Activity Date',
+    'Location',
+    'Village',
+    'Facilitator',
+    'Donor',
+    'Target Participants',
+    'Status',
+    'Pre Form URL',
+    'Post Form URL',
+    'Pre QR URL',
+    'Post QR URL',
+    'Created By Email',
+    'Created At',
+    'Updated At'
+  ]);
+}
+
+function getPrepostQuestionSheet_() {
+  return getOrCreatePrepostSheet_(PREPOST_QUESTION_SHEET, [
+    'Question ID',
+    'Session ID',
+    'Phase',
+    'Question Text',
+    'Question Type',
+    'Options JSON',
+    'Max Score',
+    'Display Order',
+    'Active',
+    'Created By Email',
+    'Created At',
+    'Updated At'
+  ]);
+}
+
+function getPrepostResponseSheet_() {
+  return getOrCreatePrepostSheet_(PREPOST_RESPONSE_SHEET, [
+    'Response ID',
+    'Session ID',
+    'Phase',
+    'Participant Code',
+    'Participant Name',
+    'Participant Email',
+    'Answers JSON',
+    'Total Score',
+    'Source Channel',
+    'Submitted At'
+  ]);
+}
+
+function createPrepostId_(prefix) {
+  return (
+    prefix + '-' +
+    Utilities.formatDate(new Date(), 'Asia/Jakarta', 'yyyyMMdd-HHmmss') +
+    '-' +
+    Math.floor(100 + Math.random() * 900)
+  );
+}
+
+function prepostAppBaseUrl_() {
+  return 'https://mulyadibagan.github.io/yg-geoportal/prepost-test.html';
+}
+
+function buildPrepostUrls_(sessionId) {
+  const base = prepostAppBaseUrl_();
+  const preUrl =
+    base + '?session=' + encodeURIComponent(sessionId) + '&phase=pre';
+  const postUrl =
+    base + '?session=' + encodeURIComponent(sessionId) + '&phase=post';
+  const qrBase = 'https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=';
+  return {
+    preFormUrl: preUrl,
+    postFormUrl: postUrl,
+    preQrUrl: qrBase + encodeURIComponent(preUrl),
+    postQrUrl: qrBase + encodeURIComponent(postUrl)
+  };
+}
+
+function parseSessionRow_(row) {
+  return {
+    sessionId: clean_(row[0]),
+    title: clean_(row[1]),
+    activityDate: clean_(row[2]),
+    location: clean_(row[3]),
+    village: clean_(row[4]),
+    facilitator: clean_(row[5]),
+    donor: clean_(row[6]),
+    targetParticipants: Number(row[7]) || 0,
+    status: clean_(row[8]) || 'active',
+    preFormUrl: clean_(row[9]),
+    postFormUrl: clean_(row[10]),
+    preQrUrl: clean_(row[11]),
+    postQrUrl: clean_(row[12]),
+    createdByEmail: clean_(row[13]),
+    createdAt: clean_(row[14]),
+    updatedAt: clean_(row[15])
+  };
+}
+
+function parseQuestionRow_(row) {
+  let options = [];
+  try {
+    const parsed = row[5] ? JSON.parse(row[5]) : [];
+    options = Array.isArray(parsed) ? parsed : [];
+  } catch (error) {
+    options = [];
+  }
+
+  return {
+    questionId: clean_(row[0]),
+    sessionId: clean_(row[1]),
+    phase: clean_(row[2]).toLowerCase(),
+    questionText: clean_(row[3]),
+    questionType: clean_(row[4]) || 'single',
+    options: options,
+    maxScore: Number(row[6]) || 0,
+    order: Number(row[7]) || 0,
+    active: clean_(row[8]) !== 'false',
+    createdByEmail: clean_(row[9]),
+    createdAt: clean_(row[10]),
+    updatedAt: clean_(row[11])
+  };
+}
+
+function parseResponseRow_(row) {
+  let answers = [];
+  try {
+    const parsed = row[6] ? JSON.parse(row[6]) : [];
+    answers = Array.isArray(parsed) ? parsed : [];
+  } catch (error) {
+    answers = [];
+  }
+
+  return {
+    responseId: clean_(row[0]),
+    sessionId: clean_(row[1]),
+    phase: clean_(row[2]).toLowerCase(),
+    participantCode: clean_(row[3]),
+    participantName: clean_(row[4]),
+    participantEmail: clean_(row[5]),
+    answers: answers,
+    totalScore: Number(row[7]) || 0,
+    sourceChannel: clean_(row[8]) || 'web',
+    submittedAt: clean_(row[9])
+  };
+}
+
+function allSessionRows_() {
+  const sheet = getPrepostSessionSheet_();
+  if (sheet.getLastRow() < 2) return [];
+  return sheet
+    .getRange(2, 1, sheet.getLastRow() - 1, 16)
+    .getDisplayValues()
+    .map(parseSessionRow_)
+    .filter(function(item) { return !!item.sessionId; });
+}
+
+function allQuestionRows_() {
+  const sheet = getPrepostQuestionSheet_();
+  if (sheet.getLastRow() < 2) return [];
+  return sheet
+    .getRange(2, 1, sheet.getLastRow() - 1, 12)
+    .getDisplayValues()
+    .map(parseQuestionRow_)
+    .filter(function(item) { return !!item.questionId; });
+}
+
+function allResponseRows_() {
+  const sheet = getPrepostResponseSheet_();
+  if (sheet.getLastRow() < 2) return [];
+  return sheet
+    .getRange(2, 1, sheet.getLastRow() - 1, 10)
+    .getDisplayValues()
+    .map(parseResponseRow_)
+    .filter(function(item) { return !!item.responseId; });
+}
+
+function summarizeSession_(session, questions, responses) {
+  const sessionQuestions = questions.filter(function(item) {
+    return item.sessionId === session.sessionId && item.active;
+  });
+  const sessionResponses = responses.filter(function(item) {
+    return item.sessionId === session.sessionId;
+  });
+
+  const preResponses = sessionResponses.filter(function(item) {
+    return item.phase === 'pre';
+  });
+  const postResponses = sessionResponses.filter(function(item) {
+    return item.phase === 'post';
+  });
+
+  const preTotal = preResponses.reduce(function(total, item) {
+    return total + Number(item.totalScore || 0);
+  }, 0);
+  const postTotal = postResponses.reduce(function(total, item) {
+    return total + Number(item.totalScore || 0);
+  }, 0);
+
+  const preAvg = preResponses.length ? preTotal / preResponses.length : 0;
+  const postAvg = postResponses.length ? postTotal / postResponses.length : 0;
+  const gain = postAvg - preAvg;
+
+  const preQuestionMax = sessionQuestions
+    .filter(function(item) { return item.phase === 'pre'; })
+    .reduce(function(total, item) { return total + Number(item.maxScore || 0); }, 0);
+  const postQuestionMax = sessionQuestions
+    .filter(function(item) { return item.phase === 'post'; })
+    .reduce(function(total, item) { return total + Number(item.maxScore || 0); }, 0);
+
+  const completionRate = session.targetParticipants > 0
+    ? (postResponses.length / session.targetParticipants) * 100
+    : 0;
+
+  return {
+    preRespondents: preResponses.length,
+    postRespondents: postResponses.length,
+    preAvgScore: Number(preAvg.toFixed(2)),
+    postAvgScore: Number(postAvg.toFixed(2)),
+    gainScore: Number(gain.toFixed(2)),
+    gainPercent: preAvg > 0
+      ? Number((((postAvg - preAvg) / preAvg) * 100).toFixed(2))
+      : 0,
+    completionRate: Number(completionRate.toFixed(2)),
+    preMaxScore: preQuestionMax,
+    postMaxScore: postQuestionMax,
+    questionCount: sessionQuestions.length
+  };
+}
+
+function getPrepostSessions_(params) {
+  const status = clean_(params.status || '').toLowerCase();
+  const query = clean_(params.q || '').toLowerCase();
+  const sessions = allSessionRows_();
+  const questions = allQuestionRows_();
+  const responses = allResponseRows_();
+
+  const rows = sessions
+    .filter(function(item) {
+      if (status && item.status.toLowerCase() !== status) return false;
+      if (!query) return true;
+      const hay = [
+        item.title,
+        item.location,
+        item.village,
+        item.facilitator,
+        item.donor
+      ].join(' ').toLowerCase();
+      return hay.indexOf(query) !== -1;
+    })
+    .map(function(session) {
+      return {
+        session: session,
+        summary: summarizeSession_(session, questions, responses)
+      };
+    })
+    .sort(function(a, b) {
+      return String(b.session.activityDate).localeCompare(String(a.session.activityDate));
+    });
+
+  return {
+    ok: true,
+    generatedAt: new Date().toISOString(),
+    count: rows.length,
+    sessions: rows
+  };
+}
+
+function getPrepostSessionDetail_(sessionId) {
+  const id = clean_(sessionId);
+  if (!id) {
+    return { ok: false, error: 'Session ID wajib diisi.' };
+  }
+
+  const sessions = allSessionRows_();
+  const session = sessions.find(function(item) {
+    return item.sessionId === id;
+  });
+
+  if (!session) {
+    return { ok: false, error: 'Sesi tidak ditemukan.' };
+  }
+
+  const questions = allQuestionRows_().filter(function(item) {
+    return item.sessionId === id && item.active;
+  }).sort(function(a, b) {
+    return a.order - b.order;
+  });
+
+  const responses = allResponseRows_().filter(function(item) {
+    return item.sessionId === id;
+  });
+
+  return {
+    ok: true,
+    generatedAt: new Date().toISOString(),
+    session: session,
+    summary: summarizeSession_(session, questions, responses),
+    questions: questions
+  };
+}
+
+function getPrepostLiveSummary_(params) {
+  const scope = clean_(params.scope || 'all').toLowerCase();
+  const sessions = allSessionRows_();
+  const questions = allQuestionRows_();
+  const responses = allResponseRows_();
+
+  const selectedSessions = scope === 'active'
+    ? sessions.filter(function(item) { return item.status === 'active'; })
+    : sessions;
+
+  const mapped = selectedSessions.map(function(session) {
+    return {
+      sessionId: session.sessionId,
+      title: session.title,
+      activityDate: session.activityDate,
+      status: session.status,
+      targetParticipants: session.targetParticipants,
+      summary: summarizeSession_(session, questions, responses)
+    };
+  });
+
+  const totals = mapped.reduce(function(acc, item) {
+    acc.sessions += 1;
+    acc.preRespondents += item.summary.preRespondents;
+    acc.postRespondents += item.summary.postRespondents;
+    acc.avgGain += item.summary.gainScore;
+    return acc;
+  }, {
+    sessions: 0,
+    preRespondents: 0,
+    postRespondents: 0,
+    avgGain: 0
+  });
+
+  return {
+    ok: true,
+    generatedAt: new Date().toISOString(),
+    totals: {
+      sessions: totals.sessions,
+      preRespondents: totals.preRespondents,
+      postRespondents: totals.postRespondents,
+      avgGain: totals.sessions
+        ? Number((totals.avgGain / totals.sessions).toFixed(2))
+        : 0
+    },
+    sessions: mapped
+  };
+}
+
+function handlePrepostCreateSessionPost_(e) {
+  try {
+    const data = parsePostPayload_(e);
+    assertOfficialEmail_(data.staffEmail);
+
+    const sessionId = createPrepostId_('SESS');
+    const urls = buildPrepostUrls_(sessionId);
+    const now = new Date();
+    const sheet = getPrepostSessionSheet_();
+
+    sheet.appendRow([
+      sessionId,
+      clean_(data.title),
+      clean_(data.activityDate),
+      clean_(data.location),
+      clean_(data.village),
+      clean_(data.facilitator),
+      clean_(data.donor),
+      Number(data.targetParticipants) || 0,
+      clean_(data.status) || 'active',
+      urls.preFormUrl,
+      urls.postFormUrl,
+      urls.preQrUrl,
+      urls.postQrUrl,
+      clean_(data.staffEmail).toLowerCase(),
+      now,
+      now
+    ]);
+
+    return prepostResponse_({
+      ok: true,
+      sessionId: sessionId,
+      links: urls
+    });
+  } catch (error) {
+    return prepostErrorResponse_(error.message);
+  }
+}
+
+function handlePrepostUpdateSessionPost_(e) {
+  try {
+    const data = parsePostPayload_(e);
+    assertOfficialEmail_(data.staffEmail);
+    const sessionId = clean_(data.sessionId);
+    if (!sessionId) throw new Error('Session ID wajib diisi.');
+
+    const sheet = getPrepostSessionSheet_();
+    if (sheet.getLastRow() < 2) throw new Error('Sesi tidak ditemukan.');
+
+    const rows = sheet
+      .getRange(2, 1, sheet.getLastRow() - 1, 16)
+      .getDisplayValues();
+
+    let found = -1;
+    rows.forEach(function(row, index) {
+      if (clean_(row[0]) === sessionId) found = index + 2;
+    });
+    if (found === -1) throw new Error('Sesi tidak ditemukan.');
+
+    const urls = buildPrepostUrls_(sessionId);
+    const previous = sheet.getRange(found, 1, 1, 16).getDisplayValues()[0];
+
+    sheet.getRange(found, 1, 1, 16).setValues([[
+      sessionId,
+      clean_(data.title) || clean_(previous[1]),
+      clean_(data.activityDate) || clean_(previous[2]),
+      clean_(data.location) || clean_(previous[3]),
+      clean_(data.village) || clean_(previous[4]),
+      clean_(data.facilitator) || clean_(previous[5]),
+      clean_(data.donor) || clean_(previous[6]),
+      Number(data.targetParticipants || previous[7]) || 0,
+      clean_(data.status) || clean_(previous[8]) || 'active',
+      urls.preFormUrl,
+      urls.postFormUrl,
+      urls.preQrUrl,
+      urls.postQrUrl,
+      clean_(previous[13]),
+      previous[14],
+      new Date()
+    ]]);
+
+    return prepostResponse_({ ok: true, sessionId: sessionId, links: urls });
+  } catch (error) {
+    return prepostErrorResponse_(error.message);
+  }
+}
+
+function normalizeQuestionOptions_(value) {
+  if (Array.isArray(value)) return value;
+  if (!value) return [];
+  if (typeof value === 'string') {
+    try {
+      const parsed = JSON.parse(value);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (error) {
+      return [];
+    }
+  }
+  return [];
+}
+
+function handlePrepostCreateQuestionPost_(e) {
+  try {
+    const data = parsePostPayload_(e);
+    assertOfficialEmail_(data.staffEmail);
+    const sessionId = clean_(data.sessionId);
+    if (!sessionId) throw new Error('Session ID wajib diisi.');
+
+    const phase = clean_(data.phase).toLowerCase();
+    if (['pre', 'post'].indexOf(phase) === -1) {
+      throw new Error('Phase harus pre atau post.');
+    }
+
+    const questionText = clean_(data.questionText);
+    if (!questionText) throw new Error('Pertanyaan wajib diisi.');
+
+    const questionType = clean_(data.questionType) || 'single';
+    const maxScore = Number(data.maxScore);
+    const options = normalizeQuestionOptions_(data.options);
+
+    const sheet = getPrepostQuestionSheet_();
+    const now = new Date();
+    sheet.appendRow([
+      createPrepostId_('QST'),
+      sessionId,
+      phase,
+      questionText,
+      questionType,
+      JSON.stringify(options),
+      Number.isFinite(maxScore) ? maxScore : 0,
+      Number(data.order) || 0,
+      'true',
+      clean_(data.staffEmail).toLowerCase(),
+      now,
+      now
+    ]);
+
+    return prepostResponse_({ ok: true });
+  } catch (error) {
+    return prepostErrorResponse_(error.message);
+  }
+}
+
+function findQuestionById_(questions, questionId) {
+  const id = clean_(questionId);
+  return questions.find(function(item) {
+    return item.questionId === id;
+  });
+}
+
+function scoreResponseAnswers_(answers, questions) {
+  if (!Array.isArray(answers)) return 0;
+  return answers.reduce(function(total, answer) {
+    const question = findQuestionById_(questions, answer.questionId);
+    if (!question) return total;
+
+    if (Number.isFinite(Number(answer.score))) {
+      return total + Number(answer.score);
+    }
+
+    if (question.questionType === 'scale') {
+      const value = Number(answer.value);
+      return total + (Number.isFinite(value) ? value : 0);
+    }
+
+    if (question.questionType === 'single') {
+      const selected = clean_(answer.value);
+      const option = (question.options || []).find(function(item) {
+        return clean_(item.value) === selected || clean_(item.label) === selected;
+      });
+      return total + Number((option && option.score) || 0);
+    }
+
+    return total;
+  }, 0);
+}
+
+function handlePrepostSubmitResponsePost_(e) {
+  try {
+    const data = parsePostPayload_(e);
+    const sessionId = clean_(data.sessionId);
+    const phase = clean_(data.phase).toLowerCase();
+
+    if (!sessionId) throw new Error('Session ID wajib diisi.');
+    if (['pre', 'post'].indexOf(phase) === -1) {
+      throw new Error('Phase harus pre atau post.');
+    }
+
+    const sessions = allSessionRows_();
+    const session = sessions.find(function(item) {
+      return item.sessionId === sessionId;
+    });
+    if (!session) throw new Error('Sesi tidak ditemukan.');
+    if (session.status === 'closed') {
+      throw new Error('Sesi sudah ditutup.');
+    }
+
+    const participantCode = clean_(data.participantCode);
+    if (!participantCode) {
+      throw new Error('Kode peserta wajib diisi.');
+    }
+
+    const answers = Array.isArray(data.answers) ? data.answers : [];
+    if (!answers.length) throw new Error('Jawaban belum diisi.');
+
+    const questions = allQuestionRows_().filter(function(item) {
+      return item.sessionId === sessionId && item.phase === phase && item.active;
+    });
+    if (!questions.length) {
+      throw new Error('Pertanyaan sesi belum tersedia.');
+    }
+
+    const totalScore = scoreResponseAnswers_(answers, questions);
+    const sheet = getPrepostResponseSheet_();
+
+    sheet.appendRow([
+      createPrepostId_('RSP'),
+      sessionId,
+      phase,
+      participantCode,
+      clean_(data.participantName),
+      clean_(data.participantEmail),
+      JSON.stringify(answers),
+      totalScore,
+      clean_(data.sourceChannel) || 'web',
+      new Date()
+    ]);
+
+    return prepostResponse_({
+      ok: true,
+      sessionId: sessionId,
+      phase: phase,
+      totalScore: totalScore
+    });
+  } catch (error) {
+    return prepostErrorResponse_(error.message);
+  }
 }

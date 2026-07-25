@@ -375,6 +375,14 @@
               <option value="Global Environment Centre"></option>
             </datalist>
           </label>
+          <label class="field span-2">
+            <span>Sesi pre/post test (data pendukung)</span>
+            <select id="capacity-session-id">
+              <option value="">Pilih sesi (opsional)</option>
+            </select>
+            <small class="help">Pilih sesi untuk menautkan ringkasan pre/post test sebagai evidence laporan.</small>
+          </label>
+          <div class="field span-2" id="capacity-session-summary" style="display:none;padding:10px 12px;border:1px solid #d8e6df;border-radius:10px;background:#f5fbf8"></div>
           <label class="field span-2"><span>Mitra/narasumber *</span><input id="capacity-partner" placeholder="Instansi atau nama narasumber"></label>
           <label class="field span-2"><span>Topik/materi pelatihan *</span><textarea id="capacity-topic" rows="4"></textarea></label>
           <label class="field span-2"><span>Peran/keterlibatan pemuda</span><textarea id="capacity-youth-role" rows="3" placeholder="Peserta, fasilitator, dokumentasi, atau tindak lanjut"></textarea></label>
@@ -434,7 +442,7 @@
 <script src="https://unpkg.com/jszip@3.10.1/dist/jszip.min.js"></script>
 <script src="https://unpkg.com/@tmcw/togeojson@5.8.1/dist/togeojson.umd.js"></script>
 <script src="js/config.js?v=20260720-area-kopi1"></script>
-<script src="js/report-v6.js?v=20260725-capacity-donor1"></script>
+<script src="js/report-v6.js?v=20260725-capacity-prepost1"></script>
   <script src="js/i18n.js?v=20260724-official-website1"></script>
   <script src="js/pwa.js?v=20260723-edge-photo-fix1"></script>
 </body>

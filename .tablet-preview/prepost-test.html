@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Pre/Post Test Capacity Building | YG GeoPortal</title>
+  <link rel="stylesheet" href="css/prepost-test.css?v=20260725-1">
+</head>
+<body>
+  <main class="test-shell">
+    <header class="test-header">
+      <span class="badge">Capacity Building</span>
+      <h1 id="session-title">Memuat sesi...</h1>
+      <p id="session-meta">Silakan tunggu, data sesi sedang dimuat.</p>
+    </header>
+
+    <section class="test-card">
+      <h2>Identitas Peserta</h2>
+      <div class="test-grid">
+        <label>Kode peserta *
+          <input id="participant-code" type="text" placeholder="Contoh: TEMIANG-01" required>
+        </label>
+        <label>Nama peserta
+          <input id="participant-name" type="text" placeholder="Opsional">
+        </label>
+        <label>Email peserta
+          <input id="participant-email" type="email" placeholder="Opsional">
+        </label>
+      </div>
+    </section>
+
+    <section class="test-card">
+      <h2>Pertanyaan</h2>
+      <div id="question-list" class="question-list">
+        <p class="loading">Memuat pertanyaan...</p>
+      </div>
+    </section>
+
+    <section class="test-card test-actions">
+      <button id="submit-test" type="button">Kirim Jawaban</button>
+      <p id="submit-status">Pastikan semua jawaban terisi sebelum mengirim.</p>
+    </section>
+  </main>
+
+  <script src="js/prepost-test.js?v=20260725-1"></script>
+</body>
+</html>
