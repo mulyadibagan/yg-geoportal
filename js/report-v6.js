@@ -2227,29 +2227,33 @@
     panel.hidden = false;
     panel.classList.remove('warning','error');
 
-    if(!layerId){
-      status.textContent =
-        'Pilih jenis titik untuk memuat konteks data WebGIS.';
-      return;
-    }
-
-    status.textContent =
-      'Memuat layer operasional aktif dan data ' +
-      newPointLayerLabel(layerId) + ' yang sedang diverifikasi...';
+    status.textContent = layerId
+      ? 'Memuat layer operasional aktif dan data ' +
+        newPointLayerLabel(layerId) + ' yang sedang diverifikasi...'
+      : 'Memuat layer operasional aktif...';
 
     Promise.all([
       loadActiveObjects(),
-      fetch(
-        DUPLICATE_CANDIDATES_API + '&layerId=' +
-        encodeURIComponent(layerId) + '&t=' + Date.now(),
-        {cache:'no-store',redirect:'follow'}
-      ).then(function(response){
-        if(!response.ok) throw new Error('HTTP ' + response.status);
-        return response.json();
-      }).catch(function(error){
-        console.warn('Data pending belum dapat dimuat.',error);
-        return {type:'FeatureCollection',features:[],pendingUnavailable:true};
-      })
+      layerId
+        ? fetch(
+            DUPLICATE_CANDIDATES_API + '&layerId=' +
+            encodeURIComponent(layerId) + '&t=' + Date.now(),
+            {cache:'no-store',redirect:'follow'}
+          ).then(function(response){
+            if(!response.ok) throw new Error('HTTP ' + response.status);
+            return response.json();
+          }).catch(function(error){
+            console.warn('Data pending belum dapat dimuat.',error);
+            return {
+              type:'FeatureCollection',
+              features:[],
+              pendingUnavailable:true
+            };
+          })
+        : Promise.resolve({
+            type:'FeatureCollection',
+            features:[]
+          })
     ]).then(function(results){
       if(sequence !== newPointReferenceSequence) return;
 
@@ -2266,6 +2270,7 @@
 
       var candidates = [];
       activeFeatures.forEach(function(feature){
+        if(!layerId) return;
         if(newPointFeatureLayerId(feature) !== layerId) return;
         var coordinates = pointCoordinatesFromFeature(feature);
         if(!coordinates) return;
@@ -2279,6 +2284,7 @@
         });
       });
       pendingFeatures.forEach(function(feature){
+        if(!layerId) return;
         if(newPointFeatureLayerId(feature) !== layerId) return;
         var coordinates = pointCoordinatesFromFeature(feature);
         if(!coordinates) return;
@@ -2387,8 +2393,11 @@
         : newPointContextConfig(contextLayerId).label;
       status.textContent =
         'Menampilkan ' + visibleActiveFeatures.length +
-        ' objek aktif dari ' + contextLabel + ' dan ' +
-        pendingCount + ' titik sejenis yang menunggu verifikasi. ' +
+        ' objek aktif dari ' + contextLabel + '. ' +
+        (layerId
+          ? pendingCount +
+            ' titik sejenis sedang menunggu verifikasi. '
+          : '') +
         (results[1] && results[1].pendingUnavailable
           ? 'Data pending sedang tidak tersedia. '
           : '') +
