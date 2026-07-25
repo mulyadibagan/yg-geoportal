@@ -2160,6 +2160,54 @@
     return activeObjectsPromise;
   }
 
+  function newPointContextConfig(layerId,feature){
+    var config = (window.YG_LAYER_CONFIG || []).find(function(item){
+      return item.id === layerId;
+    });
+    var properties = feature && feature.properties || {};
+    return config || {
+      id:layerId,
+      label:String(
+        properties.Layer_Label ||
+        newPointLayerLabel(layerId) ||
+        layerId ||
+        'Layer WebGIS'
+      ),
+      color:'#1976d2'
+    };
+  }
+
+  function populateNewPointContextLayerOptions(features){
+    var select = document.getElementById('new-point-map-layer');
+    if(!select) return;
+    var currentValue = select.value || '__all_operational__';
+    var options = {};
+
+    (window.YG_LAYER_CONFIG || []).forEach(function(config){
+      if(config.visible === false) return;
+      options[config.id] = config.label;
+    });
+    (features || []).forEach(function(feature){
+      var layerId = newPointFeatureLayerId(feature);
+      if(!layerId) return;
+      options[layerId] = newPointContextConfig(layerId,feature).label;
+    });
+
+    select.innerHTML =
+      '<option value="__all_operational__">Semua layer operasional aktif</option>';
+    Object.keys(options).sort(function(a,b){
+      return options[a].localeCompare(options[b],'id');
+    }).forEach(function(layerId){
+      var option = document.createElement('option');
+      option.value = layerId;
+      option.textContent = options[layerId];
+      select.appendChild(option);
+    });
+    select.value = options[currentValue] || currentValue === '__all_operational__'
+      ? currentValue
+      : '__all_operational__';
+  }
+
   function loadNewPointReferenceLayer(layerId){
     var sequence = ++newPointReferenceSequence;
     if(newPointReferenceGroup){
@@ -2171,19 +2219,23 @@
 
     var panel = document.getElementById('new-point-reference-panel');
     var status = document.getElementById('new-point-reference-status');
+    var contextLayerSelect = document.getElementById('new-point-map-layer');
+    var contextLayerId = contextLayerSelect
+      ? contextLayerSelect.value
+      : '__all_operational__';
     if(!panel || !status) return;
     panel.hidden = false;
     panel.classList.remove('warning','error');
 
     if(!layerId){
       status.textContent =
-        'Pilih jenis titik untuk memuat data WebGIS yang sudah ada.';
+        'Pilih jenis titik untuk memuat konteks data WebGIS.';
       return;
     }
 
     status.textContent =
-      'Memuat data ' + newPointLayerLabel(layerId) +
-      ' yang sudah ada dan yang sedang diverifikasi...';
+      'Memuat layer operasional aktif dan data ' +
+      newPointLayerLabel(layerId) + ' yang sedang diverifikasi...';
 
     Promise.all([
       loadActiveObjects(),
@@ -2207,6 +2259,10 @@
       var pendingFeatures = results[1] && Array.isArray(results[1].features)
         ? results[1].features
         : [];
+      populateNewPointContextLayerOptions(activeFeatures);
+      if(contextLayerSelect){
+        contextLayerId = contextLayerSelect.value || '__all_operational__';
+      }
 
       var candidates = [];
       activeFeatures.forEach(function(feature){
@@ -2217,6 +2273,7 @@
           feature:feature,
           coordinates:coordinates,
           name:newPointFeatureName(feature,newPointLayerLabel(layerId)),
+          layerId:layerId,
           status:'published',
           statusLabel:'data aktif'
         });
@@ -2229,6 +2286,7 @@
           feature:feature,
           coordinates:coordinates,
           name:newPointFeatureName(feature,newPointLayerLabel(layerId)),
+          layerId:layerId,
           status:'pending',
           statusLabel:'menunggu verifikasi'
         });
@@ -2236,36 +2294,101 @@
 
       newPointReferenceCandidates = candidates;
       newPointReferenceGroup = L.featureGroup();
-      candidates.forEach(function(candidate){
-        var color = candidate.status === 'pending' ? '#f39c12' : '#1976d2';
-        var point = L.circleMarker(candidate.coordinates,{
+
+      var visibleActiveFeatures = activeFeatures.filter(function(feature){
+        var featureLayerId = newPointFeatureLayerId(feature);
+        return featureLayerId &&
+          (
+            contextLayerId === '__all_operational__' ||
+            featureLayerId === contextLayerId
+          );
+      });
+
+      var activeLayer = L.geoJSON({
+        type:'FeatureCollection',
+        features:visibleActiveFeatures
+      },{
+        style:function(feature){
+          var config = newPointContextConfig(
+            newPointFeatureLayerId(feature),
+            feature
+          );
+          return {
+            color:config.color,
+            fillColor:config.color,
+            weight:3,
+            opacity:0.9,
+            fillOpacity:0.2
+          };
+        },
+        pointToLayer:function(feature,latlng){
+          var config = newPointContextConfig(
+            newPointFeatureLayerId(feature),
+            feature
+          );
+          return L.circleMarker(latlng,{
+            radius:7,
+            color:'#ffffff',
+            weight:2,
+            fillColor:config.color,
+            fillOpacity:0.95
+          });
+        },
+        onEachFeature:function(feature,featureLayer){
+          var featureLayerId = newPointFeatureLayerId(feature);
+          var config = newPointContextConfig(featureLayerId,feature);
+          featureLayer.bindPopup(
+            '<strong>' +
+            escapeCorrectionHtml(newPointFeatureName(feature,config.label)) +
+            '</strong><br>' +
+            escapeCorrectionHtml(config.label) +
+            '<br>Status: data aktif'
+          );
+          featureLayer.on('click',function(event){
+            if(event && event.originalEvent){
+              L.DomEvent.stopPropagation(event);
+            }
+          });
+        }
+      });
+      newPointReferenceGroup.addLayer(activeLayer);
+
+      pendingFeatures.forEach(function(feature){
+        var coordinates = pointCoordinatesFromFeature(feature);
+        if(!coordinates) return;
+        var pendingPoint = L.circleMarker(coordinates,{
           radius:8,
           color:'#ffffff',
           weight:2,
-          fillColor:color,
-          fillOpacity:0.95
+          fillColor:'#f39c12',
+          fillOpacity:0.96
         });
-        point.bindPopup(
-          '<strong>' + escapeCorrectionHtml(candidate.name) + '</strong>' +
-          '<br>' + escapeCorrectionHtml(newPointLayerLabel(layerId)) +
-          '<br>Status: ' + escapeCorrectionHtml(candidate.statusLabel)
+        pendingPoint.bindPopup(
+          '<strong>' +
+          escapeCorrectionHtml(
+            newPointFeatureName(feature,newPointLayerLabel(layerId))
+          ) +
+          '</strong><br>' +
+          escapeCorrectionHtml(newPointLayerLabel(layerId)) +
+          '<br>Status: menunggu verifikasi'
         );
-        point.on('click',function(event){
+        pendingPoint.on('click',function(event){
           if(event && event.originalEvent){
             L.DomEvent.stopPropagation(event);
           }
         });
-        newPointReferenceGroup.addLayer(point);
+        newPointReferenceGroup.addLayer(pendingPoint);
       });
       newPointReferenceGroup.addTo(map);
 
-      var publishedCount = candidates.filter(function(candidate){
-        return candidate.status === 'published';
-      }).length;
-      var pendingCount = candidates.length - publishedCount;
+      var pendingCount = pendingFeatures.length;
+      var contextLabel = contextLayerId === '__all_operational__'
+        ? 'semua layer operasional'
+        : newPointContextConfig(contextLayerId).label;
       status.textContent =
-        'Ditemukan ' + publishedCount + ' data aktif dan ' +
-        pendingCount + ' data menunggu verifikasi. ' +
+        'Menampilkan ' + visibleActiveFeatures.length +
+        ' objek aktif dari ' + contextLabel + ' dan ' +
+        pendingCount + ' titik sejenis yang menunggu verifikasi. ' +
         (results[1] && results[1].pendingUnavailable
           ? 'Data pending sedang tidak tersedia. '
           : '') +
@@ -2302,6 +2425,16 @@
   var newPointTypeSelect = document.getElementById('new-point-type');
   if(newPointTypeSelect){
     newPointTypeSelect.addEventListener('change',updateNewPointTypeFields);
+  }
+
+  var newPointContextLayerSelect =
+    document.getElementById('new-point-map-layer');
+  if(newPointContextLayerSelect){
+    newPointContextLayerSelect.addEventListener('change',function(){
+      if(selectedType === 'Titik Baru'){
+        loadNewPointReferenceLayer(value('new-point-type'));
+      }
+    });
   }
 
   function buildNewObjectAttributes(donor, ecosystemType, newPointType, forestSeedlingsCount, forestSeedlingsSpecies, forestSpacingRow, forestSpacingPlant, forestEstimatedAreaHa, plantingDetails){

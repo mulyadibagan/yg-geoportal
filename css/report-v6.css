@@ -451,6 +451,22 @@
   color:#8e2828;
 }
 
+.new-point-map-layer-field{
+  display:grid;
+  gap:6px;
+  margin-bottom:10px;
+  font-weight:800;
+}
+
+.new-point-map-layer-field select{
+  width:100%;
+  padding:9px 11px;
+  border:1px solid #bfd3ca;
+  border-radius:9px;
+  background:#fff;
+  color:#27473c;
+}
+
 .new-point-reference-legend{
   display:flex;
   flex-wrap:wrap;
@@ -482,4 +498,8 @@
   padding-top:10px;
   border-top:1px solid rgba(112,76,0,.2);
   font-weight:750;
+}
+
+.nearby-duplicate-confirmation[hidden]{
+  display:none !important;
 }

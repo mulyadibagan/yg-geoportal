@@ -135,11 +135,17 @@
       <div id="location-map"></div>
 
       <div id="new-point-reference-panel" class="new-point-reference-panel" hidden>
+        <label class="new-point-map-layer-field">
+          <span>Layer konteks WebGIS</span>
+          <select id="new-point-map-layer">
+            <option value="__all_operational__">Semua layer operasional aktif</option>
+          </select>
+        </label>
         <div id="new-point-reference-status">
-          Pilih jenis titik untuk memuat data WebGIS yang sudah ada.
+          Pilih jenis titik untuk memuat konteks data WebGIS.
         </div>
         <div class="new-point-reference-legend">
-          <span><i class="published"></i> Data aktif</span>
+          <span><i class="published"></i> Data aktif (warna layer)</span>
           <span><i class="pending"></i> Menunggu verifikasi</span>
         </div>
         <label id="nearby-duplicate-confirmation" class="nearby-duplicate-confirmation" hidden>
@@ -507,7 +513,7 @@
 <script src="https://unpkg.com/jszip@3.10.1/dist/jszip.min.js"></script>
 <script src="https://unpkg.com/@tmcw/togeojson@5.8.1/dist/togeojson.umd.js"></script>
 <script src="js/config.js?v=20260725-mangrove-point1"></script>
-<script src="js/report-v6.js?v=20260725-duplicate-check1"></script>
+<script src="js/report-v6.js?v=20260725-context-layers1"></script>
   <script src="js/i18n.js?v=20260724-official-website1"></script>
   <script src="js/pwa.js?v=20260725-photo-simple1"></script>
 </body>
