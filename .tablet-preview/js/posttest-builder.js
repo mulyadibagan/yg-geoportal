@@ -3,6 +3,7 @@
 
   var API = 'https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec';
   var sessions = [];
+  var existingPostCount = 0;
 
   function text(v) { return v === null || v === undefined ? '' : String(v).trim(); }
   function esc(v) { return text(v).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
@@ -60,16 +61,20 @@
     var box = document.getElementById('existing-list');
     if (!box) return;
     if (!detail || detail.ok === false) {
+      existingPostCount = 0;
       box.innerHTML = '<p class="loading">Gagal memuat daftar soal.</p>';
+      renumberDraftCards();
       return;
     }
 
     var questions = (detail.questions || []).filter(function (q) {
       return text(q.phase).toLowerCase() === 'post';
     });
+    existingPostCount = questions.length;
 
     if (!questions.length) {
       box.innerHTML = '<p class="loading">Belum ada soal post-test di sesi ini.</p>';
+      renumberDraftCards();
       return;
     }
 
@@ -80,6 +85,8 @@
           '<div class="existing-options">' + formatOptions(q.options) + '</div>' +
         '</article>';
     }).join('');
+
+    renumberDraftCards();
   }
 
   function renderSessionLinks(session) {
@@ -106,7 +113,7 @@
     var node = tpl.content.firstElementChild.cloneNode(true);
     list.appendChild(node);
 
-    var index = list.querySelectorAll('.question-card').length;
+    var index = existingPostCount + list.querySelectorAll('.question-card').length;
     var numberNode = node.querySelector('.q-number');
     if (numberNode) numberNode.textContent = String(index);
 
@@ -139,15 +146,17 @@
     var cards = document.querySelectorAll('#draft-list .question-card');
     cards.forEach(function (card, idx) {
       var n = card.querySelector('.q-number');
-      if (n) n.textContent = String(idx + 1);
+      if (n) n.textContent = String(existingPostCount + idx + 1);
     });
   }
 
   function collectDraftCards() {
     var cards = Array.prototype.slice.call(document.querySelectorAll('#draft-list .question-card'));
     return cards.map(function (card, idx) {
+      var numberText = text(card.querySelector('.q-number') && card.querySelector('.q-number').textContent);
+      var displayIndex = Number(numberText) || (existingPostCount + idx + 1);
       return {
-        index: idx + 1,
+        index: displayIndex,
         questionText: text(card.querySelector('.q-text') && card.querySelector('.q-text').value),
         a: text(card.querySelector('.q-a') && card.querySelector('.q-a').value),
         b: text(card.querySelector('.q-b') && card.querySelector('.q-b').value),
@@ -280,8 +289,8 @@
       if (status) status.textContent = 'Semua pertanyaan berhasil disimpan.';
       var list = document.getElementById('draft-list');
       if (list) list.innerHTML = '';
-      addDraftCard();
       await loadSessionDetail();
+      addDraftCard();
     } catch (error) {
       if (status) status.textContent = 'Gagal menyimpan pertanyaan. Coba lagi.';
     } finally {

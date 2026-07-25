@@ -2780,14 +2780,16 @@ function handlePrepostSubmitResponsePost_(e) {
       throw new Error('Sesi sudah ditutup.');
     }
 
-    const participantCode = clean_(data.participantCode);
-    if (!participantCode) {
-      throw new Error('Kode peserta wajib diisi.');
+    const participantName = clean_(data.participantName);
+    if (!participantName) {
+      throw new Error('Nama peserta wajib diisi.');
     }
 
-    if (phase === 'post' && (!participantGender || !participantAgeCategory || !participantDelegate)) {
-      throw new Error('Data jenis kelamin, kategori umur, dan utusan lembaga wajib diisi untuk post-test.');
+    if (!participantGender) {
+      throw new Error('Jenis kelamin peserta wajib diisi.');
     }
+
+    const participantCode = clean_(data.participantCode) || createPrepostId_('PTC');
 
     const answers = Array.isArray(data.answers) ? data.answers : [];
     if (!answers.length) throw new Error('Jawaban belum diisi.');
@@ -2811,7 +2813,7 @@ function handlePrepostSubmitResponsePost_(e) {
       sessionId,
       phase,
       participantCode,
-      clean_(data.participantName),
+      participantName,
       clean_(data.participantEmail),
       participantGender,
       participantAgeCategory,

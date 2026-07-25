@@ -115,22 +115,28 @@
   }
 
   async function submitAnswers(){
-    var code = text(document.getElementById('participant-code').value);
     var name = text(document.getElementById('participant-name').value);
     var email = text(document.getElementById('participant-email').value);
     var gender = text(document.getElementById('participant-gender') && document.getElementById('participant-gender').value);
     var ageCategory = text(document.getElementById('participant-age-category') && document.getElementById('participant-age-category').value);
-    var delegate = text(document.getElementById('participant-delegate') && document.getElementById('participant-delegate').value);
+    var delegateChoice = text(document.getElementById('participant-delegate') && document.getElementById('participant-delegate').value);
+    var delegateCustom = text(document.getElementById('participant-delegate-custom') && document.getElementById('participant-delegate-custom').value);
+    var delegate = delegateChoice === 'Lainnya' ? delegateCustom : delegateChoice;
     var status = document.getElementById('submit-status');
     var button = document.getElementById('submit-test');
 
-    if(!code){
-      status.textContent = 'Kode peserta wajib diisi.';
+    if(!name){
+      status.textContent = 'Nama peserta wajib diisi.';
       return;
     }
 
-    if(phase === 'post' && (!gender || !ageCategory || !delegate)){
-      status.textContent = 'Untuk post-test, isi jenis kelamin, kategori umur, dan utusan lembaga.';
+    if(!gender){
+      status.textContent = 'Jenis kelamin wajib diisi.';
+      return;
+    }
+
+    if(delegateChoice === 'Lainnya' && !delegateCustom){
+      status.textContent = 'Isi utusan lembaga manual jika memilih "Lainnya".';
       return;
     }
 
@@ -146,7 +152,6 @@
     var payload = {
       sessionId: sessionId,
       phase: phase,
-      participantCode: code,
       participantName: name,
       participantEmail: email,
       participantGender: gender,
@@ -177,7 +182,20 @@
     }
   }
 
+  function syncDelegateCustomField(){
+    var select = document.getElementById('participant-delegate');
+    var wrap = document.getElementById('participant-delegate-custom-wrap');
+    var input = document.getElementById('participant-delegate-custom');
+    if(!select || !wrap) return;
+    var isManual = text(select.value) === 'Lainnya';
+    wrap.style.display = isManual ? 'block' : 'none';
+    if(!isManual && input) input.value = '';
+  }
+
   document.getElementById('submit-test').addEventListener('click',submitAnswers);
+  var delegateSelect = document.getElementById('participant-delegate');
+  if(delegateSelect) delegateSelect.addEventListener('change',syncDelegateCustomField);
+  syncDelegateCustomField();
   loadSession().catch(function(){
     sessionDetail = {ok:false};
     renderMeta();

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Pre/Post Test Capacity Building | YG GeoPortal</title>
-  <link rel="stylesheet" href="css/prepost-test.css?v=20260725-2">
+  <link rel="stylesheet" href="css/prepost-test.css?v=20260725-3">
 </head>
 <body>
   <main class="test-shell">
@@ -17,16 +17,13 @@
     <section class="test-card">
       <h2>Identitas Peserta</h2>
       <div class="test-grid">
-        <label>Kode peserta *
-          <input id="participant-code" type="text" placeholder="Contoh: TEMIANG-01" required>
-        </label>
-        <label>Nama peserta
-          <input id="participant-name" type="text" placeholder="Opsional">
+        <label>Nama peserta *
+          <input id="participant-name" type="text" placeholder="Wajib diisi">
         </label>
         <label>Email peserta
           <input id="participant-email" type="email" placeholder="Opsional">
         </label>
-        <label>Jenis kelamin
+        <label>Jenis kelamin *
           <select id="participant-gender">
             <option value="">Pilih</option>
             <option value="Perempuan">Perempuan</option>
@@ -49,11 +46,13 @@
             <option value="">Pilih</option>
             <option value="Kelompok Tani">Kelompok Tani</option>
             <option value="Kelompok Perhutanan Sosial">Kelompok Perhutanan Sosial</option>
-            <option value="Petani Karet">Petani Karet</option>
-            <option value="Petani Sawit">Petani Sawit</option>
-            <option value="Masyarakat Desa Dayun">Masyarakat Desa Dayun</option>
+            <option value="Masyarakat Desa">Masyarakat Desa</option>
+            <option value="Pemerintah Desa">Pemerintah Desa</option>
             <option value="Lainnya">Lainnya</option>
           </select>
+        </label>
+        <label id="participant-delegate-custom-wrap" style="display:none">Utusan lembaga (isi manual)
+          <input id="participant-delegate-custom" type="text" placeholder="Contoh: Karang Taruna Desa X">
         </label>
       </div>
     </section>
@@ -71,6 +70,6 @@
     </section>
   </main>
 
-  <script src="js/prepost-test.js?v=20260725-2"></script>
+  <script src="js/prepost-test.js?v=20260725-3"></script>
 </body>
 </html>
