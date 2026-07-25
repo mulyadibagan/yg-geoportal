@@ -283,6 +283,16 @@
     if (!currentValue && manualValue) {
       select.value = manualValue;
     }
+
+    syncPosttestBuilderLink(text(select.value) || manualValue);
+  }
+
+  function syncPosttestBuilderLink(sessionId) {
+    var link = document.getElementById('prepost-open-builder');
+    if (!link) return;
+    var base = 'posttest-builder.html';
+    var id = text(sessionId);
+    link.href = id ? (base + '?session=' + encodeURIComponent(id)) : base;
   }
 
   function formatQuestionOptions(options) {
@@ -615,6 +625,7 @@
       manageSessionNode.addEventListener('change', function () {
         var questionSession = document.getElementById('prepost-question-session');
         if (questionSession) questionSession.value = text(manageSessionNode.value);
+        syncPosttestBuilderLink(text(manageSessionNode.value));
       });
     }
     ['prepost-question-text', 'prepost-option-a', 'prepost-option-b', 'prepost-option-c', 'prepost-option-d'].forEach(function (id) {
@@ -627,5 +638,6 @@
 
     loadCapacity();
     loadPrepost();
+    syncPosttestBuilderLink('');
   });
 })();

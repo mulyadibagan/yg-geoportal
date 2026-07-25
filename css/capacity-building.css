@@ -25,6 +25,7 @@
 .capacity-prepost__actions button{border:0;background:#0f7a5a;color:#fff;padding:10px 14px;border-radius:10px;font-weight:700;cursor:pointer}
 .capacity-prepost__actions .capacity-prepost__btn-alt{background:#e7f3ee;color:#15533f;border:1px solid #b8d4c9}
 .capacity-prepost__actions span{font-size:13px;color:#5f736c}
+.capacity-prepost__builder-link{text-decoration:none;background:#eef7f3;color:#0f6c52;border:1px solid #b8d4c9;padding:9px 12px;border-radius:10px;font-weight:700;font-size:13px}
 
 @media (max-width:980px){
   .capacity-prepost__stats{grid-template-columns:repeat(2,1fr)}

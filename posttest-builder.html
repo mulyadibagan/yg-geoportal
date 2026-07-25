@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Builder Post-Test | YG GeoPortal</title>
+  <link rel="stylesheet" href="css/posttest-builder.css?v=20260725-1">
+</head>
+<body>
+  <main class="builder-shell">
+    <header class="builder-header">
+      <p class="builder-kicker">CAPACITY BUILDING</p>
+      <h1>Builder Soal Post-Test</h1>
+      <p>Buat banyak soal sekaligus. Soal yang sudah diisi tetap terlihat di atas seperti alur Google Form.</p>
+    </header>
+
+    <section class="builder-card">
+      <h2>Konfigurasi Sesi</h2>
+      <div class="builder-grid">
+        <label>Email official staff
+          <input id="staff-email" type="email" placeholder="nama@yayasangambut.org">
+        </label>
+        <label>Pilih sesi aktif
+          <select id="session-id">
+            <option value="">Memuat sesi...</option>
+          </select>
+        </label>
+      </div>
+      <p id="session-status" class="builder-status">Pilih sesi untuk memuat link peserta dan daftar soal yang sudah tersimpan.</p>
+      <div id="session-links" class="session-links"></div>
+      <div class="session-note">
+        <strong>Data peserta post-test dikumpulkan di form peserta:</strong>
+        jenis kelamin, kategori umur, utusan/perwakilan lembaga.
+      </div>
+    </section>
+
+    <section class="builder-card">
+      <div class="card-head">
+        <h2>Soal yang Sudah Tersimpan</h2>
+        <button id="refresh-existing" type="button" class="btn btn-alt">Refresh</button>
+      </div>
+      <div id="existing-list" class="existing-list">
+        <p class="loading">Pilih sesi terlebih dahulu.</p>
+      </div>
+    </section>
+
+    <section class="builder-card">
+      <div class="card-head">
+        <h2>Input Soal Baru (Post-Test)</h2>
+        <button id="add-card" type="button" class="btn btn-alt">+ Tambah kolom pertanyaan</button>
+      </div>
+      <div id="draft-list" class="draft-list"></div>
+      <div class="action-row">
+        <button id="save-all" type="button" class="btn">Simpan semua pertanyaan baru</button>
+        <span id="save-status" class="builder-status">Isi soal lalu klik simpan.</span>
+      </div>
+    </section>
+  </main>
+
+  <template id="question-card-template">
+    <article class="question-card">
+      <div class="question-card-head">
+        <h3>Pertanyaan <span class="q-number">1</span></h3>
+        <button type="button" class="remove-card">Hapus</button>
+      </div>
+      <label>Pertanyaan
+        <textarea class="q-text" rows="3" placeholder="Tulis pertanyaan post-test"></textarea>
+      </label>
+      <div class="option-grid">
+        <label>Pilihan A
+          <input class="q-a" type="text" placeholder="Isi pilihan A">
+        </label>
+        <label>Pilihan B
+          <input class="q-b" type="text" placeholder="Isi pilihan B">
+        </label>
+        <label>Pilihan C
+          <input class="q-c" type="text" placeholder="Isi pilihan C">
+        </label>
+        <label>Pilihan D
+          <input class="q-d" type="text" placeholder="Isi pilihan D">
+        </label>
+      </div>
+      <label>Kunci jawaban
+        <select class="q-key">
+          <option value="">Pilih kunci</option>
+          <option value="A">A</option>
+          <option value="B">B</option>
+          <option value="C">C</option>
+          <option value="D">D</option>
+        </select>
+      </label>
+    </article>
+  </template>
+
+  <script src="js/posttest-builder.js?v=20260725-1"></script>
+</body>
+</html>
