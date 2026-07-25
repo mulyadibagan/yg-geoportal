@@ -54,11 +54,17 @@
     return rows.map(function (opt) {
       var label = text(opt.label || opt.value);
       var value = text(opt.value);
-      var score = Number(opt.score) || 0;
-      var isCorrect = score === 1;
-      var content = esc(label + ' (' + value + ') - skor ' + score);
+      var rawScore = text(opt && opt.score);
+      var score = Number(rawScore.replace(',', '.'));
+      if (!Number.isFinite(score)) score = 0;
+      var isCorrect =
+        score >= 1 ||
+        String(opt && opt.isCorrect).toLowerCase() === 'true' ||
+        /(^|\s)skor\s*1(\s|$)/i.test(label);
+      var scoreText = isCorrect ? 1 : score;
+      var content = esc(label + ' (' + value + ') - skor ' + scoreText);
       if (isCorrect) {
-        content = '<strong>' + content + '</strong><em class="correct-badge">Jawaban benar</em>';
+        content = '<strong class="correct-marker">[JAWABAN BENAR] ' + content + '</strong><em class="correct-badge">Jawaban benar</em>';
       }
       return '<span class="' + (isCorrect ? 'is-correct' : '') + '">' + content + '</span>';
     }).join('');
