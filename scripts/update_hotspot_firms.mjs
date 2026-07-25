@@ -480,11 +480,21 @@ async function main() {
   }
 
   const availability = [];
-  for (const source of FIRMS_SOURCES) {
-    try {
-      availability.push(await getSourceAvailability(source));
-    } catch (error) {
-      console.warn(`[FIRMS] Lewati source ${source}: ${error.message}`);
+  if (MODE === "recent") {
+    for (const source of FIRMS_SOURCES) {
+      availability.push({
+        source,
+        minDate: toIsoDate(recentStart),
+        maxDate: toIsoDate(now)
+      });
+    }
+  } else {
+    for (const source of FIRMS_SOURCES) {
+      try {
+        availability.push(await getSourceAvailability(source));
+      } catch (error) {
+        console.warn(`[FIRMS] Lewati source ${source}: ${error.message}`);
+      }
     }
   }
 
