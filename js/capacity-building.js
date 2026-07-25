@@ -420,6 +420,44 @@
     });
   }
 
+  function waitMs(ms) {
+    return new Promise(function (resolve) {
+      setTimeout(resolve, ms);
+    });
+  }
+
+  function sessionMatchesFingerprint(session, fingerprint) {
+    return text(session && session.title).toLowerCase() === text(fingerprint && fingerprint.title).toLowerCase() &&
+      text(session && session.activityDate) === text(fingerprint && fingerprint.activityDate) &&
+      text(session && session.location).toLowerCase() === text(fingerprint && fingerprint.location).toLowerCase() &&
+      text(session && session.facilitator).toLowerCase() === text(fingerprint && fingerprint.facilitator).toLowerCase();
+  }
+
+  async function findCreatedSessionId(fingerprint) {
+    for (var i = 0; i < 5; i += 1) {
+      try {
+        var data = await jsonp(API + '?page=prepost-sessions&status=active&t=' + Date.now());
+        var rows = Array.isArray(data && data.sessions) ? data.sessions : [];
+        var matched = rows.map(function (item) { return item.session || item; }).find(function (session) {
+          return sessionMatchesFingerprint(session, fingerprint);
+        });
+        if (matched && matched.sessionId) {
+          return matched.sessionId;
+        }
+      } catch (error) {}
+
+      await waitMs(900);
+    }
+
+    return '';
+  }
+
+  function openPosttestBuilder(sessionId) {
+    var target = 'posttest-builder.html';
+    var id = text(sessionId);
+    window.location.href = id ? (target + '?session=' + encodeURIComponent(id)) : target;
+  }
+
   async function loadPrepost() {
     var listNode = document.getElementById('prepost-session-list');
     if (listNode) listNode.innerHTML = '<div class="loading">Memuat sesi pre/post test...</div>';
@@ -453,6 +491,13 @@
 
     if (statusNode) statusNode.textContent = 'Mengirim data sesi...';
     try {
+      var fingerprint = {
+        title: title,
+        activityDate: activityDate,
+        location: location,
+        facilitator: facilitator
+      };
+
       await postAction('prepost-create-session', {
         staffEmail: email,
         title: title,
@@ -463,8 +508,11 @@
         facilitator: facilitator,
         status: 'active'
       });
-      if (statusNode) statusNode.textContent = 'Permintaan pembuatan sesi terkirim. Klik refresh data.';
+
+      if (statusNode) statusNode.textContent = 'Sesi berhasil dibuat. Menyiapkan halaman builder...';
+      var createdSessionId = await findCreatedSessionId(fingerprint);
       loadPrepost();
+      openPosttestBuilder(createdSessionId);
     } catch (error) {
       if (statusNode) statusNode.textContent = 'Gagal mengirim sesi. Coba lagi.';
     }

@@ -189,77 +189,11 @@
           </label>
         </div>
         <div class="capacity-prepost__actions">
-          <button id="prepost-create-session" type="button">Buat sesi</button>
-          <span id="prepost-create-status">Gunakan email official Yayasan Gambut untuk mengelola sesi.</span>
-        </div>
-        <hr style="border:none;border-top:1px solid #d9e7e1;margin:16px 0">
-        <div class="capacity-prepost__form-grid">
-          <label>Session ID
-            <input id="prepost-question-session" type="text" placeholder="Contoh: SESS-20260725-101500-123">
-          </label>
-          <label>Fase
-            <select id="prepost-question-phase">
-              <option value="pre">Pre-test</option>
-              <option value="post">Post-test</option>
-            </select>
-          </label>
-          <label style="grid-column:1/-1">Pertanyaan
-            <input id="prepost-question-text" type="text" placeholder="Contoh: Seberapa paham Anda tentang topik ini?">
-          </label>
-          <label>Pilihan A
-            <input id="prepost-option-a" type="text" placeholder="Teks pilihan A">
-          </label>
-          <label>Pilihan B
-            <input id="prepost-option-b" type="text" placeholder="Teks pilihan B">
-          </label>
-          <label>Pilihan C
-            <input id="prepost-option-c" type="text" placeholder="Teks pilihan C">
-          </label>
-          <label>Pilihan D
-            <input id="prepost-option-d" type="text" placeholder="Teks pilihan D">
-          </label>
-          <label>Kunci jawaban benar
-            <select id="prepost-answer-key">
-              <option value="">Pilih kunci</option>
-              <option value="A">A</option>
-              <option value="B">B</option>
-              <option value="C">C</option>
-              <option value="D">D</option>
-            </select>
-          </label>
+          <button id="prepost-create-session" type="button">Buat sesi & lanjut isi pertanyaan</button>
+          <span id="prepost-create-status">Session ID dibuat otomatis oleh sistem, lalu Anda langsung diarahkan ke halaman builder post-test.</span>
         </div>
         <div class="capacity-prepost__actions">
-          <button id="prepost-create-question" type="button">Tambah pertanyaan</button>
-          <span id="prepost-question-status">Gunakan Session ID dari hasil pembuatan sesi.</span>
-        </div>
-        <div class="capacity-prepost__actions">
-          <a id="prepost-open-builder" class="capacity-prepost__builder-link" href="posttest-builder.html" target="_blank" rel="noopener noreferrer">Buka halaman khusus builder post-test</a>
-        </div>
-        <div class="prepost-participant-data">
-          <strong>Data peserta post-test dikumpulkan di form peserta (bukan form pertanyaan):</strong>
-          <span>Jenis kelamin, kategori umur, dan utusan/perwakilan lembaga.</span>
-        </div>
-        <hr style="border:none;border-top:1px solid #d9e7e1;margin:16px 0">
-        <div class="capacity-prepost__head" style="margin-bottom:8px">
-          <div>
-            <span class="eyebrow">REVIEW SESI</span>
-            <h3>Lihat semua pertanyaan dan link peserta</h3>
-          </div>
-        </div>
-        <div class="capacity-prepost__form-grid">
-          <label>Pilih sesi
-            <select id="prepost-manage-session">
-              <option value="">Pilih Session ID</option>
-            </select>
-          </label>
-        </div>
-        <div class="capacity-prepost__actions">
-          <button id="prepost-load-session-detail" type="button">Tampilkan detail sesi</button>
-          <button id="prepost-hide-session-detail" type="button" class="capacity-prepost__btn-alt">Sembunyikan detail</button>
-          <span id="prepost-session-detail-status">Pilih sesi lalu klik tombol untuk melihat daftar pertanyaan lengkap.</span>
-        </div>
-        <div id="prepost-session-detail" class="prepost-session-detail is-collapsed">
-          <div class="loading">Belum ada sesi yang dipilih.</div>
+          <a id="prepost-open-builder" class="capacity-prepost__builder-link" href="posttest-builder.html" target="_blank" rel="noopener noreferrer">Sudah punya sesi? Buka halaman builder post-test</a>
         </div>
       </section>
 
@@ -278,7 +212,7 @@
   <script src="js/monitoring-data-compat.js?v=20260721-object-photo1"></script>
   <script src="js/monitoring.js?v=20260723-audit-fixes1"></script>
   <script src="js/monitoring-photo.js?v=20260720-edge-refresh1"></script>
-  <script src="js/capacity-building.js?v=20260725-capacity9"></script>
+  <script src="js/capacity-building.js?v=20260725-capacity10"></script>
   <script src="js/i18n.js?v=20260724-official-website1"></script>
   <script src="js/pwa.js?v=20260723-edge-photo-fix1"></script>
 </body>
