@@ -92,6 +92,39 @@
   }
   function yearOf(v) { var d = dateValue(v); return d ? String(d.getFullYear()) : ''; }
   function formatDate(v) { if (!v) return '-'; var d = dateValue(v); return d ? d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : v; }
+  function formatPct(v, digits) {
+    var d = typeof digits === 'number' ? digits : 1;
+    return Number(v || 0).toLocaleString('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: d }) + '%';
+  }
+  function formatLocalDateTime(v) {
+    var value = text(v);
+    if (!value) return '-';
+    var dt = new Date(value);
+    if (isNaN(dt.getTime())) return value;
+    return dt.toLocaleString('id-ID', {
+      day: '2-digit', month: 'short', year: 'numeric',
+      hour: '2-digit', minute: '2-digit'
+    });
+  }
+
+  function mapBreakdownRows(source) {
+    var obj = source && typeof source === 'object' ? source : {};
+    return Object.keys(obj).map(function (key) {
+      return { label: text(key), value: Number(obj[key] || 0) };
+    }).filter(function (item) {
+      return item.label && item.value > 0;
+    }).sort(function (a, b) {
+      return b.value - a.value;
+    });
+  }
+
+  function renderBreakdownInline(source, emptyLabel) {
+    var rows = mapBreakdownRows(source);
+    if (!rows.length) return '<span class="prepost-breakdown-empty">' + esc(emptyLabel) + '</span>';
+    return rows.map(function (item) {
+      return '<span class="prepost-breakdown-chip">' + esc(item.label) + ': ' + Number(item.value).toLocaleString('id-ID') + '</span>';
+    }).join('');
+  }
 
   function liveRecord(feature) {
     var p = feature.properties || {};
@@ -215,6 +248,11 @@
     var preNode = document.getElementById('prepost-stat-pre');
     var postNode = document.getElementById('prepost-stat-post');
     var gainNode = document.getElementById('prepost-stat-gain');
+    var targetNode = document.getElementById('prepost-stat-target');
+    var completionNode = document.getElementById('prepost-stat-completion');
+    var postPercentNode = document.getElementById('prepost-stat-post-percent');
+    var conversionNode = document.getElementById('prepost-stat-conversion');
+    var metaNode = document.getElementById('prepost-live-meta');
     var listNode = document.getElementById('prepost-session-list');
     if (!sessionsNode || !preNode || !postNode || !gainNode || !listNode) return;
 
@@ -223,10 +261,51 @@
     preNode.textContent = Number(totals.preRespondents || 0).toLocaleString('id-ID');
     postNode.textContent = Number(totals.postRespondents || 0).toLocaleString('id-ID');
     gainNode.textContent = Number(totals.avgGain || 0).toLocaleString('id-ID');
+    if (metaNode) {
+      metaNode.textContent = 'Pembaruan terakhir: ' + formatLocalDateTime(data && data.generatedAt);
+    }
 
     var sessions = Array.isArray(data && data.sessions) ? data.sessions : [];
     prepostSessions = sessions.map(function (item) { return item.session || item; }).filter(Boolean);
     renderManageSessionOptions(prepostSessions);
+
+    var aggregate = sessions.reduce(function (acc, item) {
+      var summary = item.summary || {};
+      var target = Number(item.targetParticipants || 0);
+      var pre = Number(summary.preRespondents || 0);
+      var post = Number(summary.postRespondents || 0);
+      var postPercent = Number(summary.postAvgPercent || 0);
+      acc.target += target;
+      acc.pre += pre;
+      acc.post += post;
+      if (post > 0) {
+        acc.postPercentWeighted += (postPercent * post);
+        acc.postPercentBase += post;
+      }
+      return acc;
+    }, {
+      target: 0,
+      pre: 0,
+      post: 0,
+      postPercentWeighted: 0,
+      postPercentBase: 0
+    });
+
+    if (targetNode) targetNode.textContent = Number(aggregate.target || 0).toLocaleString('id-ID');
+    if (completionNode) {
+      var completion = aggregate.target > 0 ? (aggregate.post / aggregate.target) * 100 : 0;
+      completionNode.textContent = formatPct(completion, 1);
+    }
+    if (postPercentNode) {
+      var weightedPostPercent = aggregate.postPercentBase > 0
+        ? (aggregate.postPercentWeighted / aggregate.postPercentBase)
+        : 0;
+      postPercentNode.textContent = formatPct(weightedPostPercent, 1);
+    }
+    if (conversionNode) {
+      var conversion = aggregate.pre > 0 ? (aggregate.post / aggregate.pre) * 100 : 0;
+      conversionNode.textContent = formatPct(conversion, 1);
+    }
 
     if (!sessions.length) {
       listNode.innerHTML = '<div class="capacity-empty">Belum ada sesi pre/post test.</div>';
@@ -236,7 +315,28 @@
     listNode.innerHTML = sessions.map(function (item) {
       var session = item.session || item;
       var summary = item.summary || {};
-      var evidenceStatus = summary.postRespondents > 0 ? 'Lengkap sebagian' : 'Belum ada post-test';
+      var preRespondents = Number(summary.preRespondents || 0);
+      var postRespondents = Number(summary.postRespondents || 0);
+      var preQuestions = Number(summary.preQuestionCount || 0);
+      var postQuestions = Number(summary.postQuestionCount || 0);
+      var completionRate = Number(summary.completionRate || 0);
+      var evidenceStatus = 'Belum ada responden';
+      if (preQuestions === 0 && postQuestions === 0) {
+        evidenceStatus = 'Soal belum dibuat';
+      } else if (postRespondents === 0 && preRespondents > 0) {
+        evidenceStatus = 'Belum ada post-test';
+      } else if (postRespondents > 0 && preRespondents === 0) {
+        evidenceStatus = 'Post-test berjalan';
+      } else if (postRespondents > 0 && preRespondents > 0 && postRespondents < preRespondents) {
+        evidenceStatus = 'Perlu dorong penyelesaian post-test';
+      } else if (postRespondents > 0) {
+        evidenceStatus = 'Data pre/post tersedia';
+      }
+
+      var genderHtml = renderBreakdownInline(summary.postDemographics && summary.postDemographics.gender, 'Belum ada data gender');
+      var ageHtml = renderBreakdownInline(summary.postDemographics && summary.postDemographics.ageCategory, 'Belum ada data umur');
+      var delegateHtml = renderBreakdownInline(summary.postDemographics && summary.postDemographics.delegate, 'Belum ada data utusan');
+
       return '' +
         '<article class="prepost-session-card">' +
           '<div class="prepost-session-card__head">' +
@@ -244,11 +344,20 @@
             '<span>' + esc(session.activityDate || '-') + '</span>' +
           '</div>' +
           '<p>' + esc(session.location || session.village || '-') + '</p>' +
-          '<div class="prepost-session-card__metrics">' +
-            '<span>Pre: ' + Number(summary.preRespondents || 0).toLocaleString('id-ID') + '</span>' +
-            '<span>Post: ' + Number(summary.postRespondents || 0).toLocaleString('id-ID') + '</span>' +
-            '<span>Gain: ' + Number(summary.gainScore || 0).toLocaleString('id-ID') + '</span>' +
+          '<div class="prepost-session-card__metrics prepost-session-card__metrics--extended">' +
+            '<span>Pre responden: ' + preRespondents.toLocaleString('id-ID') + '</span>' +
+            '<span>Post responden: ' + postRespondents.toLocaleString('id-ID') + '</span>' +
+            '<span>Pre rata-rata: ' + formatPct(summary.preAvgPercent || 0, 1) + '</span>' +
+            '<span>Post rata-rata: ' + formatPct(summary.postAvgPercent || 0, 1) + '</span>' +
+            '<span>Gain poin: ' + Number(summary.gainPercentPoint || 0).toLocaleString('id-ID') + '</span>' +
+            '<span>Cakupan target: ' + formatPct(completionRate, 1) + '</span>' +
+            '<span>Soal pre/post: ' + preQuestions.toLocaleString('id-ID') + '/' + postQuestions.toLocaleString('id-ID') + '</span>' +
             '<span>Status: ' + evidenceStatus + '</span>' +
+          '</div>' +
+          '<div class="prepost-session-card__demography">' +
+            '<p><strong>Gender post-test</strong>' + genderHtml + '</p>' +
+            '<p><strong>Kategori umur</strong>' + ageHtml + '</p>' +
+            '<p><strong>Utusan lembaga</strong>' + delegateHtml + '</p>' +
           '</div>' +
           '<div class="prepost-session-card__links">' +
             (session.preFormUrl ? '<a href="' + esc(session.preFormUrl) + '" target="_blank" rel="noopener noreferrer">Link pre-test</a>' : '') +

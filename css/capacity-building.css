@@ -3,6 +3,7 @@
 .capacity-prepost{margin:18px 0;padding:18px;border:1px solid #d5e2de;border-radius:16px;background:#fff}
 .capacity-prepost__head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
 .capacity-prepost__head h3{margin:5px 0 0;font-size:22px;color:#163b31}
+.capacity-prepost__meta{margin:6px 0 0;color:#5e736b;font-size:12px}
 .capacity-prepost__refresh{border:1px solid #0f8e68;background:#eaf8f3;color:#0b6e52;font-weight:700;padding:9px 12px;border-radius:10px;cursor:pointer}
 .capacity-prepost__stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
 .capacity-prepost__stats article{padding:14px;border:1px solid #deebe6;border-radius:12px;background:#f8fcfa}
@@ -16,6 +17,12 @@
 .prepost-session-card__head span{font-size:12px;color:#6d807a}
 .prepost-session-card__metrics{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
 .prepost-session-card__metrics span{font-size:12px;background:#edf8f3;padding:6px 8px;border-radius:8px;color:#0f6c52}
+.prepost-session-card__metrics--extended{grid-template-columns:repeat(2,minmax(0,1fr));}
+.prepost-session-card__demography{display:grid;gap:8px;margin:8px 0 10px}
+.prepost-session-card__demography p{margin:0;font-size:12px;color:#406057;display:grid;gap:6px}
+.prepost-session-card__demography strong{font-size:12px;color:#183e34}
+.prepost-breakdown-chip{display:inline-block;margin:0 6px 6px 0;padding:4px 8px;border-radius:999px;background:#f0f7f4;border:1px solid #d5e6df;color:#1f5b49;font-size:11px}
+.prepost-breakdown-empty{display:inline-block;color:#6c837a;font-size:11px}
 .prepost-session-card__links{display:flex;flex-wrap:wrap;gap:8px}
 .prepost-session-card__links a{font-size:12px;text-decoration:none;background:#0f7a5a;color:#fff;padding:6px 9px;border-radius:8px}
 .capacity-prepost-manage .capacity-prepost__form-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
@@ -30,6 +37,7 @@
 @media (max-width:980px){
   .capacity-prepost__stats{grid-template-columns:repeat(2,1fr)}
   .capacity-prepost-manage .capacity-prepost__form-grid{grid-template-columns:1fr 1fr}
+  .prepost-session-card__metrics--extended{grid-template-columns:1fr 1fr}
 }
 
 @media (max-width:640px){
@@ -37,6 +45,7 @@
   .capacity-prepost__stats{grid-template-columns:1fr}
   .capacity-prepost-manage .capacity-prepost__form-grid{grid-template-columns:1fr}
   .capacity-prepost__actions{flex-direction:column;align-items:flex-start}
+  .prepost-session-card__metrics--extended{grid-template-columns:1fr}
 }
 
 .capacity-prepost-manage select{display:block;width:100%;margin-top:6px;padding:10px;border:1px solid #cdded7;border-radius:9px;background:#fff}
