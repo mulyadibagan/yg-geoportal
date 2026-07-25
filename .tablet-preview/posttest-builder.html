@@ -3,15 +3,15 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Builder Post-Test | YG GeoPortal</title>
+  <title>Builder Soal Tes | YG GeoPortal</title>
   <link rel="stylesheet" href="css/posttest-builder.css?v=20260725-1">
 </head>
 <body>
   <main class="builder-shell">
     <header class="builder-header">
       <p class="builder-kicker">CAPACITY BUILDING</p>
-      <h1>Builder Soal Post-Test</h1>
-      <p>Buat banyak soal sekaligus. Soal yang sudah diisi tetap terlihat di atas seperti alur Google Form.</p>
+      <h1 id="builder-title">Builder Soal Post-Test</h1>
+      <p id="builder-subtitle">Buat banyak soal sekaligus. Soal yang sudah diisi tetap terlihat di atas seperti alur Google Form.</p>
     </header>
 
     <section class="builder-card">
@@ -29,14 +29,14 @@
       <p id="session-status" class="builder-status">Pilih sesi untuk memuat link peserta dan daftar soal yang sudah tersimpan.</p>
       <div id="session-links" class="session-links"></div>
       <div class="session-note">
-        <strong>Data peserta post-test dikumpulkan di form peserta:</strong>
-        jenis kelamin, kategori umur, utusan/perwakilan lembaga.
+        <strong id="builder-note-title">Data peserta post-test dikumpulkan di form peserta:</strong>
+        <span id="builder-note-body">jenis kelamin, kategori umur, utusan/perwakilan lembaga.</span>
       </div>
     </section>
 
     <section class="builder-card">
       <div class="card-head">
-        <h2>Soal yang Sudah Tersimpan</h2>
+        <h2 id="existing-title">Soal yang Sudah Tersimpan</h2>
         <button id="refresh-existing" type="button" class="btn btn-alt">Refresh</button>
       </div>
       <div id="existing-list" class="existing-list">
@@ -46,7 +46,7 @@
 
     <section class="builder-card">
       <div class="card-head">
-        <h2>Input Soal Baru (Post-Test)</h2>
+        <h2 id="input-title">Input Soal Baru (Post-Test)</h2>
         <button id="add-card" type="button" class="btn btn-alt">+ Tambah kolom pertanyaan</button>
       </div>
       <div id="draft-list" class="draft-list"></div>
@@ -64,7 +64,7 @@
         <button type="button" class="remove-card">Hapus</button>
       </div>
       <label>Pertanyaan
-        <textarea class="q-text" rows="3" placeholder="Tulis pertanyaan post-test"></textarea>
+        <textarea class="q-text" rows="3" placeholder="Tulis pertanyaan"></textarea>
       </label>
       <div class="option-grid">
         <label>Pilihan A
@@ -92,6 +92,6 @@
     </article>
   </template>
 
-  <script src="js/posttest-builder.js?v=20260725-2"></script>
+  <script src="js/posttest-builder.js?v=20260725-3"></script>
 </body>
 </html>

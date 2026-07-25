@@ -2243,7 +2243,9 @@ function buildPrepostUrls_(sessionId) {
     base + '?session=' + encodeURIComponent(sessionId) + '&phase=pre';
   const postUrl =
     base + '?session=' + encodeURIComponent(sessionId) + '&phase=post';
-  const qrBase = 'https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=';
+  const logoUrl = 'https://mulyadibagan.github.io/yg-geoportal/assets/logo-yayasan-gambut-192.png';
+  const qrBase = 'https://quickchart.io/qr?size=320&ecLevel=H&margin=2&centerImageUrl=' +
+    encodeURIComponent(logoUrl) + '&text=';
   return {
     preFormUrl: preUrl,
     postFormUrl: postUrl,

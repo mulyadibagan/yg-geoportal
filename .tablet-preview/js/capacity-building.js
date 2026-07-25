@@ -287,12 +287,21 @@
     syncPosttestBuilderLink(text(select.value) || manualValue);
   }
 
-  function syncPosttestBuilderLink(sessionId) {
+  function selectedBuilderPhase() {
+    var phaseNode = document.getElementById('prepost-builder-phase');
+    var phase = text(phaseNode && phaseNode.value).toLowerCase();
+    return phase === 'pre' ? 'pre' : 'post';
+  }
+
+  function syncPosttestBuilderLink(sessionId, phase) {
     var link = document.getElementById('prepost-open-builder');
     if (!link) return;
     var base = 'posttest-builder.html';
     var id = text(sessionId);
-    link.href = id ? (base + '?session=' + encodeURIComponent(id)) : base;
+    var mode = text(phase || selectedBuilderPhase()).toLowerCase() === 'pre' ? 'pre' : 'post';
+    var query = 'phase=' + encodeURIComponent(mode);
+    if (id) query = 'session=' + encodeURIComponent(id) + '&' + query;
+    link.href = base + '?' + query;
   }
 
   function formatQuestionOptions(options) {
@@ -452,10 +461,13 @@
     return '';
   }
 
-  function openPosttestBuilder(sessionId) {
+  function openPosttestBuilder(sessionId, phase) {
     var target = 'posttest-builder.html';
     var id = text(sessionId);
-    window.location.href = id ? (target + '?session=' + encodeURIComponent(id)) : target;
+    var mode = text(phase || selectedBuilderPhase()).toLowerCase() === 'pre' ? 'pre' : 'post';
+    var query = 'phase=' + encodeURIComponent(mode);
+    if (id) query = 'session=' + encodeURIComponent(id) + '&' + query;
+    window.location.href = target + '?' + query;
   }
 
   async function loadPrepost() {
@@ -478,6 +490,7 @@
     var target = num(document.getElementById('prepost-session-target') && document.getElementById('prepost-session-target').value);
     var location = text(document.getElementById('prepost-session-location') && document.getElementById('prepost-session-location').value);
     var facilitator = text(document.getElementById('prepost-session-facilitator') && document.getElementById('prepost-session-facilitator').value);
+    var builderPhase = selectedBuilderPhase();
     var statusNode = document.getElementById('prepost-create-status');
 
     if (!email || !/@yayasangambut\.org$/i.test(email)) {
@@ -512,7 +525,7 @@
       if (statusNode) statusNode.textContent = 'Sesi berhasil dibuat. Menyiapkan halaman builder...';
       var createdSessionId = await findCreatedSessionId(fingerprint);
       loadPrepost();
-      openPosttestBuilder(createdSessionId);
+      openPosttestBuilder(createdSessionId, builderPhase);
     } catch (error) {
       if (statusNode) statusNode.textContent = 'Gagal mengirim sesi. Coba lagi.';
     }
@@ -686,6 +699,13 @@
 
     loadCapacity();
     loadPrepost();
-    syncPosttestBuilderLink('');
+    var builderPhaseNode = document.getElementById('prepost-builder-phase');
+    if (builderPhaseNode) {
+      builderPhaseNode.addEventListener('change', function () {
+        syncPosttestBuilderLink('', selectedBuilderPhase());
+      });
+    }
+
+    syncPosttestBuilderLink('', selectedBuilderPhase());
   });
 })();

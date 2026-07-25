@@ -2,6 +2,8 @@
   'use strict';
 
   var API = 'https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec';
+  var params = new URLSearchParams(window.location.search);
+  var builderPhase = text(params.get('phase')).toLowerCase() === 'pre' ? 'pre' : 'post';
   var sessions = [];
   var existingPostCount = 0;
 
@@ -68,12 +70,12 @@
     }
 
     var questions = (detail.questions || []).filter(function (q) {
-      return text(q.phase).toLowerCase() === 'post';
+      return text(q.phase).toLowerCase() === builderPhase;
     });
     existingPostCount = questions.length;
 
     if (!questions.length) {
-      box.innerHTML = '<p class="loading">Belum ada soal post-test di sesi ini.</p>';
+      box.innerHTML = '<p class="loading">Belum ada soal ' + esc(phaseLabelLower()) + ' di sesi ini.</p>';
       renumberDraftCards();
       return;
     }
@@ -98,11 +100,44 @@
     }
 
     var links = [];
-    if (session.preFormUrl) links.push('<a href="' + esc(session.preFormUrl) + '" target="_blank" rel="noopener noreferrer">Link pre-test</a>');
-    if (session.postFormUrl) links.push('<a href="' + esc(session.postFormUrl) + '" target="_blank" rel="noopener noreferrer">Link post-test</a>');
-    if (session.preQrUrl) links.push('<a href="' + esc(session.preQrUrl) + '" target="_blank" rel="noopener noreferrer">QR pre-test</a>');
-    if (session.postQrUrl) links.push('<a href="' + esc(session.postQrUrl) + '" target="_blank" rel="noopener noreferrer">QR post-test</a>');
+    if (builderPhase === 'pre') {
+      if (session.preFormUrl) links.push('<a href="' + esc(session.preFormUrl) + '" target="_blank" rel="noopener noreferrer">Link pre-test</a>');
+      if (session.preQrUrl) links.push('<a href="' + esc(session.preQrUrl) + '" target="_blank" rel="noopener noreferrer">QR pre-test</a>');
+    } else {
+      if (session.postFormUrl) links.push('<a href="' + esc(session.postFormUrl) + '" target="_blank" rel="noopener noreferrer">Link post-test</a>');
+      if (session.postQrUrl) links.push('<a href="' + esc(session.postQrUrl) + '" target="_blank" rel="noopener noreferrer">QR post-test</a>');
+    }
     box.innerHTML = links.join('');
+  }
+
+  function phaseLabel() {
+    return builderPhase === 'pre' ? 'Pre-Test' : 'Post-Test';
+  }
+
+  function phaseLabelLower() {
+    return builderPhase === 'pre' ? 'pre-test' : 'post-test';
+  }
+
+  function applyPhaseLabels() {
+    var titleNode = document.getElementById('builder-title');
+    var subtitleNode = document.getElementById('builder-subtitle');
+    var existingTitleNode = document.getElementById('existing-title');
+    var inputTitleNode = document.getElementById('input-title');
+    var noteTitleNode = document.getElementById('builder-note-title');
+    var noteBodyNode = document.getElementById('builder-note-body');
+
+    if (titleNode) titleNode.textContent = 'Builder Soal ' + phaseLabel();
+    if (subtitleNode) subtitleNode.textContent = 'Buat banyak soal ' + phaseLabelLower() + ' sekaligus. Soal yang sudah diisi tetap terlihat di atas seperti alur Google Form.';
+    if (existingTitleNode) existingTitleNode.textContent = 'Soal ' + phaseLabel() + ' yang Sudah Tersimpan';
+    if (inputTitleNode) inputTitleNode.textContent = 'Input Soal Baru (' + phaseLabel() + ')';
+
+    if (builderPhase === 'pre') {
+      if (noteTitleNode) noteTitleNode.textContent = 'Catatan pre-test:';
+      if (noteBodyNode) noteBodyNode.textContent = 'Bagikan link atau QR pre-test kepada peserta untuk asesmen awal.';
+    } else {
+      if (noteTitleNode) noteTitleNode.textContent = 'Data peserta post-test dikumpulkan di form peserta:';
+      if (noteBodyNode) noteBodyNode.textContent = 'jenis kelamin, kategori umur, utusan/perwakilan lembaga.';
+    }
   }
 
   function addDraftCard(prefill) {
@@ -238,7 +273,7 @@
       var detail = await jsonp(API + '?page=prepost-session-detail&sessionId=' + encodeURIComponent(sessionId));
       renderExistingQuestions(detail || {});
       renderSessionLinks(detail && detail.session ? detail.session : null);
-      if (status) status.textContent = 'Detail sesi dimuat. Anda bisa langsung menambah banyak soal post-test.';
+      if (status) status.textContent = 'Detail sesi dimuat. Anda bisa langsung menambah banyak soal ' + phaseLabelLower() + '.';
     } catch (error) {
       if (status) status.textContent = 'Gagal memuat detail sesi. Coba lagi.';
       renderSessionLinks(null);
@@ -277,7 +312,7 @@
         await postAction('prepost-create-question', {
           staffEmail: email,
           sessionId: sessionId,
-          phase: 'post',
+          phase: builderPhase,
           questionText: row.questionText,
           questionType: 'single',
           options: toApiOptions(row),
@@ -299,6 +334,7 @@
   }
 
   function init() {
+    applyPhaseLabels();
     addDraftCard();
 
     var select = document.getElementById('session-id');
