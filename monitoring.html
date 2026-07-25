@@ -232,6 +232,31 @@
           <button id="prepost-create-question" type="button">Tambah pertanyaan</button>
           <span id="prepost-question-status">Gunakan Session ID dari hasil pembuatan sesi.</span>
         </div>
+        <div class="prepost-participant-data">
+          <strong>Data peserta yang dikumpulkan (post-test):</strong>
+          <span>Jenis kelamin, kategori umur, dan utusan/perwakilan lembaga.</span>
+        </div>
+        <hr style="border:none;border-top:1px solid #d9e7e1;margin:16px 0">
+        <div class="capacity-prepost__head" style="margin-bottom:8px">
+          <div>
+            <span class="eyebrow">REVIEW SESI</span>
+            <h3>Lihat semua pertanyaan dan link peserta</h3>
+          </div>
+        </div>
+        <div class="capacity-prepost__form-grid">
+          <label>Pilih sesi
+            <select id="prepost-manage-session">
+              <option value="">Pilih Session ID</option>
+            </select>
+          </label>
+        </div>
+        <div class="capacity-prepost__actions">
+          <button id="prepost-load-session-detail" type="button">Tampilkan detail sesi</button>
+          <span id="prepost-session-detail-status">Pilih sesi lalu klik tombol untuk melihat daftar pertanyaan lengkap.</span>
+        </div>
+        <div id="prepost-session-detail" class="prepost-session-detail">
+          <div class="loading">Belum ada sesi yang dipilih.</div>
+        </div>
       </section>
 
       <div id="capacity-list" class="capacity-list"><div class="loading">Memuat kegiatan…</div></div>
@@ -249,7 +274,7 @@
   <script src="js/monitoring-data-compat.js?v=20260721-object-photo1"></script>
   <script src="js/monitoring.js?v=20260723-audit-fixes1"></script>
   <script src="js/monitoring-photo.js?v=20260720-edge-refresh1"></script>
-  <script src="js/capacity-building.js?v=20260725-capacity8"></script>
+  <script src="js/capacity-building.js?v=20260725-capacity9"></script>
   <script src="js/i18n.js?v=20260724-official-website1"></script>
   <script src="js/pwa.js?v=20260723-edge-photo-fix1"></script>
 </body>

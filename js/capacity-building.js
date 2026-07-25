@@ -3,6 +3,7 @@
 
   var API = 'https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec';
   var all = [];
+  var prepostSessions = [];
 
   function text(v) { return v === null || v === undefined ? '' : String(v).trim(); }
   function num(v) { var n = Number(v); return isFinite(n) ? n : 0; }
@@ -224,6 +225,9 @@
     gainNode.textContent = Number(totals.avgGain || 0).toLocaleString('id-ID');
 
     var sessions = Array.isArray(data && data.sessions) ? data.sessions : [];
+    prepostSessions = sessions.map(function (item) { return item.session || item; }).filter(Boolean);
+    renderManageSessionOptions(prepostSessions);
+
     if (!sessions.length) {
       listNode.innerHTML = '<div class="capacity-empty">Belum ada sesi pre/post test.</div>';
       return;
@@ -253,6 +257,135 @@
           '</div>' +
         '</article>';
     }).join('');
+  }
+
+  function renderManageSessionOptions(sessions) {
+    var select = document.getElementById('prepost-manage-session');
+    if (!select) return;
+
+    var currentValue = text(select.value);
+    var options = ['<option value="">Pilih Session ID</option>'];
+    (sessions || []).forEach(function (session) {
+      var id = text(session && session.sessionId);
+      if (!id) return;
+      var title = text(session.title || id);
+      var date = text(session.activityDate);
+      options.push('<option value="' + esc(id) + '">' + esc(title + ' (' + id + ')' + (date ? ' - ' + date : '')) + '</option>');
+    });
+    select.innerHTML = options.join('');
+
+    if (currentValue && select.querySelector('option[value="' + currentValue.replace(/"/g, '&quot;') + '"]')) {
+      select.value = currentValue;
+    }
+
+    var manualSessionId = document.getElementById('prepost-question-session');
+    var manualValue = text(manualSessionId && manualSessionId.value);
+    if (!currentValue && manualValue) {
+      select.value = manualValue;
+    }
+  }
+
+  function formatQuestionOptions(options) {
+    var rows = Array.isArray(options) ? options : [];
+    if (!rows.length) return '<span class="prepost-question-option">Tanpa opsi</span>';
+    return rows.map(function (option) {
+      var label = text(option && (option.label || option.value));
+      var value = text(option && option.value);
+      var score = num(option && option.score);
+      var suffix = value ? ' (' + value + ')' : '';
+      return '<span class="prepost-question-option">' + esc(label + suffix) + ' - skor ' + esc(score) + '</span>';
+    }).join('');
+  }
+
+  function renderManageSessionDetail(data) {
+    var statusNode = document.getElementById('prepost-session-detail-status');
+    var box = document.getElementById('prepost-session-detail');
+    if (!box) return;
+
+    if (!data || data.ok === false) {
+      box.innerHTML = '<div class="capacity-empty">Detail sesi tidak ditemukan.</div>';
+      if (statusNode) statusNode.textContent = 'Detail sesi tidak ditemukan. Pastikan Session ID benar.';
+      return;
+    }
+
+    var session = data.session || {};
+    var summary = data.summary || {};
+    var questions = Array.isArray(data.questions) ? data.questions : [];
+    var preQuestions = questions.filter(function (item) { return text(item.phase).toLowerCase() === 'pre'; });
+    var postQuestions = questions.filter(function (item) { return text(item.phase).toLowerCase() === 'post'; });
+
+    var links = '' +
+      '<div class="prepost-manage-links">' +
+        (session.preFormUrl ? '<a href="' + esc(session.preFormUrl) + '" target="_blank" rel="noopener noreferrer">Buka link pre-test</a>' : '') +
+        (session.postFormUrl ? '<a href="' + esc(session.postFormUrl) + '" target="_blank" rel="noopener noreferrer">Buka link post-test</a>' : '') +
+        (session.preQrUrl ? '<a href="' + esc(session.preQrUrl) + '" target="_blank" rel="noopener noreferrer">Lihat QR pre-test</a>' : '') +
+        (session.postQrUrl ? '<a href="' + esc(session.postQrUrl) + '" target="_blank" rel="noopener noreferrer">Lihat QR post-test</a>' : '') +
+      '</div>';
+
+    var preList = preQuestions.map(function (item, index) {
+      return '' +
+        '<article class="prepost-question-item">' +
+          '<h5>' + (index + 1) + '. ' + esc(item.questionText || '-') + '</h5>' +
+          '<div class="prepost-question-options">' + formatQuestionOptions(item.options) + '</div>' +
+        '</article>';
+    }).join('');
+
+    var postList = postQuestions.map(function (item, index) {
+      return '' +
+        '<article class="prepost-question-item">' +
+          '<h5>' + (index + 1) + '. ' + esc(item.questionText || '-') + '</h5>' +
+          '<div class="prepost-question-options">' + formatQuestionOptions(item.options) + '</div>' +
+        '</article>';
+    }).join('');
+
+    box.innerHTML = '' +
+      '<article class="prepost-session-detail-card">' +
+        '<div class="prepost-session-detail-head">' +
+          '<h4>' + esc(session.title || session.sessionId || 'Sesi') + '</h4>' +
+          '<p>' + esc([session.activityDate, session.location || session.village, session.facilitator].filter(Boolean).join(' | ') || '-') + '</p>' +
+        '</div>' +
+        '<div class="prepost-session-detail-stats">' +
+          '<span>Pre responden: ' + Number(summary.preRespondents || 0).toLocaleString('id-ID') + '</span>' +
+          '<span>Post responden: ' + Number(summary.postRespondents || 0).toLocaleString('id-ID') + '</span>' +
+          '<span>Rata-rata post (%): ' + Number(summary.postAvgPercent || 0).toLocaleString('id-ID') + '</span>' +
+          '<span>Jumlah soal post: ' + Number(summary.postQuestionCount || 0).toLocaleString('id-ID') + '</span>' +
+        '</div>' +
+        '<div class="prepost-session-detail-demography">' +
+          '<strong>Data peserta post-test:</strong> jenis kelamin, kategori umur, utusan/perwakilan lembaga.' +
+        '</div>' +
+        links +
+        '<div class="prepost-question-columns">' +
+          '<section><h5>Pre-test (' + preQuestions.length + ' soal)</h5>' + (preList || '<div class="capacity-empty">Belum ada pertanyaan pre-test.</div>') + '</section>' +
+          '<section><h5>Post-test (' + postQuestions.length + ' soal)</h5>' + (postList || '<div class="capacity-empty">Belum ada pertanyaan post-test.</div>') + '</section>' +
+        '</div>' +
+      '</article>';
+
+    if (statusNode) statusNode.textContent = 'Detail sesi dan seluruh pertanyaan berhasil dimuat.';
+  }
+
+  async function loadManageSessionDetail() {
+    var statusNode = document.getElementById('prepost-session-detail-status');
+    var select = document.getElementById('prepost-manage-session');
+    var fallbackInput = document.getElementById('prepost-question-session');
+    var sessionId = text(select && select.value) || text(fallbackInput && fallbackInput.value);
+    var box = document.getElementById('prepost-session-detail');
+
+    if (!sessionId) {
+      if (statusNode) statusNode.textContent = 'Pilih Session ID terlebih dahulu.';
+      if (box) box.innerHTML = '<div class="capacity-empty">Pilih Session ID untuk melihat detail sesi.</div>';
+      return;
+    }
+
+    if (statusNode) statusNode.textContent = 'Memuat detail sesi...';
+    if (box) box.innerHTML = '<div class="loading">Memuat semua pertanyaan dan link sesi...</div>';
+
+    try {
+      var data = await jsonp(API + '?page=prepost-session-detail&sessionId=' + encodeURIComponent(sessionId) + '&t=' + Date.now());
+      renderManageSessionDetail(data || {});
+    } catch (error) {
+      if (statusNode) statusNode.textContent = 'Gagal memuat detail sesi. Coba lagi.';
+      if (box) box.innerHTML = '<div class="capacity-empty">Gagal memuat detail sesi.</div>';
+    }
   }
 
   function postAction(action, payload) {
@@ -394,6 +527,9 @@
       });
       var answerNode = document.getElementById('prepost-answer-key');
       if (answerNode) answerNode.value = '';
+      var manageSessionSelect = document.getElementById('prepost-manage-session');
+      if (manageSessionSelect && sessionId) manageSessionSelect.value = sessionId;
+      loadManageSessionDetail();
     } catch (error) {
       if (statusNode) statusNode.textContent = 'Gagal mengirim pertanyaan. Coba lagi.';
     }
@@ -455,6 +591,15 @@
     if (createSessionNode) createSessionNode.addEventListener('click', createSessionFromForm);
     var createQuestionNode = document.getElementById('prepost-create-question');
     if (createQuestionNode) createQuestionNode.addEventListener('click', createQuestionFromForm);
+    var loadSessionDetailNode = document.getElementById('prepost-load-session-detail');
+    if (loadSessionDetailNode) loadSessionDetailNode.addEventListener('click', loadManageSessionDetail);
+    var manageSessionNode = document.getElementById('prepost-manage-session');
+    if (manageSessionNode) {
+      manageSessionNode.addEventListener('change', function () {
+        var questionSession = document.getElementById('prepost-question-session');
+        if (questionSession) questionSession.value = text(manageSessionNode.value);
+      });
+    }
 
     loadCapacity();
     loadPrepost();

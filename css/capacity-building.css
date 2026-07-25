@@ -38,3 +38,27 @@
 }
 
 .capacity-prepost-manage select{display:block;width:100%;margin-top:6px;padding:10px;border:1px solid #cdded7;border-radius:9px;background:#fff}
+
+.prepost-participant-data{margin-top:12px;padding:10px 12px;border:1px dashed #b8d4c9;background:#f6fcf9;border-radius:10px;display:grid;gap:4px}
+.prepost-participant-data strong{color:#154737;font-size:13px}
+.prepost-participant-data span{color:#4e6a60;font-size:13px}
+.prepost-session-detail{margin-top:12px}
+.prepost-session-detail-card{border:1px solid #d6e4de;background:#fbfefd;border-radius:12px;padding:14px}
+.prepost-session-detail-head h4{margin:0;color:#163b31;font-size:18px}
+.prepost-session-detail-head p{margin:7px 0 0;color:#5e756d;font-size:13px}
+.prepost-session-detail-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}
+.prepost-session-detail-stats span{background:#eaf7f1;color:#0f6c52;padding:8px;border-radius:8px;font-size:12px}
+.prepost-session-detail-demography{margin-top:10px;color:#35574c;font-size:13px}
+.prepost-manage-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.prepost-manage-links a{font-size:12px;text-decoration:none;background:#0f7a5a;color:#fff;padding:7px 10px;border-radius:8px}
+.prepost-question-columns{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.prepost-question-columns section h5{margin:0 0 8px;color:#163b31;font-size:15px}
+.prepost-question-item{border:1px solid #dce9e4;border-radius:10px;padding:10px;background:#fff;margin-bottom:8px}
+.prepost-question-item h5{margin:0 0 8px;color:#243f37;font-size:14px;line-height:1.5;white-space:normal;word-break:break-word}
+.prepost-question-options{display:grid;gap:6px}
+.prepost-question-option{display:block;background:#f1f8f4;border-radius:8px;padding:7px 8px;color:#35574c;font-size:12px;white-space:normal;word-break:break-word;line-height:1.4}
+
+@media (max-width:980px){
+  .prepost-session-detail-stats{grid-template-columns:1fr 1fr}
+  .prepost-question-columns{grid-template-columns:1fr}
+}
