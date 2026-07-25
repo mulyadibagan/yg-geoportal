@@ -209,8 +209,29 @@
           <label style="grid-column:1/-1">Pertanyaan
             <input id="prepost-question-text" type="text" placeholder="Contoh: Seberapa paham Anda tentang topik ini?">
           </label>
-          <label style="grid-column:1/-1">Pilihan jawaban (format: label:skor, pisahkan dengan koma)
-            <input id="prepost-question-options" type="text" placeholder="Sangat paham:5, Paham:4, Cukup:3, Kurang:2, Tidak paham:1">
+          <label>Pilihan A
+            <input id="prepost-option-a" type="text" placeholder="Teks pilihan A">
+          </label>
+          <label>Pilihan B
+            <input id="prepost-option-b" type="text" placeholder="Teks pilihan B">
+          </label>
+          <label>Pilihan C
+            <input id="prepost-option-c" type="text" placeholder="Teks pilihan C">
+          </label>
+          <label>Pilihan D
+            <input id="prepost-option-d" type="text" placeholder="Teks pilihan D">
+          </label>
+          <label>Kunci jawaban benar
+            <select id="prepost-answer-key">
+              <option value="">Pilih kunci</option>
+              <option value="A">A</option>
+              <option value="B">B</option>
+              <option value="C">C</option>
+              <option value="D">D</option>
+            </select>
+          </label>
+          <label style="grid-column:1/-1">Alternatif opsi manual (opsional, format: label:skor)
+            <input id="prepost-question-options" type="text" placeholder="Contoh skala: Sangat paham:5, Paham:4, Cukup:3, Kurang:2, Tidak paham:1">
           </label>
         </div>
         <div class="capacity-prepost__actions">

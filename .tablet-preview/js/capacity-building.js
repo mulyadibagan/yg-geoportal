@@ -331,12 +331,33 @@
     }).filter(Boolean);
   }
 
+  function buildAbcdOptions(answerKey) {
+    var optionsMap = [
+      { key: 'A', id: 'prepost-option-a' },
+      { key: 'B', id: 'prepost-option-b' },
+      { key: 'C', id: 'prepost-option-c' },
+      { key: 'D', id: 'prepost-option-d' }
+    ];
+    var selectedKey = text(answerKey).toUpperCase();
+    return optionsMap.map(function (item) {
+      var field = document.getElementById(item.id);
+      var labelText = text(field && field.value);
+      if (!labelText) return null;
+      return {
+        label: item.key + '. ' + labelText,
+        value: item.key,
+        score: selectedKey && selectedKey === item.key ? 1 : 0
+      };
+    }).filter(Boolean);
+  }
+
   async function createQuestionFromForm() {
     var email = text(document.getElementById('prepost-staff-email') && document.getElementById('prepost-staff-email').value);
     var sessionId = text(document.getElementById('prepost-question-session') && document.getElementById('prepost-question-session').value);
     var phase = text(document.getElementById('prepost-question-phase') && document.getElementById('prepost-question-phase').value).toLowerCase();
     var questionText = text(document.getElementById('prepost-question-text') && document.getElementById('prepost-question-text').value);
     var optionsText = text(document.getElementById('prepost-question-options') && document.getElementById('prepost-question-options').value);
+    var answerKey = text(document.getElementById('prepost-answer-key') && document.getElementById('prepost-answer-key').value).toUpperCase();
     var maxScore = num(document.getElementById('prepost-question-max') && document.getElementById('prepost-question-max').value);
     var statusNode = document.getElementById('prepost-question-status');
 
@@ -349,10 +370,23 @@
       return;
     }
 
-    var options = parseQuestionOptions(optionsText);
+    var options = buildAbcdOptions(answerKey);
+    if (!options.length) {
+      options = parseQuestionOptions(optionsText);
+    }
     if (!options.length) {
       if (statusNode) statusNode.textContent = 'Isi minimal satu opsi jawaban dengan format label:skor.';
       return;
+    }
+
+    if (answerKey && ['A', 'B', 'C', 'D'].indexOf(answerKey) !== -1) {
+      var hasAnswerKeyOption = options.some(function (item) {
+        return text(item.value).toUpperCase() === answerKey;
+      });
+      if (!hasAnswerKeyOption) {
+        if (statusNode) statusNode.textContent = 'Kunci jawaban tidak ditemukan pada opsi A/B/C/D yang diisi.';
+        return;
+      }
     }
 
     if (statusNode) statusNode.textContent = 'Mengirim pertanyaan...';
@@ -370,6 +404,12 @@
       if (statusNode) statusNode.textContent = 'Permintaan tambah pertanyaan terkirim.';
       var questionNode = document.getElementById('prepost-question-text');
       if (questionNode) questionNode.value = '';
+      ['prepost-option-a','prepost-option-b','prepost-option-c','prepost-option-d','prepost-question-options'].forEach(function(id){
+        var node = document.getElementById(id);
+        if (node) node.value = '';
+      });
+      var answerNode = document.getElementById('prepost-answer-key');
+      if (answerNode) answerNode.value = '';
     } catch (error) {
       if (statusNode) statusNode.textContent = 'Gagal mengirim pertanyaan. Coba lagi.';
     }
