@@ -75,6 +75,26 @@
     return ['A', 'B', 'C', 'D'].indexOf(key) > -1 ? key : '';
   }
 
+  function autoresizeTextarea(node) {
+    if (!node) return;
+    node.style.height = 'auto';
+    node.style.height = Math.max(node.scrollHeight, 44) + 'px';
+  }
+
+  function bindAutoResizeWithin(scope) {
+    var root = scope || document;
+    var areas = root.querySelectorAll('textarea.auto-grow');
+    areas.forEach(function (area) {
+      if (!area.dataset.autogrowBound) {
+        area.addEventListener('input', function () {
+          autoresizeTextarea(area);
+        });
+        area.dataset.autogrowBound = '1';
+      }
+      autoresizeTextarea(area);
+    });
+  }
+
   function renderExistingQuestions(detail) {
     var box = document.getElementById('existing-list');
     if (!box) return;
@@ -104,12 +124,12 @@
           '<div class="existing-options">' + formatOptions(q.options) + '</div>' +
           '<div class="existing-actions"><button type="button" class="btn btn-alt btn-edit-question">Revisi soal ini</button></div>' +
           '<div class="existing-edit" hidden>' +
-            '<label>Pertanyaan<input type="text" class="edit-q-text" value="' + esc(q.questionText || '') + '"></label>' +
+            '<label>Pertanyaan<textarea class="edit-q-text auto-grow" rows="3">' + esc(q.questionText || '') + '</textarea></label>' +
             '<div class="option-grid">' +
-              '<label>Pilihan A<input type="text" class="edit-q-a" value="' + esc(normalizeOptionText((q.options || []).find(function (it) { return text(it.value).toUpperCase() === 'A'; }), 'A')) + '"></label>' +
-              '<label>Pilihan B<input type="text" class="edit-q-b" value="' + esc(normalizeOptionText((q.options || []).find(function (it) { return text(it.value).toUpperCase() === 'B'; }), 'B')) + '"></label>' +
-              '<label>Pilihan C<input type="text" class="edit-q-c" value="' + esc(normalizeOptionText((q.options || []).find(function (it) { return text(it.value).toUpperCase() === 'C'; }), 'C')) + '"></label>' +
-              '<label>Pilihan D<input type="text" class="edit-q-d" value="' + esc(normalizeOptionText((q.options || []).find(function (it) { return text(it.value).toUpperCase() === 'D'; }), 'D')) + '"></label>' +
+              '<label>Pilihan A<textarea class="edit-q-a auto-grow" rows="2" placeholder="Isi pilihan A">' + esc(normalizeOptionText((q.options || []).find(function (it) { return text(it.value).toUpperCase() === 'A'; }), 'A')) + '</textarea></label>' +
+              '<label>Pilihan B<textarea class="edit-q-b auto-grow" rows="2" placeholder="Isi pilihan B">' + esc(normalizeOptionText((q.options || []).find(function (it) { return text(it.value).toUpperCase() === 'B'; }), 'B')) + '</textarea></label>' +
+              '<label>Pilihan C<textarea class="edit-q-c auto-grow" rows="2" placeholder="Isi pilihan C">' + esc(normalizeOptionText((q.options || []).find(function (it) { return text(it.value).toUpperCase() === 'C'; }), 'C')) + '</textarea></label>' +
+              '<label>Pilihan D<textarea class="edit-q-d auto-grow" rows="2" placeholder="Isi pilihan D">' + esc(normalizeOptionText((q.options || []).find(function (it) { return text(it.value).toUpperCase() === 'D'; }), 'D')) + '</textarea></label>' +
             '</div>' +
             '<label>Kunci jawaban' +
               '<select class="edit-q-key">' +
@@ -129,6 +149,7 @@
         '</article>';
     }).join('');
 
+    bindAutoResizeWithin(box);
     bindExistingEditActions();
 
     renumberDraftCards();
@@ -306,6 +327,8 @@
       if (keyNode) keyNode.value = text(prefill.key).toUpperCase();
     }
 
+    bindAutoResizeWithin(node);
+
     var removeBtn = node.querySelector('.remove-card');
     if (removeBtn) {
       removeBtn.addEventListener('click', function () {
@@ -475,6 +498,7 @@
   function init() {
     applyPhaseLabels();
     addDraftCard();
+    bindAutoResizeWithin(document);
 
     var select = document.getElementById('session-id');
     if (select) select.addEventListener('change', loadSessionDetail);

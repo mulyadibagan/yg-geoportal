@@ -80,8 +80,11 @@ body {
 }
 
 .builder-card textarea {
-  resize: vertical;
+  resize: none;
   line-height: 1.45;
+  min-height: 44px;
+  overflow-y: hidden;
+  overflow-wrap: anywhere;
 }
 
 .builder-status {
