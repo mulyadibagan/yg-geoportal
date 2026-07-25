@@ -244,6 +244,10 @@ if (action === 'content-save') {
       return handlePrepostCreateQuestionPost_(e);
     }
 
+    if (action === 'prepost-update-question') {
+      return handlePrepostUpdateQuestionPost_(e);
+    }
+
     if (action === 'prepost-submit-response') {
       return handlePrepostSubmitResponsePost_(e);
     }
@@ -2731,6 +2735,65 @@ function handlePrepostCreateQuestionPost_(e) {
   }
 }
 
+function handlePrepostUpdateQuestionPost_(e) {
+  try {
+    const data = parsePostPayload_(e);
+    assertOfficialEmail_(data.staffEmail);
+
+    const questionId = clean_(data.questionId);
+    if (!questionId) throw new Error('Question ID wajib diisi.');
+
+    const questionSheet = getPrepostQuestionSheet_();
+    if (questionSheet.getLastRow() < 2) {
+      throw new Error('Data pertanyaan belum tersedia.');
+    }
+
+    const rows = questionSheet
+      .getRange(2, 1, questionSheet.getLastRow() - 1, 12)
+      .getDisplayValues();
+
+    let found = -1;
+    rows.forEach(function(row, index) {
+      if (clean_(row[0]) === questionId) found = index + 2;
+    });
+
+    if (found === -1) throw new Error('Pertanyaan tidak ditemukan.');
+
+    const previous = questionSheet.getRange(found, 1, 1, 12).getDisplayValues()[0];
+    const phase = clean_(data.phase || previous[2]).toLowerCase();
+    if (['pre', 'post'].indexOf(phase) === -1) {
+      throw new Error('Phase harus pre atau post.');
+    }
+
+    const questionText = clean_(data.questionText || previous[3]);
+    if (!questionText) throw new Error('Pertanyaan wajib diisi.');
+
+    const questionType = clean_(data.questionType || previous[4] || 'single');
+    const options = normalizeQuestionOptions_(data.options);
+    const maxScore = Number(data.maxScore);
+    const displayOrder = Number(data.order);
+
+    questionSheet.getRange(found, 1, 1, 12).setValues([[
+      questionId,
+      clean_(data.sessionId || previous[1]),
+      phase,
+      questionText,
+      questionType,
+      JSON.stringify(options),
+      Number.isFinite(maxScore) ? maxScore : Number(previous[6]) || 0,
+      Number.isFinite(displayOrder) ? displayOrder : Number(previous[7]) || 0,
+      clean_(previous[8]) || 'true',
+      clean_(previous[9]),
+      previous[10],
+      new Date()
+    ]]);
+
+    return prepostResponse_({ ok: true, questionId: questionId });
+  } catch (error) {
+    return prepostErrorResponse_(error.message);
+  }
+}
+
 function findQuestionById_(questions, questionId) {
   const id = clean_(questionId);
   return questions.find(function(item) {
@@ -2791,6 +2854,14 @@ function handlePrepostSubmitResponsePost_(e) {
 
     if (!participantGender) {
       throw new Error('Jenis kelamin peserta wajib diisi.');
+    }
+
+    if (!participantAgeCategory) {
+      throw new Error('Kategori umur peserta wajib diisi.');
+    }
+
+    if (!participantDelegate) {
+      throw new Error('Utusan lembaga peserta wajib diisi.');
     }
 
     const participantCode = clean_(data.participantCode) || createPrepostId_('PTC');

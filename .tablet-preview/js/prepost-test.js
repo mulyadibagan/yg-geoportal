@@ -135,6 +135,16 @@
       return;
     }
 
+    if(!ageCategory){
+      status.textContent = 'Kategori umur wajib diisi.';
+      return;
+    }
+
+    if(!delegate){
+      status.textContent = 'Utusan lembaga wajib diisi.';
+      return;
+    }
+
     if(delegateChoice === 'Lainnya' && !delegateCustom){
       status.textContent = 'Isi utusan lembaga manual jika memilih "Lainnya".';
       return;

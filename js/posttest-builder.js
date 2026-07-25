@@ -59,6 +59,22 @@
     }).join('');
   }
 
+  function normalizeOptionText(option, key) {
+    var label = text(option && (option.label || option.value));
+    var cleaned = label.replace(/^[A-Da-d]\.\s*/g, '').trim();
+    if (cleaned) return cleaned;
+    return text(option && option.value) === key ? text(option.value) : '';
+  }
+
+  function answerKeyFromOptions(options) {
+    var rows = Array.isArray(options) ? options : [];
+    var scored = rows.find(function (item) {
+      return Number(item && item.score) === 1;
+    });
+    var key = text(scored && scored.value).toUpperCase();
+    return ['A', 'B', 'C', 'D'].indexOf(key) > -1 ? key : '';
+  }
+
   function renderExistingQuestions(detail) {
     var box = document.getElementById('existing-list');
     if (!box) return;
@@ -81,14 +97,137 @@
     }
 
     box.innerHTML = questions.map(function (q, i) {
+      var key = answerKeyFromOptions(q.options);
       return '' +
-        '<article class="existing-item">' +
+        '<article class="existing-item" data-question-id="' + esc(q.questionId || '') + '">' +
           '<h4>' + (i + 1) + '. ' + esc(q.questionText || '-') + '</h4>' +
           '<div class="existing-options">' + formatOptions(q.options) + '</div>' +
+          '<div class="existing-actions"><button type="button" class="btn btn-alt btn-edit-question">Revisi soal ini</button></div>' +
+          '<div class="existing-edit" hidden>' +
+            '<label>Pertanyaan<input type="text" class="edit-q-text" value="' + esc(q.questionText || '') + '"></label>' +
+            '<div class="option-grid">' +
+              '<label>Pilihan A<input type="text" class="edit-q-a" value="' + esc(normalizeOptionText((q.options || []).find(function (it) { return text(it.value).toUpperCase() === 'A'; }), 'A')) + '"></label>' +
+              '<label>Pilihan B<input type="text" class="edit-q-b" value="' + esc(normalizeOptionText((q.options || []).find(function (it) { return text(it.value).toUpperCase() === 'B'; }), 'B')) + '"></label>' +
+              '<label>Pilihan C<input type="text" class="edit-q-c" value="' + esc(normalizeOptionText((q.options || []).find(function (it) { return text(it.value).toUpperCase() === 'C'; }), 'C')) + '"></label>' +
+              '<label>Pilihan D<input type="text" class="edit-q-d" value="' + esc(normalizeOptionText((q.options || []).find(function (it) { return text(it.value).toUpperCase() === 'D'; }), 'D')) + '"></label>' +
+            '</div>' +
+            '<label>Kunci jawaban' +
+              '<select class="edit-q-key">' +
+                '<option value="">Pilih kunci</option>' +
+                '<option value="A"' + (key === 'A' ? ' selected' : '') + '>A</option>' +
+                '<option value="B"' + (key === 'B' ? ' selected' : '') + '>B</option>' +
+                '<option value="C"' + (key === 'C' ? ' selected' : '') + '>C</option>' +
+                '<option value="D"' + (key === 'D' ? ' selected' : '') + '>D</option>' +
+              '</select>' +
+            '</label>' +
+            '<div class="existing-actions">' +
+              '<button type="button" class="btn btn-save-edit">Simpan revisi</button>' +
+              '<button type="button" class="btn btn-alt btn-cancel-edit">Batal</button>' +
+            '</div>' +
+            '<p class="existing-edit-status"></p>' +
+          '</div>' +
         '</article>';
     }).join('');
 
+    bindExistingEditActions();
+
     renumberDraftCards();
+  }
+
+  function buildOptionsFromEditInputs(editBox) {
+    var a = text(editBox.querySelector('.edit-q-a') && editBox.querySelector('.edit-q-a').value);
+    var b = text(editBox.querySelector('.edit-q-b') && editBox.querySelector('.edit-q-b').value);
+    var c = text(editBox.querySelector('.edit-q-c') && editBox.querySelector('.edit-q-c').value);
+    var d = text(editBox.querySelector('.edit-q-d') && editBox.querySelector('.edit-q-d').value);
+    var key = text(editBox.querySelector('.edit-q-key') && editBox.querySelector('.edit-q-key').value).toUpperCase();
+
+    if (!a || !b || !c || !d || ['A', 'B', 'C', 'D'].indexOf(key) === -1) {
+      return { error: 'Lengkapi opsi A-D dan pilih kunci jawaban.' };
+    }
+
+    return {
+      error: '',
+      options: [
+        { label: 'A. ' + a, value: 'A', score: key === 'A' ? 1 : 0 },
+        { label: 'B. ' + b, value: 'B', score: key === 'B' ? 1 : 0 },
+        { label: 'C. ' + c, value: 'C', score: key === 'C' ? 1 : 0 },
+        { label: 'D. ' + d, value: 'D', score: key === 'D' ? 1 : 0 }
+      ]
+    };
+  }
+
+  function bindExistingEditActions() {
+    var email = text(document.getElementById('staff-email') && document.getElementById('staff-email').value);
+    var sessionId = text(document.getElementById('session-id') && document.getElementById('session-id').value);
+    var rows = document.querySelectorAll('.existing-item');
+
+    rows.forEach(function (row) {
+      var toggleBtn = row.querySelector('.btn-edit-question');
+      var editBox = row.querySelector('.existing-edit');
+      var cancelBtn = row.querySelector('.btn-cancel-edit');
+      var saveBtn = row.querySelector('.btn-save-edit');
+      var statusNode = row.querySelector('.existing-edit-status');
+      var questionId = text(row.getAttribute('data-question-id'));
+
+      if (toggleBtn && editBox) {
+        toggleBtn.addEventListener('click', function () {
+          editBox.hidden = false;
+          if (statusNode) statusNode.textContent = '';
+        });
+      }
+
+      if (cancelBtn && editBox) {
+        cancelBtn.addEventListener('click', function () {
+          editBox.hidden = true;
+          if (statusNode) statusNode.textContent = '';
+        });
+      }
+
+      if (saveBtn && editBox) {
+        saveBtn.addEventListener('click', async function () {
+          var latestEmail = text(document.getElementById('staff-email') && document.getElementById('staff-email').value);
+          var latestSessionId = text(document.getElementById('session-id') && document.getElementById('session-id').value) || sessionId;
+          if (!latestEmail || !/@yayasangambut\.org$/i.test(latestEmail)) {
+            if (statusNode) statusNode.textContent = 'Gunakan email official Yayasan Gambut.';
+            return;
+          }
+
+          var questionText = text(editBox.querySelector('.edit-q-text') && editBox.querySelector('.edit-q-text').value);
+          if (!questionText) {
+            if (statusNode) statusNode.textContent = 'Pertanyaan wajib diisi.';
+            return;
+          }
+
+          var optionsResult = buildOptionsFromEditInputs(editBox);
+          if (optionsResult.error) {
+            if (statusNode) statusNode.textContent = optionsResult.error;
+            return;
+          }
+
+          saveBtn.disabled = true;
+          if (statusNode) statusNode.textContent = 'Menyimpan revisi...';
+          try {
+            await postAction('prepost-update-question', {
+              staffEmail: latestEmail,
+              questionId: questionId,
+              sessionId: latestSessionId,
+              phase: builderPhase,
+              questionText: questionText,
+              questionType: 'single',
+              options: optionsResult.options,
+              maxScore: 1,
+              order: 0
+            });
+            if (statusNode) statusNode.textContent = 'Revisi tersimpan.';
+            await loadSessionDetail();
+          } catch (error) {
+            if (statusNode) statusNode.textContent = 'Gagal menyimpan revisi.';
+          } finally {
+            saveBtn.disabled = false;
+          }
+        });
+      }
+    });
   }
 
   function renderSessionLinks(session) {
