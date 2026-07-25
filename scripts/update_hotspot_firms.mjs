@@ -19,11 +19,12 @@ const PS_GEOJSON_FILE = path.join(
 
 const FIRMS_KEY = process.env.FIRMS_MAP_KEY || "";
 const DRY_RUN = process.env.FIRMS_DRY_RUN === "1";
+const MODE = process.env.FIRMS_MODE || "recent";
 const FIRMS_SOURCES = (process.env.FIRMS_SOURCES || "VIIRS_SNPP_SP,VIIRS_NOAA20_SP,VIIRS_SNPP_NRT,VIIRS_NOAA20_NRT,VIIRS_NOAA21_NRT")
   .split(",")
   .map((x) => x.trim())
   .filter(Boolean);
-const CHUNK_DAYS = 5;
+const CHUNK_DAYS = Number(process.env.FIRMS_CHUNK_DAYS || 10);
 const REQUEST_TIMEOUT_MS = Number(process.env.FIRMS_TIMEOUT_MS || 90000);
 const REQUEST_MAX_ATTEMPTS = Number(process.env.FIRMS_RETRY_ATTEMPTS || 4);
 const REQUEST_RETRY_BASE_MS = Number(process.env.FIRMS_RETRY_BASE_MS || 1200);
@@ -422,6 +423,9 @@ function pointInUnit(point, unit) {
 }
 
 async function main() {
+  if (!["recent", "history", "all"].includes(MODE)) {
+    throw new Error(`FIRMS_MODE tidak valid: ${MODE}`);
+  }
   const analytics = JSON.parse(await readFile(ANALYTICS_PATH, "utf-8"));
   const rawVillageItems = await loadVillageBoundaryItems();
   const villageItems = rawVillageItems.map((item) => ({
@@ -461,6 +465,10 @@ async function main() {
   const now = new Date();
   const currentYear = now.getUTCFullYear();
   const yearlyStart = new Date(Date.UTC(currentYear - 4, 0, 1));
+  const recentStart = new Date(now);
+  recentStart.setUTCDate(recentStart.getUTCDate() - 29);
+  recentStart.setUTCHours(0, 0, 0, 0);
+  const requestedStart = MODE === "recent" ? recentStart : yearlyStart;
 
   const unitStats = new Map();
   for (const unit of unitItems) {
@@ -482,11 +490,11 @@ async function main() {
 
   const activeSources = availability.filter((item) => {
     const maxDate = parseIsoDate(item.maxDate);
-    return maxDate >= yearlyStart;
+    return maxDate >= requestedStart;
   });
 
   if (!activeSources.length) {
-    throw new Error("Tidak ada source FIRMS aktif yang overlap dengan periode 5 tahun terakhir.");
+    throw new Error(`Tidak ada source FIRMS aktif untuk mode ${MODE}.`);
   }
 
   const yearIndexByValue = new Map();
@@ -499,7 +507,7 @@ async function main() {
   for (const sourceInfo of activeSources) {
     const availableStart = parseIsoDate(sourceInfo.minDate);
     const availableEnd = parseIsoDate(sourceInfo.maxDate);
-    const rangeStart = availableStart > yearlyStart ? availableStart : yearlyStart;
+    const rangeStart = availableStart > requestedStart ? availableStart : requestedStart;
     const rangeEnd = availableEnd < now ? availableEnd : now;
     if (rangeStart > rangeEnd) {
       continue;
@@ -561,14 +569,14 @@ async function main() {
 
           const target = unitStats.get(`${unit.collection}|${unit.key}`);
           const ageDays = daysBetween(now, pointDate);
-          if (ageDays >= 0 && ageDays <= 6) {
+          if (MODE !== "history" && ageDays >= 0 && ageDays <= 6) {
             target.hotspot7d += 1;
           }
-          if (ageDays >= 0 && ageDays <= 29) {
+          if (MODE !== "history" && ageDays >= 0 && ageDays <= 29) {
             target.hotspot30d += 1;
           }
 
-          if (yearIndexByValue.has(pointYear)) {
+          if (MODE !== "recent" && yearIndexByValue.has(pointYear)) {
             const rowIndex = yearIndexByValue.get(pointYear);
             target.hotspotYearly5y[rowIndex].count += 1;
           }
@@ -583,17 +591,30 @@ async function main() {
   for (const unit of unitItems) {
     const metrics = unitStats.get(`${unit.collection}|${unit.key}`);
     const target = analytics[unit.collection][unit.key];
-    target.hotspot7d = metrics.hotspot7d;
-    target.hotspot30d = metrics.hotspot30d;
-    target.hotspot90d = null;
-    target.hotspotYearly5y = metrics.hotspotYearly5y;
+    if (MODE !== "history") {
+      target.hotspot7d = metrics.hotspot7d;
+      target.hotspot30d = metrics.hotspot30d;
+      target.hotspot90d = null;
+    }
+    if (MODE !== "recent") {
+      target.hotspotYearly5y = metrics.hotspotYearly5y;
+    }
     updated += 1;
   }
 
+  const previousViirs = analytics.viirs || {};
   analytics.viirs = {
+    ...previousViirs,
     source: "NASA FIRMS area API (point-in-polygon)",
     providers: activeSources.map((item) => item.source),
     updatedAt: new Date().toISOString(),
+    recentUpdatedAt: MODE !== "history"
+      ? new Date().toISOString()
+      : previousViirs.recentUpdatedAt || null,
+    historyUpdatedAt: MODE !== "recent"
+      ? new Date().toISOString()
+      : previousViirs.historyUpdatedAt || null,
+    mode: MODE,
     periodDays: [7, 30],
     yearlyTrendYears: 5,
     status: skippedChunks.length ? "partial" : "complete",

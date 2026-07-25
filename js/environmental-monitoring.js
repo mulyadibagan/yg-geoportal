@@ -204,6 +204,9 @@
   }
 
   function hotspotSummaryBars(record){
+    if(!record||record.hotspot7d==null||record.hotspot30d==null){
+      return '<div class="yg-va-note">Data hotspot per polygon belum dihitung.</div>';
+    }
     var v7=Number(record&&record.hotspot7d)||0;
     var v30=Number(record&&record.hotspot30d)||0;
     var max=Math.max(v7,v30,1);
@@ -227,10 +230,7 @@
         .filter(function(item){return /^\d{4}$/.test(item.year);});
     }
     if(!rows.length){
-      var nowYear=(new Date()).getFullYear();
-      for(var year=nowYear-4;year<=nowYear;year+=1){
-        rows.push({year:String(year),count:0});
-      }
+      return '<div class="yg-va-note">Riwayat hotspot lima tahun belum dihitung.</div>';
     }
     rows.sort(function(a,b){return Number(a.year)-Number(b.year);});
     var max=Math.max.apply(null,rows.map(function(item){return item.count;}))||1;

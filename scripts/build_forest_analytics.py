@@ -193,6 +193,27 @@ def download_hansen_tiles(items, target_dir):
     return needed_tiles
 
 
+def preserve_hotspot_metrics(output, target):
+    if not target.exists():
+        return
+    previous = json.loads(target.read_text(encoding="utf-8"))
+    hotspot_fields = (
+        "hotspot7d",
+        "hotspot30d",
+        "hotspot90d",
+        "hotspotYearly5y",
+    )
+    for collection in ("villages", "socialForestry"):
+        old_records = previous.get(collection) or {}
+        for key, record in output[collection].items():
+            old_record = old_records.get(key) or {}
+            for field in hotspot_fields:
+                if field in old_record:
+                    record[field] = old_record[field]
+    if previous.get("viirs"):
+        output["viirs"] = previous["viirs"]
+
+
 def text(value):
     return str(value or "").strip()
 
@@ -360,6 +381,7 @@ def main():
                 print(f"{completed}/{len(items)} {item[0]} {item[2]}", flush=True)
 
         target = ROOT / "data" / "village-forest-analytics.json"
+        preserve_hotspot_metrics(output, target)
         target.write_text(json.dumps(output, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(
         f"Wrote {len(output['villages'])} villages and "
