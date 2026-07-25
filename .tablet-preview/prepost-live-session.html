@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Live Session Pre/Post Test | YG GeoPortal</title>
-  <link rel="stylesheet" href="css/prepost-live-session.css?v=20260725-1">
+  <link rel="stylesheet" href="css/prepost-live-session.css?v=20260725-2">
 </head>
 <body>
   <main class="live-shell">
@@ -30,7 +30,20 @@
         <article><span>Cakupan target</span><strong id="live-completion">0%</strong></article>
       </div>
       <div id="live-links" class="live-links"></div>
+      <div class="live-participant-toggle">
+        <button id="live-toggle-participants" type="button">Daftar detail peserta</button>
+        <span id="live-participant-note">Data peserta post-test belum dimuat.</span>
+      </div>
       <p id="live-generated" class="live-generated">-</p>
+    </section>
+
+    <section id="live-participant-card" class="live-card live-card--hidden">
+      <div class="live-card-head">
+        <h2>Detail Peserta Pengisi Post-Test</h2>
+      </div>
+      <div id="live-participant-table" class="live-table-wrap">
+        <p class="question-empty">Klik tombol untuk memuat daftar peserta.</p>
+      </div>
     </section>
 
     <section class="live-card">
@@ -62,6 +75,6 @@
     </section>
   </main>
 
-  <script src="js/prepost-live-session.js?v=20260725-1"></script>
+  <script src="js/prepost-live-session.js?v=20260725-2"></script>
 </body>
 </html>

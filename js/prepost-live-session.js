@@ -4,11 +4,18 @@
   var API = 'https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec';
   var params = new URLSearchParams(window.location.search);
   var sessionId = params.get('session') || '';
+  var participantResponses = [];
 
   function text(v){ return v === null || v === undefined ? '' : String(v).trim(); }
   function esc(v){ return text(v).replace(/[&<>"']/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
   function num(v){ var n = Number(v); return Number.isFinite(n) ? n : 0; }
   function pct(v){ return num(v).toLocaleString('id-ID',{maximumFractionDigits:1}) + '%'; }
+  function formatDateTime(v){
+    var value = text(v);
+    if(!value) return '-';
+    var dt = new Date(value);
+    return isNaN(dt.getTime()) ? value : dt.toLocaleString('id-ID');
+  }
 
   function jsonp(url,prefix){
     return new Promise(function(resolve,reject){
@@ -133,6 +140,86 @@
     });
   }
 
+  function responseTableMarkup(rows){
+    if(!rows.length){
+      return '<p class="question-empty">Belum ada peserta post-test yang mengisi.</p>';
+    }
+    return '<table class="live-table">' +
+      '<thead><tr>' +
+        '<th>No</th>' +
+        '<th>Nama peserta</th>' +
+        '<th>Email</th>' +
+        '<th>Gender</th>' +
+        '<th>Umur</th>' +
+        '<th>Utusan</th>' +
+        '<th>Skor</th>' +
+        '<th>Persen</th>' +
+        '<th>Waktu submit</th>' +
+      '</tr></thead>' +
+      '<tbody>' + rows.map(function(item,index){
+        return '<tr>' +
+          '<td>' + (index + 1) + '</td>' +
+          '<td>' + esc(item.participantName || '-') + '</td>' +
+          '<td>' + esc(item.participantEmail || '-') + '</td>' +
+          '<td>' + esc(item.participantGender || '-') + '</td>' +
+          '<td>' + esc(item.participantAgeCategory || '-') + '</td>' +
+          '<td>' + esc(item.participantDelegate || '-') + '</td>' +
+          '<td>' + num(item.totalScore).toLocaleString('id-ID') + '</td>' +
+          '<td>' + pct(item.scorePercent) + '</td>' +
+          '<td>' + esc(formatDateTime(item.submittedAt)) + '</td>' +
+        '</tr>';
+      }).join('') + '</tbody>' +
+    '</table>';
+  }
+
+  function renderParticipantResponses(rows){
+    var tableNode = document.getElementById('live-participant-table');
+    var noteNode = document.getElementById('live-participant-note');
+    var toggleBtn = document.getElementById('live-toggle-participants');
+    if(tableNode) tableNode.innerHTML = responseTableMarkup(rows || []);
+    if(noteNode) noteNode.textContent = (rows || []).length
+      ? 'Total peserta post-test: ' + (rows || []).length.toLocaleString('id-ID')
+      : 'Belum ada peserta post-test yang mengisi.';
+    if(toggleBtn) toggleBtn.textContent = (rows || []).length
+      ? 'Daftar detail peserta (' + (rows || []).length.toLocaleString('id-ID') + ')'
+      : 'Daftar detail peserta';
+  }
+
+  async function loadParticipantResponses(){
+    var response = await jsonp(
+      API + '?page=prepost-session-responses&sessionId=' + encodeURIComponent(sessionId) + '&phase=post',
+      'ygLiveResponses_'
+    );
+    if(!response || response.ok === false){
+      participantResponses = [];
+      renderParticipantResponses([]);
+      return;
+    }
+    participantResponses = Array.isArray(response.responses) ? response.responses : [];
+    renderParticipantResponses(participantResponses);
+  }
+
+  function initParticipantToggle(){
+    var btn = document.getElementById('live-toggle-participants');
+    var card = document.getElementById('live-participant-card');
+    if(!btn || !card) return;
+
+    btn.addEventListener('click', function(){
+      var isHidden = card.classList.contains('live-card--hidden');
+      if(isHidden){
+        card.classList.remove('live-card--hidden');
+        btn.textContent = participantResponses.length
+          ? 'Sembunyikan daftar peserta (' + participantResponses.length.toLocaleString('id-ID') + ')'
+          : 'Sembunyikan daftar peserta';
+      } else {
+        card.classList.add('live-card--hidden');
+        btn.textContent = participantResponses.length
+          ? 'Daftar detail peserta (' + participantResponses.length.toLocaleString('id-ID') + ')'
+          : 'Daftar detail peserta';
+      }
+    });
+  }
+
   async function init(){
     if(!sessionId){
       applyError('Session ID tidak ditemukan di URL.');
@@ -147,6 +234,8 @@
       applyMeta(detail);
       applySummary(detail);
       applyQuestions(detail);
+      await loadParticipantResponses();
+      initParticipantToggle();
     }catch(error){
       applyError('Tidak dapat memuat data dari server.');
     }

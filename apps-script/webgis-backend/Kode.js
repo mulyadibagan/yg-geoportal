@@ -205,6 +205,13 @@ if (page === 'content-save-result') {
     );
   }
 
+  if (page === 'prepost-session-responses') {
+    return jsonOrJsonpResponse_(
+      getPrepostSessionResponses_(params.sessionId, params.phase),
+      callback
+    );
+  }
+
   return ContentService
     .createTextOutput(JSON.stringify({
       ok: true,
@@ -2589,6 +2596,77 @@ function getPrepostLiveSummary_(params) {
         : 0
     },
     sessions: mapped
+  };
+}
+
+function getPrepostSessionResponses_(sessionId, phase) {
+  const id = clean_(sessionId);
+  if (!id) {
+    return { ok: false, error: 'Session ID wajib diisi.' };
+  }
+
+  const requestedPhase = clean_(phase || 'post').toLowerCase();
+  if (['pre', 'post', 'all'].indexOf(requestedPhase) === -1) {
+    return { ok: false, error: 'Phase harus pre, post, atau all.' };
+  }
+
+  const sessions = allSessionRows_();
+  const session = sessions.find(function(item) {
+    return item.sessionId === id;
+  });
+  if (!session) {
+    return { ok: false, error: 'Sesi tidak ditemukan.' };
+  }
+
+  const questions = allQuestionRows_().filter(function(item) {
+    return item.sessionId === id && item.active;
+  });
+  const responses = allResponseRows_().filter(function(item) {
+    return item.sessionId === id &&
+      (requestedPhase === 'all' ? true : item.phase === requestedPhase);
+  });
+
+  const questionCount = {
+    pre: questions.filter(function(item) { return item.phase === 'pre'; }).length,
+    post: questions.filter(function(item) { return item.phase === 'post'; }).length
+  };
+
+  const mapped = responses
+    .map(function(item) {
+      const phaseKey = item.phase === 'pre' ? 'pre' : 'post';
+      const totalQuestion = questionCount[phaseKey] || 0;
+      const scorePercent = totalQuestion > 0
+        ? Number(((Number(item.totalScore || 0) / totalQuestion) * 100).toFixed(2))
+        : 0;
+      return {
+        responseId: item.responseId,
+        sessionId: item.sessionId,
+        phase: item.phase,
+        participantCode: item.participantCode,
+        participantName: item.participantName,
+        participantEmail: item.participantEmail,
+        participantGender: item.participantGender,
+        participantAgeCategory: item.participantAgeCategory,
+        participantDelegate: item.participantDelegate,
+        totalScore: Number(item.totalScore || 0),
+        scorePercent: scorePercent,
+        answeredCount: Array.isArray(item.answers) ? item.answers.length : 0,
+        sourceChannel: item.sourceChannel,
+        submittedAt: item.submittedAt
+      };
+    })
+    .sort(function(a, b) {
+      return String(b.submittedAt || '').localeCompare(String(a.submittedAt || ''));
+    });
+
+  return {
+    ok: true,
+    generatedAt: new Date().toISOString(),
+    session: session,
+    phase: requestedPhase,
+    questionCount: questionCount,
+    count: mapped.length,
+    responses: mapped
   };
 }
 
