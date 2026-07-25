@@ -73,13 +73,9 @@
 
   if (document.getElementById("report-form")) {
     const rulesScript = document.createElement("script");
-    rulesScript.src = "js/report-photo-rules.js?v=20260720-photo-loop-fix1";
+    rulesScript.src = "js/report-photo-rules.js?v=20260725-photo-simple1";
     rulesScript.async = false;
     document.head.appendChild(rulesScript);
 
-    const guardScript = document.createElement("script");
-    guardScript.src = "js/report-photo-guard.js?v=20260720-photo-loop-fix1";
-    guardScript.async = false;
-    document.head.appendChild(guardScript);
   }
 })();

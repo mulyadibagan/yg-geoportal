@@ -457,11 +457,12 @@
 
     <section id="photo-section" class="card">
       <h2>6. Dokumentasi foto</h2>
-      <p class="help"><b>Foto wajib untuk laporan lapangan, kecuali Area/Poligon Baru.</b> Tambah Foto Area Penanaman Mangrove dan Replanting/Penyulaman wajib 2 foto: BEFORE dan AFTER. Maksimal 5 foto.</p>
+      <p class="help">Tambahkan foto dokumentasi. Maksimal 5 foto.</p>
       <label class="upload-button">
-        <input id="images" type="file" accept="image/*" multiple>
+        <input id="images" type="file" accept="image/jpeg,image/png,image/webp" multiple hidden>
         <span>📷 Pilih Foto</span>
       </label>
+      <small id="photo-selection-status" class="help">Belum ada foto dipilih.</small>
       <div id="preview" class="preview"></div>
     </section>
 
@@ -492,8 +493,8 @@
 <script src="https://unpkg.com/jszip@3.10.1/dist/jszip.min.js"></script>
 <script src="https://unpkg.com/@tmcw/togeojson@5.8.1/dist/togeojson.umd.js"></script>
 <script src="js/config.js?v=20260725-mangrove-point1"></script>
-<script src="js/report-v6.js?v=20260725-planting-cluster1"></script>
+<script src="js/report-v6.js?v=20260725-photo-fallback1"></script>
   <script src="js/i18n.js?v=20260724-official-website1"></script>
-  <script src="js/pwa.js?v=20260723-edge-photo-fix1"></script>
+  <script src="js/pwa.js?v=20260725-photo-simple1"></script>
 </body>
 </html>

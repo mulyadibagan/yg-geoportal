@@ -14,6 +14,7 @@
   var form = document.getElementById('report-form');
   var imageInput = document.getElementById('images');
   var preview = document.getElementById('preview');
+  var photoSelectionStatus = document.getElementById('photo-selection-status');
   var statusText = document.getElementById('submit-status');
   var submitButton = document.getElementById('submit-button');
   var success = document.getElementById('success');
@@ -241,7 +242,7 @@
       guidance.textContent = type === 'Tambah Foto Kegiatan'
         ? 'Layer operasional tampil otomatis. Klik objek WebGIS yang akan menerima foto baru.'
         : type === 'Replanting/Penyulaman Mangrove'
-          ? 'Area Penanaman Mangrove tampil otomatis. Klik polygon, isi data penyulaman, lalu unggah foto BEFORE dan AFTER.'
+          ? 'Area Penanaman Mangrove tampil otomatis. Klik polygon, isi data penyulaman, lalu tambahkan dokumentasi foto.'
         : type === 'Monitoring'
           ? 'Pilih layer data terlebih dahulu, muat layer, lalu klik objek (titik/garis/poligon) yang akan dimonitor.'
           : 'Layer operasional tampil otomatis. Klik titik, garis, atau poligon yang informasinya ingin diperbaiki.';
@@ -1759,8 +1760,15 @@
       statusText.textContent =
         compressedImages.length +
         ' dari 5 foto siap dikirim. Anda dapat memilih foto lagi.';
+      if(photoSelectionStatus){
+        photoSelectionStatus.textContent =
+          compressedImages.length + ' foto siap dikirim.';
+      }
     }else{
       statusText.textContent = '';
+      if(photoSelectionStatus){
+        photoSelectionStatus.textContent = 'Belum ada foto dipilih.';
+      }
     }
   }
 
@@ -1788,6 +1796,7 @@
 
     try{
       statusText.textContent = 'Memproses ' + files.length + ' foto...';
+      var failedPhotos = [];
       var compressionPromises = files.map(function(file) {
         return compressImage(file, 1280, 0.7).then(function(dataUrl) {
           compressedImages.push({
@@ -1797,12 +1806,23 @@
           });
         }).catch(function(error) {
           console.error(error);
-          statusText.textContent =
-            'Salah satu foto gagal diproses. Silakan pilih ulang.';
+          failedPhotos.push(
+            (file.name || 'Foto') + ': ' +
+            (error && error.message ? error.message : 'gagal diproses')
+          );
         });
       });
 
       await Promise.all(compressionPromises);
+      renderPhotoPreview();
+
+      if(failedPhotos.length){
+        statusText.textContent =
+          failedPhotos.join(' · ') +
+          (compressedImages.length
+            ? ' Foto lainnya berhasil ditambahkan.'
+            : ' Silakan pilih foto lain.');
+      }
 
     }finally{
       imagesProcessing = false;
@@ -1822,8 +1842,6 @@
       statusText.textContent =
         'Hanya ' + availableSlots +
         ' foto yang ditambahkan karena batas maksimal 5 foto.';
-    }else{
-      renderPhotoPreview();
     }
   });
 
@@ -2467,7 +2485,7 @@
         return;
       }
       if(compressedImages.length < 2){
-        alert('Replanting wajib memiliki minimal dua foto: BEFORE (sebelum) dan AFTER (sesudah).');
+        alert('Tambahkan minimal 2 foto.');
         imageInput.scrollIntoView({behavior:'smooth',block:'center'});
         return;
       }
@@ -2501,8 +2519,7 @@
       compressedImages.length < 1
     ){
       alert(
-        'Jenis laporan ' + selectedType +
-        ' wajib memiliki minimal satu foto yang sudah siap dikirim.'
+        'Tambahkan minimal 1 foto.'
       );
       imageInput.scrollIntoView({behavior:'smooth',block:'center'});
       return;
@@ -2515,8 +2532,7 @@
       compressedImages.length < 2
     ){
       alert(
-        'Tambah Foto Area Penanaman Mangrove wajib memiliki minimal dua foto: ' +
-        'BEFORE (sebelum) dan AFTER (sesudah).'
+        'Tambahkan minimal 2 foto.'
       );
       imageInput.scrollIntoView({behavior:'smooth',block:'center'});
       return;
@@ -2759,12 +2775,22 @@
   }
 
   function compressImage(file,maxDimension,quality){
+    if(!file || !/^image\//i.test(file.type || '')){
+      return Promise.reject(new Error(
+        'File yang dipilih bukan foto. Gunakan JPG, PNG, atau WebP.'
+      ));
+    }
+
     if(typeof window.Worker === 'function'){
       /*
-       * Jangan kembali ke kompresi halaman utama ketika worker gagal.
-       * Kegagalan yang terlihat lebih aman daripada membekukan seluruh form.
+       * Worker dapat diblokir pada pratinjau file:// atau browser tertentu.
+       * Jika itu terjadi, coba kompresi kompatibel pada halaman utama.
        */
-      return compressImageInWorker(file,maxDimension,quality);
+      return compressImageInWorker(file,maxDimension,quality)
+        .catch(function(workerError){
+          console.warn('Worker foto tidak tersedia:', workerError);
+          return compressImageOnPage(file,maxDimension,quality);
+        });
     }
 
     return compressImageOnPage(file,maxDimension,quality);
@@ -2809,10 +2835,16 @@
   function compressImageOnPage(file,maxDimension,quality){
     return new Promise(function(resolve,reject){
       var reader = new FileReader();
-      reader.onerror = reject;
+      reader.onerror = function(){
+        reject(new Error('Foto tidak dapat dibaca oleh browser.'));
+      };
       reader.onload = function(){
         var image = new Image();
-        image.onerror = reject;
+        image.onerror = function(){
+          reject(new Error(
+            'Format foto tidak didukung. Gunakan JPG, PNG, atau WebP.'
+          ));
+        };
         image.onload = function(){
           var scale = Math.min(1,maxDimension/Math.max(image.width,image.height));
           var canvas = document.createElement('canvas');
