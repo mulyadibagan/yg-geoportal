@@ -2243,7 +2243,7 @@ function buildPrepostUrls_(sessionId) {
     base + '?session=' + encodeURIComponent(sessionId) + '&phase=pre';
   const postUrl =
     base + '?session=' + encodeURIComponent(sessionId) + '&phase=post';
-  const logoUrl = 'https://mulyadibagan.github.io/yg-geoportal/assets/logo-yayasan-gambut-192.png';
+  const logoUrl = 'https://raw.githubusercontent.com/mulyadibagan/yg-geoportal/main/assets/logo-yayasan-gambut-192.png';
   const qrBase = 'https://quickchart.io/qr?size=320&ecLevel=H&margin=2&centerImageUrl=' +
     encodeURIComponent(logoUrl) + '&text=';
   return {
