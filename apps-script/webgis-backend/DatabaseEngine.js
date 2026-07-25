@@ -15,6 +15,7 @@ const MASTER_REPOSITORY_RAW =
 
 const MASTER_LAYER_CONFIG = [
   { id: 'area_mangrove', label: 'Area Penanaman Mangrove', category: 'Penanaman Mangrove', file: 'data/area_mangrove.geojson' },
+  { id: 'titik_penanaman', label: 'Titik Penanaman', category: 'Penanaman', file: 'data/titik_penanaman.geojson' },
   { id: 'apo', label: 'Alat Pemecah Ombak (APO)', category: 'APO', file: 'data/apo.geojson' },
   { id: 'fdrs', label: 'FDRS / Water Table', category: 'FDRS', file: 'data/fdrs.geojson' },
   { id: 'sekat_kanal', label: 'Sekat Kanal', category: 'Sekat Kanal', file: 'data/sekat_kanal.geojson' },

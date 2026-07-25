@@ -461,14 +461,19 @@ function getAdminDashboardData(token) {
 function getAdminTargetLayerOptions_() {
   return [
     { id: 'area_mangrove', label: 'Area Penanaman Mangrove', types: ['Polygon', 'MultiPolygon'] },
+    { id: 'titik_penanaman', label: 'Titik Penanaman', types: ['Point', 'MultiPoint'] },
     { id: 'area_kopi', label: 'Wilayah Penanaman Kopi', types: ['Polygon', 'MultiPolygon'] },
     { id: 'area_agroforestry', label: 'Area Agroforestry', types: ['Polygon', 'MultiPolygon'] },
     { id: 'apo', label: 'Alat Pemecah Ombak (APO)', types: ['LineString', 'MultiLineString'] },
     { id: 'kopi', label: 'Titik Tanam Kopi', types: ['Point', 'MultiPoint'] },
     { id: 'nursery_mangrove', label: 'Rumah Pembibitan Mangrove', types: ['Point', 'MultiPoint'] },
+    { id: 'nursery_coffee', label: 'Rumah Pembibitan Kopi', types: ['Point', 'MultiPoint'] },
     { id: 'fdrs', label: 'FDRS / Water Table', types: ['Point', 'MultiPoint'] },
     { id: 'sekat_kanal', label: 'Sekat Kanal', types: ['Point', 'MultiPoint'] },
-    { id: 'kolam_ikan', label: 'Titik Kolam Ikan', types: ['Point', 'MultiPoint'] }
+    { id: 'kolam_ikan', label: 'Titik Kolam Ikan', types: ['Point', 'MultiPoint'] },
+    { id: 'information_signs', label: 'Plang Informasi & Perlindungan', types: ['Point', 'MultiPoint'] },
+    { id: 'supporting_infrastructure', label: 'Infrastruktur Pendukung', types: ['Point', 'MultiPoint'] },
+    { id: 'lainnya', label: 'Titik Lainnya', types: ['Point', 'MultiPoint'] }
   ];
 }
 
@@ -1081,9 +1086,15 @@ function validateTargetLayerCompatibility_(targetLayerId, geometryType) {
 
   const pointLayers = {
     kopi: true,
+    titik_penanaman: true,
     nursery_mangrove: true,
+    nursery_coffee: true,
     fdrs: true,
-    sekat_kanal: true
+    sekat_kanal: true,
+    kolam_ikan: true,
+    information_signs: true,
+    supporting_infrastructure: true,
+    lainnya: true
   };
   const lineLayers = {
     apo: true

@@ -718,6 +718,7 @@
       const participants = numericFrom(props, [
         "Jumlah_Peserta", "Peserta", "Participants", "participant_count"
       ]);
+      const isPlantingEngagement = layerId === "titik_penanaman";
       const isNursery = /nursery|rumah bibit|pembibitan|persemaian/.test(text);
       const isMangrove = layerId === "area_mangrove" ||
         layerId === "apo" || layerId === "nursery_mangrove" ||
@@ -726,7 +727,8 @@
       const isPeat = ["area_kopi", "kopi", "nursery_kopi", "sekat_kanal", "fdrs"]
         .includes(layerId) || /gambut|peat|agroforestri|kopi/.test(text);
       const isMineral = /hutan adat|hutan desa|imbo putui|lahan mineral|plot ukur permanen|\bpup\b/.test(text);
-      const isCapacity = /pelatihan|peningkatan kapasitas|workshop|sosialisasi|pendampingan/.test(text) || participants > 0;
+      const isCapacity = !isPlantingEngagement &&
+        (/pelatihan|peningkatan kapasitas|workshop|sosialisasi|pendampingan/.test(text) || participants > 0);
       const isAdministrative = ["desa_intervensi"].includes(layerId);
       const isObservation = ["monitoring_reports", "fdrs"].includes(layerId) ||
         (layerId === "community_reports" && area <= 0 && seedlings <= 0 &&

@@ -21,6 +21,13 @@ window.YG_LAYER_CONFIG = [
     "visible": true
   },
   {
+    "id": "titik_penanaman",
+    "label": "Titik Penanaman",
+    "color": "#009688",
+    "type": "point",
+    "visible": true
+  },
+  {
     "id": "kopi",
     "label": "Titik Tanam Kopi",
     "color": "#6d4c41",

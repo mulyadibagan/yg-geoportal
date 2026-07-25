@@ -21,6 +21,15 @@ window.YG_OBJECT_SCHEMA = {
       "url": "data/area_mangrove.geojson"
     },
     {
+      "id": "titik_penanaman",
+      "label": "Titik Penanaman",
+      "category": "Penanaman",
+      "prefix": "PLANTING-POINT",
+      "include": true,
+      "unit": "lokasi",
+      "url": "data/titik_penanaman.geojson"
+    },
+    {
       "id": "fdrs",
       "label": "FDRS / Water Table",
       "category": "FDRS",

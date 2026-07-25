@@ -9,6 +9,7 @@
     desa_intervensi: { label: "Batas Desa Intervensi", color: "#2e7d32", visible: true },
     apo: { label: "Alat Pemecah Ombak (APO)", color: "#d32f2f", visible: true },
     area_mangrove: { label: "Area Penanaman Mangrove", color: "#00796b", visible: true },
+    titik_penanaman: { label: "Titik Penanaman", color: "#009688", visible: true },
     monitoring_reports: { label: "Hasil Monitoring Terverifikasi", color: "#f9a825", visible: true },
     community_reports: { label: "Laporan Masyarakat Terverifikasi", color: "#7b1fa2", visible: true },
     forest_land_restoration: { label: "Restorasi Hutan & Lahan", color: "#388e3c", visible: true },

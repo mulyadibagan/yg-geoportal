@@ -149,6 +149,8 @@
     var newObjectDonorFields = document.getElementById('new-object-donor-fields');
     var donorInput = document.getElementById('donor');
     var newObjectEcosystemInput = document.getElementById('new-object-ecosystem');
+    var newPointTypeFields = document.getElementById('new-point-type-fields');
+    var newPointTypeInput = document.getElementById('new-point-type');
     var forestFields = document.getElementById('new-object-forest-fields');
     var needsNewObjectDonor =
       type === 'Titik Baru' || type === 'Area/Poligon Baru';
@@ -156,7 +158,10 @@
     if(donorInput) donorInput.required = needsNewObjectDonor;
     if(newObjectEcosystemInput) newObjectEcosystemInput.required =
       needsNewObjectDonor;
-    if(forestFields) forestFields.hidden = !needsNewObjectDonor;
+    if(newPointTypeFields) newPointTypeFields.hidden = type !== 'Titik Baru';
+    if(newPointTypeInput) newPointTypeInput.required = type === 'Titik Baru';
+    if(forestFields) forestFields.hidden = true;
+    if(type === 'Titik Baru') updateNewPointTypeFields();
     var replantingFields = document.getElementById('replanting-fields');
     if(replantingFields) replantingFields.hidden =
       type !== 'Replanting/Penyulaman Mangrove';
@@ -1983,7 +1988,48 @@
     return '';
   }
 
-  function buildNewObjectAttributes(donor, ecosystemType, forestSeedlingsCount, forestSeedlingsSpecies){
+  function calculatePlantingAreaHa(seedlingCount, rowSpacing, plantSpacing){
+    var count = Number(seedlingCount);
+    var row = Number(rowSpacing);
+    var plant = Number(plantSpacing);
+    if(!Number.isFinite(count) || count <= 0 ||
+       !Number.isFinite(row) || row <= 0 ||
+       !Number.isFinite(plant) || plant <= 0){
+      return null;
+    }
+    return Math.round((count * row * plant / 10000) * 10000) / 10000;
+  }
+
+  function newPointLayerLabel(layerId){
+    return {
+      titik_penanaman:'Titik Penanaman',
+      kolam_ikan:'Kolam Ikan',
+      sekat_kanal:'Sekat Kanal',
+      fdrs:'FDRS / Tinggi Muka Air',
+      nursery_mangrove:'Rumah Bibit Mangrove',
+      nursery_coffee:'Rumah Bibit Kopi',
+      information_signs:'Plang Informasi & Perlindungan',
+      supporting_infrastructure:'Infrastruktur Pendukung',
+      lainnya:'Titik Lainnya'
+    }[layerId] || '';
+  }
+
+  function updateNewPointTypeFields(){
+    var pointType = value('new-point-type');
+    var forestFields = document.getElementById('new-object-forest-fields');
+    if(forestFields){
+      forestFields.hidden =
+        selectedType !== 'Titik Baru' ||
+        pointType !== 'titik_penanaman';
+    }
+  }
+
+  var newPointTypeSelect = document.getElementById('new-point-type');
+  if(newPointTypeSelect){
+    newPointTypeSelect.addEventListener('change',updateNewPointTypeFields);
+  }
+
+  function buildNewObjectAttributes(donor, ecosystemType, newPointType, forestSeedlingsCount, forestSeedlingsSpecies, forestSpacingRow, forestSpacingPlant, forestEstimatedAreaHa, plantingDetails){
     var attributes = {
       Donor:donor,
       Donor_Cluster:donor,
@@ -1996,11 +2042,33 @@
       attributes.Program = ecosystemProgrammeLabel(ecosystemType);
     }
 
-    if(forestSeedlingsCount !== ''){
-      attributes.Jumlah_Bibit_Hutan = forestSeedlingsCount;
+    if(newPointType){
+      attributes.Jenis_Titik = newPointLayerLabel(newPointType);
+      attributes.Layer_Tujuan = newPointType;
     }
-    if(forestSeedlingsSpecies){
-      attributes.Jenis_Bibit_Hutan = forestSeedlingsSpecies;
+
+    if(newPointType === 'titik_penanaman' && forestSeedlingsCount !== ''){
+      attributes.Jumlah_Tanam = Number(forestSeedlingsCount);
+    }
+    if(newPointType === 'titik_penanaman' && forestSeedlingsSpecies){
+      attributes.Jenis_Tanaman = forestSeedlingsSpecies;
+    }
+    if(newPointType === 'titik_penanaman' && forestEstimatedAreaHa !== null){
+      attributes.Jarak_Antarbaris_M = Number(forestSpacingRow);
+      attributes.Jarak_Antartanaman_M = Number(forestSpacingPlant);
+      attributes.Luas_Indikatif_Ha = forestEstimatedAreaHa;
+      attributes.Metode_Luas = 'Estimasi jumlah bibit × jarak antarbaris × jarak antartanaman';
+    }
+    if(newPointType === 'titik_penanaman' && plantingDetails && plantingDetails.activityType){
+      attributes.Klaster_Penanaman = plantingDetails.cluster;
+      attributes.Komoditas = plantingDetails.commodity;
+      attributes.Kategori = 'Penanaman - ' + plantingDetails.cluster;
+      attributes.Jenis_Kegiatan = plantingDetails.activityType;
+      attributes.Jumlah_Peserta = plantingDetails.totalParticipants;
+      attributes.Peserta_Perempuan = plantingDetails.womenParticipants;
+      attributes.Peserta_Pemuda = plantingDetails.youthParticipants;
+      attributes.Pemuda_Perempuan = plantingDetails.youngWomenParticipants;
+      attributes.Kelompok_Terlibat = plantingDetails.participantGroups;
     }
 
     return attributes;
@@ -2087,6 +2155,28 @@
     updateReportRewettingEstimate();
   }
 
+  var forestSeedlingsInput = document.getElementById('forest-seedlings-count');
+  var forestSpacingRowInput = document.getElementById('forest-spacing-row');
+  var forestSpacingPlantInput = document.getElementById('forest-spacing-plant');
+  function updatePlantingAreaEstimate(){
+    var area = calculatePlantingAreaHa(
+      forestSeedlingsInput && forestSeedlingsInput.value,
+      forestSpacingRowInput && forestSpacingRowInput.value,
+      forestSpacingPlantInput && forestSpacingPlantInput.value
+    );
+    var output = document.getElementById('forest-estimated-area');
+    if(output){
+      output.textContent = area === null
+        ? '—'
+        : area.toLocaleString('id-ID',{maximumFractionDigits:4}) + ' ha (indikatif)';
+    }
+  }
+  [forestSeedlingsInput,forestSpacingRowInput,forestSpacingPlantInput]
+    .filter(Boolean)
+    .forEach(function(input){
+      input.addEventListener('input',updatePlantingAreaEstimate);
+    });
+
   var waterTableInput = document.getElementById('monitoring-water-table');
   if(waterTableInput){
     waterTableInput.addEventListener('input',function(){
@@ -2153,7 +2243,76 @@
 
     var forestSeedlingsCount = value('forest-seedlings-count');
     var forestSeedlingsSpecies = value('forest-seedlings-species');
+    var forestSpacingRow = value('forest-spacing-row');
+    var forestSpacingPlant = value('forest-spacing-plant');
+    var forestEstimatedAreaHa = calculatePlantingAreaHa(
+      forestSeedlingsCount,
+      forestSpacingRow,
+      forestSpacingPlant
+    );
+    var plantingDetails = {
+      cluster:value('planting-cluster'),
+      commodity:value('planting-commodity'),
+      activityType:value('planting-activity-type'),
+      totalParticipants:Number(value('planting-participants-total') || 0),
+      womenParticipants:Number(value('planting-participants-women') || 0),
+      youthParticipants:Number(value('planting-participants-youth') || 0),
+      youngWomenParticipants:Number(value('planting-participants-young-women') || 0),
+      participantGroups:value('planting-participant-groups')
+    };
+    var newPointType = selectedType === 'Titik Baru'
+      ? value('new-point-type')
+      : '';
     var newObjectEcosystem = value('new-object-ecosystem');
+
+    if(selectedType === 'Titik Baru' && !newPointType){
+      alert('Pilih jenis titik baru.');
+      document.getElementById('new-point-type').scrollIntoView({
+        behavior:'smooth',
+        block:'center'
+      });
+      return;
+    }
+
+    if(selectedType === 'Titik Baru' && newPointType === 'titik_penanaman'){
+      if(Number(forestSeedlingsCount) < 1){
+        alert('Isi jumlah bibit/tanaman untuk Titik Penanaman.');
+        return;
+      }
+      if(!plantingDetails.cluster || !plantingDetails.commodity){
+        alert('Pilih klaster penanaman dan isi komoditas.');
+        return;
+      }
+      if(!plantingDetails.activityType){
+        alert('Pilih jenis pencatatan penanaman.');
+        document.getElementById('planting-activity-type').scrollIntoView({
+          behavior:'smooth',
+          block:'center'
+        });
+        return;
+      }
+      if(forestEstimatedAreaHa === null){
+        alert('Isi jarak antarbaris dan jarak antartanaman untuk menghitung luas indikatif titik penanaman.');
+        document.getElementById('forest-spacing-row').scrollIntoView({
+          behavior:'smooth',
+          block:'center'
+        });
+        return;
+      }
+      if(plantingDetails.activityType === 'Planting Event' && plantingDetails.totalParticipants < 1){
+        alert('Isi total peserta yang terlibat pada Planting Event.');
+        return;
+      }
+      if(
+        plantingDetails.womenParticipants > plantingDetails.totalParticipants ||
+        plantingDetails.youthParticipants > plantingDetails.totalParticipants ||
+        plantingDetails.youngWomenParticipants > plantingDetails.womenParticipants ||
+        plantingDetails.youngWomenParticipants > plantingDetails.youthParticipants
+      ){
+        alert('Periksa data peserta: perempuan dan pemuda harus bagian dari total, sedangkan pemuda perempuan harus bagian dari keduanya.');
+        return;
+      }
+    }
 
     if(isNewObjectReport && !newObjectEcosystem){
       alert('Pilih kategori ekosistem objek baru (mangrove/gambut/lahan mineral).');
@@ -2367,8 +2526,13 @@
       ? buildNewObjectAttributes(
           newObjectDonor,
           newObjectEcosystem,
+          newPointType,
           forestSeedlingsCount,
-          forestSeedlingsSpecies
+          forestSeedlingsSpecies,
+          forestSpacingRow,
+          forestSpacingPlant,
+          forestEstimatedAreaHa,
+          plantingDetails
         )
       : null;
 
@@ -2409,10 +2573,10 @@
       geometryGeoJSON:geometryGeoJSON ? JSON.stringify(geometryGeoJSON) : '',
       targetLayerId:selectedCorrectionFeature
         ? selectedCorrectionFeature.layerId
-        : '',
+        : newPointType,
       targetLayerLabel:selectedCorrectionFeature
         ? selectedCorrectionFeature.layerLabel
-        : '',
+        : newPointLayerLabel(newPointType),
       targetSourceType:selectedCorrectionFeature
         ? selectedCorrectionFeature.sourceType
         : '',
@@ -2444,8 +2608,20 @@
           ? capacityData.donor
           : '',
       newObjectEcosystem:isNewObjectReport ? newObjectEcosystem : '',
-      forestSeedlingsCount:forestSeedlingsCount,
-      forestSeedlingsSpecies:forestSeedlingsSpecies,
+      newPointType:newPointType,
+      plantingCluster:newPointType === 'titik_penanaman' ? plantingDetails.cluster : '',
+      plantingCommodity:newPointType === 'titik_penanaman' ? plantingDetails.commodity : '',
+      forestSeedlingsCount:'',
+      forestSeedlingsSpecies:'',
+      forestSpacingRow:newPointType === 'titik_penanaman' ? forestSpacingRow : '',
+      forestSpacingPlant:newPointType === 'titik_penanaman' ? forestSpacingPlant : '',
+      forestEstimatedAreaHa:newPointType === 'titik_penanaman' && forestEstimatedAreaHa !== null ? forestEstimatedAreaHa : '',
+      plantingActivityType:plantingDetails.activityType,
+      plantingParticipantsTotal:plantingDetails.totalParticipants,
+      plantingParticipantsWomen:plantingDetails.womenParticipants,
+      plantingParticipantsYouth:plantingDetails.youthParticipants,
+      plantingParticipantsYoungWomen:plantingDetails.youngWomenParticipants,
+      plantingParticipantGroups:plantingDetails.participantGroups,
       supportSessionId:selectedType === 'Capacity Building'
         ? monitoringValue('capacity-session-id')
         : '',
