@@ -55,7 +55,12 @@
       var label = text(opt.label || opt.value);
       var value = text(opt.value);
       var score = Number(opt.score) || 0;
-      return '<span>' + esc(label + ' (' + value + ') - skor ' + score) + '</span>';
+      var isCorrect = score === 1;
+      var content = esc(label + ' (' + value + ') - skor ' + score);
+      if (isCorrect) {
+        content = '<strong>' + content + '</strong><em class="correct-badge">Jawaban benar</em>';
+      }
+      return '<span class="' + (isCorrect ? 'is-correct' : '') + '">' + content + '</span>';
     }).join('');
   }
 
