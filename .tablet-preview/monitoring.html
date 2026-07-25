@@ -233,7 +233,7 @@
           <span id="prepost-question-status">Gunakan Session ID dari hasil pembuatan sesi.</span>
         </div>
         <div class="prepost-participant-data">
-          <strong>Data peserta yang dikumpulkan (post-test):</strong>
+          <strong>Data peserta post-test dikumpulkan di form peserta (bukan form pertanyaan):</strong>
           <span>Jenis kelamin, kategori umur, dan utusan/perwakilan lembaga.</span>
         </div>
         <hr style="border:none;border-top:1px solid #d9e7e1;margin:16px 0">
@@ -252,9 +252,10 @@
         </div>
         <div class="capacity-prepost__actions">
           <button id="prepost-load-session-detail" type="button">Tampilkan detail sesi</button>
+          <button id="prepost-hide-session-detail" type="button" class="capacity-prepost__btn-alt">Sembunyikan detail</button>
           <span id="prepost-session-detail-status">Pilih sesi lalu klik tombol untuk melihat daftar pertanyaan lengkap.</span>
         </div>
-        <div id="prepost-session-detail" class="prepost-session-detail">
+        <div id="prepost-session-detail" class="prepost-session-detail is-collapsed">
           <div class="loading">Belum ada sesi yang dipilih.</div>
         </div>
       </section>

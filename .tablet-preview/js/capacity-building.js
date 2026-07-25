@@ -303,6 +303,7 @@
     if (!box) return;
 
     if (!data || data.ok === false) {
+      setSessionDetailVisible(false);
       box.innerHTML = '<div class="capacity-empty">Detail sesi tidak ditemukan.</div>';
       if (statusNode) statusNode.textContent = 'Detail sesi tidak ditemukan. Pastikan Session ID benar.';
       return;
@@ -360,7 +361,14 @@
         '</div>' +
       '</article>';
 
+    setSessionDetailVisible(true);
     if (statusNode) statusNode.textContent = 'Detail sesi dan seluruh pertanyaan berhasil dimuat.';
+  }
+
+  function setSessionDetailVisible(visible) {
+    var box = document.getElementById('prepost-session-detail');
+    if (!box) return;
+    box.classList.toggle('is-collapsed', !visible);
   }
 
   async function loadManageSessionDetail() {
@@ -372,11 +380,13 @@
 
     if (!sessionId) {
       if (statusNode) statusNode.textContent = 'Pilih Session ID terlebih dahulu.';
+      setSessionDetailVisible(false);
       if (box) box.innerHTML = '<div class="capacity-empty">Pilih Session ID untuk melihat detail sesi.</div>';
       return;
     }
 
     if (statusNode) statusNode.textContent = 'Memuat detail sesi...';
+    setSessionDetailVisible(true);
     if (box) box.innerHTML = '<div class="loading">Memuat semua pertanyaan dan link sesi...</div>';
 
     try {
@@ -529,7 +539,8 @@
       if (answerNode) answerNode.value = '';
       var manageSessionSelect = document.getElementById('prepost-manage-session');
       if (manageSessionSelect && sessionId) manageSessionSelect.value = sessionId;
-      loadManageSessionDetail();
+      setSessionDetailVisible(false);
+      if (statusNode) statusNode.textContent = 'Pertanyaan tersimpan. Klik "Tampilkan detail sesi" untuk review seluruh soal.';
     } catch (error) {
       if (statusNode) statusNode.textContent = 'Gagal mengirim pertanyaan. Coba lagi.';
     }
@@ -593,6 +604,12 @@
     if (createQuestionNode) createQuestionNode.addEventListener('click', createQuestionFromForm);
     var loadSessionDetailNode = document.getElementById('prepost-load-session-detail');
     if (loadSessionDetailNode) loadSessionDetailNode.addEventListener('click', loadManageSessionDetail);
+    var hideSessionDetailNode = document.getElementById('prepost-hide-session-detail');
+    if (hideSessionDetailNode) {
+      hideSessionDetailNode.addEventListener('click', function () {
+        setSessionDetailVisible(false);
+      });
+    }
     var manageSessionNode = document.getElementById('prepost-manage-session');
     if (manageSessionNode) {
       manageSessionNode.addEventListener('change', function () {
@@ -600,6 +617,13 @@
         if (questionSession) questionSession.value = text(manageSessionNode.value);
       });
     }
+    ['prepost-question-text', 'prepost-option-a', 'prepost-option-b', 'prepost-option-c', 'prepost-option-d'].forEach(function (id) {
+      var node = document.getElementById(id);
+      if (!node) return;
+      node.addEventListener('focus', function () {
+        setSessionDetailVisible(false);
+      });
+    });
 
     loadCapacity();
     loadPrepost();
