@@ -1837,6 +1837,7 @@
       youthAgeRange:monitoringValue('capacity-youth-age'),
       communityGroup:monitoringValue('capacity-group'),
       participantTarget:monitoringValue('capacity-target'),
+      donor:monitoringValue('capacity-donor'),
       partnerOrResourcePerson:monitoringValue('capacity-partner'),
       topic:monitoringValue('capacity-topic'),
       youthRole:monitoringValue('capacity-youth-role')
@@ -2198,8 +2199,8 @@
         alert('Jumlah pemuda tidak boleh melebihi jumlah peserta menurut jenis kelamin.');
         return;
       }
-      if(!capacityDataValidation.participantTarget || !capacityDataValidation.partnerOrResourcePerson || !capacityDataValidation.topic){
-        alert('Isi sasaran peserta, mitra/narasumber, dan topik pelatihan.');
+      if(!capacityDataValidation.participantTarget || !capacityDataValidation.donor || !capacityDataValidation.partnerOrResourcePerson || !capacityDataValidation.topic){
+        alert('Isi sasaran peserta, donor, mitra/narasumber, dan topik pelatihan.');
         return;
       }
     }
@@ -2294,7 +2295,11 @@
             : isNewObjectReport
               ? JSON.stringify(newObjectAttributes)
               : '',
-      donor:isNewObjectReport ? newObjectDonor : '',
+      donor:isNewObjectReport
+        ? newObjectDonor
+        : selectedType === 'Capacity Building'
+          ? collectCapacityBuildingData().donor
+          : '',
       newObjectEcosystem:isNewObjectReport ? newObjectEcosystem : '',
       forestSeedlingsCount:forestSeedlingsCount,
       forestSeedlingsSpecies:forestSeedlingsSpecies,
