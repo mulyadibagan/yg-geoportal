@@ -2153,6 +2153,61 @@
     ).then(function(response){
       if(!response.ok) throw new Error('HTTP ' + response.status);
       return response.json();
+    }).then(function(database){
+      var officialSources = [
+        {layerId:'area_mangrove',url:'data/area_mangrove.geojson'},
+        {layerId:'area_kopi',url:'data/area_kopi.geojson'},
+        {layerId:'kopi',url:'data/kopi.geojson'}
+      ];
+
+      return Promise.all(officialSources.map(function(source){
+        return fetch(
+          source.url + '?v=' + Date.now(),
+          {cache:'no-store'}
+        ).then(function(response){
+          if(!response.ok) throw new Error('HTTP ' + response.status);
+          return response.json();
+        }).then(function(data){
+          return {
+            layerId:source.layerId,
+            features:data && Array.isArray(data.features)
+              ? data.features
+              : []
+          };
+        }).catch(function(error){
+          console.warn(
+            'Layer resmi ' + source.layerId + ' belum dapat dimuat.',
+            error
+          );
+          return null;
+        });
+      })).then(function(officialResults){
+        var features = database && Array.isArray(database.features)
+          ? database.features.slice()
+          : [];
+
+        officialResults.filter(Boolean).forEach(function(result){
+          features = features.filter(function(feature){
+            return newPointFeatureLayerId(feature) !== result.layerId;
+          });
+          result.features.forEach(function(feature){
+            if(!feature.properties) feature.properties = {};
+            feature.properties.Layer_ID = result.layerId;
+            feature.properties.Source_Layer = result.layerId;
+            if(!feature.properties.Layer_Label){
+              feature.properties.Layer_Label =
+                newPointContextConfig(result.layerId,feature).label;
+            }
+            features.push(feature);
+          });
+        });
+
+        return {
+          type:'FeatureCollection',
+          generatedAt:database && database.generatedAt || '',
+          features:features
+        };
+      });
     }).catch(function(error){
       activeObjectsPromise = null;
       throw error;
