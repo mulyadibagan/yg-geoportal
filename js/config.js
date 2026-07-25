@@ -63,6 +63,48 @@ window.YG_LAYER_CONFIG = [
     "visible": true
   },
   {
+    "id": "monitoring_reports",
+    "label": "Hasil Monitoring Terverifikasi",
+    "color": "#f9a825",
+    "type": "mixed",
+    "visible": true
+  },
+  {
+    "id": "forest_land_restoration",
+    "label": "Restorasi Hutan & Lahan",
+    "color": "#388e3c",
+    "type": "mixed",
+    "visible": true
+  },
+  {
+    "id": "nursery_coffee",
+    "label": "Rumah Pembibitan Kopi",
+    "color": "#795548",
+    "type": "point",
+    "visible": true
+  },
+  {
+    "id": "information_signs",
+    "label": "Plang Informasi & Perlindungan",
+    "color": "#5e35b1",
+    "type": "point",
+    "visible": true
+  },
+  {
+    "id": "supporting_infrastructure",
+    "label": "Infrastruktur Pendukung",
+    "color": "#546e7a",
+    "type": "mixed",
+    "visible": true
+  },
+  {
+    "id": "kolam_ikan",
+    "label": "Kolam Ikan",
+    "color": "#0277bd",
+    "type": "point",
+    "visible": true
+  },
+  {
     "id": "kawasan_hutan_sk_903",
     "label": "Kawasan Hutan SK 903",
     "color": "#455a64",

@@ -2435,6 +2435,7 @@
         loadNewPointReferenceLayer(value('new-point-type'));
       }
     });
+    populateNewPointContextLayerOptions([]);
   }
 
   function buildNewObjectAttributes(donor, ecosystemType, newPointType, forestSeedlingsCount, forestSeedlingsSpecies, forestSpacingRow, forestSpacingPlant, forestEstimatedAreaHa, plantingDetails){
