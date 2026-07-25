@@ -85,9 +85,7 @@
 
     var links = document.getElementById('live-links');
     var linkHtml = '' +
-      (session.preFormUrl ? '<a href="' + esc(session.preFormUrl) + '" target="_blank" rel="noopener noreferrer">Link pre-test</a>' : '') +
       (session.postFormUrl ? '<a href="' + esc(session.postFormUrl) + '" target="_blank" rel="noopener noreferrer">Link post-test</a>' : '') +
-      (session.preQrUrl ? '<a href="' + esc(session.preQrUrl) + '" target="_blank" rel="noopener noreferrer">QR pre-test</a>' : '') +
       (session.postQrUrl ? '<a href="' + esc(session.postQrUrl) + '" target="_blank" rel="noopener noreferrer">QR post-test</a>' : '');
     if(links) links.innerHTML = linkHtml;
 
@@ -115,17 +113,12 @@
 
   function applyQuestions(detail){
     var questions = Array.isArray(detail && detail.questions) ? detail.questions : [];
-    var preRows = questions.filter(function(item){ return text(item.phase).toLowerCase() === 'pre'; });
     var postRows = questions.filter(function(item){ return text(item.phase).toLowerCase() === 'post'; });
 
-    var preTitle = document.getElementById('live-pre-title');
     var postTitle = document.getElementById('live-post-title');
-    var preList = document.getElementById('live-pre-questions');
     var postList = document.getElementById('live-post-questions');
 
-    if(preTitle) preTitle.textContent = 'Pre-test (' + preRows.length + ' soal)';
     if(postTitle) postTitle.textContent = 'Post-test (' + postRows.length + ' soal)';
-    if(preList) preList.innerHTML = questionMarkup(preRows);
     if(postList) postList.innerHTML = questionMarkup(postRows);
   }
 
