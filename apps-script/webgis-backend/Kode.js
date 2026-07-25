@@ -2214,6 +2214,9 @@ function getPrepostResponseSheet_() {
     'Participant Code',
     'Participant Name',
     'Participant Email',
+    'Participant Gender',
+    'Participant Age Category',
+    'Participant Delegate',
     'Answers JSON',
     'Total Score',
     'Source Channel',
@@ -2296,9 +2299,27 @@ function parseQuestionRow_(row) {
 }
 
 function parseResponseRow_(row) {
+  let participantGender = '';
+  let participantAgeCategory = '';
+  let participantDelegate = '';
+  let answersIndex = 6;
+  let totalScoreIndex = 7;
+  let sourceIndex = 8;
+  let submittedIndex = 9;
+
+  if (row.length >= 13) {
+    participantGender = clean_(row[6]);
+    participantAgeCategory = clean_(row[7]);
+    participantDelegate = clean_(row[8]);
+    answersIndex = 9;
+    totalScoreIndex = 10;
+    sourceIndex = 11;
+    submittedIndex = 12;
+  }
+
   let answers = [];
   try {
-    const parsed = row[6] ? JSON.parse(row[6]) : [];
+    const parsed = row[answersIndex] ? JSON.parse(row[answersIndex]) : [];
     answers = Array.isArray(parsed) ? parsed : [];
   } catch (error) {
     answers = [];
@@ -2311,10 +2332,13 @@ function parseResponseRow_(row) {
     participantCode: clean_(row[3]),
     participantName: clean_(row[4]),
     participantEmail: clean_(row[5]),
+    participantGender: participantGender,
+    participantAgeCategory: participantAgeCategory,
+    participantDelegate: participantDelegate,
     answers: answers,
-    totalScore: Number(row[7]) || 0,
-    sourceChannel: clean_(row[8]) || 'web',
-    submittedAt: clean_(row[9])
+    totalScore: Number(row[totalScoreIndex]) || 0,
+    sourceChannel: clean_(row[sourceIndex]) || 'web',
+    submittedAt: clean_(row[submittedIndex])
   };
 }
 
@@ -2342,10 +2366,19 @@ function allResponseRows_() {
   const sheet = getPrepostResponseSheet_();
   if (sheet.getLastRow() < 2) return [];
   return sheet
-    .getRange(2, 1, sheet.getLastRow() - 1, 10)
+    .getRange(2, 1, sheet.getLastRow() - 1, 13)
     .getDisplayValues()
     .map(parseResponseRow_)
     .filter(function(item) { return !!item.responseId; });
+}
+
+function responseCategoryBreakdown_(responses, key) {
+  return responses.reduce(function(acc, item) {
+    const label = clean_(item[key]);
+    if (!label) return acc;
+    acc[label] = (acc[label] || 0) + 1;
+    return acc;
+  }, {});
 }
 
 function summarizeSession_(session, questions, responses) {
@@ -2381,6 +2414,25 @@ function summarizeSession_(session, questions, responses) {
     .filter(function(item) { return item.phase === 'post'; })
     .reduce(function(total, item) { return total + Number(item.maxScore || 0); }, 0);
 
+  const preQuestionCount = sessionQuestions
+    .filter(function(item) { return item.phase === 'pre'; })
+    .length;
+  const postQuestionCount = sessionQuestions
+    .filter(function(item) { return item.phase === 'post'; })
+    .length;
+
+  const preAvgPercent = preResponses.length && preQuestionCount > 0
+    ? preResponses.reduce(function(total, item) {
+      return total + ((Number(item.totalScore || 0) / preQuestionCount) * 100);
+    }, 0) / preResponses.length
+    : 0;
+
+  const postAvgPercent = postResponses.length && postQuestionCount > 0
+    ? postResponses.reduce(function(total, item) {
+      return total + ((Number(item.totalScore || 0) / postQuestionCount) * 100);
+    }, 0) / postResponses.length
+    : 0;
+
   const completionRate = session.targetParticipants > 0
     ? (postResponses.length / session.targetParticipants) * 100
     : 0;
@@ -2391,13 +2443,23 @@ function summarizeSession_(session, questions, responses) {
     preAvgScore: Number(preAvg.toFixed(2)),
     postAvgScore: Number(postAvg.toFixed(2)),
     gainScore: Number(gain.toFixed(2)),
+    preAvgPercent: Number(preAvgPercent.toFixed(2)),
+    postAvgPercent: Number(postAvgPercent.toFixed(2)),
+    gainPercentPoint: Number((postAvgPercent - preAvgPercent).toFixed(2)),
     gainPercent: preAvg > 0
       ? Number((((postAvg - preAvg) / preAvg) * 100).toFixed(2))
       : 0,
     completionRate: Number(completionRate.toFixed(2)),
     preMaxScore: preQuestionMax,
     postMaxScore: postQuestionMax,
-    questionCount: sessionQuestions.length
+    questionCount: sessionQuestions.length,
+    preQuestionCount: preQuestionCount,
+    postQuestionCount: postQuestionCount,
+    postDemographics: {
+      gender: responseCategoryBreakdown_(postResponses, 'participantGender'),
+      ageCategory: responseCategoryBreakdown_(postResponses, 'participantAgeCategory'),
+      delegate: responseCategoryBreakdown_(postResponses, 'participantDelegate')
+    }
   };
 }
 
@@ -2678,10 +2740,6 @@ function scoreResponseAnswers_(answers, questions) {
     const question = findQuestionById_(questions, answer.questionId);
     if (!question) return total;
 
-    if (Number.isFinite(Number(answer.score))) {
-      return total + Number(answer.score);
-    }
-
     if (question.questionType === 'scale') {
       const value = Number(answer.value);
       return total + (Number.isFinite(value) ? value : 0);
@@ -2704,6 +2762,9 @@ function handlePrepostSubmitResponsePost_(e) {
     const data = parsePostPayload_(e);
     const sessionId = clean_(data.sessionId);
     const phase = clean_(data.phase).toLowerCase();
+    const participantGender = clean_(data.participantGender);
+    const participantAgeCategory = clean_(data.participantAgeCategory);
+    const participantDelegate = clean_(data.participantDelegate);
 
     if (!sessionId) throw new Error('Session ID wajib diisi.');
     if (['pre', 'post'].indexOf(phase) === -1) {
@@ -2724,6 +2785,10 @@ function handlePrepostSubmitResponsePost_(e) {
       throw new Error('Kode peserta wajib diisi.');
     }
 
+    if (phase === 'post' && (!participantGender || !participantAgeCategory || !participantDelegate)) {
+      throw new Error('Data jenis kelamin, kategori umur, dan utusan lembaga wajib diisi untuk post-test.');
+    }
+
     const answers = Array.isArray(data.answers) ? data.answers : [];
     if (!answers.length) throw new Error('Jawaban belum diisi.');
 
@@ -2735,6 +2800,10 @@ function handlePrepostSubmitResponsePost_(e) {
     }
 
     const totalScore = scoreResponseAnswers_(answers, questions);
+    const questionCount = questions.length;
+    const scorePercent = questionCount > 0
+      ? (totalScore / questionCount) * 100
+      : 0;
     const sheet = getPrepostResponseSheet_();
 
     sheet.appendRow([
@@ -2744,6 +2813,9 @@ function handlePrepostSubmitResponsePost_(e) {
       participantCode,
       clean_(data.participantName),
       clean_(data.participantEmail),
+      participantGender,
+      participantAgeCategory,
+      participantDelegate,
       JSON.stringify(answers),
       totalScore,
       clean_(data.sourceChannel) || 'web',
@@ -2754,7 +2826,9 @@ function handlePrepostSubmitResponsePost_(e) {
       ok: true,
       sessionId: sessionId,
       phase: phase,
-      totalScore: totalScore
+      totalScore: totalScore,
+      questionCount: questionCount,
+      scorePercent: Number(scorePercent.toFixed(2))
     });
   } catch (error) {
     return prepostErrorResponse_(error.message);

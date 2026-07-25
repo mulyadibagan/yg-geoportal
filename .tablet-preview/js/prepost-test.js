@@ -118,11 +118,19 @@
     var code = text(document.getElementById('participant-code').value);
     var name = text(document.getElementById('participant-name').value);
     var email = text(document.getElementById('participant-email').value);
+    var gender = text(document.getElementById('participant-gender') && document.getElementById('participant-gender').value);
+    var ageCategory = text(document.getElementById('participant-age-category') && document.getElementById('participant-age-category').value);
+    var delegate = text(document.getElementById('participant-delegate') && document.getElementById('participant-delegate').value);
     var status = document.getElementById('submit-status');
     var button = document.getElementById('submit-test');
 
     if(!code){
       status.textContent = 'Kode peserta wajib diisi.';
+      return;
+    }
+
+    if(phase === 'post' && (!gender || !ageCategory || !delegate)){
+      status.textContent = 'Untuk post-test, isi jenis kelamin, kategori umur, dan utusan lembaga.';
       return;
     }
 
@@ -141,6 +149,9 @@
       participantCode: code,
       participantName: name,
       participantEmail: email,
+      participantGender: gender,
+      participantAgeCategory: ageCategory,
+      participantDelegate: delegate,
       sourceChannel: 'web',
       answers: sentAnswers
     };
