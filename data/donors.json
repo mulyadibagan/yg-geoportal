@@ -1,0 +1,114 @@
+[
+  {
+    "name": "Aramco Asia Singapore",
+    "slug": "aramco",
+    "period": "2023–2026",
+    "focus": "Restorasi mangrove dan pelibatan masyarakat pesisir",
+    "locations": ["Buruk Bakul", "Kelapa Pati", "Sepahat", "Tanjung Kuras"],
+    "indicators": [
+      {"label":"Pohon mangrove ditanam","value":"42.545","progress":100},
+      {"label":"Restorasi mangrove","value":"13,1 ha","progress":100},
+      {"label":"Desa program","value":"4","progress":100},
+      {"label":"Peserta kegiatan","value":"1.200+","progress":100},
+      {"label":"Rumah bibit","value":"4","progress":100},
+      {"label":"Hybrid engineering","value":"300 m","progress":100}
+    ],
+    "programs": [
+      {"name": "Mangrove Tree Planting and Community Engagement Programme", "period": "2023–2026", "status": "Berjalan", "summary": "Penanaman mangrove, rumah bibit, hybrid engineering, pelatihan, dan pengembangan mata pencaharian."}
+    ],
+    "timeline": [
+      {"year": "2023", "title": "Fase 1", "detail": "Awal penanaman dan penguatan kelompok masyarakat."},
+      {"year": "2024–2025", "title": "Fase 2", "detail": "Perluasan restorasi, rumah bibit, dan hybrid engineering."},
+      {"year": "2025–2026", "title": "Fase 3", "detail": "Empat desa, target 18.000 pohon, pelatihan, dan monitoring."}
+    ]
+  },
+  {
+    "name": "Global Environment Centre",
+    "slug": "gec",
+    "period": "2021–Sekarang",
+    "focus": "Pengelolaan gambut berkelanjutan dan agroforestri kopi Liberika",
+    "locations": ["Bengkalis", "Siak"],
+    "indicators": [
+      {"label":"Bibit kopi ditanam","value":"3.400","progress":100},
+      {"label":"Bibit di persemaian","value":"2.000","progress":100},
+      {"label":"Sekat kanal terpetakan","value":"7","progress":100},
+      {"label":"FDRS terpetakan","value":"5","progress":100},
+      {"label":"Peserta pelatihan","value":"72","progress":100},
+      {"label":"Nursery training 2026","value":"1 / 2 desa","progress":50}
+    ],
+    "programs": [
+      {"name": "Sustainable Peatland Management Programme", "period": "2024–2026", "status": "Berjalan", "summary": "Agroforestri kopi, sekat kanal, FDRS, nursery, serta peningkatan kapasitas masyarakat."}
+    ],
+    "timeline": [
+      {"year": "2024", "title": "Implementasi awal", "detail": "Penanaman kopi, pelatihan pembibitan, sekat kanal, dan FDRS."},
+      {"year": "2025", "title": "Pemeliharaan", "detail": "Pemeliharaan kopi, pengembangan persemaian, serta penyusunan panduan."},
+      {"year": "2026", "title": "Perluasan program", "detail": "Coffee agroforestry, nursery training, dan monitoring hidrologi."}
+    ]
+  },
+  {
+    "name": "Pan Pacific Conservation Foundation (PPCF)",
+    "slug": "ppcf",
+    "period": "2025–2026",
+    "focus": "Pengelolaan gambut berkelanjutan berbasis masyarakat",
+    "locations": ["Pematang Duku"],
+    "indicators": [
+      {"label":"Restorasi gambut/agroforestri","value":"3,6 ha","progress":100},
+      {"label":"Bibit ditanam","value":"4.000","progress":100},
+      {"label":"Bibit di persemaian","value":"4.500","progress":100},
+      {"label":"Sekat kanal","value":"4","progress":100},
+      {"label":"FDRS","value":"3","progress":100},
+      {"label":"Peserta pelatihan","value":"119","progress":100}
+    ],
+    "programs": [
+      {"name": "Community-based Sustainable Peatland Management", "period": "2025–2026", "status": "Berjalan", "summary": "Pertanian tanpa bakar, agroforestri kopi Liberika, serta penguatan kapasitas kelompok."}
+    ],
+    "timeline": [
+      {"year": "2025", "title": "Pelatihan gambut", "detail": "Pelatihan pengelolaan gambut dan pertanian tanpa bakar."},
+      {"year": "2025–2026", "title": "Agroforestri", "detail": "Pengembangan kopi Liberika dan pendampingan masyarakat."}
+    ]
+  },
+  {
+    "name": "Aliansi Kolibri",
+    "slug": "kolibri",
+    "period": "2025–2026",
+    "focus": "Rehabilitasi lahan mineral dan penguatan Hutan Adat Imbo Putui",
+    "locations": ["Petapahan", "Imbo Putui"],
+    "indicators": [
+      {"label":"Luas area restorasi","value":"11,44 ha","progress":100},
+      {"label":"Bibit tertanam","value":"1.200","progress":100},
+      {"label":"Menara air","value":"1","progress":100},
+      {"label":"Plang restorasi","value":"1","progress":100},
+      {"label":"Kelangsungan hidup PUP 1","value":"98,07%","progress":98.07},
+      {"label":"Kelangsungan hidup PUP 2","value":"84,61%","progress":84.61}
+    ],
+    "programs": [
+      {"name": "Rehabilitasi Hutan Adat Imbo Putui", "period": "2025–2026", "status": "Berjalan", "summary": "Rehabilitasi vegetasi, plot ukur permanen, monitoring, dan penguatan kelembagaan."}
+    ],
+    "timeline": [
+      {"year": "2025", "title": "Rehabilitasi", "detail": "Penanaman dan pembangunan infrastruktur pendukung."},
+      {"year": "2026", "title": "Monitoring", "detail": "Pengukuran pertumbuhan dan keberhasilan tanaman melalui plot ukur permanen."}
+    ]
+  },
+  {
+    "name": "Yayasan Penabulu",
+    "slug": "penabulu",
+    "period": "2025–2026",
+    "focus": "Penguatan tata kelola, kelompok perempuan, dan mata pencaharian",
+    "locations": ["Temiang"],
+    "indicators": [
+      {"label":"Perempuan penerima manfaat","value":"27","progress":100},
+      {"label":"Bibit kopi","value":"10.000","progress":100},
+      {"label":"Community micro-mill","value":"1","progress":100},
+      {"label":"Rumah pengering kopi","value":"1","progress":100},
+      {"label":"Sekat kanal","value":"2","progress":100},
+      {"label":"Titik monitoring hidrologi/api","value":"2","progress":100}
+    ],
+    "programs": [
+      {"name": "Penguatan Pengelolaan Gambut Berbasis Masyarakat", "period": "2025–2026", "status": "Berjalan", "summary": "SOP, penguatan kelompok perempuan, peningkatan kapasitas, dan dukungan usaha masyarakat."}
+    ],
+    "timeline": [
+      {"year": "2025", "title": "Persiapan dan penguatan kelompok", "detail": "Penyusunan rencana kerja serta penguatan kelembagaan."},
+      {"year": "2026", "title": "Implementasi", "detail": "Pelatihan, SOP, dokumentasi keluaran, dan pengembangan usaha."}
+    ]
+  }
+]

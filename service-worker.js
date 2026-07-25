@@ -1,11 +1,14 @@
-const CACHE_NAME = "yg-geoportal-v4-20260724-legend-cache-refresh1";
+const CACHE_NAME = "yg-geoportal-v4-20260726-detail-pages1";
 
 const STATIC_ASSETS = [
   "./",
   "./index.html",
   "./webgis.html",
   "./monitoring.html",
+  "./programme-detail.html",
+  "./donor-detail.html",
   "./report.html",
+  "./data/donors.json",
   "./assets/logo-yayasan-gambut.png",
   "./assets/logo-yayasan-gambut-192.png",
   "./assets/logo-yayasan-gambut-512.png"

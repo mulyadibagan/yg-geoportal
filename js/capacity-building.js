@@ -60,6 +60,9 @@
       window[cb] = function (data) {
         delete window[cb];
         s.remove();
+        if (typeof data === 'string') {
+          try { data = JSON.parse(data); } catch (error) {}
+        }
         resolve(data);
       };
       s.onerror = function () {
@@ -138,6 +141,7 @@
     var administrativeLocation = [p.village, p.district, p.regency].map(text).filter(Boolean).join(', ');
     var metadata = p.targetFeatureProperties || {};
     return {
+      kind: 'training',
       id: text(p.reportId),
       name: text(p.title) || 'Kegiatan peningkatan kapasitas',
       date: text(p.activityDate) || text(p.publishedAt),
@@ -152,6 +156,33 @@
       topic: text(c.topic),
       group: text(c.communityGroup),
       documents: documentUrls(p.documentUrls || p.documents || p.documentUrl || c.documentUrls || c.documentUrl),
+      photos: Array.isArray(p.photos) ? p.photos : []
+    };
+  }
+
+  function activityEngagementRecord(feature) {
+    var p = feature.properties || {};
+    var metadata = p.targetFeatureProperties || {};
+    var participants = num(metadata.Jumlah_Peserta || metadata.Peserta);
+    var female = num(metadata.Peserta_Perempuan || metadata.Perempuan);
+    if (!participants) return null;
+    return {
+      kind: 'activity-engagement',
+      activityType: text(metadata.Jenis_Kegiatan || metadata.Kategori || metadata.Program) || 'Kegiatan lapangan',
+      id: text(p.reportId),
+      name: text(p.title) || 'Kegiatan pelibatan masyarakat',
+      date: text(p.activityDate) || text(p.publishedAt),
+      location: text(p.locationName) || [p.village, p.district, p.regency].map(text).filter(Boolean).join(', '),
+      regency: text(p.regency),
+      male: Math.max(0, participants - female),
+      female: female,
+      youth: num(metadata.Peserta_Pemuda),
+      target: text(metadata.Kelompok_Terlibat),
+      donor: text(metadata.Donor || metadata.Donor_Cluster || metadata.Nama_Donor),
+      partner: text(metadata.Kelompok_Terlibat),
+      topic: text(metadata.Jenis_Kegiatan) || 'Pelibatan masyarakat dalam kegiatan lapangan',
+      group: text(metadata.Kelompok_Terlibat),
+      documents: [],
       photos: Array.isArray(p.photos) ? p.photos : []
     };
   }
@@ -226,7 +257,7 @@
         return '' +
           '<article class="capacity-card">' +
             '<div class="capacity-card__head">' +
-              '<div><h3>' + esc(r.name) + '</h3><p class="capacity-card__location">Lokasi: ' + esc(r.location || '-') + '</p></div>' +
+              '<div><span class="type-label">' + (r.kind === 'activity-engagement' ? 'PELAPORAN PELIBATAN · ' + esc(r.activityType || 'KEGIATAN LAPANGAN') : 'PELATIHAN / CAPACITY BUILDING') + '</span><h3>' + esc(r.name) + '</h3><p class="capacity-card__location">Lokasi: ' + esc(r.location || '-') + '</p></div>' +
               '<time>' + esc(formatDate(r.date)) + '</time>' +
             '</div>' +
             '<div class="capacity-card__metrics">' +
@@ -779,15 +810,32 @@
   async function loadCapacity() {
     var historical = [];
     try {
-      historical = await fetch('data/capacity-building.json?v=20260722-3').then(function (r) { return r.json(); });
+      historical = await fetch('data/capacity-building.json?v=20260722-3').then(function (r) {
+        return r.json();
+      }).then(function (rows) {
+        return rows.map(function (row) {
+          row.kind = 'training';
+          return row;
+        });
+      });
     } catch (e) {}
 
     var live = [];
     try {
       var data = await jsonp(API + '?page=public-reports&t=' + Date.now());
-      live = (data.features || [])
+      var features = data.features || [];
+      live = features
         .filter(function (f) { return text((f.properties || {}).reportType) === 'Capacity Building'; })
         .map(liveRecord);
+      live = live.concat(features
+        .filter(function (f) {
+          var p = f.properties || {};
+          var metadata = p.targetFeatureProperties || {};
+          return text(p.reportType) !== 'Capacity Building' &&
+            num(metadata.Jumlah_Peserta || metadata.Peserta || metadata.participants) > 0;
+        })
+        .map(activityEngagementRecord)
+        .filter(Boolean));
     } catch (e) {}
 
     var seen = {};

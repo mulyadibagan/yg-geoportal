@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Rincian capaian dan perbandingan baseline program Yayasan Gambut.">
+  <title>Rincian Capaian Program | YG GeoPortal</title>
+  <link rel="icon" href="assets/logo-yayasan-gambut.png">
+  <link rel="stylesheet" href="css/style.css?v=20260723-revert-layout">
+  <link rel="stylesheet" href="css/programme-detail.css?v=20260726-baseline1">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html"><img src="assets/logo-yayasan-gambut.png" alt="Yayasan Gambut"><span><strong>YG GeoPortal</strong><small>Rincian capaian program</small></span></a>
+      <nav><a href="index.html">Dashboard</a><a href="webgis.html">WebGIS</a><a href="monitoring.html">Monitoring</a></nav>
+    </div>
+  </header>
+  <main class="detail-shell">
+    <section class="detail-hero">
+      <span>BASELINE DAN PEMBARUAN DATA</span>
+      <h1>Perubahan capaian program</h1>
+      <p>Baseline merupakan snapshot data dashboard pada 22 Juli 2026. Nilai terkini akan berubah saat laporan terverifikasi dan objek WebGIS baru dipublikasikan.</p>
+      <small id="detail-updated">Memuat snapshot dashboard terakhir...</small>
+    </section>
+    <nav class="detail-tabs" aria-label="Pilih program">
+      <a href="?programme=mangrove" data-programme-tab="mangrove">Mangrove</a>
+      <a href="?programme=peat" data-programme-tab="peat">Gambut</a>
+      <a href="?programme=mineral" data-programme-tab="mineral">Lahan Mineral</a>
+      <a href="?programme=engagement" data-programme-tab="engagement">Pelibatan &amp; Kapasitas</a>
+    </nav>
+    <section id="programme-detail-card" class="detail-card"><div class="detail-loading">Memuat rincian...</div></section>
+    <section class="method-note">
+      <h2>Cara membaca perbandingan</h2>
+      <p>Persentase perubahan dihitung dengan rumus <strong>(data terkini − baseline) ÷ baseline × 100%</strong>. Penambahan data menunjukkan perubahan inventaris capaian yang terverifikasi; tidak selalu berarti perubahan ekologis pada periode yang sama.</p>
+    </section>
+  </main>
+  <script src="js/programme-detail.js?v=20260726-cumulative-baseline1"></script>
+</body>
+</html>

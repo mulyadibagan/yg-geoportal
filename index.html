@@ -7,9 +7,9 @@
   <title>YG GeoPortal | Yayasan Gambut</title>
   <link rel="icon" href="assets/logo-yayasan-gambut.png"/>
   <link rel="stylesheet" href="css/style.css?v=20260723-revert-layout"/>
-  <link rel="stylesheet" href="css/dashboard-v3.css?v=20260723-cards-fix1"/>
+  <link rel="stylesheet" href="css/dashboard-v3.css?v=20260726-donor-sdg1"/>
   <link rel="stylesheet" href="css/language-switcher.css?v=20260721-all-pages1"/>
-  <link rel="stylesheet" href="css/dashboard-sdg.css?v=20260724-carbon-method1"/>
+  <link rel="stylesheet" href="css/dashboard-sdg.css?v=20260726-compact1"/>
   <link rel="stylesheet" href="https://unpkg.com/pell/dist/pell.min.css">
   <meta name="theme-color" content="#079cde">
   <meta name="application-name" content="YG GeoPortal">
@@ -66,13 +66,15 @@
       <div id="dashboard-updated" hidden></div>
     </div>
 
-    <div class="stat-grid stat-grid-6">
-      <a class="stat dashboard-link" href="webgis.html?search=Restorasi" aria-label="Lihat seluruh area restorasi"><strong id="dash-restoration-area">-</strong><span>Luas Restorasi (ha)</span></a>
-      <a class="stat dashboard-link" href="webgis.html?search=Penanaman" aria-label="Lihat seluruh lokasi penanaman"><strong id="dash-seedlings-planted">-</strong><span>Bibit Tertanam</span></a>
+    <div class="hero-programmes">
+      <div class="hero-programmes__head"><span>RINGKASAN PROGRAM</span><small>Baseline → data terkini</small></div>
+      <div class="category-grid" id="category-grid" aria-live="polite">
+        <a class="programme-card dashboard-link" href="programme-detail.html?programme=mangrove"><header><i aria-hidden="true">🌊</i><h3>Restorasi Mangrove</h3><span aria-hidden="true">→</span></header><p>Memuat data...</p></a>
+        <a class="programme-card dashboard-link" href="programme-detail.html?programme=peat"><header><i aria-hidden="true">🌿</i><h3>Restorasi Gambut</h3><span aria-hidden="true">→</span></header><p>Memuat data...</p></a>
       <a class="stat dashboard-link" href="webgis.html?layers=area_mangrove%2Carea_kopi%2Ckopi" aria-label="Lihat area revegetasi"><strong id="dash-revegetation-area">-</strong><span>Luas Revegetasi (ha)</span><small>Mangrove · gambut/agroforestri · lahan mineral</small></a>
-      <a class="stat dashboard-link" href="webgis.html?search=Pelatihan" aria-label="Lihat data peserta pelatihan"><strong id="dash-participants">-</strong><span>Total Peserta</span></a>
-      <a class="stat dashboard-link" href="webgis.html?layer=desa_intervensi" aria-label="Lihat kabupaten cakupan"><strong id="dash-regencies">-</strong><span>Kabupaten</span></a>
-      <a class="stat dashboard-link" href="webgis.html?layer=desa_intervensi" data-open-village-detail aria-label="Lihat rincian desa cakupan"><strong id="dash-villages">-</strong><span>Desa Cakupan</span></a>
+        <a class="programme-card dashboard-link" href="programme-detail.html?programme=mineral"><header><i aria-hidden="true">🌳</i><h3>Restorasi Lahan Mineral</h3><span aria-hidden="true">→</span></header><p>Memuat data...</p></a>
+        <a class="programme-card dashboard-link" href="programme-detail.html?programme=engagement"><header><i aria-hidden="true">👥</i><h3>Pelibatan &amp; Kapasitas</h3><span aria-hidden="true">→</span></header><p>Memuat data...</p></a>
+      </div>
     </div>
   </section>
 
@@ -184,13 +186,13 @@
     <p class="baseline-note"><strong>Kontribusi saat ini:</strong> luas intervensi 13,24 ha mangrove, 13,75 ha gambut/agroforestri, dan 11,44 ha lahan mineral mendukung estimasi penyerapan bruto 750,5 tCO2e/tahun. Estimasi rewetting 550 ha mendukung estimasi emisi terhindar 19.250 tCO2e/tahun. Angka ini akan berubah jika luas kegiatan, hasil overlay baseline, data monitoring, delineasi rewetting, atau faktor emisi diperbarui.</p>
   </section>
 
-  <section class="section dashboard-panel">
+  <section class="section dashboard-panel legacy-achievements" hidden>
     <div class="section-head">
       <div>
         <h2 data-editable-id="section-achievements-title">Capaian Program</h2>
       </div>
     </div>
-    <div class="category-grid" id="category-grid" aria-live="polite">
+    <div class="category-grid" id="legacy-category-grid" aria-live="polite">
       <a class="programme-card dashboard-link" href="webgis.html?layers=area_mangrove%2Cnursery_mangrove%2Capo">
         <header><i aria-hidden="true">🌊</i><h3>Restorasi Mangrove</h3><span aria-hidden="true">→</span></header>
         <ul><li><span>Memuat data...</span></li></ul>
@@ -203,8 +205,8 @@
         <header><i aria-hidden="true">🌳</i><h3>Restorasi Lahan Mineral</h3><span aria-hidden="true">→</span></header>
         <ul><li><span>Memuat data...</span></li></ul>
       </a>
-      <a class="programme-card dashboard-link" href="webgis.html?search=Pelatihan">
-        <header><i aria-hidden="true">👥</i><h3>Peningkatan Kapasitas</h3><span aria-hidden="true">→</span></header>
+      <a class="programme-card dashboard-link" href="monitoring.html">
+        <header><i aria-hidden="true">👥</i><h3>Pelibatan Masyarakat &amp; Kapasitas</h3><span aria-hidden="true">→</span></header>
         <ul><li><span>Memuat data...</span></li></ul>
       </a>
     </div>
@@ -253,6 +255,24 @@
   </section>
 
 </main>
+
+<div class="funding-modal" id="programme-summary-modal" hidden>
+  <button class="funding-backdrop" type="button" data-close-programme-summary aria-label="Tutup rincian program"></button>
+  <section class="funding-dialog programme-summary-dialog" role="dialog" aria-modal="true" aria-labelledby="programme-summary-title">
+    <button class="funding-close" type="button" data-close-programme-summary aria-label="Tutup">×</button>
+    <header class="funding-hero">
+      <span class="funding-badge">RINCIAN INDIKATOR</span>
+      <h2 id="programme-summary-title">Capaian Program</h2>
+      <p id="programme-summary-comparison"></p>
+    </header>
+    <div class="funding-content">
+      <div id="programme-summary-metrics" class="funding-indicators"></div>
+      <div class="programme-summary-actions">
+        <a id="programme-summary-source" href="webgis.html">Buka data sumber</a>
+      </div>
+    </div>
+  </section>
+</div>
 
 <div class="funding-modal" id="village-dashboard" hidden>
   <button class="funding-backdrop" type="button" data-close-village aria-label="Tutup rincian desa"></button>
@@ -553,8 +573,8 @@
   </div>
 </footer>
 
-<script src="js/dashboard-v3.js?v=20260725-dashboard-fallback1"></script>
-  <script src="js/dashboard-sdg.js?v=20260725-sdg-icons-local1"></script>
+<script src="js/dashboard-v3.js?v=20260726-donor-popup-restored1"></script>
+  <script src="js/dashboard-sdg.js?v=20260726-compact1"></script>
   <script src="https://unpkg.com/pell/dist/pell.min.js"></script>
   <script src="js/auth.js?v=1"></script>
   <script src="js/inline-editor.js?v=1"></script>

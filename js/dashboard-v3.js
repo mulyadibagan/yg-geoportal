@@ -9,6 +9,13 @@
   const DASHBOARD_REQUEST_MAX_ATTEMPTS = 3;
   const CAPACITY_BASELINE_URL = "data/capacity-building.json?v=20260722-3";
   const PUBLIC_REPORTS_API = API.replace("?page=objects", "?page=public-reports");
+  const PROGRAMME_BASELINES = {
+    snapshotDate: "22 Juli 2026",
+    mangrove: { value: 13.24, unit: "ha", label: "Luas restorasi" },
+    peat: { value: 13.75, unit: "ha", label: "Luas restorasi/agroforestri" },
+    mineral: { value: 11.44, unit: "ha", label: "Luas rehabilitasi" },
+    engagement: { value: 785, unit: "orang", label: "Orang terlibat" }
+  };
   const OFFICIAL_LAYERS = [
     { id: "area_mangrove", url: "data/area_mangrove.geojson" },
     { id: "area_kopi", url: "data/area_kopi.geojson" },
@@ -80,6 +87,9 @@
 
       window[callback] = data => {
         cleanup();
+        if (typeof data === "string") {
+          try { data = JSON.parse(data); } catch (error) {}
+        }
         if (!data || typeof data !== "object") {
           reject(new Error("Dashboard response is empty"));
           return;
@@ -300,6 +310,7 @@
     const details = proposed.capacityBuilding || information.capacityBuilding ||
       (Object.keys(proposed).length ? proposed : information);
     return {
+      kind: "training",
       id: firstValue(props, ["reportId", "Object_ID"]),
       name: firstValue(props, ["title", "Nama_Objek"]),
       date: firstValue(props, ["activityDate", "publishedAt"]),
@@ -309,6 +320,28 @@
       female: numericFrom(details, ["femaleParticipants", "female"]),
       group: firstValue(details, ["communityGroup", "group"]),
       target: firstValue(details, ["participantTarget", "target"])
+    };
+  }
+
+  function activityEngagementRecord(feature) {
+    const props = (feature && feature.properties) || {};
+    const details = parseObject(props.targetFeatureProperties);
+    const participants = numericFrom(details, ["Jumlah_Peserta", "Peserta", "participants"]);
+    if (!participants) return null;
+    const female = numericFrom(details, ["Peserta_Perempuan", "Perempuan"]);
+    return {
+      kind: "activity-engagement",
+      activityType: firstValue(details, ["Jenis_Kegiatan", "Kategori", "Program"]) || "Kegiatan lapangan",
+      id: firstValue(props, ["reportId", "Object_ID"]),
+      name: firstValue(props, ["title", "Nama_Objek"]),
+      date: firstValue(props, ["activityDate", "publishedAt"]),
+      location: firstValue(props, ["locationName", "Desa", "village"]),
+      village: firstValue(props, ["Desa", "village"]),
+      male: Math.max(0, participants - female),
+      female,
+      youth: numericFrom(details, ["Peserta_Pemuda", "Pemuda"]),
+      group: firstValue(details, ["Kelompok_Terlibat"]),
+      target: firstValue(details, ["Kelompok_Terlibat"]) || "Peserta kegiatan"
     };
   }
 
@@ -327,22 +360,35 @@
   }
 
   async function loadCapacitySummary() {
-    const [baselineResult, reportsResult] = await Promise.allSettled([
+    const [baselineResult, reportsResult, postTestResult] = await Promise.allSettled([
       fetch(CAPACITY_BASELINE_URL).then(response =>
         response.ok ? response.json() : []
       ),
-      jsonp(PUBLIC_REPORTS_API)
+      jsonp(PUBLIC_REPORTS_API),
+      jsonp(API.replace("?page=objects", "?page=prepost-live-summary&scope=active"))
     ]);
     const baseline = baselineResult.status === "fulfilled" &&
       Array.isArray(baselineResult.value) ? baselineResult.value : [];
     const reports = reportsResult.status === "fulfilled"
       ? reportsResult.value : null;
-    const live = ((reports && reports.features) || [])
+    const reportFeatures = (reports && reports.features) || [];
+    const live = reportFeatures
         .filter(feature => firstValue((feature && feature.properties) || {}, ["reportType"]) === "Capacity Building")
         .map(capacityRecordFromFeature);
+    const engagement = reportFeatures
+      .filter(feature => {
+        const props = (feature && feature.properties) || {};
+        const details = parseObject(props.targetFeatureProperties);
+        return firstValue(props, ["reportType"]) !== "Capacity Building" &&
+          numericFrom(details, ["Jumlah_Peserta", "Peserta", "participants"]) > 0;
+      })
+      .map(activityEngagementRecord)
+      .filter(Boolean);
 
     const seen = new Set();
-    const records = baseline.concat(live).filter(record => {
+    const trainingRecords = baseline.map(record => Object.assign({ kind: "training" }, record))
+      .concat(live);
+    const records = trainingRecords.concat(engagement).filter(record => {
       const key = String(record.id || [record.name, record.date, record.location].join("|")).trim();
       if (!key || seen.has(key)) return false;
       seen.add(key);
@@ -351,14 +397,33 @@
     const villages = new Set();
     const groups = new Set();
     let participants = 0;
+    let trainingParticipants = 0;
+    let engagementParticipants = 0;
     records.forEach(record => {
-      participants += Number(record.male || 0) + Number(record.female || 0);
+      const count = Number(record.male || 0) + Number(record.female || 0);
+      participants += count;
+      if (record.kind === "activity-engagement") engagementParticipants += count;
+      else trainingParticipants += count;
       const village = capacityVillage(record);
       if (village) villages.add(village.toLowerCase());
       const group = String(record.group || record.target || "").trim();
       if (group) groups.add(group.toLowerCase());
     });
-    return { loaded: records.length > 0, trainings: records.length, participants, villages, groups, records };
+    const postTestData = postTestResult.status === "fulfilled" ? postTestResult.value : {};
+    const postTestTotals = (postTestData && postTestData.totals) || {};
+    return {
+      loaded: records.length > 0,
+      trainings: trainingRecords.length,
+      engagementActivities: engagement.length,
+      participants,
+      trainingParticipants,
+      engagementParticipants,
+      postTestRespondents: Number(postTestTotals.postRespondents || 0),
+      postTestAverage: Number(postTestTotals.postAvgPercent || 0),
+      villages,
+      groups,
+      records
+    };
   }
 
   function normalizedText(props) {
@@ -781,7 +846,7 @@
           });
         }
         const metrics = villageMetricDetails.get(normalizedKey);
-        metrics.trainingSessions += 1;
+        if (record.kind !== "activity-engagement") metrics.trainingSessions += 1;
         metrics.participants += Number(record.male || 0) + Number(record.female || 0);
       });
     }
@@ -1264,11 +1329,18 @@
       nurseryCount: nurseryCount,
       monitoringReports: monitoringReports,
       trainingSessions: programmeMetrics.capacity.trainings,
+      plantingEngagementActivities: programmeMetrics.capacity.engagementActivities || 0,
+      activityEngagementActivities: programmeMetrics.capacity.engagementActivities || 0,
+      trainingParticipants: programmeMetrics.capacity.trainingParticipants || 0,
+      plantingParticipants: programmeMetrics.capacity.engagementParticipants || 0,
+      activityParticipants: programmeMetrics.capacity.engagementParticipants || 0,
+      postTestRespondents: programmeMetrics.capacity.postTestRespondents || 0,
       revegetationArea: revegetationArea,
       totalRestorationArea: totalRestorationArea,
       totalPlantedSeedlings: totalPlantedSeedlings,
       rewettingArea: peatRewettingArea,
       participants: programmeMetrics.capacity.participants,
+      programmeBaselines: PROGRAMME_BASELINES,
       regencies: regencies.size,
       villages: villages.size,
       villageDetails: Array.from(villageDetails.values()).sort((a, b) => a.name.localeCompare(b.name, "id")),
@@ -1306,6 +1378,12 @@
         };
       }).sort((a, b) => a.name.localeCompare(b.name, "id"))
     };
+    try {
+      window.localStorage.setItem("ygProgrammeDetailStats_v1", JSON.stringify({
+        savedAt: new Date().toISOString(),
+        stats: window.YG_DASHBOARD_STATS
+      }));
+    } catch (error) {}
     window.dispatchEvent(new CustomEvent("yg:dashboardstatsready", {
       detail: window.YG_DASHBOARD_STATS
     }));
@@ -1314,6 +1392,13 @@
     setMetric("dash-seedlings-planted", totalPlantedSeedlings);
     setMetric("dash-revegetation-area", revegetationArea, 2);
     setMetric("dash-participants", programmeMetrics.capacity.participants);
+    const participantDetail = document.getElementById("dash-participants-detail");
+    if (participantDetail) {
+      participantDetail.textContent =
+        formatNumber(programmeMetrics.capacity.trainingParticipants || 0) + " pelatihan · " +
+        formatNumber(programmeMetrics.capacity.engagementParticipants || 0) + " kegiatan lapangan · " +
+        formatNumber(programmeMetrics.capacity.postTestRespondents || 0) + " post-test";
+    }
     setMetric("dash-regencies", regencies.size);
     setMetric("dash-villages", villages.size);
 
@@ -1326,9 +1411,12 @@
     ).join("");
     const programmeCards = [
       {
+        key: "mangrove",
         name: "Restorasi Mangrove",
         icon: "🌊",
-        url: mapUrl({ layers: "area_mangrove,nursery_mangrove,apo" }),
+        url: "programme-detail.html?programme=mangrove",
+        sourceUrl: mapUrl({ layers: "area_mangrove,nursery_mangrove,apo" }),
+        current: Math.max(PROGRAMME_BASELINES.mangrove.value, programmeMetrics.mangrove.area),
         rows: [
           ["Luas Restorasi", programmeMetrics.mangrove.area, " ha", 2],
           ["Pohon Mangrove Ditanam", programmeMetrics.mangrove.seedlings],
@@ -1338,9 +1426,12 @@
         ]
       },
       {
+        key: "peat",
         name: "Restorasi Gambut",
         icon: "🌿",
-        url: mapUrl({ layers: "area_kopi,kopi,sekat_kanal,fdrs" }),
+        url: "programme-detail.html?programme=peat",
+        sourceUrl: mapUrl({ layers: "area_kopi,kopi,sekat_kanal,fdrs" }),
+        current: Math.max(PROGRAMME_BASELINES.peat.value, programmeMetrics.peat.area),
         rows: [
           ["Luas Gambut / Agroforestri", programmeMetrics.peat.area, " ha", 2],
           ["Bibit Kopi Ditanam", programmeMetrics.peat.coffee],
@@ -1352,9 +1443,12 @@
         ]
       },
       {
+        key: "mineral",
         name: "Restorasi Lahan Mineral",
         icon: "🌳",
-        url: mapUrl({ layer: "community_reports", search: "Imbo Putui" }),
+        url: "programme-detail.html?programme=mineral",
+        sourceUrl: mapUrl({ layer: "community_reports", search: "Imbo Putui" }),
+        current: Math.max(PROGRAMME_BASELINES.mineral.value, programmeMetrics.mineral.area),
         rows: [
           ["Luas Restorasi", Math.max(11.44, programmeMetrics.mineral.area), " ha", 2],
           ["Bibit Ditanam", Math.max(1200, programmeMetrics.mineral.seedlings)],
@@ -1364,24 +1458,88 @@
         ]
       },
       {
-        name: "Peningkatan Kapasitas",
+        key: "engagement",
+        name: "Pelibatan Masyarakat & Kapasitas",
         icon: "👥",
-        url: mapUrl({ search: "Pelatihan" }),
+        url: "programme-detail.html?programme=engagement",
+        sourceUrl: "monitoring.html",
+        current: Math.max(PROGRAMME_BASELINES.engagement.value, programmeMetrics.capacity.participants),
         rows: [
           ["Pelatihan", programmeMetrics.capacity.trainings],
-          ["Peserta", programmeMetrics.capacity.participants],
+          ["Kegiatan Lapangan", programmeMetrics.capacity.engagementActivities || 0],
+          ["Orang Terlibat", programmeMetrics.capacity.participants],
+          ["Responden Post-test", programmeMetrics.capacity.postTestRespondents || 0],
           ["Desa Terlibat", programmeMetrics.capacity.villages.size],
           ["Kelompok Masyarakat Didampingi", programmeMetrics.capacity.groups.size]
         ]
       }
     ];
-    document.getElementById("category-grid").innerHTML = programmeCards.map(card =>
+    if (false) document.getElementById("category-grid").innerHTML = programmeCards.map(card =>
       '<a class="programme-card dashboard-link" href="' + escapeHtml(card.url) + '">' +
         '<header><i aria-hidden="true">' + card.icon + '</i><h3>' +
         escapeHtml(card.name) + '</h3><span aria-hidden="true">→</span></header>' +
         '<ul>' + metricRows(card.rows) + '</ul>' +
       '</a>'
     ).join("");
+    const comparisonValue = (value, unit) =>
+      formatNumber(value, unit === "ha" ? 2 : 0) + (unit ? " " + unit : "");
+    const comparisonChange = (baseline, current) =>
+      baseline > 0 ? ((current - baseline) / baseline) * 100 : 0;
+    document.getElementById("category-grid").innerHTML = programmeCards.map(card => {
+      const baseline = PROGRAMME_BASELINES[card.key];
+      const change = comparisonChange(baseline.value, card.current);
+      const changeLabel = Math.abs(change) < 0.05
+        ? "Belum berubah"
+        : (change > 0 ? "+" : "") + formatNumber(change, 1) + "%";
+      return '<a class="programme-card dashboard-link" data-programme-summary="' + escapeHtml(card.key) + '" href="' + escapeHtml(card.url) + '">' +
+        '<header><i aria-hidden="true">' + card.icon + '</i><h3>' +
+        escapeHtml(card.name) + '</h3><span aria-hidden="true">→</span></header>' +
+        '<div class="programme-compare">' +
+          '<div class="programme-compare__value"><span>Baseline</span><strong>' +
+            escapeHtml(comparisonValue(baseline.value, baseline.unit)) + '</strong></div>' +
+          '<span class="programme-compare__arrow">→</span>' +
+          '<div class="programme-compare__value is-current"><span>Terkini</span><strong>' +
+            escapeHtml(comparisonValue(card.current, baseline.unit)) + '</strong></div>' +
+        '</div>' +
+        '<div class="programme-change"><span>Perubahan dari baseline</span><strong class="' +
+          (Math.abs(change) < 0.05 ? 'is-neutral' : '') + '">' + escapeHtml(changeLabel) + '</strong></div>' +
+        '<div class="programme-card__meta">Snapshot baseline ' +
+          escapeHtml(PROGRAMME_BASELINES.snapshotDate) + ' · buka rincian indikator</div>' +
+      '</a>';
+    }).join("");
+    const programmeModal = document.getElementById("programme-summary-modal");
+    const closeProgrammeModal = () => {
+      programmeModal.hidden = true;
+      document.body.classList.remove("modal-open");
+    };
+    document.getElementById("category-grid").onclick = event => {
+      const trigger = event.target.closest("[data-programme-summary]");
+      if (!trigger) return;
+      event.preventDefault();
+      const card = programmeCards.find(item => item.key === trigger.dataset.programmeSummary);
+      if (!card) return;
+      const baseline = PROGRAMME_BASELINES[card.key];
+      const change = comparisonChange(baseline.value, card.current);
+      const changeLabel = Math.abs(change) < 0.05
+        ? "belum berubah"
+        : (change > 0 ? "meningkat " : "menurun ") + formatNumber(Math.abs(change), 1) + "%";
+      document.getElementById("programme-summary-title").textContent = card.name;
+      document.getElementById("programme-summary-comparison").textContent =
+        "Baseline " + comparisonValue(baseline.value, baseline.unit) +
+        " → terkini " + comparisonValue(card.current, baseline.unit) +
+        " · " + changeLabel + ". Snapshot baseline " + PROGRAMME_BASELINES.snapshotDate + ".";
+      document.getElementById("programme-summary-metrics").innerHTML = card.rows.map(row =>
+        '<article class="funding-indicator"><i aria-hidden="true">•</i><strong>' +
+        escapeHtml(displayMetric(row[1], row[2] || "", row[3] || 0)) +
+        '</strong><span>' + escapeHtml(row[0]) + '</span></article>'
+      ).join("");
+      document.getElementById("programme-summary-source").href = card.sourceUrl;
+      programmeModal.hidden = false;
+      document.body.classList.add("modal-open");
+    };
+    programmeModal.querySelectorAll("[data-close-programme-summary]").forEach(node => {
+      node.onclick = closeProgrammeModal;
+    });
 
     const ppcfName = "Pan Pacific Conservation Foundation (PPCF)";
     const aramcoName = "Aramco Asia Singapore";

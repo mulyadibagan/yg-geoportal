@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Profil mitra pendanaan, program berjalan, dan timeline Yayasan Gambut.">
+  <title>Profil Mitra Pendanaan | YG GeoPortal</title>
+  <link rel="icon" href="assets/logo-yayasan-gambut.png">
+  <link rel="stylesheet" href="css/style.css?v=20260723-revert-layout">
+  <link rel="stylesheet" href="css/dashboard-v3.css?v=20260726-donor-page-popup1">
+  <link rel="stylesheet" href="css/donor-detail.css?v=20260726-donor1">
+  <link rel="stylesheet" href="css/donor-impact.css?v=20260726-impact1">
+</head>
+<body>
+  <header class="site-header"><div class="header-inner">
+    <a class="brand" href="index.html"><img src="assets/logo-yayasan-gambut.png" alt="Yayasan Gambut"><span><strong>YG GeoPortal</strong><small>Profil mitra pendanaan</small></span></a>
+    <nav><a href="index.html">Dashboard</a><a href="webgis.html">WebGIS</a><a href="monitoring.html">Monitoring</a></nav>
+  </div></header>
+  <main class="donor-shell">
+    <section id="donor-profile" class="donor-loading">Memuat profil donor...</section>
+    <section class="donor-editor">
+      <div><span>INPUT BERTAHAP</span><h2>Tambah program atau timeline</h2><p>Entri disimpan sebagai draf pada browser ini dan langsung tampil pada profil donor. Struktur ini siap disambungkan ke backend admin.</p></div>
+      <form id="donor-entry-form">
+        <label>Jenis entri<select id="entry-type"><option value="program">Program berjalan</option><option value="timeline">Timeline</option></select></label>
+        <label>Judul<input id="entry-title" required placeholder="Nama program atau tahap"></label>
+        <label>Periode/tahun<input id="entry-period" required placeholder="2026–2027"></label>
+        <label>Status<select id="entry-status"><option>Berjalan</option><option>Direncanakan</option><option>Selesai</option></select></label>
+        <label class="wide">Ringkasan<textarea id="entry-summary" required rows="4" placeholder="Tujuan, kegiatan, dan keluaran utama"></textarea></label>
+        <div class="wide donor-form-actions"><button type="submit">Simpan draf</button><button id="export-donor-data" class="secondary" type="button">Ekspor JSON</button><span id="entry-status-text"></span></div>
+      </form>
+    </section>
+  </main>
+  <script src="js/donor-detail.js?v=20260726-popup-layout1"></script>
+</body>
+</html>

@@ -1,14 +1,15 @@
 .sdg-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 9px;
 }
 
 .sdg-card {
   display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  padding: 16px;
+  align-items: center;
+  gap: 9px;
+  min-height: 82px;
+  padding: 9px;
   border: 1px solid var(--border);
   border-radius: 14px;
   background: var(--card);
@@ -26,11 +27,11 @@
 
 .sdg-card-icon {
   display: flex;
-  flex: 0 0 clamp(68px, 8vw, 88px);
+  flex: 0 0 48px;
   align-items: center;
   justify-content: center;
-  width: clamp(68px, 8vw, 88px);
-  min-width: clamp(68px, 8vw, 88px);
+  width: 48px;
+  min-width: 48px;
   aspect-ratio: 1 / 1;
   overflow: hidden;
   border-radius: 12px;
@@ -50,14 +51,14 @@
 
 .sdg-card-title {
   margin: 0;
-  font-size: 16px;
+  font-size: 11px;
   font-weight: 800;
   color: var(--brown);
 }
 
 .sdg-number {
   display: block;
-  font-size: 12px;
+  font-size: 9px;
   font-weight: 900;
   letter-spacing: .05em;
   text-transform: uppercase;
@@ -161,7 +162,12 @@
 
 @media (max-width: 640px) {
   .sdg-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: none;
+    grid-template-rows: repeat(2, auto);
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(145px, 1fr);
+    overflow-x: auto;
+    padding-bottom: 7px;
   }
 
   .sdg-card {
@@ -170,9 +176,9 @@
   }
 
   .sdg-card-icon {
-    flex-basis: 72px;
-    width: 72px;
-    min-width: 72px;
+    flex-basis: 42px;
+    width: 42px;
+    min-width: 42px;
   }
   
   .sdg-modal {
@@ -191,6 +197,17 @@
 
   .sdg-modal-body {
     padding: 20px 24px 32px;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1050px) {
+  .sdg-grid {
+    grid-template-columns: none;
+    grid-template-rows: repeat(2, auto);
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(175px, 1fr);
+    overflow-x: auto;
+    padding-bottom: 7px;
   }
 }
 
