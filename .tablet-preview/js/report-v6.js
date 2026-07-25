@@ -57,21 +57,6 @@
     'Replanting/Penyulaman Mangrove'
   ];
 
-  /*
-   * Semua laporan lapangan wajib membawa bukti foto. Perbaikan Informasi
-   * dikecualikan karena dapat berupa koreksi atribut administratif.
-   */
-  var photoRequiredTypes = [
-    'Tambah Foto Kegiatan',
-    'Titik Baru',
-    'Monitoring',
-    'Replanting/Penyulaman Mangrove',
-    'Kebakaran',
-    'Abrasi',
-    'Biodiversitas',
-    'Capacity Building'
-  ];
-
   function setProcessingState(state, message) {
     var isProcessing = Object.values(state).some(Boolean);
     if (isProcessing) {
@@ -161,14 +146,7 @@
     if(replantingFields) replantingFields.hidden =
       type !== 'Replanting/Penyulaman Mangrove';
     var photoSection = document.getElementById('photo-section');
-    var isNewArea = type === 'Area/Poligon Baru';
-    if(photoSection) photoSection.hidden = isNewArea;
-    if(isNewArea && compressedImages.length){
-      compressedImages = [];
-      imageInput.value = '';
-      renderPhotoPreview();
-      imagesProcessing = false; updateProcessingStatus();
-    }
+    if(photoSection) photoSection.hidden = false;
     var guidance = document.getElementById('type-guidance');
     var geometryHelp = document.getElementById('geometry-help');
 
@@ -2337,13 +2315,9 @@
       }
     }
 
-    if(
-      photoRequiredTypes.indexOf(selectedType) !== -1 &&
-      compressedImages.length < 1
-    ){
+    if(compressedImages.length < 1){
       alert(
-        'Jenis laporan ' + selectedType +
-        ' wajib memiliki minimal satu foto yang sudah siap dikirim.'
+        'Semua jenis laporan wajib memiliki minimal 1 foto.'
       );
       imageInput.scrollIntoView({behavior:'smooth',block:'center'});
       return;
