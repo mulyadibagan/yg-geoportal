@@ -128,7 +128,10 @@
 
   function calculateEstimatedPeatRewettingArea(unitCount) {
     var count = Number(unitCount);
-    if (!Number.isFinite(count) || count < 0) {
+    // Sebelum Master Database selesai dimuat, layer lokal belum selalu
+    // membawa titik sekat kanal. Gunakan baseline resmi 11 unit agar angka
+    // Data Final Terkini tidak turun sementara dari 588,43 menjadi 38,43 ha.
+    if (!Number.isFinite(count) || count <= 0) {
       count = 11;
     }
     return count * 50;
