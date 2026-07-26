@@ -340,6 +340,8 @@
       male: Math.max(0, participants - female),
       female,
       youth: numericFrom(details, ["Peserta_Pemuda", "Pemuda"]),
+      areaHa: numericFrom(details, ["Luas_Indikatif_Ha", "Luas_Ha", "Area_Ha"]),
+      ecosystem: firstValue(details, ["Kategori_Ekosistem", "Jenis_Ekosistem", "Komoditas"]),
       group: firstValue(details, ["Kelompok_Terlibat"]),
       target: firstValue(details, ["Kelompok_Terlibat"]) || "Peserta kegiatan"
     };
@@ -399,11 +401,19 @@
     let participants = 0;
     let trainingParticipants = 0;
     let engagementParticipants = 0;
+    let femaleParticipants = 0;
+    let youthParticipants = 0;
+    let mangroveActivityArea = 0;
     records.forEach(record => {
       const count = Number(record.male || 0) + Number(record.female || 0);
       participants += count;
       if (record.kind === "activity-engagement") engagementParticipants += count;
       else trainingParticipants += count;
+      femaleParticipants += Number(record.female || 0);
+      youthParticipants += Number(record.youth || 0);
+      if (record.kind === "activity-engagement" && /mangrove/i.test(String(record.ecosystem || record.name || ""))) {
+        mangroveActivityArea += Number(record.areaHa || 0);
+      }
       const village = capacityVillage(record);
       if (village) villages.add(village.toLowerCase());
       const group = String(record.group || record.target || "").trim();
@@ -411,6 +421,25 @@
     });
     const postTestData = postTestResult.status === "fulfilled" ? postTestResult.value : {};
     const postTestTotals = (postTestData && postTestData.totals) || {};
+    const postTestSessions = Array.isArray(postTestData && postTestData.sessions)
+      ? postTestData.sessions : [];
+    const postTestWeighted = postTestSessions.reduce((acc, item) => {
+      const summary = item && item.summary ? item.summary : {};
+      const respondents = Number(summary.postRespondents || 0);
+      acc.respondents += respondents;
+      acc.score += respondents * Number(summary.postAvgPercent || 0);
+      return acc;
+    }, { respondents: 0, score: 0 });
+    const recordTimestamp = value => {
+      const text = String(value || "").trim();
+      const local = text.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+      if (local) return Date.UTC(Number(local[3]), Number(local[2]) - 1, Number(local[1]));
+      const parsed = new Date(text).getTime();
+      return Number.isFinite(parsed) ? parsed : 0;
+    };
+    const latestRecordDate = records.slice().sort((a, b) =>
+      recordTimestamp(b.date) - recordTimestamp(a.date)
+    ).map(record => String(record.date || "")).find(Boolean) || "";
     return {
       loaded: records.length > 0,
       trainings: trainingRecords.length,
@@ -418,8 +447,13 @@
       participants,
       trainingParticipants,
       engagementParticipants,
+      femaleParticipants,
+      youthParticipants,
+      mangroveActivityArea,
+      latestRecordDate,
       postTestRespondents: Number(postTestTotals.postRespondents || 0),
-      postTestAverage: Number(postTestTotals.postAvgPercent || 0),
+      postTestAverage: postTestWeighted.respondents
+        ? postTestWeighted.score / postTestWeighted.respondents : 0,
       villages,
       groups,
       records
@@ -1416,12 +1450,16 @@
         icon: "🌊",
         url: "programme-detail.html?programme=mangrove",
         sourceUrl: mapUrl({ layers: "area_mangrove,nursery_mangrove,apo" }),
-        current: Math.max(PROGRAMME_BASELINES.mangrove.value, programmeMetrics.mangrove.area),
+        addition: programmeMetrics.capacity.mangroveActivityArea || 0,
+        current: PROGRAMME_BASELINES.mangrove.value + (programmeMetrics.capacity.mangroveActivityArea || 0),
+        baselineLabel: "Luas awal",
+        additionLabel: "Penanaman baru",
+        currentLabel: "Total restorasi",
+        status: "Data final",
+        updated: programmeMetrics.capacity.latestRecordDate || "Live WebGIS",
         rows: [
-          ["Luas Restorasi", programmeMetrics.mangrove.area, " ha", 2],
           ["Pohon Mangrove Ditanam", programmeMetrics.mangrove.seedlings],
           ["Rumah Bibit", Math.max(4, programmeMetrics.mangrove.nurseries.size)],
-          ["Hybrid Engineering", Math.max(300, programmeMetrics.mangrove.wave), " m"],
           ["Desa Program", programmeMetrics.mangrove.villages.size]
         ]
       },
@@ -1431,15 +1469,17 @@
         icon: "🌿",
         url: "programme-detail.html?programme=peat",
         sourceUrl: mapUrl({ layers: "area_kopi,kopi,sekat_kanal,fdrs" }),
-        current: Math.max(PROGRAMME_BASELINES.peat.value, programmeMetrics.peat.area),
+        addition: peatRewettingArea,
+        current: PROGRAMME_BASELINES.peat.value + peatRewettingArea,
+        baselineLabel: "Luas penanaman",
+        additionLabel: "Area rewetting",
+        currentLabel: "Total restorasi",
+        status: "Data final",
+        updated: "Live WebGIS",
         rows: [
-          ["Luas Gambut / Agroforestri", programmeMetrics.peat.area, " ha", 2],
-          ["Bibit Kopi Ditanam", programmeMetrics.peat.coffee],
-          ["Bibit Pohon Hutan & MPTS", programmeMetrics.peat.forest],
           ["Sekat Kanal", programmeMetrics.peat.canals],
           ["Estimasi Area Rewetting", peatRewettingArea, " ha", 2],
-          ["Infrastruktur Pencegahan Kebakaran", programmeMetrics.peat.fireInfra],
-          ["Rumah Bibit", programmeMetrics.peat.nurseries]
+          ["FDRS", fdrsUnits]
         ]
       },
       {
@@ -1448,12 +1488,16 @@
         icon: "🌳",
         url: "programme-detail.html?programme=mineral",
         sourceUrl: mapUrl({ layer: "community_reports", search: "Imbo Putui" }),
+        addition: Math.max(0, programmeMetrics.mineral.area - PROGRAMME_BASELINES.mineral.value),
         current: Math.max(PROGRAMME_BASELINES.mineral.value, programmeMetrics.mineral.area),
+        baselineLabel: "Luas awal",
+        additionLabel: "Rehabilitasi baru",
+        currentLabel: "Total rehabilitasi",
+        status: "Data final",
+        updated: "Monitoring Juni 2026",
         rows: [
-          ["Luas Restorasi", Math.max(11.44, programmeMetrics.mineral.area), " ha", 2],
           ["Bibit Ditanam", Math.max(1200, programmeMetrics.mineral.seedlings)],
           ["Menara Air", Math.max(1, programmeMetrics.mineral.towers)],
-          ["Plang Restorasi", Math.max(1, programmeMetrics.mineral.signs)],
           ["Plot Ukur Permanen", Math.max(1, programmeMetrics.mineral.plots)]
         ]
       },
@@ -1463,14 +1507,18 @@
         icon: "👥",
         url: "programme-detail.html?programme=engagement",
         sourceUrl: "monitoring.html",
+        addition: Math.max(0, programmeMetrics.capacity.participants - PROGRAMME_BASELINES.engagement.value),
         current: Math.max(PROGRAMME_BASELINES.engagement.value, programmeMetrics.capacity.participants),
+        baselineLabel: "Baseline orang",
+        additionLabel: "Orang baru",
+        currentLabel: "Total terlibat",
+        status: "Data final",
+        updated: programmeMetrics.capacity.latestRecordDate || "Live WebGIS",
         rows: [
-          ["Pelatihan", programmeMetrics.capacity.trainings],
-          ["Kegiatan Lapangan", programmeMetrics.capacity.engagementActivities || 0],
-          ["Orang Terlibat", programmeMetrics.capacity.participants],
-          ["Responden Post-test", programmeMetrics.capacity.postTestRespondents || 0],
-          ["Desa Terlibat", programmeMetrics.capacity.villages.size],
-          ["Kelompok Masyarakat Didampingi", programmeMetrics.capacity.groups.size]
+          ["Kegiatan Tercatat", programmeMetrics.capacity.trainings + (programmeMetrics.capacity.engagementActivities || 0)],
+          ["Perempuan Terlibat", programmeMetrics.capacity.femaleParticipants || 0],
+          ["Pemuda Terlibat", programmeMetrics.capacity.youthParticipants || 0],
+          ["Rata-rata Post-test", programmeMetrics.capacity.postTestAverage || 0, "%", 1]
         ]
       }
     ];
@@ -1495,7 +1543,7 @@
         '<header><i aria-hidden="true">' + card.icon + '</i><h3>' +
         escapeHtml(card.name) + '</h3><span aria-hidden="true">→</span></header>' +
         '<div class="programme-compare">' +
-          '<div class="programme-compare__value"><span>Baseline</span><strong>' +
+          '<div class="programme-compare__value"><span>' + escapeHtml(card.baselineLabel) + '</span><strong>' +
             escapeHtml(comparisonValue(baseline.value, baseline.unit)) + '</strong></div>' +
           '<span class="programme-compare__arrow">→</span>' +
           '<div class="programme-compare__value is-current"><span>Terkini</span><strong>' +
@@ -1505,6 +1553,29 @@
           (Math.abs(change) < 0.05 ? 'is-neutral' : '') + '">' + escapeHtml(changeLabel) + '</strong></div>' +
         '<div class="programme-card__meta">Snapshot baseline ' +
           escapeHtml(PROGRAMME_BASELINES.snapshotDate) + ' · buka rincian indikator</div>' +
+      '</a>';
+    }).join("");
+    document.getElementById("category-grid").innerHTML = programmeCards.map(card => {
+      const baseline = PROGRAMME_BASELINES[card.key];
+      return '<a class="programme-card dashboard-link" data-programme-summary="' + escapeHtml(card.key) + '" href="' + escapeHtml(card.url) + '">' +
+        '<header><i aria-hidden="true">' + card.icon + '</i><h3>' +
+          escapeHtml(card.name) + '</h3><span aria-hidden="true">→</span></header>' +
+        '<div class="programme-compare">' +
+          '<div class="programme-compare__value"><span>Baseline</span><strong>' +
+            escapeHtml(comparisonValue(baseline.value, baseline.unit)) + '</strong></div>' +
+          '<span class="programme-compare__operator">+</span>' +
+          '<div class="programme-compare__value is-addition"><span>' + escapeHtml(card.additionLabel) + '</span><strong>' +
+            escapeHtml(comparisonValue(card.addition || 0, baseline.unit)) + '</strong></div>' +
+          '<span class="programme-compare__operator">=</span>' +
+          '<div class="programme-compare__value is-current"><span>' + escapeHtml(card.currentLabel) + '</span><strong>' +
+            escapeHtml(comparisonValue(card.current, baseline.unit)) + '</strong></div>' +
+        '</div>' +
+        '<div class="programme-support-grid">' + card.rows.slice(0, 3).map(row =>
+          '<span><small>' + escapeHtml(row[0]) + '</small><strong>' +
+            escapeHtml(displayMetric(row[1], row[2] || "", row[3] || 0)) + '</strong></span>'
+        ).join("") + '</div>' +
+        '<div class="programme-card__meta"><span class="programme-verified">✓ ' +
+          escapeHtml(card.status) + '</span><span>Diperbarui: ' + escapeHtml(card.updated) + '</span></div>' +
       '</a>';
     }).join("");
     if (window.YG_I18N && typeof window.YG_I18N.translateElement === "function") {
