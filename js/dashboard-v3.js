@@ -1462,7 +1462,7 @@
         status: "Data final",
         updated: programmeMetrics.capacity.latestRecordDate || "Live WebGIS",
         rows: [
-          ["Pohon Mangrove Ditanam", programmeMetrics.mangrove.seedlings],
+          ["Pohon Mangrove Ditanam (Semua Program)", programmeMetrics.mangrove.seedlings],
           ["Rumah Bibit", Math.max(4, programmeMetrics.mangrove.nurseries.size)],
           ["Desa Program", programmeMetrics.mangrove.villages.size]
         ]
