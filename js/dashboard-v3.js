@@ -17,6 +17,7 @@
     engagement: { value: 785, unit: "orang", label: "Orang terlibat" }
   };
   const OFFICIAL_LAYERS = [
+    { id: "desa_intervensi", url: "data/desa_intervensi.geojson?v=20260726-14desa" },
     { id: "area_mangrove", url: "data/area_mangrove.geojson" },
     { id: "area_kopi", url: "data/area_kopi.geojson" },
     { id: "kopi", url: "data/kopi.geojson" }

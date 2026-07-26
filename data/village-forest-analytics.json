@@ -741,6 +741,62 @@
           "count": 0
         }
       ]
+    },
+    "merempan|siak|siak": {
+      "name": "Merempan",
+      "geostoreId": null,
+      "baselineForestHa": 6319.83,
+      "currentForestHa": 570.55,
+      "totalLossHa": 5749.28,
+      "gainHa": null,
+      "annualLossHa": {
+        "2017": 284.54,
+        "2018": 117.85,
+        "2019": 78.77,
+        "2020": 60.39,
+        "2021": 113.46,
+        "2022": 142.62,
+        "2023": 36.08,
+        "2024": 38.92,
+        "2025": 72.85,
+        "2026": null
+      },
+      "referenceAreasHa": {
+        "apl": 3366.62,
+        "productionForest": 2990.93,
+        "protectionForest": 0,
+        "conservation": 0,
+        "forestEstate": 2990.93,
+        "unclassifiedForestFunction": 88.73,
+        "peat": 2883.55,
+        "concession": 2355.92,
+        "socialForestry": 0
+      },
+      "hotspotYearly5y": [
+        {
+          "year": "2022",
+          "count": 0
+        },
+        {
+          "year": "2023",
+          "count": 0
+        },
+        {
+          "year": "2024",
+          "count": 0
+        },
+        {
+          "year": "2025",
+          "count": 0
+        },
+        {
+          "year": "2026",
+          "count": 0
+        }
+      ],
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     }
   },
   "socialForestry": {

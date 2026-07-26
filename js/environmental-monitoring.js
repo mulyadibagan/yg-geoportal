@@ -263,7 +263,7 @@
         .filter(function(item){return /^\d{4}$/.test(item.year);});
     }
     if(!rows.length){
-      return '<div class="yg-va-note">Riwayat hotspot lima tahun belum dihitung.</div>';
+      return '<div class="yg-va-note">Riwayat hotspot tahunan belum dihitung.</div>';
     }
     rows.sort(function(a,b){return Number(a.year)-Number(b.year);});
     var max=Math.max.apply(null,rows.map(function(item){return item.count;}))||1;
@@ -361,7 +361,7 @@
       {label:"Batas wilayah terpilih",color:"#0d6efd"}
     ];
     var envLabels={
-      hotspot:{label:"Hotspot NASA VIIRS (30 hari)",color:"#ff4d2e"},
+      hotspot:{label:"Hotspot NASA MODIS–VIIRS (30 hari)",color:"#ff4d2e"},
       cover:{label:"Tutupan lahan Indonesia 2017",color:"#6a8f5f"},
       loss:{label:"Kehilangan tutupan",color:"#e65100"},
       alerts:{label:"Alert perubahan terbaru",color:"#8b1d1d"}
@@ -706,7 +706,7 @@
       doc.setFontSize(8);
       doc.setTextColor(88,104,99);
       doc.text(
-        "Sumber data: NASA FIRMS/VIIRS, Global Forest Watch (Hansen GFC), dan data spasial internal Yayasan Gambut.",
+        "Sumber data: NASA FIRMS/MODIS–VIIRS, Global Forest Watch (Hansen GFC), dan data spasial internal Yayasan Gambut.",
         margin,
         295
       );
@@ -784,7 +784,7 @@
 
       doc.setTextColor(28,44,39);
       doc.setFontSize(11);
-      doc.text("Total hotspot per tahun (5 tahun terakhir)",margin,detailY+2);
+      doc.text("Total hotspot per tahun",margin,detailY+2);
       detailY+=6;
       var yearlyHotspot=hotspotYearlyRows(context.record);
       if(yearlyHotspot.length){
@@ -870,9 +870,9 @@
       '</div><section class="yg-va-section"><h3>'+forestLossPeriodLabel()+'</h3>'+bars(record)+'</section>'+
       '<section class="yg-va-section"><h3>Luas irisan layer referensi</h3>'+referenceMetrics(record)+referenceBars(record,info.area)+'</section>'+
       '<section class="yg-va-section"><h3>Ringkasan hotspot</h3>'+hotspotSummaryBars(record)+hotspotStatusNote()+'</section>'+
-      '<section class="yg-va-section"><h3>Total hotspot per tahun (5 tahun terakhir)</h3>'+hotspotYearlyBars(record)+'</section>'+
+      '<section class="yg-va-section"><h3>Total hotspot per tahun</h3>'+hotspotYearlyBars(record)+'</section>'+
       (!record?'<div class="yg-va-note" style="margin-top:12px">'+(pendingAdministrativeAnalytics?"Data analisis untuk desa ini sedang diproses otomatis dan akan terisi bertahap setelah pipeline selesai.":"Angka luas hutan memerlukan analisis raster per polygon. Sistem tidak mengestimasi angka dari gambar tile.")+'</div>':"")+
-      '<div class="yg-va-source">Sumber: NASA FIRMS/VIIRS melalui GFW dan Global Forest Watch/Hansen. Hotspot adalah anomali panas, bukan konfirmasi kebakaran.</div>';
+      '<div class="yg-va-source">Sumber: NASA FIRMS/MODIS–VIIRS dan Global Forest Watch/Hansen. Hotspot adalah anomali panas, bukan konfirmasi kebakaran.</div>';
     element.hidden=false;
   }
 
@@ -932,7 +932,7 @@
       var box=L.DomUtil.create("div","yg-env-control");
       L.DomEvent.disableClickPropagation(box);
       box.innerHTML='<strong>Pemantauan lingkungan</strong>'+
-        toggle("hotspot","Hotspot NASA VIIRS (30 hari)")+
+        toggle("hotspot","Hotspot NASA MODIS–VIIRS (30 hari)")+
         toggle("cover","Tutupan lahan Indonesia 2017")+
         toggle("loss","Kehilangan tutupan")+
         toggle("alerts","Alert perubahan terbaru")+
@@ -1043,7 +1043,7 @@
     viirs.on("click",function(event){
       var props=event.layer&&event.layer.properties||{};
       L.popup().setLatLng(event.latlng).setContent(
-        "<strong>Hotspot NASA VIIRS</strong><br>"+
+        "<strong>Hotspot NASA MODIS–VIIRS</strong><br>"+
         esc(props.alert__date||props.acq_date||props.date||"30 hari terakhir")+
         "<br><small>Anomali panas, bukan konfirmasi kebakaran.</small>"
       ).openOn(map);

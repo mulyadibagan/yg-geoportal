@@ -24,7 +24,7 @@ const INCLUDE_SOCIAL_FORESTRY = process.env.FIRMS_INCLUDE_SOCIAL_FORESTRY !== "0
 const FIRMS_KEY = process.env.FIRMS_MAP_KEY || "";
 const DRY_RUN = process.env.FIRMS_DRY_RUN === "1";
 const MODE = process.env.FIRMS_MODE || "recent";
-const FIRMS_SOURCES = (process.env.FIRMS_SOURCES || "VIIRS_SNPP_SP,VIIRS_NOAA20_SP,VIIRS_SNPP_NRT,VIIRS_NOAA20_NRT,VIIRS_NOAA21_NRT")
+const FIRMS_SOURCES = (process.env.FIRMS_SOURCES || "MODIS_SP,VIIRS_SNPP_SP,VIIRS_NOAA20_SP")
   .split(",")
   .map((x) => x.trim())
   .filter(Boolean);
@@ -32,6 +32,7 @@ const CHUNK_DAYS = Number(process.env.FIRMS_CHUNK_DAYS || 5);
 const REQUEST_TIMEOUT_MS = Number(process.env.FIRMS_TIMEOUT_MS || 90000);
 const REQUEST_MAX_ATTEMPTS = Number(process.env.FIRMS_RETRY_ATTEMPTS || 4);
 const REQUEST_RETRY_BASE_MS = Number(process.env.FIRMS_RETRY_BASE_MS || 1200);
+const HISTORY_START_YEAR = Number(process.env.FIRMS_START_YEAR || 2021);
 const API_ROOT = "https://firms.modaps.eosdis.nasa.gov/api";
 
 if (!FIRMS_KEY && !DRY_RUN) {
@@ -346,7 +347,7 @@ function dateRangeChunks(startDate, endDate) {
 
 function initYearRows(currentYear) {
   const rows = [];
-  for (let year = currentYear - 4; year <= currentYear; year += 1) {
+  for (let year = Math.min(HISTORY_START_YEAR, currentYear); year <= currentYear; year += 1) {
     rows.push({ year: String(year), count: 0 });
   }
   return rows;
@@ -470,7 +471,7 @@ async function main() {
   const analysisBounds = combineBounds(unitItems);
   const now = new Date();
   const currentYear = now.getUTCFullYear();
-  const yearlyStart = new Date(Date.UTC(currentYear - 4, 0, 1));
+  const yearlyStart = new Date(Date.UTC(Math.min(HISTORY_START_YEAR, currentYear), 0, 1));
   const recentStart = new Date(now);
   recentStart.setUTCDate(recentStart.getUTCDate() - 29);
   recentStart.setUTCHours(0, 0, 0, 0);
@@ -514,8 +515,9 @@ async function main() {
   }
 
   const yearIndexByValue = new Map();
-  for (let i = 0; i < 5; i += 1) {
-    yearIndexByValue.set(currentYear - 4 + i, i);
+  const yearlyRows = initYearRows(currentYear);
+  for (let i = 0; i < yearlyRows.length; i += 1) {
+    yearIndexByValue.set(Number(yearlyRows[i].year), i);
   }
 
   const seenDetections = new Set();
@@ -632,7 +634,8 @@ async function main() {
       : previousViirs.historyUpdatedAt || null,
     mode: MODE,
     periodDays: [7, 30],
-    yearlyTrendYears: 5,
+    yearlyTrendYears: yearlyRows.length,
+    historyStartYear: Math.min(HISTORY_START_YEAR, currentYear),
     status: skippedChunks.length ? "partial" : "complete",
     skippedChunks,
     units: {

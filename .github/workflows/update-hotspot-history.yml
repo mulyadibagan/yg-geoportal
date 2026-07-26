@@ -30,8 +30,9 @@ jobs:
       - name: Update hotspot history
         env:
           FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
-          FIRMS_SOURCES: VIIRS_SNPP_SP
+          FIRMS_SOURCES: MODIS_SP,VIIRS_SNPP_SP,VIIRS_NOAA20_SP
           FIRMS_MODE: history
+          FIRMS_START_YEAR: "2021"
           FIRMS_CHUNK_DAYS: 5
           FIRMS_VILLAGE_GEOJSON: data/desa_intervensi.geojson
           FIRMS_PS_GEOJSON: data/PERHUTANAN_SOSIAL_RIAU.geojson
@@ -40,29 +41,32 @@ jobs:
             echo "FIRMS_MAP_KEY belum diset di GitHub Secrets."
             exit 1
           fi
+          node scripts/sync_intervention_villages.mjs
           node scripts/update_hotspot_firms.mjs
 
       - name: Commit and push if changed
         run: |
-          if git diff --quiet -- data/village-forest-analytics.json; then
+          if git diff --quiet -- data/village-forest-analytics.json data/desa_intervensi.geojson; then
             echo "No hotspot history changes to commit."
             exit 0
           fi
 
           cp data/village-forest-analytics.json /tmp/hotspot-results.json
-          git restore data/village-forest-analytics.json
+          cp data/desa_intervensi.geojson /tmp/desa-intervensi.geojson
+          git restore data/village-forest-analytics.json data/desa_intervensi.geojson
           git pull --rebase origin main
+          cp /tmp/desa-intervensi.geojson data/desa_intervensi.geojson
           node scripts/merge_hotspot_results.mjs \
             /tmp/hotspot-results.json \
             data/village-forest-analytics.json
 
-          if git diff --quiet -- data/village-forest-analytics.json; then
+          if git diff --quiet -- data/village-forest-analytics.json data/desa_intervensi.geojson; then
             echo "Latest main already contains these hotspot results."
             exit 0
           fi
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/village-forest-analytics.json
+          git add data/village-forest-analytics.json data/desa_intervensi.geojson
           git commit -m "chore(data): update FIRMS hotspot history"
           git push origin HEAD:main

@@ -50,7 +50,8 @@ jobs:
         env:
           FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
           FIRMS_MODE: history
-          FIRMS_SOURCES: VIIRS_SNPP_SP
+          FIRMS_SOURCES: MODIS_SP,VIIRS_SNPP_SP,VIIRS_NOAA20_SP
+          FIRMS_START_YEAR: "2021"
           FIRMS_CHUNK_DAYS: "5"
           FIRMS_VILLAGE_GEOJSON: data/batas_administrasi_desa_riau.geojson
           FIRMS_ANALYTICS_OUTPUT: data/administrative-village-analytics.json

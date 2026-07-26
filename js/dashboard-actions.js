@@ -6,7 +6,7 @@
     {
       match: "desa intervensi",
       layerIds: ["desa_intervensi"],
-      message: "Menampilkan 13 desa intervensi"
+      message: "Menampilkan seluruh desa intervensi"
     },
     {
       match: "area mangrove",
