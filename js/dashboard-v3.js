@@ -1700,25 +1700,52 @@
   }
 
   async function initDashboardData() {
+    const cached = readDashboardCache();
+    let fallbackRendered = false;
+
+    // Cache-first: tablet/ponsel menampilkan data terakhir tanpa menunggu
+    // respons Master Database. Sinkronisasi terbaru tetap berjalan di belakang.
+    if (cached && cached.data) {
+      try {
+        await renderDashboard(cached.data);
+        fallbackRendered = true;
+        setDashboardUpdatedMessage(
+          "Menampilkan data perangkat - menyinkronkan pembaruan terbaru..."
+        );
+      } catch (renderError) {
+        console.error(renderError);
+      }
+    }
+
+    // Perangkat baru belum mempunyai localStorage. Gunakan layer resmi WebGIS
+    // sebagai tampilan awal agar kartu Data Final Terkini tidak kosong.
+    if (!fallbackRendered) {
+      try {
+        await renderDashboard({
+          type: "FeatureCollection",
+          features: [],
+          generatedAt: new Date().toISOString()
+        });
+        fallbackRendered = true;
+        setDashboardUpdatedMessage(
+          "Menampilkan layer resmi WebGIS - menyinkronkan Master Database..."
+        );
+      } catch (fallbackError) {
+        console.error(fallbackError);
+      }
+    }
+
     try {
       const data = await requestDashboardDataWithRetry();
       await renderDashboard(data);
       writeDashboardCache(data);
     } catch (error) {
       console.error(error);
-      const cached = readDashboardCache();
-      if (cached && cached.data) {
-        try {
-          await renderDashboard(cached.data);
-          setDashboardUpdatedMessage(
-            "Sumber: data cadangan perangkat (offline fallback) "+
-            "- sinkron terakhir " +
-            new Date(cached.savedAt).toLocaleString("id-ID")
-          );
-          return;
-        } catch (renderError) {
-          console.error(renderError);
-        }
+      if (fallbackRendered) {
+        setDashboardUpdatedMessage(
+          "Data awal sudah tersedia. Sinkronisasi Master Database belum berhasil; akan dicoba lagi saat halaman dimuat ulang."
+        );
+        return;
       }
       setDashboardUpdatedMessage(
         "Data dashboard belum dapat dimuat di perangkat ini. Cek koneksi/DNS/AdBlock lalu muat ulang."
