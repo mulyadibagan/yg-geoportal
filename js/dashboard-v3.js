@@ -1690,7 +1690,7 @@
           }
           if (name === "Pertamina Foundation") {
             return '<button class="category-card dashboard-link funding-card" type="button" data-open-pertamina>' +
-              '<i class="category-icon" aria-hidden="true">🌱</i>' +
+              '<i class="category-icon funding-card-logo" aria-hidden="true"><img src="assets/pertamina-foundation-logo.svg" alt="" loading="lazy"></i>' +
               '<span>' + escapeHtml(name) + '</span>' +
               '<strong>2025–2026</strong>' +
               '<small>Siarang Arang · Rokan Hilir</small>' +
