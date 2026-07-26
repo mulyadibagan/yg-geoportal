@@ -117,6 +117,10 @@
         <i class="category-icon" aria-hidden="true"></i><span>Aliansi Kolibri</span>
         <strong>2025–2026</strong><small>Imbo Putui · lihat ringkasan program</small>
       </button>
+      <button class="category-card dashboard-link funding-card" type="button" data-open-pertamina>
+        <i class="category-icon" aria-hidden="true">🌱</i><span>Pertamina Foundation</span>
+        <strong>2025–2026</strong><small>Siarang Arang · Rokan Hilir</small>
+      </button>
       <button class="category-card dashboard-link funding-card funding-card-penabulu" type="button" data-open-penabulu>
         <i class="category-icon" aria-hidden="true"></i>
         <span class="funding-penabulu-name">Yayasan Penabulu</span>
@@ -448,6 +452,41 @@
   </section>
 </div>
 
+<div class="funding-modal" id="pertamina-dashboard" hidden>
+  <button class="funding-backdrop" type="button" data-close-pertamina aria-label="Tutup dashboard Pertamina Foundation"></button>
+  <section class="funding-dialog" role="dialog" aria-modal="true" aria-labelledby="pertamina-title">
+    <button class="funding-close" type="button" data-close-pertamina aria-label="Tutup">×</button>
+    <header class="funding-hero">
+      <span class="funding-badge">MITRA PENDANAAN</span>
+      <h2 id="pertamina-title">Pertamina Foundation</h2>
+      <div class="funding-meta">
+        <span><b>Periode Program</b>Desember 2025 – Maret 2026</span>
+        <span><b>Wilayah Program</b>Siarang Arang, Kabupaten Rokan Hilir</span>
+      </div>
+    </header>
+    <div class="funding-content">
+      <div class="funding-heading">
+        <div><span>Ringkasan dampak</span><h3>Penguatan KTH Siarang-arang Lestari</h3></div>
+        <p>Program mendukung perhutanan sosial, rehabilitasi lahan, peningkatan kapasitas, dan pengembangan usaha kelompok.</p>
+      </div>
+      <div class="funding-indicators">
+        <a href="webgis.html?donor=Pertamina%20Foundation&amp;search=Siarang%20Arang" class="funding-indicator"><i>🌳</i><strong>617 ha</strong><span>Luas HKm</span></a>
+        <button type="button" class="funding-indicator"><i>🎓</i><strong>5</strong><span>Kegiatan Pelatihan</span></button>
+        <button type="button" class="funding-indicator"><i>📋</i><strong>47</strong><span>Responden Survei Kepuasan</span></button>
+        <button type="button" class="funding-indicator"><i>👥</i><strong>1 KTH</strong><span>Kelompok Mitra</span></button>
+        <a href="webgis.html?donor=Pertamina%20Foundation&amp;search=MPTS" class="funding-indicator"><i>🌱</i><strong>50 ha</strong><span>Rencana Rehabilitasi MPTS</span></a>
+        <button type="button" class="funding-indicator"><i>🏡</i><strong>7 jenis</strong><span>Sarana dan Usaha Kelompok</span></button>
+      </div>
+      <div class="funding-detail" style="display:block;">
+        <h4>Sarana dan usaha yang terdokumentasi</h4>
+        <p>Transportasi kelompok, peternakan sapi, rumah kompos, oven pengolahan salai, kolam ikan air tawar, rumah penjaga, dan kebun tebu.</p>
+        <p><strong>Catatan data peserta:</strong> daftar hadir memuat orang yang mengikuti lebih dari satu pelatihan. Karena itu, dashboard tidak menjumlahkan seluruh baris kehadiran sebagai penerima manfaat unik.</p>
+        <p><a href="https://drive.google.com/file/d/1gNHjY_HHUffMNJHh3tkBlg4eJA8XhBqY/view?usp=drivesdk" target="_blank" rel="noopener noreferrer">Buka laporan sumber</a></p>
+      </div>
+    </div>
+  </section>
+</div>
+
 <footer class="site-footer">
   <div class="footer-inner">
     <span>© Yayasan Gambut</span>
@@ -455,8 +494,8 @@
   </div>
 </footer>
 
-<script src="js/dashboard-v3.js?v=20260727-dashboard-cleanup2"></script>
-  <script src="js/donor-program-status.js?v=20260726-ipems2"></script>
+<script src="js/dashboard-v3.js?v=20260727-pertamina1"></script>
+  <script src="js/donor-program-status.js?v=20260727-pertamina1"></script>
   <script src="js/dashboard-sdg.js?v=20260726-compact1"></script>
   <script src="js/i18n.js?v=20260727-dashboard-cleanup1"></script>
   <script src="js/content-config.js?v=20260723-content-admin1"></script>
