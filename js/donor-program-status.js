@@ -6,7 +6,8 @@
     gec: '[data-open-gec]',
     ppcf: '[data-open-ppcf]',
     kolibri: '[data-open-kolibri]',
-    penabulu: '[data-open-penabulu]'
+    penabulu: '[data-open-penabulu]',
+    'pertamina-foundation': '[data-open-pertamina]'
   };
   var donorRows = [];
   var refreshQueued = false;
@@ -40,7 +41,7 @@
   }
 
   function refresh() {
-    fetch('data/donors.json?v=20260726-ipems1', { cache: 'no-store' })
+    fetch('data/donors.json?v=20260727-pertamina1', { cache: 'no-store' })
       .then(function (response) { return response.json(); })
       .then(function (donors) {
         donorRows = donors;
