@@ -1624,6 +1624,7 @@
     const gecName = "Global Environment Centre";
     const kolibriName = "Aliansi Kolibri";
     const penabuluName = "Yayasan Penabulu";
+    const pertaminaName = "Pertamina Foundation";
     const donorEntries = Object.entries(donors)
       .sort((a, b) => b[1] - a[1]);
     if (!donorEntries.some(([name]) => name === aramcoName)) {
@@ -1640,6 +1641,9 @@
     }
     if (!donorEntries.some(([name]) => name === penabuluName)) {
       donorEntries.push([penabuluName, 0]);
+    }
+    if (!donorEntries.some(([name]) => name === pertaminaName)) {
+      donorEntries.push([pertaminaName, 0]);
     }
     document.getElementById("donor-grid").innerHTML = donorEntries.length
       ? donorEntries.map(([name, count]) => {
@@ -1682,6 +1686,14 @@
               '<span class="funding-penabulu-name">' + escapeHtml(name) + '</span>' +
               '<strong class="funding-penabulu-period">2025–2026</strong>' +
               '<small>Desa Temiang \u00b7 lihat ringkasan program</small>' +
+            '</button>';
+          }
+          if (name === "Pertamina Foundation") {
+            return '<button class="category-card dashboard-link funding-card" type="button" data-open-pertamina>' +
+              '<i class="category-icon" aria-hidden="true">🌱</i>' +
+              '<span>' + escapeHtml(name) + '</span>' +
+              '<strong>2025–2026</strong>' +
+              '<small>Siarang Arang · Rokan Hilir</small>' +
             '</button>';
           }
           const donorUrl = mapUrl({ search: donorSearchTerm(name) });
@@ -1780,6 +1792,7 @@
   const gecDetail = document.getElementById("gec-detail");
   const kolibriDashboard = document.getElementById("kolibri-dashboard");
   const penabuluDashboard = document.getElementById("penabulu-dashboard");
+  const pertaminaDashboard = document.getElementById("pertamina-dashboard");
   function openFundingDashboard(dashboard) {
     dashboard.hidden = false;
     document.body.classList.add("modal-open");
@@ -1805,6 +1818,9 @@
     if (event.target.closest("[data-open-penabulu]")) {
       openFundingDashboard(penabuluDashboard);
     }
+    if (event.target.closest("[data-open-pertamina]")) {
+      openFundingDashboard(pertaminaDashboard);
+    }
     if (event.target.closest("[data-close-ppcf]")) {
       closeFundingDashboard(ppcfDashboard, ppcfDetail);
     }
@@ -1819,6 +1835,9 @@
     }
     if (event.target.closest("[data-close-penabulu]")) {
       closeFundingDashboard(penabuluDashboard);
+    }
+    if (event.target.closest("[data-close-pertamina]")) {
+      closeFundingDashboard(pertaminaDashboard);
     }
     const detailButton = event.target.closest("[data-ppcf-detail]");
     if (detailButton) {
@@ -1855,6 +1874,9 @@
     }
     if (!penabuluDashboard.hidden) {
       closeFundingDashboard(penabuluDashboard);
+    }
+    if (!pertaminaDashboard.hidden) {
+      closeFundingDashboard(pertaminaDashboard);
     }
   });
 })();
