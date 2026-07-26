@@ -5,24 +5,89 @@
     "slug": "aramco",
     "period": "2023–2026",
     "focus": "Restorasi mangrove dan pelibatan masyarakat pesisir",
-    "locations": ["Buruk Bakul", "Kelapa Pati", "Sepahat", "Tanjung Kuras"],
+    "locations": [
+      "Buruk Bakul",
+      "Kelapa Pati",
+      "Sepahat",
+      "Tanjung Kuras"
+    ],
     "indicators": [
-      {"label":"Pohon mangrove ditanam","value":"42.545","progress":100},
-      {"label":"Restorasi mangrove","value":"13,1 ha","progress":100},
-      {"label":"Desa program","value":"4","progress":100},
-      {"label":"Peserta kegiatan","value":"1.200+","progress":100},
-      {"label":"Rumah bibit","value":"4","progress":100},
-      {"label":"Hybrid engineering","value":"300 m","progress":100}
+      {
+        "label": "Pohon mangrove ditanam",
+        "value": "42.545",
+        "progress": 100
+      },
+      {
+        "label": "Restorasi mangrove",
+        "value": "13,1 ha",
+        "progress": 100
+      },
+      {
+        "label": "Desa program",
+        "value": "4",
+        "progress": 100
+      },
+      {
+        "label": "Peserta kegiatan",
+        "value": "1.200+",
+        "progress": 100
+      },
+      {
+        "label": "Rumah bibit",
+        "value": "4",
+        "progress": 100
+      },
+      {
+        "label": "Hybrid engineering",
+        "value": "300 m",
+        "progress": 100
+      }
     ],
     "programs": [
-      {"id":"PRG-ARAMCO-PHASE-01","phase":"Fase 1","name":"","period":"2023–2024","status":"Selesai","summary":"","detailsPending":true},
-      {"id":"PRG-ARAMCO-PHASE-02","phase":"Fase 2","name":"","period":"2024–2025","status":"Selesai","summary":"","detailsPending":true},
-      {"id":"PRG-ARAMCO-PHASE-03","phase":"Fase 3","name":"","period":"2025–2026","status":"Aktif","summary":"","detailsPending":true}
+      {
+        "id": "PRG-ARAMCO-PHASE-01",
+        "phase": "Fase 1",
+        "name": "",
+        "period": "2023–2024",
+        "status": "Selesai",
+        "summary": "",
+        "detailsPending": true
+      },
+      {
+        "id": "PRG-ARAMCO-PHASE-02",
+        "phase": "Fase 2",
+        "name": "",
+        "period": "2024–2025",
+        "status": "Selesai",
+        "summary": "",
+        "detailsPending": true
+      },
+      {
+        "id": "PRG-ARAMCO-PHASE-03",
+        "phase": "Fase 3",
+        "name": "",
+        "period": "2025–2026",
+        "status": "Aktif",
+        "summary": "",
+        "detailsPending": true
+      }
     ],
     "timeline": [
-      {"year": "2023", "title": "Fase 1", "detail": "Awal penanaman dan penguatan kelompok masyarakat."},
-      {"year": "2024–2025", "title": "Fase 2", "detail": "Perluasan restorasi, rumah bibit, dan hybrid engineering."},
-      {"year": "2025–2026", "title": "Fase 3", "detail": "Empat desa, target 18.000 pohon, pelatihan, dan monitoring."}
+      {
+        "year": "2023",
+        "title": "Fase 1",
+        "detail": "Awal penanaman dan penguatan kelompok masyarakat."
+      },
+      {
+        "year": "2024–2025",
+        "title": "Fase 2",
+        "detail": "Perluasan restorasi, rumah bibit, dan hybrid engineering."
+      },
+      {
+        "year": "2025–2026",
+        "title": "Fase 3",
+        "detail": "Empat desa, target 18.000 pohon, pelatihan, dan monitoring."
+      }
     ]
   },
   {
@@ -31,14 +96,41 @@
     "slug": "gec",
     "period": "2021–Sekarang",
     "focus": "Pengelolaan gambut berkelanjutan dan agroforestri kopi Liberika",
-    "locations": ["Bengkalis", "Siak"],
+    "locations": [
+      "Bengkalis",
+      "Siak"
+    ],
     "indicators": [
-      {"label":"Bibit kopi ditanam","value":"3.400","progress":100},
-      {"label":"Bibit di persemaian","value":"2.000","progress":100},
-      {"label":"Sekat kanal terpetakan","value":"7","progress":100},
-      {"label":"FDRS terpetakan","value":"5","progress":100},
-      {"label":"Peserta pelatihan","value":"72","progress":100},
-      {"label":"Nursery training 2026","value":"1 / 2 desa","progress":50}
+      {
+        "label": "Bibit kopi ditanam",
+        "value": "3.400",
+        "progress": 100
+      },
+      {
+        "label": "Bibit di persemaian",
+        "value": "2.000",
+        "progress": 100
+      },
+      {
+        "label": "Sekat kanal terpetakan",
+        "value": "7",
+        "progress": 100
+      },
+      {
+        "label": "FDRS terpetakan",
+        "value": "5",
+        "progress": 100
+      },
+      {
+        "label": "Peserta pelatihan",
+        "value": "72",
+        "progress": 100
+      },
+      {
+        "label": "Nursery training 2026",
+        "value": "1 / 2 desa",
+        "progress": 50
+      }
     ],
     "programs": [
       {
@@ -49,7 +141,10 @@
         "duration": "10 months",
         "status": "Aktif",
         "implementingOrganization": "Yayasan Gambut",
-        "locations": ["Bengkalis", "Siak"],
+        "locations": [
+          "Bengkalis",
+          "Siak"
+        ],
         "goal": "Sustainable wetland management by communities in the Giam Siak Kecil–Bukit Batu and Kampar Peninsula landscape",
         "outcome": "Improved community-led sustainable peatland management in target villages of Bengkalis and Siak",
         "summary": "Peatland agroforestry, rewetting and fire prevention, community outreach, and institutional strengthening.",
@@ -59,17 +154,37 @@
             "id": "OUT-GEC-01",
             "name": "Peatland Agroforestry Development",
             "activities": [
-              {"id":"ACT-GEC-01","name":"Coffee seedling nursery training in Pedekik Village","indicator":"1 nursery training conducted involving local community members"},
-              {"id":"ACT-GEC-02","name":"Coffee seedling nursery training in Dayun Village","indicator":"1 nursery training conducted involving local community members"},
-              {"id":"ACT-GEC-03","name":"Coffee Agroforestry Establishment in Pedekik, Dayun, and Temiang Villages","indicator":"Minimum 3 ha planted across 3 villages"}
+              {
+                "id": "ACT-GEC-01",
+                "name": "Coffee seedling nursery training in Pedekik Village",
+                "indicator": "1 nursery training conducted involving local community members"
+              },
+              {
+                "id": "ACT-GEC-02",
+                "name": "Coffee seedling nursery training in Dayun Village",
+                "indicator": "1 nursery training conducted involving local community members"
+              },
+              {
+                "id": "ACT-GEC-03",
+                "name": "Coffee Agroforestry Establishment in Pedekik, Dayun, and Temiang Villages",
+                "indicator": "Minimum 3 ha planted across 3 villages"
+              }
             ]
           },
           {
             "id": "OUT-GEC-02",
             "name": "Peatland Rewetting & Fire Prevention System",
             "activities": [
-              {"id":"ACT-GEC-04","name":"Construction of canal block in Pedekik, Dayun, and Temiang Villages","indicator":"Canal blocks completed across 3 villages"},
-              {"id":"ACT-GEC-05","name":"Installation of FDRS board in Pedekik, Dayun, and Temiang Villages","indicator":"3 FDRS units installed and monitored across 3 villages"}
+              {
+                "id": "ACT-GEC-04",
+                "name": "Construction of canal block in Pedekik, Dayun, and Temiang Villages",
+                "indicator": "Canal blocks completed across 3 villages"
+              },
+              {
+                "id": "ACT-GEC-05",
+                "name": "Installation of FDRS board in Pedekik, Dayun, and Temiang Villages",
+                "indicator": "3 FDRS units installed and monitored across 3 villages"
+              }
             ]
           },
           {
@@ -77,8 +192,16 @@
             "name": "Video Dissemination & Digital Visibility",
             "outcome": "Community Outreach and Institutional Strengthening",
             "activities": [
-              {"id":"ACT-GEC-06","name":"Public campaign video production","indicator":"1 publication video produced and disseminated"},
-              {"id":"ACT-GEC-07","name":"Website hosting renewal","indicator":"Website remains active for 12 months"}
+              {
+                "id": "ACT-GEC-06",
+                "name": "Public campaign video production",
+                "indicator": "1 publication video produced and disseminated"
+              },
+              {
+                "id": "ACT-GEC-07",
+                "name": "Website hosting renewal",
+                "indicator": "Website remains active for 12 months"
+              }
             ]
           },
           {
@@ -86,16 +209,32 @@
             "name": "Governance and Accountability",
             "outcome": "Community Outreach and Institutional Strengthening",
             "activities": [
-              {"id":"ACT-GEC-08","name":"Financial audit of Yayasan Gambut","indicator":"Audit completed"}
+              {
+                "id": "ACT-GEC-08",
+                "name": "Financial audit of Yayasan Gambut",
+                "indicator": "Audit completed"
+              }
             ]
           }
         ]
       }
     ],
     "timeline": [
-      {"year": "2024", "title": "Implementasi awal", "detail": "Penanaman kopi, pelatihan pembibitan, sekat kanal, dan FDRS."},
-      {"year": "2025", "title": "Pemeliharaan", "detail": "Pemeliharaan kopi, pengembangan persemaian, serta penyusunan panduan."},
-      {"year": "2026", "title": "Perluasan program", "detail": "Coffee agroforestry, nursery training, dan monitoring hidrologi."}
+      {
+        "year": "2024",
+        "title": "Implementasi awal",
+        "detail": "Penanaman kopi, pelatihan pembibitan, sekat kanal, dan FDRS."
+      },
+      {
+        "year": "2025",
+        "title": "Pemeliharaan",
+        "detail": "Pemeliharaan kopi, pengembangan persemaian, serta penyusunan panduan."
+      },
+      {
+        "year": "2026",
+        "title": "Perluasan program",
+        "detail": "Coffee agroforestry, nursery training, dan monitoring hidrologi."
+      }
     ]
   },
   {
@@ -104,21 +243,61 @@
     "slug": "ppcf",
     "period": "2025–2026",
     "focus": "Pengelolaan gambut berkelanjutan berbasis masyarakat",
-    "locations": ["Pematang Duku"],
+    "locations": [
+      "Pematang Duku"
+    ],
     "indicators": [
-      {"label":"Restorasi gambut/agroforestri","value":"3,6 ha","progress":100},
-      {"label":"Bibit ditanam","value":"4.000","progress":100},
-      {"label":"Bibit di persemaian","value":"4.500","progress":100},
-      {"label":"Sekat kanal","value":"4","progress":100},
-      {"label":"FDRS","value":"3","progress":100},
-      {"label":"Peserta pelatihan","value":"119","progress":100}
+      {
+        "label": "Restorasi gambut/agroforestri",
+        "value": "3,6 ha",
+        "progress": 100
+      },
+      {
+        "label": "Bibit ditanam",
+        "value": "4.000",
+        "progress": 100
+      },
+      {
+        "label": "Bibit di persemaian",
+        "value": "4.500",
+        "progress": 100
+      },
+      {
+        "label": "Sekat kanal",
+        "value": "4",
+        "progress": 100
+      },
+      {
+        "label": "FDRS",
+        "value": "3",
+        "progress": 100
+      },
+      {
+        "label": "Peserta pelatihan",
+        "value": "119",
+        "progress": 100
+      }
     ],
     "programs": [
-      {"id":"PRG-PPCF-SPM-2025","name": "Community-based Sustainable Peatland Management", "period": "2025–2026", "status": "Selesai", "summary": "Pertanian tanpa bakar, agroforestri kopi Liberika, serta penguatan kapasitas kelompok."}
+      {
+        "id": "PRG-PPCF-SPM-2025",
+        "name": "Community-based Sustainable Peatland Management",
+        "period": "2025–2026",
+        "status": "Selesai",
+        "summary": "Pertanian tanpa bakar, agroforestri kopi Liberika, serta penguatan kapasitas kelompok."
+      }
     ],
     "timeline": [
-      {"year": "2025", "title": "Pelatihan gambut", "detail": "Pelatihan pengelolaan gambut dan pertanian tanpa bakar."},
-      {"year": "2025–2026", "title": "Agroforestri", "detail": "Pengembangan kopi Liberika dan pendampingan masyarakat."}
+      {
+        "year": "2025",
+        "title": "Pelatihan gambut",
+        "detail": "Pelatihan pengelolaan gambut dan pertanian tanpa bakar."
+      },
+      {
+        "year": "2025–2026",
+        "title": "Agroforestri",
+        "detail": "Pengembangan kopi Liberika dan pendampingan masyarakat."
+      }
     ]
   },
   {
@@ -127,21 +306,61 @@
     "slug": "kolibri",
     "period": "2025–2026",
     "focus": "Rehabilitasi lahan mineral dan penguatan Hutan Adat Imbo Putui",
-    "locations": ["Petapahan", "Imbo Putui"],
+    "locations": [
+      "Petapahan",
+      "Imbo Putui"
+    ],
     "indicators": [
-      {"label":"Luas area restorasi","value":"11,44 ha","progress":100},
-      {"label":"Bibit tertanam","value":"1.200","progress":100},
-      {"label":"Menara air","value":"1","progress":100},
-      {"label":"Plang restorasi","value":"1","progress":100},
-      {"label":"Kelangsungan hidup PUP 1","value":"98,07%","progress":98.07},
-      {"label":"Kelangsungan hidup PUP 2","value":"84,61%","progress":84.61}
+      {
+        "label": "Luas area restorasi",
+        "value": "11,44 ha",
+        "progress": 100
+      },
+      {
+        "label": "Bibit tertanam",
+        "value": "1.200",
+        "progress": 100
+      },
+      {
+        "label": "Menara air",
+        "value": "1",
+        "progress": 100
+      },
+      {
+        "label": "Plang restorasi",
+        "value": "1",
+        "progress": 100
+      },
+      {
+        "label": "Kelangsungan hidup PUP 1",
+        "value": "98,07%",
+        "progress": 98.07
+      },
+      {
+        "label": "Kelangsungan hidup PUP 2",
+        "value": "84,61%",
+        "progress": 84.61
+      }
     ],
     "programs": [
-      {"name": "Rehabilitasi Hutan Adat Imbo Putui", "period": "2025–2026", "status": "Berjalan", "summary": "Rehabilitasi vegetasi, plot ukur permanen, monitoring, dan penguatan kelembagaan."}
+      {
+        "name": "Rehabilitasi Hutan Adat Imbo Putui",
+        "period": "2025–2026",
+        "status": "Berjalan",
+        "summary": "Rehabilitasi vegetasi, plot ukur permanen, monitoring, dan penguatan kelembagaan."
+      }
     ],
     "timeline": [
-      {"year": "2025", "title": "Rehabilitasi", "detail": "Penanaman dan pembangunan infrastruktur pendukung."},
-      {"year": "2026", "title": "Monitoring", "detail": "Pengukuran pertumbuhan dan keberhasilan tanaman melalui plot ukur permanen."}
+      {
+        "year": "2025",
+        "title": "Rehabilitasi",
+        "detail": "Penanaman dan pembangunan infrastruktur pendukung."
+      },
+      {
+        "year": "2026",
+        "title": "Monitoring",
+        "detail": "Pengukuran pertumbuhan dan keberhasilan tanaman melalui plot ukur permanen."
+      }
     ]
   },
   {
@@ -150,21 +369,128 @@
     "slug": "penabulu",
     "period": "2025–2026",
     "focus": "Penguatan tata kelola, kelompok perempuan, dan mata pencaharian",
-    "locations": ["Temiang"],
+    "locations": [
+      "Temiang"
+    ],
     "indicators": [
-      {"label":"Perempuan penerima manfaat","value":"27","progress":100},
-      {"label":"Bibit kopi","value":"10.000","progress":100},
-      {"label":"Community micro-mill","value":"1","progress":100},
-      {"label":"Rumah pengering kopi","value":"1","progress":100},
-      {"label":"Sekat kanal","value":"2","progress":100},
-      {"label":"Titik monitoring hidrologi/api","value":"2","progress":100}
+      {
+        "label": "Perempuan penerima manfaat",
+        "value": "27",
+        "progress": 100
+      },
+      {
+        "label": "Bibit kopi",
+        "value": "10.000",
+        "progress": 100
+      },
+      {
+        "label": "Community micro-mill",
+        "value": "1",
+        "progress": 100
+      },
+      {
+        "label": "Rumah pengering kopi",
+        "value": "1",
+        "progress": 100
+      },
+      {
+        "label": "Sekat kanal",
+        "value": "2",
+        "progress": 100
+      },
+      {
+        "label": "Titik monitoring hidrologi/api",
+        "value": "2",
+        "progress": 100
+      }
     ],
     "programs": [
-      {"name": "Penguatan Pengelolaan Gambut Berbasis Masyarakat", "period": "2025–2026", "status": "Berjalan", "summary": "SOP, penguatan kelompok perempuan, peningkatan kapasitas, dan dukungan usaha masyarakat."}
+      {
+        "name": "Penguatan Pengelolaan Gambut Berbasis Masyarakat",
+        "period": "2025–2026",
+        "status": "Berjalan",
+        "summary": "SOP, penguatan kelompok perempuan, peningkatan kapasitas, dan dukungan usaha masyarakat."
+      }
     ],
     "timeline": [
-      {"year": "2025", "title": "Persiapan dan penguatan kelompok", "detail": "Penyusunan rencana kerja serta penguatan kelembagaan."},
-      {"year": "2026", "title": "Implementasi", "detail": "Pelatihan, SOP, dokumentasi keluaran, dan pengembangan usaha."}
+      {
+        "year": "2025",
+        "title": "Persiapan dan penguatan kelompok",
+        "detail": "Penyusunan rencana kerja serta penguatan kelembagaan."
+      },
+      {
+        "year": "2026",
+        "title": "Implementasi",
+        "detail": "Pelatihan, SOP, dokumentasi keluaran, dan pengembangan usaha."
+      }
     ]
+  },
+  {
+    "id": "DNR-PERTAMINA-FOUNDATION",
+    "name": "Pertamina Foundation",
+    "slug": "pertamina-foundation",
+    "period": "2025–2026",
+    "focus": "Penguatan perhutanan sosial, rehabilitasi lahan, kapasitas, dan usaha KTH Siarang-arang Lestari",
+    "locations": [
+      "Siarang Arang, Kabupaten Rokan Hilir"
+    ],
+    "indicators": [
+      {
+        "label": "Luas HKm",
+        "value": "617 ha",
+        "progress": 100
+      },
+      {
+        "label": "Kegiatan pelatihan",
+        "value": "5",
+        "progress": 100
+      },
+      {
+        "label": "Responden survei kepuasan",
+        "value": "47",
+        "progress": 100
+      },
+      {
+        "label": "Kelompok mitra",
+        "value": "1 KTH",
+        "progress": 100
+      },
+      {
+        "label": "Rencana rehabilitasi MPTS",
+        "value": "50 ha",
+        "progress": 100
+      },
+      {
+        "label": "Sarana dan usaha kelompok",
+        "value": "7 jenis",
+        "progress": 100
+      }
+    ],
+    "programs": [
+      {
+        "id": "PRG-PF-SIARANG-ARANG-2025",
+        "name": "Penguatan KTH Siarang-arang Lestari",
+        "period": "Desember 2025–Maret 2026",
+        "status": "Selesai",
+        "summary": "Penguatan perhutanan sosial, rehabilitasi MPTS, peningkatan kapasitas, survei kepuasan masyarakat, dan pengembangan sarana usaha kelompok."
+      }
+    ],
+    "timeline": [
+      {
+        "year": "2025",
+        "title": "Persiapan dan peningkatan kapasitas",
+        "detail": "Pendampingan kelompok dan rangkaian pelatihan dengan pre-test dan post-test."
+      },
+      {
+        "year": "2026",
+        "title": "Penguatan hasil program",
+        "detail": "Survei kepuasan masyarakat, rencana rehabilitasi MPTS, serta penguatan sarana dan usaha KTH."
+      }
+    ],
+    "sourceDocument": {
+      "title": "Laporan Kegiatan Siarang-arang Lestari",
+      "url": "https://drive.google.com/file/d/1gNHjY_HHUffMNJHh3tkBlg4eJA8XhBqY/view?usp=drivesdk",
+      "note": "Daftar hadir kegiatan mengandung peserta berulang; tidak digunakan sebagai jumlah penerima manfaat unik."
+    }
   }
 ]
