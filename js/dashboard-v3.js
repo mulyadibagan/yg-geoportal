@@ -1507,6 +1507,9 @@
           escapeHtml(PROGRAMME_BASELINES.snapshotDate) + ' · buka rincian indikator</div>' +
       '</a>';
     }).join("");
+    if (window.YG_I18N && typeof window.YG_I18N.translateElement === "function") {
+      window.YG_I18N.translateElement(document.querySelector(".hero-programmes"));
+    }
     const programmeModal = document.getElementById("programme-summary-modal");
     const closeProgrammeModal = () => {
       programmeModal.hidden = true;
