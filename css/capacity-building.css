@@ -29,6 +29,15 @@
 .prepost-session-card__links{display:flex;flex-wrap:wrap;gap:8px}
 .prepost-session-card__links a{font-size:12px;text-decoration:none;background:#0f7a5a;color:#fff;padding:6px 9px;border-radius:8px}
 .prepost-session-card__detail-link{background:#e8f6f0 !important;color:#0f6c52 !important;border:1px solid #b8d4c9;font-weight:700}
+.prepost-session-card--compact{display:flex;flex-direction:column;min-height:190px}
+.prepost-session-card--compact>p{margin-bottom:8px}
+.prepost-session-card__status{align-self:flex-start;margin-bottom:12px;padding:4px 8px;border-radius:999px;background:#f1f6f4;color:#49665d;font-size:11px;font-weight:700}
+.prepost-session-card__metrics--compact{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:auto}
+.prepost-session-card__metrics--compact span{display:grid;gap:3px;text-align:left}
+.prepost-session-card__metrics--compact small{font-size:10px;color:#60776f}
+.prepost-session-card__metrics--compact strong{font-size:15px;color:#0b6f52}
+.prepost-load-more{grid-column:1/-1;border:1px dashed #9fc8b8;background:#f7fcfa;color:#0b6f52;padding:12px;border-radius:10px;font-weight:700;cursor:pointer}
+.prepost-load-more small{display:block;margin-top:3px;color:#688078;font-weight:400}
 .capacity-prepost-manage .capacity-prepost__form-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .capacity-prepost-manage label{display:block;font-size:13px;font-weight:700;color:#1b3e34}
 .capacity-prepost-manage input{display:block;width:100%;margin-top:6px;padding:10px;border:1px solid #cdded7;border-radius:9px}

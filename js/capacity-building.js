@@ -4,6 +4,8 @@
   var API = 'https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec';
   var all = [];
   var prepostSessions = [];
+  var prepostSummaryData = null;
+  var prepostVisibleCount = 6;
 
   function text(v) { return v === null || v === undefined ? '' : String(v).trim(); }
   function num(v) { var n = Number(v); return isFinite(n) ? n : 0; }
@@ -279,6 +281,7 @@
   }
 
   function renderPrepostSummary(data) {
+    prepostSummaryData = data;
     var sessionsNode = document.getElementById('prepost-stat-sessions');
     var preNode = document.getElementById('prepost-stat-pre');
     var postNode = document.getElementById('prepost-stat-post');
@@ -289,11 +292,11 @@
     var conversionNode = document.getElementById('prepost-stat-conversion');
     var metaNode = document.getElementById('prepost-live-meta');
     var listNode = document.getElementById('prepost-session-list');
-    if (!sessionsNode || !preNode || !postNode || !gainNode || !listNode) return;
+    if (!sessionsNode || !postNode || !gainNode || !listNode) return;
 
     var totals = data && data.totals ? data.totals : { sessions: 0, preRespondents: 0, postRespondents: 0, avgGain: 0 };
     sessionsNode.textContent = Number(totals.sessions || 0).toLocaleString('id-ID');
-    preNode.textContent = Number(totals.preRespondents || 0).toLocaleString('id-ID');
+    if (preNode) preNode.textContent = Number(totals.preRespondents || 0).toLocaleString('id-ID');
     postNode.textContent = Number(totals.postRespondents || 0).toLocaleString('id-ID');
     gainNode.textContent = Number(totals.avgGain || 0).toLocaleString('id-ID');
     if (metaNode) {
@@ -347,7 +350,8 @@
       return;
     }
 
-    listNode.innerHTML = sessions.map(function (item) {
+    var visibleSessions = sessions.slice(0, prepostVisibleCount);
+    listNode.innerHTML = visibleSessions.map(function (item) {
       var session = item.session || item;
       var summary = item.summary || {};
       var preRespondents = Number(summary.preRespondents || 0);
@@ -368,42 +372,32 @@
         evidenceStatus = 'Data pre/post tersedia';
       }
 
-      var genderHtml = renderBreakdownInline(summary.postDemographics && summary.postDemographics.gender, 'Belum ada data gender');
-      var ageHtml = renderBreakdownInline(summary.postDemographics && summary.postDemographics.ageCategory, 'Belum ada data umur');
-      var delegateHtml = renderBreakdownInline(summary.postDemographics && summary.postDemographics.delegate, 'Belum ada data utusan');
-
       var detailUrl = buildLiveSessionDetailUrl(session.sessionId || '');
 
       return '' +
-        '<article class="prepost-session-card prepost-session-card--clickable" data-session-id="' + esc(session.sessionId || '') + '" tabindex="0" role="link" aria-label="Buka detail live session ' + esc(session.title || session.sessionId || 'sesi') + '">' +
+        '<article class="prepost-session-card prepost-session-card--compact prepost-session-card--clickable" data-session-id="' + esc(session.sessionId || '') + '" tabindex="0" role="link" aria-label="Buka detail live session ' + esc(session.title || session.sessionId || 'sesi') + '">' +
           '<div class="prepost-session-card__head">' +
             '<h4>' + esc(session.title || session.sessionId || 'Sesi') + '</h4>' +
             '<span>' + esc(session.activityDate || '-') + '</span>' +
           '</div>' +
           '<p>' + esc(session.location || session.village || '-') + '</p>' +
-          '<div class="prepost-session-card__metrics prepost-session-card__metrics--extended">' +
-            '<span>Pre responden: ' + preRespondents.toLocaleString('id-ID') + '</span>' +
-            '<span>Post responden: ' + postRespondents.toLocaleString('id-ID') + '</span>' +
-            '<span>Pre rata-rata: ' + formatPct(summary.preAvgPercent || 0, 1) + '</span>' +
-            '<span>Post rata-rata: ' + formatPct(summary.postAvgPercent || 0, 1) + '</span>' +
-            '<span>Gain poin: ' + Number(summary.gainPercentPoint || 0).toLocaleString('id-ID') + '</span>' +
-            '<span>Cakupan target: ' + formatPct(completionRate, 1) + '</span>' +
-            '<span>Soal pre/post: ' + preQuestions.toLocaleString('id-ID') + '/' + postQuestions.toLocaleString('id-ID') + '</span>' +
-            '<span>Status: ' + evidenceStatus + '</span>' +
-          '</div>' +
-          '<div class="prepost-session-card__demography">' +
-            '<p><strong>Gender post-test</strong>' + genderHtml + '</p>' +
-            '<p><strong>Kategori umur</strong>' + ageHtml + '</p>' +
-            '<p><strong>Utusan lembaga</strong>' + delegateHtml + '</p>' +
+          '<span class="prepost-session-card__status">' + esc(evidenceStatus) + '</span>' +
+          '<div class="prepost-session-card__metrics prepost-session-card__metrics--compact">' +
+            '<span><small>Responden</small><strong>' + postRespondents.toLocaleString('id-ID') + '</strong></span>' +
+            '<span><small>Nilai post</small><strong>' + formatPct(summary.postAvgPercent || 0, 1) + '</strong></span>' +
+            '<span><small>Cakupan</small><strong>' + formatPct(completionRate, 1) + '</strong></span>' +
           '</div>' +
           '<div class="prepost-session-card__links">' +
-            (session.sessionId ? '<a class="prepost-session-card__detail-link" href="' + esc(detailUrl) + '">Buka live session</a>' : '') +
-            (session.preFormUrl ? '<a href="' + esc(session.preFormUrl) + '" target="_blank" rel="noopener noreferrer">Link pre-test</a>' : '') +
-            (session.postFormUrl ? '<a href="' + esc(session.postFormUrl) + '" target="_blank" rel="noopener noreferrer">Link post-test</a>' : '') +
-            (session.postQrUrl ? '<a href="' + esc(session.postQrUrl) + '" target="_blank" rel="noopener noreferrer">QR post-test</a>' : '') +
+            (session.sessionId ? '<a class="prepost-session-card__detail-link" href="' + esc(detailUrl) + '">Buka detail sesi</a>' : '') +
           '</div>' +
         '</article>';
-    }).join('');
+    }).join('') +
+      (sessions.length > prepostVisibleCount
+        ? '<button type="button" class="prepost-load-more" data-prepost-load-more>Tampilkan ' +
+          Math.min(6, sessions.length - prepostVisibleCount).toLocaleString('id-ID') +
+          ' sesi berikutnya <small>' + prepostVisibleCount.toLocaleString('id-ID') + ' dari ' +
+          sessions.length.toLocaleString('id-ID') + ' ditampilkan</small></button>'
+        : '');
   }
 
   function initPrepostSessionCardNavigation() {
@@ -417,6 +411,12 @@
     }
 
     list.addEventListener('click', function (event) {
+      var loadMore = event.target && event.target.closest ? event.target.closest('[data-prepost-load-more]') : null;
+      if (loadMore) {
+        prepostVisibleCount += 6;
+        renderPrepostSummary(prepostSummaryData);
+        return;
+      }
       if (event.target && event.target.closest && event.target.closest('a')) return;
       var card = event.target && event.target.closest ? event.target.closest('.prepost-session-card--clickable') : null;
       if (!card) return;
