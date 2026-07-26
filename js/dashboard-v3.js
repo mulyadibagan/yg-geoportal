@@ -1681,7 +1681,7 @@
               '<i class="category-icon" aria-hidden="true">🌍</i>' +
               '<span class="funding-penabulu-name">' + escapeHtml(name) + '</span>' +
               '<strong class="funding-penabulu-period">2025–2026</strong>' +
-              '<small>Temiang Village \u00b7 lihat ringkasan program</small>' +
+              '<small>Desa Temiang \u00b7 lihat ringkasan program</small>' +
             '</button>';
           }
           const donorUrl = mapUrl({ search: donorSearchTerm(name) });
