@@ -815,7 +815,10 @@
 
   function showAnalysis(feature,layerId){
     var element=panel(),info=unitInfo(feature,layerId),record=recordFor(info);
-    if(!record&&layerId==="batas_administrasi_desa_riau"&&!unavailableAdministrativeKeys[info.key]){
+    var canLoadAdministrativeAnalytics=
+      info.type==="villages"&&
+      (layerId==="batas_administrasi_desa_riau"||layerId==="desa_intervensi");
+    if(!record&&canLoadAdministrativeAnalytics&&!unavailableAdministrativeKeys[info.key]){
       activeAdministrativeKey=info.key;
       document.getElementById("yg-va-title").textContent=info.title;
       document.getElementById("yg-va-subtitle").textContent=info.subtitle;
@@ -843,8 +846,8 @@
       });
       return;
     }
-    activeAdministrativeKey=layerId==="batas_administrasi_desa_riau"?info.key:"";
-    var pendingAdministrativeAnalytics=!record&&layerId==="batas_administrasi_desa_riau";
+    activeAdministrativeKey=canLoadAdministrativeAnalytics?info.key:"";
+    var pendingAdministrativeAnalytics=!record&&canLoadAdministrativeAnalytics;
     var kpis=reportKpis(info,record,pendingAdministrativeAnalytics);
     document.getElementById("yg-va-title").textContent=info.title;
     document.getElementById("yg-va-subtitle").textContent=info.subtitle;

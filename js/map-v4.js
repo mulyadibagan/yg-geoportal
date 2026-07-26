@@ -2760,6 +2760,111 @@ L.control.scale({
     return data;
   }
 
+  function mergeOfficialInterventionVillages(
+    data,
+    interventionVillages,
+    administrativeVillages
+  ) {
+    if (
+      !data ||
+      !Array.isArray(data.features) ||
+      !interventionVillages ||
+      !Array.isArray(interventionVillages.features)
+    ) {
+      return data;
+    }
+
+    const officialVillages = [...interventionVillages.features];
+    const merempanHulu = administrativeVillages &&
+      Array.isArray(administrativeVillages.features)
+      ? administrativeVillages.features.find(feature => {
+          const props = feature && feature.properties || {};
+          return normalizedMatchValue(props.WADMKD || props.NAMOBJ) ===
+            "merempan hulu";
+        })
+      : null;
+
+    if (merempanHulu) {
+      officialVillages.push({
+        ...merempanHulu,
+        properties: {
+          ...(merempanHulu.properties || {}),
+          Layer_ID: "desa_intervensi",
+          Source_Layer: "desa_intervensi",
+          Layer_Label: "Batas Desa Intervensi",
+          Nama_Objek: "Desa Intervensi Merempan Hulu",
+          Kategori: "Desa Intervensi",
+          Intervensi: "Penanaman Kopi",
+          Komoditas: "Kopi",
+          Status_Data: "Final",
+          Geometry_Source: "batas_administrasi_desa_riau"
+        }
+      });
+    }
+
+    const villageKeys = new Set();
+    officialVillages.forEach(feature => {
+      if (!feature.properties) feature.properties = {};
+      const props = feature.properties;
+      props.Layer_ID = "desa_intervensi";
+      props.Source_Layer = "desa_intervensi";
+      props.Layer_Label = "Batas Desa Intervensi";
+      props.Nama_Objek = props.Nama_Objek ||
+        "Desa Intervensi " + (props.WADMKD || props.NAMOBJ || "");
+
+      villageKeys.add([
+        normalizedMatchValue(props.WADMKD || props.NAMOBJ),
+        normalizedMatchValue(props.WADMKC),
+        normalizedMatchValue(props.WADMKK)
+      ].join("|"));
+    });
+
+    data.features = [
+      ...data.features.filter(feature => {
+        const props = feature && feature.properties || {};
+        if (
+          normalizedMatchValue(props.Layer_ID || props.Source_Layer) !==
+          "desa_intervensi"
+        ) {
+          return true;
+        }
+
+        const key = [
+          normalizedMatchValue(props.WADMKD || props.Desa || props.NAMOBJ),
+          normalizedMatchValue(props.WADMKC || props.Kecamatan),
+          normalizedMatchValue(props.WADMKK || props.Kabupaten)
+        ].join("|");
+        return !villageKeys.has(key);
+      }),
+      ...officialVillages
+    ];
+
+    return data;
+  }
+
+  async function loadOfficialInterventionVillages() {
+    const [interventionResponse, administrativeResponse] = await Promise.all([
+      fetch("data/desa_intervensi.geojson?v=" + Date.now(), {
+        cache: "no-store"
+      }),
+      fetch("data/batas_administrasi_desa_riau.geojson?v=" + Date.now(), {
+        cache: "no-store"
+      })
+    ]);
+
+    if (!interventionResponse.ok) {
+      throw new Error("HTTP desa intervensi " + interventionResponse.status);
+    }
+    if (!administrativeResponse.ok) {
+      throw new Error("HTTP batas administrasi " + administrativeResponse.status);
+    }
+
+    return Promise.all([
+      interventionResponse.json(),
+      administrativeResponse.json()
+    ]);
+  }
+
   async function loadOfficialMangrove() {
     const response = await fetch(
       "data/area_mangrove.geojson?v=" + Date.now(),
@@ -2825,6 +2930,18 @@ L.control.scale({
       console.warn("kopi.geojson tidak dapat dimuat", coffeePointError);
     }
 
+    try {
+      const [interventionVillages, administrativeVillages] =
+        await loadOfficialInterventionVillages();
+      mergeOfficialInterventionVillages(
+        data,
+        interventionVillages,
+        administrativeVillages
+      );
+    } catch (villageError) {
+      console.warn("Batas desa intervensi tidak dapat dimuat", villageError);
+    }
+
     initialize(data);
     return;
 
@@ -2859,6 +2976,20 @@ L.control.scale({
         console.warn(
           "kopi.geojson tidak dapat dimuat melalui jalur cadangan",
           coffeePointError
+        );
+      }
+      try {
+        const [interventionVillages, administrativeVillages] =
+          await loadOfficialInterventionVillages();
+        mergeOfficialInterventionVillages(
+          data,
+          interventionVillages,
+          administrativeVillages
+        );
+      } catch (villageError) {
+        console.warn(
+          "Batas desa intervensi tidak dapat dimuat melalui jalur cadangan",
+          villageError
         );
       }
       initialize(data);
