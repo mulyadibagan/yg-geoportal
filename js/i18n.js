@@ -154,6 +154,8 @@
       "Program Yayasan Gambut": "Yayasan Gambut Programmes",
       "Capaian Program": "Programme Achievements",
       "Mitra Pendanaan": "Funding Partners",
+      "Program aktif": "Active programmes",
+      "Program selesai": "Completed programmes",
       "MITRA PENDANAAN": "FUNDING PARTNER",
       "Wilayah Cakupan Program": "Programme Coverage Areas",
       "Restorasi Mangrove": "Mangrove Restoration",

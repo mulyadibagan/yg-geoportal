@@ -8,6 +8,8 @@
     kolibri: '[data-open-kolibri]',
     penabulu: '[data-open-penabulu]'
   };
+  var donorRows = [];
+  var refreshQueued = false;
 
   function isActive(program) {
     return /^(aktif|berjalan|direncanakan)$/i.test(String(program.status || '').trim());
@@ -30,20 +32,37 @@
       badge.className = 'donor-status-badge';
       card.appendChild(badge);
     }
-    badge.className = 'donor-status-badge ' + (active ? 'is-active' : 'is-complete');
-    badge.textContent = active ? 'Aktif · ' + activeCount + ' program' : 'Program selesai';
+    var badgeClass = 'donor-status-badge ' + (active ? 'is-active' : 'is-complete');
+    var badgeText = active ? 'Aktif · ' + activeCount + ' program' : 'Program selesai';
+    if (badge.className !== badgeClass) badge.className = badgeClass;
+    if (badge.textContent !== badgeText) badge.textContent = badgeText;
     card.dataset.programmeStatus = active ? 'active' : 'complete';
   }
 
   function refresh() {
     fetch('data/donors.json?v=20260726-ipems1', { cache: 'no-store' })
       .then(function (response) { return response.json(); })
-      .then(function (donors) { donors.forEach(applyStatus); })
+      .then(function (donors) {
+        donorRows = donors;
+        donorRows.forEach(applyStatus);
+      })
       .catch(function (error) { console.warn('Status program donor tidak dapat dimuat.', error); });
+  }
+
+  function applyCachedStatuses() {
+    if (refreshQueued) return;
+    refreshQueued = true;
+    window.requestAnimationFrame(function () {
+      refreshQueued = false;
+      donorRows.forEach(applyStatus);
+    });
   }
 
   document.addEventListener('DOMContentLoaded', function () {
     refresh();
-    window.setTimeout(refresh, 1200);
+    var grid = document.getElementById('donor-grid');
+    if (grid && window.MutationObserver) {
+      new MutationObserver(applyCachedStatuses).observe(grid, { childList: true, subtree: true });
+    }
   });
 })();
