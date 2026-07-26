@@ -26,7 +26,7 @@
       return '<article class="funding-indicator donor-page-indicator"><i aria-hidden="true">●</i><strong>' + esc(item.value) + '</strong><span>' + esc(item.label) + '</span><div class="impact-track" aria-label="Capaian ' + progress + '%"><b style="width:' + progress + '%"></b></div><small>' + progress.toLocaleString('id-ID', {maximumFractionDigits:1}) + '% capaian</small></article>';
     }).join('') || '<p>Belum ada indikator capaian.</p>';
     var programs = data.programs.map(function (item) {
-      return '<article><b>' + esc(item.status || 'Berjalan') + '</b><strong>' + esc(item.period || '') + '</strong><h3>' + esc(item.name) + '</h3><p>' + esc(item.summary || '') + '</p></article>';
+      return '<article><b>' + esc(item.status || 'Berjalan') + '</b><strong>' + esc(item.period || '') + '</strong><h3>' + esc([item.phase, item.name || 'Judul belum diisi'].filter(Boolean).join(' · ')) + '</h3><p>' + esc(item.summary || (item.detailsPending ? 'Keterangan program belum diisi.' : '')) + '</p></article>';
     }).join('') || '<p>Belum ada program.</p>';
     var timeline = data.timeline.map(function (item) {
       return '<article><b>' + esc(item.title) + '</b><strong>' + esc(item.year || '') + '</strong><p>' + esc(item.detail || '') + '</p></article>';

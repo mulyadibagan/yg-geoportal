@@ -7,18 +7,18 @@
   <link rel="icon" href="assets/logo-yayasan-gambut.png"/>
   <link rel="stylesheet" href="css/site-brand.css?v=20260720-program-dashboard1"/>
   <link rel="stylesheet" href="css/dashboard-v3.css?v=20260722-funding-logo1"/>
-  <link rel="stylesheet" href="css/admin-dashboard.css?v=20260722-admin1"/>
+  <link rel="stylesheet" href="css/admin-dashboard.css?v=20260726-ipems2"/>
   <link rel="stylesheet" href="css/language-switcher.css?v=20260721-all-pages1"/>
   <meta name="theme-color" content="#079cde">
 </head>
 <body>
-  <header class="site-header">
-    <div class="header-inner">
-      <a class="brand" href="index.html">
+  <header class="site-header yg-page-header">
+    <div class="header-inner yg-page-header__inner">
+      <a class="brand yg-page-brand" href="index.html">
         <img src="assets/logo-yayasan-gambut.png" alt="Logo Yayasan Gambut"/>
         <span><strong>YG GeoPortal</strong><span>Admin Dashboard</span></span>
       </a>
-      <nav class="nav">
+      <nav class="nav yg-page-nav">
         <a href="index.html">Beranda</a>
         <a href="monitoring.html">Monitoring</a>
         <a href="object-manager.html">Object Manager</a>
@@ -31,13 +31,110 @@
     <section class="hero hero-compact">
       <div class="hero-main">
         <div class="eyebrow">DASHBOARD ADMIN</div>
-        <h1>Statistik Pengunjung dan Konten Dinamis</h1>
-        <p class="hero-description">Lihat ringkasan kunjungan dan kelola teks yang tidak terhubung langsung dengan data spasial atau dataset utama.</p>
-        <p class="hero-tagline">Konten yang disimpan di browser dapat diuji di sini, lalu dikembangkan ke backend bila dibutuhkan.</p>
+        <h1>Verifikasi Capaian Donor</h1>
+        <p class="hero-description">Hubungkan evidence yang telah diterima ke capaian program donor yang masih aktif.</p>
+        <p class="hero-tagline">Mode uji lokal: assignment disimpan di browser ini dan belum mengubah database produksi.</p>
       </div>
     </section>
 
-    <section class="summary-grid admin-summary-grid" aria-label="Statistik admin">
+    <section class="admin-panel assignment-panel" aria-labelledby="assignment-title">
+      <div class="admin-column admin-column--wide">
+        <div class="section-heading">
+          <div><span class="eyebrow">EVIDENCE ASSIGNMENT</span><h2 id="assignment-title">Pilih capaian program aktif</h2></div>
+          <span id="assignment-mode" class="admin-mode-badge">LOCAL TEST</span>
+        </div>
+        <div class="admin-card">
+          <form id="evidence-assignment-form" class="assignment-form">
+            <label class="wide">Evidence
+              <select id="assignment-evidence" required><option value="">Memuat evidence...</option></select>
+            </label>
+            <label>Donor aktif
+              <select id="assignment-donor" required><option value="">Pilih donor</option></select>
+            </label>
+            <label>Program aktif
+              <select id="assignment-programme" required disabled><option value="">Pilih program</option></select>
+            </label>
+            <label class="wide">Capaian/indikator
+              <select id="assignment-indicator" required disabled><option value="">Pilih capaian</option></select>
+            </label>
+            <label class="wide">Catatan verifikasi
+              <textarea id="assignment-note" rows="3" placeholder="Catatan admin mengenai kesesuaian evidence dan capaian"></textarea>
+            </label>
+            <div class="wide assignment-actions">
+              <button type="submit" class="btn btn-outline">Verifikasi &amp; simpan assignment</button>
+              <span id="assignment-feedback" role="status"></span>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="admin-column admin-column--narrow">
+        <div class="section-heading"><div><span class="eyebrow">STATUS PROGRAM</span><h2>Donor tersedia</h2></div></div>
+        <div class="admin-card"><div id="admin-donor-status-list" class="admin-donor-list">Memuat program...</div></div>
+      </div>
+    </section>
+
+    <section class="admin-panel assignment-history-panel">
+      <div class="admin-column admin-column--wide">
+        <div class="section-heading"><div><span class="eyebrow">RIWAYAT LOKAL</span><h2>Evidence yang sudah dihubungkan</h2></div></div>
+        <div class="admin-card admin-card--list"><div id="assignment-history"></div></div>
+      </div>
+    </section>
+
+    <section class="admin-panel programme-admin-panel" aria-labelledby="programme-admin-title">
+      <div class="admin-column admin-column--wide">
+        <div class="section-heading"><div><span class="eyebrow">KONFIGURASI LOKAL</span><h2 id="programme-admin-title">Kelola program/project donor</h2></div></div>
+        <div class="admin-card">
+          <form id="programme-admin-form" class="assignment-form">
+            <label>Donor
+              <select id="programme-admin-donor" required><option value="">Pilih donor</option></select>
+            </label>
+            <label>Program/project
+              <select id="programme-admin-record"><option value="">Tambah program/project baru</option></select>
+            </label>
+            <label>Fase
+              <input id="programme-admin-phase" placeholder="Contoh: Fase 3">
+            </label>
+            <label>Judul program/project
+              <input id="programme-admin-name" required placeholder="Isi judul resmi program/project">
+            </label>
+            <label>Periode
+              <input id="programme-admin-period" required placeholder="2027–2028">
+            </label>
+            <label>Status
+              <select id="programme-admin-status"><option>Aktif</option><option>Direncanakan</option><option>Selesai</option></select>
+            </label>
+            <label>Organisasi pelaksana
+              <input id="programme-admin-organization" placeholder="Contoh: Yayasan Gambut">
+            </label>
+            <label>Lokasi project
+              <input id="programme-admin-locations" placeholder="Pisahkan lokasi dengan koma">
+            </label>
+            <label class="wide">Ringkasan
+              <textarea id="programme-admin-summary" rows="2" placeholder="Fokus project atau fase"></textarea>
+            </label>
+            <label class="wide">Goal
+              <textarea id="programme-admin-goal" rows="2" placeholder="Tujuan utama program/project"></textarea>
+            </label>
+            <div class="wide logframe-builder">
+              <div class="logframe-builder-head">
+                <div><span>LOGICAL FRAMEWORK</span><h3>Outcome, output, aktivitas, dan indikator</h3></div>
+                <button id="add-logframe-row" class="btn btn-light" type="button">+ Tambah baris</button>
+              </div>
+              <p class="logframe-help">Gunakan outcome dan output yang sama pada beberapa baris jika memiliki lebih dari satu aktivitas.</p>
+              <div id="logframe-rows" class="logframe-rows"></div>
+            </div>
+            <div class="wide assignment-actions">
+              <button class="btn btn-outline" type="submit">Simpan program/project</button>
+              <button id="reset-programme-config" class="btn btn-light" type="button">Reset perubahan lokal</button>
+              <span id="programme-admin-feedback" role="status"></span>
+            </div>
+          </form>
+        </div>
+        <div id="programme-register" class="programme-register"></div>
+      </div>
+    </section>
+
+    <section class="summary-grid admin-summary-grid legacy-admin-tools" aria-label="Statistik admin" hidden>
       <article>
         <span>Total kunjungan</span>
         <strong id="stat-total-visits">0</strong>
@@ -60,7 +157,7 @@
       </article>
     </section>
 
-    <section class="admin-panel">
+    <section class="admin-panel legacy-admin-tools" hidden>
       <div class="admin-column admin-column--wide">
         <div class="section-heading">
           <div><span class="eyebrow">Statistik Pengunjung</span><h2>Ringkasan kunjungan</h2></div>
@@ -103,6 +200,6 @@
     </section>
   </main>
 
-  <script src="js/admin-dashboard.js?v=20260722-admin1"></script>
+  <script src="js/admin-dashboard.js?v=20260726-ipems1"></script>
 </body>
 </html>

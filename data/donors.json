@@ -1,5 +1,6 @@
 [
   {
+    "id": "DNR-ARAMCO",
     "name": "Aramco Asia Singapore",
     "slug": "aramco",
     "period": "2023–2026",
@@ -14,7 +15,9 @@
       {"label":"Hybrid engineering","value":"300 m","progress":100}
     ],
     "programs": [
-      {"name": "Mangrove Tree Planting and Community Engagement Programme", "period": "2023–2026", "status": "Berjalan", "summary": "Penanaman mangrove, rumah bibit, hybrid engineering, pelatihan, dan pengembangan mata pencaharian."}
+      {"id":"PRG-ARAMCO-PHASE-01","phase":"Fase 1","name":"","period":"2023–2024","status":"Selesai","summary":"","detailsPending":true},
+      {"id":"PRG-ARAMCO-PHASE-02","phase":"Fase 2","name":"","period":"2024–2025","status":"Selesai","summary":"","detailsPending":true},
+      {"id":"PRG-ARAMCO-PHASE-03","phase":"Fase 3","name":"","period":"2025–2026","status":"Aktif","summary":"","detailsPending":true}
     ],
     "timeline": [
       {"year": "2023", "title": "Fase 1", "detail": "Awal penanaman dan penguatan kelompok masyarakat."},
@@ -23,6 +26,7 @@
     ]
   },
   {
+    "id": "DNR-GEC",
     "name": "Global Environment Centre",
     "slug": "gec",
     "period": "2021–Sekarang",
@@ -37,7 +41,56 @@
       {"label":"Nursery training 2026","value":"1 / 2 desa","progress":50}
     ],
     "programs": [
-      {"name": "Sustainable Peatland Management Programme", "period": "2024–2026", "status": "Berjalan", "summary": "Agroforestri kopi, sekat kanal, FDRS, nursery, serta peningkatan kapasitas masyarakat."}
+      {
+        "id": "PRG-GEC-2026-2027",
+        "name": "Sustainable Peatland Management and Community Livelihood Strengthening in Bengkalis and Siak, Riau, Indonesia",
+        "referenceLabel": "GEC May 2026–February 2027",
+        "period": "May 2026–February 2027",
+        "duration": "10 months",
+        "status": "Aktif",
+        "implementingOrganization": "Yayasan Gambut",
+        "locations": ["Bengkalis", "Siak"],
+        "goal": "Sustainable wetland management by communities in the Giam Siak Kecil–Bukit Batu and Kampar Peninsula landscape",
+        "outcome": "Improved community-led sustainable peatland management in target villages of Bengkalis and Siak",
+        "summary": "Peatland agroforestry, rewetting and fire prevention, community outreach, and institutional strengthening.",
+        "detailsPending": false,
+        "outputs": [
+          {
+            "id": "OUT-GEC-01",
+            "name": "Peatland Agroforestry Development",
+            "activities": [
+              {"id":"ACT-GEC-01","name":"Coffee seedling nursery training in Pedekik Village","indicator":"1 nursery training conducted involving local community members"},
+              {"id":"ACT-GEC-02","name":"Coffee seedling nursery training in Dayun Village","indicator":"1 nursery training conducted involving local community members"},
+              {"id":"ACT-GEC-03","name":"Coffee Agroforestry Establishment in Pedekik, Dayun, and Temiang Villages","indicator":"Minimum 3 ha planted across 3 villages"}
+            ]
+          },
+          {
+            "id": "OUT-GEC-02",
+            "name": "Peatland Rewetting & Fire Prevention System",
+            "activities": [
+              {"id":"ACT-GEC-04","name":"Construction of canal block in Pedekik, Dayun, and Temiang Villages","indicator":"Canal blocks completed across 3 villages"},
+              {"id":"ACT-GEC-05","name":"Installation of FDRS board in Pedekik, Dayun, and Temiang Villages","indicator":"3 FDRS units installed and monitored across 3 villages"}
+            ]
+          },
+          {
+            "id": "OUT-GEC-03",
+            "name": "Video Dissemination & Digital Visibility",
+            "outcome": "Community Outreach and Institutional Strengthening",
+            "activities": [
+              {"id":"ACT-GEC-06","name":"Public campaign video production","indicator":"1 publication video produced and disseminated"},
+              {"id":"ACT-GEC-07","name":"Website hosting renewal","indicator":"Website remains active for 12 months"}
+            ]
+          },
+          {
+            "id": "OUT-GEC-04",
+            "name": "Governance and Accountability",
+            "outcome": "Community Outreach and Institutional Strengthening",
+            "activities": [
+              {"id":"ACT-GEC-08","name":"Financial audit of Yayasan Gambut","indicator":"Audit completed"}
+            ]
+          }
+        ]
+      }
     ],
     "timeline": [
       {"year": "2024", "title": "Implementasi awal", "detail": "Penanaman kopi, pelatihan pembibitan, sekat kanal, dan FDRS."},
@@ -46,6 +99,7 @@
     ]
   },
   {
+    "id": "DNR-PPCF",
     "name": "Pan Pacific Conservation Foundation (PPCF)",
     "slug": "ppcf",
     "period": "2025–2026",
@@ -60,7 +114,7 @@
       {"label":"Peserta pelatihan","value":"119","progress":100}
     ],
     "programs": [
-      {"name": "Community-based Sustainable Peatland Management", "period": "2025–2026", "status": "Berjalan", "summary": "Pertanian tanpa bakar, agroforestri kopi Liberika, serta penguatan kapasitas kelompok."}
+      {"id":"PRG-PPCF-SPM-2025","name": "Community-based Sustainable Peatland Management", "period": "2025–2026", "status": "Selesai", "summary": "Pertanian tanpa bakar, agroforestri kopi Liberika, serta penguatan kapasitas kelompok."}
     ],
     "timeline": [
       {"year": "2025", "title": "Pelatihan gambut", "detail": "Pelatihan pengelolaan gambut dan pertanian tanpa bakar."},
@@ -68,6 +122,7 @@
     ]
   },
   {
+    "id": "DNR-KOLIBRI",
     "name": "Aliansi Kolibri",
     "slug": "kolibri",
     "period": "2025–2026",
@@ -90,6 +145,7 @@
     ]
   },
   {
+    "id": "DNR-PENABULU",
     "name": "Yayasan Penabulu",
     "slug": "penabulu",
     "period": "2025–2026",
