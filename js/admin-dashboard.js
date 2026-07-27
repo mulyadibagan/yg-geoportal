@@ -145,9 +145,29 @@
   function evidenceLabel(feature) {
     var props = feature.properties || {};
     var title = props.title || props.locationName || props.targetObjectName || 'Evidence tanpa judul';
-    var type = props.reportType || 'Evidence';
-    var village = props.village || '';
-    return [type, title, village].filter(Boolean).join(' · ');
+    var village = props.village || props.locationName || '';
+    var date = props.activityDate || props.receivedAt || props.submittedAt || '';
+    if (date && /^\d{4}-\d{2}-\d{2}/.test(String(date))) date = String(date).slice(0, 10);
+    return [title, village, date].filter(Boolean).join(' · ');
+  }
+
+  function evidenceGroup(feature) {
+    var props = feature.properties || {};
+    var type = String(props.reportType || props.geometryType || 'Evidence lainnya').trim();
+    var aliases = {
+      'Capacity Building': 'Peningkatan Kapasitas',
+      'Monitoring': 'Monitoring Lapangan',
+      'Titik Baru': 'Titik dan Infrastruktur Baru',
+      'Area/Poligon Baru': 'Area/Poligon Baru'
+    };
+    return aliases[type] || type;
+  }
+
+  function evidenceTimestamp(feature) {
+    var props = feature.properties || {};
+    var value = props.activityDate || props.receivedAt || props.submittedAt || '';
+    var time = Date.parse(value);
+    return isNaN(time) ? 0 : time;
   }
 
   function evidenceId(feature, index) {
@@ -198,11 +218,32 @@
     var available = EVIDENCE_DATA.filter(function (feature, index) {
       return !used[evidenceId(feature, index)];
     });
-    select.innerHTML = '<option value="">Pilih evidence yang akan diverifikasi</option>' +
-      available.slice(0, 100).map(function (feature, index) {
-        var originalIndex = EVIDENCE_DATA.indexOf(feature);
-        return '<option value="' + esc(evidenceId(feature, originalIndex)) + '">' +
-          esc(evidenceLabel(feature)) + '</option>';
+    var groups = {};
+    available.forEach(function (feature) {
+      var group = evidenceGroup(feature);
+      if (!groups[group]) groups[group] = [];
+      groups[group].push(feature);
+    });
+    var preferredOrder = ['Peningkatan Kapasitas', 'Monitoring Lapangan', 'Titik dan Infrastruktur Baru', 'Area/Poligon Baru'];
+    var groupNames = Object.keys(groups).sort(function (left, right) {
+      var leftIndex = preferredOrder.indexOf(left);
+      var rightIndex = preferredOrder.indexOf(right);
+      if (leftIndex < 0) leftIndex = preferredOrder.length;
+      if (rightIndex < 0) rightIndex = preferredOrder.length;
+      return leftIndex - rightIndex || left.localeCompare(right, 'id');
+    });
+    select.innerHTML = '<option value="">Pilih evidence yang akan diverifikasi (' + available.length + ' tersedia)</option>' +
+      groupNames.map(function (groupName) {
+        var features = groups[groupName].slice().sort(function (left, right) {
+          return evidenceTimestamp(right) - evidenceTimestamp(left) ||
+            evidenceLabel(left).localeCompare(evidenceLabel(right), 'id');
+        });
+        return '<optgroup label="' + esc(groupName + ' (' + features.length + ')') + '">' +
+          features.map(function (feature) {
+            var originalIndex = EVIDENCE_DATA.indexOf(feature);
+            return '<option value="' + esc(evidenceId(feature, originalIndex)) + '">' +
+              esc(evidenceLabel(feature)) + '</option>';
+          }).join('') + '</optgroup>';
       }).join('');
     if (!available.length) select.innerHTML += '<option disabled>Tidak ada evidence yang belum dihubungkan</option>';
   }
