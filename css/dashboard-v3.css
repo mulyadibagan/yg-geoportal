@@ -582,3 +582,31 @@ body.modal-open{overflow:hidden}
 /* Aramco Phase 3 workplan */
 .aramco-phase-detail{margin-top:34px;padding-top:30px;border-top:1px solid #dce7e1}.aramco-phase-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:16px}.aramco-phase-summary article{padding:16px;border:1px solid #cfe3da;border-radius:14px;background:#eef7f2}.aramco-phase-summary strong,.aramco-phase-summary span{display:block}.aramco-phase-summary strong{color:#087653;font-size:20px}.aramco-phase-summary span{margin-top:5px;color:#53655d;font-size:11px;line-height:1.4}.aramco-workplan-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.aramco-workplan-grid article{position:relative;padding:22px;border:1px solid #dce7e1;border-radius:17px;background:#fff}.aramco-workplan-grid article:last-child{grid-column:1/-1}.aramco-workplan-grid h4{margin:0 44px 4px 0;color:#38180b;font-size:18px}.aramco-workplan-grid p{margin:0 0 13px;color:#087653;font-size:12px;font-weight:800}.aramco-workplan-grid ul{margin:0;padding-left:18px;color:#53655d;font-size:12px;line-height:1.65}.aramco-workplan-grid li+li{margin-top:7px}.aramco-workplan-no{position:absolute;top:17px;right:18px;color:#acd2c3;font-size:20px;font-weight:900}
 @media(max-width:760px){.aramco-phase-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.aramco-workplan-grid{grid-template-columns:1fr}.aramco-workplan-grid article:last-child{grid-column:auto}}
+
+
+/* Aramco Phase 3 verified outputs */
+.aramco-output-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:14px 0 18px}
+.aramco-output-summary span{display:grid;gap:3px;padding:12px;border:1px solid #cfe5dd;border-radius:14px;background:#f3faf7;color:#45635a}
+.aramco-output-summary strong{font-size:1.25rem;color:#087653}
+.aramco-output-list{display:grid;gap:12px}
+.aramco-output-card{border:1px solid #d8e7e1;border-radius:15px;background:#fff;overflow:hidden}
+.aramco-output-card summary{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:14px 16px;cursor:pointer;background:#f5faf8;color:#233d34;font-weight:800}
+.aramco-output-card summary b{font-size:.78rem;color:#087653;white-space:nowrap}
+.aramco-output-card ul{list-style:none;margin:0;padding:0}
+.aramco-output-card li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 12px;padding:14px 16px;border-top:1px solid #e4eee9}
+.aramco-output-card li>div:first-child{display:grid;gap:4px}
+.aramco-output-card li strong{color:#2d443c}
+.aramco-output-card li span{color:#5b6b65;font-size:.9rem;line-height:1.5}
+.aramco-output-card li em{font-style:normal;font-size:.7rem;font-weight:800;letter-spacing:.05em;padding:5px 8px;border-radius:999px;align-self:start}
+.aramco-output-card li.is-verified em{background:#dff4ea;color:#087653}
+.aramco-output-card li.is-pending em{background:#f1f2f2;color:#68756f}
+.aramco-evidence-item{grid-column:1/-1;display:grid;gap:4px;padding:10px 12px;border-left:3px solid #087653;background:#f2faf6;border-radius:8px}
+.aramco-evidence-item b{color:#087653;font-size:.8rem}
+.aramco-evidence-item small{color:#5d6c66}
+.aramco-evidence-item a{color:#087653;font-weight:700;text-decoration:none;font-size:.85rem}
+@media(max-width:700px){
+  .aramco-output-summary{grid-template-columns:1fr}
+  .aramco-output-card summary{align-items:flex-start;flex-direction:column}
+  .aramco-output-card li{grid-template-columns:1fr}
+  .aramco-output-card li em{justify-self:start}
+}
