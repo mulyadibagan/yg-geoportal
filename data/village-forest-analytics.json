@@ -8405,25 +8405,29 @@
   "viirs": {
     "source": "NASA FIRMS area API (point-in-polygon)",
     "providers": [
-      "VIIRS_SNPP_NRT"
+      "MODIS_NRT",
+      "VIIRS_SNPP_NRT",
+      "VIIRS_NOAA20_NRT",
+      "VIIRS_NOAA21_NRT"
     ],
-    "updatedAt": "2026-07-26T03:54:59.225Z",
-    "recentUpdatedAt": "2026-07-26T03:54:59.225Z",
+    "updatedAt": "2026-07-27T04:01:53.816Z",
+    "recentUpdatedAt": "2026-07-27T04:01:53.816Z",
     "historyUpdatedAt": "2026-07-25T00:16:53.357Z",
     "mode": "recent",
     "periodDays": [
       7,
       30
     ],
-    "yearlyTrendYears": 5,
+    "yearlyTrendYears": 6,
     "status": "complete",
     "skippedChunks": [],
     "units": {
-      "villages": 13,
+      "villages": 14,
       "socialForestryFeatures": 149,
       "socialForestryUnits": 135,
-      "updated": 148
+      "updated": 149
     },
-    "notes": "Counts are deduplicated and derived from FIRMS points intersecting village and social-forestry polygons."
+    "notes": "Counts are deduplicated and derived from FIRMS points intersecting village and social-forestry polygons.",
+    "historyStartYear": 2021
   }
 }
