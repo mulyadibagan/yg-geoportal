@@ -3,7 +3,7 @@
 
   const API = "https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec?page=objects";
   const CALLBACK = "ygDashboardV3Callback";
-  const DASHBOARD_CACHE_KEY = "ygDashboardV3Cache_v3_20260727_aramco_output1";
+  const DASHBOARD_CACHE_KEY = "ygDashboardV3Cache_v3_20260727_aramco_output2";
   const DASHBOARD_CACHE_MAX_AGE_MS = 1000 * 60 * 60 * 24 * 7;
   const DASHBOARD_REQUEST_TIMEOUT_MS = 18000;
   const DASHBOARD_REQUEST_MAX_ATTEMPTS = 3;
@@ -908,6 +908,92 @@
       }).join('') + '</div>';
   }
 
+  async function loadAramcoPhase3Assignments() {
+    const container = document.getElementById("aramco-phase3-live-outputs");
+    if (!container) return;
+    try {
+      const results = await Promise.allSettled([
+        fetch("data/donors.json?v=20260727-aramco-phase3-output2", { cache: "no-store" })
+          .then(response => response.ok ? response.json() : []),
+        jsonp(API.replace("?page=objects", "?page=donor-programmes"))
+      ]);
+      const donors = results[0].status === "fulfilled" && Array.isArray(results[0].value)
+        ? results[0].value : [];
+      const remote = results[1].status === "fulfilled" ? results[1].value : {};
+      const donor = donors.find(item =>
+        String(item.slug || "").toLowerCase() === "aramco" ||
+        String(item.id || "") === "DNR-ARAMCO"
+      );
+      const programme = donor && (donor.programs || []).find(item =>
+        String(item.id || "") === "PRG-ARAMCO-PHASE-03" ||
+        /^fase\s*3$/i.test(String(item.phase || ""))
+      );
+      const assignments = Array.isArray(remote && remote.assignments)
+        ? remote.assignments.filter(row =>
+            String(row.donorId || "") === "DNR-ARAMCO" &&
+            String(row.programmeId || "") === "PRG-ARAMCO-PHASE-03"
+          ) : [];
+
+      if (!programme || !Array.isArray(programme.outputs)) {
+        container.innerHTML = '<div class="funding-heading"><div><span>Data terverifikasi</span>' +
+          '<h4>Output Fase 3 dari WebGIS</h4></div></div>' +
+          '<div class="dashboard-empty">Kerangka Output Fase 3 belum tersedia.</div>';
+        return;
+      }
+
+      const assignmentMap = {};
+      assignments.forEach(row => {
+        const key = String(row.indicatorId || "");
+        if (!assignmentMap[key]) assignmentMap[key] = [];
+        assignmentMap[key].push(row);
+      });
+      const verifiedActivities = new Set(assignments.map(row => String(row.indicatorId || ""))).size;
+      const totalActivities = programme.outputs.reduce((sum, output) =>
+        sum + (output.activities || []).length, 0);
+
+      const outputMarkup = programme.outputs.map(output => {
+        const activities = (output.activities || []).map(activity => {
+          const linked = assignmentMap[String(activity.id || "")] || [];
+          const evidence = linked.map(row => {
+            const meta = [row.evidenceTitle, row.verifiedAtLabel].filter(Boolean).join(" · ");
+            return '<div class="aramco-evidence-item"><b>✓ Evidence terverifikasi</b><span>' +
+              escapeHtml(meta) + '</span>' +
+              (row.note ? '<small>' + escapeHtml(row.note) + '</small>' : '') +
+              '<a href="' + escapeHtml(mapUrl({ search: row.evidenceId || row.evidenceTitle })) +
+              '">Lihat evidence di peta →</a></div>';
+          }).join("");
+          return '<li class="' + (linked.length ? 'is-verified' : 'is-pending') + '">' +
+            '<div><strong>' + escapeHtml(activity.name || "") + '</strong>' +
+            '<span>' + escapeHtml(activity.indicator || "") + '</span></div>' +
+            '<em>' + (linked.length ? 'TERVERIFIKASI' : 'BELUM DITAG') + '</em>' +
+            evidence + '</li>';
+        }).join("");
+        const outputVerified = (output.activities || []).filter(activity =>
+          (assignmentMap[String(activity.id || "")] || []).length > 0
+        ).length;
+        return '<details class="aramco-output-card" open><summary><span>' +
+          escapeHtml(output.name || "") + '</span><b>' + outputVerified + '/' +
+          (output.activities || []).length + ' terverifikasi</b></summary><ul>' +
+          activities + '</ul></details>';
+      }).join("");
+
+      container.innerHTML =
+        '<div class="funding-heading"><div><span>Data terverifikasi</span>' +
+        '<h4>Output Fase 3 dari WebGIS</h4></div><p>' +
+        verifiedActivities + ' dari ' + totalActivities +
+        ' aktivitas memiliki evidence yang telah ditag.</p></div>' +
+        '<div class="aramco-output-summary"><span><strong>' +
+        programme.outputs.length + '</strong> kelompok output</span><span><strong>' +
+        totalActivities + '</strong> aktivitas</span><span><strong>' +
+        verifiedActivities + '</strong> terverifikasi</span></div>' +
+        '<div class="aramco-output-list">' + outputMarkup + '</div>';
+    } catch (error) {
+      container.innerHTML = '<div class="funding-heading"><div><span>Data terverifikasi</span>' +
+        '<h4>Output Fase 3 dari WebGIS</h4></div></div>' +
+        '<div class="dashboard-empty">Data assignment belum dapat dimuat. Muat ulang halaman untuk mencoba kembali.</div>';
+    }
+  }
+
   async function renderDashboard(data) {
     if (!data || data.type !== "FeatureCollection" || !Array.isArray(data.features)) {
       document.getElementById("dashboard-updated").textContent =
@@ -929,7 +1015,7 @@
         .includes(status);
     }));
 
-    renderAramcoPhase3Outputs(active);
+    loadAramcoPhase3Assignments();
 
     const regencies = new Set();
     const villages = new Set();
