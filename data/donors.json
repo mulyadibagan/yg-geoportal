@@ -66,10 +66,35 @@
         "id": "PRG-ARAMCO-PHASE-03",
         "phase": "Fase 3",
         "name": "",
-        "period": "2025–2026",
+        "period": "Juli 2025–Desember 2026",
         "status": "Aktif",
-        "summary": "",
-        "detailsPending": true
+        "summary": "Rehabilitasi hingga 9 hektare mangrove dengan target 18.000 pohon di empat desa, pembangunan infrastruktur, peningkatan kapasitas, pengembangan mata pencaharian perempuan, pembelajaran lintas negara, perlindungan, monitoring, dan pelaporan.",
+        "detailsPending": false,
+        "targets": {
+          "rehabilitationAreaHa": 9,
+          "mangroveTrees": 18000,
+          "waveBreakerMeters": 100,
+          "communityNurseries": 2,
+          "learningExchangeParticipants": 16,
+          "learningExchangeDays": 4
+        },
+        "activityGroups": [
+          {
+            "area": "Kabupaten Bengkalis",
+            "locations": ["Buruk Bakul", "Kelapa Pati", "Sepahat"],
+            "activities": ["Rehabilitasi mangrove", "Pembangunan infrastruktur", "Peningkatan kapasitas", "Pengembangan mata pencaharian kelompok perempuan"]
+          },
+          {
+            "area": "Kabupaten Siak",
+            "locations": ["Tanjung Kuras"],
+            "activities": ["Rehabilitasi mangrove", "Pembangunan rumah bibit masyarakat", "Peningkatan kapasitas"]
+          },
+          {
+            "area": "Lintas wilayah",
+            "locations": ["Malaysia", "Bengkalis", "Siak"],
+            "activities": ["Pembelajaran lintas negara", "Perlindungan dan monitoring berbasis masyarakat", "Pelaporan program"]
+          }
+        ]
       }
     ],
     "timeline": [
@@ -84,9 +109,9 @@
         "detail": "Perluasan restorasi, rumah bibit, dan hybrid engineering."
       },
       {
-        "year": "2025–2026",
+        "year": "Juli 2025–Desember 2026",
         "title": "Fase 3",
-        "detail": "Empat desa, target 18.000 pohon, pelatihan, dan monitoring."
+        "detail": "Empat desa, target rehabilitasi hingga 9 hektare atau 18.000 pohon, infrastruktur masyarakat, pelatihan, pembelajaran lintas negara, perlindungan, monitoring, dan pengembangan mata pencaharian."
       }
     ]
   },
