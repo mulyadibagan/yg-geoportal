@@ -3,7 +3,7 @@
 
   const API = "https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec?page=objects";
   const CALLBACK = "ygDashboardV3Callback";
-  const DASHBOARD_CACHE_KEY = "ygDashboardV3Cache_v3_20260727";
+  const DASHBOARD_CACHE_KEY = "ygDashboardV3Cache_v3_20260727_aramco_output1";
   const DASHBOARD_CACHE_MAX_AGE_MS = 1000 * 60 * 60 * 24 * 7;
   const DASHBOARD_REQUEST_TIMEOUT_MS = 18000;
   const DASHBOARD_REQUEST_MAX_ATTEMPTS = 3;
@@ -825,6 +825,89 @@
     return feature;
   }
 
+  function nestedOutputProperties(props) {
+    const merged = Object.assign({}, props || {});
+    [
+      props && props.Properties_JSON,
+      props && props.targetFeatureProperties,
+      props && props.proposedChanges,
+      props && props.proposedInformation
+    ].forEach(value => Object.assign(merged, parseObject(value)));
+    return merged;
+  }
+
+  function splitOutputTags(value) {
+    if (Array.isArray(value)) {
+      return value.map(item => String(item || "").trim()).filter(Boolean);
+    }
+    return String(value || "")
+      .split(/[\n;,|]+/)
+      .map(item => item.trim())
+      .filter(Boolean);
+  }
+
+  function isAramcoPhase3(props) {
+    const merged = nestedOutputProperties(props);
+    const donor = donorOf(merged);
+    const phase = firstValue(merged, [
+      "Fase", "Phase", "Programme_Phase", "Program_Phase",
+      "fase", "phase", "programme_phase", "program_phase"
+    ]);
+    const context = [
+      phase,
+      firstValue(merged, ["Nama_Proyek", "Project_Name", "Nama_Program", "Program"]),
+      firstValue(merged, ["Keterangan", "description", "Ket"])
+    ].join(" ");
+    return donor === "Aramco Asia Singapore" &&
+      /(?:fase|phase)?\s*(?:3|iii)\b/i.test(context);
+  }
+
+  function renderAramcoPhase3Outputs(features) {
+    const container = document.getElementById("aramco-phase3-live-outputs");
+    if (!container) return;
+    const records = [];
+    const seen = new Set();
+    (features || []).forEach(feature => {
+      const props = (feature && feature.properties) || {};
+      if (!isAramcoPhase3(props)) return;
+      const merged = nestedOutputProperties(props);
+      const rawOutput = firstValue(merged, [
+        "Output", "Output_Tag", "Output_Tags", "Nama_Output",
+        "output", "outputTag", "outputTags", "nama_output"
+      ]);
+      const tags = splitOutputTags(rawOutput);
+      if (!tags.length) return;
+      const objectId = firstValue(merged, ["Object_ID", "objectId", "Target_Object_ID", "reportId", "Monitoring_ID"]);
+      const name = firstValue(merged, ["Nama_Objek", "title", "Nama_Kegiatan", "activityName", "locationName"]) || tags.join(" · ");
+      const village = firstValue(merged, ["Desa", "WADMKD", "NAMA_DESA", "village", "locationName"]);
+      const date = firstValue(merged, ["Tanggal", "activityDate", "Tanggal_Kegiatan", "publishedAt", "Updated_At"]);
+      const status = firstValue(merged, ["Status_Output", "Output_Status", "Project_Status", "Status_Objek", "status"]) || "Terdata";
+      const value = firstValue(merged, ["Nilai_Output", "Output_Value", "Jumlah_Tanam", "Jumlah", "Panjang_M", "Luas_Ha"]);
+      const unit = firstValue(merged, ["Satuan_Output", "Output_Unit", "Satuan", "Unit"]);
+      const key = [objectId, tags.join("|"), name].join("|").toLowerCase();
+      if (seen.has(key)) return;
+      seen.add(key);
+      records.push({ objectId, name, village, date, status, value, unit, tags });
+    });
+    const heading = '<div class="funding-heading"><div><span>Data terverifikasi</span><h4>Output Fase 3 dari WebGIS</h4></div><p>' +
+      (records.length ? formatNumber(records.length) + ' objek/output telah ditag Aramco Fase 3.' : 'Belum ada output Fase 3 yang terbaca dari tag pada Master Database.') +
+      '</p></div>';
+    if (!records.length) {
+      container.innerHTML = heading + '<div class="dashboard-empty">Pastikan donor menggunakan “Aramco” atau “Aramco Asia Singapore”, fase menggunakan “3/III”, dan field Output tidak kosong.</div>';
+      return;
+    }
+    container.innerHTML = heading + '<div class="funding-detail-grid">' +
+      records.map(record => {
+        const meta = [record.village, record.date, record.status].filter(Boolean).join(' · ');
+        const metric = [record.value, record.unit].filter(Boolean).join(' ');
+        const href = mapUrl({ donor: "aramco", search: record.objectId || record.name });
+        return '<article><span class="funding-badge">' + escapeHtml(record.tags.join(' · ')) + '</span><strong>' +
+          escapeHtml(record.name) + '</strong>' + (metric ? '<b>' + escapeHtml(metric) + '</b>' : '') +
+          (meta ? '<span>' + escapeHtml(meta) + '</span>' : '') +
+          '<a href="' + escapeHtml(href) + '">Lihat objek di peta →</a></article>';
+      }).join('') + '</div>';
+  }
+
   async function renderDashboard(data) {
     if (!data || data.type !== "FeatureCollection" || !Array.isArray(data.features)) {
       document.getElementById("dashboard-updated").textContent =
@@ -845,6 +928,8 @@
       return !["nonaktif", "ditolak", "menunggu verifikasi", "perlu perbaikan"]
         .includes(status);
     }));
+
+    renderAramcoPhase3Outputs(active);
 
     const regencies = new Set();
     const villages = new Set();
