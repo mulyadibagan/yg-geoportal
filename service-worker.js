@@ -1,10 +1,12 @@
-const CACHE_NAME = "yg-geoportal-v4-20260727-tablet-cachefirst1";
+const CACHE_NAME = "yg-geoportal-v4-20260727-capacity-session-pages1";
 
 const STATIC_ASSETS = [
   "./",
   "./index.html",
   "./webgis.html",
   "./monitoring.html",
+  "./capacity-session-create.html",
+  "./capacity-sessions.html",
   "./programme-detail.html",
   "./donor-detail.html",
   "./report.html",

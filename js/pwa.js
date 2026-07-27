@@ -28,7 +28,7 @@
 
     window.addEventListener("load", () => {
       navigator.serviceWorker
-        .register("./service-worker.js?v=20260727-tablet-cachefirst1")
+        .register("./service-worker.js?v=20260727-capacity-session-pages1")
         .then(registration => {
           console.log("Service worker terdaftar:", registration);
           registration.update();
@@ -37,7 +37,7 @@
     });
 
     navigator.serviceWorker.addEventListener("controllerchange", () => {
-      const reloadKey = "yg-sw-tablet-cachefirst1";
+      const reloadKey = "yg-sw-capacity-session-pages1";
       if (sessionStorage.getItem(reloadKey)) return;
       sessionStorage.setItem(reloadKey, "done");
       window.location.reload();

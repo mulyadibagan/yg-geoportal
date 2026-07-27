@@ -53,6 +53,7 @@
 }
 
 .capacity-prepost-manage select{display:block;width:100%;margin-top:6px;padding:10px;border:1px solid #cdded7;border-radius:9px;background:#fff}
+.dashboard-view-tabs a{box-sizing:border-box;border:1px solid #cfe0da;background:#fff;color:#163b31;border-radius:999px;padding:11px 18px;font:700 15px inherit;text-decoration:none;white-space:nowrap}
 
 .prepost-participant-data{margin-top:12px;padding:10px 12px;border:1px dashed #b8d4c9;background:#f6fcf9;border-radius:10px;display:grid;gap:4px}
 .prepost-participant-data strong{color:#154737;font-size:13px}
