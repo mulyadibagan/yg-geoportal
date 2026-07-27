@@ -521,7 +521,7 @@
       </div>
       <div class="funding-indicators">
         <a href="webgis.html?donor=Pertamina%20Foundation&amp;search=Siarang%20Arang" class="funding-indicator"><i>🌳</i><strong>617 ha</strong><span>Luas HKm</span></a>
-        <button type="button" class="funding-indicator"><i>🎓</i><strong>5</strong><span>Kegiatan Pelatihan</span></button>
+        <button type="button" class="funding-indicator"><i>🎓</i><strong data-pertamina-training-count>5</strong><span>Kegiatan Pelatihan Ter-tag</span></button>
         <button type="button" class="funding-indicator"><i>📋</i><strong>47</strong><span>Responden Survei Kepuasan</span></button>
         <button type="button" class="funding-indicator"><i>👥</i><strong>1 KTH</strong><span>Kelompok Mitra</span></button>
         <a href="webgis.html?donor=Pertamina%20Foundation&amp;search=MPTS" class="funding-indicator"><i>🌱</i><strong>50 ha</strong><span>Rencana Rehabilitasi MPTS</span></a>
@@ -538,10 +538,19 @@
         <p class="pertamina-detail-intro">Program berlangsung pada Desember 2025–Maret 2026 bersama KTH Siarang-arang Lestari di Kabupaten Rokan Hilir. Pendampingan menghubungkan penguatan kelembagaan, peningkatan keterampilan, perencanaan rehabilitasi lahan, dan pengembangan usaha kelompok.</p>
         <div class="pertamina-detail-grid">
           <article><span class="pertamina-detail-number">617 ha · 1 KTH</span><strong>Cakupan perhutanan sosial</strong><p>Program mendampingi satu kelompok mitra pada wilayah kelola HKm seluas 617 hektare di Siarang Arang.</p></article>
-          <article><span class="pertamina-detail-number">5 kegiatan</span><strong>Peningkatan kapasitas</strong><p>Pelatihan diarahkan untuk memperkuat keterampilan teknis, pengelolaan kelompok, dan pengembangan kegiatan usaha KTH.</p></article>
+          <article><span class="pertamina-detail-number"><span data-pertamina-training-count>5</span> kegiatan</span><strong>Peningkatan kapasitas</strong><p>Pelatihan diarahkan untuk memperkuat keterampilan teknis, pengelolaan kelompok, dan pengembangan kegiatan usaha KTH.</p></article>
           <article><span class="pertamina-detail-number">50 ha</span><strong>Rencana rehabilitasi MPTS</strong><p>Luasan ini merupakan rencana rehabilitasi dengan tanaman multiguna (MPTS), bukan angka realisasi penanaman.</p></article>
           <article><span class="pertamina-detail-number">47 responden</span><strong>Survei kepuasan masyarakat</strong><p>Responden memberikan umpan balik untuk menilai penerimaan dan manfaat kegiatan menurut masyarakat.</p></article>
         </div>
+        <section class="pertamina-evidence-timeline" aria-labelledby="pertamina-evidence-timeline-title">
+          <div class="pertamina-evidence-heading">
+            <div><span class="pertamina-detail-eyebrow">Evidence terverifikasi</span><h5 id="pertamina-evidence-timeline-title">Timeline Pelatihan Pertamina</h5></div>
+            <span id="pertamina-evidence-status">Memuat tagging...</span>
+          </div>
+          <div id="pertamina-evidence-list" class="pertamina-evidence-list">
+            <p class="pertamina-evidence-empty">Memuat kegiatan yang telah di-tag dari Dashboard Admin.</p>
+          </div>
+        </section>
         <section class="pertamina-facilities" aria-labelledby="pertamina-facilities-title">
           <h5 id="pertamina-facilities-title">7 jenis sarana dan usaha kelompok</h5>
           <ul><li>Transportasi kelompok</li><li>Peternakan sapi</li><li>Rumah kompos</li><li>Oven pengolahan salai</li><li>Kolam ikan air tawar</li><li>Rumah penjaga</li><li>Kebun tebu</li></ul>
@@ -565,6 +574,7 @@
 
 <script src="js/dashboard-v3.js?v=20260727-aramco-phase3-output2"></script>
   <script src="js/donor-program-status.js?v=20260727-pertamina1"></script>
+  <script src="js/pertamina-timeline.js?v=20260727-live-tag1"></script>
   <script src="js/dashboard-sdg.js?v=20260726-compact1"></script>
   <script src="js/i18n.js?v=20260727-dashboard-cleanup1"></script>
   <script src="js/content-config.js?v=20260723-content-admin1"></script>
