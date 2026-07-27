@@ -33,6 +33,12 @@
     return (donor.programs || []).filter(isAssignable);
   }
 
+  function taggableProgrammes(donor) {
+    return (donor.programs || []).filter(function (programme) {
+      return (programme.outputs || []).length || isAssignable(programme);
+    });
+  }
+
   function localProgrammeConfig() {
     try { return JSON.parse(localStorage.getItem(PROGRAMME_CONFIG_KEY) || '[]'); }
     catch (error) { return []; }
@@ -117,10 +123,12 @@
 
   function renderDonors() {
     var donorSelect = document.getElementById('assignment-donor');
-    var activeDonors = DONOR_DATA.filter(function (donor) { return activeProgrammes(donor).length; });
-    donorSelect.innerHTML = '<option value="">Pilih donor aktif</option>' +
-      activeDonors.map(function (donor) {
-        return '<option value="' + esc(donor.id || idFrom(donor.name)) + '">' + esc(donor.name) + '</option>';
+    var taggableDonors = DONOR_DATA.filter(function (donor) { return taggableProgrammes(donor).length; });
+    donorSelect.innerHTML = '<option value="">Pilih donor</option>' +
+      taggableDonors.map(function (donor) {
+        var hasActive = activeProgrammes(donor).length > 0;
+        return '<option value="' + esc(donor.id || idFrom(donor.name)) + '">' +
+          esc(donor.name + (hasActive ? ' · aktif' : ' · selesai / historis')) + '</option>';
       }).join('');
 
     document.getElementById('admin-donor-status-list').innerHTML = DONOR_DATA.map(function (donor) {
@@ -144,7 +152,7 @@
     var donor = selectedDonor();
     var select = document.getElementById('assignment-programme');
     var indicator = document.getElementById('assignment-indicator');
-    var programmes = donor ? activeProgrammes(donor) : [];
+    var programmes = donor ? taggableProgrammes(donor) : [];
     select.disabled = !programmes.length;
     var options = [];
     programmes.forEach(function (programme) {
@@ -157,10 +165,14 @@
           });
         });
       } else {
-        options.push({ id: programmeId, label: programmeDisplayName(programme) + ' · ' + (programme.period || '') });
+        options.push({
+          id: programmeId,
+          label: programmeDisplayName(programme) + ' · ' + (programme.period || '') +
+            ' · ' + (isActive(programme) ? 'Aktif' : 'Selesai / historis')
+        });
       }
     });
-    select.innerHTML = '<option value="">Pilih program/fase aktif</option>' + options.map(function (item) {
+    select.innerHTML = '<option value="">Pilih program/fase</option>' + options.map(function (item) {
       return '<option value="' + esc(item.id) + '">' + esc(item.label) + '</option>';
     }).join('');
     indicator.disabled = true;
@@ -197,7 +209,7 @@
     var match = null;
     (donor.programs || []).some(function (programme) {
       var id = String(programme.id || ('PRG-' + idFrom(donor.name + '-' + programme.name)));
-      if (id === programmeId && isAssignable(programme)) {
+      if (id === programmeId && ((programme.outputs || []).length || isAssignable(programme))) {
         match = programme;
         return true;
       }
@@ -268,8 +280,8 @@
     });
     var feedback = document.getElementById('assignment-feedback');
 
-    if (!evidence || !donor || !programme || !indicator || !isActive(programme)) {
-      feedback.textContent = 'Lengkapi pilihan evidence, donor, program aktif, dan capaian.';
+    if (!evidence || !donor || !programme || !indicator) {
+      feedback.textContent = 'Lengkapi pilihan evidence, donor, program/fase, dan capaian.';
       return;
     }
 
@@ -510,7 +522,7 @@
   function init() {
     bind();
     Promise.all([
-      fetch('data/donors.json?v=20260726-ipems1', { cache: 'no-store' }).then(function (response) { return response.json(); }),
+      fetch('data/donors.json?v=20260727-output-tag1', { cache: 'no-store' }).then(function (response) { return response.json(); }),
       jsonp(API + '?page=public-reports').catch(function () { return { features: [] }; })
     ]).then(function (results) {
       DONOR_DATA = results[0] || [];

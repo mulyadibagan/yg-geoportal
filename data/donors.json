@@ -94,6 +94,67 @@
             "locations": ["Malaysia", "Bengkalis", "Siak"],
             "activities": ["Pembelajaran lintas negara", "Perlindungan dan monitoring berbasis masyarakat", "Pelaporan program"]
           }
+        ],
+        "outputs": [
+          {
+            "id": "OUT-ARAMCO-P3-01",
+            "name": "Mangrove Rehabilitation",
+            "activities": [
+              {"id": "ACT-ARAMCO-P3-REH-BB", "name": "Mangrove rehabilitation in Buruk Bakul", "indicator": "Up to 2 ha / 4,000 trees"},
+              {"id": "ACT-ARAMCO-P3-REH-KP", "name": "Mangrove rehabilitation in Kelapa Pati", "indicator": "Up to 3 ha / 6,000 trees"},
+              {"id": "ACT-ARAMCO-P3-REH-SP", "name": "Mangrove rehabilitation in Sepahat", "indicator": "Up to 2 ha / 4,000 trees"},
+              {"id": "ACT-ARAMCO-P3-REH-TK", "name": "Mangrove rehabilitation in Tanjung Kuras", "indicator": "Up to 2 ha / 4,000 trees"}
+            ]
+          },
+          {
+            "id": "OUT-ARAMCO-P3-02",
+            "name": "Infrastructure Development",
+            "activities": [
+              {"id": "ACT-ARAMCO-P3-WAVE", "name": "Nibung-based wave breaker in Kelapa Pati", "indicator": "100 metres constructed"},
+              {"id": "ACT-ARAMCO-P3-NURSERY-SP", "name": "Community nursery in Sepahat", "indicator": "1 nursery established with care and maintenance training"},
+              {"id": "ACT-ARAMCO-P3-NURSERY-TK", "name": "Community nursery in Tanjung Kuras", "indicator": "1 nursery established with care and maintenance training"}
+            ]
+          },
+          {
+            "id": "OUT-ARAMCO-P3-03",
+            "name": "Capacity Building",
+            "activities": [
+              {"id": "ACT-ARAMCO-P3-CB-BENGKALIS", "name": "Advanced mangrove management training in Bengkalis", "indicator": "Sekat Bakau, Paghet Segagah, and Sepahat Hijau members trained"},
+              {"id": "ACT-ARAMCO-P3-CB-SIAK", "name": "Advanced mangrove management training in Siak", "indicator": "Belatram members trained"}
+            ]
+          },
+          {
+            "id": "OUT-ARAMCO-P3-04",
+            "name": "Livelihood Development for Women Groups",
+            "activities": [
+              {"id": "ACT-ARAMCO-P3-WOMEN-TRAINING", "name": "Mangrove-based economic training", "indicator": "Economic training conducted"},
+              {"id": "ACT-ARAMCO-P3-WOMEN-MARKET", "name": "Product and local market development", "indicator": "Products and local market developed"}
+            ]
+          },
+          {
+            "id": "OUT-ARAMCO-P3-05",
+            "name": "Cross-Border Learning Exchange",
+            "activities": [
+              {"id": "ACT-ARAMCO-P3-EXCHANGE", "name": "Peer learning visit to Malaysia", "indicator": "Approximately 16 participants complete a 4-day programme"}
+            ]
+          },
+          {
+            "id": "OUT-ARAMCO-P3-06",
+            "name": "Protection & Monitoring",
+            "activities": [
+              {"id": "ACT-ARAMCO-P3-PATROL", "name": "Community-based mangrove patrol and monitoring", "indicator": "Community patrol and monitoring established"},
+              {"id": "ACT-ARAMCO-P3-PREVENTION", "name": "Encroachment and pollution prevention", "indicator": "Prevention measures implemented"}
+            ]
+          },
+          {
+            "id": "OUT-ARAMCO-P3-07",
+            "name": "Reporting",
+            "activities": [
+              {"id": "ACT-ARAMCO-P3-QUARTERLY", "name": "Quarterly email updates", "indicator": "Quarterly updates submitted"},
+              {"id": "ACT-ARAMCO-P3-PROGRESS", "name": "Progress report", "indicator": "1 progress report submitted"},
+              {"id": "ACT-ARAMCO-P3-FINAL", "name": "Final project report", "indicator": "1 final report submitted"}
+            ]
+          }
         ]
       }
     ],
@@ -497,7 +558,48 @@
         "name": "Penguatan KTH Siarang-arang Lestari",
         "period": "Desember 2025–Maret 2026",
         "status": "Selesai",
-        "summary": "Penguatan perhutanan sosial, rehabilitasi MPTS, peningkatan kapasitas, survei kepuasan masyarakat, dan pengembangan sarana usaha kelompok."
+        "summary": "Penguatan perhutanan sosial, rehabilitasi MPTS, peningkatan kapasitas, survei kepuasan masyarakat, dan pengembangan sarana usaha kelompok.",
+        "outputs": [
+          {
+            "id": "OUT-PF-01",
+            "name": "Peningkatan Kapasitas KTH",
+            "activities": [
+              {"id": "ACT-PF-CB-01", "name": "Pelatihan Budidaya Ikan Baung", "indicator": "1 kegiatan pelatihan dilaksanakan"},
+              {"id": "ACT-PF-CB-02", "name": "Pelatihan Pengolahan Gaplek", "indicator": "1 kegiatan pelatihan dilaksanakan"},
+              {"id": "ACT-PF-CB-03", "name": "Pelatihan Pengolahan Ikan Salai", "indicator": "1 kegiatan pelatihan dilaksanakan"},
+              {"id": "ACT-PF-CB-04", "name": "Pelatihan Pembuatan Pupuk Kompos", "indicator": "1 kegiatan pelatihan dilaksanakan"},
+              {"id": "ACT-PF-CB-05", "name": "Penguatan Kelembagaan dan Administrasi", "indicator": "1 kegiatan pelatihan dilaksanakan"}
+            ]
+          },
+          {
+            "id": "OUT-PF-02",
+            "name": "Perlindungan Kawasan Perhutanan Sosial",
+            "activities": [
+              {"id": "ACT-PF-PROTECT-01", "name": "Pelatihan Pengamanan Kawasan Hutan", "indicator": "1 kegiatan pelatihan dilaksanakan"}
+            ]
+          },
+          {
+            "id": "OUT-PF-03",
+            "name": "Perencanaan Rehabilitasi MPTS",
+            "activities": [
+              {"id": "ACT-PF-MPTS-01", "name": "Penyusunan rencana rehabilitasi MPTS", "indicator": "Rencana rehabilitasi seluas 50 ha terdokumentasi"}
+            ]
+          },
+          {
+            "id": "OUT-PF-04",
+            "name": "Pengembangan Sarana dan Usaha Kelompok",
+            "activities": [
+              {"id": "ACT-PF-BUSINESS-01", "name": "Penguatan sarana dan usaha KTH", "indicator": "7 jenis sarana dan usaha kelompok terdokumentasi"}
+            ]
+          },
+          {
+            "id": "OUT-PF-05",
+            "name": "Survei Kepuasan Masyarakat",
+            "activities": [
+              {"id": "ACT-PF-SURVEY-01", "name": "Pelaksanaan survei kepuasan", "indicator": "47 responden terlibat"}
+            ]
+          }
+        ]
       }
     ],
     "timeline": [

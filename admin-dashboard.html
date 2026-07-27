@@ -32,7 +32,7 @@
       <div class="hero-main">
         <div class="eyebrow">DASHBOARD ADMIN</div>
         <h1>Verifikasi Capaian Donor</h1>
-        <p class="hero-description">Hubungkan evidence yang telah diterima ke capaian program donor yang masih aktif.</p>
+        <p class="hero-description">Hubungkan evidence yang telah diterima ke output program donor aktif maupun program historis yang sudah selesai.</p>
         <p class="hero-tagline">Mode uji lokal: assignment disimpan di browser ini dan belum mengubah database produksi.</p>
       </div>
     </section>
@@ -40,7 +40,7 @@
     <section class="admin-panel assignment-panel" aria-labelledby="assignment-title">
       <div class="admin-column admin-column--wide">
         <div class="section-heading">
-          <div><span class="eyebrow">EVIDENCE ASSIGNMENT</span><h2 id="assignment-title">Pilih capaian program aktif</h2></div>
+          <div><span class="eyebrow">EVIDENCE ASSIGNMENT</span><h2 id="assignment-title">Pilih output program donor</h2></div>
           <span id="assignment-mode" class="admin-mode-badge">LOCAL TEST</span>
         </div>
         <div class="admin-card">
@@ -48,10 +48,10 @@
             <label class="wide">Evidence
               <select id="assignment-evidence" required><option value="">Memuat evidence...</option></select>
             </label>
-            <label>Donor aktif
+            <label>Donor
               <select id="assignment-donor" required><option value="">Pilih donor</option></select>
             </label>
-            <label>Program aktif
+            <label>Program/fase
               <select id="assignment-programme" required disabled><option value="">Pilih program</option></select>
             </label>
             <label class="wide">Capaian/indikator
@@ -200,6 +200,6 @@
     </section>
   </main>
 
-  <script src="js/admin-dashboard.js?v=20260726-ipems1"></script>
+  <script src="js/admin-dashboard.js?v=20260727-output-tag1"></script>
 </body>
 </html>
