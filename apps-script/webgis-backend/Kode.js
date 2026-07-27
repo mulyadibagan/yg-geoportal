@@ -390,22 +390,64 @@ if (action === 'content-save') {
       sheet.getRange(row, 16).setNumberFormat('0.0000000');
     }
 
-    notifyAdmin_(reportId, data, photoUrls, geometry);
+    let emailSent = true;
+    let emailError = '';
+    try {
+      notifyAdmin_(reportId, data, photoUrls, geometry);
+    } catch (notificationError) {
+      emailSent = false;
+      emailError = clean_(notificationError.message);
+      console.error(
+        'Laporan ' + reportId +
+        ' tersimpan, tetapi notifikasi email gagal: ' + emailError
+      );
+    }
 
-    return HtmlService.createHtmlOutput(
-      '<h2 style="font-family:Arial;color:#076b9c">Laporan berhasil diterima</h2>' +
-      '<p style="font-family:Arial">ID laporan: <b>' +
-      escapeHtml_(reportId) +
-      '</b></p>'
-    );
+    return reportSubmissionResponse_({
+      ok: true,
+      reportId: reportId,
+      emailSent: emailSent,
+      message: emailSent
+        ? 'Laporan berhasil disimpan dan notifikasi email dikirim.'
+        : 'Laporan berhasil disimpan, tetapi notifikasi email gagal.',
+      emailError: emailError
+    });
   } catch (error) {
-    return HtmlService.createHtmlOutput(
-      '<h2 style="font-family:Arial;color:#b42318">Laporan gagal dikirim</h2>' +
-      '<p style="font-family:Arial">' +
-      escapeHtml_(error.message) +
-      '</p>'
-    );
+    console.error('Pengiriman laporan gagal: ' + error.stack);
+    return reportSubmissionResponse_({
+      ok: false,
+      reportId: '',
+      emailSent: false,
+      message: clean_(error.message) || 'Laporan gagal disimpan.'
+    });
   }
+}
+
+function reportSubmissionResponse_(result) {
+  const payload = {
+    type: 'yg-report-submission-result',
+    ok: result.ok === true,
+    reportId: clean_(result.reportId),
+    emailSent: result.emailSent === true,
+    message: clean_(result.message),
+    emailError: clean_(result.emailError)
+  };
+  const json = JSON.stringify(payload).replace(/</g, '\\u003c');
+  const color = payload.ok ? '#076b9c' : '#b42318';
+  const title = payload.ok
+    ? 'Laporan berhasil diterima'
+    : 'Laporan gagal dikirim';
+  const detail = payload.ok
+    ? 'ID laporan: <b>' + escapeHtml_(payload.reportId) + '</b>'
+    : escapeHtml_(payload.message);
+
+  return HtmlService.createHtmlOutput(
+    '<!doctype html><html><head><meta charset="utf-8"></head><body>' +
+    '<h2 style="font-family:Arial;color:' + color + '">' + title + '</h2>' +
+    '<p style="font-family:Arial">' + detail + '</p>' +
+    '<script>parent.postMessage(' + json + ', "*");<\/script>' +
+    '</body></html>'
+  );
 }
 
 function getPendingDuplicateCandidates_(requestedLayerId) {
