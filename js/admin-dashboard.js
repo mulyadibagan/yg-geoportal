@@ -6,6 +6,10 @@
   var PROGRAMME_CONFIG_KEY = 'ygIpemsProgrammeConfig_v1';
   var DONOR_DATA = [];
   var EVIDENCE_DATA = [];
+  var PROGRAMME_CONFIG = [];
+  var ASSIGNMENT_DATA = [];
+  var ADMIN_SESSION = null;
+  var REMOTE_AVAILABLE = false;
 
   function esc(value) {
     return String(value == null ? '' : value).replace(/[&<>"']/g, function (character) {
@@ -39,13 +43,8 @@
     });
   }
 
-  function localProgrammeConfig() {
-    try { return JSON.parse(localStorage.getItem(PROGRAMME_CONFIG_KEY) || '[]'); }
-    catch (error) { return []; }
-  }
-
-  function applyLocalProgrammeConfig() {
-    localProgrammeConfig().forEach(function (entry) {
+  function applyProgrammeConfig(rows) {
+    (rows || []).forEach(function (entry) {
       var donor = DONOR_DATA.find(function (item) {
         return String(item.id || idFrom(item.name)) === entry.donorId;
       });
@@ -65,12 +64,17 @@
   }
 
   function assignments() {
-    try { return JSON.parse(localStorage.getItem(ASSIGNMENT_KEY) || '[]'); }
-    catch (error) { return []; }
+    return ASSIGNMENT_DATA;
   }
 
   function saveAssignments(rows) {
-    localStorage.setItem(ASSIGNMENT_KEY, JSON.stringify(rows));
+    ASSIGNMENT_DATA = rows || [];
+    if (!REMOTE_AVAILABLE) localStorage.setItem(ASSIGNMENT_KEY, JSON.stringify(ASSIGNMENT_DATA));
+  }
+
+  function localRows(key) {
+    try { return JSON.parse(localStorage.getItem(key) || '[]'); }
+    catch (error) { return []; }
   }
 
   function jsonp(url) {
@@ -93,6 +97,51 @@
     });
   }
 
+  function requireAdminSession() {
+    ADMIN_SESSION = window.YG_AUTH && window.YG_AUTH.readStoredSession();
+    if (!ADMIN_SESSION || !ADMIN_SESSION.token) {
+      throw new Error('Silakan masuk sebagai admin sebelum menyimpan perubahan.');
+    }
+    return ADMIN_SESSION;
+  }
+
+  async function postAdmin(action, payload) {
+    var session = requireAdminSession();
+    var requestId = 'yg-donor-' + Date.now() + '-' + Math.floor(Math.random() * 100000);
+    var body = new URLSearchParams({
+      action: action,
+      requestId: requestId,
+      sessionToken: session.token,
+      payload: JSON.stringify(payload || {})
+    });
+    await fetch(API, { method: 'POST', mode: 'no-cors', body: body });
+    for (var attempt = 0; attempt < 24; attempt += 1) {
+      await new Promise(function (resolve) { setTimeout(resolve, attempt ? 650 : 350); });
+      var result = await jsonp(API + '?page=donor-admin-result&requestId=' + encodeURIComponent(requestId));
+      if (result && result.pending) continue;
+      if (result && result.ok) return result.data;
+      throw new Error((result && result.error) || 'Penyimpanan ke database pusat gagal.');
+    }
+    throw new Error('Penyimpanan belum mendapat konfirmasi dari server.');
+  }
+
+  function renderAuthState(message) {
+    ADMIN_SESSION = window.YG_AUTH && window.YG_AUTH.readStoredSession();
+    var status = document.getElementById('admin-auth-status');
+    var form = document.getElementById('admin-auth-form');
+    if (!REMOTE_AVAILABLE) {
+      status.textContent = 'Backend pusat belum aktif; perubahan sementara tetap disimpan pada browser ini.';
+      form.querySelectorAll('label, button').forEach(function (element) { element.hidden = true; });
+      document.getElementById('assignment-mode').textContent = 'LOCAL FALLBACK';
+    } else if (ADMIN_SESSION && ADMIN_SESSION.token) {
+      status.textContent = message || ('Masuk sebagai ' + ADMIN_SESSION.username + '. Perubahan akan disimpan ke database pusat.');
+      form.querySelectorAll('label, button').forEach(function (element) { element.hidden = true; });
+    } else {
+      status.textContent = message || 'Silakan masuk agar perubahan tersimpan ke database pusat.';
+      form.querySelectorAll('label, button').forEach(function (element) { element.hidden = false; });
+    }
+  }
+
   function evidenceLabel(feature) {
     var props = feature.properties || {};
     var title = props.title || props.locationName || props.targetObjectName || 'Evidence tanpa judul';
@@ -103,6 +152,43 @@
 
   function evidenceId(feature, index) {
     return String((feature.properties || {}).reportId || feature.id || ('EV-LOCAL-' + index));
+  }
+
+  function capacityEvidenceFeature(row) {
+    var location = String(row.location || '').trim();
+    var village = location.split(',')[0].trim();
+    return {
+      type: 'Feature',
+      id: row.id,
+      properties: {
+        reportId: row.id,
+        reportType: 'Capacity Building',
+        title: row.name || 'Kegiatan peningkatan kapasitas',
+        locationName: location,
+        village: village,
+        regency: row.regency || '',
+        activityDate: row.date || '',
+        status: 'Published baseline',
+        targetGroup: row.target || '',
+        partner: row.partner || '',
+        topic: row.topic || '',
+        male: Number(row.male || 0),
+        female: Number(row.female || 0),
+        source: 'data/capacity-building.json'
+      }
+    };
+  }
+
+  function mergeEvidence(liveFeatures, capacityRows) {
+    var merged = [];
+    var seen = {};
+    (liveFeatures || []).concat((capacityRows || []).map(capacityEvidenceFeature)).forEach(function (feature, index) {
+      var key = evidenceId(feature, index);
+      if (seen[key]) return;
+      seen[key] = true;
+      merged.push(feature);
+    });
+    return merged;
   }
 
   function renderEvidenceOptions() {
@@ -252,7 +338,7 @@
     var rows = assignments();
     var container = document.getElementById('assignment-history');
     if (!rows.length) {
-      container.innerHTML = '<div class="assignment-empty">Belum ada assignment pada browser ini.</div>';
+      container.innerHTML = '<div class="assignment-empty">Belum ada assignment pada database pusat.</div>';
       renderEvidenceOptions();
       return;
     }
@@ -267,7 +353,7 @@
     renderEvidenceOptions();
   }
 
-  function saveAssignment(event) {
+  async function saveAssignment(event) {
     event.preventDefault();
     var evidenceIdValue = document.getElementById('assignment-evidence').value;
     var donor = selectedDonor();
@@ -301,11 +387,19 @@
       verifiedAt: now.toISOString(),
       verifiedAtLabel: now.toLocaleString('id-ID')
     });
-    saveAssignments(rows);
-    event.target.reset();
-    renderProgrammes();
-    renderHistory();
-    feedback.textContent = 'Assignment lokal berhasil disimpan.';
+    feedback.textContent = REMOTE_AVAILABLE ? 'Menyimpan assignment ke database pusat...' : 'Menyimpan assignment sementara di browser...';
+    try {
+      if (REMOTE_AVAILABLE) saveAssignments(await postAdmin('donor-assignment-save', rows[rows.length - 1]));
+      else saveAssignments(rows);
+      event.target.reset();
+      renderProgrammes();
+      renderHistory();
+      feedback.textContent = REMOTE_AVAILABLE
+        ? 'Assignment berhasil disimpan ke database pusat.'
+        : 'Assignment lokal berhasil disimpan; akan tetap tersedia pada browser ini.';
+    } catch (error) {
+      feedback.textContent = error.message;
+    }
   }
 
   function renderProgrammeAdmin() {
@@ -432,7 +526,7 @@
     populateLogframe(programme);
   }
 
-  function saveProgrammeConfig(event) {
+  async function saveProgrammeConfig(event) {
     event.preventDefault();
     var donorId = document.getElementById('programme-admin-donor').value;
     var recordId = document.getElementById('programme-admin-record').value;
@@ -469,22 +563,33 @@
         detailsPending: false
       }
     };
-    var rows = localProgrammeConfig().filter(function (item) {
-      return !(item.donorId === donorId && String(item.recordId) === String(savedId));
-    });
-    rows.push(entry);
-    localStorage.setItem(PROGRAMME_CONFIG_KEY, JSON.stringify(rows));
-    var donor = DONOR_DATA.find(function (item) { return String(item.id || idFrom(item.name)) === donorId; });
-    donor.programs = donor.programs || [];
-    var existingIndex = donor.programs.findIndex(function (item) { return String(item.id || '') === String(savedId); });
-    if (existingIndex > -1) donor.programs[existingIndex] = Object.assign({}, donor.programs[existingIndex], entry.record);
-    else donor.programs.push(entry.record);
-    event.target.reset();
-    populateLogframe(null);
-    renderDonors();
-    renderProgrammeAdmin();
-    renderProgrammes();
-    feedback.textContent = 'Konfigurasi lokal disimpan. Status donor diperbarui otomatis.';
+    feedback.textContent = REMOTE_AVAILABLE ? 'Menyimpan ke database pusat...' : 'Menyimpan sementara di browser...';
+    try {
+      if (REMOTE_AVAILABLE) {
+        PROGRAMME_CONFIG = await postAdmin('donor-programme-save', entry);
+      } else {
+        PROGRAMME_CONFIG = PROGRAMME_CONFIG.filter(function (item) {
+          return !(item.donorId === donorId && String(item.recordId) === String(savedId));
+        });
+        PROGRAMME_CONFIG.push(entry);
+        localStorage.setItem(PROGRAMME_CONFIG_KEY, JSON.stringify(PROGRAMME_CONFIG));
+      }
+      var donor = DONOR_DATA.find(function (item) { return String(item.id || idFrom(item.name)) === donorId; });
+      donor.programs = donor.programs || [];
+      var existingIndex = donor.programs.findIndex(function (item) { return String(item.id || '') === String(savedId); });
+      if (existingIndex > -1) donor.programs[existingIndex] = Object.assign({}, donor.programs[existingIndex], entry.record);
+      else donor.programs.push(entry.record);
+      event.target.reset();
+      populateLogframe(null);
+      renderDonors();
+      renderProgrammeAdmin();
+      renderProgrammes();
+      feedback.textContent = REMOTE_AVAILABLE
+        ? 'Program/project berhasil diperbarui di database pusat.'
+        : 'Konfigurasi tersimpan sementara di browser; backend pusat belum aktif.';
+    } catch (error) {
+      feedback.textContent = error.message;
+    }
   }
 
   function bind() {
@@ -505,17 +610,41 @@
     });
     document.getElementById('programme-admin-form').addEventListener('submit', saveProgrammeConfig);
     document.getElementById('reset-programme-config').addEventListener('click', function () {
-      localStorage.removeItem(PROGRAMME_CONFIG_KEY);
       location.reload();
     });
-    document.getElementById('assignment-history').addEventListener('click', function (event) {
+    document.getElementById('assignment-history').addEventListener('click', async function (event) {
       var button = event.target.closest('[data-remove-assignment]');
       if (!button) return;
-      saveAssignments(assignments().filter(function (row) {
-        return row.assignmentId !== button.dataset.removeAssignment;
-      }));
-      renderHistory();
-      document.getElementById('assignment-feedback').textContent = 'Assignment lokal dibatalkan.';
+      try {
+        if (REMOTE_AVAILABLE) {
+          saveAssignments(await postAdmin('donor-assignment-delete', { assignmentId: button.dataset.removeAssignment }));
+        } else {
+          saveAssignments(assignments().filter(function (row) {
+            return row.assignmentId !== button.dataset.removeAssignment;
+          }));
+        }
+        renderHistory();
+        document.getElementById('assignment-feedback').textContent = REMOTE_AVAILABLE
+          ? 'Assignment dibatalkan di database pusat.'
+          : 'Assignment lokal dibatalkan.';
+      } catch (error) {
+        document.getElementById('assignment-feedback').textContent = error.message;
+      }
+    });
+    document.getElementById('admin-auth-form').addEventListener('submit', async function (event) {
+      event.preventDefault();
+      var status = document.getElementById('admin-auth-status');
+      status.textContent = 'Memeriksa akun...';
+      try {
+        ADMIN_SESSION = await window.YG_AUTH.login(
+          document.getElementById('admin-auth-username').value.trim(),
+          document.getElementById('admin-auth-password').value
+        );
+        event.target.reset();
+        renderAuthState();
+      } catch (error) {
+        renderAuthState(error.message);
+      }
     });
   }
 
@@ -523,11 +652,23 @@
     bind();
     Promise.all([
       fetch('data/donors.json?v=20260727-output-tag1', { cache: 'no-store' }).then(function (response) { return response.json(); }),
-      jsonp(API + '?page=public-reports').catch(function () { return { features: [] }; })
+      jsonp(API + '?page=public-reports').catch(function () { return { features: [] }; }),
+      jsonp(API + '?page=donor-programmes').catch(function () { return { unavailable: true }; }),
+      fetch('data/capacity-building.json?v=20260727-admin-evidence1', { cache: 'no-store' })
+        .then(function (response) { return response.ok ? response.json() : []; })
+        .catch(function () { return []; })
     ]).then(function (results) {
       DONOR_DATA = results[0] || [];
-      applyLocalProgrammeConfig();
-      EVIDENCE_DATA = (results[1] && results[1].features) || [];
+      REMOTE_AVAILABLE = Array.isArray(results[2] && results[2].programmes) &&
+        Array.isArray(results[2] && results[2].assignments);
+      PROGRAMME_CONFIG = REMOTE_AVAILABLE ? results[2].programmes : localRows(PROGRAMME_CONFIG_KEY);
+      ASSIGNMENT_DATA = REMOTE_AVAILABLE ? results[2].assignments : localRows(ASSIGNMENT_KEY);
+      applyProgrammeConfig(PROGRAMME_CONFIG);
+      EVIDENCE_DATA = mergeEvidence(
+        (results[1] && results[1].features) || [],
+        results[3] || []
+      );
+      renderAuthState();
       renderDonors();
       renderProgrammeAdmin();
       populateLogframe(null);

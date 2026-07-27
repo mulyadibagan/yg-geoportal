@@ -28,12 +28,20 @@
   </header>
 
   <main class="dashboard-shell admin-shell">
+    <section class="admin-card" id="admin-auth-panel">
+      <form id="admin-auth-form" class="assignment-form">
+        <div class="wide"><strong>Akses administrator</strong><p id="admin-auth-status">Silakan masuk agar perubahan tersimpan ke database pusat.</p></div>
+        <label>Username<input id="admin-auth-username" autocomplete="username" required></label>
+        <label>Password<input id="admin-auth-password" type="password" autocomplete="current-password" required></label>
+        <div class="wide assignment-actions"><button class="btn btn-outline" type="submit">Masuk sebagai admin</button></div>
+      </form>
+    </section>
     <section class="hero hero-compact">
       <div class="hero-main">
         <div class="eyebrow">DASHBOARD ADMIN</div>
         <h1>Verifikasi Capaian Donor</h1>
         <p class="hero-description">Hubungkan evidence yang telah diterima ke output program donor aktif maupun program historis yang sudah selesai.</p>
-        <p class="hero-tagline">Mode uji lokal: assignment disimpan di browser ini dan belum mengubah database produksi.</p>
+        <p class="hero-tagline">Perubahan disimpan ke database pusat ketika layanan aktif; browser digunakan sebagai penyimpanan sementara saat layanan belum tersedia.</p>
       </div>
     </section>
 
@@ -41,7 +49,7 @@
       <div class="admin-column admin-column--wide">
         <div class="section-heading">
           <div><span class="eyebrow">EVIDENCE ASSIGNMENT</span><h2 id="assignment-title">Pilih output program donor</h2></div>
-          <span id="assignment-mode" class="admin-mode-badge">LOCAL TEST</span>
+          <span id="assignment-mode" class="admin-mode-badge">DATABASE PUSAT</span>
         </div>
         <div class="admin-card">
           <form id="evidence-assignment-form" class="assignment-form">
@@ -75,14 +83,14 @@
 
     <section class="admin-panel assignment-history-panel">
       <div class="admin-column admin-column--wide">
-        <div class="section-heading"><div><span class="eyebrow">RIWAYAT LOKAL</span><h2>Evidence yang sudah dihubungkan</h2></div></div>
+        <div class="section-heading"><div><span class="eyebrow">RIWAYAT PUSAT</span><h2>Evidence yang sudah dihubungkan</h2></div></div>
         <div class="admin-card admin-card--list"><div id="assignment-history"></div></div>
       </div>
     </section>
 
     <section class="admin-panel programme-admin-panel" aria-labelledby="programme-admin-title">
       <div class="admin-column admin-column--wide">
-        <div class="section-heading"><div><span class="eyebrow">KONFIGURASI LOKAL</span><h2 id="programme-admin-title">Kelola program/project donor</h2></div></div>
+        <div class="section-heading"><div><span class="eyebrow">KONFIGURASI PUSAT</span><h2 id="programme-admin-title">Kelola program/project donor</h2></div></div>
         <div class="admin-card">
           <form id="programme-admin-form" class="assignment-form">
             <label>Donor
@@ -125,7 +133,7 @@
             </div>
             <div class="wide assignment-actions">
               <button class="btn btn-outline" type="submit">Simpan program/project</button>
-              <button id="reset-programme-config" class="btn btn-light" type="button">Reset perubahan lokal</button>
+              <button id="reset-programme-config" class="btn btn-light" type="button">Muat ulang data pusat</button>
               <span id="programme-admin-feedback" role="status"></span>
             </div>
           </form>
@@ -200,6 +208,7 @@
     </section>
   </main>
 
-  <script src="js/admin-dashboard.js?v=20260727-output-tag1"></script>
+  <script src="js/auth.js?v=20260727-admin-central1"></script>
+  <script src="js/admin-dashboard.js?v=20260727-admin-evidence1"></script>
 </body>
 </html>

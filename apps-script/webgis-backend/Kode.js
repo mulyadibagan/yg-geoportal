@@ -64,6 +64,14 @@ if (page === 'content-save-result') {
   );
 }
 
+if (page === 'donor-programmes') {
+  return donorAdminResponse_(getDonorProgrammeAdminData_(), callback);
+}
+
+if (page === 'donor-admin-result') {
+  return donorAdminResponse_(getDonorAdminResult_(params.requestId), callback);
+}
+
   if (page === 'admin') {
     if (token !== ADMIN_TOKEN) {
       return HtmlService.createHtmlOutput(
@@ -238,6 +246,13 @@ function doPost(e) {
 if (action === 'content-save') {
   return handleContentAdminPost_(e);
 }
+    if (
+      action === 'donor-programme-save' ||
+      action === 'donor-assignment-save' ||
+      action === 'donor-assignment-delete'
+    ) {
+      return handleDonorProgrammeAdminPost_(e);
+    }
     if (action === 'editor-login' || action === 'editor-logout') {
       return handleEditorAuthPost_(e);
     }
