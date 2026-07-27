@@ -199,10 +199,73 @@
     };
   }
 
-  function mergeEvidence(liveFeatures, capacityRows) {
+  function firstProperty(properties, keys) {
+    var value = '';
+    (keys || []).some(function (key) {
+      if (properties[key] == null || String(properties[key]).trim() === '') return false;
+      value = String(properties[key]).trim();
+      return true;
+    });
+    return value;
+  }
+
+  function layerEvidenceFeature(feature, layer, index) {
+    var properties = Object.assign({}, feature.properties || {});
+    var objectName = firstProperty(properties, [
+      'Nama_Objek', 'nama_objek', 'name', 'Name', 'nama', 'Nama',
+      'lokasi', 'Lokasi', 'desa', 'Desa', 'village', 'Village'
+    ]) || (layer.label + ' #' + (index + 1));
+    var village = firstProperty(properties, [
+      'Desa', 'desa', 'village', 'Village', 'NAMOBJ', 'WADMKD'
+    ]);
+    var objectId = firstProperty(properties, [
+      'Object_ID', 'objectId', 'id', 'ID', 'fid', 'FID'
+    ]) || String(index + 1);
+    properties.reportId = 'LAYER-' + layer.id + '-' + objectId;
+    properties.reportType = 'Layer WebGIS · ' + layer.label;
+    properties.title = objectName;
+    properties.locationName = village || objectName;
+    properties.village = village;
+    properties.status = 'Objek layer aktif';
+    properties.targetLayerId = layer.id;
+    properties.targetLayerLabel = layer.label;
+    properties.source = 'data/' + layer.id + '.geojson';
+    return {
+      type: 'Feature',
+      id: properties.reportId,
+      geometry: feature.geometry || null,
+      properties: properties
+    };
+  }
+
+  function loadLayerEvidence() {
+    var layers = (window.YG_LAYER_CONFIG || []).filter(function (layer) {
+      return layer.visible !== false && layer.verifiable !== false;
+    });
+    return Promise.all(layers.map(function (layer) {
+      return fetch('data/' + layer.id + '.geojson?v=20260727-all-layers1', { cache: 'no-store' })
+        .then(function (response) {
+          if (!response.ok) return [];
+          return response.json();
+        })
+        .then(function (collection) {
+          return ((collection && collection.features) || []).map(function (feature, index) {
+            return layerEvidenceFeature(feature, layer, index);
+          });
+        })
+        .catch(function () { return []; });
+    })).then(function (groups) {
+      return groups.reduce(function (all, group) { return all.concat(group); }, []);
+    });
+  }
+
+  function mergeEvidence(liveFeatures, capacityRows, layerFeatures) {
     var merged = [];
     var seen = {};
-    (liveFeatures || []).concat((capacityRows || []).map(capacityEvidenceFeature)).forEach(function (feature, index) {
+    (liveFeatures || [])
+      .concat((capacityRows || []).map(capacityEvidenceFeature))
+      .concat(layerFeatures || [])
+      .forEach(function (feature, index) {
       var key = evidenceId(feature, index);
       if (seen[key]) return;
       seen[key] = true;
@@ -697,7 +760,8 @@
       jsonp(API + '?page=donor-programmes').catch(function () { return { unavailable: true }; }),
       fetch('data/capacity-building.json?v=20260727-admin-evidence1', { cache: 'no-store' })
         .then(function (response) { return response.ok ? response.json() : []; })
-        .catch(function () { return []; })
+        .catch(function () { return []; }),
+      loadLayerEvidence()
     ]).then(function (results) {
       DONOR_DATA = results[0] || [];
       REMOTE_AVAILABLE = Array.isArray(results[2] && results[2].programmes) &&
@@ -707,7 +771,8 @@
       applyProgrammeConfig(PROGRAMME_CONFIG);
       EVIDENCE_DATA = mergeEvidence(
         (results[1] && results[1].features) || [],
-        results[3] || []
+        results[3] || [],
+        results[4] || []
       );
       renderAuthState();
       renderDonors();
