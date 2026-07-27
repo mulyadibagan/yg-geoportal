@@ -55,6 +55,8 @@
     <nav class="dashboard-view-tabs" aria-label="Jenis dashboard">
       <button class="active" type="button" data-dashboard-view="monitoring">Monitoring Lapangan</button>
       <button type="button" data-dashboard-view="capacity">Pelibatan &amp; Kapasitas</button>
+      <a href="capacity-session-create.html">Pembuatan Sesi</a>
+      <a href="capacity-sessions.html">Live Session</a>
     </nav>
 
     <div id="monitoring-view">
@@ -144,6 +146,7 @@
         <label>Kabupaten<select id="capacity-regency"><option value="">Semua kabupaten</option></select></label>
       </div>
 
+      <div id="capacity-prepost-moved" hidden>
       <section class="capacity-prepost" aria-label="Evaluasi pre dan post test">
         <div class="capacity-prepost__head">
           <div>
@@ -203,6 +206,7 @@
           <a id="prepost-open-builder" class="capacity-prepost__builder-link" href="posttest-builder.html" target="_blank" rel="noopener noreferrer">Sudah punya sesi? Buka halaman builder post-test</a>
         </div>
       </section>
+      </div>
 
       <div id="capacity-list" class="capacity-list"><div class="loading">Memuat kegiatan…</div></div>
     </section>

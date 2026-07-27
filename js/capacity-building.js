@@ -793,7 +793,8 @@
   }
 
   function initTabs() {
-    document.querySelectorAll('[data-dashboard-view]').forEach(function (btn) {
+    var tabs = document.querySelectorAll('[data-dashboard-view]');
+    tabs.forEach(function (btn) {
       btn.addEventListener('click', function () {
         var capacity = btn.dataset.dashboardView === 'capacity';
         var monitoringView = document.getElementById('monitoring-view');
@@ -805,6 +806,10 @@
         });
       });
     });
+    if (new URLSearchParams(window.location.search).get('view') === 'capacity') {
+      var capacityTab = document.querySelector('[data-dashboard-view="capacity"]');
+      if (capacityTab) capacityTab.click();
+    }
   }
 
   async function loadCapacity() {
