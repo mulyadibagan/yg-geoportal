@@ -321,8 +321,11 @@ L.control.scale({
     let target = null;
 
     if (
-      props.reportId === "YG-20260713-165007-843" &&
-      geometryType === "Polygon"
+      [
+        "YG-20260713-162454-182",
+        "YG-20260713-165007-843"
+      ].includes(props.reportId) &&
+      ["Polygon", "MultiPolygon"].includes(geometryType)
     ) {
       target = {
         id: "mineral_land_restoration_area",
