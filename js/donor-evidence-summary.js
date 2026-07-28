@@ -129,9 +129,17 @@
       else content.appendChild(section);
     }
     var milestones = (programme ? (programme.outputs || []) : []).map(function (output) {
-      var outputRows = rows.filter(function (row) { return outputName(row) === output.name; });
+      var activityIds = (output.activities || []).map(function (activity) {
+        return String(activity.id || '');
+      });
+      var outputRows = rows.filter(function (row) {
+        return activityIds.indexOf(String(row.indicatorId || '')) >= 0 ||
+          outputName(row) === output.name;
+      });
       var uniqueActivities = {};
-      outputRows.forEach(function (row) { uniqueActivities[row.indicatorLabel] = true; });
+      outputRows.forEach(function (row) {
+        uniqueActivities[row.indicatorId || row.indicatorLabel] = true;
+      });
       var done = Object.keys(uniqueActivities).length;
       var targetCount = Math.max((output.activities || []).length, 1);
       return {
@@ -139,7 +147,9 @@
         done: done,
         target: targetCount,
         state: statusFor(done, targetCount),
-        latest: outputRows.length ? outputRows[outputRows.length - 1].evidenceTitle : ''
+        latest: outputRows.length ? outputRows[outputRows.length - 1].evidenceTitle : '',
+        output: output,
+        rows: outputRows
       };
     });
     if (!milestones.length) {
@@ -158,19 +168,48 @@
         };
       });
     }
-    section.innerHTML =
+    var milestoneMarkup = donorName === 'Aramco Asia Singapore'
+      ? '<div class="donor-milestone-detail-list">' + milestones.map(function (item) {
+          var activities = (item.output.activities || []).map(function (activity) {
+            var linked = item.rows.filter(function (row) {
+              return String(row.indicatorId || '') === String(activity.id || '');
+            });
+            var evidence = linked.map(function (row) {
+              var href = 'webgis.html?search=' + encodeURIComponent(row.evidenceId || row.evidenceTitle || '');
+              return '<div class="aramco-evidence-item"><b>✓ Evidence terverifikasi</b>' +
+                '<span>' + esc(row.evidenceTitle || row.evidenceId) + '</span>' +
+                (row.note ? '<small>' + esc(row.note) + '</small>' : '') +
+                '<a href="' + href + '">Lihat evidence di peta →</a></div>';
+            }).join('');
+            return '<li class="' + (linked.length ? 'is-verified' : 'is-pending') + '">' +
+              '<div><strong>' + esc(activity.name) + '</strong><span>' +
+              esc(activity.indicator || '') + '</span></div><em>' +
+              (linked.length ? 'TERVERIFIKASI' : 'BELUM DITAG') + '</em>' +
+              evidence + '</li>';
+          }).join('');
+          return '<details class="aramco-output-card"><summary><span>' + esc(item.name) +
+            '</span><b>' + item.done + '/' + item.target + ' terverifikasi · ' +
+            item.state.text + '</b></summary><ul>' + activities + '</ul></details>';
+        }).join('') + '</div>'
+      : '<ul class="gec2026-timeline donor-milestone-list">' +
+        milestones.map(function (item) {
+          return '<li><div><span>' + esc(item.name) + '</span><small>' +
+            (item.target === 100
+              ? item.done + '% capaian'
+              : item.done + ' / ' + item.target + ' aktivitas terverifikasi') +
+            (item.latest ? ' · ' + esc(item.latest) : '') +
+            '</small></div><strong class="' + item.state.cls + '">' +
+            item.state.text + '</strong></li>';
+        }).join('') + '</ul>';
+    var sectionMarkup =
       '<div class="funding-heading"><div><span>Milestone status</span><h3>Timeline (' +
       esc(displayPeriod(donor, programme)) + ')</h3></div>' +
       '<p>Status dihitung dari evidence yang sudah ditag admin.</p></div>' +
-      '<ul class="gec2026-timeline donor-milestone-list">' +
-      milestones.map(function (item) {
-        return '<li><div><span>' + esc(item.name) + '</span><small>' +
-          (item.target === 100
-            ? item.done + '% capaian'
-            : item.done + ' / ' + item.target + ' aktivitas terverifikasi') +
-          (item.latest ? ' · ' + esc(item.latest) : '') +
-          '</small></div><strong class="' + item.state.cls + '">' + item.state.text + '</strong></li>';
-      }).join('') + '</ul>';
+      milestoneMarkup;
+    if (section._ygMilestoneMarkup !== sectionMarkup) {
+      section.innerHTML = sectionMarkup;
+      section._ygMilestoneMarkup = sectionMarkup;
+    }
   }
 
   function applyDonorEvidence() {
@@ -184,8 +223,13 @@
           badge.className = 'donor-evidence-badge';
           card.appendChild(badge);
         }
-        badge.textContent = rows.length ? rows.length + ' evidence terverifikasi' : 'Belum ada evidence terverifikasi';
-        badge.classList.toggle('has-evidence', rows.length > 0);
+        var badgeText = rows.length
+          ? rows.length + ' evidence terverifikasi'
+          : 'Belum ada evidence terverifikasi';
+        if (badge.textContent !== badgeText) badge.textContent = badgeText;
+        if (badge.classList.contains('has-evidence') !== (rows.length > 0)) {
+          badge.classList.toggle('has-evidence', rows.length > 0);
+        }
       }
       renderMilestones(donorName, rows);
       var modal = document.querySelector(donorMap[donorName].modal);

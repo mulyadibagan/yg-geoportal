@@ -264,6 +264,7 @@ body.modal-open{overflow:hidden}
 .donor-status-badge.is-complete{background:#ecefed;color:#59635f}
 .donor-evidence-badge{display:inline-flex;align-items:center;align-self:flex-start;margin-top:6px;padding:6px 9px;border-radius:999px;background:#f1f4f2;color:#6a756f;font-size:10px;font-style:normal;font-weight:800}.donor-evidence-badge.has-evidence{background:#e7f2fb;color:#17648a}
 .funding-milestone-status{margin-top:34px;padding-top:30px;border-top:1px solid #dce7e1}.donor-milestone-list li>div{min-width:0;flex:1}.donor-milestone-list li>strong{flex:0 0 auto}
+.donor-milestone-detail-list{display:grid;gap:12px}
 .funding-card .category-icon{width:100%;height:94px;margin-bottom:18px;padding:12px 18px;background-color:#fff;background-repeat:no-repeat;background-position:center;background-origin:content-box;background-size:contain;font-size:0}
 .funding-card[data-open-aramco] .category-icon,.funding-card[href*="Aramco"] .category-icon{background-image:url("../assets/funding-aramco.jpg")}
 .funding-card[data-open-ppcf] .category-icon,.funding-card[href*="Pan%20Pacific"] .category-icon{background-image:url("../assets/funding-ppcf.jpeg")}
