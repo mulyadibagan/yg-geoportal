@@ -280,6 +280,15 @@
     };
   }
 
+  function readEvidenceFile(file) {
+    return new Promise(function (resolve, reject) {
+      var reader = new FileReader();
+      reader.onload = function () { resolve(reader.result); };
+      reader.onerror = function () { reject(new Error('File evidence gagal dibaca.')); };
+      reader.readAsDataURL(file);
+    });
+  }
+
   function mergeEvidence(liveFeatures, capacityRows, layerFeatures, nonspatialRows) {
     var merged = [];
     var seen = {};
@@ -355,26 +364,58 @@
   async function saveNonspatialEvidence(event) {
     event.preventDefault();
     var now = new Date();
+    var fileInput = document.getElementById('nonspatial-evidence-file');
+    var file = fileInput.files && fileInput.files[0];
+    var feedback = document.getElementById('nonspatial-evidence-feedback');
+    if (!file) {
+      feedback.textContent = 'Pilih laporan atau dokumen yang akan diunggah.';
+      return;
+    }
+    if (file.size > 20 * 1024 * 1024) {
+      feedback.textContent = 'Ukuran file melebihi batas 20 MB.';
+      return;
+    }
+    var supported = /\.(doc|docx|pdf|xls|xlsx|ppt|pptx|jpe?g|png|webp)$/i.test(file.name);
+    if (!supported) {
+      feedback.textContent = 'Format file belum didukung.';
+      return;
+    }
+    feedback.textContent = 'Menyiapkan file evidence...';
+    var dataUrl;
+    try {
+      dataUrl = await readEvidenceFile(file);
+    } catch (error) {
+      feedback.textContent = error.message;
+      return;
+    }
     var row = {
       id: 'EV-NS-' + now.getTime(),
       type: document.getElementById('nonspatial-evidence-type').value,
       title: document.getElementById('nonspatial-evidence-title-input').value.trim(),
       date: document.getElementById('nonspatial-evidence-date').value,
       location: document.getElementById('nonspatial-evidence-location').value.trim(),
-      url: document.getElementById('nonspatial-evidence-url').value.trim(),
+      url: '',
+      document: {
+        name: file.name,
+        mimeType: file.type || 'application/octet-stream',
+        size: file.size,
+        dataUrl: dataUrl
+      },
       description: document.getElementById('nonspatial-evidence-description').value.trim(),
       verifiedAt: now.toISOString(),
       verifiedBy: ADMIN_SESSION && ADMIN_SESSION.username ? ADMIN_SESSION.username : 'admin'
     };
-    var feedback = document.getElementById('nonspatial-evidence-feedback');
-    feedback.textContent = REMOTE_AVAILABLE ? 'Menyimpan evidence ke database pusat...' : 'Menyimpan evidence sementara di browser...';
+    feedback.textContent = REMOTE_AVAILABLE ? 'Mengunggah file dan menyimpan evidence...' : 'Menyimpan evidence sementara di browser...';
     try {
       if (REMOTE_AVAILABLE) NONSPATIAL_EVIDENCE_DATA = await postAdmin('donor-evidence-save', row);
       else {
+        row.url = 'File lokal: ' + file.name;
+        delete row.document;
         NONSPATIAL_EVIDENCE_DATA.push(row);
         localStorage.setItem(NONSPATIAL_EVIDENCE_KEY, JSON.stringify(NONSPATIAL_EVIDENCE_DATA));
       }
-      EVIDENCE_DATA.push(nonspatialEvidenceFeature(row));
+      var savedRow = NONSPATIAL_EVIDENCE_DATA.find(function (item) { return item.id === row.id; }) || row;
+      EVIDENCE_DATA.push(nonspatialEvidenceFeature(savedRow));
       event.target.reset();
       renderNonspatialEvidence();
       renderEvidenceOptions();

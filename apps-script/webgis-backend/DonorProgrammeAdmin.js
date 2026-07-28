@@ -1,11 +1,13 @@
 const YG_DONOR_PROGRAMME_PROPERTY_KEY_ = 'YG_DONOR_PROGRAMMES_V1';
 const YG_DONOR_ASSIGNMENT_PROPERTY_KEY_ = 'YG_DONOR_ASSIGNMENTS_V1';
+const YG_DONOR_EVIDENCE_PROPERTY_KEY_ = 'YG_DONOR_EVIDENCE_V1';
 const YG_DONOR_ADMIN_RESULT_PREFIX_ = 'YG_DONOR_ADMIN_RESULT_';
 
 function getDonorProgrammeAdminData_() {
   return {
     programmes: readDonorAdminProperty_(YG_DONOR_PROGRAMME_PROPERTY_KEY_, []),
-    assignments: readDonorAdminProperty_(YG_DONOR_ASSIGNMENT_PROPERTY_KEY_, [])
+    assignments: readDonorAdminProperty_(YG_DONOR_ASSIGNMENT_PROPERTY_KEY_, []),
+    evidence: readDonorAdminProperty_(YG_DONOR_EVIDENCE_PROPERTY_KEY_, [])
   };
 }
 
@@ -24,6 +26,8 @@ function handleDonorProgrammeAdminPost_(e) {
     let result;
 
     if (action === 'donor-programme-save') result = saveDonorProgramme_(payload);
+    else if (action === 'donor-evidence-save') result = saveDonorEvidence_(payload);
+    else if (action === 'donor-evidence-delete') result = deleteDonorEvidence_(payload);
     else if (action === 'donor-assignment-save') result = saveDonorAssignment_(payload);
     else if (action === 'donor-assignment-delete') result = deleteDonorAssignment_(payload);
     else throw new Error('Aksi admin donor tidak dikenal.');
@@ -36,6 +40,84 @@ function handleDonorProgrammeAdminPost_(e) {
     });
   }
   return donorAdminResponse_({ ok: true, accepted: true });
+}
+
+function saveDonorEvidence_(payload) {
+  const uploadedUrl = saveDonorEvidenceFile_(payload && payload.document, payload && payload.id);
+  const row = {
+    id: clean_(payload && payload.id).slice(0, 120),
+    type: clean_(payload && payload.type).slice(0, 160),
+    title: clean_(payload && payload.title).slice(0, 1000),
+    date: clean_(payload && payload.date).slice(0, 30),
+    location: clean_(payload && payload.location).slice(0, 500),
+    url: uploadedUrl || clean_(payload && payload.url).slice(0, 3000),
+    description: clean_(payload && payload.description).slice(0, 5000),
+    verifiedAt: clean_(payload && payload.verifiedAt).slice(0, 80),
+    verifiedBy: clean_(payload && payload.verifiedBy).slice(0, 200)
+  };
+  if (!row.id || !row.type || !row.title || !row.date || !row.url || !row.description) {
+    throw new Error('Jenis, judul, tanggal, file laporan, dan ringkasan evidence wajib diisi.');
+  }
+  if (!/^https:\/\//i.test(row.url)) throw new Error('Tautan evidence harus menggunakan HTTPS.');
+  const rows = readDonorAdminProperty_(YG_DONOR_EVIDENCE_PROPERTY_KEY_, [])
+    .filter(function(item) { return clean_(item.id) !== row.id; });
+  rows.push(row);
+  writeDonorAdminProperty_(YG_DONOR_EVIDENCE_PROPERTY_KEY_, rows.slice(-1000));
+  return rows.slice(-1000);
+}
+
+function saveDonorEvidenceFile_(document, evidenceId) {
+  if (!document || !document.dataUrl) return '';
+  const maxBytes = 20 * 1024 * 1024;
+  if (Number(document.size) > maxBytes) throw new Error('Ukuran file evidence melebihi 20 MB.');
+
+  const match = String(document.dataUrl).match(/^data:([^;]+);base64,(.+)$/i);
+  if (!match) throw new Error('Data file evidence tidak valid.');
+
+  const allowedTypes = [
+    'application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'application/pdf',
+    'application/vnd.ms-excel',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'application/vnd.ms-powerpoint',
+    'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+    'image/jpeg',
+    'image/png',
+    'image/webp'
+  ];
+  const mimeType = clean_(match[1]).toLowerCase();
+  const originalName = clean_(document.name);
+  const extensionAllowed = /\.(doc|docx|pdf|xls|xlsx|ppt|pptx|jpe?g|png|webp)$/i.test(originalName);
+  if (allowedTypes.indexOf(mimeType) === -1 && !extensionAllowed) {
+    throw new Error('Format file evidence belum didukung.');
+  }
+
+  const safeName = (originalName || 'evidence')
+    .replace(/[^a-zA-Z0-9._-]/g, '_')
+    .slice(-180);
+  const blob = Utilities.newBlob(
+    Utilities.base64Decode(match[2]),
+    mimeType === 'application/octet-stream' ? 'application/octet-stream' : mimeType,
+    safeName
+  );
+  if (blob.getBytes().length > maxBytes) throw new Error('Ukuran file evidence melebihi 20 MB.');
+
+  const rootFolder = DriveApp.getFolderById(UPLOAD_FOLDER_ID);
+  const folder = getOrCreateReportFolder_(rootFolder, clean_(evidenceId) || ('EV-NS-' + Date.now()));
+  const file = folder.createFile(blob);
+  return file.getUrl();
+}
+
+function deleteDonorEvidence_(payload) {
+  const evidenceId = clean_(payload && payload.evidenceId);
+  const inUse = readDonorAdminProperty_(YG_DONOR_ASSIGNMENT_PROPERTY_KEY_, [])
+    .some(function(row) { return clean_(row.evidenceId) === evidenceId; });
+  if (inUse) throw new Error('Evidence masih terhubung ke capaian. Batalkan assignment terlebih dahulu.');
+  const rows = readDonorAdminProperty_(YG_DONOR_EVIDENCE_PROPERTY_KEY_, [])
+    .filter(function(row) { return clean_(row.id) !== evidenceId; });
+  writeDonorAdminProperty_(YG_DONOR_EVIDENCE_PROPERTY_KEY_, rows);
+  return rows;
 }
 
 function saveDonorProgramme_(payload) {
