@@ -69,8 +69,12 @@
       if (badge.className !== state.cls) badge.className = state.cls;
     }
     if (brief && nurseryRows.length) {
-      var briefText = nurseryRows.map(function (row) { return row.evidenceTitle; }).join(' • ');
-      if (brief.textContent !== briefText) brief.textContent = briefText;
+      var briefMarkup = nurseryRows.map(function (row) {
+        var href = 'webgis.html?search=' + encodeURIComponent(row.evidenceId || row.evidenceTitle || '');
+        return '<a class="gec2026-report-link" href="' + href + '">' +
+          esc(row.evidenceTitle || row.evidenceId) + '</a>';
+      }).join('');
+      if (brief.innerHTML !== briefMarkup) brief.innerHTML = briefMarkup;
     }
     if (nurseryRows.length) {
       var latest = nurseryRows.slice().sort(function (a, b) {
@@ -82,6 +86,10 @@
       var latestTitle = latestParts.shift() || latest.evidenceTitle || 'Capacity Building';
       var latestMeta = latestParts.join(' · ');
       if (updateTitle && updateTitle.textContent !== latestTitle) updateTitle.textContent = latestTitle;
+      if (updateTitle) {
+        updateTitle.href = 'webgis.html?search=' +
+          encodeURIComponent(latest.evidenceId || latest.evidenceTitle || '');
+      }
       if (updateMeta && updateMeta.textContent !== latestMeta) updateMeta.textContent = latestMeta;
     }
   }
