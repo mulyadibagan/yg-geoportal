@@ -7,7 +7,7 @@
   <link rel="icon" href="assets/logo-yayasan-gambut.png"/>
   <link rel="stylesheet" href="css/site-brand.css?v=20260720-program-dashboard1"/>
   <link rel="stylesheet" href="css/dashboard-v3.css?v=20260722-funding-logo1"/>
-  <link rel="stylesheet" href="css/admin-dashboard.css?v=20260726-ipems2"/>
+  <link rel="stylesheet" href="css/admin-dashboard.css?v=20260728-nonspatial-evidence1"/>
   <link rel="stylesheet" href="css/language-switcher.css?v=20260721-all-pages1"/>
   <meta name="theme-color" content="#079cde">
 </head>
@@ -42,6 +42,54 @@
         <h1>Verifikasi Capaian Donor</h1>
         <p class="hero-description">Hubungkan evidence yang telah diterima ke output program donor aktif maupun program historis yang sudah selesai.</p>
         <p class="hero-tagline">Perubahan disimpan ke database pusat ketika layanan aktif; browser digunakan sebagai penyimpanan sementara saat layanan belum tersedia.</p>
+      </div>
+    </section>
+
+    <section class="admin-panel nonspatial-evidence-panel" aria-labelledby="nonspatial-evidence-title">
+      <div class="admin-column admin-column--wide">
+        <div class="section-heading">
+          <div><span class="eyebrow">EVIDENCE NONSPASIAL</span><h2 id="nonspatial-evidence-title">Tambah dokumen atau bukti kegiatan</h2></div>
+        </div>
+        <div class="admin-card">
+          <form id="nonspatial-evidence-form" class="assignment-form">
+            <label>Jenis evidence
+              <select id="nonspatial-evidence-type" required>
+                <option value="">Pilih jenis evidence</option>
+                <option>Dokumen kegiatan</option>
+                <option>Laporan program</option>
+                <option>Foto kegiatan</option>
+                <option>Daftar hadir</option>
+                <option>Berita acara</option>
+                <option>Bukti pengiriman</option>
+                <option>Bukti produk/pasar</option>
+                <option>Lainnya</option>
+              </select>
+            </label>
+            <label>Tanggal evidence
+              <input id="nonspatial-evidence-date" type="date" required>
+            </label>
+            <label class="wide">Judul evidence
+              <input id="nonspatial-evidence-title-input" required placeholder="Contoh: Laporan peer learning visit ke Malaysia">
+            </label>
+            <label>Lokasi <small>(opsional)</small>
+              <input id="nonspatial-evidence-location" placeholder="Contoh: Selangor, Malaysia">
+            </label>
+            <label>Tautan dokumen/foto
+              <input id="nonspatial-evidence-url" type="url" required placeholder="https://drive.google.com/...">
+            </label>
+            <label class="wide">Ringkasan hasil
+              <textarea id="nonspatial-evidence-description" rows="3" required placeholder="Jelaskan kegiatan, hasil, dan alasan evidence ini mendukung capaian"></textarea>
+            </label>
+            <div class="wide assignment-actions">
+              <button type="submit" class="btn btn-outline">Simpan evidence terverifikasi</button>
+              <span id="nonspatial-evidence-feedback" role="status"></span>
+            </div>
+          </form>
+        </div>
+        <div class="admin-card admin-card--list">
+          <h3>Evidence nonspasial tersimpan</h3>
+          <div id="nonspatial-evidence-list"></div>
+        </div>
       </div>
     </section>
 
@@ -210,6 +258,6 @@
 
   <script src="js/config.js?v=20260727-all-layers1"></script>
   <script src="js/auth.js?v=20260727-admin-central1"></script>
-  <script src="js/admin-dashboard.js?v=20260727-all-layers1"></script>
+  <script src="js/admin-dashboard.js?v=20260728-all-layers-nonspatial1"></script>
 </body>
 </html>
