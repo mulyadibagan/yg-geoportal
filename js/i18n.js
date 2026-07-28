@@ -207,6 +207,7 @@
       "Luas Restorasi": "Restoration Area",
       "Pohon Mangrove Ditanam": "Mangrove Trees Planted",
       "Pohon Mangrove Ditanam (Semua Program)": "Mangrove Trees Planted (All Programmes)",
+      "Total Bibit Ditanam": "Total Seedlings Planted",
       "Rumah Bibit": "Nurseries",
       "Hybrid Engineering": "Hybrid Engineering",
       "Desa Program": "Programme Villages",

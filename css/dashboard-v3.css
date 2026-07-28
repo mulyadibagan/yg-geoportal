@@ -43,6 +43,7 @@ body.modal-open{overflow:hidden}
 .programme-compare__value.is-addition{text-align:center}
 .programme-compare__value.is-addition strong{color:#087653}
 .programme-support-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding:9px 0;border-top:1px solid #e4ece8}
+.programme-support-grid.has-four{grid-template-columns:repeat(4,minmax(0,1fr))}
 .programme-support-grid>span{min-width:0;padding:7px;border-radius:8px;background:#f4f8f6}
 .programme-support-grid small,.programme-support-grid strong{display:block}
 .programme-support-grid small{min-height:27px;color:#718078;font-size:9px;line-height:1.35}
@@ -383,7 +384,7 @@ body.modal-open{overflow:hidden}
   .hero-data-summary__grid{grid-template-columns:1fr}
   .programme-card__meta{align-items:flex-start;flex-direction:column;gap:3px;font-size:8px}
   .programme-card__meta>span:last-child{white-space:normal}
-  .programme-support-grid{grid-template-columns:1fr 1fr}
+  .programme-support-grid,.programme-support-grid.has-four{grid-template-columns:1fr 1fr}
   .hero-actions{grid-template-columns:1fr}
 }
 .funding-card-penabulu{align-items:flex-start;gap:8px}

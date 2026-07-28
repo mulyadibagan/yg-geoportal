@@ -1633,7 +1633,7 @@
         status: "Data final",
         updated: programmeMetrics.capacity.latestRecordDate || "Live WebGIS",
         rows: [
-          ["Pohon Mangrove Ditanam (Semua Program)", programmeMetrics.mangrove.seedlings],
+          ["Total Bibit Ditanam", programmeMetrics.mangrove.seedlings],
           ["Rumah Bibit", Math.max(4, programmeMetrics.mangrove.nurseries.size)],
           ["Desa Program", programmeMetrics.mangrove.villages.size]
         ]
@@ -1652,6 +1652,7 @@
         status: "Data final",
         updated: "Live WebGIS",
         rows: [
+          ["Total Bibit Ditanam", programmeMetrics.peat.coffee + programmeMetrics.peat.forest],
           ["Sekat Kanal", programmeMetrics.peat.canals],
           ["Estimasi Area Rewetting", peatRewettingArea, " ha", 2],
           ["FDRS", fdrsUnits]
@@ -1671,7 +1672,7 @@
         status: "Data final",
         updated: "Monitoring Juni 2026",
         rows: [
-          ["Bibit Ditanam", Math.max(1200, programmeMetrics.mineral.seedlings)],
+          ["Total Bibit Ditanam", Math.max(1200, programmeMetrics.mineral.seedlings)],
           ["Menara Air", Math.max(1, programmeMetrics.mineral.towers)],
           ["Plot Ukur Permanen", Math.max(1, programmeMetrics.mineral.plots)]
         ]
@@ -1745,7 +1746,8 @@
           '<div class="programme-compare__value is-current"><span>' + escapeHtml(card.currentLabel) + '</span><strong>' +
             escapeHtml(comparisonValue(card.current, baseline.unit)) + '</strong></div>' +
         '</div>' +
-        '<div class="programme-support-grid">' + card.rows.slice(0, 3).map(row =>
+        '<div class="programme-support-grid' + (card.key === "peat" ? " has-four" : "") + '">' +
+        card.rows.slice(0, card.key === "peat" ? 4 : 3).map(row =>
           '<span><small>' + escapeHtml(row[0]) + '</small><strong>' +
             escapeHtml(displayMetric(row[1], row[2] || "", row[3] || 0)) + '</strong></span>'
         ).join("") + '</div>' +
