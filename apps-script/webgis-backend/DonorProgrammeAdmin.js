@@ -4,10 +4,22 @@ const YG_DONOR_EVIDENCE_PROPERTY_KEY_ = 'YG_DONOR_EVIDENCE_V1';
 const YG_DONOR_ADMIN_RESULT_PREFIX_ = 'YG_DONOR_ADMIN_RESULT_';
 
 function getDonorProgrammeAdminData_() {
+  const evidence = readDonorAdminProperty_(YG_DONOR_EVIDENCE_PROPERTY_KEY_, []);
+  const evidenceById = {};
+  evidence.forEach(function(row) { evidenceById[clean_(row.id)] = row; });
+  const assignments = readDonorAdminProperty_(YG_DONOR_ASSIGNMENT_PROPERTY_KEY_, []).map(function(row) {
+    const source = evidenceById[clean_(row.evidenceId)];
+    if (!source) return row;
+    return Object.assign({}, row, {
+      evidenceUrl: clean_(source.url),
+      evidenceType: 'Evidence Nonspasial',
+      evidenceDocumentType: clean_(source.type)
+    });
+  });
   return {
     programmes: readDonorAdminProperty_(YG_DONOR_PROGRAMME_PROPERTY_KEY_, []),
-    assignments: readDonorAdminProperty_(YG_DONOR_ASSIGNMENT_PROPERTY_KEY_, []),
-    evidence: readDonorAdminProperty_(YG_DONOR_EVIDENCE_PROPERTY_KEY_, [])
+    assignments: assignments,
+    evidence: evidence
   };
 }
 

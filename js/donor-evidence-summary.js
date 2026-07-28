@@ -175,11 +175,16 @@
               return String(row.indicatorId || '') === String(activity.id || '');
             });
             var evidence = linked.map(function (row) {
-              var href = 'webgis.html?search=' + encodeURIComponent(row.evidenceId || row.evidenceTitle || '');
+              var isDocument = row.evidenceUrl && row.evidenceType === 'Evidence Nonspasial';
+              var href = isDocument
+                ? row.evidenceUrl
+                : 'webgis.html?search=' + encodeURIComponent(row.evidenceId || row.evidenceTitle || '');
               return '<div class="aramco-evidence-item"><b>✓ Evidence terverifikasi</b>' +
                 '<span>' + esc(row.evidenceTitle || row.evidenceId) + '</span>' +
                 (row.note ? '<small>' + esc(row.note) + '</small>' : '') +
-                '<a href="' + href + '">Lihat evidence di peta →</a></div>';
+                '<a href="' + esc(href) + '"' +
+                (isDocument ? ' target="_blank" rel="noopener"' : '') + '>' +
+                (isDocument ? 'Buka laporan →' : 'Lihat evidence di peta →') + '</a></div>';
             }).join('');
             return '<li class="' + (linked.length ? 'is-verified' : 'is-pending') + '">' +
               '<div><strong>' + esc(activity.name) + '</strong><span>' +

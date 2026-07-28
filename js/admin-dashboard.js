@@ -599,6 +599,8 @@
       assignmentId: 'ASN-LOCAL-' + now.getTime(),
       evidenceId: evidenceIdValue,
       evidenceTitle: evidenceLabel(evidence),
+      evidenceUrl: (evidence.properties || {}).documentUrl || '',
+      evidenceType: (evidence.properties || {}).reportType || '',
       donorId: donor.id || idFrom(donor.name),
       donorName: donor.name,
       programmeId: programmeId,
