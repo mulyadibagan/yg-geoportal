@@ -157,6 +157,9 @@
       partner: text(c.partnerOrResourcePerson),
       topic: text(c.topic),
       group: text(c.communityGroup),
+      supportSessionId: text(c.supportSessionId),
+      supportTestSummary: c.supportTestSummary && typeof c.supportTestSummary === 'object'
+        ? c.supportTestSummary : parse(c.supportTestSummary),
       documents: documentUrls(p.documentUrls || p.documents || p.documentUrl || c.documentUrls || c.documentUrl),
       photos: Array.isArray(p.photos) ? p.photos : []
     };
@@ -256,6 +259,17 @@
         var documents = documentUrls(r.documents || r.documentUrl).map(function (url, index) {
           return '<a class="capacity-document" href="' + esc(url) + '" target="_blank" rel="noopener noreferrer">Materi ' + (index + 1) + '</a>';
         }).join('');
+        var testSummary = r.supportTestSummary || {};
+        var posttest = r.supportSessionId
+          ? '<div class="capacity-posttest-summary"><div><span>POST-TEST SESSION</span>' +
+            '<strong>' + num(testSummary.postRespondents).toLocaleString('id-ID') +
+            ' responden post-test</strong><small>Skor rata-rata ' +
+            num(testSummary.postAvgScore).toLocaleString('id-ID', { maximumFractionDigits: 2 }) +
+            (num(testSummary.completionRate) ? ' · completion ' +
+              num(testSummary.completionRate).toLocaleString('id-ID', { maximumFractionDigits: 2 }) + '%' : '') +
+            '</small></div><a href="' + esc(buildLiveSessionDetailUrl(r.supportSessionId)) +
+            '">Buka detail post-test →</a></div>'
+          : '';
         return '' +
           '<article class="capacity-card" data-capacity-report-id="' + esc(r.id || '') + '">' +
             '<div class="capacity-card__head">' +
@@ -275,6 +289,7 @@
               '<p><strong>Topik/Materi</strong>' + esc(r.topic || '-') + '</p>' +
             '</div>' +
             (documents ? '<div class="capacity-documents">' + documents + '</div>' : '') +
+            posttest +
             (photos ? '<div class="capacity-photos">' + photos + '</div>' : '') +
           '</article>';
       }).join('');
