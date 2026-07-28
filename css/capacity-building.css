@@ -90,3 +90,4 @@
   .prepost-session-detail-stats{grid-template-columns:1fr 1fr}
   .prepost-question-columns{grid-template-columns:1fr}
 }
+.capacity-card.is-requested-report{outline:3px solid #19a875;outline-offset:3px;box-shadow:0 16px 38px rgba(8,118,83,.2);scroll-margin-top:110px}

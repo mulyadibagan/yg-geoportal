@@ -43,6 +43,38 @@
     return String(row.indicatorLabel || 'Output belum diklasifikasikan').split('→')[0].trim();
   }
 
+  function isCapacityEvidence(row) {
+    return /capacity building|training|pelatihan|nursery training|pembibitan/i.test([
+      row.evidenceType,
+      row.indicatorLabel,
+      row.evidenceTitle
+    ].join(' '));
+  }
+
+  function evidenceDestination(row) {
+    if (isCapacityEvidence(row)) {
+      return {
+        href: 'monitoring.html?view=capacity&report=' +
+          encodeURIComponent(row.evidenceId || ''),
+        label: 'Buka detail peningkatan kapasitas →',
+        external: false
+      };
+    }
+    if (row.evidenceUrl && row.evidenceType === 'Evidence Nonspasial') {
+      return {
+        href: row.evidenceUrl,
+        label: 'Buka laporan →',
+        external: true
+      };
+    }
+    return {
+      href: 'webgis.html?search=' +
+        encodeURIComponent(row.evidenceId || row.evidenceTitle || ''),
+      label: 'Lihat evidence di peta →',
+      external: false
+    };
+  }
+
   function statusFor(done, target) {
     if (target > 0 && done >= target) return { text: 'Completed', cls: 'state-completed' };
     if (done > 0) return { text: 'In Progress', cls: 'state-in-progress' };
@@ -70,8 +102,8 @@
     }
     if (brief && nurseryRows.length) {
       var briefMarkup = nurseryRows.map(function (row) {
-        var href = 'webgis.html?search=' + encodeURIComponent(row.evidenceId || row.evidenceTitle || '');
-        return '<a class="gec2026-report-link" href="' + href + '">' +
+        var destination = evidenceDestination(row);
+        return '<a class="gec2026-report-link" href="' + esc(destination.href) + '">' +
           esc(row.evidenceTitle || row.evidenceId) + '</a>';
       }).join('');
       if (brief.innerHTML !== briefMarkup) brief.innerHTML = briefMarkup;
@@ -87,8 +119,7 @@
       var latestMeta = latestParts.join(' · ');
       if (updateTitle && updateTitle.textContent !== latestTitle) updateTitle.textContent = latestTitle;
       if (updateTitle) {
-        updateTitle.href = 'webgis.html?search=' +
-          encodeURIComponent(latest.evidenceId || latest.evidenceTitle || '');
+        updateTitle.href = evidenceDestination(latest).href;
       }
       if (updateMeta && updateMeta.textContent !== latestMeta) updateMeta.textContent = latestMeta;
     }
@@ -183,16 +214,13 @@
               return String(row.indicatorId || '') === String(activity.id || '');
             });
             var evidence = linked.map(function (row) {
-              var isDocument = row.evidenceUrl && row.evidenceType === 'Evidence Nonspasial';
-              var href = isDocument
-                ? row.evidenceUrl
-                : 'webgis.html?search=' + encodeURIComponent(row.evidenceId || row.evidenceTitle || '');
+              var destination = evidenceDestination(row);
               return '<div class="aramco-evidence-item"><b>✓ Evidence terverifikasi</b>' +
                 '<span>' + esc(row.evidenceTitle || row.evidenceId) + '</span>' +
                 (row.note ? '<small>' + esc(row.note) + '</small>' : '') +
-                '<a href="' + esc(href) + '"' +
-                (isDocument ? ' target="_blank" rel="noopener"' : '') + '>' +
-                (isDocument ? 'Buka laporan →' : 'Lihat evidence di peta →') + '</a></div>';
+                '<a href="' + esc(destination.href) + '"' +
+                (destination.external ? ' target="_blank" rel="noopener"' : '') + '>' +
+                destination.label + '</a></div>';
             }).join('');
             return '<li class="' + (linked.length ? 'is-verified' : 'is-pending') + '">' +
               '<div><strong>' + esc(activity.name) + '</strong><span>' +

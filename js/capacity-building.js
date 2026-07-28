@@ -257,7 +257,7 @@
           return '<a class="capacity-document" href="' + esc(url) + '" target="_blank" rel="noopener noreferrer">Materi ' + (index + 1) + '</a>';
         }).join('');
         return '' +
-          '<article class="capacity-card">' +
+          '<article class="capacity-card" data-capacity-report-id="' + esc(r.id || '') + '">' +
             '<div class="capacity-card__head">' +
               '<div><span class="type-label">' + (r.kind === 'activity-engagement' ? 'PELAPORAN PELIBATAN · ' + esc(r.activityType || 'KEGIATAN LAPANGAN') : 'PELATIHAN / CAPACITY BUILDING') + '</span><h3>' + esc(r.name) + '</h3><p class="capacity-card__location">Lokasi: ' + esc(r.location || '-') + '</p></div>' +
               '<time>' + esc(formatDate(r.date)) + '</time>' +
@@ -278,6 +278,22 @@
             (photos ? '<div class="capacity-photos">' + photos + '</div>' : '') +
           '</article>';
       }).join('');
+
+    var requestedReport = new URLSearchParams(window.location.search).get('report');
+    if (requestedReport) {
+      var requestedCard = Array.prototype.find.call(
+        box.querySelectorAll('[data-capacity-report-id]'),
+        function (card) { return card.dataset.capacityReportId === requestedReport; }
+      );
+      if (requestedCard) {
+        requestedCard.classList.add('is-requested-report');
+        window.requestAnimationFrame(function () {
+          requestedCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          requestedCard.focus({ preventScroll: true });
+        });
+        requestedCard.tabIndex = -1;
+      }
+    }
   }
 
   function renderPrepostSummary(data) {
