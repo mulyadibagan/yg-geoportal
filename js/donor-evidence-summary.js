@@ -60,6 +60,8 @@
     var progress = document.getElementById('gec2026-progress-nursery');
     var badge = document.getElementById('gec2026-status-nursery');
     var brief = document.getElementById('gec2026-nursery-brief');
+    var updateTitle = document.getElementById('gec2026-update-title');
+    var updateMeta = document.getElementById('gec2026-update-meta');
     var progressText = Math.min(completed, 2) + ' / 2 villages';
     if (progress && progress.textContent !== progressText) progress.textContent = progressText;
     if (badge) {
@@ -69,6 +71,18 @@
     if (brief && nurseryRows.length) {
       var briefText = nurseryRows.map(function (row) { return row.evidenceTitle; }).join(' • ');
       if (brief.textContent !== briefText) brief.textContent = briefText;
+    }
+    if (nurseryRows.length) {
+      var latest = nurseryRows.slice().sort(function (a, b) {
+        return String(b.verifiedAt || '').localeCompare(String(a.verifiedAt || ''));
+      })[0];
+      var latestParts = String(latest.evidenceTitle || '').split('·').map(function (part) {
+        return part.trim();
+      }).filter(Boolean);
+      var latestTitle = latestParts.shift() || latest.evidenceTitle || 'Capacity Building';
+      var latestMeta = latestParts.join(' · ');
+      if (updateTitle && updateTitle.textContent !== latestTitle) updateTitle.textContent = latestTitle;
+      if (updateMeta && updateMeta.textContent !== latestMeta) updateMeta.textContent = latestMeta;
     }
   }
 
@@ -210,7 +224,13 @@
       new MutationObserver(queueApply).observe(grid, { childList: true, subtree: true });
     }
     if (window.MutationObserver) {
-      ['gec2026-progress-nursery', 'gec2026-status-nursery', 'gec2026-nursery-brief'].forEach(function (id) {
+      [
+        'gec2026-progress-nursery',
+        'gec2026-status-nursery',
+        'gec2026-nursery-brief',
+        'gec2026-update-title',
+        'gec2026-update-meta'
+      ].forEach(function (id) {
         var node = document.getElementById(id);
         if (!node) return;
         new MutationObserver(queueApply).observe(node, {
