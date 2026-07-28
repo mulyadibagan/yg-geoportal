@@ -955,12 +955,15 @@
         const activities = (output.activities || []).map(activity => {
           const linked = assignmentMap[String(activity.id || "")] || [];
           const evidence = linked.map(row => {
+            const isDocument = row.evidenceUrl && row.evidenceType === "Evidence Nonspasial";
             const meta = [row.evidenceTitle, row.verifiedAtLabel].filter(Boolean).join(" · ");
             return '<div class="aramco-evidence-item"><b>✓ Evidence terverifikasi</b><span>' +
               escapeHtml(meta) + '</span>' +
               (row.note ? '<small>' + escapeHtml(row.note) + '</small>' : '') +
-              '<a href="' + escapeHtml(mapUrl({ search: row.evidenceId || row.evidenceTitle })) +
-              '">Lihat evidence di peta →</a></div>';
+              '<a href="' + escapeHtml(isDocument ? row.evidenceUrl :
+                mapUrl({ search: row.evidenceId || row.evidenceTitle })) + '"' +
+              (isDocument ? ' target="_blank" rel="noopener"' : '') + '>' +
+              (isDocument ? 'Buka laporan →' : 'Lihat evidence di peta →') + '</a></div>';
           }).join("");
           return '<li class="' + (linked.length ? 'is-verified' : 'is-pending') + '">' +
             '<div><strong>' + escapeHtml(activity.name || "") + '</strong>' +
