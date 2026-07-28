@@ -19,6 +19,7 @@
   const OFFICIAL_LAYERS = [
     { id: "desa_intervensi", url: "data/desa_intervensi.geojson?v=20260726-14desa" },
     { id: "area_mangrove", url: "data/area_mangrove.geojson" },
+    { id: "mineral_land_restoration_area", url: "data/mineral_land_restoration_area.geojson" },
     { id: "area_kopi", url: "data/area_kopi.geojson" },
     { id: "kopi", url: "data/kopi.geojson" }
   ];

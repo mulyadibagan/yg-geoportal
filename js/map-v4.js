@@ -9,6 +9,7 @@
     desa_intervensi: { label: "Batas Desa Intervensi", color: "#2e7d32", visible: true },
     apo: { label: "Alat Pemecah Ombak (APO)", color: "#d32f2f", visible: true },
     area_mangrove: { label: "Area Penanaman Mangrove", color: "#00796b", visible: true },
+    mineral_land_restoration_area: { label: "Area Restorasi Lahan Mineral", color: "#558b2f", visible: true },
     titik_penanaman: { label: "Titik Penanaman", color: "#009688", visible: true },
     monitoring_reports: { label: "Hasil Monitoring Terverifikasi", color: "#f9a825", visible: true },
     community_reports: { label: "Laporan Masyarakat Terverifikasi", color: "#7b1fa2", visible: true },
@@ -299,7 +300,7 @@ L.control.scale({
       feature && feature.geometry && feature.geometry.type || ""
     );
 
-    if (layerId !== "community_reports" || geometryType !== "Point") {
+    if (layerId !== "community_reports") {
       return feature;
     }
 
@@ -320,6 +321,18 @@ L.control.scale({
     let target = null;
 
     if (
+      props.reportId === "YG-20260713-165007-843" &&
+      geometryType === "Polygon"
+    ) {
+      target = {
+        id: "mineral_land_restoration_area",
+        label: "Area Restorasi Lahan Mineral",
+        category: "Restorasi Lahan Mineral",
+        sourceType: "verified_mineral_land_restoration_area"
+      };
+    } else if (geometryType !== "Point") {
+      return feature;
+    } else if (
       identity.includes("menara tampung air") ||
       identity.includes("tower air") ||
       identity.includes("pendopo")

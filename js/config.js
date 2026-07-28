@@ -21,6 +21,13 @@ window.YG_LAYER_CONFIG = [
     "visible": true
   },
   {
+    "id": "mineral_land_restoration_area",
+    "label": "Area Restorasi Lahan Mineral",
+    "color": "#558b2f",
+    "type": "polygon",
+    "visible": true
+  },
+  {
     "id": "titik_penanaman",
     "label": "Titik Penanaman",
     "color": "#009688",

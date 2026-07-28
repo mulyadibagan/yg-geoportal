@@ -21,6 +21,15 @@ window.YG_OBJECT_SCHEMA = {
       "url": "data/area_mangrove.geojson"
     },
     {
+      "id": "mineral_land_restoration_area",
+      "label": "Area Restorasi Lahan Mineral",
+      "category": "Restorasi Lahan Mineral",
+      "prefix": "MINERAL-RESTORATION",
+      "include": true,
+      "unit": "ha",
+      "url": "data/mineral_land_restoration_area.geojson"
+    },
+    {
       "id": "titik_penanaman",
       "label": "Titik Penanaman",
       "category": "Penanaman",

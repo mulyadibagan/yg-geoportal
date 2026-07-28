@@ -695,6 +695,7 @@ function getAdminDashboardData(token) {
 function getAdminTargetLayerOptions_() {
   return [
     { id: 'area_mangrove', label: 'Area Penanaman Mangrove', types: ['Polygon', 'MultiPolygon'] },
+    { id: 'mineral_land_restoration_area', label: 'Area Restorasi Lahan Mineral', types: ['Polygon', 'MultiPolygon'] },
     { id: 'titik_penanaman', label: 'Titik Penanaman', types: ['Point', 'MultiPoint'] },
     { id: 'area_kopi', label: 'Wilayah Penanaman Kopi', types: ['Polygon', 'MultiPolygon'] },
     { id: 'area_agroforestry', label: 'Area Agroforestry', types: ['Polygon', 'MultiPolygon'] },
@@ -1350,6 +1351,7 @@ function validateTargetLayerCompatibility_(targetLayerId, geometryType) {
   };
   const polygonLayers = {
     area_mangrove: true,
+    mineral_land_restoration_area: true,
     area_kopi: true,
     desa_intervensi: true
   };

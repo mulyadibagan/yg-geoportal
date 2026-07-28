@@ -161,6 +161,7 @@
       "Restorasi Mangrove": "Mangrove Restoration",
       "Restorasi Gambut": "Peatland Restoration",
       "Restorasi Lahan Mineral": "Mineral Land Restoration",
+      "Area Restorasi Lahan Mineral": "Mineral Land Restoration Areas",
       "Peningkatan Kapasitas": "Capacity Building",
       "Pelibatan & Kapasitas": "Engagement & Capacity",
       "Pelibatan Masyarakat & Kapasitas": "Community Engagement & Capacity",

@@ -1999,6 +1999,20 @@
     return '';
   }
 
+  function newAreaLayerId(ecosystemType){
+    if(ecosystemType === 'Lahan Mineral'){
+      return 'mineral_land_restoration_area';
+    }
+    return '';
+  }
+
+  function newAreaLayerLabel(ecosystemType){
+    if(ecosystemType === 'Lahan Mineral'){
+      return 'Area Restorasi Lahan Mineral';
+    }
+    return '';
+  }
+
   function calculatePlantingAreaHa(seedlingCount, rowSpacing, plantSpacing){
     var count = Number(seedlingCount);
     var row = Number(rowSpacing);
@@ -2999,6 +3013,16 @@
           plantingDetails
         )
       : null;
+    var automaticAreaLayerId = selectedType === 'Area/Poligon Baru'
+      ? newAreaLayerId(newObjectEcosystem)
+      : '';
+    var automaticAreaLayerLabel = selectedType === 'Area/Poligon Baru'
+      ? newAreaLayerLabel(newObjectEcosystem)
+      : '';
+    if(newObjectAttributes && automaticAreaLayerId){
+      newObjectAttributes.Layer_Tujuan = automaticAreaLayerId;
+      newObjectAttributes.Layer_Label = automaticAreaLayerLabel;
+    }
 
     var capacityData = selectedType === 'Capacity Building'
       ? collectCapacityBuildingData()
@@ -3037,10 +3061,10 @@
       geometryGeoJSON:geometryGeoJSON ? JSON.stringify(geometryGeoJSON) : '',
       targetLayerId:selectedCorrectionFeature
         ? selectedCorrectionFeature.layerId
-        : newPointType,
+        : (newPointType || automaticAreaLayerId),
       targetLayerLabel:selectedCorrectionFeature
         ? selectedCorrectionFeature.layerLabel
-        : newPointLayerLabel(newPointType),
+        : (newPointLayerLabel(newPointType) || automaticAreaLayerLabel),
       targetSourceType:selectedCorrectionFeature
         ? selectedCorrectionFeature.sourceType
         : '',
