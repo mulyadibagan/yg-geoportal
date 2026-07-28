@@ -248,6 +248,8 @@ if (action === 'content-save') {
 }
     if (
       action === 'donor-programme-save' ||
+      action === 'donor-evidence-save' ||
+      action === 'donor-evidence-delete' ||
       action === 'donor-assignment-save' ||
       action === 'donor-assignment-delete'
     ) {

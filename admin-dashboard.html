@@ -74,8 +74,10 @@
             <label>Lokasi <small>(opsional)</small>
               <input id="nonspatial-evidence-location" placeholder="Contoh: Selangor, Malaysia">
             </label>
-            <label>Tautan dokumen/foto
-              <input id="nonspatial-evidence-url" type="url" required placeholder="https://drive.google.com/...">
+            <label>Upload laporan/dokumen
+              <input id="nonspatial-evidence-file" type="file" required
+                accept=".doc,.docx,.pdf,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png,.webp">
+              <small>Maksimal 20 MB. File disimpan otomatis ke Google Drive evidence YG.</small>
             </label>
             <label class="wide">Ringkasan hasil
               <textarea id="nonspatial-evidence-description" rows="3" required placeholder="Jelaskan kegiatan, hasil, dan alasan evidence ini mendukung capaian"></textarea>
