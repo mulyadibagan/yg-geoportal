@@ -3,11 +3,13 @@
 
   var API = 'https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec';
   var ASSIGNMENT_KEY = 'ygIpemsEvidenceAssignments_v1';
+  var NONSPATIAL_EVIDENCE_KEY = 'ygIpemsNonspatialEvidence_v1';
   var PROGRAMME_CONFIG_KEY = 'ygIpemsProgrammeConfig_v1';
   var DONOR_DATA = [];
   var EVIDENCE_DATA = [];
   var PROGRAMME_CONFIG = [];
   var ASSIGNMENT_DATA = [];
+  var NONSPATIAL_EVIDENCE_DATA = [];
   var ADMIN_SESSION = null;
   var REMOTE_AVAILABLE = false;
 
@@ -259,12 +261,32 @@
     });
   }
 
-  function mergeEvidence(liveFeatures, capacityRows, layerFeatures) {
+  function nonspatialEvidenceFeature(row) {
+    return {
+      type: 'Feature',
+      id: row.id,
+      properties: {
+        reportId: row.id,
+        reportType: 'Evidence Nonspasial',
+        title: row.title,
+        locationName: row.location || '',
+        activityDate: row.date || '',
+        description: row.description || '',
+        documentUrl: row.url || '',
+        evidenceType: row.type || 'Dokumen kegiatan',
+        status: 'Terverifikasi admin',
+        source: 'admin-dashboard'
+      }
+    };
+  }
+
+  function mergeEvidence(liveFeatures, capacityRows, layerFeatures, nonspatialRows) {
     var merged = [];
     var seen = {};
     (liveFeatures || [])
       .concat((capacityRows || []).map(capacityEvidenceFeature))
       .concat(layerFeatures || [])
+      .concat((nonspatialRows || []).map(nonspatialEvidenceFeature))
       .forEach(function (feature, index) {
       var key = evidenceId(feature, index);
       if (seen[key]) return;
@@ -287,7 +309,7 @@
       if (!groups[group]) groups[group] = [];
       groups[group].push(feature);
     });
-    var preferredOrder = ['Peningkatan Kapasitas', 'Monitoring Lapangan', 'Titik dan Infrastruktur Baru', 'Area/Poligon Baru'];
+    var preferredOrder = ['Evidence Nonspasial', 'Peningkatan Kapasitas', 'Monitoring Lapangan', 'Titik dan Infrastruktur Baru', 'Area/Poligon Baru'];
     var groupNames = Object.keys(groups).sort(function (left, right) {
       var leftIndex = preferredOrder.indexOf(left);
       var rightIndex = preferredOrder.indexOf(right);
@@ -309,6 +331,59 @@
           }).join('') + '</optgroup>';
       }).join('');
     if (!available.length) select.innerHTML += '<option disabled>Tidak ada evidence yang belum dihubungkan</option>';
+  }
+
+  function renderNonspatialEvidence() {
+    var container = document.getElementById('nonspatial-evidence-list');
+    if (!NONSPATIAL_EVIDENCE_DATA.length) {
+      container.innerHTML = '<div class="assignment-empty">Belum ada evidence nonspasial.</div>';
+      return;
+    }
+    var used = {};
+    assignments().forEach(function (row) { used[row.evidenceId] = true; });
+    container.innerHTML = NONSPATIAL_EVIDENCE_DATA.slice().reverse().map(function (row) {
+      return '<article class="assignment-record nonspatial-evidence-record">' +
+        '<div><strong>' + esc(row.title) + '</strong><small>' + esc(row.type + ' · ' + row.date) + '</small></div>' +
+        '<div><span>' + esc(row.location || 'Tanpa lokasi') + '</span><small>' +
+        '<a href="' + esc(row.url) + '" target="_blank" rel="noopener">Buka dokumen</a></small></div>' +
+        '<div><span>' + (used[row.id] ? 'Sudah ditautkan' : 'Belum ditautkan') + '</span><small>' + esc(row.id) + '</small></div>' +
+        '<button type="button" data-remove-nonspatial-evidence="' + esc(row.id) + '"' +
+        (used[row.id] ? ' disabled title="Batalkan assignment sebelum menghapus evidence"' : '') + '>Hapus</button></article>';
+    }).join('');
+  }
+
+  async function saveNonspatialEvidence(event) {
+    event.preventDefault();
+    var now = new Date();
+    var row = {
+      id: 'EV-NS-' + now.getTime(),
+      type: document.getElementById('nonspatial-evidence-type').value,
+      title: document.getElementById('nonspatial-evidence-title-input').value.trim(),
+      date: document.getElementById('nonspatial-evidence-date').value,
+      location: document.getElementById('nonspatial-evidence-location').value.trim(),
+      url: document.getElementById('nonspatial-evidence-url').value.trim(),
+      description: document.getElementById('nonspatial-evidence-description').value.trim(),
+      verifiedAt: now.toISOString(),
+      verifiedBy: ADMIN_SESSION && ADMIN_SESSION.username ? ADMIN_SESSION.username : 'admin'
+    };
+    var feedback = document.getElementById('nonspatial-evidence-feedback');
+    feedback.textContent = REMOTE_AVAILABLE ? 'Menyimpan evidence ke database pusat...' : 'Menyimpan evidence sementara di browser...';
+    try {
+      if (REMOTE_AVAILABLE) NONSPATIAL_EVIDENCE_DATA = await postAdmin('donor-evidence-save', row);
+      else {
+        NONSPATIAL_EVIDENCE_DATA.push(row);
+        localStorage.setItem(NONSPATIAL_EVIDENCE_KEY, JSON.stringify(NONSPATIAL_EVIDENCE_DATA));
+      }
+      EVIDENCE_DATA.push(nonspatialEvidenceFeature(row));
+      event.target.reset();
+      renderNonspatialEvidence();
+      renderEvidenceOptions();
+      feedback.textContent = REMOTE_AVAILABLE
+        ? 'Evidence nonspasial tersimpan dan siap ditautkan.'
+        : 'Evidence tersimpan di browser dan siap ditautkan.';
+    } catch (error) {
+      feedback.textContent = error.message;
+    }
   }
 
   function renderDonors() {
@@ -444,6 +519,7 @@
     if (!rows.length) {
       container.innerHTML = '<div class="assignment-empty">Belum ada assignment pada database pusat.</div>';
       renderEvidenceOptions();
+      renderNonspatialEvidence();
       return;
     }
     container.innerHTML = rows.slice().reverse().map(function (row) {
@@ -455,6 +531,7 @@
       '</article>';
     }).join('');
     renderEvidenceOptions();
+    renderNonspatialEvidence();
   }
 
   async function saveAssignment(event) {
@@ -697,6 +774,28 @@
   }
 
   function bind() {
+    document.getElementById('nonspatial-evidence-form').addEventListener('submit', saveNonspatialEvidence);
+    document.getElementById('nonspatial-evidence-list').addEventListener('click', async function (event) {
+      var button = event.target.closest('[data-remove-nonspatial-evidence]');
+      if (!button || button.disabled) return;
+      var evidenceIdValue = button.dataset.removeNonspatialEvidence;
+      var feedback = document.getElementById('nonspatial-evidence-feedback');
+      try {
+        if (REMOTE_AVAILABLE) NONSPATIAL_EVIDENCE_DATA = await postAdmin('donor-evidence-delete', { evidenceId: evidenceIdValue });
+        else {
+          NONSPATIAL_EVIDENCE_DATA = NONSPATIAL_EVIDENCE_DATA.filter(function (row) { return row.id !== evidenceIdValue; });
+          localStorage.setItem(NONSPATIAL_EVIDENCE_KEY, JSON.stringify(NONSPATIAL_EVIDENCE_DATA));
+        }
+        EVIDENCE_DATA = EVIDENCE_DATA.filter(function (feature, index) {
+          return evidenceId(feature, index) !== evidenceIdValue;
+        });
+        renderNonspatialEvidence();
+        renderEvidenceOptions();
+        feedback.textContent = 'Evidence nonspasial dihapus.';
+      } catch (error) {
+        feedback.textContent = error.message;
+      }
+    });
     document.getElementById('assignment-donor').addEventListener('change', renderProgrammes);
     document.getElementById('assignment-programme').addEventListener('change', renderIndicators);
     document.getElementById('evidence-assignment-form').addEventListener('submit', saveAssignment);
@@ -768,16 +867,21 @@
         Array.isArray(results[2] && results[2].assignments);
       PROGRAMME_CONFIG = REMOTE_AVAILABLE ? results[2].programmes : localRows(PROGRAMME_CONFIG_KEY);
       ASSIGNMENT_DATA = REMOTE_AVAILABLE ? results[2].assignments : localRows(ASSIGNMENT_KEY);
+      NONSPATIAL_EVIDENCE_DATA = REMOTE_AVAILABLE
+        ? (results[2].evidence || [])
+        : localRows(NONSPATIAL_EVIDENCE_KEY);
       applyProgrammeConfig(PROGRAMME_CONFIG);
       EVIDENCE_DATA = mergeEvidence(
         (results[1] && results[1].features) || [],
         results[3] || [],
-        results[4] || []
+        results[4] || [],
+        NONSPATIAL_EVIDENCE_DATA
       );
       renderAuthState();
       renderDonors();
       renderProgrammeAdmin();
       populateLogframe(null);
+      renderNonspatialEvidence();
       renderHistory();
       if (!EVIDENCE_DATA.length) {
         document.getElementById('assignment-feedback').textContent =
