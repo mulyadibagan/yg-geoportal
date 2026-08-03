@@ -5,6 +5,7 @@
   window.__YG_MAP_MONITORING_FIX_ACTIVE__ = true;
 
   var REPORTS_API = 'https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec?page=public-reports';
+  var latestReportsData = null;
 
   function clean(value) {
     return String(value == null ? '' : value).trim();
@@ -133,6 +134,14 @@
     var api = window.YG_MAP;
     var group = api && api.layerObjects && api.layerObjects.monitoring_reports;
     if (!group || typeof group.eachLayer !== 'function') return false;
+    if (api.map && !api.map.__ygMonitoringPhotoRefreshBound) {
+      api.map.__ygMonitoringPhotoRefreshBound = true;
+      api.map.on('popupopen', function () {
+        if (latestReportsData) {
+          window.setTimeout(function () { mergeReports(latestReportsData); }, 0);
+        }
+      });
+    }
     group.eachLayer(function (layer) {
       if (layer && typeof layer.bringToFront === 'function') layer.bringToFront();
       if (layer && layer._path) layer._path.style.pointerEvents = 'auto';
@@ -144,6 +153,14 @@
     var api = window.YG_MAP;
     var group = api && api.layerObjects && api.layerObjects.monitoring_reports;
     if (!group || typeof group.eachLayer !== 'function') return false;
+    if (api.map && !api.map.__ygMonitoringPhotoRefreshBound) {
+      api.map.__ygMonitoringPhotoRefreshBound = true;
+      api.map.on('popupopen', function () {
+        if (latestReportsData) {
+          window.setTimeout(function () { mergeReports(latestReportsData); }, 0);
+        }
+      });
+    }
 
     var reports = data && Array.isArray(data.features) ? data.features : [];
     var byReport = {};
@@ -202,11 +219,13 @@
       window.clearTimeout(timer);
       try { delete window[callback]; } catch (error) { window[callback] = undefined; }
       if (script.parentNode) script.parentNode.removeChild(script);
+      latestReportsData = data;
       var attempts = 0;
       (function applyWhenReady() {
         attempts += 1;
-        if (!mergeReports(data) && attempts < 240) {
-          window.setTimeout(applyWhenReady, 300);
+        mergeReports(data);
+        if (attempts < 80) {
+          window.setTimeout(applyWhenReady, 500);
         }
       })();
     }
@@ -218,6 +237,7 @@
     timer = window.setTimeout(function () { finish({ features: [] }); }, 30000);
     document.head.appendChild(script);
   }
+
 
   document.addEventListener('change', function (event) {
     if (event.target && event.target.matches('#layer-list input[type="checkbox"]')) {
