@@ -145,7 +145,9 @@
     lightbox.innerHTML =
       '<button class="yg-gallery-lightbox__close" type="button" data-lightbox-close aria-label="Tutup">×</button>' +
       '<button class="yg-gallery-lightbox__nav yg-gallery-lightbox__prev" type="button" data-lightbox-prev aria-label="Foto sebelumnya">‹</button>' +
-      '<img class="yg-gallery-lightbox__image" alt="Foto dokumentasi">' +
+      '<div class="yg-gallery-lightbox__viewport" tabindex="0" aria-label="Foto diperbesar; geser untuk melihat seluruh foto">' +
+        '<img class="yg-gallery-lightbox__image" alt="Foto dokumentasi">' +
+      '</div>' +
       '<button class="yg-gallery-lightbox__nav yg-gallery-lightbox__next" type="button" data-lightbox-next aria-label="Foto berikutnya">›</button>' +
       '<span class="yg-gallery-lightbox__counter"></span>';
     document.body.appendChild(lightbox);
@@ -161,6 +163,11 @@
     var lightbox = ensureLightbox();
     lightbox.querySelector('.yg-gallery-lightbox__image').src = item.full;
     lightbox.querySelector('.yg-gallery-lightbox__image').alt = item.alt;
+    var viewport = lightbox.querySelector('.yg-gallery-lightbox__viewport');
+    if (viewport) {
+      viewport.scrollTop = 0;
+      viewport.scrollLeft = 0;
+    }
     lightbox.querySelector('.yg-gallery-lightbox__counter').textContent =
       (activeIndex + 1) + ' / ' + items.length;
     lightbox.querySelector('[data-lightbox-prev]').hidden = items.length < 2;
@@ -175,6 +182,8 @@
     lightbox.classList.add('is-open');
     lightbox.setAttribute('aria-hidden', 'false');
     document.body.classList.add('yg-gallery-lightbox-open');
+    var viewport = lightbox.querySelector('.yg-gallery-lightbox__viewport');
+    if (viewport) window.setTimeout(function () { viewport.focus({ preventScroll: true }); }, 0);
   }
 
   function closeLightbox() {
