@@ -259,6 +259,11 @@ body.webgis-page .app-shell{
 }
 .yg-monitoring-popup .popup-body{
   max-height:min(52vh,380px);
+  padding-bottom:12px;
+}
+.yg-monitoring-popup .yg-popup-actions{
+  position:static;
+  margin-top:10px;
 }
 .yg-monitoring-popup .yg-popup-gallery-v2__stage{
   aspect-ratio:16/9;

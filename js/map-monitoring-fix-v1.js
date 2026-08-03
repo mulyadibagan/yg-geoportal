@@ -136,7 +136,22 @@
     if (!group || typeof group.eachLayer !== 'function') return false;
     if (api.map && !api.map.__ygMonitoringPhotoRefreshBound) {
       api.map.__ygMonitoringPhotoRefreshBound = true;
-      api.map.on('popupopen', function () {
+      api.map.on('popupopen', function (event) {
+        var popupElement = event && event.popup && event.popup.getElement
+          ? event.popup.getElement()
+          : null;
+        var popupBody = popupElement && popupElement.querySelector('.popup-body');
+        if (popupBody && popupElement.classList.contains('yg-monitoring-popup')) {
+          if (window.L && L.DomEvent) {
+            L.DomEvent.disableScrollPropagation(popupBody);
+          }
+          popupBody.addEventListener('wheel', function (wheelEvent) {
+            wheelEvent.stopPropagation();
+          }, { passive: true });
+          popupBody.addEventListener('touchmove', function (touchEvent) {
+            touchEvent.stopPropagation();
+          }, { passive: true });
+        }
         if (latestReportsData) {
           window.setTimeout(function () { mergeReports(latestReportsData); }, 0);
         }
@@ -155,7 +170,22 @@
     if (!group || typeof group.eachLayer !== 'function') return false;
     if (api.map && !api.map.__ygMonitoringPhotoRefreshBound) {
       api.map.__ygMonitoringPhotoRefreshBound = true;
-      api.map.on('popupopen', function () {
+      api.map.on('popupopen', function (event) {
+        var popupElement = event && event.popup && event.popup.getElement
+          ? event.popup.getElement()
+          : null;
+        var popupBody = popupElement && popupElement.querySelector('.popup-body');
+        if (popupBody && popupElement.classList.contains('yg-monitoring-popup')) {
+          if (window.L && L.DomEvent) {
+            L.DomEvent.disableScrollPropagation(popupBody);
+          }
+          popupBody.addEventListener('wheel', function (wheelEvent) {
+            wheelEvent.stopPropagation();
+          }, { passive: true });
+          popupBody.addEventListener('touchmove', function (touchEvent) {
+            touchEvent.stopPropagation();
+          }, { passive: true });
+        }
         if (latestReportsData) {
           window.setTimeout(function () { mergeReports(latestReportsData); }, 0);
         }
