@@ -1720,9 +1720,15 @@ L.control.scale({
         const checkbox = document.getElementById("layer-" + layerId);
         if (checkbox) checkbox.checked = true;
       }
+      // Dashboard links may filter and zoom by donor, but must not open the
+      // search suggestion panel. On tablets that panel covers the layer list.
       const input = document.getElementById("search-input");
-      if (input) input.value = donor === "aramco" ? "Aramco Asia Singapore" : donor;
-      renderSearch(donor);
+      if (input) input.value = "";
+      const searchResults = document.getElementById("search-results");
+      if (searchResults) {
+        searchResults.hidden = true;
+        searchResults.innerHTML = "";
+      }
       if (bounds.isValid()) {
         map.fitBounds(bounds, { padding: [30, 30], maxZoom: 17 });
       } else if (layerId) {
