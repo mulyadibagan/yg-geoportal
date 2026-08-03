@@ -2056,7 +2056,7 @@ L.control.scale({
         script.remove();
         try { delete window[callbackName]; } catch (error) {}
         reject(new Error("JSONP tidak memberi respons."));
-      }, 30000);
+      }, 20000);
 
       window[callbackName] = data => {
         window.clearTimeout(timer);
@@ -2947,16 +2947,26 @@ L.control.scale({
   setStatus("Mengambil objek dari Master Database…", false);
 
   try {
-    // 1. Ambil data dari Google Apps Script
-    const response = await fetch(API + "&t=" + Date.now(), {
-      method: "GET",
-      cache: "no-store",
-      redirect: "follow"
-    });
+    // 1. Ambil data dari Google Apps Script. Jangan biarkan UI menggantung
+    // selamanya jika koneksi utama lambat; lanjutkan ke JSONP cadangan.
+    const fetchController = new AbortController();
+    const fetchTimeout = window.setTimeout(() => {
+      fetchController.abort();
+    }, 12000);
+    let data;
+    try {
+      const response = await fetch(API + "&t=" + Date.now(), {
+        method: "GET",
+        cache: "no-store",
+        redirect: "follow",
+        signal: fetchController.signal
+      });
 
-    if (!response.ok) throw new Error("HTTP " + response.status);
-
-    const data = await response.json();
+      if (!response.ok) throw new Error("HTTP " + response.status);
+      data = await response.json();
+    } finally {
+      window.clearTimeout(fetchTimeout);
+    }
 
     // 2. Selaraskan geometri laporan dengan SHP mangrove resmi terbaru.
     try {
