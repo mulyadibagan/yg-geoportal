@@ -223,27 +223,26 @@
 
     group.eachLayer(function (layer) {
       var properties = layer && layer.feature && layer.feature.properties || {};
-      var photos = byReport[reportKey(properties)] ||
-        byObject[objectKey(properties)] ||
-        byFallback[fallbackKey(properties)] ||
-        byLocation[normalize(properties.targetObjectName || properties.locationName || properties.Nama_Objek || properties.title || properties.village || properties.desa || '')] ||
-        photosOf(properties) || [];
+      var photos = byReport[reportKey(properties)] || photosOf(properties) || [];
       if (!photos.length || !layer.getPopup || !layer.getPopup()) return;
 
       properties.photos = photos;
       var popup = layer.getPopup();
       var content = String(popup.getContent() || '');
-      if (content.indexOf('yg-v3-gallery') !== -1) return;
       var gallery = photoGallery(photos);
-      if (content.indexOf('<div class="popup-body">') !== -1) {
-        content = content.replace(
+      var nextContent = content.replace(
+        /<div class="yg-v3-gallery[^"]*">[^]*?<[/]div>/g,
+        ''
+      );
+      if (nextContent.indexOf('<div class="popup-body">') !== -1) {
+        nextContent = nextContent.replace(
           '<div class="popup-body">',
           '<div class="popup-body">' + gallery
         );
       } else {
-        content += gallery;
+        nextContent += gallery;
       }
-      popup.setContent(content);
+      if (nextContent !== content) popup.setContent(nextContent);
     });
 
     bringMonitoringToFront();

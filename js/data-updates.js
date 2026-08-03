@@ -694,16 +694,8 @@ function toDirectDriveUrl(url){
     }
   }
 
-  function keepMonitoringPhotosSynced(data, attempt = 0) {
-    (data.updates || []).forEach(update => syncMonitoringPhotos(update));
-    if (attempt < 240) {
-      setTimeout(() => keepMonitoringPhotosSynced(data, attempt + 1), 300);
-    }
-  }
-
   window[CALLBACK] = data => {
     applyAll(data);
-    keepMonitoringPhotosSynced(data);
   };
 
   const style = document.createElement("style");
