@@ -45,6 +45,75 @@
     return normalize(value || "");
   }
 
+  function entityIds(properties) {
+    const props = properties || {};
+    const target = parseObject(props.targetFeatureProperties);
+    const changes = parseObject(props.proposedChanges);
+    const values = [
+      target.target_entity_id, target.targetEntityId,
+      target.targetReportId, target.Target_Report_ID,
+      target.Source_Report_ID, target.Report_ID, target.reportId,
+      target.Object_ID, target.Target_Object_ID_Current,
+      target.Target_Object_ID, target.objectId, target.OBJECTID,
+      props.target_entity_id, props.targetEntityId,
+      props.targetReportId, props.Target_Report_ID,
+      props.Source_Report_ID, props.Report_ID,
+      props.reportId, props.submissionId,
+      props.Object_ID, props.Target_Object_ID_Current,
+      props.Target_Object_ID, props.objectId, props.OBJECTID,
+      changes.target_entity_id, changes.targetEntityId,
+      changes.targetReportId, changes.Target_Report_ID,
+      changes.Source_Report_ID, changes.Report_ID, changes.reportId,
+      changes.Object_ID, changes.Target_Object_ID_Current,
+      changes.Target_Object_ID, changes.objectId, changes.OBJECTID,
+      changes.targetObjectId, props.targetObjectId
+    ];
+    return Array.from(new Set(values
+      .filter(value => value !== null && value !== undefined && String(value).trim())
+      .map(value => normalize(value))));
+  }
+
+  function isPhotoUpdate(update) {
+    const type = normalize(
+      update && (update.reportType || update.type || update.formType ||
+        update.action || update.category)
+    ).replace(/[_-]+/g, " ");
+    return type === "tambah foto kegiatan" ||
+      type === "tambah foto" ||
+      type === "add photos" ||
+      type === "add photo" ||
+      type === "add media" ||
+      type.indexOf("tambah foto") !== -1 ||
+      type.indexOf("add photo") !== -1 ||
+      type.indexOf("add media") !== -1;
+  }
+
+  function photoValues(update) {
+    const source = update || {};
+    const nested = [
+      parseObject(source.targetFeatureProperties),
+      parseObject(source.proposedChanges)
+    ];
+    const keys = [
+      "photos", "photoUrls", "photo_urls", "media", "mediaUrls",
+      "Foto", "Foto_1", "Foto_2", "Foto_3", "Foto_4", "Foto_5",
+      "Foto_URL", "foto", "foto1", "foto2", "foto3", "foto4", "foto5",
+      "photoUrl", "photoURL", "image", "images",
+      "photo_before_ids", "photo_after_ids"
+    ];
+    const values = [];
+    [source].concat(nested).forEach(item => {
+      keys.forEach(key => {
+        const value = item && item[key];
+        if (Array.isArray(value)) values.push.apply(values, value);
+        else if (typeof value === "string" && value.trim()) {
+          value.split(/[\n,;|]+/).forEach(part => values.push(part));
+        }
+      });
+    });
+    return uniquePhotos(values);
+  }
+
   function isLegacyAutoId(value) {
     return /:auto:/i.test(String(value || ""));
   }
@@ -134,7 +203,7 @@
 
   function legacyPhotoMatches(feature, update, target) {
     const props = feature.properties || {};
-    if (normalize(update.reportType) !== "tambah foto kegiatan") return false;
+    if (!isPhotoUpdate(update)) return false;
 
     const actualLayer = targetLayer(props);
     const expectedLayer = targetLayer(update);
@@ -307,11 +376,8 @@ function toDirectDriveUrl(url){
   }
 
   function syncMonitoringPhotos(update) {
-    if (
-      normalize(update.reportType) !== "tambah foto kegiatan" ||
-      !Array.isArray(update.photos) ||
-      !update.photos.length
-    ) {
+    const addedPhotos = photoValues(update);
+    if (!isPhotoUpdate(update) || !addedPhotos.length) {
       return;
     }
 
@@ -323,15 +389,17 @@ function toDirectDriveUrl(url){
       return;
     }
 
-    const updateId = objectId(update);
+    const updateIds = entityIds(update);
     const updateLayer = targetLayer(update);
     const updateName = objectName(update);
-    if (!updateId && (!updateLayer || !updateName)) return;
+    if (!updateIds.length && (!updateLayer || !updateName)) return;
 
     monitoringGroup.eachLayer(layer => {
       const props = layer && layer.feature && layer.feature.properties || {};
-      const matches = updateId
-        ? objectId(props) === updateId
+      const featureIds = entityIds(props);
+      const idsMatch = updateIds.some(id => featureIds.indexOf(id) !== -1);
+      const matches = updateIds.length
+        ? idsMatch
         : targetLayer(props) === updateLayer && objectName(props) === updateName;
       if (!matches) {
         return;
@@ -339,7 +407,7 @@ function toDirectDriveUrl(url){
 
       props._ygPhotos = uniquePhotos(
         (Array.isArray(props._ygPhotos) ? props._ygPhotos : [])
-          .concat(update.photos)
+          .concat(addedPhotos)
       );
 
       if (!layer.getPopup || !layer.getPopup()) return;
@@ -532,6 +600,8 @@ function toDirectDriveUrl(url){
   }
 
   function applyUpdate(update) {
+    const normalizedPhotos = photoValues(update);
+    if (normalizedPhotos.length) update.photos = normalizedPhotos;
     syncMonitoringPhotos(update);
 
     const mapApi = window.YG_MAP;
@@ -573,7 +643,7 @@ function toDirectDriveUrl(url){
       // Tambah Foto hanya memperkaya galeri. Deskripsi/catatan laporan foto
       // tidak boleh menggantikan atau mengubah informasi objek utama.
       if (
-        normalize(update.reportType) !== "tambah foto kegiatan" &&
+        !isPhotoUpdate(update) &&
         update.note &&
         !isAdministrativePhotoNote(update.note) &&
         props._ygUpdateNotes.indexOf(update.note) === -1
@@ -581,7 +651,7 @@ function toDirectDriveUrl(url){
         props._ygUpdateNotes.push(update.note);
       }
 
-      if (normalize(update.reportType) === "tambah foto kegiatan") {
+      if (isPhotoUpdate(update)) {
         updatePhotoGalleryOnly(layer, uniquePhotos(props._ygPhotos));
       } else {
         layer.bindPopup(
