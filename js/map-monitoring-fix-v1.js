@@ -195,13 +195,13 @@
       var content = String(popup.getContent() || '');
       if (content.indexOf('yg-v3-gallery') !== -1) return;
       var gallery = photoGallery(photos);
-      if (content.indexOf('<div class="yg-popup-actions">') !== -1) {
+      if (content.indexOf('<div class="popup-body">') !== -1) {
         content = content.replace(
-          '<div class="yg-popup-actions">',
-          gallery + '<div class="yg-popup-actions">'
+          '<div class="popup-body">',
+          '<div class="popup-body">' + gallery
         );
       } else {
-        content = content.replace(/(<\/div>\s*<\/div>\s*)$/, gallery + '$1');
+        content += gallery;
       }
       popup.setContent(content);
     });

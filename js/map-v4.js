@@ -901,7 +901,7 @@ L.control.scale({
           '<span>' + escapeHtml(config.label) + '</span>' +
         '</div>' +
         '<div class="popup-body">' +
-          rows + gallery + sdgHtml + monitoringAction +
+          (isMonitoring ? gallery + rows : rows + gallery) + sdgHtml + monitoringAction +
         '</div>' +
       '</div>'
     );
