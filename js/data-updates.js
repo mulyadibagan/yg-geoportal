@@ -604,8 +604,6 @@ function toDirectDriveUrl(url){
   function applyUpdate(update) {
     const normalizedPhotos = photoValues(update);
     if (normalizedPhotos.length) update.photos = normalizedPhotos;
-    syncMonitoringPhotos(update);
-
     const mapApi = window.YG_MAP;
     const parent = mapApi && mapApi.layerObjects
       ? mapApi.layerObjects[update.targetLayerId]

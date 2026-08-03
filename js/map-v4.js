@@ -787,7 +787,7 @@ L.control.scale({
     }
 
     const photos = [
-      ...cleanPhotoList(props._ygPhotos),
+      ...(isMonitoring ? [] : cleanPhotoList(props._ygPhotos)),
       ...cleanPhotoList(props.photos),
       ...cleanPhotoList(props.Foto),
       ...cleanPhotoList(props.Foto_2)
@@ -1032,9 +1032,12 @@ L.control.scale({
 
         single.eachLayer(layer => {
           layer.bindPopup(buildPopup(feature, config), {
-            maxWidth: 400,
+            maxWidth: config.id === "monitoring_reports" ? 320 : 400,
             autoPan: config.id !== "monitoring_reports",
-            keepInView: false
+            keepInView: false,
+            className: config.id === "monitoring_reports"
+              ? "yg-monitoring-popup"
+              : ""
           });
 
           /*
