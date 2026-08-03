@@ -1031,7 +1031,11 @@ L.control.scale({
         });
 
         single.eachLayer(layer => {
-          layer.bindPopup(buildPopup(feature, config), { maxWidth: 400 });
+          layer.bindPopup(buildPopup(feature, config), {
+            maxWidth: 400,
+            autoPan: config.id !== "monitoring_reports",
+            keepInView: false
+          });
 
           /*
            * Buka popup secara eksplisit. Pada beberapa browser, objek SVG yang
