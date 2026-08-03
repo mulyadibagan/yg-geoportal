@@ -694,7 +694,37 @@ function toDirectDriveUrl(url){
     }
   }
 
+  function publishLatestMonitoringPhotos(data) {
+    const latestByObject = {};
+    (data.updates || []).forEach(update => {
+      if (!isPhotoUpdate(update) || targetLayer(update) !== "area_mangrove") return;
+      const key = objectId(update);
+      const photos = photoValues(update);
+      if (!key || !photos.length) return;
+      const rawDate = String(update.publishedAt || update.activityDate || "");
+      const dateParts = rawDate.split("/");
+      const timestamp = dateParts.length >= 3
+        ? Date.UTC(
+            Number(dateParts[2].slice(0, 4)),
+            Number(dateParts[1]) - 1,
+            Number(dateParts[0])
+          )
+        : (Date.parse(rawDate) || 0);
+      const current = latestByObject[key];
+      if (!current || timestamp >= current.timestamp) {
+        latestByObject[key] = { photos: uniquePhotos(photos), timestamp };
+      }
+    });
+    window.YG_LATEST_MONITORING_PHOTOS_BY_OBJECT = Object.keys(latestByObject)
+      .reduce((result, key) => {
+        result[key] = latestByObject[key].photos;
+        return result;
+      }, {});
+    document.dispatchEvent(new CustomEvent("yg:monitoring-update-photos"));
+  }
+
   window[CALLBACK] = data => {
+    publishLatestMonitoringPhotos(data);
     applyAll(data);
   };
 

@@ -109,7 +109,7 @@
 
   function objectKey(properties) {
     properties = properties || {};
-    return normalize(properties.targetObjectId || properties.Object_ID || '');
+    return normalize(properties.Target_Object_ID || properties.targetObjectId || properties.Object_ID || '');
   }
 
   function fallbackKey(properties) {
@@ -223,7 +223,10 @@
 
     group.eachLayer(function (layer) {
       var properties = layer && layer.feature && layer.feature.properties || {};
-      var photos = byReport[reportKey(properties)] || photosOf(properties) || [];
+      var latestUpdatePhotos = window.YG_LATEST_MONITORING_PHOTOS_BY_OBJECT || {};
+      var photos = byReport[reportKey(properties)] ||
+        latestUpdatePhotos[objectKey(properties)] ||
+        photosOf(properties) || [];
       if (!photos.length || !layer.getPopup || !layer.getPopup()) return;
 
       properties.photos = photos;
@@ -277,6 +280,10 @@
     document.head.appendChild(script);
   }
 
+
+  document.addEventListener('yg:monitoring-update-photos', function () {
+    if (latestReportsData) mergeReports(latestReportsData);
+  });
 
   document.addEventListener('change', function (event) {
     if (event.target && event.target.matches('#layer-list input[type="checkbox"]')) {
