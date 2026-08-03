@@ -1032,7 +1032,7 @@ L.control.scale({
 
         single.eachLayer(layer => {
           layer.bindPopup(buildPopup(feature, config), {
-            maxWidth: config.id === "monitoring_reports" ? 320 : 400,
+            maxWidth: config.id === "monitoring_reports" ? 280 : 400,
             autoPan: config.id !== "monitoring_reports",
             keepInView: false,
             className: config.id === "monitoring_reports"
@@ -2626,8 +2626,29 @@ L.control.scale({
       }];
     });
 
+    const latestMonitoringByTarget = new Map();
+    alignedFeatures.forEach(feature => {
+      if (!isMangroveMonitoringFeature(feature)) return;
+      const props = feature && feature.properties || {};
+      const targetKey = normalizedMatchValue(props.Target_Object_ID_Current || props.Target_Object_ID);
+      if (!targetKey) return;
+      const rawDate = String(props.activityDate || props.Tanggal || props.publishedAt || props.receivedAt || "").trim();
+      const dayFirst = rawDate.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+      const timestamp = dayFirst
+        ? Date.UTC(Number(dayFirst[3]), Number(dayFirst[2]) - 1, Number(dayFirst[1]))
+        : (Date.parse(rawDate) || 0);
+      const current = latestMonitoringByTarget.get(targetKey);
+      if (!current || timestamp >= current.timestamp) latestMonitoringByTarget.set(targetKey, { feature, timestamp });
+    });
+    const latestAlignedFeatures = alignedFeatures.filter(feature => {
+      if (!isMangroveMonitoringFeature(feature)) return true;
+      const props = feature && feature.properties || {};
+      const targetKey = normalizedMatchValue(props.Target_Object_ID_Current || props.Target_Object_ID);
+      const latest = latestMonitoringByTarget.get(targetKey);
+      return !latest || latest.feature === feature;
+    });
     data.features = [
-      ...alignedFeatures,
+      ...latestAlignedFeatures,
       ...mangrove.features
     ];
     return data;

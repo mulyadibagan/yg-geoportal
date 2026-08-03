@@ -255,10 +255,10 @@ body.webgis-page .app-shell{
   .yg-gallery-lightbox__prev{left:8px}.yg-gallery-lightbox__next{right:8px}
 }
 .yg-monitoring-popup .leaflet-popup-content{
-  width:min(320px,calc(100vw - 72px))!important;
+  width:min(280px,calc(100vw - 48px))!important;
 }
 .yg-monitoring-popup .popup-body{
-  max-height:min(58vh,460px);
+  max-height:min(52vh,380px);
 }
 .yg-monitoring-popup .yg-popup-gallery-v2__stage{
   aspect-ratio:16/9;
