@@ -54,31 +54,51 @@
     });
   }
 
+  function appendPhotoValues(output, value) {
+    if (value == null || value === '') return;
+    if (Array.isArray(value)) {
+      value.forEach(function (item) { appendPhotoValues(output, item); });
+      return;
+    }
+    if (value && typeof value === 'object') {
+      appendPhotoValues(output, value.url || value.webViewLink || value.fileUrl || value.src || '');
+      return;
+    }
+    var text = clean(value);
+    var values;
+    if (!text) return;
+    try {
+      values = JSON.parse(text);
+      if (values !== text) {
+        appendPhotoValues(output, values);
+        return;
+      }
+    } catch (error) {}
+    values = text.match(/https?:\/\/[^\s,;|"'<>]+/gi) || [];
+    values.forEach(function (url) {
+      url = clean(url).replace(/[)\]}]+$/, '');
+      if (output.indexOf(url) === -1) output.push(url);
+    });
+  }
+
   function photosOf(properties) {
     properties = properties || {};
-    var value = properties.photos || properties.photoUrls || properties.photoUrl ||
-      properties.documentationPhotos || properties.documentationPhotoUrls ||
-      properties.dokumentasiFoto || properties.foto || properties.Foto ||
-      properties.Foto_1 || properties.Foto_2 || properties.Foto_URL ||
-      properties.imageUrls || properties.images || properties.photoLinks ||
-      properties.tautanFoto;
-    if (!value) return [];
-    if (typeof value === 'string') {
-      try {
-        value = JSON.parse(value);
-      } catch (error) {
-        value = value.match(/https?:\/\/[^\s,;|]+/gi) || [];
+    var photos = [];
+    Object.keys(properties).forEach(function (key) {
+      var normalizedKey = normalize(key).replace(/[^a-z0-9]+/g, '');
+      if (
+        normalizedKey === 'photos' ||
+        normalizedKey.indexOf('photo') !== -1 ||
+        normalizedKey.indexOf('foto') !== -1 ||
+        normalizedKey.indexOf('image') !== -1 ||
+        normalizedKey.indexOf('dokumentasi') !== -1 ||
+        normalizedKey.indexOf('before') !== -1 ||
+        normalizedKey.indexOf('after') !== -1
+      ) {
+        appendPhotoValues(photos, properties[key]);
       }
-    }
-    if (!Array.isArray(value)) value = [value];
-    return value.map(function (item) {
-      if (item && typeof item === 'object') {
-        item = item.url || item.webViewLink || item.fileUrl || item.src || '';
-      }
-      return clean(item);
-    }).filter(function (url, index, list) {
-      return /^https?:\/\//i.test(url) && list.indexOf(url) === index;
     });
+    return photos;
   }
 
   function reportKey(properties) {
@@ -129,22 +149,28 @@
     var byReport = {};
     var byObject = {};
     var byFallback = {};
+    var byLocation = {};
 
     reports.forEach(function (feature) {
       var properties = feature && feature.properties || {};
-      if (normalize(properties.reportType) !== 'monitoring') return;
+      var type = normalize(properties.reportType || properties.type || properties.Jenis_Laporan || properties.jenisLaporan);
+      if (type && type.indexOf('monitor') === -1) return;
       var photos = photosOf(properties);
       if (!photos.length) return;
       if (reportKey(properties)) byReport[reportKey(properties)] = photos;
       if (objectKey(properties)) byObject[objectKey(properties)] = photos;
       byFallback[fallbackKey(properties)] = photos;
+      var reportLocation = normalize(properties.targetObjectName || properties.locationName || properties.Nama_Objek || properties.title || properties.village || properties.desa || '');
+      if (reportLocation) byLocation[reportLocation] = photos;
     });
 
     group.eachLayer(function (layer) {
       var properties = layer && layer.feature && layer.feature.properties || {};
       var photos = byReport[reportKey(properties)] ||
         byObject[objectKey(properties)] ||
-        byFallback[fallbackKey(properties)] || [];
+        byFallback[fallbackKey(properties)] ||
+        byLocation[normalize(properties.targetObjectName || properties.locationName || properties.Nama_Objek || properties.title || properties.village || properties.desa || '')] ||
+        photosOf(properties) || [];
       if (!photos.length || !layer.getPopup || !layer.getPopup()) return;
 
       properties.photos = photos;
@@ -152,7 +178,7 @@
       var content = String(popup.getContent() || '');
       if (content.indexOf('yg-monitoring-live-gallery') !== -1) return;
       var gallery = photoGallery(photos);
-      content = content.replace('</div></div>', gallery + '</div></div>');
+      content += gallery;
       popup.setContent(content);
     });
 
