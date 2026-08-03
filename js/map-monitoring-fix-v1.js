@@ -144,13 +144,18 @@
         if (popupBody && popupElement.classList.contains('yg-monitoring-popup')) {
           if (window.L && L.DomEvent) {
             L.DomEvent.disableScrollPropagation(popupBody);
+            L.DomEvent.disableClickPropagation(popupBody);
           }
           popupBody.addEventListener('wheel', function (wheelEvent) {
+            wheelEvent.preventDefault();
             wheelEvent.stopPropagation();
-          }, { passive: true });
-          popupBody.addEventListener('touchmove', function (touchEvent) {
-            touchEvent.stopPropagation();
-          }, { passive: true });
+            popupBody.scrollTop += wheelEvent.deltaY;
+          }, { passive: false });
+          ['mousedown', 'pointerdown', 'touchstart', 'touchmove'].forEach(function (eventName) {
+            popupBody.addEventListener(eventName, function (pointerEvent) {
+              pointerEvent.stopPropagation();
+            }, { passive: true });
+          });
         }
         if (latestReportsData) {
           window.setTimeout(function () { mergeReports(latestReportsData); }, 0);
@@ -178,13 +183,18 @@
         if (popupBody && popupElement.classList.contains('yg-monitoring-popup')) {
           if (window.L && L.DomEvent) {
             L.DomEvent.disableScrollPropagation(popupBody);
+            L.DomEvent.disableClickPropagation(popupBody);
           }
           popupBody.addEventListener('wheel', function (wheelEvent) {
+            wheelEvent.preventDefault();
             wheelEvent.stopPropagation();
-          }, { passive: true });
-          popupBody.addEventListener('touchmove', function (touchEvent) {
-            touchEvent.stopPropagation();
-          }, { passive: true });
+            popupBody.scrollTop += wheelEvent.deltaY;
+          }, { passive: false });
+          ['mousedown', 'pointerdown', 'touchstart', 'touchmove'].forEach(function (eventName) {
+            popupBody.addEventListener(eventName, function (pointerEvent) {
+              pointerEvent.stopPropagation();
+            }, { passive: true });
+          });
         }
         if (latestReportsData) {
           window.setTimeout(function () { mergeReports(latestReportsData); }, 0);
