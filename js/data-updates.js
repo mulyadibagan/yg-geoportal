@@ -419,11 +419,13 @@ function toDirectDriveUrl(url){
         /<div class="yg-v3-gallery yg-monitoring-update-gallery">[\s\S]*?<\/div>/,
         ""
       );
-      content = content.replace(
+      const contentWithGallery = content.replace(
         /(<\/div>\s*<\/div>\s*)$/,
         gallery + "$1"
       );
-      popup.setContent(content);
+      popup.setContent(
+        contentWithGallery === content ? content + gallery : contentWithGallery
+      );
     });
   }
 
@@ -694,7 +696,17 @@ function toDirectDriveUrl(url){
     }
   }
 
-  window[CALLBACK] = data => applyAll(data);
+  function keepMonitoringPhotosSynced(data, attempt = 0) {
+    (data.updates || []).forEach(update => syncMonitoringPhotos(update));
+    if (attempt < 240) {
+      setTimeout(() => keepMonitoringPhotosSynced(data, attempt + 1), 300);
+    }
+  }
+
+  window[CALLBACK] = data => {
+    applyAll(data);
+    keepMonitoringPhotosSynced(data);
+  };
 
   const style = document.createElement("style");
   style.textContent = `
