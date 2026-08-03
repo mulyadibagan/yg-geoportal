@@ -1,6 +1,9 @@
 (function () {
   'use strict';
 
+  if (window.__YG_MAP_MONITORING_FIX_ACTIVE__) return;
+  window.__YG_MAP_MONITORING_FIX_ACTIVE__ = true;
+
   var REPORTS_API = 'https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec?page=public-reports';
 
   function clean(value) {
@@ -52,7 +55,13 @@
   }
 
   function photosOf(properties) {
-    var value = properties && properties.photos;
+    properties = properties || {};
+    var value = properties.photos || properties.photoUrls || properties.photoUrl ||
+      properties.documentationPhotos || properties.documentationPhotoUrls ||
+      properties.dokumentasiFoto || properties.foto || properties.Foto ||
+      properties.Foto_1 || properties.Foto_2 || properties.Foto_URL ||
+      properties.imageUrls || properties.images || properties.photoLinks ||
+      properties.tautanFoto;
     if (!value) return [];
     if (typeof value === 'string') {
       try {
@@ -163,7 +172,7 @@
       var attempts = 0;
       (function applyWhenReady() {
         attempts += 1;
-        if (!mergeReports(data) && attempts < 40) {
+        if (!mergeReports(data) && attempts < 240) {
           window.setTimeout(applyWhenReady, 300);
         }
       })();
@@ -173,7 +182,7 @@
     script.async = true;
     script.src = REPORTS_API + '&callback=' + encodeURIComponent(callback) + '&t=' + Date.now();
     script.onerror = function () { finish({ features: [] }); };
-    timer = window.setTimeout(function () { finish({ features: [] }); }, 15000);
+    timer = window.setTimeout(function () { finish({ features: [] }); }, 30000);
     document.head.appendChild(script);
   }
 
