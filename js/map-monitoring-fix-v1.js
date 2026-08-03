@@ -224,8 +224,15 @@
     group.eachLayer(function (layer) {
       var properties = layer && layer.feature && layer.feature.properties || {};
       var latestUpdatePhotos = window.YG_LATEST_MONITORING_PHOTOS_BY_OBJECT || {};
+      var latestLocationPhotos = window.YG_LATEST_MONITORING_PHOTOS_BY_LOCATION || {};
+      var monitoringLocation = normalize(
+        properties.locationName || properties.targetObjectName ||
+        properties.Target_Object_Name_Current || properties.Desa ||
+        properties.village || ''
+      );
       var photos = byReport[reportKey(properties)] ||
         latestUpdatePhotos[objectKey(properties)] ||
+        latestLocationPhotos[monitoringLocation] ||
         photosOf(properties) || [];
       if (!photos.length || !layer.getPopup || !layer.getPopup()) return;
 

@@ -696,11 +696,19 @@ function toDirectDriveUrl(url){
 
   function publishLatestMonitoringPhotos(data) {
     const latestByObject = {};
+    const latestByLocation = {};
     (data.updates || []).forEach(update => {
       if (!isPhotoUpdate(update) || targetLayer(update) !== "area_mangrove") return;
       const key = objectId(update);
       const photos = photoValues(update);
-      if (!key || !photos.length) return;
+      if (!photos.length) return;
+      const locationKey = normalize(
+        update.locationName || update.targetObjectName ||
+        (update.targetFeatureProperties || {}).Desa || ""
+      );
+      const monitoringIdentity = normalize(
+        [update.title, update.description, update.note].filter(Boolean).join(" ")
+      );
       const rawDate = String(update.publishedAt || update.activityDate || "");
       const dateParts = rawDate.split("/");
       const timestamp = dateParts.length >= 3
@@ -710,14 +718,30 @@ function toDirectDriveUrl(url){
             Number(dateParts[0])
           )
         : (Date.parse(rawDate) || 0);
-      const current = latestByObject[key];
-      if (!current || timestamp >= current.timestamp) {
-        latestByObject[key] = { photos: uniquePhotos(photos), timestamp };
+      if (key) {
+        const current = latestByObject[key];
+        if (!current || timestamp >= current.timestamp) {
+          latestByObject[key] = { photos: uniquePhotos(photos), timestamp };
+        }
+      }
+      if (locationKey && monitoringIdentity.includes("monitoring")) {
+        const currentLocation = latestByLocation[locationKey];
+        if (!currentLocation || timestamp >= currentLocation.timestamp) {
+          latestByLocation[locationKey] = {
+            photos: uniquePhotos(photos),
+            timestamp
+          };
+        }
       }
     });
     window.YG_LATEST_MONITORING_PHOTOS_BY_OBJECT = Object.keys(latestByObject)
       .reduce((result, key) => {
         result[key] = latestByObject[key].photos;
+        return result;
+      }, {});
+    window.YG_LATEST_MONITORING_PHOTOS_BY_LOCATION = Object.keys(latestByLocation)
+      .reduce((result, key) => {
+        result[key] = latestByLocation[key].photos;
         return result;
       }, {});
     document.dispatchEvent(new CustomEvent("yg:monitoring-update-photos"));
