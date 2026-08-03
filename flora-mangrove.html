@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZEBSLW4ZWW"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-ZEBSLW4ZWW');</script>
+  <title>Flora Mangrove | Yayasan Gambut</title>
+  <meta name="description" content="Katalog flora mangrove hasil identifikasi baseline di Buruk Bakul dan Kelapa Pati, Bengkalis.">
+  <link rel="icon" href="assets/logo-yayasan-gambut.png">
+  <link rel="stylesheet" href="css/flora-mangrove.css?v=20260804-1">
+  <link rel="stylesheet" href="css/flora-gallery.css?v=20260804-labels2">
+</head>
+<body>
+  <header class="flora-header">
+    <a class="brand" href="index.html" aria-label="Beranda Yayasan Gambut">
+      <img src="assets/logo-yayasan-gambut.png" alt="Logo Yayasan Gambut">
+      <span><strong>YG GeoPortal</strong><small>Baseline biodiversity</small></span>
+    </a>
+    <nav aria-label="Navigasi utama">
+      <a href="index.html">Beranda</a>
+      <a href="webgis.html">WebGIS</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">BASELINE FLORA MANGROVE 2024</p>
+        <h1>Kenali flora pesisir<br>Buruk Bakul dan Kelapa Pati</h1>
+        <p>Katalog identifikasi lapangan yang menyatukan nama lokal, nama ilmiah, status konservasi, lokasi temuan, dan dokumentasi visual.</p>
+        <div class="hero-actions">
+          <a class="primary-button" href="#katalog">Jelajahi katalog</a>
+          <a class="secondary-button" href="webgis.html?layer=area_mangrove">Lihat di peta</a>
+        </div>
+      </div>
+      <div class="hero-stats" aria-label="Ringkasan data flora">
+        <article><strong id="stat-species">29</strong><span>jenis unik terdokumentasi</span></article>
+        <article><strong>2</strong><span>desa lokasi baseline</span></article>
+        <article><strong>2024</strong><span>tahun baseline</span></article>
+      </div>
+    </section>
+
+    <section class="notice" aria-label="Catatan data">
+      <span>Catatan kualitas data</span>
+      <p>Laporan menyebut 20 jenis di Buruk Bakul, sedangkan tabel memuat 23 mangrove sejati. Katalog mengikuti isi tabel dan menandai data yang masih memerlukan verifikasi taksonomi atau status konservasi.</p>
+    </section>
+
+    <section class="catalog-section" id="katalog">
+      <div class="section-heading">
+        <div><p class="eyebrow">KATALOG IDENTIFIKASI</p><h2>Jenis flora mangrove</h2></div>
+        <p id="result-summary" aria-live="polite"></p>
+      </div>
+
+      <div class="filters" aria-label="Filter katalog">
+        <label class="search-field"><span>Cari jenis</span><input id="flora-search" type="search" placeholder="Nama lokal atau ilmiah..."></label>
+        <label><span>Lokasi</span><select id="location-filter"><option value="all">Semua lokasi</option><option value="Buruk Bakul">Buruk Bakul</option><option value="Kelapa Pati">Kelapa Pati</option></select></label>
+        <label><span>Kategori</span><select id="category-filter"><option value="all">Semua kategori</option><option value="Mangrove sejati">Mangrove sejati</option><option value="Mangrove asosiasi">Mangrove asosiasi</option></select></label>
+        <label><span>Status</span><select id="status-filter"><option value="all">Semua status</option><option value="Least Concern">Least Concern</option><option value="Near Threatened">Near Threatened</option><option value="Vulnerable">Vulnerable</option><option value="Belum tercantum">Belum tercantum</option><option value="Perlu verifikasi">Perlu verifikasi</option></select></label>
+      </div>
+
+      <div class="flora-grid" id="flora-grid"></div>
+      <div class="empty-state" id="empty-state" hidden>Tidak ada jenis yang sesuai dengan filter.</div>
+    </section>
+
+    <section class="source-panel">
+      <div><p class="eyebrow">SUMBER UTAMA</p><h2>Final Baseline Mangrove 2024</h2><p>Assessment Juni-September 2024 di Buruk Bakul dan Kelapa Pati, Bengkalis. Didukung Aramco Asia Singapore dan dilaksanakan bersama Global Environment Centre serta Yayasan Gambut.</p></div>
+      <a href="https://drive.google.com/file/d/1gwiTpEieu3N9waJ_fEQO1gM3O0jFFnXP/view?usp=sharing" target="_blank" rel="noopener">Buka laporan sumber</a>
+    </section>
+  </main>
+
+  <dialog class="flora-dialog" id="flora-dialog">
+    <button class="dialog-close" id="dialog-close" type="button" aria-label="Tutup detail">×</button>
+    <div id="dialog-content"></div>
+  </dialog>
+
+  <footer><span>Yayasan Gambut GeoPortal</span><a href="webgis.html">Kembali ke WebGIS</a></footer>
+  <script src="js/flora-mangrove.js?v=20260804-prepat-labels4"></script>
+</body>
+</html>

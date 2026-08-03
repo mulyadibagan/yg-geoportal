@@ -1,9 +1,10 @@
-const CACHE_NAME = "yg-geoportal-v4-20260727-capacity-session-pages1";
+const CACHE_NAME = "yg-geoportal-v4-20260804-flora-gallery1";
 
 const STATIC_ASSETS = [
   "./",
   "./index.html",
   "./webgis.html",
+  "./flora-mangrove.html",
   "./monitoring.html",
   "./capacity-session-create.html",
   "./capacity-sessions.html",

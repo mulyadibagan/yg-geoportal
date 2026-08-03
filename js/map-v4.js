@@ -870,6 +870,18 @@ L.control.scale({
       ? '<div class="yg-popup-actions">' + actionLinks + '</div>'
       : "";
 
+    const floraVillage = String(
+      props.Desa || props.Village || props.Lokasi || props.Location || ""
+    ).trim();
+    const floraLocation = /buruk\s*bakul/i.test(floraVillage)
+      ? "Buruk Bakul"
+      : /kelapa\s*pati|kelapapati/i.test(floraVillage)
+        ? "Kelapa Pati"
+        : "";
+    const floraAction = config.id === "area_mangrove" && floraLocation
+      ? '<div class="yg-popup-actions yg-popup-flora-action"><a class="yg-popup-monitoring-link" href="flora-mangrove.html?location=' + encodeURIComponent(floraLocation) + '">Lihat Jenis Flora Mangrove</a></div>'
+      : "";
+
     if (!rows) {
       rows =
         '<div class="popup-row">' +
@@ -901,7 +913,7 @@ L.control.scale({
           '<span>' + escapeHtml(config.label) + '</span>' +
         '</div>' +
         '<div class="popup-body">' +
-          (isMonitoring ? gallery + rows : rows + gallery) + sdgHtml + monitoringAction +
+          (isMonitoring ? gallery + rows : rows + gallery) + sdgHtml + floraAction + monitoringAction +
         '</div>' +
       '</div>'
     );
