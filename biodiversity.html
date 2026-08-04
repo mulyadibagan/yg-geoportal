@@ -28,7 +28,7 @@
         <p class="eyebrow">BIODIVERSITY • RIAU, INDONESIA</p>
         <h1>Kehidupan di tiga<br>ekosistem YG</h1>
         <p>Jelajahi flora dan fauna mangrove, gambut, dan lahan mineral. Temuan lapangan Yayasan Gambut dipisahkan secara jelas dari informasi referensi regional.</p>
-        <div class="hero-actions"><a class="primary-button" href="#katalog">Jelajahi katalog</a><a class="secondary-button" href="webgis.html">Lihat di peta</a></div>
+        <div class="hero-actions"><a class="primary-button" href="#ekosistem">Pilih ekosistem</a><a class="secondary-button" href="webgis.html">Lihat di peta</a></div>
       </div>
       <div class="hero-stats" aria-label="Ringkasan data biodiversitas">
         <article><strong id="stat-species">40</strong><span>taksa/jenis terdokumentasi</span></article>
@@ -37,10 +37,10 @@
       </div>
     </section>
 
-    <section class="ecosystem-strip" aria-label="Pilih ekosistem">
-      <button class="ecosystem-card is-active" type="button" data-ecosystem="Mangrove" aria-pressed="true"><span aria-hidden="true">🌊</span><div><h2>Mangrove</h2><p>Hutan pasang surut, zona pesisir, sungai, dan perairan sekitarnya.</p><strong>40 taksa · data baseline tersedia</strong><small>Lihat flora dan fauna mangrove →</small></div></button>
-      <button class="ecosystem-card" type="button" data-ecosystem="Gambut" aria-pressed="false"><span aria-hidden="true">🌿</span><div><h2>Gambut</h2><p>Hutan rawa gambut, area restorasi, dan agroforestri ramah gambut.</p><strong>Inventaris bertahap</strong><small>Lihat informasi ekosistem →</small></div></button>
-      <button class="ecosystem-card" type="button" data-ecosystem="Lahan mineral" aria-pressed="false"><span aria-hidden="true">🌳</span><div><h2>Lahan mineral</h2><p>Hutan daratan, riparian, agroforestri, dan lanskap perdesaan.</p><strong>Inventaris bertahap</strong><small>Lihat informasi ekosistem →</small></div></button>
+    <section class="ecosystem-strip" id="ekosistem" aria-label="Pilih ekosistem">
+      <a class="ecosystem-card is-active" href="biodiversity-mangrove.html"><span aria-hidden="true">🌊</span><div><h2>Mangrove</h2><p>Hutan pasang surut, zona pesisir, sungai, dan perairan sekitarnya.</p><strong>40 taksa · data baseline tersedia</strong><small>Buka informasi flora dan fauna mangrove →</small></div></a>
+      <article class="ecosystem-card"><span aria-hidden="true">🌿</span><div><h2>Gambut</h2><p>Hutan rawa gambut, area restorasi, dan agroforestri ramah gambut.</p><strong>Inventaris bertahap</strong><small>Informasi akan dilengkapi</small></div></article>
+      <article class="ecosystem-card"><span aria-hidden="true">🌳</span><div><h2>Lahan mineral</h2><p>Hutan daratan, riparian, agroforestri, dan lanskap perdesaan.</p><strong>Inventaris bertahap</strong><small>Informasi akan dilengkapi</small></div></article>
     </section>
 
     <section class="notice" aria-label="Cara membaca data">
@@ -48,33 +48,8 @@
       <p><strong>Terverifikasi YG</strong> berarti jenis tercatat dalam survei atau laporan lapangan YG. <strong>Referensi eksternal</strong> digunakan untuk membantu taksonomi, ciri, habitat, dan status konservasi; bukan bukti bahwa jenis tersebut ditemukan di lokasi program.</p>
     </section>
 
-    <section class="catalog-section" id="katalog">
-      <div class="section-heading"><div><p class="eyebrow" id="catalog-eyebrow">EKOSISTEM MANGROVE</p><h2 id="catalog-title">Flora dan fauna mangrove</h2><p class="catalog-intro" id="catalog-intro">Inventaris baseline YG dari Buruk Bakul dan Kelapa Pati, mencakup mangrove sejati, flora asosiasi, serta fauna dan biota perairan di sekitarnya.</p></div><p id="result-summary" aria-live="polite"></p></div>
-      <div class="filters" aria-label="Filter katalog">
-        <label class="search-field"><span>Cari jenis</span><input id="flora-search" type="search" placeholder="Nama lokal atau ilmiah..."></label>
-        <label><span>Ekosistem aktif</span><select id="ecosystem-filter"><option value="Mangrove">Mangrove</option><option value="Gambut">Gambut</option><option value="Lahan mineral">Lahan mineral</option></select></label>
-        <label><span>Kelompok</span><select id="group-filter"><option value="all">Flora dan fauna</option><option value="Flora">Flora</option><option value="Fauna">Fauna</option></select></label>
-        <label><span>Lokasi</span><select id="location-filter"><option value="all">Semua lokasi</option><option value="Buruk Bakul">Buruk Bakul</option><option value="Kelapa Pati">Kelapa Pati</option></select></label>
-        <label><span>Status</span><select id="status-filter"><option value="all">Semua status</option><option value="Least Concern">Least Concern</option><option value="Near Threatened">Near Threatened</option><option value="Vulnerable">Vulnerable</option><option value="Belum tercantum">Belum tercantum</option><option value="Perlu verifikasi">Perlu verifikasi</option></select></label>
-        <label><span>Sumber bukti</span><select id="evidence-filter"><option value="all">Semua sumber</option><option value="Terverifikasi YG">Terverifikasi YG</option><option value="Referensi eksternal">Referensi eksternal</option></select></label>
-      </div>
-      <div class="flora-grid" id="flora-grid"></div>
-      <div class="empty-state" id="empty-state" hidden><strong id="empty-title">Belum ada data terverifikasi untuk filter ini.</strong><span id="empty-description">Inventaris biodiversitas akan bertambah melalui observasi masyarakat, dokumentasi foto/video, dan validasi teknis.</span></div>
-    </section>
-
-    <section class="source-panel biodiversity-sources">
-      <div><p class="eyebrow">SUMBER DAN KUALITAS DATA</p><h2>Terbuka, terlacak, dan bertahap</h2><p>Sumber utama temuan lokasi adalah <em>Final Baseline Mangrove 2024</em>, berdasarkan assessment Juni–September 2024 di Buruk Bakul dan Kelapa Pati. Nama dan status dapat diperiksa silang melalui IUCN Red List, GBIF, publikasi BRIN, dan sumber pemerintah. Catatan yang belum lengkap tetap ditandai untuk verifikasi.</p></div>
-      <div class="source-links">
-        <a href="https://drive.google.com/file/d/1gwiTpEieu3N9waJ_fEQO1gM3O0jFFnXP/view?usp=sharing" target="_blank" rel="noopener">Baseline YG 2024</a>
-        <a href="https://www.iucnredlist.org/" target="_blank" rel="noopener">IUCN Red List</a>
-        <a href="https://www.gbif.org/" target="_blank" rel="noopener">GBIF</a>
-        <a href="https://brin.go.id/" target="_blank" rel="noopener">BRIN</a>
-      </div>
-    </section>
   </main>
 
-  <dialog class="flora-dialog" id="flora-dialog"><button class="dialog-close" id="dialog-close" type="button" aria-label="Tutup detail">×</button><div id="dialog-content"></div></dialog>
   <footer><span>Yayasan Gambut GeoPortal</span><a href="webgis.html">Kembali ke WebGIS</a></footer>
-  <script src="js/flora-mangrove.js?v=20260804-ecosystem-tabs1"></script>
 </body>
 </html>
