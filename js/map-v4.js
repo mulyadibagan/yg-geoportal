@@ -879,7 +879,7 @@ L.control.scale({
         ? "Kelapa Pati"
         : "";
     const floraAction = config.id === "area_mangrove" && floraLocation
-      ? '<div class="yg-popup-actions yg-popup-flora-action"><a class="yg-popup-monitoring-link" href="flora-mangrove.html?location=' + encodeURIComponent(floraLocation) + '">Lihat Jenis Flora Mangrove</a></div>'
+      ? '<div class="yg-popup-actions yg-popup-flora-action"><a class="yg-popup-monitoring-link" href="biodiversity.html?location=' + encodeURIComponent(floraLocation) + '&ecosystem=Mangrove">Lihat Biodiversity</a></div>'
       : "";
 
     if (!rows) {
