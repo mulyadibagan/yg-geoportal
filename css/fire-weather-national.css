@@ -1,0 +1,49 @@
+.fw-zoom-actions {
+  display: grid;
+  gap: 8px;
+}
+
+.fw-secondary {
+  width: 100%;
+  padding: 11px;
+  background: #fff;
+  color: var(--green);
+  border: 1px solid var(--green);
+  border-radius: 10px;
+  font-weight: 800;
+}
+
+.hotspot-dot {
+  background: #f12620 !important;
+  box-shadow: 0 0 0 2px #fff, 0 0 0 3px #991b1b;
+}
+
+.haze-low {
+  background: #f5d67b !important;
+}
+
+.haze-high {
+  background: #9b4f96 !important;
+}
+
+.fw-layer-badge {
+  display: grid;
+  gap: 2px;
+  max-width: 260px;
+  padding: 8px 10px;
+  color: var(--ink);
+  background: #ffffffeb;
+  border: 1px solid #cadbd4;
+  border-radius: 9px;
+  box-shadow: 0 2px 8px #0002;
+}
+
+.fw-layer-badge strong {
+  font-size: 11px;
+  letter-spacing: .08em;
+}
+
+.fw-layer-badge span {
+  font-size: 10px;
+  color: var(--muted);
+}
