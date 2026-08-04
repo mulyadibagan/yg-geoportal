@@ -5,6 +5,7 @@ const STATIC_ASSETS = [
   "./index.html",
   "./webgis.html",
   "./flora-mangrove.html",
+  "./biodiversity.html",
   "./monitoring.html",
   "./capacity-session-create.html",
   "./capacity-sessions.html",
