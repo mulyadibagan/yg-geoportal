@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZEBSLW4ZWW"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-ZEBSLW4ZWW');</script>
+  <title>Biodiversity | Yayasan Gambut</title>
+  <meta name="description" content="Katalog biodiversitas flora dan fauna pada ekosistem mangrove, gambut, dan lahan mineral di wilayah kerja Yayasan Gambut.">
+  <link rel="canonical" href="https://webgisyg.id/biodiversity.html">
+  <link rel="icon" href="assets/logo-yayasan-gambut.png">
+  <link rel="stylesheet" href="css/flora-mangrove.css?v=20260804-biodiversity1">
+  <link rel="stylesheet" href="css/flora-gallery.css?v=20260804-biodiversity1">
+  <link rel="stylesheet" href="css/biodiversity.css?v=20260804-biodiversity1">
+</head>
+<body>
+  <header class="flora-header">
+    <a class="brand" href="index.html" aria-label="Beranda Yayasan Gambut">
+      <img src="assets/logo-yayasan-gambut.png" alt="Logo Yayasan Gambut">
+      <span><strong>YG GeoPortal</strong><small>Community biodiversity evidence</small></span>
+    </a>
+    <nav aria-label="Navigasi utama"><a href="index.html">Beranda</a><a href="webgis.html">WebGIS</a></nav>
+  </header>
+
+  <main>
+    <section class="hero biodiversity-hero">
+      <div class="hero-copy">
+        <p class="eyebrow">BIODIVERSITY • RIAU, INDONESIA</p>
+        <h1>Kehidupan di tiga<br>ekosistem YG</h1>
+        <p>Jelajahi flora dan fauna mangrove, gambut, dan lahan mineral. Temuan lapangan Yayasan Gambut dipisahkan secara jelas dari informasi referensi regional.</p>
+        <div class="hero-actions"><a class="primary-button" href="#katalog">Jelajahi katalog</a><a class="secondary-button" href="webgis.html">Lihat di peta</a></div>
+      </div>
+      <div class="hero-stats" aria-label="Ringkasan data biodiversitas">
+        <article><strong id="stat-species">40</strong><span>taksa/jenis terdokumentasi</span></article>
+        <article><strong id="stat-flora">29</strong><span>flora baseline</span></article>
+        <article><strong id="stat-fauna">11</strong><span>fauna/biota baseline</span></article>
+      </div>
+    </section>
+
+    <section class="ecosystem-strip" aria-label="Cakupan ekosistem">
+      <article><span aria-hidden="true">🌊</span><div><h2>Mangrove</h2><p>Hutan pasang surut, zona pesisir, sungai, dan perairan sekitarnya.</p><strong>Data baseline tersedia</strong></div></article>
+      <article><span aria-hidden="true">🌿</span><div><h2>Gambut</h2><p>Hutan rawa gambut, area restorasi, dan agroforestri ramah gambut.</p><strong>Inventaris bertahap</strong></div></article>
+      <article><span aria-hidden="true">🌳</span><div><h2>Lahan mineral</h2><p>Hutan daratan, riparian, agroforestri, dan lanskap perdesaan.</p><strong>Inventaris bertahap</strong></div></article>
+    </section>
+
+    <section class="notice" aria-label="Cara membaca data">
+      <span>Cara membaca data</span>
+      <p><strong>Terverifikasi YG</strong> berarti jenis tercatat dalam survei atau laporan lapangan YG. <strong>Referensi eksternal</strong> digunakan untuk membantu taksonomi, ciri, habitat, dan status konservasi; bukan bukti bahwa jenis tersebut ditemukan di lokasi program.</p>
+    </section>
+
+    <section class="catalog-section" id="katalog">
+      <div class="section-heading"><div><p class="eyebrow">KATALOG IDENTIFIKASI</p><h2>Flora dan fauna</h2></div><p id="result-summary" aria-live="polite"></p></div>
+      <div class="filters" aria-label="Filter katalog">
+        <label class="search-field"><span>Cari jenis</span><input id="flora-search" type="search" placeholder="Nama lokal atau ilmiah..."></label>
+        <label><span>Ekosistem</span><select id="ecosystem-filter"><option value="all">Semua ekosistem</option><option value="Mangrove">Mangrove</option><option value="Gambut">Gambut</option><option value="Lahan mineral">Lahan mineral</option></select></label>
+        <label><span>Kelompok</span><select id="group-filter"><option value="all">Flora dan fauna</option><option value="Flora">Flora</option><option value="Fauna">Fauna</option></select></label>
+        <label><span>Lokasi</span><select id="location-filter"><option value="all">Semua lokasi</option><option value="Buruk Bakul">Buruk Bakul</option><option value="Kelapa Pati">Kelapa Pati</option></select></label>
+        <label><span>Status</span><select id="status-filter"><option value="all">Semua status</option><option value="Least Concern">Least Concern</option><option value="Near Threatened">Near Threatened</option><option value="Vulnerable">Vulnerable</option><option value="Belum tercantum">Belum tercantum</option><option value="Perlu verifikasi">Perlu verifikasi</option></select></label>
+        <label><span>Sumber bukti</span><select id="evidence-filter"><option value="all">Semua sumber</option><option value="Terverifikasi YG">Terverifikasi YG</option><option value="Referensi eksternal">Referensi eksternal</option></select></label>
+      </div>
+      <div class="flora-grid" id="flora-grid"></div>
+      <div class="empty-state" id="empty-state" hidden><strong>Belum ada data terverifikasi untuk filter ini.</strong><span>Inventaris biodiversitas akan bertambah melalui observasi masyarakat, dokumentasi foto/video, dan validasi teknis.</span></div>
+    </section>
+
+    <section class="source-panel biodiversity-sources">
+      <div><p class="eyebrow">SUMBER DAN KUALITAS DATA</p><h2>Terbuka, terlacak, dan bertahap</h2><p>Sumber utama temuan lokasi adalah <em>Final Baseline Mangrove 2024</em>, berdasarkan assessment Juni–September 2024 di Buruk Bakul dan Kelapa Pati. Nama dan status dapat diperiksa silang melalui IUCN Red List, GBIF, publikasi BRIN, dan sumber pemerintah. Catatan yang belum lengkap tetap ditandai untuk verifikasi.</p></div>
+      <div class="source-links">
+        <a href="https://drive.google.com/file/d/1gwiTpEieu3N9waJ_fEQO1gM3O0jFFnXP/view?usp=sharing" target="_blank" rel="noopener">Baseline YG 2024</a>
+        <a href="https://www.iucnredlist.org/" target="_blank" rel="noopener">IUCN Red List</a>
+        <a href="https://www.gbif.org/" target="_blank" rel="noopener">GBIF</a>
+        <a href="https://brin.go.id/" target="_blank" rel="noopener">BRIN</a>
+      </div>
+    </section>
+  </main>
+
+  <dialog class="flora-dialog" id="flora-dialog"><button class="dialog-close" id="dialog-close" type="button" aria-label="Tutup detail">×</button><div id="dialog-content"></div></dialog>
+  <footer><span>Yayasan Gambut GeoPortal</span><a href="webgis.html">Kembali ke WebGIS</a></footer>
+  <script src="js/flora-mangrove.js?v=20260804-biodiversity1"></script>
+</body>
+</html>
