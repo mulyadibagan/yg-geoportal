@@ -97,7 +97,7 @@ body.modal-open{overflow:hidden}
 .hero-main .hero-tagline{margin-top:18px;padding:16px 18px;border-left:3px solid rgba(255,255,255,.78);background:rgba(255,255,255,.08);font-size:14px;font-weight:700;line-height:1.6}
 .hero-actions{
   display:grid;
-  grid-template-columns:1fr 1.35fr 1.8fr 1.05fr;
+  grid-template-columns:repeat(auto-fit,minmax(190px,max-content));
   gap:10px;
   margin-top:30px;
 }
