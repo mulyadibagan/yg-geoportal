@@ -1,0 +1,11 @@
+.evidence-label{margin-bottom:8px;color:var(--green);font-size:9px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+.fauna-placeholder{display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 40%,#eff9f4,#cfe8dc)}
+.fauna-placeholder b{font-size:74px;filter:drop-shadow(0 12px 15px rgba(7,63,50,.15))}
+.empty-state{display:grid;gap:8px}.empty-state strong{color:var(--forest);font-size:20px}.empty-state[hidden]{display:none}
+.ecosystem-strip{position:relative;z-index:2;display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:-38px clamp(22px,4vw,60px) 0}
+.ecosystem-strip article{display:grid;grid-template-columns:auto 1fr;gap:15px;padding:22px;border:1px solid var(--line);border-radius:20px;background:#fff;box-shadow:0 16px 38px rgba(7,63,50,.08)}
+.ecosystem-strip article>span{font-size:34px}.ecosystem-strip h2{margin:0 0 6px;color:var(--brown);font:700 24px Georgia,serif}.ecosystem-strip p{margin:0 0 10px;color:var(--muted);font-size:13px;line-height:1.5}.ecosystem-strip strong{color:var(--green);font-size:11px}
+.biodiversity-sources{grid-template-columns:1fr minmax(190px,auto)}.source-links{display:grid;gap:8px}.source-links a{padding:11px 15px;border-radius:10px;background:#fff;color:var(--forest);font-weight:850;text-align:center;text-decoration:none}
+.dialog-fauna-visual{display:flex;min-height:520px;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:38px;background:linear-gradient(145deg,#eef8f3,#cae6d9);text-align:center}.dialog-fauna-visual span{font-size:112px}.dialog-fauna-visual strong{max-width:280px;color:var(--forest)}.dialog-fauna-visual small{max-width:300px;color:var(--muted);line-height:1.5}
+@media(max-width:1050px){.ecosystem-strip{grid-template-columns:1fr}.filters{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:760px){.ecosystem-strip{grid-template-columns:1fr;margin-top:18px}.biodiversity-sources{grid-template-columns:1fr}.dialog-fauna-visual{min-height:280px}.filters{grid-template-columns:1fr}}
