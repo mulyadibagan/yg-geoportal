@@ -115,6 +115,12 @@
   var evidenceFilter=document.getElementById('evidence-filter');
   var summary=document.getElementById('result-summary');
   var empty=document.getElementById('empty-state');
+  var emptyTitle=document.getElementById('empty-title');
+  var emptyDescription=document.getElementById('empty-description');
+  var catalogEyebrow=document.getElementById('catalog-eyebrow');
+  var catalogTitle=document.getElementById('catalog-title');
+  var catalogIntro=document.getElementById('catalog-intro');
+  var ecosystemCards=Array.from(document.querySelectorAll('[data-ecosystem]'));
   var dialog=document.getElementById('flora-dialog');
   var dialogContent=document.getElementById('dialog-content');
 
@@ -177,9 +183,25 @@
   }
   function render(){
     var rows=filtered();
+    var activeEcosystem=ecosystemFilter.value;
+    var ecosystemTotal=data.filter(function(item){return item.ecosystem===activeEcosystem;}).length;
     grid.innerHTML=rows.map(card).join('');
-    summary.textContent=rows.length+' dari '+data.length+' taksa/jenis ditampilkan';
+    summary.textContent=rows.length+' dari '+ecosystemTotal+' taksa/jenis '+activeEcosystem.toLowerCase()+' ditampilkan';
     empty.hidden=rows.length>0;
+    ecosystemCards.forEach(function(card){var active=card.dataset.ecosystem===activeEcosystem;card.classList.toggle('is-active',active);card.setAttribute('aria-pressed',String(active));});
+    catalogEyebrow.textContent='EKOSISTEM '+activeEcosystem.toUpperCase();
+    if(activeEcosystem==='Mangrove'){
+      catalogTitle.textContent='Flora dan fauna mangrove';
+      catalogIntro.textContent='Inventaris baseline YG dari Buruk Bakul dan Kelapa Pati, mencakup mangrove sejati, flora asosiasi, serta fauna dan biota perairan di sekitarnya.';
+    }else{
+      catalogTitle.textContent='Biodiversitas '+activeEcosystem.toLowerCase();
+      catalogIntro.textContent='Ruang inventaris khusus ekosistem '+activeEcosystem.toLowerCase()+'. Data jenis akan ditambahkan setelah observasi lapangan dan validasi teknis.';
+    }
+    if(rows.length===0){
+      var hasEcosystemData=ecosystemTotal>0;
+      emptyTitle.textContent=hasEcosystemData?'Tidak ada jenis yang sesuai dengan filter.':'Inventaris '+activeEcosystem.toLowerCase()+' belum tersedia.';
+      emptyDescription.textContent=hasEcosystemData?'Atur ulang pencarian, kelompok, lokasi, status, atau sumber bukti untuk melihat data lainnya.':'Data tidak diisi berdasarkan asumsi. Inventaris akan ditambahkan melalui observasi masyarakat, dokumentasi foto/video, dan validasi teknis.';
+    }
   }
   function openDetail(item){
     var visual=item.group==='Flora'?galleryHtml(item):faunaGalleryHtml(item);
@@ -193,6 +215,7 @@
     if(canUseExternalPhoto(item))loadExternalPhoto(item);
   }
   [search,ecosystemFilter,groupFilter,locationFilter,statusFilter,evidenceFilter].forEach(function(control){control.addEventListener(control===search?'input':'change',render);});
+  ecosystemCards.forEach(function(card){card.addEventListener('click',function(){ecosystemFilter.value=card.dataset.ecosystem;search.value='';groupFilter.value='all';locationFilter.value='all';statusFilter.value='all';evidenceFilter.value='all';render();document.getElementById('katalog').scrollIntoView({behavior:'smooth',block:'start'});});});
   grid.addEventListener('click',function(event){var button=event.target.closest('[data-flora-id]');if(!button)return;var item=data.find(function(row){return row.id===Number(button.dataset.floraId)});if(item)openDetail(item);});
   document.getElementById('dialog-close').addEventListener('click',function(){dialog.close();});
   dialog.addEventListener('click',function(event){if(event.target===dialog)dialog.close();});
@@ -216,6 +239,7 @@
   if(requested&&Array.from(locationFilter.options).some(function(option){return option.value===requested;}))locationFilter.value=requested;
   var requestedEcosystem=new URLSearchParams(location.search).get('ecosystem');
   if(requestedEcosystem&&Array.from(ecosystemFilter.options).some(function(option){return option.value===requestedEcosystem;}))ecosystemFilter.value=requestedEcosystem;
+  else ecosystemFilter.value='Mangrove';
   document.getElementById('stat-species').textContent=data.length;
   document.getElementById('stat-flora').textContent=floraData.length;
   document.getElementById('stat-fauna').textContent=faunaData.length;
