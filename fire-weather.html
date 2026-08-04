@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Pemantauan Karhutla & Cuaca | YG GeoPortal</title>
+  <meta name="description" content="Pemantauan hotspot, hujan, angin, FDRS, sekat kanal, dan risiko kebakaran di wilayah program Yayasan Gambut.">
+  <link rel="icon" href="assets/logo-yayasan-gambut.png">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+  <link rel="stylesheet" href="css/fire-weather.css?v=20260804-fire1">
+</head>
+<body>
+  <header class="fw-header">
+    <a class="fw-brand" href="index.html"><img src="assets/logo-yayasan-gambut.png" alt="Logo Yayasan Gambut"><span><strong>YG GeoPortal</strong><small>Pemantauan Karhutla & Cuaca</small></span></a>
+    <nav><a href="index.html">Beranda</a><a href="webgis.html">WebGIS</a><a href="monitoring.html">Monitoring</a></nav>
+  </header>
+  <main class="fw-shell">
+    <section class="fw-titlebar">
+      <div><p class="fw-eyebrow">FIRE & WEATHER MONITORING</p><h1>Pemantauan Karhutla & Cuaca</h1><p>Hotspot satelit, kondisi cuaca, dan infrastruktur pencegahan kebakaran di wilayah kerja Yayasan Gambut.</p></div>
+      <div class="fw-updated"><span>Status data</span><strong id="data-status">Memuat…</strong><small id="updated-at">—</small></div>
+    </section>
+    <section class="fw-kpis" aria-label="Ringkasan kondisi">
+      <article><span>Hotspot wilayah YG</span><strong id="kpi-hotspots">—</strong><small id="kpi-period">30 hari</small></article>
+      <article><span>Desa perlu perhatian</span><strong id="kpi-alerts">—</strong><small>berdasarkan hotspot</small></article>
+      <article><span>Unit FDRS</span><strong id="kpi-fdrs">—</strong><small>terpetakan</small></article>
+      <article><span>Sekat kanal</span><strong id="kpi-canals">—</strong><small>terpetakan</small></article>
+      <article><span>Cuaca Riau pesisir</span><strong id="kpi-weather">—</strong><small id="weather-detail">Open-Meteo</small></article>
+    </section>
+    <section class="fw-workspace">
+      <aside class="fw-controls" aria-label="Kontrol peta">
+        <div class="fw-control-group"><h2>Waktu hotspot</h2><div class="segmented" id="period-control"><button data-period="latest">Terbaru</button><button data-period="1">24 jam</button><button data-period="7">7 hari</button><button class="active" data-period="30">30 hari</button></div><p class="control-note" id="period-note">Hitungan titik di dalam batas desa intervensi.</p></div>
+        <div class="fw-control-group"><h2>Layer peta</h2>
+          <label><input type="checkbox" data-layer="villages" checked> Desa intervensi & risiko</label>
+          <label><input type="checkbox" data-layer="rain"> Curah hujan radar</label>
+          <label><input type="checkbox" data-layer="wind" checked> Arah & kecepatan angin</label>
+          <label><input type="checkbox" data-layer="fdrs" checked> FDRS / tinggi muka air</label>
+          <label><input type="checkbox" data-layer="canals" checked> Sekat kanal</label>
+        </div>
+        <div class="fw-control-group"><h2>Ketinggian angin</h2><select id="wind-level"><option value="10">Permukaan (10 m)</option><option value="800">±2.500 kaki (perkiraan model)</option></select></div>
+        <button class="fw-primary" id="zoom-yg" type="button">Zoom ke wilayah YG</button>
+        <div class="fw-legend"><h2>Risiko hotspot</h2><span><i class="risk-zero"></i>Nihil</span><span><i class="risk-low"></i>1–2 titik</span><span><i class="risk-medium"></i>3–5 titik</span><span><i class="risk-high"></i>&gt;5 titik</span></div>
+      </aside>
+      <div class="fw-map-wrap"><div id="fire-map" aria-label="Peta pemantauan karhutla dan cuaca"></div><div class="fw-map-message" id="map-message" hidden></div></div>
+      <aside class="fw-alerts"><div class="fw-alert-head"><div><p class="fw-eyebrow">PERINGATAN DESA</p><h2>Prioritas pemantauan</h2></div><span id="alert-count">0</span></div><div id="alert-list" class="fw-alert-list"><p class="empty">Memuat data…</p></div>
+        <div class="fw-disclaimer"><strong>Cara membaca</strong><p>Hotspot adalah indikasi anomali panas satelit, bukan kepastian kebakaran. Hujan adalah citra radar regional. Layer asap akan ditambahkan setelah sumber model CAMS terjadwal tersedia.</p></div>
+      </aside>
+    </section>
+    <section class="fw-sources"><strong>Sumber:</strong> NASA FIRMS/VIIRS melalui analitik WebGIS YG; Open-Meteo; RainViewer; data lapangan YG untuk FDRS, sekat kanal, dan desa intervensi. Waktu pembaruan selalu ditampilkan untuk mencegah data lama dibaca sebagai kondisi langsung.</section>
+  </main>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script src="js/fire-weather.js?v=20260804-fire1"></script>
+</body>
+</html>
