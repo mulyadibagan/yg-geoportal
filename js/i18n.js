@@ -141,6 +141,8 @@
       "Pasang Aplikasi": "Install App",
       "📲 Pasang Aplikasi": "📲 Install App",
       "🌐 Website Resmi Yayasan Gambut": "🌐 Official Yayasan Gambut Website",
+      "🌊 Pemantauan Pesisir & Mangrove": "🌊 Coastal & Mangrove Monitoring",
+      "🦜 Biodiversitas": "🦜 Biodiversity",
       "PLATFORM DATA SPASIAL RESMI YAYASAN GAMBUT": "OFFICIAL SPATIAL DATA PLATFORM OF YAYASAN GAMBUT",
       "Platform Data Spasial Yayasan Gambut": "Yayasan Gambut Spatial Data Platform",
       "Menyajikan informasi spasial yang terverifikasi untuk mendukung pengelolaan lahan basah, gambut, mangrove, dan ekosistem lainnya secara berkelanjutan melalui restorasi, rehabilitasi, pemantauan lapangan, pemberdayaan masyarakat, serta kemitraan strategis yang berbasis data.": "Providing verified spatial information to support the sustainable management of wetlands, peatlands, mangroves, and other ecosystems through restoration, rehabilitation, field monitoring, community empowerment, and data-driven strategic partnerships.",
