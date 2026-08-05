@@ -7,7 +7,7 @@
   <meta name="description" content="Prakiraan pasang surut, gelombang, arus, dan suhu laut untuk lokasi restorasi mangrove Yayasan Gambut.">
   <link rel="icon" href="assets/logo-yayasan-gambut.png">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
-  <link rel="stylesheet" href="css/coastal-monitoring.css?v=20260805-coastal1">
+  <link rel="stylesheet" href="css/coastal-monitoring.css?v=20260805-tide-times1">
 </head>
 <body>
   <header class="coast-header">
@@ -19,7 +19,9 @@
       <div><p class="eyebrow">COASTAL & MANGROVE MONITORING</p><h1>Pemantauan Pesisir & Mangrove</h1><p>Prakiraan kondisi laut untuk mendukung jadwal monitoring, penanaman, dan perlindungan lokasi rehabilitasi mangrove YG.</p></div>
       <div class="data-status"><span>Status data</span><strong id="data-status">Memuat…</strong><small id="updated-at">—</small></div>
     </section>
+
     <section class="location-tabs" id="location-tabs" aria-label="Lokasi mangrove YG"></section>
+
     <section class="coast-kpis" aria-label="Kondisi lokasi terpilih">
       <article><span>Tinggi muka laut</span><strong id="kpi-tide">—</strong><small>terhadap MSL model</small></article>
       <article><span>Tinggi gelombang</span><strong id="kpi-wave">—</strong><small id="wave-detail">—</small></article>
@@ -27,6 +29,7 @@
       <article><span>Suhu permukaan laut</span><strong id="kpi-sst">—</strong><small>prakiraan model</small></article>
       <article class="risk-card"><span>Rekomendasi lapangan</span><strong id="kpi-risk">Menilai…</strong><small id="risk-detail">—</small></article>
     </section>
+
     <section class="coast-workspace">
       <aside class="coast-panel controls">
         <h2>Produk oseanografi</h2>
@@ -41,18 +44,26 @@
       <aside class="coast-panel detail">
         <p class="eyebrow">LOKASI TERPILIH</p><h2 id="location-name">—</h2><p id="location-meta">—</p>
         <div class="field-advice"><strong id="advice-title">Memuat rekomendasi…</strong><p id="advice-copy">—</p></div>
+        <div class="tide-schedule" aria-label="Jadwal pasang surut">
+          <div class="tide-schedule-head"><span>Jadwal pasang surut</span><small>WIB · prakiraan model</small></div>
+          <div class="tide-state"><span>Kondisi sekarang</span><strong id="tide-state">—</strong></div>
+          <div class="tide-event high"><span>Pasang berikutnya</span><strong id="next-high-tide">—</strong><small id="next-high-level">—</small></div>
+          <div class="tide-event low"><span>Surut berikutnya</span><strong id="next-low-tide">—</strong><small id="next-low-level">—</small></div>
+        </div>
         <div class="next-window"><span>Jendela lapangan yang disarankan</span><strong id="next-window">—</strong></div>
       </aside>
     </section>
+
     <section class="forecast-panel">
       <div class="forecast-head"><div><p class="eyebrow">PRAKIRAAN 72 JAM</p><h2 id="chart-title">Pasang surut & gelombang</h2></div><label>Tampilkan<select id="chart-metric"><option value="sea_level_height_msl">Pasang surut</option><option value="wave_height">Gelombang</option><option value="ocean_current_velocity">Arus</option><option value="sea_surface_temperature">Suhu laut</option></select></label></div>
       <div class="chart-wrap"><canvas id="forecast-chart" width="1100" height="300" aria-label="Grafik prakiraan oseanografi"></canvas></div>
     </section>
+
     <section class="coast-note"><strong>Catatan penggunaan:</strong> Data adalah prakiraan model regional, bukan sensor lapangan dan bukan untuk navigasi. Pasang surut dan arus memiliki resolusi sekitar 8 km sehingga kondisi kanal, muara sempit, dan pantai dangkal dapat berbeda. Validasi dengan pengamatan lapangan YG tetap diperlukan.</section>
     <section class="coast-source">Sumber: <a href="https://open-meteo.com/en/docs/marine-weather-api" target="_blank" rel="noopener">Open-Meteo Marine API</a>, model gelombang dan oseanografi Copernicus/Météo-France; batas dan area mangrove dari WebGIS Yayasan Gambut.</section>
   </main>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-  <script src="js/coastal-monitoring.js?v=20260805-coastal1"></script>
+  <script src="js/coastal-monitoring.js?v=20260805-tide-times1"></script>
 </body>
 </html>
