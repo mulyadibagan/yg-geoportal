@@ -315,6 +315,7 @@ function parseFirmsCsv(csvText) {
   const dateIndex = header.findIndex((h) => h === "acq_date");
   const timeIndex = header.findIndex((h) => h === "acq_time");
   const satelliteIndex = header.findIndex((h) => h === "satellite");
+  const confidenceIndex = header.findIndex((h) => h === "confidence");
   if (latIndex < 0 || lonIndex < 0 || dateIndex < 0) {
     return [];
   }
@@ -326,9 +327,16 @@ function parseFirmsCsv(csvText) {
       lon: Number(cols[lonIndex]),
       date: cols[dateIndex],
       time: timeIndex >= 0 ? text(cols[timeIndex]).padStart(4, "0") : "",
-      satellite: satelliteIndex >= 0 ? text(cols[satelliteIndex]) : ""
+      satellite: satelliteIndex >= 0 ? text(cols[satelliteIndex]) : "",
+      confidence: confidenceIndex >= 0 ? text(cols[confidenceIndex]).toLowerCase() : ""
     };
   }).filter((row) => Number.isFinite(row.lat) && Number.isFinite(row.lon) && /^\d{4}-\d{2}-\d{2}$/.test(row.date));
+}
+
+function isHighConfidence(point) {
+  if (point.confidence === "h" || point.confidence === "high") return true;
+  const numeric = Number(point.confidence);
+  return Number.isFinite(numeric) && numeric >= 80;
 }
 
 function dateRangeChunks(startDate, endDate) {
@@ -549,7 +557,7 @@ async function main() {
         });
         continue;
       }
-      const points = parseFirmsCsv(csv).filter((point) => {
+      const points = parseFirmsCsv(csv).filter(isHighConfidence).filter((point) => {
         const d = parseIsoDate(point.date);
         return d >= chunk.start && d <= chunk.end;
       }).filter((point) => {
@@ -644,7 +652,8 @@ async function main() {
       socialForestryUnits: social.items.length,
       updated: updated
     },
-    notes: "Counts are deduplicated and derived from FIRMS points intersecting village and social-forestry polygons."
+    confidenceFilter: "high",
+    notes: "Counts include only high-confidence FIRMS points, deduplicated and intersected with village and social-forestry polygons."
   };
 
   await writeFile(ANALYTICS_PATH, `${JSON.stringify(analytics, null, 2)}\n`, "utf-8");
