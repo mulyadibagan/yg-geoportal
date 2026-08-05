@@ -21,14 +21,14 @@
       <div class="fw-updated"><span>Status data</span><strong id="data-status">Memuat…</strong><small id="updated-at">—</small></div>
     </section>
     <section class="fw-condition" aria-label="Ringkasan kondisi Indonesia">
-      <div class="fw-condition-copy"><span class="fw-condition-kicker">KONDISI TERKINI</span><strong id="condition-title">Memuat kondisi pemantauan…</strong><small id="condition-copy">Hotspot, angin, hujan, dan aerosol ditampilkan sebagai lapisan yang dapat dibandingkan.</small></div>
+      <div class="fw-condition-copy"><span class="fw-condition-kicker">KONDISI TERKINI</span><strong id="condition-title">Memuat kondisi pemantauan…</strong><small id="condition-copy">Hotspot, citra satelit, angin, dan hujan ditampilkan sebagai lapisan yang dapat dibandingkan.</small></div>
       <label class="fw-date"><span>Tanggal pengamatan</span><input id="observation-date" type="date"><small>Data satelit mengikuti tanggal yang dipilih</small></label>
     </section>
     <section class="fw-products" aria-label="Produk pemantauan">
       <button class="active" type="button" data-product="hotspots"><span>🔥</span><strong>Hotspot</strong><small>Anomali panas VIIRS</small></button>
       <button type="button" data-product="wind"><span>➤</span><strong>Angin</strong><small>Permukaan (10 m)</small></button>
       <button type="button" data-product="rain"><span>🌧</span><strong>Akumulasi hujan</strong><small>Radar hujan terbaru</small></button>
-      <button type="button" data-product="satellite"><span>🌫️</span><strong>Indikasi Kabut Asap</strong><small>Hotspot + aerosol satelit</small></button>
+      <button type="button" data-product="satellite"><span>🌫️</span><strong>Indikasi Kabut Asap</strong><small>Citra + hotspot + angin</small></button>
     </section>
     <section class="fw-kpis" aria-label="Ringkasan kondisi">
       <article><span>Hotspot desa YG</span><strong id="kpi-hotspots">—</strong><small id="kpi-period">30 hari</small></article>
@@ -42,7 +42,7 @@
         <div class="fw-control-group"><h2>Waktu hotspot</h2><div class="segmented" id="period-control"><button data-period="latest">Terbaru</button><button data-period="1">24 jam</button><button data-period="7">7 hari</button><button class="active" data-period="30">30 hari</button></div><p class="control-note" id="period-note">Hitungan titik di dalam batas desa intervensi.</p></div>
         <div class="fw-control-group"><h2>Layer peta</h2>
           <label><input type="checkbox" data-layer="hotspots" checked> Hotspot nasional (satelit)</label>
-          <label><input type="checkbox" data-layer="haze" checked> Indikasi kabut asap / aerosol</label>
+          <label><input type="checkbox" data-layer="haze"> Aerosol atmosfer (AOD) — eksperimental</label>
           <label><input type="checkbox" data-layer="satellite"> Citra satelit MODIS</label>
           <label><input type="checkbox" data-layer="villages" checked> Desa intervensi & risiko</label>
           <label><input type="checkbox" data-layer="rain"> Curah hujan radar</label>
@@ -52,16 +52,16 @@
         </div>
         <div class="fw-control-group fw-wind-level"><h2>Ketinggian angin</h2><p class="fw-static-value">Permukaan (10 m)</p><p class="control-note">Data model ±2.500 kaki belum tersedia dan tidak ditampilkan.</p></div>
         <div class="fw-zoom-actions"><button class="fw-primary" id="zoom-id" type="button">Lihat Indonesia</button><button class="fw-secondary" id="zoom-yg" type="button">Zoom ke wilayah YG</button></div>
-        <div class="fw-legend"><h2>Legenda</h2><span><i class="hotspot-dot"></i>Deteksi panas VIIRS</span><span><i class="haze-low"></i>Indikasi kabut asap rendah</span><span><i class="haze-high"></i>Indikasi kabut asap lebih tinggi</span><span><i class="risk-zero"></i>Desa: nihil</span><span><i class="risk-low"></i>Desa: 1–2 titik</span><span><i class="risk-medium"></i>Desa: 3–5 titik</span><span><i class="risk-high"></i>Desa: &gt;5 titik</span></div>
+        <div class="fw-legend"><h2>Legenda</h2><span><i class="hotspot-dot"></i>Deteksi panas VIIRS</span><span><i class="haze-low"></i>Aerosol atmosfer lebih rendah</span><span><i class="haze-high"></i>Aerosol atmosfer lebih tinggi</span><span><i class="risk-zero"></i>Desa: nihil</span><span><i class="risk-low"></i>Desa: 1–2 titik</span><span><i class="risk-medium"></i>Desa: 3–5 titik</span><span><i class="risk-high"></i>Desa: &gt;5 titik</span></div>
       </aside>
       <div class="fw-map-wrap"><div id="fire-map" aria-label="Peta pemantauan karhutla dan cuaca"></div><div class="fw-map-message" id="map-message" hidden></div></div>
       <aside class="fw-alerts"><div class="fw-alert-head"><div><p class="fw-eyebrow">PERINGATAN DESA</p><h2>Prioritas pemantauan</h2></div><span id="alert-count">0</span></div><div id="alert-list" class="fw-alert-list"><p class="empty">Memuat data…</p></div>
-        <div class="fw-disclaimer"><strong>Cara membaca</strong><p>Hotspot adalah indikasi anomali panas satelit, bukan kepastian kebakaran. Layer haze menunjukkan <em>aerosol optical depth</em> (AOD): indikasi partikel di atmosfer yang dapat berasal dari asap, tetapi juga debu atau aerosol lain. Karena itu layer ini bukan batas asap terverifikasi.</p></div>
+        <div class="fw-disclaimer"><strong>Cara membaca</strong><p>Hotspot adalah indikasi anomali panas satelit, bukan kepastian kebakaran. Indikasi kabut asap dibaca dengan membandingkan citra satelit, kelompok hotspot, dan arah angin; hasilnya bukan poligon haze terverifikasi seperti analisis operasional ASMC. Layer AOD bersifat eksperimental dan dapat dipengaruhi debu, awan tipis, atau kelembapan.</p></div>
       </aside>
     </section>
-    <section class="fw-sources"><strong>Sumber:</strong> NASA GIBS VIIRS untuk anomali panas nasional dan MODIS MAIAC AOD untuk indikasi haze; NASA FIRMS/VIIRS melalui analitik WebGIS YG; Open-Meteo; RainViewer; data lapangan YG untuk FDRS, sekat kanal, dan desa intervensi. Waktu pembaruan selalu ditampilkan untuk mencegah data lama dibaca sebagai kondisi langsung.</section>
+    <section class="fw-sources"><strong>Sumber:</strong> NASA GIBS VIIRS dan citra MODIS untuk pemantauan nasional; NASA FIRMS/VIIRS melalui analitik WebGIS YG; Open-Meteo; RainViewer; data lapangan YG untuk FDRS, sekat kanal, dan desa intervensi. MODIS MAIAC AOD tersedia hanya sebagai layer teknis eksperimental. Waktu pembaruan selalu ditampilkan untuk mencegah data lama dibaca sebagai kondisi langsung.</section>
   </main>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-  <script src="js/fire-weather.js?v=20260805-rain-zoom2"></script>
+  <script src="js/fire-weather.js?v=20260805-live-haze2"></script>
 </body>
 </html>
