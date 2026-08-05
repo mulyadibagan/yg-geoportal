@@ -3,6 +3,8 @@
   gap: 8px;
 }
 
+.fw-condition{display:grid;grid-template-columns:1fr minmax(220px,300px);gap:18px;align-items:center;padding:15px 18px;margin-bottom:10px;background:linear-gradient(110deg,#183f56,#17715c);color:#fff;border-radius:14px}.fw-condition-copy{display:grid;gap:3px}.fw-condition-kicker{font-size:10px;font-weight:900;letter-spacing:.12em;color:#bde7d9}.fw-condition-copy strong{font-size:18px}.fw-condition-copy small{color:#d9eee8}.fw-date{display:grid;gap:4px;font-size:11px}.fw-date span{font-weight:800}.fw-date input{width:100%;border:1px solid #ffffff66;border-radius:8px;padding:9px 10px;background:#fff;color:#183329;font:inherit}.fw-date small{color:#d9eee8}.fw-products{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}.fw-products button{display:grid;grid-template-columns:34px 1fr;grid-template-rows:auto auto;text-align:left;column-gap:9px;padding:11px 12px;border:1px solid #cadbd4;border-radius:12px;background:#fff;color:#183329;cursor:pointer}.fw-products button>span{grid-row:1/3;align-self:center;font-size:22px}.fw-products strong{font-size:13px}.fw-products small{font-size:10px;color:#66756f}.fw-products button.active{border-color:#0f7255;background:#eaf6f1;box-shadow:inset 0 0 0 1px #0f7255}.fw-products button:focus-visible{outline:3px solid #74c6aa;outline-offset:2px}
+
 .fw-secondary {
   width: 100%;
   padding: 11px;
@@ -47,3 +49,6 @@
   font-size: 10px;
   color: var(--muted);
 }
+
+@media(max-width:800px){.fw-condition{grid-template-columns:1fr}.fw-products{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:460px){.fw-products{grid-template-columns:1fr}.fw-products button{padding:9px 11px}}
