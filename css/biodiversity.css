@@ -13,6 +13,13 @@
 .catalog-intro{max-width:760px;margin:10px 0 0;color:var(--muted);font-size:14px;line-height:1.6}
 .biodiversity-sources{grid-template-columns:1fr minmax(190px,auto)}.source-links{display:grid;gap:8px}.source-links a{padding:11px 15px;border-radius:10px;background:#fff;color:var(--forest);font-weight:850;text-align:center;text-decoration:none}
 .dialog-fauna-visual{display:flex;min-height:520px;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:38px;background:linear-gradient(145deg,#eef8f3,#cae6d9);text-align:center}.dialog-fauna-visual span{font-size:112px}.dialog-fauna-visual strong{max-width:280px;color:var(--forest)}.dialog-fauna-visual small{max-width:300px;color:var(--muted);line-height:1.5}
+.biodiversity-hero{grid-template-columns:1fr}
+.biodiversity-hero .hero-stats{grid-template-columns:repeat(3,minmax(0,1fr))}
+.biodiversity-hero .hero-stats article{grid-template-columns:1fr}
+.biodiversity-hero .hero-stats strong{font-size:34px}
+.ecosystem-strip{grid-template-columns:1fr}
+.filters{grid-template-columns:repeat(3,minmax(0,1fr))}
+.flora-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
 .external-photo{padding:0;overflow:hidden;justify-content:flex-end;background:#dcebe4}.external-photo>img{width:100%;min-height:420px;max-height:620px;object-fit:cover}.external-photo-credit{display:grid;width:100%;gap:4px;padding:14px 18px;background:#f5fbf8;text-align:left}.external-photo-credit strong{max-width:none;font-size:11px}.external-photo-credit span{font-size:10px;color:var(--muted)}.external-photo-credit a{color:var(--green);font-size:11px;font-weight:850}
 .species-profile{margin-top:22px}.species-profile h3{margin:0 0 12px;color:var(--brown);font:700 22px Georgia,serif}.species-profile-grid{display:grid;gap:10px}.species-profile-grid article{padding:13px 15px;border:1px solid var(--line);border-radius:14px;background:#f7fbf9}.species-profile-grid span{display:block;color:var(--green);font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}.species-profile-grid p{margin:6px 0 0;color:#33443e;font-size:13px;line-height:1.55}.reference-list{display:flex;flex-wrap:wrap;gap:7px;margin:16px 0}.reference-list>strong{width:100%;color:var(--muted);font-size:11px}.reference-list a{padding:7px 10px;border:1px solid #d7eee4;border-radius:999px;background:#edf8f3;color:var(--green);font-size:11px;font-weight:800;text-decoration:none}
 @media(min-width:760px){.species-profile-grid{grid-template-columns:1fr 1fr}}
