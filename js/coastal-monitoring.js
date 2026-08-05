@@ -73,7 +73,8 @@
       const groups=[
         {key:'wave',fields:['wave_height','wave_direction','wave_period']},
         {key:'current',fields:['ocean_current_velocity','ocean_current_direction']},
-        {key:'tide',fields:['sea_level_height_msl']}
+        {key:'tide',fields:['sea_level_height_msl']},
+        {key:'sst',fields:['sea_surface_temperature']}
       ];
       const missing=groups.filter(group=>group.fields.some(field=>!(data.hourly[field]||[]).some(Number.isFinite)));
       if(missing.length){
@@ -97,7 +98,7 @@
   function renderTabs(){ $('location-tabs').innerHTML=LOCATIONS.map(l=>`<button type="button" data-id="${l.id}" class="${l.id===state.selected.id?'active':''}"><strong>${l.name}</strong><span>${l.regency}</span></button>`).join(''); }
   function setSelected(loc){state.selected=loc;renderTabs();const data=state.data.get(loc.id);$('location-name').textContent=loc.name;$('location-meta').textContent=`Kabupaten ${loc.regency} · titik model laut terdekat`;if(data)renderLocation(data);map.setView([loc.lat,loc.lon],11);}
   function renderLocation(data){
-    const {idx,h}=currentHour(data),risk=riskOf(h);$('kpi-tide').textContent=fmt(h.sea_level_height_msl,2)+' m';$('tide-detail').textContent=`terhadap MSL model${data.tideFallbackKm?` · regional ±${data.tideFallbackKm} km`:''}`;$('kpi-wave').textContent=fmt(h.wave_height,1)+' m';$('wave-detail').textContent=`dari ${dir(h.wave_direction)} · periode ${fmt(h.wave_period,0)} dtk${data.waveFallbackKm?` · regional ±${data.waveFallbackKm} km`:''}`;$('kpi-current').textContent=fmt(h.ocean_current_velocity,1)+' km/j';$('current-detail').textContent=`menuju ${dir(h.ocean_current_direction)}${data.currentFallbackKm?` · regional ±${data.currentFallbackKm} km`:''}`;$('kpi-sst').textContent=fmt(h.sea_surface_temperature,1)+' °C';$('kpi-risk').textContent=risk.label;$('risk-detail').textContent='berdasarkan gelombang dan arus';document.querySelector('.risk-card').className='risk-card '+risk.level;$('advice-title').textContent=risk.label;$('advice-copy').textContent=risk.copy;renderTideSchedule(data,idx);
+    const {idx,h}=currentHour(data),risk=riskOf(h);$('kpi-tide').textContent=fmt(h.sea_level_height_msl,2)+' m';$('tide-detail').textContent=`terhadap MSL model${data.tideFallbackKm?` · regional ±${data.tideFallbackKm} km`:''}`;$('kpi-wave').textContent=fmt(h.wave_height,1)+' m';$('wave-detail').textContent=`dari ${dir(h.wave_direction)} · periode ${fmt(h.wave_period,0)} dtk${data.waveFallbackKm?` · regional ±${data.waveFallbackKm} km`:''}`;$('kpi-current').textContent=fmt(h.ocean_current_velocity,1)+' km/j';$('current-detail').textContent=`menuju ${dir(h.ocean_current_direction)}${data.currentFallbackKm?` · regional ±${data.currentFallbackKm} km`:''}`;$('kpi-sst').textContent=fmt(h.sea_surface_temperature,1)+' °C';$('sst-detail').textContent=`prakiraan model${data.sstFallbackKm?` · regional ±${data.sstFallbackKm} km`:''}`;$('kpi-risk').textContent=risk.label;$('risk-detail').textContent='berdasarkan gelombang dan arus';document.querySelector('.risk-card').className='risk-card '+risk.level;$('advice-title').textContent=risk.label;$('advice-copy').textContent=risk.copy;renderTideSchedule(data,idx);
     $('next-window').textContent=fieldWindow(data,idx)||'Belum ditemukan dalam prakiraan';renderDirectionArrows(data,h);renderChart(data);
   }
   function renderDirectionArrows(data,h){
