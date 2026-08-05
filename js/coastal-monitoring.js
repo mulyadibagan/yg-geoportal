@@ -24,6 +24,29 @@
     let idx=0,best=Infinity;times.forEach((t,i)=>{const x=Math.abs(t-now);if(x<best){best=x;idx=i}});
     const h={time:data.hourly.time[idx]};Object.keys(data.hourly).forEach(k=>{if(k!=='time')h[k]=data.hourly[k][idx]});return {idx,h};
   }
+  function tideEvents(data,startIdx){
+    const values=data.hourly.sea_level_height_msl||[],times=data.hourly.time||[],events=[];
+    const end=Math.min(values.length-1,startIdx+48);
+    for(let i=Math.max(1,startIdx);i<end;i++){
+      const prev=values[i-1],value=values[i],next=values[i+1];
+      if(![prev,value,next].every(Number.isFinite))continue;
+      if(value>prev&&value>=next)events.push({type:'high',time:times[i],level:value});
+      if(value<prev&&value<=next)events.push({type:'low',time:times[i],level:value});
+    }
+    return events;
+  }
+  function formatTideTime(time){
+    return new Intl.DateTimeFormat('id-ID',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',hourCycle:'h23',timeZone:'Asia/Jakarta'}).format(new Date(time)).replace('.',':')+' WIB';
+  }
+  function renderTideSchedule(data,index){
+    const values=data.hourly.sea_level_height_msl||[],current=values[index],next=values[index+1];
+    $('tide-state').textContent=Number.isFinite(current)&&Number.isFinite(next)?(next>current?'Menuju pasang ↑':next<current?'Menuju surut ↓':'Relatif tetap'):'—';
+    const events=tideEvents(data,index),high=events.find(e=>e.type==='high'),low=events.find(e=>e.type==='low');
+    $('next-high-tide').textContent=high?formatTideTime(high.time):'Belum terdeteksi';
+    $('next-high-level').textContent=high?`${fmt(high.level,2)} m terhadap MSL`:'dalam 48 jam';
+    $('next-low-tide').textContent=low?formatTideTime(low.time):'Belum terdeteksi';
+    $('next-low-level').textContent=low?`${fmt(low.level,2)} m terhadap MSL`:'dalam 48 jam';
+  }
   async function fetchMarine(loc){
     const variables='wave_height,wave_direction,wave_period,ocean_current_velocity,ocean_current_direction,sea_surface_temperature,sea_level_height_msl';
     const url=`https://marine-api.open-meteo.com/v1/marine?latitude=${loc.lat}&longitude=${loc.lon}&hourly=${variables}&timezone=Asia%2FJakarta&forecast_days=8&cell_selection=sea`;
@@ -32,7 +55,7 @@
   function renderTabs(){ $('location-tabs').innerHTML=LOCATIONS.map(l=>`<button type="button" data-id="${l.id}" class="${l.id===state.selected.id?'active':''}"><strong>${l.name}</strong><span>${l.regency}</span></button>`).join(''); }
   function setSelected(loc){state.selected=loc;renderTabs();const data=state.data.get(loc.id);$('location-name').textContent=loc.name;$('location-meta').textContent=`Kabupaten ${loc.regency} · titik model laut terdekat`;if(data)renderLocation(data);map.setView([loc.lat,loc.lon],11);}
   function renderLocation(data){
-    const {h}=currentHour(data),risk=riskOf(h);$('kpi-tide').textContent=fmt(h.sea_level_height_msl,2)+' m';$('kpi-wave').textContent=fmt(h.wave_height,1)+' m';$('wave-detail').textContent=`${dir(h.wave_direction)} · periode ${fmt(h.wave_period,0)} dtk`;$('kpi-current').textContent=fmt(h.ocean_current_velocity,1)+' km/j';$('current-detail').textContent=`menuju ${dir(h.ocean_current_direction)}`;$('kpi-sst').textContent=fmt(h.sea_surface_temperature,1)+' °C';$('kpi-risk').textContent=risk.label;$('risk-detail').textContent='berdasarkan gelombang dan arus';document.querySelector('.risk-card').className='risk-card '+risk.level;$('advice-title').textContent=risk.label;$('advice-copy').textContent=risk.copy;
+    const {idx,h}=currentHour(data),risk=riskOf(h);$('kpi-tide').textContent=fmt(h.sea_level_height_msl,2)+' m';$('kpi-wave').textContent=fmt(h.wave_height,1)+' m';$('wave-detail').textContent=`${dir(h.wave_direction)} · periode ${fmt(h.wave_period,0)} dtk`;$('kpi-current').textContent=fmt(h.ocean_current_velocity,1)+' km/j';$('current-detail').textContent=`menuju ${dir(h.ocean_current_direction)}`;$('kpi-sst').textContent=fmt(h.sea_surface_temperature,1)+' °C';$('kpi-risk').textContent=risk.label;$('risk-detail').textContent='berdasarkan gelombang dan arus';document.querySelector('.risk-card').className='risk-card '+risk.level;$('advice-title').textContent=risk.label;$('advice-copy').textContent=risk.copy;renderTideSchedule(data,idx);
     const good=data.hourly.time.map((t,i)=>({t,w:data.hourly.wave_height[i],c:data.hourly.ocean_current_velocity[i],s:data.hourly.sea_level_height_msl[i]})).find(x=>new Date(x.t)>new Date()&&x.w<.8&&x.c<1.5&&Math.abs(x.s)<.5);$('next-window').textContent=good?new Intl.DateTimeFormat('id-ID',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}).format(new Date(good.t)):'Belum ditemukan dalam prakiraan';renderChart(data);
   }
   function renderChart(data){
