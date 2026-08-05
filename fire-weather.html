@@ -7,8 +7,8 @@
   <meta name="description" content="Pemantauan hotspot, hujan, angin, FDRS, sekat kanal, dan risiko kebakaran di wilayah program Yayasan Gambut.">
   <link rel="icon" href="assets/logo-yayasan-gambut.png">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
-  <link rel="stylesheet" href="css/fire-weather.css?v=20260805-asmc1">
-  <link rel="stylesheet" href="css/fire-weather-national.css?v=20260805-asmc1">
+  <link rel="stylesheet" href="css/fire-weather.css?v=20260805-wind-surface1">
+  <link rel="stylesheet" href="css/fire-weather-national.css?v=20260805-wind-surface1">
 </head>
 <body>
   <header class="fw-header">
@@ -26,7 +26,7 @@
     </section>
     <section class="fw-products" aria-label="Produk pemantauan">
       <button class="active" type="button" data-product="hotspots"><span>🔥</span><strong>Hotspot</strong><small>Anomali panas VIIRS</small></button>
-      <button type="button" data-product="wind"><span>➤</span><strong>Angin</strong><small>Permukaan / 2.500 kaki</small></button>
+      <button type="button" data-product="wind"><span>➤</span><strong>Angin</strong><small>Permukaan (10 m)</small></button>
       <button type="button" data-product="rain"><span>🌧</span><strong>Akumulasi hujan</strong><small>Radar hujan terbaru</small></button>
       <button type="button" data-product="satellite"><span>🛰</span><strong>Satelit & haze</strong><small>Citra MODIS + AOD</small></button>
     </section>
@@ -50,7 +50,7 @@
           <label><input type="checkbox" data-layer="fdrs" checked> FDRS / tinggi muka air</label>
           <label><input type="checkbox" data-layer="canals" checked> Sekat kanal</label>
         </div>
-        <div class="fw-control-group"><h2>Ketinggian angin</h2><select id="wind-level"><option value="10">Permukaan (10 m)</option><option value="800">±2.500 kaki (belum tersedia)</option></select></div>
+        <div class="fw-control-group fw-wind-level"><h2>Ketinggian angin</h2><p class="fw-static-value">Permukaan (10 m)</p><p class="control-note">Data model ±2.500 kaki belum tersedia dan tidak ditampilkan.</p></div>
         <div class="fw-zoom-actions"><button class="fw-primary" id="zoom-id" type="button">Lihat Indonesia</button><button class="fw-secondary" id="zoom-yg" type="button">Zoom ke wilayah YG</button></div>
         <div class="fw-legend"><h2>Legenda</h2><span><i class="hotspot-dot"></i>Deteksi panas VIIRS</span><span><i class="haze-low"></i>Aerosol rendah</span><span><i class="haze-high"></i>Aerosol lebih tinggi</span><span><i class="risk-zero"></i>Desa: nihil</span><span><i class="risk-low"></i>Desa: 1–2 titik</span><span><i class="risk-medium"></i>Desa: 3–5 titik</span><span><i class="risk-high"></i>Desa: &gt;5 titik</span></div>
       </aside>
@@ -62,6 +62,6 @@
     <section class="fw-sources"><strong>Sumber:</strong> NASA GIBS VIIRS untuk anomali panas nasional dan MODIS MAIAC AOD untuk indikasi haze; NASA FIRMS/VIIRS melalui analitik WebGIS YG; Open-Meteo; RainViewer; data lapangan YG untuk FDRS, sekat kanal, dan desa intervensi. Waktu pembaruan selalu ditampilkan untuk mencegah data lama dibaca sebagai kondisi langsung.</section>
   </main>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-  <script src="js/fire-weather.js?v=20260805-asmc1"></script>
+  <script src="js/fire-weather.js?v=20260805-wind-surface1"></script>
 </body>
 </html>
