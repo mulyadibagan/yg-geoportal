@@ -28,7 +28,7 @@
       <button class="active" type="button" data-product="hotspots"><span>🔥</span><strong>Hotspot</strong><small>Anomali panas VIIRS</small></button>
       <button type="button" data-product="wind"><span>➤</span><strong>Angin</strong><small>Permukaan (10 m)</small></button>
       <button type="button" data-product="rain"><span>🌧</span><strong>Akumulasi hujan</strong><small>Radar hujan terbaru</small></button>
-      <button type="button" data-product="satellite"><span>🛰</span><strong>Satelit & haze</strong><small>Citra MODIS + AOD</small></button>
+      <button type="button" data-product="satellite"><span>🌫️</span><strong>Indikasi Kabut Asap</strong><small>Hotspot + aerosol satelit</small></button>
     </section>
     <section class="fw-kpis" aria-label="Ringkasan kondisi">
       <article><span>Hotspot desa YG</span><strong id="kpi-hotspots">—</strong><small id="kpi-period">30 hari</small></article>
@@ -42,7 +42,7 @@
         <div class="fw-control-group"><h2>Waktu hotspot</h2><div class="segmented" id="period-control"><button data-period="latest">Terbaru</button><button data-period="1">24 jam</button><button data-period="7">7 hari</button><button class="active" data-period="30">30 hari</button></div><p class="control-note" id="period-note">Hitungan titik di dalam batas desa intervensi.</p></div>
         <div class="fw-control-group"><h2>Layer peta</h2>
           <label><input type="checkbox" data-layer="hotspots" checked> Hotspot nasional (satelit)</label>
-          <label><input type="checkbox" data-layer="haze" checked> Indikasi haze / aerosol</label>
+          <label><input type="checkbox" data-layer="haze" checked> Indikasi kabut asap / aerosol</label>
           <label><input type="checkbox" data-layer="satellite"> Citra satelit MODIS</label>
           <label><input type="checkbox" data-layer="villages" checked> Desa intervensi & risiko</label>
           <label><input type="checkbox" data-layer="rain"> Curah hujan radar</label>
@@ -52,7 +52,7 @@
         </div>
         <div class="fw-control-group fw-wind-level"><h2>Ketinggian angin</h2><p class="fw-static-value">Permukaan (10 m)</p><p class="control-note">Data model ±2.500 kaki belum tersedia dan tidak ditampilkan.</p></div>
         <div class="fw-zoom-actions"><button class="fw-primary" id="zoom-id" type="button">Lihat Indonesia</button><button class="fw-secondary" id="zoom-yg" type="button">Zoom ke wilayah YG</button></div>
-        <div class="fw-legend"><h2>Legenda</h2><span><i class="hotspot-dot"></i>Deteksi panas VIIRS</span><span><i class="haze-low"></i>Aerosol rendah</span><span><i class="haze-high"></i>Aerosol lebih tinggi</span><span><i class="risk-zero"></i>Desa: nihil</span><span><i class="risk-low"></i>Desa: 1–2 titik</span><span><i class="risk-medium"></i>Desa: 3–5 titik</span><span><i class="risk-high"></i>Desa: &gt;5 titik</span></div>
+        <div class="fw-legend"><h2>Legenda</h2><span><i class="hotspot-dot"></i>Deteksi panas VIIRS</span><span><i class="haze-low"></i>Indikasi kabut asap rendah</span><span><i class="haze-high"></i>Indikasi kabut asap lebih tinggi</span><span><i class="risk-zero"></i>Desa: nihil</span><span><i class="risk-low"></i>Desa: 1–2 titik</span><span><i class="risk-medium"></i>Desa: 3–5 titik</span><span><i class="risk-high"></i>Desa: &gt;5 titik</span></div>
       </aside>
       <div class="fw-map-wrap"><div id="fire-map" aria-label="Peta pemantauan karhutla dan cuaca"></div><div class="fw-map-message" id="map-message" hidden></div></div>
       <aside class="fw-alerts"><div class="fw-alert-head"><div><p class="fw-eyebrow">PERINGATAN DESA</p><h2>Prioritas pemantauan</h2></div><span id="alert-count">0</span></div><div id="alert-list" class="fw-alert-list"><p class="empty">Memuat data…</p></div>
