@@ -103,9 +103,9 @@ body.modal-open{overflow:hidden}
 }
 .hero-actions .btn{min-width:0;min-height:44px;padding:9px 11px;font-size:12px;line-height:1.2;white-space:nowrap}
 
-/* The full desktop navigation already includes Karhutla & Cuaca. */
+/* These destinations already appear in the full desktop navigation. */
 @media(min-width:901px){
-  .hero-actions .hero-fire-weather{display:none}
+  .hero-actions .hero-mobile-link{display:none}
 }
 .btn{
   display:inline-flex;
