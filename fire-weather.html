@@ -7,8 +7,8 @@
   <meta name="description" content="Pemantauan hotspot, hujan, angin, FDRS, sekat kanal, dan risiko kebakaran di wilayah program Yayasan Gambut.">
   <link rel="icon" href="assets/logo-yayasan-gambut.png">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
-  <link rel="stylesheet" href="css/fire-weather.css?v=20260805-wind-surface1">
-  <link rel="stylesheet" href="css/fire-weather-national.css?v=20260805-wind-surface1">
+  <link rel="stylesheet" href="css/fire-weather.css?v=20260805-infra-fs1">
+  <link rel="stylesheet" href="css/fire-weather-national.css?v=20260805-infra-fs1">
 </head>
 <body>
   <header class="fw-header">
@@ -51,7 +51,7 @@
         </div>
         <div class="fw-control-group fw-wind-level"><h2>Ketinggian angin</h2><p class="fw-static-value">Permukaan (10 m)</p><p class="control-note">Data model ±2.500 kaki belum tersedia dan tidak ditampilkan.</p></div>
         <div class="fw-zoom-actions"><button class="fw-primary" id="zoom-id" type="button">Lihat Indonesia</button><button class="fw-secondary" id="zoom-yg" type="button">Zoom ke wilayah YG</button></div>
-        <div class="fw-legend"><h2>Legenda</h2><span><i class="hotspot-dot"></i>Hotspot VIIRS confidence tinggi</span><span><i class="risk-zero"></i>Desa: nihil</span><span><i class="risk-low"></i>Desa: 1–2 titik</span><span><i class="risk-medium"></i>Desa: 3–5 titik</span><span><i class="risk-high"></i>Desa: &gt;5 titik</span></div>
+        <div class="fw-legend"><h2>Legenda</h2><span><i class="hotspot-dot"></i>Hotspot VIIRS confidence tinggi</span><span><i class="legend-infrastructure fdrs">F</i>FDRS / tinggi muka air</span><span><i class="legend-infrastructure canal">S</i>Sekat kanal</span><span><i class="risk-zero"></i>Desa: nihil</span><span><i class="risk-low"></i>Desa: 1–2 titik</span><span><i class="risk-medium"></i>Desa: 3–5 titik</span><span><i class="risk-high"></i>Desa: &gt;5 titik</span></div>
       </aside>
       <div class="fw-map-wrap"><div id="fire-map" aria-label="Peta pemantauan karhutla dan cuaca"></div><div class="fw-map-message" id="map-message" hidden></div></div>
       <aside class="fw-alerts"><div class="fw-alert-head"><div><p class="fw-eyebrow">PERINGATAN DESA</p><h2>Prioritas pemantauan</h2></div><span id="alert-count">0</span></div><div id="alert-list" class="fw-alert-list"><p class="empty">Memuat data…</p></div>
@@ -61,6 +61,6 @@
     <section class="fw-sources"><strong>Sumber:</strong> NASA FIRMS/VIIRS high confidence untuk titik hotspot interaktif; citra MODIS NASA GIBS; Open-Meteo; RainViewer; data lapangan YG untuk FDRS, sekat kanal, dan desa intervensi. Waktu pembaruan selalu ditampilkan untuk mencegah data lama dibaca sebagai kondisi langsung.</section>
   </main>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-  <script src="js/fire-weather.js?v=20260805-indonesia-hotspot1"></script>
+  <script src="js/fire-weather.js?v=20260805-infra-fs1"></script>
 </body>
 </html>
