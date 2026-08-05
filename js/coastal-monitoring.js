@@ -4,9 +4,9 @@
     {id:'buruk-bakul',name:'Buruk Bakul',regency:'Bengkalis',lat:1.419895,lon:102.057985},
     {id:'sepahat',name:'Sepahat',regency:'Bengkalis',lat:1.560556,lon:101.875580},
     {id:'kelapa-pati',name:'Kelapa Pati',regency:'Bengkalis',lat:1.487850,lon:102.082154},
-    {id:'tanjung-kuras',name:'Tanjung Kuras',regency:'Siak',lat:1.228433,lon:102.176332}
+    {id:'tanjung-kuras',name:'Tanjung Kuras',regency:'Siak',lat:1.228433,lon:102.176332,currentFallback:{lat:1.36,lon:102.18,distanceKm:35}}
   ];
-  const state={selected:LOCATIONS[0],data:new Map(),markers:new Map(),chart:null,areas:null,waveArrow:null,currentArrow:null};
+  const state={selected:LOCATIONS[0],product:'wave',data:new Map(),markers:new Map(),chart:null,areas:null,waveArrow:null,currentArrow:null};
   const $=id=>document.getElementById(id);
   const fmt=(v,d=1)=>Number.isFinite(v)?v.toFixed(d):'—';
   const dir=d=>Number.isFinite(d)?['U','TL','T','TG','S','BD','B','BL'][Math.round(d/45)%8]:'—';
@@ -68,30 +68,45 @@
   async function fetchMarine(loc){
     const variables='wave_height,wave_direction,wave_period,ocean_current_velocity,ocean_current_direction,sea_surface_temperature,sea_level_height_msl';
     const url=`https://marine-api.open-meteo.com/v1/marine?latitude=${loc.lat}&longitude=${loc.lon}&hourly=${variables}&timezone=GMT&timeformat=unixtime&forecast_days=8&cell_selection=sea`;
-    const response=await fetch(url);if(!response.ok)throw new Error('Marine API '+response.status);return response.json();
+    const response=await fetch(url);if(!response.ok)throw new Error('Marine API '+response.status);const data=await response.json();
+    const hasCurrent=(data.hourly.ocean_current_velocity||[]).some(Number.isFinite)&&(data.hourly.ocean_current_direction||[]).some(Number.isFinite);
+    if(!hasCurrent&&loc.currentFallback){
+      const fallback=loc.currentFallback;
+      const currentUrl=`https://marine-api.open-meteo.com/v1/marine?latitude=${fallback.lat}&longitude=${fallback.lon}&hourly=ocean_current_velocity,ocean_current_direction&timezone=GMT&timeformat=unixtime&forecast_days=8&cell_selection=sea`;
+      const currentResponse=await fetch(currentUrl);
+      if(currentResponse.ok){
+        const currentData=await currentResponse.json();
+        if((currentData.hourly.ocean_current_velocity||[]).some(Number.isFinite)){
+          data.hourly.ocean_current_velocity=currentData.hourly.ocean_current_velocity;
+          data.hourly.ocean_current_direction=currentData.hourly.ocean_current_direction;
+          data.currentFallbackKm=fallback.distanceKm;
+        }
+      }
+    }
+    return data;
   }
   function renderTabs(){ $('location-tabs').innerHTML=LOCATIONS.map(l=>`<button type="button" data-id="${l.id}" class="${l.id===state.selected.id?'active':''}"><strong>${l.name}</strong><span>${l.regency}</span></button>`).join(''); }
   function setSelected(loc){state.selected=loc;renderTabs();const data=state.data.get(loc.id);$('location-name').textContent=loc.name;$('location-meta').textContent=`Kabupaten ${loc.regency} · titik model laut terdekat`;if(data)renderLocation(data);map.setView([loc.lat,loc.lon],11);}
   function renderLocation(data){
-    const {idx,h}=currentHour(data),risk=riskOf(h);$('kpi-tide').textContent=fmt(h.sea_level_height_msl,2)+' m';$('kpi-wave').textContent=fmt(h.wave_height,1)+' m';$('wave-detail').textContent=`${dir(h.wave_direction)} · periode ${fmt(h.wave_period,0)} dtk`;$('kpi-current').textContent=fmt(h.ocean_current_velocity,1)+' km/j';$('current-detail').textContent=`menuju ${dir(h.ocean_current_direction)}`;$('kpi-sst').textContent=fmt(h.sea_surface_temperature,1)+' °C';$('kpi-risk').textContent=risk.label;$('risk-detail').textContent='berdasarkan gelombang dan arus';document.querySelector('.risk-card').className='risk-card '+risk.level;$('advice-title').textContent=risk.label;$('advice-copy').textContent=risk.copy;renderTideSchedule(data,idx);
+    const {idx,h}=currentHour(data),risk=riskOf(h);$('kpi-tide').textContent=fmt(h.sea_level_height_msl,2)+' m';$('kpi-wave').textContent=fmt(h.wave_height,1)+' m';$('wave-detail').textContent=`${dir(h.wave_direction)} · periode ${fmt(h.wave_period,0)} dtk`;$('kpi-current').textContent=fmt(h.ocean_current_velocity,1)+' km/j';$('current-detail').textContent=`menuju ${dir(h.ocean_current_direction)}${data.currentFallbackKm?` · regional ±${data.currentFallbackKm} km`:''}`;$('kpi-sst').textContent=fmt(h.sea_surface_temperature,1)+' °C';$('kpi-risk').textContent=risk.label;$('risk-detail').textContent='berdasarkan gelombang dan arus';document.querySelector('.risk-card').className='risk-card '+risk.level;$('advice-title').textContent=risk.label;$('advice-copy').textContent=risk.copy;renderTideSchedule(data,idx);
     $('next-window').textContent=fieldWindow(data,idx)||'Belum ditemukan dalam prakiraan';renderDirectionArrows(data,h);renderChart(data);
   }
   function renderDirectionArrows(data,h){
     if(state.waveArrow){state.waveArrow.remove();state.waveArrow=null;}
     if(state.currentArrow){state.currentArrow.remove();state.currentArrow=null;}
     const coastLat=state.selected.lat,coastLon=state.selected.lon;
-    const separation=Math.max(.006,Math.min(.012,.009/Math.max(Math.cos(coastLat*Math.PI/180),.4)));
-    if(Number.isFinite(h.wave_direction)){
+    if(state.product==='wave'&&Number.isFinite(h.wave_direction)){
       const travelDirection=(h.wave_direction+180)%360;
       const label=`Gelombang datang dari ${dirLong(h.wave_direction)} · bergerak ke ${dirLong(travelDirection)} · ${fmt(h.wave_height,1)} m`;
       const icon=L.divIcon({className:'marine-direction-container',html:`<div class="marine-direction-marker wave" style="--direction-rotation:${travelDirection}deg" aria-label="${label}"><span class="marine-arrow" aria-hidden="true">↑</span><span class="marine-label">Gelombang · ${fmt(h.wave_height,1)} m</span></div>`,iconSize:[146,66],iconAnchor:[73,33]});
-      state.waveArrow=L.marker([coastLat,coastLon-separation],{icon,zIndexOffset:720,interactive:true}).addTo(map).bindTooltip(`${label}<br><small>Ditampilkan di pantai ${state.selected.name}; data dari sel model laut terdekat</small>`,{direction:'top',offset:[0,-24]});
+      state.waveArrow=L.marker([coastLat,coastLon],{icon,zIndexOffset:720,interactive:true}).addTo(map).bindTooltip(`${label}<br><small>Pantai ${state.selected.name} · titik sel model laut terdekat</small>`,{direction:'top',offset:[0,-24]}).openTooltip();
     }
-    if(Number.isFinite(h.ocean_current_direction)){
+    if(state.product==='current'&&Number.isFinite(h.ocean_current_direction)){
       const currentDirection=(h.ocean_current_direction+360)%360;
-      const label=`Arus bergerak menuju ${dirLong(currentDirection)} · ${fmt(h.ocean_current_velocity,1)} km/j`;
+      const regional=data.currentFallbackKm?` · referensi regional ±${data.currentFallbackKm} km`:'';
+      const label=`Arus bergerak menuju ${dirLong(currentDirection)} · ${fmt(h.ocean_current_velocity,1)} km/j${regional}`;
       const icon=L.divIcon({className:'marine-direction-container',html:`<div class="marine-direction-marker current" style="--direction-rotation:${currentDirection}deg" aria-label="${label}"><span class="marine-arrow" aria-hidden="true">↑</span><span class="marine-label">Arus · ${fmt(h.ocean_current_velocity,1)} km/j</span></div>`,iconSize:[146,66],iconAnchor:[73,33]});
-      state.currentArrow=L.marker([coastLat,coastLon+separation],{icon,zIndexOffset:710,interactive:true}).addTo(map).bindTooltip(`${label}<br><small>Ditampilkan di pantai ${state.selected.name}; data dari sel model laut terdekat</small>`,{direction:'top',offset:[0,-24]});
+      state.currentArrow=L.marker([coastLat,coastLon],{icon,zIndexOffset:720,interactive:true}).addTo(map).bindTooltip(`${label}<br><small>Pantai ${state.selected.name} · titik sel model laut terdekat</small>`,{direction:'top',offset:[0,-24]}).openTooltip();
     }
   }
   function renderChart(data){
@@ -103,5 +118,5 @@
   function renderMarkers(){LOCATIONS.forEach(loc=>{const data=state.data.get(loc.id),risk=data?riskOf(currentHour(data).h):{level:'watch'};if(state.markers.has(loc.id))state.markers.get(loc.id).remove();const icon=L.divIcon({className:'',html:`<div class="coast-marker ${risk.level}" style="width:22px;height:22px"></div>`,iconSize:[22,22],iconAnchor:[11,11]});const marker=L.marker([loc.lat,loc.lon],{icon}).addTo(map).bindTooltip(loc.name,{permanent:false});marker.on('click',()=>setSelected(loc));state.markers.set(loc.id,marker)});}
   async function loadAreas(){try{const r=await fetch('data/area_mangrove.geojson');const j=await r.json();state.areas=L.geoJSON(j,{style:{color:'#0d8678',weight:2,fillColor:'#28a899',fillOpacity:.16},filter:f=>LOCATIONS.some(l=>String(f.properties&&f.properties.Desa||'').toLowerCase()===l.name.toLowerCase())}).addTo(map)}catch(e){console.warn(e)}}
   async function init(){renderTabs();$('location-name').textContent=state.selected.name;$('location-meta').textContent='Memuat titik model laut terdekat…';await loadAreas();try{const results=await Promise.allSettled(LOCATIONS.map(fetchMarine));results.forEach((r,i)=>{if(r.status==='fulfilled')state.data.set(LOCATIONS[i].id,r.value)});if(!state.data.size)throw new Error('Data tidak tersedia');$('data-status').textContent=`Aktif · ${state.data.size}/4 lokasi`;$('updated-at').textContent='Prakiraan model diperbarui otomatis';renderMarkers();setSelected(state.selected)}catch(e){$('data-status').textContent='Sumber tidak tersedia';$('updated-at').textContent='Coba muat ulang beberapa saat lagi';$('map-message').hidden=false;$('map-message').textContent='Data oseanografi belum dapat dimuat. Peta lokasi YG tetap tersedia.';renderMarkers()}}
-  $('location-tabs').addEventListener('click',e=>{const b=e.target.closest('button[data-id]');if(b)setSelected(LOCATIONS.find(l=>l.id===b.dataset.id))});$('chart-metric').addEventListener('change',()=>{const d=state.data.get(state.selected.id);if(d)renderChart(d)});$('zoom-all').addEventListener('click',()=>map.fitBounds(L.latLngBounds(LOCATIONS.map(l=>[l.lat,l.lon])).pad(.25)));document.querySelectorAll('input[name=product]').forEach(r=>r.addEventListener('change',()=>{$('chart-metric').value={wave:'wave_height',current:'ocean_current_velocity',tide:'sea_level_height_msl',sst:'sea_surface_temperature'}[r.value];$('chart-metric').dispatchEvent(new Event('change'))}));init();
+  $('location-tabs').addEventListener('click',e=>{const b=e.target.closest('button[data-id]');if(b)setSelected(LOCATIONS.find(l=>l.id===b.dataset.id))});$('chart-metric').addEventListener('change',()=>{const d=state.data.get(state.selected.id);if(d)renderChart(d)});$('zoom-all').addEventListener('click',()=>map.fitBounds(L.latLngBounds(LOCATIONS.map(l=>[l.lat,l.lon])).pad(.25)));document.querySelectorAll('input[name=product]').forEach(r=>r.addEventListener('change',()=>{state.product=r.value;$('chart-metric').value={wave:'wave_height',current:'ocean_current_velocity',tide:'sea_level_height_msl',sst:'sea_surface_temperature'}[r.value];const d=state.data.get(state.selected.id);if(d){renderDirectionArrows(d,currentHour(d).h);renderChart(d)}}));init();
 })();
