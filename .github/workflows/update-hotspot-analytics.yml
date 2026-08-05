@@ -4,6 +4,10 @@ on:
   schedule:
     - cron: "15 0 * * *"
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/update-hotspot-analytics.yml"
 
 permissions:
   contents: write
@@ -33,6 +37,8 @@ jobs:
           FIRMS_SOURCES: MODIS_NRT,VIIRS_SNPP_NRT,VIIRS_NOAA20_NRT,VIIRS_NOAA21_NRT
           FIRMS_MODE: recent
           FIRMS_CHUNK_DAYS: 5
+          # Seluruh Provinsi Riau: marker interaktif tidak dibatasi ke desa YG.
+          FIRMS_QUERY_BBOX: 100.00,-1.25,104.05,2.95
           FIRMS_VILLAGE_GEOJSON: data/desa_intervensi.geojson
           FIRMS_PS_GEOJSON: data/PERHUTANAN_SOSIAL_RIAU.geojson
         run: |
