@@ -7,7 +7,7 @@
   <meta name="description" content="Prakiraan pasang surut, gelombang, arus, dan suhu laut untuk lokasi restorasi mangrove Yayasan Gambut.">
   <link rel="icon" href="assets/logo-yayasan-gambut.png">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
-  <link rel="stylesheet" href="css/coastal-monitoring.css?v=20260805-wave-arrow1">
+  <link rel="stylesheet" href="css/coastal-monitoring.css?v=20260805-current-arrow1">
 </head>
 <body>
   <header class="coast-header">
@@ -37,7 +37,7 @@
         <label><input type="radio" name="product" value="current"> Arus laut</label>
         <label><input type="radio" name="product" value="tide"> Pasang surut</label>
         <label><input type="radio" name="product" value="sst"> Suhu permukaan laut</label>
-        <div class="legend"><h3>Risiko lokasi</h3><span><i class="safe"></i>Relatif aman</span><span><i class="watch"></i>Perlu perhatian</span><span><i class="high"></i>Risiko tinggi</span></div>
+        <div class="legend"><h3>Arah di pantai desa</h3><span><i style="background:#0a91c7"></i>Gelombang bergerak</span><span><i style="background:#e97924"></i>Arus menuju</span><h3>Risiko lokasi</h3><span><i class="safe"></i>Relatif aman</span><span><i class="watch"></i>Perlu perhatian</span><span><i class="high"></i>Risiko tinggi</span></div>
         <button id="zoom-all" type="button">Lihat semua lokasi YG</button>
       </aside>
       <div class="map-wrap"><div id="coastal-map" aria-label="Peta pemantauan pesisir dan mangrove"></div><div id="map-message" class="map-message" hidden></div></div>
@@ -64,6 +64,6 @@
   </main>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-  <script src="js/coastal-monitoring.js?v=20260805-wave-arrow1"></script>
+  <script src="js/coastal-monitoring.js?v=20260805-current-arrow1"></script>
 </body>
 </html>
