@@ -36,6 +36,21 @@
   box-shadow: 0 0 0 2px #fff, 0 0 0 3px #991b1b;
 }
 
+.legend-infrastructure {
+  width: 20px !important;
+  height: 20px !important;
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 20px;
+  color: #fff;
+  border: 2px solid #fff;
+  font: 900 11px/1 Inter, ui-sans-serif, system-ui, sans-serif;
+  box-shadow: 0 1px 4px #0005;
+}
+
+.legend-infrastructure.fdrs { background: #e44b2d; border-radius: 50%; }
+.legend-infrastructure.canal { background: #087f87; border-radius: 4px; }
+
 .haze-low {
   background: #f5d67b !important;
 }
