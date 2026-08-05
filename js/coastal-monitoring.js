@@ -10,6 +10,8 @@
   const $=id=>document.getElementById(id);
   const fmt=(v,d=1)=>Number.isFinite(v)?v.toFixed(d):'—';
   const dir=d=>Number.isFinite(d)?['U','TL','T','TG','S','BD','B','BL'][Math.round(d/45)%8]:'—';
+  const toMillis=time=>typeof time==='number'?time*1000:new Date(time).getTime();
+  const toDate=time=>new Date(toMillis(time));
   const map=L.map('coastal-map',{zoomControl:true}).setView([1.31,102.14],9);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap contributors'}).addTo(map);
 
@@ -20,7 +22,7 @@
     return {level:'safe',label:'Relatif aman',copy:'Kondisi model relatif tenang. Tetap cek cuaca dan pasang setempat sebelum berangkat.'};
   }
   function currentHour(data){
-    const now=Date.now(), times=data.hourly.time.map(t=>new Date(t).getTime());
+    const now=Date.now(), times=data.hourly.time.map(toMillis);
     let idx=0,best=Infinity;times.forEach((t,i)=>{const x=Math.abs(t-now);if(x<best){best=x;idx=i}});
     const h={time:data.hourly.time[idx]};Object.keys(data.hourly).forEach(k=>{if(k!=='time')h[k]=data.hourly[k][idx]});return {idx,h};
   }
@@ -36,10 +38,10 @@
     return events;
   }
   function formatTideTime(time){
-    return new Intl.DateTimeFormat('id-ID',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',hourCycle:'h23',timeZone:'Asia/Jakarta'}).format(new Date(time)).replace('.',':')+' WIB';
+    return new Intl.DateTimeFormat('id-ID',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',hourCycle:'h23',timeZone:'Asia/Jakarta'}).format(toDate(time)).replace('.',':')+' WIB';
   }
   function formatShortTime(time){
-    return new Intl.DateTimeFormat('id-ID',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',hourCycle:'h23',timeZone:'Asia/Jakarta'}).format(new Date(time)).replace('.',':');
+    return new Intl.DateTimeFormat('id-ID',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',hourCycle:'h23',timeZone:'Asia/Jakarta'}).format(toDate(time)).replace('.',':');
   }
   function fieldWindow(data,startIdx){
     const times=data.hourly.time||[],waves=data.hourly.wave_height||[],currents=data.hourly.ocean_current_velocity||[],levels=data.hourly.sea_level_height_msl||[];
@@ -50,7 +52,7 @@
       if(start>=0){if(safe)end=i;if(!safe||end-start>=5)break;}
     }
     if(start<0)return null;
-    const endTime=new Intl.DateTimeFormat('id-ID',{hour:'2-digit',minute:'2-digit',hourCycle:'h23',timeZone:'Asia/Jakarta'}).format(new Date(times[end])).replace('.',':');
+    const endTime=new Intl.DateTimeFormat('id-ID',{hour:'2-digit',minute:'2-digit',hourCycle:'h23',timeZone:'Asia/Jakarta'}).format(toDate(times[end])).replace('.',':');
     return `${formatShortTime(times[start])}–${endTime} WIB`;
   }
   function renderTideSchedule(data,index){
@@ -64,7 +66,7 @@
   }
   async function fetchMarine(loc){
     const variables='wave_height,wave_direction,wave_period,ocean_current_velocity,ocean_current_direction,sea_surface_temperature,sea_level_height_msl';
-    const url=`https://marine-api.open-meteo.com/v1/marine?latitude=${loc.lat}&longitude=${loc.lon}&hourly=${variables}&timezone=Asia%2FJakarta&forecast_days=8&cell_selection=sea`;
+    const url=`https://marine-api.open-meteo.com/v1/marine?latitude=${loc.lat}&longitude=${loc.lon}&hourly=${variables}&timezone=GMT&timeformat=unixtime&forecast_days=8&cell_selection=sea`;
     const response=await fetch(url);if(!response.ok)throw new Error('Marine API '+response.status);return response.json();
   }
   function renderTabs(){ $('location-tabs').innerHTML=LOCATIONS.map(l=>`<button type="button" data-id="${l.id}" class="${l.id===state.selected.id?'active':''}"><strong>${l.name}</strong><span>${l.regency}</span></button>`).join(''); }
@@ -75,8 +77,8 @@
   }
   function renderChart(data){
     const metric=$('chart-metric').value,times=data.hourly.time.slice(0,72),units={sea_level_height_msl:'m terhadap MSL',wave_height:'m',ocean_current_velocity:'km/j',sea_surface_temperature:'°C'},names={sea_level_height_msl:'Pasang surut',wave_height:'Tinggi gelombang',ocean_current_velocity:'Kecepatan arus',sea_surface_temperature:'Suhu permukaan laut'};
-    const labels=times.map(t=>new Intl.DateTimeFormat('id-ID',{day:'numeric',month:'short',hour:'2-digit',hourCycle:'h23',timeZone:'Asia/Jakarta'}).format(new Date(t)).replace('.',':')),values=data.hourly[metric].slice(0,72),events=metric==='sea_level_height_msl'?tideEvents(data,0).filter(e=>times.includes(e.time)):[];
-    const guidePlugin={id:'coastalGuides',afterDatasetsDraw(chart){const {ctx,chartArea,scales}=chart,now=Date.now(),stamps=times.map(t=>new Date(t).getTime());ctx.save();if(now>=stamps[0]&&now<=stamps[stamps.length-1]){let ni=stamps.findIndex(t=>t>=now);ni=Math.max(0,ni);const x=scales.x.getPixelForValue(ni);ctx.setLineDash([4,4]);ctx.strokeStyle='#dc554d';ctx.beginPath();ctx.moveTo(x,chartArea.top);ctx.lineTo(x,chartArea.bottom);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#b73c36';ctx.font='600 10px Inter, sans-serif';ctx.fillText('Sekarang',Math.min(x+4,chartArea.right-46),chartArea.top+11);}events.forEach(e=>{const i=times.indexOf(e.time),x=scales.x.getPixelForValue(i),y=scales.y.getPixelForValue(e.level),clock=new Intl.DateTimeFormat('id-ID',{hour:'2-digit',minute:'2-digit',hourCycle:'h23',timeZone:'Asia/Jakarta'}).format(new Date(e.time)).replace('.',':'),label=`${e.type==='high'?'Pasang':'Surut'} ${clock}`;ctx.fillStyle=e.type==='high'?'#0a91c7':'#087d75';ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fill();ctx.font='600 10px Inter, sans-serif';ctx.textAlign=i>times.length-10?'right':'left';ctx.fillText(label,i>times.length-10?x-6:x+6,Math.max(chartArea.top+12,y-8));});ctx.restore();}};
+    const labels=times.map(t=>new Intl.DateTimeFormat('id-ID',{day:'numeric',month:'short',hour:'2-digit',hourCycle:'h23',timeZone:'Asia/Jakarta'}).format(toDate(t)).replace('.',':')),values=data.hourly[metric].slice(0,72),events=metric==='sea_level_height_msl'?tideEvents(data,0).filter(e=>times.includes(e.time)):[];
+    const guidePlugin={id:'coastalGuides',afterDatasetsDraw(chart){const {ctx,chartArea,scales}=chart,now=Date.now(),stamps=times.map(toMillis);ctx.save();if(now>=stamps[0]&&now<=stamps[stamps.length-1]){let ni=stamps.findIndex(t=>t>=now);ni=Math.max(0,ni);const previous=Math.max(0,ni-1),span=stamps[ni]-stamps[previous]||1,fraction=ni===0?0:(now-stamps[previous])/span,x=scales.x.getPixelForValue(previous)+(scales.x.getPixelForValue(ni)-scales.x.getPixelForValue(previous))*fraction;ctx.setLineDash([4,4]);ctx.strokeStyle='#dc554d';ctx.beginPath();ctx.moveTo(x,chartArea.top);ctx.lineTo(x,chartArea.bottom);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#b73c36';ctx.font='600 10px Inter, sans-serif';ctx.fillText('Sekarang (WIB)',Math.min(x+4,chartArea.right-76),chartArea.top+11);}events.forEach(e=>{const i=times.indexOf(e.time),x=scales.x.getPixelForValue(i),y=scales.y.getPixelForValue(e.level),clock=new Intl.DateTimeFormat('id-ID',{hour:'2-digit',minute:'2-digit',hourCycle:'h23',timeZone:'Asia/Jakarta'}).format(toDate(e.time)).replace('.',':'),label=`${e.type==='high'?'Pasang':'Surut'} ${clock} WIB`;ctx.fillStyle=e.type==='high'?'#0a91c7':'#087d75';ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fill();ctx.font='600 10px Inter, sans-serif';ctx.textAlign=i>times.length-10?'right':'left';ctx.fillText(label,i>times.length-10?x-6:x+6,Math.max(chartArea.top+12,y-8));});ctx.restore();}};
     $('chart-title').textContent=`${names[metric]} · ${state.selected.name}`;if(state.chart)state.chart.destroy();state.chart=new Chart($('forecast-chart'),{type:'line',plugins:[guidePlugin],data:{labels,datasets:[{label:units[metric],data:values,borderColor:'#087d75',backgroundColor:'#087d7522',fill:true,tension:.25,pointRadius:0}]},options:{responsive:true,maintainAspectRatio:false,interaction:{intersect:false,mode:'index'},scales:{x:{ticks:{maxTicksLimit:7,maxRotation:0,font:{size:10}}},y:{title:{display:true,text:units[metric]}}},plugins:{legend:{display:false},tooltip:{padding:7,titleFont:{size:11},bodyFont:{size:11},displayColors:false}}}});
   }
   function renderMarkers(){LOCATIONS.forEach(loc=>{const data=state.data.get(loc.id),risk=data?riskOf(currentHour(data).h):{level:'watch'};if(state.markers.has(loc.id))state.markers.get(loc.id).remove();const icon=L.divIcon({className:'',html:`<div class="coast-marker ${risk.level}" style="width:22px;height:22px"></div>`,iconSize:[22,22],iconAnchor:[11,11]});const marker=L.marker([loc.lat,loc.lon],{icon}).addTo(map).bindTooltip(loc.name,{permanent:false});marker.on('click',()=>setSelected(loc));state.markers.set(loc.id,marker)});}
