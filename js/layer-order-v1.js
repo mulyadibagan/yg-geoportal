@@ -36,6 +36,9 @@
 
     const monitoring = getProgramRow(list, "monitoring_reports");
     const villageBoundary = getProgramRow(list, "desa_intervensi");
+    const environmentalRows = Array.from(
+      list.querySelectorAll(".environment-layer-row")
+    );
     const referenceRows = Array.from(
       list.querySelectorAll(".reference-layer-row")
     );
@@ -71,9 +74,18 @@
     });
 
     list.innerHTML = "";
+    list.appendChild(monitoring);
+
+    if (environmentalRows.length) {
+      list.appendChild(makeTitle("PEMANTAUAN LINGKUNGAN", "yg-environment-title"));
+      environmentalRows.forEach(row => list.appendChild(row));
+    }
+
     list.appendChild(makeTitle("PROGRAM & LAPORAN YG", "yg-program-title"));
 
-    orderedRows.forEach(row => list.appendChild(row));
+    orderedRows.forEach(row => {
+      if (row !== monitoring) list.appendChild(row);
+    });
 
     if (generalReferenceRows.length) {
       list.appendChild(makeTitle("DATA REFERENSI", "yg-reference-title"));
@@ -165,4 +177,6 @@
       window.setTimeout(() => observer.disconnect(), 30000);
     }
   }
+
+  document.addEventListener("yg:environment-layer-controls-ready", applyOrder);
 })();
