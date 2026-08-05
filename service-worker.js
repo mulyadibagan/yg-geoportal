@@ -1,4 +1,4 @@
-const CACHE_NAME = "yg-geoportal-v4-20260804-biodiversity-detail1";
+const CACHE_NAME = "yg-geoportal-v4-20260805-mangrove-count-fix1";
 
 const STATIC_ASSETS = [
   "./",
