@@ -15,30 +15,30 @@
     var values={};parts.forEach(function(p){values[p.type]=p.value});return values.year+'-'+values.month+'-'+values.day
   }
   var currentDate=jakartaDate(),observationDate=currentDate;dateInput.value=observationDate;dateInput.max=currentDate;
-  var nationalHotspots=L.tileLayer.wms('https://gibs.earthdata.nasa.gov/wms/epsg3857/best/wms.cgi',{
-    layers:'VIIRS_NOAA20_Thermal_Anomalies_375m_All',format:'image/png',transparent:true,
-    pane:'hotspotPane',opacity:.9,time:observationDate,attribution:'NASA GIBS / VIIRS'
-  });
   var satelliteLayer=L.tileLayer.wms('https://gibs.earthdata.nasa.gov/wms/epsg3857/best/wms.cgi',{layers:'MODIS_Terra_CorrectedReflectance_TrueColor',format:'image/jpeg',transparent:false,pane:'satellitePane',opacity:.72,time:observationDate,attribution:'NASA GIBS / MODIS Terra'});
   var groups={
-    hotspots:L.layerGroup([nationalHotspots]).addTo(map),satellite:L.layerGroup([satelliteLayer]),
+    hotspots:L.layerGroup().addTo(map),satellite:L.layerGroup([satelliteLayer]),
     villages:L.layerGroup().addTo(map),rain:L.layerGroup(),wind:L.layerGroup().addTo(map),
     fdrs:L.layerGroup().addTo(map),canals:L.layerGroup().addTo(map)
   };
-  var villageGeo=null,analytics=null,ygBounds=null,period=30,rainLayer=null;
+  var villageGeo=null,analytics=null,hotspotGeo=null,ygBounds=null,period=30,rainLayer=null;
   function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
-  function norm(v){return String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim()}
   function nameOf(p){return p.Desa||p.WADMKD||p.Nama_Desa||p.NAMOBJ||'Desa intervensi'}
-  function recordFor(p){var n=norm(nameOf(p)),all=analytics&&analytics.villages||{};return Object.keys(all).map(function(k){return all[k]}).find(function(r){return norm(r.name||r.village)===n})||null}
-  function countFor(r){if(!r)return 0;if(period===30)return Number(r.hotspot30d)||0;if(period===7)return Number(r.hotspot7d)||0;return 0}
+  function pointTime(f){var p=f.properties||{},t=String(p.acq_time||'0000').padStart(4,'0');return new Date(p.acq_date+'T'+t.slice(0,2)+':'+t.slice(2,4)+':00Z')}
+  function periodLabel(){return period==='latest'?'terbaru':period===1?'24 jam':period+' hari'}
+  function filteredHotspots(){var end=new Date(observationDate+'T23:59:59+07:00'),items=(hotspotGeo&&hotspotGeo.features||[]).filter(function(f){var t=pointTime(f);return !isNaN(t)&&t<=end});if(period==='latest'){var newest=items.reduce(function(m,f){return Math.max(m,pointTime(f).getTime())},0),day=newest?new Date(newest).toISOString().slice(0,10):'';return items.filter(function(f){return pointTime(f).toISOString().slice(0,10)===day})}var cutoff=end.getTime()-Number(period)*86400000;return items.filter(function(f){return pointTime(f).getTime()>cutoff})}
+  function pointInRing(p,r){var inside=false,x=p[0],y=p[1];for(var i=0,j=r.length-1;i<r.length;j=i++){var xi=r[i][0],yi=r[i][1],xj=r[j][0],yj=r[j][1];if((yi>y)!==(yj>y)&&x<((xj-xi)*(y-yi))/((yj-yi)||1e-12)+xi)inside=!inside}return inside}
+  function pointInGeometry(p,g){var polygons=!g?[]:g.type==='Polygon'?[g.coordinates]:g.type==='MultiPolygon'?g.coordinates:[];return polygons.some(function(r){return r.length&&pointInRing(p,r[0])&&!r.slice(1).some(function(h){return pointInRing(p,h)})})}
   function risk(c){return c>5?'high':c>2?'medium':c>0?'low':'zero'}
   function color(c){return {zero:'#72bd86',low:'#f2ca52',medium:'#ef8f27',high:'#d6402b'}[risk(c)]}
   function renderVillages(){
-    groups.villages.clearLayers();if(!villageGeo||!analytics)return;
+    groups.villages.clearLayers();if(!villageGeo||!hotspotGeo)return;var points=filteredHotspots();
     var alerts=[],total=0;
-    var layer=L.geoJSON(villageGeo,{style:function(f){var c=countFor(recordFor(f.properties||{}));return {color:'#31584b',weight:1,fillColor:color(c),fillOpacity:.48}},onEachFeature:function(f,l){var p=f.properties||{},r=recordFor(p),c=countFor(r);total+=c;if(c)alerts.push({name:nameOf(p),count:c,layer:l,risk:risk(c)});l.bindPopup('<strong>'+esc(nameOf(p))+'</strong><br>'+c+' hotspot · '+(period===30?'30 hari':period===7?'7 hari':period===1?'24 jam':'terbaru')+'<br><small>Analitik desa YG · NASA FIRMS/VIIRS</small>')}}).addTo(groups.villages);
+    var layer=L.geoJSON(villageGeo,{style:function(f){var c=points.filter(function(x){return pointInGeometry(x.geometry.coordinates,f.geometry)}).length;return {color:'#31584b',weight:1,fillColor:color(c),fillOpacity:.48}},onEachFeature:function(f,l){var p=f.properties||{},c=points.filter(function(x){return pointInGeometry(x.geometry.coordinates,f.geometry)}).length;total+=c;if(c)alerts.push({name:nameOf(p),count:c,layer:l,risk:risk(c)});l.bindPopup('<strong>'+esc(nameOf(p))+'</strong><br>'+c+' hotspot · '+periodLabel()+'<br><small>NASA FIRMS/VIIRS · confidence tinggi</small>')}}).addTo(groups.villages);
     ygBounds=layer.getBounds();document.getElementById('kpi-hotspots').textContent=total;document.getElementById('kpi-alerts').textContent=alerts.length;renderAlerts(alerts)
   }
+  function renderHotspots(){groups.hotspots.clearLayers();var items=filteredHotspots();items.forEach(function(f){var p=f.properties||{},t=pointTime(f),c=f.geometry.coordinates,when=isNaN(t)?'Waktu tidak tersedia':t.toLocaleString('id-ID',{timeZone:'Asia/Jakarta',dateStyle:'medium',timeStyle:'short'})+' WIB',html='<strong>Hotspot confidence tinggi</strong><br>'+when+'<br>Satelit: '+esc(p.satellite||'—')+'<br>Koordinat: '+Number(c[1]).toFixed(5)+', '+Number(c[0]).toFixed(5);if(p.brightness!=null)html+='<br>Suhu kecerahan: '+Number(p.brightness).toFixed(1)+' K';if(p.frp!=null)html+='<br>FRP: '+Number(p.frp).toFixed(1)+' MW';html+='<br><small>NASA FIRMS · klik titik lain untuk melihat datanya</small>';L.circleMarker([c[1],c[0]],{pane:'hotspotPane',radius:6,color:'#7f1d1d',weight:1,fillColor:'#ef2b2d',fillOpacity:.9}).bindPopup(html).addTo(groups.hotspots)});document.getElementById('period-note').textContent=items.length+' titik high confidence · '+periodLabel()}
+  function refreshHotspots(){renderHotspots();renderVillages()}
   function renderAlerts(items){
     items.sort(function(a,b){return b.count-a.count});var box=document.getElementById('alert-list');document.getElementById('alert-count').textContent=items.length;
     if(!items.length){box.innerHTML='<p class="empty">Tidak ada hotspot tercatat pada periode ini di desa intervensi.</p>';return}
@@ -56,19 +56,19 @@
   function setLayerChecked(id,on){var c=document.querySelector('[data-layer="'+id+'"]');if(c)c.checked=on;if(id==='rain'){toggleRain(on);if(on&&!map.hasLayer(groups.rain))groups.rain.addTo(map);return}if(on){if(!map.hasLayer(groups[id]))groups[id].addTo(map)}else if(map.hasLayer(groups[id]))map.removeLayer(groups[id])}
   function selectProduct(id){document.querySelectorAll('[data-product]').forEach(function(b){b.classList.toggle('active',b.dataset.product===id)});if(id==='hotspots'){setLayerChecked('hotspots',true)}if(id==='wind'){setLayerChecked('wind',true)}if(id==='rain'){setLayerChecked('rain',true)}if(id==='satellite'){setLayerChecked('satellite',true);setLayerChecked('hotspots',true);setLayerChecked('wind',true)}}
   function updateObservationDate(value){
-    observationDate=value;nationalHotspots.setParams({time:value});satelliteLayer.setParams({time:value});
+    observationDate=value;satelliteLayer.setParams({time:value});
     var isToday=value===currentDate,label=new Date(value+'T12:00:00+07:00').toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric',timeZone:'Asia/Jakarta'});
     document.getElementById('condition-title').textContent='Pengamatan satelit '+label+(isToday?' · sementara':'');
     document.getElementById('condition-copy').textContent=isToday?'Data hari ini diperbarui bertahap mengikuti lintasan satelit; area kosong belum tentu berarti tidak ada asap atau hotspot.':'Arsip pengamatan pada tanggal yang dipilih. Hanya hotspot berkeyakinan tinggi yang dipakai untuk prioritas.';
     document.getElementById('data-status').textContent=isToday?'Hari ini · data parsial':'Arsip harian';
   }
   function addMapBadge(){var badge=L.control({position:'bottomleft'});badge.onAdd=function(){var div=L.DomUtil.create('div','fw-layer-badge');div.innerHTML='<strong>CAKUPAN INDONESIA</strong><span>Hotspot high confidence + citra satelit + angin</span>';return div};badge.addTo(map)}
-  nationalHotspots.on('tileerror',function(){document.getElementById('data-status').textContent='Sebagian tersedia'});addMapBadge();
-  Promise.all([fetch('data/desa_intervensi.geojson').then(function(r){return r.json()}),fetch('data/village-forest-analytics.json').then(function(r){return r.json()}),pointLayer('data/fdrs.geojson',groups.fdrs,'fdrs','FDRS'),pointLayer('data/sekat_kanal.geojson',groups.canals,'canal','Sekat kanal'),loadWeather()]).then(function(v){villageGeo=v[0];analytics=v[1];document.getElementById('kpi-fdrs').textContent=v[2];document.getElementById('kpi-canals').textContent=v[3];var u=analytics.viirs&&analytics.viirs.updatedAt;document.getElementById('updated-at').textContent=u?'Analitik YG: '+new Date(u).toLocaleString('id-ID'):'Layer nasional: terbaru tersedia';document.getElementById('data-status').textContent=observationDate===currentDate?'Hari ini · data parsial':analytics.viirs&&analytics.viirs.status==='partial'?'Arsip aktif · YG sebagian':'Arsip harian aktif';renderVillages()}).catch(function(){document.getElementById('data-status').textContent='Sebagian gagal dimuat'});
-  document.getElementById('period-control').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;period=b.dataset.period==='latest'?'latest':Number(b.dataset.period);this.querySelectorAll('button').forEach(function(x){x.classList.toggle('active',x===b)});document.getElementById('kpi-period').textContent=b.textContent;var approximate=period===1||period==='latest';document.getElementById('period-note').textContent=approximate?'Analitik desa YG belum memisahkan periode ini. Layer nasional tetap menampilkan observasi harian terbaru.':'Periode mengubah analitik desa YG; layer nasional menampilkan observasi harian terbaru.';renderVillages()});
+  addMapBadge();
+  Promise.all([fetch('data/desa_intervensi.geojson').then(function(r){return r.json()}),fetch('data/village-forest-analytics.json').then(function(r){return r.json()}),fetch('data/hotspot-high-confidence.geojson').then(function(r){if(!r.ok)throw Error('hotspot');return r.json()}),pointLayer('data/fdrs.geojson',groups.fdrs,'fdrs','FDRS'),pointLayer('data/sekat_kanal.geojson',groups.canals,'canal','Sekat kanal'),loadWeather()]).then(function(v){villageGeo=v[0];analytics=v[1];hotspotGeo=v[2];document.getElementById('kpi-fdrs').textContent=v[3];document.getElementById('kpi-canals').textContent=v[4];var u=hotspotGeo.generatedAt||(analytics.viirs&&analytics.viirs.updatedAt);document.getElementById('updated-at').textContent=u?'FIRMS: '+new Date(u).toLocaleString('id-ID',{timeZone:'Asia/Jakarta'})+' WIB':'FIRMS belum diperbarui';document.getElementById('data-status').textContent=observationDate===currentDate?'Hari ini · data parsial':'Arsip harian aktif';refreshHotspots()}).catch(function(){document.getElementById('data-status').textContent='Data hotspot gagal dimuat'});
+  document.getElementById('period-control').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;period=b.dataset.period==='latest'?'latest':Number(b.dataset.period);this.querySelectorAll('button').forEach(function(x){x.classList.toggle('active',x===b)});document.getElementById('kpi-period').textContent=b.textContent;refreshHotspots()});
   document.querySelectorAll('[data-layer]').forEach(function(c){c.addEventListener('change',function(){var id=c.dataset.layer;if(id==='rain'){toggleRain(c.checked);return}if(c.checked)groups[id].addTo(map);else map.removeLayer(groups[id])})});
   document.querySelectorAll('[data-product]').forEach(function(b){b.addEventListener('click',function(){selectProduct(b.dataset.product)})});
-  dateInput.addEventListener('change',function(){if(dateInput.value){if(dateInput.value>currentDate)dateInput.value=currentDate;updateObservationDate(dateInput.value)}});updateObservationDate(observationDate);
+  dateInput.addEventListener('change',function(){if(dateInput.value){if(dateInput.value>currentDate)dateInput.value=currentDate;updateObservationDate(dateInput.value);refreshHotspots()}});updateObservationDate(observationDate);
   document.getElementById('zoom-id').onclick=function(){map.fitBounds(indonesiaBounds,{padding:[8,8]})};
   document.getElementById('zoom-yg').onclick=function(){if(ygBounds&&ygBounds.isValid())map.fitBounds(ygBounds.pad(.08))};
   document.getElementById('wind-level').onchange=function(e){var note=document.getElementById('map-message');if(e.target.value==='800'){note.hidden=false;note.textContent='Data angin 2.500 kaki belum tersedia; peta tetap menampilkan angin permukaan agar tidak memberi visual yang keliru.';e.target.value='10';setTimeout(function(){note.hidden=true},5000)}};

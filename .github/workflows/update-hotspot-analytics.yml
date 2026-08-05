@@ -45,27 +45,29 @@ jobs:
 
       - name: Commit and push if changed
         run: |
-          if git diff --quiet -- data/village-forest-analytics.json data/desa_intervensi.geojson; then
+          if git diff --quiet -- data/village-forest-analytics.json data/desa_intervensi.geojson data/hotspot-high-confidence.geojson; then
             echo "No hotspot data changes to commit."
             exit 0
           fi
 
           cp data/village-forest-analytics.json /tmp/hotspot-results.json
           cp data/desa_intervensi.geojson /tmp/desa-intervensi.geojson
-          git restore data/village-forest-analytics.json data/desa_intervensi.geojson
+          cp data/hotspot-high-confidence.geojson /tmp/hotspot-high-confidence.geojson
+          git restore data/village-forest-analytics.json data/desa_intervensi.geojson data/hotspot-high-confidence.geojson
           git pull --rebase origin main
           cp /tmp/desa-intervensi.geojson data/desa_intervensi.geojson
+          cp /tmp/hotspot-high-confidence.geojson data/hotspot-high-confidence.geojson
           node scripts/merge_hotspot_results.mjs \
             /tmp/hotspot-results.json \
             data/village-forest-analytics.json
 
-          if git diff --quiet -- data/village-forest-analytics.json data/desa_intervensi.geojson; then
+          if git diff --quiet -- data/village-forest-analytics.json data/desa_intervensi.geojson data/hotspot-high-confidence.geojson; then
             echo "Latest main already contains these hotspot results."
             exit 0
           fi
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/village-forest-analytics.json data/desa_intervensi.geojson
+          git add data/village-forest-analytics.json data/desa_intervensi.geojson data/hotspot-high-confidence.geojson
           git commit -m "chore(data): auto-update FIRMS hotspot analytics"
           git push origin HEAD:main

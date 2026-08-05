@@ -10,6 +10,10 @@ const ANALYTICS_PATH = path.join(
   ROOT,
   process.env.FIRMS_ANALYTICS_OUTPUT || "data/village-forest-analytics.json"
 );
+const RECENT_POINTS_PATH = path.join(
+  ROOT,
+  process.env.FIRMS_RECENT_POINTS_OUTPUT || "data/hotspot-high-confidence.geojson"
+);
 const VILLAGE_GEOJSON_FILES = (process.env.FIRMS_VILLAGE_GEOJSON || "data/desa_intervensi.geojson")
   .split(",")
   .map((x) => x.trim())
@@ -316,6 +320,9 @@ function parseFirmsCsv(csvText) {
   const timeIndex = header.findIndex((h) => h === "acq_time");
   const satelliteIndex = header.findIndex((h) => h === "satellite");
   const confidenceIndex = header.findIndex((h) => h === "confidence");
+  const brightnessIndex = header.findIndex((h) => h === "bright_ti4" || h === "brightness");
+  const frpIndex = header.findIndex((h) => h === "frp");
+  const daynightIndex = header.findIndex((h) => h === "daynight");
   if (latIndex < 0 || lonIndex < 0 || dateIndex < 0) {
     return [];
   }
@@ -328,7 +335,10 @@ function parseFirmsCsv(csvText) {
       date: cols[dateIndex],
       time: timeIndex >= 0 ? text(cols[timeIndex]).padStart(4, "0") : "",
       satellite: satelliteIndex >= 0 ? text(cols[satelliteIndex]) : "",
-      confidence: confidenceIndex >= 0 ? text(cols[confidenceIndex]).toLowerCase() : ""
+      confidence: confidenceIndex >= 0 ? text(cols[confidenceIndex]).toLowerCase() : "",
+      brightness: brightnessIndex >= 0 ? Number(cols[brightnessIndex]) : null,
+      frp: frpIndex >= 0 ? Number(cols[frpIndex]) : null,
+      daynight: daynightIndex >= 0 ? text(cols[daynightIndex]).toUpperCase() : ""
     };
   }).filter((row) => Number.isFinite(row.lat) && Number.isFinite(row.lon) && /^\d{4}-\d{2}-\d{2}$/.test(row.date));
 }
@@ -529,6 +539,7 @@ async function main() {
   }
 
   const seenDetections = new Set();
+  const recentDetections = [];
   const skippedChunks = [];
   for (const sourceInfo of activeSources) {
     const availableStart = parseIsoDate(sourceInfo.minDate);
@@ -574,6 +585,10 @@ async function main() {
         seenDetections.add(detectionKey);
         return true;
       });
+
+      if (MODE !== "history") {
+        recentDetections.push(...points);
+      }
 
       for (const point of points) {
         const pointCoord = [point.lon, point.lat];
@@ -655,6 +670,29 @@ async function main() {
     confidenceFilter: "high",
     notes: "Counts include only high-confidence FIRMS points, deduplicated and intersected with village and social-forestry polygons."
   };
+
+  if (MODE !== "history") {
+    const features = recentDetections.map((point) => ({
+      type: "Feature",
+      geometry: { type: "Point", coordinates: [point.lon, point.lat] },
+      properties: {
+        acq_date: point.date,
+        acq_time: point.time,
+        satellite: point.satellite,
+        confidence: "high",
+        brightness: Number.isFinite(point.brightness) ? point.brightness : null,
+        frp: Number.isFinite(point.frp) ? point.frp : null,
+        daynight: point.daynight || null
+      }
+    }));
+    await writeFile(RECENT_POINTS_PATH, `${JSON.stringify({
+      type: "FeatureCollection",
+      generatedAt: new Date().toISOString(),
+      periodDays: 30,
+      confidenceFilter: "high",
+      features
+    }, null, 2)}\n`, "utf-8");
+  }
 
   await writeFile(ANALYTICS_PATH, `${JSON.stringify(analytics, null, 2)}\n`, "utf-8");
   console.log(
