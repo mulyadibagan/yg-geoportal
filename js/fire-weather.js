@@ -3,7 +3,6 @@
   var indonesiaBounds=L.latLngBounds([[-11.2,94.5],[6.2,141.5]]);
   var map=L.map('fire-map',{preferCanvas:true,minZoom:3}).fitBounds(indonesiaBounds,{padding:[8,8]});
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'&copy; OpenStreetMap'}).addTo(map);
-  map.createPane('hazePane');map.getPane('hazePane').style.zIndex=310;
   map.createPane('satellitePane');map.getPane('satellitePane').style.zIndex=205;
   map.createPane('hotspotPane');map.getPane('hotspotPane').style.zIndex=420;
 
@@ -20,10 +19,8 @@
     layers:'VIIRS_NOAA20_Thermal_Anomalies_375m_All',format:'image/png',transparent:true,
     pane:'hotspotPane',opacity:.9,time:observationDate,attribution:'NASA GIBS / VIIRS'
   });
-  var hazeLayer=L.tileLayer.wms('https://gibs.earthdata.nasa.gov/wms/epsg3857/best/wms.cgi',{layers:'MODIS_Combined_MAIAC_L2G_AerosolOpticalDepth',format:'image/png',transparent:true,pane:'hazePane',opacity:.58,time:observationDate,attribution:'NASA GIBS / MODIS MAIAC AOD'});
   var satelliteLayer=L.tileLayer.wms('https://gibs.earthdata.nasa.gov/wms/epsg3857/best/wms.cgi',{layers:'MODIS_Terra_CorrectedReflectance_TrueColor',format:'image/jpeg',transparent:false,pane:'satellitePane',opacity:.72,time:observationDate,attribution:'NASA GIBS / MODIS Terra'});
   var groups={
-    haze:L.layerGroup([hazeLayer]),
     hotspots:L.layerGroup([nationalHotspots]).addTo(map),satellite:L.layerGroup([satelliteLayer]),
     villages:L.layerGroup().addTo(map),rain:L.layerGroup(),wind:L.layerGroup().addTo(map),
     fdrs:L.layerGroup().addTo(map),canals:L.layerGroup().addTo(map)
@@ -59,14 +56,14 @@
   function setLayerChecked(id,on){var c=document.querySelector('[data-layer="'+id+'"]');if(c)c.checked=on;if(id==='rain'){toggleRain(on);if(on&&!map.hasLayer(groups.rain))groups.rain.addTo(map);return}if(on){if(!map.hasLayer(groups[id]))groups[id].addTo(map)}else if(map.hasLayer(groups[id]))map.removeLayer(groups[id])}
   function selectProduct(id){document.querySelectorAll('[data-product]').forEach(function(b){b.classList.toggle('active',b.dataset.product===id)});if(id==='hotspots'){setLayerChecked('hotspots',true)}if(id==='wind'){setLayerChecked('wind',true)}if(id==='rain'){setLayerChecked('rain',true)}if(id==='satellite'){setLayerChecked('satellite',true);setLayerChecked('hotspots',true);setLayerChecked('wind',true)}}
   function updateObservationDate(value){
-    observationDate=value;nationalHotspots.setParams({time:value});hazeLayer.setParams({time:value});satelliteLayer.setParams({time:value});
+    observationDate=value;nationalHotspots.setParams({time:value});satelliteLayer.setParams({time:value});
     var isToday=value===currentDate,label=new Date(value+'T12:00:00+07:00').toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric',timeZone:'Asia/Jakarta'});
     document.getElementById('condition-title').textContent='Pengamatan satelit '+label+(isToday?' · sementara':'');
-    document.getElementById('condition-copy').textContent=isToday?'Data hari ini diperbarui bertahap mengikuti lintasan satelit; area kosong belum tentu berarti tidak ada asap atau hotspot.':'Arsip pengamatan pada tanggal yang dipilih. AOD adalah aerosol atmosfer, bukan poligon haze ASMC.';
+    document.getElementById('condition-copy').textContent=isToday?'Data hari ini diperbarui bertahap mengikuti lintasan satelit; area kosong belum tentu berarti tidak ada asap atau hotspot.':'Arsip pengamatan pada tanggal yang dipilih. Hanya hotspot berkeyakinan tinggi yang dipakai untuk prioritas.';
     document.getElementById('data-status').textContent=isToday?'Hari ini · data parsial':'Arsip harian';
   }
-  function addMapBadge(){var badge=L.control({position:'bottomleft'});badge.onAdd=function(){var div=L.DomUtil.create('div','fw-layer-badge');div.innerHTML='<strong>CAKUPAN INDONESIA</strong><span>Hotspot VIIRS + citra satelit + angin</span>';return div};badge.addTo(map)}
-  nationalHotspots.on('tileerror',function(){document.getElementById('data-status').textContent='Sebagian tersedia'});hazeLayer.on('tileerror',function(){document.getElementById('data-status').textContent='Sebagian tersedia'});addMapBadge();
+  function addMapBadge(){var badge=L.control({position:'bottomleft'});badge.onAdd=function(){var div=L.DomUtil.create('div','fw-layer-badge');div.innerHTML='<strong>CAKUPAN INDONESIA</strong><span>Hotspot high confidence + citra satelit + angin</span>';return div};badge.addTo(map)}
+  nationalHotspots.on('tileerror',function(){document.getElementById('data-status').textContent='Sebagian tersedia'});addMapBadge();
   Promise.all([fetch('data/desa_intervensi.geojson').then(function(r){return r.json()}),fetch('data/village-forest-analytics.json').then(function(r){return r.json()}),pointLayer('data/fdrs.geojson',groups.fdrs,'fdrs','FDRS'),pointLayer('data/sekat_kanal.geojson',groups.canals,'canal','Sekat kanal'),loadWeather()]).then(function(v){villageGeo=v[0];analytics=v[1];document.getElementById('kpi-fdrs').textContent=v[2];document.getElementById('kpi-canals').textContent=v[3];var u=analytics.viirs&&analytics.viirs.updatedAt;document.getElementById('updated-at').textContent=u?'Analitik YG: '+new Date(u).toLocaleString('id-ID'):'Layer nasional: terbaru tersedia';document.getElementById('data-status').textContent=observationDate===currentDate?'Hari ini · data parsial':analytics.viirs&&analytics.viirs.status==='partial'?'Arsip aktif · YG sebagian':'Arsip harian aktif';renderVillages()}).catch(function(){document.getElementById('data-status').textContent='Sebagian gagal dimuat'});
   document.getElementById('period-control').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;period=b.dataset.period==='latest'?'latest':Number(b.dataset.period);this.querySelectorAll('button').forEach(function(x){x.classList.toggle('active',x===b)});document.getElementById('kpi-period').textContent=b.textContent;var approximate=period===1||period==='latest';document.getElementById('period-note').textContent=approximate?'Analitik desa YG belum memisahkan periode ini. Layer nasional tetap menampilkan observasi harian terbaru.':'Periode mengubah analitik desa YG; layer nasional menampilkan observasi harian terbaru.';renderVillages()});
   document.querySelectorAll('[data-layer]').forEach(function(c){c.addEventListener('change',function(){var id=c.dataset.layer;if(id==='rain'){toggleRain(c.checked);return}if(c.checked)groups[id].addTo(map);else map.removeLayer(groups[id])})});
