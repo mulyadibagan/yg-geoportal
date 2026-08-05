@@ -336,7 +336,7 @@
   }
 
   function activeEnvironmentLayerIds(){
-    var nodes=document.querySelectorAll('.yg-env-control input[data-env]:checked');
+    var nodes=document.querySelectorAll('.environment-layer-row input[data-env]:checked');
     return Array.prototype.slice.call(nodes).map(function(node){
       return String(node.getAttribute("data-env")||"").trim();
     }).filter(Boolean);
@@ -927,28 +927,36 @@
   }
 
   function environmentalControl(map,layers){
-    var control=L.control({position:"topright"});
-    control.onAdd=function(){
-      var box=L.DomUtil.create("div","yg-env-control");
-      L.DomEvent.disableClickPropagation(box);
-      box.innerHTML='<strong>Pemantauan lingkungan</strong>'+
-        toggle("hotspot","Hotspot NASA MODIS–VIIRS (30 hari)")+
-        toggle("cover","Tutupan lahan Indonesia 2017")+
-        toggle("loss","Kehilangan tutupan")+
-        toggle("alerts","Alert perubahan terbaru")+
-        '<div class="yg-env-source">NASA FIRMS · Global Forest Watch</div>';
-      box.addEventListener("change",function(event){
-        var layer=layers[event.target.getAttribute("data-env")];
-        if(!layer){return;}
-        event.target.checked?layer.addTo(map):map.removeLayer(layer);
-      });
-      return box;
-    };
-    control.addTo(map);
-  }
+    var list=document.getElementById("layer-list");
+    if(!list){return;}
+    var definitions=[
+      ["hotspot","Hotspot NASA MODIS–VIIRS (30 hari)","#ff4d2e"],
+      ["cover","Tutupan lahan Indonesia 2017","#6a8f5f"],
+      ["loss","Kehilangan tutupan","#e65100"],
+      ["alerts","Alert perubahan terbaru","#8b1d1d"]
+    ];
 
-  function toggle(id,label){
-    return '<label><input type="checkbox" data-env="'+id+'"> '+esc(label)+'</label>';
+    function mount(){
+      if(list.querySelector(".environment-layer-row")){return;}
+      definitions.forEach(function(definition){
+        var id=definition[0],label=definition[1],color=definition[2];
+        var row=document.createElement("div");
+        row.className="layer-row environment-layer-row";
+        row.innerHTML='<input id="environment-layer-'+id+'" type="checkbox" data-env="'+id+'">'+
+          '<span class="swatch area" style="--yg-swatch-color:'+color+'"></span>'+
+          '<label for="environment-layer-'+id+'">'+esc(label)+'</label>';
+        row.querySelector("input").addEventListener("change",function(event){
+          var layer=layers[event.target.getAttribute("data-env")];
+          if(!layer){return;}
+          event.target.checked?layer.addTo(map):map.removeLayer(layer);
+        });
+        list.appendChild(row);
+      });
+      document.dispatchEvent(new CustomEvent("yg:environment-layer-controls-ready"));
+    }
+
+    mount();
+    new MutationObserver(function(){mount();}).observe(list,{childList:true});
   }
 
   function indonesiaClip(map,pane){
