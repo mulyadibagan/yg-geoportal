@@ -37,6 +37,9 @@ const REQUEST_TIMEOUT_MS = Number(process.env.FIRMS_TIMEOUT_MS || 90000);
 const REQUEST_MAX_ATTEMPTS = Number(process.env.FIRMS_RETRY_ATTEMPTS || 4);
 const REQUEST_RETRY_BASE_MS = Number(process.env.FIRMS_RETRY_BASE_MS || 1200);
 const HISTORY_START_YEAR = Number(process.env.FIRMS_START_YEAR || 2021);
+const QUERY_BBOX = (process.env.FIRMS_QUERY_BBOX || "")
+  .split(",")
+  .map(Number);
 const API_ROOT = "https://firms.modaps.eosdis.nasa.gov/api";
 
 if (!FIRMS_KEY && !DRY_RUN) {
@@ -486,7 +489,9 @@ async function main() {
     return;
   }
 
-  const analysisBounds = combineBounds(unitItems);
+  const analysisBounds = QUERY_BBOX.length === 4 && QUERY_BBOX.every(Number.isFinite)
+    ? { minX: QUERY_BBOX[0], minY: QUERY_BBOX[1], maxX: QUERY_BBOX[2], maxY: QUERY_BBOX[3] }
+    : combineBounds(unitItems);
   const now = new Date();
   const currentYear = now.getUTCFullYear();
   const yearlyStart = new Date(Date.UTC(Math.min(HISTORY_START_YEAR, currentYear), 0, 1));
