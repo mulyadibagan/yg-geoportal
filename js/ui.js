@@ -41,11 +41,6 @@
     }
   });
 
-  const layerOrderScript = document.createElement("script");
-  layerOrderScript.src = "js/layer-order-v1.js?v=20260720-2";
-  layerOrderScript.async = true;
-  document.head.appendChild(layerOrderScript);
-
   const monitoringFixScript = document.createElement("script");
   monitoringFixScript.src = "js/map-monitoring-fix-v1.js?v=20260720-1";
   monitoringFixScript.async = true;
