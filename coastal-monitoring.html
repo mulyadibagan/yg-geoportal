@@ -7,7 +7,7 @@
   <meta name="description" content="Prakiraan pasang surut, gelombang, arus, dan suhu laut untuk lokasi restorasi mangrove Yayasan Gambut.">
   <link rel="icon" href="assets/logo-yayasan-gambut.png">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
-  <link rel="stylesheet" href="css/coastal-monitoring.css?v=20260805-tide-times1">
+  <link rel="stylesheet" href="css/coastal-monitoring.css?v=20260805-tide-chart2">
 </head>
 <body>
   <header class="coast-header">
@@ -50,7 +50,7 @@
           <div class="tide-event high"><span>Pasang berikutnya</span><strong id="next-high-tide">—</strong><small id="next-high-level">—</small></div>
           <div class="tide-event low"><span>Surut berikutnya</span><strong id="next-low-tide">—</strong><small id="next-low-level">—</small></div>
         </div>
-        <div class="next-window"><span>Jendela lapangan yang disarankan</span><strong id="next-window">—</strong></div>
+        <div class="next-window"><span>Rentang waktu lapangan yang disarankan</span><strong id="next-window">—</strong><small>Gelombang &lt;0,8 m, arus &lt;1,5 km/j, muka laut ±0,5 m</small></div>
       </aside>
     </section>
 
@@ -64,6 +64,6 @@
   </main>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-  <script src="js/coastal-monitoring.js?v=20260805-tide-times1"></script>
+  <script src="js/coastal-monitoring.js?v=20260805-tide-chart2"></script>
 </body>
 </html>
