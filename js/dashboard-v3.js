@@ -474,6 +474,40 @@
     ].join(" ").toLowerCase();
   }
 
+
+  function canonicalMangroveVillage(props, text) {
+    const explicitVillage = firstValue(props, [
+      "Desa", "WADMKD", "NAMA_DESA", "village", "locationName"
+    ]).toLowerCase();
+    const searchable = [
+      explicitVillage,
+      firstValue(props, ["Nama_Objek", "title"]),
+      text || ""
+    ].join(" ").toLowerCase();
+    const villages = [
+      ["buruk bakul", "Buruk Bakul"],
+      ["kelapa pati", "Kelapa Pati"],
+      ["sepahat", "Sepahat"],
+      ["tanjung kuras", "Tanjung Kuras"]
+    ];
+    const exact = villages.find(item => explicitVillage === item[0]);
+    if (exact) return exact[1];
+    const inferred = villages.find(item => searchable.includes(item[0]));
+    return inferred ? inferred[1] : "";
+  }
+
+  function isMangroveNurseryFeature(props, layerId) {
+    if (layerId === "nursery_mangrove" || layerId === "persemaian_mangrove") {
+      return true;
+    }
+    const identityText = [
+      firstValue(props, ["Nama_Objek", "title"]),
+      firstValue(props, ["Kategori", "Layer_Label", "Jenis_Titik", "reportType"])
+    ].join(" ").toLowerCase();
+    return /nursery|rumah bibit|pembibitan|persemaian/.test(identityText) &&
+      !/kopi|coffee|ktwmj/.test(identityText);
+  }
+
   function featureIdentity(feature, index) {
     const props = (feature && feature.properties) || {};
     return firstValue(props, [
@@ -1090,7 +1124,7 @@
         "Jumlah_Peserta", "Peserta", "Participants", "participant_count"
       ]);
       const isPlantingEngagement = layerId === "titik_penanaman";
-      const isNursery = /nursery|rumah bibit|pembibitan|persemaian/.test(text);
+      const isNursery = isMangroveNurseryFeature(props, layerId);
       const isMangrove = layerId === "area_mangrove" ||
         layerId === "apo" || layerId === "nursery_mangrove" ||
         layerId === "persemaian_mangrove" || text.includes("mangrove") ||
@@ -1197,6 +1231,7 @@
       }
 
       if (isMangrove) {
+        const mangroveVillage = canonicalMangroveVillage(props, text);
         if (layerId === "area_mangrove") {
           programmeMetrics.mangrove.area += area;
           programmeMetrics.mangrove.seedlings += seedlings;
@@ -1205,9 +1240,7 @@
           // Satu rumah bibit dapat hadir sebagai objek Master Database dan
           // sebagai laporan masyarakat terverifikasi. Hitung lokasi unik agar
           // aset yang sama tidak tampil dua kali pada dashboard.
-          const nurseryVillage = village.toLowerCase() ||
-            (["buruk bakul", "kelapa pati", "sepahat", "tanjung kuras"]
-              .find((name) => text.includes(name)) || "");
+          const nurseryVillage = mangroveVillage.toLowerCase();
           const nurseryKey = nurseryVillage || firstValue(props, [
             "Object_ID", "objectId", "Nama_Objek", "objectName", "title"
           ]).toLowerCase();
@@ -1217,7 +1250,9 @@
           programmeMetrics.mangrove.wave += numericFrom(props,
             ["Panjang_M", "Panjang_m", "Panjang", "Length_m"]);
         }
-        if (village) programmeMetrics.mangrove.villages.add(village.toLowerCase());
+        if (mangroveVillage) {
+          programmeMetrics.mangrove.villages.add(mangroveVillage.toLowerCase());
+        }
       }
 
       if (isPeat) {
