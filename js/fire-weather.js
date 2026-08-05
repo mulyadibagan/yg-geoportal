@@ -5,6 +5,7 @@
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'&copy; OpenStreetMap'}).addTo(map);
   map.createPane('satellitePane');map.getPane('satellitePane').style.zIndex=205;
   map.createPane('hotspotPane');map.getPane('hotspotPane').style.zIndex=420;
+  map.createPane('infrastructurePane');map.getPane('infrastructurePane').style.zIndex=650;
 
   function gibs(id,matrix,options){
     return L.tileLayer('https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/'+id+'/default/default/'+matrix+'/{z}/{y}/{x}.png',Object.assign({maxNativeZoom:Number(matrix.match(/\d+$/)[0]),maxZoom:18,noWrap:true,attribution:'NASA GIBS'},options||{}));
@@ -45,7 +46,7 @@
     box.innerHTML=items.map(function(x,i){return '<article class="fw-alert-card '+x.risk+'"><button type="button" data-alert="'+i+'"><strong>'+esc(x.name)+'</strong><span>'+x.count+' hotspot · klik untuk melihat peta</span></button></article>'}).join('');
     box.querySelectorAll('[data-alert]').forEach(function(b){b.onclick=function(){var x=items[Number(b.dataset.alert)];map.fitBounds(x.layer.getBounds(),{maxZoom:13});x.layer.openPopup()}})
   }
-  function pointLayer(url,group,kind,label){return fetch(url).then(function(r){return r.json()}).then(function(g){L.geoJSON(g,{pointToLayer:function(f,ll){return L.marker(ll,{icon:L.divIcon({className:'',html:'<div class="fw-point '+kind+'"></div>',iconSize:[14,14],iconAnchor:[7,7]})})},onEachFeature:function(f,l){var p=f.properties||{};l.bindPopup('<strong>'+esc(p.Nama_Objek||label)+'</strong><br>'+esc(p.Desa||'')+' · '+esc(p.Tahun||''))}}).addTo(group);return (g.features||[]).length})}
+  function pointLayer(url,group,kind,label){return fetch(url).then(function(r){if(!r.ok)throw Error(label);return r.json()}).then(function(g){var letter=kind==='fdrs'?'F':'S';L.geoJSON(g,{pane:'infrastructurePane',pointToLayer:function(f,ll){return L.marker(ll,{pane:'infrastructurePane',riseOnHover:true,zIndexOffset:1000,icon:L.divIcon({className:'fw-infrastructure-icon',html:'<div class="fw-point '+kind+'" role="img" aria-label="'+esc(label)+'">'+letter+'</div>',iconSize:[24,24],iconAnchor:[12,12],popupAnchor:[0,-13]})})},onEachFeature:function(f,l){var p=f.properties||{},c=f.geometry&&f.geometry.coordinates||[];l.bindPopup('<strong>'+esc(p.Nama_Objek||label)+'</strong><br>'+esc(p.Desa||'')+' · '+esc(p.Tahun||'')+(c.length>1?'<br><small>Koordinat: '+Number(c[1]).toFixed(6)+', '+Number(c[0]).toFixed(6)+'</small>':''))}}).addTo(group);return (g.features||[]).length})}
   function loadWeather(){
     var sites=[['Aceh',5.55,95.32],['Riau',1.45,102.1],['Sumatera Selatan',-3.0,104.8],['Jakarta',-6.2,106.8],['Kalimantan Barat',-.1,109.3],['Kalimantan Tengah',-2.2,113.9],['Kalimantan Timur',.5,117.1],['Sulawesi',-2.0,121.0],['Bali',-8.4,115.2],['Maluku',-3.2,129.0],['Papua Selatan',-7.5,139.5],['Papua Utara',-2.5,140.7]];
     var lat=sites.map(function(s){return s[1]}).join(','),lon=sites.map(function(s){return s[2]}).join(',');
