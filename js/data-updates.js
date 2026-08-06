@@ -336,6 +336,7 @@ function toDirectDriveUrl(url){
     const seen = new Set();
     return (values || []).filter(url => {
       const text = String(url || "").trim();
+      if (!/^https?:\/\//i.test(text)) return false;
       const driveMatch = text.match(
         /\/file\/d\/([A-Za-z0-9_-]+)|[?&]id=([A-Za-z0-9_-]+)/
       );
