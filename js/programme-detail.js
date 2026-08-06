@@ -6,7 +6,7 @@
     mangrove: { name: 'Restorasi Mangrove', icon: '🌊', value: 13.24, unit: 'ha', field: 'mangroveArea', map: 'webgis.html?layers=area_mangrove,nursery_mangrove,apo' },
     peat: { name: 'Restorasi Gambut', icon: '🌿', value: 13.75, unit: 'ha', field: 'peatArea', map: 'webgis.html?layers=area_kopi,kopi,sekat_kanal,fdrs' },
     mineral: { name: 'Restorasi Lahan Mineral', icon: '🌳', value: 11.44, unit: 'ha', field: 'mineralArea', map: 'webgis.html?layer=community_reports&search=Imbo+Putui' },
-    engagement: { name: 'Pelibatan Masyarakat & Kapasitas', icon: '👥', value: 785, unit: 'orang', field: 'participants', map: 'monitoring.html' }
+    engagement: { name: 'Pelibatan Masyarakat & Kapasitas', icon: '👥', value: 785, unit: 'orang', field: 'participants', map: 'community-engagement.html' }
   };
   var key = new URLSearchParams(location.search).get('programme') || 'mangrove';
   if (!baselines[key]) key = 'mangrove';

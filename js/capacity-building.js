@@ -823,26 +823,6 @@
     }
   }
 
-  function initTabs() {
-    var tabs = document.querySelectorAll('[data-dashboard-view]');
-    tabs.forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var capacity = btn.dataset.dashboardView === 'capacity';
-        var monitoringView = document.getElementById('monitoring-view');
-        var capacityView = document.getElementById('capacity-view');
-        if (monitoringView) monitoringView.hidden = capacity;
-        if (capacityView) capacityView.hidden = !capacity;
-        document.querySelectorAll('[data-dashboard-view]').forEach(function (b) {
-          b.classList.toggle('active', b === btn);
-        });
-      });
-    });
-    if (new URLSearchParams(window.location.search).get('view') === 'capacity') {
-      var capacityTab = document.querySelector('[data-dashboard-view="capacity"]');
-      if (capacityTab) capacityTab.click();
-    }
-  }
-
   async function loadCapacity() {
     var historical = [];
     try {
@@ -882,12 +862,18 @@
       return true;
     });
 
+    var scope = text(document.body.getAttribute('data-capacity-scope')).toLowerCase();
+    if (scope === 'community') {
+      all = all.filter(function (r) { return r.kind === 'activity-engagement'; });
+    } else if (scope === 'training') {
+      all = all.filter(function (r) { return r.kind === 'training'; });
+    }
+
     populateFilters();
     renderCapacity();
   }
 
   document.addEventListener('DOMContentLoaded', function () {
-    initTabs();
     initPrepostSessionCardNavigation();
 
     ['capacity-search', 'capacity-year', 'capacity-regency'].forEach(function (id) {
@@ -926,8 +912,12 @@
       });
     });
 
-    loadCapacity();
-    loadPrepost();
+    if (document.getElementById('capacity-list')) loadCapacity();
+    if (document.body.hasAttribute('data-require-staff')) {
+      window.addEventListener('yg:staff-access-granted', loadPrepost, { once: true });
+    } else if (document.getElementById('prepost-session-list')) {
+      loadPrepost();
+    }
     var builderPhaseNode = document.getElementById('prepost-builder-phase');
     if (builderPhaseNode) {
       builderPhaseNode.addEventListener('change', function () {

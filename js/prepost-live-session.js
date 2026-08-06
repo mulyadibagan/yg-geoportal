@@ -260,5 +260,9 @@
     }
   }
 
-  init();
+  if(document.body.hasAttribute('data-require-staff')){
+    window.addEventListener('yg:staff-access-granted',init,{once:true});
+  }else{
+    init();
+  }
 })();

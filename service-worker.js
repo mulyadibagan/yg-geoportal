@@ -1,4 +1,4 @@
-const CACHE_NAME = "yg-geoportal-v4-20260806-land-hotspots2";
+const CACHE_NAME = "yg-geoportal-v4-20260806-capacity-navigation2";
 
 const STATIC_ASSETS = [
   "./",
@@ -8,6 +8,8 @@ const STATIC_ASSETS = [
   "./biodiversity.html",
   "./biodiversity-mangrove.html",
   "./monitoring.html",
+  "./community-engagement.html",
+  "./capacity-building.html",
   "./capacity-session-create.html",
   "./capacity-sessions.html",
   "./programme-detail.html",

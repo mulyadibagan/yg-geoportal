@@ -54,7 +54,7 @@
   function evidenceDestination(row) {
     if (isCapacityEvidence(row)) {
       return {
-        href: 'monitoring.html?view=capacity&report=' +
+        href: 'capacity-building.html?report=' +
           encodeURIComponent(row.evidenceId || ''),
         label: 'Buka detail peningkatan kapasitas →',
         external: false

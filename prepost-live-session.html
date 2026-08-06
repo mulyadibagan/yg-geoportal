@@ -5,11 +5,16 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Live Session Pre/Post Test | YG GeoPortal</title>
   <link rel="stylesheet" href="css/prepost-live-session.css?v=20260725-2">
+  <link rel="stylesheet" href="css/navigation-v2.css?v=20260806-menu1">
 </head>
-<body>
-  <main class="live-shell">
+<body data-require-staff>
+  <section class="staff-access" data-staff-access>
+    <span class="staff-access__eyebrow">AKSES STAF YG</span><h2>Verifikasi email resmi</h2><p>Detail Live Session berisi data evaluasi internal dan hanya tersedia bagi staf <strong>@yayasangambut.org</strong>.</p>
+    <form data-staff-access-form><label>Email resmi<input type="email" autocomplete="email" placeholder="nama@yayasangambut.org" data-staff-access-email required></label><button type="submit">Lanjutkan</button></form><p class="staff-access__status" data-staff-access-status aria-live="polite"></p>
+  </section>
+  <main class="live-shell" data-staff-protected hidden>
     <header class="live-header">
-      <a class="live-back" href="monitoring.html">Kembali ke Monitoring</a>
+      <a class="live-back" href="capacity-sessions.html">Kembali ke Live Session</a>
       <div class="live-brand">
         <img src="assets/logo-yayasan-gambut.png" alt="Logo Yayasan Gambut">
         <span>Yayasan Gambut</span>
@@ -75,6 +80,7 @@
     </section>
   </main>
 
-  <script src="js/prepost-live-session.js?v=20260725-2"></script>
+  <script src="js/prepost-live-session.js?v=20260806-staff-gate1"></script>
+  <script src="js/staff-email-gate.js?v=20260806-staff-gate1"></script>
 </body>
 </html>
