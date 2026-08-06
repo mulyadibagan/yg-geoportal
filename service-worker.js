@@ -1,4 +1,4 @@
-const CACHE_NAME = "yg-geoportal-v4-20260806-photo-url-filter1";
+const CACHE_NAME = "yg-geoportal-v4-20260806-modis-map-date1";
 
 const STATIC_ASSETS = [
   "./",

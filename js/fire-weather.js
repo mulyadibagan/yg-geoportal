@@ -22,7 +22,7 @@
     villages:L.layerGroup().addTo(map),rain:L.layerGroup(),wind:L.layerGroup().addTo(map),
     fdrs:L.layerGroup().addTo(map),canals:L.layerGroup().addTo(map)
   };
-  var villageGeo=null,analytics=null,hotspotGeo=null,ygBounds=null,period=30,rainLayer=null;
+  var villageGeo=null,analytics=null,hotspotGeo=null,ygBounds=null,period=30,rainLayer=null,mapDateBadge=null;
   function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
   function nameOf(p){return p.Desa||p.WADMKD||p.Nama_Desa||p.NAMOBJ||'Desa intervensi'}
   function pointTime(f){var p=f.properties||{},t=String(p.acq_time||'0000').padStart(4,'0');return new Date(p.acq_date+'T'+t.slice(0,2)+':'+t.slice(2,4)+':00Z')}
@@ -56,15 +56,27 @@
   function toggleRain(on){if(!on){groups.rain.clearLayers();rainLayer=null;return}var msg=document.getElementById('map-message');msg.hidden=false;msg.textContent='Memuat radar hujan…';fetch('https://api.rainviewer.com/public/weather-maps.json').then(function(r){return r.json()}).then(function(d){var frames=d.radar&&d.radar.past||[],f=frames[frames.length-1];if(!f)throw Error('no frame');groups.rain.clearLayers();rainLayer=L.tileLayer('https://tilecache.rainviewer.com'+f.path+'/256/{z}/{x}/{y}/2/1_1.png',{opacity:.55,maxNativeZoom:7,maxZoom:18,attribution:'RainViewer'}).addTo(groups.rain);msg.hidden=true}).catch(function(){msg.hidden=false;msg.textContent='Radar hujan sedang tidak tersedia';setTimeout(function(){msg.hidden=true},4000)})}
   function setLayerChecked(id,on){var c=document.querySelector('[data-layer="'+id+'"]');if(c)c.checked=on;if(id==='rain'){toggleRain(on);if(on&&!map.hasLayer(groups.rain))groups.rain.addTo(map);return}if(on){if(!map.hasLayer(groups[id]))groups[id].addTo(map)}else if(map.hasLayer(groups[id]))map.removeLayer(groups[id])}
   function selectProduct(id){document.querySelectorAll('[data-product]').forEach(function(b){b.classList.toggle('active',b.dataset.product===id)});if(id==='hotspots'){setLayerChecked('hotspots',true)}if(id==='wind'){setLayerChecked('wind',true)}if(id==='rain'){setLayerChecked('rain',true)}if(id==='satellite'){setLayerChecked('satellite',true);setLayerChecked('hotspots',true);setLayerChecked('wind',true)}}
+  function observationLabel(value){
+    return new Date(value+'T12:00:00+07:00').toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric',timeZone:'Asia/Jakarta'});
+  }
+  function updateMapDateBadge(){
+    if(!mapDateBadge)return;
+    var isToday=observationDate===currentDate;
+    mapDateBadge.querySelector('strong').textContent=observationLabel(observationDate);
+    mapDateBadge.querySelector('small').textContent=isToday?'Mosaik harian · data hari ini mungkin masih parsial':'Mosaik harian · arsip tanggal terpilih';
+  }
   function updateObservationDate(value){
     observationDate=value;satelliteLayer.setParams({time:value});
-    var isToday=value===currentDate,label=new Date(value+'T12:00:00+07:00').toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric',timeZone:'Asia/Jakarta'});
+    var isToday=value===currentDate,label=observationLabel(value);
     document.getElementById('condition-title').textContent='Pengamatan satelit '+label+(isToday?' · sementara':'');
     document.getElementById('condition-copy').textContent=isToday?'Data hari ini diperbarui bertahap mengikuti lintasan satelit; area kosong belum tentu berarti tidak ada asap atau hotspot.':'Arsip pengamatan pada tanggal yang dipilih. Hanya hotspot berkeyakinan tinggi yang dipakai untuk prioritas.';
     document.getElementById('data-status').textContent=isToday?'Hari ini · data parsial':'Arsip harian';
+    updateMapDateBadge();
   }
   function addMapBadge(){var badge=L.control({position:'bottomleft'});badge.onAdd=function(){var div=L.DomUtil.create('div','fw-layer-badge');div.innerHTML='<strong>HOTSPOT INTERAKTIF: INDONESIA</strong><span>High confidence · rekap desa khusus wilayah YG</span>';return div};badge.addTo(map)}
+  function addMapDateBadge(){var badge=L.control({position:'topright'});badge.onAdd=function(){var div=L.DomUtil.create('div','fw-map-date-badge');div.setAttribute('aria-label','Tanggal citra satelit MODIS');div.innerHTML='<span>CITRA MODIS TERRA</span><strong>—</strong><small>Mosaik harian</small>';mapDateBadge=div;updateMapDateBadge();return div};badge.addTo(map)}
   addMapBadge();
+  addMapDateBadge();
   Promise.all([fetch('data/desa_intervensi.geojson').then(function(r){return r.json()}),fetch('data/village-forest-analytics.json').then(function(r){return r.json()}),fetch('data/hotspot-high-confidence.geojson?v='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw Error('hotspot');return r.json()}),pointLayer('data/fdrs.geojson',groups.fdrs,'fdrs','FDRS'),pointLayer('data/sekat_kanal.geojson',groups.canals,'canal','Sekat kanal'),loadWeather()]).then(function(v){villageGeo=v[0];analytics=v[1];hotspotGeo=v[2];document.getElementById('kpi-fdrs').textContent=v[3];document.getElementById('kpi-canals').textContent=v[4];var u=hotspotGeo.generatedAt||(analytics.viirs&&analytics.viirs.updatedAt);document.getElementById('updated-at').textContent=u?'FIRMS: '+new Date(u).toLocaleString('id-ID',{timeZone:'Asia/Jakarta'})+' WIB':'FIRMS belum diperbarui';document.getElementById('data-status').textContent=observationDate===currentDate?'Hari ini · data parsial':'Arsip harian aktif';refreshHotspots()}).catch(function(){document.getElementById('data-status').textContent='Data hotspot gagal dimuat'});
   document.getElementById('period-control').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;period=b.dataset.period==='latest'?'latest':Number(b.dataset.period);this.querySelectorAll('button').forEach(function(x){x.classList.toggle('active',x===b)});document.getElementById('kpi-period').textContent=b.textContent;refreshHotspots()});
   document.querySelectorAll('[data-layer]').forEach(function(c){c.addEventListener('change',function(){var id=c.dataset.layer;if(id==='rain'){toggleRain(c.checked);return}if(c.checked)groups[id].addTo(map);else map.removeLayer(groups[id])})});
@@ -72,5 +84,5 @@
   dateInput.addEventListener('change',function(){if(dateInput.value){if(dateInput.value>currentDate)dateInput.value=currentDate;updateObservationDate(dateInput.value);refreshHotspots()}});updateObservationDate(observationDate);
   document.getElementById('zoom-id').onclick=function(){map.fitBounds(indonesiaBounds,{padding:[8,8]})};
   document.getElementById('zoom-yg').onclick=function(){if(ygBounds&&ygBounds.isValid())map.fitBounds(ygBounds.pad(.08))};
-  document.getElementById('wind-level').onchange=function(e){var note=document.getElementById('map-message');if(e.target.value==='800'){note.hidden=false;note.textContent='Data angin 2.500 kaki belum tersedia; peta tetap menampilkan angin permukaan agar tidak memberi visual yang keliru.';e.target.value='10';setTimeout(function(){note.hidden=true},5000)}};
+  var windLevel=document.getElementById('wind-level');if(windLevel)windLevel.onchange=function(e){var note=document.getElementById('map-message');if(e.target.value==='800'){note.hidden=false;note.textContent='Data angin 2.500 kaki belum tersedia; peta tetap menampilkan angin permukaan agar tidak memberi visual yang keliru.';e.target.value='10';setTimeout(function(){note.hidden=true},5000)}};
 })();
