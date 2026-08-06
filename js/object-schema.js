@@ -31,7 +31,7 @@ window.YG_OBJECT_SCHEMA = {
     },
     {
       "id": "titik_penanaman",
-      "label": "Titik Penanaman",
+      "label": "Titik Tanam Mangrove",
       "category": "Penanaman",
       "prefix": "PLANTING-POINT",
       "include": true,

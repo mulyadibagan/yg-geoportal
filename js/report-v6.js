@@ -2027,7 +2027,7 @@
 
   function newPointLayerLabel(layerId){
     return {
-      titik_penanaman:'Titik Penanaman',
+      titik_penanaman:'Titik Tanam Mangrove',
       kolam_ikan:'Kolam Ikan',
       sekat_kanal:'Sekat Kanal',
       fdrs:'FDRS / Tinggi Muka Air',
@@ -2759,7 +2759,7 @@
 
     if(selectedType === 'Titik Baru' && newPointType === 'titik_penanaman'){
       if(Number(forestSeedlingsCount) < 1){
-        alert('Isi jumlah bibit/tanaman untuk Titik Penanaman.');
+        alert('Isi jumlah bibit/tanaman untuk Titik Tanam Mangrove.');
         return;
       }
       if(!plantingDetails.cluster || !plantingDetails.commodity){

@@ -29,7 +29,7 @@ window.YG_LAYER_CONFIG = [
   },
   {
     "id": "titik_penanaman",
-    "label": "Titik Penanaman",
+    "label": "Titik Tanam Mangrove",
     "color": "#009688",
     "type": "point",
     "visible": true
