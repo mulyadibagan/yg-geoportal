@@ -326,6 +326,7 @@ function parseFirmsCsv(csvText) {
   const brightnessIndex = header.findIndex((h) => h === "bright_ti4" || h === "brightness");
   const frpIndex = header.findIndex((h) => h === "frp");
   const daynightIndex = header.findIndex((h) => h === "daynight");
+  const typeIndex = header.findIndex((h) => h === "type");
   if (latIndex < 0 || lonIndex < 0 || dateIndex < 0) {
     return [];
   }
@@ -341,7 +342,8 @@ function parseFirmsCsv(csvText) {
       confidence: confidenceIndex >= 0 ? text(cols[confidenceIndex]).toLowerCase() : "",
       brightness: brightnessIndex >= 0 ? Number(cols[brightnessIndex]) : null,
       frp: frpIndex >= 0 ? Number(cols[frpIndex]) : null,
-      daynight: daynightIndex >= 0 ? text(cols[daynightIndex]).toUpperCase() : ""
+      daynight: daynightIndex >= 0 ? text(cols[daynightIndex]).toUpperCase() : "",
+      type: typeIndex >= 0 ? text(cols[typeIndex]) : ""
     };
   }).filter((row) => Number.isFinite(row.lat) && Number.isFinite(row.lon) && /^\d{4}-\d{2}-\d{2}$/.test(row.date));
 }
@@ -573,7 +575,7 @@ async function main() {
         });
         continue;
       }
-      const points = parseFirmsCsv(csv).filter(isHighConfidence).filter((point) => {
+      const points = parseFirmsCsv(csv).filter(isHighConfidence).filter((point) => point.type !== "3").filter((point) => {
         const d = parseIsoDate(point.date);
         return d >= chunk.start && d <= chunk.end;
       }).filter((point) => {
@@ -687,7 +689,8 @@ async function main() {
         confidence: "high",
         brightness: Number.isFinite(point.brightness) ? point.brightness : null,
         frp: Number.isFinite(point.frp) ? point.frp : null,
-        daynight: point.daynight || null
+        daynight: point.daynight || null,
+        type: point.type || null
       }
     }));
     await writeFile(RECENT_POINTS_PATH, `${JSON.stringify({
