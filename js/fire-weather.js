@@ -16,6 +16,7 @@
     var values={};parts.forEach(function(p){values[p.type]=p.value});return values.year+'-'+values.month+'-'+values.day
   }
   var currentDate=jakartaDate(),observationDate=currentDate;dateInput.value=observationDate;dateInput.max=currentDate;
+  var readingGuide=document.querySelector('.fw-disclaimer p');if(readingGuide)readingGuide.textContent='Hanya hotspot berkeyakinan tinggi yang digunakan untuk prioritas pemantauan. Hotspot tetap merupakan indikasi anomali panas satelit, bukan kepastian kebakaran. Indikasi kabut asap dibaca dengan membandingkan citra satelit, kelompok hotspot, dan arah angin.';
   var satelliteLayer=L.tileLayer.wms('https://gibs.earthdata.nasa.gov/wms/epsg3857/best/wms.cgi',{layers:'MODIS_Terra_CorrectedReflectance_TrueColor',format:'image/jpeg',transparent:false,pane:'satellitePane',opacity:.72,time:observationDate,attribution:'NASA GIBS / MODIS Terra'});
   var groups={
     hotspots:L.layerGroup().addTo(map),satellite:L.layerGroup([satelliteLayer]),
