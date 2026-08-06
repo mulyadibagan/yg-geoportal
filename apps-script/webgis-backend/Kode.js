@@ -447,7 +447,7 @@ function reportSubmissionResponse_(result) {
     '<!doctype html><html><head><meta charset="utf-8"></head><body>' +
     '<h2 style="font-family:Arial;color:' + color + '">' + title + '</h2>' +
     '<p style="font-family:Arial">' + detail + '</p>' +
-    '<script>parent.postMessage(' + json + ', "*");<\/script>' +
+    '<script>top.postMessage(' + json + ', "*");<\/script>' +
     '</body></html>'
   );
 }

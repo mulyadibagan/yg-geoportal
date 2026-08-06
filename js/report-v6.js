@@ -3171,7 +3171,7 @@
   });
 
   window.addEventListener('message',function(event){
-    if(!submissionStarted || event.source !== submitFrame.contentWindow) return;
+    if(!submissionStarted) return;
 
     var originHost = '';
     try {
