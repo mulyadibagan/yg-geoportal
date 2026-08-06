@@ -162,10 +162,13 @@ function syncPublishedCommunityReportsToObjects() {
         ? proposedChanges.monitoring
         : {};
 
+    // Pilihan admin pada kolom target harus mengalahkan metadata awal laporan.
+    // Tanpa urutan ini, laporan yang dipindahkan setelah publikasi tetap muncul
+    // pada layer lamanya karena proposedChanges masih menyimpan pilihan pertama.
     const selectedTargetLayerId =
-      clean_(proposedChanges.targetLayerId || row[28]);
+      clean_(row[28] || proposedChanges.targetLayerId);
     const selectedTargetLayerLabel =
-      clean_(proposedChanges.targetLayerLabel || row[29]);
+      clean_(row[29] || proposedChanges.targetLayerLabel);
 
     const layerId = isMonitoring
       ? 'monitoring_reports'
@@ -387,9 +390,9 @@ function getWebGisObjectsFeatureCollection_() {
           : {};
 
       const selectedTargetLayerId =
-        clean_(proposedChanges.targetLayerId || row[28]);
+        clean_(row[28] || proposedChanges.targetLayerId);
       const selectedTargetLayerLabel =
-        clean_(proposedChanges.targetLayerLabel || row[29]);
+        clean_(row[29] || proposedChanges.targetLayerLabel);
 
       const layerId = isMonitoring
         ? 'monitoring_reports'
