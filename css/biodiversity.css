@@ -18,7 +18,6 @@
 .biodiversity-hero .hero-stats{grid-template-columns:repeat(3,minmax(0,1fr))}
 .biodiversity-hero .hero-stats article{grid-template-columns:1fr}
 .biodiversity-hero .hero-stats strong{font-size:34px}
-.ecosystem-strip{grid-template-columns:1fr}
 .filters{grid-template-columns:repeat(3,minmax(0,1fr))}
 .flora-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
 .external-photo{padding:0;overflow:hidden;justify-content:flex-end;background:#dcebe4}.external-photo>img{width:100%;min-height:420px;max-height:620px;object-fit:cover}.external-photo-credit{display:grid;width:100%;gap:4px;padding:14px 18px;background:#f5fbf8;text-align:left}.external-photo-credit strong{max-width:none;font-size:11px}.external-photo-credit span{font-size:10px;color:var(--muted)}.external-photo-credit a{color:var(--green);font-size:11px;font-weight:850}
