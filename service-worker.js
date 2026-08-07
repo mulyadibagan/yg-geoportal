@@ -1,4 +1,4 @@
-const CACHE_NAME = "yg-geoportal-v4-20260807-climate-layout-fix1";
+const CACHE_NAME = "yg-geoportal-v4-20260807-policy-copy1";
 
 const STATIC_ASSETS = [
   "./",
