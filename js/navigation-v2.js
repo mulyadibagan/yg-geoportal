@@ -23,12 +23,15 @@
       nav.querySelectorAll('.yg-nav-trigger').forEach(function(trigger){
         trigger.addEventListener('click',function(event){
           event.preventDefault();
+          event.stopPropagation();
           var group = trigger.closest('.yg-nav-group');
           var open = group && !group.classList.contains('is-open');
           closeAll(nav);
           if(group && open){
             group.classList.add('is-open');
             trigger.setAttribute('aria-expanded','true');
+            var menu = group.querySelector('.yg-nav-menu');
+            if(menu) menu.scrollIntoView({block:'nearest'});
           }
         });
       });

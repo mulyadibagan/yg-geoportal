@@ -1,4 +1,4 @@
-const CACHE_NAME = "yg-geoportal-v4-20260807-policy-copy1";
+const CACHE_NAME = "yg-geoportal-v4-20260807-kkmd-mobile-menu1";
 
 const STATIC_ASSETS = [
   "./",
@@ -12,6 +12,10 @@ const STATIC_ASSETS = [
   "./capacity-building.html",
   "./sdgs.html",
   "./policy-alignment.html",
+  "./kkmd-riau.html",
+  "./css/kkmd-riau.css",
+  "./js/kkmd-riau.js",
+  "./data/kkmd-riau.json",
   "./capacity-session-create.html",
   "./capacity-sessions.html",
   "./programme-detail.html",
