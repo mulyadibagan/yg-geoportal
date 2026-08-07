@@ -1,21 +1,21 @@
 (() => {
   "use strict";
 
-  const LAYER_ORDER = [
-    "monitoring_reports",
-    "community_reports",
-    "area_mangrove",
-    "nursery_mangrove",
-    "apo",
-    "area_kopi",
-    "kopi",
-    "fdrs",
-    "sekat_kanal"
-  ];
-
   const ADMIN_REFERENCE_IDS = new Set([
     "batas_administrasi_desa_riau"
   ]);
+
+  function sortRowsByVisibleLabel(rows) {
+    const language = document.documentElement.lang === "en" ? "en" : "id";
+    return rows.slice().sort((rowA, rowB) => {
+      const labelA = rowA.querySelector("label")?.textContent.trim() || "";
+      const labelB = rowB.querySelector("label")?.textContent.trim() || "";
+      return labelA.localeCompare(labelB, language, {
+        sensitivity: "base",
+        numeric: true
+      });
+    });
+  }
 
   function getProgramRow(list, layerId) {
     return list.querySelector(
@@ -36,20 +36,20 @@
 
     const monitoring = getProgramRow(list, "monitoring_reports");
     const villageBoundary = getProgramRow(list, "desa_intervensi");
-    const environmentalRows = Array.from(
+    const environmentalRows = sortRowsByVisibleLabel(Array.from(
       list.querySelectorAll(".environment-layer-row")
-    );
+    ));
     const referenceRows = Array.from(
       list.querySelectorAll(".reference-layer-row")
     );
-    const administrativeReferenceRows = referenceRows.filter(row => {
+    const administrativeReferenceRows = sortRowsByVisibleLabel(referenceRows.filter(row => {
       const referenceId = row.querySelector("input[data-reference-layer-id]")
         ?.getAttribute("data-reference-layer-id");
       return ADMIN_REFERENCE_IDS.has(referenceId || "");
-    });
-    const generalReferenceRows = referenceRows.filter(
+    }));
+    const generalReferenceRows = sortRowsByVisibleLabel(referenceRows.filter(
       row => !administrativeReferenceRows.includes(row)
-    );
+    ));
 
     if (!monitoring || !villageBoundary) return false;
 
@@ -57,21 +57,9 @@
       list.querySelectorAll('.layer-row input[data-layer-id]')
     ).map(input => input.closest(".layer-row"));
 
-    const orderedRows = [];
-
-    LAYER_ORDER.forEach(layerId => {
-      const row = getProgramRow(list, layerId);
-      if (row && !orderedRows.includes(row)) orderedRows.push(row);
-    });
-
-    allProgramRows.forEach(row => {
-      if (
-        row !== villageBoundary &&
-        !orderedRows.includes(row)
-      ) {
-        orderedRows.push(row);
-      }
-    });
+    const orderedRows = sortRowsByVisibleLabel(allProgramRows.filter(row =>
+      row !== monitoring && row !== villageBoundary
+    ));
 
     list.innerHTML = "";
     list.appendChild(monitoring);
@@ -178,5 +166,11 @@
     }
   }
 
-  document.addEventListener("yg:environment-layer-controls-ready", applyOrder);
+  function scheduleOrder() {
+    window.setTimeout(applyOrder, 50);
+  }
+
+  document.addEventListener("yg:environment-layer-controls-ready", scheduleOrder);
+  window.addEventListener("yg:languagechange", scheduleOrder);
+  window.setTimeout(applyOrder, 250);
 })();
