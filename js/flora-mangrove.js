@@ -126,9 +126,13 @@
 
   function escapeHtml(value){return String(value||'').replace(/[&<>'"]/g,function(char){return {'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char];});}
   function statusClass(status){if(status==='Near Threatened')return 'status-nt';if(status==='Vulnerable')return 'status-vu';if(status==='Perlu verifikasi')return 'status-verify';return '';}
-  function imagePath(item){return 'assets/flora-mangrove/'+item.slug+'.webp';}
-  function galleryPath(item,index){return 'assets/flora-mangrove/gallery/'+item.slug+'/'+index+'.webp';}
-  function faunaPhotoPath(item,index){return 'assets/fauna-mangrove/'+item.slug+'/'+index+'.webp';}
+  function driveImagePath(localPath){
+    var id=window.YG_DRIVE_ASSETS&&window.YG_DRIVE_ASSETS[localPath];
+    return id?'https://drive.google.com/thumbnail?id='+encodeURIComponent(id)+'&sz=w1600':localPath;
+  }
+  function imagePath(item){return driveImagePath('assets/flora-mangrove/'+item.slug+'.webp');}
+  function galleryPath(item,index){return driveImagePath('assets/flora-mangrove/gallery/'+item.slug+'/'+index+'.webp');}
+  function faunaPhotoPath(item,index){return driveImagePath('assets/fauna-mangrove/'+item.slug+'/'+index+'.webp');}
   var SPECIAL_GALLERY_LABELS={
     'sonneratia-alba':['F. AKAR','B. DAUN','C. BUNGA/PUTIK','A. POHON','E. BATANG','D. BUAH']
   };

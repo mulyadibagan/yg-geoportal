@@ -1,4 +1,4 @@
-const CACHE_NAME = "yg-geoportal-v4-20260807-drive-media2";
+const CACHE_NAME = "yg-geoportal-v4-20260807-drive-assets3";
 
 const STATIC_ASSETS = [
   "./",
@@ -7,6 +7,7 @@ const STATIC_ASSETS = [
   "./flora-mangrove.html",
   "./biodiversity.html",
   "./biodiversity-mangrove.html",
+  "./data/drive-assets.js",
   "./monitoring.html",
   "./community-engagement.html",
   "./capacity-building.html",
