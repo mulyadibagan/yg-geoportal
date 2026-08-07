@@ -1,4 +1,4 @@
-const CACHE_NAME = "yg-geoportal-v4-20260807-uniform-nav-type1";
+const CACHE_NAME = "yg-geoportal-v4-20260807-impact-pages1";
 
 const STATIC_ASSETS = [
   "./",
@@ -10,6 +10,8 @@ const STATIC_ASSETS = [
   "./monitoring.html",
   "./community-engagement.html",
   "./capacity-building.html",
+  "./sdgs.html",
+  "./policy-alignment.html",
   "./capacity-session-create.html",
   "./capacity-sessions.html",
   "./programme-detail.html",
