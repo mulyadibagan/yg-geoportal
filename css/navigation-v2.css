@@ -1,7 +1,7 @@
 :root{--yg-nav-green:#087653;--yg-nav-dark:#17382e;--yg-nav-line:#d8e5df;--yg-nav-soft:#f2f8f5}
 .yg-nav-toggle{display:none;align-items:center;justify-content:center;width:42px;height:42px;border:1px solid var(--yg-nav-line);border-radius:10px;background:#fff;color:var(--yg-nav-dark);font:800 20px/1 sans-serif;cursor:pointer}
 .yg-nav-v2{display:flex;align-items:center;gap:4px}
-.yg-nav-v2>a,.yg-nav-trigger{box-sizing:border-box;display:inline-flex;align-items:center;min-height:40px;padding:9px 11px;border:0;border-radius:9px;background:transparent;color:var(--yg-nav-dark);font:800 13px/1.2 inherit;text-decoration:none;white-space:nowrap;cursor:pointer}
+.yg-nav-v2>a,.yg-nav-trigger{box-sizing:border-box;display:inline-flex;align-items:center;min-height:40px;padding:9px 11px;border:0;border-radius:9px;background:transparent;color:var(--yg-nav-dark);font-family:inherit;font-size:13px;font-weight:800;line-height:1.2;text-decoration:none;white-space:nowrap;cursor:pointer}
 .yg-nav-v2>a:hover,.yg-nav-v2>a:focus-visible,.yg-nav-trigger:hover,.yg-nav-trigger:focus-visible,.yg-nav-group.is-open>.yg-nav-trigger{background:var(--yg-nav-soft);color:var(--yg-nav-green);outline:none}
 .yg-nav-v2 a[aria-current="page"],.yg-nav-trigger[aria-current="true"]{color:var(--yg-nav-green)}
 .yg-nav-group{position:relative}
