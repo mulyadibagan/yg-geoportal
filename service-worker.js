@@ -1,4 +1,4 @@
-const CACHE_NAME = "yg-geoportal-v4-20260807-drive-lightbox1";
+const CACHE_NAME = "yg-geoportal-v4-20260807-drive-media2";
 
 const STATIC_ASSETS = [
   "./",
