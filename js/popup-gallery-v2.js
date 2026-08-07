@@ -43,19 +43,32 @@
     return text.split(/[?#]/)[0].replace(/\/+$/, '').toLowerCase();
   }
 
+  function driveId(url) {
+    var key = mediaKey(url);
+    return key.indexOf('drive:') === 0 ? key.slice(6) : '';
+  }
+
+  function displayImageUrl(url) {
+    var id = driveId(url);
+    return id
+      ? 'https://drive.google.com/thumbnail?id=' + encodeURIComponent(id) + '&sz=w2400'
+      : clean(url);
+  }
+
   function readItems(source) {
     var seen = {};
     return Array.prototype.map.call(
       source.querySelectorAll('.yg-photo-card'),
       function (card, index) {
         var image = card.querySelector('img');
-        var full = clean(card.getAttribute('href'));
-        var thumb = clean(image && image.getAttribute('src')) || full;
-        var key = mediaKey(full || thumb);
+        var source = clean(card.getAttribute('href'));
+        var thumb = clean(image && image.getAttribute('src')) || source;
+        var key = mediaKey(source || thumb);
         if (!key || seen[key]) return null;
         seen[key] = true;
         return {
-          full: full || thumb,
+          full: displayImageUrl(source || thumb),
+          source: source || thumb,
           thumb: thumb,
           alt: clean(image && image.getAttribute('alt')) || ('Foto ' + (index + 1))
         };
