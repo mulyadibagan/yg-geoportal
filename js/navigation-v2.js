@@ -6,6 +6,11 @@
       group.classList.remove('is-open');
       var trigger = group.querySelector('.yg-nav-trigger');
       if(trigger) trigger.setAttribute('aria-expanded','false');
+      var menu = group.querySelector('.yg-nav-menu');
+      if(menu){
+        menu.style.removeProperty('display');
+        menu.setAttribute('aria-hidden','true');
+      }
     });
   }
 
@@ -31,7 +36,10 @@
             group.classList.add('is-open');
             trigger.setAttribute('aria-expanded','true');
             var menu = group.querySelector('.yg-nav-menu');
-            if(menu) menu.scrollIntoView({block:'nearest'});
+            if(menu){
+              menu.style.setProperty('display','grid','important');
+              menu.setAttribute('aria-hidden','false');
+            }
           }
         });
       });
