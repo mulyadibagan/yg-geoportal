@@ -1,4 +1,4 @@
-const CACHE_NAME = "yg-geoportal-v4-20260807-alphabetical-layers2";
+const CACHE_NAME = "yg-geoportal-v4-20260807-bengkalis-lestari1";
 
 const STATIC_ASSETS = [
   "./",
@@ -13,9 +13,13 @@ const STATIC_ASSETS = [
   "./sdgs.html",
   "./policy-alignment.html",
   "./kkmd-riau.html",
+  "./bengkalis-lestari.html",
   "./css/kkmd-riau.css",
+  "./css/bengkalis-lestari.css",
   "./js/kkmd-riau.js",
+  "./js/bengkalis-lestari.js",
   "./data/kkmd-riau.json",
+  "./data/bengkalis-lestari.json",
   "./capacity-session-create.html",
   "./capacity-sessions.html",
   "./programme-detail.html",

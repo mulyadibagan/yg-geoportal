@@ -1,0 +1,161 @@
+{
+  "updatedAt": "2026-08-07",
+  "period": "2026-2030",
+  "legalBasis": "Peraturan Bupati Bengkalis Nomor 13 Tahun 2026",
+  "summary": {
+    "goals": 3,
+    "targets": 11,
+    "actions": 47,
+    "explicit": 6
+  },
+  "goals": [
+    "Mengelola sumber daya alam secara bertanggung jawab dan berkelanjutan",
+    "Meningkatkan kesejahteraan masyarakat melalui pemanfaatan sumber daya alam yang bijaksana",
+    "Melestarikan lingkungan hidup untuk generasi sekarang dan mendatang"
+  ],
+  "formalTargets": [
+    "Tata kelola lingkungan yang transparan dan partisipatif",
+    "Peningkatan kualitas lingkungan hidup: air, udara, dan tanah",
+    "Pengurangan emisi dan pengelolaan sampah berkelanjutan",
+    "Perlindungan kawasan konservasi dan pesisir",
+    "Pengembangan ekonomi hijau dan energi terbarukan"
+  ],
+  "targets": [
+    {
+      "id": "sda-tersedia",
+      "number": 1,
+      "title": "Memastikan Ketersediaan Sumber Daya Alam",
+      "theme": "Tata kelola & data",
+      "actions": [
+        {"no":1,"name":"Penyusunan Daya Dukung dan Daya Tampung Lingkungan Hidup","period":"2026","lead":"Dinas Lingkungan Hidup; Bapperida","partners":"Jikalahari; Elang; Perguruan Tinggi","status":"unmapped","rationale":"Belum ada evidence YG yang secara langsung menunjukkan penyusunan dokumen daya dukung dan daya tampung."},
+        {"no":2,"name":"Kebijakan untuk FPIC/PADIATAPA","period":"2026","lead":"Dinas Lingkungan Hidup; Bapperida","partners":"Elang; LPESM; Perguruan Tinggi; Jikalahari","status":"supporting","rationale":"Pendekatan partisipatif YG mendukung prinsip persetujuan dan pelibatan masyarakat, tetapi belum menjadi bukti penyusunan kebijakan.","evidence":[{"label":"Pelibatan masyarakat","url":"community-engagement.html"}]}
+      ]
+    },
+    {
+      "id": "kerusakan-lingkungan",
+      "number": 2,
+      "title": "Mencegah Kerusakan Lingkungan",
+      "theme": "Gambut, pesisir & pencegahan",
+      "actions": [
+        {"no":1,"name":"Penyusunan RPPEG (Rencana Perlindungan dan Pengelolaan Ekosistem Gambut)","period":"2026","lead":"Dinas Lingkungan Hidup","partners":"Elang; Yayasan Gambut; Keslimasy; Kabut Riau; Perguruan Tinggi; Jikalahari","status":"explicit","rationale":"Yayasan Gambut disebut langsung sebagai mitra pembangunan dalam RAD.","evidence":[{"label":"Program restorasi gambut","url":"programme-detail.html?programme=peatland"},{"label":"Peta ekosistem gambut","url":"webgis.html?search=Gambut"}]},
+        {"no":2,"name":"Peningkatan upaya pengendalian karhutla melalui pencegahan, penanggulangan, dan rehabilitasi pascakarhutla","period":"2026-2030","lead":"Dinas Lingkungan Hidup; BPBD","partners":"Jikalahari; Elang; PBB; Paradigma; Keslimasy","status":"verified","rationale":"FDRS, sekat kanal, pemantauan hotspot, dan pelatihan masyarakat memberi evidence operasional pencegahan karhutla.","evidence":[{"label":"Karhutla & cuaca","url":"fire-weather.html"},{"label":"FDRS dan sekat kanal","url":"webgis.html?search=FDRS"}]},
+        {"no":3,"name":"Peningkatan peran serta masyarakat dan desa dalam pencegahan karhutla","period":"2026-2030","lead":"Dinas Lingkungan Hidup; Dinas PMD; Dinas Pangan; Dinas Perkebunan","partners":"KAR; Yayasan Gambut; Keslimasy; PBB; Fitra Riau; Bahtera Melayu","status":"explicit","rationale":"Yayasan Gambut disebut langsung sebagai mitra; evidence tersedia melalui pelibatan, pelatihan, FDRS, dan sekat kanal.","evidence":[{"label":"Pelibatan masyarakat","url":"community-engagement.html"},{"label":"Peningkatan kapasitas","url":"capacity-building.html"},{"label":"Peta pencegahan karhutla","url":"webgis.html?search=Sekat%20Kanal"}]},
+        {"no":4,"name":"Kebijakan pengendalian abrasi dan pengelolaan wilayah pesisir","period":"2026","lead":"Dinas PUPR; Dinas Lingkungan Hidup; BWSS III","partners":"KAR; Keslimasy; PBB; Yayasan Gambut; Bahtera Melayu; SART","status":"explicit","rationale":"Yayasan Gambut disebut langsung sebagai mitra; evidence lapangan mencakup APO, penanaman, dan monitoring pesisir.","evidence":[{"label":"Pemantauan pesisir","url":"coastal-monitoring.html"},{"label":"Alat pemecah ombak","url":"webgis.html?search=Alat%20Pemecah%20Ombak"}]},
+        {"no":5,"name":"Kebijakan Perlindungan Lahan Pertanian Berkelanjutan","period":"2026","lead":"Dinas Pangan; Dinas Perkebunan; Dinas PUPR","partners":"SART; Fitra Riau; PBB; Yayasan Gambut; Bahtera Melayu","status":"explicit","rationale":"Yayasan Gambut disebut langsung sebagai mitra; agroforestri kopi memberi evidence praktik, bukan bukti penyusunan kebijakan.","evidence":[{"label":"Wilayah penanaman kopi","url":"webgis.html?search=Kopi"},{"label":"Program restorasi gambut","url":"programme-detail.html?programme=peatland"}]},
+        {"no":6,"name":"Rehabilitasi dan Restorasi Mangrove","period":"2026-2030","lead":"Dinas Lingkungan Hidup; Dinas PUPR","partners":"KAR; Keslimasy; PBB; Jikalahari; Rumus Riau; Bahtera Melayu; Perguruan Tinggi; SART","status":"verified","rationale":"Penanaman, nursery, monitoring, dan perlindungan pesisir YG merupakan kontribusi terverifikasi meskipun YG tidak disebut pada baris mitra ini.","evidence":[{"label":"Program mangrove","url":"programme-detail.html?programme=mangrove"},{"label":"Area penanaman","url":"webgis.html?layer=area_mangrove"}]},
+        {"no":7,"name":"Fasilitasi ISPO/RSPO secara yurisdiksi termasuk STDB","period":"2026-2030","lead":"Dinas Perkebunan; Dinas PMPTSP","partners":"Elang; SART","status":"unmapped","rationale":"Belum tersedia evidence YG untuk fasilitasi sertifikasi sawit yurisdiksi atau STDB."},
+        {"no":8,"name":"Kebijakan pengelolaan sampah","period":"2026","lead":"Dinas Lingkungan Hidup; Dinas PUPR","partners":"Fitra Riau; Walhi Riau; Kabut Riau; Semesta; SART; PBB","status":"unmapped","rationale":"Belum tersedia evidence YG yang langsung mendukung penyusunan kebijakan sampah."},
+        {"no":9,"name":"Pengembangan bank sampah serta pengelolaan sampah yang efektif","period":"2026-2030","lead":"Dinas Lingkungan Hidup","partners":"SART; PBB; Walhi Riau; Semesta; PPSW Riau","status":"unmapped","rationale":"Belum tersedia evidence program bank sampah pada sistem YG."}
+      ]
+    },
+    {
+      "id": "nilai-ekonomi-sda",
+      "number": 3,
+      "title": "Meningkatkan Nilai Ekonomi Sumber Daya Alam",
+      "theme": "Ekonomi lokal & ekowisata",
+      "actions": [
+        {"no":1,"name":"Pemetaan dan pembuatan basis data SDA yang dapat diakses pelaku usaha","period":"2026","lead":"Bapperida; Dinas Komunikasi, Informatika dan Statistik","partners":"SART; PBB; PPSW Riau; Jikalahari; Elang; Keslimasy","status":"verified","rationale":"WebGIS YG menyediakan basis data spasial publik, tetapi belum menggantikan basis data resmi pemerintah.","evidence":[{"label":"WebGIS YG","url":"webgis.html"},{"label":"Biodiversitas","url":"biodiversity.html"}]},
+        {"no":2,"name":"Pelatihan dan pendampingan pelaku usaha sampai dengan fasilitasi akses permodalan dan pasar","period":"2026-2030","lead":"Dinas Koperasi, UKM, Perdagangan dan Perindustrian; Dinas PMD","partners":"LPESM; PBB; Keslimasy; SART; Semesta; BCN; Gekraf; Relawan Wisata Bukit Batu; PPSW Riau","status":"verified","rationale":"Pelatihan produk, usaha kelompok, dan livelihood tercatat; fasilitasi modal perlu dibuktikan terpisah.","evidence":[{"label":"Peningkatan kapasitas","url":"capacity-building.html"},{"label":"Pelibatan masyarakat","url":"community-engagement.html"}]},
+        {"no":3,"name":"Inventarisasi SDA dan budaya untuk penguatan pertumbuhan ekowisata","period":"2026","lead":"Dinas Lingkungan Hidup; Dinas Pariwisata, Kepemudaan dan Olahraga","partners":"Yayasan Gambut; PBB; Keslimasy; SART","status":"explicit","rationale":"Yayasan Gambut disebut langsung sebagai mitra; katalog biodiversitas dan data lokasi merupakan evidence pendukung.","evidence":[{"label":"Biodiversitas","url":"biodiversity.html"},{"label":"Pesisir dan mangrove","url":"coastal-monitoring.html"}]},
+        {"no":4,"name":"Peningkatan kapasitas dan pengembangan produk wisata bagi kelompok masyarakat","period":"2026-2030","lead":"Dinas Koperasi, UKM, Perdagangan dan Perindustrian","partners":"LPESM; PBB; Keslimasy; SART; Relawan Wisata Bukit Batu; PPSW Riau","status":"verified","rationale":"Pelatihan ekowisata dan pengembangan produk kelompok telah terdokumentasi.","evidence":[{"label":"Data pelatihan","url":"capacity-building.html"},{"label":"Pelibatan masyarakat","url":"community-engagement.html"}]}
+      ]
+    },
+    {
+      "id": "pelibatan-sda",
+      "number": 4,
+      "title": "Melibatkan Masyarakat dalam Pengelolaan Sumber Daya Alam",
+      "theme": "Partisipasi & kelembagaan",
+      "actions": [
+        {"no":1,"name":"Memfasilitasi Perhutanan Sosial dan wilayah kelola lainnya","period":"2026-2030","lead":"Dinas Perkebunan; Dinas Lingkungan Hidup; KPH Bengkalis Pulau","partners":"Jikalahari; Elang; PBB; LPESM; Keslimasy; SART","status":"supporting","rationale":"Pendampingan kelompok mendukung pengelolaan wilayah, tetapi fasilitasi legal Perhutanan Sosial belum dibuktikan.","evidence":[{"label":"Pelibatan masyarakat","url":"community-engagement.html"}]},
+        {"no":2,"name":"Pengembangan usaha produktif berbasis HHBK untuk masyarakat atau kelompok masyarakat","period":"2026-2030","lead":"Dinas Koperasi, UKM, Perdagangan dan Perindustrian","partners":"Jikalahari; Elang; PBB; LPESM; Keslimasy; PPSW Riau; SART","status":"supporting","rationale":"Usaha kelompok dan agroforestri terkait, tetapi klasifikasi HHBK perlu diverifikasi per produk.","evidence":[{"label":"Pelibatan masyarakat","url":"community-engagement.html"}]},
+        {"no":3,"name":"Pengembangan skema insentif fiskal kepada pemerintah kabupaten melalui bantuan keuangan berbasis ekologis","period":"2026-2030","lead":"Bapperida; Dinas PMD; BPKAD; Bapenda","partners":"Fitra Riau; Jikalahari","status":"unmapped","rationale":"Belum ada evidence YG untuk pengembangan kebijakan transfer fiskal berbasis ekologis."},
+        {"no":4,"name":"Fasilitasi keterlibatan masyarakat dalam program konservasi, rehabilitasi, dan pengelolaan SDA","period":"2026-2030","lead":"Dinas Lingkungan Hidup; Dinas PUPR; Dinas Perkebunan","partners":"Jikalahari; Elang; PBB; LPESM; Keslimasy; Perguruan Tinggi; SART","status":"verified","rationale":"Kelompok masyarakat terlibat dalam penanaman, nursery, patroli, monitoring, dan agroforestri.","evidence":[{"label":"Pelibatan masyarakat","url":"community-engagement.html"},{"label":"Peta program","url":"webgis.html"}]}
+      ]
+    },
+    {
+      "id": "ekonomi-nusantara",
+      "number": 5,
+      "title": "Menerapkan Prinsip Ekonomi Nusantara",
+      "theme": "Ekonomi komunitas",
+      "actions": [
+        {"no":1,"name":"Fasilitasi pengembangan usaha dan jaringan kerja sama berbasis komunitas","period":"2026-2030","lead":"Bapperida; Dinas Koperasi, UKM, Perdagangan dan Perindustrian","partners":"LPESM; Fitra Riau; Jikalahari; Elang; PBB; Keslimasy; SART; BCN; Gekraf; Kadin; PPSW Riau","status":"verified","rationale":"Pendampingan kelompok, livelihood perempuan, dan jejaring pelatihan memberi evidence kontribusi.","evidence":[{"label":"Pelibatan masyarakat","url":"community-engagement.html"}]},
+        {"no":2,"name":"Fasilitasi koperasi dan UMKM yang bergerak di sektor pengelolaan sumber daya alam","period":"2026-2030","lead":"Dinas Koperasi, UKM, Perdagangan dan Perindustrian","partners":"LPESM; Jikalahari; Elang; PBB; Keslimasy; SART; Kadin; PPSW Riau","status":"supporting","rationale":"Kelompok usaha telah didampingi, tetapi status koperasi/UMKM perlu diverifikasi.","evidence":[{"label":"Pelibatan masyarakat","url":"community-engagement.html"}]},
+        {"no":3,"name":"Fasilitasi program masyarakat yang mendukung ekonomi nusantara","period":"2026-2030","lead":"Dinas Koperasi, UKM, Perdagangan dan Perindustrian","partners":"LPESM; Jikalahari; Elang; PBB; Keslimasy; SART; PPSW Riau","status":"supporting","rationale":"Program livelihood dan usaha kelompok selaras secara tematik; indikator pemerintah perlu ditetapkan sebelum dihitung sebagai capaian.","evidence":[{"label":"Pelibatan masyarakat","url":"community-engagement.html"}]}
+      ]
+    },
+    {
+      "id": "pendapatan-masyarakat",
+      "number": 6,
+      "title": "Peningkatan Pendapatan Masyarakat",
+      "theme": "Produk, usaha & wisata",
+      "actions": [
+        {"no":1,"name":"Pengembangan produk bernilai tambah dari hasil pertanian, perikanan, dan kehutanan","period":"2026-2030","lead":"Dinas Koperasi, UKM, Perdagangan dan Perindustrian","partners":"LPESM; Jikalahari; Elang; PBB; Keslimasy; SART; PPSW Riau","status":"verified","rationale":"Pelatihan produk kreatif, olahan, dan usaha kelompok terdokumentasi.","evidence":[{"label":"Peningkatan kapasitas","url":"capacity-building.html"}]},
+        {"no":2,"name":"Promosi produk lokal melalui pameran, festival, dan media sosial","period":"2026-2030","lead":"Dinas Koperasi; Dinas Pariwisata; Dinas Kominfotik","partners":"LPESM; Elang; PBB; Keslimasy; SART; Kadin; BCN; Gekraf; PPSW Riau","status":"supporting","rationale":"Visibilitas digital tersedia, namun pameran dan festival perlu evidence khusus.","evidence":[{"label":"Pelibatan masyarakat","url":"community-engagement.html"}]},
+        {"no":3,"name":"Mengembangkan merek lokal yang kuat dan berdaya saing","period":"2026-2030","lead":"Dinas Koperasi; Dinas Pariwisata; Dinas PMD","partners":"Perguruan Tinggi; Kadin; LPESM; Elang; PBB; Keslimasy; SART; BCN; Gekraf; PPSW Riau","status":"supporting","rationale":"Pengembangan produk didukung, tetapi indikator merek lokal belum tersedia."},
+        {"no":4,"name":"Mendorong kerja sama dengan pihak ketiga dalam mengembangkan produk lokal","period":"2026-2030","lead":"Dinas Koperasi, UKM, Perdagangan dan Perindustrian","partners":"Perguruan Tinggi; Kadin; LPESM; Elang; PBB; Keslimasy; SART; BCN; Gekraf; PPSW Riau","status":"supporting","rationale":"Kolaborasi narasumber dan donor tersedia, tetapi kerja sama pengembangan produk perlu dicatat sebagai evidence tersendiri."},
+        {"no":5,"name":"Pengembangan sistem pertanian terpadu di lahan gambut","period":"2026-2030","lead":"Dinas Pangan; Dinas Perkebunan","partners":"Yayasan Gambut; Elang; Keslimasy; Rumus; Semesta; SART","status":"explicit","rationale":"Yayasan Gambut disebut langsung sebagai mitra; agroforestri kopi dan sarana kelompok merupakan evidence lapangan.","evidence":[{"label":"Wilayah kopi","url":"webgis.html?search=Kopi"},{"label":"Program gambut","url":"programme-detail.html?programme=peatland"}]},
+        {"no":6,"name":"Pelatihan manajemen usaha, keuangan, dan pemasaran kepada pelaku usaha sektor pertanian, perikanan, dan kehutanan","period":"2026-2030","lead":"Dinas Koperasi; Dinas PMD","partners":"Fitra Riau; LPESM; Elang; PBB; Keslimasy; SART; Perguruan Tinggi; PPSW Riau","status":"verified","rationale":"Peningkatan kapasitas dan pelatihan usaha terdokumentasi; topik per sesi tetap perlu diperiksa.","evidence":[{"label":"Peningkatan kapasitas","url":"capacity-building.html"}]},
+        {"no":7,"name":"Fasilitasi akses terhadap modal usaha melalui program kredit atau hibah","period":"2026-2030","lead":"Dinas Koperasi, UKM, Perdagangan dan Perindustrian","partners":"Fitra Riau; LPESM; Elang; PBB; Keslimasy; SART","status":"unmapped","rationale":"Belum ada evidence akses kredit atau hibah usaha pada sistem publik YG."},
+        {"no":8,"name":"Mendorong pembentukan koperasi atau kelompok usaha bersama","period":"2026-2030","lead":"Dinas Koperasi, UKM, Perdagangan dan Perindustrian","partners":"LPESM; Elang; PBB; Keslimasy; SART; PPSW Riau","status":"supporting","rationale":"Kelompok mitra aktif tersedia, tetapi status pembentukan koperasi/kelompok usaha bersama harus diverifikasi."},
+        {"no":9,"name":"Pengembangan agrowisata dan ekowisata termasuk ekowisata bahari dan HHBK","period":"2026-2030","lead":"Dinas Pariwisata; Dinas Koperasi; Dinas Pangan","partners":"LPESM; Elang; PBB; Keslimasy; SART; PPSW Riau","status":"verified","rationale":"Pelatihan tata kelola ekowisata mangrove dan pengembangan produk kelompok telah terdokumentasi.","evidence":[{"label":"Peningkatan kapasitas","url":"capacity-building.html"},{"label":"Biodiversitas mangrove","url":"biodiversity-mangrove.html"}]}
+      ]
+    },
+    {
+      "id": "hak-adat-gedsi",
+      "number": 7,
+      "title": "Pemulihan Hak Masyarakat Adat dan GEDSI",
+      "theme": "Hak, gender & inklusi",
+      "actions": [
+        {"no":1,"name":"Identifikasi dan dokumentasi wilayah adat, batas, sumber daya alam, dan tempat sakral","period":"2027","lead":"Bapperida; Dinas Pendidikan dan Kebudayaan","partners":"LAMR; Keslimasy; Jikalahari; Rumus; Semesta; Walhi Riau; AMAN Riau","status":"supporting","rationale":"Data Hutan Adat Imbo Putui menjadi referensi pengalaman YG, tetapi berada di Kampar dan tidak dihitung sebagai capaian geografis Bengkalis.","evidence":[{"label":"Referensi Hutan Adat","url":"webgis.html?search=Imbo%20Putui"}]},
+        {"no":2,"name":"Mendorong penerbitan perda yang mengakui hak masyarakat adat atas wilayah adat","period":"2027","lead":"Bapperida; Dinas Pendidikan dan Kebudayaan","partners":"LAMR; LPESM; Elang; PBB; Keslimasy; SART; Jikalahari; Walhi Riau; AMAN Riau","status":"unmapped","rationale":"Belum ada evidence YG terkait penerbitan perda pengakuan wilayah adat di Bengkalis."},
+        {"no":3,"name":"Fasilitasi pendaftaran wilayah adat ke dalam sistem pendaftaran tanah nasional","period":"2028-2030","lead":"Bapperida; Dinas Pendidikan dan Kebudayaan","partners":"LAMR; Jikalahari; Walhi Riau; AMAN Riau","status":"unmapped","rationale":"Belum ada evidence YG untuk pendaftaran wilayah adat di Bengkalis."},
+        {"no":4,"name":"Mendokumentasikan hukum adat yang berhubungan dengan penyelesaian sengketa","period":"2028-2030","lead":"Bapperida; Dinas Pendidikan dan Kebudayaan","partners":"LAMR; Jikalahari; Walhi Riau; AMAN Riau","status":"unmapped","rationale":"Belum ada evidence dokumentasi hukum adat Bengkalis pada sistem YG."},
+        {"no":5,"name":"Penyusunan kebijakan dan program yang sensitif GEDSI","period":"2027","lead":"Dinas PPPA DaldudKB; Dinas Sosial","partners":"Fitra Riau; PBB; LPESM; RWWG; PPSW Riau; Keslimasy; Jikalahari; Rumus; Semesta; Walhi Riau; AMAN Riau; SART","status":"supporting","rationale":"Data terpilah perempuan dan pemuda tersedia, tetapi belum menjadi bukti penyusunan kebijakan GEDSI.","evidence":[{"label":"Peningkatan kapasitas","url":"capacity-building.html"}]},
+        {"no":6,"name":"Peningkatan kapasitas GEDSI dalam pengelolaan SDA","period":"2027-2030","lead":"Dinas PPPA DaldudKB","partners":"Fitra Riau; PBB; LPESM; RWWG; PPSW Riau; Keslimasy; Jikalahari; Rumus; Semesta; Walhi Riau; AMAN Riau; SART","status":"verified","rationale":"Pelatihan dan keterlibatan perempuan serta pemuda telah dicatat secara terpilah.","evidence":[{"label":"Data kapasitas","url":"capacity-building.html"},{"label":"Pelibatan masyarakat","url":"community-engagement.html"}]}
+      ]
+    },
+    {
+      "id": "kualitas-hidup",
+      "number": 8,
+      "title": "Peningkatan Kualitas Hidup Masyarakat",
+      "theme": "Air, sanitasi & ruang hijau",
+      "actions": [
+        {"no":1,"name":"Pemeliharaan SPAM","period":"2026-2030","lead":"Dinas PUPR","partners":"KAR; Elang; Jikalahari","status":"unmapped","rationale":"Belum ada evidence YG terkait pemeliharaan SPAM."},
+        {"no":2,"name":"Menyusun peraturan pengelolaan air bersih dan sanitasi","period":"2026","lead":"Dinas PUPR","partners":"KAR; Jikalahari; Elang","status":"unmapped","rationale":"Belum ada evidence penyusunan regulasi air bersih dan sanitasi."},
+        {"no":3,"name":"Mendorong PAMSIMAS dan STBM","period":"2026-2030","lead":"Dinas PUPR; Dinas Kesehatan; Dinas Perkimnah","partners":"KAR; Jikalahari; Elang","status":"unmapped","rationale":"Belum tersedia evidence YG untuk PAMSIMAS atau STBM."},
+        {"no":4,"name":"Peningkatan jumlah RTH di wilayah perkotaan","period":"2026-2030","lead":"Dinas Lingkungan Hidup; Dinas PUPR","partners":"Jikalahari; Keslimasy; Rumus Riau; Semesta","status":"supporting","rationale":"Penanaman dan rehabilitasi YG mendukung penghijauan, tetapi bukan bukti capaian RTH perkotaan.","evidence":[{"label":"Peta penanaman","url":"webgis.html?search=Penanaman"}]}
+      ]
+    },
+    {
+      "id": "partisipasi-masyarakat",
+      "number": 9,
+      "title": "Peningkatan Partisipasi Masyarakat",
+      "theme": "Forum & kolaborasi",
+      "actions": [
+        {"no":1,"name":"Pembentukan Forum Sinergi Kabupaten Bengkalis Lestari untuk CSO","period":"2025","lead":"Bapperida","partners":"Kite Bengkalis","status":"supporting","rationale":"YG dapat menjadi sumber evidence partisipasi CSO, tetapi bukan mitra yang tercantum pada baris aksi ini."},
+        {"no":2,"name":"Pembentukan Forum Private Sector untuk mendukung kebijakan Kabupaten Bengkalis Lestari","period":"2026","lead":"Bapperida; Dinas Sosial; Dinas Lingkungan Hidup","partners":"Kite Bengkalis","status":"supporting","rationale":"Kemitraan donor YG relevan sebagai pengalaman, tetapi belum membuktikan pembentukan forum pemerintah."},
+        {"no":3,"name":"Surat edaran dukungan perusahaan terhadap Bengkalis Lestari dengan komitmen BMP dan NDPE","period":"2026","lead":"Bapperida; Dinas Sosial; Dinas Lingkungan Hidup","partners":"Kite Bengkalis","status":"unmapped","rationale":"Belum tersedia evidence surat edaran atau komitmen perusahaan BMP/NDPE pada sistem YG."},
+        {"no":4,"name":"Pengembangan zona pemanfaatan/buffer untuk HHBK, jasa lingkungan, dan ekowisata dengan pelibatan masyarakat setempat","period":"2026-2030","lead":"Bapperida; Dinas Lingkungan Hidup; Dinas Perkebunan","partners":"Kite Bengkalis","status":"supporting","rationale":"Program kelompok dan ekowisata selaras, tetapi penetapan zona buffer perlu evidence kebijakan dan spasial khusus.","evidence":[{"label":"Pelibatan masyarakat","url":"community-engagement.html"},{"label":"WebGIS","url":"webgis.html"}]}
+      ]
+    },
+    {
+      "id": "iklim-ekosistem",
+      "number": 10,
+      "title": "Mengendalikan Perubahan Iklim, Melindungi dan Memulihkan Ekosistem",
+      "theme": "Iklim & pemulihan ekosistem",
+      "actions": [
+        {"no":1,"name":"Menyusun Rencana Aksi FOLU Net Sink 2030","period":"2026","lead":"Dinas Lingkungan Hidup","partners":"Elang; Paradigma; Jikalahari; SART; Walhi Riau; Fitra Riau","status":"supporting","rationale":"Data restorasi, rehabilitasi, dan pencegahan emisi YG dapat menjadi input, tetapi bukan bukti penyusunan dokumen pemerintah.","evidence":[{"label":"Keselarasan kebijakan","url":"policy-alignment.html"},{"label":"Program restorasi","url":"index.html#programme-summary"}]},
+        {"no":2,"name":"Menyusun Masterplan Perlindungan Pesisir dan Mangrove","period":"2026","lead":"Dinas Lingkungan Hidup; Dinas Pangan dan Perikanan","partners":"Elang; Paradigma; Jikalahari; SART; Walhi Riau","status":"supporting","rationale":"Data mangrove, abrasi, APO, dan monitoring YG dapat menjadi input teknis; belum menjadi bukti penyusunan masterplan.","evidence":[{"label":"Pemantauan pesisir","url":"coastal-monitoring.html"},{"label":"Biodiversitas mangrove","url":"biodiversity-mangrove.html"}]}
+      ]
+    },
+    {
+      "id": "kualitas-sda",
+      "number": 11,
+      "title": "Memelihara Kualitas dan Ketersediaan Sumber Daya Alam",
+      "theme": "Indikator tanpa rencana aksi",
+      "note": "Lampiran menetapkan indikator untuk sasaran ini, tetapi tidak menyediakan baris rencana aksi tersendiri pada tabel Peran Jejaring Mitra.",
+      "indicators": ["Luas lahan gambut terdegradasi","Jumlah titik api di lahan gambut","Emisi GRK di lahan gambut","Luas tutupan hutan mangrove dan tingkat deforestasinya","Tingkat abrasi","Penerapan BMP dan NDPE","Tingkat alih fungsi lahan atau berkurangnya lahan gambut terdegradasi"],
+      "actions": []
+    }
+  ]
+}
