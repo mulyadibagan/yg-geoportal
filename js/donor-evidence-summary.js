@@ -12,6 +12,8 @@
   };
   var assignments = [];
   var donors = [];
+  var assignmentsReady = false;
+  var donorsReady = false;
   var applyQueued = false;
 
   function esc(value) {
@@ -313,8 +315,11 @@
 
   function applyDonorEvidence() {
     Object.keys(donorMap).forEach(function (donorName) {
+      var donor = donorForName(donorName);
+      var seededReady = donorsReady && donor && (donor.verifiedEvidence || []).length;
+      var ready = donorsReady && (assignmentsReady || seededReady);
       var liveRows = assignments.filter(function (row) { return row.donorName === donorName; });
-      var rows = evidenceRowsForDonor(donorName, liveRows);
+      var rows = ready ? evidenceRowsForDonor(donorName, liveRows) : [];
       var card = document.querySelector(donorMap[donorName].card);
       if (card) {
         var badge = card.querySelector('.donor-evidence-badge');
@@ -323,14 +328,17 @@
           badge.className = 'donor-evidence-badge';
           card.appendChild(badge);
         }
-        var badgeText = rows.length
-          ? rows.length + ' evidence terverifikasi'
-          : 'Belum ada evidence terverifikasi';
+        var badgeText = !ready
+          ? 'Memuat evidence...'
+          : rows.length
+            ? rows.length + ' evidence terverifikasi'
+            : 'Belum ada evidence terverifikasi';
         if (badge.textContent !== badgeText) badge.textContent = badgeText;
         if (badge.classList.contains('has-evidence') !== (rows.length > 0)) {
           badge.classList.toggle('has-evidence', rows.length > 0);
         }
       }
+      if (!ready) return;
       renderMilestones(donorName, rows);
       if (donorName === 'Yayasan Penabulu') renderPenabuluEvidence(rows);
       var modal = document.querySelector(donorMap[donorName].modal);
@@ -352,16 +360,24 @@
     jsonp(API + '?page=donor-programmes')
       .then(function (result) {
         assignments = Array.isArray(result && result.assignments) ? result.assignments : [];
+        assignmentsReady = true;
         applyDonorEvidence();
       })
-      .catch(function (error) { console.warn(error.message); });
+      .catch(function (error) {
+        assignmentsReady = true;
+        applyDonorEvidence();
+        console.warn(error.message);
+      });
     fetch('data/donors.json?v=20260808-penabulu-plan-evidence1', { cache: 'no-store' })
       .then(function (response) { return response.ok ? response.json() : []; })
       .then(function (result) {
         donors = Array.isArray(result) ? result : [];
+        donorsReady = true;
         applyDonorEvidence();
       })
       .catch(function () {
+        donorsReady = true;
+        applyDonorEvidence();
         // file:// blocks local JSON. Central evidence remains usable, including GEC progress.
       });
     var grid = document.getElementById('donor-grid');
