@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  const VERSION = "20260808-folu-portfolio1";
+  const VERSION = "20260808-folu-national-ro1";
   const PATHWAY_COLORS = {
     ro1: "#2f6f4e",
     ro2: "#8b5e34",
@@ -29,11 +29,17 @@
     law: "Peraturan aktif",
     yg: "Dokumen kerja YG"
   };
+  const RO_MAPPING_LABELS = {
+    contributing: "Ada kontribusi YG",
+    review: "Perlu telaah evidence",
+    unmapped: "Belum dipetakan"
+  };
 
   const state = {
     data: null,
     datasets: null,
     metrics: null,
+    nationalPlanFilters: { search: "", cluster: "", mapping: "" },
     contributionFilters: { search: "", pathway: "", ecosystem: "", status: "" },
     documentScope: "",
     mapFilters: { pathway: "", ecosystem: "", status: "" },
@@ -47,6 +53,12 @@
     position: document.getElementById("folu-position"),
     accountingNote: document.getElementById("folu-accounting-note"),
     statusKey: document.getElementById("folu-status-key"),
+    nationalPlans: document.getElementById("folu-national-plans"),
+    nationalPlanSearch: document.getElementById("folu-ro-search"),
+    nationalPlanCluster: document.getElementById("folu-ro-cluster"),
+    nationalPlanMapping: document.getElementById("folu-ro-mapping"),
+    nationalPlanReset: document.getElementById("folu-ro-reset"),
+    nationalPlanResultCount: document.getElementById("folu-ro-result-count"),
     pathways: document.getElementById("folu-pathways"),
     search: document.getElementById("folu-search"),
     pathway: document.getElementById("folu-pathway"),
@@ -216,6 +228,68 @@
     ).join("");
   }
 
+  function nationalPlanContributionCount(plan) {
+    return state.data.contributions.filter(item => item.pathways.includes(plan.id)).length;
+  }
+
+  function nationalPlanSearchText(plan) {
+    return normalize([
+      plan.code, plan.title, plan.clusterLabel, plan.focus, plan.ygNote,
+      (plan.directions || []).join(" "), RO_MAPPING_LABELS[plan.ygMapping]
+    ].join(" "));
+  }
+
+  function filteredNationalPlans() {
+    const filters = state.nationalPlanFilters;
+    const query = normalize(filters.search);
+    return state.data.nationalOperationalPlans.filter(plan => {
+      if (filters.cluster && plan.cluster !== filters.cluster) return false;
+      if (filters.mapping && plan.ygMapping !== filters.mapping) return false;
+      return !query || nationalPlanSearchText(plan).includes(query);
+    });
+  }
+
+  function nationalPlanDocumentLinks(plan) {
+    return (plan.documentIds || []).map(id => state.data.documents.find(item => item.id === id)).filter(Boolean).map(item => {
+      const url = item.driveUrl || item.officialUrl;
+      if (!url) return "";
+      const label = item.id === "renops-national" ? "Renops nasional" : item.id === "renja-riau" ? "Renja Riau" : item.title.replace(/^Bidang [IVX]+ – /, "Dokumen ");
+      return '<a href="' + escapeHtml(url) + '" target="_blank" rel="noopener">' + escapeHtml(label) + ' · Drive ↗</a>';
+    }).join("");
+  }
+
+  function renderNationalPlan(plan) {
+    const count = nationalPlanContributionCount(plan);
+    const directions = (plan.directions || []).map(item => '<li>' + escapeHtml(item) + '</li>').join("");
+    const contributionButton = count > 0
+      ? '<button type="button" data-ro-show-contributions="' + escapeHtml(plan.id) + '">Lihat ' + count + ' kelompok capaian YG</button>'
+      : "";
+    return '<article class="folu-ro-card" data-national-plan="' + escapeHtml(plan.id) + '">' +
+      '<div class="folu-ro-card-head"><div><span class="folu-ro-code">' + escapeHtml(plan.code) + '</span><small>' + escapeHtml(plan.clusterLabel) + '</small></div><span class="folu-ro-status is-' + escapeHtml(plan.ygMapping) + '">' + escapeHtml(RO_MAPPING_LABELS[plan.ygMapping]) + '</span></div>' +
+      '<h3>' + escapeHtml(plan.title) + '</h3><p class="folu-ro-focus">' + escapeHtml(plan.focus) + '</p>' +
+      '<div class="folu-ro-yg"><strong>Posisi Yayasan Gambut</strong><p>' + escapeHtml(plan.ygNote) + '</p>' + contributionButton + '</div>' +
+      '<details><summary>Lihat arah kegiatan nasional</summary><ul>' + directions + '</ul></details>' +
+      '<div class="folu-ro-documents">' + nationalPlanDocumentLinks(plan) + '</div>' +
+    '</article>';
+  }
+
+  function renderNationalPlans() {
+    const plans = state.data.nationalOperationalPlans;
+    const filtered = filteredNationalPlans();
+    const counts = plans.reduce((result, plan) => {
+      result[plan.ygMapping] = (result[plan.ygMapping] || 0) + 1;
+      return result;
+    }, {});
+    ["total", "contributing", "review", "unmapped"].forEach(key => {
+      const node = document.querySelector('[data-folu-ro-stat="' + key + '"]');
+      if (node) node.textContent = key === "total" ? plans.length : (counts[key] || 0);
+    });
+    elements.nationalPlanResultCount.textContent = filtered.length + " dari " + plans.length + " RO nasional ditampilkan";
+    elements.nationalPlans.innerHTML = filtered.length
+      ? filtered.map(renderNationalPlan).join("")
+      : '<div class="folu-empty"><strong>Tidak ada RO yang cocok.</strong><br>Ubah kata pencarian atau reset filter.</div>';
+  }
+
   function renderPathways() {
     elements.pathways.innerHTML = state.data.pathways.map(pathway => {
       const count = state.data.contributions.filter(item => item.pathways.includes(pathway.id)).length;
@@ -289,7 +363,25 @@
   }
 
   function bindContentFilters() {
+    document.getElementById("folu-ro-filters").addEventListener("submit", event => event.preventDefault());
     document.getElementById("folu-filters").addEventListener("submit", event => event.preventDefault());
+    elements.nationalPlanSearch.addEventListener("input", event => { state.nationalPlanFilters.search = event.target.value; renderNationalPlans(); });
+    elements.nationalPlanCluster.addEventListener("change", event => { state.nationalPlanFilters.cluster = event.target.value; renderNationalPlans(); });
+    elements.nationalPlanMapping.addEventListener("change", event => { state.nationalPlanFilters.mapping = event.target.value; renderNationalPlans(); });
+    elements.nationalPlanReset.addEventListener("click", () => {
+      state.nationalPlanFilters = { search: "", cluster: "", mapping: "" };
+      elements.nationalPlanSearch.value = ""; elements.nationalPlanCluster.value = ""; elements.nationalPlanMapping.value = "";
+      renderNationalPlans();
+    });
+    elements.nationalPlans.addEventListener("click", event => {
+      const button = event.target.closest("[data-ro-show-contributions]");
+      if (!button) return;
+      const pathwayId = button.getAttribute("data-ro-show-contributions");
+      state.contributionFilters = { search: "", pathway: pathwayId, ecosystem: "", status: "" };
+      elements.search.value = ""; elements.pathway.value = pathwayId; elements.ecosystem.value = ""; elements.status.value = "";
+      renderContributions();
+      document.getElementById("matriks-kontribusi").scrollIntoView({ behavior: "smooth", block: "start" });
+    });
     elements.search.addEventListener("input", event => { state.contributionFilters.search = event.target.value; renderContributions(); });
     elements.pathway.addEventListener("change", event => { state.contributionFilters.pathway = event.target.value; renderContributions(); });
     elements.ecosystem.addEventListener("change", event => { state.contributionFilters.ecosystem = event.target.value; renderContributions(); });
@@ -548,6 +640,7 @@
     calculateMetrics();
     renderStats();
     renderBoundary();
+    renderNationalPlans();
     renderPathways();
     fillPathwaySelects();
     renderContributions();
@@ -580,6 +673,8 @@
     console.error(error);
     elements.resultCount.textContent = "Data FOLU belum dapat dimuat";
     elements.contributions.innerHTML = '<div class="folu-empty"><strong>Data belum tersedia.</strong><br>' + escapeHtml(error.message) + '</div>';
+    elements.nationalPlanResultCount.textContent = "Katalog RO belum dapat dimuat";
+    elements.nationalPlans.innerHTML = '<div class="folu-empty"><strong>Katalog 12 RO belum tersedia.</strong><br>' + escapeHtml(error.message) + '</div>';
     elements.mapCount.textContent = "Peta belum dapat dimuat";
     elements.documentCount.textContent = "Dokumen belum dapat dimuat";
   });
