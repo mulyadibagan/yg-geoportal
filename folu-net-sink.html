@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>Kontribusi FOLU Net Sink 2030 | YG GeoPortal</title>
-  <meta name="description" content="Peta dan matriks kontribusi Yayasan Gambut terhadap Indonesia's FOLU Net Sink 2030 di Riau, meliputi mangrove, gambut, karhutla, agroforestri, perhutanan sosial, konservasi, dan MRV.">
+  <title>12 RO Nasional &amp; Kontribusi FOLU Net Sink 2030 | YG GeoPortal</title>
+  <meta name="description" content="Katalog 12 Rencana Operasional nasional Indonesia's FOLU Net Sink 2030 serta peta dan matriks kontribusi Yayasan Gambut di Riau.">
   <link rel="canonical" href="https://webgisyg.id/folu-net-sink.html">
   <link rel="icon" href="assets/logo-yayasan-gambut.png">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="css/monitoring.css?v=20260721-object-id1">
   <link rel="stylesheet" href="css/navigation-v2.css?v=20260807-mobile-submenu-links1">
   <link rel="stylesheet" href="css/kkmd-riau.css?v=20260807-kkmd1">
-  <link rel="stylesheet" href="css/folu-net-sink.css?v=20260808-folu-portfolio1">
+  <link rel="stylesheet" href="css/folu-net-sink.css?v=20260808-folu-national-ro1">
   <meta name="theme-color" content="#087653">
 </head>
 <body>
@@ -63,8 +63,25 @@
       <div id="folu-status-key" class="folu-status-key" aria-label="Definisi status"></div>
     </section>
 
+    <section class="folu-section folu-national-section" id="ro-nasional" aria-labelledby="folu-national-title">
+      <div class="folu-section-heading"><div><span class="folu-section-label">KERANGKA NASIONAL LENGKAP</span><h2 id="folu-national-title">12 Rencana Operasional FOLU Net Sink 2030</h2></div><p>Seluruh RO nasional tetap ditampilkan, termasuk yang belum mempunyai kontribusi YG. Buka setiap kartu untuk melihat fokus nasional, arah kegiatan, posisi evidence YG, serta dokumen acuannya.</p></div>
+      <div class="folu-ro-overview" aria-label="Ringkasan pemetaan RO nasional">
+        <article><strong data-folu-ro-stat="total">12</strong><span>RO nasional</span><small>kerangka lengkap RO.1–RO.12</small></article>
+        <article><strong data-folu-ro-stat="contributing">—</strong><span>ada kontribusi YG</span><small>terhubung ke capaian dan evidence</small></article>
+        <article><strong data-folu-ro-stat="review">—</strong><span>perlu telaah evidence</span><small>relevan, tetapi belum boleh diklaim</small></article>
+        <article><strong data-folu-ro-stat="unmapped">—</strong><span>belum dipetakan</span><small>tetap bagian dari kerangka nasional</small></article>
+      </div>
+      <form class="folu-ro-filters" id="folu-ro-filters">
+        <label class="folu-ro-search"><span>Cari kode, nama RO, atau arah kegiatan</span><input type="search" id="folu-ro-search" placeholder="Contoh: RIL-C, restorasi gambut, RO.8"></label>
+        <label><span>Kelompok aksi nasional</span><select id="folu-ro-cluster"><option value="">Semua kelompok</option><option value="deforestation">Pencegahan deforestasi &amp; degradasi</option><option value="carbon-stock">Hutan produksi &amp; cadangan karbon</option><option value="peat">Pengelolaan ekosistem gambut</option><option value="conservation">Konservasi &amp; biodiversitas</option><option value="mangrove">Pengelolaan ekosistem mangrove</option></select></label>
+        <label><span>Posisi kontribusi YG</span><select id="folu-ro-mapping"><option value="">Semua posisi</option><option value="contributing">Ada kontribusi YG</option><option value="review">Perlu telaah evidence</option><option value="unmapped">Belum dipetakan</option></select></label>
+      </form>
+      <div class="folu-ro-result"><strong id="folu-ro-result-count">Memuat 12 RO nasional…</strong><button type="button" id="folu-ro-reset">Reset filter</button></div>
+      <div id="folu-national-plans" class="folu-national-plans" aria-live="polite"></div>
+    </section>
+
     <section class="folu-section" aria-labelledby="folu-pathways-title">
-      <div class="folu-section-heading"><div><span class="folu-section-label">JALUR KONTRIBUSI</span><h2 id="folu-pathways-title">Tujuh bagian FOLU yang didukung YG</h2></div><p>Pemetaan mencakup aksi pengurangan emisi, peningkatan serapan, konservasi, serta instrumen informasi. Mandat regulasi dan penegakan hukum tetap berada pada pemerintah.</p></div>
+      <div class="folu-section-heading"><div><span class="folu-section-label">JALUR KONTRIBUSI YG</span><h2 id="folu-pathways-title">RO dan instrumen yang sudah terhubung ke capaian YG</h2></div><p>Bagian ini hanya merangkum RO yang sudah mempunyai pemetaan kontribusi YG serta Bidang V sebagai instrumen informasi. Kerangka nasional lengkap tetap terlihat pada katalog 12 RO di atas.</p></div>
       <div id="folu-pathways" class="folu-pathways" aria-live="polite"></div>
     </section>
 
@@ -120,7 +137,7 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="js/navigation-v2.js?v=20260807-mobile-menu-fix2"></script>
-  <script src="js/pwa.js?v=20260808-folu-portfolio1"></script>
-  <script src="js/folu-net-sink.js?v=20260808-folu-portfolio1"></script>
+  <script src="js/pwa.js?v=20260808-folu-national-ro1"></script>
+  <script src="js/folu-net-sink.js?v=20260808-folu-national-ro1"></script>
 </body>
 </html>
