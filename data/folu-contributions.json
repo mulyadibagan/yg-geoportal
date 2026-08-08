@@ -1,0 +1,428 @@
+{
+  "meta": {
+    "title": "Kontribusi Yayasan Gambut terhadap Indonesia’s FOLU Net Sink 2030",
+    "reportingDate": "2026-08-08",
+    "nationalTarget": "Net sink sektor FOLU sebesar -140 juta ton CO₂e pada 2030",
+    "position": "Yayasan Gambut adalah organisasi masyarakat sipil pelaksana kontribusi di tingkat tapak. Halaman ini bukan laporan resmi capaian nasional, registrasi SRN, atau penerbitan kredit karbon.",
+    "accountingNote": "Pohon, luas intervensi, infrastruktur, pelatihan, dan catatan monitoring disajikan dalam satuan aslinya. Nilai tersebut tidak dikonversi menjadi tCO₂e sebelum tersedia metodologi, baseline, verifikasi, dan registrasi yang berlaku."
+  },
+  "pathways": [
+    {
+      "id": "ro1",
+      "code": "RO.1",
+      "title": "Pencegahan Deforestasi Mineral",
+      "field": "Pengelolaan hutan lestari",
+      "description": "Perhutanan sosial, penguatan kelompok/KUPS, pengamanan kawasan, dan usaha lestari sebagai dukungan pencegahan deforestasi pada lahan mineral."
+    },
+    {
+      "id": "ro2",
+      "code": "RO.2",
+      "title": "Pencegahan Deforestasi Lahan Gambut",
+      "field": "Pengelolaan ekosistem gambut",
+      "description": "Pencegahan karhutla, pertanian tanpa bakar, penguatan masyarakat, sistem peringatan dini, dan informasi terbuka pada lanskap gambut."
+    },
+    {
+      "id": "ro9",
+      "code": "RO.9",
+      "title": "Pengelolaan Tata Air Gambut",
+      "field": "Peningkatan cadangan karbon",
+      "description": "Sekat kanal, pemeliharaan infrastruktur pembasahan, dan pemantauan tinggi muka air sebagai dasar pengelolaan hidrologi."
+    },
+    {
+      "id": "ro10",
+      "code": "RO.10",
+      "title": "Restorasi Gambut",
+      "field": "Peningkatan cadangan karbon",
+      "description": "Pembasahan, revegetasi, agroforestri, pemeliharaan tanaman, dan revitalisasi mata pencaharian masyarakat."
+    },
+    {
+      "id": "ro11",
+      "code": "RO.11",
+      "title": "Perlindungan Areal Konservasi Tinggi",
+      "field": "Konservasi",
+      "description": "Inventarisasi biodiversitas, patroli, pengamanan kawasan, peningkatan kapasitas, dan pendampingan perlindungan keanekaragaman hayati."
+    },
+    {
+      "id": "ro12",
+      "code": "RO.12",
+      "title": "Pengelolaan Mangrove",
+      "field": "Peningkatan cadangan karbon",
+      "description": "Penanaman, rehabilitasi, pembibitan, perlindungan pesisir, monitoring, pemberdayaan, usaha lestari, dan penguatan KKMD."
+    },
+    {
+      "id": "bidang-v",
+      "code": "BIDANG V",
+      "title": "Instrumen dan Informasi",
+      "field": "MRV dan transparansi",
+      "description": "Basis data spasial, dokumentasi, monitoring, pelaporan publik, dan penghubung evidence dari tingkat tapak ke kerangka kebijakan."
+    }
+  ],
+  "statusDefinitions": [
+    {
+      "id": "verified",
+      "label": "Capaian terverifikasi",
+      "description": "Objek atau kegiatan mempunyai data sumber/evidence yang telah ditelaah dalam sistem YG."
+    },
+    {
+      "id": "mapped",
+      "label": "Capaian terpetakan",
+      "description": "Lokasi dan hasil sudah terhubung dengan data program, tetapi belum seluruhnya melalui verifikasi formal eksternal."
+    },
+    {
+      "id": "supporting",
+      "label": "Kontribusi pendukung",
+      "description": "Kegiatan memperkuat kondisi pemungkin FOLU dan tidak diklaim sebagai pengurangan emisi terverifikasi."
+    }
+  ],
+  "sites": [
+    {"id":"temiang","name":"Temiang","regency":"Bengkalis","aliases":["Temiang"],"ecosystems":["peat"],"pathways":["ro2","ro9","ro10","bidang-v"]},
+    {"id":"sepahat","name":"Sepahat","regency":"Bengkalis","aliases":["Sepahat"],"ecosystems":["peat","mangrove"],"pathways":["ro2","ro9","ro10","ro12","bidang-v"]},
+    {"id":"pedekik","name":"Pedekik","regency":"Bengkalis","aliases":["Pedekik"],"ecosystems":["peat"],"pathways":["ro2","ro10","bidang-v"]},
+    {"id":"pematang-duku","name":"Pematang Duku","regency":"Bengkalis","aliases":["Pematang Duku"],"ecosystems":["peat"],"pathways":["ro2","ro9","ro10","bidang-v"]},
+    {"id":"buruk-bakul","name":"Buruk Bakul","regency":"Bengkalis","aliases":["Buruk Bakul"],"ecosystems":["peat","mangrove"],"pathways":["ro2","ro9","ro10","ro11","ro12","bidang-v"]},
+    {"id":"simpang-ayam","name":"Simpang Ayam","regency":"Bengkalis","aliases":["Simpang Ayam"],"ecosystems":["peat"],"pathways":["ro2","ro9","bidang-v"]},
+    {"id":"kelapa-pati","name":"Kelapa Pati","regency":"Bengkalis","aliases":["Kelapa Pati","Kelapapati"],"ecosystems":["mangrove"],"pathways":["ro11","ro12","bidang-v"]},
+    {"id":"tanjung-kuras","name":"Tanjung Kuras","regency":"Siak","aliases":["Tanjung Kuras"],"ecosystems":["peat","mangrove"],"pathways":["ro2","ro9","ro10","ro12","bidang-v"]},
+    {"id":"pencing-bekulo","name":"Pencing Bekulo","regency":"Siak","aliases":["Pencing Bekulo","Pencing Bekuto"],"ecosystems":["peat"],"pathways":["ro2","ro10"]},
+    {"id":"merempan","name":"Merempan","regency":"Siak","aliases":["Merempan"],"ecosystems":["peat"],"pathways":["ro2","ro10"]},
+    {"id":"dayun","name":"HKm Dayun","regency":"Siak","aliases":["Dayun"],"ecosystems":["social-forestry"],"pathways":["ro1","ro2","ro10","ro11","bidang-v"]},
+    {"id":"siarang-arang","name":"HKm Siarang-Arang","regency":"Rokan Hilir","aliases":["Siarang-Arang","Siarang Arang"],"ecosystems":["social-forestry"],"pathways":["ro1","ro2","ro11","bidang-v"]}
+  ],
+  "contributions": [
+    {
+      "id": "mangrove-restoration",
+      "title": "Penanaman dan rehabilitasi mangrove berbasis masyarakat",
+      "ecosystem": "mangrove",
+      "pathways": ["ro12"],
+      "codes": ["RO.12 P.3.1", "RO.12 P.3.2", "RO.12 P.3.3"],
+      "status": "verified",
+      "metricKey": "mangrove",
+      "period": "2023–2026",
+      "locations": ["Buruk Bakul", "Kelapa Pati", "Sepahat", "Tanjung Kuras"],
+      "programmes": ["Aramco Community-Based Mangrove Conservation Programme", "Global Environment Centre"],
+      "rationale": "Poligon, jumlah bibit, tahun, fase, dan lokasi penanaman tersimpan pada layer area mangrove dan ditautkan ke monitoring lapangan.",
+      "evidence": [
+        {"label":"Area penanaman mangrove","url":"webgis.html?layer=area_mangrove"},
+        {"label":"Program restorasi mangrove","url":"programme-detail.html?programme=mangrove"},
+        {"label":"Monitoring lapangan","url":"monitoring.html"}
+      ]
+    },
+    {
+      "id": "coastal-protection",
+      "title": "Perlindungan pesisir untuk mendukung keberhasilan rehabilitasi",
+      "ecosystem": "mangrove",
+      "pathways": ["ro12"],
+      "codes": ["RO.12 P.2.7", "RO.12 P.3.3"],
+      "status": "verified",
+      "metricKey": "apo",
+      "period": "2023–2025",
+      "locations": ["Buruk Bakul", "Kelapa Pati"],
+      "programmes": ["Aramco Community-Based Mangrove Conservation Programme"],
+      "rationale": "APO/perangkap sedimen membantu menurunkan energi gelombang dan menciptakan kondisi tapak yang lebih mendukung tanaman; tidak dihitung sebagai serapan karbon tersendiri.",
+      "evidence": [
+        {"label":"APO pada peta","url":"webgis.html?layer=apo"},
+        {"label":"Pemantauan pesisir","url":"coastal-monitoring.html"}
+      ]
+    },
+    {
+      "id": "mangrove-nursery",
+      "title": "Rumah pembibitan mangrove dan suplai bibit komunitas",
+      "ecosystem": "mangrove",
+      "pathways": ["ro12"],
+      "codes": ["RO.12 P.3.1", "RO.12 P.3.2", "RO.12 P.4.1"],
+      "status": "mapped",
+      "metricKey": "mangroveNursery",
+      "period": "2023–2026",
+      "locations": ["Buruk Bakul", "Kelapa Pati", "Sepahat", "Tanjung Kuras"],
+      "programmes": ["Aramco Community-Based Mangrove Conservation Programme"],
+      "rationale": "Empat rumah bibit tercatat dalam laporan program dan Renaksi KKMD; titik koordinat publik masih perlu dilengkapi untuk seluruh unit.",
+      "evidence": [
+        {"label":"Rumah bibit pada peta","url":"webgis.html?layer=nursery_mangrove"},
+        {"label":"Kontribusi KKMD","url":"kkmd-riau.html"}
+      ]
+    },
+    {
+      "id": "mangrove-monitoring",
+      "title": "Monitoring mangrove, sedimentasi, biodiversitas, dan pemeliharaan",
+      "ecosystem": "mangrove",
+      "pathways": ["ro11", "ro12", "bidang-v"],
+      "codes": ["RO.12 P.2.6", "RO.12 P.5.2", "RO.12 P.5.3", "RO.11 P.3.1"],
+      "status": "verified",
+      "metricKey": "mangroveMonitoring",
+      "period": "2024–2026",
+      "locations": ["Buruk Bakul", "Kelapa Pati", "Sepahat", "Tanjung Kuras"],
+      "programmes": ["Aramco Community-Based Mangrove Conservation Programme", "YG GeoPortal"],
+      "rationale": "Catatan lapangan, pelatihan transek, pengukuran pertumbuhan, sedimentasi, foto, dan katalog biodiversitas menjadi evidence pengelolaan adaptif.",
+      "evidence": [
+        {"label":"Monitoring lapangan","url":"monitoring.html"},
+        {"label":"Biodiversitas mangrove","url":"biodiversity-mangrove.html"},
+        {"label":"Pemantauan pesisir","url":"coastal-monitoring.html"}
+      ]
+    },
+    {
+      "id": "peat-rewetting",
+      "title": "Pembasahan gambut melalui sekat kanal",
+      "ecosystem": "peat",
+      "pathways": ["ro9", "ro10"],
+      "codes": ["RO.9 P.1.1", "RO.9 P.1.2", "RO.9 P.1.3", "RO.10 P.1.1", "RO.10 P.1.3", "RO.10 P.2.2"],
+      "status": "verified",
+      "metricKey": "canalBlocks",
+      "period": "2021–2025",
+      "locations": ["Sepahat", "Temiang", "Pematang Duku", "Buruk Bakul", "Tanjung Kuras"],
+      "programmes": ["Global Environment Centre", "PPCF"],
+      "rationale": "Setiap sekat kanal mempunyai titik, tahun, program, dan dokumentasi. Dampak luasan pembasahan disajikan terpisah bila sudah memiliki delineasi/metodologi.",
+      "evidence": [
+        {"label":"Sekat kanal pada peta","url":"webgis.html?layer=sekat_kanal"},
+        {"label":"Karhutla & cuaca","url":"fire-weather.html"}
+      ]
+    },
+    {
+      "id": "hydrology-ews",
+      "title": "Pemantauan tinggi muka air dan peringatan dini karhutla",
+      "ecosystem": "peat",
+      "pathways": ["ro2", "ro9", "bidang-v"],
+      "codes": ["RO.2 P.1.2", "RO.2 P.4.6", "RO.9 P.2.1"],
+      "status": "verified",
+      "metricKey": "fdrs",
+      "period": "2023–2026",
+      "locations": ["Tanjung Kuras", "Simpang Ayam", "Temiang", "Sepahat", "Buruk Bakul", "Pematang Duku"],
+      "programmes": ["Global Environment Centre", "PPCF", "YG GeoPortal"],
+      "rationale": "FDRS/TMAT, hotspot confidence tinggi, cuaca, hujan, dan informasi risiko ditampilkan bersama untuk membantu kesiapsiagaan berbasis lokasi.",
+      "evidence": [
+        {"label":"FDRS pada peta","url":"webgis.html?layer=fdrs"},
+        {"label":"Dashboard karhutla","url":"fire-weather.html"}
+      ]
+    },
+    {
+      "id": "peat-agroforestry",
+      "title": "Revegetasi dan agroforestri kopi pada lanskap gambut",
+      "ecosystem": "peat",
+      "pathways": ["ro2", "ro10"],
+      "codes": ["RO.2 P.6.2", "RO.2 P.8.1", "RO.10 P.2.3", "RO.10 P.2.5", "RO.10 P.3.1"],
+      "status": "mapped",
+      "metricKey": "agroforestry",
+      "period": "2022–2026",
+      "locations": ["Temiang", "Pematang Duku", "Tanjung Kuras", "Pencing Bekulo", "Sepahat", "Buruk Bakul", "Merempan"],
+      "programmes": ["Global Environment Centre", "PPCF", "Penabulu Transisi Hijau"],
+      "rationale": "Jumlah tanaman dicatat satu kali per lokasi. Stok persemaian tidak dijumlahkan sebagai tanaman tertanam, dan titik referensi desa diberi penanda verifikasi koordinat.",
+      "evidence": [
+        {"label":"Agroforestri pada peta","url":"webgis.html?layers=area_kopi,kopi"},
+        {"label":"Program restorasi gambut","url":"programme-detail.html?programme=peatland"}
+      ]
+    },
+    {
+      "id": "fire-prevention",
+      "title": "Pertanian tanpa bakar, pencegahan karhutla, dan kesiapsiagaan komunitas",
+      "ecosystem": "peat",
+      "pathways": ["ro2", "ro11", "bidang-v"],
+      "codes": ["RO.2 P.1.1", "RO.2 P.1.2", "RO.2 P.1.3", "RO.2 P.1.5", "RO.2 P.1.7", "RO.2 P.3.5"],
+      "status": "verified",
+      "metricKey": "fireCapacity",
+      "period": "2024–2026",
+      "locations": ["Pematang Duku", "Siak", "Temiang", "Sepahat", "Tanjung Kuras"],
+      "programmes": ["PPCF", "Global Environment Centre", "YG GeoPortal"],
+      "rationale": "Pelatihan zero-burning dan pengelolaan gambut diperkuat oleh pemantauan hotspot, cuaca, FDRS, dan sekat kanal. Dashboard publik tidak menggantikan peringatan resmi pemerintah.",
+      "evidence": [
+        {"label":"Pelatihan masyarakat","url":"capacity-building.html"},
+        {"label":"Karhutla & cuaca","url":"fire-weather.html"}
+      ]
+    },
+    {
+      "id": "social-forestry",
+      "title": "Penguatan HKm, KTH, KUPS, dan usaha perhutanan sosial",
+      "ecosystem": "social-forestry",
+      "pathways": ["ro1", "ro2", "ro11", "bidang-v"],
+      "codes": ["RO.1 P.9.4", "RO.1 P.9.9", "RO.1 P.9.10", "RO.1 P.9.11", "RO.2 P.7.2", "RO.2 P.8.5"],
+      "status": "supporting",
+      "metricKey": "socialForestry",
+      "period": "2025–2026",
+      "locations": ["HKm Dayun", "HKm Siarang-Arang"],
+      "programmes": ["Pertamina Foundation", "APRIL/KPI concept development", "YG technical assistance"],
+      "rationale": "Luas yang ditampilkan adalah luas izin/poligon HKm yang didampingi, bukan luas restorasi atau penurunan emisi. Capaian fisik harus dicatat tersendiri per kegiatan.",
+      "evidence": [
+        {"label":"Perhutanan sosial pada peta","url":"webgis.html?layer=PERHUTANAN_SOSIAL_RIAU"},
+        {"label":"Peningkatan kapasitas","url":"capacity-building.html"}
+      ]
+    },
+    {
+      "id": "biodiversity-protection",
+      "title": "Inventarisasi biodiversitas dan pengamanan kawasan berbasis masyarakat",
+      "ecosystem": "cross-cutting",
+      "pathways": ["ro11", "ro12", "bidang-v"],
+      "codes": ["RO.11 P.1.1", "RO.11 P.1.2", "RO.11 P.3.1", "RO.11 P.3.2", "RO.11 P.4.1"],
+      "status": "verified",
+      "metricKey": "biodiversity",
+      "period": "2024–2026",
+      "locations": ["Buruk Bakul", "Kelapa Pati", "HKm Siarang-Arang"],
+      "programmes": ["Aramco Community-Based Mangrove Conservation Programme", "Pertamina Foundation"],
+      "rationale": "Baseline flora-fauna dan pelatihan pengamanan kawasan menjadi evidence konservasi; belum digunakan untuk menghitung perubahan stok karbon.",
+      "evidence": [
+        {"label":"Katalog biodiversitas","url":"biodiversity.html"},
+        {"label":"Pelatihan pengamanan kawasan","url":"capacity-building.html"}
+      ]
+    },
+    {
+      "id": "sustainable-livelihoods",
+      "title": "Mata pencaharian lestari dan usaha komunitas",
+      "ecosystem": "cross-cutting",
+      "pathways": ["ro2", "ro10", "ro12"],
+      "codes": ["RO.2 P.4.5", "RO.2 P.8.1", "RO.2 P.8.2", "RO.2 P.8.5", "RO.10 P.3.1", "RO.12 P.4.1", "RO.12 P.4.2", "RO.12 P.4.4", "RO.12 P.5.6"],
+      "status": "verified",
+      "metricKey": "livelihoods",
+      "period": "2024–2026",
+      "locations": ["Temiang", "Buruk Bakul", "Kelapa Pati", "HKm Siarang-Arang"],
+      "programmes": ["Penabulu Transisi Hijau", "Aramco/GEC", "Pertamina Foundation"],
+      "rationale": "Micro-mill kopi, rumah jemur, sistem air nursery, produk lokal, nipah, ekowisata, dan usaha KTH mendukung keberlanjutan restorasi tanpa dihitung sebagai serapan karbon langsung.",
+      "evidence": [
+        {"label":"Program dan mitra pendanaan","url":"index.html#funding-partners"},
+        {"label":"Pelibatan masyarakat","url":"community-engagement.html"},
+        {"label":"Peningkatan kapasitas","url":"capacity-building.html"}
+      ]
+    },
+    {
+      "id": "community-capacity",
+      "title": "Peningkatan kapasitas dan partisipasi masyarakat",
+      "ecosystem": "cross-cutting",
+      "pathways": ["ro2", "ro10", "ro11", "ro12", "bidang-v"],
+      "codes": ["RO.2 P.1.5", "RO.2 P.5.2", "RO.11 P.4.2", "RO.12 P.4.1", "RO.12 P.4.2"],
+      "status": "verified",
+      "metricKey": "capacity",
+      "period": "2024–2026",
+      "locations": ["Bengkalis", "Siak", "Rokan Hilir"],
+      "programmes": ["Lintas program Yayasan Gambut"],
+      "rationale": "Data peserta disajikan sebagai jumlah kehadiran per sesi, bukan peserta unik. Data perempuan dan laki-laki dipertahankan secara terpilah.",
+      "evidence": [
+        {"label":"Dashboard peningkatan kapasitas","url":"capacity-building.html"},
+        {"label":"Pelibatan masyarakat","url":"community-engagement.html"}
+      ]
+    },
+    {
+      "id": "spatial-mrv",
+      "title": "WebGIS, evidence repository, dan informasi publik untuk MRV tapak",
+      "ecosystem": "cross-cutting",
+      "pathways": ["ro2", "ro9", "ro10", "ro11", "ro12", "bidang-v"],
+      "codes": ["RO.2 P.4.6", "RO.2 P.7.1", "RO.12 P.2.6", "RO.12 P.5.2", "RO.12 P.5.3", "Bidang V Instrumen dan Informasi"],
+      "status": "supporting",
+      "metricKey": "mrv",
+      "period": "2023–2026",
+      "locations": ["Seluruh lokasi program terpetakan"],
+      "programmes": ["YG GeoPortal"],
+      "rationale": "WebGIS menghubungkan objek spasial, monitoring, foto, program/donor, dan kebijakan. Sistem ini mendukung transparansi tetapi bukan pengganti SRN, SIGN-SMART, atau verifikasi nasional.",
+      "evidence": [
+        {"label":"Peta interaktif","url":"webgis.html"},
+        {"label":"Monitoring lapangan","url":"monitoring.html"},
+        {"label":"Keselarasan kebijakan","url":"policy-alignment.html"}
+      ]
+    },
+    {
+      "id": "policy-coordination",
+      "title": "Koordinasi kebijakan, KKMD, dan komunikasi FOLU",
+      "ecosystem": "cross-cutting",
+      "pathways": ["ro12", "bidang-v"],
+      "codes": ["RO.12 P.4.5", "Bidang V Instrumen dan Informasi"],
+      "status": "supporting",
+      "metricKey": "policy",
+      "period": "2024–2026",
+      "locations": ["Provinsi Riau", "Bengkalis", "Siak"],
+      "programmes": ["KKMD Riau", "GREEN for Riau", "RAD Bengkalis Lestari"],
+      "rationale": "YG menyediakan data tapak dan berpartisipasi dalam forum kebijakan. Penyusunan, penetapan, dan pelaporan resmi kebijakan tetap merupakan mandat pemerintah.",
+      "evidence": [
+        {"label":"Kontribusi KKMD Riau","url":"kkmd-riau.html"},
+        {"label":"RAD Bengkalis Lestari","url":"bengkalis-lestari.html"},
+        {"label":"Policy Alignment","url":"policy-alignment.html"}
+      ]
+    }
+  ],
+  "documents": [
+    {
+      "id":"renops-national",
+      "scope":"national",
+      "title":"Rencana Operasional Indonesia’s FOLU Net Sink 2030",
+      "description":"Kerangka target, strategi, bidang kerja, dan operasionalisasi nasional.",
+      "driveUrl":"https://drive.google.com/file/d/1p7cNduocA7hCf85Og3PbOdCGM2zqMqMY/view",
+      "officialUrl":"https://planologi.kehutanan.go.id/assets/img/publication/BUKU_RENOPS_FOLU_NETSINK_2030_%28Bahasa_Indonesia%29.pdf"
+    },
+    {
+      "id":"renja-riau",
+      "scope":"subnational",
+      "title":"Rencana Kerja Subnasional FOLU Net Sink 2030 Provinsi Riau",
+      "description":"Acuan RO.1–RO.12, program, kegiatan, indikator, lokasi, pelaksana, dan jadwal 2023–2030 di Riau.",
+      "driveUrl":"https://drive.google.com/file/d/1YHJPnTLyDiQ0R6U8cLWucvS1bI-Q7R0-/view"
+    },
+    {
+      "id":"yg-historic-mapping",
+      "scope":"yg",
+      "title":"Renja FOLU Riau – Pemetaan Awal Yayasan Gambut",
+      "description":"Spreadsheet kerja historis yang mencantumkan YG pada kegiatan mangrove; halaman WebGIS ini memperluas pemetaan berdasarkan evidence terbaru.",
+      "driveUrl":"https://drive.google.com/file/d/1me4PCLJGwFSY8MI6bgpeAWFsOoP9kNPJ/view"
+    },
+    {
+      "id":"field-i",
+      "scope":"thematic",
+      "title":"Bidang I – Pengelolaan Hutan Lestari",
+      "description":"Acuan pencegahan deforestasi lahan mineral, perhutanan sosial, penguatan KTH/KUPS, perlindungan hutan, dan usaha lestari.",
+      "driveUrl":"https://drive.google.com/file/d/1ON76vesPuXzqsHcyXqA6nT1B5EvoUjr3/view"
+    },
+    {
+      "id":"field-ii",
+      "scope":"thematic",
+      "title":"Bidang II – Peningkatan Cadangan Karbon",
+      "description":"Acuan rehabilitasi, peningkatan cadangan karbon, tata air gambut, restorasi gambut, konservasi tinggi, dan pengelolaan mangrove.",
+      "driveUrl":"https://drive.google.com/file/d/1S4dnwaTfMYp4DenHQm4cxm3LIVWUh9H-/view",
+      "officialUrl":"https://planologi.kehutanan.go.id/assets/img/publication/Buku_Renja_Bidang_II_IDN.pdf"
+    },
+    {
+      "id":"field-iii",
+      "scope":"thematic",
+      "title":"Bidang III – Konservasi",
+      "description":"Acuan perlindungan kawasan, biodiversitas, patroli, dan penguatan masyarakat konservasi.",
+      "driveUrl":"https://drive.google.com/file/d/1juNJHoXrA4qgJJEReaBTBqva0CIWQDPN/view"
+    },
+    {
+      "id":"field-iv",
+      "scope":"thematic",
+      "title":"Bidang IV – Pengelolaan Ekosistem Gambut",
+      "description":"Acuan pencegahan deforestasi gambut, pembasahan, rehabilitasi, pemanfaatan lestari, dan kelembagaan gambut.",
+      "driveUrl":"https://drive.google.com/file/d/1sGstudpmauK_qIglIyWIFRLRayB49hoj/view",
+      "officialUrl":"https://planologi.kehutanan.go.id/assets/img/publication/Buku_Renja_Bidang_IV_IDN1.pdf"
+    },
+    {
+      "id":"field-v",
+      "scope":"thematic",
+      "title":"Bidang V – Instrumen dan Informasi",
+      "description":"Acuan sistem informasi, pemantauan implementasi, evaluasi, kebijakan, dan instrumen pendukung FOLU.",
+      "driveUrl":"https://drive.google.com/file/d/1BwQczqofF2IMHOFFmaEYeRK165xz3se2/view",
+      "officialUrl":"https://planologi.kehutanan.go.id/assets/img/publication/Buku_Renja_Bidang_V.pdf"
+    },
+    {
+      "id":"perpres-110",
+      "scope":"law",
+      "title":"Perpres 110 Tahun 2025 – Instrumen Nilai Ekonomi Karbon dan Pengendalian Emisi GRK Nasional",
+      "description":"Kerangka hukum aktif penyelenggaraan instrumen NEK dan pengendalian emisi GRK nasional.",
+      "driveUrl":"https://drive.google.com/file/d/1c3EhJh7S02Xq4UsYHLXD717YK4q8PstY/view",
+      "officialUrl":"https://peraturan.bpk.go.id/Details/334733/perpres-no-110-tahun-2025"
+    },
+    {
+      "id":"pp-27",
+      "scope":"law",
+      "title":"PP 27 Tahun 2025 – Perlindungan dan Pengelolaan Ekosistem Mangrove",
+      "description":"Dasar hukum nasional perlindungan, rehabilitasi, pemanfaatan, dan tata kelola ekosistem mangrove.",
+      "driveUrl":"https://drive.google.com/file/d/1wpgOagqa2wFPHBduybj66u2xszfA6J3B/view",
+      "officialUrl":"https://peraturan.bpk.go.id/Details/320198/pp-no-27-tahun-2025"
+    },
+    {
+      "id":"second-ndc",
+      "scope":"national",
+      "title":"Second Nationally Determined Contribution Indonesia 2025",
+      "description":"Konteks komitmen iklim terkini, cakupan FOLU, MRV, registri nasional, dan sarana implementasi.",
+      "officialUrl":"https://unfccc.int/sites/default/files/2025-10/Indonesia_Second%20NDC_2025.10.24.pdf"
+    },
+    {
+      "id":"yg-folu-presentation",
+      "scope":"yg",
+      "title":"Peran Strategis Tapak Mangrove dan Gambut dalam Akselerasi FOLU Net Sink 2030 di Riau",
+      "description":"Presentasi YG pada forum GREEN for Riau, 8 Mei 2025.",
+      "driveUrl":"https://drive.google.com/file/d/1s_55pbylvW-XWFNBrMs2EipUaPw5T1YA/view"
+    }
+  ]
+}
