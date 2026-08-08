@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Kontribusi FOLU Net Sink 2030 | YG GeoPortal</title>
+  <meta name="description" content="Peta dan matriks kontribusi Yayasan Gambut terhadap Indonesia's FOLU Net Sink 2030 di Riau, meliputi mangrove, gambut, karhutla, agroforestri, perhutanan sosial, konservasi, dan MRV.">
+  <link rel="canonical" href="https://webgisyg.id/folu-net-sink.html">
+  <link rel="icon" href="assets/logo-yayasan-gambut.png">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="css/site-brand.css?v=20260720-program-dashboard1">
+  <link rel="stylesheet" href="css/monitoring.css?v=20260721-object-id1">
+  <link rel="stylesheet" href="css/navigation-v2.css?v=20260807-mobile-submenu-links1">
+  <link rel="stylesheet" href="css/kkmd-riau.css?v=20260807-kkmd1">
+  <link rel="stylesheet" href="css/folu-net-sink.css?v=20260808-folu-portfolio1">
+  <meta name="theme-color" content="#087653">
+</head>
+<body>
+  <header class="yg-page-header"><div class="yg-page-header__inner">
+    <a class="yg-page-brand" href="index.html"><img src="assets/logo-yayasan-gambut.png" alt="Logo Yayasan Gambut"><span><strong>YG GeoPortal</strong>WebGIS Yayasan Gambut</span></a>
+    <button class="yg-nav-toggle" type="button" aria-label="Buka menu" aria-expanded="false" data-yg-nav-toggle="folu-navigation">☰</button>
+    <nav class="yg-page-nav yg-nav-v2" id="folu-navigation" aria-label="Navigasi utama" data-yg-navigation>
+      <a href="index.html">Beranda</a><a href="webgis.html">Peta Interaktif</a>
+      <div class="yg-nav-group"><button class="yg-nav-trigger" type="button" aria-expanded="false">Jelajahi</button><div class="yg-nav-menu"><a href="biodiversity.html">Biodiversitas</a><a href="fire-weather.html">Karhutla &amp; Cuaca</a><a href="coastal-monitoring.html">Pesisir &amp; Mangrove</a></div></div>
+      <div class="yg-nav-group"><button class="yg-nav-trigger" type="button" aria-expanded="false" aria-current="true">Data &amp; Dampak</button><div class="yg-nav-menu"><a href="monitoring.html">Monitoring Lapangan<small>Hasil pemantauan objek dan lokasi</small></a><a href="community-engagement.html">Pelibatan Masyarakat<small>Partisipasi kelompok dalam kegiatan lapangan</small></a><a href="capacity-building.html">Peningkatan Kapasitas<small>Pelatihan dan evaluasi pembelajaran</small></a><a href="sdgs.html">Kontribusi SDGs<small>Capaian menurut tujuan pembangunan</small></a><a href="policy-alignment.html" aria-current="page">Keselarasan Kebijakan &amp; Komitmen<small>KKMD, FOLU Net Sink, NDC, dan kerangka terkait</small></a></div></div>
+      <a href="report.html">Laporkan Temuan</a>
+    </nav>
+  </div></header>
+
+  <main class="folu-page">
+    <nav class="kkmd-breadcrumb" aria-label="Breadcrumb"><a href="policy-alignment.html">Keselarasan Kebijakan &amp; Komitmen</a><span>›</span><strong>FOLU Net Sink 2030</strong></nav>
+
+    <section class="folu-hero">
+      <div class="folu-hero-copy">
+        <span class="folu-eyebrow">KERANGKA NASIONAL · KONTRIBUSI TAPAK RIAU</span>
+        <h1>Kontribusi Yayasan Gambut terhadap FOLU Net Sink 2030</h1>
+        <p>Menghubungkan capaian mangrove, gambut, karhutla, agroforestri, perhutanan sosial, konservasi, pemberdayaan masyarakat, dan data spasial YG dengan rencana aksi resmi FOLU—lengkap dengan lokasi serta evidence sumbernya.</p>
+        <div class="folu-hero-target"><span>Target nasional 2030</span><strong>Net sink −140 juta ton CO₂e</strong><small>Angka nasional; bukan target organisasi Yayasan Gambut.</small></div>
+      </div>
+      <div class="folu-source-list" aria-label="Dokumen acuan utama">
+        <a href="https://drive.google.com/file/d/1p7cNduocA7hCf85Og3PbOdCGM2zqMqMY/view" target="_blank" rel="noopener"><span>GOOGLE DRIVE</span><strong>Rencana Operasional Nasional</strong><small>Buka dokumen ↗</small></a>
+        <a href="https://drive.google.com/file/d/1YHJPnTLyDiQ0R6U8cLWucvS1bI-Q7R0-/view" target="_blank" rel="noopener"><span>GOOGLE DRIVE</span><strong>Rencana Kerja FOLU Provinsi Riau</strong><small>Buka dokumen ↗</small></a>
+        <a href="https://drive.google.com/file/d/1me4PCLJGwFSY8MI6bgpeAWFsOoP9kNPJ/view" target="_blank" rel="noopener"><span>ARSIP PEMETAAN YG</span><strong>Renja FOLU Riau – Yayasan Gambut</strong><small>Buka spreadsheet ↗</small></a>
+      </div>
+    </section>
+
+    <section class="folu-stats" aria-label="Ringkasan capaian terpetakan">
+      <article><strong data-folu-stat="sites">—</strong><span>lokasi/lanskap</span><small>memiliki kontribusi terdokumentasi</small></article>
+      <article><strong data-folu-stat="mangroveSeedlings">—</strong><span>mangrove tertanam</span><small data-folu-stat-note="mangroveArea">area terpetakan</small></article>
+      <article><strong data-folu-stat="agroforestryPlants">—</strong><span>tanaman agroforestri</span><small>tercatat pada layer penanaman</small></article>
+      <article><strong data-folu-stat="canalBlocks">—</strong><span>sekat kanal</span><small>infrastruktur pembasahan gambut</small></article>
+      <article><strong data-folu-stat="fdrs">—</strong><span>FDRS / TMAT</span><small>pemantauan hidrologi dan risiko</small></article>
+      <article><strong data-folu-stat="attendance">—</strong><span>kehadiran pelatihan</span><small data-folu-stat-note="women">data peserta terpilah</small></article>
+    </section>
+
+    <section class="folu-boundary" aria-labelledby="folu-boundary-title">
+      <div>
+        <span class="folu-section-label">BATAS PELAPORAN</span>
+        <h2 id="folu-boundary-title">Kontribusi tapak, bukan klaim karbon</h2>
+        <p id="folu-position">Yayasan Gambut adalah organisasi masyarakat sipil pelaksana kontribusi di tingkat tapak.</p>
+        <p id="folu-accounting-note">Pohon, luas, infrastruktur, pelatihan, dan monitoring dipertahankan dalam satuan aslinya.</p>
+      </div>
+      <div id="folu-status-key" class="folu-status-key" aria-label="Definisi status"></div>
+    </section>
+
+    <section class="folu-section" aria-labelledby="folu-pathways-title">
+      <div class="folu-section-heading"><div><span class="folu-section-label">JALUR KONTRIBUSI</span><h2 id="folu-pathways-title">Tujuh bagian FOLU yang didukung YG</h2></div><p>Pemetaan mencakup aksi pengurangan emisi, peningkatan serapan, konservasi, serta instrumen informasi. Mandat regulasi dan penegakan hukum tetap berada pada pemerintah.</p></div>
+      <div id="folu-pathways" class="folu-pathways" aria-live="polite"></div>
+    </section>
+
+    <section class="folu-section folu-map-section" id="peta-kontribusi" aria-labelledby="folu-map-title">
+      <div class="folu-section-heading"><div><span class="folu-section-label">PETA KONTRIBUSI</span><h2 id="folu-map-title">Di mana kontribusi YG dilaksanakan</h2></div><p>Peta menggabungkan poligon penanaman, infrastruktur tata air, FDRS, APO, lokasi agroforestri, dua lanskap HKm dampingan, dan lokasi kegiatan pendukung.</p></div>
+      <div class="folu-map-shell">
+        <aside class="folu-map-panel">
+          <form class="folu-map-filters" id="folu-map-filters">
+            <label><span>Ekosistem</span><select id="folu-map-ecosystem"><option value="">Semua ekosistem</option><option value="mangrove">Mangrove</option><option value="peat">Gambut &amp; agroforestri</option><option value="social-forestry">Perhutanan sosial</option><option value="cross-cutting">Lintas tema</option></select></label>
+            <label><span>Jalur FOLU</span><select id="folu-map-pathway"><option value="">Semua jalur</option></select></label>
+            <label><span>Status</span><select id="folu-map-status"><option value="">Semua status</option><option value="verified">Capaian terverifikasi</option><option value="mapped">Capaian terpetakan</option><option value="supporting">Kontribusi pendukung</option></select></label>
+          </form>
+          <div class="folu-map-result"><strong id="folu-map-count">Memuat peta…</strong><button type="button" id="folu-map-reset">Reset &amp; tampilkan semua</button></div>
+          <div class="folu-map-legend" aria-label="Legenda peta">
+            <span><i class="is-mangrove"></i> Penanaman mangrove</span>
+            <span><i class="is-agroforestry"></i> Agroforestri/kopi</span>
+            <span><i class="is-canal"></i> Sekat kanal</span>
+            <span><i class="is-fdrs"></i> FDRS/TMAT</span>
+            <span><i class="is-apo"></i> APO/perlindungan pesisir</span>
+            <span><i class="is-social"></i> HKm/KTH dampingan</span>
+            <span><i class="is-site"></i> Lokasi kontribusi</span>
+          </div>
+          <a class="folu-open-webgis" href="webgis.html?layers=area_mangrove,area_kopi,kopi,sekat_kanal,fdrs,apo,nursery_mangrove,PERHUTANAN_SOSIAL_RIAU">Buka seluruh layer di Peta Interaktif →</a>
+        </aside>
+        <div id="folu-map" class="folu-map" role="application" aria-label="Peta kontribusi FOLU Yayasan Gambut"></div>
+      </div>
+      <div id="folu-location-list" class="folu-location-list" aria-live="polite"></div>
+    </section>
+
+    <section class="folu-section" id="matriks-kontribusi" aria-labelledby="folu-contributions-title">
+      <div class="folu-section-heading"><div><span class="folu-section-label">MATRIKS KONTRIBUSI</span><h2 id="folu-contributions-title">Capaian YG dan kaitannya dengan aksi FOLU</h2></div><p>Satu kegiatan dapat mendukung beberapa kode aksi, tetapi hasil fisiknya tetap dihitung satu kali.</p></div>
+      <form class="folu-filters" id="folu-filters">
+        <label class="folu-search"><span>Cari capaian, lokasi, program, atau kode aksi</span><input type="search" id="folu-search" placeholder="Contoh: sekat kanal, Temiang, RO.10, KUPS"></label>
+        <label><span>Jalur FOLU</span><select id="folu-pathway"><option value="">Semua jalur</option></select></label>
+        <label><span>Ekosistem</span><select id="folu-ecosystem"><option value="">Semua ekosistem</option><option value="mangrove">Mangrove</option><option value="peat">Gambut &amp; agroforestri</option><option value="social-forestry">Perhutanan sosial</option><option value="cross-cutting">Lintas tema</option></select></label>
+        <label><span>Status</span><select id="folu-status"><option value="">Semua status</option><option value="verified">Capaian terverifikasi</option><option value="mapped">Capaian terpetakan</option><option value="supporting">Kontribusi pendukung</option></select></label>
+      </form>
+      <div class="folu-result-bar"><strong id="folu-result-count">Memuat kontribusi…</strong><button type="button" id="folu-reset">Reset filter</button></div>
+      <div id="folu-contributions" class="folu-contributions" aria-live="polite"></div>
+    </section>
+
+    <section class="folu-section folu-documents-section" id="dokumen-acuan" aria-labelledby="folu-documents-title">
+      <div class="folu-section-heading"><div><span class="folu-section-label">DOKUMEN ACUAN</span><h2 id="folu-documents-title">Perpustakaan FOLU di Google Drive</h2></div><p>Tautan Drive membuka berkas yang tersimpan pada arsip YG; izin akses mengikuti pengaturan masing-masing file. Tautan sumber resmi disediakan bila tersedia.</p></div>
+      <div class="folu-document-tools"><label><span>Kelompok dokumen</span><select id="folu-document-scope"><option value="">Semua dokumen</option><option value="national">Nasional &amp; NDC</option><option value="subnational">Provinsi Riau</option><option value="thematic">Bidang tematik</option><option value="law">Peraturan aktif</option><option value="yg">Dokumen kerja YG</option></select></label><strong id="folu-document-count">Memuat dokumen…</strong></div>
+      <div id="folu-documents" class="folu-documents" aria-live="polite"></div>
+    </section>
+
+    <section class="folu-method-note">
+      <strong>Catatan metodologis</strong>
+      <p>Data capaian dihitung langsung dari layer publik WebGIS dan data program per 8 Agustus 2026. Perbedaan antara angka pada laporan lama dan layer aktif harus diselesaikan melalui rekonsiliasi evidence, bukan dengan menambahkan keduanya. Pembaruan berikutnya perlu mencatat ID evidence, tanggal verifikasi, verifier, metodologi, dan hubungan ke SRN bila suatu hasil akan dilaporkan sebagai penurunan emisi atau peningkatan serapan.</p>
+    </section>
+  </main>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/navigation-v2.js?v=20260807-mobile-menu-fix2"></script>
+  <script src="js/pwa.js?v=20260808-folu-portfolio1"></script>
+  <script src="js/folu-net-sink.js?v=20260808-folu-portfolio1"></script>
+</body>
+</html>

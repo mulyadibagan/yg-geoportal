@@ -1,4 +1,4 @@
-const CACHE_NAME = "yg-geoportal-v4-20260808-penabulu-plan-evidence1";
+const CACHE_NAME = "yg-geoportal-v4-20260808-folu-portfolio1";
 
 const STATIC_ASSETS = [
   "./",
@@ -13,12 +13,16 @@ const STATIC_ASSETS = [
   "./capacity-building.html",
   "./sdgs.html",
   "./policy-alignment.html",
+  "./folu-net-sink.html",
   "./kkmd-riau.html",
   "./bengkalis-lestari.html",
+  "./css/folu-net-sink.css",
   "./css/kkmd-riau.css",
   "./css/bengkalis-lestari.css",
+  "./js/folu-net-sink.js",
   "./js/kkmd-riau.js",
   "./js/bengkalis-lestari.js",
+  "./data/folu-contributions.json",
   "./data/kkmd-riau.json",
   "./data/bengkalis-lestari.json",
   "./capacity-session-create.html",
