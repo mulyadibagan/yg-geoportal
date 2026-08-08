@@ -621,3 +621,33 @@ body.modal-open{overflow:hidden}
   .aramco-output-card li{grid-template-columns:1fr}
   .aramco-output-card li em{justify-self:start}
 }
+
+
+/* Penabulu Annex 1 plan and verified evidence */
+.penabulu-plan-counts .funding-indicator,
+.penabulu-target-grid .funding-indicator{cursor:default}
+.penabulu-target-card{position:relative}
+.penabulu-target-card small{display:block;margin-top:8px;color:#697b74;font-size:11px;font-weight:750;line-height:1.45}
+.penabulu-evidence-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.penabulu-evidence-heading>div>span{display:block;color:#087653;font-size:10px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+.penabulu-evidence-heading h3{margin:4px 0 0;color:#38180b;font-size:21px}
+.penabulu-evidence-heading>strong{flex:0 0 auto;padding:7px 11px;border-radius:999px;background:#e8f5ee;color:#176647;font-size:11px;font-weight:850}
+.penabulu-evidence-note{margin:10px 0 0;color:#61736b;font-size:12px;line-height:1.55}
+.penabulu-evidence-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:16px}
+.penabulu-evidence-card{display:flex;min-width:0;flex-direction:column;padding:16px;border:1px solid #d7e8e0;border-radius:14px;background:#fff;box-shadow:0 8px 20px rgba(20,70,52,.05)}
+.penabulu-evidence-card header{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.penabulu-evidence-card header span{color:#087653;font-size:11px;font-weight:900}
+.penabulu-evidence-card header em{padding:5px 8px;border-radius:999px;background:#dff4ea;color:#087653;font-size:9px;font-style:normal;font-weight:900;letter-spacing:.04em}
+.penabulu-evidence-card>strong{display:block;margin-top:10px;color:#29473e;font-size:14px;line-height:1.4}
+.penabulu-evidence-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.penabulu-evidence-meta span{padding:5px 7px;border-radius:7px;background:#eef7f3;color:#48655b;font-size:10px;font-weight:750}
+.penabulu-evidence-card p{margin:10px 0 0;color:#60736b;font-size:11px;line-height:1.55}
+.penabulu-evidence-card>small{display:block;margin-top:auto;padding-top:11px;color:#547267;font-size:10px;font-weight:750}
+.penabulu-evidence-card>a{display:inline-flex;margin-top:9px;color:#087653;font-size:11px;font-weight:850;text-decoration:none}
+.penabulu-evidence-card>a:hover,.penabulu-evidence-card>a:focus-visible{text-decoration:underline}
+.penabulu-evidence-empty{grid-column:1/-1;margin:0;padding:16px;border:1px dashed #c9ddd4;border-radius:12px;color:#65766f;font-size:12px}
+@media(max-width:760px){
+  .penabulu-evidence-heading{display:block}
+  .penabulu-evidence-heading>strong{display:inline-block;margin-top:10px}
+  .penabulu-evidence-list{grid-template-columns:1fr}
+}

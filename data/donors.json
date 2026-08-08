@@ -453,61 +453,298 @@
     "id": "DNR-PENABULU",
     "name": "Yayasan Penabulu",
     "slug": "penabulu",
-    "period": "2025–2026",
-    "focus": "Penguatan tata kelola, kelompok perempuan, dan mata pencaharian",
+    "period": "Juni 2026–Februari 2027",
+    "focus": "Penguatan rantai nilai kopi Liberika perempuan dan ketahanan ekosistem gambut",
     "locations": [
-      "Temiang"
+      "Desa Temiang, Kabupaten Bengkalis, Riau"
     ],
     "indicators": [
       {
-        "label": "Perempuan penerima manfaat",
+        "label": "Aktivitas dengan paket evidence lengkap",
+        "value": "4 dari 12",
+        "progress": 33
+      },
+      {
+        "label": "Output 1.1 · micro-mill",
+        "value": "3 dari 3 aktivitas",
+        "progress": 100
+      },
+      {
+        "label": "Output 1.3 · sarana nursery",
+        "value": "1 dari 2 aktivitas",
+        "progress": 50
+      },
+      {
+        "label": "Target perempuan anggota KTWMJ",
         "value": "27",
-        "progress": 100
+        "progress": 0
       },
       {
-        "label": "Bibit kopi",
+        "label": "Target benih dan media tanam",
         "value": "10.000",
-        "progress": 100
+        "progress": 0
       },
       {
-        "label": "Community micro-mill",
-        "value": "1",
-        "progress": 100
+        "label": "Target sekat kanal disurvei/diperbaiki",
+        "value": "2 unit",
+        "progress": 0
       },
       {
-        "label": "Rumah pengering kopi",
-        "value": "1",
-        "progress": 100
-      },
-      {
-        "label": "Sekat kanal",
-        "value": "2",
-        "progress": 100
-      },
-      {
-        "label": "Titik monitoring hidrologi/api",
-        "value": "2",
-        "progress": 100
+        "label": "Target titik TMAT/FDRS",
+        "value": "2 titik",
+        "progress": 0
       }
     ],
     "programs": [
       {
-        "name": "Penguatan Pengelolaan Gambut Berbasis Masyarakat",
-        "period": "2025–2026",
-        "status": "Berjalan",
-        "summary": "SOP, penguatan kelompok perempuan, peningkatan kapasitas, dan dukungan usaha masyarakat."
+        "id": "PRG-PENABULU-2026-2027",
+        "name": "Penguatan Rantai Nilai Kopi Liberika dan Ketahanan Ekosistem Gambut di Desa Temiang",
+        "referenceLabel": "Perjanjian 08.024/PENABULU–YAYASAN GAMBUT/V/2026",
+        "period": "Juni 2026–Februari 2027",
+        "duration": "9 bulan",
+        "status": "Aktif",
+        "implementingOrganization": "Yayasan Gambut",
+        "communityPartner": "Kelompok Tani Wanita Makmur Jaya (KTWMJ)",
+        "locations": [
+          "Desa Temiang, Kabupaten Bengkalis, Riau"
+        ],
+        "goal": "Peningkatan pendapatan masyarakat berjalan selaras dengan perlindungan dan keberlanjutan ekosistem gambut.",
+        "outcome": "Penguatan rantai nilai kopi Liberika berbasis pertanian gambut dan peningkatan ketahanan ekosistem melalui tata air serta pemantauan risiko kebakaran.",
+        "outcomes": [
+          {
+            "id": "OUTCOME-PENABULU-01",
+            "name": "Meningkatnya nilai tambah dan pendapatan masyarakat melalui penguatan rantai nilai kopi Liberika berbasis pertanian gambut."
+          },
+          {
+            "id": "OUTCOME-PENABULU-02",
+            "name": "Meningkatnya ketahanan ekosistem gambut melalui pengelolaan tata air dan sistem pemantauan risiko kebakaran."
+          }
+        ],
+        "summary": "Penguatan usaha kopi Liberika yang dipimpin perempuan melalui fasilitas pengolahan skala komunitas, peningkatan mutu dan pemasaran, dukungan nursery, pengelolaan tata air gambut, serta sistem monitoring hidrologi dan risiko kebakaran.",
+        "detailsPending": false,
+        "targets": {
+          "womenMembers": 27,
+          "maleRepresentatives": 4,
+          "seedsAndGrowingMedia": 10000,
+          "canalBlocksSurveyedAndImproved": 2,
+          "tmatFdrsMonitoringPoints": 2,
+          "offtakers": 2
+        },
+        "outputs": [
+          {
+            "id": "OUT-PENABULU-1.1",
+            "outcome": "Outcome 1",
+            "name": "Output 1.1 · Fasilitas pengolahan kopi skala komunitas (micro-mill) beroperasi",
+            "activities": [
+              {
+                "id": "ACT-PENABULU-1.1.1",
+                "code": "1.1.1",
+                "name": "Perencanaan teknis dan pembangunan rumah penjemuran semi permanen",
+                "indicator": "Rumah penjemuran semi permanen dibangun bersama KTWMJ dan siap digunakan."
+              },
+              {
+                "id": "ACT-PENABULU-1.1.2",
+                "code": "1.1.2",
+                "name": "Pengadaan dan instalasi mesin pengupas kopi",
+                "indicator": "Mesin pengupas kopi terpasang, diuji, dan diserahterimakan untuk operasional micro-mill."
+              },
+              {
+                "id": "ACT-PENABULU-1.1.3",
+                "code": "1.1.3",
+                "name": "Penyusunan dan penerapan SOP operasional micro-mill",
+                "indicator": "SOP produksi, penjemuran, K3, perawatan mesin, dan lembar kontrol disusun serta diterapkan."
+              }
+            ]
+          },
+          {
+            "id": "OUT-PENABULU-1.2",
+            "outcome": "Outcome 1",
+            "name": "Output 1.2 · Kapasitas panen, pascapanen, dan pengendalian mutu meningkat",
+            "activities": [
+              {
+                "id": "ACT-PENABULU-1.2.1",
+                "code": "1.2.1",
+                "name": "Pelatihan teknik panen, pascapanen, dan pengendalian mutu",
+                "indicator": "27 perempuan anggota KTWMJ dan 4 perwakilan laki-laki memperoleh peningkatan kapasitas green bean bermutu."
+              },
+              {
+                "id": "ACT-PENABULU-1.2.2",
+                "code": "1.2.2",
+                "name": "Pelatihan pengemasan, branding, dan pemasaran produk",
+                "indicator": "27 perempuan anggota KTWMJ dan 4 perwakilan laki-laki memperoleh peningkatan kapasitas pengemasan dan pemasaran."
+              }
+            ]
+          },
+          {
+            "id": "OUT-PENABULU-1.3",
+            "outcome": "Outcome 1",
+            "name": "Output 1.3 · Sarana pendukung nursery diperkuat",
+            "activities": [
+              {
+                "id": "ACT-PENABULU-1.3.1",
+                "code": "1.3.1",
+                "name": "Pembangunan tower air dan sistem distribusi air untuk nursery",
+                "indicator": "Sarana penyiraman nursery tersedia dan dapat digunakan untuk penyemaian serta perawatan bibit."
+              },
+              {
+                "id": "ACT-PENABULU-1.3.2",
+                "code": "1.3.2",
+                "name": "Produksi dan perawatan bibit pertanian gambut",
+                "indicator": "Dukungan 10.000 benih dan media tanam dikelola bersama 27 perempuan anggota KTWMJ."
+              }
+            ]
+          },
+          {
+            "id": "OUT-PENABULU-1.4",
+            "outcome": "Outcome 1",
+            "name": "Output 1.4 · Sistem pemasaran dan manajemen usaha kelompok terbangun",
+            "activities": [
+              {
+                "id": "ACT-PENABULU-1.4.1",
+                "code": "1.4.1",
+                "name": "Rencana pemasaran, pengembangan kemitraan, manajemen usaha, dan pencatatan keuangan",
+                "indicator": "Rencana penjualan dan pembukuan usaha disusun bersama KTWMJ serta diarahkan pada kerja sama dengan 2 offtaker."
+              }
+            ]
+          },
+          {
+            "id": "OUT-PENABULU-2.1",
+            "outcome": "Outcome 2",
+            "name": "Output 2.1 · Pengelolaan tata air gambut diperkuat",
+            "activities": [
+              {
+                "id": "ACT-PENABULU-2.1.1",
+                "code": "2.1.1",
+                "name": "Identifikasi lokasi dan perbaikan/penambahan sekat kanal",
+                "indicator": "Dua unit sekat kanal disurvei, dianalisis kebutuhan materialnya, lalu diperbaiki atau ditambah sesuai kebutuhan."
+              },
+              {
+                "id": "ACT-PENABULU-2.1.2",
+                "code": "2.1.2",
+                "name": "Mekanisme pemeliharaan sekat kanal berbasis komunitas",
+                "indicator": "Mekanisme/SOP monitoring kondisi dan pemeliharaan sekat kanal disusun bersama KTWMJ."
+              }
+            ]
+          },
+          {
+            "id": "OUT-PENABULU-2.2",
+            "outcome": "Outcome 2",
+            "name": "Output 2.2 · Sistem monitoring hidrologi dan risiko kebakaran berbasis komunitas berjalan",
+            "activities": [
+              {
+                "id": "ACT-PENABULU-2.2.1",
+                "code": "2.2.1",
+                "name": "Instalasi 2 titik monitoring TMAT dan FDRS sebagai Early Warning System",
+                "indicator": "Dua titik monitoring TMAT/FDRS terpasang sebagai peringatan awal potensi kebakaran."
+              },
+              {
+                "id": "ACT-PENABULU-2.2.2",
+                "code": "2.2.2",
+                "name": "Pelatihan monitoring hidrologi gambut dan pengisian logbook",
+                "indicator": "27 perempuan anggota KTWMJ dan 4 perwakilan laki-laki mampu melakukan monitoring dan mengisi logbook."
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "verifiedEvidence": [
+      {
+        "donorId": "DNR-PENABULU",
+        "donorName": "Yayasan Penabulu",
+        "programmeId": "PRG-PENABULU-2026-2027",
+        "programmeName": "Penguatan Rantai Nilai Kopi Liberika dan Ketahanan Ekosistem Gambut di Desa Temiang",
+        "evidenceType": "Evidence Nonspasial",
+        "location": "Desa Temiang, Kabupaten Bengkalis, Riau",
+        "verifiedAt": "2026-08-08T00:00:00+07:00",
+        "verifiedAtLabel": "8 Agustus 2026",
+        "verificationBasis": "PJUM · alat bukti · executive summary",
+        "verifiedBy": "Penelaahan paket dokumen proyek",
+        "evidenceId": "EV-PENABULU-1.1.1",
+        "indicatorId": "ACT-PENABULU-1.1.1",
+        "activityCode": "1.1.1",
+        "indicatorLabel": "Output 1.1 · Fasilitas pengolahan kopi skala komunitas (micro-mill) beroperasi → Perencanaan teknis dan pembangunan rumah penjemuran semi permanen",
+        "evidenceTitle": "Pembangunan rumah penjemuran semi permanen",
+        "activityDate": "2026-06-13",
+        "activityDateLabel": "13–16 Juni 2026",
+        "note": "Rumah jemur selesai dibangun; paket bukti pelaksanaan tersedia lengkap."
+      },
+      {
+        "donorId": "DNR-PENABULU",
+        "donorName": "Yayasan Penabulu",
+        "programmeId": "PRG-PENABULU-2026-2027",
+        "programmeName": "Penguatan Rantai Nilai Kopi Liberika dan Ketahanan Ekosistem Gambut di Desa Temiang",
+        "evidenceType": "Evidence Nonspasial",
+        "location": "Desa Temiang, Kabupaten Bengkalis, Riau",
+        "verifiedAt": "2026-08-08T00:00:00+07:00",
+        "verifiedAtLabel": "8 Agustus 2026",
+        "verificationBasis": "PJUM · alat bukti · executive summary",
+        "verifiedBy": "Penelaahan paket dokumen proyek",
+        "evidenceId": "EV-PENABULU-1.3.1",
+        "indicatorId": "ACT-PENABULU-1.3.1",
+        "activityCode": "1.3.1",
+        "indicatorLabel": "Output 1.3 · Sarana pendukung nursery diperkuat → Pembangunan tower air dan sistem distribusi air untuk nursery",
+        "evidenceTitle": "Pembangunan tower air dan sistem distribusi air nursery",
+        "activityDate": "2026-06-20",
+        "activityDateLabel": "20–24 Juni 2026",
+        "note": "Menara tampung air, sumur, pompa, dan distribusi penyiraman nursery selesai dibangun."
+      },
+      {
+        "donorId": "DNR-PENABULU",
+        "donorName": "Yayasan Penabulu",
+        "programmeId": "PRG-PENABULU-2026-2027",
+        "programmeName": "Penguatan Rantai Nilai Kopi Liberika dan Ketahanan Ekosistem Gambut di Desa Temiang",
+        "evidenceType": "Evidence Nonspasial",
+        "location": "Desa Temiang, Kabupaten Bengkalis, Riau",
+        "verifiedAt": "2026-08-08T00:00:00+07:00",
+        "verifiedAtLabel": "8 Agustus 2026",
+        "verificationBasis": "PJUM · alat bukti · executive summary",
+        "verifiedBy": "Penelaahan paket dokumen proyek",
+        "evidenceId": "EV-PENABULU-1.1.2",
+        "indicatorId": "ACT-PENABULU-1.1.2",
+        "activityCode": "1.1.2",
+        "indicatorLabel": "Output 1.1 · Fasilitas pengolahan kopi skala komunitas (micro-mill) beroperasi → Pengadaan dan instalasi mesin pengupas kopi",
+        "evidenceTitle": "Pengadaan dan instalasi mesin pengupas kopi",
+        "activityDate": "2026-07-16",
+        "activityDateLabel": "16–18 Juli 2026",
+        "note": "Mesin dipasang, disetel, diuji tanpa beban dan dengan kopi, lalu diserahterimakan untuk operasional."
+      },
+      {
+        "donorId": "DNR-PENABULU",
+        "donorName": "Yayasan Penabulu",
+        "programmeId": "PRG-PENABULU-2026-2027",
+        "programmeName": "Penguatan Rantai Nilai Kopi Liberika dan Ketahanan Ekosistem Gambut di Desa Temiang",
+        "evidenceType": "Evidence Nonspasial",
+        "location": "Desa Temiang, Kabupaten Bengkalis, Riau",
+        "verifiedAt": "2026-08-08T00:00:00+07:00",
+        "verifiedAtLabel": "8 Agustus 2026",
+        "verificationBasis": "PJUM · alat bukti · executive summary",
+        "verifiedBy": "Penelaahan paket dokumen proyek",
+        "evidenceId": "EV-PENABULU-1.1.3",
+        "indicatorId": "ACT-PENABULU-1.1.3",
+        "activityCode": "1.1.3",
+        "indicatorLabel": "Output 1.1 · Fasilitas pengolahan kopi skala komunitas (micro-mill) beroperasi → Penyusunan dan penerapan SOP operasional micro-mill",
+        "evidenceTitle": "Penyusunan dan penerapan SOP operasional micro-mill",
+        "activityDate": "2026-07-24",
+        "activityDateLabel": "24–26 Juli 2026",
+        "note": "SOP, poster alur, simulasi praktik, lembar kontrol, dan pengesahan aturan operasional telah diselesaikan."
       }
     ],
     "timeline": [
       {
-        "year": "2025",
-        "title": "Persiapan dan penguatan kelompok",
-        "detail": "Penyusunan rencana kerja serta penguatan kelembagaan."
+        "year": "Juni–Juli 2026",
+        "title": "Empat aktivitas terdokumentasi",
+        "detail": "Rumah jemur, sistem air nursery, mesin pengupas kopi, dan SOP micro-mill mempunyai paket bukti lengkap."
       },
       {
-        "year": "2026",
-        "title": "Implementasi",
-        "detail": "Pelatihan, SOP, dokumentasi keluaran, dan pengembangan usaha."
+        "year": "Agustus 2026",
+        "title": "Program berjalan",
+        "detail": "Produksi benih, pemasaran, sekat kanal, dan monitoring TMAT/FDRS tetap ditampilkan sebagai target atau proses berjalan sesuai status bukti."
+      },
+      {
+        "year": "Februari 2027",
+        "title": "Target penyelesaian proyek",
+        "detail": "Penutupan proyek setelah seluruh output, evidence, dan pembelajaran program dikonsolidasikan."
       }
     ]
   },

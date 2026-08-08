@@ -1,4 +1,4 @@
-const CACHE_NAME = "yg-geoportal-v4-20260807-mobile-submenu-links1";
+const CACHE_NAME = "yg-geoportal-v4-20260808-penabulu-plan-evidence1";
 
 const STATIC_ASSETS = [
   "./",

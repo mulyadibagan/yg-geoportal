@@ -41,7 +41,7 @@
   }
 
   function refresh() {
-    fetch('data/donors.json?v=20260727-pertamina1', { cache: 'no-store' })
+    fetch('data/donors.json?v=20260808-penabulu-plan-evidence1', { cache: 'no-store' })
       .then(function (response) { return response.json(); })
       .then(function (donors) {
         donorRows = donors;

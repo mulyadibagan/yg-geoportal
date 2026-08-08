@@ -1896,7 +1896,7 @@
             return '<button class="category-card dashboard-link funding-card funding-card-penabulu" type="button" data-open-penabulu>' +
               '<i class="category-icon" aria-hidden="true">🌍</i>' +
               '<span class="funding-penabulu-name">' + escapeHtml(name) + '</span>' +
-              '<strong class="funding-penabulu-period">2025–2026</strong>' +
+              '<strong class="funding-penabulu-period">Juni 2026–Februari 2027</strong>' +
               '<small>Desa Temiang \u00b7 lihat ringkasan program</small>' +
             '</button>';
           }

@@ -140,12 +140,59 @@
     return donors.find(function (item) { return item.name === donorName; }) || null;
   }
 
+  function evidenceRowsForDonor(donorName, liveRows) {
+    var donor = donorForName(donorName);
+    var seeded = (donor && donor.verifiedEvidence) || [];
+    var liveIndicatorIds = {};
+    (liveRows || []).forEach(function (row) {
+      if (row.indicatorId) liveIndicatorIds[String(row.indicatorId)] = true;
+    });
+    return seeded.filter(function (row) {
+      return !row.indicatorId || !liveIndicatorIds[String(row.indicatorId)];
+    }).concat(liveRows || []).sort(function (a, b) {
+      return String(a.activityDate || a.verifiedAt || '').localeCompare(
+        String(b.activityDate || b.verifiedAt || '')
+      );
+    });
+  }
+
   function displayPeriod(donor, programme) {
     var selected = programme || (donor.programs || [])[0] || {};
     var period = String(selected.period || '').replace(/â€“/g, '–');
     var years = period.match(/\b20\d{2}\b/g) || [];
     years = years.filter(function (year, index) { return years.indexOf(year) === index; });
     return years.length ? years.join('–') : period;
+  }
+
+  function renderPenabuluEvidence(rows) {
+    var list = document.getElementById('penabulu-evidence-list');
+    var status = document.getElementById('penabulu-evidence-status');
+    if (!list || !status) return;
+    status.textContent = rows.length
+      ? rows.length + ' evidence terverifikasi'
+      : 'Belum ada evidence terverifikasi';
+    if (!rows.length) {
+      list.innerHTML = '<p class="penabulu-evidence-empty">Belum ada paket bukti yang dapat ditampilkan.</p>';
+      return;
+    }
+    list.innerHTML = rows.map(function (row) {
+      var destination = row.evidenceUrl ? evidenceDestination(row) : null;
+      var sourceLink = destination
+        ? '<a href="' + esc(destination.href) + '"' +
+          (destination.external ? ' target="_blank" rel="noopener"' : '') + '>' +
+          esc(destination.label) + '</a>'
+        : '';
+      return '<article class="penabulu-evidence-card">' +
+        '<header><span>Aktivitas ' + esc(row.activityCode || row.indicatorId || '') +
+        '</span><em>TERVERIFIKASI</em></header>' +
+        '<strong>' + esc(row.evidenceTitle || row.evidenceId) + '</strong>' +
+        '<div class="penabulu-evidence-meta"><span>📅 ' +
+        esc(row.activityDateLabel || row.verifiedAtLabel || row.verifiedAt || 'Tanggal belum tersedia') +
+        '</span><span>📍 ' + esc(row.location || 'Desa Temiang') + '</span></div>' +
+        (row.note ? '<p>' + esc(row.note) + '</p>' : '') +
+        '<small>Basis: ' + esc(row.verificationBasis || 'Assignment evidence oleh admin') + '</small>' +
+        sourceLink + '</article>';
+    }).join('');
   }
 
   function renderMilestones(donorName, rows) {
@@ -240,13 +287,24 @@
               : item.done + ' / ' + item.target + ' aktivitas terverifikasi') +
             (item.latest ? ' · ' + esc(item.latest) : '') +
             '</small></div><strong class="' + item.state.cls + '">' +
-            item.state.text + '</strong></li>';
+            (donorName === 'Yayasan Penabulu'
+              ? (item.state.text === 'Completed' ? 'Selesai'
+                : item.state.text === 'In Progress' ? 'Berjalan' : 'Direncanakan')
+              : item.state.text) + '</strong></li>';
         }).join('') + '</ul>';
-    var sectionMarkup =
-      '<div class="funding-heading"><div><span>Milestone status</span><h3>Timeline (' +
-      esc(displayPeriod(donor, programme)) + ')</h3></div>' +
-      '<p>Status dihitung dari evidence yang sudah ditag admin.</p></div>' +
-      milestoneMarkup;
+    var activityTotal = milestones.reduce(function (total, item) {
+      return total + (item.target === 100 ? 0 : item.target);
+    }, 0);
+    var sectionMarkup = donorName === 'Yayasan Penabulu'
+      ? '<div class="funding-heading"><div><span>Status output</span><h3>' +
+        milestones.length + ' output · ' + activityTotal + ' aktivitas (' +
+        esc(displayPeriod(donor, programme)) + ')</h3></div>' +
+        '<p>Status dihitung dari paket evidence yang telah ditelaah dan evidence yang ditag admin.</p></div>' +
+        milestoneMarkup
+      : '<div class="funding-heading"><div><span>Milestone status</span><h3>Timeline (' +
+        esc(displayPeriod(donor, programme)) + ')</h3></div>' +
+        '<p>Status dihitung dari evidence yang sudah ditag admin.</p></div>' +
+        milestoneMarkup;
     if (section._ygMilestoneMarkup !== sectionMarkup) {
       section.innerHTML = sectionMarkup;
       section._ygMilestoneMarkup = sectionMarkup;
@@ -255,7 +313,8 @@
 
   function applyDonorEvidence() {
     Object.keys(donorMap).forEach(function (donorName) {
-      var rows = assignments.filter(function (row) { return row.donorName === donorName; });
+      var liveRows = assignments.filter(function (row) { return row.donorName === donorName; });
+      var rows = evidenceRowsForDonor(donorName, liveRows);
       var card = document.querySelector(donorMap[donorName].card);
       if (card) {
         var badge = card.querySelector('.donor-evidence-badge');
@@ -273,6 +332,7 @@
         }
       }
       renderMilestones(donorName, rows);
+      if (donorName === 'Yayasan Penabulu') renderPenabuluEvidence(rows);
       var modal = document.querySelector(donorMap[donorName].modal);
       var evidenceSection = modal && modal.querySelector('.funding-evidence-summary');
       if (evidenceSection) evidenceSection.remove();
@@ -295,7 +355,7 @@
         applyDonorEvidence();
       })
       .catch(function (error) { console.warn(error.message); });
-    fetch('data/donors.json?v=20260728-milestones1', { cache: 'no-store' })
+    fetch('data/donors.json?v=20260808-penabulu-plan-evidence1', { cache: 'no-store' })
       .then(function (response) { return response.ok ? response.json() : []; })
       .then(function (result) {
         donors = Array.isArray(result) ? result : [];
