@@ -6,6 +6,200 @@
     "position": "Yayasan Gambut adalah organisasi masyarakat sipil pelaksana kontribusi di tingkat tapak. Halaman ini bukan laporan resmi capaian nasional, registrasi SRN, atau penerbitan kredit karbon.",
     "accountingNote": "Pohon, luas intervensi, infrastruktur, pelatihan, dan catatan monitoring disajikan dalam satuan aslinya. Nilai tersebut tidak dikonversi menjadi tCO₂e sebelum tersedia metodologi, baseline, verifikasi, dan registrasi yang berlaku."
   },
+  "nationalOperationalPlans": [
+    {
+      "id": "ro1",
+      "code": "RO.1",
+      "title": "Pencegahan Deforestasi Lahan Mineral",
+      "cluster": "deforestation",
+      "clusterLabel": "Pencegahan deforestasi & degradasi",
+      "focus": "Menekan deforestasi terencana dan tidak terencana pada hutan alam di lahan mineral, terutama pada lokasi berisiko tinggi.",
+      "directions": [
+        "Perlindungan, patroli, pengamanan kawasan, dan pengendalian kebakaran hutan.",
+        "Perhutanan sosial, penguatan KPH/KTH/KUPS, serta usaha berbasis hutan yang menjaga tutupan.",
+        "Pemantauan deforestasi, penataan perizinan, penyelesaian konflik, dan penegakan hukum."
+      ],
+      "ygMapping": "contributing",
+      "ygNote": "Kontribusi YG dipetakan melalui pendampingan HKm/KTH/KUPS, pengamanan kawasan, peningkatan kapasitas, dan usaha lestari. Luas izin HKm tidak dihitung sebagai luas penurunan deforestasi.",
+      "documentIds": ["renops-national", "renja-riau", "field-i"]
+    },
+    {
+      "id": "ro2",
+      "code": "RO.2",
+      "title": "Pencegahan Deforestasi Lahan Gambut",
+      "cluster": "deforestation",
+      "clusterLabel": "Pencegahan deforestasi & degradasi",
+      "focus": "Menjaga hutan alam dan fungsi ekosistem gambut dari deforestasi, kebakaran, pengeringan, dan pemanfaatan yang tidak sesuai.",
+      "directions": [
+        "Pemetaan rawan karhutla, sistem peringatan dini, patroli, dan kesiapsiagaan masyarakat.",
+        "Pertanian tanpa bakar, penguatan desa/kelompok peduli gambut, dan mata pencaharian rendah emisi.",
+        "Perbaikan tata kelola, pemantauan tutupan, pengendalian izin, dan perlindungan kawasan gambut."
+      ],
+      "ygMapping": "contributing",
+      "ygNote": "Kontribusi YG mencakup pencegahan karhutla, FDRS/EWS, pertanian tanpa bakar, agroforestri gambut, pendampingan masyarakat, dan informasi risiko terbuka.",
+      "documentIds": ["renops-national", "renja-riau", "field-iv"]
+    },
+    {
+      "id": "ro3",
+      "code": "RO.3",
+      "title": "Pencegahan Deforestasi di Konsesi",
+      "cluster": "deforestation",
+      "clusterLabel": "Pencegahan deforestasi & degradasi",
+      "focus": "Melindungi hutan alam di dalam konsesi dari konversi dan degradasi serta memperkuat kepatuhan pengelolaan hutan produksi.",
+      "directions": [
+        "Perlindungan areal hutan alam, patroli, pengendalian karhutla, dan pemantauan perubahan tutupan.",
+        "Penerapan perlindungan HCV/HCS, multiusaha kehutanan, dan pengelolaan konsesi berkelanjutan.",
+        "Evaluasi perizinan, kepatuhan rencana kelola, serta penegakan hukum terhadap pelanggaran."
+      ],
+      "ygMapping": "unmapped",
+      "ygNote": "Belum ada evidence YG yang menunjukkan intervensi langsung pada pemegang konsesi. RO ini tetap ditampilkan sebagai bagian kerangka nasional.",
+      "documentIds": ["renops-national", "renja-riau", "field-i"]
+    },
+    {
+      "id": "ro4",
+      "code": "RO.4",
+      "title": "Pembangunan Hutan Tanaman",
+      "cluster": "carbon-stock",
+      "clusterLabel": "Hutan produksi & cadangan karbon",
+      "focus": "Membangun hutan tanaman pada lahan tidak produktif secara terencana untuk meningkatkan tutupan, produktivitas, dan cadangan karbon.",
+      "directions": [
+        "Penanaman pada areal PBPH hutan tanaman, Hutan Tanaman Rakyat, atau areal yang sesuai.",
+        "Pengembangan hutan tanaman energi dan pola produksi yang menjaga keberlanjutan tegakan.",
+        "Pemeliharaan, monitoring keberhasilan tanaman, dan penguatan pengelola/kelompok."
+      ],
+      "ygMapping": "unmapped",
+      "ygNote": "Penanaman kopi, geronggang, dan mangrove YG belum dikategorikan sebagai pembangunan hutan tanaman dalam RO.4 tanpa bukti status areal dan pola pengelolaan yang sesuai.",
+      "documentIds": ["renops-national", "renja-riau", "field-ii"]
+    },
+    {
+      "id": "ro5",
+      "code": "RO.5",
+      "title": "Penerapan Pengayaan Hutan Alam",
+      "cluster": "carbon-stock",
+      "clusterLabel": "Hutan produksi & cadangan karbon",
+      "focus": "Memulihkan dan meningkatkan kualitas hutan alam melalui pengayaan atau enhanced natural regeneration pada tegakan yang terdegradasi.",
+      "directions": [
+        "Pengayaan hutan sekunder, areal bekas tebangan, dan areal pascakebakaran dengan jenis yang sesuai.",
+        "Perlindungan regenerasi alami, pemeliharaan tanaman pengayaan, dan penerapan silvikultur.",
+        "Monitoring struktur tegakan, keberhasilan tumbuh, biodiversitas, dan perubahan cadangan karbon."
+      ],
+      "ygMapping": "unmapped",
+      "ygNote": "Belum ada evidence YG yang membuktikan pengayaan dilakukan di tegakan hutan alam. Penanaman di kebun/agroforestri tidak otomatis termasuk RO.5.",
+      "documentIds": ["renops-national", "renja-riau", "field-ii"]
+    },
+    {
+      "id": "ro6",
+      "code": "RO.6",
+      "title": "Penerapan Reduced Impact Logging–Carbon (RIL-C)",
+      "cluster": "carbon-stock",
+      "clusterLabel": "Hutan produksi & cadangan karbon",
+      "focus": "Mengurangi emisi dan kerusakan tegakan akibat pemanenan kayu melalui teknik pembalakan berdampak rendah berorientasi karbon.",
+      "directions": [
+        "Perencanaan jalan sarad, arah rebah, inventarisasi tegakan, dan operasi pemanenan berisiko rendah.",
+        "Penerapan RIL-C, SILIN, dan peningkatan kapasitas unit pengelola hutan produksi.",
+        "Pemantauan kerusakan tegakan tinggal, efisiensi pemanenan, kepatuhan, dan emisi operasional."
+      ],
+      "ygMapping": "unmapped",
+      "ygNote": "YG tidak menjalankan operasi pembalakan atau pendampingan RIL-C; belum ada kontribusi yang dapat dipetakan pada RO.6.",
+      "documentIds": ["renops-national", "renja-riau", "field-i"]
+    },
+    {
+      "id": "ro7",
+      "code": "RO.7",
+      "title": "Peningkatan Cadangan Karbon dengan Rotasi",
+      "cluster": "carbon-stock",
+      "clusterLabel": "Hutan produksi & cadangan karbon",
+      "focus": "Meningkatkan cadangan karbon melalui rehabilitasi atau penanaman produktif yang dikelola dalam siklus/rotasi.",
+      "directions": [
+        "Rehabilitasi dengan jenis produktif, kayu, energi, atau hasil hutan yang memiliki siklus pemanfaatan.",
+        "Pemeliharaan tegakan, pengaturan rotasi, penanaman kembali, dan penguatan usaha kelompok.",
+        "Monitoring luas, survival, pertumbuhan, panen, serta keberlanjutan cadangan karbon antarsiklus."
+      ],
+      "ygMapping": "unmapped",
+      "ygNote": "Belum tersedia evidence YG yang mendokumentasikan sistem rotasi, panen, dan penanaman kembali sebagai satu kesatuan pengelolaan RO.7.",
+      "documentIds": ["renops-national", "renja-riau", "field-ii"]
+    },
+    {
+      "id": "ro8",
+      "code": "RO.8",
+      "title": "Peningkatan Cadangan Karbon tanpa Rotasi",
+      "cluster": "carbon-stock",
+      "clusterLabel": "Hutan produksi & cadangan karbon",
+      "focus": "Meningkatkan cadangan karbon melalui rehabilitasi permanen untuk fungsi lindung, tata air, pemulihan lahan, dan jasa lingkungan.",
+      "directions": [
+        "Rehabilitasi hutan dan lahan pada kawasan lindung, riparian, sumber air, lahan kritis, dan bekas tambang.",
+        "Penanaman jenis permanen/lokal, perlindungan regenerasi, pemeliharaan, dan pengendalian gangguan.",
+        "Monitoring survival, pertumbuhan, tutupan, fungsi ekosistem, dan manfaat bagi masyarakat."
+      ],
+      "ygMapping": "review",
+      "ygNote": "Penanaman geronggang dan revegetasi permanen YG berpotensi mendukung RO.8, tetapi evidence harus lebih dahulu memisahkan jenis, jumlah, status lahan, tujuan rehabilitasi, dan pola tanpa rotasi.",
+      "documentIds": ["renops-national", "renja-riau", "field-ii"]
+    },
+    {
+      "id": "ro9",
+      "code": "RO.9",
+      "title": "Pengelolaan Tata Air Gambut",
+      "cluster": "peat",
+      "clusterLabel": "Pengelolaan ekosistem gambut",
+      "focus": "Menurunkan emisi dari dekomposisi dan kebakaran gambut melalui pengelolaan hidrologi serta pemeliharaan kelembapan gambut.",
+      "directions": [
+        "Pembangunan dan pemeliharaan sekat kanal, sumur bor, serta infrastruktur pembasahan lain.",
+        "Pemantauan tinggi muka air tanah, curah hujan, risiko kebakaran, dan efektivitas pembasahan.",
+        "Penguatan kelompok pengelola tata air, operasi pembasahan, dan tata kelola hidrologi lanskap."
+      ],
+      "ygMapping": "contributing",
+      "ygNote": "Kontribusi YG dipetakan melalui sekat kanal, pemeliharaan, FDRS/TMAT, pemantauan cuaca/hujan, dan kesiapsiagaan berbasis desa.",
+      "documentIds": ["renops-national", "renja-riau", "field-iv"]
+    },
+    {
+      "id": "ro10",
+      "code": "RO.10",
+      "title": "Pelaksanaan Restorasi Gambut",
+      "cluster": "peat",
+      "clusterLabel": "Pengelolaan ekosistem gambut",
+      "focus": "Memulihkan fungsi ekosistem gambut melalui pembasahan, revegetasi, dan revitalisasi mata pencaharian sesuai karakter tapak.",
+      "directions": [
+        "Rewetting melalui infrastruktur dan operasi pembasahan pada gambut terdegradasi.",
+        "Revegetasi dengan jenis adaptif/lokal, agroforestri, pemeliharaan, dan monitoring tanaman.",
+        "Revitalisasi mata pencaharian, penguatan kelembagaan, serta praktik budidaya tanpa mengeringkan gambut."
+      ],
+      "ygMapping": "contributing",
+      "ygNote": "Kontribusi YG mencakup rewetting, revegetasi kopi–geronggang, agroforestri, pemeliharaan, pengembangan usaha, dan peningkatan kapasitas masyarakat gambut.",
+      "documentIds": ["renops-national", "renja-riau", "field-iv"]
+    },
+    {
+      "id": "ro11",
+      "code": "RO.11",
+      "title": "Perlindungan Areal Konservasi Tinggi",
+      "cluster": "conservation",
+      "clusterLabel": "Konservasi & biodiversitas",
+      "focus": "Mempertahankan kawasan bernilai konservasi tinggi, habitat penting, dan keanekaragaman hayati di dalam maupun di luar kawasan konservasi.",
+      "directions": [
+        "Inventarisasi biodiversitas, identifikasi HCV, perlindungan habitat, koridor satwa, dan spesies prioritas.",
+        "Patroli, pencegahan kebakaran/perambahan, penanganan konflik, dan kemitraan konservasi.",
+        "Pelibatan masyarakat, kearifan lokal, pemulihan habitat, serta monitoring flora dan fauna."
+      ],
+      "ygMapping": "contributing",
+      "ygNote": "Kontribusi YG dipetakan melalui baseline biodiversitas, katalog flora-fauna, pelatihan pengamanan kawasan, patroli/kapasitas masyarakat, dan perlindungan habitat mangrove serta HKm.",
+      "documentIds": ["renops-national", "renja-riau", "field-iii"]
+    },
+    {
+      "id": "ro12",
+      "code": "RO.12",
+      "title": "Pengelolaan Mangrove",
+      "cluster": "mangrove",
+      "clusterLabel": "Pengelolaan ekosistem mangrove",
+      "focus": "Melindungi, merehabilitasi, dan memanfaatkan ekosistem mangrove secara lestari dengan tata kelola serta partisipasi masyarakat.",
+      "directions": [
+        "Pencegahan perambahan, perlindungan pesisir, pengamanan kawasan, dan penguatan tata kelola mangrove.",
+        "Pembibitan, penanaman, rehabilitasi, pemeliharaan, perlindungan tanaman, dan monitoring keberhasilan.",
+        "Pemberdayaan kelompok, usaha lestari, ekowisata, pendidikan, kemitraan, dan koordinasi KKMD."
+      ],
+      "ygMapping": "contributing",
+      "ygNote": "Kontribusi YG mencakup penanaman dan pemeliharaan, empat pembibitan, APO/perangkap sedimen, monitoring, biodiversitas, usaha masyarakat, pelatihan, dan dukungan KKMD Riau.",
+      "documentIds": ["renops-national", "renja-riau", "field-ii"]
+    }
+  ],
   "pathways": [
     {
       "id": "ro1",
