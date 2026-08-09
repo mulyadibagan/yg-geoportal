@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>NDC Indonesia &amp; Kontribusi Yayasan Gambut | YG GeoPortal</title>
+  <meta name="description" content="Pemetaan kontribusi Yayasan Gambut terhadap Enhanced NDC 2030, Second NDC 2031–2035, adaptasi iklim, dan FOLU Net Sink 2030.">
+  <link rel="canonical" href="https://webgisyg.id/ndc-indonesia.html">
+  <link rel="icon" href="assets/logo-yayasan-gambut.png">
+  <link rel="stylesheet" href="css/site-brand.css?v=20260720-program-dashboard1">
+  <link rel="stylesheet" href="css/monitoring.css?v=20260721-object-id1">
+  <link rel="stylesheet" href="css/navigation-v2.css?v=20260807-mobile-submenu-links1">
+  <style>
+    :root{--green:#087653;--dark:#17382e;--ink:#29483e;--muted:#60756d;--line:#d8e5df;--soft:#eef7f3;--gold:#d8a52c}
+    *{box-sizing:border-box}.ndc-page{max-width:1400px;margin:0 auto;padding:24px 28px 72px}.ndc-breadcrumb{display:flex;gap:9px;align-items:center;margin:2px 0 20px;color:var(--muted);font-size:14px}.ndc-breadcrumb a{color:var(--green);font-weight:750;text-decoration:none}
+    .ndc-hero{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(280px,.55fr);gap:26px;padding:38px;border-radius:28px;background:linear-gradient(135deg,#17382e,#087653);color:#fff}.eyebrow,.section-label{display:block;font-size:12px;font-weight:850;letter-spacing:.12em}.ndc-hero h1{max-width:900px;margin:12px 0;font-size:clamp(34px,5vw,58px);line-height:1.03}.ndc-hero p{max-width:850px;margin:0;font-size:17px;line-height:1.65}.target-box{align-self:stretch;display:flex;flex-direction:column;justify-content:center;padding:24px;border:1px solid rgba(255,255,255,.28);border-radius:20px;background:rgba(255,255,255,.1)}.target-box span{font-size:13px;font-weight:800}.target-box strong{margin:10px 0 5px;font-size:29px;line-height:1.15}.target-box small{line-height:1.5;opacity:.85}
+    .ndc-section{margin-top:28px;padding:30px;border:1px solid var(--line);border-radius:24px;background:#fff}.section-heading{display:flex;justify-content:space-between;gap:28px;align-items:end;margin-bottom:20px}.section-heading>div{max-width:760px}.section-heading h2{margin:8px 0 0;color:var(--dark);font-size:clamp(25px,3vw,36px)}.section-heading p{max-width:560px;margin:0;color:var(--muted);line-height:1.6}.section-label{color:var(--green)}
+    .target-grid,.sector-grid,.adapt-grid{display:grid;gap:16px}.target-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.target-card{padding:22px;border-radius:18px;background:var(--soft)}.target-card span{color:var(--green);font-size:12px;font-weight:850;letter-spacing:.08em}.target-card h3{margin:8px 0;color:var(--dark);font-size:23px}.target-card p{margin:0;color:var(--muted);line-height:1.6}.target-card strong{color:var(--dark)}
+    .policy-path{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:18px}.policy-path a,.policy-path article{position:relative;padding:18px;border:1px solid var(--line);border-radius:16px;color:inherit;text-decoration:none}.policy-path a:after,.policy-path article:not(:last-child):after{content:'→';position:absolute;right:-11px;top:50%;z-index:2;width:22px;height:22px;border-radius:50%;background:var(--green);color:#fff;text-align:center;line-height:21px}.policy-path span{display:block;color:var(--green);font-size:11px;font-weight:850}.policy-path strong{display:block;margin-top:6px;color:var(--dark);line-height:1.35}.policy-path small{display:block;margin-top:6px;color:var(--muted);line-height:1.4}
+    .sector-grid{grid-template-columns:repeat(5,minmax(0,1fr))}.sector-card{padding:20px;border:1px solid var(--line);border-radius:18px}.sector-card b{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--green);color:#fff}.sector-card h3{margin:12px 0 7px;color:var(--dark);font-size:18px}.sector-card p{margin:0;color:var(--muted);font-size:14px;line-height:1.55}.sector-card.is-yg{border:2px solid var(--green);background:var(--soft)}
+    .contribution-table{width:100%;border-collapse:separate;border-spacing:0;overflow:hidden;border:1px solid var(--line);border-radius:16px}.contribution-table th,.contribution-table td{padding:15px 16px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;line-height:1.5}.contribution-table th{background:var(--dark);color:#fff;font-size:13px}.contribution-table tr:last-child td{border-bottom:0}.contribution-table td:first-child{font-weight:800;color:var(--dark)}.tag{display:inline-block;margin:2px 3px 2px 0;padding:4px 8px;border-radius:999px;background:var(--soft);color:var(--green);font-size:11px;font-weight:800}.evidence-link{color:var(--green);font-weight:800;text-decoration:none}
+    .adapt-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.adapt-card{padding:20px;border-radius:18px;background:#f7faf8}.adapt-card h3{margin:0 0 8px;color:var(--dark)}.adapt-card p{margin:0;color:var(--muted);line-height:1.55}
+    .boundary{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;background:#fff9e9;border-color:#eddbac}.boundary h2{margin:7px 0;color:var(--dark)}.boundary p{margin:0;color:#665633;line-height:1.65}.boundary strong{padding:10px 14px;border-radius:999px;background:#fff;color:#785c0c;white-space:nowrap}.documents{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.document{display:flex;flex-direction:column;padding:20px;border:1px solid var(--line);border-radius:17px;color:inherit;text-decoration:none}.document span{color:var(--green);font-size:11px;font-weight:850;letter-spacing:.08em}.document strong{margin:8px 0;color:var(--dark)}.document small{margin-top:auto;color:var(--muted)}
+    @media(max-width:1050px){.sector-grid{grid-template-columns:repeat(3,1fr)}.policy-path{grid-template-columns:repeat(2,1fr)}.policy-path a:after,.policy-path article:after{display:none}}
+    @media(max-width:760px){.ndc-page{padding:18px 16px 50px}.ndc-hero{grid-template-columns:1fr;padding:28px 22px}.section-heading{display:block}.section-heading p{margin-top:10px}.target-grid,.adapt-grid,.documents,.sector-grid,.policy-path{grid-template-columns:1fr}.ndc-section{padding:22px 17px}.boundary{grid-template-columns:1fr}.boundary strong{white-space:normal}.table-scroll{overflow-x:auto}.contribution-table{min-width:760px}.target-box strong{font-size:25px}}
+  </style>
+  <meta name="theme-color" content="#087653">
+</head>
+<body>
+  <header class="yg-page-header"><div class="yg-page-header__inner">
+    <a class="yg-page-brand" href="index.html"><img src="assets/logo-yayasan-gambut.png" alt="Logo Yayasan Gambut"><span><strong>YG GeoPortal</strong>WebGIS Yayasan Gambut</span></a>
+    <button class="yg-nav-toggle" type="button" aria-label="Buka menu" aria-expanded="false" data-yg-nav-toggle="ndc-navigation">☰</button>
+    <nav class="yg-page-nav yg-nav-v2" id="ndc-navigation" aria-label="Navigasi utama" data-yg-navigation>
+      <a href="index.html">Beranda</a><a href="webgis.html">Peta Interaktif</a>
+      <div class="yg-nav-group"><button class="yg-nav-trigger" type="button" aria-expanded="false">Jelajahi</button><div class="yg-nav-menu"><a href="biodiversity.html">Biodiversitas</a><a href="fire-weather.html">Karhutla &amp; Cuaca</a><a href="coastal-monitoring.html">Pesisir &amp; Mangrove</a></div></div>
+      <div class="yg-nav-group"><button class="yg-nav-trigger" type="button" aria-expanded="false" aria-current="true">Data &amp; Dampak</button><div class="yg-nav-menu"><a href="monitoring.html">Monitoring Lapangan<small>Hasil pemantauan objek dan lokasi</small></a><a href="community-engagement.html">Pelibatan Masyarakat<small>Partisipasi kelompok dalam kegiatan lapangan</small></a><a href="capacity-building.html">Peningkatan Kapasitas<small>Pelatihan dan evaluasi pembelajaran</small></a><a href="sdgs.html">Kontribusi SDGs<small>Capaian menurut tujuan pembangunan</small></a><a href="policy-alignment.html" aria-current="page">Keselarasan Kebijakan &amp; Komitmen<small>KKMD, FOLU Net Sink, NDC, dan kerangka terkait</small></a></div></div>
+      <a href="report.html">Laporkan Temuan</a>
+    </nav>
+  </div></header>
+
+  <main class="ndc-page">
+    <nav class="ndc-breadcrumb" aria-label="Breadcrumb"><a href="policy-alignment.html">Keselarasan Kebijakan &amp; Komitmen</a><span>›</span><strong>NDC Indonesia</strong></nav>
+    <section class="ndc-hero">
+      <div><span class="eyebrow">KOMITMEN IKLIM NASIONAL · KONTRIBUSI TAPAK RIAU</span><h1>NDC Indonesia dan kontribusi Yayasan Gambut</h1><p>Menghubungkan restorasi gambut dan mangrove, pencegahan kebakaran, agroforestri, perhutanan sosial, penguatan penghidupan, dan monitoring YG dengan sasaran mitigasi serta adaptasi iklim Indonesia.</p></div>
+      <div class="target-box"><span>ARAH JANGKA PANJANG</span><strong>Net Zero Emission 2060 atau lebih cepat</strong><small>FOLU diproyeksikan menjadi net sink pada 2030 dan membantu tercapainya puncak emisi nasional.</small></div>
+    </section>
+
+    <section class="ndc-section" aria-labelledby="target-title">
+      <div class="section-heading"><div><span class="section-label">TARGET NASIONAL</span><h2 id="target-title">Dua periode kebijakan yang saling berlanjut</h2></div><p>Angka berikut adalah target Pemerintah Indonesia. Pemetaan YG menunjukkan kontribusi kegiatan, bukan pembagian target nasional kepada organisasi.</p></div>
+      <div class="target-grid">
+        <article class="target-card"><span>SAMPAI 2030 · ENHANCED NDC 2022</span><h3>31,89% tanpa syarat · 43,20% bersyarat</h3><p>Pengurangan emisi dibandingkan skenario business as usual 2030. Target bersyarat memerlukan dukungan internasional.</p></article>
+        <article class="target-card"><span>2031–2035 · SECOND NDC 2025</span><h3>Target tingkat emisi absolut</h3><p>Tahun referensi 2019: <strong>1.145,037 juta ton CO₂e</strong>. Proyeksi emisi 2035 dalam skenario rendah karbon: <strong>1.257,717–1.488,866 juta ton CO₂e</strong>.</p></article>
+      </div>
+      <div class="policy-path" aria-label="Hierarki kontribusi kebijakan">
+        <article><span>1 · KOMITMEN INDUK</span><strong>NDC Indonesia</strong><small>Mitigasi dan adaptasi seluruh sektor</small></article>
+        <article><span>2 · SEKTOR UTAMA YG</span><strong>Forestry and Other Land Use</strong><small>Hutan, gambut, mangrove, dan penggunaan lahan</small></article>
+        <a href="folu-net-sink.html"><span>3 · JALUR 2030</span><strong>FOLU Net Sink 2030</strong><small>Buka 12 RO nasional dan pemetaan YG</small></a>
+        <a href="webgis.html?layers=area_mangrove,area_kopi,kopi,sekat_kanal,fdrs,apo,nursery_mangrove,PERHUTANAN_SOSIAL_RIAU"><span>4 · EVIDENCE TAPAK</span><strong>Lokasi dan capaian YG</strong><small>Buka layer kontribusi di peta</small></a>
+      </div>
+    </section>
+
+    <section class="ndc-section" aria-labelledby="sector-title">
+      <div class="section-heading"><div><span class="section-label">CAKUPAN MITIGASI</span><h2 id="sector-title">Lima sektor NDC Indonesia</h2></div><p>Kegiatan Yayasan Gambut paling kuat terhubung ke FOLU, dengan kontribusi pendukung pada pertanian, limbah, dan penguatan ketahanan masyarakat.</p></div>
+      <div class="sector-grid">
+        <article class="sector-card"><b>1</b><h3>Energi</h3><p>Energi terbarukan, efisiensi, transportasi rendah karbon, dan biofuel.</p></article>
+        <article class="sector-card"><b>2</b><h3>IPPU</h3><p>Efisiensi proses industri dan pengurangan emisi penggunaan produk.</p></article>
+        <article class="sector-card"><b>3</b><h3>Limbah</h3><p>3R, ekonomi sirkular, pengolahan limbah, dan penangkapan metana.</p></article>
+        <article class="sector-card"><b>4</b><h3>Pertanian</h3><p>Budidaya rendah emisi, pupuk organik, biogas, dan efisiensi air.</p></article>
+        <article class="sector-card is-yg"><b>5</b><h3>FOLU</h3><p>Deforestasi, restorasi gambut, mangrove, karhutla, rehabilitasi lahan, dan perhutanan sosial.</p></article>
+      </div>
+    </section>
+
+    <section class="ndc-section" aria-labelledby="matrix-title">
+      <div class="section-heading"><div><span class="section-label">MATRIKS KONTRIBUSI YG</span><h2 id="matrix-title">Dari kegiatan lapangan ke sasaran NDC</h2></div><p>Setiap jalur mempertahankan satuan capaian aslinya dan diarahkan ke evidence WebGIS. Estimasi CO₂e hanya ditampilkan setelah metodologi dan verifikasinya tersedia.</p></div>
+      <div class="table-scroll"><table class="contribution-table">
+        <thead><tr><th>Kegiatan Yayasan Gambut</th><th>Jalur NDC</th><th>Kontribusi</th><th>Evidence publik</th></tr></thead>
+        <tbody>
+          <tr><td>Sekat kanal dan restorasi hidrologi</td><td><span class="tag">FOLU</span><span class="tag">Adaptasi</span></td><td>Rewetting gambut, pengurangan risiko dekomposisi dan kebakaran, ketahanan air.</td><td><a class="evidence-link" href="webgis.html?layers=sekat_kanal,fdrs">Peta sekat kanal &amp; FDRS →</a></td></tr>
+          <tr><td>FDRS dan pencegahan karhutla</td><td><span class="tag">FOLU</span><span class="tag">Adaptasi</span></td><td>Peringatan dini, pemantauan hidrologi, dan pengurangan emisi kebakaran gambut.</td><td><a class="evidence-link" href="fire-weather.html">Karhutla &amp; cuaca →</a></td></tr>
+          <tr><td>Rehabilitasi mangrove dan APO</td><td><span class="tag">FOLU</span><span class="tag">Blue carbon</span></td><td>Peningkatan serapan karbon, perlindungan pantai, habitat, dan pengurangan abrasi.</td><td><a class="evidence-link" href="coastal-monitoring.html">Pesisir &amp; mangrove →</a></td></tr>
+          <tr><td>Revegetasi gambut dan agroforestri</td><td><span class="tag">FOLU</span><span class="tag">Pertanian</span></td><td>Rehabilitasi lahan, pertanian tanpa bakar, diversifikasi penghidupan rendah emisi.</td><td><a class="evidence-link" href="webgis.html?layers=area_kopi,kopi">Area agroforestri →</a></td></tr>
+          <tr><td>Perhutanan sosial dan KUPS</td><td><span class="tag">FOLU</span><span class="tag">Transisi berkeadilan</span></td><td>Tata kelola hutan, kelembagaan lokal, usaha masyarakat, dan partisipasi inklusif.</td><td><a class="evidence-link" href="webgis.html?layers=PERHUTANAN_SOSIAL_RIAU">Wilayah perhutanan sosial →</a></td></tr>
+          <tr><td>Pelatihan, kelompok perempuan, dan pemuda</td><td><span class="tag">Adaptasi</span><span class="tag">Capacity building</span></td><td>Kapasitas adaptif, local champion, ketahanan penghidupan, dan penyebaran praktik baik.</td><td><a class="evidence-link" href="capacity-building.html">Data peningkatan kapasitas →</a></td></tr>
+          <tr><td>Monitoring lapangan dan WebGIS</td><td><span class="tag">MRV</span><span class="tag">Transparansi</span></td><td>Data terukur, dapat dilaporkan, diverifikasi, dan ditelusuri hingga lokasi serta sumber.</td><td><a class="evidence-link" href="monitoring.html">Monitoring lapangan →</a></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="ndc-section" aria-labelledby="adapt-title">
+      <div class="section-heading"><div><span class="section-label">ADAPTASI IKLIM</span><h2 id="adapt-title">Tiga ketahanan yang diperkuat YG</h2></div><p>NDC memadukan mitigasi dengan pengurangan risiko, peningkatan kapasitas adaptif, ketahanan, dan penurunan kerentanan.</p></div>
+      <div class="adapt-grid">
+        <article class="adapt-card"><h3>Ketahanan ekosistem</h3><p>Restorasi gambut dan mangrove, perlindungan biodiversitas, tata air, dan rehabilitasi lanskap.</p></article>
+        <article class="adapt-card"><h3>Ketahanan sosial</h3><p>Kesiapsiagaan kebakaran, peningkatan kapasitas, penguatan kelompok, perempuan, pemuda, dan masyarakat rentan.</p></article>
+        <article class="adapt-card"><h3>Ketahanan ekonomi</h3><p>Agroforestri ramah gambut, pengolahan produk, KUPS, kemitraan pasar, dan diversifikasi penghidupan.</p></article>
+      </div>
+    </section>
+
+    <section class="ndc-section boundary">
+      <div><span class="section-label">BATAS PELAPORAN</span><h2>Kontribusi kegiatan, bukan klaim karbon</h2><p>Capaian pohon, luas, infrastruktur, peserta, dan hasil monitoring dilaporkan dalam satuan aslinya. Angka penurunan emisi atau serapan karbon baru dapat digunakan setelah baseline, metodologi, periode pemantauan, pencegahan penghitungan ganda, dan verifikasi ditetapkan.</p></div><strong>STATUS: PEMETAAN KONTRIBUSI</strong>
+    </section>
+
+    <section class="ndc-section" aria-labelledby="document-title">
+      <div class="section-heading"><div><span class="section-label">DOKUMEN ACUAN</span><h2 id="document-title">Sumber kebijakan resmi</h2></div><p>Dokumen dibuka pada sumber resmi UNFCCC dan basis peraturan pemerintah.</p></div>
+      <div class="documents">
+        <a class="document" href="https://unfccc.int/sites/default/files/NDC/2022-09/23.09.2022_Enhanced%20NDC%20Indonesia.pdf" target="_blank" rel="noopener"><span>UNFCCC · 2022</span><strong>Enhanced NDC Indonesia</strong><small>Buka dokumen resmi ↗</small></a>
+        <a class="document" href="https://unfccc.int/sites/default/files/2025-10/Indonesia_Second%20NDC_2025.10.24.pdf" target="_blank" rel="noopener"><span>UNFCCC · 2025</span><strong>Second NDC Indonesia</strong><small>Buka dokumen resmi ↗</small></a>
+        <a class="document" href="https://peraturan.bpk.go.id/Details/334733" target="_blank" rel="noopener"><span>PERPRES · 2025</span><strong>Perpres 110/2025 tentang Nilai Ekonomi Karbon</strong><small>Buka basis peraturan ↗</small></a>
+      </div>
+    </section>
+  </main>
+  <script src="js/navigation-v2.js?v=20260807-mobile-menu-fix2"></script>
+  <script src="js/pwa.js?v=20260809-ndc1"></script>
+</body>
+</html>
