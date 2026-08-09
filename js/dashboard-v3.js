@@ -3,7 +3,7 @@
 
   const API = "https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec?page=objects";
   const CALLBACK = "ygDashboardV3Callback";
-  const DASHBOARD_CACHE_KEY = "ygDashboardV3Cache_v3_20260809_coffee_sync1";
+  const DASHBOARD_CACHE_KEY = "ygDashboardV3Cache_v3_20260809_coffee_area1";
   const DASHBOARD_CACHE_MAX_AGE_MS = 1000 * 60 * 60 * 24 * 7;
   const DASHBOARD_REQUEST_TIMEOUT_MS = 18000;
   const DASHBOARD_REQUEST_MAX_ATTEMPTS = 3;
@@ -12,7 +12,13 @@
   const PROGRAMME_BASELINES = {
     snapshotDate: "22 Juli 2026",
     mangrove: { value: 13.24, unit: "ha", label: "Luas restorasi" },
-    peat: { value: 13.75, unit: "ha", label: "Luas restorasi/agroforestri" },
+    peat: {
+      value: 13.75,
+      unit: "ha",
+      label: "Luas restorasi/agroforestri",
+      snapshotSeedlings: 17300,
+      plantingSpacingSqm: 9
+    },
     mineral: { value: 11.44, unit: "ha", label: "Luas rehabilitasi" },
     engagement: { value: 785, unit: "orang", label: "Orang terlibat" }
   };
@@ -1556,6 +1562,21 @@
       ? programmeMetrics.peat.forest
       : revisedPeatForestSeedlings;
 
+    const peatPlantedSeedlings = programmeMetrics.peat.coffee +
+      programmeMetrics.peat.forest;
+    const newPeatSeedlings = Math.max(
+      0,
+      peatPlantedSeedlings - PROGRAMME_BASELINES.peat.snapshotSeedlings
+    );
+    const newPeatPlantingArea = newPeatSeedlings *
+      PROGRAMME_BASELINES.peat.plantingSpacingSqm / 10000;
+    const peatRestorationAddition = peatRewettingArea + newPeatPlantingArea;
+    const dashboardUpdateDate = new Date().toLocaleDateString("id-ID", {
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    });
+
     const mineralArea = Math.max(11.44, programmeMetrics.mineral.area);
     const mineralSeedlings = Math.max(1200, programmeMetrics.mineral.seedlings);
     const revegetationArea = programmeMetrics.mangrove.area +
@@ -1707,17 +1728,18 @@
         icon: "🌿",
         url: "programme-detail.html?programme=peat",
         sourceUrl: mapUrl({ layers: "area_kopi,kopi,sekat_kanal,fdrs" }),
-        addition: peatRewettingArea,
-        current: PROGRAMME_BASELINES.peat.value + peatRewettingArea,
+        addition: peatRestorationAddition,
+        current: PROGRAMME_BASELINES.peat.value + peatRestorationAddition,
         baselineLabel: "Luas penanaman",
-        additionLabel: "Area rewetting",
+        additionLabel: "Rewetting + penanaman baru",
         currentLabel: "Total restorasi",
         status: "Data final",
-        updated: "Live WebGIS",
+        updated: dashboardUpdateDate,
         rows: [
-          ["Total Bibit Ditanam", programmeMetrics.peat.coffee + programmeMetrics.peat.forest],
+          ["Total Bibit Ditanam", peatPlantedSeedlings],
           ["Sekat Kanal", programmeMetrics.peat.canals],
           ["Estimasi Area Rewetting", peatRewettingArea, " ha", 2],
+          ["Luas Penanaman Baru", newPeatPlantingArea, " ha", 2],
           ["FDRS", fdrsUnits]
         ]
       },
@@ -1841,7 +1863,9 @@
       document.getElementById("programme-summary-comparison").textContent =
         "Baseline " + comparisonValue(baseline.value, baseline.unit) +
         " → terkini " + comparisonValue(card.current, baseline.unit) +
-        " · " + changeLabel + ". Snapshot baseline " + PROGRAMME_BASELINES.snapshotDate + ".";
+        " · " + changeLabel + ". Baseline ditetapkan " +
+        PROGRAMME_BASELINES.snapshotDate + "; data terkini diperbarui " +
+        dashboardUpdateDate + ".";
       document.getElementById("programme-summary-metrics").innerHTML = card.rows.map(row =>
         '<article class="funding-indicator"><i aria-hidden="true">•</i><strong>' +
         escapeHtml(displayMetric(row[1], row[2] || "", row[3] || 0)) +
