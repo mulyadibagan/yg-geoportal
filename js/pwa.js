@@ -28,7 +28,7 @@
 
     window.addEventListener("load", () => {
       navigator.serviceWorker
-        .register("./service-worker.js?v=20260809-khg-feg-local1")
+        .register("./service-worker.js?v=20260809-coffee-dashboard1")
         .then(registration => {
           console.log("Service worker terdaftar:", registration);
           registration.update();
@@ -37,7 +37,7 @@
     });
 
     navigator.serviceWorker.addEventListener("controllerchange", () => {
-      const reloadKey = "yg-sw-khg-feg-local1";
+      const reloadKey = "yg-sw-coffee-dashboard1";
       if (sessionStorage.getItem(reloadKey)) return;
       sessionStorage.setItem(reloadKey, "done");
       window.location.reload();
