@@ -50,6 +50,30 @@
       count: 736,
       type: "peat"
     },
+    khg_resmi_klhk: {
+      id: "khg_resmi_klhk",
+      label: "Kesatuan Hidrologis Gambut (KHG) — BIG/KLHK",
+      arcgisUrl: "https://kspservices.big.go.id/satupeta/rest/services/PUBLIK/SUMBER_DAYA_ALAM_DAN_LINGKUNGAN/MapServer/37",
+      color: "#7e57c2",
+      count: null,
+      type: "khg",
+      sourceLabel: "Kebijakan Satu Peta BIG / KLHK",
+      sourceUrl: "https://kspservices.big.go.id/satupeta/rest/services/PUBLIK/SUMBER_DAYA_ALAM_DAN_LINGKUNGAN/MapServer/37",
+      scale: "1:50.000",
+      policyUrl: "rppeg-riau.html"
+    },
+    fungsi_ekosistem_gambut_resmi: {
+      id: "fungsi_ekosistem_gambut_resmi",
+      label: "Fungsi Ekosistem Gambut — BIG/KLHK",
+      arcgisUrl: "https://kspservices.big.go.id/satupeta/rest/services/PUBLIK/SUMBER_DAYA_ALAM_DAN_LINGKUNGAN/MapServer/48",
+      color: "#38a800",
+      count: null,
+      type: "peat_function",
+      sourceLabel: "Kebijakan Satu Peta BIG / KLHK",
+      sourceUrl: "https://kspservices.big.go.id/satupeta/rest/services/PUBLIK/SUMBER_DAYA_ALAM_DAN_LINGKUNGAN/MapServer/48",
+      scale: "1:50.000",
+      policyUrl: "rppeg-riau.html"
+    },
     iuphhk_ht_2014: {
       id: "iuphhk_ht_2014",
       label: "IUPHHK-HT 2014",
@@ -87,7 +111,7 @@
 
     await Promise.all(Object.keys(REFERENCE_LAYERS).map(async layerId => {
       const config = REFERENCE_LAYERS[layerId];
-      if (Number.isFinite(config.count)) return;
+      if (Number.isFinite(config.count) || config.arcgisUrl) return;
 
       try {
         const response = await fetch(
@@ -905,6 +929,23 @@ L.control.scale({
       `;
     }
 
+    const sourceRows =
+      item("Sumber", config.sourceLabel) +
+      item("Skala", config.scale);
+    const sourceLink = config.sourceUrl
+      ? '<a href="' + escapeHtml(config.sourceUrl) +
+        '" target="_blank" rel="noopener noreferrer">Buka layanan resmi</a>'
+      : "";
+    const policyLink = config.policyUrl
+      ? '<a href="' + escapeHtml(config.policyUrl) +
+        '">Lihat keterkaitan RPPEG</a>'
+      : "";
+    const referenceLinks = sourceLink || policyLink
+      ? '<div class="popup-row popup-reference-links"><b>Referensi</b><span>' +
+        [sourceLink, policyLink].filter(Boolean).join(" · ") +
+        '</span></div>'
+      : "";
+
     return (
       '<div class="popup-card">' +
         '<div class="popup-head" style="background:' +
@@ -1142,6 +1183,34 @@ L.control.scale({
       };
     }
 
+    if (config.type === "khg") {
+      return {
+        color: config.color,
+        weight: 1.5,
+        opacity: 0.95,
+        dashArray: "6 4",
+        fillColor: config.color,
+        fillOpacity: 0.08
+      };
+    }
+
+    if (config.type === "peat_function") {
+      const functionName = String(props.feg_50k || props.feg_peat || "");
+      const color = functionName.toLowerCase().includes("lindung")
+        ? "#38a800"
+        : functionName.toLowerCase().includes("budidaya")
+          ? "#ffff73"
+          : config.color;
+
+      return {
+        color: "#455a64",
+        weight: 0.8,
+        opacity: 0.85,
+        fillColor: color,
+        fillOpacity: 0.32
+      };
+    }
+
     if (config.type === "peat") {
       const color = peatColor(props.KELAS_GBT || props.KETEBALAN);
 
@@ -1268,6 +1337,17 @@ L.control.scale({
     if (config.type === "forest") {
       rows += item("Fungsi kawasan", props.fungsi || "Belum terisi");
       rows += item("Sumber", "Kawasan Hutan SK 903");
+    } else if (config.type === "khg") {
+      rows += item("Kode KHG", props.kode_khg);
+      const khgArea = polygonAreaValue(props.luas_ha || props.LUAS_HA);
+      rows += item(khgArea.label, khgArea.value);
+    } else if (config.type === "peat_function") {
+      rows += item("Kode KHG", props.kode_khg);
+      rows += item("Fungsi ekosistem", props.feg_50k || props.feg_peat);
+      rows += item("Ketebalan gambut", props.peat_thick);
+      rows += item("Tanah gambut", props.tnh_gambut);
+      const peatFunctionArea = polygonAreaValue(props.luas_ha || props.LUAS_HA);
+      rows += item(peatFunctionArea.label, peatFunctionArea.value);
     } else if (config.type === "peat") {
       rows += item("Kabupaten/Kota", props.KABKOT || props.KK);
       rows += item("Kelas gambut", props.KELAS_GBT);
@@ -1310,9 +1390,74 @@ L.control.scale({
           '<strong>' + escapeHtml(config.label) + '</strong>' +
           '<span>Layer referensi — tidak dihitung dalam dashboard</span>' +
         '</div>' +
-        '<div class="popup-body">' + rows + '</div>' +
+        '<div class="popup-body">' + rows + sourceRows + referenceLinks + '</div>' +
       '</div>'
     );
+  }
+
+  async function fetchReferenceData(config) {
+    if (!config.arcgisUrl) {
+      const response = await fetch(
+        config.file + "?v=20260809-khg-reference1",
+        { cache: "force-cache" }
+      );
+
+      if (!response.ok) {
+        throw new Error("HTTP " + response.status);
+      }
+
+      return response.json();
+    }
+
+    const features = [];
+    const pageSize = 1000;
+
+    for (let offset = 0; offset < 10000; offset += pageSize) {
+      const params = new URLSearchParams({
+        where: "1=1",
+        geometry: "99.9,-1.7,105,3.1",
+        geometryType: "esriGeometryEnvelope",
+        inSR: "4326",
+        spatialRel: "esriSpatialRelIntersects",
+        outFields: "*",
+        returnGeometry: "true",
+        outSR: "4326",
+        maxAllowableOffset: "0.0005",
+        geometryPrecision: "5",
+        resultOffset: String(offset),
+        resultRecordCount: String(pageSize),
+        f: "geojson"
+      });
+      const controller = new AbortController();
+      const timeoutId = window.setTimeout(() => controller.abort(), 45000);
+      let response;
+
+      try {
+        response = await fetch(
+          config.arcgisUrl + "/query?" + params.toString(),
+          { cache: "no-store", signal: controller.signal }
+        );
+      } finally {
+        window.clearTimeout(timeoutId);
+      }
+
+      if (!response.ok) {
+        throw new Error("Layanan resmi merespons HTTP " + response.status);
+      }
+
+      const page = await response.json();
+      if (page.error) {
+        throw new Error(page.error.message || "Permintaan ArcGIS gagal.");
+      }
+      if (!page || !Array.isArray(page.features)) {
+        throw new Error("Respons GeoJSON layanan resmi tidak valid.");
+      }
+
+      features.push(...page.features);
+      if (page.features.length < pageSize) break;
+    }
+
+    return { type: "FeatureCollection", features: features };
   }
 
   async function loadReferenceLayer(layerId) {
@@ -1333,19 +1478,14 @@ L.control.scale({
     referenceLayerState[layerId] = "loading";
     setStatus("Memuat " + config.label + "…", false);
 
-    const response = await fetch(
-      config.file + "?v=20260721-ref2",
-      {
-        cache: "force-cache"
-      }
-    );
+    let data;
 
-    if (!response.ok) {
+    try {
+      data = await fetchReferenceData(config);
+    } catch (error) {
       referenceLayerState[layerId] = "error";
-      throw new Error("HTTP " + response.status);
+      throw error;
     }
-
-    const data = await response.json();
 
     if (
       !data ||
@@ -1361,7 +1501,9 @@ L.control.scale({
       config.type === "peat" ||
       config.type === "social_forestry" ||
       config.type === "concession" ||
-      config.type === "village_boundary";
+      config.type === "village_boundary" ||
+      config.type === "khg" ||
+      config.type === "peat_function";
 
     const layer = L.geoJSON(data, {
       pane: MAP_PANES.reference,
