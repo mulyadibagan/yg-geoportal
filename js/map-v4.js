@@ -52,10 +52,12 @@
     },
     khg_resmi_klhk: {
       id: "khg_resmi_klhk",
-      label: "Kesatuan Hidrologis Gambut (KHG) — BIG/KLHK",
+      label: "Kesatuan Hidrologis Gambut (KHG) Riau — BIG/KLHK",
       arcgisUrl: "https://kspservices.big.go.id/satupeta/rest/services/PUBLIK/SUMBER_DAYA_ALAM_DAN_LINGKUNGAN/MapServer/37",
+      arcgisWhere: "kode_khg LIKE 'KHG.14.%' OR kode_khg LIKE 'KHG.%-14.%'",
+      arcgisFields: "objectid_1,kode_khg",
       color: "#7e57c2",
-      count: null,
+      count: 59,
       type: "khg",
       sourceLabel: "Kebijakan Satu Peta BIG / KLHK",
       sourceUrl: "https://kspservices.big.go.id/satupeta/rest/services/PUBLIK/SUMBER_DAYA_ALAM_DAN_LINGKUNGAN/MapServer/37",
@@ -64,8 +66,10 @@
     },
     fungsi_ekosistem_gambut_resmi: {
       id: "fungsi_ekosistem_gambut_resmi",
-      label: "Fungsi Ekosistem Gambut — BIG/KLHK",
+      label: "Fungsi Ekosistem Gambut Riau — BIG/KLHK",
       arcgisUrl: "https://kspservices.big.go.id/satupeta/rest/services/PUBLIK/SUMBER_DAYA_ALAM_DAN_LINGKUNGAN/MapServer/48",
+      arcgisWhere: "kode_khg LIKE 'KHG.14.%' OR kode_khg LIKE 'KHG.%-14.%'",
+      arcgisFields: "objectid_1,kode_khg,peat_thick,tnh_gambut,feg_peat,feg_50k",
       color: "#38a800",
       count: null,
       type: "peat_function",
@@ -1414,22 +1418,18 @@ L.control.scale({
 
     for (let offset = 0; offset < 10000; offset += pageSize) {
       const params = new URLSearchParams({
-        where: "1=1",
-        geometry: "99.9,-1.7,105,3.1",
-        geometryType: "esriGeometryEnvelope",
-        inSR: "4326",
-        spatialRel: "esriSpatialRelIntersects",
-        outFields: "*",
+        where: config.arcgisWhere || "1=1",
+        outFields: config.arcgisFields || "*",
         returnGeometry: "true",
         outSR: "4326",
-        maxAllowableOffset: "0.0005",
-        geometryPrecision: "5",
+        maxAllowableOffset: "0.005",
+        geometryPrecision: "4",
         resultOffset: String(offset),
         resultRecordCount: String(pageSize),
         f: "geojson"
       });
       const controller = new AbortController();
-      const timeoutId = window.setTimeout(() => controller.abort(), 45000);
+      const timeoutId = window.setTimeout(() => controller.abort(), 60000);
       let response;
 
       try {
@@ -1484,6 +1484,11 @@ L.control.scale({
       data = await fetchReferenceData(config);
     } catch (error) {
       referenceLayerState[layerId] = "error";
+      if (error && error.name === "AbortError") {
+        throw new Error(
+          "server resmi BIG/KLHK tidak merespons. Silakan coba aktifkan kembali beberapa saat lagi."
+        );
+      }
       throw error;
     }
 
