@@ -3,7 +3,7 @@
 
   const API = "https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec?page=objects";
   const CALLBACK = "ygDashboardV3Callback";
-  const DASHBOARD_CACHE_KEY = "ygDashboardV3Cache_v3_20260727_aramco_output2";
+  const DASHBOARD_CACHE_KEY = "ygDashboardV3Cache_v3_20260809_coffee_sync1";
   const DASHBOARD_CACHE_MAX_AGE_MS = 1000 * 60 * 60 * 24 * 7;
   const DASHBOARD_REQUEST_TIMEOUT_MS = 18000;
   const DASHBOARD_REQUEST_MAX_ATTEMPTS = 3;
@@ -768,6 +768,30 @@
               props.reportId || props.Report_ID || props.Source_Report_ID || ""
             ).trim().toLowerCase();
             return !sourceReportIds.has(reportId);
+          });
+        } else if (source.id === "kopi") {
+          /*
+           * Gunakan geometri referensi untuk titik lama, tetapi pertahankan
+           * entri kopi baru dari Master Database. Object_ID yang sama diganti
+           * oleh versi referensi sehingga jumlah bibit tidak terhitung ganda.
+           */
+          const officialObjectIds = new Set(
+            official
+              .map(feature => {
+                const props = feature.properties || {};
+                return String(
+                  props.Object_ID || props.objectId || props.OBJECTID || ""
+                ).trim().toLowerCase();
+              })
+              .filter(Boolean)
+          );
+          merged = merged.filter(feature => {
+            if (layerIdOf(feature) !== source.id) return true;
+            const props = feature.properties || {};
+            const objectId = String(
+              props.Object_ID || props.objectId || props.OBJECTID || ""
+            ).trim().toLowerCase();
+            return !objectId || !officialObjectIds.has(objectId);
           });
         } else {
           merged = merged.filter(feature => layerIdOf(feature) !== source.id);
