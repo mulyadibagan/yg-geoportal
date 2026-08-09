@@ -929,23 +929,6 @@ L.control.scale({
       `;
     }
 
-    const sourceRows =
-      item("Sumber", config.sourceLabel) +
-      item("Skala", config.scale);
-    const sourceLink = config.sourceUrl
-      ? '<a href="' + escapeHtml(config.sourceUrl) +
-        '" target="_blank" rel="noopener noreferrer">Buka layanan resmi</a>'
-      : "";
-    const policyLink = config.policyUrl
-      ? '<a href="' + escapeHtml(config.policyUrl) +
-        '">Lihat keterkaitan RPPEG</a>'
-      : "";
-    const referenceLinks = sourceLink || policyLink
-      ? '<div class="popup-row popup-reference-links"><b>Referensi</b><span>' +
-        [sourceLink, policyLink].filter(Boolean).join(" · ") +
-        '</span></div>'
-      : "";
-
     return (
       '<div class="popup-card">' +
         '<div class="popup-head" style="background:' +
@@ -1382,6 +1365,23 @@ L.control.scale({
         rows += item(key, props[key]);
       });
     }
+
+    const sourceRows =
+      item("Sumber", config.sourceLabel) +
+      item("Skala", config.scale);
+    const sourceLink = config.sourceUrl
+      ? '<a href="' + escapeHtml(config.sourceUrl) +
+        '" target="_blank" rel="noopener noreferrer">Buka layanan resmi</a>'
+      : "";
+    const policyLink = config.policyUrl
+      ? '<a href="' + escapeHtml(config.policyUrl) +
+        '">Lihat keterkaitan RPPEG</a>'
+      : "";
+    const referenceLinks = sourceLink || policyLink
+      ? '<div class="popup-row popup-reference-links"><b>Referensi</b><span>' +
+        [sourceLink, policyLink].filter(Boolean).join(" · ") +
+        '</span></div>'
+      : "";
 
     return (
       '<div class="popup-card">' +
