@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>RPPEG Riau 2021–2050 &amp; Kontribusi Yayasan Gambut | YG GeoPortal</title>
+  <meta name="description" content="Pemetaan kontribusi Yayasan Gambut terhadap Rencana Perlindungan dan Pengelolaan Ekosistem Gambut Provinsi Riau 2021–2050.">
+  <link rel="canonical" href="https://webgisyg.id/rppeg-riau.html">
+  <link rel="icon" href="assets/logo-yayasan-gambut.png">
+  <link rel="stylesheet" href="css/site-brand.css?v=20260720-program-dashboard1">
+  <link rel="stylesheet" href="css/monitoring.css?v=20260721-object-id1">
+  <link rel="stylesheet" href="css/navigation-v2.css?v=20260807-mobile-submenu-links1">
+  <style>
+    :root{--green:#087653;--dark:#17382e;--ink:#29483e;--muted:#60756d;--line:#d8e5df;--soft:#eef7f3;--blue:#eaf4f8;--gold:#f7efd8}
+    *{box-sizing:border-box}.rppeg-page{max-width:1400px;margin:0 auto;padding:24px 28px 72px}.breadcrumb{display:flex;gap:9px;align-items:center;margin:2px 0 20px;color:var(--muted);font-size:14px}.breadcrumb a{color:var(--green);font-weight:800;text-decoration:none}
+    .hero{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(290px,.6fr);gap:26px;padding:38px;border-radius:28px;background:linear-gradient(135deg,#183c32,#08684d);color:#fff}.eyebrow,.label{display:block;font-size:12px;font-weight:850;letter-spacing:.12em}.hero h1{max-width:900px;margin:12px 0;font-size:clamp(34px,5vw,58px);line-height:1.03}.hero p{max-width:850px;margin:0;font-size:17px;line-height:1.65}.hero-card{display:flex;flex-direction:column;justify-content:center;padding:24px;border:1px solid rgba(255,255,255,.28);border-radius:20px;background:rgba(255,255,255,.1)}.hero-card span{font-size:12px;font-weight:850;letter-spacing:.1em}.hero-card strong{margin:10px 0 5px;font-size:28px;line-height:1.15}.hero-card small{line-height:1.5;opacity:.86}
+    .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:18px}.stats article{padding:20px;border:1px solid var(--line);border-radius:18px;background:#fff}.stats strong{display:block;color:var(--dark);font-size:25px}.stats span{display:block;margin-top:5px;color:var(--green);font-weight:800}.stats small{display:block;margin-top:5px;color:var(--muted);line-height:1.4}
+    .section{margin-top:28px;padding:30px;border:1px solid var(--line);border-radius:24px;background:#fff}.heading{display:flex;justify-content:space-between;gap:28px;align-items:end;margin-bottom:20px}.heading>div{max-width:760px}.heading h2{margin:8px 0 0;color:var(--dark);font-size:clamp(25px,3vw,36px)}.heading p{max-width:570px;margin:0;color:var(--muted);line-height:1.6}.label{color:var(--green)}
+    .pillars{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.pillar{padding:21px;border-radius:18px;background:var(--soft)}.pillar b{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--green);color:#fff}.pillar h3{margin:12px 0 8px;color:var(--dark)}.pillar p{margin:0;color:var(--muted);line-height:1.55;font-size:14px}
+    .district-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.district{padding:19px;border:1px solid var(--line);border-radius:17px}.district.is-focus{border:2px solid var(--green);background:var(--soft)}.district span{color:var(--green);font-size:11px;font-weight:850;letter-spacing:.08em}.district strong{display:block;margin:7px 0 3px;color:var(--dark);font-size:22px}.district small{color:var(--muted)}
+    .table-scroll{overflow-x:auto}.matrix{width:100%;min-width:850px;border-collapse:separate;border-spacing:0;overflow:hidden;border:1px solid var(--line);border-radius:16px}.matrix th,.matrix td{padding:15px 16px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;line-height:1.5}.matrix th{background:var(--dark);color:#fff;font-size:13px}.matrix tr:last-child td{border-bottom:0}.matrix td:first-child{font-weight:800;color:var(--dark)}.tag{display:inline-block;margin:2px 3px 2px 0;padding:4px 8px;border-radius:999px;background:var(--soft);color:var(--green);font-size:11px;font-weight:800}.link{color:var(--green);font-weight:800;text-decoration:none}
+    .priority-note{margin-top:16px;padding:17px 19px;border-radius:15px;background:var(--gold);color:#675834;line-height:1.55}.hierarchy{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.hierarchy article,.hierarchy a{padding:18px;border:1px solid var(--line);border-radius:16px;color:inherit;text-decoration:none}.hierarchy span{display:block;color:var(--green);font-size:11px;font-weight:850}.hierarchy strong{display:block;margin-top:6px;color:var(--dark)}.hierarchy small{display:block;margin-top:6px;color:var(--muted);line-height:1.4}
+    .boundary{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;background:#fff9e9;border-color:#eddbac}.boundary h2{margin:7px 0;color:var(--dark)}.boundary p{margin:0;color:#665633;line-height:1.65}.boundary strong{padding:10px 14px;border-radius:999px;background:#fff;color:#785c0c;white-space:nowrap}.documents{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.document{display:flex;flex-direction:column;padding:20px;border:1px solid var(--line);border-radius:17px;color:inherit;text-decoration:none}.document span{color:var(--green);font-size:11px;font-weight:850;letter-spacing:.08em}.document strong{margin:8px 0;color:var(--dark)}.document small{margin-top:auto;color:var(--muted)}
+    @media(max-width:1020px){.stats,.pillars,.hierarchy{grid-template-columns:repeat(2,1fr)}.district-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:760px){.rppeg-page{padding:18px 16px 50px}.hero{grid-template-columns:1fr;padding:28px 22px}.heading{display:block}.heading p{margin-top:10px}.stats,.pillars,.district-grid,.hierarchy,.documents{grid-template-columns:1fr}.section{padding:22px 17px}.boundary{grid-template-columns:1fr}.boundary strong{white-space:normal}}
+  </style>
+  <meta name="theme-color" content="#087653">
+</head>
+<body>
+  <header class="yg-page-header"><div class="yg-page-header__inner">
+    <a class="yg-page-brand" href="index.html"><img src="assets/logo-yayasan-gambut.png" alt="Logo Yayasan Gambut"><span><strong>YG GeoPortal</strong>WebGIS Yayasan Gambut</span></a>
+    <button class="yg-nav-toggle" type="button" aria-label="Buka menu" aria-expanded="false" data-yg-nav-toggle="rppeg-navigation">☰</button>
+    <nav class="yg-page-nav yg-nav-v2" id="rppeg-navigation" aria-label="Navigasi utama" data-yg-navigation>
+      <a href="index.html">Beranda</a><a href="webgis.html">Peta Interaktif</a>
+      <div class="yg-nav-group"><button class="yg-nav-trigger" type="button" aria-expanded="false">Jelajahi</button><div class="yg-nav-menu"><a href="biodiversity.html">Biodiversitas</a><a href="fire-weather.html">Karhutla &amp; Cuaca</a><a href="coastal-monitoring.html">Pesisir &amp; Mangrove</a></div></div>
+      <div class="yg-nav-group"><button class="yg-nav-trigger" type="button" aria-expanded="false" aria-current="true">Data &amp; Dampak</button><div class="yg-nav-menu"><a href="monitoring.html">Monitoring Lapangan<small>Hasil pemantauan objek dan lokasi</small></a><a href="community-engagement.html">Pelibatan Masyarakat<small>Partisipasi kelompok dalam kegiatan lapangan</small></a><a href="capacity-building.html">Peningkatan Kapasitas<small>Pelatihan dan evaluasi pembelajaran</small></a><a href="sdgs.html">Kontribusi SDGs<small>Capaian menurut tujuan pembangunan</small></a><a href="policy-alignment.html" aria-current="page">Keselarasan Kebijakan &amp; Komitmen<small>KKMD, FOLU Net Sink, NDC, RPPEG, dan kerangka terkait</small></a></div></div>
+      <a href="report.html">Laporkan Temuan</a>
+    </nav>
+  </div></header>
+
+  <main class="rppeg-page">
+    <nav class="breadcrumb" aria-label="Breadcrumb"><a href="policy-alignment.html">Keselarasan Kebijakan &amp; Komitmen</a><span>›</span><strong>RPPEG Provinsi Riau</strong></nav>
+    <section class="hero">
+      <div><span class="eyebrow">KEBIJAKAN TEMATIK GAMBUT · KONTRIBUSI TAPAK</span><h1>RPPEG Provinsi Riau 2021–2050</h1><p>Menghubungkan perlindungan, pemanfaatan berkelanjutan, pemulihan hidrologi, revegetasi, pencegahan kebakaran, penghidupan masyarakat, serta data lapangan Yayasan Gambut dengan rencana jangka panjang pengelolaan ekosistem gambut Riau.</p></div>
+      <div class="hero-card"><span>AREAL INDIKATIF RPPEG</span><strong>4.972.606,90 ha</strong><small>Total areal indikatif rencana pemulihan ekosistem gambut Provinsi Riau. Angka kebijakan, bukan luas intervensi Yayasan Gambut.</small></div>
+    </section>
+
+    <section class="stats" aria-label="Ringkasan RPPEG">
+      <article><strong>2021–2050</strong><span>periode RPPEG Riau</span><small>arah perlindungan dan pengelolaan jangka panjang</small></article>
+      <article><strong>11</strong><span>kabupaten/kota</span><small>tercakup dalam tabel areal indikatif pemulihan</small></article>
+      <article><strong>5</strong><span>kelas prioritas pemulihan</span><small>dari rusak sangat berat sampai tidak rusak</small></article>
+      <article><strong>4</strong><span>kelompok rencana utama</span><small>pemanfaatan, pengendalian, pemeliharaan, iklim</small></article>
+    </section>
+
+    <section class="section" aria-labelledby="position-title">
+      <div class="heading"><div><span class="label">POSISI KEBIJAKAN</span><h2 id="position-title">RPPEG melengkapi NDC dan FOLU Net Sink</h2></div><p>NDC menetapkan komitmen iklim, FOLU menetapkan jalur sektor lahan, sedangkan RPPEG memberi arah spasial dan pengelolaan khusus ekosistem gambut.</p></div>
+      <div class="hierarchy">
+        <a href="ndc-indonesia.html"><span>KOMITMEN IKLIM</span><strong>NDC Indonesia</strong><small>Mitigasi dan adaptasi seluruh sektor</small></a>
+        <a href="folu-net-sink.html"><span>SEKTOR LAHAN</span><strong>FOLU Net Sink 2030</strong><small>Emisi dan serapan kehutanan/penggunaan lahan</small></a>
+        <article><span>KEBIJAKAN GAMBUT</span><strong>RPPEG Riau 2021–2050</strong><small>KHG, fungsi, kondisi, perlindungan, pemulihan, dan pemanfaatan</small></article>
+        <a href="webgis.html?layers=area_kopi,kopi,sekat_kanal,fdrs,restorasi_gambut"><span>EVIDENCE TAPAK</span><strong>Kontribusi Yayasan Gambut</strong><small>Lokasi, capaian, monitoring, dan bukti kegiatan</small></a>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="pillar-title">
+      <div class="heading"><div><span class="label">STRUKTUR RPPEG</span><h2 id="pillar-title">Empat kelompok rencana utama</h2></div><p>Struktur ini mengikuti tujuan, sasaran, strategi, arah kebijakan, program, kegiatan, dan target dalam dokumen RPPEG Riau.</p></div>
+      <div class="pillars">
+        <article class="pillar"><b>1</b><h3>Pemanfaatan</h3><p>Pemanfaatan fungsi lindung dan fungsi budidaya sesuai daya dukung, daya tampung, serta karakteristik ekosistem gambut.</p></article>
+        <article class="pillar"><b>2</b><h3>Pengendalian</h3><p>Pencegahan, penanggulangan, dan pemulihan kerusakan melalui restorasi, rehabilitasi, suksesi alami, tata air, dan pengendalian kebakaran.</p></article>
+        <article class="pillar"><b>3</b><h3>Pemeliharaan</h3><p>Pencadangan areal dan pelestarian fungsi, termasuk konservasi biodiversitas serta monitoring pemanfaatan ekosistem.</p></article>
+        <article class="pillar"><b>4</b><h3>Mitigasi &amp; adaptasi</h3><p>Penurunan emisi, pemeliharaan simpanan karbon, ketahanan ekosistem dan masyarakat, serta pembangunan wilayah rendah karbon.</p></article>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="district-title">
+      <div class="heading"><div><span class="label">PRIORITAS WILAYAH</span><h2 id="district-title">Areal indikatif pemulihan di wilayah kerja YG</h2></div><p>Angka merupakan total kelas Prioritas I–V per kabupaten/kota dalam dokumen RPPEG. Sorotan menunjukkan kabupaten/kota yang beririsan dengan kegiatan Yayasan Gambut.</p></div>
+      <div class="district-grid">
+        <article class="district is-focus"><span>BENGKALIS · FOKUS YG</span><strong>647.147,86 ha</strong><small>Total areal indikatif pemulihan</small></article>
+        <article class="district is-focus"><span>SIAK · FOKUS YG</span><strong>552.255,38 ha</strong><small>Total areal indikatif pemulihan</small></article>
+        <article class="district is-focus"><span>ROKAN HILIR · FOKUS YG</span><strong>623.972,38 ha</strong><small>Total areal indikatif pemulihan</small></article>
+        <article class="district is-focus"><span>PELALAWAN · FOKUS YG</span><strong>780.234,67 ha</strong><small>Total areal indikatif pemulihan</small></article>
+        <article class="district is-focus"><span>KAMPAR · FOKUS YG</span><strong>225.839,90 ha</strong><small>Total areal indikatif pemulihan</small></article>
+        <article class="district is-focus"><span>DUMAI · FOKUS YG</span><strong>217.226,03 ha</strong><small>Total areal indikatif pemulihan</small></article>
+      </div>
+      <p class="priority-note"><strong>Definisi kelas:</strong> Prioritas I = rusak sangat berat; Prioritas II = rusak berat; Prioritas III = rusak sedang; Prioritas IV = rusak ringan; Prioritas V = tidak rusak. Keselarasan lokasi YG ke kelas prioritas belum diklaim sebelum overlay spasial dengan peta lampiran RPPEG.</p>
+    </section>
+
+    <section class="section" aria-labelledby="matrix-title">
+      <div class="heading"><div><span class="label">MATRIKS KONTRIBUSI YG</span><h2 id="matrix-title">Kegiatan lapangan dan arah RPPEG</h2></div><p>Pemetaan mempertahankan satuan capaian asli. Status kontribusi akan diperkuat melalui overlay KHG, fungsi ekosistem, kelas kerusakan, dan areal prioritas.</p></div>
+      <div class="table-scroll"><table class="matrix">
+        <thead><tr><th>Kegiatan YG</th><th>Jalur RPPEG</th><th>Kontribusi yang didukung</th><th>Evidence publik</th></tr></thead>
+        <tbody>
+          <tr><td>Sekat kanal dan pembasahan kembali</td><td><span class="tag">Pengendalian</span><span class="tag">Pemulihan</span></td><td>Pemulihan fungsi hidrologis, restorasi gambut rusak, dan pengurangan risiko kebakaran.</td><td><a class="link" href="webgis.html?layers=sekat_kanal,fdrs">Peta sekat kanal &amp; FDRS →</a></td></tr>
+          <tr><td>FDRS/TMAT dan monitoring hidrologi</td><td><span class="tag">Pencegahan</span><span class="tag">Monitoring</span></td><td>Peringatan dini, pemantauan muka air tanah, dan sistem informasi pemulihan yang terukur.</td><td><a class="link" href="fire-weather.html">Karhutla &amp; cuaca →</a></td></tr>
+          <tr><td>Revegetasi geronggang dan tanaman gambut</td><td><span class="tag">Revegetasi</span><span class="tag">Pelestarian</span></td><td>Rehabilitasi lahan rusak, pemulihan tutupan, peningkatan stok karbon, dan biodiversitas.</td><td><a class="link" href="webgis.html?layers=restorasi_gambut,nursery_gambut">Peta restorasi gambut →</a></td></tr>
+          <tr><td>Kopi Liberika, nanas, dan agroforestri</td><td><span class="tag">Pemanfaatan</span><span class="tag">Revitalisasi</span></td><td>Pemanfaatan fungsi budidaya yang adaptif, pertanian tanpa bakar, dan ekonomi masyarakat.</td><td><a class="link" href="webgis.html?layers=area_kopi,kopi">Area agroforestri →</a></td></tr>
+          <tr><td>Pencegahan dan respons karhutla</td><td><span class="tag">Pencegahan</span><span class="tag">Penanggulangan</span></td><td>Kapasitas kelembagaan, pembukaan lahan ramah lingkungan, dan penurunan risiko kerusakan.</td><td><a class="link" href="fire-weather.html">Pemantauan karhutla →</a></td></tr>
+          <tr><td>KTH, KUPS, KWT, perempuan, dan pemuda</td><td><span class="tag">Revitalisasi</span><span class="tag">Adaptasi</span></td><td>Pemberdayaan ekonomi, kapasitas adaptif, partisipasi masyarakat, dan penguatan kelembagaan.</td><td><a class="link" href="community-engagement.html">Pelibatan masyarakat →</a></td></tr>
+          <tr><td>WebGIS dan monitoring lapangan</td><td><span class="tag">Data</span><span class="tag">MRV</span></td><td>Data perlindungan dan pengelolaan gambut yang terukur, terlaporkan, dapat diverifikasi, dan spasial.</td><td><a class="link" href="monitoring.html">Monitoring lapangan →</a></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="section boundary">
+      <div><span class="label">BATAS PELAPORAN</span><h2>Keselarasan program, bukan klaim luas prioritas</h2><p>Angka RPPEG menunjukkan areal indikatif kebijakan pemerintah. Yayasan Gambut hanya mengklaim lokasi dan capaian yang mempunyai evidence program. Hubungan suatu lokasi YG dengan KHG, fungsi lindung/budidaya, tingkat kerusakan, atau kelas prioritas harus dibuktikan melalui overlay spasial.</p></div><strong>STATUS: PEMETAAN KEBIJAKAN</strong>
+    </section>
+
+    <section class="section" aria-labelledby="document-title">
+      <div class="heading"><div><span class="label">DOKUMEN ACUAN</span><h2 id="document-title">Sumber kebijakan dan landasan hukum</h2></div><p>Dokumen utama tersimpan pada Google Drive YG; landasan hukum tersedia melalui basis peraturan resmi.</p></div>
+      <div class="documents">
+        <a class="document" href="https://drive.google.com/file/d/1RTs97A7MtuR0iDjMT2Yu24flKU_0hQq2/view?usp=sharing" target="_blank" rel="noopener"><span>GOOGLE DRIVE · DOKUMEN UTAMA</span><strong>RPPEG Provinsi Riau 2021–2050</strong><small>Buka dokumen lengkap ↗</small></a>
+        <a class="document" href="https://peraturan.bpk.go.id/Download/27762/PP%20Nomor%2057%20Tahun%202016.pdf" target="_blank" rel="noopener"><span>PERATURAN PEMERINTAH</span><strong>PP 71/2014 jo. PP 57/2016</strong><small>Perlindungan dan Pengelolaan Ekosistem Gambut ↗</small></a>
+        <a class="document" href="https://ppid.riau.go.id/berita/3090/gubernur-riau-bertemu-kepala-brgm-ri--ini-yang-disampaikan" target="_blank" rel="noopener"><span>PPID PROVINSI RIAU</span><strong>Penetapan RPPEG Riau</strong><small>Konfirmasi Kepgub No. 803/IV/2022 ↗</small></a>
+      </div>
+    </section>
+  </main>
+  <script src="js/navigation-v2.js?v=20260807-mobile-menu-fix2"></script>
+  <script src="js/pwa.js?v=20260809-rppeg1"></script>
+</body>
+</html>
