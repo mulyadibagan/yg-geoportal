@@ -574,6 +574,182 @@
     "Kesatuan Hidrologis Gambut (KHG) Riau — referensi lokal": "Riau Peat Hydrological Units (KHG) — local reference",
     "Fungsi Ekosistem Gambut Riau — referensi KLHK": "Riau Peat Ecosystem Functions — MoEF reference"
   });
+  Object.assign(dictionaries.en, {
+    "Beranda": "Home",
+    "Peta Interaktif": "Interactive Map",
+    "Informasi Ekosistem": "Ecosystem Information",
+    "Laporkan Temuan": "Submit a Report",
+    "Dashboard Monitoring": "Monitoring Dashboard",
+    "Pesisir & Mangrove": "Coasts & Mangroves",
+    "Pilih ekosistem": "Choose an ecosystem",
+    "Lihat di peta": "View on map",
+    "taksa/jenis terdokumentasi": "documented taxa/species",
+    "Hutan pasang surut, zona pesisir, sungai, dan perairan sekitarnya.": "Tidal forests, coastal zones, rivers, and surrounding waters.",
+    "Hutan rawa gambut, area restorasi, dan agroforestri ramah gambut.": "Peat-swamp forests, restoration areas, and peat-friendly agroforestry.",
+    "Hutan daratan, riparian, agroforestri, dan lanskap perdesaan.": "Terrestrial and riparian forests, agroforestry, and rural landscapes.",
+    "Lihat flora dan fauna mangrove →": "View mangrove flora and fauna →",
+    "Halaman detail akan tersedia setelah data terverifikasi": "The detail page will be available after the data is verified",
+    "Cara membaca data": "How to read the data",
+    "Kembali ke WebGIS": "Return to WebGIS",
+    "EKOSISTEM MANGROVE": "MANGROVE ECOSYSTEM",
+    "Flora dan fauna mangrove": "Mangrove flora and fauna",
+    "Cari jenis": "Search species",
+    "Semua lokasi": "All locations",
+    "Semua status": "All statuses",
+    "Sumber bukti": "Evidence source",
+    "Semua sumber": "All sources",
+    "Belum tercantum": "Not listed",
+    "Tutup detail": "Close details",
+    "Pemantauan Pesisir & Mangrove": "Coastal & Mangrove Monitoring",
+    "Status data": "Data status",
+    "Arah di pantai desa": "Direction at the village coast",
+    "Risiko lokasi": "Site risk",
+    "Lihat semua lokasi YG": "View all YG locations",
+    "LOKASI TERPILIH": "SELECTED LOCATION",
+    "PRAKIRAAN 72 JAM · SEMUA WAKTU WIB": "72-HOUR FORECAST · ALL TIMES WIB",
+    "Pemantauan Karhutla & Cuaca": "Wildfire & Weather Monitoring",
+    "Pemantauan Karhutla & Cuaca Indonesia": "Indonesia Wildfire & Weather Monitoring",
+    "Hari ini · data parsial": "Today · partial data",
+    "Layer peta": "Map layers",
+    "Desa intervensi & risiko": "Programme villages & risk",
+    "Lihat Indonesia": "View Indonesia",
+    "PERINGATAN DESA": "VILLAGE ALERTS",
+    "Kontribusi Yayasan Gambut terhadap FOLU Net Sink 2030": "Yayasan Gambut Contribution to FOLU Net Sink 2030",
+    "TARGET NASIONAL 2030": "2030 NATIONAL TARGET",
+    "Angka nasional; bukan target organisasi Yayasan Gambut.": "National figure; not a Yayasan Gambut organisational target.",
+    "Buka dokumen ↗": "Open document ↗",
+    "lokasi/lanskap": "locations/landscapes",
+    "mangrove tertanam": "mangroves planted",
+    "infrastruktur pembasahan gambut": "peat rewetting infrastructure",
+    "pemantauan hidrologi dan risiko": "hydrology and risk monitoring",
+    "CAPAIAN TERVERIFIKASI": "VERIFIED RESULTS",
+    "Kontribusi Yayasan Gambut terhadap KKMD Riau": "Yayasan Gambut Contribution to Riau KKMD",
+    "Buka SK KKMD Riau": "Open the Riau KKMD Decree",
+    "Buka SK Rencana Aksi": "Open the Action Plan Decree",
+    "komitmen utama YG": "YG core commitments",
+    "Pembaruan data": "Data update",
+    "KOMITMEN UTAMA": "CORE COMMITMENTS",
+    "Target dan realisasi YG": "YG targets and delivery",
+    "Rehabilitasi mangrove": "Mangrove rehabilitation",
+    "Lihat bukti WebGIS →": "View WebGIS evidence →",
+    "NDC Indonesia dan kontribusi Yayasan Gambut": "Indonesia NDC and Yayasan Gambut Contribution",
+    "TARGET NASIONAL": "NATIONAL TARGET",
+    "Dua periode kebijakan yang saling berlanjut": "Two consecutive policy periods",
+    "Target tingkat emisi absolut": "Absolute emissions-level target",
+    "Hutan, gambut, mangrove, dan penggunaan lahan": "Forests, peatlands, mangroves, and land use",
+    "Buka 12 RO nasional dan pemetaan YG": "View the 12 national outputs and YG mapping",
+    "Lokasi dan capaian YG": "YG locations and results",
+    "Buka layer kontribusi di peta": "Open contribution layers on the map",
+    "Dari kegiatan lapangan ke sasaran NDC": "From field activities to NDC objectives",
+    "Evidence publik": "Public evidence",
+    "Perlindungan dan pengelolaan ekosistem gambut": "Peat ecosystem protection and management",
+    "Penyusunan, penetapan, dan perubahan RPPEG": "Preparation, adoption, and amendment of RPPEG",
+    "POSISI KEBIJAKAN": "POLICY POSITION",
+    "KEBIJAKAN GAMBUT": "PEATLAND POLICY",
+    "Kontribusi Yayasan Gambut": "Yayasan Gambut Contribution",
+    "Lokasi, capaian, monitoring, dan bukti kegiatan": "Locations, results, monitoring, and activity evidence",
+    "Empat kelompok rencana utama": "Four main plan groups",
+    "Rincian capaian program": "Programme results details",
+    "BASELINE DAN PEMBARUAN DATA": "BASELINE AND DATA UPDATES",
+    "Perubahan capaian program": "Changes in programme results",
+    "Memuat snapshot dashboard terakhir...": "Loading the latest dashboard snapshot...",
+    "Pilih program": "Choose a programme",
+    "Lahan Mineral": "Mineral Land",
+    "Pelibatan & Kapasitas": "Engagement & Capacity Building",
+    "Memuat rincian...": "Loading details...",
+    "Cara membaca perbandingan": "How to read the comparison",
+    "Data terkini": "Current data",
+    "Data terverifikasi yang telah dimuat": "Verified data that has been loaded",
+    "Total area restorasi": "Total restoration area",
+    "Buka data sumber": "Open source data",
+    "Kembali ke dashboard": "Return to dashboard",
+    "Profil mitra pendanaan": "Funding partner profile",
+    "Memuat profil donor...": "Loading donor profile...",
+    "FOKUS PROGRAM": "PROGRAMME FOCUS",
+    "Grafik Capaian Program": "Programme Results Chart",
+    "Pohon mangrove ditanam": "Mangrove trees planted",
+    "Desa program": "Programme villages",
+    "Peserta kegiatan": "Activity participants",
+    "Program Berjalan": "Ongoing Programmes",
+    "Judul belum diisi": "Title not provided",
+    "Keterangan program belum diisi.": "Programme description not provided.",
+    "INPUT BERTAHAP": "PHASED INPUT",
+    "Tambah program atau timeline": "Add a programme or timeline",
+    "Jenis entri": "Entry type",
+    "Program berjalan": "Ongoing programme",
+    "Judul": "Title",
+    "Periode/tahun": "Period/year",
+    "Ringkasan": "Summary",
+    "Simpan draf": "Save draft",
+    "Ekspor JSON": "Export JSON",
+    "DATA KEGIATAN TERVERIFIKASI": "VERIFIED ACTIVITY DATA",
+    "RINGKASAN CAPAIAN": "RESULTS SUMMARY",
+    "Data partisipasi masyarakat": "Community participation data",
+    "Kegiatan tercatat": "Recorded activities",
+    "Cari kegiatan": "Search activities",
+    "Data pelatihan dan pembelajaran": "Training and learning data",
+    "Kelola evaluasi pelatihan pada halaman terpisah.": "Manage training evaluations on a separate page.",
+    "Buka detail post-test →": "Open post-test details →",
+    "DATA & DAMPAK": "DATA & IMPACT",
+    "Capaian kuantitatif akan updated dari data program dan evidence yang telah diverifikasi.": "Quantitative results will be updated from verified programme data and evidence."
+  });
+  Object.assign(dictionaries.en, {
+    "Belum dicantumkan dalam laporan": "Not listed in the report",
+    "Nama ilmiah belum dicantumkan": "Scientific name not listed",
+    "Sumber utama temuan lokasi adalah Final Baseline Mangrove 2024, berdasarkan assessment Juni–September 2024 di Buruk Bakul dan Kelapa Pati. Nama dan status dapat diperiksa silang melalui IUCN Red List, GBIF, publikasi BRIN, dan sumber pemerintah. Catatan yang belum lengkap tetap ditandai untuk verifikasi.": "The primary source for site records is the 2024 Final Mangrove Baseline, based on the June–September 2024 assessment in Buruk Bakul and Kelapa Pati. Names and statuses may be cross-checked against the IUCN Red List, GBIF, BRIN publications, and government sources. Incomplete records remain flagged for verification.",
+    "Persentase perubahan dihitung dengan rumus (data terkini − baseline) ÷ baseline × 100%. Penambahan data menunjukkan perubahan inventaris capaian yang terverifikasi; tidak selalu berarti perubahan ekologis pada periode yang sama.": "Percentage change is calculated as (current data − baseline) ÷ baseline × 100%. Added records indicate changes in the verified results inventory and do not necessarily represent ecological change during the same period.",
+    "Ringkasan partisipasi masyarakat, kelompok yang terlibat, lokasi, mitra, dan bukti keterlibatan dalam kegiatan lapangan Yayasan Gambut.": "Summary of community participation, groups involved, locations, partners, and evidence of engagement in Yayasan Gambut field activities.",
+    "Ringkasan pelatihan, peserta, kelompok sasaran, materi, mitra, hasil evaluasi, dan bukti pembelajaran Yayasan Gambut.": "Summary of training, participants, target groups, materials, partners, evaluation results, and evidence of Yayasan Gambut learning activities.",
+    "Tambah Pelatihan": "Add Training",
+    "Kontribusi terhadap SDGs": "Contribution to the SDGs",
+    "Kontribusi Yayasan Gambut terhadap RAD Kabupaten Bengkalis Lestari": "Yayasan Gambut Contribution to the Bengkalis Lestari Regional Action Plan",
+    "Pemetaan posisi, evidence, dan kontribusi program Yayasan Gambut terhadap Peraturan Bupati Bengkalis Nomor 13 Tahun 2026 dan lampiran rencana aksinya.": "Mapping the position, evidence, and contribution of Yayasan Gambut programmes to Bengkalis Regent Regulation No. 13 of 2026 and its action-plan annex.",
+    "POSISI KONTRIBUSI": "CONTRIBUTION POSITION",
+    "KONTRIBUSI TERVERIFIKASI": "VERIFIED CONTRIBUTION",
+    "KONTRIBUSI PENDUKUNG": "SUPPORTING CONTRIBUTION",
+    "Relevan, tetapi belum membuktikan capaian aksi.": "Relevant, but does not yet demonstrate delivery of the action.",
+    "BELUM DIPETAKAN": "NOT YET MAPPED",
+    "Belum ada evidence YG yang sesuai.": "No matching YG evidence is available yet.",
+    "Cari aksi": "Search actions",
+    "Prioritas pemantauan": "Monitoring priority",
+    "Cara membaca": "How to read",
+    "Data model ±2.500 kaki belum tersedia dan tidak ditampilkan.": "Model data at approximately 2,500 feet is unavailable and is not displayed.",
+    "KERANGKA NASIONAL · KONTRIBUSI TAPAK RIAU": "NATIONAL FRAMEWORK · RIAU FIELD CONTRIBUTION",
+    "Buka spreadsheet ↗": "Open spreadsheet ↗",
+    "memiliki kontribusi terdokumentasi": "have documented contributions",
+    "Kontribusi tapak, bukan klaim karbon": "Field contribution, not a carbon claim",
+    "CAPAIAN TERPETAKAN": "MAPPED RESULTS",
+    "Seluruh RO nasional tetap ditampilkan, termasuk yang belum mempunyai kontribusi YG. Buka setiap kartu untuk melihat fokus nasional, arah kegiatan, posisi evidence YG, serta dokumen acuannya.": "All national outputs remain displayed, including those without a YG contribution. Open each card to view the national focus, activity direction, YG evidence position, and reference documents.",
+    "ada kontribusi YG": "YG contribution available",
+    "kontribusi terpetakan": "mapped contributions",
+    "Yayasan Gambut sebagai pelaksana kontribusi": "Yayasan Gambut as a contribution implementer",
+    "Wilayah kontribusi": "Contribution area",
+    "Semua isu": "All issues",
+    "Status kontribusi": "Contribution status",
+    "Belum terpetakan": "Not yet mapped",
+    "KOMITMEN IKLIM NASIONAL · KONTRIBUSI TAPAK RIAU": "NATIONAL CLIMATE COMMITMENT · RIAU FIELD CONTRIBUTION",
+    "MATRIKS KONTRIBUSI YG": "YG CONTRIBUTION MATRIX",
+    "Kontribusi kegiatan, bukan klaim karbon": "Activity contribution, not a carbon claim",
+    "STATUS: PEMETAAN KONTRIBUSI": "STATUS: CONTRIBUTION MAPPING",
+    "Buka dokumen resmi ↗": "Open official document ↗",
+    "NASIONAL → PROVINSI → KONTRIBUSI TAPAK": "NATIONAL → PROVINCIAL → FIELD CONTRIBUTION",
+    "Muatan RPPEG Nasional": "National RPPEG content",
+    "Penjabaran dalam RPPEG Riau": "Translation into the Riau RPPEG",
+    "Evidence kontribusi YG": "YG contribution evidence",
+    "Kegiatan YG": "YG activities",
+    "Jalur RPPEG": "RPPEG pathway",
+    "Kontribusi yang didukung": "Supported contribution",
+    "Buka dokumen lengkap ↗": "Open full document ↗",
+    "KERANGKA KONTRIBUSI": "CONTRIBUTION FRAMEWORK",
+    "Kontribusi mitigasi dan adaptasi YG": "YG mitigation and adaptation contribution",
+    "Alur kontribusi nasional": "National contribution pathway",
+    "Buka target, sektor, matriks kontribusi, dan evidence →": "View targets, sectors, contribution matrix, and evidence →",
+    "Buka 12 RO nasional dan peta kontribusi →": "View the 12 national outputs and contribution map →",
+    "Buka hierarki, prioritas wilayah, dan matriks kontribusi →": "View the hierarchy, area priorities, and contribution matrix →",
+    "Buka keselarasan KKMD Riau →": "View alignment with Riau KKMD →",
+    "Kebijakan tematik dan wilayah": "Thematic and territorial policies",
+    "Batas klaim": "Claim boundary"
+  });
   if (dictionaries.en) dictionaries.en["Cetak Peta"] = "Print Map";
   const reverse = Object.fromEntries(
     Object.entries(dictionaries.en).map(([id, en]) => [en, id])
@@ -623,6 +799,8 @@
         .replace(/^(\d{4})[–-]Sekarang$/, "$1–Present")
         .replace(/^(\d+)\s+desa\s*\u00b7\s*lihat ringkasan program$/, "$1 villages · view programme summary")
         .replace(/^Pematang Duku\s*\u00b7\s*lihat ringkasan program$/, "Pematang Duku · view programme summary")
+        .replace(/^(.+?)\s*\u00b7\s*lihat ringkasan program$/, "$1 · view programme summary")
+        .replace(/^Fase (\d+) · Judul belum diisi$/, "Phase $1 · Title not provided")
         .replace(/^(\d+)\s+program$/, (_, count) => count + (count === "1" ? " programme" : " programmes"))
         .replace(/^(\d[\d.]*)\s+pohon$/, "$1 trees")
         .replace(/^Target\s+(\d[\d.]*)\s+pohon$/, "Target: $1 trees")
@@ -640,6 +818,14 @@
         .replace(/^Buka informasi (.+)$/, "Open information for $1")
         .replace(/^Tampilkan ((?:Foto|Photo) .+)$/, (_, label) => "Show " + label.replace(/^Foto/, "Photo"))
         .replace(/^Foto (\d+)$/, "Photo $1")
+        .replace(/^(\d+) dari (\d+) (.+) ditampilkan$/, "$1 of $2 $3 displayed")
+        .replace(/^Lokasi:\s*/, "Location: ")
+        .replace(/^(\d+) lokasi$/, "$1 locations")
+        .replace(/^(\d+)% capaian$/, "$1% achieved")
+        .replace(/^Aktif · (\d+) program$/, "Active · $1 programme")
+        .replace(/^Belum ada evidence terverifikasi$/, "No verified evidence yet")
+        .replace(/^Data dashboard tersimpan:\s*/, "Dashboard data saved: ")
+        .replace(/^Target (\d[\d.,]*) meter$/, "Target: $1 metres")
         .replace(/^(\d+) hari$/, "$1 days")
         .replace(/^(\d+) titik$/, "$1 hotspots")
         .replace(/^Kehilangan tutupan hutan 10 tahun terbaru \((.+)\)$/, "Tree-cover loss over the latest 10 years ($1)")
@@ -724,12 +910,26 @@
     }));
   }
 
+  function ensureLanguageSwitcher() {
+    if (document.querySelector("[data-lang]")) return;
+    const style = document.createElement("style");
+    style.textContent = ".yg-global-language-switcher{position:fixed;top:14px;right:14px;z-index:10000;display:inline-flex;gap:3px;padding:4px;border:1px solid rgba(7,107,76,.2);border-radius:999px;background:rgba(242,248,245,.96);box-shadow:0 8px 24px rgba(17,61,47,.14);backdrop-filter:blur(8px)}.yg-global-language-switcher button{min-width:38px;padding:7px 10px;border:0;border-radius:999px;background:transparent;color:#36534a;font:800 12px/1 inherit;cursor:pointer}.yg-global-language-switcher button.active{background:#087d59;color:#fff}@media(max-width:700px){.yg-global-language-switcher{top:8px;right:8px}}";
+    document.head.appendChild(style);
+    const switcher = document.createElement("div");
+    switcher.className = "yg-global-language-switcher";
+    switcher.setAttribute("role", "group");
+    switcher.setAttribute("aria-label", "Pilihan bahasa / Language selection");
+    switcher.innerHTML = '<button type="button" data-lang="id" aria-pressed="false">ID</button><button type="button" data-lang="en" aria-pressed="false">EN</button>';
+    document.body.appendChild(switcher);
+  }
+
   document.addEventListener("click", event => {
     const button = event.target.closest("[data-lang]");
     if (button) setLanguage(button.dataset.lang);
   });
 
   document.addEventListener("DOMContentLoaded", () => {
+    ensureLanguageSwitcher();
     setLanguage(currentLanguage);
     new MutationObserver(mutations => {
       if (translating) return;
