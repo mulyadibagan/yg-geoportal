@@ -48,11 +48,11 @@
           <label><input type="checkbox" data-layer="smoke"> Poligon potensi sebaran asap</label>
           <label><input type="checkbox" data-layer="rain"> Hujan saat ini (radar)</label>
           <p class="control-note" id="rain-status">Aktifkan layer untuk melihat citra radar hujan terbaru.</p>
-          <label><input type="checkbox" data-layer="wind" checked> Arah gerak & kecepatan angin 2.500 kaki</label>
+          <label><input type="checkbox" data-layer="wind" checked> Arah gerak GFS & kecepatan angin 2.500 kaki</label>
           <label><input type="checkbox" data-layer="fdrs" checked> FDRS / tinggi muka air</label>
           <label><input type="checkbox" data-layer="canals" checked> Sekat kanal</label>
         </div>
-        <div class="fw-control-group fw-wind-level"><h2>Ketinggian angin</h2><p class="fw-static-value">925 hPa (sekitar 2.500 kaki)</p><p class="control-note">Panah menunjukkan arah perjalanan udara/asap, bukan arah asal angin.</p></div>
+        <div class="fw-control-group fw-wind-level"><h2>Ketinggian angin</h2><p class="fw-static-value">GFS 925 hPa (sekitar 2.500 kaki)</p><p class="control-note">Panah menunjukkan arah perjalanan udara/asap dan diperbarui otomatis mengikuti siklus GFS.</p></div>
         <div class="fw-zoom-actions"><button class="fw-primary" id="zoom-id" type="button">Lihat Indonesia</button><button class="fw-secondary" id="zoom-yg" type="button">Zoom ke wilayah YG</button></div>
         <div class="fw-legend"><h2>Legenda</h2><span><i class="hotspot-dot"></i>Hotspot confidence tinggi</span><span><i class="smoke-low"></i>Asap: rendah (0–24)</span><span><i class="smoke-watch"></i>Asap: waspada (25–49)</span><span><i class="smoke-high"></i>Asap: tinggi (50–74)</span><span><i class="smoke-very-high"></i>Asap: sangat tinggi (75–100)</span><span><i class="legend-infrastructure fdrs">F</i>FDRS / tinggi muka air</span><span><i class="legend-infrastructure canal">S</i>Sekat kanal</span><span><i class="risk-zero"></i>Desa: nihil</span><span><i class="risk-low"></i>Desa: 1–2 titik</span><span><i class="risk-medium"></i>Desa: 3–5 titik</span><span><i class="risk-high"></i>Desa: &gt;5 titik</span></div>
       </aside>
@@ -62,7 +62,7 @@
         <div class="fw-disclaimer"><strong>Cara membaca</strong><p>Kontur terbentuk dari kepadatan lintasan partikel selama 24 jam menggunakan angin 925 hPa. Kontur yang bersentuhan digabungkan. Zona ini bukan batas asap teramati dan bukan pengganti pengukuran kualitas udara.</p></div>
       </aside>
     </section>
-    <section class="fw-sources"><strong>Sumber:</strong> NASA FIRMS NRT (MODIS dan VIIRS) untuk hotspot dan FRP; Open-Meteo untuk angin 925 hPa serta hujan; CAMS Global/Open-Meteo untuk AOD 550 nm; RainViewer untuk radar hujan; NASA GIBS untuk citra MODIS; serta data lapangan YG. Kontur merupakan model lintasan indikatif 24 jam, bukan pengamatan asap atau kualitas udara permukaan.</section>
+    <section class="fw-sources"><strong>Sumber:</strong> NASA FIRMS NRT (MODIS dan VIIRS) untuk hotspot dan FRP; GFS/Open-Meteo untuk angin 925 hPa serta hujan; CAMS Global/Open-Meteo untuk AOD 550 nm; RainViewer untuk radar hujan; NASA GIBS untuk citra MODIS; serta data lapangan YG. Skor memakai kepadatan absolut lintasan, bukan normalisasi terhadap nilai maksimum harian. Kontur tetap merupakan model indikatif, bukan pengamatan asap atau kualitas udara permukaan.</section>
   </main>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
   <script src="https://cdn.jsdelivr.net/npm/@turf/turf@7/turf.min.js"></script>
