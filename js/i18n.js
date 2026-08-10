@@ -769,6 +769,11 @@
     "Potensi sebaran asap": "Smoke dispersion potential",
     "Aktifkan layer untuk menjalankan model indikatif 24 jam.": "Enable the layer to run the indicative 24-hour model.",
     "Poligon berwarna menunjukkan arah potensi sebaran dari hotspot mengikuti angin. Zona ini bukan batas asap teramati dan bukan pengganti pengukuran kualitas udara.": "Coloured polygons show the potential dispersion direction from hotspots following the wind. These zones are not observed smoke boundaries or a substitute for air-quality measurements."
+    ,"Lapisan rendah ±2.500 kaki": "Low level ±2,500 feet"
+    ,"Arah gerak & kecepatan angin 2.500 kaki": "Travel direction & 2,500-foot wind speed"
+    ,"925 hPa (sekitar 2.500 kaki)": "925 hPa (about 2,500 feet)"
+    ,"Panah menunjukkan arah perjalanan udara/asap, bukan arah asal angin.": "Arrows show the direction air/smoke travels, not where the wind comes from."
+    ,"Kontur terbentuk dari kepadatan lintasan partikel selama 24 jam menggunakan angin 925 hPa. Kontur yang bersentuhan digabungkan. Zona ini bukan batas asap teramati dan bukan pengganti pengukuran kualitas udara.": "Contours are formed from 24-hour particle-trajectory density using 925 hPa winds. Touching contours are merged. These zones are not observed smoke boundaries or a substitute for air-quality measurements."
   });
   if (dictionaries.en) dictionaries.en["Cetak Peta"] = "Print Map";
   const reverse = Object.fromEntries(
