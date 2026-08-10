@@ -750,6 +750,16 @@
     "Kebijakan tematik dan wilayah": "Thematic and territorial policies",
     "Batas klaim": "Claim boundary"
   });
+  Object.assign(dictionaries.en, {
+    "Tanggal terbaru": "Latest data date",
+    "24 jam bergulir": "Rolling 24 hours",
+    "Near real-time · high confidence": "Near real-time · high confidence",
+    "Peringatan · data FIRMS parsial": "Warning · partial FIRMS data",
+    "Peringatan · data FIRMS terlambat": "Warning · delayed FIRMS data",
+    "Arsip harian": "Daily archive",
+    "Periksa koneksi atau pembaruan FIRMS": "Check the connection or FIRMS update",
+    "Data hotspot gagal dimuat": "Hotspot data failed to load"
+  });
   if (dictionaries.en) dictionaries.en["Cetak Peta"] = "Print Map";
   const reverse = Object.fromEntries(
     Object.entries(dictionaries.en).map(([id, en]) => [en, id])
@@ -828,6 +838,11 @@
         .replace(/^Target (\d[\d.,]*) meter$/, "Target: $1 metres")
         .replace(/^(\d+) hari$/, "$1 days")
         .replace(/^(\d+) titik$/, "$1 hotspots")
+        .replace(/^(\d+) titik daratan high confidence · 24 jam bergulir$/, "$1 high-confidence land hotspots · rolling 24 hours")
+        .replace(/^(\d+) titik daratan high confidence · tanggal data terbaru$/, "$1 high-confidence land hotspots · latest data date")
+        .replace(/^(\d+) titik daratan high confidence · (\d+) hari$/, "$1 high-confidence land hotspots · $2 days")
+        .replace(/ · PERINGATAN: sumber parsial$/, " · WARNING: partial source data")
+        .replace(/ · pembaruan tiap jam$/, " · updated hourly")
         .replace(/^Kehilangan tutupan hutan 10 tahun terbaru \((.+)\)$/, "Tree-cover loss over the latest 10 years ($1)")
         .replace(/\bBelum diisi\b/g, "Not provided")
         .replace(/\bSekarang\b/g, "Present");

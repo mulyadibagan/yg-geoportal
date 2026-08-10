@@ -39,7 +39,7 @@
     </section>
     <section class="fw-workspace">
       <aside class="fw-controls" aria-label="Kontrol peta">
-        <div class="fw-control-group"><h2>Waktu hotspot</h2><div class="segmented" id="period-control"><button data-period="latest">Terbaru</button><button data-period="1">24 jam</button><button data-period="7">7 hari</button><button class="active" data-period="30">30 hari</button></div><p class="control-note" id="period-note">Marker mencakup seluruh Indonesia; kartu dan prioritas hanya desa intervensi YG.</p></div>
+        <div class="fw-control-group"><h2>Waktu hotspot</h2><div class="segmented" id="period-control"><button data-period="latest">Tanggal terbaru</button><button data-period="1">24 jam bergulir</button><button data-period="7">7 hari</button><button class="active" data-period="30">30 hari</button></div><p class="control-note" id="period-note">Marker mencakup seluruh Indonesia; hanya confidence tinggi. Kartu prioritas khusus desa intervensi YG.</p></div>
         <div class="fw-control-group"><h2>Layer peta</h2>
           <label><input type="checkbox" data-layer="hotspots" checked> Hotspot interaktif confidence tinggi</label>
           <label><input type="checkbox" data-layer="satellite"> Citra satelit MODIS</label>
@@ -58,10 +58,10 @@
         <div class="fw-disclaimer"><strong>Cara membaca</strong><p>Hanya hotspot berkeyakinan tinggi yang digunakan untuk prioritas pemantauan. Hotspot tetap merupakan indikasi anomali panas satelit, bukan kepastian kebakaran. Indikasi kabut asap dibaca dengan membandingkan citra satelit, kelompok hotspot, dan arah angin.</p></div>
       </aside>
     </section>
-    <section class="fw-sources"><strong>Sumber:</strong> NASA FIRMS/VIIRS high confidence untuk titik hotspot interaktif; citra MODIS NASA GIBS; Open-Meteo; RainViewer; data lapangan YG untuk FDRS, sekat kanal, dan desa intervensi. Waktu pembaruan selalu ditampilkan untuk mencegah data lama dibaca sebagai kondisi langsung.</section>
+    <section class="fw-sources"><strong>Sumber:</strong> NASA FIRMS NRT (MODIS dan VIIRS) high confidence untuk titik hotspot interaktif; citra MODIS NASA GIBS; Open-Meteo; RainViewer; data lapangan YG untuk FDRS, sekat kanal, dan desa intervensi. Data FIRMS bersifat near real-time dan dapat terlambat mengikuti lintasan serta pemrosesan satelit. Waktu pembaruan dan peringatan data parsial selalu ditampilkan.</section>
   </main>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-  <script src="js/i18n.js?v=20260810-global-public1"></script>
-  <script src="js/fire-weather.js?v=20260806-land-hotspots2"></script>
+  <script src="js/i18n.js?v=20260810-realtime-firms1"></script>
+  <script src="js/fire-weather.js?v=20260810-realtime-firms1"></script>
 </body>
 </html>
