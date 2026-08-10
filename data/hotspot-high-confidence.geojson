@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "generatedAt": "2026-08-10T11:59:26.995Z",
+  "generatedAt": "2026-08-10T13:44:57.604Z",
   "periodDays": 30,
   "confidenceFilter": "high",
   "sourceStatus": "complete",
@@ -45731,6 +45731,206 @@
         "brightness": 344.39,
         "frp": 48.16,
         "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.7942,
+          -3.29115
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-10",
+        "acq_time": "1223",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 313.53,
+        "frp": 13.02,
+        "daynight": "N",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.80629,
+          -3.24349
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-10",
+        "acq_time": "1223",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 317.15,
+        "frp": 15.66,
+        "daynight": "N",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          127.4368,
+          -1.46162
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-10",
+        "acq_time": "1223",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 317.08,
+        "frp": 17.81,
+        "daynight": "N",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          116.38331,
+          -0.45487
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-10",
+        "acq_time": "1223",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 311.51,
+        "frp": 51.59,
+        "daynight": "N",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          127.63108,
+          1.48933
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-10",
+        "acq_time": "1223",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 313.04,
+        "frp": 16.15,
+        "daynight": "N",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          127.63021,
+          1.49936
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-10",
+        "acq_time": "1223",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 329,
+        "frp": 39.79,
+        "daynight": "N",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          116.63228,
+          0.1579
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-10",
+        "acq_time": "1225",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 318.87,
+        "frp": 79.92,
+        "daynight": "N",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          116.62667,
+          0.15863
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-10",
+        "acq_time": "1225",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 313.98,
+        "frp": 58.12,
+        "daynight": "N",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          116.65352,
+          0.16255
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-10",
+        "acq_time": "1225",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 313.16,
+        "frp": 54.86,
+        "daynight": "N",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          124.86013,
+          6.02114
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-10",
+        "acq_time": "1227",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 311.06,
+        "frp": 10.97,
+        "daynight": "N",
         "type": null
       }
     },
