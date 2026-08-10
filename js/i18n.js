@@ -492,6 +492,88 @@
     },
     id: {}
   };
+  Object.assign(dictionaries.en, {
+    "Kembali ke dashboard utama": "Return to the main dashboard",
+    "Pilihan bahasa / Language selection": "Language selection",
+    "Satelit": "Satellite",
+    "Area Restorasi Lahan Mineral": "Mineral Land Restoration Areas",
+    "Titik Penanaman": "Planting Points",
+    "Wilayah Penanaman Kopi": "Coffee Cultivation Areas",
+    "Perhutanan Sosial Riau": "Riau Social Forestry",
+    "Batas Administrasi Desa Riau": "Riau Village Administrative Boundaries",
+    "IUPHHK-HT 2014": "Timber Plantation Concessions 2014",
+    "Fase/keterangan": "Phase/notes",
+    "Jumlah bibit": "Number of seedlings",
+    "Jenis pohon": "Tree species",
+    "Riwayat penanaman": "Planting history",
+    "Status koordinat": "Coordinate status",
+    "Pemilik lahan": "Landowner",
+    "Tumpang sari": "Intercropping",
+    "Proyek": "Project",
+    "Kode proyek": "Project code",
+    "Belum diisi": "Not provided",
+    "Belum ada informasi rinci.": "No detailed information is available.",
+    "Kontribusi SDGs": "SDG contribution",
+    "Kirim Monitoring Lagi": "Submit Another Monitoring Record",
+    "Lihat Jenis Flora Mangrove": "View Mangrove Flora Species",
+    "Objek WebGIS": "WebGIS object",
+    "Lokasi Anda": "Your location",
+    "Galeri foto": "Photo gallery",
+    "Perbesar foto": "Enlarge photo",
+    "Foto tidak dapat dimuat. Tekan untuk membuka sumber asli.": "The photo could not be loaded. Select it to open the original source.",
+    "Foto sebelumnya": "Previous photo",
+    "Foto berikutnya": "Next photo",
+    "Foto dokumentasi": "Documentation photo",
+    "Pembaruan terverifikasi": "Verified update",
+    "Catatan pembaruan": "Update notes",
+    "Luas": "Area",
+    "Fase": "Phase",
+    "Sumber": "Source",
+    "Status": "Status",
+    "Koordinat": "Coordinates",
+    "Jumlah": "Count",
+    "Keterangan": "Notes",
+    "Program": "Programme",
+    "Nama donor": "Donor name",
+    "Jenis": "Type",
+    "Panjang": "Length",
+    "Jumlah pohon": "Number of trees",
+    "Tanggal kegiatan": "Activity date",
+    "Nama kelompok": "Group name",
+    "Mitra": "Partner",
+    "Topik": "Topic",
+    "Peserta laki-laki": "Male participants",
+    "Peserta perempuan": "Female participants",
+    "Pemantauan lingkungan": "Environmental monitoring",
+    "PEMANTAUAN LINGKUNGAN": "ENVIRONMENTAL MONITORING",
+    "Hotspot NASA MODIS–VIIRS (30 hari)": "NASA MODIS–VIIRS hotspots (30 days)",
+    "Tutupan lahan Indonesia 2017": "Indonesia land cover 2017",
+    "Kehilangan tutupan": "Tree-cover loss",
+    "Alert perubahan terbaru": "Latest change alerts",
+    "Belum dihitung": "Not calculated",
+    "Perhutanan sosial": "Social forestry",
+    "Desa intervensi": "Programme village",
+    "Data belum tersedia": "Data unavailable",
+    "Hutan produksi": "Production forest",
+    "Hutan lindung": "Protection forest",
+    "Kawasan konservasi": "Conservation area",
+    "Total kawasan hutan": "Total forest estate",
+    "Gambut": "Peatland",
+    "Lahan gambut": "Peatland",
+    "Luas areal": "Area size",
+    "Tutupan baseline": "Baseline forest cover",
+    "Tutupan areal": "Area forest cover",
+    "Kehilangan total": "Total loss",
+    "Hotspot 7 hari": "Hotspots in 7 days",
+    "Hotspot 30 hari": "Hotspots in 30 days",
+    "Sedang diproses": "Processing",
+    "Lihat layer": "View layer",
+    "Ringkasan hotspot": "Hotspot summary",
+    "Total hotspot per tahun": "Total hotspots by year",
+    "30 hari terakhir": "Last 30 days",
+    "Kesatuan Hidrologis Gambut (KHG) Riau — referensi lokal": "Riau Peat Hydrological Units (KHG) — local reference",
+    "Fungsi Ekosistem Gambut Riau — referensi KLHK": "Riau Peat Ecosystem Functions — MoEF reference"
+  });
   if (dictionaries.en) dictionaries.en["Cetak Peta"] = "Print Map";
   const reverse = Object.fromEntries(
     Object.entries(dictionaries.en).map(([id, en]) => [en, id])
@@ -515,6 +597,12 @@
 
   let currentLanguage = readStoredLanguage() === "en" ? "en" : "id";
   let translating = false;
+  const originalText = new WeakMap();
+  const originalAttributes = new WeakMap();
+
+  function locale() {
+    return currentLanguage === "en" ? "en-US" : "id-ID";
+  }
 
   function translateDynamic(text, language) {
     if (language === "en") {
@@ -522,7 +610,7 @@
         .replace(/^Sumber: Master Database/, "Source: Master Database")
         .replace(/layer resmi WebGIS/g, "official WebGIS layers")
         .replace(/diperbarui/g, "updated")
-        .replace(/ objek · diperbarui /, " objects · updated ")
+        .replace(/ objek · (?:diperbarui|updated) /, " objects · updated ")
         .replace(/^Layer berhasil dimuat/, "Layers loaded")
         .replace(/ pembaruan publik diterapkan$/, " public updates applied")
         .replace(/^Mengambil objek dari Master Database/, "Retrieving objects from the Master Database")
@@ -542,7 +630,21 @@
         .replace(/^(\d+) objek$/, "$1 objects")
         .replace(/^Penanaman Mangrove \((\d+)\)$/, "Mangrove Planting ($1)")
         .replace(/^PENANAMAN MANGROVE$/, "MANGROVE PLANTING")
-        .replace(/^(\d+) objek terpetakan$/, "$1 mapped objects");
+        .replace(/^(\d+) objek terpetakan$/, "$1 mapped objects")
+        .replace(/^Memuat (\d+) dari (\d+) layer\.\.\.$/, "Loading $1 of $2 layers...")
+        .replace(/^Semua (\d+) layer berhasil dimuat$/, "All $1 layers loaded successfully")
+        .replace(/^(\d+) layer berhasil, (\d+) gagal$/, "$1 layers loaded, $2 failed")
+        .replace(/^(.+) berhasil dimuat \(([\d.,]+) fitur\)$/, "$1 loaded successfully ($2 features)")
+        .replace(/^(.+) gagal dimuat: (.+)$/, "$1 failed to load: $2")
+        .replace(/^Lokasi "(.+)" tidak ditemukan\.$/, 'Location "$1" was not found.')
+        .replace(/^Buka informasi (.+)$/, "Open information for $1")
+        .replace(/^Tampilkan ((?:Foto|Photo) .+)$/, (_, label) => "Show " + label.replace(/^Foto/, "Photo"))
+        .replace(/^Foto (\d+)$/, "Photo $1")
+        .replace(/^(\d+) hari$/, "$1 days")
+        .replace(/^(\d+) titik$/, "$1 hotspots")
+        .replace(/^Kehilangan tutupan hutan 10 tahun terbaru \((.+)\)$/, "Tree-cover loss over the latest 10 years ($1)")
+        .replace(/\bBelum diisi\b/g, "Not provided")
+        .replace(/\bSekarang\b/g, "Present");
     }
     return text
       .replace(/^Source: Master Database/, "Sumber: Master Database")
@@ -560,27 +662,46 @@
       parents.forEach(parent => {
         Array.from(parent.childNodes || []).forEach(node => {
           if (node.nodeType !== 3) return;
-          const nodeValue = node.nodeValue;
+          if (!originalText.has(node)) originalText.set(node, node.nodeValue);
+          const nodeValue = originalText.get(node);
           if (typeof nodeValue !== "string") return;
           const text = nodeValue.trim();
           if (text && dictionary[text]) {
-            node.nodeValue = nodeValue.replace(text, dictionary[text]);
+            const translated = nodeValue.replace(text, dictionary[text]);
+            if (node.nodeValue !== translated) node.nodeValue = translated;
           } else if (text && currentLanguage === "id" && reverse[text]) {
-            node.nodeValue = nodeValue.replace(text, reverse[text]);
+            if (node.nodeValue !== nodeValue) node.nodeValue = nodeValue;
           } else if (text) {
-            node.nodeValue = translateDynamic(nodeValue, currentLanguage);
+            const translated = currentLanguage === "id"
+              ? nodeValue
+              : translateDynamic(nodeValue, currentLanguage);
+            if (node.nodeValue !== translated) node.nodeValue = translated;
           }
         });
       });
-      element.querySelectorAll("[placeholder]").forEach(el => {
-        const placeholder = el.getAttribute("placeholder");
-        if (typeof placeholder !== "string") return;
-        const text = placeholder.trim();
-        if (text && dictionary[text]) {
-          el.setAttribute("placeholder", dictionary[text]);
-        } else if (text && currentLanguage === "id" && reverse[text]) {
-          el.setAttribute("placeholder", reverse[text]);
+      const attributes = ["placeholder", "title", "aria-label", "alt"];
+      const selector = attributes.map(name => "[" + name + "]").join(",");
+      const attributedElements = [
+        ...(element.matches && element.matches(selector) ? [element] : []),
+        ...element.querySelectorAll(selector)
+      ];
+      attributedElements.forEach(el => {
+        let originals = originalAttributes.get(el);
+        if (!originals) {
+          originals = {};
+          originalAttributes.set(el, originals);
         }
+        attributes.forEach(name => {
+          if (!el.hasAttribute(name)) return;
+          if (!Object.prototype.hasOwnProperty.call(originals, name)) originals[name] = el.getAttribute(name);
+          const source = originals[name];
+          if (typeof source !== "string") return;
+          const text = source.trim();
+          const translated = currentLanguage === "id"
+            ? source
+            : (dictionary[text] ? source.replace(text, dictionary[text]) : translateDynamic(source, currentLanguage));
+          if (el.getAttribute(name) !== translated) el.setAttribute(name, translated);
+        });
       });
     } finally {
       translating = false;
@@ -610,8 +731,13 @@
 
   document.addEventListener("DOMContentLoaded", () => {
     setLanguage(currentLanguage);
-    new MutationObserver(() => translateElement(document.body))
-      .observe(document.body, { childList: true, subtree: true });
+    new MutationObserver(mutations => {
+      if (translating) return;
+      mutations.forEach(mutation => mutation.addedNodes.forEach(node => {
+        if (node.nodeType === 1) translateElement(node);
+        else if (node.nodeType === 3 && node.parentElement) translateElement(node.parentElement);
+      }));
+    }).observe(document.body, { childList: true, subtree: true });
   });
 
   window.YG_I18N = {
@@ -620,7 +746,20 @@
     },
     t: function(text) {
       const dictionary = dictionaries[currentLanguage] || {};
-      return dictionary[text] || text;
+      return dictionary[text] || translateDynamic(String(text == null ? "" : text), currentLanguage);
+    },
+    forLanguage: function(text, language) {
+      const source = String(text == null ? "" : text);
+      const dictionary = dictionaries[language] || {};
+      return dictionary[source] || translateDynamic(source, language);
+    },
+    locale: locale,
+    formatNumber: function(value, options) {
+      return new Intl.NumberFormat(locale(), options || {}).format(value);
+    },
+    formatDate: function(value, options) {
+      const date = value instanceof Date ? value : new Date(value);
+      return isNaN(date.getTime()) ? String(value || "") : date.toLocaleString(locale(), options || {});
     },
     setLanguage: setLanguage,
     translateElement: translateElement
