@@ -305,9 +305,12 @@ function overlapsBBox(a, b) {
   return !(a.maxX < b.minX || a.minX > b.maxX || a.maxY < b.minY || a.minY > b.maxY);
 }
 
-async function fetchAreaCsv(source, bbox, endDateIso) {
+async function fetchAreaCsv(source, bbox, startDateIso) {
   const bboxParam = [bbox.minX, bbox.minY, bbox.maxX, bbox.maxY].map((n) => n.toFixed(6)).join(",");
-  const url = `${API_ROOT}/area/csv/${FIRMS_KEY}/${source}/${bboxParam}/${CHUNK_DAYS}/${endDateIso}`;
+  // FIRMS interprets DATE as the first day of the requested range, not the
+  // final day. Passing chunk.end silently retained only every fifth day after
+  // the range filter below.
+  const url = `${API_ROOT}/area/csv/${FIRMS_KEY}/${source}/${bboxParam}/${CHUNK_DAYS}/${startDateIso}`;
   return requestText(url);
 }
 
@@ -564,7 +567,7 @@ async function main() {
       const chunk = chunks[index];
       let csv = "";
       try {
-        csv = await fetchAreaCsv(sourceInfo.source, analysisBounds, toIsoDate(chunk.end));
+        csv = await fetchAreaCsv(sourceInfo.source, analysisBounds, toIsoDate(chunk.start));
       } catch (error) {
         console.warn(`[FIRMS] Lewati chunk ${sourceInfo.source} ${toIsoDate(chunk.start)}..${toIsoDate(chunk.end)}: ${error.message}`);
         skippedChunks.push({
@@ -698,6 +701,11 @@ async function main() {
       generatedAt: new Date().toISOString(),
       periodDays: 30,
       confidenceFilter: "high",
+      sourceStatus: skippedChunks.length ? "partial" : "complete",
+      skippedChunks,
+      providers: activeSources.map((item) => item.source),
+      coverageStart: toIsoDate(recentStart),
+      coverageEnd: toIsoDate(now),
       features
     }, null, 2)}\n`, "utf-8");
   }

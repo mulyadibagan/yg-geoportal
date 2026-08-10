@@ -2,7 +2,9 @@ name: Update Hotspot Analytics
 
 on:
   schedule:
-    - cron: "15 0 * * *"
+    # NASA FIRMS global NRT is normally available within a few hours of an
+    # overpass. Refresh hourly so the public map follows new detections.
+    - cron: "17 * * * *"
   workflow_dispatch:
   push:
     branches: [main]
