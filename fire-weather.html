@@ -27,7 +27,7 @@
     <section class="fw-products" aria-label="Produk pemantauan">
       <button class="active" type="button" data-product="hotspots"><span>🔥</span><strong>Hotspot</strong><small>VIIRS · confidence tinggi</small></button>
       <button type="button" data-product="wind"><span>➤</span><strong>Angin</strong><small>Permukaan (10 m)</small></button>
-      <button type="button" data-product="rain"><span>🌧</span><strong>Akumulasi hujan</strong><small>Radar hujan terbaru</small></button>
+      <button type="button" data-product="rain"><span>🌧</span><strong>Hujan saat ini</strong><small>Citra radar terbaru · bukan akumulasi</small></button>
       <button type="button" data-product="satellite"><span>🌫️</span><strong>Indikasi Kabut Asap</strong><small>Citra + hotspot + angin</small></button>
     </section>
     <section class="fw-kpis" aria-label="Ringkasan kondisi">
@@ -44,7 +44,8 @@
           <label><input type="checkbox" data-layer="hotspots" checked> Hotspot interaktif confidence tinggi</label>
           <label><input type="checkbox" data-layer="satellite"> Citra satelit MODIS</label>
           <label><input type="checkbox" data-layer="villages" checked> Desa intervensi & risiko</label>
-          <label><input type="checkbox" data-layer="rain"> Curah hujan radar</label>
+          <label><input type="checkbox" data-layer="rain"> Hujan saat ini (radar)</label>
+          <p class="control-note" id="rain-status">Aktifkan layer untuk melihat citra radar hujan terbaru.</p>
           <label><input type="checkbox" data-layer="wind" checked> Arah & kecepatan angin</label>
           <label><input type="checkbox" data-layer="fdrs" checked> FDRS / tinggi muka air</label>
           <label><input type="checkbox" data-layer="canals" checked> Sekat kanal</label>
@@ -62,6 +63,6 @@
   </main>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
   <script src="js/i18n.js?v=20260810-realtime-firms1"></script>
-  <script src="js/fire-weather.js?v=20260810-realtime-firms1"></script>
+  <script src="js/fire-weather.js?v=20260810-current-rain1"></script>
 </body>
 </html>
