@@ -758,7 +758,30 @@
     "Peringatan · data FIRMS terlambat": "Warning · delayed FIRMS data",
     "Arsip harian": "Daily archive",
     "Periksa koneksi atau pembaruan FIRMS": "Check the connection or FIRMS update",
-    "Data hotspot gagal dimuat": "Hotspot data failed to load"
+    "Data hotspot gagal dimuat": "Hotspot data failed to load",
+    "Potensi Sebaran Asap": "Smoke Dispersion Potential",
+    "Skor indikatif 0–100": "Indicative score 0–100",
+    "Poligon potensi sebaran asap": "Smoke dispersion potential polygons",
+    "Asap: rendah (0–24)": "Smoke: low (0–24)",
+    "Asap: waspada (25–49)": "Smoke: watch (25–49)",
+    "Asap: tinggi (50–74)": "Smoke: high (50–74)",
+    "Asap: sangat tinggi (75–100)": "Smoke: very high (75–100)",
+    "Potensi sebaran asap": "Smoke dispersion potential",
+    "Aktifkan layer untuk menjalankan model indikatif 24 jam.": "Enable the layer to run the indicative 24-hour model.",
+    "Poligon berwarna menunjukkan arah potensi sebaran dari hotspot mengikuti angin. Zona ini bukan batas asap teramati dan bukan pengganti pengukuran kualitas udara.": "Coloured polygons show the potential dispersion direction from hotspots following the wind. These zones are not observed smoke boundaries or a substitute for air-quality measurements."
+    ,"Lapisan rendah ±2.500 kaki": "Low level ±2,500 feet"
+    ,"Arah gerak & kecepatan angin 2.500 kaki": "Travel direction & 2,500-foot wind speed"
+    ,"925 hPa (sekitar 2.500 kaki)": "925 hPa (about 2,500 feet)"
+    ,"Arah gerak GFS & kecepatan angin 2.500 kaki": "GFS travel direction & 2,500-foot wind speed"
+    ,"GFS 925 hPa (sekitar 2.500 kaki)": "GFS 925 hPa (about 2,500 feet)"
+    ,"Panah menunjukkan arah perjalanan udara/asap dan diperbarui otomatis mengikuti siklus GFS.": "Arrows show air/smoke travel direction and update automatically with the GFS cycle."
+    ,"Panah menunjukkan arah perjalanan udara/asap, bukan arah asal angin.": "Arrows show the direction air/smoke travels, not where the wind comes from."
+    ,"Kontur terbentuk dari kepadatan lintasan partikel selama 24 jam menggunakan angin 925 hPa. Kontur yang bersentuhan digabungkan. Zona ini bukan batas asap teramati dan bukan pengganti pengukuran kualitas udara.": "Contours are formed from 24-hour particle-trajectory density using 925 hPa winds. Touching contours are merged. These zones are not observed smoke boundaries or a substitute for air-quality measurements."
+    ,"Waktu hotspot & model": "Hotspot & model period"
+    ,"Sekarang": "Current"
+    ,"24 jam": "24 hours"
+    ,"7 hari berulang": "7-day recurrence"
+    ,"Sekarang dan 24 jam membentuk lintasan asap; 7 hari menampilkan sumber berulang; 30 hari tanpa poligon.": "Current and 24-hour periods generate smoke trajectories; 7 days shows recurring sources; 30 days has no polygon."
   });
   if (dictionaries.en) dictionaries.en["Cetak Peta"] = "Print Map";
   const reverse = Object.fromEntries(
