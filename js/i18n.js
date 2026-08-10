@@ -758,7 +758,17 @@
     "Peringatan · data FIRMS terlambat": "Warning · delayed FIRMS data",
     "Arsip harian": "Daily archive",
     "Periksa koneksi atau pembaruan FIRMS": "Check the connection or FIRMS update",
-    "Data hotspot gagal dimuat": "Hotspot data failed to load"
+    "Data hotspot gagal dimuat": "Hotspot data failed to load",
+    "Potensi Sebaran Asap": "Smoke Dispersion Potential",
+    "Skor indikatif 0–100": "Indicative score 0–100",
+    "Poligon potensi sebaran asap": "Smoke dispersion potential polygons",
+    "Asap: rendah (0–24)": "Smoke: low (0–24)",
+    "Asap: waspada (25–49)": "Smoke: watch (25–49)",
+    "Asap: tinggi (50–74)": "Smoke: high (50–74)",
+    "Asap: sangat tinggi (75–100)": "Smoke: very high (75–100)",
+    "Potensi sebaran asap": "Smoke dispersion potential",
+    "Aktifkan layer untuk menjalankan model indikatif 24 jam.": "Enable the layer to run the indicative 24-hour model.",
+    "Poligon berwarna menunjukkan arah potensi sebaran dari hotspot mengikuti angin. Zona ini bukan batas asap teramati dan bukan pengganti pengukuran kualitas udara.": "Coloured polygons show the potential dispersion direction from hotspots following the wind. These zones are not observed smoke boundaries or a substitute for air-quality measurements."
   });
   if (dictionaries.en) dictionaries.en["Cetak Peta"] = "Print Map";
   const reverse = Object.fromEntries(
