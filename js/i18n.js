@@ -774,6 +774,11 @@
     ,"925 hPa (sekitar 2.500 kaki)": "925 hPa (about 2,500 feet)"
     ,"Panah menunjukkan arah perjalanan udara/asap, bukan arah asal angin.": "Arrows show the direction air/smoke travels, not where the wind comes from."
     ,"Kontur terbentuk dari kepadatan lintasan partikel selama 24 jam menggunakan angin 925 hPa. Kontur yang bersentuhan digabungkan. Zona ini bukan batas asap teramati dan bukan pengganti pengukuran kualitas udara.": "Contours are formed from 24-hour particle-trajectory density using 925 hPa winds. Touching contours are merged. These zones are not observed smoke boundaries or a substitute for air-quality measurements."
+    ,"Waktu hotspot & model": "Hotspot & model period"
+    ,"Sekarang": "Current"
+    ,"24 jam": "24 hours"
+    ,"7 hari berulang": "7-day recurrence"
+    ,"Sekarang dan 24 jam membentuk lintasan asap; 7 hari menampilkan sumber berulang; 30 hari tanpa poligon.": "Current and 24-hour periods generate smoke trajectories; 7 days shows recurring sources; 30 days has no polygon."
   });
   if (dictionaries.en) dictionaries.en["Cetak Peta"] = "Print Map";
   const reverse = Object.fromEntries(
