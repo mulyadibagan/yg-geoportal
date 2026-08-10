@@ -36,6 +36,12 @@
     return isFinite(n)?n:0;
   }
 
+  function locale(){
+    return window.YG_I18N&&typeof window.YG_I18N.locale==="function"
+      ?window.YG_I18N.locale()
+      :"id-ID";
+  }
+
   function ringAreaSquareMeters(ring){
     if(!Array.isArray(ring)||ring.length<3){return 0;}
     var toRadians=Math.PI/180;
@@ -80,7 +86,7 @@
   function formatHa(value){
     if(value==null||value===""){return "Belum dihitung";}
     var n=Number(value);
-    return isFinite(n)?n.toLocaleString("id-ID",{maximumFractionDigits:2})+" ha":"Belum dihitung";
+    return isFinite(n)?n.toLocaleString(locale(),{maximumFractionDigits:2})+" ha":"Belum dihitung";
   }
 
   function unitInfo(feature,layerId){
@@ -195,7 +201,7 @@
         return '<div class="yg-va-bar"><span>'+esc(x[0])+'</span><div class="yg-va-track"></div><strong>Data belum tersedia</strong></div>';
       }
       var value=Number(x[1])||0;
-      return '<div class="yg-va-bar"><span>'+esc(x[0])+'</span><div class="yg-va-track"><div class="yg-va-fill" style="width:'+(value/max*100).toFixed(1)+'%"></div></div><strong>'+value.toLocaleString("id-ID",{maximumFractionDigits:1})+' ha</strong></div>';
+      return '<div class="yg-va-bar"><span>'+esc(x[0])+'</span><div class="yg-va-track"><div class="yg-va-fill" style="width:'+(value/max*100).toFixed(1)+'%"></div></div><strong>'+value.toLocaleString(locale(),{maximumFractionDigits:1})+' ha</strong></div>';
     }).join("");
   }
 
@@ -232,7 +238,7 @@
     return rows.map(function(row){
       var value=Number(row[1])||0;
       var percent=Math.min(100,value/totalArea*100);
-      return '<div class="yg-va-bar"><span>'+esc(row[0])+'</span><div class="yg-va-track"><div class="yg-va-fill" style="width:'+percent.toFixed(1)+'%;background:'+row[2]+'"></div></div><strong>'+percent.toLocaleString("id-ID",{maximumFractionDigits:1})+'%</strong></div>';
+      return '<div class="yg-va-bar"><span>'+esc(row[0])+'</span><div class="yg-va-track"><div class="yg-va-fill" style="width:'+percent.toFixed(1)+'%;background:'+row[2]+'"></div></div><strong>'+percent.toLocaleString(locale(),{maximumFractionDigits:1})+'%</strong></div>';
     }).join("");
   }
 
@@ -310,7 +316,7 @@
       ["Luas areal",formatHa(info.area)],
       ["Tutupan baseline",pendingAdministrativeAnalytics?"Sedang diproses":formatHa(baseline)],
       ["Estimasi indikatif tutupan "+forestLossThroughYear(),pendingAdministrativeAnalytics?"Sedang diproses":formatHa(current)],
-      ["Tutupan areal",isFinite(percent)?percent.toLocaleString("id-ID",{maximumFractionDigits:1})+"%":(pendingAdministrativeAnalytics?"Sedang diproses":"Belum dihitung")],
+      ["Tutupan areal",isFinite(percent)?percent.toLocaleString(locale(),{maximumFractionDigits:1})+"%":(pendingAdministrativeAnalytics?"Sedang diproses":"Belum dihitung")],
       ["Kehilangan total",pendingAdministrativeAnalytics?"Sedang diproses":formatHa(loss)],
       ["Pertambahan/pemulihan",pendingAdministrativeAnalytics?"Sedang diproses":formatHa(gain)],
       ["Hotspot 7 hari",record&&record.hotspot7d!=null?String(record.hotspot7d):(pendingAdministrativeAnalytics?"Sedang diproses":"Lihat layer")],
@@ -327,7 +333,7 @@
   }
 
   function nowLabel(){
-    return new Date().toLocaleString("id-ID",{dateStyle:"medium",timeStyle:"short"});
+    return new Date().toLocaleString(locale(),{dateStyle:"medium",timeStyle:"short"});
   }
 
   function cloneFeature(feature){
@@ -602,7 +608,7 @@
   }
 
   function mm(value){
-    return Number(value).toLocaleString("id-ID",{maximumFractionDigits:2});
+    return Number(value).toLocaleString(locale(),{maximumFractionDigits:2});
   }
 
   function drawTwoColumnTable(doc,startY,margin,leftTitle,rightTitle,rows,leftWidth,rightWidth,rowHeight){
@@ -759,7 +765,7 @@
           "Layer referensi",
           "Luas (ha) | Persen",
           refRows.map(function(item){
-            return [item[0],mm(item[1])+" | "+item[2].toLocaleString("id-ID",{maximumFractionDigits:1})+"%"];
+            return [item[0],mm(item[1])+" | "+item[2].toLocaleString(locale(),{maximumFractionDigits:1})+"%"];
           }),
           90,
           96,

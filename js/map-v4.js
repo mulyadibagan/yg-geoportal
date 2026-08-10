@@ -5,6 +5,16 @@
   const DEFAULT_VIEW = [1.25, 102.05];
   const DEFAULT_ZOOM = 9;
 
+  function currentLocale() {
+    return window.YG_I18N && typeof window.YG_I18N.locale === "function"
+      ? window.YG_I18N.locale()
+      : "id-ID";
+  }
+
+  function formatNumber(value, options) {
+    return new Intl.NumberFormat(currentLocale(), options || {}).format(value);
+  }
+
   const STYLE = {
     desa_intervensi: { label: "Batas Desa Intervensi", color: "#2e7d32", visible: true },
     apo: { label: "Alat Pemecah Ombak (APO)", color: "#d32f2f", visible: true },
@@ -130,7 +140,7 @@
         }
 
         config.count = data.features.length;
-        const countText = new Intl.NumberFormat("id-ID").format(config.count);
+        const countText = formatNumber(config.count);
         document
           .querySelectorAll('[data-reference-count-id="' + layerId + '"]')
           .forEach(element => {
@@ -230,6 +240,7 @@ L.control.scale({
   const searchItems = [];
   let allBounds = L.latLngBounds([]);
   let rawFeatures = [];
+  let lastGeneratedAt = null;
 
   function escapeHtml(value) {
     return String(value == null ? "" : value).replace(/[&<>"']/g, char => ({
@@ -532,7 +543,12 @@ L.control.scale({
 
     function valueOf(keys) {
       for (let i = 0; i < keys.length; i += 1) {
-        const value = props[keys[i]];
+        const key = keys[i];
+        const englishKeys = [key + "_EN", key + "_En", key + "_en", key + "_English"];
+        const localizedKey = window.YG_I18N && window.YG_I18N.language === "en"
+          ? englishKeys.find(candidate => props[candidate] != null && String(props[candidate]).trim() !== "")
+          : "";
+        const value = localizedKey ? props[localizedKey] : props[key];
 
         if (
           value !== null &&
@@ -1019,6 +1035,9 @@ L.control.scale({
     const searchText = [
       getObjectName(feature),
       config.label,
+      window.YG_I18N && typeof window.YG_I18N.forLanguage === "function"
+        ? window.YG_I18N.forLanguage(config.label, "en")
+        : "",
       props.Object_ID,
       props.Kategori,
       props.Program,
@@ -1240,7 +1259,7 @@ L.control.scale({
     }
 
     function formatArea(value) {
-      return new Intl.NumberFormat("id-ID", {
+      return new Intl.NumberFormat(currentLocale(), {
         maximumFractionDigits: 2
       }).format(value);
     }
@@ -1554,12 +1573,12 @@ L.control.scale({
     );
     if (countElement) {
       countElement.textContent =
-        new Intl.NumberFormat("id-ID").format(config.count);
+        formatNumber(config.count);
     }
 
     setStatus(
       config.label + " berhasil dimuat (" +
-      new Intl.NumberFormat("id-ID").format(data.features.length) +
+      formatNumber(data.features.length) +
       " fitur)",
       false
     );
@@ -1603,7 +1622,7 @@ L.control.scale({
         '<span class="count" data-reference-count-id="' +
           escapeHtml(layerId) + '">' +
           (Number.isFinite(config.count)
-            ? new Intl.NumberFormat("id-ID").format(config.count)
+            ? formatNumber(config.count)
             : "—") +
         '</span>';
 
@@ -1750,13 +1769,44 @@ L.control.scale({
       if (element) element.textContent = value;
     };
 
-    setText("stat-villages", new Intl.NumberFormat("id-ID").format(villages.size));
+    setText("stat-villages", formatNumber(villages.size));
     setText(
       "stat-mangrove-area",
-      new Intl.NumberFormat("id-ID", { maximumFractionDigits: 2 }).format(mangroveArea) + " ha"
+      formatNumber(mangroveArea, { maximumFractionDigits: 2 }) + " ha"
     );
     setText("stat-fdrs", fdrs);
     setText("stat-canal-blocks", canalBlocks);
+  }
+
+  function renderDatabaseUpdated() {
+    const updated = document.getElementById("database-updated");
+    if (!updated || !rawFeatures.length) return;
+    updated.textContent =
+      "Sumber: Master Database · " +
+      formatNumber(rawFeatures.length) +
+      " objek · diperbarui " +
+      new Date(lastGeneratedAt || Date.now()).toLocaleString(currentLocale());
+  }
+
+  function refreshLocalizedMapContent() {
+    updateStats(rawFeatures);
+    renderDatabaseUpdated();
+    Object.keys(REFERENCE_LAYERS).forEach(layerId => {
+      const config = REFERENCE_LAYERS[layerId];
+      const element = document.querySelector('[data-reference-count-id="' + layerId + '"]');
+      if (element && Number.isFinite(config.count)) element.textContent = formatNumber(config.count);
+    });
+    Object.keys(layerObjects).forEach(layerId => {
+      const group = layerObjects[layerId];
+      if (!group || typeof group.eachLayer !== "function") return;
+      group.eachLayer(layer => {
+        if (layer && layer.feature && typeof layer.setPopupContent === "function") {
+          layer.setPopupContent(buildPopup(layer.feature, getLayerConfig(layerId, layer.feature)));
+        }
+      });
+    });
+    const input = document.getElementById("search-input");
+    if (input && input.value.trim()) renderSearch(input.value);
   }
 
   function renderSearch(query) {
@@ -2134,6 +2184,8 @@ L.control.scale({
       return;
     }
 
+    lastGeneratedAt = data.generatedAt || Date.now();
+
     const permanentReportIds = new Set(data.features.map(feature => {
       const p = feature && feature.properties || {};
       const layerId = String(p.Layer_ID || p.Source_Layer || "").toLowerCase();
@@ -2194,14 +2246,7 @@ L.control.scale({
 
     applyInitialDashboardLink();
 
-    const updated = document.getElementById("database-updated");
-    if (updated) {
-      updated.textContent =
-        "Sumber: Master Database · " +
-        new Intl.NumberFormat("id-ID").format(rawFeatures.length) +
-        " objek · diperbarui " +
-        new Date(data.generatedAt || Date.now()).toLocaleString("id-ID");
-    }
+    renderDatabaseUpdated();
 
     setStatus(
       rawFeatures.length + " objek dari Master Database berhasil dimuat",
@@ -3284,6 +3329,8 @@ L.control.scale({
       }
     });
   });
+
+  window.addEventListener("yg:languagechange", refreshLocalizedMapContent);
 
   window.YG_MAP = {
     map: map,
