@@ -357,6 +357,13 @@ function isHighConfidence(point) {
   return Number.isFinite(numeric) && numeric >= 80;
 }
 
+function isVegetationOrUnclassified(point) {
+  // MODIS provides: 0 vegetation fire, 1 volcano, 2 static land source,
+  // 3 offshore. VIIRS feeds may omit this field, so blank values are retained
+  // and the national land-boundary filter remains the final offshore guard.
+  return !point.type || point.type === "0";
+}
+
 function dateRangeChunks(startDate, endDate) {
   const chunks = [];
   let cursor = new Date(startDate);
@@ -578,7 +585,7 @@ async function main() {
         });
         continue;
       }
-      const points = parseFirmsCsv(csv).filter(isHighConfidence).filter((point) => point.type !== "3").filter((point) => {
+      const points = parseFirmsCsv(csv).filter(isHighConfidence).filter(isVegetationOrUnclassified).filter((point) => {
         const d = parseIsoDate(point.date);
         return d >= chunk.start && d <= chunk.end;
       }).filter((point) => {
@@ -678,7 +685,8 @@ async function main() {
       updated: updated
     },
     confidenceFilter: "high",
-    notes: "Counts include only high-confidence FIRMS points, deduplicated and intersected with village and social-forestry polygons."
+    excludedSourceTypes: ["active volcano", "static land source", "offshore"],
+    notes: "Counts include only high-confidence vegetation-fire or unclassified FIRMS detections. Exact duplicate records are removed before point-in-polygon analysis."
   };
 
   if (MODE !== "history") {
@@ -701,6 +709,7 @@ async function main() {
       generatedAt: new Date().toISOString(),
       periodDays: 30,
       confidenceFilter: "high",
+      excludedSourceTypes: ["active volcano", "static land source", "offshore"],
       sourceStatus: skippedChunks.length ? "partial" : "complete",
       skippedChunks,
       providers: activeSources.map((item) => item.source),

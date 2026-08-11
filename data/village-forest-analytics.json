@@ -9006,8 +9006,8 @@
       "VIIRS_NOAA20_NRT",
       "VIIRS_NOAA21_NRT"
     ],
-    "updatedAt": "2026-08-10T10:40:29.128Z",
-    "recentUpdatedAt": "2026-08-10T10:40:29.128Z",
+    "updatedAt": "2026-08-11T07:38:05.770Z",
+    "recentUpdatedAt": "2026-08-11T07:38:05.770Z",
     "historyUpdatedAt": "2026-08-01T05:04:04.349Z",
     "mode": "recent",
     "periodDays": [
@@ -9023,8 +9023,13 @@
       "socialForestryUnits": 135,
       "updated": 149
     },
-    "notes": "Counts include only high-confidence FIRMS points, deduplicated and intersected with village and social-forestry polygons.",
+    "notes": "Counts include only high-confidence vegetation-fire or unclassified FIRMS detections. Exact duplicate records are removed before point-in-polygon analysis.",
     "historyStartYear": 2021,
-    "confidenceFilter": "high"
+    "confidenceFilter": "high",
+    "excludedSourceTypes": [
+      "active volcano",
+      "static land source",
+      "offshore"
+    ]
   }
 }
