@@ -29,7 +29,7 @@
       <button class="active" type="button" data-product="hotspots"><span>🔥</span><strong>Hotspot</strong><small>VIIRS · confidence tinggi</small></button>
       <button type="button" data-product="wind"><span>➤</span><strong>Angin</strong><small>Lapisan rendah ±2.500 kaki</small></button>
       <button type="button" data-product="rain"><span>🌧</span><strong>Hujan saat ini</strong><small>Citra radar terbaru · bukan akumulasi</small></button>
-      <button type="button" data-product="smoke"><span>🌫️</span><strong id="smoke-product-title">Peluang Transport Asap</strong><small id="smoke-product-note">Ensemble indikatif · bukan konsentrasi</small></button>
+      <button type="button" data-product="smoke"><span>🌫️</span><strong id="smoke-product-title">Koridor Transport GEFS</strong><small id="smoke-product-note">Dukungan lintasan · bukan polygon asap</small></button>
     </section>
     <section class="fw-kpis" aria-label="Ringkasan kondisi">
       <article><span>Hotspot high confidence desa YG</span><strong id="kpi-hotspots">—</strong><small id="kpi-period">30 hari</small></article>
@@ -40,12 +40,12 @@
     </section>
     <section class="fw-workspace">
       <aside class="fw-controls" aria-label="Kontrol peta">
-        <div class="fw-control-group"><h2>Periode deteksi satelit</h2><div class="segmented" id="period-control"><button data-period="1">24 jam</button><button data-period="7">7 hari berulang</button><button class="active" data-period="30">30 hari</button></div><p class="control-note" id="period-note">Deteksi bukan status api saat ini. Periode 24 jam dapat membentuk peluang transport; 7 hari hanya sumber berulang; 30 hari tanpa poligon.</p></div>
+        <div class="fw-control-group"><h2>Periode deteksi satelit</h2><div class="segmented" id="period-control"><button data-period="1">24 jam</button><button data-period="7">7 hari berulang</button><button class="active" data-period="30">30 hari</button></div><p class="control-note" id="period-note">Deteksi bukan status api saat ini. Periode 24 jam dapat membentuk koridor dukungan transport; 7 hari hanya sumber berulang; 30 hari tanpa koridor.</p></div>
         <div class="fw-control-group"><h2>Layer peta</h2>
           <label><input type="checkbox" data-layer="hotspots" checked> Hotspot interaktif confidence tinggi</label>
           <label><input type="checkbox" data-layer="satellite"> Citra satelit MODIS</label>
           <label><input type="checkbox" data-layer="villages" checked> Desa intervensi & risiko</label>
-          <label><input type="checkbox" data-layer="smoke"> Poligon peluang transport asap</label>
+          <label><input type="checkbox" data-layer="smoke"> Koridor dukungan transport GEFS</label>
           <label><input type="checkbox" data-layer="rain"> Hujan saat ini (radar)</label>
           <p class="control-note" id="rain-status">Aktifkan layer untuk melihat citra radar hujan terbaru.</p>
           <label><input type="checkbox" data-layer="wind" checked> Arah gerak GFS & kecepatan angin 2.500 kaki</label>
@@ -58,7 +58,7 @@
       </aside>
       <div class="fw-map-wrap"><div id="fire-map" aria-label="Peta pemantauan karhutla dan cuaca"></div><div class="fw-map-message" id="map-message" hidden></div></div>
       <aside class="fw-alerts"><div class="fw-alert-head"><div><p class="fw-eyebrow">PERINGATAN DESA</p><h2>Prioritas pemantauan</h2></div><span id="alert-count">0</span></div><div id="alert-list" class="fw-alert-list"><p class="empty">Memuat data…</p></div>
-        <div class="fw-smoke-summary" id="smoke-summary"><strong>Peluang transport asap</strong><p>Aktifkan layer untuk menjalankan model ensemble indikatif 24 jam.</p></div>
+        <div class="fw-smoke-summary" id="smoke-summary"><strong>Koridor dukungan transport GEFS</strong><p>Aktifkan layer untuk menjalankan penyaringan lintasan ensemble 24 jam. Hasil bukan polygon asap teramati.</p></div>
         <div class="fw-disclaimer"><strong>Cara membaca</strong><p>Warna menunjukkan dukungan ensemble yang dihaluskan dengan kernel Gaussian 30 km dan dikalikan keandalan bukti sumber. Keandalan hanya memakai jumlah deteksi, lintasan waktu, dan satelit independen; bukan status api aktif. Angin diinterpolasi pada 925, 850, atau 700 hPa berdasarkan aturan PBL dan gerak vertikal.</p></div>
       </aside>
     </section>

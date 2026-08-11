@@ -13,6 +13,7 @@ const params = new URLSearchParams({
   longitude: longitudes,
   hourly: "wind_speed_925hPa,wind_direction_925hPa,wind_speed_850hPa,wind_direction_850hPa,wind_speed_700hPa,wind_direction_700hPa",
   models: "gfs_seamless",
+  past_days: "1",
   forecast_days: "1",
   timezone: "Asia/Jakarta"
 });

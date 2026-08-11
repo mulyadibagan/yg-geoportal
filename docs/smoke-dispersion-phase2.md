@@ -10,6 +10,8 @@ If the deterministic GFS context request fails but a non-expired GEFS ensemble r
 
 GEFS cache eligibility is determined from forecast-time coverage rather than file age alone. The common time range across all accepted grid rows must include the model time. Detection complexes older than the available ensemble time range are excluded instead of being propagated with a clamped first-hour wind field.
 
+The shared GEFS request includes one past day and one forecast day so the rolling 24-hour FIRMS source window can be matched to meteorology from the actual detection hours. The interface reports any source complexes still excluded by temporal coverage. These outputs are labelled **GEFS transport corridors** because the current kernel envelope is not a simulated or observed smoke polygon.
+
 When a contour is displayed, the map summary exposes the underlying model/provider, the common GEFS validity interval, and whether the shared cache carries the validated version-2 provenance metadata. Older browser caches may be used only while their timestamps cover the model time and are explicitly labelled as having incomplete provenance.
 
 Trajectory support is rasterised on a 0.25-degree grid with a 30 km Gaussian kernel, truncated at 75 km. Within one fire complex, each ensemble member contributes the maximum kernel weight encountered along its trajectory to a cell, preventing repeated trajectory samples from multiplying that member's vote. Source-specific support is divided by the number of valid equally weighted members; overlapping fire complexes use the maximum source-specific value rather than being added together.
