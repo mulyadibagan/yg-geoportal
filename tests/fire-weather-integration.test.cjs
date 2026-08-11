@@ -47,6 +47,10 @@ test("page labels the GEFS corridor product and wires the controller", () => {
   assert.match(controller, /ensembleProvenance/);
   assert.match(controller, /kernelKm=30/);
   assert.match(controller, /turf\.isobands/);
+  assert.match(controller, /var thresholds=\[26\]/);
+  assert.doesNotMatch(controller, /var thresholds=\[1,26,51,76\]/);
+  assert.match(controller, /Footprint penyaringan transport/);
+  assert.doesNotMatch(controller, /smokeClass\(maximum\)/);
   assert.match(controller, /setLayerChecked\('hotspots',true\)/);
   assert.match(controller, /cache GEFS server mencakup waktu model/);
   assert.match(controller, /data\/weather-riau\.json/);
