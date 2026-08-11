@@ -1,0 +1,22 @@
+name: Smoke dispersion phase 2 preflight
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  preflight:
+    runs-on: [self-hosted, hysplit]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Check protected HYSPLIT and GFAS inputs
+        env:
+          HYSPLIT_EXECUTABLE: ${{ secrets.HYSPLIT_EXECUTABLE }}
+          HYSPLIT_MET_FILES: ${{ secrets.HYSPLIT_MET_FILES }}
+          GFAS_EMISSIONS_FILE: ${{ secrets.GFAS_EMISSIONS_FILE }}
+        run: node scripts/prepare_hysplit_run.mjs
+      - name: Validate produced dispersion product
+        if: ${{ hashFiles('data/smoke-dispersion.geojson') != '' }}
+        run: node scripts/validate_smoke_dispersion.mjs

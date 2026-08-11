@@ -42,6 +42,10 @@ Every polygon requires a numeric `value` and one display band: `low`, `moderate`
 
 Run `node scripts/validate_smoke_dispersion.mjs` before publication. The validator rejects expired products and writes the public status manifest only after all provenance checks pass.
 
+Run `node scripts/prepare_hysplit_run.mjs` first. This preflight deliberately stops when the registered executable, ARL-format meteorology, or GFAS emissions/injection-height input is absent. It records blockers in `build/hysplit-run/run-manifest.json` and never converts FIRMS FRP into particulate mass using an undocumented coefficient.
+
+The WebGIS may load `data/smoke-dispersion.geojson` only when the status manifest says `ready` and its validity time has not expired. The GEFS corridor is never used as a visual fallback.
+
 ## Validation sequence
 
 1. Compare plume direction and spatial overlap with Himawari/ASMC observations.

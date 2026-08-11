@@ -3,7 +3,7 @@ import fs from "node:fs/promises";
 const input = process.argv[2] || "data/smoke-dispersion.geojson";
 const statusOutput = process.argv[3] || "data/smoke-dispersion-status.json";
 const raw = JSON.parse(await fs.readFile(input, "utf8"));
-const required = ["generatedAt", "validUntil", "sourceObservationStart", "sourceObservationEnd", "meteorology", "emissions", "modelVersion"];
+const required = ["generatedAt", "validUntil", "sourceObservationStart", "sourceObservationEnd", "meteorology", "emissions", "modelVersion", "deposition", "runId"];
 
 if (raw.type !== "FeatureCollection" || !Array.isArray(raw.features)) {
   throw new Error("Dispersion output must be a GeoJSON FeatureCollection.");
@@ -20,6 +20,11 @@ if (Date.parse(raw.validUntil) <= Date.parse(raw.generatedAt)) {
 if (Date.parse(raw.validUntil) <= Date.now()) {
   throw new Error("Dispersion output is expired and must not be published.");
 }
+if (!/^HYSPLIT\b/i.test(String(raw.modelVersion))) throw new Error("modelVersion must identify HYSPLIT.");
+if (!raw.meteorology?.files?.length || !raw.meteorology?.source) throw new Error("meteorology must record source and input files.");
+if (!raw.emissions?.source || !raw.emissions?.units || !raw.emissions?.injectionHeight) throw new Error("emissions must record source, units, and injection-height method.");
+if (!raw.deposition?.wet || !raw.deposition?.dry || !raw.deposition?.particle) throw new Error("deposition must record wet, dry, and particle settings.");
+if (!raw.features.length) throw new Error("Empty dispersion output must not be published as ready.");
 
 const allowedBands = new Set(["low", "moderate", "high", "very-high"]);
 raw.features.forEach((feature, index) => {
@@ -46,6 +51,8 @@ const status = {
   sourceObservationEnd: raw.sourceObservationEnd,
   meteorology: raw.meteorology,
   emissions: raw.emissions,
+  deposition: raw.deposition,
+  runId: raw.runId,
   validation: Array.isArray(raw.validation) ? raw.validation : [],
   featureCount: raw.features.length,
   message: "Validated dispersion output is ready for publication."
