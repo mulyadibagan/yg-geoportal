@@ -29,9 +29,9 @@ test("page labels the GEFS corridor product and wires the controller", () => {
   const controller = fs.readFileSync(path.join(ROOT, "js/fire-weather.js"), "utf8");
 
   assert.ok(html.indexOf("js/fire-weather.js") > 0);
-  assert.match(html, /Analisis Dispersi Asap/);
-  assert.match(html, /Model penyaringan GEFS terbaru/);
-  assert.match(html, /Analisis dispersi asap eksperimental/);
+  assert.match(html, /Potensi Sebaran Kabut Asap/);
+  assert.match(html, /Model GEFS eksperimental/);
+  assert.match(html, /Potensi sebaran kabut asap · eksperimental/);
   assert.match(html, /data-layer="dispersion" disabled/);
   assert.match(html, /Dispersi asap HYSPLIT \(belum tersedia\)/);
   assert.match(html, /bukan konsentrasi PM2\.5, batas asap teramati, atau risiko kesehatan/);
@@ -52,7 +52,7 @@ test("page labels the GEFS corridor product and wires the controller", () => {
   assert.match(controller, /kernelKm=30/);
   assert.match(controller, /turf\.isobands/);
   assert.match(controller, /var thresholds=\[10,26,51,76,101\]/);
-  assert.match(controller, /Analisis penyaringan dispersi asap/);
+  assert.match(controller, /Potensi sebaran kabut asap/);
   assert.doesNotMatch(controller, /smokeClass\(maximum\)/);
   assert.match(controller, /setLayerChecked\('hotspots',true\)/);
   assert.match(controller, /cache GEFS server mencakup waktu model/);
@@ -64,7 +64,7 @@ test("page labels the GEFS corridor product and wires the controller", () => {
   assert.match(controller, /data\.runId!==status\.runId/);
   assert.match(controller, /Status validasi/);
   assert.match(controller, /Belum dikalibrasi/);
-  assert.match(html, /Koridor dukungan transport relatif · belum dikalibrasi/);
+  assert.match(html, /Potensi sebaran kabut asap · belum dikalibrasi/);
   assert.match(html, /js\/smoke-transport-model\.js/);
   assert.match(controller, /Sumber ditahan/);
   assert.match(controller, /function smokeColor\(score\)/);
