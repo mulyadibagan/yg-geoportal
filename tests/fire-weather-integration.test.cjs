@@ -83,6 +83,7 @@ test("page wires the pure transport model before the map controller", () => {
   assert.match(controller, /boundarySides/);
   assert.match(controller, /expandBounds/);
   assert.match(controller, /TRANSPORT_MAX_EXPANSIONS/);
+  assert.match(controller, /transportEndTime/);
   assert.match(controller, /Polygon yang terpotong batas tidak ditampilkan/);
   assert.match(controller, /P20\/P50\/P75\/P90/);
   assert.match(controller, /fitBounds\(smokeBounds\.pad\(\.1\),\{maxZoom:6\}\)/);
