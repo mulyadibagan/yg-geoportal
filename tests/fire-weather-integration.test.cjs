@@ -39,6 +39,9 @@ test("page labels the GEFS corridor product and wires the controller", () => {
   assert.doesNotMatch(html, /data-period="latest"|>Sekarang<|>Current</);
   assert.doesNotMatch(controller, /period==='latest'|period==="latest"|6 jam terakhir|sumber 6 jam/);
   assert.match(controller, /function smokeField/);
+  assert.match(controller, /clusterRecurringSources\(features,\{spatialKm:2,minDays:2\}\)/);
+  assert.match(controller, /Anomali panas berulang · 7 hari/);
+  assert.match(controller, /Buffer dibatasi 1,5–5 km/);
   assert.match(controller, /nearestEnsembleMember/);
   assert.match(controller, /ensembleCoverageStart/);
   assert.match(controller, /ensembleProvenance/);

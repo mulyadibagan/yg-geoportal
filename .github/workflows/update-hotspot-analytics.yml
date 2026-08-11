@@ -33,6 +33,13 @@ jobs:
         with:
           node-version: "22"
 
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install WorldCover reader
+        run: python -m pip install rasterio==1.4.3
       - name: Update hotspot metrics
         env:
           FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
@@ -50,7 +57,7 @@ jobs:
           fi
           node scripts/sync_intervention_villages.mjs
           node scripts/update_hotspot_firms.mjs
-          node scripts/enrich_hotspot_landcover.mjs
+          python scripts/enrich_hotspot_landcover.py
 
       - name: Commit and push if changed
         run: |

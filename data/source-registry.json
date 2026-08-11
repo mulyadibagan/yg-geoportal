@@ -47,7 +47,7 @@
       "name": "ESA WorldCover 2021 v200",
       "used": true,
       "dataKind": "land-cover classification",
-      "access": "Terrascope official WMS categorical-colour triage",
+      "access": "direct public AWS Cloud-Optimized GeoTIFF",
       "termsUrl": "https://esa-worldcover.org/en/data-access",
       "licence": "CC BY 4.0",
       "attribution": "? ESA WorldCover project 2021 / Contains modified Copernicus Sentinel data (2021) processed by ESA WorldCover consortium",

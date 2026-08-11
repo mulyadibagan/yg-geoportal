@@ -78,6 +78,27 @@ test("withholds a recurrent thermal source on bare land", () => {
   assert.match(result.reasons.join(" "), /recurrent thermal source/);
 });
 
+test("clusters recurring anomalies by 2 km distance and distinct dates", () => {
+  const t0 = Date.parse("2026-08-05T00:00:00Z");
+  const sources = model.clusterRecurringSources([
+    feature({lat:0,lon:101,time:t0,satellite:"N20",frp:10}),
+    feature({lat:0.005,lon:101.005,time:t0+86400000,satellite:"N21",frp:12}),
+    feature({lat:0.2,lon:101.2,time:t0+86400000,satellite:"N21",frp:20})
+  ], {spatialKm:2,minDays:2});
+  assert.equal(sources.length, 1);
+  assert.equal(sources[0].dayCount, 2);
+  assert.equal(sources[0].count, 2);
+  assert.ok(sources[0].radiusKm >= 1.5 && sources[0].radiusKm <= 5);
+});
+
+test("does not call same-day repeat detections a recurring anomaly", () => {
+  const t0 = Date.parse("2026-08-05T00:00:00Z");
+  const sources = model.clusterRecurringSources([
+    feature({lat:0,lon:101,time:t0,satellite:"N20"}),
+    feature({lat:0.004,lon:101.004,time:t0+3600000,satellite:"N21"})
+  ], {spatialKm:2,minDays:2});
+  assert.equal(sources.length, 0);
+});
 test("converts meteorological wind-from direction to travel direction", () => {
   const vector = model.travelVector(10, 0);
   assert.ok(Math.abs(vector.east) < 1e-9);

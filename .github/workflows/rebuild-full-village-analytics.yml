@@ -69,7 +69,7 @@ jobs:
           FIRMS_INCLUDE_SOCIAL_FORESTRY: "0"
         run: |
           node scripts/update_hotspot_firms.mjs
-          node scripts/enrich_hotspot_landcover.mjs
+          python scripts/enrich_hotspot_landcover.py
 
       - name: Split analytics for on-demand browser loading
         run: node scripts/shard_administrative_village_analytics.mjs

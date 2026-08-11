@@ -359,6 +359,27 @@
     };
   }
 
+  function clusterRecurringSources(features, options) {
+    options = options || {};
+    var spatialKm = finite(options.spatialKm) || 2;
+    var minDays = Math.max(2, Number(options.minDays) || 2);
+    var items = (features || []).filter(function (feature) {
+      return feature && feature.geometry && feature.geometry.type === "Point" && Number.isFinite(featureTime(feature));
+    }).map(function (feature, index) {
+      var p = feature.properties || {}, c = feature.geometry.coordinates;
+      return { index:index, lat:Number(c[1]), lon:Number(c[0]), time:featureTime(feature), day:new Date(featureTime(feature)).toISOString().slice(0,10), satellite:String(p.satellite||"unknown"), frp:Math.max(0,finite(p.frp)||0) };
+    }).filter(function (item) { return Number.isFinite(item.lat) && Number.isFinite(item.lon); });
+    var parent = items.map(function (_, index) { return index; }), buckets = {}, grid = Math.max(.005, spatialKm / 111);
+    function find(index) { while (parent[index] !== index) { parent[index] = parent[parent[index]]; index = parent[index]; } return index; }
+    function join(a, b) { a=find(a);b=find(b);if(a!==b)parent[b]=a; }
+    items.forEach(function (item, index) {
+      var y=Math.floor(item.lat/grid),x=Math.floor(item.lon/grid);
+      for(var dy=-1;dy<=1;dy++)for(var dx=-1;dx<=1;dx++)(buckets[(y+dy)+"|"+(x+dx)]||[]).forEach(function(other){if(distanceKm([item.lat,item.lon],[items[other].lat,items[other].lon])<=spatialKm)join(index,other)});
+      var key=y+"|"+x;if(!buckets[key])buckets[key]=[];buckets[key].push(index);
+    });
+    var groups={};items.forEach(function(item,index){var root=find(index);if(!groups[root])groups[root]=[];groups[root].push(item)});
+    return Object.keys(groups).map(function(key){var rows=groups[key],days={},satellites={},lat=0,lon=0,frp=0;rows.forEach(function(row){lat+=row.lat;lon+=row.lon;frp+=row.frp;days[row.day]=true;satellites[row.satellite]=true});lat/=rows.length;lon/=rows.length;var maxDistance=Math.max.apply(null,rows.map(function(row){return distanceKm([lat,lon],[row.lat,row.lon])}));return {lat:lat,lon:lon,count:rows.length,frp:frp,dayCount:Object.keys(days).length,satelliteCount:Object.keys(satellites).length,firstTime:Math.min.apply(null,rows.map(function(row){return row.time})),lastTime:Math.max.apply(null,rows.map(function(row){return row.time})),radiusKm:Math.max(1.5,Math.min(5,maxDistance+1))}}).filter(function(group){return group.dayCount>=minDays});
+  }
   function clusterSources(features, options) {
     options = options || {};
     var spatialKm = finite(options.spatialKm) || 1.5;
@@ -647,6 +668,7 @@
     buildTrajectories: buildTrajectories,
     buildWindIndex: buildWindIndex,
     boundsForSources: boundsForSources,
+    clusterRecurringSources: clusterRecurringSources,
     clusterSources: clusterSources,
     contourBandwidthKm: contourBandwidthKm,
     destination: destination,
