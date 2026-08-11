@@ -54,19 +54,20 @@
         </div>
         <div class="fw-control-group fw-wind-level"><h2>Ketinggian angin</h2><p class="fw-static-value">GFS 925 hPa (sekitar 2.500 kaki)</p><p class="control-note">Panah menunjukkan arah perjalanan udara/asap dan diperbarui otomatis mengikuti siklus GFS.</p></div>
         <div class="fw-zoom-actions"><button class="fw-primary" id="zoom-id" type="button">Lihat Indonesia</button><button class="fw-secondary" id="zoom-yg" type="button">Zoom ke wilayah YG</button></div>
-        <div class="fw-legend"><h2>Legenda</h2><span><i class="hotspot-dot"></i>Hotspot confidence tinggi</span><span><i class="smoke-low"></i>Peluang: rendah (1–25%)</span><span><i class="smoke-watch"></i>Peluang: waspada (26–50%)</span><span><i class="smoke-high"></i>Peluang: tinggi (51–75%)</span><span><i class="smoke-very-high"></i>Peluang: sangat tinggi (76–100%)</span><span><i class="legend-infrastructure fdrs">F</i>FDRS / tinggi muka air</span><span><i class="legend-infrastructure canal">S</i>Sekat kanal</span><span><i class="risk-zero"></i>Desa: nihil</span><span><i class="risk-low"></i>Desa: 1–2 titik</span><span><i class="risk-medium"></i>Desa: 3–5 titik</span><span><i class="risk-high"></i>Desa: &gt;5 titik</span></div>
+        <div class="fw-legend"><h2>Legenda</h2><span><i class="hotspot-dot"></i>Hotspot confidence tinggi</span><span><i class="smoke-low"></i>Dukungan lintasan: rendah (1–25%)</span><span><i class="smoke-watch"></i>Dukungan lintasan: sedang (26–50%)</span><span><i class="smoke-high"></i>Dukungan lintasan: tinggi (51–75%)</span><span><i class="smoke-very-high"></i>Dukungan lintasan: sangat tinggi (76–100%)</span><span><i class="legend-infrastructure fdrs">F</i>FDRS / tinggi muka air</span><span><i class="legend-infrastructure canal">S</i>Sekat kanal</span><span><i class="risk-zero"></i>Desa: nihil</span><span><i class="risk-low"></i>Desa: 1–2 titik</span><span><i class="risk-medium"></i>Desa: 3–5 titik</span><span><i class="risk-high"></i>Desa: &gt;5 titik</span></div>
       </aside>
       <div class="fw-map-wrap"><div id="fire-map" aria-label="Peta pemantauan karhutla dan cuaca"></div><div class="fw-map-message" id="map-message" hidden></div></div>
       <aside class="fw-alerts"><div class="fw-alert-head"><div><p class="fw-eyebrow">PERINGATAN DESA</p><h2>Prioritas pemantauan</h2></div><span id="alert-count">0</span></div><div id="alert-list" class="fw-alert-list"><p class="empty">Memuat data…</p></div>
         <div class="fw-smoke-summary" id="smoke-summary"><strong>Koridor dukungan transport GEFS</strong><p>Aktifkan layer untuk menjalankan penyaringan lintasan ensemble 24 jam. Hasil bukan polygon asap teramati.</p></div>
-        <div class="fw-disclaimer"><strong>Cara membaca</strong><p>Warna menunjukkan dukungan ensemble yang dihaluskan dengan kernel Gaussian 30 km dan dikalikan keandalan bukti sumber. Keandalan hanya memakai jumlah deteksi, lintasan waktu, dan satelit independen; bukan status api aktif. Angin diinterpolasi pada 925, 850, atau 700 hPa berdasarkan aturan PBL dan gerak vertikal.</p></div>
+        <div class="fw-disclaimer"><strong>Cara membaca</strong><p>Warna menunjukkan dukungan ensemble yang dihaluskan dengan kernel Gaussian 30 km dan dikalikan keandalan bukti sumber. Sumber tak terklasifikasi harus memiliki konfirmasi deteksi independen; deteksi tunggal ditahan. Ini bukan status api aktif. Angin diinterpolasi pada 925, 850, atau 700 hPa berdasarkan aturan PBL dan gerak vertikal.</p></div>
       </aside>
     </section>
-    <section class="fw-sources"><strong>Sumber:</strong> NASA FIRMS NRT untuk kompleks hotspot; GEFS untuk dukungan lintasan ensemble; GFS untuk lintasan referensi, PBL, gerak vertikal, dan reduksi hujan; CAMS AOD hanya sebagai informasi pembanding. Warna adalah dukungan ensemble yang dihaluskan dengan kernel 30 km, bukan konsentrasi PM2.5, batas asap teramati, atau risiko kesehatan.</section>
+    <section class="fw-sources"><strong>Sumber:</strong> NASA FIRMS NRT untuk kompleks hotspot; GEFS untuk dukungan lintasan ensemble; GFS untuk lintasan referensi, PBL, gerak vertikal, dan reduksi hujan; CAMS AOD hanya sebagai informasi pembanding; anomali panas tak terklasifikasi disaring secara konservatif sebelum menjadi sumber. Warna adalah dukungan ensemble yang dihaluskan dengan kernel 30 km, bukan konsentrasi PM2.5, batas asap teramati, atau risiko kesehatan.</section>
   </main>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
   <script src="https://cdn.jsdelivr.net/npm/@turf/turf@7/turf.min.js"></script>
   <script src="js/i18n.js?v=20260811-remove-current-detection1"></script>
-  <script src="js/fire-weather.js?v=20260811-validation-status1"></script>
+  <script src="js/smoke-transport-model.js?v=20260811-source-screen1"></script>
+  <script src="js/fire-weather.js?v=20260811-source-screen1"></script>
 </body>
 </html>

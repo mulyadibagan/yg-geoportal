@@ -321,6 +321,40 @@
     return value == null || String(value).trim() === "" || String(value).trim() === "0";
   }
 
+  /*
+   * Conservative source gate for transport modelling. FIRMS "high"
+   * confidence describes a thermal anomaly, not confirmed vegetation fire.
+   * MODIS type 0 is explicit vegetation fire. Unclassified feeds (commonly
+   * VIIRS) need independent observational corroboration before they may seed
+   * a transport corridor. ESA WorldCover class 50 (built-up) and class 80
+   * (permanent water) are withheld when an enrichment value is available.
+   */
+  function screenSourceComplex(source) {
+    source = source || {};
+    var types = source.types || {};
+    var hasVegetationType = !!types["0"] || source.explicitVegetation === true;
+    var landCover = finite(source.landCoverClass);
+    var count = Math.max(0, Number(source.count) || 0);
+    var satelliteCount = Math.max(0, Number(source.satelliteCount) || 0);
+    var passCount = Math.max(0, Number(source.passCount) || 0);
+    var frp = Math.max(0, Number(source.frp) || 0);
+    var reasons = [];
+
+    if (landCover === 50) reasons.push("built-up land cover");
+    if (landCover === 80) reasons.push("permanent water");
+    if (!hasVegetationType && count < 2) reasons.push("single unclassified detection");
+    if (!hasVegetationType && satelliteCount < 2 && passCount < 2) reasons.push("no independent corroboration");
+    if (!hasVegetationType && frp < 10) reasons.push("weak unclassified thermal signal");
+
+    return {
+      eligible: reasons.length === 0,
+      status: reasons.length ? "withheld" : "eligible",
+      reasons: reasons,
+      evidence: hasVegetationType ? "FIRMS vegetation-fire type" : "corroborated unclassified thermal anomaly",
+      landCoverClass: landCover
+    };
+  }
+
   function clusterSources(features, options) {
     options = options || {};
     var spatialKm = finite(options.spatialKm) || 1.5;
@@ -618,6 +652,7 @@
     isVegetationOrUnclassified: isVegetationOrUnclassified,
     quantile: quantile,
     sampleWind: sampleWind,
+    screenSourceComplex: screenSourceComplex,
     travelVector: travelVector
   };
 });

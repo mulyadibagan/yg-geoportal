@@ -47,6 +47,25 @@ test("groups only close detections from different satellites", () => {
   assert.equal(merged.properties.frp, 12);
 });
 
+test("withholds a lone unclassified hotspot from transport modelling", () => {
+  const result = model.screenSourceComplex({count:1,satelliteCount:1,passCount:1,frp:25,types:{}});
+  assert.equal(result.eligible, false);
+  assert.match(result.reasons.join(" "), /single unclassified/);
+});
+
+test("accepts corroborated unclassified sources and rejects built-up land cover", () => {
+  const source = {count:2,satelliteCount:2,passCount:2,frp:18,types:{}};
+  assert.equal(model.screenSourceComplex(source).eligible, true);
+  const builtUp = model.screenSourceComplex({...source,landCoverClass:50});
+  assert.equal(builtUp.eligible, false);
+  assert.match(builtUp.reasons.join(" "), /built-up/);
+});
+
+test("accepts an explicit FIRMS vegetation-fire type", () => {
+  const result = model.screenSourceComplex({count:1,satelliteCount:1,passCount:1,frp:2,types:{"0":true}});
+  assert.equal(result.eligible, true);
+  assert.match(result.evidence, /vegetation-fire/);
+});
 test("converts meteorological wind-from direction to travel direction", () => {
   const vector = model.travelVector(10, 0);
   assert.ok(Math.abs(vector.east) < 1e-9);
