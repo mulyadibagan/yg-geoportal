@@ -6,6 +6,8 @@ The current browser model remains an experimental **transport-likelihood screeni
 
 The screening model interpolates GFS/GEFS wind vectors from the four nearest grid locations and two surrounding forecast times. It selects 925 hPa by default, 850 hPa when PBL height reaches 1,400 m, and 700 hPa only when PBL reaches 2,800 m and the magnitude of 925-hPa vertical velocity reaches 0.05 Pa/s. These are explicit screening heuristics, not measured smoke-injection heights.
 
+Trajectory support is rasterised on a 0.25-degree grid with a 30 km Gaussian kernel, truncated at 75 km. Within one fire complex, each ensemble member contributes the maximum kernel weight encountered along its trajectory to a cell, preventing repeated trajectory samples from multiplying that member's vote. Source-specific support is divided by the number of valid equally weighted members; overlapping fire complexes use the maximum source-specific value rather than being added together.
+
 The phase-2 product is published only after a backend HYSPLIT run passes the repository validator. Missing, incomplete, or expired output is withheld rather than replaced by a visual fallback.
 
 ## Required inputs
