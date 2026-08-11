@@ -29,7 +29,7 @@
       <button class="active" type="button" data-product="hotspots"><span>🔥</span><strong>Hotspot</strong><small>VIIRS · confidence tinggi</small></button>
       <button type="button" data-product="wind"><span>➤</span><strong>Angin</strong><small>Lapisan rendah ±2.500 kaki</small></button>
       <button type="button" data-product="rain"><span>🌧</span><strong>Hujan saat ini</strong><small>Citra radar terbaru · bukan akumulasi</small></button>
-      <button type="button" data-product="smoke"><span>🌫️</span><strong id="smoke-product-title">Analisis Dispersi Asap</strong><small id="smoke-product-note">Model penyaringan GEFS terbaru</small></button>
+      <button type="button" data-product="smoke"><span>🌫️</span><strong id="smoke-product-title">Potensi Sebaran Kabut Asap</strong><small id="smoke-product-note">Model GEFS eksperimental</small></button>
     </section>
     <section class="fw-kpis" aria-label="Ringkasan kondisi">
       <article><span>Hotspot high confidence desa YG</span><strong id="kpi-hotspots">—</strong><small id="kpi-period">24 jam</small></article>
@@ -45,7 +45,7 @@
           <label><input type="checkbox" data-layer="hotspots" checked> Hotspot interaktif confidence tinggi</label>
           <label><input type="checkbox" data-layer="satellite"> Citra satelit MODIS</label>
           <label><input type="checkbox" data-layer="villages" checked> Desa intervensi & risiko</label>
-          <label><input type="checkbox" data-layer="smoke"> Analisis dispersi asap eksperimental</label>
+          <label><input type="checkbox" data-layer="smoke"> Potensi sebaran kabut asap · eksperimental</label>
           <label title="Hanya aktif setelah keluaran HYSPLIT lolos validasi"><input type="checkbox" data-layer="dispersion" disabled> Dispersi asap HYSPLIT (belum tersedia)</label>
           <label><input type="checkbox" data-layer="rain"> Hujan saat ini (radar)</label>
           <p class="control-note" id="rain-status">Aktifkan layer untuk melihat citra radar hujan terbaru.</p>
@@ -55,12 +55,12 @@
         </div>
         <div class="fw-control-group fw-wind-level"><h2>Ketinggian angin</h2><p class="fw-static-value">GFS 925 hPa (sekitar 2.500 kaki)</p><p class="control-note">Panah menunjukkan arah perjalanan udara/asap dan diperbarui otomatis mengikuti siklus GFS.</p></div>
         <div class="fw-zoom-actions"><button class="fw-primary" id="zoom-id" type="button">Lihat Indonesia</button><button class="fw-secondary" id="zoom-yg" type="button">Zoom ke wilayah YG</button></div>
-        <div class="fw-legend"><h2>Legenda</h2><span><i class="hotspot-dot"></i>Hotspot confidence tinggi</span><span><i class="smoke-low"></i>Koridor dukungan transport relatif · belum dikalibrasi</span><span><i class="legend-infrastructure fdrs">F</i>FDRS / tinggi muka air</span><span><i class="legend-infrastructure canal">S</i>Sekat kanal</span><span><i class="risk-zero"></i>Desa: nihil</span><span><i class="risk-low"></i>Desa: 1–2 titik</span><span><i class="risk-medium"></i>Desa: 3–5 titik</span><span><i class="risk-high"></i>Desa: &gt;5 titik</span></div>
+        <div class="fw-legend"><h2>Legenda</h2><span><i class="hotspot-dot"></i>Hotspot confidence tinggi</span><span><i class="smoke-low"></i>Potensi sebaran kabut asap · belum dikalibrasi</span><span><i class="legend-infrastructure fdrs">F</i>FDRS / tinggi muka air</span><span><i class="legend-infrastructure canal">S</i>Sekat kanal</span><span><i class="risk-zero"></i>Desa: nihil</span><span><i class="risk-low"></i>Desa: 1–2 titik</span><span><i class="risk-medium"></i>Desa: 3–5 titik</span><span><i class="risk-high"></i>Desa: &gt;5 titik</span></div>
         <div class="fw-legend fw-dispersion-legend"><span><i class="smoke-low"></i>Rendah</span><span><i class="smoke-watch"></i>Sedang</span><span><i class="smoke-high"></i>Tinggi</span><span><i class="smoke-very-high"></i>Sangat tinggi</span><small>Dukungan relatif model; bukan konsentrasi atau tingkat bahaya.</small></div>
       </aside>
       <div class="fw-map-wrap"><div id="fire-map" aria-label="Peta pemantauan karhutla dan cuaca"></div><div class="fw-map-message" id="map-message" hidden></div></div>
       <aside class="fw-alerts"><div class="fw-alert-head"><div><p class="fw-eyebrow">PERINGATAN DESA</p><h2>Prioritas pemantauan</h2></div><span id="alert-count">0</span></div><div id="alert-list" class="fw-alert-list"><p class="empty">Memuat data…</p></div>
-        <div class="fw-smoke-summary" id="smoke-summary"><strong>Koridor dukungan transport GEFS</strong><p>Aktifkan layer untuk menjalankan penyaringan lintasan ensemble 24 jam. Hasil bukan polygon asap teramati.</p></div>
+        <div class="fw-smoke-summary" id="smoke-summary"><strong>Potensi sebaran kabut asap</strong><p>Aktifkan layer untuk menjalankan model GEFS 24 jam. Polygon menunjukkan potensi sebaran, bukan kabut asap teramati, konsentrasi PM2.5, atau tingkat bahaya.</p></div>
         <div class="fw-disclaimer"><strong>Cara membaca</strong><p>Warna menunjukkan dukungan ensemble yang dihaluskan dengan kernel Gaussian 30 km dan dikalikan keandalan bukti sumber. Sumber tak terklasifikasi harus memiliki konfirmasi deteksi independen; deteksi tunggal ditahan. Ini bukan status api aktif. Angin diinterpolasi pada 925, 850, atau 700 hPa berdasarkan aturan PBL dan gerak vertikal.</p></div>
       </aside>
     </section>
