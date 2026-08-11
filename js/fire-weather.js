@@ -26,10 +26,11 @@
   };
   var villageGeo=null,analytics=null,hotspotGeo=null,ygBounds=null,period=30,rainLayer=null,mapDateBadge=null,hotspotStatusText='Memuat…',weatherReadings=[],weatherReady=false,aerosolReadings=[],aerosolReady=false,aerosolTime='',transportReadings=[],transportReady=false,transportTime='',ensembleReadings=[],ensembleReady=false,ensembleTime='',ensembleStatus='',lastSmokeField=null,smokeEntryLayers=[];
   var weatherSites=[['Aceh',5.55,95.32],['Riau',1.45,102.1],['Sumatera Selatan',-3.0,104.8],['Jakarta',-6.2,106.8],['Kalimantan Barat',-.1,109.3],['Kalimantan Tengah',-2.2,113.9],['Kalimantan Timur',.5,117.1],['Sulawesi',-2.0,121.0],['Bali',-8.4,115.2],['Maluku',-3.2,129.0],['Papua Selatan',-7.5,139.5],['Papua Utara',-2.5,140.7]];
+  var hotspotModelReady=false,hotspotLatestObservation=null;
   function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
   function nameOf(p){return p.Desa||p.WADMKD||p.Nama_Desa||p.NAMOBJ||'Desa intervensi'}
   function pointTime(f){var p=f.properties||{},t=String(p.acq_time||'0000').padStart(4,'0');return new Date(p.acq_date+'T'+t.slice(0,2)+':'+t.slice(2,4)+':00Z')}
-  function periodLabel(){return period==='latest'?'6 jam terakhir':period===1?(observationDate===currentDate?'24 jam bergulir':'24 jam sampai akhir tanggal'):period===7?'7 hari · sumber berulang':period+' hari'}
+  function periodLabel(){return period==='latest'?'deteksi satelit 6 jam terakhir':period===1?(observationDate===currentDate?'24 jam bergulir':'24 jam sampai akhir tanggal'):period===7?'7 hari · sumber berulang':period+' hari'}
   function periodEnd(){return observationDate===currentDate?new Date():new Date(observationDate+'T23:59:59+07:00')}
   function filteredHotspots(){var end=periodEnd(),items=(hotspotGeo&&hotspotGeo.features||[]).filter(function(f){var t=pointTime(f);return !isNaN(t)&&t<=end}),days=period==='latest'?0.25:Number(period);var cutoff=end.getTime()-days*86400000;return items.filter(function(f){return pointTime(f).getTime()>cutoff})}
   function pointInRing(p,r){var inside=false,x=p[0],y=p[1];for(var i=0,j=r.length-1;i<r.length;j=i++){var xi=r[i][0],yi=r[i][1],xj=r[j][0],yj=r[j][1];if((yi>y)!==(yj>y)&&x<((xj-xi)*(y-yi))/((yj-yi)||1e-12)+xi)inside=!inside}return inside}
@@ -42,7 +43,7 @@
     var layer=L.geoJSON(villageGeo,{style:function(f){var c=points.filter(function(x){return pointInGeometry(x.geometry.coordinates,f.geometry)}).length;return {color:'#31584b',weight:1,fillColor:color(c),fillOpacity:.48}},onEachFeature:function(f,l){var p=f.properties||{},c=points.filter(function(x){return pointInGeometry(x.geometry.coordinates,f.geometry)}).length;total+=c;if(c)alerts.push({name:nameOf(p),count:c,layer:l,risk:risk(c)});l.bindPopup('<strong>'+esc(nameOf(p))+'</strong><br>'+c+' hotspot · '+periodLabel()+'<br><small>NASA FIRMS/VIIRS · confidence tinggi</small>')}}).addTo(groups.villages);
     ygBounds=layer.getBounds();document.getElementById('kpi-hotspots').textContent=total;document.getElementById('kpi-alerts').textContent=alerts.length;renderAlerts(alerts)
   }
-  function renderHotspots(){groups.hotspots.clearLayers();var items=filteredHotspots();items.forEach(function(f){var p=f.properties||{},t=pointTime(f),c=f.geometry.coordinates,when=isNaN(t)?'Waktu tidak tersedia':t.toLocaleString('id-ID',{timeZone:'Asia/Jakarta',dateStyle:'medium',timeStyle:'short'})+' WIB',html='<strong>Hotspot confidence tinggi</strong><br>'+when+'<br>Satelit: '+esc(p.satellite||'—')+'<br>Koordinat: '+Number(c[1]).toFixed(5)+', '+Number(c[0]).toFixed(5);if(p.brightness!=null)html+='<br>Suhu kecerahan: '+Number(p.brightness).toFixed(1)+' K';if(p.frp!=null)html+='<br>FRP: '+Number(p.frp).toFixed(1)+' MW';html+='<br><small>NASA FIRMS · klik titik lain untuk melihat datanya</small>';L.circleMarker([c[1],c[0]],{pane:'hotspotPane',radius:6,color:'#7f1d1d',weight:1,fillColor:'#ef2b2d',fillOpacity:.9}).bindPopup(html).addTo(groups.hotspots)});var partial=hotspotGeo&&hotspotGeo.sourceStatus==='partial'?' · PERINGATAN: sumber parsial':'';document.getElementById('period-note').textContent=items.length+' titik daratan high confidence · '+periodLabel()+partial}
+  function renderHotspots(){groups.hotspots.clearLayers();var items=filteredHotspots();items.forEach(function(f){var p=f.properties||{},t=pointTime(f),c=f.geometry.coordinates,when=isNaN(t)?'Waktu tidak tersedia':t.toLocaleString('id-ID',{timeZone:'Asia/Jakarta',dateStyle:'medium',timeStyle:'short'})+' WIB',html='<strong>Hotspot confidence tinggi</strong><br>'+when+'<br>Satelit: '+esc(p.satellite||'—')+'<br>Koordinat: '+Number(c[1]).toFixed(5)+', '+Number(c[0]).toFixed(5);if(p.brightness!=null)html+='<br>Suhu kecerahan: '+Number(p.brightness).toFixed(1)+' K';if(p.frp!=null)html+='<br>FRP: '+Number(p.frp).toFixed(1)+' MW';html+='<br><small>NASA FIRMS · klik titik lain untuk melihat datanya</small>';L.circleMarker([c[1],c[0]],{pane:'hotspotPane',radius:6,color:'#7f1d1d',weight:1,fillColor:'#ef2b2d',fillOpacity:.9}).bindPopup(html).addTo(groups.hotspots)});var partial=hotspotGeo&&hotspotGeo.sourceStatus==='partial'?' · PERINGATAN: sumber parsial':'',empty=period==='latest'&&!items.length?' · tidak ada deteksi bukan bukti tidak ada kebakaran':'';document.getElementById('period-note').textContent=items.length+' titik daratan high confidence · '+periodLabel()+partial+empty}
   function refreshHotspots(){renderHotspots();renderVillages()}
   function renderAlerts(items){
     items.sort(function(a,b){return b.count-a.count});var box=document.getElementById('alert-list');document.getElementById('alert-count').textContent=items.length;
@@ -91,9 +92,10 @@
     updateSmokeProductLabel();
     if(period===30){summary.className='fw-smoke-summary';summary.innerHTML=en?'<strong>30-day hotspot history</strong><p>Smoke-potential polygons are disabled. This period is used only for historical hotspot markers and statistics.</p>':'<strong>Riwayat hotspot 30 hari</strong><p>Poligon potensi asap dinonaktifkan. Periode ini hanya untuk marker dan statistik historis hotspot.</p>';return}
     if(period===7){if(!hotspotGeo||!window.turf){summary.className='fw-smoke-summary';summary.innerHTML=en?'<strong>Repeated fire sources · 7 days</strong><p>Source data are incomplete.</p>':'<strong>Sumber api berulang · 7 hari</strong><p>Data sumber belum lengkap.</p>';return}renderRepeatedSources(summary,en);return}
-    if(!hotspotGeo||!transportReady||!ensembleReady||!window.turf){
+    if(!hotspotGeo||!hotspotModelReady||!transportReady||!ensembleReady||!window.turf){
       summary.className='fw-smoke-summary';
-      summary.innerHTML=en?'<strong>Smoke transport likelihood unavailable</strong><p>Hotspots remain visible, but the probability polygon is withheld because '+esc(ensembleStatus||'GFS/GEFS data are incomplete')+'.</p>':'<strong>Peluang transport asap belum tersedia</strong><p>Hotspot tetap ditampilkan, tetapi poligon probabilitas tidak dibuat karena '+esc(ensembleStatus||'data GFS/GEFS belum lengkap')+'.</p>';
+      var unavailableReason=!hotspotModelReady?(en?'the FIRMS source snapshot is stale or incomplete':'snapshot sumber FIRMS terlambat atau tidak lengkap'):(ensembleStatus||'data GFS/GEFS belum lengkap');
+      summary.innerHTML=en?'<strong>Smoke transport likelihood unavailable</strong><p>Hotspots remain visible, but the probability polygon is withheld because '+esc(unavailableReason)+'.</p>':'<strong>Peluang transport asap belum tersedia</strong><p>Hotspot tetap ditampilkan, tetapi poligon probabilitas tidak dibuat karena '+esc(unavailableReason)+'.</p>';
       return;
     }
     if(observationDate!==currentDate){summary.className='fw-smoke-summary';summary.innerHTML=en?'<strong>Smoke transport likelihood</strong><p>The trajectory model is available only for the current date because historical atmospheric fields are not loaded.</p>':'<strong>Peluang transport asap</strong><p>Model lintasan hanya tersedia untuk tanggal hari ini karena medan atmosfer historis belum dimuat.</p>';return}
@@ -164,11 +166,14 @@
     var generated=hotspotGeo&&hotspotGeo.generatedAt?new Date(hotspotGeo.generatedAt):null;
     var age=generated&&!isNaN(generated)?Math.max(0,Date.now()-generated.getTime()):Infinity;
     var hours=age/3600000;
+    hotspotLatestObservation=(hotspotGeo&&hotspotGeo.features||[]).reduce(function(latest,feature){var time=pointTime(feature);return !isNaN(time)&&(!latest||time>latest)?time:latest},null);
+    hotspotModelReady=!!hotspotGeo&&hotspotGeo.sourceStatus!=='partial'&&hours<=6;
     if(hotspotGeo&&hotspotGeo.sourceStatus==='partial')hotspotStatusText='Peringatan · data FIRMS parsial';
     else if(hours>6)hotspotStatusText='Peringatan · data FIRMS terlambat';
     else hotspotStatusText='Near real-time · high confidence';
     document.getElementById('data-status').textContent=observationDate===currentDate?hotspotStatusText:'Arsip harian';
-    document.getElementById('updated-at').textContent=generated&&!isNaN(generated)?'FIRMS: '+generated.toLocaleString('id-ID',{timeZone:'Asia/Jakarta'})+' WIB · pembaruan tiap jam':'FIRMS belum diperbarui';
+    var generatedText=generated&&!isNaN(generated)?generated.toLocaleString('id-ID',{timeZone:'Asia/Jakarta'}):'belum tersedia',observedText=hotspotLatestObservation?hotspotLatestObservation.toLocaleString('id-ID',{timeZone:'Asia/Jakarta'}):'belum tersedia';
+    document.getElementById('updated-at').textContent='Snapshot: '+generatedText+' WIB | observasi terakhir: '+observedText+' WIB';
   }
   function updateMapDateBadge(){
     if(!mapDateBadge)return;
