@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "product": "GEFS transport-corridor screening",
+  "statusRules": {
+    "preliminaryCalibrationMinimumReviewedCases": 5,
+    "calibratedMinimumReviewedCases": 10,
+    "calibratedMinimumIndependentEvaluationCases": 3
+  },
+  "parameters": {
+    "kernelBandwidthKm": 30,
+    "kernelTruncationKm": 75,
+    "dryHalfLifeHours": 18,
+    "wetRemovalCoefficientPerMm": 0.35,
+    "verticalVelocityConfidenceThresholdPaPerSecond": 0.2,
+    "verticalVelocityConfidenceMultiplier": 0.9,
+    "minimumTrajectorySurvival": 0.15,
+    "supportBreaksPercent": [1, 26, 51, 76]
+  },
+  "parameterStatus": "engineering defaults; not fitted to observed plume polygons",
+  "caseRoles": {
+    "sumatra-2026-02-07": "pilot-calibration",
+    "sumatra-2026-06-03": "pilot-calibration",
+    "west-kalimantan-2026-06-05": "pilot-evaluation"
+  },
+  "primaryMetrics": [
+    "intersectionOverUnion",
+    "falseAlarmRatio",
+    "missRatio",
+    "plumeAxisAngularErrorDegrees"
+  ],
+  "claimBoundary": "Calibration evaluates agreement with independently traced satellite-visible plume-like material; it does not validate PM2.5 concentration, exposure, or health risk."
+}

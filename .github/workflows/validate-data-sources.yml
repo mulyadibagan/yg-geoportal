@@ -7,8 +7,12 @@ on:
       - "data/source-registry.json"
       - "data/smoke-validation-catalog.json"
       - "data/smoke-validation-observed.geojson"
+      - "data/smoke-calibration-plan.json"
+      - "data/smoke-validation-status.json"
       - "scripts/validate_source_registry.mjs"
       - "scripts/validate_smoke_annotations.mjs"
+      - "scripts/build_smoke_validation_status.mjs"
+      - "scripts/validate_smoke_validation_status.mjs"
       - ".github/workflows/validate-data-sources.yml"
   workflow_dispatch:
 
@@ -22,3 +26,5 @@ jobs:
           node-version: "22"
       - run: node scripts/validate_source_registry.mjs
       - run: node scripts/validate_smoke_annotations.mjs
+      - run: node scripts/build_smoke_validation_status.mjs
+      - run: node scripts/validate_smoke_validation_status.mjs

@@ -48,6 +48,9 @@ test("page labels the GEFS corridor product and wires the controller", () => {
   assert.match(controller, /cache GEFS server mencakup waktu model/);
   assert.match(controller, /data\/weather-riau\.json/);
   assert.match(controller, /data\/gfs-atmosphere\.json/);
+  assert.match(controller, /data\/smoke-validation-status\.json/);
+  assert.match(controller, /Status validasi/);
+  assert.match(controller, /Belum dikalibrasi/);
   assert.doesNotMatch(controller, /api\.open-meteo\.com\/v1\/forecast\?latitude=/);
   assert.doesNotMatch(controller, /api\.open-meteo\.com\/v1\/gfs\?latitude=/);
   assert.match(controller, /function transportSurvivalStep/);
