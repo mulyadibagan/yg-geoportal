@@ -1,0 +1,20 @@
+name: Validate data-source compliance
+
+on:
+  pull_request:
+  push:
+    paths:
+      - "data/source-registry.json"
+      - "scripts/validate_source_registry.mjs"
+      - ".github/workflows/validate-data-sources.yml"
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: node scripts/validate_source_registry.mjs

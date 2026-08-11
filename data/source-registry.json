@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-08-11",
+  "projectUse": "non-commercial public-interest prototype",
+  "sources": [
+    {
+      "id": "nasa-firms",
+      "name": "NASA FIRMS active-fire data",
+      "used": true,
+      "dataKind": "satellite observation",
+      "access": "official API",
+      "termsUrl": "https://www.earthdata.nasa.gov/engage/open-data-services-software/data-use-policy",
+      "licence": "NASA Earthdata open-data policy; NASA-led mission data generally CC0 unless marked otherwise",
+      "attribution": "NASA FIRMS / LANCE",
+      "commercialUse": "check dataset-specific restrictions",
+      "redistribution": "allowed unless dataset is marked otherwise",
+      "status": "approved"
+    },
+    {
+      "id": "nasa-gibs",
+      "name": "NASA GIBS MODIS imagery",
+      "used": true,
+      "dataKind": "satellite imagery",
+      "access": "official WMS/WMTS",
+      "termsUrl": "https://www.earthdata.nasa.gov/engage/open-data-services-software/data-use-policy",
+      "licence": "NASA Earthdata open-data policy",
+      "attribution": "NASA GIBS / MODIS Terra",
+      "commercialUse": "allowed for factual use without implying NASA endorsement",
+      "redistribution": "allowed unless marked otherwise",
+      "status": "approved"
+    },
+    {
+      "id": "open-meteo",
+      "name": "Open-Meteo weather, ensemble and CAMS air-quality APIs",
+      "used": true,
+      "dataKind": "model output",
+      "access": "official API",
+      "termsUrl": "https://open-meteo.com/en/pricing",
+      "licence": "CC BY 4.0 data; free API restricted to non-commercial use and published limits",
+      "attribution": "Open-Meteo; underlying model provider shown with each product",
+      "commercialUse": "paid commercial API required",
+      "redistribution": "allowed with attribution",
+      "status": "conditional"
+    },
+    {
+      "id": "rainviewer",
+      "name": "RainViewer Weather Radar API",
+      "used": true,
+      "dataKind": "radar mosaic",
+      "access": "official API",
+      "termsUrl": "https://www.rainviewer.com/api.html",
+      "licence": "free terms for personal, educational and small-scale community use",
+      "attribution": "Weather data by RainViewer — https://www.rainviewer.com/",
+      "commercialUse": "separate agreement required",
+      "redistribution": "subject to RainViewer terms and upstream availability",
+      "status": "conditional"
+    },
+    {
+      "id": "openstreetmap-tiles",
+      "name": "OpenStreetMap standard tiles",
+      "used": true,
+      "dataKind": "basemap tiles",
+      "access": "official tile service",
+      "termsUrl": "https://operations.osmfoundation.org/policies/tiles/",
+      "licence": "OpenStreetMap data ODbL; tile service subject to usage policy",
+      "attribution": "© OpenStreetMap contributors",
+      "commercialUse": "data allowed; heavy use of community tile servers is not allowed",
+      "redistribution": "subject to ODbL and tile policy",
+      "status": "conditional"
+    },
+    {
+      "id": "bmkg-pm25",
+      "name": "BMKG PM2.5 observations",
+      "used": false,
+      "dataKind": "ground observation",
+      "access": "no approved project API",
+      "termsUrl": "https://www.bmkg.go.id/ketentuan-penggunaan",
+      "licence": "BMKG terms of use",
+      "attribution": "Sumber: BMKG, plus required title, access date and original link",
+      "commercialUse": "written permission required",
+      "redistribution": "written permission required for third-party application integration",
+      "status": "blocked"
+    },
+    {
+      "id": "openaq",
+      "name": "OpenAQ PM2.5 observations",
+      "used": false,
+      "dataKind": "aggregated ground observations",
+      "access": "registered API key required",
+      "termsUrl": "https://docs.openaq.org/about/terms",
+      "licence": "varies by original provider and must be checked per station",
+      "attribution": "OpenAQ and original data provider",
+      "commercialUse": "depends on each provider licence",
+      "redistribution": "depends on each provider licence",
+      "status": "review-required"
+    }
+  ]
+}
