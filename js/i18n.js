@@ -784,6 +784,7 @@
     ,"Peluang: waspada (25–49)": "Likelihood: watch (25–49)"
     ,"Peluang: tinggi (50–74)": "Likelihood: high (50–74)"
     ,"Peluang: sangat tinggi (75–100)": "Likelihood: very high (75–100)"
+    ,"Titik merah tua adalah sumber kompleks kebakaran; garis putus-putus menunjukkan lintasan median ensemble menuju kontur peluang transport. Kontur bukan batas asap teramati dan bukan pengukuran kualitas udara.": "Dark-red points are fire-complex sources; dashed lines show the median ensemble path toward transport-likelihood contours. Contours are not observed smoke boundaries or air-quality measurements."
     ,"Panah menunjukkan arah perjalanan udara/asap, bukan arah asal angin.": "Arrows show the direction air/smoke travels, not where the wind comes from."
     ,"Kontur terbentuk dari kepadatan lintasan partikel selama 24 jam menggunakan angin 925 hPa. Kontur yang bersentuhan digabungkan. Zona ini bukan batas asap teramati dan bukan pengganti pengukuran kualitas udara.": "Contours are formed from 24-hour particle-trajectory density using 925 hPa winds. Touching contours are merged. These zones are not observed smoke boundaries or a substitute for air-quality measurements."
     ,"Waktu hotspot & model": "Hotspot & model period"
