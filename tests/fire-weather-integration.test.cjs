@@ -45,7 +45,12 @@ test("page labels the GEFS corridor product and wires the controller", () => {
   assert.match(controller, /setLayerChecked\('hotspots',true\)/);
   assert.match(controller, /cache GEFS server mencakup waktu model/);
   assert.match(controller, /data\/weather-riau\.json/);
+  assert.match(controller, /data\/gfs-atmosphere\.json/);
   assert.doesNotMatch(controller, /api\.open-meteo\.com\/v1\/forecast\?latitude=/);
+  assert.doesNotMatch(controller, /api\.open-meteo\.com\/v1\/gfs\?latitude=/);
+  assert.match(controller, /function transportSurvivalStep/);
+  assert.match(controller, /Math\.exp\(-\.35\*rain\)/);
+  assert.match(controller, /Math\.pow\(\.5,1\/18\)/);
   assert.match(controller, /kompleks sumber dikeluarkan karena GEFS tidak mencakup waktu deteksinya/);
 });
 
