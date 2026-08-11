@@ -31,15 +31,32 @@ async function request(attempt = 0) {
 
 const data = await request();
 const rows = Array.isArray(data) ? data : [data];
-if (!rows.length || !rows.every((row) => row.hourly?.time?.length)) {
+if (rows.length !== grid.length || !rows.every((row) => row.hourly?.time?.length)) {
   throw new Error("GEFS response is incomplete; existing cache was preserved.");
 }
 
+const memberCounts = rows.map((row) => Object.keys(row.hourly).filter((key) => /^wind_speed_925hPa(_member\d+)?$/.test(key)).length);
+const memberCount = Math.min(...memberCounts);
+const toTimestamp = (value) => new Date(`${value}+07:00`).getTime();
+const validFromMs = Math.max(...rows.map((row) => toTimestamp(row.hourly.time[0])));
+const validUntilMs = Math.min(...rows.map((row) => toTimestamp(row.hourly.time.at(-1))));
+if (memberCount < 2 || !Number.isFinite(validFromMs) || !Number.isFinite(validUntilMs) || validUntilMs <= validFromMs) {
+  throw new Error("GEFS response has invalid member or time coverage; existing cache was preserved.");
+}
+
 await fs.writeFile(output, `${JSON.stringify({
+  schemaVersion: 2,
   generatedAt: new Date().toISOString(),
+  validFrom: new Date(validFromMs).toISOString(),
+  validUntil: new Date(validUntilMs).toISOString(),
   source: "Open-Meteo GEFS ensemble API",
+  underlyingModel: "NOAA/NCEP GEFS via Open-Meteo gfs_seamless",
+  attribution: "Open-Meteo; NOAA/NCEP GEFS",
+  termsUrl: "https://open-meteo.com/en/pricing",
   levels: [925, 850, 700],
   gridCount: grid.length,
+  memberCount,
+  grid: { latitudeStart: -10, latitudeEnd: 5, latitudeStep: 3, longitudeStart: 96, longitudeEnd: 140, longitudeStep: 4 },
   data: rows
 })}\n`);
-console.log(`Wrote ${rows.length} GEFS grid locations to ${output}`);
+console.log(`Wrote ${rows.length} GEFS grid locations and ${memberCount} members to ${output}`);

@@ -23,6 +23,8 @@ jobs:
           node-version: "22"
       - name: Fetch GEFS 925 hPa ensemble
         run: node scripts/update_gefs_cache.mjs
+      - name: Validate GEFS provenance and coverage
+        run: node scripts/validate_gefs_cache.mjs
       - name: Commit refreshed cache
         run: |
           if git diff --quiet -- data/gefs-multilevel.json; then
