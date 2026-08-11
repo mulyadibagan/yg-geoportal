@@ -7,6 +7,9 @@
       "id": "sumatra-2026-02-07",
       "date": "2026-02-07",
       "region": "Central Sumatra",
+      "bbox": [98, -4, 106, 3],
+      "meteorologyStatus": "ready-deterministic-only",
+      "meteorologyFile": "data/historical-transport/sumatra-2026-02-07.json",
       "referenceUrl": "https://asmc.asean.org/category/haze-review/haze-review-for-year-2026/",
       "referenceUse": "candidate date only",
       "annotationStatus": "pending"
@@ -15,6 +18,9 @@
       "id": "sumatra-2026-06-03",
       "date": "2026-06-03",
       "region": "Northern Sumatra",
+      "bbox": [95, -1, 103, 6],
+      "meteorologyStatus": "ready-deterministic-only",
+      "meteorologyFile": "data/historical-transport/sumatra-2026-06-03.json",
       "referenceUrl": "https://asmc.asean.org/category/haze-review/haze-review-for-year-2026/",
       "referenceUse": "candidate date only",
       "annotationStatus": "pending"
@@ -23,6 +29,9 @@
       "id": "west-kalimantan-2026-06-05",
       "date": "2026-06-05",
       "region": "West Kalimantan and central Sarawak",
+      "bbox": [107, -3, 116, 5],
+      "meteorologyStatus": "ready-deterministic-only",
+      "meteorologyFile": "data/historical-transport/west-kalimantan-2026-06-05.json",
       "referenceUrl": "https://asmc.asean.org/category/haze-review/haze-review-for-year-2026/",
       "referenceUse": "candidate date only",
       "annotationStatus": "pending"
