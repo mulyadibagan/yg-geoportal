@@ -784,8 +784,9 @@
     "Dasar fungsi Gaussian NOAA": "NOAA Gaussian-function basis",
     "Geometri isoband Turf": "Turf isoband geometry",
     "Kernel ini bukan laju dispersi fisik karena model belum memuat varians turbulensi, stabilitas/PBL, plume rise, pencampuran vertikal, deposisi, atau emisi massa. Hasil bukan plume teramati, konsentrasi, probabilitas, maupun peringatan kesehatan.": "This kernel is not a physical dispersion rate because the model does not load turbulent variance, stability/PBL, plume rise, vertical mixing, deposition, or mass emissions. The result is not an observed plume, concentration, probability, or health warning.",
-    "Sekarang dan 24 jam membentuk polygon kontur dari lintasan sejak deteksi hingga kini; 7 hari menampilkan sumber berulang; 30 hari hanya marker historis.": "Current and 24-hour periods build contour polygons from trajectories since detection; 7 days shows recurring sources; 30 days shows historical markers only.",
-    "Sekarang": "Current",
+    "Memuat deteksi…": "Loading detections…",
+    "24 jam adalah jendela deteksi bergulir; 7 hari menunjukkan sumber berulang; 30 hari adalah riwayat. Titik yang tidak tampil bukan bukti bahwa api telah padam.": "The 24-hour view is a rolling detection window; 7 days shows recurring sources; 30 days is historical. A point disappearing is not proof that the fire is extinguished.",
+    "24 jam terakhir": "Last 24 hours",
     "24 jam": "24 hours",
     "7 hari berulang": "7-day recurrence"
   });

@@ -63,6 +63,10 @@ test("page wires the pure transport model before the map controller", () => {
   assert.doesNotMatch(html, /1,853 km\/jam|1\.54σ|1,54σ|laju dispersi universal/i);
   assert.match(html, /bukan konsentrasi asap, PM2\.5, probabilitas/i);
   assert.match(html, /FRP dan AOD tidak menentukan warna/);
+  assert.match(html, /data-period="1">24 jam terakhir/);
+  assert.match(html, /Titik yang tidak tampil bukan bukti bahwa api telah padam/);
+  assert.doesNotMatch(html, /data-period="latest"|>Sekarang<|>Current</);
+  assert.doesNotMatch(controller, /period==='latest'|period==="latest"|6 jam terakhir|sumber 6 jam/);
   assert.match(controller, /period===7\|\|period===30\)applyPeriodButton/);
   assert.match(controller, /data-period="1"/);
   assert.match(controller, /smokeAutoFit=true/);
