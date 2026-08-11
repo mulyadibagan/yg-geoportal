@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
   <link rel="stylesheet" href="css/fire-weather.css?v=20260806-map-date1">
   <link rel="stylesheet" href="css/fire-weather-national.css?v=20260805-infra-fs1">
-  <link rel="stylesheet" href="css/fire-weather-smoke.css?v=20260811-contour1">
+  <link rel="stylesheet" href="css/fire-weather-smoke.css?v=20260811-no-current1">
 </head>
 <body>
   <header class="fw-header">
@@ -40,7 +40,7 @@
     </section>
     <section class="fw-workspace">
       <aside class="fw-controls" aria-label="Kontrol peta">
-        <div class="fw-control-group"><h2>Waktu hotspot & kontur</h2><div class="segmented" id="period-control"><button data-period="latest">Sekarang</button><button data-period="1">24 jam</button><button data-period="7">7 hari berulang</button><button class="active" data-period="30">30 hari</button></div><p class="control-note" id="period-note">Sekarang dan 24 jam membentuk polygon kontur dari lintasan sejak deteksi hingga kini; 7 hari menampilkan sumber berulang; 30 hari hanya marker historis.</p></div>
+        <div class="fw-control-group"><h2>Waktu hotspot & kontur</h2><div class="segmented" id="period-control"><button data-period="1">24 jam terakhir</button><button data-period="7">7 hari berulang</button><button class="active" data-period="30">30 hari</button></div><p class="control-note" id="period-note">Memuat deteksi…</p><p class="control-note">24 jam adalah jendela deteksi bergulir; 7 hari menunjukkan sumber berulang; 30 hari adalah riwayat. Titik yang tidak tampil bukan bukti bahwa api telah padam.</p></div>
         <div class="fw-control-group"><h2>Layer peta</h2>
           <label><input type="checkbox" data-layer="hotspots" checked> Hotspot interaktif confidence tinggi</label>
           <label><input type="checkbox" data-layer="satellite"> Citra satelit MODIS</label>
@@ -66,8 +66,8 @@
   </main>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
   <script src="https://cdn.jsdelivr.net/npm/@turf/turf@7/turf.min.js"></script>
-  <script src="js/i18n.js?v=20260811-contour1"></script>
-  <script src="js/smoke-transport-model.js?v=20260811-contour1"></script>
-  <script src="js/fire-weather.js?v=20260811-contour1"></script>
+  <script src="js/i18n.js?v=20260811-no-current1"></script>
+  <script src="js/smoke-transport-model.js?v=20260811-no-current1"></script>
+  <script src="js/fire-weather.js?v=20260811-no-current1"></script>
 </body>
 </html>
