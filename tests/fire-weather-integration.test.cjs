@@ -63,6 +63,8 @@ test("page wires the pure transport model before the map controller", () => {
   assert.doesNotMatch(html, /1,853 km\/jam|1\.54σ|1,54σ|laju dispersi universal/i);
   assert.match(html, /bukan konsentrasi asap, PM2\.5, probabilitas/i);
   assert.match(html, /FRP dan AOD tidak menentukan warna/);
+  assert.match(html, /Domain angin lintas batas mengikuti sumber aktif/);
+  assert.match(html, /polygon tidak ditampilkan bila batas belum teratasi/);
   assert.match(html, /data-period="1">24 jam terakhir/);
   assert.match(html, /Titik yang tidak tampil bukan bukti bahwa api telah padam/);
   assert.doesNotMatch(html, /data-period="latest"|>Sekarang<|>Current</);
@@ -72,7 +74,16 @@ test("page wires the pure transport model before the map controller", () => {
   assert.match(controller, /smokeAutoFit=true/);
   assert.match(controller, /setLayerChecked\('hotspots',true\)/);
   assert.match(controller, /turf\.isobands/);
+  assert.match(controller, /turf\.cleanCoords/);
+  assert.match(controller, /turf\.booleanValid/);
   assert.match(controller, /buildSupportGrid/);
+  assert.match(controller, /buildSupportGrid\(puffs,null/);
+  assert.doesNotMatch(controller, /buildSupportGrid\(puffs,\{minLat:-11\.2,maxLat:6\.2/);
+  assert.match(controller, /boundsForSources/);
+  assert.match(controller, /boundarySides/);
+  assert.match(controller, /expandBounds/);
+  assert.match(controller, /TRANSPORT_MAX_EXPANSIONS/);
+  assert.match(controller, /Polygon yang terpotong batas tidak ditampilkan/);
   assert.match(controller, /P20\/P50\/P75\/P90/);
   assert.match(controller, /fitBounds\(smokeBounds\.pad\(\.1\),\{maxZoom:6\}\)/);
 });
