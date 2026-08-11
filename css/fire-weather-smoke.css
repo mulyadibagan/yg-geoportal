@@ -23,3 +23,5 @@
 .smoke-watch { background: #f2ca52; }
 .smoke-high { background: #ef8f27; }
 .smoke-very-high { background: #d6402b; }
+.smoke-entry-label{border:0!important;border-radius:999px!important;background:#6d28d9!important;color:#fff!important;font-size:10px!important;font-weight:800!important;box-shadow:0 2px 8px rgba(45,20,90,.28)!important}
+.smoke-entry-label:before{border-right-color:#6d28d9!important}
