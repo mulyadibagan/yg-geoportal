@@ -71,7 +71,11 @@ test("page labels the GEFS corridor product and wires the controller", () => {
   assert.match(controller, /function renderObservedHaze\(\)/);
   assert.match(controller, /function aerosolScore\(row\)/);
   assert.match(controller, /turf\.isobands\(turf\.featureCollection\(points\)/);
-  assert.match(controller, /CAMS ditampilkan sebagai kontur halus/);
+  assert.match(controller, /kontur halus hijau, kuning, oranye, dan merah/);
+  assert.match(controller, /'#54a96b'/);
+  assert.match(controller, /'#f2ca52'/);
+  assert.match(controller, /'#ef8f27'/);
+  assert.match(controller, /'#d6402b'/);
   assert.doesNotMatch(controller, /L\.circle\(\[row\.lat,row\.lon\]/);
   assert.match(controller, /'#d6402b'/);
   assert.doesNotMatch(controller, /api\.open-meteo\.com\/v1\/forecast\?latitude=/);
