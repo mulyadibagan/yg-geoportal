@@ -47,6 +47,7 @@ function makeLayer() {
 
 test("page wires the pure transport model before the map controller", () => {
   const html = fs.readFileSync(path.join(ROOT, "fire-weather.html"), "utf8");
+  const controller = fs.readFileSync(path.join(ROOT, "js/fire-weather.js"), "utf8");
   const modelAt = html.indexOf("js/smoke-transport-model.js");
   const controllerAt = html.indexOf("js/fire-weather.js");
 
@@ -58,7 +59,9 @@ test("page wires the pure transport model before the map controller", () => {
   assert.match(html, /Zona utama model · σh/);
   assert.match(html, /Batas ketidakpastian · 1,54σh/);
   assert.match(html, /1,853 km\/jam/);
+  assert.match(html, /area yang saling menumpuk/i);
   assert.match(html, /bukan plume asap teramati, bukan konsentrasi PM2\.5/i);
+  assert.match(controller, /period===7\|\|period===30\)applyPeriodButton/);
 });
 
 test("fire-weather controller boots against its browser interfaces", () => {
