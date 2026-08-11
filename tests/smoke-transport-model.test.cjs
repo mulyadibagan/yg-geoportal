@@ -53,6 +53,26 @@ test("withholds a lone unclassified hotspot from transport modelling", () => {
   assert.match(result.reasons.join(" "), /single unclassified/);
 });
 
+test("accepts a current anomaly corroborated by multi-date 7-day recurrence", () => {
+  const result = model.screenSourceComplex({
+    count: 1,
+    satelliteCount: 1,
+    passCount: 1,
+    frp: 8.67,
+    types: {},
+    recurrentHistory: true,
+    recurrentDays: 3,
+    landCoverClass: 10
+  });
+  assert.equal(result.eligible, true);
+  assert.match(result.evidence, /7-day recurrence/);
+});
+
+test("does not use a one-day history as recurrence corroboration", () => {
+  const result = model.screenSourceComplex({count:1,satelliteCount:1,passCount:1,frp:8,recurrentHistory:true,recurrentDays:1,types:{}});
+  assert.equal(result.eligible, false);
+});
+
 test("accepts corroborated unclassified sources and rejects built-up land cover", () => {
   const source = {count:2,satelliteCount:2,passCount:2,frp:18,types:{}};
   assert.equal(model.screenSourceComplex(source).eligible, true);

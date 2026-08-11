@@ -339,6 +339,7 @@
     var passCount = Math.max(0, Number(source.passCount) || 0);
     var frp = Math.max(0, Number(source.frp) || 0);
     var persistentCandidate = source.persistentCandidate === true;
+    var recurrentHistory = source.recurrentHistory === true && Number(source.recurrentDays) >= 2;
     var landCoverScreened = source.landCoverScreened === true;
     var reasons = [];
 
@@ -346,15 +347,15 @@
     if (landCover === 50) reasons.push("built-up land cover");
     if (landCover === 80) reasons.push("permanent water");
     if (persistentCandidate && landCover === 60) reasons.push("recurrent thermal source on bare land");
-    if (!hasVegetationType && count < 2) reasons.push("single unclassified detection");
-    if (!hasVegetationType && satelliteCount < 2 && passCount < 2) reasons.push("no independent corroboration");
-    if (!hasVegetationType && frp < 10) reasons.push("weak unclassified thermal signal");
+    if (!hasVegetationType && count < 2 && !recurrentHistory) reasons.push("single unclassified detection");
+    if (!hasVegetationType && satelliteCount < 2 && passCount < 2 && !recurrentHistory) reasons.push("no independent corroboration");
+    if (!hasVegetationType && frp < 10 && !recurrentHistory) reasons.push("weak unclassified thermal signal");
 
     return {
       eligible: reasons.length === 0,
       status: reasons.length ? "withheld" : "eligible",
       reasons: reasons,
-      evidence: hasVegetationType ? "FIRMS vegetation-fire type" : "corroborated unclassified thermal anomaly",
+      evidence: hasVegetationType ? "FIRMS vegetation-fire type" : recurrentHistory ? "current thermal anomaly corroborated by multi-date 7-day recurrence" : "corroborated unclassified thermal anomaly",
       landCoverClass: landCover
     };
   }
