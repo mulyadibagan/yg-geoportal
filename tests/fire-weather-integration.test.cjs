@@ -64,6 +64,8 @@ test("page wires the pure transport model before the map controller", () => {
   assert.match(controller, /period===7\|\|period===30\)applyPeriodButton/);
   assert.match(controller, /smokeAutoFit=true/);
   assert.match(controller, /fitBounds\(smokeBounds\.pad\(\.18\),\{maxZoom:8\}\)/);
+  assert.match(controller, /sourceTime>=smokeFocusTime/);
+  assert.match(controller, /peta fokus ke polygon sumber terbaru/);
 });
 
 test("fire-weather controller boots against its browser interfaces", () => {
