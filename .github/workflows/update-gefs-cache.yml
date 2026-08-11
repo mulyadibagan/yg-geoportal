@@ -1,0 +1,35 @@
+name: Update GEFS transport cache
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 */3 * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-gefs-cache
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Fetch GEFS 925 hPa ensemble
+        run: node scripts/update_gefs_cache.mjs
+      - name: Commit refreshed cache
+        run: |
+          if git diff --quiet -- data/gefs-925hpa.json; then
+            echo "GEFS cache is unchanged."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/gefs-925hpa.json
+          git commit -m "chore(data): update GEFS transport cache"
+          git push
