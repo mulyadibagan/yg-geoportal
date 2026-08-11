@@ -5,7 +5,10 @@ on:
   push:
     paths:
       - "data/source-registry.json"
+      - "data/smoke-validation-catalog.json"
+      - "data/smoke-validation-observed.geojson"
       - "scripts/validate_source_registry.mjs"
+      - "scripts/validate_smoke_annotations.mjs"
       - ".github/workflows/validate-data-sources.yml"
   workflow_dispatch:
 
@@ -18,3 +21,4 @@ jobs:
         with:
           node-version: "22"
       - run: node scripts/validate_source_registry.mjs
+      - run: node scripts/validate_smoke_annotations.mjs

@@ -44,6 +44,8 @@ Run `node scripts/validate_smoke_dispersion.mjs` before publication. The validat
 
 Candidate dates may be identified from ASMC narrative reviews, but ASMC imagery must not be copied or scraped until reuse permission is established. Manual observed-plume polygons should instead be traced from appropriately attributed NASA Worldview/GIBS layers. `scripts/score_smoke_validation.mjs` rasterises predicted and observed polygons at 0.05 degrees and reports intersection-over-union, false-alarm ratio, miss ratio, and plume-axis angular error. The annotation and model runs must use separate calibration and evaluation cases.
 
+Historical outlines must follow `docs/plume-annotation-protocol.md` and pass `node scripts/validate_smoke_annotations.mjs` before scoring. The observer must trace with model output hidden. Cloud-obscured or ambiguous cases are explicitly excluded rather than assigned a synthetic plume outline. The empty audit-ready record is stored in `data/smoke-validation-observed.geojson`.
+
 `scripts/fetch_historical_transport.mjs` downloads official Open-Meteo historical GFS fields for the validation catalog and rejects incomplete grids. This archive is deterministic: it may validate reference-trajectory direction, multi-level selection, rain and PBL heuristics, but it cannot validate the GEFS ensemble-support contour. Full contour validation remains pending until a compliant historical GEFS-member archive is connected.
 
 ## Access still required

@@ -1,7 +1,8 @@
 {
   "schemaVersion": 1,
   "status": "candidate-events-only",
-  "annotationSource": "NASA Worldview/GIBS imagery; manual plume polygons not yet created",
+  "annotationSource": "NASA Worldview/GIBS imagery; annotations governed by docs/plume-annotation-protocol.md",
+  "observedFile": "data/smoke-validation-observed.geojson",
   "cases": [
     {
       "id": "sumatra-2026-02-07",

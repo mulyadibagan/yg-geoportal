@@ -8,6 +8,16 @@ if (!predictedPath || !observedPath) throw new Error("Usage: node scripts/score_
 const predicted = JSON.parse(await fs.readFile(predictedPath, "utf8"));
 const observed = JSON.parse(await fs.readFile(observedPath, "utf8"));
 const step = 0.05;
+const observedCases = new Map((observed.metadata?.cases || []).map((record) => [record.caseId, record]));
+const eligibleCaseIds = new Set([...observedCases].filter(([, record]) =>
+  record.annotationStatus === "reviewed" &&
+  ["clear", "partial"].includes(record.visibility) &&
+  ["high", "medium"].includes(record.confidence) &&
+  record.blindToModel === true
+).map(([caseId]) => caseId));
+
+if (!observed.metadata?.protocol) throw new Error("Observed file is missing its annotation protocol reference.");
+if (!eligibleCaseIds.size) throw new Error("No independently reviewed, scoreable observed cases are available.");
 
 function rings(geometry) {
   if (!geometry) return [];
@@ -39,7 +49,7 @@ function bearing(source, target) {
 function angularError(a, b) { const d = Math.abs(a - b) % 360; return Math.min(d, 360 - d); }
 
 const predictedByCase = Map.groupBy(predicted.features || [], (feature) => feature.properties?.caseId);
-const observedByCase = Map.groupBy(observed.features || [], (feature) => feature.properties?.caseId);
+const observedByCase = Map.groupBy((observed.features || []).filter((feature) => eligibleCaseIds.has(feature.properties?.caseId)), (feature) => feature.properties?.caseId);
 const results = [];
 for (const [caseId, observedFeatures] of observedByCase) {
   const predictedFeatures = predictedByCase.get(caseId) || [];
@@ -66,5 +76,5 @@ for (const [caseId, observedFeatures] of observedByCase) {
   });
 }
 
-await fs.writeFile(outputPath, `${JSON.stringify({generatedAt:new Date().toISOString(),predictedPath,observedPath,caseCount:results.length,results}, null, 2)}\n`);
+await fs.writeFile(outputPath, `${JSON.stringify({generatedAt:new Date().toISOString(),predictedPath,observedPath,annotationProtocol:observed.metadata.protocol,eligibilityRule:"reviewed + clear/partial + high/medium confidence + blind annotation",caseCount:results.length,results}, null, 2)}\n`);
 console.log(`Scored ${results.length} validation cases.`);
