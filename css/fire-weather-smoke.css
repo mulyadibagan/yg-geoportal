@@ -9,17 +9,14 @@
   line-height: 1.45;
 }
 .fw-smoke-summary p { margin: 5px 0 0; color: var(--muted); }
-.fw-smoke-summary.high { border-left-color: var(--orange); background: #fff7ea; }
-.fw-smoke-summary.very-high { border-left-color: var(--red); background: #fff0ed; }
-.fw-legend i.smoke-low,
-.fw-legend i.smoke-watch,
-.fw-legend i.smoke-high,
-.fw-legend i.smoke-very-high {
-  border-radius: 3px;
-  border: 1px solid #fff;
-  box-shadow: 0 0 0 1px #53625c;
+.fw-legend i.transport-950,
+.fw-legend i.transport-925,
+.fw-legend i.transport-850 {
+  width: 22px;
+  height: 0;
+  border-radius: 0;
+  background: transparent;
 }
-.smoke-low { background: #54a96b; }
-.smoke-watch { background: #f2ca52; }
-.smoke-high { background: #ef8f27; }
-.smoke-very-high { background: #d6402b; }
+.transport-950 { border-top: 3px solid #167c80; }
+.transport-925 { border-top: 3px dashed #d18200; }
+.transport-850 { border-top: 3px dotted #7b4cc2; }

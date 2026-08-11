@@ -759,29 +759,30 @@
     "Arsip harian": "Daily archive",
     "Periksa koneksi atau pembaruan FIRMS": "Check the connection or FIRMS update",
     "Data hotspot gagal dimuat": "Hotspot data failed to load",
-    "Potensi Sebaran Asap": "Smoke Dispersion Potential",
-    "Skor indikatif 0–100": "Indicative score 0–100",
-    "Poligon potensi sebaran asap": "Smoke dispersion potential polygons",
-    "Asap: rendah (0–24)": "Smoke: low (0–24)",
-    "Asap: waspada (25–49)": "Smoke: watch (25–49)",
-    "Asap: tinggi (50–74)": "Smoke: high (50–74)",
-    "Asap: sangat tinggi (75–100)": "Smoke: very high (75–100)",
-    "Potensi sebaran asap": "Smoke dispersion potential",
-    "Aktifkan layer untuk menjalankan model indikatif 24 jam.": "Enable the layer to run the indicative 24-hour model.",
-    "Poligon berwarna menunjukkan arah potensi sebaran dari hotspot mengikuti angin. Zona ini bukan batas asap teramati dan bukan pengganti pengukuran kualitas udara.": "Coloured polygons show the potential dispersion direction from hotspots following the wind. These zones are not observed smoke boundaries or a substitute for air-quality measurements."
-    ,"Lapisan rendah ±2.500 kaki": "Low level ±2,500 feet"
-    ,"Arah gerak & kecepatan angin 2.500 kaki": "Travel direction & 2,500-foot wind speed"
-    ,"925 hPa (sekitar 2.500 kaki)": "925 hPa (about 2,500 feet)"
-    ,"Arah gerak GFS & kecepatan angin 2.500 kaki": "GFS travel direction & 2,500-foot wind speed"
-    ,"GFS 925 hPa (sekitar 2.500 kaki)": "GFS 925 hPa (about 2,500 feet)"
-    ,"Panah menunjukkan arah perjalanan udara/asap dan diperbarui otomatis mengikuti siklus GFS.": "Arrows show air/smoke travel direction and update automatically with the GFS cycle."
-    ,"Panah menunjukkan arah perjalanan udara/asap, bukan arah asal angin.": "Arrows show the direction air/smoke travels, not where the wind comes from."
-    ,"Kontur terbentuk dari kepadatan lintasan partikel selama 24 jam menggunakan angin 925 hPa. Kontur yang bersentuhan digabungkan. Zona ini bukan batas asap teramati dan bukan pengganti pengukuran kualitas udara.": "Contours are formed from 24-hour particle-trajectory density using 925 hPa winds. Touching contours are merged. These zones are not observed smoke boundaries or a substitute for air-quality measurements."
-    ,"Waktu hotspot & model": "Hotspot & model period"
-    ,"Sekarang": "Current"
-    ,"24 jam": "24 hours"
-    ,"7 hari berulang": "7-day recurrence"
-    ,"Sekarang dan 24 jam membentuk lintasan asap; 7 hari menampilkan sumber berulang; 30 hari tanpa poligon.": "Current and 24-hour periods generate smoke trajectories; 7 days shows recurring sources; 30 days has no polygon."
+    "Jejak Transport Asap Eksperimental": "Experimental Smoke Transport Tracks",
+    "Bukan plume atau konsentrasi PM2.5": "Not a plume or PM2.5 concentration",
+    "Referensi 925 hPa · interpolasi": "925 hPa reference · interpolated",
+    "Waktu hotspot & rekonstruksi": "Hotspot & reconstruction period",
+    "Jejak transport asap eksperimental": "Experimental smoke transport tracks",
+    "Angin referensi GFS 925 hPa": "GFS 925 hPa reference wind",
+    "Lapisan transport": "Transport layers",
+    "GFS 950 / 925 / 850 hPa": "GFS 950 / 925 / 850 hPa",
+    "Jejak memakai tiga lapisan sekitar 500, 800, dan 1.500 m dpl. Panah peta memakai 925 hPa sebagai referensi.": "Tracks use three layers at about 500, 800, and 1,500 m ASL. Map arrows use 925 hPa as the reference.",
+    "Deteksi hotspot confidence tinggi": "High-confidence hotspot detection",
+    "Jejak 950 hPa · ±500 m dpl": "950 hPa track · about 500 m ASL",
+    "Jejak 925 hPa · ±800 m dpl": "925 hPa track · about 800 m ASL",
+    "Jejak 850 hPa · ±1.500 m dpl": "850 hPa track · about 1,500 m ASL",
+    "Desa: 1–2 deteksi": "Village: 1–2 detections",
+    "Desa: 3–5 deteksi": "Village: 3–5 detections",
+    "Desa: >5 deteksi": "Village: >5 detections",
+    "Aktifkan layer dan pilih Sekarang atau 24 jam untuk merekonstruksi lintasan sejak deteksi.": "Enable the layer and select Current or 24 hours to reconstruct tracks since detection.",
+    "Garis menunjukkan rekonstruksi arah perjalanan udara sejak waktu deteksi hotspot hingga waktu model sekarang pada tiga lapisan GFS. Garis ini bukan plume asap teramati, bukan konsentrasi PM2.5, dan bukan prakiraan kesehatan.": "Lines reconstruct air travel from hotspot detection time to the current model time at three GFS levels. They are not observed smoke plumes, PM2.5 concentrations, or health forecasts.",
+    "Sumber dan batas model:": "Sources and model limits:",
+    "NASA FIRMS NRT (MODIS dan VIIRS) untuk deteksi hotspot berkeyakinan tinggi dan FRP; GFS/Open-Meteo untuk angin 950, 925, dan 850 hPa; RainViewer untuk radar hujan; NASA GIBS untuk citra MODIS; serta data lapangan YG. Deteksi berbeda satelit dalam radius 1,5 km dan 90 menit dikelompokkan sebelum menjadi sumber. Jejak memakai adveksi horizontal dan interpolasi ruang–waktu; belum memodelkan plume rise, turbulensi, pencampuran vertikal, deposisi, atau konsentrasi.": "NASA FIRMS NRT (MODIS and VIIRS) supplies high-confidence hotspot detections and FRP; GFS/Open-Meteo supplies 950, 925, and 850 hPa winds; RainViewer supplies rain radar; NASA GIBS supplies MODIS imagery; and YG supplies field data. Detections from different satellites within 1.5 km and 90 minutes are grouped before becoming sources. Tracks use horizontal advection and space-time interpolation; they do not yet model plume rise, turbulence, vertical mixing, deposition, or concentration.",
+    "Sekarang dan 24 jam merekonstruksi transport sejak deteksi hingga kini; 7 hari menampilkan sumber berulang; 30 hari hanya marker historis.": "Current and 24-hour periods reconstruct transport from detection until now; 7 days shows recurring sources; 30 days shows historical markers only.",
+    "Sekarang": "Current",
+    "24 jam": "24 hours",
+    "7 hari berulang": "7-day recurrence"
   });
   if (dictionaries.en) dictionaries.en["Cetak Peta"] = "Print Map";
   const reverse = Object.fromEntries(
