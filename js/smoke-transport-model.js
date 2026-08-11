@@ -13,6 +13,22 @@
     { id: "850", pressure: 850, altitude: 1500, color: "#7b4cc2", dashArray: "3 6" }
   ];
 
+  /*
+   * The browser product cannot solve atmospheric turbulence because the
+   * required boundary-layer and stability fields are not available.  These
+   * values therefore define a transparent sensitivity envelope, not a smoke
+   * concentration model.  The 1.853 km h-1 horizontal sigma growth and 1.54
+   * outer-radius factor follow the documented defaults in NOAA HYSPLIT's
+   * legacy puff formulation.  They are kept explicit so they can be replaced
+   * by calibrated parameters when observations become available.
+   */
+  var DEFAULT_ENVELOPE = {
+    initialRadiusKm: 1.5,
+    sigmaGrowthKmPerHour: 1.853,
+    outerRadiusFactor: 1.54,
+    capSegments: 8
+  };
+
   function finite(value) {
     var number = Number(value);
     return Number.isFinite(number) ? number : null;
@@ -43,6 +59,135 @@
       Math.cos(angular) - Math.sin(p1) * Math.sin(p2)
     );
     return [p2 * 180 / Math.PI, l2 * 180 / Math.PI];
+  }
+
+  function bearingBetween(a, b) {
+    var lon1 = Number(a && a[0]) * Math.PI / 180;
+    var lat1 = Number(a && a[1]) * Math.PI / 180;
+    var lon2 = Number(b && b[0]) * Math.PI / 180;
+    var lat2 = Number(b && b[1]) * Math.PI / 180;
+    var deltaLon = lon2 - lon1;
+    var y = Math.sin(deltaLon) * Math.cos(lat2);
+    var x = Math.cos(lat1) * Math.sin(lat2) -
+      Math.sin(lat1) * Math.cos(lat2) * Math.cos(deltaLon);
+    if (!Number.isFinite(x) || !Number.isFinite(y) || (Math.abs(x) + Math.abs(y) < 1e-12)) return 0;
+    return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
+  }
+
+  function meanBearing(first, second) {
+    var a = Number(first) * Math.PI / 180;
+    var b = Number(second) * Math.PI / 180;
+    var east = Math.sin(a) + Math.sin(b);
+    var north = Math.cos(a) + Math.cos(b);
+    if (Math.abs(east) + Math.abs(north) < 1e-12) return Number(second) || 0;
+    return (Math.atan2(east, north) * 180 / Math.PI + 360) % 360;
+  }
+
+  function pathBearing(path, index) {
+    if (index <= 0) return bearingBetween(path[0], path[1]);
+    if (index >= path.length - 1) return bearingBetween(path[path.length - 2], path[path.length - 1]);
+    return meanBearing(
+      bearingBetween(path[index - 1], path[index]),
+      bearingBetween(path[index], path[index + 1])
+    );
+  }
+
+  function horizontalSpreadKm(ageHours, options) {
+    options = options || {};
+    var initial = finite(options.initialRadiusKm);
+    var growth = finite(options.sigmaGrowthKmPerHour);
+    var factor = finite(options.radiusFactor);
+    if (initial == null) initial = DEFAULT_ENVELOPE.initialRadiusKm;
+    if (growth == null) growth = DEFAULT_ENVELOPE.sigmaGrowthKmPerHour;
+    if (factor == null) factor = 1;
+    return Math.max(0, (Math.max(0, initial) + Math.max(0, growth) * Math.max(0, Number(ageHours) || 0)) * Math.max(0, factor));
+  }
+
+  function pushCoordinate(ring, coordinate) {
+    var previous = ring[ring.length - 1];
+    if (!previous || distanceKm([previous[1], previous[0]], [coordinate[1], coordinate[0]]) > 0.001) {
+      ring.push(coordinate);
+    }
+  }
+
+  function offsetCoordinate(coordinate, bearing, radiusKm) {
+    var point = destination(Number(coordinate[1]), Number(coordinate[0]), bearing, radiusKm);
+    return [point[1], point[0]];
+  }
+
+  function buildEnvelopePolygon(trajectory, options) {
+    options = options || {};
+    var path = trajectory && trajectory.path || [];
+    if (path.length < 2) return null;
+    var duration = Math.max(0, finite(trajectory.durationHours) || 0);
+    var ages = Array.isArray(trajectory.agesHours) && trajectory.agesHours.length === path.length
+      ? trajectory.agesHours
+      : path.map(function (_, index) {
+        return path.length > 1 ? duration * index / (path.length - 1) : 0;
+      });
+    var factor = finite(options.radiusFactor);
+    if (factor == null) factor = 1;
+    var capSegments = Math.max(3, Math.round(finite(options.capSegments) || DEFAULT_ENVELOPE.capSegments));
+    var tangents = path.map(function (_, index) { return pathBearing(path, index); });
+    var radii = ages.map(function (age) {
+      return horizontalSpreadKm(age, Object.assign({}, options, { radiusFactor: factor }));
+    });
+    var left = path.map(function (coordinate, index) {
+      return offsetCoordinate(coordinate, tangents[index] - 90, radii[index]);
+    });
+    var right = path.map(function (coordinate, index) {
+      return offsetCoordinate(coordinate, tangents[index] + 90, radii[index]);
+    });
+    var ring = [];
+    left.forEach(function (coordinate) { pushCoordinate(ring, coordinate); });
+
+    var endIndex = path.length - 1;
+    for (var endStep = 1; endStep <= capSegments; endStep += 1) {
+      pushCoordinate(
+        ring,
+        offsetCoordinate(
+          path[endIndex],
+          tangents[endIndex] - 90 + 180 * endStep / capSegments,
+          radii[endIndex]
+        )
+      );
+    }
+    for (var rightIndex = right.length - 2; rightIndex >= 0; rightIndex -= 1) {
+      pushCoordinate(ring, right[rightIndex]);
+    }
+    for (var startStep = 1; startStep <= capSegments; startStep += 1) {
+      pushCoordinate(
+        ring,
+        offsetCoordinate(
+          path[0],
+          tangents[0] + 90 + 180 * startStep / capSegments,
+          radii[0]
+        )
+      );
+    }
+    if (ring.length < 4) return null;
+    pushCoordinate(ring, ring[0]);
+    if (ring[ring.length - 1][0] !== ring[0][0] || ring[ring.length - 1][1] !== ring[0][1]) {
+      ring.push(ring[0].slice());
+    }
+
+    var initialRadius = horizontalSpreadKm(0, Object.assign({}, options, { radiusFactor: factor }));
+    var endRadius = horizontalSpreadKm(duration, Object.assign({}, options, { radiusFactor: factor }));
+    return {
+      type: "Feature",
+      properties: {
+        source_index: trajectory.sourceIndex,
+        pressure_hpa: trajectory.level && trajectory.level.pressure,
+        altitude_m: trajectory.level && trajectory.level.altitude,
+        envelope_band: options.band || "core",
+        radius_factor: factor,
+        initial_radius_km: initialRadius,
+        end_radius_km: endRadius,
+        sigma_growth_km_per_hour: finite(options.sigmaGrowthKmPerHour) || DEFAULT_ENVELOPE.sigmaGrowthKmPerHour,
+        duration_hours: duration
+      },
+      geometry: { type: "Polygon", coordinates: [ring] }
+    };
   }
 
   function featureTime(feature) {
@@ -279,6 +424,7 @@
         var lon = Number(coordinates[0]);
         var time = startTime;
         var path = [[lon, lat]];
+        var agesHours = [0];
         var travelKm = 0;
         while (time < endTimeMs && path.length <= maxHours + 2) {
           var remainingHours = (endTimeMs - time) / 3600000;
@@ -295,6 +441,7 @@
           lon = next[1];
           time += stepHours * 3600000;
           path.push([lon, lat]);
+          agesHours.push((time - startTime) / 3600000);
         }
         if (path.length > 1) {
           trajectories.push({
@@ -302,6 +449,7 @@
             sourceIndex: sourceIndex,
             level: level,
             path: path,
+            agesHours: agesHours,
             startTime: startTime,
             endTime: time,
             durationHours: (time - startTime) / 3600000,
@@ -314,7 +462,10 @@
   }
 
   return {
+    DEFAULT_ENVELOPE: DEFAULT_ENVELOPE,
     DEFAULT_LEVELS: DEFAULT_LEVELS,
+    bearingBetween: bearingBetween,
+    buildEnvelopePolygon: buildEnvelopePolygon,
     buildGrid: buildGrid,
     buildTrajectories: buildTrajectories,
     buildWindIndex: buildWindIndex,
@@ -322,6 +473,7 @@
     destination: destination,
     distanceKm: distanceKm,
     featureTime: featureTime,
+    horizontalSpreadKm: horizontalSpreadKm,
     isVegetationOrUnclassified: isVegetationOrUnclassified,
     sampleWind: sampleWind,
     travelVector: travelVector
