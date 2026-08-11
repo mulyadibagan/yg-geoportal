@@ -9,21 +9,16 @@
   line-height: 1.45;
 }
 .fw-smoke-summary p { margin: 5px 0 0; color: var(--muted); }
-.fw-legend i.smoke-core,
-.fw-legend i.smoke-outer {
+.fw-legend i.smoke-contour {
   width: 22px;
   height: 12px;
   border-radius: 3px;
   box-sizing: border-box;
 }
-.smoke-core {
-  border: 1.5px solid #4f4742;
-  background: rgba(111, 101, 94, .28);
-}
-.smoke-outer {
-  border: 2px dashed #766b63;
-  background: rgba(166, 155, 146, .15);
-}
+.smoke-contour.outer { border: 2px solid #4c9d68; background: rgba(140, 207, 138, .35); }
+.smoke-contour.limited { border: 2px solid #d0aa24; background: rgba(240, 209, 92, .42); }
+.smoke-contour.moderate { border: 2px solid #e57e1f; background: rgba(238, 157, 67, .48); }
+.smoke-contour.strong { border: 2px solid #cf3b32; background: rgba(230, 91, 79, .55); }
 .fw-sources a {
   color: #0b7255;
   font-weight: 700;
