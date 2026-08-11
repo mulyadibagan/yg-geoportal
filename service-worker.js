@@ -1,4 +1,4 @@
-const CACHE_NAME = "yg-geoportal-v4-20260811-smoke-polygon3";
+const CACHE_NAME = "yg-geoportal-v4-20260811-smoke-contour1";
 
 const STATIC_ASSETS = [
   "./",
