@@ -85,6 +85,58 @@
     return Math.max(Math.max(0, minimum), Math.max(0, windStep) * 111 * Math.max(0, fraction));
   }
 
+  function boundsForSources(sources, options) {
+    options = options || {};
+    var padding = Math.max(0, finite(options.paddingDegrees) == null ? 6 : finite(options.paddingDegrees));
+    var limits = options.limits || { minLat: -90, maxLat: 90, minLon: -180, maxLon: 180 };
+    var fallback = options.fallback || { minLat: -11.2, maxLat: 6.2, minLon: 94.5, maxLon: 141.5 };
+    var coordinates = (sources || []).map(function (source) {
+      return source && source.geometry && source.geometry.type === "Point"
+        ? source.geometry.coordinates
+        : null;
+    }).filter(function (coordinate) {
+      return coordinate && Number.isFinite(Number(coordinate[0])) && Number.isFinite(Number(coordinate[1]));
+    });
+    var base = coordinates.length ? {
+      minLat: Math.min.apply(null, coordinates.map(function (coordinate) { return Number(coordinate[1]); })),
+      maxLat: Math.max.apply(null, coordinates.map(function (coordinate) { return Number(coordinate[1]); })),
+      minLon: Math.min.apply(null, coordinates.map(function (coordinate) { return Number(coordinate[0]); })),
+      maxLon: Math.max.apply(null, coordinates.map(function (coordinate) { return Number(coordinate[0]); }))
+    } : fallback;
+    return {
+      minLat: Math.max(Number(limits.minLat), Number(base.minLat) - padding),
+      maxLat: Math.min(Number(limits.maxLat), Number(base.maxLat) + padding),
+      minLon: Math.max(Number(limits.minLon), Number(base.minLon) - padding),
+      maxLon: Math.min(Number(limits.maxLon), Number(base.maxLon) + padding)
+    };
+  }
+
+  function boundarySides(trajectories) {
+    var result = { north: false, south: false, east: false, west: false, count: 0 };
+    (trajectories || []).forEach(function (trajectory) {
+      var exit = trajectory && trajectory.boundaryExit;
+      if (!exit) return;
+      result.north = result.north || !!exit.north;
+      result.south = result.south || !!exit.south;
+      result.east = result.east || !!exit.east;
+      result.west = result.west || !!exit.west;
+      result.count += 1;
+    });
+    return result;
+  }
+
+  function expandBounds(bounds, sides, options) {
+    options = options || {};
+    var amount = Math.max(0, finite(options.degrees) == null ? 7.5 : finite(options.degrees));
+    var limits = options.limits || { minLat: -90, maxLat: 90, minLon: -180, maxLon: 180 };
+    return {
+      minLat: Math.max(Number(limits.minLat), Number(bounds.minLat) - (sides && sides.south ? amount : 0)),
+      maxLat: Math.min(Number(limits.maxLat), Number(bounds.maxLat) + (sides && sides.north ? amount : 0)),
+      minLon: Math.max(Number(limits.minLon), Number(bounds.minLon) - (sides && sides.west ? amount : 0)),
+      maxLon: Math.min(Number(limits.maxLon), Number(bounds.maxLon) + (sides && sides.east ? amount : 0))
+    };
+  }
+
   function buildSupportPuffs(trajectories, options) {
     options = options || {};
     var bandwidthKm = contourBandwidthKm(options);
@@ -139,7 +191,6 @@
 
   function buildSupportGrid(puffs, domain, options) {
     options = options || {};
-    domain = domain || { minLat: -11.2, maxLat: 6.2, minLon: 94.5, maxLon: 141.5 };
     var valid = (puffs || []).filter(function (puff) {
       return puff && Number.isFinite(Number(puff.lat)) && Number.isFinite(Number(puff.lon)) &&
         Number.isFinite(Number(puff.sigmaKm)) && Number(puff.sigmaKm) > 0 &&
@@ -155,10 +206,19 @@
     var meanLat = valid.reduce(function (sum, puff) { return sum + Number(puff.lat); }, 0) / valid.length;
     var lonScale = Math.max(0.2, Math.cos(meanLat * Math.PI / 180));
     var lonPad = padding * maxSigma / (111 * lonScale);
-    var minLat = Math.max(Number(domain.minLat), Math.min.apply(null, valid.map(function (puff) { return Number(puff.lat); })) - latPad);
-    var maxLat = Math.min(Number(domain.maxLat), Math.max.apply(null, valid.map(function (puff) { return Number(puff.lat); })) + latPad);
-    var minLon = Math.max(Number(domain.minLon), Math.min.apply(null, valid.map(function (puff) { return Number(puff.lon); })) - lonPad);
-    var maxLon = Math.min(Number(domain.maxLon), Math.max.apply(null, valid.map(function (puff) { return Number(puff.lon); })) + lonPad);
+    var naturalBounds = {
+      minLat: Math.min.apply(null, valid.map(function (puff) { return Number(puff.lat); })) - latPad,
+      maxLat: Math.max.apply(null, valid.map(function (puff) { return Number(puff.lat); })) + latPad,
+      minLon: Math.min.apply(null, valid.map(function (puff) { return Number(puff.lon); })) - lonPad,
+      maxLon: Math.max.apply(null, valid.map(function (puff) { return Number(puff.lon); })) + lonPad
+    };
+    var hasDomain = !!domain && ["minLat", "maxLat", "minLon", "maxLon"].every(function (key) {
+      return Number.isFinite(Number(domain[key]));
+    });
+    var minLat = hasDomain ? Math.max(Number(domain.minLat), naturalBounds.minLat) : naturalBounds.minLat;
+    var maxLat = hasDomain ? Math.min(Number(domain.maxLat), naturalBounds.maxLat) : naturalBounds.maxLat;
+    var minLon = hasDomain ? Math.max(Number(domain.minLon), naturalBounds.minLon) : naturalBounds.minLon;
+    var maxLon = hasDomain ? Math.min(Number(domain.maxLon), naturalBounds.maxLon) : naturalBounds.maxLon;
     minLat = Math.floor(minLat / step) * step;
     maxLat = Math.ceil(maxLat / step) * step;
     minLon = Math.floor(minLon / step) * step;
@@ -235,7 +295,12 @@
       columnCount: columnCount,
       gridStepDegrees: step,
       bandwidthKm: maxSigma,
-      bounds: { minLat: minLat, maxLat: maxLat, minLon: minLon, maxLon: maxLon }
+      bounds: { minLat: minLat, maxLat: maxLat, minLon: minLon, maxLon: maxLon },
+      naturalBounds: naturalBounds,
+      clipped: hasDomain && (
+        naturalBounds.minLat < Number(domain.minLat) || naturalBounds.maxLat > Number(domain.maxLat) ||
+        naturalBounds.minLon < Number(domain.minLon) || naturalBounds.maxLon > Number(domain.maxLon)
+      )
     };
   }
 
@@ -475,16 +540,36 @@
         var path = [[lon, lat]];
         var agesHours = [0];
         var travelKm = 0;
+        var boundaryExit = null;
+        var terminationReason = "end-time";
         while (time < endTimeMs && path.length <= maxHours + 2) {
           var remainingHours = (endTimeMs - time) / 3600000;
           var stepHours = Math.min(1, remainingHours);
           var wind = sampleWind(windIndex, lat, lon, time, level.id);
-          if (!wind || wind.speed <= 0) break;
+          if (!wind) {
+            terminationReason = "wind-unavailable";
+            break;
+          }
+          if (wind.speed <= 0) {
+            terminationReason = "calm";
+            break;
+          }
           var next = destination(lat, lon, wind.travelDirection, wind.speed * stepHours);
           if (
             next[0] < windIndex.minLat || next[0] > windIndex.maxLat ||
             next[1] < windIndex.minLon || next[1] > windIndex.maxLon
-          ) break;
+          ) {
+            boundaryExit = {
+              north: next[0] > windIndex.maxLat,
+              south: next[0] < windIndex.minLat,
+              east: next[1] > windIndex.maxLon,
+              west: next[1] < windIndex.minLon,
+              attemptedLat: next[0],
+              attemptedLon: next[1]
+            };
+            terminationReason = "boundary";
+            break;
+          }
           travelKm += distanceKm([lat, lon], next);
           lat = next[0];
           lon = next[1];
@@ -492,7 +577,8 @@
           path.push([lon, lat]);
           agesHours.push((time - startTime) / 3600000);
         }
-        if (path.length > 1) {
+        if (time >= endTimeMs) terminationReason = "end-time";
+        if (path.length > 1 || boundaryExit) {
           trajectories.push({
             source: source,
             sourceIndex: sourceIndex,
@@ -502,7 +588,10 @@
             startTime: startTime,
             endTime: time,
             durationHours: (time - startTime) / 3600000,
-            travelKm: travelKm
+            travelKm: travelKm,
+            complete: time >= endTimeMs,
+            terminationReason: terminationReason,
+            boundaryExit: boundaryExit
           });
         }
       });
@@ -513,15 +602,18 @@
   return {
     DEFAULT_CONTOURS: DEFAULT_CONTOURS,
     DEFAULT_LEVELS: DEFAULT_LEVELS,
+    boundarySides: boundarySides,
     buildGrid: buildGrid,
     buildSupportGrid: buildSupportGrid,
     buildSupportPuffs: buildSupportPuffs,
     buildTrajectories: buildTrajectories,
     buildWindIndex: buildWindIndex,
+    boundsForSources: boundsForSources,
     clusterSources: clusterSources,
     contourBandwidthKm: contourBandwidthKm,
     destination: destination,
     distanceKm: distanceKm,
+    expandBounds: expandBounds,
     featureTime: featureTime,
     isVegetationOrUnclassified: isVegetationOrUnclassified,
     quantile: quantile,
