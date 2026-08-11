@@ -51,6 +51,10 @@ test("page labels the GEFS corridor product and wires the controller", () => {
   assert.match(controller, /data\/smoke-validation-status\.json/);
   assert.match(controller, /Status validasi/);
   assert.match(controller, /Belum dikalibrasi/);
+  assert.match(html, /Koridor dukungan transport relatif · belum dikalibrasi/);
+  assert.match(html, /js\/smoke-transport-model\.js/);
+  assert.match(controller, /Sumber ditahan/);
+  assert.match(controller, /function smokeColor\(\)\{return '#167c80'\}/);
   assert.doesNotMatch(controller, /api\.open-meteo\.com\/v1\/forecast\?latitude=/);
   assert.doesNotMatch(controller, /api\.open-meteo\.com\/v1\/gfs\?latitude=/);
   assert.match(controller, /function transportSurvivalStep/);

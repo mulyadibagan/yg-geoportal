@@ -66,6 +66,18 @@ test("accepts an explicit FIRMS vegetation-fire type", () => {
   assert.equal(result.eligible, true);
   assert.match(result.evidence, /vegetation-fire/);
 });
+test("withholds a source when required land-cover screening is unavailable", () => {
+  const result = model.screenSourceComplex({count:3,satelliteCount:2,passCount:2,frp:50,types:{},landCoverScreened:true});
+  assert.equal(result.eligible, false);
+  assert.match(result.reasons.join(" "), /land-cover lookup unavailable/);
+});
+
+test("withholds a recurrent thermal source on bare land", () => {
+  const result = model.screenSourceComplex({count:5,satelliteCount:3,passCount:4,frp:90,types:{},landCoverClass:60,persistentCandidate:true});
+  assert.equal(result.eligible, false);
+  assert.match(result.reasons.join(" "), /recurrent thermal source/);
+});
+
 test("converts meteorological wind-from direction to travel direction", () => {
   const vector = model.travelVector(10, 0);
   assert.ok(Math.abs(vector.east) < 1e-9);

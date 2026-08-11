@@ -67,7 +67,9 @@ jobs:
           FIRMS_VILLAGE_GEOJSON: data/batas_administrasi_desa_riau.geojson
           FIRMS_ANALYTICS_OUTPUT: data/administrative-village-analytics.json
           FIRMS_INCLUDE_SOCIAL_FORESTRY: "0"
-        run: node scripts/update_hotspot_firms.mjs
+        run: |
+          node scripts/update_hotspot_firms.mjs
+          node scripts/enrich_hotspot_landcover.mjs
 
       - name: Split analytics for on-demand browser loading
         run: node scripts/shard_administrative_village_analytics.mjs

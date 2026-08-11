@@ -50,6 +50,7 @@ jobs:
           fi
           node scripts/sync_intervention_villages.mjs
           node scripts/update_hotspot_firms.mjs
+          node scripts/enrich_hotspot_landcover.mjs
 
       - name: Commit and push if changed
         run: |

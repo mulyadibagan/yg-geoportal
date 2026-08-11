@@ -338,10 +338,14 @@
     var satelliteCount = Math.max(0, Number(source.satelliteCount) || 0);
     var passCount = Math.max(0, Number(source.passCount) || 0);
     var frp = Math.max(0, Number(source.frp) || 0);
+    var persistentCandidate = source.persistentCandidate === true;
+    var landCoverScreened = source.landCoverScreened === true;
     var reasons = [];
 
+    if (landCoverScreened && landCover == null) reasons.push("land-cover lookup unavailable");
     if (landCover === 50) reasons.push("built-up land cover");
     if (landCover === 80) reasons.push("permanent water");
+    if (persistentCandidate && landCover === 60) reasons.push("recurrent thermal source on bare land");
     if (!hasVegetationType && count < 2) reasons.push("single unclassified detection");
     if (!hasVegetationType && satelliteCount < 2 && passCount < 2) reasons.push("no independent corroboration");
     if (!hasVegetationType && frp < 10) reasons.push("weak unclassified thermal signal");

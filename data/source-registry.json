@@ -43,6 +43,19 @@
       "status": "conditional"
     },
     {
+      "id": "esa-worldcover",
+      "name": "ESA WorldCover 2021 v200",
+      "used": true,
+      "dataKind": "land-cover classification",
+      "access": "Terrascope official WMS categorical-colour triage",
+      "termsUrl": "https://esa-worldcover.org/en/data-access",
+      "licence": "CC BY 4.0",
+      "attribution": "? ESA WorldCover project 2021 / Contains modified Copernicus Sentinel data (2021) processed by ESA WorldCover consortium",
+      "commercialUse": "allowed with attribution",
+      "redistribution": "allowed with attribution",
+      "status": "approved"
+    },
+    {
       "id": "met-norway",
       "name": "MET Norway Locationforecast 2.0",
       "used": true,
