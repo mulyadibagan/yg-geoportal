@@ -4,6 +4,8 @@
 
 The current browser model remains an experimental **transport-likelihood screening** product. It must not be described as observed smoke, PM2.5 concentration, exposure, or health risk.
 
+The screening model interpolates GFS/GEFS wind vectors from the four nearest grid locations and two surrounding forecast times. It selects 925 hPa by default, 850 hPa when PBL height reaches 1,400 m, and 700 hPa only when PBL reaches 2,800 m and the magnitude of 925-hPa vertical velocity reaches 0.05 Pa/s. These are explicit screening heuristics, not measured smoke-injection heights.
+
 The phase-2 product is published only after a backend HYSPLIT run passes the repository validator. Missing, incomplete, or expired output is withheld rather than replaced by a visual fallback.
 
 ## Required inputs

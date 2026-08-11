@@ -1,6 +1,6 @@
 import fs from "node:fs/promises";
 
-const output = process.env.GEFS_OUTPUT || "data/gefs-925hpa.json";
+const output = process.env.GEFS_OUTPUT || "data/gefs-multilevel.json";
 const grid = [];
 for (let lat = -10; lat <= 5; lat += 3) {
   for (let lon = 96; lon <= 140; lon += 4) grid.push([lat, lon]);
@@ -11,7 +11,7 @@ const longitudes = grid.map((point) => point[1]).join(",");
 const params = new URLSearchParams({
   latitude: latitudes,
   longitude: longitudes,
-  hourly: "wind_speed_925hPa,wind_direction_925hPa",
+  hourly: "wind_speed_925hPa,wind_direction_925hPa,wind_speed_850hPa,wind_direction_850hPa,wind_speed_700hPa,wind_direction_700hPa",
   models: "gfs_seamless",
   forecast_days: "1",
   timezone: "Asia/Jakarta"
@@ -38,7 +38,7 @@ if (!rows.length || !rows.every((row) => row.hourly?.time?.length)) {
 await fs.writeFile(output, `${JSON.stringify({
   generatedAt: new Date().toISOString(),
   source: "Open-Meteo GEFS ensemble API",
-  level: "925 hPa",
+  levels: [925, 850, 700],
   gridCount: grid.length,
   data: rows
 })}\n`);
