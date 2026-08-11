@@ -8,6 +8,8 @@ The screening model interpolates GFS/GEFS wind vectors from the four nearest gri
 
 Trajectory support is rasterised on a 0.25-degree grid with a 30 km Gaussian kernel, truncated at 75 km. Within one fire complex, each ensemble member contributes the maximum kernel weight encountered along its trajectory to a cell, preventing repeated trajectory samples from multiplying that member's vote. Source-specific support is divided by the number of valid equally weighted members; overlapping fire complexes use the maximum source-specific value rather than being added together.
 
+Source-evidence reliability is deliberately separate from fire activity. A single high-confidence detection starts at 0.45. Multiple detections add up to 0.20, two or more independent satellite identifiers add 0.15, and detections in multiple hourly overpass buckets add up to 0.15; the score is capped at 0.95 because no satellite detection proves continuing combustion. Kernel-smoothed ensemble support is multiplied by this reliability. FRP is reported as observed radiative power but does not alter source reliability or trajectory direction.
+
 The phase-2 product is published only after a backend HYSPLIT run passes the repository validator. Missing, incomplete, or expired output is withheld rather than replaced by a visual fallback.
 
 ## Required inputs
