@@ -14,19 +14,23 @@
   ];
 
   /*
-   * The browser product cannot solve atmospheric turbulence because the
-   * required boundary-layer and stability fields are not available.  These
-   * values therefore define a transparent sensitivity envelope, not a smoke
-   * concentration model.  The 1.853 km h-1 horizontal sigma growth and 1.54
-   * outer-radius factor follow the documented defaults in NOAA HYSPLIT's
-   * legacy puff formulation.  They are kept explicit so they can be replaced
-   * by calibrated parameters when observations become available.
+   * These parameters describe a relative trajectory-support surface, not
+   * atmospheric concentration. NOAA HYSPLIT derives puff growth from
+   * meteorological turbulence (d sigma_h / dt = sigma_u). This browser model
+   * does not load stability, PBL, or turbulent velocity variance, so it must
+   * not invent a universal physical growth rate. Instead, a Gaussian kernel
+   * is used only to smooth the three-height trajectory ensemble at a bandwidth
+   * tied to the sampled wind-grid spacing. Each clustered source contributes
+   * equal total weight regardless of age, FRP, satellite count, or path length.
    */
-  var DEFAULT_ENVELOPE = {
-    initialRadiusKm: 1.5,
-    sigmaGrowthKmPerHour: 1.853,
-    outerRadiusFactor: 1.54,
-    capSegments: 8
+  var DEFAULT_CONTOURS = {
+    gridStepDegrees: 0.25,
+    windGridStepDegrees: 1.5,
+    bandwidthFraction: 0.30,
+    minimumBandwidthKm: 25,
+    kernelCutoffSigma: 3,
+    paddingSigma: 3.5,
+    quantiles: [0.20, 0.50, 0.75, 0.90]
   };
 
   function finite(value) {
@@ -61,132 +65,177 @@
     return [p2 * 180 / Math.PI, l2 * 180 / Math.PI];
   }
 
-  function bearingBetween(a, b) {
-    var lon1 = Number(a && a[0]) * Math.PI / 180;
-    var lat1 = Number(a && a[1]) * Math.PI / 180;
-    var lon2 = Number(b && b[0]) * Math.PI / 180;
-    var lat2 = Number(b && b[1]) * Math.PI / 180;
-    var deltaLon = lon2 - lon1;
-    var y = Math.sin(deltaLon) * Math.cos(lat2);
-    var x = Math.cos(lat1) * Math.sin(lat2) -
-      Math.sin(lat1) * Math.cos(lat2) * Math.cos(deltaLon);
-    if (!Number.isFinite(x) || !Number.isFinite(y) || (Math.abs(x) + Math.abs(y) < 1e-12)) return 0;
-    return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
+  function quantile(sortedValues, probability) {
+    if (!sortedValues.length) return 0;
+    var index = Math.max(0, Math.min(1, Number(probability) || 0)) * (sortedValues.length - 1);
+    var lower = Math.floor(index);
+    var upper = Math.ceil(index);
+    var ratio = index - lower;
+    return sortedValues[lower] + (sortedValues[upper] - sortedValues[lower]) * ratio;
   }
 
-  function meanBearing(first, second) {
-    var a = Number(first) * Math.PI / 180;
-    var b = Number(second) * Math.PI / 180;
-    var east = Math.sin(a) + Math.sin(b);
-    var north = Math.cos(a) + Math.cos(b);
-    if (Math.abs(east) + Math.abs(north) < 1e-12) return Number(second) || 0;
-    return (Math.atan2(east, north) * 180 / Math.PI + 360) % 360;
-  }
-
-  function pathBearing(path, index) {
-    if (index <= 0) return bearingBetween(path[0], path[1]);
-    if (index >= path.length - 1) return bearingBetween(path[path.length - 2], path[path.length - 1]);
-    return meanBearing(
-      bearingBetween(path[index - 1], path[index]),
-      bearingBetween(path[index], path[index + 1])
-    );
-  }
-
-  function horizontalSpreadKm(ageHours, options) {
+  function contourBandwidthKm(options) {
     options = options || {};
-    var initial = finite(options.initialRadiusKm);
-    var growth = finite(options.sigmaGrowthKmPerHour);
-    var factor = finite(options.radiusFactor);
-    if (initial == null) initial = DEFAULT_ENVELOPE.initialRadiusKm;
-    if (growth == null) growth = DEFAULT_ENVELOPE.sigmaGrowthKmPerHour;
-    if (factor == null) factor = 1;
-    return Math.max(0, (Math.max(0, initial) + Math.max(0, growth) * Math.max(0, Number(ageHours) || 0)) * Math.max(0, factor));
+    var windStep = finite(options.windGridStepDegrees);
+    var fraction = finite(options.bandwidthFraction);
+    var minimum = finite(options.minimumBandwidthKm);
+    if (windStep == null) windStep = DEFAULT_CONTOURS.windGridStepDegrees;
+    if (fraction == null) fraction = DEFAULT_CONTOURS.bandwidthFraction;
+    if (minimum == null) minimum = DEFAULT_CONTOURS.minimumBandwidthKm;
+    return Math.max(Math.max(0, minimum), Math.max(0, windStep) * 111 * Math.max(0, fraction));
   }
 
-  function pushCoordinate(ring, coordinate) {
-    var previous = ring[ring.length - 1];
-    if (!previous || distanceKm([previous[1], previous[0]], [coordinate[1], coordinate[0]]) > 0.001) {
-      ring.push(coordinate);
-    }
-  }
-
-  function offsetCoordinate(coordinate, bearing, radiusKm) {
-    var point = destination(Number(coordinate[1]), Number(coordinate[0]), bearing, radiusKm);
-    return [point[1], point[0]];
-  }
-
-  function buildEnvelopePolygon(trajectory, options) {
+  function buildSupportPuffs(trajectories, options) {
     options = options || {};
-    var path = trajectory && trajectory.path || [];
-    if (path.length < 2) return null;
-    var duration = Math.max(0, finite(trajectory.durationHours) || 0);
-    var ages = Array.isArray(trajectory.agesHours) && trajectory.agesHours.length === path.length
-      ? trajectory.agesHours
-      : path.map(function (_, index) {
-        return path.length > 1 ? duration * index / (path.length - 1) : 0;
+    var bandwidthKm = contourBandwidthKm(options);
+    var sources = {};
+    (trajectories || []).forEach(function (trajectory) {
+      var sourceIndex = Number(trajectory && trajectory.sourceIndex);
+      var path = trajectory && trajectory.path || [];
+      if (!Number.isFinite(sourceIndex) || !path.length) return;
+      var ages = Array.isArray(trajectory.agesHours) && trajectory.agesHours.length === path.length
+        ? trajectory.agesHours
+        : path.map(function (_, index) { return index; });
+      if (!sources[sourceIndex]) sources[sourceIndex] = {};
+      path.forEach(function (coordinate, pathIndex) {
+        var lon = Number(coordinate && coordinate[0]);
+        var lat = Number(coordinate && coordinate[1]);
+        if (!Number.isFinite(lat) || !Number.isFinite(lon)) return;
+        var ageHours = Math.max(0, Number(ages[pathIndex]) || 0);
+        var ageKey = Math.round(ageHours * 1000) / 1000;
+        if (!sources[sourceIndex][ageKey]) sources[sourceIndex][ageKey] = [];
+        sources[sourceIndex][ageKey].push({
+          lon: lon,
+          lat: lat,
+          ageHours: ageHours,
+          pressureHpa: trajectory.level && trajectory.level.pressure
+        });
       });
-    var factor = finite(options.radiusFactor);
-    if (factor == null) factor = 1;
-    var capSegments = Math.max(3, Math.round(finite(options.capSegments) || DEFAULT_ENVELOPE.capSegments));
-    var tangents = path.map(function (_, index) { return pathBearing(path, index); });
-    var radii = ages.map(function (age) {
-      return horizontalSpreadKm(age, Object.assign({}, options, { radiusFactor: factor }));
     });
-    var left = path.map(function (coordinate, index) {
-      return offsetCoordinate(coordinate, tangents[index] - 90, radii[index]);
-    });
-    var right = path.map(function (coordinate, index) {
-      return offsetCoordinate(coordinate, tangents[index] + 90, radii[index]);
-    });
-    var ring = [];
-    left.forEach(function (coordinate) { pushCoordinate(ring, coordinate); });
 
-    var endIndex = path.length - 1;
-    for (var endStep = 1; endStep <= capSegments; endStep += 1) {
-      pushCoordinate(
-        ring,
-        offsetCoordinate(
-          path[endIndex],
-          tangents[endIndex] - 90 + 180 * endStep / capSegments,
-          radii[endIndex]
-        )
-      );
-    }
-    for (var rightIndex = right.length - 2; rightIndex >= 0; rightIndex -= 1) {
-      pushCoordinate(ring, right[rightIndex]);
-    }
-    for (var startStep = 1; startStep <= capSegments; startStep += 1) {
-      pushCoordinate(
-        ring,
-        offsetCoordinate(
-          path[0],
-          tangents[0] + 90 + 180 * startStep / capSegments,
-          radii[0]
-        )
-      );
-    }
-    if (ring.length < 4) return null;
-    pushCoordinate(ring, ring[0]);
-    if (ring[ring.length - 1][0] !== ring[0][0] || ring[ring.length - 1][1] !== ring[0][1]) {
-      ring.push(ring[0].slice());
+    var puffs = [];
+    Object.keys(sources).forEach(function (sourceKey) {
+      var ages = sources[sourceKey];
+      var ageKeys = Object.keys(ages);
+      var ageWeight = ageKeys.length ? 1 / ageKeys.length : 0;
+      ageKeys.forEach(function (ageKey) {
+        var members = ages[ageKey];
+        var memberWeight = members.length ? ageWeight / members.length : 0;
+        members.forEach(function (member) {
+          puffs.push({
+            lon: member.lon,
+            lat: member.lat,
+            ageHours: member.ageHours,
+            sourceIndex: Number(sourceKey),
+            pressureHpa: member.pressureHpa,
+            sigmaKm: bandwidthKm,
+            weight: memberWeight
+          });
+        });
+      });
+    });
+    return puffs;
+  }
+
+  function buildSupportGrid(puffs, domain, options) {
+    options = options || {};
+    domain = domain || { minLat: -11.2, maxLat: 6.2, minLon: 94.5, maxLon: 141.5 };
+    var valid = (puffs || []).filter(function (puff) {
+      return puff && Number.isFinite(Number(puff.lat)) && Number.isFinite(Number(puff.lon)) &&
+        Number.isFinite(Number(puff.sigmaKm)) && Number(puff.sigmaKm) > 0 &&
+        Number.isFinite(Number(puff.weight)) && Number(puff.weight) > 0;
+    });
+    if (!valid.length) return null;
+
+    var step = finite(options.gridStepDegrees) || DEFAULT_CONTOURS.gridStepDegrees;
+    var cutoff = finite(options.kernelCutoffSigma) || DEFAULT_CONTOURS.kernelCutoffSigma;
+    var padding = finite(options.paddingSigma) || DEFAULT_CONTOURS.paddingSigma;
+    var maxSigma = Math.max.apply(null, valid.map(function (puff) { return Number(puff.sigmaKm); }));
+    var latPad = padding * maxSigma / 111;
+    var meanLat = valid.reduce(function (sum, puff) { return sum + Number(puff.lat); }, 0) / valid.length;
+    var lonScale = Math.max(0.2, Math.cos(meanLat * Math.PI / 180));
+    var lonPad = padding * maxSigma / (111 * lonScale);
+    var minLat = Math.max(Number(domain.minLat), Math.min.apply(null, valid.map(function (puff) { return Number(puff.lat); })) - latPad);
+    var maxLat = Math.min(Number(domain.maxLat), Math.max.apply(null, valid.map(function (puff) { return Number(puff.lat); })) + latPad);
+    var minLon = Math.max(Number(domain.minLon), Math.min.apply(null, valid.map(function (puff) { return Number(puff.lon); })) - lonPad);
+    var maxLon = Math.min(Number(domain.maxLon), Math.max.apply(null, valid.map(function (puff) { return Number(puff.lon); })) + lonPad);
+    minLat = Math.floor(minLat / step) * step;
+    maxLat = Math.ceil(maxLat / step) * step;
+    minLon = Math.floor(minLon / step) * step;
+    maxLon = Math.ceil(maxLon / step) * step;
+
+    var rowCount = Math.max(2, Math.round((maxLat - minLat) / step) + 1);
+    var columnCount = Math.max(2, Math.round((maxLon - minLon) / step) + 1);
+    var values = new Float64Array(rowCount * columnCount);
+    valid.forEach(function (puff) {
+      var sigma = Number(puff.sigmaKm);
+      var sigmaSquared = sigma * sigma;
+      var latRadius = cutoff * sigma / 111;
+      var localLonScale = Math.max(0.2, Math.cos(Number(puff.lat) * Math.PI / 180));
+      var lonRadius = cutoff * sigma / (111 * localLonScale);
+      var firstRow = Math.max(0, Math.floor((Number(puff.lat) - latRadius - minLat) / step));
+      var lastRow = Math.min(rowCount - 1, Math.ceil((Number(puff.lat) + latRadius - minLat) / step));
+      var firstColumn = Math.max(0, Math.floor((Number(puff.lon) - lonRadius - minLon) / step));
+      var lastColumn = Math.min(columnCount - 1, Math.ceil((Number(puff.lon) + lonRadius - minLon) / step));
+      var normalizer = Number(puff.weight) / (2 * Math.PI * sigmaSquared);
+      for (var row = firstRow; row <= lastRow; row += 1) {
+        var lat = minLat + row * step;
+        var dy = (lat - Number(puff.lat)) * 111;
+        for (var column = firstColumn; column <= lastColumn; column += 1) {
+          var lon = minLon + column * step;
+          var dx = (lon - Number(puff.lon)) * 111 * Math.cos((lat + Number(puff.lat)) * Math.PI / 360);
+          var distanceSquared = dx * dx + dy * dy;
+          if (distanceSquared > cutoff * cutoff * sigmaSquared) continue;
+          values[row * columnCount + column] += normalizer * Math.exp(-0.5 * distanceSquared / sigmaSquared);
+        }
+      }
+    });
+
+    var rawMax = Math.max.apply(null, Array.from(values));
+    if (!(rawMax > 0)) return null;
+    var normalizedPositive = Array.from(values).filter(function (value) { return value > 0; }).map(function (value) {
+      return value / rawMax;
+    }).sort(function (a, b) { return a - b; });
+    var probabilities = options.quantiles || DEFAULT_CONTOURS.quantiles;
+    var thresholds = probabilities.map(function (probability) {
+      return quantile(normalizedPositive, probability);
+    });
+    for (var thresholdIndex = 1; thresholdIndex < thresholds.length; thresholdIndex += 1) {
+      if (thresholds[thresholdIndex] <= thresholds[thresholdIndex - 1]) {
+        thresholds[thresholdIndex] = Math.min(0.999999, thresholds[thresholdIndex - 1] + 0.000001);
+      }
     }
 
-    var initialRadius = horizontalSpreadKm(0, Object.assign({}, options, { radiusFactor: factor }));
-    var endRadius = horizontalSpreadKm(duration, Object.assign({}, options, { radiusFactor: factor }));
+    var features = [];
+    for (var outputRow = 0; outputRow < rowCount; outputRow += 1) {
+      for (var outputColumn = 0; outputColumn < columnCount; outputColumn += 1) {
+        var value = values[outputRow * columnCount + outputColumn] / rawMax;
+        features.push({
+          type: "Feature",
+          properties: { support: value },
+          geometry: {
+            type: "Point",
+            coordinates: [
+              roundGrid(minLon + outputColumn * step),
+              roundGrid(minLat + outputRow * step)
+            ]
+          }
+        });
+      }
+    }
     return {
-      type: "Feature",
-      properties: {
-        source_index: trajectory.sourceIndex,
-        pressure_hpa: trajectory.level && trajectory.level.pressure,
-        altitude_m: trajectory.level && trajectory.level.altitude,
-        envelope_band: options.band || "core",
-        radius_factor: factor,
-        initial_radius_km: initialRadius,
-        end_radius_km: endRadius,
-        sigma_growth_km_per_hour: finite(options.sigmaGrowthKmPerHour) || DEFAULT_ENVELOPE.sigmaGrowthKmPerHour,
-        duration_hours: duration
-      },
-      geometry: { type: "Polygon", coordinates: [ring] }
+      grid: { type: "FeatureCollection", features: features },
+      breaks: thresholds.concat([1.000001]),
+      thresholds: thresholds,
+      quantiles: probabilities.slice(),
+      rawMax: rawMax,
+      pointCount: features.length,
+      puffCount: valid.length,
+      rowCount: rowCount,
+      columnCount: columnCount,
+      gridStepDegrees: step,
+      bandwidthKm: maxSigma,
+      bounds: { minLat: minLat, maxLat: maxLat, minLon: minLon, maxLon: maxLon }
     };
   }
 
@@ -462,21 +511,21 @@
   }
 
   return {
-    DEFAULT_ENVELOPE: DEFAULT_ENVELOPE,
+    DEFAULT_CONTOURS: DEFAULT_CONTOURS,
     DEFAULT_LEVELS: DEFAULT_LEVELS,
-    bearingBetween: bearingBetween,
-    buildEnvelopePolygon: buildEnvelopePolygon,
     buildGrid: buildGrid,
+    buildSupportGrid: buildSupportGrid,
+    buildSupportPuffs: buildSupportPuffs,
     buildTrajectories: buildTrajectories,
     buildWindIndex: buildWindIndex,
     clusterSources: clusterSources,
+    contourBandwidthKm: contourBandwidthKm,
     destination: destination,
     distanceKm: distanceKm,
     featureTime: featureTime,
-    horizontalSpreadKm: horizontalSpreadKm,
     isVegetationOrUnclassified: isVegetationOrUnclassified,
+    quantile: quantile,
     sampleWind: sampleWind,
     travelVector: travelVector
   };
 });
-
