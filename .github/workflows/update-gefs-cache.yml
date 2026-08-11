@@ -2,6 +2,11 @@ name: Update GEFS transport cache
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - "scripts/update_gefs_cache.mjs"
+      - "scripts/validate_gefs_cache.mjs"
+      - ".github/workflows/update-gefs-cache.yml"
   schedule:
     - cron: "17 */6 * * *"
 
