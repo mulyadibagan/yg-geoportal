@@ -99,32 +99,61 @@ test("builds one trajectory per configured pressure level", () => {
   });
 });
 
-test("grows the horizontal sensitivity radius with parcel age", () => {
-  assert.equal(model.horizontalSpreadKm(0), 1.5);
-  assert.ok(Math.abs(model.horizontalSpreadKm(6) - 12.618) < 1e-9);
-  assert.ok(Math.abs(model.horizontalSpreadKm(6, { radiusFactor: 1.54 }) - 19.43172) < 1e-9);
+test("ties the contour smoothing bandwidth to sampled wind-grid spacing", () => {
+  assert.ok(Math.abs(model.contourBandwidthKm({ windGridStepDegrees: 1.5 }) - 49.95) < 1e-9);
+  assert.equal(model.contourBandwidthKm({ windGridStepDegrees: 0.1 }), 25);
 });
 
-test("builds closed variable-width polygon envelopes", () => {
-  const trajectory = {
-    sourceIndex: 2,
-    level: { pressure: 925, altitude: 800 },
-    path: [[101, 0], [101.1, 0], [101.2, 0.05]],
-    agesHours: [0, 1, 2],
-    durationHours: 2
-  };
-  const core = model.buildEnvelopePolygon(trajectory, { band: "core", radiusFactor: 1 });
-  const outer = model.buildEnvelopePolygon(trajectory, { band: "outer", radiusFactor: 1.54 });
+test("gives every clustered source equal total contour weight", () => {
+  const trajectories = [];
+  [0, 1].forEach((sourceIndex) => {
+    [950, 925, 850].forEach((pressure, levelIndex) => {
+      trajectories.push({
+        sourceIndex,
+        level: { pressure },
+        path: [[101, levelIndex * 0.01], [101.1, levelIndex * 0.01], [101.2, levelIndex * 0.01]],
+        agesHours: [0, 1, 2]
+      });
+    });
+  });
+  const puffs = model.buildSupportPuffs(trajectories, { windGridStepDegrees: 1.5 });
+  const sourceWeights = puffs.reduce((weights, puff) => {
+    weights[puff.sourceIndex] = (weights[puff.sourceIndex] || 0) + puff.weight;
+    return weights;
+  }, {});
 
-  assert.equal(core.geometry.type, "Polygon");
-  assert.ok(core.geometry.coordinates[0].length > trajectory.path.length * 2);
-  assert.deepEqual(
-    core.geometry.coordinates[0][0],
-    core.geometry.coordinates[0][core.geometry.coordinates[0].length - 1]
+  assert.equal(puffs.length, 18);
+  assert.ok(Math.abs(sourceWeights[0] - 1) < 1e-12);
+  assert.ok(Math.abs(sourceWeights[1] - 1) < 1e-12);
+  assert.ok(puffs.every((puff) => Math.abs(puff.sigmaKm - 49.95) < 1e-9));
+});
+
+test("builds a rectangular normalized support grid with ordered isoband breaks", () => {
+  function trajectoriesFor(sourceIndex) {
+    return [950, 925, 850].map((pressure, levelIndex) => ({
+      sourceIndex,
+      level: { pressure },
+      path: [[101, levelIndex * 0.02], [101.2, levelIndex * 0.02], [101.4, levelIndex * 0.02]],
+      agesHours: [0, 1, 2]
+    }));
+  }
+  const oneSourcePuffs = model.buildSupportPuffs(trajectoriesFor(0), { windGridStepDegrees: 1 });
+  const twoSourcePuffs = model.buildSupportPuffs(
+    trajectoriesFor(0).concat(trajectoriesFor(1)),
+    { windGridStepDegrees: 1 }
   );
-  assert.equal(core.properties.source_index, 2);
-  assert.equal(core.properties.pressure_hpa, 925);
-  assert.ok(outer.properties.end_radius_km > core.properties.end_radius_km);
+  const domain = { minLat: -2, maxLat: 2, minLon: 99, maxLon: 103 };
+  const oneSource = model.buildSupportGrid(oneSourcePuffs, domain, { gridStepDegrees: 0.2 });
+  const twoSources = model.buildSupportGrid(twoSourcePuffs, domain, { gridStepDegrees: 0.2 });
+  const values = twoSources.grid.features.map((item) => item.properties.support);
+
+  assert.equal(twoSources.pointCount, twoSources.rowCount * twoSources.columnCount);
+  assert.equal(twoSources.breaks.length, 5);
+  assert.ok(twoSources.breaks.every((value, index, all) => index === 0 || value > all[index - 1]));
+  assert.ok(Math.abs(Math.max(...values) - 1) < 1e-12);
+  assert.ok(Math.min(...values) >= 0);
+  assert.ok(twoSources.rawMax > oneSource.rawMax * 1.99);
+  assert.equal(twoSources.gridStepDegrees, 0.2);
 });
 
 test("uses a materially denser national sampling grid", () => {
