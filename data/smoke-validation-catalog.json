@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "status": "candidate-events-only",
+  "annotationSource": "NASA Worldview/GIBS imagery; manual plume polygons not yet created",
+  "cases": [
+    {
+      "id": "sumatra-2026-02-07",
+      "date": "2026-02-07",
+      "region": "Central Sumatra",
+      "referenceUrl": "https://asmc.asean.org/category/haze-review/haze-review-for-year-2026/",
+      "referenceUse": "candidate date only",
+      "annotationStatus": "pending"
+    },
+    {
+      "id": "sumatra-2026-06-03",
+      "date": "2026-06-03",
+      "region": "Northern Sumatra",
+      "referenceUrl": "https://asmc.asean.org/category/haze-review/haze-review-for-year-2026/",
+      "referenceUse": "candidate date only",
+      "annotationStatus": "pending"
+    },
+    {
+      "id": "west-kalimantan-2026-06-05",
+      "date": "2026-06-05",
+      "region": "West Kalimantan and central Sarawak",
+      "referenceUrl": "https://asmc.asean.org/category/haze-review/haze-review-for-year-2026/",
+      "referenceUse": "candidate date only",
+      "annotationStatus": "pending"
+    }
+  ]
+}

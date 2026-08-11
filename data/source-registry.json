@@ -93,6 +93,32 @@
       "commercialUse": "depends on each provider licence",
       "redistribution": "depends on each provider licence",
       "status": "review-required"
+    },
+    {
+      "id": "nasa-worldview-validation",
+      "name": "NASA Worldview/GIBS imagery for manual plume validation",
+      "used": false,
+      "dataKind": "satellite imagery",
+      "access": "official Worldview Snapshot and GIBS services",
+      "termsUrl": "https://www.earthdata.nasa.gov/engage/open-data-services-software/data-use-policy",
+      "licence": "NASA Earthdata open-data policy",
+      "attribution": "NASA Worldview / GIBS and the named instrument",
+      "commercialUse": "allowed for factual use without implying NASA endorsement",
+      "redistribution": "allowed unless a selected layer is marked otherwise",
+      "status": "approved"
+    },
+    {
+      "id": "asmc-event-reference",
+      "name": "ASMC haze reviews used only to identify candidate event dates",
+      "used": false,
+      "dataKind": "human-authored event reference",
+      "access": "manual link review only; no scraping or image copying",
+      "termsUrl": "https://wis2.asmc.asean.org/",
+      "licence": "reuse rights not established for this project",
+      "attribution": "ASEAN Specialised Meteorological Centre (ASMC)",
+      "commercialUse": "not established",
+      "redistribution": "not allowed unless permission is established",
+      "status": "review-required"
     }
   ]
 }

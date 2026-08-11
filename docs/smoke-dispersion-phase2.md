@@ -42,6 +42,8 @@ Run `node scripts/validate_smoke_dispersion.mjs` before publication. The validat
 4. Calibrate thresholds on a historical period separate from the evaluation period.
 5. Publish uncertainty and validation dates beside the map.
 
+Candidate dates may be identified from ASMC narrative reviews, but ASMC imagery must not be copied or scraped until reuse permission is established. Manual observed-plume polygons should instead be traced from appropriately attributed NASA Worldview/GIBS layers. `scripts/score_smoke_validation.mjs` rasterises predicted and observed polygons at 0.05 degrees and reports intersection-over-union, false-alarm ratio, miss ratio, and plume-axis angular error. The annotation and model runs must use separate calibration and evaluation cases.
+
 ## Access still required
 
 - Registered NOAA HYSPLIT executable or approved runtime.
