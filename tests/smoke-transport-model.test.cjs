@@ -93,9 +93,38 @@ test("builds one trajectory per configured pressure level", () => {
   assert.equal(trajectories.length, 3);
   trajectories.forEach((trajectory) => {
     assert.ok(Math.abs(trajectory.travelKm - 10) < 0.05);
+    assert.deepEqual(trajectory.agesHours, [0, 1]);
     const last = trajectory.path[trajectory.path.length - 1];
     assert.ok(last[1] < 0);
   });
+});
+
+test("grows the horizontal sensitivity radius with parcel age", () => {
+  assert.equal(model.horizontalSpreadKm(0), 1.5);
+  assert.ok(Math.abs(model.horizontalSpreadKm(6) - 12.618) < 1e-9);
+  assert.ok(Math.abs(model.horizontalSpreadKm(6, { radiusFactor: 1.54 }) - 19.43172) < 1e-9);
+});
+
+test("builds closed variable-width polygon envelopes", () => {
+  const trajectory = {
+    sourceIndex: 2,
+    level: { pressure: 925, altitude: 800 },
+    path: [[101, 0], [101.1, 0], [101.2, 0.05]],
+    agesHours: [0, 1, 2],
+    durationHours: 2
+  };
+  const core = model.buildEnvelopePolygon(trajectory, { band: "core", radiusFactor: 1 });
+  const outer = model.buildEnvelopePolygon(trajectory, { band: "outer", radiusFactor: 1.54 });
+
+  assert.equal(core.geometry.type, "Polygon");
+  assert.ok(core.geometry.coordinates[0].length > trajectory.path.length * 2);
+  assert.deepEqual(
+    core.geometry.coordinates[0][0],
+    core.geometry.coordinates[0][core.geometry.coordinates[0].length - 1]
+  );
+  assert.equal(core.properties.source_index, 2);
+  assert.equal(core.properties.pressure_hpa, 925);
+  assert.ok(outer.properties.end_radius_km > core.properties.end_radius_km);
 });
 
 test("uses a materially denser national sampling grid", () => {
