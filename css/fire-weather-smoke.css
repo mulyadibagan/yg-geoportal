@@ -9,14 +9,22 @@
   line-height: 1.45;
 }
 .fw-smoke-summary p { margin: 5px 0 0; color: var(--muted); }
-.fw-legend i.transport-950,
-.fw-legend i.transport-925,
-.fw-legend i.transport-850 {
+.fw-legend i.smoke-core,
+.fw-legend i.smoke-outer {
   width: 22px;
-  height: 0;
-  border-radius: 0;
-  background: transparent;
+  height: 12px;
+  border-radius: 3px;
+  box-sizing: border-box;
 }
-.transport-950 { border-top: 3px solid #167c80; }
-.transport-925 { border-top: 3px dashed #d18200; }
-.transport-850 { border-top: 3px dotted #7b4cc2; }
+.smoke-core {
+  border: 1.5px solid #4f4742;
+  background: rgba(111, 101, 94, .28);
+}
+.smoke-outer {
+  border: 2px dashed #766b63;
+  background: rgba(166, 155, 146, .15);
+}
+.fw-sources a {
+  color: #0b7255;
+  font-weight: 700;
+}
