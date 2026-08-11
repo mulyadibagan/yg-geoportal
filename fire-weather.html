@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
   <link rel="stylesheet" href="css/fire-weather.css?v=20260806-map-date1">
   <link rel="stylesheet" href="css/fire-weather-national.css?v=20260805-infra-fs1">
-  <link rel="stylesheet" href="css/fire-weather-smoke.css?v=20260811-transport1">
+  <link rel="stylesheet" href="css/fire-weather-smoke.css?v=20260811-polygon1">
 </head>
 <body>
   <header class="fw-header">
@@ -29,7 +29,7 @@
       <button class="active" type="button" data-product="hotspots"><span>🔥</span><strong>Hotspot</strong><small>VIIRS · confidence tinggi</small></button>
       <button type="button" data-product="wind"><span>➤</span><strong>Angin</strong><small>Referensi 925 hPa · interpolasi</small></button>
       <button type="button" data-product="rain"><span>🌧</span><strong>Hujan saat ini</strong><small>Citra radar terbaru · bukan akumulasi</small></button>
-      <button type="button" data-product="smoke"><span>🌫️</span><strong id="smoke-product-title">Jejak Transport Asap Eksperimental</strong><small id="smoke-product-note">Bukan plume atau konsentrasi PM2.5</small></button>
+      <button type="button" data-product="smoke"><span>🌫️</span><strong id="smoke-product-title">Polygon Transport Asap Eksperimental</strong><small id="smoke-product-note">Selubung model · bukan PM2.5</small></button>
     </section>
     <section class="fw-kpis" aria-label="Ringkasan kondisi">
       <article><span>Hotspot high confidence desa YG</span><strong id="kpi-hotspots">—</strong><small id="kpi-period">30 hari</small></article>
@@ -40,34 +40,34 @@
     </section>
     <section class="fw-workspace">
       <aside class="fw-controls" aria-label="Kontrol peta">
-        <div class="fw-control-group"><h2>Waktu hotspot & rekonstruksi</h2><div class="segmented" id="period-control"><button data-period="latest">Sekarang</button><button data-period="1">24 jam</button><button data-period="7">7 hari berulang</button><button class="active" data-period="30">30 hari</button></div><p class="control-note" id="period-note">Sekarang dan 24 jam merekonstruksi transport sejak deteksi hingga kini; 7 hari menampilkan sumber berulang; 30 hari hanya marker historis.</p></div>
+        <div class="fw-control-group"><h2>Waktu hotspot & polygon</h2><div class="segmented" id="period-control"><button data-period="latest">Sekarang</button><button data-period="1">24 jam</button><button data-period="7">7 hari berulang</button><button class="active" data-period="30">30 hari</button></div><p class="control-note" id="period-note">Sekarang dan 24 jam membentuk polygon koridor transport sejak deteksi hingga kini; 7 hari menampilkan sumber berulang; 30 hari hanya marker historis.</p></div>
         <div class="fw-control-group"><h2>Layer peta</h2>
           <label><input type="checkbox" data-layer="hotspots" checked> Hotspot interaktif confidence tinggi</label>
           <label><input type="checkbox" data-layer="satellite"> Citra satelit MODIS</label>
           <label><input type="checkbox" data-layer="villages" checked> Desa intervensi & risiko</label>
-          <label><input type="checkbox" data-layer="smoke"> Jejak transport asap eksperimental</label>
+          <label><input type="checkbox" data-layer="smoke"> Polygon transport asap eksperimental</label>
           <label><input type="checkbox" data-layer="rain"> Hujan saat ini (radar)</label>
           <p class="control-note" id="rain-status">Aktifkan layer untuk melihat citra radar hujan terbaru.</p>
           <label><input type="checkbox" data-layer="wind" checked> Angin referensi GFS 925 hPa</label>
           <label><input type="checkbox" data-layer="fdrs" checked> FDRS / tinggi muka air</label>
           <label><input type="checkbox" data-layer="canals" checked> Sekat kanal</label>
         </div>
-        <div class="fw-control-group fw-wind-level"><h2>Lapisan transport</h2><p class="fw-static-value">GFS 950 / 925 / 850 hPa</p><p class="control-note">Jejak memakai tiga lapisan sekitar 500, 800, dan 1.500 m dpl. Panah peta memakai 925 hPa sebagai referensi.</p></div>
+        <div class="fw-control-group fw-wind-level"><h2>Lapisan transport</h2><p class="fw-static-value">GFS 950 / 925 / 850 hPa</p><p class="control-note">Polygon menggabungkan tiga sensitivitas ketinggian sekitar 500, 800, dan 1.500 m dpl. Lebarnya bertambah menurut umur parcel; panah peta memakai 925 hPa sebagai referensi.</p></div>
         <div class="fw-zoom-actions"><button class="fw-primary" id="zoom-id" type="button">Lihat Indonesia</button><button class="fw-secondary" id="zoom-yg" type="button">Zoom ke wilayah YG</button></div>
-        <div class="fw-legend"><h2>Legenda</h2><span><i class="hotspot-dot"></i>Deteksi hotspot confidence tinggi</span><span><i class="transport-950"></i>Jejak 950 hPa · ±500 m dpl</span><span><i class="transport-925"></i>Jejak 925 hPa · ±800 m dpl</span><span><i class="transport-850"></i>Jejak 850 hPa · ±1.500 m dpl</span><span><i class="legend-infrastructure fdrs">F</i>FDRS / tinggi muka air</span><span><i class="legend-infrastructure canal">S</i>Sekat kanal</span><span><i class="risk-zero"></i>Desa: nihil</span><span><i class="risk-low"></i>Desa: 1–2 deteksi</span><span><i class="risk-medium"></i>Desa: 3–5 deteksi</span><span><i class="risk-high"></i>Desa: &gt;5 deteksi</span></div>
+        <div class="fw-legend"><h2>Legenda</h2><span><i class="hotspot-dot"></i>Deteksi hotspot confidence tinggi</span><span><i class="smoke-core"></i>Zona utama model · σh</span><span><i class="smoke-outer"></i>Batas ketidakpastian · 1,54σh</span><span><i class="legend-infrastructure fdrs">F</i>FDRS / tinggi muka air</span><span><i class="legend-infrastructure canal">S</i>Sekat kanal</span><span><i class="risk-zero"></i>Desa: nihil</span><span><i class="risk-low"></i>Desa: 1–2 deteksi</span><span><i class="risk-medium"></i>Desa: 3–5 deteksi</span><span><i class="risk-high"></i>Desa: &gt;5 deteksi</span></div>
       </aside>
       <div class="fw-map-wrap"><div id="fire-map" aria-label="Peta pemantauan karhutla dan cuaca"></div><div class="fw-map-message" id="map-message" hidden></div></div>
       <aside class="fw-alerts"><div class="fw-alert-head"><div><p class="fw-eyebrow">PERINGATAN DESA</p><h2>Prioritas pemantauan</h2></div><span id="alert-count">0</span></div><div id="alert-list" class="fw-alert-list"><p class="empty">Memuat data…</p></div>
-        <div class="fw-smoke-summary" id="smoke-summary"><strong>Jejak transport asap eksperimental</strong><p>Aktifkan layer dan pilih Sekarang atau 24 jam untuk merekonstruksi lintasan sejak deteksi.</p></div>
-        <div class="fw-disclaimer"><strong>Cara membaca</strong><p>Garis menunjukkan rekonstruksi arah perjalanan udara sejak waktu deteksi hotspot hingga waktu model sekarang pada tiga lapisan GFS. Garis ini bukan plume asap teramati, bukan konsentrasi PM2.5, dan bukan prakiraan kesehatan.</p></div>
+        <div class="fw-smoke-summary" id="smoke-summary"><strong>Polygon transport asap eksperimental</strong><p>Aktifkan layer dan pilih Sekarang atau 24 jam untuk membentuk polygon koridor sejak deteksi.</p></div>
+        <div class="fw-disclaimer"><strong>Cara membaca</strong><p>Polygon menunjukkan koridor kumulatif potensi transport udara sejak deteksi hotspot pada tiga lapisan GFS. Zona utama dan batas ketidakpastian bukan plume asap teramati, bukan konsentrasi PM2.5, dan bukan prakiraan kesehatan.</p></div>
       </aside>
     </section>
-    <section class="fw-sources"><strong>Sumber dan batas model:</strong> NASA FIRMS NRT (MODIS dan VIIRS) untuk deteksi hotspot berkeyakinan tinggi dan FRP; GFS/Open-Meteo untuk angin 950, 925, dan 850 hPa; RainViewer untuk radar hujan; NASA GIBS untuk citra MODIS; serta data lapangan YG. Deteksi berbeda satelit dalam radius 1,5 km dan 90 menit dikelompokkan sebelum menjadi sumber. Jejak memakai adveksi horizontal dan interpolasi ruang–waktu; belum memodelkan plume rise, turbulensi, pencampuran vertikal, deposisi, atau konsentrasi.</section>
+    <section class="fw-sources"><strong>Sumber dan batas model:</strong> <span>NASA FIRMS NRT (MODIS dan VIIRS) untuk deteksi hotspot berkeyakinan tinggi dan FRP; GFS/Open-Meteo untuk angin 950, 925, dan 850 hPa; RainViewer untuk radar hujan; NASA GIBS untuk citra MODIS; serta data lapangan YG. Deteksi berbeda satelit dalam radius 1,5 km dan 90 menit dikelompokkan sebelum menjadi sumber. Polygon memakai adveksi horizontal yang diinterpolasi ruang–waktu, sensitivitas tiga ketinggian, serta pertumbuhan sigma horizontal 1,853 km/jam dengan batas luar 1,54σh sebagai parameter eksplisit.</span> <a href="https://www.ready.noaa.gov/documents/Tutorial/html/conc_eqns.html" target="_blank" rel="noopener">Persamaan puff HYSPLIT</a> · <a href="https://www.arl.noaa.gov/documents/reports/ARL%20TM-195.pdf" target="_blank" rel="noopener">Nilai default historis NOAA</a>. <span>Model belum menghitung plume rise, stabilitas/PBL, turbulensi terukur, pencampuran vertikal, deposisi, emisi massa, probabilitas, atau konsentrasi.</span></section>
   </main>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
   <script src="https://cdn.jsdelivr.net/npm/@turf/turf@7/turf.min.js"></script>
-  <script src="js/i18n.js?v=20260811-transport1"></script>
-  <script src="js/smoke-transport-model.js?v=20260811-transport1"></script>
-  <script src="js/fire-weather.js?v=20260811-transport1"></script>
+  <script src="js/i18n.js?v=20260811-polygon1"></script>
+  <script src="js/smoke-transport-model.js?v=20260811-polygon1"></script>
+  <script src="js/fire-weather.js?v=20260811-polygon1"></script>
 </body>
 </html>
