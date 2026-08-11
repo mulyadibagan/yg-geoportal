@@ -6,6 +6,8 @@ on:
     paths:
       - "scripts/update_gefs_cache.mjs"
       - "scripts/validate_gefs_cache.mjs"
+      - "scripts/update_weather_cache.mjs"
+      - "scripts/validate_weather_cache.mjs"
       - ".github/workflows/update-gefs-cache.yml"
   schedule:
     - cron: "17 */6 * * *"
@@ -30,14 +32,18 @@ jobs:
         run: node scripts/update_gefs_cache.mjs
       - name: Validate GEFS provenance and coverage
         run: node scripts/validate_gefs_cache.mjs
+      - name: Fetch cached Riau weather
+        run: node scripts/update_weather_cache.mjs
+      - name: Validate cached Riau weather
+        run: node scripts/validate_weather_cache.mjs
       - name: Commit refreshed cache
         run: |
-          if git diff --quiet -- data/gefs-multilevel.json; then
-            echo "GEFS cache is unchanged."
+          if git diff --quiet -- data/gefs-multilevel.json data/weather-riau.json; then
+            echo "GEFS and weather caches are unchanged."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/gefs-multilevel.json
-          git commit -m "chore(data): update GEFS transport cache"
+          git add data/gefs-multilevel.json data/weather-riau.json
+          git commit -m "chore(data): update GEFS and weather caches"
           git push

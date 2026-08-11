@@ -43,6 +43,19 @@
       "status": "conditional"
     },
     {
+      "id": "met-norway",
+      "name": "MET Norway Locationforecast 2.0",
+      "used": true,
+      "dataKind": "weather forecast model output",
+      "access": "server-side cached official API",
+      "termsUrl": "https://docs.api.met.no/doc/TermsOfService.html",
+      "licence": "CC BY 4.0",
+      "attribution": "Weather forecast from MET Norway",
+      "commercialUse": "allowed under CC BY 4.0 with attribution and API terms",
+      "redistribution": "allowed with attribution",
+      "status": "approved"
+    },
+    {
       "id": "rainviewer",
       "name": "RainViewer Weather Radar API",
       "used": true,

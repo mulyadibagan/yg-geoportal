@@ -44,7 +44,19 @@ test("page labels the GEFS corridor product and wires the controller", () => {
   assert.match(controller, /turf\.isobands/);
   assert.match(controller, /setLayerChecked\('hotspots',true\)/);
   assert.match(controller, /cache GEFS server mencakup waktu model/);
+  assert.match(controller, /data\/weather-riau\.json/);
+  assert.doesNotMatch(controller, /api\.open-meteo\.com\/v1\/forecast\?latitude=/);
   assert.match(controller, /kompleks sumber dikeluarkan karena GEFS tidak mencakup waktu deteksinya/);
+});
+
+test("cached Riau weather carries source and freshness metadata", () => {
+  const weather = JSON.parse(fs.readFileSync(path.join(ROOT, "data/weather-riau.json"), "utf8"));
+  assert.equal(weather.schemaVersion, 1);
+  assert.ok(Number.isFinite(Date.parse(weather.validTime)));
+  assert.ok(Number.isFinite(Number(weather.temperatureC)));
+  assert.ok(Number.isFinite(Number(weather.windSpeedKmh)));
+  assert.equal(weather.source, "MET Norway Locationforecast 2.0");
+  assert.match(weather.termsUrl, /^https:\/\//);
 });
 
 test("fire-weather controller boots against its browser interfaces", () => {
