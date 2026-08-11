@@ -34,6 +34,8 @@ test("page labels the GEFS corridor product and wires the controller", () => {
   assert.match(html, /Koridor dukungan transport GEFS/);
   assert.match(html, /bukan konsentrasi PM2\.5, batas asap teramati, atau risiko kesehatan/);
   assert.match(html, /data-period="1">24 jam/);
+  assert.match(html, /class="active" data-period="1">24 jam/);
+  assert.match(controller, /period=1,rainLayer/);
   assert.doesNotMatch(html, /data-period="latest"|>Sekarang<|>Current</);
   assert.doesNotMatch(controller, /period==='latest'|period==="latest"|6 jam terakhir|sumber 6 jam/);
   assert.match(controller, /function smokeField/);
