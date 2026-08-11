@@ -55,17 +55,22 @@ test("page wires the pure transport model before the map controller", () => {
   assert.ok(controllerAt > modelAt);
   assert.doesNotMatch(html, /Skor indikatif|Asap: sangat tinggi|AOD CAMS|kalibrasi kepadatan/i);
   assert.doesNotMatch(html, /transport-950|transport-925|transport-850/);
-  assert.match(html, /Polygon Transport Asap Eksperimental/);
-  assert.match(html, /Zona utama model · σh/);
-  assert.match(html, /Batas ketidakpastian · 1,54σh/);
-  assert.match(html, /1,853 km\/jam/);
-  assert.match(html, /area yang saling menumpuk/i);
-  assert.match(html, /bukan plume asap teramati, bukan konsentrasi PM2\.5/i);
+  assert.match(html, /Kontur Potensi Transport Asap/);
+  assert.match(html, /Jejak model terluar · P20–P50/);
+  assert.match(html, /Dukungan model terbatas · P50–P75/);
+  assert.match(html, /Dukungan model sedang · P75–P90/);
+  assert.match(html, /Dukungan model kuat · ≥P90/);
+  assert.doesNotMatch(html, /1,853 km\/jam|1\.54σ|1,54σ|laju dispersi universal/i);
+  assert.match(html, /bukan konsentrasi asap, PM2\.5, probabilitas/i);
+  assert.match(html, /FRP dan AOD tidak menentukan warna/);
   assert.match(controller, /period===7\|\|period===30\)applyPeriodButton/);
+  assert.match(controller, /data-period="1"/);
   assert.match(controller, /smokeAutoFit=true/);
-  assert.match(controller, /fitBounds\(smokeBounds\.pad\(\.18\),\{maxZoom:8\}\)/);
-  assert.match(controller, /sourceTime>=smokeFocusTime/);
-  assert.match(controller, /peta fokus ke polygon sumber terbaru/);
+  assert.match(controller, /setLayerChecked\('hotspots',true\)/);
+  assert.match(controller, /turf\.isobands/);
+  assert.match(controller, /buildSupportGrid/);
+  assert.match(controller, /P20\/P50\/P75\/P90/);
+  assert.match(controller, /fitBounds\(smokeBounds\.pad\(\.1\),\{maxZoom:6\}\)/);
 });
 
 test("fire-weather controller boots against its browser interfaces", () => {
