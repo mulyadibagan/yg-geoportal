@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Ruang Kerja Validasi Plume | YG GeoPortal</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="css/smoke-validation.css?v=20260811-1">
+</head>
+<body>
+  <header class="sv-header">
+    <a href="fire-weather.html">← Kembali ke pemantauan</a>
+    <div><strong>YG GeoPortal</strong><span>Historical plume annotation workspace</span></div>
+  </header>
+  <main>
+    <section class="sv-intro">
+      <p class="eyebrow">VALIDASI INDEPENDEN</p>
+      <h1>Anotasi plume historis</h1>
+      <p>Gambar hanya material menyerupai plume yang terlihat pada citra NASA. Koridor model, arah angin, dan hasil prediksi sengaja tidak tersedia pada halaman ini.</p>
+      <div class="warning"><strong>Blind annotation wajib.</strong> Jangan membuka halaman model selama menggambar. Ekspor dari alat ini berstatus <em>draft</em> dan belum dapat dipakai untuk skor sebelum diperiksa orang kedua.</div>
+    </section>
+    <section class="sv-layout">
+      <aside class="sv-panel">
+        <label>Kasus historis<select id="case-select"></select></label>
+        <div id="case-details" class="case-details"></div>
+        <label>Visibilitas<select id="visibility"><option value="partial">Parsial</option><option value="clear">Jelas</option><option value="unobservable">Tidak dapat diamati</option></select></label>
+        <label>Keyakinan anotasi<select id="confidence"><option value="medium">Sedang</option><option value="high">Tinggi</option><option value="low">Rendah</option></select></label>
+        <label>Layer NASA<select id="nasa-layer"><option value="MODIS_Terra_CorrectedReflectance_TrueColor">MODIS Terra True Color</option><option value="MODIS_Aqua_CorrectedReflectance_TrueColor">MODIS Aqua True Color</option><option value="VIIRS_SNPP_CorrectedReflectance_TrueColor">VIIRS SNPP True Color</option></select></label>
+        <label>Nama pengamat<input id="annotator" autocomplete="off" placeholder="Nama pengamat pertama"></label>
+        <label>Waktu akuisisi jika diketahui<input id="acquired-at" type="datetime-local"></label>
+        <label>Catatan awan/halangan<textarea id="notes" rows="3" placeholder="Awan, sunglint, batas scene, atau ketidakpastian"></textarea></label>
+        <a id="worldview-link" class="worldview" target="_blank" rel="noopener">Buka tanggal dan area di NASA Worldview ↗</a>
+        <div class="sv-actions">
+          <button id="start-draw">Mulai polygon</button>
+          <button id="undo-point" class="secondary">Batalkan titik</button>
+          <button id="finish-polygon" class="secondary">Selesaikan polygon</button>
+          <button id="clear-case" class="danger">Hapus draft kasus</button>
+        </div>
+        <p id="draw-status" class="status">Pilih kasus lalu mulai polygon.</p>
+        <button id="export-geojson" class="export">Ekspor GeoJSON draft</button>
+      </aside>
+      <div class="sv-map-wrap">
+        <div id="annotation-map" aria-label="Peta anotasi citra NASA"></div>
+        <div class="map-note">Citra: NASA GIBS · tanggal kasus · model tidak dimuat</div>
+      </div>
+    </section>
+  </main>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/smoke-validation.js?v=20260811-1"></script>
+</body>
+</html>

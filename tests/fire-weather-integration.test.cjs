@@ -69,6 +69,18 @@ test("cached Riau weather carries source and freshness metadata", () => {
   assert.match(weather.termsUrl, /^https:\/\//);
 });
 
+test("blind plume annotation workspace excludes model output", () => {
+  const html = fs.readFileSync(path.join(ROOT, "smoke-validation.html"), "utf8");
+  const controller = fs.readFileSync(path.join(ROOT, "js/smoke-validation.js"), "utf8");
+  assert.match(html, /Blind annotation wajib/);
+  assert.match(html, /NASA Worldview/);
+  assert.doesNotMatch(html, /fire-weather\.js|gfs-atmosphere|gefs-multilevel/);
+  assert.match(controller, /gibs\.earthdata\.nasa\.gov/);
+  assert.match(controller, /annotationStatus:'draft'/);
+  assert.match(controller, /record\.reviewer=null/);
+  assert.match(controller, /smoke-validation-observed-draft\.geojson/);
+});
+
 test("fire-weather controller boots against its browser interfaces", () => {
   const elements = new Map();
   const panes = new Map();
