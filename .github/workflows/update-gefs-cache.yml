@@ -10,6 +10,8 @@ on:
       - "scripts/validate_weather_cache.mjs"
       - "scripts/update_gfs_atmosphere_cache.mjs"
       - "scripts/validate_gfs_atmosphere_cache.mjs"
+      - "scripts/update_cams_air_quality_cache.mjs"
+      - "scripts/validate_cams_air_quality_cache.mjs"
       - ".github/workflows/update-gefs-cache.yml"
   schedule:
     - cron: "17 */6 * * *"
@@ -42,14 +44,18 @@ jobs:
         run: node scripts/update_weather_cache.mjs
       - name: Validate cached Riau weather
         run: node scripts/validate_weather_cache.mjs
+      - name: Fetch national CAMS air-quality cache
+        run: node scripts/update_cams_air_quality_cache.mjs
+      - name: Validate national CAMS air-quality cache
+        run: node scripts/validate_cams_air_quality_cache.mjs
       - name: Commit refreshed cache
         run: |
-          if git diff --quiet -- data/gefs-multilevel.json data/gfs-atmosphere.json data/weather-riau.json; then
-            echo "GEFS, atmosphere, and weather caches are unchanged."
+          if git diff --quiet -- data/gefs-multilevel.json data/gfs-atmosphere.json data/weather-riau.json data/cams-air-quality.json; then
+            echo "GEFS, atmosphere, weather, and CAMS caches are unchanged."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/gefs-multilevel.json data/gfs-atmosphere.json data/weather-riau.json
+          git add data/gefs-multilevel.json data/gfs-atmosphere.json data/weather-riau.json data/cams-air-quality.json
           git commit -m "chore(data): update transport and weather caches"
           git push
