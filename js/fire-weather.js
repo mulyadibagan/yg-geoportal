@@ -1,6 +1,9 @@
 (function(){
   'use strict';
-  var indonesiaBounds=L.latLngBounds([[-11.2,94.5],[6.2,141.5]]);
+  var indonesiaDomain={minLat:-11.2,maxLat:6.2,minLon:94.5,maxLon:141.5};
+  var indonesiaBounds=L.latLngBounds([[indonesiaDomain.minLat,indonesiaDomain.minLon],[indonesiaDomain.maxLat,indonesiaDomain.maxLon]]);
+  var TRANSPORT_GRID_STEP=1.5,TRANSPORT_INITIAL_PADDING=6,TRANSPORT_EXPANSION_STEP=7.5,TRANSPORT_MAX_EXPANSIONS=3;
+  var TRANSPORT_LIMITS={minLat:-35,maxLat:35,minLon:70,maxLon:170};
   var map=L.map('fire-map',{preferCanvas:true,minZoom:3}).fitBounds(indonesiaBounds,{padding:[8,8]});
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'&copy; OpenStreetMap'}).addTo(map);
   map.createPane('satellitePane');map.getPane('satellitePane').style.zIndex=205;
@@ -24,7 +27,7 @@
     villages:L.layerGroup().addTo(map),rain:L.layerGroup(),wind:L.layerGroup().addTo(map),
     fdrs:L.layerGroup().addTo(map),canals:L.layerGroup().addTo(map)
   };
-  var villageGeo=null,analytics=null,hotspotGeo=null,ygBounds=null,period=30,rainLayer=null,mapDateBadge=null,hotspotStatusText='Memuat…',weatherReadings=[],weatherReady=false,transportReadings=[],transportReady=false,transportLoading=false,transportPromise=null,transportTime='',transportCoverage=0,windIndex=null,smokeModel=window.YG_SMOKE_TRANSPORT||null,smokeAutoFit=false,smokeBounds=null;
+  var villageGeo=null,analytics=null,hotspotGeo=null,ygBounds=null,period=30,rainLayer=null,mapDateBadge=null,hotspotStatusText='Memuat…',weatherReadings=[],weatherReady=false,transportReadings=[],transportReady=false,transportLoading=false,transportPromise=null,transportTime='',transportEndTime=0,transportCoverage=0,transportDomain=null,transportExpansionCount=0,transportBoundaryLimited=false,windIndex=null,smokeModel=window.YG_SMOKE_TRANSPORT||null,smokeAutoFit=false,smokeBounds=null;
   var weatherSites=[['Aceh',5.55,95.32],['Riau',1.45,102.1],['Sumatera Selatan',-3.0,104.8],['Jakarta',-6.2,106.8],['Kalimantan Barat',-.1,109.3],['Kalimantan Tengah',-2.2,113.9],['Kalimantan Timur',.5,117.1],['Sulawesi',-2.0,121.0],['Bali',-8.4,115.2],['Maluku',-3.2,129.0],['Papua Selatan',-7.5,139.5],['Papua Utara',-2.5,140.7]];
   function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
   function nameOf(p){return p.Desa||p.WADMKD||p.Nama_Desa||p.NAMOBJ||'Desa intervensi'}
@@ -54,7 +57,7 @@
   function distanceKm(a,b){var dy=(a[0]-b[0])*111,dx=(a[1]-b[1])*111*Math.cos((a[0]+b[0])*Math.PI/360);return Math.sqrt(dx*dx+dy*dy)}
   function nearestWeather(lat,lon){return weatherReadings.reduce(function(best,row){var d=distanceKm([lat,lon],[row.lat,row.lon]);return !best||d<best.distance?Object.assign({distance:d},row):best},null)}
   function smokeEnglish(){return !!(window.YG_I18N&&window.YG_I18N.language==='en')}
-  function smokeDetections(){var end=periodEnd(),cutoff=end.getTime()-24*3600000;return (hotspotGeo&&hotspotGeo.features||[]).filter(function(f){var t=pointTime(f);return !isNaN(t)&&t<=end&&t.getTime()>cutoff&&(!smokeModel||smokeModel.isVegetationOrUnclassified(f))})}
+  function smokeDetections(endTime){var end=Number.isFinite(Number(endTime))?new Date(Number(endTime)):periodEnd(),cutoff=end.getTime()-24*3600000;return (hotspotGeo&&hotspotGeo.features||[]).filter(function(f){var t=pointTime(f);return !isNaN(t)&&t<=end&&t.getTime()>cutoff&&(!smokeModel||smokeModel.isVegetationOrUnclassified(f))})}
   function repeatedSourceGroups(){var end=periodEnd(),cutoff=end.getTime()-7*86400000,buckets={};(hotspotGeo&&hotspotGeo.features||[]).forEach(function(f){var t=pointTime(f);if(isNaN(t)||t>end||t.getTime()<=cutoff||(smokeModel&&!smokeModel.isVegetationOrUnclassified(f)))return;var c=f.geometry.coordinates,key=Math.round(c[1]*50)+'|'+Math.round(c[0]*50);if(!buckets[key])buckets[key]={lat:0,lon:0,count:0,days:{}};var b=buckets[key];b.lat+=c[1];b.lon+=c[0];b.count++;b.days[t.toISOString().slice(0,10)]=true});return Object.keys(buckets).map(function(key){var b=buckets[key];b.lat/=b.count;b.lon/=b.count;b.dayCount=Object.keys(b.days).length;return b}).filter(function(b){return b.dayCount>=2})}
   function renderRepeatedSources(summary,en){var sources=repeatedSourceGroups();if(!sources.length){summary.className='fw-smoke-summary';summary.innerHTML=en?'<strong>Repeated fire sources · 7 days</strong><p>No location has high-confidence detections on two different days.</p>':'<strong>Sumber api berulang · 7 hari</strong><p>Tidak ada lokasi dengan deteksi confidence tinggi pada dua hari berbeda.</p>';return}var buffers=sources.map(function(s){return turf.buffer(turf.point([s.lon,s.lat]),Math.min(10,3+s.dayCount*1.5),{units:'kilometers'})}),merged;try{merged=turf.union(turf.featureCollection(buffers))}catch(error){merged=turf.featureCollection(buffers)}var collection=merged.type==='FeatureCollection'?merged:turf.featureCollection([merged]),zones=[];turf.flattenEach(collection,function(part){zones.push(part)});zones.forEach(function(zone){var html=en?'<strong>Repeated fire-source zone · 7 days</strong><br>Detected on at least two different days.<br><small>This is a source recurrence zone, not a smoke plume.</small>':'<strong>Zona sumber api berulang · 7 hari</strong><br>Terdeteksi pada sedikitnya dua hari berbeda.<br><small>Ini zona perulangan sumber, bukan plume asap.</small>';L.geoJSON(zone,{pane:'smokePane',style:{color:'#a86116',weight:2,dashArray:'6 4',fillColor:'#f2ca52',fillOpacity:.2}}).bindPopup(html).addTo(groups.smoke)});summary.className='fw-smoke-summary';summary.innerHTML=en?'<strong>Repeated fire sources · 7 days</strong><p>'+sources.length+' source clusters form '+zones.length+' connected recurrence zones. No smoke trajectory is shown.</p>':'<strong>Sumber api berulang · 7 hari</strong><p>'+sources.length+' kelompok sumber membentuk '+zones.length+' zona perulangan terkoneksi. Lintasan asap tidak ditampilkan.</p>'}
   function updateSmokeProductLabel(){var en=smokeEnglish(),title=document.getElementById('smoke-product-title'),note=document.getElementById('smoke-product-note');if(period===7){title.textContent=en?'Repeated Fire Sources':'Sumber Api Berulang';note.textContent=en?'At least 2 days within 7 days':'Minimal 2 hari dalam 7 hari'}else if(period===30){title.textContent=en?'Contours Disabled':'Kontur Dinonaktifkan';note.textContent=en?'Historical detections only':'Hanya deteksi historis'}else{title.textContent=en?'Experimental Smoke-Transport Contours':'Kontur Transport Asap Eksperimental';note.textContent=en?'Relative model support · 24-hour sources':'Dukungan model relatif · sumber 24 jam'}}
@@ -74,6 +77,7 @@
     var bandCount=0,polygonCount=0;
     (bands.features||[]).forEach(function(feature,index){
       if(!feature||!feature.geometry||!feature.geometry.coordinates||!feature.geometry.coordinates.length)return;
+      try{if(typeof turf.cleanCoords==='function')feature=turf.cleanCoords(feature,{mutate:false});if(typeof turf.booleanValid==='function'&&!turf.booleanValid(feature))return}catch(error){return}
       var style=smokeContourStyles[Number(feature.properties&&feature.properties.contour_index)];if(!style)style=smokeContourStyles[index];if(!style)return;
       var layer=L.geoJSON(feature,{pane:'smokePane',style:{color:style.color,weight:2,fillColor:style.fill,fillOpacity:style.opacity}}).bindPopup(contourPopup(style,field,meta,en),{maxWidth:390}).bindTooltip(en?style.labelEn:style.labelId).addTo(groups.smoke);
       if(smokeBounds)smokeBounds.extend(layer.getBounds());bandCount+=1;
@@ -89,23 +93,31 @@
     if(readingGuide)readingGuide.textContent=en?'Contours show relative trajectory-transport support within the active time window. Green through red means stronger support within the same model run, not smoke concentration, PM2.5, probability, or a health-hazard level.':'Kontur menunjukkan dukungan relatif lintasan transport pada jendela waktu aktif. Hijau hingga merah berarti dukungan model makin kuat dalam pemodelan yang sama, bukan konsentrasi asap, PM2.5, probabilitas, atau tingkat bahaya kesehatan.';
     if(period===30){summary.className='fw-smoke-summary';summary.innerHTML=en?'<strong>30-day hotspot history</strong><p>Transport contours are disabled. This period is used only for historical hotspot detections and statistics.</p>':'<strong>Riwayat hotspot 30 hari</strong><p>Kontur transport dinonaktifkan. Periode ini hanya untuk deteksi dan statistik hotspot historis.</p>';return}
     if(period===7){if(!hotspotGeo||!window.turf){summary.className='fw-smoke-summary';summary.innerHTML=en?'<strong>Repeated fire sources · 7 days</strong><p>Source data are incomplete.</p>':'<strong>Sumber api berulang · 7 hari</strong><p>Data sumber belum lengkap.</p>';return}renderRepeatedSources(summary,en);return}
-    if(transportLoading){summary.className='fw-smoke-summary';summary.innerHTML=en?'<strong>Loading multi-level GFS wind…</strong><p>The national grid is downloaded only when this layer is used, to keep the initial page light.</p>':'<strong>Memuat angin GFS multi-lapisan…</strong><p>Grid nasional baru diunduh saat layer ini digunakan agar pemuatan awal halaman tetap ringan.</p>';return}
+    if(transportLoading){summary.className='fw-smoke-summary';summary.innerHTML=en?'<strong>Loading multi-level GFS wind…</strong><p>The cross-border domain follows active sources and expands automatically if a trajectory approaches its edge.</p>':'<strong>Memuat angin GFS multi-lapisan…</strong><p>Domain lintas batas mengikuti sumber aktif dan diperluas otomatis jika lintasan mendekati tepinya.</p>';return}
+    if(transportBoundaryLimited){summary.className='fw-smoke-summary';summary.innerHTML=en?'<strong>Contours withheld</strong><p>A trajectory still reached the available wind-domain boundary after automatic expansion. No boundary-truncated polygon is displayed.</p>':'<strong>Kontur tidak ditampilkan</strong><p>Masih ada lintasan yang mencapai batas domain angin setelah perluasan otomatis. Polygon yang terpotong batas tidak ditampilkan.</p>';return}
     if(!hotspotGeo||!transportReady||!smokeModel||!windIndex||!window.turf||typeof turf.isobands!=='function'){
       summary.className='fw-smoke-summary';
       summary.innerHTML=en?'<strong>Experimental smoke-transport contours</strong><p>Cannot be reconstructed: hotspot, contour geometry, or multi-level GFS wind data are incomplete.</p>':'<strong>Kontur transport asap eksperimental</strong><p>Belum dapat direkonstruksi: data hotspot, geometri kontur, atau angin GFS multi-lapisan belum lengkap.</p>';
       return;
     }
     if(observationDate!==currentDate){summary.className='fw-smoke-summary';summary.innerHTML=en?'<strong>Experimental smoke-transport contours</strong><p>The reconstruction is available only for the current date because historical multi-level wind has not been loaded.</p>':'<strong>Kontur transport asap eksperimental</strong><p>Rekonstruksi hanya tersedia untuk tanggal hari ini karena angin historis multi-lapisan belum dimuat.</p>';return}
-    var detections=smokeDetections(),modelHours=24;
+    var modelEndTime=transportEndTime||periodEnd().getTime(),detections=smokeDetections(modelEndTime),modelHours=24;
     if(!detections.length){
       summary.className='fw-smoke-summary';
       summary.innerHTML=en?'<strong>No transport source in the '+modelHours+'-hour window</strong><p>No high-confidence vegetation-fire detection was found. This does not mean the air is smoke-free.</p>':'<strong>Tidak ada sumber transport dalam jendela '+modelHours+' jam</strong><p>Tidak ditemukan deteksi kebakaran vegetasi berkeyakinan tinggi. Ini tidak berarti udara bebas asap.</p>';
       return;
     }
-    var sources=smokeModel.clusterSources(detections,{spatialKm:1.5,temporalMinutes:90}),trajectories=smokeModel.buildTrajectories(sources,windIndex,periodEnd().getTime(),{maxHours:modelHours}),puffs=smokeModel.buildSupportPuffs(trajectories,{windGridStepDegrees:windIndex.step}),field=smokeModel.buildSupportGrid(puffs,{minLat:-11.2,maxLat:6.2,minLon:94.5,maxLon:141.5},{gridStepDegrees:.25}),meta={sources:sources.length,detections:detections.length,trajectories:trajectories.length},rendered=field?renderContourBands(field,meta,en):{bandCount:0,polygonCount:0};
+    var sources=smokeModel.clusterSources(detections,{spatialKm:1.5,temporalMinutes:90});
+    var trajectories=smokeModel.buildTrajectories(sources,windIndex,modelEndTime,{maxHours:modelHours});
+    var boundary=smokeModel.boundarySides(trajectories);
+    if(boundary.count){transportBoundaryLimited=true;renderSmoke();return}
+    var puffs=smokeModel.buildSupportPuffs(trajectories,{windGridStepDegrees:windIndex.step});
+    var field=smokeModel.buildSupportGrid(puffs,null,{gridStepDegrees:.25});
+    var meta={sources:sources.length,detections:detections.length,trajectories:trajectories.length};
+    var rendered=field?renderContourBands(field,meta,en):{bandCount:0,polygonCount:0};
     if(!trajectories.length||!field||!rendered.bandCount){summary.className='fw-smoke-summary';summary.innerHTML=en?'<strong>Experimental smoke-transport contours</strong><p>No contour could be reconstructed within the available GFS grid and time window.</p>':'<strong>Kontur transport asap eksperimental</strong><p>Tidak ada kontur yang dapat direkonstruksi dalam cakupan grid dan waktu GFS yang tersedia.</p>';return}
     summary.className='fw-smoke-summary';
-    summary.innerHTML=en?'<strong>Relative transport-support contours · '+modelHours+'-hour source window</strong><p>'+rendered.bandCount+' color bands ('+rendered.polygonCount+' connected polygon parts) from '+sources.length+' source clusters ('+detections.length+' raw detections) and '+trajectories.length+' height-sensitive paths. Classes are run-relative P20/P50/P75/P90 isobands. Every source cluster has equal total weight; FRP and AOD are excluded. GFS sampled every '+windIndex.step.toFixed(2)+'° and interpolated in space and time; contour grid '+field.gridStepDegrees.toFixed(2)+'°, kernel bandwidth about '+Math.round(field.bandwidthKm)+' km, data coverage '+transportCoverage+'%. Model time: '+esc(transportTime||'latest')+' WIB.</p>':'<strong>Kontur dukungan transport relatif · jendela sumber '+modelHours+' jam</strong><p>'+rendered.bandCount+' pita warna ('+rendered.polygonCount+' bagian polygon tersambung) dari '+sources.length+' kelompok sumber ('+detections.length+' deteksi mentah) dan '+trajectories.length+' lintasan sensitif-ketinggian. Kelas merupakan isoband relatif P20/P50/P75/P90 pada pemodelan aktif. Setiap kelompok sumber berbobot total sama; FRP dan AOD tidak digunakan. GFS disampel setiap '+windIndex.step.toFixed(2)+'° dan diinterpolasi ruang–waktu; grid kontur '+field.gridStepDegrees.toFixed(2)+'°, lebar kernel sekitar '+Math.round(field.bandwidthKm)+' km, cakupan data '+transportCoverage+'%. Waktu model: '+esc(transportTime||'terbaru')+' WIB.</p>';
+    summary.innerHTML=en?'<strong>Relative transport-support contours · '+modelHours+'-hour source window</strong><p>'+rendered.bandCount+' color bands ('+rendered.polygonCount+' connected polygon parts) from '+sources.length+' source clusters ('+detections.length+' raw detections) and '+trajectories.length+' height-sensitive paths. Classes are run-relative P20/P50/P75/P90 isobands. Every source cluster has equal total weight; FRP and AOD are excluded. GFS sampled every '+windIndex.step.toFixed(2)+'° and interpolated in space and time; adaptive cross-border domain expanded '+transportExpansionCount+' time(s), contour grid '+field.gridStepDegrees.toFixed(2)+'°, kernel bandwidth about '+Math.round(field.bandwidthKm)+' km, data coverage '+transportCoverage+'%. Model time: '+esc(transportTime||'latest')+' WIB.</p>':'<strong>Kontur dukungan transport relatif · jendela sumber '+modelHours+' jam</strong><p>'+rendered.bandCount+' pita warna ('+rendered.polygonCount+' bagian polygon tersambung) dari '+sources.length+' kelompok sumber ('+detections.length+' deteksi mentah) dan '+trajectories.length+' lintasan sensitif-ketinggian. Kelas merupakan isoband relatif P20/P50/P75/P90 pada pemodelan aktif. Setiap kelompok sumber berbobot total sama; FRP dan AOD tidak digunakan. GFS disampel setiap '+windIndex.step.toFixed(2)+'° dan diinterpolasi ruang–waktu; domain lintas batas adaptif diperluas '+transportExpansionCount+' kali, grid kontur '+field.gridStepDegrees.toFixed(2)+'°, lebar kernel sekitar '+Math.round(field.bandwidthKm)+' km, cakupan data '+transportCoverage+'%. Waktu model: '+esc(transportTime||'terbaru')+' WIB.</p>';
     if(smokeAutoFit&&smokeBounds&&smokeBounds.isValid()){map.fitBounds(smokeBounds.pad(.1),{maxZoom:6});smokeAutoFit=false}
   }
   function fetchTransportChunk(points){
@@ -120,15 +132,40 @@
   }
   function loadTransportWeather(){
     if(!smokeModel)return Promise.reject(Error('smoke transport model unavailable'));
-    var grid=smokeModel.buildGrid({minLat:-11.2,maxLat:6.2,minLon:94.5,maxLon:141.5},1.5),chunks=[];for(var i=0;i<grid.length;i+=55)chunks.push(grid.slice(i,i+55));
-    var collected=[];
-    function loadBatch(index){if(index>=chunks.length)return Promise.resolve();var batch=chunks.slice(index,index+3).map(function(points){return fetchTransportChunk(points).catch(function(){return []})});return Promise.all(batch).then(function(rows){rows.forEach(function(items){collected=collected.concat(items)});return loadBatch(index+3)})}
-    return loadBatch(0).then(function(){
-      transportReadings=collected;transportCoverage=Math.round(100*transportReadings.length/grid.length);windIndex=smokeModel.buildWindIndex(transportReadings,1.5);transportReady=transportReadings.length>0&&transportCoverage>=60;
-      var now=periodEnd().getTime();
-      var firstTimes=transportReadings[0]&&transportReadings[0].times||[],nearestTime=firstTimes.reduce(function(best,t){return best==null||Math.abs(t-now)<Math.abs(best-now)?t:best},null);transportTime=nearestTime?new Date(nearestTime).toLocaleString('sv-SE',{timeZone:'Asia/Jakarta'}).replace(' ','T'):'';
-      if(!transportReady)throw Error('insufficient GFS grid coverage')
-    }).catch(function(error){transportReady=false;transportReadings=[];windIndex=null;transportCoverage=0;throw error})
+    transportEndTime=periodEnd().getTime();
+    var sources=smokeModel.clusterSources(smokeDetections(transportEndTime),{spatialKm:1.5,temporalMinutes:90});
+    if(!sources.length)return Promise.reject(Error('no active smoke sources'));
+    transportReadings=[];transportReady=false;windIndex=null;transportCoverage=0;transportExpansionCount=0;transportBoundaryLimited=false;
+    transportDomain=smokeModel.boundsForSources(sources,{paddingDegrees:TRANSPORT_INITIAL_PADDING,fallback:indonesiaDomain,limits:TRANSPORT_LIMITS});
+    function pointKey(point){return Number(point[0]).toFixed(6)+'|'+Number(point[1]).toFixed(6)}
+    function sameDomain(first,second){return first&&second&&first.minLat===second.minLat&&first.maxLat===second.maxLat&&first.minLon===second.minLon&&first.maxLon===second.maxLon}
+    function loadDomain(){
+      var grid=smokeModel.buildGrid(transportDomain,TRANSPORT_GRID_STEP),loaded={};
+      transportReadings.forEach(function(row){loaded[pointKey([row.gridLat,row.gridLon])]=true});
+      var missing=grid.filter(function(point){return !loaded[pointKey(point)]}),chunks=[];
+      for(var i=0;i<missing.length;i+=55)chunks.push(missing.slice(i,i+55));
+      function loadBatch(index){if(index>=chunks.length)return Promise.resolve();var batch=chunks.slice(index,index+3).map(function(points){return fetchTransportChunk(points).catch(function(){return []})});return Promise.all(batch).then(function(rows){rows.forEach(function(items){transportReadings=transportReadings.concat(items)});return loadBatch(index+3)})}
+      return loadBatch(0).then(function(){
+        var available={};transportReadings.forEach(function(row){available[pointKey([row.gridLat,row.gridLon])]=true});
+        var covered=grid.filter(function(point){return available[pointKey(point)]}).length;
+        transportCoverage=Math.round(100*covered/grid.length);
+        if(!transportReadings.length||transportCoverage<60)throw Error('insufficient GFS grid coverage');
+        windIndex=smokeModel.buildWindIndex(transportReadings,TRANSPORT_GRID_STEP);
+        var trajectories=smokeModel.buildTrajectories(sources,windIndex,transportEndTime,{maxHours:24});
+        var sides=smokeModel.boundarySides(trajectories);
+        if(sides.count){
+          var expanded=smokeModel.expandBounds(transportDomain,sides,{degrees:TRANSPORT_EXPANSION_STEP,limits:TRANSPORT_LIMITS});
+          if(transportExpansionCount<TRANSPORT_MAX_EXPANSIONS&&!sameDomain(expanded,transportDomain)){
+            transportDomain=expanded;transportExpansionCount+=1;return loadDomain()
+          }
+          transportBoundaryLimited=true;throw Error('trajectory reached adaptive domain limit')
+        }
+        transportReady=true;
+        var now=transportEndTime;
+        var firstTimes=transportReadings[0]&&transportReadings[0].times||[],nearestTime=firstTimes.reduce(function(best,t){return best==null||Math.abs(t-now)<Math.abs(best-now)?t:best},null);transportTime=nearestTime?new Date(nearestTime).toLocaleString('sv-SE',{timeZone:'Asia/Jakarta'}).replace(' ','T'):'';
+      })
+    }
+    return loadDomain().catch(function(error){transportReady=false;windIndex=null;transportCoverage=0;if(!transportBoundaryLimited)transportReadings=[];throw error})
   }
   function ensureTransportWeather(){
     if(transportReady)return Promise.resolve();

@@ -99,6 +99,62 @@ test("builds one trajectory per configured pressure level", () => {
   });
 });
 
+test("marks boundary-truncated paths and completes them after northward expansion", () => {
+  const t0 = Date.parse("2026-08-11T00:00:00Z");
+  const times = [t0, t0 + 3600000, t0 + 7200000];
+  function rowsFor(latitudes) {
+    const rows = [];
+    latitudes.forEach((lat) => [100, 101, 102].forEach((lon) => {
+      rows.push(windRow(
+        lat,
+        lon,
+        times,
+        { "950": [100, 100, 100], "925": [100, 100, 100], "850": [100, 100, 100] },
+        { "950": [180, 180, 180], "925": [180, 180, 180], "850": [180, 180, 180] }
+      ));
+    }));
+    return rows;
+  }
+  const source = feature({ lat: 0.5, lon: 101, time: t0, satellite: "N20" });
+  const limited = model.buildTrajectories(
+    [source],
+    model.buildWindIndex(rowsFor([0, 1, 2]), 1),
+    times[2],
+    { maxHours: 2 }
+  );
+  const limitedSides = model.boundarySides(limited);
+
+  assert.equal(limitedSides.count, 3);
+  assert.equal(limitedSides.north, true);
+  assert.ok(limited.every((trajectory) => trajectory.terminationReason === "boundary"));
+
+  const expanded = model.buildTrajectories(
+    [source],
+    model.buildWindIndex(rowsFor([0, 1, 2, 3, 4]), 1),
+    times[2],
+    { maxHours: 2 }
+  );
+  assert.equal(model.boundarySides(expanded).count, 0);
+  assert.ok(expanded.every((trajectory) => trajectory.complete));
+});
+
+test("builds and expands a source-driven cross-border domain within hard limits", () => {
+  const source = feature({
+    lat: 5.5,
+    lon: 95.3,
+    time: Date.parse("2026-08-11T00:00:00Z"),
+    satellite: "N20"
+  });
+  const limits = { minLat: -35, maxLat: 15, minLon: 70, maxLon: 170 };
+  const initial = model.boundsForSources([source], { paddingDegrees: 6, limits });
+
+  assert.deepEqual(initial, { minLat: -0.5, maxLat: 11.5, minLon: 89.3, maxLon: 101.3 });
+  assert.deepEqual(
+    model.expandBounds(initial, { north: true }, { degrees: 7.5, limits }),
+    { minLat: -0.5, maxLat: 15, minLon: 89.3, maxLon: 101.3 }
+  );
+});
+
 test("ties the contour smoothing bandwidth to sampled wind-grid spacing", () => {
   assert.ok(Math.abs(model.contourBandwidthKm({ windGridStepDegrees: 1.5 }) - 49.95) < 1e-9);
   assert.equal(model.contourBandwidthKm({ windGridStepDegrees: 0.1 }), 25);
@@ -154,6 +210,31 @@ test("builds a rectangular normalized support grid with ordered isoband breaks",
   assert.ok(Math.min(...values) >= 0);
   assert.ok(twoSources.rawMax > oneSource.rawMax * 1.99);
   assert.equal(twoSources.gridStepDegrees, 0.2);
+});
+
+test("lets the support grid close naturally beyond the former Indonesia ceiling", () => {
+  const puffs = [{
+    lat: 6.1,
+    lon: 95.4,
+    sigmaKm: 50,
+    weight: 1,
+    sourceIndex: 0,
+    ageHours: 0,
+    pressureHpa: 925
+  }];
+  const natural = model.buildSupportGrid(puffs, null, { gridStepDegrees: 0.25 });
+  const clipped = model.buildSupportGrid(
+    puffs,
+    { minLat: -11.2, maxLat: 6.2, minLon: 94.5, maxLon: 141.5 },
+    { gridStepDegrees: 0.25 }
+  );
+  const northEdge = natural.grid.features.filter((point) => point.geometry.coordinates[1] === natural.bounds.maxLat);
+
+  assert.ok(natural.bounds.maxLat > 6.2);
+  assert.equal(natural.clipped, false);
+  assert.equal(clipped.clipped, true);
+  assert.ok(northEdge.length > 0);
+  assert.ok(northEdge.every((point) => point.properties.support === 0));
 });
 
 test("uses a materially denser national sampling grid", () => {
