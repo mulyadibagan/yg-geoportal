@@ -9,3 +9,5 @@ Before a source is enabled, `data/source-registry.json` must record its official
 BMKG PM2.5 must not be scraped or integrated automatically until the project has an official API path or written permission. OpenAQ records must be reviewed at original-provider level; an OpenAQ API response does not override a provider's terms.
 
 Model outputs must be labelled as model outputs. Satellite detections must not be labelled as confirmed continuing fires. Provider names and logos must never imply endorsement of this project.
+
+The public browser must not fan out large GEFS requests to Open-Meteo. A single repository workflow refreshes the shared ensemble cache at most once every six hours. Browsers read that server cache and may retain the last forecast cycle locally only while its forecast timestamps still cover the requested model time. Failed refreshes preserve the previous file; they do not replace it with empty or synthetic data.
