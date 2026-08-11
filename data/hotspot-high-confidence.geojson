@@ -1,8 +1,13 @@
 {
   "type": "FeatureCollection",
-  "generatedAt": "2026-08-11T02:28:26.085Z",
+  "generatedAt": "2026-08-11T04:40:31.407Z",
   "periodDays": 30,
   "confidenceFilter": "high",
+  "excludedSourceTypes": [
+    "active volcano",
+    "static land source",
+    "offshore"
+  ],
   "sourceStatus": "complete",
   "skippedChunks": [],
   "providers": [
