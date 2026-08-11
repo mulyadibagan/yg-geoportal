@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "generatedAt": "2026-08-11T07:38:05.772Z",
+  "generatedAt": "2026-08-11T09:14:24.002Z",
   "periodDays": 30,
   "confidenceFilter": "high",
   "excludedSourceTypes": [
@@ -46144,6 +46144,626 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          140.8185,
+          -8.82373
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0622",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 336.31,
+        "frp": 34.34,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          141.36929,
+          -8.8041
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0622",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 334.89,
+        "frp": 33.48,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          141.22574,
+          -8.79935
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0622",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 331.3,
+        "frp": 27.78,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          141.36786,
+          -8.79498
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0622",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 368.11,
+        "frp": 117.28,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          141.18623,
+          -8.71224
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0622",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 372.54,
+        "frp": 131.78,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          141.1834,
+          -8.69411
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0622",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 333.89,
+        "frp": 30.37,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          140.37146,
+          -8.33612
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0622",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 331.4,
+        "frp": 25.3,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          140.38048,
+          -8.33477
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0622",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 325.49,
+        "frp": 17.13,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          140.42284,
+          -8.31031
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0622",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 335.43,
+        "frp": 29.45,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          140.38989,
+          -8.17574
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0622",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 343.6,
+        "frp": 43.52,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          140.7491,
+          -8.16814
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0622",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 328.65,
+        "frp": 18.3,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          139.57211,
+          -8.07612
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0622",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 340.65,
+        "frp": 38.52,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          139.57079,
+          -8.06736
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0622",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 370.31,
+        "frp": 110.78,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          139.57959,
+          -8.06606
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0622",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 340.61,
+        "frp": 37.62,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          139.98982,
+          -7.95725
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0622",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 333.65,
+        "frp": 27.55,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          139.81218,
+          -7.92071
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0622",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 334.67,
+        "frp": 30.19,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          139.9095,
+          -7.90623
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0622",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 333.23,
+        "frp": 28.16,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          139.91835,
+          -7.90491
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0622",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 340.77,
+        "frp": 39.7,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          139.92766,
+          -7.88364
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0622",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 352.38,
+        "frp": 62.74,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          140.0788,
+          -7.86129
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0622",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 327.02,
+        "frp": 20,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          138.81213,
+          -7.85381
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0622",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 339.11,
+        "frp": 35.43,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          138.24545,
+          -7.84345
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0622",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 364.63,
+        "frp": 98.57,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          138.25455,
+          -7.84213
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0622",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 345.67,
+        "frp": 50.13,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          138.87277,
+          -7.83597
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0622",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 328.36,
+        "frp": 20.93,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          138.88161,
+          -7.83468
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0622",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 327.93,
+        "frp": 20.56,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          139.51906,
+          -7.76801
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0622",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 327.6,
+        "frp": 19.29,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          138.46208,
+          -7.49936
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0622",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 369.34,
+        "frp": 111.21,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          138.84779,
+          -7.47016
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0622",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 326.63,
+        "frp": 17.99,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          139.39154,
+          -6.04273
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0625",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 335.96,
+        "frp": 31.05,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          136.08147,
+          -4.06635
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0625",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 322.21,
+        "frp": 22.74,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          130.13179,
+          -3.06264
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0625",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 323.28,
+        "frp": 82.31,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           141.17926,
           -8.64329
         ]
@@ -74835,6 +75455,546 @@
         "confidence": "high",
         "brightness": 367,
         "frp": 58.39,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.66956,
+          -7.05172
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0555",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 7.63,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          107.24751,
+          -6.95538
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0555",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 8.82,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.68916,
+          -5.3457
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0557",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 8.57,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          104.62153,
+          -4.65276
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0557",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 22.26,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          104.60665,
+          -4.64261
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0557",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 54.47,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          114.86749,
+          -4.06383
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0557",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 8.58,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.1415,
+          -3.5025
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0557",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 27.25,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          115.64863,
+          -3.23496
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0557",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 86.58,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          104.42989,
+          -3.05227
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0557",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 18.72,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.13026,
+          -2.7784
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0557",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 14.97,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.13351,
+          -2.77791
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0557",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 18.36,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.13474,
+          -2.7768
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0557",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 20.96,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.13272,
+          -2.77262
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0557",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 18.14,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.81738,
+          -2.72911
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0557",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 14.73,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          113.34934,
+          -2.62334
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0557",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 5.88,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.90336,
+          -2.23549
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0557",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 8.59,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.85355,
+          -2.15762
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0557",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 6.42,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.80013,
+          -2.09459
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0557",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 46.34,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.79936,
+          -2.08924
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0557",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 46.34,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          110.2073,
+          -1.98125
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0557",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 26.45,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8933,
+          -1.40133
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0557",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 15.64,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          109.95301,
+          -1.08603
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0557",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 26.36,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          110.48121,
+          -0.86998
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0557",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 22.37,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          109.54606,
+          -0.2366
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0557",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 7.97,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.69726,
+          -0.23312
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0557",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 103.2,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          114.71308,
+          2.66339
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0557",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 255.45,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          113.50483,
+          2.9664
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0559",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 232.89,
         "daynight": "D",
         "type": null
       }
@@ -110504,6 +111664,606 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
+          123.33582,
+          -10.62452
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0614",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 22.88,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          118.1134,
+          -8.45392
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0614",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 27.32,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          108.16881,
+          -6.60692
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0616",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 6.27,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          119.51876,
+          -5.27016
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0616",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 8.78,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          119.51936,
+          -5.26902
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0616",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 9.45,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          119.49673,
+          -3.22794
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0616",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 12.62,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          121.67031,
+          -2.81646
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0616",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 33.6,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          121.72673,
+          -2.7155
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0616",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 25.19,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          121.72825,
+          -2.7143
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0616",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 27.73,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          119.44289,
+          -2.4747
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0616",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 13.64,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          110.15814,
+          -2.30416
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0616",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 7.93,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          110.1982,
+          -2.05653
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0616",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 19.37,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          119.85451,
+          -1.69416
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0616",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 13.78,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          119.85828,
+          -1.69354
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0616",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 13.78,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          110.24457,
+          -1.72706
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0618",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 8.25,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          116.3793,
+          -0.46806
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0618",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 9.61,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.51732,
+          -0.29331
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0618",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 8.67,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          116.27214,
+          -0.17722
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0618",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 8.53,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          116.73331,
+          0.66144
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0618",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 25.84,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          117.6946,
+          0.92698
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0618",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 17.48,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          117.2057,
+          1.19039
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0618",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 8.68,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          117.03127,
+          1.26548
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0618",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 10.78,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          117.18299,
+          1.32222
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0618",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 9.11,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          117.86514,
+          2.2245
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0618",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 10.68,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          116.49354,
+          2.99634
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0618",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 10.94,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          116.06573,
+          3.04609
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0618",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 21.91,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          117.22684,
+          3.22251
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0618",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 8.21,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          116.6115,
+          3.50322
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0618",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 10.19,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          116.61084,
+          3.50478
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0618",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 10.77,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          115.88002,
+          3.76444
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0618",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 8.09,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
           139.36369,
           -6.5893
         ]
@@ -146135,6 +147895,586 @@
         "confidence": "high",
         "brightness": 367,
         "frp": 19.29,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.67332,
+          -7.05081
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0701",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 23.66,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          104.80362,
+          -5.23664
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0701",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 9.19,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          104.89855,
+          -4.95312
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0701",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 25.17,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.15639,
+          -4.44925
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0701",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 18.43,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          104.91722,
+          -4.20413
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0701",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 13.23,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          104.70051,
+          -3.89002
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0701",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 10.58,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.74382,
+          -3.71458
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0701",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 10.42,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          104.33247,
+          -3.32332
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0701",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 8.67,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.03042,
+          -3.29508
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0701",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 35.42,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          104.58186,
+          -3.07689
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0701",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 24.68,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          104.42546,
+          -3.05134
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0701",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 17.63,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          104.42839,
+          -3.05088
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0701",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 17.63,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          104.42599,
+          -3.05066
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0701",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 16.66,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          104.4289,
+          -3.05017
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0701",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 16.66,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.172,
+          -2.82207
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0701",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 14.2,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.17589,
+          -2.82143
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0701",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 25.55,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.1324,
+          -2.77621
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0701",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 18.19,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.12975,
+          -2.774
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0701",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 14.92,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.13362,
+          -2.77338
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0701",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 14.92,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          104.26524,
+          -2.7478
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0701",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 6.46,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          104.26765,
+          -2.74766
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0701",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 9.63,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          104.26814,
+          -2.74734
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0701",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 17.31,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.8433,
+          -2.18679
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0701",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 12.49,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.79745,
+          -2.09045
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0701",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 12.23,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.79473,
+          -2.07364
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0701",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 15.35,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.78911,
+          -2.06307
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0701",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 14.77,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.78983,
+          -2.05886
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0701",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 14.3,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.80378,
+          -2.02786
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0701",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 17.66,
+        "daynight": "D",
+        "type": null
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          105.37453,
+          -2.00067
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0701",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 9.99,
         "daynight": "D",
         "type": null
       }
