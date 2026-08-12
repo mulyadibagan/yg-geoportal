@@ -1,0 +1,147 @@
+{
+  "schemaVersion": 1,
+  "product": "Prioritas Rehabilitasi Mangrove 2016–2025",
+  "status": "foundation",
+  "baseline": "2016",
+  "comparison": "2025",
+  "generatedAt": "2026-08-12T10:30:00Z",
+  "disclaimer": "Fondasi analisis. Skor, luas kandidat, dan polygon belum dihitung dan tidak boleh digunakan untuk keputusan penanaman.",
+  "villages": [
+    {
+      "id": "kelurahan-pangkalan-sesai",
+      "village": "Kelurahan Pangkalan Sesai",
+      "district": "Dumai Barat",
+      "regency": "Kota Dumai",
+      "lat": 1.683844,
+      "lon": 101.423268,
+      "scope": "Kota Dumai coastal screening"
+    },
+    {
+      "id": "kelurahan-purnama",
+      "village": "Kelurahan Purnama",
+      "district": "Dumai Barat",
+      "regency": "Kota Dumai",
+      "lat": 1.690544,
+      "lon": 101.399788,
+      "scope": "Kota Dumai coastal screening"
+    },
+    {
+      "id": "kelurahan-dumai-kota",
+      "village": "Kelurahan Dumai Kota",
+      "district": "Dumai Kota",
+      "regency": "Kota Dumai",
+      "lat": 1.683394,
+      "lon": 101.444566,
+      "scope": "Kota Dumai coastal screening"
+    },
+    {
+      "id": "kelurahan-laksamana",
+      "village": "Kelurahan Laksamana",
+      "district": "Dumai Kota",
+      "regency": "Kota Dumai",
+      "lat": 1.681294,
+      "lon": 101.437982,
+      "scope": "Kota Dumai coastal screening"
+    },
+    {
+      "id": "kelurahan-buluh-kasap",
+      "village": "Kelurahan Buluh Kasap",
+      "district": "Dumai Timur",
+      "regency": "Kota Dumai",
+      "lat": 1.683644,
+      "lon": 101.455852,
+      "scope": "Kota Dumai coastal screening"
+    },
+    {
+      "id": "kelurahan-tanjung-palas",
+      "village": "Kelurahan Tanjung Palas",
+      "district": "Dumai Timur",
+      "regency": "Kota Dumai",
+      "lat": 1.639894,
+      "lon": 101.466034,
+      "scope": "Kota Dumai coastal screening"
+    },
+    {
+      "id": "kelurahan-guntung",
+      "village": "Kelurahan Guntung",
+      "district": "Medang Kampai",
+      "regency": "Kota Dumai",
+      "lat": 1.584794,
+      "lon": 101.563046,
+      "scope": "Kota Dumai coastal screening"
+    },
+    {
+      "id": "kelurahan-mundam",
+      "village": "Kelurahan Mundam",
+      "district": "Medang Kampai",
+      "regency": "Kota Dumai",
+      "lat": 1.627594,
+      "lon": 101.48028,
+      "scope": "Kota Dumai coastal screening"
+    },
+    {
+      "id": "kelurahan-pelintung",
+      "village": "Kelurahan Pelintung",
+      "district": "Medang Kampai",
+      "regency": "Kota Dumai",
+      "lat": 1.599044,
+      "lon": 101.645314,
+      "scope": "Kota Dumai coastal screening"
+    },
+    {
+      "id": "kelurahan-teluk-makmur",
+      "village": "Kelurahan Teluk Makmur",
+      "district": "Medang Kampai",
+      "regency": "Kota Dumai",
+      "lat": 1.620294,
+      "lon": 101.522909,
+      "scope": "Kota Dumai coastal screening"
+    },
+    {
+      "id": "kelurahan-bangsal-aceh",
+      "village": "Kelurahan Bangsal Aceh",
+      "district": "Sungai Sembilan",
+      "regency": "Kota Dumai",
+      "lat": 1.671994,
+      "lon": 101.312899,
+      "scope": "Kota Dumai coastal screening"
+    },
+    {
+      "id": "kelurahan-basilam-baru",
+      "village": "Kelurahan Basilam Baru",
+      "district": "Sungai Sembilan",
+      "regency": "Kota Dumai",
+      "lat": 1.885294,
+      "lon": 101.221152,
+      "scope": "Kota Dumai coastal screening"
+    },
+    {
+      "id": "kelurahan-batu-teritip",
+      "village": "Kelurahan Batu Teritip",
+      "district": "Sungai Sembilan",
+      "regency": "Kota Dumai",
+      "lat": 2.068944,
+      "lon": 101.202648,
+      "scope": "Kota Dumai coastal screening"
+    },
+    {
+      "id": "kelurahan-lubuk-gaung",
+      "village": "Kelurahan Lubuk Gaung",
+      "district": "Sungai Sembilan",
+      "regency": "Kota Dumai",
+      "lat": 1.724144,
+      "lon": 101.284452,
+      "scope": "Kota Dumai coastal screening"
+    },
+    {
+      "id": "kelurahan-tanjung-penyebal",
+      "village": "Kelurahan Tanjung Penyebal",
+      "district": "Sungai Sembilan",
+      "regency": "Kota Dumai",
+      "lat": 1.788144,
+      "lon": 101.278023,
+      "scope": "Kota Dumai coastal screening"
+    }
+  ],
+  "scope": "Kabupaten/Kota Kota Dumai"
+}

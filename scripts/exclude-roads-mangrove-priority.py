@@ -54,15 +54,17 @@ def main():
         args.cache.write_text(json.dumps({'type':'FeatureCollection','source':'OpenStreetMap contributors via Overpass','coveredVillageIds':sorted(cached_ids),'features':road_features},ensure_ascii=False,separators=(',',':')),encoding='utf-8')
         print(scope,len(item['ids']),len(raw.get('elements',[])),flush=True)
     args.cache.write_text(json.dumps({'type':'FeatureCollection','source':'OpenStreetMap contributors via Overpass','coveredVillageIds':sorted(cached_ids),'features':road_features},ensure_ascii=False,separators=(',',':')),encoding='utf-8')
+    prepared_roads=[]
+    for road in road_features:
+        line=shape(road['geometry']);prepared_roads.append((line,line.bounds,BUFFERS.get(road['properties']['highway'],8)))
     output=[]; removed=0
     for feature in geo['features']:
         geom=shape(feature['geometry']);zone=32600+int((geom.centroid.x+180)//6)+1
         forward=Transformer.from_crs(4326,zone,always_xy=True).transform; inverse=Transformer.from_crs(zone,4326,always_xy=True).transform
         projected=transform(forward,geom); nearby=[]
-        for road in road_features:
-            line=shape(road['geometry'])
-            if not line.bounds[2]<geom.bounds[0] and not line.bounds[0]>geom.bounds[2] and not line.bounds[3]<geom.bounds[1] and not line.bounds[1]>geom.bounds[3]:
-                width=BUFFERS.get(road['properties']['highway'],8);nearby.append(transform(forward,line).buffer(width))
+        for line,bounds,width in prepared_roads:
+            if not bounds[2]<geom.bounds[0] and not bounds[0]>geom.bounds[2] and not bounds[3]<geom.bounds[1] and not bounds[1]>geom.bounds[3]:
+                nearby.append(transform(forward,line).buffer(width))
         cleaned=projected.difference(unary_union(nearby)) if nearby else projected
         parts=list(cleaned.geoms) if hasattr(cleaned,'geoms') else [cleaned]
         for part in parts:
