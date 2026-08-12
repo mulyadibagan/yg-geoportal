@@ -24,24 +24,36 @@ def fetch(bbox):
     raise last
 
 def main():
-    parser=argparse.ArgumentParser();parser.add_argument('--geo',type=Path,default=GEO);parser.add_argument('--summary',type=Path,default=SUMMARY);parser.add_argument('--cache',type=Path,default=CACHE);args=parser.parse_args()
+    parser=argparse.ArgumentParser();parser.add_argument('--geo',type=Path,default=GEO);parser.add_argument('--summary',type=Path,default=SUMMARY);parser.add_argument('--cache',type=Path,default=CACHE);parser.add_argument('--fetch-mode',choices=('district','village'),default='district');args=parser.parse_args()
     geo=json.loads(args.geo.read_text(encoding='utf-8')); summary=json.loads(args.summary.read_text(encoding='utf-8'))
     groups={}
     for feature in geo['features']: groups.setdefault(feature['properties']['id'],[]).append(shape(feature['geometry']))
     cached=json.loads(args.cache.read_text(encoding='utf-8')) if args.cache.exists() else {'features':[]}
-    road_features=cached.get('features',[]); cached_ids={f.get('properties',{}).get('villageId') for f in road_features}
+    road_features=cached.get('features',[])
+    cached_ids=set(cached.get('coveredVillageIds',[]))|{f.get('properties',{}).get('villageId') for f in road_features}
+    cached_ids.discard(None)
+    district_by_village={r['id']:r.get('district','') for r in summary.get('villages',[])}
+    fetch_groups={}
     for village_id,geometries in groups.items():
-        if village_id in cached_ids:
-            print(village_id,'cached',flush=True);continue
-        minx,miny,maxx,maxy=unary_union(geometries).bounds
+        key=district_by_village.get(village_id,village_id) if args.fetch_mode=='district' else village_id
+        item=fetch_groups.setdefault(key,{'ids':set(),'geometries':[]})
+        item['ids'].add(village_id);item['geometries'].extend(geometries)
+    known_osm_ids={f.get('properties',{}).get('osmId') for f in road_features}
+    for scope,item in fetch_groups.items():
+        missing=item['ids']-cached_ids
+        if not missing:
+            print(scope,'cached',flush=True);continue
+        minx,miny,maxx,maxy=unary_union(item['geometries']).bounds
         raw=fetch((miny-.005,minx-.005,maxy+.005,maxx+.005))
         for element in raw.get('elements',[]):
             coords=[(p['lon'],p['lat']) for p in element.get('geometry',[])]
-            if len(coords)<2:continue
-            road_features.append({'type':'Feature','properties':{'villageId':village_id,'osmId':element['id'],'highway':element.get('tags',{}).get('highway'),'name':element.get('tags',{}).get('name')},'geometry':mapping(LineString(coords))})
-        args.cache.write_text(json.dumps({'type':'FeatureCollection','source':'OpenStreetMap contributors via Overpass','features':road_features},ensure_ascii=False,separators=(',',':')),encoding='utf-8')
-        print(village_id,len(raw.get('elements',[])),flush=True)
-    args.cache.write_text(json.dumps({'type':'FeatureCollection','source':'OpenStreetMap contributors via Overpass','features':road_features},ensure_ascii=False,separators=(',',':')),encoding='utf-8')
+            if len(coords)<2 or element['id'] in known_osm_ids:continue
+            known_osm_ids.add(element['id'])
+            road_features.append({'type':'Feature','properties':{'scope':scope,'osmId':element['id'],'highway':element.get('tags',{}).get('highway'),'name':element.get('tags',{}).get('name')},'geometry':mapping(LineString(coords))})
+        cached_ids.update(item['ids'])
+        args.cache.write_text(json.dumps({'type':'FeatureCollection','source':'OpenStreetMap contributors via Overpass','coveredVillageIds':sorted(cached_ids),'features':road_features},ensure_ascii=False,separators=(',',':')),encoding='utf-8')
+        print(scope,len(item['ids']),len(raw.get('elements',[])),flush=True)
+    args.cache.write_text(json.dumps({'type':'FeatureCollection','source':'OpenStreetMap contributors via Overpass','coveredVillageIds':sorted(cached_ids),'features':road_features},ensure_ascii=False,separators=(',',':')),encoding='utf-8')
     output=[]; removed=0
     for feature in geo['features']:
         geom=shape(feature['geometry']);zone=32600+int((geom.centroid.x+180)//6)+1

@@ -22,6 +22,8 @@ ROOT=Path(__file__).resolve().parents[1]
 FOUNDATION=ROOT/'data'/'mangrove-priority-intervention.json'
 SUMMARY=ROOT/'data'/'mangrove-priority-results.json'
 BOUNDARIES=ROOT/'data'/'desa_intervensi.geojson'
+COASTAL_BOUNDARIES=ROOT/'data'/'coastal-villages-riau.geojson'
+COASTAL_CHANGE=ROOT/'data'/'coastal-change-non-intervention-annual.geojson'
 PLANTING=ROOT/'data'/'area_mangrove.geojson'
 PROGRESS=ROOT/'data'/'mangrove-priority-progress.json'
 OUTPUT=ROOT/'data'/'mangrove-priority-candidates.geojson'
@@ -63,12 +65,16 @@ def search_latest(catalog,bbox,year):
             if attempt<3:time.sleep(3*(attempt+1))
     raise last
 def read(item,key,epsg,affine,width,height,resampling):
-    with rasterio.open(item.assets[key].href) as src,WarpedVRT(src,crs=f'EPSG:{epsg}',transform=affine,width=width,height=height,resampling=resampling) as vrt:
-        return vrt.read(1,masked=True).astype('float32').filled(np.nan)
+    # Remote COGs occasionally stop responding. A bounded timeout lets the
+    # composite skip that scene and continue with the remaining observations.
+    with rasterio.Env(GDAL_HTTP_TIMEOUT='30',GDAL_HTTP_MAX_RETRY='2',GDAL_HTTP_RETRY_DELAY='2'):
+        with rasterio.open(item.assets[key].href) as src,WarpedVRT(src,crs=f'EPSG:{epsg}',transform=affine,width=width,height=height,resampling=resampling) as vrt:
+            return vrt.read(1,masked=True).astype('float32').filled(np.nan)
 def composite(items,epsg,affine,width,height):
     obs=[]; used=[]
     for item in items:
         try:
+            print(f"  scene {item.id}",flush=True)
             scl=read(item,'SCL',epsg,affine,width,height,Resampling.nearest)
             blue=read(item,'B02',epsg,affine,width,height,Resampling.bilinear)
             green=read(item,'B03',epsg,affine,width,height,Resampling.bilinear)
@@ -96,22 +102,47 @@ def polygons(mask,affine,inverse,props):
         if value==1: out.append({'type':'Feature','properties':dict(props),'geometry':mapping(geom_transform(inverse,shape(geom)))})
     return out
 def boundary_for(v):
-    all_features=json.loads(BOUNDARIES.read_text(encoding='utf-8'))['features']
+    all_features=json.loads(BOUNDARIES.read_text(encoding='utf-8'))['features']+json.loads(COASTAL_BOUNDARIES.read_text(encoding='utf-8'))['features']
     aliases={v['village'].casefold(),v['id'].replace('-',' ').casefold()}
-    matches=[f for f in all_features if str(f.get('properties',{}).get('WADMKD','')).casefold() in aliases]
+    matches=[f for f in all_features if str(f.get('properties',{}).get('WADMKD','')).casefold() in aliases and str(f.get('properties',{}).get('WADMKK') or f.get('properties',{}).get('WIADKK') or '').casefold()==v['regency'].casefold()]
     if not matches: raise ValueError('boundary not found')
     return matches[0]
 def planted_geometries(v):
     features=json.loads(PLANTING.read_text(encoding='utf-8'))['features']
     return [shape(f['geometry']) for f in features if str(f.get('properties',{}).get('Desa','')).casefold()==v['village'].casefold()]
+def coastal_analysis_feature(v,feature):
+    if not COASTAL_CHANGE.exists():return feature
+    changes=json.loads(COASTAL_CHANGE.read_text(encoding='utf-8')).get('features',[])
+    matches=[shape(f['geometry']) for f in changes if str(f.get('properties',{}).get('village','')).casefold()==v['village'].casefold() and str(f.get('properties',{}).get('regency','')).casefold()==v['regency'].casefold()]
+    if not matches:return feature
+    boundary=shape(feature['geometry']);epsg=utm(boundary.centroid.x)
+    forward=Transformer.from_crs(4326,epsg,always_xy=True).transform;inverse=Transformer.from_crs(epsg,4326,always_xy=True).transform
+    projected=geom_transform(forward,boundary);coast=unary_union([geom_transform(forward,g) for g in matches]).buffer(2500)
+    clipped=projected.intersection(coast)
+    if clipped.is_empty:return feature
+    return {'type':'Feature','properties':feature.get('properties',{}),'geometry':mapping(geom_transform(inverse,clipped))}
 def score_class(score): return 'tinggi' if score>=70 else 'sedang' if score>=45 else 'rendah'
-def analyse(v,catalog,baseline,current,latest_year):
-    feature=boundary_for(v); points=list(coords(feature['geometry'])); bbox=[min(x for x,y in points),min(y for x,y in points),max(x for x,y in points),max(y for x,y in points)]
-    epsg,vgeom,affine,width,height=grid(feature); village=geometry_mask([mapping(vgeom)],out_shape=(height,width),transform=affine,invert=True)
-    periods=[]
-    for year in (baseline,current): periods.append(composite(search(catalog,bbox,year),epsg,affine,width,height))
-    base,now=periods
+def shared_composites(villages,catalog,baseline,current,latest_year):
+    features=[coastal_analysis_feature(v,boundary_for(v)) for v in villages]
+    merged=mapping(unary_union([shape(f['geometry']) for f in features]))
+    shared={'type':'Feature','properties':{},'geometry':merged};points=list(coords(merged))
+    bbox=[min(x for x,y in points),min(y for x,y in points),max(x for x,y in points),max(y for x,y in points)]
+    epsg,_,affine,width,height=grid(shared)
+    print(f"batch {','.join(v['id'] for v in villages)} grid={width}x{height}",flush=True)
+    base=composite(search(catalog,bbox,baseline),epsg,affine,width,height)
+    now=composite(search(catalog,bbox,current),epsg,affine,width,height)
     latest=composite(search_latest(catalog,bbox,latest_year),epsg,affine,width,height)
+    return {'epsg':epsg,'affine':affine,'width':width,'height':height,'base':base,'now':now,'latest':latest}
+def analyse(v,catalog,baseline,current,latest_year,shared=None):
+    print(f"analyse {v['village']}",flush=True)
+    feature=coastal_analysis_feature(v,boundary_for(v)); points=list(coords(feature['geometry'])); bbox=[min(x for x,y in points),min(y for x,y in points),max(x for x,y in points),max(y for x,y in points)]
+    if shared:
+        epsg,affine,width,height=shared['epsg'],shared['affine'],shared['width'],shared['height'];base,now,latest=shared['base'],shared['now'],shared['latest']
+        forward=Transformer.from_crs(4326,epsg,always_xy=True).transform;vgeom=geom_transform(forward,shape(feature['geometry']))
+    else:
+        epsg,vgeom,affine,width,height=grid(feature)
+        base=composite(search(catalog,bbox,baseline),epsg,affine,width,height);now=composite(search(catalog,bbox,current),epsg,affine,width,height);latest=composite(search_latest(catalog,bbox,latest_year),epsg,affine,width,height)
+    village=geometry_mask([mapping(vgeom)],out_shape=(height,width),transform=affine,invert=True)
     common={'id':v['id'],'village':v['village'],'district':v['district'],'regency':v['regency'],'baseline':str(baseline),'current':str(current),'status':'insufficient-data'}
     common['latest']=str(latest_year)
     if not base or not now or not latest:return {**common,'reason':'Komposit bebas awan tidak memadai.'},[]
@@ -158,7 +189,7 @@ def save(progress,records,features,foundation,baseline,current):
     SUMMARY.write_text(json.dumps(product,ensure_ascii=False,indent=2),encoding='utf-8')
     OUTPUT.write_text(json.dumps({'type':'FeatureCollection','generatedAt':now,'methodVersion':'s2-mangrove-screening-v1','features':features},ensure_ascii=False,separators=(',',':')),encoding='utf-8')
 def main():
-    p=argparse.ArgumentParser(); p.add_argument('--village'); p.add_argument('--force',action='store_true'); p.add_argument('--baseline-year',type=int,default=2016); p.add_argument('--year',type=int,default=2025); p.add_argument('--latest-year',type=int,default=datetime.now(timezone.utc).year); args=p.parse_args()
+    p=argparse.ArgumentParser(); p.add_argument('--village'); p.add_argument('--force',action='store_true'); p.add_argument('--batch-size',type=int,default=4); p.add_argument('--baseline-year',type=int,default=2016); p.add_argument('--year',type=int,default=2025); p.add_argument('--latest-year',type=int,default=datetime.now(timezone.utc).year); args=p.parse_args()
     foundation=json.loads(FOUNDATION.read_text(encoding='utf-8')); villages=foundation['villages']
     progress=json.loads(PROGRESS.read_text(encoding='utf-8')) if PROGRESS.exists() else {'schemaVersion':1,'completed':{},'failed':{}}
     existing=json.loads(SUMMARY.read_text(encoding='utf-8')) if SUMMARY.exists() else {'villages':[]}
@@ -166,16 +197,28 @@ def main():
     features=json.loads(OUTPUT.read_text(encoding='utf-8')).get('features',[]) if OUTPUT.exists() else []
     selected=[v for v in villages if (not args.village or v['id']==args.village) and (args.force or v['id'] not in progress['completed'])]
     if args.village and not selected and args.village not in {v['id'] for v in villages}: p.error('unknown village id')
+    print('open catalog',flush=True)
     catalog=Client.open('https://planetarycomputer.microsoft.com/api/stac/v1',modifier=pc.sign_inplace)
-    for v in selected:
+    print('catalog ready',flush=True)
+    batches=[]
+    for district in dict.fromkeys(v['district'] for v in selected):
+        group=sorted([v for v in selected if v['district']==district],key=lambda x:(x['lon'],x['lat']))
+        batches.extend(group[i:i+args.batch_size] for i in range(0,len(group),args.batch_size))
+    for batch in batches:
+      try:
+        shared=shared_composites(batch,catalog,args.baseline_year,args.year,args.latest_year) if len(batch)>1 else None
+      except Exception as exc:
+        print('batch fallback',exc,file=sys.stderr,flush=True);shared=None
+      for v in batch:
         try:
-            record,parts=analyse(v,catalog,args.baseline_year,args.year,args.latest_year); records[v['id']]=record
+            record,parts=analyse(v,catalog,args.baseline_year,args.year,args.latest_year,shared); records[v['id']]=record
             features=[f for f in features if f.get('properties',{}).get('id')!=v['id']]+parts
             progress['completed'][v['id']]={'status':record['status'],'completedAt':datetime.now(timezone.utc).isoformat()}; progress['failed'].pop(v['id'],None)
             print(v['village'],record['status'],record.get('candidateAreaHa'),record.get('needScore'),record.get('suitabilityScore'),flush=True)
         except Exception as exc:
             progress['failed'][v['id']]={'error':str(exc),'at':datetime.now(timezone.utc).isoformat()}; print('failed',v['village'],exc,file=sys.stderr,flush=True)
         save(progress,list(records.values()),features,foundation,args.baseline_year,args.year)
+      del shared
     save(progress,list(records.values()),features,foundation,args.baseline_year,args.year)
     print(json.dumps(progress,ensure_ascii=False))
 if __name__=='__main__':main()
