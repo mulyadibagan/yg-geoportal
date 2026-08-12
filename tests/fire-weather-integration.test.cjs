@@ -33,6 +33,7 @@ test("page labels the GEFS corridor product and wires the controller", () => {
   assert.match(html, /Model GEFS eksperimental/);
   assert.match(html, /Potensi sebaran kabut asap · eksperimental/);
   assert.match(html, /data-layer="smoke" checked/);
+  assert.match(html, /data-layer="surface" checked/);
   assert.match(controller, /smoke:L\.layerGroup\(\)\.addTo\(map\)/);
   assert.doesNotMatch(html, /data-layer="dispersion"/);
   assert.doesNotMatch(html, /Dispersi asap HYSPLIT \(belum tersedia\)/);
@@ -64,6 +65,7 @@ test("page labels the GEFS corridor product and wires the controller", () => {
   assert.match(controller, /function contourAerosolEvidence/);
   assert.match(controller, /data\/surface-observations\.json/);
   assert.match(controller, /function contourSurfaceEvidence/);
+  assert.match(controller, /function renderSurfaceObservations/);
   assert.match(controller, /maksimal 75 km dari polygon/);
   assert.match(controller, /kode asap FU/);
   assert.match(controller, /arah angin observasi\/model/);
