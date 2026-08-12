@@ -9006,8 +9006,8 @@
       "VIIRS_NOAA20_NRT",
       "VIIRS_NOAA21_NRT"
     ],
-    "updatedAt": "2026-08-12T17:16:24.429Z",
-    "recentUpdatedAt": "2026-08-12T17:16:24.429Z",
+    "updatedAt": "2026-08-12T18:08:00.586Z",
+    "recentUpdatedAt": "2026-08-12T18:08:00.586Z",
     "historyUpdatedAt": "2026-08-01T05:04:04.349Z",
     "mode": "recent",
     "periodDays": [
@@ -9015,153 +9015,8 @@
       30
     ],
     "yearlyTrendYears": 6,
-    "status": "partial",
-    "skippedChunks": [
-      {
-        "source": "MODIS_NRT",
-        "start": "2026-07-14",
-        "end": "2026-07-18",
-        "error": "AggregateError"
-      },
-      {
-        "source": "MODIS_NRT",
-        "start": "2026-07-19",
-        "end": "2026-07-23",
-        "error": "AggregateError"
-      },
-      {
-        "source": "MODIS_NRT",
-        "start": "2026-07-24",
-        "end": "2026-07-28",
-        "error": "AggregateError"
-      },
-      {
-        "source": "MODIS_NRT",
-        "start": "2026-07-29",
-        "end": "2026-08-02",
-        "error": "AggregateError"
-      },
-      {
-        "source": "MODIS_NRT",
-        "start": "2026-08-03",
-        "end": "2026-08-07",
-        "error": "AggregateError"
-      },
-      {
-        "source": "MODIS_NRT",
-        "start": "2026-08-08",
-        "end": "2026-08-12",
-        "error": "AggregateError"
-      },
-      {
-        "source": "VIIRS_SNPP_NRT",
-        "start": "2026-07-14",
-        "end": "2026-07-18",
-        "error": "AggregateError"
-      },
-      {
-        "source": "VIIRS_SNPP_NRT",
-        "start": "2026-07-19",
-        "end": "2026-07-23",
-        "error": "AggregateError"
-      },
-      {
-        "source": "VIIRS_SNPP_NRT",
-        "start": "2026-07-24",
-        "end": "2026-07-28",
-        "error": "AggregateError"
-      },
-      {
-        "source": "VIIRS_SNPP_NRT",
-        "start": "2026-07-29",
-        "end": "2026-08-02",
-        "error": "AggregateError"
-      },
-      {
-        "source": "VIIRS_SNPP_NRT",
-        "start": "2026-08-03",
-        "end": "2026-08-07",
-        "error": "AggregateError"
-      },
-      {
-        "source": "VIIRS_SNPP_NRT",
-        "start": "2026-08-08",
-        "end": "2026-08-12",
-        "error": "AggregateError"
-      },
-      {
-        "source": "VIIRS_NOAA20_NRT",
-        "start": "2026-07-14",
-        "end": "2026-07-18",
-        "error": "AggregateError"
-      },
-      {
-        "source": "VIIRS_NOAA20_NRT",
-        "start": "2026-07-19",
-        "end": "2026-07-23",
-        "error": "AggregateError"
-      },
-      {
-        "source": "VIIRS_NOAA20_NRT",
-        "start": "2026-07-24",
-        "end": "2026-07-28",
-        "error": "AggregateError"
-      },
-      {
-        "source": "VIIRS_NOAA20_NRT",
-        "start": "2026-07-29",
-        "end": "2026-08-02",
-        "error": "AggregateError"
-      },
-      {
-        "source": "VIIRS_NOAA20_NRT",
-        "start": "2026-08-03",
-        "end": "2026-08-07",
-        "error": "AggregateError"
-      },
-      {
-        "source": "VIIRS_NOAA20_NRT",
-        "start": "2026-08-08",
-        "end": "2026-08-12",
-        "error": "AggregateError"
-      },
-      {
-        "source": "VIIRS_NOAA21_NRT",
-        "start": "2026-07-14",
-        "end": "2026-07-18",
-        "error": "AggregateError"
-      },
-      {
-        "source": "VIIRS_NOAA21_NRT",
-        "start": "2026-07-19",
-        "end": "2026-07-23",
-        "error": "AggregateError"
-      },
-      {
-        "source": "VIIRS_NOAA21_NRT",
-        "start": "2026-07-24",
-        "end": "2026-07-28",
-        "error": "AggregateError"
-      },
-      {
-        "source": "VIIRS_NOAA21_NRT",
-        "start": "2026-07-29",
-        "end": "2026-08-02",
-        "error": "AggregateError"
-      },
-      {
-        "source": "VIIRS_NOAA21_NRT",
-        "start": "2026-08-03",
-        "end": "2026-08-07",
-        "error": "AggregateError"
-      },
-      {
-        "source": "VIIRS_NOAA21_NRT",
-        "start": "2026-08-08",
-        "end": "2026-08-12",
-        "error": "AggregateError"
-      }
-    ],
+    "status": "complete",
+    "skippedChunks": [],
     "units": {
       "villages": 14,
       "socialForestryFeatures": 149,
