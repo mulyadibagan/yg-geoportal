@@ -62,6 +62,11 @@ test("page labels the GEFS corridor product and wires the controller", () => {
   assert.match(controller, /data\/gfs-atmosphere\.json/);
   assert.match(controller, /data\/cams-air-quality\.json/);
   assert.match(controller, /function contourAerosolEvidence/);
+  assert.match(controller, /data\/surface-observations\.json/);
+  assert.match(controller, /function contourSurfaceEvidence/);
+  assert.match(controller, /maksimal 75 km dari polygon/);
+  assert.match(controller, /kode asap FU/);
+  assert.match(controller, /arah angin observasi\/model/);
   assert.match(controller, /Bukti multi-sumber:/);
   assert.match(controller, /tidak mengubah bentuk atau warna polygon GEFS/);
   assert.doesNotMatch(controller, /air-quality-api\.open-meteo\.com\/v1\/air-quality\?latitude=/);
