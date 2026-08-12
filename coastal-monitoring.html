@@ -60,6 +60,11 @@
       </aside>
     </section>
 
+    <section class="forecast-panel">
+      <div class="forecast-head"><div><p class="eyebrow">PRAKIRAAN 72 JAM · SEMUA WAKTU WIB</p><h2 id="chart-title">Pasang surut & gelombang</h2></div><label>Tampilkan<select id="chart-metric"><option value="sea_level_height_msl">Pasang surut</option><option value="wave_height">Gelombang</option><option value="ocean_current_velocity">Arus</option><option value="sea_surface_temperature">Suhu laut</option></select></label></div>
+      <div class="chart-wrap"><canvas id="forecast-chart" width="1100" height="300" aria-label="Grafik prakiraan oseanografi"></canvas></div>
+    </section>
+
     <section class="analysis-explorer" aria-labelledby="analysis-explorer-title">
       <div class="analysis-explorer-head">
         <div><p class="eyebrow">ANALISIS DESA PESISIR</p><h2 id="analysis-explorer-title">Ringkasan per desa dan kabupaten</h2><p>Hasil awal Sentinel-2 untuk desa non-intervensi. Pilih wilayah untuk membuka rincian dan lokasi polygon.</p></div>
@@ -79,11 +84,6 @@
         </div>
         <aside class="analysis-village-detail" id="analysis-village-detail"><strong>Pilih desa</strong><p>Klik baris desa untuk melihat metrik analisis lengkap.</p></aside>
       </div>
-    </section>
-
-    <section class="forecast-panel">
-      <div class="forecast-head"><div><p class="eyebrow">PRAKIRAAN 72 JAM · SEMUA WAKTU WIB</p><h2 id="chart-title">Pasang surut & gelombang</h2></div><label>Tampilkan<select id="chart-metric"><option value="sea_level_height_msl">Pasang surut</option><option value="wave_height">Gelombang</option><option value="ocean_current_velocity">Arus</option><option value="sea_surface_temperature">Suhu laut</option></select></label></div>
-      <div class="chart-wrap"><canvas id="forecast-chart" width="1100" height="300" aria-label="Grafik prakiraan oseanografi"></canvas></div>
     </section>
 
     <section class="coast-note"><strong>Catatan penggunaan:</strong> Data laut adalah prakiraan model regional, bukan untuk navigasi. Perubahan pantai adalah indikasi dari komposit Sentinel‑2 April–September 2016 dan 2025 dengan ketidakpastian posisi ±14,1 m; bukan survei garis pantai atau penetapan abrasi. Hasil berkeyakinan rendah wajib diverifikasi di lapangan.</section>
