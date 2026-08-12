@@ -68,6 +68,8 @@ test("page labels the GEFS corridor product and wires the controller", () => {
   assert.match(controller, /function renderSurfaceObservations/);
   assert.match(controller, /radius:3\.25,color:'#fff',weight:\.8,fillColor:'#7f1d1d'/);
   assert.match(controller, /radius:2\.5,color:'#7f1d1d',weight:\.55/);
+  assert.match(controller, /radius:smoke\|\|haze\?5\.5:3\.5,color:'#fff',weight:1/);
+  assert.match(controller, /radius:6,color:'#fff',weight:1\.4/);
   assert.match(controller, /weight:2\.8,opacity:\.95,fillColor:smokeColor\(result\.score\),fillOpacity:\.24/);
   assert.match(controller, /weight:1\.15,opacity:\.52,dashArray:'8 8'/);
   assert.match(html, /id="toggle-controls"/);
