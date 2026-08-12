@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
-  "product": "Analisis indikatif prioritas rehabilitasi mangrove desa intervensi YG",
+  "product": "Prioritas Rehabilitasi Mangrove 2016–2025",
   "generatedAt": "2026-08-12T11:06:40.624597+00:00",
   "baseline": "2016",
   "current": "2025",
-  "methodVersion": "s2-mangrove-screening-v1",
+  "methodVersion": "mangrove-priority-2016-2025-v0.1",
   "status": "complete",
   "disclaimer": "Analisis indikatif berbasis Sentinel-2; bukan penetapan lokasi tanam. Verifikasi hidrologi, substrat, salinitas, penggunaan dan status lahan, serta persetujuan masyarakat wajib dilakukan.",
   "villages": [
@@ -45,7 +45,20 @@
         "S2B_MSIL2A_20250822T031519_R118_T47NRB_20250822T065722"
       ],
       "resolutionM": 10,
-      "fieldVerification": "required"
+      "fieldVerification": "required",
+      "methodVersion": "mangrove-priority-2016-2025-v0.1",
+      "priorityPolygonCount": 33,
+      "priorityAreaHa": 45.1,
+      "priorityClasses": {
+        "P1": 2,
+        "P2": 30,
+        "P3": 1,
+        "P4": 0,
+        "P5": 0,
+        "X": 0,
+        "U": 0
+      },
+      "topPriorityScore": 67.1
     },
     {
       "id": "sepahat",
@@ -83,7 +96,20 @@
         "S2B_MSIL2A_20250716T032519_R018_T47NRB_20250716T071205"
       ],
       "resolutionM": 10,
-      "fieldVerification": "required"
+      "fieldVerification": "required",
+      "methodVersion": "mangrove-priority-2016-2025-v0.1",
+      "priorityPolygonCount": 87,
+      "priorityAreaHa": 86.59,
+      "priorityClasses": {
+        "P1": 1,
+        "P2": 84,
+        "P3": 0,
+        "P4": 2,
+        "P5": 0,
+        "X": 0,
+        "U": 0
+      },
+      "topPriorityScore": 63.9
     },
     {
       "id": "kelapa-pati",
@@ -122,7 +148,20 @@
         "S2B_MSIL2A_20250822T031519_R118_T47NRB_20250822T065722"
       ],
       "resolutionM": 10,
-      "fieldVerification": "required"
+      "fieldVerification": "required",
+      "methodVersion": "mangrove-priority-2016-2025-v0.1",
+      "priorityPolygonCount": 23,
+      "priorityAreaHa": 25.06,
+      "priorityClasses": {
+        "P1": 21,
+        "P2": 0,
+        "P3": 2,
+        "P4": 0,
+        "P5": 0,
+        "X": 0,
+        "U": 0
+      },
+      "topPriorityScore": 69.4
     },
     {
       "id": "pematang-duku",
@@ -159,7 +198,20 @@
         "S2B_MSIL2A_20250822T031519_R118_T48NTG_20250822T065722"
       ],
       "resolutionM": 10,
-      "fieldVerification": "required"
+      "fieldVerification": "required",
+      "methodVersion": "mangrove-priority-2016-2025-v0.1",
+      "priorityPolygonCount": 13,
+      "priorityAreaHa": 12.88,
+      "priorityClasses": {
+        "P1": 1,
+        "P2": 12,
+        "P3": 0,
+        "P4": 0,
+        "P5": 0,
+        "X": 0,
+        "U": 0
+      },
+      "topPriorityScore": 69.1
     },
     {
       "id": "penampi",
@@ -196,7 +248,20 @@
         "S2A_MSIL2A_20250829T032151_R118_T47NRB_20250829T073414"
       ],
       "resolutionM": 10,
-      "fieldVerification": "required"
+      "fieldVerification": "required",
+      "methodVersion": "mangrove-priority-2016-2025-v0.1",
+      "priorityPolygonCount": 21,
+      "priorityAreaHa": 21.18,
+      "priorityClasses": {
+        "P1": 1,
+        "P2": 20,
+        "P3": 0,
+        "P4": 0,
+        "P5": 0,
+        "X": 0,
+        "U": 0
+      },
+      "topPriorityScore": 69.8
     },
     {
       "id": "simpang-ayam",
@@ -235,7 +300,20 @@
         "S2B_MSIL2A_20250822T031519_R118_T47NRB_20250822T065722"
       ],
       "resolutionM": 10,
-      "fieldVerification": "required"
+      "fieldVerification": "required",
+      "methodVersion": "mangrove-priority-2016-2025-v0.1",
+      "priorityPolygonCount": 7,
+      "priorityAreaHa": 131.17,
+      "priorityClasses": {
+        "P1": 0,
+        "P2": 0,
+        "P3": 0,
+        "P4": 7,
+        "P5": 0,
+        "X": 0,
+        "U": 0
+      },
+      "topPriorityScore": 63.1
     },
     {
       "id": "tanjung-kuras",
@@ -271,7 +349,21 @@
         "S2A_MSIL2A_20250829T032151_R118_T47NRB_20250829T073414"
       ],
       "resolutionM": 10,
-      "fieldVerification": "required"
+      "fieldVerification": "required",
+      "methodVersion": "mangrove-priority-2016-2025-v0.1",
+      "priorityPolygonCount": 32,
+      "priorityAreaHa": 19.5,
+      "priorityClasses": {
+        "P1": 0,
+        "P2": 32,
+        "P3": 0,
+        "P4": 0,
+        "P5": 0,
+        "X": 0,
+        "U": 0
+      },
+      "topPriorityScore": 69.0
     }
-  ]
+  ],
+  "description": "Hasil analisis penginderaan jauh, kondisi pesisir, dan data lingkungan yang tersedia."
 }
