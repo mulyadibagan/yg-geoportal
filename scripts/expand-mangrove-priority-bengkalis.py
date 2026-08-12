@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""Add every Bengkalis coastal village to the mangrove-priority queue."""
-import json,re
+"""Add every coastal village in a requested regency to the priority queue."""
+import argparse,json,re
 from pathlib import Path
 from shapely.geometry import shape
 
@@ -16,23 +16,25 @@ def compact(text):
     return re.sub(r'[^a-z0-9]+','',text.casefold())
 
 def main():
+    parser=argparse.ArgumentParser();parser.add_argument('--regency',default='Bengkalis');args=parser.parse_args()
     foundation=json.loads(FOUNDATION.read_text(encoding='utf-8'))
     source=json.loads(SOURCE.read_text(encoding='utf-8'))
     existing={v['id']:v for v in foundation['villages']}
     existing_names={compact(v['village']) for v in existing.values()}
     for feature in source['features']:
         p=feature.get('properties') or {}
-        if (p.get('WADMKK') or p.get('WIADKK'))!='Bengkalis':continue
+        source_regency=p.get('WADMKK') or p.get('WIADKK') or ''
+        if source_regency.casefold()!=args.regency.casefold():continue
         name=p.get('WADMKD') or p.get('NAMOBJ');district=p.get('WADMKC') or p.get('WIADKC') or '—'
         if not name or name.casefold() in {'area saling klaim','area tidak terdefinisi'}:continue
         candidate_id=slug(name)
         if candidate_id in existing or compact(name) in existing_names:continue
         centroid=shape(feature['geometry']).representative_point()
-        existing[candidate_id]={'id':candidate_id,'village':name,'district':district,'regency':'Bengkalis','lat':round(centroid.y,6),'lon':round(centroid.x,6),'scope':'Bengkalis coastal screening'}
+        existing[candidate_id]={'id':candidate_id,'village':name,'district':district,'regency':source_regency,'lat':round(centroid.y,6),'lon':round(centroid.x,6),'scope':f'{source_regency} coastal screening'}
         existing_names.add(compact(name))
     foundation['product']='Prioritas Rehabilitasi Mangrove 2016–2025'
-    foundation['scope']='Seluruh desa pesisir Kabupaten Bengkalis dan Tanjung Kuras'
-    foundation['villages']=sorted(existing.values(),key=lambda v:(v['regency']!='Bengkalis',v['district'],v['village']))
+    foundation['scope']='Desa pesisir yang telah masuk antrean analisis regional'
+    foundation['villages']=sorted(existing.values(),key=lambda v:(v['regency'],v['district'],v['village']))
     FOUNDATION.write_text(json.dumps(foundation,ensure_ascii=False,indent=2),encoding='utf-8')
     progress=json.loads(PROGRESS.read_text(encoding='utf-8'))
     ids={v['id'] for v in foundation['villages']};pending=[x for x in ids if x not in progress.get('completed',{})]

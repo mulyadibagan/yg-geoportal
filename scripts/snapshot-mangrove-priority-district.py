@@ -13,7 +13,7 @@ def main():
     field='district' if args.level=='district' else 'regency'
     selected=[v for v in foundation['villages'] if v.get(field,'').casefold()==args.area.casefold()]
     ids={v['id'] for v in selected}; records=[r for r in summary['villages'] if r['id'] in ids]
-    missing=ids-{r['id'] for r in records if r.get('status')=='analysed'}
+    missing=ids-{r['id'] for r in records if r.get('status') in {'analysed','insufficient-data'}}
     if missing:raise SystemExit(f'{args.level.title()} is incomplete: '+', '.join(sorted(missing)))
     label=('Kecamatan ' if args.level=='district' else 'Kabupaten/Kota ')+args.area
     foundation['villages']=selected;foundation['scope']=label
