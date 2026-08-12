@@ -8,7 +8,7 @@ and measures only changes close to either extracted shoreline.
 """
 from __future__ import annotations
 
-import argparse, json, math, os, sys, warnings
+import argparse, json, math, os, sys, time, warnings
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -43,6 +43,10 @@ def annual_dates(year: int):
     return f"{year}-04-01", f"{year}-09-30"
 
 
+def village_key(item):
+    return tuple(str(item.get(field) or "").casefold() for field in ("regency", "district", "village"))
+
+
 def iter_coords(geom):
     if geom["type"] == "Polygon":
         rings = geom["coordinates"]
@@ -75,11 +79,18 @@ def grid_for(feature, padding=1000):
 
 
 def search_items(catalog, bbox, start, end):
-    search = catalog.search(collections=["sentinel-2-l2a"], bbox=bbox,
-        datetime=f"{start}/{end}", query={"eo:cloud_cover":{"lt":CLOUD_LIMIT}})
-    items = list(search.items())
-    items.sort(key=lambda item: item.properties.get("eo:cloud_cover", 100))
-    return items[:MAX_SCENES]
+    last_error=None
+    for attempt in range(4):
+        try:
+            search = catalog.search(collections=["sentinel-2-l2a"], bbox=bbox,
+                datetime=f"{start}/{end}", query={"eo:cloud_cover":{"lt":CLOUD_LIMIT}})
+            items = list(search.items())
+            items.sort(key=lambda item: item.properties.get("eo:cloud_cover", 100))
+            return items[:MAX_SCENES]
+        except Exception as exc:
+            last_error=exc
+            if attempt<3: time.sleep(3*(attempt+1))
+    raise last_error
 
 
 def read_asset(item, key, epsg, affine, width, height, resampling):
@@ -240,14 +251,23 @@ def main():
     catalog=Client.open("https://planetarycomputer.microsoft.com/api/stac/v1",modifier=pc.sign_inplace)
     records=[]; features=[]
     for feature in selected:
-        record,parts=analyse_village(feature,catalog,current_year,baseline_year)
+        try:
+            record,parts=analyse_village(feature,catalog,current_year,baseline_year)
+        except Exception as exc:
+            props=feature.get("properties") or {}
+            record={"village":props.get("WADMKD") or props.get("NAMOBJ") or "Tanpa nama",
+                "district":props.get("WADMKC"),"regency":props.get("WADMKK") or props.get("WIADKK"),
+                "status":"insufficient-data","baseline":str(baseline_year),"current":str(current_year),
+                "reason":"Layanan sumber citra tidak merespons setelah beberapa percobaan; jadwalkan pemrosesan ulang."}
+            parts=[]
+            print(f"skip village {record['village']}: {exc}",file=sys.stderr)
         records.append(record); features.extend(parts)
     if args.append and output.exists() and summary_path.exists():
         previous_summary=json.loads(summary_path.read_text(encoding="utf-8"))
         previous_geo=json.loads(output.read_text(encoding="utf-8"))
-        replaced={str(row["village"]).casefold() for row in records}
-        records=[row for row in previous_summary.get("villages",[]) if str(row.get("village","")).casefold() not in replaced]+records
-        features=[f for f in previous_geo.get("features",[]) if str((f.get("properties") or {}).get("village","")).casefold() not in replaced]+features
+        replaced={village_key(row) for row in records}
+        records=[row for row in previous_summary.get("villages",[]) if village_key(row) not in replaced]+records
+        features=[f for f in previous_geo.get("features",[]) if village_key(f.get("properties") or {}) not in replaced]+features
     generated=datetime.now(timezone.utc).isoformat()
     collection={"type":"FeatureCollection","name":"Indikasi perubahan garis pantai tahunan desa pesisir Riau",
         "generatedAt":generated,"methodVersion":"s2-annual-water-edge-v1","features":features}
