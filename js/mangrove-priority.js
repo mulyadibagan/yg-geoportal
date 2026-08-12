@@ -1,8 +1,10 @@
 (async function(){
-  const version='20260812-priority1',colors={P1:'#087b61',P2:'#41a66f',P3:'#258eb0',P4:'#d27b21',P5:'#647b73',X:'#9b3f3f',U:'#7753a6'};
+  const version='20260812-latest2026',colors={P1:'#087b61',P2:'#41a66f',P3:'#258eb0',P4:'#d27b21',P5:'#647b73',X:'#9b3f3f',U:'#7753a6'};
   const [foundation,results,candidates]=await Promise.all([fetch(`data/mangrove-priority-intervention.json?v=${version}`).then(r=>r.json()),fetch(`data/mangrove-priority-results.json?v=${version}`).then(r=>r.json()),fetch(`data/mangrove-priority-candidates.geojson?v=${version}`).then(r=>r.json())]);
   const villages=foundation.villages,records=new Map(results.villages.map(v=>[v.id,v])),map=L.map('priority-map').setView([1.42,102.08],9);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap contributors'}).addTo(map);
+  const imagery=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{attribution:'Tiles © Esri'}).addTo(map);
+  const streets=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap contributors'});
+  L.control.layers({'Citra satelit':imagery,'Peta jalan':streets},null,{collapsed:false}).addTo(map);
   const candidateLayer=L.geoJSON(candidates,{style:f=>({color:colors[f.properties.priorityClass]||'#555',weight:2,fillColor:colors[f.properties.priorityClass]||'#777',fillOpacity:.42}),onEachFeature:(f,l)=>{const p=f.properties;l.bindPopup(`<strong>${p.priorityClass} · ${p.priorityLabel}</strong><br>${p.village} · ${p.areaHa.toFixed(3)} ha<br>Prioritas ${p.priorityScore}/100 · peringkat desa #${p.villageRank}<br>Kebutuhan ${p.needScore} · kelayakan ${p.suitabilityScore} · risiko ${p.riskScore}<br>${p.decisionReason}<br><small>${p.polygonId}</small>`)}}).addTo(map);
   const layers=new Map();candidateLayer.eachLayer(l=>{const id=l.feature.properties.id;if(!layers.has(id))layers.set(id,[]);layers.get(id).push(l)});
   const markers=new Map(),list=document.getElementById('village-list'),fmt=n=>Number.isFinite(n)?n.toFixed(2):'—';
