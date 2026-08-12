@@ -1,11 +1,40 @@
 {
   "schemaVersion": 1,
-  "status": "foundation",
-  "completed": {},
+  "status": "complete",
+  "completed": {
+    "buruk-bakul": {
+      "status": "analysed",
+      "completedAt": "2026-08-12T10:59:43.426730+00:00"
+    },
+    "sepahat": {
+      "status": "analysed",
+      "completedAt": "2026-08-12T11:02:12.594578+00:00"
+    },
+    "kelapa-pati": {
+      "status": "analysed",
+      "completedAt": "2026-08-12T11:03:11.840364+00:00"
+    },
+    "pematang-duku": {
+      "status": "analysed",
+      "completedAt": "2026-08-12T11:04:08.986236+00:00"
+    },
+    "penampi": {
+      "status": "analysed",
+      "completedAt": "2026-08-12T11:05:18.202400+00:00"
+    },
+    "simpang-ayam": {
+      "status": "analysed",
+      "completedAt": "2026-08-12T11:06:06.366858+00:00"
+    },
+    "tanjung-kuras": {
+      "status": "analysed",
+      "completedAt": "2026-08-12T11:06:40.615188+00:00"
+    }
+  },
   "failed": {},
-  "nextVillage": "buruk-bakul",
-  "updatedAt": "2026-08-12T10:50:23.421716+00:00",
+  "nextVillage": null,
+  "updatedAt": "2026-08-12T11:06:40.624597+00:00",
   "totalVillages": 7,
-  "completedCount": 0,
+  "completedCount": 7,
   "safeToResume": true
 }
