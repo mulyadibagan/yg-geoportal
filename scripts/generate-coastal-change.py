@@ -8,7 +8,7 @@ and measures only changes close to either extracted shoreline.
 """
 from __future__ import annotations
 
-import argparse, json, math, os, sys
+import argparse, json, math, os, sys, warnings
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -107,7 +107,8 @@ def composite(items, epsg, affine, width, height):
         except Exception as exc:
             print(f"skip {item.id}: {exc}", file=sys.stderr)
     if not observations: return None
-    with np.errstate(all="ignore"):
+    with np.errstate(all="ignore"), warnings.catch_warnings():
+        warnings.filterwarnings("ignore",message="All-NaN slice encountered")
         index=np.nanmedian(np.stack(observations),axis=0)
     clear=np.isfinite(np.stack(observations)).sum(axis=0)
     return index, clear, used
@@ -115,19 +116,19 @@ def composite(items, epsg, affine, width, height):
 
 def edge_connected_water(index, clear):
     water=(index > .05) & (clear > 0)
-    water=morphology.remove_small_objects(water,min_size=MIN_COMPONENT_PIXELS)
-    water=morphology.binary_closing(water,morphology.disk(1))
+    water=morphology.remove_small_objects(water,max_size=MIN_COMPONENT_PIXELS-1)
+    water=morphology.closing(water,morphology.disk(1))
     labels,count=ndimage.label(water)
     edge=np.unique(np.concatenate([labels[0,:],labels[-1,:],labels[:,0],labels[:,-1]]))
     edge=edge[edge>0]
     if not edge.size: return np.zeros_like(water,dtype=bool)
     ocean=np.isin(labels,edge)
-    return morphology.remove_small_holes(ocean,area_threshold=MIN_COMPONENT_PIXELS)
+    return morphology.remove_small_holes(ocean,max_size=MIN_COMPONENT_PIXELS-1)
 
 
 def clean_change(mask):
-    mask=morphology.remove_small_objects(mask,min_size=MIN_COMPONENT_PIXELS)
-    return morphology.binary_opening(mask,morphology.disk(1))
+    mask=morphology.remove_small_objects(mask,max_size=MIN_COMPONENT_PIXELS-1)
+    return morphology.opening(mask,morphology.disk(1))
 
 
 def mask_to_features(mask, affine, inverse, properties):
@@ -208,13 +209,28 @@ def main():
     parser.add_argument("--year",type=int)
     parser.add_argument("--baseline-year",type=int,default=2016)
     parser.add_argument("--villages",nargs="*",help="Optional exact village names")
+    parser.add_argument("--source",type=Path,default=VILLAGES,
+        help="GeoJSON source; use coastal-villages-riau.geojson for all coastal candidates")
+    parser.add_argument("--output",type=Path,default=OUTPUT,help="Output change-polygon GeoJSON")
+    parser.add_argument("--summary",type=Path,default=SUMMARY,help="Output village summary JSON")
+    parser.add_argument("--regencies",nargs="*",help="Optional exact regency names")
+    parser.add_argument("--non-intervention",action="store_true",
+        help="Exclude intervention villages (requires the Intervention property)")
     parser.add_argument("--append",action="store_true",help="Merge processed villages into an existing annual product")
     args=parser.parse_args()
     current_year=args.year or datetime.now(timezone.utc).year-1
     baseline_year=args.baseline_year
     if current_year <= baseline_year: parser.error("comparison year must be later than baseline year")
-    source=json.loads(VILLAGES.read_text(encoding="utf-8"))
+    output=args.output.resolve()
+    summary_path=args.summary.resolve()
+    source=json.loads(args.source.resolve().read_text(encoding="utf-8"))
     selected=source["features"]
+    if args.non_intervention:
+        selected=[f for f in selected if not bool((f.get("properties") or {}).get("Intervention"))]
+    if args.regencies:
+        wanted_regencies={x.casefold() for x in args.regencies}
+        selected=[f for f in selected if str((f.get("properties") or {}).get("WADMKK") or
+            (f.get("properties") or {}).get("WIADKK") or "").casefold() in wanted_regencies]
     if args.villages:
         wanted={x.casefold() for x in args.villages}
         selected=[f for f in selected if str(f.get("properties",{}).get("WADMKD","")).casefold() in wanted]
@@ -223,14 +239,14 @@ def main():
     for feature in selected:
         record,parts=analyse_village(feature,catalog,current_year,baseline_year)
         records.append(record); features.extend(parts)
-    if args.append and OUTPUT.exists() and SUMMARY.exists():
-        previous_summary=json.loads(SUMMARY.read_text(encoding="utf-8"))
-        previous_geo=json.loads(OUTPUT.read_text(encoding="utf-8"))
+    if args.append and output.exists() and summary_path.exists():
+        previous_summary=json.loads(summary_path.read_text(encoding="utf-8"))
+        previous_geo=json.loads(output.read_text(encoding="utf-8"))
         replaced={str(row["village"]).casefold() for row in records}
         records=[row for row in previous_summary.get("villages",[]) if str(row.get("village","")).casefold() not in replaced]+records
         features=[f for f in previous_geo.get("features",[]) if str((f.get("properties") or {}).get("village","")).casefold() not in replaced]+features
     generated=datetime.now(timezone.utc).isoformat()
-    collection={"type":"FeatureCollection","name":"Indikasi perubahan garis pantai tahunan desa intervensi",
+    collection={"type":"FeatureCollection","name":"Indikasi perubahan garis pantai tahunan desa pesisir Riau",
         "generatedAt":generated,"methodVersion":"s2-annual-water-edge-v1","features":features}
     summary={"schemaVersion":1,"generatedAt":generated,"product":"Indikasi perubahan garis pantai berbasis Sentinel-2",
         "methodVersion":"s2-annual-water-edge-v1","baseline":str(baseline_year),
@@ -238,8 +254,10 @@ def main():
         "resolutionM":RESOLUTION,"minimumMappingUnitM2":MIN_COMPONENT_PIXELS*100,
         "disclaimer":"Bukan hasil survei garis pantai atau penetapan batas. Perubahan di bawah ketidakpastian posisi tidak boleh ditafsirkan sebagai abrasi pasti.",
         "source":"Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC","villages":records}
-    OUTPUT.write_text(json.dumps(collection,ensure_ascii=False,separators=(",",":")),encoding="utf-8")
-    SUMMARY.write_text(json.dumps(summary,ensure_ascii=False,indent=2),encoding="utf-8")
-    print(json.dumps({"records":len(records),"features":len(features),"output":str(OUTPUT)},ensure_ascii=False))
+    output.parent.mkdir(parents=True,exist_ok=True)
+    summary_path.parent.mkdir(parents=True,exist_ok=True)
+    output.write_text(json.dumps(collection,ensure_ascii=False,separators=(",",":")),encoding="utf-8")
+    summary_path.write_text(json.dumps(summary,ensure_ascii=False,indent=2),encoding="utf-8")
+    print(json.dumps({"records":len(records),"features":len(features),"output":str(output)},ensure_ascii=False))
 
 if __name__ == "__main__": main()

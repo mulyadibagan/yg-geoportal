@@ -7,3 +7,7 @@ tmp-*.txt
 Thumbs.db
 .coastal-tools/
 .coastal-cache/
+.coastal-runtime/
+coastal_runtime/
+runtime_local/
+scripts/__pycache__/
