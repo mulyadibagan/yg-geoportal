@@ -1,0 +1,223 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-12T04:58:28.894475+00:00",
+  "product": "Indikasi perubahan garis pantai berbasis Sentinel-2",
+  "methodVersion": "s2-annual-water-edge-v1",
+  "baseline": "2016",
+  "current": "2025",
+  "compositeWindow": "April–September",
+  "updateFrequency": "annual",
+  "resolutionM": 10,
+  "minimumMappingUnitM2": 900,
+  "disclaimer": "Bukan hasil survei garis pantai atau penetapan batas. Perubahan di bawah ketidakpastian posisi tidak boleh ditafsirkan sebagai abrasi pasti.",
+  "source": "Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+  "villages": [
+    {
+      "village": "Bungsur",
+      "district": "Sungai Apit",
+      "regency": "Siak",
+      "status": "not-coastal",
+      "baseline": "2016",
+      "current": "2025",
+      "reason": "Tidak ditemukan garis air laut yang memotong batas desa pada komposit."
+    },
+    {
+      "village": "Kayu Ara Permai",
+      "district": "Sungai Apit",
+      "regency": "Siak",
+      "status": "analysed",
+      "baseline": "2016",
+      "current": "2025",
+      "coastlineLengthKm": 2.12,
+      "erosionAreaHa": 0.56,
+      "accretionAreaHa": 0.0,
+      "indicativeMeanRetreatM": 2.6,
+      "indicativeMeanAdvanceM": 0.0,
+      "netAreaChangeHa": -0.56,
+      "elapsedYears": 9,
+      "indicativeRetreatRateMPerYear": 0.29,
+      "indicativeAdvanceRateMPerYear": 0.0,
+      "clearCoveragePct": 100.0,
+      "baselineSceneCount": 3,
+      "currentSceneCount": 5,
+      "positionalUncertaintyM": 14.1,
+      "confidence": "rendah",
+      "baselineScenes": [
+        "S2A_MSIL2A_20160416T031602_R118_T47NRB_20210211T041134",
+        "S2A_MSIL2A_20160605T033742_R118_T47NRB_20210211T163634",
+        "S2A_MSIL2A_20160804T033742_R118_T47NRB_20210212T105425"
+      ],
+      "currentScenes": [
+        "S2C_MSIL2A_20250718T031601_R118_T47NRB_20250718T083115",
+        "S2C_MSIL2A_20250906T031601_R118_T47NRB_20250906T081115",
+        "S2B_MSIL2A_20250822T031519_R118_T47NRB_20250822T065722",
+        "S2C_MSIL2A_20250728T031601_R118_T47NRB_20250728T082013",
+        "S2A_MSIL2A_20250829T032151_R118_T47NRB_20250829T073414"
+      ]
+    },
+    {
+      "village": "Mengkapan",
+      "district": "Sungai Apit",
+      "regency": "Siak",
+      "status": "analysed",
+      "baseline": "2016",
+      "current": "2025",
+      "coastlineLengthKm": 9.45,
+      "erosionAreaHa": 10.07,
+      "accretionAreaHa": 0.0,
+      "indicativeMeanRetreatM": 10.7,
+      "indicativeMeanAdvanceM": 0.0,
+      "netAreaChangeHa": -10.07,
+      "elapsedYears": 9,
+      "indicativeRetreatRateMPerYear": 1.18,
+      "indicativeAdvanceRateMPerYear": 0.0,
+      "clearCoveragePct": 69.7,
+      "baselineSceneCount": 1,
+      "currentSceneCount": 5,
+      "positionalUncertaintyM": 14.1,
+      "confidence": "rendah",
+      "baselineScenes": [
+        "S2A_MSIL2A_20160416T031602_R118_T47NRB_20210211T041134"
+      ],
+      "currentScenes": [
+        "S2C_MSIL2A_20250718T031601_R118_T47NRB_20250718T083115",
+        "S2C_MSIL2A_20250906T031601_R118_T47NRB_20250906T081115",
+        "S2C_MSIL2A_20250718T031601_R118_T47NRA_20250718T083115",
+        "S2C_MSIL2A_20250906T031601_R118_T47NRA_20250906T081115",
+        "S2B_MSIL2A_20250822T031519_R118_T47NRA_20250822T065722"
+      ]
+    },
+    {
+      "village": "Penyengat",
+      "district": "Sungai Apit",
+      "regency": "Siak",
+      "status": "analysed",
+      "baseline": "2016",
+      "current": "2025",
+      "coastlineLengthKm": 21.95,
+      "erosionAreaHa": 0.69,
+      "accretionAreaHa": 7.97,
+      "indicativeMeanRetreatM": 0.3,
+      "indicativeMeanAdvanceM": 3.6,
+      "netAreaChangeHa": 7.28,
+      "elapsedYears": 9,
+      "indicativeRetreatRateMPerYear": 0.03,
+      "indicativeAdvanceRateMPerYear": 0.4,
+      "clearCoveragePct": 65.1,
+      "baselineSceneCount": 2,
+      "currentSceneCount": 5,
+      "positionalUncertaintyM": 14.1,
+      "confidence": "rendah",
+      "baselineScenes": [
+        "S2A_MSIL2A_20160416T031602_R118_T47NRB_20210211T041134",
+        "S2A_MSIL2A_20160903T031542_R118_T48NTF_20210212T205344"
+      ],
+      "currentScenes": [
+        "S2C_MSIL2A_20250718T031601_R118_T47NRB_20250718T083115",
+        "S2C_MSIL2A_20250718T031601_R118_T48NTG_20250718T083115",
+        "S2C_MSIL2A_20250906T031601_R118_T47NRB_20250906T081115",
+        "S2C_MSIL2A_20250718T031601_R118_T47NRA_20250718T083115",
+        "S2C_MSIL2A_20250906T031601_R118_T48NTG_20250906T081115"
+      ]
+    },
+    {
+      "village": "Rawa Mekar Jaya",
+      "district": "Sungai Apit",
+      "regency": "Siak",
+      "status": "analysed",
+      "baseline": "2016",
+      "current": "2025",
+      "coastlineLengthKm": 0.15,
+      "erosionAreaHa": 0.0,
+      "accretionAreaHa": 0.0,
+      "indicativeMeanRetreatM": 0.0,
+      "indicativeMeanAdvanceM": 0.0,
+      "netAreaChangeHa": 0.0,
+      "elapsedYears": 9,
+      "indicativeRetreatRateMPerYear": 0.0,
+      "indicativeAdvanceRateMPerYear": 0.0,
+      "clearCoveragePct": 65.7,
+      "baselineSceneCount": 2,
+      "currentSceneCount": 5,
+      "positionalUncertaintyM": 14.1,
+      "confidence": "rendah",
+      "baselineScenes": [
+        "S2A_MSIL2A_20160416T031602_R118_T47NRB_20210211T041134",
+        "S2A_MSIL2A_20160903T031542_R118_T48NTF_20210212T205344"
+      ],
+      "currentScenes": [
+        "S2C_MSIL2A_20250718T031601_R118_T47NRB_20250718T083115",
+        "S2C_MSIL2A_20250718T031601_R118_T48NTG_20250718T083115",
+        "S2C_MSIL2A_20250906T031601_R118_T47NRB_20250906T081115",
+        "S2C_MSIL2A_20250718T031601_R118_T47NRA_20250718T083115",
+        "S2C_MSIL2A_20250906T031601_R118_T48NTG_20250906T081115"
+      ]
+    },
+    {
+      "village": "Sungai Rawa",
+      "district": "Sungai Apit",
+      "regency": "Siak",
+      "status": "analysed",
+      "baseline": "2016",
+      "current": "2025",
+      "coastlineLengthKm": 4.86,
+      "erosionAreaHa": 3.64,
+      "accretionAreaHa": 2.19,
+      "indicativeMeanRetreatM": 7.5,
+      "indicativeMeanAdvanceM": 4.5,
+      "netAreaChangeHa": -1.45,
+      "elapsedYears": 9,
+      "indicativeRetreatRateMPerYear": 0.83,
+      "indicativeAdvanceRateMPerYear": 0.5,
+      "clearCoveragePct": 46.9,
+      "baselineSceneCount": 2,
+      "currentSceneCount": 5,
+      "positionalUncertaintyM": 14.1,
+      "confidence": "rendah",
+      "baselineScenes": [
+        "S2A_MSIL2A_20160416T031602_R118_T47NRB_20210211T041134",
+        "S2A_MSIL2A_20160903T031542_R118_T48NTF_20210212T205344"
+      ],
+      "currentScenes": [
+        "S2C_MSIL2A_20250718T031601_R118_T47NRB_20250718T083115",
+        "S2C_MSIL2A_20250718T031601_R118_T48NTG_20250718T083115",
+        "S2C_MSIL2A_20250906T031601_R118_T47NRB_20250906T081115",
+        "S2C_MSIL2A_20250718T031601_R118_T47NRA_20250718T083115",
+        "S2C_MSIL2A_20250906T031601_R118_T48NTG_20250906T081115"
+      ]
+    },
+    {
+      "village": "Teluk Lanus",
+      "district": "Sungai Apit",
+      "regency": "Siak",
+      "status": "analysed",
+      "baseline": "2016",
+      "current": "2025",
+      "coastlineLengthKm": 40.26,
+      "erosionAreaHa": 0.61,
+      "accretionAreaHa": 12.32,
+      "indicativeMeanRetreatM": 0.2,
+      "indicativeMeanAdvanceM": 3.1,
+      "netAreaChangeHa": 11.71,
+      "elapsedYears": 9,
+      "indicativeRetreatRateMPerYear": 0.02,
+      "indicativeAdvanceRateMPerYear": 0.34,
+      "clearCoveragePct": 82.7,
+      "baselineSceneCount": 2,
+      "currentSceneCount": 5,
+      "positionalUncertaintyM": 14.1,
+      "confidence": "rendah",
+      "baselineScenes": [
+        "S2A_MSIL2A_20160903T031542_R118_T48NTF_20210212T205344",
+        "S2A_MSIL2A_20160903T031542_R118_T47NRA_20210212T205326"
+      ],
+      "currentScenes": [
+        "S2C_MSIL2A_20250718T031601_R118_T47NRA_20250718T083115",
+        "S2C_MSIL2A_20250906T031601_R118_T47NRA_20250906T081115",
+        "S2B_MSIL2A_20250822T031519_R118_T47NRA_20250822T065722",
+        "S2C_MSIL2A_20250906T031601_R118_T48NTF_20250906T081115",
+        "S2C_MSIL2A_20250718T031601_R118_T48NTF_20250718T083115"
+      ]
+    }
+  ]
+}
