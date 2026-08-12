@@ -34,8 +34,8 @@ test("page labels the GEFS corridor product and wires the controller", () => {
   assert.match(html, /Potensi sebaran kabut asap · eksperimental/);
   assert.match(html, /data-layer="smoke" checked/);
   assert.match(controller, /smoke:L\.layerGroup\(\)\.addTo\(map\)/);
-  assert.match(html, /data-layer="dispersion" disabled/);
-  assert.match(html, /Dispersi asap HYSPLIT \(belum tersedia\)/);
+  assert.doesNotMatch(html, /data-layer="dispersion"/);
+  assert.doesNotMatch(html, /Dispersi asap HYSPLIT \(belum tersedia\)/);
   assert.match(html, /bukan konsentrasi PM2\.5, batas asap teramati, atau risiko kesehatan/);
   assert.match(html, /data-period="1">24 jam/);
   assert.match(html, /class="active" data-period="1">24 jam/);
