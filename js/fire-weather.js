@@ -20,7 +20,7 @@
   var readingGuide=document.querySelector('.fw-disclaimer p');if(readingGuide)readingGuide.textContent='Warna menunjukkan dukungan ensemble yang dihaluskan dengan kernel Gaussian 30 km dan dikalikan keandalan bukti sumber. Keandalan hanya memakai jumlah deteksi, lintasan waktu, dan satelit independen; bukan status api aktif. Angin diinterpolasi pada 925, 850, atau 700 hPa berdasarkan aturan PBL dan gerak vertikal.';
   var satelliteLayer=L.tileLayer.wms('https://gibs.earthdata.nasa.gov/wms/epsg3857/best/wms.cgi',{layers:'MODIS_Terra_CorrectedReflectance_TrueColor',format:'image/jpeg',transparent:false,pane:'satellitePane',opacity:.72,time:observationDate,attribution:'NASA GIBS / MODIS Terra'});
   var groups={
-    hotspots:L.layerGroup().addTo(map),satellite:L.layerGroup([satelliteLayer]),smoke:L.layerGroup(),dispersion:L.layerGroup(),
+    hotspots:L.layerGroup().addTo(map),satellite:L.layerGroup([satelliteLayer]),smoke:L.layerGroup().addTo(map),dispersion:L.layerGroup(),
     villages:L.layerGroup().addTo(map),rain:L.layerGroup(),wind:L.layerGroup().addTo(map),
     fdrs:L.layerGroup().addTo(map),canals:L.layerGroup().addTo(map)
   };
