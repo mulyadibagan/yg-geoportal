@@ -121,6 +121,19 @@
       "status": "review-required"
     },
     {
+      "id": "noaa-awc-metar",
+      "name": "NOAA/NWS Aviation Weather Center METAR observations",
+      "used": true,
+      "dataKind": "surface weather observation",
+      "access": "official public cache",
+      "termsUrl": "https://www.weather.gov/disclaimer",
+      "licence": "United States Government information; source acknowledgement retained",
+      "attribution": "NOAA/NWS Aviation Weather Center and originating METAR station",
+      "commercialUse": "allowed subject to NOAA/NWS disclaimer",
+      "redistribution": "allowed with provenance and without implying endorsement",
+      "status": "approved"
+    },
+    {
       "id": "nasa-worldview-validation",
       "name": "NASA Worldview/GIBS imagery for manual plume validation",
       "used": false,
