@@ -38,7 +38,9 @@
       <article><span>Sekat kanal</span><strong id="kpi-canals">—</strong><small>terpetakan</small></article>
       <article><span>Cuaca Riau pesisir</span><strong id="kpi-weather">—</strong><small id="weather-detail">Open-Meteo</small></article>
     </section>
-    <section class="fw-workspace">
+    <section class="fw-workspace" id="fire-workspace">
+      <button class="fw-panel-toggle fw-panel-toggle-left" id="toggle-controls" type="button" aria-label="Ciutkan panel kontrol">‹</button>
+      <button class="fw-panel-toggle fw-panel-toggle-right" id="toggle-alerts" type="button" aria-label="Ciutkan panel informasi">›</button>
       <aside class="fw-controls" aria-label="Kontrol peta">
         <div class="fw-control-group"><h2>Periode deteksi satelit</h2><div class="segmented" id="period-control"><button class="active" data-period="1">24 jam</button><button data-period="7">7 hari berulang</button><button data-period="30">30 hari</button></div><p class="control-note" id="period-note">Deteksi bukan status api saat ini. Periode 24 jam dapat membentuk koridor dukungan transport; 7 hari hanya sumber berulang; 30 hari tanpa koridor.</p></div>
         <div class="fw-control-group"><h2>Layer peta</h2>
@@ -58,7 +60,7 @@
         <div class="fw-legend"><h2>Legenda</h2><span><i class="hotspot-dot"></i>Hotspot confidence tinggi</span><span><i class="smoke-low"></i>Potensi sebaran kabut asap · belum dikalibrasi</span><span><i class="legend-infrastructure fdrs">F</i>FDRS / tinggi muka air</span><span><i class="legend-infrastructure canal">S</i>Sekat kanal</span><span><i class="risk-zero"></i>Desa: nihil</span><span><i class="risk-low"></i>Desa: 1–2 titik</span><span><i class="risk-medium"></i>Desa: 3–5 titik</span><span><i class="risk-high"></i>Desa: &gt;5 titik</span></div>
         <div class="fw-legend fw-dispersion-legend"><span><i class="smoke-low"></i>Rendah</span><span><i class="smoke-watch"></i>Sedang</span><span><i class="smoke-high"></i>Tinggi</span><span><i class="smoke-very-high"></i>Sangat tinggi</span><small>Dukungan relatif model; bukan konsentrasi atau tingkat bahaya.</small></div>
       </aside>
-      <div class="fw-map-wrap"><div id="fire-map" aria-label="Peta pemantauan karhutla dan cuaca"></div><div class="fw-map-message" id="map-message" hidden></div></div>
+      <div class="fw-map-wrap"><div id="fire-map" aria-label="Peta pemantauan karhutla dan cuaca"></div><div class="fw-map-message" id="map-message" hidden></div><div class="fw-map-legend" id="map-legend"><strong>DUKUNGAN POLYGON</strong><span><i class="smoke-low"></i>Rendah</span><span><i class="smoke-watch"></i>Sedang</span><span><i class="smoke-high"></i>Tinggi</span><span><i class="smoke-very-high"></i>Sangat tinggi</span><hr><span><i class="metar-fu"></i>FU · asap</span><span><i class="metar-hz"></i>HZ · haze</span><span><i class="metar-normal"></i>Stasiun biasa</span><small>Bukan tingkat bahaya kesehatan</small></div></div>
       <aside class="fw-alerts"><div class="fw-alert-head"><div><p class="fw-eyebrow">PERINGATAN DESA</p><h2>Prioritas pemantauan</h2></div><span id="alert-count">0</span></div><div id="alert-list" class="fw-alert-list"><p class="empty">Memuat data…</p></div>
         <div class="fw-smoke-summary" id="smoke-summary"><strong>Potensi sebaran kabut asap</strong><p>Aktifkan layer untuk menjalankan model GEFS 24 jam. Polygon menunjukkan potensi sebaran, bukan kabut asap teramati, konsentrasi PM2.5, atau tingkat bahaya.</p></div>
         <div class="fw-disclaimer"><strong>Cara membaca</strong><p>Warna menunjukkan dukungan ensemble yang dihaluskan dengan kernel Gaussian 30 km dan dikalikan keandalan bukti sumber. Sumber tak terklasifikasi harus memiliki konfirmasi deteksi independen; deteksi tunggal ditahan. Ini bukan status api aktif. Angin diinterpolasi pada 925, 850, atau 700 hPa berdasarkan aturan PBL dan gerak vertikal.</p></div>

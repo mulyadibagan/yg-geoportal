@@ -69,7 +69,13 @@ test("page labels the GEFS corridor product and wires the controller", () => {
   assert.match(controller, /radius:3\.25,color:'#fff',weight:\.8,fillColor:'#7f1d1d'/);
   assert.match(controller, /radius:2\.5,color:'#7f1d1d',weight:\.55/);
   assert.match(controller, /weight:2\.8,opacity:\.95,fillColor:smokeColor\(result\.score\),fillOpacity:\.24/);
-  assert.match(controller, /weight:1\.4,opacity:\.62,dashArray:'8 7'/);
+  assert.match(controller, /weight:1\.15,opacity:\.52,dashArray:'8 8'/);
+  assert.match(html, /id="toggle-controls"/);
+  assert.match(html, /id="toggle-alerts"/);
+  assert.match(html, /id="map-legend"/);
+  assert.match(controller, /function updateZoomDeclutter/);
+  assert.match(controller, /function compactSmokeSummary/);
+  assert.match(controller, /function evidenceStatus/);
   assert.match(controller, /maksimal 75 km dari polygon/);
   assert.match(controller, /kode asap FU/);
   assert.match(controller, /arah angin observasi\/model/);
@@ -122,13 +128,13 @@ test("fire-weather controller boots against its browser interfaces", () => {
   const panes = new Map();
   const map = Object.assign(makeLayer(), {
     createPane(name) { panes.set(name, { style: {} }); }, getPane(name) { return panes.get(name); },
-    hasLayer() { return false; }, removeLayer() {}, fitBounds() { return this; }, getBounds() { return { contains() { return false; } }; }
+    hasLayer() { return false; }, removeLayer() {}, fitBounds() { return this; }, invalidateSize() { return this; }, getZoom() { return 4; }, getContainer() { return makeElement(); }, getBounds() { return { contains() { return false; } }; }
   });
 
   global.window = { addEventListener() {} };
   global.document = {
     getElementById(id) { if (!elements.has(id)) elements.set(id, makeElement()); return elements.get(id); },
-    querySelector() { return makeElement(); }, querySelectorAll() { return []; }
+    querySelector() { return makeElement(); }, querySelectorAll() { return []; }, createElement() { return makeElement(); }
   };
   global.localStorage = { getItem() { return null; }, setItem() {} };
   global.fetch = () => new Promise(() => {});
