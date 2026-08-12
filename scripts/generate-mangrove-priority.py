@@ -52,6 +52,16 @@ def search(catalog,bbox,year):
             last=exc
             if attempt<3: time.sleep(3*(attempt+1))
     raise last
+def search_latest(catalog,bbox,year):
+    last=None; end=datetime.now(timezone.utc).date().isoformat()
+    for attempt in range(4):
+        try:
+            items=list(catalog.search(collections=['sentinel-2-l2a'],bbox=bbox,datetime=f'{year}-01-01/{end}',query={'eo:cloud_cover':{'lt':CLOUD_LIMIT}}).items())
+            return sorted(items,key=lambda x:(x.properties.get('eo:cloud_cover',100),str(x.datetime)),reverse=False)[:MAX_SCENES]
+        except Exception as exc:
+            last=exc
+            if attempt<3:time.sleep(3*(attempt+1))
+    raise last
 def read(item,key,epsg,affine,width,height,resampling):
     with rasterio.open(item.assets[key].href) as src,WarpedVRT(src,crs=f'EPSG:{epsg}',transform=affine,width=width,height=height,resampling=resampling) as vrt:
         return vrt.read(1,masked=True).astype('float32').filled(np.nan)
@@ -95,17 +105,21 @@ def planted_geometries(v):
     features=json.loads(PLANTING.read_text(encoding='utf-8'))['features']
     return [shape(f['geometry']) for f in features if str(f.get('properties',{}).get('Desa','')).casefold()==v['village'].casefold()]
 def score_class(score): return 'tinggi' if score>=70 else 'sedang' if score>=45 else 'rendah'
-def analyse(v,catalog,baseline,current):
+def analyse(v,catalog,baseline,current,latest_year):
     feature=boundary_for(v); points=list(coords(feature['geometry'])); bbox=[min(x for x,y in points),min(y for x,y in points),max(x for x,y in points),max(y for x,y in points)]
     epsg,vgeom,affine,width,height=grid(feature); village=geometry_mask([mapping(vgeom)],out_shape=(height,width),transform=affine,invert=True)
     periods=[]
     for year in (baseline,current): periods.append(composite(search(catalog,bbox,year),epsg,affine,width,height))
     base,now=periods
+    latest=composite(search_latest(catalog,bbox,latest_year),epsg,affine,width,height)
     common={'id':v['id'],'village':v['village'],'district':v['district'],'regency':v['regency'],'baseline':str(baseline),'current':str(current),'status':'insufficient-data'}
-    if not base or not now:return {**common,'reason':'Komposit bebas awan tidak memadai.'},[]
-    valid=village&(base['clear']>0)&(now['clear']>0)
+    common['latest']=str(latest_year)
+    if not base or not now or not latest:return {**common,'reason':'Komposit bebas awan tidak memadai.'},[]
+    valid=village&(base['clear']>0)&(now['clear']>0)&(latest['clear']>0)
     base_mangrove=(base['ndvi']>.48)&(base['ndmi']>.08)&(base['mndwi']<0)
     now_mangrove=(now['ndvi']>.48)&(now['ndmi']>.08)&(now['mndwi']<0)
+    latest_mangrove=(latest['ndvi']>.48)&(latest['ndmi']>.08)&(latest['mndwi']<0)
+    latest_open=(latest['ndvi']<.48)&(latest['ndmi']>-.12)&(latest['mndwi']<.08)&(latest['clear']>0)
     water=(now['mndwi']>.08)&valid
     loss_zone=ndimage.binary_dilation(water,iterations=30)
     opportunity_zone=ndimage.binary_dilation(water,iterations=15)
@@ -119,9 +133,9 @@ def analyse(v,catalog,baseline,current):
         planted=unary_union([geom_transform(forward,g) for g in planting])
         planted_mask=geometry_mask([mapping(planted)],out_shape=(height,width),transform=affine,invert=True)
         opportunity&=~planted_mask; loss&=~planted_mask
-    candidate=clean(loss|opportunity)
+    candidate=clean((loss|opportunity)&latest_open&~latest_mangrove)
     base_area=base_mangrove[valid].sum()/100; now_area=now_mangrove[valid].sum()/100; loss_area=loss.sum()/100; opp_area=opportunity.sum()/100; candidate_area=candidate.sum()/100
-    clear=float(valid.sum()/max(village.sum(),1)); scenes=(len(base['items']),len(now['items']))
+    clear=float(valid.sum()/max(village.sum(),1)); scenes=(len(base['items']),len(now['items']),len(latest['items']))
     confidence='tinggi' if clear>=.85 and min(scenes)>=3 else 'sedang' if clear>=.65 else 'rendah'
     loss_ratio=loss_area/max(base_area,1); need=min(100,round(30+min(40,loss_ratio*120)+min(25,loss_area*2)))
     stability=70 if loss_ratio<.08 else 50 if loss_ratio<.2 else 30
@@ -131,7 +145,7 @@ def analyse(v,catalog,baseline,current):
     elif suitability>=70: action='perlindungan pantai dan verifikasi hidrodinamika sebelum penanaman'
     elif suitability>=45: action='pemulihan hidrologi dan verifikasi substrat dahulu'
     else: action='perlindungan pantai/perangkap sedimen dahulu'
-    record={**common,'status':'analysed','baselineMangroveHa':round(base_area,2),'currentMangroveHa':round(now_area,2),'indicativeMangroveLossHa':round(loss_area,2),'openTidalOpportunityHa':round(opp_area,2),'candidateAreaHa':round(candidate_area,2),'needScore':need,'needClass':score_class(need),'suitabilityScore':suitability,'suitabilityClass':score_class(suitability),'recommendedAction':action,'confidence':confidence,'clearCoveragePct':round(clear*100,1),'baselineSceneCount':scenes[0],'currentSceneCount':scenes[1],'baselineScenes':[x.id for x in base['items']],'currentScenes':[x.id for x in now['items']],'resolutionM':10,'fieldVerification':'required'}
+    record={**common,'status':'analysed','baselineMangroveHa':round(base_area,2),'currentMangroveHa':round(now_area,2),'indicativeMangroveLossHa':round(loss_area,2),'openTidalOpportunityHa':round(opp_area,2),'candidateAreaHa':round(candidate_area,2),'needScore':need,'needClass':score_class(need),'suitabilityScore':suitability,'suitabilityClass':score_class(suitability),'recommendedAction':action,'confidence':confidence,'clearCoveragePct':round(clear*100,1),'baselineSceneCount':scenes[0],'currentSceneCount':scenes[1],'latestSceneCount':scenes[2],'baselineScenes':[x.id for x in base['items']],'currentScenes':[x.id for x in now['items']],'latestScenes':[x.id for x in latest['items']],'latestOpenScreen':True,'resolutionM':10}
     inverse=Transformer.from_crs(epsg,4326,always_xy=True).transform
     feats=polygons(candidate,affine,inverse,{'id':v['id'],'village':v['village'],'district':v['district'],'regency':v['regency'],'type':'rehabilitation-candidate','confidence':confidence,'needClass':record['needClass'],'suitabilityClass':record['suitabilityClass'],'recommendedAction':action})
     return record,feats
@@ -144,7 +158,7 @@ def save(progress,records,features,foundation,baseline,current):
     SUMMARY.write_text(json.dumps(product,ensure_ascii=False,indent=2),encoding='utf-8')
     OUTPUT.write_text(json.dumps({'type':'FeatureCollection','generatedAt':now,'methodVersion':'s2-mangrove-screening-v1','features':features},ensure_ascii=False,separators=(',',':')),encoding='utf-8')
 def main():
-    p=argparse.ArgumentParser(); p.add_argument('--village'); p.add_argument('--force',action='store_true'); p.add_argument('--baseline-year',type=int,default=2016); p.add_argument('--year',type=int,default=2025); args=p.parse_args()
+    p=argparse.ArgumentParser(); p.add_argument('--village'); p.add_argument('--force',action='store_true'); p.add_argument('--baseline-year',type=int,default=2016); p.add_argument('--year',type=int,default=2025); p.add_argument('--latest-year',type=int,default=datetime.now(timezone.utc).year); args=p.parse_args()
     foundation=json.loads(FOUNDATION.read_text(encoding='utf-8')); villages=foundation['villages']
     progress=json.loads(PROGRESS.read_text(encoding='utf-8')) if PROGRESS.exists() else {'schemaVersion':1,'completed':{},'failed':{}}
     existing=json.loads(SUMMARY.read_text(encoding='utf-8')) if SUMMARY.exists() else {'villages':[]}
@@ -155,7 +169,7 @@ def main():
     catalog=Client.open('https://planetarycomputer.microsoft.com/api/stac/v1',modifier=pc.sign_inplace)
     for v in selected:
         try:
-            record,parts=analyse(v,catalog,args.baseline_year,args.year); records[v['id']]=record
+            record,parts=analyse(v,catalog,args.baseline_year,args.year,args.latest_year); records[v['id']]=record
             features=[f for f in features if f.get('properties',{}).get('id')!=v['id']]+parts
             progress['completed'][v['id']]={'status':record['status'],'completedAt':datetime.now(timezone.utc).isoformat()}; progress['failed'].pop(v['id'],None)
             print(v['village'],record['status'],record.get('candidateAreaHa'),record.get('needScore'),record.get('suitabilityScore'),flush=True)
