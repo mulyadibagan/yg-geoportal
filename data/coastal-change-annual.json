@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-12T03:44:52.829383+00:00",
+  "generatedAt": "2026-08-12T04:17:07.138250+00:00",
   "product": "Indikasi perubahan garis pantai berbasis Sentinel-2",
   "methodVersion": "s2-annual-water-edge-v1",
   "baseline": "2016",
@@ -48,6 +48,40 @@
       ]
     },
     {
+      "village": "Pematang Duku",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "status": "analysed",
+      "baseline": "2016",
+      "current": "2025",
+      "coastlineLengthKm": 3.38,
+      "erosionAreaHa": 0.0,
+      "accretionAreaHa": 1.34,
+      "indicativeMeanRetreatM": 0.0,
+      "indicativeMeanAdvanceM": 4.0,
+      "netAreaChangeHa": 1.34,
+      "elapsedYears": 9,
+      "indicativeRetreatRateMPerYear": 0.0,
+      "indicativeAdvanceRateMPerYear": 0.44,
+      "clearCoveragePct": 100.0,
+      "baselineSceneCount": 3,
+      "currentSceneCount": 5,
+      "positionalUncertaintyM": 14.1,
+      "confidence": "rendah",
+      "baselineScenes": [
+        "S2A_MSIL2A_20160416T031602_R118_T47NRB_20210211T041134",
+        "S2A_MSIL2A_20160416T031602_R118_T48NTG_20210211T041201",
+        "S2A_MSIL2A_20160605T033742_R118_T47NRB_20210211T163634"
+      ],
+      "currentScenes": [
+        "S2C_MSIL2A_20250718T031601_R118_T47NRB_20250718T083115",
+        "S2C_MSIL2A_20250718T031601_R118_T48NTG_20250718T083115",
+        "S2C_MSIL2A_20250906T031601_R118_T47NRB_20250906T081115",
+        "S2C_MSIL2A_20250906T031601_R118_T48NTG_20250906T081115",
+        "S2B_MSIL2A_20250822T031519_R118_T48NTG_20250822T065722"
+      ]
+    },
+    {
       "village": "Buruk Bakul",
       "district": "Bukit Batu",
       "regency": "Bengkalis",
@@ -68,6 +102,42 @@
       "currentSceneCount": 5,
       "positionalUncertaintyM": 14.1,
       "confidence": "rendah",
+      "baselineScenes": [
+        "S2A_MSIL2A_20160519T032542_R018_T47NRB_20210211T122533",
+        "S2A_MSIL2A_20160416T031602_R118_T47NRB_20210211T041134",
+        "S2A_MSIL2A_20160718T032542_R018_T47NRB_20210212T053345",
+        "S2A_MSIL2A_20160605T033742_R118_T47NRB_20210211T163634",
+        "S2A_MSIL2A_20160804T033742_R118_T47NRB_20210212T105425"
+      ],
+      "currentScenes": [
+        "S2C_MSIL2A_20250718T031601_R118_T47NRB_20250718T083115",
+        "S2C_MSIL2A_20250906T031601_R118_T47NRB_20250906T081115",
+        "S2B_MSIL2A_20250427T032519_R018_T47NRB_20250427T070753",
+        "S2C_MSIL2A_20250601T032601_R018_T47NRB_20250601T081256",
+        "S2B_MSIL2A_20250822T031519_R118_T47NRB_20250822T065722"
+      ]
+    },
+    {
+      "village": "Simpang Ayam",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "status": "analysed",
+      "baseline": "2016",
+      "current": "2025",
+      "coastlineLengthKm": 12.56,
+      "erosionAreaHa": 121.08,
+      "accretionAreaHa": 0.0,
+      "indicativeMeanRetreatM": 96.4,
+      "indicativeMeanAdvanceM": 0.0,
+      "netAreaChangeHa": -121.08,
+      "elapsedYears": 9,
+      "indicativeRetreatRateMPerYear": 10.71,
+      "indicativeAdvanceRateMPerYear": 0.0,
+      "clearCoveragePct": 100.0,
+      "baselineSceneCount": 5,
+      "currentSceneCount": 5,
+      "positionalUncertaintyM": 14.1,
+      "confidence": "tinggi",
       "baselineScenes": [
         "S2A_MSIL2A_20160519T032542_R018_T47NRB_20210211T122533",
         "S2A_MSIL2A_20160416T031602_R118_T47NRB_20210211T041134",
@@ -117,6 +187,40 @@
         "S2B_MSIL2A_20250427T032519_R018_T47NRB_20250427T070753",
         "S2C_MSIL2A_20250601T032601_R018_T47NRB_20250601T081256",
         "S2B_MSIL2A_20250822T031519_R118_T47NRB_20250822T065722"
+      ]
+    },
+    {
+      "village": "Penampi",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "status": "analysed",
+      "baseline": "2016",
+      "current": "2025",
+      "coastlineLengthKm": 3.4,
+      "erosionAreaHa": 0.84,
+      "accretionAreaHa": 0.0,
+      "indicativeMeanRetreatM": 2.5,
+      "indicativeMeanAdvanceM": 0.0,
+      "netAreaChangeHa": -0.84,
+      "elapsedYears": 9,
+      "indicativeRetreatRateMPerYear": 0.27,
+      "indicativeAdvanceRateMPerYear": 0.0,
+      "clearCoveragePct": 100.0,
+      "baselineSceneCount": 3,
+      "currentSceneCount": 5,
+      "positionalUncertaintyM": 14.1,
+      "confidence": "rendah",
+      "baselineScenes": [
+        "S2A_MSIL2A_20160416T031602_R118_T47NRB_20210211T041134",
+        "S2A_MSIL2A_20160605T033742_R118_T47NRB_20210211T163634",
+        "S2A_MSIL2A_20160804T033742_R118_T47NRB_20210212T105425"
+      ],
+      "currentScenes": [
+        "S2C_MSIL2A_20250718T031601_R118_T47NRB_20250718T083115",
+        "S2C_MSIL2A_20250906T031601_R118_T47NRB_20250906T081115",
+        "S2B_MSIL2A_20250822T031519_R118_T47NRB_20250822T065722",
+        "S2C_MSIL2A_20250728T031601_R118_T47NRB_20250728T082013",
+        "S2A_MSIL2A_20250829T032151_R118_T47NRB_20250829T073414"
       ]
     },
     {
