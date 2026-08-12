@@ -1,0 +1,1914 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-12T04:06:53.069617+00:00",
+  "source": "OpenStreetMap coastline via osmdata.openstreetmap.de",
+  "method": "Village polygon within 250 m of OSM marine coastline; candidate list requires Sentinel-2 water-edge confirmation.",
+  "candidateCount": 238,
+  "interventionCandidateCount": 7,
+  "villages": [
+    {
+      "village": "Api-Api",
+      "district": "Bandar Laksamana",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Paritsatuapi-Api",
+      "district": "Bandar Laksamana",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Sepahat",
+      "district": "Bandar Laksamana",
+      "regency": "Bengkalis",
+      "intervention": true,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Tanjungleban",
+      "district": "Bandar Laksamana",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Tenggayun",
+      "district": "Bandar Laksamana",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Bantan Air",
+      "district": "Bantan",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Bantan Sari",
+      "district": "Bantan",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Bantan Timur",
+      "district": "Bantan",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Deluk",
+      "district": "Bantan",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Jangkang",
+      "district": "Bantan",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Kembung Luar",
+      "district": "Bantan",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Mentayan",
+      "district": "Bantan",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Muntai",
+      "district": "Bantan",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Muntai Barat",
+      "district": "Bantan",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Pampang Baru",
+      "district": "Bantan",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Pampang Pesisir",
+      "district": "Bantan",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Selat Baru",
+      "district": "Bantan",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Teluklancar",
+      "district": "Bantan",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Telukpambang",
+      "district": "Bantan",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Telukpapal",
+      "district": "Bantan",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Air Putih",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Damai",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Kelapapati",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "intervention": true,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Kelebuk",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Kelemantan",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Kelemantan Barat",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Kelurahan Damon",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 7.6,
+      "status": "candidate"
+    },
+    {
+      "village": "Kelurahan Kota Bengkalis",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Kelurahan Rimba Sekampung",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Ketam Putih",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Kuala Alam",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Meskom",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Palkun",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Pangkalan Batang",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Pangkalan Batang Barat",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Pematang Duku",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "intervention": true,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Penampi",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "intervention": true,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Penebal",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Prapat Tunggal",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Sebauk",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Sei Alam",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Sekodi",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Senderek",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Senggoro",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Simpang Ayam",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "intervention": true,
+      "coastlineDistanceM": 96.4,
+      "status": "candidate"
+    },
+    {
+      "village": "Sungaibatang",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Teluklatak",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Temeran",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Wonosari",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 83.9,
+      "status": "candidate"
+    },
+    {
+      "village": "Batang Duku",
+      "district": "Bukit Batu",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Bukit Batu",
+      "district": "Bukit Batu",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Buruk Bakul",
+      "district": "Bukit Batu",
+      "regency": "Bengkalis",
+      "intervention": true,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Sukajadi",
+      "district": "Bukit Batu",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Sungaiselari",
+      "district": "Bukit Batu",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Darul Aman",
+      "district": "Rupat",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Kelurahan Batu Panjang",
+      "district": "Rupat",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Kelurahan Pergam",
+      "district": "Rupat",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 230.5,
+      "status": "candidate"
+    },
+    {
+      "village": "Kelurahan Tanjungkapal",
+      "district": "Rupat",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Kelurahan Terkul",
+      "district": "Rupat",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 231.7,
+      "status": "candidate"
+    },
+    {
+      "village": "Makeruh",
+      "district": "Rupat",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Sungaicingam",
+      "district": "Rupat",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 233.2,
+      "status": "candidate"
+    },
+    {
+      "village": "Puteri Sembilan",
+      "district": "Rupat Utara",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Suka Damai",
+      "district": "Rupat Utara",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Tanjungmedang",
+      "district": "Rupat Utara",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Tanjungpunak",
+      "district": "Rupat Utara",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 19.8,
+      "status": "candidate"
+    },
+    {
+      "village": "Telukrhu",
+      "district": "Rupat Utara",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Titi Akar",
+      "district": "Rupat Utara",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Lubuk Muda",
+      "district": "Siak Kecil",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Sungaisiput",
+      "district": "Siak Kecil",
+      "regency": "Bengkalis",
+      "intervention": false,
+      "coastlineDistanceM": 148.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Kampung Baru",
+      "district": "Concong",
+      "regency": "Indragiri Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 70.4,
+      "status": "candidate"
+    },
+    {
+      "village": "Panglima Raja",
+      "district": "Concong",
+      "regency": "Indragiri Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Kuala Gaung",
+      "district": "Gaung Anak Serka",
+      "regency": "Indragiri Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Air Tawar",
+      "district": "Kateman",
+      "regency": "Indragiri Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 199.1,
+      "status": "candidate"
+    },
+    {
+      "village": "Kelurahan Bandar Sri Gemilang",
+      "district": "Kateman",
+      "regency": "Indragiri Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Kuala Selat",
+      "district": "Kateman",
+      "regency": "Indragiri Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Makmur Jaya",
+      "district": "Kateman",
+      "regency": "Indragiri Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Sungaisimbar",
+      "district": "Kateman",
+      "regency": "Indragiri Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Sungaiteritip",
+      "district": "Kateman",
+      "regency": "Indragiri Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Perigi Raja",
+      "district": "Kuala Indragiri",
+      "regency": "Indragiri Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Sungaibela",
+      "district": "Kuala Indragiri",
+      "regency": "Indragiri Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Sungaibuluh",
+      "district": "Kuala Indragiri",
+      "regency": "Indragiri Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Tanjungmelayu",
+      "district": "Kuala Indragiri",
+      "regency": "Indragiri Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Bakau Aceh",
+      "district": "Mandah",
+      "regency": "Indragiri Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Batang Sari",
+      "district": "Mandah",
+      "regency": "Indragiri Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Belaras",
+      "district": "Mandah",
+      "regency": "Indragiri Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Bente",
+      "district": "Mandah",
+      "regency": "Indragiri Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Bidari Tanjung Datuk",
+      "district": "Mandah",
+      "regency": "Indragiri Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 212.5,
+      "status": "candidate"
+    },
+    {
+      "village": "Bolak Raya",
+      "district": "Mandah",
+      "regency": "Indragiri Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Pulaucawan",
+      "district": "Mandah",
+      "regency": "Indragiri Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Area Saling Klaim",
+      "district": null,
+      "regency": "Indragiri Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 196.9,
+      "status": "candidate"
+    },
+    {
+      "village": "Area Saling Klaim",
+      "district": null,
+      "regency": "Indragiri Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Area Saling Klaim",
+      "district": null,
+      "regency": "Indragiri Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Pulauburung",
+      "district": "Pulau Burung",
+      "regency": "Indragiri Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Sungaidanai",
+      "district": "Pulau Burung",
+      "regency": "Indragiri Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Teluknibung",
+      "district": "Pulau Burung",
+      "regency": "Indragiri Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Metro",
+      "district": "Reteh",
+      "regency": "Indragiri Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Pulauruku",
+      "district": "Reteh",
+      "regency": "Indragiri Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Seberang Pulau Kijang",
+      "district": "Reteh",
+      "regency": "Indragiri Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Sungaiundan",
+      "district": "Reteh",
+      "regency": "Indragiri Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Kuala Patah Parang",
+      "district": "Sungai Batang",
+      "regency": "Indragiri Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Kuala Sungai Batang",
+      "district": "Sungai Batang",
+      "regency": "Indragiri Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Pandan Sari",
+      "district": "Sungai Batang",
+      "regency": "Indragiri Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 14.8,
+      "status": "candidate"
+    },
+    {
+      "village": "Tanjungpasir",
+      "district": "Tanah Merah",
+      "regency": "Indragiri Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Kelurahan Teluk Belitung",
+      "district": "Merbau",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 28.3,
+      "status": "candidate"
+    },
+    {
+      "village": "Lukit",
+      "district": "Merbau",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Mekar Sari",
+      "district": "Merbau",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 19.5,
+      "status": "candidate"
+    },
+    {
+      "village": "Baran Melintang",
+      "district": "Pulaumerbau",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Centai",
+      "district": "Pulaumerbau",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Ketapang Permai",
+      "district": "Pulaumerbau",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Kuala Merbau",
+      "district": "Pulaumerbau",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Padang Kamal",
+      "district": "Pulaumerbau",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Pangkalan Balai",
+      "district": "Pulaumerbau",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Semukut",
+      "district": "Pulaumerbau",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Tanjungbunga",
+      "district": "Pulaumerbau",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Teluk Ketapang",
+      "district": "Pulaumerbau",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Dwi Tunggal",
+      "district": "Rangsang",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Gemala Sari",
+      "district": "Rangsang",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Penyagun",
+      "district": "Rangsang",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Repan",
+      "district": "Rangsang",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Sungai Gayung Kiri",
+      "district": "Rangsang",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 17.5,
+      "status": "candidate"
+    },
+    {
+      "village": "Tanjung Bakau",
+      "district": "Rangsang",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Tanjung Gemuk",
+      "district": "Rangsang",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Tanjung Medang",
+      "district": "Rangsang",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 37.1,
+      "status": "candidate"
+    },
+    {
+      "village": "Tanjung Samak",
+      "district": "Rangsang",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Tebun",
+      "district": "Rangsang",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Teluk Samak",
+      "district": "Rangsang",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Topang",
+      "district": "Rangsang",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Anak Setatah",
+      "district": "Rangsang Barat",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Bantar",
+      "district": "Rangsang Barat",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Bina Maju",
+      "district": "Rangsang Barat",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 8.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Bokor",
+      "district": "Rangsang Barat",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Lemang",
+      "district": "Rangsang Barat",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 188.4,
+      "status": "candidate"
+    },
+    {
+      "village": "Mekar Baru",
+      "district": "Rangsang Barat",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 38.5,
+      "status": "candidate"
+    },
+    {
+      "village": "Melai",
+      "district": "Rangsang Barat",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Permai",
+      "district": "Rangsang Barat",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Segomeng",
+      "district": "Rangsang Barat",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Sialang Pasung",
+      "district": "Rangsang Barat",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 140.6,
+      "status": "candidate"
+    },
+    {
+      "village": "Sungai Cina",
+      "district": "Rangsang Barat",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Sungai Cina / Bina Maju",
+      "district": "Rangsang Barat",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Telaga Baru",
+      "district": "Rangsang Barat",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Beting",
+      "district": "Rangsang Pesisir",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Bungur",
+      "district": "Rangsang Pesisir",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Kedabu Rapat",
+      "district": "Rangsang Pesisir",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Sokop",
+      "district": "Rangsang Pesisir",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Sonde",
+      "district": "Rangsang Pesisir",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Tanah Merah",
+      "district": "Rangsang Pesisir",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Tanjung Kedabu",
+      "district": "Rangsang Pesisir",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Telesung",
+      "district": "Rangsang Pesisir",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Tenggayun Raya",
+      "district": "Rangsang Pesisir",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Bandul",
+      "district": "Tasik Putri Puyu",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Kudap",
+      "district": "Tasik Putri Puyu",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 18.1,
+      "status": "candidate"
+    },
+    {
+      "village": "Mengkopot",
+      "district": "Tasik Putri Puyu",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 143.3,
+      "status": "candidate"
+    },
+    {
+      "village": "Putri Puyu",
+      "district": "Tasik Putri Puyu",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Tanjung Padang",
+      "district": "Tasik Putri Puyu",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Tanjung Pisang",
+      "district": "Tasik Putri Puyu",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 173.5,
+      "status": "candidate"
+    },
+    {
+      "village": "Alah Air",
+      "district": "Tebing Tinggi",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Banglas",
+      "district": "Tebing Tinggi",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Banglas Barat",
+      "district": "Tebing Tinggi",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Kelurahan Selatpanjang Barat",
+      "district": "Tebing Tinggi",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Kelurahan Selatpanjang Kota",
+      "district": "Tebing Tinggi",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Kelurahan Selatpanjang Selatan",
+      "district": "Tebing Tinggi",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 38.1,
+      "status": "candidate"
+    },
+    {
+      "village": "Sesap",
+      "district": "Tebing Tinggi",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Gogok Darussalam",
+      "district": "Tebing Tinggi Barat",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 233.2,
+      "status": "candidate"
+    },
+    {
+      "village": "Insit",
+      "district": "Tebing Tinggi Barat",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Kundur",
+      "district": "Tebing Tinggi Barat",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Mekong",
+      "district": "Tebing Tinggi Barat",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Mengkikip",
+      "district": "Tebing Tinggi Barat",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Tanjung Darul Takzim",
+      "district": "Tebing Tinggi Barat",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Tanjung Peranap",
+      "district": "Tebing Tinggi Barat",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Banglas Barat / Batin Suir",
+      "district": "Tebing Tinggi Timur",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 47.8,
+      "status": "candidate"
+    },
+    {
+      "village": "Batin Suir",
+      "district": "Tebing Tinggi Timur",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Kepau Baru",
+      "district": "Tebing Tinggi Timur",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Lukun",
+      "district": "Tebing Tinggi Timur",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Nipah Sendanu",
+      "district": "Tebing Tinggi Timur",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Sendanu Darul Ihsan",
+      "district": "Tebing Tinggi Timur",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 39.5,
+      "status": "candidate"
+    },
+    {
+      "village": "Sungai Tohor",
+      "district": "Tebing Tinggi Timur",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 186.7,
+      "status": "candidate"
+    },
+    {
+      "village": "Tanjung Gadai",
+      "district": "Tebing Tinggi Timur",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Teluk Buntal",
+      "district": "Tebing Tinggi Timur",
+      "regency": "Kepulauan Meranti",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Kelurahan Pangkalan Sesai",
+      "district": "Dumai Barat",
+      "regency": "Kota Dumai",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Kelurahan Purnama",
+      "district": "Dumai Barat",
+      "regency": "Kota Dumai",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Kelurahan Dumai Kota",
+      "district": "Dumai Kota",
+      "regency": "Kota Dumai",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Kelurahan Laksamana",
+      "district": "Dumai Kota",
+      "regency": "Kota Dumai",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Kelurahan Buluh Kasap",
+      "district": "Dumai Timur",
+      "regency": "Kota Dumai",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Kelurahan Tanjung Palas",
+      "district": "Dumai Timur",
+      "regency": "Kota Dumai",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Kelurahan Guntung",
+      "district": "Medang Kampai",
+      "regency": "Kota Dumai",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Kelurahan Mundam",
+      "district": "Medang Kampai",
+      "regency": "Kota Dumai",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Kelurahan Pelintung",
+      "district": "Medang Kampai",
+      "regency": "Kota Dumai",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Kelurahan Teluk Makmur",
+      "district": "Medang Kampai",
+      "regency": "Kota Dumai",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Kelurahan Bangsal Aceh",
+      "district": "Sungai Sembilan",
+      "regency": "Kota Dumai",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Kelurahan Basilam Baru",
+      "district": "Sungai Sembilan",
+      "regency": "Kota Dumai",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Kelurahan Batu Teritip",
+      "district": "Sungai Sembilan",
+      "regency": "Kota Dumai",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Kelurahan Lubuk Gaung",
+      "district": "Sungai Sembilan",
+      "regency": "Kota Dumai",
+      "intervention": false,
+      "coastlineDistanceM": 32.9,
+      "status": "candidate"
+    },
+    {
+      "village": "Kelurahan Tanjung Penyebal",
+      "district": "Sungai Sembilan",
+      "regency": "Kota Dumai",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Kelurahan Teluk Dalam",
+      "district": "Kuala Kampar",
+      "regency": "Pelalawan",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Serapung",
+      "district": "Kuala Kampar",
+      "regency": "Pelalawan",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Sokoi",
+      "district": "Kuala Kampar",
+      "regency": "Pelalawan",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Sungai Mas",
+      "district": "Kuala Kampar",
+      "regency": "Pelalawan",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Sungai Solok",
+      "district": "Kuala Kampar",
+      "regency": "Pelalawan",
+      "intervention": false,
+      "coastlineDistanceM": 169.5,
+      "status": "candidate"
+    },
+    {
+      "village": "Sungai Upih",
+      "district": "Kuala Kampar",
+      "regency": "Pelalawan",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Tanjung Sum",
+      "district": "Kuala Kampar",
+      "regency": "Pelalawan",
+      "intervention": false,
+      "coastlineDistanceM": 86.1,
+      "status": "candidate"
+    },
+    {
+      "village": "Teluk",
+      "district": "Kuala Kampar",
+      "regency": "Pelalawan",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Teluk Bakau",
+      "district": "Kuala Kampar",
+      "regency": "Pelalawan",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Teluk Beringin",
+      "district": "Kuala Kampar",
+      "regency": "Pelalawan",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Area Saling Klaim",
+      "district": null,
+      "regency": "Pelalawan",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Area Tidak Terdefinisi",
+      "district": "Bangko",
+      "regency": "Rokan Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Bagan Jawa Pesisir",
+      "district": "Bangko",
+      "regency": "Rokan Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Bagan Punak Pesisir",
+      "district": "Bangko",
+      "regency": "Rokan Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Kelurahan Bagan Barat",
+      "district": "Bangko",
+      "regency": "Rokan Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Kelurahan Bagan Hulu",
+      "district": "Bangko",
+      "regency": "Rokan Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Parit Aman",
+      "district": "Bangko",
+      "regency": "Rokan Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Telukpiyai",
+      "district": "Kubu",
+      "regency": "Rokan Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Telukpiyai Pesisir",
+      "district": "Kubu",
+      "regency": "Rokan Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Pulauhalang Belakang",
+      "district": "Kubu Babussalam",
+      "regency": "Rokan Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Pulauhalang Hulu",
+      "district": "Kubu Babussalam",
+      "regency": "Rokan Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 6.8,
+      "status": "candidate"
+    },
+    {
+      "village": "Pulauhalang Muka",
+      "district": "Kubu Babussalam",
+      "regency": "Rokan Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Sungaipanji-Panji",
+      "district": "Kubu Babussalam",
+      "regency": "Rokan Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Area Saling Klaim",
+      "district": null,
+      "regency": "Rokan Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Kelurahan Panipahan",
+      "district": "Pasir Limau Kapas",
+      "regency": "Rokan Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Panipahan",
+      "district": "Pasir Limau Kapas",
+      "regency": "Rokan Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Panipahan Darat",
+      "district": "Pasir Limau Kapas",
+      "regency": "Rokan Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Panipahan Laut",
+      "district": "Pasir Limau Kapas",
+      "regency": "Rokan Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Pasir Limau Kapas",
+      "district": "Pasir Limau Kapas",
+      "regency": "Rokan Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Sungai Daun",
+      "district": "Pasir Limau Kapas",
+      "regency": "Rokan Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Telukpulai",
+      "district": "Pasir Limau Kapas",
+      "regency": "Rokan Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Pekaitan",
+      "district": "Pekaitan",
+      "regency": "Rokan Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Sei Besar",
+      "district": "Pekaitan",
+      "regency": "Rokan Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 219.4,
+      "status": "candidate"
+    },
+    {
+      "village": "Darussalam",
+      "district": "Sinaboi",
+      "regency": "Rokan Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Kelurahan Sinaboi Kota",
+      "district": "Sinaboi",
+      "regency": "Rokan Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Sei Bakau",
+      "district": "Sinaboi",
+      "regency": "Rokan Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 18.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Sinaboi",
+      "district": "Sinaboi",
+      "regency": "Rokan Hilir",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Bungsur",
+      "district": "Sungai Apit",
+      "regency": "Siak",
+      "intervention": false,
+      "coastlineDistanceM": 207.6,
+      "status": "candidate"
+    },
+    {
+      "village": "Kayu Ara Permai",
+      "district": "Sungai Apit",
+      "regency": "Siak",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Mengkapan",
+      "district": "Sungai Apit",
+      "regency": "Siak",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Penyengat",
+      "district": "Sungai Apit",
+      "regency": "Siak",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Rawa Mekar Jaya",
+      "district": "Sungai Apit",
+      "regency": "Siak",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Sungai Rawa",
+      "district": "Sungai Apit",
+      "regency": "Siak",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    },
+    {
+      "village": "Tanjung Kuras",
+      "district": "Sungai Apit",
+      "regency": "Siak",
+      "intervention": true,
+      "coastlineDistanceM": 239.1,
+      "status": "candidate"
+    },
+    {
+      "village": "Teluk Lanus",
+      "district": "Sungai Apit",
+      "regency": "Siak",
+      "intervention": false,
+      "coastlineDistanceM": 0.0,
+      "status": "candidate"
+    }
+  ]
+}

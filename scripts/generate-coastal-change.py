@@ -208,6 +208,7 @@ def main():
     parser.add_argument("--year",type=int)
     parser.add_argument("--baseline-year",type=int,default=2016)
     parser.add_argument("--villages",nargs="*",help="Optional exact village names")
+    parser.add_argument("--append",action="store_true",help="Merge processed villages into an existing annual product")
     args=parser.parse_args()
     current_year=args.year or datetime.now(timezone.utc).year-1
     baseline_year=args.baseline_year
@@ -222,6 +223,12 @@ def main():
     for feature in selected:
         record,parts=analyse_village(feature,catalog,current_year,baseline_year)
         records.append(record); features.extend(parts)
+    if args.append and OUTPUT.exists() and SUMMARY.exists():
+        previous_summary=json.loads(SUMMARY.read_text(encoding="utf-8"))
+        previous_geo=json.loads(OUTPUT.read_text(encoding="utf-8"))
+        replaced={str(row["village"]).casefold() for row in records}
+        records=[row for row in previous_summary.get("villages",[]) if str(row.get("village","")).casefold() not in replaced]+records
+        features=[f for f in previous_geo.get("features",[]) if str((f.get("properties") or {}).get("village","")).casefold() not in replaced]+features
     generated=datetime.now(timezone.utc).isoformat()
     collection={"type":"FeatureCollection","name":"Indikasi perubahan garis pantai tahunan desa intervensi",
         "generatedAt":generated,"methodVersion":"s2-annual-water-edge-v1","features":features}
