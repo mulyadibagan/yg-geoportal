@@ -2292,6 +2292,41 @@ L.control.scale({
     });
   }
 
+  const LOCAL_FALLBACK_LAYERS = [
+    "desa_intervensi", "apo", "area_mangrove",
+    "mineral_land_restoration_area", "titik_penanaman", "fdrs",
+    "kopi", "area_kopi", "nursery_mangrove", "sekat_kanal"
+  ];
+
+  async function loadLocalSnapshot() {
+    const settled = await Promise.allSettled(LOCAL_FALLBACK_LAYERS.map(async layerId => {
+      const response = await fetch("data/" + layerId + ".geojson?v=20260812-local-fallback1", {
+        cache: "force-cache"
+      });
+      if (!response.ok) throw new Error(layerId + " HTTP " + response.status);
+      const data = await response.json();
+      if (!data || !Array.isArray(data.features)) throw new Error(layerId + " tidak valid");
+      return data.features.filter(feature => feature && feature.geometry).map(feature => {
+        const properties = Object.assign({}, feature.properties || {});
+        if (!properties.Layer_ID) properties.Layer_ID = layerId;
+        if (!properties.Source_Layer) properties.Source_Layer = layerId;
+        return Object.assign({}, feature, { properties: properties });
+      });
+    }));
+    const features = [];
+    settled.forEach(result => {
+      if (result.status === "fulfilled") features.push.apply(features, result.value);
+      else console.warn("Layer snapshot lokal dilewati", result.reason);
+    });
+    if (!features.length) throw new Error("Snapshot GeoJSON lokal tidak tersedia.");
+    return {
+      type: "FeatureCollection",
+      generatedAt: new Date().toISOString(),
+      sourceMode: "local-fallback",
+      features: features
+    };
+  }
+
   function geometryPolygons(geometry) {
     if (!geometry || !Array.isArray(geometry.coordinates)) return [];
 
@@ -3263,8 +3298,17 @@ L.control.scale({
       }
       initialize(data);
     } catch (jsonpError) {
-      console.error("Master Database gagal dimuat.", jsonpError);
-      setStatus("Database gagal dimuat: " + jsonpError.message, true);
+      console.warn("Master Database dan JSONP gagal; memakai snapshot lokal.", jsonpError);
+      try {
+        const localData = await loadLocalSnapshot();
+        initialize(localData);
+        setStatus(localData.features.length + " objek dimuat dari cadangan lokal", false);
+        const updated = document.getElementById("database-updated");
+        if (updated) updated.textContent = "Mode cadangan lokal · sinkronisasi database tertunda";
+      } catch (localError) {
+        console.error("Master Database dan snapshot lokal gagal dimuat.", localError);
+        setStatus("Data belum dapat dimuat: " + localError.message, true);
+      }
     }
   }
 }
