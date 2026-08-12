@@ -36,6 +36,7 @@ MAX_SCENES = 5
 MIN_COMPONENT_PIXELS = 9
 COASTAL_BAND_PIXELS = 30  # 300 m on each extracted shoreline
 CLEAR_SCL = {2, 4, 5, 6, 7}
+NON_VILLAGE_NAMES = {"area saling klaim"}
 
 
 def annual_dates(year: int):
@@ -225,6 +226,8 @@ def main():
     summary_path=args.summary.resolve()
     source=json.loads(args.source.resolve().read_text(encoding="utf-8"))
     selected=source["features"]
+    selected=[f for f in selected if str((f.get("properties") or {}).get("WADMKD") or
+        (f.get("properties") or {}).get("NAMOBJ") or "").casefold() not in NON_VILLAGE_NAMES]
     if args.non_intervention:
         selected=[f for f in selected if not bool((f.get("properties") or {}).get("Intervention"))]
     if args.regencies:
