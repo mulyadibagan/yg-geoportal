@@ -66,6 +66,9 @@ test("page labels the GEFS corridor product and wires the controller", () => {
   assert.match(controller, /data\/surface-observations\.json/);
   assert.match(controller, /function contourSurfaceEvidence/);
   assert.match(controller, /function renderSurfaceObservations/);
+  assert.match(controller, /radius:5,color:'#fff',weight:1\.2,fillColor:'#7f1d1d'/);
+  assert.match(controller, /weight:2\.8,opacity:\.95,fillColor:smokeColor\(result\.score\),fillOpacity:\.24/);
+  assert.match(controller, /weight:1\.4,opacity:\.62,dashArray:'8 7'/);
   assert.match(controller, /maksimal 75 km dari polygon/);
   assert.match(controller, /kode asap FU/);
   assert.match(controller, /arah angin observasi\/model/);
