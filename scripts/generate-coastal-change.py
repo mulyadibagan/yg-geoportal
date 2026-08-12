@@ -36,7 +36,7 @@ MAX_SCENES = 5
 MIN_COMPONENT_PIXELS = 9
 COASTAL_BAND_PIXELS = 30  # 300 m on each extracted shoreline
 CLEAR_SCL = {2, 4, 5, 6, 7}
-NON_VILLAGE_NAMES = {"area saling klaim"}
+NON_VILLAGE_NAMES = {"area saling klaim", "area tidak terdefinisi"}
 
 
 def annual_dates(year: int):
