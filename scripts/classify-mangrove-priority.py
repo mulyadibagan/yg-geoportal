@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Assign deterministic priority classes and ranks to candidate polygons."""
-import csv,hashlib,json,math
+import argparse,csv,hashlib,json,math
 from pathlib import Path
 from pyproj import Transformer
 from shapely.geometry import shape
@@ -27,7 +27,8 @@ def classify(need,suitability,risk,area,confidence):
     return 'P5','Perlindungan mangrove eksisting','Penambahan tanam bukan tindakan utama pada kondisi ini.'
 
 def main():
-    geo=json.loads(GEO.read_text(encoding='utf-8')); summary=json.loads(SUMMARY.read_text(encoding='utf-8'))
+    parser=argparse.ArgumentParser();parser.add_argument('--geo',type=Path,default=GEO);parser.add_argument('--summary',type=Path,default=SUMMARY);parser.add_argument('--csv',type=Path,default=CSV);args=parser.parse_args()
+    geo=json.loads(args.geo.read_text(encoding='utf-8')); summary=json.loads(args.summary.read_text(encoding='utf-8'))
     villages={r['id']:r for r in summary['villages']}
     rows=[]
     for feature in geo['features']:
@@ -62,11 +63,13 @@ def main():
         record['priorityClasses']={code:sum(1 for x in group if x['priorityClass']==code) for code in ('P1','P2','P3','P4','P5','X','U')}
         record['topPriorityScore']=max((x['priorityScore'] for x in group),default=None)
     summary['methodVersion']=METHOD; summary['product']='Prioritas Rehabilitasi Mangrove 2016–2025'
-    summary['description']='Hasil analisis penginderaan jauh, kondisi pesisir, dan data lingkungan yang tersedia.'
-    GEO.write_text(json.dumps(geo,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
-    SUMMARY.write_text(json.dumps(summary,ensure_ascii=False,indent=2),encoding='utf-8')
+    summary['description']='Hasil analisis penginderaan jauh, perubahan abrasi-akresi 2016–2025, kondisi pesisir, dan data lingkungan yang tersedia.'
+    summary['coastalChangeIntegration']='Polygon perubahan abrasi dan akresi 2016–2025 digunakan sebagai sabuk fokus analisis pesisir.'
+    geo['coastalChangeIntegration']=summary['coastalChangeIntegration']
+    args.geo.write_text(json.dumps(geo,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
+    args.summary.write_text(json.dumps(summary,ensure_ascii=False,indent=2),encoding='utf-8')
     fields=['overallRank','villageRank','polygonId','village','district','regency','areaHa','priorityClass','priorityLabel','priorityScore','needScore','suitabilityScore','riskScore','confidence','decisionReason','methodVersion']
-    with CSV.open('w',newline='',encoding='utf-8-sig') as handle:
+    with args.csv.open('w',newline='',encoding='utf-8-sig') as handle:
         writer=csv.DictWriter(handle,fieldnames=fields);writer.writeheader();writer.writerows([{k:r.get(k) for k in fields} for r in rows])
     print(json.dumps({'polygons':len(rows),'areaHa':round(sum(x['areaHa'] for x in rows),2),'classes':{c:sum(1 for x in rows if x['priorityClass']==c) for c in ('P1','P2','P3','P4','P5','X','U')}},ensure_ascii=False))
 if __name__=='__main__':main()
