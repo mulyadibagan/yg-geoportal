@@ -1,1 +1,19 @@
 .regional-analysis-link{display:flex;flex-direction:column;gap:2px;margin-top:12px;padding:12px 14px;border:1px solid #b8d9d3;border-radius:12px;background:#eff9f6;color:#075f56;text-decoration:none}.regional-analysis-link span{font-size:.78rem}.rehabilitation-summary{margin-top:12px;padding:14px;border-radius:14px;background:#edf8f4;border-left:4px solid #118674}.rehabilitation-summary strong,.rehabilitation-summary span{display:block}.rehabilitation-summary p{margin:6px 0}.rehabilitation-summary a{display:inline-block;margin-top:4px;color:#076b60;font-weight:800}.rehab-metrics{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:9px}.rehab-metrics span{padding:8px;border-radius:9px;background:white;font-size:.78rem}.rehab-metrics b{display:block;font-size:1rem}.coast-titlebar .data-status a{font-weight:800}
+
+/* Keep the Leaflet canvas and both side panels in one stable desktop row. */
+@media(min-width:1001px){
+  .coast-workspace{height:700px;min-height:0;align-items:stretch}
+  .coast-panel{min-height:0;overflow-y:auto;scrollbar-width:thin}
+  .map-wrap{height:700px;min-height:0;overflow:hidden}
+  #coastal-map{height:700px;min-height:0}
+}
+
+@media(max-width:1000px){
+  .coast-workspace{height:auto}
+  .coast-panel{overflow:visible}
+  .map-wrap,#coastal-map{height:560px;min-height:560px}
+}
+
+@media(max-width:720px){
+  .map-wrap,#coastal-map{height:62vh;min-height:480px}
+}
