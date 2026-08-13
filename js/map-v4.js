@@ -3202,6 +3202,26 @@ L.control.scale({
     return response.json();
   }
 
+  async function mergeProgramPhotoIndex(data) {
+    const response = await fetch(
+      "data/program-photo-index.json?v=20260813-photo1",
+      { cache: "force-cache" }
+    );
+    if (!response.ok) throw new Error("HTTP " + response.status);
+    const photoIndex = await response.json();
+    (data.features || []).forEach(feature => {
+      const props = feature && feature.properties || {};
+      const objectId = String(
+        props.Object_ID || props.objectId || props.OBJECTID || ""
+      ).trim();
+      const photos = photoIndex[objectId];
+      if (!Array.isArray(photos) || !photos.length) return;
+      props._ygPhotos = Array.from(new Set(
+        (Array.isArray(props._ygPhotos) ? props._ygPhotos : []).concat(photos)
+      ));
+    });
+  }
+
   async function enrichDatabaseData(data) {
     const tasks = [
       [loadOfficialMangrove, mergeOfficialMangroveData, "area_mangrove.geojson"],
@@ -3213,6 +3233,11 @@ L.control.scale({
       if (result.status === "fulfilled") tasks[index][1](data, result.value);
       else console.warn(tasks[index][2] + " tidak dapat dimuat", result.reason);
     });
+    try {
+      await mergeProgramPhotoIndex(data);
+    } catch (error) {
+      console.warn("Indeks foto program tidak dapat dimuat", error);
+    }
     try {
       const [interventionVillages, administrativeVillages] =
         await loadOfficialInterventionVillages();
