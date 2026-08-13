@@ -1,0 +1,228 @@
+{
+  "schemaVersion": 1,
+  "product": "Prioritas Rehabilitasi Mangrove 2016–2025",
+  "status": "foundation",
+  "baseline": "2016",
+  "comparison": "2025",
+  "generatedAt": "2026-08-12T10:30:00Z",
+  "disclaimer": "Fondasi analisis. Skor, luas kandidat, dan polygon belum dihitung dan tidak boleh digunakan untuk keputusan penanaman.",
+  "villages": [
+    {
+      "id": "bagan-jawa-pesisir",
+      "village": "Bagan Jawa Pesisir",
+      "district": "Bangko",
+      "regency": "Rokan Hilir",
+      "lat": 2.177644,
+      "lon": 100.795092,
+      "scope": "Rokan Hilir coastal screening"
+    },
+    {
+      "id": "bagan-punak-pesisir",
+      "village": "Bagan Punak Pesisir",
+      "district": "Bangko",
+      "regency": "Rokan Hilir",
+      "lat": 2.126644,
+      "lon": 100.801912,
+      "scope": "Rokan Hilir coastal screening"
+    },
+    {
+      "id": "kelurahan-bagan-barat",
+      "village": "Kelurahan Bagan Barat",
+      "district": "Bangko",
+      "regency": "Rokan Hilir",
+      "lat": 2.152444,
+      "lon": 100.792393,
+      "scope": "Rokan Hilir coastal screening"
+    },
+    {
+      "id": "kelurahan-bagan-hulu",
+      "village": "Kelurahan Bagan Hulu",
+      "district": "Bangko",
+      "regency": "Rokan Hilir",
+      "lat": 2.145044,
+      "lon": 100.8011,
+      "scope": "Rokan Hilir coastal screening"
+    },
+    {
+      "id": "parit-aman",
+      "village": "Parit Aman",
+      "district": "Bangko",
+      "regency": "Rokan Hilir",
+      "lat": 2.234444,
+      "lon": 100.79614,
+      "scope": "Rokan Hilir coastal screening"
+    },
+    {
+      "id": "telukpiyai",
+      "village": "Telukpiyai",
+      "district": "Kubu",
+      "regency": "Rokan Hilir",
+      "lat": 2.111794,
+      "lon": 100.620432,
+      "scope": "Rokan Hilir coastal screening"
+    },
+    {
+      "id": "telukpiyai-pesisir",
+      "village": "Telukpiyai Pesisir",
+      "district": "Kubu",
+      "regency": "Rokan Hilir",
+      "lat": 2.088744,
+      "lon": 100.477075,
+      "scope": "Rokan Hilir coastal screening"
+    },
+    {
+      "id": "pulauhalang-belakang",
+      "village": "Pulauhalang Belakang",
+      "district": "Kubu Babussalam",
+      "regency": "Rokan Hilir",
+      "lat": 2.196594,
+      "lon": 100.644101,
+      "scope": "Rokan Hilir coastal screening"
+    },
+    {
+      "id": "pulauhalang-hulu",
+      "village": "Pulauhalang Hulu",
+      "district": "Kubu Babussalam",
+      "regency": "Rokan Hilir",
+      "lat": 2.177444,
+      "lon": 100.670922,
+      "scope": "Rokan Hilir coastal screening"
+    },
+    {
+      "id": "pulauhalang-muka",
+      "village": "Pulauhalang Muka",
+      "district": "Kubu Babussalam",
+      "regency": "Rokan Hilir",
+      "lat": 2.198894,
+      "lon": 100.657562,
+      "scope": "Rokan Hilir coastal screening"
+    },
+    {
+      "id": "sungaipanji-panji",
+      "village": "Sungaipanji-Panji",
+      "district": "Kubu Babussalam",
+      "regency": "Rokan Hilir",
+      "lat": 2.070494,
+      "lon": 100.688893,
+      "scope": "Rokan Hilir coastal screening"
+    },
+    {
+      "id": "kelurahan-panipahan",
+      "village": "Kelurahan Panipahan",
+      "district": "Pasir Limau Kapas",
+      "regency": "Rokan Hilir",
+      "lat": 2.467194,
+      "lon": 100.342211,
+      "scope": "Rokan Hilir coastal screening"
+    },
+    {
+      "id": "panipahan",
+      "village": "Panipahan",
+      "district": "Pasir Limau Kapas",
+      "regency": "Rokan Hilir",
+      "lat": 2.471044,
+      "lon": 100.338913,
+      "scope": "Rokan Hilir coastal screening"
+    },
+    {
+      "id": "panipahan-darat",
+      "village": "Panipahan Darat",
+      "district": "Pasir Limau Kapas",
+      "regency": "Rokan Hilir",
+      "lat": 2.452744,
+      "lon": 100.320784,
+      "scope": "Rokan Hilir coastal screening"
+    },
+    {
+      "id": "panipahan-laut",
+      "village": "Panipahan Laut",
+      "district": "Pasir Limau Kapas",
+      "regency": "Rokan Hilir",
+      "lat": 2.424894,
+      "lon": 100.325774,
+      "scope": "Rokan Hilir coastal screening"
+    },
+    {
+      "id": "pasir-limau-kapas",
+      "village": "Pasir Limau Kapas",
+      "district": "Pasir Limau Kapas",
+      "regency": "Rokan Hilir",
+      "lat": 2.304394,
+      "lon": 100.372576,
+      "scope": "Rokan Hilir coastal screening"
+    },
+    {
+      "id": "sungai-daun",
+      "village": "Sungai Daun",
+      "district": "Pasir Limau Kapas",
+      "regency": "Rokan Hilir",
+      "lat": 2.116844,
+      "lon": 100.408842,
+      "scope": "Rokan Hilir coastal screening"
+    },
+    {
+      "id": "telukpulai",
+      "village": "Telukpulai",
+      "district": "Pasir Limau Kapas",
+      "regency": "Rokan Hilir",
+      "lat": 2.487844,
+      "lon": 100.325047,
+      "scope": "Rokan Hilir coastal screening"
+    },
+    {
+      "id": "pekaitan",
+      "village": "Pekaitan",
+      "district": "Pekaitan",
+      "regency": "Rokan Hilir",
+      "lat": 2.062194,
+      "lon": 100.714473,
+      "scope": "Rokan Hilir coastal screening"
+    },
+    {
+      "id": "sei-besar",
+      "village": "Sei Besar",
+      "district": "Pekaitan",
+      "regency": "Rokan Hilir",
+      "lat": 2.042244,
+      "lon": 100.758168,
+      "scope": "Rokan Hilir coastal screening"
+    },
+    {
+      "id": "darussalam",
+      "village": "Darussalam",
+      "district": "Sinaboi",
+      "regency": "Rokan Hilir",
+      "lat": 2.130794,
+      "lon": 101.067044,
+      "scope": "Rokan Hilir coastal screening"
+    },
+    {
+      "id": "kelurahan-sinaboi-kota",
+      "village": "Kelurahan Sinaboi Kota",
+      "district": "Sinaboi",
+      "regency": "Rokan Hilir",
+      "lat": 2.287594,
+      "lon": 101.033434,
+      "scope": "Rokan Hilir coastal screening"
+    },
+    {
+      "id": "sei-bakau",
+      "village": "Sei Bakau",
+      "district": "Sinaboi",
+      "regency": "Rokan Hilir",
+      "lat": 2.197894,
+      "lon": 100.969373,
+      "scope": "Rokan Hilir coastal screening"
+    },
+    {
+      "id": "sinaboi",
+      "village": "Sinaboi",
+      "district": "Sinaboi",
+      "regency": "Rokan Hilir",
+      "lat": 2.274294,
+      "lon": 101.011508,
+      "scope": "Rokan Hilir coastal screening"
+    }
+  ],
+  "scope": "Kabupaten/Kota Rokan Hilir"
+}
