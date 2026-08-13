@@ -17,7 +17,10 @@
   const toMillis=time=>typeof time==='number'?time*1000:new Date(time).getTime();
   const toDate=time=>new Date(toMillis(time));
   const map=L.map('coastal-map',{zoomControl:true}).setView([1.31,102.14],9);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap contributors'}).addTo(map);
+  const satellite=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{attribution:'Tiles © Esri',maxZoom:19}).addTo(map);
+  const satelliteLabels=L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',{attribution:'Labels © Esri',maxZoom:19,pane:'overlayPane'}).addTo(map);
+  const streets=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap contributors',maxZoom:19});
+  L.control.layers({'Citra satelit':satellite,'Peta jalan':streets},{'Label lokasi':satelliteLabels},{collapsed:false,position:'topright'}).addTo(map);
 
   function riskOf(h){
     const wave=h.wave_height, current=h.ocean_current_velocity;
