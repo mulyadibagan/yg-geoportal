@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
 <link rel="stylesheet" href="css/coastal-monitoring.css?v=20260812-priority-entry">
 <link rel="stylesheet" href="css/coastal-priority-entry.css?v=20260812">
+<link rel="stylesheet" href="css/coastal-intervention-focus.css?v=20260813">
 </head>
 <body>
   <header class="coast-header">
@@ -18,7 +19,7 @@
   <main class="coast-shell">
     <section class="coast-titlebar">
       <div class="coast-title-copy"><p class="eyebrow">COASTAL & MANGROVE MONITORING</p><h1>Pemantauan Pesisir & Mangrove</h1><p>Prakiraan kondisi laut untuk mendukung jadwal monitoring, penanaman, dan perlindungan lokasi rehabilitasi mangrove YG.</p><a class="priority-entry-button" href="mangrove-priority.html?regency=bengkalis"><span class="priority-entry-icon" aria-hidden="true">⌖</span><span><strong>Buka Peta Prioritas Mangrove</strong><small>Jelajahi Bengkalis, Siak, Dumai, desa, dan polygon</small></span><span aria-hidden="true">→</span></a><div class="priority-entry-facts" aria-label="Cakupan peta prioritas"><span><strong>3</strong><small>wilayah selesai</small></span><span><strong>92</strong><small>desa/kelurahan terbit</small></span><span><strong>2026</strong><small>kondisi terbaru</small></span></div></div>
-      <div class="data-status"><span class="status-pill">DATA AKTIF</span><strong id="data-status">Memuat…</strong><small id="updated-at">—</small><a href="mangrove-priority.html?regency=bengkalis">Pilih Bengkalis, Siak, atau Dumai →</a></div>
+      <div class="data-status"><span class="status-pill">DATA AKTIF</span><strong id="data-status">Memuat…</strong><small id="updated-at">—</small><a href="coastal-analysis.html">Buka analisis 7 kabupaten/kota →</a></div>
     </section>
 
     <section class="location-tabs" id="location-tabs" aria-label="Lokasi mangrove YG"></section>
@@ -39,18 +40,17 @@
         <label><input type="radio" name="product" value="tide"> Pasang surut</label>
         <label><input type="radio" name="product" value="sst"> Suhu permukaan laut</label>
         <label class="change-toggle"><input type="checkbox" id="toggle-coastal-change" checked> Indikasi perubahan pantai 2016–2025</label>
-        <label class="change-toggle preliminary"><input type="checkbox" id="toggle-preliminary-change" checked> Analisis awal desa pesisir lain</label>
-        <div class="preliminary-status" id="preliminary-status">Memuat batch Siak…</div>
         <div class="change-legend"><strong>Perubahan berbasis satelit</strong><span><i class="erosion"></i>Indikasi kehilangan daratan</span><span><i class="accretion"></i>Indikasi pertambahan daratan</span><small>Bukan hasil survei garis pantai</small></div>
         <div class="legend"><h3>Arah di pantai desa</h3><span><i style="background:#0a91c7"></i>Gelombang bergerak</span><span><i style="background:#e97924"></i>Arus menuju</span><h3>Risiko lokasi</h3><span><i class="safe"></i>Relatif aman</span><span><i class="watch"></i>Perlu perhatian</span><span><i class="high"></i>Risiko tinggi</span></div>
         <button id="zoom-all" type="button">Lihat semua lokasi YG</button>
-        <button id="zoom-preliminary" class="secondary-map-button" type="button">Lihat analisis awal Siak</button>
+        <a class="regional-analysis-link" href="coastal-analysis.html"><strong>Buka analisis pesisir regional</strong><span>232 desa/kelurahan · 7 kabupaten/kota →</span></a>
       </aside>
       <div class="map-wrap"><div id="coastal-map" aria-label="Peta pemantauan pesisir dan mangrove"></div><div id="map-message" class="map-message" hidden></div></div>
       <aside class="coast-panel detail">
         <p class="eyebrow">LOKASI TERPILIH</p><h2 id="location-name">—</h2><p id="location-meta">—</p>
         <div class="field-advice"><strong id="advice-title">Memuat rekomendasi…</strong><p id="advice-copy">—</p></div>
         <div class="shoreline-change" id="shoreline-change"><strong>Indikasi perubahan pantai 2016–2025</strong><p>Memuat hasil analisis satelit…</p></div>
+        <div class="rehabilitation-summary" id="rehabilitation-summary"><strong>Prioritas rehabilitasi mangrove</strong><p>Memuat hasil penilaian lokasi…</p></div>
         <div class="tide-schedule" aria-label="Jadwal pasang surut">
           <div class="tide-schedule-head"><span>Jadwal pasang surut</span><small>WIB · prakiraan model</small></div>
           <div class="tide-state"><span>Kondisi sekarang</span><strong id="tide-state">—</strong></div>
@@ -66,33 +66,12 @@
       <div class="chart-wrap"><canvas id="forecast-chart" width="1100" height="300" aria-label="Grafik prakiraan oseanografi"></canvas></div>
     </section>
 
-    <section class="analysis-explorer" aria-labelledby="analysis-explorer-title">
-      <div class="analysis-explorer-head">
-        <div><p class="eyebrow">ANALISIS DESA PESISIR</p><h2 id="analysis-explorer-title">Ringkasan per desa dan kabupaten</h2><p>Hasil awal Sentinel-2 untuk desa non-intervensi. Pilih wilayah untuk membuka rincian dan lokasi polygon.</p></div>
-        <div class="analysis-filters">
-          <label>Kabupaten<select id="analysis-regency"><option value="">Semua kabupaten</option></select></label>
-          <label>Kecamatan<select id="analysis-district"><option value="">Semua kecamatan</option></select></label>
-          <label>Desa<select id="analysis-village"><option value="">Semua desa</option></select></label>
-        </div>
-      </div>
-      <div class="analysis-summary" id="analysis-summary"></div>
-      <div class="analysis-grid">
-        <div class="analysis-table-wrap">
-          <table class="analysis-table">
-            <thead><tr><th>Desa</th><th>Kabupaten</th><th>Status</th><th>Hilang</th><th>Bertambah</th><th>Keyakinan</th><th></th></tr></thead>
-            <tbody id="analysis-table-body"><tr><td colspan="7">Memuat data analisis…</td></tr></tbody>
-          </table>
-        </div>
-        <aside class="analysis-village-detail" id="analysis-village-detail"><strong>Pilih desa</strong><p>Klik baris desa untuk melihat metrik analisis lengkap.</p></aside>
-      </div>
-    </section>
-
     <section class="coast-note"><strong>Catatan penggunaan:</strong> Data laut adalah prakiraan model regional, bukan untuk navigasi. Perubahan pantai adalah indikasi dari komposit Sentinel‑2 April–September 2016 dan 2025 dengan ketidakpastian posisi ±14,1 m; bukan survei garis pantai atau penetapan abrasi. Hasil berkeyakinan rendah wajib diverifikasi di lapangan.</section>
     <section class="coast-source">Sumber: <a href="https://open-meteo.com/en/docs/marine-weather-api" target="_blank" rel="noopener">Open-Meteo Marine API</a>; Copernicus Sentinel‑2 Level‑2A melalui Microsoft Planetary Computer; batas dan area mangrove dari WebGIS Yayasan Gambut.</section>
   </main>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
   <script src="js/i18n.js?v=20260810-global-public1"></script>
-<script src="js/coastal-monitoring.js?v=20260813-regional-summary"></script>
+<script src="js/coastal-monitoring.js?v=20260813-intervention-focus"></script>
 </body>
 </html>
