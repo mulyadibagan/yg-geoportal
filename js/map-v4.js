@@ -89,7 +89,7 @@
       label: "IUPHHK-HT 2014",
       file: "data/IUPHHK_HT_2014.geojson",
       color: "#c62828",
-      count: null,
+      count: 138,
       type: "concession"
     },
     perhutanan_sosial_riau: {
@@ -97,7 +97,7 @@
       label: "Perhutanan Sosial Riau",
       file: "data/PERHUTANAN_SOSIAL_RIAU.geojson",
       color: "#00897b",
-      count: null,
+      count: 149,
       type: "social_forestry"
     },
     batas_administrasi_desa_riau: {
@@ -105,7 +105,7 @@
       label: "Batas Administrasi Desa Riau",
       file: "data/batas_administrasi_desa_riau.geojson",
       color: "#1e88e5",
-      count: null,
+      count: 2259,
       type: "village_boundary",
       section: "administrative"
     }
@@ -1701,7 +1701,8 @@ L.control.scale({
     }
 
     appendReferenceControls(list, null);
-    preloadReferenceCounts();
+    // Jumlah fitur disimpan sebagai metadata. Geometri referensi yang besar
+    // baru diunduh ketika pengguna mengaktifkan layernya.
 
     Object.keys(groups)
       .sort((a, b) =>
@@ -3136,7 +3137,21 @@ L.control.scale({
     return data;
   }
 
+  let officialVillageDataPromise;
   async function loadOfficialInterventionVillages() {
+    if (officialVillageDataPromise) return officialVillageDataPromise;
+    officialVillageDataPromise = Promise.all([
+      fetch("data/desa_intervensi.geojson?v=20260813", {cache:"force-cache"}),
+      fetch("data/merempan-hulu-boundary.geojson?v=20260813", {cache:"force-cache"})
+    ]).then(async responses => {
+      const [interventionResponse,administrativeResponse]=responses;
+      if (!interventionResponse.ok) throw new Error("HTTP desa intervensi " + interventionResponse.status);
+      if (!administrativeResponse.ok) throw new Error("HTTP batas administrasi " + administrativeResponse.status);
+      return Promise.all([interventionResponse.json(),administrativeResponse.json()]);
+    }).catch(error => { officialVillageDataPromise=null; throw error; });
+    return officialVillageDataPromise;
+    /* legacy implementation retained below for compatibility */
+    /*
     const [interventionResponse, administrativeResponse] = await Promise.all([
       fetch("data/desa_intervensi.geojson?v=" + Date.now(), {
         cache: "no-store"
@@ -3157,12 +3172,13 @@ L.control.scale({
       interventionResponse.json(),
       administrativeResponse.json()
     ]);
+    */
   }
 
   async function loadOfficialMangrove() {
     const response = await fetch(
-      "data/area_mangrove.geojson?v=" + Date.now(),
-      { cache: "no-store" }
+      "data/area_mangrove.geojson?v=20260813",
+      { cache: "force-cache" }
     );
     if (!response.ok) throw new Error("HTTP " + response.status);
     return response.json();
@@ -3170,8 +3186,8 @@ L.control.scale({
 
   async function loadOfficialCoffeeAreas() {
     const response = await fetch(
-      "data/area_kopi.geojson?v=" + Date.now(),
-      { cache: "no-store" }
+      "data/area_kopi.geojson?v=20260813",
+      { cache: "force-cache" }
     );
     if (!response.ok) throw new Error("HTTP " + response.status);
     return response.json();
@@ -3179,14 +3195,52 @@ L.control.scale({
 
   async function loadOfficialCoffeePoints() {
     const response = await fetch(
-      "data/kopi.geojson?v=" + Date.now(),
-      { cache: "no-store" }
+      "data/kopi.geojson?v=20260813",
+      { cache: "force-cache" }
     );
     if (!response.ok) throw new Error("HTTP " + response.status);
     return response.json();
   }
 
+  async function enrichDatabaseData(data) {
+    const tasks = [
+      [loadOfficialMangrove, mergeOfficialMangroveData, "area_mangrove.geojson"],
+      [loadOfficialCoffeeAreas, mergeOfficialCoffeeAreas, "area_kopi.geojson"],
+      [loadOfficialCoffeePoints, mergeOfficialCoffeePoints, "kopi.geojson"]
+    ];
+    const settled = await Promise.allSettled(tasks.map(task => task[0]()));
+    settled.forEach((result, index) => {
+      if (result.status === "fulfilled") tasks[index][1](data, result.value);
+      else console.warn(tasks[index][2] + " tidak dapat dimuat", result.reason);
+    });
+    try {
+      const [interventionVillages, administrativeVillages] =
+        await loadOfficialInterventionVillages();
+      mergeOfficialInterventionVillages(data, interventionVillages, administrativeVillages);
+    } catch (error) {
+      console.warn("Batas desa intervensi tidak dapat dimuat", error);
+    }
+    return data;
+  }
+
   async function loadDatabase() {
+	  setStatus("Memuat snapshot Master Database...", false);
+  try {
+    const snapshotResponse = await fetch(
+      "data/master-database-snapshot.json?v=20260813-performance1",
+      { cache: "force-cache" }
+    );
+    if (!snapshotResponse.ok) throw new Error("HTTP " + snapshotResponse.status);
+    const snapshotData = await snapshotResponse.json();
+    if (!snapshotData || !Array.isArray(snapshotData.features)) {
+      throw new Error("Snapshot Master Database tidak valid");
+    }
+    await enrichDatabaseData(snapshotData);
+    initialize(snapshotData);
+    return;
+  } catch (snapshotError) {
+    console.warn("Snapshot Master Database gagal; mencoba sumber langsung.", snapshotError);
+  }
 	  console.log("LOADDATABASE VERSI BARU");
   setStatus("Mengambil objek dari Master Database…", false);
 
