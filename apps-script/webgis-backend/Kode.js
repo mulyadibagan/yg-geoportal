@@ -246,6 +246,9 @@ function doPost(e) {
 if (action === 'content-save') {
   return handleContentAdminPost_(e);
 }
+    if (action === 'data-request') {
+      return handleDataRequestPost_(e);
+    }
     if (
       action === 'donor-programme-save' ||
       action === 'donor-evidence-save' ||
@@ -294,6 +297,7 @@ if (action === 'content-save') {
     return githubSyncErrorResponse_(error);
   }
 }
+
     if (!e || !e.parameter || !e.parameter.payload) {
       throw new Error('Payload laporan tidak ditemukan.');
     }
@@ -423,6 +427,92 @@ if (action === 'content-save') {
       message: clean_(error.message) || 'Laporan gagal disimpan.'
     });
   }
+}
+
+const DATA_REQUEST_SHEET = 'DATA_REQUESTS';
+
+function handleDataRequestPost_(e) {
+  const raw = e && e.parameter ? e.parameter.payload : '';
+  if (!raw) throw new Error('Payload permintaan data tidak ditemukan.');
+  const data = JSON.parse(raw);
+  const required = ['dataset', 'scopeLevel', 'scopeName', 'accessType', 'name',
+    'email', 'organization', 'purposeType', 'purpose'];
+  required.forEach(function(key) {
+    if (!clean_(data[key])) throw new Error('Kolom wajib belum lengkap: ' + key);
+  });
+  const email = clean_(data.email).toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    throw new Error('Alamat email tidak valid.');
+  }
+  if (clean_(data.termsAccepted) !== 'yes') {
+    throw new Error('Ketentuan penggunaan harus disetujui.');
+  }
+  if (clean_(data.purpose).length < 30) {
+    throw new Error('Tujuan penggunaan perlu dijelaskan sedikitnya 30 karakter.');
+  }
+  const cache = CacheService.getScriptCache();
+  const rateKey = 'data-request:' + Utilities.base64EncodeWebSafe(email).slice(0, 80);
+  if (cache.get(rateKey)) throw new Error('Permintaan baru saja dikirim. Tunggu satu menit sebelum mencoba lagi.');
+
+  const lock = LockService.getScriptLock();
+  lock.waitLock(15000);
+  let requestId;
+  try {
+    const sheet = getOrCreateDataRequestSheet_();
+    const now = new Date();
+    const datePart = Utilities.formatDate(now, 'Asia/Bangkok', 'yyyyMMdd');
+    const sequence = String(Math.max(1, sheet.getLastRow())).padStart(4, '0');
+    requestId = 'YG-DATA-' + datePart + '-' + sequence;
+    const automatic = clean_(data.accessType) === 'summary';
+    sheet.appendRow([
+      requestId, now, clean_(data.name), clean_(data.organization), email,
+      clean_(data.dataset), clean_(data.scopeLevel), clean_(data.scopeName),
+      clean_(data.accessType), clean_(data.purposeType), clean_(data.purpose),
+      automatic ? 'Automatic summary' : 'Pending review',
+      clean_(data.sourcePage), 'YG GeoPortal', '', ''
+    ]);
+    cache.put(rateKey, '1', 60);
+    notifyDataRequest_(requestId, data, automatic);
+    return ContentService.createTextOutput(JSON.stringify({
+      ok: true,
+      requestId: requestId,
+      accessStatus: automatic ? 'automatic' : 'review',
+      message: automatic ? 'Ringkasan tersedia.' : 'Permintaan menunggu peninjauan YG.'
+    })).setMimeType(ContentService.MimeType.JSON);
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+function getOrCreateDataRequestSheet_() {
+  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+  let sheet = spreadsheet.getSheetByName(DATA_REQUEST_SHEET);
+  if (!sheet) sheet = spreadsheet.insertSheet(DATA_REQUEST_SHEET);
+  const headers = ['Request ID', 'Submitted At', 'Name', 'Organization', 'Email',
+    'Dataset', 'Scope Level', 'Scope Name', 'Access Type', 'Purpose Type',
+    'Purpose', 'Status', 'Source Page', 'Channel', 'Admin Notes', 'Completed At'];
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(headers);
+    sheet.setFrozenRows(1);
+  }
+  return sheet;
+}
+
+function notifyDataRequest_(requestId, data, automatic) {
+  const subject = '[YG Data] ' + requestId + ' · ' + clean_(data.dataset);
+  const body = [
+    'Permintaan data baru tercatat.', '',
+    'Nomor: ' + requestId,
+    'Pemohon: ' + clean_(data.name),
+    'Organisasi: ' + clean_(data.organization),
+    'Email: ' + clean_(data.email),
+    'Data: ' + clean_(data.dataset),
+    'Cakupan: ' + clean_(data.scopeLevel) + ' · ' + clean_(data.scopeName),
+    'Akses: ' + clean_(data.accessType),
+    'Status: ' + (automatic ? 'Ringkasan otomatis' : 'Menunggu peninjauan'),
+    'Tujuan: ' + clean_(data.purposeType), '', clean_(data.purpose)
+  ].join('\n');
+  MailApp.sendEmail({to: NOTIFICATION_EMAILS.join(','), subject: subject, body: body});
 }
 
 function reportSubmissionResponse_(result) {

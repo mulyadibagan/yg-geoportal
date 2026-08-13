@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Permintaan Data | YG GeoPortal</title>
+  <meta name="description" content="Ajukan akses data analisis Yayasan Gambut secara tercatat dan bertanggung jawab.">
+  <link rel="icon" href="assets/logo-yayasan-gambut.png">
+  <link rel="stylesheet" href="css/data-request.css?v=20260813-1">
+</head>
+<body>
+  <header><a href="index.html"><strong>YG GeoPortal</strong><span>Pusat Permintaan Data</span></a><nav><a href="index.html">Beranda</a><a href="webgis.html">WebGIS</a></nav></header>
+  <main>
+    <section class="intro">
+      <div><p class="eyebrow">AKSES DATA YG</p><h1>Ajukan permintaan data</h1><p>Pilih data dan cakupan yang diperlukan. Ringkasan dapat diberikan otomatis setelah permintaan tercatat; data polygon atau data rinci ditinjau oleh YG.</p></div>
+      <aside><strong>Akses bertanggung jawab</strong><p>Permintaan membantu YG mencatat penggunaan, menjaga atribusi, dan melindungi lokasi maupun data yang sensitif.</p></aside>
+    </section>
+    <section class="request-layout">
+      <form id="data-request-form">
+        <fieldset><legend>1. Data yang dibutuhkan</legend>
+          <label>Produk data<select name="dataset" id="dataset" required><option value="mangrove-priority">Prioritas rehabilitasi mangrove</option><option value="coastal-change">Perubahan abrasi–akresi pesisir</option><option value="peatland-restoration">Restorasi gambut dan risiko kebakaran</option><option value="webgis-programme">Data program WebGIS YG</option></select></label>
+          <div class="two"><label>Tingkat wilayah<select name="scopeLevel" id="scope-level" required><option value="province">Provinsi</option><option value="regency">Kabupaten/kota</option><option value="district">Kecamatan</option><option value="village">Desa/kelurahan</option></select></label><label>Nama wilayah<input name="scopeName" id="scope-name" value="Riau" required maxlength="120"></label></div>
+          <label>Jenis data<select name="accessType" id="access-type" required><option value="summary">Ringkasan tabel (CSV) — otomatis</option><option value="polygon">Polygon rinci (GeoJSON) — peninjauan YG</option><option value="both">Ringkasan + polygon — peninjauan YG</option></select></label>
+        </fieldset>
+        <fieldset><legend>2. Identitas pemohon</legend>
+          <div class="two"><label>Nama lengkap<input name="name" required maxlength="100" autocomplete="name"></label><label>Email<input name="email" type="email" required maxlength="160" autocomplete="email"></label></div>
+          <label>Organisasi/instansi<input name="organization" required maxlength="160" autocomplete="organization"></label>
+          <label>Jenis penggunaan<select name="purposeType" required><option value="">Pilih tujuan</option><option>Penelitian</option><option>Perencanaan program</option><option>Pendidikan</option><option>Pemerintahan</option><option>Donor/mitra pembangunan</option><option>Jurnalistik</option><option>Lainnya</option></select></label>
+          <label>Jelaskan tujuan penggunaan<textarea name="purpose" required minlength="30" maxlength="1200" rows="5" placeholder="Jelaskan kegiatan, keluaran, dan bagaimana data akan digunakan."></textarea></label>
+        </fieldset>
+        <fieldset><legend>3. Ketentuan penggunaan</legend>
+          <label class="check"><input type="checkbox" name="termsAccepted" value="yes" required><span>Saya akan mencantumkan atribusi “Yayasan Gambut – YG GeoPortal”, tidak menyebarkan ulang data rinci tanpa izin, dan tidak menggunakan data untuk merugikan masyarakat atau lingkungan.</span></label>
+        </fieldset>
+        <div class="form-actions"><button type="submit">Kirim permintaan data</button><span id="form-status" role="status" aria-live="polite"></span></div>
+      </form>
+      <aside class="access-guide"><h2>Tingkat akses</h2><article><span class="badge open">OTOMATIS</span><strong>Ringkasan publik</strong><p>Rekap CSV tanpa geometri rinci tersedia setelah formulir tercatat.</p></article><article><span class="badge review">DITINJAU</span><strong>Polygon dan lokasi rinci</strong><p>YG menilai tujuan, cakupan, dan sensitivitas sebelum memberikan akses.</p></article><article><span class="badge closed">DILINDUNGI</span><strong>Data pribadi masyarakat</strong><p>Identitas, kontak, dan informasi sensitif tidak dibagikan kepada publik.</p></article></aside>
+    </section>
+    <section id="request-result" class="result" hidden><p class="eyebrow">PERMINTAAN TERCATAT</p><h2 id="result-title"></h2><p id="result-message"></p><div id="result-actions"></div></section>
+  </main>
+  <script src="js/data-request.js?v=20260813-1"></script>
+</body>
+</html>
