@@ -451,21 +451,11 @@ var LEGACY_OBJECT_ALIASES={
     document.getElementById(id).addEventListener(id==='monitor-search'?'input':'change',render);
   });
 
-  document.getElementById('download-monitor-data').addEventListener('click',function(){
-    var items=recordsForSelectedYear();
-    if(!items.length){
-      window.alert('Tidak ada data monitoring untuk diunduh pada tahun yang dipilih.');
-      return;
-    }
-    var year=getSelectedYear();
-    var format=document.getElementById('monitor-download-format').value;
-    if(format==='json'){
-      var filename='monitoring-'+(year||'semua')+'.json';
-      downloadFile(filename,buildMonitoringJson(items),'application/json;charset=utf-8;');
-      return;
-    }
-    var filename='monitoring-'+(year||'semua')+'.csv';
-    downloadFile(filename,buildMonitoringCsv(items),'text/csv;charset=utf-8;');
+  document.getElementById('monitor-year').addEventListener('change',function(){
+    var link=document.getElementById('monitoring-request-link');
+    if(!link)return;
+    var year=this.value;
+    link.href='data-request.html?dataset=monitoring-results&scope=all'+(year?'&period='+encodeURIComponent(year):'');
   });
 
   document.addEventListener('click',function(e){
