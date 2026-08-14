@@ -6,11 +6,14 @@
     'mangrove-priority':{summary:'data/mangrove-priority-ranking.csv'},
     'coastal-change':{summary:'data/coastal-analysis-villages.csv'},
     'monitoring-results':{dynamicSummary:true},
+    'smoke-validation':{},
     'peatland-restoration':{},'webgis-programme':{}
   };
   var datasetSelect=document.getElementById('dataset'),monitoringOption=document.createElement('option');
   monitoringOption.value='monitoring-results';monitoringOption.textContent='Hasil monitoring terverifikasi';
   datasetSelect.insertBefore(monitoringOption,datasetSelect.querySelector('[value="peatland-restoration"]'));
+  var smokeOption=document.createElement('option');smokeOption.value='smoke-validation';smokeOption.textContent='Validasi plume/asap historis';
+  datasetSelect.insertBefore(smokeOption,datasetSelect.querySelector('[value="peatland-restoration"]'));
   var scopeRow=document.getElementById('scope-level').closest('.two'),periodLabel=document.createElement('label');
   periodLabel.innerHTML='Periode/tahun yang dibutuhkan <input name="period" id="request-period" maxlength="60" placeholder="Contoh: 2026 atau semua tahun">';
   scopeRow.insertAdjacentElement('afterend',periodLabel);
@@ -19,7 +22,9 @@
   var scope=params.get('scope');if(scope==='all')document.getElementById('scope-name').value='Semua wilayah';else if(scope&&scope!=='riau')document.getElementById('scope-name').value=scope.replace(/-/g,' ').replace(/\b\w/g,function(c){return c.toUpperCase();});
   var period=params.get('period');if(period)document.getElementById('request-period').value=period;
   function updateAccessLabels(){
-    var access=document.getElementById('access-type'),monitoring=datasetSelect.value==='monitoring-results';
+    var access=document.getElementById('access-type'),monitoring=datasetSelect.value==='monitoring-results',smoke=datasetSelect.value==='smoke-validation';
+    access.options[0].disabled=smoke;
+    if(smoke){access.options[0].textContent='Ringkasan publik tidak tersedia';access.options[1].textContent='GeoJSON anotasi plume draft \u2014 peninjauan YG';access.options[2].textContent='Katalog + GeoJSON draft \u2014 peninjauan YG';if(access.value==='summary')access.value='polygon';return;}
     access.options[0].textContent=monitoring?'Ringkasan monitoring (CSV) \u2014 otomatis':'Ringkasan tabel (CSV) \u2014 otomatis';
     access.options[1].textContent=monitoring?'Data monitoring rinci + foto \u2014 peninjauan YG':'Polygon rinci (GeoJSON) \u2014 peninjauan YG';
     access.options[2].textContent=monitoring?'Ringkasan + data rinci \u2014 peninjauan YG':'Ringkasan + polygon \u2014 peninjauan YG';
