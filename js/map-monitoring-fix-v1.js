@@ -173,6 +173,49 @@
     var api = window.YG_MAP;
     var group = api && api.layerObjects && api.layerObjects.monitoring_reports;
     if (!group || typeof group.eachLayer !== 'function') return false;
+
+    var liveMonitoring = (data && Array.isArray(data.features) ? data.features : [])
+      .filter(function (feature) {
+        var properties = feature && feature.properties || {};
+        return normalize(properties.reportType).indexOf('monitor') !== -1 && feature.geometry;
+      })
+      .map(function (feature) {
+        var copy = JSON.parse(JSON.stringify(feature));
+        var properties = copy.properties || {};
+        var monitoring = {};
+        try { monitoring = JSON.parse(properties.proposedInformation || '{}'); }
+        catch (error) { monitoring = {}; }
+        properties.Layer_ID = 'monitoring_reports';
+        properties.Layer_Label = 'Hasil Monitoring Terverifikasi';
+        properties.Source_Type = 'monitoring_report';
+        properties.Source_Report_ID = properties.reportId || properties.Source_Report_ID;
+        properties.Object_ID = properties.Object_ID || ('MONITORING-' + properties.reportId);
+        properties.Nama_Objek = properties.Nama_Objek || properties.targetObjectName || properties.title;
+        properties.Desa = properties.Desa || properties.village;
+        properties.Kecamatan = properties.Kecamatan || properties.district;
+        properties.Kabupaten = properties.Kabupaten || properties.regency;
+        properties.Monitoring_ID = properties.Monitoring_ID || properties.reportId;
+        properties.Monitoring_Type = properties.Monitoring_Type || monitoring.monitoringType;
+        properties.Kondisi = properties.Kondisi || monitoring.condition;
+        properties.Survival = properties.Survival || monitoring.survivalPercent;
+        properties.Jumlah_Hidup = properties.Jumlah_Hidup || monitoring.aliveCount;
+        properties.Jumlah_Mati_Rusak = properties.Jumlah_Mati_Rusak || monitoring.deadOrDamagedCount;
+        properties.Luas_Terpantau_Ha = properties.Luas_Terpantau_Ha || monitoring.monitoredAreaHa;
+        properties.Tinggi_Rata_Rata_Cm = properties.Tinggi_Rata_Rata_Cm || monitoring.averageHeightCm;
+        properties.Diameter_Rata_Rata_Cm = properties.Diameter_Rata_Rata_Cm || monitoring.averageDiameterCm;
+        properties.Sedimentasi_Cm = properties.Sedimentasi_Cm || monitoring.sedimentationCm;
+        properties.Water_Table_Cm = properties.Water_Table_Cm || monitoring.waterTableCm;
+        properties.Ancaman = properties.Ancaman || monitoring.threats;
+        properties.Temuan = properties.Temuan || monitoring.notes;
+        properties.Tindak_Lanjut = properties.Tindak_Lanjut || monitoring.followUp;
+        properties.Target_Object_ID = properties.Target_Object_ID || properties.targetObjectId;
+        copy.properties = properties;
+        return copy;
+      });
+    if (typeof api.addLiveFeatures === 'function') {
+      api.addLiveFeatures('monitoring_reports', liveMonitoring);
+      group = api.layerObjects.monitoring_reports;
+    }
     if (api.map && !api.map.__ygMonitoringPhotoRefreshBound) {
       api.map.__ygMonitoringPhotoRefreshBound = true;
       api.map.on('popupopen', function (event) {
