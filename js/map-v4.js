@@ -1069,9 +1069,12 @@ L.control.scale({
     });
   }
 
-  function createLayer(layerId, features) {
+  function createLayer(layerId, features, options) {
     const config = getLayerConfig(layerId, features[0]);
-    const group = L.featureGroup();
+    const append = options && options.append;
+    const group = append && layerObjects[layerId]
+      ? layerObjects[layerId]
+      : L.featureGroup();
 
     features.forEach(feature => {
       try {
@@ -1133,7 +1136,35 @@ L.control.scale({
     const bounds = group.getBounds();
     if (bounds.isValid()) allBounds.extend(bounds);
 
-    if (config.visible) group.addTo(map);
+    if (config.visible && !map.hasLayer(group)) group.addTo(map);
+    return group;
+  }
+
+  function addLiveFeatures(layerId, features) {
+    const group = layerObjects[layerId];
+    if (!group || !Array.isArray(features) || !features.length) return 0;
+    const existing = new Set();
+    group.eachLayer(layer => {
+      const props = layer && layer.feature && layer.feature.properties || {};
+      const id = String(
+        props.reportId || props.Source_Report_ID || props.Object_ID || ""
+      ).trim();
+      if (id) existing.add(id);
+    });
+    const missing = features.filter(feature => {
+      const props = feature && feature.properties || {};
+      const id = String(
+        props.reportId || props.Source_Report_ID || props.Object_ID || ""
+      ).trim();
+      return id && !existing.has(id) && feature.geometry;
+    });
+    if (!missing.length) return 0;
+    createLayer(layerId, missing, { append: true });
+    const countElement = document.querySelector(
+      '[data-layer-count-id="' + layerId + '"]'
+    );
+    if (countElement) countElement.textContent = formatNumber(group.getLayers().length);
+    return missing.length;
   }
 
 
@@ -1734,7 +1765,7 @@ L.control.scale({
               : "") +
           '</span>' +
           '<label for="layer-' + escapeHtml(layerId) + '">' + escapeHtml(config.label) + '</label>' +
-          '<span class="count">' + count + '</span>';
+          '<span class="count" data-layer-count-id="' + escapeHtml(layerId) + '">' + count + '</span>';
 
         list.appendChild(row);
 
@@ -3460,6 +3491,7 @@ L.control.scale({
     layerObjects: layerObjects,
     searchItems: searchItems,
     referenceLayerObjects: referenceLayerObjects,
+    addLiveFeatures: addLiveFeatures,
     get rawFeatures() {
       return rawFeatures;
     }
