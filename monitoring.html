@@ -1,162 +1,24 @@
 <!doctype html>
 <html lang="id">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZEBSLW4ZWW"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-ZEBSLW4ZWW');
-  </script>
-  <title>Dashboard Monitoring | YG GeoPortal</title>
-  <link rel="icon" href="assets/logo-yayasan-gambut.png">
-  <link rel="stylesheet" href="css/site-brand.css?v=20260720-program-dashboard1">
-  <link rel="stylesheet" href="css/monitoring.css?v=20260819-priority-link8">
-  <link rel="stylesheet" href="css/monitoring-v1-fix.css?v=20260720-104">
-  <link rel="stylesheet" href="css/language-switcher.css?v=20260721-all-pages1">
-  <link rel="stylesheet" href="css/navigation-v2.css?v=20260807-mobile-submenu-links1">
-  <meta name="theme-color" content="#079cde">
-  <meta name="application-name" content="YG GeoPortal">
-  <meta name="apple-mobile-web-app-title" content="YG GeoPortal">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <link rel="manifest" href="manifest.webmanifest?v=20260714-1">
-  <link rel="apple-touch-icon" href="assets/logo-yayasan-gambut-192.png">
-  <link rel="icon" type="image/png" sizes="192x192" href="assets/logo-yayasan-gambut-192.png">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Dashboard Monitoring | YG GeoPortal</title>
+<link rel="icon" href="assets/logo-yayasan-gambut.png">
+<link rel="stylesheet" href="css/site-brand.css?v=20260720-program-dashboard1"><link rel="stylesheet" href="css/monitoring.css?v=20260819-priority-link8"><link rel="stylesheet" href="css/monitoring-v1-fix.css?v=20260720-104"><link rel="stylesheet" href="css/language-switcher.css?v=20260721-all-pages1"><link rel="stylesheet" href="css/navigation-v2.css?v=20260807-mobile-submenu-links1">
+<style>
+.monitoring-category-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:12px 0 24px}.monitoring-category-card{display:flex;min-height:118px;flex-direction:column;justify-content:space-between;padding:17px;border:1px solid var(--line);border-radius:16px;background:#fff;color:var(--ink);text-decoration:none;box-shadow:0 8px 22px rgba(22,67,51,.06);transition:.18s}.monitoring-category-card:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(22,67,51,.1)}.monitoring-category-card strong{font-size:16px}.monitoring-category-card span{color:var(--muted);font-size:12px;line-height:1.45}.monitoring-category-card b{color:var(--green);font-size:12px}.monitoring-detail-entry{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px;border:1px solid var(--line);border-radius:16px;background:#fff}.monitoring-detail-entry h2{margin:3px 0 5px}.monitoring-detail-entry p{margin:0;color:var(--muted)}.monitoring-detail-entry a{white-space:nowrap;padding:11px 15px;border-radius:12px;background:var(--green);color:#fff;font-weight:800;text-decoration:none}@media(max-width:900px){.monitoring-category-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:560px){.monitoring-category-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.monitoring-category-card{min-height:105px;padding:13px}.monitoring-detail-entry{align-items:flex-start;flex-direction:column}}
+</style>
 </head>
 <body>
-  <header class="yg-page-header">
-    <div class="yg-page-header__inner">
-      <a class="yg-page-brand" href="index.html">
-        <img src="assets/logo-yayasan-gambut.png" alt="Logo Yayasan Gambut">
-        <span><strong>YG GeoPortal</strong>WebGIS Yayasan Gambut</span>
-      </a>
-      <button class="yg-nav-toggle" type="button" aria-label="Buka menu" aria-expanded="false" data-yg-nav-toggle="monitoring-navigation">☰</button>
-      <nav class="yg-page-nav yg-nav-v2" id="monitoring-navigation" aria-label="Navigasi utama" data-yg-navigation>
-        <a href="index.html">Beranda</a>
-        <a href="webgis.html">Peta Interaktif</a>
-        <div class="yg-nav-group">
-          <button class="yg-nav-trigger" type="button" aria-expanded="false">Jelajahi</button>
-          <div class="yg-nav-menu"><a href="biodiversity.html">Biodiversitas</a><a href="fire-weather.html">Karhutla &amp; Cuaca</a><a href="coastal-monitoring.html">Pesisir &amp; Mangrove</a></div>
-        </div>
-        <div class="yg-nav-group">
-          <button class="yg-nav-trigger" type="button" aria-expanded="false" aria-current="true">Data &amp; Dampak</button>
-          <div class="yg-nav-menu"><a href="monitoring.html" aria-current="page">Monitoring Lapangan<small>Hasil pemantauan objek dan lokasi</small></a><a href="community-engagement.html">Pelibatan Masyarakat<small>Partisipasi kelompok dalam kegiatan lapangan</small></a><a href="capacity-building.html">Peningkatan Kapasitas<small>Pelatihan dan evaluasi pembelajaran</small></a><a href="sdgs.html">Kontribusi SDGs<small>Capaian menurut tujuan pembangunan</small></a><a href="policy-alignment.html">Keselarasan Kebijakan &amp; Komitmen<small>KKMD, FOLU Net Sink, NDC, dan kerangka terkait</small></a></div>
-        </div>
-        <a href="report.html">Laporkan Temuan</a>
-        <span class="yg-public-language-switcher" role="group" aria-label="Pilihan bahasa / Language selection">
-          <button type="button" data-lang="id" aria-pressed="true">ID</button>
-          <button type="button" data-lang="en" aria-pressed="false">EN</button>
-        </span>
-      </nav>
-    </div>
-  </header>
-  <main class="dashboard-shell">
-    <section class="hero hero-compact">
-      <div>
-        <span class="eyebrow">DATA TERVERIFIKASI</span>
-        <h1>Monitoring Program Yayasan Gambut</h1>
-        <p>Ringkasan monitoring mangrove, gambut, FDRS, sekat kanal, APO, pembibitan, dan kegiatan lapangan lainnya.</p>
-      </div>
-      <div class="hero-actions">
-        <a class="hero-button" href="report.html?type=monitoring">Kirim Monitoring</a>
-        <a class="hero-button secondary" href="webgis.html">Buka Peta</a>
-      </div>
-    </section>
-
-    <section class="summary-chart-section summary-chart-section-top" aria-label="Kartu kompilasi hasil monitoring">
-      <div class="section-heading">
-        <div><span class="eyebrow">RINGKASAN</span><h2>Kompilasi hasil laporan</h2></div>
-        <span id="summary-record-count">0 laporan</span>
-      </div>
-      <div id="summary-status-chart">Memuat ringkasan...</div>
-    </section>
-
-    <section class="toolbar" aria-label="Filter monitoring">
-      <label>Cari
-        <input id="monitor-search" type="search" placeholder="Nama objek, lokasi, atau jenis monitoring">
-      </label>
-      <label>Jenis monitoring
-        <select id="monitor-type"><option value="">Semua jenis</option></select>
-      </label>
-      <label>Kondisi
-        <select id="monitor-status">
-          <option value="">Semua kondisi</option>
-          <option value="baik">Baik/normal</option>
-          <option value="waspada">Perlu dipantau</option>
-          <option value="masalah">Perlu tindak lanjut</option>
-        </select>
-      </label>
-      <label>Klaster
-        <select id="monitor-cluster">
-          <option value="object">Objek</option>
-          <option value="village">Nama desa</option>
-          <option value="reporter">Nama pelapor</option>
-        </select>
-      </label>
-      <label>Nilai klaster
-        <select id="monitor-cluster-value"><option value="">Semua</option></select>
-      </label>
-      <label>Urutkan
-        <select id="monitor-sort">
-          <option value="latest">Terbaru</option>
-          <option value="name">Nama lokasi</option>
-          <option value="risk">Prioritas tindak lanjut</option>
-        </select>
-      </label>
-    </section>
-
-    <section class="toolbar-download monitoring-data-request" aria-label="Permintaan data monitoring">
-      <div>
-        <span class="eyebrow">AKSES DATA TERCATAT</span>
-        <strong>Butuh data monitoring?</strong>
-        <p>Ajukan cakupan, format, identitas, dan tujuan penggunaan. Ringkasan tanpa data sensitif tersedia setelah permintaan tercatat; data rinci dan lokasi ditinjau YG.</p>
-      </div>
-      <label>Tahun data
-        <select id="monitor-year"><option value="">Semua tahun</option></select>
-      </label>
-      <a id="monitoring-request-link" class="monitoring-request-button" href="data-request.html?dataset=monitoring-results&amp;scope=all">Ajukan permintaan data <span aria-hidden="true">&rarr;</span></a>
-    </section>
-
-    <div class="category-strip" id="category-strip"></div>
-
-    <section class="content-grid">
-      <div>
-        <div class="section-heading">
-          <div><span class="eyebrow">RINGKASAN PER OBJEK</span><h2>Lokasi monitoring</h2></div>
-          <span id="result-count">0 objek</span>
-        </div>
-        <div class="monitor-list" id="monitor-list">
-          <div class="loading">Memuat data monitoring…</div>
-        </div>
-      </div>
-
-      <aside>
-        <section class="side-card">
-          <span class="eyebrow">PRIORITAS</span>
-          <h2>Perlu tindak lanjut</h2>
-          <div class="action-list" id="action-list"><p>Belum ada data.</p></div>
-        </section>
-
-      </aside>
-    </section>
-  </main>
-
-  <div class="modal" id="detail-modal" aria-hidden="true">
-    <div class="modal-backdrop" data-close-modal></div>
-    <section class="modal-panel" role="dialog" aria-modal="true" aria-label="Detail monitoring">
-      <button class="modal-close" type="button" data-close-modal aria-label="Tutup">×</button>
-      <div id="detail-content"></div>
-    </section>
-  </div>
-
-  <script src="js/monitoring-data-compat.js?v=20260819-cluster3"></script>
-  <script src="js/monitoring.js?v=20260819-single-compilation6"></script>
-  <script src="js/monitoring-photo.js?v=20260720-edge-refresh1"></script>
-<script src="js/i18n.js?v=20260814-monitoring-request1"></script>
-  <script src="js/navigation-v2.js?v=20260807-mobile-menu-fix2"></script>
-  <script src="js/pwa.js?v=20260723-edge-photo-fix1"></script>
-</body>
-</html>
+<header class="yg-page-header"><div class="yg-page-header__inner"><a class="yg-page-brand" href="index.html"><img src="assets/logo-yayasan-gambut.png" alt="Logo Yayasan Gambut"><span><strong>YG GeoPortal</strong>WebGIS Yayasan Gambut</span></a><button class="yg-nav-toggle" type="button" aria-label="Buka menu" aria-expanded="false" data-yg-nav-toggle="monitoring-navigation">☰</button><nav class="yg-page-nav yg-nav-v2" id="monitoring-navigation" aria-label="Navigasi utama" data-yg-navigation><a href="index.html">Beranda</a><a href="webgis.html">Peta Interaktif</a><div class="yg-nav-group"><button class="yg-nav-trigger" type="button" aria-expanded="false">Jelajahi</button><div class="yg-nav-menu"><a href="biodiversity.html">Biodiversitas</a><a href="fire-weather.html">Karhutla &amp; Cuaca</a><a href="coastal-monitoring.html">Pesisir &amp; Mangrove</a></div></div><div class="yg-nav-group"><button class="yg-nav-trigger" type="button" aria-expanded="false" aria-current="true">Data &amp; Dampak</button><div class="yg-nav-menu"><a href="monitoring.html" aria-current="page">Monitoring Lapangan</a><a href="community-engagement.html">Pelibatan Masyarakat</a><a href="capacity-building.html">Peningkatan Kapasitas</a><a href="sdgs.html">Kontribusi SDGs</a></div></div><a href="report.html">Laporkan Temuan</a><span class="yg-public-language-switcher" role="group"><button type="button" data-lang="id" aria-pressed="true">ID</button><button type="button" data-lang="en" aria-pressed="false">EN</button></span></nav></div></header>
+<main class="dashboard-shell">
+<section class="hero hero-compact"><div><span class="eyebrow">DATA TERVERIFIKASI</span><h1>Monitoring Program Yayasan Gambut</h1><p>Ringkasan monitoring mangrove, gambut, FDRS, sekat kanal, APO, pembibitan, dan kegiatan lapangan lainnya.</p></div><div class="hero-actions"><a class="hero-button" href="report.html?type=monitoring">Kirim Monitoring</a><a class="hero-button secondary" href="webgis.html">Buka Peta</a></div></section>
+<section class="summary-chart-section summary-chart-section-top"><div class="section-heading"><div><span class="eyebrow">RINGKASAN</span><h2>Monitoring lapangan</h2></div><span id="summary-record-count">0 laporan</span></div><div id="summary-status-chart">Memuat ringkasan...</div></section>
+<section aria-label="Jenis monitoring"><div class="section-heading"><div><span class="eyebrow">JENIS MONITORING</span><h2>Jelajahi berdasarkan objek</h2></div></div><div class="monitoring-category-grid"><a class="monitoring-category-card" href="monitoring-detail.html?type=mangrove"><strong>Mangrove</strong><span>Penanaman, survival, luas dan kondisi.</span><b>Lihat monitoring →</b></a><a class="monitoring-category-card" href="monitoring-detail.html?type=gambut"><strong>Gambut &amp; Agroforestri</strong><span>Restorasi, tanaman dan kondisi lahan.</span><b>Lihat monitoring →</b></a><a class="monitoring-category-card" href="monitoring-detail.html?type=sekat-kanal"><strong>Sekat Kanal</strong><span>Unit, fungsi dan kebutuhan perbaikan.</span><b>Lihat monitoring →</b></a><a class="monitoring-category-card" href="monitoring-detail.html?type=fdrs"><strong>FDRS</strong><span>Tinggi muka air dan kondisi perangkat.</span><b>Lihat monitoring →</b></a><a class="monitoring-category-card" href="monitoring-detail.html?type=apo"><strong>Wave Attenuation / APO</strong><span>Panjang, kondisi dan perkembangan lokasi.</span><b>Lihat monitoring →</b></a><a class="monitoring-category-card" href="monitoring-detail.html?type=nursery"><strong>Pembibitan</strong><span>Jumlah bibit dan kondisi nursery.</span><b>Lihat monitoring →</b></a><a class="monitoring-category-card" href="community-engagement.html"><strong>Pelibatan Masyarakat</strong><span>Kegiatan, kelompok dan partisipasi.</span><b>Lihat data →</b></a><a class="monitoring-category-card" href="capacity-building.html"><strong>Peningkatan Kapasitas</strong><span>Pelatihan, peserta dan hasil pembelajaran.</span><b>Lihat data →</b></a></div></section>
+<section class="monitoring-detail-entry"><div><span class="eyebrow">DATA LENGKAP</span><h2>Detail monitoring</h2><p>Pencarian, filter, riwayat, foto dan indikator tersedia pada halaman detail.</p></div><a href="monitoring-detail.html">Buka detail monitoring →</a></section>
+<!-- Elemen data lama dipertahankan tersembunyi agar pemuatan data/API tetap kompatibel. -->
+<div hidden><section class="toolbar"><label>Cari<input id="monitor-search" type="search"></label><label>Jenis<select id="monitor-type"><option value="">Semua jenis</option></select></label><label>Kondisi<select id="monitor-status"><option value="">Semua kondisi</option></select></label><label>Klaster<select id="monitor-cluster"><option value="object">Objek</option></select></label><label>Nilai<select id="monitor-cluster-value"><option value="">Semua</option></select></label><label>Urutkan<select id="monitor-sort"><option value="latest">Terbaru</option></select></label></section><select id="monitor-year"><option value="">Semua tahun</option></select><a id="monitoring-request-link" href="data-request.html?dataset=monitoring-results&amp;scope=all">Data</a><div id="category-strip"></div><span id="result-count"></span><div id="monitor-list"></div><div id="action-list"></div></div>
+</main>
+<div class="modal" id="detail-modal" aria-hidden="true"><div class="modal-backdrop" data-close-modal></div><section class="modal-panel"><button class="modal-close" type="button" data-close-modal>×</button><div id="detail-content"></div></section></div>
+<script src="js/monitoring-data-compat.js?v=20260819-cluster3"></script><script src="js/monitoring.js?v=20260819-single-compilation6"></script><script src="js/monitoring-photo.js?v=20260720-edge-refresh1"></script><script src="js/i18n.js?v=20260814-monitoring-request1"></script><script src="js/navigation-v2.js?v=20260807-mobile-menu-fix2"></script><script src="js/pwa.js?v=20260723-edge-photo-fix1"></script>
+</body></html>
