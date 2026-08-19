@@ -1,39 +1,6 @@
-const CACHE_NAME = "yg-geoportal-v4-20260811-validation-status1";
+const CACHE_NAME = "yg-geoportal-v5-20260820-freshness1";
 
-const STATIC_ASSETS = [
-  "./",
-  "./index.html",
-  "./webgis.html",
-  "./flora-mangrove.html",
-  "./biodiversity.html",
-  "./biodiversity-mangrove.html",
-  "./data/drive-assets.js",
-  "./monitoring.html",
-  "./smoke-validation.html",
-  "./css/smoke-validation.css",
-  "./js/smoke-validation.js",
-  "./community-engagement.html",
-  "./capacity-building.html",
-  "./sdgs.html",
-  "./policy-alignment.html",
-  "./folu-net-sink.html",
-  "./kkmd-riau.html",
-  "./bengkalis-lestari.html",
-  "./css/folu-net-sink.css",
-  "./css/kkmd-riau.css",
-  "./css/bengkalis-lestari.css",
-  "./js/folu-net-sink.js",
-  "./js/kkmd-riau.js",
-  "./js/bengkalis-lestari.js",
-  "./data/folu-contributions.json",
-  "./data/kkmd-riau.json",
-  "./data/bengkalis-lestari.json",
-  "./capacity-session-create.html",
-  "./capacity-sessions.html",
-  "./programme-detail.html",
-  "./donor-detail.html",
-  "./report.html",
-  "./data/donors.json",
+const OFFLINE_ASSETS = [
   "./assets/logo-yayasan-gambut.png",
   "./assets/logo-yayasan-gambut-192.png",
   "./assets/logo-yayasan-gambut-512.png"
@@ -42,7 +9,7 @@ const STATIC_ASSETS = [
 self.addEventListener("install", event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(STATIC_ASSETS))
+      .then(cache => cache.addAll(OFFLINE_ASSETS))
       .then(() => self.skipWaiting())
   );
 });
@@ -51,83 +18,61 @@ self.addEventListener("activate", event => {
   event.waitUntil(
     caches.keys()
       .then(keys => Promise.all(
-        keys
-          .filter(key => key !== CACHE_NAME)
-          .map(key => caches.delete(key))
+        keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
       ))
       .then(() => self.clients.claim())
   );
 });
 
-self.addEventListener("fetch", event => {
-  const request = event.request;
-  const url = new URL(request.url);
+function isDynamicData(url) {
+  return url.hostname === "script.google.com" ||
+    url.hostname === "script.googleusercontent.com" ||
+    /\/(data\/.*\.(?:json|geojson)|api\/)/i.test(url.pathname);
+}
 
-  if (request.method !== "GET") return;
-
-  if (
-    url.hostname === "script.google.com" ||
-    url.hostname === "script.googleusercontent.com"
-  ) {
-    event.respondWith(fetch(request));
-    return;
-  }
-
-  if (request.mode === "navigate") {
-    event.respondWith(
-      fetch(request, { cache: "no-store" })
-        .then(response => {
-          const copy = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
-          return response;
-        })
-        .catch(() =>
-          caches.match(request).then(cached =>
-            cached || caches.match("./index.html")
-          )
-        )
-    );
-    return;
-  }
-
-  /*
-   * JavaScript dan CSS harus mengutamakan jaringan. Ini mencegah Edge/PWA
-   * terus menjalankan bundle lama setelah rilis GitHub Pages terbaru.
-   * Cache hanya menjadi cadangan ketika perangkat benar-benar offline.
-   */
-  if (
+function isFreshnessCritical(request, url) {
+  return request.mode === "navigate" ||
+    request.destination === "document" ||
     request.destination === "script" ||
     request.destination === "style" ||
-    url.pathname.endsWith(".js") || // JavaScript files
-    url.pathname.endsWith(".css") // CSS files
-  ) {
+    /\.(?:html?|js|css)$/i.test(url.pathname) ||
+    isDynamicData(url);
+}
+
+self.addEventListener("fetch", event => {
+  const request = event.request;
+  if (request.method !== "GET") return;
+
+  const url = new URL(request.url);
+
+  // Live API/data must never be answered from the service-worker cache.
+  if (isDynamicData(url)) {
+    event.respondWith(fetch(request, { cache: "no-store" }));
+    return;
+  }
+
+  // HTML, JS and CSS are network-only while online. This prevents one device
+  // from staying on an older WebGIS/Monitoring bundle after a deployment.
+  if (isFreshnessCritical(request, url)) {
     event.respondWith(
-      fetch(request, { cache: "no-store" })
-        .then(response => {
-          if (response && response.ok && url.origin === self.location.origin) {
-            const copy = response.clone();
-            caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
-          }
-          return response;
-        })
-        .catch(() => caches.match(request))
+      fetch(request, { cache: "no-store" }).catch(() => {
+        if (request.mode === "navigate") {
+          return caches.match(request).then(cached => cached || caches.match("./index.html"));
+        }
+        return caches.match(request);
+      })
     );
     return;
   }
 
+  // Only non-critical static assets use cache-first behavior.
   event.respondWith(
-    caches.match(request).then(cached => {
-      const network = fetch(request)
-        .then(response => {
-          if (response && response.ok && url.origin === self.location.origin) {
-            const copy = response.clone();
-            caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
-          }
-          return response;
-        })
-        .catch(() => cached);
-
-      return cached || network;
-    })
+    caches.match(request).then(cached => cached || fetch(request).then(response => {
+      if (response && response.ok && url.origin === self.location.origin) {
+        const copy = response.clone();
+        caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
+      }
+      return response;
+    }))
   );
 });
