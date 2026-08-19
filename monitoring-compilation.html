@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>Kompilasi Hasil Monitoring</title>
+  <link rel="stylesheet" href="css/monitoring.css?v=20260819-single-compilation6">
+  <style>
+    .compilation-shell{padding-top:18px}
+    .compilation-hero{position:relative;padding:28px;border-radius:22px;background:linear-gradient(130deg,#074a35,#0b7652);color:#fff;overflow:hidden}
+    .compilation-hero:after{position:absolute;right:-80px;bottom:-150px;width:360px;height:360px;border:60px solid rgba(255,255,255,.08);border-radius:50%;content:""}
+    .compilation-hero h1{position:relative;z-index:1;margin:7px 0;font-size:clamp(28px,4vw,44px)}
+    .compilation-hero p{position:relative;z-index:1;max-width:760px;margin:0;color:rgba(255,255,255,.82);line-height:1.6}
+    .compilation-back{position:relative;z-index:1;display:inline-flex;margin-bottom:18px;color:#fff;font-weight:800;text-decoration:none}
+    .compilation-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:16px 0}
+    .compilation-kpis article{padding:16px;border:1px solid var(--line);border-radius:15px;background:#fff}
+    .compilation-kpis span,.compilation-kpis small{display:block;color:var(--muted);font-size:11px}
+    .compilation-kpis strong{display:block;margin:6px 0;font-size:26px;color:var(--green)}
+    .reporter-pills{display:flex;flex-wrap:wrap;gap:8px}
+    .reporter-pill{padding:9px 12px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:12px}
+    .reporter-pill b{color:var(--green)}
+    .compilation-objects{display:grid;gap:16px}
+    .compilation-object{padding:20px;border:1px solid var(--line);border-radius:18px;background:#fff;box-shadow:0 8px 24px rgba(22,67,51,.06)}
+    .compilation-object-head{display:flex;justify-content:space-between;gap:18px}
+    .compilation-object-head h3{margin:5px 0 3px;font-size:20px}
+    .compilation-object-meta{color:var(--muted);font-size:12px}
+    .object-quick-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:14px 0}
+    .object-quick-metrics span{padding:10px;border-radius:10px;background:#f3f8f5}
+    .object-quick-metrics small,.object-quick-metrics b{display:block}
+    .object-quick-metrics small{color:var(--muted);font-size:10px}
+    .object-quick-metrics b{margin-top:4px}
+    .compilation-trend{margin-top:13px;padding:14px;border:1px solid #e6efe9;border-radius:13px;background:#fbfefd}
+    .compilation-trend h4{margin:0 0 8px}
+    .compilation-trend svg{display:block;width:100%;height:auto;max-height:190px}
+    .compilation-trend .axis{stroke:#d7e5de;stroke-width:1}
+    .compilation-trend .trend{fill:none;stroke:#11865d;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+    .compilation-trend circle{fill:#fff;stroke:#0c6949;stroke-width:3}
+    .compilation-trend text{fill:#6b7d75;font-size:11px}
+    .compilation-object-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;padding-top:13px;border-top:1px solid #edf2ef}
+    .compilation-object-actions small{color:var(--muted)}
+    .compilation-object-actions a{color:var(--green);font-weight:850;text-decoration:none}
+    @media(max-width:900px){.compilation-kpis{grid-template-columns:repeat(2,1fr)}.object-quick-metrics{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:560px){.compilation-kpis{grid-template-columns:1fr 1fr}.compilation-object-head,.compilation-object-actions{flex-direction:column}.compilation-object-actions{align-items:flex-start}}
+  </style>
+</head>
+<body>
+  <header class="monitor-header">
+    <a class="brand" href="monitoring.html"><img src="assets/logo-yayasan-gambut.png" alt="Logo YG"><span><strong>YG GeoPortal</strong><small>Kompilasi Monitoring</small></span></a>
+    <nav><a href="monitoring.html">Kembali ke monitoring</a></nav>
+  </header>
+  <main class="dashboard-shell compilation-shell">
+    <section class="compilation-hero">
+      <a class="compilation-back" href="monitoring.html">← Kembali ke monitoring</a>
+      <span class="eyebrow">HASIL KOMPILASI LAPORAN</span>
+      <h1>Seluruh hasil monitoring lapangan</h1>
+      <p>Angka total dihitung dari laporan terbaru setiap objek. Riwayat dan grafik di bawah tetap dipisahkan per objek agar perkembangan lokasi tidak tercampur.</p>
+    </section>
+    <section id="compilation-kpis" class="compilation-kpis"></section>
+    <section class="side-card">
+      <span class="eyebrow">PELAPOR AKTIF</span>
+      <h2>Pelapor yang sudah mengirim data</h2>
+      <div id="compilation-reporters" class="reporter-pills"></div>
+    </section>
+    <div class="section-heading">
+      <div><span class="eyebrow">PER OBJEK</span><h2>Grafik pertumbuhan dan laporan</h2></div>
+      <span id="compilation-count">0 objek</span>
+    </div>
+    <section id="compilation-objects" class="compilation-objects"><div class="loading">Memuat hasil kompilasi…</div></section>
+  </main>
+  <script src="js/monitoring-compilation.js?v=20260819-compilation5"></script>
+</body>
+</html>
+
+

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>Detail Monitoring</title>
+  <link rel="stylesheet" href="css/monitoring.css?v=20260819-card-detail4">
+  <style>
+    .detail-shell{padding-top:18px}
+    .detail-shell .back-link{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:1px solid var(--line);border-radius:999px;color:var(--green);font-weight:700;text-decoration:none}
+    .detail-summary{padding:18px 0 4px}
+    .detail-summary h2{margin:4px 0 14px}
+    .detail-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,360px);gap:16px}
+    .detail-card-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .detail-timeline{display:grid;gap:10px}
+    .detail-timeline-item{padding:12px;border:1px solid var(--line);border-radius:12px;background:#fff}
+    .detail-timeline-item p{margin:8px 0 0;color:var(--muted);line-height:1.5}
+    .detail-timeline-meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+    .detail-timeline-meta .status{margin:0}
+    .detail-card-grid article{padding:12px;border:1px solid var(--line);border-radius:12px;background:#fff}
+    .detail-card-grid strong{display:block;margin:5px 0;color:var(--ink);font-size:20px}
+    .detail-card-grid .muted{display:block;color:var(--muted);font-size:12px}
+    @media(max-width:1020px){
+      .detail-card-grid{grid-template-columns:repeat(2,1fr)}
+      .detail-layout{grid-template-columns:1fr}
+    }
+    @media(max-width:680px){
+      .detail-card-grid{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <header class="monitor-header">
+    <a class="brand" href="monitoring.html">
+      <img src="assets/logo-yayasan-gambut.png" alt="Logo YG">
+      <span><strong>YG GeoPortal</strong><small>Detail Monitoring</small></span>
+    </a>
+    <nav><a href="monitoring.html">Kembali ke monitoring</a></nav>
+  </header>
+
+  <main class="dashboard-shell detail-shell">
+    <section class="detail-summary">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">MONITORING DETAIL</span>
+          <h2 id="detail-title">Memuat detail objek</h2>
+        </div>
+        <a class="back-link" href="monitoring.html">← Kembali</a>
+      </div>
+      <p id="detail-subtitle">Membuka data riwayat, indikator, dan grafik pertumbuhan pada satu objek.</p>
+      <section class="detail-card-grid" id="detail-kpi"></section>
+    </section>
+
+    <section class="detail-layout">
+      <div>
+        <section class="side-card">
+          <span class="eyebrow">GRAFIK PERTUMBUHAN</span>
+          <h2>Perubahan per indikator</h2>
+          <div id="detail-growth" class="chart-empty">Memuat grafik pertumbuhan…</div>
+        </section>
+        <section class="side-card">
+          <span class="eyebrow">RIWAYAT</span>
+          <h2>Catatan pelaporan</h2>
+          <div id="detail-history" class="detail-timeline"></div>
+        </section>
+      </div>
+      <aside>
+        <section class="side-card">
+          <span class="eyebrow">INFO OBJEK</span>
+          <h2>Profil ringkas</h2>
+          <div id="detail-info" class="detail-timeline"></div>
+        </section>
+        <section class="side-card">
+          <span class="eyebrow">FOTO</span>
+          <h2>Dokumentasi</h2>
+          <div id="detail-photos" class="detail-timeline">Belum ada data foto.</div>
+        </section>
+      </aside>
+    </section>
+  </main>
+
+  <script src="js/i18n.js?v=20260819-monitoring-request2"></script>
+  <script src="js/monitoring-detail.js?v=20260819-detail-v3"></script>
+</body>
+</html>
+
+

@@ -114,7 +114,11 @@
 
   function normalizePayload(data) {
     if (!data || typeof data !== 'object') return data;
-    var features = Array.isArray(data.features) ? data.features : Array.isArray(data.updates) ? data.updates : Array.isArray(data.reports) ? data.reports : [];
+    var features = Array.isArray(data.features) ? data.features : [];
+    if (!features.length && Array.isArray(data.updates)) features = data.updates;
+    if (!features.length && Array.isArray(data.reports)) features = data.reports;
+    if (!features.length && Array.isArray(data.items)) features = data.items;
+    if (!features.length && Array.isArray(data.data)) features = data.data;
     if (!Array.isArray(data.features) && features.length) data.features = features;
     data.features = (data.features || []).map(function (item) {
       if (item && item.type === 'Feature') {
