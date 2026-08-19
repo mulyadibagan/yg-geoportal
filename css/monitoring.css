@@ -97,3 +97,42 @@ body.modal-open{overflow:hidden}.action-item{width:100%;border:0;text-align:left
   border-color:#087452;
   background:#dff1e8;
 }
+
+/* Akses unduhan melalui prosedur permintaan data YG */
+.toolbar-download.monitoring-data-request{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(150px,210px) auto;
+  gap:22px;
+  align-items:center;
+  padding:20px;
+  border:1px solid #bcd9cf;
+  border-left:5px solid var(--green);
+  background:linear-gradient(135deg,#fff,#edf8f4);
+}
+.monitoring-data-request>div{display:grid;gap:5px}
+.monitoring-data-request strong{font-size:20px;color:var(--green)}
+.monitoring-data-request p{max-width:720px;margin:0;color:var(--muted);line-height:1.55}
+.monitoring-data-request label{display:grid;gap:7px;color:var(--muted);font-size:12px;font-weight:800}
+.monitoring-request-button{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  min-width:245px;
+  padding:14px 17px;
+  border-radius:13px;
+  background:var(--green);
+  color:#fff;
+  font-weight:850;
+  text-decoration:none;
+  box-shadow:0 9px 22px rgba(12,105,73,.18);
+}
+.monitoring-request-button:hover{background:var(--green2);transform:translateY(-1px)}
+@media(max-width:900px){
+  .toolbar-download.monitoring-data-request{grid-template-columns:1fr 1fr}
+  .monitoring-data-request>div{grid-column:1/-1}
+}
+@media(max-width:560px){
+  .toolbar-download.monitoring-data-request{grid-template-columns:1fr}
+  .monitoring-request-button{min-width:0}
+}
