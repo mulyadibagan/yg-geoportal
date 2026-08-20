@@ -11,6 +11,9 @@ var LEGACY_OBJECT_ALIASES={
   'area_mangrove:auto:374024597':'MANGROVE-BURUK-BAKUL-PHASE-III-2025-001',
   'area_mangrove:auto:1281388060':'MANGROVE-KELAPA-PATI-PHASE-III-2026-001'
 };
+  var REPORT_CORRECTIONS={
+    'YG-20260717-205241-378':{aliveCount:2730,deadOrDamagedCount:600,survivalPercent:82}
+  };
   var records=[],groups=[],masterObjects=[];
   var CLUSTER_MODES=['object','village','reporter','donor','phase'];
   var list=document.getElementById('monitor-list');
@@ -21,11 +24,11 @@ var LEGACY_OBJECT_ALIASES={
     var text=String(v||'').trim();
     var dayFirst=text.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})/);
     var d=dayFirst
-      ? new Date(Number(dayFirst[3]),Number(dayFirst[2])-1,Number(dayFirst[1]))
+      ? new Date(Date.UTC(Number(dayFirst[3]),Number(dayFirst[2])-1,Number(dayFirst[1])))
       : new Date(v||0);
     return isNaN(d.getTime())?new Date(0):d;
   }
-  function fmtDate(v){var d=dateValue(v);return d.getTime()?d.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}):'—';}
+  function fmtDate(v){var d=dateValue(v);return d.getTime()?d.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric',timeZone:'UTC'}):'—';}
   function has(v){return v!==undefined&&v!==null&&v!==''&&!(typeof v==='number'&&isNaN(v));}
   function toLowerText(v){
     return String(v==null?'':v).trim().toLowerCase();
@@ -377,12 +380,9 @@ var LEGACY_OBJECT_ALIASES={
     var phase=phaseOf(p)||phaseOf(targetProperties)||masterObject.phase||'';
     // Koreksi rekaman Kelapa Pati berdasarkan catatan lapangan tervalidasi:
     // 3.330 bibit, sekitar 600 mati, dan survival sekitar 82%.
-    if(masterObjectId==='MANGROVE-KELAPA-PATI-PHASE-III-2026-001'||
-       LEGACY_OBJECT_ALIASES[String(p.targetObjectId||'').trim()]==='MANGROVE-KELAPA-PATI-PHASE-III-2026-001'){
-      m.aliveCount=2730;
-      m.deadOrDamagedCount=600;
-      m.survivalPercent=82;
-    }
+    var correction=REPORT_CORRECTIONS[String(p.reportId||p.Source_Report_ID||'').trim()];
+    if(correction)Object.keys(correction).forEach(function(key){m[key]=correction[key];});
+    reconcileSurvival(m);
     var areaKey=isFinite(targetArea)&&targetArea>0?targetArea.toFixed(4):'';
     var boundsKey=geometryKey(feature&&feature.geometry);
     var spatialKey=[layerKey,nameKey,areaKey,boundsKey].filter(Boolean).join('|');
@@ -414,6 +414,21 @@ var LEGACY_OBJECT_ALIASES={
       metrics:m,
       status:statusOf(p,m,type)
     };
+  }
+
+  function reconcileSurvival(metrics){
+    metrics=metrics||{};
+    var alive=parseMetricNumber(metrics.aliveCount);
+    var dead=parseMetricNumber(metrics.deadOrDamagedCount);
+    var reported=parseMetricNumber(metrics.survivalPercent);
+    if(alive!==null&&dead!==null&&alive+dead>0){
+      var calculated=alive/(alive+dead)*100;
+      metrics.reportedSurvivalPercent=reported;
+      metrics.calculatedSurvivalPercent=calculated;
+      metrics.survivalPercent=calculated;
+      metrics.survivalReconciled=reported!==null&&Math.abs(reported-calculated)>1;
+    }
+    return metrics;
   }
 
   function clusterGroupKey(record){

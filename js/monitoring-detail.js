@@ -5,6 +5,9 @@
   var API=BASE+'?page=public-reports';
   var CALLBACK='ygMonitoringDetailCallback';
   var STORAGE_KEY='monitoring-detail';
+  var REPORT_CORRECTIONS={
+    'YG-20260717-205241-378':{aliveCount:2730,deadOrDamagedCount:600,survivalPercent:82}
+  };
 
   var params=new URLSearchParams(location.search);
   var objectKey=params.get('object')||'';
@@ -30,12 +33,16 @@
     try{return JSON.parse(v);}catch(e){return{};}
   }
   function dateValue(v){
-    var d=new Date(v||0);
+    var text=String(v||'').trim();
+    var dayFirst=text.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})/);
+    var d=dayFirst
+      ? new Date(Date.UTC(Number(dayFirst[3]),Number(dayFirst[2])-1,Number(dayFirst[1])))
+      : new Date(v||0);
     return isNaN(d.getTime())?new Date(0):d;
   }
   function fmtDate(v){
     var d=dateValue(v);
-    return d.getTime()?d.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}):'—';
+    return d.getTime()?d.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric',timeZone:'UTC'}):'—';
   }
   function has(v){
     return v!==undefined&&v!==null&&v!==''&&!(typeof v==='number'&&isNaN(v));
@@ -207,6 +214,9 @@
     var objectId=[layerKey,nameKey,areaKey,boundsKey].filter(Boolean).join('|');
     if(!objectId)objectId=p.targetObjectId||((p.targetSourceType||'program_layer')+'|'+(p.targetLayerId||'monitoring')+'|'+keyText(title));
     var type=typeOf(p,m);
+    var correction=REPORT_CORRECTIONS[String(p.reportId||p.Source_Report_ID||'').trim()];
+    if(correction)Object.keys(correction).forEach(function(key){m[key]=correction[key];});
+    reconcileSurvival(m);
     return{
       id:p.monitoringId||p.reportId||index,
       objectId:objectId,
@@ -225,6 +235,21 @@
       metrics:m,
       status:statusOf(p,m,type)
     };
+  }
+
+  function reconcileSurvival(metrics){
+    metrics=metrics||{};
+    var alive=parseMetricNumber(metrics.aliveCount);
+    var dead=parseMetricNumber(metrics.deadOrDamagedCount);
+    var reported=parseMetricNumber(metrics.survivalPercent);
+    if(alive!==null&&dead!==null&&alive+dead>0){
+      var calculated=alive/(alive+dead)*100;
+      metrics.reportedSurvivalPercent=reported;
+      metrics.calculatedSurvivalPercent=calculated;
+      metrics.survivalPercent=calculated;
+      metrics.survivalReconciled=reported!==null&&Math.abs(reported-calculated)>1;
+    }
+    return metrics;
   }
 
   function groupData(items){
@@ -400,11 +425,12 @@
       ['Pelapor aktif',Object.keys(group.reporterKeys||{}).length+' orang'],
       ['Organisasi',latest.organization||'—'],
       ['Jenis monitoring',latest.type||'—'],
+      ['Perhitungan survival','Pohon hidup ÷ (hidup + mati/rusak)','Satu rumus untuk kartu, detail, dan grafik'],
       ['ID Objek',group.objectCode||'—'],
       ['Jumlah riwayat',group.history.length+' kali']
     ];
     infoElement.innerHTML=itemList.map(function(item){
-      return'<div class="detail-timeline-item"><strong>'+esc(item[0])+'</strong><p>'+esc(item[1])+'</p></div>';
+      return'<div class="detail-timeline-item"><strong>'+esc(item[0])+'</strong><p>'+esc(item[1])+(item[2]?'<small class="detail-source-note">'+esc(item[2])+'</small>':'')+'</p></div>';
     }).join('')+
       '<div class="detail-timeline-item"><strong>Pelapor yang sudah melapor</strong><p>'+(reporters||'<span style="color:var(--muted);">Belum ada data pelapor</span>')+'</p></div>';
   }

@@ -6,6 +6,7 @@
   var prepostSessions = [];
   var prepostSummaryData = null;
   var prepostVisibleCount = 6;
+  var sourceCounts = { baseline: 0, published: 0 };
 
   function text(v) { return v === null || v === undefined ? '' : String(v).trim(); }
   function num(v) { var n = Number(v); return isFinite(n) ? n : 0; }
@@ -89,14 +90,14 @@
     if (!value) return null;
     var local = value.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})(?:\D.*)?$/);
     if (local) {
-      var d = new Date(Number(local[3]), Number(local[2]) - 1, Number(local[1]));
+      var d = new Date(Date.UTC(Number(local[3]), Number(local[2]) - 1, Number(local[1])));
       return isNaN(d.getTime()) ? null : d;
     }
     var parsed = new Date(value);
     return isNaN(parsed.getTime()) ? null : parsed;
   }
-  function yearOf(v) { var d = dateValue(v); return d ? String(d.getFullYear()) : ''; }
-  function formatDate(v) { if (!v) return '-'; var d = dateValue(v); return d ? d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : v; }
+  function yearOf(v) { var d = dateValue(v); return d ? String(d.getUTCFullYear()) : ''; }
+  function formatDate(v) { if (!v) return '-'; var d = dateValue(v); return d ? d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }) : v; }
   function formatPct(v, digits) {
     var d = typeof digits === 'number' ? digits : 1;
     return Number(v || 0).toLocaleString('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: d }) + '%';
@@ -240,6 +241,10 @@
     if (participantsNode) participantsNode.textContent = total.toLocaleString('id-ID');
     if (womenNode) womenNode.textContent = women.toLocaleString('id-ID');
     if (youthNode) youthNode.textContent = youth ? youth.toLocaleString('id-ID') : '-';
+    var sourceNode = document.getElementById('capacity-source-status');
+    if(sourceNode)sourceNode.textContent='Sumber kanonik: '+sourceCounts.baseline.toLocaleString('id-ID')+
+      ' arsip tervalidasi + '+sourceCounts.published.toLocaleString('id-ID')+
+      ' laporan terpublikasi · duplikat ID dihitung satu kali.';
 
     if (!rows.length) {
       box.innerHTML = '<div class="capacity-empty">Belum ada kegiatan yang sesuai dengan filter.</div>';
@@ -727,7 +732,6 @@
         facilitator: facilitator,
         status: 'active'
       });
-
       if (statusNode) statusNode.textContent = 'Sesi berhasil dibuat. Menyiapkan halaman builder...';
       var createdSessionId = await findCreatedSessionId(fingerprint);
       loadPrepost();
@@ -835,6 +839,7 @@
         });
       });
     } catch (e) {}
+    sourceCounts.baseline=historical.length;
 
     var live = [];
     try {
@@ -852,6 +857,7 @@
         })
         .map(activityEngagementRecord)
         .filter(Boolean));
+      sourceCounts.published=live.length;
     } catch (e) {}
 
     var seen = {};

@@ -16,8 +16,8 @@
     if(!isFinite(v))return'0';
     return v.toLocaleString('id-ID',{maximumFractionDigits:1});
   }
-  function dateValue(v){var d=new Date(v||0);return isNaN(d.getTime())?new Date(0):d;}
-  function fmtDate(v){var d=dateValue(v);return d.getTime()?d.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}):'—';}
+  function dateValue(v){var text=String(v||'').trim();var local=text.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})/);var d=local?new Date(Date.UTC(Number(local[3]),Number(local[2])-1,Number(local[1]))):new Date(v||0);return isNaN(d.getTime())?new Date(0):d;}
+  function fmtDate(v){var d=dateValue(v);return d.getTime()?d.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric',timeZone:'UTC'}):'—';}
   function metricNumber(v){
     if(v===undefined||v===null||v==='')return null;
     if(typeof v==='number')return isFinite(v)?v:null;
@@ -153,9 +153,7 @@
     var link=event.target.closest('[data-object-key]');
     if(!link)return;
     var key=link.getAttribute('data-object-key');
-    var saved=null;
-    try{saved=JSON.parse(sessionStorage.getItem('monitoring-compilation')||'null');}catch(e){}
-    var group=saved&&saved.groups&&saved.groups.find(function(item){return item.key===key;});
+    var group=activeData&&activeData.groups&&activeData.groups.find(function(item){return item.key===key;});
     if(group){
       try{sessionStorage.setItem('monitoring-detail',JSON.stringify({objectKey:group.key,objectId:group.objectCode||'',generatedAt:Date.now(),group:group}));}catch(e){}
     }
