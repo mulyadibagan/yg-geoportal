@@ -174,8 +174,11 @@
     var donor = '';
 
     // Only infer from programme/location combinations recorded in data/donors.json.
-    if (/pedekik|dayun|temiang/.test(haystack) &&
-        /kopi|coffee|liberica|nursery|agroforestr|gambut|peat|zero[ -]?burning/.test(haystack)) {
+    if (/buruk bakul|kelapa pati|sepahat/.test(haystack) &&
+        /mangrove|bakau|nipah|pesisir|ekowisata|produk kreatif|digital communication/.test(haystack)) {
+      donor = 'Aramco Asia Singapore';
+    } else if (/pedekik|dayun|temiang|tanjung kuras|siak/.test(haystack) &&
+        /kopi|coffee|liberica|nursery|agroforestr|gambut|peat|zero[ -]?burning|rspo/.test(haystack)) {
       donor = 'Global Environment Centre';
     } else if (/siarang[ -]?arang/.test(haystack)) {
       donor = 'Pertamina Foundation';
