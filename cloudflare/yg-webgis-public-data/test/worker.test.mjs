@@ -79,6 +79,40 @@ test("rejects write methods and unknown paths", async () => {
   assert.equal(missing.status, 404);
 });
 
+test("serves a no-store redacted prepost session list for webgisyg.id", async () => {
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async url => {
+    assert.match(String(url), /page=prepost-live-summary/);
+    return new Response(JSON.stringify({ ok: true, sessions: [{ sessionId: "SESS-1", title: "Training", createdByEmail: "staff@example.org" }] }), { headers: { "content-type": "application/json" } });
+  };
+  try {
+    const response = await worker.fetch(new Request("https://data.test/api/prepost/sessions"), envWith(null));
+    const data = await response.json();
+    assert.equal(response.status, 200);
+    assert.equal(response.headers.get("access-control-allow-origin"), "https://webgisyg.id");
+    assert.equal(response.headers.get("cache-control"), "no-store");
+    assert.equal(data.sessions[0].createdByEmail, undefined);
+    assert.equal(data.sessions[0].sessionId, "SESS-1");
+  } finally { globalThis.fetch = originalFetch; }
+});
+
+test("serves redacted prepost session detail and validates the session id", async () => {
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async url => {
+    assert.match(String(url), /page=prepost-session-detail/);
+    return new Response(JSON.stringify({ ok: true, session: { sessionId: "SESS-1", createdByEmail: "staff@example.org" }, questions: [{ questionId: "Q-1", createdByEmail: "staff@example.org" }] }), { headers: { "content-type": "application/json" } });
+  };
+  try {
+    const response = await worker.fetch(new Request("https://data.test/api/prepost/session-detail?sessionId=SESS-1"), envWith(null));
+    const data = await response.json();
+    assert.equal(response.status, 200);
+    assert.equal(data.session.createdByEmail, undefined);
+    assert.equal(data.questions[0].createdByEmail, undefined);
+    const invalid = await worker.fetch(new Request("https://data.test/api/prepost/session-detail?sessionId=%2Fbad"), envWith(null));
+    assert.equal(invalid.status, 400);
+  } finally { globalThis.fetch = originalFetch; }
+});
+
 test("publication refresh requires its secret and atomically publishes a manifest", async () => {
   const env = writableEnv();
   const denied = await worker.fetch(new Request("https://data.test/internal/refresh", { method: "POST", body: "{}" }), env);
