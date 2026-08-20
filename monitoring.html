@@ -13,7 +13,7 @@
   <title>Dashboard Monitoring | YG GeoPortal</title>
   <link rel="icon" href="assets/logo-yayasan-gambut.png">
   <link rel="stylesheet" href="css/site-brand.css?v=20260720-program-dashboard1">
-  <link rel="stylesheet" href="css/monitoring.css?v=20260819-priority-link8">
+  <link rel="stylesheet" href="css/monitoring.css?v=20260820-type-cards1">
   <link rel="stylesheet" href="css/monitoring-v1-fix.css?v=20260720-104">
   <link rel="stylesheet" href="css/language-switcher.css?v=20260721-all-pages1">
   <link rel="stylesheet" href="css/navigation-v2.css?v=20260807-mobile-submenu-links1">
@@ -74,7 +74,7 @@
       <div id="summary-status-chart">Memuat ringkasan...</div>
     </section>
 
-    <section class="toolbar" aria-label="Filter monitoring">
+    <section class="toolbar monitoring-detail-only" aria-label="Filter monitoring">
       <label>Cari
         <input id="monitor-search" type="search" placeholder="Nama objek, lokasi, atau jenis monitoring">
       </label>
@@ -108,7 +108,7 @@
       </label>
     </section>
 
-    <section class="toolbar-download monitoring-data-request" aria-label="Permintaan data monitoring">
+    <section class="toolbar-download monitoring-data-request monitoring-detail-only" aria-label="Permintaan data monitoring">
       <div>
         <span class="eyebrow">AKSES DATA TERCATAT</span>
         <strong>Butuh data monitoring?</strong>
@@ -120,9 +120,9 @@
       <a id="monitoring-request-link" class="monitoring-request-button" href="data-request.html?dataset=monitoring-results&amp;scope=all">Ajukan permintaan data <span aria-hidden="true">&rarr;</span></a>
     </section>
 
-    <div class="category-strip" id="category-strip"></div>
+    <div class="category-strip monitoring-detail-only" id="category-strip"></div>
 
-    <section class="content-grid">
+    <section class="content-grid monitoring-detail-only">
       <div>
         <div class="section-heading">
           <div><span class="eyebrow">RINGKASAN PER OBJEK</span><h2>Lokasi monitoring</h2></div>
@@ -153,7 +153,7 @@
   </div>
 
   <script src="js/monitoring-data-compat.js?v=20260820-snapshot-fast1"></script>
-  <script src="js/monitoring.js?v=20260820-snapshot-fast1"></script>
+  <script src="js/monitoring.js?v=20260820-type-cards1"></script>
   <script src="js/monitoring-photo.js?v=20260720-edge-refresh1"></script>
 <script src="js/i18n.js?v=20260814-monitoring-request1"></script>
   <script src="js/navigation-v2.js?v=20260807-mobile-menu-fix2"></script>

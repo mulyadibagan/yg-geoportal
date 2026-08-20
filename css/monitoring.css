@@ -78,6 +78,8 @@ body.modal-open{overflow:hidden}.action-item{width:100%;border:0;text-align:left
 @media(max-width:1000px){.compilation-main-card{grid-template-columns:1fr}.compilation-main-metrics{grid-template-columns:repeat(4,1fr)}.compilation-main-action{justify-self:start}}
 @media(max-width:620px){.compilation-main-card{padding:20px}.compilation-main-metrics{grid-template-columns:repeat(2,1fr)}.compilation-main-copy>strong{font-size:21px}}
 .summary-chart-section-top{margin:10px 0 18px}
+.monitoring-detail-only{display:none!important}
+#summary-status-chart{display:grid;gap:16px}
 /* Tombol admin untuk memperbaiki objek monitoring */
 .edit-object-button{
   display:inline-flex;
