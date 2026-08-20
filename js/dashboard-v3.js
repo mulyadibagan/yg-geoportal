@@ -352,6 +352,17 @@
     };
   }
 
+  function isCapacityFeature(feature) {
+    const props = (feature && feature.properties) || {};
+    if (firstValue(props, ["reportType"]) === "Capacity Building") return true;
+    const proposed = parseObject(props.proposedChanges);
+    const information = parseObject(props.proposedInformation);
+    const details = proposed.capacityBuilding || information.capacityBuilding || {};
+    return Object.keys(details).length > 0 || [
+      "maleParticipants", "femaleParticipants", "participantTarget", "topic"
+    ].some(key => information[key] !== undefined && information[key] !== null && information[key] !== "");
+  }
+
   function activityEngagementRecord(feature) {
     const props = (feature && feature.properties) || {};
     const details = parseObject(props.targetFeatureProperties);
@@ -410,13 +421,13 @@
       ? reportsResult.value : null;
     const reportFeatures = (reports && reports.features) || [];
     const live = reportFeatures
-        .filter(feature => firstValue((feature && feature.properties) || {}, ["reportType"]) === "Capacity Building")
+        .filter(isCapacityFeature)
         .map(capacityRecordFromFeature);
     const engagement = reportFeatures
       .filter(feature => {
         const props = (feature && feature.properties) || {};
         const details = parseObject(props.targetFeatureProperties);
-        return firstValue(props, ["reportType"]) !== "Capacity Building" &&
+        return !isCapacityFeature(feature) &&
           numericFrom(details, ["Jumlah_Peserta", "Peserta", "participants"]) > 0;
       })
       .map(activityEngagementRecord)

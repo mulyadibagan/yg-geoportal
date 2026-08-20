@@ -6,7 +6,7 @@
   var prepostSessions = [];
   var prepostSummaryData = null;
   var prepostVisibleCount = 6;
-  var sourceCounts = { baseline: 0, published: 0 };
+  var sourceCounts = { baseline: 0, publishedTraining: 0, publishedEngagement: 0, latestPublished: '' };
 
   function text(v) { return v === null || v === undefined ? '' : String(v).trim(); }
   function num(v) { var n = Number(v); return isFinite(n) ? n : 0; }
@@ -166,6 +166,23 @@
     };
   }
 
+  function capacityPayload(properties) {
+    var p=properties||{};
+    var info=parse(p.proposedInformation);
+    var changes=parse(p.proposedChanges);
+    var capacity=changes.capacityBuilding||info.capacityBuilding||{};
+    if(!Object.keys(capacity).length&&(
+      info.maleParticipants!==undefined||info.femaleParticipants!==undefined||
+      info.participantTarget!==undefined||info.topic!==undefined
+    ))capacity=info;
+    return capacity;
+  }
+
+  function isCapacityFeature(feature) {
+    var p=feature&&feature.properties||{};
+    return text(p.reportType)==='Capacity Building'||Object.keys(capacityPayload(p)).length>0;
+  }
+
   function activityEngagementRecord(feature) {
     var p = feature.properties || {};
     var metadata = p.targetFeatureProperties || {};
@@ -242,9 +259,15 @@
     if (womenNode) womenNode.textContent = women.toLocaleString('id-ID');
     if (youthNode) youthNode.textContent = youth ? youth.toLocaleString('id-ID') : '-';
     var sourceNode = document.getElementById('capacity-source-status');
-    if(sourceNode)sourceNode.textContent='Sumber kanonik: '+sourceCounts.baseline.toLocaleString('id-ID')+
-      ' arsip tervalidasi + '+sourceCounts.published.toLocaleString('id-ID')+
-      ' laporan terpublikasi · duplikat ID dihitung satu kali.';
+    if(sourceNode){
+      var scope=text(document.body.getAttribute('data-capacity-scope')).toLowerCase();
+      var sourceText=scope==='community'
+        ? sourceCounts.publishedEngagement.toLocaleString('id-ID')+' laporan pelibatan terpublikasi'
+        : sourceCounts.baseline.toLocaleString('id-ID')+' arsip tervalidasi + '+
+          sourceCounts.publishedTraining.toLocaleString('id-ID')+' laporan pelatihan terpublikasi';
+      sourceNode.textContent='Sumber kanonik: '+sourceText+' · duplikat ID dihitung satu kali'+
+        (sourceCounts.latestPublished?' · aktivitas terbaru '+formatDate(sourceCounts.latestPublished):'')+'.';
+    }
 
     if (!rows.length) {
       box.innerHTML = '<div class="capacity-empty">Belum ada kegiatan yang sesuai dengan filter.</div>';
@@ -846,18 +869,23 @@
       var data = await jsonp(API + '?page=public-reports&t=' + Date.now());
       var features = data.features || [];
       live = features
-        .filter(function (f) { return text((f.properties || {}).reportType) === 'Capacity Building'; })
+        .filter(isCapacityFeature)
         .map(liveRecord);
-      live = live.concat(features
+      sourceCounts.publishedTraining=live.length;
+      var engagement=features
         .filter(function (f) {
           var p = f.properties || {};
           var metadata = p.targetFeatureProperties || {};
-          return text(p.reportType) !== 'Capacity Building' &&
+          return !isCapacityFeature(f) &&
             num(metadata.Jumlah_Peserta || metadata.Peserta || metadata.participants) > 0;
         })
         .map(activityEngagementRecord)
-        .filter(Boolean));
-      sourceCounts.published=live.length;
+        .filter(Boolean);
+      sourceCounts.publishedEngagement=engagement.length;
+      live=live.concat(engagement);
+      sourceCounts.latestPublished=live.map(function(row){return row.date;}).filter(Boolean).sort(function(a,b){
+        return (dateValue(b)||new Date(0))-(dateValue(a)||new Date(0));
+      })[0]||'';
     } catch (e) {}
 
     var seen = {};
