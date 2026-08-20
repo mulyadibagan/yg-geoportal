@@ -2,7 +2,10 @@
   "use strict";
 
   const API = "https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec?page=objects";
-  const DASHBOARD_SNAPSHOT_URL = "data/dashboard-summary-snapshot.json?v=20260820-public-snapshot1";
+  const DASHBOARD_SNAPSHOT_URL =
+    new URLSearchParams(window.location.search).get("dataSource") === "cloudflare-staging"
+      ? "https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/snapshots/current/dashboard.json"
+      : "data/dashboard-summary-snapshot.json?v=20260820-public-snapshot1";
   const CALLBACK = "ygDashboardV3Callback";
   const DASHBOARD_CACHE_KEY = "ygDashboardV3Cache_v3_20260809_coffee_area1";
   const DASHBOARD_CACHE_MAX_AGE_MS = 1000 * 60 * 60 * 24 * 7;

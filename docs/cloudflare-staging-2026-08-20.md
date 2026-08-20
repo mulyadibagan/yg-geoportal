@@ -54,6 +54,16 @@ Urutan sumber adalah R2, GitHub Pages, lalu Apps Script. Respons membawa `x-yg-d
 5. Jalankan workflow manual staging, smoke test berulang, observability, fallback, dan rollback.
 6. Production memerlukan bucket `yg-webgis-public-snapshots` dan Worker `yg-webgis-public-data`; keduanya belum dibuat.
 
+## Integrasi frontend staging
+
+- Home staging: `/?dataSource=cloudflare-staging`.
+- WebGIS staging: `/webgis.html?dataSource=cloudflare-staging`.
+- Hanya nilai parameter persis `cloudflare-staging` yang mengaktifkan gateway; URL biasa tetap memakai snapshot GitHub.
+- Browser smoke test staging dan default menghasilkan angka identik: 588,64 ha, 1.125 peserta, 14 desa, dan 4 kabupaten.
+- WebGIS staging memuat 26 kontrol layer, 124 objek master, dan 46 pembaruan publik tanpa error console.
+- GitHub Environment `yg-webgis-staging` sudah dibuat dan dibatasi ke branch `codex/yg-webgis-performance-p0`.
+- Variable environment `CLOUDFLARE_ACCOUNT_ID` sudah tersedia. Secret `CLOUDFLARE_API_TOKEN` belum dibuat sehingga workflow tidak dapat dijalankan dari GitHub sampai credential minimum ditambahkan.
+
 ## Rollback staging
 
 - Frontend production belum menunjuk Cloudflare, sehingga kegagalan staging tidak memengaruhi pengguna.

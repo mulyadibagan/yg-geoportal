@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "test": "node --test test/*.test.mjs",
-    "check": "wrangler deploy --dry-run --env staging"
+    "check": "wrangler deploy --dry-run --env staging",
+    "smoke:staging": "node scripts/smoke-staging.mjs"
   },
   "devDependencies": {
     "wrangler": "4.124.0"
