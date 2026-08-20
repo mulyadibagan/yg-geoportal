@@ -23,6 +23,19 @@ function isAdminToken_(value) {
   return Boolean(expected) && String(value || '') === expected;
 }
 
+function setAdminTokenFromSecureExecution(token) {
+  const caller = String(Session.getActiveUser().getEmail() || '').toLowerCase();
+  if (caller !== ADMIN_EMAIL.toLowerCase()) {
+    throw new Error('Only the configured administrator may rotate the admin token.');
+  }
+  const value = String(token || '').trim();
+  if (!/^[A-Za-z0-9_-]{43,128}$/.test(value)) {
+    throw new Error('Admin token must be 43-128 URL-safe characters.');
+  }
+  PropertiesService.getScriptProperties().setProperty(ADMIN_TOKEN_PROPERTY, value);
+  return { ok: true, property: ADMIN_TOKEN_PROPERTY, rotatedAt: new Date().toISOString() };
+}
+
 /*
   Struktur kolom:
   A  ID Laporan
