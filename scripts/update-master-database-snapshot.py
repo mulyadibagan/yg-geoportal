@@ -21,14 +21,14 @@ def load_source(source_path):
         return json.loads(Path(source_path).read_text(encoding='utf-8'))
     return fetch_json(URL)
 
-def load_capacity_sources(local_source):
+def load_capacity_sources(local_source,reports=None):
     dashboard_target=ROOT/'data'/'dashboard-summary-snapshot.json'
     if local_source and dashboard_target.exists():
         current=json.loads(dashboard_target.read_text(encoding='utf-8'))
         cached=current.get('capacitySources')
         if isinstance(cached,dict):
             return cached
-    reports=fetch_json(PUBLIC_REPORTS_URL)
+    reports=reports or fetch_json(PUBLIC_REPORTS_URL)
     features=reports.get('features') if isinstance(reports,dict) else []
     relevant=[]
     for feature in features or []:
@@ -64,7 +64,25 @@ data=load_source(args.source)
 if not isinstance(data,dict) or not isinstance(data.get('features'),list):
     raise RuntimeError('Master Database response is not a GeoJSON FeatureCollection')
 snapshot_generated_at=datetime.now(timezone.utc).isoformat()
-capacity_sources=load_capacity_sources(args.source)
+public_reports=None if args.source else fetch_json(PUBLIC_REPORTS_URL)
+if public_reports:
+    report_by_id={
+        str((feature.get('properties') or {}).get('reportId') or '').strip():
+        (feature.get('properties') or {})
+        for feature in public_reports.get('features') or [] if isinstance(feature,dict)
+    }
+    for feature in data['features']:
+        properties=feature.get('properties') if isinstance(feature,dict) else None
+        if not isinstance(properties,dict):
+            continue
+        report_id=str(properties.get('reportId') or properties.get('Source_Report_ID') or '').strip()
+        report=report_by_id.get(report_id)
+        if not report:
+            continue
+        for key in ('reporterName','organization','targetFeatureProperties'):
+            if report.get(key) not in (None,''):
+                properties[key]=report[key]
+capacity_sources=load_capacity_sources(args.source,public_reports)
 data['snapshotGeneratedAt']=snapshot_generated_at
 master_target=ROOT/'data'/'master-database-snapshot.json'
 master_changed=write_if_changed(master_target,data,('snapshotGeneratedAt',))
