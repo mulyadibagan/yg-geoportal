@@ -213,8 +213,12 @@
     var targetArea=parseMetricNumber(rawArea);
     var boundsKey=geometryKey(feature&&feature.geometry);
     var areaKey=isFinite(targetArea)&&targetArea>0?targetArea.toFixed(4):'';
-    var objectId=[layerKey,nameKey,areaKey,boundsKey].filter(Boolean).join('|');
-    if(!objectId)objectId=p.targetObjectId||((p.targetSourceType||'program_layer')+'|'+(p.targetLayerId||'monitoring')+'|'+keyText(title));
+    var spatialObjectId=[layerKey,nameKey,areaKey,boundsKey].filter(Boolean).join('|');
+    var permanentObjectId=String(
+      targetProperties.Object_ID||targetProperties.OBJECT_ID||targetProperties.objectId||p.targetObjectId||''
+    ).trim();
+    var objectId=permanentObjectId||spatialObjectId||
+      ((p.targetSourceType||'program_layer')+'|'+(p.targetLayerId||'monitoring')+'|'+keyText(title));
     var type=typeOf(p,m);
     var correction=REPORT_CORRECTIONS[String(p.reportId||p.Source_Report_ID||'').trim()];
     if(correction)Object.keys(correction).forEach(function(key){m[key]=correction[key];});
@@ -222,6 +226,8 @@
     return{
       id:p.monitoringId||p.reportId||index,
       objectId:objectId,
+      spatialObjectId:spatialObjectId,
+      legacyObjectId:p.targetObjectId||'',
       title:title,
       type:type,
       date:p.activityDate||p.publishedAt||p.verifiedAt||p.receivedAt,
