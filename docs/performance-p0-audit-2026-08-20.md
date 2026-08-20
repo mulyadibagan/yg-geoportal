@@ -1,7 +1,7 @@
 # Audit dan implementasi P0 performa publik
 
-Tanggal audit: 20 Agustus 2026  
-Basis source: `origin/main` commit `98a3a2f`  
+Tanggal audit: 20 Agustus 2026
+Basis source: `origin/main` commit `98a3a2f`
 Feature branch: `codex/yg-webgis-performance-p0`
 
 ## Temuan terverifikasi
