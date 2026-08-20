@@ -1,124 +1,14 @@
-const ROUTES = {
-  "/snapshots/current/dashboard.json": {
-    key: "snapshots/current/dashboard.json",
-    github: "/data/dashboard-summary-snapshot.json",
-    appsScriptPage: "objects"
-  },
-  "/snapshots/current/objects.json": {
-    key: "snapshots/current/objects.json",
-    github: "/data/master-database-snapshot.json",
-    appsScriptPage: "objects"
-  },
-  "/manifests/current.json": {
-    key: "manifests/current.json"
-  }
-};
-
-const PUBLIC_HEADERS = {
-  "access-control-allow-origin": "*",
-  "access-control-allow-methods": "GET, HEAD, OPTIONS",
-  "access-control-max-age": "86400",
-  "x-content-type-options": "nosniff"
-};
-
-function jsonResponse(value, status, extraHeaders) {
-  return new Response(JSON.stringify(value), {
-    status: status || 200,
-    headers: Object.assign({ "content-type": "application/json; charset=utf-8" },
-      PUBLIC_HEADERS, extraHeaders || {})
-  });
-}
-
-function withPublicHeaders(response, source, cacheControl) {
-  const headers = new Headers(response.headers);
-  Object.entries(PUBLIC_HEADERS).forEach(([key, value]) => headers.set(key, value));
-  headers.set("cache-control", cacheControl);
-  headers.set("x-yg-data-source", source);
-  return new Response(response.body, {
-    status: response.status,
-    statusText: response.statusText,
-    headers
-  });
-}
-
-async function fromR2(request, env, route) {
-  if (!env.PUBLIC_SNAPSHOTS || !route.key) return null;
-  const object = await env.PUBLIC_SNAPSHOTS.get(route.key);
-  if (!object) return null;
-  const headers = new Headers();
-  object.writeHttpMetadata(headers);
-  headers.set("etag", object.httpEtag);
-  if (!headers.has("content-type")) headers.set("content-type", "application/json; charset=utf-8");
-  const body = request.method === "HEAD" ? null : object.body;
-  return withPublicHeaders(new Response(body, { headers }), "r2", "public, max-age=300, stale-while-revalidate=3600");
-}
-
-async function fetchFallback(request, env, route) {
-  if (route.github) {
-    try {
-      const github = await fetch(env.GITHUB_ORIGIN + route.github, {
-        headers: { accept: "application/json" }
-      });
-      if (github.ok) {
-        return withPublicHeaders(
-          new Response(request.method === "HEAD" ? null : github.body, {
-            status: github.status,
-            headers: github.headers
-          }),
-          "github-pages",
-          "public, max-age=60, stale-while-revalidate=300"
-        );
-      }
-    } catch (error) {
-      console.warn({ event: "github_fallback_failed", path: route.github, message: error.message });
-    }
-  }
-  if (route.appsScriptPage) {
-    try {
-      const appsScript = await fetch(env.APPS_SCRIPT_BASE + "?page=" + route.appsScriptPage, {
-        headers: { accept: "application/json" },
-        redirect: "follow"
-      });
-      if (appsScript.ok) {
-        return withPublicHeaders(
-          new Response(request.method === "HEAD" ? null : appsScript.body, {
-            status: appsScript.status,
-            headers: appsScript.headers
-          }),
-          "apps-script-fallback",
-          "no-store"
-        );
-      }
-    } catch (error) {
-      console.error({ event: "apps_script_fallback_failed", message: error.message });
-    }
-  }
-  return null;
-}
-
-export default {
-  async fetch(request, env) {
-    const url = new URL(request.url);
-    if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: PUBLIC_HEADERS });
-    if (request.method !== "GET" && request.method !== "HEAD") {
-      return jsonResponse({ ok: false, error: "method_not_allowed" }, 405, { allow: "GET, HEAD, OPTIONS" });
-    }
-    if (url.pathname === "/health") {
-      return jsonResponse({ ok: true, service: "yg-webgis-public-data", environment: env.ENVIRONMENT }, 200,
-        { "cache-control": "no-store" });
-    }
-    const route = ROUTES[url.pathname];
-    if (!route) return jsonResponse({ ok: false, error: "not_found" }, 404, { "cache-control": "no-store" });
-
-    try {
-      const r2 = await fromR2(request, env, route);
-      if (r2) return r2;
-    } catch (error) {
-      console.error({ event: "r2_read_failed", key: route.key, message: error.message });
-    }
-    const fallback = await fetchFallback(request, env, route);
-    if (fallback) return fallback;
-    return jsonResponse({ ok: false, error: "snapshot_unavailable" }, 503,
-      { "cache-control": "no-store", "retry-after": "60" });
-  }
-};
+const ROUTES={"/snapshots/current/dashboard.json":{name:"dashboard",github:"/data/dashboard-summary-snapshot.json"},"/snapshots/current/objects.json":{name:"objects",github:"/data/master-database-snapshot.json"},"/manifests/current.json":{key:"manifests/current.json"}};
+const PUBLIC_HEADERS={"access-control-allow-origin":"*","access-control-allow-methods":"GET, HEAD, OPTIONS","access-control-max-age":"86400","x-content-type-options":"nosniff"};
+const META={httpMetadata:{contentType:"application/json; charset=utf-8",cacheControl:"public, max-age=300"}};
+function json(value,status=200,headers={}){return new Response(JSON.stringify(value),{status,headers:{"content-type":"application/json; charset=utf-8",...PUBLIC_HEADERS,...headers}})}
+function publicResponse(response,source,cache){const h=new Headers(response.headers);Object.entries(PUBLIC_HEADERS).forEach(([k,v])=>h.set(k,v));h.set("cache-control",cache);h.set("x-yg-data-source",source);return new Response(response.body,{status:response.status,headers:h})}
+async function hash(text){const data=new TextEncoder().encode(text);const digest=await crypto.subtle.digest("SHA-256",data);return Array.from(new Uint8Array(digest),b=>b.toString(16).padStart(2,"0")).join("")}
+async function authorized(request,secret){const supplied=request.headers.get("authorization")?.replace(/^Bearer\s+/i,"")||"";if(!secret||!supplied)return false;const [a,b]=await Promise.all([hash(supplied),hash(secret)]);let difference=0;for(let i=0;i<a.length;i++)difference|=a.charCodeAt(i)^b.charCodeAt(i);return difference===0}
+async function r2Key(env,route){if(route.key)return route.key;const object=await env.PUBLIC_SNAPSHOTS.get("manifests/current.json");if(!object)return `snapshots/current/${route.name}.json`;try{const manifest=JSON.parse(await object.text());return String(manifest?.snapshots?.[route.name]?.path||"").replace(/^\//,"")||`snapshots/current/${route.name}.json`}catch{return `snapshots/current/${route.name}.json`}}
+async function fromR2(request,env,route){if(!env.PUBLIC_SNAPSHOTS)return null;const object=await env.PUBLIC_SNAPSHOTS.get(await r2Key(env,route));if(!object)return null;const h=new Headers();object.writeHttpMetadata(h);h.set("etag",object.httpEtag);if(!h.has("content-type"))h.set("content-type","application/json; charset=utf-8");return publicResponse(new Response(request.method==="HEAD"?null:object.body,{headers:h}),"r2","public, max-age=300, stale-while-revalidate=3600")}
+async function fallback(request,env,route){if(!route.github)return null;try{const response=await fetch(env.GITHUB_ORIGIN+route.github,{headers:{accept:"application/json"}});if(response.ok)return publicResponse(new Response(request.method==="HEAD"?null:response.body,{status:response.status,headers:response.headers}),"github-pages","public, max-age=60, stale-while-revalidate=300")}catch(error){console.warn({event:"github_fallback_failed",message:error.message})}return null}
+async function fetchJson(url){const response=await fetch(url,{headers:{accept:"application/json","user-agent":"YG-GeoPortal-Cloudflare-Snapshot/1.0"},redirect:"follow"});if(!response.ok)throw new Error(`upstream_http_${response.status}`);const value=await response.json();if(!value||typeof value!=="object")throw new Error("invalid_upstream_json");return value}
+function enrich(objects,reports){if(!Array.isArray(objects.features)||!Array.isArray(reports.features))throw new Error("invalid_feature_collection");const byId=new Map(reports.features.map(f=>[String(f?.properties?.reportId||"").trim(),f?.properties||{}]));for(const feature of objects.features){const p=feature?.properties;if(!p)continue;const report=byId.get(String(p.reportId||p.Source_Report_ID||"").trim());if(!report)continue;for(const key of ["reporterName","organization","targetFeatureProperties"])if(report[key]!==undefined&&report[key]!=="")p[key]=report[key]}return objects}
+async function refresh(env,event){if(!env.PUBLIC_SNAPSHOTS)throw new Error("r2_binding_missing");const base=env.APPS_SCRIPT_BASE;const [raw,reports,prepost]=await Promise.all([fetchJson(`${base}?page=objects`),fetchJson(`${base}?page=public-reports`),fetchJson(`${base}?page=prepost-live-summary&scope=active`)]);const now=new Date().toISOString();const id=String(event.reportId||"publication").replace(/[^a-zA-Z0-9_-]/g,"-").slice(0,80);const version=`${now.replace(/[-:.TZ]/g,"")}-${id}`;const objects=enrich(structuredClone(raw),reports);objects.snapshotGeneratedAt=now;const dashboard={type:"FeatureCollection",dashboardSnapshotVersion:1,generatedAt:objects.generatedAt||now,snapshotGeneratedAt:now,featureCount:objects.features.length,source:"YG_MASTER_DATABASE_PUBLIC_SNAPSHOT",capacitySources:{reports,prepost},features:objects.features.map(f=>({type:"Feature",properties:f?.properties||{}}))};const texts={dashboard:JSON.stringify(dashboard),objects:JSON.stringify(objects)};const snapshots={};for(const name of ["dashboard","objects"]){const data=name==="dashboard"?dashboard:objects;snapshots[name]={path:`/snapshots/${version}/${name}.json`,bytes:new TextEncoder().encode(texts[name]).length,sha256:await hash(texts[name]),featureCount:data.features.length,generatedAt:data.generatedAt||null}}await Promise.all(Object.entries(texts).map(([name,text])=>env.PUBLIC_SNAPSHOTS.put(`snapshots/${version}/${name}.json`,text,META)));const manifest={schemaVersion:1,service:"yg-webgis-public-data",version,publishedAt:now,trigger:{event:event.event||"report_published",reportId:event.reportId||null},snapshots};await env.PUBLIC_SNAPSHOTS.put("manifests/current.json",JSON.stringify(manifest),META);return manifest}
+export default{async fetch(request,env){const url=new URL(request.url);if(request.method==="OPTIONS")return new Response(null,{status:204,headers:PUBLIC_HEADERS});if(url.pathname==="/internal/refresh"){if(request.method!=="POST")return json({ok:false,error:"method_not_allowed"},405,{allow:"POST, OPTIONS"});if(!(await authorized(request,env.REFRESH_TOKEN)))return json({ok:false,error:"unauthorized"},401,{"cache-control":"no-store"});try{const manifest=await refresh(env,(await request.json())||{});return json({ok:true,version:manifest.version,publishedAt:manifest.publishedAt},200,{"cache-control":"no-store"})}catch(error){console.error({event:"snapshot_refresh_failed",message:error.message});return json({ok:false,error:"refresh_failed"},502,{"cache-control":"no-store"})}}if(request.method!=="GET"&&request.method!=="HEAD")return json({ok:false,error:"method_not_allowed"},405,{allow:"GET, HEAD, OPTIONS"});if(url.pathname==="/health")return json({ok:true,service:"yg-webgis-public-data",environment:env.ENVIRONMENT},200,{"cache-control":"no-store"});const route=ROUTES[url.pathname];if(!route)return json({ok:false,error:"not_found"},404,{"cache-control":"no-store"});try{const response=await fromR2(request,env,route);if(response)return response}catch(error){console.error({event:"r2_read_failed",message:error.message})}const response=await fallback(request,env,route);if(response)return response;return json({ok:false,error:"snapshot_unavailable"},503,{"cache-control":"no-store","retry-after":"60"})}};

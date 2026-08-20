@@ -2,7 +2,7 @@
   'use strict';
 
   var API = 'https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec';
-  var SNAPSHOT_URL = 'data/dashboard-summary-snapshot.json?v=20260820-prepost-fallback1';
+  var SNAPSHOT_URL = 'https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/snapshots/current/dashboard.json';
   var params = new URLSearchParams(window.location.search);
   var sessionId = params.get('session') || '';
   var participantResponses = [];

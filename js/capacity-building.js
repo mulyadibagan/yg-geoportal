@@ -2,7 +2,7 @@
   'use strict';
 
   var API = 'https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec';
-  var SNAPSHOT_URL = 'data/dashboard-summary-snapshot.json?v=20260820-capacity-fallback1';
+  var SNAPSHOT_URL = 'https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/snapshots/current/dashboard.json';
   var all = [];
   var prepostSessions = [];
   var prepostSummaryData = null;
@@ -930,6 +930,7 @@
       renderCapacity();
     }
 
+    var snapshotLoaded=false;
     try {
       var snapshot=await fetch(SNAPSHOT_URL,{cache:'no-store'}).then(function(response){
         if(!response.ok)throw new Error('snapshot '+response.status);
@@ -937,11 +938,12 @@
       });
       applyPublishedFeatures(snapshot&&snapshot.capacitySources&&snapshot.capacitySources.reports&&
         snapshot.capacitySources.reports.features||[]);
+      snapshotLoaded=true;
     } catch (e) {
       applyPublishedFeatures([]);
     }
 
-    try {
+    if(!snapshotLoaded) try {
       var data = await jsonp(API + '?page=public-reports&t=' + Date.now());
       if(data&&Array.isArray(data.features)&&data.features.length)applyPublishedFeatures(data.features);
     } catch (e) {}

@@ -4,7 +4,7 @@
   var BASE='https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec';
   var API=BASE+'?page=public-reports';
   var OBJECTS_API=BASE+'?page=objects';
-  var SNAPSHOT_URL='data/master-database-snapshot.json?v=20260820-monitoring-page-fast1';
+  var SNAPSHOT_URL='https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/snapshots/current/objects.json';
   var CALLBACK='ygMonitoringDashboardCallback';
   var OBJECTS_CALLBACK='ygMonitoringObjectsCallback';
 var LEGACY_OBJECT_ALIASES={
@@ -1038,7 +1038,7 @@ var LEGACY_OBJECT_ALIASES={
   }
 
   function loadSnapshotImmediately(){
-    fetch(SNAPSHOT_URL,{cache:'no-store'})
+    return fetch(SNAPSHOT_URL,{cache:'no-store'})
       .then(function(response){
         if(!response.ok)throw new Error('HTTP '+response.status);
         return response.json();
@@ -1051,14 +1051,15 @@ var LEGACY_OBJECT_ALIASES={
       })
       .catch(function(error){
         console.warn('Snapshot monitoring tidak dapat dimuat:',error);
+        throw error;
       });
   }
 
-  loadSnapshotImmediately();
-
-  var objectsScript=document.createElement('script');
-  objectsScript.src=OBJECTS_API+'&callback='+OBJECTS_CALLBACK+'&t='+Date.now();
-  objectsScript.async=true;
-  objectsScript.onerror=function(){masterObjects=[];loadReportsScript();};
-  document.head.appendChild(objectsScript);
+  loadSnapshotImmediately().catch(function(){
+    var objectsScript=document.createElement('script');
+    objectsScript.src=OBJECTS_API+'&callback='+OBJECTS_CALLBACK+'&t='+Date.now();
+    objectsScript.async=true;
+    objectsScript.onerror=function(){masterObjects=[];loadReportsScript();};
+    document.head.appendChild(objectsScript);
+  });
 })();
