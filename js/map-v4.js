@@ -22,6 +22,7 @@
     area_mangrove: { label: "Area Penanaman Mangrove", color: "#00796b", visible: true },
     mineral_land_restoration_area: { label: "Area Restorasi Lahan Mineral", color: "#558b2f", visible: true },
     permanent_measurement_plots: { label: "Petak Ukur Permanen", color: "#8e24aa", visible: true },
+    measurement_points: { label: "Titik Tapak Ukur", color: "#ef6c00", visible: true },
     titik_penanaman: { label: "Titik Tanam Mangrove", color: "#009688", visible: true },
     monitoring_reports: { label: "Hasil Monitoring Terverifikasi", color: "#f9a825", visible: true },
     community_reports: { label: "Laporan Masyarakat Terverifikasi", color: "#7b1fa2", visible: true },
@@ -272,6 +273,33 @@ L.control.scale({
   function getObjectName(feature) {
     const props = feature.properties || {};
     return props.Nama_Objek || props.title || props.NAMOBJ || props.Desa || props.WADMKD || "Objek WebGIS";
+  }
+
+  function applyMeasurementPointPolicy(feature) {
+    const props = feature && feature.properties || {};
+    const identity = [
+      props.title,
+      props.locationName,
+      props.Nama_Objek,
+      props.description,
+      props.Keterangan
+    ].filter(Boolean).join(" ").toLowerCase();
+
+    if (!identity.includes("titik tapak ukur")) return feature;
+
+    props.Audit_Source_Layer =
+      props.Audit_Source_Layer || props.Layer_ID || props.Source_Layer || "lainnya";
+    props.Layer_ID = "measurement_points";
+    props.Source_Layer = "measurement_points";
+    props.Layer_Tujuan = "measurement_points";
+    props.Layer_Label = "Titik Tapak Ukur";
+    props.Jenis_Titik = "Titik Tapak Ukur";
+    props.Kategori = "Titik Tapak Ukur";
+    props.Donor = "Aliansi Kolibri";
+    props.Donor_Cluster = "Aliansi Kolibri";
+    props.Nama_Donor = "Aliansi Kolibri";
+
+    return feature;
   }
 
   function getDonor(props, visited) {
@@ -2252,6 +2280,7 @@ L.control.scale({
         );
       })
       .map(normalizeVerifiedCommunityAssets)
+      .map(applyMeasurementPointPolicy)
       .map(applyPematangDukuDonorPolicy)
       .map(applyAramcoCoastalAssetPolicy)
       .map(applyExternalPeatInfrastructureDonorPolicy)
