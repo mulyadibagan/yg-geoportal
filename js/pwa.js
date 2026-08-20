@@ -18,7 +18,7 @@
 
     window.addEventListener("load", () => {
       navigator.serviceWorker
-        .register("./service-worker.js?v=20260820-freshness2", { updateViaCache: "none" })
+        .register("./service-worker.js?v=20260820-freshness3", { updateViaCache: "none" })
         .then(registration => {
           registration.update();
 
@@ -30,7 +30,7 @@
     });
 
     navigator.serviceWorker.addEventListener("controllerchange", () => {
-      const reloadKey = "yg-sw-freshness-20260820-2";
+      const reloadKey = "yg-sw-freshness-20260820-3";
       if (sessionStorage.getItem(reloadKey)) return;
       sessionStorage.setItem(reloadKey, "done");
       window.location.reload();

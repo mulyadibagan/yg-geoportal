@@ -5,7 +5,7 @@
   const PUBLIC_OBJECTS_SNAPSHOT_URL =
     new URLSearchParams(window.location.search).get("dataSource") === "cloudflare-staging"
       ? "https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/snapshots/current/objects.json"
-      : "data/master-database-snapshot.json?v=20260813-performance1";
+      : "data/master-database-snapshot.json?v=20260820-monitoring20";
   const DEFAULT_VIEW = [1.25, 102.05];
   const DEFAULT_ZOOM = 9;
 
@@ -3288,7 +3288,7 @@ L.control.scale({
   try {
     const snapshotResponse = await fetch(
       PUBLIC_OBJECTS_SNAPSHOT_URL,
-      { cache: "force-cache" }
+      { cache: "no-store" }
     );
     if (!snapshotResponse.ok) throw new Error("HTTP " + snapshotResponse.status);
     const snapshotData = await snapshotResponse.json();
