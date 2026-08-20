@@ -2872,11 +2872,12 @@ L.control.scale({
         mangrove.features
       );
       /*
-       * Jangan tampilkan geometry lama jika relasi permanennya belum valid.
-       * Lebih aman menyembunyikan satu laporan yang perlu direkonsiliasi
-       * daripada menampilkan monitoring pada polygon yang salah.
+       * Laporan tetap harus terlihat walaupun relasi ke registri permanen
+       * belum tersedia. Geometri yang tersimpan bersama laporan adalah
+       * fallback terverifikasi; geometri resmi hanya menggantikannya ketika
+       * pasangan objek berhasil ditemukan.
        */
-      if (!officialTargets.length) return [];
+      if (!officialTargets.length) return [feature];
 
       const geometry = combinedOfficialMangroveGeometry(officialTargets);
       if (!geometry) return [];
@@ -2906,29 +2907,8 @@ L.control.scale({
       }];
     });
 
-    const latestMonitoringByTarget = new Map();
-    alignedFeatures.forEach(feature => {
-      if (!isMangroveMonitoringFeature(feature)) return;
-      const props = feature && feature.properties || {};
-      const targetKey = normalizedMatchValue(props.Target_Object_ID_Current || props.Target_Object_ID);
-      if (!targetKey) return;
-      const rawDate = String(props.activityDate || props.Tanggal || props.publishedAt || props.receivedAt || "").trim();
-      const dayFirst = rawDate.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
-      const timestamp = dayFirst
-        ? Date.UTC(Number(dayFirst[3]), Number(dayFirst[2]) - 1, Number(dayFirst[1]))
-        : (Date.parse(rawDate) || 0);
-      const current = latestMonitoringByTarget.get(targetKey);
-      if (!current || timestamp >= current.timestamp) latestMonitoringByTarget.set(targetKey, { feature, timestamp });
-    });
-    const latestAlignedFeatures = alignedFeatures.filter(feature => {
-      if (!isMangroveMonitoringFeature(feature)) return true;
-      const props = feature && feature.properties || {};
-      const targetKey = normalizedMatchValue(props.Target_Object_ID_Current || props.Target_Object_ID);
-      const latest = latestMonitoringByTarget.get(targetKey);
-      return !latest || latest.feature === feature;
-    });
     data.features = [
-      ...latestAlignedFeatures,
+      ...alignedFeatures,
       ...mangrove.features
     ];
     return data;
