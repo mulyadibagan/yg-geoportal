@@ -1,4 +1,4 @@
-const CACHE_NAME = "yg-geoportal-v6-20260820-monitoring20";
+const CACHE_NAME = "yg-geoportal-v7-20260820-monitoring-all";
 
 const OFFLINE_ASSETS = [
   "./assets/logo-yayasan-gambut.png",
