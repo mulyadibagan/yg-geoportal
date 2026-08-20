@@ -167,6 +167,30 @@
     };
   }
 
+  function reconcileDonor(record) {
+    if (text(record.donor)) return record;
+    var haystack = [record.name, record.location, record.regency, record.target, record.partner, record.topic, record.group]
+      .map(text).join(' ').toLowerCase();
+    var donor = '';
+
+    // Only infer from programme/location combinations recorded in data/donors.json.
+    if (/pedekik|dayun|temiang/.test(haystack) &&
+        /kopi|coffee|liberica|nursery|agroforestr|gambut|peat|zero[ -]?burning/.test(haystack)) {
+      donor = 'Global Environment Centre';
+    } else if (/siarang[ -]?arang/.test(haystack)) {
+      donor = 'Pertamina Foundation';
+    } else if (/pematang duku/.test(haystack) &&
+        /gambut|peat|zero[ -]?burning|restor|rehabilit|pertanian/.test(haystack)) {
+      donor = 'Pan Pacific Conservation Foundation (PPCF)';
+    }
+
+    if (donor) {
+      record.donor = donor;
+      record.donorSource = 'programme';
+    }
+    return record;
+  }
+
   function capacityPayload(properties) {
     var p=properties||{};
     var info=parse(p.proposedInformation);
@@ -313,7 +337,8 @@
             '</div>' +
             '<div class="capacity-card__details">' +
               '<p><strong>Sasaran peserta</strong>' + esc(r.target || r.group || '-') + '</p>' +
-              '<p><strong>Donor</strong>' + esc(r.donor || '-') + '</p>' +
+              '<p><strong>Donor</strong>' + esc(r.donor || '-') +
+                (r.donorSource === 'programme' ? '<small style="display:block;color:#547064;margin-top:4px">Diselaraskan dari program donor terverifikasi</small>' : '') + '</p>' +
               '<p><strong>Mitra/Narasumber</strong>' + esc(r.partner || '-') + '</p>' +
               '<p><strong>Topik/Materi</strong>' + esc(r.topic || '-') + '</p>' +
             '</div>' +
@@ -886,7 +911,7 @@
         return (dateValue(b)||new Date(0))-(dateValue(a)||new Date(0));
       })[0]||'';
       var seen = {};
-      all = historical.concat(live).filter(function (r) {
+      all = historical.concat(live).map(reconcileDonor).filter(function (r) {
         var k = r.id || [r.name, r.date, r.location].join('|');
         if (seen[k]) return false;
         seen[k] = 1;
