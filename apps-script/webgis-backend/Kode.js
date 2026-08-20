@@ -92,6 +92,64 @@ function rotateAdminTokenAndEmailAccessLinksFromSecureExecution() {
   };
 }
 
+function migratePermanentMeasurementPlotsFromSecureExecution() {
+  const caller = String(Session.getActiveUser().getEmail() || '').toLowerCase();
+  if (caller !== ADMIN_EMAIL.toLowerCase()) {
+    throw new Error('Only the configured administrator may migrate PUP reports.');
+  }
+
+  const reportIds = [
+    'YG-20260713-165850-288',
+    'YG-20260820-190119-864'
+  ];
+  const layerId = 'permanent_measurement_plots';
+  const layerLabel = 'Petak Ukur Permanen';
+  const sheet = getSheet_();
+  if (!sheet) throw new Error('Sheet laporan tidak ditemukan.');
+
+  const migrated = [];
+  reportIds.forEach(function(reportId) {
+    const rowNumber = findReportRowById_(sheet, reportId);
+    if (!rowNumber) throw new Error('Laporan tidak ditemukan: ' + reportId);
+    if (clean_(sheet.getRange(rowNumber, 22).getDisplayValue()) !== 'Sudah Dipublikasikan') {
+      throw new Error('Laporan belum dipublikasikan: ' + reportId);
+    }
+
+    let targetProperties = {};
+    let proposedChanges = {};
+    try {
+      targetProperties = JSON.parse(sheet.getRange(rowNumber, 31).getDisplayValue() || '{}');
+    } catch (error) {}
+    try {
+      proposedChanges = JSON.parse(sheet.getRange(rowNumber, 32).getDisplayValue() || '{}');
+    } catch (error) {}
+
+    targetProperties.Layer_Tujuan = layerId;
+    targetProperties.Layer_Label = layerLabel;
+    targetProperties.Kategori = layerLabel;
+    proposedChanges.targetLayerId = layerId;
+    proposedChanges.targetLayerLabel = layerLabel;
+
+    sheet.getRange(rowNumber, 29).setValue(layerId);
+    sheet.getRange(rowNumber, 30).setValue(layerLabel);
+    sheet.getRange(rowNumber, 31).setValue(JSON.stringify(targetProperties));
+    sheet.getRange(rowNumber, 32).setValue(JSON.stringify(proposedChanges));
+    migrated.push(reportId);
+  });
+
+  SpreadsheetApp.flush();
+  const syncResult = syncPublishedCommunityReportsToObjects();
+  notifyCloudflarePublication_('PUP-LAYER-MIGRATION');
+
+  return {
+    ok: true,
+    layerId: layerId,
+    layerLabel: layerLabel,
+    migrated: migrated,
+    sync: syncResult
+  };
+}
+
 /*
   Struktur kolom:
   A  ID Laporan
@@ -892,6 +950,7 @@ function getAdminTargetLayerOptions_() {
   return [
     { id: 'area_mangrove', label: 'Area Penanaman Mangrove', types: ['Polygon', 'MultiPolygon'] },
     { id: 'mineral_land_restoration_area', label: 'Area Restorasi Lahan Mineral', types: ['Polygon', 'MultiPolygon'] },
+    { id: 'permanent_measurement_plots', label: 'Petak Ukur Permanen', types: ['Polygon', 'MultiPolygon'] },
     { id: 'titik_penanaman', label: 'Titik Tanam Mangrove', types: ['Point', 'MultiPoint'] },
     { id: 'area_kopi', label: 'Wilayah Penanaman Kopi', types: ['Polygon', 'MultiPolygon'] },
     { id: 'area_agroforestry', label: 'Area Agroforestry', types: ['Polygon', 'MultiPolygon'] },
