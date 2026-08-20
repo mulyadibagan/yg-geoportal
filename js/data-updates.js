@@ -658,6 +658,21 @@ function toDirectDriveUrl(url){
 
     const popup = layer.getPopup();
     let content = String(popup.getContent() || "");
+    content = content.replace(
+      /<div class="yg-update-gallery">[\s\S]*?<\/div>/,
+      ""
+    );
+    const allPhotosAlreadyRendered = photos.length > 0 && photos.every(url => {
+      const match = String(url || "").match(
+        /\/file\/d\/([A-Za-z0-9_-]+)|[?&]id=([A-Za-z0-9_-]+)/
+      );
+      const identity = match ? (match[1] || match[2]) : String(url || "");
+      return identity && content.indexOf(identity) !== -1;
+    });
+    if (allPhotosAlreadyRendered) {
+      popup.setContent(content);
+      return;
+    }
     const gallery = photos.length
       ? '<div class="yg-update-gallery">' +
         photos.map((url, index) =>
@@ -676,10 +691,6 @@ function toDirectDriveUrl(url){
      * No, Object ID, wilayah, tahun, fase, luas, jumlah bibit, nama objek,
      * kategori, dan donor tidak pernah diganti oleh snapshot laporan foto.
      */
-    content = content.replace(
-      /<div class="yg-update-gallery">[\s\S]*?<\/div>/,
-      ""
-    );
     content = content.replace(
       /<div class="yg-v3-gallery">[\s\S]*?<\/div>/,
       ""
