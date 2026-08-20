@@ -22,6 +22,31 @@ const EDITOR_USERS = {
   }
 };
 
+function cleanupExpiredAuthProperties() {
+  const caller = String(Session.getActiveUser().getEmail() || '').toLowerCase();
+  if (caller !== ADMIN_EMAIL.toLowerCase()) {
+    throw new Error('Only the configured administrator may clean authentication properties.');
+  }
+  const properties = PropertiesService.getScriptProperties();
+  const all = properties.getProperties();
+  const now = Date.now();
+  let deleted = 0;
+  Object.keys(all).forEach(function(key) {
+    if (key.indexOf('EDITOR_SESSION_') !== 0 && key.indexOf('EDITOR_LOGIN_RESULT_') !== 0) return;
+    let value = {};
+    try { value = JSON.parse(all[key] || '{}'); } catch (error) {}
+    const expiresAt = Number(value.expiresAt || 0);
+    const createdAt = Number(value.createdAt || 0);
+    const expiredSession = key.indexOf('EDITOR_SESSION_') === 0 && (!expiresAt || expiresAt <= now);
+    const staleResult = key.indexOf('EDITOR_LOGIN_RESULT_') === 0 && (!createdAt || now - createdAt > 10 * 60 * 1000);
+    if (expiredSession || staleResult) {
+      properties.deleteProperty(key);
+      deleted += 1;
+    }
+  });
+  return { ok: true, deleted: deleted, remaining: Object.keys(properties.getProperties()).length };
+}
+
 function handleEditorAuthPost_(e) {
   const params = e && e.parameter ? e.parameter : {};
   const action = clean_(params.action);
