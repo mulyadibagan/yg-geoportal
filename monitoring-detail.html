@@ -24,13 +24,27 @@
     .detail-card-grid strong{display:block;margin:5px 0;color:var(--ink);font-size:20px}
     .detail-card-grid .muted{display:block;color:var(--muted);font-size:12px}
     .detail-source-note{display:block;margin-top:6px;color:var(--muted);font-size:11px;line-height:1.4}
+    .detail-tree-table-wrap{overflow:auto;border:1px solid var(--line);border-radius:12px;background:#fff}
+    .detail-tree-table{width:100%;min-width:980px;border-collapse:collapse;font-size:12px}
+    .detail-tree-table th,.detail-tree-table td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+    .detail-tree-table th{position:sticky;top:0;background:#edf7f2;color:var(--green);font-size:11px;letter-spacing:.03em}
+    .detail-tree-table tr:last-child td{border-bottom:0}
+    .tree-status{display:inline-flex;padding:4px 8px;border-radius:999px;font-size:10px;font-weight:800}
+    .tree-status.alive{background:#dff5e9;color:#146640}
+    .tree-status.dead{background:#fde2e2;color:#9c2323}
+    .detail-replant-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+    .detail-replant-grid article{padding:11px;border:1px solid var(--line);border-radius:10px;background:#f7fbf9}
+    .detail-replant-grid strong,.detail-replant-grid span{display:block}
+    .detail-replant-grid span{margin-top:3px;color:var(--muted);font-size:11px}
     .chart-heading strong{padding:5px 9px;border-radius:999px;background:#e8f5ef;color:var(--green);font-size:14px}
     @media(max-width:1020px){
       .detail-card-grid{grid-template-columns:repeat(2,1fr)}
       .detail-layout{grid-template-columns:1fr}
+      .detail-replant-grid{grid-template-columns:repeat(2,1fr)}
     }
     @media(max-width:680px){
       .detail-card-grid{grid-template-columns:1fr}
+      .detail-replant-grid{grid-template-columns:1fr}
     }
   </style>
 </head>
@@ -69,10 +83,10 @@
           <h2>Catatan pelaporan</h2>
           <div id="detail-history" class="detail-timeline"></div>
         </section>
-        <section class="side-card" id="detail-trees-card" hidden>
-          <span class="eyebrow">DATA INDIVIDU</span>
-          <h2>Riwayat setiap pohon</h2>
-          <p class="muted">ID yang sama menghubungkan pengukuran pohon dari satu tahap monitoring ke tahap berikutnya.</p>
+        <section class="side-card" id="detail-trees-section" hidden>
+          <span class="eyebrow">DATA TEGAKAN PUP 1</span>
+          <h2>Detail per pohon</h2>
+          <p class="muted">Perbandingan pengukuran Tahap I dan Tahap II untuk pohon awal yang memiliki kode individu.</p>
           <div id="detail-trees"></div>
         </section>
       </div>
@@ -92,7 +106,6 @@
   </main>
 
   <script src="js/i18n.js?v=20260819-monitoring-request2"></script>
-  <script src="js/monitoring-detail.js?v=20260820-object-link1"></script>
+  <script src="js/monitoring-detail.js?v=20260821-pup1-tree-detail1"></script>
 </body>
 </html>
-
