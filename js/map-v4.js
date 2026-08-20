@@ -831,7 +831,7 @@ L.control.scale({
     }
 
     const photos = [
-      ...(isMonitoring ? [] : cleanPhotoList(props._ygPhotos)),
+      ...cleanPhotoList(props._ygPhotos),
       ...cleanPhotoList(props.photos),
       ...cleanPhotoList(props.Foto),
       ...cleanPhotoList(props.Foto_2)
@@ -2263,6 +2263,36 @@ L.control.scale({
       if (!groups[layerId]) groups[layerId] = [];
       groups[layerId].push(feature);
     });
+
+    /*
+     * Beberapa laporan monitoring memakai polygon target yang sama. Leaflet
+     * memberikan klik ke fitur yang ditambahkan terakhir, jadi tempatkan
+     * laporan berdokumentasi di atas laporan tanpa foto. Di dalam kelompok
+     * yang sama, laporan terbaru berada paling atas.
+     */
+    if (groups.monitoring_reports) {
+      const monitoringTimestamp = feature => {
+        const props = feature && feature.properties || {};
+        const value = String(
+          props.activityDate || props.Tanggal || props.publishedAt ||
+          props.receivedAt || ""
+        ).trim();
+        const dayFirst = value.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+        return dayFirst
+          ? Date.UTC(Number(dayFirst[3]), Number(dayFirst[2]) - 1, Number(dayFirst[1]))
+          : (Date.parse(value) || 0);
+      };
+      const hasMonitoringPhotos = feature => {
+        const props = feature && feature.properties || {};
+        return [props._ygPhotos, props.photos, props.Foto, props.Foto_2]
+          .some(value => Array.isArray(value) ? value.length > 0 : Boolean(String(value || "").trim()));
+      };
+      groups.monitoring_reports.sort((first, second) => {
+        const photoOrder = Number(hasMonitoringPhotos(first)) -
+          Number(hasMonitoringPhotos(second));
+        return photoOrder || monitoringTimestamp(first) - monitoringTimestamp(second);
+      });
+    }
 
     updateStats(rawFeatures);
 
