@@ -3,6 +3,8 @@ name: Update GEFS transport cache
 on:
   workflow_dispatch:
   push:
+    branches:
+      - main
     paths:
       - "scripts/update_gefs_cache.mjs"
       - "scripts/validate_gefs_cache.mjs"
@@ -30,8 +32,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: "22"
       - name: Fetch GEFS 925 hPa ensemble
