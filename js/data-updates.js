@@ -487,8 +487,11 @@ function toDirectDriveUrl(url){
       VERIFIED_MONITORING_PHOTO_FALLBACK,
       window.YG_LATEST_MONITORING_PHOTOS_BY_LOCATION || {}
     );
-    if (!window.YG_MAP || !window.YG_MAP.layerObjects) {
-      if (attempt < 30) {
+    const monitoringGroup = window.YG_MAP && window.YG_MAP.layerObjects
+      ? window.YG_MAP.layerObjects.monitoring_reports
+      : null;
+    if (!monitoringGroup || typeof monitoringGroup.eachLayer !== "function") {
+      if (attempt < 300) {
         setTimeout(() => applyVerifiedMonitoringPhotoFallback(attempt + 1), 200);
       }
       return;
