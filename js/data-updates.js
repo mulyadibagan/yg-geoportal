@@ -681,6 +681,10 @@ function toDirectDriveUrl(url){
       ""
     );
     content = content.replace(
+      /<div class="yg-v3-gallery">[\s\S]*?<\/div>/,
+      ""
+    );
+    content = content.replace(
       /(<\/div>\s*<\/div>\s*)$/,
       gallery + "$1"
     );
