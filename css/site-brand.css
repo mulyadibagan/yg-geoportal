@@ -12,10 +12,15 @@
 .yg-header-brand img{flex:0 0 auto;width:48px;height:48px;object-fit:contain}
 .yg-header-brand__text{min-width:0}
 .yg-header-brand__text h1{margin:0}
-.yg-sidebar-brand{display:flex;align-items:center;gap:9px;margin-bottom:9px;color:inherit;text-decoration:none}
+.yg-sidebar-brand{display:flex;align-items:center;gap:9px;min-width:0;margin-bottom:9px;color:inherit;text-decoration:none}
 .yg-sidebar-brand img{width:42px;height:42px;padding:3px;border-radius:50%;background:#fff;object-fit:contain}
-.yg-sidebar-brand strong{font-size:14px!important;line-height:1.25}
+.yg-sidebar-brand strong{min-width:0;font-size:14px!important;line-height:1.2;text-wrap:balance}
 .yg-sidebar-brand:hover strong,.yg-sidebar-brand:focus-visible strong{text-decoration:underline}
+.yg-language-switcher{display:inline-flex;align-items:center;gap:3px;margin-top:9px;padding:3px;border:1px solid rgba(255,255,255,.42);border-radius:999px;background:rgba(0,70,110,.18)}
+.yg-language-switcher>span{display:none}
+.yg-language-switcher button{min-width:35px;padding:5px 9px;border:0;border-radius:999px;background:transparent;color:#fff;font:800 10px/1 inherit;cursor:pointer}
+.yg-language-switcher button:hover,.yg-language-switcher button:focus-visible{background:rgba(255,255,255,.2);outline:none}
+.yg-language-switcher button.active{background:#fff;color:#0879a8;box-shadow:0 2px 8px rgba(0,0,0,.15)}
 @media(max-width:760px){
   .yg-page-header__inner{min-height:64px}
   .yg-page-brand img{width:44px;height:44px}
