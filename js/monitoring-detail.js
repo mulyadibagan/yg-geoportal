@@ -468,15 +468,36 @@
 
   function renderTrees(group){
     if(!treesCard||!treesElement)return;
-    var records=[];
-    group.history.forEach(function(report){
+    var reports=group.history.slice().sort(function(a,b){return dateValue(a.date)-dateValue(b.date);});
+    var stages=[];
+    var rows={};
+    reports.forEach(function(report){
       var trees=Array.isArray(report.metrics&&report.metrics.treeRecords)?report.metrics.treeRecords:[];
-      trees.forEach(function(tree,index){records.push({stage:report.metrics.pupStage||fmtDate(report.date),date:report.date,tree:tree,index:index});});
+      var stage=report.metrics.pupStage||fmtDate(report.date);
+      var stageKey=keyText(stage)+'|'+String(report.date||'');
+      stages.push({key:stageKey,label:stage,date:report.date});
+      var occurrences={};
+      trees.forEach(function(tree,index){
+        var id=String(tree.treeId||'').trim();
+        if(!id)return;
+        var normalized=keyText(id);
+        occurrences[normalized]=(occurrences[normalized]||0)+1;
+        var rowKey=normalized+'|'+occurrences[normalized];
+        if(!rows[rowKey])rows[rowKey]={id:id,species:tree.species||'',measurements:{},order:index,occurrence:occurrences[normalized]};
+        rows[rowKey].species=rows[rowKey].species||tree.species||'';
+        rows[rowKey].measurements[stageKey]=tree;
+      });
     });
+    var records=Object.keys(rows).map(function(key){return rows[key];}).sort(function(a,b){return a.order-b.order;});
     if(!records.length){treesCard.hidden=true;return;}
-    var counts={};records.forEach(function(item){var id=String(item.tree.treeId||'').toLowerCase();if(id)counts[id]=(counts[id]||0)+1;});
+    function metric(value,unit){return value===''||value===null||value===undefined?'—':esc(value)+' '+unit;}
+    function delta(first,last,unit){var a=num(first),b=num(last);if(a===null||b===null)return'—';var d=b-a;return(d>0?'+':'')+Math.round(d*100)/100+' '+unit;}
     treesCard.hidden=false;
-    treesElement.innerHTML='<div style="overflow-x:auto"><table style="width:100%;min-width:760px;border-collapse:collapse"><thead><tr><th>ID</th><th>Tahap</th><th>Jenis</th><th>Tinggi</th><th>Diameter</th><th>Status</th><th>Catatan</th></tr></thead><tbody>'+records.map(function(item){var t=item.tree||{},duplicate=counts[String(t.treeId||'').toLowerCase()]>1;return'<tr><td style="padding:8px;border-bottom:1px solid var(--line)"><strong>'+esc(t.treeId||'—')+'</strong>'+(duplicate?'<small style="display:block;color:#a33">ID berulang</small>':'')+'</td><td>'+esc(item.stage||'—')+'</td><td>'+esc(t.species||'—')+'</td><td>'+esc(t.heightCm||'—')+' cm</td><td>'+esc(t.diameterCm||'—')+' cm</td><td>'+esc(t.status||'—')+'</td><td>'+esc(t.notes||'—')+'</td></tr>';}).join('')+'</tbody></table></div>';
+    treesElement.innerHTML='<div style="overflow-x:auto"><table style="width:100%;min-width:820px;border-collapse:collapse"><thead><tr><th>ID</th><th>Jenis</th>'+stages.map(function(stage){return'<th>'+esc(stage.label)+'</th>';}).join('')+'<th>Perubahan</th><th>Status terbaru</th></tr></thead><tbody>'+records.map(function(row){
+      var first=row.measurements[stages[0].key]||{};
+      var last=row.measurements[stages[stages.length-1].key]||{};
+      return'<tr><td style="padding:8px;border-bottom:1px solid var(--line)"><strong>'+esc(row.id)+'</strong></td><td>'+esc(row.species||'—')+'</td>'+stages.map(function(stage){var t=row.measurements[stage.key]||{};return'<td><strong>'+metric(t.heightCm,'cm')+'</strong><small style="display:block;color:var(--muted)">Ø '+metric(t.diameterCm,'cm')+'</small></td>';}).join('')+'<td><strong>Tinggi '+delta(first.heightCm,last.heightCm,'cm')+'</strong><small style="display:block;color:var(--muted)">Diameter '+delta(first.diameterCm,last.diameterCm,'cm')+'</small></td><td>'+esc(last.status||first.status||'—')+'</td></tr>';
+    }).join('')+'</tbody></table></div>';
   }
 
   function render(group){
