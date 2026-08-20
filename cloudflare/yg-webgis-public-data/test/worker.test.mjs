@@ -85,10 +85,12 @@ test("publication refresh requires its secret and atomically publishes a manifes
   assert.equal(denied.status, 401);
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async url => {
-    const value = String(url).includes("public-reports")
+    const value = String(url).includes("public-updates")
+      ? { type: "FeatureCollection", features: [{ properties: { reportId: "P-1", photos: ["https://drive.google.com/file/d/photo/view"], targetFeatureProperties: { Object_ID: "OBJECT-1" } } }] }
+      : String(url).includes("public-reports")
       ? { type: "FeatureCollection", features: [{ properties: { reportId: "R-1", reporterName: "Pelapor" } }] }
       : String(url).includes("prepost-live-summary") ? { sessions: [] }
-      : { type: "FeatureCollection", generatedAt: "2026-08-20T00:00:00Z", features: [{ type: "Feature", properties: { Source_Report_ID: "R-1" } }] };
+      : { type: "FeatureCollection", generatedAt: "2026-08-20T00:00:00Z", features: [{ type: "Feature", properties: { Object_ID: "OBJECT-1", Source_Report_ID: "R-1" } }] };
     return new Response(JSON.stringify(value), { headers: { "content-type": "application/json" } });
   };
   try {
@@ -103,5 +105,7 @@ test("publication refresh requires its secret and atomically publishes a manifes
     assert.ok(env.store.has(manifest.snapshots.objects.path.slice(1)));
     const current = await worker.fetch(new Request("https://data.test/snapshots/current/objects.json"), env);
     assert.equal((await current.json()).features[0].properties.reporterName, "Pelapor");
+    const currentAgain = await worker.fetch(new Request("https://data.test/snapshots/current/objects.json"), env);
+    assert.equal((await currentAgain.json()).features[0].properties._ygPhotos.length, 1);
   } finally { globalThis.fetch = originalFetch; }
 });
