@@ -2,6 +2,7 @@
   'use strict';
 
   var API = 'https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec';
+  var SNAPSHOT_URL = 'data/dashboard-summary-snapshot.json?v=20260820-prepost-fallback1';
   var params = new URLSearchParams(window.location.search);
   var sessionId = params.get('session') || '';
   var participantResponses = [];
@@ -38,7 +39,7 @@
     return new Promise(function(resolve,reject){
       var cb = (prefix || 'ygLive_') + Date.now() + Math.floor(Math.random() * 1000);
       var script = document.createElement('script');
-      var timer = setTimeout(function(){ cleanup(); reject(new Error('timeout')); },15000);
+      var timer = setTimeout(function(){ cleanup(); reject(new Error('timeout')); },30000);
 
       function cleanup(){
         clearTimeout(timer);
@@ -148,6 +149,24 @@
     if(postList) postList.innerHTML = questionMarkup(postRows);
   }
 
+  async function loadSnapshotDetail(){
+    var response = await fetch(SNAPSHOT_URL,{cache:'no-store'});
+    if(!response.ok) throw new Error('snapshot HTTP ' + response.status);
+    var snapshot = await response.json();
+    var prepost = snapshot && snapshot.capacitySources && snapshot.capacitySources.prepost;
+    var sessions = prepost && Array.isArray(prepost.sessions) ? prepost.sessions : [];
+    var session = sessions.find(function(item){ return text(item.sessionId) === sessionId; });
+    if(!session) return null;
+    return {
+      ok:true,
+      generatedAt:prepost.generatedAt || snapshot.snapshotGeneratedAt || snapshot.generatedAt,
+      session:session,
+      summary:session.summary || {},
+      questions:[],
+      source:'snapshot'
+    };
+  }
+
   function applyError(message){
     var titleNode = document.getElementById('live-title');
     var metaNode = document.getElementById('live-meta');
@@ -218,6 +237,14 @@
     renderParticipantResponses(participantResponses);
   }
 
+  function applyParticipantError(){
+    participantResponses = [];
+    var tableNode = document.getElementById('live-participant-table');
+    var noteNode = document.getElementById('live-participant-note');
+    if(tableNode) tableNode.innerHTML = '<p class="question-empty">Daftar peserta belum dapat dimuat. Ringkasan sesi tetap tersedia.</p>';
+    if(noteNode) noteNode.textContent = 'Koneksi daftar peserta sedang tidak tersedia.';
+  }
+
   function initParticipantToggle(){
     var btn = document.getElementById('live-toggle-participants');
     var card = document.getElementById('live-participant-card');
@@ -244,20 +271,37 @@
       applyError('Session ID tidak ditemukan di URL.');
       return;
     }
+    var fallback = null;
+    try{
+      fallback = await loadSnapshotDetail();
+      if(fallback){
+        applyMeta(fallback);
+        applySummary(fallback);
+        applyQuestions(fallback);
+        var generatedNode = document.getElementById('live-generated');
+        if(generatedNode) generatedNode.textContent += ' · ringkasan snapshot';
+      }
+    }catch(snapshotError){}
+
     try{
       var detail = await jsonp(API + '?page=prepost-session-detail&sessionId=' + encodeURIComponent(sessionId), 'ygLiveSession_');
-      if(!detail || detail.ok === false){
-        applyError(detail && detail.error ? detail.error : 'Sesi tidak ditemukan.');
-        return;
-      }
+      if(!detail || detail.ok === false) throw new Error(detail && detail.error ? detail.error : 'Sesi tidak ditemukan.');
       applyMeta(detail);
       applySummary(detail);
       applyQuestions(detail);
-      await loadParticipantResponses();
-      initParticipantToggle();
-    }catch(error){
-      applyError('Tidak dapat memuat data dari server.');
+    }catch(detailError){
+      if(!fallback){
+        applyError('Tidak dapat memuat data dari server maupun snapshot.');
+        return;
+      }
     }
+
+    try{
+      await loadParticipantResponses();
+    }catch(responseError){
+      applyParticipantError();
+    }
+    initParticipantToggle();
   }
 
   if(document.body.hasAttribute('data-require-staff')){
