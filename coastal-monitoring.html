@@ -7,14 +7,39 @@
   <meta name="description" content="Prakiraan pasang surut, gelombang, arus, dan suhu laut untuk lokasi restorasi mangrove Yayasan Gambut.">
   <link rel="icon" href="assets/logo-yayasan-gambut.png">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+  <link rel="stylesheet" href="css/style.css?v=20260723-revert-layout">
+  <link rel="stylesheet" href="css/language-switcher.css?v=20260721-all-pages1">
+  <link rel="stylesheet" href="css/navigation-v2.css?v=20260807-mobile-submenu-links1">
 <link rel="stylesheet" href="css/coastal-monitoring.css?v=20260812-priority-entry">
 <link rel="stylesheet" href="css/coastal-priority-entry.css?v=20260813-dualentry1">
 <link rel="stylesheet" href="css/coastal-intervention-focus.css?v=20260813-layoutfix1">
 </head>
 <body>
-  <header class="coast-header">
-    <a class="coast-brand" href="index.html"><img src="assets/logo-yayasan-gambut.png" alt="Logo Yayasan Gambut"><span><strong>YG GeoPortal</strong><small>Pemantauan Pesisir & Mangrove</small></span></a>
-    <nav><a href="index.html">Beranda</a><a href="webgis.html">WebGIS</a><a href="fire-weather.html">Karhutla & Cuaca</a><a class="active" href="coastal-monitoring.html">Pesisir & Mangrove</a></nav>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html">
+        <img src="assets/logo-yayasan-gambut.png" alt="Logo Yayasan Gambut">
+        <span><strong>YG GeoPortal</strong><span>WebGIS Yayasan Gambut</span></span>
+      </a>
+      <button class="yg-nav-toggle" type="button" aria-label="Buka menu" aria-expanded="false" data-yg-nav-toggle="main-navigation">☰</button>
+      <nav class="nav yg-nav-v2" id="main-navigation" aria-label="Navigasi utama" data-yg-navigation>
+        <a href="index.html">Beranda</a>
+        <a href="webgis.html">Peta Interaktif</a>
+        <div class="yg-nav-group">
+          <button class="yg-nav-trigger" type="button" aria-expanded="false" aria-current="true">Jelajahi</button>
+          <div class="yg-nav-menu"><a href="biodiversity.html">Biodiversitas</a><a href="fire-weather.html">Karhutla &amp; Cuaca</a><a href="coastal-monitoring.html" aria-current="page">Pesisir &amp; Mangrove</a></div>
+        </div>
+        <div class="yg-nav-group">
+          <button class="yg-nav-trigger" type="button" aria-expanded="false">Data &amp; Dampak</button>
+          <div class="yg-nav-menu"><a href="monitoring.html">Monitoring Lapangan<small>Hasil pemantauan objek dan lokasi</small></a><a href="community-engagement.html">Pelibatan Masyarakat<small>Partisipasi kelompok dalam kegiatan lapangan</small></a><a href="capacity-building.html">Peningkatan Kapasitas<small>Pelatihan dan evaluasi pembelajaran</small></a><a href="sdgs.html">Kontribusi SDGs<small>Capaian menurut tujuan pembangunan</small></a><a href="policy-alignment.html">Keselarasan Kebijakan &amp; Komitmen<small>KKMD, FOLU Net Sink, NDC, dan kerangka terkait</small></a></div>
+        </div>
+        <a href="report.html">Laporkan Temuan</a>
+        <span class="yg-public-language-switcher" role="group" aria-label="Pilihan bahasa / Language selection">
+          <button type="button" data-lang="id" aria-pressed="true">ID</button>
+          <button type="button" data-lang="en" aria-pressed="false">EN</button>
+        </span>
+      </nav>
+    </div>
   </header>
   <main class="coast-shell">
     <section class="coast-titlebar">
@@ -72,6 +97,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
   <script src="js/i18n.js?v=20260810-global-public1"></script>
+  <script src="js/navigation-v2.js?v=20260807-mobile-menu-fix2"></script>
 <script src="js/coastal-monitoring.js?v=20260813-satellite"></script>
 </body>
 </html>
