@@ -6,6 +6,8 @@
   var params = new URLSearchParams(window.location.search);
   var sessionId = params.get('session') || '';
   var participantResponses = [];
+  var participantResponsesLoaded = false;
+  var participantResponsesLoading = false;
 
   function text(v){ return v === null || v === undefined ? '' : String(v).trim(); }
   function esc(v){ return text(v).replace(/[&<>"']/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
@@ -224,16 +226,30 @@
   }
 
   async function loadParticipantResponses(){
-    var response = await jsonp(
-      API + '?page=prepost-session-responses&sessionId=' + encodeURIComponent(sessionId) + '&phase=post',
-      'ygLiveResponses_'
-    );
+    var response;
+    var lastError;
+    for(var attempt=1;attempt<=3;attempt++){
+      try{
+        response = await jsonp(
+          API + '?page=prepost-session-responses&sessionId=' + encodeURIComponent(sessionId) + '&phase=post',
+          'ygLiveResponses_'
+        );
+        break;
+      }catch(error){
+        lastError = error;
+        if(attempt < 3){
+          await new Promise(function(resolve){ setTimeout(resolve,attempt * 1200); });
+        }
+      }
+    }
+    if(!response) throw lastError || new Error('Daftar peserta tidak tersedia.');
     if(!response || response.ok === false){
       participantResponses = [];
       renderParticipantResponses([]);
       return;
     }
     participantResponses = Array.isArray(response.responses) ? response.responses : [];
+    participantResponsesLoaded = true;
     renderParticipantResponses(participantResponses);
   }
 
@@ -250,10 +266,25 @@
     var card = document.getElementById('live-participant-card');
     if(!btn || !card) return;
 
-    btn.addEventListener('click', function(){
+    btn.addEventListener('click', async function(){
       var isHidden = card.classList.contains('live-card--hidden');
       if(isHidden){
         card.classList.remove('live-card--hidden');
+        if(!participantResponsesLoaded && !participantResponsesLoading){
+          participantResponsesLoading = true;
+          btn.disabled = true;
+          btn.textContent = 'Memuat daftar peserta...';
+          var noteNode = document.getElementById('live-participant-note');
+          if(noteNode) noteNode.textContent = 'Menghubungkan ke data peserta...';
+          try{
+            await loadParticipantResponses();
+          }catch(responseError){
+            applyParticipantError();
+          }finally{
+            participantResponsesLoading = false;
+            btn.disabled = false;
+          }
+        }
         btn.textContent = participantResponses.length
           ? 'Sembunyikan daftar peserta (' + participantResponses.length.toLocaleString('id-ID') + ')'
           : 'Sembunyikan daftar peserta';
@@ -296,11 +327,6 @@
       }
     }
 
-    try{
-      await loadParticipantResponses();
-    }catch(responseError){
-      applyParticipantError();
-    }
     initParticipantToggle();
   }
 
