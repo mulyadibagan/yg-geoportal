@@ -24,13 +24,24 @@
     .detail-card-grid strong{display:block;margin:5px 0;color:var(--ink);font-size:20px}
     .detail-card-grid .muted{display:block;color:var(--muted);font-size:12px}
     .detail-source-note{display:block;margin-top:6px;color:var(--muted);font-size:11px;line-height:1.4}
-    .detail-tree-table-wrap{overflow:auto;border:1px solid var(--line);border-radius:12px;background:#fff}
-    .detail-tree-table{width:100%;min-width:980px;border-collapse:collapse;font-size:12px}
-    .detail-tree-table th,.detail-tree-table td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
-    .detail-tree-table th{position:sticky;top:0;background:#edf7f2;color:var(--green);font-size:11px}
-    .tree-status{display:inline-flex;padding:4px 8px;border-radius:999px;font-size:10px;font-weight:800}
-    .tree-status.alive{background:#dff5e9;color:#146640}
-    .tree-status.dead{background:#fde2e2;color:#9c2323}
+    .tree-charts{display:grid;gap:16px}
+    .tree-chart-card{border:1px solid var(--line);border-radius:14px;background:#fff;overflow:hidden}
+    .tree-chart-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px 8px}
+    .tree-chart-head h3{margin:0;font-size:16px}
+    .tree-chart-legend{display:flex;gap:14px;color:var(--muted);font-size:12px}
+    .tree-chart-legend span{display:inline-flex;align-items:center;gap:6px}
+    .tree-chart-legend i{width:18px;height:3px;border-radius:3px;background:#64748b}
+    .tree-chart-legend .t2 i{background:#0b8061}
+    .tree-chart-scroll{overflow-x:auto;padding:0 8px 8px;-webkit-overflow-scrolling:touch}
+    .tree-chart-scroll svg{display:block;min-width:1020px;width:100%;height:auto}
+    .tree-chart-grid{stroke:#dfe9e4;stroke-width:1}
+    .tree-chart-axis{stroke:#789088;stroke-width:1.2}
+    .tree-chart-t1,.tree-chart-t2{fill:none;stroke-width:2.5;stroke-linecap:round}
+    .tree-chart-t1{stroke:#64748b}.tree-chart-t2{stroke:#0b8061}
+    .tree-chart-dot-t1{fill:#fff;stroke:#64748b;stroke-width:2}
+    .tree-chart-dot-t2{fill:#fff;stroke:#0b8061;stroke-width:2.5}
+    .tree-chart-label{fill:#52645e;font-size:10px}
+    .tree-chart-note{padding:0 16px 13px;color:var(--muted);font-size:11px}
     .detail-replant-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
     .detail-replant-grid article{padding:11px;border:1px solid var(--line);border-radius:10px;background:#f7fbf9}
     .detail-replant-grid strong,.detail-replant-grid span{display:block}
@@ -79,8 +90,8 @@
         </section>
         <section class="side-card" id="detail-trees-card" hidden>
           <span class="eyebrow">DATA INDIVIDU</span>
-          <h2>Riwayat setiap pohon</h2>
-          <p class="muted">ID yang sama menghubungkan pengukuran pohon dari satu tahap monitoring ke tahap berikutnya.</p>
+          <h2>Grafik pertumbuhan setiap pohon</h2>
+          <p class="muted">Sumbu X menunjukkan nomor dan kode pohon; sumbu Y menunjukkan hasil pengukuran Tahap I dan Tahap II.</p>
           <div id="detail-trees"></div>
         </section>
         <section class="side-card">
@@ -105,7 +116,7 @@
   </main>
 
   <script src="js/i18n.js?v=20260819-monitoring-request2"></script>
-  <script src="js/monitoring-detail.js?v=20260821-pup1-tree-detail3"></script>
+  <script src="js/monitoring-detail.js?v=20260821-pup1-xy-chart1"></script>
 </body>
 </html>
 

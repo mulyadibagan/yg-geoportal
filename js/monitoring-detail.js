@@ -516,28 +516,78 @@
     photosElement.innerHTML='<div class="photo-grid">'+shown+'</div>';
   }
 
-  function renderPup1FallbackTrees(){
-    function value(v,digits){
-      if(v===null||v===undefined||v==='')return'—';
-      return typeof v==='number'?v.toLocaleString('id-ID',{minimumFractionDigits:digits||0,maximumFractionDigits:digits||0}):String(v);
+  function treeChartSVG(title,unit,records,valueKey1,valueKey2){
+    var width=Math.max(1020,records.length*39+90),height=390;
+    var left=58,right=24,top=28,bottom=94,plotHeight=height-top-bottom;
+    var values=[];
+    records.forEach(function(record){
+      [record[valueKey1],record[valueKey2]].forEach(function(value){
+        if(value!==null&&value!==undefined&&isFinite(value))values.push(Number(value));
+      });
+    });
+    if(!values.length)return'';
+    var max=Math.max.apply(null,values);
+    var step=max>160?50:(max>80?25:(max>20?10:0.5));
+    var yMax=Math.ceil(max/step)*step;
+    if(yMax===0)yMax=step;
+    function x(index){return left+(records.length===1?0:index*(width-left-right)/(records.length-1));}
+    function y(value){return top+(yMax-Number(value))*plotHeight/yMax;}
+    var grid='';
+    for(var tick=0;tick<=5;tick+=1){
+      var tickValue=yMax*tick/5;
+      var tickY=y(tickValue);
+      grid+='<line class="tree-chart-grid" x1="'+left+'" y1="'+tickY+'" x2="'+(width-right)+'" y2="'+tickY+'"></line>'+
+        '<text class="tree-chart-label" x="'+(left-9)+'" y="'+(tickY+4)+'" text-anchor="end">'+esc(numberFormat(tickValue))+'</text>';
     }
-    var rows=PUP1_TREES.map(function(tree,index){
-      var alive=tree[8]==='Hidup';
-      return'<tr><td>'+(index+1)+'</td><td><strong>'+esc(tree[0])+'</strong></td><td>'+esc(tree[1])+'</td>'+
-        '<td>'+esc(value(tree[2]))+'</td><td>'+esc(value(tree[3]))+'</td><td>'+esc(tree[4])+'</td>'+
-        '<td>'+esc(value(tree[5],2))+'</td><td>'+esc(value(tree[6],2))+'</td><td>'+esc(tree[7])+'</td>'+
-        '<td><span class="tree-status '+(alive?'alive':'dead')+'">'+esc(tree[8])+'</span></td></tr>';
+    function series(key,lineClass,dotClass){
+      var parts='',dots='';
+      records.forEach(function(record,index){
+        var value=record[key];
+        if(value===null||value===undefined||!isFinite(value))return;
+        if(index>0){
+          var previous=records[index-1][key];
+          if(previous!==null&&previous!==undefined&&isFinite(previous)){
+            parts+='<line class="'+lineClass+'" x1="'+x(index-1)+'" y1="'+y(previous)+'" x2="'+x(index)+'" y2="'+y(value)+'"></line>';
+          }
+        }
+        dots+='<circle class="'+dotClass+'" cx="'+x(index)+'" cy="'+y(value)+'" r="4"><title>'+esc(record.label+': '+numberFormat(Number(value))+' '+unit)+'</title></circle>';
+      });
+      return parts+dots;
+    }
+    var labels=records.map(function(record,index){
+      return'<text class="tree-chart-label" transform="translate('+x(index)+' '+(height-bottom+20)+') rotate(-48)" text-anchor="end">'+esc(record.label)+'</text>';
     }).join('');
+    return'<article class="tree-chart-card"><div class="tree-chart-head"><h3>'+esc(title)+'</h3>'+
+      '<div class="tree-chart-legend"><span><i></i>Tahap I</span><span class="t2"><i></i>Tahap II</span></div></div>'+
+      '<div class="tree-chart-scroll"><svg viewBox="0 0 '+width+' '+height+'" role="img" aria-label="'+esc(title+' Tahap I dan Tahap II')+'">'+
+      grid+'<line class="tree-chart-axis" x1="'+left+'" y1="'+top+'" x2="'+left+'" y2="'+(height-bottom)+'"></line>'+
+      '<line class="tree-chart-axis" x1="'+left+'" y1="'+(height-bottom)+'" x2="'+(width-right)+'" y2="'+(height-bottom)+'"></line>'+
+      series(valueKey1,'tree-chart-t1','tree-chart-dot-t1')+series(valueKey2,'tree-chart-t2','tree-chart-dot-t2')+labels+
+      '<text class="tree-chart-label" x="16" y="'+(top+plotHeight/2)+'" text-anchor="middle" transform="rotate(-90 16 '+(top+plotHeight/2)+')">'+esc(unit)+'</text>'+
+      '</svg></div><div class="tree-chart-note">Geser grafik ke samping untuk melihat seluruh kode pohon. Sentuh titik untuk melihat nilainya.</div></article>';
+  }
+
+  function treeChartsHTML(records){
+    return'<div class="tree-charts">'+
+      treeChartSVG('Tinggi pohon','cm',records,'heightT1','heightT2')+
+      treeChartSVG('Diameter batang','cm',records,'diameterT1','diameterT2')+
+      '</div>';
+  }
+
+  function renderPup1FallbackTrees(){
+    var records=PUP1_TREES.map(function(tree,index){
+      return{
+        label:(index+1)+'-'+tree[0],
+        heightT1:tree[2],heightT2:tree[3],
+        diameterT1:tree[5],diameterT2:tree[6]
+      };
+    });
     var replanting=PUP1_REPLANTING.map(function(item){
       return'<article><strong>'+esc(item[0])+'</strong><span>'+esc(item[1])+' batang · hidup</span></article>';
     }).join('');
     treesCard.hidden=false;
-    treesElement.innerHTML='<div class="detail-tree-table-wrap"><table class="detail-tree-table"><thead><tr>'+
-      '<th>No.</th><th>Kode</th><th>Jenis</th><th>Tinggi T1</th><th>Tinggi T2</th><th>Δ tinggi</th>'+
-      '<th>Diameter T1</th><th>Diameter T2</th><th>Δ diameter</th><th>Status T2</th>'+
-      '</tr></thead><tbody>'+rows+'</tbody></table></div>'+
-      '<small class="detail-source-note">Tinggi dalam cm; diameter dalam cm. Nilai negatif mengikuti dokumen sumber dan dapat dipengaruhi perbedaan alat/titik ukur atau kerusakan pucuk.</small>'+
-      '<small class="detail-source-note">Kode D23 dan O24 masing-masing muncul dua kali pada dokumen sumber dan dipertahankan sambil menunggu verifikasi lembar lapangan.</small>'+
+    treesElement.innerHTML=treeChartsHTML(records)+
+      '<small class="detail-source-note">Garis terputus pada Tahap II menunjukkan pohon tanpa pengukuran karena tercatat mati. Kode D23 dan O24 yang berulang diberi nomor urut berbeda sesuai dokumen sumber.</small>'+
       '<h3>Komposisi 25 pohon sulaman</h3><p class="muted">Dokumen mencatat sulaman per jenis dan jumlah tanpa kode individual; seluruhnya hidup pada Tahap II.</p>'+
       '<div class="detail-replant-grid">'+replanting+'</div>'+
       '<small class="detail-source-note">Sumber: Laporan Monitoring Restorasi Hutan Adat Imbo Putui Tahap II, 2–3 Juni 2026.</small>';
@@ -546,8 +596,7 @@
   function renderTrees(group){
     if(!treesCard||!treesElement)return;
     var reports=group.history.slice().sort(function(a,b){return dateValue(a.date)-dateValue(b.date);});
-    var stages=[];
-    var rows={};
+    var stages=[],rows={};
     reports.forEach(function(report){
       var trees=Array.isArray(report.metrics&&report.metrics.treeRecords)?report.metrics.treeRecords:[];
       var stage=report.metrics.pupStage||fmtDate(report.date);
@@ -560,28 +609,27 @@
         var normalized=keyText(id);
         occurrences[normalized]=(occurrences[normalized]||0)+1;
         var rowKey=normalized+'|'+occurrences[normalized];
-        if(!rows[rowKey])rows[rowKey]={id:id,species:tree.species||'',measurements:{},order:index,occurrence:occurrences[normalized]};
-        rows[rowKey].species=rows[rowKey].species||tree.species||'';
+        if(!rows[rowKey])rows[rowKey]={id:id,measurements:{},order:index};
         rows[rowKey].measurements[stageKey]=tree;
       });
     });
-    var records=Object.keys(rows).map(function(key){return rows[key];}).sort(function(a,b){return a.order-b.order;});
+    var records=Object.keys(rows).map(function(key){
+      var row=rows[key],first=row.measurements[stages[0]&&stages[0].key]||{};
+      var last=row.measurements[stages[stages.length-1]&&stages[stages.length-1].key]||{};
+      return{
+        label:(row.order+1)+'-'+row.id,
+        order:row.order,
+        heightT1:num(first.heightCm),heightT2:num(last.heightCm),
+        diameterT1:num(first.diameterCm),diameterT2:num(last.diameterCm)
+      };
+    }).sort(function(a,b){return a.order-b.order;});
     if(!records.length){
-      if(String(group.objectCode||'').trim().toUpperCase()===PUP1_OBJECT_ID){
-        renderPup1FallbackTrees();
-      }else{
-        treesCard.hidden=true;
-      }
+      if(String(group.objectCode||'').trim().toUpperCase()===PUP1_OBJECT_ID)renderPup1FallbackTrees();
+      else treesCard.hidden=true;
       return;
     }
-    function metric(value,unit){return value===''||value===null||value===undefined?'—':esc(value)+' '+unit;}
-    function delta(first,last,unit){var a=num(first),b=num(last);if(a===null||b===null)return'—';var d=b-a;return(d>0?'+':'')+Math.round(d*100)/100+' '+unit;}
     treesCard.hidden=false;
-    treesElement.innerHTML='<div style="overflow-x:auto"><table style="width:100%;min-width:820px;border-collapse:collapse"><thead><tr><th>ID</th><th>Jenis</th>'+stages.map(function(stage){return'<th>'+esc(stage.label)+'</th>';}).join('')+'<th>Perubahan</th><th>Status terbaru</th></tr></thead><tbody>'+records.map(function(row){
-      var first=row.measurements[stages[0].key]||{};
-      var last=row.measurements[stages[stages.length-1].key]||{};
-      return'<tr><td style="padding:8px;border-bottom:1px solid var(--line)"><strong>'+esc(row.id)+'</strong></td><td>'+esc(row.species||'—')+'</td>'+stages.map(function(stage){var t=row.measurements[stage.key]||{};return'<td><strong>'+metric(t.heightCm,'cm')+'</strong><small style="display:block;color:var(--muted)">Ø '+metric(t.diameterCm,'cm')+'</small></td>';}).join('')+'<td><strong>Tinggi '+delta(first.heightCm,last.heightCm,'cm')+'</strong><small style="display:block;color:var(--muted)">Diameter '+delta(first.diameterCm,last.diameterCm,'cm')+'</small></td><td>'+esc(last.status||first.status||'—')+'</td></tr>';
-    }).join('')+'</tbody></table></div>';
+    treesElement.innerHTML=treeChartsHTML(records);
   }
 
   function render(group){
