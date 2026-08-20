@@ -178,6 +178,10 @@ function syncPublishedCommunityReportsToObjects() {
       ? 'Hasil Monitoring Terverifikasi'
       : (selectedTargetLayerLabel || selectedTargetLayerId || 'Laporan Masyarakat Terverifikasi');
 
+    const communityCategory = layerId === 'permanent_measurement_plots'
+      ? 'Petak Ukur Permanen'
+      : (reportType || 'Laporan Masyarakat');
+
     const sourceType = isMonitoring
       ? 'monitoring_report'
       : 'community_report';
@@ -206,7 +210,7 @@ function syncPublishedCommunityReportsToObjects() {
       Layer_ID: layerId,
       Layer_Label: layerLabel,
       Nama_Objek: objectName,
-      Kategori: isMonitoring ? monitoringType : (reportType || 'Laporan Masyarakat'),
+      Kategori: isMonitoring ? monitoringType : communityCategory,
       Source_Type: sourceType,
       Source_Report_ID: reportId,
       reportId: reportId,
@@ -251,7 +255,7 @@ function syncPublishedCommunityReportsToObjects() {
       objectName: objectName,
       category: isMonitoring
         ? monitoringType
-        : (reportType || 'Laporan Masyarakat'),
+        : communityCategory,
       sourceType: sourceType,
       sourceReportId: reportId,
       program: clean_(targetProperties.Program || targetProperties.program),
@@ -402,6 +406,10 @@ function getWebGisObjectsFeatureCollection_() {
         ? 'Hasil Monitoring Terverifikasi'
         : (selectedTargetLayerLabel || selectedTargetLayerId || 'Laporan Masyarakat Terverifikasi');
 
+      const communityCategory = layerId === 'permanent_measurement_plots'
+        ? 'Petak Ukur Permanen'
+        : (reportType || 'Laporan Masyarakat');
+
       const monitoringType = clean_(
         monitoringData.monitoringType ||
         targetProperties.monitoringType ||
@@ -427,7 +435,7 @@ function getWebGisObjectsFeatureCollection_() {
           Nama_Objek: objectName,
           Kategori: isMonitoring
             ? monitoringType
-            : (reportType || 'Laporan Masyarakat'),
+            : communityCategory,
           Source_Type: isMonitoring
             ? 'monitoring_report'
             : 'community_report',
