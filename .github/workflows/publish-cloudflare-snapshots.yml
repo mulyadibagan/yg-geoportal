@@ -10,6 +10,11 @@ on:
       - 'data/master-database-snapshot.json'
       - 'cloudflare/yg-webgis-public-data/**'
       - '.github/workflows/publish-cloudflare-snapshots.yml'
+  workflow_run:
+    workflows:
+      - Update Master Database snapshot
+    types:
+      - completed
 
 permissions:
   contents: read
@@ -20,10 +25,14 @@ concurrency:
 
 jobs:
   publish-staging:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     environment: yg-webgis-staging
     steps:
       - uses: actions/checkout@v5
+      - name: Resolve published snapshot version
+        shell: bash
+        run: echo "SNAPSHOT_VERSION=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
       - uses: actions/setup-node@v5
         with:
           node-version: '22'
@@ -40,7 +49,6 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
-          SNAPSHOT_VERSION: ${{ github.sha }}
         run: |
           npx wrangler r2 object put "yg-webgis-public-snapshots-staging/snapshots/${SNAPSHOT_VERSION}/dashboard.json" --remote --file ../../data/dashboard-summary-snapshot.json --content-type application/json
           npx wrangler r2 object put "yg-webgis-public-snapshots-staging/snapshots/${SNAPSHOT_VERSION}/objects.json" --remote --file ../../data/master-database-snapshot.json --content-type application/json
@@ -52,7 +60,6 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
-          SNAPSHOT_VERSION: ${{ github.sha }}
         run: |
           node scripts/build-manifest.mjs "$SNAPSHOT_VERSION"
           npx wrangler r2 object put "yg-webgis-public-snapshots-staging/manifests/${SNAPSHOT_VERSION}.json" --remote --file tmp/current-manifest.json --content-type application/json
