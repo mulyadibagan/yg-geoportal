@@ -87,6 +87,7 @@
       "Laporan Masyarakat Terverifikasi": "Verified Community Reports",
       "Area Penanaman Mangrove": "Mangrove Planting Areas",
       "Petak Ukur Permanen": "Permanent Measurement Plots",
+      "Titik Tapak Ukur": "Measurement Points",
       "Restorasi Hutan & Lahan": "Forest & Land Restoration",
       "Rumah Pembibitan Mangrove": "Mangrove Nurseries",
       "Rumah Pembibitan Kopi": "Coffee Nurseries",
