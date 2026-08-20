@@ -2,6 +2,7 @@
   'use strict';
 
   var API = 'https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec';
+  var SNAPSHOT_URL = 'data/dashboard-summary-snapshot.json?v=20260820-capacity-fallback1';
   var all = [];
   var prepostSessions = [];
   var prepostSummaryData = null;
@@ -864,11 +865,9 @@
     } catch (e) {}
     sourceCounts.baseline=historical.length;
 
-    var live = [];
-    try {
-      var data = await jsonp(API + '?page=public-reports&t=' + Date.now());
-      var features = data.features || [];
-      live = features
+    function applyPublishedFeatures(features) {
+      features=Array.isArray(features)?features:[];
+      var live = features
         .filter(isCapacityFeature)
         .map(liveRecord);
       sourceCounts.publishedTraining=live.length;
@@ -886,25 +885,38 @@
       sourceCounts.latestPublished=live.map(function(row){return row.date;}).filter(Boolean).sort(function(a,b){
         return (dateValue(b)||new Date(0))-(dateValue(a)||new Date(0));
       })[0]||'';
-    } catch (e) {}
-
-    var seen = {};
-    all = historical.concat(live).filter(function (r) {
-      var k = r.id || [r.name, r.date, r.location].join('|');
-      if (seen[k]) return false;
-      seen[k] = 1;
-      return true;
-    });
-
-    var scope = text(document.body.getAttribute('data-capacity-scope')).toLowerCase();
-    if (scope === 'community') {
-      all = all.filter(function (r) { return r.kind === 'activity-engagement'; });
-    } else if (scope === 'training') {
-      all = all.filter(function (r) { return r.kind === 'training'; });
+      var seen = {};
+      all = historical.concat(live).filter(function (r) {
+        var k = r.id || [r.name, r.date, r.location].join('|');
+        if (seen[k]) return false;
+        seen[k] = 1;
+        return true;
+      });
+      var scope = text(document.body.getAttribute('data-capacity-scope')).toLowerCase();
+      if (scope === 'community') {
+        all = all.filter(function (r) { return r.kind === 'activity-engagement'; });
+      } else if (scope === 'training') {
+        all = all.filter(function (r) { return r.kind === 'training'; });
+      }
+      populateFilters();
+      renderCapacity();
     }
 
-    populateFilters();
-    renderCapacity();
+    try {
+      var snapshot=await fetch(SNAPSHOT_URL,{cache:'no-store'}).then(function(response){
+        if(!response.ok)throw new Error('snapshot '+response.status);
+        return response.json();
+      });
+      applyPublishedFeatures(snapshot&&snapshot.capacitySources&&snapshot.capacitySources.reports&&
+        snapshot.capacitySources.reports.features||[]);
+    } catch (e) {
+      applyPublishedFeatures([]);
+    }
+
+    try {
+      var data = await jsonp(API + '?page=public-reports&t=' + Date.now());
+      if(data&&Array.isArray(data.features)&&data.features.length)applyPublishedFeatures(data.features);
+    } catch (e) {}
   }
 
   document.addEventListener('DOMContentLoaded', function () {
