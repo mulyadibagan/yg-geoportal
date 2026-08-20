@@ -2,6 +2,7 @@
   "use strict";
 
   const API = "https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec?page=objects";
+  const DASHBOARD_SNAPSHOT_URL = "data/dashboard-summary-snapshot.json?v=20260820-public-snapshot1";
   const CALLBACK = "ygDashboardV3Callback";
   const DASHBOARD_CACHE_KEY = "ygDashboardV3Cache_v3_20260809_coffee_area1";
   const DASHBOARD_CACHE_MAX_AGE_MS = 1000 * 60 * 60 * 24 * 7;
@@ -126,6 +127,20 @@
       }
     }
     throw lastError || new Error("Dashboard request failed");
+  }
+
+  async function requestDashboardSnapshot() {
+    const response = await fetch(DASHBOARD_SNAPSHOT_URL, {
+      method: "GET",
+      cache: "force-cache"
+    });
+    if (!response.ok) throw new Error("Dashboard snapshot HTTP " + response.status);
+    const data = await response.json();
+    if (!data || data.type !== "FeatureCollection" ||
+        data.dashboardSnapshotVersion !== 1 || !Array.isArray(data.features)) {
+      throw new Error("Dashboard snapshot is invalid");
+    }
+    return data;
   }
 
   function formatNumber(value, digits = 0) {
@@ -372,13 +387,19 @@
     return first;
   }
 
-  async function loadCapacitySummary() {
+  async function loadCapacitySummary(snapshotSources) {
+    const snapshotReports = snapshotSources && snapshotSources.reports;
+    const snapshotPrepost = snapshotSources && snapshotSources.prepost;
     const [baselineResult, reportsResult, postTestResult] = await Promise.allSettled([
       fetch(CAPACITY_BASELINE_URL).then(response =>
         response.ok ? response.json() : []
       ),
-      jsonp(PUBLIC_REPORTS_API),
-      jsonp(API.replace("?page=objects", "?page=prepost-live-summary&scope=active"))
+      snapshotReports
+        ? Promise.resolve(snapshotReports)
+        : jsonp(PUBLIC_REPORTS_API),
+      snapshotPrepost
+        ? Promise.resolve(snapshotPrepost)
+        : jsonp(API.replace("?page=objects", "?page=prepost-live-summary&scope=active"))
     ]);
     const baseline = baselineResult.status === "fulfilled" &&
       Array.isArray(baselineResult.value) ? baselineResult.value : [];
@@ -1069,14 +1090,14 @@
       return;
     }
 
-    const capacitySummary = await loadCapacitySummary();
+    const capacitySummary = await loadCapacitySummary(data.capacitySources);
     const mergedFeatures = (await mergeOfficialLayers(data.features))
       .map(applyPematangDukuDonorPolicy)
       .map(applyAramcoCoastalAssetPolicy)
       .map(applyExternalPeatInfrastructureDonorPolicy)
       .map(applyRequestedDonorCorrections);
     const active = uniqueFeatures(mergedFeatures.filter(feature => {
-      if (!feature || !feature.geometry) return false;
+      if (!feature || (!feature.geometry && data.dashboardSnapshotVersion !== 1)) return false;
       const props = feature.properties || {};
       const status = String(props.Status_Objek || props.status || "Aktif").toLowerCase();
       return !["nonaktif", "ditolak", "menunggu verifikasi", "perlu perbaikan"]
@@ -2011,7 +2032,13 @@
     }
 
     try {
-      const data = await requestDashboardDataWithRetry();
+      let data;
+      try {
+        data = await requestDashboardSnapshot();
+      } catch (snapshotError) {
+        console.warn("Snapshot dashboard gagal; mencoba Apps Script.", snapshotError);
+        data = await requestDashboardDataWithRetry();
+      }
       await renderDashboard(data);
       writeDashboardCache(data);
     } catch (error) {
