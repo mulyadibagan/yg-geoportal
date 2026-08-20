@@ -2,6 +2,14 @@ name: Publish Cloudflare staging snapshots
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/dashboard-summary-snapshot.json'
+      - 'data/master-database-snapshot.json'
+      - 'cloudflare/yg-webgis-public-data/**'
+      - '.github/workflows/publish-cloudflare-snapshots.yml'
 
 permissions:
   contents: read
@@ -25,6 +33,8 @@ jobs:
         working-directory: cloudflare/yg-webgis-public-data
       - run: npm test
         working-directory: cloudflare/yg-webgis-public-data
+      - run: npm run validate:snapshots
+        working-directory: cloudflare/yg-webgis-public-data
       - name: Upload versioned and current snapshots
         working-directory: cloudflare/yg-webgis-public-data
         env:
@@ -45,6 +55,7 @@ jobs:
           SNAPSHOT_VERSION: ${{ github.sha }}
         run: |
           node scripts/build-manifest.mjs "$SNAPSHOT_VERSION"
+          npx wrangler r2 object put "yg-webgis-public-snapshots-staging/manifests/${SNAPSHOT_VERSION}.json" --remote --file tmp/current-manifest.json --content-type application/json
           npx wrangler r2 object put "yg-webgis-public-snapshots-staging/manifests/current.json" --remote --file tmp/current-manifest.json --content-type application/json
       - name: Deploy staging Worker
         working-directory: cloudflare/yg-webgis-public-data

@@ -73,14 +73,23 @@ Write-Host "[DEPLOY] Menjalankan deploy (autentikasi akan divalidasi saat push).
 
 Write-Host "[DEPLOY] Push source ke Apps Script..."
 clasp push | Out-Host
+if ($LASTEXITCODE -ne 0) {
+  throw "clasp push gagal dengan exit code $LASTEXITCODE"
+}
 
 Write-Host "[DEPLOY] Buat versi baru..."
 clasp version "$VersionDescription" | Out-Host
+if ($LASTEXITCODE -ne 0) {
+  throw "clasp version gagal dengan exit code $LASTEXITCODE"
+}
 
 Write-Host "[DEPLOY] Update deployment..."
 $deployOutput = ""
 try {
   $deployOutput = clasp deploy --deploymentId $DeploymentId --description "$DeploymentDescription" 2>&1 | Out-String
+  if ($LASTEXITCODE -ne 0) {
+    throw "clasp deploy gagal dengan exit code $LASTEXITCODE`n$($deployOutput.Trim())"
+  }
   $deployOutput.Trim() | Write-Host
 } catch {
   if (-not $CreateIfMissing) {
@@ -89,6 +98,9 @@ try {
 
   Write-Host "[DEPLOY] Deployment ID tidak ditemukan. Membuat deployment baru..."
   $deployOutput = clasp deploy --description "$DeploymentDescription" 2>&1 | Out-String
+  if ($LASTEXITCODE -ne 0) {
+    throw "clasp deploy baru gagal dengan exit code $LASTEXITCODE`n$($deployOutput.Trim())"
+  }
   $deployOutput.Trim() | Write-Host
 }
 
