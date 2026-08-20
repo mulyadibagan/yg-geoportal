@@ -39,14 +39,8 @@
     ['B21','Meranti Kunyit',25,71,'+46',0.50,0.63,'+0.13','Hidup']
   ];
   var PUP1_REPLANTING=[
-    ['Kelat',2,'Kondisi vegetatif baik, daun normal'],
-    ['Alpukat',1,'Pertumbuhan stabil, daun normal'],
-    ['Aren',1,'Pertumbuhan stabil, daun normal'],
-    ['Meranti Kunyit',2,'Kondisi tajuk normal'],
-    ['Kuras',12,'Pertumbuhan stabil, daun normal'],
-    ['Gaharu',2,'Pertumbuhan stabil, daun normal'],
-    ['Nangka',3,'Kondisi tajuk normal'],
-    ['Meranti',2,'Kondisi tajuk normal']
+    ['Kelat',2],['Alpukat',1],['Aren',1],['Meranti Kunyit',2],
+    ['Kuras',12],['Gaharu',2],['Nangka',3],['Meranti',2]
   ];
 
   var params=new URLSearchParams(location.search);
@@ -61,7 +55,7 @@
   var historyElement=document.getElementById('detail-history');
   var infoElement=document.getElementById('detail-info');
   var photosElement=document.getElementById('detail-photos');
-  var treesSection=document.getElementById('detail-trees-section');
+  var treesCard=document.getElementById('detail-trees-card');
   var treesElement=document.getElementById('detail-trees');
 
   function esc(v){
@@ -212,10 +206,7 @@
     return isFinite(bounds[0])?bounds.map(function(v){return v.toFixed(5);}).join(''):'';
   }
   function typeOf(p,m){
-    var id=String(
-      p.Target_Layer_ID_Current||p.targetLayerId||p.Target_Layer_ID||
-      m.monitoringType||p.targetLayerLabel||p.Target_Layer_Label||''
-    ).toLowerCase();
+    var id=String(p.targetLayerId||m.monitoringType||p.targetLayerLabel||'').toLowerCase();
     if(id==='fdrs'||/water|muka air|fdrs/.test(id))return'Tinggi Muka Air/FDRS';
     if(/restorasi.*hutan|imbo putuih/.test(id))return'Restorasi Hutan';
     if(/restorasi.*gambut/.test(id))return'Restorasi Gambut';
@@ -246,48 +237,32 @@
     if(!isMonitoringRecord(p))return null;
     var m=parseJSON(p.proposedInformation);
     if(!Object.keys(m).length)m=parseJSON(p.proposedChanges).monitoring||{};
-    if(!Object.keys(m).length&&(
-      p.Monitoring_Type||p.Kondisi||has(p.Survival)||has(p.Jumlah_Hidup)
-    )){
+    if(!Object.keys(m).length&&(p.Monitoring_Type||p.Kondisi||has(p.Survival)||has(p.Jumlah_Hidup))){
       m={
-        monitoringType:p.Monitoring_Type,
-        condition:p.Kondisi,
-        survivalPercent:p.Survival,
-        aliveCount:p.Jumlah_Hidup,
-        deadOrDamagedCount:p.Jumlah_Mati_Rusak,
-        monitoredAreaHa:p.Luas_Terpantau_Ha,
-        averageHeightCm:p.Tinggi_Rata_Rata_Cm,
-        averageDiameterCm:p.Diameter_Rata_Rata_Cm,
-        sedimentationCm:p.Sedimentasi_Cm,
-        waterTableCm:p.Water_Table_Cm,
-        threats:p.Ancaman,
-        notes:p.Temuan,
-        followUp:p.Tindak_Lanjut
+        monitoringType:p.Monitoring_Type,condition:p.Kondisi,survivalPercent:p.Survival,
+        aliveCount:p.Jumlah_Hidup,deadOrDamagedCount:p.Jumlah_Mati_Rusak,
+        monitoredAreaHa:p.Luas_Terpantau_Ha,averageHeightCm:p.Tinggi_Rata_Rata_Cm,
+        averageDiameterCm:p.Diameter_Rata_Rata_Cm,sedimentationCm:p.Sedimentasi_Cm,
+        waterTableCm:p.Water_Table_Cm,threats:p.Ancaman,notes:p.Temuan,followUp:p.Tindak_Lanjut
       };
     }
-    var title=p.locationName||p.targetObjectName||p.Target_Object_Name_Current||p.title||'Objek monitoring';
+    var title=p.locationName||p.targetObjectName||p.title||'Objek monitoring';
     var village=p.village||p.Desa||p.WADMKD||p.kelurahan||p.desa||'';
     var reporter=firstText(p,['name','namaPelapor','nama_pelapor','pelapor','reporter','reporterName','reporter_name','createdBy','created_by','createdby','author','authorName','submittedBy','submitted_by','submitter','submitterName','submitter_name','submitterBy','fullName','namaLengkap','organization'])||firstText(m,['reporter','name','namaPelapor','nama_pelapor','pelapor','createdBy','author','authorName','userName','nama','petugas'])||'';
-    var layerKey=keyText(
-      p.Target_Layer_ID_Current||p.targetLayerId||p.Target_Layer_ID||
-      p.targetLayerLabel||p.Target_Layer_Label||m.monitoringType||'monitoring'
-    );
-    var nameKey=keyText(
-      p.Target_Object_Name_Current||p.targetObjectName||p.locationName||p.title||title
-    );
+    var layerKey=keyText(p.targetLayerId||p.targetLayerLabel||m.monitoringType||'monitoring');
+    var nameKey=keyText(p.targetObjectName||p.locationName||p.title||title);
     var targetProperties=parseJSON(p.targetFeatureProperties);
     var rawArea=targetProperties.Luas_Ha||targetProperties.Luas||targetProperties.areaHa||targetProperties.luas_ha;
     var targetArea=parseMetricNumber(rawArea);
     var boundsKey=geometryKey(feature&&feature.geometry);
     var areaKey=isFinite(targetArea)&&targetArea>0?targetArea.toFixed(4):'';
-    var canonicalObjectId=firstText(p,[
-      'Target_Object_ID_Current','targetObjectId','Target_Object_ID'
-    ])||firstText(targetProperties,[
-      'Object_ID','OBJECT_ID','objectId'
-    ]);
-    var objectId=canonicalObjectId||[layerKey,nameKey,areaKey,boundsKey].filter(Boolean).join('|');
-    if(!objectId)objectId=(p.targetSourceType||'program_layer')+'|'+
-      (p.targetLayerId||p.Target_Layer_ID||'monitoring')+'|'+keyText(title);
+    var spatialObjectId=[layerKey,nameKey,areaKey,boundsKey].filter(Boolean).join('|');
+    var permanentObjectId=String(
+      p.Target_Object_ID_Current||p.targetObjectId||p.Target_Object_ID||
+      targetProperties.Object_ID||targetProperties.OBJECT_ID||targetProperties.objectId||''
+    ).trim();
+    var objectId=permanentObjectId||spatialObjectId||
+      ((p.targetSourceType||'program_layer')+'|'+(p.targetLayerId||'monitoring')+'|'+keyText(title));
     var type=typeOf(p,m);
     var correction=REPORT_CORRECTIONS[String(p.reportId||p.Source_Report_ID||'').trim()];
     if(correction)Object.keys(correction).forEach(function(key){m[key]=correction[key];});
@@ -295,6 +270,8 @@
     return{
       id:p.monitoringId||p.reportId||index,
       objectId:objectId,
+      spatialObjectId:spatialObjectId,
+      legacyObjectId:p.targetObjectId||'',
       title:title,
       type:type,
       date:p.activityDate||p.publishedAt||p.verifiedAt||p.receivedAt,
@@ -539,45 +516,72 @@
     photosElement.innerHTML='<div class="photo-grid">'+shown+'</div>';
   }
 
-  function treeValue(value,digits){
-    if(value===null||value===undefined||value==='')return'—';
-    if(typeof value==='number')return value.toLocaleString('id-ID',{
-      minimumFractionDigits:digits||0,
-      maximumFractionDigits:digits||0
-    });
-    return String(value);
-  }
-
-  function renderTrees(group){
-    if(!treesSection||!treesElement)return;
-    var objectCode=String(group&&group.objectCode||'').trim().toUpperCase();
-    if(objectCode!==PUP1_OBJECT_ID){
-      treesSection.hidden=true;
-      treesElement.innerHTML='';
-      return;
+  function renderPup1FallbackTrees(){
+    function value(v,digits){
+      if(v===null||v===undefined||v==='')return'—';
+      return typeof v==='number'?v.toLocaleString('id-ID',{minimumFractionDigits:digits||0,maximumFractionDigits:digits||0}):String(v);
     }
     var rows=PUP1_TREES.map(function(tree,index){
       var alive=tree[8]==='Hidup';
-      return'<tr><td>'+(index+1)+'</td><td>'+esc(tree[0])+'</td><td>'+esc(tree[1])+'</td>'+
-        '<td>'+esc(treeValue(tree[2]))+'</td><td>'+esc(treeValue(tree[3]))+'</td><td>'+esc(tree[4])+'</td>'+
-        '<td>'+esc(treeValue(tree[5],2))+'</td><td>'+esc(treeValue(tree[6],2))+'</td><td>'+esc(tree[7])+'</td>'+
+      return'<tr><td>'+(index+1)+'</td><td><strong>'+esc(tree[0])+'</strong></td><td>'+esc(tree[1])+'</td>'+
+        '<td>'+esc(value(tree[2]))+'</td><td>'+esc(value(tree[3]))+'</td><td>'+esc(tree[4])+'</td>'+
+        '<td>'+esc(value(tree[5],2))+'</td><td>'+esc(value(tree[6],2))+'</td><td>'+esc(tree[7])+'</td>'+
         '<td><span class="tree-status '+(alive?'alive':'dead')+'">'+esc(tree[8])+'</span></td></tr>';
     }).join('');
     var replanting=PUP1_REPLANTING.map(function(item){
-      return'<article><strong>'+esc(item[0])+' · '+esc(item[1])+' batang</strong><span>'+esc(item[2])+'</span></article>';
+      return'<article><strong>'+esc(item[0])+'</strong><span>'+esc(item[1])+' batang · hidup</span></article>';
     }).join('');
-    treesElement.innerHTML=
-      '<div class="detail-tree-table-wrap"><table class="detail-tree-table"><thead><tr>'+
-        '<th>No.</th><th>Kode</th><th>Jenis</th><th>Tinggi T1 (cm)</th><th>Tinggi T2 (cm)</th>'+
-        '<th>Δ tinggi</th><th>Diameter T1 (cm)</th><th>Diameter T2 (cm)</th><th>Δ diameter</th><th>Status T2</th>'+
+    treesCard.hidden=false;
+    treesElement.innerHTML='<div class="detail-tree-table-wrap"><table class="detail-tree-table"><thead><tr>'+
+      '<th>No.</th><th>Kode</th><th>Jenis</th><th>Tinggi T1</th><th>Tinggi T2</th><th>Δ tinggi</th>'+
+      '<th>Diameter T1</th><th>Diameter T2</th><th>Δ diameter</th><th>Status T2</th>'+
       '</tr></thead><tbody>'+rows+'</tbody></table></div>'+
-      '<small class="detail-source-note">* Nilai negatif mengikuti dokumen sumber dan dapat dipengaruhi perbedaan alat/titik ukur atau kerusakan fisik pucuk.</small>'+
-      '<small class="detail-source-note">Kode D23 dan O24 masing-masing muncul dua kali pada dokumen sumber; keduanya dipertahankan apa adanya sambil menunggu verifikasi lembar lapangan.</small>'+
-      '<h3>Komposisi 25 pohon sulaman</h3>'+
-      '<p class="muted">Dokumen sumber mencatat sulaman per jenis dan jumlah, tanpa kode individual. Seluruh 25 batang berstatus hidup pada Tahap II.</p>'+
+      '<small class="detail-source-note">Tinggi dalam cm; diameter dalam cm. Nilai negatif mengikuti dokumen sumber dan dapat dipengaruhi perbedaan alat/titik ukur atau kerusakan pucuk.</small>'+
+      '<small class="detail-source-note">Kode D23 dan O24 masing-masing muncul dua kali pada dokumen sumber dan dipertahankan sambil menunggu verifikasi lembar lapangan.</small>'+
+      '<h3>Komposisi 25 pohon sulaman</h3><p class="muted">Dokumen mencatat sulaman per jenis dan jumlah tanpa kode individual; seluruhnya hidup pada Tahap II.</p>'+
       '<div class="detail-replant-grid">'+replanting+'</div>'+
       '<small class="detail-source-note">Sumber: Laporan Monitoring Restorasi Hutan Adat Imbo Putui Tahap II, 2–3 Juni 2026.</small>';
-    treesSection.hidden=false;
+  }
+
+  function renderTrees(group){
+    if(!treesCard||!treesElement)return;
+    var reports=group.history.slice().sort(function(a,b){return dateValue(a.date)-dateValue(b.date);});
+    var stages=[];
+    var rows={};
+    reports.forEach(function(report){
+      var trees=Array.isArray(report.metrics&&report.metrics.treeRecords)?report.metrics.treeRecords:[];
+      var stage=report.metrics.pupStage||fmtDate(report.date);
+      var stageKey=keyText(stage)+'|'+String(report.date||'');
+      stages.push({key:stageKey,label:stage,date:report.date});
+      var occurrences={};
+      trees.forEach(function(tree,index){
+        var id=String(tree.treeId||'').trim();
+        if(!id)return;
+        var normalized=keyText(id);
+        occurrences[normalized]=(occurrences[normalized]||0)+1;
+        var rowKey=normalized+'|'+occurrences[normalized];
+        if(!rows[rowKey])rows[rowKey]={id:id,species:tree.species||'',measurements:{},order:index,occurrence:occurrences[normalized]};
+        rows[rowKey].species=rows[rowKey].species||tree.species||'';
+        rows[rowKey].measurements[stageKey]=tree;
+      });
+    });
+    var records=Object.keys(rows).map(function(key){return rows[key];}).sort(function(a,b){return a.order-b.order;});
+    if(!records.length){
+      if(String(group.objectCode||'').trim().toUpperCase()===PUP1_OBJECT_ID){
+        renderPup1FallbackTrees();
+      }else{
+        treesCard.hidden=true;
+      }
+      return;
+    }
+    function metric(value,unit){return value===''||value===null||value===undefined?'—':esc(value)+' '+unit;}
+    function delta(first,last,unit){var a=num(first),b=num(last);if(a===null||b===null)return'—';var d=b-a;return(d>0?'+':'')+Math.round(d*100)/100+' '+unit;}
+    treesCard.hidden=false;
+    treesElement.innerHTML='<div style="overflow-x:auto"><table style="width:100%;min-width:820px;border-collapse:collapse"><thead><tr><th>ID</th><th>Jenis</th>'+stages.map(function(stage){return'<th>'+esc(stage.label)+'</th>';}).join('')+'<th>Perubahan</th><th>Status terbaru</th></tr></thead><tbody>'+records.map(function(row){
+      var first=row.measurements[stages[0].key]||{};
+      var last=row.measurements[stages[stages.length-1].key]||{};
+      return'<tr><td style="padding:8px;border-bottom:1px solid var(--line)"><strong>'+esc(row.id)+'</strong></td><td>'+esc(row.species||'—')+'</td>'+stages.map(function(stage){var t=row.measurements[stage.key]||{};return'<td><strong>'+metric(t.heightCm,'cm')+'</strong><small style="display:block;color:var(--muted)">Ø '+metric(t.diameterCm,'cm')+'</small></td>';}).join('')+'<td><strong>Tinggi '+delta(first.heightCm,last.heightCm,'cm')+'</strong><small style="display:block;color:var(--muted)">Diameter '+delta(first.diameterCm,last.diameterCm,'cm')+'</small></td><td>'+esc(last.status||first.status||'—')+'</td></tr>';
+    }).join('')+'</tbody></table></div>';
   }
 
   function render(group){
@@ -602,7 +606,6 @@
     historyElement.innerHTML='<div class="empty">Tidak ada riwayat laporan.</div>';
     infoElement.innerHTML='<div class="empty">Belum ada profil.</div>';
     photosElement.innerHTML='<div class="empty">Belum ada foto.</div>';
-    if(treesSection)treesSection.hidden=true;
     if(!titleElement.textContent||!titleElement.textContent.trim())titleElement.textContent='Detail objek';
   }
 
@@ -677,3 +680,5 @@
   window[CALLBACK]=applyData;
   init();
 })();
+
+
