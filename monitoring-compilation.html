@@ -7,7 +7,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <title>Kompilasi Hasil Monitoring</title>
-  <link rel="stylesheet" href="css/monitoring.css?v=20260819-layout-restore7">
+  <link rel="stylesheet" href="css/monitoring.css?v=20260820-type-cards1">
   <style>
     .compilation-shell{padding-top:18px}
     .compilation-hero{position:relative;padding:28px;border-radius:22px;background:linear-gradient(130deg,#074a35,#0b7652);color:#fff;overflow:hidden}
@@ -59,6 +59,21 @@
       <p>Angka total dihitung dari laporan terbaru setiap objek. Riwayat dan grafik di bawah tetap dipisahkan per objek agar perkembangan lokasi tidak tercampur.</p>
     </section>
     <section id="compilation-kpis" class="compilation-kpis"></section>
+    <section class="toolbar" aria-label="Klaster detail monitoring">
+      <label>Klaster
+        <select id="compilation-cluster">
+          <option value="object">Objek</option>
+          <option value="village">Nama desa</option>
+          <option value="reporter">Nama pelapor</option>
+        </select>
+      </label>
+      <label>Nilai klaster
+        <select id="compilation-cluster-value"><option value="">Semua</option></select>
+      </label>
+      <label>Cari detail
+        <input id="compilation-search" type="search" placeholder="Objek, lokasi, atau pelapor">
+      </label>
+    </section>
     <section class="side-card">
       <span class="eyebrow">PELAPOR AKTIF</span>
       <h2>Pelapor yang sudah mengirim data</h2>
@@ -70,7 +85,7 @@
     </div>
     <section id="compilation-objects" class="compilation-objects"><div class="loading">Memuat hasil kompilasi…</div></section>
   </main>
-  <script src="js/monitoring-compilation.js?v=20260819-compilation5"></script>
+  <script src="js/monitoring-compilation.js?v=20260820-type-cluster1"></script>
 </body>
 </html>
 

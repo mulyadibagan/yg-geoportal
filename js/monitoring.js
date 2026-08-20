@@ -464,10 +464,31 @@ var LEGACY_OBJECT_ALIASES={
     });
   }
 
-  function renderSummaryChart(recordsForSummary){
+  function renderSummaryChart(recordsForSummary,cardType){
     var compileElement=document.getElementById('summary-status-chart');
     var countElement=document.getElementById('summary-record-count');
     if(!compileElement)return;
+
+    if(cardType===undefined){
+      if(!recordsForSummary.length){
+        if(countElement)countElement.textContent='0 laporan';
+        compileElement.innerHTML='<div class="summary-chart-empty">Belum ada laporan monitoring terverifikasi.</div>';
+        return;
+      }
+      var typeMap={};
+      recordsForSummary.forEach(function(record){
+        var type=record.type||'Monitoring Umum';
+        if(!typeMap[type])typeMap[type]=[];
+        typeMap[type].push(record);
+      });
+      if(countElement){
+        countElement.textContent=groupData(recordsForSummary).length+' objek · '+recordsForSummary.length+' laporan';
+      }
+      compileElement.innerHTML=Object.keys(typeMap).sort().map(function(type){
+        return renderSummaryChart(typeMap[type],type);
+      }).join('');
+      return;
+    }
 
     function metricNumber(v){
       if(v===undefined||v===null||v==='')return null;
@@ -489,12 +510,6 @@ var LEGACY_OBJECT_ALIASES={
       if(Math.abs(v)>1000)return Math.round(v).toLocaleString('id-ID');
       if(Math.floor(v)!==v)return v.toLocaleString('id-ID',{minimumFractionDigits:1,maximumFractionDigits:1});
       return String(Math.round(v)).toLocaleString('id-ID');
-    }
-
-    if(!recordsForSummary.length){
-      if(countElement)countElement.textContent='0 laporan';
-      compileElement.innerHTML='<div class="summary-chart-empty">Belum ada laporan yang cocok dengan filter aktif.</div>';
-      return;
     }
 
     var latestByObject={};
@@ -537,10 +552,6 @@ var LEGACY_OBJECT_ALIASES={
       return uniqueReporters[b].reports-uniqueReporters[a].reports;
     }).map(function(k){return uniqueReporters[k];});
 
-    if(countElement){
-      countElement.textContent=latestGroups.length+' objek · '+recordsForSummary.length+' laporan';
-    }
-
     var condition=totalPlants>0?Math.round((totalAlive/totalPlants)*100):0;
     var compilationGroups=groupData(recordsForSummary);
     var followUpGroups=compilationGroups.filter(function(group){
@@ -565,12 +576,16 @@ var LEGACY_OBJECT_ALIASES={
       reporters:reporterList,
       groups:compilationGroups
     };
-    try{sessionStorage.setItem('monitoring-compilation',JSON.stringify(compilationData));}catch(e){}
+    compilationData.type=cardType;
+    try{
+      sessionStorage.setItem('monitoring-compilation:'+keyText(cardType),JSON.stringify(compilationData));
+      if(Object.keys(typeMap||{}).length===1)sessionStorage.setItem('monitoring-compilation',JSON.stringify(compilationData));
+    }catch(e){}
 
-    compileElement.innerHTML='<a class="compilation-main-card" href="monitoring-compilation.html">'+
+    return '<a class="compilation-main-card" href="monitoring-compilation.html?type='+encodeURIComponent(cardType)+'">'+
       '<span class="compilation-main-copy">'+
         '<span class="eyebrow">LAPORAN KOMPILASI</span>'+
-        '<strong>Lihat seluruh hasil monitoring</strong>'+
+        '<strong>Monitoring '+esc(cardType)+'</strong>'+
         '<small>'+latestGroups.length+' objek · '+recordsForSummary.length+' laporan · '+reporterList.length+' pelapor aktif</small>'+
       '</span>'+
       '<span class="compilation-main-metrics">'+
