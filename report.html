@@ -337,6 +337,7 @@
               <option value="APO">Alat Pemecah Ombak (APO)</option>
               <option value="Pembibitan">Pembibitan</option>
               <option value="Agroforestri/Kopi">Agroforestri/Kopi</option>
+              <option value="Monitoring Restorasi Hutan Mineral">Monitoring Restorasi Hutan Mineral (PUP)</option>
               <option value="Monitoring Umum">Monitoring Umum</option>
             </select>
           </label>
@@ -351,6 +352,23 @@
               <option value="Tidak Ditemukan">Tidak Ditemukan</option>
             </select>
           </label>
+        </div>
+
+        <div id="monitoring-pup-fields" class="monitoring-type-panel" hidden>
+          <h4>Detail Petak Ukur Permanen (PUP)</h4>
+          <p class="help">Satu baris untuk satu pohon. ID pohon wajib unik dalam laporan ini; riwayat tahap berikutnya dicocokkan menggunakan ID yang sama.</p>
+          <div class="form-grid">
+            <label class="field"><span>Tahap monitoring *</span><input id="pup-monitoring-stage" placeholder="Contoh: Tahap III"></label>
+            <label class="field"><span>Nama PUP *</span><input id="pup-name" placeholder="PUP 1"></label>
+          </div>
+          <div class="pup-tree-table-wrap">
+            <table class="pup-tree-table">
+              <thead><tr><th>ID pohon</th><th>Jenis</th><th>Tinggi (cm)</th><th>Diameter (cm)</th><th>Status</th><th>Catatan</th><th></th></tr></thead>
+              <tbody id="pup-tree-rows"></tbody>
+            </table>
+          </div>
+          <button id="pup-add-tree" class="secondary-button" type="button">+ Tambah pohon</button>
+          <p id="pup-tree-summary" class="help">Belum ada pohon dicatat.</p>
         </div>
 
         <div id="monitoring-mangrove-fields" class="monitoring-type-panel" hidden>
@@ -522,7 +540,7 @@
 <script src="https://unpkg.com/jszip@3.10.1/dist/jszip.min.js"></script>
 <script src="https://unpkg.com/@tmcw/togeojson@5.8.1/dist/togeojson.umd.js"></script>
 <script src="js/config.js?v=20260725-context-layer-options1"></script>
-<script src="js/report-v6.js?v=20260807-submission-confirmation1"></script>
+<script src="js/report-v6.js?v=20260820-pup-monitoring-form1"></script>
   <script src="js/i18n.js?v=20260810-global-public1"></script>
   <script src="js/pwa.js?v=20260725-photo-simple1"></script>
 </body>
