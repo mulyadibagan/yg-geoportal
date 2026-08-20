@@ -477,7 +477,7 @@
     ).map(record => String(record.date || "")).find(Boolean) || "";
     return {
       loaded: records.length > 0,
-      trainings: trainingRecords.length,
+      trainings: records.filter(record => record.kind !== "activity-engagement").length,
       engagementActivities: engagement.length,
       participants,
       trainingParticipants,
@@ -1911,6 +1911,9 @@
     const pertaminaName = "Pertamina Foundation";
     const donorEntries = Object.entries(donors)
       .sort((a, b) => b[1] - a[1]);
+    const pertaminaCapacityReports = (capacitySummary.records || []).filter(record =>
+      /siarang[\s-]*arang/i.test(String(record.location || record.village || ""))
+    ).length;
     if (!donorEntries.some(([name]) => name === aramcoName)) {
       donorEntries.unshift([aramcoName, 0]);
     }
@@ -1937,7 +1940,7 @@
               '<i class="category-icon" aria-hidden="true">🤝</i>' + // PPCF
               '<span>' + escapeHtml(name) + '</span>' +
               '<strong>2025\u20132026</strong>' +
-              '<small>Pematang Duku \u00b7 lihat ringkasan program</small>' +
+              '<small>Pematang Duku · ' + formatNumber(count) + ' objek · ' + formatNumber(programCount) + ' program</small>' +
             '</button>';
           }
           if (name === "Aramco Asia Singapore") {
@@ -1945,7 +1948,7 @@
               '<i class="category-icon" aria-hidden="true">🌿</i>' + // Aramco
               '<span>' + escapeHtml(name) + '</span>' +
               '<strong>2023–2026</strong>' +
-              '<small>4 desa · lihat ringkasan program</small>' +
+              '<small>' + formatNumber(count) + ' objek · ' + formatNumber(programCount) + ' program · data terverifikasi</small>' +
             '</button>';
           }
           if (name === "Global Environment Centre") {
@@ -1953,7 +1956,7 @@
               '<i class="category-icon" aria-hidden="true">💧</i>' + // GEC
               '<span>' + escapeHtml(name) + '</span>' +
               '<strong>2021 - Sekarang</strong>' +
-              '<small>Bengkalis &amp; Siak · lihat ringkasan program</small>' +
+              '<small>' + formatNumber(count) + ' objek · ' + formatNumber(programCount) + ' program · data terverifikasi</small>' +
             '</button>';
           }
           if (name === "Aliansi Kolibri") {
@@ -1961,7 +1964,7 @@
               '<i class="category-icon" aria-hidden="true">🐦</i>' + // Kolibri
               '<span>' + escapeHtml(name) + '</span>' +
               '<strong>2025\u20132026</strong>' +
-              '<small>Imbo Putui \u00b7 lihat ringkasan program</small>' +
+              '<small>Imbo Putui · ' + formatNumber(count) + ' objek · ' + formatNumber(programCount) + ' program</small>' +
             '</button>';
           }
           if (name === "Yayasan Penabulu") {
@@ -1969,7 +1972,7 @@
               '<i class="category-icon" aria-hidden="true">🌍</i>' +
               '<span class="funding-penabulu-name">' + escapeHtml(name) + '</span>' +
               '<strong class="funding-penabulu-period">Juni 2026–Februari 2027</strong>' +
-              '<small>Desa Temiang \u00b7 lihat ringkasan program</small>' +
+              '<small>Desa Temiang · ' + formatNumber(count) + ' objek · ' + formatNumber(programCount) + ' program</small>' +
             '</button>';
           }
           if (name === "Pertamina Foundation") {
@@ -1977,7 +1980,7 @@
               '<i class="category-icon funding-card-logo" aria-hidden="true"><img src="assets/pertamina-foundation-logo.svg?v=20260727-color1" alt="" loading="lazy"></i>' +
               '<span>' + escapeHtml(name) + '</span>' +
               '<strong>2025–2026</strong>' +
-              '<small>Siarang Arang · Rokan Hilir</small>' +
+              '<small>Siarang Arang · ' + formatNumber(pertaminaCapacityReports) + ' laporan kegiatan terverifikasi</small>' +
             '</button>';
           }
           const donorUrl = mapUrl({ search: donorSearchTerm(name) });

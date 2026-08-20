@@ -29,19 +29,71 @@ def load_capacity_sources(local_source,reports=None):
         if isinstance(cached,dict):
             return cached
     reports=reports or fetch_json(PUBLIC_REPORTS_URL)
-    features=reports.get('features') if isinstance(reports,dict) else []
-    relevant=[]
-    for feature in features or []:
-        properties=feature.get('properties') if isinstance(feature,dict) else {}
-        report_type=str((properties or {}).get('reportType') or '')
-        target=str((properties or {}).get('targetFeatureProperties') or '')
-        if report_type=='Capacity Building' or any(
-            key in target for key in ('Jumlah_Peserta','Peserta','participants')
-        ):
-            relevant.append(feature)
     return {
-        'reports':{'type':'FeatureCollection','features':relevant},
+        # Simpan seluruh laporan publik sebagai satu sumber kanonik. Setiap
+        # halaman melakukan filter jenis laporan dari snapshot yang sama.
+        'reports':reports,
         'prepost':fetch_json(PREPOST_URL)
+    }
+
+def report_audit(data,reports,snapshot_generated_at):
+    report_features=(reports or {}).get('features') or []
+    master_features=data.get('features') or []
+    report_types={}
+    monitoring=[]
+    survival_mismatches=[]
+    reporter_names=set()
+    for feature in report_features:
+        props=(feature or {}).get('properties') or {}
+        report_type=str(props.get('reportType') or 'Tanpa jenis').strip()
+        report_types[report_type]=report_types.get(report_type,0)+1
+        if report_type.lower()!='monitoring':
+            continue
+        monitoring.append(feature)
+        reporter=str(props.get('reporterName') or '').strip()
+        if reporter:
+            reporter_names.add(reporter.casefold())
+        proposed=props.get('proposedInformation') or {}
+        if isinstance(proposed,str):
+            try: proposed=json.loads(proposed)
+            except json.JSONDecodeError: proposed={}
+        alive_number=proposed.get('aliveCount')
+        dead_number=proposed.get('deadOrDamagedCount')
+        survival_number=proposed.get('survivalPercent')
+        try:
+            alive=float(str(alive_number).replace(',','.'))
+            dead=float(str(dead_number).replace(',','.'))
+            reported=float(str(survival_number).replace(',','.'))
+        except (TypeError,ValueError):
+            continue
+        if alive+dead<=0:
+            continue
+        calculated=alive/(alive+dead)*100
+        if abs(reported-calculated)>1:
+            survival_mismatches.append({
+                'reportId':props.get('reportId'),'reported':reported,
+                'calculated':round(calculated,2),'alive':alive,'dead':dead
+            })
+    master_report_ids={
+        str(((feature or {}).get('properties') or {}).get('Source_Report_ID') or '').strip()
+        for feature in master_features
+    }
+    monitoring_ids={
+        str(((feature or {}).get('properties') or {}).get('reportId') or '').strip()
+        for feature in monitoring
+    }
+    return {
+        'generatedAt':snapshot_generated_at,
+        'status':'pass' if monitoring_ids.issubset(master_report_ids) else 'review',
+        'publicReports':len(report_features),'reportTypes':report_types,
+        'monitoring':{
+            'reports':len(monitoring),'reporters':len(reporter_names),
+            'presentInMasterSnapshot':len(monitoring_ids & master_report_ids),
+            'missingFromMasterSnapshot':sorted(monitoring_ids-master_report_ids),
+            'survivalFormula':'alive / (alive + deadOrDamaged) * 100',
+            'survivalReconciliations':survival_mismatches,
+            'displayPolicy':'calculated survival is authoritative when alive and dead/damaged are available'
+        }
     }
 
 def write_if_changed(target,payload,volatile_keys):
@@ -100,6 +152,10 @@ dashboard_data={
 }
 dashboard_target=ROOT/'data'/'dashboard-summary-snapshot.json'
 dashboard_changed=write_if_changed(dashboard_target,dashboard_data,('snapshotGeneratedAt',))
+audit_target=ROOT/'data'/'report-data-audit.json'
+audit_payload=report_audit(data,public_reports or capacity_sources.get('reports') or {},snapshot_generated_at)
+audit_changed=write_if_changed(audit_target,audit_payload,('generatedAt',))
 print(json.dumps({'features':len(data['features']),
     'master':{'target':str(master_target),'changed':master_changed},
-    'dashboard':{'target':str(dashboard_target),'changed':dashboard_changed}},ensure_ascii=False))
+    'dashboard':{'target':str(dashboard_target),'changed':dashboard_changed},
+    'audit':{'target':str(audit_target),'changed':audit_changed,'status':audit_payload['status']}},ensure_ascii=False))
