@@ -18,7 +18,7 @@ on:
       - "scripts/validate_surface_observations_cache.mjs"
       - ".github/workflows/update-gefs-cache.yml"
   schedule:
-    - cron: "17 */6 * * *"
+    - cron: "37 */6 * * *"
 
 permissions:
   contents: write

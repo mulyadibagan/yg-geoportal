@@ -3,7 +3,7 @@ name: Update Master Database snapshot
 on:
   workflow_dispatch:
   schedule:
-    - cron: '17 * * * *'
+    - cron: '27 * * * *'
 
 permissions:
   contents: write
