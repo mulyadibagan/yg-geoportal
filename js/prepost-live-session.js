@@ -5,6 +5,7 @@
   var SNAPSHOT_URL = 'https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/snapshots/current/dashboard.json';
   var params = new URLSearchParams(window.location.search);
   var sessionId = params.get('session') || '';
+  var accessToken = params.get('access') || '';
   var participantResponses = [];
 
   function text(v){ return v === null || v === undefined ? '' : String(v).trim(); }
@@ -235,32 +236,72 @@
       : 'Daftar peserta tersamarkan';
   }
 
-  async function loadMaskedParticipantNames(){
+  async function loadParticipantNames(){
     try{
-      var response = await jsonp(
-        API + '?page=prepost-session-responses&sessionId=' + encodeURIComponent(sessionId) + '&phase=post',
-        'ygLiveMaskedResponses_'
-      );
+      var url=API + '?page=prepost-session-responses&sessionId=' + encodeURIComponent(sessionId) + '&phase=post';
+      if(accessToken)url+='&accessToken='+encodeURIComponent(accessToken);
+      var response = await jsonp(url,'ygLiveResponses_');
       var rows = response && Array.isArray(response.responses) ? response.responses : [];
       if(!rows.length) return;
-      var total = Math.max(participantResponses.length,rows.length);
-      participantResponses = Array.from({length:total},function(_,index){
-        var source = rows[index] || {};
-        return {
-          participantCode:maskParticipantName(source.participantName,index),
-          participantEmail:maskParticipantEmail(source.participantEmail),
-          participantGender:text(source.participantGender) || '-',
+      var authorized=response.authorized===true;
+      var total=Math.max(participantResponses.length,rows.length);
+      participantResponses=Array.from({length:total},function(_,index){
+        var source=rows[index]||{};
+        return{
+          participantCode:text(source.participantName)||text(source.participantCode)||('Peserta '+(index+1)),
+          participantEmail:text(source.participantEmail)||'-',
+          participantGender:text(source.participantGender)||'-',
           totalScore:num(source.totalScore),
           scorePercent:num(source.scorePercent),
-          hasScore:source.totalScore !== null && source.totalScore !== undefined && text(source.totalScore) !== ''
+          hasScore:source.totalScore!==null&&source.totalScore!==undefined&&text(source.totalScore)!==''
         };
       });
       renderParticipantResponses(participantResponses);
-      var noteNode = document.getElementById('live-participant-note');
-      if(noteNode) noteNode.textContent = 'Total responden post-test: ' + participantResponses.length.toLocaleString('id-ID') + ' · nama dan email disamarkan.';
+      var noteNode=document.getElementById('live-participant-note');
+      var titleNode=document.getElementById('live-participant-title');
+      var accessBox=document.getElementById('participant-access-box');
+      if(authorized){
+        if(noteNode)noteNode.textContent='Total responden post-test: '+participantResponses.length.toLocaleString('id-ID')+' · akses identitas aktif sampai '+formatDateTime(response.expiresAt)+'.';
+        if(titleNode)titleNode.textContent='Daftar Peserta Pengisi Post-Test';
+        if(accessBox){
+          accessBox.classList.add('is-authorized');
+          accessBox.innerHTML='<strong>Akses data lengkap aktif</strong><p>Tautan ini berlaku sampai '+esc(formatDateTime(response.expiresAt))+'. Setelah kedaluwarsa, minta tautan baru.</p>';
+        }
+      }else{
+        if(noteNode)noteNode.textContent='Total responden post-test: '+participantResponses.length.toLocaleString('id-ID')+' · nama dan email disamarkan.';
+      }
     }catch(responseError){
-      // Daftar anonim dari ringkasan tetap digunakan jika sumber nama tidak tersedia.
+      // Daftar anonim dari ringkasan tetap digunakan jika sumber tidak tersedia.
     }
+  }
+
+  function initParticipantAccessRequest(){
+    var form=document.getElementById('participant-access-form');
+    var input=document.getElementById('participant-access-email');
+    var status=document.getElementById('participant-access-status');
+    if(!form||!input)return;
+    form.addEventListener('submit',async function(event){
+      event.preventDefault();
+      var email=text(input.value).toLowerCase();
+      if(!/^[^\\s@]+@yayasangambut\\.org$/i.test(email)){
+        if(status)status.textContent='Gunakan email aktif @yayasangambut.org.';
+        return;
+      }
+      var button=form.querySelector('button');
+      if(button)button.disabled=true;
+      if(status)status.textContent='Mengirim tautan akses…';
+      var body=new URLSearchParams();
+      body.set('action','prepost-request-participant-access');
+      body.set('payload',JSON.stringify({sessionId:sessionId,email:email}));
+      try{
+        await fetch(API,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'},body:body.toString()});
+        if(status)status.textContent='Jika email aktif, tautan akses telah dikirim. Periksa kotak masuk atau folder spam.';
+      }catch(error){
+        if(status)status.textContent='Tautan belum dapat dikirim. Silakan coba kembali.';
+      }finally{
+        if(button)button.disabled=false;
+      }
+    });
   }
 
   function initParticipantToggle(){
@@ -315,12 +356,9 @@
     }
 
     initParticipantToggle();
-    loadMaskedParticipantNames();
+    initParticipantAccessRequest();
+    loadParticipantNames();
   }
 
-  if(document.body.hasAttribute('data-require-staff')){
-    window.addEventListener('yg:staff-access-granted',init,{once:true});
-  }else{
-    init();
-  }
+  init();
 })();
