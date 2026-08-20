@@ -72,6 +72,26 @@ function emailAdminDashboardAccessLinksFromSecureExecution() {
   };
 }
 
+function rotateAdminTokenAndEmailAccessLinksFromSecureExecution() {
+  const caller = String(Session.getActiveUser().getEmail() || '').toLowerCase();
+  if (caller !== ADMIN_EMAIL.toLowerCase()) {
+    throw new Error('Only the configured administrator may rotate admin access.');
+  }
+
+  const token = (
+    Utilities.getUuid().replace(/-/g, '') +
+    Utilities.getUuid().replace(/-/g, '')
+  );
+  setAdminTokenFromSecureExecution(token);
+  const delivery = emailAdminDashboardAccessLinksFromSecureExecution();
+
+  return {
+    ok: true,
+    recipientCount: delivery.recipientCount,
+    rotatedAt: new Date().toISOString()
+  };
+}
+
 /*
   Struktur kolom:
   A  ID Laporan
