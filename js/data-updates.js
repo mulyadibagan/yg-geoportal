@@ -376,6 +376,31 @@ function toDirectDriveUrl(url){
     );
   }
 
+  function setMonitoringLayerPhotos(layer, addedPhotos) {
+    const props = layer && layer.feature && layer.feature.properties || {};
+    props._ygPhotos = uniquePhotos(
+      (Array.isArray(props._ygPhotos) ? props._ygPhotos : [])
+        .concat(addedPhotos || [])
+    );
+
+    if (!props._ygPhotos.length || !layer.getPopup || !layer.getPopup()) return;
+    const popup = layer.getPopup();
+    let content = String(popup.getContent() || "");
+    const gallery = monitoringGallery(props._ygPhotos);
+
+    content = content.replace(
+      /<div class="yg-v3-gallery yg-monitoring-update-gallery">[\s\S]*?<\/div>/,
+      ""
+    );
+    const contentWithGallery = content.replace(
+      /(<div class="popup-body">)/,
+      "$1" + gallery
+    );
+    popup.setContent(
+      contentWithGallery === content ? gallery + content : contentWithGallery
+    );
+  }
+
   function syncMonitoringPhotos(update) {
     const addedPhotos = photoValues(update);
     if (!isPhotoUpdate(update) || !addedPhotos.length) {
@@ -406,27 +431,33 @@ function toDirectDriveUrl(url){
         return;
       }
 
-      props._ygPhotos = uniquePhotos(
-        (Array.isArray(props._ygPhotos) ? props._ygPhotos : [])
-          .concat(addedPhotos)
-      );
+      setMonitoringLayerPhotos(layer, addedPhotos);
+    });
+  }
 
-      if (!layer.getPopup || !layer.getPopup()) return;
-      const popup = layer.getPopup();
-      let content = String(popup.getContent() || "");
-      const gallery = monitoringGallery(props._ygPhotos);
+  function syncLegacyMonitoringPhotosByLocation() {
+    const mapApi = window.YG_MAP;
+    const monitoringGroup = mapApi && mapApi.layerObjects
+      ? mapApi.layerObjects.monitoring_reports
+      : null;
+    const photosByLocation = window.YG_LATEST_MONITORING_PHOTOS_BY_LOCATION || {};
+    if (!monitoringGroup || typeof monitoringGroup.eachLayer !== "function") return;
 
-      content = content.replace(
-        /<div class="yg-v3-gallery yg-monitoring-update-gallery">[\s\S]*?<\/div>/,
-        ""
-      );
-      const contentWithGallery = content.replace(
-        /(<\/div>\s*<\/div>\s*)$/,
-        gallery + "$1"
-      );
-      popup.setContent(
-        contentWithGallery === content ? content + gallery : contentWithGallery
-      );
+    monitoringGroup.eachLayer(layer => {
+      const props = layer && layer.feature && layer.feature.properties || {};
+      const hasDirectPhotos = uniquePhotos(
+        (Array.isArray(props.photos) ? props.photos : [])
+          .concat(Array.isArray(props._ygPhotos) ? props._ygPhotos : [])
+      ).length > 0;
+      if (hasDirectPhotos) return;
+
+      const locationCandidates = [
+        props.locationName, props.Desa, props.desa, props.WADMKD
+      ].map(normalize).filter(Boolean);
+      const locationKey = locationCandidates.find(key => photosByLocation[key]);
+      if (!locationKey) return;
+
+      setMonitoringLayerPhotos(layer, photosByLocation[locationKey]);
     });
   }
 
@@ -745,6 +776,7 @@ function toDirectDriveUrl(url){
         result[key] = latestByLocation[key].photos;
         return result;
       }, {});
+    syncLegacyMonitoringPhotosByLocation();
     document.dispatchEvent(new CustomEvent("yg:monitoring-update-photos"));
   }
 
