@@ -386,7 +386,7 @@ if (page === 'donor-admin-result') {
 
   if (page === 'prepost-session-responses') {
     return jsonOrJsonpResponse_(
-      getPrepostSessionResponses_(params.sessionId, params.phase),
+      getPrepostSessionResponses_(params.sessionId, params.phase, params.accessToken),
       callback
     );
   }
@@ -448,6 +448,10 @@ if (action === 'content-save') {
 
     if (action === 'prepost-submit-response') {
       return handlePrepostSubmitResponsePost_(e);
+    }
+
+    if (action === 'prepost-request-participant-access') {
+      return handlePrepostParticipantAccessRequest_(e);
     }
 
     if (
@@ -3139,7 +3143,107 @@ function getPrepostLiveSummary_(params) {
   };
 }
 
-function getPrepostSessionResponses_(sessionId, phase) {
+const PREPOST_ACCESS_TTL_MS = 12 * 60 * 60 * 1000;
+const PREPOST_ACCESS_PROPERTY_PREFIX = 'PREPOST_ACCESS_';
+const PREPOST_ACCESS_THROTTLE_PREFIX = 'PREPOST_ACCESS_THROTTLE_';
+
+function prepostAccessHash_(value) {
+  const digest = Utilities.computeDigest(
+    Utilities.DigestAlgorithm.SHA_256,
+    String(value || ''),
+    Utilities.Charset.UTF_8
+  );
+  return Utilities.base64EncodeWebSafe(digest).replace(/=+$/g, '');
+}
+
+function prepostAccessPropertyKey_(token) {
+  return PREPOST_ACCESS_PROPERTY_PREFIX + prepostAccessHash_(token);
+}
+
+function getValidPrepostAccess_(token, sessionId) {
+  const cleanToken = clean_(token);
+  if (!cleanToken) return null;
+  const properties = PropertiesService.getScriptProperties();
+  const key = prepostAccessPropertyKey_(cleanToken);
+  const raw = properties.getProperty(key);
+  if (!raw) return null;
+  let record = null;
+  try { record = JSON.parse(raw); } catch (error) {}
+  if (!record || record.sessionId !== clean_(sessionId) || Number(record.expiresAt || 0) <= Date.now()) {
+    properties.deleteProperty(key);
+    return null;
+  }
+  return record;
+}
+
+function maskPrepostName_(value, index) {
+  const name = clean_(value).replace(/\s+/g, ' ');
+  if (!name) return 'Peserta ' + (index + 1);
+  if (name.length <= 4) return name.charAt(0) + '***' + name.charAt(name.length - 1);
+  return name.slice(0, 2) + '***' + name.slice(-2);
+}
+
+function maskPrepostEmail_(value) {
+  const email = clean_(value);
+  const at = email.lastIndexOf('@');
+  if (at < 1) return '-';
+  const local = email.slice(0, at);
+  const domain = email.slice(at + 1);
+  return (local.length > 1 ? local.slice(0, 2) : local.charAt(0)) + '***@' + domain;
+}
+
+function handlePrepostParticipantAccessRequest_(e) {
+  try {
+    const data = parsePostPayload_(e);
+    const sessionId = clean_(data.sessionId);
+    const email = clean_(data.email).toLowerCase();
+    if (!sessionId || !/^[^\s@]+@yayasangambut\.org$/i.test(email)) {
+      return prepostResponse_({ ok: true });
+    }
+    const session = allSessionRows_().find(function(item) {
+      return item.sessionId === sessionId;
+    });
+    if (!session) return prepostResponse_({ ok: true });
+
+    const properties = PropertiesService.getScriptProperties();
+    const throttleKey = PREPOST_ACCESS_THROTTLE_PREFIX + prepostAccessHash_(email + '|' + sessionId);
+    const lastSentAt = Number(properties.getProperty(throttleKey) || 0);
+    if (Date.now() - lastSentAt < 60000) return prepostResponse_({ ok: true });
+
+    const token = Utilities.getUuid().replace(/-/g, '') + Utilities.getUuid().replace(/-/g, '');
+    const expiresAt = Date.now() + PREPOST_ACCESS_TTL_MS;
+    properties.setProperty(prepostAccessPropertyKey_(token), JSON.stringify({
+      email: email,
+      sessionId: sessionId,
+      expiresAt: expiresAt,
+      createdAt: Date.now()
+    }));
+    properties.setProperty(throttleKey, String(Date.now()));
+
+    const accessUrl = 'https://webgisyg.id/prepost-live-session.html?session=' +
+      encodeURIComponent(sessionId) + '&access=' + encodeURIComponent(token);
+    MailApp.sendEmail({
+      to: email,
+      subject: '[YG GeoPortal] Tautan akses data peserta',
+      body: [
+        'Permintaan akses data peserta diterima.',
+        '',
+        'Sesi: ' + clean_(session.title || session.sessionId),
+        'Buka data lengkap:',
+        accessUrl,
+        '',
+        'Tautan berlaku selama 12 jam. Setelah kedaluwarsa, silakan minta tautan baru.',
+        'Jangan meneruskan tautan ini kepada pihak di luar Yayasan Gambut.'
+      ].join('\n')
+    });
+    return prepostResponse_({ ok: true });
+  } catch (error) {
+    console.error({ event: 'prepost_access_request_failed', message: error.message });
+    return prepostResponse_({ ok: true });
+  }
+}
+
+function getPrepostSessionResponses_(sessionId, phase, accessToken) {
   const id = clean_(sessionId);
   if (!id) {
     return { ok: false, error: 'Session ID wajib diisi.' };
@@ -3171,8 +3275,11 @@ function getPrepostSessionResponses_(sessionId, phase) {
     post: questions.filter(function(item) { return item.phase === 'post'; }).length
   };
 
+  const access = getValidPrepostAccess_(accessToken, id);
+  const authorized = Boolean(access);
+
   const mapped = responses
-    .map(function(item) {
+    .map(function(item, index) {
       const phaseKey = item.phase === 'pre' ? 'pre' : 'post';
       const totalQuestion = questionCount[phaseKey] || 0;
       const scorePercent = totalQuestion > 0
@@ -3183,8 +3290,8 @@ function getPrepostSessionResponses_(sessionId, phase) {
         sessionId: item.sessionId,
         phase: item.phase,
         participantCode: item.participantCode,
-        participantName: item.participantName,
-        participantEmail: item.participantEmail,
+        participantName: authorized ? item.participantName : maskPrepostName_(item.participantName, index),
+        participantEmail: authorized ? item.participantEmail : maskPrepostEmail_(item.participantEmail),
         participantGender: item.participantGender,
         participantAgeCategory: item.participantAgeCategory,
         participantDelegate: item.participantDelegate,
@@ -3206,6 +3313,8 @@ function getPrepostSessionResponses_(sessionId, phase) {
     phase: requestedPhase,
     questionCount: questionCount,
     count: mapped.length,
+    authorized: authorized,
+    expiresAt: authorized ? new Date(Number(access.expiresAt)).toISOString() : null,
     responses: mapped
   };
 }
