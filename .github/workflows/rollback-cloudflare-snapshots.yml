@@ -1,0 +1,55 @@
+name: Roll back Cloudflare staging snapshots
+
+on:
+  workflow_dispatch:
+    inputs:
+      snapshot_version:
+        description: 'Full Git commit SHA previously published to R2'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: yg-webgis-cloudflare-staging
+  cancel-in-progress: false
+
+jobs:
+  rollback-staging:
+    runs-on: ubuntu-latest
+    environment: yg-webgis-staging
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: cloudflare/yg-webgis-public-data/package-lock.json
+      - run: npm ci
+        working-directory: cloudflare/yg-webgis-public-data
+      - name: Validate requested version
+        shell: bash
+        env:
+          SNAPSHOT_VERSION: ${{ inputs.snapshot_version }}
+        run: |
+          [[ "$SNAPSHOT_VERSION" =~ ^[0-9a-f]{40}$ ]] || { echo "snapshot_version must be a full commit SHA"; exit 1; }
+      - name: Restore immutable version to current
+        shell: bash
+        working-directory: cloudflare/yg-webgis-public-data
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          SNAPSHOT_VERSION: ${{ inputs.snapshot_version }}
+        run: |
+          mkdir -p tmp/rollback
+          npx wrangler r2 object get "yg-webgis-public-snapshots-staging/snapshots/${SNAPSHOT_VERSION}/dashboard.json" --remote --file tmp/rollback/dashboard.json
+          npx wrangler r2 object get "yg-webgis-public-snapshots-staging/snapshots/${SNAPSHOT_VERSION}/objects.json" --remote --file tmp/rollback/objects.json
+          npx wrangler r2 object get "yg-webgis-public-snapshots-staging/manifests/${SNAPSHOT_VERSION}.json" --remote --file tmp/rollback/manifest.json
+          node -e "const fs=require('fs'),c=require('crypto');const m=JSON.parse(fs.readFileSync('tmp/rollback/manifest.json'));for(const n of ['dashboard','objects']){const b=fs.readFileSync('tmp/rollback/'+n+'.json');if(c.createHash('sha256').update(b).digest('hex')!==m.snapshots[n].sha256)throw new Error(n+' hash mismatch')}"
+          npx wrangler r2 object put "yg-webgis-public-snapshots-staging/snapshots/current/dashboard.json" --remote --file tmp/rollback/dashboard.json --content-type application/json
+          npx wrangler r2 object put "yg-webgis-public-snapshots-staging/snapshots/current/objects.json" --remote --file tmp/rollback/objects.json --content-type application/json
+          npx wrangler r2 object put "yg-webgis-public-snapshots-staging/manifests/current.json" --remote --file tmp/rollback/manifest.json --content-type application/json
+      - name: Smoke test restored staging gateway
+        working-directory: cloudflare/yg-webgis-public-data
+        run: npm run smoke:staging

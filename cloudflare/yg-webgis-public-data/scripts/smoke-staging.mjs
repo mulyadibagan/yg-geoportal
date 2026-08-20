@@ -1,3 +1,5 @@
+import { createHash } from "node:crypto";
+
 const base = process.env.YG_WEBGIS_STAGING_URL ||
   "https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev";
 
@@ -14,21 +16,33 @@ if (health.response.status !== 200 || !health.data?.ok || health.data.environmen
   throw new Error("Staging health check failed");
 }
 
-for (const [name, expectedFeatures] of [["dashboard", 137], ["objects", 137]]) {
+const snapshots = {};
+for (const name of ["dashboard", "objects"]) {
   const result = await request(`/snapshots/current/${name}.json`);
   if (result.response.status !== 200) throw new Error(`${name} HTTP ${result.response.status}`);
   if (result.response.headers.get("x-yg-data-source") !== "r2") {
     throw new Error(`${name} did not come from R2`);
   }
-  if (!Array.isArray(result.data?.features) || result.data.features.length !== expectedFeatures) {
-    throw new Error(`${name} feature count mismatch`);
+  if (!Array.isArray(result.data?.features) || result.data.features.length < 1) {
+    throw new Error(`${name} has no features`);
   }
+  snapshots[name] = result;
 }
 
 const manifest = await request("/manifests/current.json");
 if (manifest.response.status !== 200 || !manifest.data?.version ||
     !manifest.data?.snapshots?.dashboard?.sha256 || !manifest.data?.snapshots?.objects?.sha256) {
   throw new Error("Manifest validation failed");
+}
+
+for (const [name, result] of Object.entries(snapshots)) {
+  const expected = manifest.data.snapshots[name];
+  const actualHash = createHash("sha256").update(result.bytes).digest("hex");
+  if (actualHash !== expected.sha256) throw new Error(`${name} sha256 mismatch`);
+  if (result.bytes.length !== expected.bytes) throw new Error(`${name} byte length mismatch`);
+  if (result.data.features.length !== expected.featureCount) {
+    throw new Error(`${name} manifest feature count mismatch`);
+  }
 }
 
 const head = await request("/snapshots/current/dashboard.json", { method: "HEAD" });

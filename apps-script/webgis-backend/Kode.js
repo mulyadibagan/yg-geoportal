@@ -6,11 +6,22 @@ const NOTIFICATION_EMAILS = [
   ADMIN_EMAIL,
   'zamharier@yayasangambut.org'
 ];
-const ADMIN_TOKEN = 'We612IBwjWpyxg-Jw7cf0u9eqlw-6DNn';
+const ADMIN_TOKEN_PROPERTY = 'YG_ADMIN_TOKEN';
 const OFFICIAL_EMAIL_DOMAIN = 'yayasangambut.org';
 const PREPOST_SESSION_SHEET = 'TEST_SESSIONS';
 const PREPOST_QUESTION_SHEET = 'TEST_QUESTIONS';
 const PREPOST_RESPONSE_SHEET = 'TEST_RESPONSES';
+
+function getAdminToken_() {
+  return String(
+    PropertiesService.getScriptProperties().getProperty(ADMIN_TOKEN_PROPERTY) || ''
+  ).trim();
+}
+
+function isAdminToken_(value) {
+  const expected = getAdminToken_();
+  return Boolean(expected) && String(value || '') === expected;
+}
 
 /*
   Struktur kolom:
@@ -48,14 +59,40 @@ const PREPOST_RESPONSE_SHEET = 'TEST_RESPONSES';
   AF Proposed Changes JSON
 */
 
+function getServiceHealth_() {
+  try {
+    const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const uploadFolder = DriveApp.getFolderById(UPLOAD_FOLDER_ID);
+    return {
+      ok: Boolean(spreadsheet.getId()) && Boolean(uploadFolder.getId()),
+      service: 'YG GeoPortal Reporting API',
+      version: '2.1-stack-health',
+      dependencies: { spreadsheet: true, drive: true },
+      checkedAt: new Date().toISOString()
+    };
+  } catch (error) {
+    console.error({ event: 'service_health_failed', message: error.message });
+    return {
+      ok: false,
+      service: 'YG GeoPortal Reporting API',
+      version: '2.1-stack-health',
+      dependencies: { spreadsheet: false, drive: false },
+      checkedAt: new Date().toISOString()
+    };
+  }
+}
+
 function doGet(e) {
   const params = e && e.parameter ? e.parameter : {};
   const page = params.page || '';
   const token = params.token || '';
   const callback = params.callback || '';
+  if (page === 'health') {
+    return jsonOrJsonpResponse_(getServiceHealth_(), callback);
+  }
   if (page === 'public-content') {
-  return contentAdminResponse_(getPublicContent_(), callback);
-}
+    return contentAdminResponse_(getPublicContent_(), callback);
+  }
 
 if (page === 'content-save-result') {
   return contentAdminResponse_(
@@ -73,7 +110,7 @@ if (page === 'donor-admin-result') {
 }
 
   if (page === 'admin') {
-    if (token !== ADMIN_TOKEN) {
+    if (!isAdminToken_(token)) {
       return HtmlService.createHtmlOutput(
         '<h2 style="font-family:Arial;color:#b42318">Akses ditolak</h2>'
       );
@@ -97,7 +134,7 @@ if (page === 'donor-admin-result') {
   }
 
   if (page === 'object-admin') {
-    if (token !== ADMIN_TOKEN) {
+    if (!isAdminToken_(token)) {
       return HtmlService.createHtmlOutput(
         '<h2 style="font-family:Arial;color:#b42318">Akses ditolak</h2>'
       );
@@ -2173,7 +2210,7 @@ function notifyAdmin_(reportId, data, photoUrls, geometry) {
   const adminUrl =
     ScriptApp.getService().getUrl() +
     '?page=admin&token=' +
-    encodeURIComponent(ADMIN_TOKEN);
+    encodeURIComponent(getAdminToken_());
 
   const body = [
     'Laporan baru telah diterima.',
@@ -2211,7 +2248,7 @@ function createReportId_() {
 }
 
 function assertAdmin_(token) {
-  if (token !== ADMIN_TOKEN) {
+  if (!isAdminToken_(token)) {
     throw new Error('Akses admin tidak valid.');
   }
 }

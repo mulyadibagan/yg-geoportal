@@ -133,7 +133,7 @@ function assertEditorCredential_(credential) {
   const value = clean_(credential);
 
   // Jalur pemulihan untuk dashboard admin lama.
-  if (value && typeof ADMIN_TOKEN !== 'undefined' && value === ADMIN_TOKEN) {
+  if (value && typeof isAdminToken_ === 'function' && isAdminToken_(value)) {
     return {
       username: 'admin-legacy',
       name: 'Administrator',
