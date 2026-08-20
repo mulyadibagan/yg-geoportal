@@ -4,6 +4,7 @@
   var BASE='https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec';
   var API=BASE+'?page=public-reports';
   var OBJECTS_API=BASE+'?page=objects';
+  var SNAPSHOT_URL='data/master-database-snapshot.json?v=20260820-monitoring-page-fast1';
   var CALLBACK='ygMonitoringDashboardCallback';
   var OBJECTS_CALLBACK='ygMonitoringObjectsCallback';
 var LEGACY_OBJECT_ALIASES={
@@ -16,7 +17,14 @@ var LEGACY_OBJECT_ALIASES={
 
   function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
   function parseJSON(v){if(!v)return{};if(typeof v==='object')return v;try{return JSON.parse(v);}catch(e){return{};}}
-  function dateValue(v){var d=new Date(v||0);return isNaN(d.getTime())?new Date(0):d;}
+  function dateValue(v){
+    var text=String(v||'').trim();
+    var dayFirst=text.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})/);
+    var d=dayFirst
+      ? new Date(Number(dayFirst[3]),Number(dayFirst[2])-1,Number(dayFirst[1]))
+      : new Date(v||0);
+    return isNaN(d.getTime())?new Date(0):d;
+  }
   function fmtDate(v){var d=dateValue(v);return d.getTime()?d.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}):'—';}
   function has(v){return v!==undefined&&v!==null&&v!==''&&!(typeof v==='number'&&isNaN(v));}
   function toLowerText(v){
@@ -307,6 +315,25 @@ var LEGACY_OBJECT_ALIASES={
     if(!isMonitoringRecord(p))return null;
     var m=parseJSON(p.proposedInformation);
     if(!Object.keys(m).length)m=parseJSON(p.proposedChanges).monitoring||{};
+    if(!Object.keys(m).length&&(
+      p.Monitoring_Type||p.Kondisi||has(p.Survival)||has(p.Jumlah_Hidup)
+    )){
+      m={
+        monitoringType:p.Monitoring_Type,
+        condition:p.Kondisi,
+        survivalPercent:p.Survival,
+        aliveCount:p.Jumlah_Hidup,
+        deadOrDamagedCount:p.Jumlah_Mati_Rusak,
+        monitoredAreaHa:p.Luas_Terpantau_Ha,
+        averageHeightCm:p.Tinggi_Rata_Rata_Cm,
+        averageDiameterCm:p.Diameter_Rata_Rata_Cm,
+        sedimentationCm:p.Sedimentasi_Cm,
+        waterTableCm:p.Water_Table_Cm,
+        threats:p.Ancaman,
+        notes:p.Temuan,
+        followUp:p.Tindak_Lanjut
+      };
+    }
     var title=p.locationName||p.targetObjectName||p.title||'Objek monitoring';
     var village=p.village||p.Desa||p.WADMKD||p.kelurahan||p.desa||'';
       var reporter=
@@ -914,6 +941,25 @@ var LEGACY_OBJECT_ALIASES={
     script.onerror=function(){list.innerHTML='<div class="empty">Data monitoring belum dapat dimuat. Periksa koneksi atau endpoint Apps Script.</div>';};
     document.head.appendChild(script);
   }
+
+  function loadSnapshotImmediately(){
+    fetch(SNAPSHOT_URL,{cache:'no-store'})
+      .then(function(response){
+        if(!response.ok)throw new Error('HTTP '+response.status);
+        return response.json();
+      })
+      .then(function(data){
+        var features=data&&Array.isArray(data.features)?data.features:[];
+        if(!features.length)return;
+        masterObjects=features.map(normalizeMaster).filter(Boolean);
+        applyData({type:'FeatureCollection',features:features});
+      })
+      .catch(function(error){
+        console.warn('Snapshot monitoring tidak dapat dimuat:',error);
+      });
+  }
+
+  loadSnapshotImmediately();
 
   var objectsScript=document.createElement('script');
   objectsScript.src=OBJECTS_API+'&callback='+OBJECTS_CALLBACK+'&t='+Date.now();
