@@ -2,10 +2,7 @@
   "use strict";
 
   const API = "https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec?page=objects";
-  const PUBLIC_OBJECTS_SNAPSHOT_URL =
-    new URLSearchParams(window.location.search).get("dataSource") === "cloudflare-staging"
-      ? "https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/snapshots/current/objects.json"
-      : "data/master-database-snapshot.json?v=20260820-monitoring20";
+  const PUBLIC_OBJECTS_SNAPSHOT_URL = "https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/snapshots/current/objects.json";
   const DEFAULT_VIEW = [1.25, 102.05];
   const DEFAULT_ZOOM = 9;
 

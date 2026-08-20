@@ -938,9 +938,15 @@ function updateReportStatus(token, rowNumber, newStatus, adminNote, targetLayerI
   sheet.getRange(rowNumber, 22)
     .setBackground(colors[newStatus] || '#ffffff');
 
+  const reportId = sheet.getRange(rowNumber, 1).getDisplayValue();
+  if (newStatus === 'Sudah Dipublikasikan') {
+    SpreadsheetApp.flush();
+    notifyCloudflarePublication_(reportId);
+  }
+
   return {
     ok: true,
-    reportId: sheet.getRange(rowNumber, 1).getDisplayValue(),
+    reportId: reportId,
     status: newStatus
   };
 }

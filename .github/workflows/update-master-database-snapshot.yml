@@ -2,6 +2,8 @@ name: Update Master Database snapshot
 
 on:
   workflow_dispatch:
+  repository_dispatch:
+    types: [report-published]
   schedule:
     - cron: '27 * * * *'
 
