@@ -36,6 +36,42 @@ function setAdminTokenFromSecureExecution(token) {
   return { ok: true, property: ADMIN_TOKEN_PROPERTY, rotatedAt: new Date().toISOString() };
 }
 
+function emailAdminDashboardAccessLinksFromSecureExecution() {
+  const caller = String(Session.getActiveUser().getEmail() || '').toLowerCase();
+  if (caller !== ADMIN_EMAIL.toLowerCase()) {
+    throw new Error('Only the configured administrator may send admin access links.');
+  }
+
+  const token = getAdminToken_();
+  if (!token) {
+    throw new Error('Admin token is not configured.');
+  }
+
+  const adminUrl =
+    ScriptApp.getService().getUrl() +
+    '?page=admin&token=' +
+    encodeURIComponent(token);
+
+  MailApp.sendEmail(
+    NOTIFICATION_EMAILS.join(','),
+    '[YG GeoPortal] Tautan Dashboard Verifikasi',
+    [
+      'Tautan akses Dashboard Verifikasi YG GeoPortal telah diperbarui.',
+      '',
+      'Buka Dashboard Verifikasi:',
+      adminUrl,
+      '',
+      'Jangan meneruskan tautan ini kepada pihak di luar administrator YG.'
+    ].join('\n')
+  );
+
+  return {
+    ok: true,
+    recipientCount: NOTIFICATION_EMAILS.length,
+    sentAt: new Date().toISOString()
+  };
+}
+
 /*
   Struktur kolom:
   A  ID Laporan
@@ -2226,10 +2262,15 @@ function saveImages_(images, reportId) {
 }
 
 function notifyAdmin_(reportId, data, photoUrls, geometry) {
+  const adminToken = getAdminToken_();
+  if (!adminToken) {
+    throw new Error('Admin token is not configured; notification link was not sent.');
+  }
+
   const adminUrl =
     ScriptApp.getService().getUrl() +
     '?page=admin&token=' +
-    encodeURIComponent(getAdminToken_());
+    encodeURIComponent(adminToken);
 
   const body = [
     'Laporan baru telah diterima.',
