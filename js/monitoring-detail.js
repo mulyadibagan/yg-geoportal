@@ -21,6 +21,8 @@
   var historyElement=document.getElementById('detail-history');
   var infoElement=document.getElementById('detail-info');
   var photosElement=document.getElementById('detail-photos');
+  var treesCard=document.getElementById('detail-trees-card');
+  var treesElement=document.getElementById('detail-trees');
 
   function esc(v){
     return String(v==null?'':v).replace(/[&<>"']/g,function(c){
@@ -464,6 +466,19 @@
     photosElement.innerHTML='<div class="photo-grid">'+shown+'</div>';
   }
 
+  function renderTrees(group){
+    if(!treesCard||!treesElement)return;
+    var records=[];
+    group.history.forEach(function(report){
+      var trees=Array.isArray(report.metrics&&report.metrics.treeRecords)?report.metrics.treeRecords:[];
+      trees.forEach(function(tree,index){records.push({stage:report.metrics.pupStage||fmtDate(report.date),date:report.date,tree:tree,index:index});});
+    });
+    if(!records.length){treesCard.hidden=true;return;}
+    var counts={};records.forEach(function(item){var id=String(item.tree.treeId||'').toLowerCase();if(id)counts[id]=(counts[id]||0)+1;});
+    treesCard.hidden=false;
+    treesElement.innerHTML='<div style="overflow-x:auto"><table style="width:100%;min-width:760px;border-collapse:collapse"><thead><tr><th>ID</th><th>Tahap</th><th>Jenis</th><th>Tinggi</th><th>Diameter</th><th>Status</th><th>Catatan</th></tr></thead><tbody>'+records.map(function(item){var t=item.tree||{},duplicate=counts[String(t.treeId||'').toLowerCase()]>1;return'<tr><td style="padding:8px;border-bottom:1px solid var(--line)"><strong>'+esc(t.treeId||'—')+'</strong>'+(duplicate?'<small style="display:block;color:#a33">ID berulang</small>':'')+'</td><td>'+esc(item.stage||'—')+'</td><td>'+esc(t.species||'—')+'</td><td>'+esc(t.heightCm||'—')+' cm</td><td>'+esc(t.diameterCm||'—')+' cm</td><td>'+esc(t.status||'—')+'</td><td>'+esc(t.notes||'—')+'</td></tr>';}).join('')+'</tbody></table></div>';
+  }
+
   function render(group){
     if(!group||!group.latest){
       renderNoData('Detail objek tidak ditemukan.');
@@ -477,6 +492,7 @@
     renderHistory(group);
     renderInfo(group);
     renderPhotos(group);
+    renderTrees(group);
   }
 
   function renderNoData(message){

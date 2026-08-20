@@ -1930,6 +1930,28 @@
     return el ? String(el.value || '').trim() : '';
   }
 
+  function pupTreeRows(){
+    return Array.prototype.slice.call(document.querySelectorAll('#pup-tree-rows tr')).map(function(row){
+      function field(name){var el=row.querySelector('[data-pup-field="'+name+'"]');return el?String(el.value||'').trim():'';}
+      return {treeId:field('treeId'),species:field('species'),heightCm:field('heightCm'),diameterCm:field('diameterCm'),status:field('status'),notes:field('notes')};
+    }).filter(function(item){return item.treeId||item.species||item.heightCm||item.diameterCm||item.status||item.notes;});
+  }
+
+  function addPupTreeRow(seed){
+    var body=document.getElementById('pup-tree-rows');if(!body)return;
+    seed=seed||{};var row=document.createElement('tr');
+    row.innerHTML='<td><input data-pup-field="treeId" required></td><td><input data-pup-field="species"></td><td><input data-pup-field="heightCm" type="number" min="0" step="0.1"></td><td><input data-pup-field="diameterCm" type="number" min="0" step="0.01"></td><td><select data-pup-field="status"><option value="">Pilih</option><option>Hidup</option><option>Mati</option><option>Rusak</option><option>Tidak ditemukan</option></select></td><td><input data-pup-field="notes"></td><td><button class="pup-remove-tree" type="button" aria-label="Hapus baris pohon">Hapus</button></td>';
+    Object.keys(seed).forEach(function(key){var el=row.querySelector('[data-pup-field="'+key+'"]');if(el)el.value=seed[key];});
+    row.querySelector('.pup-remove-tree').addEventListener('click',function(){row.remove();updatePupTreeSummary();});
+    row.addEventListener('input',updatePupTreeSummary);body.appendChild(row);updatePupTreeSummary();
+  }
+
+  function updatePupTreeSummary(){
+    var rows=pupTreeRows(),ids={},duplicates=[];rows.forEach(function(item){var key=item.treeId.toLowerCase();if(!key)return;if(ids[key])duplicates.push(item.treeId);ids[key]=true;});
+    var el=document.getElementById('pup-tree-summary');if(el)el.textContent=rows.length+' pohon dicatat'+(duplicates.length?' · ID duplikat: '+duplicates.join(', '):' · semua ID unik');
+    return duplicates;
+  }
+
   function collectMonitoringData(){
     return {
       monitoringType:monitoringValue('monitoring-type'),
@@ -1950,6 +1972,9 @@
       functionStatus:monitoringValue('monitoring-function'),
       monitoredLength:monitoringValue('monitoring-length'),
       canalUnits:monitoringValue('monitoring-canal-units'),
+      pupStage:monitoringValue('pup-monitoring-stage'),
+      pupName:monitoringValue('pup-name'),
+      treeRecords:pupTreeRows(),
       threats:monitoringValue('monitoring-threats'),
       notes:monitoringValue('monitoring-notes'),
       followUp:monitoringValue('monitoring-follow-up')
@@ -2573,7 +2598,9 @@
     var mangrove = document.getElementById('monitoring-mangrove-fields');
     var fdrs = document.getElementById('monitoring-fdrs-fields');
     var infra = document.getElementById('monitoring-infrastructure-fields');
-    if(mangrove) mangrove.hidden = ['Penanaman Mangrove','Hutan Mangrove','Restorasi Hutan','Restorasi Gambut','Pembibitan','Agroforestri/Kopi'].indexOf(type) === -1;
+    var pup = document.getElementById('monitoring-pup-fields');
+    if(mangrove) mangrove.hidden = ['Penanaman Mangrove','Hutan Mangrove','Restorasi Hutan','Restorasi Gambut','Pembibitan','Agroforestri/Kopi','Monitoring Restorasi Hutan Mineral'].indexOf(type) === -1;
+    if(pup) pup.hidden = type !== 'Monitoring Restorasi Hutan Mineral';
     if(fdrs) fdrs.hidden = type !== 'Tinggi Muka Air/FDRS';
     if(infra) infra.hidden = ['Sekat Kanal','APO'].indexOf(type) === -1;
 
@@ -2590,6 +2617,8 @@
   if(monitoringTypeSelect){
     monitoringTypeSelect.addEventListener('change',updateMonitoringPanels);
   }
+  var pupAddTree=document.getElementById('pup-add-tree');
+  if(pupAddTree)pupAddTree.addEventListener('click',function(){addPupTreeRow();});
 
   var canalUnitInput = document.getElementById('monitoring-canal-units');
   var rewettingEstimateNote = document.getElementById('rewetting-estimate-note');
@@ -2907,6 +2936,15 @@
           alert('Pilih kondisi water table pelampung.');
           return;
         }
+      }
+      if(monitorDataValidation.monitoringType === 'Monitoring Restorasi Hutan Mineral'){
+        if(!selectedCorrectionFeature || selectedCorrectionFeature.layerId !== 'permanent_measurement_plots'){
+          alert('Monitoring PUP hanya dapat dikirim untuk objek pada layer Petak Ukur Permanen. Pilih PUP pada peta terlebih dahulu.');
+          return;
+        }
+        if(!monitorDataValidation.pupStage||!monitorDataValidation.pupName){alert('Isi tahap monitoring dan nama PUP.');return;}
+        if(!monitorDataValidation.treeRecords.length){alert('Tambahkan minimal satu data pohon PUP.');return;}
+        if(updatePupTreeSummary().length){alert('ID pohon PUP harus unik dalam satu laporan. Periksa ID duplikat.');return;}
       }
     }
 

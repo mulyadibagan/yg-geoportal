@@ -503,3 +503,4 @@
 .nearby-duplicate-confirmation[hidden]{
   display:none !important;
 }
+.pup-tree-table-wrap{overflow-x:auto;margin:12px 0}.pup-tree-table{width:100%;min-width:860px;border-collapse:collapse}.pup-tree-table th,.pup-tree-table td{padding:8px;border-bottom:1px solid #d8e6df;text-align:left}.pup-tree-table input,.pup-tree-table select{width:100%;min-width:90px}.pup-tree-table .pup-remove-tree{border:1px solid #c84c4c;background:#fff;color:#9d2929;border-radius:8px;padding:7px 10px;cursor:pointer}.secondary-button{border:1px solid #07835f;background:#fff;color:#076b50;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer}
