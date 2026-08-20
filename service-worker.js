@@ -1,4 +1,4 @@
-const CACHE_NAME = "yg-geoportal-v6-20260820-webgis-refresh2";
+const CACHE_NAME = "yg-geoportal-v6-20260820-monitoring20";
 
 const OFFLINE_ASSETS = [
   "./assets/logo-yayasan-gambut.png",
@@ -50,18 +50,18 @@ self.addEventListener("fetch", event => {
 
   const url = new URL(request.url);
 
-  // Public snapshots are generated hourly and safe to serve immediately from
-  // the edge/device cache while a fresh copy is fetched in the background.
+  // Public snapshots drive visible counts and popup evidence. Always prefer
+  // the network response so a page never renders an older count first. The
+  // cached copy is only an offline fallback.
   if (url.origin === self.location.origin && isPublicSnapshot(url)) {
     event.respondWith(
       caches.open(CACHE_NAME).then(cache =>
-        cache.match(request).then(cached => {
-          const refreshed = fetch(request).then(response => {
+        fetch(request, { cache: "no-store" })
+          .then(response => {
             if (response && response.ok) cache.put(request, response.clone());
             return response;
-          }).catch(() => cached);
-          return cached || refreshed;
-        })
+          })
+          .catch(() => cache.match(request))
       )
     );
     return;
