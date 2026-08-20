@@ -6,13 +6,17 @@
   var params = new URLSearchParams(window.location.search);
   var sessionId = params.get('session') || '';
   var participantResponses = [];
-  var participantResponsesLoaded = false;
-  var participantResponsesLoading = false;
 
   function text(v){ return v === null || v === undefined ? '' : String(v).trim(); }
   function esc(v){ return text(v).replace(/[&<>"']/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
   function num(v){ var n = Number(v); return Number.isFinite(n) ? n : 0; }
   function pct(v){ return num(v).toLocaleString('id-ID',{maximumFractionDigits:1}) + '%'; }
+  function maskParticipantName(value,index){
+    var name = text(value).replace(/\s+/g,' ');
+    if(!name) return 'Peserta ' + (index + 1);
+    if(name.length <= 4) return name.charAt(0) + '***' + name.charAt(name.length - 1);
+    return name.slice(0,2) + '***' + name.slice(-2);
+  }
   function parseLegacyDateTime(v){
     var m = text(v).match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})(?:\s+(\d{1,2}):(\d{2})(?::(\d{2}))?)?$/);
     if(!m) return null;
@@ -138,6 +142,11 @@
     if(genderNode) genderNode.innerHTML = breakdownHtml(summary.postDemographics && summary.postDemographics.gender);
     if(ageNode) ageNode.innerHTML = breakdownHtml(summary.postDemographics && summary.postDemographics.ageCategory);
     if(delegateNode) delegateNode.innerHTML = breakdownHtml(summary.postDemographics && summary.postDemographics.delegate);
+
+    participantResponses = Array.from({length:post},function(_,index){
+      return {participantCode:'Peserta ' + (index + 1)};
+    });
+    renderParticipantResponses(participantResponses);
   }
 
   function applyQuestions(detail){
@@ -187,26 +196,14 @@
     return '<table class="live-table">' +
       '<thead><tr>' +
         '<th>No</th>' +
-        '<th>Nama peserta</th>' +
-        '<th>Email</th>' +
-        '<th>Gender</th>' +
-        '<th>Umur</th>' +
-        '<th>Utusan</th>' +
-        '<th>Skor</th>' +
-        '<th>Persen</th>' +
-        '<th>Waktu submit</th>' +
+        '<th>Peserta</th>' +
+        '<th>Status</th>' +
       '</tr></thead>' +
       '<tbody>' + rows.map(function(item,index){
         return '<tr>' +
           '<td>' + (index + 1) + '</td>' +
-          '<td>' + esc(item.participantName || '-') + '</td>' +
-          '<td>' + esc(item.participantEmail || '-') + '</td>' +
-          '<td>' + esc(item.participantGender || '-') + '</td>' +
-          '<td>' + esc(item.participantAgeCategory || '-') + '</td>' +
-          '<td>' + esc(item.participantDelegate || '-') + '</td>' +
-          '<td>' + num(item.totalScore).toLocaleString('id-ID') + '</td>' +
-          '<td>' + pct(item.scorePercent) + '</td>' +
-          '<td>' + esc(formatDateTime(item.submittedAt)) + '</td>' +
+          '<td>' + esc(item.participantCode || ('Peserta ' + (index + 1))) + '</td>' +
+          '<td>Sudah mengisi post-test</td>' +
         '</tr>';
       }).join('') + '</tbody>' +
     '</table>';
@@ -218,47 +215,32 @@
     var toggleBtn = document.getElementById('live-toggle-participants');
     if(tableNode) tableNode.innerHTML = responseTableMarkup(rows || []);
     if(noteNode) noteNode.textContent = (rows || []).length
-      ? 'Total peserta post-test: ' + (rows || []).length.toLocaleString('id-ID')
+      ? 'Total responden post-test: ' + (rows || []).length.toLocaleString('id-ID') + ' · identitas tidak ditampilkan.'
       : 'Belum ada peserta post-test yang mengisi.';
     if(toggleBtn) toggleBtn.textContent = (rows || []).length
-      ? 'Daftar detail peserta (' + (rows || []).length.toLocaleString('id-ID') + ')'
-      : 'Daftar detail peserta';
+      ? 'Daftar peserta anonim (' + (rows || []).length.toLocaleString('id-ID') + ')'
+      : 'Daftar peserta anonim';
   }
 
-  async function loadParticipantResponses(){
-    var response;
-    var lastError;
-    for(var attempt=1;attempt<=3;attempt++){
-      try{
-        response = await jsonp(
-          API + '?page=prepost-session-responses&sessionId=' + encodeURIComponent(sessionId) + '&phase=post',
-          'ygLiveResponses_'
-        );
-        break;
-      }catch(error){
-        lastError = error;
-        if(attempt < 3){
-          await new Promise(function(resolve){ setTimeout(resolve,attempt * 1200); });
-        }
-      }
+  async function loadMaskedParticipantNames(){
+    try{
+      var response = await jsonp(
+        API + '?page=prepost-session-responses&sessionId=' + encodeURIComponent(sessionId) + '&phase=post',
+        'ygLiveMaskedResponses_'
+      );
+      var rows = response && Array.isArray(response.responses) ? response.responses : [];
+      if(!rows.length) return;
+      var total = Math.max(participantResponses.length,rows.length);
+      participantResponses = Array.from({length:total},function(_,index){
+        var source = rows[index] || {};
+        return {participantCode:maskParticipantName(source.participantName,index)};
+      });
+      renderParticipantResponses(participantResponses);
+      var noteNode = document.getElementById('live-participant-note');
+      if(noteNode) noteNode.textContent = 'Total responden post-test: ' + participantResponses.length.toLocaleString('id-ID') + ' · nama disamarkan.';
+    }catch(responseError){
+      // Daftar anonim dari ringkasan tetap digunakan jika sumber nama tidak tersedia.
     }
-    if(!response) throw lastError || new Error('Daftar peserta tidak tersedia.');
-    if(!response || response.ok === false){
-      participantResponses = [];
-      renderParticipantResponses([]);
-      return;
-    }
-    participantResponses = Array.isArray(response.responses) ? response.responses : [];
-    participantResponsesLoaded = true;
-    renderParticipantResponses(participantResponses);
-  }
-
-  function applyParticipantError(){
-    participantResponses = [];
-    var tableNode = document.getElementById('live-participant-table');
-    var noteNode = document.getElementById('live-participant-note');
-    if(tableNode) tableNode.innerHTML = '<p class="question-empty">Daftar peserta belum dapat dimuat. Ringkasan sesi tetap tersedia.</p>';
-    if(noteNode) noteNode.textContent = 'Koneksi daftar peserta sedang tidak tersedia.';
   }
 
   function initParticipantToggle(){
@@ -266,33 +248,18 @@
     var card = document.getElementById('live-participant-card');
     if(!btn || !card) return;
 
-    btn.addEventListener('click', async function(){
+    btn.addEventListener('click',function(){
       var isHidden = card.classList.contains('live-card--hidden');
       if(isHidden){
         card.classList.remove('live-card--hidden');
-        if(!participantResponsesLoaded && !participantResponsesLoading){
-          participantResponsesLoading = true;
-          btn.disabled = true;
-          btn.textContent = 'Memuat daftar peserta...';
-          var noteNode = document.getElementById('live-participant-note');
-          if(noteNode) noteNode.textContent = 'Menghubungkan ke data peserta...';
-          try{
-            await loadParticipantResponses();
-          }catch(responseError){
-            applyParticipantError();
-          }finally{
-            participantResponsesLoading = false;
-            btn.disabled = false;
-          }
-        }
         btn.textContent = participantResponses.length
-          ? 'Sembunyikan daftar peserta (' + participantResponses.length.toLocaleString('id-ID') + ')'
-          : 'Sembunyikan daftar peserta';
+          ? 'Sembunyikan daftar anonim (' + participantResponses.length.toLocaleString('id-ID') + ')'
+          : 'Sembunyikan daftar anonim';
       } else {
         card.classList.add('live-card--hidden');
         btn.textContent = participantResponses.length
-          ? 'Daftar detail peserta (' + participantResponses.length.toLocaleString('id-ID') + ')'
-          : 'Daftar detail peserta';
+          ? 'Daftar peserta anonim (' + participantResponses.length.toLocaleString('id-ID') + ')'
+          : 'Daftar peserta anonim';
       }
     });
   }
@@ -328,6 +295,7 @@
     }
 
     initParticipantToggle();
+    loadMaskedParticipantNames();
   }
 
   if(document.body.hasAttribute('data-require-staff')){
