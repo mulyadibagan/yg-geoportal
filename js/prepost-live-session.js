@@ -17,6 +17,15 @@
     if(name.length <= 4) return name.charAt(0) + '***' + name.charAt(name.length - 1);
     return name.slice(0,2) + '***' + name.slice(-2);
   }
+  function maskParticipantEmail(value){
+    var email = text(value);
+    var at = email.lastIndexOf('@');
+    if(at < 1) return '-';
+    var local = email.slice(0,at);
+    var domain = email.slice(at + 1);
+    var visible = local.length > 1 ? local.slice(0,2) : local.charAt(0);
+    return visible + '***@' + domain;
+  }
   function parseLegacyDateTime(v){
     var m = text(v).match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})(?:\s+(\d{1,2}):(\d{2})(?::(\d{2}))?)?$/);
     if(!m) return null;
@@ -197,13 +206,17 @@
       '<thead><tr>' +
         '<th>No</th>' +
         '<th>Peserta</th>' +
-        '<th>Status</th>' +
+        '<th>Email</th>' +
+        '<th>Gender</th>' +
+        '<th>Nilai</th>' +
       '</tr></thead>' +
       '<tbody>' + rows.map(function(item,index){
         return '<tr>' +
           '<td>' + (index + 1) + '</td>' +
           '<td>' + esc(item.participantCode || ('Peserta ' + (index + 1))) + '</td>' +
-          '<td>Sudah mengisi post-test</td>' +
+          '<td>' + esc(item.participantEmail || '-') + '</td>' +
+          '<td>' + esc(item.participantGender || '-') + '</td>' +
+          '<td>' + (item.hasScore ? num(item.totalScore).toLocaleString('id-ID') + ' (' + pct(item.scorePercent) + ')' : '-') + '</td>' +
         '</tr>';
       }).join('') + '</tbody>' +
     '</table>';
@@ -218,8 +231,8 @@
       ? 'Total responden post-test: ' + (rows || []).length.toLocaleString('id-ID') + ' · identitas tidak ditampilkan.'
       : 'Belum ada peserta post-test yang mengisi.';
     if(toggleBtn) toggleBtn.textContent = (rows || []).length
-      ? 'Daftar peserta anonim (' + (rows || []).length.toLocaleString('id-ID') + ')'
-      : 'Daftar peserta anonim';
+      ? 'Daftar peserta tersamarkan (' + (rows || []).length.toLocaleString('id-ID') + ')'
+      : 'Daftar peserta tersamarkan';
   }
 
   async function loadMaskedParticipantNames(){
@@ -233,11 +246,18 @@
       var total = Math.max(participantResponses.length,rows.length);
       participantResponses = Array.from({length:total},function(_,index){
         var source = rows[index] || {};
-        return {participantCode:maskParticipantName(source.participantName,index)};
+        return {
+          participantCode:maskParticipantName(source.participantName,index),
+          participantEmail:maskParticipantEmail(source.participantEmail),
+          participantGender:text(source.participantGender) || '-',
+          totalScore:num(source.totalScore),
+          scorePercent:num(source.scorePercent),
+          hasScore:source.totalScore !== null && source.totalScore !== undefined && text(source.totalScore) !== ''
+        };
       });
       renderParticipantResponses(participantResponses);
       var noteNode = document.getElementById('live-participant-note');
-      if(noteNode) noteNode.textContent = 'Total responden post-test: ' + participantResponses.length.toLocaleString('id-ID') + ' · nama disamarkan.';
+      if(noteNode) noteNode.textContent = 'Total responden post-test: ' + participantResponses.length.toLocaleString('id-ID') + ' · nama dan email disamarkan.';
     }catch(responseError){
       // Daftar anonim dari ringkasan tetap digunakan jika sumber nama tidak tersedia.
     }
@@ -253,13 +273,13 @@
       if(isHidden){
         card.classList.remove('live-card--hidden');
         btn.textContent = participantResponses.length
-          ? 'Sembunyikan daftar anonim (' + participantResponses.length.toLocaleString('id-ID') + ')'
-          : 'Sembunyikan daftar anonim';
+          ? 'Sembunyikan daftar tersamarkan (' + participantResponses.length.toLocaleString('id-ID') + ')'
+          : 'Sembunyikan daftar tersamarkan';
       } else {
         card.classList.add('live-card--hidden');
         btn.textContent = participantResponses.length
-          ? 'Daftar peserta anonim (' + participantResponses.length.toLocaleString('id-ID') + ')'
-          : 'Daftar peserta anonim';
+          ? 'Daftar peserta tersamarkan (' + participantResponses.length.toLocaleString('id-ID') + ')'
+          : 'Daftar peserta tersamarkan';
       }
     });
   }
