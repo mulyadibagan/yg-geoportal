@@ -2,6 +2,7 @@
   'use strict';
 
   var API = 'https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec';
+  var DATA_API = 'https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev';
   var SNAPSHOT_URL = 'https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/snapshots/current/dashboard.json';
   var all = [];
   var prepostSessions = [];
@@ -165,6 +166,23 @@
       documents: documentUrls(p.documentUrls || p.documents || p.documentUrl || c.documentUrls || c.documentUrl),
       photos: Array.isArray(p.photos) ? p.photos : []
     };
+  }
+
+  async function cloudflarePrepost(path) {
+    var controller = typeof AbortController === 'function' ? new AbortController() : null;
+    var timer = controller ? setTimeout(function () { controller.abort(); }, 30000) : null;
+    try {
+      var response = await fetch(DATA_API + path, {
+        cache: 'no-store',
+        headers: { Accept: 'application/json' },
+        signal: controller ? controller.signal : undefined
+      });
+      if (!response.ok) throw new Error('Cloudflare HTTP ' + response.status);
+      var data = await response.json();
+      return parse(data);
+    } finally {
+      if (timer) clearTimeout(timer);
+    }
   }
 
   function reconcileDonor(record) {
@@ -672,7 +690,12 @@
     if (box) box.innerHTML = '<div class="loading">Memuat semua pertanyaan dan link sesi...</div>';
 
     try {
-      var data = await jsonp(API + '?page=prepost-session-detail&sessionId=' + encodeURIComponent(sessionId) + '&t=' + Date.now());
+      var data;
+      try {
+        data = await cloudflarePrepost('/api/prepost/session-detail?sessionId=' + encodeURIComponent(sessionId));
+      } catch (cloudflareError) {
+        data = await jsonp(API + '?page=prepost-session-detail&sessionId=' + encodeURIComponent(sessionId) + '&t=' + Date.now());
+      }
       renderManageSessionDetail(data || {});
     } catch (error) {
       if (statusNode) statusNode.textContent = 'Gagal memuat detail sesi. Coba lagi.';
@@ -708,7 +731,12 @@
   async function findCreatedSessionId(fingerprint) {
     for (var i = 0; i < 5; i += 1) {
       try {
-        var data = await jsonp(API + '?page=prepost-sessions&status=active&t=' + Date.now());
+        var data;
+        try {
+          data = await cloudflarePrepost('/api/prepost/sessions');
+        } catch (cloudflareError) {
+          data = await jsonp(API + '?page=prepost-sessions&status=active&t=' + Date.now());
+        }
         var rows = Array.isArray(data && data.sessions) ? data.sessions : [];
         var matched = rows.map(function (item) { return item.session || item; }).find(function (session) {
           return sessionMatchesFingerprint(session, fingerprint);
@@ -737,7 +765,12 @@
     var listNode = document.getElementById('prepost-session-list');
     if (listNode) listNode.innerHTML = '<div class="loading">Memuat sesi pre/post test...</div>';
     try {
-      var data = await jsonp(API + '?page=prepost-live-summary&scope=active&t=' + Date.now());
+      var data;
+      try {
+        data = await cloudflarePrepost('/api/prepost/sessions');
+      } catch (cloudflareError) {
+        data = await jsonp(API + '?page=prepost-live-summary&scope=active&t=' + Date.now());
+      }
       renderPrepostSummary(data || {});
     } catch (error) {
       if (listNode) {
