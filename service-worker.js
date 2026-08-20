@@ -1,4 +1,4 @@
-const CACHE_NAME = "yg-geoportal-v5-20260820-freshness1";
+const CACHE_NAME = "yg-geoportal-v6-20260820-public-snapshots1";
 
 const OFFLINE_ASSETS = [
   "./assets/logo-yayasan-gambut.png",
@@ -30,6 +30,11 @@ function isDynamicData(url) {
     /\/(data\/.*\.(?:json|geojson)|api\/)/i.test(url.pathname);
 }
 
+function isPublicSnapshot(url) {
+  return /\/(?:master-database-snapshot|dashboard-summary-snapshot)\.json$/i
+    .test(url.pathname);
+}
+
 function isFreshnessCritical(request, url) {
   return request.mode === "navigate" ||
     request.destination === "document" ||
@@ -44,6 +49,23 @@ self.addEventListener("fetch", event => {
   if (request.method !== "GET") return;
 
   const url = new URL(request.url);
+
+  // Public snapshots are generated hourly and safe to serve immediately from
+  // the edge/device cache while a fresh copy is fetched in the background.
+  if (url.origin === self.location.origin && isPublicSnapshot(url)) {
+    event.respondWith(
+      caches.open(CACHE_NAME).then(cache =>
+        cache.match(request).then(cached => {
+          const refreshed = fetch(request).then(response => {
+            if (response && response.ok) cache.put(request, response.clone());
+            return response;
+          }).catch(() => cached);
+          return cached || refreshed;
+        })
+      )
+    );
+    return;
+  }
 
   // Live API/data must never be answered from the service-worker cache.
   if (isDynamicData(url)) {

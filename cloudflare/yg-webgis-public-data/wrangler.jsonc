@@ -1,0 +1,54 @@
+{
+  "$schema": "../../../node_modules/wrangler/config-schema.json",
+  "name": "yg-webgis-public-data-local",
+  "main": "src/index.js",
+  "compatibility_date": "2026-08-20",
+  "workers_dev": true,
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  },
+  "vars": {
+    "ENVIRONMENT": "local",
+    "GITHUB_ORIGIN": "https://webgisyg.id",
+    "APPS_SCRIPT_BASE": "https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec"
+  },
+  "r2_buckets": [
+    {
+      "binding": "PUBLIC_SNAPSHOTS",
+      "bucket_name": "yg-webgis-public-snapshots-local"
+    }
+  ],
+  "env": {
+    "staging": {
+      "name": "yg-webgis-public-data-staging",
+      "workers_dev": true,
+      "vars": {
+        "ENVIRONMENT": "staging",
+        "GITHUB_ORIGIN": "https://webgisyg.id",
+        "APPS_SCRIPT_BASE": "https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec"
+      },
+      "r2_buckets": [
+        {
+          "binding": "PUBLIC_SNAPSHOTS",
+          "bucket_name": "yg-webgis-public-snapshots-staging"
+        }
+      ]
+    },
+    "production": {
+      "name": "yg-webgis-public-data",
+      "workers_dev": false,
+      "vars": {
+        "ENVIRONMENT": "production",
+        "GITHUB_ORIGIN": "https://webgisyg.id",
+        "APPS_SCRIPT_BASE": "https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec"
+      },
+      "r2_buckets": [
+        {
+          "binding": "PUBLIC_SNAPSHOTS",
+          "bucket_name": "yg-webgis-public-snapshots"
+        }
+      ]
+    }
+  }
+}

@@ -2,6 +2,10 @@
   "use strict";
 
   const API = "https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec?page=objects";
+  const PUBLIC_OBJECTS_SNAPSHOT_URL =
+    new URLSearchParams(window.location.search).get("dataSource") === "cloudflare-staging"
+      ? "https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/snapshots/current/objects.json"
+      : "data/master-database-snapshot.json?v=20260813-performance1";
   const DEFAULT_VIEW = [1.25, 102.05];
   const DEFAULT_ZOOM = 9;
 
@@ -3283,7 +3287,7 @@ L.control.scale({
 	  setStatus("Memuat snapshot Master Database...", false);
   try {
     const snapshotResponse = await fetch(
-      "data/master-database-snapshot.json?v=20260813-performance1",
+      PUBLIC_OBJECTS_SNAPSHOT_URL,
       { cache: "force-cache" }
     );
     if (!snapshotResponse.ok) throw new Error("HTTP " + snapshotResponse.status);
