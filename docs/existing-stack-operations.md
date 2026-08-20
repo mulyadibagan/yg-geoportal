@@ -34,3 +34,7 @@ Rotasi aman:
 Jalankan workflow `Roll back Cloudflare staging snapshots`, lalu masukkan SHA commit penuh yang pernah berhasil dipublikasikan. Workflow mengambil snapshot dan manifest immutable, memverifikasi SHA-256, mengganti alias `current`, lalu menjalankan smoke test.
 
 Rollback tidak mengubah Google Drive, Spreadsheet, Apps Script, GitHub snapshot, DNS, atau resource produksi.
+
+## Backlog arsitektur yang disepakati
+
+Pindahkan endpoint publik `objects`, `public-reports`, dan `public-updates` ke jalur utama Cloudflare. Apps Script tetap menjadi sumber input/admin, tetapi browser pengunjung membaca snapshot Cloudflare. Publikasi laporan harus tetap otomatis muncul dalam target 1–5 menit, dengan snapshot GitHub terakhir sebagai fallback tervalidasi.

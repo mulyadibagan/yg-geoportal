@@ -18,7 +18,7 @@
 
     window.addEventListener("load", () => {
       navigator.serviceWorker
-        .register("./service-worker.js?v=20260820-monitoring-photos-ready", { updateViaCache: "none" })
+        .register("./service-worker.js?v=20260820-monitoring-photos-by-object", { updateViaCache: "none" })
         .then(registration => {
           registration.update();
 
@@ -30,7 +30,7 @@
     });
 
     navigator.serviceWorker.addEventListener("controllerchange", () => {
-      const reloadKey = "yg-sw-freshness-20260820-9";
+      const reloadKey = "yg-sw-freshness-20260820-10";
       if (sessionStorage.getItem(reloadKey)) return;
       sessionStorage.setItem(reloadKey, "done");
       window.location.reload();

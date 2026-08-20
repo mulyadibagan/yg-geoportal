@@ -11,13 +11,22 @@
       "https://drive.google.com/file/d/15yAA7i2NoeA_-PX4S7i-BrZxIrEMZf18/view?usp=drivesdk",
       "https://drive.google.com/file/d/1hPmXUKzdIcDHpVRwtygIRTGLfJ0mpsuX/view?usp=drivesdk",
       "https://drive.google.com/file/d/1PBG76KHR-TM8psFuljLqPY3ya6Zhh8Fd/view?usp=drivesdk"
-    ],
-    "buruk bakul": [
+    ]
+  };
+  const VERIFIED_MONITORING_PHOTOS_BY_OBJECT = {
+    "area_mangrove:auto:374024597": [
       "https://drive.google.com/file/d/1u1Did5qZYT6Of89-Rl2Ii0IOVsIb5DWs/view?usp=drivesdk",
       "https://drive.google.com/file/d/151b8GRRDMabPZxrxeWKMCPIj6iTy_lvY/view?usp=drivesdk",
       "https://drive.google.com/file/d/1prfw-eEF9Y_TCdmSgYi88OFVJN_AteiR/view?usp=drivesdk",
       "https://drive.google.com/file/d/1TGhL2NCD08y5_3GqfyZovoQUzMSOTFdd/view?usp=drivesdk",
       "https://drive.google.com/file/d/1JUaeDbbt-w77nbFjQOuQpwFA-_2qWDi0/view?usp=drivesdk"
+    ],
+    "area_mangrove:auto:56906758": [
+      "https://drive.google.com/file/d/1i1B_Y8txs453q8QfRP5RlPDye3rt5-Vo/view?usp=drivesdk",
+      "https://drive.google.com/file/d/1BpyM9hdKSPMA1_zFVqrFxiiDJFIEpV5w/view?usp=drivesdk",
+      "https://drive.google.com/file/d/1sTqLcNhfhJCbMLdBRAH95rMsmxi63SYt/view?usp=drivesdk",
+      "https://drive.google.com/file/d/1IW-DJ_PZ6N5bRfnU_lb3UmrYzk5B2m7z/view?usp=drivesdk",
+      "https://drive.google.com/file/d/1GIUiQ09AD8IejdWYWCR-W5wi50Hyvtdt/view?usp=drivesdk"
     ]
   };
 
@@ -496,6 +505,13 @@ function toDirectDriveUrl(url){
       }
       return;
     }
+    monitoringGroup.eachLayer(layer => {
+      const props = layer && layer.feature && layer.feature.properties || {};
+      const photos = entityIds(props)
+        .map(id => VERIFIED_MONITORING_PHOTOS_BY_OBJECT[id])
+        .find(value => Array.isArray(value) && value.length);
+      if (photos) setMonitoringLayerPhotos(layer, photos);
+    });
     syncLegacyMonitoringPhotosByLocation();
   }
 
