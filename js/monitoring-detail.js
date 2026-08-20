@@ -404,6 +404,16 @@
     return out.slice(0,limit||4);
   }
 
+  function formatChartMetric(value,unit){
+    var number=Number(value);
+    if(!isFinite(number))return String(value==null?'—':value);
+    var formatted=number.toLocaleString('id-ID',{
+      minimumFractionDigits:unit==='%'?2:0,
+      maximumFractionDigits:2
+    });
+    return formatted+(unit?' '+unit:'');
+  }
+
   function chartSVG(history,definition){
     var chronological=history.slice().sort(function(a,b){return dateValue(a.date)-dateValue(b.date);});
     var points=chronological.map(function(r){
@@ -421,10 +431,10 @@
     var line=points.map(function(point,index){return x(index)+','+y(point.value);}).join(' ');
     var marks=points.map(function(point,index){
       return'<circle cx="'+x(index)+'" cy="'+y(point.value)+'" r="6"></circle>'+
-        '<text x="'+x(index)+'" y="'+(y(point.value)-12)+'" text-anchor="middle">'+esc(point.value+(definition[2]?' '+definition[2]:''))+'</text>'+
+        '<text x="'+x(index)+'" y="'+(y(point.value)-12)+'" text-anchor="middle">'+esc(formatChartMetric(point.value,definition[2]))+'</text>'+
         '<text x="'+x(index)+'" y="'+(height-17)+'" text-anchor="middle">'+esc(fmtDate(point.date))+'</text>';
     }).join('');
-    return'<article class="chart-card"><div class="chart-heading"><h3>'+esc(definition[1])+'</h3><strong>'+esc(points[points.length-1].value+(definition[2]?' '+definition[2]:''))+'</strong></div>'+
+    return'<article class="chart-card"><div class="chart-heading"><h3>'+esc(definition[1])+'</h3><strong>'+esc(formatChartMetric(points[points.length-1].value,definition[2]))+'</strong></div>'+
       '<div class="chart-wrap"><svg viewBox="0 0 '+width+' '+height+'" role="img" aria-label="Grafik perubahan '+esc(definition[1])+'">'+
       '<line class="axis" x1="'+left+'" y1="'+(height-bottom)+'" x2="'+(width-right)+'" y2="'+(height-bottom)+'"></line>'+
       '<polyline class="trend-line" points="'+line+'"></polyline>'+marks+'</svg></div></article>';
