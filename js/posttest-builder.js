@@ -14,26 +14,59 @@
     return new Promise(function (resolve, reject) {
       var cb = 'ygPosttest' + Date.now() + Math.floor(Math.random() * 1000);
       var s = document.createElement('script');
-      window[cb] = function (data) {
-        delete window[cb];
+      var settled = false;
+      var timer = setTimeout(function () {
+        if (settled) return;
+        settled = true;
+        cleanup();
+        reject(new Error('timeout'));
+      }, 45000);
+
+      function cleanup() {
+        clearTimeout(timer);
+        try { delete window[cb]; } catch (error) { window[cb] = undefined; }
         if (s.parentNode) s.parentNode.removeChild(s);
+      }
+
+      window[cb] = function (data) {
+        if (settled) return;
+        settled = true;
+        cleanup();
         resolve(data);
       };
       s.onerror = function () {
-        delete window[cb];
-        if (s.parentNode) s.parentNode.removeChild(s);
+        if (settled) return;
+        settled = true;
+        cleanup();
         reject(new Error('API'));
       };
       s.src = url + (url.indexOf('?') > -1 ? '&' : '?') + 'callback=' + cb + '&t=' + Date.now();
       document.head.appendChild(s);
-      setTimeout(function () {
-        if (window[cb]) {
-          delete window[cb];
-          if (s.parentNode) s.parentNode.removeChild(s);
-          reject(new Error('timeout'));
-        }
-      }, 15000);
     });
+  }
+
+  function normalizeApiPayload(data) {
+    var value = data;
+    for (var depth = 0; depth < 2 && typeof value === 'string'; depth += 1) {
+      try { value = JSON.parse(value); } catch (error) { break; }
+    }
+    return value && typeof value === 'object' ? value : {};
+  }
+
+  async function jsonpRetry(url, attempts) {
+    var total = Math.max(1, Number(attempts) || 1);
+    var lastError;
+    for (var attempt = 1; attempt <= total; attempt += 1) {
+      try {
+        return normalizeApiPayload(await jsonp(url));
+      } catch (error) {
+        lastError = error;
+        if (attempt < total) {
+          await new Promise(function (resolve) { setTimeout(resolve, attempt * 1200); });
+        }
+      }
+    }
+    throw lastError || new Error('API');
   }
 
   function postAction(action, payload) {
@@ -400,7 +433,7 @@
 
     select.innerHTML = '<option value="">Memuat sesi...</option>';
     try {
-      var data = await jsonp(API + '?page=prepost-live-summary&scope=active');
+      var data = await jsonpRetry(API + '?page=prepost-live-summary&scope=active', 3);
       var rows = Array.isArray(data && data.sessions) ? data.sessions : [];
       sessions = rows.map(function (item) { return item.session || item; }).filter(Boolean);
 
@@ -425,7 +458,7 @@
         loadSessionDetail();
       }
     } catch (error) {
-      select.innerHTML = '<option value="">Gagal memuat sesi</option>';
+      select.innerHTML = '<option value="">Gagal memuat sesi — klik Refresh</option>';
     }
   }
 
@@ -443,7 +476,7 @@
 
     if (status) status.textContent = 'Memuat detail sesi...';
     try {
-      var detail = await jsonp(API + '?page=prepost-session-detail&sessionId=' + encodeURIComponent(sessionId));
+      var detail = await jsonpRetry(API + '?page=prepost-session-detail&sessionId=' + encodeURIComponent(sessionId), 3);
       renderExistingQuestions(detail || {});
       renderSessionLinks(detail && detail.session ? detail.session : null);
       if (status) status.textContent = 'Detail sesi dimuat. Anda bisa langsung menambah banyak soal ' + phaseLabelLower() + '.';
@@ -521,7 +554,14 @@
     });
 
     var refreshBtn = document.getElementById('refresh-existing');
-    if (refreshBtn) refreshBtn.addEventListener('click', loadSessionDetail);
+    if (refreshBtn) refreshBtn.addEventListener('click', function () {
+      var select = document.getElementById('session-id');
+      if (text(select && select.value)) {
+        loadSessionDetail();
+      } else {
+        loadSessions();
+      }
+    });
 
     var saveBtn = document.getElementById('save-all');
     if (saveBtn) saveBtn.addEventListener('click', saveAllQuestions);
