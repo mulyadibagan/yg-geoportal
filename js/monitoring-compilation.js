@@ -5,6 +5,10 @@
   var reporters=document.getElementById('compilation-reporters');
   var objects=document.getElementById('compilation-objects');
   var count=document.getElementById('compilation-count');
+  var cluster=document.getElementById('compilation-cluster');
+  var clusterValue=document.getElementById('compilation-cluster-value');
+  var search=document.getElementById('compilation-search');
+  var activeData=null;
 
   function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
   function numberFormat(v){
@@ -86,6 +90,7 @@
   }
 
   function render(data){
+    activeData=data;
     var summary=data.summary||{};
     var kpiItems=[
       ['Objek dipantau',summary.objects,'objek'],['Laporan masuk',summary.reports,'laporan'],
@@ -95,7 +100,17 @@
     ];
     kpis.innerHTML=kpiItems.map(function(item){return'<article><span>'+esc(item[0])+'</span><strong>'+esc(numberFormat(item[1]))+'</strong><small>'+esc(item[2])+'</small></article>';}).join('');
     reporters.innerHTML=(data.reporters||[]).map(function(item){return'<span class="reporter-pill"><b>'+esc(item.name)+'</b> · '+item.reports+' laporan · '+Object.keys(item.objects||{}).length+' objek</span>';}).join('')||'<span class="muted">Belum ada nama pelapor.</span>';
-    var groups=data.groups||[];
+    var groups=(data.groups||[]).filter(function(group){
+      var value=clusterValue&&clusterValue.value||'';
+      var mode=cluster&&cluster.value||'object';
+      var latest=group.latest||{};
+      var query=String(search&&search.value||'').toLowerCase();
+      var matchesValue=!value||
+        (mode==='village'&&group.villageKeys&&group.villageKeys[value])||
+        (mode==='reporter'&&group.reporterKeys&&group.reporterKeys[value]);
+      var hay=[group.label,latest.title,latest.location,latest.village,latest.reporter,group.objectCode].join(' ').toLowerCase();
+      return matchesValue&&(!query||hay.indexOf(query)>-1);
+    });
     count.textContent=groups.length+' objek';
     objects.innerHTML=groups.map(function(group){
       var latest=group.latest||{};
@@ -110,6 +125,26 @@
     }).join('')||'<div class="empty">Belum ada objek dalam kompilasi ini.</div>';
   }
 
+  function refreshClusterValues(){
+    if(!activeData||!clusterValue)return;
+    var mode=cluster.value;
+    var values={};
+    (activeData.groups||[]).forEach(function(group){
+      var latest=group.latest||{};
+      if(mode==='village'&&latest.villageKey)values[latest.villageKey]=latest.village||latest.location||latest.villageKey;
+      if(mode==='reporter'&&latest.reporterKey)values[latest.reporterKey]=latest.reporter||latest.reporterKey;
+    });
+    clusterValue.parentElement.style.display=mode==='object'?'none':'';
+    clusterValue.innerHTML='<option value="">Semua</option>'+Object.keys(values).sort().map(function(key){
+      return'<option value="'+esc(key)+'">'+esc(values[key])+'</option>';
+    }).join('');
+    render(activeData);
+  }
+
+  if(cluster)cluster.addEventListener('change',refreshClusterValues);
+  if(clusterValue)clusterValue.addEventListener('change',function(){render(activeData);});
+  if(search)search.addEventListener('input',function(){render(activeData);});
+
   document.addEventListener('click',function(event){
     var link=event.target.closest('[data-object-key]');
     if(!link)return;
@@ -123,14 +158,21 @@
   });
 
   var saved=null;
-  try{saved=JSON.parse(sessionStorage.getItem('monitoring-compilation')||'null');}catch(e){}
+  var requestedType=new URLSearchParams(location.search).get('type')||'';
+  var storageKey=requestedType?'monitoring-compilation:'+String(requestedType).toLowerCase().replace(/[^a-z0-9]+/g,' ').trim():'monitoring-compilation';
+  try{saved=JSON.parse(sessionStorage.getItem(storageKey)||'null');}catch(e){}
   if(!saved||!saved.groups){
     objects.innerHTML='<div class="empty">Data kompilasi belum tersedia. Kembali ke halaman monitoring dan buka kartu kompilasi setelah data selesai dimuat.</div>';
     kpis.innerHTML='';
     reporters.innerHTML='<span class="muted">Belum ada data.</span>';
     return;
   }
+  if(requestedType){
+    var heading=document.querySelector('.compilation-hero h1');
+    if(heading)heading.textContent='Monitoring '+requestedType;
+  }
   render(saved);
+  refreshClusterValues();
 })();
 
 
