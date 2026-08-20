@@ -2,6 +2,7 @@
   'use strict';
 
   var API = 'https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec';
+  var DATA_API = 'https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev';
   var params = new URLSearchParams(window.location.search);
   var builderPhase = text(params.get('phase')).toLowerCase() === 'pre' ? 'pre' : 'post';
   var sessions = [];
@@ -67,6 +68,22 @@
       }
     }
     throw lastError || new Error('API');
+  }
+
+  async function cloudflareApi(path) {
+    var controller = typeof AbortController === 'function' ? new AbortController() : null;
+    var timer = controller ? setTimeout(function () { controller.abort(); }, 30000) : null;
+    try {
+      var response = await fetch(DATA_API + path, {
+        cache: 'no-store',
+        headers: { Accept: 'application/json' },
+        signal: controller ? controller.signal : undefined
+      });
+      if (!response.ok) throw new Error('Cloudflare HTTP ' + response.status);
+      return normalizeApiPayload(await response.json());
+    } finally {
+      if (timer) clearTimeout(timer);
+    }
   }
 
   function postAction(action, payload) {
@@ -433,7 +450,12 @@
 
     select.innerHTML = '<option value="">Memuat sesi...</option>';
     try {
-      var data = await jsonpRetry(API + '?page=prepost-live-summary&scope=active', 3);
+      var data;
+      try {
+        data = await cloudflareApi('/api/prepost/sessions');
+      } catch (cloudflareError) {
+        data = await jsonpRetry(API + '?page=prepost-live-summary&scope=active', 3);
+      }
       var rows = Array.isArray(data && data.sessions) ? data.sessions : [];
       sessions = rows.map(function (item) { return item.session || item; }).filter(Boolean);
 
@@ -476,7 +498,12 @@
 
     if (status) status.textContent = 'Memuat detail sesi...';
     try {
-      var detail = await jsonpRetry(API + '?page=prepost-session-detail&sessionId=' + encodeURIComponent(sessionId), 3);
+      var detail;
+      try {
+        detail = await cloudflareApi('/api/prepost/session-detail?sessionId=' + encodeURIComponent(sessionId));
+      } catch (cloudflareError) {
+        detail = await jsonpRetry(API + '?page=prepost-session-detail&sessionId=' + encodeURIComponent(sessionId), 3);
+      }
       renderExistingQuestions(detail || {});
       renderSessionLinks(detail && detail.session ? detail.session : null);
       if (status) status.textContent = 'Detail sesi dimuat. Anda bisa langsung menambah banyak soal ' + phaseLabelLower() + '.';
