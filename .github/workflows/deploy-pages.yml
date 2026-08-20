@@ -8,6 +8,10 @@ on:
   workflow_run:
     workflows:
       - Update GEFS transport cache
+      - Update Hotspot Analytics
+      - Update Hotspot History
+      - Update Master Database snapshot
+      - Rebuild Full Village Analytics
     types:
       - completed
 
