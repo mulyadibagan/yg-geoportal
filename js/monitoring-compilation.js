@@ -107,8 +107,10 @@
       var query=String(search&&search.value||'').toLowerCase();
       var matchesValue=!value||
         (mode==='village'&&group.villageKeys&&group.villageKeys[value])||
-        (mode==='reporter'&&group.reporterKeys&&group.reporterKeys[value]);
-      var hay=[group.label,latest.title,latest.location,latest.village,latest.reporter,group.objectCode].join(' ').toLowerCase();
+        (mode==='reporter'&&group.reporterKeys&&group.reporterKeys[value])||
+        (mode==='donor'&&group.donorKeys&&group.donorKeys[value])||
+        (mode==='phase'&&group.phaseKeys&&group.phaseKeys[value]);
+      var hay=[group.label,latest.title,latest.location,latest.village,latest.reporter,latest.donor,latest.phase,group.objectCode].join(' ').toLowerCase();
       return matchesValue&&(!query||hay.indexOf(query)>-1);
     });
     count.textContent=groups.length+' objek';
@@ -133,6 +135,8 @@
       var latest=group.latest||{};
       if(mode==='village'&&latest.villageKey)values[latest.villageKey]=latest.village||latest.location||latest.villageKey;
       if(mode==='reporter'&&latest.reporterKey)values[latest.reporterKey]=latest.reporter||latest.reporterKey;
+      if(mode==='donor'&&latest.donorKey)values[latest.donorKey]=latest.donor||latest.donorKey;
+      if(mode==='phase'&&latest.phaseKey)values[latest.phaseKey]=latest.phase||latest.phaseKey;
     });
     clusterValue.parentElement.style.display=mode==='object'?'none':'';
     clusterValue.innerHTML='<option value="">Semua</option>'+Object.keys(values).sort().map(function(key){

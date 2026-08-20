@@ -12,7 +12,7 @@ var LEGACY_OBJECT_ALIASES={
   'area_mangrove:auto:1281388060':'MANGROVE-KELAPA-PATI-PHASE-III-2026-001'
 };
   var records=[],groups=[],masterObjects=[];
-  var CLUSTER_MODES=['object','village','reporter'];
+  var CLUSTER_MODES=['object','village','reporter','donor','phase'];
   var list=document.getElementById('monitor-list');
 
   function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
@@ -84,6 +84,8 @@ var LEGACY_OBJECT_ALIASES={
   function clusterModeLabel(mode){
     if(mode==='village')return'Nama desa';
     if(mode==='reporter')return'Nama pelapor';
+    if(mode==='donor')return'Donor';
+    if(mode==='phase')return'Fase';
     return'Objek';
   }
 
@@ -94,6 +96,8 @@ var LEGACY_OBJECT_ALIASES={
   function clusterValueHelp(mode){
     if(mode==='village')return'Semua desa';
     if(mode==='reporter')return'Semua pelapor';
+    if(mode==='donor')return'Semua donor';
+    if(mode==='phase')return'Semua fase';
     return'Semua objek';
   }
 
@@ -273,9 +277,22 @@ var LEGACY_OBJECT_ALIASES={
       layer:keyText(p.Source_Layer||p.Layer_ID||p.layerId||p.Kategori),
       name:keyText(p.Nama_Objek||p.objectName||p.Nama||p.name),
       village:keyText(p.Desa||p.WADMKD||p.village),
+      donor:firstText(p,['Donor','Donor_Cluster','Nama_Donor','Funding_Source','donor']),
+      phase:phaseOf(p),
       area:isFinite(area)&&area>0?area:null,
       bounds:geometryKey(feature&&feature.geometry)
     };
+  }
+
+  function phaseOf(source){
+    source=source||{};
+    var values=[source.Fase,source.fase,source.Ket,source.phase,source.Tahun,source.Object_ID,source.Nama_Objek];
+    for(var i=0;i<values.length;i+=1){
+      var text=String(values[i]||'').trim();
+      var match=text.match(/(?:fase|phase)[\s_-]*([ivx]+|\d+)/i);
+      if(match)return'Fase '+match[1].toUpperCase();
+    }
+    return'';
   }
 
   function resolveMasterObject(p,targetProperties,feature,title,targetArea){
@@ -354,6 +371,10 @@ var LEGACY_OBJECT_ALIASES={
     var rawArea=targetProperties.Luas_Ha||targetProperties.Luas||targetProperties.areaHa||targetProperties.luas_ha;
     var targetArea=parseMetricNumber(rawArea);
     var masterObjectId=resolveMasterObject(p,targetProperties,feature,title,targetArea);
+    var masterObject=masterObjects.find(function(object){return object.id===masterObjectId;})||{};
+    var donor=firstText(p,['Donor','Donor_Cluster','Nama_Donor','Funding_Source','donor'])||
+      firstText(targetProperties,['Donor','Donor_Cluster','Nama_Donor','Funding_Source','donor'])||masterObject.donor||'';
+    var phase=phaseOf(p)||phaseOf(targetProperties)||masterObject.phase||'';
     // Koreksi rekaman Kelapa Pati berdasarkan catatan lapangan tervalidasi:
     // 3.330 bibit, sekitar 600 mati, dan survival sekitar 82%.
     if(masterObjectId==='MANGROVE-KELAPA-PATI-PHASE-III-2026-001'||
@@ -382,6 +403,10 @@ var LEGACY_OBJECT_ALIASES={
       location:[village,p.district,p.regency].filter(Boolean).join(', '),
       reporter:reporter,
       reporterKey:keyText(reporter),
+      donor:donor,
+      donorKey:keyText(donor),
+      phase:phase,
+      phaseKey:keyText(phase),
       organization:p.organization||'',
       description:m.notes||p.description||'',
       recommendation:m.followUp||m.recommendation||p.recommendation||'',
@@ -411,6 +436,8 @@ var LEGACY_OBJECT_ALIASES={
           history:[],
           villageKeys:{},
           reporterKeys:{},
+          donorKeys:{},
+          phaseKeys:{},
           objectCode:''
         };
       }
@@ -420,6 +447,8 @@ var LEGACY_OBJECT_ALIASES={
       if(!g.location&&r.location)g.location=r.location;
       if(r.villageKey)g.villageKeys[r.villageKey]=1;
       if(r.reporterKey)g.reporterKeys[r.reporterKey]=1;
+      if(r.donorKey)g.donorKeys[r.donorKey]=1;
+      if(r.phaseKey)g.phaseKeys[r.phaseKey]=1;
     });
     return Object.keys(map).map(function(k){
       var g=map[k];
@@ -428,6 +457,8 @@ var LEGACY_OBJECT_ALIASES={
       g.objectCount=1;
       g.villageCount=Object.keys(g.villageKeys).length;
       g.reporterCount=Object.keys(g.reporterKeys).length;
+      g.donorCount=Object.keys(g.donorKeys).length;
+      g.phaseCount=Object.keys(g.phaseKeys).length;
       return g;
     });
   }
@@ -440,12 +471,14 @@ var LEGACY_OBJECT_ALIASES={
     if(mode==='reporter'){
       return (record.reporterKey||'tanpa-identitas')===value;
     }
+    if(mode==='donor')return(record.donorKey||'tanpa-identitas')===value;
+    if(mode==='phase')return(record.phaseKey||'tanpa-identitas')===value;
     return true;
   }
 
   function summarySearchMatch(record,q){
     if(!q)return true;
-    var hay=(record.title+' '+record.location+' '+record.village+' '+record.reporter+' '+record.status.label+' '+record.description+' '+record.recommendation).toLowerCase();
+    var hay=(record.title+' '+record.location+' '+record.village+' '+record.reporter+' '+record.donor+' '+record.phase+' '+record.status.label+' '+record.description+' '+record.recommendation).toLowerCase();
     return hay.indexOf(q)>-1;
   }
 
