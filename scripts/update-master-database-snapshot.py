@@ -43,20 +43,36 @@ def report_audit(data,reports,snapshot_generated_at):
     monitoring=[]
     survival_mismatches=[]
     reporter_names=set()
+    completeness={key:[] for key in ('missingDate','missingLocation','missingReporter','missingPhotos','missingRawDonor')}
     for feature in report_features:
         props=(feature or {}).get('properties') or {}
         report_type=str(props.get('reportType') or 'Tanpa jenis').strip()
+        report_id=str(props.get('reportId') or '').strip()
         report_types[report_type]=report_types.get(report_type,0)+1
+        if not props.get('activityDate'):
+            completeness['missingDate'].append(report_id)
+        if not (props.get('locationName') or props.get('village')):
+            completeness['missingLocation'].append(report_id)
+        if not props.get('reporterName'):
+            completeness['missingReporter'].append(report_id)
+        if not props.get('photos'):
+            completeness['missingPhotos'].append(report_id)
+        proposed=props.get('proposedInformation') or {}
+        if isinstance(proposed,str):
+            try: proposed=json.loads(proposed)
+            except json.JSONDecodeError: proposed={}
+        capacity=proposed.get('capacityBuilding') or proposed if isinstance(proposed,dict) else {}
+        target=props.get('targetFeatureProperties') or {}
+        raw_donor=(capacity.get('donor') if isinstance(capacity,dict) else None) or \
+            target.get('Donor') or target.get('Donor_Cluster') or target.get('Nama_Donor')
+        if not raw_donor:
+            completeness['missingRawDonor'].append(report_id)
         if report_type.lower()!='monitoring':
             continue
         monitoring.append(feature)
         reporter=str(props.get('reporterName') or '').strip()
         if reporter:
             reporter_names.add(reporter.casefold())
-        proposed=props.get('proposedInformation') or {}
-        if isinstance(proposed,str):
-            try: proposed=json.loads(proposed)
-            except json.JSONDecodeError: proposed={}
         alive_number=proposed.get('aliveCount')
         dead_number=proposed.get('deadOrDamagedCount')
         survival_number=proposed.get('survivalPercent')
@@ -86,6 +102,10 @@ def report_audit(data,reports,snapshot_generated_at):
         'generatedAt':snapshot_generated_at,
         'status':'pass' if monitoring_ids.issubset(master_report_ids) else 'review',
         'publicReports':len(report_features),'reportTypes':report_types,
+        'completeness':{
+            key:{'count':len(values),'reportIds':values}
+            for key,values in completeness.items()
+        },
         'monitoring':{
             'reports':len(monitoring),'reporters':len(reporter_names),
             'presentInMasterSnapshot':len(monitoring_ids & master_report_ids),

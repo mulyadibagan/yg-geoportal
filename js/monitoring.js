@@ -132,9 +132,15 @@ var LEGACY_OBJECT_ALIASES={
       if(mode==='village'){
         key=r.villageKey||'';
         label=r.village||'Tanpa nama desa';
-      }else{
+      }else if(mode==='reporter'){
         key=r.reporterKey||'';
         label=r.reporter||'Pelapor tidak disebut';
+      }else if(mode==='donor'){
+        key=r.donorKey||'';
+        label=r.donor||'Donor belum ditautkan';
+      }else if(mode==='phase'){
+        key=r.phaseKey||'';
+        label=r.phase||'Fase belum ditautkan';
       }
       if(!key)key='tanpa-identitas';
       map[key]=label;
@@ -293,8 +299,23 @@ var LEGACY_OBJECT_ALIASES={
     for(var i=0;i<values.length;i+=1){
       var text=String(values[i]||'').trim();
       var match=text.match(/(?:fase|phase)[\s_-]*([ivx]+|\d+)/i);
-      if(match)return'Fase '+match[1].toUpperCase();
+      if(match){
+        var value=match[1].toUpperCase();
+        var roman={I:'1',II:'2',III:'3',IV:'4',V:'5',VI:'6',VII:'7',VIII:'8',IX:'9',X:'10'};
+        return'Fase '+(roman[value]||value);
+      }
     }
+    return'';
+  }
+
+  function inferMonitoringDonor(p,targetProperties,type,title,village){
+    var haystack=[title,village,p.locationName,p.district,p.regency,
+      targetProperties.Nama_Objek,targetProperties.Kategori,type].join(' ').toLowerCase();
+    if(/pematang duku/.test(haystack))return'Pan Pacific Conservation Foundation (PPCF)';
+    if(/siarang[ -]?arang/.test(haystack))return'Pertamina Foundation';
+    if(/pedekik|dayun|temiang/.test(haystack)&&/kopi|coffee|gambut|peat|fdrs|sekat kanal/.test(haystack))return'Global Environment Centre';
+    if(/buruk bakul|kelapa ?pati|sepahat|tanjung kuras/.test(haystack)&&
+      /mangrove|bakau|penanaman|rehabilitasi|monitoring/.test(haystack))return'Aramco Asia Singapore';
     return'';
   }
 
@@ -376,8 +397,10 @@ var LEGACY_OBJECT_ALIASES={
     var masterObjectId=resolveMasterObject(p,targetProperties,feature,title,targetArea);
     var masterObject=masterObjects.find(function(object){return object.id===masterObjectId;})||{};
     var donor=firstText(p,['Donor','Donor_Cluster','Nama_Donor','Funding_Source','donor'])||
-      firstText(targetProperties,['Donor','Donor_Cluster','Nama_Donor','Funding_Source','donor'])||masterObject.donor||'';
+      firstText(targetProperties,['Donor','Donor_Cluster','Nama_Donor','Funding_Source','donor'])||masterObject.donor||
+      inferMonitoringDonor(p,targetProperties,typeOf(p,m),title,village)||'';
     var phase=phaseOf(p)||phaseOf(targetProperties)||masterObject.phase||'';
+    if(!phase&&donor==='Aramco Asia Singapore'&&dateValue(p.activityDate||p.publishedAt)>=dateValue('2025-07-01'))phase='Fase 3';
     // Koreksi rekaman Kelapa Pati berdasarkan catatan lapangan tervalidasi:
     // 3.330 bibit, sekitar 600 mati, dan survival sekitar 82%.
     var correction=REPORT_CORRECTIONS[String(p.reportId||p.Source_Report_ID||'').trim()];
@@ -688,6 +711,8 @@ var LEGACY_OBJECT_ALIASES={
       if(clusterValue){
         if(mode==='village')matchCluster=!!g.villageKeys[clusterValue];
         else if(mode==='reporter')matchCluster=!!g.reporterKeys[clusterValue];
+        else if(mode==='donor')matchCluster=!!g.donorKeys[clusterValue];
+        else if(mode==='phase')matchCluster=!!g.phaseKeys[clusterValue];
       }
       return matchCluster&&(!q||hay.indexOf(q)>-1)&&(!type||r.type===type)&&(!status||r.status.key===status)&&(!year||dateValue(r.date).getFullYear()===Number(year));
     });
@@ -934,7 +959,14 @@ var LEGACY_OBJECT_ALIASES={
         if(Array.isArray(candidate)){features=candidate;break;}
       }
     }
-    records=features.map(normalize).filter(Boolean);
+    var nextRecords=features.map(normalize).filter(Boolean);
+    if(records.length&&nextRecords.length){
+      var currentLatest=Math.max.apply(null,records.map(function(r){return dateValue(r.date).getTime();}));
+      var nextLatest=Math.max.apply(null,nextRecords.map(function(r){return dateValue(r.date).getTime();}));
+      // A slower Apps Script response must not replace a newer hourly snapshot.
+      if(nextRecords.length<=records.length&&nextLatest<currentLatest)return;
+    }
+    records=nextRecords;
     groups=groupData(records);
     stats();filters();render();
   }
