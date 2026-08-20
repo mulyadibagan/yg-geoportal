@@ -4,6 +4,22 @@
   const API = "https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec?page=public-updates";
   const CALLBACK = "ygPublishedUpdatesCallback";
   const appliedUpdates = new Set();
+  const VERIFIED_MONITORING_PHOTO_FALLBACK = {
+    "kelapa pati": [
+      "https://drive.google.com/file/d/1P_shebiVd-NXp3C0rBLgiVxYK7hiI1dG/view?usp=drivesdk",
+      "https://drive.google.com/file/d/1ePclkMmzTzhJ0elxXwmRcuVSmzcDqKVx/view?usp=drivesdk",
+      "https://drive.google.com/file/d/15yAA7i2NoeA_-PX4S7i-BrZxIrEMZf18/view?usp=drivesdk",
+      "https://drive.google.com/file/d/1hPmXUKzdIcDHpVRwtygIRTGLfJ0mpsuX/view?usp=drivesdk",
+      "https://drive.google.com/file/d/1PBG76KHR-TM8psFuljLqPY3ya6Zhh8Fd/view?usp=drivesdk"
+    ],
+    "buruk bakul": [
+      "https://drive.google.com/file/d/1u1Did5qZYT6Of89-Rl2Ii0IOVsIb5DWs/view?usp=drivesdk",
+      "https://drive.google.com/file/d/151b8GRRDMabPZxrxeWKMCPIj6iTy_lvY/view?usp=drivesdk",
+      "https://drive.google.com/file/d/1prfw-eEF9Y_TCdmSgYi88OFVJN_AteiR/view?usp=drivesdk",
+      "https://drive.google.com/file/d/1TGhL2NCD08y5_3GqfyZovoQUzMSOTFdd/view?usp=drivesdk",
+      "https://drive.google.com/file/d/1JUaeDbbt-w77nbFjQOuQpwFA-_2qWDi0/view?usp=drivesdk"
+    ]
+  };
 
   function escapeHtml(value) {
     return String(value == null ? "" : value).replace(/[&<>"']/g, char => ({
@@ -465,6 +481,21 @@ function toDirectDriveUrl(url){
     });
   }
 
+  function applyVerifiedMonitoringPhotoFallback(attempt = 0) {
+    window.YG_LATEST_MONITORING_PHOTOS_BY_LOCATION = Object.assign(
+      {},
+      VERIFIED_MONITORING_PHOTO_FALLBACK,
+      window.YG_LATEST_MONITORING_PHOTOS_BY_LOCATION || {}
+    );
+    if (!window.YG_MAP || !window.YG_MAP.layerObjects) {
+      if (attempt < 30) {
+        setTimeout(() => applyVerifiedMonitoringPhotoFallback(attempt + 1), 200);
+      }
+      return;
+    }
+    syncLegacyMonitoringPhotosByLocation();
+  }
+
   function buildUpdatedPopup(feature, layerLabel) {
     const props = feature.properties || {};
     const photos = Array.isArray(props._ygPhotos) ? props._ygPhotos : [];
@@ -788,6 +819,8 @@ function toDirectDriveUrl(url){
     publishLatestMonitoringPhotos(data);
     applyAll(data);
   };
+
+  applyVerifiedMonitoringPhotoFallback();
 
   const style = document.createElement("style");
   style.textContent = `
