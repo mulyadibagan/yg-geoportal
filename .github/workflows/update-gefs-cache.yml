@@ -3,6 +3,8 @@ name: Update GEFS transport cache
 on:
   workflow_dispatch:
   push:
+    branches:
+      - main
     paths:
       - "scripts/update_gefs_cache.mjs"
       - "scripts/validate_gefs_cache.mjs"
