@@ -392,9 +392,13 @@ function toDirectDriveUrl(url){
       /<div class="yg-v3-gallery yg-monitoring-update-gallery">[\s\S]*?<\/div>/,
       ""
     );
+    content = content.replace(
+      /class="popup-card(?![^\"]*yg-monitoring-has-gallery)/,
+      'class="popup-card yg-monitoring-has-gallery'
+    );
     const contentWithGallery = content.replace(
       /(<div class="popup-body">)/,
-      "$1" + gallery
+      gallery + "$1"
     );
     popup.setContent(
       contentWithGallery === content ? gallery + content : contentWithGallery

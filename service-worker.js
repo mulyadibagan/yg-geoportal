@@ -1,4 +1,4 @@
-const CACHE_NAME = "yg-geoportal-v9-20260820-monitoring-legacy-photos";
+const CACHE_NAME = "yg-geoportal-v10-20260820-monitoring-gallery-fixed";
 
 const OFFLINE_ASSETS = [
   "./assets/logo-yayasan-gambut.png",

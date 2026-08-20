@@ -261,6 +261,9 @@ body.webgis-page .app-shell{
   max-height:min(52vh,380px);
   padding-bottom:12px;
 }
+.yg-monitoring-popup .yg-monitoring-has-gallery>.popup-body{
+  max-height:min(30vh,220px);
+}
 .yg-monitoring-popup .yg-popup-actions{
   position:static;
   margin-top:10px;

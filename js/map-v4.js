@@ -950,14 +950,16 @@ L.control.scale({
     }
 
     return (
-      '<div class="popup-card">' +
+      '<div class="popup-card' +
+        (isMonitoring && gallery ? ' yg-monitoring-has-gallery' : '') + '">' +
         '<div class="popup-head" style="background:' +
           escapeHtml(config.color) + '">' +
           '<strong>' + escapeHtml(getObjectName(feature)) + '</strong>' +
           '<span>' + escapeHtml(config.label) + '</span>' +
         '</div>' +
+        (isMonitoring ? gallery : '') +
         '<div class="popup-body">' +
-          (isMonitoring ? gallery + rows : rows + gallery) + sdgHtml + floraAction + monitoringAction +
+          (isMonitoring ? rows : rows + gallery) + sdgHtml + floraAction + monitoringAction +
         '</div>' +
       '</div>'
     );
@@ -1095,8 +1097,9 @@ L.control.scale({
         single.eachLayer(layer => {
           layer.bindPopup(buildPopup(feature, config), {
             maxWidth: config.id === "monitoring_reports" ? 280 : 400,
-            autoPan: config.id !== "monitoring_reports",
-            keepInView: false,
+            autoPan: true,
+            keepInView: config.id === "monitoring_reports",
+            autoPanPadding: config.id === "monitoring_reports" ? [22, 22] : [5, 5],
             className: config.id === "monitoring_reports"
               ? "yg-monitoring-popup"
               : ""
