@@ -1,6 +1,24 @@
 (function(){
   'use strict';
 
+  function applyStaffAccount(nav){
+    var link=nav.querySelector('a[href="staff-login.html"]');
+    if(!link)return;
+    var session=null;
+    try{session=JSON.parse(sessionStorage.getItem('ygEditorSessionV1')||'null');}catch(error){}
+    if(!session||!session.token||!session.username||Number(session.expiresAt||0)<=Date.now()){
+      try{sessionStorage.removeItem('ygEditorSessionV1');}catch(error){}
+      return;
+    }
+    var label=String(session.name||session.username).trim();
+    if(!label)return;
+    link.textContent=label;
+    link.href='admin-dashboard.html';
+    link.classList.add('yg-staff-account-link');
+    link.setAttribute('aria-label','Dashboard staf '+label);
+    link.title='Dashboard staf';
+  }
+
   function closeAll(nav){
     nav.querySelectorAll('.yg-nav-group.is-open').forEach(function(group){
       group.classList.remove('is-open');
@@ -16,6 +34,7 @@
 
   document.addEventListener('DOMContentLoaded',function(){
     document.querySelectorAll('[data-yg-navigation]').forEach(function(nav){
+      applyStaffAccount(nav);
       var toggle = document.querySelector('[data-yg-nav-toggle="' + nav.id + '"]');
       if(toggle){
         toggle.addEventListener('click',function(){
