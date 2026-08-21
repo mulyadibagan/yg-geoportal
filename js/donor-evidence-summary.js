@@ -143,9 +143,10 @@
         var link = document.createElement('a');
         link.className = 'gec2026-audit-evidence-link';
         link.href = directDrivePreviewUrl(privateAudit.evidenceUrl);
-        link.target = '_self';
-        link.setAttribute('aria-label', 'Lihat dokumen audit di Google Drive');
-        link.textContent = 'Lihat di Google Drive →';
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        link.setAttribute('aria-label', 'Lihat dokumen audit di Google Drive pada tab baru');
+        link.textContent = 'Lihat di Google Drive ↗';
         auditItem.insertBefore(link, auditBadge || null);
       }
     }
