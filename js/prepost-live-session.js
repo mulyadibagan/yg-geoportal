@@ -283,7 +283,7 @@
     form.addEventListener('submit',async function(event){
       event.preventDefault();
       var email=text(input.value).toLowerCase();
-      if(!/^[^\\s@]+@yayasangambut\\.org$/i.test(email)){
+      if(!/^[^\s@]+@yayasangambut\.org$/i.test(email)){
         if(status)status.textContent='Gunakan email aktif @yayasangambut.org.';
         return;
       }
