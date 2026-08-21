@@ -445,6 +445,32 @@
         (active.length ? 'AKTIF' : 'SELESAI') + '</span></header>' +
         '<small>' + active.length + ' aktif · ' + completed + ' selesai</small></article>';
     }).join('');
+    renderDonorCards();
+  }
+
+  function renderDonorCards() {
+    var container = document.getElementById('admin-donor-card-grid');
+    if (!container) return;
+    var selectedId = document.getElementById('assignment-donor').value;
+    if (!DONOR_DATA.length) {
+      container.innerHTML = '<div class="assignment-empty">Belum ada donor yang tersedia.</div>';
+      return;
+    }
+    container.innerHTML = DONOR_DATA.map(function (donor) {
+      var donorId = String(donor.id || idFrom(donor.name));
+      var active = activeProgrammes(donor);
+      var total = (donor.programs || []).length;
+      var locations = (donor.locations || []).slice(0, 3).join(' · ');
+      return '<button type="button" class="admin-donor-card' + (donorId === selectedId ? ' is-selected' : '') +
+        '" data-select-donor="' + esc(donorId) + '" aria-pressed="' + (donorId === selectedId ? 'true' : 'false') + '">' +
+        '<span class="admin-donor-card-status ' + (active.length ? 'is-active' : 'is-complete') + '">' +
+        (active.length ? 'AKTIF' : 'HISTORIS') + '</span>' +
+        '<strong>' + esc(donor.name) + '</strong>' +
+        '<span class="admin-donor-card-focus">' + esc(donor.focus || 'Program donor') + '</span>' +
+        '<span class="admin-donor-card-meta"><b>' + active.length + '</b> aktif <b>' + total + '</b> program</span>' +
+        (locations ? '<small>' + esc(locations) + '</small>' : '') +
+        '<span class="admin-donor-card-action">Pilih donor →</span></button>';
+    }).join('');
   }
 
   function selectedDonor() {
@@ -839,7 +865,26 @@
         feedback.textContent = error.message;
       }
     });
-    document.getElementById('assignment-donor').addEventListener('change', renderProgrammes);
+    document.getElementById('assignment-donor').addEventListener('change', function () {
+      renderProgrammes();
+      renderDonorCards();
+    });
+    document.getElementById('admin-donor-card-grid').addEventListener('click', function (event) {
+      var card = event.target.closest('[data-select-donor]');
+      if (!card) return;
+      var donorId = card.dataset.selectDonor;
+      var assignmentDonor = document.getElementById('assignment-donor');
+      var programmeDonor = document.getElementById('programme-admin-donor');
+      assignmentDonor.value = donorId;
+      renderProgrammes();
+      renderDonorCards();
+      if (programmeDonor) {
+        programmeDonor.value = donorId;
+        renderProgrammeRecords();
+        loadProgrammeRecord();
+      }
+      document.getElementById('assignment-title').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
     document.getElementById('assignment-programme').addEventListener('change', renderIndicators);
     document.getElementById('evidence-assignment-form').addEventListener('submit', saveAssignment);
     document.getElementById('programme-admin-donor').addEventListener('change', function () {
