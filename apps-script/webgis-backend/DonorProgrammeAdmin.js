@@ -226,7 +226,12 @@ function setDonorAdminResult_(requestId, result) {
   );
 }
 
-function getDonorAdminResult_(requestId) {
+function getDonorAdminResult_(requestId, sessionToken) {
+  try {
+    assertEditorCredential_(clean_(sessionToken));
+  } catch (error) {
+    return { ok: false, error: 'Sesi staf tidak valid.' };
+  }
   const key = YG_DONOR_ADMIN_RESULT_PREFIX_ + clean_(requestId);
   const properties = PropertiesService.getScriptProperties();
   const raw = properties.getProperty(key);

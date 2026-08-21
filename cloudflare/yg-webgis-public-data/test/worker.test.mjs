@@ -164,6 +164,26 @@ test("forwards a staff bearer session to request private donor evidence", async 
   } finally { globalThis.fetch = originalFetch; }
 });
 
+test("securely proxies donor administration results for Edge", async () => {
+  const invalid = await worker.fetch(new Request("https://data.test/api/donor/admin-result?requestId=../bad"), envWith(null));
+  assert.equal(invalid.status, 400);
+  const denied = await worker.fetch(new Request("https://data.test/api/donor/admin-result?requestId=yg-donor-test-123"), envWith(null));
+  assert.equal(denied.status, 401);
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async url => {
+    assert.match(String(url), /page=donor-admin-result/);
+    assert.match(String(url), /requestId=yg-donor-test-123/);
+    assert.match(String(url), /sessionToken=staff-session-1/);
+    return new Response(JSON.stringify({ pending: true }), { headers: { "content-type": "application/json" } });
+  };
+  try {
+    const response = await worker.fetch(new Request("https://data.test/api/donor/admin-result?requestId=yg-donor-test-123", { headers: { authorization: "Bearer staff-session-1" } }), envWith(null));
+    assert.equal(response.status, 200);
+    assert.equal(response.headers.get("cache-control"), "no-store");
+    assert.deepEqual(await response.json(), { pending: true });
+  } finally { globalThis.fetch = originalFetch; }
+});
+
 test("publication refresh requires its secret and atomically publishes a manifest", async () => {
   const env = writableEnv();
   const denied = await worker.fetch(new Request("https://data.test/internal/refresh", { method: "POST", body: "{}" }), env);
