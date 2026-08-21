@@ -229,7 +229,10 @@ if (page === 'content-save-result') {
 }
 
 if (page === 'donor-programmes') {
-  return donorAdminResponse_(getDonorProgrammeAdminData_(), callback);
+  return donorAdminResponse_(
+    getDonorProgrammeAdminData_(params.sessionToken),
+    callback
+  );
 }
 
 if (page === 'donor-admin-result') {

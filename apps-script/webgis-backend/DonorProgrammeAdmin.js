@@ -3,23 +3,29 @@ const YG_DONOR_ASSIGNMENT_PROPERTY_KEY_ = 'YG_DONOR_ASSIGNMENTS_V1';
 const YG_DONOR_EVIDENCE_PROPERTY_KEY_ = 'YG_DONOR_EVIDENCE_V1';
 const YG_DONOR_ADMIN_RESULT_PREFIX_ = 'YG_DONOR_ADMIN_RESULT_';
 
-function getDonorProgrammeAdminData_() {
+function getDonorProgrammeAdminData_(sessionToken) {
+  let staff = null;
+  try { staff = assertEditorCredential_(clean_(sessionToken)); } catch (error) {}
+  const includePrivateEvidence = Boolean(staff);
   const evidence = readDonorAdminProperty_(YG_DONOR_EVIDENCE_PROPERTY_KEY_, []);
   const evidenceById = {};
   evidence.forEach(function(row) { evidenceById[clean_(row.id)] = row; });
   const assignments = readDonorAdminProperty_(YG_DONOR_ASSIGNMENT_PROPERTY_KEY_, []).map(function(row) {
     const source = evidenceById[clean_(row.evidenceId)];
-    if (!source) return row;
-    return Object.assign({}, row, {
-      evidenceUrl: clean_(source.url),
-      evidenceType: 'Evidence Nonspasial',
-      evidenceDocumentType: clean_(source.type)
+    const safeRow = Object.assign({}, row, {
+      evidenceUrl: includePrivateEvidence ? clean_(row.evidenceUrl) : ''
     });
+    if (!source) return safeRow;
+    safeRow.evidenceUrl = includePrivateEvidence ? clean_(source.url) : '';
+    safeRow.evidenceType = 'Evidence Nonspasial';
+    safeRow.evidenceDocumentType = clean_(source.type);
+    return safeRow;
   });
   return {
     programmes: readDonorAdminProperty_(YG_DONOR_PROGRAMME_PROPERTY_KEY_, []),
     assignments: assignments,
-    evidence: evidence
+    evidence: includePrivateEvidence ? evidence : [],
+    authorized: includePrivateEvidence
   };
 }
 

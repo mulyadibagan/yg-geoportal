@@ -131,6 +131,39 @@ test("proxies a validated staff authentication result without caching", async ()
   } finally { globalThis.fetch = originalFetch; }
 });
 
+test("proxies donor programmes without relying on cross-site JSONP", async () => {
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async url => {
+    assert.match(String(url), /page=donor-programmes/);
+    assert.doesNotMatch(String(url), /sessionToken=/);
+    return new Response(JSON.stringify({ assignments: [{ indicatorId: "ACT-GEC-01", evidenceUrl: "" }], authorized: false }), { headers: { "content-type": "application/json" } });
+  };
+  try {
+    const response = await worker.fetch(new Request("https://data.test/api/donor/programmes"), envWith(null));
+    const data = await response.json();
+    assert.equal(response.status, 200);
+    assert.equal(response.headers.get("access-control-allow-origin"), "https://webgisyg.id");
+    assert.equal(response.headers.get("cache-control"), "no-store");
+    assert.equal(data.assignments[0].indicatorId, "ACT-GEC-01");
+    assert.equal(data.authorized, false);
+  } finally { globalThis.fetch = originalFetch; }
+});
+
+test("forwards a staff bearer session to request private donor evidence", async () => {
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async url => {
+    assert.match(String(url), /page=donor-programmes/);
+    assert.match(String(url), /sessionToken=staff-session-1/);
+    return new Response(JSON.stringify({ assignments: [{ evidenceUrl: "https://drive.example/audit" }], authorized: true }), { headers: { "content-type": "application/json" } });
+  };
+  try {
+    const response = await worker.fetch(new Request("https://data.test/api/donor/programmes", { headers: { authorization: "Bearer staff-session-1" } }), envWith(null));
+    const data = await response.json();
+    assert.equal(data.authorized, true);
+    assert.equal(data.assignments[0].evidenceUrl, "https://drive.example/audit");
+  } finally { globalThis.fetch = originalFetch; }
+});
+
 test("publication refresh requires its secret and atomically publishes a manifest", async () => {
   const env = writableEnv();
   const denied = await worker.fetch(new Request("https://data.test/internal/refresh", { method: "POST", body: "{}" }), env);

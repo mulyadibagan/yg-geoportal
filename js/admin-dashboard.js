@@ -2,6 +2,7 @@
   'use strict';
 
   var API = 'https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec';
+  var DONOR_DATA_API = 'https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/api/donor/programmes';
   var ASSIGNMENT_KEY = 'ygIpemsEvidenceAssignments_v1';
   var NONSPATIAL_EVIDENCE_KEY = 'ygIpemsNonspatialEvidence_v1';
   var PROGRAMME_CONFIG_KEY = 'ygIpemsProgrammeConfig_v1';
@@ -174,6 +175,19 @@
 
   function evidenceId(feature, index) {
     return String((feature.properties || {}).reportId || feature.id || ('EV-LOCAL-' + index));
+  }
+
+  function loadDonorAdminData() {
+    var session = window.YG_AUTH && window.YG_AUTH.readStoredSession();
+    var headers = { accept: 'application/json' };
+    if (session && session.token) headers.authorization = 'Bearer ' + session.token;
+    return fetch(DONOR_DATA_API + '?t=' + Date.now(), {
+      cache: 'no-store',
+      headers: headers
+    }).then(function (response) {
+      if (!response.ok) throw new Error('Data program donor tidak dapat dimuat.');
+      return response.json();
+    });
   }
 
   function compactIndicatorLabel(outputName, activityName) {
@@ -947,7 +961,7 @@
     Promise.all([
       fetch('data/donors.json?v=20260808-penabulu-plan-evidence1', { cache: 'no-store' }).then(function (response) { return response.json(); }),
       jsonp(API + '?page=public-reports').catch(function () { return { features: [] }; }),
-      jsonp(API + '?page=donor-programmes').catch(function () { return { unavailable: true }; }),
+      loadDonorAdminData().catch(function () { return { unavailable: true }; }),
       fetch('data/capacity-building.json?v=20260727-admin-evidence1', { cache: 'no-store' })
         .then(function (response) { return response.ok ? response.json() : []; })
         .catch(function () { return []; }),

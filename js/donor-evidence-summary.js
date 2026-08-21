@@ -2,6 +2,7 @@
   'use strict';
 
   var API = 'https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec';
+  var DONOR_DATA_API = 'https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/api/donor/programmes';
   var donorMap = {
     'Aramco Asia Singapore': { card: '[data-open-aramco]', modal: '#aramco-dashboard' },
     'Global Environment Centre': { card: '[data-open-gec]', modal: '#gec-dashboard' },
@@ -83,6 +84,16 @@
     return { text: 'Planned', cls: '' };
   }
 
+  function readStaffSession() {
+    try {
+      var session = JSON.parse(sessionStorage.getItem('ygEditorSessionV1') || 'null');
+      if (!session || !session.token || Number(session.expiresAt) <= Date.now()) return null;
+      return session;
+    } catch (error) {
+      return null;
+    }
+  }
+
   function updateGecMilestones(rows) {
     var nurseryRows = rows.filter(function (row) {
       return /^(ACT-GEC-01|ACT-GEC-02)$/i.test(String(row.indicatorId || '')) ||
@@ -99,11 +110,36 @@
     var brief = document.getElementById('gec2026-nursery-brief');
     var updateTitle = document.getElementById('gec2026-update-title');
     var updateMeta = document.getElementById('gec2026-update-meta');
+    var auditRows = rows.filter(function (row) {
+      return String(row.indicatorId || '') === 'ACT-GEC-08' ||
+        /financial audit of yayasan gambut/i.test(String(row.indicatorLabel || ''));
+    });
+    var auditBadge = document.getElementById('gec2026-status-audit');
+    var auditItem = document.getElementById('gec2026-timeline-audit');
+    var auditState = statusFor(auditRows.length, 1);
     var progressText = Math.min(completed, 2) + ' / 2 villages';
     if (progress && progress.textContent !== progressText) progress.textContent = progressText;
     if (badge) {
       if (badge.textContent !== state.text) badge.textContent = state.text;
       if (badge.className !== state.cls) badge.className = state.cls;
+    }
+    if (auditBadge) {
+      auditBadge.textContent = auditState.text;
+      auditBadge.className = auditState.cls;
+    }
+    if (auditItem) {
+      var oldLink = auditItem.querySelector('.gec2026-audit-evidence-link');
+      if (oldLink) oldLink.remove();
+      var privateAudit = auditRows.find(function (row) { return !!row.evidenceUrl; });
+      if (privateAudit && readStaffSession()) {
+        var link = document.createElement('a');
+        link.className = 'gec2026-audit-evidence-link';
+        link.href = privateAudit.evidenceUrl;
+        link.target = '_blank';
+        link.rel = 'noopener';
+        link.textContent = 'Buka evidence audit →';
+        auditItem.insertBefore(link, auditBadge || null);
+      }
     }
     if (brief && nurseryRows.length) {
       var briefMarkup = nurseryRows.map(function (row) {
@@ -360,7 +396,14 @@
   }
 
   document.addEventListener('DOMContentLoaded', function () {
-    jsonp(API + '?page=donor-programmes')
+    var staffSession = readStaffSession();
+    var donorHeaders = { accept: 'application/json' };
+    if (staffSession) donorHeaders.authorization = 'Bearer ' + staffSession.token;
+    fetch(DONOR_DATA_API + '?t=' + Date.now(), { cache: 'no-store', headers: donorHeaders })
+      .then(function (response) {
+        if (!response.ok) throw new Error('Data evidence donor tidak dapat dimuat.');
+        return response.json();
+      })
       .then(function (result) {
         assignments = Array.isArray(result && result.assignments) ? result.assignments : [];
         assignmentsReady = true;
