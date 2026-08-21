@@ -67,5 +67,10 @@
     rulesScript.src = "js/report-photo-rules.js?v=20260725-photo-simple1";
     rulesScript.async = false;
     document.head.appendChild(rulesScript);
+
+    const maintenanceScript = document.createElement("script");
+    maintenanceScript.src = "js/report-infrastructure-maintenance.js?v=20260821-maintenance1";
+    maintenanceScript.async = false;
+    document.head.appendChild(maintenanceScript);
   }
 })();
