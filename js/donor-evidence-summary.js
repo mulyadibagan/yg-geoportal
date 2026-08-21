@@ -85,10 +85,13 @@
 
   function updateGecMilestones(rows) {
     var nurseryRows = rows.filter(function (row) {
-      return /coffee seedling nursery training/i.test(String(row.indicatorLabel || ''));
+      return /^(ACT-GEC-01|ACT-GEC-02)$/i.test(String(row.indicatorId || '')) ||
+        /coffee seedling nursery training/i.test(String(row.indicatorLabel || ''));
     });
     var uniqueActivities = {};
-    nurseryRows.forEach(function (row) { uniqueActivities[row.indicatorLabel] = true; });
+    nurseryRows.forEach(function (row) {
+      uniqueActivities[row.indicatorId || row.indicatorLabel] = true;
+    });
     var completed = Object.keys(uniqueActivities).length;
     var state = statusFor(completed, 2);
     var progress = document.getElementById('gec2026-progress-nursery');
@@ -362,6 +365,11 @@
         assignments = Array.isArray(result && result.assignments) ? result.assignments : [];
         assignmentsReady = true;
         applyDonorEvidence();
+        // dashboard-v3 menghitung layer secara asinkron; pastikan evidence pusat
+        // kembali menjadi sumber status setelah kalkulasi layer selesai.
+        [500, 1500, 3500, 7000].forEach(function (delay) {
+          window.setTimeout(applyDonorEvidence, delay);
+        });
       })
       .catch(function (error) {
         assignmentsReady = true;
