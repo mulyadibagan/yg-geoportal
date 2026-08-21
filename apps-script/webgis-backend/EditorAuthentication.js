@@ -386,6 +386,7 @@ function createEditorLoginResult_(requestId, username, password) {
     requestId: requestId,
     sessionToken: sessionToken,
     username: username,
+    name: user.name || username,
     role: user.role,
     expiresAt: expiresAt
   };

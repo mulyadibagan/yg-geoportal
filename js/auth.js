@@ -81,6 +81,7 @@
     const session = {
       token: result.sessionToken,
       username: result.username,
+      name: result.name || result.username,
       expiresAt: Number(result.expiresAt)
     };
     sessionStorage.setItem(SESSION_KEY, JSON.stringify(session));
