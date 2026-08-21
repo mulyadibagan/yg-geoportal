@@ -21,12 +21,12 @@
 
   function callbackLoad(url) {
     return new Promise((resolve, reject) => {
-      const callback = "ygAuthCallback_" + Date.now();
+      const callback = "ygAuthCallback_" + Date.now() + "_" + Math.floor(Math.random() * 100000);
       const script = document.createElement("script");
       const timer = setTimeout(() => {
         cleanup();
         reject(new Error("Waktu koneksi habis."));
-      }, 20000);
+      }, 10000);
 
       function cleanup() {
         clearTimeout(timer);
@@ -40,67 +40,39 @@
       };
       script.onerror = () => {
         cleanup();
-        reject(new Error("Skrip otentikasi gagal dimuat."));
+        reject(new Error("Hasil autentikasi belum dapat dimuat."));
       };
-      script.src = url + (url.includes("?") ? "&" : "?") + "callback=" + callback;
+      script.src = url + (url.includes("?") ? "&" : "?") +
+        "callback=" + encodeURIComponent(callback) + "&t=" + Date.now();
       document.head.appendChild(script);
     });
   }
 
   async function postAuthRequest(action, fields) {
-    const requestId = "yg-auth-" + Date.now();
-    return new Promise((resolve, reject) => {
-      const frameName = "yg-auth-frame-" + Date.now();
-      const iframe = document.createElement("iframe");
-      const form = document.createElement("form");
-      const timer = setTimeout(() => finish(new Error("Waktu koneksi autentikasi habis.")), 25000);
+    const requestId = "yg-auth-" + Date.now() + "-" + Math.floor(Math.random() * 100000);
+    const body = new URLSearchParams({ action, requestId, ...(fields || {}) });
+    await fetch(API, { method: "POST", mode: "no-cors", body });
+    if (action === "editor-logout") return { ok: true };
 
-      iframe.name = frameName;
-      iframe.hidden = true;
-      form.method = "POST";
-      form.action = API;
-      form.target = frameName;
-      form.hidden = true;
-
-      function addField(name, value) {
-        const input = document.createElement("input");
-        input.type = "hidden";
-        input.name = name;
-        input.value = String(value == null ? "" : value);
-        form.appendChild(input);
+    const deadline = Date.now() + 30000;
+    let lastLoadError = null;
+    while (Date.now() < deadline) {
+      await new Promise(resolve => setTimeout(resolve, 700));
+      try {
+        const result = await callbackLoad(
+          `${API}?page=editor-auth-result&requestId=${encodeURIComponent(requestId)}`
+        );
+        lastLoadError = null;
+        if (result && result.pending) continue;
+        if (result && result.ok) return result;
+        throw new Error(result?.message || "Autentikasi gagal.");
+      } catch (error) {
+        if (error && error.message && !/belum dapat dimuat|koneksi habis/i.test(error.message)) throw error;
+        lastLoadError = error;
       }
-
-      function cleanup() {
-        clearTimeout(timer);
-        window.removeEventListener("message", onMessage);
-        form.remove();
-        iframe.remove();
-      }
-
-      function finish(error, result) {
-        cleanup();
-        if (error) reject(error);
-        else if (result && result.ok) resolve(result);
-        else reject(new Error(result?.message || "Autentikasi gagal."));
-      }
-
-      function onMessage(event) {
-        if (event.origin !== "https://script.google.com" &&
-            event.origin !== "https://script.googleusercontent.com") return;
-        const result = event.data;
-        if (!result || result.requestId !== requestId) return;
-        finish(null, result);
-      }
-
-      addField("action", action);
-      addField("requestId", requestId);
-      addField("transport", "iframe");
-      Object.keys(fields || {}).forEach(key => addField(key, fields[key]));
-      window.addEventListener("message", onMessage);
-      document.body.appendChild(iframe);
-      document.body.appendChild(form);
-      form.submit();
-    });
+    }
+    if (lastLoadError) throw new Error("Hasil autentikasi belum dapat dimuat. Periksa koneksi lalu coba lagi.");
+    throw new Error("Waktu koneksi autentikasi habis. Silakan coba lagi.");
   }
 
   async function login(username, password) {
