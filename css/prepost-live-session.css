@@ -6,6 +6,7 @@ body{margin:0;background:#f2f8f5;color:#183b31;font-family:"Segoe UI",Tahoma,Ari
 .participant-access-box form{display:flex;gap:8px}
 .participant-access-box input{min-width:0;flex:1;padding:10px 12px;border:1px solid #aacfc1;border-radius:9px;background:#fff;font:inherit}
 .participant-access-box button{padding:10px 14px;border:0;border-radius:9px;background:#087653;color:#fff;font:inherit;font-weight:800;cursor:pointer}
+.participant-access-login{display:inline-flex;padding:10px 14px;border-radius:9px;background:#087653;color:#fff;text-decoration:none;font:inherit;font-weight:800}
 .participant-access-box small{display:block;margin-top:8px;color:#526a61}
 .participant-access-box.is-authorized{border-color:#79bea5;background:#e2f5ed}
 @media(max-width:640px){.participant-access-box form{flex-direction:column}.participant-access-box button{width:100%}}

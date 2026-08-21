@@ -5,8 +5,12 @@
   var SNAPSHOT_URL = 'https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/snapshots/current/dashboard.json';
   var params = new URLSearchParams(window.location.search);
   var sessionId = params.get('session') || '';
-  var accessToken = params.get('access') || '';
+  var staffSession = window.YG_AUTH && window.YG_AUTH.readStoredSession();
   var participantResponses = [];
+
+  function loginUrl(){
+    return 'staff-login.html?return=' + encodeURIComponent(window.location.pathname.split('/').pop() + window.location.search);
+  }
 
   function text(v){ return v === null || v === undefined ? '' : String(v).trim(); }
   function esc(v){ return text(v).replace(/[&<>"']/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
@@ -162,12 +166,16 @@
   function applyQuestions(detail){
     var questions = Array.isArray(detail && detail.questions) ? detail.questions : [];
     var postRows = questions.filter(function(item){ return text(item.phase).toLowerCase() === 'post'; });
+    var postCount = num(detail && detail.questionCount && detail.questionCount.post) ||
+      num(detail && detail.summary && detail.summary.questionCount);
 
     var postTitle = document.getElementById('live-post-title');
     var postList = document.getElementById('live-post-questions');
 
-    if(postTitle) postTitle.textContent = 'Post-test (' + postRows.length + ' soal)';
-    if(postList) postList.innerHTML = questionMarkup(postRows);
+    if(postTitle) postTitle.textContent = 'Post-test (' + (postRows.length || postCount) + ' soal)';
+    if(postList) postList.innerHTML = staffSession
+      ? questionMarkup(postRows)
+      : '<div class="participant-access-box"><strong>Detail soal khusus staf</strong><p>Jumlah soal dapat dilihat publik. Isi soal dan kunci jawaban hanya tersedia setelah login staf.</p><a class="participant-access-login" href="' + esc(loginUrl()) + '">Login staf untuk melihat detail</a></div>';
   }
 
   async function loadSnapshotDetail(){
@@ -231,15 +239,16 @@
     if(noteNode) noteNode.textContent = (rows || []).length
       ? 'Total responden post-test: ' + (rows || []).length.toLocaleString('id-ID') + ' · identitas tidak ditampilkan.'
       : 'Belum ada peserta post-test yang mengisi.';
-    if(toggleBtn) toggleBtn.textContent = (rows || []).length
-      ? 'Daftar peserta tersamarkan (' + (rows || []).length.toLocaleString('id-ID') + ')'
-      : 'Daftar peserta tersamarkan';
+    if(toggleBtn) toggleBtn.textContent = staffSession
+      ? ((rows || []).length ? 'Daftar detail peserta (' + (rows || []).length.toLocaleString('id-ID') + ')' : 'Daftar detail peserta')
+      : ((rows || []).length ? 'Login staf untuk detail peserta (' + (rows || []).length.toLocaleString('id-ID') + ')' : 'Login staf untuk detail peserta');
   }
 
   async function loadParticipantNames(){
+    if(!staffSession || !staffSession.token) return;
     try{
       var url=API + '?page=prepost-session-responses&sessionId=' + encodeURIComponent(sessionId) + '&phase=post';
-      if(accessToken)url+='&accessToken='+encodeURIComponent(accessToken);
+      url+='&sessionToken='+encodeURIComponent(staffSession.token);
       var response = await jsonp(url,'ygLiveResponses_');
       var rows = response && Array.isArray(response.responses) ? response.responses : [];
       if(!rows.length) return;
@@ -261,11 +270,11 @@
       var titleNode=document.getElementById('live-participant-title');
       var accessBox=document.getElementById('participant-access-box');
       if(authorized){
-        if(noteNode)noteNode.textContent='Total responden post-test: '+participantResponses.length.toLocaleString('id-ID')+' · akses identitas aktif sampai '+formatDateTime(response.expiresAt)+'.';
+        if(noteNode)noteNode.textContent='Total responden post-test: '+participantResponses.length.toLocaleString('id-ID')+' · login staf aktif.';
         if(titleNode)titleNode.textContent='Daftar Peserta Pengisi Post-Test';
         if(accessBox){
           accessBox.classList.add('is-authorized');
-          accessBox.innerHTML='<strong>Akses data lengkap aktif</strong><p>Tautan ini berlaku sampai '+esc(formatDateTime(response.expiresAt))+'. Setelah kedaluwarsa, minta tautan baru.</p>';
+          accessBox.innerHTML='<strong>Akses staf aktif</strong><p>Identitas lengkap dan nilai peserta hanya ditampilkan dalam sesi login staf ini.</p>';
         }
       }else{
         if(noteNode)noteNode.textContent='Total responden post-test: '+participantResponses.length.toLocaleString('id-ID')+' · nama dan email disamarkan.';
@@ -275,41 +284,16 @@
     }
   }
 
-  function initParticipantAccessRequest(){
-    var form=document.getElementById('participant-access-form');
-    var input=document.getElementById('participant-access-email');
-    var status=document.getElementById('participant-access-status');
-    if(!form||!input)return;
-    form.addEventListener('submit',async function(event){
-      event.preventDefault();
-      var email=text(input.value).toLowerCase();
-      if(!/^[^\s@]+@yayasangambut\.org$/i.test(email)){
-        if(status)status.textContent='Gunakan email aktif @yayasangambut.org.';
-        return;
-      }
-      var button=form.querySelector('button');
-      if(button)button.disabled=true;
-      if(status)status.textContent='Mengirim tautan akses…';
-      var body=new URLSearchParams();
-      body.set('action','prepost-request-participant-access');
-      body.set('payload',JSON.stringify({sessionId:sessionId,email:email}));
-      try{
-        await fetch(API,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'},body:body.toString()});
-        if(status)status.textContent='Jika email aktif, tautan akses telah dikirim. Periksa kotak masuk atau folder spam.';
-      }catch(error){
-        if(status)status.textContent='Tautan belum dapat dikirim. Silakan coba kembali.';
-      }finally{
-        if(button)button.disabled=false;
-      }
-    });
-  }
-
   function initParticipantToggle(){
     var btn = document.getElementById('live-toggle-participants');
     var card = document.getElementById('live-participant-card');
     if(!btn || !card) return;
 
     btn.addEventListener('click',function(){
+      if(!staffSession || !staffSession.token){
+        window.location.href=loginUrl();
+        return;
+      }
       var isHidden = card.classList.contains('live-card--hidden');
       if(isHidden){
         card.classList.remove('live-card--hidden');
@@ -343,7 +327,9 @@
     }catch(snapshotError){}
 
     try{
-      var detail = await jsonp(API + '?page=prepost-session-detail&sessionId=' + encodeURIComponent(sessionId), 'ygLiveSession_');
+      var detailUrl = API + '?page=prepost-session-detail&sessionId=' + encodeURIComponent(sessionId);
+      if(staffSession && staffSession.token) detailUrl += '&sessionToken=' + encodeURIComponent(staffSession.token);
+      var detail = await jsonp(detailUrl, 'ygLiveSession_');
       if(!detail || detail.ok === false) throw new Error(detail && detail.error ? detail.error : 'Sesi tidak ditemukan.');
       applyMeta(detail);
       applySummary(detail);
@@ -356,7 +342,8 @@
     }
 
     initParticipantToggle();
-    initParticipantAccessRequest();
+    var loginLink=document.getElementById('participant-access-login');
+    if(loginLink)loginLink.href=loginUrl();
     loadParticipantNames();
   }
 

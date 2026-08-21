@@ -6,6 +6,12 @@
   const processingPanel = document.getElementById("staff-processing-panel");
   const retryLink = document.getElementById("staff-retry-link");
 
+  function returnTarget() {
+    const value = new URLSearchParams(window.location.search).get("return") || "";
+    if (!value || /^(?:[a-z]+:|\/\/)/i.test(value) || value.includes("..")) return "admin-dashboard.html";
+    return value;
+  }
+
   function updateStatus(node, message, isError) {
     node.textContent = message || "";
     node.classList.toggle("is-error", Boolean(isError));
@@ -31,7 +37,7 @@
         document.getElementById("staff-username").value.trim().toLowerCase(),
         document.getElementById("staff-password").value
       );
-      window.location.replace("admin-dashboard.html");
+      window.location.replace(returnTarget());
     } catch (error) {
       updateStatus(status, error.message || "Login gagal.", true);
       submit.disabled = false;
@@ -89,6 +95,6 @@
   if (activationToken) {
     activateAccount(activationToken);
   } else if (storedSession) {
-    window.location.replace("admin-dashboard.html");
+    window.location.replace(returnTarget());
   }
 })();
