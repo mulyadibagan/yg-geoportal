@@ -138,6 +138,11 @@
         link.target = '_self';
         link.setAttribute('aria-label', 'Buka dokumen audit');
         link.textContent = 'Buka dokumen audit →';
+        link.addEventListener('click', function (event) {
+          event.preventDefault();
+          event.stopPropagation();
+          window.location.assign(privateAudit.evidenceUrl);
+        });
         auditItem.insertBefore(link, auditBadge || null);
       }
     }
