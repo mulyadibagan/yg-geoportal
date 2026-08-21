@@ -67,7 +67,7 @@ function handleEditorAuthPost_(e) {
           String(params.password || '')
         );
       storeEditorAuthResult_(requestId, result);
-      return editorAuthAccepted_();
+      return editorAuthTransportResponse_(params, result);
     }
 
     if (action === 'staff-register') {
@@ -78,7 +78,7 @@ function handleEditorAuthPost_(e) {
         String(params.password || '')
       );
       storeEditorAuthResult_(requestId, result);
-      return editorAuthAccepted_();
+      return editorAuthTransportResponse_(params, result);
     }
 
     if (action === 'staff-activate') {
@@ -87,12 +87,12 @@ function handleEditorAuthPost_(e) {
         clean_(params.activationToken)
       );
       storeEditorAuthResult_(requestId, result);
-      return editorAuthAccepted_();
+      return editorAuthTransportResponse_(params, result);
     }
 
     if (action === 'editor-logout') {
       deleteEditorSession_(clean_(params.sessionToken));
-      return editorAuthAccepted_();
+      return editorAuthTransportResponse_(params, { ok: true, requestId: requestId });
     }
 
     throw new Error('Aksi autentikasi tidak dikenal.');
@@ -103,7 +103,7 @@ function handleEditorAuthPost_(e) {
       message: error.message || 'Autentikasi gagal.'
     };
     if (requestId) storeEditorAuthResult_(requestId, result);
-    return editorAuthAccepted_();
+    return editorAuthTransportResponse_(params, result);
   }
 }
 
@@ -418,4 +418,19 @@ function editorAuthAccepted_() {
   return ContentService
     .createTextOutput(JSON.stringify({ ok: true, accepted: true }))
     .setMimeType(ContentService.MimeType.JSON);
+}
+
+function editorAuthTransportResponse_(params, result) {
+  if (clean_(params && params.transport) !== 'iframe') {
+    return editorAuthAccepted_();
+  }
+  const safeResult = JSON.stringify(result || { ok: false, message: 'Autentikasi gagal.' })
+    .replace(/</g, '\\u003c')
+    .replace(/>/g, '\\u003e')
+    .replace(/&/g, '\\u0026');
+  return HtmlService.createHtmlOutput(
+    '<!doctype html><meta charset="utf-8"><script>' +
+    'parent.postMessage(' + safeResult + ',"https://webgisyg.id");' +
+    '<\/script>'
+  ).setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
