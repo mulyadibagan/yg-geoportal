@@ -133,13 +133,40 @@
   function imagePath(item){return driveImagePath('assets/flora-mangrove/'+item.slug+'.webp');}
   function galleryPath(item,index){return driveImagePath('assets/flora-mangrove/gallery/'+item.slug+'/'+index+'.webp');}
   function faunaPhotoPath(item,index){return driveImagePath('assets/fauna-mangrove/'+item.slug+'/'+index+'.webp');}
-  var SPECIAL_GALLERY_LABELS={
-    'sonneratia-alba':['F. AKAR','B. DAUN','C. BUNGA/PUTIK','A. POHON','E. BATANG','D. BUAH']
+  // Urutan file mengikuti hasil ekstraksi foto pada laporan, bukan urutan label A-F.
+  var GALLERY_LABELS={
+    'rhizophora-apiculata':['F. AKAR','A. POHON','B. DAUN','E. BATANG','C. BUNGA/PUTIK','D. BUAH'],
+    'rhizophora-mucronata':['B. DAUN','C. BUNGA/PUTIK','A. POHON','E. BATANG','D. BUAH','F. AKAR'],
+    'sonneratia-alba':['F. AKAR','B. DAUN','C. BUNGA/PUTIK','A. POHON','E. BATANG','D. BUAH'],
+    'sonneratia-ovata':['F. AKAR','A. POHON','B. DAUN','E. BATANG','C. BUNGA/PUTIK','D. BUAH'],
+    'sonneratia-caseolaris':['A. POHON','B. DAUN','E. BATANG','C. BUNGA/PUTIK','D. BUAH','F. AKAR'],
+    'avicennia-alba':['B. DAUN','F. AKAR','A. POHON','E. BATANG','C. BUNGA/PUTIK','D. BUAH'],
+    'avicennia-lanata':['A. POHON','B. DAUN','E. BATANG','C. BUNGA/PUTIK','D. BUAH','F. AKAR'],
+    'bruguiera-cylindrica':['A. POHON','B. DAUN','E. BATANG','C. BUNGA/PUTIK','F. AKAR','D. BUAH'],
+    'bruguiera-gymnorhiza':['A. POHON','C. BUNGA/PUTIK','F. AKAR','B. DAUN','E. BATANG','D. BUAH'],
+    'bruguiera-sexangula':['E. BATANG','A. POHON','B. DAUN','D. BUAH','C. BUNGA/PUTIK','F. AKAR'],
+    'bruguiera-parviflora':['A. POHON','E. BATANG','B. DAUN','C. BUNGA/PUTIK','D. BUAH','F. AKAR'],
+    'ceriops-tagal':['A. POHON','C. BUNGA/PUTIK','F. AKAR','E. BATANG','B. DAUN','D. BUAH'],
+    'lumnitzera-littorea':['A. POHON','B. DAUN','C. BUNGA/PUTIK','F. AKAR','E. BATANG','D. BUAH'],
+    'lumnitzera-racemosa':['B. DAUN','C. BUNGA/PUTIK','F. AKAR','A. POHON','E. BATANG','D. BUAH'],
+    'excoecaria-agallocha':['A. POHON','B. DAUN','E. BATANG','D. BUAH','C. BUNGA/PUTIK','F. AKAR'],
+    'scyphiphora-hydrophylacea':['A. POHON','D. BUAH','E. BATANG','C. BUNGA/PUTIK','B. DAUN','F. AKAR'],
+    'nypa-fruticans':['A. POHON','B. DAUN','E. BATANG','C. BUNGA/PUTIK','D. BUAH','F. AKAR'],
+    'xylocarpus-granatum':['A. POHON','B. DAUN','E. BATANG','C. BUNGA/PUTIK','D. BUAH','F. AKAR'],
+    'xylocarpus-moluccensis':['A. POHON','B. DAUN','E. BATANG','C. BUNGA/PUTIK','D. BUAH','F. AKAR'],
+    'heritiera-littoralis':['A. POHON','B. DAUN','E. BATANG','C. BUNGA/PUTIK','D. BUAH','F. AKAR'],
+    'acanthus-ilicifolius':['A. TUMBUHAN','B. DAUN','D. BUAH','C. BUNGA/PUTIK'],
+    'acrostichum-speciosum':['A. TUMBUHAN','B. DAUN'],
+    'acrostichum-aureum':['B. DAUN','A. TUMBUHAN'],
+    'hibiscus-tiliaceus':['B. DAUN','A. POHON'],
+    'rotan-nasi':['C. BUNGA/PUTIK','A. TUMBUHAN','E. BATANG'],
+    'oncosperma-tigillarium':['A. POHON'],
+    'morinda-citrifolia':['D. BUAH','A. POHON'],
+    'terminalia-catappa':['B. DAUN'],
+    'teki-laut':['C. BUNGA/PUTIK','A. TUMBUHAN']
   };
   function galleryLabel(item,count,index){
-    var complete=['A. POHON','B. DAUN','C. BUNGA/PUTIK','D. BUAH','E. BATANG','F. AKAR'];
-    if(SPECIAL_GALLERY_LABELS[item.slug])return SPECIAL_GALLERY_LABELS[item.slug][index-1];
-    if(count===6)return complete[index-1];
+    if(GALLERY_LABELS[item.slug])return GALLERY_LABELS[item.slug][index-1];
     return 'DOKUMENTASI '+index;
   }
   function galleryHtml(item){
