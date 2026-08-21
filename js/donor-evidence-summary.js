@@ -136,18 +136,14 @@
       auditBadge.className = auditState.cls;
     }
     if (auditItem) {
-      var oldLink = auditItem.querySelector('.gec2026-audit-evidence-link');
-      if (oldLink) oldLink.remove();
+      var link = document.getElementById('gec2026-audit-evidence-link');
       var privateAudit = auditRows.find(function (row) { return !!row.evidenceUrl; });
-      if (privateAudit && readStaffSession()) {
-        var link = document.createElement('a');
-        link.className = 'gec2026-audit-evidence-link';
+      if (link && privateAudit && readStaffSession()) {
         link.href = directDrivePreviewUrl(privateAudit.evidenceUrl);
-        link.target = '_blank';
-        link.rel = 'noopener noreferrer';
-        link.setAttribute('aria-label', 'Lihat dokumen audit di Google Drive pada tab baru');
-        link.textContent = 'Lihat di Google Drive ↗';
-        auditItem.insertBefore(link, auditBadge || null);
+        link.hidden = false;
+      } else if (link) {
+        link.hidden = true;
+        link.removeAttribute('href');
       }
     }
     if (brief && nurseryRows.length) {
