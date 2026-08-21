@@ -236,7 +236,10 @@ if (page === 'donor-programmes') {
 }
 
 if (page === 'donor-admin-result') {
-  return donorAdminResponse_(getDonorAdminResult_(params.requestId), callback);
+  return donorAdminResponse_(
+    getDonorAdminResult_(params.requestId, params.sessionToken),
+    callback
+  );
 }
 
   if (page === 'admin') {

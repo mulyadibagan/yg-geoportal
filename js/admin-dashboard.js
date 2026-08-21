@@ -3,6 +3,7 @@
 
   var API = 'https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec';
   var DONOR_DATA_API = 'https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/api/donor/programmes';
+  var DONOR_ADMIN_RESULT_API = 'https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/api/donor/admin-result';
   var ASSIGNMENT_KEY = 'ygIpemsEvidenceAssignments_v1';
   var NONSPATIAL_EVIDENCE_KEY = 'ygIpemsNonspatialEvidence_v1';
   var PROGRAMME_CONFIG_KEY = 'ygIpemsProgrammeConfig_v1';
@@ -120,7 +121,12 @@
     await fetch(API, { method: 'POST', mode: 'no-cors', body: body });
     for (var attempt = 0; attempt < 24; attempt += 1) {
       await new Promise(function (resolve) { setTimeout(resolve, attempt ? 650 : 350); });
-      var result = await jsonp(API + '?page=donor-admin-result&requestId=' + encodeURIComponent(requestId));
+      var response = await fetch(DONOR_ADMIN_RESULT_API + '?requestId=' + encodeURIComponent(requestId) + '&t=' + Date.now(), {
+        cache: 'no-store',
+        headers: { accept: 'application/json', authorization: 'Bearer ' + session.token }
+      });
+      if (!response.ok) throw new Error('Konfirmasi penyimpanan gagal dimuat.');
+      var result = await response.json();
       if (result && result.pending) continue;
       if (result && result.ok) return result.data;
       throw new Error((result && result.error) || 'Penyimpanan ke database pusat gagal.');
