@@ -176,6 +176,12 @@
     return String((feature.properties || {}).reportId || feature.id || ('EV-LOCAL-' + index));
   }
 
+  function compactIndicatorLabel(outputName, activityName) {
+    var outputCode = String(outputName || '').match(/^Output\s+[\w.-]+/i);
+    var label = [outputCode ? outputCode[0] : '', activityName || outputName || 'Indikator'].filter(Boolean).join(' · ');
+    return label.length > 105 ? label.slice(0, 102).trim() + '…' : label;
+  }
+
   function isDonorEvidenceCandidate(feature) {
     var props = feature.properties || {};
     var source = String(props.source || '');
@@ -534,6 +540,7 @@
           indicators.push({
             id: activity.id,
             label: output.name + ' → ' + activity.name,
+            optionLabel: compactIndicatorLabel(output.name, activity.name),
             value: activity.indicator
           });
         });
@@ -544,7 +551,7 @@
     select.disabled = !indicators.length;
     select.innerHTML = '<option value="">Pilih capaian/indikator</option>' + indicators.map(function (item, index) {
       var id = item.id || ((donor.id || idFrom(donor.name)) + '-KPI-' + (index + 1));
-      return '<option value="' + esc(id) + '">' + esc(item.label + ' · capaian saat ini ' + item.value) + '</option>';
+      return '<option value="' + esc(id) + '">' + esc(item.optionLabel || item.label) + '</option>';
     }).join('');
   }
 
