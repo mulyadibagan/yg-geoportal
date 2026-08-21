@@ -133,14 +133,14 @@
     var form = document.getElementById('admin-auth-form');
     if (!REMOTE_AVAILABLE) {
       status.textContent = 'Backend pusat belum aktif; perubahan sementara tetap disimpan pada browser ini.';
-      form.querySelectorAll('label, button').forEach(function (element) { element.hidden = true; });
+      form.querySelectorAll('label, button, a').forEach(function (element) { element.hidden = true; });
       document.getElementById('assignment-mode').textContent = 'LOCAL FALLBACK';
     } else if (ADMIN_SESSION && ADMIN_SESSION.token) {
       status.textContent = message || ('Masuk sebagai ' + ADMIN_SESSION.username + '. Perubahan akan disimpan ke database pusat.');
-      form.querySelectorAll('label, button').forEach(function (element) { element.hidden = true; });
+      form.querySelectorAll('label, button, a').forEach(function (element) { element.hidden = true; });
     } else {
       status.textContent = message || 'Silakan masuk agar perubahan tersimpan ke database pusat.';
-      form.querySelectorAll('label, button').forEach(function (element) { element.hidden = false; });
+      form.querySelectorAll('label, button, a').forEach(function (element) { element.hidden = false; });
     }
   }
 
@@ -875,21 +875,6 @@
           : 'Assignment lokal dibatalkan.';
       } catch (error) {
         document.getElementById('assignment-feedback').textContent = error.message;
-      }
-    });
-    document.getElementById('admin-auth-form').addEventListener('submit', async function (event) {
-      event.preventDefault();
-      var status = document.getElementById('admin-auth-status');
-      status.textContent = 'Memeriksa akun...';
-      try {
-        ADMIN_SESSION = await window.YG_AUTH.login(
-          document.getElementById('admin-auth-username').value.trim(),
-          document.getElementById('admin-auth-password').value
-        );
-        event.target.reset();
-        renderAuthState();
-      } catch (error) {
-        renderAuthState(error.message);
       }
     });
   }

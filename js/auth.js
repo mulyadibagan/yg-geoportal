@@ -74,17 +74,27 @@
     return session;
   }
 
+  async function registerStaff(username, email, password) {
+    return postAuthRequest("staff-register", { username, email, password });
+  }
+
+  async function activateStaff(activationToken) {
+    return postAuthRequest("staff-activate", { activationToken });
+  }
+
   function logout() {
     const session = readStoredSession();
     sessionStorage.removeItem(SESSION_KEY);
     if (session && session.token) {
-      postAuthRequest("editor-logout", { token: session.token }).catch(console.warn);
+      postAuthRequest("editor-logout", { sessionToken: session.token }).catch(console.warn);
     }
   }
 
   window.YG_AUTH = {
     readStoredSession,
     login,
+    registerStaff,
+    activateStaff,
     logout
   };
 })();
