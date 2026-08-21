@@ -84,6 +84,14 @@
     return { text: 'Planned', cls: '' };
   }
 
+  function directDriveDownloadUrl(url) {
+    var match = String(url || '').match(/\/file\/d\/([a-zA-Z0-9_-]+)/) ||
+      String(url || '').match(/[?&]id=([a-zA-Z0-9_-]+)/);
+    return match
+      ? 'https://drive.usercontent.google.com/download?id=' + encodeURIComponent(match[1]) + '&export=download'
+      : String(url || '');
+  }
+
   function readStaffSession() {
     try {
       var session = JSON.parse(sessionStorage.getItem('ygEditorSessionV1') || 'null');
@@ -134,15 +142,9 @@
       if (privateAudit && readStaffSession()) {
         var link = document.createElement('a');
         link.className = 'gec2026-audit-evidence-link';
-        link.href = privateAudit.evidenceUrl;
-        link.target = '_self';
-        link.setAttribute('aria-label', 'Buka dokumen audit');
-        link.textContent = 'Buka dokumen audit →';
-        link.addEventListener('click', function (event) {
-          event.preventDefault();
-          event.stopPropagation();
-          window.location.assign(privateAudit.evidenceUrl);
-        });
+        link.href = directDriveDownloadUrl(privateAudit.evidenceUrl);
+        link.setAttribute('aria-label', 'Unduh PDF audit');
+        link.textContent = 'Unduh PDF audit ↓';
         auditItem.insertBefore(link, auditBadge || null);
       }
     }
