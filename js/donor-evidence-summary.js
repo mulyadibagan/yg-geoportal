@@ -137,7 +137,8 @@
         link.href = privateAudit.evidenceUrl;
         link.target = '_blank';
         link.rel = 'noopener';
-        link.textContent = 'Buka evidence audit →';
+        link.setAttribute('aria-label', 'Buka dokumen audit di tab baru');
+        link.textContent = 'Buka dokumen audit ↗';
         auditItem.insertBefore(link, auditBadge || null);
       }
     }

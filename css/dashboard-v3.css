@@ -651,4 +651,7 @@ body.modal-open{overflow:hidden}
   .penabulu-evidence-heading>strong{display:inline-block;margin-top:10px}
   .penabulu-evidence-list{grid-template-columns:1fr}
 }
-.gec2026-audit-evidence-link{margin-left:auto;color:#087653;font-size:12px;font-weight:800;text-decoration:underline;text-underline-offset:3px}
+#gec2026-timeline-audit{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px 12px}
+#gec2026-timeline-audit .gec2026-audit-evidence-link{grid-column:1/-1;display:inline-flex;align-items:center;justify-content:center;min-height:40px;margin:0;padding:0 14px;border-radius:9px;background:#087653;color:#fff;font-size:12px;font-weight:850;line-height:1.2;text-align:center;text-decoration:none;box-shadow:0 5px 12px rgba(8,118,83,.18);transition:background .18s ease,transform .18s ease}
+#gec2026-timeline-audit .gec2026-audit-evidence-link:hover{background:#065e43;transform:translateY(-1px)}
+#gec2026-timeline-audit .gec2026-audit-evidence-link:focus-visible{outline:3px solid rgba(8,118,83,.28);outline-offset:3px}
