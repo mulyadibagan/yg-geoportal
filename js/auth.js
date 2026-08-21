@@ -95,6 +95,14 @@
     return postAuthRequest("staff-activate", { activationToken });
   }
 
+  async function requestPasswordReset(email) {
+    return postAuthRequest("staff-password-reset-request", { email });
+  }
+
+  async function resetPassword(resetToken, password) {
+    return postAuthRequest("staff-password-reset", { resetToken, password });
+  }
+
   function logout() {
     const session = readStoredSession();
     sessionStorage.removeItem(SESSION_KEY);
@@ -108,6 +116,8 @@
     login,
     registerStaff,
     activateStaff,
+    requestPasswordReset,
+    resetPassword,
     logout
   };
 })();

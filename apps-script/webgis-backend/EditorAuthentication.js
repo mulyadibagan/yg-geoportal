@@ -7,6 +7,7 @@
  */
 const EDITOR_SESSION_HOURS = 12;
 const STAFF_ACTIVATION_LINK_MINUTES = 30;
+const STAFF_PASSWORD_RESET_MINUTES = 30;
 const STAFF_PORTAL_URL = 'https://webgisyg.id/staff-login.html';
 const EDITOR_PASSWORD_SALT = 'YG-EDITOR-2026';
 const EDITOR_USERS = {
@@ -37,7 +38,8 @@ function cleanupExpiredAuthProperties() {
     if (
       key.indexOf('EDITOR_SESSION_') !== 0 &&
       key.indexOf('EDITOR_LOGIN_RESULT_') !== 0 &&
-      key.indexOf('STAFF_ACTIVATION_') !== 0
+      key.indexOf('STAFF_ACTIVATION_') !== 0 &&
+      key.indexOf('STAFF_PASSWORD_RESET_') !== 0
     ) return;
     let value = {};
     try { value = JSON.parse(all[key] || '{}'); } catch (error) {}
@@ -46,7 +48,8 @@ function cleanupExpiredAuthProperties() {
     const expiredSession = key.indexOf('EDITOR_SESSION_') === 0 && (!expiresAt || expiresAt <= now);
     const staleResult = key.indexOf('EDITOR_LOGIN_RESULT_') === 0 && (!createdAt || now - createdAt > 10 * 60 * 1000);
     const expiredActivation = key.indexOf('STAFF_ACTIVATION_') === 0 && (!expiresAt || expiresAt <= now);
-    if (expiredSession || staleResult || expiredActivation) {
+    const expiredReset = key.indexOf('STAFF_PASSWORD_RESET_') === 0 && (!expiresAt || expiresAt <= now);
+    if (expiredSession || staleResult || expiredActivation || expiredReset) {
       properties.deleteProperty(key);
       deleted += 1;
     }
@@ -86,6 +89,18 @@ function handleEditorAuthPost_(e) {
         requestId,
         clean_(params.activationToken)
       );
+      storeEditorAuthResult_(requestId, result);
+      return editorAuthTransportResponse_(params, result);
+    }
+
+    if (action === 'staff-password-reset-request') {
+      const result = requestStaffPasswordReset_(requestId, clean_(params.email).toLowerCase());
+      storeEditorAuthResult_(requestId, result);
+      return editorAuthTransportResponse_(params, result);
+    }
+
+    if (action === 'staff-password-reset') {
+      const result = resetStaffPassword_(requestId, clean_(params.resetToken), String(params.password || ''));
       storeEditorAuthResult_(requestId, result);
       return editorAuthTransportResponse_(params, result);
     }
@@ -217,42 +232,124 @@ function staffActivationKey_(activationToken) {
   return 'STAFF_ACTIVATION_' + bytesToHex_(digest);
 }
 
+function staffPasswordResetKey_(resetToken) {
+  const digest = Utilities.computeDigest(
+    Utilities.DigestAlgorithm.SHA_256,
+    String(resetToken),
+    Utilities.Charset.UTF_8
+  );
+  return 'STAFF_PASSWORD_RESET_' + bytesToHex_(digest);
+}
+
 function staffUserKey_(username) {
   return 'STAFF_USER_' + String(username || '').toLowerCase();
 }
 
 function getEditorUser_(username) {
   const cleanUsername = clean_(username).toLowerCase();
-  if (EDITOR_USERS[cleanUsername]) return EDITOR_USERS[cleanUsername];
   const raw = PropertiesService.getScriptProperties().getProperty(staffUserKey_(cleanUsername));
-  if (!raw) return null;
-  try {
-    const user = JSON.parse(raw);
-    return user && user.active ? user : null;
-  } catch (error) {
-    return null;
+  if (raw) {
+    try {
+      const user = JSON.parse(raw);
+      if (user && user.active) return user;
+    } catch (error) {}
   }
+  return EDITOR_USERS[cleanUsername] || null;
 }
 
-function findEditorUserByEmail_(email) {
+function findEditorIdentityByEmail_(email) {
   const target = clean_(email).toLowerCase();
-  const staticUser = Object.keys(EDITOR_USERS).map(function(username) {
-    return EDITOR_USERS[username];
-  }).find(function(user) {
-    return clean_(user.email).toLowerCase() === target;
-  });
-  if (staticUser) return staticUser;
   const properties = PropertiesService.getScriptProperties().getProperties();
-  const keys = Object.keys(properties).filter(function(key) {
-    return key.indexOf('STAFF_USER_') === 0;
-  });
+  const keys = Object.keys(properties).filter(function(key) { return key.indexOf('STAFF_USER_') === 0; });
   for (let index = 0; index < keys.length; index += 1) {
     try {
       const user = JSON.parse(properties[keys[index]] || '{}');
-      if (user.active && clean_(user.email).toLowerCase() === target) return user;
+      if (user.active && clean_(user.email).toLowerCase() === target) {
+        return { username: keys[index].slice('STAFF_USER_'.length).toLowerCase(), user: user };
+      }
     } catch (error) {}
   }
-  return null;
+  const username = Object.keys(EDITOR_USERS).find(function(key) {
+    return clean_(EDITOR_USERS[key].email).toLowerCase() === target;
+  });
+  return username ? { username: username, user: EDITOR_USERS[username] } : null;
+}
+
+function findEditorUserByEmail_(email) {
+  const identity = findEditorIdentityByEmail_(email);
+  return identity ? identity.user : null;
+}
+
+function requestStaffPasswordReset_(requestId, email) {
+  const generic = {
+    ok: true,
+    requestId: requestId,
+    message: 'Jika email terdaftar, tautan reset password telah dikirim.'
+  };
+  if (!isOfficialStaffEmail_(email)) return generic;
+  const identity = findEditorIdentityByEmail_(email);
+  if (!identity) return generic;
+
+  const token = Utilities.getUuid().replace(/-/g, '') + Utilities.getUuid().replace(/-/g, '');
+  const now = Date.now();
+  PropertiesService.getScriptProperties().setProperty(staffPasswordResetKey_(token), JSON.stringify({
+    username: identity.username,
+    email: email,
+    createdAt: now,
+    expiresAt: now + STAFF_PASSWORD_RESET_MINUTES * 60 * 1000
+  }));
+  const resetUrl = STAFF_PORTAL_URL + '?resetToken=' + encodeURIComponent(token);
+  MailApp.sendEmail({
+    to: email,
+    subject: '[YG GeoPortal] Reset password akun staf',
+    body: [
+      'Permintaan reset password akun staf YG GeoPortal diterima.',
+      '',
+      resetUrl,
+      '',
+      'Tautan hanya dapat digunakan satu kali dan berlaku selama ' + STAFF_PASSWORD_RESET_MINUTES + ' menit.',
+      'Abaikan email ini jika Anda tidak meminta reset password.'
+    ].join('\n'),
+    name: 'YG GeoPortal'
+  });
+  return generic;
+}
+
+function resetStaffPassword_(requestId, resetToken, password) {
+  if (!resetToken) throw new Error('Tautan reset password tidak valid.');
+  if (String(password || '').length < 10) throw new Error('Password minimal 10 karakter.');
+  const properties = PropertiesService.getScriptProperties();
+  const key = staffPasswordResetKey_(resetToken);
+  const raw = properties.getProperty(key);
+  properties.deleteProperty(key);
+  if (!raw) throw new Error('Tautan reset password tidak valid atau sudah digunakan.');
+  let record;
+  try { record = JSON.parse(raw); } catch (error) { throw new Error('Tautan reset password tidak valid.'); }
+  if (!record.expiresAt || Number(record.expiresAt) <= Date.now()) {
+    throw new Error('Tautan reset password telah kedaluwarsa. Silakan minta tautan baru.');
+  }
+  const current = getEditorUser_(record.username);
+  if (!current || clean_(current.email).toLowerCase() !== clean_(record.email).toLowerCase()) {
+    throw new Error('Akun staf tidak ditemukan.');
+  }
+  properties.setProperty(staffUserKey_(record.username), JSON.stringify({
+    name: current.name || record.username,
+    email: record.email,
+    role: current.role || 'operator',
+    passwordHash: hashEditorPassword_(record.username, password),
+    active: true,
+    passwordUpdatedAt: Date.now()
+  }));
+  Object.keys(properties.getProperties()).forEach(function(propertyKey) {
+    if (propertyKey.indexOf('EDITOR_SESSION_') !== 0) return;
+    try {
+      const session = JSON.parse(properties.getProperty(propertyKey) || '{}');
+      if (clean_(session.username).toLowerCase() === clean_(record.username).toLowerCase()) {
+        properties.deleteProperty(propertyKey);
+      }
+    } catch (error) {}
+  });
+  return { ok: true, requestId: requestId, message: 'Password berhasil diperbarui. Silakan login.' };
 }
 
 function createEditorLoginResult_(requestId, username, password) {
