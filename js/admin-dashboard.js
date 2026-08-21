@@ -176,6 +176,17 @@
     return String((feature.properties || {}).reportId || feature.id || ('EV-LOCAL-' + index));
   }
 
+  function isDonorEvidenceCandidate(feature) {
+    var props = feature.properties || {};
+    var source = String(props.source || '');
+    var reportId = String(props.reportId || feature.id || '');
+    // Inventaris layer dan baseline statis bukan antrean evidence donor.
+    // Evidence yang diajukan lewat API atau diunggah staf tetap tersedia.
+    return !/^LAYER-/i.test(reportId) &&
+      source !== 'data/capacity-building.json' &&
+      !/\.geojson(?:$|\?)/i.test(source);
+  }
+
   function capacityEvidenceFeature(row) {
     var location = String(row.location || '').trim();
     var village = location.split(',')[0].trim();
@@ -310,7 +321,7 @@
     var used = {};
     assignments().forEach(function (row) { used[row.evidenceId] = true; });
     var available = EVIDENCE_DATA.filter(function (feature, index) {
-      return !used[evidenceId(feature, index)];
+      return isDonorEvidenceCandidate(feature) && !used[evidenceId(feature, index)];
     });
     var groups = {};
     available.forEach(function (feature) {
@@ -326,7 +337,7 @@
       if (rightIndex < 0) rightIndex = preferredOrder.length;
       return leftIndex - rightIndex || left.localeCompare(right, 'id');
     });
-    select.innerHTML = '<option value="">Pilih evidence yang akan diverifikasi (' + available.length + ' tersedia)</option>' +
+    select.innerHTML = '<option value="">Pilih evidence yang belum diverifikasi donor (' + available.length + ' tersedia)</option>' +
       groupNames.map(function (groupName) {
         var features = groups[groupName].slice().sort(function (left, right) {
           return evidenceTimestamp(right) - evidenceTimestamp(left) ||
@@ -339,7 +350,7 @@
               esc(evidenceLabel(feature)) + '</option>';
           }).join('') + '</optgroup>';
       }).join('');
-    if (!available.length) select.innerHTML += '<option disabled>Tidak ada evidence yang belum dihubungkan</option>';
+    if (!available.length) select.innerHTML += '<option disabled>Tidak ada evidence yang belum diverifikasi donor</option>';
   }
 
   function renderNonspatialEvidence() {
