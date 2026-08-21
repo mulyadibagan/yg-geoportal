@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Live Session Pre/Post Test | YG GeoPortal</title>
-  <link rel="stylesheet" href="css/prepost-live-session.css?v=20260725-2">
+  <link rel="stylesheet" href="css/prepost-live-session.css?v=20260821-staff-details1">
   <link rel="stylesheet" href="css/navigation-v2.css?v=20260807-mobile-submenu-links1">
 </head>
 <body>
@@ -43,13 +43,9 @@
         <h2 id="live-participant-title">Daftar Peserta Pengisi Post-Test (Tersamarkan)</h2>
       </div>
       <div class="participant-access-box" id="participant-access-box">
-        <strong>Lihat identitas peserta</strong>
-        <p>Masukkan email aktif <b>@yayasangambut.org</b>. Tautan akses data lengkap akan dikirim ke email dan berlaku selama 12 jam.</p>
-        <form id="participant-access-form">
-          <input id="participant-access-email" type="email" autocomplete="email" placeholder="nama@yayasangambut.org" required>
-          <button type="submit">Kirim tautan akses</button>
-        </form>
-        <small id="participant-access-status" aria-live="polite"></small>
+        <strong>Detail peserta khusus staf</strong>
+        <p>Login dengan akun staf terverifikasi untuk melihat identitas lengkap dan nilai peserta.</p>
+        <a class="participant-access-login" id="participant-access-login" href="staff-login.html">Login staf</a>
       </div>
       <div id="live-participant-table" class="live-table-wrap">
         <p class="question-empty">Daftar anonim dibuat dari jumlah responden.</p>
@@ -85,6 +81,7 @@
     </section>
   </main>
 
-  <script src="js/prepost-live-session.js?v=20260821-participant-magic-link1"></script>
+  <script src="js/auth.js?v=20260821-staff-login1"></script>
+  <script src="js/prepost-live-session.js?v=20260821-staff-details1"></script>
 </body>
 </html>

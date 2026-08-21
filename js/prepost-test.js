@@ -44,11 +44,6 @@
     metaNode.textContent = [session.activityDate,session.location || session.village,session.facilitator].filter(Boolean).join(' | ');
   }
 
-  function optionScore(option){
-    var n = Number(option && option.score);
-    return Number.isFinite(n) ? n : 0;
-  }
-
   function renderQuestions(){
     var node = document.getElementById('question-list');
     if(!sessionDetail || sessionDetail.ok === false){
@@ -87,8 +82,7 @@
           }) || null;
           answers[question.questionId] = {
             questionId: question.questionId,
-            value: radio.value,
-            score: optionScore(option)
+            value: radio.value
           };
         });
       });
@@ -107,7 +101,7 @@
       return;
     }
     sessionDetail = await jsonp(
-      API + '?page=prepost-session-detail&sessionId=' + encodeURIComponent(sessionId),
+      API + '?page=prepost-questionnaire&sessionId=' + encodeURIComponent(sessionId),
       'ygPrepostSession_'
     );
     renderMeta();

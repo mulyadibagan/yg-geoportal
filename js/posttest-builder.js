@@ -496,14 +496,15 @@
       return;
     }
 
+    var staffSession = window.YG_AUTH && window.YG_AUTH.readStoredSession();
+    if (!staffSession || !staffSession.token) {
+      window.location.href = 'staff-login.html?return=' + encodeURIComponent('posttest-builder.html?session=' + sessionId);
+      return;
+    }
+
     if (status) status.textContent = 'Memuat detail sesi...';
     try {
-      var detail;
-      try {
-        detail = await cloudflareApi('/api/prepost/session-detail?sessionId=' + encodeURIComponent(sessionId));
-      } catch (cloudflareError) {
-        detail = await jsonpRetry(API + '?page=prepost-session-detail&sessionId=' + encodeURIComponent(sessionId), 3);
-      }
+      var detail = await jsonpRetry(API + '?page=prepost-session-detail&sessionId=' + encodeURIComponent(sessionId) + '&sessionToken=' + encodeURIComponent(staffSession.token), 3);
       renderExistingQuestions(detail || {});
       renderSessionLinks(detail && detail.session ? detail.session : null);
       if (status) status.textContent = 'Detail sesi dimuat. Anda bisa langsung menambah banyak soal ' + phaseLabelLower() + '.';
