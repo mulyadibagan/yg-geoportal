@@ -2,6 +2,7 @@
   "use strict";
 
   const API = "https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec";
+  const AUTH_RESULT_API = "https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/api/staff/auth-result";
   const SESSION_KEY = "ygEditorSessionV1";
 
   function readStoredSession() {
@@ -59,9 +60,9 @@
     while (Date.now() < deadline) {
       await new Promise(resolve => setTimeout(resolve, 700));
       try {
-        const result = await callbackLoad(
-          `${API}?page=editor-auth-result&requestId=${encodeURIComponent(requestId)}`
-        );
+        const response = await fetch(`${AUTH_RESULT_API}?requestId=${encodeURIComponent(requestId)}&t=${Date.now()}`, { cache: "no-store" });
+        if (!response.ok) throw new Error("Hasil autentikasi belum dapat dimuat.");
+        const result = await response.json();
         lastLoadError = null;
         if (result && result.pending) continue;
         if (result && result.ok) return result;
