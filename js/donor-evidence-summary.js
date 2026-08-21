@@ -135,10 +135,9 @@
         var link = document.createElement('a');
         link.className = 'gec2026-audit-evidence-link';
         link.href = privateAudit.evidenceUrl;
-        link.target = '_blank';
-        link.rel = 'noopener';
-        link.setAttribute('aria-label', 'Buka dokumen audit di tab baru');
-        link.textContent = 'Buka dokumen audit ↗';
+        link.target = '_self';
+        link.setAttribute('aria-label', 'Buka dokumen audit');
+        link.textContent = 'Buka dokumen audit →';
         auditItem.insertBefore(link, auditBadge || null);
       }
     }
