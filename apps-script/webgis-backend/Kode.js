@@ -433,7 +433,9 @@ if (action === 'content-save') {
       action === 'editor-login' ||
       action === 'editor-logout' ||
       action === 'staff-register' ||
-      action === 'staff-activate'
+      action === 'staff-activate' ||
+      action === 'staff-password-reset-request' ||
+      action === 'staff-password-reset'
     ) {
       return handleEditorAuthPost_(e);
     }

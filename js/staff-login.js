@@ -4,6 +4,8 @@
   const loginPanel = document.getElementById("staff-request-panel");
   const registrationPanel = document.getElementById("staff-registration-panel");
   const processingPanel = document.getElementById("staff-processing-panel");
+  const resetRequestPanel = document.getElementById("staff-password-reset-request-panel");
+  const resetPanel = document.getElementById("staff-password-reset-panel");
   const retryLink = document.getElementById("staff-retry-link");
 
   function returnTarget() {
@@ -24,6 +26,14 @@
   document.getElementById("show-login").addEventListener("click", () => {
     registrationPanel.hidden = true;
     loginPanel.hidden = false;
+  });
+  document.querySelectorAll(".show-login").forEach(button => button.addEventListener("click", () => {
+    resetRequestPanel.hidden = true;
+    loginPanel.hidden = false;
+  }));
+  document.getElementById("show-password-reset-request").addEventListener("click", () => {
+    loginPanel.hidden = true;
+    resetRequestPanel.hidden = false;
   });
 
   document.getElementById("staff-login-form").addEventListener("submit", async event => {
@@ -73,6 +83,48 @@
     }
   });
 
+  document.getElementById("staff-password-reset-request-form").addEventListener("submit", async event => {
+    event.preventDefault();
+    const submit = document.getElementById("staff-password-reset-request-submit");
+    const status = document.getElementById("staff-password-reset-request-status");
+    const email = document.getElementById("password-reset-email").value.trim().toLowerCase();
+    if (!email.endsWith("@yayasangambut.org")) {
+      updateStatus(status, "Gunakan email aktif @yayasangambut.org.", true);
+      return;
+    }
+    submit.disabled = true;
+    updateStatus(status, "Mengirim tautan reset…", false);
+    try {
+      const result = await window.YG_AUTH.requestPasswordReset(email);
+      updateStatus(status, result.message || "Jika email terdaftar, tautan reset telah dikirim.", false);
+      event.target.reset();
+    } catch (error) {
+      updateStatus(status, error.message || "Permintaan reset belum dapat diproses.", true);
+    } finally { submit.disabled = false; }
+  });
+
+  document.getElementById("staff-password-reset-form").addEventListener("submit", async event => {
+    event.preventDefault();
+    const submit = document.getElementById("staff-password-reset-submit");
+    const status = document.getElementById("staff-password-reset-status");
+    const password = document.getElementById("password-reset-new").value;
+    const confirmation = document.getElementById("password-reset-confirm").value;
+    if (password !== confirmation) {
+      updateStatus(status, "Ulangi password dengan nilai yang sama.", true);
+      return;
+    }
+    submit.disabled = true;
+    updateStatus(status, "Memperbarui password…", false);
+    try {
+      const result = await window.YG_AUTH.resetPassword(resetToken, password);
+      updateStatus(status, result.message || "Password berhasil diperbarui.", false);
+      event.target.reset();
+      history.replaceState({}, document.title, "staff-login.html");
+    } catch (error) {
+      updateStatus(status, error.message || "Password belum dapat diperbarui.", true);
+    } finally { submit.disabled = false; }
+  });
+
   async function activateAccount(activationToken) {
     loginPanel.hidden = true;
     registrationPanel.hidden = true;
@@ -92,7 +144,13 @@
 
   const storedSession = window.YG_AUTH.readStoredSession();
   const activationToken = new URLSearchParams(window.location.search).get("activationToken");
-  if (activationToken) {
+  const resetToken = new URLSearchParams(window.location.search).get("resetToken");
+  if (resetToken) {
+    loginPanel.hidden = true;
+    registrationPanel.hidden = true;
+    resetRequestPanel.hidden = true;
+    resetPanel.hidden = false;
+  } else if (activationToken) {
     activateAccount(activationToken);
   } else if (storedSession) {
     window.location.replace(returnTarget());
