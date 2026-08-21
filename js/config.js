@@ -28,6 +28,13 @@ window.YG_LAYER_CONFIG = [
     "visible": true
   },
   {
+    "id": "permanent_measurement_plots",
+    "label": "Petak Ukur Permanen (PUP)",
+    "color": "#8e24aa",
+    "type": "polygon",
+    "visible": true
+  },
+  {
     "id": "titik_penanaman",
     "label": "Titik Tanam Mangrove",
     "color": "#009688",

@@ -255,6 +255,13 @@
       correctionLayersLoaded = true;
       document.getElementById('correction-layer')
         .addEventListener('change',function(){
+          if(selectedType === 'Monitoring' && this.value === 'permanent_measurement_plots'){
+            var monitoringType = document.getElementById('monitoring-type');
+            if(monitoringType){
+              monitoringType.value = 'Monitoring Restorasi Hutan Mineral';
+              updateMonitoringPanels();
+            }
+          }
           if(
             selectedType === 'Monitoring' &&
             this.value === '__all_operational__'
@@ -605,8 +612,27 @@
       }else{
         var dataPath = config.url || config.dataUrl || config.file || ('data/' + config.id + '.geojson');
         var response = await fetch(dataPath, {cache:'no-store'});
-        if(!response.ok) throw new Error('HTTP ' + response.status + ' untuk ' + dataPath);
-        data = await response.json();
+        if(response.ok){
+          data = await response.json();
+        }else{
+          var objectsResponse = await fetch(
+            OBJECTS_API + '&t=' + Date.now(),
+            {cache:'no-store',redirect:'follow'}
+          );
+          if(!objectsResponse.ok) throw new Error('HTTP ' + response.status + ' untuk ' + dataPath);
+          var objectsData = await objectsResponse.json();
+          data = {
+            type:'FeatureCollection',
+            features:(objectsData && Array.isArray(objectsData.features)
+              ? objectsData.features
+              : []).filter(function(feature){
+                var properties = feature && feature.properties || {};
+                return String(
+                  properties.Layer_ID || properties.Source_Layer || ''
+                ).trim() === config.id;
+              })
+          };
+        }
 
         /*
          * Tautan dari popup membawa Object ID Master Database. GeoJSON statis
