@@ -72,5 +72,10 @@
     maintenanceScript.src = "js/report-infrastructure-maintenance.js?v=20260821-maintenance1";
     maintenanceScript.async = false;
     document.head.appendChild(maintenanceScript);
+
+    const maintenanceMapFixScript = document.createElement("script");
+    maintenanceMapFixScript.src = "js/report-maintenance-map-fix.js?v=20260821-maintenance-map1";
+    maintenanceMapFixScript.async = false;
+    document.head.appendChild(maintenanceMapFixScript);
   }
 })();
