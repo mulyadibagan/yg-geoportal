@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="description" content="Profil dan analisis lingkungan Desa Intervensi Yayasan Gambut.">
+  <meta name="description" content="Profil program, pelibatan masyarakat, dan analisis lingkungan Desa Intervensi Yayasan Gambut.">
   <title>Profil Desa Intervensi | Yayasan Gambut</title>
   <link rel="icon" href="assets/logo-yayasan-gambut.png">
   <link rel="preconnect" href="https://unpkg.com">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="css/village-profile.css?v=20260822-3">
+  <link rel="stylesheet" href="css/village-profile.css?v=20260822-4">
 </head>
 <body>
   <header class="vp-topbar">
@@ -39,8 +39,8 @@
         </div>
         <div class="vp-hero__summary">
           <span>Ringkasan publik</span>
-          <strong>Data dalam batas desa</strong>
-          <p>Tutupan hutan, kehilangan tahunan, hotspot, dan irisan layer referensi disajikan secara indikatif.</p>
+          <strong>Program dan kondisi desa</strong>
+          <p>Jejak kegiatan YG, pelibatan masyarakat, tutupan pohon, hotspot, dan analisis pesisir disajikan dalam satu profil.</p>
         </div>
       </div>
     </section>
@@ -55,6 +55,29 @@
 
       <div id="profile-content" hidden>
         <section class="vp-kpis" id="kpi-grid" aria-label="Ringkasan angka"></section>
+
+        <section class="vp-card vp-program-card" id="program-section">
+          <div class="vp-section-head">
+            <div><span class="vp-kicker">JEJAK PROGRAM YG</span><h2>Program dan pelibatan masyarakat</h2></div>
+            <span class="vp-badge" id="program-badge">Memuat…</span>
+          </div>
+          <div class="vp-program-summary" id="program-summary" aria-label="Ringkasan program"></div>
+          <div class="vp-program-grid">
+            <section class="vp-program-panel" aria-labelledby="program-list-title">
+              <div class="vp-program-panel__head">
+                <div><span>PROGRAM DI DESA INI</span><h3 id="program-list-title">Intervensi dan infrastruktur</h3></div>
+              </div>
+              <div class="vp-program-list" id="program-list"></div>
+            </section>
+            <section class="vp-program-panel" aria-labelledby="activity-list-title">
+              <div class="vp-program-panel__head">
+                <div><span>PELIBATAN</span><h3 id="activity-list-title">Pelatihan, kegiatan, dan monitoring</h3></div>
+              </div>
+              <div class="vp-activity-list" id="activity-list"></div>
+            </section>
+          </div>
+          <p class="vp-program-note" id="program-note">Program dicocokkan menggunakan atribut desa pada Master Database dan laporan terverifikasi. Posisi spasial digunakan sebagai pemeriksaan tambahan.</p>
+        </section>
 
         <section class="vp-layout">
           <article class="vp-card vp-map-card">
@@ -159,6 +182,6 @@
 
   <div class="vp-toast" id="toast" role="status" aria-live="polite"></div>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="js/village-profile.js?v=20260822-7"></script>
+  <script src="js/village-profile.js?v=20260822-8"></script>
 </body>
 </html>
