@@ -115,8 +115,9 @@
     el("forest-definition").textContent=method.forestDefinition||"Tutupan pohon mengikuti definisi dataset sumber.";
     el("baseline-period").textContent=method.baselineYear||"—";
     el("loss-through").textContent=method.lossDataThroughYear||"—";
-    renderLoss(record,method);renderHotspots(record);renderReferences(record,area);renderMap(feature,name);
+    renderLoss(record,method);renderHotspots(record);renderReferences(record,area);
     el("loading-state").hidden=true;el("profile-content").hidden=false;
+    window.requestAnimationFrame(function(){renderMap(feature,name);});
   }
 
   async function init(){
