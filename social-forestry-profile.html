@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="description" content="Profil dan analisis areal Perhutanan Sosial Riau.">
+  <title>Profil Perhutanan Sosial | Yayasan Gambut</title>
+  <link rel="icon" href="assets/logo-yayasan-gambut.png">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="css/village-profile.css?v=20260822-3">
+</head>
+<body>
+  <header class="vp-topbar">
+    <a class="vp-brand" href="index.html"><img src="assets/logo-yayasan-gambut.png" alt="Logo Yayasan Gambut"><span><strong>Yayasan Gambut</strong><small>Profil Perhutanan Sosial</small></span></a>
+    <nav class="vp-top-actions" aria-label="Aksi halaman">
+      <a class="vp-button vp-button--quiet" href="webgis.html">← Kembali ke peta</a>
+      <button class="vp-button vp-button--quiet" id="share-profile" type="button">Bagikan</button>
+      <button class="vp-button" id="print-profile" type="button">Unduh / cetak</button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="vp-hero">
+      <div class="vp-hero__glow"></div>
+      <div class="vp-container vp-hero__content">
+        <div>
+          <span class="vp-eyebrow">PERHUTANAN SOSIAL RIAU</span>
+          <h1 id="area-name">Memuat profil areal…</h1>
+          <p id="area-location">Menghubungkan data izin dan analisis lingkungan.</p>
+          <div class="vp-status-row"><span class="vp-status"><i></i> Analisis dalam batas areal</span><span id="data-updated">Memeriksa pembaruan…</span></div>
+        </div>
+        <div class="vp-hero__summary">
+          <span>Ringkasan publik</span><strong>Tutupan pohon dan hotspot</strong>
+          <p>Analisis menggunakan polygon Perhutanan Sosial sebagai satu batas pemotongan data.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="vp-container vp-content">
+      <div id="loading-state" class="vp-message">Menyiapkan profil Perhutanan Sosial…</div>
+      <div id="error-state" class="vp-message vp-message--error" hidden><strong>Profil belum dapat dimuat.</strong><span id="error-message"></span><a href="webgis.html">Pilih kembali areal melalui peta</a></div>
+
+      <div id="profile-content" hidden>
+        <section class="vp-kpis" id="kpi-grid"></section>
+
+        <section class="vp-layout">
+          <article class="vp-card vp-map-card">
+            <div class="vp-section-head"><div><span class="vp-kicker">LOKASI</span><h2>Batas areal pada peta</h2></div><span class="vp-badge">Citra satelit</span></div>
+            <div id="village-map"></div>
+            <p class="vp-caption">Garis menunjukkan polygon Perhutanan Sosial yang digunakan dalam analisis.</p>
+          </article>
+          <article class="vp-card">
+            <div class="vp-section-head"><div><span class="vp-kicker">IDENTITAS AREAL</span><h2>Informasi izin</h2></div><span class="vp-sf-status">Layer referensi</span></div>
+            <div class="vp-identity" id="identity-list"></div>
+          </article>
+        </section>
+
+        <section class="vp-layout">
+          <article class="vp-card">
+            <div class="vp-section-head"><div><span class="vp-kicker">TUTUPAN POHON</span><h2>Kondisi ringkas</h2></div></div>
+            <div class="vp-forest-visual">
+              <div class="vp-donut" id="forest-donut"><span><strong id="forest-percent">—</strong><small>dari luas areal</small></span></div>
+              <div class="vp-forest-copy"><p>Sisa tutupan pohon</p><strong id="current-forest">—</strong><small id="forest-definition">Keterangan metode sedang dimuat.</small></div>
+            </div>
+            <div class="vp-callout">Tutupan pohon ≥30% mengikuti dataset Hansen/UMD dan tidak selalu menunjukkan hutan alam.</div>
+          </article>
+          <article class="vp-card">
+            <div class="vp-section-head"><div><span class="vp-kicker">HOTSPOT</span><h2>Pemantauan anomali panas</h2></div></div>
+            <div class="vp-hotspot-summary" id="hotspot-summary"></div>
+            <h3 class="vp-subtitle">Jumlah hotspot per tahun</h3><div class="vp-mini-bars" id="hotspot-years"></div>
+            <p class="vp-caption">Hotspot adalah anomali panas satelit, bukan konfirmasi kebakaran.</p>
+          </article>
+        </section>
+
+        <section class="vp-card">
+          <div class="vp-section-head"><div><span class="vp-kicker">PERUBAHAN TAHUNAN</span><h2 id="loss-chart-title">Kehilangan tutupan pohon</h2></div><span class="vp-badge vp-badge--warm">hektare per tahun</span></div>
+          <div class="vp-bars" id="loss-bars"></div><p class="vp-caption" id="loss-note"></p>
+        </section>
+
+        <section class="vp-card">
+          <div class="vp-section-head"><div><span class="vp-kicker">KONTEKS WILAYAH</span><h2>Irisan layer referensi</h2></div></div>
+          <div class="vp-reference-list" id="reference-list"></div>
+          <p class="vp-caption">Layer dapat saling tumpang tindih dan tidak boleh dijumlahkan sebagai total luas areal.</p>
+        </section>
+
+        <section class="vp-card vp-method">
+          <div class="vp-section-head"><div><span class="vp-kicker">TRANSPARANSI DATA</span><h2>Bagaimana data dihasilkan?</h2></div></div>
+          <div class="vp-method-grid">
+            <div><b>1</b><strong>Batas analisis</strong><p>Polygon Perhutanan Sosial menjadi batas pemotongan seluruh dataset.</p></div>
+            <div><b>2</b><strong>Tutupan pohon</strong><p>Pixel kanopi ≥30% dihitung berdasarkan dataset Hansen/UMD.</p></div>
+            <div><b>3</b><strong>Perubahan</strong><p>Pixel kehilangan dikelompokkan per tahun dan dikonversi ke hektare.</p></div>
+            <div><b>4</b><strong>Hotspot</strong><p>Titik NASA FIRMS dihitung bila berada di dalam polygon areal.</p></div>
+          </div>
+          <div class="vp-source-grid">
+            <div><span>Baseline tutupan</span><strong id="baseline-period">—</strong></div>
+            <div><span>Data kehilangan tersedia s.d.</span><strong id="loss-through">—</strong></div>
+            <div><span>Sumber tutupan pohon</span><strong>Hansen / UMD / Google / USGS / NASA</strong></div>
+            <div><span>Sumber hotspot</span><strong>NASA FIRMS · MODIS/VIIRS</strong></div>
+          </div>
+        </section>
+
+        <footer class="vp-footer"><p><strong>Catatan:</strong> angka bersifat indikatif. Batas izin, kondisi lapangan, dan keputusan pengelolaan tetap perlu diverifikasi dengan instansi dan pemegang izin.</p><a href="webgis.html">Jelajahi areal lain di WebGIS →</a></footer>
+      </div>
+    </div>
+  </main>
+  <div class="vp-toast" id="toast" role="status"></div>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/social-forestry-profile.js?v=20260822-1"></script>
+</body>
+</html>
