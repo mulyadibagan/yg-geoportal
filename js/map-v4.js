@@ -1497,6 +1497,11 @@ L.control.scale({
       typeof socialProfileRaw === "number" && Number.isInteger(socialProfileRaw)
         ? socialProfileRaw.toFixed(1)
         : String(socialProfileRaw == null ? "" : socialProfileRaw).trim().toLowerCase();
+    const administrativeVillageKey = [
+      props.WADMKD || props.Desa || props.NAMOBJ || props.Nama_Desa,
+      props.WADMKC || props.Kecamatan,
+      props.WADMKK || props.Kabupaten
+    ].filter(Boolean).join("|").trim().toLowerCase();
     const socialProfileAction =
       config.type === "social_forestry" && socialProfileKey
         ? (
@@ -1504,6 +1509,16 @@ L.control.scale({
               '<a class="yg-popup-monitoring-link yg-popup-profile-link" target="_blank" rel="noopener noreferrer" href="social-forestry-profile.html?key=' +
                 encodeURIComponent(socialProfileKey) +
               '">Buka Profil &amp; Analisis Areal&nbsp; →</a>' +
+            '</div>'
+          )
+        : "";
+    const administrativeVillageAction =
+      config.type === "village_boundary" && administrativeVillageKey
+        ? (
+            '<div class="yg-popup-actions yg-popup-profile-action">' +
+              '<a class="yg-popup-monitoring-link yg-popup-profile-link" target="_blank" rel="noopener noreferrer" href="village-profile.html?source=administrative&amp;key=' +
+                encodeURIComponent(administrativeVillageKey) +
+              '">Buka Profil &amp; Analisis Desa&nbsp; →</a>' +
             '</div>'
           )
         : "";
@@ -1515,7 +1530,7 @@ L.control.scale({
           '<strong>' + escapeHtml(config.label) + '</strong>' +
           '<span>Layer referensi — tidak dihitung dalam dashboard</span>' +
         '</div>' +
-        '<div class="popup-body">' + rows + sourceRows + referenceLinks + socialProfileAction + '</div>' +
+        '<div class="popup-body">' + rows + sourceRows + referenceLinks + socialProfileAction + administrativeVillageAction + '</div>' +
       '</div>'
     );
   }
