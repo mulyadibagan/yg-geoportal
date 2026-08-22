@@ -5,6 +5,7 @@ var params=new URLSearchParams(location.search);
 var key=String(params.get("key")||"").trim().toLowerCase();
 var source=String(params.get("source")||"intervention").trim().toLowerCase();
 var map,localInset,riauInset,villageFeature,villageBounds,snapshotData,baseLayer;
+var RIAU_FRAME=L.latLngBounds([[-1.25,99.85],[2.85,104.25]]);
 var active={},customCount=0;
 var defs={
   village:{label:"Batas desa",color:"#d7df00",fill:"rgba(215,223,0,.04)",locked:true,source:"Master Database Yayasan Gambut"},
@@ -103,11 +104,16 @@ function controls(){
   el("layer-options").innerHTML=order.map(function(id){var d=defs[id];return'<label class="ml-layer-toggle" data-layer="'+id+'" style="--swatch:'+d.color+';--fill:'+d.fill+'"><input type="checkbox" '+(id==="village"?"checked disabled":"")+'><i></i><span>'+esc(d.label)+'</span></label>'}).join("");
   document.querySelectorAll(".ml-layer-toggle input").forEach(function(input){input.addEventListener("change",function(){var id=input.parentNode.dataset.layer;if(input.checked)addLayer(id);else removeLayer(id)})});
 }
+function fitRiauInset(){
+  if(!riauInset){return}
+  riauInset.invalidateSize(false);
+  riauInset.fitBounds(RIAU_FRAME,{padding:[6,6],animate:false});
+}
 function initInsets(){
   localInset=L.map("inset-local",{zoomControl:false,attributionControl:false,dragging:false,scrollWheelZoom:false,doubleClickZoom:false});
   tile("road").addTo(localInset);var vl=geoLayer("village",villageFeature).addTo(localInset);localInset.fitBounds(vl.getBounds().pad(.6));
   riauInset=L.map("inset-riau",{zoomControl:false,attributionControl:false,dragging:false,scrollWheelZoom:false,doubleClickZoom:false});
-  tile("road").addTo(riauInset);var c=villageBounds.getCenter();L.rectangle(villageBounds,{color:"#d32f2f",weight:2,fillOpacity:.12}).addTo(riauInset);L.circleMarker(c,{radius:4,color:"#d32f2f",fillOpacity:1}).addTo(riauInset);riauInset.setView([.65,101.7],6);
+  tile("road").addTo(riauInset);var c=villageBounds.getCenter();L.rectangle(villageBounds,{color:"#d32f2f",weight:2,fillOpacity:.12}).addTo(riauInset);L.circleMarker(c,{radius:5,color:"#ffffff",weight:2,fillColor:"#d32f2f",fillOpacity:1}).addTo(riauInset);fitRiauInset();
 }
 function titleSetup(){
   var p=villageFeature.properties||{},parts=key.split("|"),v=p.WADMKD||p.Desa||parts[0],k=p.WADMKC||p.Kecamatan||parts[1],kab=p.WADMKK||p.Kabupaten||parts[2];
@@ -118,10 +124,10 @@ function titleSetup(){
 function initMap(){
   map=L.map("print-map",{zoomControl:true,preferCanvas:true}).setView([1.2,102],9);setBasemap("road");L.control.scale({imperial:false,maxWidth:160,position:"bottomleft"}).addTo(map);
   var village=geoLayer("village",villageFeature).addTo(map);active.village=village;villageBounds=village.getBounds();map.fitBounds(villageBounds.pad(.08));map.on("moveend zoomend",grid);
-  controls();legend();titleSetup();initInsets();grid();el("map-loading").hidden=true;status("Layout siap");setTimeout(function(){map.invalidateSize();localInset.invalidateSize();riauInset.invalidateSize();map.fitBounds(villageBounds.pad(.08));grid()},100);
+  controls();legend();titleSetup();initInsets();grid();el("map-loading").hidden=true;status("Layout siap");setTimeout(function(){map.invalidateSize();localInset.invalidateSize();fitRiauInset();map.fitBounds(villageBounds.pad(.08));grid()},100);
 }
 async function capture(){
-  status("Menyiapkan gambar resolusi tinggi…");map.invalidateSize();localInset.invalidateSize();riauInset.invalidateSize();await new Promise(function(r){setTimeout(r,500)});
+  status("Menyiapkan gambar resolusi tinggi…");map.invalidateSize();localInset.invalidateSize();fitRiauInset();await new Promise(function(r){setTimeout(r,500)});
   return html2canvas(el("map-sheet"),{scale:2,useCORS:true,allowTaint:false,backgroundColor:"#ffffff",logging:false});
 }
 async function download(kind){
