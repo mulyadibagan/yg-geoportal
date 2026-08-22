@@ -107,13 +107,21 @@ function controls(){
 function fitRiauInset(){
   if(!riauInset){return}
   riauInset.invalidateSize(false);
-  riauInset.fitBounds(RIAU_FRAME,{padding:[6,6],animate:false});
+  var frame=L.latLngBounds(RIAU_FRAME.getSouthWest(),RIAU_FRAME.getNorthEast());
+  if(villageBounds&&villageBounds.isValid()){frame.extend(villageBounds)}
+  riauInset.fitBounds(frame.pad(.10),{padding:[8,8],animate:false});
 }
 function initInsets(){
   localInset=L.map("inset-local",{zoomControl:false,attributionControl:false,dragging:false,scrollWheelZoom:false,doubleClickZoom:false});
   tile("road").addTo(localInset);var vl=geoLayer("village",villageFeature).addTo(localInset);localInset.fitBounds(vl.getBounds().pad(.6));
   riauInset=L.map("inset-riau",{zoomControl:false,attributionControl:false,dragging:false,scrollWheelZoom:false,doubleClickZoom:false});
-  tile("road").addTo(riauInset);var c=villageBounds.getCenter();L.rectangle(villageBounds,{color:"#d32f2f",weight:2,fillOpacity:.12}).addTo(riauInset);L.circleMarker(c,{radius:5,color:"#ffffff",weight:2,fillColor:"#d32f2f",fillOpacity:1}).addTo(riauInset);fitRiauInset();
+  tile("road").addTo(riauInset);
+  var c=villageBounds.getCenter(),p=villageFeature.properties||{},villageName=p.WADMKD||p.Desa||p.NAMOBJ||key.split("|")[0]||"Lokasi desa";
+  L.rectangle(villageBounds,{color:"#d32f2f",weight:2,fillOpacity:.12}).addTo(riauInset);
+  L.circleMarker(c,{radius:5,color:"#ffffff",weight:2,fillColor:"#d32f2f",fillOpacity:1})
+    .addTo(riauInset)
+    .bindTooltip(villageName,{permanent:true,direction:"auto",offset:[7,0],opacity:1,className:"ml-inset-village-label"});
+  fitRiauInset();
 }
 function titleSetup(){
   var p=villageFeature.properties||{},parts=key.split("|"),v=p.WADMKD||p.Desa||parts[0],k=p.WADMKC||p.Kecamatan||parts[1],kab=p.WADMKK||p.Kabupaten||parts[2];
