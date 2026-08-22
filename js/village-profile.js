@@ -235,10 +235,18 @@
     try{
       var pair=await Promise.all([loadJson(MANIFEST_URL+"?v="+Date.now()),findFeature()]);
       var manifest=pair[0],feature=pair[1],shard=manifest.index&&manifest.index[key];
-      if(shard==null){throw new Error("Analisis untuk desa ini belum tersedia pada indeks data.");}
+      if(shard==null){
+        el("profile-status").innerHTML="<i></i> Analisis utama belum tersedia";
+        render({},manifest,feature);
+        return;
+      }
       var records=await loadJson("data/administrative-village-analytics/"+shard+".json?v="+encodeURIComponent(manifest.generatedAt||""));
       var record=records[key];
-      if(!record){throw new Error("Rekaman analisis desa tidak ditemukan.");}
+      if(!record){
+        el("profile-status").innerHTML="<i></i> Analisis utama belum tersedia";
+        render({},manifest,feature);
+        return;
+      }
       render(record,manifest,feature);
     }catch(error){console.error(error);showError(error.message||"Terjadi gangguan ketika membaca data desa.");}
   }
