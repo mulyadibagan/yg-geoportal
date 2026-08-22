@@ -4,6 +4,7 @@
   var MANIFEST_URL="data/administrative-village-analytics/manifest.json";
   var params=new URLSearchParams(window.location.search);
   var key=String(params.get("key")||"").trim().toLowerCase();
+  var source=String(params.get("source")||"intervention").trim().toLowerCase();
   var map=null;
 
   function el(id){return document.getElementById(id);}
@@ -40,6 +41,11 @@
   async function loadJson(url){var response=await fetch(url,{cache:"no-store"});if(!response.ok){throw new Error("HTTP "+response.status);}return response.json();}
   async function findFeature(){
     try{
+      if(source==="administrative"){
+        var administrative=await loadJson("data/batas_administrasi_desa_riau.geojson?v=20260822-admin-profile1");
+        var boundaries=Array.isArray(administrative.features)?administrative.features:[];
+        return boundaries.find(function(feature){return featureKey(feature)===key;})||null;
+      }
       var data=await loadJson(SNAPSHOT_URL);
       var features=Array.isArray(data.features)?data.features:[];
       var exact=features.find(function(feature){return layerId(feature)==="desa_intervensi"&&featureKey(feature)===key;});
@@ -199,7 +205,8 @@
     var current=number(record.currentForestHa),baseline=number(record.baselineForestHa),loss=number(record.totalLossHa);
     var remainingPct=baseline&&current!=null?Math.max(0,Math.min(100,current/baseline*100)):null;
     var method=manifest.method||{},viirs=manifest.viirs||{};
-    document.title=name+" · Profil Desa Intervensi | Yayasan Gambut";
+    document.title=name+" · Profil & Analisis Desa | Yayasan Gambut";
+    el("profile-type-label").textContent=source==="administrative"?"DESA ADMINISTRASI RIAU":"DESA INTERVENSI YG";
     el("village-name").textContent=name;
     el("village-location").textContent=[district,regency].filter(Boolean).join(" · ");
     var updated=viirs.updatedAt||manifest.generatedAt;
@@ -223,7 +230,7 @@
   }
 
   async function init(){
-    el("map-layout-link").href="map-layout.html?key="+encodeURIComponent(key);
+    el("map-layout-link").href="map-layout.html?source="+encodeURIComponent(source)+"&key="+encodeURIComponent(key);
     if(!key){showError("Tautan desa tidak lengkap. Silakan pilih desa melalui WebGIS.");return;}
     try{
       var pair=await Promise.all([loadJson(MANIFEST_URL+"?v="+Date.now()),findFeature()]);
