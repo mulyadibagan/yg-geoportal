@@ -85,7 +85,7 @@ def main() -> None:
         comparison=str(args.comparison_year),
         generatedAt=generated_at,
         updateFrequency="annual",
-        nextScheduledUpdate=f"{args.comparison_year + 1}-01-10",
+        nextScheduledUpdate=f"{args.comparison_year + 2}-01-10",
     )
     write_json(GENERIC["foundation"], foundation)
     write_json(
@@ -169,7 +169,7 @@ def main() -> None:
         latest=str(args.comparison_year),
         generatedAt=generated_at,
         updateFrequency="annual",
-        nextScheduledUpdate=f"{args.comparison_year + 1}-01-10",
+        nextScheduledUpdate=f"{args.comparison_year + 2}-01-10",
         status="complete",
         methodVersion=method,
     )
