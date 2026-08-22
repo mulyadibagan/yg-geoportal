@@ -43,7 +43,7 @@ function dms(value,lat){
 function grid(){
   if(!map)return;var b=map.getBounds(),xs=[],ys=[],i;
   for(i=0;i<5;i+=1){xs.push(b.getWest()+(b.getEast()-b.getWest())*i/4);ys.push(b.getNorth()-(b.getNorth()-b.getSouth())*i/4)}
-  var xh=xs.map(function(x){return"<span>"+dms(x,false)+"</span>"}).join(""),yh=ys.map(function(y){return"<span>"+dms(y,true)+"</span>"}).join("");
+  var xh=xs.map(function(x){return"<span>"+dms(x,false)+"</span>"}).join(""),yh=ys.map(function(y,index){return'<span style="top:'+(index*25)+'%">'+dms(y,true)+"</span>"}).join("");
   el("coord-top").innerHTML=xh;el("coord-bottom").innerHTML=xh;el("coord-left").innerHTML=yh;el("coord-right").innerHTML=yh;
   var center=map.getCenter(),meters=156543.03392*Math.cos(center.lat*Math.PI/180)/Math.pow(2,map.getZoom()),scale=Math.round(meters*96/0.0254);
   el("scale-label").textContent="± 1 : "+scale.toLocaleString("id-ID");
