@@ -1,7 +1,9 @@
 (function(){
 "use strict";
 var SNAPSHOT="https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/snapshots/current/objects.json";
-var key=String(new URLSearchParams(location.search).get("key")||"").trim().toLowerCase();
+var params=new URLSearchParams(location.search);
+var key=String(params.get("key")||"").trim().toLowerCase();
+var source=String(params.get("source")||"intervention").trim().toLowerCase();
 var map,localInset,riauInset,villageFeature,villageBounds,snapshotData,baseLayer;
 var active={},customCount=0;
 var defs={
@@ -141,8 +143,24 @@ function customFile(file){
 }
 async function init(){
   if(!key){el("map-loading").textContent="Kunci desa tidak tersedia";status("Pilih desa dari WebGIS");return}
-  try{snapshotData=await json(SNAPSHOT);var features=snapshotData.features||[];villageFeature=features.find(function(f){return lid(f)==="desa_intervensi"&&fkey(f)===key});if(!villageFeature){var n=norm(key.split("|")[0]);villageFeature=features.find(function(f){return lid(f)==="desa_intervensi"&&norm((f.properties||{}).WADMKD||(f.properties||{}).Desa)===n})}if(!villageFeature||!villageFeature.geometry)throw new Error("Batas desa tidak ditemukan");initMap()}
-  catch(e){console.error(e);el("map-loading").textContent="Batas desa gagal dimuat";status(e.message)}
+  try{
+    if(source==="administrative"){
+      var pair=await Promise.all([json("data/batas_administrasi_desa_riau.geojson?v=20260822-admin-layout1"),json(SNAPSHOT)]);
+      snapshotData=pair[1];
+      var boundaries=pair[0].features||[];
+      villageFeature=boundaries.find(function(f){return fkey(f)===key});
+    }else{
+      snapshotData=await json(SNAPSHOT);
+      var features=snapshotData.features||[];
+      villageFeature=features.find(function(f){return lid(f)==="desa_intervensi"&&fkey(f)===key});
+      if(!villageFeature){
+        var n=norm(key.split("|")[0]);
+        villageFeature=features.find(function(f){return lid(f)==="desa_intervensi"&&norm((f.properties||{}).WADMKD||(f.properties||{}).Desa)===n});
+      }
+    }
+    if(!villageFeature||!villageFeature.geometry)throw new Error("Batas desa tidak ditemukan");
+    initMap();
+  }catch(e){console.error(e);el("map-loading").textContent="Batas desa gagal dimuat";status(e.message)}
 }
 el("basemap-select").addEventListener("change",function(){setBasemap(this.value)});
 el("fit-village").addEventListener("click",function(){if(villageBounds)map.fitBounds(villageBounds.pad(.08))});
