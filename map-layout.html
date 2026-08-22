@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Generator Layout Peta | Yayasan Gambut</title>
+  <link rel="icon" href="assets/logo-yayasan-gambut.png">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="css/map-layout.css?v=20260822-1">
+</head>
+<body>
+  <header class="ml-toolbar">
+    <a class="ml-brand" href="webgis.html"><img src="assets/logo-yayasan-gambut.png" alt=""><span><strong>Generator Layout Peta</strong><small>Yayasan Gambut</small></span></a>
+    <div class="ml-toolbar__actions">
+      <span id="layout-status">Menyiapkan data desa…</span>
+      <button type="button" id="fit-village">Fokus desa</button>
+      <button type="button" id="export-png">Unduh PNG</button>
+      <button type="button" id="export-pdf" class="primary">Unduh PDF</button>
+    </div>
+  </header>
+
+  <main class="ml-workspace">
+    <aside class="ml-controls">
+      <section>
+        <span class="ml-kicker">JUDUL PETA</span>
+        <label>Judul utama<input id="map-title-input" value="Peta Desa"></label>
+        <label>Subjudul<textarea id="map-subtitle-input" rows="3"></textarea></label>
+      </section>
+      <section>
+        <span class="ml-kicker">FORMAT KELUARAN</span>
+        <div class="ml-inline">
+          <label>Ukuran<select id="paper-size"><option value="a3">A3</option><option value="a4">A4</option></select></label>
+          <label>Peta dasar<select id="basemap-select"><option value="road">Peta jalan</option><option value="satellite">Citra satelit</option><option value="clean">Tanpa peta dasar</option></select></label>
+        </div>
+      </section>
+      <section>
+        <div class="ml-section-head"><span class="ml-kicker">LAYER PETA</span><small>Legenda mengikuti pilihan</small></div>
+        <div id="layer-options" class="ml-layer-options"></div>
+      </section>
+      <section>
+        <span class="ml-kicker">TAMBAH LAYER SENDIRI</span>
+        <label>Nama layer<input id="custom-layer-name" placeholder="Contoh: Area survei"></label>
+        <label class="ml-file">Pilih GeoJSON<input type="file" id="custom-geojson" accept=".geojson,.json,application/geo+json,application/json"></label>
+        <small>Layer hanya digunakan pada perangkat ini dan otomatis masuk legenda.</small>
+      </section>
+      <section class="ml-note"><strong>Layout kartografis</strong><p>Judul, skala, koordinat, legenda, sumber, dan inset diperbarui otomatis. Untuk keputusan batas resmi, tetap gunakan sumber instansi berwenang.</p></section>
+    </aside>
+
+    <div class="ml-stage">
+      <div class="map-sheet" id="map-sheet">
+        <div class="map-frame">
+          <div id="print-map"></div>
+          <div class="coord coord-top" id="coord-top"></div>
+          <div class="coord coord-bottom" id="coord-bottom"></div>
+          <div class="coord coord-left" id="coord-left"></div>
+          <div class="coord coord-right" id="coord-right"></div>
+          <div class="ml-map-loading" id="map-loading">Memuat batas desa…</div>
+        </div>
+        <aside class="map-sidebar">
+          <section class="map-title-block">
+            <img src="assets/logo-yayasan-gambut.png" alt="Logo Yayasan Gambut">
+            <span>PETA TEMATIK</span>
+            <h1 id="sheet-title">Peta Desa</h1>
+            <p id="sheet-subtitle">Memuat lokasi…</p>
+          </section>
+          <section class="orientation-block">
+            <div class="north-arrow" aria-label="Arah utara"><span>N</span><i></i><b>W</b><em>E</em><small>S</small></div>
+            <div id="scale-label">Skala dinamis</div>
+            <div id="scale-copy"></div>
+          </section>
+          <section class="legend-block">
+            <h2>Legenda</h2>
+            <div id="layout-legend"></div>
+          </section>
+          <section class="insets-block">
+            <div><h3>Lokasi desa</h3><div id="inset-local"></div></div>
+            <div><h3>Provinsi Riau</h3><div id="inset-riau"></div></div>
+          </section>
+          <section class="source-block">
+            <strong>Sumber data</strong>
+            <ol id="source-list"></ol>
+            <p>Datum: WGS 1984<br>Proyeksi tampilan: Web Mercator<br>Dibuat: <span id="created-date"></span></p>
+          </section>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <div id="toast" class="ml-toast" role="status"></div>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="js/map-layout.js?v=20260822-1"></script>
+</body>
+</html>
