@@ -10,7 +10,6 @@ ROOT=Path(__file__).resolve().parents[1]
 GEO=ROOT/'data'/'mangrove-priority-candidates.geojson'
 SUMMARY=ROOT/'data'/'mangrove-priority-results.json'
 CSV=ROOT/'data'/'mangrove-priority-ranking.csv'
-METHOD='mangrove-priority-2016-2025-v0.1'
 
 def area_ha(geometry):
     geom=shape(geometry); zone=32600+int((geom.centroid.x+180)//6)+1
@@ -29,6 +28,7 @@ def classify(need,suitability,risk,area,confidence):
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--geo',type=Path,default=GEO);parser.add_argument('--summary',type=Path,default=SUMMARY);parser.add_argument('--csv',type=Path,default=CSV);args=parser.parse_args()
     geo=json.loads(args.geo.read_text(encoding='utf-8')); summary=json.loads(args.summary.read_text(encoding='utf-8'))
+    baseline=str(summary.get('baseline','2016')); current=str(summary.get('current','2025')); method=f'mangrove-priority-{baseline}-{current}-v0.1'
     villages={r['id']:r for r in summary['villages']}
     rows=[]
     for feature in geo['features']:
@@ -43,7 +43,7 @@ def main():
         centroid=shape(feature['geometry']).centroid
         token=f"{p['id']}|{centroid.x:.6f}|{centroid.y:.6f}|{area:.4f}"
         polygon_id='MPR-'+hashlib.sha1(token.encode()).hexdigest()[:10].upper()
-        p.update(polygonId=polygon_id,methodVersion=METHOD,areaHa=round(area,3),needScore=need,
+        p.update(polygonId=polygon_id,methodVersion=method,areaHa=round(area,3),needScore=need,
             suitabilityScore=suitability,riskScore=risk,priorityScore=priority,priorityClass=code,
             priorityLabel=label,decisionReason=reason)
         rows.append(p)
@@ -55,14 +55,14 @@ def main():
         for index,row in enumerate(group,1): row['villageRank']=index
     lookup={r['polygonId']:r for r in rows}
     for feature in geo['features']: feature['properties'].update(lookup[feature['properties']['polygonId']])
-    geo['methodVersion']=METHOD; geo['name']='Prioritas Rehabilitasi Mangrove 2016–2025'
+    geo['methodVersion']=method; geo['name']='Prioritas Rehabilitasi Mangrove 2016–2025'
     geo['features'].sort(key=lambda f:f['properties']['overallRank'])
     for village_id,record in villages.items():
-        group=village_groups.get(village_id,[]); record['methodVersion']=METHOD
+        group=village_groups.get(village_id,[]); record['methodVersion']=method
         record['priorityPolygonCount']=len(group); record['priorityAreaHa']=round(sum(x['areaHa'] for x in group),2)
         record['priorityClasses']={code:sum(1 for x in group if x['priorityClass']==code) for code in ('P1','P2','P3','P4','P5','X','U')}
         record['topPriorityScore']=max((x['priorityScore'] for x in group),default=None)
-    summary['methodVersion']=METHOD; summary['product']='Prioritas Rehabilitasi Mangrove 2016–2025'
+    summary['methodVersion']=method; summary['product']='Prioritas Rehabilitasi Mangrove 2016–2025'
     summary['description']='Hasil analisis penginderaan jauh, perubahan abrasi-akresi 2016–2025, kondisi pesisir, dan data lingkungan yang tersedia.'
     summary['coastalChangeIntegration']='Polygon perubahan abrasi dan akresi 2016–2025 digunakan sebagai sabuk fokus analisis pesisir.'
     geo['coastalChangeIntegration']=summary['coastalChangeIntegration']
