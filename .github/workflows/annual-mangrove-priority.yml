@@ -1,0 +1,196 @@
+name: Annual Mangrove Priority Update
+
+on:
+  schedule:
+    # 10 January, 02:00 UTC = 09:00 WIB. First scheduled run: 10 January 2027.
+    - cron: "0 2 10 1 *"
+  workflow_dispatch:
+    inputs:
+      comparison_year:
+        description: "Year to compare with the fixed 2016 baseline; blank uses the previous calendar year"
+        required: false
+        type: string
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: annual-mangrove-priority
+  cancel-in-progress: false
+
+jobs:
+  analyse-region:
+    name: Analyse ${{ matrix.region }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        region:
+          - bengkalis
+          - siak
+          - dumai
+          - rokan-hilir
+          - kepulauan-meranti
+          - indragiri-hilir
+          - pelalawan
+          - intervention
+    steps:
+      - name: Checkout published source
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Install geospatial dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install numpy planetary-computer pystac-client rasterio pyproj scipy shapely scikit-image
+
+      - name: Resolve annual comparison year
+        id: period
+        env:
+          REQUESTED_YEAR: ${{ inputs.comparison_year }}
+        run: |
+          if [ -n "$REQUESTED_YEAR" ]; then
+            year="$REQUESTED_YEAR"
+          else
+            year="$(( $(date -u +%Y) - 1 ))"
+          fi
+          if ! [[ "$year" =~ ^[0-9]{4}$ ]] || [ "$year" -le 2016 ]; then
+            echo "Invalid comparison year: $year" >&2
+            exit 1
+          fi
+          echo "comparison_year=$year" >> "$GITHUB_OUTPUT"
+
+      - name: Generate and validate regional package
+        run: |
+          python scripts/run-annual-mangrove-priority-region.py \
+            --region "${{ matrix.region }}" \
+            --baseline-year 2016 \
+            --comparison-year "${{ steps.period.outputs.comparison_year }}" \
+            --artifact-root annual-artifacts
+
+      - name: Upload completed regional package
+        uses: actions/upload-artifact@v4
+        with:
+          name: mangrove-priority-${{ matrix.region }}
+          path: annual-artifacts/${{ matrix.region }}
+          if-no-files-found: error
+          retention-days: 14
+
+  publish:
+    name: Validate and publish annual result
+    needs: analyse-region
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout latest source
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Download all completed regional packages
+        uses: actions/download-artifact@v4
+        with:
+          pattern: mangrove-priority-*
+          path: staged
+          merge-multiple: true
+
+      - name: Resolve annual comparison year
+        id: period
+        env:
+          REQUESTED_YEAR: ${{ inputs.comparison_year }}
+        run: |
+          if [ -n "$REQUESTED_YEAR" ]; then
+            year="$REQUESTED_YEAR"
+          else
+            year="$(( $(date -u +%Y) - 1 ))"
+          fi
+          echo "comparison_year=$year" >> "$GITHUB_OUTPUT"
+
+      - name: Stage regional outputs
+        run: |
+          test -d staged/data
+          cp -a staged/data/. data/
+
+      - name: Rebuild Bandar Laksamana and provincial packages
+        run: |
+          work_dir="$(mktemp -d)"
+          cp data/mangrove-priority-intervention.json "$work_dir/intervention.json"
+          cp data/mangrove-priority-results.json "$work_dir/results.json"
+          cp data/mangrove-priority-candidates.geojson "$work_dir/candidates.geojson"
+
+          cp data/mangrove-priority-bengkalis-villages.json data/mangrove-priority-intervention.json
+          cp data/mangrove-priority-bengkalis-results.json data/mangrove-priority-results.json
+          cp data/mangrove-priority-bengkalis-candidates.geojson data/mangrove-priority-candidates.geojson
+          python scripts/snapshot-mangrove-priority-district.py \
+            "Bandar Laksamana" --slug bandar-laksamana --level district
+
+          cp "$work_dir/intervention.json" data/mangrove-priority-intervention.json
+          cp "$work_dir/results.json" data/mangrove-priority-results.json
+          cp "$work_dir/candidates.geojson" data/mangrove-priority-candidates.geojson
+
+          python scripts/build-mangrove-priority-riau.py
+
+      - name: Validate complete publication
+        run: |
+          python scripts/validate-annual-mangrove-priority.py \
+            --baseline-year 2016 \
+            --comparison-year "${{ steps.period.outputs.comparison_year }}"
+
+      - name: Publish only when data changed
+        env:
+          COMPARISON_YEAR: ${{ steps.period.outputs.comparison_year }}
+        run: |
+          git add data/mangrove-priority-*.json
+          git add data/mangrove-priority-*.geojson
+          git add data/mangrove-priority-*.csv
+          if git diff --cached --quiet; then
+            echo "No annual mangrove-priority changes to publish."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "4189826+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore(data): publish mangrove priority $COMPARISON_YEAR"
+          git pull --rebase origin main
+          git push origin HEAD:main
+
+  report-failure:
+    name: Report annual update failure
+    if: ${{ failure() }}
+    needs:
+      - analyse-region
+      - publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Open a diagnostic issue
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const title = `Annual mangrove priority update failed (${new Date().getUTCFullYear()})`;
+            const body = `The scheduled annual mangrove-priority pipeline did not publish data because at least one analysis or validation step failed. Existing public data remains unchanged. Review the workflow run: ${runUrl}`;
+            const existing = await github.paginate(github.rest.issues.listForRepo, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              per_page: 100
+            });
+            if (!existing.some(issue => issue.title === title)) {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                body
+              });
+            }
