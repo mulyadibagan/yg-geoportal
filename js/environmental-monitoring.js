@@ -890,7 +890,15 @@
      * peta utama tetap ringkas. Popup desa menyediakan tautan ke halaman itu.
      * Panel ini tetap dipakai untuk batas administrasi dan perhutanan sosial.
      */
-    if(layerId==="desa_intervensi"){return;}
+    if(layerId==="desa_intervensi"){
+      layer.on("popupopen",function(){
+        var existing=document.getElementById("yg-village-analytics");
+        if(existing){existing.hidden=true;}
+        currentAnalysisContext=null;
+        activeAdministrativeKey="";
+      });
+      return;
+    }
     var open=function(){showAnalysis(layer.feature,layerId);};
     layer.on("click",open);
     layer.on("popupopen",open);
