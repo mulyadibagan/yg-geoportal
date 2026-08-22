@@ -5,7 +5,7 @@
   <title>Analisis Pesisir Regional | WebGIS YG</title>
   <meta name="description" content="Analisis perubahan pesisir tingkat desa di tujuh kabupaten/kota, termasuk desa intervensi Yayasan Gambut.">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="css/coastal-analysis.css?v=20260813">
+  <link rel="stylesheet" href="css/coastal-analysis.css?v=20260822-village-search1">
 </head>
 <body>
   <main>
@@ -24,6 +24,7 @@
     <section class="workspace">
       <aside class="filters">
         <div><p class="eyebrow">FILTER WILAYAH</p><h2>Temukan desa</h2></div>
+        <label>Cari nama desa<input id="filter-village" type="search" placeholder="Contoh: Sepahat" autocomplete="off" spellcheck="false"></label>
         <label>Kabupaten/kota<select id="filter-regency"><option value="">Semua kabupaten/kota</option></select></label>
         <label>Kecamatan<select id="filter-district"><option value="">Semua kecamatan</option></select></label>
         <label>Status program<select id="filter-program"><option value="">Semua desa</option><option value="intervention">Intervensi YG</option><option value="regional">Di luar intervensi</option></select></label>
@@ -43,6 +44,6 @@
     <footer><strong>Catatan penggunaan:</strong> hasil merupakan indikasi berbasis komposit Sentinel-2, bukan survei garis pantai atau penetapan abrasi. Ketidakpastian posisi ±14,1 m; hasil berkeyakinan rendah perlu ditinjau hati-hati.<br>Sumber: Copernicus Sentinel-2 Level-2A melalui Microsoft Planetary Computer; batas desa WebGIS Yayasan Gambut.</footer>
   </main>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="js/coastal-analysis.js?v=20260822-retreat-rate1"></script>
+  <script src="js/coastal-analysis.js?v=20260822-village-search1"></script>
 </body>
 </html>
