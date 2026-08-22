@@ -116,9 +116,11 @@ function initInsets(){
   tile("road").addTo(localInset);var vl=geoLayer("village",villageFeature).addTo(localInset);vl.eachLayer(function(layer){if(layer.unbindTooltip){layer.unbindTooltip()}});localInset.fitBounds(vl.getBounds().pad(.6));
   riauInset=L.map("inset-riau",{zoomControl:false,attributionControl:false,dragging:false,scrollWheelZoom:false,doubleClickZoom:false});
   tile("road").addTo(riauInset);
-  var c=villageBounds.getCenter();
+  var c=villageBounds.getCenter(),p=villageFeature.properties||{},villageName=p.WADMKD||p.Desa||p.NAMOBJ||key.split("|")[0]||"Lokasi desa";
   L.rectangle(villageBounds,{color:"#d32f2f",weight:2,fillOpacity:.12}).addTo(riauInset);
-  L.circleMarker(c,{radius:5,color:"#ffffff",weight:2,fillColor:"#d32f2f",fillOpacity:1}).addTo(riauInset);
+  L.circleMarker(c,{radius:5,color:"#ffffff",weight:2,fillColor:"#d32f2f",fillOpacity:1})
+    .addTo(riauInset)
+    .bindTooltip(villageName,{permanent:true,direction:"auto",offset:[7,0],opacity:1,className:"ml-inset-village-label"});
   fitRiauInset();
 }
 function titleSetup(){
