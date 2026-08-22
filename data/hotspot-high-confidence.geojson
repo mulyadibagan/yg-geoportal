@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "generatedAt": "2026-08-21T23:42:32.077Z",
+  "generatedAt": "2026-08-22T01:54:13.244Z",
   "periodDays": 30,
   "confidenceFilter": "high",
   "excludedSourceTypes": [
@@ -12,146 +12,146 @@
   "skippedChunks": [
     {
       "source": "MODIS_NRT",
-      "start": "2026-07-23",
-      "end": "2026-07-27",
+      "start": "2026-07-24",
+      "end": "2026-07-28",
       "error": "AggregateError"
     },
     {
       "source": "MODIS_NRT",
-      "start": "2026-07-28",
-      "end": "2026-08-01",
+      "start": "2026-07-29",
+      "end": "2026-08-02",
       "error": "AggregateError"
     },
     {
       "source": "MODIS_NRT",
-      "start": "2026-08-02",
-      "end": "2026-08-06",
+      "start": "2026-08-03",
+      "end": "2026-08-07",
       "error": "AggregateError"
     },
     {
       "source": "MODIS_NRT",
-      "start": "2026-08-07",
-      "end": "2026-08-11",
+      "start": "2026-08-08",
+      "end": "2026-08-12",
       "error": "AggregateError"
     },
     {
       "source": "MODIS_NRT",
-      "start": "2026-08-12",
-      "end": "2026-08-16",
+      "start": "2026-08-13",
+      "end": "2026-08-17",
       "error": "AggregateError"
     },
     {
       "source": "MODIS_NRT",
-      "start": "2026-08-17",
-      "end": "2026-08-21",
+      "start": "2026-08-18",
+      "end": "2026-08-22",
       "error": "AggregateError"
     },
     {
       "source": "VIIRS_SNPP_NRT",
-      "start": "2026-07-23",
-      "end": "2026-07-27",
+      "start": "2026-07-24",
+      "end": "2026-07-28",
       "error": "AggregateError"
     },
     {
       "source": "VIIRS_SNPP_NRT",
-      "start": "2026-07-28",
-      "end": "2026-08-01",
+      "start": "2026-07-29",
+      "end": "2026-08-02",
       "error": "AggregateError"
     },
     {
       "source": "VIIRS_SNPP_NRT",
-      "start": "2026-08-02",
-      "end": "2026-08-06",
+      "start": "2026-08-03",
+      "end": "2026-08-07",
       "error": "AggregateError"
     },
     {
       "source": "VIIRS_SNPP_NRT",
-      "start": "2026-08-07",
-      "end": "2026-08-11",
+      "start": "2026-08-08",
+      "end": "2026-08-12",
       "error": "AggregateError"
     },
     {
       "source": "VIIRS_SNPP_NRT",
-      "start": "2026-08-12",
-      "end": "2026-08-16",
+      "start": "2026-08-13",
+      "end": "2026-08-17",
       "error": "AggregateError"
     },
     {
       "source": "VIIRS_SNPP_NRT",
-      "start": "2026-08-17",
-      "end": "2026-08-21",
+      "start": "2026-08-18",
+      "end": "2026-08-22",
       "error": "AggregateError"
     },
     {
       "source": "VIIRS_NOAA20_NRT",
-      "start": "2026-07-23",
-      "end": "2026-07-27",
+      "start": "2026-07-24",
+      "end": "2026-07-28",
       "error": "AggregateError"
     },
     {
       "source": "VIIRS_NOAA20_NRT",
-      "start": "2026-07-28",
-      "end": "2026-08-01",
+      "start": "2026-07-29",
+      "end": "2026-08-02",
       "error": "AggregateError"
     },
     {
       "source": "VIIRS_NOAA20_NRT",
-      "start": "2026-08-02",
-      "end": "2026-08-06",
+      "start": "2026-08-03",
+      "end": "2026-08-07",
       "error": "AggregateError"
     },
     {
       "source": "VIIRS_NOAA20_NRT",
-      "start": "2026-08-07",
-      "end": "2026-08-11",
+      "start": "2026-08-08",
+      "end": "2026-08-12",
       "error": "AggregateError"
     },
     {
       "source": "VIIRS_NOAA20_NRT",
-      "start": "2026-08-12",
-      "end": "2026-08-16",
+      "start": "2026-08-13",
+      "end": "2026-08-17",
       "error": "AggregateError"
     },
     {
       "source": "VIIRS_NOAA20_NRT",
-      "start": "2026-08-17",
-      "end": "2026-08-21",
+      "start": "2026-08-18",
+      "end": "2026-08-22",
       "error": "AggregateError"
     },
     {
       "source": "VIIRS_NOAA21_NRT",
-      "start": "2026-07-23",
-      "end": "2026-07-27",
+      "start": "2026-07-24",
+      "end": "2026-07-28",
       "error": "AggregateError"
     },
     {
       "source": "VIIRS_NOAA21_NRT",
-      "start": "2026-07-28",
-      "end": "2026-08-01",
+      "start": "2026-07-29",
+      "end": "2026-08-02",
       "error": "AggregateError"
     },
     {
       "source": "VIIRS_NOAA21_NRT",
-      "start": "2026-08-02",
-      "end": "2026-08-06",
+      "start": "2026-08-03",
+      "end": "2026-08-07",
       "error": "AggregateError"
     },
     {
       "source": "VIIRS_NOAA21_NRT",
-      "start": "2026-08-07",
-      "end": "2026-08-11",
+      "start": "2026-08-08",
+      "end": "2026-08-12",
       "error": "AggregateError"
     },
     {
       "source": "VIIRS_NOAA21_NRT",
-      "start": "2026-08-12",
-      "end": "2026-08-16",
+      "start": "2026-08-13",
+      "end": "2026-08-17",
       "error": "AggregateError"
     },
     {
       "source": "VIIRS_NOAA21_NRT",
-      "start": "2026-08-17",
-      "end": "2026-08-21",
+      "start": "2026-08-18",
+      "end": "2026-08-22",
       "error": "AggregateError"
     }
   ],
@@ -161,11 +161,11 @@
     "VIIRS_NOAA20_NRT",
     "VIIRS_NOAA21_NRT"
   ],
-  "coverageStart": "2026-07-23",
-  "coverageEnd": "2026-08-21",
+  "coverageStart": "2026-07-24",
+  "coverageEnd": "2026-08-22",
   "features": [],
   "landCoverScreening": {
-    "generatedAt": "2026-08-21T23:42:32.294409+00:00",
+    "generatedAt": "2026-08-22T01:54:13.568361+00:00",
     "product": "ESA WorldCover 2021 v200",
     "access": "Direct public Cloud-Optimized GeoTIFF",
     "maxAgeHours": 36,
