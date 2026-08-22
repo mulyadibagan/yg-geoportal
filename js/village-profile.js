@@ -235,8 +235,11 @@
     var villageValues=[props.Desa,props.village,props.Village,props.Nama_Desa,target.Desa,target.village].filter(Boolean);
     var regencyValue=props.Kabupaten||props.regency||target.Kabupaten||"";
     var regencyOk=!regencyValue||!regency||normalized(regencyValue)===normalized(regency);
-    if(villageValues.length){return regencyOk&&villageValues.some(function(value){return aliases.indexOf(normalized(value))!==-1;});}
     var textValues=[props.Nama_Objek,props.title,props.locationName,props.location,props.Lokasi,props.description].filter(Boolean);
+    if(villageValues.length){
+      if(regencyOk&&villageValues.some(function(value){return aliases.indexOf(normalized(value))!==-1;})){return true;}
+      return regencyOk&&textValues.some(function(value){return containsPlace(value,aliases);});
+    }
     if(regencyOk&&textValues.some(function(value){return containsPlace(value,aliases);})){return true;}
     var point=representativePoint(feature&&feature.geometry);
     return !!(point&&boundary&&pointInGeometry(point,boundary.geometry));
@@ -266,10 +269,11 @@
     features.forEach(function(feature){
       var props=feature.properties||{},id=layerId(feature),donor=props.Donor||props.Nama_Donor||"",phase=props.Fase||"",year=props.Tahun||"";
       var groupKey=[id,normalized(donor),normalized(phase),year].join("|");
-      if(!groups[groupKey]){groups[groupKey]={id:id,title:programLabel(id,props.Layer_Label||props.Kategori),donor:donor,phase:phase,year:year,count:0,area:0,length:0,plants:0,outside:0};}
+      if(!groups[groupKey]){groups[groupKey]={id:id,title:programLabel(id,props.Layer_Label||props.Kategori),donor:donor,phase:phase,year:year,count:0,area:0,length:0,plants:0,outside:0,species:{}};}
       var group=groups[groupKey],area=number(props.Luas_Ha),length=number(props.Panjang_M),plants=number(props.Jumlah_Tanam||props.Jumlah_Bib);
       if(area==null&&feature.geometry&&/Polygon/.test(feature.geometry.type)){area=geometryAreaHa(feature.geometry);}
       group.count+=1;group.area+=area||0;group.length+=length||0;group.plants+=plants||0;
+      String(props.Jenis_Tanaman||props.Komoditas||"").split(/[,;]/).map(function(value){return value.trim();}).filter(Boolean).forEach(function(value){group.species[value]=true;});
       if(outsideReference(feature,boundary)){group.outside+=1;}
     });
     return Object.keys(groups).map(function(groupKey){return groups[groupKey];}).sort(function(a,b){return Number(b.year||0)-Number(a.year||0)||a.title.localeCompare(b.title);});
@@ -279,6 +283,7 @@
     if(group.donor){meta.push("<span>"+esc(group.donor)+"</span>");}
     if(group.phase){meta.push("<span>Fase "+esc(group.phase)+"</span>");}
     if(group.year){meta.push("<span>"+esc(group.year)+"</span>");}
+    var species=Object.keys(group.species||{});if(species.length){meta.push("<span>Jenis: "+esc(compactText(species.join(", "),110))+"</span>");}
     if(group.outside){meta.push('<span class="vp-warning">'+format(group.outside,0)+' titik di luar batas referensi</span>');}
     var measures=[];
     if(group.area>0){measures.push("<span><strong>"+ha(group.area)+"</strong> luas tercatat</span>");}
@@ -296,7 +301,11 @@
     var time=Date.parse(text);return isFinite(time)?time:0;
   }
   function displayDate(value){
-    var time=dateValue(value);return time?new Date(time).toLocaleDateString("id-ID",{day:"numeric",month:"short",year:"numeric"}):"Tanggal belum tersedia";
+    var text=String(value||"").trim(),ymd=text.match(/^(\d{4})-(\d{2})-(\d{2})$/),dmy=text.match(/^(\d{2})\/(\d{2})\/(\d{4})$/),date=null;
+    if(ymd){date=new Date(Number(ymd[1]),Number(ymd[2])-1,Number(ymd[3]));}
+    else if(dmy){date=new Date(Number(dmy[3]),Number(dmy[2])-1,Number(dmy[1]));}
+    else{var time=dateValue(value);if(time){date=new Date(time);}}
+    return date?date.toLocaleDateString("id-ID",{day:"numeric",month:"short",year:"numeric"}):"Tanggal belum tersedia";
   }
   function compactText(value,limit){
     var text=String(value||"").replace(/\s+/g," ").trim();
@@ -308,12 +317,39 @@
   }
   function activityFromFeature(feature){
     var props=feature.properties||{},target=props.targetFeatureProperties||{},id=layerId(feature),participants=number(props.Jumlah_Peserta||target.Jumlah_Peserta);
+    var survival=number(props.Survival),alive=number(props.Jumlah_Hidup),planted=number(props.Jumlah_Bib||target.Jumlah_Bib);
+    if(planted==null&&alive!=null&&survival>0){planted=Math.round(alive/(survival/100));}
+    var copy=props.Ancaman?"Ancaman: "+props.Ancaman:(props.description||""),qualityWarning="";
+    if(id==="community_reports"&&/nursery|rumah bibit/i.test(String(props.title||props.Nama_Objek||""))&&/stok bibit/i.test(copy)){
+      copy="Stok bibit dalam laporan masih menunggu verifikasi terhadap kapasitas rumah pembibitan.";
+      qualityWarning="Kapasitas perlu diverifikasi";
+    }
     return {
       kind:id==="monitoring_reports"?"monitoring":"activity",date:props.activityDate||props.Tahun||props.receivedAt,title:props.title||props.Nama_Objek||props.Layer_Label||"Kegiatan",
       participants:participants,male:number(props.Peserta_Laki_Laki||target.Peserta_Laki_Laki),female:number(props.Peserta_Perempuan||target.Peserta_Perempuan),youth:number(props.Peserta_Pemuda||target.Peserta_Pemuda),
-      donor:props.Donor||target.Donor||"",survival:number(props.Survival),alive:number(props.Jumlah_Hidup),condition:props.Kondisi||"",groups:props.Kelompok_Terlibat||target.Kelompok_Terlibat||"",
-      topic:props.Monitoring_Type||props.reportType||props.Kategori||"",copy:props.Ancaman?"Ancaman: "+props.Ancaman:(props.description||""),objectId:props.Object_ID||""
+      donor:props.Donor||target.Donor||"",survival:survival,alive:alive,planted:planted,condition:props.Kondisi||"",groups:props.Kelompok_Terlibat||target.Kelompok_Terlibat||"",
+      topic:props.Monitoring_Type||props.reportType||props.Kategori||"",copy:copy,objectId:props.Object_ID||"",village:props.Desa||target.Desa||"",area:number(props.Luas_Terpantau_Ha||props.Luas_Ha),
+      additionalPlanting:id==="titik_penanaman"?(number(props.Jumlah_Tanam||target.Jumlah_Tanam)||0):0,qualityWarning:qualityWarning,history:false
     };
+  }
+  function reconcileMonitoring(activities){
+    var groups={};
+    activities.filter(function(item){return item.kind==="monitoring";}).forEach(function(item){
+      var groupKey=[normalized(item.village),normalized(item.topic),item.area==null?"":item.area].join("|");
+      if(!groups[groupKey]){groups[groupKey]=[];}groups[groupKey].push(item);
+    });
+    Object.keys(groups).forEach(function(groupKey){
+      var rows=groups[groupKey].sort(function(a,b){return dateValue(b.date)-dateValue(a.date);});
+      if(rows.length<2||dateValue(rows[0].date)===dateValue(rows[1].date)){return;}
+      rows.slice(1).forEach(function(item){item.history=true;});
+      var latest=rows[0],previous=rows[1],sameBaseline=latest.planted>0&&previous.planted>0&&Math.abs(latest.planted-previous.planted)<=Math.max(10,latest.planted*.05);
+      var additions=activities.filter(function(item){var time=dateValue(item.date);return item.additionalPlanting>0&&normalized(item.village)===normalized(latest.village)&&time>dateValue(previous.date)&&time<=dateValue(latest.date);}).reduce(function(total,item){return total+item.additionalPlanting;},0);
+      if(sameBaseline&&latest.alive!=null&&previous.alive!=null&&latest.alive>previous.alive+additions){
+        latest.qualityWarning="Perubahan hasil perlu diverifikasi";
+        latest.copy=(latest.copy?latest.copy+" · ":"")+"Jumlah hidup meningkat melebihi penanaman tambahan yang tercatat sejak monitoring sebelumnya.";
+      }
+    });
+    return activities;
   }
   function activityItem(item){
     var meta=[];
@@ -324,6 +360,8 @@
     if(item.alive!=null){meta.push("<span>"+format(item.alive,0)+" hidup</span>");}
     if(item.condition){meta.push("<span>Kondisi "+esc(item.condition)+"</span>");}
     if(item.donor){meta.push("<span>"+esc(item.donor)+"</span>");}
+    if(item.history){meta.push('<span class="vp-history">Riwayat monitoring</span>');}
+    if(item.qualityWarning){meta.push('<span class="vp-quality">'+esc(item.qualityWarning)+'</span>');}
     var copy=item.kind==="training"?[item.topic,item.target?"Peserta: "+item.target:"",item.partner?"Mitra: "+item.partner:""].filter(Boolean).join(" · "):[item.topic,item.groups?"Terlibat: "+item.groups:"",item.copy].filter(Boolean).join(" · ");
     var link=item.objectId?'<a class="vp-item-link" target="_blank" rel="noopener noreferrer" href="monitoring-detail.html?object='+encodeURIComponent(item.objectId)+'&amp;title='+encodeURIComponent(item.title)+'">Buka detail kegiatan →</a>':"";
     return '<article class="vp-activity-item'+(item.kind==="monitoring"?' is-monitoring':'')+'"><div class="vp-activity-item__body">'+
@@ -335,11 +373,30 @@
     var visible=items.slice(0,limit).map(renderer).join(""),remaining=items.slice(limit);
     return visible+(remaining.length?'<details class="vp-program-more"><summary>Lihat '+format(remaining.length,0)+' '+esc(label)+' lainnya</summary><div class="vp-program-more__content">'+remaining.map(renderer).join("")+'</div></details>':"");
   }
-  function plantingTotal(programs,reports){
-    var physical=programs.filter(function(feature){return layerId(feature)==="area_mangrove";}).reduce(function(total,feature){var props=feature.properties||{};return total+(number(props.Jumlah_Tanam||props.Jumlah_Bib)||0);},0);
-    var reported=reports.reduce(function(max,feature){var props=feature.properties||{},target=props.targetFeatureProperties||{};return Math.max(max,number(target.Jumlah_Bib)||0);},0);
-    var supplemental=reports.filter(function(feature){return layerId(feature)==="titik_penanaman";}).reduce(function(total,feature){var props=feature.properties||{},target=props.targetFeatureProperties||{};return total+(number(props.Jumlah_Tanam||target.Jumlah_Tanam)||0);},0);
-    return Math.max(physical,reported)+supplemental;
+  function vegetationClass(feature){
+    var props=feature.properties||{},target=props.targetFeatureProperties||{},id=layerId(feature),text=normalized([id,props.Program,props.Kategori,props.Kategori_Ekosistem,props.Jenis_Ekosistem,props.Komoditas,props.Jenis_Tanaman,props.Nama_Objek,target.Program,target.Kategori_Ekosistem,target.Komoditas,target.Jenis_Tanaman].join(" "));
+    if(id==="area_mangrove"||id==="titik_penanaman"||/mangrove/.test(text)){return "mangrove";}
+    if(id==="kopi"||id==="area_kopi"||/kopi|liberika|liberica/.test(text)){return "coffee";}
+    if(/lahan mineral|restorasi hutan|hutan adat/.test(text)){return "forest";}
+    if(/gambut|peat|geronggang|jelutung/.test(text)){return "peat";}
+    return "";
+  }
+  function plantedCount(feature){
+    var props=feature.properties||{},target=props.targetFeatureProperties||{},id=layerId(feature);
+    if(id==="nursery_mangrove"||id==="nursery_kopi"){return 0;}
+    if(id==="monitoring_reports"){return number(props.Jumlah_Bib||target.Jumlah_Bib)||0;}
+    return number(props.Jumlah_Tanam||props.Jumlah_Bib||target.Jumlah_Tanam||target.Jumlah_Bib)||0;
+  }
+  function plantInventory(programs,reports){
+    var records={mangrove:{},coffee:{},peat:{},forest:{}};
+    programs.concat(reports).forEach(function(feature){
+      var category=vegetationClass(feature),count=plantedCount(feature),props=feature.properties||{},target=props.targetFeatureProperties||{};
+      if(!category||count<=0){return;}
+      var recordKey=target.Object_ID||props.Target_Object_ID||props.Object_ID||[layerId(feature),props.Nama_Objek,props.activityDate].join("|");
+      records[category][recordKey]=Math.max(records[category][recordKey]||0,count);
+    });
+    var totals={};Object.keys(records).forEach(function(category){totals[category]=Object.keys(records[category]).reduce(function(total,recordKey){return total+records[category][recordKey];},0);});
+    return totals;
   }
   function renderPrograms(features,capacityRows,boundary,name,district,regency){
     var matched=(Array.isArray(features)?features:[]).filter(function(feature){return featureMatchesPlace(feature,name,district,regency,boundary);});
@@ -351,16 +408,21 @@
     var aliases=placeAliases(boundary,name),trainings=(Array.isArray(capacityRows)?capacityRows:[]).filter(function(row){
       return containsPlace(row.location,aliases)&&(!row.regency||!regency||normalized(row.regency)===normalized(regency));
     });
-    var groups=groupPrograms(programs,boundary),activities=trainings.map(activityFromTraining).concat(reports.map(activityFromFeature)).sort(function(a,b){return dateValue(b.date)-dateValue(a.date);});
+    var groups=groupPrograms(programs,boundary),activities=reconcileMonitoring(trainings.map(activityFromTraining).concat(reports.map(activityFromFeature))).sort(function(a,b){return dateValue(b.date)-dateValue(a.date);});
     var participantTotal=trainings.reduce(function(total,row){return total+(number(row.male)||0)+(number(row.female)||0);},0)+reports.reduce(function(total,feature){var props=feature.properties||{},target=props.targetFeatureProperties||{};return total+(number(props.Jumlah_Peserta||target.Jumlah_Peserta)||0);},0);
     var plantingArea=programs.filter(function(feature){return ["area_mangrove","area_kopi","mineral_land_restoration_area"].indexOf(layerId(feature))!==-1;}).reduce(function(total,feature){var props=feature.properties||{},area=number(props.Luas_Ha);if(area==null&&feature.geometry&&/Polygon/.test(feature.geometry.type)){area=geometryAreaHa(feature.geometry);}return total+(area||0);},0);
-    var plants=plantingTotal(programs,reports),outside=programs.filter(function(feature){return outsideReference(feature,boundary);}).length;
+    var plants=plantInventory(programs,reports),outside=programs.filter(function(feature){return outsideReference(feature,boundary);}).length;
+    var canalUnits=programs.filter(function(feature){return layerId(feature)==="sekat_kanal";}).length,fdrsUnits=programs.filter(function(feature){return layerId(feature)==="fdrs";}).length;
     el("program-badge").textContent=(programs.length||activities.length)?format(programs.length,0)+" objek · "+format(activities.length,0)+" kegiatan":"Belum ada catatan";
     el("program-summary").innerHTML=[
-      ["Objek program",format(programs.length,0),format(groups.length,0)+" kelompok intervensi"],
+      ["Sekat kanal",format(canalUnits,0)+" unit","berdasarkan titik infrastruktur"],
+      ["FDRS",format(fdrsUnits,0)+" unit","pemantauan muka air"],
+      ["Mangrove tertanam",plants.mangrove>0?format(plants.mangrove,0)+" pohon":"—","stok persemaian tidak dihitung"],
+      ["Kopi tertanam",plants.coffee>0?format(plants.coffee,0)+" pohon":"—","jumlah tanam yang tercatat"],
+      ["Tanaman gambut",plants.peat>0?format(plants.peat,0)+" pohon":"—","selain tanaman kopi"],
+      ["Tanaman hutan",plants.forest>0?format(plants.forest,0)+" pohon":"—","restorasi hutan/mineral"],
       ["Luas kegiatan",plantingArea>0?ha(plantingArea):"—","area yang memiliki polygon"],
-      ["Tanaman tercatat",plants>0?format(plants,0):"—","penanaman awal dan tambahan"],
-      ["Partisipasi",participantTotal>0?format(participantTotal,0):"—","kehadiran terdokumentasi"]
+      ["Partisipasi",participantTotal>0?format(participantTotal,0):"—","kehadiran, bukan orang unik"]
     ].map(function(item){return '<div class="vp-program-stat"><span>'+esc(item[0])+'</span><strong>'+esc(item[1])+'</strong><small>'+esc(item[2])+'</small></div>';}).join("");
     el("program-list").innerHTML=expandableList(groups,function(group){return programItem(group,name);},4,"program");
     el("activity-list").innerHTML=expandableList(activities,activityItem,4,"kegiatan");
@@ -406,7 +468,7 @@
     el("map-layout-link").href="map-layout.html?source="+encodeURIComponent(source)+"&key="+encodeURIComponent(key);
     if(!key){showError("Tautan desa tidak lengkap. Silakan pilih desa melalui WebGIS.");return;}
     try{
-      var pair=await Promise.all([loadJson(MANIFEST_URL+"?v="+Date.now()),findFeature(),loadJson(SNAPSHOT_URL),loadJson("data/capacity-building.json?v=20260822-program-profile1")]);
+      var pair=await Promise.all([loadJson(MANIFEST_URL+"?v="+Date.now()),findFeature(),loadJson(SNAPSHOT_URL),loadJson("data/capacity-building.json?v=20260822-program-profile2")]);
       var manifest=pair[0],feature=pair[1],snapshot=pair[2]||{},capacityRows=pair[3]||[],snapshotFeatures=Array.isArray(snapshot.features)?snapshot.features:[],shard=manifest.index&&manifest.index[key];
       if(shard==null){
         el("profile-status").innerHTML="<i></i> Analisis utama belum tersedia";
