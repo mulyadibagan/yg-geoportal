@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Create an immutable district or regency package from a resumable analysis."""
-import argparse,json
+import argparse,csv,json
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -23,6 +23,10 @@ def main():
     (base.with_name(base.name+'-villages.json')).write_text(json.dumps(foundation,ensure_ascii=False,indent=2),encoding='utf-8')
     (base.with_name(base.name+'-results.json')).write_text(json.dumps(summary,ensure_ascii=False,indent=2),encoding='utf-8')
     (base.with_name(base.name+'-candidates.geojson')).write_text(json.dumps(geo,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
+    fields=['overallRank','villageRank','polygonId','village','district','regency','areaHa','priorityClass','priorityLabel','priorityScore','needScore','suitabilityScore','riskScore','confidence','decisionReason','methodVersion']
+    ranked=sorted((f['properties'] for f in geo['features']),key=lambda p:(-p.get('priorityScore',0),-p.get('areaHa',0),p.get('polygonId','')))
+    with base.with_name(base.name+'-ranking.csv').open('w',newline='',encoding='utf-8-sig') as handle:
+        writer=csv.DictWriter(handle,fieldnames=fields);writer.writeheader();writer.writerows([{key:p.get(key) for key in fields} for p in ranked])
     print(json.dumps({'level':args.level,'area':args.area,'villages':len(selected),'records':len(records),'polygons':len(geo['features'])}))
 
 if __name__=='__main__':main()
