@@ -197,7 +197,7 @@
     var attributeArea=number(props.Luas_Ha||props.Area_Ha||props.areaHa||props.LUASWH);
     var area=attributeArea||geometryAreaHa(feature&&feature.geometry);
     var current=number(record.currentForestHa),baseline=number(record.baselineForestHa),loss=number(record.totalLossHa);
-    var cover=area&&current!=null?Math.max(0,Math.min(100,current/area*100)):null;
+    var remainingPct=baseline&&current!=null?Math.max(0,Math.min(100,current/baseline*100)):null;
     var method=manifest.method||{},viirs=manifest.viirs||{};
     document.title=name+" · Profil Desa Intervensi | Yayasan Gambut";
     el("village-name").textContent=name;
@@ -207,13 +207,13 @@
     el("kpi-grid").innerHTML=[
       kpi("⌗","Luas desa",ha(area),"berdasarkan polygon analisis"),
       kpi("♣","Tutupan pohon awal",ha(baseline),"baseline "+(method.baselineYear||"dataset")),
-      kpi("◒","Estimasi tutupan saat ini",ha(current),cover==null?"persentase belum tersedia":percent(cover)+" dari luas desa"),
+      kpi("◒","Sisa tutupan pohon",ha(current),remainingPct==null?"persentase belum tersedia":percent(remainingPct)+" dari baseline "+(method.baselineYear||2000)),
       kpi("↘","Kehilangan kumulatif",ha(loss),"akumulasi pixel kehilangan")
     ].join("");
-    el("forest-percent").textContent=percent(cover);
+    el("forest-percent").textContent=percent(remainingPct);
     el("current-forest").textContent=ha(current);
-    el("forest-donut").style.setProperty("--value",cover==null?0:cover);
-    el("forest-definition").textContent=method.forestDefinition||"Tutupan pohon mengikuti definisi dataset sumber.";
+    el("forest-donut").style.setProperty("--value",remainingPct==null?0:remainingPct);
+    el("forest-definition").textContent="Tutupan pohon baseline "+(method.baselineYear||2000)+" yang belum terdeteksi mengalami kehilangan hingga "+(method.lossDataThroughYear||"tahun data terakhir")+". Regenerasi atau pertambahan tidak dihitung.";
     el("baseline-period").textContent=method.baselineYear||"—";
     el("loss-through").textContent=method.lossDataThroughYear||"—";
     renderLoss(record,method);renderHotspots(record);renderReferences(record,area);
