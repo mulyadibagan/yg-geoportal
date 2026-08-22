@@ -71,7 +71,8 @@ function geoLayer(id,data){
   return L.geoJSON(data,{style:function(f){return styleFor(id,f)},pointToLayer:function(f,ll){return pointFor(id,f,ll)},onEachFeature:function(f,l){labelLayer(l,f,id)}});
 }
 function sourceEntries(){
-  var seen={},list=[];Object.keys(active).forEach(function(id){var d=defs[id];if(d&&d.source&&!seen[d.source]){seen[d.source]=1;list.push(d.source)}});
+  var provinceSource="Batas Provinsi Riau – turunan dissolve Batas Administrasi Desa Riau";
+  var seen={},list=[provinceSource];seen[provinceSource]=1;Object.keys(active).forEach(function(id){var d=defs[id];if(d&&d.source&&!seen[d.source]){seen[d.source]=1;list.push(d.source)}});
   el("source-list").innerHTML=list.map(function(x){return"<li>"+esc(x)+"</li>"}).join("");
 }
 function legend(){
@@ -101,11 +102,23 @@ function controls(){
   el("layer-options").innerHTML=order.map(function(id){var d=defs[id];return'<label class="ml-layer-toggle" data-layer="'+id+'" style="--swatch:'+d.color+';--fill:'+d.fill+'"><input type="checkbox" '+(id==="village"?"checked disabled":"")+'><i></i><span>'+esc(d.label)+'</span></label>'}).join("");
   document.querySelectorAll(".ml-layer-toggle input").forEach(function(input){input.addEventListener("change",function(){var id=input.parentNode.dataset.layer;if(input.checked)addLayer(id);else removeLayer(id)})});
 }
-function initInsets(){
+async function initInsets(){
   localInset=L.map("inset-local",{zoomControl:false,attributionControl:false,dragging:false,scrollWheelZoom:false,doubleClickZoom:false});
   tile("road").addTo(localInset);var vl=geoLayer("village",villageFeature).addTo(localInset);localInset.fitBounds(vl.getBounds().pad(.6));
   riauInset=L.map("inset-riau",{zoomControl:false,attributionControl:false,dragging:false,scrollWheelZoom:false,doubleClickZoom:false});
-  tile("road").addTo(riauInset);var c=villageBounds.getCenter();L.rectangle(villageBounds,{color:"#d32f2f",weight:2,fillOpacity:.12}).addTo(riauInset);L.circleMarker(c,{radius:4,color:"#d32f2f",fillOpacity:1}).addTo(riauInset);riauInset.setView([.65,101.7],6);
+  riauInset.getContainer().style.background="#d9f0f6";
+  var c=villageBounds.getCenter();
+  try{
+    var province=await json("data/batas_provinsi_riau_dissolve.geojson");
+    var provinceLayer=L.geoJSON(province,{style:{color:"#087d76",weight:2,fillColor:"#b8e4c6",fillOpacity:.88}}).addTo(riauInset);
+    riauInset.fitBounds(provinceLayer.getBounds().pad(.05));
+    L.circleMarker(c,{radius:5,color:"#fff",weight:2,fillColor:"#d32f2f",fillOpacity:1})
+      .bindTooltip((villageFeature.properties||{}).WADMKD||(villageFeature.properties||{}).Desa||"Lokasi desa",{permanent:true,direction:"right",className:"ml-label"})
+      .addTo(riauInset);
+  }catch(error){
+    console.warn("Batas turunan Provinsi Riau gagal dimuat",error);
+    tile("road").addTo(riauInset);L.circleMarker(c,{radius:5,color:"#d32f2f",fillOpacity:1}).addTo(riauInset);riauInset.setView([.65,101.7],6);
+  }
 }
 function titleSetup(){
   var p=villageFeature.properties||{},parts=key.split("|"),v=p.WADMKD||p.Desa||parts[0],k=p.WADMKC||p.Kecamatan||parts[1],kab=p.WADMKK||p.Kabupaten||parts[2];
