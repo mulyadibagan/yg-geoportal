@@ -230,6 +230,38 @@
     var total=ring.reduce(function(sum,point){sum[0]+=point[0];sum[1]+=point[1];return sum;},[0,0]);
     return [total[0]/ring.length,total[1]/ring.length];
   }
+  function segmentIntersects(a,b,c,d){
+    if(!a||!b||!c||!d){return false;}
+    var epsilon=1e-12;
+    if(Math.max(a[0],b[0])+epsilon<Math.min(c[0],d[0])||Math.max(c[0],d[0])+epsilon<Math.min(a[0],b[0])||Math.max(a[1],b[1])+epsilon<Math.min(c[1],d[1])||Math.max(c[1],d[1])+epsilon<Math.min(a[1],b[1])){return false;}
+    function cross(p,q,r){return (q[0]-p[0])*(r[1]-p[1])-(q[1]-p[1])*(r[0]-p[0]);}
+    var abC=cross(a,b,c),abD=cross(a,b,d),cdA=cross(c,d,a),cdB=cross(c,d,b);
+    return ((abC<=epsilon&&abD>=-epsilon)||(abD<=epsilon&&abC>=-epsilon))&&((cdA<=epsilon&&cdB>=-epsilon)||(cdB<=epsilon&&cdA>=-epsilon));
+  }
+  function ringsIntersect(a,b){
+    if(!Array.isArray(a)||!Array.isArray(b)){return false;}
+    for(var i=1;i<a.length;i+=1){for(var j=1;j<b.length;j+=1){if(segmentIntersects(a[i-1],a[i],b[j-1],b[j])){return true;}}}
+    return false;
+  }
+  function geometryIntersectsBoundary(geometry,boundaryGeometry){
+    if(!geometry||!boundaryGeometry){return false;}
+    if(geometry.type==="Point"){return pointInGeometry(geometry.coordinates,boundaryGeometry);}
+    if(geometry.type==="MultiPoint"){return geometry.coordinates.some(function(point){return pointInGeometry(point,boundaryGeometry);});}
+    if(geometry.type==="LineString"||geometry.type==="MultiLineString"){
+      var lines=geometry.type==="LineString"?[geometry.coordinates]:geometry.coordinates;
+      var boundaryPolygons=boundaryGeometry.type==="Polygon"?[boundaryGeometry.coordinates]:(boundaryGeometry.type==="MultiPolygon"?boundaryGeometry.coordinates:[]);
+      return lines.some(function(line){return line.some(function(point){return pointInGeometry(point,boundaryGeometry);})||boundaryPolygons.some(function(poly){return ringsIntersect(line,poly[0]);});});
+    }
+    var featurePolygons=geometry.type==="Polygon"?[geometry.coordinates]:(geometry.type==="MultiPolygon"?geometry.coordinates:[]);
+    var boundaryPolygons=boundaryGeometry.type==="Polygon"?[boundaryGeometry.coordinates]:(boundaryGeometry.type==="MultiPolygon"?boundaryGeometry.coordinates:[]);
+    return featurePolygons.some(function(featurePolygon){
+      var featureRing=featurePolygon[0]||[];
+      return featureRing.some(function(point){return pointInGeometry(point,boundaryGeometry);})||boundaryPolygons.some(function(boundaryPolygon){
+        var boundaryRing=boundaryPolygon[0]||[];
+        return boundaryRing.some(function(point){return pointInGeometry(point,geometry);})||ringsIntersect(featureRing,boundaryRing);
+      });
+    });
+  }
   function featureMatchesPlace(feature,name,district,regency,boundary){
     var props=feature&&feature.properties||{},target=props.targetFeatureProperties||{},aliases=placeAliases(boundary,name);
     var villageValues=[props.Desa,props.village,props.Village,props.Nama_Desa,target.Desa,target.village].filter(Boolean);
@@ -243,6 +275,12 @@
     if(regencyOk&&textValues.some(function(value){return containsPlace(value,aliases);})){return true;}
     var point=representativePoint(feature&&feature.geometry);
     return !!(point&&boundary&&pointInGeometry(point,boundary.geometry));
+  }
+  function activityMatchesPlace(feature,name,district,regency,boundary){
+    if(feature&&feature.geometry&&representativePoint(feature.geometry)&&boundary&&boundary.geometry){
+      return geometryIntersectsBoundary(feature.geometry,boundary.geometry);
+    }
+    return featureMatchesPlace(feature,name,district,regency,boundary);
   }
   function outsideReference(feature,boundary){
     return !!(feature&&feature.geometry&&feature.geometry.type==="Point"&&boundary&&boundary.geometry&&!pointInGeometry(feature.geometry.coordinates,boundary.geometry));
@@ -315,7 +353,7 @@
     var male=number(row.male)||0,female=number(row.female)||0;
     return {kind:"training",date:row.date,title:row.name||"Pelatihan",participants:male+female,male:male,female:female,topic:row.topic||"",target:row.target||"",partner:row.partner||""};
   }
-  function activityFromFeature(feature){
+  function activityFromFeature(feature,name){
     var props=feature.properties||{},target=props.targetFeatureProperties||{},id=layerId(feature),participants=number(props.Jumlah_Peserta||target.Jumlah_Peserta);
     var survival=number(props.Survival),alive=number(props.Jumlah_Hidup),planted=number(props.Jumlah_Bib||target.Jumlah_Bib);
     if(planted==null&&alive!=null&&survival>0){planted=Math.round(alive/(survival/100));}
@@ -328,7 +366,7 @@
       kind:id==="monitoring_reports"?"monitoring":"activity",date:props.activityDate||props.Tahun||props.receivedAt,title:props.title||props.Nama_Objek||props.Layer_Label||"Kegiatan",
       participants:participants,male:number(props.Peserta_Laki_Laki||target.Peserta_Laki_Laki),female:number(props.Peserta_Perempuan||target.Peserta_Perempuan),youth:number(props.Peserta_Pemuda||target.Peserta_Pemuda),
       donor:props.Donor||target.Donor||"",survival:survival,alive:alive,planted:planted,condition:props.Kondisi||"",groups:props.Kelompok_Terlibat||target.Kelompok_Terlibat||"",
-      topic:props.Monitoring_Type||props.reportType||props.Kategori||"",copy:copy,objectId:props.Object_ID||"",village:props.Desa||target.Desa||"",area:number(props.Luas_Terpantau_Ha||props.Luas_Ha),
+      topic:props.Monitoring_Type||props.reportType||props.Kategori||"",copy:copy,objectId:props.Object_ID||"",layerId:id,village:props.Desa||target.Desa||name||"",area:number(props.Luas_Terpantau_Ha||props.Luas_Ha),hasGeometry:!!(feature.geometry&&representativePoint(feature.geometry)),
       additionalPlanting:id==="titik_penanaman"?(number(props.Jumlah_Tanam||target.Jumlah_Tanam)||0):0,qualityWarning:qualityWarning,history:false
     };
   }
@@ -363,7 +401,7 @@
     if(item.history){meta.push('<span class="vp-history">Riwayat monitoring</span>');}
     if(item.qualityWarning){meta.push('<span class="vp-quality">'+esc(item.qualityWarning)+'</span>');}
     var copy=item.kind==="training"?[item.topic,item.target?"Peserta: "+item.target:"",item.partner?"Mitra: "+item.partner:""].filter(Boolean).join(" · "):[item.topic,item.groups?"Terlibat: "+item.groups:"",item.copy].filter(Boolean).join(" · ");
-    var link=item.objectId?'<a class="vp-item-link" target="_blank" rel="noopener noreferrer" href="monitoring-detail.html?object='+encodeURIComponent(item.objectId)+'&amp;title='+encodeURIComponent(item.title)+'">Buka detail kegiatan →</a>':"";
+    var link=item.hasGeometry?'<a class="vp-item-link" target="_blank" rel="noopener noreferrer" href="webgis.html?layer='+encodeURIComponent(item.layerId||'')+'&amp;object='+encodeURIComponent(item.objectId||'')+'&amp;search='+encodeURIComponent(item.title)+'">Lihat pada peta →</a>':(item.objectId?'<a class="vp-item-link" target="_blank" rel="noopener noreferrer" href="monitoring-detail.html?object='+encodeURIComponent(item.objectId)+'&amp;title='+encodeURIComponent(item.title)+'">Buka detail kegiatan →</a>':"");
     return '<article class="vp-activity-item'+(item.kind==="monitoring"?' is-monitoring':'')+'"><div class="vp-activity-item__body">'+
       '<div class="vp-activity-item__top"><h4>'+esc(item.title)+'</h4><span class="vp-activity-date">'+esc(displayDate(item.date))+'</span></div>'+
       (meta.length?'<div class="vp-activity-meta">'+meta.join("")+'</div>':"")+(copy?'<p class="vp-activity-copy">'+esc(compactText(copy,230))+'</p>':"")+link+'</div></article>';
@@ -399,19 +437,21 @@
     return totals;
   }
   function renderPrograms(features,capacityRows,boundary,name,district,regency){
-    var matched=(Array.isArray(features)?features:[]).filter(function(feature){return featureMatchesPlace(feature,name,district,regency,boundary);});
-    var programs=matched.filter(isProgramFeature),reportIds={},reports=matched.filter(function(feature){
+    var allFeatures=Array.isArray(features)?features:[];
+    var programs=allFeatures.filter(function(feature){return isProgramFeature(feature)&&featureMatchesPlace(feature,name,district,regency,boundary);});
+    var reportIds={},reports=allFeatures.filter(function(feature){
       var id=layerId(feature);if(["community_reports","monitoring_reports","titik_penanaman"].indexOf(id)===-1){return false;}
+      if(!activityMatchesPlace(feature,name,district,regency,boundary)){return false;}
       var props=feature.properties||{},reportId=props.reportId||props.Source_Report_ID||props.Object_ID||[id,props.title,props.activityDate,props.receivedAt].join("|");
       if(reportIds[reportId]){return false;}reportIds[reportId]=true;return true;
     });
     var aliases=placeAliases(boundary,name),trainings=(Array.isArray(capacityRows)?capacityRows:[]).filter(function(row){
       return containsPlace(row.location,aliases)&&(!row.regency||!regency||normalized(row.regency)===normalized(regency));
     });
-    var groups=groupPrograms(programs,boundary),activities=reconcileMonitoring(trainings.map(activityFromTraining).concat(reports.map(activityFromFeature))).sort(function(a,b){return dateValue(b.date)-dateValue(a.date);});
+    var groups=groupPrograms(programs,boundary),activities=reconcileMonitoring(trainings.map(activityFromTraining).concat(reports.map(function(feature){return activityFromFeature(feature,name);}))).sort(function(a,b){return dateValue(b.date)-dateValue(a.date);});
     var participantTotal=trainings.reduce(function(total,row){return total+(number(row.male)||0)+(number(row.female)||0);},0)+reports.reduce(function(total,feature){var props=feature.properties||{},target=props.targetFeatureProperties||{};return total+(number(props.Jumlah_Peserta||target.Jumlah_Peserta)||0);},0);
     var plantingArea=programs.filter(function(feature){return ["area_mangrove","area_kopi","mineral_land_restoration_area"].indexOf(layerId(feature))!==-1;}).reduce(function(total,feature){var props=feature.properties||{},area=number(props.Luas_Ha);if(area==null&&feature.geometry&&/Polygon/.test(feature.geometry.type)){area=geometryAreaHa(feature.geometry);}return total+(area||0);},0);
-    var plants=plantInventory(programs,reports),outside=programs.filter(function(feature){return outsideReference(feature,boundary);}).length;
+    var plants=plantInventory(programs,reports);
     var canalUnits=programs.filter(function(feature){return layerId(feature)==="sekat_kanal";}).length,fdrsUnits=programs.filter(function(feature){return layerId(feature)==="fdrs";}).length;
     el("program-badge").textContent=(programs.length||activities.length)?format(programs.length,0)+" objek · "+format(activities.length,0)+" kegiatan":"Belum ada catatan";
     el("program-summary").innerHTML=[
@@ -426,7 +466,7 @@
     ].map(function(item){return '<div class="vp-program-stat"><span>'+esc(item[0])+'</span><strong>'+esc(item[1])+'</strong><small>'+esc(item[2])+'</small></div>';}).join("");
     el("program-list").innerHTML=expandableList(groups,function(group){return programItem(group,name);},4,"program");
     el("activity-list").innerHTML=expandableList(activities,activityItem,4,"kegiatan");
-    el("program-note").textContent="Program dicocokkan terutama dari atribut desa pada Master Database dan laporan terverifikasi. Posisi spasial digunakan sebagai pemeriksaan tambahan."+(outside?" "+format(outside,0)+" titik tetap ditampilkan berdasarkan atribusi desa walaupun berada di luar batas administrasi referensi; koordinat dan batas perlu diverifikasi sebelum digunakan untuk keputusan lapangan.":"");
+    el("program-note").textContent="Kegiatan dan monitoring yang memiliki titik, garis, atau polygon dicocokkan melalui posisi dan irisannya dengan batas desa pada peta. Atribut nama desa digunakan untuk catatan nonspasial, seperti data pelatihan yang belum memiliki koordinat.";
   }
 
   function render(record,manifest,feature,snapshotFeatures,capacityRows){
