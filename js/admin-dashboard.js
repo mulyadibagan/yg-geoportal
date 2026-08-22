@@ -101,16 +101,16 @@
     });
   }
 
-  function requireAdminSession() {
+  function requireStaffSession() {
     ADMIN_SESSION = window.YG_AUTH && window.YG_AUTH.readStoredSession();
     if (!ADMIN_SESSION || !ADMIN_SESSION.token) {
-      throw new Error('Silakan masuk sebagai admin sebelum menyimpan perubahan.');
+      throw new Error('Silakan masuk sebagai staf sebelum menyimpan perubahan.');
     }
     return ADMIN_SESSION;
   }
 
   async function postAdmin(action, payload) {
-    var session = requireAdminSession();
+    var session = requireStaffSession();
     var requestId = 'yg-donor-' + Date.now() + '-' + Math.floor(Math.random() * 100000);
     var body = new URLSearchParams({
       action: action,
