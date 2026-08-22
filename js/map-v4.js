@@ -1109,6 +1109,7 @@ L.control.scale({
       text: searchText,
       label: getObjectName(feature),
       layerId: config.id,
+      objectId: String(props.Object_ID || props.objectId || props.reportId || ""),
       donorMissing: !getDonor(props),
       meta: [props.Desa || props.WADMKD, config.label].filter(Boolean).join(" · "),
       layer: layer,
@@ -2011,7 +2012,27 @@ L.control.scale({
       .split(",").map(value => value.trim()).filter(Boolean);
     const village = String(params.get("village") || "").trim();
     const search = String(params.get("search") || "").trim();
+    const objectId = String(params.get("object") || "").trim();
     const donor = String(params.get("donor") || "").trim().toLowerCase();
+
+    if (objectId) {
+      const item = searchItems.find(candidate => candidate.objectId === objectId);
+      if (item) {
+        if (item.parent && !map.hasLayer(item.parent)) item.parent.addTo(map);
+        const checkbox = document.getElementById("layer-" + item.layerId);
+        if (checkbox) checkbox.checked = true;
+        if (item.layer && typeof item.layer.getBounds === "function") {
+          const bounds = item.layer.getBounds();
+          if (bounds.isValid()) map.fitBounds(bounds, { padding: [30, 30], maxZoom: 17 });
+        } else if (item.layer && typeof item.layer.getLatLng === "function") {
+          map.setView(item.layer.getLatLng(), 17);
+        }
+        window.setTimeout(() => {
+          if (item.layer && typeof item.layer.openPopup === "function") item.layer.openPopup();
+        }, 350);
+        return;
+      }
+    }
 
     if (layerIds.length) {
       const bounds = L.latLngBounds([]);
