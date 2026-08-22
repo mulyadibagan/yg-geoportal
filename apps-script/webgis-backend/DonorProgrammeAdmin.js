@@ -36,11 +36,22 @@ function handleDonorProgrammeAdminPost_(e) {
 
   try {
     const editor = assertEditorCredential_(clean_(params.sessionToken));
-    if (clean_(editor.role).toLowerCase() !== 'admin') {
-      throw new Error('Hanya administrator yang dapat mengubah konfigurasi program.');
+    const action = clean_(params.action);
+    const role = clean_(editor.role).toLowerCase();
+    const staffActions = [
+      'donor-evidence-save',
+      'donor-assignment-save',
+      'donor-assignment-delete'
+    ];
+    if (role !== 'admin' && staffActions.indexOf(action) === -1) {
+      throw new Error('Aksi ini khusus administrator. Staf dapat menambah evidence dan mencocokkannya ke capaian donor.');
     }
     const payload = JSON.parse(params.payload || '{}');
-    const action = clean_(params.action);
+    if (action === 'donor-evidence-save' || action === 'donor-assignment-save') {
+      payload.verifiedBy = clean_(editor.username || editor.email || 'staf').slice(0, 200);
+      payload.verifiedAt = new Date().toISOString();
+      payload.verifiedAtLabel = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'dd/MM/yyyy HH:mm');
+    }
     let result;
 
     if (action === 'donor-programme-save') result = saveDonorProgramme_(payload);
