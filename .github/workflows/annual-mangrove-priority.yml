@@ -160,14 +160,14 @@ jobs:
             exit 0
           fi
           git config user.name "github-actions[bot]"
-          git config user.email "4189826+github-actions[bot]@users.noreply.github.com"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "chore(data): publish mangrove priority $COMPARISON_YEAR"
           git pull --rebase origin main
           git push origin HEAD:main
 
   report-failure:
     name: Report annual update failure
-    if: ${{ failure() }}
+    if: ${{ always() && failure() }}
     needs:
       - analyse-region
       - publish
