@@ -121,6 +121,7 @@
   }
 
   async function init(){
+    el("map-layout-link").href="map-layout.html?key="+encodeURIComponent(key);
     if(!key){showError("Tautan desa tidak lengkap. Silakan pilih desa melalui WebGIS.");return;}
     try{
       var pair=await Promise.all([loadJson(MANIFEST_URL+"?v="+Date.now()),findFeature()]);
