@@ -886,11 +886,11 @@
     if(!layer||!layer.feature||attached.has(layer)){return;}
     attached.add(layer);
     /*
-     * Analisis Desa Intervensi dipindahkan ke halaman profil khusus agar
+     * Analisis Desa Intervensi dan Perhutanan Sosial dipindahkan ke profil khusus agar
      * peta utama tetap ringkas. Popup desa menyediakan tautan ke halaman itu.
      * Panel ini tetap dipakai untuk batas administrasi dan perhutanan sosial.
      */
-    if(layerId==="desa_intervensi"){
+    if(layerId==="desa_intervensi"||layerId==="perhutanan_sosial_riau"){
       layer.on("popupopen",function(){
         var existing=document.getElementById("yg-village-analytics");
         if(existing){existing.hidden=true;}
