@@ -2,7 +2,7 @@
 """Resumable, conservative Sentinel-2 mangrove rehabilitation screening."""
 from __future__ import annotations
 import argparse,json,math,sys,time,warnings
-from datetime import datetime,timezone
+from datetime import date,datetime,timezone
 from pathlib import Path
 import numpy as np
 import planetary_computer as pc
@@ -55,7 +55,7 @@ def search(catalog,bbox,year):
             if attempt<3: time.sleep(3*(attempt+1))
     raise last
 def search_latest(catalog,bbox,year):
-    last=None; end=datetime.now(timezone.utc).date().isoformat()
+    last=None; today=datetime.now(timezone.utc).date(); end=min(today,date(year,12,31)).isoformat()
     for attempt in range(4):
         try:
             items=list(catalog.search(collections=['sentinel-2-l2a'],bbox=bbox,datetime=f'{year}-01-01/{end}',query={'eo:cloud_cover':{'lt':CLOUD_LIMIT}}).items())
