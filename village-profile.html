@@ -8,7 +8,7 @@
   <link rel="icon" href="assets/logo-yayasan-gambut.png">
   <link rel="preconnect" href="https://unpkg.com">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="css/village-profile.css?v=20260822-1">
+  <link rel="stylesheet" href="css/village-profile.css?v=20260822-2">
 </head>
 <body>
   <header class="vp-topbar">
@@ -91,6 +91,26 @@
           <p class="vp-caption" id="loss-note"></p>
         </section>
 
+        <section class="vp-coastal-grid">
+          <article class="vp-card vp-coastal-card">
+            <div class="vp-section-head">
+              <div><span class="vp-kicker">PERUBAHAN GARIS PANTAI</span><h2>Abrasi dan akresi indikatif</h2></div>
+              <span class="vp-badge vp-badge--coast" id="coastal-confidence">Memuat…</span>
+            </div>
+            <div id="coastal-content" class="vp-module-loading">Mencocokkan data perubahan pantai desa…</div>
+            <a class="vp-module-link" href="coastal-monitoring.html" target="_blank" rel="noopener noreferrer">Buka analisis pesisir lengkap →</a>
+          </article>
+
+          <article class="vp-card vp-priority-card">
+            <div class="vp-section-head">
+              <div><span class="vp-kicker">PRIORITAS MANGROVE</span><h2>Kebutuhan dan kelayakan</h2></div>
+              <span class="vp-badge" id="priority-confidence">Memuat…</span>
+            </div>
+            <div id="priority-content" class="vp-module-loading">Mencocokkan hasil prioritas rehabilitasi…</div>
+            <a class="vp-module-link" id="priority-link" href="mangrove-priority.html" target="_blank" rel="noopener noreferrer">Buka polygon prioritas →</a>
+          </article>
+        </section>
+
         <section class="vp-split">
           <article class="vp-card">
             <div class="vp-section-head">
@@ -139,6 +159,6 @@
 
   <div class="vp-toast" id="toast" role="status" aria-live="polite"></div>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="js/village-profile.js?v=20260822-3"></script>
+  <script src="js/village-profile.js?v=20260822-4"></script>
 </body>
 </html>
