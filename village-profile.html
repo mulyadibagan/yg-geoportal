@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="description" content="Profil dan analisis lingkungan Desa Intervensi Yayasan Gambut.">
+  <title>Profil Desa Intervensi | Yayasan Gambut</title>
+  <link rel="icon" href="assets/logo-yayasan-gambut.png">
+  <link rel="preconnect" href="https://unpkg.com">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="css/village-profile.css?v=20260822-1">
+</head>
+<body>
+  <header class="vp-topbar">
+    <a class="vp-brand" href="index.html">
+      <img src="assets/logo-yayasan-gambut.png" alt="Logo Yayasan Gambut">
+      <span><strong>Yayasan Gambut</strong><small>Profil Desa Intervensi</small></span>
+    </a>
+    <nav class="vp-top-actions" aria-label="Aksi halaman">
+      <a class="vp-button vp-button--quiet" href="webgis.html">← Kembali ke peta</a>
+      <button class="vp-button vp-button--quiet" id="share-profile" type="button">Bagikan</button>
+      <button class="vp-button" id="print-profile" type="button">Unduh / cetak</button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="vp-hero">
+      <div class="vp-hero__glow"></div>
+      <div class="vp-container vp-hero__content">
+        <div>
+          <span class="vp-eyebrow">DESA INTERVENSI YG</span>
+          <h1 id="village-name">Memuat profil desa…</h1>
+          <p id="village-location">Menghubungkan data administrasi dan analisis lingkungan.</p>
+          <div class="vp-status-row">
+            <span class="vp-status"><i></i> Data analisis tersedia</span>
+            <span id="data-updated">Memeriksa tanggal pembaruan…</span>
+          </div>
+        </div>
+        <div class="vp-hero__summary">
+          <span>Ringkasan publik</span>
+          <strong>Data dalam batas desa</strong>
+          <p>Tutupan hutan, kehilangan tahunan, hotspot, dan irisan layer referensi disajikan secara indikatif.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="vp-container vp-content">
+      <div id="loading-state" class="vp-message">Menyiapkan profil dan analisis desa…</div>
+      <div id="error-state" class="vp-message vp-message--error" hidden>
+        <strong>Profil belum dapat dimuat.</strong>
+        <span id="error-message">Kunci desa tidak ditemukan.</span>
+        <a href="webgis.html">Pilih kembali desa melalui peta</a>
+      </div>
+
+      <div id="profile-content" hidden>
+        <section class="vp-kpis" id="kpi-grid" aria-label="Ringkasan angka"></section>
+
+        <section class="vp-layout">
+          <article class="vp-card vp-map-card">
+            <div class="vp-section-head">
+              <div><span class="vp-kicker">LOKASI</span><h2>Batas desa pada peta</h2></div>
+              <span class="vp-badge">Citra satelit</span>
+            </div>
+            <div id="village-map" aria-label="Peta batas desa"></div>
+            <p class="vp-caption" id="map-caption">Garis menunjukkan batas polygon yang digunakan dalam analisis.</p>
+          </article>
+
+          <article class="vp-card">
+            <div class="vp-section-head">
+              <div><span class="vp-kicker">TUTUPAN HUTAN</span><h2>Kondisi ringkas</h2></div>
+            </div>
+            <div class="vp-forest-visual">
+              <div class="vp-donut" id="forest-donut"><span><strong id="forest-percent">—</strong><small>dari luas desa</small></span></div>
+              <div class="vp-forest-copy">
+                <p>Estimasi tutupan hutan saat ini</p>
+                <strong id="current-forest">—</strong>
+                <small id="forest-definition">Definisi tutupan hutan sedang dimuat.</small>
+              </div>
+            </div>
+            <div class="vp-callout">Kehilangan tutupan pohon adalah indikasi perubahan kanopi, bukan otomatis deforestasi legal maupun ilegal.</div>
+          </article>
+        </section>
+
+        <section class="vp-card">
+          <div class="vp-section-head">
+            <div><span class="vp-kicker">PERUBAHAN TAHUNAN</span><h2 id="loss-chart-title">Kehilangan tutupan pohon</h2></div>
+            <span class="vp-badge vp-badge--warm">hektare per tahun</span>
+          </div>
+          <div class="vp-bars" id="loss-bars"></div>
+          <p class="vp-caption" id="loss-note"></p>
+        </section>
+
+        <section class="vp-split">
+          <article class="vp-card">
+            <div class="vp-section-head">
+              <div><span class="vp-kicker">HOTSPOT</span><h2>Pemantauan anomali panas</h2></div>
+            </div>
+            <div class="vp-hotspot-summary" id="hotspot-summary"></div>
+            <h3 class="vp-subtitle">Jumlah hotspot per tahun</h3>
+            <div class="vp-mini-bars" id="hotspot-years"></div>
+            <p class="vp-caption">Hotspot adalah anomali panas dari satelit, bukan konfirmasi kejadian kebakaran.</p>
+          </article>
+
+          <article class="vp-card">
+            <div class="vp-section-head">
+              <div><span class="vp-kicker">KONTEKS WILAYAH</span><h2>Irisan layer referensi</h2></div>
+            </div>
+            <div class="vp-reference-list" id="reference-list"></div>
+            <p class="vp-caption">Layer dapat saling tumpang tindih, sehingga nilainya tidak boleh dijumlahkan sebagai total luas desa.</p>
+          </article>
+        </section>
+
+        <section class="vp-card vp-method">
+          <div class="vp-section-head">
+            <div><span class="vp-kicker">TRANSPARANSI DATA</span><h2>Bagaimana data ini dihasilkan?</h2></div>
+          </div>
+          <div class="vp-method-grid">
+            <div><b>1</b><strong>Batas analisis</strong><p>Polygon batas desa menjadi area pemotongan seluruh dataset.</p></div>
+            <div><b>2</b><strong>Tutupan pohon</strong><p>Raster Hansen/UMD dihitung untuk kanopi sesuai ambang dataset.</p></div>
+            <div><b>3</b><strong>Perubahan tahunan</strong><p>Pixel kehilangan dikelompokkan menurut tahun lalu dikonversi ke hektare.</p></div>
+            <div><b>4</b><strong>Hotspot</strong><p>Titik NASA FIRMS dihitung bila berada di dalam polygon desa.</p></div>
+          </div>
+          <div class="vp-source-grid">
+            <div><span>Periode dasar</span><strong id="baseline-period">—</strong></div>
+            <div><span>Data kehilangan tersedia s.d.</span><strong id="loss-through">—</strong></div>
+            <div><span>Sumber tutupan pohon</span><strong>Hansen / UMD / Google / USGS / NASA</strong></div>
+            <div><span>Sumber hotspot</span><strong>NASA FIRMS · VIIRS</strong></div>
+          </div>
+        </section>
+
+        <footer class="vp-footer">
+          <p><strong>Catatan penggunaan:</strong> angka bersifat indikatif untuk penyaringan awal dan komunikasi publik. Verifikasi lapangan dan sumber resmi tetap diperlukan untuk keputusan operasional.</p>
+          <a href="webgis.html">Jelajahi desa lain di WebGIS →</a>
+        </footer>
+      </div>
+    </div>
+  </main>
+
+  <div class="vp-toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/village-profile.js?v=20260822-1"></script>
+</body>
+</html>
