@@ -939,6 +939,21 @@ L.control.scale({
     const monitoringAction = actionLinks
       ? '<div class="yg-popup-actions">' + actionLinks + '</div>'
       : "";
+    const villageProfileKey = [
+      props.WADMKD || props.Desa || props.NAMOBJ || props.Nama_Desa,
+      props.WADMKC || props.Kecamatan,
+      props.WADMKK || props.Kabupaten
+    ].filter(Boolean).join("|").trim().toLowerCase();
+    const villageProfileAction =
+      config.id === "desa_intervensi" && villageProfileKey
+        ? (
+            '<div class="yg-popup-actions yg-popup-profile-action">' +
+              '<a class="yg-popup-monitoring-link yg-popup-profile-link" href="village-profile.html?key=' +
+                encodeURIComponent(villageProfileKey) +
+              '">Buka Profil &amp; Analisis Desa&nbsp; →</a>' +
+            '</div>'
+          )
+        : "";
 
     const floraVillage = String(
       props.Desa || props.Village || props.Lokasi || props.Location || ""
@@ -985,7 +1000,7 @@ L.control.scale({
         '</div>' +
         (isMonitoring ? gallery : '') +
         '<div class="popup-body">' +
-          (isMonitoring ? rows : rows + gallery) + sdgHtml + floraAction + monitoringAction +
+          (isMonitoring ? rows : rows + gallery) + sdgHtml + floraAction + monitoringAction + villageProfileAction +
         '</div>' +
       '</div>'
     );
