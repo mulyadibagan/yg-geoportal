@@ -285,13 +285,24 @@
       };
     });
     if (!milestones.length) {
-      var ppcfSpatialEvidence = {
-        'Restorasi gambut/agroforestri': 'webgis.html?layer=area_kopi&village=Pematang+Duku',
-        'Bibit ditanam': 'webgis.html?layer=area_kopi&village=Pematang+Duku',
-        'Bibit di persemaian': 'webgis.html?layer=kopi&village=Pematang+Duku',
-        'Sekat kanal': 'webgis.html?layer=sekat_kanal&village=Pematang+Duku',
-        'FDRS': 'webgis.html?layer=fdrs&village=Pematang+Duku'
+      var spatialEvidenceByDonor = {
+        'Pan Pacific Conservation Foundation (PPCF)': {
+          'Restorasi gambut/agroforestri': 'webgis.html?layer=area_kopi&village=Pematang+Duku',
+          'Bibit ditanam': 'webgis.html?layer=area_kopi&village=Pematang+Duku',
+          'Bibit di persemaian': 'webgis.html?layer=kopi&village=Pematang+Duku',
+          'Sekat kanal': 'webgis.html?layer=sekat_kanal&village=Pematang+Duku',
+          'FDRS': 'webgis.html?layer=fdrs&village=Pematang+Duku'
+        },
+        'Aliansi Kolibri': {
+          'Luas area restorasi': 'webgis.html?donor=Aliansi+Kolibri&village=Petapahan',
+          'Bibit tertanam': 'webgis.html?donor=Aliansi+Kolibri&village=Petapahan',
+          'Menara air': 'webgis.html?donor=Aliansi+Kolibri&village=Petapahan&search=Menara+Air',
+          'Plang restorasi': 'webgis.html?donor=Aliansi+Kolibri&village=Petapahan&search=Plang+Restorasi',
+          'Kelangsungan hidup PUP 1': 'webgis.html?donor=Aliansi+Kolibri&layer=monitoring_reports&search=PUP+1',
+          'Kelangsungan hidup PUP 2': 'webgis.html?donor=Aliansi+Kolibri&layer=monitoring_reports&search=PUP+2'
+        }
       };
+      var spatialEvidence = spatialEvidenceByDonor[donorName] || {};
       milestones = (donor.indicators || []).map(function (indicator) {
         var progress = Number(indicator.progress || 0);
         return {
@@ -304,9 +315,7 @@
               ? { text: 'In Progress', cls: 'state-in-progress' }
               : { text: 'Planned', cls: '' },
           latest: indicator.value || '',
-          evidenceHref: donorName === 'Pan Pacific Conservation Foundation (PPCF)'
-            ? (ppcfSpatialEvidence[indicator.label] || '')
-            : ''
+          evidenceHref: spatialEvidence[indicator.label] || ''
         };
       });
     }
@@ -363,7 +372,8 @@
         milestoneMarkup
       : '<div class="funding-heading"><div><span>Milestone status</span><h3>Timeline (' +
         esc(displayPeriod(donor, programme)) + ')</h3></div>' +
-        '<p>' + (donorName === 'Pan Pacific Conservation Foundation (PPCF)'
+        '<p>' + (donorName === 'Pan Pacific Conservation Foundation (PPCF)' ||
+          donorName === 'Aliansi Kolibri'
           ? 'Status program dilengkapi evidence spasial terverifikasi dari WebGIS.'
           : 'Status dihitung dari evidence yang sudah ditag admin.') + '</p></div>' +
         milestoneMarkup;
@@ -388,9 +398,11 @@
           badge.className = 'donor-evidence-badge';
           card.appendChild(badge);
         }
-        var ppcfSpatialEvidenceCount =
-          donorName === 'Pan Pacific Conservation Foundation (PPCF)' ? 5 : 0;
-        var evidenceCount = rows.length + ppcfSpatialEvidenceCount;
+        var spatialEvidenceCounts = {
+          'Pan Pacific Conservation Foundation (PPCF)': 5,
+          'Aliansi Kolibri': 6
+        };
+        var evidenceCount = rows.length + (spatialEvidenceCounts[donorName] || 0);
         var badgeText = !ready
           ? 'Memuat evidence...'
           : evidenceCount
