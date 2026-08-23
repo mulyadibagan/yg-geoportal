@@ -223,6 +223,12 @@ function doGet(e) {
   if (page === 'ps-document-review') {
     return getSocialForestryDocumentReview_(params);
   }
+  if (page === 'ps-sync-install') {
+    if (!isAdminToken_(token)) {
+      return jsonOrJsonpResponse_({ ok: false, error: 'Akses admin tidak valid.' }, callback);
+    }
+    return jsonOrJsonpResponse_(installSocialForestryDriveSync(), callback);
+  }
 
 if (page === 'content-save-result') {
   return contentAdminResponse_(
