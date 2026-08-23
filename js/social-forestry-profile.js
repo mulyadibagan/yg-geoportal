@@ -74,7 +74,7 @@ function render(feature,record,data,detail){
   el("forest-definition").textContent="Baseline "+(method.baselineYear||2000)+" dikurangi kehilangan"+(gain!=null?" dan ditambah pertambahan terpetakan":"")+". Angka bersifat indikatif.";
   el("baseline-period").textContent=method.baselineYear||"—";el("loss-through").textContent=method.lossDataThroughYear||"—";
   renderIdentity(p,area);renderSupplemental(detail);renderLoss(record,method);renderHotspots(record);renderReferences(record,area);
-  el("loading-state").hidden=true;el("profile-content").hidden=false;requestAnimationFrame(function(){renderMap(feature,name)});
+  el("loading-state").hidden=true;el("error-state").hidden=true;el("profile-content").hidden=false;requestAnimationFrame(function(){renderMap(feature,name)});
 }
 async function init(){
   if(!key){showError("Tautan areal tidak lengkap. Pilih Perhutanan Sosial melalui WebGIS.");return}
