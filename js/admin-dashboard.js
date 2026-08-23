@@ -355,7 +355,7 @@
       if (!groups[group]) groups[group] = [];
       groups[group].push(feature);
     });
-    var preferredOrder = ['Evidence Nonspasial', 'Peningkatan Kapasitas', 'Monitoring Lapangan', 'Titik dan Infrastruktur Baru', 'Area/Poligon Baru'];
+    var preferredOrder = ['Evidence Nonspasial', 'Pemeliharaan Infrastruktur', 'Peningkatan Kapasitas', 'Monitoring Lapangan', 'Titik dan Infrastruktur Baru', 'Area/Poligon Baru'];
     var groupNames = Object.keys(groups).sort(function (left, right) {
       var leftIndex = preferredOrder.indexOf(left);
       var rightIndex = preferredOrder.indexOf(right);

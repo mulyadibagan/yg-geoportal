@@ -275,6 +275,13 @@ L.control.scale({
     return props.Nama_Objek || props.title || props.NAMOBJ || props.Desa || props.WADMKD || "Objek WebGIS";
   }
 
+  function canonicalDonorName(value) {
+    const donor = String(value == null ? "" : value).trim();
+    return /^(?:yayasan\s+)?penabulu$/i.test(donor)
+      ? "Yayasan Penabulu"
+      : donor;
+  }
+
   function applyMeasurementPointPolicy(feature) {
     const props = feature && feature.properties || {};
     const identity = [
@@ -326,7 +333,7 @@ L.control.scale({
         value !== undefined &&
         String(value).trim() !== ""
       ) {
-        return String(value).trim();
+        return canonicalDonorName(value);
       }
     }
 
