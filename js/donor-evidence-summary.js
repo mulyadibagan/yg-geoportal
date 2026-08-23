@@ -104,15 +104,19 @@
 
   function updateAramcoStaffReport() {
     var panel = document.getElementById('aramco-staff-report');
-    var link = document.getElementById('aramco-staff-report-link');
+    var phase1 = document.getElementById('aramco-phase1-report-link');
+    var phase2 = document.getElementById('aramco-phase2-report-link');
+    var phase3 = document.getElementById('aramco-staff-report-link');
     var session = readStaffSession();
-    if (!panel || !link) return;
+    if (!panel || !phase1 || !phase2 || !phase3) return;
     if (session) {
-      link.href = 'https://drive.google.com/file/d/1DFxyFC3X1VsLqCjhi_IqkhPE9CiEh4sD/preview';
+      phase1.href = 'https://drive.google.com/file/d/1urwXsg64a4ttgihusCFZzTiKmGYyyqWB/preview';
+      phase2.href = 'https://drive.google.com/file/d/1FG5iQCiJjQW8A8-uVGKht0WlBaYYt0hK/preview';
+      phase3.href = 'https://drive.google.com/file/d/1DFxyFC3X1VsLqCjhi_IqkhPE9CiEh4sD/preview';
       panel.hidden = false;
     } else {
       panel.hidden = true;
-      link.removeAttribute('href');
+      [phase1, phase2, phase3].forEach(function (link) { link.removeAttribute('href'); });
     }
   }
 
