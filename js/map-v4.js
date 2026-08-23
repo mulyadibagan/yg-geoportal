@@ -1144,18 +1144,28 @@ L.control.scale({
         });
 
         single.eachLayer(layer => {
+          const reportId = String(
+            feature && feature.properties && (
+              feature.properties.reportId || feature.properties.Source_Report_ID
+            ) || ""
+          ).trim();
+          const isPupMonitoringPopup = config.id === "monitoring_reports" && [
+            "YG-20260820-202849-964",
+            "YG-20260820-202852-996"
+          ].includes(reportId);
+
           layer.bindPopup(buildPopup(feature, config), {
-            maxWidth: 400,
-            autoPan: config.id !== "monitoring_reports",
-            keepInView: false,
-            autoPanPadding: [5, 5],
+            maxWidth: config.id === "monitoring_reports" ? 280 : 400,
+            autoPan: !isPupMonitoringPopup,
+            keepInView: config.id === "monitoring_reports" && !isPupMonitoringPopup,
+            autoPanPadding: config.id === "monitoring_reports" ? [22, 22] : [5, 5],
             className: config.id === "monitoring_reports"
               ? "yg-monitoring-popup"
               : ""
           });
 
           layer.on("popupopen", event => {
-            if (config.id !== "monitoring_reports") return;
+            if (!isPupMonitoringPopup) return;
             const popupElement = event && event.popup && event.popup.getElement();
             if (!popupElement) return;
             L.DomEvent.disableClickPropagation(popupElement);
