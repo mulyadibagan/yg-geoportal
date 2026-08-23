@@ -2,6 +2,7 @@
   "use strict";
 
   const API = "https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec";
+  const AUTH_API = "https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/api/staff/auth";
   const AUTH_RESULT_API = "https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/api/staff/auth-result";
   const SESSION_KEY = "ygEditorSessionV1";
 
@@ -49,58 +50,19 @@
     });
   }
 
-  function iframeAuthRequest(action, fields) {
-    return new Promise((resolve, reject) => {
-      const requestId = "yg-auth-" + Date.now() + "-" + Math.floor(Math.random() * 100000);
-      const iframeName = "ygAuthFrame_" + requestId.replace(/[^a-zA-Z0-9_]/g, "_");
-      const iframe = document.createElement("iframe");
-      const form = document.createElement("form");
-      const timer = setTimeout(() => {
-        cleanup();
-        reject(new Error("Waktu koneksi autentikasi habis. Silakan coba lagi."));
-      }, 30000);
-
-      function cleanup() {
-        clearTimeout(timer);
-        window.removeEventListener("message", onMessage);
-        form.remove();
-        iframe.remove();
-      }
-
-      function onMessage(event) {
-        const trustedOrigin = /^https:\/\/(?:script\.google\.com|script\.googleusercontent\.com)$/.test(event.origin);
-        const result = event.data;
-        if (!trustedOrigin || !result || result.requestId !== requestId) return;
-        cleanup();
-        if (result.ok) resolve(result);
-        else reject(new Error(result.message || "Autentikasi gagal."));
-      }
-
-      iframe.name = iframeName;
-      iframe.hidden = true;
-      form.method = "POST";
-      form.action = API;
-      form.target = iframeName;
-      form.hidden = true;
-
-      const payload = { action, requestId, transport: "iframe", ...(fields || {}) };
-      Object.entries(payload).forEach(([name, value]) => {
-        const input = document.createElement("input");
-        input.type = "hidden";
-        input.name = name;
-        input.value = String(value == null ? "" : value);
-        form.appendChild(input);
-      });
-
-      window.addEventListener("message", onMessage);
-      document.body.append(iframe, form);
-      form.submit();
-    });
-  }
-
   async function postAuthRequest(action, fields) {
     if (action !== "editor-logout") {
-      return iframeAuthRequest(action, fields);
+      const body = new URLSearchParams({ action, ...(fields || {}) });
+      const response = await fetch(AUTH_API, {
+        method: "POST",
+        headers: { "content-type": "application/x-www-form-urlencoded;charset=UTF-8" },
+        body
+      });
+      const result = await response.json().catch(() => null);
+      if (!response.ok || !result || !result.ok) {
+        throw new Error(result?.message || "Autentikasi belum dapat diproses. Silakan coba lagi.");
+      }
+      return result;
     }
     const requestId = "yg-auth-" + Date.now() + "-" + Math.floor(Math.random() * 100000);
     const body = new URLSearchParams({ action, requestId, ...(fields || {}) });
