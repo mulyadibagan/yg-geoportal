@@ -285,6 +285,13 @@
       };
     });
     if (!milestones.length) {
+      var ppcfSpatialEvidence = {
+        'Restorasi gambut/agroforestri': 'webgis.html?layer=area_kopi&village=Pematang+Duku',
+        'Bibit ditanam': 'webgis.html?layer=area_kopi&village=Pematang+Duku',
+        'Bibit di persemaian': 'webgis.html?layer=kopi&village=Pematang+Duku',
+        'Sekat kanal': 'webgis.html?layer=sekat_kanal&village=Pematang+Duku',
+        'FDRS': 'webgis.html?layer=fdrs&village=Pematang+Duku'
+      };
       milestones = (donor.indicators || []).map(function (indicator) {
         var progress = Number(indicator.progress || 0);
         return {
@@ -296,7 +303,10 @@
             : progress > 0
               ? { text: 'In Progress', cls: 'state-in-progress' }
               : { text: 'Planned', cls: '' },
-          latest: indicator.value || ''
+          latest: indicator.value || '',
+          evidenceHref: donorName === 'Pan Pacific Conservation Foundation (PPCF)'
+            ? (ppcfSpatialEvidence[indicator.label] || '')
+            : ''
         };
       });
     }
@@ -327,12 +337,16 @@
         }).join('') + '</div>'
       : '<ul class="gec2026-timeline donor-milestone-list">' +
         milestones.map(function (item) {
+          var evidenceLink = item.evidenceHref
+            ? '<a class="donor-milestone-evidence-link" href="' +
+              esc(item.evidenceHref) + '">Lihat evidence WebGIS →</a>'
+            : '';
           return '<li><div><span>' + esc(item.name) + '</span><small>' +
             (item.target === 100
               ? item.done + '% capaian'
               : item.done + ' / ' + item.target + ' aktivitas terverifikasi') +
             (item.latest ? ' · ' + esc(item.latest) : '') +
-            '</small></div><strong class="' + item.state.cls + '">' +
+            '</small>' + evidenceLink + '</div><strong class="' + item.state.cls + '">' +
             (donorName === 'Yayasan Penabulu'
               ? (item.state.text === 'Completed' ? 'Selesai'
                 : item.state.text === 'In Progress' ? 'Berjalan' : 'Direncanakan')
@@ -349,7 +363,9 @@
         milestoneMarkup
       : '<div class="funding-heading"><div><span>Milestone status</span><h3>Timeline (' +
         esc(displayPeriod(donor, programme)) + ')</h3></div>' +
-        '<p>Status dihitung dari evidence yang sudah ditag admin.</p></div>' +
+        '<p>' + (donorName === 'Pan Pacific Conservation Foundation (PPCF)'
+          ? 'Status program dilengkapi evidence spasial terverifikasi dari WebGIS.'
+          : 'Status dihitung dari evidence yang sudah ditag admin.') + '</p></div>' +
         milestoneMarkup;
     if (section._ygMilestoneMarkup !== sectionMarkup) {
       section.innerHTML = sectionMarkup;
