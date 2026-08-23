@@ -2339,6 +2339,15 @@ L.control.scale({
             reportType === "peningkatan kapasitas") {
           return false;
         }
+        const sourceType = String(
+          p.Source_Type || p.sourceType || ""
+        ).trim().toLowerCase();
+        if (
+          sourceType === "community_report" &&
+          reportType === "pemeliharaan infrastruktur"
+        ) {
+          return false;
+        }
         if (!feature.geometry) return false;
         const layerId = String(p.Layer_ID || p.Source_Layer || "").toLowerCase();
         const reportId = String(p.reportId || p.Report_ID || "").trim();
