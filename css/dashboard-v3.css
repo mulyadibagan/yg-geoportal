@@ -662,6 +662,8 @@ body.modal-open{overflow:hidden}
 /* Legacy Pertamina live-tag timeline retired; verified six-output section is canonical. */
 .pertamina-evidence-timeline{display:none!important}
 /* Report photos for the six verified Pertamina outputs. */
-#pertamina-dashboard .donor-milestone-list>li{overflow:hidden;align-items:center}
-#pertamina-dashboard .pertamina-output-photo{width:124px;aspect-ratio:3/2;object-fit:cover;border-radius:12px;flex:0 0 auto;background:#eef4f0}
-@media (max-width:760px){#pertamina-dashboard .donor-milestone-list>li{align-items:flex-start;flex-wrap:wrap}#pertamina-dashboard .pertamina-output-photo{width:100%;aspect-ratio:16/9}}
+#pertamina-dashboard .donor-milestone-list>li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px 12px;align-items:start;overflow:hidden}
+#pertamina-dashboard .pertamina-output-photo{grid-column:1/-1;width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:12px;background:#eef4f0}
+#pertamina-dashboard .donor-milestone-list>li>div{min-width:0}
+#pertamina-dashboard .donor-milestone-list>li>strong{grid-column:2;grid-row:2;align-self:center}
+@media (max-width:760px){#pertamina-dashboard .donor-milestone-list{grid-template-columns:1fr}#pertamina-dashboard .pertamina-output-photo{aspect-ratio:16/9}}
