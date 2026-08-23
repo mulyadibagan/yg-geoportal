@@ -220,6 +220,9 @@ function doGet(e) {
   if (page === 'public-content') {
     return contentAdminResponse_(getPublicContent_(), callback);
   }
+  if (page === 'ps-document-review') {
+    return getSocialForestryDocumentReview_(params);
+  }
 
 if (page === 'content-save-result') {
   return contentAdminResponse_(
