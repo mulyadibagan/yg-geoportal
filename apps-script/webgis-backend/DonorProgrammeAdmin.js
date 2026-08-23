@@ -166,6 +166,11 @@ function saveDonorProgramme_(payload) {
 
 function saveDonorAssignment_(payload) {
   const row = payload && typeof payload === 'object' ? payload : {};
+  const evidenceType = clean_(row.evidenceType).toLowerCase();
+  if (row.dataDomain === 'social_forestry_profile' || row.psProfileDocument === true ||
+      /sk\s*&?\s*legalitas|profil\s*ps|rkps|rkt|data\s*spasial\s*ps|kelengkapan\s*ps/.test(evidenceType)) {
+    throw new Error('Dokumen kelengkapan PS tidak dapat dikaitkan ke kartu donor. Gunakan Inbox Data PS.');
+  }
   if (!clean_(row.assignmentId) || !clean_(row.evidenceId) || !clean_(row.programmeId)) {
     throw new Error('Assignment tidak lengkap.');
   }

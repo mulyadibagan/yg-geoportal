@@ -37,9 +37,23 @@
     <section class="hero hero-compact">
       <div class="hero-main">
         <div class="eyebrow">DASHBOARD ADMIN</div>
-        <h1>Verifikasi Capaian Donor</h1>
-        <p class="hero-description">Hubungkan evidence yang telah diterima ke output program donor aktif maupun program historis yang sudah selesai.</p>
+        <h1>Administrasi Data &amp; Capaian</h1>
+        <p class="hero-description">Kelola kelengkapan profil Perhutanan Sosial dan hubungkan laporan kegiatan terverifikasi ke output program donor melalui dua antrean yang terpisah.</p>
         <p class="hero-tagline">Perubahan disimpan ke database pusat ketika layanan aktif; browser digunakan sebagai penyimpanan sementara saat layanan belum tersedia.</p>
+      </div>
+    </section>
+
+    <section class="admin-panel ps-inbox-panel" aria-labelledby="ps-inbox-title">
+      <div class="admin-column admin-column--wide">
+        <div class="section-heading">
+          <div><span class="eyebrow">KELENGKAPAN PERHUTANAN SOSIAL</span><h2 id="ps-inbox-title">Inbox Data PS</h2></div>
+          <button id="refresh-ps-inbox" class="btn btn-light" type="button">Periksa Drive</button>
+        </div>
+        <div class="admin-card">
+          <p class="ps-inbox-rule"><strong>Jalur khusus profil PS.</strong> SK/legalitas, profil kelompok, KUPS, RKPS/RKT, peta dan data pendukung tidak dapat dikaitkan ke kartu donor.</p>
+          <div id="ps-inbox-feedback" role="status"></div>
+          <div id="ps-inbox-list" class="ps-inbox-list"><div class="assignment-empty">Masuk sebagai staf untuk memuat Inbox Data PS.</div></div>
+        </div>
       </div>
     </section>
 
@@ -105,12 +119,12 @@
     <section class="admin-panel assignment-panel" aria-labelledby="assignment-title">
       <div class="admin-column admin-column--wide">
         <div class="section-heading">
-          <div><span class="eyebrow">EVIDENCE ASSIGNMENT</span><h2 id="assignment-title">Pilih output program donor</h2></div>
+          <div><span class="eyebrow">KEGIATAN TERVERIFIKASI</span><h2 id="assignment-title">Pilih output program donor</h2></div>
           <span id="assignment-mode" class="admin-mode-badge">DATABASE PUSAT</span>
         </div>
         <div class="admin-card">
           <form id="evidence-assignment-form" class="assignment-form">
-            <label class="wide">Evidence
+            <label class="wide">Laporan/kegiatan terverifikasi
               <select id="assignment-evidence" required><option value="">Memuat evidence...</option></select>
             </label>
             <label>Donor

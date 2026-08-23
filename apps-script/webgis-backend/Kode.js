@@ -220,13 +220,6 @@ function doGet(e) {
   if (page === 'public-content') {
     return contentAdminResponse_(getPublicContent_(), callback);
   }
-  if (page === 'ps-document-review') {
-    return getSocialForestryDocumentReview_(params);
-  }
-  if (page === 'ps-sync-install') {
-    assertAdmin_(token);
-    return jsonOrJsonpResponse_(installSocialForestryDriveSync(), callback);
-  }
 
 if (page === 'content-save-result') {
   return contentAdminResponse_(
@@ -247,6 +240,10 @@ if (page === 'donor-admin-result') {
     getDonorAdminResult_(params.requestId, params.sessionToken),
     callback
   );
+}
+
+if (page === 'ps-inbox') {
+  return donorAdminResponse_(getSocialForestryInbox_(params.sessionToken), callback);
 }
 
   if (page === 'admin') {
@@ -441,6 +438,9 @@ if (action === 'content-save') {
       action === 'donor-assignment-delete'
     ) {
       return handleDonorProgrammeAdminPost_(e);
+    }
+    if (action === 'ps-inbox-review') {
+      return handleSocialForestryInboxPost_(e);
     }
     if (
       action === 'editor-login' ||

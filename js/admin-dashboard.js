@@ -4,6 +4,7 @@
   var API = 'https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec';
   var DONOR_DATA_API = 'https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/api/donor/programmes';
   var DONOR_ADMIN_RESULT_API = 'https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/api/donor/admin-result';
+  var PS_INBOX_KEY = 'ygIpemsPsInbox_v1';
   var ASSIGNMENT_KEY = 'ygIpemsEvidenceAssignments_v1';
   var NONSPATIAL_EVIDENCE_KEY = 'ygIpemsNonspatialEvidence_v1';
   var PROGRAMME_CONFIG_KEY = 'ygIpemsProgrammeConfig_v1';
@@ -208,9 +209,42 @@
     var reportId = String(props.reportId || feature.id || '');
     // Inventaris layer dan baseline statis bukan antrean evidence donor.
     // Evidence yang diajukan lewat API atau diunggah staf tetap tersedia.
-    return !/^LAYER-/i.test(reportId) &&
+    var evidenceType = String(props.evidenceType || props.reportType || '').toLowerCase();
+    var psOnly = props.dataDomain === 'social_forestry_profile' || props.psProfileDocument === true ||
+      /sk\s*&?\s*legalitas|profil\s*ps|rkps|rkt|data\s*spasial\s*ps|kelengkapan\s*ps/.test(evidenceType);
+    return !psOnly && !/^LAYER-/i.test(reportId) &&
       source !== 'data/capacity-building.json' &&
       !/\.geojson(?:$|\?)/i.test(source);
+  }
+
+  function renderPsInbox(rows) {
+    var container = document.getElementById('ps-inbox-list');
+    rows = Array.isArray(rows) ? rows : [];
+    if (!rows.length) {
+      container.innerHTML = '<div class="assignment-empty">Belum ada dokumen PS baru yang menunggu review.</div>';
+      return;
+    }
+    container.innerHTML = rows.map(function (row) {
+      var actions = row.status === 'Baru' || row.status === 'Perlu Review'
+        ? '<div class="ps-inbox-actions"><button class="btn btn-outline" data-ps-review="approve" data-file-id="' + esc(row.fileId) + '">Setujui dokumen</button>' +
+          '<button class="btn btn-light" data-ps-review="revision" data-file-id="' + esc(row.fileId) + '">Perlu perbaikan</button></div>' : '';
+      return '<article class="assignment-record ps-inbox-record"><div><strong>' + esc(row.fileName) + '</strong><small>' +
+        esc([row.regency, row.psName, row.category].filter(Boolean).join(' · ')) + '</small></div><div><span>' + esc(row.status || 'Baru') +
+        '</span><small>' + esc(row.createdAtLabel || '') + '</small></div><a href="' + esc(row.url) + '" target="_blank" rel="noopener">Buka Drive ↗</a>' + actions + '</article>';
+    }).join('');
+  }
+
+  async function loadPsInbox() {
+    var feedback = document.getElementById('ps-inbox-feedback');
+    try {
+      var session = requireStaffSession();
+      var data = await jsonp(API + '?page=ps-inbox&sessionToken=' + encodeURIComponent(session.token));
+      renderPsInbox(data && data.records);
+      feedback.textContent = data && data.scannedAtLabel ? 'Drive diperiksa ' + data.scannedAtLabel + '.' : '';
+    } catch (error) {
+      renderPsInbox(localRows(PS_INBOX_KEY));
+      feedback.textContent = error.message;
+    }
   }
 
   function capacityEvidenceFeature(row) {
@@ -355,7 +389,7 @@
       if (!groups[group]) groups[group] = [];
       groups[group].push(feature);
     });
-    var preferredOrder = ['Evidence Nonspasial', 'Pemeliharaan Infrastruktur', 'Peningkatan Kapasitas', 'Monitoring Lapangan', 'Titik dan Infrastruktur Baru', 'Area/Poligon Baru'];
+    var preferredOrder = ['Evidence Nonspasial', 'Peningkatan Kapasitas', 'Monitoring Lapangan', 'Titik dan Infrastruktur Baru', 'Area/Poligon Baru'];
     var groupNames = Object.keys(groups).sort(function (left, right) {
       var leftIndex = preferredOrder.indexOf(left);
       var rightIndex = preferredOrder.indexOf(right);
@@ -881,6 +915,17 @@
   }
 
   function bind() {
+    document.getElementById('refresh-ps-inbox').addEventListener('click', loadPsInbox);
+    document.getElementById('ps-inbox-list').addEventListener('click', async function (event) {
+      var button = event.target.closest('[data-ps-review]');
+      if (!button) return;
+      var feedback = document.getElementById('ps-inbox-feedback');
+      try {
+        await postAdmin('ps-inbox-review', { fileId: button.dataset.fileId, decision: button.dataset.psReview });
+        feedback.textContent = button.dataset.psReview === 'approve' ? 'Dokumen disetujui untuk melengkapi profil PS.' : 'Dokumen ditandai perlu perbaikan.';
+        await loadPsInbox();
+      } catch (error) { feedback.textContent = error.message; }
+    });
     document.getElementById('nonspatial-evidence-form').addEventListener('submit', saveNonspatialEvidence);
     document.getElementById('nonspatial-evidence-list').addEventListener('click', async function (event) {
       var button = event.target.closest('[data-remove-nonspatial-evidence]');
@@ -994,6 +1039,7 @@
       populateLogframe(null);
       renderNonspatialEvidence();
       renderHistory();
+      loadPsInbox();
       if (!EVIDENCE_DATA.length) {
         document.getElementById('assignment-feedback').textContent =
           'API evidence tidak tersedia; status donor tetap dapat diuji.';

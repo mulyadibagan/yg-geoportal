@@ -370,3 +370,7 @@ body{margin:0;background:#f4f7f5;color:#1f352d;font-family:Inter,ui-sans-serif,s
   .logframe-builder-head{align-items:flex-start;flex-direction:column}
   .logframe-row{grid-template-columns:1fr}
 }
+.ps-inbox-rule{margin:0 0 16px;padding:12px 14px;border-left:4px solid #079cde;background:#eef8fc;color:#234}
+.ps-inbox-list{display:grid;gap:10px}.ps-inbox-record{grid-template-columns:minmax(220px,2fr) minmax(150px,1fr) auto;align-items:center}
+.ps-inbox-actions{grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap}.ps-inbox-record>a{font-weight:700;color:#067aa9}
+@media(max-width:720px){.ps-inbox-record{grid-template-columns:1fr}.ps-inbox-actions{grid-column:auto}}
