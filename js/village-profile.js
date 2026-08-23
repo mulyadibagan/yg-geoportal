@@ -508,7 +508,7 @@
     el("map-layout-link").href="map-layout.html?source="+encodeURIComponent(source)+"&key="+encodeURIComponent(key);
     if(!key){showError("Tautan desa tidak lengkap. Silakan pilih desa melalui WebGIS.");return;}
     try{
-      var pair=await Promise.all([loadJson(MANIFEST_URL+"?v="+Date.now()),findFeature(),loadJson(SNAPSHOT_URL),loadJson("data/capacity-building.json?v=20260822-program-profile2")]);
+      var pair=await Promise.all([loadJson(MANIFEST_URL+"?v="+Date.now()),findFeature(),loadJson(SNAPSHOT_URL),loadJson("data/capacity-building.json?v=20260823-dayun-coffee")]);
       var manifest=pair[0],feature=pair[1],snapshot=pair[2]||{},capacityRows=pair[3]||[],snapshotFeatures=Array.isArray(snapshot.features)?snapshot.features:[],shard=manifest.index&&manifest.index[key];
       if(shard==null){
         el("profile-status").innerHTML="<i></i> Analisis utama belum tersedia";
