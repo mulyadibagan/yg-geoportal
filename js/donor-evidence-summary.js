@@ -388,14 +388,17 @@
           badge.className = 'donor-evidence-badge';
           card.appendChild(badge);
         }
+        var ppcfSpatialEvidenceCount =
+          donorName === 'Pan Pacific Conservation Foundation (PPCF)' ? 5 : 0;
+        var evidenceCount = rows.length + ppcfSpatialEvidenceCount;
         var badgeText = !ready
           ? 'Memuat evidence...'
-          : rows.length
-            ? rows.length + ' evidence terverifikasi'
+          : evidenceCount
+            ? evidenceCount + ' evidence terverifikasi'
             : 'Belum ada evidence terverifikasi';
         if (badge.textContent !== badgeText) badge.textContent = badgeText;
-        if (badge.classList.contains('has-evidence') !== (rows.length > 0)) {
-          badge.classList.toggle('has-evidence', rows.length > 0);
+        if (badge.classList.contains('has-evidence') !== (evidenceCount > 0)) {
+          badge.classList.toggle('has-evidence', evidenceCount > 0);
         }
       }
       if (!ready) return;
