@@ -1145,13 +1145,21 @@ L.control.scale({
 
         single.eachLayer(layer => {
           layer.bindPopup(buildPopup(feature, config), {
-            maxWidth: config.id === "monitoring_reports" ? 280 : 400,
-            autoPan: true,
-            keepInView: config.id === "monitoring_reports",
-            autoPanPadding: config.id === "monitoring_reports" ? [22, 22] : [5, 5],
+            maxWidth: 400,
+            autoPan: config.id !== "monitoring_reports",
+            keepInView: false,
+            autoPanPadding: [5, 5],
             className: config.id === "monitoring_reports"
               ? "yg-monitoring-popup"
               : ""
+          });
+
+          layer.on("popupopen", event => {
+            if (config.id !== "monitoring_reports") return;
+            const popupElement = event && event.popup && event.popup.getElement();
+            if (!popupElement) return;
+            L.DomEvent.disableClickPropagation(popupElement);
+            L.DomEvent.disableScrollPropagation(popupElement);
           });
 
           /*

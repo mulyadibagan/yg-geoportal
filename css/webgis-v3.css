@@ -255,14 +255,14 @@ body.webgis-page .app-shell{
   .yg-gallery-lightbox__prev{left:8px}.yg-gallery-lightbox__next{right:8px}
 }
 .yg-monitoring-popup .leaflet-popup-content{
-  width:min(280px,calc(100vw - 48px))!important;
+  width:min(390px,calc(100vw - 48px))!important;
 }
 .yg-monitoring-popup .popup-body{
-  max-height:min(52vh,380px);
+  max-height:min(62vh,520px);
   padding-bottom:12px;
 }
 .yg-monitoring-popup .yg-monitoring-has-gallery>.popup-body{
-  max-height:min(30vh,220px);
+  max-height:min(62vh,520px);
 }
 .yg-monitoring-popup .yg-popup-actions{
   position:static;
