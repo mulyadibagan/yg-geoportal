@@ -1,0 +1,27 @@
+{
+  "2942.0": {
+    "name": "LPHD Sungai Linau",
+    "status": "Pilot profil dokumen",
+    "demography": {
+      "households": 247,
+      "population": 1286,
+      "male": 668,
+      "female": 618,
+      "source": "BPS__ Populasi_HD.xlsx (versi terbaru di Drive Yayasan Gambut)"
+    },
+    "management": {
+      "forestManagementUnit": "KPH Bengkalis Pulau",
+      "ecosystem": "Gambut",
+      "restorationTargetHa": 350,
+      "rkpsStatus": "Dokumen RKPS tersedia"
+    },
+    "kups": [{"name": "KUPS Linau Jaya Gambut", "legalStatus": "SK KPH tersedia"}],
+    "documents": [
+      {"label": "SK LPHD Sungai Linau", "category": "Legalitas", "url": "https://drive.google.com/file/d/1qSrnOGXo_C12SsH9CbrE9IpFpHupr734/view"},
+      {"label": "SK KPH KUPS Linau Jaya Gambut", "category": "KUPS", "url": "https://drive.google.com/file/d/1U0UbblBqMMpC0u11Z9wuRDCDEaF5oBgE/view"},
+      {"label": "RKPS LPHD Sungai Linau", "category": "Rencana kerja", "url": "https://drive.google.com/file/d/1-YMRsVIsFCY-6hH8mLqcZqXnP81Sue3X/view"},
+      {"label": "Peta LPHD Sungai Linau", "category": "Peta", "url": "https://drive.google.com/file/d/1kVcCb32SJi7E4kvFvuSoKKFc_QY_5wPR/view"}
+    ],
+    "sourceFolderUrl": "https://drive.google.com/drive/folders/1xSaAz9p5sRmHnb6tvzVeT9XnCrKqSkpq"
+  }
+}

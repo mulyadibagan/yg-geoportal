@@ -43,7 +43,29 @@ function renderIdentity(p,area){
     item("Luas izin",number(p.L_IUPHKM)!=null?format(p.L_IUPHKM,2)+" ha":"—"),item("Luas polygon",ha(area)),item("Desa",p.NAMA_DESA||"—"),item("Kecamatan",p.NAMA_KEC||"—"),item("Kabupaten",p.NAMA_KAB||"—"),item("Provinsi",p.NAMA_PROV||"Riau")
   ].join("");
 }
-function render(feature,record,data){
+function renderSupplemental(detail){
+  var section=el("sf-detail");
+  if(!detail){section.hidden=true;return}
+  var demography=detail.demography||{},management=detail.management||{},kups=Array.isArray(detail.kups)?detail.kups:[],documents=Array.isArray(detail.documents)?detail.documents:[];
+  el("sf-detail-status").textContent=detail.status||"Dokumen tersedia";
+  el("sf-detail-summary").innerHTML=[
+    item("Lembaga pengelola",detail.name||"—"),
+    item("KUPS",kups.length?kups.map(function(row){return row.name}).join(", "):"—"),
+    item("Status legalitas KUPS",kups.length?kups.map(function(row){return row.legalStatus}).join(", "):"—"),
+    item("Jumlah keluarga",number(demography.households)!=null?format(demography.households,0)+" KK":"—"),
+    item("Jumlah penduduk",number(demography.population)!=null?format(demography.population,0)+" jiwa":"—"),
+    item("Komposisi penduduk",number(demography.male)!=null&&number(demography.female)!=null?format(demography.male,0)+" laki-laki · "+format(demography.female,0)+" perempuan":"—"),
+    item("KPH/FMU",management.forestManagementUnit||"—"),
+    item("Ekosistem",management.ecosystem||"—"),
+    item("Target area restorasi",number(management.restorationTargetHa)!=null?format(management.restorationTargetHa,0)+" ha":"—"),
+    item("RKPS",management.rkpsStatus||"—")
+  ].join("");
+  el("sf-document-list").innerHTML=documents.map(function(doc){return '<a href="'+esc(doc.url)+'" target="_blank" rel="noopener noreferrer"><span>'+esc(doc.category||"Dokumen")+'</span><strong>'+esc(doc.label||"Buka dokumen")+'</strong><b aria-hidden="true">↗</b></a>'}).join("");
+  var folderLink=el("sf-folder-link");folderLink.href=detail.sourceFolderUrl||"#";folderLink.hidden=!detail.sourceFolderUrl;
+  el("sf-detail-note").textContent="Sumber demografi: "+(demography.source||"dokumen organisasi")+". Angka kegiatan dan capaian lapangan akan ditambahkan setelah tersedia laporan pendukung.";
+  section.hidden=false;
+}
+function render(feature,record,data,detail){
   var p=feature.properties||{},method=data.method||{},viirs=data.viirs||{},name=p.NAMA_HKM||record.name||p.NAMA_DESA||"Perhutanan Sosial";
   var area=number(p.LUAS_POLI)||number(p.L_IUPHKM),baseline=number(record.baselineForestHa),current=number(record.currentForestHa),loss=number(record.totalLossHa),gain=number(record.gainHa);
   var share=area&&current!=null?Math.max(0,Math.min(100,current/area*100)):null;
@@ -53,20 +75,20 @@ function render(feature,record,data){
   el("forest-percent").textContent=percent(share);el("current-forest").textContent=ha(current);el("forest-donut").style.setProperty("--value",share==null?0:share);
   el("forest-definition").textContent="Baseline "+(method.baselineYear||2000)+" dikurangi kehilangan"+(gain!=null?" dan ditambah pertambahan terpetakan":"")+". Angka bersifat indikatif.";
   el("baseline-period").textContent=method.baselineYear||"—";el("loss-through").textContent=method.lossDataThroughYear||"—";
-  renderIdentity(p,area);renderLoss(record,method);renderHotspots(record);renderReferences(record,area);
+  renderIdentity(p,area);renderSupplemental(detail);renderLoss(record,method);renderHotspots(record);renderReferences(record,area);
   el("loading-state").hidden=true;el("profile-content").hidden=false;requestAnimationFrame(function(){renderMap(feature,name)});
 }
 async function init(){
   if(!key){showError("Tautan areal tidak lengkap. Pilih Perhutanan Sosial melalui WebGIS.");return}
   try{
-    var results=await Promise.all([json("data/village-forest-analytics.json?v=20260822-social-profile1"),json("data/PERHUTANAN_SOSIAL_RIAU.geojson?v=20260822-social-profile1")]),data=results[0],geo=results[1];
+    var results=await Promise.all([json("data/village-forest-analytics.json?v=20260822-social-profile1"),json("data/PERHUTANAN_SOSIAL_RIAU.geojson?v=20260822-social-profile1"),json("data/social-forestry-details.json?v=20260823-sungai-linau-pilot1")]),data=results[0],geo=results[1],details=results[2]||{};
     var feature=(geo.features||[]).find(function(f){return featureKey(f)===key});
     var record=(data.socialForestry||{})[key];
     if(!feature&&record){feature=(geo.features||[]).find(function(f){return normalized((f.properties||{}).NAMA_HKM)===normalized(record.name)})}
     if(!record&&feature){var fk=featureKey(feature);record=(data.socialForestry||{})[fk]}
     if(!feature||!feature.geometry)throw new Error("Polygon Perhutanan Sosial tidak ditemukan.");
     if(!record)throw new Error("Analisis tutupan pohon untuk areal ini belum tersedia.");
-    render(feature,record,data);
+    render(feature,record,data,details[key]||null);
   }catch(e){console.error(e);showError(e.message||"Profil gagal dimuat.")}
 }
 el("print-profile").addEventListener("click",function(){window.print()});
