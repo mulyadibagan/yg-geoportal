@@ -102,6 +102,20 @@
     }
   }
 
+  function updateAramcoStaffReport() {
+    var panel = document.getElementById('aramco-staff-report');
+    var link = document.getElementById('aramco-staff-report-link');
+    var session = readStaffSession();
+    if (!panel || !link) return;
+    if (session) {
+      link.href = 'https://drive.google.com/file/d/1DFxyFC3X1VsLqCjhi_IqkhPE9CiEh4sD/preview';
+      panel.hidden = false;
+    } else {
+      panel.hidden = true;
+      link.removeAttribute('href');
+    }
+  }
+
   function updateGecMilestones(rows) {
     var nurseryRows = rows.filter(function (row) {
       return /^(ACT-GEC-01|ACT-GEC-02)$/i.test(String(row.indicatorId || '')) ||
@@ -406,6 +420,7 @@
   }
 
   function applyDonorEvidence() {
+    updateAramcoStaffReport();
     Object.keys(donorMap).forEach(function (donorName) {
       var donor = donorForName(donorName);
       var seededReady = donorsReady && donor && (donor.verifiedEvidence || []).length;
