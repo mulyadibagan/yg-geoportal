@@ -224,9 +224,7 @@ function doGet(e) {
     return getSocialForestryDocumentReview_(params);
   }
   if (page === 'ps-sync-install') {
-    if (!isAdminToken_(token)) {
-      return jsonOrJsonpResponse_({ ok: false, error: 'Akses admin tidak valid.' }, callback);
-    }
+    assertAdmin_(token);
     return jsonOrJsonpResponse_(installSocialForestryDriveSync(), callback);
   }
 

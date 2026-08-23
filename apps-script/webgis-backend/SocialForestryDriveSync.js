@@ -203,7 +203,7 @@ function saveSocialForestryPending_(pending) {
 }
 
 function sendSocialForestryReviewEmail_(documents) {
-  const adminToken = getAdminToken_();
+  const adminToken = socialForestryAdminToken_();
   if (!adminToken) throw new Error('Admin token belum tersedia untuk tautan verifikasi.');
   const reviewUrl = ScriptApp.getService().getUrl() + '?page=ps-document-review&token=' + encodeURIComponent(adminToken);
   const lines = documents.map(function(item) { return '- ' + item.profileName + ' | ' + item.category + ' | ' + item.fileName; });
@@ -212,6 +212,11 @@ function sendSocialForestryReviewEmail_(documents) {
     subject: '[YG GeoPortal] ' + documents.length + ' dokumen PS menunggu verifikasi',
     body: ['Dokumen baru ditemukan pada arsip Perhutanan Sosial.', '', lines.join('\n'), '', 'Buka dashboard verifikasi:', reviewUrl, '', 'Dokumen belum tampil kepada publik sebelum disetujui.'].join('\n')
   });
+}
+
+function socialForestryAdminToken_() {
+  if (typeof getAdminToken_ === 'function') return getAdminToken_();
+  return typeof ADMIN_TOKEN !== 'undefined' ? clean_(ADMIN_TOKEN) : '';
 }
 
 function escapeSocialForestryHtml_(value) {
