@@ -79,7 +79,7 @@ function render(feature,record,data,detail){
 async function init(){
   if(!key){showError("Tautan areal tidak lengkap. Pilih Perhutanan Sosial melalui WebGIS.");return}
   try{
-    var results=await Promise.all([json("data/village-forest-analytics.json?v=20260822-social-profile1"),json("data/PERHUTANAN_SOSIAL_RIAU.geojson?v=20260822-social-profile1"),json("data/social-forestry-details.json?v=20260823-sungai-linau-pilot1")]),data=results[0],geo=results[1],details=results[2]||{};
+    var results=await Promise.all([json("data/village-forest-analytics.json?v=20260822-social-profile1"),json("data/PERHUTANAN_SOSIAL_RIAU.geojson?v=20260822-social-profile1"),json("data/social-forestry-details.json?v=20260823-sungai-linau-public2")]),data=results[0],geo=results[1],details=results[2]||{};
     var feature=(geo.features||[]).find(function(f){return featureKey(f)===key});
     var record=(data.socialForestry||{})[key];
     if(!feature&&record){feature=(geo.features||[]).find(function(f){return normalized((f.properties||{}).NAMA_HKM)===normalized(record.name)})}
