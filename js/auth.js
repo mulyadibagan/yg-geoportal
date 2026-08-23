@@ -2,7 +2,6 @@
   "use strict";
 
   const API = "https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec";
-  const AUTH_API = "https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/api/staff/auth";
   const AUTH_RESULT_API = "https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/api/staff/auth-result";
   const SESSION_KEY = "ygEditorSessionV1";
 
@@ -51,19 +50,6 @@
   }
 
   async function postAuthRequest(action, fields) {
-    if (action !== "editor-logout") {
-      const body = new URLSearchParams({ action, ...(fields || {}) });
-      const response = await fetch(AUTH_API, {
-        method: "POST",
-        headers: { "content-type": "application/x-www-form-urlencoded;charset=UTF-8" },
-        body
-      });
-      const result = await response.json().catch(() => null);
-      if (!response.ok || !result || !result.ok) {
-        throw new Error(result?.message || "Autentikasi belum dapat diproses. Silakan coba lagi.");
-      }
-      return result;
-    }
     const requestId = "yg-auth-" + Date.now() + "-" + Math.floor(Math.random() * 100000);
     const body = new URLSearchParams({ action, requestId, ...(fields || {}) });
     await fetch(API, { method: "POST", mode: "no-cors", body });
