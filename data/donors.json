@@ -230,11 +230,6 @@
             "name": "Reporting",
             "activities": [
               {
-                "id": "ACT-ARAMCO-P3-QUARTERLY",
-                "name": "Quarterly email updates",
-                "indicator": "Quarterly updates submitted"
-              },
-              {
                 "id": "ACT-ARAMCO-P3-PROGRESS",
                 "name": "Progress report",
                 "indicator": "1 progress report submitted"
