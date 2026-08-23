@@ -47,7 +47,6 @@ function renderSupplemental(detail){
   var section=el("sf-detail");
   if(!detail){section.hidden=true;return}
   var demography=detail.demography||{},management=detail.management||{},kups=Array.isArray(detail.kups)?detail.kups:[],documents=Array.isArray(detail.documents)?detail.documents:[];
-  el("sf-detail-status").textContent=detail.status||"Dokumen tersedia";
   el("sf-detail-summary").innerHTML=[
     item("Lembaga pengelola",detail.name||"—"),
     item("KUPS",kups.length?kups.map(function(row){return row.name}).join(", "):"—"),
@@ -61,7 +60,6 @@ function renderSupplemental(detail){
     item("RKPS",management.rkpsStatus||"—")
   ].join("");
   el("sf-document-list").innerHTML=documents.map(function(doc){return '<a href="'+esc(doc.url)+'" target="_blank" rel="noopener noreferrer"><span>'+esc(doc.category||"Dokumen")+'</span><strong>'+esc(doc.label||"Buka dokumen")+'</strong><b aria-hidden="true">↗</b></a>'}).join("");
-  var folderLink=el("sf-folder-link");folderLink.href=detail.sourceFolderUrl||"#";folderLink.hidden=!detail.sourceFolderUrl;
   el("sf-detail-note").textContent="Sumber demografi: "+(demography.source||"dokumen organisasi")+". Angka kegiatan dan capaian lapangan akan ditambahkan setelah tersedia laporan pendukung.";
   section.hidden=false;
 }
