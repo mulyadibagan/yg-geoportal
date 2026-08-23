@@ -51,7 +51,20 @@
         "period": "2023–2024",
         "status": "Selesai",
         "summary": "",
-        "detailsPending": true
+        "detailsPending": true,
+        "outputs": [
+          {
+            "id": "OUT-ARAMCO-P1-REPORTING",
+            "name": "Reporting",
+            "activities": [
+              {
+                "id": "ACT-ARAMCO-P1-FINAL",
+                "name": "Final Report Fase I",
+                "indicator": "1 final report submitted"
+              }
+            ]
+          }
+        ]
       },
       {
         "id": "PRG-ARAMCO-PHASE-02",
@@ -60,7 +73,20 @@
         "period": "2024–2025",
         "status": "Selesai",
         "summary": "",
-        "detailsPending": true
+        "detailsPending": true,
+        "outputs": [
+          {
+            "id": "OUT-ARAMCO-P2-REPORTING",
+            "name": "Reporting",
+            "activities": [
+              {
+                "id": "ACT-ARAMCO-P2-FINAL",
+                "name": "Final Report Fase II",
+                "indicator": "1 final report submitted"
+              }
+            ]
+          }
+        ]
       },
       {
         "id": "PRG-ARAMCO-PHASE-03",
@@ -277,6 +303,34 @@
         "staffOnly": true,
         "verifiedAt": "2026-02-24",
         "verifiedAtLabel": "24 Februari 2026"
+      },
+      {
+        "evidenceId": "EVD-ARAMCO-P1-FINAL",
+        "donorName": "Aramco Asia Singapore",
+        "programmeId": "PRG-ARAMCO-PHASE-01",
+        "indicatorId": "ACT-ARAMCO-P1-FINAL",
+        "indicatorLabel": "Reporting → Final Report Fase I",
+        "evidenceType": "Evidence Nonspasial",
+        "evidenceTitle": "Final Report Fase I · Juni 2023–Mei 2024",
+        "evidenceUrl": "https://drive.google.com/file/d/1urwXsg64a4ttgihusCFZzTiKmGYyyqWB/view?usp=drivesdk",
+        "verificationBasis": "Laporan akhir resmi Aramco",
+        "note": "Laporan final program telah selesai.",
+        "access": "staff",
+        "staffOnly": true
+      },
+      {
+        "evidenceId": "EVD-ARAMCO-P2-FINAL",
+        "donorName": "Aramco Asia Singapore",
+        "programmeId": "PRG-ARAMCO-PHASE-02",
+        "indicatorId": "ACT-ARAMCO-P2-FINAL",
+        "indicatorLabel": "Reporting → Final Report Fase II",
+        "evidenceType": "Evidence Nonspasial",
+        "evidenceTitle": "Final Report Fase II · Juni 2024–Mei 2025",
+        "evidenceUrl": "https://drive.google.com/file/d/1FG5iQCiJjQW8A8-uVGKht0WlBaYYt0hK/view?usp=drivesdk",
+        "verificationBasis": "Laporan akhir resmi Aramco",
+        "note": "Laporan final program telah selesai.",
+        "access": "staff",
+        "staffOnly": true
       }
     ]
   },
