@@ -656,3 +656,5 @@ body.modal-open{overflow:hidden}
 #gec2026-timeline-audit .gec2026-audit-evidence-link[hidden]{display:none!important}
 #gec2026-timeline-audit .gec2026-audit-evidence-link:hover{background:#065e43;transform:translateY(-1px)}
 #gec2026-timeline-audit .gec2026-audit-evidence-link:focus-visible{outline:3px solid rgba(8,118,83,.28);outline-offset:3px}
+
+.donor-milestone-evidence-link{display:inline-flex;margin-top:6px;color:#087653;font-size:11px;font-weight:850;text-decoration:none}.donor-milestone-evidence-link:hover,.donor-milestone-evidence-link:focus-visible{text-decoration:underline;outline:0}
