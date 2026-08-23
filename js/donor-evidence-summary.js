@@ -210,6 +210,18 @@
     return years.length ? years.join('–') : period;
   }
 
+  function pertaminaOutputPhoto(name) {
+    var photos = {
+      'Asesmen Awal': 'assets/pertamina/assessment.webp',
+      'Pelatihan Pengamanan Kawasan Hutan': 'assets/pertamina/forest-protection.webp',
+      'Pengembangan Keramba Ikan dan Diversifikasi Hasil Olahan': 'assets/pertamina/fish-pond.webp',
+      'Pelatihan Pengolahan Gaplek dari Ubi': 'assets/pertamina/gaplek-training.webp',
+      'Pelatihan Pembuatan Pupuk Kompos': 'assets/pertamina/compost-training.webp',
+      'Penyusunan Administrasi Kelompok': 'assets/pertamina/administration-training.webp'
+    };
+    return photos[String(name || '')] || '';
+  }
+
   function renderPenabuluEvidence(rows) {
     var list = document.getElementById('penabulu-evidence-list');
     var status = document.getElementById('penabulu-evidence-status');
