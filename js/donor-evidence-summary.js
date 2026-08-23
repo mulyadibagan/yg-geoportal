@@ -304,15 +304,19 @@
       });
       var done = Object.keys(uniqueActivities).length;
       var targetCount = Math.max((output.activities || []).length, 1);
+      var directEvidenceUrl = output.evidenceUrl || output.mapUrl || '';
+      if (!activityIds.length && directEvidenceUrl) done = 1;
       return {
         name: output.name,
         done: done,
         target: targetCount,
         state: statusFor(done, targetCount),
-        latest: outputRows.length ? outputRows[outputRows.length - 1].evidenceTitle : '',
+        latest: outputRows.length
+          ? outputRows[outputRows.length - 1].evidenceTitle
+          : (output.indicator || ''),
         evidenceHref: outputRows.length
           ? evidenceDestination(outputRows[outputRows.length - 1]).href
-          : '',
+          : directEvidenceUrl,
         output: output,
         rows: outputRows
       };
@@ -386,7 +390,9 @@
         milestones.map(function (item) {
           var evidenceLink = item.evidenceHref
             ? '<a class="donor-milestone-evidence-link" href="' +
-              esc(item.evidenceHref) + '">Buka evidence →</a>'
+              esc(item.evidenceHref) + '"' +
+              (/^https?:\/\//i.test(item.evidenceHref) ? ' target="_blank" rel="noopener"' : '') +
+              '>Buka evidence →</a>'
             : '';
           return '<li>' + (donorName === 'Pertamina Foundation' && pertaminaOutputPhoto(item.name)
             ? '<img class="pertamina-output-photo" src="' + esc(pertaminaOutputPhoto(item.name)) + '" alt="Dokumentasi ' + esc(item.name) + '" loading="lazy" decoding="async">'
