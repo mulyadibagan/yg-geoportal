@@ -485,7 +485,7 @@
     "id": "DNR-PPCF",
     "name": "Pan Pacific Conservation Foundation (PPCF)",
     "slug": "ppcf",
-    "period": "2025–2026",
+    "period": "April 2025–Maret 2026",
     "focus": "Pengelolaan gambut berkelanjutan berbasis masyarakat",
     "locations": [
       "Pematang Duku"
@@ -503,7 +503,7 @@
       },
       {
         "label": "Bibit di persemaian",
-        "value": "4.500",
+        "value": "4.500+",
         "progress": 100
       },
       {
@@ -517,18 +517,52 @@
         "progress": 100
       },
       {
-        "label": "Peserta pelatihan",
-        "value": "119",
+        "label": "Peserta pelatihan tanpa bakar",
+        "value": "69",
+        "progress": 100
+      },
+      {
+        "label": "Peserta pelatihan kopi Liberika",
+        "value": "50",
+        "progress": 100
+      },
+      {
+        "label": "Kemitraan pasar",
+        "value": "1",
+        "progress": 100
+      },
+      {
+        "label": "Buku panduan",
+        "value": "1",
+        "progress": 100
+      },
+      {
+        "label": "Hotspot periode proyek",
+        "value": "0",
         "progress": 100
       }
     ],
     "programs": [
       {
         "id": "PRG-PPCF-SPM-2025",
-        "name": "Community-based Sustainable Peatland Management",
-        "period": "2025–2026",
+        "name": "Sustainable Agriculture Promotion in Peatland Areas to Prevent Palm Oil Expansion",
+        "referenceLabel": "PPCF Final Report April 2025–March 2026",
+        "period": "April 2025–March 2026",
         "status": "Selesai",
-        "summary": "Pertanian tanpa bakar, agroforestri kopi Liberika, serta penguatan kapasitas kelompok."
+        "summary": "Restorasi hidrologi gambut, agroforestri kopi Liberika dan Geronggang, peningkatan kapasitas masyarakat, pengembangan usaha, serta pencegahan kebakaran berbasis FDRS di Desa Pematang Duku.",
+        "detailsPending": false,
+        "outputs": [
+          {"id":"OUT-PPCF-01","name":"Restorasi hidrologi gambut","indicator":"4 sekat kanal selesai dan berfungsi","evidenceUrl":"https://drive.google.com/file/d/1tOuaOdxpf6wAHAkJccgTzSlF-NlSNQm9/view#page=9","mapUrl":"webgis.html?layer=sekat_kanal&village=Pematang+Duku"},
+          {"id":"OUT-PPCF-02","name":"Persemaian masyarakat","indicator":"Persemaian 7 × 8 m dengan lebih dari 4.500 bibit","evidenceUrl":"https://drive.google.com/file/d/1tOuaOdxpf6wAHAkJccgTzSlF-NlSNQm9/view#page=10","mapUrl":"webgis.html?layer=kopi&village=Pematang+Duku"},
+          {"id":"OUT-PPCF-03","name":"Penanaman agroforestri","indicator":"4.000 bibit pada sekitar 3,6 ha: 2.500 kopi Liberika dan 1.500 Geronggang","evidenceUrl":"https://drive.google.com/file/d/1tOuaOdxpf6wAHAkJccgTzSlF-NlSNQm9/view#page=10","mapUrl":"webgis.html?layer=area_kopi&village=Pematang+Duku"},
+          {"id":"OUT-PPCF-04","name":"Pelatihan tanpa bakar","indicator":"69 peserta; nilai rata-rata post-test 8,96 dari 10","evidenceUrl":"https://drive.google.com/file/d/1tOuaOdxpf6wAHAkJccgTzSlF-NlSNQm9/view#page=12"},
+          {"id":"OUT-PPCF-05","name":"Pelatihan agroforestri kopi Liberika","indicator":"50 petani, termasuk 13 perempuan","evidenceUrl":"https://drive.google.com/file/d/1tOuaOdxpf6wAHAkJccgTzSlF-NlSNQm9/view#page=17"},
+          {"id":"OUT-PPCF-06","name":"Penguatan usaha dan pascapanen","indicator":"1 usaha HHBK berbasis masyarakat didukung dengan peralatan pascapanen","evidenceUrl":"https://drive.google.com/file/d/1tOuaOdxpf6wAHAkJccgTzSlF-NlSNQm9/view#page=17"},
+          {"id":"OUT-PPCF-07","name":"Kemitraan pasar","indicator":"1 MoU antara Kelompok Tani Ketiau Jaya dan Suvarnabhumi Coffee","evidenceUrl":"https://drive.google.com/file/d/1tOuaOdxpf6wAHAkJccgTzSlF-NlSNQm9/view#page=18"},
+          {"id":"OUT-PPCF-08","name":"Pencegahan kebakaran berbasis FDRS","indicator":"3 unit FDRS terpasang dan berfungsi","evidenceUrl":"https://drive.google.com/file/d/1tOuaOdxpf6wAHAkJccgTzSlF-NlSNQm9/view#page=21","mapUrl":"webgis.html?layer=fdrs&village=Pematang+Duku"},
+          {"id":"OUT-PPCF-09","name":"Penurunan indikatif kejadian kebakaran","indicator":"0 hotspot di Pematang Duku selama April 2025–Maret 2026; baseline 395 hotspot pada 2015–2025","evidenceUrl":"https://drive.google.com/file/d/1tOuaOdxpf6wAHAkJccgTzSlF-NlSNQm9/view#page=24"},
+          {"id":"OUT-PPCF-10","name":"Panduan dan diseminasi","indicator":"1 buku panduan; diskusi 15 pemangku kepentingan dan kegiatan desa 22 peserta termasuk 6 perempuan","evidenceUrl":"https://drive.google.com/file/d/1tOuaOdxpf6wAHAkJccgTzSlF-NlSNQm9/view#page=26"}
+        ]
       }
     ],
     "timeline": [
