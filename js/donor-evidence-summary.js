@@ -280,6 +280,9 @@
         target: targetCount,
         state: statusFor(done, targetCount),
         latest: outputRows.length ? outputRows[outputRows.length - 1].evidenceTitle : '',
+        evidenceHref: outputRows.length
+          ? evidenceDestination(outputRows[outputRows.length - 1]).href
+          : '',
         output: output,
         rows: outputRows
       };
