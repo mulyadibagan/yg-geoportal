@@ -642,7 +642,9 @@
       "aramco asia singapore": "Aramco Asia Singapore",
       ppcf: "Pan Pacific Conservation Foundation (PPCF)",
       "pan pacific conservation foundation": "Pan Pacific Conservation Foundation (PPCF)",
-      "pan pacific conservation foundation ppcf": "Pan Pacific Conservation Foundation (PPCF)"
+      "pan pacific conservation foundation ppcf": "Pan Pacific Conservation Foundation (PPCF)",
+      kolibri: "Aliansi Kolibri",
+      "aliansi kolibri": "Aliansi Kolibri"
     };
     return aliases[normalized] || donor;
   }
