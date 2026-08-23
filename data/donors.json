@@ -81,18 +81,41 @@
         "activityGroups": [
           {
             "area": "Kabupaten Bengkalis",
-            "locations": ["Buruk Bakul", "Kelapa Pati", "Sepahat"],
-            "activities": ["Rehabilitasi mangrove", "Pembangunan infrastruktur", "Peningkatan kapasitas", "Pengembangan mata pencaharian kelompok perempuan"]
+            "locations": [
+              "Buruk Bakul",
+              "Kelapa Pati",
+              "Sepahat"
+            ],
+            "activities": [
+              "Rehabilitasi mangrove",
+              "Pembangunan infrastruktur",
+              "Peningkatan kapasitas",
+              "Pengembangan mata pencaharian kelompok perempuan"
+            ]
           },
           {
             "area": "Kabupaten Siak",
-            "locations": ["Tanjung Kuras"],
-            "activities": ["Rehabilitasi mangrove", "Pembangunan rumah bibit masyarakat", "Peningkatan kapasitas"]
+            "locations": [
+              "Tanjung Kuras"
+            ],
+            "activities": [
+              "Rehabilitasi mangrove",
+              "Pembangunan rumah bibit masyarakat",
+              "Peningkatan kapasitas"
+            ]
           },
           {
             "area": "Lintas wilayah",
-            "locations": ["Malaysia", "Bengkalis", "Siak"],
-            "activities": ["Pembelajaran lintas negara", "Perlindungan dan monitoring berbasis masyarakat", "Pelaporan program"]
+            "locations": [
+              "Malaysia",
+              "Bengkalis",
+              "Siak"
+            ],
+            "activities": [
+              "Pembelajaran lintas negara",
+              "Perlindungan dan monitoring berbasis masyarakat",
+              "Pelaporan program"
+            ]
           }
         ],
         "outputs": [
@@ -100,59 +123,127 @@
             "id": "OUT-ARAMCO-P3-01",
             "name": "Mangrove Rehabilitation",
             "activities": [
-              {"id": "ACT-ARAMCO-P3-REH-BB", "name": "Mangrove rehabilitation in Buruk Bakul", "indicator": "Up to 2 ha / 4,000 trees"},
-              {"id": "ACT-ARAMCO-P3-REH-KP", "name": "Mangrove rehabilitation in Kelapa Pati", "indicator": "Up to 3 ha / 6,000 trees"},
-              {"id": "ACT-ARAMCO-P3-REH-SP", "name": "Mangrove rehabilitation in Sepahat", "indicator": "Up to 2 ha / 4,000 trees"},
-              {"id": "ACT-ARAMCO-P3-REH-TK", "name": "Mangrove rehabilitation in Tanjung Kuras", "indicator": "Up to 2 ha / 4,000 trees"}
+              {
+                "id": "ACT-ARAMCO-P3-REH-BB",
+                "name": "Mangrove rehabilitation in Buruk Bakul",
+                "indicator": "Up to 2 ha / 4,000 trees"
+              },
+              {
+                "id": "ACT-ARAMCO-P3-REH-KP",
+                "name": "Mangrove rehabilitation in Kelapa Pati",
+                "indicator": "Up to 3 ha / 6,000 trees"
+              },
+              {
+                "id": "ACT-ARAMCO-P3-REH-SP",
+                "name": "Mangrove rehabilitation in Sepahat",
+                "indicator": "Up to 2 ha / 4,000 trees"
+              },
+              {
+                "id": "ACT-ARAMCO-P3-REH-TK",
+                "name": "Mangrove rehabilitation in Tanjung Kuras",
+                "indicator": "Up to 2 ha / 4,000 trees"
+              }
             ]
           },
           {
             "id": "OUT-ARAMCO-P3-02",
             "name": "Infrastructure Development",
             "activities": [
-              {"id": "ACT-ARAMCO-P3-WAVE", "name": "Nibung-based wave breaker in Kelapa Pati", "indicator": "100 metres constructed"},
-              {"id": "ACT-ARAMCO-P3-NURSERY-SP", "name": "Community nursery in Sepahat", "indicator": "1 nursery established with care and maintenance training"},
-              {"id": "ACT-ARAMCO-P3-NURSERY-TK", "name": "Community nursery in Tanjung Kuras", "indicator": "1 nursery established with care and maintenance training"}
+              {
+                "id": "ACT-ARAMCO-P3-WAVE",
+                "name": "Nibung-based wave breaker in Kelapa Pati",
+                "indicator": "100 metres constructed"
+              },
+              {
+                "id": "ACT-ARAMCO-P3-NURSERY-SP",
+                "name": "Community nursery in Sepahat",
+                "indicator": "1 nursery established with care and maintenance training"
+              },
+              {
+                "id": "ACT-ARAMCO-P3-NURSERY-TK",
+                "name": "Community nursery in Tanjung Kuras",
+                "indicator": "1 nursery established with care and maintenance training"
+              }
             ]
           },
           {
             "id": "OUT-ARAMCO-P3-03",
             "name": "Capacity Building",
             "activities": [
-              {"id": "ACT-ARAMCO-P3-CB-BENGKALIS", "name": "Advanced mangrove management training in Bengkalis", "indicator": "Sekat Bakau, Paghet Segagah, and Sepahat Hijau members trained"},
-              {"id": "ACT-ARAMCO-P3-CB-SIAK", "name": "Advanced mangrove management training in Siak", "indicator": "Belatram members trained"}
+              {
+                "id": "ACT-ARAMCO-P3-CB-BENGKALIS",
+                "name": "Advanced mangrove management training in Bengkalis",
+                "indicator": "Sekat Bakau, Paghet Segagah, and Sepahat Hijau members trained"
+              },
+              {
+                "id": "ACT-ARAMCO-P3-CB-SIAK",
+                "name": "Advanced mangrove management training in Siak",
+                "indicator": "Belatram members trained"
+              }
             ]
           },
           {
             "id": "OUT-ARAMCO-P3-04",
             "name": "Livelihood Development for Women Groups",
             "activities": [
-              {"id": "ACT-ARAMCO-P3-WOMEN-TRAINING", "name": "Mangrove-based economic training", "indicator": "Economic training conducted"},
-              {"id": "ACT-ARAMCO-P3-WOMEN-MARKET", "name": "Product and local market development", "indicator": "Products and local market developed"}
+              {
+                "id": "ACT-ARAMCO-P3-WOMEN-TRAINING",
+                "name": "Mangrove-based economic training",
+                "indicator": "Economic training conducted"
+              },
+              {
+                "id": "ACT-ARAMCO-P3-WOMEN-MARKET",
+                "name": "Product and local market development",
+                "indicator": "Products and local market developed"
+              }
             ]
           },
           {
             "id": "OUT-ARAMCO-P3-05",
             "name": "Cross-Border Learning Exchange",
             "activities": [
-              {"id": "ACT-ARAMCO-P3-EXCHANGE", "name": "Peer learning visit to Malaysia", "indicator": "Approximately 16 participants complete a 4-day programme"}
+              {
+                "id": "ACT-ARAMCO-P3-EXCHANGE",
+                "name": "Peer learning visit to Malaysia",
+                "indicator": "Approximately 16 participants complete a 4-day programme"
+              }
             ]
           },
           {
             "id": "OUT-ARAMCO-P3-06",
             "name": "Protection & Monitoring",
             "activities": [
-              {"id": "ACT-ARAMCO-P3-PATROL", "name": "Community-based mangrove patrol and monitoring", "indicator": "Community patrol and monitoring established"},
-              {"id": "ACT-ARAMCO-P3-PREVENTION", "name": "Encroachment and pollution prevention", "indicator": "Prevention measures implemented"}
+              {
+                "id": "ACT-ARAMCO-P3-PATROL",
+                "name": "Community-based mangrove patrol and monitoring",
+                "indicator": "Community patrol and monitoring established"
+              },
+              {
+                "id": "ACT-ARAMCO-P3-PREVENTION",
+                "name": "Encroachment and pollution prevention",
+                "indicator": "Prevention measures implemented"
+              }
             ]
           },
           {
             "id": "OUT-ARAMCO-P3-07",
             "name": "Reporting",
             "activities": [
-              {"id": "ACT-ARAMCO-P3-QUARTERLY", "name": "Quarterly email updates", "indicator": "Quarterly updates submitted"},
-              {"id": "ACT-ARAMCO-P3-PROGRESS", "name": "Progress report", "indicator": "1 progress report submitted"},
-              {"id": "ACT-ARAMCO-P3-FINAL", "name": "Final project report", "indicator": "1 final report submitted"}
+              {
+                "id": "ACT-ARAMCO-P3-QUARTERLY",
+                "name": "Quarterly email updates",
+                "indicator": "Quarterly updates submitted"
+              },
+              {
+                "id": "ACT-ARAMCO-P3-PROGRESS",
+                "name": "Progress report",
+                "indicator": "1 progress report submitted"
+              },
+              {
+                "id": "ACT-ARAMCO-P3-FINAL",
+                "name": "Final project report",
+                "indicator": "1 final report submitted"
+              }
             ]
           }
         ]
@@ -759,81 +850,108 @@
     ],
     "indicators": [
       {
-        "label": "Luas HKm",
-        "value": "617 ha",
+        "label": "Asesmen Awal",
+        "value": "01",
         "progress": 100
       },
       {
-        "label": "Kegiatan pelatihan",
-        "value": "5",
+        "label": "Pelatihan Pengamanan Kawasan Hutan",
+        "value": "02",
         "progress": 100
       },
       {
-        "label": "Responden survei kepuasan",
-        "value": "47",
+        "label": "Pengembangan Keramba Ikan dan Diversifikasi Hasil Olahan",
+        "value": "03",
         "progress": 100
       },
       {
-        "label": "Kelompok mitra",
-        "value": "1 KTH",
+        "label": "Pelatihan Pengolahan Gaplek dari Ubi",
+        "value": "04",
         "progress": 100
       },
       {
-        "label": "Rencana rehabilitasi MPTS",
-        "value": "50 ha",
+        "label": "Pelatihan Pembuatan Pupuk Kompos",
+        "value": "05",
         "progress": 100
       },
       {
-        "label": "Sarana dan usaha kelompok",
-        "value": "7 jenis",
+        "label": "Penyusunan Administrasi Kelompok",
+        "value": "06",
         "progress": 100
       }
     ],
     "programs": [
       {
         "id": "PRG-PF-SIARANG-ARANG-2025",
-        "name": "Penguatan KTH Siarang-arang Lestari",
+        "name": "Program Perhutanan Sosial KTH Siarang-arang Lestari",
         "period": "Desember 2025–Maret 2026",
         "status": "Selesai",
-        "summary": "Penguatan perhutanan sosial, rehabilitasi MPTS, peningkatan kapasitas, survei kepuasan masyarakat, dan pengembangan sarana usaha kelompok.",
+        "summary": "Enam komponen inti program: asesmen awal, pengamanan kawasan hutan, keramba ikan dan diversifikasi hasil olahan, gaplek, kompos, serta administrasi kelompok.",
         "outputs": [
           {
             "id": "OUT-PF-01",
-            "name": "Peningkatan Kapasitas KTH",
+            "name": "Asesmen Awal",
             "activities": [
-              {"id": "ACT-PF-CB-01", "name": "Pelatihan Budidaya Ikan Baung", "indicator": "1 kegiatan pelatihan dilaksanakan"},
-              {"id": "ACT-PF-CB-02", "name": "Pelatihan Pengolahan Gaplek", "indicator": "1 kegiatan pelatihan dilaksanakan"},
-              {"id": "ACT-PF-CB-03", "name": "Pelatihan Pengolahan Ikan Salai", "indicator": "1 kegiatan pelatihan dilaksanakan"},
-              {"id": "ACT-PF-CB-04", "name": "Pelatihan Pembuatan Pupuk Kompos", "indicator": "1 kegiatan pelatihan dilaksanakan"},
-              {"id": "ACT-PF-CB-05", "name": "Penguatan Kelembagaan dan Administrasi", "indicator": "1 kegiatan pelatihan dilaksanakan"}
+              {
+                "id": "ACT-PF-01",
+                "name": "Asesmen Awal",
+                "indicator": "Asesmen awal kondisi KTH dan wilayah program"
+              }
             ]
           },
           {
             "id": "OUT-PF-02",
-            "name": "Perlindungan Kawasan Perhutanan Sosial",
+            "name": "Pelatihan Pengamanan Kawasan Hutan",
             "activities": [
-              {"id": "ACT-PF-PROTECT-01", "name": "Pelatihan Pengamanan Kawasan Hutan", "indicator": "1 kegiatan pelatihan dilaksanakan"}
+              {
+                "id": "ACT-PF-02",
+                "name": "Pelatihan Pengamanan Kawasan Hutan",
+                "indicator": "Peningkatan kapasitas pengamanan, pemantauan, dan pemahaman hukum kawasan hutan"
+              }
             ]
           },
           {
             "id": "OUT-PF-03",
-            "name": "Perencanaan Rehabilitasi MPTS",
+            "name": "Pengembangan Keramba Ikan dan Diversifikasi Hasil Olahan",
             "activities": [
-              {"id": "ACT-PF-MPTS-01", "name": "Penyusunan rencana rehabilitasi MPTS", "indicator": "Rencana rehabilitasi seluas 50 ha terdokumentasi"}
+              {
+                "id": "ACT-PF-03",
+                "name": "Pengembangan Keramba Ikan dan Diversifikasi Hasil Olahan",
+                "indicator": "Budidaya ikan melalui media kolam dan pengolahan salai ikan baung"
+              }
             ]
           },
           {
             "id": "OUT-PF-04",
-            "name": "Pengembangan Sarana dan Usaha Kelompok",
+            "name": "Pelatihan Pengolahan Gaplek dari Ubi",
             "activities": [
-              {"id": "ACT-PF-BUSINESS-01", "name": "Penguatan sarana dan usaha KTH", "indicator": "7 jenis sarana dan usaha kelompok terdokumentasi"}
+              {
+                "id": "ACT-PF-04",
+                "name": "Pelatihan Pengolahan Gaplek dari Ubi",
+                "indicator": "Peningkatan keterampilan pengolahan ubi menjadi gaplek bernilai jual"
+              }
             ]
           },
           {
             "id": "OUT-PF-05",
-            "name": "Survei Kepuasan Masyarakat",
+            "name": "Pelatihan Pembuatan Pupuk Kompos",
             "activities": [
-              {"id": "ACT-PF-SURVEY-01", "name": "Pelaksanaan survei kepuasan", "indicator": "47 responden terlibat"}
+              {
+                "id": "ACT-PF-05",
+                "name": "Pelatihan Pembuatan Pupuk Kompos",
+                "indicator": "Pengolahan bahan organik, fermentasi, dan aplikasi pupuk kompos"
+              }
+            ]
+          },
+          {
+            "id": "OUT-PF-06",
+            "name": "Penyusunan Administrasi Kelompok",
+            "activities": [
+              {
+                "id": "ACT-PF-06",
+                "name": "Penyusunan Administrasi Kelompok",
+                "indicator": "Penguatan dokumentasi, pencatatan keuangan, dan tata kelola KTH"
+              }
             ]
           }
         ]
@@ -853,8 +971,82 @@
     ],
     "sourceDocument": {
       "title": "Laporan Kegiatan Siarang-arang Lestari",
-      "url": "https://drive.google.com/file/d/1gNHjY_HHUffMNJHh3tkBlg4eJA8XhBqY/view?usp=drivesdk",
-      "note": "Daftar hadir kegiatan mengandung peserta berulang; tidak digunakan sebagai jumlah penerima manfaat unik."
-    }
+      "url": "https://drive.google.com/file/d/16V7lvQRqhlUumuHqRURp0x-47CQvWvfX/view?usp=drivesdk",
+      "note": "Evidence dibagi menjadi enam bagian sesuai struktur inti laporan."
+    },
+    "verifiedEvidence": [
+      {
+        "evidenceId": "EVD-ACT-PF-01",
+        "donorName": "Pertamina Foundation",
+        "programmeId": "PRG-PF-SIARANG-ARANG-2025",
+        "indicatorId": "ACT-PF-01",
+        "indicatorLabel": "Asesmen Awal",
+        "evidenceType": "Evidence Nonspasial",
+        "evidenceTitle": "Asesmen Awal · Halaman 11–14",
+        "evidenceUrl": "https://drive.google.com/file/d/16V7lvQRqhlUumuHqRURp0x-47CQvWvfX/view?usp=drivesdk#page=11",
+        "verificationBasis": "Laporan Kegiatan Siarang-arang Lestari",
+        "note": "Asesmen awal kondisi KTH dan wilayah program"
+      },
+      {
+        "evidenceId": "EVD-ACT-PF-02",
+        "donorName": "Pertamina Foundation",
+        "programmeId": "PRG-PF-SIARANG-ARANG-2025",
+        "indicatorId": "ACT-PF-02",
+        "indicatorLabel": "Pelatihan Pengamanan Kawasan Hutan",
+        "evidenceType": "Evidence Nonspasial",
+        "evidenceTitle": "Pelatihan Pengamanan Kawasan Hutan · Halaman 15–24",
+        "evidenceUrl": "https://drive.google.com/file/d/16V7lvQRqhlUumuHqRURp0x-47CQvWvfX/view?usp=drivesdk#page=15",
+        "verificationBasis": "Laporan Kegiatan Siarang-arang Lestari",
+        "note": "Peningkatan kapasitas pengamanan, pemantauan, dan pemahaman hukum kawasan hutan"
+      },
+      {
+        "evidenceId": "EVD-ACT-PF-03",
+        "donorName": "Pertamina Foundation",
+        "programmeId": "PRG-PF-SIARANG-ARANG-2025",
+        "indicatorId": "ACT-PF-03",
+        "indicatorLabel": "Pengembangan Keramba Ikan dan Diversifikasi Hasil Olahan",
+        "evidenceType": "Evidence Nonspasial",
+        "evidenceTitle": "Pengembangan Keramba Ikan dan Diversifikasi Hasil Olahan · Halaman 25–43",
+        "evidenceUrl": "https://drive.google.com/file/d/16V7lvQRqhlUumuHqRURp0x-47CQvWvfX/view?usp=drivesdk#page=25",
+        "verificationBasis": "Laporan Kegiatan Siarang-arang Lestari",
+        "note": "Budidaya ikan melalui media kolam dan pengolahan salai ikan baung"
+      },
+      {
+        "evidenceId": "EVD-ACT-PF-04",
+        "donorName": "Pertamina Foundation",
+        "programmeId": "PRG-PF-SIARANG-ARANG-2025",
+        "indicatorId": "ACT-PF-04",
+        "indicatorLabel": "Pelatihan Pengolahan Gaplek dari Ubi",
+        "evidenceType": "Evidence Nonspasial",
+        "evidenceTitle": "Pelatihan Pengolahan Gaplek dari Ubi · Halaman 44–53",
+        "evidenceUrl": "https://drive.google.com/file/d/16V7lvQRqhlUumuHqRURp0x-47CQvWvfX/view?usp=drivesdk#page=44",
+        "verificationBasis": "Laporan Kegiatan Siarang-arang Lestari",
+        "note": "Peningkatan keterampilan pengolahan ubi menjadi gaplek bernilai jual"
+      },
+      {
+        "evidenceId": "EVD-ACT-PF-05",
+        "donorName": "Pertamina Foundation",
+        "programmeId": "PRG-PF-SIARANG-ARANG-2025",
+        "indicatorId": "ACT-PF-05",
+        "indicatorLabel": "Pelatihan Pembuatan Pupuk Kompos",
+        "evidenceType": "Evidence Nonspasial",
+        "evidenceTitle": "Pelatihan Pembuatan Pupuk Kompos · Halaman 54–64",
+        "evidenceUrl": "https://drive.google.com/file/d/16V7lvQRqhlUumuHqRURp0x-47CQvWvfX/view?usp=drivesdk#page=54",
+        "verificationBasis": "Laporan Kegiatan Siarang-arang Lestari",
+        "note": "Pengolahan bahan organik, fermentasi, dan aplikasi pupuk kompos"
+      },
+      {
+        "evidenceId": "EVD-ACT-PF-06",
+        "donorName": "Pertamina Foundation",
+        "programmeId": "PRG-PF-SIARANG-ARANG-2025",
+        "indicatorId": "ACT-PF-06",
+        "indicatorLabel": "Penyusunan Administrasi Kelompok",
+        "evidenceType": "Evidence Nonspasial",
+        "evidenceTitle": "Penyusunan Administrasi Kelompok · Mulai halaman 65",
+        "evidenceUrl": "https://drive.google.com/file/d/16V7lvQRqhlUumuHqRURp0x-47CQvWvfX/view?usp=drivesdk#page=65",
+        "verificationBasis": "Laporan Kegiatan Siarang-arang Lestari",
+        "note": "Penguatan dokumentasi, pencatatan keuangan, dan tata kelola KTH"
+      }
+    ]
   }
 ]
