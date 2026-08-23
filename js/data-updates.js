@@ -830,7 +830,7 @@ function toDirectDriveUrl(url){
     const latestByObject = {};
     const latestByLocation = {};
     (data.updates || []).forEach(update => {
-      if (!isPhotoUpdate(update) || targetLayer(update) !== "area_mangrove") return;
+      if (!isPhotoUpdate(update)) return;
       const key = objectId(update);
       const photos = photoValues(update);
       if (!photos.length) return;
@@ -876,6 +876,25 @@ function toDirectDriveUrl(url){
         result[key] = latestByLocation[key].photos;
         return result;
       }, {});
+
+    /*
+     * Foto monitoring berlaku untuk seluruh objek program, bukan hanya
+     * area mangrove. Tempelkan kembali foto berdasarkan ID target agar
+     * laporan PUP/restorasi hutan tetap mempertahankan dokumentasinya
+     * setelah objek dipindahkan ke layer tematik yang baru.
+     */
+    const monitoringGroup = window.YG_MAP && window.YG_MAP.layerObjects
+      ? window.YG_MAP.layerObjects.monitoring_reports
+      : null;
+    if (monitoringGroup && typeof monitoringGroup.eachLayer === "function") {
+      monitoringGroup.eachLayer(layer => {
+        const props = layer && layer.feature && layer.feature.properties || {};
+        const photos = entityIds(props)
+          .map(id => window.YG_LATEST_MONITORING_PHOTOS_BY_OBJECT[id])
+          .find(value => Array.isArray(value) && value.length);
+        if (photos) setMonitoringLayerPhotos(layer, photos);
+      });
+    }
     syncLegacyMonitoringPhotosByLocation();
     document.dispatchEvent(new CustomEvent("yg:monitoring-update-photos"));
   }
