@@ -1,25 +1,15 @@
 {
-  "2942.0": {
-    "name": "LPHD Sungai Linau",
-    "demography": {
-      "households": 247,
-      "population": 1286,
-      "male": 668,
-      "female": 618,
-      "source": "BPS__ Populasi_HD.xlsx (versi terbaru di Drive Yayasan Gambut)"
-    },
-    "management": {
-      "forestManagementUnit": "KPH Bengkalis Pulau",
-      "ecosystem": "Gambut",
-      "restorationTargetHa": 350,
-      "rkpsStatus": "Dokumen RKPS tersedia"
-    },
-    "kups": [{"name": "KUPS Linau Jaya Gambut", "legalStatus": "SK KPH tersedia"}],
-    "documents": [
-      {"label": "SK LPHD Sungai Linau", "category": "Legalitas", "url": "https://drive.google.com/file/d/1qSrnOGXo_C12SsH9CbrE9IpFpHupr734/view"},
-      {"label": "SK KPH KUPS Linau Jaya Gambut", "category": "KUPS", "url": "https://drive.google.com/file/d/1U0UbblBqMMpC0u11Z9wuRDCDEaF5oBgE/view"},
-      {"label": "RKPS LPHD Sungai Linau", "category": "Rencana kerja", "url": "https://drive.google.com/file/d/1-YMRsVIsFCY-6hH8mLqcZqXnP81Sue3X/view"},
-      {"label": "Peta LPHD Sungai Linau", "category": "Peta", "url": "https://drive.google.com/file/d/1kVcCb32SJi7E4kvFvuSoKKFc_QY_5wPR/view"}
-    ]
-  }
+  "3794.0":{"name":"KTH Mangrove Berkah Usaha","documents":[{"label":"SK KTH Mangrove Berkah Usaha","category":"Legalitas","url":"https://drive.google.com/file/d/1KT2-gF6Q-nBGNqc2xQsLWVgEu-F8iFEC/view"}]},
+  "3795.0":{"name":"KTH Bangkit Bersama","documents":[{"label":"SK KTH Mangrove Bangkit Bersama","category":"Legalitas","url":"https://drive.google.com/file/d/1jYPCBZbPxS4-CEoBzrdepoGeb0TFDQPG/view"}]},
+  "3796.0":{"name":"KTH Pulau Mandiri","documents":[{"label":"SK KTH Pulau Mandiri","category":"Legalitas","url":"https://drive.google.com/file/d/1-ehZDIM78gW2eGyuwtqrPxsyOl0A0xhK/view"}]},
+  "sk.5214/menlhk-pskl/pkps/psl.0/5/2023":{"name":"KTH Akit Maju","documents":[{"label":"SK KTH Akit Maju","category":"Legalitas","url":"https://drive.google.com/file/d/1e8IYeUztYqjjo-QeKpCm2DmdJqCNWGMV/view"},{"label":"Peta KTH Akit Maju","category":"Peta","url":"https://drive.google.com/file/d/1avzhyheQBlZX_ESCurn2xBw3MnAL_Lhr/view"}]},
+  "sk.7721/menlhk-pskl/pkps/psl.0/7/2023":{"name":"KTH Maju Bersama","documents":[{"label":"SK KTH Maju Bersama","category":"Legalitas","url":"https://drive.google.com/file/d/1uNTx5cqq501ef7dMqNZgGDIv7fmP3ryr/view"},{"label":"Peta KTH Maju Bersama","category":"Peta","url":"https://drive.google.com/file/d/1NiCcrbh9ubDqrQB0U7UFNb4qu_au5-lI/view"}]},
+  "4042.0":{"name":"KTH Bangun Mekar Jaya","documents":[{"label":"SK KTH Bangun Mekar Jaya","category":"Legalitas","url":"https://drive.google.com/file/d/1Jnj4_5EyrDHmKby7ZmZTZ9tkd2yk-BIp/view"},{"label":"Peta KTH Bangun Mekar Jaya","category":"Peta","url":"https://drive.google.com/file/d/136wLyfJIKbZZDvTHsm5q1NVaS9Y4muC1/view"}]},
+  "4014.0":{"name":"KTH Ketam Putih Makmur Jaya Bakau","documents":[{"label":"SK KTH Ketam Putih Makmur Jaya Bakau","category":"Legalitas","url":"https://drive.google.com/file/d/1q6-5AVV2H8RIDMdRCsiak-PrjgN8f0Mf/view"},{"label":"Peta KTH Ketam Putih Makmur Jaya Bakau","category":"Peta","url":"https://drive.google.com/file/d/13OTzfK5PlAHXPo5iCKbPEbFUvi9kEuDg/view"}]},
+  "3981.0":{"name":"KTH Swadaya Mandiri Bakau","documents":[{"label":"SK KTH Swadaya Mandiri Bakau","category":"Legalitas","url":"https://drive.google.com/file/d/1EKTA-Fem0B2nSDU7KS_X5EXjSNVBECZs/view"},{"label":"Peta KTH Swadaya Mandiri Bakau","category":"Peta","url":"https://drive.google.com/file/d/1TorDn9GAM8Kt4H9J5gXxAy-fcv0zhD14/view"}]},
+  "4135.0":{"name":"KTH Karya Medang Jaya","documents":[{"label":"SK KTH Karya Medang Jaya","category":"Legalitas","url":"https://drive.google.com/file/d/1YCfBanpbC_feKzGOF7xxwAlQAiGC_zcC/view"},{"label":"Peta KTH Karya Medang Jaya","category":"Peta","url":"https://drive.google.com/file/d/15D25WEGkUHeMzo7ZKjIQsMPz_qOhV4bt/view"}]},
+  "2941.0":{"name":"LPHD Muara Dua","demography":{"households":465,"population":1778,"male":932,"female":846,"source":"BPS__ Populasi_HD.xlsx (versi terbaru di Drive Yayasan Gambut)"},"management":{"forestManagementUnit":"KPH Bengkalis Pulau","ecosystem":"Gambut","restorationTargetHa":25,"rkpsStatus":"Dokumen RKPS tersedia"},"documents":[{"label":"SK LPHD Muara Dua","category":"Legalitas","url":"https://drive.google.com/file/d/1ZKAaKezsxKwpP76YnZRls1fOoDLbH44W/view"},{"label":"RKPS LPHD Muara Dua","category":"Rencana kerja","url":"https://docs.google.com/document/d/1kK6-PszvExRiO7-PmdCtNBzIDRnZo8Mx/edit"},{"label":"Peta LPHD Muara Dua","category":"Peta","url":"https://drive.google.com/file/d/1GDJSN6B_GEyZrwPCyDmHt5H5N0zW49-U/view"}]},
+  "2942.0":{"name":"LPHD Sungai Linau","demography":{"households":247,"population":1286,"male":668,"female":618,"source":"BPS__ Populasi_HD.xlsx (versi terbaru di Drive Yayasan Gambut)"},"management":{"forestManagementUnit":"KPH Bengkalis Pulau","ecosystem":"Gambut","restorationTargetHa":350,"rkpsStatus":"Dokumen RKPS tersedia"},"kups":[{"name":"KUPS Linau Jaya Gambut","legalStatus":"SK KPH tersedia"}],"documents":[{"label":"SK LPHD Sungai Linau","category":"Legalitas","url":"https://drive.google.com/file/d/1qSrnOGXo_C12SsH9CbrE9IpFpHupr734/view"},{"label":"SK KPH KUPS Linau Jaya Gambut","category":"KUPS","url":"https://drive.google.com/file/d/1U0UbblBqMMpC0u11Z9wuRDCDEaF5oBgE/view"},{"label":"RKPS LPHD Sungai Linau","category":"Rencana kerja","url":"https://drive.google.com/file/d/1-YMRsVIsFCY-6hH8mLqcZqXnP81Sue3X/view"},{"label":"Peta LPHD Sungai Linau","category":"Peta","url":"https://drive.google.com/file/d/1kVcCb32SJi7E4kvFvuSoKKFc_QY_5wPR/view"}]},
+  "11610 tahun 2024":{"name":"LDPH Teluk Pambang","documents":[{"label":"SK LDPH Teluk Pambang","category":"Legalitas","url":"https://drive.google.com/file/d/1-SdCzbuWMm-GdIUAS24OjobSBoQoBBoA/view"},{"label":"Peta LDPH Teluk Pambang","category":"Peta","url":"https://drive.google.com/file/d/17wXkhq3xoSArcAsSrrdKOJmUYQaXdgGb/view"}]},
+  "sk.9848/menlhk-pskl/pkps/psl.0/9/2023":{"name":"LPHD Bantan Air","documents":[{"label":"SK LPHD Bantan Air","category":"Legalitas","url":"https://drive.google.com/file/d/1tt8r5hflwsTkut8f9LJzadOCcxfah6w3/view"},{"label":"Peta LPHD Bantan Air","category":"Peta","url":"https://drive.google.com/file/d/1XSTFrFbtmp_OAZlXPXtBtnISsN3T4k2J/view"}]}
 }

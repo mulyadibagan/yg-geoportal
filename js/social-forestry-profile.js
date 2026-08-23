@@ -47,20 +47,18 @@ function renderSupplemental(detail){
   var section=el("sf-detail");
   if(!detail){section.hidden=true;return}
   var demography=detail.demography||{},management=detail.management||{},kups=Array.isArray(detail.kups)?detail.kups:[],documents=Array.isArray(detail.documents)?detail.documents:[];
-  el("sf-detail-summary").innerHTML=[
-    item("Lembaga pengelola",detail.name||"—"),
-    item("KUPS",kups.length?kups.map(function(row){return row.name}).join(", "):"—"),
-    item("Status legalitas KUPS",kups.length?kups.map(function(row){return row.legalStatus}).join(", "):"—"),
-    item("Jumlah keluarga",number(demography.households)!=null?format(demography.households,0)+" KK":"—"),
-    item("Jumlah penduduk",number(demography.population)!=null?format(demography.population,0)+" jiwa":"—"),
-    item("Komposisi penduduk",number(demography.male)!=null&&number(demography.female)!=null?format(demography.male,0)+" laki-laki · "+format(demography.female,0)+" perempuan":"—"),
-    item("KPH/FMU",management.forestManagementUnit||"—"),
-    item("Ekosistem",management.ecosystem||"—"),
-    item("Target area restorasi",number(management.restorationTargetHa)!=null?format(management.restorationTargetHa,0)+" ha":"—"),
-    item("RKPS",management.rkpsStatus||"—")
-  ].join("");
+  var summary=[item("Lembaga pengelola",detail.name||"—")];
+  if(kups.length){summary.push(item("KUPS",kups.map(function(row){return row.name}).join(", ")));summary.push(item("Status legalitas KUPS",kups.map(function(row){return row.legalStatus}).filter(Boolean).join(", ")||"—"));}
+  if(number(demography.households)!=null){summary.push(item("Jumlah keluarga",format(demography.households,0)+" KK"));}
+  if(number(demography.population)!=null){summary.push(item("Jumlah penduduk",format(demography.population,0)+" jiwa"));}
+  if(number(demography.male)!=null&&number(demography.female)!=null){summary.push(item("Komposisi penduduk",format(demography.male,0)+" laki-laki · "+format(demography.female,0)+" perempuan"));}
+  if(management.forestManagementUnit){summary.push(item("KPH/FMU",management.forestManagementUnit));}
+  if(management.ecosystem){summary.push(item("Ekosistem",management.ecosystem));}
+  if(number(management.restorationTargetHa)!=null){summary.push(item("Target area restorasi",format(management.restorationTargetHa,0)+" ha"));}
+  if(management.rkpsStatus){summary.push(item("RKPS",management.rkpsStatus));}
+  el("sf-detail-summary").innerHTML=summary.join("");
   el("sf-document-list").innerHTML=documents.map(function(doc){return '<a href="'+esc(doc.url)+'" target="_blank" rel="noopener noreferrer"><span>'+esc(doc.category||"Dokumen")+'</span><strong>'+esc(doc.label||"Buka dokumen")+'</strong><b aria-hidden="true">↗</b></a>'}).join("");
-  el("sf-detail-note").textContent="Sumber demografi: "+(demography.source||"dokumen organisasi")+". Angka kegiatan dan capaian lapangan akan ditambahkan setelah tersedia laporan pendukung.";
+  el("sf-detail-note").textContent=demography.source?"Sumber demografi: "+demography.source+". Data yang belum tersedia tidak ditampilkan.":"Dokumen berasal dari arsip organisasi. Data yang belum tersedia tidak ditampilkan.";
   section.hidden=false;
 }
 function render(feature,record,data,detail){
@@ -79,7 +77,7 @@ function render(feature,record,data,detail){
 async function init(){
   if(!key){showError("Tautan areal tidak lengkap. Pilih Perhutanan Sosial melalui WebGIS.");return}
   try{
-    var results=await Promise.all([json("data/village-forest-analytics.json?v=20260822-social-profile1"),json("data/PERHUTANAN_SOSIAL_RIAU.geojson?v=20260822-social-profile1"),json("data/social-forestry-details.json?v=20260823-sungai-linau-public2")]),data=results[0],geo=results[1],details=results[2]||{};
+    var results=await Promise.all([json("data/village-forest-analytics.json?v=20260822-social-profile1"),json("data/PERHUTANAN_SOSIAL_RIAU.geojson?v=20260822-social-profile1"),json("data/social-forestry-details.json?v=20260823-bengkalis-documents1")]),data=results[0],geo=results[1],details=results[2]||{};
     var feature=(geo.features||[]).find(function(f){return featureKey(f)===key});
     var record=(data.socialForestry||{})[key];
     if(!feature&&record){feature=(geo.features||[]).find(function(f){return normalized((f.properties||{}).NAMA_HKM)===normalized(record.name)})}
