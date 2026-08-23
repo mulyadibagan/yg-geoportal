@@ -6,7 +6,7 @@
   <title>Login Staf | YG GeoPortal</title>
   <link rel="icon" href="assets/logo-yayasan-gambut.png">
   <link rel="stylesheet" href="css/site-brand.css?v=20260821-staff-login1">
-  <link rel="stylesheet" href="css/staff-login.css?v=20260821-staff-login1">
+  <link rel="stylesheet" href="css/staff-login.css?v=20260823-password-toggle1">
   <meta name="robots" content="noindex,nofollow">
   <meta name="theme-color" content="#087653">
 </head>
@@ -26,7 +26,10 @@
           <label for="staff-username">Username</label>
           <input id="staff-username" name="username" autocomplete="username" required>
           <label for="staff-password">Password</label>
-          <input id="staff-password" name="password" type="password" autocomplete="current-password" required>
+          <div class="password-field">
+            <input id="staff-password" name="password" type="password" autocomplete="current-password" required>
+            <button class="password-toggle" type="button" data-password-toggle="staff-password" aria-label="Tampilkan password" aria-pressed="false">Lihat</button>
+          </div>
           <button id="staff-login-submit" type="submit">Login</button>
         </form>
         <p id="staff-login-status" class="staff-login-status" role="status" aria-live="polite"></p>
@@ -54,9 +57,15 @@
         <p class="staff-login-intro">Password minimal 10 karakter. Tautan hanya dapat digunakan satu kali.</p>
         <form id="staff-password-reset-form">
           <label for="password-reset-new">Password baru</label>
-          <input id="password-reset-new" type="password" autocomplete="new-password" minlength="10" required>
+          <div class="password-field">
+            <input id="password-reset-new" type="password" autocomplete="new-password" minlength="10" required>
+            <button class="password-toggle" type="button" data-password-toggle="password-reset-new" aria-label="Tampilkan password baru" aria-pressed="false">Lihat</button>
+          </div>
           <label for="password-reset-confirm">Ulangi password baru</label>
-          <input id="password-reset-confirm" type="password" autocomplete="new-password" minlength="10" required>
+          <div class="password-field">
+            <input id="password-reset-confirm" type="password" autocomplete="new-password" minlength="10" required>
+            <button class="password-toggle" type="button" data-password-toggle="password-reset-confirm" aria-label="Tampilkan ulang password baru" aria-pressed="false">Lihat</button>
+          </div>
           <button id="staff-password-reset-submit" type="submit">Simpan password baru</button>
         </form>
         <p id="staff-password-reset-status" class="staff-login-status" role="status" aria-live="polite"></p>
@@ -73,9 +82,15 @@
           <label for="registration-email">Email resmi Yayasan Gambut</label>
           <input id="registration-email" type="email" autocomplete="email" placeholder="nama@yayasangambut.org" required>
           <label for="registration-password">Buat password</label>
-          <input id="registration-password" type="password" autocomplete="new-password" minlength="10" required>
+          <div class="password-field">
+            <input id="registration-password" type="password" autocomplete="new-password" minlength="10" required>
+            <button class="password-toggle" type="button" data-password-toggle="registration-password" aria-label="Tampilkan password" aria-pressed="false">Lihat</button>
+          </div>
           <label for="registration-password-confirm">Ulangi password</label>
-          <input id="registration-password-confirm" type="password" autocomplete="new-password" minlength="10" required>
+          <div class="password-field">
+            <input id="registration-password-confirm" type="password" autocomplete="new-password" minlength="10" required>
+            <button class="password-toggle" type="button" data-password-toggle="registration-password-confirm" aria-label="Tampilkan ulang password" aria-pressed="false">Lihat</button>
+          </div>
           <button id="staff-registration-submit" type="submit">Kirim tautan verifikasi</button>
         </form>
         <p id="staff-registration-status" class="staff-login-status" role="status" aria-live="polite"></p>
@@ -91,6 +106,6 @@
     </section>
   </main>
   <script src="js/auth.js?v=20260821-password-reset1"></script>
-  <script src="js/staff-login.js?v=20260821-password-reset1"></script>
+  <script src="js/staff-login.js?v=20260823-password-toggle1"></script>
 </body>
 </html>
