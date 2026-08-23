@@ -5,7 +5,8 @@
  * Password tidak disimpan dalam source code; hanya hash hasil 2.000 putaran
  * SHA-256 yang tersimpan di sini.
  */
-const EDITOR_SESSION_HOURS = 12;
+const ADMIN_SESSION_HOURS = 7 * 24;
+const STAFF_SESSION_HOURS = 24;
 const STAFF_ACTIVATION_LINK_MINUTES = 30;
 const STAFF_PASSWORD_RESET_MINUTES = 30;
 const STAFF_PORTAL_URL = 'https://webgisyg.id/staff-login.html';
@@ -366,7 +367,10 @@ function createEditorLoginResult_(requestId, username, password) {
   }
 
   const now = Date.now();
-  const expiresAt = now + EDITOR_SESSION_HOURS * 60 * 60 * 1000;
+  const sessionHours = clean_(user.role).toLowerCase() === 'admin'
+    ? ADMIN_SESSION_HOURS
+    : STAFF_SESSION_HOURS;
+  const expiresAt = now + sessionHours * 60 * 60 * 1000;
   const sessionToken =
     Utilities.getUuid().replace(/-/g, '') +
     Utilities.getUuid().replace(/-/g, '');
