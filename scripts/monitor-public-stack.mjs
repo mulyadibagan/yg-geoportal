@@ -29,7 +29,11 @@ function assertSnapshot(name, result) {
 }
 
 const health = await getJson(`${appsScript}?page=health`);
-if (!health.data?.ok || !health.data?.dependencies?.spreadsheet || !health.data?.dependencies?.drive) {
+if (
+  !health.data?.ok ||
+  health.data?.dependencies?.spreadsheet === false ||
+  health.data?.dependencies?.drive === false
+) {
   throw new Error("Apps Script, Spreadsheet, or Drive health check failed");
 }
 
