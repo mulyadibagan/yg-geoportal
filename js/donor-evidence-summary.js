@@ -351,7 +351,7 @@
         milestones.map(function (item) {
           var evidenceLink = item.evidenceHref
             ? '<a class="donor-milestone-evidence-link" href="' +
-              esc(item.evidenceHref) + '">Lihat evidence WebGIS →</a>'
+              esc(item.evidenceHref) + '">Buka evidence →</a>'
             : '';
           return '<li><div><span>' + esc(item.name) + '</span><small>' +
             (item.target === 100
@@ -373,13 +373,18 @@
         esc(displayPeriod(donor, programme)) + ')</h3></div>' +
         '<p>Status dihitung dari paket evidence yang telah ditelaah dan evidence yang ditag admin.</p></div>' +
         milestoneMarkup
-      : '<div class="funding-heading"><div><span>Milestone status</span><h3>Timeline (' +
-        esc(displayPeriod(donor, programme)) + ')</h3></div>' +
-        '<p>' + (donorName === 'Pan Pacific Conservation Foundation (PPCF)' ||
-          donorName === 'Aliansi Kolibri'
-          ? 'Status program dilengkapi evidence spasial terverifikasi dari WebGIS.'
-          : 'Status dihitung dari evidence yang sudah ditag admin.') + '</p></div>' +
-        milestoneMarkup;
+      : donorName === 'Pertamina Foundation'
+        ? '<div class="funding-heading"><div><span>Evidence terverifikasi</span>' +
+          '<h3>Verifikasi 6 Output Inti Program</h3></div>' +
+          '<p>Setiap output diverifikasi terhadap bagian terkait dalam laporan kegiatan.</p></div>' +
+          milestoneMarkup
+        : '<div class="funding-heading"><div><span>Milestone status</span><h3>Timeline (' +
+          esc(displayPeriod(donor, programme)) + ')</h3></div>' +
+          '<p>' + (donorName === 'Pan Pacific Conservation Foundation (PPCF)' ||
+            donorName === 'Aliansi Kolibri'
+            ? 'Status program dilengkapi evidence spasial terverifikasi dari WebGIS.'
+            : 'Status dihitung dari evidence yang sudah ditag admin.') + '</p></div>' +
+          milestoneMarkup;
     if (section._ygMilestoneMarkup !== sectionMarkup) {
       section.innerHTML = sectionMarkup;
       section._ygMilestoneMarkup = sectionMarkup;
