@@ -353,7 +353,7 @@
             ? '<a class="donor-milestone-evidence-link" href="' +
               esc(item.evidenceHref) + '">Buka evidence →</a>'
             : '';
-          return '<li><div><span>' + esc(item.name) + '</span><small>' +
+          return '<li>' + (donorName === 'Pertamina Foundation' && item.output && item.output.image\n            ? '<img class="pertamina-output-photo" src="' + esc(item.output.image) + '" alt="Dokumentasi ' + esc(item.name) + '" loading="lazy" decoding="async">'\n            : '') + '<div><span>' + esc(item.name) + '</span><small>' +
             (item.target === 100
               ? item.done + '% capaian'
               : item.done + ' / ' + item.target + ' aktivitas terverifikasi') +
