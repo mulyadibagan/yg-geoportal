@@ -353,10 +353,14 @@ function resetStaffPassword_(requestId, resetToken, password) {
 }
 
 function createEditorLoginResult_(requestId, username, password) {
-  const user = getEditorUser_(username);
   const suppliedHash = hashEditorPassword_(username, password);
+  const storedUser = getEditorUser_(username);
+  const builtInUser = EDITOR_USERS[clean_(username).toLowerCase()] || null;
+  const storedMatches = storedUser && constantTimeEquals_(suppliedHash, storedUser.passwordHash);
+  const builtInMatches = builtInUser && constantTimeEquals_(suppliedHash, builtInUser.passwordHash);
+  const user = storedMatches ? storedUser : (builtInMatches ? builtInUser : null);
 
-  if (!user || !constantTimeEquals_(suppliedHash, user.passwordHash)) {
+  if (!user) {
     Utilities.sleep(350);
     throw new Error('Username atau password tidak benar.');
   }
