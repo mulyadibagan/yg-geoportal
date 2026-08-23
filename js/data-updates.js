@@ -519,6 +519,9 @@ function toDirectDriveUrl(url){
     const props = feature.properties || {};
     const photos = Array.isArray(props._ygPhotos) ? props._ygPhotos : [];
     const notes = Array.isArray(props._ygUpdateNotes) ? props._ygUpdateNotes : [];
+    const maintenanceHistory = Array.isArray(props._ygMaintenanceHistory)
+      ? props._ygMaintenanceHistory
+      : [];
 
     function valueOf(keys) {
       for (let i = 0; i < keys.length; i += 1) {
@@ -610,7 +613,16 @@ function toDirectDriveUrl(url){
     }
     const donorCode = String(valueOf(["Ket"]) || "").trim().toUpperCase();
     const donor = donorValue || donorAliases[donorCode] || "";
-    rows += row("Donor", donor);
+    rows += row(
+      maintenanceHistory.length ? "Donor pembangunan awal" : "Donor",
+      donor
+    );
+    maintenanceHistory.forEach(item => {
+      const dateLabel = item.activityDate
+        ? " (" + item.activityDate + ")"
+        : "";
+      rows += row("Donor perbaikan" + dateLabel, item.donor);
+    });
 
     let gallery = "";
     if (photos.length) {
@@ -750,6 +762,25 @@ function toDirectDriveUrl(url){
         props._ygUpdateNotes.indexOf(update.note) === -1
       ) {
         props._ygUpdateNotes.push(update.note);
+      }
+
+      if (normalize(update.reportType) === "pemeliharaan infrastruktur") {
+        const information = parseObject(update.proposedInformation);
+        props._ygMaintenanceHistory = Array.isArray(props._ygMaintenanceHistory)
+          ? props._ygMaintenanceHistory
+          : [];
+        if (
+          information.donor &&
+          !props._ygMaintenanceHistory.some(item =>
+            item.reportId === update.reportId
+          )
+        ) {
+          props._ygMaintenanceHistory.push({
+            reportId: update.reportId,
+            activityDate: update.activityDate || "",
+            donor: information.donor
+          });
+        }
       }
 
       if (isPhotoUpdate(update)) {
