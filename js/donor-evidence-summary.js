@@ -458,7 +458,7 @@
         applyDonorEvidence();
         console.warn(error.message);
       });
-    fetch('data/donors.json?v=20260808-penabulu-plan-evidence1', { cache: 'no-store' })
+    fetch('data/donors.json?v=20260823-pertamina-six-outputs1', { cache: 'no-store' })
       .then(function (response) { return response.ok ? response.json() : []; })
       .then(function (result) {
         donors = Array.isArray(result) ? result : [];
