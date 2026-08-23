@@ -1305,6 +1305,15 @@ L.control.scale({
 
   function socialForestryDocumentKey(feature) {
     const props = feature && feature.properties || {};
+    const raw = props.NO_IUPHKM || props.SK || props.OBJECTID || props.ID ||
+      [props.NAMA_HKM, props.NAMA_DESA, props.NAMA_KAB].filter(Boolean).join("|");
+    return typeof raw === "number" && Number.isInteger(raw)
+      ? raw.toFixed(1)
+      : String(raw == null ? "" : raw).trim().toLowerCase();
+  }
+
+  function socialForestryLegacyDocumentKey(feature) {
+    const props = feature && feature.properties || {};
     const raw = props.OBJECTID || props.ID || props.NO_IUPHKM || props.SK ||
       [props.NAMA_HKM, props.NAMA_DESA, props.NAMA_KAB].filter(Boolean).join("|");
     return typeof raw === "number" && Number.isInteger(raw)
@@ -1312,8 +1321,13 @@ L.control.scale({
       : String(raw == null ? "" : raw).trim().toLowerCase();
   }
 
+  function socialForestryDocumentDetail(feature) {
+    return socialForestryDocumentDetails[socialForestryDocumentKey(feature)] ||
+      socialForestryDocumentDetails[socialForestryLegacyDocumentKey(feature)] || {};
+  }
+
   function socialForestryDocumentClass(feature) {
-    const detail = socialForestryDocumentDetails[socialForestryDocumentKey(feature)] || {};
+    const detail = socialForestryDocumentDetail(feature);
     const categories = new Set((detail.documents || []).map(document => {
       const category = String(document.category || "").toLowerCase();
       if (category.indexOf("legal") !== -1) return "legalitas";
@@ -1602,7 +1616,7 @@ L.control.scale({
       : "";
 
     const socialProfileRaw =
-      props.OBJECTID || props.ID || props.NO_IUPHKM || props.SK ||
+      props.NO_IUPHKM || props.SK || props.OBJECTID || props.ID ||
       [props.NAMA_HKM, props.NAMA_DESA, props.NAMA_KAB].filter(Boolean).join("|");
     const socialProfileKey =
       typeof socialProfileRaw === "number" && Number.isInteger(socialProfileRaw)
@@ -1731,7 +1745,7 @@ L.control.scale({
       data = await fetchReferenceData(config);
       if (config.type === "social_forestry" && !socialForestryDocumentDetailsLoaded) {
         try {
-          const response = await fetch("data/social-forestry-details.json?v=20260823-document-clusters1", { cache: "no-store" });
+          const response = await fetch("data/social-forestry-details.json?v=20260823-two-regencies1", { cache: "no-store" });
           if (response.ok) socialForestryDocumentDetails = await response.json();
         } catch (documentError) {
           console.warn("Data kelengkapan dokumen PS belum dapat dimuat:", documentError);

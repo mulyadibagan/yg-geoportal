@@ -10,6 +10,7 @@ function percent(v){var n=number(v);return n==null?"—":format(n,1)+"%"}
 function normalized(v){return String(v||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim()}
 function analysisKeyValue(v){if(typeof v==="number"&&Number.isInteger(v))return v.toFixed(1);return String(v==null?"":v)}
 function featureKey(f){var p=f&&f.properties||{};return analysisKeyValue(p.OBJECTID||p.ID||p.NO_IUPHKM||p.SK||[p.NAMA_HKM,p.NAMA_DESA,p.NAMA_KAB].filter(Boolean).join("|")).trim().toLowerCase()}
+function permitKey(f){var p=f&&f.properties||{};return analysisKeyValue(p.NO_IUPHKM||p.SK||p.OBJECTID||p.ID||[p.NAMA_HKM,p.NAMA_DESA,p.NAMA_KAB].filter(Boolean).join("|")).trim().toLowerCase()}
 function kpi(icon,label,value,note){return'<article class="vp-kpi"><div class="vp-kpi__icon">'+esc(icon)+'</div><span>'+esc(label)+'</span><strong>'+esc(value)+'</strong><small>'+esc(note||"")+'</small></article>'}
 function item(label,value){return'<div><span>'+esc(label)+'</span><strong>'+esc(value==null||value===""?"—":value)+'</strong></div>'}
 function showError(message){el("loading-state").hidden=true;el("error-message").textContent=message;el("error-state").hidden=false}
@@ -77,14 +78,14 @@ function render(feature,record,data,detail){
 async function init(){
   if(!key){showError("Tautan areal tidak lengkap. Pilih Perhutanan Sosial melalui WebGIS.");return}
   try{
-    var results=await Promise.all([json("data/village-forest-analytics.json?v=20260822-social-profile1"),json("data/PERHUTANAN_SOSIAL_RIAU.geojson?v=20260822-social-profile1"),json("data/social-forestry-details.json?v=20260823-bengkalis-documents1")]),data=results[0],geo=results[1],details=results[2]||{};
-    var feature=(geo.features||[]).find(function(f){return featureKey(f)===key});
+    var results=await Promise.all([json("data/village-forest-analytics.json?v=20260822-social-profile1"),json("data/PERHUTANAN_SOSIAL_RIAU.geojson?v=20260822-social-profile1"),json("data/social-forestry-details.json?v=20260823-two-regencies1")]),data=results[0],geo=results[1],details=results[2]||{};
+    var feature=(geo.features||[]).find(function(f){return permitKey(f)===key||featureKey(f)===key});
     var record=(data.socialForestry||{})[key];
     if(!feature&&record){feature=(geo.features||[]).find(function(f){return normalized((f.properties||{}).NAMA_HKM)===normalized(record.name)})}
     if(!record&&feature){var fk=featureKey(feature);record=(data.socialForestry||{})[fk]}
     if(!feature||!feature.geometry)throw new Error("Polygon Perhutanan Sosial tidak ditemukan.");
     if(!record)throw new Error("Analisis tutupan pohon untuk areal ini belum tersedia.");
-    render(feature,record,data,details[key]||null);
+    render(feature,record,data,details[permitKey(feature)]||details[featureKey(feature)]||null);
   }catch(e){console.error(e);showError(e.message||"Profil gagal dimuat.")}
 }
 el("print-profile").addEventListener("click",function(){window.print()});
