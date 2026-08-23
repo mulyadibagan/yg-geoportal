@@ -356,12 +356,17 @@
             });
             var evidence = linked.map(function (row) {
               var destination = evidenceDestination(row);
+              var staffOnly = row.staffOnly || String(row.access || '').toLowerCase() === 'staff';
+              var canOpen = !staffOnly || !!readStaffSession();
+              var evidenceLink = canOpen
+                ? '<a href="' + esc(destination.href) + '"' +
+                  (destination.external ? ' target="_blank" rel="noopener"' : '') + '>' +
+                  destination.label + '</a>'
+                : '<small class="aramco-staff-only-note">Login staf untuk membuka dokumen.</small>';
               return '<div class="aramco-evidence-item"><b>✓ Evidence terverifikasi</b>' +
                 '<span>' + esc(row.evidenceTitle || row.evidenceId) + '</span>' +
                 (row.note ? '<small>' + esc(row.note) + '</small>' : '') +
-                '<a href="' + esc(destination.href) + '"' +
-                (destination.external ? ' target="_blank" rel="noopener"' : '') + '>' +
-                destination.label + '</a></div>';
+                evidenceLink + '</div>';
             }).join('');
             return '<li class="' + (linked.length ? 'is-verified' : 'is-pending') + '">' +
               '<div><strong>' + esc(activity.name) + '</strong><span>' +
