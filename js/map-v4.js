@@ -1192,14 +1192,39 @@ L.control.scale({
   function addLiveFeatures(layerId, features) {
     const group = layerObjects[layerId];
     if (!group || !Array.isArray(features) || !features.length) return 0;
+
+    const incomingById = new Map();
+    features.forEach(feature => {
+      const props = feature && feature.properties || {};
+      const id = String(
+        props.reportId || props.Source_Report_ID || props.Object_ID || ""
+      ).trim();
+      if (id) incomingById.set(id, feature);
+    });
+
     const existing = new Set();
+    let updated = 0;
     group.eachLayer(layer => {
       const props = layer && layer.feature && layer.feature.properties || {};
       const id = String(
         props.reportId || props.Source_Report_ID || props.Object_ID || ""
       ).trim();
-      if (id) existing.add(id);
+      if (!id) return;
+
+      existing.add(id);
+      const incoming = incomingById.get(id);
+      if (!incoming) return;
+
+      const incomingProps = incoming.properties || {};
+      layer.feature.properties = Object.assign({}, props, incomingProps);
+      if (typeof layer.setPopupContent === "function") {
+        layer.setPopupContent(
+          buildPopup(layer.feature, getLayerConfig(layerId, layer.feature))
+        );
+      }
+      updated += 1;
     });
+
     const missing = features.filter(feature => {
       const props = feature && feature.properties || {};
       const id = String(
@@ -1207,13 +1232,13 @@ L.control.scale({
       ).trim();
       return id && !existing.has(id) && feature.geometry;
     });
-    if (!missing.length) return 0;
-    createLayer(layerId, missing, { append: true });
+
+    if (missing.length) createLayer(layerId, missing, { append: true });
     const countElement = document.querySelector(
       '[data-layer-count-id="' + layerId + '"]'
     );
     if (countElement) countElement.textContent = formatNumber(group.getLayers().length);
-    return missing.length;
+    return updated + missing.length;
   }
 
 
