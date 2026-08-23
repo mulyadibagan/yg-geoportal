@@ -1323,7 +1323,7 @@ L.control.scale({
       return "";
     }).filter(Boolean));
     const count = categories.size;
-    if (count >= 4) return { count: count, color: "#15803d", label: "Lengkap (4 kelompok)" };
+    if (count >= 4) return { count: count, color: "#7e22ce", label: "Lengkap (4 kelompok)" };
     if (count === 3) return { count: count, color: "#0f766e", label: "Hampir lengkap (3 kelompok)" };
     if (count === 2) return { count: count, color: "#d97706", label: "Sebagian (2 kelompok)" };
     if (count === 1) return { count: count, color: "#dc5f21", label: "Terbatas (1 kelompok)" };
@@ -1337,7 +1337,7 @@ L.control.scale({
       const container = L.DomUtil.create("div", "leaflet-control");
       container.style.cssText = "background:#fff;border:1px solid #dce9e5;border-radius:12px;padding:10px 12px;box-shadow:0 5px 18px rgba(9,53,56,.14);font:11px/1.35 Inter,Segoe UI,sans-serif;color:#24454b;max-width:210px";
       container.innerHTML = '<strong style="display:block;margin-bottom:7px;color:#0a2d33">Kelengkapan dokumen PS</strong>' +
-        [["#15803d","Lengkap · 4 kelompok"],["#0f766e","Hampir lengkap · 3"],["#d97706","Sebagian · 2"],["#dc5f21","Terbatas · 1"],["#94a3b8","Belum tercatat"]].map(entry =>
+        [["#7e22ce","Lengkap · 4 kelompok"],["#0f766e","Hampir lengkap · 3"],["#d97706","Sebagian · 2"],["#dc5f21","Terbatas · 1"],["#94a3b8","Belum tercatat"]].map(entry =>
           '<span style="display:flex;align-items:center;gap:7px;margin:4px 0"><i style="display:inline-block;width:18px;border-top:3px solid '+entry[0]+'"></i>'+entry[1]+'</span>'
         ).join("");
       L.DomEvent.disableClickPropagation(container);
@@ -1895,7 +1895,7 @@ L.control.scale({
 
       if (canRenderLegend) {
         const legendRows = config.type === "social_forestry"
-          ? [["#15803d", "PS · dokumen lengkap (4 kelompok)"], ["#0f766e", "PS · hampir lengkap (3 kelompok)"], ["#d97706", "PS · sebagian (2 kelompok)"], ["#dc5f21", "PS · terbatas (1 kelompok)"], ["#94a3b8", "PS · belum tercatat"]]
+          ? [["#7e22ce", "PS · dokumen lengkap (4 kelompok)"], ["#0f766e", "PS · hampir lengkap (3 kelompok)"], ["#d97706", "PS · sebagian (2 kelompok)"], ["#dc5f21", "PS · terbatas (1 kelompok)"], ["#94a3b8", "PS · belum tercatat"]]
           : [[config.color, config.label]];
         legendRows.forEach(entry => {
           const legendItem = document.createElement("div");
