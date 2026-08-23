@@ -667,10 +667,10 @@ body.modal-open{overflow:hidden}
 #pertamina-dashboard .donor-milestone-list>li>div{min-width:0}
 #pertamina-dashboard .donor-milestone-list>li>strong{grid-column:2;grid-row:2;align-self:center}
 @media (max-width:760px){#pertamina-dashboard .donor-milestone-list{grid-template-columns:1fr}#pertamina-dashboard .pertamina-output-photo{aspect-ratio:16/9}}
-.aramco-staff-report{margin-top:28px;padding:20px 22px;border:1px solid #d8e5df;border-radius:18px;background:#f4f9f6;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.aramco-staff-report{margin-top:28px;padding:20px 22px;border:1px solid #d8e5df;border-radius:18px;background:#f4f9f6;display:grid;grid-template-columns:minmax(220px,.8fr) minmax(0,1.6fr);align-items:start;gap:20px}
 .aramco-staff-report[hidden]{display:none!important}
 .aramco-staff-report span{color:#087653;font-size:11px;font-weight:850;letter-spacing:.12em;text-transform:uppercase}
 .aramco-staff-report h3{margin:5px 0 4px;color:#2f1a12;font-size:20px}
 .aramco-staff-report p{margin:0;color:#6c7772;font-size:13px}
-.aramco-staff-report>a{display:inline-flex;padding:11px 16px;border-radius:12px;background:#087653;color:#fff;font-weight:800;text-decoration:none;white-space:nowrap}
-@media(max-width:760px){.aramco-staff-report{align-items:flex-start;flex-direction:column}.aramco-staff-report>a{width:100%;justify-content:center}}
+.aramco-staff-report-list{display:grid;gap:8px}.aramco-staff-report-list>a{display:grid;grid-template-columns:72px minmax(0,1fr) auto;align-items:center;gap:10px;padding:11px 14px;border:1px solid #d5e6dd;border-radius:12px;background:#fff;color:#173c31;text-decoration:none}.aramco-staff-report-list>a:hover{border-color:#087653}.aramco-staff-report-list strong{font-size:13px}.aramco-staff-report-list small{color:#67756f}.aramco-staff-report-list em{color:#087653;font-style:normal;font-weight:900}
+@media(max-width:760px){.aramco-staff-report{grid-template-columns:1fr}.aramco-staff-report-list>a{grid-template-columns:58px minmax(0,1fr) auto}}
