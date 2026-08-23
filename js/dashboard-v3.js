@@ -1012,7 +1012,7 @@
     if (!container) return;
     try {
       const results = await Promise.allSettled([
-        fetch("data/donors.json?v=20260727-aramco-phase3-output2", { cache: "no-store" })
+        fetch("data/donors.json?v=20260823-ppcf-evidence2", { cache: "no-store" })
           .then(response => response.ok ? response.json() : []),
         jsonp(API.replace("?page=objects", "?page=donor-programmes"))
       ]);
@@ -1424,7 +1424,7 @@
     setMetric("ppcf-planted-count", officialMetric(sumProperties(ppcfCoffeeAreas,
       ["Jumlah_Bibit", "Jumlah bibit", "jumlah_bibit", "Bibit_Ditanam"]), 4000));
     setMetric("ppcf-nursery-seedling-count", officialMetric(sumProperties(ppcfCoffee,
-      ["Jumlah_Bibit", "Jumlah bibit", "jumlah_bibit", "Bibit"]), 4500));
+      ["Jumlah_Bibit", "Jumlah bibit", "jumlah_bibit", "Bibit"]), 4500), 0, "+");
     setMetric("ppcf-canal-count", officialMetric(ppcfCanals.length, 4));
     setMetric("ppcf-fdrs-count", officialMetric(ppcfFdrs.length, 3));
 
@@ -2074,8 +2074,9 @@
   initDashboardData();
 
   const ppcfDetails = {
-    training: '<h4>Pelatihan PPCF</h4><div class="funding-detail-grid"><article><strong>69 peserta</strong><span>Pelatihan pengelolaan gambut berkelanjutan dan pertanian tanpa bakar · 7 Agustus 2025</span></article><article><strong>50 peserta</strong><span>Pelatihan agroforestri kopi Liberika, termasuk 13 perempuan · 19 Desember 2025</span></article></div>',
-    market: '<h4>Kemitraan pasar kopi</h4><p>MoU antara Kelompok Tani Ketiau Jaya dan Suvarnabhumi Coffee ditandatangani pada 20 Januari 2026. Suvarnabhumi Coffee bertindak sebagai calon pembeli utama kopi Liberika sesuai mutu, harga, dan kapasitas pasokan yang disepakati.</p><a href="webgis.html?layer=kopi&amp;village=Pematang+Duku">Lihat lokasi kelompok tani →</a>'
+    training: '<h4>Pelatihan pengelolaan gambut dan tanpa bakar</h4><div class="funding-detail-grid"><article><strong>69 peserta</strong><span>Pelatihan tanggal 7 Agustus 2025.</span></article><article><strong>8,96 / 10</strong><span>Nilai rata-rata post-test.</span></article></div><a href="https://drive.google.com/file/d/1tOuaOdxpf6wAHAkJccgTzSlF-NlSNQm9/view#page=12" target="_blank" rel="noopener">Buka evidence laporan →</a>',
+    "coffee-training": '<h4>Pelatihan agroforestri kopi Liberika</h4><div class="funding-detail-grid"><article><strong>50 petani</strong><span>Pelatihan tanggal 19 Desember 2025.</span></article><article><strong>13 perempuan</strong><span>Keterlibatan perempuan dicatat terpisah dalam laporan.</span></article></div><a href="https://drive.google.com/file/d/1tOuaOdxpf6wAHAkJccgTzSlF-NlSNQm9/view#page=17" target="_blank" rel="noopener">Buka evidence laporan →</a>',
+    market: '<h4>Kemitraan pasar kopi</h4><p>MoU antara Kelompok Tani Ketiau Jaya dan Suvarnabhumi Coffee ditandatangani pada 20 Januari 2026. Suvarnabhumi Coffee bertindak sebagai calon pembeli utama kopi Liberika sesuai mutu, harga, dan kapasitas pasokan yang disepakati.</p><a href="https://drive.google.com/file/d/1tOuaOdxpf6wAHAkJccgTzSlF-NlSNQm9/view#page=18" target="_blank" rel="noopener">Buka evidence MoU →</a><a href="webgis.html?layer=kopi&amp;village=Pematang+Duku">Lihat lokasi kelompok tani →</a>'
   };
   const aramcoDetails = {
     nursery: '<h4>Rumah Bibit Mangrove</h4><p>Pilih desa untuk langsung menuju lokasi rumah bibit di peta.</p><div class="funding-location-grid"><a href="webgis.html?layer=nursery_mangrove&amp;village=Buruk+Bakul">Desa Buruk Bakul <span>→</span></a><a href="webgis.html?layer=nursery_mangrove&amp;village=Kelapa+Pati">Desa Kelapa Pati <span>→</span></a><a href="webgis.html?layer=nursery_mangrove&amp;village=Sepahat">Desa Sepahat <span>→</span></a><a href="webgis.html?layer=nursery_mangrove&amp;village=Tanjung+Kuras">Desa Tanjung Kuras <span>→</span></a></div>',
