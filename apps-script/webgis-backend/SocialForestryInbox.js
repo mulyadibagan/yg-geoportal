@@ -1,6 +1,7 @@
 const YG_PS_ROOT_FOLDER_ID_ = '1YNJksFZLQtVTwJXWfixlCbJE_UH6ZRKS';
 const YG_PS_INBOX_PROPERTY_KEY_ = 'YG_PS_INBOX_V1';
 const YG_PS_SEEN_PROPERTY_KEY_ = 'YG_PS_SEEN_FILE_IDS_V1';
+const YG_PS_NOTIFICATION_EMAILS_ = [ADMIN_EMAIL, 'zamharier@yayasangambut.org'];
 
 function getSocialForestryInbox_(sessionToken) {
   assertEditorCredential_(clean_(sessionToken));
@@ -62,7 +63,7 @@ function emailNewSocialForestryFiles_(rows) {
     return [index + 1 + '. ' + row.fileName, row.regency + ' / ' + row.psName + ' / ' + row.category, row.url].join('\n');
   });
   MailApp.sendEmail({
-    to: ADMIN_EMAIL,
+    to: YG_PS_NOTIFICATION_EMAILS_.join(','),
     subject: '[YG GeoPortal] ' + rows.length + ' Data PS Baru Perlu Ditinjau',
     body: ['Dokumen baru terdeteksi pada Database Perhutanan Sosial.', '', lines.join('\n\n'), '', 'Buka Inbox Data PS:', adminUrl].join('\n')
   });
@@ -80,7 +81,7 @@ function installSocialForestryInboxMonitoringFromSecureExecution() {
   });
   scanSocialForestryDrive_({ notify: false });
   ScriptApp.newTrigger('scheduledSocialForestryDriveScan').timeBased().everyHours(1).create();
-  return { ok: true, folderId: YG_PS_ROOT_FOLDER_ID_, frequency: 'hourly', notificationEmail: ADMIN_EMAIL };
+  return { ok: true, folderId: YG_PS_ROOT_FOLDER_ID_, frequency: 'hourly', notificationEmails: YG_PS_NOTIFICATION_EMAILS_ };
 }
 
 function handleSocialForestryInboxPost_(e) {
