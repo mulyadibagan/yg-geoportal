@@ -212,12 +212,12 @@
 
   function pertaminaOutputPhoto(name) {
     var photos = {
-      'Asesmen Awal': 'assets/pertamina/assessment.webp',
-      'Pelatihan Pengamanan Kawasan Hutan': 'assets/pertamina/forest-protection.webp',
-      'Pengembangan Keramba Ikan dan Diversifikasi Hasil Olahan': 'assets/pertamina/fish-pond.webp',
-      'Pelatihan Pengolahan Gaplek dari Ubi': 'assets/pertamina/gaplek-training.webp',
-      'Pelatihan Pembuatan Pupuk Kompos': 'assets/pertamina/compost-training.webp',
-      'Penyusunan Administrasi Kelompok': 'assets/pertamina/administration-training.webp'
+      'Asesmen Awal': 'assets/pertamina/assessment.webp?v=2',
+      'Pelatihan Pengamanan Kawasan Hutan': 'assets/pertamina/forest-protection.webp?v=2',
+      'Pengembangan Keramba Ikan dan Diversifikasi Hasil Olahan': 'assets/pertamina/fish-pond.webp?v=2',
+      'Pelatihan Pengolahan Gaplek dari Ubi': 'assets/pertamina/gaplek-training.webp?v=2',
+      'Pelatihan Pembuatan Pupuk Kompos': 'assets/pertamina/compost-training.webp?v=2',
+      'Penyusunan Administrasi Kelompok': 'assets/pertamina/administration-training.webp?v=2'
     };
     return photos[String(name || '')] || '';
   }
