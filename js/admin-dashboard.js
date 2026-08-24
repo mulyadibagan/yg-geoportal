@@ -13,6 +13,7 @@
   var PROGRAMME_CONFIG = [];
   var ASSIGNMENT_DATA = [];
   var NONSPATIAL_EVIDENCE_DATA = [];
+  var PS_PROFILE_INDEX = [];
   var ADMIN_SESSION = null;
   var REMOTE_AVAILABLE = false;
 
@@ -24,6 +25,38 @@
 
   function idFrom(value) {
     return String(value || '').toUpperCase().replace(/[^A-Z0-9]+/g, '-').replace(/^-|-$/g, '');
+  }
+
+  function normalizedText(value) {
+    return String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  }
+
+  function socialForestryProfileKey(feature) {
+    var props = feature && feature.properties || {};
+    var value = props.NO_IUPHKM || props.SK || props.OBJECTID || props.ID ||
+      [props.NAMA_HKM, props.NAMA_DESA, props.NAMA_KAB].filter(Boolean).join('|');
+    if (typeof value === 'number' && Number.isInteger(value)) value = value.toFixed(1);
+    return String(value == null ? '' : value).trim().toLowerCase();
+  }
+
+  function buildSocialForestryProfileIndex(geojson) {
+    PS_PROFILE_INDEX = ((geojson && geojson.features) || []).map(function (feature) {
+      var props = feature.properties || {};
+      return {
+        name: normalizedText(props.NAMA_HKM),
+        regency: normalizedText(props.NAMA_KAB),
+        key: socialForestryProfileKey(feature)
+      };
+    }).filter(function (row) { return row.name && row.key; });
+  }
+
+  function socialForestryProfileUrl(psName, regency) {
+    var name = normalizedText(psName), area = normalizedText(regency);
+    var candidates = PS_PROFILE_INDEX.filter(function (row) { return row.name === name; });
+    var match = candidates.find(function (row) { return area && row.regency === area; }) ||
+      (candidates.length === 1 ? candidates[0] : null);
+    return match ? 'social-forestry-profile.html?key=' + encodeURIComponent(match.key) : '';
   }
 
   function isActive(programme) {
@@ -226,8 +259,8 @@
     }
     container.innerHTML = rows.map(function (row) {
       var actions = row.status === 'Baru' || row.status === 'Perlu Review'
-        ? '<div class="ps-inbox-actions"><button class="btn btn-outline" data-ps-review="approve" data-file-id="' + esc(row.fileId) + '">Setujui dokumen</button>' +
-          '<button class="btn btn-light" data-ps-review="revision" data-file-id="' + esc(row.fileId) + '">Perlu perbaikan</button></div>' : '';
+        ? '<div class="ps-inbox-actions"><button class="btn btn-outline" data-ps-review="approve" data-file-id="' + esc(row.fileId) + '" data-ps-name="' + esc(row.psName) + '" data-ps-regency="' + esc(row.regency) + '">Setujui dokumen</button>' +
+          '<button class="btn btn-light" data-ps-review="revision" data-file-id="' + esc(row.fileId) + '" data-ps-name="' + esc(row.psName) + '" data-ps-regency="' + esc(row.regency) + '">Perlu perbaikan</button></div>' : '';
       return '<article class="assignment-record ps-inbox-record"><div><strong>' + esc(row.fileName) + '</strong><small>' +
         esc([row.regency, row.psName, row.category].filter(Boolean).join(' · ')) + '</small></div><div><span>' + esc(row.status || 'Baru') +
         '</span><small>' + esc(row.createdAtLabel || '') + '</small></div><a href="' + esc(row.url) + '" target="_blank" rel="noopener">Buka Drive ↗</a>' + actions + '</article>';
@@ -921,10 +954,21 @@
       if (!button) return;
       var feedback = document.getElementById('ps-inbox-feedback');
       try {
+        button.disabled = true;
         await postAdmin('ps-inbox-review', { fileId: button.dataset.fileId, decision: button.dataset.psReview });
-        feedback.textContent = button.dataset.psReview === 'approve' ? 'Dokumen disetujui untuk melengkapi profil PS.' : 'Dokumen ditandai perlu perbaikan.';
+        if (button.dataset.psReview === 'approve') {
+          var profileUrl = socialForestryProfileUrl(button.dataset.psName, button.dataset.psRegency);
+          if (profileUrl) {
+            feedback.textContent = 'Dokumen disetujui. Membuka profil PS yang diperbarui...';
+            window.location.assign(profileUrl);
+            return;
+          }
+          feedback.textContent = 'Dokumen disetujui, tetapi profil PS tidak dapat dicocokkan secara aman.';
+        } else {
+          feedback.textContent = 'Dokumen ditandai perlu perbaikan.';
+        }
         await loadPsInbox();
-      } catch (error) { feedback.textContent = error.message; }
+      } catch (error) { button.disabled = false; feedback.textContent = error.message; }
     });
     document.getElementById('nonspatial-evidence-form').addEventListener('submit', saveNonspatialEvidence);
     document.getElementById('nonspatial-evidence-list').addEventListener('click', async function (event) {
@@ -1016,7 +1060,10 @@
       fetch('data/capacity-building.json?v=20260727-admin-evidence1', { cache: 'no-store' })
         .then(function (response) { return response.ok ? response.json() : []; })
         .catch(function () { return []; }),
-      loadLayerEvidence()
+      loadLayerEvidence(),
+      fetch('data/PERHUTANAN_SOSIAL_RIAU.geojson?v=20260824-ps-approval-redirect1', { cache: 'no-store' })
+        .then(function (response) { return response.ok ? response.json() : { features: [] }; })
+        .catch(function () { return { features: [] }; })
     ]).then(function (results) {
       DONOR_DATA = results[0] || [];
       REMOTE_AVAILABLE = Array.isArray(results[2] && results[2].programmes) &&
@@ -1033,6 +1080,7 @@
         results[4] || [],
         NONSPATIAL_EVIDENCE_DATA
       );
+      buildSocialForestryProfileIndex(results[5]);
       renderAuthState();
       renderDonors();
       renderProgrammeAdmin();
