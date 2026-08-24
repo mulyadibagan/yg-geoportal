@@ -1,12 +1,30 @@
 (function(){
   'use strict';
   var DONOR_FILE='data/donors.json?v=20260808-penabulu-plan-evidence1';
+  var GROUP_FILE='data/community-groups.json?v=20260824-gender2';
   var DONOR_API='https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/api/donor/programmes';
+  var groups=[];
   function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
   function text(id,value){var el=document.getElementById(id);if(el)el.textContent=value;}
   function active(program){return /^(aktif|berjalan|direncanakan)$/i.test(String(program.status||'').trim());}
   function metricMarkup(row){return '<article><strong>'+esc(row.value||'—')+'</strong><span>'+esc(row.label||'')+'</span></article>';}
-  function locationMarkup(name,index){var region=/tanjung kuras/i.test(name)?'Kabupaten Siak':'Kabupaten Bengkalis';return '<a class="aramco-location-card" href="webgis.html?search='+encodeURIComponent(name)+'"><small>Lokasi '+(index+1)+'</small><strong>'+esc(name)+'</strong><span>'+esc(region)+' · buka di peta →</span></a>';}
+  function normalize(v){return String(v||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();}
+  function groupForVillage(name){var n=normalize(name);return groups.find(function(g){return normalize(g.village)===n;})||null;}
+  function membershipMarkup(m){if(!m||m.total==null)return '';var parts=['<b>'+esc(m.total)+' anggota</b>'];if(m.male!=null)parts.push(esc(m.male)+' laki-laki');if(m.female!=null)parts.push(esc(m.female)+' perempuan');return '<div class="aramco-group-members">'+parts.join('<span>·</span>')+'</div>';}
+  function groupMarkup(group){if(!group)return '<div class="aramco-group aramco-group-empty"><small>Kelompok masyarakat</small><strong>Profil kelompok belum ditambahkan</strong></div>';
+    var legal=group.legal||{},lead=group.leadership||{};
+    return '<div class="aramco-group">'+
+      '<small>KELOMPOK MITRA</small><strong>'+esc(group.shortName||group.name||'Kelompok masyarakat')+'</strong>'+
+      membershipMarkup(group.membership)+
+      '<p>'+esc(group.summary||'')+'</p>'+
+      '<div class="aramco-group-meta">'+
+        (lead.chair?'<span><b>Ketua</b>'+esc(lead.chair)+'</span>':'')+
+        (legal.number?'<span><b>Legalitas</b>'+esc(legal.number)+(legal.date?' · '+esc(legal.date):'')+'</span>':'')+
+      '</div>'+
+      (legal.url?'<a class="aramco-group-doc" href="'+esc(legal.url)+'" target="_blank" rel="noopener noreferrer">Buka SK kelompok ↗</a>':'')+
+    '</div>';
+  }
+  function locationMarkup(name,index){var region=/tanjung kuras/i.test(name)?'Kabupaten Siak':'Kabupaten Bengkalis';var group=groupForVillage(name);return '<article class="aramco-location-card"><div class="aramco-location-head"><small>Lokasi '+(index+1)+'</small><strong>'+esc(name)+'</strong><a href="webgis.html?search='+encodeURIComponent(name)+'">'+esc(region)+' · buka di peta →</a></div>'+groupMarkup(group)+'</article>';}
   function phaseMarkup(p){var on=active(p);return '<article class="aramco-phase-card'+(on?' is-active':'')+'"><header><strong>'+esc(p.phase||p.name||'Fase')+'</strong><em>'+esc(on?'AKTIF':(p.status||'SELESAI').toUpperCase())+'</em></header><p>'+esc(p.period||'')+(p.summary?' · '+esc(p.summary):'')+'</p></article>';}
   function targetItems(targets){var rows=[['rehabilitationAreaHa','ha','Target rehabilitasi'],['mangroveTrees',' pohon','Target penanaman'],['waveBreakerMeters',' m','Wave breaker'],['communityNurseries',' unit','Rumah bibit'],['learningExchangeParticipants',' orang','Peserta learning exchange'],['learningExchangeDays',' hari','Durasi learning exchange']];return rows.filter(function(r){return targets&&targets[r[0]]!=null;}).map(function(r){return '<article class="aramco-target"><strong>'+esc(targets[r[0]])+esc(r[1])+'</strong><span>'+esc(r[2])+'</span></article>';}).join('');}
   function outputMarkup(output){var acts=(output.activities||[]).map(function(a){return '<li>'+esc(a.name||'')+(a.indicator?' — '+esc(a.indicator):'')+'</li>';}).join('');return '<article class="aramco-output"><h3>'+esc(output.name||'Output program')+'</h3><ul>'+acts+'</ul></article>';}
@@ -27,7 +45,10 @@
     text('aramco-updated','Data program terhubung · '+new Intl.DateTimeFormat('id-ID',{day:'numeric',month:'short',year:'numeric'}).format(new Date()));
   }
   document.addEventListener('DOMContentLoaded',function(){
-    fetch(DONOR_FILE,{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('donors');return r.json();}).then(function(rows){var donor=(rows||[]).find(function(d){return d.slug==='aramco'||/Aramco Asia Singapore/i.test(d.name||'');});if(!donor)throw new Error('aramco');render(donor);}).catch(function(){text('aramco-updated','Data program belum dapat dimuat');});
+    Promise.all([
+      fetch(DONOR_FILE,{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('donors');return r.json();}),
+      fetch(GROUP_FILE,{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('groups');return r.json();}).catch(function(){return {groups:[]};})
+    ]).then(function(results){groups=(results[1]&&results[1].groups)||[];var rows=results[0];var donor=(rows||[]).find(function(d){return d.slug==='aramco'||/Aramco Asia Singapore/i.test(d.name||'');});if(!donor)throw new Error('aramco');render(donor);}).catch(function(){text('aramco-updated','Data program belum dapat dimuat');});
     fetch(DONOR_API,{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('api');return r.json();}).then(function(data){renderEvidence(flattenEvidence(data));}).catch(function(){renderEvidence([]);});
   });
 })();
