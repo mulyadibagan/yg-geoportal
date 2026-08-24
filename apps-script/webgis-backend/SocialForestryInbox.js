@@ -200,7 +200,9 @@ function publishSocialForestryInboxDocument_(row, requestedProfileKey, requested
 }
 
 function matchSocialForestryInboxProfile_(details, psName, regency, catalog) {
-  const incoming = normalizeSocialForestryInboxName_(psName);
+  const folderParts = clean_(psName).split('_');
+  const incoming = normalizeSocialForestryInboxName_(folderParts.shift());
+  const inboxVillage = normalizeSocialForestryInboxVillage_(folderParts.join(' '));
   if (!incoming) return null;
   const area = normalizeSocialForestryInboxRegency_(regency);
   const source = Array.isArray(catalog) && catalog.length ? catalog : Object.keys(details).map(function(key) {
@@ -213,12 +215,19 @@ function matchSocialForestryInboxProfile_(details, psName, regency, catalog) {
       const canonicalProfile = canonicalSocialForestryInboxName_(item.normalized);
       return item.normalized && (
         item.normalized === incoming || incoming.indexOf(item.normalized + ' ') === 0 || item.normalized.indexOf(incoming + ' ') === 0 ||
-        canonicalProfile === canonicalIncoming || canonicalIncoming.indexOf(canonicalProfile + ' ') === 0 || canonicalProfile.indexOf(canonicalIncoming + ' ') === 0
+        canonicalProfile === canonicalIncoming || canonicalIncoming.indexOf(canonicalProfile + ' ') === 0 || canonicalProfile.indexOf(canonicalIncoming + ' ') === 0 ||
+        canonicalIncoming.indexOf(' ' + canonicalProfile) > -1 || canonicalProfile.indexOf(' ' + canonicalIncoming) > -1
       );
     }).sort(function(a, b) { return b.normalized.length - a.normalized.length; });
   }
   let matches = matching(source.filter(function(item) { return !area || item.regency === area; }));
   if (!matches.length && area) matches = matching(source);
+  if (!matches.length && inboxVillage) {
+    const villageMatches = source.filter(function(item) {
+      return (!area || item.regency === area) && item.village === inboxVillage;
+    });
+    if (villageMatches.length === 1) matches = villageMatches;
+  }
   if (!matches.length || (matches.length > 1 && matches[0].normalized.length === matches[1].normalized.length)) return null;
   const target = matches[0];
   if (!details[target.key]) details[target.key] = target.profile;
@@ -253,13 +262,19 @@ function readSocialForestryProfileCatalogFromGitHub_(details) {
       key: key,
       profile: profile,
       normalized: normalizeSocialForestryInboxName_(props.NAMA_HKM),
-      regency: normalizeSocialForestryInboxRegency_(props.NAMA_KAB)
+      regency: normalizeSocialForestryInboxRegency_(props.NAMA_KAB),
+      village: normalizeSocialForestryInboxVillage_(props.NAMA_DESA)
     };
   }).filter(function(item) { return item.key && item.normalized; });
 }
 
 function normalizeSocialForestryInboxRegency_(value) {
   return clean_(value).toLowerCase().replace(/^\d+[_\s-]*/, '').replace(/[^a-z0-9]+/g, ' ').trim();
+}
+
+function normalizeSocialForestryInboxVillage_(value) {
+  return clean_(value).toLowerCase().replace(/^(?:desa|kelurahan|kepenghuluan|kampung)\s+/, '')
+    .replace(/[^a-z0-9]+/g, ' ').replace(/\s+/g, ' ').trim();
 }
 
 function canonicalSocialForestryInboxName_(value) {
