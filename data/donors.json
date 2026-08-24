@@ -299,8 +299,8 @@
         "evidenceUrl": "https://drive.google.com/file/d/1DFxyFC3X1VsLqCjhi_IqkhPE9CiEh4sD/view?usp=drivesdk",
         "verificationBasis": "Laporan kemajuan resmi Aramco Phase III",
         "note": "Satu progress report telah selesai dan diserahkan.",
-        "access": "staff",
-        "staffOnly": true,
+        "access": "public",
+        "staffOnly": false,
         "verifiedAt": "2026-02-24",
         "verifiedAtLabel": "24 Februari 2026"
       },
@@ -315,8 +315,8 @@
         "evidenceUrl": "https://drive.google.com/file/d/1urwXsg64a4ttgihusCFZzTiKmGYyyqWB/view?usp=drivesdk",
         "verificationBasis": "Laporan akhir resmi Aramco",
         "note": "Laporan final program telah selesai.",
-        "access": "staff",
-        "staffOnly": true
+        "access": "public",
+        "staffOnly": false
       },
       {
         "evidenceId": "EVD-ARAMCO-P2-FINAL",
@@ -329,8 +329,8 @@
         "evidenceUrl": "https://drive.google.com/file/d/1FG5iQCiJjQW8A8-uVGKht0WlBaYYt0hK/view?usp=drivesdk",
         "verificationBasis": "Laporan akhir resmi Aramco",
         "note": "Laporan final program telah selesai.",
-        "access": "staff",
-        "staffOnly": true
+        "access": "public",
+        "staffOnly": false
       }
     ]
   },
