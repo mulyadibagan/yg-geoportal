@@ -14,12 +14,12 @@
     "indicators": [
       {
         "label": "Pohon mangrove ditanam",
-        "value": "42.545",
+      "value": "43.742",
         "progress": 100
       },
       {
         "label": "Restorasi mangrove",
-        "value": "13,1 ha",
+      "value": "12,77 ha",
         "progress": 100
       },
       {
@@ -51,6 +51,7 @@
         "period": "2023–2024",
         "status": "Selesai",
         "summary": "Pelaksanaan konservasi dan rehabilitasi mangrove berbasis masyarakat di Desa Buruk Bakul pada Juni 2023–Mei 2024.",
+        "realization": { "mangroveTrees": 10420, "rehabilitationAreaHa": 2.65 },
         "detailsPending": false,
         "reportUrl": "https://drive.google.com/file/d/1urwXsg64a4ttgihusCFZzTiKmGYyyqWB/view?usp=drivesdk",
         "achievements": [
@@ -156,6 +157,7 @@
         "period": "2024–2025",
         "status": "Selesai",
         "summary": "Perluasan konservasi berbasis masyarakat ke Desa Buruk Bakul dan Kelapa Pati pada Juni 2024–Mei 2025.",
+        "realization": { "mangroveTrees": 15225, "rehabilitationAreaHa": 1.45 },
         "detailsPending": false,
         "reportUrl": "https://drive.google.com/file/d/1FG5iQCiJjQW8A8-uVGKht0WlBaYYt0hK/view?usp=sharing",
         "achievements": [
