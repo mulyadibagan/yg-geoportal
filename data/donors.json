@@ -237,6 +237,7 @@
         "name": "",
         "period": "Juli 2025–Desember 2026",
         "status": "Aktif",
+        "dataAsOf": "25 Agustus 2026",
         "summary": "Rehabilitasi hingga 9 hektare mangrove dengan target 18.000 pohon di empat desa, pembangunan infrastruktur, peningkatan kapasitas, pengembangan mata pencaharian perempuan, pembelajaran lintas negara, perlindungan, monitoring, dan pelaporan.",
         "detailsPending": false,
         "targets": {
@@ -247,6 +248,12 @@
             "Kelapa Pati": 6270,
             "Sepahat": 4000,
             "Tanjung Kuras": 3627
+          },
+          "rehabilitationAreaByVillage": {
+            "Buruk Bakul": 2.08,
+            "Kelapa Pati": 3.135,
+            "Sepahat": 2,
+            "Tanjung Kuras": 1.4508
           },
           "waveBreakerMeters": 100,
           "communityNurseries": 2,
