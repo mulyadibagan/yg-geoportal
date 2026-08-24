@@ -1,4 +1,5 @@
 const YG_PS_ROOT_FOLDER_ID_ = '1YNJksFZLQtVTwJXWfixlCbJE_UH6ZRKS';
+const YG_PS_PROFILE_LAYER_PATH_ = 'data/PERHUTANAN_SOSIAL_RIAU.geojson';
 const YG_PS_INBOX_PROPERTY_KEY_ = 'YG_PS_INBOX_V1';
 const YG_PS_SEEN_PROPERTY_KEY_ = 'YG_PS_SEEN_FILE_IDS_V1';
 const YG_PS_NOTIFICATION_EMAILS_ = [ADMIN_EMAIL, 'zamharier@yayasangambut.org'];
@@ -27,10 +28,11 @@ function syncApprovedSocialForestryInboxDocuments_(records, options) {
   if (!candidates.length) return { records: records, synchronized: 0, unmatched: 0 };
 
   const details = readSocialForestryDetailsFromGitHub_();
+  const catalog = readSocialForestryProfileCatalogFromGitHub_(details);
   const resolved = [];
   let added = 0;
   candidates.forEach(function(row) {
-    const target = matchSocialForestryInboxProfile_(details, row.psName);
+    const target = matchSocialForestryInboxProfile_(details, row.psName, row.regency, catalog);
     if (!target) return;
     const document = socialForestryInboxDocument_(row);
     target.profile.documents = Array.isArray(target.profile.documents) ? target.profile.documents : [];
@@ -197,17 +199,74 @@ function publishSocialForestryInboxDocument_(row, requestedProfileKey, requested
   return publishSocialForestryDocumentToProfile_(details, target.key, target.profile, row);
 }
 
-function matchSocialForestryInboxProfile_(details, psName) {
+function matchSocialForestryInboxProfile_(details, psName, regency, catalog) {
   const incoming = normalizeSocialForestryInboxName_(psName);
   if (!incoming) return null;
-  const matches = Object.keys(details).map(function(key) {
+  const area = normalizeSocialForestryInboxRegency_(regency);
+  const source = Array.isArray(catalog) && catalog.length ? catalog : Object.keys(details).map(function(key) {
     const profile = details[key] || {};
-    return { key: key, profile: profile, normalized: normalizeSocialForestryInboxName_(profile.name) };
-  }).filter(function(item) {
-    return item.normalized && (item.normalized === incoming || incoming.indexOf(item.normalized + ' ') === 0 || item.normalized.indexOf(incoming + ' ') === 0);
-  }).sort(function(a, b) { return b.normalized.length - a.normalized.length; });
+    return { key: key, profile: profile, normalized: normalizeSocialForestryInboxName_(profile.name), regency: '' };
+  });
+  function matching(items) {
+    const canonicalIncoming = canonicalSocialForestryInboxName_(incoming);
+    return items.filter(function(item) {
+      const canonicalProfile = canonicalSocialForestryInboxName_(item.normalized);
+      return item.normalized && (
+        item.normalized === incoming || incoming.indexOf(item.normalized + ' ') === 0 || item.normalized.indexOf(incoming + ' ') === 0 ||
+        canonicalProfile === canonicalIncoming || canonicalIncoming.indexOf(canonicalProfile + ' ') === 0 || canonicalProfile.indexOf(canonicalIncoming + ' ') === 0
+      );
+    }).sort(function(a, b) { return b.normalized.length - a.normalized.length; });
+  }
+  let matches = matching(source.filter(function(item) { return !area || item.regency === area; }));
+  if (!matches.length && area) matches = matching(source);
   if (!matches.length || (matches.length > 1 && matches[0].normalized.length === matches[1].normalized.length)) return null;
-  return matches[0];
+  const target = matches[0];
+  if (!details[target.key]) details[target.key] = target.profile;
+  target.profile = details[target.key];
+  return target;
+}
+
+function readSocialForestryProfileCatalogFromGitHub_(details) {
+  const config = getGitHubConfig_();
+  const url = 'https://raw.githubusercontent.com/' + encodeURIComponent(config.owner) + '/' +
+    encodeURIComponent(config.repo) + '/' + encodeURIComponent(config.branch) + '/' + YG_PS_PROFILE_LAYER_PATH_;
+  const response = UrlFetchApp.fetch(url, { muteHttpExceptions: true });
+  if (response.getResponseCode() !== 200) throw new Error('Gagal membaca referensi profil PS: ' + response.getResponseCode());
+  const geojson = JSON.parse(response.getContentText());
+  return (geojson.features || []).map(function(feature) {
+    const props = feature.properties || {};
+    let keyValue = props.NO_IUPHKM || props.SK || props.OBJECTID || props.ID ||
+      [props.NAMA_HKM, props.NAMA_DESA, props.NAMA_KAB].filter(Boolean).join('|');
+    if (typeof keyValue === 'number' && Math.floor(keyValue) === keyValue) keyValue = keyValue.toFixed(1);
+    const key = clean_(keyValue).toLowerCase();
+    const profile = details[key] || {
+      name: clean_(props.NAMA_HKM) || clean_(props.NAMA_DESA) || 'Profil Perhutanan Sosial',
+      village: clean_(props.NAMA_DESA),
+      district: clean_(props.NAMA_KEC),
+      regency: clean_(props.NAMA_KAB),
+      scheme: clean_(props.Ket),
+      decree: clean_(props.NO_IUPHKM),
+      areaHa: props.L_IUPHKM == null ? '' : props.L_IUPHKM,
+      documents: []
+    };
+    return {
+      key: key,
+      profile: profile,
+      normalized: normalizeSocialForestryInboxName_(props.NAMA_HKM),
+      regency: normalizeSocialForestryInboxRegency_(props.NAMA_KAB)
+    };
+  }).filter(function(item) { return item.key && item.normalized; });
+}
+
+function normalizeSocialForestryInboxRegency_(value) {
+  return clean_(value).toLowerCase().replace(/^\d+[_\s-]*/, '').replace(/[^a-z0-9]+/g, ' ').trim();
+}
+
+function canonicalSocialForestryInboxName_(value) {
+  return clean_(value).toLowerCase()
+    .replace(/^koperasi unit desa\s+/, '')
+    .replace(/^(?:lphd|kth|kt|gapoktanhut|gapoktan|kud|kelompok nelayan)\s+/, '')
+    .replace(/[^a-z0-9]+/g, ' ').replace(/\s+/g, ' ').trim();
 }
 
 function socialForestryInboxDocument_(row) {
