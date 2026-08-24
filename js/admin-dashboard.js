@@ -321,9 +321,13 @@
   function renderPsInbox(rows) {
     var container = document.getElementById('ps-inbox-list');
     rows = Array.isArray(rows) ? rows : [];
+    rows = rows.filter(function (row) {
+      var published = row.status === 'Disetujui' && (String(row.profileKey || '').trim() || String(row.publishedAt || '').trim());
+      return !published;
+    });
     if (!rows.length) {
-      container.innerHTML = '<div class="assignment-empty">Belum ada dokumen PS baru yang menunggu review.</div>';
-      return;
+      container.innerHTML = '<div class="assignment-empty">Semua dokumen PS sudah disinkronkan. Tidak ada antrean yang perlu ditindaklanjuti.</div>';
+      return 0;
     }
     container.innerHTML = rows.map(function (row) {
       var pending = row.status === 'Baru' || row.status === 'Perlu Review';
@@ -336,6 +340,7 @@
         esc([row.regency, row.psName, row.category].filter(Boolean).join(' · ')) + '</small></div><div><span>' + esc(row.status || 'Baru') +
         '</span><small>' + esc(row.createdAtLabel || '') + '</small></div><a href="' + esc(row.url) + '" target="_blank" rel="noopener">Buka Drive ↗</a>' + actions + '</article>';
     }).join('');
+    return rows.length;
   }
 
   async function loadPsInbox() {
@@ -343,8 +348,10 @@
     try {
       var session = requireStaffSession();
       var data = await jsonp(API + '?page=ps-inbox&sessionToken=' + encodeURIComponent(session.token));
-      renderPsInbox(data && data.records);
-      feedback.textContent = data && data.scannedAtLabel ? 'Drive diperiksa ' + data.scannedAtLabel + '.' : '';
+      var pendingCount = renderPsInbox(data && data.records);
+      feedback.textContent = data && data.scannedAtLabel
+        ? 'Drive diperiksa ' + data.scannedAtLabel + '. ' + (pendingCount ? pendingCount + ' dokumen belum disinkronkan.' : 'Semua dokumen sudah disinkronkan.')
+        : '';
     } catch (error) {
       renderPsInbox(localRows(PS_INBOX_KEY));
       feedback.textContent = error.message;
