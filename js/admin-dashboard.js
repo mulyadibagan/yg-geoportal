@@ -52,10 +52,18 @@
   }
 
   function socialForestryProfileUrl(psName, regency) {
-    var name = normalizedText(psName), area = normalizedText(regency);
-    var candidates = PS_PROFILE_INDEX.filter(function (row) { return row.name === name; });
-    var match = candidates.find(function (row) { return area && row.regency === area; }) ||
-      (candidates.length === 1 ? candidates[0] : null);
+    var name = normalizedText(psName), area = normalizedText(regency).replace(/^\d+\s+/, '');
+    var areaCandidates = PS_PROFILE_INDEX.filter(function (row) {
+      return !area || row.regency === area;
+    });
+    var exact = areaCandidates.filter(function (row) { return row.name === name; });
+    var match = exact.length === 1 ? exact[0] : null;
+    if (!match) {
+      var prefixed = areaCandidates.filter(function (row) {
+        return name.indexOf(row.name + ' ') === 0 || row.name.indexOf(name + ' ') === 0;
+      }).sort(function (a, b) { return b.name.length - a.name.length; });
+      if (prefixed.length && (prefixed.length === 1 || prefixed[0].name.length > prefixed[1].name.length)) match = prefixed[0];
+    }
     return match ? 'social-forestry-profile.html?key=' + encodeURIComponent(match.key) : '';
   }
 
