@@ -2153,6 +2153,7 @@ L.control.scale({
     const search = String(params.get("search") || "").trim();
     const objectId = String(params.get("object") || "").trim();
     const donor = String(params.get("donor") || "").trim().toLowerCase();
+    const phase = String(params.get("phase") || "").trim().toLowerCase();
 
     if (objectId) {
       const item = searchItems.find(candidate => candidate.objectId === objectId);
@@ -2193,9 +2194,11 @@ L.control.scale({
     if (donor && donor !== "missing") {
       const donorTerm = donor === "aramco" ? "aramco asia singapore" : donor;
       const normalizedVillage = village.toLowerCase();
+      const phaseTerms = phase === "3" ? ["phase iii", "phase 3", "fase iii", "fase 3"] : (phase ? ["phase " + phase, "fase " + phase] : []);
       const matches = searchItems.filter(item =>
         (!layerId || item.layerId === layerId) &&
         (!village || item.text.includes(normalizedVillage)) &&
+        (!phaseTerms.length || phaseTerms.some(term => item.text.includes(term))) &&
         (item.text.includes(donorTerm) || item.text.includes(donor))
       );
       const bounds = L.latLngBounds([]);
