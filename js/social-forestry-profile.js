@@ -86,7 +86,7 @@ async function init(){
     if(!feature||!feature.geometry)throw new Error("Polygon Perhutanan Sosial tidak ditemukan.");
     if(!record)throw new Error("Analisis tutupan pohon untuk areal ini belum tersedia.");
     var detailKey=permitKey(feature),detail=details[detailKey]||details[featureKey(feature)]||null,approvedDocument=null;
-    try{approvedDocument=JSON.parse(sessionStorage.getItem("ygPsApprovedDocument:"+key)||"null")}catch(ignore){}
+    try{approvedDocument=JSON.parse(localStorage.getItem("ygPsApprovedDocument:"+key)||"null")}catch(ignore){}
     if(approvedDocument){detail=Object.assign({name:(feature.properties||{}).NAMA_HKM||record.name||"Profil PS"},detail||{});detail.documents=Array.isArray(detail.documents)?detail.documents.slice():[];if(!detail.documents.some(function(doc){return doc.url===approvedDocument.url}))detail.documents.push(approvedDocument)}
     render(feature,record,data,detail);
   }catch(e){console.error(e);showError(e.message||"Profil gagal dimuat.")}

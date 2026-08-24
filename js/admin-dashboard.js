@@ -1062,7 +1062,7 @@
         });
         var publication = result && result.publication;
         if (publication && publication.document) {
-          sessionStorage.setItem('ygPsApprovedDocument:' + pending.profile.key, JSON.stringify(publication.document));
+          localStorage.setItem('ygPsApprovedDocument:' + pending.profile.key, JSON.stringify(publication.document));
         }
         feedback.textContent = 'Dokumen disetujui untuk ' + pending.profile.displayName + '.';
         document.getElementById('ps-review-dialog').close();
