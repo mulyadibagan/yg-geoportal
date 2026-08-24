@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const boundaryPath = path.join(ROOT, process.env.HOTSPOT_VILLAGE_BOUNDARY || "data/batas_administrasi_desa_riau.geojson");
 const hotspotPath = path.join(ROOT, process.env.HOTSPOT_POINTS_FILE || "data/hotspot-high-confidence.geojson");
+const iuphhkPath = path.join(ROOT, process.env.HOTSPOT_IUPHHK_BOUNDARY || "data/IUPHHK_HT_2014.geojson");
 
 function ringContains(point, ring) {
   let inside = false;
@@ -38,9 +39,10 @@ function boundsOf(geometry) {
   return bounds;
 }
 
-const [boundary, hotspots] = await Promise.all([
+const [boundary, hotspots, iuphhkGeo] = await Promise.all([
   readFile(boundaryPath, "utf8").then(JSON.parse),
-  readFile(hotspotPath, "utf8").then(JSON.parse)
+  readFile(hotspotPath, "utf8").then(JSON.parse),
+  readFile(iuphhkPath, "utf8").then(JSON.parse)
 ]);
 const villages = (boundary.features || []).map((feature) => ({
   feature,
@@ -49,7 +51,15 @@ const villages = (boundary.features || []).map((feature) => ({
   district: feature.properties?.WADMKC || "",
   regency: feature.properties?.WADMKK || ""
 }));
+const iuphhkUnits = (iuphhkGeo.features || []).filter((feature) => feature.geometry && (feature.geometry.type === "Polygon" || feature.geometry.type === "MultiPolygon")).map((feature) => ({
+  feature,
+  bounds: boundsOf(feature.geometry),
+  name: feature.properties?.NAMA_PRH || "Nama pemegang izin tidak tersedia",
+  sk: feature.properties?.SK_PBH || feature.properties?.SK_LAMA || "",
+  areaHa: feature.properties?.LUAS_HA ?? null
+}));
 let identified = 0;
+let insideIuphhk = 0;
 for (const feature of hotspots.features || []) {
   const point = feature.geometry?.type === "Point" ? feature.geometry.coordinates : null;
   if (!point) continue;
@@ -65,6 +75,14 @@ for (const feature of hotspots.features || []) {
     delete feature.properties.district;
     delete feature.properties.regency;
   }
+  const permitMatches = iuphhkUnits.filter((item) => point[0] >= item.bounds[0] && point[0] <= item.bounds[2] && point[1] >= item.bounds[1] && point[1] <= item.bounds[3] && geometryContains(point, item.feature.geometry));
+  if (permitMatches.length) {
+    feature.properties.iuphhkHt2014 = permitMatches.map((item) => ({ name: item.name, sk: item.sk, areaHa: item.areaHa }));
+    insideIuphhk++;
+  } else {
+    delete feature.properties.iuphhkHt2014;
+  }
 }
 await writeFile(hotspotPath, JSON.stringify(hotspots, null, 2) + "\n");
 console.log(`Identified ${identified} of ${(hotspots.features || []).length} hotspots in Riau villages.`);
+console.log(`Identified ${insideIuphhk} hotspots inside IUPHHK-HT 2014 reference polygons.`);
