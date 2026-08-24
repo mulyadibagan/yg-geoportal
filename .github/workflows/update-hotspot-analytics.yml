@@ -10,6 +10,7 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/update-hotspot-analytics.yml"
+      - "scripts/enrich_hotspot_villages.mjs"
 
 permissions:
   contents: write
@@ -58,6 +59,7 @@ jobs:
           node scripts/sync_intervention_villages.mjs
           node scripts/update_hotspot_firms.mjs
           python scripts/enrich_hotspot_landcover.py
+          node scripts/enrich_hotspot_villages.mjs
 
       - name: Commit and push if changed
         run: |
