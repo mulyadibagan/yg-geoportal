@@ -242,6 +242,8 @@
         "targets": {
           "rehabilitationAreaHa": 9,
           "mangroveTrees": 18000,
+          "mangroveTreesRealized": 18097,
+          "mangroveTreesProgress": 100.5,
           "waveBreakerMeters": 100,
           "communityNurseries": 2,
           "learningExchangeParticipants": 16,
@@ -295,22 +297,22 @@
               {
                 "id": "ACT-ARAMCO-P3-REH-BB",
                 "name": "Mangrove rehabilitation in Buruk Bakul",
-                "indicator": "Up to 2 ha / 4,000 trees"
+                "indicator": "Target 4,000 trees · realized 4,200 trees"
               },
               {
                 "id": "ACT-ARAMCO-P3-REH-KP",
                 "name": "Mangrove rehabilitation in Kelapa Pati",
-                "indicator": "Up to 3 ha / 6,000 trees"
+                "indicator": "Target 6,000 trees · realized 6,270 trees"
               },
               {
                 "id": "ACT-ARAMCO-P3-REH-SP",
                 "name": "Mangrove rehabilitation in Sepahat",
-                "indicator": "Up to 2 ha / 4,000 trees"
+                "indicator": "Target 4,000 trees · realized 4,000 trees · 200 replacement seedlings"
               },
               {
                 "id": "ACT-ARAMCO-P3-REH-TK",
                 "name": "Mangrove rehabilitation in Tanjung Kuras",
-                "indicator": "Up to 2 ha / 4,000 trees"
+                "indicator": "Target 4,000 trees · realized 3,627 trees"
               }
             ]
           },
