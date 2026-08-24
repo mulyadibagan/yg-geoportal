@@ -7,13 +7,13 @@
   <title>Profil Perhutanan Sosial | Yayasan Gambut</title>
   <link rel="icon" href="assets/logo-yayasan-gambut.png">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="css/village-profile.css?v=20260823-bengkalis-documents1">
+  <link rel="stylesheet" href="css/village-profile.css?v=20260824-ps-nonspatial1">
 </head>
 <body>
   <header class="vp-topbar">
     <a class="vp-brand" href="index.html"><img src="assets/logo-yayasan-gambut.png" alt="Logo Yayasan Gambut"><span><strong>Yayasan Gambut</strong><small>Profil Perhutanan Sosial</small></span></a>
     <nav class="vp-top-actions" aria-label="Aksi halaman">
-      <a class="vp-button vp-button--quiet" href="webgis.html">← Kembali ke peta</a>
+      <a class="vp-button vp-button--quiet" href="social-forestry-directory.html">← Kembali ke direktori</a>
       <button class="vp-button vp-button--quiet" id="share-profile" type="button">Bagikan</button>
       <button class="vp-button" id="print-profile" type="button">Unduh / cetak</button>
     </nav>
@@ -29,7 +29,7 @@
           <p id="area-location">Menghubungkan data izin dan analisis lingkungan.</p>
           <div class="vp-status-row"><span class="vp-status"><i></i> Analisis dalam batas areal</span><span id="data-updated">Memeriksa pembaruan…</span></div>
         </div>
-        <div class="vp-hero__summary">
+          <div class="vp-hero__summary" id="profile-summary">
           <span>Ringkasan publik</span><strong>Tutupan pohon dan hotspot</strong>
           <p>Analisis menggunakan polygon Perhutanan Sosial sebagai satu batas pemotongan data.</p>
         </div>
@@ -44,7 +44,7 @@
         <section class="vp-kpis" id="kpi-grid"></section>
 
         <section class="vp-layout">
-          <article class="vp-card vp-map-card">
+          <article class="vp-card vp-map-card" data-spatial-only>
             <div class="vp-section-head"><div><span class="vp-kicker">LOKASI</span><h2>Batas areal pada peta</h2></div><span class="vp-badge">Citra satelit</span></div>
             <div id="village-map"></div>
             <p class="vp-caption">Garis menunjukkan polygon Perhutanan Sosial yang digunakan dalam analisis.</p>
@@ -67,7 +67,7 @@
           <p class="vp-caption" id="sf-detail-note"></p>
         </section>
 
-        <section class="vp-layout">
+        <section class="vp-layout" data-spatial-only>
           <article class="vp-card">
             <div class="vp-section-head"><div><span class="vp-kicker">TUTUPAN POHON</span><h2>Kondisi ringkas</h2></div></div>
             <div class="vp-forest-visual">
@@ -84,18 +84,18 @@
           </article>
         </section>
 
-        <section class="vp-card">
+        <section class="vp-card" data-spatial-only>
           <div class="vp-section-head"><div><span class="vp-kicker">PERUBAHAN TAHUNAN</span><h2 id="loss-chart-title">Kehilangan tutupan pohon</h2></div><span class="vp-badge vp-badge--warm">hektare per tahun</span></div>
           <div class="vp-bars" id="loss-bars"></div><p class="vp-caption" id="loss-note"></p>
         </section>
 
-        <section class="vp-card">
+        <section class="vp-card" data-spatial-only>
           <div class="vp-section-head"><div><span class="vp-kicker">KONTEKS WILAYAH</span><h2>Irisan layer referensi</h2></div></div>
           <div class="vp-reference-list" id="reference-list"></div>
           <p class="vp-caption">Layer dapat saling tumpang tindih dan tidak boleh dijumlahkan sebagai total luas areal.</p>
         </section>
 
-        <section class="vp-card vp-method">
+        <section class="vp-card vp-method" data-spatial-only>
           <div class="vp-section-head"><div><span class="vp-kicker">TRANSPARANSI DATA</span><h2>Bagaimana data dihasilkan?</h2></div></div>
           <div class="vp-method-grid">
             <div><b>1</b><strong>Batas analisis</strong><p>Polygon Perhutanan Sosial menjadi batas pemotongan seluruh dataset.</p></div>
@@ -111,12 +111,12 @@
           </div>
         </section>
 
-        <footer class="vp-footer"><p><strong>Catatan:</strong> angka bersifat indikatif. Batas izin, kondisi lapangan, dan keputusan pengelolaan tetap perlu diverifikasi dengan instansi dan pemegang izin.</p><a href="webgis.html">Jelajahi areal lain di WebGIS →</a></footer>
+        <footer class="vp-footer"><p><strong>Catatan:</strong> angka bersifat indikatif. Batas izin, kondisi lapangan, dan keputusan pengelolaan tetap perlu diverifikasi dengan instansi dan pemegang izin.</p><a href="social-forestry-directory.html">Lihat direktori Perhutanan Sosial →</a></footer>
       </div>
     </div>
   </main>
   <div class="vp-toast" id="toast" role="status"></div>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="js/social-forestry-profile.js?v=20260824-ps-standard-layout1"></script>
+  <script src="js/social-forestry-profile.js?v=20260824-ps-nonspatial1"></script>
 </body>
 </html>

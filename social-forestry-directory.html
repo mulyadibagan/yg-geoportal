@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Direktori profil Perhutanan Sosial Riau, termasuk profil spasial dan dokumen nonspasial.">
+  <title>Direktori Perhutanan Sosial | YG GeoPortal</title>
+  <link rel="icon" href="assets/logo-yayasan-gambut.png">
+  <link rel="stylesheet" href="css/style.css?v=20260723-revert-layout">
+  <link rel="stylesheet" href="css/navigation-v2.css?v=20260807-mobile-submenu-links1">
+  <link rel="stylesheet" href="css/social-forestry-directory.css?v=20260824-ps-directory1">
+</head>
+<body>
+<header class="site-header"><div class="header-inner">
+  <a class="brand" href="index.html"><img src="assets/logo-yayasan-gambut.png" alt="Logo Yayasan Gambut"><span><strong>YG GeoPortal</strong><span>WebGIS Yayasan Gambut</span></span></a>
+  <button class="yg-nav-toggle" type="button" aria-label="Buka menu" aria-expanded="false" data-yg-nav-toggle="main-navigation">☰</button>
+  <nav class="nav yg-nav-v2" id="main-navigation" aria-label="Navigasi utama" data-yg-navigation>
+    <a href="index.html">Beranda</a><a href="webgis.html">Peta Interaktif</a>
+    <div class="yg-nav-group"><button class="yg-nav-trigger" type="button" aria-expanded="false" aria-current="true">Jelajahi</button><div class="yg-nav-menu"><a href="biodiversity.html">Biodiversitas</a><a href="fire-weather.html">Karhutla &amp; Cuaca</a><a href="coastal-monitoring.html">Pesisir &amp; Mangrove</a><a href="social-forestry-directory.html" aria-current="page">Direktori Perhutanan Sosial<small>Profil spasial dan dokumen nonspasial</small></a></div></div>
+    <div class="yg-nav-group"><button class="yg-nav-trigger" type="button" aria-expanded="false">Data &amp; Dampak</button><div class="yg-nav-menu"><a href="monitoring.html">Monitoring Lapangan</a><a href="community-engagement.html">Pelibatan Masyarakat</a><a href="capacity-building.html">Peningkatan Kapasitas</a></div></div>
+    <a href="report.html">Laporkan Temuan</a><a href="staff-login.html">Login Staf</a>
+  </nav>
+</div></header>
+<main>
+  <section class="psd-hero"><div class="psd-wrap"><span>DIREKTORI PERHUTANAN SOSIAL RIAU</span><h1>Temukan profil tanpa harus mencari polygon</h1><p>Jelajahi profil spasial dan profil dokumen nonspasial dalam satu daftar.</p><div class="psd-stats"><div><strong id="stat-all">—</strong><small>Total profil</small></div><div><strong id="stat-spatial">—</strong><small>Memiliki polygon</small></div><div><strong id="stat-nonspatial">—</strong><small>Nonspasial</small></div><div><strong id="stat-docs">—</strong><small>Dokumen</small></div></div></div></section>
+  <section class="psd-wrap psd-content">
+    <div class="psd-toolbar"><label class="psd-search"><span>Cari profil, desa, atau nomor izin</span><input id="profile-search" type="search" placeholder="Contoh: Kampung Dosan"></label><label><span>Kabupaten</span><select id="regency-filter"><option value="">Semua kabupaten</option></select></label><div class="psd-types" role="group" aria-label="Status spasial"><button class="is-active" type="button" data-type="all">Semua</button><button type="button" data-type="spatial">Spasial</button><button type="button" data-type="nonspatial">Nonspasial</button></div></div>
+    <div class="psd-result-head"><div><span>HASIL DIREKTORI</span><h2>Profil Perhutanan Sosial</h2></div><strong id="result-count">Memuat…</strong></div>
+    <div id="profile-grid" class="psd-grid"><div class="psd-empty">Memuat direktori…</div></div>
+  </section>
+</main>
+<script src="js/navigation-v2.js?v=20260807-mobile-submenu-links1"></script>
+<script src="js/social-forestry-directory.js?v=20260824-ps-directory1"></script>
+</body></html>

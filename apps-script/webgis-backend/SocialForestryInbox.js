@@ -32,8 +32,8 @@ function syncApprovedSocialForestryInboxDocuments_(records, options) {
   const resolved = [];
   let added = 0;
   candidates.forEach(function(row) {
-    const target = matchSocialForestryInboxProfile_(details, row.psName, row.regency, catalog);
-    if (!target) return;
+    const target = matchSocialForestryInboxProfile_(details, row.psName, row.regency, catalog) ||
+      createAuditedSocialForestryInboxProfile_(details, row);
     const document = socialForestryInboxDocument_(row);
     target.profile.documents = Array.isArray(target.profile.documents) ? target.profile.documents : [];
     const exists = target.profile.documents.some(function(item) {
@@ -67,6 +67,30 @@ function syncApprovedSocialForestryInboxDocuments_(records, options) {
     synchronized: resolved.length,
     unmatched: candidates.length - resolved.length
   };
+}
+
+function createAuditedSocialForestryInboxProfile_(details, row) {
+  const folderParts = clean_(row.psName).split('_');
+  const name = clean_(folderParts.shift()) || socialForestryDocumentLabel_(row.fileName);
+  const village = clean_(folderParts.join(' ')).replace(/^(?:desa|kelurahan|kepenghuluan|kampung)\s+/i, '');
+  const regency = clean_(row.regency).replace(/^\d+[_\s-]*/, '').replace(/_/g, ' ');
+  const slug = normalizeSocialForestryInboxName_([regency, name].join(' ')).replace(/\s+/g, '-');
+  const key = 'drive-audit:' + slug;
+  if (!details[key]) {
+    details[key] = {
+      name: name,
+      village: village,
+      district: '',
+      regency: regency,
+      scheme: 'Profil dokumen nonspasial',
+      decree: '',
+      areaHa: '',
+      source: 'Audit Drive Perhutanan Sosial YG',
+      spatialStatus: 'nonspatial',
+      documents: []
+    };
+  }
+  return { key: key, profile: details[key], normalized: normalizeSocialForestryInboxName_(name), regency: normalizeSocialForestryInboxRegency_(regency), village: normalizeSocialForestryInboxVillage_(village) };
 }
 
 function scanSocialForestryDrive_(options) {

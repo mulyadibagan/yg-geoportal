@@ -61,6 +61,17 @@ function renderSupplemental(detail){
   el("sf-detail-note").textContent=demography.source?"Sumber demografi: "+demography.source+". Kolom tanpa data ditandai Belum tersedia.":"Dokumen berasal dari arsip organisasi. Kolom tanpa data ditandai Belum tersedia.";
   section.hidden=false;
 }
+function renderNonspatial(detail){
+  var documents=Array.isArray(detail.documents)?detail.documents:[],name=detail.name||"Profil Perhutanan Sosial",location=[detail.village,detail.district,detail.regency].filter(Boolean).join(" · ");
+  document.title=name+" · Profil Perhutanan Sosial | Yayasan Gambut";el("area-name").textContent=name;el("area-location").textContent=location||"Lokasi administratif belum tersedia";
+  document.querySelector(".vp-status").innerHTML="<i></i> Profil dokumen nonspasial";el("data-updated").textContent="Sumber: audit Drive Yayasan Gambut";
+  el("profile-summary").innerHTML="<span>STATUS PROFIL</span><strong>Polygon belum tersedia</strong><p>Dokumen ditampilkan tanpa mengarang batas, luas, atau analisis spasial.</p>";
+  el("kpi-grid").innerHTML=[kpi("▤","Dokumen terpublikasi",format(documents.length,0),"hasil audit Drive"),kpi("⌖","Kabupaten",detail.regency||"Belum tersedia","lokasi administratif"),kpi("◎","Status spasial","Nonspasial","polygon belum tersedia")].join("");
+  document.querySelectorAll("[data-spatial-only]").forEach(function(node){node.hidden=true});
+  document.querySelector(".vp-layout").classList.add("vp-layout--single");
+  renderIdentity({NAMA_HKM:name,Ket:detail.scheme||"Profil dokumen nonspasial",NO_IUPHKM:detail.decree||"Belum tersedia",L_IUPHKM:detail.areaHa||null,NAMA_DESA:detail.village,NAMA_KEC:detail.district,NAMA_KAB:detail.regency,NAMA_PROV:"Riau"},null);
+  renderSupplemental(detail);el("loading-state").hidden=true;el("error-state").hidden=true;el("profile-content").hidden=false;
+}
 function render(feature,record,data,detail){
   var p=feature.properties||{},method=data.method||{},viirs=data.viirs||{},name=p.NAMA_HKM||record.name||p.NAMA_DESA||"Perhutanan Sosial";
   var area=number(p.LUAS_POLI)||number(p.L_IUPHKM),baseline=number(record.baselineForestHa),current=number(record.currentForestHa),loss=number(record.totalLossHa),gain=number(record.gainHa);
@@ -82,6 +93,8 @@ async function init(){
     var record=(data.socialForestry||{})[key];
     if(!feature&&record){feature=(geo.features||[]).find(function(f){return normalized((f.properties||{}).NAMA_HKM)===normalized(record.name)})}
     if(!record&&feature){var fk=featureKey(feature);record=(data.socialForestry||{})[fk]}
+    var directDetail=details[key]||null;
+    if((!feature||!feature.geometry)&&directDetail){renderNonspatial(directDetail);return}
     if(!feature||!feature.geometry)throw new Error("Polygon Perhutanan Sosial tidak ditemukan.");
     if(!record)throw new Error("Analisis tutupan pohon untuk areal ini belum tersedia.");
     var detailKey=permitKey(feature),detail=details[detailKey]||details[featureKey(feature)]||null,approvedDocument=null;
