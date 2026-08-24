@@ -6,10 +6,58 @@ const YG_PS_NOTIFICATION_EMAILS_ = [ADMIN_EMAIL, 'zamharier@yayasangambut.org'];
 function getSocialForestryInbox_(sessionToken) {
   assertEditorCredential_(clean_(sessionToken));
   const scan = scanSocialForestryDrive_({ notify: false });
+  const sync = syncApprovedSocialForestryInboxDocuments_(scan.records);
   return {
-    records: scan.records,
+    records: sync.records,
     scannedAt: scan.scannedAt,
-    scannedAtLabel: Utilities.formatDate(new Date(scan.scannedAt), Session.getScriptTimeZone(), 'dd/MM/yyyy HH:mm')
+    scannedAtLabel: Utilities.formatDate(new Date(scan.scannedAt), Session.getScriptTimeZone(), 'dd/MM/yyyy HH:mm'),
+    synchronized: sync.synchronized,
+    unmatched: sync.unmatched
+  };
+}
+
+function syncApprovedSocialForestryInboxDocuments_(records) {
+  records = Array.isArray(records) ? records : [];
+  const candidates = records.filter(function(row) {
+    return clean_(row.status) === 'Disetujui' && !clean_(row.profileKey) && !clean_(row.publishedAt);
+  });
+  if (!candidates.length) return { records: records, synchronized: 0, unmatched: 0 };
+
+  const details = readSocialForestryDetailsFromGitHub_();
+  const resolved = [];
+  let added = 0;
+  candidates.forEach(function(row) {
+    const target = matchSocialForestryInboxProfile_(details, row.psName);
+    if (!target) return;
+    const document = socialForestryInboxDocument_(row);
+    target.profile.documents = Array.isArray(target.profile.documents) ? target.profile.documents : [];
+    const exists = target.profile.documents.some(function(item) {
+      return driveFileIdFromUrl_(item.url) === clean_(row.fileId) || clean_(item.url) === document.url;
+    });
+    if (!exists) {
+      target.profile.documents.push(document);
+      added += 1;
+    }
+    resolved.push({ row: row, target: target });
+  });
+
+  if (added) {
+    updateGitHubFile_(
+      PS_DOCUMENT_DETAILS_PATH,
+      JSON.stringify(details, null, 2) + '\n',
+      'Synchronize approved PS inbox documents'
+    );
+  }
+  const publishedAt = new Date().toISOString();
+  resolved.forEach(function(item) {
+    item.row.profileKey = item.target.key;
+    item.row.publishedAt = publishedAt;
+  });
+  if (resolved.length) writeDonorAdminProperty_(YG_PS_INBOX_PROPERTY_KEY_, records);
+  return {
+    records: records,
+    synchronized: resolved.length,
+    unmatched: candidates.length - resolved.length
   };
 }
 
@@ -128,26 +176,36 @@ function publishSocialForestryInboxDocument_(row, requestedProfileKey, requested
     details[key] = profile;
     return publishSocialForestryDocumentToProfile_(details, key, profile, row);
   }
-  const incoming = normalizeSocialForestryInboxName_(row.psName);
+  const target = matchSocialForestryInboxProfile_(details, row.psName);
+  if (!target) {
+    throw new Error('Profil PS tujuan tidak dapat dicocokkan secara aman untuk publikasi.');
+  }
+  return publishSocialForestryDocumentToProfile_(details, target.key, target.profile, row);
+}
+
+function matchSocialForestryInboxProfile_(details, psName) {
+  const incoming = normalizeSocialForestryInboxName_(psName);
+  if (!incoming) return null;
   const matches = Object.keys(details).map(function(key) {
     const profile = details[key] || {};
     return { key: key, profile: profile, normalized: normalizeSocialForestryInboxName_(profile.name) };
   }).filter(function(item) {
-    return item.normalized === incoming || incoming.indexOf(item.normalized + ' ') === 0 || item.normalized.indexOf(incoming + ' ') === 0;
+    return item.normalized && (item.normalized === incoming || incoming.indexOf(item.normalized + ' ') === 0 || item.normalized.indexOf(incoming + ' ') === 0);
   }).sort(function(a, b) { return b.normalized.length - a.normalized.length; });
-  if (!matches.length || (matches.length > 1 && matches[0].normalized.length === matches[1].normalized.length)) {
-    throw new Error('Profil PS tujuan tidak dapat dicocokkan secara aman untuk publikasi.');
-  }
-  const target = matches[0];
-  return publishSocialForestryDocumentToProfile_(details, target.key, target.profile, row);
+  if (!matches.length || (matches.length > 1 && matches[0].normalized.length === matches[1].normalized.length)) return null;
+  return matches[0];
 }
 
-function publishSocialForestryDocumentToProfile_(details, profileKey, profile, row) {
-  const document = {
+function socialForestryInboxDocument_(row) {
+  return {
     label: socialForestryDocumentLabel_(row.fileName),
     category: socialForestryCategory_(row.category) || clean_(row.category) || 'Dokumen pendukung',
     url: clean_(row.url)
   };
+}
+
+function publishSocialForestryDocumentToProfile_(details, profileKey, profile, row) {
+  const document = socialForestryInboxDocument_(row);
   profile.documents = Array.isArray(profile.documents) ? profile.documents : [];
   const exists = profile.documents.some(function(item) {
     return driveFileIdFromUrl_(item.url) === clean_(row.fileId) || clean_(item.url) === document.url;
