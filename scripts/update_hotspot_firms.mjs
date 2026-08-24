@@ -558,6 +558,7 @@ async function main() {
   const seenDetections = new Set();
   const recentDetections = [];
   const skippedChunks = [];
+  let successfulChunks = 0;
   for (const sourceInfo of activeSources) {
     const availableStart = parseIsoDate(sourceInfo.minDate);
     const availableEnd = parseIsoDate(sourceInfo.maxDate);
@@ -575,6 +576,7 @@ async function main() {
       let csv = "";
       try {
         csv = await fetchAreaCsv(sourceInfo.source, analysisBounds, toIsoDate(chunk.start));
+        successfulChunks += 1;
       } catch (error) {
         console.warn(`[FIRMS] Lewati chunk ${sourceInfo.source} ${toIsoDate(chunk.start)}..${toIsoDate(chunk.end)}: ${error.message}`);
         skippedChunks.push({
@@ -643,6 +645,10 @@ async function main() {
 
       console.log(`[FIRMS] ${sourceInfo.source} chunk ${index + 1}/${chunks.length} points=${points.length}`);
     }
+  }
+
+  if (skippedChunks.length && successfulChunks === 0) {
+    throw new Error(`Semua ${skippedChunks.length} chunk FIRMS gagal; snapshot valid sebelumnya dipertahankan.`);
   }
 
   let updated = 0;
