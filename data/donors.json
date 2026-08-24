@@ -242,8 +242,12 @@
         "targets": {
           "rehabilitationAreaHa": 9,
           "mangroveTrees": 18000,
-          "mangroveTreesRealized": 18097,
-          "mangroveTreesProgress": 100.5,
+          "mangroveTreesByVillage": {
+            "Buruk Bakul": 4200,
+            "Kelapa Pati": 6270,
+            "Sepahat": 4000,
+            "Tanjung Kuras": 3627
+          },
           "waveBreakerMeters": 100,
           "communityNurseries": 2,
           "learningExchangeParticipants": 16,
