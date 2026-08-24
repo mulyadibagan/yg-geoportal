@@ -6,7 +6,7 @@ const YG_PS_NOTIFICATION_EMAILS_ = [ADMIN_EMAIL, 'zamharier@yayasangambut.org'];
 function getSocialForestryInbox_(sessionToken) {
   assertEditorCredential_(clean_(sessionToken));
   const scan = scanSocialForestryDrive_({ notify: false });
-  const sync = syncApprovedSocialForestryInboxDocuments_(scan.records);
+  const sync = syncApprovedSocialForestryInboxDocuments_(scan.records, { includeUnapproved: true });
   return {
     records: sync.records,
     scannedAt: scan.scannedAt,
@@ -16,10 +16,13 @@ function getSocialForestryInbox_(sessionToken) {
   };
 }
 
-function syncApprovedSocialForestryInboxDocuments_(records) {
+function syncApprovedSocialForestryInboxDocuments_(records, options) {
   records = Array.isArray(records) ? records : [];
+  const settings = options || {};
   const candidates = records.filter(function(row) {
-    return clean_(row.status) === 'Disetujui' && !clean_(row.profileKey) && !clean_(row.publishedAt);
+    const status = clean_(row.status) || 'Baru';
+    const reviewReady = status === 'Disetujui' || (settings.includeUnapproved && (status === 'Baru' || status === 'Perlu Review'));
+    return reviewReady && !clean_(row.profileKey) && !clean_(row.publishedAt);
   });
   if (!candidates.length) return { records: records, synchronized: 0, unmatched: 0 };
 
@@ -50,6 +53,9 @@ function syncApprovedSocialForestryInboxDocuments_(records) {
   }
   const publishedAt = new Date().toISOString();
   resolved.forEach(function(item) {
+    item.row.status = 'Disetujui';
+    item.row.reviewedBy = item.row.reviewedBy || 'Audit Drive otomatis';
+    item.row.reviewedAt = item.row.reviewedAt || publishedAt;
     item.row.profileKey = item.target.key;
     item.row.publishedAt = publishedAt;
   });
@@ -119,14 +125,14 @@ function emailNewSocialForestryFiles_(rows) {
 
 function scheduledSocialForestryDriveScan() {
   const scan = scanSocialForestryDrive_({ notify: true });
-  return syncApprovedSocialForestryInboxDocuments_(scan.records);
+  return syncApprovedSocialForestryInboxDocuments_(scan.records, { includeUnapproved: true });
 }
 
 function synchronizeApprovedSocialForestryInboxFromSecureExecution() {
   const caller = clean_(Session.getActiveUser().getEmail()).toLowerCase();
   if (caller !== ADMIN_EMAIL.toLowerCase()) throw new Error('Hanya administrator yang dapat menjalankan sinkronisasi massal Data PS.');
   const scan = scanSocialForestryDrive_({ notify: false });
-  return syncApprovedSocialForestryInboxDocuments_(scan.records);
+  return syncApprovedSocialForestryInboxDocuments_(scan.records, { includeUnapproved: true });
 }
 
 function installSocialForestryInboxMonitoringFromSecureExecution() {
