@@ -33,6 +33,10 @@
       .toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
   }
 
+  function normalizedPsName(value) {
+    return normalizedText(value).replace(/^kt\s+/, 'kth ');
+  }
+
   function socialForestryProfileKey(feature) {
     var props = feature && feature.properties || {};
     var value = props.NO_IUPHKM || props.SK || props.OBJECTID || props.ID ||
@@ -45,7 +49,7 @@
     PS_PROFILE_INDEX = ((geojson && geojson.features) || []).map(function (feature) {
       var props = feature.properties || {};
       return {
-        name: normalizedText(props.NAMA_HKM),
+        name: normalizedPsName(props.NAMA_HKM),
         regency: normalizedText(props.NAMA_KAB),
         displayName: props.NAMA_HKM || 'Profil Perhutanan Sosial',
         village: props.NAMA_DESA || '',
@@ -57,17 +61,22 @@
   }
 
   function socialForestryProfileMatch(psName, regency) {
-    var name = normalizedText(psName), area = normalizedText(regency).replace(/^\d+\s+/, '');
+    var name = normalizedPsName(psName), area = normalizedText(regency).replace(/^\d+\s+/, '');
+    function findUnique(candidates) {
+      var exact = candidates.filter(function (row) { return row.name === name; });
+      if (exact.length === 1) return exact[0];
+      var prefixed = candidates.filter(function (row) {
+        return name.indexOf(row.name + ' ') === 0 || row.name.indexOf(name + ' ') === 0;
+      }).sort(function (a, b) { return b.name.length - a.name.length; });
+      return prefixed.length && (prefixed.length === 1 || prefixed[0].name.length > prefixed[1].name.length) ? prefixed[0] : null;
+    }
     var areaCandidates = PS_PROFILE_INDEX.filter(function (row) {
       return !area || row.regency === area;
     });
-    var exact = areaCandidates.filter(function (row) { return row.name === name; });
-    var match = exact.length === 1 ? exact[0] : null;
-    if (!match) {
-      var prefixed = areaCandidates.filter(function (row) {
-        return name.indexOf(row.name + ' ') === 0 || row.name.indexOf(name + ' ') === 0;
-      }).sort(function (a, b) { return b.name.length - a.name.length; });
-      if (prefixed.length && (prefixed.length === 1 || prefixed[0].name.length > prefixed[1].name.length)) match = prefixed[0];
+    var match = findUnique(areaCandidates);
+    if (!match && area) {
+      match = findUnique(PS_PROFILE_INDEX);
+      if (match) match = Object.assign({}, match, { regencyMismatch: true, inboxRegency: regency });
     }
     return match;
   }
@@ -110,8 +119,10 @@
     document.getElementById('ps-review-profile-link').href = profileUrl;
     document.getElementById('ps-review-category').textContent = 'Kategori: ' + PS_REVIEW_PENDING.category;
     var message = document.getElementById('ps-review-message');
-    message.className = 'ps-review-message';
-    message.textContent = 'Pastikan dokumen dan profil tujuan sudah benar sebelum menyetujui.';
+    message.className = profile.regencyMismatch ? 'ps-review-message is-error' : 'ps-review-message';
+    message.textContent = profile.regencyMismatch
+      ? 'Peringatan: folder Inbox tercatat di ' + button.dataset.psRegency + ', tetapi profil resmi berada di ' + profile.displayRegency + '. Periksa profil dan dokumen sebelum menyetujui.'
+      : 'Pastikan dokumen dan profil tujuan sudah benar sebelum menyetujui.';
     document.getElementById('ps-review-confirm').disabled = false;
     document.getElementById('ps-review-dialog').showModal();
   }
