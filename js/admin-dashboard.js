@@ -953,14 +953,26 @@
       var button = event.target.closest('[data-ps-review]');
       if (!button) return;
       var feedback = document.getElementById('ps-inbox-feedback');
+      var isApproval = button.dataset.psReview === 'approve';
+      var profileUrl = isApproval ? socialForestryProfileUrl(button.dataset.psName, button.dataset.psRegency) : '';
+      var profileWindow = null;
+      if (profileUrl) {
+        profileWindow = window.open('about:blank', '_blank');
+        if (profileWindow) {
+          profileWindow.opener = null;
+          profileWindow.document.title = 'Membuka profil PS…';
+          profileWindow.document.body.textContent = 'Persetujuan sedang diproses. Profil PS akan segera dibuka…';
+        }
+      }
       try {
         button.disabled = true;
         await postAdmin('ps-inbox-review', { fileId: button.dataset.fileId, decision: button.dataset.psReview });
-        if (button.dataset.psReview === 'approve') {
-          var profileUrl = socialForestryProfileUrl(button.dataset.psName, button.dataset.psRegency);
+        if (isApproval) {
           if (profileUrl) {
             feedback.textContent = 'Dokumen disetujui. Membuka profil PS yang diperbarui...';
-            window.location.assign(profileUrl);
+            if (profileWindow && !profileWindow.closed) profileWindow.location.replace(profileUrl);
+            else window.location.assign(profileUrl);
+            await loadPsInbox();
             return;
           }
           feedback.textContent = 'Dokumen disetujui, tetapi profil PS tidak dapat dicocokkan secara aman.';
@@ -968,7 +980,11 @@
           feedback.textContent = 'Dokumen ditandai perlu perbaikan.';
         }
         await loadPsInbox();
-      } catch (error) { button.disabled = false; feedback.textContent = error.message; }
+      } catch (error) {
+        if (profileWindow && !profileWindow.closed) profileWindow.close();
+        button.disabled = false;
+        feedback.textContent = error.message;
+      }
     });
     document.getElementById('nonspatial-evidence-form').addEventListener('submit', saveNonspatialEvidence);
     document.getElementById('nonspatial-evidence-list').addEventListener('click', async function (event) {
