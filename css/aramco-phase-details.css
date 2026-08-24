@@ -1,0 +1,46 @@
+.aramco-phase-card.has-details {
+  grid-column: span 2;
+}
+.aramco-phase-achievements {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 16px;
+}
+.aramco-phase-achievements span {
+  padding: 10px;
+  border-radius: 12px;
+  background: #f1f6f4;
+  color: #62756f;
+  font-size: 0.72rem;
+  line-height: 1.3;
+}
+.aramco-phase-achievements b {
+  display: block;
+  margin-bottom: 2px;
+  color: #0c725b;
+  font-size: 1rem;
+}
+.aramco-phase-highlights {
+  margin: 15px 0 0;
+  padding-left: 18px;
+  color: #60736e;
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+.aramco-phase-highlights li + li { margin-top: 5px; }
+.aramco-phase-report {
+  display: inline-block;
+  margin-top: 14px;
+  color: #087b61;
+  font-size: 0.82rem;
+  font-weight: 750;
+  text-decoration: none;
+}
+@media (max-width: 720px) {
+  .aramco-phase-card.has-details { grid-column: auto; }
+  .aramco-phase-achievements { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 460px) {
+  .aramco-phase-achievements { grid-template-columns: 1fr; }
+}
