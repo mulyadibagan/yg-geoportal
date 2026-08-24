@@ -155,23 +155,77 @@
         "name": "",
         "period": "2024–2025",
         "status": "Selesai",
-        "summary": "Perluasan restorasi mangrove, penguatan rumah bibit masyarakat, dan pembangunan hybrid engineering, yang telah dituntaskan dan didokumentasikan dalam Final Report Fase II.",
-        "detailsPending": true,
-        "evidenceLinks": [
-          {
-            "label": "Buka line APO Fase 1–2",
-            "url": "webgis.html?object=APO-BURUK-BAKUL-NA-001"
-          }
+        "summary": "Perluasan konservasi berbasis masyarakat ke Desa Buruk Bakul dan Kelapa Pati pada Juni 2024–Mei 2025.",
+        "detailsPending": false,
+        "reportUrl": "https://drive.google.com/file/d/1FG5iQCiJjQW8A8-uVGKht0WlBaYYt0hK/view?usp=sharing",
+        "achievements": [
+          { "value": "15.225", "label": "mangrove ditanam" },
+          { "value": "1,45 ha", "label": "area rehabilitasi" },
+          { "value": "17.150", "label": "bibit dibesarkan" },
+          { "value": "200 m", "label": "APO dipelihara dan dibangun" },
+          { "value": "2", "label": "pelatihan · 90 peserta" },
+          { "value": "1.200+", "label": "peserta kegiatan" }
         ],
         "outputs": [
           {
+            "id": "OUT-ARAMCO-P2-CAPACITY",
+            "activity": "Peningkatan kapasitas masyarakat",
+            "output": "Dua pelatihan untuk pengelolaan mangrove dan mata pencaharian berkelanjutan.",
+            "achievement": "Pelatihan monitoring mangrove diikuti 43 peserta dan pelatihan pengolahan gula nipah diikuti 47 peserta.",
+            "evidenceLinks": [
+              { "label": "Buka pelatihan monitoring mangrove", "url": "capacity-building.html?report=CB-2024-002" },
+              { "label": "Buka pelatihan gula nipah", "url": "capacity-building.html?report=CB-2025-001" }
+            ]
+          },
+          {
+            "id": "OUT-ARAMCO-P2-ASSESSMENT",
+            "activity": "Asesmen dan desain konservasi",
+            "output": "Asesmen dasar mangrove di Buruk Bakul dan Kelapa Pati bersama kelompok masyarakat.",
+            "achievement": "Selesai pada Juni–September 2024 melalui kajian literatur, analisis GIS, dan survei lapangan dengan lebih dari 10 anggota kelompok.",
+            "evidenceUrl": "https://drive.google.com/file/d/1FG5iQCiJjQW8A8-uVGKht0WlBaYYt0hK/view?usp=sharing"
+          },
+          {
+            "id": "OUT-ARAMCO-P2-NURSERY",
+            "activity": "Penguatan rumah bibit",
+            "output": "Target 14.000 bibit dari rumah bibit masyarakat di Buruk Bakul dan Kelapa Pati.",
+            "achievement": "Sebanyak 17.150 Rhizophora apiculata dibesarkan: 11.000 di Buruk Bakul dan 6.150 di Kelapa Pati.",
+            "evidenceLinks": [
+              { "label": "Buka titik rumah bibit Buruk Bakul", "url": "webgis.html?object=YG-NURSERY-MANGROVE-MRW1PF95" },
+              { "label": "Buka evidence laporan", "url": "https://drive.google.com/file/d/1FG5iQCiJjQW8A8-uVGKht0WlBaYYt0hK/view?usp=sharing" }
+            ]
+          },
+          {
+            "id": "OUT-ARAMCO-P2-APO",
+            "activity": "Pemeliharaan dan pembangunan APO",
+            "output": "Pemeliharaan 100 meter APO lama dan pembangunan tambahan 100 meter APO berbasis alam.",
+            "achievement": "APO lama diperkuat dengan 50 batang nibung; APO tambahan dibangun menggunakan 500 batang nibung dan 118 ikat ghansang.",
+            "evidenceUrl": "webgis.html?object=APO-BURUK-BAKUL-NA-001",
+            "evidenceLabel": "Buka line APO Fase 1–2"
+          },
+          {
+            "id": "OUT-ARAMCO-P2-REHABILITATION",
+            "activity": "Rehabilitasi dan penanaman mangrove",
+            "output": "Target 14.000 mangrove pada area rehabilitasi 7 hektare di dua desa.",
+            "achievement": "Sebanyak 15.225 mangrove ditanam pada 11 polygon seluas 1,45 hektare: 10.200 di Buruk Bakul dan 5.025 di Kelapa Pati.",
+            "evidenceUrl": "aramco-phase2-map.html",
+            "evidenceLabel": "Buka 11 polygon Fase 2"
+          },
+          {
+            "id": "OUT-ARAMCO-P2-MONITORING",
+            "activity": "Monitoring, pemeliharaan, dan perlindungan",
+            "output": "Patroli dan monitoring dua kali seminggu oleh kelompok di Buruk Bakul dan Kelapa Pati.",
+            "achievement": "Survival tercatat 100% di tambak udang Buruk Bakul, 25,3% di area APO, dan sekitar 99% di Kelapa Pati.",
+            "evidenceUrl": "https://drive.google.com/file/d/1FG5iQCiJjQW8A8-uVGKht0WlBaYYt0hK/view?usp=sharing"
+          },
+          {
             "id": "OUT-ARAMCO-P2-REPORTING",
-            "name": "Reporting",
-            "activities": [
+            "activity": "Pelaporan program",
+            "output": "Laporan kemajuan dan laporan akhir Fase 2.",
+            "achievement": "Laporan kemajuan Januari 2025 dan Final Report Juni 2024–Mei 2025 telah disusun dan disampaikan.",
+            "evidenceLinks": [
               {
-                "id": "ACT-ARAMCO-P2-FINAL",
-                "name": "Final Report Fase II",
-                "indicator": "1 final report submitted"
+                "label": "Buka Final Report Fase 2",
+                "url": "https://drive.google.com/file/d/1FG5iQCiJjQW8A8-uVGKht0WlBaYYt0hK/view?usp=sharing"
               }
             ]
           }
