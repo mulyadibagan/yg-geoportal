@@ -1159,7 +1159,7 @@
         .then(function (response) { return response.ok ? response.json() : []; })
         .catch(function () { return []; }),
       loadLayerEvidence(),
-      fetch('data/PERHUTANAN_SOSIAL_RIAU.geojson?v=20260824-ps-approval-redirect1', { cache: 'no-store' })
+      fetch('data/PERHUTANAN_SOSIAL_RIAU.geojson?v=20260824-kth-alam-hijau-pelalawan1', { cache: 'no-store' })
         .then(function (response) { return response.ok ? response.json() : { features: [] }; })
         .catch(function () { return { features: [] }; })
     ]).then(function (results) {
