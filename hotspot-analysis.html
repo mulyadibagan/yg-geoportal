@@ -7,7 +7,7 @@
   <link rel="icon" href="assets/logo-yayasan-gambut.png">
   <link rel="preconnect" href="https://unpkg.com">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
-  <link rel="stylesheet" href="css/hotspot-analysis.css?v=20260824-analysis1">
+  <link rel="stylesheet" href="css/hotspot-analysis.css?v=20260824-trend2">
 </head>
 <body>
   <header class="ha-header"><a class="ha-brand" href="index.html"><img src="assets/logo-yayasan-gambut.png" alt="Yayasan Gambut"><span><strong>YG GeoPortal</strong><small>Laporan analisis hotspot</small></span></a><a class="ha-back" href="fire-weather.html">← Kembali ke peta</a></header>
@@ -17,18 +17,26 @@
     <section class="ha-kpis" aria-label="Ringkasan analisis">
       <article><span>Total hotspot</span><strong id="metric-total">—</strong><small id="metric-period">periode terpilih</small></article>
       <article><span id="metric-location-label">Lokasi teridentifikasi</span><strong id="metric-locations">—</strong><small>kelompok lokasi</small></article>
-      <article><span>Satelit</span><strong id="metric-satellites">—</strong><small>platform pendeteksi</small></article>
+      <article><span>Perubahan tren</span><strong id="metric-change">—</strong><small id="metric-change-note">dibanding periode sebelumnya</small></article>
       <article><span>Rata-rata FRP</span><strong id="metric-frp">—</strong><small>MW · data tersedia</small></article>
     </section>
+
+    <section class="ha-panel ha-media-panel" aria-label="Narasi tren untuk media">
+      <div class="ha-panel-head"><div><p>NARASI TREN</p><h2>Ringkasan siap kutip media</h2></div><button class="ha-copy" id="copy-narrative" type="button">Salin narasi</button></div>
+      <div id="key-figures" class="ha-key-figures"></div>
+      <div id="media-narrative" class="ha-narrative"><p>Menyiapkan narasi…</p></div>
+      <div class="ha-location-box"><strong>Lokasi administratif utama</strong><div id="admin-locations">—</div></div>
+    </section>
+
     <section class="ha-grid">
-      <article class="ha-panel ha-chart-panel"><div class="ha-panel-head"><div><p>TREN DETEKSI</p><h2>Hotspot per hari</h2></div></div><div id="daily-chart" class="ha-chart"></div></article>
+      <article class="ha-panel ha-chart-panel"><div class="ha-panel-head"><div><p>TREN DETEKSI</p><h2>Hotspot per hari</h2></div><small id="chart-note"></small></div><div id="daily-chart" class="ha-chart"></div></article>
       <article class="ha-panel"><div class="ha-panel-head"><div><p>PERINGKAT</p><h2 id="ranking-title">Lokasi terbanyak</h2></div></div><div id="location-ranking" class="ha-ranking"></div></article>
     </section>
     <section class="ha-panel ha-map-panel"><div class="ha-panel-head"><div><p>SEBARAN SPASIAL</p><h2 id="map-title">Titik hotspot terpilih</h2></div><small id="map-note"></small></div><div id="analysis-map"></div></section>
-    <section class="ha-panel"><div class="ha-panel-head"><div><p>RINCIAN DETEKSI</p><h2>Tabel hotspot</h2></div><small id="table-note"></small></div><div class="ha-table-wrap"><table><thead><tr><th>Waktu (WIB)</th><th>Lokasi analisis</th><th>Satelit</th><th>FRP</th><th>Suhu</th><th>Koordinat</th></tr></thead><tbody id="hotspot-table"></tbody></table></div></section>
-    <section class="ha-method"><strong>Catatan metodologi</strong><p id="method-note"></p><p>Hotspot adalah anomali termal satelit berkeyakinan tinggi, bukan konfirmasi api yang masih menyala, luas kebakaran, sumber asap, atau penetapan pihak penyebab.</p></section>
+    <section class="ha-panel"><div class="ha-panel-head"><div><p>RINCIAN DETEKSI</p><h2>Tabel hotspot</h2></div><small id="table-note"></small></div><div class="ha-table-wrap"><table><thead><tr><th>Waktu (WIB)</th><th>Lokasi analisis</th><th>Desa</th><th>Kecamatan</th><th>Kabupaten</th><th>Satelit</th><th>FRP</th><th>Koordinat</th></tr></thead><tbody id="hotspot-table"></tbody></table></div></section>
+    <section class="ha-method"><strong>Catatan metodologi</strong><p id="method-note"></p><p>Hotspot adalah anomali termal satelit berkeyakinan tinggi, bukan konfirmasi api yang masih menyala, luas kebakaran, sumber asap, atau penetapan pihak penyebab.</p><p>Untuk periode 7 dan 30 hari, grafik menggunakan hari kalender WIB agar jumlah harian konsisten dengan total periode. Perubahan tren dihitung terhadap periode sebelumnya jika cakupan data sumber mencukupi.</p></section>
   </main>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-  <script src="js/hotspot-analysis.js?v=20260824-esri-imagery1"></script>
+  <script src="js/hotspot-analysis.js?v=20260824-trend2"></script>
 </body>
 </html>
