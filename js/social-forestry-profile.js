@@ -69,7 +69,7 @@ function renderNonspatial(detail){
   el("kpi-grid").innerHTML=[kpi("▤","Dokumen terpublikasi",format(documents.length,0),"hasil audit Drive"),kpi("⌖","Kabupaten",detail.regency||"Belum tersedia","lokasi administratif"),kpi("◎","Status spasial","Nonspasial","polygon belum tersedia")].join("");
   document.querySelectorAll("[data-spatial-only]").forEach(function(node){node.hidden=true});
   document.querySelector(".vp-layout").classList.add("vp-layout--single");
-  renderIdentity({NAMA_HKM:name,Ket:detail.scheme||"Profil dokumen nonspasial",NO_IUPHKM:detail.decree||"Belum tersedia",L_IUPHKM:detail.areaHa||null,NAMA_DESA:detail.village,NAMA_KEC:detail.district,NAMA_KAB:detail.regency,NAMA_PROV:"Riau"},null);
+  el("identity-list").innerHTML=[item("Kelompok/Hutan Desa",name),item("Skema",detail.scheme||"Profil dokumen nonspasial"),item("Nomor izin",detail.decree||"Belum tersedia"),item("Tanggal izin","Belum tersedia"),item("Luas izin",detail.areaHa?format(detail.areaHa,2)+" ha":"Belum tersedia"),item("Luas polygon","Belum tersedia"),item("Desa",detail.village||"Belum tersedia"),item("Kecamatan",detail.district||"Belum tersedia"),item("Kabupaten",detail.regency||"Belum tersedia"),item("Provinsi","Riau")].join("");
   renderSupplemental(detail);el("loading-state").hidden=true;el("error-state").hidden=true;el("profile-content").hidden=false;
 }
 function render(feature,record,data,detail){
