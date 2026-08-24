@@ -99,7 +99,8 @@
             "output": "Pemecah gelombang sepanjang 100 meter untuk melindungi area tanam.",
             "achievement": "Selesai dibangun manual oleh 11 anggota Sekat Bakau menggunakan 540 batang nibung; sedimentasi sekitar 3 cm tercatat pada Mei 2024.",
             "evidence": "Final Report Fase I · hlm. 3, 12, dan 29",
-            "evidenceUrl": "https://drive.google.com/file/d/1urwXsg64a4ttgihusCFZzTiKmGYyyqWB/view?usp=drivesdk"
+            "evidenceUrl": "webgis.html?object=APO-BURUK-BAKUL-NA-001",
+            "evidenceLabel": "Buka line APO Fase 1–2"
           },
           {
             "id": "OUT-ARAMCO-P1-REHABILITATION",
@@ -152,6 +153,12 @@
         "status": "Selesai",
         "summary": "Perluasan restorasi mangrove, penguatan rumah bibit masyarakat, dan pembangunan hybrid engineering, yang telah dituntaskan dan didokumentasikan dalam Final Report Fase II.",
         "detailsPending": true,
+        "evidenceLinks": [
+          {
+            "label": "Buka line APO Fase 1–2",
+            "url": "webgis.html?object=APO-BURUK-BAKUL-NA-001"
+          }
+        ],
         "outputs": [
           {
             "id": "OUT-ARAMCO-P2-REPORTING",
