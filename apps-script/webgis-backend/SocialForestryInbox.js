@@ -118,7 +118,15 @@ function emailNewSocialForestryFiles_(rows) {
 }
 
 function scheduledSocialForestryDriveScan() {
-  return scanSocialForestryDrive_({ notify: true });
+  const scan = scanSocialForestryDrive_({ notify: true });
+  return syncApprovedSocialForestryInboxDocuments_(scan.records);
+}
+
+function synchronizeApprovedSocialForestryInboxFromSecureExecution() {
+  const caller = clean_(Session.getActiveUser().getEmail()).toLowerCase();
+  if (caller !== ADMIN_EMAIL.toLowerCase()) throw new Error('Hanya administrator yang dapat menjalankan sinkronisasi massal Data PS.');
+  const scan = scanSocialForestryDrive_({ notify: false });
+  return syncApprovedSocialForestryInboxDocuments_(scan.records);
 }
 
 function installSocialForestryInboxMonitoringFromSecureExecution() {
