@@ -101,7 +101,7 @@ function handleSocialForestryInboxPost_(e) {
     });
     if (!found) throw new Error('Dokumen Data PS tidak ditemukan.');
     let publication = null;
-    if (decision === 'approve') publication = publishSocialForestryInboxDocument_(found);
+    if (decision === 'approve') publication = publishSocialForestryInboxDocument_(found, clean_(payload.profileKey), clean_(payload.profileName));
     rows.forEach(function(row) {
       if (clean_(row.fileId) !== fileId) return;
       row.status = decision === 'approve' ? 'Disetujui' : 'Perlu Perbaikan';
@@ -120,8 +120,14 @@ function handleSocialForestryInboxPost_(e) {
   return donorAdminResponse_({ ok: true, accepted: true });
 }
 
-function publishSocialForestryInboxDocument_(row) {
+function publishSocialForestryInboxDocument_(row, requestedProfileKey, requestedProfileName) {
   const details = readSocialForestryDetailsFromGitHub_();
+  if (requestedProfileKey) {
+    const key = requestedProfileKey.toLowerCase();
+    const profile = details[key] || { name: requestedProfileName || clean_(row.psName), documents: [] };
+    details[key] = profile;
+    return publishSocialForestryDocumentToProfile_(details, key, profile, row);
+  }
   const incoming = normalizeSocialForestryInboxName_(row.psName);
   const matches = Object.keys(details).map(function(key) {
     const profile = details[key] || {};
@@ -133,7 +139,10 @@ function publishSocialForestryInboxDocument_(row) {
     throw new Error('Profil PS tujuan tidak dapat dicocokkan secara aman untuk publikasi.');
   }
   const target = matches[0];
-  const profile = target.profile;
+  return publishSocialForestryDocumentToProfile_(details, target.key, target.profile, row);
+}
+
+function publishSocialForestryDocumentToProfile_(details, profileKey, profile, row) {
   const document = {
     label: socialForestryDocumentLabel_(row.fileName),
     category: socialForestryCategory_(row.category) || clean_(row.category) || 'Dokumen pendukung',
@@ -154,7 +163,7 @@ function publishSocialForestryInboxDocument_(row) {
     commitSha = result && result.commit && result.commit.sha || '';
   }
   return {
-    profileKey: target.key,
+    profileKey: profileKey,
     profileName: clean_(profile.name) || clean_(row.psName),
     document: document,
     published: !exists,

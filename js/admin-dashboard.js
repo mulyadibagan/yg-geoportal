@@ -1054,7 +1054,12 @@
         confirmButton.disabled = true;
         message.className = 'ps-review-message';
         message.textContent = 'Menyimpan persetujuan dan menyiapkan profil PS…';
-        var result = await postAdmin('ps-inbox-review', { fileId: pending.fileId, decision: 'approve' });
+        var result = await postAdmin('ps-inbox-review', {
+          fileId: pending.fileId,
+          decision: 'approve',
+          profileKey: pending.profile.key,
+          profileName: pending.profile.displayName
+        });
         var publication = result && result.publication;
         if (publication && publication.document) {
           sessionStorage.setItem('ygPsApprovedDocument:' + pending.profile.key, JSON.stringify(publication.document));
