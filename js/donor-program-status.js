@@ -59,11 +59,27 @@
     });
   }
 
+  function bindAramcoDirectPage() {
+    var card = document.querySelector(cardSelectors.aramco);
+    if (!card || card.dataset.directPageBound === 'true') return;
+    card.dataset.directPageBound = 'true';
+    card.setAttribute('aria-label', 'Buka dashboard program Aramco Asia Singapore');
+    card.addEventListener('click', function (event) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      window.location.href = 'aramco.html';
+    }, true);
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
+    bindAramcoDirectPage();
     refresh();
     var grid = document.getElementById('donor-grid');
     if (grid && window.MutationObserver) {
-      new MutationObserver(applyCachedStatuses).observe(grid, { childList: true, subtree: true });
+      new MutationObserver(function () {
+        bindAramcoDirectPage();
+        applyCachedStatuses();
+      }).observe(grid, { childList: true, subtree: true });
     }
   });
 })();
