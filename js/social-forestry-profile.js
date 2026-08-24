@@ -1,6 +1,8 @@
 (function(){
 "use strict";
 var params=new URLSearchParams(location.search),key=String(params.get("key")||"").trim().toLowerCase(),map=null;
+var keyAliases={"drive-audit:kampar-lphd-kenagarian-pangkalan-kapas":"sk.3072/menlhk-pskl/pkps/psl.0/5/2018"};
+key=keyAliases[key]||key;
 function el(id){return document.getElementById(id)}
 function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
 function number(v){var n=Number(v);return isFinite(n)?n:null}
