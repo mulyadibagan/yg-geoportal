@@ -37,9 +37,64 @@
   font-weight: 750;
   text-decoration: none;
 }
+.aramco-phase-output-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid #dfe9e5;
+  color: #174e44;
+}
+.aramco-phase-output-heading span {
+  color: #71837e;
+  font-size: 0.78rem;
+}
+.aramco-phase-output-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+.aramco-phase-output {
+  padding: 14px;
+  border: 1px solid #e0e9e6;
+  border-radius: 15px;
+  background: #fff;
+}
+.aramco-phase-output h4 {
+  margin: 0 0 10px;
+  color: #174e44;
+  font-size: 0.9rem;
+}
+.aramco-phase-output dl,
+.aramco-phase-output dd { margin: 0; }
+.aramco-phase-output dl { display: grid; gap: 9px; }
+.aramco-phase-output dt {
+  margin-bottom: 2px;
+  color: #0b8c6d;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+.aramco-phase-output dd {
+  color: #61746f;
+  font-size: 0.77rem;
+  line-height: 1.45;
+}
+.aramco-phase-output dd a {
+  display: block;
+  margin-top: 4px;
+  color: #087b61;
+  font-weight: 750;
+  text-decoration: none;
+}
 @media (max-width: 720px) {
   .aramco-phase-card.has-details { grid-column: auto; }
   .aramco-phase-achievements { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .aramco-phase-output-grid { grid-template-columns: 1fr; }
+  .aramco-phase-output-heading { display: block; }
+  .aramco-phase-output-heading span { display: block; margin-top: 4px; }
 }
 @media (max-width: 460px) {
   .aramco-phase-achievements { grid-template-columns: 1fr; }

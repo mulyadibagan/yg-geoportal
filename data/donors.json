@@ -69,15 +69,77 @@
         ],
         "outputs": [
           {
+            "id": "OUT-ARAMCO-P1-ASSESSMENT",
+            "activity": "Asesmen dan desain konservasi",
+            "output": "Satu asesmen lapangan dan rencana implementasi bersama masyarakat serta pemerintah.",
+            "achievement": "Selesai melalui rangkaian pertemuan dan survei Juni–Agustus 2023 dengan lebih dari 23 orang terlibat.",
+            "evidence": "Final Report Fase I · hlm. 2 dan 10",
+            "evidenceUrl": "https://drive.google.com/file/d/1urwXsg64a4ttgihusCFZzTiKmGYyyqWB/view?usp=drivesdk"
+          },
+          {
+            "id": "OUT-ARAMCO-P1-LAUNCH",
+            "activity": "Peluncuran program",
+            "output": "Satu kegiatan peluncuran Community-based Mangrove Conservation Programme.",
+            "achievement": "Dilaksanakan pada 22 Oktober 2023 di Desa Buruk Bakul dengan sekitar 118 peserta lintas pemangku kepentingan.",
+            "evidence": "Final Report Fase I · hlm. 3, 10, dan 13",
+            "evidenceUrl": "https://drive.google.com/file/d/1urwXsg64a4ttgihusCFZzTiKmGYyyqWB/view?usp=drivesdk"
+          },
+          {
+            "id": "OUT-ARAMCO-P1-NURSERY",
+            "activity": "Rumah bibit mangrove",
+            "output": "Satu rumah bibit masyarakat dengan target produksi 8.000 bibit.",
+            "achievement": "Rumah bibit 5 × 10 meter dibangun dan menampung 8.579 propagul dari lima jenis mangrove.",
+            "evidence": "Final Report Fase I · hlm. 3 dan 11",
+            "evidenceUrl": "https://drive.google.com/file/d/1urwXsg64a4ttgihusCFZzTiKmGYyyqWB/view?usp=drivesdk"
+          },
+          {
+            "id": "OUT-ARAMCO-P1-WAVEBREAKER",
+            "activity": "Pemecah gelombang",
+            "output": "Pemecah gelombang sepanjang 100 meter untuk melindungi area tanam.",
+            "achievement": "Selesai dibangun manual oleh 11 anggota Sekat Bakau menggunakan 540 batang nibung; sedimentasi sekitar 3 cm tercatat pada Mei 2024.",
+            "evidence": "Final Report Fase I · hlm. 3, 12, dan 29",
+            "evidenceUrl": "https://drive.google.com/file/d/1urwXsg64a4ttgihusCFZzTiKmGYyyqWB/view?usp=drivesdk"
+          },
+          {
+            "id": "OUT-ARAMCO-P1-REHABILITATION",
+            "activity": "Rehabilitasi dan penanaman mangrove",
+            "output": "Target penanaman 8.000 mangrove pada area rehabilitasi 4 hektare.",
+            "achievement": "Sebanyak 10.420 mangrove ditanam pada enam polygon dengan luas aktual 2,65 hektare.",
+            "evidence": "Final Report Fase I · hlm. 4–5 dan 13–18",
+            "evidenceUrl": "aramco-phase1-map.html",
+            "evidenceLabel": "Buka 6 polygon Fase 1"
+          },
+          {
+            "id": "OUT-ARAMCO-P1-MONITORING",
+            "activity": "Monitoring, pemeliharaan, dan perlindungan",
+            "output": "Sistem monitoring masyarakat dua kali seminggu dengan laporan berkala.",
+            "achievement": "Monitoring berjalan sejak Desember 2023; mortalitas sekitar 39% diidentifikasi dan ditindaklanjuti dengan penyulaman serta perbaikan teknik transplantasi.",
+            "evidence": "Final Report Fase I · hlm. 5–6 dan 19–22",
+            "evidenceUrl": "https://drive.google.com/file/d/1urwXsg64a4ttgihusCFZzTiKmGYyyqWB/view?usp=drivesdk"
+          },
+          {
+            "id": "OUT-ARAMCO-P1-CAPACITY",
+            "activity": "Peningkatan kapasitas",
+            "output": "Dua pelatihan bagi kelompok masyarakat terpilih.",
+            "achievement": "Pelatihan monitoring mangrove diikuti 30 peserta dan pelatihan informasi-komunikasi diikuti 39 peserta.",
+            "evidence": "Final Report Fase I · hlm. 6–7 dan 23–25",
+            "evidenceUrl": "https://drive.google.com/file/d/1urwXsg64a4ttgihusCFZzTiKmGYyyqWB/view?usp=drivesdk"
+          },
+          {
+            "id": "OUT-ARAMCO-P1-EXCHANGE",
+            "activity": "Kunjungan belajar lintas negara",
+            "output": "Pertukaran pengetahuan antara komunitas Indonesia dan Malaysia.",
+            "achievement": "Kunjungan lima hari ke Johor pada 29 November–3 Desember 2023 diikuti 20 peserta; 95% responden menyatakan kegiatan bermanfaat dan mencapai tujuan.",
+            "evidence": "Final Report Fase I · hlm. 7–8 dan 25–28",
+            "evidenceUrl": "https://drive.google.com/file/d/1urwXsg64a4ttgihusCFZzTiKmGYyyqWB/view?usp=drivesdk"
+          },
+          {
             "id": "OUT-ARAMCO-P1-REPORTING",
-            "name": "Reporting",
-            "activities": [
-              {
-                "id": "ACT-ARAMCO-P1-FINAL",
-                "name": "Final Report Fase I",
-                "indicator": "1 final report submitted"
-              }
-            ]
+            "activity": "Pelaporan program",
+            "output": "Laporan kemajuan dan laporan akhir pelaksanaan Fase 1.",
+            "achievement": "Final Report Fase I periode Juni 2023–Mei 2024 tersedia dan menjadi sumber capaian pada dashboard.",
+            "evidence": "Final Report Fase I",
+            "evidenceUrl": "https://drive.google.com/file/d/1urwXsg64a4ttgihusCFZzTiKmGYyyqWB/view?usp=drivesdk"
           }
         ]
       },
