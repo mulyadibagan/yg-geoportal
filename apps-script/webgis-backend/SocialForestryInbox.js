@@ -94,19 +94,75 @@ function handleSocialForestryInboxPost_(e) {
     const fileId = clean_(payload.fileId);
     const decision = clean_(payload.decision);
     const rows = readDonorAdminProperty_(YG_PS_INBOX_PROPERTY_KEY_, []);
-    let found = false;
+    let found = null;
     rows.forEach(function(row) {
       if (clean_(row.fileId) !== fileId) return;
-      found = true;
+      found = row;
+    });
+    if (!found) throw new Error('Dokumen Data PS tidak ditemukan.');
+    let publication = null;
+    if (decision === 'approve') publication = publishSocialForestryInboxDocument_(found);
+    rows.forEach(function(row) {
+      if (clean_(row.fileId) !== fileId) return;
       row.status = decision === 'approve' ? 'Disetujui' : 'Perlu Perbaikan';
       row.reviewedBy = clean_(editor.username || editor.email);
       row.reviewedAt = new Date().toISOString();
+      if (publication) {
+        row.profileKey = publication.profileKey;
+        row.publishedAt = row.reviewedAt;
+      }
     });
-    if (!found) throw new Error('Dokumen Data PS tidak ditemukan.');
     writeDonorAdminProperty_(YG_PS_INBOX_PROPERTY_KEY_, rows);
-    setDonorAdminResult_(requestId, { ok: true, data: rows });
+    setDonorAdminResult_(requestId, { ok: true, data: { rows: rows, publication: publication } });
   } catch (error) {
     setDonorAdminResult_(requestId, { ok: false, error: error.message || String(error) });
   }
   return donorAdminResponse_({ ok: true, accepted: true });
+}
+
+function publishSocialForestryInboxDocument_(row) {
+  const details = readSocialForestryDetailsFromGitHub_();
+  const incoming = normalizeSocialForestryInboxName_(row.psName);
+  const matches = Object.keys(details).map(function(key) {
+    const profile = details[key] || {};
+    return { key: key, profile: profile, normalized: normalizeSocialForestryInboxName_(profile.name) };
+  }).filter(function(item) {
+    return item.normalized === incoming || incoming.indexOf(item.normalized + ' ') === 0 || item.normalized.indexOf(incoming + ' ') === 0;
+  }).sort(function(a, b) { return b.normalized.length - a.normalized.length; });
+  if (!matches.length || (matches.length > 1 && matches[0].normalized.length === matches[1].normalized.length)) {
+    throw new Error('Profil PS tujuan tidak dapat dicocokkan secara aman untuk publikasi.');
+  }
+  const target = matches[0];
+  const profile = target.profile;
+  const document = {
+    label: socialForestryDocumentLabel_(row.fileName),
+    category: socialForestryCategory_(row.category) || clean_(row.category) || 'Dokumen pendukung',
+    url: clean_(row.url)
+  };
+  profile.documents = Array.isArray(profile.documents) ? profile.documents : [];
+  const exists = profile.documents.some(function(item) {
+    return driveFileIdFromUrl_(item.url) === clean_(row.fileId) || clean_(item.url) === document.url;
+  });
+  let commitSha = '';
+  if (!exists) {
+    profile.documents.push(document);
+    const result = updateGitHubFile_(
+      PS_DOCUMENT_DETAILS_PATH,
+      JSON.stringify(details, null, 2) + '\n',
+      'Publish approved PS document: ' + (clean_(profile.name) || clean_(row.psName))
+    );
+    commitSha = result && result.commit && result.commit.sha || '';
+  }
+  return {
+    profileKey: target.key,
+    profileName: clean_(profile.name) || clean_(row.psName),
+    document: document,
+    published: !exists,
+    commitSha: commitSha
+  };
+}
+
+function normalizeSocialForestryInboxName_(value) {
+  return clean_(value).toLowerCase().replace(/^kt\s+/, 'kth ')
+    .replace(/[_-]+/g, ' ').replace(/[^a-z0-9]+/g, ' ').replace(/\s+/g, ' ').trim();
 }

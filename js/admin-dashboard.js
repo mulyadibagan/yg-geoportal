@@ -326,9 +326,12 @@
       return;
     }
     container.innerHTML = rows.map(function (row) {
-      var actions = row.status === 'Baru' || row.status === 'Perlu Review'
-        ? '<div class="ps-inbox-actions"><button class="btn btn-outline" data-ps-review="approve" data-file-id="' + esc(row.fileId) + '" data-file-name="' + esc(row.fileName) + '" data-drive-url="' + esc(row.url) + '" data-ps-category="' + esc(row.category) + '" data-ps-name="' + esc(row.psName) + '" data-ps-regency="' + esc(row.regency) + '">Setujui dokumen</button>' +
-          '<button class="btn btn-light" data-ps-review="revision" data-file-id="' + esc(row.fileId) + '" data-ps-name="' + esc(row.psName) + '" data-ps-regency="' + esc(row.regency) + '">Perlu perbaikan</button></div>' : '';
+      var pending = row.status === 'Baru' || row.status === 'Perlu Review';
+      var approved = row.status === 'Disetujui';
+      var approveButton = pending || approved
+        ? '<button class="btn btn-outline" data-ps-review="approve" data-file-id="' + esc(row.fileId) + '" data-file-name="' + esc(row.fileName) + '" data-drive-url="' + esc(row.url) + '" data-ps-category="' + esc(row.category) + '" data-ps-name="' + esc(row.psName) + '" data-ps-regency="' + esc(row.regency) + '">' + (approved ? 'Sinkronkan ke profil' : 'Setujui dokumen') + '</button>' : '';
+      var revisionButton = pending ? '<button class="btn btn-light" data-ps-review="revision" data-file-id="' + esc(row.fileId) + '" data-ps-name="' + esc(row.psName) + '" data-ps-regency="' + esc(row.regency) + '">Perlu perbaikan</button>' : '';
+      var actions = approveButton || revisionButton ? '<div class="ps-inbox-actions">' + approveButton + revisionButton + '</div>' : '';
       return '<article class="assignment-record ps-inbox-record"><div><strong>' + esc(row.fileName) + '</strong><small>' +
         esc([row.regency, row.psName, row.category].filter(Boolean).join(' · ')) + '</small></div><div><span>' + esc(row.status || 'Baru') +
         '</span><small>' + esc(row.createdAtLabel || '') + '</small></div><a href="' + esc(row.url) + '" target="_blank" rel="noopener">Buka Drive ↗</a>' + actions + '</article>';
@@ -1051,7 +1054,11 @@
         confirmButton.disabled = true;
         message.className = 'ps-review-message';
         message.textContent = 'Menyimpan persetujuan dan menyiapkan profil PS…';
-        await postAdmin('ps-inbox-review', { fileId: pending.fileId, decision: 'approve' });
+        var result = await postAdmin('ps-inbox-review', { fileId: pending.fileId, decision: 'approve' });
+        var publication = result && result.publication;
+        if (publication && publication.document) {
+          sessionStorage.setItem('ygPsApprovedDocument:' + pending.profile.key, JSON.stringify(publication.document));
+        }
         feedback.textContent = 'Dokumen disetujui untuk ' + pending.profile.displayName + '.';
         document.getElementById('ps-review-dialog').close();
         if (profileWindow && !profileWindow.closed) profileWindow.location.replace(pending.profileUrl + '&approved=' + Date.now());
