@@ -7,7 +7,7 @@
   <link rel="icon" href="assets/logo-yayasan-gambut.png"/>
   <link rel="stylesheet" href="css/site-brand.css?v=20260720-program-dashboard1"/>
   <link rel="stylesheet" href="css/dashboard-v3.css?v=20260722-funding-logo1"/>
-  <link rel="stylesheet" href="css/admin-dashboard.css?v=20260728-nonspatial-evidence1"/>
+  <link rel="stylesheet" href="css/admin-dashboard.css?v=20260824-ps-review-preview1"/>
   <link rel="stylesheet" href="css/language-switcher.css?v=20260721-all-pages1"/>
   <meta name="theme-color" content="#079cde">
 </head>
@@ -279,8 +279,27 @@
     </section>
   </main>
 
+  <dialog id="ps-review-dialog" class="ps-review-dialog" aria-labelledby="ps-review-title">
+    <form method="dialog" class="ps-review-card">
+      <div class="ps-review-head">
+        <div><span class="eyebrow">PRATINJAU PERSETUJUAN</span><h2 id="ps-review-title">Rencana penempatan dokumen</h2></div>
+        <button class="ps-review-close" value="cancel" aria-label="Tutup pratinjau">×</button>
+      </div>
+      <div class="ps-review-grid">
+        <section><span>Dokumen yang ditinjau</span><strong id="ps-review-file">—</strong><a id="ps-review-drive" href="#" target="_blank" rel="noopener">Preview dokumen di Drive ↗</a></section>
+        <section><span>Profil PS tujuan</span><strong id="ps-review-profile">—</strong><small id="ps-review-location">—</small><a id="ps-review-profile-link" href="#" target="_blank" rel="noopener">Preview profil PS ↗</a></section>
+        <section class="ps-review-placement"><span>Rencana penempatan</span><strong>Profil PS → Pengelolaan Perhutanan Sosial → Dokumen pendukung</strong><small id="ps-review-category">Kategori: —</small></section>
+      </div>
+      <p id="ps-review-message" class="ps-review-message">Pastikan dokumen dan profil tujuan sudah benar sebelum menyetujui.</p>
+      <div class="ps-review-actions">
+        <button class="btn btn-light" value="cancel">Batal</button>
+        <button class="btn btn-outline" id="ps-review-confirm" value="default" type="button">Setujui &amp; buka profil</button>
+      </div>
+    </form>
+  </dialog>
+
   <script src="js/config.js?v=20260727-all-layers1"></script>
   <script src="js/auth.js?v=20260821-admin-donor-cards1"></script>
-  <script src="js/admin-dashboard.js?v=20260824-ps-approval-redirect3"></script>
+  <script src="js/admin-dashboard.js?v=20260824-ps-review-preview1"></script>
 </body>
 </html>

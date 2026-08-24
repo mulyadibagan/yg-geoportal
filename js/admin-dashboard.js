@@ -14,6 +14,7 @@
   var ASSIGNMENT_DATA = [];
   var NONSPATIAL_EVIDENCE_DATA = [];
   var PS_PROFILE_INDEX = [];
+  var PS_REVIEW_PENDING = null;
   var ADMIN_SESSION = null;
   var REMOTE_AVAILABLE = false;
 
@@ -46,12 +47,16 @@
       return {
         name: normalizedText(props.NAMA_HKM),
         regency: normalizedText(props.NAMA_KAB),
+        displayName: props.NAMA_HKM || 'Profil Perhutanan Sosial',
+        village: props.NAMA_DESA || '',
+        district: props.NAMA_KEC || '',
+        displayRegency: props.NAMA_KAB || '',
         key: socialForestryProfileKey(feature)
       };
     }).filter(function (row) { return row.name && row.key; });
   }
 
-  function socialForestryProfileUrl(psName, regency) {
+  function socialForestryProfileMatch(psName, regency) {
     var name = normalizedText(psName), area = normalizedText(regency).replace(/^\d+\s+/, '');
     var areaCandidates = PS_PROFILE_INDEX.filter(function (row) {
       return !area || row.regency === area;
@@ -64,7 +69,51 @@
       }).sort(function (a, b) { return b.name.length - a.name.length; });
       if (prefixed.length && (prefixed.length === 1 || prefixed[0].name.length > prefixed[1].name.length)) match = prefixed[0];
     }
+    return match;
+  }
+
+  function socialForestryProfileUrl(psName, regency) {
+    var match = socialForestryProfileMatch(psName, regency);
     return match ? 'social-forestry-profile.html?key=' + encodeURIComponent(match.key) : '';
+  }
+
+  function socialForestryDocumentCategory(value) {
+    var category = String(value || '').toLowerCase();
+    if (/sk|legal/.test(category)) return 'Legalitas';
+    if (/peta|spasial/.test(category)) return 'Peta & Data Spasial';
+    if (/kups/.test(category)) return 'KUPS';
+    if (/rkps|rkt|rencana/.test(category)) return 'Rencana kerja';
+    if (/profil/.test(category)) return 'Profil kelompok';
+    return String(value || 'Dokumen pendukung').replace(/^\d+[_\s-]*/, '').replace(/_/g, ' ');
+  }
+
+  function openPsReviewPreview(button) {
+    var profile = socialForestryProfileMatch(button.dataset.psName, button.dataset.psRegency);
+    var feedback = document.getElementById('ps-inbox-feedback');
+    if (!profile) {
+      feedback.textContent = 'Profil PS tujuan belum dapat dicocokkan. Dokumen belum disetujui.';
+      return;
+    }
+    var profileUrl = 'social-forestry-profile.html?key=' + encodeURIComponent(profile.key);
+    PS_REVIEW_PENDING = {
+      fileId: button.dataset.fileId,
+      fileName: button.dataset.fileName,
+      driveUrl: button.dataset.driveUrl,
+      category: socialForestryDocumentCategory(button.dataset.psCategory),
+      profile: profile,
+      profileUrl: profileUrl
+    };
+    document.getElementById('ps-review-file').textContent = PS_REVIEW_PENDING.fileName || 'Dokumen PS';
+    document.getElementById('ps-review-drive').href = PS_REVIEW_PENDING.driveUrl || '#';
+    document.getElementById('ps-review-profile').textContent = profile.displayName;
+    document.getElementById('ps-review-location').textContent = [profile.village, profile.district, profile.displayRegency].filter(Boolean).join(' · ');
+    document.getElementById('ps-review-profile-link').href = profileUrl;
+    document.getElementById('ps-review-category').textContent = 'Kategori: ' + PS_REVIEW_PENDING.category;
+    var message = document.getElementById('ps-review-message');
+    message.className = 'ps-review-message';
+    message.textContent = 'Pastikan dokumen dan profil tujuan sudah benar sebelum menyetujui.';
+    document.getElementById('ps-review-confirm').disabled = false;
+    document.getElementById('ps-review-dialog').showModal();
   }
 
   function isActive(programme) {
@@ -267,7 +316,7 @@
     }
     container.innerHTML = rows.map(function (row) {
       var actions = row.status === 'Baru' || row.status === 'Perlu Review'
-        ? '<div class="ps-inbox-actions"><button class="btn btn-outline" data-ps-review="approve" data-file-id="' + esc(row.fileId) + '" data-ps-name="' + esc(row.psName) + '" data-ps-regency="' + esc(row.regency) + '">Setujui dokumen</button>' +
+        ? '<div class="ps-inbox-actions"><button class="btn btn-outline" data-ps-review="approve" data-file-id="' + esc(row.fileId) + '" data-file-name="' + esc(row.fileName) + '" data-drive-url="' + esc(row.url) + '" data-ps-category="' + esc(row.category) + '" data-ps-name="' + esc(row.psName) + '" data-ps-regency="' + esc(row.regency) + '">Setujui dokumen</button>' +
           '<button class="btn btn-light" data-ps-review="revision" data-file-id="' + esc(row.fileId) + '" data-ps-name="' + esc(row.psName) + '" data-ps-regency="' + esc(row.regency) + '">Perlu perbaikan</button></div>' : '';
       return '<article class="assignment-record ps-inbox-record"><div><strong>' + esc(row.fileName) + '</strong><small>' +
         esc([row.regency, row.psName, row.category].filter(Boolean).join(' · ')) + '</small></div><div><span>' + esc(row.status || 'Baru') +
@@ -961,38 +1010,52 @@
       var button = event.target.closest('[data-ps-review]');
       if (!button) return;
       var feedback = document.getElementById('ps-inbox-feedback');
-      var isApproval = button.dataset.psReview === 'approve';
-      var profileUrl = isApproval ? socialForestryProfileUrl(button.dataset.psName, button.dataset.psRegency) : '';
-      var profileWindow = null;
-      if (profileUrl) {
-        profileWindow = window.open('about:blank', '_blank');
-        if (profileWindow) {
-          profileWindow.opener = null;
-          profileWindow.document.title = 'Membuka profil PS…';
-          profileWindow.document.body.textContent = 'Persetujuan sedang diproses. Profil PS akan segera dibuka…';
-        }
+      if (button.dataset.psReview === 'approve') {
+        openPsReviewPreview(button);
+        return;
       }
       try {
         button.disabled = true;
-        await postAdmin('ps-inbox-review', { fileId: button.dataset.fileId, decision: button.dataset.psReview });
-        if (isApproval) {
-          if (profileUrl) {
-            feedback.textContent = 'Dokumen disetujui. Membuka profil PS yang diperbarui...';
-            if (profileWindow && !profileWindow.closed) profileWindow.location.replace(profileUrl);
-            else window.location.assign(profileUrl);
-            await loadPsInbox();
-            return;
-          }
-          feedback.textContent = 'Dokumen disetujui, tetapi profil PS tidak dapat dicocokkan secara aman.';
-        } else {
-          feedback.textContent = 'Dokumen ditandai perlu perbaikan.';
-        }
+        await postAdmin('ps-inbox-review', { fileId: button.dataset.fileId, decision: 'revision' });
+        feedback.textContent = 'Dokumen ditandai perlu perbaikan.';
         await loadPsInbox();
       } catch (error) {
-        if (profileWindow && !profileWindow.closed) profileWindow.close();
         button.disabled = false;
         feedback.textContent = error.message;
       }
+    });
+    document.getElementById('ps-review-confirm').addEventListener('click', async function () {
+      if (!PS_REVIEW_PENDING) return;
+      var pending = PS_REVIEW_PENDING;
+      var confirmButton = this;
+      var message = document.getElementById('ps-review-message');
+      var feedback = document.getElementById('ps-inbox-feedback');
+      var profileWindow = window.open('about:blank', '_blank');
+      if (profileWindow) {
+        profileWindow.opener = null;
+        profileWindow.document.title = 'Memproses persetujuan…';
+        profileWindow.document.body.textContent = 'Dokumen sedang disetujui. Profil PS akan segera dibuka…';
+      }
+      try {
+        confirmButton.disabled = true;
+        message.className = 'ps-review-message';
+        message.textContent = 'Menyimpan persetujuan dan menyiapkan profil PS…';
+        await postAdmin('ps-inbox-review', { fileId: pending.fileId, decision: 'approve' });
+        feedback.textContent = 'Dokumen disetujui untuk ' + pending.profile.displayName + '.';
+        document.getElementById('ps-review-dialog').close();
+        if (profileWindow && !profileWindow.closed) profileWindow.location.replace(pending.profileUrl + '&approved=' + Date.now());
+        else window.location.assign(pending.profileUrl + '&approved=' + Date.now());
+        PS_REVIEW_PENDING = null;
+        await loadPsInbox();
+      } catch (error) {
+        if (profileWindow && !profileWindow.closed) profileWindow.close();
+        confirmButton.disabled = false;
+        message.className = 'ps-review-message is-error';
+        message.textContent = error.message;
+      }
+    });
+    document.getElementById('ps-review-dialog').addEventListener('close', function () {
+      if (this.returnValue === 'cancel') PS_REVIEW_PENDING = null;
     });
     document.getElementById('nonspatial-evidence-form').addEventListener('submit', saveNonspatialEvidence);
     document.getElementById('nonspatial-evidence-list').addEventListener('click', async function (event) {
