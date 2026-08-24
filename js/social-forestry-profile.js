@@ -48,18 +48,17 @@ function renderSupplemental(detail){
   var section=el("sf-detail");
   if(!detail){section.hidden=true;return}
   var demography=detail.demography||{},management=detail.management||{},kups=Array.isArray(detail.kups)?detail.kups:[],documents=Array.isArray(detail.documents)?detail.documents:[];
-  var summary=[item("Lembaga pengelola",detail.name||"—")];
-  if(kups.length){summary.push(item("KUPS",kups.map(function(row){return row.name}).join(", ")));summary.push(item("Status legalitas KUPS",kups.map(function(row){return row.legalStatus}).filter(Boolean).join(", ")||"—"));}
-  if(number(demography.households)!=null){summary.push(item("Jumlah keluarga",format(demography.households,0)+" KK"));}
-  if(number(demography.population)!=null){summary.push(item("Jumlah penduduk",format(demography.population,0)+" jiwa"));}
-  if(number(demography.male)!=null&&number(demography.female)!=null){summary.push(item("Komposisi penduduk",format(demography.male,0)+" laki-laki · "+format(demography.female,0)+" perempuan"));}
-  if(management.forestManagementUnit){summary.push(item("KPH/FMU",management.forestManagementUnit));}
-  if(management.ecosystem){summary.push(item("Ekosistem",management.ecosystem));}
-  if(number(management.restorationTargetHa)!=null){summary.push(item("Target area restorasi",format(management.restorationTargetHa,0)+" ha"));}
-  if(management.rkpsStatus){summary.push(item("RKPS",management.rkpsStatus));}
+  var unavailable="Belum tersedia",kupsNames=kups.map(function(row){return row.name}).filter(Boolean).join(", "),kupsLegal=kups.map(function(row){return row.legalStatus}).filter(Boolean).join(", ");
+  var summary=[
+    item("Lembaga pengelola",detail.name||unavailable),item("KUPS",kupsNames||unavailable),
+    item("Status legalitas KUPS",kupsLegal||unavailable),item("Jumlah keluarga",number(demography.households)!=null?format(demography.households,0)+" KK":unavailable),
+    item("Jumlah penduduk",number(demography.population)!=null?format(demography.population,0)+" jiwa":unavailable),item("Komposisi penduduk",number(demography.male)!=null&&number(demography.female)!=null?format(demography.male,0)+" laki-laki · "+format(demography.female,0)+" perempuan":unavailable),
+    item("KPH/FMU",management.forestManagementUnit||unavailable),item("Ekosistem",management.ecosystem||unavailable),
+    item("Target area restorasi",number(management.restorationTargetHa)!=null?format(management.restorationTargetHa,0)+" ha":unavailable),item("RKPS",management.rkpsStatus||unavailable)
+  ];
   el("sf-detail-summary").innerHTML=summary.join("");
   el("sf-document-list").innerHTML=documents.map(function(doc){return '<a href="'+esc(doc.url)+'" target="_blank" rel="noopener noreferrer"><span>'+esc(doc.category||"Dokumen")+'</span><strong>'+esc(doc.label||"Buka dokumen")+'</strong><b aria-hidden="true">↗</b></a>'}).join("");
-  el("sf-detail-note").textContent=demography.source?"Sumber demografi: "+demography.source+". Data yang belum tersedia tidak ditampilkan.":"Dokumen berasal dari arsip organisasi. Data yang belum tersedia tidak ditampilkan.";
+  el("sf-detail-note").textContent=demography.source?"Sumber demografi: "+demography.source+". Kolom tanpa data ditandai Belum tersedia.":"Dokumen berasal dari arsip organisasi. Kolom tanpa data ditandai Belum tersedia.";
   section.hidden=false;
 }
 function render(feature,record,data,detail){
