@@ -10,6 +10,7 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/update-hotspot-analytics.yml"
+      - "scripts/update_hotspot_firms.mjs"
       - "scripts/enrich_hotspot_villages.mjs"
 
 permissions:
