@@ -3,6 +3,9 @@ import { gunzipSync } from "node:zlib";
 
 const output = process.env.SURFACE_OBSERVATIONS_OUTPUT || "data/surface-observations.json";
 const sourceUrl = "https://aviationweather.gov/data/cache/metars.cache.csv.gz";
+// The workflow runs every six hours. Keep observations available long enough
+// to cover normal GitHub Actions scheduling delays without hiding all stations.
+const validityHours = 9;
 
 function parseCsv(text) {
   const rows = [];
@@ -49,7 +52,7 @@ await fs.writeFile(output, `${JSON.stringify({
   schemaVersion: 1,
   generatedAt: new Date().toISOString(),
   newestObservationAt: new Date(newest).toISOString(),
-  validUntil: new Date(newest + 3 * 3600000).toISOString(),
+  validUntil: new Date(newest + validityHours * 3600000).toISOString(),
   source: "NOAA/NWS Aviation Weather Center METAR cache",
   sourceUrl,
   termsUrl: "https://www.weather.gov/disclaimer",

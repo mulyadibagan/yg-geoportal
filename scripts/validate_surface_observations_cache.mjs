@@ -10,6 +10,8 @@ if (!Array.isArray(cache.observations) || !cache.observations.length || cache.st
   throw new Error("Surface-observation cache is empty or inconsistent.");
 }
 if (!(Date.parse(cache.validUntil) > Date.parse(cache.newestObservationAt))) throw new Error("Surface-observation validity window is invalid.");
+const validityHours = (Date.parse(cache.validUntil) - Date.parse(cache.newestObservationAt)) / 3600000;
+if (validityHours < 8 || validityHours > 12) throw new Error("Surface-observation validity window must cover the six-hour refresh cadence.");
 for (const row of cache.observations) {
   if (!row.stationId || !Number.isFinite(Date.parse(row.observedAt)) || !Number.isFinite(row.latitude) || !Number.isFinite(row.longitude)) {
     throw new Error("Surface-observation cache contains an invalid station record.");
