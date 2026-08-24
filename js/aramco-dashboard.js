@@ -21,16 +21,15 @@
   function membershipMarkup(m){if(!m||m.total==null)return '';var parts=['<b>'+esc(m.total)+' anggota</b>'];if(m.male!=null)parts.push(esc(m.male)+' laki-laki');if(m.female!=null)parts.push(esc(m.female)+' perempuan');return '<div class="aramco-group-members">'+parts.join('<span>·</span>')+'</div>';}
   function groupMarkup(group){if(!group)return '<div class="aramco-group aramco-group-empty"><small>Kelompok masyarakat</small><strong>Profil kelompok belum ditambahkan</strong></div>';
     var legal=group.legal||{},lead=group.leadership||{};
-    return '<div class="aramco-group">'+
-      '<small>KELOMPOK MITRA</small><strong>'+esc(group.shortName||group.name||'Kelompok masyarakat')+'</strong>'+
-      membershipMarkup(group.membership)+
-      '<p>'+esc(group.summary||'')+'</p>'+
+    return '<details class="aramco-group aramco-group-profile">'+
+      '<summary><span><small>KELOMPOK MITRA</small><strong>'+esc(group.shortName||group.name||'Kelompok masyarakat')+'</strong>'+membershipMarkup(group.membership)+'</span><b>Profil &amp; legalitas</b></summary>'+
+      '<div class="aramco-group-profile-content"><p>'+esc(group.summary||'')+'</p>'+
       '<div class="aramco-group-meta">'+
         (lead.chair?'<span><b>Ketua</b>'+esc(lead.chair)+'</span>':'')+
         (legal.number?'<span><b>Legalitas</b>'+esc(legal.number)+(legal.date?' · '+esc(legal.date):'')+'</span>':'')+
       '</div>'+
       (legal.url?'<a class="aramco-group-doc" href="'+esc(legal.url)+'" target="_blank" rel="noopener noreferrer">Buka SK kelompok ↗</a>':'')+
-    '</div>';
+    '</div></details>';
   }
   function driveImage(url){var value=String(url||'').trim(),match=value.match(/\/d\/([^/]+)/)||value.match(/[?&]id=([^&]+)/);return match?'https://drive.google.com/thumbnail?id='+encodeURIComponent(match[1])+'&sz=w1200':value;}
   function collectPhotos(properties){var rows=[];['photos','_ygPhotos','photoUrls','images'].forEach(function(key){var value=properties&&properties[key];if(Array.isArray(value))rows=rows.concat(value);else if(value)rows.push(value);});['Foto','Foto_2','photoUrl','imageUrl'].forEach(function(key){if(properties&&properties[key])rows.push(properties[key]);});return rows.map(driveImage).filter(function(url){return /^https?:/i.test(url);});}
