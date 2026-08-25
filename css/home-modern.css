@@ -204,13 +204,13 @@ main.container{width:100%;max-width:none;padding:0}
 /* Compose tint and photo in one background so legacy pseudo-elements cannot bypass it. */
 #programme-overview #category-grid .programme-card::before{display:none}
 #programme-overview #category-grid .programme-card:nth-child(1){
-  background-image:linear-gradient(145deg,rgba(10,105,166,.62),rgba(4,49,91,.76)),url("https://drive.google.com/thumbnail?id=1BaHgKDzLscc51H-CpXMbpzUmTO8VbsJK&sz=w2400");
+  background-image:linear-gradient(145deg,rgba(10,105,166,.70),rgba(4,49,91,.82)),url("https://drive.google.com/thumbnail?id=1BaHgKDzLscc51H-CpXMbpzUmTO8VbsJK&sz=w2400");
 }
 #programme-overview #category-grid .programme-card:nth-child(2){
   background-image:linear-gradient(145deg,rgba(132,82,43,.84),rgba(67,39,24,.92)),url("https://drive.google.com/thumbnail?id=1OzFSxSwbg9BtKyOAK8-WpmaqsWCw4MO6&sz=w1200");
 }
 #programme-overview #category-grid .programme-card:nth-child(3){
-  background-image:linear-gradient(145deg,rgba(190,91,43,.66),rgba(105,48,27,.79)),url("https://drive.google.com/thumbnail?id=1K8Tsimo6YNhYRnNgt2cnsvPsA4OLmyYl&sz=w2400");
+  background-image:linear-gradient(145deg,rgba(190,91,43,.72),rgba(105,48,27,.84)),url("https://drive.google.com/thumbnail?id=1K8Tsimo6YNhYRnNgt2cnsvPsA4OLmyYl&sz=w2400");
 }
 #programme-overview #category-grid .programme-card:nth-child(4){
   background-image:linear-gradient(145deg,rgba(48,125,72,.84),rgba(22,66,43,.92)),url("https://drive.google.com/thumbnail?id=1O3i6D__XrYTwn-5QKM6MTruZaK4Ic6pz&sz=w1200");
