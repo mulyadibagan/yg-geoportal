@@ -1,14 +1,6 @@
 (() => {
   "use strict";
 
-  if (!window.YG_I18N_AUTO_READY && !document.querySelector('script[data-yg-i18n-auto]')) {
-    const autoI18nScript = document.createElement("script");
-    autoI18nScript.src = "js/i18n-auto.js?v=20260825-global1";
-    autoI18nScript.async = false;
-    autoI18nScript.setAttribute("data-yg-i18n-auto", "1");
-    document.head.appendChild(autoI18nScript);
-  }
-
   if (document.querySelector('script[src*="data-updates.js"]')) {
     const targetFixScript = document.createElement("script");
     targetFixScript.src = "js/public-update-target-fix.js?v=20260721-legacy-photo1";
