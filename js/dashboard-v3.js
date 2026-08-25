@@ -1981,7 +1981,7 @@
             return '<button class="category-card dashboard-link funding-card funding-card-penabulu" type="button" data-open-penabulu>' +
               '<i class="category-icon funding-card-logo" aria-hidden="true"><img src="assets/funding-penabulu.png" alt="" loading="lazy"></i>' +
               '<span class="funding-penabulu-name">' + escapeHtml(name) + '</span>' +
-              '<strong class="funding-penabulu-period">Juni 2026–Februari 2027</strong>' +
+              '<strong class="funding-penabulu-period">2026–2027</strong>' +
               '<small>Desa Temiang · ' + formatNumber(count) + ' objek · ' + formatNumber(programCount) + ' program</small>' +
             '</button>';
           }
