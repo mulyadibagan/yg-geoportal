@@ -1947,7 +1947,7 @@
           const programCount = Object.keys(donorPrograms[name] || {}).length;
           if (name === "Pan Pacific Conservation Foundation (PPCF)") {
             return '<button class="category-card dashboard-link funding-card" type="button" data-open-ppcf>' +
-              '<i class="category-icon" aria-hidden="true">🤝</i>' + // PPCF
+              '<i class="category-icon funding-card-logo" aria-hidden="true"><img src="assets/funding-ppcf.jpeg" alt="" loading="lazy"></i>' +
               '<span>' + escapeHtml(name) + '</span>' +
               '<strong>2025\u20132026</strong>' +
               '<small>Pematang Duku · ' + formatNumber(count) + ' objek · ' + formatNumber(programCount) + ' program</small>' +
@@ -1955,7 +1955,7 @@
           }
           if (name === "Aramco Asia Singapore") {
             return '<button class="category-card dashboard-link funding-card" type="button" data-open-aramco>' +
-              '<i class="category-icon" aria-hidden="true">🌿</i>' + // Aramco
+              '<i class="category-icon funding-card-logo" aria-hidden="true"><img src="assets/funding-aramco.jpg" alt="" loading="lazy"></i>' +
               '<span>' + escapeHtml(name) + '</span>' +
               '<strong>2023–2026</strong>' +
               '<small>' + formatNumber(count) + ' objek · ' + formatNumber(programCount) + ' program · data terverifikasi</small>' +
@@ -1963,7 +1963,7 @@
           }
           if (name === "Global Environment Centre") {
             return '<button class="category-card dashboard-link funding-card" type="button" data-open-gec>' +
-              '<i class="category-icon" aria-hidden="true">💧</i>' + // GEC
+              '<i class="category-icon funding-card-logo" aria-hidden="true"><img src="assets/funding-gec.jpeg" alt="" loading="lazy"></i>' +
               '<span>' + escapeHtml(name) + '</span>' +
               '<strong>2021 - Sekarang</strong>' +
               '<small>' + formatNumber(count) + ' objek · ' + formatNumber(programCount) + ' program · data terverifikasi</small>' +
@@ -1971,7 +1971,7 @@
           }
           if (name === "Aliansi Kolibri") {
             return '<button class="category-card dashboard-link funding-card" type="button" data-open-kolibri>' +
-              '<i class="category-icon" aria-hidden="true">🐦</i>' + // Kolibri
+              '<i class="category-icon funding-card-logo" aria-hidden="true"><img src="assets/funding-aliansi-kolibri.jpg" alt="" loading="lazy"></i>' +
               '<span>' + escapeHtml(name) + '</span>' +
               '<strong>2025\u20132026</strong>' +
               '<small>Imbo Putui · ' + formatNumber(count) + ' objek · ' + formatNumber(programCount) + ' program</small>' +
@@ -1979,7 +1979,7 @@
           }
           if (name === "Yayasan Penabulu") {
             return '<button class="category-card dashboard-link funding-card funding-card-penabulu" type="button" data-open-penabulu>' +
-              '<i class="category-icon" aria-hidden="true">🌍</i>' +
+              '<i class="category-icon funding-card-logo" aria-hidden="true"><img src="assets/funding-penabulu.png" alt="" loading="lazy"></i>' +
               '<span class="funding-penabulu-name">' + escapeHtml(name) + '</span>' +
               '<strong class="funding-penabulu-period">Juni 2026–Februari 2027</strong>' +
               '<small>Desa Temiang · ' + formatNumber(count) + ' objek · ' + formatNumber(programCount) + ' program</small>' +
