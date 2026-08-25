@@ -264,3 +264,22 @@ main.container{width:100%;max-width:none;padding:0}
   #programme-overview #category-grid .programme-support-grid{height:100%;box-sizing:border-box}
   #programme-overview #category-grid .programme-card__meta{align-self:end;margin-top:0}
 }
+
+/* Compact aligned rhythm: same rails, substantially less empty vertical space. */
+@media(min-width:1180px){
+  #programme-overview #category-grid .programme-card{
+    grid-template-rows:92px 214px 98px 30px;
+    padding:22px;
+  }
+  #programme-overview #category-grid .programme-card header{padding-bottom:14px}
+  #programme-overview #category-grid .programme-compare{
+    grid-template-rows:88px 1fr;
+    padding:14px 0;
+  }
+  #programme-overview #category-grid .programme-compare__value.is-current{
+    margin-top:5px;
+    padding-top:10px;
+  }
+  #programme-overview #category-grid .programme-support-grid>span{padding-top:10px;padding-bottom:8px}
+  #programme-overview #category-grid .programme-card__meta{padding-top:8px}
+}
