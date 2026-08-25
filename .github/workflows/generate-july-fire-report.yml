@@ -3,7 +3,9 @@ name: Generate July 2026 Riau Fire Report
 on:
   push:
     branches: [main]
-    paths: [.github/workflows/generate-july-fire-report.yml]
+    paths:
+      - .github/workflows/generate-july-fire-report.yml
+      - scripts/generate_fire_monthly_report.mjs
   workflow_dispatch:
 
 permissions:

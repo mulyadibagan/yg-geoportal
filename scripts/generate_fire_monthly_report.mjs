@@ -52,11 +52,13 @@ function pointInGeometry(point, geometry) {
 }
 function boundsOf(geometry) {
   const points = [];
+  if (!geometry || !geometry.coordinates) return null;
   (function walk(value) { if (Array.isArray(value) && typeof value[0] === "number") points.push(value); else if (Array.isArray(value)) value.forEach(walk); })(geometry.coordinates);
+  if (!points.length) return null;
   return points.reduce((b, p) => [Math.min(b[0], p[0]), Math.min(b[1], p[1]), Math.max(b[2], p[0]), Math.max(b[3], p[1])], [Infinity, Infinity, -Infinity, -Infinity]);
 }
 function indexed(features) {
-  return features.map((feature) => ({ feature, bounds: boundsOf(feature.geometry) }));
+  return features.map((feature) => ({ feature, bounds: boundsOf(feature.geometry) })).filter((item) => item.bounds);
 }
 function contains(item, point) {
   const b = item.bounds;
