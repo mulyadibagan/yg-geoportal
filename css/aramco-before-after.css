@@ -1,0 +1,11 @@
+.aramco-change-section{overflow:hidden;background:linear-gradient(145deg,#eef7f3,#fff)}
+.aramco-change-locations{display:grid;gap:12px}
+.aramco-change-location{overflow:hidden;border:1px solid #cfe2dc;border-radius:18px;background:#fff}
+.aramco-change-location>summary{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:18px 20px;cursor:pointer;list-style:none}
+.aramco-change-location>summary::-webkit-details-marker{display:none}
+.aramco-change-location>summary span{display:grid;gap:4px}.aramco-change-location>summary small{color:#0a8c72;font-size:.65rem;font-weight:900;letter-spacing:.1em}.aramco-change-location>summary strong{color:var(--aramco-ink);font-size:1.15rem}.aramco-change-location>summary b{padding:7px 10px;border-radius:999px;background:#e2f3ec;color:#087756;font-size:.7rem}
+.aramco-change-location[open]>summary{border-bottom:1px solid #dbe9e4}
+.aramco-change-pairs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;padding:18px}.aramco-change-pairs article{overflow:hidden;border:1px solid #dce8e4;border-radius:15px}.aramco-change-pairs header{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 13px}.aramco-change-pairs header strong{font-size:.83rem}.aramco-change-pairs header span{color:#71817c;font-size:.7rem}
+.aramco-change-pair{display:grid;grid-template-columns:1fr 1fr;gap:2px}.aramco-change-pair a{position:relative;display:block;aspect-ratio:4/3;overflow:hidden;background:#123f38}.aramco-change-pair img{width:100%;height:100%;display:block;object-fit:cover;transition:transform .25s}.aramco-change-pair a:hover img,.aramco-change-pair a:focus-visible img{transform:scale(1.03)}.aramco-change-pair a span{position:absolute;right:8px;bottom:8px;padding:5px 8px;border-radius:999px;background:rgba(4,48,43,.86);color:#fff;font-size:.62rem;font-weight:850}
+.aramco-change-location>footer{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:0 18px 18px;color:#74857f;font-size:.72rem}.aramco-change-location>footer a{color:var(--aramco-green);font-weight:850;text-decoration:none}
+@media(max-width:760px){.aramco-change-pairs{grid-template-columns:1fr}.aramco-change-location>footer{align-items:flex-start;flex-direction:column}}
