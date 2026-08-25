@@ -2373,6 +2373,46 @@ L.control.scale({
     return feature;
   }
 
+  function applyVerifiedTemiangCanalMaintenance(feature) {
+    const props = feature && feature.properties || {};
+    const objectId = String(
+      props.Object_ID || props.objectId || props.OBJECTID || ""
+    ).trim().toUpperCase();
+    const records = {
+      "SEKAT-TEMIANG-2022-001": {
+        date: "3–6 Agustus 2026",
+        reportId: "YG-20260823-001222-487",
+        functionAfter: "Tidak berfungsi (sesuai laporan)",
+        photos: [
+          "https://drive.google.com/file/d/1rAq5XTADwc4PpERI_K6LVAMDKIAr0m55/view?usp=drivesdk",
+          "https://drive.google.com/file/d/1CfEkpc4lGHNLQndo6Cn73rRkv1_fP8BC/view?usp=drivesdk"
+        ]
+      },
+      "SEKAT-TEMIANG-2023-001": {
+        date: "7–11 Agustus 2026",
+        reportId: "YG-20260823-002945-756",
+        functionAfter: "Berfungsi baik",
+        photos: [
+          "https://drive.google.com/file/d/1KHsl79Fo_Xg1GBM-HO8ZQo6Q1Ze0irsR/view?usp=drivesdk",
+          "https://drive.google.com/file/d/1S4VJAY-iL4cuq-H5xQ8MXCojPR4Wq50r/view?usp=drivesdk"
+        ]
+      }
+    };
+    const record = records[objectId];
+    if (!record) return feature;
+
+    props.Perawatan_Terakhir = record.date;
+    props.Donor_Perawatan = "Yayasan Penabulu";
+    props.Pelaksana_Perawatan = "Kelompok Tani Wanita Makmur Jaya";
+    props.Kondisi_Setelah_Perawatan = "Baik";
+    props.Fungsi_Setelah_Perawatan = record.functionAfter;
+    props.Laporan_Perawatan_ID = record.reportId;
+    props._ygPhotos = Array.from(new Set(
+      (Array.isArray(props._ygPhotos) ? props._ygPhotos : []).concat(record.photos)
+    ));
+    return feature;
+  }
+
   function applyRequestedDonorCorrections(feature) {
     const props = feature && feature.properties || {};
     const layerId = String(
@@ -2526,6 +2566,7 @@ L.control.scale({
       .map(applyPematangDukuDonorPolicy)
       .map(applyAramcoCoastalAssetPolicy)
       .map(applyExternalPeatInfrastructureDonorPolicy)
+      .map(applyVerifiedTemiangCanalMaintenance)
       .map(applyRequestedDonorCorrections));
     const groups = {};
 
