@@ -82,3 +82,25 @@ main.container{width:100%;max-width:none;padding:0}
 #programme-overview #category-grid .programme-verified{color:inherit;font-weight:700}
 @media(max-width:900px){#programme-overview #category-grid{grid-template-columns:1fr}#programme-overview #category-grid .programme-card{min-height:330px}}
 @media(max-width:560px){#programme-overview #category-grid .programme-card{min-height:0;padding:23px}#programme-overview #category-grid .programme-card header h3{font-size:31px}#programme-overview #category-grid .programme-compare{grid-template-columns:1fr 20px 1fr;align-items:start}#programme-overview #category-grid .programme-compare__operator:nth-of-type(2),#programme-overview #category-grid .programme-compare__value.is-current{grid-column:auto}#programme-overview #category-grid .programme-compare__value.is-current{grid-column:1/-1;margin-top:16px;padding-top:15px;border-top:1px solid rgba(18,59,50,.14)}#programme-overview #category-grid .programme-support-grid,#programme-overview #category-grid .programme-support-grid.has-four{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 0}#programme-overview #category-grid .programme-support-grid>span:nth-child(odd){padding-left:0;border-left:0}#programme-overview #category-grid .programme-card__meta{align-items:flex-start;flex-direction:column;gap:4px}}
+
+/* Compact programme dashboard */
+#programme-overview #category-grid{gap:10px}
+#programme-overview #category-grid .programme-card{min-height:0;padding:24px;border-radius:16px}
+#programme-overview #category-grid .programme-card header{min-height:68px;padding-bottom:16px}
+#programme-overview #category-grid .programme-card header h3{max-width:calc(100% - 46px);font-family:"Manrope","Segoe UI",sans-serif;font-size:clamp(20px,1.45vw,27px);font-weight:700;line-height:1.08;letter-spacing:-.045em}
+#programme-overview #category-grid .programme-card header>span:last-child{width:38px;height:38px}
+#programme-overview #category-grid .programme-compare{grid-template-columns:1fr auto 1fr;gap:9px;min-height:124px;padding:18px 0;align-items:end}
+#programme-overview #category-grid .programme-compare__value.is-current{grid-column:1/-1;display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-top:8px;padding-top:13px;border-top:1px solid currentColor}
+#programme-overview #category-grid .programme-compare__value.is-current strong{font-size:clamp(25px,1.8vw,35px);line-height:1;text-align:right}
+#programme-overview #category-grid .programme-compare__operator:nth-of-type(2){display:none}
+#programme-overview #category-grid .programme-compare small,#programme-overview #category-grid .programme-support-grid small{min-height:0;font-size:10px;line-height:1.2}
+#programme-overview #category-grid .programme-compare strong{font-size:18px}
+#programme-overview #category-grid .programme-support-grid,#programme-overview #category-grid .programme-support-grid.has-four{gap:0;padding:0;border-top:0}
+#programme-overview #category-grid .programme-support-grid>span{min-width:0;padding:11px 9px;border-top:1px solid rgba(9,71,60,.18);border-left:0}
+#programme-overview #category-grid .programme-support-grid>span+span{border-left:1px solid rgba(9,71,60,.18)}
+#programme-overview #category-grid .programme-card:nth-child(1) .programme-support-grid>span{border-color:rgba(255,255,255,.18)}
+#programme-overview #category-grid .programme-support-grid strong{margin-top:6px;font-size:15px}
+#programme-overview #category-grid .programme-card__meta{margin-top:14px;padding-top:12px;font-size:10px}
+@media(min-width:1180px){#programme-overview #category-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(min-width:681px) and (max-width:1179px){#programme-overview #category-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:680px){#programme-overview #category-grid{grid-template-columns:1fr}#programme-overview #category-grid .programme-card{padding:20px}}
