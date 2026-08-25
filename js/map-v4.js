@@ -3496,7 +3496,7 @@ L.control.scale({
 
   async function mergeProgramPhotoIndex(data) {
     const response = await fetch(
-      "data/program-photo-index.json?v=20260813-photo1",
+      "data/program-photo-index.json?v=20260825-tanjung-kuras-nursery1",
       { cache: "force-cache" }
     );
     if (!response.ok) throw new Error("HTTP " + response.status);
@@ -3617,6 +3617,12 @@ L.control.scale({
       console.warn("Batas desa intervensi tidak dapat dimuat", villageError);
     }
 
+    try {
+      await mergeProgramPhotoIndex(data);
+    } catch (photoIndexError) {
+      console.warn("Indeks foto program tidak dapat dimuat", photoIndexError);
+    }
+
     initialize(data);
     return;
 
@@ -3666,6 +3672,11 @@ L.control.scale({
           "Batas desa intervensi tidak dapat dimuat melalui jalur cadangan",
           villageError
         );
+      }
+      try {
+        await mergeProgramPhotoIndex(data);
+      } catch (photoIndexError) {
+        console.warn("Indeks foto program tidak dapat dimuat melalui jalur cadangan", photoIndexError);
       }
       initialize(data);
     } catch (jsonpError) {
