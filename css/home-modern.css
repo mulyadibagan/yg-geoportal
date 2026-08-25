@@ -173,3 +173,30 @@ main.container{width:100%;max-width:none;padding:0}
   height:5px;
   background:#e9b63f;
 }
+
+/* Keep photography as a quiet texture beneath each ecosystem colour. */
+#programme-overview #category-grid .programme-card::before{
+  z-index:0;
+  background:linear-gradient(145deg,var(--ecosystem-solid) 0%,var(--ecosystem-solid) 62%,var(--ecosystem-deep) 100%);
+}
+#programme-overview #category-grid .programme-card>*{
+  position:relative;
+  z-index:1;
+}
+#programme-overview #category-grid .programme-card::after{z-index:2}
+#programme-overview #category-grid .programme-card:nth-child(1){
+  --ecosystem-solid:rgba(4,73,66,.91);
+  --ecosystem-deep:rgba(2,51,47,.96);
+}
+#programme-overview #category-grid .programme-card:nth-child(2){
+  --ecosystem-solid:rgba(91,76,46,.91);
+  --ecosystem-deep:rgba(47,61,42,.96);
+}
+#programme-overview #category-grid .programme-card:nth-child(3){
+  --ecosystem-solid:rgba(125,73,46,.91);
+  --ecosystem-deep:rgba(78,48,36,.96);
+}
+#programme-overview #category-grid .programme-card:nth-child(4){
+  --ecosystem-solid:rgba(72,102,52,.91);
+  --ecosystem-deep:rgba(35,68,45,.96);
+}
