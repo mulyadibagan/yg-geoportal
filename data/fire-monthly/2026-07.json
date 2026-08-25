@@ -1,0 +1,154 @@
+{
+  "schemaVersion": 1,
+  "month": "2026-07",
+  "period": {
+    "start": "2026-07-01",
+    "end": "2026-07-31"
+  },
+  "province": "Riau",
+  "generatedAt": "2026-08-25T09:07:31.092Z",
+  "source": "NASA FIRMS",
+  "sources": [
+    "MODIS_SP",
+    "VIIRS_SNPP_SP",
+    "VIIRS_NOAA20_SP"
+  ],
+  "methodology": "Deteksi kategori high confidence di dalam polygon Provinsi Riau; pencocokan desa dan referensi IUPHHK-HT dilakukan secara spasial.",
+  "disclaimer": "IUPHHK-HT 2014 adalah referensi batas. Irisan hotspot bukan bukti penyebab atau tanggung jawab perusahaan.",
+  "summary": {
+    "hotspots": 0,
+    "villages": 0,
+    "regencies": 0,
+    "companies": 0,
+    "companyHotspots": 0
+  },
+  "daily": [
+    {
+      "date": "2026-07-01",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-02",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-03",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-04",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-05",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-06",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-07",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-08",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-09",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-10",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-11",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-12",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-13",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-14",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-15",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-16",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-17",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-18",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-19",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-20",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-21",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-22",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-23",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-24",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-25",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-26",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-27",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-28",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-29",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-30",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-31",
+      "hotspots": 0
+    }
+  ],
+  "villages": [],
+  "companies": [],
+  "hotspots": []
+}
