@@ -456,6 +456,18 @@ main.container{width:100%;max-width:none;padding:0}
   }
 }
 #partnerships #donor-grid .funding-card>span{font-size:14px}
+
+/* Stable first paint while the synchronized programme totals are loading. */
+#programme-overview #category-grid .programme-card--loading{pointer-events:none}
+#programme-overview #category-grid .programme-card--loading header{padding-right:48px}
+#programme-overview #category-grid .programme-loading{display:flex;min-height:214px;flex-direction:column;justify-content:center;gap:12px}
+#programme-overview #category-grid .programme-loading span,
+#programme-overview #category-grid .programme-loading strong,
+#programme-overview #category-grid .programme-loading small{display:block;border-radius:999px;background:rgba(255,255,255,.22);animation:programme-loading-pulse 1.4s ease-in-out infinite}
+#programme-overview #category-grid .programme-loading span{width:42%;height:9px}
+#programme-overview #category-grid .programme-loading strong{width:66%;height:32px}
+#programme-overview #category-grid .programme-loading small{width:30%;height:8px}
+@keyframes programme-loading-pulse{0%,100%{opacity:.45}50%{opacity:.9}}
 #partnerships #donor-grid .funding-card-penabulu .funding-penabulu-period{
   width:100%;
   font-size:11px!important;
