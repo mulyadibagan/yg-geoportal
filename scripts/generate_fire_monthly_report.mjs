@@ -70,7 +70,8 @@ function highConfidence(row) {
 }
 async function fetchChunk(source, chunkStart, days) {
   const bbox = "100.0,-1.3,104.9,2.9";
-  const url = `${API}/${MAP_KEY}/${source}/${bbox}/${days}/${iso(chunkStart)}`;
+  const chunkEnd = new Date(chunkStart.getTime() + (days - 1) * 86400000);
+  const url = `${API}/${MAP_KEY}/${source}/${bbox}/${days}/${iso(chunkEnd)}`;
   const response = await fetch(url);
   if (!response.ok) throw new Error(`${source} ${iso(chunkStart)} HTTP ${response.status}`);
   const body = await response.text();
