@@ -1202,6 +1202,7 @@
       const isCapacity = !isPlantingEngagement &&
         (/pelatihan|peningkatan kapasitas|workshop|sosialisasi|pendampingan/.test(text) || participants > 0);
       const isAdministrative = ["desa_intervensi"].includes(layerId);
+      const isCanalMaintenance = /pemeliharaan infrastruktur/.test(text) && /sekat kanal/.test(text);
       const isObservation = ["monitoring_reports", "fdrs"].includes(layerId) ||
         (layerId === "community_reports" && area <= 0 && seedlings <= 0 &&
           !isMineral && !isCapacity && !isNursery);
@@ -1259,7 +1260,7 @@
             metrics.coffeeSeedlings += seedlings;
             metrics.coffeeArea += (seedlings * 9) / 10000;
           }
-          if (layerId === "sekat_kanal" || /sekat kanal/.test(text)) {
+          if (!isCanalMaintenance && (layerId === "sekat_kanal" || /sekat kanal/.test(text))) {
             metrics.canalBlocks += 1;
           }
           if (layerId === "fdrs" || /fdrs/.test(text)) {
@@ -1340,10 +1341,10 @@
           programmeMetrics.peat.coffee += seedlings;
         }
         programmeMetrics.peat.forest += forestSeedlings;
-        if (layerId === "sekat_kanal" || /sekat kanal/.test(text)) {
+        if (!isCanalMaintenance && (layerId === "sekat_kanal" || /sekat kanal/.test(text))) {
           programmeMetrics.peat.canals += 1;
         }
-        if (layerId === "fdrs" || layerId === "sekat_kanal" || /sekat kanal/.test(text)) {
+        if (layerId === "fdrs" || (!isCanalMaintenance && (layerId === "sekat_kanal" || /sekat kanal/.test(text)))) {
           programmeMetrics.peat.fireInfra += 1;
         }
         if (isNursery) programmeMetrics.peat.nurseries += 1;
