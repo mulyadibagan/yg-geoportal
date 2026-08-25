@@ -21,6 +21,7 @@ window.YG_ARAMCO_PHOTO_TIMELINE = [
   {id:'bb-p3-2025b',village:'Buruk Bakul',phase:'Fase 3',series:'Area Penanaman Fase 3',date:'2025-12-09',stage:'Penanaman',fileId:'1QsyFFEeRsVLtGkZkhAe0jrJZa9SOZTCA',caption:'Dokumentasi 9 Desember 2025',verified:true},
   {id:'bb-p3-2026a',village:'Buruk Bakul',phase:'Fase 3',series:'Area Penanaman Fase 3',date:'2026-02-03',stage:'Monitoring',fileId:'1QkMPgi8lPihkdiHqFD2S-Qcq7kHkiRfa',caption:'Monitoring 3 Februari 2026',verified:true},
   {id:'bb-p3-2026b',village:'Buruk Bakul',phase:'Fase 3',series:'Area Penanaman Fase 3',date:'2026-02-03',stage:'Monitoring',fileId:'1n8Nva2pwg3NsAZWJl-PkfwJkf31evP1K',caption:'Sudut dokumentasi tambahan',verified:true},
+  {id:'bb-p3-2026c',village:'Buruk Bakul',phase:'Fase 3',series:'Area Penanaman Fase 3',date:'2026-07-16',stage:'Monitoring',fileId:'1fYgw0FOfAusw0YQ0P_zmYePX4X6QGEdq',caption:'Monitoring penanaman Aramco Fase 3',verified:true},
 
   {id:'kp-p2-2025',village:'Kelapa Pati',phase:'Fase 2',series:'Area Penanaman Fase 2',date:'2025-05-18',stage:'Monitoring',fileId:'1IBnpsSOk-04ArEpafxXcTIcjaVwSv-CT',caption:'Monitoring 18 Mei 2025',verified:true},
   {id:'kp-p2-2026',village:'Kelapa Pati',phase:'Fase 2',series:'Area Penanaman Fase 2',date:'2026-02-03',stage:'Monitoring',fileId:'1b8CyleF-6g84QRqtKdW2IJcOupSiDl1v',caption:'Monitoring 3 Februari 2026',verified:true},
