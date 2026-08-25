@@ -21,8 +21,39 @@
     return isActive(program) && (!phases.length || phases.some(isActive));
   }
 
+  function findDonorCard(donor) {
+    var selector = cardSelectors[donor.slug];
+    if (selector) {
+      var knownCard = document.querySelector(selector);
+      if (knownCard) return knownCard;
+    }
+    var donorName = String(donor.name || '').trim().toLowerCase();
+    return Array.prototype.find.call(
+      document.querySelectorAll('#donor-grid .funding-card'),
+      function (card) {
+        var name = card.querySelector(':scope > span');
+        return name && String(name.textContent || '').trim().toLowerCase() === donorName;
+      }
+    ) || null;
+  }
+
+  function reorderCards() {
+    var grid = document.getElementById('donor-grid');
+    if (!grid) return;
+    var cards = Array.prototype.slice.call(grid.querySelectorAll(':scope > .funding-card'));
+    var ordered = cards.map(function (card, index) {
+      var status = card.dataset.programmeStatus || 'unknown';
+      return { card: card, index: index, rank: status === 'active' ? 0 : status === 'complete' ? 2 : 1 };
+    }).sort(function (a, b) {
+      return a.rank - b.rank || a.index - b.index;
+    }).map(function (item) { return item.card; });
+    var changed = ordered.some(function (card, index) { return cards[index] !== card; });
+    if (!changed) return;
+    ordered.forEach(function (card) { grid.appendChild(card); });
+  }
+
   function applyStatus(donor) {
-    var card = document.querySelector(cardSelectors[donor.slug]);
+    var card = findDonorCard(donor);
     if (!card) return;
     var programmes = donor.programs || [];
     var activeCount = programmes.filter(isAssignable).length;
@@ -46,6 +77,7 @@
       .then(function (donors) {
         donorRows = donors;
         donorRows.forEach(applyStatus);
+        reorderCards();
       })
       .catch(function (error) { console.warn('Status program donor tidak dapat dimuat.', error); });
   }
@@ -56,6 +88,7 @@
     window.requestAnimationFrame(function () {
       refreshQueued = false;
       donorRows.forEach(applyStatus);
+      reorderCards();
     });
   }
 
