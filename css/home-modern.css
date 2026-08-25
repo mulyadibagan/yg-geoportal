@@ -384,7 +384,6 @@ main.container{width:100%;max-width:none;padding:0}
   line-height:1.4;
 }
 #donor-grid .donor-status-badge{margin-top:auto}
-@media(max-width:900px){#donor-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:760px){#donor-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:620px){#donor-grid{grid-template-columns:1fr}#donor-grid .funding-card{min-height:218px}}
 
