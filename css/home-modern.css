@@ -647,3 +647,22 @@ main.container{width:100%;max-width:none;padding:0}
   #programme-overview #category-grid .programme-support-grid>span{padding-top:10px;padding-bottom:8px}
   #programme-overview #category-grid .programme-card__meta{padding-top:8px}
 }
+
+/* Final compact programme-card geometry. Keep this after legacy responsive rules. */
+@media(min-width:1180px){
+  #programme-overview #category-grid .programme-card{
+    grid-template-rows:76px 112px 88px 26px;
+    padding:18px 22px;
+  }
+  #programme-overview #category-grid .programme-card header{padding-bottom:12px}
+  #programme-overview #category-grid .programme-current{min-height:0;padding:10px 0}
+  #programme-overview #category-grid .programme-support-grid,
+  #programme-overview #category-grid .programme-support-grid.has-four{grid-template-columns:repeat(3,minmax(0,1fr));height:88px}
+  #programme-overview #category-grid .programme-support-grid>span{padding-top:9px;padding-bottom:7px}
+  #programme-overview #category-grid .programme-card__meta{margin-top:5px;padding-top:5px}
+  #programme-overview #category-grid .programme-loading{min-height:112px}
+}
+.dashboard-hero .hero-copy .eyebrow::before,
+.dashboard-hero .hero-copy .hero-eyebrow::before,
+.dashboard-hero .hero-copy .kicker::before,
+.dashboard-hero .hero-copy .hero-kicker::before{display:none!important}

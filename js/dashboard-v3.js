@@ -1864,8 +1864,8 @@
           '<strong>' + escapeHtml(comparisonValue(card.current, baseline.unit)) + '</strong>' +
           '<small>Data terkini</small>' +
         '</div>' +
-        '<div class="programme-support-grid' + (card.key === "peat" ? " has-four" : "") + '">' +
-        card.rows.slice(0, card.key === "peat" ? 4 : 3).map(row =>
+        '<div class="programme-support-grid">' +
+        card.rows.slice(0, 3).map(row =>
           '<span><small>' + escapeHtml(row[0]) + '</small><strong>' +
             escapeHtml(displayMetric(row[1], row[2] || "", row[3] || 0)) + '</strong></span>'
         ).join("") + '</div>' +
