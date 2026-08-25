@@ -18,6 +18,10 @@
   <link rel="stylesheet" href="css/dashboard-sdg.css?v=20260807-climate-layout-fix1"/>
   <link rel="stylesheet" href="css/language-switcher.css?v=20260721-all-pages1"/>
   <link rel="stylesheet" href="css/navigation-v2.css?v=20260807-mobile-submenu-links1"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=DM+Serif+Display&amp;display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/home-modern.css?v=20260825-editorial1"/>
   <meta name="theme-color" content="#079cde">
   <meta name="application-name" content="YG GeoPortal">
   <meta name="apple-mobile-web-app-title" content="YG GeoPortal">
@@ -61,15 +65,31 @@
   <section class="hero dashboard-hero">
     <div class="hero-main">
       <div class="hero-copy">
-      <div class="eyebrow" data-editable-id="hero-eyebrow">PLATFORM DATA SPASIAL RESMI YAYASAN GAMBUT</div>
-      <h1 data-editable-id="hero-title">Platform Data Spasial Yayasan Gambut</h1>
-      <p class="hero-description" data-editable-id="hero-description">Menyajikan informasi spasial yang terverifikasi untuk mendukung pengelolaan lahan basah, gambut, mangrove, dan ekosistem lainnya secara berkelanjutan melalui restorasi, rehabilitasi, pemantauan lapangan, pemberdayaan masyarakat, serta kemitraan strategis yang berbasis data.</p>
-      <p class="hero-tagline" data-editable-id="hero-tagline">Menghubungkan data spasial, pemantauan lapangan, dan pelaporan masyarakat dalam satu platform untuk mendukung pengelolaan lahan basah dan ekosistem yang berkelanjutan.</p>
+      <div class="eyebrow" data-editable-id="hero-eyebrow">DATA SPASIAL UNTUK AKSI IKLIM</div>
+      <h1 data-editable-id="hero-title">Lahan basah pulih. Masyarakat bertumbuh.</h1>
+      <p class="hero-description" data-editable-id="hero-description">Data spasial terverifikasi untuk restorasi, monitoring lapangan, pemberdayaan masyarakat, dan kolaborasi pengelolaan ekosistem yang berkelanjutan.</p>
+      <p class="hero-tagline" data-editable-id="hero-tagline">Menghubungkan lokasi, capaian, foto evidence, dan laporan program dalam satu platform.</p>
       <div class="hero-actions">
+        <a class="btn home-primary-action" href="webgis.html">Jelajahi Peta <span aria-hidden="true">→</span></a>
+        <a class="btn home-secondary-action" href="#programme-overview">Lihat Dampak Program</a>
         <a class="btn btn-outline" href="https://yayasangambut.org/" target="_blank" rel="noopener noreferrer">🌐 Website Resmi Yayasan Gambut</a>
         <button class="btn btn-outline" type="button" data-install-app hidden>📲 Pasang Aplikasi</button>
       </div>
       </div>
+      <aside class="home-evidence-gallery" aria-label="Dokumentasi lapangan terverifikasi">
+        <a class="home-evidence-main" href="webgis.html?object=APO-KELAPA-PATI-NA-001">
+          <img data-home-photo="APO-KELAPA-PATI-NA-001" alt="Dokumentasi wave breaker Kelapa Pati" loading="eager"/>
+          <span><b>Perlindungan pesisir</b><small>Kelapa Pati · buka evidence →</small></span>
+        </a>
+        <a href="webgis.html?object=NURSERY-TANJUNG-KURAS-NA-001">
+          <img data-home-photo="NURSERY-TANJUNG-KURAS-NA-001" alt="Dokumentasi rumah bibit Tanjung Kuras" loading="eager"/>
+          <span><b>Rumah bibit masyarakat</b><small>Tanjung Kuras</small></span>
+        </a>
+        <a href="webgis.html?object=SEKAT-SEPAHAT-2023-001">
+          <img data-home-photo="SEKAT-SEPAHAT-2023-001" alt="Dokumentasi sekat kanal Sepahat" loading="lazy"/>
+          <span><b>Restorasi gambut</b><small>Sepahat</small></span>
+        </a>
+      </aside>
       <aside class="hero-data-summary" aria-label="Ringkasan data WebGIS">
         <div class="hero-data-summary__head"><span>DATA FINAL TERKINI</span><small>Terhubung ke WebGIS</small></div>
         <div class="hero-data-summary__grid">
@@ -83,7 +103,7 @@
       <div id="dashboard-updated" hidden></div>
     </div>
 
-    <div class="hero-programmes">
+    <div class="hero-programmes" id="programme-overview">
       <div class="hero-programmes__head"><span>RINGKASAN PROGRAM</span><small>Baseline → data terkini</small></div>
       <div class="category-grid" id="category-grid" aria-live="polite">
         <a class="programme-card dashboard-link" href="programme-detail.html?programme=mangrove"><header><i aria-hidden="true">🌊</i><h3>Restorasi Mangrove</h3><span aria-hidden="true">→</span></header><p>Memuat data...</p></a>
@@ -604,6 +624,7 @@
 </footer>
 
 <script src="js/dashboard-v3.js?v=20260823-ppcf-evidence2"></script>
+  <script src="js/home-modern.js?v=20260825-evidence1"></script>
   <script src="js/donor-program-status.js?v=20260808-penabulu-plan-evidence1"></script>
    <script src="js/donor-evidence-summary.js?v=20260823-ppcf-output-status1"></script>
   <script src="js/dashboard-sdg.js?v=20260807-climate-layout-fix1"></script>
