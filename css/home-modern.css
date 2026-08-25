@@ -185,18 +185,18 @@ main.container{width:100%;max-width:none;padding:0}
 }
 #programme-overview #category-grid .programme-card::after{z-index:2}
 #programme-overview #category-grid .programme-card:nth-child(1){
-  --ecosystem-solid:rgba(4,73,66,.91);
-  --ecosystem-deep:rgba(2,51,47,.96);
+  --ecosystem-solid:rgba(12,91,137,.93);
+  --ecosystem-deep:rgba(5,54,94,.97);
 }
 #programme-overview #category-grid .programme-card:nth-child(2){
-  --ecosystem-solid:rgba(91,76,46,.91);
-  --ecosystem-deep:rgba(47,61,42,.96);
+  --ecosystem-solid:rgba(119,76,42,.93);
+  --ecosystem-deep:rgba(71,43,27,.97);
 }
 #programme-overview #category-grid .programme-card:nth-child(3){
-  --ecosystem-solid:rgba(125,73,46,.91);
-  --ecosystem-deep:rgba(78,48,36,.96);
+  --ecosystem-solid:rgba(181,91,45,.93);
+  --ecosystem-deep:rgba(112,54,31,.97);
 }
 #programme-overview #category-grid .programme-card:nth-child(4){
-  --ecosystem-solid:rgba(72,102,52,.91);
-  --ecosystem-deep:rgba(35,68,45,.96);
+  --ecosystem-solid:rgba(47,112,69,.93);
+  --ecosystem-deep:rgba(24,72,48,.97);
 }
