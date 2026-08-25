@@ -8,7 +8,7 @@
   <link rel="icon" href="assets/logo-yayasan-gambut.png">
   <link rel="preconnect" href="https://unpkg.com">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="css/village-profile.css?v=20260822-5">
+  <link rel="stylesheet" href="css/village-profile.css?v=20260825-community-groups1">
   <style>[hidden]{display:none!important}</style>
 </head>
 <body>
@@ -106,6 +106,15 @@
           <p class="vp-program-note" id="program-note">Program dicocokkan menggunakan atribut desa pada Master Database dan laporan terverifikasi. Posisi spasial digunakan sebagai pemeriksaan tambahan.</p>
         </section>
 
+        <section class="vp-card vp-community-card" id="community-group-section" hidden>
+          <div class="vp-section-head">
+            <div><span class="vp-kicker">KELOMPOK MITRA</span><h2>Kelembagaan dan legalitas kelompok</h2></div>
+            <span class="vp-badge" id="community-group-badge">Data kelompok</span>
+          </div>
+          <div class="vp-community-groups" id="community-group-list"></div>
+          <p class="vp-caption">Dokumen kelembagaan dikelola pada profil desa agar kartu donor dan informasi publik menggunakan sumber yang sama.</p>
+        </section>
+
         <section class="vp-card">
           <div class="vp-section-head">
             <div><span class="vp-kicker">PERUBAHAN TAHUNAN</span><h2 id="loss-chart-title">Kehilangan tutupan pohon</h2></div>
@@ -183,6 +192,6 @@
 
   <div class="vp-toast" id="toast" role="status" aria-live="polite"></div>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="js/village-profile.js?v=20260822-11"></script>
+  <script src="js/village-profile.js?v=20260825-community-groups1"></script>
 </body>
 </html>
