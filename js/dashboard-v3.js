@@ -4,7 +4,7 @@
   const API = "https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec?page=objects";
   const DASHBOARD_SNAPSHOT_URL = "https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/snapshots/current/dashboard.json";
   const CALLBACK = "ygDashboardV3Callback";
-  const DASHBOARD_CACHE_KEY = "ygDashboardV3Cache_v3_20260809_coffee_area1";
+  const DASHBOARD_CACHE_KEY = "ygDashboardV3Cache_v4_20260825_synced_cards1";
   const DASHBOARD_CACHE_MAX_AGE_MS = 1000 * 60 * 60 * 24 * 7;
   const DASHBOARD_REQUEST_TIMEOUT_MS = 18000;
   const DASHBOARD_REQUEST_MAX_ATTEMPTS = 3;
@@ -25,10 +25,10 @@
   };
   const OFFICIAL_LAYERS = [
     { id: "desa_intervensi", url: "data/desa_intervensi.geojson?v=20260726-14desa" },
-    { id: "area_mangrove", url: "data/area_mangrove.geojson" },
-    { id: "mineral_land_restoration_area", url: "data/mineral_land_restoration_area.geojson" },
-    { id: "area_kopi", url: "data/area_kopi.geojson" },
-    { id: "kopi", url: "data/kopi.geojson" }
+    { id: "area_mangrove", url: "data/area_mangrove.geojson?v=20260825-sync1" },
+    { id: "mineral_land_restoration_area", url: "data/mineral_land_restoration_area.geojson?v=20260825-sync1" },
+    { id: "area_kopi", url: "data/area_kopi.geojson?v=20260825-sync1" },
+    { id: "kopi", url: "data/kopi.geojson?v=20260825-sync1" }
   ];
 
   function escapeHtml(value) {
@@ -1591,11 +1591,6 @@
       : estimatedPeatRewettingArea;
     programmeMetrics.peat.rewetting = peatRewettingArea;
 
-    const revisedPeatForestSeedlings = 4300;
-    programmeMetrics.peat.forest = programmeMetrics.peat.forest > 0
-      ? programmeMetrics.peat.forest
-      : revisedPeatForestSeedlings;
-
     const peatPlantedSeedlings = programmeMetrics.peat.coffee +
       programmeMetrics.peat.forest;
     const newPeatSeedlings = Math.max(
@@ -1605,14 +1600,15 @@
     const newPeatPlantingArea = newPeatSeedlings *
       PROGRAMME_BASELINES.peat.plantingSpacingSqm / 10000;
     const peatRestorationAddition = peatRewettingArea + newPeatPlantingArea;
-    const dashboardUpdateDate = new Date().toLocaleDateString("id-ID", {
+    const dashboardGeneratedAt = new Date(data.generatedAt || Date.now());
+    const dashboardUpdateDate = dashboardGeneratedAt.toLocaleDateString("id-ID", {
       day: "numeric",
       month: "long",
       year: "numeric"
     });
 
-    const mineralArea = Math.max(11.44, programmeMetrics.mineral.area);
-    const mineralSeedlings = Math.max(1200, programmeMetrics.mineral.seedlings);
+    const mineralArea = programmeMetrics.mineral.area;
+    const mineralSeedlings = programmeMetrics.mineral.seedlings;
     const revegetationArea = programmeMetrics.mangrove.area +
       programmeMetrics.peat.area + mineralArea;
     const totalRestorationArea = peatRewettingArea + revegetationArea;
@@ -1736,6 +1732,14 @@
       escapeHtml(displayMetric(row[1], row[2] || "", row[3] || 0)) +
       '</strong></li>'
     ).join("");
+    const mangroveCurrentArea = Math.max(
+      PROGRAMME_BASELINES.mangrove.value,
+      programmeMetrics.mangrove.area
+    );
+    const mangroveAddition = Math.max(
+      0,
+      mangroveCurrentArea - PROGRAMME_BASELINES.mangrove.value
+    );
     const programmeCards = [
       {
         key: "mangrove",
@@ -1743,16 +1747,16 @@
         icon: "🌊",
         url: "programme-detail.html?programme=mangrove",
         sourceUrl: mapUrl({ layers: "area_mangrove,nursery_mangrove,apo" }),
-        addition: programmeMetrics.capacity.mangroveActivityArea || 0,
-        current: PROGRAMME_BASELINES.mangrove.value + (programmeMetrics.capacity.mangroveActivityArea || 0),
+        addition: mangroveAddition,
+        current: mangroveCurrentArea,
         baselineLabel: "Luas awal",
         additionLabel: "Penanaman baru",
         currentLabel: "Total restorasi",
-        status: "Data final",
-        updated: programmeMetrics.capacity.latestRecordDate || "Live WebGIS",
+        status: "Data tersinkron",
+        updated: dashboardUpdateDate,
         rows: [
           ["Total Bibit Ditanam", programmeMetrics.mangrove.seedlings],
-          ["Rumah Bibit", Math.max(4, programmeMetrics.mangrove.nurseries.size)],
+          ["Rumah Bibit", programmeMetrics.mangrove.nurseries.size],
           ["Desa Program", programmeMetrics.mangrove.villages.size]
         ]
       },
@@ -1767,7 +1771,7 @@
         baselineLabel: "Luas penanaman",
         additionLabel: "Rewetting + penanaman baru",
         currentLabel: "Total restorasi",
-        status: "Data final",
+        status: "Data tersinkron",
         updated: dashboardUpdateDate,
         rows: [
           ["Total Bibit Ditanam", peatPlantedSeedlings],
@@ -1788,12 +1792,12 @@
         baselineLabel: "Luas awal",
         additionLabel: "Rehabilitasi baru",
         currentLabel: "Total rehabilitasi",
-        status: "Data final",
-        updated: "Monitoring Juni 2026",
+        status: "Data tersinkron",
+        updated: dashboardUpdateDate,
         rows: [
-          ["Total Bibit Ditanam", Math.max(1200, programmeMetrics.mineral.seedlings)],
-          ["Menara Air", Math.max(1, programmeMetrics.mineral.towers)],
-          ["Plot Ukur Permanen", Math.max(1, programmeMetrics.mineral.plots)]
+          ["Total Bibit Ditanam", programmeMetrics.mineral.seedlings],
+          ["Menara Air", programmeMetrics.mineral.towers],
+          ["Plot Ukur Permanen", programmeMetrics.mineral.plots]
         ]
       },
       {
@@ -1807,8 +1811,8 @@
         baselineLabel: "Baseline orang",
         additionLabel: "Orang baru",
         currentLabel: "Total terlibat",
-        status: "Data final",
-        updated: programmeMetrics.capacity.latestRecordDate || "Live WebGIS",
+        status: "Data tersinkron",
+        updated: dashboardUpdateDate,
         rows: [
           ["Kegiatan Tercatat", programmeMetrics.capacity.trainings + (programmeMetrics.capacity.engagementActivities || 0)],
           ["Perempuan Terlibat", programmeMetrics.capacity.femaleParticipants || 0],
