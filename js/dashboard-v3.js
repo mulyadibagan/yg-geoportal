@@ -1104,7 +1104,10 @@
     }
 
     const capacitySummary = await loadCapacitySummary(data.capacitySources);
-    const mergedFeatures = (await mergeOfficialLayers(data.features))
+    const snapshotFeatures = data.dashboardSnapshotVersion === 1
+      ? data.features
+      : await mergeOfficialLayers(data.features);
+    const mergedFeatures = snapshotFeatures
       .map(applyPematangDukuDonorPolicy)
       .map(applyAramcoCoastalAssetPolicy)
       .map(applyExternalPeatInfrastructureDonorPolicy)
@@ -1137,7 +1140,6 @@
       mineral: { area: 0, seedlings: 0, towers: 0, signs: 0, plots: 0 },
       capacity: { trainings: 0, participants: 0, villages: new Set(), groups: new Set() }
     };
-    let verifiedCanalMaintenance = 0;
     if (capacitySummary.loaded) {
       programmeMetrics.capacity = capacitySummary;
       (capacitySummary.records || []).forEach(record => {
@@ -1200,9 +1202,6 @@
       const isCapacity = !isPlantingEngagement &&
         (/pelatihan|peningkatan kapasitas|workshop|sosialisasi|pendampingan/.test(text) || participants > 0);
       const isAdministrative = ["desa_intervensi"].includes(layerId);
-      if (/pemeliharaan infrastruktur/.test(text) && /sekat kanal/.test(text)) {
-        verifiedCanalMaintenance += 1;
-      }
       const isObservation = ["monitoring_reports", "fdrs"].includes(layerId) ||
         (layerId === "community_reports" && area <= 0 && seedlings <= 0 &&
           !isMineral && !isCapacity && !isNursery);
@@ -1590,7 +1589,6 @@
     }
 
     const estimatedPeatRewettingArea = calculateEstimatedPeatRewettingArea(programmeMetrics.peat.canals);
-    const canalActivityCount = programmeMetrics.peat.canals + verifiedCanalMaintenance;
     const peatRewettingArea = programmeMetrics.peat.rewetting > 0
       ? programmeMetrics.peat.rewetting
       : estimatedPeatRewettingArea;
@@ -1652,7 +1650,7 @@
       peatAreaIncludesInferredCoffee: true,
       mineralArea: mineralArea,
       rewettingArea: peatRewettingArea,
-      canalBlocks: canalActivityCount,
+      canalBlocks: programmeMetrics.peat.canals,
       fdrsUnits: fdrsUnits,
       nurseryCount: nurseryCount,
       monitoringReports: monitoringReports,
@@ -1780,7 +1778,7 @@
         updated: dashboardUpdateDate,
         rows: [
           ["Total Bibit Ditanam", peatPlantedSeedlings],
-          ["Sekat Kanal", canalActivityCount],
+          ["Sekat Kanal", programmeMetrics.peat.canals],
           ["Estimasi Area Rewetting", peatRewettingArea, " ha", 2],
           ["Luas Penanaman Baru", newPeatPlantingArea, " ha", 2],
           ["FDRS", fdrsUnits]
