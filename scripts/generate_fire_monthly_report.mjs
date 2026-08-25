@@ -73,7 +73,11 @@ async function fetchChunk(source, chunkStart, days) {
   const url = `${API}/${MAP_KEY}/${source}/${bbox}/${days}/${iso(chunkStart)}`;
   const response = await fetch(url);
   if (!response.ok) throw new Error(`${source} ${iso(chunkStart)} HTTP ${response.status}`);
-  return csvRows(await response.text());
+  const body = await response.text();
+  const rows = csvRows(body);
+  console.log(`[FIRMS] ${source} ${iso(chunkStart)} +${days}d: ${rows.length} rows`);
+  if (!rows.length && body.trim() && !/^latitude,/i.test(body.trim())) console.warn(`[FIRMS] Response: ${body.trim().slice(0, 240)}`);
+  return rows;
 }
 
 const raw = [];
@@ -86,15 +90,21 @@ for (const source of SOURCES) {
     cursor = new Date(cursor.getTime() + days * 86400000);
   }
 }
+if (!raw.length) throw new Error("NASA FIRMS tidak mengembalikan baris data untuk Juli 2026; snapshot kosong tidak diterbitkan.");
 
 const provinceGeometry = province.features[0].geometry;
 const villageIndex = indexed(villages.features || []);
 const permitIndex = indexed(permits.features || []);
 const seen = new Set(), detections = [];
+let highConfidenceRows = 0, datedRows = 0, riauRows = 0;
 for (const row of raw) {
-  if (!highConfidence(row) || !row.acq_date || row.acq_date < iso(start) || row.acq_date > iso(end)) continue;
+  if (!highConfidence(row)) continue;
+  highConfidenceRows++;
+  if (!row.acq_date || row.acq_date < iso(start) || row.acq_date > iso(end)) continue;
+  datedRows++;
   const lon = Number(row.longitude), lat = Number(row.latitude), point = [lon, lat];
   if (!Number.isFinite(lon) || !Number.isFinite(lat) || !pointInGeometry(point, provinceGeometry)) continue;
+  riauRows++;
   const key = [row.acq_date, row.acq_time, lon.toFixed(5), lat.toFixed(5), row.satellite || row.source].join("|");
   if (seen.has(key)) continue;
   seen.add(key);
@@ -115,6 +125,8 @@ for (const row of raw) {
     })).filter((value, index, array) => array.findIndex((x) => x.name === value.name && x.sk === value.sk) === index)
   });
 }
+console.log(`[FILTER] raw=${raw.length}; high=${highConfidenceRows}; dated=${datedRows}; insideRiau=${riauRows}; unique=${detections.length}`);
+if (!detections.length) throw new Error("Tidak ada deteksi yang lolos filter Riau; snapshot kosong tidak diterbitkan.");
 
 const dailyMap = new Map(), villageMap = new Map(), companyMap = new Map(), regencies = new Set();
 for (const item of detections) {
