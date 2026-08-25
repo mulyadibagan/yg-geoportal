@@ -8,7 +8,11 @@
   var SOURCE_ATTR=new WeakMap();
   var missing=new Set();
   var running=false;
+  var observer=null;
+  var pendingNodes=new Set();
+  var scheduled=false;
   var ATTRS=['placeholder','title','aria-label','alt'];
+  var SKIP_SELECTOR='script,style,noscript,template,svg,canvas,pre,code';
   var exact={
     'Memetakan aksi. Merekam perubahan.':'Mapping action. Tracking change.',
     'Menghubungkan lokasi, capaian, foto evidence, dan laporan program dalam satu platform.':'Connecting locations, results, evidence photos, and programme reports in one platform.',
@@ -69,6 +73,11 @@
     try{return localStorage.getItem('yg-language')==='en'?'en':'id';}catch(e){return document.documentElement.lang==='en'?'en':'id';}
   }
 
+  function shouldSkip(node){
+    var el=node&&node.nodeType===1?node:node&&node.parentElement;
+    return !!(el&&el.closest&&el.closest(SKIP_SELECTOR));
+  }
+
   function fallback(text){
     var raw=String(text==null?'':text);
     var trimmed=raw.trim();
@@ -96,7 +105,7 @@
   }
 
   function translateTextNode(node){
-    if(!node||node.nodeType!==3)return;
+    if(!node||node.nodeType!==3||shouldSkip(node))return;
     if(language()==='id'){
       if(SOURCE_TEXT.has(node))node.nodeValue=SOURCE_TEXT.get(node);
       return;
@@ -114,7 +123,7 @@
   }
 
   function translateAttributes(el){
-    if(!el||el.nodeType!==1)return;
+    if(!el||el.nodeType!==1||shouldSkip(el))return;
     var originals=SOURCE_ATTR.get(el)||{};
     ATTRS.forEach(function(name){
       if(!el.hasAttribute(name))return;
@@ -134,11 +143,13 @@
 
   function translateTree(root){
     if(!root||running)return;
+    if(language()!=='en')return;
     running=true;
     try{
       if(root.nodeType===3){translateTextNode(root);return;}
       if(root.nodeType!==1&&root.nodeType!==9)return;
-      var walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,null);
+      if(root.nodeType===1&&shouldSkip(root))return;
+      var walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode:function(node){return shouldSkip(node)?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT;}});
       var node;
       while((node=walker.nextNode()))translateTextNode(node);
       if(root.nodeType===1)translateAttributes(root);
@@ -146,17 +157,42 @@
     }finally{running=false;}
   }
 
+  function restoreTree(root){
+    if(!root)return;
+    if(root.nodeType===3){translateTextNode(root);return;}
+    if(root.nodeType!==1&&root.nodeType!==9)return;
+    var walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,null);
+    var node;
+    while((node=walker.nextNode()))translateTextNode(node);
+    if(root.nodeType===1)translateAttributes(root);
+    if(root.querySelectorAll)root.querySelectorAll(ATTRS.map(function(a){return '['+a+']';}).join(',')).forEach(translateAttributes);
+  }
+
+  function queueNode(node){
+    if(!node||shouldSkip(node))return;
+    pendingNodes.add(node.nodeType===3?node.parentElement||node:node);
+    if(scheduled)return;
+    scheduled=true;
+    requestAnimationFrame(function(){
+      scheduled=false;
+      if(language()!=='en'){pendingNodes.clear();return;}
+      var nodes=Array.from(pendingNodes);
+      pendingNodes.clear();
+      nodes.forEach(translateTree);
+    });
+  }
+
   function installObserver(){
-    if(!document.body)return;
-    translateTree(document.body);
-    new MutationObserver(function(records){
-      if(running)return;
+    if(!document.body||observer)return;
+    if(language()==='en')translateTree(document.body);
+    observer=new MutationObserver(function(records){
+      if(running||language()!=='en')return;
       records.forEach(function(record){
-        if(record.type==='characterData')translateTextNode(record.target);
-        if(record.type==='attributes')translateAttributes(record.target);
-        if(record.type==='childList')record.addedNodes.forEach(function(node){translateTree(node);});
+        if(record.type==='characterData')queueNode(record.target);
+        if(record.type==='childList')record.addedNodes.forEach(queueNode);
       });
-    }).observe(document.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:ATTRS});
+    });
+    observer.observe(document.body,{subtree:true,childList:true,characterData:true});
   }
 
   function wrapApi(){
@@ -183,7 +219,8 @@
     installObserver();
     window.addEventListener('yg:languagechange',function(){
       wrapApi();
-      translateTree(document.body);
+      if(language()==='en')requestAnimationFrame(function(){translateTree(document.body);});
+      else requestAnimationFrame(function(){restoreTree(document.body);});
     });
   }
 
