@@ -1859,15 +1859,10 @@
       return '<a class="programme-card dashboard-link" data-programme-summary="' + escapeHtml(card.key) + '" href="' + escapeHtml(card.url) + '">' +
         '<header><i aria-hidden="true">' + card.icon + '</i><h3>' +
           escapeHtml(card.name) + '</h3><span aria-hidden="true">→</span></header>' +
-        '<div class="programme-compare">' +
-          '<div class="programme-compare__value"><span>Baseline</span><strong>' +
-            escapeHtml(comparisonValue(baseline.value, baseline.unit)) + '</strong></div>' +
-          '<span class="programme-compare__operator">+</span>' +
-          '<div class="programme-compare__value is-addition"><span>' + escapeHtml(card.additionLabel) + '</span><strong>' +
-            escapeHtml(comparisonValue(card.addition || 0, baseline.unit)) + '</strong></div>' +
-          '<span class="programme-compare__operator">=</span>' +
-          '<div class="programme-compare__value is-current"><span>' + escapeHtml(card.currentLabel) + '</span><strong>' +
-            escapeHtml(comparisonValue(card.current, baseline.unit)) + '</strong></div>' +
+        '<div class="programme-current">' +
+          '<span>' + escapeHtml(card.currentLabel) + '</span>' +
+          '<strong>' + escapeHtml(comparisonValue(card.current, baseline.unit)) + '</strong>' +
+          '<small>Data terkini</small>' +
         '</div>' +
         '<div class="programme-support-grid' + (card.key === "peat" ? " has-four" : "") + '">' +
         card.rows.slice(0, card.key === "peat" ? 4 : 3).map(row =>
