@@ -526,7 +526,7 @@ main.container{width:100%;max-width:none;padding:0}
   height:30px;
   align-items:center;
   justify-content:center;
-  align-self:start;
+  align-self:center!important;
   margin:0 auto;
   padding:5px 10px;
   box-sizing:border-box;
