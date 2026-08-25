@@ -21,6 +21,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=DM+Serif+Display&amp;display=swap" rel="stylesheet"/>
+  <link rel="preconnect" href="https://script.google.com" crossorigin>
+  <link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
+  <link rel="dns-prefetch" href="//script.google.com">
   <link rel="stylesheet" href="css/home-modern.css?v=20260825-programme-compact24"/>
   <meta name="theme-color" content="#079cde">
   <meta name="application-name" content="YG GeoPortal">
@@ -622,6 +625,38 @@
   </div>
 </footer>
 
+<script>
+(function () {
+  var key = "yg-home-fast-snapshot-v1";
+  var summary = document.querySelector(".hero-data-summary__grid");
+  var programmes = document.getElementById("category-grid");
+  try {
+    var cached = JSON.parse(localStorage.getItem(key) || "null");
+    if (cached && cached.summary && cached.programmes) {
+      summary.innerHTML = cached.summary;
+      programmes.innerHTML = cached.programmes;
+    }
+  } catch (error) {}
+
+  var saveTimer;
+  function saveSnapshot() {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(function () {
+      if (!programmes.querySelector(".programme-card--loading") && programmes.querySelector(".programme-current")) {
+        try {
+          localStorage.setItem(key, JSON.stringify({
+            summary: summary.innerHTML,
+            programmes: programmes.innerHTML,
+            savedAt: Date.now()
+          }));
+        } catch (error) {}
+      }
+    }, 120);
+  }
+  new MutationObserver(saveSnapshot).observe(summary, { childList: true, subtree: true, characterData: true });
+  new MutationObserver(saveSnapshot).observe(programmes, { childList: true, subtree: true, characterData: true });
+}());
+</script>
 <script src="js/dashboard-v3.js?v=20260825-programme-compact3"></script>
   <script src="js/home-modern.js?v=20260825-evidence1"></script>
    <script src="js/donor-program-status.js?v=20260825-active-first1"></script>
