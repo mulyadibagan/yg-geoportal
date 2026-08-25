@@ -298,6 +298,93 @@ main.container{width:100%;max-width:none;padding:0}
   .hero-programmes{margin-top:62px}
 }
 
+/* Funding partners: spacious 3x2 editorial directory instead of a six-column table. */
+#partnerships{
+  padding-top:52px;
+  padding-bottom:58px;
+  background:linear-gradient(145deg,#f3f5ef 0%,#edf4f1 100%);
+}
+#partnerships .section-head{margin-bottom:24px}
+#partnerships .section-head h2{font-size:clamp(34px,3vw,48px);letter-spacing:-.035em}
+#donor-grid{
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+  background:transparent;
+}
+#donor-grid .funding-card{
+  --partner-accent:#087b62;
+  position:relative;
+  min-height:238px;
+  gap:7px;
+  overflow:hidden;
+  padding:22px;
+  border:1px solid rgba(17,75,62,.12);
+  border-radius:18px;
+  background:rgba(255,255,255,.86);
+  box-shadow:0 14px 34px rgba(13,65,53,.07);
+  transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease;
+}
+#donor-grid .funding-card::before{
+  content:"";
+  position:absolute;
+  inset:0 0 auto;
+  height:5px;
+  background:var(--partner-accent);
+}
+#donor-grid .funding-card::after{
+  content:"→";
+  position:absolute;
+  top:22px;
+  right:22px;
+  display:grid;
+  width:36px;
+  height:36px;
+  place-items:center;
+  border:1px solid rgba(8,82,65,.2);
+  border-radius:50%;
+  color:var(--partner-accent);
+  font-size:18px;
+}
+#donor-grid .funding-card:hover,#donor-grid .funding-card:focus-visible{
+  z-index:1;
+  transform:translateY(-4px);
+  border-color:var(--partner-accent);
+  box-shadow:0 20px 44px rgba(13,65,53,.13);
+}
+#donor-grid .funding-card:nth-child(1){--partner-accent:#087d72}
+#donor-grid .funding-card:nth-child(2){--partner-accent:#4b7d38}
+#donor-grid .funding-card:nth-child(3){--partner-accent:#15956f}
+#donor-grid .funding-card:nth-child(4){--partner-accent:#769144}
+#donor-grid .funding-card:nth-child(5){--partner-accent:#1689a1}
+#donor-grid .funding-card:nth-child(6){--partner-accent:#1768a5}
+#donor-grid .funding-card .category-icon{
+  display:flex;
+  width:calc(100% - 52px);
+  height:68px;
+  align-items:center;
+  justify-content:flex-start;
+  margin:0 0 8px;
+  padding:8px 0;
+  border-radius:0;
+  background:transparent!important;
+  background-position:left center!important;
+  box-shadow:none;
+}
+#donor-grid .funding-card .category-icon img{max-width:210px;max-height:56px;object-fit:contain}
+#donor-grid .funding-card>span{max-width:82%;font-size:18px;line-height:1.2;letter-spacing:-.02em}
+#donor-grid .funding-card>strong{color:var(--partner-accent);font-size:13px;letter-spacing:.02em}
+#donor-grid .funding-card>small{
+  width:100%;
+  margin-top:7px;
+  padding-top:11px;
+  border-color:rgba(18,76,63,.12);
+  font-size:12px;
+  line-height:1.45;
+}
+#donor-grid .donor-status-badge{margin-top:auto}
+@media(max-width:1050px){#donor-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){#donor-grid{grid-template-columns:1fr}#donor-grid .funding-card{min-height:218px}}
+
 /* Final desktop density pass for scaled displays and laptop viewports. */
 @media(min-width:1051px){
   .dashboard-hero .hero-copy{
