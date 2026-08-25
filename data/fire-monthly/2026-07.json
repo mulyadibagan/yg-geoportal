@@ -1,0 +1,352 @@
+{
+  "schemaVersion": 1,
+  "month": "2026-07",
+  "period": {
+    "start": "2026-07-01",
+    "end": "2026-07-31"
+  },
+  "province": "Riau",
+  "generatedAt": "2026-08-25T09:44:16.794Z",
+  "source": "NASA FIRMS",
+  "sources": [
+    "VIIRS NOAA-20 C2",
+    "VIIRS NOAA-21 C2",
+    "MODIS C6.1",
+    "VIIRS S-NPP C2"
+  ],
+  "methodology": "Deteksi kategori high confidence di dalam polygon Provinsi Riau; pencocokan desa dan referensi IUPHHK-HT dilakukan secara spasial.",
+  "disclaimer": "IUPHHK-HT 2014 adalah referensi batas. Irisan hotspot bukan bukti penyebab atau tanggung jawab perusahaan.",
+  "summary": {
+    "hotspots": 9,
+    "villages": 5,
+    "regencies": 3,
+    "companies": 1,
+    "companyHotspots": 3
+  },
+  "daily": [
+    {
+      "date": "2026-07-01",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-02",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-03",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-04",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-05",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-06",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-07",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-08",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-09",
+      "hotspots": 3
+    },
+    {
+      "date": "2026-07-10",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-11",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-12",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-13",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-14",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-15",
+      "hotspots": 1
+    },
+    {
+      "date": "2026-07-16",
+      "hotspots": 2
+    },
+    {
+      "date": "2026-07-17",
+      "hotspots": 1
+    },
+    {
+      "date": "2026-07-18",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-19",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-20",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-21",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-22",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-23",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-24",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-25",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-26",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-27",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-28",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-29",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-30",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-07-31",
+      "hotspots": 2
+    }
+  ],
+  "villages": [
+    {
+      "village": "Buluh Apo",
+      "district": "Pinggir",
+      "regency": "Bengkalis",
+      "hotspots": 3,
+      "lastDetection": "2026-07-17",
+      "detectionDays": 2
+    },
+    {
+      "village": "Darussalam",
+      "district": "Sinaboi",
+      "regency": "Rokan Hilir",
+      "hotspots": 2,
+      "lastDetection": "2026-07-31",
+      "detectionDays": 1
+    },
+    {
+      "village": "Sei Segajah Makmur",
+      "district": "Kubu",
+      "regency": "Rokan Hilir",
+      "hotspots": 2,
+      "lastDetection": "2026-07-09",
+      "detectionDays": 1
+    },
+    {
+      "village": "Sontang/Kasang Padang",
+      "district": "Bonai Darussalam",
+      "regency": "Rokan Hulu",
+      "hotspots": 1,
+      "lastDetection": "2026-07-15",
+      "detectionDays": 1
+    },
+    {
+      "village": "Telukpiyai Pesisir",
+      "district": "Kubu",
+      "regency": "Rokan Hilir",
+      "hotspots": 1,
+      "lastDetection": "2026-07-09",
+      "detectionDays": 1
+    }
+  ],
+  "companies": [
+    {
+      "name": "PT. RIMBA ROKAN PERKASA",
+      "sk": "SK. 554/Menhut-II/2006",
+      "areaHa": 22930,
+      "hotspots": 3,
+      "villages": [
+        "Buluh Apo"
+      ],
+      "detectionDays": 2
+    }
+  ],
+  "hotspots": [
+    {
+      "date": "2026-07-09",
+      "time": "0722",
+      "longitude": 100.41567,
+      "latitude": 2.0097,
+      "satellite": "N21",
+      "confidence": "h",
+      "brightness": 367,
+      "frp": 11.79,
+      "village": "Sei Segajah Makmur",
+      "district": "Kubu",
+      "regency": "Rokan Hilir",
+      "permits": []
+    },
+    {
+      "date": "2026-07-09",
+      "time": "0722",
+      "longitude": 100.41708,
+      "latitude": 2.01243,
+      "satellite": "N21",
+      "confidence": "h",
+      "brightness": 367,
+      "frp": 33.83,
+      "village": "Telukpiyai Pesisir",
+      "district": "Kubu",
+      "regency": "Rokan Hilir",
+      "permits": []
+    },
+    {
+      "date": "2026-07-16",
+      "time": "0652",
+      "longitude": 101.03468,
+      "latitude": 1.14205,
+      "satellite": "N21",
+      "confidence": "h",
+      "brightness": 367,
+      "frp": 13.82,
+      "village": "Buluh Apo",
+      "district": "Pinggir",
+      "regency": "Bengkalis",
+      "permits": [
+        {
+          "name": "PT. RIMBA ROKAN PERKASA",
+          "sk": "SK. 554/Menhut-II/2006",
+          "areaHa": 22930
+        }
+      ]
+    },
+    {
+      "date": "2026-07-15",
+      "time": "0856",
+      "longitude": 100.81334,
+      "latitude": 1.23668,
+      "satellite": "Aqua",
+      "confidence": "86",
+      "brightness": 333.23,
+      "frp": 35.23,
+      "village": "Sontang/Kasang Padang",
+      "district": "Bonai Darussalam",
+      "regency": "Rokan Hulu",
+      "permits": []
+    },
+    {
+      "date": "2026-07-16",
+      "time": "1410",
+      "longitude": 101.03134,
+      "latitude": 1.14563,
+      "satellite": "Terra",
+      "confidence": "91",
+      "brightness": 315.42,
+      "frp": 17.01,
+      "village": "Buluh Apo",
+      "district": "Pinggir",
+      "regency": "Bengkalis",
+      "permits": [
+        {
+          "name": "PT. RIMBA ROKAN PERKASA",
+          "sk": "SK. 554/Menhut-II/2006",
+          "areaHa": 22930
+        }
+      ]
+    },
+    {
+      "date": "2026-07-17",
+      "time": "0835",
+      "longitude": 101.03889,
+      "latitude": 1.13362,
+      "satellite": "Aqua",
+      "confidence": "86",
+      "brightness": 332.18,
+      "frp": 32.48,
+      "village": "Buluh Apo",
+      "district": "Pinggir",
+      "regency": "Bengkalis",
+      "permits": [
+        {
+          "name": "PT. RIMBA ROKAN PERKASA",
+          "sk": "SK. 554/Menhut-II/2006",
+          "areaHa": 22930
+        }
+      ]
+    },
+    {
+      "date": "2026-07-31",
+      "time": "1408",
+      "longitude": 101.10048,
+      "latitude": 2.14694,
+      "satellite": "Terra",
+      "confidence": "97",
+      "brightness": 318.59,
+      "frp": 16.55,
+      "village": "Darussalam",
+      "district": "Sinaboi",
+      "regency": "Rokan Hilir",
+      "permits": []
+    },
+    {
+      "date": "2026-07-31",
+      "time": "1408",
+      "longitude": 101.09084,
+      "latitude": 2.14563,
+      "satellite": "Terra",
+      "confidence": "100",
+      "brightness": 325.3,
+      "frp": 24.65,
+      "village": "Darussalam",
+      "district": "Sinaboi",
+      "regency": "Rokan Hilir",
+      "permits": []
+    },
+    {
+      "date": "2026-07-09",
+      "time": "0618",
+      "longitude": 100.4187,
+      "latitude": 2.01219,
+      "satellite": "SNPP",
+      "confidence": "h",
+      "brightness": 367,
+      "frp": 17.61,
+      "village": "Sei Segajah Makmur",
+      "district": "Kubu",
+      "regency": "Rokan Hilir",
+      "permits": []
+    }
+  ]
+}

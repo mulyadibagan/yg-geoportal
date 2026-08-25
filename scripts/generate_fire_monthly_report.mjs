@@ -1,14 +1,15 @@
-import { readFile, writeFile, mkdir } from "node:fs/promises";
+import { readFile, writeFile, mkdir, readdir } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const MONTH = process.argv.includes("--month") ? process.argv[process.argv.indexOf("--month") + 1] : "2026-07";
+const ARCHIVE_DIR = process.argv.includes("--archive-dir") ? process.argv[process.argv.indexOf("--archive-dir") + 1] : "";
 const MAP_KEY = process.env.FIRMS_MAP_KEY || "";
-const SOURCES = ["MODIS_SP", "VIIRS_SNPP_SP", "VIIRS_NOAA20_SP"];
+const API_SOURCES = ["MODIS_SP", "VIIRS_SNPP_SP", "VIIRS_NOAA20_SP"];
 const API = "https://firms.modaps.eosdis.nasa.gov/api/area/csv";
 if (!/^\d{4}-\d{2}$/.test(MONTH)) throw new Error("Format bulan harus YYYY-MM");
-if (!MAP_KEY) throw new Error("FIRMS_MAP_KEY belum tersedia");
+if (!ARCHIVE_DIR && !MAP_KEY) throw new Error("FIRMS_MAP_KEY belum tersedia");
 
 const [year, month] = MONTH.split("-").map(Number);
 const start = new Date(Date.UTC(year, month - 1, 1));
@@ -82,13 +83,28 @@ async function fetchChunk(source, chunkStart, days) {
 }
 
 const raw = [];
-for (const source of SOURCES) {
-  for (let cursor = new Date(start); cursor <= end;) {
-    const remaining = Math.floor((end - cursor) / 86400000) + 1;
-    const days = Math.min(5, remaining);
-    const rows = await fetchChunk(source, cursor, days);
+const sourcesUsed = [];
+if (ARCHIVE_DIR) {
+  const archivePath = path.resolve(ROOT, ARCHIVE_DIR);
+  const files = (await readdir(archivePath)).filter((name) => name.toLowerCase().endsWith(".csv")).sort();
+  if (!files.length) throw new Error(`CSV arsip tidak ditemukan di ${archivePath}`);
+  for (const file of files) {
+    const source = file.includes("M-C61") ? "MODIS C6.1" : file.includes("J1V-C2") ? "VIIRS NOAA-20 C2" : file.includes("J2V-C2") ? "VIIRS NOAA-21 C2" : file.includes("SV-C2") ? "VIIRS S-NPP C2" : file;
+    const rows = csvRows(await readFile(path.join(archivePath, file), "utf8"));
     rows.forEach((row) => raw.push({ ...row, source }));
-    cursor = new Date(cursor.getTime() + days * 86400000);
+    sourcesUsed.push(source);
+    console.log(`[ARCHIVE] ${source}: ${rows.length} rows`);
+  }
+} else {
+  for (const source of API_SOURCES) {
+    for (let cursor = new Date(start); cursor <= end;) {
+      const remaining = Math.floor((end - cursor) / 86400000) + 1;
+      const days = Math.min(5, remaining);
+      const rows = await fetchChunk(source, cursor, days);
+      rows.forEach((row) => raw.push({ ...row, source }));
+      cursor = new Date(cursor.getTime() + days * 86400000);
+    }
+    sourcesUsed.push(source);
   }
 }
 if (!raw.length) throw new Error("NASA FIRMS tidak mengembalikan baris data untuk Juli 2026; snapshot kosong tidak diterbitkan.");
@@ -151,7 +167,7 @@ const companyRows = [...companyMap.values()].map((x) => ({ ...x, detectionDays: 
 const report = {
   schemaVersion: 1, month: MONTH, period: { start: iso(start), end: iso(end) }, province: "Riau",
   generatedAt: new Date().toISOString(), source: "NASA FIRMS",
-  sources: SOURCES,
+  sources: sourcesUsed,
   methodology: "Deteksi kategori high confidence di dalam polygon Provinsi Riau; pencocokan desa dan referensi IUPHHK-HT dilakukan secara spasial.",
   disclaimer: "IUPHHK-HT 2014 adalah referensi batas. Irisan hotspot bukan bukti penyebab atau tanggung jawab perusahaan.",
   summary: { hotspots: detections.length, villages: villageRows.length, regencies: regencies.size, companies: companyRows.length, companyHotspots: detections.filter((x) => x.permits.length).length },
