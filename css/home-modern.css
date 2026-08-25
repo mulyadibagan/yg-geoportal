@@ -514,6 +514,21 @@ main.container{width:100%;max-width:none;padding:0}
   max-height:42px!important;
   object-fit:contain!important;
 }
+
+/* Keep wide donor marks safely inside narrow six-column tablet cards. */
+@media(min-width:761px) and (max-width:1400px){
+  #partnerships #donor-grid .funding-card .category-icon{
+    padding-right:10px;
+    padding-left:10px;
+    overflow:visible;
+  }
+  #partnerships #donor-grid .funding-card .category-icon img{
+    max-width:calc(100% - 12px)!important;
+  }
+  #partnerships #donor-grid .funding-card:nth-child(1) .category-icon img{
+    max-width:min(132px,calc(100% - 18px))!important;
+  }
+}
 #partnerships #donor-grid .funding-card>span{
   display:flex;
   align-items:flex-start;
