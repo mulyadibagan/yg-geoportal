@@ -61,6 +61,102 @@
     }
   }
 
+  function setText(selector, idText, enText, english) {
+    var element = document.querySelector(selector);
+    if (element) element.textContent = english ? enText : idText;
+  }
+
+  function applyHomepageLanguage(language) {
+    var english = language === 'en';
+
+    setText('.brand > span > span', 'WebGIS Yayasan Gambut', 'Yayasan Gambut WebGIS', english);
+    setText('a[href="staff-login.html"]', 'Login Staf', 'Staff Login', english);
+    setText('a[href="fire-weather.html"]', 'Karhutla & Cuaca', 'Wildfire & Weather', english);
+
+    var socialForestry = document.querySelector('a[href="social-forestry-directory.html"]');
+    if (socialForestry) {
+      var sfSmall = socialForestry.querySelector('small');
+      Array.from(socialForestry.childNodes).forEach(function (node) {
+        if (node.nodeType === 3 && node.nodeValue.trim()) {
+          node.nodeValue = english ? 'Social Forestry Directory' : 'Direktori Perhutanan Sosial';
+        }
+      });
+      if (sfSmall) sfSmall.textContent = english ? 'Spatial profiles and non-spatial documents' : 'Profil spasial dan dokumen nonspasial';
+    }
+
+    var monitoring = document.querySelector('a[href="monitoring.html"] small');
+    if (monitoring) monitoring.textContent = english ? 'Object and site monitoring results' : 'Hasil pemantauan objek dan lokasi';
+    var engagement = document.querySelector('a[href="community-engagement.html"] small');
+    if (engagement) engagement.textContent = english ? 'Group participation in field activities' : 'Partisipasi kelompok dalam kegiatan lapangan';
+    var capacity = document.querySelector('a[href="capacity-building.html"]');
+    if (capacity) {
+      var capacitySmall = capacity.querySelector('small');
+      Array.from(capacity.childNodes).forEach(function (node) {
+        if (node.nodeType === 3 && node.nodeValue.trim()) {
+          node.nodeValue = english ? 'Capacity Building' : 'Peningkatan Kapasitas';
+        }
+      });
+      if (capacitySmall) capacitySmall.textContent = english ? 'Training and learning evaluation' : 'Pelatihan dan evaluasi pembelajaran';
+    }
+
+    setText('[data-editable-id="hero-title"]', 'Memetakan aksi. Merekam perubahan.', 'Mapping action. Tracking change.', english);
+    setText('[data-editable-id="hero-tagline"]', 'Menghubungkan lokasi, capaian, foto evidence, dan laporan program dalam satu platform.', 'Connecting locations, results, evidence photos, and programme reports in one platform.', english);
+    setText('.home-secondary-action', 'Lihat Dampak Program', 'View Programme Impact', english);
+
+    var evidenceCards = document.querySelectorAll('.home-evidence-gallery a');
+    if (evidenceCards[0]) {
+      var coastTitle = evidenceCards[0].querySelector('b');
+      var coastMeta = evidenceCards[0].querySelector('small');
+      if (coastTitle) coastTitle.textContent = english ? 'Coastal Protection' : 'Perlindungan pesisir';
+      if (coastMeta) coastMeta.textContent = english ? 'Kelapa Pati · view evidence →' : 'Kelapa Pati · buka evidence →';
+    }
+    if (evidenceCards[1]) {
+      var nurseryTitle = evidenceCards[1].querySelector('b');
+      var nurseryMeta = evidenceCards[1].querySelector('small');
+      var nurseryImage = evidenceCards[1].querySelector('img');
+      if (nurseryTitle) nurseryTitle.textContent = english ? 'Sepahat Community Nursery' : 'Rumah bibit Sepahat';
+      if (nurseryMeta) nurseryMeta.textContent = 'Sepahat';
+      if (nurseryImage) nurseryImage.alt = english ? 'Sepahat community nursery documentation' : 'Dokumentasi rumah bibit Sepahat';
+    }
+    if (evidenceCards[2]) {
+      var canalTitle = evidenceCards[2].querySelector('b');
+      var canalMeta = evidenceCards[2].querySelector('small');
+      var canalImage = evidenceCards[2].querySelector('img');
+      if (canalTitle) canalTitle.textContent = english ? 'Canal Block in Temiang' : 'Sekat kanal di Temiang';
+      if (canalMeta) canalMeta.textContent = 'Temiang';
+      if (canalImage) canalImage.alt = english ? 'Temiang canal block documentation' : 'Dokumentasi sekat kanal Temiang';
+    }
+
+    setText('#dash-participants-detail', 'pelatihan + kegiatan lapangan', 'training + field activities', english);
+
+    document.querySelectorAll('.funding-card').forEach(function (card) {
+      var period = card.querySelector('strong');
+      var small = card.querySelector('small');
+      if (period && period.textContent.trim() === '2021 - Sekarang') {
+        period.textContent = english ? '2021 - Present' : '2021 - Sekarang';
+      }
+      if (small) {
+        var value = small.textContent.trim();
+        if (english) {
+          value = value
+            .replace(/^4 desa · lihat ringkasan program$/, '4 villages · view programme summary')
+            .replace(/^Bengkalis & Siak · lihat ringkasan program$/, 'Bengkalis & Siak · view programme summary')
+            .replace(/^Imbo Putui · lihat ringkasan program$/, 'Imbo Putui · view programme summary')
+            .replace(/^Pematang Duku · lihat ringkasan program$/, 'Pematang Duku · view programme summary')
+            .replace(/^Desa Temiang · lihat ringkasan program$/, 'Temiang Village · view programme summary');
+        } else {
+          value = value
+            .replace(/^4 villages · view programme summary$/, '4 desa · lihat ringkasan program')
+            .replace(/^Bengkalis & Siak · view programme summary$/, 'Bengkalis & Siak · lihat ringkasan program')
+            .replace(/^Imbo Putui · view programme summary$/, 'Imbo Putui · lihat ringkasan program')
+            .replace(/^Pematang Duku · view programme summary$/, 'Pematang Duku · lihat ringkasan program')
+            .replace(/^Temiang Village · view programme summary$/, 'Desa Temiang · lihat ringkasan program');
+        }
+        small.textContent = value;
+      }
+    });
+  }
+
   function applyEvidencePhotos(index) {
     document.querySelectorAll('[data-home-photo]').forEach(function (image) {
       var photos = index[image.getAttribute('data-home-photo')] || [];
@@ -71,6 +167,15 @@
   }
 
   configureEvidenceCards();
+
+  window.addEventListener('yg:languagechange', function (event) {
+    applyHomepageLanguage(event && event.detail ? event.detail.language : 'id');
+  });
+
+  document.addEventListener('DOMContentLoaded', function () {
+    var language = window.YG_I18N && window.YG_I18N.language ? window.YG_I18N.language : 'id';
+    applyHomepageLanguage(language);
+  });
 
   fetch('data/program-photo-index.json?v=20260825-home-evidence1', { cache: 'force-cache' })
     .then(function (response) {
