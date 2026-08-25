@@ -1,7 +1,14 @@
-name: Generate July 2026 Riau Fire Report
+name: Generate Monthly Riau Fire Report
 
 on:
+  schedule:
+    - cron: "30 3 2 * *"
   workflow_dispatch:
+    inputs:
+      month:
+        description: "Month to finalize (YYYY-MM); blank uses previous month"
+        required: false
+        type: string
 
 permissions:
   contents: write
@@ -20,19 +27,39 @@ jobs:
       - uses: actions/setup-node@v5
         with:
           node-version: "22"
-      - name: Generate July report
+      - name: Install Cloudflare CLI
+        working-directory: cloudflare/yg-webgis-public-data
+        run: npm ci
+      - name: Resolve closed month and download R2 archive
+        id: period
+        working-directory: cloudflare/yg-webgis-public-data
         env:
-          FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
-        run: node scripts/generate_fire_monthly_report.mjs --month 2026-07
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          REQUESTED_MONTH: ${{ inputs.month }}
+        run: |
+          month="${REQUESTED_MONTH:-$(date -u -d "$(date -u +%Y-%m-01) -1 day" +%Y-%m)}"
+          case "$month" in ????-??) ;; *) echo "Invalid month: $month"; exit 1;; esac
+          if [ "$month" = "$(date -u +%Y-%m)" ]; then echo "Current month cannot be finalized"; exit 1; fi
+          echo "month=$month" >> "$GITHUB_OUTPUT"
+          mkdir -p ../../../tmp/fire-monthly
+          npx wrangler r2 object get "yg-webgis-public-snapshots/fire-archive/${month}.geojson" --file="../../../tmp/fire-monthly/${month}.geojson" --remote
+      - name: Generate final monthly report and index
+        run: |
+          node scripts/generate_fire_monthly_report.mjs --month "${{ steps.period.outputs.month }}" --geojson-archive "tmp/fire-monthly/${{ steps.period.outputs.month }}.geojson"
+          node scripts/build_fire_monthly_index.mjs
       - name: Publish report snapshot
         run: |
-          cp data/fire-monthly/2026-07.json /tmp/2026-07.json
+          month="${{ steps.period.outputs.month }}"
+          cp "data/fire-monthly/${month}.json" "/tmp/${month}.json"
+          cp data/fire-monthly/index.json /tmp/fire-monthly-index.json
           git pull --rebase origin main
           mkdir -p data/fire-monthly
-          cp /tmp/2026-07.json data/fire-monthly/2026-07.json
+          cp "/tmp/${month}.json" "data/fire-monthly/${month}.json"
+          cp /tmp/fire-monthly-index.json data/fire-monthly/index.json
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/fire-monthly/2026-07.json
+          git add "data/fire-monthly/${month}.json" data/fire-monthly/index.json
           git diff --cached --quiet && exit 0
-          git commit -m "data: publish July 2026 Riau fire report"
+          git commit -m "data: publish ${month} Riau fire report"
           git push origin HEAD:main

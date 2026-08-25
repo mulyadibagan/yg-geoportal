@@ -5,11 +5,12 @@ import { fileURLToPath } from "node:url";
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const MONTH = process.argv.includes("--month") ? process.argv[process.argv.indexOf("--month") + 1] : "2026-07";
 const ARCHIVE_DIR = process.argv.includes("--archive-dir") ? process.argv[process.argv.indexOf("--archive-dir") + 1] : "";
+const GEOJSON_ARCHIVE = process.argv.includes("--geojson-archive") ? process.argv[process.argv.indexOf("--geojson-archive") + 1] : "";
 const MAP_KEY = process.env.FIRMS_MAP_KEY || "";
 const API_SOURCES = ["MODIS_SP", "VIIRS_SNPP_SP", "VIIRS_NOAA20_SP"];
 const API = "https://firms.modaps.eosdis.nasa.gov/api/area/csv";
 if (!/^\d{4}-\d{2}$/.test(MONTH)) throw new Error("Format bulan harus YYYY-MM");
-if (!ARCHIVE_DIR && !MAP_KEY) throw new Error("FIRMS_MAP_KEY belum tersedia");
+if (!ARCHIVE_DIR && !GEOJSON_ARCHIVE && !MAP_KEY) throw new Error("FIRMS_MAP_KEY belum tersedia");
 
 const [year, month] = MONTH.split("-").map(Number);
 const start = new Date(Date.UTC(year, month - 1, 1));
@@ -84,7 +85,15 @@ async function fetchChunk(source, chunkStart, days) {
 
 const raw = [];
 const sourcesUsed = [];
-if (ARCHIVE_DIR) {
+if (GEOJSON_ARCHIVE) {
+  const archive = JSON.parse(await readFile(path.resolve(ROOT, GEOJSON_ARCHIVE), "utf8"));
+  for (const feature of archive.features || []) {
+    const p = feature.properties || {}, coordinates = feature.geometry?.coordinates || [];
+    raw.push({ ...p, longitude: coordinates[0], latitude: coordinates[1], source: p.source || p.satellite || "NASA FIRMS daily archive" });
+  }
+  sourcesUsed.push(...new Set(raw.map((row) => row.source)));
+  console.log(`[R2 ARCHIVE] ${raw.length} rows`);
+} else if (ARCHIVE_DIR) {
   const archivePath = path.resolve(ROOT, ARCHIVE_DIR);
   const files = (await readdir(archivePath)).filter((name) => name.toLowerCase().endsWith(".csv")).sort();
   if (!files.length) throw new Error(`CSV arsip tidak ditemukan di ${archivePath}`);
@@ -166,6 +175,7 @@ const villageRows = [...villageMap.values()].map((x) => ({ ...x, detectionDays: 
 const companyRows = [...companyMap.values()].map((x) => ({ ...x, detectionDays: x.dates.size, villages: [...x.villages].sort(), dates: undefined })).sort((a, b) => b.hotspots - a.hotspots || a.name.localeCompare(b.name));
 const report = {
   schemaVersion: 1, month: MONTH, period: { start: iso(start), end: iso(end) }, province: "Riau",
+  status: "final",
   generatedAt: new Date().toISOString(), source: "NASA FIRMS",
   sources: sourcesUsed,
   methodology: "Deteksi kategori high confidence di dalam polygon Provinsi Riau; pencocokan desa dan referensi IUPHHK-HT dilakukan secara spasial.",
