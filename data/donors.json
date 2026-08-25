@@ -14,12 +14,12 @@
     "indicators": [
       {
         "label": "Pohon mangrove ditanam",
-      "value": "43.742",
+        "value": "43.742",
         "progress": 100
       },
       {
         "label": "Restorasi mangrove",
-      "value": "12,77 ha",
+        "value": "12,77 ha",
         "progress": 100
       },
       {
@@ -51,16 +51,37 @@
         "period": "2023–2024",
         "status": "Selesai",
         "summary": "Pelaksanaan konservasi dan rehabilitasi mangrove berbasis masyarakat di Desa Buruk Bakul pada Juni 2023–Mei 2024.",
-        "realization": { "mangroveTrees": 10420, "rehabilitationAreaHa": 2.65 },
+        "realization": {
+          "mangroveTrees": 10420,
+          "rehabilitationAreaHa": 2.65
+        },
         "detailsPending": false,
         "reportUrl": "https://drive.google.com/file/d/1urwXsg64a4ttgihusCFZzTiKmGYyyqWB/view?usp=drivesdk",
         "achievements": [
-          { "value": "10.420", "label": "mangrove ditanam" },
-          { "value": "2,65 ha", "label": "area rehabilitasi" },
-          { "value": "8.579", "label": "propagul di rumah bibit" },
-          { "value": "100 m", "label": "pemecah gelombang" },
-          { "value": "2", "label": "pelatihan · 69 peserta" },
-          { "value": "20", "label": "peserta belajar ke Johor" }
+          {
+            "value": "10.420",
+            "label": "mangrove ditanam"
+          },
+          {
+            "value": "2,65 ha",
+            "label": "area rehabilitasi"
+          },
+          {
+            "value": "8.579",
+            "label": "propagul di rumah bibit"
+          },
+          {
+            "value": "100 m",
+            "label": "pemecah gelombang"
+          },
+          {
+            "value": "2",
+            "label": "pelatihan · 69 peserta"
+          },
+          {
+            "value": "20",
+            "label": "peserta belajar ke Johor"
+          }
         ],
         "outputs": [
           {
@@ -157,16 +178,37 @@
         "period": "2024–2025",
         "status": "Selesai",
         "summary": "Perluasan konservasi berbasis masyarakat ke Desa Buruk Bakul dan Kelapa Pati pada Juni 2024–Mei 2025.",
-        "realization": { "mangroveTrees": 15225, "rehabilitationAreaHa": 1.45 },
+        "realization": {
+          "mangroveTrees": 15225,
+          "rehabilitationAreaHa": 1.45
+        },
         "detailsPending": false,
         "reportUrl": "https://drive.google.com/file/d/1FG5iQCiJjQW8A8-uVGKht0WlBaYYt0hK/view?usp=sharing",
         "achievements": [
-          { "value": "15.225", "label": "mangrove ditanam" },
-          { "value": "1,45 ha", "label": "area rehabilitasi" },
-          { "value": "17.150", "label": "bibit dibesarkan" },
-          { "value": "200 m", "label": "APO dipelihara dan dibangun" },
-          { "value": "2", "label": "pelatihan · 90 peserta" },
-          { "value": "1.200+", "label": "peserta kegiatan" }
+          {
+            "value": "15.225",
+            "label": "mangrove ditanam"
+          },
+          {
+            "value": "1,45 ha",
+            "label": "area rehabilitasi"
+          },
+          {
+            "value": "17.150",
+            "label": "bibit dibesarkan"
+          },
+          {
+            "value": "200 m",
+            "label": "APO dipelihara dan dibangun"
+          },
+          {
+            "value": "2",
+            "label": "pelatihan · 90 peserta"
+          },
+          {
+            "value": "1.200+",
+            "label": "peserta kegiatan"
+          }
         ],
         "outputs": [
           {
@@ -175,8 +217,14 @@
             "output": "Dua pelatihan untuk pengelolaan mangrove dan mata pencaharian berkelanjutan.",
             "achievement": "Pelatihan monitoring mangrove diikuti 43 peserta dan pelatihan pengolahan gula nipah diikuti 47 peserta.",
             "evidenceLinks": [
-              { "label": "Buka pelatihan monitoring mangrove", "url": "capacity-building.html?report=CB-2024-002" },
-              { "label": "Buka pelatihan gula nipah", "url": "capacity-building.html?report=CB-2025-001" }
+              {
+                "label": "Buka pelatihan monitoring mangrove",
+                "url": "capacity-building.html?report=CB-2024-002"
+              },
+              {
+                "label": "Buka pelatihan gula nipah",
+                "url": "capacity-building.html?report=CB-2025-001"
+              }
             ]
           },
           {
@@ -192,8 +240,14 @@
             "output": "Target 14.000 bibit dari rumah bibit masyarakat di Buruk Bakul dan Kelapa Pati.",
             "achievement": "Sebanyak 17.150 Rhizophora apiculata dibesarkan: 11.000 di Buruk Bakul dan 6.150 di Kelapa Pati.",
             "evidenceLinks": [
-              { "label": "Buka titik rumah bibit Buruk Bakul", "url": "webgis.html?object=YG-NURSERY-MANGROVE-MRW1PF95" },
-              { "label": "Buka evidence laporan", "url": "https://drive.google.com/file/d/1FG5iQCiJjQW8A8-uVGKht0WlBaYYt0hK/view?usp=sharing" }
+              {
+                "label": "Buka titik rumah bibit Buruk Bakul",
+                "url": "webgis.html?object=YG-NURSERY-MANGROVE-MRW1PF95"
+              },
+              {
+                "label": "Buka evidence laporan",
+                "url": "https://drive.google.com/file/d/1FG5iQCiJjQW8A8-uVGKht0WlBaYYt0hK/view?usp=sharing"
+              }
             ]
           },
           {
@@ -239,7 +293,7 @@
         "name": "",
         "period": "Juli 2025–Desember 2026",
         "status": "Aktif",
-        "dataAsOf": "25 Agustus 2026",
+        "dataAsOf": "26 Agustus 2026",
         "summary": "Rehabilitasi hingga 9 hektare mangrove dengan target 18.000 pohon di empat desa, pembangunan infrastruktur, peningkatan kapasitas, pengembangan mata pencaharian perempuan, pembelajaran lintas negara, perlindungan, monitoring, dan pelaporan.",
         "detailsPending": false,
         "targets": {
@@ -259,8 +313,8 @@
           },
           "waveBreakerMeters": 100,
           "communityNurseries": 2,
-          "learningExchangeParticipants": 16,
-          "learningExchangeDays": 4
+          "learningExchangeParticipants": 25,
+          "learningExchangeDays": 5
         },
         "activityGroups": [
           {
@@ -370,7 +424,7 @@
             "name": "Capacity Building",
             "activities": [
               {
-                "id": "ACT-ARAMCO-P3-CB-BENGKALIS",
+                "id": "ACT-ARAMCO-P3-CB-SEPAHAT",
                 "name": "Pelatihan Monitoring Mangrove Berbasis Masyarakat di Sepahat",
                 "indicator": "Selesai 13 Mei 2026 · 54 peserta (36 laki-laki dan 18 perempuan)",
                 "target": 1,
@@ -380,9 +434,32 @@
                 "reportLabel": "buka detail pelatihan"
               },
               {
+                "id": "ACT-ARAMCO-P3-CB-KP-PRODUCT",
+                "name": "Pelatihan Pengembangan Produk Kreatif Lokal dan Kuliner di Kelapa Pati",
+                "indicator": "Selesai 23 Mei 2026 · 36 peserta (4 laki-laki dan 32 perempuan)",
+                "target": 1,
+                "realization": 1,
+                "unit": "kegiatan",
+                "reportUrl": "capacity-building.html?report=CB-2026-008",
+                "reportLabel": "buka detail pelatihan"
+              },
+              {
+                "id": "ACT-ARAMCO-P3-CB-KP-ECOTOURISM",
+                "name": "Pelatihan Tata Kelola Ekowisata Mangrove Berbasis Komunitas di Kelapa Pati",
+                "indicator": "Selesai 24 Mei 2026 · 20 peserta (12 laki-laki dan 8 perempuan)",
+                "target": 1,
+                "realization": 1,
+                "unit": "kegiatan",
+                "reportUrl": "capacity-building.html?report=CB-2026-009",
+                "reportLabel": "buka detail pelatihan"
+              },
+              {
                 "id": "ACT-ARAMCO-P3-CB-SIAK",
-                "name": "Advanced mangrove management training in Siak",
-                "indicator": "Belatram members trained"
+                "name": "Pelatihan lanjutan pengelolaan mangrove di Tanjung Kuras",
+                "indicator": "Terjadwal 29 Agustus 2026 · belum dihitung sebagai realisasi",
+                "target": 1,
+                "realization": 0,
+                "unit": "kegiatan"
               }
             ]
           },
@@ -392,13 +469,15 @@
             "activities": [
               {
                 "id": "ACT-ARAMCO-P3-WOMEN-TRAINING",
-                "name": "Mangrove-based economic training",
-                "indicator": "Economic training conducted"
+                "name": "Pelatihan produk kreatif lokal dan kuliner",
+                "indicator": "Selesai 23 Mei 2026 di Kelapa Pati · 36 peserta, termasuk 32 perempuan",
+                "reportUrl": "capacity-building.html?report=CB-2026-008",
+                "reportLabel": "buka detail pelatihan"
               },
               {
                 "id": "ACT-ARAMCO-P3-WOMEN-MARKET",
-                "name": "Product and local market development",
-                "indicator": "Products and local market developed"
+                "name": "Pengembangan produk dan kesiapan pasar lokal",
+                "indicator": "5 lini produk terdokumentasi pada Juli 2026: gantungan kunci resin, kerupuk ikan, ikan kering kemasan, keripik singkong, dan madu alam kemasan"
               }
             ]
           },
@@ -408,8 +487,10 @@
             "activities": [
               {
                 "id": "ACT-ARAMCO-P3-EXCHANGE",
-                "name": "Peer learning visit to Malaysia",
-                "indicator": "Approximately 16 participants complete a 4-day programme"
+                "name": "Peer Learning Visit to Johor, Malaysia",
+                "indicator": "Selesai 10–14 November 2025 · 25 peserta · pembelajaran nursery, penanaman, ekowisata, dan produk mangrove",
+                "reportUrl": "https://docs.google.com/document/d/19Qc8TtcVIwBcw4aYLjSO5n5erCF-Hs8D/edit?usp=drivesdk",
+                "reportLabel": "buka laporan kunjungan"
               }
             ]
           },
@@ -419,13 +500,15 @@
             "activities": [
               {
                 "id": "ACT-ARAMCO-P3-PATROL",
-                "name": "Community-based mangrove patrol and monitoring",
-                "indicator": "Community patrol and monitoring established"
+                "name": "Monitoring mangrove berbasis masyarakat",
+                "indicator": "Berjalan · data monitoring terverifikasi tersedia untuk Sepahat, Tanjung Kuras, dan Kelapa Pati pada Juli–Agustus 2026",
+                "reportUrl": "monitoring.html?search=Aramco",
+                "reportLabel": "buka hasil monitoring"
               },
               {
                 "id": "ACT-ARAMCO-P3-PREVENTION",
-                "name": "Encroachment and pollution prevention",
-                "indicator": "Prevention measures implemented"
+                "name": "Pencegahan perambahan dan pencemaran",
+                "indicator": "Berjalan bersama patroli dan pemeliharaan · bukti kegiatan tersendiri belum tercatat"
               }
             ]
           },
@@ -436,12 +519,14 @@
               {
                 "id": "ACT-ARAMCO-P3-PROGRESS",
                 "name": "Progress report",
-                "indicator": "1 progress report submitted"
+                "indicator": "Selesai dan diserahkan · periode Juli–Desember 2025",
+                "reportUrl": "https://drive.google.com/file/d/1DFxyFC3X1VsLqCjhi_IqkhPE9CiEh4sD/view?usp=drivesdk",
+                "reportLabel": "buka progress report"
               },
               {
                 "id": "ACT-ARAMCO-P3-FINAL",
                 "name": "Final project report",
-                "indicator": "1 final report submitted"
+                "indicator": "Dalam penyusunan · working draft diperbarui Agustus 2026 · belum diserahkan"
               }
             ]
           }
@@ -730,16 +815,70 @@
         "summary": "Restorasi hidrologi gambut, agroforestri kopi Liberika dan Geronggang, peningkatan kapasitas masyarakat, pengembangan usaha, serta pencegahan kebakaran berbasis FDRS di Desa Pematang Duku.",
         "detailsPending": false,
         "outputs": [
-          {"id":"OUT-PPCF-01","name":"Restorasi hidrologi gambut","indicator":"4 sekat kanal selesai dan berfungsi","evidenceUrl":"https://drive.google.com/file/d/1tOuaOdxpf6wAHAkJccgTzSlF-NlSNQm9/view#page=9","mapUrl":"webgis.html?layer=sekat_kanal&village=Pematang+Duku"},
-          {"id":"OUT-PPCF-02","name":"Persemaian masyarakat","indicator":"Persemaian 7 × 8 m dengan lebih dari 4.500 bibit","evidenceUrl":"https://drive.google.com/file/d/1tOuaOdxpf6wAHAkJccgTzSlF-NlSNQm9/view#page=10","mapUrl":"webgis.html?layer=kopi&village=Pematang+Duku"},
-          {"id":"OUT-PPCF-03","name":"Penanaman agroforestri","indicator":"4.000 bibit pada sekitar 3,6 ha: 2.500 kopi Liberika dan 1.500 Geronggang","evidenceUrl":"https://drive.google.com/file/d/1tOuaOdxpf6wAHAkJccgTzSlF-NlSNQm9/view#page=10","mapUrl":"webgis.html?layer=area_kopi&village=Pematang+Duku"},
-          {"id":"OUT-PPCF-04","name":"Pelatihan tanpa bakar","indicator":"69 peserta; nilai rata-rata post-test 8,96 dari 10","evidenceUrl":"https://drive.google.com/file/d/1tOuaOdxpf6wAHAkJccgTzSlF-NlSNQm9/view#page=12"},
-          {"id":"OUT-PPCF-05","name":"Pelatihan agroforestri kopi Liberika","indicator":"50 petani, termasuk 13 perempuan","evidenceUrl":"https://drive.google.com/file/d/1tOuaOdxpf6wAHAkJccgTzSlF-NlSNQm9/view#page=17"},
-          {"id":"OUT-PPCF-06","name":"Penguatan usaha dan pascapanen","indicator":"1 usaha HHBK berbasis masyarakat didukung dengan peralatan pascapanen","evidenceUrl":"https://drive.google.com/file/d/1tOuaOdxpf6wAHAkJccgTzSlF-NlSNQm9/view#page=17"},
-          {"id":"OUT-PPCF-07","name":"Kemitraan pasar","indicator":"1 MoU antara Kelompok Tani Ketiau Jaya dan Suvarnabhumi Coffee","evidenceUrl":"https://drive.google.com/file/d/1tOuaOdxpf6wAHAkJccgTzSlF-NlSNQm9/view#page=18"},
-          {"id":"OUT-PPCF-08","name":"Pencegahan kebakaran berbasis FDRS","indicator":"3 unit FDRS terpasang dan berfungsi","evidenceUrl":"https://drive.google.com/file/d/1tOuaOdxpf6wAHAkJccgTzSlF-NlSNQm9/view#page=21","mapUrl":"webgis.html?layer=fdrs&village=Pematang+Duku"},
-          {"id":"OUT-PPCF-09","name":"Penurunan indikatif kejadian kebakaran","indicator":"0 hotspot di Pematang Duku selama April 2025–Maret 2026; baseline 395 hotspot pada 2015–2025","evidenceUrl":"https://drive.google.com/file/d/1tOuaOdxpf6wAHAkJccgTzSlF-NlSNQm9/view#page=24"},
-          {"id":"OUT-PPCF-10","name":"Panduan dan diseminasi","indicator":"1 buku panduan; diskusi 15 pemangku kepentingan dan kegiatan desa 22 peserta termasuk 6 perempuan","evidenceUrl":"https://drive.google.com/file/d/1tOuaOdxpf6wAHAkJccgTzSlF-NlSNQm9/view#page=26"}
+          {
+            "id": "OUT-PPCF-01",
+            "name": "Restorasi hidrologi gambut",
+            "indicator": "4 sekat kanal selesai dan berfungsi",
+            "evidenceUrl": "https://drive.google.com/file/d/1tOuaOdxpf6wAHAkJccgTzSlF-NlSNQm9/view#page=9",
+            "mapUrl": "webgis.html?layer=sekat_kanal&village=Pematang+Duku"
+          },
+          {
+            "id": "OUT-PPCF-02",
+            "name": "Persemaian masyarakat",
+            "indicator": "Persemaian 7 × 8 m dengan lebih dari 4.500 bibit",
+            "evidenceUrl": "https://drive.google.com/file/d/1tOuaOdxpf6wAHAkJccgTzSlF-NlSNQm9/view#page=10",
+            "mapUrl": "webgis.html?layer=kopi&village=Pematang+Duku"
+          },
+          {
+            "id": "OUT-PPCF-03",
+            "name": "Penanaman agroforestri",
+            "indicator": "4.000 bibit pada sekitar 3,6 ha: 2.500 kopi Liberika dan 1.500 Geronggang",
+            "evidenceUrl": "https://drive.google.com/file/d/1tOuaOdxpf6wAHAkJccgTzSlF-NlSNQm9/view#page=10",
+            "mapUrl": "webgis.html?layer=area_kopi&village=Pematang+Duku"
+          },
+          {
+            "id": "OUT-PPCF-04",
+            "name": "Pelatihan tanpa bakar",
+            "indicator": "69 peserta; nilai rata-rata post-test 8,96 dari 10",
+            "evidenceUrl": "https://drive.google.com/file/d/1tOuaOdxpf6wAHAkJccgTzSlF-NlSNQm9/view#page=12"
+          },
+          {
+            "id": "OUT-PPCF-05",
+            "name": "Pelatihan agroforestri kopi Liberika",
+            "indicator": "50 petani, termasuk 13 perempuan",
+            "evidenceUrl": "https://drive.google.com/file/d/1tOuaOdxpf6wAHAkJccgTzSlF-NlSNQm9/view#page=17"
+          },
+          {
+            "id": "OUT-PPCF-06",
+            "name": "Penguatan usaha dan pascapanen",
+            "indicator": "1 usaha HHBK berbasis masyarakat didukung dengan peralatan pascapanen",
+            "evidenceUrl": "https://drive.google.com/file/d/1tOuaOdxpf6wAHAkJccgTzSlF-NlSNQm9/view#page=17"
+          },
+          {
+            "id": "OUT-PPCF-07",
+            "name": "Kemitraan pasar",
+            "indicator": "1 MoU antara Kelompok Tani Ketiau Jaya dan Suvarnabhumi Coffee",
+            "evidenceUrl": "https://drive.google.com/file/d/1tOuaOdxpf6wAHAkJccgTzSlF-NlSNQm9/view#page=18"
+          },
+          {
+            "id": "OUT-PPCF-08",
+            "name": "Pencegahan kebakaran berbasis FDRS",
+            "indicator": "3 unit FDRS terpasang dan berfungsi",
+            "evidenceUrl": "https://drive.google.com/file/d/1tOuaOdxpf6wAHAkJccgTzSlF-NlSNQm9/view#page=21",
+            "mapUrl": "webgis.html?layer=fdrs&village=Pematang+Duku"
+          },
+          {
+            "id": "OUT-PPCF-09",
+            "name": "Penurunan indikatif kejadian kebakaran",
+            "indicator": "0 hotspot di Pematang Duku selama April 2025–Maret 2026; baseline 395 hotspot pada 2015–2025",
+            "evidenceUrl": "https://drive.google.com/file/d/1tOuaOdxpf6wAHAkJccgTzSlF-NlSNQm9/view#page=24"
+          },
+          {
+            "id": "OUT-PPCF-10",
+            "name": "Panduan dan diseminasi",
+            "indicator": "1 buku panduan; diskusi 15 pemangku kepentingan dan kegiatan desa 22 peserta termasuk 6 perempuan",
+            "evidenceUrl": "https://drive.google.com/file/d/1tOuaOdxpf6wAHAkJccgTzSlF-NlSNQm9/view#page=26"
+          }
         ]
       }
     ],
@@ -831,8 +970,8 @@
     "indicators": [
       {
         "label": "Aktivitas dengan paket evidence lengkap",
-      "value": "6 dari 12",
-      "progress": 50
+        "value": "6 dari 12",
+        "progress": 50
       },
       {
         "label": "Output 1.1 · micro-mill",
