@@ -1,6 +1,14 @@
 (function () {
   'use strict';
 
+  if (!document.querySelector('link[data-funding-modern]')) {
+    var fundingStyles = document.createElement('link');
+    fundingStyles.rel = 'stylesheet';
+    fundingStyles.href = 'css/funding-modern.css?v=20260825-editorial1';
+    fundingStyles.setAttribute('data-funding-modern', '1');
+    document.head.appendChild(fundingStyles);
+  }
+
   function driveThumbnail(url) {
     var value = String(url || '').trim();
     var match = value.match(/\/d\/([^/]+)/) || value.match(/[?&]id=([^&]+)/);
