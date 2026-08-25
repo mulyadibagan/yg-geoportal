@@ -54,7 +54,7 @@
       return features.find(function(feature){
         var p=feature&&feature.properties||{};
         var aliases=Array.isArray(p.Intervention_Aliases)?p.Intervention_Aliases:[];
-        return [p.WADMKD,p.Desa,p.NAMOBJ,p.Nama_Desa].concat(aliases).some(function(value){return normalized(value)===village;});
+        return [p.WADMKD,p.Desa,p.NAMOBJ,p.Nama_Desa,p.Intervention_Source_Name].concat(aliases).some(function(value){return normalized(value)===village;});
       })||null;
     }catch(error){console.warn("Batas desa tidak dapat dimuat",error);return null;}
   }
@@ -469,7 +469,35 @@
     el("program-note").textContent="Kegiatan dan monitoring yang memiliki titik, garis, atau polygon dicocokkan melalui posisi dan irisannya dengan batas desa pada peta. Atribut nama desa digunakan untuk catatan nonspasial, seperti data pelatihan yang belum memiliki koordinat.";
   }
 
-  function render(record,manifest,feature,snapshotFeatures,capacityRows){
+  function renderCommunityGroups(rows,name,district,regency){
+    var matches=(Array.isArray(rows)?rows:[]).filter(function(group){
+      return normalized(group.village)===normalized(name)&&
+        (!group.district||!district||normalized(group.district)===normalized(district))&&
+        (!group.regency||!regency||normalized(group.regency)===normalized(regency));
+    });
+    var section=el("community-group-section"),list=el("community-group-list");
+    if(!section||!list||!matches.length){return;}
+    section.hidden=false;
+    el("community-group-badge").textContent=matches.length+" kelompok tercatat";
+    list.innerHTML=matches.map(function(group){
+      var membership=group.membership||{},lead=group.leadership||{},legal=group.legal||{};
+      var gender=[];
+      if(membership.male!=null){gender.push(format(membership.male,0)+" laki-laki");}
+      if(membership.female!=null){gender.push(format(membership.female,0)+" perempuan");}
+      return '<article class="vp-community-group">'+
+        '<div class="vp-community-group__main"><small>KELOMPOK MASYARAKAT</small><h3>'+esc(group.shortName||group.name||"Kelompok mitra")+'</h3><p>'+esc(group.summary||"")+'</p></div>'+
+        '<dl class="vp-community-group__facts">'+
+          (lead.chair?'<div><dt>Ketua</dt><dd>'+esc(lead.chair)+'</dd></div>':'')+
+          (membership.total!=null?'<div><dt>Anggota</dt><dd>'+format(membership.total,0)+(gender.length?'<small>'+esc(gender.join(" · "))+'</small>':'')+'</dd></div>':'')+
+          (legal.number?'<div><dt>Legalitas</dt><dd>'+esc(legal.number)+(legal.date?'<small>'+esc(legal.date)+'</small>':'')+'</dd></div>':'')+
+          (legal.validUntil?'<div><dt>Berlaku sampai</dt><dd>'+esc(legal.validUntil)+'</dd></div>':'')+
+        '</dl>'+
+        (legal.url?'<a class="vp-community-group__document" href="'+esc(legal.url)+'" target="_blank" rel="noopener noreferrer">Buka dokumen SK/legalitas ↗</a>':'')+
+      '</article>';
+    }).join("");
+  }
+
+  function render(record,manifest,feature,snapshotFeatures,capacityRows,communityGroups){
     var parts=key.split("|"),props=feature&&feature.properties||{};
     var name=props.WADMKD||props.Desa||props.NAMOBJ||record.name||titleCase(parts[0]);
     var district=props.WADMKC||props.Kecamatan||titleCase(parts[1]);
@@ -498,6 +526,7 @@
     el("baseline-period").textContent=method.baselineYear||"—";
     el("loss-through").textContent=method.lossDataThroughYear||"—";
     renderPrograms(snapshotFeatures,capacityRows,feature,name,district,regency);
+    renderCommunityGroups(communityGroups,name,district,regency);
     renderLoss(record,method);renderHotspots(record);renderReferences(record,area);
     el("loading-state").hidden=true;el("profile-content").hidden=false;
     loadCoastalMangrove(name,district,regency);
@@ -508,21 +537,21 @@
     el("map-layout-link").href="map-layout.html?source="+encodeURIComponent(source)+"&key="+encodeURIComponent(key);
     if(!key){showError("Tautan desa tidak lengkap. Silakan pilih desa melalui WebGIS.");return;}
     try{
-      var pair=await Promise.all([loadJson(MANIFEST_URL+"?v="+Date.now()),findFeature(),loadJson(SNAPSHOT_URL),loadJson("data/capacity-building.json?v=20260823-dayun-coffee")]);
-      var manifest=pair[0],feature=pair[1],snapshot=pair[2]||{},capacityRows=pair[3]||[],snapshotFeatures=Array.isArray(snapshot.features)?snapshot.features:[],shard=manifest.index&&manifest.index[key];
+      var pair=await Promise.all([loadJson(MANIFEST_URL+"?v="+Date.now()),findFeature(),loadJson(SNAPSHOT_URL),loadJson("data/capacity-building.json?v=20260823-dayun-coffee"),loadJson("data/community-groups.json?v=20260825-village-profile1").catch(function(){return {groups:[]};})]);
+      var manifest=pair[0],feature=pair[1],snapshot=pair[2]||{},capacityRows=pair[3]||[],communityGroups=pair[4]&&pair[4].groups||[],snapshotFeatures=Array.isArray(snapshot.features)?snapshot.features:[],shard=manifest.index&&manifest.index[key];
       if(shard==null){
         el("profile-status").innerHTML="<i></i> Analisis utama belum tersedia";
-        render({},manifest,feature,snapshotFeatures,capacityRows);
+        render({},manifest,feature,snapshotFeatures,capacityRows,communityGroups);
         return;
       }
       var records=await loadJson("data/administrative-village-analytics/"+shard+".json?v="+encodeURIComponent(manifest.generatedAt||""));
       var record=records[key];
       if(!record){
         el("profile-status").innerHTML="<i></i> Analisis utama belum tersedia";
-        render({},manifest,feature,snapshotFeatures,capacityRows);
+        render({},manifest,feature,snapshotFeatures,capacityRows,communityGroups);
         return;
       }
-      render(record,manifest,feature,snapshotFeatures,capacityRows);
+      render(record,manifest,feature,snapshotFeatures,capacityRows,communityGroups);
     }catch(error){console.error(error);showError(error.message||"Terjadi gangguan ketika membaca data desa.");}
   }
   el("print-profile").addEventListener("click",function(){window.print();});
