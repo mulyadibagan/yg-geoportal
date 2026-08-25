@@ -1,0 +1,6822 @@
+{
+  "type": "FeatureCollection",
+  "month": "2026-08",
+  "province": "Riau",
+  "updatedAt": "2026-08-25T10:04:28.720Z",
+  "source": "NASA FIRMS daily high-confidence snapshot archive",
+  "featureCount": 258,
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.43073,
+          -0.03602
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-01",
+        "acq_time": "0605",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 16.25,
+        "daynight": "D",
+        "type": null,
+        "village": "Area Tidak Terdefinisi",
+        "district": "",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.31306,
+          -0.13649
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-02",
+        "acq_time": "1344",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 316.33,
+        "frp": 15.96,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.52168,
+          -0.31232
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-03",
+        "acq_time": "0204",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 324.16,
+        "frp": 24.13,
+        "daynight": "D",
+        "type": null,
+        "village": "Kuantan Baru",
+        "district": "Rengat",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          101.09571,
+          2.15057
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-04",
+        "acq_time": "0833",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 336.26,
+        "frp": 54.28,
+        "daynight": "D",
+        "type": null,
+        "village": "Darussalam",
+        "district": "Sinaboi",
+        "regency": "Rokan Hilir"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.55107,
+          -1.02688
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-04",
+        "acq_time": "0833",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 326.8,
+        "frp": 29.5,
+        "daynight": "D",
+        "type": null,
+        "village": "Rantai Langsat/Sungai Akar",
+        "district": "Batang Gangsal",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.82509,
+          -0.45685
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-04",
+        "acq_time": "2051",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 311.19,
+        "frp": 11.34,
+        "daynight": "N",
+        "type": null,
+        "village": "Telukkiambang",
+        "district": "Tempuling",
+        "regency": "Indragiri Hilir"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.52833,
+          -0.31265
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-05",
+        "acq_time": "0629",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 13.24,
+        "daynight": "D",
+        "type": null,
+        "village": "Kuantan Baru",
+        "district": "Rengat",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.52454,
+          -0.30814
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-05",
+        "acq_time": "0716",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 10.32,
+        "daynight": "D",
+        "type": null,
+        "village": "Kuantan Baru",
+        "district": "Rengat",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.21138,
+          -0.86662
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-05",
+        "acq_time": "1403",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 312.2,
+        "frp": 11.06,
+        "daynight": "N",
+        "type": null,
+        "village": "Cenaku Kecil/Alim",
+        "district": "Batang Cenaku",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.58407,
+          -0.93171
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-05",
+        "acq_time": "1403",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 322.74,
+        "frp": 23.8,
+        "daynight": "N",
+        "type": null,
+        "village": "Keritang",
+        "district": "Kemuning",
+        "regency": "Indragiri Hilir"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.58802,
+          -0.92659
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-05",
+        "acq_time": "1403",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 313.46,
+        "frp": 13.69,
+        "daynight": "N",
+        "type": null,
+        "village": "Keritang",
+        "district": "Kemuning",
+        "regency": "Indragiri Hilir"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.35709,
+          2.27878
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-06",
+        "acq_time": "0733",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 9.99,
+        "daynight": "D",
+        "type": null,
+        "village": "Pasir Limau Kapas",
+        "district": "Pasir Limau Kapas",
+        "regency": "Rokan Hilir"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.35939,
+          2.28037
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-07",
+        "acq_time": "0555",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 12.99,
+        "daynight": "D",
+        "type": null,
+        "village": "Pasir Limau Kapas",
+        "district": "Pasir Limau Kapas",
+        "regency": "Rokan Hilir"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.35668,
+          2.27715
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-07",
+        "acq_time": "0637",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 13.58,
+        "daynight": "D",
+        "type": null,
+        "village": "Pasir Limau Kapas",
+        "district": "Pasir Limau Kapas",
+        "regency": "Rokan Hilir"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.92989,
+          2.23559
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-07",
+        "acq_time": "0733",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 10.36,
+        "daynight": "D",
+        "type": null,
+        "village": "Raja Bejamu",
+        "district": "Sinaboi",
+        "regency": "Rokan Hilir"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.93063,
+          2.24055
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-07",
+        "acq_time": "0733",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 19.05,
+        "daynight": "D",
+        "type": null,
+        "village": "Raja Bejamu",
+        "district": "Sinaboi",
+        "regency": "Rokan Hilir"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.00693,
+          1.00952
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-07",
+        "acq_time": "0733",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 58.64,
+        "daynight": "D",
+        "type": null,
+        "village": "Temusai",
+        "district": "Bunga Raya",
+        "regency": "Siak"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.52572,
+          -0.30664
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-07",
+        "acq_time": "0848",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 356.41,
+        "frp": 71.48,
+        "daynight": "D",
+        "type": null,
+        "village": "Kuantan Baru",
+        "district": "Rengat",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.35402,
+          2.27565
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-07",
+        "acq_time": "0850",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 329.11,
+        "frp": 19.92,
+        "daynight": "D",
+        "type": null,
+        "village": "Pasir Limau Kapas",
+        "district": "Pasir Limau Kapas",
+        "regency": "Rokan Hilir"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.92429,
+          2.23094
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-07",
+        "acq_time": "0850",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 328.35,
+        "frp": 18.33,
+        "daynight": "D",
+        "type": null,
+        "village": "Raja Bejamu",
+        "district": "Sinaboi",
+        "regency": "Rokan Hilir"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          101.06411,
+          1.87288
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-07",
+        "acq_time": "0850",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 327.16,
+        "frp": 19.2,
+        "daynight": "D",
+        "type": null,
+        "village": "Langgadai Hulu",
+        "district": "Rimba Melintang",
+        "regency": "Rokan Hilir",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. RUAS UTAMA JAYA",
+            "sk": "18/MENHUT-II/2007",
+            "areaHa": 0
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          101.99641,
+          1.01158
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-07",
+        "acq_time": "0850",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 342.69,
+        "frp": 39.72,
+        "daynight": "D",
+        "type": null,
+        "village": "Bandar Jaya",
+        "district": "Siak Kecil",
+        "regency": "Bengkalis"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.00516,
+          1.01286
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-07",
+        "acq_time": "0850",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 355.61,
+        "frp": 67.05,
+        "daynight": "D",
+        "type": null,
+        "village": "Bandar Jaya",
+        "district": "Siak Kecil",
+        "regency": "Bengkalis"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.00645,
+          1.00409
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-07",
+        "acq_time": "0850",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 342.84,
+        "frp": 40.46,
+        "daynight": "D",
+        "type": null,
+        "village": "Tuah Indrapura",
+        "district": "Bunga Raya",
+        "regency": "Siak"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.35225,
+          2.28357
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-07",
+        "acq_time": "1344",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 313.8,
+        "frp": 17.12,
+        "daynight": "N",
+        "type": null,
+        "village": "Pasir Limau Kapas",
+        "district": "Pasir Limau Kapas",
+        "regency": "Rokan Hilir"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.36022,
+          2.27957
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-07",
+        "acq_time": "1344",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 314.92,
+        "frp": 18.79,
+        "daynight": "N",
+        "type": null,
+        "village": "Pasir Limau Kapas",
+        "district": "Pasir Limau Kapas",
+        "regency": "Rokan Hilir"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.00627,
+          1.00803
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-07",
+        "acq_time": "1344",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 312.18,
+        "frp": 11.19,
+        "daynight": "N",
+        "type": null,
+        "village": "Tuah Indrapura",
+        "district": "Bunga Raya",
+        "regency": "Siak"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.51371,
+          -0.30396
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-07",
+        "acq_time": "1344",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 335.3,
+        "frp": 43.46,
+        "daynight": "N",
+        "type": null,
+        "village": "Sungai Guntung Tengah / Sungai Guntung Hilir",
+        "district": "",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.52395,
+          -0.30256
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-07",
+        "acq_time": "1344",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 370.17,
+        "frp": 145.54,
+        "daynight": "N",
+        "type": null,
+        "village": "Kuantan Baru",
+        "district": "Rengat",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.53416,
+          -0.30116
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-07",
+        "acq_time": "1344",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 312.38,
+        "frp": 11.99,
+        "daynight": "N",
+        "type": null,
+        "village": "Kampung Pulau",
+        "district": "Rengat",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.51627,
+          -0.30176
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-07",
+        "acq_time": "1834",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 8.26,
+        "daynight": "N",
+        "type": null,
+        "village": "Sungai Guntung Tengah / Sungai Guntung Hilir",
+        "district": "",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.51986,
+          -0.30233
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-07",
+        "acq_time": "1834",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 8.26,
+        "daynight": "N",
+        "type": null,
+        "village": "Kuantan Baru",
+        "district": "Rengat",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.52344,
+          -0.3029
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-07",
+        "acq_time": "1834",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 8.6,
+        "daynight": "N",
+        "type": null,
+        "village": "Kuantan Baru",
+        "district": "Rengat",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.51864,
+          -0.30219
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-07",
+        "acq_time": "1919",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 19,
+        "daynight": "N",
+        "type": null,
+        "village": "Sungai Guntung Tengah / Sungai Guntung Hilir",
+        "district": "",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.51959,
+          -0.29613
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-07",
+        "acq_time": "1919",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 17.12,
+        "daynight": "N",
+        "type": null,
+        "village": "Kuantan Baru",
+        "district": "Rengat",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.52324,
+          -0.3029
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-07",
+        "acq_time": "1919",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 19,
+        "daynight": "N",
+        "type": null,
+        "village": "Kuantan Baru",
+        "district": "Rengat",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.51557,
+          -0.2914
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-07",
+        "acq_time": "2106",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 328.44,
+        "frp": 68.18,
+        "daynight": "N",
+        "type": null,
+        "village": "Sungai Guntung Tengah / Sungai Guntung Hilir",
+        "district": "",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.53085,
+          -0.30591
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-07",
+        "acq_time": "2106",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 317.39,
+        "frp": 38.46,
+        "daynight": "N",
+        "type": null,
+        "village": "Kampung Pulau",
+        "district": "Rengat",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.53255,
+          -0.29397
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-07",
+        "acq_time": "2106",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 318.37,
+        "frp": 39.84,
+        "daynight": "N",
+        "type": null,
+        "village": "Kampung Pulau",
+        "district": "Rengat",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.00218,
+          1.01026
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-08",
+        "acq_time": "0204",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 330.42,
+        "frp": 28.19,
+        "daynight": "D",
+        "type": null,
+        "village": "Bandar Jaya",
+        "district": "Siak Kecil",
+        "regency": "Bengkalis"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.5146,
+          -0.29991
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-08",
+        "acq_time": "0204",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 356.79,
+        "frp": 98.03,
+        "daynight": "D",
+        "type": null,
+        "village": "Sungai Guntung Tengah / Sungai Guntung Hilir",
+        "district": "",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.51591,
+          -0.29033
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-08",
+        "acq_time": "0204",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 337.76,
+        "frp": 48.64,
+        "daynight": "D",
+        "type": null,
+        "village": "Sungai Guntung Tengah / Sungai Guntung Hilir",
+        "district": "",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.52507,
+          -0.30142
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-08",
+        "acq_time": "0204",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 344.7,
+        "frp": 64.87,
+        "daynight": "D",
+        "type": null,
+        "village": "Kuantan Baru",
+        "district": "Rengat",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.51493,
+          -0.30034
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-08",
+        "acq_time": "0620",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 24.18,
+        "daynight": "D",
+        "type": null,
+        "village": "Sungai Guntung Tengah / Sungai Guntung Hilir",
+        "district": "",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.51957,
+          -0.29963
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-08",
+        "acq_time": "0620",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 24.18,
+        "daynight": "D",
+        "type": null,
+        "village": "Kuantan Baru",
+        "district": "Rengat",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.52937,
+          -0.30201
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-08",
+        "acq_time": "0620",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 12.88,
+        "daynight": "D",
+        "type": null,
+        "village": "Kampung Pulau",
+        "district": "Rengat",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.51505,
+          -0.29874
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-08",
+        "acq_time": "0657",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 22.61,
+        "daynight": "D",
+        "type": null,
+        "village": "Sungai Guntung Tengah / Sungai Guntung Hilir",
+        "district": "",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.51889,
+          -0.29815
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-08",
+        "acq_time": "0657",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 22.61,
+        "daynight": "D",
+        "type": null,
+        "village": "Kuantan Baru",
+        "district": "Rengat",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.52327,
+          -0.30106
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-08",
+        "acq_time": "0657",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 14.54,
+        "daynight": "D",
+        "type": null,
+        "village": "Kuantan Baru",
+        "district": "Rengat",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.52711,
+          -0.30047
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-08",
+        "acq_time": "0657",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 14.54,
+        "daynight": "D",
+        "type": null,
+        "village": "Kuantan Baru",
+        "district": "Rengat",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.21918,
+          1.47014
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-08",
+        "acq_time": "0714",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 8.5,
+        "daynight": "D",
+        "type": null,
+        "village": "Damai",
+        "district": "Bengkalis",
+        "regency": "Bengkalis"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.51627,
+          -0.29997
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-08",
+        "acq_time": "0714",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 10.99,
+        "daynight": "D",
+        "type": null,
+        "village": "Sungai Guntung Tengah / Sungai Guntung Hilir",
+        "district": "",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.5194,
+          -0.29947
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-08",
+        "acq_time": "0714",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 10.99,
+        "daynight": "D",
+        "type": null,
+        "village": "Kuantan Baru",
+        "district": "Rengat",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.52566,
+          -0.29847
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-08",
+        "acq_time": "0714",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 11.23,
+        "daynight": "D",
+        "type": null,
+        "village": "Kuantan Baru",
+        "district": "Rengat",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.52646,
+          -0.30366
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-08",
+        "acq_time": "0714",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 11.23,
+        "daynight": "D",
+        "type": null,
+        "village": "Kuantan Baru",
+        "district": "Rengat",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.52959,
+          -0.30316
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-08",
+        "acq_time": "0714",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 8.43,
+        "daynight": "D",
+        "type": null,
+        "village": "Kampung Pulau",
+        "district": "Rengat",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          101.11362,
+          1.09194
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-08",
+        "acq_time": "1425",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 314.41,
+        "frp": 31.59,
+        "daynight": "N",
+        "type": null,
+        "village": "Buluh Apo",
+        "district": "Pinggir",
+        "regency": "Bengkalis",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. RIMBA ROKAN PERKASA",
+            "sk": "SK. 554/Menhut-II/2006",
+            "areaHa": 22930
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.49982,
+          -0.28887
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-08",
+        "acq_time": "1425",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 311.8,
+        "frp": 35.91,
+        "daynight": "N",
+        "type": null,
+        "village": "Sungai Guntung Tengah",
+        "district": "Rengat",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.5072,
+          -0.29429
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-08",
+        "acq_time": "1425",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 319.13,
+        "frp": 62.38,
+        "daynight": "N",
+        "type": null,
+        "village": "Sungai Guntung Tengah",
+        "district": "Rengat",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.52579,
+          -0.29953
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-08",
+        "acq_time": "1425",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 314.58,
+        "frp": 45.46,
+        "daynight": "N",
+        "type": null,
+        "village": "Kuantan Baru",
+        "district": "Rengat",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.51371,
+          -0.2926
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-08",
+        "acq_time": "1813",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 10.01,
+        "daynight": "N",
+        "type": null,
+        "village": "Sungai Guntung Tengah / Sungai Guntung Hilir",
+        "district": "",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          101.11716,
+          1.09347
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-09",
+        "acq_time": "0826",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 323.4,
+        "frp": 47,
+        "daynight": "D",
+        "type": null,
+        "village": "Buluh Apo",
+        "district": "Pinggir",
+        "regency": "Bengkalis",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. RIMBA ROKAN PERKASA",
+            "sk": "SK. 554/Menhut-II/2006",
+            "areaHa": 22930
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          101.11905,
+          1.0811
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-09",
+        "acq_time": "0826",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 339.79,
+        "frp": 111.83,
+        "daynight": "D",
+        "type": null,
+        "village": "Buluh Apo",
+        "district": "Pinggir",
+        "regency": "Bengkalis",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. RIMBA ROKAN PERKASA",
+            "sk": "SK. 554/Menhut-II/2006",
+            "areaHa": 22930
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.51682,
+          -0.29304
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-09",
+        "acq_time": "1325",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 323.67,
+        "frp": 93.04,
+        "daynight": "N",
+        "type": null,
+        "village": "Sungai Guntung Tengah / Sungai Guntung Hilir",
+        "district": "",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.52075,
+          -0.29195
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-09",
+        "acq_time": "1756",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 12.82,
+        "daynight": "N",
+        "type": null,
+        "village": "Kuantan Baru",
+        "district": "Rengat",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          101.11899,
+          1.09632
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-09",
+        "acq_time": "2044",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 315.82,
+        "frp": 15.82,
+        "daynight": "N",
+        "type": null,
+        "village": "Buluh Apo",
+        "district": "Pinggir",
+        "regency": "Bengkalis",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. RIMBA ROKAN PERKASA",
+            "sk": "SK. 554/Menhut-II/2006",
+            "areaHa": 22930
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          101.12714,
+          1.0858
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-09",
+        "acq_time": "2044",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 312.8,
+        "frp": 13.36,
+        "daynight": "N",
+        "type": null,
+        "village": "Buluh Apo",
+        "district": "Pinggir",
+        "regency": "Bengkalis",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. RIMBA ROKAN PERKASA",
+            "sk": "SK. 554/Menhut-II/2006",
+            "areaHa": 22930
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          101.12846,
+          1.0949
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-09",
+        "acq_time": "2044",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 337.54,
+        "frp": 45.03,
+        "daynight": "N",
+        "type": null,
+        "village": "Buluh Apo",
+        "district": "Pinggir",
+        "regency": "Bengkalis",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. RIMBA ROKAN PERKASA",
+            "sk": "SK. 554/Menhut-II/2006",
+            "areaHa": 22930
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.51721,
+          -0.28911
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-09",
+        "acq_time": "2044",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 327.17,
+        "frp": 24.93,
+        "daynight": "N",
+        "type": null,
+        "village": "Sungai Guntung Tengah / Sungai Guntung Hilir",
+        "district": "",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.52589,
+          -0.29043
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-09",
+        "acq_time": "2044",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 329.78,
+        "frp": 28.12,
+        "daynight": "N",
+        "type": null,
+        "village": "Kuantan Baru",
+        "district": "Rengat",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          101.12519,
+          1.0924
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-10",
+        "acq_time": "0143",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 327.02,
+        "frp": 43.36,
+        "daynight": "D",
+        "type": null,
+        "village": "Buluh Apo",
+        "district": "Pinggir",
+        "regency": "Bengkalis",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. RIMBA ROKAN PERKASA",
+            "sk": "SK. 554/Menhut-II/2006",
+            "areaHa": 22930
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.51628,
+          -0.2918
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-10",
+        "acq_time": "0143",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 332.74,
+        "frp": 41.1,
+        "daynight": "D",
+        "type": null,
+        "village": "Sungai Guntung Tengah / Sungai Guntung Hilir",
+        "district": "",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.52651,
+          -0.29326
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-10",
+        "acq_time": "0143",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 325.05,
+        "frp": 28.95,
+        "daynight": "D",
+        "type": null,
+        "village": "Kuantan Baru",
+        "district": "Rengat",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          101.11684,
+          1.09012
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-10",
+        "acq_time": "1403",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 325.25,
+        "frp": 22.4,
+        "daynight": "N",
+        "type": null,
+        "village": "Buluh Apo",
+        "district": "Pinggir",
+        "regency": "Bengkalis",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. RIMBA ROKAN PERKASA",
+            "sk": "SK. 554/Menhut-II/2006",
+            "areaHa": 22930
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          101.12598,
+          1.09139
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-10",
+        "acq_time": "1403",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 335.86,
+        "frp": 37.12,
+        "daynight": "N",
+        "type": null,
+        "village": "Buluh Apo",
+        "district": "Pinggir",
+        "regency": "Bengkalis",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. RIMBA ROKAN PERKASA",
+            "sk": "SK. 554/Menhut-II/2006",
+            "areaHa": 22930
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.51732,
+          -0.29331
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-11",
+        "acq_time": "0618",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 8.67,
+        "daynight": "D",
+        "type": null,
+        "village": "Sungai Guntung Tengah / Sungai Guntung Hilir",
+        "district": "",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          101.12475,
+          1.08927
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-12",
+        "acq_time": "0644",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 6.88,
+        "daynight": "D",
+        "type": null,
+        "village": "Buluh Apo",
+        "district": "Pinggir",
+        "regency": "Bengkalis",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. RIMBA ROKAN PERKASA",
+            "sk": "SK. 554/Menhut-II/2006",
+            "areaHa": 22930
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.45389,
+          0.21501
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-12",
+        "acq_time": "0720",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 11.28,
+        "daynight": "D",
+        "type": null,
+        "village": "Petodaan",
+        "district": "Teluk Meranti",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. SELARAS ABADI UTAMA",
+            "sk": "S. 382/Menhut-II/2004",
+            "areaHa": 13600
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.32558,
+          -0.12963
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-12",
+        "acq_time": "0841",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 337.5,
+        "frp": 39.17,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          101.47179,
+          -0.73484
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-12",
+        "acq_time": "1342",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 316.09,
+        "frp": 22.82,
+        "daynight": "N",
+        "type": null,
+        "village": "Seberang Cengar",
+        "district": "Kuantan Mudik",
+        "regency": "Kuantan Singingi"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          101.47825,
+          -0.73691
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-12",
+        "acq_time": "1342",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 312.11,
+        "frp": 17.5,
+        "daynight": "N",
+        "type": null,
+        "village": "Seberang Cengar",
+        "district": "Kuantan Mudik",
+        "regency": "Kuantan Singingi"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.32211,
+          -0.12737
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-12",
+        "acq_time": "1342",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 314.65,
+        "frp": 18.69,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.3031,
+          -0.1359
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-14",
+        "acq_time": "1321",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 314.19,
+        "frp": 63.53,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.30212,
+          -0.13474
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-15",
+        "acq_time": "0548",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 26.66,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          101.18088,
+          -0.20632
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-15",
+        "acq_time": "0856",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 326.69,
+        "frp": 19.85,
+        "daynight": "D",
+        "type": null,
+        "village": "Koto Baru/Sungai Paku",
+        "district": "Singingi Hilir",
+        "regency": "Kuantan Singingi"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.29577,
+          -0.14283
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-15",
+        "acq_time": "0856",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 332.23,
+        "frp": 32.4,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.30621,
+          -0.14129
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-15",
+        "acq_time": "0856",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 330.4,
+        "frp": 29.41,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.22044,
+          -0.87162
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-15",
+        "acq_time": "1401",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 310.66,
+        "frp": 9.66,
+        "daynight": "N",
+        "type": null,
+        "village": "Cenaku Kecil/Alim",
+        "district": "Batang Cenaku",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.29047,
+          -0.13223
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-15",
+        "acq_time": "1401",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 322.26,
+        "frp": 20.69,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.29177,
+          -0.14148
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-15",
+        "acq_time": "1401",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 329.01,
+        "frp": 29.63,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.30023,
+          -0.13086
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-15",
+        "acq_time": "1401",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 343.54,
+        "frp": 55.8,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.30151,
+          -0.14012
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-15",
+        "acq_time": "1401",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 369.58,
+        "frp": 132.67,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.29712,
+          -0.13817
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-15",
+        "acq_time": "1904",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 18.24,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.71586,
+          1.41953
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-17",
+        "acq_time": "0605",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 14.01,
+        "daynight": "D",
+        "type": null,
+        "village": "Babussalam Rokan",
+        "district": "Pujud",
+        "regency": "Rokan Hilir"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.2896,
+          -0.14595
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-17",
+        "acq_time": "0835",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 357.72,
+        "frp": 105.56,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.30066,
+          -0.14433
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-17",
+        "acq_time": "0835",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 333.33,
+        "frp": 38.32,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.28161,
+          -0.13791
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-17",
+        "acq_time": "1342",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 325.84,
+        "frp": 31.23,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.29269,
+          -0.13637
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-17",
+        "acq_time": "1342",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 348.56,
+        "frp": 81.94,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.29257,
+          -0.14116
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-17",
+        "acq_time": "2053",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 327.58,
+        "frp": 29,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.29391,
+          -0.13205
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-17",
+        "acq_time": "2053",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 336.26,
+        "frp": 42.87,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.29128,
+          -0.14294
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-18",
+        "acq_time": "0202",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 350.12,
+        "frp": 66.9,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          101.18519,
+          -0.18028
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-18",
+        "acq_time": "0913",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 361.44,
+        "frp": 210.89,
+        "daynight": "D",
+        "type": null,
+        "village": "Sungailiti",
+        "district": "Kampar Kiri",
+        "regency": "Kampar"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.26588,
+          -0.14241
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-18",
+        "acq_time": "1420",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 321.99,
+        "frp": 65.77,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.28706,
+          -0.13948
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-18",
+        "acq_time": "1420",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 350.98,
+        "frp": 232.56,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.2814,
+          -0.14061
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-18",
+        "acq_time": "1809",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 14.62,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.28513,
+          -0.1412
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-18",
+        "acq_time": "1809",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 14.62,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.28605,
+          -0.14307
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-19",
+        "acq_time": "0614",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 9.67,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.28114,
+          -0.13879
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-19",
+        "acq_time": "0650",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 18.68,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.28163,
+          -0.14213
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-19",
+        "acq_time": "0650",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 18.68,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.28461,
+          -0.13826
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-19",
+        "acq_time": "0650",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 18.68,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.70165,
+          -0.01101
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-19",
+        "acq_time": "0707",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 6.48,
+        "daynight": "D",
+        "type": null,
+        "village": "Batang Sari",
+        "district": "Mandah",
+        "regency": "Indragiri Hilir"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.70186,
+          -0.0125
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-19",
+        "acq_time": "0707",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 6.33,
+        "daynight": "D",
+        "type": null,
+        "village": "Batang Sari",
+        "district": "Mandah",
+        "regency": "Indragiri Hilir"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.31551,
+          -0.77246
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-20",
+        "acq_time": "0850",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 325.33,
+        "frp": 22.85,
+        "daynight": "D",
+        "type": null,
+        "village": "Punti Anai",
+        "district": "Batang Cenaku",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.27503,
+          -0.13857
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-20",
+        "acq_time": "1359",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 355.78,
+        "frp": 83.1,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.27631,
+          -0.14772
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-20",
+        "acq_time": "1359",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 335.42,
+        "frp": 38.2,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.28455,
+          -0.13725
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-20",
+        "acq_time": "1359",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 324.52,
+        "frp": 22.25,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.28584,
+          -0.14641
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-20",
+        "acq_time": "1359",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 321.58,
+        "frp": 18.65,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.27456,
+          -0.14352
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-20",
+        "acq_time": "1913",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 27.49,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.27869,
+          -0.14417
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-20",
+        "acq_time": "1913",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 14.32,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.26292,
+          -0.14555
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-21",
+        "acq_time": "0219",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 326.83,
+        "frp": 71.05,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.2709,
+          -0.13573
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-21",
+        "acq_time": "0219",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 346.72,
+        "frp": 180.54,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.28382,
+          -0.14846
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-21",
+        "acq_time": "0219",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 340.26,
+        "frp": 140.69,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.29182,
+          -0.13879
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-21",
+        "acq_time": "0219",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 327.75,
+        "frp": 74.26,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.27779,
+          -0.13638
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-21",
+        "acq_time": "0612",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 38.74,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.27936,
+          -0.14704
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-21",
+        "acq_time": "0612",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 16.99,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.62209,
+          0.82166
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-21",
+        "acq_time": "0612",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 7.77,
+        "daynight": "D",
+        "type": null,
+        "village": "Kepau Baru",
+        "district": "Tebing Tinggi Timur",
+        "regency": "Kepulauan Meranti"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          101.16212,
+          -0.18342
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-21",
+        "acq_time": "0716",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 7.67,
+        "daynight": "D",
+        "type": null,
+        "village": "Domo",
+        "district": "Kampar Kiri",
+        "regency": "Kampar"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          101.17538,
+          -0.15984
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-21",
+        "acq_time": "0716",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 7.84,
+        "daynight": "D",
+        "type": null,
+        "village": "Sungailiti",
+        "district": "Kampar Kiri",
+        "regency": "Kampar"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.27243,
+          -0.13528
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-21",
+        "acq_time": "0716",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 60.16,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.27626,
+          -0.13468
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-21",
+        "acq_time": "0716",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 60.16,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.27714,
+          -0.14034
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-21",
+        "acq_time": "0716",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 60.16,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.27805,
+          -0.14599
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-21",
+        "acq_time": "0716",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 22.73,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.28187,
+          -0.1454
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-21",
+        "acq_time": "0716",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 16.4,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.27408,
+          -0.14211
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-21",
+        "acq_time": "1815",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 43.31,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.2776,
+          -0.14266
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-21",
+        "acq_time": "1815",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 43.31,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.29285,
+          -0.13684
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-21",
+        "acq_time": "1815",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 10.48,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.27213,
+          -0.13692
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-21",
+        "acq_time": "1851",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 30.93,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.27465,
+          -0.14423
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-21",
+        "acq_time": "1851",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 7.76,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.27517,
+          -0.14085
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-21",
+        "acq_time": "1851",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 40.61,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.27821,
+          -0.14479
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-21",
+        "acq_time": "1851",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 7.76,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.2905,
+          -0.13636
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-21",
+        "acq_time": "1851",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 12.27,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.2606,
+          -0.12549
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-21",
+        "acq_time": "2010",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 313.23,
+        "frp": 88.3,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.28761,
+          -0.13579
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-21",
+        "acq_time": "2010",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 334.67,
+        "frp": 269.87,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.29613,
+          -0.13084
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-21",
+        "acq_time": "2010",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 325.55,
+        "frp": 178.18,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.29111,
+          -0.13395
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "0122",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 325.99,
+        "frp": 104.48,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.27859,
+          -0.1375
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "0553",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 35.35,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.2832,
+          -0.13967
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "0553",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 29,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.03853,
+          -0.04326
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "0553",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 16.67,
+        "daynight": "D",
+        "type": null,
+        "village": "Simpang Gaung",
+        "district": "Gaung",
+        "regency": "Indragiri Hilir"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.04008,
+          -0.04227
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "0553",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 19.05,
+        "daynight": "D",
+        "type": null,
+        "village": "Simpang Gaung",
+        "district": "Gaung",
+        "regency": "Indragiri Hilir"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.27051,
+          -0.59916
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "0553",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 20.36,
+        "daynight": "D",
+        "type": null,
+        "village": "Pasenggerahan",
+        "district": "Sungai Batang",
+        "regency": "Indragiri Hilir"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.9813,
+          1.36574
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "0612",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 16.56,
+        "daynight": "D",
+        "type": null,
+        "village": "Bagan Cempedak",
+        "district": "Rantau Kopar",
+        "regency": "Rokan Hilir"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          101.29652,
+          0.3954
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "0612",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 10.06,
+        "daynight": "D",
+        "type": null,
+        "village": "Tarai Bangun",
+        "district": "Tambang",
+        "regency": "Kampar"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.27295,
+          -0.14396
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "0612",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 16.05,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.27802,
+          -0.14317
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "0612",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 16.05,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.9156,
+          0.26231
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "0612",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 13.57,
+        "daynight": "D",
+        "type": null,
+        "village": "Pulau Muda",
+        "district": "Teluk Meranti",
+        "regency": "Pelalawan"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.26991,
+          -0.13713
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "0659",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 22.11,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.27052,
+          -0.14122
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "0659",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 13.75,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.27352,
+          -0.13657
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "0659",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 30.55,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.27415,
+          -0.14066
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "0659",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 13.39,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.27776,
+          -0.1401
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "0659",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 13.39,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.2814,
+          -0.13954
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "0659",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 15.68,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.31488,
+          -0.13856
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "0659",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 10.17,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.27829,
+          -0.13378
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "0733",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 18.14,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.27926,
+          -0.14009
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "0733",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 18.14,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.28323,
+          -0.13301
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "0733",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 18.14,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.28421,
+          -0.13932
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "0733",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 18.14,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.29178,
+          -0.7723
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "0733",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 18.27,
+        "daynight": "D",
+        "type": null,
+        "village": "Punti Anai",
+        "district": "Batang Cenaku",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.29292,
+          -0.77467
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "0733",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 17,
+        "daynight": "D",
+        "type": null,
+        "village": "Sipang",
+        "district": "Batang Cenaku",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.0382,
+          -0.04025
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "0733",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 48.9,
+        "daynight": "D",
+        "type": null,
+        "village": "Simpang Gaung",
+        "district": "Gaung",
+        "regency": "Indragiri Hilir"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.27177,
+          -0.59991
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "0733",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 11.92,
+        "daynight": "D",
+        "type": null,
+        "village": "Pasenggerahan",
+        "district": "Sungai Batang",
+        "regency": "Indragiri Hilir"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.26437,
+          -0.14682
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "0828",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 344.18,
+        "frp": 94.49,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.27765,
+          -0.13337
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "0828",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 331.75,
+        "frp": 50.99,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.27929,
+          -0.14459
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "0828",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 368.36,
+        "frp": 224.93,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.29578,
+          -0.15358
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "0828",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 330.8,
+        "frp": 47.61,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.53475,
+          -1.05099
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "0828",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 328.31,
+        "frp": 50.5,
+        "daynight": "D",
+        "type": null,
+        "village": "Rantai Langsat/Sungai Akar",
+        "district": "Batang Gangsal",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.02831,
+          -0.04376
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "0828",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 338.78,
+        "frp": 61.78,
+        "daynight": "D",
+        "type": null,
+        "village": "Simpang Gaung",
+        "district": "Gaung",
+        "regency": "Indragiri Hilir"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.04128,
+          -0.04181
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "0828",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 340.3,
+        "frp": 65.68,
+        "daynight": "D",
+        "type": null,
+        "village": "Simpang Gaung",
+        "district": "Gaung",
+        "regency": "Indragiri Hilir"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.27028,
+          -0.59955
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "0828",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 326.25,
+        "frp": 30.69,
+        "daynight": "D",
+        "type": null,
+        "village": "Pasenggerahan",
+        "district": "Sungai Batang",
+        "regency": "Indragiri Hilir"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.27016,
+          -0.13447
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "1340",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 335.78,
+        "frp": 51.23,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.27154,
+          -0.14445
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "1340",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 341.97,
+        "frp": 66.77,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.28164,
+          -0.13291
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "1340",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 369.04,
+        "frp": 164.1,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.283,
+          -0.14288
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "1340",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 333.68,
+        "frp": 45.96,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.29305,
+          -0.13136
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "1340",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 317.02,
+        "frp": 18.14,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.30583,
+          -0.13976
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "1340",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 319.11,
+        "frp": 21.08,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.3172,
+          -0.13821
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "1340",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 319.09,
+        "frp": 21.36,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.93228,
+          0.25623
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "1340",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 320.13,
+        "frp": 20.64,
+        "daynight": "N",
+        "type": null,
+        "village": "Pulau Muda",
+        "district": "Teluk Meranti",
+        "regency": "Pelalawan"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.02938,
+          -0.04092
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "1340",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 317.72,
+        "frp": 18.56,
+        "daynight": "N",
+        "type": null,
+        "village": "Simpang Gaung",
+        "district": "Gaung",
+        "regency": "Indragiri Hilir"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.03967,
+          -0.03952
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "1340",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 332.7,
+        "frp": 39.98,
+        "daynight": "N",
+        "type": null,
+        "village": "Simpang Gaung",
+        "district": "Gaung",
+        "regency": "Indragiri Hilir"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.1672,
+          -0.19674
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "1340",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 312.44,
+        "frp": 12.57,
+        "daynight": "N",
+        "type": null,
+        "village": "Idaman",
+        "district": "Gaung Anak Serka",
+        "regency": "Indragiri Hilir"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.50481,
+          0.18022
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "1340",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 310.73,
+        "frp": 10.36,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Pelangiran",
+        "district": "Pelangiran",
+        "regency": "Indragiri Hilir"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.28304,
+          -0.13613
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "1758",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 13.16,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.28075,
+          -0.13734
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "1834",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 14.97,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.28503,
+          -0.13803
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "1834",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 7.57,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.28561,
+          -0.13436
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "1834",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 13.81,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.27974,
+          -0.13712
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "1851",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 10.21,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.26926,
+          -0.14323
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "2046",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 317.88,
+        "frp": 15.23,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.27054,
+          -0.13449
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "2046",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 324.64,
+        "frp": 21.93,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.27793,
+          -0.14454
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "2046",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 326.93,
+        "frp": 24.33,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.27921,
+          -0.1358
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "2046",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 348.36,
+        "frp": 57.58,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.28049,
+          -0.12706
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "2046",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 320.6,
+        "frp": 17.08,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.2879,
+          -0.13711
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "2046",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 334.44,
+        "frp": 33.32,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.28918,
+          -0.12837
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-22",
+        "acq_time": "2046",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 341.19,
+        "frp": 44.2,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.26744,
+          -0.14084
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-23",
+        "acq_time": "0158",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 334.77,
+        "frp": 33.57,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.27692,
+          -0.14219
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-23",
+        "acq_time": "0158",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 349.3,
+        "frp": 62.03,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.27817,
+          -0.13303
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-23",
+        "acq_time": "0158",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 336.92,
+        "frp": 37.39,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.28766,
+          -0.13438
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-23",
+        "acq_time": "0158",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 353.4,
+        "frp": 73.11,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.90334,
+          -0.82307
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-23",
+        "acq_time": "0553",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 12.21,
+        "daynight": "D",
+        "type": null,
+        "village": "Kayu Raja",
+        "district": "Keritang",
+        "regency": "Indragiri Hilir",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. SARI HIJAU MUTIARA",
+            "sk": "SK. 378/Menhut-II/2008",
+            "areaHa": 20000
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.9053,
+          -0.81979
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-23",
+        "acq_time": "0553",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 23.2,
+        "daynight": "D",
+        "type": null,
+        "village": "Kayu Raja",
+        "district": "Keritang",
+        "regency": "Indragiri Hilir",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. SARI HIJAU MUTIARA",
+            "sk": "SK. 378/Menhut-II/2008",
+            "areaHa": 20000
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.91975,
+          -0.55589
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-23",
+        "acq_time": "0553",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 17.43,
+        "daynight": "D",
+        "type": null,
+        "village": "Sungaigantang",
+        "district": "Kempas",
+        "regency": "Indragiri Hilir"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.21606,
+          -0.75466
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-23",
+        "acq_time": "0553",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 10.84,
+        "daynight": "D",
+        "type": null,
+        "village": "Metro",
+        "district": "Reteh",
+        "regency": "Indragiri Hilir"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.21859,
+          -0.75361
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-23",
+        "acq_time": "0553",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 21.23,
+        "daynight": "D",
+        "type": null,
+        "village": "Metro",
+        "district": "Reteh",
+        "regency": "Indragiri Hilir"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.03723,
+          -0.04179
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-23",
+        "acq_time": "0555",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 10.4,
+        "daynight": "D",
+        "type": null,
+        "village": "Simpang Gaung",
+        "district": "Gaung",
+        "regency": "Indragiri Hilir"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.03876,
+          -0.04113
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-23",
+        "acq_time": "0555",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 9.64,
+        "daynight": "D",
+        "type": null,
+        "village": "Simpang Gaung",
+        "district": "Gaung",
+        "regency": "Indragiri Hilir"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.03967,
+          -0.0473
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-23",
+        "acq_time": "0555",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 9.64,
+        "daynight": "D",
+        "type": null,
+        "village": "Simpang Gaung",
+        "district": "Gaung",
+        "regency": "Indragiri Hilir"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.27029,
+          -0.14153
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-23",
+        "acq_time": "0637",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 7.95,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.27078,
+          -0.14484
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-23",
+        "acq_time": "0637",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 12.07,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.27129,
+          -0.14814
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-23",
+        "acq_time": "0637",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 12.07,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.27666,
+          -0.13718
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-23",
+        "acq_time": "0637",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 10.67,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.27717,
+          -0.14048
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-23",
+        "acq_time": "0637",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 10.67,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.27866,
+          -0.15039
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-23",
+        "acq_time": "0637",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 13.71,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.28011,
+          -0.13666
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-23",
+        "acq_time": "0637",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 10.67,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.30618,
+          -0.1462
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-23",
+        "acq_time": "0637",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 12.32,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.90488,
+          -0.8234
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-23",
+        "acq_time": "0637",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 10.22,
+        "daynight": "D",
+        "type": null,
+        "village": "Kayu Raja",
+        "district": "Keritang",
+        "regency": "Indragiri Hilir",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. SARI HIJAU MUTIARA",
+            "sk": "SK. 378/Menhut-II/2008",
+            "areaHa": 20000
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.03879,
+          -0.04126
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-23",
+        "acq_time": "0637",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 19.83,
+        "daynight": "D",
+        "type": null,
+        "village": "Simpang Gaung",
+        "district": "Gaung",
+        "regency": "Indragiri Hilir"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.27094,
+          -0.14819
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-23",
+        "acq_time": "0714",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 12.66,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.2751,
+          -0.1513
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-23",
+        "acq_time": "0714",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 17.95,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.27625,
+          -0.15208
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-23",
+        "acq_time": "0714",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 17.49,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.27973,
+          -0.15056
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-23",
+        "acq_time": "0714",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 17.95,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.28348,
+          -0.13688
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-23",
+        "acq_time": "0714",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 23.01,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.30428,
+          -0.14783
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-23",
+        "acq_time": "0714",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 16.43,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.90324,
+          -0.81807
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-23",
+        "acq_time": "0714",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 13.9,
+        "daynight": "D",
+        "type": null,
+        "village": "Kayu Raja",
+        "district": "Keritang",
+        "regency": "Indragiri Hilir",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. SARI HIJAU MUTIARA",
+            "sk": "SK. 378/Menhut-II/2008",
+            "areaHa": 20000
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.03978,
+          -0.04374
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-23",
+        "acq_time": "0714",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 11.59,
+        "daynight": "D",
+        "type": null,
+        "village": "Simpang Gaung",
+        "district": "Gaung",
+        "regency": "Indragiri Hilir"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.30542,
+          -0.1333
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-23",
+        "acq_time": "0733",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 30.63,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.90469,
+          -0.81823
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-23",
+        "acq_time": "0733",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 13.78,
+        "daynight": "D",
+        "type": null,
+        "village": "Kayu Raja",
+        "district": "Keritang",
+        "regency": "Indragiri Hilir",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. SARI HIJAU MUTIARA",
+            "sk": "SK. 378/Menhut-II/2008",
+            "areaHa": 20000
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.39294,
+          0.69995
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-23",
+        "acq_time": "0907",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 326.03,
+        "frp": 25.48,
+        "daynight": "D",
+        "type": null,
+        "village": "Pemandang",
+        "district": "Rokan Iv Koto",
+        "regency": "Rokan Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          101.03549,
+          1.14241
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-23",
+        "acq_time": "0907",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 343.02,
+        "frp": 69.19,
+        "daynight": "D",
+        "type": null,
+        "village": "Buluh Apo",
+        "district": "Pinggir",
+        "regency": "Bengkalis",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. RIMBA ROKAN PERKASA",
+            "sk": "SK. 554/Menhut-II/2006",
+            "areaHa": 22930
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.06596,
+          -0.78257
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-23",
+        "acq_time": "0907",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 326.84,
+        "frp": 36.19,
+        "daynight": "D",
+        "type": null,
+        "village": "Semelinang Tebing/Anak Talang",
+        "district": "Peranap/Batang Cenaku",
+        "regency": "Indragiri Hulu"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.27041,
+          -0.14093
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-23",
+        "acq_time": "0907",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 330.8,
+        "frp": 47.24,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.28473,
+          -0.13882
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-23",
+        "acq_time": "0907",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 333.04,
+        "frp": 51.66,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.29916,
+          -0.13669
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-23",
+        "acq_time": "0907",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 340.03,
+        "frp": 76.17,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.30079,
+          -0.14777
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-23",
+        "acq_time": "0907",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 327.15,
+        "frp": 38.34,
+        "daynight": "D",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.81822,
+          -0.46359
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-23",
+        "acq_time": "0907",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 349.9,
+        "frp": 130.73,
+        "daynight": "D",
+        "type": null,
+        "village": "Kerta Jaya",
+        "district": "Kempas",
+        "regency": "Indragiri Hilir"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.82332,
+          -0.45999
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-23",
+        "acq_time": "0907",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 334.07,
+        "frp": 64.29,
+        "daynight": "D",
+        "type": null,
+        "village": "Telukkiambang",
+        "district": "Tempuling",
+        "regency": "Indragiri Hilir"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.90151,
+          -0.81676
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-23",
+        "acq_time": "0907",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 327.89,
+        "frp": 44.18,
+        "daynight": "D",
+        "type": null,
+        "village": "Kayu Raja",
+        "district": "Keritang",
+        "regency": "Indragiri Hilir",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. SARI HIJAU MUTIARA",
+            "sk": "SK. 378/Menhut-II/2008",
+            "areaHa": 20000
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.27718,
+          -0.13418
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-23",
+        "acq_time": "1418",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 316.75,
+        "frp": 46.45,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.27904,
+          -0.14719
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-23",
+        "acq_time": "1418",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 319.25,
+        "frp": 54.84,
+        "daynight": "N",
+        "type": null,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.81702,
+          -0.45787
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-23",
+        "acq_time": "1919",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 10.69,
+        "daynight": "N",
+        "type": null,
+        "village": "Kerta Jaya",
+        "district": "Kempas",
+        "regency": "Indragiri Hilir"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          101.04261,
+          1.14347
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-24",
+        "acq_time": "0620",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 8.66,
+        "daynight": "D",
+        "type": null,
+        "land_cover_class": 30,
+        "land_cover_label": "grassland",
+        "land_cover_source": "ESA WorldCover 2021 v200 COG",
+        "land_cover_checked_at": "2026-08-25T09:53:27.360188+00:00",
+        "persistent_thermal_candidate": false,
+        "thermal_detection_days_30d": 1,
+        "village": "Buluh Apo",
+        "district": "Pinggir",
+        "regency": "Bengkalis",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. RIMBA ROKAN PERKASA",
+            "sk": "SK. 554/Menhut-II/2006",
+            "areaHa": 22930
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          101.04289,
+          1.14124
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-24",
+        "acq_time": "0657",
+        "satellite": "N",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 9.3,
+        "daynight": "D",
+        "type": null,
+        "land_cover_class": 20,
+        "land_cover_label": "shrubland",
+        "land_cover_source": "ESA WorldCover 2021 v200 COG",
+        "land_cover_checked_at": "2026-08-25T09:53:27.360152+00:00",
+        "persistent_thermal_candidate": false,
+        "thermal_detection_days_30d": 1,
+        "village": "Buluh Apo",
+        "district": "Pinggir",
+        "regency": "Bengkalis",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. RIMBA ROKAN PERKASA",
+            "sk": "SK. 554/Menhut-II/2006",
+            "areaHa": 22930
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          101.81616,
+          0.33218
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-24",
+        "acq_time": "0714",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 13.27,
+        "daynight": "D",
+        "type": null,
+        "land_cover_class": 30,
+        "land_cover_label": "grassland",
+        "land_cover_source": "ESA WorldCover 2021 v200 COG",
+        "land_cover_checked_at": "2026-08-25T09:53:27.360171+00:00",
+        "persistent_thermal_candidate": false,
+        "thermal_detection_days_30d": 1,
+        "village": "Rantau Baru",
+        "district": "Pangkalan Kerinci",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "CV. RIAU BINA INSANI",
+            "sk": "522.21/IUPHHKHT/I/2002/001",
+            "areaHa": 4300
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          101.8169,
+          0.32718
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-24",
+        "acq_time": "0714",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 12.62,
+        "daynight": "D",
+        "type": null,
+        "land_cover_class": 30,
+        "land_cover_label": "grassland",
+        "land_cover_source": "ESA WorldCover 2021 v200 COG",
+        "land_cover_checked_at": "2026-08-25T09:53:27.360166+00:00",
+        "persistent_thermal_candidate": false,
+        "thermal_detection_days_30d": 1,
+        "village": "Rantau Baru",
+        "district": "Pangkalan Kerinci",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "CV. RIAU BINA INSANI",
+            "sk": "522.21/IUPHHKHT/I/2002/001",
+            "areaHa": 4300
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.90146,
+          -0.8034
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-24",
+        "acq_time": "0714",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 5.2,
+        "daynight": "D",
+        "type": null,
+        "land_cover_class": 10,
+        "land_cover_label": "tree cover",
+        "land_cover_source": "ESA WorldCover 2021 v200 COG",
+        "land_cover_checked_at": "2026-08-25T09:53:47.882286+00:00",
+        "persistent_thermal_candidate": false,
+        "thermal_detection_days_30d": 1,
+        "village": "Kayu Raja",
+        "district": "Keritang",
+        "regency": "Indragiri Hilir",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. SARI HIJAU MUTIARA",
+            "sk": "SK. 378/Menhut-II/2008",
+            "areaHa": 20000
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.90536,
+          -0.82989
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-24",
+        "acq_time": "0714",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 5.57,
+        "daynight": "D",
+        "type": null,
+        "land_cover_class": 30,
+        "land_cover_label": "grassland",
+        "land_cover_source": "ESA WorldCover 2021 v200 COG",
+        "land_cover_checked_at": "2026-08-25T09:53:47.882283+00:00",
+        "persistent_thermal_candidate": false,
+        "thermal_detection_days_30d": 1,
+        "village": "Kayu Raja",
+        "district": "Keritang",
+        "regency": "Indragiri Hilir",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. SARI HIJAU MUTIARA",
+            "sk": "SK. 378/Menhut-II/2008",
+            "areaHa": 20000
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.31791,
+          -0.14226
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-25",
+        "acq_time": "0559",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 9.55,
+        "daynight": "D",
+        "type": null,
+        "land_cover_class": 20,
+        "land_cover_label": "shrubland",
+        "land_cover_source": "ESA WorldCover 2021 v200 COG",
+        "land_cover_checked_at": "2026-08-25T09:53:47.882353+00:00",
+        "persistent_thermal_candidate": false,
+        "thermal_detection_days_30d": 1,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          101.03815,
+          1.14798
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-25",
+        "acq_time": "0601",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 9.24,
+        "daynight": "D",
+        "type": null,
+        "land_cover_class": 30,
+        "land_cover_label": "grassland",
+        "land_cover_source": "ESA WorldCover 2021 v200 COG",
+        "land_cover_checked_at": "2026-08-25T09:53:27.360198+00:00",
+        "persistent_thermal_candidate": false,
+        "thermal_detection_days_30d": 1,
+        "village": "Buluh Apo",
+        "district": "Pinggir",
+        "regency": "Bengkalis",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. RIMBA ROKAN PERKASA",
+            "sk": "SK. 554/Menhut-II/2006",
+            "areaHa": 22930
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          101.8637,
+          0.81503
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-25",
+        "acq_time": "0601",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 12.16,
+        "daynight": "D",
+        "type": null,
+        "land_cover_class": 10,
+        "land_cover_label": "tree cover",
+        "land_cover_source": "ESA WorldCover 2021 v200 COG",
+        "land_cover_checked_at": "2026-08-25T09:53:27.360194+00:00",
+        "persistent_thermal_candidate": false,
+        "thermal_detection_days_30d": 1,
+        "village": "Rantau Panjang",
+        "district": "Koto Gasib",
+        "regency": "Siak",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. SERAYA SUMBER LESTARI",
+            "sk": "SK. 22/Menhut-II/2007",
+            "areaHa": 18767
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.31659,
+          -0.14312
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-25",
+        "acq_time": "0843",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 328.09,
+        "frp": 20.33,
+        "daynight": "D",
+        "type": null,
+        "land_cover_class": 20,
+        "land_cover_label": "shrubland",
+        "land_cover_source": "ESA WorldCover 2021 v200 COG",
+        "land_cover_checked_at": "2026-08-25T09:53:47.882132+00:00",
+        "persistent_thermal_candidate": false,
+        "thermal_detection_days_30d": 1,
+        "village": "Kelurahan Kerumutan",
+        "district": "Kerumutan",
+        "regency": "Pelalawan",
+        "iuphhkHt2014": [
+          {
+            "name": "PT. MERBAU PELALAWAN LESTARI",
+            "sk": "SK. 69/Menhut-II/2007",
+            "areaHa": 5970
+          }
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.05189,
+          -0.47879
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-08-25",
+        "acq_time": "0843",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 327.48,
+        "frp": 19.93,
+        "daynight": "D",
+        "type": null,
+        "land_cover_class": 10,
+        "land_cover_label": "tree cover",
+        "land_cover_source": "ESA WorldCover 2021 v200 COG",
+        "land_cover_checked_at": "2026-08-25T09:53:47.882129+00:00",
+        "persistent_thermal_candidate": false,
+        "thermal_detection_days_30d": 1,
+        "village": "Sungairukam",
+        "district": "Enok",
+        "regency": "Indragiri Hilir"
+      }
+    }
+  ]
+}

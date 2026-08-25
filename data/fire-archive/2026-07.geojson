@@ -1,0 +1,56 @@
+{
+  "type": "FeatureCollection",
+  "month": "2026-07",
+  "province": "Riau",
+  "updatedAt": "2026-08-25T10:04:28.713Z",
+  "source": "NASA FIRMS daily high-confidence snapshot archive",
+  "featureCount": 2,
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          101.09084,
+          2.14563
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-07-31",
+        "acq_time": "1408",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 325.3,
+        "frp": 24.65,
+        "daynight": "N",
+        "type": null,
+        "village": "Darussalam",
+        "district": "Sinaboi",
+        "regency": "Rokan Hilir"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          101.10048,
+          2.14694
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-07-31",
+        "acq_time": "1408",
+        "satellite": "Terra",
+        "confidence": "high",
+        "brightness": 318.59,
+        "frp": 16.55,
+        "daynight": "N",
+        "type": null,
+        "village": "Darussalam",
+        "district": "Sinaboi",
+        "regency": "Rokan Hilir"
+      }
+    }
+  ]
+}
