@@ -204,14 +204,28 @@ main.container{width:100%;max-width:none;padding:0}
 /* Compose tint and photo in one background so legacy pseudo-elements cannot bypass it. */
 #programme-overview #category-grid .programme-card::before{display:none}
 #programme-overview #category-grid .programme-card:nth-child(1){
-  background-image:linear-gradient(145deg,rgba(10,105,166,.94),rgba(4,49,91,.98)),url("https://drive.google.com/thumbnail?id=1fqHSgbsc2Dz3at0fDgHTSZYFa56gy4HV&sz=w1200");
+  background-image:linear-gradient(145deg,rgba(10,105,166,.84),rgba(4,49,91,.92)),url("https://drive.google.com/thumbnail?id=1fqHSgbsc2Dz3at0fDgHTSZYFa56gy4HV&sz=w1200");
 }
 #programme-overview #category-grid .programme-card:nth-child(2){
-  background-image:linear-gradient(145deg,rgba(132,82,43,.94),rgba(67,39,24,.98)),url("https://drive.google.com/thumbnail?id=1OzFSxSwbg9BtKyOAK8-WpmaqsWCw4MO6&sz=w1200");
+  background-image:linear-gradient(145deg,rgba(132,82,43,.84),rgba(67,39,24,.92)),url("https://drive.google.com/thumbnail?id=1OzFSxSwbg9BtKyOAK8-WpmaqsWCw4MO6&sz=w1200");
 }
 #programme-overview #category-grid .programme-card:nth-child(3){
-  background-image:linear-gradient(145deg,rgba(190,91,43,.94),rgba(105,48,27,.98)),url("https://drive.google.com/thumbnail?id=1UGITzG6XvUE9fFJFmPFNkEqq6pgSCyRs&sz=w1200");
+  background-image:linear-gradient(145deg,rgba(190,91,43,.84),rgba(105,48,27,.92)),url("https://drive.google.com/thumbnail?id=1UGITzG6XvUE9fFJFmPFNkEqq6pgSCyRs&sz=w1200");
 }
 #programme-overview #category-grid .programme-card:nth-child(4){
-  background-image:linear-gradient(145deg,rgba(48,125,72,.94),rgba(22,66,43,.98)),url("https://drive.google.com/thumbnail?id=1O3i6D__XrYTwn-5QKM6MTruZaK4Ic6pz&sz=w1200");
+  background-image:linear-gradient(145deg,rgba(48,125,72,.84),rgba(22,66,43,.92)),url("https://drive.google.com/thumbnail?id=1O3i6D__XrYTwn-5QKM6MTruZaK4Ic6pz&sz=w1200");
 }
+
+/* Balanced type scale across short and long translated values. */
+#programme-overview #category-grid .programme-card header h3{font-size:clamp(21px,1.35vw,26px);letter-spacing:-.035em}
+#programme-overview #category-grid .programme-compare strong{font-size:18px;line-height:1.1;letter-spacing:-.025em}
+#programme-overview #category-grid .programme-compare__value.is-current strong{
+  max-width:58%;
+  font-size:clamp(24px,1.55vw,29px);
+  line-height:1.05;
+  letter-spacing:-.045em;
+  overflow-wrap:anywhere;
+}
+#programme-overview #category-grid .programme-compare__value.is-current small{max-width:40%}
+#programme-overview #category-grid .programme-support-grid strong{font-size:15px;line-height:1.15}
+@media(max-width:680px){#programme-overview #category-grid .programme-compare__value.is-current strong{max-width:62%;font-size:26px}}
