@@ -298,6 +298,38 @@ main.container{width:100%;max-width:none;padding:0}
   .hero-programmes{margin-top:62px}
 }
 
+/* Final desktop density pass for scaled displays and laptop viewports. */
+@media(min-width:1051px){
+  .dashboard-hero .hero-copy{
+    min-height:390px;
+    padding-top:24px;
+    padding-bottom:24px;
+  }
+  .dashboard-hero .hero-copy h1{
+    max-width:560px;
+    margin-top:12px;
+    font-size:clamp(44px,3.8vw,58px);
+    line-height:.91;
+  }
+  .dashboard-hero .hero-description{
+    max-width:610px;
+    margin-top:14px;
+    font-size:14px;
+    line-height:1.42;
+  }
+  .dashboard-hero .hero-tagline{display:none}
+  .dashboard-hero .hero-actions{gap:8px;margin-top:16px}
+  .dashboard-hero .hero-actions .btn{
+    min-height:36px;
+    padding:7px 13px;
+    font-size:12px;
+  }
+  .home-evidence-gallery{height:390px;min-height:390px}
+  .hero-data-summary{margin-top:-22px;transform:translateY(22px)}
+  .hero-data-summary__grid a{min-height:82px;padding-top:11px;padding-bottom:11px}
+  .hero-programmes{margin-top:52px}
+}
+
 /* Compact aligned rhythm: same rails, substantially less empty vertical space. */
 @media(min-width:1180px){
   #programme-overview #category-grid .programme-card{
