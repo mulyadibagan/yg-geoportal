@@ -296,6 +296,19 @@
     return 0;
   }
 
+  function seedlingCountFromNarrative(props) {
+    const narrative = [
+      firstValue(props, ["description", "Description", "Keterangan", "Catatan"]),
+      firstValue(props, ["Nama_Objek", "title", "Nama_Program", "Program"])
+    ].join(" ");
+    let highest = 0;
+    for (const match of narrative.matchAll(/(\d{1,3}(?:[.\s]\d{3})+|\d+)\s*(?:bibit|seedlings?)/gi)) {
+      const value = Number(String(match[1]).replace(/[.\s]/g, ""));
+      if (Number.isFinite(value)) highest = Math.max(highest, value);
+    }
+    return highest;
+  }
+
   function parseObject(value) {
     if (!value) return {};
     if (typeof value === "object" && !Array.isArray(value)) return value;
@@ -1137,6 +1150,7 @@
       mineral: { area: 0, seedlings: 0, towers: 0, signs: 0, plots: 0 },
       capacity: { trainings: 0, participants: 0, villages: new Set(), groups: new Set() }
     };
+    let mineralProgrammeSeedlings = 0;
     if (capacitySummary.loaded) {
       programmeMetrics.capacity = capacitySummary;
       (capacitySummary.records || []).forEach(record => {
@@ -1351,7 +1365,13 @@
 
       if (isMineral) {
         programmeMetrics.mineral.area += area;
-        programmeMetrics.mineral.seedlings += seedlings;
+        if (!isObservation) {
+          programmeMetrics.mineral.seedlings += seedlings;
+          mineralProgrammeSeedlings = Math.max(
+            mineralProgrammeSeedlings,
+            seedlingCountFromNarrative(props)
+          );
+        }
         if (/menara air|tower air|water tower/.test(text)) programmeMetrics.mineral.towers += 1;
         if (/plang restorasi|restoration sign/.test(text)) programmeMetrics.mineral.signs += 1;
         if (/plot ukur permanen|\bpup\b/.test(text)) programmeMetrics.mineral.plots += 1;
@@ -1609,7 +1629,10 @@
     });
 
     const mineralArea = programmeMetrics.mineral.area;
-    const mineralSeedlings = programmeMetrics.mineral.seedlings;
+    const mineralSeedlings = Math.max(
+      programmeMetrics.mineral.seedlings,
+      mineralProgrammeSeedlings
+    );
     const revegetationArea = programmeMetrics.mangrove.area +
       programmeMetrics.peat.area + mineralArea;
     const totalRestorationArea =
@@ -1799,7 +1822,7 @@
         status: "Data tersinkron",
         updated: dashboardUpdateDate,
         rows: [
-          ["Total Bibit Ditanam", programmeMetrics.mineral.seedlings],
+          ["Total Bibit Ditanam", mineralSeedlings],
           ["Menara Air", programmeMetrics.mineral.towers],
           ["Plot Ukur Permanen", programmeMetrics.mineral.plots]
         ]
