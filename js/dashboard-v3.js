@@ -2,7 +2,7 @@
   "use strict";
 
   const API = "https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec?page=objects";
-  const DASHBOARD_SNAPSHOT_URL = "https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/snapshots/current/dashboard.json";
+  const DASHBOARD_SNAPSHOT_URL = "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/snapshots/current/dashboard.json";
   const CALLBACK = "ygDashboardV3Callback";
   const DASHBOARD_CACHE_KEY = "ygDashboardV3Cache_v4_20260825_synced_cards1";
   const DASHBOARD_CACHE_MAX_AGE_MS = 1000 * 60 * 60 * 24 * 7;

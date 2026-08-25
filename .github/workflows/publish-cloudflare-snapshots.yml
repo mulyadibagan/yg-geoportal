@@ -1,4 +1,4 @@
-name: Publish Cloudflare staging snapshots
+name: Publish Cloudflare snapshots
 
 on:
   workflow_dispatch:
@@ -54,6 +54,10 @@ jobs:
           npx wrangler r2 object put "yg-webgis-public-snapshots-staging/snapshots/${SNAPSHOT_VERSION}/objects.json" --remote --file ../../data/master-database-snapshot.json --content-type application/json
           npx wrangler r2 object put "yg-webgis-public-snapshots-staging/snapshots/current/dashboard.json" --remote --file ../../data/dashboard-summary-snapshot.json --content-type application/json
           npx wrangler r2 object put "yg-webgis-public-snapshots-staging/snapshots/current/objects.json" --remote --file ../../data/master-database-snapshot.json --content-type application/json
+          npx wrangler r2 object put "yg-webgis-public-snapshots/snapshots/${SNAPSHOT_VERSION}/dashboard.json" --remote --file ../../data/dashboard-summary-snapshot.json --content-type application/json
+          npx wrangler r2 object put "yg-webgis-public-snapshots/snapshots/${SNAPSHOT_VERSION}/objects.json" --remote --file ../../data/master-database-snapshot.json --content-type application/json
+          npx wrangler r2 object put "yg-webgis-public-snapshots/snapshots/current/dashboard.json" --remote --file ../../data/dashboard-summary-snapshot.json --content-type application/json
+          npx wrangler r2 object put "yg-webgis-public-snapshots/snapshots/current/objects.json" --remote --file ../../data/master-database-snapshot.json --content-type application/json
       - name: Build and upload manifest last
         shell: bash
         working-directory: cloudflare/yg-webgis-public-data
@@ -64,12 +68,20 @@ jobs:
           node scripts/build-manifest.mjs "$SNAPSHOT_VERSION"
           npx wrangler r2 object put "yg-webgis-public-snapshots-staging/manifests/${SNAPSHOT_VERSION}.json" --remote --file tmp/current-manifest.json --content-type application/json
           npx wrangler r2 object put "yg-webgis-public-snapshots-staging/manifests/current.json" --remote --file tmp/current-manifest.json --content-type application/json
+          npx wrangler r2 object put "yg-webgis-public-snapshots/manifests/${SNAPSHOT_VERSION}.json" --remote --file tmp/current-manifest.json --content-type application/json
+          npx wrangler r2 object put "yg-webgis-public-snapshots/manifests/current.json" --remote --file tmp/current-manifest.json --content-type application/json
       - name: Deploy staging Worker
         working-directory: cloudflare/yg-webgis-public-data
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
         run: npx wrangler deploy --env staging
+      - name: Deploy production Worker
+        working-directory: cloudflare/yg-webgis-public-data
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        run: npx wrangler deploy --env production
       - name: Smoke test staging gateway
         working-directory: cloudflare/yg-webgis-public-data
         run: npm run smoke:staging

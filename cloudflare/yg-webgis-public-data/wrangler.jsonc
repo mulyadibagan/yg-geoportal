@@ -37,7 +37,7 @@
     },
     "production": {
       "name": "yg-webgis-public-data",
-      "workers_dev": false,
+      "workers_dev": true,
       "vars": {
         "ENVIRONMENT": "production",
         "GITHUB_ORIGIN": "https://webgisyg.id",
