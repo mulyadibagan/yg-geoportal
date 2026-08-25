@@ -468,6 +468,49 @@ main.container{width:100%;max-width:none;padding:0}
 }
 #partnerships #donor-grid .funding-card .donor-status-badge{align-self:end;margin:0}
 
+/* Final measured type scale and fixed rails for six narrow columns. */
+#partnerships .section-head h2{font-size:34px!important;line-height:1;letter-spacing:-.03em}
+#partnerships #donor-grid .funding-card{
+  display:flex!important;
+  min-height:374px;
+  flex-direction:column!important;
+  gap:0!important;
+}
+#partnerships #donor-grid .funding-card .category-icon{
+  flex:0 0 54px;
+}
+#partnerships #donor-grid .funding-card>span{
+  display:block;
+  flex:0 0 72px;
+  padding-top:9px;
+  font-size:12px!important;
+  line-height:1.22!important;
+}
+#partnerships #donor-grid .funding-card>strong{
+  display:block;
+  flex:0 0 42px;
+  width:max-content;
+  max-width:100%;
+  font-size:10.5px!important;
+  line-height:1.2!important;
+}
+#partnerships #donor-grid .funding-card>small{
+  display:block;
+  flex:0 0 72px;
+  width:100%;
+  padding-top:11px;
+  box-sizing:border-box;
+  font-size:10px!important;
+  line-height:1.35!important;
+}
+#partnerships #donor-grid .funding-card .donor-status-badge{
+  width:100%;
+  margin-top:auto!important;
+  font-size:10px!important;
+  line-height:1.2!important;
+}
+#partnerships #donor-grid .funding-card>*:last-child{font-size:10px!important;line-height:1.2!important}
+
 /* Final desktop density pass for scaled displays and laptop viewports. */
 @media(min-width:1051px){
   .dashboard-hero .hero-copy{
