@@ -1,0 +1,149 @@
+/* Funding partners — editorial card grid */
+#partnerships{
+  position:relative;
+  max-width:1280px;
+  margin:28px auto 76px;
+  padding:48px 32px 34px;
+  overflow:hidden;
+  background:linear-gradient(135deg,#f2f1e9 0%,#f7f5ee 58%,#edf3ee 100%);
+}
+#partnerships:before{
+  position:absolute;
+  top:0;right:-120px;
+  width:420px;height:420px;
+  border:1px solid rgba(8,118,94,.10);
+  border-radius:50%;
+  box-shadow:0 0 0 72px rgba(8,118,94,.025),0 0 0 144px rgba(8,118,94,.018);
+  content:"";
+  pointer-events:none;
+}
+#partnerships .section-head{position:relative;z-index:1;margin-bottom:26px}
+#partnerships .section-head>div{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:24px;width:100%}
+#partnerships .section-head h2{margin:0;font-family:"DM Serif Display",serif;font-size:clamp(36px,4vw,54px);font-weight:400;letter-spacing:-.035em;line-height:1;color:#123b32}
+#partnerships .donor-status-legend{display:flex;align-items:center;gap:18px;margin:0 0 7px;color:#687b74;font-size:12px}
+#partnerships .donor-status-legend span{display:inline-flex;align-items:center;gap:7px}
+#partnerships .donor-status-legend i{width:8px;height:8px;border-radius:50%}
+#partnerships .donor-status-legend .is-active{background:#0b8c67}
+#partnerships .donor-status-legend .is-complete{background:#95a19c}
+
+#donor-grid{
+  position:relative;z-index:1;
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:14px!important;
+  background:transparent!important;
+}
+#donor-grid .funding-card{
+  position:relative;
+  display:grid;
+  grid-template-rows:88px auto auto 1fr auto;
+  min-height:310px!important;
+  padding:0 24px 22px!important;
+  overflow:hidden;
+  border:1px solid rgba(18,59,50,.09)!important;
+  border-radius:18px!important;
+  background:rgba(255,255,255,.88)!important;
+  box-shadow:0 10px 28px rgba(20,53,43,.055)!important;
+  text-align:left;
+  backdrop-filter:blur(8px);
+  transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease!important;
+}
+#donor-grid .funding-card:hover{
+  transform:translateY(-4px);
+  border-color:rgba(8,118,94,.24)!important;
+  box-shadow:0 18px 40px rgba(20,53,43,.11)!important;
+}
+#donor-grid .funding-card:before{
+  position:absolute;top:0;right:0;left:0;height:4px;
+  background:linear-gradient(90deg,#0b8265,#47a894,#e4b94f);
+  content:"";
+}
+#donor-grid .funding-card .category-icon{
+  display:flex!important;
+  align-items:center;
+  justify-content:flex-start;
+  width:100%!important;
+  height:88px!important;
+  margin:0!important;
+  padding:18px 0 12px!important;
+  border:0!important;
+  background:transparent!important;
+}
+#donor-grid .funding-card .category-icon img{
+  display:block;
+  width:auto;
+  max-width:190px;
+  height:auto;
+  max-height:54px;
+  object-fit:contain;
+  object-position:left center;
+  filter:none;
+}
+#donor-grid .funding-card>span{
+  display:block;
+  min-height:52px;
+  margin:0!important;
+  color:#123b32!important;
+  font-family:"DM Sans",sans-serif;
+  font-size:18px!important;
+  font-weight:700!important;
+  letter-spacing:-.02em;
+  line-height:1.25;
+}
+#donor-grid .funding-card>strong{
+  display:inline-flex;
+  align-items:center;
+  width:max-content;
+  margin:8px 0 0!important;
+  padding:5px 9px;
+  border-radius:999px;
+  background:#e7f3ee;
+  color:#08765e!important;
+  font-size:11px!important;
+  font-weight:800;
+  letter-spacing:.03em;
+  line-height:1.1;
+}
+#donor-grid .funding-card>small{
+  display:block;
+  min-height:44px;
+  margin:14px 0 0!important;
+  padding:14px 0 0;
+  border-top:1px solid #e1e8e4;
+  color:#687a73!important;
+  font-size:12px!important;
+  line-height:1.45;
+}
+#donor-grid .funding-card .funding-card-status,
+#donor-grid .funding-card .funding-status,
+#donor-grid .funding-card .funding-evidence,
+#donor-grid .funding-card .funding-badge,
+#donor-grid .funding-card [class*="status"],
+#donor-grid .funding-card [class*="evidence"]{
+  max-width:100%;
+}
+#donor-grid .funding-card .funding-card-logo{justify-content:flex-start!important}
+
+/* Dynamically appended chips / badges */
+#donor-grid .funding-card>span~span,
+#donor-grid .funding-card>small~span,
+#donor-grid .funding-card>small~strong{
+  align-self:end;
+}
+#donor-grid .funding-card button,
+#donor-grid .funding-card .badge,
+#donor-grid .funding-card .chip{
+  border-radius:999px!important;
+}
+
+@media(max-width:1050px){
+  #donor-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:720px){
+  #partnerships{margin:14px 14px 48px;padding:34px 18px 20px;border-radius:18px}
+  #partnerships .section-head>div{grid-template-columns:1fr;gap:12px}
+  #partnerships .donor-status-legend{flex-wrap:wrap}
+  #donor-grid{grid-template-columns:1fr!important;gap:10px!important}
+  #donor-grid .funding-card{min-height:270px!important;padding:0 20px 20px!important}
+  #donor-grid .funding-card>span{min-height:auto;font-size:17px!important}
+}
