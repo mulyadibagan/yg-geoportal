@@ -1612,7 +1612,10 @@
     const mineralSeedlings = programmeMetrics.mineral.seedlings;
     const revegetationArea = programmeMetrics.mangrove.area +
       programmeMetrics.peat.area + mineralArea;
-    const totalRestorationArea = peatRewettingArea + revegetationArea;
+    const totalRestorationArea =
+      Math.max(PROGRAMME_BASELINES.mangrove.value, programmeMetrics.mangrove.area) +
+      (PROGRAMME_BASELINES.peat.value + peatRestorationAddition) +
+      Math.max(PROGRAMME_BASELINES.mineral.value, mineralArea);
     const totalPlantedSeedlings = programmeMetrics.mangrove.seedlings +
       programmeMetrics.peat.coffee + programmeMetrics.peat.forest +
       mineralSeedlings;
