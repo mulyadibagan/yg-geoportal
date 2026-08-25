@@ -622,6 +622,10 @@ function toDirectDriveUrl(url){
         ? " (" + item.activityDate + ")"
         : "";
       rows += row("Donor perbaikan" + dateLabel, item.donor);
+      rows += row("Pelaksana perbaikan", item.implementer);
+      rows += row("Kondisi setelah perbaikan", item.conditionAfter);
+      rows += row("Fungsi setelah perbaikan", item.functionAfter);
+      rows += row("Diverifikasi", item.verifiedAt);
     });
 
     let gallery = "";
@@ -778,7 +782,11 @@ function toDirectDriveUrl(url){
           props._ygMaintenanceHistory.push({
             reportId: update.reportId,
             activityDate: update.activityDate || "",
-            donor: information.donor
+            donor: information.donor,
+            implementer: information.implementer || "",
+            conditionAfter: information.conditionAfter || "",
+            functionAfter: information.functionAfter || "",
+            verifiedAt: update.verifiedAt || update.publishedAt || ""
           });
         }
       }

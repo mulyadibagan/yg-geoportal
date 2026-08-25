@@ -2638,7 +2638,7 @@ L.control.scale({
 
   async function loadLocalSnapshot() {
     const settled = await Promise.allSettled(LOCAL_FALLBACK_LAYERS.map(async layerId => {
-      const response = await fetch("data/" + layerId + ".geojson?v=20260812-local-fallback1", {
+      const response = await fetch("data/" + layerId + ".geojson?v=20260825-maintenance-history2", {
         cache: "force-cache"
       });
       if (!response.ok) throw new Error(layerId + " HTTP " + response.status);
