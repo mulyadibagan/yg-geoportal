@@ -3,6 +3,7 @@
   if(!card)return;
   fetch('data/fire-monthly/2026-07.json?v=1').then(function(r){if(!r.ok)throw Error('report');return r.json()}).then(function(data){
     var s=data.summary||{};
+    if(!Number(s.hotspots))throw Error('empty report');
     card.querySelector('[data-monthly-hotspots]').textContent=Number(s.hotspots||0).toLocaleString('id-ID');
     card.querySelector('[data-monthly-villages]').textContent=Number(s.villages||0).toLocaleString('id-ID');
     card.querySelector('[data-monthly-companies]').textContent=Number(s.companies||0).toLocaleString('id-ID');
