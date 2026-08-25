@@ -630,6 +630,12 @@
   var key = "yg-home-fast-snapshot-v1";
   var summary = document.querySelector(".hero-data-summary__grid");
   var programmes = document.getElementById("category-grid");
+  var fallbackSummary = ["588,43", "1.125", "14", "4"];
+  if (summary) {
+    Array.prototype.forEach.call(summary.querySelectorAll("strong"), function (value, index) {
+      if (fallbackSummary[index] && value.textContent.trim() === "-") value.textContent = fallbackSummary[index];
+    });
+  }
   try {
     var cached = JSON.parse(localStorage.getItem(key) || "null");
     if (cached && cached.summary && cached.programmes) {
