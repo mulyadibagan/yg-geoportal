@@ -9,6 +9,17 @@
       : value;
   }
 
+  function setPhotoFallbacks(image, urls) {
+    var candidates = (urls || []).map(driveThumbnail).filter(Boolean);
+    var index = 0;
+    if (!image || !candidates.length) return;
+    image.onerror = function () {
+      index += 1;
+      if (index < candidates.length) image.src = candidates[index];
+    };
+    image.src = candidates[0];
+  }
+
   function configureEvidenceCards() {
     var gallery = document.querySelector('.home-evidence-gallery');
     if (!gallery) return;
@@ -24,7 +35,11 @@
       if (nurseryImage) {
         nurseryImage.setAttribute('data-home-photo', 'HOME-NURSERY-SEPAHAT');
         nurseryImage.alt = 'Dokumentasi rumah bibit Sepahat';
-        nurseryImage.src = driveThumbnail('https://drive.google.com/file/d/11qdYp81VlGM88NU1k30FRUT_3snDReO-/view?usp=drivesdk');
+        setPhotoFallbacks(nurseryImage, [
+          'https://drive.google.com/file/d/12M-0UoJ3zVkyd8JJZgefXx1uQpGcCgp9/view?usp=drivesdk',
+          'https://drive.google.com/file/d/1FUZWggOHfixJy7tNlzJakOrOgOspBPlK/view?usp=drivesdk',
+          'https://drive.google.com/file/d/1w-Eq1tnS_ONKspmyHbrJWIPIE_hINoex/view?usp=drivesdk'
+        ]);
       }
       if (nurseryTitle) nurseryTitle.textContent = 'Rumah bibit Sepahat';
       if (nurseryMeta) nurseryMeta.textContent = 'Sepahat';
