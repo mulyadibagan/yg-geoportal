@@ -39,7 +39,7 @@
       var nurseryTitle = cards[1].querySelector('b');
       var nurseryMeta = cards[1].querySelector('small');
 
-      cards[1].href = 'webgis.html?search=Sepahat&layer=nursery_mangrove';
+      cards[1].href = 'webgis.html?object=NURSERY-NURSERY-SEPAHAT-2026-152652-633';
       if (nurseryImage) {
         nurseryImage.setAttribute('data-home-photo', 'HOME-NURSERY-SEPAHAT');
         nurseryImage.alt = 'Dokumentasi rumah bibit Sepahat';
