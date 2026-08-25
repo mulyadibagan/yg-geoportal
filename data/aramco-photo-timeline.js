@@ -24,6 +24,7 @@ window.YG_ARAMCO_PHOTO_TIMELINE = [
 
   {id:'kp-p2-2025',village:'Kelapa Pati',phase:'Fase 2',series:'Area Penanaman Fase 2',date:'2025-05-18',stage:'Monitoring',fileId:'1IBnpsSOk-04ArEpafxXcTIcjaVwSv-CT',caption:'Monitoring 18 Mei 2025',verified:true},
   {id:'kp-p2-2026',village:'Kelapa Pati',phase:'Fase 2',series:'Area Penanaman Fase 2',date:'2026-02-03',stage:'Monitoring',fileId:'1b8CyleF-6g84QRqtKdW2IJcOupSiDl1v',caption:'Monitoring 3 Februari 2026',verified:true},
+  {id:'kp-p2-2026-08-20',village:'Kelapa Pati',phase:'Fase 2',series:'Area Penanaman Fase 2',date:'2026-08-20',stage:'Monitoring',fileId:'1OwqUmdPI2EU8wzSJkBQ4jQePTIk5u29O',caption:'Perkembangan penanaman mangrove Kelapa Pati pada 20 Agustus 2026',verified:true},
   {id:'kp-p3-2025',village:'Kelapa Pati',phase:'Fase 3',series:'Area Penanaman Fase 3',date:'2025-10-01',stage:'Sebelum',fileId:'1yI3Aby5shVZMj2vQWLNgrsKLhD6Y62Fl',caption:'Kondisi area penanaman Oktober 2025',verified:true},
 
   {id:'sp-p3-2025a',village:'Sepahat',phase:'Fase 3',series:'Area Penanaman Fase 3',date:'2025-01-01',stage:'Sebelum',fileId:'1GjS1nl2mSJS6CvK4ebn8Ek7-kdcXLW7u',caption:'Kondisi awal area penanaman',verified:true},
