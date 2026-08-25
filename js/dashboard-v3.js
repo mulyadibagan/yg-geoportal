@@ -1104,10 +1104,7 @@
     }
 
     const capacitySummary = await loadCapacitySummary(data.capacitySources);
-    const snapshotFeatures = data.dashboardSnapshotVersion === 1
-      ? data.features
-      : await mergeOfficialLayers(data.features);
-    const mergedFeatures = snapshotFeatures
+    const mergedFeatures = (await mergeOfficialLayers(data.features))
       .map(applyPematangDukuDonorPolicy)
       .map(applyAramcoCoastalAssetPolicy)
       .map(applyExternalPeatInfrastructureDonorPolicy)
