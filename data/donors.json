@@ -336,17 +336,32 @@
               {
                 "id": "ACT-ARAMCO-P3-WAVE",
                 "name": "Nibung-based wave breaker in Kelapa Pati",
-                "indicator": "100 metres constructed"
+                "indicator": "100 metres constructed",
+                "target": 100,
+                "realization": 100,
+                "unit": "m",
+                "mapUrl": "webgis.html?layer=apo&village=Kelapa+Pati",
+                "mapLabel": "buka garis wave breaker"
               },
               {
                 "id": "ACT-ARAMCO-P3-NURSERY-SP",
                 "name": "Community nursery in Sepahat",
-                "indicator": "1 nursery established with care and maintenance training"
+                "indicator": "1 nursery established with care and maintenance training",
+                "target": 1,
+                "realization": 1,
+                "unit": "nursery",
+                "mapUrl": "webgis.html?layer=nursery_mangrove&village=Sepahat",
+                "mapLabel": "buka titik rumah bibit"
               },
               {
                 "id": "ACT-ARAMCO-P3-NURSERY-TK",
                 "name": "Community nursery in Tanjung Kuras",
-                "indicator": "1 nursery established with care and maintenance training"
+                "indicator": "1 nursery established with care and maintenance training",
+                "target": 1,
+                "realization": 1,
+                "unit": "nursery",
+                "mapUrl": "webgis.html?layer=nursery_mangrove&village=Tanjung+Kuras",
+                "mapLabel": "buka titik rumah bibit"
               }
             ]
           },
