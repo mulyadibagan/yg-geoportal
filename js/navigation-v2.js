@@ -1,15 +1,29 @@
 (function(){
   'use strict';
 
-  function ensureAutoI18n(){
-    if(window.YG_I18N_AUTO_READY || document.querySelector('script[data-yg-i18n-auto]')) return;
-    var script=document.createElement('script');
-    script.src='js/i18n-auto.js?v=20260825-global1';
-    script.async=false;
-    script.setAttribute('data-yg-i18n-auto','1');
-    document.head.appendChild(script);
+  function isEnglish(){
+    if(window.YG_I18N&&window.YG_I18N.language)return window.YG_I18N.language==='en';
+    try{return localStorage.getItem('yg-language')==='en';}catch(error){return document.documentElement.lang==='en';}
   }
-  ensureAutoI18n();
+
+  function ensureAutoI18n(){
+    if(!isEnglish())return;
+    if(window.YG_I18N_AUTO_READY || document.querySelector('script[data-yg-i18n-auto]')) return;
+    var load=function(){
+      if(window.YG_I18N_AUTO_READY || document.querySelector('script[data-yg-i18n-auto]')) return;
+      var script=document.createElement('script');
+      script.src='js/i18n-auto.js?v=20260825-global2';
+      script.async=true;
+      script.setAttribute('data-yg-i18n-auto','1');
+      document.head.appendChild(script);
+    };
+    if('requestIdleCallback' in window) requestIdleCallback(load,{timeout:1200});
+    else setTimeout(load,300);
+  }
+
+  window.addEventListener('yg:languagechange',function(event){
+    if(event&&event.detail&&event.detail.language==='en')ensureAutoI18n();
+  });
 
   function applyStaffAccount(nav){
     var link=nav.querySelector('a[href="staff-login.html"]');
@@ -73,6 +87,8 @@
         });
       });
     });
+
+    ensureAutoI18n();
 
     document.addEventListener('click',function(event){
       document.querySelectorAll('[data-yg-navigation]').forEach(function(nav){
