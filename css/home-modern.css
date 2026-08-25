@@ -229,3 +229,38 @@ main.container{width:100%;max-width:none;padding:0}
 #programme-overview #category-grid .programme-compare__value.is-current small{max-width:40%}
 #programme-overview #category-grid .programme-support-grid strong{font-size:15px;line-height:1.15}
 @media(max-width:680px){#programme-overview #category-grid .programme-compare__value.is-current strong{max-width:62%;font-size:26px}}
+
+/* Shared internal rhythm keeps every card on the same horizontal rails. */
+@media(min-width:1180px){
+  #programme-overview #category-grid .programme-card{
+    display:grid;
+    grid-template-rows:116px minmax(286px,1fr) 112px 34px;
+    align-items:stretch;
+  }
+  #programme-overview #category-grid .programme-card header{
+    min-height:0;
+    height:100%;
+    box-sizing:border-box;
+  }
+  #programme-overview #category-grid .programme-compare{
+    min-height:0;
+    height:100%;
+    grid-template-rows:126px 1fr;
+    box-sizing:border-box;
+  }
+  #programme-overview #category-grid .programme-compare__value:not(.is-current){
+    display:flex;
+    min-width:0;
+    flex-direction:column;
+    justify-content:flex-end;
+  }
+  #programme-overview #category-grid .programme-compare__value:not(.is-current) small{
+    display:flex;
+    min-height:34px;
+    align-items:flex-end;
+  }
+  #programme-overview #category-grid .programme-compare__operator{align-self:end;margin-bottom:4px}
+  #programme-overview #category-grid .programme-compare__value.is-current{align-self:stretch}
+  #programme-overview #category-grid .programme-support-grid{height:100%;box-sizing:border-box}
+  #programme-overview #category-grid .programme-card__meta{align-self:end;margin-top:0}
+}
