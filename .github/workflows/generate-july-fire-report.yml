@@ -1,0 +1,41 @@
+name: Generate July 2026 Riau Fire Report
+
+on:
+  push:
+    branches: [main]
+    paths: [.github/workflows/generate-july-fire-report.yml]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fire-monthly-report-main
+  cancel-in-progress: false
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+      - name: Generate July report
+        env:
+          FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
+        run: node scripts/generate_fire_monthly_report.mjs --month 2026-07
+      - name: Publish report snapshot
+        run: |
+          cp data/fire-monthly/2026-07.json /tmp/2026-07.json
+          git pull --rebase origin main
+          mkdir -p data/fire-monthly
+          cp /tmp/2026-07.json data/fire-monthly/2026-07.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/fire-monthly/2026-07.json
+          git diff --cached --quiet && exit 0
+          git commit -m "data: publish July 2026 Riau fire report"
+          git push origin HEAD:main
