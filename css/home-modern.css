@@ -468,6 +468,20 @@ main.container{width:100%;max-width:none;padding:0}
 #programme-overview #category-grid .programme-loading strong{width:66%;height:32px}
 #programme-overview #category-grid .programme-loading small{width:30%;height:8px}
 @keyframes programme-loading-pulse{0%,100%{opacity:.45}50%{opacity:.9}}
+
+/* Total-only cards no longer need the former baseline comparison height. */
+@media(min-width:1180px){
+  #programme-overview #category-grid .programme-card{
+    grid-template-rows:82px 126px 98px 28px;
+    padding:20px 22px;
+  }
+  #programme-overview #category-grid .programme-current{
+    min-height:0;
+    padding:12px 0;
+  }
+  #programme-overview #category-grid .programme-loading{min-height:126px}
+  #programme-overview #category-grid .programme-card__meta{margin-top:8px;padding-top:7px}
+}
 #partnerships #donor-grid .funding-card-penabulu .funding-penabulu-period{
   width:100%;
   font-size:11px!important;
