@@ -46,6 +46,7 @@ jobs:
         run: npm ci
 
       - name: Ensure five-year R2 archive retention
+        continue-on-error: true
         working-directory: cloudflare/yg-webgis-public-data
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
