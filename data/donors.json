@@ -826,8 +826,8 @@
     "indicators": [
       {
         "label": "Aktivitas dengan paket evidence lengkap",
-        "value": "4 dari 12",
-        "progress": 33
+      "value": "6 dari 12",
+      "progress": 50
       },
       {
         "label": "Output 1.1 · micro-mill",
@@ -1093,6 +1093,46 @@
         "activityDate": "2026-07-24",
         "activityDateLabel": "24–26 Juli 2026",
         "note": "SOP, poster alur, simulasi praktik, lembar kontrol, dan pengesahan aturan operasional telah diselesaikan."
+      },
+      {
+        "donorId": "DNR-PENABULU",
+        "donorName": "Yayasan Penabulu",
+        "programmeId": "PRG-PENABULU-2026-2027",
+        "programmeName": "Penguatan Rantai Nilai Kopi Liberika dan Ketahanan Ekosistem Gambut di Desa Temiang",
+        "evidenceType": "Evidence Spasial Terverifikasi",
+        "location": "Sekat Kanal Temiang 2022, Desa Temiang, Bengkalis",
+        "verifiedAt": "2026-08-23T00:00:00+07:00",
+        "verifiedAtLabel": "23 Agustus 2026",
+        "verificationBasis": "Laporan pemeliharaan · foto sebelum dan sesudah",
+        "verifiedBy": "mulyadi@yayasangambut.org",
+        "evidenceId": "YG-20260823-001222-487",
+        "indicatorId": "ACT-PENABULU-2.1.1",
+        "activityCode": "2.1.1",
+        "indicatorLabel": "Output 2.1 · Pengelolaan tata air gambut diperkuat → Perbaikan sekat kanal",
+        "evidenceTitle": "Perbaikan sekat kanal Temiang 2022",
+        "activityDate": "2026-08-06",
+        "activityDateLabel": "3–6 Agustus 2026",
+        "note": "Perbaikan struktur kayu, pemadatan, penambahan tanah, dan semenisasi telah dilaporkan serta diverifikasi."
+      },
+      {
+        "donorId": "DNR-PENABULU",
+        "donorName": "Yayasan Penabulu",
+        "programmeId": "PRG-PENABULU-2026-2027",
+        "programmeName": "Penguatan Rantai Nilai Kopi Liberika dan Ketahanan Ekosistem Gambut di Desa Temiang",
+        "evidenceType": "Evidence Spasial Terverifikasi",
+        "location": "Sekat Kanal Temiang 2023, Desa Temiang, Bengkalis",
+        "verifiedAt": "2026-08-23T00:00:00+07:00",
+        "verifiedAtLabel": "23 Agustus 2026",
+        "verificationBasis": "Laporan pemeliharaan · foto sebelum dan sesudah",
+        "verifiedBy": "mulyadi@yayasangambut.org",
+        "evidenceId": "YG-20260823-002945-756",
+        "indicatorId": "ACT-PENABULU-2.1.1",
+        "activityCode": "2.1.1",
+        "indicatorLabel": "Output 2.1 · Pengelolaan tata air gambut diperkuat → Perbaikan sekat kanal",
+        "evidenceTitle": "Perbaikan sekat kanal Temiang 2023",
+        "activityDate": "2026-08-11",
+        "activityDateLabel": "7–11 Agustus 2026",
+        "note": "Sekat kanal selesai diperbaiki; kondisi akhir baik dan berfungsi baik."
       }
     ],
     "timeline": [

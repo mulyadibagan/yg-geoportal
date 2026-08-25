@@ -1171,7 +1171,7 @@
   function init() {
     bind();
     Promise.all([
-      fetch('data/donors.json?v=20260808-penabulu-plan-evidence1', { cache: 'no-store' }).then(function (response) { return response.json(); }),
+      fetch('data/donors.json?v=20260825-penabulu-maintenance2', { cache: 'no-store' }).then(function (response) { return response.json(); }),
       jsonp(API + '?page=public-reports').catch(function () { return { features: [] }; }),
       loadDonorAdminData().catch(function () { return { unavailable: true }; }),
       fetch('data/capacity-building.json?v=20260727-admin-evidence1', { cache: 'no-store' })

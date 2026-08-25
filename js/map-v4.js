@@ -859,6 +859,31 @@ L.control.scale({
         "Kode proyek",
         valueOf(["Project_ID", "Kode_Proyek"])
       );
+
+      rows += row(
+        "Perawatan terakhir",
+        valueOf(["Perawatan_Terakhir"])
+      );
+
+      rows += row(
+        "Donor perawatan",
+        valueOf(["Donor_Perawatan"])
+      );
+
+      rows += row(
+        "Pelaksana perawatan",
+        valueOf(["Pelaksana_Perawatan"])
+      );
+
+      rows += row(
+        "Kondisi setelah perawatan",
+        valueOf(["Kondisi_Setelah_Perawatan"])
+      );
+
+      rows += row(
+        "Fungsi setelah perawatan",
+        valueOf(["Fungsi_Setelah_Perawatan"])
+      );
     }
 
     // Batas administrasi bukan objek program dan tidak memiliki donor.
