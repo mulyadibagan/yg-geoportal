@@ -101,6 +101,18 @@ test("page labels the GEFS corridor product and wires the controller", () => {
   assert.match(controller, /Math\.exp\(-\.35\*rain\)/);
   assert.match(controller, /Math\.pow\(\.5,1\/18\)/);
   assert.match(controller, /kompleks sumber dikeluarkan karena GEFS tidak mencakup waktu deteksinya/);
+  assert.match(controller, /map\.createPane\('rainPane'\)/);
+  assert.match(controller, /data\.host/);
+  assert.match(controller, /slice\(0,3\)/);
+  assert.match(controller, /cache:'no-store',signal:signal/);
+  assert.match(controller, /rainAbortController\.abort\(\)/);
+  assert.match(controller, /Frame radar terbaru tidak berhasil dimuat/);
+  assert.match(controller, /Data radar belum tersedia/);
+  assert.match(controller, /Gagal mengambil data radar/);
+  assert.match(controller, /setLayerChecked\('satellite',false\);setLayerChecked\('rain',true\)/);
+  assert.doesNotMatch(controller, /toggleRain[\s\S]{0,4000}MODIS_Terra/);
+  assert.match(html, /id="rain-legend"/);
+  assert.match(html, /INTENSITAS RADAR · dBZ/);
 });
 
 test("cached Riau weather carries source and freshness metadata", () => {
