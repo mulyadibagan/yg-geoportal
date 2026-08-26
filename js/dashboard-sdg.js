@@ -266,10 +266,10 @@
           <summary>
             <div class="climate-card-head">
               <span>${english ? 'Gross removals per year' : 'Penyerapan bruto per tahun'}</span>
-              <strong title="${english ? 'Annual proxy estimate' : 'Estimasi proksi tahunan'}">${formatNumber(absorptionEstimate, 1)} tCO2e/yr*</strong>
+              <strong title="${english ? 'Annual proxy estimate' : 'Estimasi proksi tahunan'}">${formatNumber(absorptionEstimate, 1)} ${english ? 'tCO₂e/year' : 'tCO₂e/tahun'}*</strong>
             </div>
             <div class="climate-bar"><span style="width:${absorptionShare}%"></span></div>
-            <small class="climate-open-hint">${english ? 'Select to view data sources and baseline' : 'Klik untuk melihat sumber data dan baseline'}</small>
+            <small class="climate-open-hint">${english ? 'View data sources and calculation method' : 'Lihat sumber data dan metode perhitungan'}</small>
           </summary>
           <div class="climate-expanded">
             <p class="climate-card-caption">${english ? 'Current estimate uses the agreed programme activity areas. Ecological baseline areas validate land context and are not counted as programme achievements.' : 'Estimasi saat ini menggunakan luas kegiatan program yang telah disepakati. Luas baseline ekologis memvalidasi konteks lahan dan tidak dihitung sebagai capaian program.'}</p>
@@ -289,13 +289,13 @@
           <summary>
             <div class="climate-card-head">
               <span>${english ? 'Emission reductions per year' : 'Pengurangan emisi per tahun'}</span>
-              <strong title="${english ? 'Annual proxy estimate' : 'Estimasi proksi tahunan'}">${formatNumber(reductionEstimate, 1)} tCO2e/yr*</strong>
+              <strong title="${english ? 'Annual proxy estimate' : 'Estimasi proksi tahunan'}">${formatNumber(reductionEstimate, 1)} ${english ? 'tCO₂e/year' : 'tCO₂e/tahun'}*</strong>
             </div>
             <div class="climate-bar"><span style="width:${reductionShare}%"></span></div>
-            <small class="climate-open-hint">${english ? 'Select to view the rewetting basis' : 'Klik untuk melihat basis rewetting'}</small>
+            <small class="climate-open-hint">${english ? 'View the emission-reduction calculation basis' : 'Lihat dasar perhitungan pengurangan emisi'}</small>
           </summary>
           <div class="climate-expanded">
-            <p class="climate-card-caption">${english ? 'Agreed project basis: 11 active canal blocks × 50 ha = 550 ha estimated rewetting area. The target water table is no deeper than 40 cm below ground.' : 'Basis proyek yang disepakati: 11 sekat kanal aktif × 50 ha = estimasi area rewetting 550 ha. Target muka air tanah tidak lebih dalam dari 40 cm di bawah permukaan.'}</p>
+            <p class="climate-card-caption">${english ? 'Calculation basis: 11 active canal blocks × 50 ha = 550 ha of estimated rewetting area. The target water table is no deeper than 40 cm below ground.' : 'Dasar perhitungan: 11 sekat kanal aktif × 50 ha = estimasi area pembasahan kembali (rewetting) seluas 550 ha. Target muka air tanah tidak lebih dalam dari 40 cm di bawah permukaan.'}</p>
             <div class="climate-source-list">${renderRows('pengurangan')}</div>
             <div class="climate-baseline-brief">
               <strong>${english ? 'Important distinction' : 'Pembedaan penting'}</strong>
@@ -306,6 +306,7 @@
           </div>
         </details>
       </div>
+      <div class="climate-footnote"><strong>${english ? '*Estimate note:' : '*Catatan estimasi:'}</strong> ${english ? 'Figures are proxy estimates, not verified results or issued carbon credits. The method refers to the IPCC 2006 Guidelines and 2013 Wetlands Supplement; site-specific factors will be used when available.' : 'Angka merupakan estimasi proksi, bukan hasil verifikasi atau penerbitan kredit karbon. Metode mengacu pada IPCC 2006 Guidelines dan 2013 Wetlands Supplement; faktor spesifik lokasi akan digunakan ketika tersedia.'}</div>
     `;
     renderMangroveCandidateScenarios();
   }
