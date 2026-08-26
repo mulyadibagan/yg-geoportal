@@ -1147,17 +1147,22 @@
       }
     ]
   },
-  "drive-audit:kampar-mha-kenegerian-kampa": {
-    "name": "MHA KENEGERIAN KAMPA",
-    "village": "Kampa dan Kota Perambahan",
-    "district": "",
-    "regency": "KAMPAR",
-    "scheme": "Profil dokumen nonspasial",
-    "decree": "",
-    "areaHa": "",
+  "sk.7504/menlhk-pskl/pktha/kum.1/9/2019": {
+    "name": "Hutan Adat Ghimbo Bonca Lida dan Ghimbo Pomuan",
+    "village": "Kampa, Koto Perambahan",
+    "district": "Kampa",
+    "regency": "Kampar",
+    "scheme": "HA",
+    "decree": "SK.7504/MENLHK-PSKL/PKTHA/KUM.1/9/2019",
+    "areaHa": 212.8,
     "source": "Audit Drive Perhutanan Sosial YG",
-    "spatialStatus": "nonspatial",
+    "spatialStatus": "spatial",
     "documents": [
+      {
+        "label": "SK HA Imbo Bonca Lida dan Imbo Pomuan Kenegerian Kampa",
+        "category": "Legalitas",
+        "url": "https://drive.google.com/file/d/1xFcl9hYNfyuJWlCfUbqfOpA8boM_YkM9/view?usp=drivesdk"
+      },
       {
         "label": "SK MHA KENEGERIAN KAMPA",
         "category": "Legalitas",
@@ -1175,7 +1180,7 @@
       },
       {
         "label": "PROFIL MHA KENEGERIAN KAMPA",
-        "category": "02_Profil PS",
+        "category": "Profil kelompok",
         "url": "https://drive.google.com/file/d/1yHLkCW0qhAfZo5VqE5VoU7HwRe1hvxAl/view?usp=drivesdk"
       }
     ]

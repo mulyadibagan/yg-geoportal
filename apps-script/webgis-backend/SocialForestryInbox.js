@@ -228,6 +228,19 @@ function matchSocialForestryInboxProfile_(details, psName, regency, catalog) {
   const incoming = normalizeSocialForestryInboxName_(folderParts.shift());
   const inboxVillage = normalizeSocialForestryInboxVillage_(folderParts.join(' '));
   if (!incoming) return null;
+  const profileAliases = {
+    'mha kenegerian kampa': 'sk.7504/menlhk-pskl/pktha/kum.1/9/2019'
+  };
+  const aliasKey = profileAliases[incoming];
+  if (aliasKey && details[aliasKey]) {
+    return {
+      key: aliasKey,
+      profile: details[aliasKey],
+      normalized: normalizeSocialForestryInboxName_(details[aliasKey].name),
+      regency: normalizeSocialForestryInboxRegency_(details[aliasKey].regency),
+      village: normalizeSocialForestryInboxVillage_(details[aliasKey].village)
+    };
+  }
   const area = normalizeSocialForestryInboxRegency_(regency);
   const source = Array.isArray(catalog) && catalog.length ? catalog : Object.keys(details).map(function(key) {
     const profile = details[key] || {};
