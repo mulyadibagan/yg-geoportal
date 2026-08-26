@@ -36,6 +36,24 @@
     'Tutup rincian program':'Close programme details',
     'RINCIAN INDIKATOR':'INDICATOR DETAILS',
     'Buka data sumber':'Open source data'
+    ,'MITRA PENDANAAN · PROGRAM MANGROVE':'FUNDING PARTNER · MANGROVE PROGRAMME'
+    ,'Ringkasan capaian program dari Fase 1 hingga Fase 3.':'Summary of programme results from Phase 1 through Phase 3.'
+    ,'FASE 3 · PROGRAM BERJALAN':'PHASE 3 · ONGOING PROGRAMME'
+    ,'PERJALANAN PROGRAM':'PROGRAMME JOURNEY'
+    ,'Fase Program Sebelumnya':'Previous Programme Phases'
+    ,'Dokumentasi pelaksanaan, capaian, dan pembelajaran dari fase program sebelumnya.':'Documentation of implementation, results, and lessons from previous programme phases.'
+    ,'MONITORING & DOKUMENTASI':'MONITORING & DOCUMENTATION'
+    ,'Hasil Pemantauan Lapangan':'Field Monitoring Results'
+    ,'Dokumentasi Spasial':'Spatial Documentation'
+    ,'Lihat lokasi dan bukti capaian pada peta →':'View locations and evidence of results on the map →'
+    ,'Data dan Dokumentasi':'Data and Documentation'
+    ,'Informasi program dilengkapi dengan profil kelompok mitra, dokumentasi kegiatan, dan bukti capaian yang dapat ditelusuri.':'Programme information includes partner group profiles, activity documentation, and traceable evidence of results.'
+    ,'Setiap capaian dilengkapi dokumentasi pendukung.':'Each result is supported by documentation.'
+    ,'Menyiapkan informasi program…':'Preparing programme information…'
+    ,'Menyiapkan capaian program…':'Preparing programme results…'
+    ,'Menyiapkan ringkasan Fase 3…':'Preparing the Phase 3 summary…'
+    ,'Menyiapkan dokumentasi…':'Preparing documentation…'
+    ,'Informasi program sementara belum tersedia':'Programme information is temporarily unavailable'
   };
 
   var fragments=[
@@ -45,9 +63,9 @@
     [/\bProgram aktif\b/g,'Active programme'],[/\bProgram selesai\b/g,'Completed programme'],
     [/\bProgram berjalan\b/g,'Ongoing programme'],[/\bSekarang\b/g,'Present'],
     [/\blihat ringkasan program\b/gi,'view programme summary'],
-    [/\bbuka evidence\b/gi,'view evidence'],[/\bbuka detail\b/gi,'open details'],
+    [/\bbuka evidence\b/gi,'view evidence'],[/\bbuka dokumentasi\b/gi,'view documentation'],[/\bbuka detail\b/gi,'open details'],
     [/\bbuka data sumber\b/gi,'open source data'],[/\bdata terkini\b/gi,'current data'],
-    [/\bdata terverifikasi\b/gi,'verified data'],[/\bmonitoring lapangan\b/gi,'field monitoring'],
+    [/\bdata terverifikasi\b/gi,'verified data'],[/\bbukti capaian\b/gi,'evidence of results'],[/\bdokumentasi\b/gi,'documentation'],[/\bmonitoring lapangan\b/gi,'field monitoring'],
     [/\bpelatihan\b/gi,'training'],[/\bkegiatan lapangan\b/gi,'field activities'],
     [/\brumah bibit\b/gi,'nursery'],[/\bsekat kanal\b/gi,'canal block'],
     [/\brestorasi gambut\b/gi,'peatland restoration'],[/\brestorasi mangrove\b/gi,'mangrove restoration'],
@@ -60,6 +78,7 @@
     [/\bunit\b/gi,'units'],[/\borang\b/gi,'people'],[/\bhektare\b/gi,'hectares'],
     [/\bbelum tersedia\b/gi,'not yet available'],[/\bbelum ada data\b/gi,'no data available'],
     [/\bmemuat data\b/gi,'loading data'],[/\bmemuat\b/gi,'loading'],
+    [/\bInformasi diperbarui\b/gi,'Information updated'],
     [/\bdiperbarui\b/gi,'updated'],[/\bterhubung ke\b/gi,'connected to'],
     [/\btutup\b/gi,'close'],[/\bkembali\b/gi,'back'],[/\bsimpan\b/gi,'save'],
     [/\btambah\b/gi,'add'],[/\bhapus\b/gi,'delete'],[/\bcari\b/gi,'search'],

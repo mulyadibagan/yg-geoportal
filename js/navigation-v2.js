@@ -12,7 +12,7 @@
     var load=function(){
       if(window.YG_I18N_AUTO_READY || document.querySelector('script[data-yg-i18n-auto]')) return;
       var script=document.createElement('script');
-      script.src='js/i18n-auto.js?v=20260825-global2';
+      script.src='js/i18n-auto.js?v=20260826-aramco-public-copy1';
       script.async=true;
       script.setAttribute('data-yg-i18n-auto','1');
       document.head.appendChild(script);
