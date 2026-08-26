@@ -10,9 +10,8 @@ window.YG_ARAMCO_PHOTO_TIMELINE = [
   {id:'bb-kolam-2024b',village:'Buruk Bakul',phase:'Fase 1',series:'Kolam Om Ning',date:'2024-05-01',stage:'Sebelum',fileId:'1F_GVEFU9uoBEJMqQfqm_c5T2VHUy9699',caption:'Dokumentasi Mei 2024',verified:false},
   {id:'bb-kolam-2026',village:'Buruk Bakul',phase:'Fase 2',series:'Kolam Om Ning',date:'2026-02-26',stage:'Monitoring',fileId:'1BN3D3u3N_6BDJysvAQ9C31SYm9z5_RsC',caption:'Dokumentasi Februari 2026',verified:false},
 
-  {id:'bb-p2-2025a',village:'Buruk Bakul',phase:'Fase 2',series:'Area Penanaman Fase 2',date:'2025-05-18',stage:'Monitoring',fileId:'18K3g-4peX3FlcM1oiPCjfPUPv6oaeD2_',caption:'Monitoring 18 Mei 2025',verified:true},
-  {id:'bb-p2-2025b',village:'Buruk Bakul',phase:'Fase 2',series:'Area Penanaman Fase 2',date:'2025-12-09',stage:'Monitoring',fileId:'1qoarf1zw82xy1XqGB6gTtDD6mQMSqGEX',caption:'Monitoring 9 Desember 2025',verified:true},
-  {id:'bb-p2-2026',village:'Buruk Bakul',phase:'Fase 2',series:'Area Penanaman Fase 2',date:'2026-02-26',stage:'Monitoring',fileId:'1OzY2DJUthvpGn2jUp3JqhITi_MdiALZ-',caption:'Dokumentasi lanjutan Februari 2026',verified:true},
+  {id:'bb-p2-2025a',village:'Buruk Bakul',phase:'Fase 2',series:'Area Penanaman Fase 2',date:'2025-05-18',stage:'Monitoring',fileId:'18K3g-4peX3FlcM1oiPCjfPUPv6oaeD2_',caption:'Monitoring 18 Mei 2025',verified:true,objectId:'MANGROVE-BURUK-BAKUL-PHASE-II-2024-001'},
+  {id:'bb-p2-2026',village:'Buruk Bakul',phase:'Fase 2',series:'Area Penanaman Fase 2',date:'2026-02-26',stage:'Monitoring',fileId:'1OzY2DJUthvpGn2jUp3JqhITi_MdiALZ-',caption:'Dokumentasi lanjutan Februari 2026',verified:true,objectId:'MANGROVE-BURUK-BAKUL-PHASE-II-2024-001'},
 
   {id:'bb-p3-2025a',village:'Buruk Bakul',phase:'Fase 3',series:'Area Penanaman Fase 3',date:'2025-11-01',stage:'Sebelum',fileId:'1AMGrUeTAkpPSzrSS8JmyroNf2v7B57lC',caption:'Kondisi tapak sebelum penanaman',verified:true},
   {id:'bb-p3-2025b',village:'Buruk Bakul',phase:'Fase 3',series:'Area Penanaman Fase 3',date:'2025-12-09',stage:'Penanaman',fileId:'1QsyFFEeRsVLtGkZkhAe0jrJZa9SOZTCA',caption:'Dokumentasi 9 Desember 2025',verified:true},
