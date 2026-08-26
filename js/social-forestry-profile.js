@@ -40,18 +40,29 @@ function renderReferences(record,area){
   var r=record.referenceAreasHa||{},rows=[["APL",r.apl],["Hutan produksi",r.productionForest],["Hutan lindung",r.protectionForest],["Kawasan konservasi",r.conservation],["Ekosistem gambut",r.peat],["Konsesi",r.concession],["Perhutanan sosial",r.socialForestry]];
   el("reference-list").innerHTML=rows.map(function(x){var v=number(x[1]),w=v!=null&&area?Math.min(100,v/area*100):0;return'<div class="vp-reference"><span>'+esc(x[0])+'</span><strong>'+esc(ha(v))+'</strong><div class="vp-reference__track"><div class="vp-reference__fill" style="width:'+w.toFixed(2)+'%"></div></div></div>'}).join("");
 }
-function renderIdentity(p,area){
+function renderIdentity(p,area,detail){
+  var legal=detail&&detail.skExtraction?detail.skExtraction:{};
   el("identity-list").innerHTML=[
-    item("Kelompok/Hutan Desa",p.NAMA_HKM||"—"),item("Skema",p.Ket||"—"),item("Nomor izin",p.NO_IUPHKM||"—"),item("Tanggal izin",p.TGL_IUPHKM||"—"),
-    item("Luas izin",number(p.L_IUPHKM)!=null?format(p.L_IUPHKM,2)+" ha":"—"),item("Luas polygon",ha(area)),item("Desa",p.NAMA_DESA||"—"),item("Kecamatan",p.NAMA_KEC||"—"),item("Kabupaten",p.NAMA_KAB||"—"),item("Provinsi",p.NAMA_PROV||"Riau")
+    item("Kelompok/Hutan Desa",detail&&detail.name?detail.name:(p.NAMA_HKM||"—")),item("Skema",legal.scheme||p.Ket||"—"),item("Nomor SK",legal.decreeNumber||p.NO_IUPHKM||"—"),item("Tanggal SK",legal.decreeDate||p.TGL_IUPHKM||"—"),
+    item("Luas berdasarkan SK",number(legal.approvedAreaHa)!=null?format(legal.approvedAreaHa,0)+" ha":(number(p.L_IUPHKM)!=null?format(p.L_IUPHKM,2)+" ha":"—")),item("Luas hasil kalkulasi polygon",ha(area)),item("Desa",p.NAMA_DESA||"—"),item("Kecamatan",p.NAMA_KEC||"—"),item("Kabupaten",p.NAMA_KAB||"—"),item("Provinsi",p.NAMA_PROV||"Riau")
   ].join("");
+  var badge=document.querySelector(".vp-sf-status");
+  if(badge)badge.textContent=legal.decreeNumber?"Data spasial & SK terverifikasi":"Layer referensi";
 }
 function renderSupplemental(detail){
   var section=el("sf-detail");
   if(!detail){section.hidden=true;return}
-  var demography=detail.demography||{},management=detail.management||{},kups=Array.isArray(detail.kups)?detail.kups:[],documents=Array.isArray(detail.documents)?detail.documents:[];
+  var demography=detail.demography||{},management=detail.management||{},legal=detail.skExtraction||{},beneficiaries=detail.beneficiaries||{},kups=Array.isArray(detail.kups)?detail.kups:[],documents=Array.isArray(detail.documents)?detail.documents:[];
   var unavailable="Belum tersedia",kupsNames=kups.map(function(row){return row.name}).filter(Boolean).join(", "),kupsLegal=kups.map(function(row){return row.legalStatus}).filter(Boolean).join(", ");
-  var summary=[
+  var summary=legal.decreeNumber?[
+    item("Lembaga pengelola",detail.name||unavailable),item("Masa berlaku",legal.validity||unavailable),
+    item("Periode persetujuan",legal.validityPeriod||unavailable),item("Evaluasi",legal.evaluation||unavailable),
+    item("Fungsi kawasan hutan",legal.forestFunctions||unavailable),item("KPH/FMU",management.forestManagementUnit||unavailable),
+    item("Ekosistem",management.ecosystem||unavailable),item("Penerima manfaat langsung",number(beneficiaries.direct)!=null?format(beneficiaries.direct,0)+" orang":unavailable),
+    item("Komposisi penerima langsung",number(beneficiaries.male)!=null&&number(beneficiaries.female)!=null?format(beneficiaries.male,0)+" laki-laki · "+format(beneficiaries.female,0)+" perempuan":unavailable),
+    item("Penerima manfaat tidak langsung",number(beneficiaries.indirectHouseholds)!=null?format(beneficiaries.indirectHouseholds,0)+" keluarga":unavailable),
+    item("Pengurus inti",[management.chairperson&&"Ketua: "+management.chairperson,management.viceChairperson&&"Wakil: "+management.viceChairperson,management.secretary&&"Sekretaris: "+management.secretary,management.treasurer&&"Bendahara: "+management.treasurer].filter(Boolean).join(" · ")||unavailable)
+  ]:[
     item("Lembaga pengelola",detail.name||unavailable),item("KUPS",kupsNames||unavailable),
     item("Status legalitas KUPS",kupsLegal||unavailable),item("Jumlah keluarga",number(demography.households)!=null?format(demography.households,0)+" KK":unavailable),
     item("Jumlah penduduk",number(demography.population)!=null?format(demography.population,0)+" jiwa":unavailable),item("Komposisi penduduk",number(demography.male)!=null&&number(demography.female)!=null?format(demography.male,0)+" laki-laki · "+format(demography.female,0)+" perempuan":unavailable),
@@ -60,7 +71,7 @@ function renderSupplemental(detail){
   ];
   el("sf-detail-summary").innerHTML=summary.join("");
   el("sf-document-list").innerHTML=documents.map(function(doc){return '<a href="'+esc(doc.url)+'" target="_blank" rel="noopener noreferrer"><span>'+esc(doc.category||"Dokumen")+'</span><strong>'+esc(doc.label||"Buka dokumen")+'</strong><b aria-hidden="true">↗</b></a>'}).join("");
-  el("sf-detail-note").textContent=demography.source?"Sumber demografi: "+demography.source+". Kolom tanpa data ditandai Belum tersedia.":"Dokumen berasal dari arsip organisasi. Kolom tanpa data ditandai Belum tersedia.";
+  el("sf-detail-note").textContent=legal.decreeNumber?"Sumber: "+(legal.source||"dokumen SK")+" beserta lampirannya.":demography.source?"Sumber demografi: "+demography.source+". Kolom tanpa data ditandai Belum tersedia.":"Dokumen berasal dari arsip organisasi. Kolom tanpa data ditandai Belum tersedia.";
   section.hidden=false;
 }
 function renderNonspatial(detail){
@@ -84,7 +95,7 @@ function render(feature,record,data,detail){
   el("forest-percent").textContent=percent(share);el("current-forest").textContent=ha(current);el("forest-donut").style.setProperty("--value",share==null?0:share);
   el("forest-definition").textContent="Baseline "+(method.baselineYear||2000)+" dikurangi kehilangan"+(gain!=null?" dan ditambah pertambahan terpetakan":"")+". Angka bersifat indikatif.";
   el("baseline-period").textContent=method.baselineYear||"—";el("loss-through").textContent=method.lossDataThroughYear||"—";
-  renderIdentity(p,area);renderSupplemental(detail);renderLoss(record,method);renderHotspots(record);renderReferences(record,area);
+  renderIdentity(p,area,detail);renderSupplemental(detail);renderLoss(record,method);renderHotspots(record);renderReferences(record,area);
   el("loading-state").hidden=true;el("error-state").hidden=true;el("profile-content").hidden=false;requestAnimationFrame(function(){renderMap(feature,name)});
 }
 async function init(){
