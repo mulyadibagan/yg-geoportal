@@ -75,15 +75,15 @@
       scale: "Referensi; bukan layer BIG 1:50.000",
       policyUrl: "rppeg-riau.html"
     },
-    kph_2019_gsk_bb: {
-      id: "kph_2019_gsk_bb",
-      label: "Wilayah KPH 2019 - GSK-BB",
-      file: "data/kph_2019_gsk_bb.geojson",
+    kph_2019_riau: {
+      id: "kph_2019_riau",
+      label: "Wilayah KPH 2019 Provinsi Riau",
+      file: "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/references/kph_2019_riau.geojson",
       color: "#827717",
-      count: 213,
+      count: 1382,
       type: "kph",
-      sourceLabel: "Shapefile KPH 2019 - Giam Siak Kecil Bukit Batu",
-      scale: "Referensi wilayah KPH; sistem koordinat WGS 84"
+      sourceLabel: "Shapefile KPH 2019 Provinsi Riau",
+      scale: "Sumber World Mercator; ditransformasikan ke WGS 84"
     },
     fungsi_ekosistem_gambut_resmi: {
       id: "fungsi_ekosistem_gambut_resmi",
@@ -141,7 +141,7 @@
 
       try {
         const response = await fetch(
-          config.file + "?v=20260826-kph-reference1",
+          config.file + "?v=20260826-kph-riau-cloudflare1",
           { cache: "force-cache" }
         );
         if (!response.ok) return;
@@ -1722,7 +1722,7 @@ L.control.scale({
   async function fetchReferenceData(config) {
     if (!config.arcgisUrl) {
       const response = await fetch(
-        config.file + "?v=20260826-kph-reference1",
+        config.file + "?v=20260826-kph-riau-cloudflare1",
         { cache: "force-cache" }
       );
 

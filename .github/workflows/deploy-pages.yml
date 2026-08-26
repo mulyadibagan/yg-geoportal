@@ -47,6 +47,7 @@ jobs:
             --exclude '.tablet-preview/' \
             --exclude 'apps-script/' \
             --exclude 'scripts/' \
+            --exclude 'data/kph_2019_riau.geojson' \
             --exclude '_site/' \
             ./ _site/
 
