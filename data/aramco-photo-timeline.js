@@ -3,11 +3,8 @@ window.YG_ARAMCO_PHOTO_TIMELINE = [
   {id:'bb-tambak-2025',village:'Buruk Bakul',phase:'Fase 2',series:'Tambak',date:'2025-01-01',stage:'Monitoring',fileId:'1_NgZVTJ1Nhck62d9jvHlmqHhP10U7Wly',caption:'Perkembangan area tambak',verified:false},
   {id:'bb-tambak-2026',village:'Buruk Bakul',phase:'Fase 2',series:'Tambak',date:'2026-02-26',stage:'Monitoring',fileId:'1SxVoLZtfSjqSkQQX_7GLKVFZkLb-hRyL',caption:'Dokumentasi terbaru area tambak',verified:false},
 
-  {id:'bb-udang2-2023',village:'Buruk Bakul',phase:'Fase 1',series:'Tambak Udang 2',date:'2023-01-01',stage:'Sebelum',fileId:'1a-RgTfhFLbQtNkK2Wsa43-PqwEoHElzQ',caption:'Kondisi awal Tambak Udang 2',verified:false},
-  {id:'bb-udang2-2024',village:'Buruk Bakul',phase:'Fase 1',series:'Tambak Udang 2',date:'2024-09-01',stage:'Monitoring',fileId:'1m6aqA88x_SjTSK4EWTJIM6Cu3xf9yJ_6',caption:'Monitoring September 2024',verified:false},
-  {id:'bb-udang2-2025a',village:'Buruk Bakul',phase:'Fase 2',series:'Tambak Udang 2',date:'2025-05-18',stage:'Monitoring',fileId:'1rZTXKa6eG5YYUzB9G6KpGl0yta_rOheU',caption:'Monitoring 18 Mei 2025',verified:false},
-  {id:'bb-udang2-2025b',village:'Buruk Bakul',phase:'Fase 2',series:'Tambak Udang 2',date:'2025-05-18',stage:'Monitoring',fileId:'1O91XxPFP0_8KIvsFx6bzkH3J1fyHFOrA',caption:'Foto pembanding 18 Mei 2025',verified:false},
-  {id:'bb-udang2-2026',village:'Buruk Bakul',phase:'Fase 2',series:'Tambak Udang 2',date:'2026-02-26',stage:'Monitoring',fileId:'1O91XxPFP0_8KIvsFx6bzkH3J1fyHFOrA',caption:'Dokumentasi Februari 2026',verified:false},
+  {id:'bb-udang2-2023',village:'Buruk Bakul',phase:'Fase 1',series:'Tambak Udang 2',date:'2023-01-01',stage:'Sebelum',fileId:'1gSkbzvHpDndg9dN9PTHFW7--NJmyiyBx',caption:'Kondisi awal Tambak Udang 2 · Plot 4',verified:true,objectId:'MANGROVE-BURUK-BAKUL-PHASE-I-2023-004'},
+  {id:'bb-udang2-2023-after',village:'Buruk Bakul',phase:'Fase 1',series:'Tambak Udang 2',date:'2023-12-01',stage:'Monitoring',fileId:'19vE0WgC5WLVydsIqoRurFWgLRcWgmw7Y',caption:'Perkembangan Tambak Udang 2 · Plot 4',verified:true,objectId:'MANGROVE-BURUK-BAKUL-PHASE-I-2023-004'},
 
   {id:'bb-kolam-2024a',village:'Buruk Bakul',phase:'Fase 1',series:'Kolam Om Ning',date:'2024-05-02',stage:'Sebelum',fileId:'1fq3YA1YxY8SVvF1ZCLfMkrvmbdbu3tdA',caption:'Kondisi 2 Mei 2024',verified:false},
   {id:'bb-kolam-2024b',village:'Buruk Bakul',phase:'Fase 1',series:'Kolam Om Ning',date:'2024-05-01',stage:'Sebelum',fileId:'1F_GVEFU9uoBEJMqQfqm_c5T2VHUy9699',caption:'Dokumentasi Mei 2024',verified:false},
