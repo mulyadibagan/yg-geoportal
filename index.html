@@ -122,7 +122,7 @@
     <div class="section-head">
       <div>
         <h2>Penyerapan &amp; Pengurangan Emisi</h2>
-        <p>Estimasi diturunkan dari data WebGIS yang sudah ada, tanpa tabel baru.</p>
+        <p>Estimasi manfaat iklim berdasarkan data kegiatan restorasi dan pemulihan ekosistem yang terdokumentasi di YG GeoPortal.</p>
       </div>
     </div>
     <div id="climate-dashboard-container">
@@ -662,8 +662,8 @@
   <script src="js/home-modern.js?v=20260825-sepahat-popup1"></script>
    <script src="js/donor-program-status.js?v=20260825-active-first1"></script>
    <script src="js/donor-evidence-summary.js?v=20260823-ppcf-output-status1"></script>
-  <script src="js/dashboard-sdg.js?v=20260807-climate-layout-fix1"></script>
-  <script src="js/i18n.js?v=20260825-vision1"></script>
+  <script src="js/dashboard-sdg.js?v=20260827-public-climate-copy1"></script>
+  <script src="js/i18n.js?v=20260827-public-climate-copy1"></script>
   <script src="js/content-config.js?v=20260723-content-admin1"></script>
   <script src="js/navigation-v2.js?v=20260821-staff-name1"></script>
   <script src="js/pwa.js?v=20260809-coffee-area1"></script>
@@ -838,19 +838,19 @@
         container.innerHTML = '' +
           '<div class="climate-grid">' +
             '<article class="climate-card climate-card-absorb">' +
-              '<div class="climate-card-head"><span>' + t('Penyerapan bruto / Gross removals', 'Gross removals / Absorptions') + '</span><strong>' + formatNumber(absorptionEstimate, 1) + ' tCO2e/yr*</strong></div>' +
+              '<div class="climate-card-head"><span>' + t('Penyerapan bruto', 'Gross removals') + '</span><strong>' + formatNumber(absorptionEstimate, 1) + t(' tCO₂e/tahun*', ' tCO₂e/year*') + '</strong></div>' +
               '<div class="climate-bar"><span style="width:' + absorptionShare + '%"></span></div>' +
               '<p class="climate-card-caption">' + t('Estimasi proksi konservatif menggunakan panduan pelaporan sektor lahan internasional untuk restorasi mangrove, restorasi gambut/agroforestri, dan rehabilitasi lahan mineral.', 'Conservative proxy estimate using international land-sector reporting guidance for mangrove restoration, peatland/agroforestry restoration, and mineral land rehabilitation.') + '</p>' +
               '<div class="climate-source-list">' + rowMarkup('penyerapan') + '</div>' +
             '</article>' +
             '<article class="climate-card climate-card-reduce">' +
-              '<div class="climate-card-head"><span>' + t('Emisi terhindar / Avoided emissions', 'Avoided emissions / Reductions') + '</span><strong>' + formatNumber(reductionEstimate, 1) + ' tCO2e/yr*</strong></div>' +
+              '<div class="climate-card-head"><span>' + t('Pengurangan emisi', 'Emission reductions') + '</span><strong>' + formatNumber(reductionEstimate, 1) + t(' tCO₂e/tahun*', ' tCO₂e/year*') + '</strong></div>' +
               '<div class="climate-bar"><span style="width:' + reductionShare + '%"></span></div>' +
               '<p class="climate-card-caption">' + t('Estimasi proksi konservatif menggunakan panduan pelaporan sektor lahan internasional untuk rewetting, sekat kanal, dan FDRS. Monitoring dan pelatihan ditampilkan sebagai data pendukung implementasi.', 'Conservative proxy estimate using international land-sector reporting guidance for rewetting, canal blocks, and FDRS. Monitoring and training are shown as supporting implementation data.') + '</p>' +
               '<div class="climate-source-list">' + rowMarkup('pengurangan') + '</div>' +
             '</article>' +
           '</div>' +
-          '<div class="climate-footnote"><strong>' + t('Metodologi:', 'Methodology:') + '</strong> ' + t('IPCC 2006 Guidelines + 2013 Wetlands Supplement (proxy konservatif). Kontributor data: bibit tertanam, monitoring lapangan, pelatihan masyarakat, dokumentasi kegiatan, publikasi program. Ganti koefisien proksi dengan faktor emisi spesifik lokasi jika/ketika tersedia.', 'IPCC 2006 Guidelines + 2013 Wetlands Supplement (conservative proxy). Data contributors: Seedlings planted / bibit tertanam, Field monitoring / monitoring lapangan, Community training / pelatihan masyarakat, Documentation / dokumentasi kegiatan, Publications / publikasi program. Replace the proxy coefficients with site-specific emission factors if/when those become available.') + '</div>';
+          '<div class="climate-footnote"><strong>' + t('*Catatan estimasi:', '*Estimate note:') + '</strong> ' + t('Angka merupakan estimasi proksi, bukan hasil verifikasi atau penerbitan kredit karbon. Metode mengacu pada IPCC 2006 Guidelines dan 2013 Wetlands Supplement; faktor spesifik lokasi akan digunakan ketika tersedia.', 'Figures are proxy estimates, not verified results or issued carbon credits. The method refers to the IPCC 2006 Guidelines and 2013 Wetlands Supplement; site-specific factors will be used when available.') + '</div>';
       }
 
       window.addEventListener('load', function() {
@@ -889,4 +889,3 @@
   </script>
 </body>
 </html>
-
