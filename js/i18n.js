@@ -249,7 +249,7 @@
       "Luas Revegetasi (ha)": "Revegetation Area (ha)",
       "Mangrove · gambut/agroforestri · lahan mineral": "Mangrove · peat/agroforestry · mineral land",
       "Penyerapan & Pengurangan Emisi": "Carbon Removals & Emission Reductions",
-      "Estimasi diturunkan dari data WebGIS yang sudah ada, tanpa tabel baru.": "Estimates are derived from existing WebGIS data without introducing a new data table.",
+      "Estimasi manfaat iklim berdasarkan data kegiatan restorasi dan pemulihan ekosistem yang terdokumentasi di YG GeoPortal.": "Climate-benefit estimates based on restoration and ecosystem-recovery activities documented in YG GeoPortal.",
       "Data yang berkontribusi: area restorasi mangrove, area restorasi gambut/agroforestri, bibit tertanam, rumah bibit, sekat kanal, FDRS, monitoring lapangan, pelatihan masyarakat, dan dokumentasi kegiatan.": "Contributing data: mangrove restoration areas, peatland/agroforestry restoration areas, planted seedlings, nurseries, canal blocks, FDRS, field monitoring, community training, and activity documentation.",
       "Desa Terlibat": "Villages Involved",
       "Kelompok Masyarakat Didampingi": "Supported Community Groups",
