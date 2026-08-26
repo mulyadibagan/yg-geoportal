@@ -75,6 +75,16 @@
       scale: "Referensi; bukan layer BIG 1:50.000",
       policyUrl: "rppeg-riau.html"
     },
+    kph_2019_gsk_bb: {
+      id: "kph_2019_gsk_bb",
+      label: "Wilayah KPH 2019 - GSK-BB",
+      file: "data/kph_2019_gsk_bb.geojson",
+      color: "#827717",
+      count: 213,
+      type: "kph",
+      sourceLabel: "Shapefile KPH 2019 - Giam Siak Kecil Bukit Batu",
+      scale: "Referensi wilayah KPH; sistem koordinat WGS 84"
+    },
     fungsi_ekosistem_gambut_resmi: {
       id: "fungsi_ekosistem_gambut_resmi",
       label: "Fungsi Ekosistem Gambut Riau — referensi KLHK",
@@ -131,7 +141,7 @@
 
       try {
         const response = await fetch(
-          config.file + "?v=20260721-ref2",
+          config.file + "?v=20260826-kph-reference1",
           { cache: "force-cache" }
         );
         if (!response.ok) return;
@@ -1422,6 +1432,21 @@ L.control.scale({
       };
     }
 
+    if (config.type === "kph") {
+      const color = String(props.KPH || "").toUpperCase() === "LINDUNG"
+        ? "#2e7d32"
+        : config.color;
+
+      return {
+        color: color,
+        weight: 1.2,
+        opacity: 0.9,
+        dashArray: "5 4",
+        fillColor: color,
+        fillOpacity: 0.08
+      };
+    }
+
     if (config.type === "peat_function") {
       const functionName = String(
         props.fungsi_feg || props.feg_kghltr ||
@@ -1617,6 +1642,15 @@ L.control.scale({
       rows += item("Provinsi", props.NAMA_PROV);
       rows += item("Kelengkapan dokumen", documentClass.count + " dari 4 kelompok");
       rows += item("Status dokumen", documentClass.label);
+    } else if (config.type === "kph") {
+      rows += item("Lembaga KPH", props.LEMBAGA);
+      rows += item("Kategori KPH", props.KPH);
+      rows += item("Unit", props.UNIT);
+      rows += item("Fungsi kawasan", props.Fungsi || props.F_KWS);
+      rows += item("Nomor SK kawasan", props.SK_Kawasan);
+      rows += item("Kabupaten", props.KABUPATEN);
+      rows += item("Kecamatan", props.KECAMATAN || props.KEC);
+      rows += item("Luas (ha)", areaValue(props.HEKTAR));
     } else {
       Object.keys(props).slice(0, 8).forEach(key => {
         rows += item(key, props[key]);
@@ -1688,7 +1722,7 @@ L.control.scale({
   async function fetchReferenceData(config) {
     if (!config.arcgisUrl) {
       const response = await fetch(
-        config.file + "?v=20260809-khg-feg-local1",
+        config.file + "?v=20260826-kph-reference1",
         { cache: "force-cache" }
       );
 
@@ -1803,6 +1837,7 @@ L.control.scale({
       config.type === "concession" ||
       config.type === "village_boundary" ||
       config.type === "khg" ||
+      config.type === "kph" ||
       config.type === "peat_function";
 
     const layer = L.geoJSON(data, {
