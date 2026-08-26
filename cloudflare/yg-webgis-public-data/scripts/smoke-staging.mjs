@@ -45,6 +45,14 @@ for (const [name, result] of Object.entries(snapshots)) {
   }
 }
 
+const kph = await request("/references/kph_2019_riau.geojson");
+if (kph.response.status !== 200 || kph.response.headers.get("x-yg-data-source") !== "r2") {
+  throw new Error("KPH Riau reference did not come from R2");
+}
+if (!Array.isArray(kph.data?.features) || kph.data.features.length !== 1382) {
+  throw new Error("KPH Riau reference feature count mismatch");
+}
+
 const head = await request("/snapshots/current/dashboard.json", { method: "HEAD" });
 if (head.response.status !== 200 || head.bytes.length !== 0) throw new Error("HEAD validation failed");
 const options = await request("/health", { method: "OPTIONS" });

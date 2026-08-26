@@ -1,4 +1,4 @@
-const ROUTES={"/snapshots/current/dashboard.json":{name:"dashboard",github:"/data/dashboard-summary-snapshot.json"},"/snapshots/current/objects.json":{name:"objects",github:"/data/master-database-snapshot.json"},"/manifests/current.json":{key:"manifests/current.json"}};
+const ROUTES={"/snapshots/current/dashboard.json":{name:"dashboard",github:"/data/dashboard-summary-snapshot.json"},"/snapshots/current/objects.json":{name:"objects",github:"/data/master-database-snapshot.json"},"/references/kph_2019_riau.geojson":{key:"references/kph_2019_riau.geojson"},"/manifests/current.json":{key:"manifests/current.json"}};
 const PUBLIC_HEADERS={"access-control-allow-origin":"*","access-control-allow-methods":"GET, HEAD, OPTIONS","access-control-max-age":"86400","x-content-type-options":"nosniff"};
 const STAFF_API_HEADERS={"access-control-allow-origin":"https://webgisyg.id","access-control-allow-methods":"GET, HEAD, OPTIONS","access-control-allow-headers":"authorization","access-control-max-age":"3600","vary":"Origin","x-content-type-options":"nosniff"};
 const META={httpMetadata:{contentType:"application/json; charset=utf-8",cacheControl:"public, max-age=300"}};

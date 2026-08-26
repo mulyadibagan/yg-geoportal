@@ -51,6 +51,16 @@ test("serves dashboard snapshot from R2 with public cache headers", async () => 
   assert.equal((await response.json()).type, "FeatureCollection");
 });
 
+test("serves the Riau KPH reference layer from R2", async () => {
+  const response = await worker.fetch(
+    new Request("https://data.test/references/kph_2019_riau.geojson"),
+    envWith({ type: "FeatureCollection", features: [{ id: "KPH2019-RIAU-0001" }] })
+  );
+  assert.equal(response.status, 200);
+  assert.equal(response.headers.get("x-yg-data-source"), "r2");
+  assert.equal((await response.json()).features.length, 1);
+});
+
 test("falls back to GitHub Pages when an R2 object is unavailable", async () => {
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async url => {
