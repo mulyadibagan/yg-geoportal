@@ -15,7 +15,7 @@ var defs={
   social:{label:"Perhutanan sosial",color:"#00897b",fill:"rgba(0,137,123,.25)",url:"data/PERHUTANAN_SOSIAL_RIAU.geojson",source:"Perhutanan Sosial Riau"},
   peat:{label:"Sebaran gambut",color:"#6a1b9a",fill:"rgba(106,27,154,.22)",url:"data/Gambut_BBSDLP_2019.geojson",source:"Peta Gambut BBSDLP 2019"},
   area_mangrove:{label:"Area penanaman mangrove",color:"#00796b",fill:"rgba(0,121,107,.34)",program:true,source:"Master Database Yayasan Gambut"},
-  apo:{label:"Alat pemecah ombak",color:"#d32f2f",fill:"rgba(211,47,47,.18)",program:true,source:"Master Database Yayasan Gambut"},
+  apo:{label:"Alat pemecah ombak",color:"#d32f2f",fill:"rgba(211,47,47,.18)",program:true,line:true,source:"Master Database Yayasan Gambut"},
   sekat_kanal:{label:"Sekat kanal",color:"#00838f",fill:"#00838f",program:true,point:true,source:"Master Database Yayasan Gambut"},
   fdrs:{label:"FDRS / Water Table",color:"#e65100",fill:"#e65100",program:true,point:true,source:"Master Database Yayasan Gambut"},
   nursery_mangrove:{label:"Rumah pembibitan mangrove",color:"#8fa600",fill:"#8fa600",program:true,point:true,source:"Master Database Yayasan Gambut"},
@@ -81,9 +81,9 @@ function legend(){
   var rows=[];order.concat(Object.keys(defs).filter(function(x){return order.indexOf(x)<0})).forEach(function(id){
     if(!active[id])return;var d=defs[id];
     if(d.sublegend)d.sublegend.forEach(function(s){rows.push([s[0],s[1],s[2],false])});
-    else rows.push([d.label,d.color,d.fill,d.point]);
+    else rows.push([d.label,d.color,d.fill,d.point,d.line]);
   });
-  el("layout-legend").innerHTML=rows.map(function(r){return'<div class="legend-row"><i class="legend-symbol'+(r[3]?" point":"")+'" style="--stroke:'+r[1]+';--fill:'+r[2]+'"></i><span>'+esc(r[0])+'</span></div>'}).join("");
+  el("layout-legend").innerHTML=rows.map(function(r){var symbolClass=r[3]?" point":r[4]?" line":"";return'<div class="legend-row"><i class="legend-symbol'+symbolClass+'" style="--stroke:'+r[1]+';--fill:'+r[2]+'"></i><span>'+esc(r[0])+'</span></div>'}).join("");
   sourceEntries();
 }
 async function addLayer(id){
