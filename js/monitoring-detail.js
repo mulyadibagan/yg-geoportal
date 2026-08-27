@@ -7,7 +7,9 @@
   var STORAGE_KEY='monitoring-detail';
   var OBJECT_ALIASES={
     'area_mangrove:auto:1281388060':'MANGROVE-KELAPA-PATI-PHASE-III-2026-001',
-    'area_mangrove:auto:1674337344':'MANGROVE-KELAPA-PATI-PHASE-III-2026-001'
+    'area_mangrove:auto:1674337344':'MANGROVE-KELAPA-PATI-PHASE-III-2026-001',
+    'area_mangrove:auto:1732351650':'MANGROVE-SEPAHAT-PHASE-III-2025-001',
+    'area_mangrove:auto:1601647125':'MANGROVE-SEPAHAT-PHASE-III-2025-001'
   };
   var REPORT_CORRECTIONS={
     'YG-20260717-205241-378':{aliveCount:2730,deadOrDamagedCount:600,survivalPercent:82}

@@ -11,7 +11,9 @@
   var activeData=null;
   var OBJECT_ALIASES={
     'area_mangrove:auto:1281388060':'MANGROVE-KELAPA-PATI-PHASE-III-2026-001',
-    'area_mangrove:auto:1674337344':'MANGROVE-KELAPA-PATI-PHASE-III-2026-001'
+    'area_mangrove:auto:1674337344':'MANGROVE-KELAPA-PATI-PHASE-III-2026-001',
+    'area_mangrove:auto:1732351650':'MANGROVE-SEPAHAT-PHASE-III-2025-001',
+    'area_mangrove:auto:1601647125':'MANGROVE-SEPAHAT-PHASE-III-2025-001'
   };
 
   function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
