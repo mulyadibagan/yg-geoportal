@@ -29,6 +29,159 @@
     return isFinite(n)?n:null;
   }
 
+  function parseJSON(v){if(!v)return{};if(typeof v==='object')return v;try{return JSON.parse(v);}catch(e){return{};}}
+  function keyText(v){
+    var text=String(v||'').toLowerCase();
+    if(text.normalize)text=text.normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+    return text.replace(/[^a-z0-9]+/g,' ').trim();
+  }
+  function firstText(obj,keys){
+    if(!obj||typeof obj!=='object')return'';
+    for(var i=0;i<keys.length;i+=1){
+      var value=obj[keys[i]];
+      if(value!==undefined&&value!==null&&String(value).trim()!=='')return String(value).trim();
+    }
+    return'';
+  }
+  function publishedNumber(v){
+    var matched=String(v==null?'':v).match(/-?\d[\d.,]*/);
+    if(!matched)return null;
+    var text=matched[0],hasDot=text.indexOf('.')>-1,hasComma=text.indexOf(',')>-1;
+    if(hasDot&&hasComma){
+      text=text.lastIndexOf('.')>text.lastIndexOf(',')?text.replace(/,/g,''):text.replace(/\./g,'').replace(',','.');
+    }else if(hasComma){
+      text=text.replace(',','.');
+    }else if(hasDot){
+      var parts=text.split('.');
+      if(parts.length>1&&parts[parts.length-1].length===3)text=parts.join('');
+    }
+    var number=Number(text);
+    return isFinite(number)?number:null;
+  }
+  function isMonitoringRecord(p){
+    var values=[p.reportType,p.Report_Type,p.type,p.type_of_report,p.jenisActivity,p.jenis_aktivitas,p.activityType,p.activity_type,p.jenis,p.jenisLaporan,p.jenis_laporan,p.kategori,p.category,p.KATEGORI];
+    return values.some(function(value){return /monitoring|pemantauan/i.test(String(value||''));});
+  }
+  function reportType(p,m){
+    var id=String(p.targetLayerId||m.monitoringType||p.targetLayerLabel||'').toLowerCase();
+    if(id==='fdrs'||/water|muka air|fdrs/.test(id))return'Tinggi Muka Air/FDRS';
+    if(/restorasi.*hutan|imbo putuih/.test(id))return'Restorasi Hutan';
+    if(/restorasi.*gambut/.test(id))return'Restorasi Gambut';
+    if(/area_mangrove|penanaman/.test(id))return'Penanaman Mangrove';
+    if(/hutan.*mangrove/.test(id))return'Hutan Mangrove';
+    if(/sekat/.test(id))return'Sekat Kanal';
+    if(/apo|pemecah ombak/.test(id))return'APO';
+    if(/nursery|pembibitan/.test(id))return'Pembibitan';
+    if(/kopi|agroforestri/.test(id))return'Agroforestri/Kopi';
+    return m.monitoringType||p.targetLayerLabel||'Monitoring Umum';
+  }
+  function phaseOf(source){
+    source=source||{};
+    var values=[source.Fase,source.fase,source.Ket,source.phase,source.Tahun,source.Object_ID,source.Nama_Objek];
+    for(var i=0;i<values.length;i+=1){
+      var match=String(values[i]||'').match(/(?:fase|phase)[\s_-]*([ivx]+|\d+)/i);
+      if(match)return'Fase '+match[1].toUpperCase();
+    }
+    return'';
+  }
+  function normalizePublished(feature,index){
+    var p=feature&&feature.properties||feature||{};
+    if(!isMonitoringRecord(p))return null;
+    var m=parseJSON(p.proposedInformation);
+    if(!Object.keys(m).length)m=parseJSON(p.proposedChanges).monitoring||{};
+    if(!Object.keys(m).length)m={
+      monitoringType:p.Monitoring_Type,condition:p.Kondisi,survivalPercent:p.Survival,
+      aliveCount:p.Jumlah_Hidup,deadOrDamagedCount:p.Jumlah_Mati_Rusak,
+      monitoredAreaHa:p.Luas_Terpantau_Ha,averageHeightCm:p.Tinggi_Rata_Rata_Cm,
+      sedimentationCm:p.Sedimentasi_Cm,waterTableCm:p.Water_Table_Cm
+    };
+    var target=parseJSON(p.targetFeatureProperties);
+    var targetArea=publishedNumber(target.Luas_Ha||target.Luas||target.areaHa||target.luas_ha);
+    if(targetArea!==null&&targetArea>0)m.monitoredAreaHa=targetArea;
+    if(String(p.reportId||p.Source_Report_ID||'')==='YG-20260717-205241-378'){
+      m.aliveCount=2730;m.deadOrDamagedCount=600;m.survivalPercent=82;
+    }
+    var alive=publishedNumber(m.aliveCount),dead=publishedNumber(m.deadOrDamagedCount);
+    if(alive!==null&&dead!==null&&alive+dead>0)m.survivalPercent=alive/(alive+dead)*100;
+    var title=p.locationName||p.targetObjectName||p.title||target.Nama_Objek||'Objek monitoring';
+    var village=p.village||p.Desa||p.WADMKD||p.kelurahan||p.desa||target.Desa||target.WADMKD||'';
+    var reporter=firstText(p,['name','namaPelapor','nama_pelapor','pelapor','reporter','reporterName','createdBy','authorName','submittedBy','submitterName','fullName','namaLengkap','organization'])||firstText(m,['reporter','name','namaPelapor','pelapor','createdBy','authorName','nama','petugas']);
+    var donor=firstText(p,['Donor','Donor_Cluster','Nama_Donor','Funding_Source','donor'])||firstText(target,['Donor','Donor_Cluster','Nama_Donor','Funding_Source','donor']);
+    var phase=phaseOf(p)||phaseOf(target);
+    var condition=String(m.condition||p.condition||p.description||'').toLowerCase();
+    var status=/rusak berat|hilang|kritis|tindak lanjut|kering parah|gagal/.test(condition)?{key:'masalah',label:'Perlu tindak lanjut'}:/sedang|rusak ringan|pantau|waspada|abrasi|hama/.test(condition)?{key:'waspada',label:'Perlu dipantau'}:{key:'baik',label:m.condition||p.condition||'Baik/normal'};
+    var objectCode=String(target.Object_ID||target.OBJECT_ID||target.objectId||p.Object_ID||p.targetObjectId||'').trim();
+    var objectKey=objectCode||[p.targetLayerId||p.targetLayerLabel||'monitoring',title,targetArea||''].map(keyText).join('|');
+    return{
+      id:p.monitoringId||p.reportId||index,objectId:objectKey,masterObjectId:objectCode,
+      title:title,type:reportType(p,m),date:p.activityDate||p.publishedAt||p.verifiedAt||p.receivedAt,
+      village:village,villageKey:keyText(village),location:[village,p.district,p.regency].filter(Boolean).join(', '),
+      reporter:reporter,reporterKey:keyText(reporter),donor:donor,donorKey:keyText(donor),
+      phase:phase,phaseKey:keyText(phase),metrics:m,status:status
+    };
+  }
+  function compilePublished(records,type){
+    records=records.filter(function(record){return !type||record.type===type;});
+    var map={};
+    records.forEach(function(record){
+      var key=record.masterObjectId||record.objectId||String(record.id);
+      if(!map[key])map[key]={key:key,label:record.title,history:[],villageKeys:{},reporterKeys:{},donorKeys:{},phaseKeys:{},objectCode:record.masterObjectId||''};
+      var group=map[key];
+      group.history.push(record);
+      if(record.villageKey)group.villageKeys[record.villageKey]=1;
+      if(record.reporterKey)group.reporterKeys[record.reporterKey]=1;
+      if(record.donorKey)group.donorKeys[record.donorKey]=1;
+      if(record.phaseKey)group.phaseKeys[record.phaseKey]=1;
+    });
+    var groups=Object.keys(map).map(function(key){
+      var group=map[key];
+      group.history.sort(function(a,b){return dateValue(b.date)-dateValue(a.date);});
+      group.latest=group.history[0];
+      return group;
+    });
+    var alive=0,dead=0,area=0,reporterMap={};
+    groups.forEach(function(group){
+      var metrics=group.latest.metrics||{};
+      var live=metricValue(metrics,metricDefs[0]),lost=metricValue(metrics,metricDefs[1]),size=metricValue(metrics,metricDefs[6]);
+      if(live!==null)alive+=live;if(lost!==null)dead+=lost;if(size!==null)area+=size;
+    });
+    records.forEach(function(record){
+      var key=record.reporterKey||'pelapor-tidak-disebut';
+      if(!reporterMap[key])reporterMap[key]={name:record.reporter||'Pelapor tidak disebut',reports:0,objects:{}};
+      reporterMap[key].reports+=1;reporterMap[key].objects[record.masterObjectId||record.objectId]=1;
+    });
+    var reporters=Object.keys(reporterMap).map(function(key){return reporterMap[key];}).sort(function(a,b){return b.reports-a.reports;});
+    return{generatedAt:Date.now(),type:type,summary:{objects:groups.length,reports:records.length,reporters:reporters.length,area:area,alive:alive,dead:dead,totalPlants:alive+dead,condition:alive+dead?Math.round(alive/(alive+dead)*100):0},reporters:reporters,groups:groups};
+  }
+  function loadPublished(type,storageKey){
+    var callback='ygMonitoringCompilationCallback'+Date.now();
+    var script=document.createElement('script');
+    var settled=false;
+    function cleanup(){if(script.parentNode)script.parentNode.removeChild(script);try{delete window[callback];}catch(e){window[callback]=undefined;}}
+    window[callback]=function(payload){
+      settled=true;
+      var features=[];
+      if(payload&&Array.isArray(payload.features))features=payload.features;
+      else if(payload&&Array.isArray(payload.reports))features=payload.reports;
+      else if(payload&&Array.isArray(payload.items))features=payload.items;
+      else if(Array.isArray(payload))features=payload;
+      var data=compilePublished(features.map(normalizePublished).filter(Boolean),type);
+      try{sessionStorage.setItem(storageKey,JSON.stringify(data));}catch(e){}
+      render(data);refreshClusterValues();cleanup();
+    };
+    script.src='https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec?page=public-reports&callback='+encodeURIComponent(callback)+'&t='+Date.now();
+    script.async=true;
+    script.onerror=function(){
+      cleanup();
+      if(!activeData){
+        objects.innerHTML='<div class="empty">Data publik belum dapat dimuat. Silakan coba beberapa saat lagi.</div>';
+        reporters.innerHTML='<span class="muted">Koneksi sumber data gagal.</span>';
+      }
+    };
+    document.head.appendChild(script);
+    window.setTimeout(function(){if(!settled&&script.parentNode)script.onerror();},15000);
+  }
+
   var metricDefs=[
     {keys:['aliveCount','alive','jumlahHidup','tanamanHidup'],label:'Tanaman hidup',unit:'pohon'},
     {keys:['deadOrDamagedCount','dead','mati','jumlahMati','tanamanMati','deadCount'],label:'Tanaman mati/rusak',unit:'pohon'},
@@ -163,18 +316,19 @@
   var requestedType=new URLSearchParams(location.search).get('type')||'';
   var storageKey=requestedType?'monitoring-compilation:'+String(requestedType).toLowerCase().replace(/[^a-z0-9]+/g,' ').trim():'monitoring-compilation';
   try{saved=JSON.parse(sessionStorage.getItem(storageKey)||'null');}catch(e){}
-  if(!saved||!saved.groups){
-    objects.innerHTML='<div class="empty">Data kompilasi belum tersedia. Kembali ke halaman monitoring dan buka kartu kompilasi setelah data selesai dimuat.</div>';
-    kpis.innerHTML='';
-    reporters.innerHTML='<span class="muted">Belum ada data.</span>';
-    return;
-  }
   if(requestedType){
     var heading=document.querySelector('.compilation-hero h1');
     if(heading)heading.textContent='Monitoring '+requestedType;
   }
-  render(saved);
-  refreshClusterValues();
+  if(saved&&saved.groups){
+    render(saved);
+    refreshClusterValues();
+  }else{
+    objects.innerHTML='<div class="loading">Memuat laporan monitoring terpublikasi…</div>';
+    kpis.innerHTML='';
+    reporters.innerHTML='<span class="muted">Menghubungkan ke sumber data publik…</span>';
+  }
+  loadPublished(requestedType,storageKey);
 })();
 
 
