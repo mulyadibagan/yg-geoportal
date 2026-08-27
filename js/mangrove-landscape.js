@@ -24,44 +24,35 @@
   }
 
   function renderCards(klms){
-    cards.innerHTML=klms.map(klm=>`<button type="button" class="klm-card" data-klm="${safe(klm.code)}" style="--klm-color:${safe(klm.color)}"><header><div><small>KLM ${safe(klm.code)}</small><strong>${safe(klm.name.replace(/^KLM\s+/i,''))}</strong></div><b>Fokus peta</b></header><div class="klm-card-stats"><span><strong>${fmt(klm.initial_lindung_ha)} ha</strong>Lindung awal</span><span class="paired"><strong>+${fmt(klm.budidaya_to_lindung_true_ha)} ha</strong>Irisan budidaya dengan TRUE</span><span><strong>+${fmt(klm.additional_true_from_unclassified_ha)} ha</strong>Dari belum terklasifikasi</span><span><strong>${fmt(klm.validated_true_ha)} ha</strong>Lindung indikatif TRUE</span><span><strong>${fmt(klm.initial_budidaya_ha)} ha</strong>Budidaya awal</span><span class="paired"><strong>−${fmt(klm.budidaya_to_lindung_true_ha)} ha</strong>Pengurangan baseline budidaya</span><span><strong>${fmt(klm.budidaya_remaining_after_true_ha)} ha</strong>Sisa baseline budidaya</span><span><strong>${fmt(klm.budidaya_review_exposure_ha)} ha</strong>Budidaya dalam REVIEW</span></div><div class="klm-bar"><i style="width:${Math.min(100,klm.validated_true_percent)}%"></i></div></button>`).join('');
+    cards.innerHTML=klms.map(klm=>`<button type="button" class="klm-card" data-klm="${safe(klm.code)}" style="--klm-color:${safe(klm.color)}"><header><div><small>KLM ${safe(klm.code)}</small><strong>${safe(klm.name.replace(/^KLM\s+/i,''))}</strong></div><b>Fokus peta</b></header><div class="klm-card-stats"><span class="total"><strong>${fmt(klm.mangrove_area_ha)} ha</strong>Mangrove referensi</span><span><strong>${fmt(klm.initial_lindung_ha)} ha</strong>Lindung sumber · ${fmt(klm.initial_percent)}%</span><span><strong>${fmt(klm.validated_true_ha)} ha</strong>Lindung indikatif · ${fmt(klm.validated_true_percent)}%</span><span><strong>${fmt(klm.initial_budidaya_ha)} ha</strong>Budidaya sumber · ${fmt(klm.initial_budidaya_percent)}%</span><span><strong>${fmt(klm.indicative_budidaya_ha)} ha</strong>Budidaya indikatif · ${fmt(klm.indicative_budidaya_percent)}%</span></div><div class="klm-bar"><i style="width:${Math.min(100,klm.validated_true_percent)}%"></i></div></button>`).join('');
     cards.addEventListener('click',event=>{const button=event.target.closest('[data-klm]');if(!button)return;const klm=klms.find(item=>item.code===button.dataset.klm);if(klm)focusKlm(klm)});
   }
 
   function renderBaseline(data){
-    baseline.innerHTML=`<article><span>Jumlah KLM sumber</span><strong>${data.klms.length}</strong><small>14.01 · 14.02 · 14.03</small></article><article><span>Total luas KLM sumber</span><strong>${fmt(data.totals.klm_source_total_area_ha)} ha</strong><small>luas atribut dataset KLM</small></article><article><span>Mangrove dianalisis</span><strong>${fmt(data.totals.inside_source_klm_area_ha)} ha</strong><small>hanya di dalam tiga KLM</small></article><article><span>Cakupan terhadap referensi Riau</span><strong>${fmt(data.totals.inside_source_klm_percent)}%</strong><small>${fmt(data.totals.outside_source_klm_area_ha)} ha di luar KLM dikecualikan</small></article>`;
+    baseline.innerHTML=`<article><span>Jumlah KLM sumber</span><strong>${data.klms.length}</strong><small>14.01 · 14.02 · 14.03</small></article><article><span>Total luas KLM sumber</span><strong>${fmt(data.totals.klm_source_total_area_ha)} ha</strong><small>luas atribut dataset KLM</small></article><article><span>Mangrove dalam tiga KLM</span><strong>${fmt(data.totals.inside_source_klm_area_ha)} ha</strong><small>cakupan peta dan kartu KLM</small></article><article><span>Cakupan terhadap Riau</span><strong>${fmt(data.totals.inside_source_klm_percent)}%</strong><small>${fmt(data.totals.outside_source_klm_area_ha)} ha berada di luar peta KLM</small></article>`;
   }
 
   function renderOverview(data){
-    const total=data.totals;
-    document.getElementById('overview-scope-area').textContent=`${fmt(total.mangrove_area_ha)} ha`;
-    document.getElementById('overview-unit-count').textContent=new Intl.NumberFormat('id-ID').format(total.unit_count);
-    document.getElementById('overview-regency-count').textContent=new Intl.NumberFormat('id-ID').format(data.regencies.length);
-    document.getElementById('comparison-initial-percent').textContent=`${fmt(total.initial_percent)}%`;
-    document.getElementById('comparison-initial-copy').textContent=`${fmt(total.initial_lindung_ha)} ha fungsi lindung pada data awal di dalam tiga KLM.`;
-    document.getElementById('comparison-initial-bar').style.width=`${Math.min(100,total.initial_percent)}%`;
-    document.getElementById('comparison-true-percent').textContent=`${fmt(total.validated_true_percent)}%`;
-    document.getElementById('comparison-true-copy').textContent=`${fmt(total.validated_true_ha)} ha terindikasi memenuhi sedikitnya satu kriteria berdasarkan bukti yang tersedia.`;
-    document.getElementById('comparison-true-bar').style.width=`${Math.min(100,total.validated_true_percent)}%`;
-    document.getElementById('comparison-true-note').textContent=`Naik ${fmt(total.additional_true_beyond_initial_ha)} ha: ${fmt(total.budidaya_to_lindung_true_ha)} ha berasal dari irisan baseline budidaya dan ${fmt(total.additional_true_from_unclassified_ha)} ha dari area awal belum terklasifikasi.`;
-    document.getElementById('comparison-review-percent').textContent=`${fmt(total.true_plus_review_percent)}%`;
-    document.getElementById('comparison-review-copy').textContent=`${fmt(total.true_plus_review_ha)} ha bila tambahan yang masih REVIEW ditampilkan sebagai skenario.`;
-    document.getElementById('comparison-review-bar').style.width=`${Math.min(100,total.true_plus_review_percent)}%`;
-    document.getElementById('comparison-review-note').textContent=`${fmt(total.review_increment_ha)} ha tetap memerlukan verifikasi.`;
+    const riau=data.statewide;
+    document.getElementById('overview-scope-area').textContent=`${fmt(riau.mangrove_area_ha)} ha`;
+    document.getElementById('overview-klm-area').textContent=`${fmt(data.totals.mangrove_area_ha)} ha`;
+    document.getElementById('overview-unit-count').textContent=new Intl.NumberFormat('id-ID').format(riau.unit_count);
+    document.getElementById('overview-regency-count').textContent=new Intl.NumberFormat('id-ID').format(riau.regency_count);
   }
 
   function renderBalance(total){
-    balance.innerHTML=`<article class="balance-side protection"><p class="eyebrow">NERACA FUNGSI LINDUNG INDIKATIF</p><div><span><small>Awal RPPEM</small><strong>${fmt(total.initial_lindung_ha)} ha</strong><em>${fmt(total.initial_percent)}%</em></span><b>+</b><span><small>Irisan budidaya dengan TRUE</small><strong>${fmt(total.budidaya_to_lindung_true_ha)} ha</strong><em>+ ${fmt(total.additional_true_from_unclassified_ha)} ha dari area belum terklasifikasi</em></span><b>=</b><span><small>Lindung indikatif TRUE</small><strong>${fmt(total.validated_true_ha)} ha</strong><em>${fmt(total.validated_true_percent)}%</em></span></div></article><article class="balance-side cultivation"><p class="eyebrow">NERACA BASELINE BUDIDAYA</p><div><span><small>Budidaya awal</small><strong>${fmt(total.initial_budidaya_ha)} ha</strong><em>${fmt(total.initial_budidaya_percent)}%</em></span><b>−</b><span><small>Irisan dengan indikasi TRUE</small><strong>${fmt(total.budidaya_to_lindung_true_ha)} ha</strong><em>${fmt(total.budidaya_reduction_true_percent_of_initial)}% dari awal</em></span><b>=</b><span><small>Sisa setelah overlay TRUE</small><strong>${fmt(total.budidaya_remaining_after_true_ha)} ha</strong><em>belum menjadi penetapan</em></span></div><p class="balance-review">REVIEW terpisah: ${fmt(total.budidaya_review_exposure_ha)} ha baseline budidaya masih memerlukan verifikasi.</p></article><p class="balance-explainer"><strong>Rekonsiliasi:</strong> overlay TRUE mengidentifikasi ${fmt(total.budidaya_to_lindung_true_ha)} ha baseline budidaya yang beririsan dengan indikasi fungsi lindung. Dalam neraca analitis, luas yang sama ditambahkan pada fungsi lindung indikatif dan dikurangkan dari baseline budidaya. Total tambahan lindung ${fmt(total.additional_true_beyond_initial_ha)} ha juga mencakup ${fmt(total.additional_true_from_unclassified_ha)} ha dari area awal belum terklasifikasi. Perhitungan ini bukan perubahan fungsi resmi.</p>`;
+    const indicativeUnclassified=total.indicative_unclassified_ha??Math.max(0,total.initial_unclassified_ha-total.additional_true_from_unclassified_ha);
+    balance.innerHTML=`<article class="balance-side source"><p class="eyebrow">FUNGSI PADA DATA SUMBER · RIAU</p><div><span><small>Fungsi lindung sumber</small><strong>${fmt(total.initial_lindung_ha)} ha</strong><em>${fmt(total.initial_percent)}% dari mangrove referensi</em></span><span><small>Fungsi budidaya sumber</small><strong>${fmt(total.initial_budidaya_ha)} ha</strong><em>${fmt(total.initial_budidaya_percent)}% dari mangrove referensi</em></span></div></article><article class="balance-side analysis"><p class="eyebrow">HASIL ANALISIS INDIKATIF YG · RIAU</p><div><span><small>Indikasi fungsi lindung · TRUE</small><strong>${fmt(total.validated_true_ha)} ha</strong><em>${fmt(total.validated_true_percent)}% dari mangrove referensi</em></span><span><small>Indikasi fungsi budidaya</small><strong>${fmt(total.indicative_budidaya_ha)} ha</strong><em>${fmt(total.indicative_budidaya_percent)}% dari mangrove referensi</em></span></div></article><p class="balance-explainer"><strong>Definisi tampilan:</strong> fungsi sumber mengikuti klasifikasi pada data RPPEM yang tersedia. Lindung indikatif adalah area dengan hasil TRUE. Budidaya indikatif adalah bagian baseline budidaya yang tidak beririsan dengan hasil TRUE. Pada sumber terdapat ${fmt(total.initial_unclassified_ha)} ha yang belum terklasifikasi; setelah analisis, ${fmt(indicativeUnclassified)} ha tetap tidak dimasukkan ke dua kategori tersebut. Semua hasil bersifat analitis, bukan penetapan fungsi.</p>`;
   }
 
   function renderRegencies(regencies){
-    regencyBody.innerHTML=regencies.map(row=>`<tr><th>${safe(row.name)}</th><td>${fmt(row.mangrove_area_ha)} ha</td><td>${fmt(row.initial_lindung_ha)} ha<br><small>${fmt(row.initial_percent)}%</small></td><td class="positive paired">+${fmt(row.budidaya_to_lindung_true_ha)} ha</td><td class="positive">+${fmt(row.additional_true_from_unclassified_ha)} ha</td><td>${fmt(row.validated_true_ha)} ha<br><small>${fmt(row.validated_true_percent)}%</small></td><td>${fmt(row.initial_budidaya_ha)} ha</td><td class="negative paired">−${fmt(row.budidaya_to_lindung_true_ha)} ha</td><td>${fmt(row.budidaya_remaining_after_true_ha)} ha</td><td class="review-cell">${fmt(row.budidaya_review_exposure_ha)} ha</td></tr>`).join('');
+    regencyBody.innerHTML=regencies.map(row=>`<tr><th>${safe(row.name)}</th><td>${fmt(row.mangrove_area_ha)} ha</td><td>${fmt(row.initial_lindung_ha)} ha<br><small>${fmt(row.initial_percent)}%</small></td><td class="analysis-value">${fmt(row.validated_true_ha)} ha<br><small>${fmt(row.validated_true_percent)}%</small></td><td>${fmt(row.initial_budidaya_ha)} ha<br><small>${fmt(row.initial_budidaya_percent)}%</small></td><td class="analysis-value">${fmt(row.indicative_budidaya_ha)} ha<br><small>${fmt(row.indicative_budidaya_percent)}%</small></td></tr>`).join('');
   }
 
   async function init(){
     if(!window.L){status.textContent='Peta belum dapat dimuat';return}
     try{
-      const response=await fetch('data/mangrove-klm-summary.json?v=20260827-klmclip1',{cache:'no-store'});
+      const response=await fetch('data/mangrove-klm-summary.json?v=20260827-publiccomparison1',{cache:'no-store'});
       if(!response.ok)throw new Error('Ringkasan KLM tidak tersedia');
       state.data=await response.json();
       state.map=L.map('klm-map',{zoomControl:true,minZoom:6,maxZoom:18});
@@ -98,11 +89,11 @@
       renderCards(state.data.klms);
       renderBaseline(state.data);
       renderOverview(state.data);
-      renderBalance(state.data.totals);
+      renderBalance(state.data.statewide);
       renderRegencies(state.data.regencies);
       selectKlm(state.data.klms[0]);
       status.textContent=`Analisis dibatasi pada 3 KLM · zoom hingga level 18`;
-      document.getElementById('klm-reconciliation').textContent=`Sebanyak ${fmt(state.data.totals.outside_source_klm_area_ha)} ha (${fmt(100-state.data.totals.inside_source_klm_percent)}%) mangrove referensi Riau berada di luar gabungan tiga KLM dan dikecualikan dari poligon, penyebut, serta tabel analisis halaman ini.`;
+      document.getElementById('klm-reconciliation').textContent=`Peta dan kartu KLM memakai area di dalam tiga batas KLM. Ringkasan Riau dan tabel kabupaten/kota memakai seluruh mangrove referensi Riau, termasuk ${fmt(state.data.totals.outside_source_klm_area_ha)} ha yang berada di luar gabungan tiga KLM.`;
     }catch(error){
       console.warn(error);
       status.textContent='Peta KLM belum dapat dimuat';

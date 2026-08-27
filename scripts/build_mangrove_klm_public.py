@@ -139,6 +139,7 @@ def public_metrics(values):
     initial_unclassified = max(0.0, total - values["initial_lindung_ha"] - values["initial_budidaya_ha"])
     budidaya_to_lindung = values["budidaya_reduction_true_ha"]
     additional_from_unclassified = max(0.0, values["additional_true_beyond_initial_ha"] - budidaya_to_lindung)
+    indicative_unclassified = max(0.0, initial_unclassified - additional_from_unclassified)
     pct = lambda number: round(number / total * 100, 6) if total else 0
     return {
         "mangrove_area_ha": round(total, 6),
@@ -162,9 +163,13 @@ def public_metrics(values):
         "budidaya_reduction_true_ha": round(values["budidaya_reduction_true_ha"], 6),
         "budidaya_reduction_true_percent_of_initial": round(values["budidaya_reduction_true_ha"] / values["initial_budidaya_ha"] * 100, 6) if values["initial_budidaya_ha"] else 0,
         "budidaya_remaining_after_true_ha": round(budidaya_remaining, 6),
+        "indicative_budidaya_ha": round(budidaya_remaining, 6),
+        "indicative_budidaya_percent": pct(budidaya_remaining),
         "budidaya_review_exposure_ha": round(values["budidaya_review_exposure_ha"], 6),
         "budidaya_remaining_true_plus_review_scenario_ha": round(budidaya_scenario_remaining, 6),
         "initial_unclassified_ha": round(initial_unclassified, 6),
+        "indicative_unclassified_ha": round(indicative_unclassified, 6),
+        "indicative_unclassified_percent": pct(indicative_unclassified),
     }
 
 
@@ -375,6 +380,18 @@ def main():
         unit_area = float(properties.get("area_ha") or area_ha(unit_geometry))
         parsed_units.append((unit_geometry, properties, unit_area))
         add_metrics(statewide, unit_area, properties, 0.0)
+        for regency_index in regency_tree.query(unit_geometry):
+            index = int(regency_index)
+            if regency_prepared[index].covers(unit_geometry):
+                regency_area = unit_area
+            elif regency_prepared[index].intersects(unit_geometry):
+                regency_area = area_ha(polygonal(unit_geometry.intersection(regency_geometries[index])))
+            else:
+                continue
+            if regency_area > 0:
+                name = regency_names[index]
+                add_metrics(regency_summaries[name], regency_area, properties, 0.0)
+                regency_counts[name].add(properties.get("unit_id"))
         unit_bounds = unit_geometry.bounds
         scope_parts = []
         for klm in klms:
@@ -405,18 +422,6 @@ def main():
             if inside_area > 0:
                 add_metrics(inside_scope, inside_area, properties, 0.0)
                 scope_unit_ids.add(properties.get("unit_id"))
-                for regency_index in regency_tree.query(inside_geometry):
-                    index = int(regency_index)
-                    if regency_prepared[index].covers(inside_geometry):
-                        regency_area = inside_area
-                    elif regency_prepared[index].intersects(inside_geometry):
-                        regency_area = area_ha(polygonal(inside_geometry.intersection(regency_geometries[index])))
-                    else:
-                        continue
-                    if regency_area > 0:
-                        name = regency_names[index]
-                        add_metrics(regency_summaries[name], regency_area, properties, 0.0)
-                        regency_counts[name].add(properties.get("unit_id"))
         if unit_index % 500 == 0:
             print(f"  processed {unit_index}/{len(units)} units", flush=True)
 
@@ -439,6 +444,16 @@ def main():
             if overlap_area <= 0:
                 continue
             add_budidaya_metrics(statewide, overlap_area, unit_properties)
+            for regency_index in regency_tree.query(overlap_geometry):
+                index = int(regency_index)
+                if regency_prepared[index].covers(overlap_geometry):
+                    regency_overlap_area = overlap_area
+                elif regency_prepared[index].intersects(overlap_geometry):
+                    regency_overlap_area = area_ha(polygonal(overlap_geometry.intersection(regency_geometries[index])))
+                else:
+                    continue
+                if regency_overlap_area > 0:
+                    add_budidaya_metrics(regency_summaries[regency_names[index]], regency_overlap_area, unit_properties)
             scope_overlap_parts = []
             for klm in klms:
                 if not klm["prepared"].intersects(overlap_geometry):
@@ -460,16 +475,6 @@ def main():
             scope_overlap_geometry = scope_overlap_parts[0][0] if len(scope_overlap_parts) == 1 else polygonal(unary_union([item[0] for item in scope_overlap_parts]))
             scope_overlap_area = area_ha(scope_overlap_geometry) if len(scope_overlap_parts) > 1 else scope_overlap_parts[0][1]
             add_budidaya_metrics(inside_scope, scope_overlap_area, unit_properties)
-            for regency_index in regency_tree.query(scope_overlap_geometry):
-                index = int(regency_index)
-                if regency_prepared[index].covers(scope_overlap_geometry):
-                    regency_overlap_area = scope_overlap_area
-                elif regency_prepared[index].intersects(scope_overlap_geometry):
-                    regency_overlap_area = area_ha(polygonal(scope_overlap_geometry.intersection(regency_geometries[index])))
-                else:
-                    continue
-                if regency_overlap_area > 0:
-                    add_budidaya_metrics(regency_summaries[regency_names[index]], regency_overlap_area, unit_properties)
         if record_index % 25 == 0:
             print(f"  processed {record_index}/{len(budidaya_records)} cultivation polygons", flush=True)
 
@@ -506,6 +511,7 @@ def main():
         public_regencies.append({**public_metrics(regency_summaries[name]), "name": name, "unit_count": len(regency_counts[name])})
 
     scoped_metrics = public_metrics(inside_scope)
+    statewide_metrics = public_metrics(statewide)
     statewide_reference_area = statewide["mangrove_area_ha"]
     inside_area = inside_scope["mangrove_area_ha"]
 
@@ -532,8 +538,9 @@ def main():
         },
         "function_layers": [
             {"id": "analysis_lindung", "label": "Indikasi fungsi lindung — TRUE", "images": function_images["analysis_lindung"], "color": "#19805a", "visible": True},
-            {"id": "analysis_budidaya", "label": "Baseline budidaya tersisa setelah overlay TRUE", "images": function_images["analysis_budidaya"], "color": "#e09723", "visible": True},
+            {"id": "analysis_budidaya", "label": "Indikasi fungsi budidaya", "images": function_images["analysis_budidaya"], "color": "#e09723", "visible": True},
         ],
+        "statewide": {**statewide_metrics, "unit_count": len(parsed_units), "regency_count": len(regency_names)},
         "totals": {**scoped_metrics,
             "klm_source_total_area_ha": round(sum(item["source_area_ha"] for item in public_klms), 6),
             "unit_count": len(scope_unit_ids),
