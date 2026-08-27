@@ -920,14 +920,26 @@
       restoreCorrectionFeatureStyle(correctionFeatureLayer);
     }
 
+    var previousObjectId = selectedCorrectionFeature
+      ? selectedCorrectionFeature.objectId
+      : '';
+    var nextObjectId = makeObjectId(feature,config);
     correctionFeatureLayer = layer;
     selectedCorrectionFeature = {
       layerId:config.id,
       layerLabel:config.label,
       sourceType:config.sourceType || 'program_layer',
-      objectId:makeObjectId(feature,config),
+      objectId:nextObjectId,
       feature:feature
     };
+
+    if(selectedType === 'Monitoring' && previousObjectId !== nextObjectId){
+      ['monitoring-dead','monitoring-alive','monitoring-survival']
+        .forEach(function(id){
+          var input = document.getElementById(id);
+          if(input) input.value = '';
+        });
+    }
 
     if(typeof layer.setStyle === 'function'){
       layer.setStyle({
@@ -986,6 +998,7 @@
 
     document.getElementById('clear-selected-feature').hidden = false;
     updateGeometrySummary();
+    updateAutomaticPlantCounts();
 
     if(typeof layer.openPopup === 'function'){
       layer.openPopup();
@@ -1171,7 +1184,16 @@
       'Belum ada objek WebGIS dipilih.';
     document.getElementById('clear-selected-feature').hidden = true;
 
+    if(selectedType === 'Monitoring'){
+      ['monitoring-dead','monitoring-alive','monitoring-survival']
+        .forEach(function(id){
+          var input = document.getElementById(id);
+          if(input) input.value = '';
+        });
+    }
+
     updateGeometrySummary();
+    updateAutomaticPlantCounts();
   }
 
   function restoreCorrectionFeatureStyle(layer){
@@ -1956,6 +1978,113 @@
     return el ? String(el.value || '').trim() : '';
   }
 
+  function selectedPlantingCount(){
+    if(
+      !selectedCorrectionFeature ||
+      !selectedCorrectionFeature.feature ||
+      !selectedCorrectionFeature.feature.properties
+    ){
+      return null;
+    }
+
+    var properties = selectedCorrectionFeature.feature.properties;
+    var keys = [
+      'Jumlah_Bib','Jumlah_Bibit','jumlah_bibit','jumlahBibit',
+      'Jumlah_Tanam','plantedCount'
+    ];
+    var raw = null;
+    for(var i=0;i<keys.length;i++){
+      if(properties[keys[i]] !== undefined && properties[keys[i]] !== null){
+        raw = properties[keys[i]];
+        break;
+      }
+    }
+    if(raw === null || String(raw).trim() === '') return null;
+
+    var normalized = String(raw).trim().replace(/\s+/g,'');
+    if(/^\d{1,3}(\.\d{3})+$/.test(normalized)){
+      normalized = normalized.replace(/\./g,'');
+    }else if(/^\d{1,3}(,\d{3})+$/.test(normalized)){
+      normalized = normalized.replace(/,/g,'');
+    }else{
+      normalized = normalized.replace(',','.');
+    }
+
+    var count = Number(normalized);
+    return Number.isInteger(count) && count >= 0 ? count : null;
+  }
+
+  function formatPlantCount(value){
+    return Number(value).toLocaleString('id-ID');
+  }
+
+  function updateAutomaticPlantCounts(){
+    var type = monitoringValue('monitoring-type');
+    var isAutomatic = type === 'Penanaman Mangrove';
+    var survivalInput = document.getElementById('monitoring-survival');
+    var aliveInput = document.getElementById('monitoring-alive');
+    var deadInput = document.getElementById('monitoring-dead');
+    var help = document.getElementById('monitoring-plant-count-help');
+
+    if(survivalInput) survivalInput.readOnly = isAutomatic;
+    if(aliveInput) aliveInput.readOnly = isAutomatic;
+    if(deadInput) deadInput.required = isAutomatic;
+
+    if(!isAutomatic){
+      if(help){
+        help.textContent = 'Isi indikator sesuai hasil monitoring.';
+      }
+      return true;
+    }
+
+    var total = selectedPlantingCount();
+    if(total === null){
+      if(survivalInput) survivalInput.value = '';
+      if(aliveInput) aliveInput.value = '';
+      if(help){
+        help.textContent = selectedCorrectionFeature
+          ? 'Total bibit tidak tersedia pada atribut objek terpilih. Pilih objek penanaman yang memiliki Jumlah_Bib.'
+          : 'Pilih objek penanaman mangrove untuk mengambil total bibit secara otomatis.';
+      }
+      return false;
+    }
+
+    var deadText = deadInput ? String(deadInput.value || '').trim() : '';
+    if(deadText === ''){
+      if(survivalInput) survivalInput.value = '';
+      if(aliveInput) aliveInput.value = '';
+      if(help){
+        help.textContent = 'Total tertanam ' + formatPlantCount(total) +
+          ' bibit. Isi jumlah mati/rusak; isi 0 jika tidak ada.';
+      }
+      return false;
+    }
+
+    var dead = Number(deadText);
+    if(!Number.isInteger(dead) || dead < 0 || dead > total){
+      if(survivalInput) survivalInput.value = '';
+      if(aliveInput) aliveInput.value = '';
+      if(help){
+        help.textContent = 'Jumlah mati/rusak harus bilangan bulat antara 0 dan ' +
+          formatPlantCount(total) + '.';
+      }
+      return false;
+    }
+
+    var alive = total - dead;
+    var survival = total === 0 ? 0 : (alive / total) * 100;
+    if(aliveInput) aliveInput.value = String(alive);
+    if(survivalInput){
+      survivalInput.value = survival.toFixed(1).replace(/\.0$/,'');
+    }
+    if(help){
+      help.textContent = 'Total tertanam ' + formatPlantCount(total) +
+        ' bibit − ' + formatPlantCount(dead) + ' mati/rusak = ' +
+        formatPlantCount(alive) + ' hidup.';
+    }
+    return true;
+  }
+
   function pupTreeRows(){
     return Array.prototype.slice.call(document.querySelectorAll('#pup-tree-rows tr')).map(function(row){
       function field(name){var el=row.querySelector('[data-pup-field="'+name+'"]');return el?String(el.value||'').trim():'';}
@@ -2629,6 +2758,7 @@
     if(pup) pup.hidden = type !== 'Monitoring Restorasi Hutan Mineral';
     if(fdrs) fdrs.hidden = type !== 'Tinggi Muka Air/FDRS';
     if(infra) infra.hidden = ['Sekat Kanal','APO'].indexOf(type) === -1;
+    updateAutomaticPlantCounts();
 
     if(type === 'Sekat Kanal' && canalUnitInput){
       var currentValue = Number(canalUnitInput.value);
@@ -2642,6 +2772,10 @@
   var monitoringTypeSelect = document.getElementById('monitoring-type');
   if(monitoringTypeSelect){
     monitoringTypeSelect.addEventListener('change',updateMonitoringPanels);
+  }
+  var monitoringDeadInput = document.getElementById('monitoring-dead');
+  if(monitoringDeadInput){
+    monitoringDeadInput.addEventListener('input',updateAutomaticPlantCounts);
   }
   var pupAddTree=document.getElementById('pup-add-tree');
   if(pupAddTree)pupAddTree.addEventListener('click',function(){addPupTreeRow();});
@@ -2932,6 +3066,7 @@
     }
 
     if(selectedType === 'Monitoring'){
+      updateAutomaticPlantCounts();
       var monitorDataValidation = collectMonitoringData();
       if(!monitorDataValidation.monitoringType){
         alert('Pilih jenis monitoring.');
@@ -2944,6 +3079,28 @@
       if(!monitorDataValidation.notes){
         alert('Isi temuan monitoring.');
         return;
+      }
+      if(monitorDataValidation.monitoringType === 'Penanaman Mangrove'){
+        var plantingTotal = selectedPlantingCount();
+        if(plantingTotal === null){
+          alert('Total bibit tidak tersedia pada atribut objek terpilih. Pilih objek penanaman mangrove yang memiliki Jumlah_Bib.');
+          return;
+        }
+        if(monitorDataValidation.deadOrDamagedCount === ''){
+          alert('Isi jumlah mati/rusak. Isi 0 jika tidak ada tanaman mati atau rusak.');
+          document.getElementById('monitoring-dead').focus();
+          return;
+        }
+        var deadOrDamaged = Number(monitorDataValidation.deadOrDamagedCount);
+        if(
+          !Number.isInteger(deadOrDamaged) ||
+          deadOrDamaged < 0 ||
+          deadOrDamaged > plantingTotal
+        ){
+          alert('Jumlah mati/rusak harus bilangan bulat antara 0 dan ' + formatPlantCount(plantingTotal) + '.');
+          document.getElementById('monitoring-dead').focus();
+          return;
+        }
       }
       if(monitorDataValidation.monitoringType === 'Sekat Kanal'){
         var canalUnits = Number(monitorDataValidation.canalUnits);
