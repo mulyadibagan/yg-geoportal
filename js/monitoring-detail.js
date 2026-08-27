@@ -822,4 +822,22 @@
   init();
 })();
 
+(function(){
+  document.addEventListener('click',function(event){
+    var link=event.target.closest('a');
+    if(!link)return;
+    var label=String(link.textContent||'').trim().toLowerCase();
+    var href=String(link.getAttribute('href')||'').toLowerCase();
+    if(label.indexOf('kembali')===-1||href.indexOf('monitoring')===-1)return;
+    var referrer=document.referrer;
+    if(!referrer)return;
+    try{
+      var previous=new URL(referrer,window.location.href);
+      if(previous.origin!==window.location.origin||previous.href===window.location.href)return;
+      event.preventDefault();
+      window.history.back();
+    }catch(error){}
+  });
+})();
+
 
