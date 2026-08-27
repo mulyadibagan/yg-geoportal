@@ -42,6 +42,25 @@
     if(text.normalize)text=text.normalize('NFD').replace(/[\u0300-\u036f]/g,'');
     return text.replace(/[^a-z0-9]+/g,' ').trim();
   }
+  function canonicalVillage(v){
+    var text=String(v||'').trim();
+    if(keyText(text).replace(/\s+/g,'')==='kelapapati')return'Kelapa Pati';
+    return text;
+  }
+  function normalizeCompiledVillages(groups){
+    function normalizeRecord(record){
+      if(!record)return;
+      record.village=canonicalVillage(record.village);
+      record.villageKey=keyText(record.village);
+      if(record.location)record.location=String(record.location).replace(/\bkelapapati\b/gi,'Kelapa Pati');
+    }
+    (groups||[]).forEach(function(group){
+      group.villageKeys={};
+      (group.history||[]).forEach(function(record){normalizeRecord(record);if(record.villageKey)group.villageKeys[record.villageKey]=1;});
+      normalizeRecord(group.latest);
+      if(group.latest&&group.latest.villageKey)group.villageKeys[group.latest.villageKey]=1;
+    });
+  }
   function firstText(obj,keys){
     if(!obj||typeof obj!=='object')return'';
     for(var i=0;i<keys.length;i+=1){
@@ -121,7 +140,7 @@
     var alive=publishedNumber(m.aliveCount),dead=publishedNumber(m.deadOrDamagedCount);
     if(alive!==null&&dead!==null&&alive+dead>0)m.survivalPercent=alive/(alive+dead)*100;
     var title=p.locationName||p.targetObjectName||p.title||target.Nama_Objek||'Objek monitoring';
-    var village=p.village||p.Desa||p.WADMKD||p.kelurahan||p.desa||target.Desa||target.WADMKD||'';
+    var village=canonicalVillage(p.village||p.Desa||p.WADMKD||p.kelurahan||p.desa||target.Desa||target.WADMKD||'');
     var reporter=firstText(p,['name','namaPelapor','nama_pelapor','pelapor','reporter','reporterName','createdBy','authorName','submittedBy','submitterName','fullName','namaLengkap','organization'])||firstText(m,['reporter','name','namaPelapor','pelapor','createdBy','authorName','nama','petugas']);
     var donor=firstText(p,['Donor','Donor_Cluster','Nama_Donor','Funding_Source','donor'])||firstText(target,['Donor','Donor_Cluster','Nama_Donor','Funding_Source','donor']);
     var phase=phaseOf(p)||phaseOf(target);
@@ -303,6 +322,7 @@
   }
 
   function render(data){
+    normalizeCompiledVillages(data.groups);
     activeData=data;
     var summary=data.summary||{};
     var kpiItems=[
