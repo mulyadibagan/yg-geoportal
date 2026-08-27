@@ -578,18 +578,46 @@
   }
 
   function renderPhotos(group){
-    var photos=group.history.reduce(function(acc,r){
-      if(r.photos&&r.photos.length)acc=acc.concat(r.photos);
-      return acc;
-    },[]).filter(function(url,index,array){return array.indexOf(url)===index;});
-    if(!photos.length){
+    var latestPhotos=(group.latest.photos||[]).filter(function(url,index,array){return array.indexOf(url)===index;});
+    var periods=group.history.filter(function(record){
+      return record!==group.latest&&record.photos&&record.photos.length;
+    }).map(function(record){
+      return{date:record.date,label:'Foto laporan monitoring',photos:record.photos};
+    });
+    var label=String(group.label||group.latest.location||group.latest.title||'').toLowerCase();
+    if(label.indexOf('kelapa pati')!==-1){
+      periods.push({
+        date:'16/07/2026',
+        label:'Tambah Foto Kegiatan · Monitoring Penanaman Mangrove Aramco Fase 3',
+        photos:[
+          'https://drive.google.com/file/d/1P_shebiVd-NXp3C0rBLgiVxYK7hiI1dG/view?usp=drivesdk',
+          'https://drive.google.com/file/d/1ePclkMmzTzhJ0elxXwmRcuVSmzcDqKVx/view?usp=drivesdk',
+          'https://drive.google.com/file/d/15yAA7i2NoeA_-PX4S7i-BrZxIrEMZf18/view?usp=drivesdk',
+          'https://drive.google.com/file/d/1hPmXUKzdIcDHpVRwtygIRTGLfJ0mpsuX/view?usp=drivesdk',
+          'https://drive.google.com/file/d/1PBG76KHR-TM8psFuljLqPY3ya6Zhh8Fd/view?usp=drivesdk'
+        ]
+      });
+    }
+    var seen={};
+    periods=periods.map(function(period){
+      period.photos=(period.photos||[]).filter(function(url){
+        if(!url||latestPhotos.indexOf(url)!==-1||seen[url])return false;
+        seen[url]=true;return true;
+      });
+      return period;
+    }).filter(function(period){return period.photos.length;});
+    if(!latestPhotos.length&&!periods.length){
       photosElement.innerHTML='<div class="empty">Belum ada data foto.</div>';
       return;
     }
-    var shown=photos.slice(0,12).map(function(url,index){
+    var shown=latestPhotos.slice(0,12).map(function(url){
       return'<a href="'+esc(original(url))+'" target="_blank" rel="noopener"><img src="'+esc(thumb(url))+'" alt="Foto monitoring" style="max-width:100%;height:auto;border-radius:10px"></a>';
     }).join('');
-    photosElement.innerHTML='<div class="photo-grid">'+shown+'</div>';
+    var archive=periods.map(function(period){
+      var images=period.photos.map(function(url){return'<a href="'+esc(original(url))+'" target="_blank" rel="noopener"><img src="'+esc(thumb(url))+'" alt="Foto monitoring sebelumnya" loading="lazy"></a>';}).join('');
+      return'<article class="photo-period"><header><strong>'+esc(fmtDate(period.date))+'</strong><span>'+period.photos.length+' foto</span></header><div class="photo-period-grid">'+images+'</div><p class="photo-period-note">'+esc(period.label)+'</p></article>';
+    }).join('');
+    photosElement.innerHTML=(shown?'<div class="photo-grid">'+shown+'</div>':'<div class="empty">Foto monitoring terbaru belum tersedia.</div>')+(archive?'<div class="photo-section-title"><strong>Foto monitoring sebelumnya</strong><span>'+periods.length+' periode</span></div><div class="photo-archive">'+archive+'</div>':'');
   }
 
   function renderMap(group){
