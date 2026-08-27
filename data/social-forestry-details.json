@@ -2810,7 +2810,6 @@
     "village": "Tenggayun Raya",
     "district": "Rangsang Pesisir",
     "regency": "Kepulauan Meranti",
-    "scheme": "HD",
     "decree": "SK.6611/MENLHK-PSKL/PSL.0/8/2022",
     "areaHa": 257,
     "documents": [
@@ -2824,7 +2823,34 @@
         "category": "Peta",
         "url": "https://drive.google.com/file/d/1JQS_p1U7z3sLHE8yL-tbGqBmFWAFRX2m/view?usp=drivesdk"
       }
-    ]
+    ],
+    "scheme": "Persetujuan Pengelolaan Hutan Desa",
+    "province": "Riau",
+    "skExtraction": {
+      "institution": "Tenggayun Raya",
+      "scheme": "Persetujuan Pengelolaan Hutan Desa",
+      "decreeNumber": "SK.6611/MENLHK-PSKL/PSL.0/8/2022",
+      "decreeDate": "15 Agustus 2022",
+      "validity": "Sampai 15 Agustus 2057",
+      "validityPeriod": "35 tahun sejak 15 Agustus 2022",
+      "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
+      "approvedAreaHa": 257,
+      "forestFunctions": "Hutan Produksi Terbatas ±257 ha",
+      "location": "Desa/Kelurahan Tenggayun Raya · Kecamatan Rangsang Pesisir · Kabupaten Kepulauan Meranti · Provinsi Riau",
+      "ecosystem": "Ekosistem gambut · fungsi budidaya ±257 ha",
+      "beneficiaries": {
+        "direct": 28,
+        "male": 28,
+        "female": 0,
+        "indirectHouseholds": 259,
+        "source": "Lampiran SK Tenggayun Raya"
+      },
+      "management": {
+        "forestManagementUnit": "Kesatuan Pengelolaan Hutan Tebing Tinggi",
+        "source": "Tembusan SK Tenggayun Raya"
+      },
+      "source": "SK Tenggayun Raya"
+    }
   },
   "drive-audit:kepulauan-meranti-lphd-pulau-setahun": {
     "name": "LPHD PULAU SETAHUN",
@@ -2854,7 +2880,6 @@
     "village": "Lukun",
     "district": "Tebing Tinggi Timur",
     "regency": "Kepulauan Meranti",
-    "scheme": "HD",
     "decree": "SK.6719/MENLHK-PSKL/PSL.0/12/2016",
     "areaHa": 2446,
     "documents": [
@@ -2868,14 +2893,25 @@
         "category": "Peta",
         "url": "https://drive.google.com/file/d/1Y8trB6-3wQh33ix7v_j49BovMWAOkFvR/view?usp=drivesdk"
       }
-    ]
+    ],
+    "scheme": "Persetujuan Pengelolaan Hutan Desa",
+    "province": "Riau",
+    "skExtraction": {
+      "institution": "Lukun",
+      "scheme": "Persetujuan Pengelolaan Hutan Desa",
+      "decreeNumber": "SK.6719/MENLHK-PSKL/PSL.0/12/2016",
+      "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
+      "approvedAreaHa": 2446,
+      "forestFunctions": "Hutan Produksi Tetap ±2.446 ha",
+      "location": "Desa/Kelurahan Lukun · Kecamatan Tebing Tinggi Timur · Kabupaten Kepulauan Meranti · Provinsi Riau",
+      "source": "SK Lukun"
+    }
   },
   "sk.6716/menlhk-pskl/psl.0/12/2016": {
     "name": "Nipah Sendanu",
     "village": "Nipah Sendanu",
     "district": "Tebing Tinggi Timur",
     "regency": "Kepulauan Meranti",
-    "scheme": "HD",
     "decree": "SK.6716/MENLHK-PSKL/PSL.0/12/2016",
     "areaHa": 838,
     "documents": [
@@ -2889,14 +2925,25 @@
         "category": "Peta",
         "url": "https://drive.google.com/file/d/1e1Ey-D5Aw1dLrbLQp1zFAyXJ3Aq7IVPw/view?usp=drivesdk"
       }
-    ]
+    ],
+    "scheme": "Persetujuan Pengelolaan Hutan Desa",
+    "province": "Riau",
+    "skExtraction": {
+      "institution": "Nipah Sendanu",
+      "scheme": "Persetujuan Pengelolaan Hutan Desa",
+      "decreeNumber": "SK.6716/MENLHK-PSKL/PSL.0/12/2016",
+      "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
+      "approvedAreaHa": 838,
+      "forestFunctions": "Hutan Produksi Tetap ±838 ha",
+      "location": "Desa/Kelurahan Nipah Sendanu · Kecamatan Tebing Tinggi Timur · Kabupaten Kepulauan Meranti · Provinsi Riau",
+      "source": "SK Nipah Sendanu"
+    }
   },
   "sk.6722/menlhk-pskl/psl.0/12/2016": {
     "name": "Sungai Tohor",
     "village": "Sungai Tohor",
     "district": "Tebing Tinggi Timur",
     "regency": "Kepulauan Meranti",
-    "scheme": "HD",
     "decree": "SK.6722/MENLHK-PSKL/PSL.0/12/2016",
     "areaHa": 2940,
     "documents": [
@@ -2920,14 +2967,25 @@
         "category": "Peta",
         "url": "https://drive.google.com/file/d/1rLQILkXk78WEnp7mNwJg_Wkem1cflPIt/view?usp=drivesdk"
       }
-    ]
+    ],
+    "scheme": "Persetujuan Pengelolaan Hutan Desa",
+    "province": "Riau",
+    "skExtraction": {
+      "institution": "Sungai Tohor",
+      "scheme": "Persetujuan Pengelolaan Hutan Desa",
+      "decreeNumber": "SK.6722/MENLHK-PSKL/PSL.0/12/2016",
+      "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
+      "approvedAreaHa": 2940,
+      "forestFunctions": "Hutan Produksi Tetap ±2.940 ha",
+      "location": "Desa/Kelurahan Sungai Tohor · Kecamatan Tebing Tinggi Timur · Kabupaten Kepulauan Meranti · Provinsi Riau",
+      "source": "SK Sungai Tohor"
+    }
   },
   "sk.6717/menlhk-pskl/psl.0/12/2016": {
     "name": "Tanjung Sari",
     "village": "Tanjung Sari",
     "district": "Tebing Tinggi Timur",
     "regency": "Kepulauan Meranti",
-    "scheme": "HD",
     "decree": "SK.6717/MENLHK-PSKL/PSL.0/12/2016",
     "areaHa": 760,
     "documents": [
@@ -2941,14 +2999,25 @@
         "category": "Legalitas",
         "url": "https://drive.google.com/file/d/1eSQWWG8HAEpYJWaxU-lNohSBXP9ojGq_/view?usp=drivesdk"
       }
-    ]
+    ],
+    "scheme": "Persetujuan Pengelolaan Hutan Desa",
+    "province": "Riau",
+    "skExtraction": {
+      "institution": "Tanjung Sari",
+      "scheme": "Persetujuan Pengelolaan Hutan Desa",
+      "decreeNumber": "SK.6717/MENLHK-PSKL/PSL.0/12/2016",
+      "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
+      "approvedAreaHa": 760,
+      "forestFunctions": "Hutan Produksi Tetap ±689 ha · Hutan Produksi yang Dapat Dikonversi ±71 ha",
+      "location": "Desa/Kelurahan Tanjung Sari · Kecamatan Tebing Tinggi Timur · Kabupaten Kepulauan Meranti · Provinsi Riau",
+      "source": "SK Tanjung Sari"
+    }
   },
   "sk.6718/menlhk-pskl/psl.0/12/2016": {
     "name": "Sendanu Darul Ihsan",
     "village": "Sendanu Darul Ihsan",
     "district": "Tebing Tinggi Timur",
     "regency": "Kepulauan Meranti",
-    "scheme": "HD",
     "decree": "SK.6718/MENLHK-PSKL/PSL.0/12/2016",
     "areaHa": 650,
     "documents": [
@@ -2962,14 +3031,25 @@
         "category": "Peta",
         "url": "https://drive.google.com/file/d/1TLilOZIWuapuNKPa7DK1I1wY3bvVzmEq/view?usp=drivesdk"
       }
-    ]
+    ],
+    "scheme": "Persetujuan Pengelolaan Hutan Desa",
+    "province": "Riau",
+    "skExtraction": {
+      "institution": "Sendanu Darul Ihsan",
+      "scheme": "Persetujuan Pengelolaan Hutan Desa",
+      "decreeNumber": "SK.6718/MENLHK-PSKL/PSL.0/12/2016",
+      "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
+      "approvedAreaHa": 650,
+      "forestFunctions": "Hutan Produksi Tetap ±650 ha",
+      "location": "Desa/Kelurahan Sendanu Darul Ihsan · Kecamatan Tebing Tinggi Timur · Kabupaten Kepulauan Meranti · Provinsi Riau",
+      "source": "SK Sendanu Darul Ihsan"
+    }
   },
   "sk. 1267/menlhk-pskl/pkps/psl.0/3/2018": {
     "name": "KTH TANI MEKAR",
     "village": "Mengkikip",
     "district": "Tebing Tingi Barat",
     "regency": "Kepulauan Meranti",
-    "scheme": "HKm",
     "decree": "SK. 1267/MENLHK-PSKL/PKPS/PSL.0/3/2018",
     "areaHa": 735,
     "documents": [
@@ -2983,14 +3063,32 @@
         "category": "Peta",
         "url": "https://drive.google.com/file/d/1SAUlSkxKYxl2pVwxtBldU8k5x7n1Ac99/view?usp=drivesdk"
       }
-    ]
+    ],
+    "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
+    "province": "Riau",
+    "skExtraction": {
+      "institution": "KTH TANI MEKAR",
+      "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
+      "decreeNumber": "SK. 1267/MENLHK-PSKL/PKPS/PSL.0/3/2018",
+      "decreeDate": "27 Maret 2018",
+      "validity": "Sampai 27 Maret 2053",
+      "validityPeriod": "35 tahun sejak 27 Maret 2018",
+      "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
+      "approvedAreaHa": 735,
+      "forestFunctions": "Hutan Produksi Terbatas ±735 ha",
+      "location": "Desa/Kelurahan Mengkikip · Kecamatan Tebing Tinggi Barat · Kabupaten Kepulauan Meranti · Provinsi Riau",
+      "beneficiaries": {
+        "direct": 72,
+        "source": "Lampiran SK KTH TANI MEKAR"
+      },
+      "source": "SK KTH TANI MEKAR"
+    }
   },
   "sk.3002/menlhk-pskl/pkps/ psl.0/5/2020": {
     "name": "KT BAKTI RAYA LUKIT",
     "village": "Lukit",
     "district": "Merbau",
     "regency": "Kepulauan Meranti",
-    "scheme": "HKm",
     "decree": "SK.3002/MENLHK-PSKL/PKPS/ PSL.0/5/2020",
     "areaHa": 121,
     "documents": [
@@ -3004,14 +3102,39 @@
         "category": "Legalitas",
         "url": "https://drive.google.com/file/d/1rpvu9KEHKjbpLhRxdqrKpvIi72jMRj-R/view?usp=drivesdk"
       }
-    ]
+    ],
+    "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
+    "province": "Riau",
+    "skExtraction": {
+      "institution": "KT BAKTI RAYA LUKIT",
+      "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
+      "decreeNumber": "SK.3002/MENLHK-PSKL/PKPS/ PSL.0/5/2020",
+      "decreeDate": "13 Mei 2020",
+      "validity": "Sampai 13 Mei 2055",
+      "validityPeriod": "35 tahun sejak 13 Mei 2020",
+      "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
+      "approvedAreaHa": 121,
+      "forestFunctions": "Hutan Produksi Terbatas ±121 ha",
+      "location": "Desa/Kelurahan Lukit · Kecamatan Merbau · Kabupaten Kepulauan Meranti · Provinsi Riau",
+      "ecosystem": "Ekosistem gambut · fungsi lindung ±120 ha · fungsi budidaya ±1 ha",
+      "beneficiaries": {
+        "direct": 28,
+        "male": 25,
+        "female": 3,
+        "source": "Lampiran SK KT BAKTI RAYA LUKIT"
+      },
+      "management": {
+        "forestManagementUnit": "Kesatuan Pengelolaan Hutan Tebing Tinggi",
+        "source": "Tembusan SK KT BAKTI RAYA LUKIT"
+      },
+      "source": "SK KT BAKTI RAYA LUKIT"
+    }
   },
   "sk.4074/menlhk-pskl/pkps/ psl.0/6/2020": {
     "name": "KTH LESTARI ALAM",
     "village": "Tanjung Sari",
     "district": "Tebing TInggi Timur",
     "regency": "Kepulauan Meranti",
-    "scheme": "HKm",
     "decree": "SK.4074/MENLHK-PSKL/PKPS/ PSL.0/6/2020",
     "areaHa": 261,
     "documents": [
@@ -3025,23 +3148,37 @@
         "category": "Peta",
         "url": "https://drive.google.com/file/d/1M0DRYhlSWR3z4eiuTCCpIUp2OxyYyxKt/view?usp=drivesdk"
       }
-    ]
+    ],
+    "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
+    "province": "Riau",
+    "skExtraction": {
+      "institution": "KTH LESTARI ALAM",
+      "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
+      "decreeNumber": "SK.4074/MENLHK-PSKL/PKPS/ PSL.0/6/2020",
+      "decreeDate": "26 Juni 2020",
+      "validity": "Sampai 26 Juni 2055",
+      "validityPeriod": "35 tahun sejak 26 Juni 2020",
+      "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
+      "approvedAreaHa": 261,
+      "forestFunctions": "Hutan Produksi Terbatas ±180 ha · Hutan Produksi yang Dapat Dikonversi ±81 ha",
+      "location": "Desa/Kelurahan Tanjung Sari · Kecamatan Tebing Tinggi Timur · Kabupaten Kepulauan Meranti · Provinsi Riau",
+      "ecosystem": "Ekosistem gambut",
+      "beneficiaries": {
+        "direct": 44,
+        "male": 40,
+        "female": 4,
+        "source": "Lampiran SK KTH LESTARI ALAM"
+      },
+      "management": {
+        "forestManagementUnit": "Kesatuan Pengelolaan Hutan Tebing Tinggi",
+        "source": "Tembusan SK KTH LESTARI ALAM"
+      },
+      "source": "SK KTH LESTARI ALAM"
+    }
   },
   "sk.4086/menlhk-pskl/pkps/ psl.0/6/2020": {
     "name": "KT BINTANG TIMUR",
     "driveFolderId": "19BmQvDDyWzYSS9QKzlBp4IVyJf2ky_E9",
-    "skExtraction": {
-      "decreeNumber": "SK.4086/MENLHK-PSKL/PKPS/PSL.0/6/2020",
-      "approvedAreaHa": 189,
-      "decreeDate": "26 Juni 2020",
-      "location": "Desa Bungur · Kecamatan Rangsang Pesisir · Kabupaten Kepulauan Meranti · Provinsi Riau",
-      "validity": "Sampai 26 Juni 2055",
-      "source": "SK KTH Bintang Timur",
-      "scheme": "Izin Usaha Pemanfaatan Hutan Kemasyarakatan",
-      "validityPeriod": "35 tahun sejak 26 Juni 2020",
-      "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
-      "forestFunctions": "Hutan Produksi Terbatas ±157 ha · Hutan Produksi yang dapat Dikonversi ±32 ha"
-    },
     "beneficiaries": {
       "direct": 64,
       "male": 64,
@@ -3071,18 +3208,42 @@
       }
     ],
     "decree": "SK.4086/MENLHK-PSKL/PKPS/PSL.0/6/2020",
-    "scheme": "Izin Usaha Pemanfaatan Hutan Kemasyarakatan",
     "areaHa": 189,
     "village": "Bungur",
     "district": "Rangsang Pesisir",
-    "regency": "Kepulauan Meranti"
+    "regency": "Kepulauan Meranti",
+    "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
+    "province": "Riau",
+    "skExtraction": {
+      "institution": "KT BINTANG TIMUR",
+      "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
+      "decreeNumber": "SK.4086/MENLHK-PSKL/PKPS/PSL.0/6/2020",
+      "decreeDate": "26 Juni 2020",
+      "validity": "Sampai 26 Juni 2055",
+      "validityPeriod": "35 tahun sejak 26 Juni 2020",
+      "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
+      "approvedAreaHa": 189,
+      "forestFunctions": "Hutan Produksi Terbatas ±157 ha · Hutan Produksi yang Dapat Dikonversi ±32 ha",
+      "location": "Desa/Kelurahan Bungur · Kecamatan Rangsang Pesisir · Kabupaten Kepulauan Meranti · Provinsi Riau",
+      "ecosystem": "Ekosistem gambut",
+      "beneficiaries": {
+        "direct": 64,
+        "male": 64,
+        "female": 0,
+        "source": "Lampiran SK KT BINTANG TIMUR"
+      },
+      "management": {
+        "forestManagementUnit": "Kesatuan Pengelolaan Hutan Tebing Tinggi",
+        "source": "Tembusan SK KT BINTANG TIMUR"
+      },
+      "source": "SK KT BINTANG TIMUR"
+    }
   },
   "sk.4085/menlhk-pskl/pkps/psl.0/6/2020": {
     "name": "KTH PUTRA ASLI KUNDUR",
     "village": "Kundur",
     "district": "Tebing Tinggi Barat",
     "regency": "Kepulauan Meranti",
-    "scheme": "HKm",
     "decree": "SK.4085/MENLHK-PSKL/PKPS/PSL.0/6/2020",
     "areaHa": 151,
     "documents": [
@@ -3096,14 +3257,33 @@
         "category": "Peta",
         "url": "https://drive.google.com/file/d/1atz5Ta1E_oXOWfpevGGvGEP9k_S1FO4x/view?usp=drivesdk"
       }
-    ]
+    ],
+    "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
+    "province": "Riau",
+    "skExtraction": {
+      "institution": "KTH PUTRA ASLI KUNDUR",
+      "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
+      "decreeNumber": "SK.4085/MENLHK-PSKL/PKPS/PSL.0/6/2020",
+      "decreeDate": "26 Juni 2020",
+      "validity": "Sampai 26 Juni 2055",
+      "validityPeriod": "35 tahun sejak 26 Juni 2020",
+      "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
+      "approvedAreaHa": 151,
+      "forestFunctions": "Hutan Produksi Terbatas ±130 ha · Hutan Produksi yang Dapat Dikonversi ±21 ha",
+      "location": "Desa/Kelurahan Kundur · Kecamatan Tebing Tinggi Barat · Kabupaten Kepulauan Meranti · Provinsi Riau",
+      "ecosystem": "Ekosistem gambut",
+      "management": {
+        "forestManagementUnit": "Kesatuan Pengelolaan Hutan Tebing Tinggi",
+        "source": "Tembusan SK KTH PUTRA ASLI KUNDUR"
+      },
+      "source": "SK KTH PUTRA ASLI KUNDUR"
+    }
   },
   "sk.4084/menlhk-pskl/pkps/psl.0/6/2020": {
     "name": "KTH PUTRA ASLI TENAN",
     "village": "Tenan",
     "district": "Tebing Tinggi Barat",
     "regency": "Kepulauan Meranti",
-    "scheme": "HKm",
     "decree": "SK.4084/MENLHK-PSKL/PKPS/PSL.0/6/2020",
     "areaHa": 340,
     "documents": [
@@ -3117,14 +3297,37 @@
         "category": "Legalitas",
         "url": "https://drive.google.com/file/d/1qp0J_deYfWVUMxduFu82fWFoX64qMsiO/view?usp=drivesdk"
       }
-    ]
+    ],
+    "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
+    "province": "Riau",
+    "skExtraction": {
+      "institution": "KTH PUTRA ASLI TENAN",
+      "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
+      "decreeNumber": "SK.4084/MENLHK-PSKL/PKPS/PSL.0/6/2020",
+      "decreeDate": "26 Juni 2020",
+      "validity": "Sampai 26 Juni 2055",
+      "validityPeriod": "35 tahun sejak 26 Juni 2020",
+      "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
+      "approvedAreaHa": 340,
+      "forestFunctions": "Hutan Produksi Terbatas ±314 ha",
+      "location": "Desa/Kelurahan Tenan · Kecamatan Tebing Tinggi Barat · Kabupaten Kepulauan Meranti · Provinsi Riau",
+      "ecosystem": "Ekosistem gambut",
+      "beneficiaries": {
+        "direct": 31,
+        "source": "Lampiran SK KTH PUTRA ASLI TENAN"
+      },
+      "management": {
+        "forestManagementUnit": "Kesatuan Pengelolaan Hutan Tebing Tinggi",
+        "source": "Tembusan SK KTH PUTRA ASLI TENAN"
+      },
+      "source": "SK KTH PUTRA ASLI TENAN"
+    }
   },
   "sk.4083/menlhk-pskl/pkps/ psl.0/6/2020": {
     "name": "KTH MANGROVE MERANTI LESTARI",
     "village": "Batang Meranti",
     "district": "Pulau Merbau",
     "regency": "Kepulauan Meranti",
-    "scheme": "HKm",
     "decree": "SK.4083/MENLHK-PSKL/PKPS/ PSL.0/6/2020",
     "areaHa": 164,
     "documents": [
@@ -3148,14 +3351,39 @@
         "category": "Rencana kerja",
         "url": "https://drive.google.com/file/d/1qPyloxT8N-8V9K9N0AkyHz6JssxeWD9o/view?usp=drivesdk"
       }
-    ]
+    ],
+    "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
+    "province": "Riau",
+    "skExtraction": {
+      "institution": "KTH MANGROVE MERANTI LESTARI",
+      "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
+      "decreeNumber": "SK.4083/MENLHK-PSKL/PKPS/ PSL.0/6/2020",
+      "decreeDate": "26 Juni 2020",
+      "validity": "Sampai 26 Juni 2055",
+      "validityPeriod": "35 tahun sejak 26 Juni 2020",
+      "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
+      "approvedAreaHa": 164,
+      "forestFunctions": "Hutan Produksi Terbatas ±300 ha",
+      "location": "Desa/Kelurahan Batang Meranti · Kecamatan Pulau Merbau · Kabupaten Kepulauan Meranti · Provinsi Riau",
+      "ecosystem": "Ekosistem gambut",
+      "beneficiaries": {
+        "direct": 146,
+        "male": 141,
+        "female": 5,
+        "source": "Lampiran SK KTH MANGROVE MERANTI LESTARI"
+      },
+      "management": {
+        "forestManagementUnit": "Kesatuan Pengelolaan Hutan Tebing Tinggi",
+        "source": "Tembusan SK KTH MANGROVE MERANTI LESTARI"
+      },
+      "source": "SK KTH MANGROVE MERANTI LESTARI"
+    }
   },
   "sk.4082/menlhk-pskl/pkps/psl.0/6/2020": {
     "name": "KTH TERUS JAYA",
     "village": "Teluk Ketapang",
     "district": "Pulau Merbau",
     "regency": "Kepulauan Meranti",
-    "scheme": "HKm",
     "decree": "SK.4082/MENLHK-PSKL/PKPS/PSL.0/6/2020",
     "areaHa": 169,
     "documents": [
@@ -3174,23 +3402,37 @@
         "category": "KUPS",
         "url": "https://drive.google.com/file/d/1ma-4zHmjUSmIumGJWEZqCiW68EKxguGh/view?usp=drivesdk"
       }
-    ]
+    ],
+    "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
+    "province": "Riau",
+    "skExtraction": {
+      "institution": "KTH TERUS JAYA",
+      "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
+      "decreeNumber": "SK.4082/MENLHK-PSKL/PKPS/PSL.0/6/2020",
+      "decreeDate": "26 Juni 2020",
+      "validity": "Sampai 26 Juni 2055",
+      "validityPeriod": "35 tahun sejak 26 Juni 2020",
+      "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
+      "approvedAreaHa": 169,
+      "forestFunctions": "Hutan Produksi Terbatas ±169 ha",
+      "location": "Desa/Kelurahan Teluk Ketapang · Kecamatan Pulau Merbau · Kabupaten Kepulauan Meranti · Provinsi Riau",
+      "ecosystem": "Ekosistem gambut · fungsi budidaya seluruh areal",
+      "beneficiaries": {
+        "direct": 87,
+        "male": 85,
+        "female": 2,
+        "source": "Lampiran SK KTH TERUS JAYA"
+      },
+      "management": {
+        "forestManagementUnit": "Kesatuan Pengelolaan Hutan Tebing Tinggi",
+        "source": "Tembusan SK KTH TERUS JAYA"
+      },
+      "source": "SK KTH TERUS JAYA"
+    }
   },
   "sk.4081/menlhk-pskl/pkps/psl.0/6/2020": {
     "name": "KTH SUBUR MAKMUR",
     "driveFolderId": "1n_e5zfbI0QsDWr3dJ3EjLZPN_DZcxA30",
-    "skExtraction": {
-      "decreeNumber": "SK.4081/MENLHK-PSKL/PKPS/PSL.0/6/2020",
-      "approvedAreaHa": 265,
-      "decreeDate": "26 Juni 2020",
-      "location": "Desa Tanjung Darul Takzim · Kecamatan Tebing Tinggi Barat · Kabupaten Kepulauan Meranti · Provinsi Riau",
-      "validity": "Sampai 26 Juni 2055",
-      "source": "SK KTH Subur Makmur",
-      "scheme": "Izin Usaha Pemanfaatan Hutan Kemasyarakatan",
-      "validityPeriod": "35 tahun sejak 26 Juni 2020",
-      "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
-      "forestFunctions": "Hutan Produksi Terbatas ±265 ha"
-    },
     "beneficiaries": {
       "direct": 51,
       "male": 47,
@@ -3240,27 +3482,38 @@
       }
     ],
     "decree": "SK.4081/MENLHK-PSKL/PKPS/PSL.0/6/2020",
-    "scheme": "Izin Usaha Pemanfaatan Hutan Kemasyarakatan",
     "areaHa": 265,
     "village": "Tanjung Darul Takzim",
     "district": "Tebing Tinggi Barat",
-    "regency": "Kepulauan Meranti"
+    "regency": "Kepulauan Meranti",
+    "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
+    "province": "Riau",
+    "skExtraction": {
+      "institution": "KTH SUBUR MAKMUR",
+      "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
+      "decreeNumber": "SK.4081/MENLHK-PSKL/PKPS/PSL.0/6/2020",
+      "decreeDate": "26 Juni 2020",
+      "validity": "Sampai 26 Juni 2055",
+      "validityPeriod": "35 tahun sejak 26 Juni 2020",
+      "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
+      "approvedAreaHa": 265,
+      "forestFunctions": "Hutan Produksi Terbatas ±265 ha",
+      "location": "Desa/Kelurahan Tanjung Darul Takzim · Kecamatan Tebing Tinggi Barat · Kabupaten Kepulauan Meranti · Provinsi Riau",
+      "ecosystem": "Ekosistem gambut",
+      "beneficiaries": {
+        "direct": 51,
+        "source": "Lampiran SK KTH SUBUR MAKMUR"
+      },
+      "management": {
+        "forestManagementUnit": "Kesatuan Pengelolaan Hutan Tebing Tinggi",
+        "source": "Tembusan SK KTH SUBUR MAKMUR"
+      },
+      "source": "SK KTH SUBUR MAKMUR"
+    }
   },
   "sk.4101/menlhk-pskl/pkps/ psl.0/6/2020": {
     "name": "KTH BUNGUR MANGROVE LESTARI",
     "driveFolderId": "1_stB1wTEbWuFWyLsbY2Qy0sycDf3jgsb",
-    "skExtraction": {
-      "decreeNumber": "SK.4101/MENLHK-PSKL/PKPS/PSL.0/6/2020",
-      "approvedAreaHa": 168,
-      "decreeDate": "29 Juni 2020",
-      "location": "Desa Bungur · Kecamatan Rangsang Pesisir · Kabupaten Kepulauan Meranti · Provinsi Riau",
-      "validity": "Sampai 29 Juni 2055",
-      "source": "SK KTH Bungur Mangrove Lestari",
-      "scheme": "Izin Usaha Pemanfaatan Hutan Kemasyarakatan",
-      "validityPeriod": "35 tahun sejak 29 Juni 2020",
-      "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
-      "forestFunctions": "Hutan Produksi Terbatas ±147 ha · Hutan Produksi yang dapat Dikonversi ±21 ha"
-    },
     "beneficiaries": {
       "direct": 46,
       "male": 44,
@@ -3290,27 +3543,40 @@
       }
     ],
     "decree": "SK.4101/MENLHK-PSKL/PKPS/PSL.0/6/2020",
-    "scheme": "Izin Usaha Pemanfaatan Hutan Kemasyarakatan",
     "areaHa": 168,
     "village": "Bungur",
     "district": "Rangsang Pesisir",
-    "regency": "Kepulauan Meranti"
+    "regency": "Kepulauan Meranti",
+    "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
+    "province": "Riau",
+    "skExtraction": {
+      "institution": "KTH BUNGUR MANGROVE LESTARI",
+      "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
+      "decreeNumber": "SK.4101/MENLHK-PSKL/PKPS/PSL.0/6/2020",
+      "decreeDate": "29 Juni 2020",
+      "validity": "Sampai 29 Juni 2055",
+      "validityPeriod": "35 tahun sejak 29 Juni 2020",
+      "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
+      "approvedAreaHa": 168,
+      "forestFunctions": "Hutan Produksi Terbatas ±147 ha · Hutan Produksi yang Dapat Dikonversi ±21 ha",
+      "location": "Desa/Kelurahan Bungur · Kecamatan Rangsang Pesisir · Kabupaten Kepulauan Meranti · Provinsi Riau",
+      "ecosystem": "Ekosistem gambut",
+      "beneficiaries": {
+        "direct": 46,
+        "male": 44,
+        "female": 2,
+        "source": "Lampiran SK KTH BUNGUR MANGROVE LESTARI"
+      },
+      "management": {
+        "forestManagementUnit": "Kesatuan Pengelolaan Hutan Tebing Tinggi",
+        "source": "Tembusan SK KTH BUNGUR MANGROVE LESTARI"
+      },
+      "source": "SK KTH BUNGUR MANGROVE LESTARI"
+    }
   },
   "sk.4100/menlhk-pskl/pkps/ psl.0/6/2020": {
     "name": "KTH PERMATA SODOR LESTARI",
     "driveFolderId": "1SmsV0kjLqjLNUbNRoTSqkW8mvIbRNbmY",
-    "skExtraction": {
-      "decreeNumber": "SK.4100/MENLHK-PSKL/PKPS/PSL.0/6/2020",
-      "approvedAreaHa": 453,
-      "decreeDate": "29 Juni 2020",
-      "location": "Desa Kayu Ara · Kecamatan Rangsang Pesisir · Kabupaten Kepulauan Meranti · Provinsi Riau",
-      "validity": "Sampai 29 Juni 2055",
-      "source": "SK KTH Permata Sodor Lestari",
-      "scheme": "Izin Usaha Pemanfaatan Hutan Kemasyarakatan",
-      "validityPeriod": "35 tahun sejak 29 Juni 2020",
-      "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
-      "forestFunctions": "Hutan Produksi Terbatas ±453 ha"
-    },
     "beneficiaries": {
       "direct": 49,
       "male": 48,
@@ -3340,27 +3606,40 @@
       }
     ],
     "decree": "SK.4100/MENLHK-PSKL/PKPS/PSL.0/6/2020",
-    "scheme": "Izin Usaha Pemanfaatan Hutan Kemasyarakatan",
     "areaHa": 453,
     "village": "Kayu Ara",
     "district": "Rangsang Pesisir",
-    "regency": "Kepulauan Meranti"
+    "regency": "Kepulauan Meranti",
+    "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
+    "province": "Riau",
+    "skExtraction": {
+      "institution": "KTH PERMATA SODOR LESTARI",
+      "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
+      "decreeNumber": "SK.4100/MENLHK-PSKL/PKPS/PSL.0/6/2020",
+      "decreeDate": "29 Juni 2020",
+      "validity": "Sampai 29 Juni 2055",
+      "validityPeriod": "35 tahun sejak 29 Juni 2020",
+      "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
+      "approvedAreaHa": 453,
+      "forestFunctions": "Hutan Produksi Terbatas ±1.850 ha",
+      "location": "Desa/Kelurahan Kayu Ara · Kecamatan Rangsang Pesisir · Kabupaten Kepulauan Meranti · Provinsi Riau",
+      "ecosystem": "Ekosistem gambut",
+      "beneficiaries": {
+        "direct": 49,
+        "male": 48,
+        "female": 1,
+        "source": "Lampiran SK KTH PERMATA SODOR LESTARI"
+      },
+      "management": {
+        "forestManagementUnit": "Kesatuan Pengelolaan Hutan Tebing Tinggi",
+        "source": "Tembusan SK KTH PERMATA SODOR LESTARI"
+      },
+      "source": "SK KTH PERMATA SODOR LESTARI"
+    }
   },
   "sk.4249/menlhk-pskl/pkps/ psl.0/7/2020": {
     "name": "KTH PERANAP LESTARI",
     "driveFolderId": "1A3rmot7LUBBGPkWgHNJr3C3PsLXeeH5m",
-    "skExtraction": {
-      "decreeNumber": "SK.4249/MENLHK-PSKL/PKPS/PSL.0/7/2020",
-      "approvedAreaHa": 661,
-      "decreeDate": "2 Juli 2020",
-      "location": "Desa Tanjung Peranap · Kecamatan Tebing Tinggi Barat · Kabupaten Kepulauan Meranti · Provinsi Riau",
-      "validity": "Sampai 2 Juli 2055",
-      "source": "SK KTH Peranap Lestari",
-      "scheme": "Izin Usaha Pemanfaatan Hutan Kemasyarakatan",
-      "validityPeriod": "35 tahun sejak 2 Juli 2020",
-      "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
-      "forestFunctions": "Hutan Produksi Terbatas ±494 ha · Hutan Produksi yang dapat Dikonversi ±167 ha"
-    },
     "beneficiaries": {
       "direct": 144,
       "male": 94,
@@ -3395,25 +3674,40 @@
       }
     ],
     "decree": "SK.4249/MENLHK-PSKL/PKPS/PSL.0/7/2020",
-    "scheme": "Izin Usaha Pemanfaatan Hutan Kemasyarakatan",
     "areaHa": 661,
     "village": "Tanjung Peranap",
     "district": "Tebing Tinggi Barat",
-    "regency": "Kepulauan Meranti"
+    "regency": "Kepulauan Meranti",
+    "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
+    "province": "Riau",
+    "skExtraction": {
+      "institution": "KTH PERANAP LESTARI",
+      "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
+      "decreeNumber": "SK.4249/MENLHK-PSKL/PKPS/PSL.0/7/2020",
+      "decreeDate": "2 Juli 2020",
+      "validity": "Sampai 2 Juli 2055",
+      "validityPeriod": "35 tahun sejak 2 Juli 2020",
+      "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
+      "approvedAreaHa": 661,
+      "forestFunctions": "Hutan Produksi Terbatas ±494 ha · Hutan Produksi yang Dapat Dikonversi ±167 ha",
+      "location": "Desa/Kelurahan Tanjung Peranap · Kecamatan Tebing Tinggi Barat · Kabupaten Kepulauan Meranti · Provinsi Riau",
+      "ecosystem": "Ekosistem gambut",
+      "beneficiaries": {
+        "direct": 144,
+        "male": 94,
+        "female": 50,
+        "source": "Lampiran SK KTH PERANAP LESTARI"
+      },
+      "management": {
+        "forestManagementUnit": "Kesatuan Pengelolaan Hutan Tebing Tinggi",
+        "source": "Tembusan SK KTH PERANAP LESTARI"
+      },
+      "source": "SK KTH PERANAP LESTARI"
+    }
   },
   "sk.4248/menlhk-pskl/pkps/psl.0/7/2020": {
     "name": "KTH REMAI GEMILANG",
     "driveFolderId": "1Z29Izzf9a0FguxLaLHJsL-MjqhAimS01",
-    "skExtraction": {
-      "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
-      "validityPeriod": "35 tahun sejak tanggal penetapan SK",
-      "scheme": "Izin Usaha Pemanfaatan Hutan Kemasyarakatan",
-      "decreeNumber": "SK.4248/MENLHK-PSKL/PKPS/PSL.0/7/2020",
-      "approvedAreaHa": 218,
-      "location": "Desa Padang Kamal · Kecamatan Pulau Merbau · Kabupaten Kepulauan Meranti · Provinsi Riau",
-      "forestFunctions": "Hutan Produksi Terbatas ±218 ha",
-      "source": "SK KTH Remai Gemilang"
-    },
     "beneficiaries": {
       "direct": 44,
       "male": 43,
@@ -3443,27 +3737,40 @@
       }
     ],
     "decree": "SK.4248/MENLHK-PSKL/PKPS/PSL.0/7/2020",
-    "scheme": "Izin Usaha Pemanfaatan Hutan Kemasyarakatan",
     "areaHa": 218,
     "village": "Padang Kamal",
     "district": "Pulau Merbau",
-    "regency": "Kepulauan Meranti"
+    "regency": "Kepulauan Meranti",
+    "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
+    "province": "Riau",
+    "skExtraction": {
+      "institution": "KTH REMAI GEMILANG",
+      "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
+      "decreeNumber": "SK.4248/MENLHK-PSKL/PKPS/PSL.0/7/2020",
+      "decreeDate": "2 Juli 2020",
+      "validity": "Sampai 2 Juli 2055",
+      "validityPeriod": "35 tahun sejak 2 Juli 2020",
+      "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
+      "approvedAreaHa": 218,
+      "forestFunctions": "Hutan Produksi Terbatas ±218 ha",
+      "location": "Desa/Kelurahan Padang Kamal · Kecamatan Pulau Merbau · Kabupaten Kepulauan Meranti · Provinsi Riau",
+      "ecosystem": "Ekosistem gambut",
+      "beneficiaries": {
+        "direct": 43,
+        "male": 43,
+        "female": 0,
+        "source": "Lampiran SK KTH REMAI GEMILANG"
+      },
+      "management": {
+        "forestManagementUnit": "Kesatuan Pengelolaan Hutan Tebing Tinggi",
+        "source": "Tembusan SK KTH REMAI GEMILANG"
+      },
+      "source": "SK KTH REMAI GEMILANG"
+    }
   },
   "sk.4244/menlhk-pskl/pkps/psl.0/7/2020": {
     "name": "KT BUNGA BUNGUR SEJAHTERA",
     "driveFolderId": "1n9i3f5vkGeuiWYkdYO3dooPh4jlZYczV",
-    "skExtraction": {
-      "decreeNumber": "SK.4244/MENLHK-PSKL/PKPS/PSL.0/7/2020",
-      "approvedAreaHa": 180,
-      "decreeDate": "2 Juli 2020",
-      "location": "Desa Bungur · Kecamatan Rangsang Pesisir · Kabupaten Kepulauan Meranti · Provinsi Riau",
-      "validity": "Sampai 2 Juli 2055",
-      "source": "SK KT Bunga Bungur Sejahtera",
-      "scheme": "Izin Usaha Pemanfaatan Hutan Kemasyarakatan",
-      "validityPeriod": "35 tahun sejak 2 Juli 2020",
-      "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
-      "forestFunctions": "Hutan Produksi Terbatas ±127 ha · Hutan Produksi Tetap ±53 ha"
-    },
     "beneficiaries": {
       "direct": 35,
       "male": 34,
@@ -3498,27 +3805,40 @@
       }
     ],
     "decree": "SK.4244/MENLHK-PSKL/PKPS/PSL.0/7/2020",
-    "scheme": "Izin Usaha Pemanfaatan Hutan Kemasyarakatan",
     "areaHa": 180,
     "village": "Bungur",
     "district": "Rangsang Pesisir",
-    "regency": "Kepulauan Meranti"
+    "regency": "Kepulauan Meranti",
+    "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
+    "province": "Riau",
+    "skExtraction": {
+      "institution": "KT BUNGA BUNGUR SEJAHTERA",
+      "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
+      "decreeNumber": "SK.4244/MENLHK-PSKL/PKPS/PSL.0/7/2020",
+      "decreeDate": "2 Juli 2020",
+      "validity": "Sampai 2 Juli 2055",
+      "validityPeriod": "35 tahun sejak 2 Juli 2020",
+      "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
+      "approvedAreaHa": 180,
+      "forestFunctions": "Hutan Produksi Terbatas ±127 ha · Hutan Produksi Tetap ±53 ha",
+      "location": "Desa/Kelurahan Bungur · Kecamatan Rangsang Pesisir · Kabupaten Kepulauan Meranti · Provinsi Riau",
+      "ecosystem": "Ekosistem gambut",
+      "beneficiaries": {
+        "direct": 35,
+        "male": 34,
+        "female": 1,
+        "source": "Lampiran SK KT BUNGA BUNGUR SEJAHTERA"
+      },
+      "management": {
+        "forestManagementUnit": "Kesatuan Pengelolaan Hutan Tebing Tinggi",
+        "source": "Tembusan SK KT BUNGA BUNGUR SEJAHTERA"
+      },
+      "source": "SK KT BUNGA BUNGUR SEJAHTERA"
+    }
   },
   "sk. 4240/menlhk-pskl/pkps/psl.0/7/2020": {
     "name": "KTH CIPTA KARYA BERSAMA",
     "driveFolderId": "1bYmqZ93sjwW0nf58SKcaTQBRpfgDKWyv",
-    "skExtraction": {
-      "decreeNumber": "SK.4240/MENLHK-PSKL/PKPS/PSL.0/7/2020",
-      "approvedAreaHa": 229,
-      "decreeDate": "2 Juli 2020",
-      "location": "Kecamatan Tebing Tinggi Timur · Kabupaten Kepulauan Meranti · Provinsi Riau",
-      "validity": "Sampai 2 Juli 2055",
-      "source": "SK KTH Cipta Karya Bersama",
-      "scheme": "Izin Usaha Pemanfaatan Hutan Kemasyarakatan",
-      "validityPeriod": "35 tahun sejak 2 Juli 2020",
-      "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
-      "forestFunctions": "Hutan Produksi Terbatas ±180 ha · Hutan Produksi yang dapat Dikonversi ±49 ha"
-    },
     "beneficiaries": {
       "direct": 44,
       "male": 41,
@@ -3556,27 +3876,36 @@
       }
     ],
     "decree": "SK.4240/MENLHK-PSKL/PKPS/PSL.0/7/2020",
-    "scheme": "Izin Usaha Pemanfaatan Hutan Kemasyarakatan",
     "areaHa": 229,
     "village": "Sungai Tohor",
     "district": "Tebing Tinggi Timur",
-    "regency": "Kepulauan Meranti"
+    "regency": "Kepulauan Meranti",
+    "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
+    "province": "Riau",
+    "skExtraction": {
+      "institution": "KTH CIPTA KARYA BERSAMA",
+      "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
+      "decreeNumber": "SK.4240/MENLHK-PSKL/PKPS/PSL.0/7/2020",
+      "decreeDate": "2 Juli 2020",
+      "validity": "Sampai 2 Juli 2055",
+      "validityPeriod": "35 tahun sejak 2 Juli 2020",
+      "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
+      "approvedAreaHa": 229,
+      "forestFunctions": "Hutan Produksi Terbatas ±180 ha · Hutan Produksi yang Dapat Dikonversi ±49 ha",
+      "location": "Desa/Kelurahan Sungai Tohor · Kecamatan Tebing Tinggi Timur · Kabupaten Kepulauan Meranti · Provinsi Riau",
+      "ecosystem": "Ekosistem gambut",
+      "beneficiaries": {
+        "direct": 44,
+        "male": 41,
+        "female": 3,
+        "source": "Lampiran SK KTH CIPTA KARYA BERSAMA"
+      },
+      "source": "SK KTH CIPTA KARYA BERSAMA"
+    }
   },
   "sk. 4231/menlhk-pskl/pkps/psl.0/7/2020": {
     "name": "KTH PELITA BANGLAS SEJAHTERA",
     "driveFolderId": "1cW0PprKGKTPn9q-eNRc8T2Q8Gib6hOJN",
-    "skExtraction": {
-      "decreeNumber": "SK.4231/MENLHK-PSKL/PKPS/PSL.0/7/2020",
-      "approvedAreaHa": 642,
-      "decreeDate": "2 Juli 2020",
-      "location": "Desa Banglas · Kecamatan Tebing Tinggi · Kabupaten Kepulauan Meranti · Provinsi Riau",
-      "validity": "Sampai 2 Juli 2055",
-      "source": "SK KTH Pelita Banglas Sejahtera",
-      "scheme": "Izin Usaha Pemanfaatan Hutan Kemasyarakatan",
-      "validityPeriod": "35 tahun sejak 2 Juli 2020",
-      "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
-      "forestFunctions": "Hutan Produksi Terbatas ±642 ha"
-    },
     "beneficiaries": {
       "direct": 141,
       "male": 128,
@@ -3606,27 +3935,38 @@
       }
     ],
     "decree": "SK.4231/MENLHK-PSKL/PKPS/PSL.0/7/2020",
-    "scheme": "Izin Usaha Pemanfaatan Hutan Kemasyarakatan",
     "areaHa": 642,
     "village": "Banglas",
     "district": "Tebing Tinggi",
-    "regency": "Kepulauan Meranti"
+    "regency": "Kepulauan Meranti",
+    "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
+    "province": "Riau",
+    "skExtraction": {
+      "institution": "KTH PELITA BANGLAS SEJAHTERA",
+      "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
+      "decreeNumber": "SK.4231/MENLHK-PSKL/PKPS/PSL.0/7/2020",
+      "decreeDate": "2 Juli 2020",
+      "validity": "Sampai 2 Juli 2055",
+      "validityPeriod": "35 tahun sejak 2 Juli 2020",
+      "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
+      "approvedAreaHa": 642,
+      "forestFunctions": "Hutan Produksi Terbatas ±1.750 ha",
+      "location": "Desa/Kelurahan Banglas · Kecamatan Tebing Tinggi · Kabupaten Kepulauan Meranti · Provinsi Riau",
+      "ecosystem": "Ekosistem gambut",
+      "beneficiaries": {
+        "direct": 141,
+        "source": "Lampiran SK KTH PELITA BANGLAS SEJAHTERA"
+      },
+      "management": {
+        "forestManagementUnit": "Kesatuan Pengelolaan Hutan Tebing Tinggi",
+        "source": "Tembusan SK KTH PELITA BANGLAS SEJAHTERA"
+      },
+      "source": "SK KTH PELITA BANGLAS SEJAHTERA"
+    }
   },
   "sk.4230/menlhk-pskl/pkps/ psl.0/7/2020": {
     "name": "KOPERASI BANAU BISA MAJU",
     "driveFolderId": "1OVdn33b64d4Sfjp1rY3D-zY-rxz4jqZv",
-    "skExtraction": {
-      "decreeNumber": "SK.4230/MENLHK-PSKL/PKPS/PSL.0/7/2020",
-      "approvedAreaHa": 549,
-      "decreeDate": "2 Juli 2020",
-      "location": "Desa Beting · Kecamatan Rangsang Pesisir · Kabupaten Kepulauan Meranti · Provinsi Riau",
-      "validity": "Sampai 2 Juli 2055",
-      "source": "SK Koperasi Banau Bisa Maju",
-      "scheme": "Izin Usaha Pemanfaatan Hutan Kemasyarakatan",
-      "validityPeriod": "35 tahun sejak 2 Juli 2020",
-      "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
-      "forestFunctions": "Hutan Produksi Terbatas ±526 ha · Hutan Produksi yang dapat Dikonversi ±23 ha"
-    },
     "beneficiaries": {
       "direct": 74,
       "male": 67,
@@ -3656,27 +3996,40 @@
       }
     ],
     "decree": "SK.4230/MENLHK-PSKL/PKPS/PSL.0/7/2020",
-    "scheme": "Izin Usaha Pemanfaatan Hutan Kemasyarakatan",
     "areaHa": 549,
     "village": "Beting",
     "district": "Rangsang Pesisir",
-    "regency": "Kepulauan Meranti"
+    "regency": "Kepulauan Meranti",
+    "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
+    "province": "Riau",
+    "skExtraction": {
+      "institution": "KOPERASI BANAU BISA MAJU",
+      "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
+      "decreeNumber": "SK.4230/MENLHK-PSKL/PKPS/PSL.0/7/2020",
+      "decreeDate": "2 Juli 2020",
+      "validity": "Sampai 2 Juli 2055",
+      "validityPeriod": "35 tahun sejak 2 Juli 2020",
+      "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
+      "approvedAreaHa": 549,
+      "forestFunctions": "Hutan Produksi Terbatas ±526 ha · Hutan Produksi yang Dapat Dikonversi ±23 ha",
+      "location": "Desa/Kelurahan Beting · Kecamatan Rangsang Pesisir · Kabupaten Kepulauan Meranti · Provinsi Riau",
+      "ecosystem": "Ekosistem gambut · fungsi lindung ±34 ha · fungsi budidaya ±515 ha",
+      "beneficiaries": {
+        "direct": 74,
+        "male": 67,
+        "female": 7,
+        "source": "Lampiran SK KOPERASI BANAU BISA MAJU"
+      },
+      "management": {
+        "forestManagementUnit": "Kesatuan Pengelolaan Hutan Tebing Tinggi",
+        "source": "Tembusan SK KOPERASI BANAU BISA MAJU"
+      },
+      "source": "SK KOPERASI BANAU BISA MAJU"
+    }
   },
   "sk.4394/menlhk-pskl/pkps/ psl.0/7/2020": {
     "name": "KTH TUAH SONDE",
     "driveFolderId": "14Nw-2TEx-0JbIwF60ToNbhTzusYrZnUj",
-    "skExtraction": {
-      "decreeNumber": "SK.4394/MENLHK-PSKL/PKPS/PSL.0/7/2020",
-      "approvedAreaHa": 668,
-      "decreeDate": "15 Juli 2020",
-      "location": "Desa Sonde · Kecamatan Rangsang Pesisir · Kabupaten Kepulauan Meranti · Provinsi Riau",
-      "validity": "Sampai 15 Juli 2055",
-      "source": "SK KTH Tuah Sonde",
-      "scheme": "Izin Usaha Pemanfaatan Hutan Kemasyarakatan",
-      "validityPeriod": "35 tahun sejak 15 Juli 2020",
-      "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
-      "forestFunctions": "Hutan Produksi Terbatas ±668 ha"
-    },
     "beneficiaries": {
       "direct": 239,
       "male": 213,
@@ -3706,27 +4059,34 @@
       }
     ],
     "decree": "SK.4394/MENLHK-PSKL/PKPS/PSL.0/7/2020",
-    "scheme": "Izin Usaha Pemanfaatan Hutan Kemasyarakatan",
     "areaHa": 668,
     "village": "Sonde",
     "district": "Rangsang Pesisir",
-    "regency": "Kepulauan Meranti"
+    "regency": "Kepulauan Meranti",
+    "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
+    "province": "Riau",
+    "skExtraction": {
+      "institution": "KTH TUAH SONDE",
+      "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
+      "decreeNumber": "SK.4394/MENLHK-PSKL/PKPS/PSL.0/7/2020",
+      "decreeDate": "15 Juli 2020",
+      "validity": "Sampai 15 Juli 2055",
+      "validityPeriod": "35 tahun sejak 15 Juli 2020",
+      "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
+      "approvedAreaHa": 668,
+      "forestFunctions": "Hutan Produksi Terbatas ±668 ha",
+      "location": "Desa/Kelurahan Sonde · Kecamatan Rangsang Pesisir · Kabupaten Kepulauan Meranti · Provinsi Riau",
+      "ecosystem": "Ekosistem gambut",
+      "management": {
+        "forestManagementUnit": "Kesatuan Pengelolaan Hutan Tebing Tinggi",
+        "source": "Tembusan SK KTH TUAH SONDE"
+      },
+      "source": "SK KTH TUAH SONDE"
+    }
   },
   "sk.5143/menlhk-pskl/pkps/psl.0/6/2022": {
     "name": "KTH Flamboyan",
     "driveFolderId": "1fO1rTZaaHIVx7WNO_UIu330yAA7Zk45R",
-    "skExtraction": {
-      "decreeNumber": "SK.5143/MENLHK-PSKL/PKPS/PSL.0/6/2022",
-      "approvedAreaHa": 164,
-      "decreeDate": "13 Juni 2022",
-      "location": "Desa Teluk Buntal · Kecamatan Tebing Tinggi Timur · Kabupaten Kepulauan Meranti · Provinsi Riau",
-      "validity": "Sampai 13 Juni 2057",
-      "source": "SK KTH Flamboyan",
-      "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
-      "validityPeriod": "35 tahun sejak 13 Juni 2022",
-      "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
-      "forestFunctions": "Hutan Produksi yang dapat Dikonversi ±164 ha"
-    },
     "beneficiaries": {
       "direct": 36,
       "male": 35,
@@ -3747,26 +4107,30 @@
       }
     ],
     "decree": "SK.5143/MENLHK-PSKL/PKPS/PSL.0/6/2022",
-    "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
     "areaHa": 164,
     "village": "Teluk Buntal",
     "district": "Tebing Tinggi Timur",
-    "regency": "Kepulauan Meranti"
+    "regency": "Kepulauan Meranti",
+    "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
+    "province": "Riau",
+    "skExtraction": {
+      "institution": "KTH Flamboyan",
+      "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
+      "decreeNumber": "SK.5143/MENLHK-PSKL/PKPS/PSL.0/6/2022",
+      "decreeDate": "13 Juni 2022",
+      "validity": "Sampai 13 Juni 2057",
+      "validityPeriod": "35 tahun sejak 13 Juni 2022",
+      "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
+      "approvedAreaHa": 164,
+      "forestFunctions": "Hutan Produksi yang Dapat Dikonversi ±164 ha",
+      "location": "Desa/Kelurahan Teluk Buntal · Kecamatan Tebing Tinggi Timur · Kabupaten Kepulauan Meranti · Provinsi Riau",
+      "ecosystem": "Ekosistem gambut · fungsi lindung ±134 ha · fungsi budidaya ±30 ha",
+      "source": "SK KTH Flamboyan"
+    }
   },
   "sk.4243/menlhk-pskl/pkps/psl.0/7/2020": {
     "name": "Gapoktan Karya Bersama",
     "driveFolderId": "12uf5cZuDqW9GAtl9n1cNeeGdE5YxOsOu",
-    "skExtraction": {
-      "decreeNumber": "SK.4243/MENLHK-PSKL/PKPS/PSL.0/7/2020",
-      "approvedAreaHa": 127,
-      "decreeDate": "2 Juli 2020",
-      "location": "Desa Sungai Tengah · Kecamatan Merbau · Kabupaten Kepulauan Meranti · Provinsi Riau",
-      "validity": "Sampai 2 Juli 2055",
-      "source": "SK Gapoktan Karya Bersama",
-      "scheme": "Izin Usaha Pemanfaatan Hutan Kemasyarakatan",
-      "validityPeriod": "35 tahun sejak 2 Juli 2020",
-      "evaluation": "Paling sedikit 1 kali setiap 5 tahun"
-    },
     "beneficiaries": {
       "direct": 103,
       "male": 102,
@@ -3787,24 +4151,40 @@
       }
     ],
     "decree": "SK.4243/MENLHK-PSKL/PKPS/PSL.0/7/2020",
-    "scheme": "Izin Usaha Pemanfaatan Hutan Kemasyarakatan",
     "areaHa": 127,
     "village": "Sungai Tengah",
     "district": "Merbau",
-    "regency": "Kepulauan Meranti"
+    "regency": "Kepulauan Meranti",
+    "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
+    "province": "Riau",
+    "skExtraction": {
+      "institution": "Gapoktan Karya Bersama",
+      "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
+      "decreeNumber": "SK.4243/MENLHK-PSKL/PKPS/PSL.0/7/2020",
+      "decreeDate": "2 Juli 2020",
+      "validity": "Sampai 2 Juli 2055",
+      "validityPeriod": "35 tahun sejak 2 Juli 2020",
+      "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
+      "approvedAreaHa": 127,
+      "forestFunctions": "Hutan Produksi Terbatas ±160 ha",
+      "location": "Desa/Kelurahan Sungai Tengah · Kecamatan Merbau · Kabupaten Kepulauan Meranti · Provinsi Riau",
+      "ecosystem": "Ekosistem gambut",
+      "beneficiaries": {
+        "direct": 103,
+        "male": 102,
+        "female": 1,
+        "source": "Lampiran SK Gapoktan Karya Bersama"
+      },
+      "management": {
+        "forestManagementUnit": "Kesatuan Pengelolaan Hutan Tebing Tinggi",
+        "source": "Tembusan SK Gapoktan Karya Bersama"
+      },
+      "source": "SK Gapoktan Karya Bersama"
+    }
   },
   "sk.6721/menlhk-pskl/psl.0/12/2016": {
     "name": "LPHD Kepau Baru",
     "driveFolderId": "1g03AgMfESjWvwJIiur6pjVVNfN5_X96o",
-    "skExtraction": {
-      "scheme": "Hak Pengelolaan Hutan Desa",
-      "source": "SK LPHD Kepau Baru",
-      "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
-      "location": "Desa Kepau Baru · Kecamatan Tebing Tinggi Timur · Kabupaten Kepulauan Meranti · Provinsi Riau",
-      "decreeNumber": "SK.6721/MENLHK-PSKL/PSL.0/12/2016",
-      "approvedAreaHa": 844,
-      "validityPeriod": "35 tahun sejak tanggal penetapan SK"
-    },
     "management": {
       "forestManagementUnitSource": "Tembusan SK LPHD Kepau Baru",
       "forestManagementUnit": "Kesatuan Pengelolaan Hutan Lindung Tebing Tinggi Timur"
@@ -3818,25 +4198,27 @@
       }
     ],
     "decree": "SK.6721/MENLHK-PSKL/PSL.0/12/2016",
-    "scheme": "Hak Pengelolaan Hutan Desa",
     "areaHa": 844,
     "village": "Kepau Baru",
     "district": "Tebing Tinggi Timur",
-    "regency": "Kepulauan Meranti"
+    "regency": "Kepulauan Meranti",
+    "scheme": "Persetujuan Pengelolaan Hutan Desa",
+    "province": "Riau",
+    "skExtraction": {
+      "validityPeriod": "35 tahun sejak tanggal penetapan SK",
+      "institution": "LPHD Kepau Baru",
+      "scheme": "Persetujuan Pengelolaan Hutan Desa",
+      "decreeNumber": "SK.6721/MENLHK-PSKL/PSL.0/12/2016",
+      "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
+      "approvedAreaHa": 844,
+      "forestFunctions": "Hutan Produksi Tetap ±844 ha",
+      "location": "Desa/Kelurahan Kepau Baru · Kecamatan Tebing Tinggi Timur · Kabupaten Kepulauan Meranti · Provinsi Riau",
+      "source": "SK LPHD Kepau Baru"
+    }
   },
   "sk.6720/menlhk-pskl/psl.0/12/2016": {
     "name": "LPHD Sungai Tohor Barat",
     "driveFolderId": "1aoSjBWMsKQKVY8ghWq4OmY8OznKWZtMM",
-    "skExtraction": {
-      "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
-      "validityPeriod": "35 tahun sejak tanggal penetapan SK",
-      "scheme": "Hak Pengelolaan Hutan Desa",
-      "decreeNumber": "SK.6720/MENLHK-PSKL/PSL.0/12/2016",
-      "approvedAreaHa": 1482,
-      "location": "Desa Sungai Tohor Barat · Kecamatan Tebing Tinggi Timur · Kabupaten Kepulauan Meranti · Provinsi Riau",
-      "forestFunctions": "Hutan Produksi Tetap ±1.388 ha · Hutan Produksi yang dapat Dikonversi ±94 ha",
-      "source": "SK LPHD Sungai Tohor Barat"
-    },
     "management": {
       "forestManagementUnitSource": "Tembusan SK LPHD Sungai Tohor Barat",
       "forestManagementUnit": "Kesatuan Pengelolaan Hutan Lindung Tebing Tinggi Timur"
@@ -3850,27 +4232,27 @@
       }
     ],
     "decree": "SK.6720/MENLHK-PSKL/PSL.0/12/2016",
-    "scheme": "Hak Pengelolaan Hutan Desa",
     "areaHa": 1482,
     "village": "Sungai Tohor Barat",
     "district": "Tebing Tinggi Timur",
-    "regency": "Kepulauan Meranti"
+    "regency": "Kepulauan Meranti",
+    "scheme": "Persetujuan Pengelolaan Hutan Desa",
+    "province": "Riau",
+    "skExtraction": {
+      "validityPeriod": "35 tahun sejak tanggal penetapan SK",
+      "institution": "LPHD Sungai Tohor Barat",
+      "scheme": "Persetujuan Pengelolaan Hutan Desa",
+      "decreeNumber": "SK.6720/MENLHK-PSKL/PSL.0/12/2016",
+      "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
+      "approvedAreaHa": 1482,
+      "forestFunctions": "Hutan Produksi Tetap ±1.388 ha · Hutan Produksi yang Dapat Dikonversi ±94 ha",
+      "location": "Desa/Kelurahan Sungai Tohor Barat · Kecamatan Tebing Tinggi Timur · Kabupaten Kepulauan Meranti · Provinsi Riau",
+      "source": "SK LPHD Sungai Tohor Barat"
+    }
   },
   "sk.4226/menlhk-pskl/pkps/psl.0/7/2020": {
     "name": "KT Mangrove Formula",
     "driveFolderId": "1dqYdIitoyZoScNONcf-4qbPP1lMOG505",
-    "skExtraction": {
-      "scheme": "Izin Usaha Pemanfaatan Hutan Kemasyarakatan",
-      "decreeNumber": "SK.4226/MENLHK-PSKL/PKPS/PSL.0/7/2020",
-      "decreeDate": "2 Juli 2020",
-      "validity": "Sampai 2 Juli 2055",
-      "validityPeriod": "35 tahun sejak 2 Juli 2020",
-      "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
-      "approvedAreaHa": 79,
-      "forestFunctions": "Hutan Produksi Terbatas ±79 ha",
-      "location": "Desa Lukit · Kecamatan Merbau · Kabupaten Kepulauan Meranti · Provinsi Riau",
-      "source": "SK KT Mangrove Formula"
-    },
     "beneficiaries": {
       "direct": 38,
       "male": 29,
@@ -3895,34 +4277,69 @@
       }
     ],
     "decree": "SK.4226/MENLHK-PSKL/PKPS/PSL.0/7/2020",
-    "scheme": "Izin Usaha Pemanfaatan Hutan Kemasyarakatan",
     "areaHa": 79,
     "village": "Lukit",
     "district": "Merbau",
-    "regency": "Kepulauan Meranti"
+    "regency": "Kepulauan Meranti",
+    "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
+    "province": "Riau",
+    "skExtraction": {
+      "institution": "KT Mangrove Formula",
+      "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
+      "decreeNumber": "SK.4226/MENLHK-PSKL/PKPS/PSL.0/7/2020",
+      "decreeDate": "2 Juli 2020",
+      "validity": "Sampai 2 Juli 2055",
+      "validityPeriod": "35 tahun sejak 2 Juli 2020",
+      "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
+      "approvedAreaHa": 79,
+      "forestFunctions": "Hutan Produksi Terbatas ±160 ha",
+      "location": "Desa/Kelurahan Lukit · Kecamatan Merbau · Kabupaten Kepulauan Meranti · Provinsi Riau",
+      "ecosystem": "Ekosistem gambut",
+      "beneficiaries": {
+        "direct": 29,
+        "male": 29,
+        "female": 0,
+        "source": "Lampiran SK KT Mangrove Formula"
+      },
+      "management": {
+        "forestManagementUnit": "Kesatuan Pengelolaan Hutan Tebing Tinggi",
+        "source": "Tembusan SK KT Mangrove Formula"
+      },
+      "source": "SK KT Mangrove Formula"
+    }
   },
   "10153 tahun 2024": {
     "name": "KTH Mangrove Laksamana",
     "decree": "10153 TAHUN 2024",
-    "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
     "areaHa": 13,
     "village": "Laksamana",
     "district": "Dumai Kota",
     "regency": "Dumai",
     "province": "Riau",
+    "documents": [
+      {
+        "type": "SK",
+        "title": "SK KTH Mangrove Laksamana",
+        "url": "https://drive.google.com/file/d/1VHsXIplwjLLE6pIH5YLcRMtSIfNsx85J/view"
+      }
+    ],
+    "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
     "skExtraction": {
-      "institution": "Kelompok Tani Hutan Mangrove Laksamana",
+      "institution": "KTH Mangrove Laksamana",
       "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
       "decreeNumber": "10153 TAHUN 2024",
       "decreeDate": "14 Agustus 2024",
       "validity": "Sampai 14 Agustus 2059",
       "validityPeriod": "35 tahun sejak 14 Agustus 2024",
+      "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
       "approvedAreaHa": 13,
       "forestFunctions": "Hutan Produksi Terbatas ±13 ha",
-      "location": "Kelurahan Laksamana · Kecamatan Dumai Kota · Kota Dumai · Provinsi Riau",
+      "location": "Desa/Kelurahan Laksamana · Kecamatan Dumai Kota · Kota Dumai · Provinsi Riau",
+      "ecosystem": "Ekosistem gambut · fungsi budidaya seluruh areal",
       "beneficiaries": {
         "direct": 22,
         "male": 14,
+        "female": 8,
         "source": "Lampiran SK KTH Mangrove Laksamana"
       },
       "management": {
@@ -3930,14 +4347,7 @@
         "source": "Tembusan SK KTH Mangrove Laksamana"
       },
       "source": "SK KTH Mangrove Laksamana"
-    },
-    "documents": [
-      {
-        "type": "SK",
-        "title": "SK KTH Mangrove Laksamana",
-        "url": "https://drive.google.com/file/d/1VHsXIplwjLLE6pIH5YLcRMtSIfNsx85J/view"
-      }
-    ]
+    }
   },
   "sk.4243/menlhk-pskl/pkps/ psl.0/7/2020": {
     "name": "GAPOKTAN KARYA BERSAMA",
