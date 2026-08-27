@@ -50,6 +50,10 @@
   var params=new URLSearchParams(location.search);
   var objectKey=params.get('object')||'';
   var titleHint=decodeURIComponent(params.get('title')||'');
+  if(!objectKey&&location.protocol==='file:'){
+    objectKey='MANGROVE-KELAPA-PATI-PHASE-III-2026-001';
+    titleHint='Kelapa Pati';
+  }
   var selectedGroup=null;
 
   var kpiElement=document.getElementById('detail-kpi');
@@ -480,10 +484,26 @@
     }
     var defs=metricDefs(group.latest.type||'').filter(function(def){
       if(group.latest.type==='Penanaman Mangrove'&&def[0]==='monitoredAreaHa')return false;
-      return metricNumber(group.latest.metrics||{},[def[0]])!==null;
+      return metricNumber(history[0].metrics||{},[def[0]])!==null&&metricNumber(history[history.length-1].metrics||{},[def[0]])!==null;
     });
-    var charts=defs.map(function(definition){return chartSVG(history,definition);}).filter(Boolean);
-    return charts.length?'<div class="charts-grid">'+charts.join('')+'</div>':'<div class="chart-empty">Belum ada metrik yang bisa digrafikkan.</div>';
+    var chronological=history.slice().sort(function(a,b){return dateValue(a.date)-dateValue(b.date);});
+    var first=chronological[0],latest=chronological[chronological.length-1];
+    var planted=metricNumber(group.latest.targetProperties||{},['Jumlah_Bib','Jumlah_Bibit','seedlings']);
+    var alive=metricNumber(latest.metrics||{},['aliveCount','alive','jumlahHidup','tanamanHidup']);
+    var dead=metricNumber(latest.metrics||{},['deadOrDamagedCount']);
+    var total=planted!==null&&planted>0?planted:(alive||0)+(dead||0);
+    alive=alive===null?0:alive;dead=dead===null?Math.max(0,total-alive):dead;
+    var alivePct=total>0?alive/total*100:0,deadPct=total>0?dead/total*100:0;
+    var rows=defs.map(function(definition){
+      var start=metricNumber(first.metrics||{},[definition[0]]),end=metricNumber(latest.metrics||{},[definition[0]]);
+      if(start===null||end===null)return'';
+      var delta=end-start,tone='neutral';
+      if(definition[0]==='deadOrDamagedCount')tone=delta<=0?'good':'bad';
+      else if(definition[0]!=='sedimentationCm')tone=delta>=0?'good':'bad';
+      return'<div class="dumbbell-row '+tone+'"><div class="dumbbell-label">'+esc(definition[1])+'</div><div class="dumbbell-track"><span class="dumbbell-line"></span><span class="dumbbell-dot first"></span><span class="dumbbell-value first">'+esc(formatChartMetric(start,definition[2]))+'</span><span class="dumbbell-value latest">'+esc(formatChartMetric(end,definition[2]))+'</span><span class="dumbbell-dot latest"></span></div><div class="dumbbell-delta '+tone+'">'+esc((delta>0?'+':'')+formatChartMetric(delta,definition[2]))+'</div></div>';
+    }).filter(Boolean).join('');
+    if(!rows)return'<div class="chart-empty">Belum ada indikator yang dapat dibandingkan.</div>';
+    return'<div class="condition-summary"><div class="condition-heading"><strong>Kondisi bibit terbaru</strong><span>'+esc(fmtDate(latest.date))+'</span></div><div class="condition-bar" aria-label="'+esc(numberFormat(alive))+' bibit hidup dan '+esc(numberFormat(dead))+' mati atau rusak"><div class="condition-part condition-alive" style="width:'+alivePct+'%"><span>'+esc(numberFormat(alive))+'<small>'+esc(numberFormat(alivePct))+'% hidup</small></span></div><div class="condition-part condition-dead" style="width:'+deadPct+'%"><span>'+esc(numberFormat(dead))+'<small>'+esc(numberFormat(deadPct))+'% mati/rusak</small></span></div></div><div class="condition-total"><span>Basis atribut polygon</span><strong>'+esc(numberFormat(total))+' bibit tertanam</strong></div></div><div class="dumbbell-chart"><div class="dumbbell-head"><strong>Indikator</strong><span><b>'+esc(fmtDate(first.date))+'</b><b>'+esc(fmtDate(latest.date))+'</b></span><strong>Perubahan</strong></div>'+rows+'</div><p class="chart-note">Nilai memakai satuan asli. Warna menunjukkan arah perubahan; sedimentasi ditampilkan netral.</p>';
   }
 
   function renderKpis(group){

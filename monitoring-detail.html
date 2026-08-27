@@ -13,7 +13,7 @@
     .detail-shell{padding-top:22px;padding-bottom:60px}
     .detail-shell .back-link{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:1px solid var(--line);border-radius:999px;color:var(--green);font-weight:700;text-decoration:none}
     .detail-summary{padding:28px;border-radius:24px;background:linear-gradient(135deg,#064a3c,#08775b);color:#fff;box-shadow:0 18px 46px rgba(9,69,53,.16)}
-    .detail-summary .eyebrow,.detail-summary #detail-subtitle{color:#bde9d9}
+    .detail-summary>.section-heading .eyebrow,.detail-summary #detail-subtitle{color:#c8f2e3}
     .detail-summary .back-link{border-color:rgba(255,255,255,.35);color:#fff}
     .detail-summary h2{margin:5px 0 6px;font-size:clamp(30px,4vw,48px)}
     .detail-summary p{margin:0 0 22px}
@@ -22,13 +22,18 @@
     .detail-card-grid article.primary{background:#fff;color:var(--ink)}
     .detail-card-grid article.alive{background:#dff7e9;color:#064e38}
     .detail-card-grid article.dead{background:#fff0ec;color:#8b321e}
+    .detail-card-grid article .eyebrow{color:#effff9}
+    .detail-card-grid article.primary .eyebrow{color:#315d51}
+    .detail-card-grid article.alive .eyebrow{color:#17684e}
+    .detail-card-grid article.dead .eyebrow{color:#9a4934}
     .detail-card-grid strong{display:block;margin:7px 0 3px;font-size:clamp(23px,2.4vw,34px)}
     .detail-card-grid .muted{display:block;color:inherit;opacity:.72;font-size:11px;line-height:1.35}
-    .detail-evidence{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(340px,.85fr);gap:16px;margin-top:16px}
+    .detail-evidence{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(300px,.65fr);gap:16px;margin-top:16px}
+    .detail-map-stack{display:grid;gap:16px;min-width:0}
     .detail-map-card,.detail-photo-card{padding:20px;border:1px solid var(--line);border-radius:18px;background:#fff;box-shadow:0 10px 28px rgba(20,70,52,.06)}
     .detail-section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:13px}
     .detail-section-head h2{margin:3px 0 0}
-    #detail-map{height:410px;border-radius:14px;background:#e8f1ed;overflow:hidden}
+    #detail-map{height:350px;border-radius:14px;background:#e8f1ed;overflow:hidden}
     .detail-map-note{margin:10px 0 0;color:var(--muted);font-size:11px}
     .detail-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,380px);gap:16px;margin-top:16px}
     .detail-timeline{display:grid;gap:10px}
@@ -39,10 +44,15 @@
     .history-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-top:10px}
     .history-metrics span{padding:9px;border-radius:9px;background:#f2f8f5;color:var(--muted);font-size:10px}
     .history-metrics b{display:block;margin-top:3px;color:var(--ink);font-size:14px}
-    .photo-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+    .photo-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
     .photo-grid a:first-child{grid-column:1/-1}
-    .photo-grid img{display:block;width:100%;height:145px;object-fit:cover;border-radius:10px}
-    .photo-grid a:first-child img{height:238px}
+    .photo-grid img{display:block;width:100%;height:82px;object-fit:cover;border-radius:9px}
+    .photo-grid a:first-child img{height:170px}
+    .detail-chart-card{padding:20px}
+    .condition-summary{padding:14px;border:1px solid #dce9e3;border-radius:14px;background:#f8fcfa;margin-bottom:12px}
+    .condition-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin-bottom:10px}.condition-heading strong{font-size:14px;color:#153f35}.condition-heading span{font-size:11px;color:var(--muted)}
+    .condition-bar{display:flex;overflow:hidden;height:48px;border-radius:11px;background:#edf2ef}.condition-part{display:flex;align-items:center;justify-content:center;min-width:66px;color:#fff;font-size:14px;font-weight:800;line-height:1.05;text-align:center}.condition-part small{display:block;margin-top:3px;font-size:9px;font-weight:600;opacity:.9}.condition-alive{background:#078466}.condition-dead{background:#c7523b}.condition-total{display:flex;justify-content:space-between;gap:12px;margin-top:8px;color:#5a7068;font-size:11px}.condition-total strong{color:#173f35}
+    .dumbbell-chart{padding:4px 14px;border:1px solid #dce9e3;border-radius:14px;background:#fff}.dumbbell-head,.dumbbell-row{display:grid;grid-template-columns:minmax(120px,1fr) minmax(250px,2fr) 92px;gap:12px;align-items:center}.dumbbell-head{padding:9px 0 7px;color:#657970;font-size:10px}.dumbbell-head span{display:flex;justify-content:space-between}.dumbbell-row{padding:12px 0;border-top:1px solid #e2ebe7}.dumbbell-label{color:#173f35;font-size:11px;font-weight:800}.dumbbell-track{position:relative;height:34px}.dumbbell-line{position:absolute;left:7px;right:7px;top:16px;height:3px;border-radius:4px;background:#b7cbc3}.dumbbell-dot{position:absolute;top:10px;width:15px;height:15px;border:4px solid #fff;border-radius:50%;box-shadow:0 0 0 1px currentColor;background:currentColor}.dumbbell-dot.first{left:0}.dumbbell-dot.latest{right:0}.dumbbell-value{position:absolute;top:-3px;color:#1d4c40;font-size:11px;font-weight:800;white-space:nowrap}.dumbbell-value.first{left:23px}.dumbbell-value.latest{right:23px}.dumbbell-delta{text-align:right;font-size:11px;font-weight:800}.dumbbell-row.good,.dumbbell-delta.good{color:#078466}.dumbbell-row.bad,.dumbbell-delta.bad{color:#c7523b}.dumbbell-row.neutral,.dumbbell-delta.neutral{color:#238c91}.chart-note{margin:9px 2px 0;color:var(--muted);font-size:10px;line-height:1.45}
     .detail-source-note{display:block;margin-top:6px;color:var(--muted);font-size:11px;line-height:1.4}
     .tree-charts{display:grid;gap:16px}
     .tree-chart-card{border:1px solid var(--line);border-radius:14px;background:#fff;overflow:hidden}
@@ -70,6 +80,7 @@
     @media(max-width:1020px){
       .detail-card-grid{grid-template-columns:repeat(3,1fr)}
       .detail-layout,.detail-evidence{grid-template-columns:1fr}
+      .dumbbell-head,.dumbbell-row{grid-template-columns:120px minmax(220px,1fr) 84px;gap:9px}
       .detail-replant-grid{grid-template-columns:repeat(2,1fr)}
     }
     @media(max-width:680px){
@@ -78,6 +89,7 @@
       .detail-card-grid article:first-child{grid-column:1/-1}
       #detail-map{height:330px}
       .history-metrics{grid-template-columns:repeat(2,1fr)}
+      .condition-heading{align-items:flex-start;flex-direction:column;gap:3px}.condition-bar{height:58px}.dumbbell-head{display:none}.dumbbell-row{grid-template-columns:1fr 76px;gap:6px}.dumbbell-track{grid-column:1/-1;grid-row:2}.dumbbell-delta{grid-column:2;grid-row:1}
       .detail-replant-grid{grid-template-columns:1fr}
     }
   </style>
@@ -105,11 +117,18 @@
     </section>
 
     <section class="detail-evidence">
-      <article class="detail-map-card">
-        <div class="detail-section-head"><div><span class="eyebrow">LOKASI OBJEK</span><h2>Polygon area monitoring</h2></div></div>
-        <div id="detail-map"><div class="chart-empty">Memuat polygon objek…</div></div>
-        <p class="detail-map-note">Citra satelit digunakan sebagai basemap. Garis menunjukkan polygon pada laporan terbaru.</p>
-      </article>
+      <div class="detail-map-stack">
+        <article class="detail-map-card">
+          <div class="detail-section-head"><div><span class="eyebrow">LOKASI OBJEK</span><h2>Polygon area monitoring</h2></div></div>
+          <div id="detail-map"><div class="chart-empty">Memuat polygon objek…</div></div>
+          <p class="detail-map-note">Citra satelit digunakan sebagai basemap. Garis menunjukkan polygon pada laporan terbaru.</p>
+        </article>
+        <section class="side-card detail-chart-card">
+          <span class="eyebrow">RINGKASAN PERUBAHAN</span>
+          <h2>Kondisi bibit dan perkembangan indikator</h2>
+          <div id="detail-growth" class="chart-empty">Memuat grafik pertumbuhan…</div>
+        </section>
+      </div>
       <article class="detail-photo-card">
         <div class="detail-section-head"><div><span class="eyebrow">DOKUMENTASI</span><h2>Foto monitoring terbaru</h2></div></div>
         <div id="detail-photos" class="detail-timeline">Memuat foto…</div>
@@ -120,13 +139,8 @@
       <div>
         <section class="side-card">
           <span class="eyebrow">RIWAYAT</span>
-          <h2>Perbandingan laporan monitoring</h2>
+          <h2>Catatan laporan monitoring</h2>
           <div id="detail-history" class="detail-timeline"></div>
-        </section>
-        <section class="side-card">
-          <span class="eyebrow">GRAFIK KRONOLOGIS</span>
-          <h2>Perubahan per indikator</h2>
-          <div id="detail-growth" class="chart-empty">Memuat grafik pertumbuhan…</div>
         </section>
         <section class="side-card" id="detail-trees-card" hidden>
           <span class="eyebrow">DATA INDIVIDU</span>
@@ -147,7 +161,7 @@
 
   <script src="js/i18n.js?v=20260819-monitoring-request2"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="js/monitoring-detail.js?v=20260827-object-baseline2"></script>
+  <script src="js/monitoring-detail.js?v=20260827-dumbbell6"></script>
 </body>
 </html>
 
