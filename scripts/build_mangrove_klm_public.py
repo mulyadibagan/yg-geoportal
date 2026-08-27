@@ -46,14 +46,10 @@ from shapely.strtree import STRtree  # noqa: E402
 KLM_PATH = ROOT / "02_Working_Analysis" / "klm" / "Peta_Indikatif_Kesatuan_Lanskap_Mangrove.shp"
 UNIT_PATH = ROOT / "02_Working_Analysis" / "statewide_outputs_not_for_publication" / "riau_mangrove_regulatory_review_units.geojson"
 RPPEM_PATH = ROOT / "02_Working_Analysis" / "rppem" / "Rencana_Perlindungan_Dan_Pengelolaan_Ekosistem_Mangrove.shp"
-STATEWIDE_SUMMARY_PATH = ROOT / "04_Methodology_Metadata" / "statewide_modelled_overlay_summary.json"
 ADMIN_PATH = SITE / "data" / "batas_administrasi_desa_riau.geojson"
 SUMMARY_PATH = SITE / "data" / "mangrove-klm-summary.json"
 IMAGE_PATH = SITE / "assets" / "mangrove-klm-boundaries.png"
-FUNCTION_IMAGE_PATHS = {
-    "analysis_lindung": SITE / "assets" / "mangrove-function-analysis-lindung.png",
-    "analysis_budidaya": SITE / "assets" / "mangrove-function-analysis-budidaya.png",
-}
+FUNCTION_IMAGE_SIZE = (3600, 3000)
 
 WGS84 = CRS.from_epsg(4326)
 AREA_CRS = CRS.from_epsg(6933)
@@ -220,8 +216,8 @@ def render_geometry_layer(geometries, path: Path, projected_bounds, size, fill, 
     canvas.save(path, optimize=True)
 
 
-def render_boundaries(records, path: Path):
-    width, height = 1800, 1500
+def render_context(records, size=(1800, 1500)):
+    width, height = size
     all_bounds = [item["geometry"].bounds for item in records]
     lon_min = min(bounds[0] for bounds in all_bounds)
     lat_min = min(bounds[1] for bounds in all_bounds)
@@ -235,7 +231,14 @@ def render_boundaries(records, path: Path):
     west, south = inverse_web_mercator(projected_bounds[0], projected_bounds[1])
     east, north = inverse_web_mercator(projected_bounds[2], projected_bounds[3])
 
-    canvas = Image.new("RGBA", (width, height), (0, 0, 0, 0))
+    image_bounds = [[round(south, 8), round(west, 8)], [round(north, 8), round(east, 8)]]
+    return image_bounds, projected_bounds, (width, height)
+
+
+def render_boundaries(records, path: Path):
+    image_bounds, projected_bounds, size = render_context(records)
+    width, height = size
+    canvas = Image.new("RGBA", size, (0, 0, 0, 0))
     for item in records:
         layer = Image.new("RGBA", (width, height), (0, 0, 0, 0))
         draw = ImageDraw.Draw(layer)
@@ -252,7 +255,6 @@ def render_boundaries(records, path: Path):
         canvas = Image.alpha_composite(canvas, layer)
     path.parent.mkdir(parents=True, exist_ok=True)
     canvas.save(path, optimize=True)
-    image_bounds = [[round(south, 8), round(west, 8)], [round(north, 8), round(east, 8)]]
     return image_bounds, projected_bounds, (width, height)
 
 
@@ -316,8 +318,10 @@ def main():
     klm_counts = defaultdict(set)
     regency_counts = defaultdict(set)
     statewide = defaultdict(float)
+    inside_scope = defaultdict(float)
+    scope_unit_ids = set()
     parsed_units = []
-    analysis_lindung_display_parts = []
+    analysis_lindung_parts_by_klm = defaultdict(list)
 
     for unit_index, feature in enumerate(units, start=1):
         unit_geometry = polygonal(shape(feature["geometry"]))
@@ -326,13 +330,9 @@ def main():
             continue
         unit_area = float(properties.get("area_ha") or area_ha(unit_geometry))
         parsed_units.append((unit_geometry, properties, unit_area))
-        if properties.get("scenario_state") == "INDICATIVE_PROTECTION_TRUE":
-            analysis_lindung_display_parts.append(unit_geometry)
         add_metrics(statewide, unit_area, properties, 0.0)
-        regency = str(properties.get("kabupaten_kota") or "UNKNOWN")
-        if regency in RIAU_MANGROVE_REGENCIES:
-            regency_counts[regency].add(properties.get("unit_id"))
         unit_bounds = unit_geometry.bounds
+        scope_parts = []
         for klm in klms:
             bounds = klm["geometry"].bounds
             if unit_bounds[2] < bounds[0] or unit_bounds[0] > bounds[2] or unit_bounds[3] < bounds[1] or unit_bounds[1] > bounds[3]:
@@ -340,6 +340,7 @@ def main():
             if not klm["prepared"].intersects(unit_geometry):
                 continue
             if klm["prepared"].covers(unit_geometry):
+                overlap = unit_geometry
                 overlap_area = unit_area
             else:
                 overlap = polygonal(unit_geometry.intersection(klm["geometry"]))
@@ -351,17 +352,36 @@ def main():
             code = klm["code"]
             add_metrics(klm_summaries[code], overlap_area, properties, 0.0)
             klm_counts[code].add(properties.get("unit_id"))
+            scope_parts.append((overlap, overlap_area))
+            if properties.get("scenario_state") == "INDICATIVE_PROTECTION_TRUE":
+                analysis_lindung_parts_by_klm[code].append(overlap)
+        if scope_parts:
+            inside_geometry = scope_parts[0][0] if len(scope_parts) == 1 else polygonal(unary_union([item[0] for item in scope_parts]))
+            inside_area = area_ha(inside_geometry) if len(scope_parts) > 1 else scope_parts[0][1]
+            if inside_area > 0:
+                add_metrics(inside_scope, inside_area, properties, 0.0)
+                scope_unit_ids.add(properties.get("unit_id"))
+                for regency_index in regency_tree.query(inside_geometry):
+                    index = int(regency_index)
+                    if regency_prepared[index].covers(inside_geometry):
+                        regency_area = inside_area
+                    elif regency_prepared[index].intersects(inside_geometry):
+                        regency_area = area_ha(polygonal(inside_geometry.intersection(regency_geometries[index])))
+                    else:
+                        continue
+                    if regency_area > 0:
+                        name = regency_names[index]
+                        add_metrics(regency_summaries[name], regency_area, properties, 0.0)
+                        regency_counts[name].add(properties.get("unit_id"))
         if unit_index % 500 == 0:
             print(f"  processed {unit_index}/{len(units)} units", flush=True)
 
     print(f"  intersecting {len(budidaya_records)} RPPEM cultivation polygons with analysis units", flush=True)
     unit_geometries = [item[0] for item in parsed_units]
     unit_tree = STRtree(unit_geometries)
-    analysis_budidaya_display_parts = []
-    klm_code_by_name = {item["name"]: item["code"] for item in klms}
+    analysis_budidaya_parts_by_klm = defaultdict(list)
     for record_index, (budidaya_geometry, source_properties) in enumerate(budidaya_records, start=1):
         prepared_budidaya = prep(budidaya_geometry)
-        klm_code = klm_code_by_name.get(str(source_properties.get("KLM") or ""))
         for unit_index in unit_tree.query(budidaya_geometry):
             unit_geometry, unit_properties, unit_area = parsed_units[int(unit_index)]
             if prepared_budidaya.covers(unit_geometry):
@@ -374,17 +394,34 @@ def main():
                 continue
             if overlap_area <= 0:
                 continue
-            if unit_properties.get("scenario_state") != "INDICATIVE_PROTECTION_TRUE":
-                analysis_budidaya_display_parts.append(overlap_geometry)
             add_budidaya_metrics(statewide, overlap_area, unit_properties)
-            if klm_code:
-                add_budidaya_metrics(klm_summaries[klm_code], overlap_area, unit_properties)
-            for regency_index in regency_tree.query(overlap_geometry):
+            scope_overlap_parts = []
+            for klm in klms:
+                if not klm["prepared"].intersects(overlap_geometry):
+                    continue
+                if klm["prepared"].covers(overlap_geometry):
+                    klm_overlap_geometry = overlap_geometry
+                    klm_overlap_area = overlap_area
+                else:
+                    klm_overlap_geometry = polygonal(overlap_geometry.intersection(klm["geometry"]))
+                    klm_overlap_area = area_ha(klm_overlap_geometry)
+                if klm_overlap_area <= 0:
+                    continue
+                scope_overlap_parts.append((klm_overlap_geometry, klm_overlap_area))
+                add_budidaya_metrics(klm_summaries[klm["code"]], klm_overlap_area, unit_properties)
+                if unit_properties.get("scenario_state") != "INDICATIVE_PROTECTION_TRUE":
+                    analysis_budidaya_parts_by_klm[klm["code"]].append(klm_overlap_geometry)
+            if not scope_overlap_parts:
+                continue
+            scope_overlap_geometry = scope_overlap_parts[0][0] if len(scope_overlap_parts) == 1 else polygonal(unary_union([item[0] for item in scope_overlap_parts]))
+            scope_overlap_area = area_ha(scope_overlap_geometry) if len(scope_overlap_parts) > 1 else scope_overlap_parts[0][1]
+            add_budidaya_metrics(inside_scope, scope_overlap_area, unit_properties)
+            for regency_index in regency_tree.query(scope_overlap_geometry):
                 index = int(regency_index)
-                if regency_prepared[index].covers(overlap_geometry):
-                    regency_overlap_area = overlap_area
-                elif regency_prepared[index].intersects(overlap_geometry):
-                    regency_overlap_area = area_ha(polygonal(overlap_geometry.intersection(regency_geometries[index])))
+                if regency_prepared[index].covers(scope_overlap_geometry):
+                    regency_overlap_area = scope_overlap_area
+                elif regency_prepared[index].intersects(scope_overlap_geometry):
+                    regency_overlap_area = area_ha(polygonal(scope_overlap_geometry.intersection(regency_geometries[index])))
                 else:
                     continue
                 if regency_overlap_area > 0:
@@ -393,9 +430,18 @@ def main():
             print(f"  processed {record_index}/{len(budidaya_records)} cultivation polygons", flush=True)
 
     print("[4/5] Rendering source boundaries and function polygons", flush=True)
-    image_bounds, projected_bounds, image_size = render_boundaries(klms, IMAGE_PATH)
-    render_geometry_layer(analysis_lindung_display_parts, FUNCTION_IMAGE_PATHS["analysis_lindung"], projected_bounds, image_size, (25, 128, 90, 145), (12, 91, 62, 245), 3)
-    render_geometry_layer(analysis_budidaya_display_parts, FUNCTION_IMAGE_PATHS["analysis_budidaya"], projected_bounds, image_size, (224, 151, 35, 112), (175, 105, 10, 225), 2)
+    image_bounds, _projected_bounds, _image_size = render_boundaries(klms, IMAGE_PATH)
+    function_images = {"analysis_lindung": [], "analysis_budidaya": []}
+    for klm in sorted(klms, key=lambda item: item["code"]):
+        code = klm["code"]
+        slug = code.replace(".", "-")
+        klm_image_bounds, klm_projected_bounds, klm_image_size = render_context([klm], FUNCTION_IMAGE_SIZE)
+        lindung_path = SITE / "assets" / f"mangrove-function-analysis-lindung-{slug}.png"
+        budidaya_path = SITE / "assets" / f"mangrove-function-analysis-budidaya-{slug}.png"
+        render_geometry_layer(analysis_lindung_parts_by_klm[code], lindung_path, klm_projected_bounds, klm_image_size, (25, 128, 90, 145), (12, 91, 62, 245), 3)
+        render_geometry_layer(analysis_budidaya_parts_by_klm[code], budidaya_path, klm_projected_bounds, klm_image_size, (224, 151, 35, 112), (175, 105, 10, 225), 2)
+        function_images["analysis_lindung"].append({"path": f"assets/{lindung_path.name}", "bounds": klm_image_bounds, "width": klm_image_size[0], "height": klm_image_size[1], "klm": code})
+        function_images["analysis_budidaya"].append({"path": f"assets/{budidaya_path.name}", "bounds": klm_image_bounds, "width": klm_image_size[0], "height": klm_image_size[1], "klm": code})
     public_klms = []
     for klm in sorted(klms, key=lambda item: item["code"]):
         code = klm["code"]
@@ -410,18 +456,13 @@ def main():
             "color": "#%02x%02x%02x" % COLORS[code][:3],
         })
 
-    statewide_source = json.loads(STATEWIDE_SUMMARY_PATH.read_text(encoding="utf-8"))
     public_regencies = []
-    for source_row in sorted(statewide_source["by_regency"], key=lambda item: item["kabupaten_kota"]):
-        name = source_row["kabupaten_kota"]
-        values = regency_summaries[name]
-        values["mangrove_area_ha"] = float(source_row["mangrove_area_ha"])
-        values["initial_lindung_ha"] = float(source_row["initial_rppem_lindung_ha"])
-        values["validated_true_ha"] = float(source_row["validated_true_union_ha"])
-        values["additional_true_beyond_initial_ha"] = max(0.0, values["validated_true_ha"] - values["initial_lindung_ha"])
-        values["review_increment_ha"] = float(source_row["review_increment_ha"])
-        values["unresolved_ha"] = max(0.0, values["mangrove_area_ha"] - values["validated_true_ha"] - values["review_increment_ha"])
-        public_regencies.append({**public_metrics(values), "name": name, "unit_count": len(regency_counts[name])})
+    for name in regency_names:
+        public_regencies.append({**public_metrics(regency_summaries[name]), "name": name, "unit_count": len(regency_counts[name])})
+
+    scoped_metrics = public_metrics(inside_scope)
+    statewide_reference_area = statewide["mangrove_area_ha"]
+    inside_area = inside_scope["mangrove_area_ha"]
 
     payload = {
         "generated_at": str(date.today()),
@@ -440,15 +481,16 @@ def main():
             "height": 1500,
         },
         "function_layers": [
-            {"id": "analysis_lindung", "label": "Indikasi fungsi lindung — TRUE", "path": "assets/mangrove-function-analysis-lindung.png", "color": "#19805a", "visible": True},
-            {"id": "analysis_budidaya", "label": "Baseline budidaya tersisa setelah overlay TRUE", "path": "assets/mangrove-function-analysis-budidaya.png", "color": "#e09723", "visible": True},
+            {"id": "analysis_lindung", "label": "Indikasi fungsi lindung — TRUE", "images": function_images["analysis_lindung"], "color": "#19805a", "visible": True},
+            {"id": "analysis_budidaya", "label": "Baseline budidaya tersisa setelah overlay TRUE", "images": function_images["analysis_budidaya"], "color": "#e09723", "visible": True},
         ],
-        "totals": {**public_metrics(statewide),
+        "totals": {**scoped_metrics,
             "klm_source_total_area_ha": round(sum(item["source_area_ha"] for item in public_klms), 6),
-            "statewide_mangrove_area_ha": round(statewide["mangrove_area_ha"], 6),
-            "inside_source_klm_area_ha": round(sum(item["mangrove_area_ha"] for item in public_klms), 6),
-            "outside_source_klm_area_ha": round(statewide["mangrove_area_ha"] - sum(item["mangrove_area_ha"] for item in public_klms), 6),
-            "inside_source_klm_percent": round(sum(item["mangrove_area_ha"] for item in public_klms) / statewide["mangrove_area_ha"] * 100, 6),
+            "unit_count": len(scope_unit_ids),
+            "statewide_mangrove_reference_area_ha": round(statewide_reference_area, 6),
+            "inside_source_klm_area_ha": round(inside_area, 6),
+            "outside_source_klm_area_ha": round(statewide_reference_area - inside_area, 6),
+            "inside_source_klm_percent": round(inside_area / statewide_reference_area * 100, 6),
         },
         "klms": public_klms,
         "regencies": public_regencies,

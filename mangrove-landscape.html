@@ -48,9 +48,9 @@
     <section class="page-section" id="gambaran">
       <div class="section-heading"><div><p class="eyebrow">GAMBARAN LANSKAP</p><h2>Mangrove Riau dalam angka</h2></div><p>Seluruh persentase menggunakan luas gabungan PMN 2025 di Riau sebagai penyebut, sehingga poligon yang bertumpang tindih tidak dihitung ganda.</p></div>
       <div class="overview-grid">
-        <article><span>Cakupan mangrove</span><strong>186.812,38 ha</strong><small>union PMN 2025 di Riau</small></article>
-        <article><span>Unit analisis</span><strong>6.460</strong><small>0 geometri tidak valid</small></article>
-        <article><span>Wilayah pesisir</span><strong>7</strong><small>kabupaten/kota teridentifikasi</small></article>
+        <article><span>Cakupan analisis KLM</span><strong id="overview-scope-area">—</strong><small>mangrove PMN 2025 di dalam tiga KLM</small></article>
+        <article><span>Unit analisis</span><strong id="overview-unit-count">—</strong><small>hanya unit yang beririsan dengan KLM</small></article>
+        <article><span>Wilayah pesisir</span><strong id="overview-regency-count">—</strong><small>kabupaten/kota di dalam cakupan KLM</small></article>
         <article><span>Pemeriksaan teknis</span><strong>LULUS</strong><small>15 dari 15 pemeriksaan internal data dan perhitungan lulus</small></article>
       </div>
     </section>
@@ -69,9 +69,9 @@
     <section class="page-section function-section" id="fungsi">
       <div class="section-heading"><div><p class="eyebrow">ANALISIS INDIKATIF FUNGSI EKOSISTEM</p><h2>Perbandingan fungsi awal dan indikasi hasil analisis YG</h2></div><p>Angka TRUE dan REVIEW ditampilkan terpisah. REVIEW bukan TRUE dan tidak boleh dibaca sebagai kepastian hukum.</p></div>
       <div class="comparison-grid">
-        <article class="comparison-card initial"><header><span>01</span><div><small>FUNGSI AWAL RPPEM</small><strong>6,76%</strong></div></header><p>12.631,48 ha fungsi lindung pada data awal.</p><div class="bar"><i style="width:6.76%"></i></div><small>Acuan pembanding untuk membaca kesenjangan, bukan hasil analisis YG.</small></article>
-        <article class="comparison-card validated"><header><span>02</span><div><small>INDIKASI TRUE</small><strong>14,44%</strong></div></header><p>26.974,28 ha terindikasi memenuhi sedikitnya satu kriteria berdasarkan bukti yang tersedia.</p><div class="bar"><i style="width:14.44%"></i></div><small>Naik 14.342,81 ha: 14.314,30 ha berasal dari irisan baseline budidaya dan 28,51 ha dari area awal belum terklasifikasi.</small></article>
-        <article class="comparison-card review"><header><span>03</span><div><small>TRUE + SKENARIO REVIEW</small><strong>30,29%</strong></div></header><p>56.594,77 ha bila tambahan FL01/FL02 yang masih REVIEW ditampilkan sebagai skenario.</p><div class="bar"><i style="width:30.29%"></i></div><small>29.620,49 ha tambahan tetap memerlukan verifikasi.</small></article>
+        <article class="comparison-card initial"><header><span>01</span><div><small>FUNGSI AWAL RPPEM</small><strong id="comparison-initial-percent">—</strong></div></header><p id="comparison-initial-copy">Memuat fungsi awal dalam cakupan tiga KLM…</p><div class="bar"><i id="comparison-initial-bar" style="width:0"></i></div><small>Acuan pembanding untuk membaca kesenjangan, bukan hasil analisis YG.</small></article>
+        <article class="comparison-card validated"><header><span>02</span><div><small>INDIKASI TRUE</small><strong id="comparison-true-percent">—</strong></div></header><p id="comparison-true-copy">Memuat indikasi TRUE dalam cakupan tiga KLM…</p><div class="bar"><i id="comparison-true-bar" style="width:0"></i></div><small id="comparison-true-note">Perubahan dihitung hanya di dalam batas KLM sumber.</small></article>
+        <article class="comparison-card review"><header><span>03</span><div><small>TRUE + SKENARIO REVIEW</small><strong id="comparison-review-percent">—</strong></div></header><p id="comparison-review-copy">Memuat skenario REVIEW dalam cakupan tiga KLM…</p><div class="bar"><i id="comparison-review-bar" style="width:0"></i></div><small id="comparison-review-note">Area REVIEW tetap memerlukan verifikasi.</small></article>
       </div>
       <div class="transition-balance" id="transition-balance"><article class="klm-loading">Memuat neraca fungsi lindung dan budidaya…</article></div>
       <div class="reading-rule"><strong>Cara membaca hasil:</strong><span><b>TRUE</b> bukti memenuhi aturan</span><span><b>REVIEW</b> bukti tersedia tetapi belum cukup</span><span><b>UNKNOWN</b> data belum memadai</span><span><b>FALSE</b> hanya bila bukti cukup untuk menyatakan tidak memenuhi</span></div>
@@ -114,7 +114,7 @@
   </main>
   <footer><div><strong>YG GeoPortal</strong><p>Kawasan Lanskap Mangrove Riau · ringkasan publik v1</p></div><a href="coastal-monitoring.html">Kembali ke Pesisir &amp; Mangrove</a></footer>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-  <script src="js/mangrove-landscape.js?v=20260827-public2"></script>
+  <script src="js/mangrove-landscape.js?v=20260827-klmclip1"></script>
   <script src="js/navigation-v2.js?v=20260807-mobile-menu-fix2"></script>
 </body>
 </html>
