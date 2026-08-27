@@ -25,6 +25,27 @@
     .compilation-toolbar{position:sticky;top:65px;z-index:35;grid-template-columns:minmax(170px,.8fr) minmax(170px,.8fr) minmax(280px,1.7fr);gap:10px;padding:12px;border-color:#d8e5df;border-radius:14px;box-shadow:0 9px 24px rgba(22,67,51,.09)}
     .compilation-toolbar label{font-size:10px}
     .compilation-toolbar input,.compilation-toolbar select{min-height:40px;border-color:#d3e1db;background:#f8fbf9}
+    .village-overview{margin-top:12px;padding:16px;border:1px solid #d8e5df;border-radius:16px;background:#fff;box-shadow:0 8px 22px rgba(22,67,51,.06)}
+    .village-overview-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:13px}
+    .village-overview-head h2{margin:3px 0 2px;font-size:21px}
+    .village-overview-head p{margin:0;color:#667b73;font-size:11px}
+    .village-chart-legend{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:12px;color:#667b73;font-size:11px}
+    .village-chart-legend span{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+    .village-chart-legend i{width:9px;height:9px;border-radius:3px;background:var(--compilation-green)}
+    .village-chart-legend .dead i{background:var(--compilation-red)}
+    .village-chart{display:grid;gap:7px}
+    .village-chart-row{display:grid;grid-template-columns:minmax(125px,1.05fr) minmax(220px,3fr) minmax(185px,1.25fr);align-items:center;gap:13px;width:100%;padding:9px 10px;border:0;border-radius:10px;background:#f8fbf9;color:var(--ink);font:inherit;text-align:left;cursor:pointer;transition:background .18s ease,transform .18s ease}
+    .village-chart-row:hover{background:#eef7f2;transform:translateX(2px)}
+    .village-chart-row:focus-visible{outline:3px solid rgba(8,107,76,.25);outline-offset:2px}
+    .village-chart-name strong,.village-chart-name small{display:block}
+    .village-chart-name strong{font-size:13px}.village-chart-name small{margin-top:2px;color:#667b73;font-size:10px}
+    .village-bar-line{display:flex;align-items:center;gap:9px;min-width:0}
+    .village-bar-track{display:flex;flex:1;height:15px;border-radius:999px;background:#e7efeb;overflow:hidden}
+    .village-bar-alive{background:var(--compilation-green)}.village-bar-dead{background:var(--compilation-red)}
+    .village-bar-line b{min-width:38px;color:var(--compilation-green);font-size:12px;text-align:right}
+    .village-chart-stats{display:flex;justify-content:flex-end;gap:14px;color:#667b73;font-size:10px}
+    .village-chart-stats span{white-space:nowrap}.village-chart-stats b{display:block;margin-bottom:1px;color:var(--ink);font-size:12px}
+    .village-chart-empty{padding:18px;border-radius:10px;background:#f8fbf9;color:#667b73;text-align:center}
     .compilation-reporters{margin-top:12px;padding:0;border:1px solid #d8e5df;border-radius:14px;background:#fff;box-shadow:0 7px 20px rgba(22,67,51,.05);overflow:hidden}
     .compilation-reporters summary{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:13px 15px;cursor:pointer;list-style:none}
     .compilation-reporters summary::-webkit-details-marker{display:none}
@@ -63,8 +84,8 @@
     .compilation-object-actions a:hover{text-decoration:underline}
     .compilation-page .status.baik{background:#dff5e9;color:#146640}.compilation-page .status.waspada{background:#fff0d3;color:var(--compilation-amber)}.compilation-page .status.masalah{background:#fde2e2;color:var(--compilation-red)}
     @media(max-width:1180px){.compilation-kpis{grid-template-columns:repeat(4,minmax(0,1fr))}.compilation-objects{grid-template-columns:1fr}}
-    @media(max-width:900px){.compilation-toolbar{position:static;grid-template-columns:1fr 1fr}.compilation-toolbar label:last-child{grid-column:1/-1}.object-quick-metrics{grid-template-columns:repeat(2,1fr)}}
-    @media(max-width:560px){.compilation-page .dashboard-shell{width:min(100% - 20px,1440px)}.compilation-shell{padding-top:12px}.compilation-hero{padding:18px;border-radius:15px}.compilation-hero h1{font-size:27px}.compilation-hero p{font-size:13px}.compilation-kpis{grid-template-columns:1fr 1fr;gap:7px}.compilation-kpis article{padding:11px}.compilation-kpis strong{font-size:20px}.compilation-toolbar{grid-template-columns:1fr 1fr;padding:10px}.compilation-toolbar label:last-child{grid-column:1/-1}.compilation-reporters summary{padding:12px}.compilation-reporters .reporter-pills{padding:0 12px 12px}.compilation-object-head,.compilation-object-actions{flex-direction:column}.compilation-object-actions{align-items:flex-start}.compilation-section-heading{align-items:center}.compilation-section-heading h2{font-size:19px}}
+    @media(max-width:900px){.compilation-toolbar{position:static;grid-template-columns:1fr 1fr}.compilation-toolbar label:last-child{grid-column:1/-1}.object-quick-metrics{grid-template-columns:repeat(2,1fr)}.village-chart-row{grid-template-columns:minmax(115px,1fr) minmax(190px,2.4fr)}.village-chart-stats{grid-column:2;justify-content:flex-start}}
+    @media(max-width:560px){.compilation-page .dashboard-shell{width:min(100% - 20px,1440px)}.compilation-shell{padding-top:12px}.compilation-hero{padding:18px;border-radius:15px}.compilation-hero h1{font-size:27px}.compilation-hero p{font-size:13px}.compilation-kpis{grid-template-columns:1fr 1fr;gap:7px}.compilation-kpis article{padding:11px}.compilation-kpis strong{font-size:20px}.compilation-toolbar{grid-template-columns:1fr 1fr;padding:10px}.compilation-toolbar label:last-child{grid-column:1/-1}.village-overview{padding:13px}.village-overview-head{display:block}.village-chart-legend{justify-content:flex-start;margin-top:9px}.village-chart-row{grid-template-columns:1fr;gap:7px}.village-chart-stats{grid-column:auto;justify-content:flex-start}.village-bar-line b{min-width:34px}.compilation-reporters summary{padding:12px}.compilation-reporters .reporter-pills{padding:0 12px 12px}.compilation-object-head,.compilation-object-actions{flex-direction:column}.compilation-object-actions{align-items:flex-start}.compilation-section-heading{align-items:center}.compilation-section-heading h2{font-size:19px}}
     @media(max-width:390px){.compilation-toolbar{grid-template-columns:1fr}.compilation-toolbar label:last-child{grid-column:auto}.compilation-kpis{grid-template-columns:1fr}.object-quick-metrics{grid-template-columns:1fr 1fr}}
   </style>
 </head>
@@ -97,6 +118,13 @@
         <input id="compilation-search" type="search" placeholder="Objek, lokasi, pelapor, donor, atau fase">
       </label>
     </section>
+    <section class="village-overview" aria-labelledby="village-overview-title">
+      <div class="village-overview-head">
+        <div><span class="eyebrow">RINGKASAN WILAYAH</span><h2 id="village-overview-title">Kondisi tanaman per desa</h2><p>Laporan terbaru setiap objek; klik desa untuk menyaring daftar objek.</p></div>
+        <div class="village-chart-legend" aria-label="Legenda grafik"><span><i></i>Hidup</span><span class="dead"><i></i>Mati/rusak</span></div>
+      </div>
+      <div id="compilation-village-chart" class="village-chart" aria-live="polite"><div class="village-chart-empty">Memuat ringkasan desa…</div></div>
+    </section>
     <details class="compilation-reporters" open>
       <summary><span><span class="eyebrow">PELAPOR AKTIF</span><strong>Pelapor yang sudah mengirim data</strong></span></summary>
       <div id="compilation-reporters" class="reporter-pills"></div>
@@ -107,7 +135,7 @@
     </div>
     <section id="compilation-objects" class="compilation-objects"><div class="loading">Memuat hasil kompilasi…</div></section>
   </main>
-  <script src="js/monitoring-compilation.js?v=20260827-sepahat-alias4"></script>
+  <script src="js/monitoring-compilation.js?v=20260828-village-chart1"></script>
 </body>
 </html>
 

@@ -8,6 +8,7 @@
   var cluster=document.getElementById('compilation-cluster');
   var clusterValue=document.getElementById('compilation-cluster-value');
   var search=document.getElementById('compilation-search');
+  var villageChart=document.getElementById('compilation-village-chart');
   var activeData=null;
   var OBJECT_ALIASES={
     'area_mangrove:auto:1281388060':'MANGROVE-KELAPA-PATI-PHASE-III-2026-001',
@@ -193,6 +194,7 @@
       if(!activeData){
         objects.innerHTML='<div class="empty">Data publik belum dapat dimuat. Silakan coba beberapa saat lagi.</div>';
         reporters.innerHTML='<span class="muted">Koneksi sumber data gagal.</span>';
+        if(villageChart)villageChart.innerHTML='<div class="village-chart-empty">Ringkasan desa belum dapat dimuat karena sumber data tidak terhubung.</div>';
       }
     };
     document.head.appendChild(script);
@@ -259,6 +261,47 @@
     return'<div class="compilation-trend"><h4>'+esc(series.definition.label)+' ('+esc(series.definition.unit)+')</h4><svg viewBox="0 0 '+width+' '+height+'" role="img" aria-label="Grafik '+esc(series.definition.label)+'"><line class="axis" x1="'+left+'" y1="'+(height-bottom)+'" x2="'+(width-right)+'" y2="'+(height-bottom)+'"></line><polyline class="trend" points="'+line+'"></polyline>'+marks+'</svg></div>';
   }
 
+  function villageSummary(groups){
+    var villages={};
+    (groups||[]).forEach(function(group){
+      var latest=group.latest||{};
+      var key=latest.villageKey||keyText(latest.village||'');
+      if(!key)return;
+      if(!villages[key])villages[key]={key:key,label:latest.village||latest.location||key,objects:0,reports:0,alive:0,dead:0,area:0};
+      var village=villages[key],metrics=latest.metrics||{};
+      var alive=metricValue(metrics,metricDefs[0]),dead=metricValue(metrics,metricDefs[1]),area=metricValue(metrics,metricDefs[6]);
+      village.objects+=1;
+      village.reports+=(group.history||[]).length;
+      if(alive!==null)village.alive+=alive;
+      if(dead!==null)village.dead+=dead;
+      if(area!==null)village.area+=area;
+    });
+    return Object.keys(villages).map(function(key){
+      var village=villages[key],total=village.alive+village.dead;
+      village.total=total;
+      village.survival=total?Math.round(village.alive/total*100):null;
+      return village;
+    }).sort(function(a,b){return b.total-a.total||a.label.localeCompare(b.label,'id');});
+  }
+
+  function renderVillageChart(groups){
+    if(!villageChart)return;
+    var villages=villageSummary(groups);
+    if(!villages.length){villageChart.innerHTML='<div class="village-chart-empty">Belum ada nama desa pada objek yang ditampilkan.</div>';return;}
+    var maxTotal=Math.max.apply(null,villages.map(function(village){return village.total;}));
+    if(!maxTotal)maxTotal=1;
+    villageChart.innerHTML=villages.map(function(village){
+      var aliveWidth=village.alive/maxTotal*100,deadWidth=village.dead/maxTotal*100;
+      var survival=village.survival===null?'—':numberFormat(village.survival)+'%';
+      var aria=village.label+', '+numberFormat(village.alive)+' tanaman hidup, '+numberFormat(village.dead)+' mati atau rusak, kondisi hidup '+survival;
+      return'<button type="button" class="village-chart-row" data-village-chart-key="'+esc(village.key)+'" aria-label="'+esc(aria)+'. Saring objek desa ini">'+
+        '<span class="village-chart-name"><strong>'+esc(village.label)+'</strong><small>'+village.objects+' objek · '+village.reports+' laporan</small></span>'+
+        '<span class="village-bar-line"><span class="village-bar-track" role="img" aria-label="'+esc(aria)+'"><i class="village-bar-alive" style="width:'+aliveWidth.toFixed(2)+'%"></i><i class="village-bar-dead" style="width:'+deadWidth.toFixed(2)+'%"></i></span><b>'+esc(survival)+'</b></span>'+
+        '<span class="village-chart-stats"><span><b>'+esc(numberFormat(village.alive))+'</b>hidup</span><span><b>'+esc(numberFormat(village.dead))+'</b>mati/rusak</span><span><b>'+esc(numberFormat(village.area))+' ha</b>terpantau</span></span>'+
+      '</button>';
+    }).join('');
+  }
+
   function render(data){
     activeData=data;
     var summary=data.summary||{};
@@ -284,6 +327,7 @@
       return matchesValue&&(!query||hay.indexOf(query)>-1);
     });
     count.textContent=groups.length+' objek';
+    renderVillageChart(groups);
     objects.innerHTML=groups.map(function(group){
       var latest=group.latest||{};
       var quick=latestMetrics(group).map(function(item){return'<span><small>'+esc(item.definition.label)+'</small><b>'+esc(numberFormat(item.value))+' '+esc(item.definition.unit)+'</b></span>';}).join('');
@@ -319,6 +363,16 @@
   if(clusterValue)clusterValue.addEventListener('change',function(){render(activeData);});
   if(search)search.addEventListener('input',function(){render(activeData);});
 
+  if(villageChart)villageChart.addEventListener('click',function(event){
+    var row=event.target.closest('[data-village-chart-key]');
+    if(!row||!cluster||!clusterValue)return;
+    cluster.value='village';
+    refreshClusterValues();
+    clusterValue.value=row.getAttribute('data-village-chart-key');
+    render(activeData);
+    clusterValue.focus();
+  });
+
   document.addEventListener('click',function(event){
     var link=event.target.closest('[data-object-key]');
     if(!link)return;
@@ -344,6 +398,7 @@
     objects.innerHTML='<div class="loading">Memuat laporan monitoring terpublikasi…</div>';
     kpis.innerHTML='';
     reporters.innerHTML='<span class="muted">Menghubungkan ke sumber data publik…</span>';
+    if(villageChart)villageChart.innerHTML='<div class="village-chart-empty">Menghubungkan ke sumber data publik…</div>';
   }
   loadPublished(requestedType,storageKey);
 })();
