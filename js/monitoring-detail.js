@@ -5,6 +5,10 @@
   var API=BASE+'?page=public-reports';
   var CALLBACK='ygMonitoringDetailCallback';
   var STORAGE_KEY='monitoring-detail';
+  var OBJECT_ALIASES={
+    'area_mangrove:auto:1281388060':'MANGROVE-KELAPA-PATI-PHASE-III-2026-001',
+    'area_mangrove:auto:1674337344':'MANGROVE-KELAPA-PATI-PHASE-III-2026-001'
+  };
   var REPORT_CORRECTIONS={
     'YG-20260717-205241-378':{aliveCount:2730,deadOrDamagedCount:600,survivalPercent:82}
   };
@@ -57,6 +61,9 @@
   var photosElement=document.getElementById('detail-photos');
   var treesCard=document.getElementById('detail-trees-card');
   var treesElement=document.getElementById('detail-trees');
+  var mapElement=document.getElementById('detail-map');
+  var detailMap=null;
+  var detailMapLayer=null;
 
   function esc(v){
     return String(v==null?'':v).replace(/[&<>"']/g,function(c){
@@ -110,6 +117,16 @@
   }
   function num(v){
     return parseMetricNumber(v);
+  }
+  function parseAreaNumber(v){
+    if(typeof v==='number')return isFinite(v)?v:null;
+    var text=String(v==null?'':v).trim().replace(/\s/g,'');
+    if(!text)return null;
+    if(text.indexOf(',')>-1&&text.indexOf('.')>-1)text=text.replace(/\./g,'').replace(',','.');
+    else if(text.indexOf(',')>-1)text=text.replace(',','.');
+    text=text.replace(/[^0-9.-]/g,'');
+    var number=Number(text);
+    return isFinite(number)?number:null;
   }
   function keyText(v){
     var text=String(v||'').toLowerCase();
@@ -253,14 +270,16 @@
     var nameKey=keyText(p.targetObjectName||p.locationName||p.title||title);
     var targetProperties=parseJSON(p.targetFeatureProperties);
     var rawArea=targetProperties.Luas_Ha||targetProperties.Luas||targetProperties.areaHa||targetProperties.luas_ha;
-    var targetArea=parseMetricNumber(rawArea);
+    var targetArea=parseAreaNumber(rawArea);
+    if(targetArea!==null&&targetArea>0)m.monitoredAreaHa=targetArea;
     var boundsKey=geometryKey(feature&&feature.geometry);
     var areaKey=isFinite(targetArea)&&targetArea>0?targetArea.toFixed(4):'';
     var spatialObjectId=[layerKey,nameKey,areaKey,boundsKey].filter(Boolean).join('|');
     var permanentObjectId=String(
-      p.Target_Object_ID_Current||p.targetObjectId||p.Target_Object_ID||
-      targetProperties.Object_ID||targetProperties.OBJECT_ID||targetProperties.objectId||''
+      targetProperties.Object_ID||targetProperties.OBJECT_ID||targetProperties.objectId||
+      p.Target_Object_ID_Current||p.Target_Object_ID||p.targetObjectId||''
     ).trim();
+    permanentObjectId=OBJECT_ALIASES[permanentObjectId]||permanentObjectId;
     var objectId=permanentObjectId||spatialObjectId||
       ((p.targetSourceType||'program_layer')+'|'+(p.targetLayerId||'monitoring')+'|'+keyText(title));
     var type=typeOf(p,m);
@@ -284,6 +303,8 @@
       description:m.notes||p.description||'',
       recommendation:m.followUp||m.recommendation||p.recommendation||'',
       photos:cleanPhotos(p.photos),
+      geometry:feature&&feature.geometry||null,
+      targetProperties:targetProperties,
       metrics:m,
       status:statusOf(p,m,type)
     };
@@ -354,7 +375,7 @@
     for(var i=0;i<keys.length;i+=1){
       var raw=m[keys[i]];
       if(raw===undefined||raw===null||raw==='')continue;
-      var n=parseMetricNumber(raw);
+      var n=/area|luas/i.test(keys[i])?parseAreaNumber(raw):parseMetricNumber(raw);
       if(n!==null&&isFinite(n))return n;
     }
     return null;
@@ -363,7 +384,7 @@
   function metricText(r,key,unit){
     var raw=r.metrics && r.metrics[key];
     if(raw===undefined||raw===null||raw==='')return '';
-    var numValue=parseMetricNumber(raw);
+    var numValue=/area|luas/i.test(key)?parseAreaNumber(raw):parseMetricNumber(raw);
     if(numValue===null)numValue=Number(raw);
     if(numValue===null||!isFinite(numValue))return String(raw);
     return String(numValue)+(unit?' '+unit:'');
@@ -418,7 +439,7 @@
     var chronological=history.slice().sort(function(a,b){return dateValue(a.date)-dateValue(b.date);});
     var points=chronological.map(function(r){
       var raw=r.metrics[definition[0]];
-      return{date:r.date,value:has(raw)?num(raw):null};
+      return{date:r.date,value:has(raw)?(/area|luas/i.test(definition[0])?parseAreaNumber(raw):num(raw)):null};
     }).filter(function(point){return point.value!==null;});
     if(points.length<2)return'';
     var width=720,height=250,left=52,right=24,top=25,bottom=48;
@@ -442,8 +463,26 @@
 
   function chartsHTML(group){
     if(!group||!group.history||group.history.length<2)return'<div class="chart-empty">Grafik pertumbuhan tersedia setelah minimal dua kali monitoring.</div>';
-    var defs=metricDefs(group.latest.type||'').filter(function(def){return metricNumber(group.latest.metrics||{},[def[0]])!==null;});
-    var charts=defs.map(function(definition){return chartSVG(group.history,definition);}).filter(Boolean);
+    var history=group.history;
+    if(group.latest.type==='Penanaman Mangrove'){
+      var baseline=metricNumber(group.latest.targetProperties||{},['Jumlah_Bib','Jumlah_Bibit','seedlings']);
+      if(baseline!==null&&baseline>0){
+        history=group.history.map(function(record){
+          var copy=Object.assign({},record,{metrics:Object.assign({},record.metrics||{})});
+          var alive=metricNumber(copy.metrics,['aliveCount','alive','jumlahHidup','tanamanHidup']);
+          if(alive!==null){
+            copy.metrics.deadOrDamagedCount=Math.max(0,baseline-alive);
+            copy.metrics.survivalPercent=alive/baseline*100;
+          }
+          return copy;
+        });
+      }
+    }
+    var defs=metricDefs(group.latest.type||'').filter(function(def){
+      if(group.latest.type==='Penanaman Mangrove'&&def[0]==='monitoredAreaHa')return false;
+      return metricNumber(group.latest.metrics||{},[def[0]])!==null;
+    });
+    var charts=defs.map(function(definition){return chartSVG(history,definition);}).filter(Boolean);
     return charts.length?'<div class="charts-grid">'+charts.join('')+'</div>':'<div class="chart-empty">Belum ada metrik yang bisa digrafikkan.</div>';
   }
 
@@ -452,26 +491,24 @@
     var latestTime=fmtDate(latest.date);
     var totalRecords=group.history.length;
     var reporters=Object.keys(group.reporterKeys||{}).length;
-    var area=metricNumber(latest.metrics||{},['monitoredAreaHa','area','luas','luasHa','luas_ha','areaHa']);
+    var area=metricNumber(latest.targetProperties||{},['Luas_Ha','Luas','areaHa']);
+    if(area===null)area=metricNumber(latest.metrics||{},['monitoredAreaHa','area','luas','luasHa','luas_ha','areaHa']);
     var alive=metricNumber(latest.metrics||{},['aliveCount','alive','jumlahHidup','tanamanHidup']);
-    var dead=metricNumber(latest.metrics||{},['deadOrDamagedCount','dead','mati','jumlahMati','tanamanMati','deadCount']);
-    var totalPlants=0;
-    if(alive!==null&&dead!==null)totalPlants=alive+dead;
+    var baseline=metricNumber(latest.targetProperties||{},['Jumlah_Bib','Jumlah_Bibit','seedlings']);
+    var reportedDead=metricNumber(latest.metrics||{},['deadOrDamagedCount','dead','mati','jumlahMati','tanamanMati','deadCount']);
+    var totalPlants=baseline!==null?baseline:(alive!==null&&reportedDead!==null?alive+reportedDead:0);
+    var dead=totalPlants&&alive!==null?Math.max(0,totalPlants-alive):reportedDead;
+    var alivePercent=totalPlants?alive/totalPlants*100:0;
+    var deadPercent=totalPlants?dead/totalPlants*100:0;
     var kpis=[
-      ['Objek',''+(group.label||'—'),''],
-      ['Pelapor aktif',reporters,'orang'],
-      ['Laporan masuk',totalRecords,'laporan'],
-      ['Status',latest.status&&latest.status.label?latest.status.label:'—',''],
-      ['Luas terpantau (terbaru)',area!==null?numberFormat(area):'—','ha'],
-      ['Pohon hidup',alive!==null?numberFormat(alive):'—','pohon'],
-      ['Pohon mati/rusak',dead!==null?numberFormat(dead):'—','pohon'],
-      ['Terakhir dipantau',latestTime,'']
+      ['Bibit tertanam',totalPlants?numberFormat(totalPlants):'—','baseline atribut polygon','primary'],
+      ['Hidup',alive!==null?numberFormat(alive):'—',numberFormat(alivePercent)+'% dari total','alive'],
+      ['Mati/rusak',dead!==null?numberFormat(dead):'—',numberFormat(deadPercent)+'% dari total','dead'],
+      ['Survival',totalPlants?numberFormat(alivePercent)+'%':'—','kelangsungan hidup',''],
+      ['Luas polygon',area!==null?numberFormat(area)+' ha':'—','monitoring '+latestTime,'']
     ];
-    if(totalPlants){
-      kpis.push(['Kondisi hidup',Math.round((alive/totalPlants)*100),'% dari '+numberFormat(totalPlants)+' tanaman']);
-    }
     kpiElement.innerHTML=kpis.map(function(item){
-      return'<article><span class="eyebrow">'+esc(item[0])+'</span><strong>'+esc(item[1])+'</strong><small class="muted">'+esc(item[2]||'')+'</small></article>';
+      return'<article class="'+esc(item[3]||'')+'"><span class="eyebrow">'+esc(item[0])+'</span><strong>'+esc(item[1])+'</strong><small class="muted">'+esc(item[2]||'')+'</small></article>';
     }).join('');
   }
 
@@ -480,16 +517,17 @@
     var reporters=uniqueReporters(group).map(function(item){
       return'<div>'+esc(item.name)+' '+(item.reports?'<span style="color:var(--muted);">('+item.reports+'x)</span>':'')+'</div>';
     }).join('');
+    var targetSeedlings=metricNumber(latest.targetProperties||{},['Jumlah_Bib','Jumlah_Bibit','seedlings']);
+    var targetArea=metricNumber(latest.targetProperties||{},['Luas_Ha','Luas','areaHa']);
     var itemList=[
       ['Nama objek',latest.title||group.label||'Objek monitoring'],
       ['Lokasi',latest.location||'Belum dicantumkan'],
-      ['Pelapor terakhir',latest.reporter||'Belum disebut'],
-      ['Pelapor aktif',Object.keys(group.reporterKeys||{}).length+' orang'],
-      ['Organisasi',latest.organization||'—'],
+      ['Monitoring terbaru',fmtDate(latest.date)+' · '+(latest.reporter||'Pelapor belum disebut')],
+      ['Organisasi pelapor',latest.organization||'—'],
       ['Jenis monitoring',latest.type||'—'],
-      ['Perhitungan survival','Pohon hidup ÷ (hidup + mati/rusak)','Satu rumus untuk kartu, detail, dan grafik'],
+      ['Basis objek',targetSeedlings!==null?numberFormat(targetSeedlings)+' bibit · '+numberFormat(targetArea)+' ha':'Belum tersedia','Jumlah bibit dan luas resmi mengikuti atribut polygon.'],
       ['ID Objek',group.objectCode||'—'],
-      ['Jumlah riwayat',group.history.length+' kali']
+      ['Jumlah monitoring',group.history.length+' kali · '+Object.keys(group.reporterKeys||{}).length+' pelapor']
     ];
     infoElement.innerHTML=itemList.map(function(item){
       return'<div class="detail-timeline-item"><strong>'+esc(item[0])+'</strong><p>'+esc(item[1])+(item[2]?'<small class="detail-source-note">'+esc(item[2])+'</small>':'')+'</p></div>';
@@ -502,11 +540,19 @@
       historyElement.innerHTML='<div class="empty">Belum ada catatan riwayat.</div>';
       return;
     }
+    var baseline=metricNumber(group.latest.targetProperties||{},['Jumlah_Bib','Jumlah_Bibit','seedlings']);
     historyElement.innerHTML=group.history.map(function(r,index){
+      var alive=metricNumber(r.metrics||{},['aliveCount','alive','jumlahHidup']);
+      var reportedDead=metricNumber(r.metrics||{},['deadOrDamagedCount','dead','mati']);
+      var total=baseline!==null?baseline:(alive!==null&&reportedDead!==null?alive+reportedDead:null);
+      var dead=total!==null&&alive!==null?Math.max(0,total-alive):reportedDead;
+      var survival=total?alive/total*100:null;
       return'<div class="detail-timeline-item">'+
         '<div class="detail-timeline-meta"><span>'+esc(fmtDate(r.date))+'</span><span class="status '+esc(r.status.key||'baik')+'">'+esc(r.status.label||'')+'</span></div>'+
         '<small style="display:block;margin-top:4px;color:var(--muted);">Pelapor: '+esc(r.reporter||'Belum disebut')+'</small>'+
+        (total!==null?'<div class="history-metrics"><span>Total bibit<b>'+esc(numberFormat(total))+'</b></span><span>Hidup<b>'+esc(numberFormat(alive))+'</b></span><span>Mati/rusak<b>'+esc(numberFormat(dead))+'</b></span><span>Survival<b>'+esc(numberFormat(survival))+'%</b></span></div>':'')+
         '<p>'+esc(r.description||'Tidak ada catatan temuan.')+'</p>'+
+        (r.recommendation?'<p><strong>Tindak lanjut:</strong> '+esc(r.recommendation)+'</p>':'')+
       '</div>';
     }).join('');
   }
@@ -515,15 +561,31 @@
     var photos=group.history.reduce(function(acc,r){
       if(r.photos&&r.photos.length)acc=acc.concat(r.photos);
       return acc;
-    },[]);
+    },[]).filter(function(url,index,array){return array.indexOf(url)===index;});
     if(!photos.length){
       photosElement.innerHTML='<div class="empty">Belum ada data foto.</div>';
       return;
     }
-    var shown=photos.slice(0,12).map(function(url){
+    var shown=photos.slice(0,12).map(function(url,index){
       return'<a href="'+esc(original(url))+'" target="_blank" rel="noopener"><img src="'+esc(thumb(url))+'" alt="Foto monitoring" style="max-width:100%;height:auto;border-radius:10px"></a>';
     }).join('');
     photosElement.innerHTML='<div class="photo-grid">'+shown+'</div>';
+  }
+
+  function renderMap(group){
+    if(!mapElement||typeof L==='undefined')return;
+    var report=group.history.find(function(item){return item.geometry&&item.geometry.coordinates;});
+    if(!report){mapElement.innerHTML='<div class="chart-empty">Polygon objek belum tersedia.</div>';return;}
+    if(!detailMap){
+      mapElement.innerHTML='';
+      detailMap=L.map(mapElement,{scrollWheelZoom:false,zoomControl:true});
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:20,attribution:'Tiles © Esri'}).addTo(detailMap);
+    }
+    if(detailMapLayer)detailMap.removeLayer(detailMapLayer);
+    detailMapLayer=L.geoJSON(report.geometry,{style:{color:'#f6bd3b',weight:4,fillColor:'#0aa77c',fillOpacity:.22}}).addTo(detailMap);
+    var bounds=detailMapLayer.getBounds();
+    if(bounds.isValid())detailMap.fitBounds(bounds,{padding:[28,28],maxZoom:18});
+    window.setTimeout(function(){detailMap.invalidateSize();},80);
   }
 
   function treeChartSVG(title,unit,records,valueKey1,valueKey2){
@@ -655,6 +717,7 @@
     renderHistory(group);
     renderInfo(group);
     renderPhotos(group);
+    renderMap(group);
     renderTrees(group);
   }
 
@@ -664,6 +727,7 @@
     historyElement.innerHTML='<div class="empty">Tidak ada riwayat laporan.</div>';
     infoElement.innerHTML='<div class="empty">Belum ada profil.</div>';
     photosElement.innerHTML='<div class="empty">Belum ada foto.</div>';
+    if(mapElement)mapElement.innerHTML='<div class="chart-empty">Polygon objek belum tersedia.</div>';
     if(!titleElement.textContent||!titleElement.textContent.trim())titleElement.textContent='Detail objek';
   }
 
@@ -724,7 +788,6 @@
           restored.key=restored.key||saved.objectKey||objectKey;
           selectedGroup=restored;
           render(selectedGroup);
-          return;
         }
       }catch(e){}
     }

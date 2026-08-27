@@ -62,6 +62,16 @@
     var number=Number(text);
     return isFinite(number)?number:null;
   }
+  function publishedAreaNumber(v){
+    if(typeof v==='number')return isFinite(v)?v:null;
+    var text=String(v==null?'':v).trim().replace(/\s/g,'');
+    if(!text)return null;
+    if(text.indexOf(',')>-1&&text.indexOf('.')>-1)text=text.replace(/\./g,'').replace(',','.');
+    else if(text.indexOf(',')>-1)text=text.replace(',','.');
+    text=text.replace(/[^0-9.-]/g,'');
+    var number=Number(text);
+    return isFinite(number)?number:null;
+  }
   function isMonitoringRecord(p){
     var values=[p.reportType,p.Report_Type,p.type,p.type_of_report,p.jenisActivity,p.jenis_aktivitas,p.activityType,p.activity_type,p.jenis,p.jenisLaporan,p.jenis_laporan,p.kategori,p.category,p.KATEGORI];
     return values.some(function(value){return /monitoring|pemantauan/i.test(String(value||''));});
@@ -100,7 +110,7 @@
       sedimentationCm:p.Sedimentasi_Cm,waterTableCm:p.Water_Table_Cm
     };
     var target=parseJSON(p.targetFeatureProperties);
-    var targetArea=publishedNumber(target.Luas_Ha||target.Luas||target.areaHa||target.luas_ha);
+    var targetArea=publishedAreaNumber(target.Luas_Ha||target.Luas||target.areaHa||target.luas_ha);
     if(targetArea!==null&&targetArea>0)m.monitoredAreaHa=targetArea;
     if(String(p.reportId||p.Source_Report_ID||'')==='YG-20260717-205241-378'){
       m.aliveCount=2730;m.deadOrDamagedCount=600;m.survivalPercent=82;

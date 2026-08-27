@@ -62,6 +62,16 @@ var LEGACY_OBJECT_ALIASES={
   function num(v){
     return parseMetricNumber(v);
   }
+  function parseAreaNumber(v){
+    if(typeof v==='number')return isFinite(v)?v:null;
+    var text=String(v==null?'':v).trim().replace(/\s/g,'');
+    if(!text)return null;
+    if(text.indexOf(',')>-1&&text.indexOf('.')>-1)text=text.replace(/\./g,'').replace(',','.');
+    else if(text.indexOf(',')>-1)text=text.replace(',','.');
+    text=text.replace(/[^0-9.-]/g,'');
+    var number=Number(text);
+    return isFinite(number)?number:null;
+  }
   function keyText(v){
     var text=String(v||'').toLowerCase();
     if(text.normalize)text=text.normalize('NFD').replace(/[\u0300-\u036f]/g,'');
@@ -394,7 +404,8 @@ var LEGACY_OBJECT_ALIASES={
     var nameKey=keyText(p.targetObjectName||p.locationName||p.title||title);
     var targetProperties=parseJSON(p.targetFeatureProperties);
     var rawArea=targetProperties.Luas_Ha||targetProperties.Luas||targetProperties.areaHa||targetProperties.luas_ha;
-    var targetArea=parseMetricNumber(rawArea);
+    var targetArea=parseAreaNumber(rawArea);
+    if(targetArea!==null&&targetArea>0)m.monitoredAreaHa=targetArea;
     var masterObjectId=resolveMasterObject(p,targetProperties,feature,title,targetArea);
     var masterObject=masterObjects.find(function(object){return object.id===masterObjectId;})||{};
     var donor=firstText(p,['Donor','Donor_Cluster','Nama_Donor','Funding_Source','donor'])||
