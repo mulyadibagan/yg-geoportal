@@ -9,6 +9,10 @@
   var clusterValue=document.getElementById('compilation-cluster-value');
   var search=document.getElementById('compilation-search');
   var activeData=null;
+  var OBJECT_ALIASES={
+    'area_mangrove:auto:1281388060':'MANGROVE-KELAPA-PATI-PHASE-III-2026-001',
+    'area_mangrove:auto:1674337344':'MANGROVE-KELAPA-PATI-PHASE-III-2026-001'
+  };
 
   function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
   function numberFormat(v){
@@ -111,6 +115,7 @@
     var condition=String(m.condition||p.condition||p.description||'').toLowerCase();
     var status=/rusak berat|hilang|kritis|tindak lanjut|kering parah|gagal/.test(condition)?{key:'masalah',label:'Perlu tindak lanjut'}:/sedang|rusak ringan|pantau|waspada|abrasi|hama/.test(condition)?{key:'waspada',label:'Perlu dipantau'}:{key:'baik',label:m.condition||p.condition||'Baik/normal'};
     var objectCode=String(target.Object_ID||target.OBJECT_ID||target.objectId||p.Object_ID||p.targetObjectId||'').trim();
+    objectCode=OBJECT_ALIASES[objectCode]||objectCode;
     var objectKey=objectCode||[p.targetLayerId||p.targetLayerLabel||'monitoring',title,targetArea||''].map(keyText).join('|');
     return{
       id:p.monitoringId||p.reportId||index,objectId:objectKey,masterObjectId:objectCode,
@@ -138,7 +143,7 @@
       group.history.sort(function(a,b){return dateValue(b.date)-dateValue(a.date);});
       group.latest=group.history[0];
       return group;
-    });
+    }).sort(function(a,b){return dateValue(b.latest.date)-dateValue(a.latest.date);});
     var alive=0,dead=0,area=0,reporterMap={};
     groups.forEach(function(group){
       var metrics=group.latest.metrics||{};

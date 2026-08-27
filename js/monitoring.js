@@ -9,7 +9,8 @@
   var OBJECTS_CALLBACK='ygMonitoringObjectsCallback';
 var LEGACY_OBJECT_ALIASES={
   'area_mangrove:auto:374024597':'MANGROVE-BURUK-BAKUL-PHASE-III-2025-001',
-  'area_mangrove:auto:1281388060':'MANGROVE-KELAPA-PATI-PHASE-III-2026-001'
+  'area_mangrove:auto:1281388060':'MANGROVE-KELAPA-PATI-PHASE-III-2026-001',
+  'area_mangrove:auto:1674337344':'MANGROVE-KELAPA-PATI-PHASE-III-2026-001'
 };
   var REPORT_CORRECTIONS={
     'YG-20260717-205241-378':{aliveCount:2730,deadOrDamagedCount:600,survivalPercent:82}
@@ -498,7 +499,7 @@ var LEGACY_OBJECT_ALIASES={
       g.donorCount=Object.keys(g.donorKeys).length;
       g.phaseCount=Object.keys(g.phaseKeys).length;
       return g;
-    });
+    }).sort(function(a,b){return dateValue(b.latest.date)-dateValue(a.latest.date);});
   }
 
   function clusterMatchRecord(mode,value,record){
