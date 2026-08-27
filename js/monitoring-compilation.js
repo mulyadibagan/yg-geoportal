@@ -25,6 +25,9 @@
     'MANGROVE-BURUK-BAKUL-PHASE-III-2025-002':{plantedCount:3164,areaHa:1.582},
     'MANGROVE-BURUK-BAKUL-PHASE-III-2025-003':{plantedCount:600,areaHa:0.3}
   };
+  var REPORT_METRIC_OVERRIDES={
+    'YG-20260826-135016-915':{aliveCount:600,deadOrDamagedCount:0}
+  };
 
   function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
   function numberFormat(v){
@@ -147,6 +150,8 @@
     if(String(p.reportId||p.Source_Report_ID||'')==='YG-20260717-205241-378'){
       m.aliveCount=2730;m.deadOrDamagedCount=600;m.survivalPercent=82;
     }
+    var reportMetricOverride=REPORT_METRIC_OVERRIDES[String(p.reportId||p.Source_Report_ID||'')];
+    if(reportMetricOverride){m.aliveCount=reportMetricOverride.aliveCount;m.deadOrDamagedCount=reportMetricOverride.deadOrDamagedCount;m.survivalPercent=100;}
     var alive=publishedNumber(m.aliveCount),dead=publishedNumber(m.deadOrDamagedCount);
     if(alive!==null&&dead!==null&&alive+dead>0)m.survivalPercent=alive/(alive+dead)*100;
     var title=p.locationName||p.targetObjectName||p.title||target.Nama_Objek||'Objek monitoring';
@@ -345,7 +350,7 @@
       var master=OBJECT_MASTER_OVERRIDES[canonical];
       if(!master)return;
       group.key=canonical;group.objectCode=canonical;
-      function update(record){if(!record)return;record.objectId=canonical;record.masterObjectId=canonical;record.plantedCount=master.plantedCount;record.metrics=record.metrics||{};record.metrics.monitoredAreaHa=master.areaHa;}
+      function update(record){if(!record)return;record.objectId=canonical;record.masterObjectId=canonical;record.plantedCount=master.plantedCount;record.metrics=record.metrics||{};record.metrics.monitoredAreaHa=master.areaHa;var correction=REPORT_METRIC_OVERRIDES[String(record.id||'')];if(correction){record.metrics.aliveCount=correction.aliveCount;record.metrics.deadOrDamagedCount=correction.deadOrDamagedCount;record.metrics.survivalPercent=100;}}
       (group.history||[]).forEach(update);update(group.latest);
     });
     var alive=0,dead=0,area=0,planted=0,plantedObjects=0;
