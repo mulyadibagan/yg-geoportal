@@ -258,6 +258,41 @@ def render_boundaries(records, path: Path):
     return image_bounds, projected_bounds, (width, height)
 
 
+def render_boundary_layer(geometry, path: Path, projected_bounds, size):
+    """Render a cased KLM perimeter that remains legible over satellite tiles."""
+    canvas = Image.new("RGBA", size, (0, 0, 0, 0))
+    draw = ImageDraw.Draw(canvas)
+    polygons = geometry.geoms if isinstance(geometry, MultiPolygon) else [geometry]
+    for polygon in polygons:
+        if not isinstance(polygon, Polygon):
+            continue
+        rings = [polygon.exterior, *polygon.interiors]
+        for ring in rings:
+            points = pixel_ring(ring.coords, projected_bounds, size)
+            if len(points) >= 4:
+                draw.line(points, fill=(255, 255, 255, 245), width=11, joint="curve")
+                draw.line(points, fill=(0, 145, 127, 255), width=6, joint="curve")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    canvas.save(path, optimize=True)
+
+
+def render_detailed_boundaries(records):
+    images = []
+    for item in sorted(records, key=lambda record: record["code"]):
+        slug = item["code"].replace(".", "-")
+        image_bounds, projected_bounds, image_size = render_context([item], FUNCTION_IMAGE_SIZE)
+        path = SITE / "assets" / f"mangrove-klm-boundary-{slug}.png"
+        render_boundary_layer(item["geometry"], path, projected_bounds, image_size)
+        images.append({
+            "path": f"assets/{path.name}",
+            "bounds": image_bounds,
+            "width": image_size[0],
+            "height": image_size[1],
+            "klm": item["code"],
+        })
+    return images
+
+
 def main():
     print("[1/5] Loading KLM source", flush=True)
     reader = shapefile.Reader(str(KLM_PATH), encoding="utf-8", encodingErrors="replace")
@@ -277,9 +312,18 @@ def main():
         })
 
     if ARGS.boundaries_only:
-        print("[2/2] Rendering neutral KLM boundaries", flush=True)
+        print("[2/2] Rendering province and detailed KLM boundaries", flush=True)
         render_boundaries(klms, IMAGE_PATH)
-        print(json.dumps({"image": str(IMAGE_PATH), "style": "single neutral outline, transparent fill"}, ensure_ascii=False))
+        boundary_images = render_detailed_boundaries(klms)
+        if SUMMARY_PATH.exists():
+            payload = json.loads(SUMMARY_PATH.read_text(encoding="utf-8"))
+            payload["boundary_layer"] = {
+                "label": "Batas KLM sumber",
+                "color": "#00917f",
+                "images": boundary_images,
+            }
+            SUMMARY_PATH.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+        print(json.dumps({"image": str(IMAGE_PATH), "detail_images": boundary_images, "style": "cased KLM perimeter, transparent fill"}, ensure_ascii=False))
         return
 
     with UNIT_PATH.open(encoding="utf-8") as stream:
@@ -431,6 +475,7 @@ def main():
 
     print("[4/5] Rendering source boundaries and function polygons", flush=True)
     image_bounds, _projected_bounds, _image_size = render_boundaries(klms, IMAGE_PATH)
+    boundary_images = render_detailed_boundaries(klms)
     function_images = {"analysis_lindung": [], "analysis_budidaya": []}
     for klm in sorted(klms, key=lambda item: item["code"]):
         code = klm["code"]
@@ -479,6 +524,11 @@ def main():
             "bounds": image_bounds,
             "width": 1800,
             "height": 1500,
+        },
+        "boundary_layer": {
+            "label": "Batas KLM sumber",
+            "color": "#00917f",
+            "images": boundary_images,
         },
         "function_layers": [
             {"id": "analysis_lindung", "label": "Indikasi fungsi lindung — TRUE", "images": function_images["analysis_lindung"], "color": "#19805a", "visible": True},

@@ -491,5 +491,59 @@
       "name": "Siak",
       "unit_count": 228
     }
-  ]
+  ],
+  "boundary_layer": {
+    "label": "Batas KLM sumber",
+    "color": "#00917f",
+    "images": [
+      {
+        "path": "assets/mangrove-klm-boundary-14-01.png",
+        "bounds": [
+          [
+            -0.8089619,
+            102.67999925
+          ],
+          [
+            0.76498829,
+            103.83457905
+          ]
+        ],
+        "width": 3600,
+        "height": 3000,
+        "klm": "14.01"
+      },
+      {
+        "path": "assets/mangrove-klm-boundary-14-02.png",
+        "bounds": [
+          [
+            1.6187767,
+            100.2941865
+          ],
+          [
+            2.56452059,
+            101.80907786
+          ]
+        ],
+        "width": 3600,
+        "height": 3000,
+        "klm": "14.02"
+      },
+      {
+        "path": "assets/mangrove-klm-boundary-14-03.png",
+        "bounds": [
+          [
+            0.6681023,
+            101.7186973
+          ],
+          [
+            1.68247598,
+            103.14095833
+          ]
+        ],
+        "width": 3600,
+        "height": 3000,
+        "klm": "14.03"
+      }
+    ]
+  }
 }

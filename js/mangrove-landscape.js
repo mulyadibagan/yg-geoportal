@@ -65,6 +65,9 @@
       if(!response.ok)throw new Error('Ringkasan KLM tidak tersedia');
       state.data=await response.json();
       state.map=L.map('klm-map',{zoomControl:true,minZoom:6,maxZoom:18});
+      state.map.createPane('klmBoundaryPane');
+      state.map.getPane('klmBoundaryPane').style.zIndex=620;
+      state.map.getPane('klmBoundaryPane').style.pointerEvents='none';
       state.map.createPane('labelsPane');
       state.map.getPane('labelsPane').style.zIndex=650;
       state.map.getPane('labelsPane').style.pointerEvents='none';
@@ -79,11 +82,13 @@
         overlays[item.label]=layer;
         if(item.visible)layer.addTo(state.map);
       });
-      const boundaryLayer=L.imageOverlay(`${state.data.image.path}?v=20260827-neutral1`,bounds,{opacity:.92,interactive:false}).addTo(state.map);
-      overlays['Batas KLM sumber']=boundaryLayer;
+      const boundaryConfig=state.data.boundary_layer||{};
+      const boundaryImages=(boundaryConfig.images||[{path:state.data.image.path,bounds}]).map(image=>L.imageOverlay(`${image.path}?v=20260827-klmboundary1`,image.bounds||bounds,{opacity:1,interactive:false,pane:'klmBoundaryPane'}));
+      const boundaryLayer=L.layerGroup(boundaryImages).addTo(state.map);
+      overlays[boundaryConfig.label||'Batas KLM sumber']=boundaryLayer;
       overlays['Label tempat']=placeLabels;
       L.control.layers({'Citra satelit':satellite,'Peta jalan':streets},overlays,{collapsed:true,position:'topright'}).addTo(state.map);
-      functionLegend.innerHTML=`<b>POLIGON FUNGSI INDIKATIF</b>${state.data.function_layers.map(item=>`<span><i style="background:${safe(item.color)}"></i>${safe(item.label)}</span>`).join('')}<small>Gunakan kontrol layer untuk menyalakan atau mematikan poligon.</small>`;
+      functionLegend.innerHTML=`<b>POLIGON FUNGSI INDIKATIF</b>${state.data.function_layers.map(item=>`<span><i style="background:${safe(item.color)}"></i>${safe(item.label)}</span>`).join('')}<span class="boundary-key"><i></i>${safe(boundaryConfig.label||'Batas KLM sumber')}</span><small>Garis hijau-kebiruan berbingkai putih menunjukkan perimeter KLM dan hanya tampak di tepi KLM.</small>`;
       state.map.fitBounds(bounds,{padding:[12,12]});
       state.data.klms.forEach(klm=>{
         const marker=L.circleMarker(klm.label_point,{radius:7,color:'#fff',weight:2,fillColor:'#073f3b',fillOpacity:1}).addTo(state.map).bindTooltip(klm.name.replace(/^KLM\s+/i,''),{permanent:true,direction:'top',className:'klm-label',offset:[0,-7]});
