@@ -98,7 +98,7 @@
       renderRegencies(state.data.regencies);
       selectKlm(state.data.klms[0]);
       status.textContent=`Analisis dibatasi pada 3 KLM · zoom hingga level 18`;
-      document.getElementById('klm-reconciliation').textContent=`Peta dan kartu KLM memakai area di dalam tiga batas KLM. Ringkasan Riau dan tabel kabupaten/kota memakai seluruh mangrove referensi Riau, termasuk ${fmt(state.data.totals.outside_source_klm_area_ha)} ha yang berada di luar gabungan tiga KLM.`;
+      document.getElementById('klm-reconciliation').textContent=`Tabel kabupaten/kota menggunakan seluruh mangrove referensi Riau, termasuk ${fmt(state.data.totals.outside_source_klm_area_ha)} ha di luar ketiga KLM.`;
     }catch(error){
       console.warn(error);
       status.textContent='Peta KLM belum dapat dimuat';
