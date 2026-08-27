@@ -611,7 +611,7 @@ def main():
             "images": boundary_images,
         },
         "function_layers": [
-            {"id": "analysis_lindung", "label": "Indikasi fungsi lindung — TRUE + skenario REVIEW", "images": function_images["analysis_lindung"], "color": "#19805a", "visible": True},
+            {"id": "analysis_lindung", "label": "Fungsi lindung indikatif — TRUE + skenario REVIEW", "images": function_images["analysis_lindung"], "color": "#19805a", "visible": True},
             {"id": "analysis_budidaya", "label": "Fungsi budidaya indikatif", "images": function_images["analysis_budidaya"], "color": "#e09723", "visible": True},
         ],
         "statewide": {**statewide_metrics, "unit_count": len(parsed_units), "regency_count": len(regency_names)},

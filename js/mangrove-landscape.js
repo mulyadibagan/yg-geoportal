@@ -51,7 +51,7 @@
   async function init(){
     if(!window.L){status.textContent='Peta belum dapat dimuat';return}
     try{
-      const response=await fetch('data/mangrove-klm-summary.json?v=20260828-budidaya1',{cache:'no-store'});
+      const response=await fetch('data/mangrove-klm-summary.json?v=20260828-fl02roadqa1',{cache:'no-store'});
       if(!response.ok)throw new Error('Ringkasan KLM tidak tersedia');
       state.data=await response.json();
       state.map=L.map('klm-map',{zoomControl:true,minZoom:6,maxZoom:18});
@@ -63,7 +63,7 @@
       const bounds=state.data.image.bounds;
       const overlays={};
       state.data.function_layers.forEach(item=>{
-        const images=(item.images||[{path:item.path,bounds}]).map(image=>L.imageOverlay(`${image.path}?v=20260828-fl02unnamed1`,image.bounds||bounds,{opacity:1,interactive:false}));
+        const images=(item.images||[{path:item.path,bounds}]).map(image=>L.imageOverlay(`${image.path}?v=20260828-fl02roadqa1`,image.bounds||bounds,{opacity:1,interactive:false}));
         const layer=L.layerGroup(images);
         overlays[item.label]=layer;
         if(item.visible)layer.addTo(state.map);
