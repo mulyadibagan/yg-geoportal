@@ -23,7 +23,7 @@
   }
 
   function renderCards(klms){
-    cards.innerHTML=klms.map(klm=>{const mangroveShare=klm.source_area_ha?klm.mangrove_area_ha/klm.source_area_ha*100:0;return `<button type="button" class="klm-card" data-klm="${safe(klm.code)}" style="--klm-color:${safe(klm.color)}"><header><div><small>KLM ${safe(klm.code)}</small><strong>${safe(klm.name.replace(/^KLM\s+/i,''))}</strong></div><b>Fokus peta</b></header><div class="klm-card-stats"><span class="total"><strong>${fmt(klm.source_area_ha)} ha</strong>Luas KLM sumber</span><span class="total"><strong>${fmt(klm.mangrove_area_ha)} ha</strong>Mangrove referensi · ${fmt(mangroveShare)}% dari luas KLM</span><span><strong>${fmt(klm.initial_lindung_ha)} ha</strong>Lindung sumber · ${fmt(klm.initial_percent)}%</span><span><strong>${fmt(klm.indicative_lindung_ha)} ha</strong>Lindung indikatif · ${fmt(klm.indicative_lindung_percent)}%</span><span><strong>${fmt(klm.initial_budidaya_ha)} ha</strong>Budidaya sumber · ${fmt(klm.initial_budidaya_percent)}%</span><span><strong>${fmt(klm.indicative_budidaya_ha)} ha</strong>Belum terindikasi lindung · ${fmt(klm.indicative_budidaya_percent)}%</span></div><div class="klm-bar"><i style="width:${Math.min(100,klm.indicative_lindung_percent)}%"></i></div></button>`}).join('');
+    cards.innerHTML=klms.map(klm=>{const mangroveShare=klm.source_area_ha?klm.mangrove_area_ha/klm.source_area_ha*100:0;return `<button type="button" class="klm-card" data-klm="${safe(klm.code)}" style="--klm-color:${safe(klm.color)}"><header><div><small>KLM ${safe(klm.code)}</small><strong>${safe(klm.name.replace(/^KLM\s+/i,''))}</strong></div><b>Fokus peta</b></header><div class="klm-card-stats"><span class="total"><strong>${fmt(klm.source_area_ha)} ha</strong>Luas KLM sumber</span><span class="total"><strong>${fmt(klm.mangrove_area_ha)} ha</strong>Mangrove referensi · ${fmt(mangroveShare)}% dari luas KLM</span><span><strong>${fmt(klm.initial_lindung_ha)} ha</strong>Lindung sumber · ${fmt(klm.initial_percent)}%</span><span><strong>${fmt(klm.indicative_lindung_ha)} ha</strong>Lindung indikatif · ${fmt(klm.indicative_lindung_percent)}%</span><span><strong>${fmt(klm.initial_budidaya_ha)} ha</strong>Budidaya sumber · ${fmt(klm.initial_budidaya_percent)}%</span><span><strong>${fmt(klm.indicative_budidaya_ha)} ha</strong>Budidaya indikatif · ${fmt(klm.indicative_budidaya_percent)}%</span></div><div class="klm-bar"><i style="width:${Math.min(100,klm.indicative_lindung_percent)}%"></i></div></button>`}).join('');
     cards.addEventListener('click',event=>{const button=event.target.closest('[data-klm]');if(!button)return;const klm=klms.find(item=>item.code===button.dataset.klm);if(klm)focusKlm(klm)});
   }
 
@@ -51,7 +51,7 @@
   async function init(){
     if(!window.L){status.textContent='Peta belum dapat dimuat';return}
     try{
-      const response=await fetch('data/mangrove-klm-summary.json?v=20260828-fl02unnamed1',{cache:'no-store'});
+      const response=await fetch('data/mangrove-klm-summary.json?v=20260828-budidaya1',{cache:'no-store'});
       if(!response.ok)throw new Error('Ringkasan KLM tidak tersedia');
       state.data=await response.json();
       state.map=L.map('klm-map',{zoomControl:true,minZoom:6,maxZoom:18});
@@ -80,7 +80,7 @@
       }
       overlays[boundaryConfig.label||'Batas KLM sumber']=boundaryLayer;
       L.control.layers({'Citra satelit':satellite,'Peta jalan':streets},overlays,{collapsed:true,position:'topright'}).addTo(state.map);
-      functionLegend.innerHTML=`<b>POLIGON FUNGSI INDIKATIF</b>${state.data.function_layers.map(item=>`<span><i style="background:${safe(item.color)}"></i>${safe(item.label)}</span>`).join('')}<span class="boundary-key"><i style="border-top-color:${safe(boundaryConfig.color||'#7c3aed')}"></i>${safe(boundaryConfig.label||'Batas KLM sumber')}</span><small>Hijau menunjukkan lindung indikatif, jingga menunjukkan area yang belum terindikasi lindung, dan garis ungu tipis menunjukkan batas KLM.</small>`;
+      functionLegend.innerHTML=`<b>POLIGON FUNGSI INDIKATIF</b>${state.data.function_layers.map(item=>`<span><i style="background:${safe(item.color)}"></i>${safe(item.label)}</span>`).join('')}<span class="boundary-key"><i style="border-top-color:${safe(boundaryConfig.color||'#7c3aed')}"></i>${safe(boundaryConfig.label||'Batas KLM sumber')}</span><small>Hijau menunjukkan lindung indikatif, jingga menunjukkan budidaya indikatif, dan garis ungu tipis menunjukkan batas KLM.</small>`;
       state.map.fitBounds(bounds,{padding:[12,12]});
       state.data.klms.forEach(klm=>{
         const marker=L.circleMarker(klm.label_point,{radius:7,color:'#fff',weight:2,fillColor:'#073f3b',fillOpacity:1}).addTo(state.map).bindTooltip(klm.name.replace(/^KLM\s+/i,''),{permanent:true,direction:'top',className:'klm-label',offset:[0,-7]});
