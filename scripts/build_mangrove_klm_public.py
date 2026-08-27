@@ -270,8 +270,8 @@ def render_boundary_layer(geometry, path: Path, projected_bounds, size):
         for ring in rings:
             points = pixel_ring(ring.coords, projected_bounds, size)
             if len(points) >= 4:
-                draw.line(points, fill=(255, 255, 255, 245), width=11, joint="curve")
-                draw.line(points, fill=(0, 145, 127, 255), width=6, joint="curve")
+                draw.line(points, fill=(255, 255, 255, 210), width=4, joint="curve")
+                draw.line(points, fill=(0, 145, 127, 245), width=2, joint="curve")
     path.parent.mkdir(parents=True, exist_ok=True)
     canvas.save(path, optimize=True)
 

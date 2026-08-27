@@ -83,7 +83,7 @@
         if(item.visible)layer.addTo(state.map);
       });
       const boundaryConfig=state.data.boundary_layer||{};
-      const boundaryImages=(boundaryConfig.images||[{path:state.data.image.path,bounds}]).map(image=>L.imageOverlay(`${image.path}?v=20260827-klmboundary1`,image.bounds||bounds,{opacity:1,interactive:false,pane:'klmBoundaryPane'}));
+      const boundaryImages=(boundaryConfig.images||[{path:state.data.image.path,bounds}]).map(image=>L.imageOverlay(`${image.path}?v=20260827-klmboundary2`,image.bounds||bounds,{opacity:1,interactive:false,pane:'klmBoundaryPane'}));
       const boundaryLayer=L.layerGroup(boundaryImages).addTo(state.map);
       overlays[boundaryConfig.label||'Batas KLM sumber']=boundaryLayer;
       overlays['Label tempat']=placeLabels;
