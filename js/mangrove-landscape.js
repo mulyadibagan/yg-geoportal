@@ -28,7 +28,8 @@
   }
 
   function renderBaseline(data){
-    baseline.innerHTML=`<article><span>Jumlah KLM</span><strong>${data.klms.length}</strong><small>kode 14.01 · 14.02 · 14.03</small></article><article><span>Total luas tiga KLM</span><strong>${fmt(data.totals.klm_source_total_area_ha)} ha</strong><small>luas atribut dataset sumber</small></article><article><span>Mangrove di dalam KLM</span><strong>${fmt(data.totals.inside_source_klm_area_ha)} ha</strong><small>cakupan peta dan kartu KLM</small></article>`;
+    const mangroveShareOfKlm=data.totals.klm_source_total_area_ha?data.totals.inside_source_klm_area_ha/data.totals.klm_source_total_area_ha*100:0;
+    baseline.innerHTML=`<article><span>Jumlah KLM</span><strong>${data.klms.length}</strong><small>kode 14.01 · 14.02 · 14.03</small></article><article><span>Total luas tiga KLM</span><strong>${fmt(data.totals.klm_source_total_area_ha)} ha</strong><small>seluruh bentang lanskap dalam batas sumber</small></article><article><span>Mangrove referensi di dalam KLM</span><strong>${fmt(data.totals.inside_source_klm_area_ha)} ha</strong><small>${fmt(mangroveShareOfKlm)}% dari total luas tiga KLM</small></article>`;
   }
 
   function renderOverview(data){
