@@ -14,7 +14,16 @@
     'area_mangrove:auto:1281388060':'MANGROVE-KELAPA-PATI-PHASE-III-2026-001',
     'area_mangrove:auto:1674337344':'MANGROVE-KELAPA-PATI-PHASE-III-2026-001',
     'area_mangrove:auto:1732351650':'MANGROVE-SEPAHAT-PHASE-III-2025-001',
-    'area_mangrove:auto:1601647125':'MANGROVE-SEPAHAT-PHASE-III-2025-001'
+    'area_mangrove:auto:1601647125':'MANGROVE-SEPAHAT-PHASE-III-2025-001',
+    'area_mangrove:auto:613256434':'MANGROVE-BURUK-BAKUL-PHASE-II-2024-001',
+    'area_mangrove:auto:374024597':'MANGROVE-BURUK-BAKUL-PHASE-III-2025-001',
+    'area_mangrove:auto:56906758':'MANGROVE-BURUK-BAKUL-PHASE-III-2025-002'
+  };
+  var OBJECT_MASTER_OVERRIDES={
+    'MANGROVE-BURUK-BAKUL-PHASE-II-2024-001':{plantedCount:10200,areaHa:0.97},
+    'MANGROVE-BURUK-BAKUL-PHASE-III-2025-001':{plantedCount:236,areaHa:0.118},
+    'MANGROVE-BURUK-BAKUL-PHASE-III-2025-002':{plantedCount:3164,areaHa:1.582},
+    'MANGROVE-BURUK-BAKUL-PHASE-III-2025-003':{plantedCount:600,areaHa:0.3}
   };
 
   function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
@@ -149,6 +158,8 @@
     var status=/rusak berat|hilang|kritis|tindak lanjut|kering parah|gagal/.test(condition)?{key:'masalah',label:'Perlu tindak lanjut'}:/sedang|rusak ringan|pantau|waspada|abrasi|hama/.test(condition)?{key:'waspada',label:'Perlu dipantau'}:{key:'baik',label:m.condition||p.condition||'Baik/normal'};
     var objectCode=String(target.Object_ID||target.OBJECT_ID||target.objectId||p.Object_ID||p.targetObjectId||'').trim();
     objectCode=OBJECT_ALIASES[objectCode]||objectCode;
+    var masterOverride=OBJECT_MASTER_OVERRIDES[objectCode];
+    if(masterOverride){plantedCount=masterOverride.plantedCount;m.monitoredAreaHa=masterOverride.areaHa;}
     var objectKey=objectCode||[p.targetLayerId||p.targetLayerLabel||'monitoring',title,targetArea||''].map(keyText).join('|');
     return{
       id:p.monitoringId||p.reportId||index,objectId:objectKey,masterObjectId:objectCode,
@@ -177,12 +188,12 @@
       group.latest=group.history[0];
       return group;
     }).sort(function(a,b){return dateValue(b.latest.date)-dateValue(a.latest.date);});
-    var alive=0,dead=0,area=0,planted=0,hasPlanted=false,reporterMap={};
+    var alive=0,dead=0,area=0,planted=0,plantedObjects=0,reporterMap={};
     groups.forEach(function(group){
       var metrics=group.latest.metrics||{};
       var live=metricValue(metrics,metricDefs[0]),lost=metricValue(metrics,metricDefs[1]),size=metricValue(metrics,metricDefs[6]);
       if(live!==null)alive+=live;if(lost!==null)dead+=lost;if(size!==null)area+=size;
-      if(group.latest.plantedCount!==null&&group.latest.plantedCount!==undefined){planted+=Number(group.latest.plantedCount)||0;hasPlanted=true;}
+      if(group.latest.plantedCount!==null&&group.latest.plantedCount!==undefined){planted+=Number(group.latest.plantedCount)||0;plantedObjects+=1;}
     });
     records.forEach(function(record){
       var key=record.reporterKey||'pelapor-tidak-disebut';
@@ -190,7 +201,7 @@
       reporterMap[key].reports+=1;reporterMap[key].objects[record.masterObjectId||record.objectId]=1;
     });
     var reporters=Object.keys(reporterMap).map(function(key){return reporterMap[key];}).sort(function(a,b){return b.reports-a.reports;});
-    return{generatedAt:Date.now(),type:type,summary:{objects:groups.length,reports:records.length,reporters:reporters.length,area:area,alive:alive,dead:dead,planted:hasPlanted?planted:null,totalPlants:hasPlanted?planted:alive+dead,condition:alive+dead?Math.round(alive/(alive+dead)*100):0},reporters:reporters,groups:groups};
+    return{generatedAt:Date.now(),type:type,summary:{objects:groups.length,reports:records.length,reporters:reporters.length,area:area,alive:alive,dead:dead,planted:plantedObjects===groups.length?planted:null,totalPlants:plantedObjects===groups.length?planted:null,condition:alive+dead?Math.round(alive/(alive+dead)*100):0},reporters:reporters,groups:groups};
   }
   function loadPublished(type,storageKey){
     var callback='ygMonitoringCompilationCallback'+Date.now();
@@ -288,7 +299,7 @@
       var latest=group.latest||{};
       var key=latest.villageKey||keyText(latest.village||'');
       if(!key)return;
-      if(!villages[key])villages[key]={key:key,label:latest.village||latest.location||key,objects:0,reports:0,alive:0,dead:0,area:0,planted:0,hasPlanted:false};
+      if(!villages[key])villages[key]={key:key,label:latest.village||latest.location||key,objects:0,reports:0,alive:0,dead:0,area:0,planted:0,plantedObjects:0,hasPlanted:false};
       var village=villages[key],metrics=latest.metrics||{};
       var alive=metricValue(metrics,metricDefs[0]),dead=metricValue(metrics,metricDefs[1]),area=metricValue(metrics,metricDefs[6]);
       village.objects+=1;
@@ -296,12 +307,13 @@
       if(alive!==null)village.alive+=alive;
       if(dead!==null)village.dead+=dead;
       if(area!==null)village.area+=area;
-      if(latest.plantedCount!==null&&latest.plantedCount!==undefined){village.planted+=Number(latest.plantedCount)||0;village.hasPlanted=true;}
+      if(latest.plantedCount!==null&&latest.plantedCount!==undefined){village.planted+=Number(latest.plantedCount)||0;village.plantedObjects+=1;}
     });
     return Object.keys(villages).map(function(key){
       var village=villages[key],total=village.alive+village.dead;
       village.total=total;
       village.survival=total?Math.round(village.alive/total*100):null;
+      village.hasPlanted=village.plantedObjects===village.objects;
       return village;
     }).sort(function(a,b){return b.total-a.total||a.label.localeCompare(b.label,'id');});
   }
@@ -325,7 +337,30 @@
     }).join('');
   }
 
+  function applyMasterObjectData(data){
+    var groups=data&&data.groups||[],summary=data.summary||{};
+    groups.forEach(function(group){
+      var original=group.objectCode||group.key||'';
+      var canonical=OBJECT_ALIASES[original]||original;
+      var master=OBJECT_MASTER_OVERRIDES[canonical];
+      if(!master)return;
+      group.key=canonical;group.objectCode=canonical;
+      function update(record){if(!record)return;record.objectId=canonical;record.masterObjectId=canonical;record.plantedCount=master.plantedCount;record.metrics=record.metrics||{};record.metrics.monitoredAreaHa=master.areaHa;}
+      (group.history||[]).forEach(update);update(group.latest);
+    });
+    var alive=0,dead=0,area=0,planted=0,plantedObjects=0;
+    groups.forEach(function(group){
+      var latest=group.latest||{},metrics=latest.metrics||{};
+      var live=metricValue(metrics,metricDefs[0]),lost=metricValue(metrics,metricDefs[1]),size=metricValue(metrics,metricDefs[6]);
+      if(live!==null)alive+=live;if(lost!==null)dead+=lost;if(size!==null)area+=size;
+      if(latest.plantedCount!==null&&latest.plantedCount!==undefined){planted+=Number(latest.plantedCount)||0;plantedObjects+=1;}
+    });
+    summary.area=area;summary.alive=alive;summary.dead=dead;summary.planted=plantedObjects===groups.length?planted:null;summary.totalPlants=summary.planted;summary.condition=alive+dead?Math.round(alive/(alive+dead)*100):0;
+    data.summary=summary;
+  }
+
   function render(data){
+    applyMasterObjectData(data);
     normalizeCompiledVillages(data.groups);
     activeData=data;
     var summary=data.summary||{};
@@ -333,9 +368,9 @@
       ['Objek dipantau',summary.objects,'objek'],['Laporan masuk',summary.reports,'laporan'],
       ['Pelapor aktif',summary.reporters,'orang'],['Luas terpantau',summary.area,'ha'],
       ['Tanaman hidup',summary.alive,'pohon'],['Tanaman mati/rusak',summary.dead,'pohon'],
-      ['Bibit tertanam',summary.planted==null?summary.totalPlants:summary.planted,'bibit'],['Kondisi hidup',summary.condition,'%']
+      ['Bibit tertanam',summary.planted,'bibit'],['Kondisi hidup',summary.condition,'%']
     ];
-    kpis.innerHTML=kpiItems.map(function(item){return'<article><span>'+esc(item[0])+'</span><strong>'+esc(numberFormat(item[1]))+'</strong><small>'+esc(item[2])+'</small></article>';}).join('');
+    kpis.innerHTML=kpiItems.map(function(item){return'<article><span>'+esc(item[0])+'</span><strong>'+esc(item[1]==null?'—':numberFormat(item[1]))+'</strong><small>'+esc(item[2])+'</small></article>';}).join('');
     reporters.innerHTML=(data.reporters||[]).map(function(item){return'<span class="reporter-pill"><b>'+esc(item.name)+'</b> · '+item.reports+' laporan · '+Object.keys(item.objects||{}).length+' objek</span>';}).join('')||'<span class="muted">Belum ada nama pelapor.</span>';
     var groups=(data.groups||[]).filter(function(group){
       var value=clusterValue&&clusterValue.value||'';
