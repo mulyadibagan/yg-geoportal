@@ -6,60 +6,81 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
+  <meta name="theme-color" content="#086b4c">
   <title>Kompilasi Hasil Monitoring</title>
-  <link rel="stylesheet" href="css/monitoring.css?v=20260820-type-cards1">
+  <link rel="stylesheet" href="css/monitoring.css?v=20260828-compilation-modern1">
   <style>
+    .compilation-page{--compilation-green:#086b4c;--compilation-green-dark:#064d38;--compilation-green-soft:#eaf4ef;--compilation-blue:#1d70a2;--compilation-amber:#b76a08;--compilation-red:#b5483e;background:#f3f7f5}
+    .compilation-page .monitor-header{min-height:64px;padding-top:9px;padding-bottom:9px;background:rgba(255,255,255,.97)}
+    .compilation-page .dashboard-shell{width:min(1440px,calc(100% - 32px))}
     .compilation-shell{padding-top:18px}
-    .compilation-hero{position:relative;padding:28px;border-radius:22px;background:linear-gradient(130deg,#074a35,#0b7652);color:#fff;overflow:hidden}
-    .compilation-hero:after{position:absolute;right:-80px;bottom:-150px;width:360px;height:360px;border:60px solid rgba(255,255,255,.08);border-radius:50%;content:""}
-    .compilation-hero h1{position:relative;z-index:1;margin:7px 0;font-size:clamp(28px,4vw,44px)}
-    .compilation-hero p{position:relative;z-index:1;max-width:760px;margin:0;color:rgba(255,255,255,.82);line-height:1.6}
-    .compilation-back{position:relative;z-index:1;display:inline-flex;margin-bottom:18px;color:#fff;font-weight:800;text-decoration:none}
-    .compilation-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:16px 0}
-    .compilation-kpis article{padding:16px;border:1px solid var(--line);border-radius:15px;background:#fff}
-    .compilation-kpis span,.compilation-kpis small{display:block;color:var(--muted);font-size:11px}
-    .compilation-kpis strong{display:block;margin:6px 0;font-size:26px;color:var(--green)}
-    .reporter-pills{display:flex;flex-wrap:wrap;gap:8px}
-    .reporter-pill{padding:9px 12px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:12px}
-    .reporter-pill b{color:var(--green)}
-    .compilation-objects{display:grid;gap:16px}
-    .compilation-object{padding:20px;border:1px solid var(--line);border-radius:18px;background:#fff;box-shadow:0 8px 24px rgba(22,67,51,.06)}
-    .compilation-object-head{display:flex;justify-content:space-between;gap:18px}
-    .compilation-object-head h3{margin:5px 0 3px;font-size:20px}
-    .compilation-object-meta{color:var(--muted);font-size:12px}
-    .object-quick-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:14px 0}
-    .object-quick-metrics span{padding:10px;border-radius:10px;background:#f3f8f5}
+    .compilation-hero{position:relative;padding:21px 24px;border-radius:18px;background:linear-gradient(125deg,var(--compilation-green-dark),var(--compilation-green));color:#fff;box-shadow:0 14px 34px rgba(22,67,51,.12);overflow:hidden}
+    .compilation-hero:after{position:absolute;right:-58px;bottom:-118px;width:270px;height:270px;border:42px solid rgba(255,255,255,.08);border-radius:50%;content:""}
+    .compilation-hero h1{position:relative;z-index:1;margin:6px 0;font-size:clamp(28px,3.6vw,40px);line-height:1.08}
+    .compilation-hero p{position:relative;z-index:1;max-width:820px;margin:0;color:rgba(255,255,255,.84);line-height:1.5}
+    .compilation-kpis{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:9px;margin:12px 0}
+    .compilation-kpis article{min-width:0;padding:12px 13px;border:1px solid #d8e5df;border-radius:13px;background:#fff;box-shadow:0 7px 20px rgba(22,67,51,.055)}
+    .compilation-kpis span,.compilation-kpis small{display:block;color:#667b73;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .compilation-kpis strong{display:block;margin:4px 0 2px;font-size:22px;line-height:1;color:var(--compilation-green)}
+    .compilation-toolbar{position:sticky;top:65px;z-index:35;grid-template-columns:minmax(170px,.8fr) minmax(170px,.8fr) minmax(280px,1.7fr);gap:10px;padding:12px;border-color:#d8e5df;border-radius:14px;box-shadow:0 9px 24px rgba(22,67,51,.09)}
+    .compilation-toolbar label{font-size:10px}
+    .compilation-toolbar input,.compilation-toolbar select{min-height:40px;border-color:#d3e1db;background:#f8fbf9}
+    .compilation-reporters{margin-top:12px;padding:0;border:1px solid #d8e5df;border-radius:14px;background:#fff;box-shadow:0 7px 20px rgba(22,67,51,.05);overflow:hidden}
+    .compilation-reporters summary{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:13px 15px;cursor:pointer;list-style:none}
+    .compilation-reporters summary::-webkit-details-marker{display:none}
+    .compilation-reporters summary:after{content:"＋";color:var(--compilation-green);font-size:18px;font-weight:800}
+    .compilation-reporters[open] summary:after{content:"−"}
+    .compilation-reporters summary strong{display:block;margin:2px 0 0;font-size:16px;color:var(--ink)}
+    .compilation-reporters .reporter-pills{display:flex;flex-wrap:wrap;gap:7px;padding:0 15px 14px}
+    .reporter-pill{padding:8px 11px;border:1px solid #d8e5df;border-radius:999px;background:#f8fbf9;font-size:11px}
+    .reporter-pill b{color:var(--compilation-green)}
+    .compilation-section-heading{margin:17px 0 9px}
+    .compilation-section-heading h2{font-size:21px}
+    .compilation-count{padding:6px 9px;border-radius:999px;background:var(--compilation-green-soft);color:var(--compilation-green);font-size:11px;font-weight:850}
+    .compilation-objects{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+    .compilation-object{min-width:0;padding:17px;border:1px solid #d8e5df;border-radius:16px;background:#fff;box-shadow:0 9px 24px rgba(22,67,51,.065);transition:transform .18s ease,box-shadow .18s ease}
+    .compilation-object:hover{transform:translateY(-2px);box-shadow:0 14px 31px rgba(22,67,51,.11)}
+    .compilation-object-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+    .compilation-object-head h3{margin:4px 0 3px;font-size:18px;line-height:1.25}
+    .compilation-object-meta{display:block;color:#667b73;font-size:11px;line-height:1.45}
+    .compilation-object .status{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+    .compilation-object .status:before{width:7px;height:7px;border-radius:50%;background:currentColor;content:""}
+    .object-quick-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(105px,1fr));gap:7px;margin:12px 0}
+    .object-quick-metrics span{min-width:0;padding:9px;border-radius:9px;background:var(--compilation-green-soft)}
     .object-quick-metrics small,.object-quick-metrics b{display:block}
-    .object-quick-metrics small{color:var(--muted);font-size:10px}
-    .object-quick-metrics b{margin-top:4px}
-    .compilation-trend{margin-top:13px;padding:14px;border:1px solid #e6efe9;border-radius:13px;background:#fbfefd}
-    .compilation-trend h4{margin:0 0 8px}
-    .compilation-trend svg{display:block;width:100%;height:auto;max-height:190px}
-    .compilation-trend .axis{stroke:#d7e5de;stroke-width:1}
-    .compilation-trend .trend{fill:none;stroke:#11865d;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
-    .compilation-trend circle{fill:#fff;stroke:#0c6949;stroke-width:3}
-    .compilation-trend text{fill:#6b7d75;font-size:11px}
-    .compilation-object-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;padding-top:13px;border-top:1px solid #edf2ef}
-    .compilation-object-actions small{color:var(--muted)}
-    .compilation-object-actions a{color:var(--green);font-weight:850;text-decoration:none}
-    @media(max-width:900px){.compilation-kpis{grid-template-columns:repeat(2,1fr)}.object-quick-metrics{grid-template-columns:repeat(2,1fr)}}
-    @media(max-width:560px){.compilation-kpis{grid-template-columns:1fr 1fr}.compilation-object-head,.compilation-object-actions{flex-direction:column}.compilation-object-actions{align-items:flex-start}}
+    .object-quick-metrics small{color:#667b73;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .object-quick-metrics b{margin-top:3px;font-size:13px}
+    .compilation-trend{margin-top:11px;padding:11px;border:1px solid #e0ebe6;border-radius:11px;background:linear-gradient(180deg,#f3faf6,#fbfefd)}
+    .compilation-trend h4{margin:0 0 5px;font-size:13px}
+    .compilation-trend svg{display:block;width:100%;height:auto;max-height:160px}
+    .compilation-trend .axis{stroke:#d3e2db;stroke-width:1}
+    .compilation-trend .trend{fill:none;stroke:var(--compilation-green);stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+    .compilation-trend circle{fill:#fff;stroke:var(--compilation-green);stroke-width:3}
+    .compilation-trend text{fill:#667b73;font-size:11px}
+    .compilation-object-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;padding-top:11px;border-top:1px solid #edf2ef}
+    .compilation-object-actions small{color:#667b73;font-size:11px}
+    .compilation-object-actions a{color:var(--compilation-green);font-size:12px;font-weight:850;text-decoration:none}
+    .compilation-object-actions a:hover{text-decoration:underline}
+    .compilation-page .status.baik{background:#dff5e9;color:#146640}.compilation-page .status.waspada{background:#fff0d3;color:var(--compilation-amber)}.compilation-page .status.masalah{background:#fde2e2;color:var(--compilation-red)}
+    @media(max-width:1180px){.compilation-kpis{grid-template-columns:repeat(4,minmax(0,1fr))}.compilation-objects{grid-template-columns:1fr}}
+    @media(max-width:900px){.compilation-toolbar{position:static;grid-template-columns:1fr 1fr}.compilation-toolbar label:last-child{grid-column:1/-1}.object-quick-metrics{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:560px){.compilation-page .dashboard-shell{width:min(100% - 20px,1440px)}.compilation-shell{padding-top:12px}.compilation-hero{padding:18px;border-radius:15px}.compilation-hero h1{font-size:27px}.compilation-hero p{font-size:13px}.compilation-kpis{grid-template-columns:1fr 1fr;gap:7px}.compilation-kpis article{padding:11px}.compilation-kpis strong{font-size:20px}.compilation-toolbar{grid-template-columns:1fr 1fr;padding:10px}.compilation-toolbar label:last-child{grid-column:1/-1}.compilation-reporters summary{padding:12px}.compilation-reporters .reporter-pills{padding:0 12px 12px}.compilation-object-head,.compilation-object-actions{flex-direction:column}.compilation-object-actions{align-items:flex-start}.compilation-section-heading{align-items:center}.compilation-section-heading h2{font-size:19px}}
+    @media(max-width:390px){.compilation-toolbar{grid-template-columns:1fr}.compilation-toolbar label:last-child{grid-column:auto}.compilation-kpis{grid-template-columns:1fr}.object-quick-metrics{grid-template-columns:1fr 1fr}}
   </style>
 </head>
-<body>
+<body class="compilation-page">
   <header class="monitor-header">
     <a class="brand" href="monitoring.html"><img src="assets/logo-yayasan-gambut.png" alt="Logo YG"><span><strong>YG GeoPortal</strong><small>Kompilasi Monitoring</small></span></a>
     <nav><a href="monitoring.html">Kembali ke monitoring</a></nav>
   </header>
   <main class="dashboard-shell compilation-shell">
     <section class="compilation-hero">
-      <a class="compilation-back" href="monitoring.html">← Kembali ke monitoring</a>
       <span class="eyebrow">HASIL KOMPILASI LAPORAN</span>
       <h1>Seluruh hasil monitoring lapangan</h1>
       <p>Angka total dihitung dari laporan terbaru setiap objek. Riwayat dan grafik di bawah tetap dipisahkan per objek agar perkembangan lokasi tidak tercampur.</p>
     </section>
     <section id="compilation-kpis" class="compilation-kpis"></section>
-    <section class="toolbar" aria-label="Klaster detail monitoring">
+    <section class="toolbar compilation-toolbar" aria-label="Klaster detail monitoring">
       <label>Klaster
         <select id="compilation-cluster">
           <option value="object">Objek</option>
@@ -76,14 +97,13 @@
         <input id="compilation-search" type="search" placeholder="Objek, lokasi, pelapor, donor, atau fase">
       </label>
     </section>
-    <section class="side-card">
-      <span class="eyebrow">PELAPOR AKTIF</span>
-      <h2>Pelapor yang sudah mengirim data</h2>
+    <details class="compilation-reporters" open>
+      <summary><span><span class="eyebrow">PELAPOR AKTIF</span><strong>Pelapor yang sudah mengirim data</strong></span></summary>
       <div id="compilation-reporters" class="reporter-pills"></div>
-    </section>
-    <div class="section-heading">
+    </details>
+    <div class="section-heading compilation-section-heading">
       <div><span class="eyebrow">PER OBJEK</span><h2>Grafik pertumbuhan dan laporan</h2></div>
-      <span id="compilation-count">0 objek</span>
+      <span id="compilation-count" class="compilation-count">0 objek</span>
     </div>
     <section id="compilation-objects" class="compilation-objects"><div class="loading">Memuat hasil kompilasi…</div></section>
   </main>
