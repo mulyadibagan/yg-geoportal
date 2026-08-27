@@ -26,6 +26,7 @@
     'MANGROVE-BURUK-BAKUL-PHASE-III-2025-003':{plantedCount:600,areaHa:0.3}
   };
   var REPORT_METRIC_OVERRIDES={
+    'YG-20260713-202057-344':{aliveCount:10200,deadOrDamagedCount:0},
     'YG-20260826-135016-915':{aliveCount:600,deadOrDamagedCount:0}
   };
 
