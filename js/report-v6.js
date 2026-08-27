@@ -934,7 +934,7 @@
     };
 
     if(selectedType === 'Monitoring' && previousObjectId !== nextObjectId){
-      ['monitoring-dead','monitoring-alive','monitoring-survival']
+      ['monitoring-dead','monitoring-alive','monitoring-survival','monitoring-area']
         .forEach(function(id){
           var input = document.getElementById(id);
           if(input) input.value = '';
@@ -1185,7 +1185,7 @@
     document.getElementById('clear-selected-feature').hidden = true;
 
     if(selectedType === 'Monitoring'){
-      ['monitoring-dead','monitoring-alive','monitoring-survival']
+      ['monitoring-dead','monitoring-alive','monitoring-survival','monitoring-area']
         .forEach(function(id){
           var input = document.getElementById(id);
           if(input) input.value = '';
@@ -2018,16 +2018,60 @@
     return Number(value).toLocaleString('id-ID');
   }
 
+  function selectedPlantingAreaHa(){
+    if(
+      !selectedCorrectionFeature ||
+      !selectedCorrectionFeature.feature ||
+      !selectedCorrectionFeature.feature.properties
+    ){
+      return null;
+    }
+
+    var properties = selectedCorrectionFeature.feature.properties;
+    var keys = [
+      'Luas_Ha','Luas_HA','luas_ha','Luas_Area_Ha','areaHa'
+    ];
+    var raw = null;
+    for(var i=0;i<keys.length;i++){
+      if(properties[keys[i]] !== undefined && properties[keys[i]] !== null){
+        raw = properties[keys[i]];
+        break;
+      }
+    }
+    if(raw === null || String(raw).trim() === '') return null;
+
+    var normalized = String(raw).trim().replace(/\s+/g,'');
+    if(normalized.indexOf('.') !== -1 && normalized.indexOf(',') !== -1){
+      normalized = normalized.lastIndexOf(',') > normalized.lastIndexOf('.')
+        ? normalized.replace(/\./g,'').replace(',','.')
+        : normalized.replace(/,/g,'');
+    }else{
+      normalized = normalized.replace(',','.');
+    }
+
+    var area = Number(normalized);
+    return Number.isFinite(area) && area > 0 ? area : null;
+  }
+
+  function formatAreaHa(value){
+    return Number(value).toLocaleString('id-ID',{
+      minimumFractionDigits:0,
+      maximumFractionDigits:4
+    });
+  }
+
   function updateAutomaticPlantCounts(){
     var type = monitoringValue('monitoring-type');
     var isAutomatic = type === 'Penanaman Mangrove';
     var survivalInput = document.getElementById('monitoring-survival');
     var aliveInput = document.getElementById('monitoring-alive');
     var deadInput = document.getElementById('monitoring-dead');
+    var areaInput = document.getElementById('monitoring-area');
     var help = document.getElementById('monitoring-plant-count-help');
 
     if(survivalInput) survivalInput.readOnly = isAutomatic;
     if(aliveInput) aliveInput.readOnly = isAutomatic;
+    if(areaInput) areaInput.readOnly = isAutomatic;
     if(deadInput) deadInput.required = isAutomatic;
 
     if(!isAutomatic){
@@ -2038,13 +2082,15 @@
     }
 
     var total = selectedPlantingCount();
-    if(total === null){
+    var areaHa = selectedPlantingAreaHa();
+    if(areaInput) areaInput.value = areaHa === null ? '' : String(areaHa);
+    if(total === null || areaHa === null){
       if(survivalInput) survivalInput.value = '';
       if(aliveInput) aliveInput.value = '';
       if(help){
         help.textContent = selectedCorrectionFeature
-          ? 'Total bibit tidak tersedia pada atribut objek terpilih. Pilih objek penanaman yang memiliki Jumlah_Bib.'
-          : 'Pilih objek penanaman mangrove untuk mengambil total bibit secara otomatis.';
+          ? 'Jumlah bibit atau luas tidak tersedia pada atribut objek terpilih. Pilih objek yang memiliki Jumlah_Bib dan Luas_Ha.'
+          : 'Pilih objek penanaman mangrove untuk mengambil jumlah bibit dan luas secara otomatis.';
       }
       return false;
     }
@@ -2054,8 +2100,9 @@
       if(survivalInput) survivalInput.value = '';
       if(aliveInput) aliveInput.value = '';
       if(help){
-        help.textContent = 'Total tertanam ' + formatPlantCount(total) +
-          ' bibit. Isi jumlah mati/rusak; isi 0 jika tidak ada.';
+        help.textContent = 'Atribut objek: ' + formatPlantCount(total) +
+          ' bibit pada ' + formatAreaHa(areaHa) +
+          ' ha. Isi jumlah mati/rusak; isi 0 jika tidak ada.';
       }
       return false;
     }
@@ -2078,8 +2125,9 @@
       survivalInput.value = survival.toFixed(1).replace(/\.0$/,'');
     }
     if(help){
-      help.textContent = 'Total tertanam ' + formatPlantCount(total) +
-        ' bibit − ' + formatPlantCount(dead) + ' mati/rusak = ' +
+      help.textContent = 'Atribut objek: ' + formatAreaHa(areaHa) +
+        ' ha · ' + formatPlantCount(total) + ' bibit − ' +
+        formatPlantCount(dead) + ' mati/rusak = ' +
         formatPlantCount(alive) + ' hidup.';
     }
     return true;
@@ -3082,8 +3130,13 @@
       }
       if(monitorDataValidation.monitoringType === 'Penanaman Mangrove'){
         var plantingTotal = selectedPlantingCount();
+        var plantingAreaHa = selectedPlantingAreaHa();
         if(plantingTotal === null){
           alert('Total bibit tidak tersedia pada atribut objek terpilih. Pilih objek penanaman mangrove yang memiliki Jumlah_Bib.');
+          return;
+        }
+        if(plantingAreaHa === null){
+          alert('Luas tidak tersedia pada atribut objek terpilih. Pilih objek penanaman mangrove yang memiliki Luas_Ha.');
           return;
         }
         if(monitorDataValidation.deadOrDamagedCount === ''){
