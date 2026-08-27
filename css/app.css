@@ -189,6 +189,11 @@ button{cursor:pointer}
   background:var(--yg-swatch-color);
   background:color-mix(in srgb, var(--yg-swatch-color) 32%, #ffffff);
 }
+.swatch.line{
+  width:14px;
+  height:0;
+  border-top:2px solid var(--yg-swatch-color);
+}
 .swatch-symbol{transform:translateY(-0.2px)}
 .layer-row label{font-size:10px;font-weight:750;line-height:1.3}
 .count{min-width:24px;padding:2px 5px;border-radius:999px;background:#f3f7f5;color:var(--muted);font-size:8px;text-align:center}

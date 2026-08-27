@@ -2031,6 +2031,8 @@ L.control.scale({
           groups[layerId][0].geometry &&
           groups[layerId][0].geometry.type || "";
         const isPoint = geometryType.includes("Point");
+        const isLine = geometryType.includes("LineString");
+        const swatchType = isPoint ? "point" : isLine ? "line" : "area";
         const symbol = isPoint ? pointSymbolFor(layerId) : "";
 
         const row = document.createElement("div");
@@ -2039,7 +2041,7 @@ L.control.scale({
           '<input id="layer-' + escapeHtml(layerId) +
           '" data-layer-id="' + escapeHtml(layerId) +
           '" type="checkbox"' + (config.visible ? " checked" : "") + '>' +
-          '<span class="swatch ' + (isPoint ? "point" : "area") +
+          '<span class="swatch ' + swatchType +
           '" style="--yg-swatch-color:' + escapeHtml(config.color) + '">' +
             (isPoint
               ? '<span class="swatch-symbol">' + escapeHtml(symbol) + '</span>'
