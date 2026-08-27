@@ -1,7 +1,7 @@
 (function(){
 "use strict";
 var params=new URLSearchParams(location.search),key=String(params.get("key")||"").trim().toLowerCase(),map=null;
-var keyAliases={"drive-audit:kampar-lphd-kenagarian-pangkalan-kapas":"sk.3072/menlhk-pskl/pkps/psl.0/5/2018","drive-audit:kampar-mha-kenegerian-kampa":"sk.7504/menlhk-pskl/pktha/kum.1/9/2019"};
+var keyAliases={"drive-audit:kampar-lphd-kenagarian-pangkalan-kapas":"sk.3072/menlhk-pskl/pkps/psl.0/5/2018","drive-audit:kampar-mha-kenegerian-kampa":"sk.7504/menlhk-pskl/pktha/kum.1/9/2019","drive-audit:bengkalis-gapoktan-rupat-agro-mandiri":"13528 tahun 2024"};
 key=keyAliases[key]||key;
 function el(id){return document.getElementById(id)}
 function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
@@ -102,7 +102,7 @@ function render(feature,record,data,detail){
 async function init(){
   if(!key){showError("Tautan areal tidak lengkap. Pilih Perhutanan Sosial melalui WebGIS.");return}
   try{
-    var results=await Promise.all([json("data/village-forest-analytics.json?v=20260822-social-profile1"),json("data/PERHUTANAN_SOSIAL_RIAU.geojson?v=20260827-sk-audit6"),json("data/social-forestry-details.json?v=20260827-sk-audit6")]),data=results[0],geo=results[1],details=results[2]||{};
+    var results=await Promise.all([json("data/village-forest-analytics.json?v=20260822-social-profile1"),json("data/PERHUTANAN_SOSIAL_RIAU.geojson?v=20260828-rupat-derived1"),json("data/social-forestry-details.json?v=20260828-rupat-derived1")]),data=results[0],geo=results[1],details=results[2]||{};
     var feature=(geo.features||[]).find(function(f){return permitKey(f)===key||featureKey(f)===key});
     var record=(data.socialForestry||{})[key];
     if(!feature&&record){feature=(geo.features||[]).find(function(f){return normalized((f.properties||{}).NAMA_HKM)===normalized(record.name)})}

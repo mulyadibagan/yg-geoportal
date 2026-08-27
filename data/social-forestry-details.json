@@ -4685,53 +4685,6 @@
     "areaHa": 127,
     "documents": []
   },
-  "drive-audit:bengkalis-gapoktan-rupat-agro-mandiri": {
-    "name": "GAPOKTAN RUPAT AGRO MANDIRI",
-    "village": "Darul Aman",
-    "district": "Rupat",
-    "regency": "Bengkalis",
-    "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
-    "decree": "13528 TAHUN 2024",
-    "areaHa": 1027,
-    "source": "Audit Drive Perhutanan Sosial YG",
-    "spatialStatus": "nonspatial",
-    "documents": [
-      {
-        "label": "PETA GAPOKTAN RUPAT AGRO MANDIRI",
-        "category": "Peta",
-        "url": "https://drive.google.com/file/d/18RtzfO0R5eqhJi0U4NVLQ_joV5vpWlkQ/view?usp=drivesdk"
-      },
-      {
-        "label": "SK GAPOKTAN RUPAT AGRO MANDIRI",
-        "category": "Legalitas",
-        "url": "https://drive.google.com/file/d/1J-UjLQa7_cdY1t-U7qgoN3C9q_3YhkkO/view?usp=drivesdk"
-      }
-    ],
-    "driveFolderId": "1JPvt7B5Ipvco3ykCSQl2TPDbpYjRGqhj",
-    "province": "Riau",
-    "skExtraction": {
-      "institution": "Gabungan Kelompok Tani Rupat Agro Mandiri",
-      "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
-      "decreeNumber": "13528 TAHUN 2024",
-      "decreeDate": "27 Desember 2024",
-      "approvedAreaHa": 1027,
-      "forestFunctions": "Hutan Produksi Terbatas ±1.027 ha",
-      "location": "Desa Darul Aman · Kecamatan Rupat · Kabupaten Bengkalis · Provinsi Riau",
-      "source": "SK Gabungan Kelompok Tani Rupat Agro Mandiri",
-      "validity": "Sampai 27 Desember 2059",
-      "validityPeriod": "35 tahun sejak 27 Desember 2024",
-      "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
-      "ecosystem": "Ekosistem gambut · fungsi budidaya",
-      "beneficiaries": {
-        "direct": 207,
-        "source": "Lampiran SK Gabungan Kelompok Tani Rupat Agro Mandiri"
-      },
-      "management": {
-        "forestManagementUnit": "UPTD Kesatuan Pengelolaan Hutan Bengkalis Pulau",
-        "source": "Tembusan SK Gabungan Kelompok Tani Rupat Agro Mandiri"
-      }
-    }
-  },
   "drive-audit:bengkalis-kth-pasir-putih": {
     "name": "KTH PASIR PUTIH",
     "village": "Sungai Batang",
@@ -5325,5 +5278,60 @@
         "url": "https://drive.google.com/file/d/16bmIS7_Wn3WW-UpF5rqyDkh3ud33DwmO/view?usp=drivesdk"
       }
     ]
+  },
+  "13528 tahun 2024": {
+    "name": "GAPOKTAN RUPAT AGRO MANDIRI",
+    "village": "Darul Aman",
+    "district": "Rupat",
+    "regency": "Bengkalis",
+    "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
+    "decree": "13528 TAHUN 2024",
+    "areaHa": 1027,
+    "source": "Audit Drive Perhutanan Sosial YG",
+    "spatialStatus": "derived-from-sk-map",
+    "documents": [
+      {
+        "label": "PETA GAPOKTAN RUPAT AGRO MANDIRI",
+        "category": "Peta",
+        "url": "https://drive.google.com/file/d/18RtzfO0R5eqhJi0U4NVLQ_joV5vpWlkQ/view?usp=drivesdk"
+      },
+      {
+        "label": "SK GAPOKTAN RUPAT AGRO MANDIRI",
+        "category": "Legalitas",
+        "url": "https://drive.google.com/file/d/1J-UjLQa7_cdY1t-U7qgoN3C9q_3YhkkO/view?usp=drivesdk"
+      }
+    ],
+    "driveFolderId": "1JPvt7B5Ipvco3ykCSQl2TPDbpYjRGqhj",
+    "province": "Riau",
+    "skExtraction": {
+      "institution": "Gabungan Kelompok Tani Rupat Agro Mandiri",
+      "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
+      "decreeNumber": "13528 TAHUN 2024",
+      "decreeDate": "27 Desember 2024",
+      "approvedAreaHa": 1027,
+      "forestFunctions": "Hutan Produksi Terbatas ±1.027 ha",
+      "location": "Desa Darul Aman · Kecamatan Rupat · Kabupaten Bengkalis · Provinsi Riau",
+      "source": "SK Gabungan Kelompok Tani Rupat Agro Mandiri",
+      "validity": "Sampai 27 Desember 2059",
+      "validityPeriod": "35 tahun sejak 27 Desember 2024",
+      "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
+      "ecosystem": "Ekosistem gambut · fungsi budidaya",
+      "beneficiaries": {
+        "direct": 207,
+        "source": "Lampiran SK Gabungan Kelompok Tani Rupat Agro Mandiri"
+      },
+      "management": {
+        "forestManagementUnit": "UPTD Kesatuan Pengelolaan Hutan Bengkalis Pulau",
+        "source": "Tembusan SK Gabungan Kelompok Tani Rupat Agro Mandiri"
+      }
+    },
+    "spatialAreaHa": 993.51,
+    "spatialSource": {
+      "label": "Digitasi peta lampiran SK",
+      "document": "PETA GAPOKTAN RUPAT AGRO MANDIRI.pdf",
+      "fileId": "18RtzfO0R5eqhJi0U4NVLQ_joV5vpWlkQ",
+      "digitizedAt": "2026-08-28",
+      "note": "Polygon turunan dari peta raster SK dan bukan SHP resmi pemerintah."
+    }
   }
 }
