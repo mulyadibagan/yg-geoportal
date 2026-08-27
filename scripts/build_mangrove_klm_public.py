@@ -139,7 +139,8 @@ def public_metrics(values):
     initial_unclassified = max(0.0, total - values["initial_lindung_ha"] - values["initial_budidaya_ha"])
     budidaya_to_lindung = values["budidaya_reduction_true_ha"]
     additional_from_unclassified = max(0.0, values["additional_true_beyond_initial_ha"] - budidaya_to_lindung)
-    indicative_unclassified = max(0.0, initial_unclassified - additional_from_unclassified)
+    review_from_unclassified = max(0.0, values["review_beyond_initial_ha"] - values["budidaya_review_exposure_ha"])
+    indicative_unclassified = max(0.0, initial_unclassified - additional_from_unclassified - review_from_unclassified)
     pct = lambda number: round(number / total * 100, 6) if total else 0
     return {
         "mangrove_area_ha": round(total, 6),
@@ -157,14 +158,16 @@ def public_metrics(values):
         "review_beyond_initial_ha": round(values["review_beyond_initial_ha"], 6),
         "true_plus_review_ha": round(true_plus_review, 6),
         "true_plus_review_percent": pct(true_plus_review),
+        "indicative_lindung_ha": round(true_plus_review, 6),
+        "indicative_lindung_percent": pct(true_plus_review),
         "unresolved_ha": round(values["unresolved_ha"], 6),
         "initial_budidaya_ha": round(values["initial_budidaya_ha"], 6),
         "initial_budidaya_percent": pct(values["initial_budidaya_ha"]),
         "budidaya_reduction_true_ha": round(values["budidaya_reduction_true_ha"], 6),
         "budidaya_reduction_true_percent_of_initial": round(values["budidaya_reduction_true_ha"] / values["initial_budidaya_ha"] * 100, 6) if values["initial_budidaya_ha"] else 0,
         "budidaya_remaining_after_true_ha": round(budidaya_remaining, 6),
-        "indicative_budidaya_ha": round(budidaya_remaining, 6),
-        "indicative_budidaya_percent": pct(budidaya_remaining),
+        "indicative_budidaya_ha": round(budidaya_scenario_remaining, 6),
+        "indicative_budidaya_percent": pct(budidaya_scenario_remaining),
         "budidaya_review_exposure_ha": round(values["budidaya_review_exposure_ha"], 6),
         "budidaya_remaining_true_plus_review_scenario_ha": round(budidaya_scenario_remaining, 6),
         "initial_unclassified_ha": round(initial_unclassified, 6),
@@ -414,7 +417,7 @@ def main():
             add_metrics(klm_summaries[code], overlap_area, properties, 0.0)
             klm_counts[code].add(properties.get("unit_id"))
             scope_parts.append((overlap, overlap_area))
-            if properties.get("scenario_state") == "INDICATIVE_PROTECTION_TRUE":
+            if properties.get("scenario_state") in {"INDICATIVE_PROTECTION_TRUE", "REVIEW_PROTECTION_SCENARIO"}:
                 analysis_lindung_parts_by_klm[code].append(overlap)
         if scope_parts:
             inside_geometry = scope_parts[0][0] if len(scope_parts) == 1 else polygonal(unary_union([item[0] for item in scope_parts]))
@@ -468,7 +471,7 @@ def main():
                     continue
                 scope_overlap_parts.append((klm_overlap_geometry, klm_overlap_area))
                 add_budidaya_metrics(klm_summaries[klm["code"]], klm_overlap_area, unit_properties)
-                if unit_properties.get("scenario_state") != "INDICATIVE_PROTECTION_TRUE":
+                if unit_properties.get("scenario_state") not in {"INDICATIVE_PROTECTION_TRUE", "REVIEW_PROTECTION_SCENARIO"}:
                     analysis_budidaya_parts_by_klm[klm["code"]].append(klm_overlap_geometry)
             if not scope_overlap_parts:
                 continue
@@ -537,8 +540,8 @@ def main():
             "images": boundary_images,
         },
         "function_layers": [
-            {"id": "analysis_lindung", "label": "Indikasi fungsi lindung — TRUE", "images": function_images["analysis_lindung"], "color": "#19805a", "visible": True},
-            {"id": "analysis_budidaya", "label": "Indikasi fungsi budidaya", "images": function_images["analysis_budidaya"], "color": "#e09723", "visible": True},
+            {"id": "analysis_lindung", "label": "Indikasi fungsi lindung — TRUE + skenario REVIEW", "images": function_images["analysis_lindung"], "color": "#19805a", "visible": True},
+            {"id": "analysis_budidaya", "label": "Indikasi fungsi budidaya — sisa skenario", "images": function_images["analysis_budidaya"], "color": "#e09723", "visible": True},
         ],
         "statewide": {**statewide_metrics, "unit_count": len(parsed_units), "regency_count": len(regency_names)},
         "totals": {**scoped_metrics,

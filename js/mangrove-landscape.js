@@ -23,7 +23,7 @@
   }
 
   function renderCards(klms){
-    cards.innerHTML=klms.map(klm=>`<button type="button" class="klm-card" data-klm="${safe(klm.code)}" style="--klm-color:${safe(klm.color)}"><header><div><small>KLM ${safe(klm.code)}</small><strong>${safe(klm.name.replace(/^KLM\s+/i,''))}</strong></div><b>Fokus peta</b></header><div class="klm-card-stats"><span class="total"><strong>${fmt(klm.mangrove_area_ha)} ha</strong>Mangrove referensi</span><span><strong>${fmt(klm.initial_lindung_ha)} ha</strong>Lindung sumber · ${fmt(klm.initial_percent)}%</span><span><strong>${fmt(klm.validated_true_ha)} ha</strong>Lindung indikatif · ${fmt(klm.validated_true_percent)}%</span><span><strong>${fmt(klm.initial_budidaya_ha)} ha</strong>Budidaya sumber · ${fmt(klm.initial_budidaya_percent)}%</span><span><strong>${fmt(klm.indicative_budidaya_ha)} ha</strong>Budidaya indikatif · ${fmt(klm.indicative_budidaya_percent)}%</span></div><div class="klm-bar"><i style="width:${Math.min(100,klm.validated_true_percent)}%"></i></div></button>`).join('');
+    cards.innerHTML=klms.map(klm=>`<button type="button" class="klm-card" data-klm="${safe(klm.code)}" style="--klm-color:${safe(klm.color)}"><header><div><small>KLM ${safe(klm.code)}</small><strong>${safe(klm.name.replace(/^KLM\s+/i,''))}</strong></div><b>Fokus peta</b></header><div class="klm-card-stats"><span class="total"><strong>${fmt(klm.mangrove_area_ha)} ha</strong>Mangrove referensi</span><span><strong>${fmt(klm.initial_lindung_ha)} ha</strong>Lindung sumber · ${fmt(klm.initial_percent)}%</span><span><strong>${fmt(klm.indicative_lindung_ha)} ha</strong>Lindung indikatif · ${fmt(klm.indicative_lindung_percent)}%</span><span><strong>${fmt(klm.initial_budidaya_ha)} ha</strong>Budidaya sumber · ${fmt(klm.initial_budidaya_percent)}%</span><span><strong>${fmt(klm.indicative_budidaya_ha)} ha</strong>Budidaya indikatif · ${fmt(klm.indicative_budidaya_percent)}%</span></div><div class="klm-bar"><i style="width:${Math.min(100,klm.indicative_lindung_percent)}%"></i></div></button>`).join('');
     cards.addEventListener('click',event=>{const button=event.target.closest('[data-klm]');if(!button)return;const klm=klms.find(item=>item.code===button.dataset.klm);if(klm)focusKlm(klm)});
   }
 
@@ -37,20 +37,20 @@
     document.getElementById('overview-source-lindung-percent').textContent=`${fmt(riau.initial_percent)}% dari mangrove referensi`;
     document.getElementById('overview-source-budidaya').textContent=`${fmt(riau.initial_budidaya_ha)} ha`;
     document.getElementById('overview-source-budidaya-percent').textContent=`${fmt(riau.initial_budidaya_percent)}% dari mangrove referensi`;
-    document.getElementById('overview-indicative-lindung').textContent=`${fmt(riau.validated_true_ha)} ha`;
-    document.getElementById('overview-indicative-lindung-percent').textContent=`${fmt(riau.validated_true_percent)}% · hasil TRUE`;
+    document.getElementById('overview-indicative-lindung').textContent=`${fmt(riau.indicative_lindung_ha)} ha`;
+    document.getElementById('overview-indicative-lindung-percent').textContent=`${fmt(riau.indicative_lindung_percent)}% · TRUE + skenario REVIEW`;
     document.getElementById('overview-indicative-budidaya').textContent=`${fmt(riau.indicative_budidaya_ha)} ha`;
     document.getElementById('overview-indicative-budidaya-percent').textContent=`${fmt(riau.indicative_budidaya_percent)}% · hasil indikatif`;
   }
 
   function renderRegencies(regencies){
-    regencyBody.innerHTML=regencies.map(row=>`<tr><th>${safe(row.name)}</th><td>${fmt(row.mangrove_area_ha)} ha</td><td>${fmt(row.initial_lindung_ha)} ha<br><small>${fmt(row.initial_percent)}%</small></td><td class="analysis-value">${fmt(row.validated_true_ha)} ha<br><small>${fmt(row.validated_true_percent)}%</small></td><td>${fmt(row.initial_budidaya_ha)} ha<br><small>${fmt(row.initial_budidaya_percent)}%</small></td><td class="analysis-value">${fmt(row.indicative_budidaya_ha)} ha<br><small>${fmt(row.indicative_budidaya_percent)}%</small></td></tr>`).join('');
+    regencyBody.innerHTML=regencies.map(row=>`<tr><th>${safe(row.name)}</th><td>${fmt(row.mangrove_area_ha)} ha</td><td>${fmt(row.initial_lindung_ha)} ha<br><small>${fmt(row.initial_percent)}%</small></td><td class="analysis-value">${fmt(row.indicative_lindung_ha)} ha<br><small>${fmt(row.indicative_lindung_percent)}%</small></td><td>${fmt(row.initial_budidaya_ha)} ha<br><small>${fmt(row.initial_budidaya_percent)}%</small></td><td class="analysis-value">${fmt(row.indicative_budidaya_ha)} ha<br><small>${fmt(row.indicative_budidaya_percent)}%</small></td></tr>`).join('');
   }
 
   async function init(){
     if(!window.L){status.textContent='Peta belum dapat dimuat';return}
     try{
-      const response=await fetch('data/mangrove-klm-summary.json?v=20260827-publiccomparison1',{cache:'no-store'});
+      const response=await fetch('data/mangrove-klm-summary.json?v=20260827-reviewscenario1',{cache:'no-store'});
       if(!response.ok)throw new Error('Ringkasan KLM tidak tersedia');
       state.data=await response.json();
       state.map=L.map('klm-map',{zoomControl:true,minZoom:6,maxZoom:18});
@@ -66,7 +66,7 @@
       const bounds=state.data.image.bounds;
       const overlays={};
       state.data.function_layers.forEach(item=>{
-        const images=(item.images||[{path:item.path,bounds}]).map(image=>L.imageOverlay(`${image.path}?v=20260827-klmclip1`,image.bounds||bounds,{opacity:1,interactive:false}));
+        const images=(item.images||[{path:item.path,bounds}]).map(image=>L.imageOverlay(`${image.path}?v=20260827-reviewscenario1`,image.bounds||bounds,{opacity:1,interactive:false}));
         const layer=L.layerGroup(images);
         overlays[item.label]=layer;
         if(item.visible)layer.addTo(state.map);

@@ -50,10 +50,10 @@
       <div class="overview-grid">
         <article><span>Lindung sumber</span><strong id="overview-source-lindung">—</strong><small id="overview-source-lindung-percent">klasifikasi pada data RPPEM</small></article>
         <article><span>Budidaya sumber</span><strong id="overview-source-budidaya">—</strong><small id="overview-source-budidaya-percent">klasifikasi pada data RPPEM</small></article>
-        <article class="overview-indicative"><span>Lindung indikatif</span><strong id="overview-indicative-lindung">—</strong><small id="overview-indicative-lindung-percent">hasil TRUE analisis YG</small></article>
-        <article class="overview-indicative"><span>Budidaya indikatif</span><strong id="overview-indicative-budidaya">—</strong><small id="overview-indicative-budidaya-percent">baseline budidaya yang tidak beririsan TRUE</small></article>
+        <article class="overview-indicative"><span>Lindung indikatif</span><strong id="overview-indicative-lindung">—</strong><small id="overview-indicative-lindung-percent">TRUE + skenario REVIEW</small></article>
+        <article class="overview-indicative"><span>Budidaya indikatif</span><strong id="overview-indicative-budidaya">—</strong><small id="overview-indicative-budidaya-percent">sisa baseline budidaya dalam skenario</small></article>
       </div>
-      <div class="boundary-assurance riau-definition"><strong>Ringkasan Riau.</strong><p>Lindung indikatif adalah area dengan hasil TRUE. Budidaya indikatif adalah bagian baseline budidaya yang tidak beririsan dengan hasil TRUE. Area yang belum terklasifikasi tidak dipaksakan masuk ke salah satu fungsi. Angka ini merupakan hasil analisis, bukan penetapan fungsi.</p></div>
+      <div class="boundary-assurance riau-definition"><strong>Ringkasan Riau.</strong><p>Lindung indikatif mencakup hasil TRUE dan skenario REVIEW sehingga memperlihatkan cakupan hingga sekitar 30%. Budidaya indikatif adalah sisa baseline budidaya setelah TRUE dan skenario REVIEW. REVIEW tetap memerlukan verifikasi; angka ini merupakan skenario analitis, bukan penetapan fungsi.</p></div>
     </section>
 
     <section class="page-section klm-section" id="klm">
@@ -64,11 +64,11 @@
       </div>
       <div class="klm-cluster-heading"><div><p class="eyebrow">RINGKASAN PER KLM</p><h3>Fungsi sumber dan hasil indikatif</h3></div><p>Setiap kartu memperlihatkan luas mangrove, fungsi lindung dan budidaya pada data sumber, serta fungsi lindung dan budidaya indikatif hasil analisis.</p></div>
       <div class="klm-cards" id="klm-cards" aria-live="polite"><article class="klm-loading">Memuat ringkasan per KLM…</article></div>
-      <div class="boundary-assurance"><strong>Batas KLM tidak diubah.</strong><p>Peta menampilkan dua kelompok hasil: indikasi fungsi lindung dan indikasi fungsi budidaya. Perhitungan menggunakan geometri sumber secara penuh; raster hanya digunakan untuk tampilan web. <span id="klm-reconciliation"></span></p></div>
+      <div class="boundary-assurance"><strong>Batas KLM tidak diubah.</strong><p>Peta menampilkan dua kelompok skenario: fungsi lindung indikatif yang mencakup TRUE + REVIEW dan fungsi budidaya indikatif yang tersisa. Perhitungan menggunakan geometri sumber secara penuh; raster hanya digunakan untuk tampilan web. <span id="klm-reconciliation"></span></p></div>
     </section>
 
     <section class="page-section function-section" id="fungsi">
-      <div class="section-heading"><div><p class="eyebrow">DASAR ANALISIS</p><h2>Kriteria fungsi lindung indikatif</h2></div><p>Delapan kriteria diterjemahkan menjadi aturan spasial yang dapat diperiksa kembali. Hasil TRUE menjadi dasar luas lindung indikatif yang ditampilkan pada total Riau, kartu KLM, dan tabel wilayah.</p></div>
+      <div class="section-heading"><div><p class="eyebrow">DASAR ANALISIS</p><h2>Kriteria fungsi lindung indikatif</h2></div><p>Delapan kriteria diterjemahkan menjadi aturan spasial yang dapat diperiksa kembali. Tampilan lindung indikatif menggabungkan hasil TRUE dan skenario REVIEW; keduanya tetap dapat dibedakan dalam data analitis.</p></div>
       <div class="reading-rule"><strong>Cara membaca hasil:</strong><span><b>TRUE</b> memenuhi sedikitnya satu kriteria berdasarkan bukti tersedia</span><span><b>REVIEW</b> memerlukan verifikasi tambahan</span><span><b>UNKNOWN</b> data belum memadai</span><span><b>FALSE</b> hanya digunakan bila bukti cukup</span></div>
 
       <div class="criteria-heading"><h3>Delapan kriteria fungsi lindung</h3><p>Kode FL adalah kode internal YG untuk menerjemahkan kriteria regulasi menjadi aturan spasial yang dapat diaudit.</p></div>
@@ -87,7 +87,7 @@
     <section class="page-section" id="wilayah">
       <div class="section-heading"><div><p class="eyebrow">RINGKASAN PER KABUPATEN/KOTA</p><h2>Fungsi sumber dan hasil indikatif per wilayah</h2></div><p>Tabel menggunakan seluruh mangrove referensi Riau pada setiap kabupaten/kota, tidak dibatasi oleh gabungan tiga KLM.</p></div>
       <div class="table-wrap transition-table"><table><thead><tr><th>Wilayah</th><th>Mangrove referensi</th><th>Lindung sumber</th><th>Lindung indikatif</th><th>Budidaya sumber</th><th>Budidaya indikatif</th></tr></thead><tbody id="regency-transition-body"><tr><td colspan="6">Memuat ringkasan kabupaten/kota…</td></tr></tbody></table></div>
-      <p class="transition-caveat">Budidaya indikatif adalah bagian baseline budidaya yang tidak beririsan dengan hasil lindung TRUE. Angka ini bukan penetapan fungsi, tidak mengubah izin atau status kawasan, dan tetap harus dibaca bersama data sumber serta keterbatasan bukti.</p>
+      <p class="transition-caveat">Lindung indikatif mencakup TRUE + skenario REVIEW. Budidaya indikatif adalah sisa baseline budidaya setelah kedua kelompok tersebut. REVIEW tetap memerlukan verifikasi. Angka ini bukan penetapan fungsi dan tidak mengubah izin atau status kawasan.</p>
     </section>
 
     <section class="page-section" id="modul">
@@ -102,14 +102,14 @@
 
     <section class="page-section method-section" id="metode">
       <div class="section-heading"><div><p class="eyebrow">METODE &amp; AKUNTABILITAS</p><h2>Bagaimana angka dihitung</h2></div><p>Mesin menggunakan aturan deterministik empat status, bukan skor, bobot, voting, atau probabilitas.</p></div>
-      <div class="method-flow"><article><b>1</b><strong>Bangun unit analisis</strong><p>Poligon mangrove PMN 2025 dipotong dengan geometri bukti dan batas wilayah.</p></article><article><b>2</b><strong>Uji FL01–FL08</strong><p>Setiap kriteria dinilai TRUE, REVIEW, UNKNOWN, atau FALSE berdasarkan bukti.</p></article><article><b>3</b><strong>Gabungkan geometri</strong><p>Luas fungsi dihitung dari gabungan geometri agar tumpang tindih antarkriteria tidak dijumlahkan ganda.</p></article><article><b>4</b><strong>Kelompokkan hasil</strong><p>TRUE menjadi dasar lindung indikatif. REVIEW dan UNKNOWN tetap ditandai untuk verifikasi dan tidak dihitung sebagai lindung TRUE.</p></article></div>
+      <div class="method-flow"><article><b>1</b><strong>Bangun unit analisis</strong><p>Poligon mangrove PMN 2025 dipotong dengan geometri bukti dan batas wilayah.</p></article><article><b>2</b><strong>Uji FL01–FL08</strong><p>Setiap kriteria dinilai TRUE, REVIEW, UNKNOWN, atau FALSE berdasarkan bukti.</p></article><article><b>3</b><strong>Gabungkan geometri</strong><p>Luas fungsi dihitung dari gabungan geometri agar tumpang tindih antarkriteria tidak dijumlahkan ganda.</p></article><article><b>4</b><strong>Bangun skenario publik</strong><p>Lindung indikatif menggabungkan TRUE dan REVIEW. Status REVIEW tetap dipertahankan sebagai penanda bahwa verifikasi tambahan masih diperlukan.</p></article></div>
       <div class="legal-grid"><article><h3>Acuan regulasi</h3><p><a href="https://peraturan.bpk.go.id/Details/320198" target="_blank" rel="noopener"><strong>PP Nomor 27 Tahun 2025</strong></a> tentang Perlindungan dan Pengelolaan Ekosistem Mangrove menjadi kerangka utama fungsi dan pengelolaan ekosistem mangrove.</p><p><a href="https://peraturan.bpk.go.id/Details/353164/permen-lhbplh-no-8-tahun-2026" target="_blank" rel="noopener"><strong>Permen LH/BPLH Nomor 8 Tahun 2026</strong></a> mengatur tata cara penetapan/perubahan fungsi, rencana dasar KLM, dan RPPEM. Kode FL01–FL08 adalah terjemahan operasional internal YG, bukan kode resmi peraturan.</p></article><article><h3>Batas publikasi v1</h3><ul><li>Geometri unit rinci belum dibuka sebagai data resmi.</li><li>FL01 memakai input model pasut tanpa kalibrasi stasiun lokal dan garis datum legal.</li><li>FL02 masih mencakup centerline dan pencocokan nama sungai.</li><li>Persentase adalah pangsa luas spasial, bukan probabilitas atau kepastian hukum.</li></ul></article></div>
       <div class="public-note"><strong>Catatan penggunaan:</strong><p>Hasil ini merupakan analisis spasial indikatif Yayasan Gambut berdasarkan data dan bukti yang tersedia. Istilah “lindung indikatif” dan “budidaya indikatif” digunakan untuk menyajikan hasil analisis, bukan penetapan atau perubahan fungsi ekosistem mangrove. Hasil tidak mengubah batas, izin, atau status kawasan dan memerlukan verifikasi melalui proses resmi serta pemeriksaan lapangan.</p></div>
     </section>
   </main>
   <footer><div><strong>YG GeoPortal</strong><p>Kawasan Lanskap Mangrove Riau · ringkasan publik v1</p></div><a href="coastal-monitoring.html">Kembali ke Pesisir &amp; Mangrove</a></footer>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-  <script src="js/mangrove-landscape.js?v=20260827-riauoverview1"></script>
+  <script src="js/mangrove-landscape.js?v=20260827-reviewscenario1"></script>
   <script src="js/navigation-v2.js?v=20260807-mobile-menu-fix2"></script>
 </body>
 </html>
