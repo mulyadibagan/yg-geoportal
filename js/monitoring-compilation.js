@@ -133,6 +133,7 @@
     };
     var target=parseJSON(p.targetFeatureProperties);
     var targetArea=publishedAreaNumber(target.Luas_Ha||target.Luas||target.areaHa||target.luas_ha);
+    var plantedCount=publishedNumber(target.Jumlah_Bib||target.Jumlah_Tanam||target.plantedCount||target.jumlahBibit||target.jumlah_bibit);
     if(targetArea!==null&&targetArea>0)m.monitoredAreaHa=targetArea;
     if(String(p.reportId||p.Source_Report_ID||'')==='YG-20260717-205241-378'){
       m.aliveCount=2730;m.deadOrDamagedCount=600;m.survivalPercent=82;
@@ -154,7 +155,7 @@
       title:title,type:reportType(p,m),date:p.activityDate||p.publishedAt||p.verifiedAt||p.receivedAt,
       village:village,villageKey:keyText(village),location:[village,p.district,p.regency].filter(Boolean).join(', '),
       reporter:reporter,reporterKey:keyText(reporter),donor:donor,donorKey:keyText(donor),
-      phase:phase,phaseKey:keyText(phase),metrics:m,status:status
+      phase:phase,phaseKey:keyText(phase),plantedCount:plantedCount,metrics:m,status:status
     };
   }
   function compilePublished(records,type){
@@ -176,11 +177,12 @@
       group.latest=group.history[0];
       return group;
     }).sort(function(a,b){return dateValue(b.latest.date)-dateValue(a.latest.date);});
-    var alive=0,dead=0,area=0,reporterMap={};
+    var alive=0,dead=0,area=0,planted=0,hasPlanted=false,reporterMap={};
     groups.forEach(function(group){
       var metrics=group.latest.metrics||{};
       var live=metricValue(metrics,metricDefs[0]),lost=metricValue(metrics,metricDefs[1]),size=metricValue(metrics,metricDefs[6]);
       if(live!==null)alive+=live;if(lost!==null)dead+=lost;if(size!==null)area+=size;
+      if(group.latest.plantedCount!==null&&group.latest.plantedCount!==undefined){planted+=Number(group.latest.plantedCount)||0;hasPlanted=true;}
     });
     records.forEach(function(record){
       var key=record.reporterKey||'pelapor-tidak-disebut';
@@ -188,7 +190,7 @@
       reporterMap[key].reports+=1;reporterMap[key].objects[record.masterObjectId||record.objectId]=1;
     });
     var reporters=Object.keys(reporterMap).map(function(key){return reporterMap[key];}).sort(function(a,b){return b.reports-a.reports;});
-    return{generatedAt:Date.now(),type:type,summary:{objects:groups.length,reports:records.length,reporters:reporters.length,area:area,alive:alive,dead:dead,totalPlants:alive+dead,condition:alive+dead?Math.round(alive/(alive+dead)*100):0},reporters:reporters,groups:groups};
+    return{generatedAt:Date.now(),type:type,summary:{objects:groups.length,reports:records.length,reporters:reporters.length,area:area,alive:alive,dead:dead,planted:hasPlanted?planted:null,totalPlants:hasPlanted?planted:alive+dead,condition:alive+dead?Math.round(alive/(alive+dead)*100):0},reporters:reporters,groups:groups};
   }
   function loadPublished(type,storageKey){
     var callback='ygMonitoringCompilationCallback'+Date.now();
@@ -286,7 +288,7 @@
       var latest=group.latest||{};
       var key=latest.villageKey||keyText(latest.village||'');
       if(!key)return;
-      if(!villages[key])villages[key]={key:key,label:latest.village||latest.location||key,objects:0,reports:0,alive:0,dead:0,area:0};
+      if(!villages[key])villages[key]={key:key,label:latest.village||latest.location||key,objects:0,reports:0,alive:0,dead:0,area:0,planted:0,hasPlanted:false};
       var village=villages[key],metrics=latest.metrics||{};
       var alive=metricValue(metrics,metricDefs[0]),dead=metricValue(metrics,metricDefs[1]),area=metricValue(metrics,metricDefs[6]);
       village.objects+=1;
@@ -294,6 +296,7 @@
       if(alive!==null)village.alive+=alive;
       if(dead!==null)village.dead+=dead;
       if(area!==null)village.area+=area;
+      if(latest.plantedCount!==null&&latest.plantedCount!==undefined){village.planted+=Number(latest.plantedCount)||0;village.hasPlanted=true;}
     });
     return Object.keys(villages).map(function(key){
       var village=villages[key],total=village.alive+village.dead;
@@ -312,11 +315,12 @@
     villageChart.innerHTML=villages.map(function(village){
       var aliveWidth=village.alive/maxTotal*100,deadWidth=village.dead/maxTotal*100;
       var survival=village.survival===null?'—':numberFormat(village.survival)+'%';
-      var aria=village.label+', '+numberFormat(village.alive)+' tanaman hidup, '+numberFormat(village.dead)+' mati atau rusak, kondisi hidup '+survival;
+      var planted=village.hasPlanted?numberFormat(village.planted):'—';
+      var aria=village.label+', '+planted+' bibit tertanam, '+numberFormat(village.alive)+' tanaman hidup, '+numberFormat(village.dead)+' mati atau rusak, kondisi hidup '+survival;
       return'<button type="button" class="village-chart-row" data-village-chart-key="'+esc(village.key)+'" aria-label="'+esc(aria)+'. Saring objek desa ini">'+
         '<span class="village-chart-name"><strong>'+esc(village.label)+'</strong><small>'+village.objects+' objek · '+village.reports+' laporan</small></span>'+
         '<span class="village-bar-line"><span class="village-bar-track" role="img" aria-label="'+esc(aria)+'"><i class="village-bar-alive" style="width:'+aliveWidth.toFixed(2)+'%"></i><i class="village-bar-dead" style="width:'+deadWidth.toFixed(2)+'%"></i></span><b>'+esc(survival)+'</b></span>'+
-        '<span class="village-chart-stats"><span><b>'+esc(numberFormat(village.alive))+'</b>hidup</span><span><b>'+esc(numberFormat(village.dead))+'</b>mati/rusak</span><span><b>'+esc(numberFormat(village.area))+' ha</b>terpantau</span></span>'+
+        '<span class="village-chart-stats"><span class="village-planted-total"><b>'+esc(planted)+'</b>bibit tertanam</span><span><b>'+esc(numberFormat(village.alive))+'</b>hidup</span><span><b>'+esc(numberFormat(village.dead))+'</b>mati/rusak</span><span><b>'+esc(numberFormat(village.area))+' ha</b>terpantau</span></span>'+
       '</button>';
     }).join('');
   }
@@ -329,7 +333,7 @@
       ['Objek dipantau',summary.objects,'objek'],['Laporan masuk',summary.reports,'laporan'],
       ['Pelapor aktif',summary.reporters,'orang'],['Luas terpantau',summary.area,'ha'],
       ['Tanaman hidup',summary.alive,'pohon'],['Tanaman mati/rusak',summary.dead,'pohon'],
-      ['Total tanaman',summary.totalPlants,'pohon'],['Kondisi hidup',summary.condition,'%']
+      ['Bibit tertanam',summary.planted==null?summary.totalPlants:summary.planted,'bibit'],['Kondisi hidup',summary.condition,'%']
     ];
     kpis.innerHTML=kpiItems.map(function(item){return'<article><span>'+esc(item[0])+'</span><strong>'+esc(numberFormat(item[1]))+'</strong><small>'+esc(item[2])+'</small></article>';}).join('');
     reporters.innerHTML=(data.reporters||[]).map(function(item){return'<span class="reporter-pill"><b>'+esc(item.name)+'</b> · '+item.reports+' laporan · '+Object.keys(item.objects||{}).length+' objek</span>';}).join('')||'<span class="muted">Belum ada nama pelapor.</span>';

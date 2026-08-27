@@ -34,7 +34,7 @@
     .village-chart-legend i{width:9px;height:9px;border-radius:3px;background:var(--compilation-green)}
     .village-chart-legend .dead i{background:var(--compilation-red)}
     .village-chart{display:grid;gap:7px}
-    .village-chart-row{display:grid;grid-template-columns:minmax(125px,1.05fr) minmax(220px,3fr) minmax(185px,1.25fr);align-items:center;gap:13px;width:100%;padding:9px 10px;border:0;border-radius:10px;background:#f8fbf9;color:var(--ink);font:inherit;text-align:left;cursor:pointer;transition:background .18s ease,transform .18s ease}
+    .village-chart-row{display:grid;grid-template-columns:minmax(125px,1.05fr) minmax(220px,3fr) minmax(255px,1.55fr);align-items:center;gap:13px;width:100%;padding:9px 10px;border:0;border-radius:10px;background:#f8fbf9;color:var(--ink);font:inherit;text-align:left;cursor:pointer;transition:background .18s ease,transform .18s ease}
     .village-chart-row:hover{background:#eef7f2;transform:translateX(2px)}
     .village-chart-row:focus-visible{outline:3px solid rgba(8,107,76,.25);outline-offset:2px}
     .village-chart-name strong,.village-chart-name small{display:block}
@@ -43,8 +43,9 @@
     .village-bar-track{display:flex;flex:1;height:15px;border-radius:999px;background:#e7efeb;overflow:hidden}
     .village-bar-alive{background:var(--compilation-green)}.village-bar-dead{background:var(--compilation-red)}
     .village-bar-line b{min-width:38px;color:var(--compilation-green);font-size:12px;text-align:right}
-    .village-chart-stats{display:flex;justify-content:flex-end;gap:14px;color:#667b73;font-size:10px}
+    .village-chart-stats{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:12px;color:#667b73;font-size:10px}
     .village-chart-stats span{white-space:nowrap}.village-chart-stats b{display:block;margin-bottom:1px;color:var(--ink);font-size:12px}
+    .village-chart-stats .village-planted-total b{color:var(--compilation-green)}
     .village-chart-empty{padding:18px;border-radius:10px;background:#f8fbf9;color:#667b73;text-align:center}
     .compilation-reporters{margin-top:12px;padding:0;border:1px solid #d8e5df;border-radius:14px;background:#fff;box-shadow:0 7px 20px rgba(22,67,51,.05);overflow:hidden}
     .compilation-reporters summary{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:13px 15px;cursor:pointer;list-style:none}
@@ -135,7 +136,7 @@
     </div>
     <section id="compilation-objects" class="compilation-objects"><div class="loading">Memuat hasil kompilasi…</div></section>
   </main>
-  <script src="js/monitoring-compilation.js?v=20260828-village-chart2"></script>
+  <script src="js/monitoring-compilation.js?v=20260828-village-chart3"></script>
 </body>
 </html>
 
