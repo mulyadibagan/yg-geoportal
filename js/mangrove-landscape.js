@@ -28,7 +28,7 @@
   }
 
   function renderBaseline(data){
-    baseline.innerHTML=`<article><span>Jumlah KLM sumber</span><strong>${data.klms.length}</strong><small>14.01 · 14.02 · 14.03</small></article><article><span>Total luas KLM sumber</span><strong>${fmt(data.totals.klm_source_total_area_ha)} ha</strong><small>luas atribut dataset KLM</small></article><article><span>Mangrove dalam tiga KLM</span><strong>${fmt(data.totals.inside_source_klm_area_ha)} ha</strong><small>cakupan peta dan kartu KLM</small></article><article><span>Cakupan terhadap Riau</span><strong>${fmt(data.totals.inside_source_klm_percent)}%</strong><small>${fmt(data.totals.outside_source_klm_area_ha)} ha berada di luar peta KLM</small></article>`;
+    baseline.innerHTML=`<article><span>Jumlah KLM</span><strong>${data.klms.length}</strong><small>kode 14.01 · 14.02 · 14.03</small></article><article><span>Total luas tiga KLM</span><strong>${fmt(data.totals.klm_source_total_area_ha)} ha</strong><small>luas atribut dataset sumber</small></article><article><span>Mangrove di dalam KLM</span><strong>${fmt(data.totals.inside_source_klm_area_ha)} ha</strong><small>cakupan peta dan kartu KLM</small></article>`;
   }
 
   function renderOverview(data){
