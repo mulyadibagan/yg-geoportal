@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="css/navigation-v2.css?v=20260807-mobile-submenu-links1">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
   <link rel="stylesheet" href="css/mangrove-landscape.css?v=20260827-public1">
-  <link rel="stylesheet" href="css/mangrove-klm.css?v=20260827-map1">
+  <link rel="stylesheet" href="css/mangrove-klm.css?v=20260827-functions2">
   <meta name="theme-color" content="#075b53">
 </head>
 <body>
@@ -46,38 +46,40 @@
     <nav class="section-nav" aria-label="Bagian halaman"><a href="#gambaran">Gambaran</a><a href="#klm">Peta &amp; KLM</a><a href="#fungsi">Fungsi ekosistem</a><a href="#wilayah">Wilayah</a><a href="#modul">Modul terkait</a><a href="#metode">Metode &amp; batasan</a></nav>
 
     <section class="page-section" id="gambaran">
-      <div class="section-heading"><div><p class="eyebrow">GAMBARAN LANSKAP</p><h2>Mangrove Riau dalam angka</h2></div><p>Seluruh persentase menggunakan luas union PMN 2025 di Riau sebagai penyebut, sehingga polygon yang bertumpang tindih tidak dihitung ganda.</p></div>
+      <div class="section-heading"><div><p class="eyebrow">GAMBARAN LANSKAP</p><h2>Mangrove Riau dalam angka</h2></div><p>Seluruh persentase menggunakan luas gabungan PMN 2025 di Riau sebagai penyebut, sehingga poligon yang bertumpang tindih tidak dihitung ganda.</p></div>
       <div class="overview-grid">
         <article><span>Cakupan mangrove</span><strong>186.812,38 ha</strong><small>union PMN 2025 di Riau</small></article>
         <article><span>Unit analisis</span><strong>6.460</strong><small>0 geometri tidak valid</small></article>
         <article><span>Wilayah pesisir</span><strong>7</strong><small>kabupaten/kota teridentifikasi</small></article>
-        <article><span>Status QA</span><strong>PASS</strong><small>15 dari 15 pengujian lulus</small></article>
+        <article><span>Pemeriksaan teknis</span><strong>LULUS</strong><small>15 dari 15 pemeriksaan internal data dan perhitungan lulus</small></article>
       </div>
     </section>
 
     <section class="page-section klm-section" id="klm">
-      <div class="section-heading"><div><p class="eyebrow">KESATUAN LANSKAP MANGROVE</p><h2>Ringkasan per KLM dan peta batas sumber</h2></div><p>Tiga KLM ditampilkan mengikuti geometri pada dataset Peta Indikatif Kesatuan Lanskap Mangrove. Pilih nama KLM untuk memusatkan peta dan membaca hasilnya.</p></div>
+      <div class="section-heading"><div><p class="eyebrow">BASELINE KLM SE-RIAU</p><h2>Data awal Kesatuan Lanskap Mangrove</h2></div><p>Baseline ditampilkan lebih dahulu sesuai dataset Peta Indikatif Kesatuan Lanskap Mangrove. Setelah itu, unit mangrove dan hasil fungsi dikelompokkan menurut KLM tanpa mengubah batas sumber.</p></div>
+      <div class="klm-baseline" id="klm-baseline"><article class="klm-loading">Memuat baseline KLM Riau…</article></div>
       <div class="klm-workspace">
-        <div class="klm-map-wrap"><div id="klm-map" aria-label="Peta tiga Kesatuan Lanskap Mangrove di Riau"></div><div class="klm-map-status" id="klm-map-status">Memuat batas KLM sumber…</div><div class="klm-map-legend"><span><i style="background:#0f7e6b"></i>Kuala Indragiri Hilir</span><span><i style="background:#1671ad"></i>Semenanjung Dumai</span><span><i style="background:#dd842d"></i>Kuala Bengkalis</span></div></div>
-        <aside class="klm-detail" id="klm-detail"><p class="eyebrow">KLM TERPILIH</p><h3>Pilih KLM pada peta</h3><p>Ringkasan luas mangrove dan fungsi akan tampil di sini.</p></aside>
+        <div class="klm-map-wrap"><div id="klm-map" aria-label="Peta indikasi fungsi lindung TRUE dan baseline budidaya tersisa pada tiga Kesatuan Lanskap Mangrove di Riau"></div><div class="klm-map-status" id="klm-map-status">Memuat dua tampilan indikatif dan batas KLM…</div><div class="klm-map-legend" id="function-map-legend"><span>Memuat legenda fungsi…</span></div></div>
       </div>
+      <div class="klm-cluster-heading"><div><p class="eyebrow">KLASTER HASIL ANALISIS</p><h3>Ringkasan fungsi per KLM</h3></div><p>Setiap kartu membandingkan fungsi lindung dan budidaya awal dengan perubahan indikatif berdasarkan hasil TRUE. REVIEW tetap menjadi skenario terpisah.</p></div>
       <div class="klm-cards" id="klm-cards" aria-live="polite"><article class="klm-loading">Memuat ringkasan per KLM…</article></div>
-      <div class="boundary-assurance"><strong>Batas KLM tidak diubah.</strong><p>Perhitungan memakai seluruh geometri sumber tanpa simplifikasi. Peta menampilkan hasil rasterisasi dari geometri yang sama pada resolusi layar agar halaman tetap ringan; raster hanya untuk visualisasi dan tidak digunakan menghitung luas. <span id="klm-reconciliation"></span></p></div>
+      <div class="boundary-assurance"><strong>Batas KLM tidak diubah.</strong><p>Untuk keperluan visualisasi, peta mengelompokkan hasil analisis ke dalam dua tampilan indikatif: indikasi fungsi lindung TRUE dan baseline budidaya tersisa setelah overlay TRUE. Rincian perubahan awal tersedia pada kartu dan neraca di bawah. Perhitungan memakai geometri penuh; raster peta hanya untuk tampilan. <span id="klm-reconciliation"></span></p></div>
     </section>
 
     <section class="page-section function-section" id="fungsi">
-      <div class="section-heading"><div><p class="eyebrow">ANALISIS INDIKATIF FUNGSI EKOSISTEM</p><h2>Dari fungsi awal ke hasil validasi YG</h2></div><p>Angka TRUE dan REVIEW ditampilkan terpisah. REVIEW bukan TRUE dan tidak boleh dibaca sebagai kepastian hukum.</p></div>
+      <div class="section-heading"><div><p class="eyebrow">ANALISIS INDIKATIF FUNGSI EKOSISTEM</p><h2>Perbandingan fungsi awal dan indikasi hasil analisis YG</h2></div><p>Angka TRUE dan REVIEW ditampilkan terpisah. REVIEW bukan TRUE dan tidak boleh dibaca sebagai kepastian hukum.</p></div>
       <div class="comparison-grid">
-        <article class="comparison-card initial"><header><span>01</span><div><small>FUNGSI AWAL RPPEM</small><strong>6,76%</strong></div></header><p>12.631,48 ha fungsi lindung pada data awal.</p><div class="bar"><i style="width:6.76%"></i></div><small>Benchmark untuk membaca kesenjangan, bukan hasil YG.</small></article>
-        <article class="comparison-card validated"><header><span>02</span><div><small>TERVALIDASI TRUE</small><strong>14,44%</strong></div></header><p>26.974,28 ha memenuhi sedikitnya satu kriteria dengan bukti yang lolos gerbang validasi.</p><div class="bar"><i style="width:14.44%"></i></div><small>Naik 14.342,81 ha atau 7,68 poin persentase dari fungsi awal.</small></article>
+        <article class="comparison-card initial"><header><span>01</span><div><small>FUNGSI AWAL RPPEM</small><strong>6,76%</strong></div></header><p>12.631,48 ha fungsi lindung pada data awal.</p><div class="bar"><i style="width:6.76%"></i></div><small>Acuan pembanding untuk membaca kesenjangan, bukan hasil analisis YG.</small></article>
+        <article class="comparison-card validated"><header><span>02</span><div><small>INDIKASI TRUE</small><strong>14,44%</strong></div></header><p>26.974,28 ha terindikasi memenuhi sedikitnya satu kriteria berdasarkan bukti yang tersedia.</p><div class="bar"><i style="width:14.44%"></i></div><small>Naik 14.342,81 ha: 14.314,30 ha berasal dari irisan baseline budidaya dan 28,51 ha dari area awal belum terklasifikasi.</small></article>
         <article class="comparison-card review"><header><span>03</span><div><small>TRUE + SKENARIO REVIEW</small><strong>30,29%</strong></div></header><p>56.594,77 ha bila tambahan FL01/FL02 yang masih REVIEW ditampilkan sebagai skenario.</p><div class="bar"><i style="width:30.29%"></i></div><small>29.620,49 ha tambahan tetap memerlukan verifikasi.</small></article>
       </div>
+      <div class="transition-balance" id="transition-balance"><article class="klm-loading">Memuat neraca fungsi lindung dan budidaya…</article></div>
       <div class="reading-rule"><strong>Cara membaca hasil:</strong><span><b>TRUE</b> bukti memenuhi aturan</span><span><b>REVIEW</b> bukti tersedia tetapi belum cukup</span><span><b>UNKNOWN</b> data belum memadai</span><span><b>FALSE</b> hanya bila bukti cukup untuk menyatakan tidak memenuhi</span></div>
 
       <div class="criteria-heading"><h3>Delapan kriteria fungsi lindung</h3><p>Kode FL adalah kode internal YG untuk menerjemahkan kriteria regulasi menjadi aturan spasial yang dapat diaudit.</p></div>
       <div class="criteria-grid">
-        <article><b>FL01</b><strong>Sempadan pantai</strong><p>Dua subaturan garis pasang tertinggi dan garis air surut terendah harus sama-sama terpenuhi.</p><span class="state review-state">MODELLED · REVIEW</span></article>
-        <article><b>FL02</b><strong>Sempadan sungai</strong><p>Lebar 100 m untuk sungai besar dan 50 m untuk sungai kecil dari tepi palung.</p><span class="state review-state">MODELLED · REVIEW</span></article>
+        <article><b>FL01</b><strong>Sempadan pantai</strong><p>Dalam aturan analisis YG, komponen garis pasang tertinggi dan garis air surut terendah diperiksa secara berpasangan.</p><span class="state review-state">DIMODELKAN · REVIEW</span></article>
+        <article><b>FL02</b><strong>Sempadan sungai</strong><p>Parameter analisis menggunakan lebar 100 m untuk sungai besar dan 50 m untuk sungai kecil dari tepi palung.</p><span class="state review-state">DIMODELKAN · REVIEW</span></article>
         <article><b>FL03</b><strong>KSA/KPA</strong><p>Irisan dengan kawasan suaka alam atau kawasan pelestarian alam yang relevan.</p><span class="state true-state">TRUE TERSEDIA</span></article>
         <article><b>FL04</b><strong>Hutan dan perlindungan pantai</strong><p>Hutan lindung, fungsi pencegahan intrusi, atau fungsi perlindungan pantai.</p><span class="state true-state">TRUE TERSEDIA</span></article>
         <article><b>FL05</b><strong>Habitat fauna penting</strong><p>Spesies dilindungi/migran, fungsi habitat, dan hubungan spasial harus terkonfirmasi.</p><span class="state true-state">TRUE TERBATAS</span></article>
@@ -88,38 +90,31 @@
     </section>
 
     <section class="page-section" id="wilayah">
-      <div class="section-heading"><div><p class="eyebrow">PERBANDINGAN WILAYAH</p><h2>Hasil menurut kabupaten/kota</h2></div><p>Skenario REVIEW ditampilkan untuk transparansi kebutuhan verifikasi, bukan sebagai usulan penetapan.</p></div>
-      <div class="table-wrap"><table><thead><tr><th>Wilayah</th><th>Mangrove</th><th>Awal RPPEM</th><th>TRUE tervalidasi</th><th>TRUE + REVIEW</th></tr></thead><tbody>
-        <tr><th>Bengkalis</th><td>24.595,96 ha</td><td>0,00%</td><td>4,97%</td><td>28,37%</td></tr>
-        <tr><th>Indragiri Hilir</th><td>111.208,74 ha</td><td>8,79%</td><td>17,15%</td><td>30,09%</td></tr>
-        <tr><th>Kepulauan Meranti</th><td>27.014,83 ha</td><td>0,12%</td><td>0,60%</td><td>17,44%</td></tr>
-        <tr><th>Kota Dumai</th><td>2.587,29 ha</td><td>0,00%</td><td>0,00%</td><td>35,00%</td></tr>
-        <tr><th>Pelalawan</th><td>6.577,18 ha</td><td>41,71%</td><td>41,76%</td><td>58,28%</td></tr>
-        <tr><th>Rokan Hilir</th><td>12.137,58 ha</td><td>0,00%</td><td>30,07%</td><td>46,27%</td></tr>
-        <tr><th>Siak</th><td>2.690,80 ha</td><td>2,91%</td><td>4,62%</td><td>40,54%</td></tr>
-      </tbody></table></div>
+      <div class="section-heading"><div><p class="eyebrow">NERACA PER KABUPATEN/KOTA</p><h2>Perubahan indikatif fungsi wilayah</h2></div><p>Irisan baseline budidaya dengan indikasi lindung TRUE ditampilkan sebagai pasangan nilai yang sama. Tambahan dari area awal belum terklasifikasi dan area REVIEW dipisahkan.</p></div>
+      <div class="table-wrap transition-table"><table><thead><tr><th>Wilayah</th><th>Mangrove</th><th>Lindung awal</th><th>Irisan budidaya dengan TRUE</th><th>Tambahan dari belum terklasifikasi</th><th>Lindung indikatif TRUE</th><th>Budidaya awal</th><th>Pengurangan baseline budidaya (indikatif)</th><th>Sisa baseline budidaya</th><th>Budidaya dalam REVIEW</th></tr></thead><tbody id="regency-transition-body"><tr><td colspan="10">Memuat neraca kabupaten/kota…</td></tr></tbody></table></div>
+      <p class="transition-caveat">Overlay TRUE mengidentifikasi luas baseline budidaya yang beririsan dengan indikasi fungsi lindung. Dalam neraca analitis, luas yang sama ditambahkan pada fungsi lindung indikatif dan dikurangkan dari baseline budidaya. Perhitungan ini bukan perubahan fungsi resmi dan tidak mengubah izin maupun status kawasan.</p>
     </section>
 
     <section class="page-section" id="modul">
       <div class="section-heading"><div><p class="eyebrow">MODUL LANSKAP</p><h2>Lanjutkan dari fungsi ke tindakan</h2></div><p>Setiap modul menjawab pertanyaan berbeda dan tidak saling menggantikan.</p></div>
       <div class="module-grid">
-        <a href="#fungsi"><span>01</span><strong>Fungsi Ekosistem</strong><p>Bandingkan fungsi awal, TRUE tervalidasi, dan skenario REVIEW.</p><b>Anda berada di sini</b></a>
+        <a href="#fungsi"><span>01</span><strong>Fungsi Ekosistem</strong><p>Bandingkan fungsi awal, indikasi TRUE, dan skenario REVIEW.</p><b>Anda berada di sini</b></a>
         <a href="coastal-analysis.html"><span>02</span><strong>Abrasi &amp; Perubahan Pesisir</strong><p>Periksa indikasi kehilangan dan pertambahan daratan 2016–2025.</p><b>Buka analisis →</b></a>
-        <a href="mangrove-priority.html"><span>03</span><strong>Prioritas Rehabilitasi</strong><p>Jelajahi kandidat tindakan, tingkat keyakinan, polygon, dan ranking.</p><b>Buka prioritas →</b></a>
+        <a href="mangrove-priority.html"><span>03</span><strong>Prioritas Rehabilitasi</strong><p>Jelajahi kandidat tindakan, tingkat keyakinan, poligon, dan peringkat.</p><b>Buka prioritas →</b></a>
         <a href="coastal-monitoring.html"><span>04</span><strong>Pemantauan Pesisir</strong><p>Lihat prakiraan pasang surut, gelombang, arus, dan rekomendasi lapangan.</p><b>Buka pemantauan →</b></a>
       </div>
     </section>
 
     <section class="page-section method-section" id="metode">
       <div class="section-heading"><div><p class="eyebrow">METODE &amp; AKUNTABILITAS</p><h2>Bagaimana angka dihitung</h2></div><p>Mesin menggunakan aturan deterministik empat status, bukan skor, bobot, voting, atau probabilitas.</p></div>
-      <div class="method-flow"><article><b>1</b><strong>Bangun unit analisis</strong><p>Polygon mangrove PMN 2025 dipotong dengan geometri bukti dan batas wilayah.</p></article><article><b>2</b><strong>Uji FL01–FL08</strong><p>Setiap kriteria dinilai TRUE, REVIEW, UNKNOWN, atau FALSE berdasarkan bukti.</p></article><article><b>3</b><strong>Gabungkan geometri</strong><p>Luas fungsi dihitung dari union geometri agar tumpang tindih antarkriteria tidak dijumlahkan ganda.</p></article><article><b>4</b><strong>Pisahkan hasil</strong><p>TRUE dipublikasikan terpisah dari REVIEW; UNKNOWN tidak pernah diubah menjadi FALSE.</p></article></div>
+      <div class="method-flow"><article><b>1</b><strong>Bangun unit analisis</strong><p>Poligon mangrove PMN 2025 dipotong dengan geometri bukti dan batas wilayah.</p></article><article><b>2</b><strong>Uji FL01–FL08</strong><p>Setiap kriteria dinilai TRUE, REVIEW, UNKNOWN, atau FALSE berdasarkan bukti.</p></article><article><b>3</b><strong>Gabungkan geometri</strong><p>Luas fungsi dihitung dari gabungan geometri agar tumpang tindih antarkriteria tidak dijumlahkan ganda.</p></article><article><b>4</b><strong>Pisahkan hasil</strong><p>TRUE dipublikasikan terpisah dari REVIEW; UNKNOWN tidak pernah diubah menjadi FALSE.</p></article></div>
       <div class="legal-grid"><article><h3>Acuan regulasi</h3><p><a href="https://peraturan.bpk.go.id/Details/320198" target="_blank" rel="noopener"><strong>PP Nomor 27 Tahun 2025</strong></a> tentang Perlindungan dan Pengelolaan Ekosistem Mangrove menjadi kerangka utama fungsi dan pengelolaan ekosistem mangrove.</p><p><a href="https://peraturan.bpk.go.id/Details/353164/permen-lhbplh-no-8-tahun-2026" target="_blank" rel="noopener"><strong>Permen LH/BPLH Nomor 8 Tahun 2026</strong></a> mengatur tata cara penetapan/perubahan fungsi, rencana dasar KLM, dan RPPEM. Kode FL01–FL08 adalah terjemahan operasional internal YG, bukan kode resmi peraturan.</p></article><article><h3>Batas publikasi v1</h3><ul><li>Geometri unit rinci belum dibuka sebagai data resmi.</li><li>FL01 memakai input model pasut tanpa kalibrasi stasiun lokal dan garis datum legal.</li><li>FL02 masih mencakup centerline dan pencocokan nama sungai.</li><li>Persentase adalah pangsa luas spasial, bukan probabilitas atau kepastian hukum.</li></ul></article></div>
-      <div class="public-note"><strong>Kalimat publik wajib:</strong><p>“Hasil ini merupakan analisis indikatif Yayasan Gambut berdasarkan data dan evidence yang tersedia. Hasil tidak menggantikan penetapan fungsi ekosistem mangrove oleh pemerintah dan wajib diverifikasi melalui proses resmi serta pemeriksaan lapangan.”</p></div>
+      <div class="public-note"><strong>Catatan penggunaan:</strong><p>“Hasil ini merupakan analisis spasial indikatif Yayasan Gambut berdasarkan data dan bukti yang tersedia. Hasil tidak merupakan penetapan atau perubahan fungsi ekosistem mangrove, tidak mengubah izin atau status kawasan, dan memerlukan verifikasi melalui proses resmi serta pemeriksaan lapangan.”</p></div>
     </section>
   </main>
   <footer><div><strong>YG GeoPortal</strong><p>Kawasan Lanskap Mangrove Riau · ringkasan publik v1</p></div><a href="coastal-monitoring.html">Kembali ke Pesisir &amp; Mangrove</a></footer>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-  <script src="js/mangrove-landscape.js?v=20260827-map1"></script>
+  <script src="js/mangrove-landscape.js?v=20260827-public2"></script>
   <script src="js/navigation-v2.js?v=20260807-mobile-menu-fix2"></script>
 </body>
 </html>
