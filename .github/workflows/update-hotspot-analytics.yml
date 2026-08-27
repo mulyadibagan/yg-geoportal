@@ -52,6 +52,10 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
         run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "R2 archive credentials are not configured; skipping lifecycle setup."
+            exit 0
+          fi
           npx wrangler r2 bucket lifecycle list yg-webgis-public-snapshots | grep -q "fire-archive-60-months" || \
             npx wrangler r2 bucket lifecycle add yg-webgis-public-snapshots fire-archive-60-months fire-archive/ --expire-days 1826
 
@@ -62,6 +66,10 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           mkdir -p ../../../data/fire-archive
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "R2 archive credentials are not configured; starting without a remote archive restore."
+            exit 0
+          fi
           current_month=$(date -u +%Y-%m)
           previous_month=$(date -u -d "$(date -u +%Y-%m-01) -1 day" +%Y-%m)
           for month in "$previous_month" "$current_month"; do
@@ -98,6 +106,10 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
         run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "R2 archive credentials are not configured; skipping the optional archive upload."
+            exit 0
+          fi
           for file in ../../../data/fire-archive/*.geojson; do
             [ -e "$file" ] || continue
             name=$(basename "$file")
