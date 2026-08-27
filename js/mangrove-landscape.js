@@ -58,12 +58,8 @@
       state.map.createPane('klmBoundaryPane');
       state.map.getPane('klmBoundaryPane').style.zIndex=620;
       state.map.getPane('klmBoundaryPane').style.pointerEvents='none';
-      state.map.createPane('labelsPane');
-      state.map.getPane('labelsPane').style.zIndex=650;
-      state.map.getPane('labelsPane').style.pointerEvents='none';
       const satellite=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:18,attribution:'Tiles &copy; Esri — Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community'}).addTo(state.map);
       const streets=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap contributors'});
-      const placeLabels=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',{maxZoom:18,pane:'labelsPane',attribution:'Labels &copy; Esri'}).addTo(state.map);
       const bounds=state.data.image.bounds;
       const overlays={};
       state.data.function_layers.forEach(item=>{
@@ -83,7 +79,6 @@
         boundaryLayer=L.layerGroup(boundaryImages).addTo(state.map);
       }
       overlays[boundaryConfig.label||'Batas KLM sumber']=boundaryLayer;
-      overlays['Label tempat']=placeLabels;
       L.control.layers({'Citra satelit':satellite,'Peta jalan':streets},overlays,{collapsed:true,position:'topright'}).addTo(state.map);
       functionLegend.innerHTML=`<b>POLIGON FUNGSI INDIKATIF</b>${state.data.function_layers.map(item=>`<span><i style="background:${safe(item.color)}"></i>${safe(item.label)}</span>`).join('')}<span class="boundary-key"><i style="border-top-color:${safe(boundaryConfig.color||'#7c3aed')}"></i>${safe(boundaryConfig.label||'Batas KLM sumber')}</span><small>Hijau menunjukkan lindung indikatif, jingga menunjukkan area yang belum terindikasi lindung, dan garis ungu tipis menunjukkan batas KLM.</small>`;
       state.map.fitBounds(bounds,{padding:[12,12]});
