@@ -9,7 +9,9 @@
   <link rel="stylesheet" href="css/style.css?v=20260723-revert-layout">
   <link rel="stylesheet" href="css/language-switcher.css?v=20260721-all-pages1">
   <link rel="stylesheet" href="css/navigation-v2.css?v=20260807-mobile-submenu-links1">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
   <link rel="stylesheet" href="css/mangrove-landscape.css?v=20260827-public1">
+  <link rel="stylesheet" href="css/mangrove-klm.css?v=20260827-map1">
   <meta name="theme-color" content="#075b53">
 </head>
 <body>
@@ -41,7 +43,7 @@
       </aside>
     </section>
 
-    <nav class="section-nav" aria-label="Bagian halaman"><a href="#gambaran">Gambaran</a><a href="#fungsi">Fungsi ekosistem</a><a href="#wilayah">Wilayah</a><a href="#modul">Modul terkait</a><a href="#metode">Metode &amp; batasan</a></nav>
+    <nav class="section-nav" aria-label="Bagian halaman"><a href="#gambaran">Gambaran</a><a href="#klm">Peta &amp; KLM</a><a href="#fungsi">Fungsi ekosistem</a><a href="#wilayah">Wilayah</a><a href="#modul">Modul terkait</a><a href="#metode">Metode &amp; batasan</a></nav>
 
     <section class="page-section" id="gambaran">
       <div class="section-heading"><div><p class="eyebrow">GAMBARAN LANSKAP</p><h2>Mangrove Riau dalam angka</h2></div><p>Seluruh persentase menggunakan luas union PMN 2025 di Riau sebagai penyebut, sehingga polygon yang bertumpang tindih tidak dihitung ganda.</p></div>
@@ -51,6 +53,16 @@
         <article><span>Wilayah pesisir</span><strong>7</strong><small>kabupaten/kota teridentifikasi</small></article>
         <article><span>Status QA</span><strong>PASS</strong><small>15 dari 15 pengujian lulus</small></article>
       </div>
+    </section>
+
+    <section class="page-section klm-section" id="klm">
+      <div class="section-heading"><div><p class="eyebrow">KESATUAN LANSKAP MANGROVE</p><h2>Ringkasan per KLM dan peta batas sumber</h2></div><p>Tiga KLM ditampilkan mengikuti geometri pada dataset Peta Indikatif Kesatuan Lanskap Mangrove. Pilih nama KLM untuk memusatkan peta dan membaca hasilnya.</p></div>
+      <div class="klm-workspace">
+        <div class="klm-map-wrap"><div id="klm-map" aria-label="Peta tiga Kesatuan Lanskap Mangrove di Riau"></div><div class="klm-map-status" id="klm-map-status">Memuat batas KLM sumber…</div><div class="klm-map-legend"><span><i style="background:#0f7e6b"></i>Kuala Indragiri Hilir</span><span><i style="background:#1671ad"></i>Semenanjung Dumai</span><span><i style="background:#dd842d"></i>Kuala Bengkalis</span></div></div>
+        <aside class="klm-detail" id="klm-detail"><p class="eyebrow">KLM TERPILIH</p><h3>Pilih KLM pada peta</h3><p>Ringkasan luas mangrove dan fungsi akan tampil di sini.</p></aside>
+      </div>
+      <div class="klm-cards" id="klm-cards" aria-live="polite"><article class="klm-loading">Memuat ringkasan per KLM…</article></div>
+      <div class="boundary-assurance"><strong>Batas KLM tidak diubah.</strong><p>Perhitungan memakai seluruh geometri sumber tanpa simplifikasi. Peta menampilkan hasil rasterisasi dari geometri yang sama pada resolusi layar agar halaman tetap ringan; raster hanya untuk visualisasi dan tidak digunakan menghitung luas. <span id="klm-reconciliation"></span></p></div>
     </section>
 
     <section class="page-section function-section" id="fungsi">
@@ -106,6 +118,8 @@
     </section>
   </main>
   <footer><div><strong>YG GeoPortal</strong><p>Kawasan Lanskap Mangrove Riau · ringkasan publik v1</p></div><a href="coastal-monitoring.html">Kembali ke Pesisir &amp; Mangrove</a></footer>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script src="js/mangrove-landscape.js?v=20260827-map1"></script>
   <script src="js/navigation-v2.js?v=20260807-mobile-menu-fix2"></script>
 </body>
 </html>

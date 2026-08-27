@@ -1,0 +1,112 @@
+{
+  "generated_at": "2026-08-27",
+  "scope": "Three source KLM polygons for Riau",
+  "boundary_policy": "Analytical intersections use the full unmodified source KLM geometry. The website map uses a raster rendering generated from that same geometry at display resolution.",
+  "source": {
+    "dataset": "Peta Indikatif Kesatuan Lanskap Mangrove",
+    "feature_count": 3,
+    "sha256_shp": "666e029ab5cabbf5d052c8640ce4fec495364adc307ec8d8525dd2bedcd2898c",
+    "sha256_dbf": "0f2116f7f53d06ab2503316d48a68f898870981166613835ccd2583938abe0a4"
+  },
+  "image": {
+    "path": "assets/mangrove-klm-boundaries.png",
+    "bounds": [
+      [
+        -0.84156139,
+        100.2576148
+      ],
+      [
+        2.60798365,
+        103.877411
+      ]
+    ],
+    "width": 1800,
+    "height": 1500
+  },
+  "totals": {
+    "statewide_mangrove_area_ha": 186812.37815,
+    "inside_source_klm_area_ha": 186546.515357,
+    "outside_source_klm_area_ha": 265.862793,
+    "inside_source_klm_percent": 99.857685
+  },
+  "klms": [
+    {
+      "code": "14.01",
+      "name": "KLM Kuala Indragiri Hilir",
+      "source_area_ha": 165475.943345,
+      "mangrove_area_ha": 117643.201763,
+      "unit_count": 3239,
+      "initial_lindung_ha": 12521.949168,
+      "initial_percent": 10.644006,
+      "validated_true_ha": 21801.317833,
+      "validated_true_percent": 18.531728,
+      "review_increment_ha": 15433.269145,
+      "true_plus_review_ha": 37234.586978,
+      "true_plus_review_percent": 31.650437,
+      "unresolved_ha": 80408.614785,
+      "bbox": [
+        102.70005952,
+        -0.78161705,
+        103.81451879,
+        0.73764315
+      ],
+      "label_point": [
+        -0.19069263,
+        103.53151009
+      ],
+      "color": "#0f7e6b"
+    },
+    {
+      "code": "14.02",
+      "name": "KLM Semenanjung Dumai",
+      "source_area_ha": 60435.926523,
+      "mangrove_area_ha": 29666.088846,
+      "unit_count": 1284,
+      "initial_lindung_ha": 0.0,
+      "initial_percent": 0.0,
+      "validated_true_ha": 4273.014562,
+      "validated_true_percent": 14.4037,
+      "review_increment_ha": 6539.1789,
+      "true_plus_review_ha": 10812.193462,
+      "true_plus_review_percent": 36.446306,
+      "unresolved_ha": 18853.895384,
+      "bbox": [
+        100.32050701,
+        1.63521305,
+        101.78275735,
+        2.54809397
+      ],
+      "label_point": [
+        2.19708338,
+        100.74132383
+      ],
+      "color": "#1671ad"
+    },
+    {
+      "code": "14.03",
+      "name": "KLM Kuala Bengkalis",
+      "source_area_ha": 52980.87756,
+      "mangrove_area_ha": 39237.224748,
+      "unit_count": 1920,
+      "initial_lindung_ha": 109.528397,
+      "initial_percent": 0.279144,
+      "validated_true_ha": 883.616614,
+      "validated_true_percent": 2.251986,
+      "review_increment_ha": 7561.528511,
+      "true_plus_review_ha": 8445.145126,
+      "true_plus_review_percent": 21.523299,
+      "unresolved_ha": 30792.079623,
+      "bbox": [
+        101.7434084,
+        0.68572926,
+        103.11624723,
+        1.66485531
+      ],
+      "label_point": [
+        1.43767927,
+        102.2838365
+      ],
+      "color": "#dd842d"
+    }
+  ]
+}
