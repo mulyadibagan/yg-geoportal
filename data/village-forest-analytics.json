@@ -644,8 +644,8 @@
         "concession": 28632.89,
         "socialForestry": 1359.18
       },
-      "hotspot7d": 0,
-      "hotspot30d": 0,
+      "hotspot7d": 1,
+      "hotspot30d": 1,
       "hotspot90d": null,
       "hotspotYearly5y": [
         {
@@ -6226,8 +6226,8 @@
         "concession": 770.83,
         "socialForestry": 1350.69
       },
-      "hotspot7d": 0,
-      "hotspot30d": 0,
+      "hotspot7d": 1,
+      "hotspot30d": 1,
       "hotspot90d": null,
       "hotspotYearly5y": [
         {
@@ -9017,8 +9017,8 @@
       "VIIRS_NOAA20_NRT",
       "VIIRS_NOAA21_NRT"
     ],
-    "updatedAt": "2026-08-27T09:50:05.682Z",
-    "recentUpdatedAt": "2026-08-27T09:50:05.682Z",
+    "updatedAt": "2026-08-27T20:31:20.789Z",
+    "recentUpdatedAt": "2026-08-27T20:31:20.789Z",
     "historyUpdatedAt": "2026-08-01T05:04:04.349Z",
     "mode": "recent",
     "periodDays": [
@@ -9030,8 +9030,8 @@
     "skippedChunks": [],
     "units": {
       "villages": 14,
-      "socialForestryFeatures": 149,
-      "socialForestryUnits": 135,
+      "socialForestryFeatures": 150,
+      "socialForestryUnits": 136,
       "updated": 149
     },
     "notes": "Counts include only high-confidence vegetation-fire or unclassified FIRMS detections. Exact duplicate records are removed before point-in-polygon analysis.",
