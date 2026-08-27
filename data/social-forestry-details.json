@@ -5288,7 +5288,7 @@
     "decree": "13528 TAHUN 2024",
     "areaHa": 1027,
     "source": "Audit Drive Perhutanan Sosial YG",
-    "spatialStatus": "derived-from-sk-map",
+    "spatialStatus": "official-ministry-source",
     "documents": [
       {
         "label": "PETA GAPOKTAN RUPAT AGRO MANDIRI",
@@ -5325,13 +5325,14 @@
         "source": "Tembusan SK Gabungan Kelompok Tani Rupat Agro Mandiri"
       }
     },
-    "spatialAreaHa": 993.51,
+    "spatialAreaHa": 1032.77,
     "spatialSource": {
-      "label": "Digitasi peta lampiran SK",
-      "document": "PETA GAPOKTAN RUPAT AGRO MANDIRI.pdf",
-      "fileId": "18RtzfO0R5eqhJi0U4NVLQ_joV5vpWlkQ",
-      "digitizedAt": "2026-08-28",
-      "note": "Polygon turunan dari peta raster SK dan bukan SHP resmi pemerintah."
+      "label": "Peta resmi PPHKm Kementerian Kehutanan",
+      "service": "Peta Interaktif SIGAP Kementerian Kehutanan",
+      "url": "https://geoportal.planologi.kehutanan.go.id/server/rest/services/Peta_Interaktif_2026/PPHKm_AR_50K/MapServer/0",
+      "sourceObjectId": 3014,
+      "retrievedAt": "2026-08-28",
+      "note": "Geometri dicocokkan melalui nama kelompok, nomor SK, desa, kecamatan, dan kabupaten."
     }
   }
 }
