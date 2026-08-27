@@ -111,7 +111,8 @@
       file: "data/PERHUTANAN_SOSIAL_RIAU.geojson",
       color: "#00897b",
       count: 149,
-      type: "social_forestry"
+      type: "social_forestry",
+      focusOnEnable: true
     },
     batas_administrasi_desa_riau: {
       id: "batas_administrasi_desa_riau",
@@ -1362,7 +1363,10 @@ L.control.scale({
 
   function socialForestryDocumentClass(feature) {
     const detail = socialForestryDocumentDetail(feature);
-    const categories = new Set((detail.documents || []).map(document => {
+    const documents = Array.isArray(detail.documents)
+      ? detail.documents.filter(document => document && typeof document === "object")
+      : [];
+    const categories = new Set(documents.map(document => {
       const category = String(document.category || "").toLowerCase();
       if (category.indexOf("legal") !== -1) return "legalitas";
       if (category.indexOf("peta") !== -1) return "peta";
@@ -1945,6 +1949,34 @@ L.control.scale({
             if (layer) {
               layer.addTo(map);
               if (config.type === "social_forestry") showSocialForestryDocumentLegend();
+
+              /*
+               * Layer PS sering dipilih dari panel yang menutupi peta pada
+               * layar sempit. Fokuskan viewport ke geometri dan tutup panel
+               * mobile agar hasil pilihan langsung terlihat.
+               */
+              if (
+                config.focusOnEnable &&
+                typeof layer.getBounds === "function"
+              ) {
+                const bounds = layer.getBounds();
+                if (bounds && bounds.isValid()) {
+                  map.fitBounds(bounds, {
+                    padding: [20, 20],
+                    maxZoom: 11
+                  });
+                }
+
+                if (
+                  window.matchMedia("(max-width: 760px)").matches &&
+                  window.YG_UI &&
+                  typeof window.YG_UI.closeMobileSidebar === "function"
+                ) {
+                  window.YG_UI.closeMobileSidebar();
+                }
+
+                requestAnimationFrame(() => map.invalidateSize(false));
+              }
             }
           } else {
             const layer = referenceLayerObjects[layerId];
