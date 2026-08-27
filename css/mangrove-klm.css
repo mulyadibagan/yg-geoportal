@@ -1,4 +1,6 @@
 .klm-section{scroll-margin-top:65px}
+.overview-grid .overview-indicative{border-color:#b9ddd3;background:#f3faf7}
+.riau-definition{margin-top:12px}
 .klm-baseline{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:13px}
 .klm-baseline article{padding:18px;border:1px solid var(--line);border-radius:14px;background:#fff}
 .klm-baseline span,.klm-baseline small{display:block;color:var(--muted)}

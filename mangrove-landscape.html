@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="css/navigation-v2.css?v=20260807-mobile-submenu-links1">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
   <link rel="stylesheet" href="css/mangrove-landscape.css?v=20260827-public1">
-  <link rel="stylesheet" href="css/mangrove-klm.css?v=20260827-functions2">
+  <link rel="stylesheet" href="css/mangrove-klm.css?v=20260827-riauoverview1">
   <meta name="theme-color" content="#075b53">
 </head>
 <body>
@@ -34,7 +34,7 @@
         <p class="eyebrow">ANALISIS LANSKAP SE-RIAU · PEMBARUAN 27 AGUSTUS 2026</p>
         <h1>Kawasan Lanskap Mangrove Riau</h1>
         <p class="lead">Ruang informasi untuk membandingkan fungsi lindung dan budidaya pada data sumber dengan hasil analisis indikatif YG untuk Riau, setiap KLM, dan setiap kabupaten/kota pesisir.</p>
-        <div class="hero-links"><a class="primary-link" href="#fungsi">Lihat analisis fungsi <span aria-hidden="true">↓</span></a><a href="#metode">Baca metode</a></div>
+        <div class="hero-links"><a class="primary-link" href="#gambaran">Lihat total Riau <span aria-hidden="true">↓</span></a><a href="#klm">Jelajahi KLM</a></div>
       </div>
       <aside class="scope-card" aria-label="Status penggunaan hasil">
         <span class="scope-badge">RINGKASAN PUBLIK V1</span>
@@ -43,16 +43,17 @@
       </aside>
     </section>
 
-    <nav class="section-nav" aria-label="Bagian halaman"><a href="#gambaran">Gambaran</a><a href="#klm">Peta &amp; KLM</a><a href="#fungsi">Fungsi ekosistem</a><a href="#wilayah">Wilayah</a><a href="#modul">Modul terkait</a><a href="#metode">Metode &amp; batasan</a></nav>
+    <nav class="section-nav" aria-label="Bagian halaman"><a href="#gambaran">Total Riau</a><a href="#klm">Peta &amp; KLM</a><a href="#fungsi">Kriteria fungsi</a><a href="#wilayah">Wilayah</a><a href="#modul">Modul terkait</a><a href="#metode">Metode &amp; batasan</a></nav>
 
     <section class="page-section" id="gambaran">
-      <div class="section-heading"><div><p class="eyebrow">GAMBARAN LANSKAP</p><h2>Mangrove Riau dalam angka</h2></div><p>Persentase fungsi menggunakan luas mangrove referensi PMN 2025 pada wilayah ringkasan sebagai penyebut. Geometri digabungkan terlebih dahulu agar tumpang tindih tidak dihitung ganda.</p></div>
+      <div class="section-heading"><div><p class="eyebrow">TOTAL PROVINSI RIAU</p><h2>Fungsi mangrove Riau</h2></div><p>Perbandingan fungsi pada data sumber dengan hasil analisis indikatif YG untuk seluruh 186.812,38 ha mangrove referensi PMN 2025 di Riau.</p></div>
       <div class="overview-grid">
-        <article><span>Mangrove referensi Riau</span><strong id="overview-scope-area">—</strong><small>luas PMN 2025 yang dianalisis se-Riau</small></article>
-        <article><span>Mangrove di dalam KLM</span><strong id="overview-klm-area">—</strong><small>cakupan peta dan kartu tiga KLM sumber</small></article>
-        <article><span>Unit analisis Riau</span><strong id="overview-unit-count">—</strong><small>unit spasial pada seluruh mangrove referensi</small></article>
-        <article><span>Kabupaten/kota pesisir</span><strong id="overview-regency-count">—</strong><small>wilayah ringkasan hasil tingkat Riau</small></article>
+        <article><span>Lindung sumber</span><strong id="overview-source-lindung">—</strong><small id="overview-source-lindung-percent">klasifikasi pada data RPPEM</small></article>
+        <article><span>Budidaya sumber</span><strong id="overview-source-budidaya">—</strong><small id="overview-source-budidaya-percent">klasifikasi pada data RPPEM</small></article>
+        <article class="overview-indicative"><span>Lindung indikatif</span><strong id="overview-indicative-lindung">—</strong><small id="overview-indicative-lindung-percent">hasil TRUE analisis YG</small></article>
+        <article class="overview-indicative"><span>Budidaya indikatif</span><strong id="overview-indicative-budidaya">—</strong><small id="overview-indicative-budidaya-percent">baseline budidaya yang tidak beririsan TRUE</small></article>
       </div>
+      <div class="boundary-assurance riau-definition"><strong>Ringkasan Riau.</strong><p>Lindung indikatif adalah area dengan hasil TRUE. Budidaya indikatif adalah bagian baseline budidaya yang tidak beririsan dengan hasil TRUE. Area yang belum terklasifikasi tidak dipaksakan masuk ke salah satu fungsi. Angka ini merupakan hasil analisis, bukan penetapan fungsi.</p></div>
     </section>
 
     <section class="page-section klm-section" id="klm">
@@ -67,8 +68,7 @@
     </section>
 
     <section class="page-section function-section" id="fungsi">
-      <div class="section-heading"><div><p class="eyebrow">PERBANDINGAN SE-RIAU</p><h2>Fungsi sumber dan hasil analisis indikatif</h2></div><p>Empat angka utama memperlihatkan fungsi lindung dan budidaya pada data sumber dibandingkan dengan hasil analisis indikatif YG untuk seluruh mangrove referensi Riau.</p></div>
-      <div class="transition-balance" id="transition-balance"><article class="klm-loading">Memuat perbandingan fungsi Riau…</article></div>
+      <div class="section-heading"><div><p class="eyebrow">DASAR ANALISIS</p><h2>Kriteria fungsi lindung indikatif</h2></div><p>Delapan kriteria diterjemahkan menjadi aturan spasial yang dapat diperiksa kembali. Hasil TRUE menjadi dasar luas lindung indikatif yang ditampilkan pada total Riau, kartu KLM, dan tabel wilayah.</p></div>
       <div class="reading-rule"><strong>Cara membaca hasil:</strong><span><b>TRUE</b> memenuhi sedikitnya satu kriteria berdasarkan bukti tersedia</span><span><b>REVIEW</b> memerlukan verifikasi tambahan</span><span><b>UNKNOWN</b> data belum memadai</span><span><b>FALSE</b> hanya digunakan bila bukti cukup</span></div>
 
       <div class="criteria-heading"><h3>Delapan kriteria fungsi lindung</h3><p>Kode FL adalah kode internal YG untuk menerjemahkan kriteria regulasi menjadi aturan spasial yang dapat diaudit.</p></div>
@@ -109,7 +109,7 @@
   </main>
   <footer><div><strong>YG GeoPortal</strong><p>Kawasan Lanskap Mangrove Riau · ringkasan publik v1</p></div><a href="coastal-monitoring.html">Kembali ke Pesisir &amp; Mangrove</a></footer>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-  <script src="js/mangrove-landscape.js?v=20260827-publiccomparison1"></script>
+  <script src="js/mangrove-landscape.js?v=20260827-riauoverview1"></script>
   <script src="js/navigation-v2.js?v=20260807-mobile-menu-fix2"></script>
 </body>
 </html>

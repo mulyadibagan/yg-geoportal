@@ -6,7 +6,6 @@
   const cards=document.getElementById('klm-cards');
   const status=document.getElementById('klm-map-status');
   const baseline=document.getElementById('klm-baseline');
-  const balance=document.getElementById('transition-balance');
   const regencyBody=document.getElementById('regency-transition-body');
   const functionLegend=document.getElementById('function-map-legend');
 
@@ -34,15 +33,14 @@
 
   function renderOverview(data){
     const riau=data.statewide;
-    document.getElementById('overview-scope-area').textContent=`${fmt(riau.mangrove_area_ha)} ha`;
-    document.getElementById('overview-klm-area').textContent=`${fmt(data.totals.mangrove_area_ha)} ha`;
-    document.getElementById('overview-unit-count').textContent=new Intl.NumberFormat('id-ID').format(riau.unit_count);
-    document.getElementById('overview-regency-count').textContent=new Intl.NumberFormat('id-ID').format(riau.regency_count);
-  }
-
-  function renderBalance(total){
-    const indicativeUnclassified=total.indicative_unclassified_ha??Math.max(0,total.initial_unclassified_ha-total.additional_true_from_unclassified_ha);
-    balance.innerHTML=`<article class="balance-side source"><p class="eyebrow">FUNGSI PADA DATA SUMBER · RIAU</p><div><span><small>Fungsi lindung sumber</small><strong>${fmt(total.initial_lindung_ha)} ha</strong><em>${fmt(total.initial_percent)}% dari mangrove referensi</em></span><span><small>Fungsi budidaya sumber</small><strong>${fmt(total.initial_budidaya_ha)} ha</strong><em>${fmt(total.initial_budidaya_percent)}% dari mangrove referensi</em></span></div></article><article class="balance-side analysis"><p class="eyebrow">HASIL ANALISIS INDIKATIF YG · RIAU</p><div><span><small>Indikasi fungsi lindung · TRUE</small><strong>${fmt(total.validated_true_ha)} ha</strong><em>${fmt(total.validated_true_percent)}% dari mangrove referensi</em></span><span><small>Indikasi fungsi budidaya</small><strong>${fmt(total.indicative_budidaya_ha)} ha</strong><em>${fmt(total.indicative_budidaya_percent)}% dari mangrove referensi</em></span></div></article><p class="balance-explainer"><strong>Definisi tampilan:</strong> fungsi sumber mengikuti klasifikasi pada data RPPEM yang tersedia. Lindung indikatif adalah area dengan hasil TRUE. Budidaya indikatif adalah bagian baseline budidaya yang tidak beririsan dengan hasil TRUE. Pada sumber terdapat ${fmt(total.initial_unclassified_ha)} ha yang belum terklasifikasi; setelah analisis, ${fmt(indicativeUnclassified)} ha tetap tidak dimasukkan ke dua kategori tersebut. Semua hasil bersifat analitis, bukan penetapan fungsi.</p>`;
+    document.getElementById('overview-source-lindung').textContent=`${fmt(riau.initial_lindung_ha)} ha`;
+    document.getElementById('overview-source-lindung-percent').textContent=`${fmt(riau.initial_percent)}% dari mangrove referensi`;
+    document.getElementById('overview-source-budidaya').textContent=`${fmt(riau.initial_budidaya_ha)} ha`;
+    document.getElementById('overview-source-budidaya-percent').textContent=`${fmt(riau.initial_budidaya_percent)}% dari mangrove referensi`;
+    document.getElementById('overview-indicative-lindung').textContent=`${fmt(riau.validated_true_ha)} ha`;
+    document.getElementById('overview-indicative-lindung-percent').textContent=`${fmt(riau.validated_true_percent)}% · hasil TRUE`;
+    document.getElementById('overview-indicative-budidaya').textContent=`${fmt(riau.indicative_budidaya_ha)} ha`;
+    document.getElementById('overview-indicative-budidaya-percent').textContent=`${fmt(riau.indicative_budidaya_percent)}% · hasil indikatif`;
   }
 
   function renderRegencies(regencies){
@@ -89,7 +87,6 @@
       renderCards(state.data.klms);
       renderBaseline(state.data);
       renderOverview(state.data);
-      renderBalance(state.data.statewide);
       renderRegencies(state.data.regencies);
       selectKlm(state.data.klms[0]);
       status.textContent=`Analisis dibatasi pada 3 KLM · zoom hingga level 18`;
