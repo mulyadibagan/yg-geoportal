@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Kawasan Lanskap Mangrove Riau | YG GeoPortal</title>
+  <meta name="description" content="Ringkasan spasial, fungsi ekosistem, wilayah, metodologi, dan batas penggunaan analisis lanskap mangrove Provinsi Riau.">
+  <link rel="icon" href="assets/logo-yayasan-gambut.png">
+  <link rel="stylesheet" href="css/style.css?v=20260723-revert-layout">
+  <link rel="stylesheet" href="css/language-switcher.css?v=20260721-all-pages1">
+  <link rel="stylesheet" href="css/navigation-v2.css?v=20260807-mobile-submenu-links1">
+  <link rel="stylesheet" href="css/mangrove-landscape.css?v=20260827-public1">
+  <meta name="theme-color" content="#075b53">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html"><img src="assets/logo-yayasan-gambut.png" alt="Logo Yayasan Gambut"><span><strong>YG GeoPortal</strong><span>WebGIS Yayasan Gambut</span></span></a>
+      <button class="yg-nav-toggle" type="button" aria-label="Buka menu" aria-expanded="false" data-yg-nav-toggle="main-navigation">☰</button>
+      <nav class="nav yg-nav-v2" id="main-navigation" aria-label="Navigasi utama" data-yg-navigation>
+        <a href="index.html">Beranda</a><a href="webgis.html">Peta Interaktif</a>
+        <div class="yg-nav-group"><button class="yg-nav-trigger" type="button" aria-expanded="false" aria-current="true">Jelajahi</button><div class="yg-nav-menu"><a href="biodiversity.html">Biodiversitas</a><a href="fire-weather.html">Karhutla &amp; Cuaca</a><a href="coastal-monitoring.html" aria-current="page">Pesisir &amp; Mangrove</a></div></div>
+        <div class="yg-nav-group"><button class="yg-nav-trigger" type="button" aria-expanded="false">Data &amp; Dampak</button><div class="yg-nav-menu"><a href="monitoring.html">Monitoring Lapangan</a><a href="community-engagement.html">Pelibatan Masyarakat</a><a href="capacity-building.html">Peningkatan Kapasitas</a><a href="sdgs.html">Kontribusi SDGs</a><a href="policy-alignment.html">Keselarasan Kebijakan &amp; Komitmen</a></div></div>
+        <a href="report.html">Laporkan Temuan</a><a href="staff-login.html">Login Staf</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="landscape-hero">
+      <div class="landscape-hero__copy">
+        <p class="eyebrow">ANALISIS LANSKAP SE-RIAU · PEMBARUAN 27 AGUSTUS 2026</p>
+        <h1>Kawasan Lanskap Mangrove Riau</h1>
+        <p class="lead">Ruang informasi untuk membaca cakupan mangrove, fungsi ekosistem, tekanan pesisir, dan arah pengelolaan dalam satu lanskap analisis.</p>
+        <div class="hero-links"><a class="primary-link" href="#fungsi">Lihat analisis fungsi <span aria-hidden="true">↓</span></a><a href="#metode">Baca metode</a></div>
+      </div>
+      <aside class="scope-card" aria-label="Status penggunaan hasil">
+        <span class="scope-badge">RINGKASAN PUBLIK V1</span>
+        <strong>Analisis indikatif, bukan penetapan kawasan</strong>
+        <p>Istilah “kawasan lanskap” menunjukkan ruang analisis bentang alam. Hasil YG tidak mengubah fungsi resmi, batas hukum, atau kewenangan pemerintah.</p>
+      </aside>
+    </section>
+
+    <nav class="section-nav" aria-label="Bagian halaman"><a href="#gambaran">Gambaran</a><a href="#fungsi">Fungsi ekosistem</a><a href="#wilayah">Wilayah</a><a href="#modul">Modul terkait</a><a href="#metode">Metode &amp; batasan</a></nav>
+
+    <section class="page-section" id="gambaran">
+      <div class="section-heading"><div><p class="eyebrow">GAMBARAN LANSKAP</p><h2>Mangrove Riau dalam angka</h2></div><p>Seluruh persentase menggunakan luas union PMN 2025 di Riau sebagai penyebut, sehingga polygon yang bertumpang tindih tidak dihitung ganda.</p></div>
+      <div class="overview-grid">
+        <article><span>Cakupan mangrove</span><strong>186.812,38 ha</strong><small>union PMN 2025 di Riau</small></article>
+        <article><span>Unit analisis</span><strong>6.460</strong><small>0 geometri tidak valid</small></article>
+        <article><span>Wilayah pesisir</span><strong>7</strong><small>kabupaten/kota teridentifikasi</small></article>
+        <article><span>Status QA</span><strong>PASS</strong><small>15 dari 15 pengujian lulus</small></article>
+      </div>
+    </section>
+
+    <section class="page-section function-section" id="fungsi">
+      <div class="section-heading"><div><p class="eyebrow">ANALISIS INDIKATIF FUNGSI EKOSISTEM</p><h2>Dari fungsi awal ke hasil validasi YG</h2></div><p>Angka TRUE dan REVIEW ditampilkan terpisah. REVIEW bukan TRUE dan tidak boleh dibaca sebagai kepastian hukum.</p></div>
+      <div class="comparison-grid">
+        <article class="comparison-card initial"><header><span>01</span><div><small>FUNGSI AWAL RPPEM</small><strong>6,76%</strong></div></header><p>12.631,48 ha fungsi lindung pada data awal.</p><div class="bar"><i style="width:6.76%"></i></div><small>Benchmark untuk membaca kesenjangan, bukan hasil YG.</small></article>
+        <article class="comparison-card validated"><header><span>02</span><div><small>TERVALIDASI TRUE</small><strong>14,44%</strong></div></header><p>26.974,28 ha memenuhi sedikitnya satu kriteria dengan bukti yang lolos gerbang validasi.</p><div class="bar"><i style="width:14.44%"></i></div><small>Naik 14.342,81 ha atau 7,68 poin persentase dari fungsi awal.</small></article>
+        <article class="comparison-card review"><header><span>03</span><div><small>TRUE + SKENARIO REVIEW</small><strong>30,29%</strong></div></header><p>56.594,77 ha bila tambahan FL01/FL02 yang masih REVIEW ditampilkan sebagai skenario.</p><div class="bar"><i style="width:30.29%"></i></div><small>29.620,49 ha tambahan tetap memerlukan verifikasi.</small></article>
+      </div>
+      <div class="reading-rule"><strong>Cara membaca hasil:</strong><span><b>TRUE</b> bukti memenuhi aturan</span><span><b>REVIEW</b> bukti tersedia tetapi belum cukup</span><span><b>UNKNOWN</b> data belum memadai</span><span><b>FALSE</b> hanya bila bukti cukup untuk menyatakan tidak memenuhi</span></div>
+
+      <div class="criteria-heading"><h3>Delapan kriteria fungsi lindung</h3><p>Kode FL adalah kode internal YG untuk menerjemahkan kriteria regulasi menjadi aturan spasial yang dapat diaudit.</p></div>
+      <div class="criteria-grid">
+        <article><b>FL01</b><strong>Sempadan pantai</strong><p>Dua subaturan garis pasang tertinggi dan garis air surut terendah harus sama-sama terpenuhi.</p><span class="state review-state">MODELLED · REVIEW</span></article>
+        <article><b>FL02</b><strong>Sempadan sungai</strong><p>Lebar 100 m untuk sungai besar dan 50 m untuk sungai kecil dari tepi palung.</p><span class="state review-state">MODELLED · REVIEW</span></article>
+        <article><b>FL03</b><strong>KSA/KPA</strong><p>Irisan dengan kawasan suaka alam atau kawasan pelestarian alam yang relevan.</p><span class="state true-state">TRUE TERSEDIA</span></article>
+        <article><b>FL04</b><strong>Hutan dan perlindungan pantai</strong><p>Hutan lindung, fungsi pencegahan intrusi, atau fungsi perlindungan pantai.</p><span class="state true-state">TRUE TERSEDIA</span></article>
+        <article><b>FL05</b><strong>Habitat fauna penting</strong><p>Spesies dilindungi/migran, fungsi habitat, dan hubungan spasial harus terkonfirmasi.</p><span class="state true-state">TRUE TERBATAS</span></article>
+        <article><b>FL06</b><strong>NKT dan tata ruang</strong><p>Kawasan lindung, zona konservasi, NKT/HCV, atau nilai penting dengan bukti kuat.</p><span class="state true-state">TRUE TERSEDIA</span></article>
+        <article><b>FL07</b><strong>Kerentanan pesisir</strong><p>Dasar perlindungan/pengelolaan harus berpasangan dengan bukti kerentanan pesisir.</p><span class="state true-state">TRUE TERBATAS</span></article>
+        <article><b>FL08</b><strong>Jasa ekosistem</strong><p>Jasa, penerima manfaat/ketergantungan, dan hubungan spasial harus terbukti.</p><span class="state true-state">TRUE TERSEDIA</span></article>
+      </div>
+    </section>
+
+    <section class="page-section" id="wilayah">
+      <div class="section-heading"><div><p class="eyebrow">PERBANDINGAN WILAYAH</p><h2>Hasil menurut kabupaten/kota</h2></div><p>Skenario REVIEW ditampilkan untuk transparansi kebutuhan verifikasi, bukan sebagai usulan penetapan.</p></div>
+      <div class="table-wrap"><table><thead><tr><th>Wilayah</th><th>Mangrove</th><th>Awal RPPEM</th><th>TRUE tervalidasi</th><th>TRUE + REVIEW</th></tr></thead><tbody>
+        <tr><th>Bengkalis</th><td>24.595,96 ha</td><td>0,00%</td><td>4,97%</td><td>28,37%</td></tr>
+        <tr><th>Indragiri Hilir</th><td>111.208,74 ha</td><td>8,79%</td><td>17,15%</td><td>30,09%</td></tr>
+        <tr><th>Kepulauan Meranti</th><td>27.014,83 ha</td><td>0,12%</td><td>0,60%</td><td>17,44%</td></tr>
+        <tr><th>Kota Dumai</th><td>2.587,29 ha</td><td>0,00%</td><td>0,00%</td><td>35,00%</td></tr>
+        <tr><th>Pelalawan</th><td>6.577,18 ha</td><td>41,71%</td><td>41,76%</td><td>58,28%</td></tr>
+        <tr><th>Rokan Hilir</th><td>12.137,58 ha</td><td>0,00%</td><td>30,07%</td><td>46,27%</td></tr>
+        <tr><th>Siak</th><td>2.690,80 ha</td><td>2,91%</td><td>4,62%</td><td>40,54%</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section class="page-section" id="modul">
+      <div class="section-heading"><div><p class="eyebrow">MODUL LANSKAP</p><h2>Lanjutkan dari fungsi ke tindakan</h2></div><p>Setiap modul menjawab pertanyaan berbeda dan tidak saling menggantikan.</p></div>
+      <div class="module-grid">
+        <a href="#fungsi"><span>01</span><strong>Fungsi Ekosistem</strong><p>Bandingkan fungsi awal, TRUE tervalidasi, dan skenario REVIEW.</p><b>Anda berada di sini</b></a>
+        <a href="coastal-analysis.html"><span>02</span><strong>Abrasi &amp; Perubahan Pesisir</strong><p>Periksa indikasi kehilangan dan pertambahan daratan 2016–2025.</p><b>Buka analisis →</b></a>
+        <a href="mangrove-priority.html"><span>03</span><strong>Prioritas Rehabilitasi</strong><p>Jelajahi kandidat tindakan, tingkat keyakinan, polygon, dan ranking.</p><b>Buka prioritas →</b></a>
+        <a href="coastal-monitoring.html"><span>04</span><strong>Pemantauan Pesisir</strong><p>Lihat prakiraan pasang surut, gelombang, arus, dan rekomendasi lapangan.</p><b>Buka pemantauan →</b></a>
+      </div>
+    </section>
+
+    <section class="page-section method-section" id="metode">
+      <div class="section-heading"><div><p class="eyebrow">METODE &amp; AKUNTABILITAS</p><h2>Bagaimana angka dihitung</h2></div><p>Mesin menggunakan aturan deterministik empat status, bukan skor, bobot, voting, atau probabilitas.</p></div>
+      <div class="method-flow"><article><b>1</b><strong>Bangun unit analisis</strong><p>Polygon mangrove PMN 2025 dipotong dengan geometri bukti dan batas wilayah.</p></article><article><b>2</b><strong>Uji FL01–FL08</strong><p>Setiap kriteria dinilai TRUE, REVIEW, UNKNOWN, atau FALSE berdasarkan bukti.</p></article><article><b>3</b><strong>Gabungkan geometri</strong><p>Luas fungsi dihitung dari union geometri agar tumpang tindih antarkriteria tidak dijumlahkan ganda.</p></article><article><b>4</b><strong>Pisahkan hasil</strong><p>TRUE dipublikasikan terpisah dari REVIEW; UNKNOWN tidak pernah diubah menjadi FALSE.</p></article></div>
+      <div class="legal-grid"><article><h3>Acuan regulasi</h3><p><a href="https://peraturan.bpk.go.id/Details/320198" target="_blank" rel="noopener"><strong>PP Nomor 27 Tahun 2025</strong></a> tentang Perlindungan dan Pengelolaan Ekosistem Mangrove menjadi kerangka utama fungsi dan pengelolaan ekosistem mangrove.</p><p><a href="https://peraturan.bpk.go.id/Details/353164/permen-lhbplh-no-8-tahun-2026" target="_blank" rel="noopener"><strong>Permen LH/BPLH Nomor 8 Tahun 2026</strong></a> mengatur tata cara penetapan/perubahan fungsi, rencana dasar KLM, dan RPPEM. Kode FL01–FL08 adalah terjemahan operasional internal YG, bukan kode resmi peraturan.</p></article><article><h3>Batas publikasi v1</h3><ul><li>Geometri unit rinci belum dibuka sebagai data resmi.</li><li>FL01 memakai input model pasut tanpa kalibrasi stasiun lokal dan garis datum legal.</li><li>FL02 masih mencakup centerline dan pencocokan nama sungai.</li><li>Persentase adalah pangsa luas spasial, bukan probabilitas atau kepastian hukum.</li></ul></article></div>
+      <div class="public-note"><strong>Kalimat publik wajib:</strong><p>“Hasil ini merupakan analisis indikatif Yayasan Gambut berdasarkan data dan evidence yang tersedia. Hasil tidak menggantikan penetapan fungsi ekosistem mangrove oleh pemerintah dan wajib diverifikasi melalui proses resmi serta pemeriksaan lapangan.”</p></div>
+    </section>
+  </main>
+  <footer><div><strong>YG GeoPortal</strong><p>Kawasan Lanskap Mangrove Riau · ringkasan publik v1</p></div><a href="coastal-monitoring.html">Kembali ke Pesisir &amp; Mangrove</a></footer>
+  <script src="js/navigation-v2.js?v=20260807-mobile-menu-fix2"></script>
+</body>
+</html>
