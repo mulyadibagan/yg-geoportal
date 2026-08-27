@@ -72,12 +72,19 @@
         if(item.visible)layer.addTo(state.map);
       });
       const boundaryConfig=state.data.boundary_layer||{};
-      const boundaryImages=(boundaryConfig.images||[{path:state.data.image.path,bounds}]).map(image=>L.imageOverlay(`${image.path}?v=20260827-klmboundary2`,image.bounds||bounds,{opacity:1,interactive:false,pane:'klmBoundaryPane'}));
-      const boundaryLayer=L.layerGroup(boundaryImages).addTo(state.map);
+      let boundaryLayer;
+      if(boundaryConfig.vector_path){
+        const boundaryResponse=await fetch(`${boundaryConfig.vector_path}?v=20260827-purplevector1`,{cache:'no-store'});
+        if(!boundaryResponse.ok)throw new Error('Batas KLM tidak tersedia');
+        boundaryLayer=L.geoJSON(await boundaryResponse.json(),{pane:'klmBoundaryPane',interactive:false,style:{color:boundaryConfig.color||'#7c3aed',weight:Number(boundaryConfig.weight||1.25),opacity:.95,fill:false,lineCap:'round',lineJoin:'round'}}).addTo(state.map);
+      }else{
+        const boundaryImages=(boundaryConfig.images||[{path:state.data.image.path,bounds}]).map(image=>L.imageOverlay(`${image.path}?v=20260827-klmboundary2`,image.bounds||bounds,{opacity:1,interactive:false,pane:'klmBoundaryPane'}));
+        boundaryLayer=L.layerGroup(boundaryImages).addTo(state.map);
+      }
       overlays[boundaryConfig.label||'Batas KLM sumber']=boundaryLayer;
       overlays['Label tempat']=placeLabels;
       L.control.layers({'Citra satelit':satellite,'Peta jalan':streets},overlays,{collapsed:true,position:'topright'}).addTo(state.map);
-      functionLegend.innerHTML=`<b>POLIGON FUNGSI INDIKATIF</b>${state.data.function_layers.map(item=>`<span><i style="background:${safe(item.color)}"></i>${safe(item.label)}</span>`).join('')}<span class="boundary-key"><i></i>${safe(boundaryConfig.label||'Batas KLM sumber')}</span><small>Garis hijau-kebiruan berbingkai putih menunjukkan perimeter KLM dan hanya tampak di tepi KLM.</small>`;
+      functionLegend.innerHTML=`<b>POLIGON FUNGSI INDIKATIF</b>${state.data.function_layers.map(item=>`<span><i style="background:${safe(item.color)}"></i>${safe(item.label)}</span>`).join('')}<span class="boundary-key"><i style="border-top-color:${safe(boundaryConfig.color||'#7c3aed')}"></i>${safe(boundaryConfig.label||'Batas KLM sumber')}</span><small>Hijau menunjukkan lindung indikatif, jingga menunjukkan budidaya indikatif, dan garis ungu tipis menunjukkan batas KLM.</small>`;
       state.map.fitBounds(bounds,{padding:[12,12]});
       state.data.klms.forEach(klm=>{
         const marker=L.circleMarker(klm.label_point,{radius:7,color:'#fff',weight:2,fillColor:'#073f3b',fillOpacity:1}).addTo(state.map).bindTooltip(klm.name.replace(/^KLM\s+/i,''),{permanent:true,direction:'top',className:'klm-label',offset:[0,-7]});

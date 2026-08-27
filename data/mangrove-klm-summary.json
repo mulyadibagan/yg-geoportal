@@ -1,7 +1,7 @@
 {
   "generated_at": "2026-08-27",
   "scope": "Tiga poligon KLM sumber untuk Provinsi Riau",
-  "boundary_policy": "Irisan analitis menggunakan geometri KLM sumber secara penuh tanpa perubahan. Peta web memakai raster yang dibuat dari geometri yang sama pada resolusi tampilan.",
+  "boundary_policy": "Irisan analitis menggunakan geometri KLM sumber secara penuh tanpa perubahan. Garis batas web digeneralisasi ringan untuk tampilan; poligon fungsi memakai raster dari hasil analisis.",
   "source": {
     "dataset": "Peta Indikatif Kesatuan Lanskap Mangrove",
     "feature_count": 3,
@@ -25,7 +25,9 @@
   },
   "boundary_layer": {
     "label": "Batas KLM sumber",
-    "color": "#00917f",
+    "color": "#7c3aed",
+    "weight": 1.25,
+    "vector_path": "data/mangrove-klm-boundaries.geojson",
     "images": [
       {
         "path": "assets/mangrove-klm-boundary-14-01.png",

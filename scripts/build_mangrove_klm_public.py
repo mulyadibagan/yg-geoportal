@@ -37,7 +37,7 @@ sys.path[:0] = [str(ROOT / "vendor_model"), str(ROOT / "vendor")]
 import shapefile  # noqa: E402
 from pyproj import CRS, Transformer  # noqa: E402
 from shapely import make_valid  # noqa: E402
-from shapely.geometry import GeometryCollection, MultiPolygon, Polygon, shape  # noqa: E402
+from shapely.geometry import GeometryCollection, MultiPolygon, Polygon, mapping, shape  # noqa: E402
 from shapely.ops import transform, unary_union  # noqa: E402
 from shapely.prepared import prep  # noqa: E402
 from shapely.strtree import STRtree  # noqa: E402
@@ -49,6 +49,7 @@ RPPEM_PATH = ROOT / "02_Working_Analysis" / "rppem" / "Rencana_Perlindungan_Dan_
 ADMIN_PATH = SITE / "data" / "batas_administrasi_desa_riau.geojson"
 SUMMARY_PATH = SITE / "data" / "mangrove-klm-summary.json"
 IMAGE_PATH = SITE / "assets" / "mangrove-klm-boundaries.png"
+VECTOR_BOUNDARY_PATH = SITE / "data" / "mangrove-klm-boundaries.geojson"
 FUNCTION_IMAGE_SIZE = (3600, 3000)
 
 WGS84 = CRS.from_epsg(4326)
@@ -301,6 +302,33 @@ def render_detailed_boundaries(records):
     return images
 
 
+def rounded_coordinates(value, digits=6):
+    if isinstance(value, (list, tuple)):
+        if value and isinstance(value[0], (int, float)):
+            return [round(number, digits) for number in value]
+        return [rounded_coordinates(item, digits) for item in value]
+    return value
+
+
+def render_vector_boundaries(records, path: Path):
+    features = []
+    for item in sorted(records, key=lambda record: record["code"]):
+        display_geometry = mapping(item["geometry"].simplify(0.0002, preserve_topology=True))
+        display_geometry["coordinates"] = rounded_coordinates(display_geometry["coordinates"])
+        features.append({
+            "type": "Feature",
+            "properties": {"code": item["code"], "name": item["name"]},
+            "geometry": display_geometry,
+        })
+    payload = {
+        "type": "FeatureCollection",
+        "display_policy": "Generalized for web display only; analysis uses full source geometry.",
+        "features": features,
+    }
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+
+
 def main():
     print("[1/5] Loading KLM source", flush=True)
     reader = shapefile.Reader(str(KLM_PATH), encoding="utf-8", encodingErrors="replace")
@@ -323,15 +351,19 @@ def main():
         print("[2/2] Rendering province and detailed KLM boundaries", flush=True)
         render_boundaries(klms, IMAGE_PATH)
         boundary_images = render_detailed_boundaries(klms)
+        render_vector_boundaries(klms, VECTOR_BOUNDARY_PATH)
         if SUMMARY_PATH.exists():
             payload = json.loads(SUMMARY_PATH.read_text(encoding="utf-8"))
+            payload["boundary_policy"] = "Irisan analitis menggunakan geometri KLM sumber secara penuh tanpa perubahan. Garis batas web digeneralisasi ringan untuk tampilan; poligon fungsi memakai raster dari hasil analisis."
             payload["boundary_layer"] = {
                 "label": "Batas KLM sumber",
-                "color": "#00917f",
+                "color": "#7c3aed",
+                "weight": 1.25,
+                "vector_path": "data/mangrove-klm-boundaries.geojson",
                 "images": boundary_images,
             }
             SUMMARY_PATH.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
-        print(json.dumps({"image": str(IMAGE_PATH), "detail_images": boundary_images, "style": "cased KLM perimeter, transparent fill"}, ensure_ascii=False))
+        print(json.dumps({"image": str(IMAGE_PATH), "vector": str(VECTOR_BOUNDARY_PATH), "detail_images": boundary_images, "style": "thin purple vector perimeter with raster fallback"}, ensure_ascii=False))
         return
 
     with UNIT_PATH.open(encoding="utf-8") as stream:
@@ -484,6 +516,7 @@ def main():
     print("[4/5] Rendering source boundaries and function polygons", flush=True)
     image_bounds, _projected_bounds, _image_size = render_boundaries(klms, IMAGE_PATH)
     boundary_images = render_detailed_boundaries(klms)
+    render_vector_boundaries(klms, VECTOR_BOUNDARY_PATH)
     function_images = {"analysis_lindung": [], "analysis_budidaya": []}
     for klm in sorted(klms, key=lambda item: item["code"]):
         code = klm["code"]
@@ -521,7 +554,7 @@ def main():
     payload = {
         "generated_at": str(date.today()),
         "scope": "Tiga poligon KLM sumber untuk Provinsi Riau",
-        "boundary_policy": "Irisan analitis menggunakan geometri KLM sumber secara penuh tanpa perubahan. Peta web memakai raster yang dibuat dari geometri yang sama pada resolusi tampilan.",
+        "boundary_policy": "Irisan analitis menggunakan geometri KLM sumber secara penuh tanpa perubahan. Garis batas web digeneralisasi ringan untuk tampilan; poligon fungsi memakai raster dari hasil analisis.",
         "source": {
             "dataset": "Peta Indikatif Kesatuan Lanskap Mangrove",
             "feature_count": len(klms),
@@ -536,7 +569,9 @@ def main():
         },
         "boundary_layer": {
             "label": "Batas KLM sumber",
-            "color": "#00917f",
+            "color": "#7c3aed",
+            "weight": 1.25,
+            "vector_path": "data/mangrove-klm-boundaries.geojson",
             "images": boundary_images,
         },
         "function_layers": [
