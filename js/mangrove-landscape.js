@@ -23,25 +23,25 @@
   }
 
   function renderCards(klms){
-    cards.innerHTML=klms.map(klm=>`<button type="button" class="klm-card" data-klm="${safe(klm.code)}" style="--klm-color:${safe(klm.color)}"><header><div><small>KLM ${safe(klm.code)}</small><strong>${safe(klm.name.replace(/^KLM\s+/i,''))}</strong></div><b>Fokus peta</b></header><div class="klm-card-stats"><span class="total"><strong>${fmt(klm.mangrove_area_ha)} ha</strong>Mangrove referensi</span><span><strong>${fmt(klm.initial_lindung_ha)} ha</strong>Lindung sumber · ${fmt(klm.initial_percent)}%</span><span><strong>${fmt(klm.indicative_lindung_ha)} ha</strong>Lindung indikatif · ${fmt(klm.indicative_lindung_percent)}%</span><span><strong>${fmt(klm.initial_budidaya_ha)} ha</strong>Budidaya sumber · ${fmt(klm.initial_budidaya_percent)}%</span><span><strong>${fmt(klm.indicative_budidaya_ha)} ha</strong>Budidaya indikatif · ${fmt(klm.indicative_budidaya_percent)}%</span></div><div class="klm-bar"><i style="width:${Math.min(100,klm.indicative_lindung_percent)}%"></i></div></button>`).join('');
+    cards.innerHTML=klms.map(klm=>{const mangroveShare=klm.source_area_ha?klm.mangrove_area_ha/klm.source_area_ha*100:0;return `<button type="button" class="klm-card" data-klm="${safe(klm.code)}" style="--klm-color:${safe(klm.color)}"><header><div><small>KLM ${safe(klm.code)}</small><strong>${safe(klm.name.replace(/^KLM\s+/i,''))}</strong></div><b>Fokus peta</b></header><div class="klm-card-stats"><span class="total"><strong>${fmt(klm.source_area_ha)} ha</strong>Luas KLM sumber</span><span class="total"><strong>${fmt(klm.mangrove_area_ha)} ha</strong>Mangrove referensi · ${fmt(mangroveShare)}% dari luas KLM</span><span><strong>${fmt(klm.initial_lindung_ha)} ha</strong>Lindung sumber · ${fmt(klm.initial_percent)}%</span><span><strong>${fmt(klm.indicative_lindung_ha)} ha</strong>Lindung indikatif · ${fmt(klm.indicative_lindung_percent)}%</span><span><strong>${fmt(klm.initial_budidaya_ha)} ha</strong>Budidaya sumber · ${fmt(klm.initial_budidaya_percent)}%</span><span><strong>${fmt(klm.indicative_budidaya_ha)} ha</strong>Budidaya indikatif · ${fmt(klm.indicative_budidaya_percent)}%</span></div><div class="klm-bar"><i style="width:${Math.min(100,klm.indicative_lindung_percent)}%"></i></div></button>`}).join('');
     cards.addEventListener('click',event=>{const button=event.target.closest('[data-klm]');if(!button)return;const klm=klms.find(item=>item.code===button.dataset.klm);if(klm)focusKlm(klm)});
   }
 
   function renderBaseline(data){
     const mangroveShareOfKlm=data.totals.klm_source_total_area_ha?data.totals.inside_source_klm_area_ha/data.totals.klm_source_total_area_ha*100:0;
-    baseline.innerHTML=`<article><span>Jumlah KLM</span><strong>${data.klms.length}</strong><small>kode 14.01 · 14.02 · 14.03</small></article><article><span>Total luas tiga KLM</span><strong>${fmt(data.totals.klm_source_total_area_ha)} ha</strong><small>seluruh bentang lanskap dalam batas sumber</small></article><article><span>Mangrove referensi di dalam KLM</span><strong>${fmt(data.totals.inside_source_klm_area_ha)} ha</strong><small>${fmt(mangroveShareOfKlm)}% dari total luas tiga KLM</small></article>`;
+    baseline.innerHTML=`<article><span>Total luas KLM di Riau</span><strong>${fmt(data.totals.klm_source_total_area_ha)} ha</strong><small>seluruh bentang lanskap dalam batas sumber</small></article><article><span>Mangrove referensi dalam KLM</span><strong>${fmt(data.totals.inside_source_klm_area_ha)} ha</strong><small>${fmt(mangroveShareOfKlm)}% dari total luas KLM</small></article><article><span>Jumlah KLM</span><strong>${data.klms.length}</strong><small>kode 14.01 · 14.02 · 14.03</small></article>`;
   }
 
   function renderOverview(data){
-    const riau=data.statewide;
-    document.getElementById('overview-source-lindung').textContent=`${fmt(riau.initial_lindung_ha)} ha`;
-    document.getElementById('overview-source-lindung-percent').textContent=`${fmt(riau.initial_percent)}% dari mangrove referensi`;
-    document.getElementById('overview-source-budidaya').textContent=`${fmt(riau.initial_budidaya_ha)} ha`;
-    document.getElementById('overview-source-budidaya-percent').textContent=`${fmt(riau.initial_budidaya_percent)}% dari mangrove referensi`;
-    document.getElementById('overview-indicative-lindung').textContent=`${fmt(riau.indicative_lindung_ha)} ha`;
-    document.getElementById('overview-indicative-lindung-percent').textContent=`${fmt(riau.indicative_lindung_percent)}% · TRUE + skenario REVIEW`;
-    document.getElementById('overview-indicative-budidaya').textContent=`${fmt(riau.indicative_budidaya_ha)} ha`;
-    document.getElementById('overview-indicative-budidaya-percent').textContent=`${fmt(riau.indicative_budidaya_percent)}% · hasil indikatif`;
+    const klm=data.totals;
+    document.getElementById('overview-source-lindung').textContent=`${fmt(klm.initial_lindung_ha)} ha`;
+    document.getElementById('overview-source-lindung-percent').textContent=`${fmt(klm.initial_percent)}% dari mangrove dalam KLM`;
+    document.getElementById('overview-source-budidaya').textContent=`${fmt(klm.initial_budidaya_ha)} ha`;
+    document.getElementById('overview-source-budidaya-percent').textContent=`${fmt(klm.initial_budidaya_percent)}% dari mangrove dalam KLM`;
+    document.getElementById('overview-indicative-lindung').textContent=`${fmt(klm.indicative_lindung_ha)} ha`;
+    document.getElementById('overview-indicative-lindung-percent').textContent=`${fmt(klm.indicative_lindung_percent)}% · TRUE + skenario REVIEW`;
+    document.getElementById('overview-indicative-budidaya').textContent=`${fmt(klm.indicative_budidaya_ha)} ha`;
+    document.getElementById('overview-indicative-budidaya-percent').textContent=`${fmt(klm.indicative_budidaya_percent)}% · hasil indikatif`;
   }
 
   function renderRegencies(regencies){

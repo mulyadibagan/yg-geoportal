@@ -4,14 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>Kawasan Lanskap Mangrove Riau | YG GeoPortal</title>
-  <meta name="description" content="Perbandingan fungsi lindung dan budidaya pada data sumber dengan hasil analisis indikatif mangrove Provinsi Riau, per KLM, dan per kabupaten/kota.">
+  <meta name="description" content="Ringkasan luas, mangrove, serta perbandingan fungsi lindung dan budidaya pada tiga Kesatuan Lanskap Mangrove di Provinsi Riau.">
   <link rel="icon" href="assets/logo-yayasan-gambut.png">
   <link rel="stylesheet" href="css/style.css?v=20260723-revert-layout">
   <link rel="stylesheet" href="css/language-switcher.css?v=20260721-all-pages1">
   <link rel="stylesheet" href="css/navigation-v2.css?v=20260807-mobile-submenu-links1">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
   <link rel="stylesheet" href="css/mangrove-landscape.css?v=20260827-public1">
-  <link rel="stylesheet" href="css/mangrove-klm.css?v=20260827-publicaudit2">
+  <link rel="stylesheet" href="css/mangrove-klm.css?v=20260827-unified1">
   <meta name="theme-color" content="#075b53">
 </head>
 <body>
@@ -33,8 +33,8 @@
       <div class="landscape-hero__copy">
         <p class="eyebrow">ANALISIS LANSKAP SE-RIAU · PEMBARUAN 27 AGUSTUS 2026</p>
         <h1>Kawasan Lanskap Mangrove Riau</h1>
-        <p class="lead">Ruang informasi untuk membandingkan fungsi lindung dan budidaya pada data sumber dengan hasil analisis indikatif YG untuk Riau, setiap KLM, dan setiap kabupaten/kota pesisir.</p>
-        <div class="hero-links"><a class="primary-link" href="#gambaran">Lihat total Riau <span aria-hidden="true">↓</span></a><a href="#klm">Jelajahi KLM</a></div>
+        <p class="lead">Ruang informasi untuk melihat luas, mangrove, serta perbandingan fungsi lindung dan budidaya pada tiga KLM Riau dan setiap kabupaten/kota pesisir.</p>
+        <div class="hero-links"><a class="primary-link" href="#gambaran">Lihat ringkasan KLM <span aria-hidden="true">↓</span></a><a href="#klm">Jelajahi peta</a></div>
       </div>
       <aside class="scope-card" aria-label="Status penggunaan hasil">
         <span class="scope-badge">RINGKASAN PUBLIK V1</span>
@@ -43,26 +43,26 @@
       </aside>
     </section>
 
-    <nav class="section-nav" aria-label="Bagian halaman"><a href="#gambaran">Total Riau</a><a href="#klm">Peta &amp; KLM</a><a href="#fungsi">Kriteria fungsi</a><a href="#wilayah">Wilayah</a><a href="#modul">Modul terkait</a><a href="#metode">Metode &amp; batasan</a></nav>
+    <nav class="section-nav" aria-label="Bagian halaman"><a href="#gambaran">Ringkasan KLM</a><a href="#klm">Peta &amp; per KLM</a><a href="#fungsi">Kriteria fungsi</a><a href="#wilayah">Wilayah</a><a href="#modul">Modul terkait</a><a href="#metode">Metode &amp; batasan</a></nav>
 
     <section class="page-section" id="gambaran">
-      <div class="section-heading"><div><p class="eyebrow">TOTAL PROVINSI RIAU</p><h2>Fungsi mangrove Riau</h2></div><p>Perbandingan fungsi pada data sumber dengan hasil analisis indikatif YG untuk seluruh 186.812,38 ha mangrove referensi PMN 2025 di Riau.</p></div>
+      <div class="section-heading"><div><p class="eyebrow">RINGKASAN KLM RIAU</p><h2>KLM dan fungsi mangrove</h2></div><p>Ringkasan mengikuti dataset Peta Indikatif Kesatuan Lanskap Mangrove. KLM merupakan bentang lanskap sehingga luasnya mencakup mangrove dan area lain di dalam batas sumber.</p></div>
+      <div class="klm-baseline" id="klm-baseline"><article class="klm-loading">Memuat ringkasan KLM Riau…</article></div>
       <div class="overview-grid">
         <article><span>Lindung sumber</span><strong id="overview-source-lindung">—</strong><small id="overview-source-lindung-percent">klasifikasi pada data RPPEM</small></article>
         <article><span>Budidaya sumber</span><strong id="overview-source-budidaya">—</strong><small id="overview-source-budidaya-percent">klasifikasi pada data RPPEM</small></article>
         <article class="overview-indicative"><span>Lindung indikatif</span><strong id="overview-indicative-lindung">—</strong><small id="overview-indicative-lindung-percent">TRUE + skenario REVIEW</small></article>
         <article class="overview-indicative"><span>Budidaya indikatif</span><strong id="overview-indicative-budidaya">—</strong><small id="overview-indicative-budidaya-percent">sisa baseline budidaya dalam skenario</small></article>
       </div>
-      <div class="boundary-assurance riau-definition"><strong>Ringkasan Riau.</strong><p>Lindung indikatif mencakup hasil TRUE dan skenario REVIEW sehingga memperlihatkan cakupan hingga sekitar 30%. Budidaya indikatif adalah sisa baseline budidaya setelah TRUE dan skenario REVIEW. REVIEW tetap memerlukan verifikasi; angka ini merupakan skenario analitis, bukan penetapan fungsi.</p></div>
+      <div class="boundary-assurance riau-definition"><strong>Ringkasan tiga KLM.</strong><p>Persentase fungsi menggunakan luas mangrove referensi di dalam tiga KLM sebagai penyebut. Lindung indikatif mencakup TRUE dan skenario REVIEW hingga sekitar 30%; budidaya indikatif adalah sisanya dalam skenario. REVIEW tetap memerlukan verifikasi dan angka ini bukan penetapan fungsi.</p></div>
     </section>
 
     <section class="page-section klm-section" id="klm">
-      <div class="section-heading"><div><p class="eyebrow">DATA SUMBER KLM RIAU</p><h2>Kesatuan Lanskap Mangrove Riau</h2></div><p>Informasi mengikuti dataset Peta Indikatif Kesatuan Lanskap Mangrove. KLM merupakan bentang lanskap sehingga luasnya mencakup mangrove dan area lain di dalam batas sumber. Unit mangrove dan hasil fungsi dikelompokkan menurut KLM tanpa mengubah geometri tersebut.</p></div>
-      <div class="klm-baseline" id="klm-baseline"><article class="klm-loading">Memuat baseline KLM Riau…</article></div>
+      <div class="klm-cluster-heading klm-map-heading"><div><p class="eyebrow">PETA TIGA KLM</p><h3>Fungsi indikatif dalam batas KLM</h3></div><p>Hijau menunjukkan fungsi lindung indikatif, jingga menunjukkan fungsi budidaya indikatif, dan garis ungu tipis menunjukkan batas KLM sumber.</p></div>
       <div class="klm-workspace">
         <div class="klm-map-wrap"><div id="klm-map" aria-label="Peta indikasi fungsi lindung dan fungsi budidaya pada tiga Kesatuan Lanskap Mangrove di Riau"></div><div class="klm-map-status" id="klm-map-status">Memuat dua fungsi indikatif dan batas KLM…</div><div class="klm-map-legend" id="function-map-legend"><span>Memuat legenda fungsi…</span></div></div>
       </div>
-      <div class="klm-cluster-heading"><div><p class="eyebrow">RINGKASAN PER KLM</p><h3>Fungsi sumber dan hasil indikatif</h3></div><p>Setiap kartu memperlihatkan luas mangrove, fungsi lindung dan budidaya pada data sumber, serta fungsi lindung dan budidaya indikatif hasil analisis.</p></div>
+      <div class="klm-cluster-heading"><div><p class="eyebrow">RINGKASAN PER KLM</p><h3>Luas dan fungsi setiap KLM</h3></div><p>Setiap kartu memperlihatkan luas KLM sumber, luas mangrove referensi, serta fungsi lindung dan budidaya pada data sumber dan hasil indikatif.</p></div>
       <div class="klm-cards" id="klm-cards" aria-live="polite"><article class="klm-loading">Memuat ringkasan per KLM…</article></div>
       <div class="boundary-assurance"><strong>Batas KLM tidak diubah.</strong><p>Hijau menunjukkan fungsi lindung indikatif, jingga menunjukkan fungsi budidaya indikatif, dan garis ungu tipis menunjukkan batas KLM. Perhitungan menggunakan geometri sumber secara penuh; garis web digeneralisasi ringan hanya untuk kecepatan tampilan. <span id="klm-reconciliation"></span></p></div>
     </section>
@@ -109,7 +109,7 @@
   </main>
   <footer><div><strong>YG GeoPortal</strong><p>Kawasan Lanskap Mangrove Riau · ringkasan publik v1</p></div><a href="coastal-monitoring.html">Kembali ke Pesisir &amp; Mangrove</a></footer>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-  <script src="js/mangrove-landscape.js?v=20260827-publicaudit2"></script>
+  <script src="js/mangrove-landscape.js?v=20260827-unified1"></script>
   <script src="js/navigation-v2.js?v=20260807-mobile-menu-fix2"></script>
 </body>
 </html>

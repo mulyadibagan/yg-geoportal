@@ -18,6 +18,7 @@
 .klm-map-legend .boundary-key i{width:18px;height:0;border-top:2px solid #7c3aed;border-radius:0;box-shadow:none}
 .klm-map-legend small{margin-top:2px;color:#607a75;font-size:8px;line-height:1.35}
 .klm-cluster-heading{display:flex;justify-content:space-between;gap:25px;align-items:end;margin:34px 0 13px}
+.klm-map-heading{margin-top:0}
 .klm-cluster-heading h3{margin:0;font-family:Georgia,serif;font-size:28px;font-weight:500}
 .klm-cluster-heading>p{max-width:530px;margin:0;color:var(--muted);font-size:10px;line-height:1.6}
 .klm-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-top:13px}
