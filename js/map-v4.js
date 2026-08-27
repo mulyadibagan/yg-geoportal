@@ -110,7 +110,7 @@
       label: "Perhutanan Sosial Riau",
       file: "data/PERHUTANAN_SOSIAL_RIAU.geojson",
       color: "#00897b",
-      count: 149,
+      count: 175,
       type: "social_forestry",
       focusOnEnable: true
     },
@@ -142,7 +142,7 @@
 
       try {
         const response = await fetch(
-          config.file + "?v=20260828-rupat-agro-official1",
+          config.file + "?v=20260828-ps-official-expansion1",
           { cache: "force-cache" }
         );
         if (!response.ok) return;
@@ -1725,7 +1725,7 @@ L.control.scale({
   async function fetchReferenceData(config) {
     if (!config.arcgisUrl) {
       const response = await fetch(
-        config.file + "?v=20260828-rupat-agro-official1",
+        config.file + "?v=20260828-ps-official-expansion1",
         { cache: "force-cache" }
       );
 
