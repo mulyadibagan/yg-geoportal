@@ -1191,11 +1191,14 @@ L.control.scale({
             "YG-20260820-202849-964",
             "YG-20260820-202852-996"
           ].includes(reportId);
+          const isCompactMonitoringPopup = config.id === "monitoring_reports" &&
+            window.matchMedia("(max-width: 900px)").matches;
 
           layer.bindPopup(buildPopup(feature, config), {
             maxWidth: config.id === "monitoring_reports" ? 280 : 400,
-            autoPan: !isPupMonitoringPopup,
-            keepInView: config.id === "monitoring_reports" && !isPupMonitoringPopup,
+            autoPan: !(isPupMonitoringPopup || isCompactMonitoringPopup),
+            keepInView: config.id === "monitoring_reports" &&
+              !(isPupMonitoringPopup || isCompactMonitoringPopup),
             autoPanPadding: config.id === "monitoring_reports" ? [22, 22] : [5, 5],
             className: config.id === "monitoring_reports"
               ? "yg-monitoring-popup"
