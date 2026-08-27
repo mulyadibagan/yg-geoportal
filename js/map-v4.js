@@ -142,7 +142,7 @@
 
       try {
         const response = await fetch(
-          config.file + "?v=20260826-kph-riau-cloudflare1",
+          config.file + "?v=20260828-rupat-agro-official1",
           { cache: "force-cache" }
         );
         if (!response.ok) return;
@@ -1725,7 +1725,7 @@ L.control.scale({
   async function fetchReferenceData(config) {
     if (!config.arcgisUrl) {
       const response = await fetch(
-        config.file + "?v=20260826-kph-riau-cloudflare1",
+        config.file + "?v=20260828-rupat-agro-official1",
         { cache: "force-cache" }
       );
 
