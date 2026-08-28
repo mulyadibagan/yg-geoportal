@@ -103,6 +103,10 @@
   };
 
   const referenceLayerObjects = {};
+  let socialForestryDocumentDetails = {};
+  let socialForestryDocumentIndex = {};
+  let socialForestryDocumentDetailsLoaded = false;
+  let socialForestryDocumentLegend = null;
 
   function socialForestryIdentity(feature, index) {
     const properties = feature && feature.properties ? feature.properties : {};
@@ -1197,8 +1201,130 @@ L.control.scale({
     return "#b39ddb";
   }
 
+  function socialForestryDocumentLookupKey(value) {
+    return String(value == null ? "" : value)
+      .trim()
+      .toLowerCase()
+      .replace(/\.0$/, "")
+      .replace(/\s+/g, " ");
+  }
+
+  function indexSocialForestryDocumentDetails(details) {
+    const index = {};
+    Object.keys(details || {}).forEach(key => {
+      const detail = details[key] || {};
+      const extraction = detail.skExtraction || {};
+      [
+        key,
+        detail.decree,
+        detail.name,
+        extraction.decreeNumber,
+        extraction.institution
+      ].forEach(value => {
+        const normalized = socialForestryDocumentLookupKey(value);
+        if (normalized && !index[normalized]) index[normalized] = detail;
+      });
+    });
+    return index;
+  }
+
+  function socialForestryDocumentDetail(feature) {
+    const props = feature && feature.properties || {};
+    const candidates = [
+      props.OBJECTID,
+      props.ID,
+      props.NO_IUPHKM,
+      props.NOMOR_SK,
+      props.NO_SK,
+      props.SK,
+      props.NAMA_HKM
+    ];
+
+    for (let index = 0; index < candidates.length; index += 1) {
+      const key = socialForestryDocumentLookupKey(candidates[index]);
+      if (key && socialForestryDocumentIndex[key]) {
+        return socialForestryDocumentIndex[key];
+      }
+    }
+    return {};
+  }
+
+  function socialForestryDocumentClass(feature) {
+    const detail = socialForestryDocumentDetail(feature);
+    const documents = Array.isArray(detail.documents)
+      ? detail.documents.filter(document => document && typeof document === "object")
+      : [];
+    const categories = new Set(documents.map(document => {
+      const category = String(document.category || "").toLowerCase();
+      if (category.includes("legal")) return "legalitas";
+      if (category.includes("peta")) return "peta";
+      if (
+        category.includes("rencana") ||
+        category.includes("rkps") ||
+        category.includes("rkt")
+      ) return "rencana";
+      if (category.includes("kups")) return "kups";
+      return "";
+    }).filter(Boolean));
+    const count = categories.size;
+
+    if (count >= 4) return { count, color: "#7e22ce", label: "Lengkap (4 kelompok)" };
+    if (count === 3) return { count, color: "#0f766e", label: "Hampir lengkap (3 kelompok)" };
+    if (count === 2) return { count, color: "#d97706", label: "Sebagian (2 kelompok)" };
+    if (count === 1) return { count, color: "#dc5f21", label: "Terbatas (1 kelompok)" };
+    return { count: 0, color: "#94a3b8", label: "Belum tercatat" };
+  }
+
+  const SOCIAL_FORESTRY_DOCUMENT_CLASSES = [
+    ["#7e22ce", "Lengkap · 4 kelompok"],
+    ["#0f766e", "Hampir lengkap · 3"],
+    ["#d97706", "Sebagian · 2"],
+    ["#dc5f21", "Terbatas · 1"],
+    ["#94a3b8", "Belum tercatat"]
+  ];
+
+  function showSocialForestryDocumentLegend() {
+    if (socialForestryDocumentLegend) return;
+    socialForestryDocumentLegend = L.control({ position: "bottomright" });
+    socialForestryDocumentLegend.onAdd = function() {
+      const container = L.DomUtil.create(
+        "div",
+        "leaflet-control yg-ps-document-legend"
+      );
+      container.innerHTML =
+        '<strong>Kelengkapan dokumen PS</strong>' +
+        SOCIAL_FORESTRY_DOCUMENT_CLASSES.map(entry =>
+          '<span><i style="--yg-ps-color:' + escapeHtml(entry[0]) +
+          '"></i>' + escapeHtml(entry[1]) + '</span>'
+        ).join("");
+      L.DomEvent.disableClickPropagation(container);
+      L.DomEvent.disableScrollPropagation(container);
+      return container;
+    };
+    socialForestryDocumentLegend.addTo(map);
+  }
+
+  function hideSocialForestryDocumentLegend() {
+    if (!socialForestryDocumentLegend) return;
+    map.removeControl(socialForestryDocumentLegend);
+    socialForestryDocumentLegend = null;
+  }
+
   function referenceStyle(config, feature) {
     const props = feature.properties || {};
+
+    if (config.type === "social_forestry") {
+      const documentClass = socialForestryDocumentClass(feature);
+      return {
+        color: documentClass.color,
+        weight: documentClass.count >= 4
+          ? 2.8
+          : documentClass.count > 0 ? 2.1 : 1.2,
+        opacity: documentClass.count > 0 ? 1 : 0.75,
+        fillColor: documentClass.color,
+        fillOpacity: documentClass.count > 0 ? 0.18 : 0.07
+      };
+    }
 
     if (config.type === "forest") {
       const color = forestColor(props.fungsi);
@@ -1371,6 +1497,7 @@ L.control.scale({
       rows += item("Kabupaten/Kota", props.KAB_KOTA);
       rows += item("Distrik", props.DISTRIK);
     } else if (config.type === "social_forestry") {
+      const documentClass = socialForestryDocumentClass(feature);
       rows += item("Kelompok/Hutan Desa", props.NAMA_HKM);
       rows += item("Skema", props.Ket);
       rows += item("Nomor izin", props.NO_IUPHKM);
@@ -1382,6 +1509,8 @@ L.control.scale({
       rows += item("Kecamatan", props.NAMA_KEC);
       rows += item("Kabupaten", props.NAMA_KAB);
       rows += item("Provinsi", props.NAMA_PROV);
+      rows += item("Kelengkapan dokumen", documentClass.count + " dari 4 kelompok");
+      rows += item("Kluster warna", documentClass.label);
     } else if (config.type === "kph") {
       rows += item("Lembaga KPH", props.LEMBAGA);
       rows += item("Kategori KPH", props.KPH);
@@ -1441,6 +1570,27 @@ L.control.scale({
     }
 
     const data = await response.json();
+
+    if (config.type === "social_forestry" && !socialForestryDocumentDetailsLoaded) {
+      try {
+        const detailsResponse = await fetch(
+          "data/social-forestry-details.json?v=20260828-ps-color-clusters1",
+          { cache: "no-store" }
+        );
+        if (detailsResponse.ok) {
+          socialForestryDocumentDetails = await detailsResponse.json();
+          socialForestryDocumentIndex = indexSocialForestryDocumentDetails(
+            socialForestryDocumentDetails
+          );
+        }
+      } catch (documentError) {
+        console.warn(
+          "Data kelengkapan dokumen PS belum dapat dimuat:",
+          documentError
+        );
+      }
+      socialForestryDocumentDetailsLoaded = true;
+    }
 
     if (
       !data ||
@@ -1567,6 +1717,9 @@ L.control.scale({
 
             if (layer) {
               layer.addTo(map);
+              if (config.type === "social_forestry") {
+                showSocialForestryDocumentLegend();
+              }
 
               /*
                * Layer PS mencakup seluruh Riau dan sering diaktifkan dari
@@ -1602,6 +1755,9 @@ L.control.scale({
 
             if (layer && map.hasLayer(layer)) {
               map.removeLayer(layer);
+            }
+            if (config.type === "social_forestry") {
+              hideSocialForestryDocumentLegend();
             }
           }
         } catch (error) {

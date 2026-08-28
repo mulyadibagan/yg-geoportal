@@ -310,3 +310,7 @@ body.webgis-page .app-shell{
     0 2px 7px rgba(16, 42, 36, 0.45);
   transform: scale(1.12);
 }
+.yg-ps-document-legend{display:grid;gap:5px;max-width:220px;padding:11px 13px;border:1px solid #dce9e5;border-radius:12px;background:rgba(255,255,255,.96);box-shadow:0 5px 18px rgba(9,53,56,.14);color:#24454b;font:11px/1.35 Inter,"Segoe UI",sans-serif;backdrop-filter:blur(8px)}
+.yg-ps-document-legend strong{margin-bottom:2px;color:#0a2d33;font-size:12px}
+.yg-ps-document-legend span{display:flex;align-items:center;gap:8px}
+.yg-ps-document-legend i{display:inline-block;width:20px;height:9px;border:2px solid var(--yg-ps-color);border-radius:3px;background:var(--yg-ps-color)}
