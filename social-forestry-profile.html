@@ -42,81 +42,22 @@
 
       <div id="profile-content" hidden>
         <section class="vp-kpis" id="kpi-grid"></section>
-
         <section class="vp-layout">
-          <article class="vp-card vp-map-card" data-spatial-only>
-            <div class="vp-section-head"><div><span class="vp-kicker">LOKASI</span><h2>Batas areal pada peta</h2></div><span class="vp-badge">Citra satelit</span></div>
-            <div id="village-map"></div>
-            <p class="vp-caption">Garis menunjukkan polygon Perhutanan Sosial yang digunakan dalam analisis. Batas dan luas polygon bersumber dari layer referensi PS.</p>
-          </article>
-          <article class="vp-card">
-            <div class="vp-section-head"><div><span class="vp-kicker">IDENTITAS AREAL</span><h2>Informasi izin</h2></div><span class="vp-sf-status">Layer referensi</span></div>
-            <div class="vp-identity" id="identity-list"></div>
-          </article>
+          <article class="vp-card vp-map-card" data-spatial-only><div class="vp-section-head"><div><span class="vp-kicker">LOKASI</span><h2>Batas areal pada peta</h2></div><span class="vp-badge">Citra satelit</span></div><div id="village-map"></div><p class="vp-caption">Garis menunjukkan polygon Perhutanan Sosial yang digunakan dalam analisis. Batas dan luas polygon bersumber dari layer referensi PS.</p></article>
+          <article class="vp-card"><div class="vp-section-head"><div><span class="vp-kicker">IDENTITAS AREAL</span><h2>Informasi izin</h2></div><span class="vp-sf-status">Layer referensi</span></div><div class="vp-identity" id="identity-list"></div></article>
         </section>
-
-        <section class="vp-card vp-sf-detail" id="sf-detail" hidden>
-          <div class="vp-section-head"><div><span class="vp-kicker">PENGELOLAAN PERHUTANAN SOSIAL</span><h2>Kelembagaan, masyarakat, dan dokumen</h2></div></div>
-          <div class="vp-sf-detail-grid">
-            <div class="vp-sf-detail-summary" id="sf-detail-summary"></div>
-            <div>
-              <h3 class="vp-subtitle vp-subtitle--top">Dokumen pendukung</h3>
-              <div class="vp-document-list" id="sf-document-list"></div>
-            </div>
-          </div>
-          <p class="vp-caption" id="sf-detail-note"></p>
-        </section>
-
-        <section class="vp-layout" data-spatial-only>
-          <article class="vp-card">
-            <div class="vp-section-head"><div><span class="vp-kicker">TUTUPAN POHON</span><h2>Kondisi ringkas</h2></div></div>
-            <div class="vp-forest-visual">
-              <div class="vp-donut" id="forest-donut"><span><strong id="forest-percent">—</strong><small>dari luas areal</small></span></div>
-              <div class="vp-forest-copy"><p>Sisa tutupan pohon</p><strong id="current-forest">—</strong><small id="forest-definition">Keterangan metode sedang dimuat.</small></div>
-            </div>
-            <div class="vp-callout">Tutupan pohon ≥30% mengikuti dataset Hansen/UMD dan tidak selalu menunjukkan hutan alam.</div>
-          </article>
-          <article class="vp-card">
-            <div class="vp-section-head"><div><span class="vp-kicker">HOTSPOT</span><h2>Pemantauan anomali panas</h2></div></div>
-            <div class="vp-hotspot-summary" id="hotspot-summary"></div>
-            <h3 class="vp-subtitle">Jumlah hotspot per tahun</h3><div class="vp-mini-bars" id="hotspot-years"></div>
-            <p class="vp-caption">Hotspot adalah anomali panas satelit, bukan konfirmasi kebakaran.</p>
-          </article>
-        </section>
-
-        <section class="vp-card" data-spatial-only>
-          <div class="vp-section-head"><div><span class="vp-kicker">PERUBAHAN TAHUNAN</span><h2 id="loss-chart-title">Kehilangan tutupan pohon</h2></div><span class="vp-badge vp-badge--warm">hektare per tahun</span></div>
-          <div class="vp-bars" id="loss-bars"></div><p class="vp-caption" id="loss-note"></p>
-        </section>
-
-        <section class="vp-card" data-spatial-only>
-          <div class="vp-section-head"><div><span class="vp-kicker">KONTEKS WILAYAH</span><h2>Irisan layer referensi</h2></div></div>
-          <div class="vp-reference-list" id="reference-list"></div>
-          <p class="vp-caption">Layer dapat saling tumpang tindih dan tidak boleh dijumlahkan sebagai total luas areal.</p>
-        </section>
-
-        <section class="vp-card vp-method" data-spatial-only>
-          <div class="vp-section-head"><div><span class="vp-kicker">TRANSPARANSI DATA</span><h2>Bagaimana data dihasilkan?</h2></div></div>
-          <div class="vp-method-grid">
-            <div><b>1</b><strong>Batas analisis</strong><p>Polygon Perhutanan Sosial menjadi batas pemotongan seluruh dataset.</p></div>
-            <div><b>2</b><strong>Tutupan pohon</strong><p>Pixel kanopi ≥30% dihitung berdasarkan dataset Hansen/UMD.</p></div>
-            <div><b>3</b><strong>Perubahan</strong><p>Pixel kehilangan dikelompokkan per tahun dan dikonversi ke hektare.</p></div>
-            <div><b>4</b><strong>Hotspot</strong><p>Titik NASA FIRMS dihitung bila berada di dalam polygon areal.</p></div>
-          </div>
-          <div class="vp-source-grid">
-            <div><span>Baseline tutupan</span><strong id="baseline-period">—</strong></div>
-            <div><span>Data kehilangan tersedia s.d.</span><strong id="loss-through">—</strong></div>
-            <div><span>Sumber tutupan pohon</span><strong>Hansen / UMD / Google / USGS / NASA</strong></div>
-            <div><span>Sumber hotspot</span><strong>NASA FIRMS · MODIS/VIIRS</strong></div>
-          </div>
-        </section>
-
+        <section class="vp-card vp-sf-detail" id="sf-detail" hidden><div class="vp-section-head"><div><span class="vp-kicker">PENGELOLAAN PERHUTANAN SOSIAL</span><h2>Kelembagaan, masyarakat, dan dokumen</h2></div></div><div class="vp-sf-detail-grid"><div class="vp-sf-detail-summary" id="sf-detail-summary"></div><div><h3 class="vp-subtitle vp-subtitle--top">Dokumen pendukung</h3><div class="vp-document-list" id="sf-document-list"></div></div></div><p class="vp-caption" id="sf-detail-note"></p></section>
+        <section class="vp-layout" data-spatial-only><article class="vp-card"><div class="vp-section-head"><div><span class="vp-kicker">TUTUPAN POHON</span><h2>Kondisi ringkas</h2></div></div><div class="vp-forest-visual"><div class="vp-donut" id="forest-donut"><span><strong id="forest-percent">—</strong><small>dari luas areal</small></span></div><div class="vp-forest-copy"><p>Sisa tutupan pohon</p><strong id="current-forest">—</strong><small id="forest-definition">Keterangan metode sedang dimuat.</small></div></div><div class="vp-callout">Tutupan pohon ≥30% mengikuti dataset Hansen/UMD dan tidak selalu menunjukkan hutan alam.</div></article><article class="vp-card"><div class="vp-section-head"><div><span class="vp-kicker">HOTSPOT</span><h2>Pemantauan anomali panas</h2></div></div><div class="vp-hotspot-summary" id="hotspot-summary"></div><h3 class="vp-subtitle">Jumlah hotspot per tahun</h3><div class="vp-mini-bars" id="hotspot-years"></div><p class="vp-caption">Hotspot adalah anomali panas satelit, bukan konfirmasi kebakaran.</p></article></section>
+        <section class="vp-card" data-spatial-only><div class="vp-section-head"><div><span class="vp-kicker">PERUBAHAN TAHUNAN</span><h2 id="loss-chart-title">Kehilangan tutupan pohon</h2></div><span class="vp-badge vp-badge--warm">hektare per tahun</span></div><div class="vp-bars" id="loss-bars"></div><p class="vp-caption" id="loss-note"></p></section>
+        <section class="vp-card" data-spatial-only><div class="vp-section-head"><div><span class="vp-kicker">KONTEKS WILAYAH</span><h2>Irisan layer referensi</h2></div></div><div class="vp-reference-list" id="reference-list"></div><p class="vp-caption">Layer dapat saling tumpang tindih dan tidak boleh dijumlahkan sebagai total luas areal.</p></section>
+        <section class="vp-card vp-method" data-spatial-only><div class="vp-section-head"><div><span class="vp-kicker">TRANSPARANSI DATA</span><h2>Bagaimana data dihasilkan?</h2></div></div><div class="vp-method-grid"><div><b>1</b><strong>Batas analisis</strong><p>Polygon Perhutanan Sosial menjadi batas pemotongan seluruh dataset.</p></div><div><b>2</b><strong>Tutupan pohon</strong><p>Pixel kanopi ≥30% dihitung berdasarkan dataset Hansen/UMD.</p></div><div><b>3</b><strong>Perubahan</strong><p>Pixel kehilangan dikelompokkan per tahun dan dikonversi ke hektare.</p></div><div><b>4</b><strong>Hotspot</strong><p>Titik NASA FIRMS dihitung bila berada di dalam polygon areal.</p></div></div><div class="vp-source-grid"><div><span>Baseline tutupan</span><strong id="baseline-period">—</strong></div><div><span>Data kehilangan tersedia s.d.</span><strong id="loss-through">—</strong></div><div><span>Sumber tutupan pohon</span><strong>Hansen / UMD / Google / USGS / NASA</strong></div><div><span>Sumber hotspot</span><strong>NASA FIRMS · MODIS/VIIRS</strong></div></div></section>
         <footer class="vp-footer"><p><strong>Catatan:</strong> angka bersifat indikatif. Batas izin, kondisi lapangan, dan keputusan pengelolaan tetap perlu diverifikasi dengan instansi dan pemegang izin.</p><a href="social-forestry-directory.html">Lihat direktori Perhutanan Sosial →</a></footer>
       </div>
     </div>
   </main>
   <div class="vp-toast" id="toast" role="status"></div>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/social-forestry-process-overlay.js?v=20260828"></script>
   <script src="js/social-forestry-profile.js?v=20260827-sk-audit6"></script>
 </body>
 </html>
