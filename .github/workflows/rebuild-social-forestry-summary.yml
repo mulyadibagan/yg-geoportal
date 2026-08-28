@@ -21,6 +21,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Preserve current summary for diagnostics
+        run: cp data/social-forestry-summary.json /tmp/social-forestry-summary-before.json
+
       - name: Rebuild summary
         run: node tools/build-social-forestry-summary.js
 
@@ -28,7 +31,20 @@ jobs:
         run: |
           node - <<'NODE'
           const fs = require('fs');
+          const before = JSON.parse(fs.readFileSync('/tmp/social-forestry-summary-before.json','utf8'));
           const s = JSON.parse(fs.readFileSync('data/social-forestry-summary.json','utf8'));
+          const identity = p => [p.key || '', p.decree || '', p.name || '', p.regency || ''].join('|').toLowerCase();
+          const beforeMap = new Map(before.profiles.map(p => [identity(p), p]));
+          const afterMap = new Map(s.profiles.map(p => [identity(p), p]));
+          const onlyBefore = [...beforeMap].filter(([k]) => !afterMap.has(k)).map(([,p]) => p);
+          const onlyAfter = [...afterMap].filter(([k]) => !beforeMap.has(k)).map(([,p]) => p);
+          console.log('Before totals:', before.totals);
+          console.log('After totals:', s.totals);
+          console.log('After schemes:', s.schemes.map(x => [x.scheme,x.profileCount,x.totalAreaHa]));
+          console.log('Only before:', onlyBefore.map(p => ({key:p.key,decree:p.decree,name:p.name,regency:p.regency,scheme:p.scheme,areaHa:p.areaHa,spatial:p.spatial})));
+          console.log('Only after:', onlyAfter.map(p => ({key:p.key,decree:p.decree,name:p.name,regency:p.regency,scheme:p.scheme,areaHa:p.areaHa,spatial:p.spatial})));
+          console.log('Unclassified:', s.profiles.filter(p => /Persetujuan Perhutanan Sosial|Belum terklasifikasi/i.test(p.scheme)).map(p => ({key:p.key,decree:p.decree,name:p.name,regency:p.regency,scheme:p.scheme,areaHa:p.areaHa,spatial:p.spatial})));
+          console.log('HTR:', s.profiles.filter(p => p.scheme === 'Hutan Tanaman Rakyat').map(p => ({key:p.key,decree:p.decree,name:p.name,regency:p.regency,areaHa:p.areaHa,spatial:p.spatial})));
           if (s.totals.profileCount !== 189) throw new Error(`Expected 189 profiles, got ${s.totals.profileCount}`);
           if (Math.abs(s.totals.totalAreaHa - 177507.4) > 0.01) throw new Error(`Unexpected total area ${s.totals.totalAreaHa}`);
           const generic = s.schemes.find(x => /Persetujuan Perhutanan Sosial|Belum terklasifikasi/i.test(x.scheme));
