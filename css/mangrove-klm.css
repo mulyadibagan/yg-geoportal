@@ -38,8 +38,6 @@
 .boundary-assurance{display:flex;gap:15px;align-items:start;margin-top:12px;padding:15px 17px;border-left:4px solid var(--green);border-radius:8px;background:#edf7f3}
 .boundary-assurance strong{white-space:nowrap;font-size:11px}
 .boundary-assurance p{margin:0;color:#526c67;font-size:10px;line-height:1.55}
-.klm-label{border:0;background:transparent;box-shadow:none;color:#073f3b;font-size:10px;font-weight:900;text-shadow:0 1px 2px #fff,0 0 4px #fff}
-.leaflet-tooltip.klm-label:before{display:none}
 .transition-table table{min-width:900px}.transition-table td{white-space:nowrap}.transition-table td small{color:var(--muted)}.transition-table .analysis-value{background:#edf7f3;color:#075b53;font-weight:800}.transition-caveat{margin:11px 0 0;color:var(--muted);font-size:10px;line-height:1.6}
 @media(max-width:1020px){.klm-cards{grid-template-columns:1fr}}
 @media(max-width:680px){.klm-map-wrap,.klm-workspace{min-height:430px}.boundary-assurance{flex-direction:column}.boundary-assurance strong{white-space:normal}.klm-baseline{grid-template-columns:1fr}.klm-baseline strong{font-size:19px}.klm-cluster-heading{align-items:start;flex-direction:column}.klm-card-stats{grid-template-columns:1fr 1fr}}

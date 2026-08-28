@@ -2,7 +2,7 @@
   'use strict';
   const fmt=(value,digits=2)=>new Intl.NumberFormat('id-ID',{minimumFractionDigits:digits,maximumFractionDigits:digits}).format(Number(value||0));
   const safe=value=>String(value??'').replace(/[&<>'"]/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
-  const state={data:null,map:null,markers:new Map(),selected:null};
+  const state={data:null,map:null,selected:null};
   const cards=document.getElementById('klm-cards');
   const status=document.getElementById('klm-map-status');
   const baseline=document.getElementById('klm-baseline');
@@ -18,8 +18,6 @@
     const [west,south,east,north]=klm.bbox;
     state.map.fitBounds([[south,west],[north,east]],{padding:[25,25],maxZoom:10});
     selectKlm(klm);
-    const marker=state.markers.get(klm.code);
-    if(marker)marker.openTooltip();
   }
 
   function renderCards(klms){
@@ -82,11 +80,6 @@
       L.control.layers({'Citra satelit':satellite,'Peta jalan':streets},overlays,{collapsed:true,position:'topright'}).addTo(state.map);
       functionLegend.innerHTML=`<b>POLIGON FUNGSI INDIKATIF</b>${state.data.function_layers.map(item=>`<span><i style="background:${safe(item.color)}"></i>${safe(item.label)}</span>`).join('')}<span class="boundary-key"><i style="border-top-color:${safe(boundaryConfig.color||'#7c3aed')}"></i>${safe(boundaryConfig.label||'Batas KLM sumber')}</span><small>Hijau menunjukkan lindung indikatif, jingga menunjukkan budidaya indikatif, dan garis ungu tipis menunjukkan batas KLM.</small>`;
       state.map.fitBounds(bounds,{padding:[12,12]});
-      state.data.klms.forEach(klm=>{
-        const marker=L.circleMarker(klm.label_point,{radius:7,color:'#fff',weight:2,fillColor:'#073f3b',fillOpacity:1}).addTo(state.map).bindTooltip(klm.name.replace(/^KLM\s+/i,''),{permanent:true,direction:'top',className:'klm-label',offset:[0,-7]});
-        marker.on('click',()=>focusKlm(klm));
-        state.markers.set(klm.code,marker);
-      });
       renderCards(state.data.klms);
       renderBaseline(state.data);
       renderOverview(state.data);
