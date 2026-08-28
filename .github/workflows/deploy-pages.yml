@@ -12,6 +12,7 @@ on:
       - Update Hotspot History
       - Update Master Database snapshot
       - Rebuild Full Village Analytics
+      - Rebuild Social Forestry Summary
     types:
       - completed
 
