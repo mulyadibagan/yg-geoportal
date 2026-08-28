@@ -1,0 +1,51 @@
+name: Rebuild Social Forestry Summary
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'data/social-forestry-details.json'
+      - 'data/PERHUTANAN_SOSIAL_RIAU.geojson'
+      - 'tools/build-social-forestry-summary.js'
+      - '.github/workflows/rebuild-social-forestry-summary.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Rebuild summary
+        run: node tools/build-social-forestry-summary.js
+
+      - name: Validate summary
+        run: |
+          node - <<'NODE'
+          const fs = require('fs');
+          const s = JSON.parse(fs.readFileSync('data/social-forestry-summary.json','utf8'));
+          if (s.totals.profileCount !== 189) throw new Error(`Expected 189 profiles, got ${s.totals.profileCount}`);
+          if (Math.abs(s.totals.totalAreaHa - 177507.4) > 0.01) throw new Error(`Unexpected total area ${s.totals.totalAreaHa}`);
+          const generic = s.schemes.find(x => /Persetujuan Perhutanan Sosial|Belum terklasifikasi/i.test(x.scheme));
+          if (generic) throw new Error(`Generic scheme remains: ${generic.scheme}`);
+          const htr = s.schemes.find(x => x.scheme === 'Hutan Tanaman Rakyat');
+          if (!htr || htr.profileCount !== 4) throw new Error(`Expected 4 HTR profiles, got ${htr ? htr.profileCount : 0}`);
+          console.log('Validated:', s.totals, s.schemes.map(x => [x.scheme,x.profileCount,x.totalAreaHa]));
+          NODE
+
+      - name: Commit rebuilt summary
+        run: |
+          if git diff --quiet -- data/social-forestry-summary.json; then
+            echo 'Summary already current.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/social-forestry-summary.json
+          git commit -m 'Rebuild social forestry summary'
+          git push
