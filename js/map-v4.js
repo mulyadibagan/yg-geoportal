@@ -940,6 +940,21 @@ L.control.scale({
     const monitoringAction = actionLinks
       ? '<div class="yg-popup-actions">' + actionLinks + '</div>'
       : "";
+    const interventionVillageKey = config.id === "desa_intervensi"
+      ? villageProfileKey(feature)
+      : "";
+    const villageProfileAction = interventionVillageKey
+      ? (
+          '<div class="yg-popup-actions yg-popup-profile-action">' +
+            '<a class="yg-popup-monitoring-link yg-popup-profile-link" ' +
+              'target="_blank" rel="noopener noreferrer" ' +
+              'href="village-profile.html?key=' +
+                encodeURIComponent(interventionVillageKey) + '">' +
+              'Buka Profil &amp; Analisis Desa&nbsp; →' +
+            '</a>' +
+          '</div>'
+        )
+      : "";
 
     const floraVillage = String(
       props.Desa || props.Village || props.Lokasi || props.Location || ""
@@ -985,6 +1000,7 @@ L.control.scale({
         '</div>' +
         '<div class="popup-body">' +
           rows + gallery + sdgHtml + floraAction + monitoringAction +
+          villageProfileAction +
         '</div>' +
       '</div>'
     );
@@ -1259,6 +1275,16 @@ L.control.scale({
     return typeof raw === "number" && Number.isInteger(raw)
       ? raw.toFixed(1)
       : String(raw == null ? "" : raw).trim().toLowerCase();
+  }
+
+  function villageProfileKey(feature) {
+    const props = feature && feature.properties || {};
+    return [
+      props.WADMKD || props.Desa || props.NAMOBJ ||
+        props.Nama_Desa || props.NAMA_DESA,
+      props.WADMKC || props.Kecamatan || props.NAMA_KEC,
+      props.WADMKK || props.Kabupaten || props.NAMA_KAB
+    ].filter(Boolean).join("|").trim().toLowerCase();
   }
 
   function socialForestryDocumentClass(feature) {
@@ -1554,6 +1580,21 @@ L.control.scale({
           '</div>'
         )
       : "";
+    const administrativeVillageKey = config.type === "village_boundary"
+      ? villageProfileKey(feature)
+      : "";
+    const administrativeVillageAction = administrativeVillageKey
+      ? (
+          '<div class="yg-popup-actions yg-popup-profile-action">' +
+            '<a class="yg-popup-monitoring-link yg-popup-profile-link" ' +
+              'target="_blank" rel="noopener noreferrer" ' +
+              'href="village-profile.html?source=administrative&amp;key=' +
+                encodeURIComponent(administrativeVillageKey) + '">' +
+              'Buka Profil &amp; Analisis Desa&nbsp; →' +
+            '</a>' +
+          '</div>'
+        )
+      : "";
 
     return (
       '<div class="popup-card">' +
@@ -1562,7 +1603,8 @@ L.control.scale({
           '<strong>' + escapeHtml(config.label) + '</strong>' +
           '<span>Layer referensi — tidak dihitung dalam dashboard</span>' +
         '</div>' +
-        '<div class="popup-body">' + rows + socialForestryAction + '</div>' +
+        '<div class="popup-body">' + rows + socialForestryAction +
+          administrativeVillageAction + '</div>' +
       '</div>'
     );
   }
