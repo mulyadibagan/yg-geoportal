@@ -1,7 +1,7 @@
 {
   "generated_at": "2026-08-28",
   "scope": "Tiga poligon KLM sumber untuk Provinsi Riau",
-  "boundary_policy": "Irisan analitis menggunakan geometri KLM sumber secara penuh tanpa perubahan. Garis batas web digeneralisasi ringan untuk tampilan; poligon fungsi memakai raster dari hasil analisis.",
+  "boundary_policy": "Irisan analitis dan luas menggunakan geometri sumber secara penuh. Garis batas KLM digeneralisasi ringan dan poligon fungsi didisolve serta disederhanakan 0,1 meter hanya untuk tampilan web.",
   "source": {
     "dataset": "Peta Indikatif Kesatuan Lanskap Mangrove",
     "feature_count": 3,
@@ -83,113 +83,21 @@
     {
       "id": "analysis_lindung",
       "label": "Fungsi lindung indikatif — TRUE + skenario REVIEW",
-      "images": [
-        {
-          "path": "assets/mangrove-function-analysis-lindung-14-01.png",
-          "bounds": [
-            [
-              -0.8089619,
-              102.67999925
-            ],
-            [
-              0.76498829,
-              103.83457905
-            ]
-          ],
-          "width": 3600,
-          "height": 3000,
-          "klm": "14.01"
-        },
-        {
-          "path": "assets/mangrove-function-analysis-lindung-14-02.png",
-          "bounds": [
-            [
-              1.6187767,
-              100.2941865
-            ],
-            [
-              2.56452059,
-              101.80907786
-            ]
-          ],
-          "width": 3600,
-          "height": 3000,
-          "klm": "14.02"
-        },
-        {
-          "path": "assets/mangrove-function-analysis-lindung-14-03.png",
-          "bounds": [
-            [
-              0.6681023,
-              101.7186973
-            ],
-            [
-              1.68247598,
-              103.14095833
-            ]
-          ],
-          "width": 3600,
-          "height": 3000,
-          "klm": "14.03"
-        }
-      ],
+      "vector_path": "data/mangrove-function-lindung-indikatif.geojson",
       "color": "#19805a",
+      "outline_color": "#0c5b3e",
+      "fill_opacity": 0.57,
+      "weight": 0.7,
       "visible": true
     },
     {
       "id": "analysis_budidaya",
       "label": "Fungsi budidaya indikatif",
-      "images": [
-        {
-          "path": "assets/mangrove-function-analysis-budidaya-14-01.png",
-          "bounds": [
-            [
-              -0.8089619,
-              102.67999925
-            ],
-            [
-              0.76498829,
-              103.83457905
-            ]
-          ],
-          "width": 3600,
-          "height": 3000,
-          "klm": "14.01"
-        },
-        {
-          "path": "assets/mangrove-function-analysis-budidaya-14-02.png",
-          "bounds": [
-            [
-              1.6187767,
-              100.2941865
-            ],
-            [
-              2.56452059,
-              101.80907786
-            ]
-          ],
-          "width": 3600,
-          "height": 3000,
-          "klm": "14.02"
-        },
-        {
-          "path": "assets/mangrove-function-analysis-budidaya-14-03.png",
-          "bounds": [
-            [
-              0.6681023,
-              101.7186973
-            ],
-            [
-              1.68247598,
-              103.14095833
-            ]
-          ],
-          "width": 3600,
-          "height": 3000,
-          "klm": "14.03"
-        }
-      ],
+      "vector_path": "data/mangrove-function-budidaya-indikatif.geojson",
       "color": "#e09723",
+      "outline_color": "#af690a",
+      "fill_opacity": 0.48,
+      "weight": 0.6,
       "visible": true
     }
   ],

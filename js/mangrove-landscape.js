@@ -60,12 +60,19 @@
       const streets=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap contributors'});
       const bounds=state.data.image.bounds;
       const overlays={};
-      state.data.function_layers.forEach(item=>{
-        const images=(item.images||[{path:item.path,bounds}]).map(image=>L.imageOverlay(`${image.path}?v=20260828-fl02roadqa1`,image.bounds||bounds,{opacity:1,interactive:false}));
-        const layer=L.layerGroup(images);
+      for(const item of state.data.function_layers){
+        let layer;
+        if(item.vector_path){
+          const vectorResponse=await fetch(`${item.vector_path}?v=20260828-functionvector1`,{cache:'no-store'});
+          if(!vectorResponse.ok)throw new Error(`Poligon ${item.label} tidak tersedia`);
+          layer=L.geoJSON(await vectorResponse.json(),{interactive:false,style:{color:item.outline_color||item.color,weight:Number(item.weight||.7),opacity:.9,fillColor:item.color,fillOpacity:Number(item.fill_opacity||.5),lineCap:'round',lineJoin:'round'}});
+        }else{
+          const images=(item.images||[{path:item.path,bounds}]).map(image=>L.imageOverlay(`${image.path}?v=20260828-fl02roadqa1`,image.bounds||bounds,{opacity:1,interactive:false}));
+          layer=L.layerGroup(images);
+        }
         overlays[item.label]=layer;
         if(item.visible)layer.addTo(state.map);
-      });
+      }
       const boundaryConfig=state.data.boundary_layer||{};
       let boundaryLayer;
       if(boundaryConfig.vector_path){

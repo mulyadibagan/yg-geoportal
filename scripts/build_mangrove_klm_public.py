@@ -51,11 +51,15 @@ ADMIN_PATH = SITE / "data" / "batas_administrasi_desa_riau.geojson"
 SUMMARY_PATH = SITE / "data" / "mangrove-klm-summary.json"
 IMAGE_PATH = SITE / "assets" / "mangrove-klm-boundaries.png"
 VECTOR_BOUNDARY_PATH = SITE / "data" / "mangrove-klm-boundaries.geojson"
+FUNCTION_LINDUNG_VECTOR_PATH = SITE / "data" / "mangrove-function-lindung-indikatif.geojson"
+FUNCTION_BUDIDAYA_VECTOR_PATH = SITE / "data" / "mangrove-function-budidaya-indikatif.geojson"
 FUNCTION_IMAGE_SIZE = (3600, 3000)
+FUNCTION_DISPLAY_SIMPLIFY_M = 0.1
 
 WGS84 = CRS.from_epsg(4326)
 AREA_CRS = CRS.from_epsg(6933)
 TO_AREA = Transformer.from_crs(WGS84, AREA_CRS, always_xy=True).transform
+FROM_AREA = Transformer.from_crs(AREA_CRS, WGS84, always_xy=True).transform
 COLORS = {
     "14.01": (15, 126, 107, 80),
     "14.02": (22, 113, 173, 80),
@@ -82,7 +86,13 @@ def polygonal(geometry):
         geometry = make_valid(geometry)
     if isinstance(geometry, (Polygon, MultiPolygon)):
         return geometry
-    parts = [part for part in getattr(geometry, "geoms", []) if isinstance(part, (Polygon, MultiPolygon))]
+    parts = []
+    for part in getattr(geometry, "geoms", []):
+        candidate = polygonal(part)
+        if isinstance(candidate, Polygon):
+            parts.append(candidate)
+        elif isinstance(candidate, MultiPolygon):
+            parts.extend(candidate.geoms)
     return MultiPolygon(parts) if parts else GeometryCollection()
 
 
@@ -347,6 +357,55 @@ def render_vector_boundaries(records, path: Path):
     path.write_text(json.dumps(payload, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
 
 
+def render_function_vectors(parts_by_klm, water_parts_by_klm, path: Path, function_id: str):
+    features = []
+    for code in sorted(parts_by_klm):
+        projected_parts = [
+            polygonal(transform(TO_AREA, geometry))
+            for geometry in parts_by_klm[code]
+            if geometry and not geometry.is_empty
+        ]
+        full_geometry = polygonal(unary_union(projected_parts))
+        water_parts = [
+            polygonal(transform(TO_AREA, geometry))
+            for geometry in water_parts_by_klm[code]
+            if geometry and not geometry.is_empty
+        ]
+        if water_parts and not full_geometry.is_empty:
+            full_geometry = polygonal(full_geometry.difference(unary_union(water_parts)))
+        if full_geometry.is_empty:
+            continue
+        display_geometry = polygonal(full_geometry.simplify(FUNCTION_DISPLAY_SIMPLIFY_M, preserve_topology=True))
+        original_area = full_geometry.area
+        display_area = display_geometry.area
+        area_difference_percent = (
+            abs(display_area - original_area) / original_area * 100
+            if original_area else 0.0
+        )
+        web_geometry = mapping(transform(FROM_AREA, display_geometry))
+        web_geometry["coordinates"] = rounded_coordinates(web_geometry["coordinates"])
+        features.append({
+            "type": "Feature",
+            "properties": {
+                "klm": code,
+                "function": function_id,
+                "display_simplification_m": FUNCTION_DISPLAY_SIMPLIFY_M,
+                "display_area_difference_percent": round(area_difference_percent, 8),
+            },
+            "geometry": web_geometry,
+        })
+    payload = {
+        "type": "FeatureCollection",
+        "display_policy": (
+            "Dissolved vector for web display, simplified by 0.1 metre. "
+            "Published hectare values are calculated separately from full-precision analysis geometry."
+        ),
+        "features": features,
+    }
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+
+
 def main():
     print("[1/5] Loading KLM source", flush=True)
     reader = shapefile.Reader(str(KLM_PATH), encoding="utf-8", encodingErrors="replace")
@@ -553,17 +612,8 @@ def main():
     image_bounds, _projected_bounds, _image_size = render_boundaries(klms, IMAGE_PATH)
     boundary_images = render_detailed_boundaries(klms)
     render_vector_boundaries(klms, VECTOR_BOUNDARY_PATH)
-    function_images = {"analysis_lindung": [], "analysis_budidaya": []}
-    for klm in sorted(klms, key=lambda item: item["code"]):
-        code = klm["code"]
-        slug = code.replace(".", "-")
-        klm_image_bounds, klm_projected_bounds, klm_image_size = render_context([klm], FUNCTION_IMAGE_SIZE)
-        lindung_path = SITE / "assets" / f"mangrove-function-analysis-lindung-{slug}.png"
-        budidaya_path = SITE / "assets" / f"mangrove-function-analysis-budidaya-{slug}.png"
-        render_geometry_layer(analysis_lindung_parts_by_klm[code], lindung_path, klm_projected_bounds, klm_image_size, (25, 128, 90, 145), (12, 91, 62, 245), 3, water_parts_by_klm[code])
-        render_geometry_layer(analysis_budidaya_parts_by_klm[code], budidaya_path, klm_projected_bounds, klm_image_size, (224, 151, 35, 112), (175, 105, 10, 225), 2, water_parts_by_klm[code])
-        function_images["analysis_lindung"].append({"path": f"assets/{lindung_path.name}", "bounds": klm_image_bounds, "width": klm_image_size[0], "height": klm_image_size[1], "klm": code})
-        function_images["analysis_budidaya"].append({"path": f"assets/{budidaya_path.name}", "bounds": klm_image_bounds, "width": klm_image_size[0], "height": klm_image_size[1], "klm": code})
+    render_function_vectors(analysis_lindung_parts_by_klm, water_parts_by_klm, FUNCTION_LINDUNG_VECTOR_PATH, "LINDUNG_INDIKATIF")
+    render_function_vectors(analysis_budidaya_parts_by_klm, water_parts_by_klm, FUNCTION_BUDIDAYA_VECTOR_PATH, "BUDIDAYA_INDIKATIF")
     public_klms = []
     for klm in sorted(klms, key=lambda item: item["code"]):
         code = klm["code"]
@@ -590,7 +640,7 @@ def main():
     payload = {
         "generated_at": str(date.today()),
         "scope": "Tiga poligon KLM sumber untuk Provinsi Riau",
-        "boundary_policy": "Irisan analitis menggunakan geometri KLM sumber secara penuh tanpa perubahan. Garis batas web digeneralisasi ringan untuk tampilan; poligon fungsi memakai raster dari hasil analisis.",
+        "boundary_policy": "Irisan analitis dan luas menggunakan geometri sumber secara penuh. Garis batas KLM digeneralisasi ringan dan poligon fungsi didisolve serta disederhanakan 0,1 meter hanya untuk tampilan web.",
         "source": {
             "dataset": "Peta Indikatif Kesatuan Lanskap Mangrove",
             "feature_count": len(klms),
@@ -611,8 +661,8 @@ def main():
             "images": boundary_images,
         },
         "function_layers": [
-            {"id": "analysis_lindung", "label": "Fungsi lindung indikatif — TRUE + skenario REVIEW", "images": function_images["analysis_lindung"], "color": "#19805a", "visible": True},
-            {"id": "analysis_budidaya", "label": "Fungsi budidaya indikatif", "images": function_images["analysis_budidaya"], "color": "#e09723", "visible": True},
+            {"id": "analysis_lindung", "label": "Fungsi lindung indikatif — TRUE + skenario REVIEW", "vector_path": "data/mangrove-function-lindung-indikatif.geojson", "color": "#19805a", "outline_color": "#0c5b3e", "fill_opacity": 0.57, "weight": 0.7, "visible": True},
+            {"id": "analysis_budidaya", "label": "Fungsi budidaya indikatif", "vector_path": "data/mangrove-function-budidaya-indikatif.geojson", "color": "#e09723", "outline_color": "#af690a", "fill_opacity": 0.48, "weight": 0.6, "visible": True},
         ],
         "statewide": {**statewide_metrics, "unit_count": len(parsed_units), "regency_count": len(regency_names)},
         "totals": {**scoped_metrics,
