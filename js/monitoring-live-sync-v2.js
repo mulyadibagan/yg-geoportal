@@ -79,10 +79,23 @@
 
   function targetObjectId(props) {
     const target = parsed(props.targetFeatureProperties) || {};
-    return String(
-      props.Target_Object_ID_Current || props.targetObjectId ||
-      props.Target_Object_ID || target.Object_ID || target.objectId || ""
-    ).trim();
+    const candidates = [
+      props.Target_Object_ID_Current,
+      target.Object_ID,
+      target.objectId,
+      props.targetObjectId,
+      props.Target_Object_ID
+    ].map(value => String(value || "").trim()).filter(Boolean);
+
+    /*
+     * targetObjectId/Target_Object_ID pada laporan lama dapat berisi ID
+     * geometry sementara (area_mangrove:auto:*). Ketika snapshot target sudah
+     * membawa Object_ID permanen, selalu pakai ID itu agar monitoring tetap
+     * menempel ke polygon resmi setelah data spasial diperbarui.
+     */
+    return candidates.find(value =>
+      normalized(value).startsWith("mangrove-")
+    ) || candidates[0] || "";
   }
 
   function apply(data) {
@@ -130,7 +143,10 @@
     if (activeRequest) return activeRequest;
     activeRequest = (async () => {
       const controller = new AbortController();
-      const timeout = window.setTimeout(() => controller.abort(), 15000);
+      // Apps Script kadang memerlukan lebih dari 15 detik saat cold start.
+      // Fallback tetap tampil segera, tetapi respons 25 laporan tidak boleh
+      // dibatalkan sebelum sinkronisasi lengkap selesai.
+      const timeout = window.setTimeout(() => controller.abort(), 45000);
       try {
         const response = await fetch(API + "&t=" + Date.now(), {
           cache: "no-store",

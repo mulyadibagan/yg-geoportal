@@ -12,7 +12,8 @@
     'area_mangrove:auto:1601647125':'MANGROVE-SEPAHAT-PHASE-III-2025-001'
   };
   var REPORT_CORRECTIONS={
-    'YG-20260717-205241-378':{aliveCount:2730,deadOrDamagedCount:600,survivalPercent:82}
+    'YG-20260717-205241-378':{aliveCount:2730,deadOrDamagedCount:600,survivalPercent:82},
+    'YG-20260826-135016-915':{aliveCount:600,deadOrDamagedCount:0,survivalPercent:100}
   };
   var PUP1_OBJECT_ID='COMMUNITY-YG-20260820-190119-864';
   var PUP1_TREES=[
@@ -789,12 +790,34 @@
     return null;
   }
 
-  function loadData(){
+  function loadJsonp(){
     var script=document.createElement('script');
     script.src=API+'&callback='+CALLBACK+'&t='+Date.now();
     script.async=true;
     script.onerror=function(){renderNoData('Data tidak dapat dimuat.');};
     document.head.appendChild(script);
+  }
+
+  function loadData(){
+    if(typeof fetch!=='function'){
+      loadJsonp();
+      return;
+    }
+    var controller=typeof AbortController==='function'?new AbortController():null;
+    var timeout=window.setTimeout(function(){
+      if(controller)controller.abort();
+    },45000);
+    fetch(API+'&t='+Date.now(),{
+      cache:'no-store',
+      signal:controller?controller.signal:undefined
+    }).then(function(response){
+      if(!response.ok)throw new Error('HTTP '+response.status);
+      return response.json();
+    }).then(applyData).catch(function(){
+      loadJsonp();
+    }).then(function(){
+      window.clearTimeout(timeout);
+    });
   }
 
   function applyData(data){

@@ -282,6 +282,7 @@ L.control.scale({
   const layerObjects = {};
   const layerConfigs = {};
   const pendingLiveFeatures = {};
+  const monitoringReportsByTarget = new Map();
   const searchItems = [];
   let allBounds = L.latLngBounds([]);
   let rawFeatures = [];
@@ -972,12 +973,28 @@ L.control.scale({
       !["desa_intervensi", "community_reports"].includes(config.id) &&
       Boolean(objectId) &&
       Boolean(actionLayerId);
+    const existingMonitoringIds = !isMonitoring && config.id === "area_mangrove"
+      ? monitoringReportsByTarget.get(normalizedMatchValue(objectId))
+      : null;
+    const existingMonitoringCount = existingMonitoringIds
+      ? existingMonitoringIds.size
+      : 0;
+    const monitoringDetailUrl = existingMonitoringCount
+      ? 'monitoring-detail.html?object=' + encodeURIComponent(objectId) +
+        '&title=' + encodeURIComponent(getObjectName(feature))
+      : "";
+    const existingMonitoringLink = monitoringDetailUrl
+      ? '<a class="yg-popup-monitoring-link yg-popup-existing-monitoring" href="' +
+        escapeHtml(monitoringDetailUrl) + '">Lihat Monitoring (' +
+        formatNumber(existingMonitoringCount) + ')</a>'
+      : "";
     const buildReportLink = (mode, label) => {
       const reportUrl = 'report.html?type=' + encodeURIComponent(mode) + '&layer=' + encodeURIComponent(actionLayerId) + '&object=' + encodeURIComponent(objectId);
       const payload = JSON.stringify({ type: mode, layer: actionLayerId, object: objectId });
       return '<a class="yg-popup-monitoring-link" href="' + escapeHtml(reportUrl) + '" onclick="try{sessionStorage.setItem(\'ygPendingReportAction\', ' + JSON.stringify(payload) + ');}catch(e){}window.location.assign(' + JSON.stringify(reportUrl) + '); return false;">' + escapeHtml(label) + '</a>';
     };
     const actionLinks = [
+      existingMonitoringLink,
       canAddPhoto
         ? buildReportLink("photo", "Tambah Foto")
         : "",
@@ -1291,12 +1308,48 @@ L.control.scale({
     return group;
   }
 
+  function refreshAreaMangrovePopups() {
+    const areaGroup = layerObjects.area_mangrove;
+    if (!areaGroup || typeof areaGroup.eachLayer !== "function") return;
+    const config = getLayerConfig("area_mangrove");
+    areaGroup.eachLayer(layer => {
+      if (
+        !layer || !layer.feature ||
+        typeof layer.setPopupContent !== "function"
+      ) return;
+      layer.setPopupContent(buildPopup(layer.feature, config));
+    });
+  }
+
+  function indexMonitoringReports(features) {
+    monitoringReportsByTarget.clear();
+    (features || []).forEach(feature => {
+      const props = feature && feature.properties || {};
+      const reportId = String(
+        props.reportId || props.Source_Report_ID || props.Object_ID || ""
+      ).trim();
+      if (!reportId) return;
+      monitoringTargetObjectIds(props).forEach(targetId => {
+        const key = normalizedMatchValue(targetId);
+        if (!key) return;
+        if (!monitoringReportsByTarget.has(key)) {
+          monitoringReportsByTarget.set(key, new Set());
+        }
+        monitoringReportsByTarget.get(key).add(reportId);
+      });
+    });
+    refreshAreaMangrovePopups();
+  }
+
   function addLiveFeatures(layerId, features) {
     const group = layerObjects[layerId];
     if (!Array.isArray(features) || !features.length) return 0;
     if (!group) {
       pendingLiveFeatures[layerId] = features;
       return 0;
+    }
+    if (layerId === "monitoring_reports") {
+      indexMonitoringReports(features);
     }
 
     const incomingById = new Map();
@@ -3031,17 +3084,19 @@ L.control.scale({
       changes = {};
     }
 
-    const storedTargetId = String(
-      props.Target_Object_ID_Current ||
-      props.targetObjectId ||
-      props.Target_Object_ID ||
-      targetProperties.Object_ID ||
-      targetProperties.objectId ||
-      changes.Target_Object_ID_Current ||
-      changes.targetObjectId ||
-      changes.Target_Object_ID ||
-      ""
-    ).trim();
+    const storedTargetCandidates = [
+      props.Target_Object_ID_Current,
+      targetProperties.Object_ID,
+      targetProperties.objectId,
+      changes.Target_Object_ID_Current,
+      changes.targetObjectId,
+      changes.Target_Object_ID,
+      props.targetObjectId,
+      props.Target_Object_ID
+    ].map(value => String(value || "").trim()).filter(Boolean);
+    const storedTargetId = storedTargetCandidates.find(
+      candidate => Boolean(canonicalMangroveObjectId(candidate))
+    ) || storedTargetCandidates[0] || "";
 
     const reportId = String(
       props.reportId || props.Source_Report_ID || props.Monitoring_ID || ""
