@@ -14,6 +14,11 @@ for (const key of Object.keys(details)) {
   if (duplicateIds.has(detail.driveFolderId)) { delete details[key]; continue; }
   const source = byFolder.get(detail.driveFolderId);
   if (!source) continue;
+  // Folder kabupaten in the audited Drive tree is authoritative for the
+  // administrative location.  Preserve richer profile values, but fill the
+  // common gaps left by OCR-only profiles.
+  if (!detail.regency && source.regency) detail.regency = source.regency;
+  if (!detail.province) detail.province = "Riau";
   const existing = Array.isArray(detail.documents) ? detail.documents.filter(Boolean) : [];
   const retained = existing.filter(doc => !/^legalitas$/i.test(String(doc.category || "")));
   detail.documents = retained.concat(source.documents.map(doc => ({label:doc.label,category:doc.category,url:doc.url})));
@@ -36,4 +41,3 @@ const regencyByCode={"1401":"Kampar","1402":"Indragiri Hulu","1403":"Bengkalis",
 for(const feature of geo.features||[]){const p=feature&&feature.properties||{};const code=String(p.KODE_KAB||p.KD_KAB||p.KODEKAB||"").trim();if(regencyByCode[code])p.NAMA_KAB=regencyByCode[code]}
 fs.writeFileSync(detailsPath,JSON.stringify(details,null,2)+"\n");
 fs.writeFileSync(geoPath,JSON.stringify(geo)+"\n");
-
