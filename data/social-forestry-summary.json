@@ -1,13 +1,13 @@
 {
-  "generatedAt": "2026-08-28T05:11:16.977Z",
+  "generatedAt": "2026-08-28T19:25:41.826Z",
   "methodology": "Satu PS dihitung sekali berdasarkan nomor SK. Luas SK diprioritaskan; atribut polygon dan kalkulasi geometri digunakan sebagai cadangan.",
   "totals": {
     "profileCount": 189,
     "areaKnownCount": 189,
     "areaMissingCount": 0,
     "totalAreaHa": 177507.4,
-    "documentAreaKnownCount": 158,
-    "documentAreaHa": 153841.27,
+    "documentAreaKnownCount": 160,
+    "documentAreaHa": 157831.27,
     "spatialAreaKnownCount": 172,
     "spatialAreaHa": 164271.04
   },
@@ -29,21 +29,21 @@
       "areaKnownCount": 48,
       "areaMissingCount": 0,
       "totalAreaHa": 92292.27,
-      "documentAreaKnownCount": 41,
-      "documentAreaHa": 79654.54,
+      "documentAreaKnownCount": 42,
+      "documentAreaHa": 83129.54,
       "spatialAreaKnownCount": 46,
       "spatialAreaHa": 90141
     },
     {
       "scheme": "Hutan Tanaman Rakyat",
-      "profileCount": 3,
-      "areaKnownCount": 3,
+      "profileCount": 4,
+      "areaKnownCount": 4,
       "areaMissingCount": 0,
-      "totalAreaHa": 1577,
-      "documentAreaKnownCount": 3,
-      "documentAreaHa": 1577,
-      "spatialAreaKnownCount": 0,
-      "spatialAreaHa": 0
+      "totalAreaHa": 2092,
+      "documentAreaKnownCount": 4,
+      "documentAreaHa": 2092,
+      "spatialAreaKnownCount": 1,
+      "spatialAreaHa": 515
     },
     {
       "scheme": "Hutan Adat",
@@ -55,17 +55,6 @@
       "documentAreaHa": 463.8,
       "spatialAreaKnownCount": 2,
       "spatialAreaHa": 463.8
-    },
-    {
-      "scheme": "Persetujuan Perhutanan Sosial",
-      "profileCount": 1,
-      "areaKnownCount": 1,
-      "areaMissingCount": 0,
-      "totalAreaHa": 515,
-      "documentAreaKnownCount": 0,
-      "documentAreaHa": 0,
-      "spatialAreaKnownCount": 1,
-      "spatialAreaHa": 515
     }
   ],
   "profiles": [
@@ -2326,20 +2315,20 @@
       "areaSource": "arsip dokumen"
     },
     {
-      "key": "sk:8947 tahun 2024",
-      "decree": "8947 Tahun 2024",
+      "key": "drive-audit:indragiri-hilir-lembaga-pengelola-hutan-desa-mabloe-sejahtera",
+      "decree": "SK.130/MENLHK/SETJEN/PKL.0/2/2017",
       "decreeNorm": "8947 tahun 2024",
       "signature": "sungai bela sungai bela indragiri hilir",
-      "name": "Sungai Bela",
+      "name": "LEMBAGA PENGELOLA HUTAN DESA MABLOE SEJAHTERA",
       "regency": "Indragiri Hilir",
       "scheme": "Hutan Desa",
       "spatial": true,
-      "documentAreaHa": null,
-      "documentAreaSource": "belum tersedia",
+      "documentAreaHa": 3475,
+      "documentAreaSource": "SK",
       "spatialAreaHa": 3475,
       "spatialAreaSource": "atribut polygon",
       "areaHa": 3475,
-      "areaSource": "atribut polygon"
+      "areaSource": "SK"
     },
     {
       "key": "917 tahun 2024",
@@ -2806,20 +2795,20 @@
       "areaSource": "SK"
     },
     {
-      "key": "sk:522 dishut 284 2011",
-      "decree": "522/DISHUT/284/2011",
+      "key": "drive-audit:kampar-kud-sepakat-jaya",
+      "decree": "SK.62/MENHUT-II/2011",
       "decreeNorm": "522 dishut 284 2011",
       "signature": "kud sepakat jaya buluh cina kampar",
       "name": "KUD SEPAKAT JAYA",
       "regency": "Kampar",
-      "scheme": "Persetujuan Perhutanan Sosial",
+      "scheme": "Hutan Tanaman Rakyat",
       "spatial": true,
-      "documentAreaHa": null,
-      "documentAreaSource": "belum tersedia",
+      "documentAreaHa": 515,
+      "documentAreaSource": "SK",
       "spatialAreaHa": 515,
       "spatialAreaSource": "atribut polygon",
       "areaHa": 515,
-      "areaSource": "atribut polygon"
+      "areaSource": "SK"
     },
     {
       "key": "2941.0",
