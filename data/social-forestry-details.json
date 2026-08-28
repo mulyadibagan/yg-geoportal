@@ -2099,7 +2099,7 @@
     "decree": "",
     "areaHa": "",
     "source": "Audit Drive Perhutanan Sosial YG",
-    "spatialStatus": "nonspatial",
+    "spatialStatus": "spatial",
     "documents": [
       {
         "label": "PETA KUD SEPAKAT JAYA",
@@ -2113,8 +2113,12 @@
       }
     ],
     "driveFolderId": "1-qHjzr4Xj_z7ZoGefHtPV7OvU8BVDU_u",
+<<<<<<< Updated upstream
     "skDocumentStatus": "available",
     "skDocumentCheckedAt": "2026-08-28"
+=======
+    "spatialObjectKey": "522/dishut/284/2011"
+>>>>>>> Stashed changes
   },
   "sk.3072/menlhk-pskl/pkps/psl.0/5/2018": {
     "name": "LPHD KENAGARIAN PANGKALAN KAPAS",
@@ -2574,7 +2578,7 @@
     "decree": "",
     "areaHa": "",
     "source": "Audit Drive Perhutanan Sosial YG",
-    "spatialStatus": "nonspatial",
+    "spatialStatus": "spatial",
     "documents": [
       {
         "label": "SK KTH MANGROVE LAKSAMANA",
@@ -2586,7 +2590,8 @@
         "category": "Peta",
         "url": "https://drive.google.com/file/d/1TRl-dw8jL-5gm6hQEZaMGwo3-DqORz73/view?usp=drivesdk"
       }
-    ]
+    ],
+    "spatialObjectKey": "10153 tahun 2024"
   },
   "sk 11326 tahun 2024": {
     "name": "KTH BAGAN BESAR JAYA",
@@ -2944,7 +2949,7 @@
     "decree": "",
     "areaHa": "",
     "source": "Audit Drive Perhutanan Sosial YG",
-    "spatialStatus": "nonspatial",
+    "spatialStatus": "spatial",
     "documents": [
       {
         "label": "PETA LEMBAGA PENGELOLA HUTAN DESA MABLOE SEJAHTERA",
@@ -2958,8 +2963,12 @@
       }
     ],
     "driveFolderId": "1xaQ9T4NX97T54rBa-QokQmjHHWcHqkwv",
+<<<<<<< Updated upstream
     "skDocumentStatus": "available",
     "skDocumentCheckedAt": "2026-08-28"
+=======
+    "spatialObjectKey": "8947 tahun 2024"
+>>>>>>> Stashed changes
   },
   "8473 tahun 2024": {
     "name": "Concong Tengah",
@@ -3319,7 +3328,7 @@
     "decree": "",
     "areaHa": "",
     "source": "Audit Drive Perhutanan Sosial YG",
-    "spatialStatus": "nonspatial",
+    "spatialStatus": "spatial",
     "documents": [
       {
         "label": "SK FLAMBOYAN",
@@ -3336,7 +3345,8 @@
         "category": "Peta",
         "url": "https://drive.google.com/file/d/1LS8GnzFDjVGrQ3ACVo7Alqn-2oivf9-8/view?usp=drivesdk"
       }
-    ]
+    ],
+    "spatialObjectKey": "sk.5143/menlhk-pskl/pkps/psl.0/6/2022"
   },
   "drive-audit:kepulauan-meranti-pecinta-mangrove-kulit-bakau": {
     "name": "PECINTA MANGROVE KULIT BAKAU",
@@ -5296,7 +5306,8 @@
     "decree": "SK.9849/MENLHK-PSKL/PKPS/PSL.0/9/2023",
     "areaHa": 561,
     "source": "Audit Drive Perhutanan Sosial YG",
-    "spatialStatus": "nonspatial",
+    "spatialStatus": "spatial",
+    "spatialObjectKey": "sk.9849/menlhk-pskl/pkps/psl.0/9/2023",
     "documents": [
       {
         "label": "PETA BINA PERTIWI",
