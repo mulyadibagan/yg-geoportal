@@ -1249,6 +1249,18 @@ L.control.scale({
     return {};
   }
 
+  function socialForestryProfileKey(feature) {
+    const props = feature && feature.properties || {};
+    const raw =
+      props.NO_IUPHKM || props.NOMOR_SK || props.NO_SK || props.SK ||
+      props.OBJECTID || props.ID ||
+      [props.NAMA_HKM, props.NAMA_DESA, props.NAMA_KAB]
+        .filter(Boolean).join("|");
+    return typeof raw === "number" && Number.isInteger(raw)
+      ? raw.toFixed(1)
+      : String(raw == null ? "" : raw).trim().toLowerCase();
+  }
+
   function socialForestryDocumentClass(feature) {
     const detail = socialForestryDocumentDetail(feature);
     const documents = Array.isArray(detail.documents)
@@ -1527,6 +1539,22 @@ L.control.scale({
       });
     }
 
+    const socialForestryKey = config.type === "social_forestry"
+      ? socialForestryProfileKey(feature)
+      : "";
+    const socialForestryAction = socialForestryKey
+      ? (
+          '<div class="yg-popup-actions yg-popup-profile-action">' +
+            '<a class="yg-popup-monitoring-link yg-popup-profile-link" ' +
+              'target="_blank" rel="noopener noreferrer" ' +
+              'href="social-forestry-profile.html?key=' +
+                encodeURIComponent(socialForestryKey) + '">' +
+              'Buka Profil &amp; Analisis Areal&nbsp; →' +
+            '</a>' +
+          '</div>'
+        )
+      : "";
+
     return (
       '<div class="popup-card">' +
         '<div class="popup-head" style="background:' +
@@ -1534,7 +1562,7 @@ L.control.scale({
           '<strong>' + escapeHtml(config.label) + '</strong>' +
           '<span>Layer referensi — tidak dihitung dalam dashboard</span>' +
         '</div>' +
-        '<div class="popup-body">' + rows + '</div>' +
+        '<div class="popup-body">' + rows + socialForestryAction + '</div>' +
       '</div>'
     );
   }
