@@ -1376,6 +1376,31 @@ L.control.scale({
 
       const incomingProps = incoming.properties || {};
       layer.feature.properties = Object.assign({}, props, incomingProps);
+      if (incoming.geometry) {
+        const replacement = L.geoJSON(incoming);
+        const replacementLayers = replacement.getLayers();
+        const replacementLayer = replacementLayers[0];
+        if (replacementLayer) {
+          if (
+            typeof layer.setLatLngs === "function" &&
+            typeof replacementLayer.getLatLngs === "function"
+          ) {
+            layer.setLatLngs(replacementLayer.getLatLngs());
+          } else if (
+            typeof layer.setLatLng === "function" &&
+            typeof replacementLayer.getLatLng === "function"
+          ) {
+            layer.setLatLng(replacementLayer.getLatLng());
+          } else if (
+            typeof layer.setLatLng === "function" &&
+            typeof replacementLayer.getBounds === "function" &&
+            replacementLayer.getBounds().isValid()
+          ) {
+            layer.setLatLng(replacementLayer.getBounds().getCenter());
+          }
+          layer.feature.geometry = incoming.geometry;
+        }
+      }
       if (typeof layer.setPopupContent === "function") {
         layer.setPopupContent(
           buildPopup(layer.feature, getLayerConfig(layerId, layer.feature))

@@ -110,29 +110,21 @@
       return false;
     }
 
-    const officialGeometryById = {};
-    api.layerObjects.area_mangrove.eachLayer(layer => {
-      const feature = layer && layer.feature;
-      const props = feature && feature.properties || {};
-      const objectId = String(props.Object_ID || "").trim();
-      if (objectId && feature.geometry) {
-        officialGeometryById[objectId] = feature.geometry;
-      }
-    });
-
     const features = (data && Array.isArray(data.features)
       ? data.features
       : [])
       .map(monitoringFeature)
       .filter(Boolean);
 
+    /*
+     * Geometry laporan adalah cakupan area yang benar-benar dimonitor.
+     * Jangan menggantinya dengan polygon petak tanam sasaran yang lebih kecil:
+     * polygon tanam tetap tersedia pada layer area_mangrove, sedangkan layer
+     * monitoring harus memperlihatkan cakupan pemantauan lapangan yang luas.
+     */
     features.forEach(feature => {
       const props = feature.properties || {};
-      const objectId = targetObjectId(props);
-      if (officialGeometryById[objectId]) {
-        feature.geometry = officialGeometryById[objectId];
-        props.Geometry_Source = "target_object_attribute";
-      }
+      props.Geometry_Source = "monitoring_report";
     });
 
     api.addLiveFeatures("monitoring_reports", features);
