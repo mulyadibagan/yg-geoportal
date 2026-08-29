@@ -157,9 +157,11 @@
     if(ageNode) ageNode.innerHTML = breakdownHtml(summary.postDemographics && summary.postDemographics.ageCategory);
     if(delegateNode) delegateNode.innerHTML = breakdownHtml(summary.postDemographics && summary.postDemographics.delegate);
 
-    participantResponses = Array.from({length:post},function(_,index){
-      return {participantCode:'Peserta ' + (index + 1)};
-    });
+    if(participantResponses.length < post){
+      participantResponses = Array.from({length:post},function(_,index){
+        return participantResponses[index] || {participantCode:'Peserta ' + (index + 1)};
+      });
+    }
     renderParticipantResponses(participantResponses);
   }
 
@@ -241,19 +243,17 @@
       : 'Belum ada peserta post-test yang mengisi.';
     if(toggleBtn) toggleBtn.textContent = staffSession
       ? ((rows || []).length ? 'Daftar detail peserta (' + (rows || []).length.toLocaleString('id-ID') + ')' : 'Daftar detail peserta')
-      : ((rows || []).length ? 'Login staf untuk detail peserta (' + (rows || []).length.toLocaleString('id-ID') + ')' : 'Login staf untuk detail peserta');
+      : ((rows || []).length ? 'Lihat peserta tersamarkan (' + (rows || []).length.toLocaleString('id-ID') + ')' : 'Lihat peserta tersamarkan');
   }
 
   async function loadParticipantNames(){
-    if(!staffSession || !staffSession.token) return;
     try{
       var url=API + '?page=prepost-session-responses&sessionId=' + encodeURIComponent(sessionId) + '&phase=post';
-      url+='&sessionToken='+encodeURIComponent(staffSession.token);
+      if(staffSession && staffSession.token) url+='&sessionToken='+encodeURIComponent(staffSession.token);
       var response = await jsonp(url,'ygLiveResponses_');
       var rows = response && Array.isArray(response.responses) ? response.responses : [];
-      if(!rows.length) return;
       var authorized=response.authorized===true;
-      var total=Math.max(participantResponses.length,rows.length);
+      var total=rows.length || participantResponses.length;
       participantResponses=Array.from({length:total},function(_,index){
         var source=rows[index]||{};
         return{
@@ -278,6 +278,9 @@
         }
       }else{
         if(noteNode)noteNode.textContent='Total responden post-test: '+participantResponses.length.toLocaleString('id-ID')+' · nama dan email disamarkan.';
+        if(accessBox){
+          accessBox.innerHTML='<strong>Daftar peserta tersamarkan</strong><p>Nama dan email ditampilkan secara terbatas. Login staf untuk melihat identitas lengkap, demografi, dan nilai peserta.</p><a class="participant-access-login" href="'+esc(loginUrl())+'">Login staf untuk detail lengkap</a>';
+        }
       }
     }catch(responseError){
       // Daftar anonim dari ringkasan tetap digunakan jika sumber tidak tersedia.
@@ -290,21 +293,17 @@
     if(!btn || !card) return;
 
     btn.addEventListener('click',function(){
-      if(!staffSession || !staffSession.token){
-        window.location.href=loginUrl();
-        return;
-      }
       var isHidden = card.classList.contains('live-card--hidden');
       if(isHidden){
         card.classList.remove('live-card--hidden');
         btn.textContent = participantResponses.length
-          ? 'Sembunyikan daftar tersamarkan (' + participantResponses.length.toLocaleString('id-ID') + ')'
-          : 'Sembunyikan daftar tersamarkan';
+          ? 'Sembunyikan daftar peserta (' + participantResponses.length.toLocaleString('id-ID') + ')'
+          : 'Sembunyikan daftar peserta';
       } else {
         card.classList.add('live-card--hidden');
         btn.textContent = participantResponses.length
-          ? 'Daftar peserta tersamarkan (' + participantResponses.length.toLocaleString('id-ID') + ')'
-          : 'Daftar peserta tersamarkan';
+          ? (staffSession ? 'Daftar detail peserta (' : 'Lihat peserta tersamarkan (') + participantResponses.length.toLocaleString('id-ID') + ')'
+          : (staffSession ? 'Daftar detail peserta' : 'Lihat peserta tersamarkan');
       }
     });
   }
@@ -314,6 +313,11 @@
       applyError('Session ID tidak ditemukan di URL.');
       return;
     }
+    initParticipantToggle();
+    var detailUrl = API + '?page=prepost-session-detail&sessionId=' + encodeURIComponent(sessionId);
+    if(staffSession && staffSession.token) detailUrl += '&sessionToken=' + encodeURIComponent(staffSession.token);
+    var detailPromise = jsonp(detailUrl, 'ygLiveSession_');
+    var participantPromise = loadParticipantNames();
     var fallback = null;
     try{
       fallback = await loadSnapshotDetail();
@@ -327,9 +331,7 @@
     }catch(snapshotError){}
 
     try{
-      var detailUrl = API + '?page=prepost-session-detail&sessionId=' + encodeURIComponent(sessionId);
-      if(staffSession && staffSession.token) detailUrl += '&sessionToken=' + encodeURIComponent(staffSession.token);
-      var detail = await jsonp(detailUrl, 'ygLiveSession_');
+      var detail = await detailPromise;
       if(!detail || detail.ok === false) throw new Error(detail && detail.error ? detail.error : 'Sesi tidak ditemukan.');
       applyMeta(detail);
       applySummary(detail);
@@ -341,10 +343,9 @@
       }
     }
 
-    initParticipantToggle();
     var loginLink=document.getElementById('participant-access-login');
     if(loginLink)loginLink.href=loginUrl();
-    loadParticipantNames();
+    await participantPromise;
   }
 
   init();
