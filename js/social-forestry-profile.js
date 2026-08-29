@@ -53,7 +53,7 @@ function renderIdentity(p,area,detail){
 function renderSupplemental(detail){
   var section=el("sf-detail");
   if(!detail){section.hidden=true;return}
-  var demography=detail.demography||{},legal=detail.skExtraction||{},management=detail.management||legal.management||{},beneficiaries=detail.beneficiaries||legal.beneficiaries||{},kups=Array.isArray(detail.kups)?detail.kups:[],documents=Array.isArray(detail.documents)?detail.documents.filter(Boolean):[];
+  var demography=detail.demography||{},legal=detail.skExtraction||{},management=detail.management||legal.management||{},beneficiaries=detail.beneficiaries||legal.beneficiaries||detail.members||{},kups=Array.isArray(detail.kups)?detail.kups:[],documents=Array.isArray(detail.documents)?detail.documents.filter(Boolean):[],bpskl=detail.bpsklProfile||{},governance=detail.governance||{},forest=detail.forestAreaComposition||{},landCover=detail.landCoverHa||{};
   var unavailable="Belum tersedia",kupsNames=kups.map(function(row){return row.name}).filter(Boolean).join(", "),kupsLegal=kups.map(function(row){return row.legalStatus}).filter(Boolean).join(", ");
   var summary=legal.decreeNumber?[
     item("Lembaga pengelola",detail.name||unavailable),item("Masa berlaku",legal.validity||unavailable),
@@ -65,11 +65,21 @@ function renderSupplemental(detail){
     item("Pengurus inti",[management.chairperson&&"Ketua: "+management.chairperson,management.viceChairperson&&"Wakil: "+management.viceChairperson,management.secretary&&"Sekretaris: "+management.secretary,management.treasurer&&"Bendahara: "+management.treasurer].filter(Boolean).join(" · ")||unavailable)
   ]:[
     item("Lembaga pengelola",detail.name||unavailable),item("KUPS",kupsNames||unavailable),
-    item("Status legalitas KUPS",kupsLegal||unavailable),item("Jumlah keluarga",number(demography.households)!=null?format(demography.households,0)+" KK":unavailable),
-    item("Jumlah penduduk",number(demography.population)!=null?format(demography.population,0)+" jiwa":unavailable),item("Komposisi penduduk",number(demography.male)!=null&&number(demography.female)!=null?format(demography.male,0)+" laki-laki · "+format(demography.female,0)+" perempuan":unavailable),
+    item("Status legalitas KUPS",kupsLegal||unavailable),item("Jumlah keluarga/anggota",number(beneficiaries.total)!=null?format(beneficiaries.total,0)+" orang":(number(demography.households)!=null?format(demography.households,0)+" KK":unavailable)),
+    item("Komposisi anggota",number(beneficiaries.male)!=null&&number(beneficiaries.female)!=null?format(beneficiaries.male,0)+" laki-laki · "+format(beneficiaries.female,0)+" perempuan":(number(demography.male)!=null&&number(demography.female)!=null?format(demography.male,0)+" laki-laki · "+format(demography.female,0)+" perempuan":unavailable)),
     item("KPH/FMU",management.forestManagementUnit||unavailable),item("Ekosistem",management.ecosystem||unavailable),
     item("Target area restorasi",number(management.restorationTargetHa)!=null?format(management.restorationTargetHa,0)+" ha":unavailable),item("RKPS",management.rkpsStatus||unavailable)
   ];
+  var facilitators=management.facilitators&&typeof management.facilitators==="object"?Object.keys(management.facilitators).sort().map(function(year){return year+": "+management.facilitators[year]}).join(" · "):"";
+  var forestRows=[["Hutan lindung",forest.protectionForestHa],["Hutan produksi",forest.productionForestHa],["Hutan produksi terbatas",forest.limitedProductionForestHa],["Hutan produksi konversi",forest.convertibleProductionForestHa],["Konservasi",forest.conservationHa],["APL",forest.otherUseAreaHa]].filter(function(row){return number(row[1])!=null}).map(function(row){return row[0]+" "+format(row[1],2)+" ha"}).join(" · ");
+  var landCoverRows=Object.keys(landCover).filter(function(key){return number(landCover[key])!=null&&number(landCover[key])>0}).sort(function(a,b){return number(landCover[b])-number(landCover[a])}).slice(0,6).map(function(key){return key.replace(/_/g," ")+" "+format(landCover[key],2)+" ha"}).join(" · ");
+  var kupsRows=kups.map(function(row){return [row.name,row.class&&"kelas "+row.class,row.commodity,row.commodityAreaHa!=null&&format(row.commodityAreaHa,2)+" ha",row.annualProduction].filter(Boolean).join(" · ")}).filter(Boolean).join("; ");
+  summary=summary.concat([
+    item("Status data BPSKL",bpskl.status||detail.legalStatus||unavailable),item("Ketersediaan SK (BPSKL)",bpskl.skDataAvailability||unavailable),item("Ketersediaan peta/SHP (BPSKL)",bpskl.mapDataAvailability||unavailable),
+    item("Pendamping PS",facilitators||unavailable),item("Pendamping mandiri",management.independentFacilitator||unavailable),item("Penandaan batas",management.boundaryMarking||unavailable),item("RKPS/RPHD/RKU",management.rkpsStatus||unavailable),
+    item("Komposisi fungsi kawasan",forestRows||unavailable),item("Tutupan lahan utama",landCoverRows||unavailable),item("Informasi KUPS",kupsRows||kupsNames||unavailable),
+    item("Kerja sama",governance.cooperation||unavailable),item("Konflik/tumpang tindih",[governance.conflict,number(governance.overlapHa)!=null&&format(governance.overlapHa,2)+" ha"].filter(Boolean).join(" · ")||unavailable),item("Pengawasan dan evaluasi",[governance.supervision,governance.evaluation].filter(Boolean).join(" · ")||unavailable),item("Kebutuhan kelompok",governance.needs||unavailable)
+  ]);
   el("sf-detail-summary").innerHTML=summary.join("");
   el("sf-document-list").innerHTML=documents.map(function(doc){return '<a href="'+esc(doc.url)+'" target="_blank" rel="noopener noreferrer"><span>'+esc(doc.category||doc.type||"Dokumen pendukung")+'</span><strong>'+esc(doc.label||doc.title||"Buka dokumen")+'</strong><b aria-hidden="true">↗</b></a>'}).join("");
   el("sf-detail-note").textContent=legal.decreeNumber?"Sumber: "+(legal.source||"dokumen SK")+" beserta lampirannya.":demography.source?"Sumber demografi: "+demography.source+". Kolom tanpa data ditandai Belum tersedia.":"Dokumen berasal dari arsip organisasi. Kolom tanpa data ditandai Belum tersedia.";

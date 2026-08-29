@@ -23,7 +23,8 @@ window.fetch=function(input,init){
         regency:p.regency,
         province:p.province||"Riau",
         legalStatus:"Dalam proses persetujuan",
-        members:{total:p.members,male:p.male,female:p.female},
+        beneficiaries:{total:p.members,male:p.male,female:p.female},
+        bpsklProfile:{status:"PROSES",sourceSheet:"2025",updatedAt:"2026-08-29"},
         documents:[],
         skDocumentStatus:"process",
         sourceUpdate:"Data Perhutanan Sosial Riau 2025"

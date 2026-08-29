@@ -926,7 +926,12 @@
       "validity": "Sampai 23 Februari 2052",
       "source": "Dokumen SK"
     },
-    "management": {},
+    "management": {
+      "chairperson": "Zam Zami",
+      "forestManagementUnit": "KPH Bagan Siapiapi",
+      "boundaryMarking": "Belum",
+      "rkpsStatus": "RKPS Belum ada"
+    },
     "beneficiaries": {
       "male": 168.0,
       "female": 19.0,
@@ -944,11 +949,34 @@
       "status": "matched",
       "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Rohil",
       "handoverStatus": "Sudah Diserahkan"
     },
     "spatialStatus": "available",
-    "spatialObjectKey": "3792.0"
+    "spatialObjectKey": "3792.0",
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 477.0,
+      "limitedProductionForestHa": 0.0,
+      "convertibleProductionForestHa": 0.0
+    },
+    "landCoverHa": {
+      "perkebunan": 181.14,
+      "badan_air": 0.08,
+      "belukar_rawa": 0.14,
+      "rawa": 283.87
+    },
+    "palmOil": {
+      "imageryHa": "-",
+      "decreeHa": "-"
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "skDataAvailability": "Ada",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Rohil",
+      "updatedAt": "2026-08-29"
+    }
   },
   "sk.7398/menlhk-pskl/pkps/psl.0/7/2023": {
     "name": "KTH Siarang-Arang",
@@ -989,19 +1017,67 @@
     },
     "management": {
       "forestManagementUnit": "Kesatuan Pengelolaan Hutan Bagan Siapiapi",
-      "ecosystem": "Ekosistem gambut"
+      "ecosystem": "Ekosistem gambut",
+      "chairperson": "Yunadi",
+      "facilitators": {
+        "2024": "Azwan",
+        "2025": "Azwan"
+      },
+      "boundaryMarking": "Belum",
+      "rkpsStatus": "RKPS sudah ada (15 Okt 2024)"
     },
     "beneficiaries": {
       "female": 16,
-      "indirectHouseholds": 28
+      "indirectHouseholds": 28,
+      "male": 28.0,
+      "total": 44
     },
     "areaHa": 617,
     "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
     "regency": "Rokan Hilir",
     "province": "Riau",
     "bpsklVerification": {
-      "status": "not-matched",
-      "source": "Data Perhutanan Sosial di Provinsi Riau"
+      "status": "matched",
+      "source": "Data Perhutanan Sosial di Provinsi Riau",
+      "method": "decree",
+      "sourceSheet": "Rohil"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 617.0,
+      "limitedProductionForestHa": 0.0,
+      "convertibleProductionForestHa": 0.0,
+      "conservationHa": 0.0
+    },
+    "landCoverHa": {
+      "hutan_lahan_kering_sekunder": 312.0,
+      "hutan_rawa_sekunder": 172.7,
+      "perkebunan": 2.38,
+      "belukar_rawa": 436.09,
+      "rawa": 6.16
+    },
+    "palmOil": {
+      "imageryHa": "-",
+      "decreeHa": "-"
+    },
+    "kups": [
+      {
+        "name": "1. KUPS Rokan Makmur (Ternak Sapi),2. KUPS Kasang Mugkal (Perikanan), 3. KUPS Pematang Kopau Jaya (Ekowisata), 4.KUPS Imbon (Lebah Madu)",
+        "decreeNumber": "Nomor : Kpts./188/UPT-KPH-BAA/07 Tanggal 17 Oktober 2024",
+        "chairperson": "1. Jon Helen, 2. Musradi, 3. Faisal Romika, 4. Zulmiadi",
+        "class": "1.Silver , 2. Silver , 3. Silver, 4. Silver",
+        "commodity": "1. Ternak Sapi., 2. Perikanan., 3 Ekowisata 4. Lebah Madu"
+      }
+    ],
+    "governance": {
+      "cooperation": "1. NGO Rimba Satwa Foundation, 2. PHR, 3 Pengusaha"
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "skDataAvailability": "Ada",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Rohil",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.9864/menlhk-pskl/pkps/psl.0/9/2023": {
@@ -1037,7 +1113,15 @@
       "source": "Dokumen SK"
     },
     "management": {
-      "ecosystem": "Ekosistem gambut · fungsi lindung"
+      "ecosystem": "Ekosistem gambut · fungsi lindung",
+      "chairperson": "Surianto",
+      "forestManagementUnit": "KPH Bagan Siapiapi",
+      "facilitators": {
+        "2024": "Khoiruddin",
+        "2025": "Yennova Sari, S.Hut"
+      },
+      "boundaryMarking": "Belum",
+      "rkpsStatus": "RKPS TTD KKPH"
     },
     "beneficiaries": {
       "male": 13.0,
@@ -1057,8 +1141,41 @@
       "status": "matched",
       "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Rohil",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "forestAreaComposition": {
+      "limitedProductionForestHa": 143.0,
+      "conservationHa": 0.0
+    },
+    "landCoverHa": {
+      "hutan_mangrove_sekunder": 85.78,
+      "perkebunan": 2.85,
+      "tanah_terbuka": 50.75,
+      "badan_air": 4.15
+    },
+    "palmOil": {
+      "imageryHa": "-",
+      "decreeHa": "-"
+    },
+    "kups": [
+      {
+        "name": "1. KUPS Merpati Pesisir (Peternakan Sapi)",
+        "decreeNumber": "Nomor : Kpts./188/UPT-KPH-BAA/08 Tanggal 6 November 2024",
+        "chairperson": "Wagiman",
+        "class": "Biru",
+        "commodity": "Peternakan Sapi"
+      }
+    ],
+    "governance": {
+      "cooperation": "1. FOLU Net Sink 2030 (Norwegia)"
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "skDataAvailability": "Ada",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Rohil",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.9863/menlhk-pskl/pkps/psl.0/9/2023": {
@@ -1087,7 +1204,15 @@
       "source": "Dokumen SK"
     },
     "management": {
-      "ecosystem": "Ekosistem gambut · fungsi lindung"
+      "ecosystem": "Ekosistem gambut · fungsi lindung",
+      "chairperson": "Nanang Kasim",
+      "forestManagementUnit": "KPH Bagan Siapiapi",
+      "facilitators": {
+        "2024": "Khoiruddin",
+        "2025": "Putri Azhari Oktaviana, S.IP"
+      },
+      "boundaryMarking": "Belum",
+      "rkpsStatus": "RKPS dalam Proses"
     },
     "beneficiaries": {
       "male": 13.0,
@@ -1107,8 +1232,31 @@
       "status": "matched",
       "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Rohil",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "forestAreaComposition": {
+      "limitedProductionForestHa": 184.0,
+      "conservationHa": 0.0
+    },
+    "landCoverHa": {
+      "hutan_mangrove_sekunder": 156.03,
+      "belukar": 7.82,
+      "perkebunan": 1.4,
+      "tanah_terbuka": 6.41,
+      "badan_air": 6.06,
+      "tambak": 6.82
+    },
+    "palmOil": {
+      "imageryHa": "-",
+      "decreeHa": "-"
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "skDataAvailability": "Ada",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Rohil",
+      "updatedAt": "2026-08-29"
     }
   },
   "11509 tahun 2024": {
@@ -1137,7 +1285,10 @@
       "source": "Dokumen SK"
     },
     "management": {
-      "ecosystem": "Ekosistem gambut · fungsi lindung"
+      "ecosystem": "Ekosistem gambut · fungsi lindung",
+      "chairperson": "Khomsaruzam",
+      "forestManagementUnit": "KPH Bagan Siapiapi",
+      "boundaryMarking": "Belum"
     },
     "beneficiaries": {
       "female": 74.0,
@@ -1156,8 +1307,28 @@
       "status": "matched",
       "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Rohil",
       "handoverStatus": "Belum Diserahkan"
+    },
+    "forestAreaComposition": {
+      "limitedProductionForestHa": 1730.0
+    },
+    "landCoverHa": {
+      "hutan_rawa_sekunder": 2.96,
+      "hutan_tanaman": 83.85,
+      "tanah_terbuka": 44.82,
+      "belukar_rawa": 1599.21
+    },
+    "palmOil": {
+      "imageryHa": "-",
+      "decreeHa": "-"
+    },
+    "bpsklProfile": {
+      "status": "Belum Diserahkan",
+      "skDataAvailability": "Ada",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Rohil",
+      "updatedAt": "2026-08-29"
     }
   },
   "10767 tahun 2024": {
@@ -1185,7 +1356,14 @@
       "source": "Dokumen SK"
     },
     "management": {
-      "ecosystem": "Ekosistem gambut"
+      "ecosystem": "Ekosistem gambut",
+      "chairperson": "Hafis Salam",
+      "forestManagementUnit": "KPH Bagan Siapiapi",
+      "facilitators": {
+        "2025": "Dedi sandika, SH"
+      },
+      "boundaryMarking": "Belum",
+      "rkpsStatus": "RKPS dalam Proses"
     },
     "beneficiaries": {
       "male": 32.0,
@@ -1205,8 +1383,33 @@
       "status": "matched",
       "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Rohil",
       "handoverStatus": "Belum Diserahkan"
+    },
+    "forestAreaComposition": {
+      "limitedProductionForestHa": 415.0,
+      "convertibleProductionForestHa": 235.0
+    },
+    "landCoverHa": {
+      "hutan_mangrove_sekunder": 360.54,
+      "perkebunan": 195.98,
+      "tanah_terbuka": 42.24,
+      "badan_air": 19.56,
+      "belukar_rawa": 7.35
+    },
+    "palmOil": {
+      "imageryHa": 12.1,
+      "decreeHa": "-"
+    },
+    "governance": {
+      "conflict": "Areal diduduki oleh KTH Alam Pesisir (46 ha kerjasama dg 4CR) dan perorangan"
+    },
+    "bpsklProfile": {
+      "status": "Belum Diserahkan",
+      "skDataAvailability": "Ada",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Rohil",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.8469 tahun 2024": {
@@ -1238,7 +1441,10 @@
     },
     "management": {
       "forestManagementUnit": "Kesatuan Pengelolaan Hutan Bagan Siapi- api",
-      "ecosystem": "Ekosistem gambut · fungsi lindung"
+      "ecosystem": "Ekosistem gambut · fungsi lindung",
+      "chairperson": "Jupitar, S.AP",
+      "boundaryMarking": "Belum",
+      "rkpsStatus": "RKPS TTD KKPH"
     },
     "beneficiaries": {
       "female": 9.0,
@@ -1258,8 +1464,39 @@
       "status": "matched",
       "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Rohil",
       "handoverStatus": "Belum Diserahkan"
+    },
+    "forestAreaComposition": {
+      "convertibleProductionForestHa": 861.0
+    },
+    "landCoverHa": {
+      "hutan_mangrove_sekunder": 86.468,
+      "perkebunan": 80.39,
+      "tanah_terbuka": 369.65,
+      "badan_air": 30.05,
+      "belukar_rawa": 638.94,
+      "pertanian_lahan_kering": 160.86
+    },
+    "palmOil": {
+      "imageryHa": "-",
+      "decreeHa": "-"
+    },
+    "kups": [
+      {
+        "name": "KUPS Donceng Manggrove",
+        "decreeNumber": "Nomor : Kpts/188/UPT-KPH-BAA/09 Tanggal 6 November 2024",
+        "chairperson": "Jupitar, S.AP",
+        "class": "Biru",
+        "commodity": "Budidaya siput donceng"
+      }
+    ],
+    "bpsklProfile": {
+      "status": "Belum Diserahkan",
+      "skDataAvailability": "Ada",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Rohil",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.8494/menlhk-pskl/pkps/psl.0/12/2021": {
@@ -1330,7 +1567,13 @@
       "source": "Dokumen SK"
     },
     "management": {
-      "ecosystem": "Ekosistem gambut · fungsi lindung"
+      "ecosystem": "Ekosistem gambut · fungsi lindung",
+      "chairperson": "Junaidi",
+      "forestManagementUnit": "KPH Sorek",
+      "facilitators": {
+        "2023": "Nurhadi Rahim / 081275761515"
+      },
+      "rkpsStatus": "RKPS Periode 2023 s.d 2032"
     },
     "beneficiaries": {
       "female": 11.0,
@@ -1349,8 +1592,39 @@
       "status": "matched",
       "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Pelalawan",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 597.0,
+      "limitedProductionForestHa": 0.0,
+      "convertibleProductionForestHa": 0.0,
+      "conservationHa": 0.0
+    },
+    "landCoverHa": {
+      "hutan_rawa_sekunder": 4.64,
+      "hutan_tanaman": 19.93,
+      "pemukiman": 0.07,
+      "tanah_terbuka": 558.59
+    },
+    "kups": [
+      {
+        "class": "Silver",
+        "commodity": "Jagung (akan dibentuk)",
+        "commodityAreaHa": 10.0
+      }
+    ],
+    "governance": {
+      "cooperation": "Awalnya dengan pihak Arara, tetapi terjadi konflik PT. NPM",
+      "conflict": "Ada konflik dengan Arara Abadi, waktu penumbangan 2023 secara perjanjian akan menaman, ternyata dibiarkan setelah ditumbang. Akhirnya lahan KPS dipancang oleh masyarakat karna tidak ditanam. Terjadilah konflik antara kelompok, arara, dan masyarakat. (Junaidi) Untuk di tanami jagung ini yang nanti akan ditanam konflik karna sudah dipancang oleh masyarakat."
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "skDataAvailability": "Ada",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Pelalawan",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.342/menhut-ii/2015": {
@@ -1452,14 +1726,46 @@
     "decreeDate": "2022-03-28",
     "beneficiaries": {
       "male": 41.0,
-      "total": 41.0
+      "total": 41.0,
+      "female": 18.0
     },
     "bpsklVerification": {
       "status": "matched",
       "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Pelalawan",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "chairperson": "Saiful",
+      "forestManagementUnit": "KPH Tasik Besar Serkap",
+      "rkpsStatus": "RKPS Periode 2023 s.d. 2032 tgl 10 Agustus 2023"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 0.0,
+      "limitedProductionForestHa": 0.0,
+      "convertibleProductionForestHa": 688.0,
+      "conservationHa": 0.0
+    },
+    "landCoverHa": {
+      "perkebunan": 155.82
+    },
+    "kups": [
+      {
+        "class": "Silver",
+        "commodity": "1. Acasia 2. Eucalyptus"
+      }
+    ],
+    "governance": {
+      "cooperation": "PT. NPM"
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "skDataAvailability": "Ada",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Pelalawan",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.1201/menlhk-pskl/pkps/psl.0/3/2018": {
@@ -1502,6 +1808,49 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Pelalawan",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "chairperson": "Sutrisno",
+      "forestManagementUnit": "KPH Sorek",
+      "facilitators": {
+        "2021": "Khairunnas, S.ST/ 081371321266",
+        "2022": "Khairunnas, S.ST/ 081371321266"
+      },
+      "boundaryMarking": "Belum",
+      "rkpsStatus": "RKU Periode 2019 s.d. 2028 Pengesahan oleh KKPH Sorek an. Khairil Anwar Untuk RKPS terbaru masih proses telaah PJ an. Erna"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "limitedProductionForestHa": 9210.0,
+      "convertibleProductionForestHa": 0.0
+    },
+    "landCoverHa": {
+      "perkebunan": 9208.34,
+      "pemukiman": 6.34
+    },
+    "palmOil": {
+      "imageryHa": "± 8.488",
+      "decreeHa": 9210.0
+    },
+    "kups": [
+      {
+        "name": "1. KUPS Impian Makmur 2. KUPS Tunas Mekar SK KUPS masih format lama disahkan Kades)",
+        "decreeNumber": "1.KPTS/PG/KUPS/1/2022/20 2.KPTS/PG/KUPS/1/2022/14",
+        "chairperson": "1. Nur Ngaliman 2. Dedi Susanto",
+        "class": "1. Silver 2. Silver",
+        "commodity": "1. Ternak Sapi 2. -",
+        "commodityAreaHa": "1. 3 tahun, dulu 10 ekor, sekarang 13 ekor"
+      }
+    ],
+    "governance": {
+      "supervision": "Sudah / 14-18 Juli 2025"
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "skDataAvailability": "Ada",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Pelalawan",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.3658/menlhk-pskl/pkps/psl.0/5/2018": {
@@ -1542,8 +1891,42 @@
       "status": "matched",
       "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Pelalawan",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "chairperson": "Musmuliadi",
+      "forestManagementUnit": "KPH Sorek",
+      "rkpsStatus": "RKU Periode 2019 s.d 2028. Pengesahan oleh Kepala KPH a.n Khairil Anwar"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 0.0,
+      "limitedProductionForestHa": 0.0,
+      "convertibleProductionForestHa": 1379.0
+    },
+    "landCoverHa": {
+      "hutan_tanaman": 1325.64,
+      "perkebunan": 21.55
+    },
+    "palmOil": {
+      "imageryHa": "± 3,97"
+    },
+    "kups": [
+      {
+        "class": "Silver",
+        "commodity": "Acasia"
+      }
+    ],
+    "governance": {
+      "cooperation": "PT. NPM"
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "skDataAvailability": "Ada",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Pelalawan",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.10346/menlhk-pskl/pkps/psl.0/9/2023": {
@@ -1573,14 +1956,49 @@
     "decreeDate": "2023-09-18",
     "beneficiaries": {
       "male": 102.0,
-      "total": 102.0
+      "total": 102.0,
+      "female": 20.0
     },
     "bpsklVerification": {
       "status": "matched",
       "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Pelalawan",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "chairperson": "Suriadi",
+      "forestManagementUnit": "KPH Sorek",
+      "independentFacilitator": "M. Angga Fachriza / 081275410195 (2025)",
+      "facilitators": {
+        "2024": "Wage Hardwiyanto / 081371746857"
+      },
+      "boundaryMarking": "Sudah, Arara Abadi,"
+    },
+    "forestAreaComposition": {
+      "productionForestHa": 941.68
+    },
+    "landCoverHa": {
+      "hutan_rawa_sekunder": 910.1,
+      "hutan_tanaman": 1.59,
+      "belukar_rawa": 8.52,
+      "rawa": 22.99
+    },
+    "kups": [
+      {
+        "name": "1. KUPS Tasik River 2. KUPS Sialang Teduh 3. kUPS Sungai Bobak the culture SK KUPS masih format lama ( disahkan Kades)",
+        "commodity": "1. Pengelolaan Perikanan dan Jasling 2. HHBK (Madu)"
+      }
+    ],
+    "governance": {
+      "cooperation": "Yayasan Hutan Tropis"
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "skDataAvailability": "Ada",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Pelalawan",
+      "updatedAt": "2026-08-29"
     }
   },
   "11508 tahun 2024": {
@@ -1617,8 +2035,26 @@
       "status": "matched",
       "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Siak",
       "handoverStatus": "Belum Diserahkan"
+    },
+    "management": {
+      "chairperson": "A.Rahid",
+      "forestManagementUnit": "KPH Tasik Besar Serkap"
+    },
+    "forestAreaComposition": {
+      "productionForestHa": 982.0
+    },
+    "landCoverHa": {
+      "hutan_rawa_sekunder": 689.65,
+      "belukar_rawa": 292.04
+    },
+    "bpsklProfile": {
+      "status": "Belum Diserahkan",
+      "skDataAvailability": "SK Gapoktan Mekar Tani Makmur",
+      "mapDataAvailability": "ADA",
+      "sourceSheet": "Siak",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.6702/menlhk-pskl/pkps/psl.0/12/2017": {
@@ -1669,8 +2105,45 @@
       "status": "matched",
       "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Siak",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "chairperson": "Sutriadi",
+      "forestManagementUnit": "KPH Tasik Besar Serkap",
+      "rkpsStatus": "RKPS PERIODE 2021 SAMPAI 2030 Pengesahan oleh Kepala KPH a.n. Andri, S.Hut"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 3580.0,
+      "limitedProductionForestHa": 0.0,
+      "convertibleProductionForestHa": 0.0
+    },
+    "landCoverHa": {
+      "hutan_rawa_sekunder": 3267.15,
+      "hutan_tanaman": 175.03,
+      "badan_air": 147.04
+    },
+    "kups": [
+      {
+        "name": "KUPS Walet Hijau",
+        "decreeNumber": "SK.105/SK/KPH-TBS/V/2024 Tanggal 3 Mei 2024",
+        "chairperson": "Sunarti, S.PD.I",
+        "class": "Silver/Perak",
+        "commodity": "Sarang Burung Walet/Silvopastura",
+        "commodityAreaHa": 1000.0,
+        "annualProduction": "100 kg"
+      }
+    ],
+    "governance": {
+      "overlapHa": "1. PT PERANAP TIMBER = 239,18 2. PT RIAU ANDALAN PULP & PAPER = 28,51"
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "skDataAvailability": "SK LPHD Teluk Lanus",
+      "mapDataAvailability": "ADA",
+      "sourceSheet": "Siak",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.4587/menlhk-pskl/pkps/psl.0/7/2020": {
@@ -1711,8 +2184,50 @@
       "status": "matched",
       "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Siak",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "chairperson": "Sutarno",
+      "forestManagementUnit": "KPH Tasik Besar Serkap",
+      "facilitators": {
+        "2021": "Nurhadi Rahim, S.Hut",
+        "2022": "Nurhadi Rahim, S.Hut"
+      },
+      "rkpsStatus": "RKPS PERIODE 2022 SAMPAI 2031 Pengesahan oleh Kepala KPH a.n. Andri, S.Hut"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 3433.0,
+      "limitedProductionForestHa": 0.0,
+      "convertibleProductionForestHa": 0.0
+    },
+    "landCoverHa": {
+      "hutan_rawa_sekunder": 2382.27,
+      "belukar": 940.23,
+      "perkebunan": 16.31,
+      "tanah_terbuka": 98.49
+    },
+    "kups": [
+      {
+        "name": "1.KUPS Rumbia Rawa Jaya",
+        "decreeNumber": "SK.140/Kpg-RMJ/SK/2021 Tanggal 5 April 2021",
+        "chairperson": "Jamaludin",
+        "class": "Biru",
+        "commodity": "Sagu Sumbia",
+        "commodityAreaHa": 100.0,
+        "annualProduction": "100 ton/tahun"
+      }
+    ],
+    "governance": {
+      "overlapHa": "PT ARARA ABADI =7,95"
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "skDataAvailability": "SK LPHD Rawa Mekar Jaya",
+      "mapDataAvailability": "ADA",
+      "sourceSheet": "Siak",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.5760/menlhk-pskl/pkps/psl.0/9/2021": {
@@ -1792,8 +2307,49 @@
       "status": "matched",
       "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Siak",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "chairperson": "M. Yusuf",
+      "forestManagementUnit": "KPH Tasik Besar Serkap",
+      "facilitators": {
+        "2023": "Febbi Nurdia, S.Hut",
+        "2024": "Febbi Nurdia, S.Hut"
+      },
+      "boundaryMarking": "Tidak Ada (Terkendala biaya)",
+      "rkpsStatus": "RKPS PERIODE 2024 SAMPAI 2033 Pengesahan oleh Kepala BPSKL Wil Sumatera Apri Dwi Sumarah"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": "-",
+      "productionForestHa": "-",
+      "limitedProductionForestHa": 13.0,
+      "convertibleProductionForestHa": "-",
+      "conservationHa": "-"
+    },
+    "landCoverHa": {
+      "belukar_rawa": 10.34,
+      "pertambangan": 2.51
+    },
+    "kups": [
+      {
+        "name": "KUPS Mahkota Nenas",
+        "decreeNumber": "SK.522/SK/KPH-TBS/378 Tanggal 12 Juli 2023",
+        "chairperson": "M.Yusuf",
+        "class": "Biru",
+        "commodity": "1. Nenas olahan menjadi wajik nenas Rp Rp. 1.643.000, 2. Hasil Hutan Bukan Kayu berupa Dodol Labu Rp. . 1.430.000",
+        "commodityAreaHa": 12.0
+      }
+    ],
+    "governance": {
+      "overlapHa": "PT ARARA ABADI"
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "skDataAvailability": "SK KTH Cemerlang",
+      "mapDataAvailability": "ADA",
+      "sourceSheet": "Siak",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.8812/menlhk-pskl/pkps/psl.0/12/2021": {
@@ -1829,8 +2385,45 @@
       "status": "matched",
       "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Siak",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "chairperson": "Charles Nadeak",
+      "forestManagementUnit": "KPH Tasik Besar Serkap",
+      "facilitators": {
+        "2023": "Milla Ramadani, S.Hut",
+        "2024": "Milla Ramadani, S.Hut"
+      },
+      "rkpsStatus": "Pengajuan Pengesahan"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": "-",
+      "productionForestHa": "-",
+      "limitedProductionForestHa": 10.0,
+      "convertibleProductionForestHa": "-",
+      "conservationHa": "-"
+    },
+    "landCoverHa": {
+      "belukar": 8.65,
+      "pertambangan": 1.15
+    },
+    "kups": [
+      {
+        "name": "KUPS Citronel Oil",
+        "decreeNumber": "SK.522/SK/KPH-TBS/368 Tanggal 24 Juli 2024",
+        "class": "Biru",
+        "commodity": "Agroforestry",
+        "commodityAreaHa": 10.0,
+        "annualProduction": "24 Liter/tahun"
+      }
+    ],
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "skDataAvailability": "SK KTH Bina Sejahtera",
+      "mapDataAvailability": "ADA",
+      "sourceSheet": "Siak",
+      "updatedAt": "2026-08-29"
     }
   },
   "474 tahun 2024": {
@@ -1867,8 +2460,33 @@
       "status": "matched",
       "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Siak",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "chairperson": "M. Tommy",
+      "forestManagementUnit": "KPH Tasik Besar Serkap",
+      "facilitators": {
+        "2023": "Heni Herawati, A.Md"
+      },
+      "rkpsStatus": "RKPS PERIODE 2024 SAMPAI 2033 Pengesahan oleh Kepala BPSKL Wil Sumatera Apri Dwi Sumarah"
+    },
+    "forestAreaComposition": {
+      "productionForestHa": 145.0,
+      "conservationHa": 0.0
+    },
+    "landCoverHa": {
+      "hutan_rawa_sekunder": 125.63,
+      "perkebunan": 4.41,
+      "belukar_rawa": 13.5,
+      "pertambangan": 1.89
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "skDataAvailability": "SK KT Maju Jaya",
+      "mapDataAvailability": "ADA",
+      "sourceSheet": "Siak",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.847/menlhk-pskl/pkps/psl.0/3/2017": {
@@ -1998,7 +2616,9 @@
       "source": "Dokumen SK"
     },
     "management": {
-      "ecosystem": "Ekosistem gambut"
+      "ecosystem": "Ekosistem gambut",
+      "chairperson": "Syamsudin dan Edi Haris",
+      "forestManagementUnit": "KPH Tasik Besar Serkap"
     },
     "beneficiaries": {
       "male": 439.0,
@@ -2011,8 +2631,31 @@
       "status": "matched",
       "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Siak",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 1132.0,
+      "limitedProductionForestHa": 0.0,
+      "convertibleProductionForestHa": 0.0,
+      "conservationHa": 0.0
+    },
+    "landCoverHa": {
+      "hutan_rawa_sekunder": 332.39,
+      "hutan_tanaman": 210.17,
+      "perkebunan": 230.42,
+      "tanah_terbuka": 1.77,
+      "badan_air": 1.86,
+      "belukar_rawa": 335.35,
+      "pertambangan": 20.5
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "skDataAvailability": "SK Gapoktanhut Kampung Dosan",
+      "mapDataAvailability": "ADA",
+      "sourceSheet": "Siak",
+      "updatedAt": "2026-08-29"
     }
   },
   "drive-audit:rokan-hilir-gapoktan-sumber-alam-makmur-jaya": {
@@ -2043,11 +2686,17 @@
       "validity": "Sampai 26 September 2027",
       "source": "Dokumen SK"
     },
-    "management": {},
+    "management": {
+      "chairperson": "Umar Wijaya",
+      "forestManagementUnit": "KPH Bagan Siapiapi",
+      "boundaryMarking": "Belum",
+      "rkpsStatus": "RKPS sudah ada"
+    },
     "beneficiaries": {
       "indirectHouseholds": 5,
       "male": 0.0,
-      "total": 0.0
+      "total": 0.0,
+      "female": "-"
     },
     "province": "Riau",
     "decreeDate": "2017-10-13",
@@ -2055,8 +2704,34 @@
       "status": "matched",
       "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Rohil",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 4000.0,
+      "limitedProductionForestHa": 0.0,
+      "convertibleProductionForestHa": 0.0,
+      "conservationHa": 0.0
+    },
+    "landCoverHa": {
+      "hutan_mangrove_sekunder": 113.81,
+      "hutan_rawa_sekunder": 191.36,
+      "perkebunan": 2347.43,
+      "pemukiman": 183.35,
+      "tanah_terbuka": 244.55,
+      "belukar_rawa": 921.96
+    },
+    "palmOil": {
+      "imageryHa": "1,41 (3-8 th)",
+      "decreeHa": "-"
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "skDataAvailability": "Ada",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Rohil",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk. 4523/menlhk-pskl/pkps/psl.0/7/2018": {
@@ -2091,14 +2766,47 @@
     "decreeDate": "2018-07-03",
     "beneficiaries": {
       "male": 280.0,
-      "total": 280.0
+      "total": 280.0,
+      "female": "-"
     },
     "bpsklVerification": {
       "status": "matched",
       "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Kampar",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "chairperson": "Ir. Ihsan",
+      "forestManagementUnit": "UPT KPH Kampar Kiri",
+      "facilitators": {
+        "2023": "Marsuhendra, S.E"
+      },
+      "rkpsStatus": "RKPS Periode 2024 s.d 2033 (S.677/X-1/BPSKL-2/PSL.0/12/2024 Tanggal 31 Desember 2024), Revisi RKPS Periode 2025 s.d 2033 (S.351/VI-5/BPS.1/PSL.01.01/B/10/2025 Tanggal 03 Oktober 2025"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": "-",
+      "productionForestHa": "-",
+      "limitedProductionForestHa": 3000.0,
+      "convertibleProductionForestHa": "-",
+      "conservationHa": "-",
+      "otherUseAreaHa": "-"
+    },
+    "landCoverHa": {
+      "hutan_lahan_kering_sekunder": 1883.67,
+      "belukar": 74.81,
+      "tanah_terbuka": 3.17,
+      "pertanian_lahan_kering_campuran": 1034.0
+    },
+    "governance": {
+      "cooperation": "Yayasan Hutan Tropis"
+    },
+    "bpsklProfile": {
+      "status": "Sudah di serahkan",
+      "skDataAvailability": "PDF",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Kampar",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.10375/menlhk-pskl/pkps/psl.0/9/2023": {
@@ -2135,8 +2843,35 @@
       "status": "matched",
       "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Kampar",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "chairperson": "Wardoyo",
+      "forestManagementUnit": "UPT KPH Kampar Kiri",
+      "facilitators": {
+        "2024": "Khairil Kasdi, S.Hut",
+        "2025": "Khairil Kasdi, S.Hut"
+      }
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": "-",
+      "productionForestHa": "-",
+      "limitedProductionForestHa": 70.0,
+      "convertibleProductionForestHa": "-",
+      "conservationHa": "-",
+      "otherUseAreaHa": "-"
+    },
+    "landCoverHa": {
+      "hutan_lahan_kering_sekunder": 61.13,
+      "tanah_terbuka": 8.51
+    },
+    "bpsklProfile": {
+      "status": "Sudah di serahkan",
+      "skDataAvailability": "PDF",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Kampar",
+      "updatedAt": "2026-08-29"
     }
   },
   "918 tahun 2024": {
@@ -2173,8 +2908,36 @@
       "status": "matched",
       "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Kampar",
       "handoverStatus": "Belum Diserahkan"
+    },
+    "management": {
+      "chairperson": "Dino Marjono",
+      "forestManagementUnit": "UPT KPH Kampar Kiri",
+      "facilitators": {
+        "2024": "Ir. IHSAN"
+      }
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": "-",
+      "productionForestHa": "-",
+      "limitedProductionForestHa": 660.0,
+      "convertibleProductionForestHa": "-",
+      "conservationHa": "-",
+      "otherUseAreaHa": "-"
+    },
+    "landCoverHa": {
+      "hutan_lahan_kering_sekunder": 421.0,
+      "belukar": 23.0,
+      "tanah_terbuka": 3.0,
+      "pertanian_lahan_kering_campuran": 213.0
+    },
+    "bpsklProfile": {
+      "status": "Belum Diserahkan",
+      "skDataAvailability": "PDF",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Kampar",
+      "updatedAt": "2026-08-29"
     }
   },
   "drive-audit:kampar-kth-bersatu-abadi-jaya": {
@@ -2212,7 +2975,10 @@
     },
     "management": {
       "forestManagementUnit": "Kesatuan Pengelolaan Hutan Sorek",
-      "ecosystem": "Ekosistem gambut · fungsi lindung"
+      "ecosystem": "Ekosistem gambut · fungsi lindung",
+      "facilitators": {
+        "2025": "Zul Panca Hariadi, SH"
+      }
     },
     "beneficiaries": {
       "male": 519.0,
@@ -2226,8 +2992,26 @@
       "status": "matched",
       "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Kampar",
       "handoverStatus": "Belum Diserahkan"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": "-",
+      "productionForestHa": 1089.0,
+      "limitedProductionForestHa": 180.0,
+      "convertibleProductionForestHa": "-",
+      "conservationHa": "-",
+      "otherUseAreaHa": "-"
+    },
+    "landCoverHa": {
+      "perkebunan": 1268.81,
+      "gambut": 1268.81
+    },
+    "bpsklProfile": {
+      "status": "Belum Diserahkan",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Kampar",
+      "updatedAt": "2026-08-29"
     }
   },
   "1265 tahun 2025": {
@@ -2469,14 +3253,46 @@
     "decreeDate": "2019-09-17",
     "beneficiaries": {
       "male": 2446.0,
-      "total": 2446.0
+      "total": 2446.0,
+      "female": "-"
     },
     "bpsklVerification": {
       "status": "matched",
       "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Kampar",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "chairperson": "Samsiwir",
+      "forestManagementUnit": "UPT KPH Kampar Kiri"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": "-",
+      "productionForestHa": "-",
+      "limitedProductionForestHa": "-",
+      "convertibleProductionForestHa": "-",
+      "conservationHa": "-",
+      "otherUseAreaHa": 157.0
+    },
+    "landCoverHa": {
+      "hutan_lahan_kering_primer": 100.0,
+      "hutan_lahan_kering_sekunder": 40.0,
+      "belukar": 10.0,
+      "tanah_terbuka": 2.0
+    },
+    "kups": [
+      {
+        "name": "Kebun Bibit Alam Kampa",
+        "decreeNumber": "SK.05/KPH-KK/KUPS-GBLP/11/2025",
+        "class": "BLUE"
+      }
+    ],
+    "bpsklProfile": {
+      "status": "Sudah di serahkan",
+      "skDataAvailability": "PDF",
+      "sourceSheet": "Kampar",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.7503/menlhk-pskl/pktha/kum.1/9/2019": {
@@ -2516,14 +3332,41 @@
     "decreeDate": "2019-09-17",
     "beneficiaries": {
       "male": 2800.0,
-      "total": 2800.0
+      "total": 2800.0,
+      "female": "-"
     },
     "bpsklVerification": {
       "status": "matched",
       "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Kampar",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "chairperson": "Farhan Amin",
+      "forestManagementUnit": "UPT KPH Suligi - Batu Gajah",
+      "rkpsStatus": "RKPS 2025 s.d 2034.(S.124/X-1/BPSKL-2/PSL.10.1/B/04/2025 Tanggal 30 April 2025)"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": "-",
+      "productionForestHa": "-",
+      "limitedProductionForestHa": "-",
+      "convertibleProductionForestHa": "-",
+      "conservationHa": "-",
+      "otherUseAreaHa": 251.0
+    },
+    "kups": [
+      {
+        "name": "Sadar Wisata Imbo Putui",
+        "decreeNumber": "525/SBG-PERUN/10",
+        "class": "BLUE"
+      }
+    ],
+    "bpsklProfile": {
+      "status": "Sudah di serahkan",
+      "skDataAvailability": "PDF",
+      "sourceSheet": "Kampar",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.262/menlhk-setjen/2015": {
@@ -2596,6 +3439,76 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Rokan Hulu",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "chairperson": "Syamsul Sulaiman",
+      "forestManagementUnit": "UPT KPH Suligi Batu Gajah",
+      "independentFacilitator": "-",
+      "facilitators": {
+        "2019": "-",
+        "2020": "-",
+        "2021": "-",
+        "2022": "-",
+        "2023": "Maya Puspita Tri Rizky/ 085355059700",
+        "2024": "Maya Puspita Tri Rizky/ 085355059700",
+        "2025": "Maya Puspita Tri Rizky/ 085355059700"
+      },
+      "boundaryMarking": "Belum",
+      "rkpsStatus": "RKPS Periode 2023 s.d 2032 (S.1445/X-1/BPSKL-2/PSL.2/12/2023) Tanggal 29 Desember 2023"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": "-",
+      "productionForestHa": 501.0,
+      "conservationHa": "-",
+      "otherUseAreaHa": "-"
+    },
+    "landCoverHa": {
+      "hutan_lahan_kering_primer": "-",
+      "hutan_lahan_kering_sekunder": 456.59,
+      "hutan_mangrove_primer": "-",
+      "hutan_rawa_primer": "-",
+      "hutan_mangrove_sekunder": "-",
+      "hutan_rawa_sekunder": "-",
+      "hutan_tanaman": "-",
+      "belukar": 39.22,
+      "perkebunan": 0.67,
+      "pemukiman": "-",
+      "tanah_terbuka": 4.85,
+      "badan_air": "-",
+      "belukar_rawa": "-",
+      "pertanian_lahan_kering": "-",
+      "pertanian_lahan_kering_campuran": "-",
+      "sawah": "-",
+      "tambak": "-",
+      "pertambangan": "-",
+      "rawa": "-"
+    },
+    "palmOil": {
+      "imageryHa": 9.7,
+      "decreeHa": "-"
+    },
+    "kups": [
+      {
+        "name": "1. KUPS Pendalian Lestari, 2. KUPS Tani Berkarya, 3. KUPS Rimbo Sakti, 4. KUPS Agro Madani",
+        "decreeNumber": "1. Kpts.525/SBG-Perlin/KUPS-XVI/01/VIII/2023 Tanggal 07 Agustus 2023, 2. Kpts.525/SBG-Perlin/KUPS-XVI/01/VIII/2023 Tanggal 07 Agustus 2023, 3. Kpts.525/SBG-Perlin/KUPS-XVI/01/VIII/2023 Tanggal 07 Agustus 2023, 4. Kpts.525/SBG-Perlin/KUPS-XVI/01/VIII/2023 Tanggal 07 Agustus 2023",
+        "chairperson": "1. Rahmi. J/ , 2. Andeska/ , 3. Zarlis/ , 4. Rosmanto",
+        "class": "1. Silver, 2. Silver, 3. Silver, 4. Silver, 5. Silver",
+        "commodity": "1. Jasa Lingkungan, 2. Jernang, Vanili, Tanaman Pakan Ternak, Lebah Galo-Galo, 3. Jasa Lingkungan, 4. Kopi, Madu, Ternak Sapi dan Kambing"
+      }
+    ],
+    "governance": {
+      "cooperation": "Tidak Ada",
+      "overlapHa": "-",
+      "forestFunctionChangeToAplHa": "-",
+      "supervision": "Pembinaan dan Pengawasan PS 6-10 Desember 2024",
+      "evaluation": "Belum"
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "skDataAvailability": "Ada",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Rokan Hulu",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.259/menhut-ii/2015": {
@@ -2739,6 +3652,77 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Rokan Hulu",
       "handoverStatus": "Belum Diserahkan"
+    },
+    "management": {
+      "chairperson": "Maulana Adi Sodikin",
+      "forestManagementUnit": "UPT KPH Suligi Batu Gajah",
+      "independentFacilitator": "-",
+      "facilitators": {
+        "2019": "-",
+        "2020": "-",
+        "2021": "-",
+        "2022": "-",
+        "2023": "-",
+        "2024": "-",
+        "2025": "-"
+      },
+      "boundaryMarking": "Belum",
+      "rkpsStatus": "Belum Ada"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 7.52,
+      "productionForestHa": "-",
+      "conservationHa": "-",
+      "otherUseAreaHa": "-"
+    },
+    "landCoverHa": {
+      "hutan_lahan_kering_primer": "-",
+      "hutan_lahan_kering_sekunder": 5.52,
+      "hutan_mangrove_primer": "-",
+      "hutan_rawa_primer": "-",
+      "hutan_mangrove_sekunder": "-",
+      "hutan_rawa_sekunder": "-",
+      "hutan_tanaman": "-",
+      "belukar": 1.53,
+      "perkebunan": 0.04,
+      "pemukiman": "-",
+      "tanah_terbuka": "-",
+      "badan_air": "-",
+      "belukar_rawa": "-",
+      "pertanian_lahan_kering": "-",
+      "pertanian_lahan_kering_campuran": "-",
+      "sawah": "-",
+      "tambak": "-",
+      "pertambangan": "-",
+      "rawa": "-"
+    },
+    "palmOil": {
+      "imageryHa": 0.59,
+      "decreeHa": "-"
+    },
+    "kups": [
+      {
+        "name": "Belum Ada",
+        "decreeNumber": "-",
+        "class": "Blue",
+        "commodity": "-",
+        "commodityAreaHa": "-",
+        "annualProduction": "-"
+      }
+    ],
+    "governance": {
+      "cooperation": "Tidak Ada",
+      "overlapHa": "-",
+      "forestFunctionChangeToAplHa": "-",
+      "supervision": "Belum",
+      "evaluation": "Belum"
+    },
+    "bpsklProfile": {
+      "status": "Belum Diserahkan",
+      "skDataAvailability": "Ada",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Rokan Hulu",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.849/menlhk-pskl/pkps/psl.0/3/2017": {
@@ -2768,7 +3752,8 @@
     "decreeDate": "2017-03-03",
     "beneficiaries": {
       "male": 924.0,
-      "total": 924.0
+      "total": 924.0,
+      "female": "-"
     },
     "bpsklVerification": {
       "status": "matched",
@@ -2776,6 +3761,78 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Rokan Hulu",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "chairperson": "Sariman",
+      "forestManagementUnit": "UPT KPH Rokan",
+      "independentFacilitator": "-",
+      "facilitators": {
+        "2019": "Nursal/ 082288192509",
+        "2020": "Nursal/ 082288192509",
+        "2021": "Nursal/ 082288192509",
+        "2022": "Nursal/ 082288192509",
+        "2023": "-",
+        "2024": "Dasa Surianto/ 085364923223",
+        "2025": "Dasa Surianto/ 085364923223"
+      },
+      "boundaryMarking": "Belum",
+      "rkpsStatus": "RKU Periode 2021 s.d 2030. Pengesahan oleh Kepala KPH a.n. Dendy Saputra"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 500.0,
+      "productionForestHa": 1065.0,
+      "limitedProductionForestHa": "-",
+      "convertibleProductionForestHa": "-",
+      "conservationHa": "-",
+      "otherUseAreaHa": "-"
+    },
+    "landCoverHa": {
+      "hutan_lahan_kering_primer": "-",
+      "hutan_lahan_kering_sekunder": "-",
+      "hutan_mangrove_primer": "-",
+      "hutan_rawa_primer": "-",
+      "hutan_mangrove_sekunder": "-",
+      "hutan_rawa_sekunder": "-",
+      "hutan_tanaman": "-",
+      "belukar": "-",
+      "perkebunan": 1578.28,
+      "pemukiman": "-",
+      "tanah_terbuka": "-",
+      "badan_air": "-",
+      "belukar_rawa": "-",
+      "pertanian_lahan_kering": "-",
+      "pertanian_lahan_kering_campuran": "-",
+      "sawah": "-",
+      "tambak": "-",
+      "pertambangan": "-",
+      "rawa": "-"
+    },
+    "palmOil": {
+      "imageryHa": 696.44,
+      "decreeHa": "-"
+    },
+    "kups": [
+      {
+        "name": "1. KUPS Aren HKm Rawa Seribu, 2. KUPS Aren Rantau Arwana, 3. KUPS Aren Rantau Kayangan, 4. KUPS Perikanan Padang Kayangan, 5. KUPS Perikanan Rimbo Kayangan",
+        "decreeNumber": "1. SK.1056/PEMDES/TU/GAPOKTAN HKM/XI/2019 Tanggal 04 November 2019, 2. SK.1057/PEMDES/TU/GAPOKTAN HKM/XI/2019 Tanggal 04 November 2019, 3. SK.1060/PEMDES/TU/GAPOKTAN HKM/XI/2019 Tanggal 04 November 2019, 4. SK.1058/PEMDES/TU/GAPOKTAN HKM/XI/2019 Tanggal 04 November 2019, 5. SK.1060/PEMDES/TU/GAPOKTAN HKM/XI/2019 Tanggal 04 November 2019",
+        "chairperson": "1. Sariman Siregar/ , 2. M. Jamil Siregar/ , 3. Hendri Jamal/ , 4. Sudirman/ , 5. Roni Hendri",
+        "class": "1. Silver, 2. Silver, 3. Silver, 4. Silver, 5. Silver",
+        "commodity": "1. Aren Genjah, 2. Aren Genjah, 3. Aren Genjah, 4. Ikan Nila, 5. Ikan Nila"
+      }
+    ],
+    "governance": {
+      "cooperation": "Tidak Ada",
+      "overlapHa": "-",
+      "forestFunctionChangeToAplHa": "-",
+      "supervision": "Belum",
+      "evaluation": "Belum"
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "skDataAvailability": "Ada",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Rokan Hulu",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.5750/menlhk-pskl/pkps/psl.0/10/2017": {
@@ -2805,7 +3862,8 @@
     "decreeDate": "2017-10-27",
     "beneficiaries": {
       "male": 28.0,
-      "total": 28.0
+      "total": 28.0,
+      "female": "-"
     },
     "bpsklVerification": {
       "status": "matched",
@@ -2813,6 +3871,76 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Rokan Hulu",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "chairperson": "Ikhwan Rambe",
+      "forestManagementUnit": "UPT KPH Rokan",
+      "independentFacilitator": "-",
+      "facilitators": {
+        "2019": "Mulyanto/081378104923",
+        "2020": "Mulyanto/081378104923",
+        "2021": "-",
+        "2022": "Nursal/ 082288192509",
+        "2023": "Arya Putra Kurniawan/ 08537634177",
+        "2024": "-",
+        "2025": "Dasa Surianto/ 085364923223"
+      },
+      "boundaryMarking": "Belum",
+      "rkpsStatus": "Belum Ada"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 58.0,
+      "productionForestHa": 26.0,
+      "conservationHa": "-",
+      "otherUseAreaHa": "-"
+    },
+    "landCoverHa": {
+      "hutan_lahan_kering_primer": "-",
+      "hutan_lahan_kering_sekunder": "-",
+      "hutan_mangrove_primer": "-",
+      "hutan_rawa_primer": "-",
+      "hutan_mangrove_sekunder": "-",
+      "hutan_rawa_sekunder": "-",
+      "hutan_tanaman": "-",
+      "belukar": "-",
+      "perkebunan": 84.82,
+      "pemukiman": "-",
+      "tanah_terbuka": "-",
+      "badan_air": "-",
+      "belukar_rawa": "-",
+      "pertanian_lahan_kering": "-",
+      "pertanian_lahan_kering_campuran": "-",
+      "sawah": "-",
+      "tambak": "-",
+      "pertambangan": "-",
+      "rawa": "-"
+    },
+    "palmOil": {
+      "imageryHa": 73.04,
+      "decreeHa": "-"
+    },
+    "kups": [
+      {
+        "name": "1. KUPS Hasil Hutan Bukan Kayu, 2. KUPS Silvopastura, 3. KUPS Jasa Lingkungan, 4. KUPS Agroforestry",
+        "decreeNumber": "1. 140/019/PEMDES-TU/XI/2019 Tanggal 28 Nopember 2019, 2. 140/020/PEMDES-TU/XI/2019 Tanggal 28 Nopember 2019, 3. 140/021/PEMDES-TU/XI/2019 Tanggal 28 Nopember 2019, 4. 140/022/PEMDES-TU/XI/2019 Tanggal 28 Nopember 2019",
+        "chairperson": "1. Habdul Halim PA/ , 2. Hendri Jamal/ , 3. Dedi Dores/ , 4. Andi Azis Hasibuan",
+        "class": "1. Blue, 2. Blue, 3. Blue, 4. Blue",
+        "commodity": "1. Hasil Hutan Bukan Kayu (Rotan, Gaharu, Jernang dll), 2. Silvopastura (Ternak Sapi), 3. Jasa Lingkungan (Air Minum Kemasan), 4. Agroforestry (Budidaya Tanaman MPTS)"
+      }
+    ],
+    "governance": {
+      "cooperation": "Tidak Ada",
+      "overlapHa": "-",
+      "forestFunctionChangeToAplHa": "-",
+      "supervision": "Belum",
+      "evaluation": "Belum"
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "skDataAvailability": "Ada",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Rokan Hulu",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.3627/menlhk-pskl/pkps/psl.0/5/2018": {
@@ -2842,7 +3970,8 @@
     "decreeDate": "2018-05-31",
     "beneficiaries": {
       "male": 338.0,
-      "total": 338.0
+      "total": 338.0,
+      "female": "-"
     },
     "bpsklVerification": {
       "status": "matched",
@@ -2850,6 +3979,76 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Rokan Hulu",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "chairperson": "Jamaris",
+      "forestManagementUnit": "UPT KPH Suligi Batu Gajah",
+      "independentFacilitator": "-",
+      "facilitators": {
+        "2019": "-",
+        "2020": "-",
+        "2021": "Mulyanto/081378104923",
+        "2022": "Mulyanto/081378104923",
+        "2023": "Mulyanto/081378104923",
+        "2024": "Mulyanto/081378104923",
+        "2025": "Mulyanto/081378104923"
+      },
+      "boundaryMarking": "Belum",
+      "rkpsStatus": "RKU Periode 2019 s.d 2028. Pengesahan Oleh Kepala KPH an. Almawen. RKPS Periode 2025 s.d 2034 (S.360/VI-5/BPS.I/PSL.01.01/B/10/2025 Tanggal 6 Oktober 2025)"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 1705.0,
+      "productionForestHa": "-",
+      "conservationHa": "-",
+      "otherUseAreaHa": "-"
+    },
+    "landCoverHa": {
+      "hutan_lahan_kering_primer": "-",
+      "hutan_lahan_kering_sekunder": 237.01,
+      "hutan_mangrove_primer": "-",
+      "hutan_rawa_primer": "-",
+      "hutan_mangrove_sekunder": "-",
+      "hutan_rawa_sekunder": "-",
+      "hutan_tanaman": "-",
+      "belukar": 67.99,
+      "perkebunan": 1282.6,
+      "pemukiman": "-",
+      "tanah_terbuka": 115.17,
+      "badan_air": "-",
+      "belukar_rawa": "-",
+      "pertanian_lahan_kering": "-",
+      "pertanian_lahan_kering_campuran": "-",
+      "sawah": "-",
+      "tambak": "-",
+      "pertambangan": "-",
+      "rawa": "-"
+    },
+    "palmOil": {
+      "imageryHa": 1095.36,
+      "decreeHa": "-"
+    },
+    "kups": [
+      {
+        "name": "1. KUPS Kelompok Penangkap Ikan Tandun, 2. KUPS Kelompok KUPS Sipang Jaya, 3. KUPS Kelompok Bambu Palma Tandun, 4. KUPS Agroforestry \"Kulim Maju Sejahtera\", 5. KUPS \"Silvofishery\" Kulim Berseri, 6. KUPS \"Silvopastura\" Kulim Maju Bersama",
+        "decreeNumber": "1. 16/PEM-DES/TDN-2019 Tanggal 14 Agustus 2019, 2. 17 Tahun 2020 Tanggal 17 Januari 2020, 3. 26 Tahun 2020 Tanggal 29 Desember 2020, 4. Kpts.140/14.06.11.2002/16/2021 Tanggal 25 Maret 2021, 5. Kpts.140/14.06.11.2002/17/2021 Tanggal 25 Maret 2021, 6. Kpts.140/14.06.11.2002/18/2021 Tanggal 25 Maret 2021",
+        "chairperson": "1. Al Ahri/ , 2. Jamris/ , 3. Jamelri Andesta/ , 4. Haryono/ , 5. Muh. Rendy CP/ , 6. Nuryanto",
+        "class": "1. Gold, 2. Gold, 3. Gold, 4. Silver, 5. Gold, 6. Silver",
+        "commodity": "1. Ikan Sungai, 2. HHBK, 3. Aren, Pinang, Rotan dan Bambu, 4. Tanaman MPTS dan Tanaman Semusim, 5. Budidaya Perikanan, 6. Budidaya Ternak dan Makanan Ternak"
+      }
+    ],
+    "governance": {
+      "cooperation": "Tidak Ada",
+      "overlapHa": "-",
+      "forestFunctionChangeToAplHa": "-",
+      "supervision": "1. Pembinaan dan Pengawasan PS 6-10 Desember 2024, 2. Puldasi Aduan HKm KT Sipang Jaya Tanggal 15-16 Juli 2025",
+      "evaluation": "Belum"
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "skDataAvailability": "Ada",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Rokan Hulu",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.4988/menlhk-pskl/pkps/psl.0/6/2022": {
@@ -2888,6 +4087,67 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Rokan Hulu",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "chairperson": "Erpandes",
+      "forestManagementUnit": "UPT KPH Suligi Batu Gajah",
+      "independentFacilitator": "-",
+      "facilitators": {
+        "2019": "-",
+        "2020": "-",
+        "2021": "-",
+        "2022": "-",
+        "2023": "Donal Pitomonda/ 081270949242",
+        "2024": "Rinaldi/ 082384880244",
+        "2025": "Tasman Adi/ 08117673380"
+      },
+      "boundaryMarking": "Belum",
+      "rkpsStatus": "Belum Ada"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 325.0,
+      "productionForestHa": "-",
+      "conservationHa": "-",
+      "otherUseAreaHa": "-"
+    },
+    "landCoverHa": {
+      "hutan_lahan_kering_primer": 60.33,
+      "hutan_lahan_kering_sekunder": "-",
+      "hutan_mangrove_primer": "-",
+      "hutan_rawa_primer": "-",
+      "hutan_mangrove_sekunder": "-",
+      "hutan_rawa_sekunder": "-",
+      "hutan_tanaman": "-",
+      "belukar": 265.12,
+      "perkebunan": "-",
+      "pemukiman": "-",
+      "tanah_terbuka": "-",
+      "badan_air": "-",
+      "belukar_rawa": "-",
+      "pertanian_lahan_kering": "-",
+      "pertanian_lahan_kering_campuran": "-",
+      "sawah": "-",
+      "tambak": "-",
+      "pertambangan": "-",
+      "rawa": "-"
+    },
+    "palmOil": {
+      "imageryHa": 13.52,
+      "decreeHa": "-"
+    },
+    "governance": {
+      "cooperation": "Tidak Ada",
+      "overlapHa": "-",
+      "forestFunctionChangeToAplHa": "-",
+      "supervision": "Belum",
+      "evaluation": "Belum"
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "skDataAvailability": "Ada",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Rokan Hulu",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.4989/menlhk-pskl/pkps/psl.0/6/2022": {
@@ -2926,6 +4186,76 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Rokan Hulu",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "chairperson": "Surya",
+      "forestManagementUnit": "UPT KPH Suligi Batu Gajah",
+      "independentFacilitator": "-",
+      "facilitators": {
+        "2019": "-",
+        "2020": "-",
+        "2021": "-",
+        "2022": "-",
+        "2023": "Nurfiani/ 08126778430",
+        "2024": "Nanik Suparni/ 082169598839",
+        "2025": "Suzi Mei Yola/ 081275785899"
+      },
+      "boundaryMarking": "Belum",
+      "rkpsStatus": "Revisi RKPS terhambat, Pendamping PS Tahun 2024 sulit dihubungi"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": "-",
+      "productionForestHa": 917.0,
+      "conservationHa": "-",
+      "otherUseAreaHa": "-"
+    },
+    "landCoverHa": {
+      "hutan_lahan_kering_primer": 25.43,
+      "hutan_lahan_kering_sekunder": 95.01,
+      "hutan_mangrove_primer": "-",
+      "hutan_rawa_primer": "-",
+      "hutan_mangrove_sekunder": "-",
+      "hutan_rawa_sekunder": "-",
+      "hutan_tanaman": "-",
+      "belukar": 107.28,
+      "perkebunan": 656.46,
+      "pemukiman": "-",
+      "tanah_terbuka": 33.76,
+      "badan_air": "-",
+      "belukar_rawa": "-",
+      "pertanian_lahan_kering": "-",
+      "pertanian_lahan_kering_campuran": "-",
+      "sawah": "-",
+      "tambak": "-",
+      "pertambangan": "-",
+      "rawa": "-"
+    },
+    "palmOil": {
+      "imageryHa": 220.61,
+      "decreeHa": "-"
+    },
+    "kups": [
+      {
+        "name": "1. KUPS Rokan Jaya, 2. KUPS Berkah Rimbo Pegang, 3. KUPS Bukit Pegang , 4. KUPS Sungai Palih",
+        "decreeNumber": "1. 04/KPTS.525/SBG-PERLIN/KUPS-XVI/X/2023 Tanggal 2 Oktober 2023, 2. 05/Kpts.525/SBG-PERLIN/KUPS-XVI/X/2023 Tanggal 2 Oktober 2023, 3. 06/KPTS.525/SBG-PERLIN/KUPS.XVI/X/2023 Tanggal 2 Oktober 2023, 4. 07/KPTS.525/SBG-PERLIN/KUPS.XVI/X/2023 Tanggal 2 Oktober 2023",
+        "chairperson": "1. Jenefra/ , 2. Zel Arif/ , 3. Aswandi/ , 4. Sodikil Wadi",
+        "class": "1. Blue, 2. Blue, 3. Blue, 4. Blue",
+        "commodity": "1. Agroforestry, Eukaliptus, Kopi, Cengkeh, Tanaman Pangan dan Hortikultura, 2. Ternak Rumanansia, 3. Ikan Nila dan Ikan Emas, 4. Wisata Alam dan Agrowisata"
+      }
+    ],
+    "governance": {
+      "cooperation": "Tidak Ada",
+      "overlapHa": "-",
+      "forestFunctionChangeToAplHa": "-",
+      "supervision": "Belum",
+      "evaluation": "Belum"
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "skDataAvailability": "Ada",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Rokan Hulu",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.5543/menlhk-pskl/pkps/psl.0/6/2022": {
@@ -2964,6 +4294,72 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Rokan Hulu",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "chairperson": "Heri Yano",
+      "forestManagementUnit": "UPT KPH Suligi Batu Gajah",
+      "independentFacilitator": "-",
+      "facilitators": {
+        "2019": "-",
+        "2020": "-",
+        "2021": "-",
+        "2022": "-",
+        "2023": "Taufik Hidayat/ 081365318435",
+        "2024": "-",
+        "2025": "Marhalim/ 081371162155"
+      },
+      "boundaryMarking": "Belum",
+      "rkpsStatus": "Belum Ada"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": "-",
+      "productionForestHa": 713.0,
+      "conservationHa": "-",
+      "otherUseAreaHa": "-"
+    },
+    "landCoverHa": {
+      "hutan_lahan_kering_primer": 238.95,
+      "hutan_lahan_kering_sekunder": "-",
+      "hutan_mangrove_primer": "-",
+      "hutan_rawa_primer": "-",
+      "hutan_mangrove_sekunder": "-",
+      "hutan_rawa_sekunder": "-",
+      "hutan_tanaman": "-",
+      "belukar": 41.65,
+      "perkebunan": 9.47,
+      "pemukiman": "-",
+      "tanah_terbuka": 418.05,
+      "badan_air": "-",
+      "belukar_rawa": "-",
+      "pertanian_lahan_kering": "-",
+      "pertanian_lahan_kering_campuran": 4.91,
+      "sawah": "-",
+      "tambak": "-",
+      "pertambangan": "-",
+      "rawa": "-"
+    },
+    "palmOil": {
+      "imageryHa": 198.7,
+      "decreeHa": "-"
+    },
+    "kups": [
+      {
+        "name": "SK Proses di KPH"
+      }
+    ],
+    "governance": {
+      "cooperation": "Tidak Ada",
+      "overlapHa": "-",
+      "forestFunctionChangeToAplHa": "-",
+      "supervision": "Belum",
+      "evaluation": "Belum"
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "skDataAvailability": "Ada",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Rokan Hulu",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.5138/menlhk-pskl/pkps/psl.0/6/2022": {
@@ -3002,6 +4398,72 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Rokan Hulu",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "chairperson": "Bahrul",
+      "forestManagementUnit": "UPT KPH Suligi Batu Gajah dan UPT KPH Rokan",
+      "independentFacilitator": "-",
+      "facilitators": {
+        "2019": "-",
+        "2020": "-",
+        "2021": "-",
+        "2022": "-",
+        "2023": "Nanik Suparni/ 082169598839",
+        "2024": "Satria/ 081371519178",
+        "2025": "Satria/ 081371519178"
+      },
+      "boundaryMarking": "Proses (130 Pal dari 463 Pal)",
+      "rkpsStatus": "RKPS Periode 2025 s.d 2034 (S.447/VI-5/BPS-I/PSL.03.01/B/11/2025 Tanggal 17 November 2025)"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": "-",
+      "productionForestHa": 4438.0,
+      "conservationHa": "-",
+      "otherUseAreaHa": "-"
+    },
+    "landCoverHa": {
+      "hutan_lahan_kering_primer": 3136.0,
+      "hutan_lahan_kering_sekunder": 28.61,
+      "hutan_mangrove_primer": "-",
+      "hutan_rawa_primer": "-",
+      "hutan_mangrove_sekunder": "-",
+      "hutan_rawa_sekunder": "-",
+      "hutan_tanaman": "-",
+      "belukar": 247.85,
+      "perkebunan": 600.65,
+      "pemukiman": "-",
+      "tanah_terbuka": 421.35,
+      "badan_air": 4.08,
+      "belukar_rawa": "-",
+      "pertanian_lahan_kering": "-",
+      "pertanian_lahan_kering_campuran": "-",
+      "sawah": "-",
+      "tambak": "-",
+      "pertambangan": "-",
+      "rawa": "-"
+    },
+    "palmOil": {
+      "imageryHa": "Tidak Teridentifikasi",
+      "decreeHa": "-"
+    },
+    "kups": [
+      {
+        "name": "Belum Ada"
+      }
+    ],
+    "governance": {
+      "cooperation": "Tidak Ada",
+      "overlapHa": "-",
+      "forestFunctionChangeToAplHa": "-",
+      "supervision": "Pengawasan 23 Januari 2026",
+      "evaluation": "Belum"
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "skDataAvailability": "Ada",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Rokan Hulu",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.7486/menlhk-pskl/pkps/psl.0/7/2023": {
@@ -3040,6 +4502,67 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Rokan Hulu",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "chairperson": "Reki Periadi",
+      "forestManagementUnit": "UPT KPH Rokan",
+      "independentFacilitator": "-",
+      "facilitators": {
+        "2019": "-",
+        "2020": "-",
+        "2021": "-",
+        "2022": "-",
+        "2023": "-",
+        "2024": "Nursal/ 082288192509",
+        "2025": "Sri Azimah/ 082382554487"
+      },
+      "boundaryMarking": "Belum",
+      "rkpsStatus": "RKPS Periode 2024 s.d 2033 (S.609/X-1/BPSKL-2/PSL.10.1/B/12/2024 Tanggal 31 Desember"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": "-",
+      "productionForestHa": 330.0,
+      "conservationHa": "-",
+      "otherUseAreaHa": "-"
+    },
+    "landCoverHa": {
+      "hutan_lahan_kering_primer": "-",
+      "hutan_lahan_kering_sekunder": 119.73,
+      "hutan_mangrove_primer": "-",
+      "hutan_rawa_primer": "-",
+      "hutan_mangrove_sekunder": "-",
+      "hutan_rawa_sekunder": "-",
+      "hutan_tanaman": "-",
+      "belukar": 50.26,
+      "perkebunan": 154.33,
+      "pemukiman": "-",
+      "tanah_terbuka": 6.27,
+      "badan_air": "-",
+      "belukar_rawa": "-",
+      "pertanian_lahan_kering": "-",
+      "pertanian_lahan_kering_campuran": "-",
+      "sawah": "-",
+      "tambak": "-",
+      "pertambangan": "-",
+      "rawa": "-"
+    },
+    "palmOil": {
+      "imageryHa": 6.33,
+      "decreeHa": "-"
+    },
+    "governance": {
+      "cooperation": "Tidak Ada",
+      "overlapHa": "-",
+      "forestFunctionChangeToAplHa": "-",
+      "supervision": "Belum",
+      "evaluation": "Belum"
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "skDataAvailability": "Ada",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Rokan Hulu",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.7725/menlhk-pskl/pkps/psl.0/7/2023": {
@@ -3078,6 +4601,77 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Rokan Hulu",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "chairperson": "As'ari Lubis",
+      "forestManagementUnit": "UPT KPH Rokan",
+      "independentFacilitator": "-",
+      "facilitators": {
+        "2019": "-",
+        "2020": "-",
+        "2021": "-",
+        "2022": "-",
+        "2023": "-",
+        "2024": "Harisman/081268857373",
+        "2025": "Harisman/081268857373"
+      },
+      "boundaryMarking": "Belum",
+      "rkpsStatus": "RKPS Periode 2023 s.d 2032 (Nomor : S.1403/X-1/BPSKL-2/PSL.2/12/2023 Tanggal 29 Desember 2023)"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": "-",
+      "productionForestHa": 84.0,
+      "conservationHa": "-",
+      "otherUseAreaHa": "-"
+    },
+    "landCoverHa": {
+      "hutan_lahan_kering_primer": "-",
+      "hutan_lahan_kering_sekunder": 71.24,
+      "hutan_mangrove_primer": "-",
+      "hutan_rawa_primer": "-",
+      "hutan_mangrove_sekunder": "-",
+      "hutan_rawa_sekunder": "-",
+      "hutan_tanaman": "-",
+      "belukar": 11.48,
+      "perkebunan": 1.27,
+      "pemukiman": "-",
+      "tanah_terbuka": 0.02,
+      "badan_air": "-",
+      "belukar_rawa": "-",
+      "pertanian_lahan_kering": "-",
+      "pertanian_lahan_kering_campuran": "-",
+      "sawah": "-",
+      "tambak": "-",
+      "pertambangan": "-",
+      "rawa": "-"
+    },
+    "palmOil": {
+      "imageryHa": "-",
+      "decreeHa": "-"
+    },
+    "kups": [
+      {
+        "name": "KUPS Hutan Kita Lestari",
+        "decreeNumber": "06 Tahun 2024 Tanggal 17 Oktober 2024",
+        "chairperson": "Fahri Husaini",
+        "class": "Silver",
+        "commodity": "Buah-Buahan, Lebah Madu, dan HHBK Lainnya",
+        "commodityAreaHa": 20.0
+      }
+    ],
+    "governance": {
+      "cooperation": "Tidak Ada",
+      "overlapHa": "-",
+      "forestFunctionChangeToAplHa": "-",
+      "supervision": "Belum",
+      "evaluation": "Belum"
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "skDataAvailability": "Ada",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Rokan Hulu",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.916 tahun 2024": {
@@ -3105,8 +4699,76 @@
     "skDocumentCheckedAt": "2026-08-28",
     "province": "Riau",
     "bpsklVerification": {
-      "status": "not-matched",
-      "source": "Data Perhutanan Sosial di Provinsi Riau"
+      "status": "matched",
+      "source": "Data Perhutanan Sosial di Provinsi Riau",
+      "method": "decree",
+      "sourceSheet": "Rokan Hulu"
+    },
+    "management": {
+      "chairperson": "Izul",
+      "forestManagementUnit": "UPT KPH Suligi Batu Gajah",
+      "independentFacilitator": "-",
+      "facilitators": {
+        "2019": "-",
+        "2020": "-",
+        "2021": "-",
+        "2022": "-",
+        "2023": "-",
+        "2024": "-",
+        "2025": "Marhalim/ 081371162155"
+      },
+      "boundaryMarking": "Belum",
+      "rkpsStatus": "Belum Ada"
+    },
+    "beneficiaries": {
+      "male": 30.0,
+      "female": 51.0,
+      "total": 81.0
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": "-",
+      "productionForestHa": 1215.0,
+      "conservationHa": "-",
+      "otherUseAreaHa": "-"
+    },
+    "landCoverHa": {
+      "hutan_lahan_kering_primer": 783.96,
+      "hutan_lahan_kering_sekunder": 15.37,
+      "hutan_mangrove_primer": "-",
+      "hutan_rawa_primer": "-",
+      "hutan_mangrove_sekunder": "-",
+      "hutan_rawa_sekunder": "-",
+      "hutan_tanaman": "-",
+      "belukar": 38.34,
+      "perkebunan": "-",
+      "pemukiman": "-",
+      "tanah_terbuka": 377.91,
+      "badan_air": "-",
+      "belukar_rawa": "-",
+      "pertanian_lahan_kering": "-",
+      "pertanian_lahan_kering_campuran": "-",
+      "sawah": "-",
+      "tambak": "-",
+      "pertambangan": "-",
+      "rawa": "-"
+    },
+    "palmOil": {
+      "imageryHa": 166.0,
+      "decreeHa": "-"
+    },
+    "governance": {
+      "cooperation": "Tidak Ada",
+      "overlapHa": "-",
+      "forestFunctionChangeToAplHa": "-",
+      "supervision": "Belum",
+      "evaluation": "Belum"
+    },
+    "bpsklProfile": {
+      "status": "Belum Diserahkan",
+      "skDataAvailability": "Ada",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Rokan Hulu",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.5729 tahun 2024": {
@@ -3141,10 +4803,76 @@
     },
     "bpsklVerification": {
       "status": "matched",
-      "method": "name-location",
+      "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Rokan Hulu",
       "handoverStatus": "Belum Diserahkan"
+    },
+    "management": {
+      "chairperson": "Fajri",
+      "forestManagementUnit": "UPT KPH Suligi Batu Gajah",
+      "independentFacilitator": "-",
+      "facilitators": {
+        "2019": "-",
+        "2020": "-",
+        "2021": "-",
+        "2022": "-",
+        "2023": "-",
+        "2024": "-",
+        "2025": "Mulyanto/081378104923"
+      },
+      "boundaryMarking": "Belum",
+      "rkpsStatus": "Belum Ada"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 311.4,
+      "productionForestHa": "-",
+      "conservationHa": "-",
+      "otherUseAreaHa": "-"
+    },
+    "landCoverHa": {
+      "hutan_lahan_kering_primer": "-",
+      "hutan_lahan_kering_sekunder": 223.56,
+      "hutan_mangrove_primer": "-",
+      "hutan_rawa_primer": "-",
+      "hutan_mangrove_sekunder": "-",
+      "hutan_rawa_sekunder": "-",
+      "hutan_tanaman": "-",
+      "belukar": 8.02,
+      "perkebunan": 24.05,
+      "pemukiman": "-",
+      "tanah_terbuka": 55.73,
+      "badan_air": "-",
+      "belukar_rawa": "-",
+      "pertanian_lahan_kering": "-",
+      "pertanian_lahan_kering_campuran": "-",
+      "sawah": "-",
+      "tambak": "-",
+      "pertambangan": "-",
+      "rawa": "-"
+    },
+    "palmOil": {
+      "imageryHa": 16.04,
+      "decreeHa": "-"
+    },
+    "kups": [
+      {
+        "name": "SK Proses di KPH"
+      }
+    ],
+    "governance": {
+      "cooperation": "Tidak Ada",
+      "overlapHa": "-",
+      "forestFunctionChangeToAplHa": "-",
+      "supervision": "Belum",
+      "evaluation": "Belum"
+    },
+    "bpsklProfile": {
+      "status": "Belum Diserahkan",
+      "skDataAvailability": "Ada",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Rokan Hulu",
+      "updatedAt": "2026-08-29"
     }
   },
   "drive-audit:kampar-kud-agro-lestari": {
@@ -3181,7 +4909,8 @@
     "management": {},
     "beneficiaries": {
       "male": 55.0,
-      "total": 55.0
+      "total": 55.0,
+      "female": "-"
     },
     "province": "Riau",
     "decreeDate": "2011-11-11",
@@ -3189,8 +4918,21 @@
       "status": "matched",
       "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Kampar",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": "-",
+      "productionForestHa": 177.0,
+      "limitedProductionForestHa": "-",
+      "convertibleProductionForestHa": "-",
+      "conservationHa": "-",
+      "otherUseAreaHa": "-"
+    },
+    "bpsklProfile": {
+      "status": "Sudah di serahkan",
+      "sourceSheet": "Kampar",
+      "updatedAt": "2026-08-29"
     }
   },
   "drive-audit:kampar-kud-sepakat-jaya": {
@@ -3228,7 +4970,8 @@
     "management": {},
     "beneficiaries": {
       "male": 200.0,
-      "total": 200.0
+      "total": 200.0,
+      "female": "-"
     },
     "province": "Riau",
     "decreeDate": "2011-11-11",
@@ -3236,8 +4979,20 @@
       "status": "matched",
       "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Kampar",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": "-",
+      "limitedProductionForestHa": "-",
+      "convertibleProductionForestHa": "-",
+      "conservationHa": "-",
+      "otherUseAreaHa": "-"
+    },
+    "bpsklProfile": {
+      "status": "Sudah di serahkan",
+      "sourceSheet": "Kampar",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.3072/menlhk-pskl/pkps/psl.0/5/2018": {
@@ -3268,14 +5023,41 @@
     "decreeDate": "2018-05-17",
     "beneficiaries": {
       "male": 370.0,
-      "total": 370.0
+      "total": 370.0,
+      "female": "-"
     },
     "bpsklVerification": {
       "status": "matched",
       "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Kampar",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "chairperson": "Zulfikar",
+      "forestManagementUnit": "UPT KPH Model Kampar Kiri"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": "-",
+      "productionForestHa": "-",
+      "limitedProductionForestHa": 5550.0,
+      "convertibleProductionForestHa": "-",
+      "conservationHa": "-",
+      "otherUseAreaHa": "-"
+    },
+    "landCoverHa": {
+      "hutan_lahan_kering_primer": 2066.71,
+      "hutan_lahan_kering_sekunder": 2907.02,
+      "belukar": 140.66,
+      "tanah_terbuka": 44.36,
+      "pertanian_lahan_kering_campuran": 372.88
+    },
+    "bpsklProfile": {
+      "status": "Sudah di serahkan",
+      "skDataAvailability": "PDF",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Kampar",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.10976/menlhk-pskl/pkps/psl.0/9/2023": {
@@ -3312,8 +5094,34 @@
       "status": "matched",
       "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Kampar",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "forestManagementUnit": "UPT KPH Suligi - Batu Gajah",
+      "facilitators": {
+        "2025": "Taufik Hidayat, S.Hut"
+      }
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": "-",
+      "productionForestHa": "-",
+      "limitedProductionForestHa": "-",
+      "convertibleProductionForestHa": "-",
+      "conservationHa": "-",
+      "otherUseAreaHa": "-"
+    },
+    "landCoverHa": {
+      "hutan_lahan_kering_sekunder": 28.42,
+      "belukar": 25.3,
+      "tanah_terbuka": 15.63
+    },
+    "bpsklProfile": {
+      "status": "Sudah di serahkan",
+      "skDataAvailability": "PDF",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Kampar",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.9862/menlhk-pskl/pkps/psl.0/9/2023": {
@@ -3350,8 +5158,38 @@
       "status": "matched",
       "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Kampar",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "chairperson": "Adi Syaputra",
+      "forestManagementUnit": "UPT KPH Sorek",
+      "rkpsStatus": "RKPS Periode 2024 s.d 2033"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": "-",
+      "productionForestHa": 1147.0,
+      "limitedProductionForestHa": 421.0,
+      "convertibleProductionForestHa": "-",
+      "conservationHa": "-",
+      "otherUseAreaHa": "-"
+    },
+    "landCoverHa": {
+      "hutan_lahan_kering_sekunder": 42.71,
+      "hutan_tanaman": 1411.72,
+      "belukar": 47.22,
+      "perkebunan": 33.96,
+      "tanah_terbuka": 32.58
+    },
+    "governance": {
+      "cooperation": "PT. Nusa Prima Manunggal"
+    },
+    "bpsklProfile": {
+      "status": "Sudah di serahkan",
+      "skDataAvailability": "PDF",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Kampar",
+      "updatedAt": "2026-08-29"
     }
   },
   "917 tahun 2024": {
@@ -3388,8 +5226,38 @@
       "status": "matched",
       "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Kampar",
       "handoverStatus": "Belum Diserahkan"
+    },
+    "management": {
+      "chairperson": "Apriyal Apendi",
+      "forestManagementUnit": "UPT KPH Kampar Kiri",
+      "facilitators": {
+        "2024": "Riandi, Nst",
+        "2025": "Nizam Febri, S.Hut"
+      }
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 169.0,
+      "productionForestHa": "-",
+      "limitedProductionForestHa": "-",
+      "convertibleProductionForestHa": "-",
+      "conservationHa": "-",
+      "otherUseAreaHa": "-"
+    },
+    "landCoverHa": {
+      "hutan_lahan_kering_sekunder": 147.41,
+      "belukar": 1.15,
+      "perkebunan": 1.14,
+      "tanah_terbuka": 18.36,
+      "badan_air": 1.19
+    },
+    "bpsklProfile": {
+      "status": "Belum Diserahkan",
+      "skDataAvailability": "PDF",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Kampar",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.3887/menlhk-pskl/pkps/psl.0/7/2017": {
@@ -3421,10 +5289,18 @@
       "validityPeriod": "35 tahun",
       "source": "Dokumen SK"
     },
-    "management": {},
+    "management": {
+      "forestManagementUnit": "UPT KPH Sorek",
+      "facilitators": {
+        "2023": "Nursyirwan, S.Hut",
+        "2024": "Annisa Wahyu Safitri, S.Hut"
+      },
+      "rkpsStatus": "RHPD Periode 2018 s.d 2027 Pengesahan oleh Kepala KPH A.n Khairil Anwar"
+    },
     "beneficiaries": {
       "male": 657.0,
-      "total": 657.0
+      "total": 657.0,
+      "female": "-"
     },
     "province": "Riau",
     "decreeDate": "2017-07-13",
@@ -3432,8 +5308,30 @@
       "status": "matched",
       "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Kampar",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": "-",
+      "productionForestHa": 190.8,
+      "limitedProductionForestHa": 2750.9,
+      "convertibleProductionForestHa": "-",
+      "conservationHa": "-",
+      "otherUseAreaHa": "-"
+    },
+    "landCoverHa": {
+      "hutan_lahan_kering_sekunder": 578.58,
+      "hutan_tanaman": 1452.64,
+      "belukar": 58.72,
+      "perkebunan": 201.66,
+      "tanah_terbuka": 650.12
+    },
+    "bpsklProfile": {
+      "status": "Sudah di serahkan",
+      "skDataAvailability": "PDF",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Kampar",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.5160/menlhk-pskl/pkps/psl.0/10/2017": {
@@ -3468,14 +5366,43 @@
     "decreeDate": "2017-10-04",
     "beneficiaries": {
       "male": 670.0,
-      "total": 670.0
+      "total": 670.0,
+      "female": "-"
     },
     "bpsklVerification": {
       "status": "matched",
       "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Kampar",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "forestManagementUnit": "UPT KPH Kampar Kiri",
+      "facilitators": {
+        "2021": "Roni Padli, S. Hut"
+      }
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 375.0,
+      "productionForestHa": 230.0,
+      "limitedProductionForestHa": "-",
+      "convertibleProductionForestHa": "-",
+      "conservationHa": "-",
+      "otherUseAreaHa": "-"
+    },
+    "landCoverHa": {
+      "hutan_lahan_kering_primer": 25.3,
+      "hutan_lahan_kering_sekunder": 305.8,
+      "belukar": 152.5,
+      "perkebunan": 114.46,
+      "tanah_terbuka": 5.85
+    },
+    "bpsklProfile": {
+      "status": "Sudah di serahkan",
+      "skDataAvailability": "PDF",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Kampar",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk. 3641/menlhk-pskl/pkps/psl.0/5/2018": {
@@ -3505,14 +5432,58 @@
     "decreeDate": "2018-05-31",
     "beneficiaries": {
       "male": 216.0,
-      "total": 216.0
+      "total": 216.0,
+      "female": "-"
     },
     "bpsklVerification": {
       "status": "matched",
       "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Kampar",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "chairperson": "Apen",
+      "forestManagementUnit": "UPT KPH Suligi - Batu Gajah",
+      "facilitators": {
+        "2021": "Maya Puspita Tri Rizky",
+        "2023": "Maya Puspita Tri Rizky",
+        "2024": "Maya Puspita Tri Rizky"
+      },
+      "rkpsStatus": "Revisi RKPS Periode 2022 s.d 2031 (S.569/X-1/BPSKL-2/PSL.10.1/B/12/2024 Tanggal 31 Desember 2024)"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": "-",
+      "productionForestHa": "-",
+      "limitedProductionForestHa": 2670.0,
+      "convertibleProductionForestHa": "-",
+      "conservationHa": "-",
+      "otherUseAreaHa": "-"
+    },
+    "landCoverHa": {
+      "hutan_lahan_kering_sekunder": 961.51,
+      "belukar": 355.92,
+      "perkebunan": 775.88,
+      "tanah_terbuka": 345.95,
+      "pertanian_lahan_kering": 467.9,
+      "pertanian_lahan_kering_campuran": 230.38
+    },
+    "kups": [
+      {
+        "name": "Alam Mahligai Muara Takus",
+        "decreeNumber": "Kpts.525/SBG-Perlin/KUPS-XVII/VII/2022/01",
+        "class": "BLUE"
+      }
+    ],
+    "governance": {
+      "cooperation": "PT.ARARA"
+    },
+    "bpsklProfile": {
+      "status": "Sudah di serahkan",
+      "skDataAvailability": "PDF",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Kampar",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.9852/menlhk-pskl/pkps/psl.0/9/2023": {
@@ -3741,6 +5712,50 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Indragiri Hulu",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "chairperson": "Rodang",
+      "forestManagementUnit": "Indragiri",
+      "facilitators": {
+        "2023": "Suharni",
+        "2024": "Jamri, S. Hut",
+        "2025": "Jamri, S.Hut"
+      },
+      "rkpsStatus": "RKPS Periode 2024 s.d 2033"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": "-",
+      "limitedProductionForestHa": 1079.0,
+      "convertibleProductionForestHa": "-",
+      "conservationHa": "-",
+      "otherUseAreaHa": "-"
+    },
+    "landCoverHa": {
+      "hutan_lahan_kering_sekunder": 517.05,
+      "belukar": 360.12,
+      "perkebunan": 110.84,
+      "tanah_terbuka": 92.14,
+      "pertambangan": 0.69
+    },
+    "palmOil": {
+      "imageryHa": 63.0
+    },
+    "kups": [
+      {
+        "name": "Rindu Alam",
+        "decreeNumber": "Kpts.106/UPT-KPH-INDRAGIRI/2024",
+        "chairperson": "Rodesman",
+        "class": "Silver",
+        "commodity": "HHBK 1. TBS"
+      }
+    ],
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "skDataAvailability": "Tersedia",
+      "mapDataAvailability": "ada",
+      "sourceSheet": "Indragiri Hulu",
+      "updatedAt": "2026-08-29"
     }
   },
   "drive-audit:indragiri-hulu-kth-bomban-berduri": {
@@ -3770,10 +5785,17 @@
       "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
       "source": "Dokumen SK"
     },
-    "management": {},
+    "management": {
+      "forestManagementUnit": "TNBT",
+      "facilitators": {
+        "2023": "Fonda Amelia Sarah, S. Hut"
+      },
+      "rkpsStatus": "Draft RKPS Periode 2023 s.d 2032.Penilaian Kepala SPTN Wil II Belilas a.n Ibram Eddy (Tidak diproses karena Kemitraan Konservasi). Perjanjian Kemitraan Konservasi ditindaklanjuti dengan Rencana Pelaksanaan Program (RPP)"
+    },
     "beneficiaries": {
       "male": 10.0,
-      "total": 10.0
+      "total": 10.0,
+      "female": 1.0
     },
     "province": "Riau",
     "decreeDate": "2022-08-12",
@@ -3781,8 +5803,27 @@
       "status": "matched",
       "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Indragiri Hulu",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 0.0,
+      "limitedProductionForestHa": "-",
+      "convertibleProductionForestHa": "-",
+      "conservationHa": 348.0,
+      "otherUseAreaHa": "-"
+    },
+    "landCoverHa": {
+      "hutan_lahan_kering_sekunder": 41.05,
+      "perkebunan": 312.89
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "skDataAvailability": "Tersedia",
+      "mapDataAvailability": "ada",
+      "sourceSheet": "Indragiri Hulu",
+      "updatedAt": "2026-08-29"
     }
   },
   "drive-audit:indragiri-hulu-kth-batu-berdiri": {
@@ -3818,10 +5859,17 @@
       "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
       "source": "Dokumen SK"
     },
-    "management": {},
+    "management": {
+      "forestManagementUnit": "TNBT",
+      "facilitators": {
+        "2023": "Santi Juwita"
+      },
+      "rkpsStatus": "Draft RKPS Periode 2023 s.d 2032.Penilaian Kepala SPTN Wil II Belilas a.n Ibram Eddy (Tidak diproses karena Kemitraan Konservasi). Perjanjian Kemitraan Konservasi ditindaklanjuti dengan Rencana Pelaksanaan Program (RPP)"
+    },
     "beneficiaries": {
       "male": 12.0,
-      "total": 12.0
+      "total": 12.0,
+      "female": 1.0
     },
     "province": "Riau",
     "decreeDate": "2022-08-12",
@@ -3829,8 +5877,29 @@
       "status": "matched",
       "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Indragiri Hulu",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 0.0,
+      "limitedProductionForestHa": "-",
+      "convertibleProductionForestHa": "-",
+      "conservationHa": 351.0,
+      "otherUseAreaHa": "-"
+    },
+    "landCoverHa": {
+      "hutan_lahan_kering_sekunder": 106.36,
+      "belukar": 9.44,
+      "perkebunan": 230.6,
+      "tanah_terbuka": 0.06
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "skDataAvailability": "Tersedia",
+      "mapDataAvailability": "ada",
+      "sourceSheet": "Indragiri Hulu",
+      "updatedAt": "2026-08-29"
     }
   },
   "drive-audit:indragiri-hulu-kth-batu-kucing": {
@@ -3866,11 +5935,18 @@
       "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
       "source": "Dokumen SK"
     },
-    "management": {},
+    "management": {
+      "forestManagementUnit": "TNBT",
+      "facilitators": {
+        "2023": "Santi Juwita"
+      },
+      "rkpsStatus": "Draft RKPS Periode 2023 s.d 2032.Penilaian Kepala SPTN Wil II Belilas a.n Ibram Eddy (Tidak diproses karena Kemitraan Konservasi). Perjanjian Kemitraan Konservasi ditindaklanjuti dengan Rencana Pelaksanaan Program (RPP)"
+    },
     "beneficiaries": {
       "indirectHouseholds": 3,
       "male": 16.0,
-      "total": 16.0
+      "total": 16.0,
+      "female": 1.0
     },
     "province": "Riau",
     "decreeDate": "2022-08-12",
@@ -3878,8 +5954,34 @@
       "status": "matched",
       "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Indragiri Hulu",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 0.0,
+      "limitedProductionForestHa": "-",
+      "convertibleProductionForestHa": "-",
+      "conservationHa": 329.0,
+      "otherUseAreaHa": "-"
+    },
+    "landCoverHa": {
+      "hutan_lahan_kering_sekunder": 83.8,
+      "belukar": 14.66,
+      "perkebunan": 228.44
+    },
+    "kups": [
+      {
+        "class": "Silver",
+        "commodity": "HHBK dan Madu Kelulut"
+      }
+    ],
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "skDataAvailability": "Tersedia",
+      "mapDataAvailability": "ada",
+      "sourceSheet": "Indragiri Hulu",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.9858/menlhk-pskl/pkps/psl.0/9/2023": {
@@ -3918,6 +6020,48 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Indragiri Hulu",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "chairperson": "Robi Auliansyah",
+      "forestManagementUnit": "Indragiri",
+      "facilitators": {
+        "2024": "Jamri, S.Hut",
+        "2025": "Jamri, S.Hut"
+      },
+      "rkpsStatus": "Belum Ada"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 587.0,
+      "limitedProductionForestHa": 239.0,
+      "convertibleProductionForestHa": 348.0,
+      "conservationHa": 0.0,
+      "otherUseAreaHa": "-"
+    },
+    "landCoverHa": {
+      "hutan_lahan_kering_sekunder": 20.15,
+      "hutan_tanaman": 64.39,
+      "perkebunan": 493.79,
+      "tanah_terbuka": 10.95
+    },
+    "palmOil": {
+      "imageryHa": 52.0
+    },
+    "kups": [
+      {
+        "name": "Ayik Nibung Jaya Lestari",
+        "decreeNumber": "Kpts.110/UPT-KPH-INDRAGIRI/2024",
+        "chairperson": "Reza Oktavianus",
+        "class": "Blue",
+        "commodity": "HHK"
+      }
+    ],
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "skDataAvailability": "Tersedia",
+      "mapDataAvailability": "ada",
+      "sourceSheet": "Indragiri Hulu",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.9859/menlhk-pskl/pkps/psl.0/9/2023": {
@@ -3954,8 +6098,41 @@
       "status": "matched",
       "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Indragiri Hulu",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "chairperson": "M Arifin",
+      "forestManagementUnit": "Indragiri",
+      "facilitators": {
+        "2024": "Nadilla Silvia, S.Hut",
+        "2025": "Nadila Silvia"
+      },
+      "rkpsStatus": "Revisi RKPS"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 778.14,
+      "limitedProductionForestHa": "-",
+      "convertibleProductionForestHa": "-",
+      "conservationHa": 0.0,
+      "otherUseAreaHa": "-"
+    },
+    "kups": [
+      {
+        "name": "Gambut Berkah",
+        "decreeNumber": "Kpts.108/UPT-KPH/INDRAGIRI/2024",
+        "chairperson": "M. Arifin",
+        "class": "Silver",
+        "commodity": "HHBK (Gaharu, Petai, pala, Jengkol)"
+      }
+    ],
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "skDataAvailability": "Tersedia",
+      "mapDataAvailability": "ada",
+      "sourceSheet": "Indragiri Hulu",
+      "updatedAt": "2026-08-29"
     }
   },
   "drive-audit:dumai-kth-mangrove-laksamana": {
@@ -4070,14 +6247,67 @@
     "decreeDate": "2017-12-22",
     "beneficiaries": {
       "male": 112.0,
-      "total": 112.0
+      "total": 112.0,
+      "female": 45.0
     },
     "bpsklVerification": {
       "status": "matched",
       "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Kuantan Singingi",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "chairperson": "Badur Ramin",
+      "forestManagementUnit": "KPH Kuansing",
+      "facilitators": {
+        "2019": "-",
+        "2020": "-",
+        "2021": "-",
+        "2022": "-",
+        "2023": "Rowandri / 082268559371",
+        "2024": "Musliadi / 081240043577",
+        "2025": "Musliadi / 081240043577"
+      },
+      "boundaryMarking": "Mandiri Tanggal 15 Agustus 2018",
+      "rkpsStatus": "RKU Periode 2020 s.d 2029. Pengesahan oleh Kepala KPH Singingi a.n. Abriman"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": "-",
+      "limitedProductionForestHa": "-",
+      "convertibleProductionForestHa": 759.0,
+      "otherUseAreaHa": "-"
+    },
+    "landCoverHa": {
+      "hutan_lahan_kering_sekunder": 5.28,
+      "hutan_tanaman": 636.81,
+      "perkebunan": 22.87,
+      "tanah_terbuka": 6.16,
+      "badan_air": 8.27,
+      "pertambangan": 86.26
+    },
+    "kups": [
+      {
+        "name": "KUPS Sungai Petapusan",
+        "decreeNumber": "522.05/TU-UPT KPH-Singingi/1589 Tanggal 20 Agustus 2024",
+        "chairperson": "Badur Ramin",
+        "class": "Silver",
+        "commodity": "Eucalyptus",
+        "commodityAreaHa": 518.0,
+        "annualProduction": "1.725 Ton/Ha/5 Tahun"
+      }
+    ],
+    "governance": {
+      "cooperation": "PT. Nusa Prima Manunggal No. 001/PKS-KTSP/IX/2024 No. 123/NPM/LGL/IX/2024 Tanggal 10 September 2024",
+      "overlapHa": "PT RIMBA LAZUARDI (0,01)"
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "skDataAvailability": "Ada",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Kuantan Singingi",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk. 6922/menlhk-pskl/pkps/psl.0/12/2017": {
@@ -4102,14 +6332,63 @@
     "decreeDate": "2017-12-27",
     "beneficiaries": {
       "male": 56.0,
-      "total": 56.0
+      "total": 56.0,
+      "female": 19.0
     },
     "bpsklVerification": {
       "status": "matched",
       "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Kuantan Singingi",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "chairperson": "Abasri",
+      "forestManagementUnit": "KPH Sorek",
+      "facilitators": {
+        "2019": "-",
+        "2020": "-",
+        "2021": "-",
+        "2022": "-",
+        "2023": "Doni Aprianto, SH / 082284740730",
+        "2024": "-",
+        "2025": "-"
+      },
+      "boundaryMarking": "Mandiri Tanggal 16 Agustus 2018",
+      "rkpsStatus": "RKU Periode 2020 s.d 2029. Pengesahan oleh Kepala KPH Sorek a.n Khairil Anwar"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": "-",
+      "limitedProductionForestHa": 0.0,
+      "convertibleProductionForestHa": 0.0,
+      "otherUseAreaHa": "-"
+    },
+    "landCoverHa": {
+      "hutan_tanaman": 114.07,
+      "perkebunan": 5.54
+    },
+    "palmOil": {
+      "imageryHa": 0.08
+    },
+    "kups": [
+      {
+        "commodity": "Eucalyptus",
+        "commodityAreaHa": 120.0,
+        "annualProduction": "0,129 M3/Ha/5 Tahun"
+      }
+    ],
+    "governance": {
+      "cooperation": "PT. Nusa Prima Manunggal No. 001/PKS-KTDLK/IX/2024 No. 121/NPM/LGL/IX/2024 Tanggal 9 September 2024",
+      "overlapHa": "-",
+      "supervision": "Sudah dilakukan pengawasan Tahun 2025 https://drive.google.com/file/d/1-VEG7bR0AGE4opSPC4bLBNmvl8t9eeO0/view?usp=drive_link"
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "skDataAvailability": "Ada",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Kuantan Singingi",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk. 3643/menlhk-pskl/pkps/psl.0/5/2018": {
@@ -4150,8 +6429,60 @@
       "status": "matched",
       "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Kuantan Singingi",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "chairperson": "M. Hadta",
+      "forestManagementUnit": "KPH Singingi",
+      "facilitators": {
+        "2019": "Rohani Murti T / 081365012220",
+        "2020": "Rohani Murti T / 081365012220",
+        "2021": "Rohani Murti. T / 081365012220",
+        "2022": "Rohani Murti. T / 081365012220",
+        "2023": "-",
+        "2024": "-",
+        "2025": "-"
+      },
+      "boundaryMarking": "Mandiri Tanggal 1 Juli 2019",
+      "rkpsStatus": "RKU Periode 2020 s.d 2029. Pengesahan oleh Kepala KPH Singingi a.n. Abriman"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": "-",
+      "limitedProductionForestHa": 19.0,
+      "convertibleProductionForestHa": 87.0,
+      "otherUseAreaHa": "-"
+    },
+    "landCoverHa": {
+      "hutan_tanaman": 96.88,
+      "perkebunan": 10.37
+    },
+    "palmOil": {
+      "imageryHa": 7.19
+    },
+    "kups": [
+      {
+        "name": "KUPS KT Maju Bersama",
+        "decreeNumber": "001/KPTS/STGL/III/2020",
+        "chairperson": "M. Hadta",
+        "class": "Silver",
+        "commodity": "Eucalyptus, Mangga dan Ternak Ikan",
+        "commodityAreaHa": 96.0,
+        "annualProduction": "180 M3/Ha/5 tahun"
+      }
+    ],
+    "governance": {
+      "cooperation": "PT. Nusa Prima Manunggal No. 001/PKS-KTDLS/IX/2024 No. 122/NPM/LGL/IX/2024 Tanggal 9 September 2024",
+      "overlapHa": "PT RIAU ANDALAN PULP & PAPER (0,15)",
+      "supervision": "Sudah dilakukan pengawasan Tahun 2025 https://drive.google.com/file/d/1ERa0gVGhH14O6cCu49bb0NWG5UAby7I0/view?usp=drive_link"
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "skDataAvailability": "Ada",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Kuantan Singingi",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.4433/menlhk-pskl/pkps/psl.0/6/2018": {
@@ -4187,8 +6518,47 @@
       "status": "matched",
       "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Kuantan Singingi",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "chairperson": "Jon Herman",
+      "forestManagementUnit": "KPH Singingi",
+      "facilitators": {
+        "2019": "Marjali / 081365215265",
+        "2020": "-",
+        "2021": "Yurnalis/ 082283535323",
+        "2022": "-",
+        "2023": "Winda Eliza, S.I.Kom / 088742825579",
+        "2024": "Afif Fandri, F/ 081266995696",
+        "2025": "-"
+      },
+      "rkpsStatus": "Belum ada"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 0.0,
+      "limitedProductionForestHa": 1565.0,
+      "convertibleProductionForestHa": 0.0,
+      "otherUseAreaHa": "-"
+    },
+    "landCoverHa": {
+      "hutan_lahan_kering_sekunder": 1378.21,
+      "hutan_tanaman": 48.02,
+      "belukar": 119.23,
+      "perkebunan": 13.61,
+      "tanah_terbuka": 2.24,
+      "pertambangan": 5.52
+    },
+    "governance": {
+      "overlapHa": "-"
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "skDataAvailability": "Ada",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Kuantan Singingi",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.4442/menlhk-pskl/pkps/psl.0/6/2018": {
@@ -4224,8 +6594,52 @@
       "status": "matched",
       "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Kuantan Singingi",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "chairperson": "Rafa'i",
+      "forestManagementUnit": "KPH Singingi",
+      "facilitators": {
+        "2019": "-",
+        "2020": "-",
+        "2021": "Yusmadeti / 082381045294",
+        "2022": "Yusmadeti / 082381045294",
+        "2023": "Musliadi, SH / 081240043577",
+        "2024": "-",
+        "2025": "-"
+      },
+      "boundaryMarking": "Mandiri Tanggal 3 Juli 2019",
+      "rkpsStatus": "RKU Periode 2020 s.d 2029. Pengesahan oleh Kepala KPH Singingi a.n. Abriman"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 33.0,
+      "limitedProductionForestHa": "-",
+      "convertibleProductionForestHa": 203.0,
+      "otherUseAreaHa": "-"
+    },
+    "landCoverHa": {
+      "hutan_tanaman": 218.68,
+      "perkebunan": 17.46
+    },
+    "kups": [
+      {
+        "commodity": "Eucalyptus",
+        "commodityAreaHa": 236.0,
+        "annualProduction": "0,18 M3/Ha/5 tahun"
+      }
+    ],
+    "governance": {
+      "cooperation": "PT. Nusa Prima Manunggal No. 001/PKS-KTDTR/IX/2024 No. 124/NPM/LGL/IX/2024 Tanggal 19 September 2024",
+      "supervision": "Sudah dilakukan pengawasan Tahun 2025 https://drive.google.com/file/d/1CYYnWQ3xRDeqX0OxmWkDCC6cwjbKOPJD/view?usp=drive_link"
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "skDataAvailability": "Ada",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Kuantan Singingi",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.10406/menlhk-pskl/pkps/psl.0/12/2019": {
@@ -4259,6 +6673,50 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Kuantan Singingi",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "chairperson": "Jarman",
+      "forestManagementUnit": "KPH Singingi",
+      "facilitators": {
+        "2019": "-",
+        "2020": "-",
+        "2021": "Nemora / 081371191126",
+        "2022": "-",
+        "2023": "Depriandri / 082390837807",
+        "2024": "-",
+        "2025": "Widya Nur Fadhila, SP / 082235959696"
+      }
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 0.0,
+      "limitedProductionForestHa": 1945.0,
+      "convertibleProductionForestHa": 0.0,
+      "otherUseAreaHa": "-"
+    },
+    "landCoverHa": {
+      "hutan_lahan_kering_primer": 279.21,
+      "hutan_lahan_kering_sekunder": 1376.86,
+      "hutan_tanaman": 0.8,
+      "belukar": 192.66,
+      "tanah_terbuka": 0.43,
+      "badan_air": 32.38,
+      "pertambangan": 63.5
+    },
+    "kups": [
+      {
+        "commodity": "Aren 200 batang Jagung tanah datar 1000 ha"
+      }
+    ],
+    "governance": {
+      "overlapHa": "-"
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "skDataAvailability": "Ada",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Kuantan Singingi",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.5136/menlhk-pskl/pkps/psl.0/6/2022": {
@@ -4288,14 +6746,63 @@
     "decreeDate": "2022-06-13",
     "beneficiaries": {
       "male": 52.0,
-      "total": 52.0
+      "total": 52.0,
+      "female": 13.0
     },
     "bpsklVerification": {
       "status": "matched",
       "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Kuantan Singingi",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "chairperson": "Salmi",
+      "forestManagementUnit": "KPH Sorek",
+      "facilitators": {
+        "2019": "-",
+        "2020": "-",
+        "2021": "-",
+        "2022": "-",
+        "2023": "-",
+        "2024": "-",
+        "2025": "-"
+      },
+      "boundaryMarking": "Mandiri Tanggal 15 Juli 2022",
+      "rkpsStatus": "RKPS Periode 2022-2031. Pengesahan oleh Kepala KPH Sorek a.n Dewi Handayani"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 92.5,
+      "limitedProductionForestHa": 126.5,
+      "convertibleProductionForestHa": 131.0,
+      "conservationHa": 0.0,
+      "otherUseAreaHa": "-"
+    },
+    "landCoverHa": {
+      "hutan_tanaman": 273.07,
+      "perkebunan": 76.95,
+      "pertanian_lahan_kering_campuran": 76.95
+    },
+    "palmOil": {
+      "imageryHa": 0.41
+    },
+    "kups": [
+      {
+        "commodity": "Eucalyptus"
+      }
+    ],
+    "governance": {
+      "cooperation": "PT. Nusa Prima Manunggal No. 001/PKS-KTDR/IX/2024 No.34/NPM/LGL/IX/2024",
+      "overlapHa": "-",
+      "supervision": "Sudah dilakukan pengawasan Tahun 2025 https://drive.google.com/file/d/12rI4DYIfEs9cUrKO7odV-GgtRoUmw6U-/view?usp=drive_link"
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "skDataAvailability": "Ada",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Kuantan Singingi",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.9856/menlhk-pskl/pkps/psl.0/9/2023": {
@@ -4627,6 +7134,17 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "forestManagementUnit": "KPH Tebing Tinggi"
+    },
+    "forestAreaComposition": {
+      "limitedProductionForestHa": 181.0
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.5827/menlhk-pskl/pkps/psl.0/6/2023": {
@@ -4665,6 +7183,22 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "forestManagementUnit": "KPH Tebing Tinggi",
+      "independentFacilitator": "Tidak ada"
+    },
+    "forestAreaComposition": {
+      "limitedProductionForestHa": 1584.0
+    },
+    "palmOil": {
+      "imageryHa": "Tidak ada",
+      "decreeHa": "Tidak ada"
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.6223/menlhk-pskl/pkps/psl.0/6/2023": {
@@ -4702,6 +7236,18 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "forestManagementUnit": "KPH Tebing Tinggi"
+    },
+    "forestAreaComposition": {
+      "limitedProductionForestHa": 526.0,
+      "convertibleProductionForestHa": 17.0
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.6218/menlhk-pskl/pkps/psl.0/6/2023": {
@@ -4739,6 +7285,17 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "forestManagementUnit": "KPH Tebing Tinggi"
+    },
+    "forestAreaComposition": {
+      "limitedProductionForestHa": 51.0
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.8552/menlhk-pskl/pkps/psl.0/8/2023": {
@@ -4771,6 +7328,17 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "forestManagementUnit": "KPH Tebing Tinggi"
+    },
+    "forestAreaComposition": {
+      "limitedProductionForestHa": 89.0
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "drive-audit:kepulauan-meranti-kth-jepun-bestari": {
@@ -4867,6 +7435,20 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "forestManagementUnit": "KPH Tebing Tinggi"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 173.0,
+      "limitedProductionForestHa": 0.0,
+      "convertibleProductionForestHa": 0.0
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.7429/menlhk-pskl/pkps/psl.0/12/2020": {
@@ -4904,6 +7486,20 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "forestManagementUnit": "KPH Tebing Tinggi"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 385.0,
+      "limitedProductionForestHa": 0.0,
+      "convertibleProductionForestHa": 0.0
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.7444/menlhk-pskl/pkps/psl.0/12/2020": {
@@ -4971,6 +7567,20 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "forestManagementUnit": "KPH Tebing Tinggi"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 869.0,
+      "limitedProductionForestHa": 0.0,
+      "convertibleProductionForestHa": 0.0
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.7443/menlhk-pskl/pkps/psl.0/12/2020": {
@@ -5008,6 +7618,25 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "forestManagementUnit": "KPH Tebing Tinggi",
+      "independentFacilitator": "Tidak ada"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 0.0,
+      "limitedProductionForestHa": 1437.0,
+      "convertibleProductionForestHa": 68.0
+    },
+    "palmOil": {
+      "imageryHa": "Tidak ada",
+      "decreeHa": "Tidak ada"
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.4987/menlhk-pskl/pkps/psl.0/6/2022": {
@@ -5045,6 +7674,21 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "forestManagementUnit": "KPH Tebing Tinggi"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 144.0,
+      "limitedProductionForestHa": 0.0,
+      "convertibleProductionForestHa": 0.0,
+      "conservationHa": 0.0
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.5128/menlhk-pskl/pkps/psl.0/6/2022": {
@@ -5082,6 +7726,21 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "forestManagementUnit": "KPH Tebing Tinggi"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 1205.0,
+      "limitedProductionForestHa": 0.0,
+      "convertibleProductionForestHa": 0.0,
+      "conservationHa": 0.0
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "drive-audit:kepulauan-meranti-flamboyan-alai": {
@@ -5217,6 +7876,21 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "forestManagementUnit": "KPH Tebing Tinggi"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 428.0,
+      "productionForestHa": 0.0,
+      "limitedProductionForestHa": 0.0,
+      "convertibleProductionForestHa": 0.0,
+      "conservationHa": 0.0
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.5284/menlhk-pskl/pkps/psl.0/5/2023": {
@@ -5255,6 +7929,33 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "chairperson": "M. DARWIS",
+      "forestManagementUnit": "KPH Tebing Tinggi",
+      "boundaryMarking": "BELUM",
+      "rkpsStatus": "BELUM"
+    },
+    "forestAreaComposition": {
+      "limitedProductionForestHa": 903.0
+    },
+    "palmOil": {
+      "imageryHa": "TIDAK ADA",
+      "decreeHa": "TIDAK ADA"
+    },
+    "kups": [
+      {
+        "name": "KUPS GASCO (Gambut Sagu Cocoa)",
+        "class": "BLUE",
+        "commodity": "Sagu (lama 2 ha; 11 ha ditanam 2025; rencana 2026 tanam 50 ha), Lahan rawan kebakaran Karet (sebelum kebakaran, sebagian besar karet)",
+        "commodityAreaHa": "Sagu 11 ha, Karet 50 ha",
+        "annualProduction": "Belum produksi"
+      }
+    ],
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.6611/menlhk-pskl/psl.0/8/2022": {
@@ -5344,7 +8045,8 @@
       "source": "Dokumen SK"
     },
     "management": {
-      "ecosystem": "Ekosistem gambut · fungsi lindung"
+      "ecosystem": "Ekosistem gambut · fungsi lindung",
+      "forestManagementUnit": "KPH Tebing Tinggi"
     },
     "beneficiaries": {
       "direct": 76,
@@ -5361,6 +8063,18 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 0.0,
+      "limitedProductionForestHa": 808.0,
+      "convertibleProductionForestHa": 36.0,
+      "conservationHa": 0.0
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.6719/menlhk-pskl/psl.0/12/2016": {
@@ -5408,6 +8122,44 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "chairperson": "Amran",
+      "forestManagementUnit": "KPH Tebing Tinggi",
+      "independentFacilitator": "Tidak ada",
+      "boundaryMarking": "Sudah",
+      "rkpsStatus": "ADA"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 2446.0,
+      "limitedProductionForestHa": 0.0,
+      "convertibleProductionForestHa": 0.0
+    },
+    "landCoverHa": {
+      "hutan_rawa_sekunder": 1973.38,
+      "belukar": 415.4,
+      "perkebunan": 12.85,
+      "tanah_terbuka": 62.16
+    },
+    "palmOil": {
+      "imageryHa": "Tidak ada",
+      "decreeHa": "Tidak ada"
+    },
+    "kups": [
+      {
+        "name": "1 kups/ Madu kelulut Aie Damo",
+        "commodity": "Belum, rencana sagu"
+      }
+    ],
+    "governance": {
+      "overlapHa": "PT NATIONAL SAGO PRIMA 9,93 ha",
+      "needs": "5000 bibit sagu/ 10 ha"
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.6716/menlhk-pskl/psl.0/12/2016": {
@@ -5455,6 +8207,45 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "chairperson": "Eramzi",
+      "forestManagementUnit": "KPH Tebing Tinggi",
+      "independentFacilitator": "Tidak ada",
+      "rkpsStatus": "ADA"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 838.0,
+      "limitedProductionForestHa": 0.0,
+      "convertibleProductionForestHa": 0.0
+    },
+    "landCoverHa": {
+      "hutan_rawa_sekunder": 744.58,
+      "belukar": 2.83,
+      "perkebunan": 112.9
+    },
+    "palmOil": {
+      "imageryHa": "Tidak ada",
+      "decreeHa": "Tidak ada"
+    },
+    "kups": [
+      {
+        "name": "belum",
+        "class": "Silver",
+        "commodity": "Sagu",
+        "commodityAreaHa": "50 ha (umur 2, 3, 10) Baru panen 10 ha 80 KK, baru tanam sagu",
+        "annualProduction": "estimasi: 1 ha = 3,5 jalur 40-60 batang/ jalur 1 batang, 7 - 12 tual 70.000/ tual hasil kilang sagu basah ada sagu central di ST 1.750 tual/ ha Total Produksi: 87.500"
+      }
+    ],
+    "governance": {
+      "overlapHa": "PT NATIONAL SAGO PRIMA 19,72 ha",
+      "needs": "15000 bibit sagu/ 100 ha"
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.6722/menlhk-pskl/psl.0/12/2016": {
@@ -5502,6 +8293,46 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "chairperson": "Ferenki",
+      "forestManagementUnit": "KPH Tebing Tinggi",
+      "independentFacilitator": "Tidak ada",
+      "boundaryMarking": "Sudah",
+      "rkpsStatus": "ADA"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 2940.0,
+      "limitedProductionForestHa": 0.0,
+      "convertibleProductionForestHa": 0.0
+    },
+    "landCoverHa": {
+      "hutan_rawa_sekunder": 1831.14,
+      "belukar": 617.69,
+      "perkebunan": 379.28,
+      "tanah_terbuka": 121.35
+    },
+    "palmOil": {
+      "imageryHa": "Tidak ada",
+      "decreeHa": "Tidak ada"
+    },
+    "kups": [
+      {
+        "name": "2 kups (gambut sentosa, madu kelulut)",
+        "commodity": "Sagu (400 ha); sudah panen 200 ha; umur variasi",
+        "commodityAreaHa": "Sagu (400 ha); sudah panen 200 ha; umur variasi",
+        "annualProduction": "estimasi: 1 ha = 3,5 jalur 40-60 batang/ jalur 1 batang, 7 - 12 tual RP 62.000/ tual 450.000/ batang 1 kg = Rp 3.100 (sagu basah); Rp 6.000-7.000 (tepung) tual dari HD dijual ke kilang - asiong - ekspor hasil kilang sagu basah 14 kilang milik pribadi di ST 2.100 tual/ha Total Produksi: 420.000 tual"
+      }
+    ],
+    "governance": {
+      "cooperation": "Rencana kerja sama karbon dengan PT. 360 Green",
+      "needs": "19000 bibit sagu/126 ha lahan terbakar"
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.6717/menlhk-pskl/psl.0/12/2016": {
@@ -5549,6 +8380,43 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "chairperson": "Kasmuri",
+      "forestManagementUnit": "KPH Tebing Tinggi",
+      "independentFacilitator": "Tidak ada",
+      "boundaryMarking": "Belum",
+      "rkpsStatus": "ADA"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 689.0,
+      "limitedProductionForestHa": 0.0,
+      "convertibleProductionForestHa": 71.0
+    },
+    "palmOil": {
+      "imageryHa": "Tidak Ada",
+      "decreeHa": "Tidak Ada"
+    },
+    "kups": [
+      {
+        "name": "3 (kelapa, sagu, kelulut)",
+        "class": "Silver",
+        "commodity": "Kelapa, Sagu, Pinang, Karet, Kopi",
+        "commodityAreaHa": "100 ha, 50 ha, 10 ha, 15 ha, 1 ha",
+        "annualProduction": "Kelapa: 1 KK = 1000 buah (est 25 KK punya kelapa) 1x panen = 20.000 1 tahun = 4x panen Harga 1 buah = Rp 3.800 Total Produksi: 80.000 buah/ tahun Sagu: Umur variasi, yang sudah produksi 10 ha, 1 batang = 8-10 tual, 1 tual = Rp 38.000, Tual dijual ke Bangsal di Selatpanjang, hasilnya sagu basah, dijual ke Akiong dan PT. NSP (Nasional Sagu Prima), langsung dijual ke malaysia 1.225 tual/ ha Total Produksi: 61.250 tual"
+      }
+    ],
+    "governance": {
+      "cooperation": "Rencana kerja sama karbon dengan PT. 360 Green",
+      "conflict": "-",
+      "overlapHa": "PT NATIONAL SAGO PRIMA 41,32 ha",
+      "needs": "16000 bibit kelapa/ 100 ha, 15000 bibit sagu/ 100 ha Alat kelengkapan kebakaran hutan"
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.6718/menlhk-pskl/psl.0/12/2016": {
@@ -5596,6 +8464,43 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "chairperson": "Nawar",
+      "forestManagementUnit": "KPH Tebing Tinggi",
+      "independentFacilitator": "Tidak ada",
+      "boundaryMarking": "Sudah",
+      "rkpsStatus": "ADA"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 650.0,
+      "limitedProductionForestHa": 0.0,
+      "convertibleProductionForestHa": 0.0
+    },
+    "landCoverHa": {
+      "hutan_rawa_sekunder": 466.88,
+      "belukar": 191.62,
+      "perkebunan": 13.06
+    },
+    "palmOil": {
+      "imageryHa": "Tidak ada",
+      "decreeHa": "Tidak ada"
+    },
+    "kups": [
+      {
+        "name": "belum",
+        "commodity": "belum, rencana kelapa"
+      }
+    ],
+    "governance": {
+      "overlapHa": "PT NATIONAL SAGO PRIMA 18,68 ha",
+      "needs": "18000 bibit kelapa/ 100 ha"
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk. 1267/menlhk-pskl/pkps/psl.0/3/2018": {
@@ -5650,6 +8555,20 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "forestManagementUnit": "KPH Tebing Tinggi"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 0.0,
+      "limitedProductionForestHa": 735.0,
+      "convertibleProductionForestHa": 0.0
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.3002/menlhk-pskl/pkps/ psl.0/5/2020": {
@@ -5711,6 +8630,23 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "forestManagementUnit": "KPH Tebing Tinggi"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 0.0,
+      "limitedProductionForestHa": 121.0,
+      "convertibleProductionForestHa": 0.0
+    },
+    "governance": {
+      "overlapHa": "PT RIAU ANDALAN PULP & PAPER 0,02 ha"
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.4074/menlhk-pskl/pkps/ psl.0/6/2020": {
@@ -5772,6 +8708,37 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "chairperson": "Samin",
+      "forestManagementUnit": "KPH Tebing Tinggi",
+      "independentFacilitator": "Tidak ada",
+      "boundaryMarking": "Belum",
+      "rkpsStatus": "ADA"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 181.0,
+      "limitedProductionForestHa": 0.0,
+      "convertibleProductionForestHa": 80.0
+    },
+    "palmOil": {
+      "imageryHa": "Tidak ada",
+      "decreeHa": "Tidak ada"
+    },
+    "kups": [
+      {
+        "name": "3 kups (kambing, kepiting)",
+        "commodity": "Kambing 37 ekor, rencana tanaman holtikultura"
+      }
+    ],
+    "governance": {
+      "needs": "api2 dan bakau 300000 batang/ 60 ha"
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.4086/menlhk-pskl/pkps/ psl.0/6/2020": {
@@ -5841,6 +8808,17 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 157.0,
+      "limitedProductionForestHa": 0.0,
+      "convertibleProductionForestHa": 32.0
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.4085/menlhk-pskl/pkps/psl.0/6/2020": {
@@ -5896,6 +8874,20 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "forestManagementUnit": "KPH Tebing Tinggi"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 0.0,
+      "limitedProductionForestHa": 130.0,
+      "convertibleProductionForestHa": 21.0
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.4084/menlhk-pskl/pkps/psl.0/6/2020": {
@@ -5955,6 +8947,20 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "forestManagementUnit": "KPH Tebing Tinggi"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 0.0,
+      "limitedProductionForestHa": 314.0,
+      "convertibleProductionForestHa": 26.0
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.4083/menlhk-pskl/pkps/ psl.0/6/2020": {
@@ -6026,6 +9032,20 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "forestManagementUnit": "KPH Tebing Tinggi"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 0.0,
+      "limitedProductionForestHa": 164.0,
+      "convertibleProductionForestHa": 0.0
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.4082/menlhk-pskl/pkps/psl.0/6/2020": {
@@ -6092,6 +9112,20 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "forestManagementUnit": "KPH Tebing Tinggi"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 0.0,
+      "limitedProductionForestHa": 169.0,
+      "convertibleProductionForestHa": 0.0
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.4081/menlhk-pskl/pkps/psl.0/6/2020": {
@@ -6179,6 +9213,17 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 0.0,
+      "limitedProductionForestHa": 265.0,
+      "convertibleProductionForestHa": 0.0
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.4101/menlhk-pskl/pkps/ psl.0/6/2020": {
@@ -6248,6 +9293,17 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 0.0,
+      "limitedProductionForestHa": 147.0,
+      "convertibleProductionForestHa": 21.0
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.4100/menlhk-pskl/pkps/ psl.0/6/2020": {
@@ -6317,6 +9373,17 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 0.0,
+      "limitedProductionForestHa": 453.0,
+      "convertibleProductionForestHa": 0.0
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.4249/menlhk-pskl/pkps/ psl.0/7/2020": {
@@ -6391,6 +9458,17 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 0.0,
+      "limitedProductionForestHa": 494.0,
+      "convertibleProductionForestHa": 167.0
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.4248/menlhk-pskl/pkps/psl.0/7/2020": {
@@ -6460,6 +9538,17 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 0.0,
+      "limitedProductionForestHa": 218.0,
+      "convertibleProductionForestHa": 0.0
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.4244/menlhk-pskl/pkps/psl.0/7/2020": {
@@ -6534,6 +9623,17 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 53.0,
+      "limitedProductionForestHa": 127.0,
+      "convertibleProductionForestHa": 0.0
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk. 4240/menlhk-pskl/pkps/psl.0/7/2020": {
@@ -6547,7 +9647,9 @@
       "total": 44.0
     },
     "management": {
-      "ecosystem": "Ekosistem gambut"
+      "ecosystem": "Ekosistem gambut",
+      "forestManagementUnit": "KPH Tebing Tinggi",
+      "independentFacilitator": "Tidak ada"
     },
     "documents": [
       {
@@ -6597,6 +9699,21 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 0.0,
+      "limitedProductionForestHa": 180.0,
+      "convertibleProductionForestHa": 49.0
+    },
+    "palmOil": {
+      "imageryHa": "Tidak ada",
+      "decreeHa": "Tidak ada"
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk. 4231/menlhk-pskl/pkps/psl.0/7/2020": {
@@ -6664,6 +9781,17 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 0.0,
+      "limitedProductionForestHa": 642.0,
+      "convertibleProductionForestHa": 0.0
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.4230/menlhk-pskl/pkps/ psl.0/7/2020": {
@@ -6733,6 +9861,17 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 0.0,
+      "limitedProductionForestHa": 526.0,
+      "convertibleProductionForestHa": 23.0
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.4394/menlhk-pskl/pkps/ psl.0/7/2020": {
@@ -6796,6 +9935,17 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 668.0,
+      "limitedProductionForestHa": 0.0,
+      "convertibleProductionForestHa": 0.0
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.5143/menlhk-pskl/pkps/psl.0/6/2022": {
@@ -6811,7 +9961,8 @@
     "management": {
       "ecosystem": "Ekosistem gambut",
       "forestManagementUnitSource": "Tembusan SK KTH Flamboyan",
-      "forestManagementUnit": "UPTD Kesatuan Pengelolaan Hutan Tebing Tinggi"
+      "forestManagementUnit": "UPTD Kesatuan Pengelolaan Hutan Tebing Tinggi",
+      "independentFacilitator": "Tidak ada"
     },
     "documents": [
       {
@@ -6860,6 +10011,22 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 0.0,
+      "limitedProductionForestHa": 0.0,
+      "convertibleProductionForestHa": 164.0,
+      "conservationHa": 0.0
+    },
+    "palmOil": {
+      "imageryHa": "Tidak ada",
+      "decreeHa": "Tidak ada"
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.4243/menlhk-pskl/pkps/psl.0/7/2020": {
@@ -6929,6 +10096,17 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 0.0,
+      "limitedProductionForestHa": 127.0,
+      "convertibleProductionForestHa": 0.0
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.6721/menlhk-pskl/psl.0/12/2016": {
@@ -6936,7 +10114,11 @@
     "driveFolderId": "1g03AgMfESjWvwJIiur6pjVVNfN5_X96o",
     "management": {
       "forestManagementUnitSource": "Tembusan SK LPHD Kepau Baru",
-      "forestManagementUnit": "Kesatuan Pengelolaan Hutan Lindung Tebing Tinggi Timur"
+      "forestManagementUnit": "Kesatuan Pengelolaan Hutan Lindung Tebing Tinggi Timur",
+      "chairperson": "Hendri Samuel",
+      "independentFacilitator": "Tidak ada",
+      "boundaryMarking": "Sudah",
+      "rkpsStatus": "ADA"
     },
     "documents": [
       {
@@ -6981,6 +10163,40 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 844.0,
+      "limitedProductionForestHa": 0.0,
+      "convertibleProductionForestHa": 0.0
+    },
+    "landCoverHa": {
+      "hutan_rawa_sekunder": 592.22,
+      "belukar": 250.62,
+      "perkebunan": 36.57,
+      "tanah_terbuka": 3.12
+    },
+    "palmOil": {
+      "imageryHa": "Tidak ada",
+      "decreeHa": "Tidak ada"
+    },
+    "kups": [
+      {
+        "name": "2 kups",
+        "class": "Silver",
+        "commodity": "Sagu (200 ha) Umur variasi, mayoritas 2 tahun",
+        "commodityAreaHa": "Sagu (200 ha) Umur variasi, mayoritas 2 tahun",
+        "annualProduction": "Belum Produksi"
+      }
+    ],
+    "governance": {
+      "overlapHa": "PT NATIONAL SAGO PRIMA 36,5 ha",
+      "needs": "2000 bibit sagu/ 100 ha"
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.6720/menlhk-pskl/psl.0/12/2016": {
@@ -6988,7 +10204,11 @@
     "driveFolderId": "1aoSjBWMsKQKVY8ghWq4OmY8OznKWZtMM",
     "management": {
       "forestManagementUnitSource": "Tembusan SK LPHD Sungai Tohor Barat",
-      "forestManagementUnit": "Kesatuan Pengelolaan Hutan Lindung Tebing Tinggi Timur"
+      "forestManagementUnit": "Kesatuan Pengelolaan Hutan Lindung Tebing Tinggi Timur",
+      "chairperson": "Ishak",
+      "independentFacilitator": "Tidak ada",
+      "boundaryMarking": "Sudah",
+      "rkpsStatus": "ADA"
     },
     "documents": [
       {
@@ -7033,6 +10253,40 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 1388.0,
+      "limitedProductionForestHa": 0.0,
+      "convertibleProductionForestHa": 94.0
+    },
+    "landCoverHa": {
+      "hutan_mangrove_primer": 31.76,
+      "hutan_mangrove_sekunder": 704.3,
+      "belukar": 742.79,
+      "tanah_terbuka": 7.72
+    },
+    "palmOil": {
+      "imageryHa": "Tidak ada",
+      "decreeHa": "Tidak ada"
+    },
+    "kups": [
+      {
+        "name": "2 Kups (sagu, karet)",
+        "class": "Silver",
+        "commodity": "Sagu",
+        "commodityAreaHa": "200 ha (umur variasi, budidaya sagu sudah ratusan tahun) kepemilikan sagu variasi luasannya",
+        "annualProduction": "estimasi: 1 ha = 3,5 jalur 40-60 batang/ jalur 1 batang, 7 - 12 tual 75.000-80.000/ tual 450.000/ batang hasil kilang sagu basah 16 kilang bukan milik HD 2.100 tual/ha Total Produksi: 420.000 tual"
+      }
+    ],
+    "governance": {
+      "cooperation": "Geogreen/ 360 green",
+      "needs": "10000 bibit sagu/ 80 ha"
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.4226/menlhk-pskl/pkps/psl.0/7/2020": {
@@ -7097,6 +10351,17 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 79.0,
+      "limitedProductionForestHa": 0.0,
+      "convertibleProductionForestHa": 0.0
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "10153 tahun 2024": {
@@ -7182,6 +10447,20 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "forestManagementUnit": "KPH Tebing Tinggi"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 0.0,
+      "limitedProductionForestHa": 127.0,
+      "convertibleProductionForestHa": 0.0
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "drive-audit:bengkalis-kth-pasir-putih": {
@@ -7434,6 +10713,14 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "2025",
       "handoverStatus": null
+    },
+    "forestAreaComposition": {
+      "productionForestHa": 414.4,
+      "limitedProductionForestHa": 8.4
+    },
+    "bpsklProfile": {
+      "sourceSheet": "2025",
+      "updatedAt": "2026-08-29"
     }
   },
   "11867 tahun 2024": {
@@ -7724,10 +11011,17 @@
       "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
       "source": "Dokumen SK"
     },
-    "management": {},
+    "management": {
+      "forestManagementUnit": "TNBT",
+      "facilitators": {
+        "2023": "Fonda Amelia Sarah, S. Hut"
+      },
+      "rkpsStatus": "Draft RKPS Periode 2023 s.d 2032.Penilaian Kepala SPTN Wil II Belilas a.n Ibram Eddy (Tidak diproses karena Kemitraan Konservasi). Perjanjian Kemitraan Konservasi ditindaklanjuti dengan Rencana Pelaksanaan Program (RPP)"
+    },
     "beneficiaries": {
       "male": 23.0,
-      "total": 23.0
+      "total": 23.0,
+      "female": 8.0
     },
     "areaHa": 684.0,
     "scheme": "Persetujuan Kemitraan Konservasi",
@@ -7741,8 +11035,35 @@
       "status": "matched",
       "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Indragiri Hulu",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 0.0,
+      "limitedProductionForestHa": "-",
+      "convertibleProductionForestHa": "-",
+      "conservationHa": 684.0,
+      "otherUseAreaHa": "-"
+    },
+    "landCoverHa": {
+      "hutan_lahan_kering_sekunder": 99.92,
+      "belukar": 12.48,
+      "perkebunan": 558.79,
+      "tanah_terbuka": 5.83
+    },
+    "kups": [
+      {
+        "class": "Silver",
+        "commodity": "HHBK dan Madu Kelulut"
+      }
+    ],
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "skDataAvailability": "Tersedia",
+      "mapDataAvailability": "ada",
+      "sourceSheet": "Indragiri Hulu",
+      "updatedAt": "2026-08-29"
     }
   },
   "drive-audit:1oqeertrlpjieggsqiqoxcf-5u8piw2pc-kth-pahundan-tunas-buana-kepenghuluan-siarang-arang": {
@@ -7885,8 +11206,22 @@
     "skDocumentStatus": "available",
     "skDocumentCheckedAt": "2026-08-28",
     "bpsklVerification": {
-      "status": "not-matched",
-      "source": "Data Perhutanan Sosial di Provinsi Riau"
+      "status": "matched",
+      "source": "Data Perhutanan Sosial di Provinsi Riau",
+      "method": "name+regency",
+      "sourceSheet": "2025"
+    },
+    "beneficiaries": {
+      "male": 132.0,
+      "female": 41.0,
+      "total": 173.0
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 1000.0
+    },
+    "bpsklProfile": {
+      "sourceSheet": "2025",
+      "updatedAt": "2026-08-29"
     }
   },
   "drive-audit:1z62ckw1vwz4mucrn-unxenrpeba9iwyy-kth-bakti-alam-pesisir-desa-teluk-lancar": {
@@ -7933,8 +11268,23 @@
     "skDocumentStatus": "available",
     "skDocumentCheckedAt": "2026-08-28",
     "bpsklVerification": {
-      "status": "not-matched",
-      "source": "Data Perhutanan Sosial di Provinsi Riau"
+      "status": "matched",
+      "source": "Data Perhutanan Sosial di Provinsi Riau",
+      "method": "name+regency",
+      "sourceSheet": "2025"
+    },
+    "beneficiaries": {
+      "male": 48.0,
+      "female": 0.0,
+      "total": 48.0
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 346.0,
+      "limitedProductionForestHa": 922.0
+    },
+    "bpsklProfile": {
+      "sourceSheet": "2025",
+      "updatedAt": "2026-08-29"
     }
   },
   "drive-audit:1z62ckw1vwz4mucrn-unxenrpeba9iwyy-kelompok-nelayan-tanjung-desa-batang-duku": {
@@ -8026,11 +11376,24 @@
     "management": {
       "forestManagementUnit": "Kesatuan Pengelolaan Hutan Lindung Unit XVI Rokan Hulu",
       "chairperson": "MuhammadJais",
-      "secretary": "Asrowi"
+      "secretary": "Asrowi",
+      "independentFacilitator": "-",
+      "facilitators": {
+        "2019": "-",
+        "2020": "-",
+        "2021": "Mutohir/081276864744",
+        "2022": "Mutohir/081276864744",
+        "2023": "Marhalim/ 081371162155",
+        "2024": "Taufik Hidayat/081365318435",
+        "2025": "Nanik Suparni/ 082169598839"
+      },
+      "boundaryMarking": "Belum",
+      "rkpsStatus": "RKPS Penilaian KKPH"
     },
     "beneficiaries": {
       "male": 723.0,
-      "total": 723.0
+      "total": 723.0,
+      "female": "-"
     },
     "areaHa": 1783.0,
     "regency": "Rokan Hulu",
@@ -8046,6 +11409,60 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Rokan Hulu",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": "-",
+      "productionForestHa": 1783.0,
+      "conservationHa": "-",
+      "otherUseAreaHa": "-"
+    },
+    "landCoverHa": {
+      "hutan_lahan_kering_primer": 341.92,
+      "hutan_lahan_kering_sekunder": 337.1,
+      "hutan_mangrove_primer": "-",
+      "hutan_rawa_primer": "-",
+      "hutan_mangrove_sekunder": "-",
+      "hutan_rawa_sekunder": "-",
+      "hutan_tanaman": "-",
+      "belukar": 123.94,
+      "perkebunan": 879.15,
+      "pemukiman": "-",
+      "tanah_terbuka": 102.1,
+      "badan_air": "-",
+      "belukar_rawa": "-",
+      "pertanian_lahan_kering": "-",
+      "pertanian_lahan_kering_campuran": "-",
+      "sawah": "-",
+      "tambak": "-",
+      "pertambangan": "-",
+      "rawa": "-"
+    },
+    "palmOil": {
+      "imageryHa": 278.69,
+      "decreeHa": 60.0
+    },
+    "kups": [
+      {
+        "name": "1. KUPS Pendalian Makmur, 2. KUPS Pendalian Mekar , 3. KUPS Pendalian Bersatu",
+        "decreeNumber": "1. 24 Tahun 2021 Tanggal 24 Agustus 2021, 2. 23 Tahun 2021 Tanggal 24 Agustus 2021, 3. 22 Tahun 2021 Tanggal 24 Agustus 2021",
+        "chairperson": "1. M. Asri/ , 2. Asrowi/ , 3. Wisraidi",
+        "class": "1. Blue, 2. Blue, 3. Blue",
+        "commodity": "Tidak tertuang pada SK KUPS"
+      }
+    ],
+    "governance": {
+      "cooperation": "Tidak Ada",
+      "overlapHa": "-",
+      "forestFunctionChangeToAplHa": 0.00353307080736,
+      "supervision": "Pembinaan dan Pengawasan PS 6-10 Desember 2024",
+      "evaluation": "Belum"
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "skDataAvailability": "Ada",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Rokan Hulu",
+      "updatedAt": "2026-08-29"
     }
   },
   "13528 tahun 2024": {
@@ -8139,10 +11556,47 @@
     },
     "bpsklVerification": {
       "status": "matched",
-      "method": "name-location",
+      "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Rohil",
       "handoverStatus": "Belum Diserahkan"
+    },
+    "management": {
+      "chairperson": "Jupitar, S.AP",
+      "forestManagementUnit": "KPH Bagan Siapiapi",
+      "boundaryMarking": "Belum",
+      "rkpsStatus": "RKPS TTD KKPH"
+    },
+    "forestAreaComposition": {
+      "convertibleProductionForestHa": 861.0
+    },
+    "landCoverHa": {
+      "hutan_mangrove_sekunder": 86.468,
+      "perkebunan": 80.39,
+      "tanah_terbuka": 369.65,
+      "badan_air": 30.05,
+      "belukar_rawa": 638.94,
+      "pertanian_lahan_kering": 160.86
+    },
+    "palmOil": {
+      "imageryHa": "-",
+      "decreeHa": "-"
+    },
+    "kups": [
+      {
+        "name": "KUPS Donceng Manggrove",
+        "decreeNumber": "Nomor : Kpts/188/UPT-KPH-BAA/09 Tanggal 6 November 2024",
+        "chairperson": "Jupitar, S.AP",
+        "class": "Biru",
+        "commodity": "Budidaya siput donceng"
+      }
+    ],
+    "bpsklProfile": {
+      "status": "Belum Diserahkan",
+      "skDataAvailability": "Ada",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Rohil",
+      "updatedAt": "2026-08-29"
     }
   },
   "3980.0": {
@@ -8158,8 +11612,22 @@
     "spatialStatus": "available",
     "spatialObjectKey": "3980.0",
     "bpsklVerification": {
-      "status": "not-matched",
-      "source": "Data Perhutanan Sosial di Provinsi Riau"
+      "status": "matched",
+      "source": "Data Perhutanan Sosial di Provinsi Riau",
+      "method": "name+regency",
+      "sourceSheet": "2025"
+    },
+    "beneficiaries": {
+      "male": 57.0,
+      "female": 3.0,
+      "total": 60.0
+    },
+    "forestAreaComposition": {
+      "productionForestHa": 1250.0
+    },
+    "bpsklProfile": {
+      "sourceSheet": "2025",
+      "updatedAt": "2026-08-29"
     }
   },
   "2280.0": {
@@ -8184,8 +11652,30 @@
       "status": "matched",
       "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Siak",
       "handoverStatus": "Belum Diserahkan"
+    },
+    "management": {
+      "chairperson": "Mansyur E",
+      "forestManagementUnit": "KPH Tasik Besar Serkap"
+    },
+    "forestAreaComposition": {
+      "productionForestHa": 212.56,
+      "conservationHa": 0.0
+    },
+    "landCoverHa": {
+      "hutan_rawa_sekunder": 1.1,
+      "perkebunan": 14.49,
+      "tanah_terbuka": 6.08,
+      "belukar_rawa": 153.31,
+      "pertambangan": 37.82
+    },
+    "bpsklProfile": {
+      "status": "Belum Diserahkan",
+      "skDataAvailability": "SK Gapoktan Mekar Jaya",
+      "mapDataAvailability": "ADA",
+      "sourceSheet": "Siak",
+      "updatedAt": "2026-08-29"
     }
   },
   "sk.11578 tahun 2025": {
@@ -8270,6 +11760,21 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "forestManagementUnit": "KPH Tebing Tinggi"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 0.0,
+      "limitedProductionForestHa": 808.0,
+      "convertibleProductionForestHa": 36.0,
+      "conservationHa": 0.0
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "2349.0": {
@@ -8287,7 +11792,8 @@
     "decreeDate": "2023-09-18",
     "beneficiaries": {
       "male": 22.0,
-      "total": 22.0
+      "total": 22.0,
+      "female": "-"
     },
     "bpsklVerification": {
       "status": "matched",
@@ -8295,6 +11801,67 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Rokan Hulu",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "chairperson": "Syofian",
+      "forestManagementUnit": "UPT KPH Suligi Batu Gajah",
+      "independentFacilitator": "-",
+      "facilitators": {
+        "2019": "-",
+        "2020": "-",
+        "2021": "-",
+        "2022": "-",
+        "2023": "-",
+        "2024": "-",
+        "2025": "Rico Satria Putra/ 085265652713"
+      },
+      "boundaryMarking": "Belum",
+      "rkpsStatus": "Belum Ada (Draft)"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 4925.0,
+      "productionForestHa": "-",
+      "conservationHa": "-",
+      "otherUseAreaHa": "-"
+    },
+    "landCoverHa": {
+      "hutan_lahan_kering_primer": 1587.39,
+      "hutan_lahan_kering_sekunder": 662.23,
+      "hutan_mangrove_primer": "-",
+      "hutan_rawa_primer": "-",
+      "hutan_mangrove_sekunder": "-",
+      "hutan_rawa_sekunder": "-",
+      "hutan_tanaman": "-",
+      "belukar": 2595.72,
+      "perkebunan": "-",
+      "pemukiman": "-",
+      "tanah_terbuka": 33.38,
+      "badan_air": "-",
+      "belukar_rawa": "-",
+      "pertanian_lahan_kering": "-",
+      "pertanian_lahan_kering_campuran": 14.82,
+      "sawah": "-",
+      "tambak": "-",
+      "pertambangan": "-",
+      "rawa": "-"
+    },
+    "palmOil": {
+      "imageryHa": 176.8,
+      "decreeHa": "-"
+    },
+    "governance": {
+      "cooperation": "Tidak Ada",
+      "overlapHa": "-",
+      "forestFunctionChangeToAplHa": "-",
+      "supervision": "Belum",
+      "evaluation": "Belum"
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "skDataAvailability": "Ada",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Rokan Hulu",
+      "updatedAt": "2026-08-29"
     }
   },
   "1229.0": {
@@ -8320,6 +11887,20 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "forestManagementUnit": "KPH Tebing Tinggi"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 362.0,
+      "limitedProductionForestHa": 0.0,
+      "convertibleProductionForestHa": 0.0
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "1230.0": {
@@ -8345,6 +11926,25 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "forestManagementUnit": "KPH Tebing Tinggi",
+      "independentFacilitator": "Tidak ada"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 1679.0,
+      "limitedProductionForestHa": 0.0,
+      "convertibleProductionForestHa": 0.0
+    },
+    "palmOil": {
+      "imageryHa": "Tidak ada",
+      "decreeHa": "Tidak ada"
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "1604.0": {
@@ -8362,14 +11962,64 @@
     "decreeDate": "2022-03-28",
     "beneficiaries": {
       "male": 28.0,
-      "total": 28.0
+      "total": 28.0,
+      "female": 10.0
     },
     "bpsklVerification": {
       "status": "matched",
       "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Kuantan Singingi",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "chairperson": "Aminullah",
+      "forestManagementUnit": "KPH Sorek",
+      "facilitators": {
+        "2019": "-",
+        "2020": "-",
+        "2021": "-",
+        "2022": "-",
+        "2023": "-",
+        "2024": "-",
+        "2025": "-"
+      },
+      "boundaryMarking": "Mandiri Tanggal 17 Juni 2022",
+      "rkpsStatus": "RKPS Periode 2022-2031. Pengesahan oleh Kepala KPH Sorek a.n Dewi Handayani"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 18.0,
+      "limitedProductionForestHa": "-",
+      "convertibleProductionForestHa": 56.0,
+      "conservationHa": 0.0,
+      "otherUseAreaHa": "-"
+    },
+    "landCoverHa": {
+      "hutan_tanaman": 61.23,
+      "perkebunan": 12.7,
+      "pertanian_lahan_kering_campuran": 12.48
+    },
+    "palmOil": {
+      "imageryHa": 0.13
+    },
+    "kups": [
+      {
+        "commodity": "Eucalyptus",
+        "commodityAreaHa": 74.0
+      }
+    ],
+    "governance": {
+      "cooperation": "PT. Nusa Prima Manunggal No. 001/PKS-KTDGM/IX/2024 No. 125/NPM/LGL/IX/2024 Tanggal 19 September 2024",
+      "overlapHa": "-",
+      "supervision": "Sudah dilakukan pengawasan Tahun 2025 https://drive.google.com/file/d/1pdyRJtaFp7Q4XL1lH1WdqX3UfIX6hKvU/view?usp=sharing"
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "skDataAvailability": "Ada",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Kuantan Singingi",
+      "updatedAt": "2026-08-29"
     }
   },
   "1654.0": {
@@ -8395,6 +12045,21 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "forestManagementUnit": "KPH Tebing Tinggi"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 0.0,
+      "limitedProductionForestHa": 14.0,
+      "convertibleProductionForestHa": 0.0,
+      "conservationHa": 0.0
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "2463.0": {
@@ -8446,6 +12111,31 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "chairperson": "Asqolani",
+      "forestManagementUnit": "KPH Tebing Tinggi",
+      "independentFacilitator": "Tidak ada",
+      "boundaryMarking": "Belum",
+      "rkpsStatus": "Belum"
+    },
+    "palmOil": {
+      "imageryHa": "Tidak ada",
+      "decreeHa": "Tidak ada"
+    },
+    "kups": [
+      {
+        "name": "Belum",
+        "commodityAreaHa": "Belum, rencana sagu, madu, ternak kambing, perikanan lele, nila"
+      }
+    ],
+    "governance": {
+      "needs": "7500 bibit sagu/ 50 ha"
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "2652.0": {
@@ -8471,6 +12161,21 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "forestManagementUnit": "KPH Tebing Tinggi"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 13.0,
+      "productionForestHa": 0.0,
+      "limitedProductionForestHa": 36.0,
+      "convertibleProductionForestHa": 0.0,
+      "conservationHa": 0.0
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "2655.0": {
@@ -8496,6 +12201,14 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "forestManagementUnit": "KPH Tebing Tinggi"
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "2656.0": {
@@ -8522,6 +12235,21 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Meranti",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "forestManagementUnit": "KPH Tebing Tinggi"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": 0.0,
+      "limitedProductionForestHa": 2.78,
+      "convertibleProductionForestHa": 0.0,
+      "conservationHa": 0.0
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
     }
   },
   "3010.0": {
@@ -8563,8 +12291,31 @@
       "status": "matched",
       "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Kampar",
       "handoverStatus": "Belum Diserahkan"
+    },
+    "management": {
+      "facilitators": {
+        "2025": "Zul Panca Hariadi, SH"
+      }
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": "-",
+      "productionForestHa": 1089.0,
+      "limitedProductionForestHa": 180.0,
+      "convertibleProductionForestHa": "-",
+      "conservationHa": "-",
+      "otherUseAreaHa": "-"
+    },
+    "landCoverHa": {
+      "perkebunan": 1268.81,
+      "gambut": 1268.81
+    },
+    "bpsklProfile": {
+      "status": "Belum Diserahkan",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Kampar",
+      "updatedAt": "2026-08-29"
     }
   },
   "3577.0": {
@@ -8580,8 +12331,25 @@
     "spatialStatus": "available",
     "spatialObjectKey": "3577.0",
     "bpsklVerification": {
-      "status": "not-matched",
-      "source": "Data Perhutanan Sosial di Provinsi Riau"
+      "status": "matched",
+      "source": "Data Perhutanan Sosial di Provinsi Riau",
+      "method": "decree",
+      "sourceSheet": "Kuantan Singingi"
+    },
+    "beneficiaries": {
+      "male": 59.0,
+      "female": 13.0,
+      "total": 72.0
+    },
+    "forestAreaComposition": {
+      "limitedProductionForestHa": 170.48
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "skDataAvailability": "Ada",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Kuantan Singingi",
+      "updatedAt": "2026-08-29"
     }
   },
   "3578.0": {
@@ -8604,10 +12372,28 @@
     },
     "bpsklVerification": {
       "status": "matched",
-      "method": "name-location",
+      "method": "name+regency",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Indragiri Hulu",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0.0,
+      "productionForestHa": "-",
+      "limitedProductionForestHa": 345.31,
+      "convertibleProductionForestHa": 4.53,
+      "conservationHa": 0.0,
+      "otherUseAreaHa": "-"
+    },
+    "palmOil": {
+      "imageryHa": 340.0
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "skDataAvailability": "Tersedia",
+      "mapDataAvailability": "ada",
+      "sourceSheet": "Indragiri Hulu",
+      "updatedAt": "2026-08-29"
     }
   },
   "3579.0": {
@@ -8634,6 +12420,28 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Pelalawan",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "management": {
+      "chairperson": "Sri Legowo",
+      "forestManagementUnit": "KPH Sorek"
+    },
+    "forestAreaComposition": {
+      "productionForestHa": 110.63
+    },
+    "landCoverHa": {
+      "perkebunan": 110.24,
+      "belukar_rawa": 0.57
+    },
+    "palmOil": {
+      "imageryHa": "± 105,35",
+      "decreeHa": 110.63
+    },
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "skDataAvailability": "Ada",
+      "mapDataAvailability": "Ada",
+      "sourceSheet": "Pelalawan",
+      "updatedAt": "2026-08-29"
     }
   },
   "3585.0": {
@@ -8702,14 +12510,27 @@
     "decreeDate": "2011-11-11",
     "beneficiaries": {
       "male": 200.0,
-      "total": 200.0
+      "total": 200.0,
+      "female": "-"
     },
     "bpsklVerification": {
       "status": "matched",
       "method": "decree",
       "source": "Data Perhutanan Sosial di Provinsi Riau",
-      "sourceSheet": "Dumai",
+      "sourceSheet": "Kampar",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": "-",
+      "limitedProductionForestHa": "-",
+      "convertibleProductionForestHa": "-",
+      "conservationHa": "-",
+      "otherUseAreaHa": "-"
+    },
+    "bpsklProfile": {
+      "status": "Sudah di serahkan",
+      "sourceSheet": "Kampar",
+      "updatedAt": "2026-08-29"
     }
   }
 }
