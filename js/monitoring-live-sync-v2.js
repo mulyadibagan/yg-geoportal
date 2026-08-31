@@ -22,9 +22,7 @@
       "MANGROVE-KELAPA-PATI-PHASE-III-2026-001"
   });
   const HIDDEN_GEOMETRY_REPORT_IDS = new Set([
-    "YG-20260717-205241-378",
-    "YG-20260818-145801-438",
-    "YG-20260818-160751-261"
+    "YG-20260717-205241-378"
   ]);
   let activeRequest = null;
 

@@ -2900,9 +2900,7 @@ L.control.scale({
         const reportId = String(p.reportId || p.Report_ID || "").trim();
         const objectId = String(p.Object_ID || p.objectId || "").trim();
         if ([
-          "YG-20260717-205241-378",
-          "YG-20260818-145801-438",
-          "YG-20260818-160751-261"
+          "YG-20260717-205241-378"
         ].includes(reportId)) {
           return false;
         }
