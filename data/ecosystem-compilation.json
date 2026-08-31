@@ -1,0 +1,274 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-31T08:17:26.720Z",
+  "scope": "Provinsi Riau",
+  "interpretation": {
+    "areaPolicy": "Luas tiap tema disajikan sesuai unit analisis sumber. Luas antartema tidak dijumlahkan karena dapat bertumpang tindih.",
+    "restorationPolicy": "Prioritas rehabilitasi adalah indikasi penyaringan spasial, bukan kewajiban hukum atau penetapan lokasi tanam.",
+    "protectionPolicy": "Luas yang perlu dijaga menggunakan tutupan hutan terkini dalam unit Perhutanan Sosial yang telah dianalisis; bukan seluruh kawasan hutan secara otomatis."
+  },
+  "mangrove": {
+    "referenceAreaHa": 186812.38,
+    "indicativeProtectionHa": 75765.05,
+    "indicativeProtectionPct": 40.56,
+    "indicativeCultivationHa": 111047.32,
+    "indicativeCultivationPct": 59.44,
+    "indicativeUnclassifiedHa": 190.69,
+    "restorationPriorityHa": 5918.2,
+    "restorationPriorityPolygons": 7992,
+    "analysedVillages": 230,
+    "programmePlantingHa": 13.24,
+    "programmeSeedlings": 43915,
+    "status": "available_indicative",
+    "detailPages": [
+      "mangrove-landscape.html",
+      "mangrove-priority.html"
+    ]
+  },
+  "peat": {
+    "mappedPeatHa": 3572620.74,
+    "fegProtectionHa": 3533999.46,
+    "fegCultivationHa": 3135233.95,
+    "restorationNeedHa": null,
+    "restorationStatus": "not_available",
+    "restorationMessage": "Layer produksi yang menetapkan kandidat kebutuhan restorasi gambut belum tersedia. Peta gambut dan FEG tidak boleh dianggap otomatis sebagai area yang harus direstorasi.",
+    "scopeNote": "FEG mencakup fungsi dalam Kesatuan Hidrologis Gambut dan tidak sama dengan luas sebaran tanah gambut BBSDLP."
+  },
+  "forestAndSocialForestry": {
+    "socialForestryProfiles": 186,
+    "socialForestryAreaHa": 178419.42,
+    "socialForestrySpatialAreaHa": 168271.04,
+    "analysedSpatialUnits": 135,
+    "pendingSpatialUnits": 1,
+    "currentForestToGuardHa": 102829.62,
+    "baselineForestHa": 144272.48,
+    "recordedForestLossHa": 53282.62,
+    "socialForestryInsideForestEstateHa": 147539.71,
+    "socialForestryOnPeatHa": 50007.24,
+    "forestEstateHa": 5426826.78,
+    "productionForestHa": 4559102.08,
+    "protectionForestHa": 234837.66,
+    "conservationForestHa": 632887.04,
+    "unmatchedAnalyticsUnits": 0,
+    "detailPage": "social-forestry-directory.html"
+  },
+  "dataQuality": [
+    {
+      "theme": "Mangrove referensi dan fungsi",
+      "status": "ready",
+      "coverage": "7 kabupaten/kota pesisir",
+      "source": "Peta Indikatif KLM dan analisis fungsi publik v1"
+    },
+    {
+      "theme": "Prioritas rehabilitasi mangrove",
+      "status": "ready_indicative",
+      "coverage": "232 catatan desa/kelurahan · 230 teranalisis",
+      "source": "Sentinel-2 2016–2025 dan penyaringan kandidat"
+    },
+    {
+      "theme": "Gambut dan FEG",
+      "status": "ready_context",
+      "coverage": "Provinsi Riau",
+      "source": "BBSDLP 2019 dan referensi FEG"
+    },
+    {
+      "theme": "Kebutuhan restorasi gambut",
+      "status": "missing",
+      "coverage": "Belum tersedia pada produksi",
+      "source": "Memerlukan model kandidat, verifikasi hidrologi, dan kondisi lapangan"
+    },
+    {
+      "theme": "Perhutanan Sosial",
+      "status": "ready",
+      "coverage": "186 profil",
+      "source": "Ringkasan satu PS per nomor SK"
+    },
+    {
+      "theme": "Tutupan hutan dalam PS",
+      "status": "partial",
+      "coverage": "135 unit spasial dianalisis",
+      "source": "Hansen/UMD dan irisan referensi WebGIS"
+    },
+    {
+      "theme": "Restorasi lahan mineral",
+      "status": "empty",
+      "coverage": "0 objek",
+      "source": "Layer program WebGIS"
+    }
+  ],
+  "regions": [
+    {
+      "name": "Bengkalis",
+      "mangroveHa": 24595.96,
+      "mangroveLindungHa": 9478.93,
+      "mangroveBudidayaHa": 15117.02,
+      "mangrovePriorityHa": 2143.56,
+      "mangrovePriorityVillages": 69,
+      "socialForestryHa": 20315.4,
+      "socialForestryProfiles": 31,
+      "currentForestInSocialForestryHa": 9513.88,
+      "analysedSocialForestryUnits": 21
+    },
+    {
+      "name": "Dumai",
+      "mangroveHa": 2587.29,
+      "mangroveLindungHa": 1008.5,
+      "mangroveBudidayaHa": 1578.79,
+      "mangrovePriorityHa": 510.37,
+      "mangrovePriorityVillages": 15,
+      "socialForestryHa": 4060,
+      "socialForestryProfiles": 3,
+      "currentForestInSocialForestryHa": 36.53,
+      "analysedSocialForestryUnits": 2
+    },
+    {
+      "name": "Indragiri Hilir",
+      "mangroveHa": 111211.36,
+      "mangroveLindungHa": 43325.56,
+      "mangroveBudidayaHa": 67885.8,
+      "mangrovePriorityHa": 1239.69,
+      "mangrovePriorityVillages": 31,
+      "socialForestryHa": 22843,
+      "socialForestryProfiles": 14,
+      "currentForestInSocialForestryHa": 15699.08,
+      "analysedSocialForestryUnits": 10
+    },
+    {
+      "name": "Indragiri Hulu",
+      "mangroveHa": null,
+      "mangroveLindungHa": null,
+      "mangroveBudidayaHa": null,
+      "mangrovePriorityHa": 0,
+      "mangrovePriorityVillages": 0,
+      "socialForestryHa": 4509.22,
+      "socialForestryProfiles": 8,
+      "currentForestInSocialForestryHa": 1648.34,
+      "analysedSocialForestryUnits": 3
+    },
+    {
+      "name": "Kampar",
+      "mangroveHa": null,
+      "mangroveLindungHa": null,
+      "mangroveBudidayaHa": null,
+      "mangrovePriorityHa": 0,
+      "mangrovePriorityVillages": 0,
+      "socialForestryHa": 29373,
+      "socialForestryProfiles": 21,
+      "currentForestInSocialForestryHa": 16303.25,
+      "analysedSocialForestryUnits": 12
+    },
+    {
+      "name": "Kepulauan Meranti",
+      "mangroveHa": 27014.83,
+      "mangroveLindungHa": 10542,
+      "mangroveBudidayaHa": 16472.83,
+      "mangrovePriorityHa": 825.39,
+      "mangrovePriorityVillages": 75,
+      "socialForestryHa": 28064.78,
+      "socialForestryProfiles": 52,
+      "currentForestInSocialForestryHa": 20425.24,
+      "analysedSocialForestryUnits": 41
+    },
+    {
+      "name": "Kuantan Singingi",
+      "mangroveHa": null,
+      "mangroveLindungHa": null,
+      "mangroveBudidayaHa": null,
+      "mangrovePriorityHa": 0,
+      "mangrovePriorityVillages": 0,
+      "socialForestryHa": 5081,
+      "socialForestryProfiles": 7,
+      "currentForestInSocialForestryHa": 4330.62,
+      "analysedSocialForestryUnits": 7
+    },
+    {
+      "name": "Pelalawan",
+      "mangroveHa": 6577.18,
+      "mangroveLindungHa": 4026.77,
+      "mangroveBudidayaHa": 2550.41,
+      "mangrovePriorityHa": 354.84,
+      "mangrovePriorityVillages": 10,
+      "socialForestryHa": 17083.68,
+      "socialForestryProfiles": 9,
+      "currentForestInSocialForestryHa": 7274.76,
+      "analysedSocialForestryUnits": 8
+    },
+    {
+      "name": "Rokan Hilir",
+      "mangroveHa": 12137.58,
+      "mangroveLindungHa": 6130.29,
+      "mangroveBudidayaHa": 6007.29,
+      "mangrovePriorityHa": 810.2,
+      "mangrovePriorityVillages": 24,
+      "socialForestryHa": 6724.55,
+      "socialForestryProfiles": 10,
+      "currentForestInSocialForestryHa": 4392.11,
+      "analysedSocialForestryUnits": 8
+    },
+    {
+      "name": "Rokan Hulu",
+      "mangroveHa": null,
+      "mangroveLindungHa": null,
+      "mangroveBudidayaHa": null,
+      "mangrovePriorityHa": 0,
+      "mangrovePriorityVillages": 0,
+      "socialForestryHa": 29766.6,
+      "socialForestryProfiles": 21,
+      "currentForestInSocialForestryHa": 15132.32,
+      "analysedSocialForestryUnits": 17
+    },
+    {
+      "name": "Siak",
+      "mangroveHa": 2690.8,
+      "mangroveLindungHa": 1252.99,
+      "mangroveBudidayaHa": 1437.81,
+      "mangrovePriorityHa": 34.15,
+      "mangrovePriorityVillages": 6,
+      "socialForestryHa": 10598.19,
+      "socialForestryProfiles": 10,
+      "currentForestInSocialForestryHa": 8073.49,
+      "analysedSocialForestryUnits": 6
+    }
+  ],
+  "sources": [
+    {
+      "id": "mangrove-landscape",
+      "file": "data/mangrove-klm-summary.json",
+      "generatedAt": "2026-08-28",
+      "role": "Luas mangrove serta fungsi lindung/budidaya indikatif"
+    },
+    {
+      "id": "mangrove-priority",
+      "file": "data/mangrove-priority-riau-results.json",
+      "methodVersion": "mangrove-priority-2016-2025-v0.1",
+      "role": "Kandidat prioritas rehabilitasi mangrove"
+    },
+    {
+      "id": "peat",
+      "file": "data/Gambut_BBSDLP_2019.geojson",
+      "role": "Sebaran tanah gambut"
+    },
+    {
+      "id": "feg",
+      "file": "data/feg_riau.geojson",
+      "role": "Fungsi Ekosistem Gambut"
+    },
+    {
+      "id": "social-forestry",
+      "file": "data/social-forestry-summary.json",
+      "generatedAt": "2026-08-31T03:55:22.892Z",
+      "role": "Jumlah dan luas Perhutanan Sosial tanpa hitung ganda SK"
+    },
+    {
+      "id": "forest-analytics",
+      "file": "data/village-forest-analytics.json",
+      "generatedAt": "2026-08-31T04:43:16.748245Z",
+      "role": "Tutupan, kehilangan hutan, dan irisan PS"
+    },
+    {
+      "id": "forest-estate",
+      "file": "data/kawasan_hutan_sk_903.geojson",
+      "role": "Fungsi kawasan hutan SK 903"
+    }
+  ]
+}
