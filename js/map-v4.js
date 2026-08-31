@@ -1308,8 +1308,6 @@ L.control.scale({
           style: () => styleFor(config),
           pointToLayer: (_feature, latlng) => pointFor(config, latlng, pane)
         });
-        let monitoringIndicatorAdded = false;
-
         single.eachLayer(layer => {
           const reportId = String(
             feature && feature.properties && (
@@ -1366,36 +1364,6 @@ L.control.scale({
           addFeatureToSearch(feature, layer, group, config);
           group.addLayer(layer);
 
-          const geometryType = String(
-            feature && feature.geometry && feature.geometry.type || ""
-          );
-          if (
-            config.id === "monitoring_reports" &&
-            !/Point$/.test(geometryType) &&
-            !monitoringIndicatorAdded &&
-            typeof layer.getBounds === "function"
-          ) {
-            const layerBounds = layer.getBounds();
-            if (layerBounds.isValid()) {
-              const indicator = pointFor(config, layerBounds.getCenter(), pane);
-              indicator.feature = feature;
-              indicator.bindPopup(buildPopup(feature, config), {
-                maxWidth: 280,
-                autoPan: false,
-                keepInView: false,
-                autoPanPadding: [22, 22],
-                className: "yg-monitoring-popup"
-              });
-              indicator.on("click", event => {
-                if (event && event.originalEvent) {
-                  L.DomEvent.stopPropagation(event.originalEvent);
-                }
-                indicator.openPopup();
-              });
-              group.addLayer(indicator);
-              monitoringIndicatorAdded = true;
-            }
-          }
         });
       } catch (error) {
         console.error("Feature gagal diproses:", layerId, feature, error);
@@ -2972,9 +2940,7 @@ L.control.scale({
           return false;
         }
         if ([
-          "MANGROVE-KELAPA-PATI-PHASE-III-2025-001",
-          "MANGROVE-KELAPA-PATI-PHASE-III-2026-002",
-          "MANGROVE-KELAPA-PATI-PHASE-III-2026-003"
+          "MANGROVE-KELAPA-PATI-PHASE-III-2025-001"
         ].includes(objectId)) {
           return false;
         }
@@ -3339,10 +3305,6 @@ L.control.scale({
 
   const MANGROVE_TARGET_ALIASES = Object.freeze({
     "mangrove-kelapa-pati-phase-iii-2025-001":
-      "MANGROVE-KELAPA-PATI-PHASE-III-2026-001",
-    "mangrove-kelapa-pati-phase-iii-2026-002":
-      "MANGROVE-KELAPA-PATI-PHASE-III-2026-001",
-    "mangrove-kelapa-pati-phase-iii-2026-003":
       "MANGROVE-KELAPA-PATI-PHASE-III-2026-001"
   });
 

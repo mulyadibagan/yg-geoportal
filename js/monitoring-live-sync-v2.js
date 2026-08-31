@@ -15,10 +15,6 @@
   });
   const TARGET_ALIASES = Object.freeze({
     "mangrove-kelapa-pati-phase-iii-2025-001":
-      "MANGROVE-KELAPA-PATI-PHASE-III-2026-001",
-    "mangrove-kelapa-pati-phase-iii-2026-002":
-      "MANGROVE-KELAPA-PATI-PHASE-III-2026-001",
-    "mangrove-kelapa-pati-phase-iii-2026-003":
       "MANGROVE-KELAPA-PATI-PHASE-III-2026-001"
   });
   const HIDDEN_GEOMETRY_REPORT_IDS = new Set([
