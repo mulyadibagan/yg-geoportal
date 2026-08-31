@@ -213,6 +213,27 @@ test('PBPH profile separates permit documents from conservative SVLK status', ()
   assert.equal(bkm.svlk.certificateNumber, '23-PHL-024');
   assert.equal(bkm.svlk.validUntil, '1 Agustus 2031');
   assert.match(bkm.svlk.note, /SK\.772.*16\.514 hektar/i);
+
+  const alam = registry.profiles['015,2003'];
+  assert.equal(alam.svlk.status, 'certificate-verified');
+  assert.equal(alam.svlk.certificateNumber, 'SPHL.43/ASERT/LPVI-001-IDN');
+  assert.equal(alam.svlk.validUntil, '14 November 2029');
+  assert.match(alam.svlk.note, /SK\.805.*4\.868,65 hektar/i);
+
+  const bhakti = registry.profiles['011,2003'];
+  assert.equal(bhakti.svlk.status, 'certificate-verified');
+  assert.equal(bhakti.svlk.certificateNumber, 'LPVI-008/MUTU/FM-028');
+  assert.equal(bhakti.svlk.validUntil, '17 Desember 2029');
+
+  const mutiara = registry.profiles['007,2003'];
+  assert.equal(mutiara.svlk.status, 'certificate-verified');
+  assert.equal(mutiara.svlk.certificateNumber, 'SPHL.46/ASERT/LPVI-001-IDN');
+  assert.equal(mutiara.svlk.validUntil, '26 Desember 2029');
+
+  const putri = registry.profiles['005,2003'];
+  assert.equal(putri.svlk.status, 'certificate-verified');
+  assert.equal(putri.svlk.certificateNumber, 'SPHL.44/ASERT/LPVI-001-IDN');
+  assert.equal(putri.svlk.validUntil, '23 November 2029');
 });
 
 test('internal source remarks are not rendered in the public PBPH profile', () => {

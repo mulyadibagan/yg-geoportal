@@ -60,5 +60,9 @@ Jalankan `node scripts/validate_pbph_documents.mjs` sebelum publikasi.
 - PT Seraya Sumber Lestari: pengumuman re-sertifikasi resmi Januari 2021 ditemukan, tetapi keputusan hasil audit, nomor sertifikat baru, dan masa berlaku belum ditemukan. Sertifikasi IFCC dipisahkan dari S-PHL nasional.
 - PT Rimba Lazuardi: pengumuman penilikan resmi 2024 memverifikasi kepemilikan sertifikat 034.4/EQC-PHPL/III/2021 untuk PBPH di Hutan Produksi, berlaku sampai 2 Maret 2027. Keputusan hasil penilikan individual belum ditemukan.
 - PT Balai Kayang Mandiri: sertifikat baru 23-PHL-024 memverifikasi predikat baik untuk SK.772/MENLHK/SETJEN/HPL.0.7/2022 seluas 16.514 hektar, berlaku sampai 1 Agustus 2031.
+- CV Alam Lestari: hasil penilikan ke-1 tahun 2025 menyatakan sertifikat SPHL.43/ASERT/LPVI-001-IDN terpelihara dan berlanjut sampai 14 November 2029. Nomor SK dan luas 4.868,65 hektar konsisten dengan snapshot.
+- CV Bhakti Praja Mulia: keputusan Penilikan ke-1 tahun 2025 mempertahankan sertifikat LPVI-008/MUTU/FM-028 sampai 17 Desember 2029. Nomor SK dan luas 5.868,99 hektar konsisten dengan snapshot.
+- CV Mutiara Lestari: keputusan Penilikan ke-1 tahun 2025 memverifikasi sertifikat SPHL.46/ASERT/LPVI-001-IDN sampai 26 Desember 2029. Nomor SK dan luas 4.000 hektar konsisten dengan snapshot.
+- CV Putri Lindung Bulan: keputusan Penilikan ke-1 tahun 2025 memverifikasi sertifikat SPHL.44/ASERT/LPVI-001-IDN sampai 23 November 2029. Nomor SK dan luas 2.085,54 hektar konsisten dengan snapshot.
 
 Untuk profil yang telah ditelusuri, salinan keputusan PBPH beserta lampiran petanya belum ditemukan sebagai berkas publik tersendiri. Dokumen PHL/SVLK tidak boleh dipindahkan ke kategori SK PBPH.
