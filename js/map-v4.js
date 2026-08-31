@@ -1420,6 +1420,37 @@ L.control.scale({
       if (id) incomingById.set(id, feature);
     });
 
+    /*
+     * Live monitoring hanya menggambar laporan terbaru per objek. Snapshot
+     * database awal dapat masih memuat laporan lama untuk objek yang sama;
+     * hapus layer visual lamanya sebelum laporan live diperbarui. Riwayat
+     * laporan tetap tersimpan dan tetap tersedia pada halaman detail.
+     */
+    if (layerId === "monitoring_reports") {
+      const incomingTargetKeys = new Set();
+      features.forEach(feature => {
+        const props = feature && feature.properties || {};
+        monitoringTargetObjectIds(props).forEach(targetId => {
+          const key = normalizedMatchValue(targetId);
+          if (key) incomingTargetKeys.add(key);
+        });
+      });
+
+      const staleLayers = [];
+      group.eachLayer(layer => {
+        const props = layer && layer.feature && layer.feature.properties || {};
+        const id = String(
+          props.reportId || props.Source_Report_ID || props.Object_ID || ""
+        ).trim();
+        if (!id || incomingById.has(id)) return;
+        const sharesTarget = monitoringTargetObjectIds(props).some(targetId =>
+          incomingTargetKeys.has(normalizedMatchValue(targetId))
+        );
+        if (sharesTarget) staleLayers.push(layer);
+      });
+      staleLayers.forEach(layer => group.removeLayer(layer));
+    }
+
     const existing = new Set();
     let updated = 0;
     group.eachLayer(layer => {
