@@ -56,5 +56,9 @@ Jalankan `node scripts/validate_pbph_documents.mjs` sebelum publikasi.
 - PT Cahaya Permata Indragiri: laporan kinerja pemerintah mencatat SK pemberian 14012200375810004 tanggal 7 Oktober 2024 seluas 29.492 hektar, konsisten dengan snapshot. Laporan ini bukan salinan keputusan Menteri atau peta lampirannya; S-PHL belum ditemukan.
 - PT Meranti Foresta Jore: laporan pemerintah 2022 mencatat proses historis seluas 20.723 hektar, sedangkan snapshot memuat izin tahun 2025 seluas 25.248 hektar. Perbedaan tahap dan luas dipertahankan; S-PHL belum ditemukan.
 - PT Gemilang Cipta Nusantara Unit I/Kabupaten Pelalawan: keputusan dan ringkasan sertifikasi 2024 memverifikasi sertifikat LPVI-008/MUTU/FM-036, predikat sedang, sampai 20 Agustus 2030. Unit Pelalawan dipisahkan dari unit Kepulauan Meranti.
+- PT Bina Daya Bentala: sertifikat PHPL 013.4/EQC-PHPL/VI/2018 yang tersedia berakhir 28 Juni 2023. Label PHPL pada profil pemasok tidak memuat nomor atau masa berlaku pengganti, sehingga status aktif tidak disimpulkan.
+- PT Seraya Sumber Lestari: pengumuman re-sertifikasi resmi Januari 2021 ditemukan, tetapi keputusan hasil audit, nomor sertifikat baru, dan masa berlaku belum ditemukan. Sertifikasi IFCC dipisahkan dari S-PHL nasional.
+- PT Rimba Lazuardi: pengumuman penilikan resmi 2024 memverifikasi kepemilikan sertifikat 034.4/EQC-PHPL/III/2021 untuk PBPH di Hutan Produksi, berlaku sampai 2 Maret 2027. Keputusan hasil penilikan individual belum ditemukan.
+- PT Balai Kayang Mandiri: sertifikat baru 23-PHL-024 memverifikasi predikat baik untuk SK.772/MENLHK/SETJEN/HPL.0.7/2022 seluas 16.514 hektar, berlaku sampai 1 Agustus 2031.
 
 Untuk profil yang telah ditelusuri, salinan keputusan PBPH beserta lampiran petanya belum ditemukan sebagai berkas publik tersendiri. Dokumen PHL/SVLK tidak boleh dipindahkan ke kategori SK PBPH.
