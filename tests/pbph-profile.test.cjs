@@ -269,6 +269,28 @@ test('PBPH profile separates permit documents from conservative SVLK status', ()
   assert.equal(nusaPrima.svlk.validUntil, null);
   assert.match(nusaPrima.svlk.note, /SK\.1126.*4\.298 hektar.*843 Tahun 2025.*4\.287 hektar/i);
 
+  const riauAbadi = registry.profiles['542,1997'];
+  assert.equal(riauAbadi.svlk.status, 'certificate-verified');
+  assert.equal(riauAbadi.svlk.certificateNumber, '26-PHL-024');
+  assert.equal(riauAbadi.svlk.validUntil, '3 November 2031');
+  assert.match(riauAbadi.svlk.note, /15\.226,20 hektar.*12\.000 hektar/i);
+
+  const riauIndo = registry.profiles['61,2006'];
+  assert.equal(riauIndo.svlk.status, 'certificate-not-found');
+  assert.equal(riauIndo.svlk.certificateNumber, null);
+  assert.match(riauIndo.svlk.note, /SK\.1128.*10\.114 hektar.*10\.113,91 hektar.*IFCC.*berbeda/i);
+
+  const rimbaMandau = registry.profiles['552,2006'];
+  assert.equal(rimbaMandau.svlk.status, 'certificate-expired');
+  assert.equal(rimbaMandau.svlk.certificateNumber, 'SPHL.24/ASERT/LPVI-001-IDN');
+  assert.equal(rimbaMandau.svlk.validUntil, '14 Oktober 2024');
+  assert.match(rimbaMandau.svlk.note, /habis masa berlaku.*14 Oktober 2024.*re-sertifikasi baru belum ditemukan/i);
+
+  const rimbaMutiara = registry.profiles['65,2007'];
+  assert.equal(rimbaMutiara.svlk.status, 'certificate-not-found');
+  assert.equal(rimbaMutiara.svlk.certificateNumber, null);
+  assert.match(rimbaMutiara.svlk.note, /SK\.715.*8\.030 hektar.*2 Februari 2026.*IFCC.*berbeda/i);
+
   const madukoro = registry.profiles['017,2003'];
   assert.equal(madukoro.svlk.status, 'certificate-verified');
   assert.equal(madukoro.svlk.certificateNumber, 'SPHL.45/ASERT/LPVI-001-IDN');
