@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-08-31",
+  "profiles": {
+    "443,1998": {
+      "documents": [],
+      "svlk": {
+        "status": "audit-announcement-found",
+        "statusLabel": "Pengumuman audit ditemukan",
+        "certificateStatus": "S-PHL belum terverifikasi",
+        "scope": "PBPH di Hutan Produksi",
+        "auditType": "Sertifikasi/Penilikan",
+        "auditPeriod": "17–25 Mei 2024",
+        "lpvi": "PT Equality Indonesia",
+        "certificateNumber": null,
+        "validUntil": null,
+        "checkedAt": "2026-08-31",
+        "note": "Dokumen SILK yang ditemukan adalah pengumuman rencana penilaian, bukan sertifikat dan bukan keputusan PBPH.",
+        "documents": [
+          {
+            "category": "Pengumuman audit PHL",
+            "label": "Rencana penilaian PHL PT Diamond Raya Timber — Mei 2024",
+            "url": "https://silk.menlhk.go.id/app/Upload/phpl/20240503/a5fcea4ffeb58d91d74ec9267b1d63e6.pdf",
+            "publisher": "SILK Kementerian Lingkungan Hidup dan Kehutanan"
+          }
+        ]
+      }
+    }
+  }
+}

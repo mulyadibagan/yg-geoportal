@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="description" content="Profil areal PBPH aktif Riau dan riwayat hotspot berdasarkan laporan bulanan.">
+  <title>Profil PBPH | Yayasan Gambut</title>
+  <link rel="icon" href="assets/logo-yayasan-gambut.png">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="css/village-profile.css?v=20260824-ps-nonspatial2">
+  <link rel="stylesheet" href="css/pbph-profile.css?v=20260831-1">
+</head>
+<body>
+  <header class="vp-topbar">
+    <a class="vp-brand" href="index.html"><img src="assets/logo-yayasan-gambut.png" alt="Logo Yayasan Gambut"><span><strong>Yayasan Gambut</strong><small>Profil PBPH aktif Riau</small></span></a>
+    <nav class="vp-top-actions" aria-label="Aksi halaman">
+      <a class="vp-button vp-button--quiet" href="webgis.html">← Kembali ke peta</a>
+      <button class="vp-button vp-button--quiet" id="share-profile" type="button">Bagikan</button>
+      <button class="vp-button" id="print-profile" type="button">Unduh / cetak</button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="vp-hero pbph-hero">
+      <div class="vp-hero__glow"></div>
+      <div class="vp-container vp-hero__content">
+        <div><span class="vp-eyebrow">PBPH AKTIF RIAU · PEMBARUAN MEI 2026</span><h1 id="area-name">Memuat profil PBPH…</h1><p id="area-location">Menghubungkan batas areal dan laporan hotspot bulanan.</p><div class="vp-status-row"><span class="vp-status"><i></i> Referensi areal aktif</span><span id="data-updated">Memeriksa pembaruan…</span></div></div>
+        <div class="vp-hero__summary"><span>BATAS ANALISIS HOTSPOT</span><strong>Laporan bulanan mulai Juli 2026</strong><p>Angka pada profil berasal dari snapshot laporan final, bukan hitungan 30 hari berjalan.</p></div>
+      </div>
+    </section>
+
+    <div class="vp-container vp-content">
+      <div id="loading-state" class="vp-message">Menyiapkan profil PBPH…</div>
+      <div id="error-state" class="vp-message vp-message--error" hidden><span id="error-message"></span></div>
+      <div id="profile-content" hidden>
+        <section class="vp-kpis" id="kpi-grid"></section>
+        <section class="vp-layout">
+          <article class="vp-card vp-map-card"><div class="vp-section-head"><div><span class="vp-kicker">LOKASI</span><h2>Keseluruhan bagian areal</h2></div><span class="vp-badge pbph-badge">PBPH Mei 2026</span></div><div id="village-map"></div><p class="vp-caption">Seluruh bagian polygon dengan PBPH ID yang sama ditampilkan sebagai satu profil.</p></article>
+          <article class="vp-card"><div class="vp-section-head"><div><span class="vp-kicker">IDENTITAS AREAL</span><h2>Informasi PBPH</h2></div><span class="vp-sf-status">Layer referensi</span></div><div class="vp-identity" id="identity-list"></div></article>
+        </section>
+
+        <section class="vp-card"><div class="vp-section-head"><div><span class="vp-kicker">PELAPORAN HOTSPOT</span><h2>Riwayat laporan bulanan</h2></div><span class="vp-badge vp-badge--warm">mulai Juli 2026</span></div><div class="pbph-months" id="monthly-hotspots"></div><p class="vp-caption" id="hotspot-note"></p></section>
+        <section class="vp-card"><div class="vp-section-head"><div><span class="vp-kicker">RINCIAN DETEKSI</span><h2>Hotspot dalam laporan</h2></div></div><div class="pbph-table-wrap"><table class="pbph-table"><thead><tr><th>Tanggal</th><th>Desa</th><th>Kabupaten</th><th>Satelit</th><th>FRP</th><th>Laporan</th></tr></thead><tbody id="hotspot-list"></tbody></table></div><div class="pbph-empty" id="hotspot-empty" hidden>Belum ada hotspot yang tercatat di dalam PBPH ini pada laporan bulanan final.</div></section>
+        <section class="vp-card"><div class="vp-section-head"><div><span class="vp-kicker">DOKUMEN PBPH</span><h2>SK dan dokumen pendukung</h2></div><span class="vp-badge" id="document-count">0 dokumen</span></div><div class="vp-document-list" id="pbph-document-list"></div><div class="pbph-empty" id="document-empty" hidden>Dokumen publik terverifikasi belum tersedia.</div><p class="vp-caption" id="document-note"></p></section>
+        <section class="vp-card"><div class="vp-section-head"><div><span class="vp-kicker">SVLK &amp; PHL</span><h2>Status penjaminan legalitas dan kelestarian</h2></div><span class="pbph-svlk-status" id="svlk-status">Belum ditelusuri</span></div><div class="pbph-svlk-grid" id="svlk-details"></div><div class="vp-document-list pbph-svlk-documents" id="svlk-document-list"></div><p class="vp-caption" id="svlk-note"></p></section>
+        <section class="vp-card vp-method"><div class="vp-section-head"><div><span class="vp-kicker">TRANSPARANSI DATA</span><h2>Bagaimana angka hotspot dihitung?</h2></div></div><div class="vp-method-grid"><div><b>1</b><strong>Batas PBPH</strong><p>Bagian polygon dengan PBPH ID yang sama digabung sebagai satu profil.</p></div><div><b>2</b><strong>Periode tetap</strong><p>Hanya laporan bulanan final mulai Juli 2026 yang dibaca.</p></div><div><b>3</b><strong>Irisan spasial</strong><p>Hotspot dihitung bila laporan menempatkannya di dalam polygon PBPH.</p></div><div><b>4</b><strong>Bukan atribusi</strong><p>Irisan bukan bukti penyebab atau tanggung jawab pemegang PBPH.</p></div></div></section>
+        <footer class="vp-footer"><p><strong>Catatan:</strong> batas PBPH dan laporan hotspot adalah referensi pemantauan. Keputusan hukum dan kondisi lapangan harus diverifikasi kepada instansi serta pemegang izin.</p><a href="fire-monthly-report.html">Buka laporan hotspot bulanan →</a></footer>
+      </div>
+    </div>
+  </main>
+  <div class="vp-toast" id="toast" role="status"></div>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/pbph-profile.js?v=20260831-1"></script>
+</body>
+</html>

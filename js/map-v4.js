@@ -1596,6 +1596,13 @@ L.control.scale({
       : String(raw == null ? "" : raw).trim().toLowerCase();
   }
 
+  function activeConcessionProfileId(feature) {
+    const props = feature && feature.properties || {};
+    return String(
+      props.PBPH_ID || [props.NAMOBJ, props.NO_SK].filter(Boolean).join("|")
+    ).trim();
+  }
+
   function villageProfileKey(feature) {
     const props = feature && feature.properties || {};
     return [
@@ -1968,6 +1975,21 @@ L.control.scale({
           '</div>'
         )
       : "";
+    const activeConcessionId = config.type === "active_concession"
+      ? activeConcessionProfileId(feature)
+      : "";
+    const activeConcessionAction = activeConcessionId
+      ? (
+          '<div class="yg-popup-actions yg-popup-profile-action">' +
+            '<a class="yg-popup-monitoring-link yg-popup-profile-link" ' +
+              'target="_blank" rel="noopener noreferrer" ' +
+              'href="pbph-profile.html?id=' +
+                encodeURIComponent(activeConcessionId) + '">' +
+              'Buka Profil PBPH&nbsp; →' +
+            '</a>' +
+          '</div>'
+        )
+      : "";
     const administrativeVillageKey = config.type === "village_boundary"
       ? villageProfileKey(feature)
       : "";
@@ -1992,6 +2014,7 @@ L.control.scale({
           '<span>Layer referensi — tidak dihitung dalam dashboard</span>' +
         '</div>' +
         '<div class="popup-body">' + rows + sourceRows + referenceLinks +
+          activeConcessionAction +
           socialForestryAction +
           administrativeVillageAction + '</div>' +
       '</div>'
