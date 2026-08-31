@@ -39,5 +39,9 @@ Jalankan `node scripts/validate_pbph_documents.mjs` sebelum publikasi.
 - PT Bukit Batu Hutani Alam: keputusan dan ringkasan hasil re-sertifikasi 2024 telah diverifikasi dari LPVI PT Ayamaru Sertifikasi. Sertifikat SPHL.69/ASERT/LPVI-001-IDN berlaku sampai 24 Oktober 2030.
 - PT Nusantara Sentosa Raya: keputusan penilikan ke-3 tahun 2026 telah diverifikasi dari LPVI PT Ayamaru Sertifikasi. Sertifikat SPHL.35/ASERT/LPVI-001-IDN dinyatakan terpelihara dan berlaku sampai 27 Februari 2027.
 - CV Tuah Negeri: nomor dan masa berlaku sertifikat diverifikasi melalui register klien aktif LPVI PT Ayamaru Sertifikasi. Sertifikat SPHL.40/ASERT/LPVI-001-IDN berlaku sampai 4 Mei 2029; berkas keputusan audit individual belum ditemukan.
+- PT Satria Perkasa Agung (PBPH 77.702 hektar): sertifikat EQC-PHL-004 yang ditemukan berakhir 12 November 2024. Belum ditemukan keputusan perpanjangan untuk areal ini. Unit Serapung dan KTH Sinar Merawang tidak digabung karena memiliki izin dan sertifikat tersendiri.
+- PT Perawang Sukses Perkasa Industri: sertifikat EQC-PHL-005 dengan masa berlaku baru telah diverifikasi. Sertifikat berlaku sampai 27 November 2030; ringkasan publik PBPH 2025 juga tersedia.
+- PT Sekato Pratama Makmur: sertifikat EQC-PHL-045 terbaru ditautkan pada profil pemasok publik dan berlaku sampai 29 September 2030. Pengumuman audit tahun 2024 digunakan sebagai pemeriksaan silang periode audit.
+- PT The Best One Unitimber: keputusan dan ringkasan sertifikasi PHL tahun 2024 telah diverifikasi dari LPVI PT Mutuagung Lestari Tbk. Sertifikat LPVI-008/MUTU/FM-039 berlaku sampai 29 Agustus 2030.
 
 Untuk profil yang telah ditelusuri, salinan keputusan PBPH beserta lampiran petanya belum ditemukan sebagai berkas publik tersendiri. Dokumen PHL/SVLK tidak boleh dipindahkan ke kategori SK PBPH.
