@@ -248,6 +248,27 @@ test('PBPH profile separates permit documents from conservative SVLK status', ()
   assert.equal(mustika.svlk.certificateNumber, null);
   assert.match(mustika.svlk.note, /16082100232240008.*15\.170 hektar/i);
 
+  const ekawana = registry.profiles['733,1997'];
+  assert.equal(ekawana.svlk.status, 'certificate-not-found');
+  assert.equal(ekawana.svlk.certificateNumber, null);
+  assert.match(ekawana.svlk.note, /10\.982,56 hektar.*9\.300 hektar.*IFCC.*berbeda/i);
+
+  const mitraKembang = registry.profiles['71,2007'];
+  assert.equal(mitraKembang.svlk.status, 'audit-announcement-found');
+  assert.equal(mitraKembang.svlk.certificateNumber, null);
+  assert.match(mitraKembang.svlk.note, /SK\.814.*15\.028,09 hektar.*tidak membuktikan/i);
+
+  const mitraTaninusa = registry.profiles['66,2007'];
+  assert.equal(mitraTaninusa.svlk.status, 'certificate-not-found');
+  assert.equal(mitraTaninusa.svlk.certificateNumber, null);
+  assert.match(mitraTaninusa.svlk.note, /SK\.826.*7\.480 hektar.*IFCC.*berbeda/i);
+
+  const nusaPrima = registry.profiles['2,2002'];
+  assert.equal(nusaPrima.svlk.status, 'audit-announcement-found');
+  assert.equal(nusaPrima.svlk.certificateNumber, '007/LPVI-007/TRANsTRA');
+  assert.equal(nusaPrima.svlk.validUntil, null);
+  assert.match(nusaPrima.svlk.note, /SK\.1126.*4\.298 hektar.*843 Tahun 2025.*4\.287 hektar/i);
+
   const madukoro = registry.profiles['017,2003'];
   assert.equal(madukoro.svlk.status, 'certificate-verified');
   assert.equal(madukoro.svlk.certificateNumber, 'SPHL.45/ASERT/LPVI-001-IDN');
