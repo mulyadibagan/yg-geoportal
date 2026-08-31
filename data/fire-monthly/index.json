@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-08-25T10:27:27.269Z",
+  "updatedAt": "2026-08-31T04:40:11.923Z",
   "latest": "2026-07",
   "retention": {
     "rawArchiveMonths": 60,
@@ -14,13 +14,13 @@
         "start": "2026-07-01",
         "end": "2026-07-31"
       },
-      "generatedAt": "2026-08-25T09:44:16.794Z",
+      "generatedAt": "2026-08-31T04:40:11.923Z",
       "summary": {
         "hotspots": 9,
         "villages": 5,
         "regencies": 3,
         "companies": 1,
-        "companyHotspots": 3
+        "companyHotspots": 2
       },
       "href": "fire-monthly-report.html?month=2026-07",
       "data": "data/fire-monthly/2026-07.json"

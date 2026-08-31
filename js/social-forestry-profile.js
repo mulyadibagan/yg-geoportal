@@ -37,7 +37,7 @@ function renderHotspots(record){
   el("hotspot-years").innerHTML=rows.map(function(x){var v=number(x.count)||0,h=Math.max(3,v/max*88);return'<div class="vp-mini"><strong>'+format(v,0)+'</strong><div class="vp-mini__bar" style="height:'+h.toFixed(1)+'px"></div><span>'+esc(x.year)+'</span></div>'}).join("");
 }
 function renderReferences(record,area){
-  var r=record.referenceAreasHa||{},rows=[["APL",r.apl],["Hutan produksi",r.productionForest],["Hutan lindung",r.protectionForest],["Kawasan konservasi",r.conservation],["Ekosistem gambut",r.peat],["Konsesi",r.concession],["Perhutanan sosial",r.socialForestry]];
+  var r=record.referenceAreasHa||{},rows=[["APL",r.apl],["Hutan produksi",r.productionForest],["Hutan lindung",r.protectionForest],["Kawasan konservasi",r.conservation],["Ekosistem gambut",r.peat],["PBPH aktif (Mei 2026)",r.concession],["Perhutanan sosial",r.socialForestry]];
   el("reference-list").innerHTML=rows.map(function(x){var v=number(x[1]),w=v!=null&&area?Math.min(100,v/area*100):0;return'<div class="vp-reference"><span>'+esc(x[0])+'</span><strong>'+esc(ha(v))+'</strong><div class="vp-reference__track"><div class="vp-reference__fill" style="width:'+w.toFixed(2)+'%"></div></div></div>'}).join("");
 }
 function renderIdentity(p,area,detail){
@@ -113,7 +113,7 @@ function render(feature,record,data,detail){
 async function init(){
   if(!key){showError("Tautan areal tidak lengkap. Pilih Perhutanan Sosial melalui WebGIS.");return}
   try{
-    var results=await Promise.all([json("data/village-forest-analytics.json?v=20260822-social-profile1"),json("data/PERHUTANAN_SOSIAL_RIAU.geojson?v=20260828-sk-sync1"),json("data/social-forestry-details.json?v=20260828-sk-sync1"),json("data/social-forestry-pkk-samj.geojson?v=20260831-samj-pkk1").catch(function(){return{features:[]}})]),data=results[0],geo=results[1],details=results[2]||{};
+    var results=await Promise.all([json("data/village-forest-analytics.json?v=20260831-pbph1"),json("data/PERHUTANAN_SOSIAL_RIAU.geojson?v=20260828-sk-sync1"),json("data/social-forestry-details.json?v=20260828-sk-sync1"),json("data/social-forestry-pkk-samj.geojson?v=20260831-samj-pkk1").catch(function(){return{features:[]}})]),data=results[0],geo=results[1],details=results[2]||{};
     geo.features=(geo.features||[]).concat(results[3].features||[]);
     var feature=(geo.features||[]).find(function(f){return permitKey(f)===key||featureKey(f)===key});
     var record=(data.socialForestry||{})[key];

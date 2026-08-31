@@ -99,14 +99,6 @@
       sourceUrl: "https://geoportal.planologi.kehutanan.go.id/server/rest/services/Peta_Interaktif_2026/PBPH_AR_50K/MapServer/0",
       scale: "1:50.000; snapshot pembaruan Mei 2026"
     },
-    iuphhk_ht_2014: {
-      id: "iuphhk_ht_2014",
-      label: "IUPHHK-HT 2014",
-      file: "data/IUPHHK_HT_2014.geojson",
-      color: "#c62828",
-      count: 138,
-      type: "concession"
-    },
     perhutanan_sosial_riau: {
       id: "perhutanan_sosial_riau",
       label: "Perhutanan Sosial Riau",

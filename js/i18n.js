@@ -512,7 +512,6 @@
     "Wilayah Penanaman Kopi": "Coffee Cultivation Areas",
     "Perhutanan Sosial Riau": "Riau Social Forestry",
     "Batas Administrasi Desa Riau": "Riau Village Administrative Boundaries",
-    "IUPHHK-HT 2014": "Timber Plantation Concessions 2014",
     "Fase/keterangan": "Phase/notes",
     "Jumlah bibit": "Number of seedlings",
     "Jenis pohon": "Tree species",

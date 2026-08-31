@@ -91,7 +91,7 @@
     var rows=[
       ["APL",ref.apl],["Hutan produksi",ref.productionForest],["Hutan lindung",ref.protectionForest],
       ["Kawasan konservasi",ref.conservation],["Ekosistem gambut",ref.peat],
-      ["Konsesi",ref.concession],["Perhutanan sosial",ref.socialForestry]
+      ["PBPH aktif (Mei 2026)",ref.concession],["Perhutanan sosial",ref.socialForestry]
     ];
     el("reference-list").innerHTML=rows.map(function(item){var value=number(item[1]);var width=value!=null&&area?Math.min(100,value/area*100):0;return '<div class="vp-reference"><span>'+esc(item[0])+'</span><strong>'+esc(ha(value))+'</strong><div class="vp-reference__track"><div class="vp-reference__fill" style="width:'+width.toFixed(2)+'%"></div></div></div>';}).join("");
   }

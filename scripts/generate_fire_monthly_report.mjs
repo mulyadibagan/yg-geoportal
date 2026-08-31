@@ -19,7 +19,7 @@ const iso = (d) => d.toISOString().slice(0, 10);
 const outputDir = path.join(ROOT, "data", "fire-monthly");
 const province = JSON.parse(await readFile(path.join(ROOT, "data", "batas_provinsi_riau_dissolve.geojson"), "utf8"));
 const villages = JSON.parse(await readFile(path.join(ROOT, "data", "batas_administrasi_desa_riau.geojson"), "utf8"));
-const permits = JSON.parse(await readFile(path.join(ROOT, "data", "IUPHHK_HT_2014.geojson"), "utf8"));
+const permits = JSON.parse(await readFile(path.join(ROOT, "data", "PBPH_RIAU_052026.geojson"), "utf8"));
 
 function csvRows(text) {
   const rows = [];
@@ -145,9 +145,9 @@ for (const row of raw) {
     district: village ? village.feature.properties.WADMKC || "" : "",
     regency: village ? village.feature.properties.WADMKK || "" : "",
     permits: permitMatches.map(({ feature }) => ({
-      name: feature.properties.NAMA_PRH || "Tidak teridentifikasi",
-      sk: feature.properties.SK_PBH || feature.properties.SK_LAMA || "",
-      areaHa: Number(feature.properties.LUAS_HA) || null
+      name: feature.properties.NAMOBJ || "Tidak teridentifikasi",
+      sk: feature.properties.NO_SK || "",
+      areaHa: Number(feature.properties.LSSK) || null
     })).filter((value, index, array) => array.findIndex((x) => x.name === value.name && x.sk === value.sk) === index)
   });
 }
@@ -178,8 +178,8 @@ const report = {
   status: "final",
   generatedAt: new Date().toISOString(), source: "NASA FIRMS",
   sources: sourcesUsed,
-  methodology: "Deteksi kategori high confidence di dalam polygon Provinsi Riau; pencocokan desa dan referensi IUPHHK-HT dilakukan secara spasial.",
-  disclaimer: "IUPHHK-HT 2014 adalah referensi batas. Irisan hotspot bukan bukti penyebab atau tanggung jawab perusahaan.",
+  methodology: "Deteksi kategori high confidence di dalam polygon Provinsi Riau; pencocokan desa dan PBPH Riau pembaruan Mei 2026 dilakukan secara spasial.",
+  disclaimer: "PBPH Mei 2026 adalah referensi areal kerja terkini pada sumber. Irisan hotspot bukan bukti penyebab atau tanggung jawab pemegang PBPH.",
   summary: { hotspots: detections.length, villages: villageRows.length, regencies: regencies.size, companies: companyRows.length, companyHotspots: detections.filter((x) => x.permits.length).length },
   daily, villages: villageRows, companies: companyRows, hotspots: detections
 };

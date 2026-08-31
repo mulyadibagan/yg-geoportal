@@ -1,5 +1,6 @@
 import json
 import os
+from datetime import datetime, timezone
 from pathlib import Path
 
 from pyproj import Transformer
@@ -26,7 +27,7 @@ GROUP_VILLAGE_PARTS = os.getenv("FOREST_GROUP_VILLAGE_PARTS", "0") == "1"
 
 REFERENCES = {
     "peat": ("Gambut_BBSDLP_2019.geojson", "Lahan gambut BBSDLP 2019"),
-    "concession": ("IUPHHK_HT_2014.geojson", "IUPHHK-HT 2014"),
+    "concession": ("PBPH_RIAU_052026.geojson", "PBPH Riau pembaruan Mei 2026"),
     "socialForestry": ("PERHUTANAN_SOSIAL_RIAU.geojson", "Perhutanan sosial"),
 }
 
@@ -246,6 +247,9 @@ def main():
             "conservation": sorted(FOREST_FUNCTIONS["conservation"]),
         },
     }
+    analytics["generatedAt"] = datetime.now(timezone.utc).isoformat().replace(
+        "+00:00", "Z"
+    )
     target.write_text(
         json.dumps(analytics, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )

@@ -41,7 +41,7 @@ def area_hectares(geometry):
 villages = union_features("desa_intervensi.geojson")
 peat = union_features("Gambut_BBSDLP_2019.geojson")
 forest_estate = union_features("kawasan_hutan_sk_903.geojson")
-timber_licenses = union_features("IUPHHK_HT_2014.geojson")
+timber_licenses = union_features("PBPH_RIAU_052026.geojson")
 social_forestry = union_features("PERHUTANAN_SOSIAL_RIAU.geojson")
 mangrove_features = load_features("area_mangrove.geojson")
 mangrove = unary_union([

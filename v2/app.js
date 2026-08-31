@@ -25,7 +25,7 @@
   const REFERENCES = [
     { id: "kawasan_hutan_sk_903", file: "kawasan_hutan_sk_903.geojson", label: "Kawasan Hutan SK 903", caption: "Referensi fungsi kawasan", color: "#56645f", type: "polygon" },
     { id: "gambut_bbsdlp_2019", file: "Gambut_BBSDLP_2019.geojson", label: "Peta Gambut BBSDLP 2019", caption: "Referensi sebaran gambut", color: "#6d4c3d", type: "polygon" },
-    { id: "iuphhk_ht_2014", file: "IUPHHK_HT_2014.geojson", label: "IUPHHK-HT 2014", caption: "Referensi perizinan pemanfaatan hutan", color: "#c62828", type: "polygon" },
+    { id: "pbph_riau_052026", file: "PBPH_RIAU_052026.geojson", label: "PBPH aktif Riau — Mei 2026", caption: "Areal kerja PBPH pembaruan terkini", color: "#d84315", type: "polygon" },
     { id: "perhutanan_sosial_riau", file: "PERHUTANAN_SOSIAL_RIAU.geojson", label: "Perhutanan Sosial Riau", caption: "Referensi akses kelola masyarakat", color: "#00897b", type: "polygon" }
   ];
   const EN_LAYER = {
@@ -45,7 +45,7 @@
     nursery_mangrove: ["Mangrove Nursery", "Community seedling nurseries"],
     kawasan_hutan_sk_903: ["Forest Estate SK 903", "Forest-function reference"],
     gambut_bbsdlp_2019: ["BBSDLP Peat Map 2019", "Peat-distribution reference"],
-    iuphhk_ht_2014: ["IUPHHK-HT 2014", "Forest-utilisation licence reference"],
+    pbph_riau_052026: ["Active Riau PBPH — May 2026", "Current PBPH working-area reference"],
     perhutanan_sosial_riau: ["Riau Social Forestry", "Community forest access reference"]
   };
   let currentLanguage = localStorage.getItem("yg-v2-language") === "en" ? "en" : "id";

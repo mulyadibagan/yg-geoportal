@@ -7,7 +7,7 @@
   },
   "province": "Riau",
   "status": "final",
-  "generatedAt": "2026-08-25T09:44:16.794Z",
+  "generatedAt": "2026-08-31T04:40:11.923Z",
   "source": "NASA FIRMS",
   "sources": [
     "VIIRS NOAA-20 C2",
@@ -15,14 +15,14 @@
     "MODIS C6.1",
     "VIIRS S-NPP C2"
   ],
-  "methodology": "Deteksi kategori high confidence di dalam polygon Provinsi Riau; pencocokan desa dan referensi IUPHHK-HT dilakukan secara spasial.",
-  "disclaimer": "IUPHHK-HT 2014 adalah referensi batas. Irisan hotspot bukan bukti penyebab atau tanggung jawab perusahaan.",
+  "methodology": "Deteksi kategori high confidence di dalam polygon Provinsi Riau; pencocokan desa dan PBPH Riau pembaruan Mei 2026 dilakukan secara spasial.",
+  "disclaimer": "PBPH Mei 2026 adalah referensi areal kerja terkini pada sumber. Irisan hotspot bukan bukti penyebab atau tanggung jawab pemegang PBPH.",
   "summary": {
     "hotspots": 9,
     "villages": 5,
     "regencies": 3,
     "companies": 1,
-    "companyHotspots": 3
+    "companyHotspots": 2
   },
   "daily": [
     {
@@ -194,14 +194,14 @@
   ],
   "companies": [
     {
-      "name": "PT. RIMBA ROKAN PERKASA",
-      "sk": "SK. 554/Menhut-II/2006",
-      "areaHa": 22930,
-      "hotspots": 3,
+      "name": "PT DIAMOND RAYA TIMBER",
+      "sk": "SK.718/MENLHK/SETJEN/HPL.0/9/2021",
+      "areaHa": 89155,
+      "hotspots": 2,
       "villages": [
-        "Buluh Apo"
+        "Darussalam"
       ],
-      "detectionDays": 2
+      "detectionDays": 1
     }
   ],
   "hotspots": [
@@ -245,13 +245,7 @@
       "village": "Buluh Apo",
       "district": "Pinggir",
       "regency": "Bengkalis",
-      "permits": [
-        {
-          "name": "PT. RIMBA ROKAN PERKASA",
-          "sk": "SK. 554/Menhut-II/2006",
-          "areaHa": 22930
-        }
-      ]
+      "permits": []
     },
     {
       "date": "2026-07-15",
@@ -279,13 +273,7 @@
       "village": "Buluh Apo",
       "district": "Pinggir",
       "regency": "Bengkalis",
-      "permits": [
-        {
-          "name": "PT. RIMBA ROKAN PERKASA",
-          "sk": "SK. 554/Menhut-II/2006",
-          "areaHa": 22930
-        }
-      ]
+      "permits": []
     },
     {
       "date": "2026-07-17",
@@ -299,13 +287,7 @@
       "village": "Buluh Apo",
       "district": "Pinggir",
       "regency": "Bengkalis",
-      "permits": [
-        {
-          "name": "PT. RIMBA ROKAN PERKASA",
-          "sk": "SK. 554/Menhut-II/2006",
-          "areaHa": 22930
-        }
-      ]
+      "permits": []
     },
     {
       "date": "2026-07-31",
@@ -319,7 +301,13 @@
       "village": "Darussalam",
       "district": "Sinaboi",
       "regency": "Rokan Hilir",
-      "permits": []
+      "permits": [
+        {
+          "name": "PT DIAMOND RAYA TIMBER",
+          "sk": "SK.718/MENLHK/SETJEN/HPL.0/9/2021",
+          "areaHa": 89155
+        }
+      ]
     },
     {
       "date": "2026-07-31",
@@ -333,7 +321,13 @@
       "village": "Darussalam",
       "district": "Sinaboi",
       "regency": "Rokan Hilir",
-      "permits": []
+      "permits": [
+        {
+          "name": "PT DIAMOND RAYA TIMBER",
+          "sk": "SK.718/MENLHK/SETJEN/HPL.0/9/2021",
+          "areaHa": 89155
+        }
+      ]
     },
     {
       "date": "2026-07-09",

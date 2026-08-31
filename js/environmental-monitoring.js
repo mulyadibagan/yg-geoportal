@@ -217,7 +217,7 @@
       kpi("Kawasan konservasi",formatHa(values.conservation))+
       kpi("Total kawasan hutan",formatHa(values.forestEstate))+
       kpi("Lahan gambut",formatHa(values.peat))+
-      kpi("IUPHHK-HT",formatHa(values.concession))+
+      kpi("PBPH aktif (Mei 2026)",formatHa(values.concession))+
       kpi("Perhutanan sosial",formatHa(values.socialForestry))+
       '</div>';
   }
@@ -232,7 +232,7 @@
       ["Konservasi",values.conservation,"#00695c"],
       ["Total kawasan hutan",values.forestEstate,"#455a64"],
       ["Gambut",values.peat,"#6a4a3a"],
-      ["IUPHHK-HT",values.concession,"#c62828"],
+      ["PBPH aktif (Mei 2026)",values.concession,"#c62828"],
       ["Perhutanan sosial",values.socialForestry,"#00897b"]
     ];
     return rows.map(function(row){
@@ -586,7 +586,7 @@
       ["Kawasan konservasi",Number(values.conservation)||0],
       ["Total kawasan hutan",Number(values.forestEstate)||0],
       ["Lahan gambut",Number(values.peat)||0],
-      ["IUPHHK-HT",Number(values.concession)||0],
+      ["PBPH aktif (Mei 2026)",Number(values.concession)||0],
       ["Perhutanan sosial",Number(values.socialForestry)||0]
     ];
     return rows.map(function(item){
