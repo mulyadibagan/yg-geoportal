@@ -150,6 +150,28 @@ test('PBPH profile separates permit documents from conservative SVLK status', ()
   assert.equal(peranap.svlk.certificateNumber, null);
   assert.equal(peranap.svlk.validUntil, null);
   assert.match(peranap.svlk.note, /IFCC berbeda dari S-PHL nasional/i);
+
+  const nwr = registry.profiles['241,2007'];
+  assert.equal(nwr.svlk.status, 'certificate-verified');
+  assert.equal(nwr.svlk.certificateNumber, '40-SIC-04.01');
+  assert.equal(nwr.svlk.validUntil, '12 Januari 2027');
+  assert.match(nwr.svlk.note, /842 Tahun 2025/i);
+
+  const bdl = registry.profiles['46,2019'];
+  assert.equal(bdl.svlk.status, 'certificate-verified');
+  assert.equal(bdl.svlk.certificateNumber, '026/S-PHPL/GRS/X/2021');
+  assert.equal(bdl.svlk.validUntil, '25 Oktober 2027');
+
+  const nsp = registry.profiles['380,2009'];
+  assert.equal(nsp.svlk.status, 'certificate-not-found');
+  assert.equal(nsp.svlk.certificateNumber, null);
+  assert.match(nsp.svlk.scope, /bukan kayu.*sagu/i);
+
+  const gcnMeranti = registry.profiles['825,2013'];
+  assert.equal(gcnMeranti.svlk.status, 'certificate-verified');
+  assert.equal(gcnMeranti.svlk.certificateNumber, 'LPVI-008/MUTU/FM-035');
+  assert.equal(gcnMeranti.svlk.validUntil, '15 Agustus 2030');
+  assert.match(gcnMeranti.svlk.note, /tidak digabung dengan unit Kabupaten Pelalawan/i);
 });
 
 test('internal source remarks are not rendered in the public PBPH profile', () => {

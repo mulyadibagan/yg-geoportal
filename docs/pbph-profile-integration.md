@@ -22,6 +22,7 @@ Integrasi memakai status konservatif berikut:
 
 - `not-researched`: belum ditelusuri;
 - `audit-announcement-found`: pengumuman audit ditemukan, tetapi status sertifikat belum terverifikasi;
+- `certificate-not-found`: penelusuran telah dilakukan, tetapi bukti sertifikat yang dapat diverifikasi belum ditemukan;
 - `certificate-verified`: nomor sertifikat, masa berlaku, LPVI, dan dokumen resmi tersedia;
 - `certificate-expired`, `certificate-suspended`, atau `certificate-revoked`: hanya digunakan bila dokumen resmi menyatakan status tersebut.
 
@@ -47,5 +48,9 @@ Jalankan `node scripts/validate_pbph_documents.mjs` sebelum publikasi.
 - PT Sinar Mutiara Nusantara: keputusan dan ringkasan sertifikasi PHL tahun 2024 telah diverifikasi dari LPVI PT Mutuagung Lestari Tbk. Sertifikat LPVI-008/MUTU/FM-038 berlaku sampai 26 Agustus 2030.
 - PT Suntara Gajapati: register PT Global Resource Sertifikasi menyatakan status aktif untuk periode 19 Januari 2026–18 Januari 2032, tetapi nomor sertifikat baru belum ditampilkan. PDF pada profil pemasok adalah sertifikat lama PT TUV Rheinland Indonesia yang berakhir 18 Januari 2026 dan tidak boleh disajikan sebagai sertifikat aktif.
 - PT Peranap Timber: pengumuman audit IFCC Januari 2026 ditemukan, tetapi dokumen tersebut bukan S-PHL nasional. Status S-PHL/SVLK belum disimpulkan sampai dokumen LPVI nasional ditemukan.
+- PT Nusa Wana Raya: keputusan, resume, dan sertifikat Penilikan II memverifikasi S-PHL 40-SIC-04.01 sampai 12 Januari 2027. Dokumen LPVI masih memakai SK.1121/2021 dan luas 26.880 hektar; perubahan pada snapshot menjadi Keputusan 842 Tahun 2025 dan luas 25.845 hektar belum ditemukan dalam publikasi LPVI sehingga ditampilkan sebagai catatan ketidaksinkronan.
+- PT Bina Duta Laksana: register klien aktif dan paket Penilikan II tahun 2025 memverifikasi sertifikat 026/S-PHPL/GRS/X/2021 sampai 25 Oktober 2027. Legalitas Penilikan II telah memakai SK.984/MENLHK/SETJEN/HPL.0/10/2021 dan luas 25.093 hektar.
+- PT National Sago Prima: snapshot mengklasifikasikan kegiatan sebagai pemanfaatan hasil hutan bukan kayu (sagu). Penelusuran belum menemukan S-PHL nasional yang dapat diverifikasi; dokumen korporasi, perkara lingkungan, dan perubahan kepemilikan tidak digunakan sebagai bukti sertifikasi.
+- PT Gemilang Cipta Nusantara Unit II/Kabupaten Kepulauan Meranti: keputusan dan ringkasan sertifikasi 2024 memverifikasi sertifikat LPVI-008/MUTU/FM-035, predikat sedang, sampai 15 Agustus 2030. Unit Meranti dipisahkan dari unit Pelalawan.
 
 Untuk profil yang telah ditelusuri, salinan keputusan PBPH beserta lampiran petanya belum ditemukan sebagai berkas publik tersendiri. Dokumen PHL/SVLK tidak boleh dipindahkan ke kategori SK PBPH.

@@ -3,7 +3,7 @@ import fs from "node:fs";
 const registry=JSON.parse(fs.readFileSync("data/pbph-documents.json","utf8"));
 const geo=JSON.parse(fs.readFileSync("data/PBPH_RIAU_052026.geojson","utf8"));
 const ids=new Set((geo.features||[]).map(feature=>String(feature.properties?.PBPH_ID||"").trim()));
-const allowedSvlk=new Set(["not-researched","audit-announcement-found","certificate-verified","certificate-expired","certificate-suspended","certificate-revoked"]);
+const allowedSvlk=new Set(["not-researched","audit-announcement-found","certificate-not-found","certificate-verified","certificate-expired","certificate-suspended","certificate-revoked"]);
 
 for(const[id,profile]of Object.entries(registry.profiles||{})){
   if(!ids.has(id))throw new Error(`${id}: PBPH_ID tidak ditemukan pada snapshot.`);
