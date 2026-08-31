@@ -9,6 +9,7 @@ function number(v){var n=Number(v);return isFinite(n)?n:null}
 function format(v,d){var n=number(v);return n==null?"Belum tersedia":n.toLocaleString("id-ID",{maximumFractionDigits:d==null?2:d})}
 function ha(v){var n=number(v);return n==null?"Belum tersedia":format(n,2)+" ha"}
 function percent(v){var n=number(v);return n==null?"—":format(n,1)+"%"}
+function displayDate(v){var value=String(v==null?"":v).trim();return!value||/^0(?:\.0+)?$/.test(value)||/^1899-12-30/.test(value)?"—":value}
 function normalized(v){return String(v||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim()}
 function analysisKeyValue(v){if(typeof v==="number"&&Number.isInteger(v))return v.toFixed(1);return String(v==null?"":v)}
 function featureKey(f){var p=f&&f.properties||{};return analysisKeyValue(p.PROFILE_KEY||p.OBJECTID||p.ID||p.NO_IUPHKM||p.SK||[p.NAMA_HKM,p.NAMA_DESA,p.NAMA_KAB].filter(Boolean).join("|")).trim().toLowerCase()}
@@ -42,13 +43,15 @@ function renderReferences(record,area){
 }
 function renderIdentity(p,area,detail){
   var legal=detail&&detail.skExtraction?detail.skExtraction:{};
+  var polygonDecree=String(p.NO_IUPHKM||p.SK||"").trim(),detailDecree=String(detail&&detail.decree||"").trim(),legalDecree=String(legal.decreeNumber||"").trim(),canonicalDecree=detailDecree||polygonDecree||legalDecree,legalVerified=Boolean(legalDecree&&normalized(legalDecree)===normalized(canonicalDecree)),detailScheme=String(detail&&detail.scheme||"").trim(),canonicalScheme=/nonspasial|belum terklasifikasi/i.test(detailScheme)?p.Ket:(detailScheme||p.Ket||"—");
+  var approvedArea=legalVerified?number(legal.approvedAreaHa):number(detail&&detail.areaHa);if(approvedArea==null||approvedArea<=0)approvedArea=number(p.L_IUPHKM);if(approvedArea!=null&&approvedArea<=0)approvedArea=null;
   var verifiedVillage=detail&&detail.village?detail.village:(p.NAMA_DESA||"—"),verifiedDistrict=detail&&detail.district?detail.district:(p.NAMA_KEC||"—"),verifiedRegency=detail&&detail.regency?detail.regency:(p.NAMA_KAB||"—"),verifiedProvince=detail&&detail.province?detail.province:(p.NAMA_PROV||"Riau");
   el("identity-list").innerHTML=[
-    item("Kelompok/Hutan Desa",detail&&detail.name?detail.name:(p.NAMA_HKM||"—")),item("Skema",legal.scheme||p.Ket||"—"),item("Nomor SK",legal.decreeNumber||p.NO_IUPHKM||"—"),item("Tanggal SK",legal.decreeDate||p.TGL_IUPHKM||"—"),
-    item("Luas berdasarkan SK",number(legal.approvedAreaHa)!=null?format(legal.approvedAreaHa,0)+" ha":(number(p.L_IUPHKM)!=null?format(p.L_IUPHKM,2)+" ha":"—")),item("Luas hasil kalkulasi polygon",ha(area)),item("Desa",verifiedVillage),item("Kecamatan",verifiedDistrict),item("Kabupaten",verifiedRegency),item("Provinsi",verifiedProvince)
+    item("Kelompok/Hutan Desa",detail&&detail.name?detail.name:(p.NAMA_HKM||"—")),item("Skema",legalVerified&&legal.scheme?legal.scheme:canonicalScheme),item("Nomor SK",canonicalDecree||"—"),item("Tanggal SK",displayDate(legalVerified&&legal.decreeDate?legal.decreeDate:(detail&&detail.decreeDate||p.TGL_IUPHKM))),
+    item("Luas berdasarkan SK",approvedArea!=null?format(approvedArea,2)+" ha":"—"),item("Luas hasil kalkulasi polygon",ha(area)),item("Desa",verifiedVillage),item("Kecamatan",verifiedDistrict),item("Kabupaten",verifiedRegency),item("Provinsi",verifiedProvince)
   ].join("");
   var badge=document.querySelector(".vp-sf-status");
-  if(badge)badge.textContent=legal.decreeNumber?"Data spasial & SK terverifikasi":"Layer referensi";
+  if(badge)badge.textContent=legalVerified?"Data spasial & SK terverifikasi":detail&&detail.skDocumentStatus==="available"?"Data spasial & dokumen tersedia":"Layer referensi";
 }
 function renderSupplemental(detail){
   var section=el("sf-detail");
@@ -116,11 +119,13 @@ async function init(){
     var results=await Promise.all([json("data/village-forest-analytics.json?v=20260831-pbph1"),json("data/PERHUTANAN_SOSIAL_RIAU.geojson?v=20260828-sk-sync1"),json("data/social-forestry-details.json?v=20260831-geometry-audit2"),json("data/social-forestry-pkk-samj.geojson?v=20260831-samj-pkk1").catch(function(){return{features:[]}}),json("data/social-forestry-kud-agro-lestari.geojson?v=20260831-agro1").catch(function(){return{features:[]}}),json("data/social-forestry-derived-2025.geojson?v=20260831-derived1").catch(function(){return{features:[]}})]),data=results[0],geo=results[1],details=results[2]||{};
     geo.features=(geo.features||[]).concat(results[3].features||[],results[4].features||[],results[5].features||[]);
     (geo.features||[]).forEach(function(feature){var p=feature&&feature.properties||{};if(String(p.OBJECTID||"")==="2941"){p.NO_IUPHKM="SK.4391/MENLHK-PSKL/PKPS/PSL.0/7/2020";p.TGL_IUPHKM="2020-07-08"}});
+    geo.features.sort(function(a,b){return Number(Boolean((b.properties||{}).PROFILE_KEY))-Number(Boolean((a.properties||{}).PROFILE_KEY))});
     var directDetail=details[key]||null,spatialAlias=directDetail&&directDetail.spatialObjectKey?String(directDetail.spatialObjectKey).trim().toLowerCase():"";
-    var feature=(geo.features||[]).find(function(f){return permitKey(f)===key||featureKey(f)===key||spatialAlias&&(permitKey(f)===spatialAlias||featureKey(f)===spatialAlias)});
+    var feature=(geo.features||[]).find(function(f){return permitKey(f)===key||featureKey(f)===key});
+    if(!feature&&spatialAlias){var aliasMatches=(geo.features||[]).filter(function(f){return permitKey(f)===spatialAlias||featureKey(f)===spatialAlias});if(aliasMatches.length===1)feature=aliasMatches[0];else if(aliasMatches.length>1&&directDetail){feature=aliasMatches.find(function(f){var p=f.properties||{};return directDetail.decree&&normalized(p.NO_IUPHKM||p.SK)===normalized(directDetail.decree)||directDetail.name&&normalized(p.NAMA_HKM)===normalized(directDetail.name)})}}
     var record=(data.socialForestry||{})[key];
     if(!feature&&record){feature=(geo.features||[]).find(function(f){return normalized((f.properties||{}).NAMA_HKM)===normalized(record.name)})}
-    if(!record&&feature){var fk=featureKey(feature);record=(data.socialForestry||{})[fk]}
+    if(!record&&feature){var fk=featureKey(feature),records=data.socialForestry||{};record=records[fk]||Object.keys(records).map(function(recordKey){return records[recordKey]}).find(function(candidate){return normalized(candidate&&candidate.name)===normalized((feature.properties||{}).NAMA_HKM)})}
     if((!feature||!feature.geometry)&&directDetail){renderNonspatial(directDetail);return}
     if(!feature||!feature.geometry)throw new Error("Polygon Perhutanan Sosial tidak ditemukan.");
     if(!record)record={analysisAvailable:false,name:(feature.properties||{}).NAMA_HKM,annualLossHa:{},hotspotYearly5y:[],referenceAreasHa:{}};
