@@ -1903,8 +1903,6 @@ L.control.scale({
       rows += item("Luas SK akhir (ha)", areaValue(props.LSSK));
       rows += item("Jenis PBPH", props.JENIS);
       rows += item("Kegiatan", props.KEGIATAN);
-      rows += item("Catatan sumber", props.REMARK);
-      rows += item("Status data", "Areal kerja pada pembaruan Mei 2026");
     } else if (config.type === "concession") {
       rows += item("Pemegang izin", props.NAMA_PRH);
       rows += item("Nomor SK", props.SK_PBH || props.SK_LAMA);
@@ -1945,14 +1943,15 @@ L.control.scale({
       });
     }
 
-    const sourceRows =
-      item("Sumber", config.sourceLabel) +
-      item("Skala", config.scale);
-    const sourceLink = config.sourceUrl
+    const showReferenceDetails = config.type !== "active_concession";
+    const sourceRows = showReferenceDetails
+      ? item("Sumber", config.sourceLabel) + item("Skala", config.scale)
+      : "";
+    const sourceLink = showReferenceDetails && config.sourceUrl
       ? '<a href="' + escapeHtml(config.sourceUrl) +
         '" target="_blank" rel="noopener noreferrer">Buka layanan resmi</a>'
       : "";
-    const policyLink = config.policyUrl
+    const policyLink = showReferenceDetails && config.policyUrl
       ? '<a href="' + escapeHtml(config.policyUrl) +
         '">Lihat keterkaitan RPPEG</a>'
       : "";
