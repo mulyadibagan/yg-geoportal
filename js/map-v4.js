@@ -993,7 +993,23 @@ L.control.scale({
 
     // Batas administrasi bukan objek program dan tidak memiliki donor.
     if (config.id !== "desa_intervensi") {
-      rows += row("Donor", getDonor(props) || "Belum diisi");
+      const targetLayerForDonor = String(
+        props.Target_Layer_ID_Current || props.targetLayerId ||
+        props.Target_Layer_ID || ""
+      ).trim().toLowerCase();
+      const sourceLayerForDonor = String(props.Source_Layer || "")
+        .trim().toLowerCase();
+      const monitoringTypeForDonor = String(
+        props.Monitoring_Type || props.monitoringType || props.Kategori || ""
+      ).trim().toLowerCase();
+      const isMangroveMonitoring = isMonitoring && (
+        targetLayerForDonor === "area_mangrove" ||
+        sourceLayerForDonor === "area_mangrove" ||
+        monitoringTypeForDonor.includes("mangrove")
+      );
+      const popupDonor = getDonor(props) ||
+        (isMangroveMonitoring ? "Aramco Asia Singapore" : "");
+      rows += row("Donor", popupDonor || "Belum diisi");
     }
 
     const photos = [
@@ -2381,6 +2397,7 @@ L.control.scale({
         if (HIDDEN_LAYER_IDS.has(layerId)) return;
         const config = getLayerConfig(layerId, groups[layerId][0]);
         const count = groups[layerId].length;
+        const countLabel = layerId === "monitoring_reports" ? "…" : count;
         const geometryType =
           groups[layerId][0].geometry &&
           groups[layerId][0].geometry.type || "";
@@ -2400,7 +2417,7 @@ L.control.scale({
               : "") +
           '</span>' +
           '<label for="layer-' + escapeHtml(layerId) + '">' + escapeHtml(config.label) + '</label>' +
-          '<span class="count">' + count + '</span>';
+          '<span class="count">' + countLabel + '</span>';
 
         list.appendChild(row);
 
@@ -2724,6 +2741,11 @@ L.control.scale({
     const targetLayerId = String(
       targetProps.Layer_ID || targetProps.Source_Layer || ""
     ).trim().toLowerCase();
+    const sourceLayerId = String(props.Source_Layer || "")
+      .trim().toLowerCase();
+    const monitoringType = String(
+      props.Monitoring_Type || props.monitoringType || props.Kategori || ""
+    ).trim().toLowerCase();
     const targetDonor = getDonor(targetProps);
 
     if (layerId === "area_mangrove" && !getDonor(props)) {
@@ -2731,7 +2753,11 @@ L.control.scale({
       props.Donor_Cluster = "Aramco Asia Singapore";
       props.Nama_Donor = "Aramco Asia Singapore";
     }
-    if (layerId === "monitoring_reports" && targetLayerId === "area_mangrove") {
+    if (layerId === "monitoring_reports" && (
+      targetLayerId === "area_mangrove" ||
+      sourceLayerId === "area_mangrove" ||
+      monitoringType.includes("mangrove")
+    )) {
       const inheritedDonor = targetDonor || getDonor(props) ||
         "Aramco Asia Singapore";
       props.Donor = inheritedDonor;
