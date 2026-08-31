@@ -172,6 +172,25 @@ test('PBPH profile separates permit documents from conservative SVLK status', ()
   assert.equal(gcnMeranti.svlk.certificateNumber, 'LPVI-008/MUTU/FM-035');
   assert.equal(gcnMeranti.svlk.validUntil, '15 Agustus 2030');
   assert.match(gcnMeranti.svlk.note, /tidak digabung dengan unit Kabupaten Pelalawan/i);
+
+  const nmr = registry.profiles['02202028800340009,2026'];
+  assert.equal(nmr.svlk.status, 'certificate-not-found');
+  assert.match(nmr.svlk.scope, /jasa lingkungan/i);
+  assert.match(nmr.svlk.note, /bukan.*salinan SK/i);
+
+  const cpi = registry.profiles['14012200375810004,2024'];
+  assert.equal(cpi.svlk.status, 'certificate-not-found');
+  assert.match(cpi.svlk.note, /29\.492 hektar/i);
+
+  const mfj = registry.profiles['01032200340080008, 2025'];
+  assert.equal(mfj.svlk.status, 'certificate-not-found');
+  assert.match(mfj.svlk.note, /20\.723 hektar.*25\.248 hektar/i);
+
+  const gcnPelalawan = registry.profiles['395,2012'];
+  assert.equal(gcnPelalawan.svlk.status, 'certificate-verified');
+  assert.equal(gcnPelalawan.svlk.certificateNumber, 'LPVI-008/MUTU/FM-036');
+  assert.equal(gcnPelalawan.svlk.validUntil, '20 Agustus 2030');
+  assert.match(gcnPelalawan.svlk.note, /tidak digabung dengan unit Kabupaten Kepulauan Meranti/i);
 });
 
 test('internal source remarks are not rendered in the public PBPH profile', () => {

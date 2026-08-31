@@ -520,6 +520,102 @@
           }
         ]
       }
+    },
+    "02202028800340009,2026": {
+      "documents": [
+        {
+          "category": "Laporan proses PBPH",
+          "label": "Daftar unit proses working area PBPH — 2024",
+          "url": "https://phl.menlhk.go.id/media/publikasi/publikasi_file_1737514294.pdf",
+          "publisher": "Direktorat Jenderal Pengelolaan Hutan Lestari"
+        }
+      ],
+      "svlk": {
+        "status": "certificate-not-found",
+        "statusLabel": "S-PHL belum ditemukan",
+        "certificateStatus": "Belum dapat diverifikasi",
+        "scope": "PBPH pemanfaatan jasa lingkungan",
+        "auditType": "Dokumen S-PHL nasional belum ditemukan",
+        "auditPeriod": "Belum tersedia",
+        "lpvi": "Belum terverifikasi",
+        "certificateNumber": null,
+        "validUntil": null,
+        "checkedAt": "2026-08-31",
+        "note": "Snapshot spasial memuat izin 02202028800340009 dengan luas 34.682 hektar dan kegiatan pemanfaatan jasa lingkungan. Laporan pemerintah yang ditemukan hanya membuktikan proses working area sebelumnya; salinan keputusan 2026 dan S-PHL belum ditemukan pada register publik. Dokumen proses tersebut bukan salinan SK.",
+        "documents": []
+      }
+    },
+    "14012200375810004,2024": {
+      "documents": [
+        {
+          "category": "Laporan pemberian PBPH",
+          "label": "Laporan Kinerja Direktorat Bina Usaha Pemanfaatan Hutan — 2024",
+          "url": "https://phl.menlhk.go.id/media/publikasi/publikasi_file_1737514406.pdf",
+          "publisher": "Direktorat Jenderal Pengelolaan Hutan Lestari"
+        }
+      ],
+      "svlk": {
+        "status": "certificate-not-found",
+        "statusLabel": "S-PHL belum ditemukan",
+        "certificateStatus": "Belum dapat diverifikasi",
+        "scope": "PBPH jasa lingkungan, hasil hutan bukan kayu, dan pemanfaatan kawasan",
+        "auditType": "Dokumen S-PHL nasional belum ditemukan",
+        "auditPeriod": "Belum tersedia",
+        "lpvi": "Belum terverifikasi",
+        "certificateNumber": null,
+        "validUntil": null,
+        "checkedAt": "2026-08-31",
+        "note": "Laporan kinerja pemerintah mencatat SK pemberian nomor 14012200375810004 tanggal 7 Oktober 2024 dengan luas 29.492 hektar, konsisten dengan snapshot spasial. Berkas tersebut adalah laporan kinerja, bukan salinan keputusan Menteri atau peta lampirannya. S-PHL belum ditemukan pada register publik.",
+        "documents": []
+      }
+    },
+    "01032200340080008, 2025": {
+      "documents": [
+        {
+          "category": "Laporan proses PBPH historis",
+          "label": "Laporan Kinerja Direktorat Bina Rencana — 2022",
+          "url": "https://phl.menlhk.go.id/media/publikasi/publikasi_file_1679296549.pdf",
+          "publisher": "Direktorat Jenderal Pengelolaan Hutan Lestari"
+        }
+      ],
+      "svlk": {
+        "status": "certificate-not-found",
+        "statusLabel": "S-PHL belum ditemukan",
+        "certificateStatus": "Belum dapat diverifikasi",
+        "scope": "PBPH pemanfaatan jasa lingkungan",
+        "auditType": "Dokumen S-PHL nasional belum ditemukan",
+        "auditPeriod": "Belum tersedia",
+        "lpvi": "Belum terverifikasi",
+        "certificateNumber": null,
+        "validUntil": null,
+        "checkedAt": "2026-08-31",
+        "note": "Laporan pemerintah tahun 2022 hanya mencatat proses/komitmen historis PT Meranti Foresta Jore seluas 20.723 hektar. Snapshot terbaru memuat izin 01032200340080008 tahun 2025 seluas 25.248 hektar. Karena angka dan tahapnya berbeda, laporan historis tidak digunakan sebagai bukti salinan keputusan 2025. S-PHL belum ditemukan pada register publik.",
+        "documents": []
+      }
+    },
+    "395,2012": {
+      "documents": [],
+      "svlk": {
+        "status": "certificate-verified",
+        "statusLabel": "S-PHL terverifikasi",
+        "certificateStatus": "Berlaku sampai 20 Agustus 2030",
+        "scope": "PBPH Restorasi Ekosistem — Kabupaten Pelalawan",
+        "auditType": "Sertifikasi PHL dan VLHH",
+        "auditPeriod": "15–23 Juli 2024",
+        "lpvi": "PT Mutuagung Lestari Tbk",
+        "certificateNumber": "LPVI-008/MUTU/FM-036",
+        "validUntil": "20 Agustus 2030",
+        "checkedAt": "2026-08-31",
+        "note": "Keputusan dan ringkasan hasil sertifikasi memverifikasi penerbitan S-PHL dengan predikat sedang dan VLHH memenuhi. Profil ini khusus unit Kabupaten Pelalawan dan tidak digabung dengan unit Kabupaten Kepulauan Meranti. Luas penetapan areal 20.123,33 hektar pada audit dibedakan dari luas SK 20.265 hektar pada snapshot.",
+        "documents": [
+          {
+            "category": "Keputusan dan ringkasan audit S-PHL",
+            "label": "Sertifikasi PHL PT Gemilang Cipta Nusantara Kabupaten Pelalawan — 2024",
+            "url": "https://mutucertification.com/wp-content/uploads/2024/09/UPLAOD-Pengumuman-publik-hasil-Sertifikasi-PHL-RER-PT-GCN-PELALAWAN.pdf",
+            "publisher": "LPVI PT Mutuagung Lestari Tbk"
+          }
+        ]
+      }
     }
   }
 }
