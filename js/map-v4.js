@@ -2853,7 +2853,11 @@ L.control.scale({
         const layerId = String(p.Layer_ID || p.Source_Layer || "").toLowerCase();
         const reportId = String(p.reportId || p.Report_ID || "").trim();
         const objectId = String(p.Object_ID || p.objectId || "").trim();
-        if (objectId === "MANGROVE-KELAPA-PATI-PHASE-III-2025-001") {
+        if ([
+          "MANGROVE-KELAPA-PATI-PHASE-III-2025-001",
+          "MANGROVE-KELAPA-PATI-PHASE-III-2026-002",
+          "MANGROVE-KELAPA-PATI-PHASE-III-2026-003"
+        ].includes(objectId)) {
           return false;
         }
         if (
@@ -3223,6 +3227,10 @@ L.control.scale({
 
   const MANGROVE_TARGET_ALIASES = Object.freeze({
     "mangrove-kelapa-pati-phase-iii-2025-001":
+      "MANGROVE-KELAPA-PATI-PHASE-III-2026-001",
+    "mangrove-kelapa-pati-phase-iii-2026-002":
+      "MANGROVE-KELAPA-PATI-PHASE-III-2026-001",
+    "mangrove-kelapa-pati-phase-iii-2026-003":
       "MANGROVE-KELAPA-PATI-PHASE-III-2026-001"
   });
 
