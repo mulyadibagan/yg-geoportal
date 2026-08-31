@@ -134,7 +134,10 @@ test("blind plume annotation workspace excludes model output", () => {
   assert.match(controller, /gibs\.earthdata\.nasa\.gov/);
   assert.match(controller, /annotationStatus:'draft'/);
   assert.match(controller, /record\.reviewer=null/);
-  assert.match(controller, /smoke-validation-observed-draft\.geojson/);
+  assert.match(html, /id="request-geojson"/);
+  assert.match(html, /data-request\.html\?dataset=smoke-validation&amp;scope=riau/);
+  assert.doesNotMatch(html, /id="export-geojson"/);
+  assert.doesNotMatch(controller, /smoke-validation-observed-draft\.geojson/);
 });
 
 test("fire-weather controller boots against its browser interfaces", () => {
