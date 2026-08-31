@@ -13,8 +13,9 @@ async function init(){
     var result=await Promise.all([
       fetch("data/PERHUTANAN_SOSIAL_RIAU.geojson?v=20260828-area-summary1",{cache:"no-store"}).then(function(r){return r.json()}),
       fetch("data/social-forestry-details.json?v=20260828-status3",{cache:"no-store"}).then(function(r){return r.json()}),
-      fetch("data/social-forestry-summary.json?v=20260828-area-summary1",{cache:"no-store"}).then(function(r){return r.json()})
-    ]),features=result[0].features||[],details=result[1]||{},summaries=result[2].profiles||[],detailKeys=Object.keys(details),byD={},byS={},used={},seen={},spatialDecrees={},spatialSignatures={};
+      fetch("data/social-forestry-summary.json?v=20260828-area-summary1",{cache:"no-store"}).then(function(r){return r.json()}),
+      fetch("data/social-forestry-pkk-samj.geojson?v=20260831-samj-pkk1",{cache:"no-store"}).then(function(r){return r.ok?r.json():{features:[]}}).catch(function(){return{features:[]}})
+    ]),features=(result[0].features||[]).concat(result[3].features||[]),details=result[1]||{},summaries=result[2].profiles||[],detailKeys=Object.keys(details),byD={},byS={},used={},seen={},spatialDecrees={},spatialSignatures={};
 
     function sig(n,v,a){return norm([n,v,cleanRegency(a)].join("|"))}
     function addIndex(index,key,value){

@@ -11,8 +11,8 @@ function ha(v){var n=number(v);return n==null?"Belum tersedia":format(n,2)+" ha"
 function percent(v){var n=number(v);return n==null?"—":format(n,1)+"%"}
 function normalized(v){return String(v||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim()}
 function analysisKeyValue(v){if(typeof v==="number"&&Number.isInteger(v))return v.toFixed(1);return String(v==null?"":v)}
-function featureKey(f){var p=f&&f.properties||{};return analysisKeyValue(p.OBJECTID||p.ID||p.NO_IUPHKM||p.SK||[p.NAMA_HKM,p.NAMA_DESA,p.NAMA_KAB].filter(Boolean).join("|")).trim().toLowerCase()}
-function permitKey(f){var p=f&&f.properties||{};return analysisKeyValue(p.NO_IUPHKM||p.SK||p.OBJECTID||p.ID||[p.NAMA_HKM,p.NAMA_DESA,p.NAMA_KAB].filter(Boolean).join("|")).trim().toLowerCase()}
+function featureKey(f){var p=f&&f.properties||{};return analysisKeyValue(p.PROFILE_KEY||p.OBJECTID||p.ID||p.NO_IUPHKM||p.SK||[p.NAMA_HKM,p.NAMA_DESA,p.NAMA_KAB].filter(Boolean).join("|")).trim().toLowerCase()}
+function permitKey(f){var p=f&&f.properties||{};return analysisKeyValue(p.PROFILE_KEY||p.NO_IUPHKM||p.SK||p.OBJECTID||p.ID||[p.NAMA_HKM,p.NAMA_DESA,p.NAMA_KAB].filter(Boolean).join("|")).trim().toLowerCase()}
 function kpi(icon,label,value,note){return'<article class="vp-kpi"><div class="vp-kpi__icon">'+esc(icon)+'</div><span>'+esc(label)+'</span><strong>'+esc(value)+'</strong><small>'+esc(note||"")+'</small></article>'}
 function item(label,value){return'<div><span>'+esc(label)+'</span><strong>'+esc(value==null||value===""?"—":value)+'</strong></div>'}
 function showError(message){el("loading-state").hidden=true;el("error-message").textContent=message;el("error-state").hidden=false}
@@ -101,18 +101,20 @@ function render(feature,record,data,detail){
   var area=number(p.LUAS_POLI)||number(p.L_IUPHKM),baseline=number(record.baselineForestHa),current=number(record.currentForestHa),loss=number(record.totalLossHa),gain=number(record.gainHa);
   var share=area&&current!=null?Math.max(0,Math.min(100,current/area*100)):null;
   document.title=name+" · Profil Perhutanan Sosial | Yayasan Gambut";el("area-name").textContent=name;el("area-location").textContent=[detail&&detail.village||p.NAMA_DESA,detail&&detail.district||p.NAMA_KEC,detail&&detail.regency||p.NAMA_KAB].filter(Boolean).join(" · ");
-  var updated=viirs.updatedAt||data.generatedAt;el("data-updated").textContent=updated?"Pembaruan analisis "+new Date(updated).toLocaleDateString("id-ID",{day:"numeric",month:"long",year:"numeric"}):"Tanggal pembaruan belum tersedia";
+  var analysisAvailable=record.analysisAvailable!==false,updated=viirs.updatedAt||data.generatedAt;el("data-updated").textContent=analysisAvailable?(updated?"Pembaruan analisis "+new Date(updated).toLocaleDateString("id-ID",{day:"numeric",month:"long",year:"numeric"}):"Tanggal pembaruan belum tersedia"):"Polygon resmi tersedia · analisis tutupan pohon belum dihitung";
   el("kpi-grid").innerHTML=[kpi("⌗","Luas areal",ha(area),"berdasarkan polygon analisis"),kpi("♣","Tutupan pohon baseline",ha(baseline),"baseline "+(method.baselineYear||2000)),kpi("◒","Sisa tutupan pohon",ha(current),share==null?"persentase belum tersedia":percent(share)+" dari luas areal"),kpi("↘","Kehilangan kumulatif",ha(loss),gain!=null?"pertambahan terpetakan "+ha(gain):"akumulasi pixel kehilangan")].join("");
   el("forest-percent").textContent=percent(share);el("current-forest").textContent=ha(current);el("forest-donut").style.setProperty("--value",share==null?0:share);
   el("forest-definition").textContent="Baseline "+(method.baselineYear||2000)+" dikurangi kehilangan"+(gain!=null?" dan ditambah pertambahan terpetakan":"")+". Angka bersifat indikatif.";
   el("baseline-period").textContent=method.baselineYear||"—";el("loss-through").textContent=method.lossDataThroughYear||"—";
   renderIdentity(p,area,detail);renderSupplemental(detail);renderLoss(record,method);renderHotspots(record);renderReferences(record,area);
+  if(!analysisAvailable){el("loss-chart-title").textContent="Analisis kehilangan tutupan pohon belum tersedia";el("loss-note").textContent="Polygon resmi telah terhubung. Statistik raster akan ditampilkan setelah proses analisis berikutnya."}
   el("loading-state").hidden=true;el("error-state").hidden=true;el("profile-content").hidden=false;requestAnimationFrame(function(){renderMap(feature,name)});
 }
 async function init(){
   if(!key){showError("Tautan areal tidak lengkap. Pilih Perhutanan Sosial melalui WebGIS.");return}
   try{
-    var results=await Promise.all([json("data/village-forest-analytics.json?v=20260822-social-profile1"),json("data/PERHUTANAN_SOSIAL_RIAU.geojson?v=20260828-sk-sync1"),json("data/social-forestry-details.json?v=20260828-sk-sync1")]),data=results[0],geo=results[1],details=results[2]||{};
+    var results=await Promise.all([json("data/village-forest-analytics.json?v=20260822-social-profile1"),json("data/PERHUTANAN_SOSIAL_RIAU.geojson?v=20260828-sk-sync1"),json("data/social-forestry-details.json?v=20260828-sk-sync1"),json("data/social-forestry-pkk-samj.geojson?v=20260831-samj-pkk1").catch(function(){return{features:[]}})]),data=results[0],geo=results[1],details=results[2]||{};
+    geo.features=(geo.features||[]).concat(results[3].features||[]);
     var feature=(geo.features||[]).find(function(f){return permitKey(f)===key||featureKey(f)===key});
     var record=(data.socialForestry||{})[key];
     if(!feature&&record){feature=(geo.features||[]).find(function(f){return normalized((f.properties||{}).NAMA_HKM)===normalized(record.name)})}
@@ -120,7 +122,7 @@ async function init(){
     var directDetail=details[key]||null;
     if((!feature||!feature.geometry)&&directDetail){renderNonspatial(directDetail);return}
     if(!feature||!feature.geometry)throw new Error("Polygon Perhutanan Sosial tidak ditemukan.");
-    if(!record)throw new Error("Analisis tutupan pohon untuk areal ini belum tersedia.");
+    if(!record)record={analysisAvailable:false,name:(feature.properties||{}).NAMA_HKM,annualLossHa:{},hotspotYearly5y:[],referenceAreasHa:{}};
     var detailKey=permitKey(feature),detail=details[detailKey]||details[featureKey(feature)]||null,approvedDocument=null;
     try{approvedDocument=JSON.parse(localStorage.getItem("ygPsApprovedDocument:"+key)||"null")}catch(ignore){}
     if(approvedDocument){detail=Object.assign({name:(feature.properties||{}).NAMA_HKM||record.name||"Profil PS"},detail||{});detail.documents=Array.isArray(detail.documents)?detail.documents.slice():[];if(!detail.documents.some(function(doc){return doc.url===approvedDocument.url}))detail.documents.push(approvedDocument)}

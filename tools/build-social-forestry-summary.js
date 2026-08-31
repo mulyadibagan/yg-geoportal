@@ -4,6 +4,8 @@ const path = require("path");
 const root = path.resolve(__dirname, "..");
 const details = JSON.parse(fs.readFileSync(path.join(root, "data", "social-forestry-details.json"), "utf8"));
 const geo = JSON.parse(fs.readFileSync(path.join(root, "data", "PERHUTANAN_SOSIAL_RIAU.geojson"), "utf8"));
+const pkkSupplement = JSON.parse(fs.readFileSync(path.join(root, "data", "social-forestry-pkk-samj.geojson"), "utf8"));
+geo.features = (geo.features || []).concat(pkkSupplement.features || []);
 const text = value => String(value == null ? "" : value).trim();
 const norm = value => text(value).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 const decreeNorm = value => norm(value).replace(/^(?:nomor\s+)?(?:sk|kepmen|keputusan)\s+/, "");

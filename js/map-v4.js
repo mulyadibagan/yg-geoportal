@@ -99,6 +99,7 @@
       id: "perhutanan_sosial_riau",
       label: "Perhutanan Sosial Riau",
       file: "data/PERHUTANAN_SOSIAL_RIAU.geojson?v=20260828-175-polygons1",
+      supplementFiles: ["data/social-forestry-pkk-samj.geojson?v=20260831-samj-pkk1"],
       color: "#00897b",
       count: null,
       type: "social_forestry",
@@ -129,6 +130,40 @@
       [properties.NAMA_HKM, properties.NAMA_DESA, properties.NAMA_KAB]
         .filter(Boolean).join("|") || "feature-" + index;
     return String(value).trim().toLowerCase().replace(/\s+/g, " ");
+  }
+
+  async function mergeReferenceSupplements(config, data) {
+    const files = Array.isArray(config.supplementFiles)
+      ? config.supplementFiles
+      : [];
+    if (!files.length) return data;
+
+    const features = Array.isArray(data && data.features)
+      ? data.features.slice()
+      : [];
+    const supplements = await Promise.all(files.map(async file => {
+      try {
+        const response = await fetch(file, { cache: "force-cache" });
+        if (!response.ok) throw new Error("HTTP " + response.status);
+        const collection = await response.json();
+        if (!collection || !Array.isArray(collection.features)) {
+          throw new Error("GeoJSON tambahan tidak valid.");
+        }
+        return collection.features;
+      } catch (error) {
+        console.warn("Layer tambahan PS belum dapat dimuat:", file, error);
+        return [];
+      }
+    }));
+    const identities = new Set(features.map(socialForestryIdentity));
+    supplements.forEach(rows => rows.forEach(feature => {
+      const identity = socialForestryIdentity(feature, features.length);
+      if (!identities.has(identity)) {
+        identities.add(identity);
+        features.push(feature);
+      }
+    }));
+    return Object.assign({}, data, { features });
   }
 
   function referenceCountInfo(layerId, features) {
@@ -171,7 +206,8 @@
         );
         if (!response.ok) return;
 
-        const data = await response.json();
+        let data = await response.json();
+        data = await mergeReferenceSupplements(config, data);
         if (
           !data ||
           data.type !== "FeatureCollection" ||
@@ -1528,7 +1564,7 @@ L.control.scale({
   function socialForestryProfileKey(feature) {
     const props = feature && feature.properties || {};
     const raw =
-      props.NO_IUPHKM || props.NOMOR_SK || props.NO_SK || props.SK ||
+      props.PROFILE_KEY || props.NO_IUPHKM || props.NOMOR_SK || props.NO_SK || props.SK ||
       props.OBJECTID || props.ID ||
       [props.NAMA_HKM, props.NAMA_DESA, props.NAMA_KAB]
         .filter(Boolean).join("|");
@@ -1939,7 +1975,8 @@ L.control.scale({
       throw new Error("HTTP " + response.status);
     }
 
-    const data = await response.json();
+    let data = await response.json();
+    data = await mergeReferenceSupplements(config, data);
 
     if (config.type === "social_forestry" && !socialForestryDocumentDetailsLoaded) {
       try {

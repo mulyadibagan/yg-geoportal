@@ -6,6 +6,7 @@ on:
     paths:
       - 'data/social-forestry-details.json'
       - 'data/PERHUTANAN_SOSIAL_RIAU.geojson'
+      - 'data/social-forestry-pkk-samj.geojson'
       - 'tools/build-social-forestry-summary.js'
       - '.github/workflows/rebuild-social-forestry-summary.yml'
 
@@ -60,6 +61,8 @@ jobs:
           const makmurPesisir = rohil.find(p => /MAKMUR PESISIR/i.test(p.name));
           if (!makmurJaya || !/9864/.test(makmurJaya.decree) || makmurJaya.areaHa !== 184) throw new Error('Makmur Jaya Bersama identity is inconsistent');
           if (!makmurPesisir || !/9863/.test(makmurPesisir.decree) || makmurPesisir.areaHa !== 143) throw new Error('Makmur Pesisir identity is inconsistent');
+          const samj = s.profiles.find(p => /SUMBER ALAM MAKMUR JAYA/i.test(p.name));
+          if (!samj || !samj.spatial || samj.regency !== 'Dumai' || samj.areaHa !== 4000) throw new Error('SAMJ official spatial profile is inconsistent');
           console.log('Validated:', s.totals, s.schemes.map(x => [x.scheme,x.profileCount,x.totalAreaHa]));
           NODE
 

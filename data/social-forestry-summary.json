@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-31T03:34:55.248Z",
+  "generatedAt": "2026-08-31T03:49:57.759Z",
   "methodology": "Satu PS dihitung sekali berdasarkan nomor SK. Luas SK diprioritaskan; atribut polygon dan kalkulasi geometri digunakan sebagai cadangan.",
   "totals": {
     "profileCount": 186,
@@ -8,8 +8,8 @@
     "totalAreaHa": 178419.42,
     "documentAreaKnownCount": 180,
     "documentAreaHa": 175653.12,
-    "spatialAreaKnownCount": 172,
-    "spatialAreaHa": 164271.04
+    "spatialAreaKnownCount": 173,
+    "spatialAreaHa": 168271.04
   },
   "schemes": [
     {
@@ -64,8 +64,8 @@
       "totalAreaHa": 4000,
       "documentAreaKnownCount": 1,
       "documentAreaHa": 4000,
-      "spatialAreaKnownCount": 0,
-      "spatialAreaHa": 0
+      "spatialAreaKnownCount": 1,
+      "spatialAreaHa": 4000
     }
   ],
   "profiles": [
@@ -2822,6 +2822,22 @@
       "areaSource": "SK"
     },
     {
+      "key": "drive-audit:dumai-gapoktan-sumber-alam-makmur-jaya",
+      "decree": "SK.4921/MENLHK-PSKL/PKPS/PSL.0/9/2017",
+      "decreeNorm": "4921 menlhk pskl pkps psl 0 9 2017",
+      "signature": "gapoktan sumber alam makmur jaya batu teritip dumai",
+      "name": "GAPOKTAN SUMBER ALAM MAKMUR JAYA",
+      "regency": "Dumai",
+      "scheme": "Kemitraan Kehutanan",
+      "spatial": true,
+      "documentAreaHa": 4000,
+      "documentAreaSource": "SK",
+      "spatialAreaHa": 4000,
+      "spatialAreaSource": "atribut polygon",
+      "areaHa": 4000,
+      "areaSource": "SK"
+    },
+    {
       "key": "2941.0",
       "decree": "SK.4391/MENLHK-PSKL/PKPS/PSL.0/7/2020",
       "decreeNorm": "4391 menlhk pskl pkps psl 0 7 2020",
@@ -2867,22 +2883,6 @@
       "spatialAreaHa": null,
       "spatialAreaSource": "belum tersedia",
       "areaHa": 1132,
-      "areaSource": "SK"
-    },
-    {
-      "key": "drive-audit:dumai-gapoktan-sumber-alam-makmur-jaya",
-      "decree": "SK.4921/MENLHK-PSKL/PKPS/PSL.0/9/2017",
-      "decreeNorm": "4921 menlhk pskl pkps psl 0 9 2017",
-      "signature": "gapoktan sumber alam makmur jaya batu teritip dumai",
-      "name": "GAPOKTAN SUMBER ALAM MAKMUR JAYA",
-      "regency": "Dumai",
-      "scheme": "Kemitraan Kehutanan",
-      "spatial": false,
-      "documentAreaHa": 4000,
-      "documentAreaSource": "SK",
-      "spatialAreaHa": null,
-      "spatialAreaSource": "belum tersedia",
-      "areaHa": 4000,
       "areaSource": "SK"
     },
     {
