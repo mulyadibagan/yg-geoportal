@@ -20,6 +20,11 @@
     return [p.WADMKD||p.Desa||p.NAMOBJ||p.Nama_Desa,p.WADMKC||p.Kecamatan,p.WADMKK||p.Kabupaten].filter(Boolean).join("|").trim().toLowerCase();
   }
   function layerId(feature){var p=feature&&feature.properties||{};return String(p.Layer_ID||p.Source_Layer||"").toLowerCase();}
+  function sourceType(feature){var p=feature&&feature.properties||{};return String(p.Source_Type||"").toLowerCase();}
+  function isActivityFeature(feature){
+    var id=layerId(feature),type=sourceType(feature);
+    return ["community_report","monitoring_report","titik_penanaman"].indexOf(type)!==-1||["community_reports","monitoring_reports","titik_penanaman"].indexOf(id)!==-1;
+  }
   function ringArea(ring){
     if(!Array.isArray(ring)||ring.length<3){return 0;}
     var radius=6378137,rad=Math.PI/180,total=0;
@@ -277,10 +282,11 @@
     return !!(point&&boundary&&pointInGeometry(point,boundary.geometry));
   }
   function activityMatchesPlace(feature,name,district,regency,boundary){
+    if(featureMatchesPlace(feature,name,district,regency,boundary)){return true;}
     if(feature&&feature.geometry&&representativePoint(feature.geometry)&&boundary&&boundary.geometry){
       return geometryIntersectsBoundary(feature.geometry,boundary.geometry);
     }
-    return featureMatchesPlace(feature,name,district,regency,boundary);
+    return false;
   }
   function outsideReference(feature,boundary){
     return !!(feature&&feature.geometry&&feature.geometry.type==="Point"&&boundary&&boundary.geometry&&!pointInGeometry(feature.geometry.coordinates,boundary.geometry));
@@ -300,7 +306,7 @@
   }
   function isProgramFeature(feature){
     var id=layerId(feature),excluded=["","desa_intervensi","titik_desa","community_reports","monitoring_reports","titik_penanaman"];
-    return excluded.indexOf(id)===-1;
+    return !isActivityFeature(feature)&&excluded.indexOf(id)===-1;
   }
   function groupPrograms(features,boundary){
     var groups={};
@@ -354,7 +360,7 @@
     return {kind:"training",date:row.date,title:row.name||"Pelatihan",participants:male+female,male:male,female:female,topic:row.topic||"",target:row.target||"",partner:row.partner||""};
   }
   function activityFromFeature(feature,name){
-    var props=feature.properties||{},target=props.targetFeatureProperties||{},id=layerId(feature),participants=number(props.Jumlah_Peserta||target.Jumlah_Peserta);
+    var props=feature.properties||{},target=props.targetFeatureProperties||{},id=layerId(feature),type=sourceType(feature),participants=number(props.Jumlah_Peserta||target.Jumlah_Peserta);
     var survival=number(props.Survival),alive=number(props.Jumlah_Hidup),planted=number(props.Jumlah_Bib||target.Jumlah_Bib);
     if(planted==null&&alive!=null&&survival>0){planted=Math.round(alive/(survival/100));}
     var copy=props.Ancaman?"Ancaman: "+props.Ancaman:(props.description||""),qualityWarning="";
@@ -363,7 +369,7 @@
       qualityWarning="Kapasitas perlu diverifikasi";
     }
     return {
-      kind:id==="monitoring_reports"?"monitoring":"activity",date:props.activityDate||props.Tahun||props.receivedAt,title:props.title||props.Nama_Objek||props.Layer_Label||"Kegiatan",
+      kind:id==="monitoring_reports"||type==="monitoring_report"?"monitoring":"activity",date:props.activityDate||props.Tahun||props.receivedAt,title:props.title||props.Nama_Objek||props.Layer_Label||"Kegiatan",
       participants:participants,male:number(props.Peserta_Laki_Laki||target.Peserta_Laki_Laki),female:number(props.Peserta_Perempuan||target.Peserta_Perempuan),youth:number(props.Peserta_Pemuda||target.Peserta_Pemuda),
       donor:props.Donor||target.Donor||"",survival:survival,alive:alive,planted:planted,condition:props.Kondisi||"",groups:props.Kelompok_Terlibat||target.Kelompok_Terlibat||"",
       topic:props.Monitoring_Type||props.reportType||props.Kategori||"",copy:copy,objectId:props.Object_ID||"",layerId:id,village:props.Desa||target.Desa||name||"",area:number(props.Luas_Terpantau_Ha||props.Luas_Ha),hasGeometry:!!(feature.geometry&&representativePoint(feature.geometry)),
@@ -420,9 +426,9 @@
     return "";
   }
   function plantedCount(feature){
-    var props=feature.properties||{},target=props.targetFeatureProperties||{},id=layerId(feature);
+    var props=feature.properties||{},target=props.targetFeatureProperties||{},id=layerId(feature),type=sourceType(feature);
     if(id==="nursery_mangrove"||id==="nursery_kopi"){return 0;}
-    if(id==="monitoring_reports"){return number(props.Jumlah_Bib||target.Jumlah_Bib)||0;}
+    if(id==="monitoring_reports"||type==="monitoring_report"){return number(props.Jumlah_Bib||target.Jumlah_Bib)||0;}
     return number(props.Jumlah_Tanam||props.Jumlah_Bib||target.Jumlah_Tanam||target.Jumlah_Bib)||0;
   }
   function plantInventory(programs,reports){
@@ -440,7 +446,7 @@
     var allFeatures=Array.isArray(features)?features:[];
     var programs=allFeatures.filter(function(feature){return isProgramFeature(feature)&&featureMatchesPlace(feature,name,district,regency,boundary);});
     var reportIds={},reports=allFeatures.filter(function(feature){
-      var id=layerId(feature);if(["community_reports","monitoring_reports","titik_penanaman"].indexOf(id)===-1){return false;}
+      var id=layerId(feature);if(!isActivityFeature(feature)){return false;}
       if(!activityMatchesPlace(feature,name,district,regency,boundary)){return false;}
       var props=feature.properties||{},reportId=props.reportId||props.Source_Report_ID||props.Object_ID||[id,props.title,props.activityDate,props.receivedAt].join("|");
       if(reportIds[reportId]){return false;}reportIds[reportId]=true;return true;
