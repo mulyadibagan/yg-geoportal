@@ -12,10 +12,20 @@ async function init(){
   try{
     var result=await Promise.all([
       fetch("data/PERHUTANAN_SOSIAL_RIAU.geojson?v=20260828-area-summary1",{cache:"no-store"}).then(function(r){return r.json()}),
-      fetch("data/social-forestry-details.json?v=20260828-status3",{cache:"no-store"}).then(function(r){return r.json()}),
+      fetch("data/social-forestry-details.json?v=20260831-geometry-audit2",{cache:"no-store"}).then(function(r){return r.json()}),
       fetch("data/social-forestry-summary.json?v=20260828-area-summary1",{cache:"no-store"}).then(function(r){return r.json()}),
-      fetch("data/social-forestry-pkk-samj.geojson?v=20260831-samj-pkk1",{cache:"no-store"}).then(function(r){return r.ok?r.json():{features:[]}}).catch(function(){return{features:[]}})
-    ]),features=(result[0].features||[]).concat(result[3].features||[]),details=result[1]||{},summaries=result[2].profiles||[],detailKeys=Object.keys(details),byD={},byS={},used={},seen={},spatialDecrees={},spatialSignatures={};
+      fetch("data/social-forestry-pkk-samj.geojson?v=20260831-samj-pkk1",{cache:"no-store"}).then(function(r){return r.ok?r.json():{features:[]}}).catch(function(){return{features:[]}}),
+      fetch("data/social-forestry-kud-agro-lestari.geojson?v=20260831-agro1",{cache:"no-store"}).then(function(r){return r.ok?r.json():{features:[]}}).catch(function(){return{features:[]}}),
+      fetch("data/social-forestry-derived-2025.geojson?v=20260831-derived1",{cache:"no-store"}).then(function(r){return r.ok?r.json():{features:[]}}).catch(function(){return{features:[]}})
+    ]),features=(result[0].features||[]).concat(result[3].features||[],result[4].features||[],result[5].features||[]),details=result[1]||{},summaries=result[2].profiles||[],detailKeys=Object.keys(details),byD={},byS={},bySpatial={},used={},seen={},spatialDecrees={},spatialSignatures={};
+
+    features.forEach(function(feature){
+      var p=feature&&feature.properties||{};
+      if(String(p.OBJECTID||"")==="2941"){
+        p.NO_IUPHKM="SK.4391/MENLHK-PSKL/PKPS/PSL.0/7/2020";
+        p.TGL_IUPHKM="2020-07-08";
+      }
+    });
 
     function sig(n,v,a){return norm([n,v,cleanRegency(a)].join("|"))}
     function addIndex(index,key,value){
@@ -28,6 +38,8 @@ async function init(){
       var d=details[k]||{},de=norm(d.decree),s=sig(d.name,d.village,d.regency);
       addIndex(byD,de,k);
       addIndex(byS,s,k);
+      addIndex(bySpatial,keyValue(d.spatialObjectKey).toLowerCase(),k);
+      addIndex(bySpatial,norm(d.spatialObjectKey),k);
     });
 
     var sumD={},sumS={};
@@ -44,6 +56,9 @@ async function init(){
       include(fk);
       (byD[de]||[]).forEach(include);
       (byS[s]||[]).forEach(include);
+      (bySpatial[pk]||[]).forEach(include);
+      (bySpatial[fk]||[]).forEach(include);
+      (bySpatial[de]||[]).forEach(include);
 
       /* Satu SK adalah satu profil. Semua sumber pasangan ikut ditandai dan
          dokumennya digabung agar record audit tidak muncul lagi sebagai kartu
@@ -59,6 +74,11 @@ async function init(){
       var k=candidateKeys.find(function(key){return norm(key)===de})||candidateKeys.find(function(key){return key.indexOf("drive-audit:")!==0})||candidateKeys[0]||fk||pk||String(i),d=details[k]?Object.assign({},details[k]):{},documents=[],documentSeen={};
       candidateKeys.forEach(function(key){
         var source=details[key]||{};
+        if(source.spatialObjectKey){
+          if(source.name)d.directoryName=source.name;
+          if(source.village)d.directoryVillage=source.village;
+          if(source.district)d.directoryDistrict=source.district;
+        }
         Object.keys(source).forEach(function(prop){
           if(prop!=="documents"&&(d[prop]==null||d[prop]==="")&&source[prop]!=null)d[prop]=source[prop];
         });

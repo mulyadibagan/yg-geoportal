@@ -569,7 +569,9 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Dumai",
       "handoverStatus": "Sudah Diserahkan"
-    }
+    },
+    "spatialStatus": "spatial",
+    "spatialObjectKey": "2941.0"
   },
   "2942.0": {
     "name": "LPHD Sungai Linau",
@@ -1524,10 +1526,12 @@
     "skDocumentStatus": "available",
     "skDocumentCheckedAt": "2026-08-28",
     "skExtraction": {
-      "decreeNumber": "41 TAHUN 1999",
+      "decreeNumber": "SK.8494/MENLHK-PSKL/PKPS/PSL.0/12/2021",
+      "decreeDate": "24 Desember 2021",
       "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
       "approvedAreaHa": 21,
-      "validityPeriod": "35 tahun",
+      "validityPeriod": "35 tahun sejak 24 Desember 2021",
+      "validity": "Sampai 24 Desember 2056",
       "source": "Dokumen SK"
     },
     "management": {
@@ -1540,12 +1544,18 @@
     },
     "areaHa": 21,
     "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
+    "decree": "SK.8494/MENLHK-PSKL/PKPS/PSL.0/12/2021",
+    "decreeDate": "2021-12-24",
+    "village": "Sungai Upih",
+    "district": "Kuala Kampar",
     "regency": "Pelalawan",
     "province": "Riau",
     "bpsklVerification": {
       "status": "not-matched",
       "source": "Data Perhutanan Sosial di Provinsi Riau"
-    }
+    },
+    "spatialStatus": "spatial",
+    "spatialObjectKey": "sk.8494/menlhk-pskl/pkps/psl.0/12/2021"
   },
   "sk.2861/menlhk-pskl/pkps/psl.0/3/2022": {
     "name": "KTH PULAU MUDA SEJAHTERA",
@@ -3178,13 +3188,16 @@
   "drive-audit:kampar-kth-mitra-bumi": {
     "name": "KTH MITRA BUMI",
     "village": "Balung",
-    "district": "",
+    "district": "XIII Koto Kampar",
     "regency": "KAMPAR",
-    "scheme": "Profil dokumen nonspasial",
-    "decree": "",
+    "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
+    "decree": "9637 TAHUN 2025",
     "areaHa": 918,
     "source": "Audit Drive Perhutanan Sosial YG",
-    "spatialStatus": "nonspatial",
+    "spatialStatus": "spatial",
+    "spatialObjectKey": "drive-audit:kampar-kth-mitra-bumi",
+    "spatialSource": "Digitasi lampiran peta keputusan tahun 2025",
+    "spatialConfidence": "derived-from-georeferenced-map",
     "documents": [
       {
         "label": "PETA KTH MITRA BUMI",
@@ -3633,6 +3646,10 @@
     "scheme": "HD",
     "decree": "8617 Tahun 2025",
     "areaHa": 7.52,
+    "spatialStatus": "spatial",
+    "spatialObjectKey": "8617 tahun 2025",
+    "spatialSource": "Digitasi lampiran peta keputusan tahun 2025",
+    "spatialConfidence": "derived-from-georeferenced-map",
     "documents": [
       {
         "label": "PETA LEMBAGA PENGELOLA HUTAN DESA SIKEBAU JAYA",
@@ -4886,14 +4903,17 @@
   },
   "drive-audit:kampar-kud-agro-lestari": {
     "name": "KUD AGRO LESTARI",
-    "village": "Bulu cina",
+    "village": "Buluh Cina",
     "district": "Siak Hulu",
     "regency": "KAMPAR",
-    "scheme": "Profil dokumen nonspasial",
+    "scheme": "Hutan Tanaman Rakyat",
     "decree": "522/Dishut/285/2011",
     "areaHa": 177,
     "source": "Audit Drive Perhutanan Sosial YG",
-    "spatialStatus": "nonspatial",
+    "spatialStatus": "spatial",
+    "spatialObjectKey": "drive-audit:kampar-kud-agro-lestari",
+    "spatialSource": "Digitasi lampiran peta SK Bupati Kampar Nomor 522/DISHUT/285/2011",
+    "spatialConfidence": "derived-from-georeferenced-map",
     "documents": [
       {
         "label": "PETA KUD AGRO LESTARI",
@@ -4910,7 +4930,7 @@
     "skDocumentStatus": "available",
     "skDocumentCheckedAt": "2026-08-28",
     "skExtraction": {
-      "decreeNumber": "SK.62/MENHUT-II/2011",
+      "decreeNumber": "522/DISHUT/285/2011",
       "scheme": "Hutan Tanaman Rakyat",
       "approvedAreaHa": 177,
       "source": "Dokumen SK"
@@ -10799,6 +10819,10 @@
     "decree": "8606 TAHUN 2025",
     "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
     "areaHa": 120,
+    "spatialStatus": "spatial",
+    "spatialObjectKey": "8606 tahun 2025",
+    "spatialSource": "Digitasi lampiran peta keputusan tahun 2025",
+    "spatialConfidence": "derived-from-georeferenced-map",
     "village": "Suka Damai",
     "district": "Rupat Utara",
     "regency": "Bengkalis",
@@ -11433,6 +11457,8 @@
       "sourceSheet": "Rokan Hulu",
       "handoverStatus": "Sudah Diserahkan"
     },
+    "spatialStatus": "spatial",
+    "spatialObjectKey": "2187.0",
     "forestAreaComposition": {
       "protectionForestHa": "-",
       "productionForestHa": 1783,

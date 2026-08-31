@@ -1,0 +1,43 @@
+{
+  "type": "FeatureCollection",
+  "name": "social-forestry-kud-agro-lestari",
+  "source": "Digitasi lampiran peta SK Bupati Kampar Nomor 522/DISHUT/285/2011",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "PROFILE_KEY": "drive-audit:kampar-kud-agro-lestari",
+        "NAMA_PROV": "Riau",
+        "NAMA_KAB": "Kampar",
+        "NAMA_KEC": "Siak Hulu",
+        "NAMA_DESA": "Buluh Cina",
+        "NAMA_HKM": "KUD AGRO LESTARI",
+        "NO_IUPHKM": "522/DISHUT/285/2011",
+        "TGL_IUPHKM": "2011-11-11",
+        "L_IUPHKM": 177,
+        "LUAS_POLI": 168.54,
+        "Ket": "HTR",
+        "SPATIAL_SOURCE": "Digitasi lampiran peta SK",
+        "SPATIAL_CONFIDENCE": "derived-from-georeferenced-map",
+        "SPATIAL_NOTE": "Batas diturunkan dari grid koordinat lampiran peta; luas legal mengikuti SK."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [101.50703906, 0.35417802],
+            [101.50617620, 0.34227975],
+            [101.50821980, 0.34187103],
+            [101.50594914, 0.33960036],
+            [101.50594914, 0.33814714],
+            [101.50826521, 0.33710263],
+            [101.51094460, 0.33751135],
+            [101.51430518, 0.33710263],
+            [101.51562216, 0.35317893],
+            [101.50703906, 0.35417802]
+          ]
+        ]
+      }
+    }
+  ]
+}

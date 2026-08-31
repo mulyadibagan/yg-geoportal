@@ -103,7 +103,11 @@
       id: "perhutanan_sosial_riau",
       label: "Perhutanan Sosial Riau",
       file: "data/PERHUTANAN_SOSIAL_RIAU.geojson?v=20260828-175-polygons1",
-      supplementFiles: ["data/social-forestry-pkk-samj.geojson?v=20260831-samj-pkk1"],
+      supplementFiles: [
+        "data/social-forestry-pkk-samj.geojson?v=20260831-samj-pkk1",
+        "data/social-forestry-kud-agro-lestari.geojson?v=20260831-agro1",
+        "data/social-forestry-derived-2025.geojson?v=20260831-derived1"
+      ],
       color: "#00897b",
       count: null,
       type: "social_forestry",
@@ -168,6 +172,21 @@
       }
     }));
     return Object.assign({}, data, { features });
+  }
+
+  function correctSocialForestryAttributes(data) {
+    const corrections = {
+      "2941": {
+        NO_IUPHKM: "SK.4391/MENLHK-PSKL/PKPS/PSL.0/7/2020",
+        TGL_IUPHKM: "2020-07-08"
+      }
+    };
+    (data && data.features || []).forEach(feature => {
+      const props = feature && feature.properties || {};
+      const correction = corrections[String(props.OBJECTID || "")];
+      if (correction) Object.assign(props, correction);
+    });
+    return data;
   }
 
   function referenceCountInfo(layerId, features) {
@@ -1602,6 +1621,7 @@ L.control.scale({
         key,
         detail.decree,
         detail.name,
+        detail.spatialObjectKey,
         extraction.decreeNumber,
         extraction.institution
       ].forEach(value => {
@@ -2102,11 +2122,14 @@ L.control.scale({
 
     let data = await response.json();
     data = await mergeReferenceSupplements(config, data);
+    if (config.type === "social_forestry") {
+      data = correctSocialForestryAttributes(data);
+    }
 
     if (config.type === "social_forestry" && !socialForestryDocumentDetailsLoaded) {
       try {
         const detailsResponse = await fetch(
-          "data/social-forestry-details.json?v=20260828-ps-color-clusters1",
+          "data/social-forestry-details.json?v=20260831-geometry-audit2",
           { cache: "no-store" }
         );
         if (detailsResponse.ok) {

@@ -97,7 +97,7 @@ function renderNonspatial(detail){
   renderSupplemental(detail);el("loading-state").hidden=true;el("error-state").hidden=true;el("profile-content").hidden=false;
 }
 function render(feature,record,data,detail){
-  var p=feature.properties||{},method=data.method||{},viirs=data.viirs||{},name=p.NAMA_HKM||record.name||p.NAMA_DESA||"Perhutanan Sosial";
+  var p=feature.properties||{},method=data.method||{},viirs=data.viirs||{},name=detail&&detail.name||p.NAMA_HKM||record.name||p.NAMA_DESA||"Perhutanan Sosial";
   var area=number(p.LUAS_POLI)||number(p.L_IUPHKM),baseline=number(record.baselineForestHa),current=number(record.currentForestHa),loss=number(record.totalLossHa),gain=number(record.gainHa);
   var share=area&&current!=null?Math.max(0,Math.min(100,current/area*100)):null;
   document.title=name+" · Profil Perhutanan Sosial | Yayasan Gambut";el("area-name").textContent=name;el("area-location").textContent=[detail&&detail.village||p.NAMA_DESA,detail&&detail.district||p.NAMA_KEC,detail&&detail.regency||p.NAMA_KAB].filter(Boolean).join(" · ");
@@ -113,17 +113,18 @@ function render(feature,record,data,detail){
 async function init(){
   if(!key){showError("Tautan areal tidak lengkap. Pilih Perhutanan Sosial melalui WebGIS.");return}
   try{
-    var results=await Promise.all([json("data/village-forest-analytics.json?v=20260831-pbph1"),json("data/PERHUTANAN_SOSIAL_RIAU.geojson?v=20260828-sk-sync1"),json("data/social-forestry-details.json?v=20260828-sk-sync1"),json("data/social-forestry-pkk-samj.geojson?v=20260831-samj-pkk1").catch(function(){return{features:[]}})]),data=results[0],geo=results[1],details=results[2]||{};
-    geo.features=(geo.features||[]).concat(results[3].features||[]);
-    var feature=(geo.features||[]).find(function(f){return permitKey(f)===key||featureKey(f)===key});
+    var results=await Promise.all([json("data/village-forest-analytics.json?v=20260831-pbph1"),json("data/PERHUTANAN_SOSIAL_RIAU.geojson?v=20260828-sk-sync1"),json("data/social-forestry-details.json?v=20260831-geometry-audit2"),json("data/social-forestry-pkk-samj.geojson?v=20260831-samj-pkk1").catch(function(){return{features:[]}}),json("data/social-forestry-kud-agro-lestari.geojson?v=20260831-agro1").catch(function(){return{features:[]}}),json("data/social-forestry-derived-2025.geojson?v=20260831-derived1").catch(function(){return{features:[]}})]),data=results[0],geo=results[1],details=results[2]||{};
+    geo.features=(geo.features||[]).concat(results[3].features||[],results[4].features||[],results[5].features||[]);
+    (geo.features||[]).forEach(function(feature){var p=feature&&feature.properties||{};if(String(p.OBJECTID||"")==="2941"){p.NO_IUPHKM="SK.4391/MENLHK-PSKL/PKPS/PSL.0/7/2020";p.TGL_IUPHKM="2020-07-08"}});
+    var directDetail=details[key]||null,spatialAlias=directDetail&&directDetail.spatialObjectKey?String(directDetail.spatialObjectKey).trim().toLowerCase():"";
+    var feature=(geo.features||[]).find(function(f){return permitKey(f)===key||featureKey(f)===key||spatialAlias&&(permitKey(f)===spatialAlias||featureKey(f)===spatialAlias)});
     var record=(data.socialForestry||{})[key];
     if(!feature&&record){feature=(geo.features||[]).find(function(f){return normalized((f.properties||{}).NAMA_HKM)===normalized(record.name)})}
     if(!record&&feature){var fk=featureKey(feature);record=(data.socialForestry||{})[fk]}
-    var directDetail=details[key]||null;
     if((!feature||!feature.geometry)&&directDetail){renderNonspatial(directDetail);return}
     if(!feature||!feature.geometry)throw new Error("Polygon Perhutanan Sosial tidak ditemukan.");
     if(!record)record={analysisAvailable:false,name:(feature.properties||{}).NAMA_HKM,annualLossHa:{},hotspotYearly5y:[],referenceAreasHa:{}};
-    var detailKey=permitKey(feature),detail=details[detailKey]||details[featureKey(feature)]||null,approvedDocument=null;
+    var detailKey=permitKey(feature),spatialDetail=details[detailKey]||details[featureKey(feature)]||null,detail=directDetail?Object.assign({},spatialDetail||{},directDetail):spatialDetail,approvedDocument=null;
     try{approvedDocument=JSON.parse(localStorage.getItem("ygPsApprovedDocument:"+key)||"null")}catch(ignore){}
     if(approvedDocument){detail=Object.assign({name:(feature.properties||{}).NAMA_HKM||record.name||"Profil PS"},detail||{});detail.documents=Array.isArray(detail.documents)?detail.documents.slice():[];if(!detail.documents.some(function(doc){return doc.url===approvedDocument.url}))detail.documents.push(approvedDocument)}
     render(feature,record,data,detail);
