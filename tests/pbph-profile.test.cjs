@@ -124,6 +124,32 @@ test('PBPH profile separates permit documents from conservative SVLK status', ()
   assert.equal(tbo.svlk.status, 'certificate-verified');
   assert.equal(tbo.svlk.certificateNumber, 'LPVI-008/MUTU/FM-039');
   assert.equal(tbo.svlk.validUntil, '29 Agustus 2030');
+
+  const gan = registry.profiles['230,2014'];
+  assert.equal(gan.documents.length, 0);
+  assert.equal(gan.svlk.status, 'certificate-verified');
+  assert.equal(gan.svlk.certificateNumber, 'LPVI-008/MUTU/FM-037');
+  assert.equal(gan.svlk.validUntil, '22 Agustus 2030');
+
+  const smn = registry.profiles['162,2014'];
+  assert.equal(smn.documents.length, 0);
+  assert.equal(smn.svlk.status, 'certificate-verified');
+  assert.equal(smn.svlk.certificateNumber, 'LPVI-008/MUTU/FM-038');
+  assert.equal(smn.svlk.validUntil, '26 Agustus 2030');
+
+  const sgp = registry.profiles['71,2001'];
+  assert.equal(sgp.documents.length, 1);
+  assert.equal(sgp.svlk.status, 'audit-announcement-found');
+  assert.equal(sgp.svlk.certificateNumber, null);
+  assert.equal(sgp.svlk.validUntil, '18 Januari 2032');
+  assert.match(sgp.svlk.note, /sertifikat lama.*berakhir 18 Januari 2026/i);
+
+  const peranap = registry.profiles['214,2007'];
+  assert.equal(peranap.documents.length, 0);
+  assert.equal(peranap.svlk.status, 'audit-announcement-found');
+  assert.equal(peranap.svlk.certificateNumber, null);
+  assert.equal(peranap.svlk.validUntil, null);
+  assert.match(peranap.svlk.note, /IFCC berbeda dari S-PHL nasional/i);
 });
 
 test('internal source remarks are not rendered in the public PBPH profile', () => {

@@ -43,5 +43,9 @@ Jalankan `node scripts/validate_pbph_documents.mjs` sebelum publikasi.
 - PT Perawang Sukses Perkasa Industri: sertifikat EQC-PHL-005 dengan masa berlaku baru telah diverifikasi. Sertifikat berlaku sampai 27 November 2030; ringkasan publik PBPH 2025 juga tersedia.
 - PT Sekato Pratama Makmur: sertifikat EQC-PHL-045 terbaru ditautkan pada profil pemasok publik dan berlaku sampai 29 September 2030. Pengumuman audit tahun 2024 digunakan sebagai pemeriksaan silang periode audit.
 - PT The Best One Unitimber: keputusan dan ringkasan sertifikasi PHL tahun 2024 telah diverifikasi dari LPVI PT Mutuagung Lestari Tbk. Sertifikat LPVI-008/MUTU/FM-039 berlaku sampai 29 Agustus 2030.
+- PT Global Alam Nusantara: keputusan dan ringkasan sertifikasi PHL tahun 2024 telah diverifikasi dari LPVI PT Mutuagung Lestari Tbk. Sertifikat LPVI-008/MUTU/FM-037 berlaku sampai 22 Agustus 2030.
+- PT Sinar Mutiara Nusantara: keputusan dan ringkasan sertifikasi PHL tahun 2024 telah diverifikasi dari LPVI PT Mutuagung Lestari Tbk. Sertifikat LPVI-008/MUTU/FM-038 berlaku sampai 26 Agustus 2030.
+- PT Suntara Gajapati: register PT Global Resource Sertifikasi menyatakan status aktif untuk periode 19 Januari 2026–18 Januari 2032, tetapi nomor sertifikat baru belum ditampilkan. PDF pada profil pemasok adalah sertifikat lama PT TUV Rheinland Indonesia yang berakhir 18 Januari 2026 dan tidak boleh disajikan sebagai sertifikat aktif.
+- PT Peranap Timber: pengumuman audit IFCC Januari 2026 ditemukan, tetapi dokumen tersebut bukan S-PHL nasional. Status S-PHL/SVLK belum disimpulkan sampai dokumen LPVI nasional ditemukan.
 
 Untuk profil yang telah ditelusuri, salinan keputusan PBPH beserta lampiran petanya belum ditemukan sebagai berkas publik tersendiri. Dokumen PHL/SVLK tidak boleh dipindahkan ke kategori SK PBPH.
