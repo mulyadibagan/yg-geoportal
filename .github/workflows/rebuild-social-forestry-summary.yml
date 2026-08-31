@@ -45,12 +45,21 @@ jobs:
           console.log('Only after:', onlyAfter.map(p => ({key:p.key,decree:p.decree,name:p.name,regency:p.regency,scheme:p.scheme,areaHa:p.areaHa,spatial:p.spatial})));
           console.log('Unclassified:', s.profiles.filter(p => /Persetujuan Perhutanan Sosial|Belum terklasifikasi/i.test(p.scheme)).map(p => ({key:p.key,decree:p.decree,name:p.name,regency:p.regency,scheme:p.scheme,areaHa:p.areaHa,spatial:p.spatial})));
           console.log('HTR:', s.profiles.filter(p => p.scheme === 'Hutan Tanaman Rakyat').map(p => ({key:p.key,decree:p.decree,name:p.name,regency:p.regency,areaHa:p.areaHa,spatial:p.spatial})));
-          if (s.totals.profileCount !== 189) throw new Error(`Expected 189 profiles, got ${s.totals.profileCount}`);
-          if (Math.abs(s.totals.totalAreaHa - 177507.4) > 0.01) throw new Error(`Unexpected total area ${s.totals.totalAreaHa}`);
+          if (s.totals.profileCount !== 186) throw new Error(`Expected 186 profiles, got ${s.totals.profileCount}`);
+          if (Math.abs(s.totals.totalAreaHa - 178419.42) > 0.01) throw new Error(`Unexpected total area ${s.totals.totalAreaHa}`);
           const generic = s.schemes.find(x => /Persetujuan Perhutanan Sosial|Belum terklasifikasi/i.test(x.scheme));
           if (generic) throw new Error(`Generic scheme remains: ${generic.scheme}`);
           const htr = s.schemes.find(x => x.scheme === 'Hutan Tanaman Rakyat');
           if (!htr || htr.profileCount !== 4) throw new Error(`Expected 4 HTR profiles, got ${htr ? htr.profileCount : 0}`);
+          const rohil = s.profiles.filter(p => p.regency === 'Rokan Hilir');
+          const rohilArea = rohil.reduce((sum, p) => sum + (p.areaHa || 0), 0);
+          if (rohil.length !== 10) throw new Error(`Expected 10 Rokan Hilir profiles, got ${rohil.length}`);
+          if (Math.abs(rohilArea - 6724.55) > 0.01) throw new Error(`Unexpected Rokan Hilir area ${rohilArea}`);
+          if (rohil.some(p => /SUMBER ALAM MAKMUR JAYA/i.test(p.name))) throw new Error('Dumai profile SAMJ remains in Rokan Hilir');
+          const makmurJaya = rohil.find(p => /MAKMUR JAYA BERSAMA/i.test(p.name));
+          const makmurPesisir = rohil.find(p => /MAKMUR PESISIR/i.test(p.name));
+          if (!makmurJaya || !/9864/.test(makmurJaya.decree) || makmurJaya.areaHa !== 184) throw new Error('Makmur Jaya Bersama identity is inconsistent');
+          if (!makmurPesisir || !/9863/.test(makmurPesisir.decree) || makmurPesisir.areaHa !== 143) throw new Error('Makmur Pesisir identity is inconsistent');
           console.log('Validated:', s.totals, s.schemes.map(x => [x.scheme,x.profileCount,x.totalAreaHa]));
           NODE
 

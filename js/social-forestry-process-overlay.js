@@ -7,7 +7,7 @@ window.fetch=function(input,init){
   if(url.indexOf("data/social-forestry-details.json")===-1)return originalFetch(input,init);
   return Promise.all([
     originalFetch(input,init).then(function(r){return r.json()}),
-    originalFetch("data/social-forestry-process-2025.json?v=20260828",{cache:"no-store"}).then(function(r){return r.json()}).catch(function(){return{profiles:[]}})
+    originalFetch("data/social-forestry-process-2025.json?v=20260831-rohil-correction1",{cache:"no-store"}).then(function(r){return r.json()}).catch(function(){return{profiles:[]}})
   ]).then(function(result){
     var details=result[0]||{},processData=result[1]||{};
     (processData.profiles||[]).forEach(function(p){
