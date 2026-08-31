@@ -87,6 +87,18 @@
       sourceLabel: "Shapefile KPH 2019 Provinsi Riau",
       scale: "Sumber World Mercator; ditransformasikan ke WGS 84"
     },
+    pbph_riau_052026: {
+      id: "pbph_riau_052026",
+      label: "PBPH aktif Riau — Mei 2026",
+      file: "data/PBPH_RIAU_052026.geojson",
+      color: "#d84315",
+      count: 56,
+      type: "active_concession",
+      focusOnEnable: true,
+      sourceLabel: "Peta Interaktif 2026 Kementerian Kehutanan — PBPH Mei 2026",
+      sourceUrl: "https://geoportal.planologi.kehutanan.go.id/server/rest/services/Peta_Interaktif_2026/PBPH_AR_50K/MapServer/0",
+      scale: "1:50.000; snapshot pembaruan Mei 2026"
+    },
     iuphhk_ht_2014: {
       id: "iuphhk_ht_2014",
       label: "IUPHHK-HT 2014",
@@ -168,6 +180,25 @@
 
   function referenceCountInfo(layerId, features) {
     const featureCount = Array.isArray(features) ? features.length : 0;
+    if (layerId === "pbph_riau_052026") {
+      const permitIds = new Set(
+        features.map((feature, index) => {
+          const properties = feature && feature.properties
+            ? feature.properties
+            : {};
+          return String(properties.OBJECTID || properties.PBPH_ID || index);
+        })
+      );
+      const permitCount = permitIds.size;
+      return {
+        count: permitCount,
+        featureCount,
+        label: formatNumber(permitCount) + " izin · " +
+          formatNumber(featureCount) + " bagian",
+        statusLabel: formatNumber(permitCount) + " izin unik · " +
+          formatNumber(featureCount) + " bagian geometri"
+      };
+    }
     if (layerId !== "perhutanan_sosial_riau") {
       return {
         count: featureCount,
@@ -1699,6 +1730,16 @@ L.control.scale({
       };
     }
 
+    if (config.type === "active_concession") {
+      return {
+        color: config.color,
+        weight: 1.35,
+        opacity: 0.95,
+        fillColor: config.color,
+        fillOpacity: 0.11
+      };
+    }
+
     return {
       color: config.color,
       weight: 0.9,
@@ -1740,6 +1781,18 @@ L.control.scale({
       return Number.isFinite(number) && number > 0
         ? formatArea(number)
         : "Belum tersedia";
+    }
+
+    function dateValue(value) {
+      if (value === null || value === undefined || value === "") return "";
+      const date = new Date(Number(value));
+      if (Number.isNaN(date.getTime())) return value;
+      return new Intl.DateTimeFormat(currentLocale(), {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+        timeZone: "Asia/Jakarta"
+      }).format(date);
     }
 
     function ringAreaSquareMeters(ring) {
@@ -1843,6 +1896,15 @@ L.control.scale({
       rows += item("pH", props.pH);
       rows += item("Substratum", props.SUBSTRATUM);
       rows += item("Tahun", props.TAHUN || 2019);
+    } else if (config.type === "active_concession") {
+      rows += item("Pemegang PBPH", props.NAMOBJ);
+      rows += item("Nomor SK", props.NO_SK);
+      rows += item("Tanggal SK", dateValue(props.TGL_SK));
+      rows += item("Luas SK akhir (ha)", areaValue(props.LSSK));
+      rows += item("Jenis PBPH", props.JENIS);
+      rows += item("Kegiatan", props.KEGIATAN);
+      rows += item("Catatan sumber", props.REMARK);
+      rows += item("Status data", "Areal kerja pada pembaruan Mei 2026");
     } else if (config.type === "concession") {
       rows += item("Pemegang izin", props.NAMA_PRH);
       rows += item("Nomor SK", props.SK_PBH || props.SK_LAMA);
@@ -2014,6 +2076,7 @@ L.control.scale({
       config.type === "peat_function" ||
       config.type === "khg" ||
       config.type === "social_forestry" ||
+      config.type === "active_concession" ||
       config.type === "concession" ||
       config.type === "kph" ||
       config.type === "village_boundary";
