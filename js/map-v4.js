@@ -2649,9 +2649,15 @@ L.control.scale({
       props.Layer_ID || props.Source_Layer || ""
     ).trim().toLowerCase();
 
+    if (layerId === "area_mangrove" && !getDonor(props)) {
+      props.Donor = "Aramco Asia Singapore";
+      props.Donor_Cluster = "Aramco Asia Singapore";
+      props.Nama_Donor = "Aramco Asia Singapore";
+    }
     if (layerId === "nursery_mangrove" || layerId === "apo") {
       props.Donor = "Aramco Asia Singapore";
       props.Donor_Cluster = "Aramco Asia Singapore";
+      props.Nama_Donor = "Aramco Asia Singapore";
     }
     return feature;
   }
@@ -2846,6 +2852,16 @@ L.control.scale({
         if (!feature.geometry) return false;
         const layerId = String(p.Layer_ID || p.Source_Layer || "").toLowerCase();
         const reportId = String(p.reportId || p.Report_ID || "").trim();
+        const objectId = String(p.Object_ID || p.objectId || "").trim();
+        if (objectId === "MANGROVE-KELAPA-PATI-PHASE-III-2025-001") {
+          return false;
+        }
+        if (
+          reportId === "YG-20260717-205241-378" &&
+          p.Geometry_Source !== "permanent_monitoring_registry"
+        ) {
+          return false;
+        }
         return !(
           layerId === "community_reports" &&
           reportId &&
@@ -3205,6 +3221,11 @@ L.control.scale({
     ]
   });
 
+  const MANGROVE_TARGET_ALIASES = Object.freeze({
+    "mangrove-kelapa-pati-phase-iii-2025-001":
+      "MANGROVE-KELAPA-PATI-PHASE-III-2026-001"
+  });
+
   function monitoringTargetObjectIds(props) {
     let targetProperties = props.targetFeatureProperties ||
       props.Target_Feature_Properties || {};
@@ -3251,8 +3272,11 @@ L.control.scale({
      * satu fase dapat terdiri dari beberapa plot dan tebakan dapat berubah
      * setiap kali SHP diperbarui.
      */
-    if (!canonicalMangroveObjectId(storedTargetId)) return [];
-    return [storedTargetId];
+    const resolvedTargetId =
+      MANGROVE_TARGET_ALIASES[normalizedMatchValue(storedTargetId)] ||
+      storedTargetId;
+    if (!canonicalMangroveObjectId(resolvedTargetId)) return [];
+    return [resolvedTargetId];
   }
 
   function isMangroveMonitoringFeature(feature) {
@@ -3457,16 +3481,10 @@ L.control.scale({
        * merupakan bagian dari dukungan Aramco Asia Singapore.
        * Nilai ini mengatasi donor kosong maupun alias donor lama.
        */
-      feature.properties.Donor = "Aramco Asia Singapore";
-      feature.properties.Donor_Cluster = "Aramco Asia Singapore";
-
-      // Pastikan donor tetap diterapkan meskipun objek tidak ada di master DB
-      if (!getDonor(feature.properties)) {
-        feature.properties.Donor = "Aramco Asia Singapore";
-      }
-      if (!feature.properties.Donor_Cluster) {
-        feature.properties.Donor_Cluster = "Aramco Asia Singapore";
-      }
+      const polygonDonor = getDonor(feature.properties) || "Aramco Asia Singapore";
+      feature.properties.Donor = polygonDonor;
+      feature.properties.Donor_Cluster = polygonDonor;
+      feature.properties.Nama_Donor = polygonDonor;
 
       if (databaseProps.Object_ID) {
         feature.properties.Master_Object_ID = databaseProps.Object_ID;
@@ -3504,8 +3522,9 @@ L.control.scale({
         target.properties && target.properties.Object_ID || ""
       ).filter(Boolean);
       const inheritedDonor =
+        getDonor(officialProps) ||
         getDonor(feature.properties || {}) ||
-        getDonor(officialProps);
+        "Aramco Asia Singapore";
       return [{
         ...feature,
         geometry,

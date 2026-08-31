@@ -9,8 +9,13 @@ window.fetch=function(input,init){
     originalFetch(input,init).then(function(r){return r.json()}),
     originalFetch("data/social-forestry-process-2025.json?v=20260831-rohil-correction1",{cache:"no-store"}).then(function(r){return r.json()}).catch(function(){return{profiles:[]}})
   ]).then(function(result){
-    var details=result[0]||{},processData=result[1]||{};
+    var details=result[0]||{},processData=result[1]||{},approvedSignatures={};
+    Object.keys(details).forEach(function(k){
+      var d=details[k]||{},signature=norm([d.name,d.village].join("|")),decree=norm(d.decree),isProcess=norm(d.legalStatus).indexOf("proses")>-1||norm(d.skDocumentStatus)==="process"||decree==="proses";
+      if(d.name&&d.village&&!isProcess&&decree)approvedSignatures[signature]=true;
+    });
     (processData.profiles||[]).forEach(function(p){
+      if(approvedSignatures[norm([p.name,p.village].join("|"))])return;
       var key="process-2025-"+norm([p.name,p.village,p.regency].join("-"));
       if(details[key])return;
       details[key]={

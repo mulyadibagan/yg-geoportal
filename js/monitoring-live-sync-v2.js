@@ -5,6 +5,18 @@
   window.__YG_MONITORING_LIVE_SYNC_V2__ = true;
 
   const API = "https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec?page=public-reports";
+  const VERIFIED_TARGETS = Object.freeze({
+    "YG-20260713-202057-344": "MANGROVE-BURUK-BAKUL-PHASE-II-2024-001",
+    "YG-20260713-230541-911": "MANGROVE-SEPAHAT-PHASE-III-2025-001",
+    "YG-20260717-205241-378": "MANGROVE-KELAPA-PATI-PHASE-III-2026-001",
+    "YG-20260717-210140-375": "MANGROVE-BURUK-BAKUL-PHASE-III-2025-001",
+    "YG-20260717-211305-543": "MANGROVE-BURUK-BAKUL-PHASE-III-2025-002",
+    "YG-20260721-012602-224": "MANGROVE-SEPAHAT-PHASE-III-2025-001"
+  });
+  const TARGET_ALIASES = Object.freeze({
+    "mangrove-kelapa-pati-phase-iii-2025-001":
+      "MANGROVE-KELAPA-PATI-PHASE-III-2026-001"
+  });
   let activeRequest = null;
 
   function normalized(value) {
@@ -78,6 +90,10 @@
   }
 
   function targetObjectId(props) {
+    const reportId = String(
+      props.reportId || props.Source_Report_ID || props.Monitoring_ID || ""
+    ).trim();
+    if (VERIFIED_TARGETS[reportId]) return VERIFIED_TARGETS[reportId];
     const target = parsed(props.targetFeatureProperties) || {};
     const candidates = [
       props.Target_Object_ID_Current,
@@ -93,9 +109,57 @@
      * membawa Object_ID permanen, selalu pakai ID itu agar monitoring tetap
      * menempel ke polygon resmi setelah data spasial diperbarui.
      */
-    return candidates.find(value =>
+    const selected = candidates.find(value =>
       normalized(value).startsWith("mangrove-")
     ) || candidates[0] || "";
+    return TARGET_ALIASES[normalized(selected)] || selected;
+  }
+
+  function canonicalObjectId(value) {
+    return normalized(value).replace(/-\d{4}-(\d{3})$/, "-$1");
+  }
+
+  function areaObjectIndex(api) {
+    const index = new Map();
+    const group = api.layerObjects && api.layerObjects.area_mangrove;
+    if (!group || typeof group.eachLayer !== "function") return index;
+    group.eachLayer(layer => {
+      const feature = layer && layer.feature;
+      const props = feature && feature.properties || {};
+      const objectId = String(props.Object_ID || "").trim();
+      if (!objectId || !feature.geometry) return;
+      index.set(normalized(objectId), feature);
+      index.set(canonicalObjectId(objectId), feature);
+    });
+    return index;
+  }
+
+  function reportTimestamp(props) {
+    const raw = String(
+      props.activityDate || props.Tanggal || props.publishedAt ||
+      props.receivedAt || ""
+    ).trim();
+    const dayFirst = raw.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+    return dayFirst
+      ? Date.UTC(Number(dayFirst[3]), Number(dayFirst[2]) - 1, Number(dayFirst[1]))
+      : (Date.parse(raw) || 0);
+  }
+
+  function latestPerObject(features) {
+    const latest = new Map();
+    features.forEach(feature => {
+      const props = feature.properties || {};
+      const targetId = targetObjectId(props);
+      const key = targetId
+        ? canonicalObjectId(targetId)
+        : "report:" + String(props.reportId || props.Source_Report_ID || "");
+      const timestamp = reportTimestamp(props);
+      const current = latest.get(key);
+      if (!current || timestamp >= current.timestamp) {
+        latest.set(key, { feature, timestamp });
+      }
+    });
+    return Array.from(latest.values()).map(item => item.feature);
   }
 
   function apply(data) {
@@ -110,10 +174,33 @@
       return false;
     }
 
+    const areaObjects = areaObjectIndex(api);
     const features = (data && Array.isArray(data.features)
       ? data.features
       : [])
       .map(monitoringFeature)
+      .filter(Boolean)
+      .map(feature => {
+        const props = feature.properties || {};
+        const targetId = targetObjectId(props);
+        if (!normalized(targetId).startsWith("mangrove-")) return feature;
+        const target = areaObjects.get(normalized(targetId)) ||
+          areaObjects.get(canonicalObjectId(targetId));
+        if (!target || !target.geometry) return null;
+        const targetProps = target.properties || {};
+        const donor = targetProps.Donor || targetProps.Nama_Donor ||
+          targetProps.Donor_Cluster || "";
+        feature.geometry = JSON.parse(JSON.stringify(target.geometry));
+        props.Target_Object_ID_Current = targetProps.Object_ID || targetId;
+        props.Target_Layer_ID_Current = "area_mangrove";
+        props.Geometry_Source = "permanent_monitoring_registry";
+        if (donor) {
+          props.Donor = donor;
+          props.Donor_Cluster = donor;
+          props.Nama_Donor = donor;
+        }
+        return feature;
+      })
       .filter(Boolean);
 
     /*
@@ -122,12 +209,7 @@
      * polygon tanam tetap tersedia pada layer area_mangrove, sedangkan layer
      * monitoring harus memperlihatkan cakupan pemantauan lapangan yang luas.
      */
-    features.forEach(feature => {
-      const props = feature.properties || {};
-      props.Geometry_Source = "monitoring_report";
-    });
-
-    api.addLiveFeatures("monitoring_reports", features);
+    api.addLiveFeatures("monitoring_reports", latestPerObject(features));
     return true;
   }
 

@@ -970,6 +970,19 @@
     document.getElementById('location-name').value = featureName;
 
     var fp = feature.properties || {};
+    var selectedDonor = String(
+      fp.Donor || fp.Nama_Donor || fp.Donor_Cluster || fp.Funding_Source || ''
+    ).trim();
+    if(!selectedDonor && config.id === 'area_mangrove'){
+      selectedDonor = 'Aramco Asia Singapore';
+    }
+    if(selectedDonor){
+      fp.Donor = selectedDonor;
+      fp.Donor_Cluster = selectedDonor;
+      fp.Nama_Donor = selectedDonor;
+    }
+    var monitoringDonorInput = document.getElementById('monitoring-donor');
+    if(monitoringDonorInput) monitoringDonorInput.value = selectedDonor;
     var fieldMap = {
       province:['province','provinsi','Provinsi','PROVINSI'],
       regency:['regency','kabupaten','Kabupaten','kab_kota','KAB_KOTA'],
@@ -1185,7 +1198,7 @@
     document.getElementById('clear-selected-feature').hidden = true;
 
     if(selectedType === 'Monitoring'){
-      ['monitoring-dead','monitoring-alive','monitoring-survival','monitoring-area']
+      ['monitoring-dead','monitoring-alive','monitoring-survival','monitoring-area','monitoring-donor']
         .forEach(function(id){
           var input = document.getElementById(id);
           if(input) input.value = '';
@@ -3368,7 +3381,14 @@
         ? newObjectDonor
         : selectedType === 'Capacity Building'
           ? capacityData.donor
-          : '',
+          : selectedType === 'Monitoring' && selectedCorrectionFeature
+            ? String(
+                selectedCorrectionFeature.feature.properties.Donor ||
+                selectedCorrectionFeature.feature.properties.Nama_Donor ||
+                selectedCorrectionFeature.feature.properties.Donor_Cluster ||
+                ''
+              ).trim()
+            : '',
       newObjectEcosystem:isNewObjectReport ? newObjectEcosystem : '',
       newPointType:newPointType,
       plantingCluster:newPointType === 'titik_penanaman' ? plantingDetails.cluster : '',
