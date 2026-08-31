@@ -62,6 +62,18 @@ test('PBPH profile separates permit documents from conservative SVLK status', ()
   assert.equal(msk.svlk.certificateNumber, 'SPHL.26/ASERT/LPVI-001-IDN');
   assert.equal(msk.svlk.validUntil, '27 Desember 2030');
   assert.match(msk.svlk.note, /bukan salinan keputusan PBPH/i);
+
+  const ruj = registry.profiles['641,2018'];
+  assert.equal(ruj.documents.length, 1);
+  assert.equal(ruj.svlk.status, 'certificate-verified');
+  assert.equal(ruj.svlk.certificateNumber, 'SPHL.64/ASERT/LPVI-001-IDN');
+  assert.equal(ruj.svlk.validUntil, '9 April 2029');
+
+  const arara = registry.profiles['743,1996'];
+  assert.equal(arara.documents.length, 1);
+  assert.equal(arara.svlk.status, 'certificate-verified');
+  assert.equal(arara.svlk.certificateNumber, 'SPHL.72/ASERT/LPVI-001-IDN');
+  assert.equal(arara.svlk.validUntil, '24 Juli 2031');
 });
 
 test('internal source remarks are not rendered in the public PBPH profile', () => {

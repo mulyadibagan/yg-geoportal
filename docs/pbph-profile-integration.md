@@ -33,5 +33,7 @@ Jalankan `node scripts/validate_pbph_documents.mjs` sebelum publikasi.
 
 - PT Diamond Raya Timber: pengumuman rencana audit PHL ditemukan; sertifikat belum terverifikasi.
 - PT Mutiara Sabuk Khatulistiwa: keputusan perpanjangan, sertifikat S-PHL, dan ringkasan re-sertifikasi 2024 telah diverifikasi dari LPVI PT Ayamaru Sertifikasi. Sertifikat SPHL.26/ASERT/LPVI-001-IDN berlaku sampai 27 Desember 2030.
+- PT Ruas Utama Jaya: keputusan hasil penilikan ke-1 dan ringkasan publik PBPH tahun 2025 telah diverifikasi. Sertifikat SPHL.64/ASERT/LPVI-001-IDN dinyatakan terpelihara dan berlaku sampai 9 April 2029.
+- PT Arara Abadi: keputusan perpanjangan, sertifikat S-PHL, ringkasan re-sertifikasi 2025, dan ringkasan publik PBPH 2025 telah diverifikasi. Sertifikat SPHL.72/ASERT/LPVI-001-IDN berlaku sampai 24 Juli 2031.
 
-Untuk kedua profil tersebut, salinan keputusan PBPH beserta lampiran petanya belum ditemukan sebagai berkas publik tersendiri. Dokumen PHL/SVLK tidak boleh dipindahkan ke kategori SK PBPH.
+Untuk profil yang telah ditelusuri, salinan keputusan PBPH beserta lampiran petanya belum ditemukan sebagai berkas publik tersendiri. Dokumen PHL/SVLK tidak boleh dipindahkan ke kategori SK PBPH.
