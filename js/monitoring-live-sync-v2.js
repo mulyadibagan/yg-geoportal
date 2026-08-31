@@ -70,6 +70,13 @@
     const target = parsed(props.targetFeatureProperties) || {};
     const targetArea =
       target.Luas_Ha || target.Luas || target.areaHa || target.luas_ha;
+    const targetLayerId = normalized(
+      target.Layer_ID || target.Source_Layer
+    );
+    const inheritedDonor =
+      target.Donor || target.Nama_Donor || target.Donor_Cluster ||
+      props.Donor || props.Nama_Donor || props.Donor_Cluster ||
+      (targetLayerId === "area_mangrove" ? "Aramco Asia Singapore" : "");
     const normalizedProps = Object.assign({}, props, {
       Layer_ID: "monitoring_reports",
       Layer_Label: "Hasil Monitoring Terverifikasi",
@@ -86,7 +93,10 @@
       Jumlah_Mati_Rusak:
         props.Jumlah_Mati_Rusak || monitoring.deadOrDamagedCount,
       Luas_Terpantau_Ha:
-        targetArea || props.Luas_Terpantau_Ha || monitoring.monitoredAreaHa
+        targetArea || props.Luas_Terpantau_Ha || monitoring.monitoredAreaHa,
+      Donor: inheritedDonor,
+      Donor_Cluster: inheritedDonor,
+      Nama_Donor: inheritedDonor
     });
 
     return {

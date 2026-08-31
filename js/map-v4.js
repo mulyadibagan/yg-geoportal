@@ -2694,11 +2694,30 @@ L.control.scale({
     const layerId = String(
       props.Layer_ID || props.Source_Layer || ""
     ).trim().toLowerCase();
+    let targetProps = props.targetFeatureProperties || {};
+    if (typeof targetProps === "string") {
+      try {
+        targetProps = JSON.parse(targetProps);
+      } catch (_error) {
+        targetProps = {};
+      }
+    }
+    const targetLayerId = String(
+      targetProps.Layer_ID || targetProps.Source_Layer || ""
+    ).trim().toLowerCase();
+    const targetDonor = getDonor(targetProps);
 
     if (layerId === "area_mangrove" && !getDonor(props)) {
       props.Donor = "Aramco Asia Singapore";
       props.Donor_Cluster = "Aramco Asia Singapore";
       props.Nama_Donor = "Aramco Asia Singapore";
+    }
+    if (layerId === "monitoring_reports" && targetLayerId === "area_mangrove") {
+      const inheritedDonor = targetDonor || getDonor(props) ||
+        "Aramco Asia Singapore";
+      props.Donor = inheritedDonor;
+      props.Donor_Cluster = inheritedDonor;
+      props.Nama_Donor = inheritedDonor;
     }
     if (layerId === "nursery_mangrove" || layerId === "apo") {
       props.Donor = "Aramco Asia Singapore";
