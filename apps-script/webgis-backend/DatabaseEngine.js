@@ -138,6 +138,7 @@ function syncPublishedCommunityReportsToObjects() {
       return;
     }
 
+    const reportId = clean_(row[0]);
     let targetProperties = {};
     let proposedChanges = {};
 
@@ -147,13 +148,17 @@ function syncPublishedCommunityReportsToObjects() {
       targetProperties = {};
     }
 
+    targetProperties = applyPublishedReportDataCorrections_(
+      reportId,
+      targetProperties
+    );
+
     try {
       proposedChanges = row[31] ? JSON.parse(row[31]) : {};
     } catch (error) {
       proposedChanges = {};
     }
 
-    const reportId = clean_(row[0]);
     const isMonitoring = reportType === 'Monitoring';
     const monitoringData =
       proposedChanges &&
@@ -307,6 +312,23 @@ function syncPublishedCommunityReportsToObjects() {
 
   console.log(JSON.stringify(result, null, 2));
   return result;
+}
+
+/**
+ * Corrections that have been verified against the original activity report.
+ * Keep these keyed by report ID so similarly named programme objects are never
+ * merged accidentally. The source report YG-20260725-135142-186 records the
+ * 200-seedling activity represented by the published Tanjung Kuras polygon.
+ */
+function applyPublishedReportDataCorrections_(reportId, targetProperties) {
+  const properties = Object.assign({}, targetProperties || {});
+
+  if (clean_(reportId) === 'YG-20260829-144847-315') {
+    properties.Jumlah_Tanam = 200;
+    properties.Jumlah_Bib = 200;
+  }
+
+  return properties;
 }
 
 /**
@@ -488,10 +510,19 @@ function getWebGisObjectsFeatureCollection_() {
 }
 
 function masterObjectToFeature_(object) {
+  const correctedProperties = applyPublishedReportDataCorrections_(
+    object.sourceReportId,
+    object.properties
+  );
+  const correctedPlantedCount = numberOrBlank_(firstValue_(
+    correctedProperties,
+    ['Jumlah_Tanam', 'jumlah_tanam', 'Jumlah_Bib', 'Jumlah_Bibit']
+  ));
+
   return {
     type: 'Feature',
     geometry: object.geometry,
-    properties: Object.assign({}, object.properties, {
+    properties: Object.assign({}, correctedProperties, {
       Object_ID: object.objectId,
       Layer_ID: object.layerId,
       Layer_Label: object.layerLabel,
@@ -508,7 +539,9 @@ function masterObjectToFeature_(object) {
       Desa: object.village,
       Luas_Ha: object.areaHa,
       Panjang_M: object.lengthM,
-      Jumlah_Tanam: object.plantedCount,
+      Jumlah_Tanam: correctedPlantedCount === ''
+        ? object.plantedCount
+        : correctedPlantedCount,
       Status_Objek: object.status,
       Revision: object.revision
     })

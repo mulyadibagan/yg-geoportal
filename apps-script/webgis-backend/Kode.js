@@ -150,6 +150,57 @@ function migratePermanentMeasurementPlotsFromSecureExecution() {
   };
 }
 
+/**
+ * One-time repair for the verified Tanjung Kuras planting polygon. The value
+ * comes from planting report YG-20260725-135142-186 and belongs specifically
+ * to polygon report YG-20260829-144847-315, not to the separate Phase III
+ * programme target of 4,000 seedlings.
+ */
+function repairTanjungKurasPlantingCountFromSecureExecution() {
+  const caller = String(Session.getActiveUser().getEmail() || '').toLowerCase();
+  if (caller !== ADMIN_EMAIL.toLowerCase()) {
+    throw new Error('Only the configured administrator may repair report data.');
+  }
+
+  const reportId = 'YG-20260829-144847-315';
+  const sheet = getSheet_();
+  if (!sheet) throw new Error('Sheet laporan tidak ditemukan.');
+
+  const rowNumber = findReportRowById_(sheet, reportId);
+  if (!rowNumber) throw new Error('Laporan tidak ditemukan: ' + reportId);
+  if (clean_(sheet.getRange(rowNumber, 22).getDisplayValue()) !== 'Sudah Dipublikasikan') {
+    throw new Error('Laporan belum dipublikasikan: ' + reportId);
+  }
+
+  let targetProperties = {};
+  try {
+    targetProperties = JSON.parse(
+      sheet.getRange(rowNumber, 31).getDisplayValue() || '{}'
+    );
+  } catch (error) {
+    targetProperties = {};
+  }
+
+  targetProperties = applyPublishedReportDataCorrections_(
+    reportId,
+    targetProperties
+  );
+  sheet.getRange(rowNumber, 31).setValue(JSON.stringify(targetProperties));
+  SpreadsheetApp.flush();
+
+  const syncResult = syncPublishedCommunityReportsToObjects();
+  const publicationResult = notifyCloudflarePublication_(reportId);
+
+  return {
+    ok: true,
+    reportId: reportId,
+    sourcePlantingReportId: 'YG-20260725-135142-186',
+    plantedCount: 200,
+    sync: syncResult,
+    publication: publicationResult
+  };
+}
+
 /*
   Struktur kolom:
   A  ID Laporan

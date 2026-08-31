@@ -880,6 +880,11 @@ L.control.scale({
       );
 
       rows += row(
+        "Jumlah bibit",
+        valueOf(["Jumlah_Bib", "Jumlah_Bibit", "Jumlah_Tanam"])
+      );
+
+      rows += row(
         "Deskripsi",
         valueOf(["description"])
       );
