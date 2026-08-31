@@ -74,6 +74,31 @@ test('PBPH profile separates permit documents from conservative SVLK status', ()
   assert.equal(arara.svlk.status, 'certificate-verified');
   assert.equal(arara.svlk.certificateNumber, 'SPHL.72/ASERT/LPVI-001-IDN');
   assert.equal(arara.svlk.validUntil, '24 Juli 2031');
+
+  const rapp = registry.profiles['180,2013'];
+  assert.equal(rapp.documents.length, 0);
+  assert.equal(rapp.svlk.status, 'certificate-verified');
+  assert.equal(rapp.svlk.certificateNumber, 'LPVI-008/MUTU/FM-001');
+  assert.equal(rapp.svlk.validUntil, '19 Oktober 2030');
+
+  const bbha = registry.profiles['365,2003'];
+  assert.equal(bbha.documents.length, 0);
+  assert.equal(bbha.svlk.status, 'certificate-verified');
+  assert.equal(bbha.svlk.certificateNumber, 'SPHL.69/ASERT/LPVI-001-IDN');
+  assert.equal(bbha.svlk.validUntil, '24 Oktober 2030');
+
+  const nsr = registry.profiles['550,2012'];
+  assert.equal(nsr.documents.length, 0);
+  assert.equal(nsr.svlk.status, 'certificate-verified');
+  assert.equal(nsr.svlk.certificateNumber, 'SPHL.35/ASERT/LPVI-001-IDN');
+  assert.equal(nsr.svlk.validUntil, '27 Februari 2027');
+
+  const tuah = registry.profiles['215,2007'];
+  assert.equal(tuah.documents.length, 0);
+  assert.equal(tuah.svlk.status, 'certificate-verified');
+  assert.equal(tuah.svlk.certificateNumber, 'SPHL.40/ASERT/LPVI-001-IDN');
+  assert.equal(tuah.svlk.validUntil, '4 Mei 2029');
+  assert.match(tuah.svlk.note, /register klien aktif/i);
 });
 
 test('internal source remarks are not rendered in the public PBPH profile', () => {

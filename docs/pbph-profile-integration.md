@@ -35,5 +35,9 @@ Jalankan `node scripts/validate_pbph_documents.mjs` sebelum publikasi.
 - PT Mutiara Sabuk Khatulistiwa: keputusan perpanjangan, sertifikat S-PHL, dan ringkasan re-sertifikasi 2024 telah diverifikasi dari LPVI PT Ayamaru Sertifikasi. Sertifikat SPHL.26/ASERT/LPVI-001-IDN berlaku sampai 27 Desember 2030.
 - PT Ruas Utama Jaya: keputusan hasil penilikan ke-1 dan ringkasan publik PBPH tahun 2025 telah diverifikasi. Sertifikat SPHL.64/ASERT/LPVI-001-IDN dinyatakan terpelihara dan berlaku sampai 9 April 2029.
 - PT Arara Abadi: keputusan perpanjangan, sertifikat S-PHL, ringkasan re-sertifikasi 2025, dan ringkasan publik PBPH 2025 telah diverifikasi. Sertifikat SPHL.72/ASERT/LPVI-001-IDN berlaku sampai 24 Juli 2031.
+- PT Riau Andalan Pulp & Paper: keputusan dan ringkasan hasil re-sertifikasi 2024 telah diverifikasi dari LPVI PT Mutuagung Lestari Tbk. Sertifikat LPVI-008/MUTU/FM-001 berlaku sampai 19 Oktober 2030.
+- PT Bukit Batu Hutani Alam: keputusan dan ringkasan hasil re-sertifikasi 2024 telah diverifikasi dari LPVI PT Ayamaru Sertifikasi. Sertifikat SPHL.69/ASERT/LPVI-001-IDN berlaku sampai 24 Oktober 2030.
+- PT Nusantara Sentosa Raya: keputusan penilikan ke-3 tahun 2026 telah diverifikasi dari LPVI PT Ayamaru Sertifikasi. Sertifikat SPHL.35/ASERT/LPVI-001-IDN dinyatakan terpelihara dan berlaku sampai 27 Februari 2027.
+- CV Tuah Negeri: nomor dan masa berlaku sertifikat diverifikasi melalui register klien aktif LPVI PT Ayamaru Sertifikasi. Sertifikat SPHL.40/ASERT/LPVI-001-IDN berlaku sampai 4 Mei 2029; berkas keputusan audit individual belum ditemukan.
 
 Untuk profil yang telah ditelusuri, salinan keputusan PBPH beserta lampiran petanya belum ditemukan sebagai berkas publik tersendiri. Dokumen PHL/SVLK tidak boleh dipindahkan ke kategori SK PBPH.
