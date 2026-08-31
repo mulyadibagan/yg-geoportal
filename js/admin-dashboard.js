@@ -17,6 +17,8 @@
   var PS_REVIEW_PENDING = null;
   var ADMIN_SESSION = null;
   var REMOTE_AVAILABLE = false;
+  var STAFF_REPORT_DATA = [];
+  var STAFF_REPORT_STATS = {};
 
   function esc(value) {
     return String(value == null ? '' : value).replace(/[&<>"']/g, function (character) {
@@ -209,6 +211,94 @@
       throw new Error('Silakan masuk sebagai staf sebelum menyimpan perubahan.');
     }
     return ADMIN_SESSION;
+  }
+
+  function loadStaffReportInbox() {
+    var session = window.YG_AUTH && window.YG_AUTH.readStoredSession();
+    if (!session || !session.token) {
+      return Promise.resolve({ requiresLogin: true, stats: {}, reports: [] });
+    }
+    return jsonp(API + '?page=staff-reports&sessionToken=' + encodeURIComponent(session.token));
+  }
+
+  function reportStatusClass(status) {
+    if (status === 'Sudah Dipublikasikan') return 'is-published';
+    if (status === 'Disetujui') return 'is-approved';
+    if (status === 'Perlu Perbaikan') return 'is-revision';
+    if (status === 'Ditolak') return 'is-rejected';
+    return 'is-pending';
+  }
+
+  function safeReportUrl(value) {
+    var url = String(value || '').trim();
+    return /^https:\/\//i.test(url) ? url : '';
+  }
+
+  function renderStaffReportInbox() {
+    var list = document.getElementById('report-inbox-list');
+    var filter = document.getElementById('report-inbox-filter').value;
+    var rows = STAFF_REPORT_DATA.filter(function (report) {
+      return filter === 'all' || report.status === filter;
+    });
+    var stats = STAFF_REPORT_STATS || {};
+
+    document.getElementById('report-stat-total').textContent = Number(stats.total || 0).toLocaleString('id-ID');
+    document.getElementById('report-stat-pending').textContent = Number(stats.pending || 0).toLocaleString('id-ID');
+    document.getElementById('report-stat-revision').textContent = Number(stats.revision || 0).toLocaleString('id-ID');
+    document.getElementById('report-stat-published').textContent = Number(stats.published || 0).toLocaleString('id-ID');
+
+    if (!rows.length) {
+      list.innerHTML = '<div class="assignment-empty">Tidak ada laporan untuk status yang dipilih.</div>';
+      return;
+    }
+
+    list.innerHTML = rows.map(function (report) {
+      var location = [report.village, report.district, report.regency, report.province].filter(Boolean).join(' · ');
+      var reporter = [report.name, report.organization].filter(Boolean).join(' · ');
+      var photos = (report.photos || []).map(safeReportUrl).filter(Boolean);
+      var documentUrl = safeReportUrl(report.documentUrl);
+      var evidenceLinks = photos.map(function (url, index) {
+        return '<a href="' + esc(url) + '" target="_blank" rel="noopener noreferrer">Foto ' + (index + 1) + '</a>';
+      });
+      if (documentUrl) evidenceLinks.push('<a href="' + esc(documentUrl) + '" target="_blank" rel="noopener noreferrer">Dokumen</a>');
+
+      return '<article class="report-inbox-record">' +
+        '<header><div><span class="report-inbox-id">' + esc(report.id || 'Tanpa ID') + '</span>' +
+        '<h3>' + esc(report.title || report.reportType || 'Laporan tim') + '</h3></div>' +
+        '<span class="report-status ' + reportStatusClass(report.status) + '">' + esc(report.status || 'Menunggu Verifikasi') + '</span></header>' +
+        '<div class="report-inbox-meta"><span><b>Jenis</b>' + esc(report.reportType || '-') + '</span>' +
+        '<span><b>Pelapor</b>' + esc(reporter || '-') + '</span>' +
+        '<span><b>Lokasi</b>' + esc(location || report.locationName || '-') + '</span>' +
+        '<span><b>Diterima</b>' + esc(report.receivedAt || '-') + '</span></div>' +
+        (report.description ? '<p>' + esc(report.description) + '</p>' : '') +
+        (evidenceLinks.length ? '<div class="report-inbox-evidence">' + evidenceLinks.join('') + '</div>' : '') +
+        '</article>';
+    }).join('');
+  }
+
+  function applyStaffReportInbox(data) {
+    var feedback = document.getElementById('report-inbox-feedback');
+    if (data && data.requiresLogin) {
+      STAFF_REPORT_DATA = [];
+      STAFF_REPORT_STATS = {};
+      feedback.textContent = 'Masuk sebagai staf untuk memuat laporan tim.';
+      renderStaffReportInbox();
+      return;
+    }
+    STAFF_REPORT_DATA = (data && data.reports) || [];
+    STAFF_REPORT_STATS = (data && data.stats) || {};
+    feedback.textContent = STAFF_REPORT_DATA.length
+      ? STAFF_REPORT_DATA.length.toLocaleString('id-ID') + ' laporan berhasil dimuat dari server.'
+      : 'Belum ada laporan tim pada server.';
+    renderStaffReportInbox();
+  }
+
+  function refreshStaffReportInbox() {
+    var feedback = document.getElementById('report-inbox-feedback');
+    feedback.textContent = 'Memuat antrean laporan tim...';
+    return loadStaffReportInbox().then(applyStaffReportInbox).catch(function (error) {
+      feedback.textContent = 'Antrean laporan gagal dimuat: ' + error.message;
+    });
   }
 
   async function postAdmin(action, payload) {
@@ -1026,6 +1116,8 @@
   }
 
   function bind() {
+    document.getElementById('refresh-report-inbox').addEventListener('click', refreshStaffReportInbox);
+    document.getElementById('report-inbox-filter').addEventListener('change', renderStaffReportInbox);
     document.getElementById('refresh-ps-inbox').addEventListener('click', loadPsInbox);
     document.getElementById('ps-inbox-list').addEventListener('click', async function (event) {
       var button = event.target.closest('[data-ps-review]');
@@ -1180,7 +1272,8 @@
       loadLayerEvidence(),
       fetch('data/PERHUTANAN_SOSIAL_RIAU.geojson?v=20260824-kth-alam-hijau-pelalawan1', { cache: 'no-store' })
         .then(function (response) { return response.ok ? response.json() : { features: [] }; })
-        .catch(function () { return { features: [] }; })
+        .catch(function () { return { features: [] }; }),
+      loadStaffReportInbox().catch(function (error) { return { loadError: error.message, stats: {}, reports: [] }; })
     ]).then(function (results) {
       DONOR_DATA = results[0] || [];
       REMOTE_AVAILABLE = Array.isArray(results[2] && results[2].programmes) &&
@@ -1198,6 +1291,11 @@
         NONSPATIAL_EVIDENCE_DATA
       );
       buildSocialForestryProfileIndex(results[5]);
+      applyStaffReportInbox(results[6]);
+      if (results[6] && results[6].loadError) {
+        document.getElementById('report-inbox-feedback').textContent =
+          'Antrean laporan gagal dimuat: ' + results[6].loadError;
+      }
       renderAuthState();
       renderDonors();
       renderProgrammeAdmin();

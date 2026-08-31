@@ -246,6 +246,17 @@ if (page === 'ps-inbox') {
   return donorAdminResponse_(getSocialForestryInbox_(params.sessionToken), callback);
 }
 
+if (page === 'staff-reports') {
+  return donorAdminResponse_(getStaffReportInbox_(params.sessionToken), callback);
+}
+
+if (page === 'report-submission-status') {
+  return jsonOrJsonpResponse_(
+    getReportSubmissionStatus_(params.clientSubmissionId),
+    callback
+  );
+}
+
   if (page === 'admin') {
     if (!isAdminToken_(token)) {
       return HtmlService.createHtmlOutput(
@@ -418,6 +429,7 @@ if (page === 'ps-inbox') {
 }
 
 function doPost(e) {
+  let clientSubmissionId = '';
   try {
     const action = clean_(
       e && e.parameter
@@ -494,6 +506,7 @@ if (action === 'content-save') {
     }
 
     const data = JSON.parse(e.parameter.payload);
+    clientSubmissionId = clean_(data.clientSubmissionId);
     validateIncomingPayload_(data);
 
     // Normalisasi metadata tambahan agar frontend lama/baru tetap kompatibel.
@@ -600,7 +613,7 @@ if (action === 'content-save') {
       );
     }
 
-    return reportSubmissionResponse_({
+    const submissionResult = {
       ok: true,
       reportId: reportId,
       emailSent: emailSent,
@@ -608,15 +621,19 @@ if (action === 'content-save') {
         ? 'Laporan berhasil disimpan dan notifikasi email dikirim.'
         : 'Laporan berhasil disimpan, tetapi notifikasi email gagal.',
       emailError: emailError
-    });
+    };
+    storeReportSubmissionStatus_(clientSubmissionId, submissionResult);
+    return reportSubmissionResponse_(submissionResult);
   } catch (error) {
     console.error('Pengiriman laporan gagal: ' + error.stack);
-    return reportSubmissionResponse_({
+    const submissionError = {
       ok: false,
       reportId: '',
       emailSent: false,
       message: clean_(error.message) || 'Laporan gagal disimpan.'
-    });
+    };
+    storeReportSubmissionStatus_(clientSubmissionId, submissionError);
+    return reportSubmissionResponse_(submissionError);
   }
 }
 
@@ -731,6 +748,37 @@ function reportSubmissionResponse_(result) {
     '<script>top.postMessage(' + json + ', "*");<\/script>' +
     '</body></html>'
   );
+}
+
+function reportSubmissionStatusKey_(clientSubmissionId) {
+  const value = clean_(clientSubmissionId);
+  if (!/^[A-Za-z0-9_-]{20,120}$/.test(value)) return '';
+  return 'REPORT_SUBMISSION_' + value;
+}
+
+function storeReportSubmissionStatus_(clientSubmissionId, result) {
+  const key = reportSubmissionStatusKey_(clientSubmissionId);
+  if (!key) return;
+  CacheService.getScriptCache().put(
+    key,
+    JSON.stringify(Object.assign({
+      type: 'yg-report-submission-result',
+      confirmedAt: new Date().toISOString()
+    }, result)),
+    21600
+  );
+}
+
+function getReportSubmissionStatus_(clientSubmissionId) {
+  const key = reportSubmissionStatusKey_(clientSubmissionId);
+  if (!key) return { pending: false, ok: false, message: 'ID pengiriman tidak valid.' };
+  const raw = CacheService.getScriptCache().get(key);
+  if (!raw) return { pending: true, clientSubmissionId: clean_(clientSubmissionId) };
+  try {
+    return Object.assign({ pending: false }, JSON.parse(raw));
+  } catch (error) {
+    return { pending: false, ok: false, message: 'Konfirmasi pengiriman tidak valid.' };
+  }
 }
 
 function getPendingDuplicateCandidates_(requestedLayerId) {
@@ -893,6 +941,22 @@ function formatPublicDate_(value) {
 
 function getAdminDashboardData(token) {
   assertAdmin_(token);
+
+  return buildReportDashboardData_();
+}
+
+function getStaffReportInbox_(sessionToken) {
+  const staff = assertEditorCredential_(sessionToken);
+  const data = buildReportDashboardData_();
+  data.viewer = {
+    username: clean_(staff.username),
+    name: clean_(staff.name),
+    role: clean_(staff.role)
+  };
+  return data;
+}
+
+function buildReportDashboardData_() {
 
   const targetLayerOptions = getAdminTargetLayerOptions_();
 

@@ -43,6 +43,9 @@
   var areaMethod = 'draw';
   var submissionStarted = false;
   var submissionConfirmationTimer = null;
+  var submissionPollTimer = null;
+  var submissionPollSequence = 0;
+  var activeSubmissionId = '';
   var correctionLayerGroup = null;
   var correctionFeatureLayer = null;
   var selectedCorrectionFeature = null;
@@ -458,6 +461,70 @@
       script.async = true;
       document.head.appendChild(script);
     });
+  }
+
+  function createClientSubmissionId(){
+    if(window.crypto && typeof window.crypto.randomUUID === 'function'){
+      return 'yg-' + window.crypto.randomUUID().replace(/-/g,'');
+    }
+    return 'yg-' + Date.now().toString(36) + '-' +
+      Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
+  }
+
+  function stopSubmissionConfirmation(){
+    clearTimeout(submissionConfirmationTimer);
+    clearTimeout(submissionPollTimer);
+    submissionPollSequence += 1;
+  }
+
+  function handleSubmissionResponse(response){
+    if(!submissionStarted || !response || response.type !== 'yg-report-submission-result') return;
+
+    stopSubmissionConfirmation();
+    submissionStarted = false;
+    submitButton.disabled = false;
+    submitButton.textContent = 'Kirim Laporan';
+
+    if(response.ok && response.reportId){
+      successReportId.textContent = response.reportId;
+      successEmailStatus.textContent = response.emailSent
+        ? 'Notifikasi email berhasil dikirim.'
+        : 'Data tersimpan, tetapi notifikasi email gagal. Admin tetap dapat memeriksa laporan melalui dashboard.';
+      form.hidden = true;
+      success.hidden = false;
+      statusText.textContent = '';
+      success.scrollIntoView({behavior:'smooth',block:'start'});
+      return;
+    }
+
+    success.hidden = true;
+    statusText.textContent =
+      'Laporan belum tersimpan. ' +
+      (response.message || 'Server tidak memberikan konfirmasi penyimpanan. Silakan coba lagi.');
+    statusText.setAttribute('role','alert');
+  }
+
+  function scheduleSubmissionStatusPoll(clientSubmissionId, sequence, delay){
+    clearTimeout(submissionPollTimer);
+    submissionPollTimer = setTimeout(function(){
+      if(!submissionStarted || sequence !== submissionPollSequence) return;
+      jsonpRequest(
+        PREPOST_API + '?page=report-submission-status&clientSubmissionId=' +
+          encodeURIComponent(clientSubmissionId),
+        'ygReportSubmissionStatus_'
+      ).then(function(result){
+        if(!submissionStarted || sequence !== submissionPollSequence) return;
+        if(result && result.pending === false && result.type === 'yg-report-submission-result'){
+          handleSubmissionResponse(result);
+          return;
+        }
+        scheduleSubmissionStatusPoll(clientSubmissionId,sequence,1200);
+      }).catch(function(){
+        if(submissionStarted && sequence === submissionPollSequence){
+          scheduleSubmissionStatusPoll(clientSubmissionId,sequence,2500);
+        }
+      });
+    },delay || 500);
   }
 
   function capacityEvidenceText(summary){
@@ -3319,7 +3386,9 @@
       ? (capacityData.supportTestSummary || null)
       : null;
 
+    activeSubmissionId = createClientSubmissionId();
     var payload = {
+      clientSubmissionId:activeSubmissionId,
       reportType:selectedType,
       name:value('name'),
       organization:value('organization'),
@@ -3450,17 +3519,21 @@
     submitButton.disabled = true;
     submitButton.textContent = 'Mengirim...';
     statusText.textContent = 'Mohon tunggu. Data dan foto sedang dikirim.';
+    stopSubmissionConfirmation();
     submissionStarted = true;
-    clearTimeout(submissionConfirmationTimer);
+    var currentPollSequence = submissionPollSequence;
     submissionConfirmationTimer = setTimeout(function(){
       if(!submissionStarted) return;
+      clearTimeout(submissionPollTimer);
+      submissionPollSequence += 1;
       submissionStarted = false;
       submitButton.disabled = false;
       submitButton.textContent = 'Kirim Laporan';
       statusText.textContent =
-        'Konfirmasi server belum diterima. Periksa dashboard sebelum mengirim ulang agar laporan tidak ganda.';
+        'Status penyimpanan belum dapat dipastikan. Catat waktu pengiriman dan periksa Antrean Laporan Tim di dashboard admin sebelum mencoba lagi.';
       statusText.setAttribute('role','alert');
     },120000);
+    scheduleSubmissionStatusPoll(activeSubmissionId,currentPollSequence,700);
     form.submit();
   });
 
@@ -3482,28 +3555,7 @@
     var response = event.data || {};
     if(response.type !== 'yg-report-submission-result') return;
 
-    clearTimeout(submissionConfirmationTimer);
-    submissionStarted = false;
-    submitButton.disabled = false;
-    submitButton.textContent = 'Kirim Laporan';
-
-    if(response.ok && response.reportId){
-      successReportId.textContent = response.reportId;
-      successEmailStatus.textContent = response.emailSent
-        ? 'Notifikasi email berhasil dikirim.'
-        : 'Data tersimpan, tetapi notifikasi email gagal. Admin tetap dapat memeriksa laporan melalui dashboard.';
-      form.hidden = true;
-      success.hidden = false;
-      statusText.textContent = '';
-      success.scrollIntoView({behavior:'smooth',block:'start'});
-      return;
-    }
-
-    success.hidden = true;
-    statusText.textContent =
-      'Laporan belum tersimpan. ' +
-      (response.message || 'Server tidak memberikan konfirmasi penyimpanan. Silakan coba lagi.');
-    statusText.setAttribute('role','alert');
+    handleSubmissionResponse(response);
   });
 
   submitFrame.addEventListener('load',function(){
@@ -3590,7 +3642,9 @@
       'Pilih jenis laporan untuk menampilkan isian yang sesuai.';
     statusText.textContent = '';
     statusText.removeAttribute('role');
-    clearTimeout(submissionConfirmationTimer);
+    stopSubmissionConfirmation();
+    submissionStarted = false;
+    activeSubmissionId = '';
     successReportId.textContent = '-';
     successEmailStatus.textContent = '';
     submitButton.disabled = false;

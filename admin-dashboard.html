@@ -7,7 +7,7 @@
   <link rel="icon" href="assets/logo-yayasan-gambut.png"/>
   <link rel="stylesheet" href="css/site-brand.css?v=20260720-program-dashboard1"/>
   <link rel="stylesheet" href="css/dashboard-v3.css?v=20260722-funding-logo1"/>
-  <link rel="stylesheet" href="css/admin-dashboard.css?v=20260824-ps-review-preview2"/>
+  <link rel="stylesheet" href="css/admin-dashboard.css?v=20260831-report-inbox1"/>
   <link rel="stylesheet" href="css/language-switcher.css?v=20260721-all-pages1"/>
   <meta name="theme-color" content="#079cde">
 </head>
@@ -40,6 +40,30 @@
         <h1>Administrasi Data &amp; Capaian</h1>
         <p class="hero-description">Kelola kelengkapan profil Perhutanan Sosial dan hubungkan laporan kegiatan terverifikasi ke output program donor melalui dua antrean yang terpisah.</p>
         <p class="hero-tagline">Perubahan disimpan ke database pusat ketika layanan aktif; browser digunakan sebagai penyimpanan sementara saat layanan belum tersedia.</p>
+      </div>
+    </section>
+
+    <section class="admin-panel report-inbox-panel" aria-labelledby="report-inbox-title">
+      <div class="admin-column admin-column--wide">
+        <div class="section-heading">
+          <div><span class="eyebrow">LAPORAN TIM</span><h2 id="report-inbox-title">Antrean Laporan Masuk</h2></div>
+          <button id="refresh-report-inbox" class="btn btn-light" type="button">Muat ulang</button>
+        </div>
+        <div class="admin-card">
+          <div class="report-inbox-summary" aria-label="Ringkasan laporan tim">
+            <span><b id="report-stat-total">0</b>Total</span>
+            <span><b id="report-stat-pending">0</b>Menunggu</span>
+            <span><b id="report-stat-revision">0</b>Perlu perbaikan</span>
+            <span><b id="report-stat-published">0</b>Dipublikasikan</span>
+          </div>
+          <div class="report-inbox-toolbar">
+            <label>Status laporan
+              <select id="report-inbox-filter"><option value="all">Semua status</option><option value="Menunggu Verifikasi">Menunggu Verifikasi</option><option value="Perlu Perbaikan">Perlu Perbaikan</option><option value="Disetujui">Disetujui</option><option value="Sudah Dipublikasikan">Sudah Dipublikasikan</option><option value="Ditolak">Ditolak</option></select>
+            </label>
+            <span id="report-inbox-feedback" role="status">Masuk sebagai staf untuk memuat laporan tim.</span>
+          </div>
+          <div id="report-inbox-list" class="report-inbox-list"><div class="assignment-empty">Belum ada data laporan yang dimuat.</div></div>
+        </div>
       </div>
     </section>
 
@@ -300,6 +324,6 @@
 
   <script src="js/config.js?v=20260727-all-layers1"></script>
   <script src="js/auth.js?v=20260821-admin-donor-cards1"></script>
-  <script src="js/admin-dashboard.js?v=20260824-ps-inbox-unsynced1"></script>
+  <script src="js/admin-dashboard.js?v=20260831-report-inbox1"></script>
 </body>
 </html>
