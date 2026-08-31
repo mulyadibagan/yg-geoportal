@@ -8,6 +8,89 @@ function updateStats(scope){var approved=scope.filter(function(r){return r.statu
 function regencyLogo(name){var files={"Bengkalis":"Lambang Kabupaten Bengkalis.png","Siak":"Lambang Kabupaten Siak.png","Pelalawan":"Pelalawan logo.png","Rokan Hilir":"Lambang Kabupaten Rokan Hilir.png","Rokan Hulu":"Rohul.png","Kampar":"Lambang Kabupaten Kampar.png","Kuantan Singingi":"Lambang Kabupaten Kuantan Singingi.PNG","Indragiri Hilir":"Logo kabupaten indragiri hilir.jpg","Indragiri Hulu":"Lambang Kab Indragiri Hulu.png","Kepulauan Meranti":"Lambang kab Kepulauan Meranti.png","Dumai":"Lambang Kota Dumai.png"};return files[name]?"https://commons.wikimedia.org/wiki/Special:FilePath/"+encodeURIComponent(files[name]):"assets/logo-yayasan-gambut.png"}
 function updateRegencySummary(){var groups={};rows.filter(function(r){return r.status==="approved"&&r.regency}).forEach(function(r){var g=groups[r.regency]||(groups[r.regency]={count:0,area:0});g.count++;g.area+=Number(r.areaHa||0)});regencyGrid.innerHTML=Object.keys(groups).sort(function(a,b){return groups[b].count-groups[a].count}).map(function(name){var g=groups[name];return'<button type="button" class="psd-regency-card" data-regency-card="'+esc(name)+'"><span class="psd-regency-card__logo"><img src="'+regencyLogo(name)+'" alt="Lambang '+esc(name)+'" loading="lazy"></span><span><strong>'+esc(name)+'</strong><small>'+g.count+' PS · '+formatHa(g.area)+'</small></span></button>'}).join("")}
 function render(){var q=norm(search.value),area=regency.value,legal=legalFilter.value,doc=documentFilter.value,scope=rows.filter(function(r){return!area||r.regency===area});updateStats(rows);var shown=scope.filter(function(r){var dm=doc==="all"||doc.indexOf("missing-")===0&&!hasDocument(r,doc.replace("missing-",""))||doc.indexOf("available-")===0&&hasDocument(r,doc.replace("available-",""));return(legal==="all"||r.status===legal)&&(activeType==="all"||r.type===activeType)&&dm&&(!q||r.haystack.indexOf(q)>-1)});document.getElementById("result-count").textContent=shown.length+" profil";grid.innerHTML=shown.length?shown.map(function(r){var process=r.status==="process",types=["sk","map","rkps","rkt","kups"];return'<a class="psd-card '+(process?'is-process':'')+'" href="social-forestry-profile.html?key='+encodeURIComponent(r.key)+'"><div class="psd-card__top"><span class="psd-badge '+(process?'psd-badge--nonspatial':'')+'">'+(process?'Dalam proses':(r.type==='spatial'?'SK terbit · spasial':'SK terbit'))+'</span><span class="psd-docs">'+(process?'SK belum terbit':r.documents+' dokumen')+'</span></div><h3>'+esc(r.name)+'</h3><p>'+esc([r.village,r.district,r.regency].filter(Boolean).join(" · "))+'</p><div class="psd-document-matrix">'+types.map(function(t){var a=hasDocument(r,t);return'<span class="'+(a?'is-present':'is-missing')+'">'+t.toUpperCase()+' '+(process&&t==='sk'?'proses':(a?'ada':'belum'))+'</span>'}).join("")+'</div><div class="psd-card__meta"><span>'+esc(canonicalScheme(r.scheme))+'</span>'+(r.decree?'<span>'+esc(r.decree)+'</span>':'')+'</div><span class="psd-card__action">Buka profil →</span></a>'}).join(""):'<div class="psd-empty">Tidak ada profil yang sesuai dengan filter.</div>'}
-async function init(){try{var result=await Promise.all([fetch("data/PERHUTANAN_SOSIAL_RIAU.geojson?v=20260828-area-summary1",{cache:"no-store"}).then(function(r){return r.json()}),fetch("data/social-forestry-details.json?v=20260828-status3",{cache:"no-store"}).then(function(r){return r.json()}),fetch("data/social-forestry-summary.json?v=20260828-area-summary1",{cache:"no-store"}).then(function(r){return r.json()})]),features=result[0].features||[],details=result[1]||{},summaries=result[2].profiles||[],byD={},byS={},used={},seen={};function sig(n,v,a){return norm([n,v,cleanRegency(a)].join("|"))}Object.keys(details).forEach(function(k){var d=details[k]||{},de=norm(d.decree),s=sig(d.name,d.village,d.regency);if(de&&!byD[de])byD[de]=k;if(s&&!byS[s])byS[s]=k});var sumD={},sumS={};summaries.forEach(function(s){if(s.decreeNorm)sumD[s.decreeNorm]=s;if(s.signature)sumS[s.signature]=s});rows=[];features.forEach(function(f,i){var p=f.properties||{},de=norm(p.NO_IUPHKM||p.SK),s=sig(p.NAMA_HKM,p.NAMA_DESA,p.NAMA_KAB),k=byD[de]||byS[s]||featureKey(p)||permitKey(p)||String(i),d=details[k]||{},id=de?"sk:"+de:"row:"+i;if(seen[id])return;seen[id]=true;if(details[k])used[k]=true;var r=makeRow(k,"spatial",p,d),sm=sumD[de]||sumS[s];if(sm){r.areaHa=Number(sm.areaHa||r.areaHa);r.summaryScheme=sm.scheme}rows.push(r)});Object.keys(details).forEach(function(k){if(used[k])return;var d=details[k]||{};if(!d.name)return;var r=makeRow(k,"nonspatial",{},d),de=norm(d.decree),s=sig(d.name,d.village,d.regency),sm=sumD[de]||sumS[s];if(sm&&r.status==='approved'){r.areaHa=Number(sm.areaHa||r.areaHa);r.summaryScheme=sm.scheme}rows.push(r)});rows.sort(function(a,b){return a.name.localeCompare(b.name,"id")});var areas=Array.from(new Set(rows.map(function(r){return r.regency}).filter(Boolean))).sort();regency.innerHTML='<option value="">Semua kabupaten</option>'+areas.map(function(a){return'<option>'+esc(a)+'</option>'}).join("");updateRegencySummary();render()}catch(e){console.error(e);grid.innerHTML='<div class="psd-empty">Direktori gagal dimuat. Silakan coba lagi.</div>'}}
+async function init(){
+  try{
+    var result=await Promise.all([
+      fetch("data/PERHUTANAN_SOSIAL_RIAU.geojson?v=20260828-area-summary1",{cache:"no-store"}).then(function(r){return r.json()}),
+      fetch("data/social-forestry-details.json?v=20260828-status3",{cache:"no-store"}).then(function(r){return r.json()}),
+      fetch("data/social-forestry-summary.json?v=20260828-area-summary1",{cache:"no-store"}).then(function(r){return r.json()})
+    ]),features=result[0].features||[],details=result[1]||{},summaries=result[2].profiles||[],detailKeys=Object.keys(details),byD={},byS={},used={},seen={},spatialDecrees={},spatialSignatures={};
+
+    function sig(n,v,a){return norm([n,v,cleanRegency(a)].join("|"))}
+    function addIndex(index,key,value){
+      if(!key)return;
+      if(!index[key])index[key]=[];
+      if(index[key].indexOf(value)<0)index[key].push(value);
+    }
+
+    detailKeys.forEach(function(k){
+      var d=details[k]||{},de=norm(d.decree),s=sig(d.name,d.village,d.regency);
+      addIndex(byD,de,k);
+      addIndex(byS,s,k);
+    });
+
+    var sumD={},sumS={};
+    summaries.forEach(function(s){
+      if(s.decreeNorm)sumD[s.decreeNorm]=s;
+      if(s.signature)sumS[s.signature]=s;
+    });
+
+    rows=[];
+    features.forEach(function(f,i){
+      var p=f.properties||{},de=norm(p.NO_IUPHKM||p.SK),s=sig(p.NAMA_HKM,p.NAMA_DESA,p.NAMA_KAB),pk=permitKey(p),fk=featureKey(p),candidateKeys=[];
+      function include(k){if(k&&details[k]&&candidateKeys.indexOf(k)<0)candidateKeys.push(k)}
+      include(pk);
+      include(fk);
+      (byD[de]||[]).forEach(include);
+      (byS[s]||[]).forEach(include);
+
+      /* Satu SK adalah satu profil. Semua sumber pasangan ikut ditandai dan
+         dokumennya digabung agar record audit tidak muncul lagi sebagai kartu
+         nonspasial terpisah. */
+      candidateKeys.forEach(function(k){used[k]=true});
+      if(de)spatialDecrees[de]=true;
+      if(s)spatialSignatures[s]=true;
+
+      var id=de?"sk:"+de:"row:"+i;
+      if(seen[id])return;
+      seen[id]=true;
+
+      var k=candidateKeys.find(function(key){return norm(key)===de})||candidateKeys.find(function(key){return key.indexOf("drive-audit:")!==0})||candidateKeys[0]||fk||pk||String(i),d=details[k]?Object.assign({},details[k]):{},documents=[],documentSeen={};
+      candidateKeys.forEach(function(key){
+        var source=details[key]||{};
+        Object.keys(source).forEach(function(prop){
+          if(prop!=="documents"&&(d[prop]==null||d[prop]==="")&&source[prop]!=null)d[prop]=source[prop];
+        });
+        (Array.isArray(source.documents)?source.documents:[]).filter(Boolean).forEach(function(doc){
+          var docKey=text(doc.url)||norm([doc.label,doc.category].join("|"));
+          if(!documentSeen[docKey]){documentSeen[docKey]=true;documents.push(doc)}
+        });
+      });
+      if(candidateKeys.length)d.documents=documents;
+
+      var r=makeRow(k,"spatial",p,d),sm=sumD[de]||sumS[s];
+      if(sm){r.areaHa=Number(sm.areaHa||r.areaHa);r.summaryScheme=sm.scheme}
+      rows.push(r);
+    });
+
+    detailKeys.forEach(function(k){
+      if(used[k])return;
+      var d=details[k]||{},de=norm(d.decree),s=sig(d.name,d.village,d.regency);
+      if(!d.name||de&&spatialDecrees[de]||s&&spatialSignatures[s])return;
+      var r=makeRow(k,"nonspatial",{},d),sm=sumD[de]||sumS[s];
+      if(sm&&r.status==="approved"){r.areaHa=Number(sm.areaHa||r.areaHa);r.summaryScheme=sm.scheme}
+      rows.push(r);
+    });
+
+    rows.sort(function(a,b){return a.name.localeCompare(b.name,"id")});
+    var areas=Array.from(new Set(rows.map(function(r){return r.regency}).filter(Boolean))).sort();
+    regency.innerHTML='<option value="">Semua kabupaten</option>'+areas.map(function(a){return'<option>'+esc(a)+'</option>'}).join("");
+    updateRegencySummary();
+    render();
+  }catch(e){
+    console.error(e);
+    grid.innerHTML='<div class="psd-empty">Direktori gagal dimuat. Silakan coba lagi.</div>';
+  }
+}
 [search,regency,legalFilter,documentFilter].forEach(function(el){el.addEventListener(el===search?'input':'change',render)});document.querySelectorAll('[data-type]').forEach(function(b){b.addEventListener('click',function(){activeType=b.dataset.type;document.querySelectorAll('[data-type]').forEach(function(x){x.classList.toggle('is-active',x===b)});render()})});regencyGrid.addEventListener("click",function(e){var card=e.target.closest("[data-regency-card]");if(!card)return;regency.value=card.dataset.regencyCard;render();document.querySelector(".psd-content").scrollIntoView({behavior:"smooth",block:"start"})});init();
 })();
