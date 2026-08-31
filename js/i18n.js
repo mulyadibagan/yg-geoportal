@@ -105,6 +105,8 @@
       "Peta Gambut BBSDLP 2019": "BBSDLP Peat Map 2019",
       "Batas Desa Intervensi": "Programme Village Boundaries",
       "Jenis laporan": "Report type",
+      "Jenis objek": "Object type",
+      "FDRS / Tinggi Muka Air": "FDRS / Water Table",
       "Tanggal": "Date",
       "Lokasi": "Location",
       "Judul": "Title",

@@ -732,6 +732,21 @@ L.control.scale({
       );
     }
 
+    function communityObjectType() {
+      /*
+       * reportType menjelaskan jalur formulir (mis. "Titik Baru"), bukan
+       * jenis objek yang akhirnya dipublikasikan. Pada popup peta, tampilkan
+       * klasifikasi objek agar FDRS/TMA tidak terbaca sebagai "New Location".
+       */
+      return valueOf([
+        "Jenis_Titik",
+        "Layer_Label",
+        "targetLayerLabel",
+        "Kategori",
+        "reportType"
+      ]);
+    }
+
     function cleanPhotoList(value) {
       if (!value) return [];
 
@@ -841,8 +856,8 @@ L.control.scale({
       );
     } else if (isCommunity) {
       rows += row(
-        "Jenis laporan",
-        valueOf(["reportType", "Kategori"])
+        "Jenis objek",
+        communityObjectType()
       );
 
       rows += row(
