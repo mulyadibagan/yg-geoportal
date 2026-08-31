@@ -28,3 +28,10 @@ Integrasi memakai status konservatif berikut:
 Situs tidak boleh menyimpulkan sertifikat aktif hanya dari rencana audit. Pembaruan otomatis di masa depan harus menggunakan API atau unduhan resmi yang terdokumentasi; scraping antarmuka SILK tidak digunakan.
 
 Jalankan `node scripts/validate_pbph_documents.mjs` sebelum publikasi.
+
+## Hasil penelusuran awal
+
+- PT Diamond Raya Timber: pengumuman rencana audit PHL ditemukan; sertifikat belum terverifikasi.
+- PT Mutiara Sabuk Khatulistiwa: keputusan perpanjangan, sertifikat S-PHL, dan ringkasan re-sertifikasi 2024 telah diverifikasi dari LPVI PT Ayamaru Sertifikasi. Sertifikat SPHL.26/ASERT/LPVI-001-IDN berlaku sampai 27 Desember 2030.
+
+Untuk kedua profil tersebut, salinan keputusan PBPH beserta lampiran petanya belum ditemukan sebagai berkas publik tersendiri. Dokumen PHL/SVLK tidak boleh dipindahkan ke kategori SK PBPH.
