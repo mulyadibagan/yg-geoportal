@@ -25,6 +25,11 @@
     var id=layerId(feature),type=sourceType(feature);
     return ["community_report","monitoring_report","titik_penanaman"].indexOf(type)!==-1||["community_reports","monitoring_reports","titik_penanaman"].indexOf(id)!==-1;
   }
+  function isNewInfrastructureReport(feature){
+    var props=feature&&feature.properties||{},id=layerId(feature),type=sourceType(feature);
+    if(type!=="community_report"||["sekat_kanal","fdrs"].indexOf(id)===-1||String(props.Target_Object_ID||"").trim()){return false;}
+    return /instalasi|installasi|installation|pembangunan|dibangun|titik baru/.test(normalized([props.reportType,props.title,props.Nama_Objek,props.description].join(" ")));
+  }
   function ringArea(ring){
     if(!Array.isArray(ring)||ring.length<3){return 0;}
     var radius=6378137,rad=Math.PI/180,total=0;
@@ -306,7 +311,7 @@
   }
   function isProgramFeature(feature){
     var id=layerId(feature),excluded=["","desa_intervensi","titik_desa","community_reports","monitoring_reports","titik_penanaman"];
-    return !isActivityFeature(feature)&&excluded.indexOf(id)===-1;
+    return isNewInfrastructureReport(feature)||(!isActivityFeature(feature)&&excluded.indexOf(id)===-1);
   }
   function groupPrograms(features,boundary){
     var groups={};
