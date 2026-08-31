@@ -367,7 +367,7 @@
       {label:"Batas wilayah terpilih",color:"#0d6efd"}
     ];
     var envLabels={
-      hotspot:{label:"Hotspot NASA MODIS–VIIRS (30 hari)",color:"#ff4d2e"},
+      hotspot:{label:"Hotspot 30 hari · confidence tinggi",color:"#ff4d2e"},
       cover:{label:"Tutupan lahan Indonesia 2017",color:"#6a8f5f"},
       loss:{label:"Kehilangan tutupan",color:"#e65100"},
       alerts:{label:"Alert perubahan terbaru",color:"#8b1d1d"}
@@ -940,17 +940,53 @@
     if(layerId){attachOne(layer,layerId);}
   }
 
-  function viirsUrl(){
-    var end=new Date(),start=new Date(end.getTime()-30*86400000);
-    function day(date){return date.toISOString().slice(0,10);}
-    return "https://tiles.globalforestwatch.org/nasa_viirs_fire_alerts/latest/dynamic/{z}/{x}/{y}.pbf?start_date="+day(start)+"&end_date="+day(end);
+  function hotspotPointTime(feature){
+    var props=feature&&feature.properties||{};
+    var date=String(props.acq_date||"").trim();
+    var time=String(props.acq_time||"0000").replace(/\D/g,"").padStart(4,"0").slice(-4);
+    if(!date){return null;}
+    var parsed=new Date(date+"T"+time.slice(0,2)+":"+time.slice(2,4)+":00Z");
+    return isNaN(parsed.getTime())?null:parsed;
+  }
+
+  function loadSharedHotspots(layer){
+    var cutoff=Date.now()-30*86400000;
+    return fetch("data/hotspot-high-confidence.geojson?v="+Date.now(),{cache:"no-store"})
+      .then(function(response){
+        if(!response.ok){throw new Error("HTTP "+response.status);}
+        return response.json();
+      })
+      .then(function(data){
+        layer.clearLayers();
+        (data.features||[]).forEach(function(feature){
+          var geometry=feature.geometry||{};
+          var coordinates=geometry.coordinates||[];
+          var observedAt=hotspotPointTime(feature);
+          if(geometry.type!=="Point"||coordinates.length<2||!observedAt||observedAt.getTime()<cutoff){return;}
+          var props=feature.properties||{};
+          var language=(document.documentElement.lang||"id").toLowerCase().indexOf("en")===0?"en-GB":"id-ID";
+          var when=observedAt.toLocaleString(language,{timeZone:"Asia/Jakarta",dateStyle:"medium",timeStyle:"short"});
+          var popup="<strong>Hotspot 30 hari · confidence tinggi</strong><br>"+
+            esc(when+" WIB")+"<br>"+
+            "Satelit: "+esc(props.satellite||"—")+"<br>"+
+            "Koordinat: "+Number(coordinates[1]).toFixed(5)+", "+Number(coordinates[0]).toFixed(5);
+          if(props.brightness!=null){popup+="<br>Brightness: "+esc(props.brightness);}
+          if(props.frp!=null){popup+="<br>FRP: "+esc(props.frp)+" MW";}
+          popup+="<br><small>NASA FIRMS/VIIRS · anomali panas, bukan konfirmasi kebakaran.</small>";
+          L.circleMarker([coordinates[1],coordinates[0]],{
+            pane:"yg-indonesia-environment-pane",radius:5,color:"#8b1d1d",weight:1,
+            fill:true,fillColor:"#ff4d2e",fillOpacity:.85
+          }).bindPopup(popup).addTo(layer);
+        });
+      })
+      .catch(function(error){console.warn("Gagal memuat hotspot 30 hari:",error);});
   }
 
   function environmentalControl(map,layers){
     var list=document.getElementById("layer-list");
     if(!list){return;}
     var definitions=[
-      ["hotspot","Hotspot NASA MODIS–VIIRS (30 hari)","#ff4d2e"],
+      ["hotspot","Hotspot 30 hari · confidence tinggi","#ff4d2e"],
       ["cover","Tutupan lahan Indonesia 2017","#6a8f5f"],
       ["loss","Kehilangan tutupan","#e65100"],
       ["alerts","Alert perubahan terbaru","#8b1d1d"]
@@ -1061,21 +1097,8 @@
     GRID_OPTIONS.pane="yg-indonesia-environment-pane";
     map.on("layeradd",function(event){attachDiscovered(event.layer);});
     map.eachLayer(function(layer){attachDiscovered(layer);});
-    var viirs=L.vectorGrid.protobuf(viirsUrl(),Object.assign({},GRID_OPTIONS,{
-      interactive:true,
-      maxNativeZoom:14,
-      vectorTileLayerStyles:{
-        nasa_viirs_fire_alerts:{radius:5,color:"#8b1d1d",weight:1,fill:true,fillColor:"#ff4d2e",fillOpacity:.85}
-      }
-    }));
-    viirs.on("click",function(event){
-      var props=event.layer&&event.layer.properties||{};
-      L.popup().setLatLng(event.latlng).setContent(
-        "<strong>Hotspot NASA MODIS–VIIRS</strong><br>"+
-        esc(props.alert__date||props.acq_date||props.date||"30 hari terakhir")+
-        "<br><small>Anomali panas, bukan konfirmasi kebakaran.</small>"
-      ).openOn(map);
-    });
+    var viirs=L.layerGroup();
+    loadSharedHotspots(viirs);
     environmentalControl(map,{
       hotspot:viirs,
       cover:L.tileLayer(GFW.cover,Object.assign({},GRID_OPTIONS,{opacity:.55,maxZoom:18,attribution:"Global Forest Watch"})),
