@@ -343,6 +343,29 @@ test('PBPH profile separates permit documents from conservative SVLK status', ()
   assert.equal(putri.svlk.status, 'certificate-verified');
   assert.equal(putri.svlk.certificateNumber, 'SPHL.44/ASERT/LPVI-001-IDN');
   assert.equal(putri.svlk.validUntil, '23 November 2029');
+
+  const rimbaPeranap = registry.profiles['598,1996'];
+  assert.equal(rimbaPeranap.svlk.status, 'certificate-not-found');
+  assert.equal(rimbaPeranap.svlk.certificateNumber, null);
+  assert.match(rimbaPeranap.svlk.note, /14\.434 hektar.*844 Tahun 2025.*14\.039 hektar.*IFCC.*berbeda/i);
+
+  const spaKth = registry.profiles['19,2007'];
+  assert.equal(spaKth.svlk.status, 'certificate-verified');
+  assert.equal(spaKth.svlk.certificateNumber, '28-PHL-024');
+  assert.equal(spaKth.svlk.validUntil, '11 November 2031');
+  assert.match(spaKth.svlk.note, /10\.070 hektar.*tidak digabung.*Unit Serapung/i);
+
+  const selaras = registry.profiles['5,2002'];
+  assert.equal(selaras.svlk.status, 'certificate-verified');
+  assert.equal(selaras.svlk.certificateNumber, 'LPVI-008/MUTU/FM-022');
+  assert.equal(selaras.svlk.validUntil, '21 Juli 2032');
+  assert.match(selaras.svlk.note, /SK\.1122.*13\.600 hektar/i);
+
+  const wananugraha = registry.profiles['362,2007'];
+  assert.equal(wananugraha.svlk.status, 'certificate-verified');
+  assert.equal(wananugraha.svlk.certificateNumber, 'LPVI-008/MUTU/FM-003');
+  assert.equal(wananugraha.svlk.validUntil, '3 Agustus 2027');
+  assert.match(wananugraha.svlk.note, /SK\.136.*7\.465 hektar/i);
 });
 
 test('internal source remarks are not rendered in the public PBPH profile', () => {
