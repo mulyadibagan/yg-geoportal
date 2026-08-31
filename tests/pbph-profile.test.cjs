@@ -220,6 +220,29 @@ test('PBPH profile separates permit documents from conservative SVLK status', ()
   assert.equal(artelindo.svlk.validUntil, null);
   assert.match(artelindo.svlk.note, /masa berlaku.*belum ditemukan/i);
 
+  const harapanjaya = registry.profiles['016,2003'];
+  assert.equal(harapanjaya.svlk.status, 'certificate-verified');
+  assert.equal(harapanjaya.svlk.certificateNumber, 'SPHL.47/ASERT/LPVI-001-IDN');
+  assert.equal(harapanjaya.svlk.validUntil, '3 Januari 2030');
+  assert.match(harapanjaya.svlk.note, /SK\.807.*5\.086,44 hektar/i);
+
+  const madukoro = registry.profiles['017,2003'];
+  assert.equal(madukoro.svlk.status, 'certificate-verified');
+  assert.equal(madukoro.svlk.certificateNumber, 'SPHL.45/ASERT/LPVI-001-IDN');
+  assert.equal(madukoro.svlk.validUntil, '3 Desember 2029');
+  assert.match(madukoro.svlk.note, /SK\.835.*14\.900,70 hektar/i);
+
+  const hijauBakau = registry.profiles['10022200574330004, 2025'];
+  assert.equal(hijauBakau.svlk.status, 'certificate-not-found');
+  assert.equal(hijauBakau.svlk.certificateNumber, null);
+  assert.match(hijauBakau.svlk.note, /konsep SK.*izin 10022200574330004.*19\.719 hektar/i);
+
+  const mitraHutani = registry.profiles['101,2006'];
+  assert.equal(mitraHutani.svlk.status, 'audit-announcement-found');
+  assert.equal(mitraHutani.svlk.certificateNumber, 'IMS-SPHPL-008');
+  assert.equal(mitraHutani.svlk.validUntil, null);
+  assert.match(mitraHutani.svlk.note, /berakhir 13 November 2023.*tidak disajikan sebagai sertifikat aktif/i);
+
   const binaDayaBintara = registry.profiles['64,2007'];
   assert.equal(binaDayaBintara.svlk.status, 'certificate-verified');
   assert.equal(binaDayaBintara.svlk.certificateNumber, 'EQC-PHL-035');
