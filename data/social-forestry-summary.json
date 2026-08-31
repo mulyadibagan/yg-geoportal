@@ -1,36 +1,36 @@
 {
-  "generatedAt": "2026-08-31T03:55:22.892Z",
+  "generatedAt": "2026-08-31T15:47:44.242Z",
   "methodology": "Satu PS dihitung sekali berdasarkan nomor SK. Luas SK diprioritaskan; atribut polygon dan kalkulasi geometri digunakan sebagai cadangan.",
   "totals": {
-    "profileCount": 186,
-    "areaKnownCount": 186,
+    "profileCount": 182,
+    "areaKnownCount": 182,
     "areaMissingCount": 0,
-    "totalAreaHa": 178419.42,
-    "documentAreaKnownCount": 180,
-    "documentAreaHa": 175653.12,
-    "spatialAreaKnownCount": 173,
-    "spatialAreaHa": 168271.04
+    "totalAreaHa": 172819.21,
+    "documentAreaKnownCount": 179,
+    "documentAreaHa": 172286.12,
+    "spatialAreaKnownCount": 174,
+    "spatialAreaHa": 168448.04
   },
   "schemes": [
     {
       "scheme": "Hutan Kemasyarakatan",
-      "profileCount": 130,
-      "areaKnownCount": 130,
+      "profileCount": 129,
+      "areaKnownCount": 129,
       "areaMissingCount": 0,
-      "totalAreaHa": 76126.67,
+      "totalAreaHa": 76213.67,
       "documentAreaKnownCount": 126,
-      "documentAreaHa": 75572.58,
+      "documentAreaHa": 75680.58,
       "spatialAreaKnownCount": 123,
       "spatialAreaHa": 73151.24
     },
     {
       "scheme": "Hutan Desa",
-      "profileCount": 49,
-      "areaKnownCount": 49,
+      "profileCount": 46,
+      "areaKnownCount": 46,
       "areaMissingCount": 0,
-      "totalAreaHa": 95792.75,
-      "documentAreaKnownCount": 47,
-      "documentAreaHa": 93580.54,
+      "totalAreaHa": 90105.54,
+      "documentAreaKnownCount": 46,
+      "documentAreaHa": 90105.54,
       "spatialAreaKnownCount": 46,
       "spatialAreaHa": 90141
     },
@@ -42,8 +42,8 @@
       "totalAreaHa": 2092,
       "documentAreaKnownCount": 4,
       "documentAreaHa": 2092,
-      "spatialAreaKnownCount": 1,
-      "spatialAreaHa": 515
+      "spatialAreaKnownCount": 2,
+      "spatialAreaHa": 692
     },
     {
       "scheme": "Hutan Adat",
@@ -662,20 +662,20 @@
       "areaSource": "SK"
     },
     {
-      "key": "sk:8494 menlhk pskl pkps psl 0 12 2021",
-      "decree": "SK.8494/Menlhk-PSKL/PKPS/PSL.0/12/2021",
+      "key": "sk.8494/menlhk-pskl/pkps/psl.0/12/2021",
+      "decree": "SK.8494/MENLHK-PSKL/PKPS/PSL.0/12/2021",
       "decreeNorm": "8494 menlhk pskl pkps psl 0 12 2021",
       "signature": "kth alam hijau sungai upih pelalawan",
       "name": "KTH ALAM HIJAU",
       "regency": "Pelalawan",
       "scheme": "Hutan Kemasyarakatan",
       "spatial": true,
-      "documentAreaHa": null,
-      "documentAreaSource": "belum tersedia",
+      "documentAreaHa": 21,
+      "documentAreaSource": "SK",
       "spatialAreaHa": 21,
       "spatialAreaSource": "atribut polygon",
       "areaHa": 21,
-      "areaSource": "atribut polygon"
+      "areaSource": "SK"
     },
     {
       "key": "sk.2860/menlhk-pskl/pkps/psl.0/3/2022",
@@ -1110,20 +1110,20 @@
       "areaSource": "SK"
     },
     {
-      "key": "drive-audit:dumai-kth-mangrove-laksamana",
+      "key": "10153 tahun 2024",
       "decree": "10153 TAHUN 2024",
       "decreeNorm": "10153 tahun 2024",
       "signature": "kth mangrove laksamana laksamana dumai",
-      "name": "KTH MANGROVE LAKSAMANA",
+      "name": "KTH Mangrove Laksamana",
       "regency": "Dumai",
       "scheme": "Hutan Kemasyarakatan",
       "spatial": true,
       "documentAreaHa": 13,
-      "documentAreaSource": "arsip dokumen",
+      "documentAreaSource": "SK",
       "spatialAreaHa": 13,
       "spatialAreaSource": "atribut polygon",
       "areaHa": 13,
-      "areaSource": "arsip dokumen"
+      "areaSource": "SK"
     },
     {
       "key": "sk 11326 tahun 2024",
@@ -1814,20 +1814,20 @@
       "areaSource": "SK"
     },
     {
-      "key": "2187.0",
-      "decree": "SK.260/Menlhk-Setjen/2015",
-      "decreeNorm": "260 menlhk setjen 2015",
+      "key": "drive-audit:1i3-grxxedhy7gxs2x-fd6tyo1-turqej-lphd-pendalian-pandalian",
+      "decree": "SK.3324/Menlhk-PSKL/PKPS/PSL.0/5/2017",
+      "decreeNorm": "3324 menlhk pskl pkps psl 0 5 2017",
       "signature": "pendalian pendalian rokan hulu",
-      "name": "Pendalian",
+      "name": "LPHD PENDALIAN",
       "regency": "Rokan Hulu",
       "scheme": "Hutan Desa",
       "spatial": true,
-      "documentAreaHa": null,
-      "documentAreaSource": "belum tersedia",
+      "documentAreaHa": 1783,
+      "documentAreaSource": "SK",
       "spatialAreaHa": 1784.2062,
       "spatialAreaSource": "kalkulasi polygon",
-      "areaHa": 1784.2062,
-      "areaSource": "kalkulasi polygon"
+      "areaHa": 1783,
+      "areaSource": "SK"
     },
     {
       "key": "sk.343/menhut-ii/2015",
@@ -2070,20 +2070,20 @@
       "areaSource": "arsip dokumen"
     },
     {
-      "key": "sk:4073 menlhk pskl pkps psl 0 6 2020",
-      "decree": "SK.4073/MENLHK-PSKL/PKPS/PSL.0/6/2020",
-      "decreeNorm": "4073 menlhk pskl pkps psl 0 6 2020",
+      "key": "2941.0",
+      "decree": "SK.4391/MENLHK-PSKL/PKPS/PSL.0/7/2020",
+      "decreeNorm": "4391 menlhk pskl pkps psl 0 7 2020",
       "signature": "muara dua muara dua bengkalis",
-      "name": "Muara Dua",
+      "name": "LPHD Muara Dua",
       "regency": "Bengkalis",
       "scheme": "Hutan Desa",
       "spatial": true,
-      "documentAreaHa": null,
-      "documentAreaSource": "belum tersedia",
+      "documentAreaHa": 428,
+      "documentAreaSource": "SK",
       "spatialAreaHa": 428,
       "spatialAreaSource": "atribut polygon",
       "areaHa": 428,
-      "areaSource": "atribut polygon"
+      "areaSource": "SK"
     },
     {
       "key": "2942.0",
@@ -2326,20 +2326,20 @@
       "areaSource": "SK"
     },
     {
-      "key": "2071.0",
+      "key": "drive-audit:indragiri-hilir-lembaga-pengelola-hutan-desa-mabloe-sejahtera",
       "decree": "8947 Tahun 2024",
       "decreeNorm": "8947 tahun 2024",
       "signature": "sungai bela sungai bela indragiri hilir",
-      "name": "Sungai Bela",
+      "name": "LEMBAGA PENGELOLA HUTAN DESA MABLOE SEJAHTERA",
       "regency": "Indragiri Hilir",
       "scheme": "Hutan Desa",
       "spatial": true,
       "documentAreaHa": 3475,
-      "documentAreaSource": "arsip dokumen",
+      "documentAreaSource": "SK",
       "spatialAreaHa": 3475,
       "spatialAreaSource": "atribut polygon",
       "areaHa": 3475,
-      "areaSource": "arsip dokumen"
+      "areaSource": "SK"
     },
     {
       "key": "917 tahun 2024",
@@ -2838,35 +2838,19 @@
       "areaSource": "SK"
     },
     {
-      "key": "2941.0",
-      "decree": "SK.4391/MENLHK-PSKL/PKPS/PSL.0/7/2020",
-      "decreeNorm": "4391 menlhk pskl pkps psl 0 7 2020",
-      "signature": "lphd muara dua muara dua bengkalis",
-      "name": "LPHD Muara Dua",
-      "regency": "Bengkalis",
-      "scheme": "Hutan Desa",
-      "spatial": false,
-      "documentAreaHa": 428,
+      "key": "drive-audit:kampar-kud-agro-lestari",
+      "decree": "522/Dishut/285/2011",
+      "decreeNorm": "522 dishut 285 2011",
+      "signature": "kud agro lestari buluh cina kampar",
+      "name": "KUD AGRO LESTARI",
+      "regency": "Kampar",
+      "scheme": "Hutan Tanaman Rakyat",
+      "spatial": true,
+      "documentAreaHa": 177,
       "documentAreaSource": "SK",
-      "spatialAreaHa": null,
-      "spatialAreaSource": "belum tersedia",
-      "areaHa": 428,
-      "areaSource": "SK"
-    },
-    {
-      "key": "sk.8494/menlhk-pskl/pkps/psl.0/12/2021",
-      "decree": "41 TAHUN 1999",
-      "decreeNorm": "41 tahun 1999",
-      "signature": "kth alam hijau pelalawan",
-      "name": "KTH ALAM HIJAU",
-      "regency": "Pelalawan",
-      "scheme": "Hutan Kemasyarakatan",
-      "spatial": false,
-      "documentAreaHa": 21,
-      "documentAreaSource": "SK",
-      "spatialAreaHa": null,
-      "spatialAreaSource": "belum tersedia",
-      "areaHa": 21,
+      "spatialAreaHa": 177,
+      "spatialAreaSource": "atribut polygon",
+      "areaHa": 177,
       "areaSource": "SK"
     },
     {
@@ -2883,22 +2867,6 @@
       "spatialAreaHa": null,
       "spatialAreaSource": "belum tersedia",
       "areaHa": 1132,
-      "areaSource": "SK"
-    },
-    {
-      "key": "drive-audit:kampar-kud-agro-lestari",
-      "decree": "522/Dishut/285/2011",
-      "decreeNorm": "522 dishut 285 2011",
-      "signature": "kud agro lestari bulu cina kampar",
-      "name": "KUD AGRO LESTARI",
-      "regency": "Kampar",
-      "scheme": "Hutan Tanaman Rakyat",
-      "spatial": false,
-      "documentAreaHa": 177,
-      "documentAreaSource": "SK",
-      "spatialAreaHa": null,
-      "spatialAreaSource": "belum tersedia",
-      "areaHa": 177,
       "areaSource": "SK"
     },
     {
@@ -2950,35 +2918,19 @@
       "areaSource": "SK"
     },
     {
-      "key": "drive-audit:indragiri-hilir-lembaga-pengelola-hutan-desa-mabloe-sejahtera",
+      "key": "drive-audit:kepulauan-meranti-pecinta-mangrove-kulit-bakau",
       "decree": "SK.130/MENLHK/SETJEN/PKL.0/2/2017",
       "decreeNorm": "130 menlhk setjen pkl 0 2 2017",
-      "signature": "lembaga pengelola hutan desa mabloe sejahtera indragiri hilir",
-      "name": "LEMBAGA PENGELOLA HUTAN DESA MABLOE SEJAHTERA",
-      "regency": "Indragiri Hilir",
-      "scheme": "Hutan Desa",
-      "spatial": false,
-      "documentAreaHa": 3475,
-      "documentAreaSource": "SK",
-      "spatialAreaHa": null,
-      "spatialAreaSource": "belum tersedia",
-      "areaHa": 3475,
-      "areaSource": "SK"
-    },
-    {
-      "key": "drive-audit:kepulauan-meranti-flamboyan-alai",
-      "decree": "SK.130/MENLHK/SETJEN/PKL.0/2/2017TENTANG",
-      "decreeNorm": "130 menlhk setjen pkl 0 2 2017tentang",
-      "signature": "flamboyan alai kepulauan meranti",
-      "name": "FLAMBOYAN-Alai",
+      "signature": "pecinta mangrove kulit bakau bokor kepulauan meranti",
+      "name": "PECINTA MANGROVE KULIT BAKAU",
       "regency": "Kepulauan Meranti",
       "scheme": "Hutan Kemasyarakatan",
       "spatial": false,
-      "documentAreaHa": 164,
+      "documentAreaHa": 272,
       "documentAreaSource": "SK",
       "spatialAreaHa": null,
       "spatialAreaSource": "belum tersedia",
-      "areaHa": 164,
+      "areaHa": 272,
       "areaSource": "SK"
     },
     {
@@ -3027,22 +2979,6 @@
       "spatialAreaHa": null,
       "spatialAreaSource": "belum tersedia",
       "areaHa": 684,
-      "areaSource": "SK"
-    },
-    {
-      "key": "drive-audit:1i3-grxxedhy7gxs2x-fd6tyo1-turqej-lphd-pendalian-pandalian",
-      "decree": "SK.3324/Menlhk-PSKL/PKPS/PSL.0/5/2017",
-      "decreeNorm": "3324 menlhk pskl pkps psl 0 5 2017",
-      "signature": "lphd pendalian pendalian rokan hulu",
-      "name": "LPHD PENDALIAN",
-      "regency": "Rokan Hulu",
-      "scheme": "Hutan Desa",
-      "spatial": false,
-      "documentAreaHa": 1783,
-      "documentAreaSource": "SK",
-      "spatialAreaHa": null,
-      "spatialAreaSource": "belum tersedia",
-      "areaHa": 1783,
       "areaSource": "SK"
     }
   ]

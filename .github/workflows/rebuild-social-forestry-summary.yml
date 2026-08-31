@@ -7,6 +7,8 @@ on:
       - 'data/social-forestry-details.json'
       - 'data/PERHUTANAN_SOSIAL_RIAU.geojson'
       - 'data/social-forestry-pkk-samj.geojson'
+      - 'data/social-forestry-kud-agro-lestari.geojson'
+      - 'data/social-forestry-derived-2025.geojson'
       - 'tools/build-social-forestry-summary.js'
       - '.github/workflows/rebuild-social-forestry-summary.yml'
 
@@ -46,8 +48,8 @@ jobs:
           console.log('Only after:', onlyAfter.map(p => ({key:p.key,decree:p.decree,name:p.name,regency:p.regency,scheme:p.scheme,areaHa:p.areaHa,spatial:p.spatial})));
           console.log('Unclassified:', s.profiles.filter(p => /Persetujuan Perhutanan Sosial|Belum terklasifikasi/i.test(p.scheme)).map(p => ({key:p.key,decree:p.decree,name:p.name,regency:p.regency,scheme:p.scheme,areaHa:p.areaHa,spatial:p.spatial})));
           console.log('HTR:', s.profiles.filter(p => p.scheme === 'Hutan Tanaman Rakyat').map(p => ({key:p.key,decree:p.decree,name:p.name,regency:p.regency,areaHa:p.areaHa,spatial:p.spatial})));
-          if (s.totals.profileCount !== 186) throw new Error(`Expected 186 profiles, got ${s.totals.profileCount}`);
-          if (Math.abs(s.totals.totalAreaHa - 178419.42) > 0.01) throw new Error(`Unexpected total area ${s.totals.totalAreaHa}`);
+          if (s.totals.profileCount !== 182) throw new Error(`Expected 182 unique profiles, got ${s.totals.profileCount}`);
+          if (Math.abs(s.totals.totalAreaHa - 172819.21) > 0.01) throw new Error(`Unexpected total area ${s.totals.totalAreaHa}`);
           const generic = s.schemes.find(x => /Persetujuan Perhutanan Sosial|Belum terklasifikasi/i.test(x.scheme));
           if (generic) throw new Error(`Generic scheme remains: ${generic.scheme}`);
           const htr = s.schemes.find(x => x.scheme === 'Hutan Tanaman Rakyat');
@@ -63,6 +65,23 @@ jobs:
           if (!makmurPesisir || !/9863/.test(makmurPesisir.decree) || makmurPesisir.areaHa !== 143) throw new Error('Makmur Pesisir identity is inconsistent');
           const samj = s.profiles.find(p => /SUMBER ALAM MAKMUR JAYA/i.test(p.name));
           if (!samj || !samj.spatial || samj.regency !== 'Dumai' || samj.areaHa !== 4000) throw new Error('SAMJ official spatial profile is inconsistent');
+          const assertUniqueSpatial = (pattern, decreePattern) => {
+            const matches = s.profiles.filter(p => pattern.test(p.name));
+            if (matches.length !== 1 || !matches[0].spatial || !decreePattern.test(matches[0].decree)) {
+              throw new Error(`Spatial identity is inconsistent for ${pattern}: ${JSON.stringify(matches)}`);
+            }
+          };
+          assertUniqueSpatial(/KTH ALAM HIJAU/i, /8494/);
+          assertUniqueSpatial(/MUARA DUA/i, /4391/);
+          assertUniqueSpatial(/LPHD PENDALIAN/i, /3324/);
+          assertUniqueSpatial(/MABLOE SEJAHTERA/i, /8947/);
+          assertUniqueSpatial(/KTH FLAMBOYAN/i, /5143/);
+          assertUniqueSpatial(/KUD AGRO LESTARI/i, /522\/DISHUT\/285\/2011/i);
+          assertUniqueSpatial(/KTH MITRA BUMI/i, /9637/);
+          assertUniqueSpatial(/SIKEBAU JAYA/i, /8617/);
+          assertUniqueSpatial(/SUKA DAMAI/i, /8606/);
+          const nonspatial = s.profiles.filter(p => !p.spatial);
+          if (nonspatial.length !== 8) throw new Error(`Expected 8 nonspatial profiles, got ${nonspatial.length}`);
           console.log('Validated:', s.totals, s.schemes.map(x => [x.scheme,x.profileCount,x.totalAreaHa]));
           NODE
 
