@@ -2884,17 +2884,14 @@ L.control.scale({
         const layerId = String(p.Layer_ID || p.Source_Layer || "").toLowerCase();
         const reportId = String(p.reportId || p.Report_ID || "").trim();
         const objectId = String(p.Object_ID || p.objectId || "").trim();
+        if (reportId === "YG-20260717-205241-378") {
+          return false;
+        }
         if ([
           "MANGROVE-KELAPA-PATI-PHASE-III-2025-001",
           "MANGROVE-KELAPA-PATI-PHASE-III-2026-002",
           "MANGROVE-KELAPA-PATI-PHASE-III-2026-003"
         ].includes(objectId)) {
-          return false;
-        }
-        if (
-          reportId === "YG-20260717-205241-378" &&
-          p.Geometry_Source !== "permanent_monitoring_registry"
-        ) {
           return false;
         }
         return !(

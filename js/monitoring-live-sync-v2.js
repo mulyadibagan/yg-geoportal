@@ -21,6 +21,9 @@
     "mangrove-kelapa-pati-phase-iii-2026-003":
       "MANGROVE-KELAPA-PATI-PHASE-III-2026-001"
   });
+  const HIDDEN_GEOMETRY_REPORT_IDS = new Set([
+    "YG-20260717-205241-378"
+  ]);
   let activeRequest = null;
 
   function normalized(value) {
@@ -184,6 +187,13 @@
       : [])
       .map(monitoringFeature)
       .filter(Boolean)
+      .filter(feature => {
+        const props = feature.properties || {};
+        const reportId = String(
+          props.reportId || props.Source_Report_ID || props.Monitoring_ID || ""
+        ).trim();
+        return !HIDDEN_GEOMETRY_REPORT_IDS.has(reportId);
+      })
       .map(feature => {
         const props = feature.properties || {};
         const targetId = targetObjectId(props);
