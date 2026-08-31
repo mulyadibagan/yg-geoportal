@@ -1269,6 +1269,20 @@ L.control.scale({
 
     features.forEach(feature => {
       try {
+        const featureProps = feature && feature.properties || {};
+        const featureReportIds = [
+          featureProps.reportId,
+          featureProps.Report_ID,
+          featureProps.Source_Report_ID,
+          featureProps.Monitoring_ID,
+          featureProps.Object_ID
+        ].map(value => String(value || "").trim());
+        if (featureReportIds.some(value =>
+          value === "YG-20260717-205241-378" ||
+          value === "MONITORING-YG-20260717-205241-378"
+        )) {
+          return;
+        }
         const pane = paneFor(config, feature);
         const single = L.geoJSON(feature, {
           pane: pane,
@@ -2921,7 +2935,10 @@ L.control.scale({
         }
         if (!feature.geometry) return false;
         const layerId = String(p.Layer_ID || p.Source_Layer || "").toLowerCase();
-        const reportId = String(p.reportId || p.Report_ID || "").trim();
+        const reportId = String(
+          p.reportId || p.Report_ID || p.Source_Report_ID ||
+          p.Monitoring_ID || ""
+        ).trim();
         const objectId = String(p.Object_ID || p.objectId || "").trim();
         if ([
           "YG-20260717-205241-378"
