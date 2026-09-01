@@ -20,6 +20,12 @@ test('Temiang counts three physical canal blocks and keeps two maintenance repor
   assert.equal(physical.length, 3);
   assert.equal(maintenance.length, 2);
   assert.ok(maintenance.every(feature => /perbaikan sekat kanal/i.test(feature.properties.title || '')));
+  assert.ok(maintenance.every(feature => /penabulu/i.test(feature.properties.Donor || '')));
+  const mapController = read('js/map-v4.js');
+  assert.match(mapController, /isPenabuluMaintenance/);
+  assert.match(mapController, /rows \+= row\("Riwayat perbaikan", maintenanceDate\)/);
+  assert.match(mapController, /rows \+= row\("Donor perbaikan", valueOf\(\["Donor_Perawatan"\]\)\)/);
+  assert.match(mapController, /Objek_Induk_Perawatan/);
 });
 
 test('Temiang counts the reported 2026 FDRS installation as a second physical unit', () => {

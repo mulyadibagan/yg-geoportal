@@ -1010,6 +1010,20 @@ L.control.scale({
       );
     }
 
+    const maintenanceDate = valueOf(["Perawatan_Terakhir"]);
+    if (maintenanceDate) {
+      rows += row("Riwayat perbaikan", maintenanceDate);
+      rows += row("Objek yang diperbaiki", valueOf(["Objek_Induk_Perawatan"]));
+      rows += row("Donor perbaikan", valueOf(["Donor_Perawatan"]));
+      rows += row("Pelaksana perbaikan", valueOf(["Pelaksana_Perawatan"]));
+      rows += row("Kondisi sebelum", valueOf(["Kondisi_Sebelum_Perawatan"]));
+      rows += row("Kondisi setelah", valueOf(["Kondisi_Setelah_Perawatan"]));
+      rows += row("Fungsi setelah", valueOf(["Fungsi_Setelah_Perawatan"]));
+      rows += row("Pekerjaan perbaikan", valueOf(["Pekerjaan_Perawatan"]));
+      rows += row("Laporan perbaikan", valueOf(["Laporan_Perawatan_ID"]));
+      rows += row("Diverifikasi", valueOf(["Verifikasi_Perawatan"]));
+    }
+
     // Batas administrasi bukan objek program dan tidak memiliki donor.
     if (config.id !== "desa_intervensi") {
       const targetLayerForDonor = String(
@@ -2777,9 +2791,25 @@ L.control.scale({
       props.Desa, props.WADMKD, props.NAMA_DESA,
       props.village, props.locationName
     ].filter(Boolean).join(" ").trim().toLowerCase();
+    const reportType = String(
+      props.reportType || props.Report_Type || props.Jenis_Laporan || ""
+    ).trim().toLowerCase();
+    const reportId = String(
+      props.reportId || props.Source_Report_ID || props.Report_ID || ""
+    ).trim().toUpperCase();
+    const existingDonor = String(
+      props.Donor || props.Donor_Cluster || props.Nama_Donor || ""
+    ).trim().toLowerCase();
+    const isPenabuluMaintenance =
+      reportType === "pemeliharaan infrastruktur" && (
+        existingDonor.includes("penabulu") ||
+        reportId === "YG-20260823-001222-487" ||
+        reportId === "YG-20260823-002945-756"
+      );
 
     if ((layerId === "sekat_kanal" || layerId === "fdrs") &&
-        !village.includes("pematang duku")) {
+        !village.includes("pematang duku") &&
+        !isPenabuluMaintenance) {
       props.Donor = "Global Environment Centre";
       props.Donor_Cluster = "Global Environment Centre";
     }
@@ -2791,11 +2821,17 @@ L.control.scale({
     const objectId = String(
       props.Object_ID || props.objectId || props.OBJECTID || ""
     ).trim().toUpperCase();
+    const reportId = String(
+      props.reportId || props.Source_Report_ID || props.Report_ID || ""
+    ).trim().toUpperCase();
     const records = {
       "SEKAT-TEMIANG-2022-001": {
         date: "3–6 Agustus 2026",
         reportId: "YG-20260823-001222-487",
+        objectName: "Sekat Kanal – Temiang – 2022",
+        conditionBefore: "Rusak berat",
         functionAfter: "Tidak berfungsi (sesuai laporan)",
+        workPerformed: "Penggantian kayu pancang, pemadatan, penambahan tanah, dan semenisasi bagian atas sekat kanal.",
         photos: [
           "https://drive.google.com/file/d/1rAq5XTADwc4PpERI_K6LVAMDKIAr0m55/view?usp=drivesdk",
           "https://drive.google.com/file/d/1CfEkpc4lGHNLQndo6Cn73rRkv1_fP8BC/view?usp=drivesdk"
@@ -2804,22 +2840,36 @@ L.control.scale({
       "SEKAT-TEMIANG-2023-001": {
         date: "7–11 Agustus 2026",
         reportId: "YG-20260823-002945-756",
+        objectName: "Sekat Kanal – Temiang – 2023",
+        conditionBefore: "Rusak berat",
         functionAfter: "Berfungsi baik",
+        workPerformed: "Penggantian kayu pancang, pemadatan, penambahan tanah, dan semenisasi bagian atas sekat kanal.",
         photos: [
           "https://drive.google.com/file/d/1KHsl79Fo_Xg1GBM-HO8ZQo6Q1Ze0irsR/view?usp=drivesdk",
           "https://drive.google.com/file/d/1S4VJAY-iL4cuq-H5xQ8MXCojPR4Wq50r/view?usp=drivesdk"
         ]
       }
     };
-    const record = records[objectId];
+    const record = records[objectId] || Object.values(records).find(item =>
+      item.reportId === reportId
+    );
     if (!record) return feature;
 
     props.Perawatan_Terakhir = record.date;
+    props.Objek_Induk_Perawatan = record.objectName;
     props.Donor_Perawatan = "Yayasan Penabulu";
     props.Pelaksana_Perawatan = "Kelompok Tani Wanita Makmur Jaya";
+    props.Kondisi_Sebelum_Perawatan = record.conditionBefore;
     props.Kondisi_Setelah_Perawatan = "Baik";
     props.Fungsi_Setelah_Perawatan = record.functionAfter;
+    props.Pekerjaan_Perawatan = record.workPerformed;
     props.Laporan_Perawatan_ID = record.reportId;
+    props.Verifikasi_Perawatan = "23 Agustus 2026";
+    if (reportId === record.reportId) {
+      props.Donor = "Yayasan Penabulu";
+      props.Donor_Cluster = "Yayasan Penabulu";
+      props.Nama_Donor = "Yayasan Penabulu";
+    }
     props._ygPhotos = Array.from(new Set(
       (Array.isArray(props._ygPhotos) ? props._ygPhotos : []).concat(record.photos)
     ));
