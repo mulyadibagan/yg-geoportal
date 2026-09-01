@@ -113,7 +113,7 @@ function render(feature,record,data,detail){
   el("baseline-period").textContent=method.baselineYear||"—";el("loss-through").textContent=method.lossDataThroughYear||"—";
   renderIdentity(p,area,detail);renderSupplemental(detail);renderLoss(record,method);renderReferences(record,area);
   if(!analysisAvailable){el("loss-chart-title").textContent="Analisis kehilangan tutupan pohon belum tersedia";el("loss-note").textContent="Polygon resmi telah terhubung. Statistik raster akan ditampilkan setelah proses analisis berikutnya."}
-  el("loading-state").hidden=true;el("error-state").hidden=true;el("profile-content").hidden=false;requestAnimationFrame(function(){renderMap(feature,name);if(window.YGFinalMonthlyHotspots){window.YGFinalMonthlyHotspots.init({geometry:feature.geometry,onPoints:function(points){drawMonthlyHotspotPoints(points)}})}});
+  el("loading-state").hidden=true;el("error-state").hidden=true;el("profile-content").hidden=false;requestAnimationFrame(function(){renderMap(feature,name);if(window.YGFinalMonthlyHotspots){window.YGFinalMonthlyHotspots.init({geometry:feature.geometry,annualType:"socialForestry",annualKeys:[key,permitKey(feature),featureKey(feature)],onPoints:function(points){drawMonthlyHotspotPoints(points)}})}});
 }
 async function init(){
   if(!key){showError("Tautan areal tidak lengkap. Pilih Perhutanan Sosial melalui WebGIS.");return}

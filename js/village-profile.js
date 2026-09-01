@@ -565,7 +565,7 @@
     loadCoastalMangrove(name,district,regency);
     window.requestAnimationFrame(function(){
       renderMap(feature,name);
-      if(window.YGFinalMonthlyHotspots){window.YGFinalMonthlyHotspots.init({geometry:feature&&feature.geometry,onPoints:function(points){drawMonthlyHotspotPoints(points);}});}
+      if(window.YGFinalMonthlyHotspots){window.YGFinalMonthlyHotspots.init({geometry:feature&&feature.geometry,annualType:"village",annualKeys:[featureKey(feature)],onPoints:function(points){drawMonthlyHotspotPoints(points);}});}
     });
   }
 

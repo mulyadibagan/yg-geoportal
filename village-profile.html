@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://unpkg.com">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="css/village-profile.css?v=20260825-community-groups1">
-  <link rel="stylesheet" href="css/final-monthly-hotspots.css?v=20260901-final1">
+  <link rel="stylesheet" href="css/final-monthly-hotspots.css?v=20260901-annual1">
   <style>[hidden]{display:none!important}</style>
 </head>
 <body>
@@ -155,6 +155,9 @@
             <p class="vp-month-status" id="hotspot-month-status">Memuat indeks laporan final…</p>
             <div class="vp-monthly-table-wrap"><table class="vp-monthly-table"><thead><tr><th>Waktu (UTC)</th><th>Satelit</th><th>FRP</th><th>Koordinat</th></tr></thead><tbody id="hotspot-month-list"></tbody></table></div>
             <a class="vp-module-link" id="hotspot-report-link" href="fire-monthly-report.html">Buka laporan bulanan lengkap →</a>
+            <h3 class="vp-subtitle vp-annual-title">Rekap per tahun</h3>
+            <div class="vp-annual-list" id="hotspot-annual-list"></div>
+            <p class="vp-month-status" id="hotspot-annual-status">Dihitung dari laporan final sejak Juli 2026.</p>
             <p class="vp-caption">Hanya laporan final yang dimuat. Hotspot adalah anomali panas satelit, bukan konfirmasi kejadian kebakaran.</p>
           </article>
 
@@ -195,7 +198,7 @@
 
   <div class="vp-toast" id="toast" role="status" aria-live="polite"></div>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="js/final-monthly-hotspots.js?v=20260901-final1"></script>
-  <script src="js/village-profile.js?v=20260901-final-monthly1"></script>
+  <script src="js/final-monthly-hotspots.js?v=20260901-annual1"></script>
+  <script src="js/village-profile.js?v=20260901-annual1"></script>
 </body>
 </html>

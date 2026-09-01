@@ -1,0 +1,407 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-01T05:17:43.870Z",
+  "earliestMonth": "2026-07",
+  "source": "NASA FIRMS monthly final reports",
+  "years": [
+    {
+      "year": "2026",
+      "months": [
+        "2026-07",
+        "2026-08"
+      ],
+      "start": "2026-07-01",
+      "end": "2026-08-31"
+    }
+  ],
+  "villages": {
+    "area tidak terdefinisi|indragiri hulu": {
+      "2026": {
+        "hotspots": 1,
+        "detectionDays": 1
+      }
+    },
+    "babussalam rokan|pujud|rokan hilir": {
+      "2026": {
+        "hotspots": 1,
+        "detectionDays": 1
+      }
+    },
+    "bagan cempedak|rantau kopar|rokan hilir": {
+      "2026": {
+        "hotspots": 1,
+        "detectionDays": 1
+      }
+    },
+    "bandar jaya|siak kecil|bengkalis": {
+      "2026": {
+        "hotspots": 3,
+        "detectionDays": 2
+      }
+    },
+    "batang sari|mandah|indragiri hilir": {
+      "2026": {
+        "hotspots": 2,
+        "detectionDays": 1
+      }
+    },
+    "belantaraya|gaung|indragiri hilir": {
+      "2026": {
+        "hotspots": 3,
+        "detectionDays": 2
+      }
+    },
+    "buluh apo|pinggir|bengkalis": {
+      "2026": {
+        "hotspots": 20,
+        "detectionDays": 9
+      }
+    },
+    "cenaku kecil/alim|batang cenaku|indragiri hulu": {
+      "2026": {
+        "hotspots": 2,
+        "detectionDays": 2
+      }
+    },
+    "damai|bengkalis|bengkalis": {
+      "2026": {
+        "hotspots": 1,
+        "detectionDays": 1
+      }
+    },
+    "darussalam|sinaboi|rokan hilir": {
+      "2026": {
+        "hotspots": 3,
+        "detectionDays": 2
+      }
+    },
+    "dayun|siak|siak": {
+      "2026": {
+        "hotspots": 2,
+        "detectionDays": 2
+      }
+    },
+    "domo|kampar kiri|kampar": {
+      "2026": {
+        "hotspots": 1,
+        "detectionDays": 1
+      }
+    },
+    "idaman|gaung anak serka|indragiri hilir": {
+      "2026": {
+        "hotspots": 1,
+        "detectionDays": 1
+      }
+    },
+    "kampung pulau|rengat|indragiri hulu": {
+      "2026": {
+        "hotspots": 5,
+        "detectionDays": 2
+      }
+    },
+    "kayu raja|keritang|indragiri hilir": {
+      "2026": {
+        "hotspots": 8,
+        "detectionDays": 2
+      }
+    },
+    "kelurahan kerumutan|kerumutan|pelalawan": {
+      "2026": {
+        "hotspots": 123,
+        "detectionDays": 12
+      }
+    },
+    "metro|reteh|indragiri hilir": {
+      "2026": {
+        "hotspots": 2,
+        "detectionDays": 1
+      }
+    },
+    "kelurahan pelangiran|pelangiran|indragiri hilir": {
+      "2026": {
+        "hotspots": 1,
+        "detectionDays": 1
+      }
+    },
+    "kepau baru|tebing tinggi timur|kepulauan meranti": {
+      "2026": {
+        "hotspots": 1,
+        "detectionDays": 1
+      }
+    },
+    "keritang|kemuning|indragiri hilir": {
+      "2026": {
+        "hotspots": 2,
+        "detectionDays": 1
+      }
+    },
+    "kerta jaya|kempas|indragiri hilir": {
+      "2026": {
+        "hotspots": 2,
+        "detectionDays": 1
+      }
+    },
+    "koto baru/sungai paku|singingi hilir|kuantan singingi": {
+      "2026": {
+        "hotspots": 1,
+        "detectionDays": 1
+      }
+    },
+    "kuantan baru|rengat|indragiri hulu": {
+      "2026": {
+        "hotspots": 22,
+        "detectionDays": 7
+      }
+    },
+    "lahang hulu|gaung|indragiri hilir": {
+      "2026": {
+        "hotspots": 6,
+        "detectionDays": 3
+      }
+    },
+    "langgadai hulu|rimba melintang|rokan hilir": {
+      "2026": {
+        "hotspots": 1,
+        "detectionDays": 1
+      }
+    },
+    "pasenggerahan|sungai batang|indragiri hilir": {
+      "2026": {
+        "hotspots": 3,
+        "detectionDays": 1
+      }
+    },
+    "pasir limau kapas|pasir limau kapas|rokan hilir": {
+      "2026": {
+        "hotspots": 6,
+        "detectionDays": 2
+      }
+    },
+    "pemandang|rokan iv koto|rokan hulu": {
+      "2026": {
+        "hotspots": 1,
+        "detectionDays": 1
+      }
+    },
+    "petodaan|teluk meranti|pelalawan": {
+      "2026": {
+        "hotspots": 1,
+        "detectionDays": 1
+      }
+    },
+    "pulau muda|teluk meranti|pelalawan": {
+      "2026": {
+        "hotspots": 2,
+        "detectionDays": 1
+      }
+    },
+    "pungkat|gaung|indragiri hilir": {
+      "2026": {
+        "hotspots": 1,
+        "detectionDays": 1
+      }
+    },
+    "punti anai|batang cenaku|indragiri hulu": {
+      "2026": {
+        "hotspots": 4,
+        "detectionDays": 3
+      }
+    },
+    "raja bejamu|sinaboi|rokan hilir": {
+      "2026": {
+        "hotspots": 3,
+        "detectionDays": 1
+      }
+    },
+    "rantai langsat|batang gangsal|indragiri hulu": {
+      "2026": {
+        "hotspots": 1,
+        "detectionDays": 1
+      }
+    },
+    "rantai langsat/sungai akar|batang gangsal|indragiri hulu": {
+      "2026": {
+        "hotspots": 2,
+        "detectionDays": 2
+      }
+    },
+    "rantau baru|pangkalan kerinci|pelalawan": {
+      "2026": {
+        "hotspots": 19,
+        "detectionDays": 5
+      }
+    },
+    "rantau panjang|koto gasib|siak": {
+      "2026": {
+        "hotspots": 1,
+        "detectionDays": 1
+      }
+    },
+    "seberang cengar|kuantan mudik|kuantan singingi": {
+      "2026": {
+        "hotspots": 2,
+        "detectionDays": 1
+      }
+    },
+    "sei segajah makmur|kubu|rokan hilir": {
+      "2026": {
+        "hotspots": 2,
+        "detectionDays": 1
+      }
+    },
+    "sekara|kemuning|indragiri hilir": {
+      "2026": {
+        "hotspots": 1,
+        "detectionDays": 1
+      }
+    },
+    "semelinang tebing/anak talang|peranap/batang cenaku|indragiri hulu": {
+      "2026": {
+        "hotspots": 1,
+        "detectionDays": 1
+      }
+    },
+    "semelinang tebing/pauh ranap/pesajian|peranap/batang peranap|indragiri hulu": {
+      "2026": {
+        "hotspots": 1,
+        "detectionDays": 1
+      }
+    },
+    "simpang gaung|gaung|indragiri hilir": {
+      "2026": {
+        "hotspots": 12,
+        "detectionDays": 2
+      }
+    },
+    "sipang|batang cenaku|indragiri hulu": {
+      "2026": {
+        "hotspots": 1,
+        "detectionDays": 1
+      }
+    },
+    "sontang/kasang padang|bonai darussalam|rokan hulu": {
+      "2026": {
+        "hotspots": 1,
+        "detectionDays": 1
+      }
+    },
+    "sungai guntung tengah|rengat|indragiri hulu": {
+      "2026": {
+        "hotspots": 2,
+        "detectionDays": 1
+      }
+    },
+    "sungai guntung tengah / sungai guntung hilir|indragiri hulu": {
+      "2026": {
+        "hotspots": 16,
+        "detectionDays": 6
+      }
+    },
+    "sungaigantang|kempas|indragiri hilir": {
+      "2026": {
+        "hotspots": 1,
+        "detectionDays": 1
+      }
+    },
+    "sungailiti|kampar kiri|kampar": {
+      "2026": {
+        "hotspots": 2,
+        "detectionDays": 2
+      }
+    },
+    "sungaipaku|singingi hilir|kuantan singingi": {
+      "2026": {
+        "hotspots": 4,
+        "detectionDays": 2
+      }
+    },
+    "sungairukam|enok|indragiri hilir": {
+      "2026": {
+        "hotspots": 1,
+        "detectionDays": 1
+      }
+    },
+    "tarai bangun|tambang|kampar": {
+      "2026": {
+        "hotspots": 1,
+        "detectionDays": 1
+      }
+    },
+    "tasiktebingserai|talang muandau|bengkalis": {
+      "2026": {
+        "hotspots": 6,
+        "detectionDays": 2
+      }
+    },
+    "telukkabung|gaung|indragiri hilir": {
+      "2026": {
+        "hotspots": 1,
+        "detectionDays": 1
+      }
+    },
+    "telukkiambang|tempuling|indragiri hilir": {
+      "2026": {
+        "hotspots": 3,
+        "detectionDays": 3
+      }
+    },
+    "telukpiyai pesisir|kubu|rokan hilir": {
+      "2026": {
+        "hotspots": 1,
+        "detectionDays": 1
+      }
+    },
+    "temusai|bunga raya|siak": {
+      "2026": {
+        "hotspots": 1,
+        "detectionDays": 1
+      }
+    },
+    "tuah indrapura|bunga raya|siak": {
+      "2026": {
+        "hotspots": 2,
+        "detectionDays": 1
+      }
+    }
+  },
+  "socialForestry": [
+    {
+      "keys": [
+        "sk.9858/menlhk-pskl/pkps/psl.0/9/2023",
+        "3493.0"
+      ],
+      "name": "KTH CENAKU JAYA",
+      "yearly": {
+        "2026": {
+          "hotspots": 1,
+          "detectionDays": 1
+        }
+      }
+    },
+    {
+      "keys": [
+        "6065 tahun 2024",
+        "2280.0"
+      ],
+      "name": "GAPOKTAN MEKAR JAYA",
+      "yearly": {
+        "2026": {
+          "hotspots": 1,
+          "detectionDays": 1
+        }
+      }
+    },
+    {
+      "keys": [
+        "drive-audit:dumai-gapoktan-sumber-alam-makmur-jaya"
+      ],
+      "name": "GAPOKTAN SUMBER ALAM MAKMUR JAYA",
+      "yearly": {
+        "2026": {
+          "hotspots": 3,
+          "detectionDays": 2
+        }
+      }
+    }
+  ]
+}

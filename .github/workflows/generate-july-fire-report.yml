@@ -48,18 +48,21 @@ jobs:
         run: |
           node scripts/generate_fire_monthly_report.mjs --month "${{ steps.period.outputs.month }}" --geojson-archive "tmp/fire-monthly/${{ steps.period.outputs.month }}.geojson"
           node scripts/build_fire_monthly_index.mjs
+          node scripts/build_fire_profile_annual.mjs
       - name: Publish report snapshot
         run: |
           month="${{ steps.period.outputs.month }}"
           cp "data/fire-monthly/${month}.json" "/tmp/${month}.json"
           cp data/fire-monthly/index.json /tmp/fire-monthly-index.json
+          cp data/fire-monthly/profile-annual.json /tmp/fire-profile-annual.json
           git pull --rebase origin main
           mkdir -p data/fire-monthly
           cp "/tmp/${month}.json" "data/fire-monthly/${month}.json"
           cp /tmp/fire-monthly-index.json data/fire-monthly/index.json
+          cp /tmp/fire-profile-annual.json data/fire-monthly/profile-annual.json
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add "data/fire-monthly/${month}.json" data/fire-monthly/index.json
+          git add "data/fire-monthly/${month}.json" data/fire-monthly/index.json data/fire-monthly/profile-annual.json
           git diff --cached --quiet && exit 0
           git commit -m "data: publish ${month} Riau fire report"
           git push origin HEAD:main

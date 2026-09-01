@@ -14,6 +14,8 @@ test("village and social-forestry profiles show final monthly reports only", () 
   for (const source of [village, social]) {
     assert.match(source, /<h2>Laporan bulanan final<\/h2>/);
     assert.match(source, /id="hotspot-month-select"/);
+    assert.match(source, /id="hotspot-annual-list"/);
+    assert.match(source, /Rekap per tahun/);
     assert.match(source, /js\/final-monthly-hotspots\.js/);
     assert.doesNotMatch(source, /7 hari terakhir|30 hari terakhir|Jumlah hotspot per tahun/);
   }
@@ -25,7 +27,20 @@ test("monthly hotspot loader fetches only the selected final report", () => {
   assert.match(source, /data\/fire-monthly\/index\.json/);
   assert.match(source, /report\.status==="final"/);
   assert.match(source, /json\(meta\.data/);
+  assert.match(source, /profile-annual\.json/);
   assert.doesNotMatch(source, /hotspot-high-confidence\.geojson|village-forest-analytics/);
+});
+
+test("annual profile summary starts in July 2026 and uses final monthly reports", () => {
+  const annual = JSON.parse(read("data", "fire-monthly", "profile-annual.json"));
+  const workflow = read(".github", "workflows", "generate-july-fire-report.yml");
+  const cenaku = annual.socialForestry.find((profile) => profile.name === "KTH CENAKU JAYA");
+
+  assert.equal(annual.earliestMonth, "2026-07");
+  assert.deepEqual(annual.years[0].months, ["2026-07", "2026-08"]);
+  assert.equal(cenaku.yearly["2026"].hotspots, 1);
+  assert.match(workflow, /build_fire_profile_annual\.mjs/);
+  assert.match(workflow, /profile-annual\.json/);
 });
 
 test("monthly hotspot spatial filter handles polygon holes", () => {
