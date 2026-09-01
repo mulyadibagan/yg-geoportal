@@ -11,8 +11,8 @@ import math
 from datetime import datetime, timezone
 from pathlib import Path
 
-from shapely.geometry import GeometryCollection, MultiPolygon, mapping, shape
-from shapely.ops import transform, unary_union
+from shapely.geometry import GeometryCollection, LineString, MultiLineString, MultiPolygon, mapping, shape
+from shapely.ops import linemerge, split, transform, unary_union
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -43,6 +43,23 @@ def polygonal(geometry):
             parts.extend(polygon.geoms if isinstance(polygon, MultiPolygon) else [polygon])
         return MultiPolygon(parts) if len(parts) > 1 else parts[0]
     return None
+
+
+def longest_line(geometry):
+    if geometry.geom_type == "LineString":
+        return geometry
+    if isinstance(geometry, MultiLineString):
+        return max(geometry.geoms, key=lambda part: part.length)
+    raise RuntimeError(f"Expected a shared boundary line, got {geometry.geom_type}")
+
+
+def extended_endpoint(origin, neighbour, distance):
+    dx = origin[0] - neighbour[0]
+    dy = origin[1] - neighbour[1]
+    length = math.hypot(dx, dy)
+    if not length:
+        raise RuntimeError("Cannot extend a zero-length shared-boundary segment")
+    return (origin[0] + dx / length * distance, origin[1] + dy / length * distance)
 
 
 source = json.loads(SOURCE_CHANGE.read_text(encoding="utf-8"))
@@ -85,11 +102,9 @@ overlap_area = boundaries[codes[0]][0].intersection(boundaries[codes[1]][0]).are
 if overlap_area > 1:
     raise RuntimeError(f"Village boundaries overlap by {overlap_area:.2f} m²")
 
-features = []
-stats = {code: {"erosion": 0.0, "accretion": 0.0, "features": 0} for code in TARGETS}
+source_records = []
 source_areas = {"erosion": 0.0, "accretion": 0.0}
 coastal_support_parts = []
-
 for feature in source["features"]:
     change = feature.get("properties", {}).get("change")
     if change not in source_areas:
@@ -97,10 +112,76 @@ for feature in source["features"]:
     projected_change = transform(forward, shape(feature["geometry"]))
     if not projected_change.is_valid:
         projected_change = projected_change.buffer(0)
+    source_records.append((feature, change, projected_change))
     coastal_support_parts.append(projected_change)
     source_areas[change] += projected_change.area
-    for code, (boundary, properties) in boundaries.items():
-        clipped = polygonal(projected_change.intersection(boundary))
+
+for feature in coverage["features"]:
+    projected_coverage = transform(forward, shape(feature["geometry"]))
+    if not projected_coverage.is_valid:
+        projected_coverage = projected_coverage.buffer(0)
+    coastal_support_parts.append(projected_coverage)
+
+source_coastal = landscape["coastal"]
+reported_area_totals_m2 = {
+    "erosion": float(source_coastal["erosionAreaHa"]) * 10000,
+    "accretion": float(source_coastal["accretionAreaHa"]) * 10000,
+}
+reported_area_scale = {
+    change: reported_area_totals_m2[change] / source_areas[change]
+    for change in source_areas
+}
+coastal_support = unary_union(coastal_support_parts)
+physical_extent = coastal_support.envelope.buffer(1000)
+
+# Only the official boundary shared by the two villages is locked. Its coastal
+# endpoint is extended through the image-analysis extent so the administrative
+# polygon's seaward cap never clips image-derived erosion or accretion.
+shared_boundary = longest_line(linemerge(
+    boundaries[codes[0]][0].boundary.intersection(boundaries[codes[1]][0].boundary)
+))
+shared_coords = list(shared_boundary.coords)
+extension_m = math.hypot(
+    physical_extent.bounds[2] - physical_extent.bounds[0],
+    physical_extent.bounds[3] - physical_extent.bounds[1],
+) * 2
+extended_divider = LineString([
+    extended_endpoint(shared_coords[0], shared_coords[1], extension_m),
+    *shared_coords,
+    extended_endpoint(shared_coords[-1], shared_coords[-2], extension_m),
+])
+partition_parts = [part for part in split(physical_extent, extended_divider).geoms if part.area > 1]
+if len(partition_parts) < 2:
+    raise RuntimeError("Shared village boundary did not divide the physical coastal extent")
+
+attribution_parts = {code: [] for code in TARGETS}
+for part in partition_parts:
+    overlap_scores = {
+        code: part.intersection(boundary).area
+        for code, (boundary, _) in boundaries.items()
+    }
+    assigned_code = max(overlap_scores, key=overlap_scores.get)
+    if overlap_scores[assigned_code] <= 1:
+        sample = part.representative_point()
+        assigned_code = min(boundaries, key=lambda code: sample.distance(boundaries[code][0]))
+    attribution_parts[assigned_code].append(part)
+
+attribution_masks = {
+    code: unary_union(parts)
+    for code, parts in attribution_parts.items()
+}
+if any(mask.is_empty for mask in attribution_masks.values()):
+    raise RuntimeError("A village received no image-derived coastal attribution zone")
+attribution_overlap_area = attribution_masks[codes[0]].intersection(attribution_masks[codes[1]]).area
+if attribution_overlap_area > 1:
+    raise RuntimeError(f"Coastal attribution zones overlap by {attribution_overlap_area:.2f} m²")
+
+features = []
+stats = {code: {"erosion": 0.0, "accretion": 0.0, "features": 0} for code in TARGETS}
+for _, change, projected_change in source_records:
+    for code, mask in attribution_masks.items():
+        properties = boundaries[code][1]
+        clipped = polygonal(projected_change.intersection(mask))
         if clipped is None or clipped.area <= 1:
             continue
         stats[code][change] += clipped.area
@@ -122,35 +203,34 @@ for feature in source["features"]:
                 "uncertaintyM": 14.1,
                 "imageDerivedBeforeBoundaryClip": True,
                 "administrativeBoundaryUsedForAttribution": True,
+                "administrativeSeawardBoundaryUsedForClipping": False,
+                "lockedInterVillageBoundary": True,
             },
             "geometry": mapping(transform(inverse, clipped)),
         })
 
-for feature in coverage["features"]:
-    projected_coverage = transform(forward, shape(feature["geometry"]))
-    if not projected_coverage.is_valid:
-        projected_coverage = projected_coverage.buffer(0)
-    coastal_support_parts.append(projected_coverage)
-
-source_coastal = landscape["coastal"]
-coastal_support = unary_union(coastal_support_parts)
 coastline_proxy_total_km = coastal_support.length / 2000
 source_coastline_km = float(source_coastal["coastlineLengthKm"])
 coastline_calibration_factor = source_coastline_km / coastline_proxy_total_km
-for code, (boundary, _) in boundaries.items():
-    clipped_support = coastal_support.intersection(boundary)
-    stats[code]["coastlineProxyKm"] = clipped_support.length / 2000
+for code, mask in attribution_masks.items():
+    # Measure only the original image-derived support boundary. Measuring the
+    # clipped polygon perimeter would count the artificial village divider on
+    # both sides and inflate the combined coastline length.
+    attributed_support_boundary = coastal_support.boundary.intersection(mask)
+    stats[code]["coastlineProxyKm"] = attributed_support_boundary.length / 2000
     stats[code]["coastlineLengthKm"] = stats[code]["coastlineProxyKm"] * coastline_calibration_factor
 
 villages = []
 for code, (_, properties) in boundaries.items():
     item = stats[code]
-    erosion_ha = round(item["erosion"] / 10000, 2)
-    accretion_ha = round(item["accretion"] / 10000, 2)
+    erosion_area_m2 = item["erosion"] * reported_area_scale["erosion"]
+    accretion_area_m2 = item["accretion"] * reported_area_scale["accretion"]
+    erosion_ha = round(erosion_area_m2 / 10000, 2)
+    accretion_ha = round(accretion_area_m2 / 10000, 2)
     coastline_m = item["coastlineLengthKm"] * 1000
     elapsed_years = 9
-    mean_retreat_m = item["erosion"] / coastline_m if coastline_m else None
-    mean_advance_m = item["accretion"] / coastline_m if coastline_m else None
+    mean_retreat_m = erosion_area_m2 / coastline_m if coastline_m else None
+    mean_advance_m = accretion_area_m2 / coastline_m if coastline_m else None
     villages.append({
         "id": TARGETS[code],
         "village": properties["WADMKD"],
@@ -165,7 +245,7 @@ for code, (_, properties) in boundaries.items():
         "coastlineLengthKm": round(item["coastlineLengthKm"], 2),
         "coastlineProxyKm": round(item["coastlineProxyKm"], 3),
         "coastlineCalibrationFactor": round(coastline_calibration_factor, 6),
-        "coastlineLengthMethod": "Calibrated half-perimeter of image-derived change and stable-shoreline support clipped to the village boundary",
+        "coastlineLengthMethod": "Calibrated half-perimeter of image-derived coastal support attributed by the locked inter-village boundary; administrative seaward edges excluded",
         "indicativeMeanRetreatM": round(mean_retreat_m, 1) if mean_retreat_m is not None else None,
         "indicativeMeanAdvanceM": round(mean_advance_m, 1) if mean_advance_m is not None else None,
         "elapsedYears": elapsed_years,
@@ -182,30 +262,38 @@ for code, (_, properties) in boundaries.items():
         "programmeStatus": "regional",
         "administrativeCode": code,
         "boundarySource": properties["UUPP"],
-        "analysisMethod": "Image-derived change polygons clipped after classification to the 2025 village boundary",
+        "analysisMethod": "Image-derived change polygons attributed using the locked 2025 inter-village boundary; the land-water edge remains image-derived",
         "imageDerivedBeforeBoundaryClip": True,
         "administrativeBoundaryUsedForAttribution": True,
+        "administrativeSeawardBoundaryUsedForClipping": False,
+        "lockedInterVillageBoundary": True,
         "featureCount": item["features"],
     })
 
 assigned = {
-    change: sum(stats[code][change] for code in TARGETS)
+    change: sum(stats[code][change] for code in TARGETS) * reported_area_scale[change]
     for change in source_areas
 }
 metadata = {
     "schemaVersion": 1,
     "generatedAt": datetime.now(timezone.utc).isoformat(),
     "sourceScopeId": landscape["scopeId"],
-    "method": "Sentinel-2 change polygons classified on the physical coast, then intersected with official village boundaries",
-    "coastlineLengthMethod": "Calibrated half-perimeter of the vectorized image-derived change and stable-shoreline support",
+    "method": "Sentinel-2 change polygons classified on the physical coast and divided only by the locked official inter-village boundary",
+    "coastlineLengthMethod": "Calibrated half-perimeter of image-derived coastal support divided by the extended inter-village boundary",
+    "administrativeSeawardBoundaryUsedForClipping": False,
+    "lockedInterVillageBoundary": True,
+    "lockedInterVillageBoundaryLengthKm": round(shared_boundary.length / 1000, 3),
+    "attributionZoneOverlapAreaM2": round(attribution_overlap_area, 2),
     "sourceCoastlineLengthKm": source_coastline_km,
     "coastlineProxyTotalKm": round(coastline_proxy_total_km, 6),
     "coastlineCalibrationFactor": round(coastline_calibration_factor, 6),
     "boundarySources": [boundaries[code][1]["UUPP"] for code in TARGETS],
-    "sourceAreaHa": {change: round(area / 10000, 2) for change, area in source_areas.items()},
+    "sourceAreaHa": {change: round(area / 10000, 2) for change, area in reported_area_totals_m2.items()},
+    "sourceVectorAreaHa": {change: round(area / 10000, 2) for change, area in source_areas.items()},
+    "reportedAreaScale": {change: round(scale, 8) for change, scale in reported_area_scale.items()},
     "assignedAreaHa": {change: round(area / 10000, 2) for change, area in assigned.items()},
     "outsideTargetBoundariesHa": {
-        change: round(max(0, source_areas[change] - assigned[change]) / 10000, 2)
+        change: round(max(0, reported_area_totals_m2[change] - assigned[change]) / 10000, 2)
         for change in source_areas
     },
     "boundaryOverlapAreaM2": round(overlap_area, 2),

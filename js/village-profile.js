@@ -179,7 +179,7 @@
         '<div class="vp-coastal-metric"><span>Kemunduran rerata periode</span><strong>'+metric(row.indicativeMeanRetreatM,1,' m')+'</strong></div>'+
       '</div>'+
       '<div class="vp-coast-balance" title="Proporsi kehilangan terhadap total area berubah"><i style="width:'+erosionPct.toFixed(1)+'%"></i></div>'+
-      (row.administrativeBoundaryUsedForAttribution?'<p class="vp-module-note"><strong>Hasil per kelurahan.</strong> Polygon perubahan dari citra dipotong menggunakan '+esc(row.boundarySource)+'; area di luar batas tidak dihitung. Panjang pantai dihitung dari cakupan pantai hasil citra, bukan dari sisi polygon administrasi.</p>':'')+
+      (row.lockedInterVillageBoundary&&row.administrativeSeawardBoundaryUsedForClipping===false?'<p class="vp-module-note"><strong>Hasil per kelurahan.</strong> Batas bersama antar-kelurahan dikunci mengikuti '+esc(row.boundarySource)+'. Garis darat–laut dan polygon perubahan mengikuti citra; sisi batas administrasi yang menghadap laut tidak digunakan sebagai masker.</p>':row.administrativeBoundaryUsedForAttribution?'<p class="vp-module-note"><strong>Hasil per kelurahan.</strong> Polygon perubahan dari citra dipotong menggunakan '+esc(row.boundarySource)+'; area di luar batas tidak dihitung. Panjang pantai dihitung dari cakupan pantai hasil citra, bukan dari sisi polygon administrasi.</p>':'')+
       '<p class="vp-module-note">Panjang pantai '+metric(row.coastlineLengthKm,2,' km')+' · ketidakpastian posisi ±'+format(row.positionalUncertaintyM,1)+' m. Perubahan di bawah ketidakpastian tidak boleh ditafsirkan sebagai abrasi pasti.</p>'+
       '<div class="vp-data-period"><span>Periode '+esc(row.baseline||meta.baseline||"2016")+'–'+esc(row.current||meta.current||"2025")+'</span><span>Sentinel-2 · '+format(row.clearCoveragePct,1)+'% bebas awan</span></div>';
     var coastalLink=document.querySelector(".vp-coastal-card .vp-module-link");
@@ -217,7 +217,7 @@
     var coastalFiles=["data/basilam-geniot-village-coastal-overrides.json","data/coastal-change-annual.json","data/coastal-change-non-intervention-annual.json"];
     var pFile=priorityFile(regency);
     try{
-      var jobs=coastalFiles.map(function(file){return loadJson(file+"?v=20260901-village-clip2");});
+    var jobs=coastalFiles.map(function(file){return loadJson(file+"?v=20260901-village-clip4");});
       if(pFile){jobs.push(loadJson(pFile+"?v=20260822-profile1"));}
       var results=await Promise.allSettled(jobs),coastalRows=[],coastalMeta={},priorityRows=[],priorityMeta={};
       results.forEach(function(result,index){

@@ -22,6 +22,7 @@ test('coastal analysis keeps filters above a clickable village-boundary map', ()
   assert.match(css, /\.analysis-grid\{display:grid;grid-template-columns:minmax\(0,1fr\) 340px\}/);
   assert.match(controller, /coastal-villages-riau\.geojson/);
   assert.match(controller, /layer\.on\(\{click:\(\)=>selectVillage\(id\)/);
+  assert.match(controller, /changeVillageLayers/);
   assert.doesNotMatch(html + controller, /Unduh polygon|Unduh cakupan/);
   assert.equal(summary.villages.length, 232);
   assert.equal(boundaries.features.length, 239);
@@ -54,14 +55,22 @@ test('coastal analysis keeps filters above a clickable village-boundary map', ()
     retreat: row.indicativeMeanRetreatM,
     rate: row.indicativeRetreatRateMPerYear,
   })), [
-    { code: '14.72.04.1004', erosion: 0.21, accretion: 1.82, coastline: 1.85, retreat: 1.1, rate: 0.13 },
-    { code: '14.72.04.1006', erosion: 1.23, accretion: 2.28, coastline: 2.2, retreat: 5.6, rate: 0.62 },
+    { code: '14.72.04.1004', erosion: 3.5, accretion: 3.41, coastline: 11.94, retreat: 2.9, rate: 0.33 },
+    { code: '14.72.04.1006', erosion: 10.43, accretion: 16.12, coastline: 13.14, retreat: 7.9, rate: 0.88 },
   ]);
-  assert.equal(clippedGeo.features.length, 20);
+  assert.equal(clippedGeo.features.length, 177);
   assert.ok(clippedGeo.features.every(feature => feature.properties.imageDerivedBeforeBoundaryClip === true));
   assert.ok(clippedGeo.features.every(feature => feature.properties.administrativeBoundaryUsedForAttribution === true));
+  assert.ok(clippedGeo.features.every(feature => feature.properties.administrativeSeawardBoundaryUsedForClipping === false));
+  assert.ok(clippedGeo.features.every(feature => feature.properties.lockedInterVillageBoundary === true));
   assert.equal(clippedSummary.metadata.boundaryOverlapAreaM2, 0);
-  assert.deepEqual(clippedSummary.metadata.assignedAreaHa, { erosion: 1.45, accretion: 4.09 });
+  assert.equal(clippedSummary.metadata.administrativeSeawardBoundaryUsedForClipping, false);
+  assert.equal(clippedSummary.metadata.lockedInterVillageBoundary, true);
+  assert.equal(clippedSummary.metadata.attributionZoneOverlapAreaM2, 0);
+  assert.deepEqual(clippedSummary.metadata.sourceAreaHa, { erosion: 13.93, accretion: 19.53 });
+  assert.deepEqual(clippedSummary.metadata.assignedAreaHa, { erosion: 13.93, accretion: 19.53 });
+  assert.deepEqual(clippedSummary.metadata.outsideTargetBoundariesHa, { erosion: 0, accretion: 0 });
+  assert.equal(clippedSummary.villages.reduce((total, row) => total + row.coastlineLengthKm, 0), 25.08);
   assert.equal(clippedSummary.metadata.sourceCoastlineLengthKm, 25.08);
   assert.equal(clippedSummary.metadata.coastlineProxyTotalKm, 21.055888);
   assert.equal(clippedSummary.metadata.coastlineCalibrationFactor, 1.191116);
