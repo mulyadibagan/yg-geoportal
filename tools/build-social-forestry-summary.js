@@ -7,7 +7,8 @@ const geo = JSON.parse(fs.readFileSync(path.join(root, "data", "PERHUTANAN_SOSIA
 const supplementFiles = [
   "social-forestry-pkk-samj.geojson",
   "social-forestry-kud-agro-lestari.geojson",
-  "social-forestry-derived-2025.geojson"
+  "social-forestry-derived-2025.geojson",
+  "social-forestry-official-2026.geojson"
 ];
 geo.features = (geo.features || []).concat(...supplementFiles.map(file => {
   const collection = JSON.parse(fs.readFileSync(path.join(root, "data", file), "utf8"));

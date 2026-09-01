@@ -9,7 +9,8 @@ const PS_FILES = [
   "PERHUTANAN_SOSIAL_RIAU.geojson",
   "social-forestry-pkk-samj.geojson",
   "social-forestry-kud-agro-lestari.geojson",
-  "social-forestry-derived-2025.geojson"
+  "social-forestry-derived-2025.geojson",
+  "social-forestry-official-2026.geojson"
 ];
 const VILLAGE_FILES = ["batas_administrasi_desa_riau.geojson", "desa_intervensi.geojson"];
 

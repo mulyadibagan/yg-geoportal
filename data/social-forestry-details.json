@@ -2610,11 +2610,11 @@
     "village": "Dosan",
     "district": "Pusako",
     "regency": "SIAK",
-    "scheme": "Profil dokumen nonspasial",
+    "scheme": "Persetujuan Kemitraan Kehutanan",
     "decree": "SK.3153/MENLHK-PSKL/PKPS/PSL.0/3/2023",
     "areaHa": 1132,
     "source": "Audit Drive Perhutanan Sosial YG",
-    "spatialStatus": "nonspatial",
+    "spatialStatus": "official-geometry",
     "documents": [
       {
         "label": "SK GAPOKTANHUT KAMPUNG DOSAN",
@@ -2630,7 +2630,8 @@
       "scheme": "Persetujuan Kemitraan Kehutanan",
       "approvedAreaHa": 1132,
       "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
-      "source": "Dokumen SK"
+      "source": "Dokumen SK",
+      "decreeDate": "2023-03-27"
     },
     "management": {
       "ecosystem": "Ekosistem gambut",
@@ -2673,7 +2674,10 @@
       "mapDataAvailability": "ADA",
       "sourceSheet": "Siak",
       "updatedAt": "2026-08-29"
-    }
+    },
+    "spatialObjectKey": "drive-audit:siak-gapoktanhut-kampung-dosan",
+    "spatialSource": "https://geoportal.planologi.kehutanan.go.id/server/rest/services/Peta_Interaktif_2026/PKK_AR_50K/MapServer/0",
+    "spatialVerifiedAt": "2026-09-01"
   },
   "drive-audit:dumai-gapoktan-sumber-alam-makmur-jaya": {
     "name": "GAPOKTAN SUMBER ALAM MAKMUR JAYA",
@@ -5796,7 +5800,7 @@
     "decree": "SK.6463/MENLHK-PSKL/PKPS/PSL.0/8/2022",
     "areaHa": 348,
     "source": "Audit Drive Perhutanan Sosial YG",
-    "spatialStatus": "nonspatial",
+    "spatialStatus": "official-geometry",
     "documents": [
       {
         "label": "SK KTH BOMBAN BERDURI",
@@ -5808,11 +5812,12 @@
     "skDocumentStatus": "available",
     "skDocumentCheckedAt": "2026-08-28",
     "skExtraction": {
-      "decreeNumber": "SK.6463/MENLHK-PSKL/PKPS/PSL.0/12/2022",
+      "decreeNumber": "SK.6463/MENLHK-PSKL/PKPS/PSL.0/8/2022",
       "scheme": "Persetujuan Kemitraan Konservasi",
       "approvedAreaHa": 348,
       "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
-      "source": "Dokumen SK"
+      "source": "Dokumen SK",
+      "decreeDate": "2022-08-12"
     },
     "management": {
       "forestManagementUnit": "TNBT",
@@ -5853,7 +5858,10 @@
       "mapDataAvailability": "ada",
       "sourceSheet": "Indragiri Hulu",
       "updatedAt": "2026-08-29"
-    }
+    },
+    "spatialObjectKey": "drive-audit:indragiri-hulu-kth-bomban-berduri",
+    "spatialSource": "https://geoportal.planologi.kehutanan.go.id/server/rest/services/Peta_Interaktif_2026/PKK_AR_50K/MapServer/0",
+    "spatialVerifiedAt": "2026-09-01"
   },
   "drive-audit:indragiri-hulu-kth-batu-berdiri": {
     "name": "KTH BATU BERDIRI",
@@ -5864,13 +5872,8 @@
     "decree": "SK.6466/MENLHK-PSKL/PKPS/PSL.0/8/2022",
     "areaHa": 351,
     "source": "Audit Drive Perhutanan Sosial YG",
-    "spatialStatus": "nonspatial",
+    "spatialStatus": "official-geometry",
     "documents": [
-      {
-        "label": "PETA KTH BATU BERDIRI",
-        "category": "Peta",
-        "url": "https://drive.google.com/file/d/194AzaJhWoIjPAJAK6p32rSgNJPr_SpXa/view?usp=drivesdk"
-      },
       {
         "label": "SK KTH BATU BERDIRI",
         "category": "Legalitas",
@@ -5881,10 +5884,10 @@
     "skDocumentStatus": "available",
     "skDocumentCheckedAt": "2026-08-28",
     "skExtraction": {
-      "decreeNumber": "6245 TAHUN 2024",
-      "decreeDate": "25 Maret 2024",
+      "decreeNumber": "SK.6466/MENLHK-PSKL/PKPS/PSL.0/8/2022",
+      "decreeDate": "2022-08-12",
       "scheme": "Persetujuan Kemitraan Konservasi",
-      "approvedAreaHa": 52,
+      "approvedAreaHa": 351,
       "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
       "source": "Dokumen SK"
     },
@@ -5929,7 +5932,10 @@
       "mapDataAvailability": "ada",
       "sourceSheet": "Indragiri Hulu",
       "updatedAt": "2026-08-29"
-    }
+    },
+    "spatialObjectKey": "drive-audit:indragiri-hulu-kth-batu-berdiri",
+    "spatialSource": "https://geoportal.planologi.kehutanan.go.id/server/rest/services/Peta_Interaktif_2026/PKK_AR_50K/MapServer/0",
+    "spatialVerifiedAt": "2026-09-01"
   },
   "drive-audit:indragiri-hulu-kth-batu-kucing": {
     "name": "KTH BATU KUCING",
@@ -5940,13 +5946,8 @@
     "decree": "SK.6465/MENLHK-PSKL/PKPS/PSL.0/8/2022",
     "areaHa": 329,
     "source": "Audit Drive Perhutanan Sosial YG",
-    "spatialStatus": "nonspatial",
+    "spatialStatus": "official-geometry",
     "documents": [
-      {
-        "label": "PETA KTH BATU KUCING",
-        "category": "Peta",
-        "url": "https://drive.google.com/file/d/15rXAp-l60w0m9tR3yeJWtbY65B9ZDfZ4/view?usp=drivesdk"
-      },
       {
         "label": "SK KTH BATU KUCING",
         "category": "Legalitas",
@@ -5957,10 +5958,10 @@
     "skDocumentStatus": "available",
     "skDocumentCheckedAt": "2026-08-28",
     "skExtraction": {
-      "decreeNumber": "6411 TAHUN 2024",
-      "decreeDate": "6 Desember 2013",
+      "decreeNumber": "SK.6465/MENLHK-PSKL/PKPS/PSL.0/8/2022",
+      "decreeDate": "2022-08-12",
       "scheme": "Persetujuan Kemitraan Konservasi",
-      "approvedAreaHa": 72,
+      "approvedAreaHa": 329,
       "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
       "source": "Dokumen SK"
     },
@@ -6011,7 +6012,10 @@
       "mapDataAvailability": "ada",
       "sourceSheet": "Indragiri Hulu",
       "updatedAt": "2026-08-29"
-    }
+    },
+    "spatialObjectKey": "drive-audit:indragiri-hulu-kth-batu-kucing",
+    "spatialSource": "https://geoportal.planologi.kehutanan.go.id/server/rest/services/Peta_Interaktif_2026/PKK_AR_50K/MapServer/0",
+    "spatialVerifiedAt": "2026-09-01"
   },
   "sk.9858/menlhk-pskl/pkps/psl.0/9/2023": {
     "name": "KTH CENAKU JAYA",
@@ -7825,15 +7829,15 @@
     }
   },
   "drive-audit:kepulauan-meranti-pecinta-mangrove-kulit-bakau": {
-    "name": "PECINTA MANGROVE KULIT BAKAU",
+    "name": "KTH PECINTA MANGROVE KULIT BAKAU",
     "village": "Bokor",
-    "district": "",
+    "district": "Rangsang Barat",
     "regency": "KEPULAUAN MERANTI",
-    "scheme": "Profil dokumen nonspasial",
-    "decree": "",
-    "areaHa": 272,
+    "scheme": "Hutan Kemasyarakatan",
+    "decree": "SK.5133/MENLHK-PSKL/PKPS/PSL.0/6/2022",
+    "areaHa": 14,
     "source": "Audit Drive Perhutanan Sosial YG",
-    "spatialStatus": "nonspatial",
+    "spatialStatus": "official-geometry",
     "documents": [
       {
         "label": "KUPS Genak Padang PECINTA MANGROVE KULIT BAKAU",
@@ -7850,13 +7854,15 @@
     "skDocumentStatus": "available",
     "skDocumentCheckedAt": "2026-08-28",
     "skExtraction": {
-      "decreeNumber": "SK.130/MENLHK/SETJEN/PKL.0/2/2017",
-      "scheme": "Persetujuan Pengelolaan Hutan Kemasyarakatan",
-      "approvedAreaHa": 272,
+      "decreeNumber": "SK.5133/MENLHK-PSKL/PKPS/PSL.0/6/2022",
+      "scheme": "Hutan Kemasyarakatan",
+      "approvedAreaHa": 14,
       "validityPeriod": "35 tahun",
-      "source": "Dokumen SK"
+      "source": "Dokumen SK",
+      "decreeDate": "2022-06-13"
     },
     "management": {
+      "forestManagementUnit": "KPH Tebing Tinggi",
       "ecosystem": "Ekosistem gambut · fungsi lindung"
     },
     "beneficiaries": {
@@ -7866,8 +7872,27 @@
     },
     "province": "Riau",
     "bpsklVerification": {
-      "status": "not-matched",
-      "source": "Data Perhutanan Sosial di Provinsi Riau"
+      "status": "matched",
+      "method": "decree",
+      "source": "Data Perhutanan Sosial di Provinsi Riau",
+      "sourceSheet": "Meranti",
+      "handoverStatus": "Sudah Diserahkan"
+    },
+    "decreeDate": "2022-06-13",
+    "spatialObjectKey": "1654.0",
+    "spatialSource": "https://geoportal.planologi.kehutanan.go.id/server/rest/services/Peta_Interaktif_2026/PPHKm_AR_50K/MapServer/0",
+    "spatialVerifiedAt": "2026-09-01",
+    "bpsklProfile": {
+      "status": "Sudah Diserahkan",
+      "sourceSheet": "Meranti",
+      "updatedAt": "2026-08-29"
+    },
+    "forestAreaComposition": {
+      "protectionForestHa": 0,
+      "productionForestHa": 0,
+      "limitedProductionForestHa": 14,
+      "convertibleProductionForestHa": 0,
+      "conservationHa": 0
     }
   },
   "sk.5158/menlhk-pskl/pkps/psl.0/6/2022": {
@@ -11042,7 +11067,8 @@
       "approvedAreaHa": 684,
       "validityPeriod": "35 tahun",
       "evaluation": "Paling sedikit 1 kali setiap 5 tahun",
-      "source": "Dokumen SK"
+      "source": "Dokumen SK",
+      "decreeDate": "2022-08-12"
     },
     "management": {
       "forestManagementUnit": "TNBT",
@@ -11097,7 +11123,11 @@
       "mapDataAvailability": "ada",
       "sourceSheet": "Indragiri Hulu",
       "updatedAt": "2026-08-29"
-    }
+    },
+    "spatialStatus": "official-geometry",
+    "spatialObjectKey": "drive-audit:1urhekp2qlyly-o2q5c5agy1edtmqd870-kth-kasih-alam-siambul",
+    "spatialSource": "https://geoportal.planologi.kehutanan.go.id/server/rest/services/Peta_Interaktif_2026/PKK_AR_50K/MapServer/0",
+    "spatialVerifiedAt": "2026-09-01"
   },
   "8657 tahun 2025": {
     "name": "KTH Pahundan Tunas Buana",

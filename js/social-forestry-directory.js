@@ -12,12 +12,13 @@ async function init(){
   try{
     var result=await Promise.all([
       fetch("data/PERHUTANAN_SOSIAL_RIAU.geojson?v=20260828-area-summary1",{cache:"no-store"}).then(function(r){return r.json()}),
-      fetch("data/social-forestry-details.json?v=20260831-geometry-audit2",{cache:"no-store"}).then(function(r){return r.json()}),
-      fetch("data/social-forestry-summary.json?v=20260828-area-summary1",{cache:"no-store"}).then(function(r){return r.json()}),
+      fetch("data/social-forestry-details.json?v=20260901-official1",{cache:"no-store"}).then(function(r){return r.json()}),
+      fetch("data/social-forestry-summary.json?v=20260901-official1",{cache:"no-store"}).then(function(r){return r.json()}),
       fetch("data/social-forestry-pkk-samj.geojson?v=20260831-samj-pkk1",{cache:"no-store"}).then(function(r){return r.ok?r.json():{features:[]}}).catch(function(){return{features:[]}}),
       fetch("data/social-forestry-kud-agro-lestari.geojson?v=20260831-agro1",{cache:"no-store"}).then(function(r){return r.ok?r.json():{features:[]}}).catch(function(){return{features:[]}}),
-      fetch("data/social-forestry-derived-2025.geojson?v=20260831-derived1",{cache:"no-store"}).then(function(r){return r.ok?r.json():{features:[]}}).catch(function(){return{features:[]}})
-    ]),features=(result[0].features||[]).concat(result[3].features||[],result[4].features||[],result[5].features||[]),details=result[1]||{},summaries=result[2].profiles||[],detailKeys=Object.keys(details),byD={},byS={},bySpatial={},used={},seen={},spatialDecrees={},spatialSignatures={},spatialKeyCounts={};
+      fetch("data/social-forestry-derived-2025.geojson?v=20260831-derived1",{cache:"no-store"}).then(function(r){return r.ok?r.json():{features:[]}}).catch(function(){return{features:[]}}),
+      fetch("data/social-forestry-official-2026.geojson?v=20260901-official1",{cache:"no-store"}).then(function(r){return r.ok?r.json():{features:[]}}).catch(function(){return{features:[]}})
+    ]),features=(result[0].features||[]).concat(result[3].features||[],result[4].features||[],result[5].features||[],result[6].features||[]),details=result[1]||{},summaries=result[2].profiles||[],detailKeys=Object.keys(details),byD={},byS={},bySpatial={},used={},seen={},spatialDecrees={},spatialSignatures={},spatialKeyCounts={};
 
     features.forEach(function(feature){
       var p=feature&&feature.properties||{};

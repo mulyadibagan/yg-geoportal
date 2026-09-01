@@ -106,7 +106,8 @@
       supplementFiles: [
         "data/social-forestry-pkk-samj.geojson?v=20260831-samj-pkk1",
         "data/social-forestry-kud-agro-lestari.geojson?v=20260831-agro1",
-        "data/social-forestry-derived-2025.geojson?v=20260831-derived1"
+        "data/social-forestry-derived-2025.geojson?v=20260831-derived1",
+        "data/social-forestry-official-2026.geojson?v=20260901-official1"
       ],
       color: "#00897b",
       count: null,
@@ -2148,7 +2149,7 @@ L.control.scale({
     if (config.type === "social_forestry" && !socialForestryDocumentDetailsLoaded) {
       try {
         const detailsResponse = await fetch(
-          "data/social-forestry-details.json?v=20260831-geometry-audit2",
+          "data/social-forestry-details.json?v=20260901-official1",
           { cache: "no-store" }
         );
         if (detailsResponse.ok) {

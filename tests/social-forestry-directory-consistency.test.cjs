@@ -10,10 +10,10 @@ const details = readJson("data/social-forestry-details.json");
 
 test("PS summary has one canonical profile per decree or signature", () => {
   const profiles = summary.profiles || [];
-  assert.equal(profiles.length, 182);
+  assert.equal(profiles.length, 181);
   assert.equal(summary.totals.profileCount, profiles.length);
-  assert.equal(profiles.filter(profile => profile.spatial).length, 174);
-  assert.equal(profiles.filter(profile => !profile.spatial).length, 8);
+  assert.equal(profiles.filter(profile => profile.spatial).length, 179);
+  assert.equal(profiles.filter(profile => !profile.spatial).length, 2);
   assert.equal(profiles.filter(profile => profile.areaHa == null).length, 0);
 
   const decrees = profiles.map(profile => profile.decreeNorm).filter(Boolean);
@@ -28,10 +28,11 @@ test("all spatial PS sources contain valid polygon geometry", () => {
     "data/PERHUTANAN_SOSIAL_RIAU.geojson",
     "data/social-forestry-pkk-samj.geojson",
     "data/social-forestry-kud-agro-lestari.geojson",
-    "data/social-forestry-derived-2025.geojson"
+    "data/social-forestry-derived-2025.geojson",
+    "data/social-forestry-official-2026.geojson"
   ];
   const features = files.flatMap(file => readJson(file).features || []);
-  assert.equal(features.length, 181);
+  assert.equal(features.length, 186);
   features.forEach((feature, index) => {
     assert.ok(feature.geometry, `geometry missing at feature ${index}`);
     assert.ok(["Polygon", "MultiPolygon"].includes(feature.geometry.type));
@@ -45,7 +46,9 @@ test("document-backed schemes and approved 2025 profile stay canonical", () => {
   assert.equal(byName.get("KTH JEPUN BESTARI").decree, "8652 TAHUN 2025");
   assert.equal(byName.get("KTH JEPUN BESTARI").scheme, "Hutan Kemasyarakatan");
   assert.equal(byName.get("GAPOKTANHUT KAMPUNG DOSAN").scheme, "Kemitraan Kehutanan");
-  assert.equal(byName.get("PECINTA MANGROVE KULIT BAKAU").scheme, "Hutan Kemasyarakatan");
+  assert.equal(byName.get("KTH PECINTA MANGROVE KULIT BAKAU").scheme, "Hutan Kemasyarakatan");
+  assert.equal(byName.get("KTH PECINTA MANGROVE KULIT BAKAU").decree, "SK.5133/MENLHK-PSKL/PKPS/PSL.0/6/2022");
+  assert.equal(byName.get("KTH PECINTA MANGROVE KULIT BAKAU").areaHa, 14);
   assert.equal(byName.get("HUTAN ADAT GHIMBO BONCA LIDA DAN GHIMBO POMUAN").scheme, "Hutan Adat");
   assert.equal(byName.get("MHA KENEGERIAN PETAPAHAN").scheme, "Hutan Adat");
   ["KTH BOMBAN BERDURI", "KTH BATU BERDIRI", "KTH BATU KUCING", "KTH KASIH ALAM"].forEach(name => {
@@ -74,7 +77,7 @@ test("scheme summary cards are accessible directory filters", () => {
   assert.match(directory, /aria-pressed=/);
   assert.match(directory, /schemeGrid\.addEventListener\("click"/);
   assert.match(page, /social-forestry-directory-clickable\.css\?v=20260901-clickable-schemes1/);
-  assert.match(page, /social-forestry-directory\.js\?v=20260901-clickable-schemes1/);
+  assert.match(page, /social-forestry-directory\.js\?v=20260901-official-geometry1/);
   assert.match(styles, /\.psd-area-card:focus-visible/);
   assert.match(styles, /\.psd-area-card\.is-active/);
 });

@@ -12,7 +12,7 @@ var defs={
   feg:{label:"Fungsi Ekosistem Gambut",color:"#a87500",fill:"rgba(239,158,0,.50)",url:"data/feg_riau.geojson",source:"Fungsi Ekosistem Gambut – referensi KLHK",sublegend:[["FEG fungsi lindung","#9b7000","rgba(155,112,0,.62)"],["FEG fungsi budidaya","#ed9d00","rgba(237,157,0,.62)"]]},
   forest:{label:"Kawasan hutan",color:"#33691e",fill:"rgba(76,175,80,.30)",url:"data/kawasan_hutan_sk_903.geojson",source:"Kawasan Hutan SK 903"},
   concession:{label:"PBPH aktif",color:"#d84315",fill:"rgba(216,67,21,.11)",url:"data/PBPH_RIAU_052026.geojson",source:"PBPH Riau pembaruan Mei 2026"},
-  social:{label:"Perhutanan sosial",color:"#00897b",fill:"rgba(0,137,123,.25)",url:"data/PERHUTANAN_SOSIAL_RIAU.geojson",supplements:["data/social-forestry-pkk-samj.geojson","data/social-forestry-kud-agro-lestari.geojson","data/social-forestry-derived-2025.geojson"],source:"Perhutanan Sosial Riau"},
+  social:{label:"Perhutanan sosial",color:"#00897b",fill:"rgba(0,137,123,.25)",url:"data/PERHUTANAN_SOSIAL_RIAU.geojson",supplements:["data/social-forestry-pkk-samj.geojson","data/social-forestry-kud-agro-lestari.geojson","data/social-forestry-derived-2025.geojson","data/social-forestry-official-2026.geojson"],source:"Perhutanan Sosial Riau"},
   peat:{label:"Sebaran gambut",color:"#6a1b9a",fill:"rgba(106,27,154,.22)",url:"data/Gambut_BBSDLP_2019.geojson",source:"Peta Gambut BBSDLP 2019"},
   area_mangrove:{label:"Area penanaman mangrove",color:"#00796b",fill:"rgba(0,121,107,.34)",program:true,source:"Master Database Yayasan Gambut"},
   apo:{label:"Alat pemecah ombak",color:"#d32f2f",fill:"rgba(211,47,47,.18)",program:true,line:true,source:"Master Database Yayasan Gambut"},
