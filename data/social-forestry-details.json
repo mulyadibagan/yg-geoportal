@@ -10973,12 +10973,17 @@
         "label": "SK KOPERASI KARYA BERSAMA I",
         "category": "Legalitas",
         "url": "https://drive.google.com/file/d/14XJmRvq0qRqIhJDUTlrS69VtaTax4nrh/view?usp=drivesdk"
+      },
+      {
+        "label": "Data Koperasi Aktif Primer Kabupaten Bengkalis",
+        "category": "Referensi administrasi",
+        "url": "https://ppid.bengkaliskab.go.id/media/file/88372826343koperasi.pdf"
       }
     ],
     "decree": "4/KPTS/X/2014",
     "scheme": "IUPHHK-HTR",
     "areaHa": 700,
-    "village": "-",
+    "village": "Tanjung Damai",
     "district": "Siak Kecil",
     "regency": "Bengkalis",
     "province": "Riau",
@@ -10989,7 +10994,7 @@
       "decreeDate": "18 Desember 2014",
       "approvedAreaHa": 700,
       "forestFunctions": "Kawasan Hutan Produksi ±700 ha",
-      "location": "Desa - · Kecamatan Siak Kecil · Kabupaten Bengkalis · Provinsi Riau",
+      "location": "Desa Tanjung Damai · Kecamatan Siak Kecil · Kabupaten Bengkalis · Provinsi Riau",
       "source": "SK Koperasi Karya Bersama I"
     },
     "skDocumentStatus": "available",
@@ -11005,22 +11010,34 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Dumai",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "administrativeVerification": {
+      "status": "matched",
+      "checkedAt": "2026-09-01",
+      "source": "Data Koperasi Aktif Primer Kabupaten Bengkalis",
+      "sourceUrl": "https://ppid.bengkaliskab.go.id/media/file/88372826343koperasi.pdf",
+      "note": "Alamat kelembagaan tercatat di Desa Tanjung Damai; batas areal izin belum tersedia."
     }
   },
   "drive-audit:1z62ckw1vwz4mucrn-unxenrpeba9iwyy-koperasi-maju-bersama-ii": {
-    "name": "KOPERASI MAJU BERSAMA II",
+    "name": "KOPERASI KARYA BERSAMA II",
     "driveFolderId": "18Nv4sdgdU0dsq_GYKFBCMoHSm_bb0mkS",
     "documents": [
       {
-        "label": "SK KOPERASI MAJU BERSAMA II",
+        "label": "SK KOPERASI KARYA BERSAMA II",
         "category": "Legalitas",
         "url": "https://drive.google.com/file/d/1YwoTaTbhMVAtSJFHEUgZOw7KIN5Li9-E/view?usp=drivesdk"
+      },
+      {
+        "label": "Data Koperasi Aktif Primer Kabupaten Bengkalis",
+        "category": "Referensi administrasi",
+        "url": "https://ppid.bengkaliskab.go.id/media/file/88372826343koperasi.pdf"
       }
     ],
     "decree": "46/KPTS/X/2014",
     "scheme": "IUPHHK-HTR",
     "areaHa": 700,
-    "village": "-",
+    "village": "Tanjung Damai",
     "district": "Siak Kecil",
     "regency": "Bengkalis",
     "province": "Riau",
@@ -11031,7 +11048,7 @@
       "decreeDate": "18 Desember 2014",
       "approvedAreaHa": 700,
       "forestFunctions": "Kawasan Hutan Produksi ±700 ha",
-      "location": "Desa - · Kecamatan Siak Kecil · Kabupaten Bengkalis · Provinsi Riau",
+      "location": "Desa Tanjung Damai · Kecamatan Siak Kecil · Kabupaten Bengkalis · Provinsi Riau",
       "source": "SK Koperasi Karya Bersama II"
     },
     "skDocumentStatus": "available",
@@ -11047,6 +11064,13 @@
       "source": "Data Perhutanan Sosial di Provinsi Riau",
       "sourceSheet": "Dumai",
       "handoverStatus": "Sudah Diserahkan"
+    },
+    "administrativeVerification": {
+      "status": "matched",
+      "checkedAt": "2026-09-01",
+      "source": "Data Koperasi Aktif Primer Kabupaten Bengkalis",
+      "sourceUrl": "https://ppid.bengkaliskab.go.id/media/file/88372826343koperasi.pdf",
+      "note": "Nama dan alamat kelembagaan cocok dengan SK serta register koperasi; batas areal izin belum tersedia."
     }
   },
   "drive-audit:1urhekp2qlyly-o2q5c5agy1edtmqd870-kth-kasih-alam-siambul": {
