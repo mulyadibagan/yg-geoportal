@@ -36,7 +36,13 @@ function renderSvlk(svlk){
 }
 function reportPermit(report,profile){return(report.companies||[]).find(function(row){return samePermit(row,{name:profile.NAMOBJ,sk:profile.NO_SK})})||null}
 function reportDetections(report,profile){return(report.hotspots||[]).filter(function(point){return(point.permits||[]).some(function(row){return samePermit(row,{name:profile.NAMOBJ,sk:profile.NO_SK})})})}
+function renderAnnualReports(reports,profile){
+  var grouped={};reports.forEach(function(report){var year=String(report.month||"").slice(0,4),permit=reportPermit(report,profile),points=reportDetections(report,profile);if(!grouped[year])grouped[year]={hotspots:0,dates:new Set(),months:[]};grouped[year].hotspots+=permit?Number(permit.hotspots)||0:0;points.forEach(function(point){if(point.date)grouped[year].dates.add(point.date)});grouped[year].months.push(report.month)});
+  var years=Object.keys(grouped).sort().reverse();el("annual-hotspots").innerHTML=years.map(function(year){var row=grouped[year],months=row.months.sort(),coverage=months.length?monthLabel(months[0])+(months.length>1?" – "+monthLabel(months[months.length-1]):""):"Belum ada bulan final";return'<div class="vp-annual-row"><strong>'+esc(year)+'</strong><span>'+format(row.hotspots,0)+' hotspot</span><span>'+format(row.dates.size,0)+' hari deteksi</span><small>'+esc(coverage)+' · '+months.length+' laporan bulanan final</small></div>'}).join("")||'<div class="pbph-empty">Rekap tahunan belum tersedia.</div>';
+  el("annual-hotspot-note").textContent="Rekap dihitung sejak Juli 2026. Tahun 2026 bukan periode Januari–Desember penuh.";
+}
 function renderReports(reports,profile){
+  renderAnnualReports(reports,profile);
   var total=0,detections=[];el("monthly-hotspots").innerHTML=reports.map(function(report){var permit=reportPermit(report,profile),count=permit?Number(permit.hotspots)||0:0;total+=count;reportDetections(report,profile).forEach(function(point){detections.push({point:point,month:report.month})});return'<a class="pbph-month" href="fire-monthly-report.html?month='+encodeURIComponent(report.month)+'"><span>'+esc(monthLabel(report.month))+'</span><strong>'+format(count,0)+'</strong><b>hotspot dalam PBPH</b><small>'+esc(report.status==="final"?"Laporan final":"Laporan sementara")+' · buka laporan →</small></a>'}).join("");
   if(!reports.length)el("monthly-hotspots").innerHTML='<div class="pbph-empty">Laporan bulanan mulai Juli 2026 belum tersedia.</div>';
   el("hotspot-note").textContent="Total "+format(total,0)+" hotspot dari "+reports.length+" laporan bulanan yang tersedia sejak Juli 2026. Bulan final tanpa irisan ditampilkan sebagai nol.";

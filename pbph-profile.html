@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="css/village-profile.css?v=20260824-ps-nonspatial2">
   <link rel="stylesheet" href="css/pbph-profile.css?v=20260831-1">
+  <link rel="stylesheet" href="css/final-monthly-hotspots.css?v=20260901-annual1">
 </head>
 <body>
   <header class="vp-topbar">
@@ -39,7 +40,7 @@
           <article class="vp-card"><div class="vp-section-head"><div><span class="vp-kicker">IDENTITAS AREAL</span><h2>Informasi PBPH</h2></div><span class="vp-sf-status">Layer referensi</span></div><div class="vp-identity" id="identity-list"></div></article>
         </section>
 
-        <section class="vp-card"><div class="vp-section-head"><div><span class="vp-kicker">PELAPORAN HOTSPOT</span><h2>Riwayat laporan bulanan</h2></div><span class="vp-badge vp-badge--warm">mulai Juli 2026</span></div><div class="pbph-months" id="monthly-hotspots"></div><p class="vp-caption" id="hotspot-note"></p></section>
+        <section class="vp-card"><div class="vp-section-head"><div><span class="vp-kicker">PELAPORAN HOTSPOT</span><h2>Rekap tahunan dan laporan bulanan</h2></div><span class="vp-badge vp-badge--warm">mulai Juli 2026</span></div><h3 class="vp-subtitle">Rekap per tahun</h3><div class="vp-annual-list" id="annual-hotspots"></div><p class="vp-month-status" id="annual-hotspot-note">Dihitung dari laporan final sejak Juli 2026.</p><h3 class="vp-subtitle vp-annual-title">Rincian per bulan</h3><div class="pbph-months" id="monthly-hotspots"></div><p class="vp-caption" id="hotspot-note"></p></section>
         <section class="vp-card"><div class="vp-section-head"><div><span class="vp-kicker">RINCIAN DETEKSI</span><h2>Hotspot dalam laporan</h2></div></div><div class="pbph-table-wrap"><table class="pbph-table"><thead><tr><th>Tanggal</th><th>Desa</th><th>Kabupaten</th><th>Satelit</th><th>FRP</th><th>Laporan</th></tr></thead><tbody id="hotspot-list"></tbody></table></div><div class="pbph-empty" id="hotspot-empty" hidden>Belum ada hotspot yang tercatat di dalam PBPH ini pada laporan bulanan final.</div></section>
         <section class="vp-card"><div class="vp-section-head"><div><span class="vp-kicker">DOKUMEN PBPH</span><h2>SK dan dokumen pendukung</h2></div><span class="vp-badge" id="document-count">0 dokumen</span></div><div class="vp-document-list" id="pbph-document-list"></div><div class="pbph-empty" id="document-empty" hidden>Dokumen publik terverifikasi belum tersedia.</div><p class="vp-caption" id="document-note"></p></section>
         <section class="vp-card"><div class="vp-section-head"><div><span class="vp-kicker">SVLK &amp; PHL</span><h2>Status penjaminan legalitas dan kelestarian</h2></div><span class="pbph-svlk-status" id="svlk-status">Belum ditelusuri</span></div><div class="pbph-svlk-grid" id="svlk-details"></div><div class="vp-document-list pbph-svlk-documents" id="svlk-document-list"></div><p class="vp-caption" id="svlk-note"></p></section>
@@ -50,6 +51,6 @@
   </main>
   <div class="vp-toast" id="toast" role="status"></div>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="js/pbph-profile.js?v=20260831-1"></script>
+  <script src="js/pbph-profile.js?v=20260901-annual1"></script>
 </body>
 </html>

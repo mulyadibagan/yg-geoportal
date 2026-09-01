@@ -16,11 +16,16 @@ test('PBPH snapshot groups 187 polygon parts into 56 stable profiles', () => {
 
 test('PBPH profile uses frozen monthly reports starting July 2026', () => {
   const controller = read('js/pbph-profile.js');
+  const html = read('pbph-profile.html');
   assert.match(controller, /REPORT_START="2026-07"/);
   assert.match(controller, /data\/fire-monthly\/index\.json/);
   assert.match(controller, /row\.status==="final"/);
   assert.match(controller, /report\.companies/);
   assert.match(controller, /report\.hotspots/);
+  assert.match(controller, /renderAnnualReports/);
+  assert.match(html, /id="annual-hotspots"/);
+  assert.match(html, /Rekap per tahun/);
+  assert.match(html, /Tahun 2026 bukan periode Januari–Desember penuh|Dihitung dari laporan final sejak Juli 2026/);
   assert.doesNotMatch(controller, /hotspot-high-confidence\.geojson/);
 });
 
@@ -39,7 +44,7 @@ test('map and PBPH hotspot polygons link to the dedicated profile', () => {
   assert.match(map, /pbph-profile\.html\?id=/);
   assert.match(map, /Buka Profil PBPH/);
   assert.match(analysis, /pbph-profile\.html\?id=/);
-  assert.match(html, /Riwayat laporan bulanan/);
+  assert.match(html, /Rekap tahunan dan laporan bulanan/);
   assert.match(html, /Dokumen pendukung/i);
 });
 
