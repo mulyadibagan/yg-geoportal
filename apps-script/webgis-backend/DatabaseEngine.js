@@ -316,6 +316,196 @@ function syncPublishedCommunityReportsToObjects() {
 }
 
 /**
+ * One-time consolidation for the Tanjung Kuras planting activity that was
+ * initially published as a point before its surveyed planting polygon was
+ * submitted. The point remains in the database as an archived audit record;
+ * the small area_mangrove polygon becomes the single public map object.
+ */
+function consolidateTanjungKurasPlantingIntoPolygonFromSecureExecution() {
+  const caller = String(Session.getActiveUser().getEmail() || '').toLowerCase();
+  if (caller !== ADMIN_EMAIL.toLowerCase()) {
+    throw new Error('Only the configured administrator may consolidate planting objects.');
+  }
+
+  ensureMasterDatabaseSheets_();
+
+  const pointReportId = 'YG-20260725-135142-186';
+  const polygonReportId = 'YG-20260829-144847-315';
+  const correctionReportId = 'YG-20260901-224828-188';
+  const pointObjectId = 'COMMUNITY-' + pointReportId;
+  const polygonObjectId = 'COMMUNITY-' + polygonReportId;
+  const polygonLayerId = 'area_mangrove';
+  const polygonLayerLabel = 'Area Penanaman Mangrove';
+  const objectName =
+    'Mangrove Tree Planting and Community Engagement Programme – Tanjung Kuras';
+
+  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const objectSheet = spreadsheet.getSheetByName(OBJECTS_SHEET_NAME);
+  const reportSheet = getSheet_();
+  if (!objectSheet || !reportSheet) throw new Error('Sheet data tidak ditemukan.');
+
+  const pointObjectRow = findObjectRowById_(objectSheet, pointObjectId);
+  const polygonObjectRow = findObjectRowById_(objectSheet, polygonObjectId);
+  const pointReportRow = findReportRowById_(reportSheet, pointReportId);
+  const polygonReportRow = findReportRowById_(reportSheet, polygonReportId);
+  const correctionReportRow = findReportRowById_(reportSheet, correctionReportId);
+
+  if (!pointObjectRow || !polygonObjectRow) {
+    throw new Error('Objek titik atau poligon Tanjung Kuras tidak ditemukan.');
+  }
+  if (!pointReportRow || !polygonReportRow || !correctionReportRow) {
+    throw new Error('Salah satu laporan Tanjung Kuras tidak ditemukan.');
+  }
+
+  const pointObject = readObjectFromRow_(
+    objectSheet.getRange(pointObjectRow, 1, 1, OBJECT_HEADERS.length).getValues()[0]
+  );
+  const polygonObject = readObjectFromRow_(
+    objectSheet.getRange(polygonObjectRow, 1, 1, OBJECT_HEADERS.length).getValues()[0]
+  );
+
+  function reportPhotos_(rowNumber) {
+    const raw = clean_(reportSheet.getRange(rowNumber, 20).getDisplayValue());
+    return raw ? raw.split(/\r?\n/).map(clean_).filter(Boolean) : [];
+  }
+
+  function uniqueValues_(values) {
+    const seen = {};
+    return values.filter(function(value) {
+      const key = clean_(value);
+      if (!key || seen[key]) return false;
+      seen[key] = true;
+      return true;
+    });
+  }
+
+  const mergedPhotos = uniqueValues_([].concat(
+    reportPhotos_(pointReportRow),
+    reportPhotos_(polygonReportRow),
+    reportPhotos_(correctionReportRow),
+    pointObject.properties.photos || [],
+    polygonObject.properties.photos || []
+  ));
+
+  const mergedProperties = Object.assign(
+    {},
+    pointObject.properties || {},
+    polygonObject.properties || {},
+    {
+      Object_ID: polygonObjectId,
+      Layer_ID: polygonLayerId,
+      Layer_Label: polygonLayerLabel,
+      Layer_Tujuan: polygonLayerId,
+      Nama_Objek: objectName,
+      Kategori: 'Penanaman Mangrove',
+      Source_Type: 'community_report',
+      Source_Report_ID: polygonReportId,
+      reportId: polygonReportId,
+      reportType: 'Area/Poligon Baru',
+      title: objectName,
+      description: clean_(reportSheet.getRange(pointReportRow, 13).getDisplayValue()),
+      activityDate: clean_(reportSheet.getRange(pointReportRow, 14).getDisplayValue()),
+      locationName: 'Penanaman di belakang SD',
+      photos: mergedPhotos,
+      _ygPhotos: mergedPhotos,
+      Jumlah_Tanam: 200,
+      Jumlah_Bib: 200,
+      Status_Objek: 'Aktif',
+      Linked_Report_IDs: [pointReportId, polygonReportId, correctionReportId],
+      Activity_Report_ID: pointReportId,
+      Correction_Report_ID: correctionReportId
+    }
+  );
+
+  polygonObject.objectName = objectName;
+  polygonObject.category = 'Penanaman Mangrove';
+  polygonObject.plantedCount = 200;
+  polygonObject.status = 'Aktif';
+  polygonObject.properties = mergedProperties;
+  upsertMasterObject_(polygonObject, {
+    action: 'CONSOLIDATE_POINT_INTO_POLYGON',
+    reason: 'Gabungkan laporan titik penanaman ke poligon kecil Tanjung Kuras',
+    changedBy: caller
+  });
+
+  pointObject.status = 'Arsip';
+  pointObject.properties = Object.assign({}, pointObject.properties || {}, {
+    Status_Objek: 'Arsip',
+    Merged_Into_Object_ID: polygonObjectId,
+    Merged_At: new Date().toISOString()
+  });
+  upsertMasterObject_(pointObject, {
+    action: 'ARCHIVE_DUPLICATE_POINT',
+    reason: 'Laporan aktivitas telah digabungkan ke poligon penanaman Tanjung Kuras',
+    changedBy: caller
+  });
+
+  const polygonChanges = {
+    targetObjectId: polygonObjectId,
+    targetSourceType: 'community_report',
+    targetLayerId: polygonLayerId,
+    targetLayerLabel: polygonLayerLabel,
+    targetObjectName: objectName
+  };
+
+  reportSheet.getRange(polygonReportRow, 12).setValue(objectName);
+  reportSheet.getRange(polygonReportRow, 13).setValue(
+    reportSheet.getRange(pointReportRow, 13).getDisplayValue()
+  );
+  reportSheet.getRange(polygonReportRow, 14).setValue(
+    reportSheet.getRange(pointReportRow, 14).getValue()
+  );
+  reportSheet.getRange(polygonReportRow, 17).setValue('Penanaman di belakang SD');
+  reportSheet.getRange(polygonReportRow, 20).setValue(mergedPhotos.join('\n'));
+  reportSheet.getRange(polygonReportRow, 29).setValue(polygonLayerId);
+  reportSheet.getRange(polygonReportRow, 30).setValue(polygonLayerLabel);
+  reportSheet.getRange(polygonReportRow, 31).setValue(JSON.stringify(mergedProperties));
+  reportSheet.getRange(polygonReportRow, 32).setValue(JSON.stringify(polygonChanges));
+
+  reportSheet.getRange(pointReportRow, 22).setValue('Digabungkan ke Poligon');
+  reportSheet.getRange(pointReportRow, 23).setValue(
+    'Objek titik diarsipkan; evidence digabungkan ke ' + polygonObjectId
+  );
+  reportSheet.getRange(pointReportRow, 29).setValue(polygonLayerId);
+  reportSheet.getRange(pointReportRow, 30).setValue(polygonLayerLabel);
+  reportSheet.getRange(pointReportRow, 31).setValue(JSON.stringify(mergedProperties));
+  reportSheet.getRange(pointReportRow, 32).setValue(JSON.stringify(Object.assign({}, polygonChanges, {
+    mergedIntoObjectId: polygonObjectId,
+    displayAsEvidenceOnly: true
+  })));
+
+  let correctionChanges = {};
+  try {
+    correctionChanges = JSON.parse(
+      reportSheet.getRange(correctionReportRow, 32).getDisplayValue() || '{}'
+    );
+  } catch (error) {
+    correctionChanges = {};
+  }
+  correctionChanges = Object.assign(correctionChanges, polygonChanges);
+  reportSheet.getRange(correctionReportRow, 29).setValue(polygonLayerId);
+  reportSheet.getRange(correctionReportRow, 30).setValue(polygonLayerLabel);
+  reportSheet.getRange(correctionReportRow, 31).setValue(JSON.stringify(mergedProperties));
+  reportSheet.getRange(correctionReportRow, 32).setValue(JSON.stringify(correctionChanges));
+
+  SpreadsheetApp.flush();
+  const syncResult = syncPublishedCommunityReportsToObjects();
+  const publicationResult = notifyCloudflarePublication_(correctionReportId);
+
+  return {
+    ok: true,
+    pointReportId: pointReportId,
+    polygonReportId: polygonReportId,
+    correctionReportId: correctionReportId,
+    archivedPointObjectId: pointObjectId,
+    publicPolygonObjectId: polygonObjectId,
+    photoCount: mergedPhotos.length,
+    sync: syncResult,
+    publication: publicationResult
+  };
+}
+
+/**
  * Corrections that have been verified against the original activity report.
  * Keep these keyed by report ID so similarly named programme objects are never
  * merged accidentally. The source report YG-20260725-135142-186 records the
