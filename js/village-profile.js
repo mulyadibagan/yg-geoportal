@@ -5,7 +5,7 @@
   var params=new URLSearchParams(window.location.search);
   var key=String(params.get("key")||"").trim().toLowerCase();
   var source=String(params.get("source")||"intervention").trim().toLowerCase();
-  var map=null;
+  var map=null,monthlyHotspotLayer=null,monthlyHotspotPoints=[],profileProgramFeatures=[];
 
   function el(id){return document.getElementById(id);}
   function esc(value){return String(value==null?"":value).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
@@ -71,8 +71,10 @@
   function renderMap(feature,name){
     map=L.map("village-map",{zoomControl:true,scrollWheelZoom:false});
     L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{maxNativeZoom:17,maxZoom:20,attribution:"Tiles &copy; Esri"}).addTo(map);
+    var overlays={};
     if(feature&&feature.geometry){
       var layer=L.geoJSON(feature,{style:{color:"#66e0bd",weight:4,opacity:1,fillColor:"#087f78",fillOpacity:.18}}).addTo(map);
+      overlays["Batas desa"]=layer;
       var bounds=layer.getBounds();
       if(bounds.isValid()){map.fitBounds(bounds,{padding:[24,24],maxZoom:14});}
       layer.bindTooltip(name,{permanent:false,direction:"center"});
@@ -80,6 +82,30 @@
       map.setView([1.25,102.05],7);
       el("map-caption").textContent="Batas polygon tidak tersedia pada snapshot saat ini; angka analisis tetap dibaca dari basis data desa.";
     }
+    function programmeLayer(id,label,markerClass,color){
+      var features=profileProgramFeatures.filter(function(item){return layerId(item)===id&&item.geometry;});
+      if(!features.length)return;
+      var group=L.geoJSON({type:"FeatureCollection",features:features},{
+        pointToLayer:function(item,latlng){return L.marker(latlng,{icon:L.divIcon({className:"",html:'<span class="vp-map-marker '+markerClass+'">'+(id==="fdrs"?"F":"S")+'</span>',iconSize:[22,22],iconAnchor:[11,11]})});},
+        style:{color:color,weight:4,opacity:.95},
+        onEachFeature:function(item,itemLayer){var p=item.properties||{};itemLayer.bindPopup('<strong>'+esc(p.Nama_Objek||label)+'</strong><br>'+esc(p.Tahun||p.activityDate||"")+'<br><small>'+esc(label)+'</small>');}
+      }).addTo(map);
+      overlays[label+" ("+features.length+")"]=group;
+    }
+    programmeLayer("fdrs","FDRS / TMA","vp-map-marker--fdrs","#ed6c19");
+    programmeLayer("sekat_kanal","Sekat kanal","vp-map-marker--canal","#078a9b");
+    monthlyHotspotLayer=L.layerGroup().addTo(map);overlays["Hotspot laporan final"]=monthlyHotspotLayer;
+    L.control.layers(null,overlays,{collapsed:true,position:"topright"}).addTo(map);
+    drawMonthlyHotspotPoints(monthlyHotspotPoints);
+  }
+
+  function drawMonthlyHotspotPoints(points){
+    monthlyHotspotPoints=points||[];
+    if(!monthlyHotspotLayer)return;
+    monthlyHotspotLayer.clearLayers();
+    monthlyHotspotPoints.forEach(function(point){
+      L.marker([Number(point.latitude),Number(point.longitude)],{icon:L.divIcon({className:"",html:'<span class="vp-map-marker vp-map-marker--hotspot">!</span>',iconSize:[22,22],iconAnchor:[11,11]})}).bindPopup('<strong>Hotspot high-confidence</strong><br>'+esc(point.date)+' '+esc(String(point.time||"").padStart(4,"0"))+' UTC<br>Satelit: '+esc(point.satellite||"—")+'<br>FRP: '+(point.frp==null?'—':Number(point.frp).toLocaleString("id-ID",{maximumFractionDigits:2})+' MW')).addTo(monthlyHotspotLayer);
+    });
   }
   function renderLoss(record,method){
     var annual=record.annualLossHa||{},years=Object.keys(annual).sort(),values=years.map(function(y){return number(annual[y]);}),available=values.filter(function(v){return v!=null;}),max=Math.max.apply(Math,[1].concat(available));
@@ -90,11 +116,6 @@
     var start=years[0]||"",end=years[years.length-1]||"";
     el("loss-chart-title").textContent="Kehilangan tutupan pohon "+start+"–"+end;
     el("loss-note").textContent="Data sumber tersedia sampai "+(method.lossDataThroughYear||"tahun terakhir yang tertera")+". Tahun setelah cakupan sumber ditandai “Belum ada”, bukan nol.";
-  }
-  function renderHotspots(record){
-    el("hotspot-summary").innerHTML='<div class="vp-hotspot-box"><span>7 hari terakhir</span><strong>'+format(record.hotspot7d,0)+'</strong></div><div class="vp-hotspot-box"><span>30 hari terakhir</span><strong>'+format(record.hotspot30d,0)+'</strong></div>';
-    var rows=Array.isArray(record.hotspotYearly5y)?record.hotspotYearly5y:[],max=Math.max.apply(Math,[1].concat(rows.map(function(x){return number(x.count)||0;})));
-    el("hotspot-years").innerHTML=rows.map(function(item){var value=number(item.count)||0;var height=Math.max(3,value/max*88);return '<div class="vp-mini"><strong>'+format(value,0)+'</strong><div class="vp-mini__bar" style="height:'+height.toFixed(1)+'px"></div><span>'+esc(item.year)+'</span></div>';}).join("");
   }
   function renderReferences(record,area){
     var ref=record.referenceAreasHa||{};
@@ -450,6 +471,7 @@
   function renderPrograms(features,capacityRows,boundary,name,district,regency){
     var allFeatures=Array.isArray(features)?features:[];
     var programs=allFeatures.filter(function(feature){return isProgramFeature(feature)&&featureMatchesPlace(feature,name,district,regency,boundary);});
+    profileProgramFeatures=programs.slice();
     var reportIds={},reports=allFeatures.filter(function(feature){
       var id=layerId(feature);if(!isActivityFeature(feature)){return false;}
       if(!activityMatchesPlace(feature,name,district,regency,boundary)){return false;}
@@ -538,10 +560,13 @@
     el("loss-through").textContent=method.lossDataThroughYear||"—";
     renderPrograms(snapshotFeatures,capacityRows,feature,name,district,regency);
     renderCommunityGroups(communityGroups,name,district,regency);
-    renderLoss(record,method);renderHotspots(record);renderReferences(record,area);
+    renderLoss(record,method);renderReferences(record,area);
     el("loading-state").hidden=true;el("profile-content").hidden=false;
     loadCoastalMangrove(name,district,regency);
-    window.requestAnimationFrame(function(){renderMap(feature,name);});
+    window.requestAnimationFrame(function(){
+      renderMap(feature,name);
+      if(window.YGFinalMonthlyHotspots){window.YGFinalMonthlyHotspots.init({geometry:feature&&feature.geometry,onPoints:function(points){drawMonthlyHotspotPoints(points);}});}
+    });
   }
 
   async function init(){

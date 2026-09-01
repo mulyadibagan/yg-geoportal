@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://unpkg.com">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="css/village-profile.css?v=20260825-community-groups1">
+  <link rel="stylesheet" href="css/final-monthly-hotspots.css?v=20260901-final1">
   <style>[hidden]{display:none!important}</style>
 </head>
 <body>
@@ -147,12 +148,14 @@
         <section class="vp-split">
           <article class="vp-card">
             <div class="vp-section-head">
-              <div><span class="vp-kicker">HOTSPOT</span><h2>Pemantauan anomali panas</h2></div>
+              <div><span class="vp-kicker">HOTSPOT</span><h2>Laporan bulanan final</h2></div>
+              <select class="vp-month-select" id="hotspot-month-select" aria-label="Pilih laporan hotspot bulanan"></select>
             </div>
             <div class="vp-hotspot-summary" id="hotspot-summary"></div>
-            <h3 class="vp-subtitle">Jumlah hotspot per tahun</h3>
-            <div class="vp-mini-bars" id="hotspot-years"></div>
-            <p class="vp-caption">Hotspot adalah anomali panas dari satelit, bukan konfirmasi kejadian kebakaran.</p>
+            <p class="vp-month-status" id="hotspot-month-status">Memuat indeks laporan final…</p>
+            <div class="vp-monthly-table-wrap"><table class="vp-monthly-table"><thead><tr><th>Waktu (UTC)</th><th>Satelit</th><th>FRP</th><th>Koordinat</th></tr></thead><tbody id="hotspot-month-list"></tbody></table></div>
+            <a class="vp-module-link" id="hotspot-report-link" href="fire-monthly-report.html">Buka laporan bulanan lengkap →</a>
+            <p class="vp-caption">Hanya laporan final yang dimuat. Hotspot adalah anomali panas satelit, bukan konfirmasi kejadian kebakaran.</p>
           </article>
 
           <article class="vp-card">
@@ -172,13 +175,13 @@
             <div><b>1</b><strong>Batas analisis</strong><p>Polygon batas desa menjadi area pemotongan seluruh dataset.</p></div>
             <div><b>2</b><strong>Tutupan pohon</strong><p>Raster Hansen/UMD dihitung untuk kanopi sesuai ambang dataset.</p></div>
             <div><b>3</b><strong>Perubahan tahunan</strong><p>Pixel kehilangan dikelompokkan menurut tahun lalu dikonversi ke hektare.</p></div>
-            <div><b>4</b><strong>Hotspot</strong><p>Titik NASA FIRMS dihitung bila berada di dalam polygon desa.</p></div>
+          <div><b>4</b><strong>Hotspot</strong><p>Hanya titik NASA FIRMS dari laporan bulanan final terpilih yang dihitung di dalam polygon desa.</p></div>
           </div>
           <div class="vp-source-grid">
             <div><span>Baseline tutupan pohon</span><strong id="baseline-period">—</strong></div>
             <div><span>Data kehilangan tersedia s.d.</span><strong id="loss-through">—</strong></div>
             <div><span>Sumber tutupan pohon</span><strong>Hansen / UMD / Google / USGS / NASA</strong></div>
-            <div><span>Sumber hotspot</span><strong>NASA FIRMS · VIIRS</strong></div>
+            <div><span>Sumber hotspot</span><strong>NASA FIRMS · MODIS/VIIRS · laporan bulanan final</strong></div>
           </div>
         </section>
 
@@ -192,6 +195,7 @@
 
   <div class="vp-toast" id="toast" role="status" aria-live="polite"></div>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="js/village-profile.js?v=20260831-activity-classification2"></script>
+  <script src="js/final-monthly-hotspots.js?v=20260901-final1"></script>
+  <script src="js/village-profile.js?v=20260901-final-monthly1"></script>
 </body>
 </html>

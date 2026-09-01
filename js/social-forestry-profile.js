@@ -1,6 +1,6 @@
 (function(){
 "use strict";
-var params=new URLSearchParams(location.search),key=String(params.get("key")||"").trim().toLowerCase(),map=null;
+var params=new URLSearchParams(location.search),key=String(params.get("key")||"").trim().toLowerCase(),map=null,monthlyHotspotLayer=null,monthlyHotspotPoints=[];
 var keyAliases={"drive-audit:kampar-lphd-kenagarian-pangkalan-kapas":"sk.3072/menlhk-pskl/pkps/psl.0/5/2018","drive-audit:kampar-mha-kenegerian-kampa":"sk.7504/menlhk-pskl/pktha/kum.1/9/2019","drive-audit:bengkalis-gapoktan-rupat-agro-mandiri":"13528 tahun 2024"};
 key=keyAliases[key]||key;
 function el(id){return document.getElementById(id)}
@@ -25,17 +25,19 @@ function renderMap(feature,name){
   var layer=L.geoJSON(feature,{style:{color:"#00b89c",weight:4,opacity:1,fillColor:"#087f78",fillOpacity:.16}}).addTo(map);
   var b=layer.getBounds();if(b.isValid())map.fitBounds(b,{padding:[24,24],maxZoom:14});
   layer.bindTooltip(name,{direction:"center"});
+  monthlyHotspotLayer=L.layerGroup().addTo(map);
+  L.control.layers(null,{"Batas Perhutanan Sosial":layer,"Hotspot laporan final":monthlyHotspotLayer},{collapsed:true,position:"topright"}).addTo(map);
+  drawMonthlyHotspotPoints(monthlyHotspotPoints);
+}
+function drawMonthlyHotspotPoints(points){
+  monthlyHotspotPoints=points||[];if(!monthlyHotspotLayer)return;monthlyHotspotLayer.clearLayers();
+  monthlyHotspotPoints.forEach(function(point){L.marker([Number(point.latitude),Number(point.longitude)],{icon:L.divIcon({className:"",html:'<span class="vp-map-marker vp-map-marker--hotspot">!</span>',iconSize:[22,22],iconAnchor:[11,11]})}).bindPopup('<strong>Hotspot high-confidence</strong><br>'+esc(point.date)+' '+esc(String(point.time||"").padStart(4,"0"))+' UTC<br>Satelit: '+esc(point.satellite||"—")+'<br>FRP: '+(point.frp==null?'—':Number(point.frp).toLocaleString("id-ID",{maximumFractionDigits:2})+' MW')).addTo(monthlyHotspotLayer)});
 }
 function renderLoss(record,method){
   var annual=record.annualLossHa||{},years=Object.keys(annual).sort(),values=years.map(function(y){return number(annual[y])}),available=values.filter(function(v){return v!=null}),max=Math.max.apply(Math,[1].concat(available));
   el("loss-bars").innerHTML=years.map(function(year){var value=number(annual[year]),empty=value==null,width=empty?0:value/max*100;return'<div class="vp-bar'+(empty?' vp-bar--empty':'')+'"><span>'+esc(year)+'</span><div class="vp-bar__track"><div class="vp-bar__fill" style="width:'+width.toFixed(2)+'%"></div></div><strong>'+(empty?'Belum ada':format(value,1)+' ha')+'</strong></div>'}).join("");
   el("loss-chart-title").textContent="Kehilangan tutupan pohon "+(years[0]||"")+"–"+(years[years.length-1]||"");
   el("loss-note").textContent="Data tersedia sampai "+(method.lossDataThroughYear||"tahun terakhir")+". Tahun setelah cakupan sumber ditandai “Belum ada”, bukan nol.";
-}
-function renderHotspots(record){
-  el("hotspot-summary").innerHTML='<div class="vp-hotspot-box"><span>7 hari terakhir</span><strong>'+format(record.hotspot7d,0)+'</strong></div><div class="vp-hotspot-box"><span>30 hari terakhir</span><strong>'+format(record.hotspot30d,0)+'</strong></div>';
-  var rows=Array.isArray(record.hotspotYearly5y)?record.hotspotYearly5y:[],max=Math.max.apply(Math,[1].concat(rows.map(function(x){return number(x.count)||0})));
-  el("hotspot-years").innerHTML=rows.map(function(x){var v=number(x.count)||0,h=Math.max(3,v/max*88);return'<div class="vp-mini"><strong>'+format(v,0)+'</strong><div class="vp-mini__bar" style="height:'+h.toFixed(1)+'px"></div><span>'+esc(x.year)+'</span></div>'}).join("");
 }
 function renderReferences(record,area){
   var r=record.referenceAreasHa||{},rows=[["APL",r.apl],["Hutan produksi",r.productionForest],["Hutan lindung",r.protectionForest],["Kawasan konservasi",r.conservation],["Ekosistem gambut",r.peat],["PBPH aktif (Mei 2026)",r.concession],["Perhutanan sosial",r.socialForestry]];
@@ -109,9 +111,9 @@ function render(feature,record,data,detail){
   el("forest-percent").textContent=percent(share);el("current-forest").textContent=ha(current);el("forest-donut").style.setProperty("--value",share==null?0:share);
   el("forest-definition").textContent="Baseline "+(method.baselineYear||2000)+" dikurangi kehilangan"+(gain!=null?" dan ditambah pertambahan terpetakan":"")+". Angka bersifat indikatif.";
   el("baseline-period").textContent=method.baselineYear||"—";el("loss-through").textContent=method.lossDataThroughYear||"—";
-  renderIdentity(p,area,detail);renderSupplemental(detail);renderLoss(record,method);renderHotspots(record);renderReferences(record,area);
+  renderIdentity(p,area,detail);renderSupplemental(detail);renderLoss(record,method);renderReferences(record,area);
   if(!analysisAvailable){el("loss-chart-title").textContent="Analisis kehilangan tutupan pohon belum tersedia";el("loss-note").textContent="Polygon resmi telah terhubung. Statistik raster akan ditampilkan setelah proses analisis berikutnya."}
-  el("loading-state").hidden=true;el("error-state").hidden=true;el("profile-content").hidden=false;requestAnimationFrame(function(){renderMap(feature,name)});
+  el("loading-state").hidden=true;el("error-state").hidden=true;el("profile-content").hidden=false;requestAnimationFrame(function(){renderMap(feature,name);if(window.YGFinalMonthlyHotspots){window.YGFinalMonthlyHotspots.init({geometry:feature.geometry,onPoints:function(points){drawMonthlyHotspotPoints(points)}})}});
 }
 async function init(){
   if(!key){showError("Tautan areal tidak lengkap. Pilih Perhutanan Sosial melalui WebGIS.");return}
@@ -128,6 +130,8 @@ async function init(){
     if(!record&&feature){var fk=featureKey(feature),records=data.socialForestry||{};record=records[fk]||Object.keys(records).map(function(recordKey){return records[recordKey]}).find(function(candidate){return normalized(candidate&&candidate.name)===normalized((feature.properties||{}).NAMA_HKM)})}
     if((!feature||!feature.geometry)&&directDetail){renderNonspatial(directDetail);return}
     if(!feature||!feature.geometry)throw new Error("Polygon Perhutanan Sosial tidak ditemukan.");
+    var resolvedPermit=permitKey(feature),resolvedFeature=featureKey(feature),spatialParts=(geo.features||[]).filter(function(candidate){return resolvedPermit&&permitKey(candidate)===resolvedPermit||resolvedFeature&&featureKey(candidate)===resolvedFeature});
+    if(spatialParts.length>1&&window.YGFinalMonthlyHotspots){var mergedGeometry=window.YGFinalMonthlyHotspots.mergePolygonGeometries(spatialParts);if(mergedGeometry){var mergedProperties=Object.assign({},feature.properties),partAreas=spatialParts.map(function(part){return number((part.properties||{}).LUAS_POLI)}).filter(function(value){return value!=null});if(partAreas.length===spatialParts.length)mergedProperties.LUAS_POLI=partAreas.reduce(function(total,value){return total+value},0);feature={type:"Feature",properties:mergedProperties,geometry:mergedGeometry}}}
     if(!record)record={analysisAvailable:false,name:(feature.properties||{}).NAMA_HKM,annualLossHa:{},hotspotYearly5y:[],referenceAreasHa:{}};
     var detailKey=permitKey(feature),spatialDetail=details[detailKey]||details[featureKey(feature)]||null,detail=directDetail?Object.assign({},spatialDetail||{},directDetail):spatialDetail,approvedDocument=null;
     try{approvedDocument=JSON.parse(localStorage.getItem("ygPsApprovedDocument:"+key)||"null")}catch(ignore){}
