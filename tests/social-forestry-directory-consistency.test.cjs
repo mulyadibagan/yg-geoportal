@@ -61,3 +61,20 @@ test("directory uses extracted decrees and canonical summary keys", () => {
   assert.match(directory, /canonicalScheme\(r\.summaryScheme\|\|r\.scheme\)/);
   assert.match(overlay, /d\.decree\|\|legal\.decreeNumber/);
 });
+
+test("scheme summary cards are accessible directory filters", () => {
+  const directory = fs.readFileSync(path.join(root, "js/social-forestry-directory.js"), "utf8");
+  const page = fs.readFileSync(path.join(root, "social-forestry-directory.html"), "utf8");
+  const styles = fs.readFileSync(path.join(root, "css/social-forestry-directory-clickable.css"), "utf8");
+
+  assert.match(directory, /activeScheme/);
+  assert.match(directory, /data-area-action="approved"/);
+  assert.match(directory, /data-area-action="process"/);
+  assert.match(directory, /data-area-scheme=/);
+  assert.match(directory, /aria-pressed=/);
+  assert.match(directory, /schemeGrid\.addEventListener\("click"/);
+  assert.match(page, /social-forestry-directory-clickable\.css\?v=20260901-clickable-schemes1/);
+  assert.match(page, /social-forestry-directory\.js\?v=20260901-clickable-schemes1/);
+  assert.match(styles, /\.psd-area-card:focus-visible/);
+  assert.match(styles, /\.psd-area-card\.is-active/);
+});
