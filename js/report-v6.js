@@ -825,8 +825,10 @@
         map.fitBounds(bounds,{padding:[24,24],maxZoom:14});
       }
 
-      summary.textContent =
-        'Layer dimuat. Klik salah satu titik atau poligon pada peta.';
+      if(!preferredSelection){
+        summary.textContent =
+          'Layer dimuat. Klik salah satu titik atau poligon pada peta.';
+      }
     }catch(error){
       console.error(error);
       summary.className = 'selected-feature-summary error';

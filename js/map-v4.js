@@ -1122,8 +1122,7 @@ L.control.scale({
       : "";
     const buildReportLink = (mode, label) => {
       const reportUrl = 'report.html?type=' + encodeURIComponent(mode) + '&layer=' + encodeURIComponent(actionLayerId) + '&object=' + encodeURIComponent(objectId);
-      const payload = JSON.stringify({ type: mode, layer: actionLayerId, object: objectId });
-      return '<a class="yg-popup-monitoring-link" href="' + escapeHtml(reportUrl) + '" onclick="try{sessionStorage.setItem(\'ygPendingReportAction\', ' + JSON.stringify(payload) + ');}catch(e){}window.location.assign(' + JSON.stringify(reportUrl) + '); return false;">' + escapeHtml(label) + '</a>';
+      return '<a class="yg-popup-monitoring-link" href="' + escapeHtml(reportUrl) + '">' + escapeHtml(label) + '</a>';
     };
     const actionLinks = [
       existingMonitoringLink,
