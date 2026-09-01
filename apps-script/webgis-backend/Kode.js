@@ -1858,6 +1858,10 @@ function getPublishedReports_() {
 
     const reportType = clean_(row[1]);
 
+    if (isMergedEvidenceReport_(row[0])) {
+      return;
+    }
+
     /*
       Perbaikan Informasi adalah usulan perubahan terhadap objek lama.
       Jangan dibuat sebagai titik/poligon publik baru.

@@ -40,6 +40,18 @@ const CHANGE_LOG_HEADERS = [
   'Before_JSON', 'After_JSON'
 ];
 
+const MERGED_EVIDENCE_REPORT_TARGETS = {
+  'YG-20260725-135142-186': 'COMMUNITY-YG-20260829-144847-315'
+};
+
+function mergedEvidenceTargetObjectId_(reportId) {
+  return MERGED_EVIDENCE_REPORT_TARGETS[clean_(reportId)] || '';
+}
+
+function isMergedEvidenceReport_(reportId) {
+  return Boolean(mergedEvidenceTargetObjectId_(reportId));
+}
+
 /**
  * Jalankan sekali dari editor Apps Script.
  * Fungsi ini membuat sheet master dan mengimpor seluruh layer GeoJSON GitHub.
@@ -109,8 +121,13 @@ function syncPublishedCommunityReportsToObjects() {
   rows.forEach(function(row) {
     const status = clean_(row[21]);
     const reportType = clean_(row[1]);
+    const reportId = clean_(row[0]);
 
     if (status !== 'Sudah Dipublikasikan') return;
+    if (isMergedEvidenceReport_(reportId)) {
+      skipped += 1;
+      return;
+    }
 
     if (
       ['Perbaikan Informasi', 'Tambah Foto Kegiatan']
@@ -138,7 +155,6 @@ function syncPublishedCommunityReportsToObjects() {
       return;
     }
 
-    const reportId = clean_(row[0]);
     let targetProperties = {};
     let proposedChanges = {};
 
@@ -346,9 +362,22 @@ function consolidateTanjungKurasPlantingIntoPolygonFromSecureExecution() {
 
   const pointObjectRow = findObjectRowById_(objectSheet, pointObjectId);
   const polygonObjectRow = findObjectRowById_(objectSheet, polygonObjectId);
-  const pointReportRow = findReportRowById_(reportSheet, pointReportId);
-  const polygonReportRow = findReportRowById_(reportSheet, polygonReportId);
-  const correctionReportRow = findReportRowById_(reportSheet, correctionReportId);
+  function reportRowsById_(reportId) {
+    if (reportSheet.getLastRow() < 2) return [];
+    return reportSheet
+      .getRange(2, 1, reportSheet.getLastRow() - 1, 1)
+      .createTextFinder(reportId)
+      .matchEntireCell(true)
+      .findAll()
+      .map(function(cell) { return cell.getRow(); });
+  }
+
+  const pointReportRows = reportRowsById_(pointReportId);
+  const polygonReportRows = reportRowsById_(polygonReportId);
+  const correctionReportRows = reportRowsById_(correctionReportId);
+  const pointReportRow = pointReportRows[0];
+  const polygonReportRow = polygonReportRows[0];
+  const correctionReportRow = correctionReportRows[0];
 
   if (!pointObjectRow || !polygonObjectRow) {
     throw new Error('Objek titik atau poligon Tanjung Kuras tidak ditemukan.');
@@ -448,45 +477,51 @@ function consolidateTanjungKurasPlantingIntoPolygonFromSecureExecution() {
     targetObjectName: objectName
   };
 
-  reportSheet.getRange(polygonReportRow, 12).setValue(objectName);
-  reportSheet.getRange(polygonReportRow, 13).setValue(
-    reportSheet.getRange(pointReportRow, 13).getDisplayValue()
-  );
-  reportSheet.getRange(polygonReportRow, 14).setValue(
-    reportSheet.getRange(pointReportRow, 14).getValue()
-  );
-  reportSheet.getRange(polygonReportRow, 17).setValue('Penanaman di belakang SD');
-  reportSheet.getRange(polygonReportRow, 20).setValue(mergedPhotos.join('\n'));
-  reportSheet.getRange(polygonReportRow, 29).setValue(polygonLayerId);
-  reportSheet.getRange(polygonReportRow, 30).setValue(polygonLayerLabel);
-  reportSheet.getRange(polygonReportRow, 31).setValue(JSON.stringify(mergedProperties));
-  reportSheet.getRange(polygonReportRow, 32).setValue(JSON.stringify(polygonChanges));
-
-  reportSheet.getRange(pointReportRow, 22).setValue('Digabungkan ke Poligon');
-  reportSheet.getRange(pointReportRow, 23).setValue(
-    'Objek titik diarsipkan; evidence digabungkan ke ' + polygonObjectId
-  );
-  reportSheet.getRange(pointReportRow, 29).setValue(polygonLayerId);
-  reportSheet.getRange(pointReportRow, 30).setValue(polygonLayerLabel);
-  reportSheet.getRange(pointReportRow, 31).setValue(JSON.stringify(mergedProperties));
-  reportSheet.getRange(pointReportRow, 32).setValue(JSON.stringify(Object.assign({}, polygonChanges, {
-    mergedIntoObjectId: polygonObjectId,
-    displayAsEvidenceOnly: true
-  })));
-
-  let correctionChanges = {};
-  try {
-    correctionChanges = JSON.parse(
-      reportSheet.getRange(correctionReportRow, 32).getDisplayValue() || '{}'
+  polygonReportRows.forEach(function(rowNumber) {
+    reportSheet.getRange(rowNumber, 12).setValue(objectName);
+    reportSheet.getRange(rowNumber, 13).setValue(
+      reportSheet.getRange(pointReportRow, 13).getDisplayValue()
     );
-  } catch (error) {
-    correctionChanges = {};
-  }
-  correctionChanges = Object.assign(correctionChanges, polygonChanges);
-  reportSheet.getRange(correctionReportRow, 29).setValue(polygonLayerId);
-  reportSheet.getRange(correctionReportRow, 30).setValue(polygonLayerLabel);
-  reportSheet.getRange(correctionReportRow, 31).setValue(JSON.stringify(mergedProperties));
-  reportSheet.getRange(correctionReportRow, 32).setValue(JSON.stringify(correctionChanges));
+    reportSheet.getRange(rowNumber, 14).setValue(
+      reportSheet.getRange(pointReportRow, 14).getValue()
+    );
+    reportSheet.getRange(rowNumber, 17).setValue('Penanaman di belakang SD');
+    reportSheet.getRange(rowNumber, 20).setValue(mergedPhotos.join('\n'));
+    reportSheet.getRange(rowNumber, 29).setValue(polygonLayerId);
+    reportSheet.getRange(rowNumber, 30).setValue(polygonLayerLabel);
+    reportSheet.getRange(rowNumber, 31).setValue(JSON.stringify(mergedProperties));
+    reportSheet.getRange(rowNumber, 32).setValue(JSON.stringify(polygonChanges));
+  });
+
+  pointReportRows.forEach(function(rowNumber) {
+    reportSheet.getRange(rowNumber, 23).setValue(
+      'Laporan tetap terpublikasi sebagai evidence; objek titik diarsipkan dan digabungkan ke ' +
+      polygonObjectId
+    );
+    reportSheet.getRange(rowNumber, 29).setValue(polygonLayerId);
+    reportSheet.getRange(rowNumber, 30).setValue(polygonLayerLabel);
+    reportSheet.getRange(rowNumber, 31).setValue(JSON.stringify(mergedProperties));
+    reportSheet.getRange(rowNumber, 32).setValue(JSON.stringify(Object.assign({}, polygonChanges, {
+      mergedIntoObjectId: polygonObjectId,
+      displayAsEvidenceOnly: true
+    })));
+  });
+
+  correctionReportRows.forEach(function(rowNumber) {
+    let correctionChanges = {};
+    try {
+      correctionChanges = JSON.parse(
+        reportSheet.getRange(rowNumber, 32).getDisplayValue() || '{}'
+      );
+    } catch (error) {
+      correctionChanges = {};
+    }
+    correctionChanges = Object.assign(correctionChanges, polygonChanges);
+    reportSheet.getRange(rowNumber, 29).setValue(polygonLayerId);
+    reportSheet.getRange(rowNumber, 30).setValue(polygonLayerLabel);
+    reportSheet.getRange(rowNumber, 31).setValue(JSON.stringify(mergedProperties));
+    reportSheet.getRange(rowNumber, 32).setValue(JSON.stringify(correctionChanges));
+  });
 
   SpreadsheetApp.flush();
   const syncResult = syncPublishedCommunityReportsToObjects();
@@ -500,6 +535,9 @@ function consolidateTanjungKurasPlantingIntoPolygonFromSecureExecution() {
     archivedPointObjectId: pointObjectId,
     publicPolygonObjectId: polygonObjectId,
     photoCount: mergedPhotos.length,
+    pointReportRows: pointReportRows.length,
+    polygonReportRows: polygonReportRows.length,
+    correctionReportRows: correctionReportRows.length,
     sync: syncResult,
     publication: publicationResult
   };
@@ -580,6 +618,7 @@ function getWebGisObjectsFeatureCollection_() {
       }
 
       const reportId = clean_(row[0]);
+      if (isMergedEvidenceReport_(reportId)) return;
       const isMonitoring = reportType === 'Monitoring';
 
       const objectId = isMonitoring
