@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-31T04:43:53.116864Z",
+  "generatedAt": "2026-09-01T08:17:07.521592Z",
   "method": {
     "forestDefinition": "Hansen tree cover extent with canopy density at or above 30 percent",
     "baselineYear": 2000,
@@ -29737,62 +29737,6 @@
         {
           "year": "2024",
           "count": 0
-        },
-        {
-          "year": "2025",
-          "count": 0
-        },
-        {
-          "year": "2026",
-          "count": 0
-        }
-      ],
-      "hotspot7d": 0,
-      "hotspot30d": 0,
-      "hotspot90d": null
-    },
-    "kelurahan basilam baru|sungai sembilan|kota dumai": {
-      "name": "Kelurahan Basilam Baru",
-      "geostoreId": null,
-      "baselineForestHa": 50552.75,
-      "currentForestHa": 18995.39,
-      "totalLossHa": 31557.36,
-      "gainHa": null,
-      "annualLossHa": {
-        "2017": 589.91,
-        "2018": 301.03,
-        "2019": 119.18,
-        "2020": 460.42,
-        "2021": 490.72,
-        "2022": 337.4,
-        "2023": 177.92,
-        "2024": 144.55,
-        "2025": 217.29,
-        "2026": null
-      },
-      "referenceAreasHa": {
-        "apl": 5910.3,
-        "productionForest": 47033.53,
-        "protectionForest": 0.0,
-        "conservation": 0.0,
-        "forestEstate": 47033.53,
-        "unclassifiedForestFunction": 0.0,
-        "peat": 41070.9,
-        "concession": 36180.58,
-        "socialForestry": 0.0
-      },
-      "hotspotYearly5y": [
-        {
-          "year": "2022",
-          "count": 0
-        },
-        {
-          "year": "2023",
-          "count": 0
-        },
-        {
-          "year": "2024",
-          "count": 2
         },
         {
           "year": "2025",
@@ -117894,6 +117838,120 @@
       "hotspot7d": 0,
       "hotspot30d": 0,
       "hotspot90d": null
+    },
+    "14.72.04.1006": {
+      "name": "Kelurahan Sungai Geniot",
+      "geostoreId": null,
+      "baselineForestHa": 29533.14,
+      "currentForestHa": 15450.29,
+      "totalLossHa": 14082.85,
+      "gainHa": null,
+      "annualLossHa": {
+        "2017": 254.81,
+        "2018": 134.09,
+        "2019": 89.11,
+        "2020": 274.41,
+        "2021": 204.06,
+        "2022": 204.99,
+        "2023": 125.1,
+        "2024": 91.27,
+        "2025": 143.94,
+        "2026": null
+      },
+      "referenceAreasHa": {
+        "apl": 2060.85,
+        "productionForest": 27773.83,
+        "protectionForest": 0.0,
+        "conservation": 0.0,
+        "forestEstate": 27773.83,
+        "unclassifiedForestFunction": 0.0,
+        "peat": 22957.22,
+        "concession": 18612.57,
+        "socialForestry": 0.0
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null,
+      "hotspotYearly5y": [
+        {
+          "year": "2022",
+          "count": null
+        },
+        {
+          "year": "2023",
+          "count": null
+        },
+        {
+          "year": "2024",
+          "count": null
+        },
+        {
+          "year": "2025",
+          "count": null
+        },
+        {
+          "year": "2026",
+          "count": 0
+        }
+      ],
+      "generatedAt": "2026-09-01T08:17:07.521592Z"
+    },
+    "14.72.04.1004": {
+      "name": "Kelurahan Basilam Baru",
+      "geostoreId": null,
+      "baselineForestHa": 21019.61,
+      "currentForestHa": 3545.1,
+      "totalLossHa": 17474.51,
+      "gainHa": null,
+      "annualLossHa": {
+        "2017": 335.1,
+        "2018": 166.93,
+        "2019": 30.06,
+        "2020": 186.0,
+        "2021": 286.66,
+        "2022": 132.41,
+        "2023": 52.83,
+        "2024": 53.29,
+        "2025": 73.36,
+        "2026": null
+      },
+      "referenceAreasHa": {
+        "apl": 3849.45,
+        "productionForest": 19259.7,
+        "protectionForest": 0.0,
+        "conservation": 0.0,
+        "forestEstate": 19259.7,
+        "unclassifiedForestFunction": 0.0,
+        "peat": 18113.67,
+        "concession": 17568.01,
+        "socialForestry": 0.0
+      },
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null,
+      "hotspotYearly5y": [
+        {
+          "year": "2022",
+          "count": null
+        },
+        {
+          "year": "2023",
+          "count": null
+        },
+        {
+          "year": "2024",
+          "count": null
+        },
+        {
+          "year": "2025",
+          "count": null
+        },
+        {
+          "year": "2026",
+          "count": 0
+        }
+      ],
+      "generatedAt": "2026-09-01T08:17:07.521592Z"
     }
   },
   "socialForestry": {},

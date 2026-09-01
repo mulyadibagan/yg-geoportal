@@ -1,0 +1,142 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-01T08:35:10.570753+00:00",
+  "scopeId": "basilam-geniot-coastal-landscape",
+  "scopeLabel": "Bentang Pesisir Basilam Baru - Sungai Geniot",
+  "sharedLandscape": true,
+  "administrativeBoundaryUsedForClipping": false,
+  "physicalSeed": {
+    "source": "Sentinel-2 coastal-change and mangrove-candidate polygons",
+    "featureCount": 82,
+    "contextBufferM": 2500
+  },
+  "aliases": [
+    {
+      "code": "14.72.04.1004",
+      "village": "Kelurahan Basilam Baru",
+      "district": "Sungai Sembilan",
+      "regency": "Kota Dumai"
+    },
+    {
+      "code": "14.72.04.1006",
+      "village": "Kelurahan Sungai Geniot",
+      "district": "Sungai Sembilan",
+      "regency": "Kota Dumai"
+    }
+  ],
+  "methodology": {
+    "coastal": "Sentinel-2 NDWI/MNDWI, edge-connected water, 300 m image-derived shoreline band",
+    "mangrove": "Sentinel-2 NDVI/NDMI/MNDWI with tidal-water and mangrove-context filters",
+    "administrativeUse": "location label only; not used as analysis clipping mask"
+  },
+  "coastal": {
+    "village": "Bentang Pesisir Basilam Baru - Sungai Geniot",
+    "district": "Sungai Sembilan",
+    "regency": "Kota Dumai",
+    "status": "analysed",
+    "baseline": "2016",
+    "current": "2025",
+    "coastlineLengthKm": 25.08,
+    "erosionAreaHa": 13.93,
+    "accretionAreaHa": 19.53,
+    "indicativeMeanRetreatM": 5.6,
+    "indicativeMeanAdvanceM": 7.8,
+    "netAreaChangeHa": 5.6,
+    "elapsedYears": 9,
+    "indicativeRetreatRateMPerYear": 0.62,
+    "indicativeAdvanceRateMPerYear": 0.87,
+    "clearCoveragePct": 100.0,
+    "baselineSceneCount": 3,
+    "currentSceneCount": 5,
+    "stableCoverageFeatureCount": 31,
+    "stableCoverageMeaning": "Analysed current shoreline without mapped erosion or accretion outside the positional uncertainty context",
+    "stableCoverageGeoJson": "data/basilam-geniot-physical-coastal-coverage.geojson",
+    "positionalUncertaintyM": 14.1,
+    "confidence": "rendah",
+    "baselineScenes": [
+      "S2A_MSIL2A_20160608T032542_R018_T47NQC_20210211T173049",
+      "S2A_MSIL2A_20160807T032542_R018_T47NQC_20210212T115107",
+      "S2A_MSIL2A_20160519T032542_R018_T47NQC_20210211T122533"
+    ],
+    "currentScenes": [
+      "S2C_MSIL2A_20250711T032601_R018_T47NQC_20250711T082105",
+      "S2B_MSIL2A_20250706T032519_R018_T47NQC_20250706T071937",
+      "S2B_MSIL2A_20250716T032519_R018_T47NQC_20250716T071205",
+      "S2C_MSIL2A_20250731T032601_R018_T47NQC_20250731T082914",
+      "S2B_MSIL2A_20250517T032519_R018_T47NQC_20250517T071427"
+    ],
+    "analysisScope": "physical-coastal-landscape",
+    "analysisScopeId": "basilam-geniot-coastal-landscape",
+    "analysisScopeLabel": "Bentang Pesisir Basilam Baru - Sungai Geniot",
+    "sharedLandscape": true,
+    "administrativeBoundaryUsedForClipping": false,
+    "physicalSeedBufferM": 2500
+  },
+  "mangrove": {
+    "id": "basilam-geniot-coastal-landscape",
+    "village": "Bentang Pesisir Basilam Baru - Sungai Geniot",
+    "district": "Sungai Sembilan",
+    "regency": "Kota Dumai",
+    "baseline": "2016",
+    "current": "2025",
+    "status": "analysed",
+    "latest": "2026",
+    "baselineMangroveHa": 2423.12,
+    "currentMangroveHa": 1588.85,
+    "indicativeMangroveLossHa": 159.32,
+    "openTidalOpportunityHa": 71.95,
+    "candidateAreaHa": 152.02,
+    "needScore": 63,
+    "needClass": "sedang",
+    "suitabilityScore": 85,
+    "suitabilityClass": "tinggi",
+    "recommendedAction": "perlindungan pantai dan verifikasi hidrodinamika sebelum penanaman",
+    "confidence": "tinggi",
+    "clearCoveragePct": 99.9,
+    "baselineSceneCount": 3,
+    "currentSceneCount": 5,
+    "latestSceneCount": 5,
+    "baselineScenes": [
+      "S2A_MSIL2A_20160608T032542_R018_T47NQC_20210211T173049",
+      "S2A_MSIL2A_20160807T032542_R018_T47NQC_20210212T115107",
+      "S2A_MSIL2A_20160519T032542_R018_T47NQC_20210211T122533"
+    ],
+    "currentScenes": [
+      "S2C_MSIL2A_20250711T032601_R018_T47NQC_20250711T082105",
+      "S2B_MSIL2A_20250706T032519_R018_T47NQC_20250706T071937",
+      "S2B_MSIL2A_20250716T032519_R018_T47NQC_20250716T071205",
+      "S2C_MSIL2A_20250731T032601_R018_T47NQC_20250731T082914",
+      "S2B_MSIL2A_20250517T032519_R018_T47NQC_20250517T071427"
+    ],
+    "latestScenes": [
+      "S2C_MSIL2A_20260815T032531_R018_T47NQC_20260815T081814",
+      "S2B_MSIL2A_20260313T032529_R018_T47NQC_20260313T084552",
+      "S2C_MSIL2A_20260127T033011_R018_T47NQC_20260127T080608",
+      "S2C_MSIL2A_20260318T032521_R018_T47NQC_20260318T084912",
+      "S2C_MSIL2A_20260527T032511_R018_T47NQC_20260527T082311"
+    ],
+    "latestOpenScreen": true,
+    "resolutionM": 10,
+    "analysisScope": "physical-coastal-landscape",
+    "analysisScopeId": "basilam-geniot-coastal-landscape",
+    "analysisScopeLabel": "Bentang Pesisir Basilam Baru - Sungai Geniot",
+    "sharedLandscape": true,
+    "administrativeBoundaryUsedForClipping": false,
+    "physicalSeedBufferM": 2500,
+    "roadFilteredAreaHa": 146.38,
+    "roadFilteredPolygonCount": 156,
+    "methodVersion": "mangrove-priority-2016-2025-v0.1",
+    "priorityPolygonCount": 156,
+    "priorityAreaHa": 146.38,
+    "priorityClasses": {
+      "P1": 0,
+      "P2": 0,
+      "P3": 0,
+      "P4": 155,
+      "P5": 0,
+      "X": 1,
+      "U": 0
+    },
+    "topPriorityScore": 62.7
+  }
+}

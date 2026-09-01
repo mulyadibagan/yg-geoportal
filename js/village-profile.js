@@ -12,10 +12,17 @@
   function number(value){if(value==null||String(value).trim()===""){return null;}var n=Number(value);return isFinite(n)?n:null;}
   function format(value,digits){var n=number(value);return n==null?"Belum tersedia":n.toLocaleString("id-ID",{maximumFractionDigits:digits==null?2:digits});}
   function ha(value){var n=number(value);return n==null?"Belum tersedia":format(n,2)+" ha";}
+  function metric(value,digits,suffix){var n=number(value);return n==null?"Belum tersedia":format(n,digits)+(suffix||"");}
   function percent(value){var n=number(value);return n==null?"—":format(n,1)+"%";}
   function titleCase(value){return String(value||"").replace(/\b\w/g,function(c){return c.toUpperCase();});}
   function normalized(value){return String(value||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();}
   function featureKey(feature){
+    var p=feature&&feature.properties||{};
+    var stable=p.Village_ID||p.VILLAGE_ID||p.Kode_Desa||p.KODE_DESA||p.KODE_WIL;
+    if(stable){return String(stable).trim().toLowerCase();}
+    return [p.WADMKD||p.Desa||p.NAMOBJ||p.Nama_Desa,p.WADMKC||p.Kecamatan,p.WADMKK||p.Kabupaten].filter(Boolean).join("|").trim().toLowerCase();
+  }
+  function featureNameKey(feature){
     var p=feature&&feature.properties||{};
     return [p.WADMKD||p.Desa||p.NAMOBJ||p.Nama_Desa,p.WADMKC||p.Kecamatan,p.WADMKK||p.Kabupaten].filter(Boolean).join("|").trim().toLowerCase();
   }
@@ -54,7 +61,7 @@
       if(source==="administrative"){
         var administrative=await loadJson("data/batas_administrasi_desa_riau.geojson?v=20260822-admin-profile1");
         var boundaries=Array.isArray(administrative.features)?administrative.features:[];
-        return boundaries.find(function(feature){return featureKey(feature)===key;})||null;
+        return boundaries.find(function(feature){return featureKey(feature)===key||featureNameKey(feature)===key;})||null;
       }
       var data=await loadJson("data/desa_intervensi.geojson?v=20260822-program-profile1");
       var features=Array.isArray(data.features)?data.features:[];
@@ -168,11 +175,12 @@
       '<div class="vp-coastal-metrics">'+
         '<div class="vp-coastal-metric loss"><span>Indikasi kehilangan daratan</span><strong>'+ha(erosion)+'</strong></div>'+
         '<div class="vp-coastal-metric gain"><span>Indikasi pertambahan daratan</span><strong>'+ha(accretion)+'</strong></div>'+
-        '<div class="vp-coastal-metric"><span>Laju kemunduran rerata</span><strong>'+format(row.indicativeRetreatRateMPerYear,2)+' m/tahun</strong></div>'+
-        '<div class="vp-coastal-metric"><span>Kemunduran rerata periode</span><strong>'+format(row.indicativeMeanRetreatM,1)+' m</strong></div>'+
+        '<div class="vp-coastal-metric"><span>Laju kemunduran rerata</span><strong>'+metric(row.indicativeRetreatRateMPerYear,2,' m/tahun')+'</strong></div>'+
+        '<div class="vp-coastal-metric"><span>Kemunduran rerata periode</span><strong>'+metric(row.indicativeMeanRetreatM,1,' m')+'</strong></div>'+
       '</div>'+
       '<div class="vp-coast-balance" title="Proporsi kehilangan terhadap total area berubah"><i style="width:'+erosionPct.toFixed(1)+'%"></i></div>'+
-      '<p class="vp-module-note">Panjang pantai '+format(row.coastlineLengthKm,2)+' km · ketidakpastian posisi ±'+format(row.positionalUncertaintyM,1)+' m. Perubahan di bawah ketidakpastian tidak boleh ditafsirkan sebagai abrasi pasti.</p>'+
+      (row.administrativeBoundaryUsedForAttribution?'<p class="vp-module-note"><strong>Hasil per kelurahan.</strong> Polygon perubahan dari citra dipotong menggunakan '+esc(row.boundarySource)+'; area di luar batas tidak dihitung. Panjang pantai dihitung dari cakupan pantai hasil citra, bukan dari sisi polygon administrasi.</p>':'')+
+      '<p class="vp-module-note">Panjang pantai '+metric(row.coastlineLengthKm,2,' km')+' · ketidakpastian posisi ±'+format(row.positionalUncertaintyM,1)+' m. Perubahan di bawah ketidakpastian tidak boleh ditafsirkan sebagai abrasi pasti.</p>'+
       '<div class="vp-data-period"><span>Periode '+esc(row.baseline||meta.baseline||"2016")+'–'+esc(row.current||meta.current||"2025")+'</span><span>Sentinel-2 · '+format(row.clearCoveragePct,1)+'% bebas awan</span></div>';
     var coastalLink=document.querySelector(".vp-coastal-card .vp-module-link");
     if(coastalLink){coastalLink.href="coastal-monitoring.html?village="+encodeURIComponent(name);}
@@ -206,10 +214,10 @@
     link.href="mangrove-priority.html?regency="+encodeURIComponent(regency)+"&village="+encodeURIComponent(village);
   }
   async function loadCoastalMangrove(name,district,regency){
-    var coastalFiles=["data/coastal-change-annual.json","data/coastal-change-non-intervention-annual.json"];
+    var coastalFiles=["data/basilam-geniot-village-coastal-overrides.json","data/coastal-change-annual.json","data/coastal-change-non-intervention-annual.json"];
     var pFile=priorityFile(regency);
     try{
-      var jobs=coastalFiles.map(function(file){return loadJson(file+"?v=20260822-profile1");});
+      var jobs=coastalFiles.map(function(file){return loadJson(file+"?v=20260901-village-clip2");});
       if(pFile){jobs.push(loadJson(pFile+"?v=20260822-profile1"));}
       var results=await Promise.allSettled(jobs),coastalRows=[],coastalMeta={},priorityRows=[],priorityMeta={};
       results.forEach(function(result,index){
@@ -544,7 +552,7 @@
     el("profile-type-label").textContent=source==="administrative"?"DESA ADMINISTRASI RIAU":"DESA INTERVENSI YG";
     el("village-name").textContent=name;
     el("village-location").textContent=[district,regency].filter(Boolean).join(" · ");
-    var updated=viirs.updatedAt||manifest.generatedAt;
+    var updated=record.generatedAt||viirs.updatedAt||manifest.generatedAt;
     el("data-updated").textContent=updated?"Pembaruan analisis "+new Date(updated).toLocaleDateString("id-ID",{day:"numeric",month:"long",year:"numeric"}):"Tanggal pembaruan belum tersedia";
     el("kpi-grid").innerHTML=[
       kpi("⌗","Luas desa",ha(area),"berdasarkan polygon analisis"),
@@ -574,14 +582,14 @@
     if(!key){showError("Tautan desa tidak lengkap. Silakan pilih desa melalui WebGIS.");return;}
     try{
       var pair=await Promise.all([loadJson(MANIFEST_URL+"?v="+Date.now()),findFeature(),loadJson(SNAPSHOT_URL),loadJson("data/capacity-building.json?v=20260823-dayun-coffee"),loadJson("data/community-groups.json?v=20260825-village-profile1").catch(function(){return {groups:[]};})]);
-      var manifest=pair[0],feature=pair[1],snapshot=pair[2]||{},capacityRows=pair[3]||[],communityGroups=pair[4]&&pair[4].groups||[],snapshotFeatures=Array.isArray(snapshot.features)?snapshot.features:[],shard=manifest.index&&manifest.index[key];
+      var manifest=pair[0],feature=pair[1],snapshot=pair[2]||{},capacityRows=pair[3]||[],communityGroups=pair[4]&&pair[4].groups||[],snapshotFeatures=Array.isArray(snapshot.features)?snapshot.features:[],analyticsKey=feature?featureKey(feature):key,shard=manifest.index&&manifest.index[analyticsKey];
       if(shard==null){
         el("profile-status").innerHTML="<i></i> Analisis utama belum tersedia";
         render({},manifest,feature,snapshotFeatures,capacityRows,communityGroups);
         return;
       }
       var records=await loadJson("data/administrative-village-analytics/"+shard+".json?v="+encodeURIComponent(manifest.generatedAt||""));
-      var record=records[key];
+      var record=records[analyticsKey];
       if(!record){
         el("profile-status").innerHTML="<i></i> Analisis utama belum tersedia";
         render({},manifest,feature,snapshotFeatures,capacityRows,communityGroups);

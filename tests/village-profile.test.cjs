@@ -46,3 +46,24 @@ test('village profile classifies reports by source type before counting program 
   assert.match(controller, /if\(!isActivityFeature\(feature\)\)\{return false;\}/);
   assert.match(controller, /if\(featureMatchesPlace\(feature,name,district,regency,boundary\)\)\{return true;\}/);
 });
+
+test('Basilam Baru and Sungai Geniot profiles use stable administrative codes', () => {
+  const controller = read('js/village-profile.js');
+  const mapController = read('js/map-v4.js');
+  const manifest = JSON.parse(read('data/administrative-village-analytics/manifest.json'));
+  const codes = ['14.72.04.1004', '14.72.04.1006'];
+
+  assert.match(controller, /function featureNameKey\(feature\)/);
+  assert.match(controller, /featureKey\(feature\)===key\|\|featureNameKey\(feature\)===key/);
+  assert.match(mapController, /props\.KODE_DESA \|\| props\.KODE_WIL/);
+  assert.equal(manifest.count, 2106);
+  assert.equal(manifest.index['kelurahan basilam baru|sungai sembilan|kota dumai'], undefined);
+
+  for (const code of codes) {
+    const shard = manifest.index[code];
+    assert.notEqual(shard, undefined);
+    const records = JSON.parse(read(`data/administrative-village-analytics/${shard}.json`));
+    assert.ok(records[code]);
+    assert.ok(records[code].baselineForestHa > 0);
+  }
+});

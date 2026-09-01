@@ -1,4 +1,4 @@
-const CACHE_NAME = "yg-geoportal-v13-20260828-social-forestry-focus1";
+const CACHE_NAME = "yg-geoportal-v20-20260901-coastal-village-clip2";
 
 const OFFLINE_ASSETS = [
   "./assets/logo-yayasan-gambut.png",

@@ -5,7 +5,7 @@
   <title>Analisis Pesisir Regional | WebGIS YG</title>
   <meta name="description" content="Analisis perubahan pesisir tingkat desa di tujuh kabupaten/kota, termasuk desa intervensi Yayasan Gambut.">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="css/coastal-analysis.css?v=20260822-village-search1">
+  <link rel="stylesheet" href="css/coastal-analysis.css?v=20260901-wide-map1">
 </head>
 <body>
   <main>
@@ -22,21 +22,27 @@
     </section>
 
     <section class="workspace">
-      <aside class="filters">
-        <div><p class="eyebrow">FILTER WILAYAH</p><h2>Temukan desa</h2></div>
-        <label>Cari nama desa<input id="filter-village" type="search" placeholder="Contoh: Sepahat" autocomplete="off" spellcheck="false"></label>
-        <label>Kabupaten/kota<select id="filter-regency"><option value="">Semua kabupaten/kota</option></select></label>
-        <label>Kecamatan<select id="filter-district"><option value="">Semua kecamatan</option></select></label>
-        <label>Status program<select id="filter-program"><option value="">Semua desa</option><option value="intervention">Intervensi YG</option><option value="regional">Di luar intervensi</option></select></label>
-        <label>Status analisis<select id="filter-status"><option value="">Semua status</option><option value="analysed">Ada indikasi perubahan</option><option value="not-coastal">Tidak terpetakan sebagai pesisir</option></select></label>
-        <button id="reset-filter" type="button">Atur ulang</button>
-        <div class="legend"><strong>Legenda</strong><span><i class="erosion"></i> Indikasi kehilangan daratan</span><span><i class="accretion"></i> Indikasi pertambahan daratan</span><span><i class="intervention"></i> Batas tebal: desa intervensi YG</span></div>
-      </aside>
-      <div class="map-column">
-        <div id="regional-map" aria-label="Peta analisis pesisir regional"></div>
-        <div class="map-foot"><strong id="result-count">Memuat data…</strong><span>Klik polygon atau nama desa untuk melihat rincian.</span></div>
+      <div class="filters">
+        <div class="filter-head">
+          <div><p class="eyebrow">FILTER WILAYAH</p><h2>Temukan desa pesisir</h2></div>
+          <div class="legend"><strong>Legenda</strong><span><i class="village-boundary"></i> Batas desa pesisir</span><span><i class="erosion"></i> Indikasi kehilangan daratan</span><span><i class="accretion"></i> Indikasi pertambahan daratan</span><span><i class="intervention"></i> Batas tebal: desa intervensi YG</span></div>
+        </div>
+        <div class="filter-controls">
+          <label>Cari nama desa<input id="filter-village" type="search" placeholder="Contoh: Sepahat" autocomplete="off" spellcheck="false"></label>
+          <label>Kabupaten/kota<select id="filter-regency"><option value="">Semua kabupaten/kota</option></select></label>
+          <label>Kecamatan<select id="filter-district"><option value="">Semua kecamatan</option></select></label>
+          <label>Status program<select id="filter-program"><option value="">Semua desa</option><option value="intervention">Intervensi YG</option><option value="regional">Di luar intervensi</option></select></label>
+          <label>Status analisis<select id="filter-status"><option value="">Semua status</option><option value="analysed">Ada indikasi perubahan</option><option value="not-coastal">Tidak terpetakan sebagai pesisir</option><option value="boundary-only">Analisis belum tersedia</option></select></label>
+          <button id="reset-filter" type="button">Atur ulang</button>
+        </div>
       </div>
-      <aside class="detail" id="village-detail"><p class="eyebrow">DETAIL DESA</p><h2>Pilih desa pada peta</h2><p>Rincian abrasi/akresi indikatif dan status intervensi akan tampil di sini.</p></aside>
+      <div class="analysis-grid">
+        <div class="map-column">
+          <div id="regional-map" aria-label="Peta analisis pesisir regional"></div>
+          <div class="map-foot"><strong id="result-count">Memuat data…</strong><span>Klik batas desa, polygon perubahan, atau nama desa untuk melihat rincian.</span></div>
+        </div>
+        <aside class="detail" id="village-detail"><p class="eyebrow">DETAIL DESA</p><h2>Pilih desa pada peta</h2><p>Klik polygon batas desa pesisir untuk melihat rincian abrasi/akresi indikatif.</p></aside>
+      </div>
     </section>
 
     <section class="regency-section"><div class="section-head"><div><p class="eyebrow">REKAP KABUPATEN</p><h2>Total sudah termasuk desa intervensi</h2></div><p>Tidak ada perhitungan ganda: setiap kombinasi kabupaten–kecamatan–desa memiliki satu ID.</p></div><div class="regency-grid" id="regency-grid"></div></section>
@@ -44,6 +50,6 @@
     <footer><strong>Catatan penggunaan:</strong> hasil merupakan indikasi berbasis komposit Sentinel-2, bukan survei garis pantai atau penetapan abrasi. Ketidakpastian posisi ±14,1 m; hasil berkeyakinan rendah perlu ditinjau hati-hati.<br>Sumber: Copernicus Sentinel-2 Level-2A melalui Microsoft Planetary Computer; batas desa WebGIS Yayasan Gambut.</footer>
   </main>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="js/coastal-analysis.js?v=20260822-search-detail1"></script>
+  <script src="js/coastal-analysis.js?v=20260901-village-clip2"></script>
 </body>
 </html>

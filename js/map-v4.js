@@ -243,7 +243,7 @@
 
       try {
         const response = await fetch(
-          config.file + "?v=20260826-kph1",
+          config.file + "?v=20260901-basilam-geniot1",
           { cache: "force-cache" }
         );
         if (!response.ok) return;
@@ -1674,6 +1674,11 @@ L.control.scale({
 
   function villageProfileKey(feature) {
     const props = feature && feature.properties || {};
+    const stable = props.Village_ID || props.VILLAGE_ID ||
+      props.Kode_Desa || props.KODE_DESA || props.KODE_WIL;
+    if (stable) {
+      return String(stable).trim().toLowerCase();
+    }
     return [
       props.WADMKD || props.Desa || props.NAMOBJ ||
         props.Nama_Desa || props.NAMA_DESA,
@@ -2109,7 +2114,7 @@ L.control.scale({
     setStatus("Memuat " + config.label + "…", false);
 
     const response = await fetch(
-      config.file + "?v=20260826-kph1",
+      config.file + "?v=20260901-basilam-geniot1",
       {
         cache: "force-cache"
       }
