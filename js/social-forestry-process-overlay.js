@@ -17,7 +17,7 @@ window.fetch=function(input,init){
   ]).then(function(result){
     var details=result[0]||{},processData=result[1]||{},approvedSignatures={},approvedNames={};
     Object.keys(details).forEach(function(k){
-      var d=details[k]||{},approvedSignature=signature(d.name,d.village,d.regency),decree=norm(d.decree),isProcess=norm(d.legalStatus).indexOf("proses")>-1||norm(d.skDocumentStatus)==="process"||decree==="proses";
+      var d=details[k]||{},legal=d.skExtraction||{},approvedSignature=signature(d.name,d.village,d.regency),decree=norm(d.decree||legal.decreeNumber),isProcess=norm(d.legalStatus).indexOf("proses")>-1||norm(d.skDocumentStatus)==="process"||decree==="proses";
       if(d.name&&d.village&&!isProcess&&decree){
         approvedSignatures[approvedSignature]=true;
         approvedNames[[canonicalName(d.name),norm(d.regency)].join("|")]=true;

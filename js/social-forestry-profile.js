@@ -11,6 +11,7 @@ function ha(v){var n=number(v);return n==null?"Belum tersedia":format(n,2)+" ha"
 function percent(v){var n=number(v);return n==null?"—":format(n,1)+"%"}
 function displayDate(v){var value=String(v==null?"":v).trim();return!value||/^0(?:\.0+)?$/.test(value)||/^1899-12-30/.test(value)?"—":value}
 function normalized(v){return String(v||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim()}
+function canonicalScheme(v){var n=normalized(v);if(/kemitraan/.test(n))return"Kemitraan Kehutanan";if(/adat|\bha\b/.test(n))return"Hutan Adat";if(/tanaman rakyat|\bhtr\b/.test(n))return"Hutan Tanaman Rakyat";if(/hutan desa|\bhd\b|lphd/.test(n))return"Hutan Desa";if(/kemasyarakatan|\bhkm\b/.test(n))return"Hutan Kemasyarakatan";return String(v||"Belum terklasifikasi")}
 function analysisKeyValue(v){if(typeof v==="number"&&Number.isInteger(v))return v.toFixed(1);return String(v==null?"":v)}
 function featureKey(f){var p=f&&f.properties||{};return analysisKeyValue(p.PROFILE_KEY||p.OBJECTID||p.ID||p.NO_IUPHKM||p.SK||[p.NAMA_HKM,p.NAMA_DESA,p.NAMA_KAB].filter(Boolean).join("|")).trim().toLowerCase()}
 function permitKey(f){var p=f&&f.properties||{};return analysisKeyValue(p.PROFILE_KEY||p.NO_IUPHKM||p.SK||p.OBJECTID||p.ID||[p.NAMA_HKM,p.NAMA_DESA,p.NAMA_KAB].filter(Boolean).join("|")).trim().toLowerCase()}
@@ -45,11 +46,11 @@ function renderReferences(record,area){
 }
 function renderIdentity(p,area,detail){
   var legal=detail&&detail.skExtraction?detail.skExtraction:{};
-  var polygonDecree=String(p.NO_IUPHKM||p.SK||"").trim(),detailDecree=String(detail&&detail.decree||"").trim(),legalDecree=String(legal.decreeNumber||"").trim(),canonicalDecree=detailDecree||polygonDecree||legalDecree,legalVerified=Boolean(legalDecree&&normalized(legalDecree)===normalized(canonicalDecree)),detailScheme=String(detail&&detail.scheme||"").trim(),canonicalScheme=/nonspasial|belum terklasifikasi/i.test(detailScheme)?p.Ket:(detailScheme||p.Ket||"—");
+  var polygonDecree=String(p.NO_IUPHKM||p.SK||"").trim(),detailDecree=String(detail&&detail.decree||"").trim(),legalDecree=String(legal.decreeNumber||"").trim(),canonicalDecree=detailDecree||polygonDecree||legalDecree,legalVerified=Boolean(legalDecree&&normalized(legalDecree)===normalized(canonicalDecree)),detailScheme=String(detail&&detail.scheme||"").trim(),schemeSource=/nonspasial|belum terklasifikasi/i.test(detailScheme)?p.Ket:(detailScheme||p.Ket||"—");
   var approvedArea=legalVerified?number(legal.approvedAreaHa):number(detail&&detail.areaHa);if(approvedArea==null||approvedArea<=0)approvedArea=number(p.L_IUPHKM);if(approvedArea!=null&&approvedArea<=0)approvedArea=null;
   var verifiedVillage=detail&&detail.village?detail.village:(p.NAMA_DESA||"—"),verifiedDistrict=detail&&detail.district?detail.district:(p.NAMA_KEC||"—"),verifiedRegency=detail&&detail.regency?detail.regency:(p.NAMA_KAB||"—"),verifiedProvince=detail&&detail.province?detail.province:(p.NAMA_PROV||"Riau");
   el("identity-list").innerHTML=[
-    item("Kelompok/Hutan Desa",detail&&detail.name?detail.name:(p.NAMA_HKM||"—")),item("Skema",legalVerified&&legal.scheme?legal.scheme:canonicalScheme),item("Nomor SK",canonicalDecree||"—"),item("Tanggal SK",displayDate(legalVerified&&legal.decreeDate?legal.decreeDate:(detail&&detail.decreeDate||p.TGL_IUPHKM))),
+    item("Kelompok/Hutan Desa",detail&&detail.name?detail.name:(p.NAMA_HKM||"—")),item("Skema",canonicalScheme(legalVerified&&legal.scheme?legal.scheme:schemeSource)),item("Nomor SK",canonicalDecree||"—"),item("Tanggal SK",displayDate(legalVerified&&legal.decreeDate?legal.decreeDate:(detail&&detail.decreeDate||p.TGL_IUPHKM))),
     item("Luas berdasarkan SK",approvedArea!=null?format(approvedArea,2)+" ha":"—"),item("Luas hasil kalkulasi polygon",ha(area)),item("Desa",verifiedVillage),item("Kecamatan",verifiedDistrict),item("Kabupaten",verifiedRegency),item("Provinsi",verifiedProvince)
   ].join("");
   var badge=document.querySelector(".vp-sf-status");
@@ -91,14 +92,14 @@ function renderSupplemental(detail){
   section.hidden=false;
 }
 function renderNonspatial(detail){
-  var documents=Array.isArray(detail.documents)?detail.documents:[],name=detail.name||"Profil Perhutanan Sosial",location=[detail.village,detail.district,detail.regency].filter(Boolean).join(" · ");
+  var documents=Array.isArray(detail.documents)?detail.documents:[],legal=detail.skExtraction||{},name=detail.name||"Profil Perhutanan Sosial",location=[detail.village,detail.district,detail.regency].filter(Boolean).join(" · "),detailDecree=String(detail.decree||"").trim(),legalDecree=String(legal.decreeNumber||"").trim(),legalVerified=Boolean(legalDecree&&(!detailDecree||normalized(legalDecree)===normalized(detailDecree))),profileScheme=canonicalScheme(legalVerified&&legal.scheme?legal.scheme:[detail.scheme,detail.name].join(" ")),profileDecree=detailDecree||(legalVerified?legalDecree:"");
   document.title=name+" · Profil Perhutanan Sosial | Yayasan Gambut";el("area-name").textContent=name;el("area-location").textContent=location||"Lokasi administratif belum tersedia";
   document.querySelector(".vp-status").innerHTML="<i></i> Profil dokumen nonspasial";el("data-updated").textContent="Sumber: audit Drive Yayasan Gambut";
   el("profile-summary").innerHTML="<span>STATUS PROFIL</span><strong>Polygon belum tersedia</strong><p>Dokumen ditampilkan tanpa mengarang batas, luas, atau analisis spasial.</p>";
   el("kpi-grid").innerHTML=[kpi("▤","Dokumen terpublikasi",format(documents.length,0),"hasil audit Drive"),kpi("⌖","Kabupaten",detail.regency||"Belum tersedia","lokasi administratif"),kpi("◎","Status spasial","Nonspasial","polygon belum tersedia")].join("");
   document.querySelectorAll("[data-spatial-only]").forEach(function(node){node.hidden=true});
   document.querySelector(".vp-layout").classList.add("vp-layout--single");
-  el("identity-list").innerHTML=[item("Kelompok/Hutan Desa",name),item("Skema",detail.scheme||"Profil dokumen nonspasial"),item("Nomor izin",detail.decree||"Belum tersedia"),item("Tanggal izin","Belum tersedia"),item("Luas izin",detail.areaHa?format(detail.areaHa,2)+" ha":"Belum tersedia"),item("Luas polygon","Belum tersedia"),item("Desa",detail.village||"Belum tersedia"),item("Kecamatan",detail.district||"Belum tersedia"),item("Kabupaten",detail.regency||"Belum tersedia"),item("Provinsi","Riau")].join("");
+  el("identity-list").innerHTML=[item("Kelompok/Hutan Desa",name),item("Skema",profileScheme),item("Nomor izin",profileDecree||"Belum tersedia"),item("Tanggal izin",legalVerified&&legal.decreeDate?legal.decreeDate:"Belum tersedia"),item("Luas izin",detail.areaHa?format(detail.areaHa,2)+" ha":"Belum tersedia"),item("Luas polygon","Belum tersedia"),item("Desa",detail.village||"Belum tersedia"),item("Kecamatan",detail.district||"Belum tersedia"),item("Kabupaten",detail.regency||"Belum tersedia"),item("Provinsi","Riau")].join("");
   renderSupplemental(detail);el("loading-state").hidden=true;el("error-state").hidden=true;el("profile-content").hidden=false;
 }
 function render(feature,record,data,detail){

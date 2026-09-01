@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-31T15:48:36.502Z",
+  "generatedAt": "2026-09-01T11:29:12.302Z",
   "methodology": "Satu PS dihitung sekali berdasarkan nomor SK. Luas SK diprioritaskan; atribut polygon dan kalkulasi geometri digunakan sebagai cadangan.",
   "totals": {
     "profileCount": 182,
@@ -14,12 +14,12 @@
   "schemes": [
     {
       "scheme": "Hutan Kemasyarakatan",
-      "profileCount": 129,
-      "areaKnownCount": 129,
+      "profileCount": 124,
+      "areaKnownCount": 124,
       "areaMissingCount": 0,
-      "totalAreaHa": 76213.67,
-      "documentAreaKnownCount": 126,
-      "documentAreaHa": 75680.58,
+      "totalAreaHa": 73369.67,
+      "documentAreaKnownCount": 121,
+      "documentAreaHa": 72836.58,
       "spatialAreaKnownCount": 123,
       "spatialAreaHa": 73151.24
     },
@@ -33,6 +33,17 @@
       "documentAreaHa": 90105.54,
       "spatialAreaKnownCount": 46,
       "spatialAreaHa": 90141
+    },
+    {
+      "scheme": "Kemitraan Kehutanan",
+      "profileCount": 6,
+      "areaKnownCount": 6,
+      "areaMissingCount": 0,
+      "totalAreaHa": 6844,
+      "documentAreaKnownCount": 6,
+      "documentAreaHa": 6844,
+      "spatialAreaKnownCount": 1,
+      "spatialAreaHa": 4000
     },
     {
       "scheme": "Hutan Tanaman Rakyat",
@@ -55,17 +66,6 @@
       "documentAreaHa": 408,
       "spatialAreaKnownCount": 2,
       "spatialAreaHa": 463.8
-    },
-    {
-      "scheme": "Kemitraan Kehutanan",
-      "profileCount": 1,
-      "areaKnownCount": 1,
-      "areaMissingCount": 0,
-      "totalAreaHa": 4000,
-      "documentAreaKnownCount": 1,
-      "documentAreaHa": 4000,
-      "spatialAreaKnownCount": 1,
-      "spatialAreaHa": 4000
     }
   ],
   "profiles": [
@@ -2860,7 +2860,7 @@
       "signature": "gapoktanhut kampung dosan dosan siak",
       "name": "GAPOKTANHUT KAMPUNG DOSAN",
       "regency": "Siak",
-      "scheme": "Hutan Kemasyarakatan",
+      "scheme": "Kemitraan Kehutanan",
       "spatial": false,
       "documentAreaHa": 1132,
       "documentAreaSource": "SK",
@@ -2876,7 +2876,7 @@
       "signature": "kth bomban berduri rantau langsat indragiri hulu",
       "name": "KTH BOMBAN BERDURI",
       "regency": "Indragiri Hulu",
-      "scheme": "Hutan Kemasyarakatan",
+      "scheme": "Kemitraan Kehutanan",
       "spatial": false,
       "documentAreaHa": 348,
       "documentAreaSource": "SK",
@@ -2892,7 +2892,7 @@
       "signature": "kth batu berdiri rantau langsat indragiri hulu",
       "name": "KTH BATU BERDIRI",
       "regency": "Indragiri Hulu",
-      "scheme": "Hutan Kemasyarakatan",
+      "scheme": "Kemitraan Kehutanan",
       "spatial": false,
       "documentAreaHa": 351,
       "documentAreaSource": "SK",
@@ -2908,7 +2908,7 @@
       "signature": "kth batu kucing rantau langsat indragiri hulu",
       "name": "KTH BATU KUCING",
       "regency": "Indragiri Hulu",
-      "scheme": "Hutan Kemasyarakatan",
+      "scheme": "Kemitraan Kehutanan",
       "spatial": false,
       "documentAreaHa": 329,
       "documentAreaSource": "SK",
@@ -2972,7 +2972,7 @@
       "signature": "kth kasih alam rantau langsat indragiri hulu",
       "name": "KTH KASIH ALAM",
       "regency": "Indragiri Hulu",
-      "scheme": "Hutan Kemasyarakatan",
+      "scheme": "Kemitraan Kehutanan",
       "spatial": false,
       "documentAreaHa": 684,
       "documentAreaSource": "SK",
