@@ -1196,15 +1196,20 @@ function updateReportStatus(token, rowNumber, newStatus, adminNote, targetLayerI
     .setBackground(colors[newStatus] || '#ffffff');
 
   const reportId = sheet.getRange(rowNumber, 1).getDisplayValue();
+  let syncResult = null;
+  let publicationResult = null;
   if (newStatus === 'Sudah Dipublikasikan') {
     SpreadsheetApp.flush();
-    notifyCloudflarePublication_(reportId);
+    syncResult = syncPublishedCommunityReportsToObjects();
+    publicationResult = notifyCloudflarePublication_(reportId);
   }
 
   return {
     ok: true,
     reportId: reportId,
-    status: newStatus
+    status: newStatus,
+    sync: syncResult,
+    publication: publicationResult
   };
 }
 

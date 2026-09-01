@@ -3,6 +3,7 @@
 
   const API = "https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec?page=objects";
   const PUBLIC_OBJECTS_SNAPSHOT_URL = "https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/snapshots/current/objects.json";
+  const PUBLIC_OBJECTS_MANIFEST_URL = "https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/manifests/current.json";
   const DEFAULT_VIEW = [1.25, 102.05];
   const DEFAULT_ZOOM = 9;
 
@@ -366,6 +367,8 @@ L.control.scale({
   let allBounds = L.latLngBounds([]);
   let rawFeatures = [];
   let lastGeneratedAt = null;
+  let observedSnapshotVersion = "";
+  let snapshotRefreshTimer = null;
 
   function escapeHtml(value) {
     return String(value == null ? "" : value).replace(/[&<>"']/g, char => ({
@@ -2801,6 +2804,10 @@ L.control.scale({
     const existingDonor = String(
       props.Donor || props.Donor_Cluster || props.Nama_Donor || ""
     ).trim().toLowerCase();
+    const sourceType = String(props.Source_Type || "")
+      .trim().toLowerCase();
+    const hasVerifiedCommunityDonor =
+      sourceType === "community_report" && Boolean(existingDonor);
     const isPenabuluMaintenance =
       reportType === "pemeliharaan infrastruktur" && (
         existingDonor.includes("penabulu") ||
@@ -2810,10 +2817,56 @@ L.control.scale({
 
     if ((layerId === "sekat_kanal" || layerId === "fdrs") &&
         !village.includes("pematang duku") &&
+        !hasVerifiedCommunityDonor &&
         !isPenabuluMaintenance) {
       props.Donor = "Global Environment Centre";
       props.Donor_Cluster = "Global Environment Centre";
     }
+    return feature;
+  }
+
+  function applyVerifiedMonitoringInstallationPolicy(feature) {
+    const props = feature && feature.properties || {};
+    const layerId = String(
+      props.Layer_ID || props.Source_Layer || ""
+    ).trim().toLowerCase();
+    const sourceType = String(props.Source_Type || "")
+      .trim().toLowerCase();
+    const reportId = String(
+      props.reportId || props.Source_Report_ID || ""
+    ).trim().toUpperCase();
+    const identity = [
+      props.title, props.Nama_Objek, props.locationName,
+      props.description, props.Jenis_Titik
+    ].filter(Boolean).join(" ").toLowerCase();
+
+    if (
+      layerId !== "fdrs" ||
+      sourceType !== "community_report" ||
+      !/(?:instalasi|installasi|fdrs|tmat|tinggi muka air)/.test(identity)
+    ) {
+      return feature;
+    }
+
+    props.Kategori = "Instalasi Titik Monitoring FDRS / TMAT";
+    props.Jenis_Instalasi = "FDRS / TMAT";
+    props.Status_Instalasi = "Terverifikasi";
+
+    if (reportId === "YG-20260901-201544-276") {
+      props.activityDate = "24/08/2026";
+      props.Tanggal_Kegiatan_Terverifikasi = "23–26 Agustus 2026";
+      props.Donor = "Yayasan Penabulu";
+      props.Donor_Cluster = "Yayasan Penabulu";
+      props.Nama_Donor = "Yayasan Penabulu";
+    }
+    if (reportId === "YG-20260901-202530-896") {
+      props.activityDate = "26/08/2026";
+      props.Tanggal_Kegiatan_Terverifikasi = "23–26 Agustus 2026";
+      props.Donor = "Yayasan Penabulu";
+      props.Donor_Cluster = "Yayasan Penabulu";
+      props.Nama_Donor = "Yayasan Penabulu";
+    }
+
     return feature;
   }
 
@@ -3033,6 +3086,7 @@ L.control.scale({
       .map(applyMeasurementPointPolicy)
       .map(applyPematangDukuDonorPolicy)
       .map(applyAramcoCoastalAssetPolicy)
+      .map(applyVerifiedMonitoringInstallationPolicy)
       .map(applyExternalPeatInfrastructureDonorPolicy)
       .map(applyVerifiedTemiangCanalMaintenance)
       .map(applyRequestedDonorCorrections));
@@ -4267,6 +4321,42 @@ L.control.scale({
   }
 }
 
+  async function readPublishedSnapshotVersion() {
+    const response = await fetch(
+      PUBLIC_OBJECTS_MANIFEST_URL + "?t=" + Date.now(),
+      { cache: "no-store" }
+    );
+    if (!response.ok) throw new Error("HTTP " + response.status);
+    const manifest = await response.json();
+    return String(manifest && manifest.version || "").trim();
+  }
+
+  async function checkForPublishedSnapshotUpdate() {
+    try {
+      const version = await readPublishedSnapshotVersion();
+      if (!version) return;
+      if (!observedSnapshotVersion) {
+        observedSnapshotVersion = version;
+        return;
+      }
+      if (version !== observedSnapshotVersion) {
+        observedSnapshotVersion = version;
+        window.location.reload();
+      }
+    } catch (error) {
+      console.warn("Pemeriksaan pembaruan snapshot ditunda", error);
+    }
+  }
+
+  function startPublishedSnapshotWatch() {
+    if (snapshotRefreshTimer) return;
+    checkForPublishedSnapshotUpdate();
+    snapshotRefreshTimer = window.setInterval(
+      checkForPublishedSnapshotUpdate,
+      30000
+    );
+  }
+
 
   const searchInput = document.getElementById("search-input");
   const searchButton = document.getElementById("search-button");
@@ -4341,5 +4431,5 @@ L.control.scale({
     }
   };
 
-  loadDatabase();
+  loadDatabase().finally(startPublishedSnapshotWatch);
 })();

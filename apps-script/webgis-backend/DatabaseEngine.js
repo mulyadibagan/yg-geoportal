@@ -183,9 +183,10 @@ function syncPublishedCommunityReportsToObjects() {
       ? 'Hasil Monitoring Terverifikasi'
       : (selectedTargetLayerLabel || selectedTargetLayerId || 'Laporan Masyarakat Terverifikasi');
 
-    const communityCategory = layerId === 'permanent_measurement_plots'
-      ? 'Petak Ukur Permanen'
-      : (reportType || 'Laporan Masyarakat');
+    const communityCategory = publishedCommunityCategory_(
+      layerId,
+      reportType
+    );
 
     const sourceType = isMonitoring
       ? 'monitoring_report'
@@ -222,7 +223,7 @@ function syncPublishedCommunityReportsToObjects() {
       reportType: reportType,
       title: clean_(row[11]),
       description: clean_(row[12]),
-      activityDate: clean_(row[13]),
+      activityDate: correctedPublishedActivityDate_(reportId, row[13]),
       receivedAt: clean_(row[2]),
       locationName: clean_(row[16]),
       reporterName: clean_(row[3]),
@@ -331,6 +332,26 @@ function applyPublishedReportDataCorrections_(reportId, targetProperties) {
   return properties;
 }
 
+function publishedCommunityCategory_(layerId, reportType) {
+  if (clean_(layerId) === 'permanent_measurement_plots') {
+    return 'Petak Ukur Permanen';
+  }
+  if (clean_(layerId) === 'fdrs') {
+    return 'Instalasi Titik Monitoring FDRS / TMAT';
+  }
+  return clean_(reportType) || 'Laporan Masyarakat';
+}
+
+function correctedPublishedActivityDate_(reportId, activityDate) {
+  if (clean_(reportId) === 'YG-20260901-201544-276') {
+    return '24/08/2026';
+  }
+  if (clean_(reportId) === 'YG-20260901-202530-896') {
+    return '26/08/2026';
+  }
+  return clean_(activityDate);
+}
+
 /**
  * Menyusun FeatureCollection publik untuk WebGIS.
  * Data utama berasal dari OBJECTS. Laporan masyarakat terpublikasi yang
@@ -428,9 +449,10 @@ function getWebGisObjectsFeatureCollection_() {
         ? 'Hasil Monitoring Terverifikasi'
         : (selectedTargetLayerLabel || selectedTargetLayerId || 'Laporan Masyarakat Terverifikasi');
 
-      const communityCategory = layerId === 'permanent_measurement_plots'
-        ? 'Petak Ukur Permanen'
-        : (reportType || 'Laporan Masyarakat');
+      const communityCategory = publishedCommunityCategory_(
+        layerId,
+        reportType
+      );
 
       const monitoringType = clean_(
         monitoringData.monitoringType ||
@@ -474,7 +496,7 @@ function getWebGisObjectsFeatureCollection_() {
           reportType: reportType,
           title: clean_(row[11]),
           description: clean_(row[12]),
-          activityDate: clean_(row[13]),
+          activityDate: correctedPublishedActivityDate_(reportId, row[13]),
           locationName: clean_(row[16]),
           photos: row[19]
             ? row[19].split(/\r?\n/).filter(Boolean)

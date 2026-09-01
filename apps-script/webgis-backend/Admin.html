@@ -701,7 +701,16 @@ function changeStatus(rowNumber,newStatus){
   var targetLayerLabel = targetLayerLabelById(targetLayerId);
   if(!confirm('Ubah status laporan menjadi "'+newStatus+'"?')){return;}
   google.script.run
-    .withSuccessHandler(function(){loadData();})
+    .withSuccessHandler(function(result){
+      if(newStatus === 'Sudah Dipublikasikan'){
+        if(result && result.sync && result.sync.ok && result.publication && result.publication.ok){
+          alert('Objek sudah disinkronkan. Snapshot publik sedang diperbarui dan peta akan memuat data baru secara otomatis.');
+        }else{
+          alert('Laporan sudah dipublikasikan, tetapi sinkronisasi snapshot perlu diperiksa kembali.');
+        }
+      }
+      loadData();
+    })
     .withFailureHandler(function(error){
       var message = error && error.message ? error.message : String(error);
       alert('Gagal mengubah status: '+message);

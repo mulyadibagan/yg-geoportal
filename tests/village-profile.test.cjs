@@ -28,7 +28,7 @@ test('Temiang counts three physical canal blocks and keeps two maintenance repor
   assert.match(mapController, /Objek_Induk_Perawatan/);
 });
 
-test('Temiang counts the reported 2026 FDRS installation as a second physical unit', () => {
+test('Temiang keeps all verified 2026 FDRS installation reports as physical units', () => {
   const snapshot = JSON.parse(read('data/dashboard-summary-snapshot.json'));
   const fdrs = (snapshot.features || []).filter(feature => {
     const props = feature.properties || {};
@@ -37,11 +37,29 @@ test('Temiang counts the reported 2026 FDRS installation as a second physical un
     return village.includes('temiang') && String(props.Layer_ID || props.Source_Layer || '').toLowerCase() === 'fdrs';
   });
   const baseUnits = fdrs.filter(feature => feature.properties.Source_Type === 'program_layer');
-  const newInstallations = fdrs.filter(feature => feature.properties.Source_Type === 'community_report' && !feature.properties.Target_Object_ID && /installasi fdrs/i.test(feature.properties.title || ''));
+  const newInstallations = fdrs.filter(feature => feature.properties.Source_Type === 'community_report' && !feature.properties.Target_Object_ID && /instalasi|installasi/i.test(feature.properties.title || ''));
 
   assert.equal(baseUnits.length, 1);
-  assert.equal(newInstallations.length, 1);
-  assert.equal(baseUnits.length + newInstallations.length, 2);
+  assert.equal(newInstallations.length, 3);
+  assert.equal(baseUnits.length + newInstallations.length, 4);
+
+  const penabuluInstallations = newInstallations.filter(feature => [
+    'YG-20260901-201544-276',
+    'YG-20260901-202530-896'
+  ].includes(feature.properties.Source_Report_ID));
+  assert.equal(penabuluInstallations.length, 2);
+  assert.ok(penabuluInstallations.every(feature => feature.properties.Donor === 'Yayasan Penabulu'));
+
+  const mapController = read('js/map-v4.js');
+  const databaseEngine = read('apps-script/webgis-backend/DatabaseEngine.js');
+  const backend = read('apps-script/webgis-backend/Kode.js');
+  assert.match(mapController, /hasVerifiedCommunityDonor/);
+  assert.match(mapController, /Instalasi Titik Monitoring FDRS \/ TMAT/);
+  assert.match(mapController, /PUBLIC_OBJECTS_MANIFEST_URL/);
+  assert.match(mapController, /window\.location\.reload\(\)/);
+  assert.match(databaseEngine, /correctedPublishedActivityDate_/);
+  assert.match(databaseEngine, /YG-20260901-201544-276/);
+  assert.match(backend, /syncResult = syncPublishedCommunityReportsToObjects\(\);[\s\S]*publicationResult = notifyCloudflarePublication_/);
 });
 
 test('village profile classifies reports by source type before counting program objects', () => {
