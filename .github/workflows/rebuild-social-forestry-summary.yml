@@ -9,6 +9,7 @@ on:
       - 'data/social-forestry-pkk-samj.geojson'
       - 'data/social-forestry-kud-agro-lestari.geojson'
       - 'data/social-forestry-derived-2025.geojson'
+      - 'data/social-forestry-official-2026.geojson'
       - 'tools/build-social-forestry-summary.js'
       - '.github/workflows/rebuild-social-forestry-summary.yml'
 
@@ -48,8 +49,8 @@ jobs:
           console.log('Only after:', onlyAfter.map(p => ({key:p.key,decree:p.decree,name:p.name,regency:p.regency,scheme:p.scheme,areaHa:p.areaHa,spatial:p.spatial})));
           console.log('Unclassified:', s.profiles.filter(p => /Persetujuan Perhutanan Sosial|Belum terklasifikasi/i.test(p.scheme)).map(p => ({key:p.key,decree:p.decree,name:p.name,regency:p.regency,scheme:p.scheme,areaHa:p.areaHa,spatial:p.spatial})));
           console.log('HTR:', s.profiles.filter(p => p.scheme === 'Hutan Tanaman Rakyat').map(p => ({key:p.key,decree:p.decree,name:p.name,regency:p.regency,areaHa:p.areaHa,spatial:p.spatial})));
-          if (s.totals.profileCount !== 182) throw new Error(`Expected 182 unique profiles, got ${s.totals.profileCount}`);
-          if (Math.abs(s.totals.totalAreaHa - 172819.21) > 0.01) throw new Error(`Unexpected total area ${s.totals.totalAreaHa}`);
+          if (s.totals.profileCount !== 181) throw new Error(`Expected 181 unique profiles, got ${s.totals.profileCount}`);
+          if (Math.abs(s.totals.totalAreaHa - 172547.21) > 0.01) throw new Error(`Unexpected total area ${s.totals.totalAreaHa}`);
           const generic = s.schemes.find(x => /Persetujuan Perhutanan Sosial|Belum terklasifikasi/i.test(x.scheme));
           if (generic) throw new Error(`Generic scheme remains: ${generic.scheme}`);
           const htr = s.schemes.find(x => x.scheme === 'Hutan Tanaman Rakyat');
@@ -81,7 +82,7 @@ jobs:
           assertUniqueSpatial(/SIKEBAU JAYA/i, /8617/);
           assertUniqueSpatial(/SUKA DAMAI/i, /8606/);
           const nonspatial = s.profiles.filter(p => !p.spatial);
-          if (nonspatial.length !== 8) throw new Error(`Expected 8 nonspatial profiles, got ${nonspatial.length}`);
+          if (nonspatial.length !== 2) throw new Error(`Expected 2 nonspatial profiles, got ${nonspatial.length}`);
           console.log('Validated:', s.totals, s.schemes.map(x => [x.scheme,x.profileCount,x.totalAreaHa]));
           NODE
 
