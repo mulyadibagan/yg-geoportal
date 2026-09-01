@@ -1832,6 +1832,24 @@ function getPublishedReports_() {
 
   const features = [];
   const skipped = [];
+  const capacitySessionSummaries = {};
+
+  try {
+    const sessions = allSessionRows_();
+    const questions = allQuestionRows_();
+    const responses = allResponseRows_();
+
+    sessions.forEach(function(session) {
+      if (!session.sessionId) return;
+      capacitySessionSummaries[session.sessionId] = summarizeSession_(
+        session,
+        questions,
+        responses
+      );
+    });
+  } catch (error) {
+    console.warn('Ringkasan sesi pelatihan tidak dapat disegarkan: ' + error.message);
+  }
 
   rows.forEach(function(row, index) {
     if (row[21] !== 'Sudah Dipublikasikan') {
@@ -1879,9 +1897,27 @@ function getPublishedReports_() {
 
     let targetProperties = {};
     let storedChanges = {};
+    let proposedInformation = row[18];
 
     try { targetProperties = row[30] ? JSON.parse(row[30]) : {}; } catch (error) {}
     try { storedChanges = row[31] ? JSON.parse(row[31]) : {}; } catch (error) {}
+
+    if (reportType === 'Capacity Building' && proposedInformation) {
+      try {
+        const capacityInformation = JSON.parse(proposedInformation);
+        const sessionId = clean_(capacityInformation.supportSessionId);
+
+        if (sessionId && capacitySessionSummaries[sessionId]) {
+          capacityInformation.supportTestSummary = capacitySessionSummaries[sessionId];
+          proposedInformation = JSON.stringify(capacityInformation);
+        }
+      } catch (error) {
+        console.warn(
+          'Ringkasan post-test laporan ' + clean_(row[0]) +
+          ' tidak dapat disegarkan: ' + error.message
+        );
+      }
+    }
 
     features.push({
       type: 'Feature',
@@ -1900,7 +1936,7 @@ function getPublishedReports_() {
         description: row[12],
         activityDate: row[13],
         locationName: row[16],
-        proposedInformation: row[18],
+        proposedInformation: proposedInformation,
         photos: row[19]
           ? row[19].split(/\r?\n/).filter(Boolean)
           : [],
