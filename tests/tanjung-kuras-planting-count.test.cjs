@@ -17,7 +17,15 @@ test("Tanjung Kuras polygon keeps the verified 200-seedling count", () => {
 
   assert.match(
     databaseSource,
-    /reportId\) === 'YG-20260829-144847-315'[\s\S]*?Jumlah_Tanam = 200;[\s\S]*?Jumlah_Bib = 200;[\s\S]*?Luas_Indikatif_Ha[\s\S]*?properties\.Luas_Ha = indicativeAreaHa;/
+    /reportId\) === 'YG-20260829-144847-315'[\s\S]*?Jumlah_Tanam = 200;[\s\S]*?Jumlah_Bib = 200;[\s\S]*?Kategori = 'Penanaman Mangrove';[\s\S]*?Source_Layer = 'area_mangrove';[\s\S]*?Luas_Indikatif_Ha[\s\S]*?properties\.Luas_Ha = indicativeAreaHa;/
+  );
+  assert.match(
+    databaseSource,
+    /function publishedCommunityCategory_\(layerId, reportType\)[\s\S]*?layerId\) === 'area_mangrove'[\s\S]*?return 'Penanaman Mangrove';/
+  );
+  assert.match(
+    databaseSource,
+    /function masterObjectToFeature_\(object\)[\s\S]*?correctedAreaHa[\s\S]*?Luas_Ha: numberOrBlank_\(object\.areaHa\) === ''[\s\S]*?correctedAreaHa/
   );
   assert.match(
     backendSource,

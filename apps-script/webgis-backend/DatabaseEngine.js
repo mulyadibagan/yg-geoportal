@@ -555,6 +555,8 @@ function applyPublishedReportDataCorrections_(reportId, targetProperties) {
   if (clean_(reportId) === 'YG-20260829-144847-315') {
     properties.Jumlah_Tanam = 200;
     properties.Jumlah_Bib = 200;
+    properties.Kategori = 'Penanaman Mangrove';
+    properties.Source_Layer = 'area_mangrove';
     const indicativeAreaHa = numberOrBlank_(properties.Luas_Indikatif_Ha);
     if (numberOrBlank_(properties.Luas_Ha) === '' && indicativeAreaHa !== '') {
       properties.Luas_Ha = indicativeAreaHa;
@@ -565,6 +567,9 @@ function applyPublishedReportDataCorrections_(reportId, targetProperties) {
 }
 
 function publishedCommunityCategory_(layerId, reportType) {
+  if (clean_(layerId) === 'area_mangrove') {
+    return 'Penanaman Mangrove';
+  }
   if (clean_(layerId) === 'permanent_measurement_plots') {
     return 'Petak Ukur Permanen';
   }
@@ -655,6 +660,11 @@ function getWebGisObjectsFeatureCollection_() {
       } catch (error) {
         targetProperties = {};
       }
+
+      targetProperties = applyPublishedReportDataCorrections_(
+        reportId,
+        targetProperties
+      );
 
       try {
         proposedChanges = row[31] ? JSON.parse(row[31]) : {};
@@ -773,6 +783,10 @@ function masterObjectToFeature_(object) {
     correctedProperties,
     ['Jumlah_Tanam', 'jumlah_tanam', 'Jumlah_Bib', 'Jumlah_Bibit']
   ));
+  const correctedAreaHa = numberOrBlank_(firstValue_(
+    correctedProperties,
+    ['Luas_Ha', 'luas_ha', 'Luas_Indikatif_Ha']
+  ));
 
   return {
     type: 'Feature',
@@ -792,7 +806,9 @@ function masterObjectToFeature_(object) {
       Kabupaten: object.regency,
       Kecamatan: object.district,
       Desa: object.village,
-      Luas_Ha: object.areaHa,
+      Luas_Ha: numberOrBlank_(object.areaHa) === ''
+        ? correctedAreaHa
+        : object.areaHa,
       Panjang_M: object.lengthM,
       Jumlah_Tanam: correctedPlantedCount === ''
         ? object.plantedCount
