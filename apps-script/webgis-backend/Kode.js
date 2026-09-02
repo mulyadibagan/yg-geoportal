@@ -1088,6 +1088,44 @@ function buildReportDashboardData_() {
   };
 }
 
+function restoreTanjungKurasCapacityPublicationFromSecureExecution() {
+  const caller = String(Session.getActiveUser().getEmail() || '').toLowerCase();
+  if (caller !== ADMIN_EMAIL.toLowerCase()) {
+    throw new Error('Only the configured administrator may repair report data.');
+  }
+
+  const reportId = 'YG-20260901-211328-989';
+  const sheet = getSheet_();
+  if (!sheet) throw new Error('Sheet laporan tidak ditemukan.');
+
+  const rowNumber = findReportRowById_(sheet, reportId);
+  if (!rowNumber) throw new Error('Laporan tidak ditemukan: ' + reportId);
+
+  const reportType = clean_(sheet.getRange(rowNumber, 2).getDisplayValue());
+  const publishedAt = sheet.getRange(rowNumber, 26).getValue();
+  if (reportType !== 'Capacity Building') {
+    throw new Error('Laporan bukan Capacity Building: ' + reportId);
+  }
+  if (!publishedAt) {
+    throw new Error('Riwayat tanggal publikasi tidak ditemukan: ' + reportId);
+  }
+
+  sheet.getRange(rowNumber, 22)
+    .setValue('Sudah Dipublikasikan')
+    .setBackground('#dceeff');
+  SpreadsheetApp.flush();
+
+  const publicationResult = notifyCloudflarePublication_(reportId);
+  return {
+    ok: true,
+    reportId: reportId,
+    rowNumber: rowNumber,
+    status: 'Sudah Dipublikasikan',
+    publishedAt: publishedAt,
+    publication: publicationResult
+  };
+}
+
 function getAdminTargetLayerOptions_() {
   return [
     { id: 'area_mangrove', label: 'Area Penanaman Mangrove', types: ['Polygon', 'MultiPolygon'] },
@@ -1140,6 +1178,18 @@ function updateReportStatus(token, rowNumber, newStatus, adminNote, targetLayerI
     rowNumber > sheet.getLastRow()
   ) {
     throw new Error('Baris laporan tidak valid.');
+  }
+
+  const currentStatus = clean_(
+    sheet.getRange(rowNumber, 22).getDisplayValue()
+  );
+  if (
+    currentStatus === 'Sudah Dipublikasikan' &&
+    newStatus !== 'Sudah Dipublikasikan'
+  ) {
+    throw new Error(
+      'Laporan sudah dipublikasikan dan tidak boleh diturunkan statusnya melalui aksi verifikasi biasa.'
+    );
   }
 
   const reportType = clean_(sheet.getRange(rowNumber, 2).getDisplayValue());
