@@ -3,11 +3,14 @@
 
   var BASE='https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec';
   var API=BASE+'?page=public-reports';
+  var OFFICIAL_MANGROVE='data/area_mangrove.geojson?v=20260902-kelapa-pati-monitoring1';
   var CALLBACK='ygMonitoringDetailCallback';
   var STORAGE_KEY='monitoring-detail';
   var OBJECT_ALIASES={
     'area_mangrove:auto:1281388060':'MANGROVE-KELAPA-PATI-PHASE-III-2026-001',
     'area_mangrove:auto:1674337344':'MANGROVE-KELAPA-PATI-PHASE-III-2026-001',
+    'area_mangrove:auto:645930758':'MANGROVE-KELAPA-PATI-PHASE-III-2026-001',
+    'MANGROVE-KELAPA-PATI-PHASE-III-2025-001':'MANGROVE-KELAPA-PATI-PHASE-III-2026-001',
     'area_mangrove:auto:1732351650':'MANGROVE-SEPAHAT-PHASE-III-2025-001',
     'area_mangrove:auto:1601647125':'MANGROVE-SEPAHAT-PHASE-III-2025-001'
   };
@@ -364,6 +367,24 @@
     });
   }
 
+  function applyOfficialObjectProperties(records,officialData){
+    var features=Array.isArray(officialData&&officialData.features)
+      ? officialData.features
+      : [];
+    var byId={};
+    features.forEach(function(feature){
+      var props=feature&&feature.properties||{};
+      var id=String(props.Object_ID||'').trim();
+      if(id)byId[id]=props;
+    });
+    records.forEach(function(record){
+      var id=String(record.objectId||'').trim();
+      var official=byId[id];
+      if(!official)return;
+      record.targetProperties=Object.assign({},record.targetProperties||{},official);
+    });
+  }
+
   function metricDefs(type){
     if(type==='Tinggi Muka Air/FDRS')return[
       ['waterTableCm','Muka air','cm'],['floatCondition','Kondisi pelampung',''],['weather','Cuaca',''],['monitoredAreaHa','Area terpantau','ha']
@@ -422,6 +443,12 @@
     return String(Math.round(v)).toLocaleString('id-ID');
   }
 
+  function areaFormat(v){
+    var number=Number(v);
+    if(!isFinite(number))return'—';
+    return number.toLocaleString('id-ID',{maximumFractionDigits:3});
+  }
+
   function metricItems(r,limit){
     var out=[];
     metricDefs(r.type).forEach(function(d){
@@ -471,20 +498,6 @@
   function chartsHTML(group){
     if(!group||!group.history||group.history.length<2)return'<div class="chart-empty">Grafik pertumbuhan tersedia setelah minimal dua kali monitoring.</div>';
     var history=group.history;
-    if(group.latest.type==='Penanaman Mangrove'){
-      var baseline=metricNumber(group.latest.targetProperties||{},['Jumlah_Bib','Jumlah_Bibit','seedlings']);
-      if(baseline!==null&&baseline>0){
-        history=group.history.map(function(record){
-          var copy=Object.assign({},record,{metrics:Object.assign({},record.metrics||{})});
-          var alive=metricNumber(copy.metrics,['aliveCount','alive','jumlahHidup','tanamanHidup']);
-          if(alive!==null){
-            copy.metrics.deadOrDamagedCount=Math.max(0,baseline-alive);
-            copy.metrics.survivalPercent=alive/baseline*100;
-          }
-          return copy;
-        });
-      }
-    }
     var defs=metricDefs(group.latest.type||'').filter(function(def){
       if(group.latest.type==='Penanaman Mangrove'&&def[0]==='monitoredAreaHa')return false;
       return metricNumber(history[0].metrics||{},[def[0]])!==null&&metricNumber(history[history.length-1].metrics||{},[def[0]])!==null;
@@ -494,9 +507,11 @@
     var planted=metricNumber(group.latest.targetProperties||{},['Jumlah_Bib','Jumlah_Bibit','seedlings']);
     var alive=metricNumber(latest.metrics||{},['aliveCount','alive','jumlahHidup','tanamanHidup']);
     var dead=metricNumber(latest.metrics||{},['deadOrDamagedCount']);
-    var total=planted!==null&&planted>0?planted:(alive||0)+(dead||0);
-    alive=alive===null?0:alive;dead=dead===null?Math.max(0,total-alive):dead;
-    var alivePct=total>0?alive/total*100:0,deadPct=total>0?dead/total*100:0;
+    alive=alive===null?0:alive;
+    dead=dead===null?0:dead;
+    var monitoredTotal=alive+dead;
+    var alivePct=monitoredTotal>0?alive/monitoredTotal*100:0;
+    var deadPct=monitoredTotal>0?dead/monitoredTotal*100:0;
     var rows=defs.map(function(definition){
       var start=metricNumber(first.metrics||{},[definition[0]]),end=metricNumber(latest.metrics||{},[definition[0]]);
       if(start===null||end===null)return'';
@@ -506,7 +521,7 @@
       return'<div class="dumbbell-row '+tone+'"><div class="dumbbell-label">'+esc(definition[1])+'</div><div class="dumbbell-track"><span class="dumbbell-line"></span><span class="dumbbell-dot first"></span><span class="dumbbell-value first">'+esc(formatChartMetric(start,definition[2]))+'</span><span class="dumbbell-value latest">'+esc(formatChartMetric(end,definition[2]))+'</span><span class="dumbbell-dot latest"></span></div><div class="dumbbell-delta '+tone+'">'+esc((delta>0?'+':'')+formatChartMetric(delta,definition[2]))+'</div></div>';
     }).filter(Boolean).join('');
     if(!rows)return'<div class="chart-empty">Belum ada indikator yang dapat dibandingkan.</div>';
-    return'<div class="condition-summary"><div class="condition-heading"><strong>Kondisi bibit terbaru</strong><span>'+esc(fmtDate(latest.date))+'</span></div><div class="condition-bar" aria-label="'+esc(numberFormat(alive))+' bibit hidup dan '+esc(numberFormat(dead))+' mati atau rusak"><div class="condition-part condition-alive" style="width:'+alivePct+'%"><span>'+esc(numberFormat(alive))+'<small>'+esc(numberFormat(alivePct))+'% hidup</small></span></div><div class="condition-part condition-dead" style="width:'+deadPct+'%"><span>'+esc(numberFormat(dead))+'<small>'+esc(numberFormat(deadPct))+'% mati/rusak</small></span></div></div><div class="condition-total"><span>Basis atribut polygon</span><strong>'+esc(numberFormat(total))+' bibit tertanam</strong></div></div><div class="dumbbell-chart"><div class="dumbbell-head"><strong>Indikator</strong><span><b>'+esc(fmtDate(first.date))+'</b><b>'+esc(fmtDate(latest.date))+'</b></span><strong>Perubahan</strong></div>'+rows+'</div>';
+    return'<div class="condition-summary"><div class="condition-heading"><strong>Kondisi bibit terbaru</strong><span>'+esc(fmtDate(latest.date))+'</span></div><div class="condition-bar" aria-label="'+esc(numberFormat(alive))+' bibit hidup dan '+esc(numberFormat(dead))+' mati atau rusak"><div class="condition-part condition-alive" style="width:'+alivePct+'%"><span>'+esc(numberFormat(alive))+'<small>'+esc(numberFormat(alivePct))+'% hidup</small></span></div><div class="condition-part condition-dead" style="width:'+deadPct+'%"><span>'+esc(numberFormat(dead))+'<small>'+esc(numberFormat(deadPct))+'% mati/rusak</small></span></div></div><div class="condition-total"><span>Realisasi terkini · populasi dipantau '+esc(numberFormat(monitoredTotal))+'</span><strong>'+esc(numberFormat(planted))+' bibit pada Plot 1</strong></div></div><div class="dumbbell-chart"><div class="dumbbell-head"><strong>Indikator</strong><span><b>'+esc(fmtDate(first.date))+'</b><b>'+esc(fmtDate(latest.date))+'</b></span><strong>Perubahan</strong></div>'+rows+'</div>';
   }
 
   function renderKpis(group){
@@ -519,16 +534,17 @@
     var alive=metricNumber(latest.metrics||{},['aliveCount','alive','jumlahHidup','tanamanHidup']);
     var baseline=metricNumber(latest.targetProperties||{},['Jumlah_Bib','Jumlah_Bibit','seedlings']);
     var reportedDead=metricNumber(latest.metrics||{},['deadOrDamagedCount','dead','mati','jumlahMati','tanamanMati','deadCount']);
-    var totalPlants=baseline!==null?baseline:(alive!==null&&reportedDead!==null?alive+reportedDead:0);
-    var dead=totalPlants&&alive!==null?Math.max(0,totalPlants-alive):reportedDead;
-    var alivePercent=totalPlants?alive/totalPlants*100:0;
-    var deadPercent=totalPlants?dead/totalPlants*100:0;
+    var totalPlants=baseline!==null?baseline:0;
+    var dead=reportedDead;
+    var monitoredTotal=alive!==null&&dead!==null?alive+dead:0;
+    var alivePercent=monitoredTotal?alive/monitoredTotal*100:0;
+    var deadPercent=monitoredTotal?dead/monitoredTotal*100:0;
     var kpis=[
-      ['Bibit tertanam',totalPlants?numberFormat(totalPlants):'—','baseline atribut polygon','primary'],
-      ['Hidup',alive!==null?numberFormat(alive):'—',numberFormat(alivePercent)+'% dari total','alive'],
-      ['Mati/rusak',dead!==null?numberFormat(dead):'—',numberFormat(deadPercent)+'% dari total','dead'],
-      ['Survival',totalPlants?numberFormat(alivePercent)+'%':'—','kelangsungan hidup',''],
-      ['Luas polygon',area!==null?numberFormat(area)+' ha':'—','monitoring '+latestTime,'']
+      ['Bibit tertanam',totalPlants?numberFormat(totalPlants):'—','realisasi terkini Plot 1','primary'],
+      ['Hidup',alive!==null?numberFormat(alive):'—',numberFormat(alivePercent)+'% dari populasi dipantau','alive'],
+      ['Mati/rusak',dead!==null?numberFormat(dead):'—',numberFormat(deadPercent)+'% dari populasi dipantau','dead'],
+      ['Survival',monitoredTotal?numberFormat(alivePercent)+'%':'—','kelangsungan hidup hasil monitoring',''],
+      ['Luas polygon',area!==null?areaFormat(area)+' ha':'—','atribut terkini Plot 1','']
     ];
     kpiElement.innerHTML=kpis.map(function(item){
       return'<article class="'+esc(item[3]||'')+'"><span class="eyebrow">'+esc(item[0])+'</span><strong>'+esc(item[1])+'</strong><small class="muted">'+esc(item[2]||'')+'</small></article>';
@@ -548,7 +564,7 @@
       ['Monitoring terbaru',fmtDate(latest.date)+' · '+(latest.reporter||'Pelapor belum disebut')],
       ['Organisasi pelapor',latest.organization||'—'],
       ['Jenis monitoring',latest.type||'—'],
-      ['Basis objek',targetSeedlings!==null?numberFormat(targetSeedlings)+' bibit · '+numberFormat(targetArea)+' ha':'Belum tersedia','Jumlah bibit dan luas resmi mengikuti atribut polygon.'],
+      ['Basis objek',targetSeedlings!==null?numberFormat(targetSeedlings)+' bibit · '+areaFormat(targetArea)+' ha':'Belum tersedia','Jumlah bibit dan luas resmi mengikuti atribut polygon.'],
       ['ID Objek',group.objectCode||'—'],
       ['Jumlah monitoring',group.history.length+' kali · '+Object.keys(group.reporterKeys||{}).length+' pelapor']
     ];
@@ -563,12 +579,11 @@
       historyElement.innerHTML='<div class="empty">Belum ada catatan riwayat.</div>';
       return;
     }
-    var baseline=metricNumber(group.latest.targetProperties||{},['Jumlah_Bib','Jumlah_Bibit','seedlings']);
     historyElement.innerHTML=group.history.map(function(r,index){
       var alive=metricNumber(r.metrics||{},['aliveCount','alive','jumlahHidup']);
       var reportedDead=metricNumber(r.metrics||{},['deadOrDamagedCount','dead','mati']);
-      var total=baseline!==null?baseline:(alive!==null&&reportedDead!==null?alive+reportedDead:null);
-      var dead=total!==null&&alive!==null?Math.max(0,total-alive):reportedDead;
+      var total=alive!==null&&reportedDead!==null?alive+reportedDead:null;
+      var dead=reportedDead;
       var survival=total?alive/total*100:null;
       return'<div class="detail-timeline-item">'+
         '<div class="detail-timeline-meta"><span>'+esc(fmtDate(r.date))+'</span><span class="status '+esc(r.status.key||'baik')+'">'+esc(r.status.label||'')+'</span></div>'+
@@ -807,20 +822,27 @@
     var timeout=window.setTimeout(function(){
       if(controller)controller.abort();
     },45000);
-    fetch(API+'&t='+Date.now(),{
-      cache:'no-store',
-      signal:controller?controller.signal:undefined
-    }).then(function(response){
-      if(!response.ok)throw new Error('HTTP '+response.status);
-      return response.json();
-    }).then(applyData).catch(function(){
+    Promise.all([
+      fetch(API+'&t='+Date.now(),{
+        cache:'no-store',
+        signal:controller?controller.signal:undefined
+      }).then(function(response){
+        if(!response.ok)throw new Error('HTTP '+response.status);
+        return response.json();
+      }),
+      fetch(OFFICIAL_MANGROVE+'&t='+Date.now(),{cache:'no-store'})
+        .then(function(response){return response.ok?response.json():null;})
+        .catch(function(){return null;})
+    ]).then(function(results){
+      applyData(results[0],results[1]);
+    }).catch(function(){
       loadJsonp();
     }).then(function(){
       window.clearTimeout(timeout);
     });
   }
 
-  function applyData(data){
+  function applyData(data,officialData){
     var features=Array.isArray(data&&data.features)?data.features:[];
     if(!features.length&&Array.isArray(data&&data.reports))features=data.reports;
     if(!features.length&&Array.isArray(data&&data.updates))features=data.updates;
@@ -834,6 +856,7 @@
       }
     }
     var records=features.map(normalize).filter(Boolean);
+    applyOfficialObjectProperties(records,officialData);
     var groups=groupData(records);
     var group=groups.find(function(g){return g.key===objectKey;});
     if(!group&&objectKey)group=groups.find(function(g){return g.objectCode===objectKey;});

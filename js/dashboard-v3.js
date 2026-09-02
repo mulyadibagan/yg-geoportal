@@ -25,7 +25,7 @@
   };
   const OFFICIAL_LAYERS = [
     { id: "desa_intervensi", url: "data/desa_intervensi.geojson?v=20260726-14desa" },
-    { id: "area_mangrove", url: "data/area_mangrove.geojson?v=20260825-sync1" },
+    { id: "area_mangrove", url: "data/area_mangrove.geojson?v=20260902-kelapa-pati-monitoring1" },
     { id: "mineral_land_restoration_area", url: "data/mineral_land_restoration_area.geojson?v=20260825-sync1" },
     { id: "area_kopi", url: "data/area_kopi.geojson?v=20260825-sync1" },
     { id: "kopi", url: "data/kopi.geojson?v=20260825-sync1" }
@@ -793,12 +793,14 @@
             Source_Layer: source.id,
             Status_Objek: (feature.properties || {}).Status_Objek || "Aktif",
             Donor: source.id === "area_mangrove"
-              ? "Aramco Asia Singapore"
+              ? ((feature.properties || {}).Donor || "Aramco Asia Singapore")
               : source.id === "kopi"
                 ? ((feature.properties || {}).Donor || "Global Environment Centre")
                 : (feature.properties || {}).Donor,
             Donor_Cluster: source.id === "area_mangrove"
-              ? "Aramco Asia Singapore"
+              ? ((feature.properties || {}).Donor_Cluster ||
+                (feature.properties || {}).Donor ||
+                "Aramco Asia Singapore")
               : source.id === "kopi"
                 ? ((feature.properties || {}).Donor_Cluster ||
                   (feature.properties || {}).Donor ||
@@ -1406,10 +1408,10 @@
     ).filter(Boolean)).size;
 
     const aramcoAssets = assetsFor("Aramco Asia Singapore");
-    // Seluruh layer resmi area_mangrove merupakan cakupan Aramco. Ambil
-    // langsung dari layer agar polygon lama tanpa atribut Donor tetap dihitung.
-    const aramcoMangrove = layerAssets(active, ["area_mangrove"]);
-    const aramcoProgrammeAssets = [...aramcoAssets, ...aramcoMangrove];
+    // Polygon lama tanpa donor diberi fallback Aramco saat layer resmi dimuat,
+    // sedangkan polygon dengan donor eksplisit (mis. MA Earth) tetap terpisah.
+    const aramcoMangrove = layerAssets(aramcoAssets, ["area_mangrove"]);
+    const aramcoProgrammeAssets = aramcoAssets;
     const aramcoNurseries = layerAssets(aramcoAssets, [
       "nursery_mangrove", "persemaian_mangrove"
     ]);

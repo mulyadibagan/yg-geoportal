@@ -363,6 +363,7 @@ L.control.scale({
   const layerConfigs = {};
   const pendingLiveFeatures = {};
   const monitoringReportsByTarget = new Map();
+  const monitoringHistoryIdsByTarget = new Map();
   const searchItems = [];
   let allBounds = L.latLngBounds([]);
   let rawFeatures = [];
@@ -1436,8 +1437,28 @@ L.control.scale({
 
   function indexMonitoringReports(features) {
     monitoringReportsByTarget.clear();
+    monitoringHistoryIdsByTarget.forEach((reportIds, targetId) => {
+      monitoringReportsByTarget.set(targetId, new Set(reportIds));
+    });
     (features || []).forEach(feature => {
       const props = feature && feature.properties || {};
+      const permanentObjectId = canonicalMangroveObjectId(props.Object_ID)
+        ? String(props.Object_ID || "").trim()
+        : "";
+      const historyIds = Array.isArray(props.Monitoring_Report_IDs)
+        ? props.Monitoring_Report_IDs
+        : [];
+      if (permanentObjectId && historyIds.length) {
+        const key = normalizedMatchValue(permanentObjectId);
+        if (!monitoringReportsByTarget.has(key)) {
+          monitoringReportsByTarget.set(key, new Set());
+        }
+        historyIds.forEach(reportId => {
+          if (String(reportId || "").trim()) {
+            monitoringReportsByTarget.get(key).add(String(reportId).trim());
+          }
+        });
+      }
       const reportId = String(
         props.reportId || props.Source_Report_ID || props.Object_ID || ""
       ).trim();
@@ -3424,6 +3445,9 @@ L.control.scale({
     "YG-20260717-205241-378": [
       "MANGROVE-KELAPA-PATI-PHASE-III-2026-001"
     ],
+    "YG-20260827-154822-115": [
+      "MANGROVE-KELAPA-PATI-PHASE-III-2026-001"
+    ],
     "YG-20260717-210140-375": [
       "MANGROVE-BURUK-BAKUL-PHASE-III-2025-001"
     ],
@@ -3755,6 +3779,43 @@ L.control.scale({
           Donor_Cluster: inheritedDonor
         }
       }];
+    });
+
+    /*
+     * Peta hanya menggambar monitoring terbaru untuk setiap target agar
+     * polygon tidak bertumpuk. Daftar ID berikut tetap membawa seluruh
+     * histori terverifikasi ke popup objek resmi dan halaman detail.
+     */
+    monitoringHistoryIdsByTarget.clear();
+    alignedFeatures.forEach(feature => {
+      if (!isMangroveMonitoringFeature(feature)) return;
+      const props = feature && feature.properties || {};
+      const reportId = String(
+        props.reportId || props.Source_Report_ID || props.Object_ID || ""
+      ).trim();
+      const targetIds = Array.isArray(props.Target_Object_IDs_Current)
+        ? props.Target_Object_IDs_Current
+        : String(
+            props.Target_Object_ID_Current || props.Target_Object_ID || ""
+          ).split("|");
+      if (!reportId) return;
+      targetIds.map(value => String(value || "").trim()).filter(Boolean)
+        .forEach(targetId => {
+          const key = normalizedMatchValue(targetId);
+          if (!monitoringHistoryIdsByTarget.has(key)) {
+            monitoringHistoryIdsByTarget.set(key, new Set());
+          }
+          monitoringHistoryIdsByTarget.get(key).add(reportId);
+        });
+    });
+    mangrove.features.forEach(feature => {
+      const props = feature && feature.properties || {};
+      const history = monitoringHistoryIdsByTarget.get(
+        normalizedMatchValue(props.Object_ID)
+      );
+      if (history && history.size) {
+        props.Monitoring_Report_IDs = Array.from(history).sort();
+      }
     });
 
     const latestMonitoringByTarget = new Map();
