@@ -196,6 +196,7 @@ function repairTanjungKurasPlantingCountFromSecureExecution() {
     reportId: reportId,
     sourcePlantingReportId: 'YG-20260725-135142-186',
     plantedCount: 200,
+    areaHa: 0.088,
     sync: syncResult,
     publication: publicationResult
   };

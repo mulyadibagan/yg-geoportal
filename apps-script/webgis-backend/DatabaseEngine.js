@@ -555,6 +555,10 @@ function applyPublishedReportDataCorrections_(reportId, targetProperties) {
   if (clean_(reportId) === 'YG-20260829-144847-315') {
     properties.Jumlah_Tanam = 200;
     properties.Jumlah_Bib = 200;
+    const indicativeAreaHa = numberOrBlank_(properties.Luas_Indikatif_Ha);
+    if (numberOrBlank_(properties.Luas_Ha) === '' && indicativeAreaHa !== '') {
+      properties.Luas_Ha = indicativeAreaHa;
+    }
   }
 
   return properties;

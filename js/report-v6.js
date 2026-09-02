@@ -2076,7 +2076,11 @@
     ];
     var raw = null;
     for(var i=0;i<keys.length;i++){
-      if(properties[keys[i]] !== undefined && properties[keys[i]] !== null){
+      if(
+        properties[keys[i]] !== undefined &&
+        properties[keys[i]] !== null &&
+        String(properties[keys[i]]).trim() !== ''
+      ){
         raw = properties[keys[i]];
         break;
       }
@@ -2111,11 +2115,16 @@
 
     var properties = selectedCorrectionFeature.feature.properties;
     var keys = [
-      'Luas_Ha','Luas_HA','luas_ha','Luas_Area_Ha','areaHa'
+      'Luas_Ha','Luas_HA','luas_ha','Luas_Area_Ha','areaHa',
+      'Luas_Indikatif_Ha','luas_indikatif_ha'
     ];
     var raw = null;
     for(var i=0;i<keys.length;i++){
-      if(properties[keys[i]] !== undefined && properties[keys[i]] !== null){
+      if(
+        properties[keys[i]] !== undefined &&
+        properties[keys[i]] !== null &&
+        String(properties[keys[i]]).trim() !== ''
+      ){
         raw = properties[keys[i]];
         break;
       }
