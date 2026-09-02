@@ -1290,6 +1290,81 @@
     ]
   },
   {
+    "id": "DNR-MA-EARTH",
+    "name": "MA Earth",
+    "slug": "ma-earth",
+    "period": "Agustus–Desember 2026",
+    "focus": "Penanaman mangrove dan kopi agroforestri",
+    "locations": [
+      "Sepahat, Kabupaten Bengkalis"
+    ],
+    "indicators": [
+      {
+        "label": "Bibit mangrove tertanam",
+        "value": "500 / 2.000",
+        "progress": 25
+      },
+      {
+        "label": "Bibit kopi agroforestri tertanam",
+        "value": "0 / 1.000",
+        "progress": 0
+      }
+    ],
+    "programs": [
+      {
+        "id": "PRG-MA-EARTH-2026",
+        "name": "Program Penanaman Mangrove dan Kopi Agroforestri",
+        "period": "Agustus–Desember 2026",
+        "status": "Aktif",
+        "summary": "Program penanaman berbasis ekosistem dengan output 2.000 bibit mangrove tertanam dan 1.000 bibit kopi agroforestri tertanam.",
+        "outputs": [
+          {
+            "id": "OUT-MA-EARTH-MANGROVE",
+            "name": "Penanaman mangrove",
+            "indicator": "Target 2.000 bibit; realisasi terpetakan 500 bibit (25%)",
+            "target": 2000,
+            "realization": 500,
+            "unit": "bibit",
+            "mapUrl": "webgis.html?object=MANGROVE-SEPAHAT-MA-EARTH-2026-001"
+          },
+          {
+            "id": "OUT-MA-EARTH-COFFEE",
+            "name": "Penanaman kopi agroforestri",
+            "indicator": "Target 1.000 bibit; belum ada realisasi terpetakan",
+            "target": 1000,
+            "realization": 0,
+            "unit": "bibit"
+          }
+        ]
+      }
+    ],
+    "timeline": [
+      {
+        "year": "Agustus–Desember 2026",
+        "title": "Pelaksanaan penanaman",
+        "detail": "Penanaman mangrove dan kopi agroforestri sesuai output program."
+      }
+    ],
+    "verifiedEvidence": [
+      {
+        "evidenceId": "MANGROVE-SEPAHAT-MA-EARTH-2026-001",
+        "donorName": "MA Earth",
+        "programmeId": "PRG-MA-EARTH-2026",
+        "indicatorId": "OUT-MA-EARTH-MANGROVE",
+        "indicatorLabel": "Penanaman mangrove",
+        "evidenceType": "Evidence Spasial",
+        "evidenceTitle": "Penanaman 500 bibit prepat · Sepahat",
+        "location": "Sepahat, Bandar Laksamana, Bengkalis",
+        "activityDate": "2026-09-01",
+        "activityDateLabel": "1 September 2026",
+        "verificationBasis": "Polygon final dan dokumentasi lapangan MA Earth",
+        "note": "Realisasi 500 bibit pada polygon seluas 0,20 ha dengan jarak tanam 2 × 2 meter.",
+        "access": "public",
+        "staffOnly": false
+      }
+    ]
+  },
+  {
     "id": "DNR-PERTAMINA-FOUNDATION",
     "name": "Pertamina Foundation",
     "slug": "pertamina-foundation",

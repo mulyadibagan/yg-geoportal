@@ -14,7 +14,7 @@
   <title>YG GeoPortal | Yayasan Gambut</title>
   <link rel="icon" href="assets/logo-yayasan-gambut.png"/>
   <link rel="stylesheet" href="css/style.css?v=20260723-revert-layout"/>
-   <link rel="stylesheet" href="css/dashboard-v3.css?v=20260825-aramco-before-after1"/>
+   <link rel="stylesheet" href="css/dashboard-v3.css?v=20260902-ma-earth-logo-precision4"/>
   <link rel="stylesheet" href="css/dashboard-sdg.css?v=20260807-climate-layout-fix1"/>
   <link rel="stylesheet" href="css/language-switcher.css?v=20260721-all-pages1"/>
   <link rel="stylesheet" href="css/navigation-v2.css?v=20260807-mobile-submenu-links1"/>
@@ -164,6 +164,10 @@
         <span class="funding-penabulu-name">Yayasan Penabulu</span>
         <strong class="funding-penabulu-period">2026–2027</strong>
         <small>Desa Temiang · lihat ringkasan program</small>
+      </button>
+      <button class="category-card dashboard-link funding-card funding-card-ma-earth" type="button" data-open-ma-earth>
+        <i class="category-icon funding-card-logo" aria-hidden="true"><img src="assets/funding-ma-earth.svg?v=20260902-official1" alt="" loading="lazy"></i><span>MA Earth</span>
+        <strong>Agustus–Desember 2026</strong><small>500/2.000 mangrove · 0/1.000 kopi · 1 objek terpetakan</small>
       </button>
     </div>
   </section>
@@ -567,6 +571,52 @@
   </section>
 </div>
 
+<div class="funding-modal" id="ma-earth-dashboard" hidden>
+  <button class="funding-backdrop" type="button" data-close-ma-earth aria-label="Tutup dashboard MA Earth"></button>
+  <section class="funding-dialog" role="dialog" aria-modal="true" aria-labelledby="ma-earth-title">
+    <button class="funding-close" type="button" data-close-ma-earth aria-label="Tutup">×</button>
+    <header class="funding-hero">
+      <span class="funding-badge">PROGRAM AKTIF</span>
+      <h2 id="ma-earth-title">MA Earth</h2>
+      <div class="funding-meta">
+        <span><b>Periode Program</b>Agustus–Desember 2026</span>
+        <span><b>Fokus Program</b>Penanaman mangrove dan kopi agroforestri</span>
+      </div>
+    </header>
+    <div class="funding-content">
+      <div class="funding-heading">
+        <div><span>Output program</span><h3>Penanaman Berbasis Ekosistem</h3></div>
+        <p>Angka output program ditampilkan terpisah dari jumlah objek yang sudah terpetakan.</p>
+      </div>
+      <div class="funding-indicators">
+        <a href="webgis.html?donor=MA+Earth&amp;layer=area_mangrove" class="funding-indicator"><i>🌿</i><strong>2.000</strong><span>Bibit Mangrove Tertanam</span></a>
+        <a href="webgis.html?donor=MA+Earth&amp;layers=kopi,area_kopi" class="funding-indicator"><i>☕</i><strong>1.000</strong><span>Bibit Kopi Agroforestri Tertanam</span></a>
+      </div>
+      <section class="ma-earth-progress" aria-labelledby="ma-earth-progress-title">
+        <div class="funding-heading"><div><span>Progres program aktif</span><h3 id="ma-earth-progress-title">Realisasi terhadap target</h3></div><p>Diperbarui dari objek terverifikasi di WebGIS.</p></div>
+        <div class="ma-earth-progress-grid">
+          <article>
+            <header><strong>Mangrove</strong><b>25%</b></header>
+            <div class="ma-earth-progress-track" role="progressbar" aria-label="Progres penanaman mangrove" aria-valuemin="0" aria-valuemax="2000" aria-valuenow="500"><i style="width:25%"></i></div>
+            <p><b>500 bibit terealisasi</b><span>Target 2.000 bibit · 0,20 ha · Sepahat</span></p>
+            <a href="webgis.html?object=MANGROVE-SEPAHAT-MA-EARTH-2026-001">Lihat polygon dan foto →</a>
+          </article>
+          <article>
+            <header><strong>Kopi agroforestri</strong><b>0%</b></header>
+            <div class="ma-earth-progress-track" role="progressbar" aria-label="Progres penanaman kopi agroforestri" aria-valuemin="0" aria-valuemax="1000" aria-valuenow="0"><i style="width:0%"></i></div>
+            <p><b>Belum ada realisasi terpetakan</b><span>Target 1.000 bibit</span></p>
+          </article>
+        </div>
+      </section>
+      <div class="funding-detail" style="display:block;">
+        <h4>Keterhubungan dengan WebGIS</h4>
+        <p>Progres dihitung dari realisasi objek MA Earth yang sudah terpetakan. Target program tetap 2.000 bibit mangrove dan 1.000 bibit kopi agroforestri.</p>
+        <a href="webgis.html?donor=MA+Earth">Lihat seluruh objek MA Earth →</a>
+      </div>
+    </div>
+  </section>
+</div>
+
 <div class="funding-modal" id="pertamina-dashboard" hidden>
   <button class="funding-backdrop" type="button" data-close-pertamina aria-label="Tutup dashboard Pertamina Foundation"></button>
   <section class="funding-dialog" role="dialog" aria-modal="true" aria-labelledby="pertamina-title">
@@ -658,10 +708,10 @@
   new MutationObserver(saveSnapshot).observe(programmes, { childList: true, subtree: true, characterData: true });
 }());
 </script>
-<script src="js/dashboard-v3.js?v=20260902-kelapa-pati-monitoring1"></script>
-  <script src="js/home-modern.js?v=20260825-sepahat-popup1"></script>
-   <script src="js/donor-program-status.js?v=20260825-active-first1"></script>
-   <script src="js/donor-evidence-summary.js?v=20260823-ppcf-output-status1"></script>
+<script src="js/dashboard-v3.js?v=20260902-ma-earth-progress1"></script>
+  <script src="js/home-modern.js?v=20260902-ma-earth-progress1"></script>
+   <script src="js/donor-program-status.js?v=20260902-ma-earth-card1"></script>
+   <script src="js/donor-evidence-summary.js?v=20260902-ma-earth-progress2"></script>
   <script src="js/dashboard-sdg.js?v=20260827-public-climate-copy1"></script>
   <script src="js/i18n.js?v=20260827-public-climate-copy1"></script>
   <script src="js/content-config.js?v=20260723-content-admin1"></script>

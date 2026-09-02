@@ -2,18 +2,22 @@
   'use strict';
 
   var API = 'https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec';
-  var DONOR_DATA_API = 'https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/api/donor/programmes';
+  var DONOR_DATA_API = 'https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes';
+  var DONOR_JSONP_API = API + '?page=donor-programmes';
   var donorMap = {
     'Aramco Asia Singapore': { card: '[data-open-aramco]', modal: '#aramco-dashboard' },
     'Global Environment Centre': { card: '[data-open-gec]', modal: '#gec-dashboard' },
     'Pan Pacific Conservation Foundation (PPCF)': { card: '[data-open-ppcf]', modal: '#ppcf-dashboard' },
     'Aliansi Kolibri': { card: '[data-open-kolibri]', modal: '#kolibri-dashboard' },
     'Yayasan Penabulu': { card: '[data-open-penabulu]', modal: '#penabulu-dashboard' },
+    'MA Earth': { card: '[data-open-ma-earth]', modal: '#ma-earth-dashboard' },
     'Pertamina Foundation': { card: '[data-open-pertamina]', modal: '#pertamina-dashboard' }
   };
   var assignments = [];
   var donors = [];
+  var fallbackEvidenceCounts = {};
   var assignmentsReady = false;
+  var assignmentsUnavailable = false;
   var donorsReady = false;
   var applyQueued = false;
 
@@ -40,6 +44,41 @@
       script.src = url + '&callback=' + encodeURIComponent(callback) + '&t=' + Date.now();
       document.head.appendChild(script);
     });
+  }
+
+  function setEvidenceSource(value) {
+    if (document.documentElement) {
+      document.documentElement.setAttribute('data-donor-evidence-source', value);
+    }
+  }
+
+  function requestDonorProgrammes(staffSession, donorHeaders) {
+    function publicJsonpFallback(error) {
+      // The Worker intentionally restricts this endpoint to the production origin.
+      // Local previews therefore use the public, redacted Apps Script JSONP response.
+      if (staffSession) throw error;
+      setEvidenceSource('loading-jsonp');
+      return jsonp(DONOR_JSONP_API).then(function (result) {
+        setEvidenceSource('jsonp');
+        return result;
+      });
+    }
+
+    if (typeof window.fetch !== 'function') {
+      return publicJsonpFallback(new Error('Fetch tidak tersedia.'));
+    }
+
+    setEvidenceSource('loading-worker');
+    return window.fetch(DONOR_DATA_API + '?t=' + Date.now(), {
+      cache: 'no-store',
+      headers: donorHeaders
+    }).then(function (response) {
+      if (!response.ok) throw new Error('Data evidence donor tidak dapat dimuat.');
+      return response.json().then(function (result) {
+        setEvidenceSource('worker');
+        return result;
+      });
+    }).catch(publicJsonpFallback);
   }
 
   function outputName(row) {
@@ -276,6 +315,7 @@
       updateGecMilestones(rows);
       return;
     }
+    if (donorName === 'MA Earth') return;
     var target = donorMap[donorName];
     var modal = target && document.querySelector(target.modal);
     var content = modal && modal.querySelector('.funding-content');
@@ -455,6 +495,10 @@
           'Aliansi Kolibri': 6
         };
         var evidenceCount = rows.length + (spatialEvidenceCounts[donorName] || 0);
+        var fallbackCount = Number(fallbackEvidenceCounts[donorName]);
+        if (assignmentsUnavailable && Number.isFinite(fallbackCount)) {
+          evidenceCount = fallbackCount;
+        }
         var badgeText = !ready
           ? 'Memuat evidence...'
           : evidenceCount
@@ -487,13 +531,10 @@
     var staffSession = readStaffSession();
     var donorHeaders = { accept: 'application/json' };
     if (staffSession) donorHeaders.authorization = 'Bearer ' + staffSession.token;
-    fetch(DONOR_DATA_API + '?t=' + Date.now(), { cache: 'no-store', headers: donorHeaders })
-      .then(function (response) {
-        if (!response.ok) throw new Error('Data evidence donor tidak dapat dimuat.');
-        return response.json();
-      })
+    requestDonorProgrammes(staffSession, donorHeaders)
       .then(function (result) {
         assignments = Array.isArray(result && result.assignments) ? result.assignments : [];
+        assignmentsUnavailable = false;
         assignmentsReady = true;
         applyDonorEvidence();
         // dashboard-v3 menghitung layer secara asinkron; pastikan evidence pusat
@@ -503,10 +544,22 @@
         });
       })
       .catch(function (error) {
+        setEvidenceSource(Object.keys(fallbackEvidenceCounts).length ? 'local-snapshot' : 'unavailable');
+        assignmentsUnavailable = true;
         assignmentsReady = true;
         applyDonorEvidence();
         console.warn(error.message);
       });
+    if (typeof window.fetch === 'function') {
+      window.fetch('data/donor-evidence-counts-snapshot.json?v=20260902-1', { cache: 'no-store' })
+        .then(function (response) { return response.ok ? response.json() : {}; })
+        .then(function (result) {
+          fallbackEvidenceCounts = result && result.counts ? result.counts : {};
+          if (assignmentsUnavailable) setEvidenceSource('local-snapshot');
+          applyDonorEvidence();
+        })
+        .catch(function () {});
+    }
     fetch('data/donors.json?v=20260823-pertamina-six-outputs1', { cache: 'no-store' })
       .then(function (response) { return response.ok ? response.json() : []; })
       .then(function (result) {

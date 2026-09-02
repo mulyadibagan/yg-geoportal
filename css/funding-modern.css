@@ -79,6 +79,26 @@
   object-position:left center;
   filter:none;
 }
+/* Keep every donor mark on one precise 88px baseline after status reordering. */
+#partnerships #donor-grid .funding-card.category-card .category-icon{
+  box-sizing:border-box!important;
+  min-height:88px!important;
+  justify-content:center!important;
+}
+#partnerships #donor-grid .funding-card.category-card .category-icon img{
+  width:auto!important;
+  height:auto!important;
+  max-width:100%!important;
+  max-height:54px!important;
+  margin:auto!important;
+  object-position:center center!important;
+}
+#partnerships #donor-grid .funding-card.category-card.funding-card-ma-earth .category-icon img{
+  width:48px!important;
+  height:48px!important;
+  max-width:48px!important;
+  max-height:48px!important;
+}
 #donor-grid .funding-card>span{
   display:block;
   min-height:52px;
@@ -136,6 +156,21 @@
   border-radius:999px!important;
 }
 
+.ma-earth-progress{margin-top:24px}
+.ma-earth-progress .funding-heading{margin-bottom:14px}
+.ma-earth-progress-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.ma-earth-progress-grid article{padding:20px;border:1px solid #d4e7de;border-radius:16px;background:#fff}
+.ma-earth-progress-grid header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.ma-earth-progress-grid header strong{color:#23443a;font-size:16px}
+.ma-earth-progress-grid header b{color:#087653;font-size:20px}
+.ma-earth-progress-track{height:10px;margin:14px 0;border-radius:999px;background:#e4eee9;overflow:hidden}
+.ma-earth-progress-track i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#087653,#4aaa89)}
+.ma-earth-progress-grid p{display:flex;flex-direction:column;gap:5px;margin:0;color:#53655d}
+.ma-earth-progress-grid p b{color:#123b32;font-size:15px}
+.ma-earth-progress-grid p span{font-size:12px}
+.ma-earth-progress-grid a{display:inline-block;margin-top:14px;color:#087653;font-size:13px;font-weight:800;text-decoration:none}
+.ma-earth-progress-grid a:hover,.ma-earth-progress-grid a:focus-visible{text-decoration:underline;outline:0}
+
 @media(max-width:1050px){
   #donor-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 }
@@ -146,4 +181,5 @@
   #donor-grid{grid-template-columns:1fr!important;gap:10px!important}
   #donor-grid .funding-card{min-height:270px!important;padding:0 20px 20px!important}
   #donor-grid .funding-card>span{min-height:auto;font-size:17px!important}
+  .ma-earth-progress-grid{grid-template-columns:1fr}
 }

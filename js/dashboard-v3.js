@@ -657,7 +657,8 @@
       "pan pacific conservation foundation": "Pan Pacific Conservation Foundation (PPCF)",
       "pan pacific conservation foundation ppcf": "Pan Pacific Conservation Foundation (PPCF)",
       kolibri: "Aliansi Kolibri",
-      "aliansi kolibri": "Aliansi Kolibri"
+      "aliansi kolibri": "Aliansi Kolibri",
+      "ma earth": "MA Earth"
     };
     return aliases[normalized] || donor;
   }
@@ -1946,6 +1947,7 @@
     const gecName = "Global Environment Centre";
     const kolibriName = "Aliansi Kolibri";
     const penabuluName = "Yayasan Penabulu";
+    const maEarthName = "MA Earth";
     const pertaminaName = "Pertamina Foundation";
     const donorEntries = Object.entries(donors)
       .sort((a, b) => b[1] - a[1]);
@@ -1966,6 +1968,9 @@
     }
     if (!donorEntries.some(([name]) => name === penabuluName)) {
       donorEntries.push([penabuluName, 0]);
+    }
+    if (!donorEntries.some(([name]) => name === maEarthName)) {
+      donorEntries.push([maEarthName, 0]);
     }
     if (!donorEntries.some(([name]) => name === pertaminaName)) {
       donorEntries.push([pertaminaName, 0]);
@@ -2011,6 +2016,14 @@
               '<span class="funding-penabulu-name">' + escapeHtml(name) + '</span>' +
               '<strong class="funding-penabulu-period">2026–2027</strong>' +
               '<small>Desa Temiang · ' + formatNumber(count) + ' objek · ' + formatNumber(programCount) + ' program</small>' +
+            '</button>';
+          }
+          if (name === "MA Earth") {
+            return '<button class="category-card dashboard-link funding-card funding-card-ma-earth" type="button" data-open-ma-earth>' +
+              '<i class="category-icon funding-card-logo" aria-hidden="true"><img src="assets/funding-ma-earth.svg?v=20260902-official1" alt="" loading="lazy"></i>' +
+              '<span>' + escapeHtml(name) + '</span>' +
+              '<strong>Agustus–Desember 2026</strong>' +
+              '<small>500/2.000 mangrove · 0/1.000 kopi · ' + formatNumber(count) + ' objek terpetakan</small>' +
             '</button>';
           }
           if (name === "Pertamina Foundation") {
@@ -2124,6 +2137,7 @@
   const gecDetail = document.getElementById("gec-detail");
   const kolibriDashboard = document.getElementById("kolibri-dashboard");
   const penabuluDashboard = document.getElementById("penabulu-dashboard");
+  const maEarthDashboard = document.getElementById("ma-earth-dashboard");
   const pertaminaDashboard = document.getElementById("pertamina-dashboard");
   function openFundingDashboard(dashboard) {
     dashboard.hidden = false;
@@ -2150,6 +2164,9 @@
     if (event.target.closest("[data-open-penabulu]")) {
       openFundingDashboard(penabuluDashboard);
     }
+    if (event.target.closest("[data-open-ma-earth]")) {
+      openFundingDashboard(maEarthDashboard);
+    }
     if (event.target.closest("[data-open-pertamina]")) {
       openFundingDashboard(pertaminaDashboard);
     }
@@ -2167,6 +2184,9 @@
     }
     if (event.target.closest("[data-close-penabulu]")) {
       closeFundingDashboard(penabuluDashboard);
+    }
+    if (event.target.closest("[data-close-ma-earth]")) {
+      closeFundingDashboard(maEarthDashboard);
     }
     if (event.target.closest("[data-close-pertamina]")) {
       closeFundingDashboard(pertaminaDashboard);
@@ -2206,6 +2226,9 @@
     }
     if (!penabuluDashboard.hidden) {
       closeFundingDashboard(penabuluDashboard);
+    }
+    if (!maEarthDashboard.hidden) {
+      closeFundingDashboard(maEarthDashboard);
     }
     if (!pertaminaDashboard.hidden) {
       closeFundingDashboard(pertaminaDashboard);

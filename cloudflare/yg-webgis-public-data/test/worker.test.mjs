@@ -152,7 +152,7 @@ test("proxies donor programmes without relying on cross-site JSONP", async () =>
     const response = await worker.fetch(new Request("https://data.test/api/donor/programmes"), envWith(null));
     const data = await response.json();
     assert.equal(response.status, 200);
-    assert.equal(response.headers.get("access-control-allow-origin"), "https://webgisyg.id");
+    assert.equal(response.headers.get("access-control-allow-origin"), "*");
     assert.equal(response.headers.get("cache-control"), "no-store");
     assert.equal(data.assignments[0].indicatorId, "ACT-GEC-01");
     assert.equal(data.authorized, false);
@@ -169,6 +169,7 @@ test("forwards a staff bearer session to request private donor evidence", async 
   try {
     const response = await worker.fetch(new Request("https://data.test/api/donor/programmes", { headers: { authorization: "Bearer staff-session-1" } }), envWith(null));
     const data = await response.json();
+    assert.equal(response.headers.get("access-control-allow-origin"), "https://webgisyg.id");
     assert.equal(data.authorized, true);
     assert.equal(data.assignments[0].evidenceUrl, "https://drive.example/audit");
   } finally { globalThis.fetch = originalFetch; }
