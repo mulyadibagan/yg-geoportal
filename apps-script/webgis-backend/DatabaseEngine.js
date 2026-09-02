@@ -796,7 +796,9 @@ function masterObjectToFeature_(object) {
       Layer_ID: object.layerId,
       Layer_Label: object.layerLabel,
       Nama_Objek: object.objectName,
-      Kategori: object.category,
+      Kategori: clean_(object.layerId) === 'area_mangrove'
+        ? publishedCommunityCategory_(object.layerId, object.category)
+        : object.category,
       Source_Type: object.sourceType,
       Source_Report_ID: object.sourceReportId,
       Program: object.program,

@@ -28,6 +28,10 @@ test("Tanjung Kuras polygon keeps the verified 200-seedling count", () => {
     /function masterObjectToFeature_\(object\)[\s\S]*?correctedAreaHa[\s\S]*?Luas_Ha: numberOrBlank_\(object\.areaHa\) === ''[\s\S]*?correctedAreaHa/
   );
   assert.match(
+    databaseSource,
+    /function masterObjectToFeature_\(object\)[\s\S]*?Kategori: clean_\(object\.layerId\) === 'area_mangrove'[\s\S]*?publishedCommunityCategory_\(object\.layerId, object\.category\)/
+  );
+  assert.match(
     backendSource,
     /sourcePlantingReportId: 'YG-20260725-135142-186'/
   );
