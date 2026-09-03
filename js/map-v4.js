@@ -1306,6 +1306,9 @@ L.control.scale({
       text: searchText,
       label: getObjectName(feature),
       layerId: config.id,
+      objectId: String(
+        props.Object_ID || props.objectId || props.OBJECTID || ""
+      ).trim(),
       donorMissing: !getDonor(props),
       meta: [props.Desa || props.WADMKD, config.label].filter(Boolean).join(" · "),
       layer: layer,
@@ -2564,18 +2567,7 @@ L.control.scale({
         '<span>' + escapeHtml(item.meta || "Objek WebGIS") + '</span>';
 
       button.addEventListener("click", () => {
-        if (!map.hasLayer(item.parent)) item.parent.addTo(map);
-
-        if (item.layer.getBounds) {
-          const bounds = item.layer.getBounds();
-          if (bounds && bounds.isValid()) {
-            map.fitBounds(bounds, { padding: [40, 40], maxZoom: 16 });
-          }
-        } else if (item.layer.getLatLng) {
-          map.setView(item.layer.getLatLng(), 16);
-        }
-
-        item.layer.openPopup();
+        focusSearchItem(item);
         results.hidden = true;
       });
 
@@ -2583,6 +2575,26 @@ L.control.scale({
     });
 
     results.hidden = false;
+  }
+
+  function focusSearchItem(item) {
+    if (!item || !item.layer || !item.parent) return false;
+    if (!map.hasLayer(item.parent)) item.parent.addTo(map);
+
+    const checkbox = document.getElementById("layer-" + item.layerId);
+    if (checkbox) checkbox.checked = true;
+
+    if (typeof item.layer.getBounds === "function") {
+      const bounds = item.layer.getBounds();
+      if (bounds && bounds.isValid()) {
+        map.fitBounds(bounds, { padding: [40, 40], maxZoom: 16 });
+      }
+    } else if (typeof item.layer.getLatLng === "function") {
+      map.setView(item.layer.getLatLng(), 16);
+    }
+
+    item.layer.openPopup();
+    return true;
   }
 
   function setStatus(message, error) {
@@ -2614,12 +2626,22 @@ L.control.scale({
 
   function applyInitialDashboardLink() {
     const params = new URLSearchParams(window.location.search);
+    const objectId = String(params.get("object") || "").trim();
     const layerId = String(params.get("layer") || "").trim();
     const layerIds = String(params.get("layers") || "")
       .split(",").map(value => value.trim()).filter(Boolean);
     const village = String(params.get("village") || "").trim();
     const search = String(params.get("search") || "").trim();
     const donor = String(params.get("donor") || "").trim().toLowerCase();
+
+    if (objectId) {
+      const normalizedObjectId = normalizedMatchValue(objectId);
+      const match = searchItems.find(item =>
+        normalizedMatchValue(item.objectId) === normalizedObjectId
+      );
+
+      if (match && focusSearchItem(match)) return;
+    }
 
     if (layerIds.length) {
       const bounds = L.latLngBounds([]);

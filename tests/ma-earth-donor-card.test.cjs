@@ -90,3 +90,19 @@ test("mapped MA Earth realization remains separate from programme output", () =>
 
   assert.ok(areaSquareMetres > 3900 && areaSquareMetres < 4100);
 });
+
+test("MA Earth map link opens its exact polygon popup", () => {
+  const html = read("index.html");
+  const mapHtml = read("webgis.html");
+  const mapSource = read("js/map-v4.js");
+
+  assert.match(
+    html,
+    /webgis\.html\?object=MANGROVE-SEPAHAT-MA-EARTH-2026-001/
+  );
+  assert.match(mapHtml, /map-v4\.js\?v=20260903-object-deeplink1/);
+  assert.match(mapSource, /params\.get\("object"\)/);
+  assert.match(mapSource, /normalizedMatchValue\(item\.objectId\) === normalizedObjectId/);
+  assert.match(mapSource, /match && focusSearchItem\(match\)/);
+  assert.match(mapSource, /item\.layer\.openPopup\(\)/);
+});
