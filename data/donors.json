@@ -1301,8 +1301,8 @@
     "indicators": [
       {
         "label": "Bibit mangrove tertanam",
-        "value": "500 / 2.000",
-        "progress": 25
+        "value": "1.000 / 2.000",
+        "progress": 50
       },
       {
         "label": "Bibit kopi agroforestri tertanam",
@@ -1321,9 +1321,9 @@
           {
             "id": "OUT-MA-EARTH-MANGROVE",
             "name": "Penanaman mangrove",
-            "indicator": "Target 2.000 bibit; realisasi terpetakan 500 bibit (25%)",
+            "indicator": "Target 2.000 bibit; realisasi terpetakan 1.000 bibit (50%)",
             "target": 2000,
-            "realization": 500,
+            "realization": 1000,
             "unit": "bibit",
             "mapUrl": "webgis.html?object=MANGROVE-SEPAHAT-MA-EARTH-2026-001"
           },
@@ -1353,12 +1353,12 @@
         "indicatorId": "OUT-MA-EARTH-MANGROVE",
         "indicatorLabel": "Penanaman mangrove",
         "evidenceType": "Evidence Spasial",
-        "evidenceTitle": "Penanaman 500 bibit prepat · Sepahat",
+        "evidenceTitle": "Penanaman 1.000 bibit prepat · Sepahat",
         "location": "Sepahat, Bandar Laksamana, Bengkalis",
         "activityDate": "2026-09-01",
         "activityDateLabel": "1 September 2026",
         "verificationBasis": "Polygon final dan dokumentasi lapangan MA Earth",
-        "note": "Realisasi 500 bibit pada polygon seluas 0,20 ha dengan jarak tanam 2 × 2 meter.",
+        "note": "Realisasi 1.000 bibit pada polygon seluas 0,40 ha dengan jarak tanam 2 × 2 meter.",
         "access": "public",
         "staffOnly": false
       }

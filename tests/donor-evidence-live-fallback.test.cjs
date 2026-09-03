@@ -17,5 +17,5 @@ test('local dashboard falls back to the public donor-programmes JSONP feed', () 
   assert.match(source, /return jsonp\(DONOR_JSONP_API\)/);
   assert.match(source, /donor-evidence-counts-snapshot\.json\?v=20260902-1/);
   assert.match(source, /assignmentsUnavailable && Number\.isFinite\(fallbackCount\)/);
-  assert.match(html, /donor-evidence-summary\.js\?v=20260902-ma-earth-progress2/);
+  assert.match(html, /donor-evidence-summary\.js\?v=20260903-ma-earth-1000-1/);
 });

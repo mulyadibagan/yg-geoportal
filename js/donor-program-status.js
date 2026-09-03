@@ -73,7 +73,7 @@
   }
 
   function refresh() {
-    fetch('data/donors.json?v=20260902-ma-earth-card1', { cache: 'no-store' })
+    fetch('data/donors.json?v=20260903-ma-earth-1000-1', { cache: 'no-store' })
       .then(function (response) { return response.json(); })
       .then(function (donors) {
         donorRows = donors;

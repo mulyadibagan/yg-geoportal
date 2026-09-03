@@ -4,7 +4,7 @@
   const API = "https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec?page=objects";
   const DASHBOARD_SNAPSHOT_URL = "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/snapshots/current/dashboard.json";
   const CALLBACK = "ygDashboardV3Callback";
-  const DASHBOARD_CACHE_KEY = "ygDashboardV3Cache_v4_20260825_synced_cards1";
+  const DASHBOARD_CACHE_KEY = "ygDashboardV3Cache_v4_20260903_ma_earth_1000_1";
   const DASHBOARD_CACHE_MAX_AGE_MS = 1000 * 60 * 60 * 24 * 7;
   const DASHBOARD_REQUEST_TIMEOUT_MS = 18000;
   const DASHBOARD_REQUEST_MAX_ATTEMPTS = 3;
@@ -25,7 +25,7 @@
   };
   const OFFICIAL_LAYERS = [
     { id: "desa_intervensi", url: "data/desa_intervensi.geojson?v=20260726-14desa" },
-    { id: "area_mangrove", url: "data/area_mangrove.geojson?v=20260902-kelapa-pati-monitoring1" },
+    { id: "area_mangrove", url: "data/area_mangrove.geojson?v=20260903-ma-earth-1000-1" },
     { id: "mineral_land_restoration_area", url: "data/mineral_land_restoration_area.geojson?v=20260825-sync1" },
     { id: "area_kopi", url: "data/area_kopi.geojson?v=20260825-sync1" },
     { id: "kopi", url: "data/kopi.geojson?v=20260825-sync1" }
@@ -2023,7 +2023,7 @@
               '<i class="category-icon funding-card-logo" aria-hidden="true"><img src="assets/funding-ma-earth.svg?v=20260902-official1" alt="" loading="lazy"></i>' +
               '<span>' + escapeHtml(name) + '</span>' +
               '<strong>Agustus–Desember 2026</strong>' +
-              '<small>500/2.000 mangrove · 0/1.000 kopi · ' + formatNumber(count) + ' objek terpetakan</small>' +
+              '<small>1.000/2.000 mangrove · 0/1.000 kopi · ' + formatNumber(count) + ' objek terpetakan</small>' +
             '</button>';
           }
           if (name === "Pertamina Foundation") {

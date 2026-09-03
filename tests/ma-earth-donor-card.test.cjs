@@ -18,9 +18,9 @@ test("MA Earth donor card exposes the approved programme outputs", () => {
   assert.match(html, /Agustus–Desember 2026/);
   assert.match(html, /<strong>2\.000<\/strong><span>Bibit Mangrove Tertanam<\/span>/);
   assert.match(html, /<strong>1\.000<\/strong><span>Bibit Kopi Agroforestri Tertanam<\/span>/);
-  assert.match(html, /500 bibit terealisasi/);
-  assert.match(html, /aria-valuemax="2000" aria-valuenow="500"/);
-  assert.match(html, /500\/2\.000 mangrove · 0\/1\.000 kopi/);
+  assert.match(html, /1\.000 bibit terealisasi/);
+  assert.match(html, /aria-valuemax="2000" aria-valuenow="1000"/);
+  assert.match(html, /1\.000\/2\.000 mangrove · 0\/1\.000 kopi/);
   assert.match(dashboard, /if \(name === "MA Earth"\)/);
   assert.match(dashboard, /data-open-ma-earth/);
   assert.match(dashboard, /data-close-ma-earth/);
@@ -43,12 +43,12 @@ test("MA Earth programme status is sourced from donors.json", () => {
   assert.equal(maEarth.period, "Agustus–Desember 2026");
   assert.equal(maEarth.programs.length, 1);
   assert.equal(maEarth.programs[0].status, "Aktif");
-  assert.equal(maEarth.indicators[0].progress, 25);
+  assert.equal(maEarth.indicators[0].progress, 50);
   assert.equal(maEarth.indicators[1].progress, 0);
   assert.deepEqual(
     maEarth.indicators.map(indicator => [indicator.label, indicator.value]),
     [
-      ["Bibit mangrove tertanam", "500 / 2.000"],
+      ["Bibit mangrove tertanam", "1.000 / 2.000"],
       ["Bibit kopi agroforestri tertanam", "0 / 1.000"]
     ]
   );
@@ -66,6 +66,24 @@ test("mapped MA Earth realization remains separate from programme output", () =>
   );
 
   assert.equal(mapped.length, 1);
-  assert.equal(mapped[0].properties.Jumlah_Bib, 500);
-  assert.equal(mapped[0].properties.Luas_Ha, 0.2);
+  assert.equal(mapped[0].properties.Jumlah_Bib, 1000);
+  assert.equal(mapped[0].properties.Luas_Ha, 0.4);
+  assert.equal(mapped[0].properties.photos.length, 4);
+  assert.equal(mapped[0].properties.Attribute_Updated, "2026-09-03");
+
+  const ring = mapped[0].geometry.coordinates[0];
+  const latitude = ring.reduce((sum, point) => sum + point[1], 0) / ring.length;
+  const metresPerDegreeX = 111320 * Math.cos(latitude * Math.PI / 180);
+  const metresPerDegreeY = 110574;
+  const origin = ring[0];
+  const points = ring.map(point => [
+    (point[0] - origin[0]) * metresPerDegreeX,
+    (point[1] - origin[1]) * metresPerDegreeY
+  ]);
+  const areaSquareMetres = Math.abs(points.slice(0, -1).reduce((sum, point, index) => {
+    const next = points[(index + 1) % (points.length - 1)];
+    return sum + point[0] * next[1] - next[0] * point[1];
+  }, 0)) / 2;
+
+  assert.ok(areaSquareMetres > 3900 && areaSquareMetres < 4100);
 });

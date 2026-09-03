@@ -73,8 +73,8 @@ test("Phase III and donor totals remain separated", () => {
   assert.equal(sum(phaseThree, "Jumlah_Bib"), 18270);
   assert.ok(Math.abs(sum(aramco, "Luas_Ha") - 13.235) < 1e-9);
   assert.equal(sum(aramco, "Jumlah_Bib"), 43915);
-  assert.equal(sum(maEarth, "Luas_Ha"), 0.2);
-  assert.equal(sum(maEarth, "Jumlah_Bib"), 500);
+  assert.equal(sum(maEarth, "Luas_Ha"), 0.4);
+  assert.equal(sum(maEarth, "Jumlah_Bib"), 1000);
 });
 
 test("latest Kelapa Pati monitoring resolves to permanent Plot 1", () => {
