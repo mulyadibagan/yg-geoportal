@@ -3,9 +3,11 @@
 
   var BASE='https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec';
   var API=BASE+'?page=public-reports';
+  var SNAPSHOT_URL='https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/snapshots/current/dashboard.json';
   var OFFICIAL_MANGROVE='data/area_mangrove.geojson?v=20260903-ma-earth-1000-1';
   var CALLBACK='ygMonitoringDetailCallback';
   var STORAGE_KEY='monitoring-detail';
+  var DATA_CACHE_KEY='monitoring-detail-public-data-v1';
   var OBJECT_ALIASES={
     'area_mangrove:auto:1281388060':'MANGROVE-KELAPA-PATI-PHASE-III-001',
     'area_mangrove:auto:1674337344':'MANGROVE-KELAPA-PATI-PHASE-III-001',
@@ -781,6 +783,7 @@
       renderNoData('Detail objek tidak ditemukan.');
       return;
     }
+    selectedGroup=group;
     var title=group.label||group.latest.title||titleHint||'Detail objek';
     titleElement.textContent='Detail: '+title;
     subtitleElement.textContent='Objek: '+title;
@@ -811,44 +814,58 @@
     return null;
   }
 
-  function loadJsonp(){
+  function saveDataCache(data,officialData){
+    try{
+      localStorage.setItem(DATA_CACHE_KEY,JSON.stringify({savedAt:Date.now(),data:data,officialData:officialData}));
+    }catch(e){}
+  }
+
+  function restoreDataCache(){
+    try{
+      var cached=JSON.parse(localStorage.getItem(DATA_CACHE_KEY)||'null');
+      if(!cached||!cached.data||Date.now()-Number(cached.savedAt||0)>86400000)return false;
+      return applyData(cached.data,cached.officialData,{silent:true});
+    }catch(e){return false;}
+  }
+
+  function loadJsonp(officialData){
+    window[CALLBACK]=function(data){
+      if(applyData(data,officialData))saveDataCache(data,officialData);
+    };
     var script=document.createElement('script');
     script.src=API+'&callback='+CALLBACK+'&t='+Date.now();
     script.async=true;
-    script.onerror=function(){renderNoData('Data tidak dapat dimuat.');};
+    script.onerror=function(){if(!selectedGroup)renderNoData('Data tidak dapat dimuat.');};
     document.head.appendChild(script);
   }
 
   function loadData(){
+    restoreDataCache();
     if(typeof fetch!=='function'){
       loadJsonp();
       return;
     }
-    var controller=typeof AbortController==='function'?new AbortController():null;
-    var timeout=window.setTimeout(function(){
-      if(controller)controller.abort();
-    },45000);
+    var officialData=null;
     Promise.all([
-      fetch(API+'&t='+Date.now(),{
-        cache:'no-store',
-        signal:controller?controller.signal:undefined
-      }).then(function(response){
+      fetch(SNAPSHOT_URL,{cache:'default'}).then(function(response){
         if(!response.ok)throw new Error('HTTP '+response.status);
         return response.json();
+      }).then(function(snapshot){
+        return snapshot&&snapshot.capacitySources&&snapshot.capacitySources.reports||snapshot;
       }),
-      fetch(OFFICIAL_MANGROVE+'&t='+Date.now(),{cache:'no-store'})
+      fetch(OFFICIAL_MANGROVE,{cache:'force-cache'})
         .then(function(response){return response.ok?response.json():null;})
         .catch(function(){return null;})
     ]).then(function(results){
-      applyData(results[0],results[1]);
+      officialData=results[1];
+      if(!applyData(results[0],officialData))throw new Error('object_not_found');
+      saveDataCache(results[0],officialData);
     }).catch(function(){
-      loadJsonp();
-    }).then(function(){
-      window.clearTimeout(timeout);
+      loadJsonp(officialData);
     });
   }
 
-  function applyData(data,officialData){
+  function applyData(data,officialData,options){
     var features=Array.isArray(data&&data.features)?data.features:[];
     if(!features.length&&Array.isArray(data&&data.reports))features=data.reports;
     if(!features.length&&Array.isArray(data&&data.updates))features=data.updates;
@@ -873,10 +890,11 @@
       });
     }
     if(!group){
-      renderNoData('ID objek tidak cocok dengan data terbaru.');
-      return;
+      if(!(options&&options.silent))renderNoData('ID objek tidak cocok dengan data terbaru.');
+      return false;
     }
     render(group);
+    return true;
   }
 
   function init(){
@@ -900,7 +918,6 @@
     loadData();
   }
 
-  window[CALLBACK]=applyData;
   init();
 })();
 

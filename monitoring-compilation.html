@@ -54,7 +54,9 @@
     .compilation-reporters[open] summary:after{content:"−"}
     .compilation-reporters summary strong{display:block;margin:2px 0 0;font-size:16px;color:var(--ink)}
     .compilation-reporters .reporter-pills{display:flex;flex-wrap:wrap;gap:7px;padding:0 15px 14px}
-    .reporter-pill{padding:8px 11px;border:1px solid #d8e5df;border-radius:999px;background:#f8fbf9;font-size:11px}
+    .reporter-pill{padding:8px 11px;border:1px solid #d8e5df;border-radius:999px;background:#f8fbf9;color:var(--ink);font:inherit;font-size:11px;text-align:left;cursor:pointer;transition:background .18s ease,border-color .18s ease,transform .18s ease}
+    .reporter-pill:hover{border-color:#8dc5ae;background:#eef8f3;transform:translateY(-1px)}
+    .reporter-pill:focus-visible{outline:3px solid rgba(8,107,76,.24);outline-offset:2px}
     .reporter-pill b{color:var(--compilation-green)}
     .compilation-section-heading{margin:17px 0 9px}
     .compilation-section-heading h2{font-size:21px}
@@ -136,7 +138,7 @@
     </div>
     <section id="compilation-objects" class="compilation-objects"><div class="loading">Memuat hasil kompilasi…</div></section>
   </main>
-  <script src="js/monitoring-compilation.js?v=20260903-monitoring-object-sync1"></script>
+  <script src="js/monitoring-compilation.js?v=20260903-reporter-filter-fast1"></script>
 </body>
 </html>
 

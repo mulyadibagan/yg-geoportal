@@ -98,3 +98,29 @@ test("Apps Script makes retries idempotent and flags same-day monitoring duplica
   assert.match(source, /Monitoring wajib terhubung ke satu objek WebGIS yang dipilih/);
   assert.match(admin, /Potensi laporan monitoring ganda/);
 });
+
+test("monitoring reporter chips filter historical reporters and remain keyboard accessible", () => {
+  const source = read("js/monitoring-compilation.js");
+  const html = read("monitoring-compilation.html");
+
+  assert.match(source, /key:key,name:record\.reporter/);
+  assert.match(source, /<button type="button" class="reporter-pill" data-reporter-key=/);
+  assert.match(source, /group\.history\|\|\[\]\)\.forEach\(function\(record\)/);
+  assert.match(source, /reporters\.addEventListener\('click'/);
+  assert.match(source, /cluster\.value='reporter'/);
+  assert.match(html, /\.reporter-pill:focus-visible/);
+});
+
+test("monitoring pages prefer the fast public snapshot and keep the source API as fallback", () => {
+  const detail = read("js/monitoring-detail.js");
+  const compilation = read("js/monitoring-compilation.js");
+
+  [detail, compilation].forEach(source => {
+    assert.match(source, /snapshots\/current\/dashboard\.json/);
+    assert.match(source, /capacitySources&&.*capacitySources\.reports/);
+  });
+  assert.match(detail, /restoreDataCache\(\)/);
+  assert.match(detail, /localStorage\.setItem\(DATA_CACHE_KEY/);
+  assert.match(detail, /fetch\(SNAPSHOT_URL,\{cache:'default'\}\)/);
+  assert.match(compilation, /loadPublishedJsonp\(type,storageKey\)/);
+});

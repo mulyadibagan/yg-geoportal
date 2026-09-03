@@ -10,6 +10,7 @@
   var search=document.getElementById('compilation-search');
   var villageChart=document.getElementById('compilation-village-chart');
   var activeData=null;
+  var SNAPSHOT_URL='https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/snapshots/current/dashboard.json';
   var OBJECT_ALIASES={
     'area_mangrove:auto:1281388060':'MANGROVE-KELAPA-PATI-PHASE-III-001',
     'area_mangrove:auto:1674337344':'MANGROVE-KELAPA-PATI-PHASE-III-001',
@@ -212,27 +213,32 @@
     });
     records.forEach(function(record){
       var key=record.reporterKey||'pelapor-tidak-disebut';
-      if(!reporterMap[key])reporterMap[key]={name:record.reporter||'Pelapor tidak disebut',reports:0,objects:{}};
+      if(!reporterMap[key])reporterMap[key]={key:key,name:record.reporter||'Pelapor tidak disebut',reports:0,objects:{}};
       reporterMap[key].reports+=1;reporterMap[key].objects[record.masterObjectId||record.objectId]=1;
     });
     var reporters=Object.keys(reporterMap).map(function(key){return reporterMap[key];}).sort(function(a,b){return b.reports-a.reports;});
     return{generatedAt:Date.now(),type:type,summary:{objects:groups.length,reports:records.length,reporters:reporters.length,area:area,alive:alive,dead:dead,planted:plantedObjects===groups.length?planted:null,totalPlants:plantedObjects===groups.length?planted:null,condition:alive+dead?Math.round(alive/(alive+dead)*100):0},reporters:reporters,groups:groups};
   }
-  function loadPublished(type,storageKey){
+  function compilePayload(payload,type,storageKey){
+    var features=[];
+    if(payload&&Array.isArray(payload.features))features=payload.features;
+    else if(payload&&Array.isArray(payload.reports))features=payload.reports;
+    else if(payload&&Array.isArray(payload.items))features=payload.items;
+    else if(Array.isArray(payload))features=payload;
+    if(!features.length)throw new Error('public_reports_empty');
+    var data=compilePublished(features.map(normalizePublished).filter(Boolean),type);
+    try{sessionStorage.setItem(storageKey,JSON.stringify(data));}catch(e){}
+    render(data);refreshClusterValues();
+  }
+  function loadPublishedJsonp(type,storageKey){
     var callback='ygMonitoringCompilationCallback'+Date.now();
     var script=document.createElement('script');
     var settled=false;
     function cleanup(){if(script.parentNode)script.parentNode.removeChild(script);try{delete window[callback];}catch(e){window[callback]=undefined;}}
     window[callback]=function(payload){
       settled=true;
-      var features=[];
-      if(payload&&Array.isArray(payload.features))features=payload.features;
-      else if(payload&&Array.isArray(payload.reports))features=payload.reports;
-      else if(payload&&Array.isArray(payload.items))features=payload.items;
-      else if(Array.isArray(payload))features=payload;
-      var data=compilePublished(features.map(normalizePublished).filter(Boolean),type);
-      try{sessionStorage.setItem(storageKey,JSON.stringify(data));}catch(e){}
-      render(data);refreshClusterValues();cleanup();
+      try{compilePayload(payload,type,storageKey);}catch(e){}
+      cleanup();
     };
     script.src='https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec?page=public-reports&callback='+encodeURIComponent(callback)+'&t='+Date.now();
     script.async=true;
@@ -246,6 +252,21 @@
     };
     document.head.appendChild(script);
     window.setTimeout(function(){if(!settled&&script.parentNode)script.onerror();},15000);
+  }
+  function loadPublished(type,storageKey){
+    if(typeof fetch!=='function'){
+      loadPublishedJsonp(type,storageKey);
+      return;
+    }
+    fetch(SNAPSHOT_URL,{cache:'default'}).then(function(response){
+      if(!response.ok)throw new Error('HTTP '+response.status);
+      return response.json();
+    }).then(function(snapshot){
+      var payload=snapshot&&snapshot.capacitySources&&snapshot.capacitySources.reports;
+      compilePayload(payload||snapshot,type,storageKey);
+    }).catch(function(){
+      loadPublishedJsonp(type,storageKey);
+    });
   }
 
   var metricDefs=[
@@ -386,7 +407,7 @@
       ['Bibit tertanam',summary.planted,'bibit'],['Kondisi hidup',summary.condition,'%']
     ];
     kpis.innerHTML=kpiItems.map(function(item){return'<article><span>'+esc(item[0])+'</span><strong>'+esc(item[1]==null?'—':numberFormat(item[1]))+'</strong><small>'+esc(item[2])+'</small></article>';}).join('');
-    reporters.innerHTML=(data.reporters||[]).map(function(item){return'<span class="reporter-pill"><b>'+esc(item.name)+'</b> · '+item.reports+' laporan · '+Object.keys(item.objects||{}).length+' objek</span>';}).join('')||'<span class="muted">Belum ada nama pelapor.</span>';
+    reporters.innerHTML=(data.reporters||[]).map(function(item){return'<button type="button" class="reporter-pill" data-reporter-key="'+esc(item.key||keyText(item.name))+'"><b>'+esc(item.name)+'</b> · '+item.reports+' laporan · '+Object.keys(item.objects||{}).length+' objek</button>';}).join('')||'<span class="muted">Belum ada nama pelapor.</span>';
     var groups=(data.groups||[]).filter(function(group){
       var value=clusterValue&&clusterValue.value||'';
       var mode=cluster&&cluster.value||'object';
@@ -422,7 +443,11 @@
     (activeData.groups||[]).forEach(function(group){
       var latest=group.latest||{};
       if(mode==='village'&&latest.villageKey)values[latest.villageKey]=latest.village||latest.location||latest.villageKey;
-      if(mode==='reporter'&&latest.reporterKey)values[latest.reporterKey]=latest.reporter||latest.reporterKey;
+      if(mode==='reporter'){
+        (group.history||[]).forEach(function(record){
+          if(record.reporterKey)values[record.reporterKey]=record.reporter||record.reporterKey;
+        });
+      }
       if(mode==='donor'&&latest.donorKey)values[latest.donorKey]=latest.donor||latest.donorKey;
       if(mode==='phase'&&latest.phaseKey)values[latest.phaseKey]=latest.phase||latest.phaseKey;
     });
@@ -445,6 +470,17 @@
     clusterValue.value=row.getAttribute('data-village-chart-key');
     render(activeData);
     clusterValue.focus();
+  });
+
+  if(reporters)reporters.addEventListener('click',function(event){
+    var button=event.target.closest('[data-reporter-key]');
+    if(!button||!cluster||!clusterValue)return;
+    cluster.value='reporter';
+    refreshClusterValues();
+    clusterValue.value=button.getAttribute('data-reporter-key');
+    render(activeData);
+    clusterValue.focus();
+    if(objects)objects.scrollIntoView({behavior:'smooth',block:'start'});
   });
 
   document.addEventListener('click',function(event){
