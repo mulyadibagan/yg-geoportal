@@ -230,6 +230,7 @@
      * monitoring harus memperlihatkan cakupan pemantauan lapangan yang luas.
      */
     api.addLiveFeatures("monitoring_reports", latestPerObject(features));
+    document.dispatchEvent(new CustomEvent("yg:monitoring-live-synced"));
     return true;
   }
 

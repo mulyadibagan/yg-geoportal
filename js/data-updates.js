@@ -14,12 +14,26 @@
     ]
   };
   const VERIFIED_MONITORING_PHOTOS_BY_OBJECT = {
+    "mangrove-buruk-bakul-phase-iii-2025-001": [
+      "https://drive.google.com/file/d/1u1Did5qZYT6Of89-Rl2Ii0IOVsIb5DWs/view?usp=drivesdk",
+      "https://drive.google.com/file/d/151b8GRRDMabPZxrxeWKMCPIj6iTy_lvY/view?usp=drivesdk",
+      "https://drive.google.com/file/d/1prfw-eEF9Y_TCdmSgYi88OFVJN_AteiR/view?usp=drivesdk",
+      "https://drive.google.com/file/d/1TGhL2NCD08y5_3GqfyZovoQUzMSOTFdd/view?usp=drivesdk",
+      "https://drive.google.com/file/d/1JUaeDbbt-w77nbFjQOuQpwFA-_2qWDi0/view?usp=drivesdk"
+    ],
     "area_mangrove:auto:374024597": [
       "https://drive.google.com/file/d/1u1Did5qZYT6Of89-Rl2Ii0IOVsIb5DWs/view?usp=drivesdk",
       "https://drive.google.com/file/d/151b8GRRDMabPZxrxeWKMCPIj6iTy_lvY/view?usp=drivesdk",
       "https://drive.google.com/file/d/1prfw-eEF9Y_TCdmSgYi88OFVJN_AteiR/view?usp=drivesdk",
       "https://drive.google.com/file/d/1TGhL2NCD08y5_3GqfyZovoQUzMSOTFdd/view?usp=drivesdk",
       "https://drive.google.com/file/d/1JUaeDbbt-w77nbFjQOuQpwFA-_2qWDi0/view?usp=drivesdk"
+    ],
+    "mangrove-buruk-bakul-phase-iii-2025-002": [
+      "https://drive.google.com/file/d/1i1B_Y8txs453q8QfRP5RlPDye3rt5-Vo/view?usp=drivesdk",
+      "https://drive.google.com/file/d/1BpyM9hdKSPMA1_zFVqrFxiiDJFIEpV5w/view?usp=drivesdk",
+      "https://drive.google.com/file/d/1sTqLcNhfhJCbMLdBRAH95rMsmxi63SYt/view?usp=drivesdk",
+      "https://drive.google.com/file/d/1IW-DJ_PZ6N5bRfnU_lb3UmrYzk5B2m7z/view?usp=drivesdk",
+      "https://drive.google.com/file/d/1GIUiQ09AD8IejdWYWCR-W5wi50Hyvtdt/view?usp=drivesdk"
     ],
     "area_mangrove:auto:56906758": [
       "https://drive.google.com/file/d/1i1B_Y8txs453q8QfRP5RlPDye3rt5-Vo/view?usp=drivesdk",
@@ -401,12 +415,32 @@ function toDirectDriveUrl(url){
     );
   }
 
-  function setMonitoringLayerPhotos(layer, addedPhotos) {
-    const props = layer && layer.feature && layer.feature.properties || {};
-    props._ygPhotos = uniquePhotos(
-      (Array.isArray(props._ygPhotos) ? props._ygPhotos : [])
-        .concat(addedPhotos || [])
+  function eachFeatureLayer(group, callback) {
+    if (!group) return;
+    if (group.feature) callback(group);
+    if (typeof group.eachLayer === "function") {
+      group.eachLayer(layer => eachFeatureLayer(layer, callback));
+    }
+  }
+
+  function verifiedMonitoringPhotos(properties) {
+    const directPhotos = uniquePhotos(
+      Array.isArray(properties && properties.photos) ? properties.photos : []
     );
+    if (directPhotos.length) return null;
+    return entityIds(properties)
+      .map(id => VERIFIED_MONITORING_PHOTOS_BY_OBJECT[id])
+      .find(value => Array.isArray(value) && value.length) || null;
+  }
+
+  function setMonitoringLayerPhotos(layer, addedPhotos, replaceExisting) {
+    const props = layer && layer.feature && layer.feature.properties || {};
+    props._ygPhotos = replaceExisting
+      ? uniquePhotos(addedPhotos || [])
+      : uniquePhotos(
+          (Array.isArray(props._ygPhotos) ? props._ygPhotos : [])
+            .concat(addedPhotos || [])
+        );
 
     if (!props._ygPhotos.length || !layer.getPopup || !layer.getPopup()) return;
     const popup = layer.getPopup();
@@ -449,7 +483,7 @@ function toDirectDriveUrl(url){
     const updateName = objectName(update);
     if (!updateIds.length && (!updateLayer || !updateName)) return;
 
-    monitoringGroup.eachLayer(layer => {
+    eachFeatureLayer(monitoringGroup, layer => {
       const props = layer && layer.feature && layer.feature.properties || {};
       const featureIds = entityIds(props);
       const idsMatch = updateIds.some(id => featureIds.indexOf(id) !== -1);
@@ -460,7 +494,14 @@ function toDirectDriveUrl(url){
         return;
       }
 
-      setMonitoringLayerPhotos(layer, addedPhotos);
+      const verifiedPhotos = verifiedMonitoringPhotos(props) ||
+        updateIds.map(id => VERIFIED_MONITORING_PHOTOS_BY_OBJECT[id])
+          .find(value => Array.isArray(value) && value.length);
+      setMonitoringLayerPhotos(
+        layer,
+        verifiedPhotos || addedPhotos,
+        Boolean(verifiedPhotos)
+      );
     });
   }
 
@@ -472,7 +513,7 @@ function toDirectDriveUrl(url){
     const photosByLocation = window.YG_LATEST_MONITORING_PHOTOS_BY_LOCATION || {};
     if (!monitoringGroup || typeof monitoringGroup.eachLayer !== "function") return;
 
-    monitoringGroup.eachLayer(layer => {
+    eachFeatureLayer(monitoringGroup, layer => {
       const props = layer && layer.feature && layer.feature.properties || {};
       const hasDirectPhotos = uniquePhotos(
         (Array.isArray(props.photos) ? props.photos : [])
@@ -490,14 +531,27 @@ function toDirectDriveUrl(url){
     });
   }
 
+  function attachMonitoringPopupPhotoSync(mapApi) {
+    if (!mapApi || !mapApi.map || mapApi.map.__ygMonitoringPhotoSync) return;
+    mapApi.map.__ygMonitoringPhotoSync = true;
+    mapApi.map.on("popupopen", event => {
+      const layer = event && event.popup && event.popup._source;
+      const props = layer && layer.feature && layer.feature.properties || {};
+      const photos = verifiedMonitoringPhotos(props);
+      if (photos) setMonitoringLayerPhotos(layer, photos, true);
+    });
+  }
+
   function applyVerifiedMonitoringPhotoFallback(attempt = 0) {
     window.YG_LATEST_MONITORING_PHOTOS_BY_LOCATION = Object.assign(
       {},
       VERIFIED_MONITORING_PHOTO_FALLBACK,
       window.YG_LATEST_MONITORING_PHOTOS_BY_LOCATION || {}
     );
-    const monitoringGroup = window.YG_MAP && window.YG_MAP.layerObjects
-      ? window.YG_MAP.layerObjects.monitoring_reports
+    const mapApi = window.YG_MAP;
+    attachMonitoringPopupPhotoSync(mapApi);
+    const monitoringGroup = mapApi && mapApi.layerObjects
+      ? mapApi.layerObjects.monitoring_reports
       : null;
     if (!monitoringGroup || typeof monitoringGroup.eachLayer !== "function") {
       if (attempt < 300) {
@@ -505,12 +559,10 @@ function toDirectDriveUrl(url){
       }
       return;
     }
-    monitoringGroup.eachLayer(layer => {
+    eachFeatureLayer(monitoringGroup, layer => {
       const props = layer && layer.feature && layer.feature.properties || {};
-      const photos = entityIds(props)
-        .map(id => VERIFIED_MONITORING_PHOTOS_BY_OBJECT[id])
-        .find(value => Array.isArray(value) && value.length);
-      if (photos) setMonitoringLayerPhotos(layer, photos);
+      const photos = verifiedMonitoringPhotos(props);
+      if (photos) setMonitoringLayerPhotos(layer, photos, true);
     });
     syncLegacyMonitoringPhotosByLocation();
   }
@@ -864,7 +916,14 @@ function toDirectDriveUrl(url){
           latestByObject[key] = { photos: uniquePhotos(photos), timestamp };
         }
       }
-      if (locationKey && monitoringIdentity.includes("monitoring")) {
+      if (
+        locationKey &&
+        Object.prototype.hasOwnProperty.call(
+          VERIFIED_MONITORING_PHOTO_FALLBACK,
+          locationKey
+        ) &&
+        monitoringIdentity.includes("monitoring")
+      ) {
         const currentLocation = latestByLocation[locationKey];
         if (!currentLocation || timestamp >= currentLocation.timestamp) {
           latestByLocation[locationKey] = {
@@ -895,12 +954,15 @@ function toDirectDriveUrl(url){
       ? window.YG_MAP.layerObjects.monitoring_reports
       : null;
     if (monitoringGroup && typeof monitoringGroup.eachLayer === "function") {
-      monitoringGroup.eachLayer(layer => {
+      eachFeatureLayer(monitoringGroup, layer => {
         const props = layer && layer.feature && layer.feature.properties || {};
-        const photos = entityIds(props)
+        const verifiedPhotos = verifiedMonitoringPhotos(props);
+        const photos = verifiedPhotos || entityIds(props)
           .map(id => window.YG_LATEST_MONITORING_PHOTOS_BY_OBJECT[id])
           .find(value => Array.isArray(value) && value.length);
-        if (photos) setMonitoringLayerPhotos(layer, photos);
+        if (photos) {
+          setMonitoringLayerPhotos(layer, photos, Boolean(verifiedPhotos));
+        }
       });
     }
     syncLegacyMonitoringPhotosByLocation();
@@ -912,6 +974,10 @@ function toDirectDriveUrl(url){
     applyAll(data);
   };
 
+  document.addEventListener(
+    "yg:monitoring-live-synced",
+    () => applyVerifiedMonitoringPhotoFallback()
+  );
   applyVerifiedMonitoringPhotoFallback();
 
   const style = document.createElement("style");
@@ -965,9 +1031,23 @@ function toDirectDriveUrl(url){
   `;
   document.head.appendChild(style);
 
-  const script = document.createElement("script");
-  script.src = API + "&callback=" + CALLBACK + "&t=" + Date.now();
-  script.async = true;
-  document.head.appendChild(script);
+  function loadByJsonp() {
+    const script = document.createElement("script");
+    script.src = API + "&callback=" + CALLBACK + "&t=" + Date.now();
+    script.async = true;
+    document.head.appendChild(script);
+  }
+
+  fetch(API + "&t=" + Date.now(), {
+    method: "GET",
+    cache: "no-store",
+    redirect: "follow"
+  })
+    .then(response => {
+      if (!response.ok) throw new Error("HTTP " + response.status);
+      return response.json();
+    })
+    .then(window[CALLBACK])
+    .catch(loadByJsonp);
 })();
 

@@ -51,7 +51,8 @@
   function displayImageUrl(url) {
     var id = driveId(url);
     return id
-      ? 'https://drive.google.com/thumbnail?id=' + encodeURIComponent(id) + '&sz=w2400'
+      ? 'https://lh3.googleusercontent.com/d/' + encodeURIComponent(id) +
+          '=w1000?yg=20260903'
       : clean(url);
   }
 
@@ -62,14 +63,14 @@
       function (card, index) {
         var image = card.querySelector('img');
         var source = clean(card.getAttribute('href'));
-        var thumb = clean(image && image.getAttribute('src')) || source;
-        var key = mediaKey(source || thumb);
+        var rawThumb = clean(image && image.getAttribute('src')) || source;
+        var key = mediaKey(source || rawThumb);
         if (!key || seen[key]) return null;
         seen[key] = true;
         return {
-          full: displayImageUrl(source || thumb),
-          source: source || thumb,
-          thumb: thumb,
+          full: displayImageUrl(source || rawThumb),
+          source: source || rawThumb,
+          thumb: displayImageUrl(source || rawThumb),
           alt: clean(image && image.getAttribute('alt')) || ('Foto ' + (index + 1))
         };
       }
