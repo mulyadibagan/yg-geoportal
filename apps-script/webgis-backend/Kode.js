@@ -1861,7 +1861,8 @@ function validateReportForPublication_(sheet, rowNumber) {
         ['Polygon', 'MultiPolygon'].indexOf(
           geometry && geometry.type
         ) === -1 ||
-        clean_(monitoring.monitoringType) !== 'Penanaman Mangrove'
+        clean_(monitoring.monitoringType) !== 'Penanaman Mangrove' ||
+        Number(monitoring.averageDiameterCm) <= 0
       ) {
         throw new Error(
           'Monitoring mangrove belum terikat secara valid ke polygon Area Penanaman Mangrove.'
@@ -2401,6 +2402,12 @@ function validateIncomingPayload_(data) {
     if (clean_(monitoring.monitoringType) !== 'Penanaman Mangrove') {
       throw new Error(
         'Jenis monitoring untuk polygon Area Penanaman Mangrove harus Penanaman Mangrove.'
+      );
+    }
+
+    if (Number(monitoring.averageDiameterCm) <= 0) {
+      throw new Error(
+        'Diameter batang rata-rata monitoring mangrove wajib diisi lebih dari 0 cm.'
       );
     }
   }

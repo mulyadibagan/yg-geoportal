@@ -2269,6 +2269,7 @@
     var survivalInput = document.getElementById('monitoring-survival');
     var aliveInput = document.getElementById('monitoring-alive');
     var deadInput = document.getElementById('monitoring-dead');
+    var diameterInput = document.getElementById('monitoring-diameter');
     var areaInput = document.getElementById('monitoring-area');
     var help = document.getElementById('monitoring-plant-count-help');
 
@@ -2276,6 +2277,7 @@
     if(aliveInput) aliveInput.readOnly = isAutomatic;
     if(areaInput) areaInput.readOnly = isAutomatic;
     if(deadInput) deadInput.required = isAutomatic;
+    if(diameterInput) diameterInput.required = isAutomatic;
 
     if(!isAutomatic){
       if(help){
@@ -2368,6 +2370,7 @@
       monitoredAreaHa:monitoringValue('monitoring-area'),
       averageHeightCm:monitoringValue('monitoring-height'),
       averageDiameterCm:monitoringValue('monitoring-diameter'),
+      averageLeafCount:monitoringValue('monitoring-leaves'),
       sedimentationCm:monitoringValue('monitoring-sediment'),
       waterTableCm:monitoringValue('monitoring-water-table'),
       floatCondition:monitoringValue('monitoring-float-condition'),
@@ -3128,6 +3131,7 @@
       ['Mati/rusak',formatMonitoringNumber(data.deadOrDamagedCount,'batang')],
       ['Tinggi rata-rata',formatMonitoringNumber(data.averageHeightCm,'cm')],
       ['Diameter rata-rata',formatMonitoringNumber(data.averageDiameterCm,'cm')],
+      ['Jumlah daun rata-rata',formatMonitoringNumber(data.averageLeafCount,'helai')],
       ['Sedimentasi',formatMonitoringNumber(data.sedimentationCm,'cm')]
     ].map(function(item){
       return '<div><span>' + escapeCorrectionHtml(item[0]) + '</span><strong>' +
@@ -3206,6 +3210,7 @@
       : {};
     setMonitoringComparison('monitoring-height','monitoring-height-comparison',previous.averageHeightCm,'cm');
     setMonitoringComparison('monitoring-diameter','monitoring-diameter-comparison',previous.averageDiameterCm,'cm');
+    setMonitoringComparison('monitoring-leaves','monitoring-leaves-comparison',previous.averageLeafCount,'helai');
     setMonitoringComparison('monitoring-sediment','monitoring-sediment-comparison',previous.sedimentationCm,'cm');
     var deadInput = document.getElementById('monitoring-dead');
     var deadNode = document.getElementById('monitoring-dead-comparison');
@@ -3294,7 +3299,7 @@
   if(monitoringTypeSelect){
     monitoringTypeSelect.addEventListener('change',updateMonitoringPanels);
   }
-  ['monitoring-height','monitoring-diameter','monitoring-sediment'].forEach(function(id){
+  ['monitoring-height','monitoring-diameter','monitoring-leaves','monitoring-sediment'].forEach(function(id){
     var input = document.getElementById(id);
     if(input) input.addEventListener('input',updateMangroveComparisons);
   });
@@ -3649,6 +3654,15 @@
         ){
           alert('Jumlah mati/rusak harus bilangan bulat antara 0 dan ' + formatPlantCount(plantingTotal) + '.');
           document.getElementById('monitoring-dead').focus();
+          return;
+        }
+        if(
+          monitorDataValidation.averageDiameterCm === '' ||
+          !Number.isFinite(Number(monitorDataValidation.averageDiameterCm)) ||
+          Number(monitorDataValidation.averageDiameterCm) <= 0
+        ){
+          alert('Isi diameter batang rata-rata lebih dari 0 cm.');
+          document.getElementById('monitoring-diameter').focus();
           return;
         }
       }
