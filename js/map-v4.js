@@ -3107,15 +3107,9 @@ L.control.scale({
           p.reportId || p.Report_ID || p.Source_Report_ID ||
           p.Monitoring_ID || ""
         ).trim();
-        const objectId = String(p.Object_ID || p.objectId || "").trim();
         if ([
           "YG-20260717-205241-378"
         ].includes(reportId)) {
-          return false;
-        }
-        if ([
-          "MANGROVE-KELAPA-PATI-PHASE-III-2025-001"
-        ].includes(objectId)) {
           return false;
         }
         return !(
@@ -3446,6 +3440,12 @@ L.control.scale({
     const normalized = normalizedMatchValue(value);
     if (!normalized || normalized.indexOf("mangrove-") !== 0) return "";
 
+    // Plot laporan 19 Agustus 2026 memiliki geometri sendiri dan harus tetap
+    // terpisah dari Plot 1 tahun 2026 walaupun nomor urutnya sama.
+    if (normalized === "mangrove-kelapa-pati-phase-iii-2025-001") {
+      return normalized;
+    }
+
     /*
      * ID legacy belum menyimpan tahun, misalnya:
      * MANGROVE-BURUK-BAKUL-PHASE-I-004
@@ -3482,8 +3482,6 @@ L.control.scale({
   });
 
   const MANGROVE_TARGET_ALIASES = Object.freeze({
-    "mangrove-kelapa-pati-phase-iii-2025-001":
-      "MANGROVE-KELAPA-PATI-PHASE-III-001",
     "mangrove-kelapa-pati-phase-iii-2026-001":
       "MANGROVE-KELAPA-PATI-PHASE-III-001",
     "mangrove-buruk-bakul-phase-ii-2024-001":

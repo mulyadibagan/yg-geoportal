@@ -77,7 +77,7 @@ test("Phase III and donor totals remain separated", () => {
   assert.equal(sum(maEarth, "Jumlah_Bib"), 1000);
 });
 
-test("latest Kelapa Pati monitoring resolves to permanent Plot 1", () => {
+test("Kelapa Pati 2026 monitoring resolves to permanent Plot 1", () => {
   const mapSource = read("js/map-v4.js");
   const detailSource = read("js/monitoring-detail.js");
 
@@ -89,16 +89,46 @@ test("latest Kelapa Pati monitoring resolves to permanent Plot 1", () => {
     detailSource,
     /'area_mangrove:auto:1674337344':'MANGROVE-KELAPA-PATI-PHASE-III-001'/
   );
-  assert.match(
-    detailSource,
-    /'MANGROVE-KELAPA-PATI-PHASE-III-2025-001':'MANGROVE-KELAPA-PATI-PHASE-III-001'/
-  );
   assert.match(mapSource, /props\.Monitoring_Report_IDs = Array\.from\(history\)\.sort\(\)/);
   assert.match(mapSource, /const historyIds = Array\.isArray\(props\.Monitoring_Report_IDs\)/);
   assert.match(detailSource, /var OFFICIAL_MANGROVE='data\/area_mangrove\.geojson/);
   assert.match(detailSource, /applyOfficialObjectProperties\(records,officialData\)/);
   assert.match(detailSource, /var monitoredTotal=alive\+dead/);
   assert.match(detailSource, /Realisasi terkini · populasi dipantau/);
+});
+
+test("Kelapa Pati report dated 19 August stays a separate monitored object", () => {
+  const sources = [
+    read("js/monitoring.js"),
+    read("js/monitoring-detail.js"),
+    read("js/monitoring-compilation.js"),
+    read("js/monitoring-live-sync-v2.js"),
+    read("js/map-v4.js")
+  ];
+
+  sources.forEach(source => {
+    assert.doesNotMatch(
+      source,
+      /645930758['"]?\s*:\s*['"]MANGROVE-KELAPA-PATI-PHASE-III-001/i
+    );
+    assert.doesNotMatch(
+      source,
+      /KELAPA-PATI-PHASE-III-2025-001['"]?\s*:\s*['"]MANGROVE-KELAPA-PATI-PHASE-III-001/i
+    );
+  });
+
+  assert.match(
+    read("js/monitoring-live-sync-v2.js"),
+    /id === "mangrove-kelapa-pati-phase-iii-2025-001"\) return id/
+  );
+  assert.match(
+    read("js/map-v4.js"),
+    /normalized === "mangrove-kelapa-pati-phase-iii-2025-001"/
+  );
+  assert.doesNotMatch(
+    read("js/map-v4.js"),
+    /\.includes\(objectId\)/
+  );
 });
 
 test("dashboard preserves explicit mangrove donors", () => {

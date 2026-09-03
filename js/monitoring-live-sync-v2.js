@@ -14,8 +14,6 @@
     "YG-20260721-012602-224": "MANGROVE-SEPAHAT-2025-001"
   });
   const TARGET_ALIASES = Object.freeze({
-    "mangrove-kelapa-pati-phase-iii-2025-001":
-      "MANGROVE-KELAPA-PATI-PHASE-III-001",
     "mangrove-kelapa-pati-phase-iii-2026-001":
       "MANGROVE-KELAPA-PATI-PHASE-III-001",
     "mangrove-buruk-bakul-phase-ii-2024-001":
@@ -143,7 +141,10 @@
   }
 
   function canonicalObjectId(value) {
-    return normalized(value).replace(/-\d{4}-(\d{3})$/, "-$1");
+    const id = normalized(value);
+    // Plot laporan 19 Agustus 2026 adalah lokasi tersendiri, bukan Plot 1 2026.
+    if (id === "mangrove-kelapa-pati-phase-iii-2025-001") return id;
+    return id.replace(/-\d{4}-(\d{3})$/, "-$1");
   }
 
   function areaObjectIndex(api) {

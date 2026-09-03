@@ -161,6 +161,8 @@
     const text = normalize(value).replace(/_/g, "-");
     if (text.indexOf("mangrove-") !== 0) return text;
 
+    if (text === "mangrove-kelapa-pati-phase-iii-2025-001") return text;
+
     /*
      * ID area mangrove lama belum menyertakan tahun, misalnya
      * MANGROVE-BURUK-BAKUL-PHASE-I-001. ID permanen terbaru menyisipkan

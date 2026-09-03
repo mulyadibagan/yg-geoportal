@@ -100,7 +100,7 @@ test("MA Earth map link opens its exact polygon popup", () => {
     html,
     /webgis\.html\?object=MANGROVE-SEPAHAT-MA-EARTH-2026-001/
   );
-  assert.match(mapHtml, /map-v4\.js\?v=20260903-object-deeplink1/);
+  assert.match(mapHtml, /map-v4\.js\?v=20260904-kelapa-object-separation1/);
   assert.match(mapSource, /params\.get\("object"\)/);
   assert.match(mapSource, /normalizedMatchValue\(item\.objectId\) === normalizedObjectId/);
   assert.match(mapSource, /match && focusSearchItem\(match\)/);
