@@ -135,6 +135,24 @@
     var proposedInformation = document.getElementById('proposed-information');
     var monitoringFields = document.getElementById('monitoring-fields');
     if(monitoringFields) monitoringFields.hidden = type !== 'Monitoring';
+    var activityDateInput = document.getElementById('activity-date');
+    var activityDateLabel = document.getElementById('activity-date-label');
+    if(activityDateInput){
+      activityDateInput.readOnly = type === 'Monitoring';
+      if(type === 'Monitoring' && !activityDateInput.value){
+        var today = new Date();
+        activityDateInput.value = [
+          today.getFullYear(),
+          String(today.getMonth() + 1).padStart(2,'0'),
+          String(today.getDate()).padStart(2,'0')
+        ].join('-');
+      }
+    }
+    if(activityDateLabel){
+      activityDateLabel.textContent = type === 'Monitoring'
+        ? 'Tanggal monitoring (otomatis)'
+        : 'Tanggal kegiatan';
+    }
     var capacityFields = document.getElementById('capacity-building-fields');
     if(capacityFields) capacityFields.hidden = type !== 'Capacity Building';
     var documentLabel = document.getElementById('document-label');
@@ -3106,6 +3124,8 @@
       (record.activityDate || record.receivedAt || 'tanggal tidak tersedia');
     metrics.innerHTML = [
       ['Survival',formatMonitoringNumber(data.survivalPercent,'%')],
+      ['Jumlah hidup',formatMonitoringNumber(data.aliveCount,'batang')],
+      ['Mati/rusak',formatMonitoringNumber(data.deadOrDamagedCount,'batang')],
       ['Tinggi rata-rata',formatMonitoringNumber(data.averageHeightCm,'cm')],
       ['Diameter rata-rata',formatMonitoringNumber(data.averageDiameterCm,'cm')],
       ['Sedimentasi',formatMonitoringNumber(data.sedimentationCm,'cm')]
@@ -3187,6 +3207,35 @@
     setMonitoringComparison('monitoring-height','monitoring-height-comparison',previous.averageHeightCm,'cm');
     setMonitoringComparison('monitoring-diameter','monitoring-diameter-comparison',previous.averageDiameterCm,'cm');
     setMonitoringComparison('monitoring-sediment','monitoring-sediment-comparison',previous.sedimentationCm,'cm');
+    var deadInput = document.getElementById('monitoring-dead');
+    var deadNode = document.getElementById('monitoring-dead-comparison');
+    if(deadInput && deadNode){
+      deadNode.className = 'monitoring-comparison';
+      deadNode.textContent = '';
+      var currentDead = Number(deadInput.value);
+      var previousDead = Number(previous.deadOrDamagedCount);
+      if(
+        deadInput.value !== '' &&
+        previous.deadOrDamagedCount !== '' &&
+        previous.deadOrDamagedCount !== null &&
+        previous.deadOrDamagedCount !== undefined &&
+        Number.isFinite(currentDead) && Number.isFinite(previousDead)
+      ){
+        var deadDifference = currentDead - previousDead;
+        if(deadDifference > 0){
+          deadNode.classList.add('decrease');
+          deadNode.textContent = '⚠ Bertambah ' + formatMonitoringNumber(deadDifference,'batang') +
+            ' dari monitoring sebelumnya (' + formatMonitoringNumber(previousDead,'batang') + ').';
+        }else if(deadDifference < 0){
+          deadNode.classList.add('increase');
+          deadNode.textContent = 'Berkurang ' + formatMonitoringNumber(Math.abs(deadDifference),'batang') +
+            ' dari monitoring sebelumnya (' + formatMonitoringNumber(previousDead,'batang') + ').';
+        }else{
+          deadNode.classList.add('same');
+          deadNode.textContent = 'Sama dengan monitoring sebelumnya: ' + formatMonitoringNumber(previousDead,'batang');
+        }
+      }
+    }
   }
 
   function updateMangroveObjectContext(){
@@ -3194,8 +3243,13 @@
       selectedCorrectionFeature.layerId === 'area_mangrove' &&
       ['Polygon','MultiPolygon'].indexOf(geometryType) !== -1;
     var context = document.getElementById('mangrove-monitoring-context');
+    var typeInput = document.getElementById('monitoring-type');
     if(context) context.hidden = !active;
     if(!active){
+      if(typeInput){
+        typeInput.disabled = false;
+        typeInput.title = '';
+      }
       mangroveHistorySequence += 1;
       selectedMangrovePreviousMonitoring = null;
       updateMangroveComparisons();
@@ -3204,8 +3258,11 @@
 
     var properties = selectedCorrectionFeature.feature.properties || {};
     var objectName = getCorrectionFeatureName(selectedCorrectionFeature.feature,selectedCorrectionFeature.layerLabel);
-    var typeInput = document.getElementById('monitoring-type');
-    if(typeInput) typeInput.value = 'Penanaman Mangrove';
+    if(typeInput){
+      typeInput.value = 'Penanaman Mangrove';
+      typeInput.disabled = true;
+      typeInput.title = 'Ditentukan otomatis dari polygon Area Penanaman Mangrove';
+    }
     var titleNode = document.getElementById('mangrove-context-title');
     var idNode = document.getElementById('mangrove-context-object-id');
     var detailsNode = document.getElementById('mangrove-context-details');
@@ -3243,7 +3300,10 @@
   });
   var monitoringDeadInput = document.getElementById('monitoring-dead');
   if(monitoringDeadInput){
-    monitoringDeadInput.addEventListener('input',updateAutomaticPlantCounts);
+    monitoringDeadInput.addEventListener('input',function(){
+      updateAutomaticPlantCounts();
+      updateMangroveComparisons();
+    });
   }
   var pupAddTree=document.getElementById('pup-add-tree');
   if(pupAddTree)pupAddTree.addEventListener('click',function(){addPupTreeRow();});
@@ -3550,10 +3610,6 @@
       }
       if(!monitorDataValidation.condition){
         alert('Pilih kondisi umum objek.');
-        return;
-      }
-      if(!monitorDataValidation.notes){
-        alert('Isi temuan monitoring.');
         return;
       }
       if(selectedCorrectionFeature.layerId === 'area_mangrove'){
