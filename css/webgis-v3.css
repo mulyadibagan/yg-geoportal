@@ -47,10 +47,26 @@
 .yg-search-empty{padding:13px;color:#a22b2b;font-size:10px}
 .stats .stat{cursor:pointer}
 .stats .stat:hover{transform:translateY(-1px);box-shadow:0 8px 18px rgba(20,70,52,.08)}
-.popup-body{max-height:min(62vh,520px);overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+/*
+ * Kontrak ukuran popup WebGIS: seluruh objek program memakai kanvas ringkas
+ * yang sama. Galeri dan jumlah atribut boleh bertambah, tetapi ukuran popup
+ * tidak ikut membesar; isinya tetap dapat digulir.
+ */
+body.webgis-page .leaflet-popup-content{
+  width:min(300px,calc(100vw - 54px))!important;
+}
+body.webgis-page .popup-card{
+  width:100%;
+  min-width:0;
+  max-width:none;
+}
+.popup-body{max-height:min(52vh,430px);overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
 .yg-popup-actions{
   position:sticky;
   bottom:0;
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:6px;
   padding:10px 12px 12px;
   border-top:1px solid #e4ece8;
   background:linear-gradient(to bottom,rgba(255,255,255,.92),#fff 24%);
@@ -87,7 +103,7 @@
   position:relative;
   display:block;
   width:100%;
-  aspect-ratio:16/10;
+  aspect-ratio:16/9;
   padding:0;
   overflow:hidden;
   border:0;

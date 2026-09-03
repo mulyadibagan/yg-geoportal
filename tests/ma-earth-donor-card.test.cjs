@@ -106,3 +106,15 @@ test("MA Earth map link opens its exact polygon popup", () => {
   assert.match(mapSource, /match && focusSearchItem\(match\)/);
   assert.match(mapSource, /item\.layer\.openPopup\(\)/);
 });
+
+test("WebGIS programme popups keep a stable compact size", () => {
+  const mapHtml = read("webgis.html");
+  const mapCss = read("css/webgis-v3.css");
+
+  assert.match(mapHtml, /webgis-v3\.css\?v=20260903-popup-size-contract1/);
+  assert.match(mapCss, /body\.webgis-page \.leaflet-popup-content/);
+  assert.match(mapCss, /width:min\(300px,calc\(100vw - 54px\)\)!important/);
+  assert.match(mapCss, /max-height:min\(52vh,430px\)/);
+  assert.match(mapCss, /grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
+  assert.match(mapCss, /aspect-ratio:16\/9/);
+});
