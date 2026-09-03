@@ -28,6 +28,22 @@
     'YG-20260717-205241-378':{aliveCount:2730,deadOrDamagedCount:600,survivalPercent:82},
     'YG-20260826-135016-915':{aliveCount:600,deadOrDamagedCount:0,survivalPercent:100}
   };
+  var HISTORICAL_PHOTOS_BY_REPORT={
+    'YG-20260717-210140-375':[
+      'https://drive.google.com/file/d/1u1Did5qZYT6Of89-Rl2Ii0IOVsIb5DWs/view?usp=drivesdk',
+      'https://drive.google.com/file/d/151b8GRRDMabPZxrxeWKMCPIj6iTy_lvY/view?usp=drivesdk',
+      'https://drive.google.com/file/d/1prfw-eEF9Y_TCdmSgYi88OFVJN_AteiR/view?usp=drivesdk',
+      'https://drive.google.com/file/d/1TGhL2NCD08y5_3GqfyZovoQUzMSOTFdd/view?usp=drivesdk',
+      'https://drive.google.com/file/d/1JUaeDbbt-w77nbFjQOuQpwFA-_2qWDi0/view?usp=drivesdk'
+    ],
+    'YG-20260717-211305-543':[
+      'https://drive.google.com/file/d/1i1B_Y8txs453q8QfRP5RlPDye3rt5-Vo/view?usp=drivesdk',
+      'https://drive.google.com/file/d/1BpyM9hdKSPMA1_zFVqrFxiiDJFIEpV5w/view?usp=drivesdk',
+      'https://drive.google.com/file/d/1sTqLcNhfhJCbMLdBRAH95rMsmxi63SYt/view?usp=drivesdk',
+      'https://drive.google.com/file/d/1IW-DJ_PZ6N5bRfnU_lb3UmrYzk5B2m7z/view?usp=drivesdk',
+      'https://drive.google.com/file/d/1GIUiQ09AD8IejdWYWCR-W5wi50Hyvtdt/view?usp=drivesdk'
+    ]
+  };
   var PUP1_OBJECT_ID='COMMUNITY-YG-20260820-190119-864';
   var PUP1_TREES=[
     ['D23','Nangka',150,169,'+19',1.22,1.59,'+0.37','Hidup'],
@@ -273,6 +289,7 @@
   function normalize(feature,index){
     var p=feature&&feature.properties||{};
     if(!isMonitoringRecord(p))return null;
+    var reportId=String(p.monitoringId||p.reportId||p.Source_Report_ID||index);
     var m=parseJSON(p.proposedInformation);
     if(!Object.keys(m).length)m=parseJSON(p.proposedChanges).monitoring||{};
     if(!Object.keys(m).length&&(p.Monitoring_Type||p.Kondisi||has(p.Survival)||has(p.Jumlah_Hidup))){
@@ -307,8 +324,12 @@
     var correction=REPORT_CORRECTIONS[String(p.reportId||p.Source_Report_ID||'').trim()];
     if(correction)Object.keys(correction).forEach(function(key){m[key]=correction[key];});
     reconcileSurvival(m);
+    var photos=cleanPhotos(p.photos);
+    if(!photos.length&&HISTORICAL_PHOTOS_BY_REPORT[reportId]){
+      photos=HISTORICAL_PHOTOS_BY_REPORT[reportId].slice();
+    }
     return{
-      id:p.monitoringId||p.reportId||index,
+      id:reportId,
       objectId:objectId,
       spatialObjectId:spatialObjectId,
       legacyObjectId:p.targetObjectId||'',
@@ -323,7 +344,7 @@
       organization:p.organization||'',
       description:m.notes||p.description||'',
       recommendation:m.followUp||m.recommendation||p.recommendation||'',
-      photos:cleanPhotos(p.photos),
+      photos:photos,
       geometry:feature&&feature.geometry||null,
       targetProperties:targetProperties,
       metrics:m,

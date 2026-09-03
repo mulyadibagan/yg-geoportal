@@ -51,9 +51,15 @@ test("legacy monitoring ids resolve to the current official polygon ids everywhe
 
 test("published report photos take priority over historical photo fallback", () => {
   const source = read("js/data-updates.js");
+  const detail = read("js/monitoring-detail.js");
 
   assert.match(source, /function verifiedMonitoringPhotos\(properties\)/);
   assert.match(source, /if \(directPhotos\.length\) return null/);
+  assert.match(detail, /var HISTORICAL_PHOTOS_BY_REPORT=/);
+  assert.match(detail, /'YG-20260717-210140-375':\[/);
+  assert.match(detail, /'YG-20260717-211305-543':\[/);
+  assert.match(detail, /if\(!photos\.length&&HISTORICAL_PHOTOS_BY_REPORT\[reportId\]\)/);
+  assert.match(detail, /photos=HISTORICAL_PHOTOS_BY_REPORT\[reportId\]\.slice\(\)/);
 });
 
 test("live sync keeps the latest report when the official polygon loads later", () => {
