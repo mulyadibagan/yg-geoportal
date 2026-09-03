@@ -480,32 +480,6 @@
     return formatted+(unit?' '+unit:'');
   }
 
-  function chartSVG(history,definition){
-    var chronological=history.slice().sort(function(a,b){return dateValue(a.date)-dateValue(b.date);});
-    var points=chronological.map(function(r){
-      var raw=r.metrics[definition[0]];
-      return{date:r.date,value:has(raw)?(/area|luas/i.test(definition[0])?parseAreaNumber(raw):num(raw)):null};
-    }).filter(function(point){return point.value!==null;});
-    if(points.length<2)return'';
-    var width=720,height=250,left=52,right=24,top=25,bottom=48;
-    var values=points.map(function(point){return point.value;});
-    var min=Math.min.apply(null,values),max=Math.max.apply(null,values);
-    if(min===max){min=Math.max(0,min-1);max+=1;}
-    var range=max-min;
-    function x(index){return left+index*(width-left-right)/(points.length-1);}
-    function y(value){return top+(max-value)*(height-top-bottom)/range;}
-    var line=points.map(function(point,index){return x(index)+','+y(point.value);}).join(' ');
-    var marks=points.map(function(point,index){
-      return'<circle cx="'+x(index)+'" cy="'+y(point.value)+'" r="6"></circle>'+
-        '<text x="'+x(index)+'" y="'+(y(point.value)-12)+'" text-anchor="middle">'+esc(formatChartMetric(point.value,definition[2]))+'</text>'+
-        '<text x="'+x(index)+'" y="'+(height-17)+'" text-anchor="middle">'+esc(fmtDate(point.date))+'</text>';
-    }).join('');
-    return'<article class="chart-card"><div class="chart-heading"><h3>'+esc(definition[1])+'</h3><strong>'+esc(formatChartMetric(points[points.length-1].value,definition[2]))+'</strong></div>'+
-      '<div class="chart-wrap"><svg viewBox="0 0 '+width+' '+height+'" role="img" aria-label="Grafik perubahan '+esc(definition[1])+'">'+
-      '<line class="axis" x1="'+left+'" y1="'+(height-bottom)+'" x2="'+(width-right)+'" y2="'+(height-bottom)+'"></line>'+
-      '<polyline class="trend-line" points="'+line+'"></polyline>'+marks+'</svg></div></article>';
-  }
-
   function chartsHTML(group){
     if(!group||!group.history||group.history.length<2)return'<div class="chart-empty">Grafik pertumbuhan tersedia setelah minimal dua kali monitoring.</div>';
     var history=group.history;
@@ -532,11 +506,7 @@
       return'<div class="dumbbell-row '+tone+'"><div class="dumbbell-label">'+esc(definition[1])+'</div><div class="dumbbell-track"><span class="dumbbell-line"></span><span class="dumbbell-dot first"></span><span class="dumbbell-value first">'+esc(formatChartMetric(start,definition[2]))+'</span><span class="dumbbell-value latest">'+esc(formatChartMetric(end,definition[2]))+'</span><span class="dumbbell-dot latest"></span></div><div class="dumbbell-delta '+tone+'">'+esc((delta>0?'+':'')+formatChartMetric(delta,definition[2]))+'</div></div>';
     }).filter(Boolean).join('');
     if(!rows)return'<div class="chart-empty">Belum ada indikator yang dapat dibandingkan.</div>';
-    var trendCharts=defs.map(function(definition){
-      return chartSVG(history,definition);
-    }).filter(Boolean).join('');
-    return'<div class="condition-summary"><div class="condition-heading"><strong>Kondisi bibit terbaru</strong><span>'+esc(fmtDate(latest.date))+'</span></div><div class="condition-bar" aria-label="'+esc(numberFormat(alive))+' bibit hidup dan '+esc(numberFormat(dead))+' mati atau rusak"><div class="condition-part condition-alive" style="width:'+alivePct+'%"><span>'+esc(numberFormat(alive))+'<small>'+esc(numberFormat(alivePct))+'% hidup</small></span></div><div class="condition-part condition-dead" style="width:'+deadPct+'%"><span>'+esc(numberFormat(dead))+'<small>'+esc(numberFormat(deadPct))+'% mati/rusak</small></span></div></div><div class="condition-total"><span>Realisasi terkini · populasi dipantau '+esc(numberFormat(monitoredTotal))+'</span><strong>'+esc(numberFormat(planted))+' bibit pada Plot 1</strong></div></div><div class="dumbbell-chart"><div class="dumbbell-head"><strong>Indikator</strong><span><b>'+esc(fmtDate(first.date))+'</b><b>'+esc(fmtDate(latest.date))+'</b></span><strong>Perubahan</strong></div>'+rows+'</div>'+
-      (trendCharts?'<h3 class="trend-history-title">Grafik riwayat per indikator</h3><div class="charts-grid trend-history">'+trendCharts+'</div>':'');
+    return'<div class="condition-summary"><div class="condition-heading"><strong>Kondisi bibit terbaru</strong><span>'+esc(fmtDate(latest.date))+'</span></div><div class="condition-bar" aria-label="'+esc(numberFormat(alive))+' bibit hidup dan '+esc(numberFormat(dead))+' mati atau rusak"><div class="condition-part condition-alive" style="width:'+alivePct+'%"><span>'+esc(numberFormat(alive))+'<small>'+esc(numberFormat(alivePct))+'% hidup</small></span></div><div class="condition-part condition-dead" style="width:'+deadPct+'%"><span>'+esc(numberFormat(dead))+'<small>'+esc(numberFormat(deadPct))+'% mati/rusak</small></span></div></div><div class="condition-total"><span>Realisasi terkini · populasi dipantau '+esc(numberFormat(monitoredTotal))+'</span><strong>'+esc(numberFormat(planted))+' bibit pada Plot 1</strong></div></div><div class="dumbbell-chart"><div class="dumbbell-head"><strong>Indikator</strong><span><b>'+esc(fmtDate(first.date))+'</b><b>'+esc(fmtDate(latest.date))+'</b></span><strong>Perubahan</strong></div>'+rows+'</div>';
   }
 
   function renderKpis(group){

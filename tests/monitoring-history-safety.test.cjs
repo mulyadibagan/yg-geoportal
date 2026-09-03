@@ -14,8 +14,11 @@ test("monitoring detail keeps permanent object identity and renders time-series 
 
   assert.match(source, /targetProperties\.Object_ID\|\|targetProperties\.OBJECT_ID/);
   assert.match(source, /var objectId=permanentObjectId\|\|spatialObjectId/);
-  assert.match(source, /return chartSVG\(history,definition\)/);
-  assert.match(source, /Grafik riwayat per indikator/);
+  assert.match(source, /class="dumbbell-chart"/);
+  assert.doesNotMatch(source, /Grafik riwayat per indikator/);
+  assert.doesNotMatch(source, /function chartSVG\(/);
+  assert.match(source, /Foto monitoring sebelumnya/);
+  assert.match(source, /class="photo-archive"/);
 });
 
 test("legacy monitoring ids resolve to the current official polygon ids everywhere", () => {
