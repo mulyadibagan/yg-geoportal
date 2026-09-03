@@ -11,6 +11,8 @@
   var PREPOST_API = 'https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec';
   var communityDataCache = null;
   var communityDataPromise = null;
+  var mangroveHistorySequence = 0;
+  var selectedMangrovePreviousMonitoring = null;
 
   var form = document.getElementById('report-form');
   var imageInput = document.getElementById('images');
@@ -688,7 +690,7 @@
     }
   }
 
-  function makeObjectId(feature,config){
+  function makeLegacyObjectId(feature,config){
     var p = feature && feature.properties ? feature.properties : {};
     var direct = p.objectId || p.monitoringObjectId || p.reportId || p.id || p.ID || p.OBJECTID || p.FID;
     if(direct !== undefined && direct !== null && String(direct).trim() !== ''){
@@ -701,6 +703,12 @@
     var raw = config.id + '|' + name + '|' + geom;
     for(var i=0;i<raw.length;i++) hash = ((hash << 5) - hash + raw.charCodeAt(i)) | 0;
     return String(config.id) + ':auto:' + Math.abs(hash);
+  }
+
+  function makeObjectId(feature,config){
+    var p = feature && feature.properties ? feature.properties : {};
+    var permanent = p.Object_ID || p.objectId || p.Monitoring_Object_ID || '';
+    return String(permanent || makeLegacyObjectId(feature,config)).trim();
   }
 
   async function loadCorrectionLayer(layerId, preferredObjectId){
@@ -775,7 +783,18 @@
          * dapat tertinggal saat objek baru sudah dipublikasikan, jadi gabungkan
          * objek layer terbaru sebelum mencoba memilih sasaran.
          */
-        if(preferredObjectId){
+        var preferredIdText = String(preferredObjectId || '').trim();
+        var staticHasPreferredObject = preferredIdText &&
+          Array.isArray(data.features) && data.features.some(function(feature){
+            var properties = feature && feature.properties || {};
+            var directId = String(
+              properties.Object_ID || properties.objectId || ''
+            ).trim();
+            return directId === preferredIdText ||
+              makeObjectId(feature,config) === preferredIdText ||
+              makeLegacyObjectId(feature,config) === preferredIdText;
+          });
+        if(preferredObjectId && !staticHasPreferredObject){
           try{
             var masterResponse = await fetch(
               OBJECTS_API + '&t=' + Date.now(),
@@ -853,12 +872,14 @@
             ''
           ).trim();
           var generatedObjectId = makeObjectId(feature,config);
+          var legacyObjectId = makeLegacyObjectId(feature,config);
 
           if(
             normalizedPreferredObjectId &&
             (
               directObjectId === normalizedPreferredObjectId ||
-              generatedObjectId === normalizedPreferredObjectId
+              generatedObjectId === normalizedPreferredObjectId ||
+              legacyObjectId === normalizedPreferredObjectId
             )
           ){
             preferredSelection = {
@@ -1152,6 +1173,7 @@
     document.getElementById('clear-selected-feature').hidden = false;
     updateGeometrySummary();
     updateAutomaticPlantCounts();
+    updateMangroveObjectContext();
 
     if(typeof layer.openPopup === 'function'){
       layer.openPopup();
@@ -1347,6 +1369,7 @@
 
     updateGeometrySummary();
     updateAutomaticPlantCounts();
+    updateMangroveObjectContext();
   }
 
   function restoreCorrectionFeatureStyle(layer){
@@ -2342,7 +2365,16 @@
       treeRecords:pupTreeRows(),
       threats:monitoringValue('monitoring-threats'),
       notes:monitoringValue('monitoring-notes'),
-      followUp:monitoringValue('monitoring-follow-up')
+      followUp:monitoringValue('monitoring-follow-up'),
+      targetObjectId:selectedCorrectionFeature
+        ? selectedCorrectionFeature.objectId
+        : '',
+      previousMonitoringReportId:selectedMangrovePreviousMonitoring
+        ? String(selectedMangrovePreviousMonitoring.reportId || '')
+        : '',
+      previousMonitoringActivityDate:selectedMangrovePreviousMonitoring
+        ? String(selectedMangrovePreviousMonitoring.activityDate || '')
+        : ''
     };
   }
 
@@ -2979,10 +3011,236 @@
     }
   }
 
+  function mangroveProperty(properties,keys){
+    for(var i=0;i<keys.length;i++){
+      var value = properties && properties[keys[i]];
+      if(value !== undefined && value !== null && String(value).trim() !== ''){
+        return String(value).trim();
+      }
+    }
+    return '';
+  }
+
+  function parseMonitoringObject(value){
+    if(!value) return {};
+    if(typeof value === 'object') return value;
+    try{
+      var parsed = JSON.parse(value);
+      return parsed && typeof parsed === 'object' ? parsed : {};
+    }catch(error){
+      return {};
+    }
+  }
+
+  function selectedMangroveObjectAliases(){
+    if(!selectedCorrectionFeature) return [];
+    var feature = selectedCorrectionFeature.feature || {};
+    var properties = feature.properties || {};
+    var config = {id:selectedCorrectionFeature.layerId,label:selectedCorrectionFeature.layerLabel};
+    return [
+      selectedCorrectionFeature.objectId,
+      properties.Object_ID,
+      properties.objectId,
+      makeLegacyObjectId(feature,config)
+    ].map(function(value){
+      return String(value || '').trim().toLowerCase();
+    }).filter(function(value,index,array){
+      return value && array.indexOf(value) === index;
+    });
+  }
+
+  function monitoringFeatureAliases(properties){
+    var targetProperties = parseMonitoringObject(
+      properties.targetFeatureProperties || properties.Target_Feature_Properties
+    );
+    var proposedChanges = parseMonitoringObject(properties.proposedChanges);
+    return [
+      properties.targetObjectId,
+      properties.Target_Object_ID,
+      properties.Target_Object_ID_Current,
+      proposedChanges.targetObjectId,
+      targetProperties.Object_ID,
+      targetProperties.objectId
+    ].map(function(value){
+      return String(value || '').trim().toLowerCase();
+    }).filter(function(value,index,array){
+      return value && array.indexOf(value) === index;
+    });
+  }
+
+  function monitoringTimestamp(value){
+    var text = String(value || '').trim();
+    var match = text.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})(?:\s+(\d{1,2}):(\d{2}))?/);
+    if(match){
+      return new Date(
+        Number(match[3]),Number(match[2]) - 1,Number(match[1]),
+        Number(match[4] || 0),Number(match[5] || 0)
+      ).getTime();
+    }
+    var parsed = Date.parse(text);
+    return Number.isFinite(parsed) ? parsed : 0;
+  }
+
+  function formatMonitoringNumber(value,unit){
+    var number = Number(value);
+    if(value === '' || value === null || value === undefined || !Number.isFinite(number)) return '—';
+    return number.toLocaleString('id-ID',{maximumFractionDigits:2}) + (unit ? ' ' + unit : '');
+  }
+
+  function renderMangrovePreviousMonitoring(record){
+    var metrics = document.getElementById('mangrove-previous-metrics');
+    var status = document.getElementById('mangrove-history-status');
+    if(!metrics || !status) return;
+    var data = record ? parseMonitoringObject(record.proposedInformation) : {};
+    selectedMangrovePreviousMonitoring = record || null;
+    if(!record){
+      status.className = 'mangrove-history-status first';
+      status.textContent = 'Monitoring pertama untuk polygon ini — belum ada data pembanding.';
+      metrics.hidden = true;
+      metrics.innerHTML = '';
+      updateMangroveComparisons();
+      return;
+    }
+    status.className = 'mangrove-history-status';
+    status.textContent = 'Monitoring terakhir polygon ini: ' +
+      (record.activityDate || record.receivedAt || 'tanggal tidak tersedia');
+    metrics.innerHTML = [
+      ['Survival',formatMonitoringNumber(data.survivalPercent,'%')],
+      ['Tinggi rata-rata',formatMonitoringNumber(data.averageHeightCm,'cm')],
+      ['Diameter rata-rata',formatMonitoringNumber(data.averageDiameterCm,'cm')],
+      ['Sedimentasi',formatMonitoringNumber(data.sedimentationCm,'cm')]
+    ].map(function(item){
+      return '<div><span>' + escapeCorrectionHtml(item[0]) + '</span><strong>' +
+        escapeCorrectionHtml(item[1]) + '</strong></div>';
+    }).join('');
+    metrics.hidden = false;
+    updateMangroveComparisons();
+  }
+
+  function loadMangroveMonitoringHistory(){
+    var sequence = ++mangroveHistorySequence;
+    var status = document.getElementById('mangrove-history-status');
+    var aliases = selectedMangroveObjectAliases();
+    selectedMangrovePreviousMonitoring = null;
+    if(status){
+      status.className = 'mangrove-history-status';
+      status.textContent = 'Memuat histori khusus polygon ini…';
+    }
+    loadCommunityReports().then(function(collection){
+      if(sequence !== mangroveHistorySequence) return;
+      var matches = (collection.features || []).map(function(feature){
+        return feature && feature.properties || {};
+      }).filter(function(properties){
+        var reportType = String(properties.reportType || properties.Jenis_Laporan || '').trim().toLowerCase();
+        var targetLayerId = String(properties.targetLayerId || properties.Target_Layer_ID || '').trim();
+        if(reportType !== 'monitoring' || targetLayerId !== 'area_mangrove') return false;
+        return monitoringFeatureAliases(properties).some(function(alias){
+          return aliases.indexOf(alias) !== -1;
+        });
+      }).sort(function(a,b){
+        return monitoringTimestamp(b.activityDate || b.receivedAt) -
+          monitoringTimestamp(a.activityDate || a.receivedAt);
+      });
+      renderMangrovePreviousMonitoring(matches[0] || null);
+    }).catch(function(error){
+      if(sequence !== mangroveHistorySequence) return;
+      console.warn('Histori monitoring polygon tidak dapat dimuat.',error);
+      selectedMangrovePreviousMonitoring = null;
+      if(status){
+        status.className = 'mangrove-history-status error';
+        status.textContent = 'Histori polygon belum dapat dimuat. Data baru tetap akan terikat ke ID polygon ini.';
+      }
+      var metrics = document.getElementById('mangrove-previous-metrics');
+      if(metrics) metrics.hidden = true;
+      updateMangroveComparisons();
+    });
+  }
+
+  function setMonitoringComparison(inputId,nodeId,previousValue,unit){
+    var input = document.getElementById(inputId);
+    var node = document.getElementById(nodeId);
+    if(!input || !node) return;
+    node.className = 'monitoring-comparison';
+    node.textContent = '';
+    var current = Number(input.value);
+    var previous = Number(previousValue);
+    if(!input.value || previousValue === '' || previousValue === null || previousValue === undefined || !Number.isFinite(current) || !Number.isFinite(previous)) return;
+    var difference = current - previous;
+    var percent = previous !== 0 ? Math.abs(difference / previous * 100) : null;
+    var change = percent === null ? '' : ' (' + percent.toLocaleString('id-ID',{maximumFractionDigits:1}) + '%)';
+    if(difference < 0){
+      node.classList.add('decrease');
+      node.textContent = '⚠ Turun dari ' + formatMonitoringNumber(previous,unit) + change + '. Periksa kembali; data tetap boleh dikirim.';
+    }else if(difference > 0){
+      node.classList.add('increase');
+      node.textContent = '↑ Naik dari ' + formatMonitoringNumber(previous,unit) + change;
+    }else{
+      node.classList.add('same');
+      node.textContent = 'Sama dengan monitoring sebelumnya: ' + formatMonitoringNumber(previous,unit);
+    }
+  }
+
+  function updateMangroveComparisons(){
+    var previous = selectedMangrovePreviousMonitoring
+      ? parseMonitoringObject(selectedMangrovePreviousMonitoring.proposedInformation)
+      : {};
+    setMonitoringComparison('monitoring-height','monitoring-height-comparison',previous.averageHeightCm,'cm');
+    setMonitoringComparison('monitoring-diameter','monitoring-diameter-comparison',previous.averageDiameterCm,'cm');
+    setMonitoringComparison('monitoring-sediment','monitoring-sediment-comparison',previous.sedimentationCm,'cm');
+  }
+
+  function updateMangroveObjectContext(){
+    var active = selectedType === 'Monitoring' && selectedCorrectionFeature &&
+      selectedCorrectionFeature.layerId === 'area_mangrove' &&
+      ['Polygon','MultiPolygon'].indexOf(geometryType) !== -1;
+    var context = document.getElementById('mangrove-monitoring-context');
+    if(context) context.hidden = !active;
+    if(!active){
+      mangroveHistorySequence += 1;
+      selectedMangrovePreviousMonitoring = null;
+      updateMangroveComparisons();
+      return;
+    }
+
+    var properties = selectedCorrectionFeature.feature.properties || {};
+    var objectName = getCorrectionFeatureName(selectedCorrectionFeature.feature,selectedCorrectionFeature.layerLabel);
+    var typeInput = document.getElementById('monitoring-type');
+    if(typeInput) typeInput.value = 'Penanaman Mangrove';
+    var titleNode = document.getElementById('mangrove-context-title');
+    var idNode = document.getElementById('mangrove-context-object-id');
+    var detailsNode = document.getElementById('mangrove-context-details');
+    if(titleNode) titleNode.textContent = 'Monitoring Mangrove — ' + objectName;
+    if(idNode) idNode.textContent = selectedCorrectionFeature.objectId;
+    var detailItems = [
+      ['Desa',mangroveProperty(properties,['Desa','village','Village'])],
+      ['Fase',mangroveProperty(properties,['Ket','Keterangan','Phase','Fase'])],
+      ['Tahun',mangroveProperty(properties,['Tahun','Year'])],
+      ['Luas',formatMonitoringNumber(mangroveProperty(properties,['Luas_Ha','luas_ha','areaHa']),'ha')],
+      ['Donor',mangroveProperty(properties,['Donor','Nama_Donor','Donor_Cluster'])]
+    ].filter(function(item){ return item[1] && item[1] !== '—'; });
+    if(detailsNode){
+      detailsNode.innerHTML = detailItems.map(function(item){
+        return '<span><b>' + escapeCorrectionHtml(item[0]) + ':</b> ' + escapeCorrectionHtml(item[1]) + '</span>';
+      }).join('');
+    }
+    var titleInput = document.getElementById('title');
+    var descriptionInput = document.getElementById('description');
+    if(titleInput && !titleInput.value.trim()) titleInput.value = 'Monitoring Mangrove — ' + objectName;
+    if(descriptionInput && !descriptionInput.value.trim()){
+      descriptionInput.value = 'Monitoring kondisi dan pertumbuhan mangrove pada polygon ' + selectedCorrectionFeature.objectId + '.';
+    }
+    updateMonitoringPanels();
+    loadMangroveMonitoringHistory();
+  }
+
   var monitoringTypeSelect = document.getElementById('monitoring-type');
   if(monitoringTypeSelect){
     monitoringTypeSelect.addEventListener('change',updateMonitoringPanels);
   }
+  ['monitoring-height','monitoring-diameter','monitoring-sediment'].forEach(function(id){
+    var input = document.getElementById(id);
+    if(input) input.addEventListener('input',updateMangroveComparisons);
+  });
   var monitoringDeadInput = document.getElementById('monitoring-dead');
   if(monitoringDeadInput){
     monitoringDeadInput.addEventListener('input',updateAutomaticPlantCounts);
@@ -3297,6 +3555,19 @@
       if(!monitorDataValidation.notes){
         alert('Isi temuan monitoring.');
         return;
+      }
+      if(selectedCorrectionFeature.layerId === 'area_mangrove'){
+        if(
+          !selectedCorrectionFeature.objectId ||
+          ['Polygon','MultiPolygon'].indexOf(geometryType) === -1
+        ){
+          alert('Monitoring mangrove wajib terhubung ke satu polygon mangrove yang memiliki ID objek.');
+          return;
+        }
+        if(monitorDataValidation.monitoringType !== 'Penanaman Mangrove'){
+          alert('Jenis monitoring untuk polygon Area Penanaman Mangrove harus Penanaman Mangrove.');
+          return;
+        }
       }
       if(monitorDataValidation.monitoringType === 'Penanaman Mangrove'){
         var plantingTotal = selectedPlantingCount();

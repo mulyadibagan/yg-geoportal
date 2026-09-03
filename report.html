@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css">
   <link rel="stylesheet" href="css/site-brand.css?v=20260720-program-dashboard1">
-  <link rel="stylesheet" href="css/report-v6.css?v=20260831-photo-grid1">
+  <link rel="stylesheet" href="css/report-v6.css?v=20260904-mangrove-polygon-history1">
   <link rel="stylesheet" href="css/language-switcher.css?v=20260721-all-pages1">
   <meta name="theme-color" content="#079cde">
   <meta name="application-name" content="YG GeoPortal">
@@ -326,6 +326,19 @@
         <h3>Data monitoring objek</h3>
         <p class="help">Pilih layer data monitoring terlebih dahulu, lalu klik objek WebGIS pada peta. Isian akan menyesuaikan jenis objek yang dipilih.</p>
 
+        <div id="mangrove-monitoring-context" class="mangrove-monitoring-context" hidden aria-live="polite">
+          <div class="mangrove-context-heading">
+            <div>
+              <span class="mangrove-context-kicker">POLYGON TERPILIH</span>
+              <h4 id="mangrove-context-title">Monitoring Mangrove</h4>
+            </div>
+            <span id="mangrove-context-object-id" class="mangrove-object-id"></span>
+          </div>
+          <div id="mangrove-context-details" class="mangrove-context-details"></div>
+          <div id="mangrove-history-status" class="mangrove-history-status">Memuat histori polygon ini…</div>
+          <div id="mangrove-previous-metrics" class="mangrove-previous-metrics" hidden></div>
+        </div>
+
         <div class="form-grid">
           <label class="field"><span>Jenis monitoring *</span>
             <select id="monitoring-type">
@@ -379,9 +392,9 @@
             <label class="field"><span>Jumlah hidup (otomatis)</span><input id="monitoring-alive" type="number" min="0" step="1" readonly></label>
             <label class="field"><span>Jumlah mati/rusak *</span><input id="monitoring-dead" type="number" min="0" step="1" inputmode="numeric"></label>
             <label class="field"><span>Luas terpantau otomatis (ha)</span><input id="monitoring-area" type="number" min="0" step="0.001" readonly></label>
-            <label class="field"><span>Tinggi rata-rata (cm)</span><input id="monitoring-height" type="number" min="0" step="0.1"></label>
-            <label class="field"><span>Diameter batang rata-rata (cm)</span><input id="monitoring-diameter" type="number" min="0" step="0.01"></label>
-            <label class="field"><span>Sedimentasi (cm)</span><input id="monitoring-sediment" type="number" step="0.1"></label>
+            <label class="field"><span>Tinggi rata-rata (cm)</span><input id="monitoring-height" type="number" min="0" step="0.1"><small id="monitoring-height-comparison" class="monitoring-comparison"></small></label>
+            <label class="field"><span>Diameter batang rata-rata (cm)</span><input id="monitoring-diameter" type="number" min="0" step="0.01"><small id="monitoring-diameter-comparison" class="monitoring-comparison"></small></label>
+            <label class="field"><span>Sedimentasi / penambahan sedimen (cm)</span><input id="monitoring-sediment" type="number" step="0.1"><small id="monitoring-sediment-comparison" class="monitoring-comparison"></small></label>
           </div>
           <p id="monitoring-plant-count-help" class="help">Pilih objek penanaman mangrove untuk mengambil total bibit secara otomatis.</p>
         </div>
@@ -542,7 +555,7 @@
 <script src="https://unpkg.com/jszip@3.10.1/dist/jszip.min.js"></script>
 <script src="https://unpkg.com/@tmcw/togeojson@5.8.1/dist/togeojson.umd.js"></script>
 <script src="js/config.js?v=20260821-pup-layer1"></script>
-<script src="js/report-v6.js?v=20260903-monitoring-duplicate-guard1"></script>
+<script src="js/report-v6.js?v=20260904-mangrove-polygon-history1"></script>
   <script src="js/i18n.js?v=20260810-global-public1"></script>
   <script src="js/pwa.js?v=20260725-photo-simple1"></script>
 </body>

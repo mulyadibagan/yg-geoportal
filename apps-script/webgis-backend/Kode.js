@@ -564,6 +564,7 @@ if (action === 'content-save') {
       return reportSubmissionResponse_(previousSubmission);
     }
     validateIncomingPayload_(data);
+    normalizeMangroveMonitoringTarget_(data);
 
     // Normalisasi metadata tambahan agar frontend lama/baru tetap kompatibel.
     const normalizedTargetFeatureProperties =
@@ -1835,6 +1836,38 @@ function validateReportForPublication_(sheet, rowNumber) {
   }
 
   if (reportType === 'Monitoring') {
+    if (targetLayerId === 'area_mangrove') {
+      let monitoring = {};
+      let targetProperties = {};
+      let storedChanges = {};
+      try {
+        monitoring = proposedInformation
+          ? JSON.parse(proposedInformation)
+          : {};
+        targetProperties = targetFeatureProperties
+          ? JSON.parse(targetFeatureProperties)
+          : {};
+        storedChanges = proposedChanges
+          ? JSON.parse(proposedChanges)
+          : {};
+      } catch (error) {
+        throw new Error('Data monitoring mangrove atau identitas polygon tidak valid.');
+      }
+
+      if (
+        !clean_(storedChanges.targetObjectId) ||
+        !targetProperties ||
+        typeof targetProperties !== 'object' ||
+        ['Polygon', 'MultiPolygon'].indexOf(
+          geometry && geometry.type
+        ) === -1 ||
+        clean_(monitoring.monitoringType) !== 'Penanaman Mangrove'
+      ) {
+        throw new Error(
+          'Monitoring mangrove belum terikat secara valid ke polygon Area Penanaman Mangrove.'
+        );
+      }
+    }
     requireAnyGeometryOrPoint_(geometry, latitude, longitude);
     return true;
   }
@@ -2339,6 +2372,40 @@ function validateIncomingPayload_(data) {
   }
 
   if (
+    data.reportType === 'Monitoring' &&
+    clean_(data.targetLayerId) === 'area_mangrove'
+  ) {
+    let targetProperties = {};
+    let monitoring = {};
+    try {
+      targetProperties = JSON.parse(data.targetFeatureProperties || '{}');
+      monitoring = JSON.parse(data.proposedInformation || '{}');
+    } catch (error) {
+      throw new Error('Data monitoring mangrove atau identitas polygon tidak valid.');
+    }
+
+    const geometry = parseGeometry_(data.geometryGeoJSON);
+    if (
+      !clean_(data.targetObjectId) ||
+      !targetProperties ||
+      typeof targetProperties !== 'object' ||
+      ['Polygon', 'MultiPolygon'].indexOf(
+        geometry && geometry.type
+      ) === -1
+    ) {
+      throw new Error(
+        'Monitoring mangrove wajib terhubung ke satu polygon Area Penanaman Mangrove yang memiliki ID objek.'
+      );
+    }
+
+    if (clean_(monitoring.monitoringType) !== 'Penanaman Mangrove') {
+      throw new Error(
+        'Jenis monitoring untuk polygon Area Penanaman Mangrove harus Penanaman Mangrove.'
+      );
+    }
+  }
+
+  if (
     data.reportType === 'Titik Baru' ||
     data.reportType === 'Area/Poligon Baru'
   ) {
@@ -2401,6 +2468,30 @@ function validateIncomingPayload_(data) {
         'Jumlah bibit, jenis bibit, luas, penyebab, dan catatan replanting wajib diisi.'
       );
     }
+  }
+}
+
+function normalizeMangroveMonitoringTarget_(data) {
+  if (
+    !data ||
+    data.reportType !== 'Monitoring' ||
+    clean_(data.targetLayerId) !== 'area_mangrove'
+  ) {
+    return;
+  }
+
+  let targetProperties = {};
+  try {
+    targetProperties = JSON.parse(data.targetFeatureProperties || '{}');
+  } catch (error) {
+    targetProperties = {};
+  }
+
+  const permanentObjectId = clean_(
+    targetProperties.Object_ID || targetProperties.objectId
+  );
+  if (permanentObjectId) {
+    data.targetObjectId = permanentObjectId;
   }
 }
 
