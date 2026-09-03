@@ -8,9 +8,22 @@
   var CALLBACK='ygMonitoringDashboardCallback';
   var OBJECTS_CALLBACK='ygMonitoringObjectsCallback';
 var LEGACY_OBJECT_ALIASES={
-  'area_mangrove:auto:374024597':'MANGROVE-BURUK-BAKUL-PHASE-III-2025-001',
-  'area_mangrove:auto:1281388060':'MANGROVE-KELAPA-PATI-PHASE-III-2026-001',
-  'area_mangrove:auto:1674337344':'MANGROVE-KELAPA-PATI-PHASE-III-2026-001'
+  'area_mangrove:auto:1281388060':'MANGROVE-KELAPA-PATI-PHASE-III-001',
+  'area_mangrove:auto:1674337344':'MANGROVE-KELAPA-PATI-PHASE-III-001',
+  'area_mangrove:auto:645930758':'MANGROVE-KELAPA-PATI-PHASE-III-001',
+  'MANGROVE-KELAPA-PATI-PHASE-III-2025-001':'MANGROVE-KELAPA-PATI-PHASE-III-001',
+  'MANGROVE-KELAPA-PATI-PHASE-III-2026-001':'MANGROVE-KELAPA-PATI-PHASE-III-001',
+  'area_mangrove:auto:613256434':'MANGROVE-BURUK-BAKUL-PHASE-II-001',
+  'MANGROVE-BURUK-BAKUL-PHASE-II-2024-001':'MANGROVE-BURUK-BAKUL-PHASE-II-001',
+  'area_mangrove:auto:374024597':'MANGROVE-BURUK-BAKUL-2025-001',
+  'MANGROVE-BURUK-BAKUL-PHASE-III-2025-001':'MANGROVE-BURUK-BAKUL-2025-001',
+  'area_mangrove:auto:56906758':'MANGROVE-BURUK-BAKUL-2025-002',
+  'MANGROVE-BURUK-BAKUL-PHASE-III-2025-002':'MANGROVE-BURUK-BAKUL-2025-002',
+  'MANGROVE-BURUK-BAKUL-PHASE-III-2025-003':'MANGROVE-BURUK-BAKUL-2025-003',
+  'area_mangrove:auto:1732351650':'MANGROVE-SEPAHAT-2025-001',
+  'area_mangrove:auto:1601647125':'MANGROVE-SEPAHAT-2025-001',
+  'MANGROVE-SEPAHAT-PHASE-III-2025-001':'MANGROVE-SEPAHAT-2025-001',
+  'MANGROVE-TANJUNG-KURAS-PHASE-III-2026-001':'MANGROVE-TANJUNG-KURAS-2026-001'
 };
   var REPORT_CORRECTIONS={
     'YG-20260717-205241-378':{aliveCount:2730,deadOrDamagedCount:600,survivalPercent:82}
@@ -336,6 +349,7 @@ var LEGACY_OBJECT_ALIASES={
     var direct=permanentId(
       targetProperties.Object_ID||targetProperties.OBJECT_ID||targetProperties.objectId||p.Object_ID
     );
+    direct=LEGACY_OBJECT_ALIASES[direct]||direct;
     if(direct&&masterObjects.some(function(object){return object.id===direct;}))return direct;
 
     var layer=keyText(p.targetLayerId||p.targetLayerLabel||targetProperties.Source_Layer||targetProperties.Layer_ID);

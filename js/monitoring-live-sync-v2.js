@@ -6,16 +6,30 @@
 
   const API = "https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec?page=public-reports";
   const VERIFIED_TARGETS = Object.freeze({
-    "YG-20260713-202057-344": "MANGROVE-BURUK-BAKUL-PHASE-II-2024-001",
-    "YG-20260713-230541-911": "MANGROVE-SEPAHAT-PHASE-III-2025-001",
-    "YG-20260717-205241-378": "MANGROVE-KELAPA-PATI-PHASE-III-2026-001",
-    "YG-20260717-210140-375": "MANGROVE-BURUK-BAKUL-PHASE-III-2025-001",
-    "YG-20260717-211305-543": "MANGROVE-BURUK-BAKUL-PHASE-III-2025-002",
-    "YG-20260721-012602-224": "MANGROVE-SEPAHAT-PHASE-III-2025-001"
+    "YG-20260713-202057-344": "MANGROVE-BURUK-BAKUL-PHASE-II-001",
+    "YG-20260713-230541-911": "MANGROVE-SEPAHAT-2025-001",
+    "YG-20260717-205241-378": "MANGROVE-KELAPA-PATI-PHASE-III-001",
+    "YG-20260717-210140-375": "MANGROVE-BURUK-BAKUL-2025-001",
+    "YG-20260717-211305-543": "MANGROVE-BURUK-BAKUL-2025-002",
+    "YG-20260721-012602-224": "MANGROVE-SEPAHAT-2025-001"
   });
   const TARGET_ALIASES = Object.freeze({
     "mangrove-kelapa-pati-phase-iii-2025-001":
-      "MANGROVE-KELAPA-PATI-PHASE-III-2026-001"
+      "MANGROVE-KELAPA-PATI-PHASE-III-001",
+    "mangrove-kelapa-pati-phase-iii-2026-001":
+      "MANGROVE-KELAPA-PATI-PHASE-III-001",
+    "mangrove-buruk-bakul-phase-ii-2024-001":
+      "MANGROVE-BURUK-BAKUL-PHASE-II-001",
+    "mangrove-buruk-bakul-phase-iii-2025-001":
+      "MANGROVE-BURUK-BAKUL-2025-001",
+    "mangrove-buruk-bakul-phase-iii-2025-002":
+      "MANGROVE-BURUK-BAKUL-2025-002",
+    "mangrove-buruk-bakul-phase-iii-2025-003":
+      "MANGROVE-BURUK-BAKUL-2025-003",
+    "mangrove-sepahat-phase-iii-2025-001":
+      "MANGROVE-SEPAHAT-2025-001",
+    "mangrove-tanjung-kuras-phase-iii-2026-001":
+      "MANGROVE-TANJUNG-KURAS-2026-001"
   });
   const HIDDEN_GEOMETRY_REPORT_IDS = new Set([
     "YG-20260717-205241-378"
@@ -206,7 +220,18 @@
         if (!normalized(targetId).startsWith("mangrove-")) return feature;
         const target = areaObjects.get(normalized(targetId)) ||
           areaObjects.get(canonicalObjectId(targetId));
-        if (!target || !target.geometry) return null;
+        if (!target || !target.geometry) {
+          /*
+           * Registry polygon dan laporan live dimuat secara paralel. Jangan
+           * membuang laporan terbaru bila polygon resminya belum tersedia
+           * pada saat respons API tiba; geometry laporan tetap merupakan
+           * fallback yang sah dan identitas targetnya tetap dipertahankan.
+           */
+          props.Target_Object_ID_Current = targetId;
+          props.Target_Layer_ID_Current = "area_mangrove";
+          props.Geometry_Source = "monitoring_report_fallback";
+          return feature;
+        }
         const targetProps = target.properties || {};
         const donor = targetProps.Donor || targetProps.Nama_Donor ||
           targetProps.Donor_Cluster || "";
@@ -223,12 +248,6 @@
       })
       .filter(Boolean);
 
-    /*
-     * Geometry laporan adalah cakupan area yang benar-benar dimonitor.
-     * Jangan menggantinya dengan polygon petak tanam sasaran yang lebih kecil:
-     * polygon tanam tetap tersedia pada layer area_mangrove, sedangkan layer
-     * monitoring harus memperlihatkan cakupan pemantauan lapangan yang luas.
-     */
     api.addLiveFeatures("monitoring_reports", latestPerObject(features));
     document.dispatchEvent(new CustomEvent("yg:monitoring-live-synced"));
     return true;

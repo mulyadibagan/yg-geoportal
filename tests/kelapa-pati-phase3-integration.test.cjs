@@ -83,15 +83,15 @@ test("latest Kelapa Pati monitoring resolves to permanent Plot 1", () => {
 
   assert.match(
     mapSource,
-    /"YG-20260827-154822-115":\s*\[\s*"MANGROVE-KELAPA-PATI-PHASE-III-2026-001"\s*\]/
+    /"YG-20260827-154822-115":\s*\[\s*"MANGROVE-KELAPA-PATI-PHASE-III-001"\s*\]/
   );
   assert.match(
     detailSource,
-    /'area_mangrove:auto:1674337344':'MANGROVE-KELAPA-PATI-PHASE-III-2026-001'/
+    /'area_mangrove:auto:1674337344':'MANGROVE-KELAPA-PATI-PHASE-III-001'/
   );
   assert.match(
     detailSource,
-    /'MANGROVE-KELAPA-PATI-PHASE-III-2025-001':'MANGROVE-KELAPA-PATI-PHASE-III-2026-001'/
+    /'MANGROVE-KELAPA-PATI-PHASE-III-2025-001':'MANGROVE-KELAPA-PATI-PHASE-III-001'/
   );
   assert.match(mapSource, /props\.Monitoring_Report_IDs = Array\.from\(history\)\.sort\(\)/);
   assert.match(mapSource, /const historyIds = Array\.isArray\(props\.Monitoring_Report_IDs\)/);

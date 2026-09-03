@@ -3437,31 +3437,45 @@ L.control.scale({
 
   const VERIFIED_MONITORING_TARGETS = Object.freeze({
     "YG-20260713-202057-344": [
-      "MANGROVE-BURUK-BAKUL-PHASE-II-2024-001"
+      "MANGROVE-BURUK-BAKUL-PHASE-II-001"
     ],
     "YG-20260713-230541-911": [
-      "MANGROVE-SEPAHAT-PHASE-III-2025-001"
+      "MANGROVE-SEPAHAT-2025-001"
     ],
     "YG-20260717-205241-378": [
-      "MANGROVE-KELAPA-PATI-PHASE-III-2026-001"
+      "MANGROVE-KELAPA-PATI-PHASE-III-001"
     ],
     "YG-20260827-154822-115": [
-      "MANGROVE-KELAPA-PATI-PHASE-III-2026-001"
+      "MANGROVE-KELAPA-PATI-PHASE-III-001"
     ],
     "YG-20260717-210140-375": [
-      "MANGROVE-BURUK-BAKUL-PHASE-III-2025-001"
+      "MANGROVE-BURUK-BAKUL-2025-001"
     ],
     "YG-20260717-211305-543": [
-      "MANGROVE-BURUK-BAKUL-PHASE-III-2025-002"
+      "MANGROVE-BURUK-BAKUL-2025-002"
     ],
     "YG-20260721-012602-224": [
-      "MANGROVE-SEPAHAT-PHASE-III-2025-001"
+      "MANGROVE-SEPAHAT-2025-001"
     ]
   });
 
   const MANGROVE_TARGET_ALIASES = Object.freeze({
     "mangrove-kelapa-pati-phase-iii-2025-001":
-      "MANGROVE-KELAPA-PATI-PHASE-III-2026-001"
+      "MANGROVE-KELAPA-PATI-PHASE-III-001",
+    "mangrove-kelapa-pati-phase-iii-2026-001":
+      "MANGROVE-KELAPA-PATI-PHASE-III-001",
+    "mangrove-buruk-bakul-phase-ii-2024-001":
+      "MANGROVE-BURUK-BAKUL-PHASE-II-001",
+    "mangrove-buruk-bakul-phase-iii-2025-001":
+      "MANGROVE-BURUK-BAKUL-2025-001",
+    "mangrove-buruk-bakul-phase-iii-2025-002":
+      "MANGROVE-BURUK-BAKUL-2025-002",
+    "mangrove-buruk-bakul-phase-iii-2025-003":
+      "MANGROVE-BURUK-BAKUL-2025-003",
+    "mangrove-sepahat-phase-iii-2025-001":
+      "MANGROVE-SEPAHAT-2025-001",
+    "mangrove-tanjung-kuras-phase-iii-2026-001":
+      "MANGROVE-TANJUNG-KURAS-2026-001"
   });
 
   function monitoringTargetObjectIds(props) {
@@ -3513,7 +3527,8 @@ L.control.scale({
     const resolvedTargetId =
       MANGROVE_TARGET_ALIASES[normalizedMatchValue(storedTargetId)] ||
       storedTargetId;
-    if (!canonicalMangroveObjectId(resolvedTargetId)) return [];
+    if (!resolvedTargetId || /:auto:/i.test(resolvedTargetId)) return [];
+    if (/^monitoring-/i.test(resolvedTargetId)) return [];
     return [resolvedTargetId];
   }
 
