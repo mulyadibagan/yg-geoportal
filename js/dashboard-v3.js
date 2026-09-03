@@ -772,7 +772,7 @@
     let merged = features.slice();
     const layerResults = await Promise.all(OFFICIAL_LAYERS.map(async source => {
       try {
-        const response = await fetch(source.url);
+        const response = await fetch(source.url, { cache: "no-store" });
         if (!response.ok) throw new Error("HTTP " + response.status);
         return { source, data: await response.json() };
       } catch (error) {

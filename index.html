@@ -676,39 +676,7 @@
   </div>
 </footer>
 
-<script>
-(function () {
-  var key = "yg-home-fast-snapshot-v4";
-  var summary = document.querySelector(".hero-data-summary__grid");
-  var programmes = document.getElementById("category-grid");
-  try {
-    var cached = JSON.parse(localStorage.getItem(key) || "null");
-    if (cached && cached.summary && cached.programmes) {
-      summary.innerHTML = cached.summary;
-      programmes.innerHTML = cached.programmes;
-    }
-  } catch (error) {}
-
-  var saveTimer;
-  function saveSnapshot() {
-    clearTimeout(saveTimer);
-    saveTimer = setTimeout(function () {
-      if (!programmes.querySelector(".programme-card--loading") && programmes.querySelector(".programme-current")) {
-        try {
-          localStorage.setItem(key, JSON.stringify({
-            summary: summary.innerHTML,
-            programmes: programmes.innerHTML,
-            savedAt: Date.now()
-          }));
-        } catch (error) {}
-      }
-    }, 120);
-  }
-  new MutationObserver(saveSnapshot).observe(summary, { childList: true, subtree: true, characterData: true });
-  new MutationObserver(saveSnapshot).observe(programmes, { childList: true, subtree: true, characterData: true });
-}());
-</script>
-<script src="js/dashboard-v3.js?v=20260903-ma-earth-1000-1"></script>
+<script src="js/dashboard-v3.js?v=20260903-dashboard-live1"></script>
   <script src="js/home-modern.js?v=20260903-ma-earth-1000-1"></script>
    <script src="js/donor-program-status.js?v=20260903-ma-earth-1000-1"></script>
    <script src="js/donor-evidence-summary.js?v=20260903-ma-earth-1000-1"></script>

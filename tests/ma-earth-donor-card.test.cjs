@@ -24,6 +24,9 @@ test("MA Earth donor card exposes the approved programme outputs", () => {
   assert.match(dashboard, /if \(name === "MA Earth"\)/);
   assert.match(dashboard, /data-open-ma-earth/);
   assert.match(dashboard, /data-close-ma-earth/);
+  assert.match(html, /dashboard-v3\.js\?v=20260903-dashboard-live1/);
+  assert.doesNotMatch(html, /yg-home-fast-snapshot/);
+  assert.match(dashboard, /fetch\(source\.url, \{ cache: "no-store" \}\)/);
   assert.ok(fs.existsSync(path.join(ROOT, "assets/funding-ma-earth.svg")));
   assert.match(html, /assets\/funding-ma-earth\.svg\?v=20260902-official1/);
   assert.match(dashboard, /assets\/funding-ma-earth\.svg\?v=20260902-official1/);
