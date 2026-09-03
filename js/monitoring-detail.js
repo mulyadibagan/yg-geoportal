@@ -31,6 +31,13 @@
     'YG-20260826-135016-915':{aliveCount:600,deadOrDamagedCount:0,survivalPercent:100}
   };
   var HISTORICAL_PHOTOS_BY_REPORT={
+    'YG-20260717-205241-378':[
+      'https://drive.google.com/file/d/1P_shebiVd-NXp3C0rBLgiVxYK7hiI1dG/view?usp=drivesdk',
+      'https://drive.google.com/file/d/1ePclkMmzTzhJ0elxXwmRcuVSmzcDqKVx/view?usp=drivesdk',
+      'https://drive.google.com/file/d/15yAA7i2NoeA_-PX4S7i-BrZxIrEMZf18/view?usp=drivesdk',
+      'https://drive.google.com/file/d/1hPmXUKzdIcDHpVRwtygIRTGLfJ0mpsuX/view?usp=drivesdk',
+      'https://drive.google.com/file/d/1PBG76KHR-TM8psFuljLqPY3ya6Zhh8Fd/view?usp=drivesdk'
+    ],
     'YG-20260717-210140-375':[
       'https://drive.google.com/file/d/1u1Did5qZYT6Of89-Rl2Ii0IOVsIb5DWs/view?usp=drivesdk',
       'https://drive.google.com/file/d/151b8GRRDMabPZxrxeWKMCPIj6iTy_lvY/view?usp=drivesdk',
@@ -610,20 +617,6 @@
     }).map(function(record){
       return{date:record.date,label:'Foto laporan monitoring',photos:record.photos};
     });
-    var label=String(group.label||group.latest.location||group.latest.title||'').toLowerCase();
-    if(label.indexOf('kelapa pati')!==-1){
-      periods.push({
-        date:'16/07/2026',
-        label:'Tambah Foto Kegiatan · Monitoring Penanaman Mangrove Aramco Fase 3',
-        photos:[
-          'https://drive.google.com/file/d/1P_shebiVd-NXp3C0rBLgiVxYK7hiI1dG/view?usp=drivesdk',
-          'https://drive.google.com/file/d/1ePclkMmzTzhJ0elxXwmRcuVSmzcDqKVx/view?usp=drivesdk',
-          'https://drive.google.com/file/d/15yAA7i2NoeA_-PX4S7i-BrZxIrEMZf18/view?usp=drivesdk',
-          'https://drive.google.com/file/d/1hPmXUKzdIcDHpVRwtygIRTGLfJ0mpsuX/view?usp=drivesdk',
-          'https://drive.google.com/file/d/1PBG76KHR-TM8psFuljLqPY3ya6Zhh8Fd/view?usp=drivesdk'
-        ]
-      });
-    }
     var seen={};
     periods=periods.map(function(period){
       period.photos=(period.photos||[]).filter(function(url){
