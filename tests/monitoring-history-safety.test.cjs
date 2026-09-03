@@ -121,6 +121,7 @@ test("monitoring pages prefer the fast public snapshot and keep the source API a
   });
   assert.match(detail, /restoreDataCache\(\)/);
   assert.match(detail, /localStorage\.setItem\(DATA_CACHE_KEY/);
+  assert.match(compilation, /localStorage\.setItem\('monitoring-detail-public-data-v1'/);
   assert.match(detail, /fetch\(SNAPSHOT_URL,\{cache:'default'\}\)/);
   assert.match(compilation, /loadPublishedJsonp\(type,storageKey\)/);
 });

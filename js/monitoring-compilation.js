@@ -228,6 +228,7 @@
     if(!features.length)throw new Error('public_reports_empty');
     var data=compilePublished(features.map(normalizePublished).filter(Boolean),type);
     try{sessionStorage.setItem(storageKey,JSON.stringify(data));}catch(e){}
+    try{localStorage.setItem('monitoring-detail-public-data-v1',JSON.stringify({savedAt:Date.now(),data:payload,officialData:null}));}catch(e){}
     render(data);refreshClusterValues();
   }
   function loadPublishedJsonp(type,storageKey){
