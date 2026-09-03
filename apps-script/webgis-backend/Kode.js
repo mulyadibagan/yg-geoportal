@@ -559,6 +559,10 @@ if (action === 'content-save') {
 
     const data = JSON.parse(e.parameter.payload);
     clientSubmissionId = clean_(data.clientSubmissionId);
+    const previousSubmission = claimReportSubmission_(clientSubmissionId);
+    if (previousSubmission) {
+      return reportSubmissionResponse_(previousSubmission);
+    }
     validateIncomingPayload_(data);
 
     // Normalisasi metadata tambahan agar frontend lama/baru tetap kompatibel.
@@ -578,6 +582,10 @@ if (action === 'content-save') {
 
     const sheet = getOrCreateSheet_();
     ensureExtendedColumns_(sheet);
+    const monitoringDuplicates = findSameDayMonitoringDuplicates_(sheet, data);
+    if (monitoringDuplicates.length) {
+      data.monitoringDuplicateCandidates = monitoringDuplicates;
+    }
     const serverDuplicate = findNearbyPendingDuplicate_(
       sheet,
       data.reportType,
@@ -808,6 +816,37 @@ function reportSubmissionStatusKey_(clientSubmissionId) {
   return 'REPORT_SUBMISSION_' + value;
 }
 
+function claimReportSubmission_(clientSubmissionId) {
+  const key = reportSubmissionStatusKey_(clientSubmissionId);
+  if (!key) return null;
+  const cache = CacheService.getScriptCache();
+  const lock = LockService.getScriptLock();
+  lock.waitLock(5000);
+  try {
+    const raw = cache.get(key);
+    if (raw) {
+      try {
+        return JSON.parse(raw);
+      } catch (error) {
+        cache.remove(key);
+      }
+    }
+    cache.put(
+      key,
+      JSON.stringify({
+        type: 'yg-report-submission-pending',
+        pending: true,
+        clientSubmissionId: clean_(clientSubmissionId),
+        message: 'Pengiriman yang sama sedang diproses.'
+      }),
+      600
+    );
+    return null;
+  } finally {
+    lock.releaseLock();
+  }
+}
+
 function storeReportSubmissionStatus_(clientSubmissionId, result) {
   const key = reportSubmissionStatusKey_(clientSubmissionId);
   if (!key) return;
@@ -831,6 +870,72 @@ function getReportSubmissionStatus_(clientSubmissionId) {
   } catch (error) {
     return { pending: false, ok: false, message: 'Konfirmasi pengiriman tidak valid.' };
   }
+}
+
+function parseMonitoringObjectMetadata_(value) {
+  if (!value) return {};
+  if (typeof value === 'object') return value;
+  try {
+    const parsed = JSON.parse(value);
+    return parsed && typeof parsed === 'object' && !Array.isArray(parsed)
+      ? parsed
+      : {};
+  } catch (error) {
+    return {};
+  }
+}
+
+function monitoringPermanentObjectId_(targetProperties, proposedChanges, fallback) {
+  const target = parseMonitoringObjectMetadata_(targetProperties);
+  const changes = parseMonitoringObjectMetadata_(proposedChanges);
+  return clean_(
+    target.Object_ID || target.OBJECT_ID || target.objectId ||
+    target.Target_Object_ID_Current || changes.Target_Object_ID_Current ||
+    changes.Target_Object_ID || changes.targetObjectId || fallback
+  );
+}
+
+function monitoringDateKey_(value) {
+  if (value instanceof Date && !isNaN(value.getTime())) {
+    return Utilities.formatDate(value, Session.getScriptTimeZone(), 'yyyy-MM-dd');
+  }
+  const text = clean_(value);
+  let match = text.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+  if (match) {
+    return match[1] + '-' + ('0' + match[2]).slice(-2) + '-' + ('0' + match[3]).slice(-2);
+  }
+  match = text.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})/);
+  if (match) {
+    return match[3] + '-' + ('0' + match[2]).slice(-2) + '-' + ('0' + match[1]).slice(-2);
+  }
+  return text;
+}
+
+function findSameDayMonitoringDuplicates_(sheet, data) {
+  if (clean_(data.reportType) !== 'Monitoring') return [];
+  const targetObjectId = monitoringPermanentObjectId_(
+    data.targetFeatureProperties,
+    data.proposedChanges,
+    data.targetObjectId
+  );
+  const activityDate = monitoringDateKey_(data.activityDate);
+  if (!targetObjectId || !activityDate || sheet.getLastRow() < 2) return [];
+
+  return sheet.getRange(2, 1, sheet.getLastRow() - 1, 32).getValues()
+    .filter(function(row) {
+      if (clean_(row[1]) !== 'Monitoring') return false;
+      const existingTarget = monitoringPermanentObjectId_(row[30], row[31], '');
+      return existingTarget === targetObjectId && monitoringDateKey_(row[13]) === activityDate;
+    })
+    .slice(-5)
+    .map(function(row) {
+      return {
+        reportId: clean_(row[0]),
+        activityDate: activityDate,
+        reporter: clean_(row[3]),
+        status: clean_(row[21])
+      };
+    });
 }
 
 function getPendingDuplicateCandidates_(requestedLayerId) {
@@ -1512,6 +1617,23 @@ function buildStoredProposedChanges_(data) {
       )
     };
     stored.Duplikat_Dikonfirmasi_Pelapor =
+      Boolean(data.duplicateCheckAcknowledged);
+  }
+  if (
+    data.monitoringDuplicateCandidates &&
+    Array.isArray(data.monitoringDuplicateCandidates) &&
+    data.monitoringDuplicateCandidates.length
+  ) {
+    stored.Potensi_Duplikat_Monitoring = {
+      targetObjectId: monitoringPermanentObjectId_(
+        data.targetFeatureProperties,
+        data.proposedChanges,
+        data.targetObjectId
+      ),
+      activityDate: monitoringDateKey_(data.activityDate),
+      candidates: data.monitoringDuplicateCandidates.slice(0, 5)
+    };
+    stored.Duplikat_Monitoring_Dikonfirmasi_Pelapor =
       Boolean(data.duplicateCheckAcknowledged);
   }
 
@@ -2200,6 +2322,19 @@ function validateIncomingPayload_(data) {
       throw new Error(
         'Objek lama, atribut baru, dan catatan perbaikan wajib diisi.'
       );
+    }
+  }
+
+  if (data.reportType === 'Monitoring') {
+    if (
+      !clean_(data.targetLayerId) ||
+      !clean_(data.targetObjectId) ||
+      !clean_(data.targetFeatureProperties)
+    ) {
+      throw new Error('Monitoring wajib terhubung ke satu objek WebGIS yang dipilih.');
+    }
+    if (!clean_(data.activityDate)) {
+      throw new Error('Tanggal kegiatan monitoring wajib diisi.');
     }
   }
 

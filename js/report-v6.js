@@ -53,6 +53,7 @@
   var newPointReferenceGroup = null;
   var newPointReferenceCandidates = [];
   var nearbyDuplicateCandidates = [];
+  var monitoringDuplicateCandidates = [];
   var newPointReferenceSequence = 0;
   var activeObjectsPromise = null;
   var deepLinkSelectionPending = Boolean(
@@ -429,6 +430,74 @@
     });
 
     return communityDataPromise;
+  }
+
+  function parseObject(value){
+    if(!value) return {};
+    if(typeof value === 'object') return value;
+    try{return JSON.parse(value);}catch(error){return {};}
+  }
+
+  function monitoringObjectIdFromProperties(properties,fallback){
+    var p = parseObject(properties);
+    return String(
+      p.Object_ID || p.OBJECT_ID || p.objectId || p.Target_Object_ID_Current ||
+      fallback || ''
+    ).trim();
+  }
+
+  function monitoringDateKey(value){
+    var text = String(value || '').trim();
+    var iso = text.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+    if(iso) return iso[1] + '-' + String(iso[2]).padStart(2,'0') + '-' + String(iso[3]).padStart(2,'0');
+    var dayFirst = text.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})/);
+    if(dayFirst) return dayFirst[3] + '-' + String(dayFirst[2]).padStart(2,'0') + '-' + String(dayFirst[1]).padStart(2,'0');
+    return text;
+  }
+
+  function findMonitoringDuplicates(data,activityDate){
+    if(!selectedCorrectionFeature) return [];
+    var targetId = monitoringObjectIdFromProperties(
+      selectedCorrectionFeature.feature && selectedCorrectionFeature.feature.properties,
+      selectedCorrectionFeature.objectId
+    );
+    var dateKey = monitoringDateKey(activityDate);
+    if(!targetId || !dateKey) return [];
+    return (data && Array.isArray(data.features) ? data.features : []).filter(function(feature){
+      var p = feature && feature.properties || {};
+      if(String(p.reportType || '').toLowerCase() !== 'monitoring') return false;
+      var reportTarget = monitoringObjectIdFromProperties(
+        p.targetFeatureProperties,
+        p.Target_Object_ID_Current || p.Target_Object_ID || p.targetObjectId
+      );
+      return reportTarget === targetId && monitoringDateKey(p.activityDate) === dateKey;
+    }).map(function(feature){
+      var p = feature.properties || {};
+      return{
+        reportId:String(p.reportId || ''),
+        activityDate:String(p.activityDate || ''),
+        reporter:String(p.name || p.reporter || p.organization || ''),
+        status:String(p.status || '')
+      };
+    });
+  }
+
+  async function confirmSameDayMonitoring(){
+    monitoringDuplicateCandidates = [];
+    if(selectedType !== 'Monitoring' || !selectedCorrectionFeature) return true;
+    try{
+      var data = await loadCommunityReports();
+      monitoringDuplicateCandidates = findMonitoringDuplicates(data,value('activity-date'));
+    }catch(error){
+      return true;
+    }
+    if(!monitoringDuplicateCandidates.length) return true;
+    var targetName = value('location-name') || 'objek ini';
+    return window.confirm(
+      'Sudah ada ' + monitoringDuplicateCandidates.length +
+      ' laporan monitoring untuk "' + targetName +
+      '" pada tanggal yang sama.\n\nPilih OK hanya jika ini kunjungan/laporan berbeda. Pilih Batal jika laporan terkirim dua kali.'
+    );
   }
 
   function jsonpRequest(url, prefix){
@@ -1003,6 +1072,8 @@
     };
 
     if(selectedType === 'Monitoring' && previousObjectId !== nextObjectId){
+      monitoringDuplicateCandidates = [];
+      loadCommunityReports().catch(function(){});
       ['monitoring-dead','monitoring-alive','monitoring-survival','monitoring-area']
         .forEach(function(id){
           var input = document.getElementById(id);
@@ -2994,7 +3065,7 @@
     });
   }
 
-  form.addEventListener('submit',function(event){
+  form.addEventListener('submit',async function(event){
     event.preventDefault();
 
     if(imagesProcessing || capacityDocumentsProcessing){
@@ -3205,6 +3276,14 @@
     }
 
     if(selectedType === 'Monitoring'){
+      if(!selectedCorrectionFeature){
+        alert('Pilih objek WebGIS yang akan dimonitor.');
+        return;
+      }
+      if(!value('activity-date')){
+        alert('Isi tanggal kegiatan monitoring.');
+        return;
+      }
       updateAutomaticPlantCounts();
       var monitorDataValidation = collectMonitoringData();
       if(!monitorDataValidation.monitoringType){
@@ -3273,6 +3352,7 @@
         if(!monitorDataValidation.treeRecords.length){alert('Tambahkan minimal satu data pohon PUP.');return;}
         if(updatePupTreeSummary().length){alert('ID pohon PUP harus unik dalam satu laporan. Periksa ID duplikat.');return;}
       }
+      if(!(await confirmSameDayMonitoring())) return;
     }
 
     if(selectedType === 'Replanting/Penyulaman Mangrove'){
@@ -3484,10 +3564,9 @@
       plantingParticipantsYouth:plantingDetails.youthParticipants,
       plantingParticipantsYoungWomen:plantingDetails.youngWomenParticipants,
       plantingParticipantGroups:plantingDetails.participantGroups,
-      duplicateCheckAcknowledged:selectedType === 'Titik Baru' &&
-        nearbyDuplicateCandidates.length
+      duplicateCheckAcknowledged:selectedType === 'Titik Baru' && nearbyDuplicateCandidates.length
         ? document.getElementById('confirm-nearby-duplicate').checked
-        : false,
+        : selectedType === 'Monitoring' && monitoringDuplicateCandidates.length,
       nearbyDuplicateCandidates:selectedType === 'Titik Baru'
         ? nearbyDuplicateCandidates.slice(0,5).map(function(candidate){
             return {
@@ -3496,6 +3575,9 @@
               distanceMeters:Math.round(candidate.distance)
             };
           })
+        : [],
+      monitoringDuplicateCandidates:selectedType === 'Monitoring'
+        ? monitoringDuplicateCandidates.slice(0,5)
         : [],
       supportSessionId:selectedType === 'Capacity Building'
         ? monitoringValue('capacity-session-id')

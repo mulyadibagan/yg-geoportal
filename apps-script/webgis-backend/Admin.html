@@ -56,6 +56,7 @@
     .preview-gallery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
     .preview-photo{display:block;aspect-ratio:4/3;overflow:hidden;border:1px solid var(--border);border-radius:9px;background:#eef4f1}
     .preview-photo img{width:100%;height:100%;display:block;object-fit:cover}
+    .duplicate-warning{margin:10px 0;padding:11px 13px;border:1px solid #e7a425;border-radius:10px;background:#fff6d9;color:#704d00;font-size:12px;line-height:1.5}.duplicate-warning strong{display:block;margin-bottom:3px}
     .preview-no-map{height:100%;display:grid;place-items:center;padding:20px;text-align:center;color:var(--muted);font-size:13px}
     .preview-popup h3{margin:0 0 6px;color:var(--brown);font-size:14px}.preview-popup p{margin:3px 0;font-size:11px}
     @media(max-width:1000px){.stats{grid-template-columns:repeat(3,minmax(0,1fr))}.details{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -215,6 +216,17 @@ function renderReports(){
     html += infoBox('Kontak',[report.email,report.phone].filter(Boolean).join(' / ')||'-');
     html += '</div>';
     html += '<div class="description">'+escapeHtml(report.description||'-')+'</div>';
+
+    var monitoringDuplicate = extractMonitoringDuplicate(report);
+    if(monitoringDuplicate && monitoringDuplicate.candidates.length){
+      html += '<div class="duplicate-warning"><strong>⚠️ Potensi laporan monitoring ganda</strong>'+
+        escapeHtml(
+          monitoringDuplicate.candidates.length +
+          ' laporan untuk Object_ID dan tanggal kegiatan yang sama: ' +
+          monitoringDuplicate.candidates.map(function(item){return item.reportId || '-';}).join(', ')
+        )+
+        '. Pastikan ini kunjungan berbeda sebelum dipublikasikan.</div>';
+    }
 
     if(report.oldInformation || report.proposedInformation){
       html += '<div class="details">';
@@ -635,6 +647,17 @@ function parseJsonObject(value){
   }catch(error){
     return {};
   }
+}
+
+function extractMonitoringDuplicate(report){
+  var changes = parseJsonObject(report && report.proposedChanges);
+  var warning = changes.Potensi_Duplikat_Monitoring;
+  if(!warning || typeof warning !== 'object') return null;
+  return{
+    targetObjectId:String(warning.targetObjectId || ''),
+    activityDate:String(warning.activityDate || ''),
+    candidates:Array.isArray(warning.candidates) ? warning.candidates : []
+  };
 }
 
 function reportMergedMetadata(report){
