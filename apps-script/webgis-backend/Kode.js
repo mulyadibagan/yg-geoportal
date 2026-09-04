@@ -2410,6 +2410,25 @@ function validateIncomingPayload_(data) {
         'Diameter batang rata-rata monitoring mangrove wajib diisi lebih dari 0 cm.'
       );
     }
+
+    const totalPlanted = Number(
+      targetProperties.Jumlah_Bib ||
+      targetProperties.Jumlah_Bibit ||
+      targetProperties.jumlah_bibit ||
+      targetProperties.jumlahBibit
+    );
+    const deadOrDamaged = Number(monitoring.deadOrDamagedCount);
+    if (
+      !Number.isInteger(totalPlanted) ||
+      totalPlanted <= 0 ||
+      !Number.isInteger(deadOrDamaged) ||
+      deadOrDamaged < 0 ||
+      deadOrDamaged > totalPlanted
+    ) {
+      throw new Error(
+        'Jumlah bibit wajib berasal dari polygon dan jumlah mati/rusak harus sesuai total bibit polygon.'
+      );
+    }
   }
 
   if (
@@ -2500,6 +2519,46 @@ function normalizeMangroveMonitoringTarget_(data) {
   if (permanentObjectId) {
     data.targetObjectId = permanentObjectId;
   }
+
+  let monitoring = {};
+  try {
+    monitoring = JSON.parse(data.proposedInformation || '{}');
+  } catch (error) {
+    monitoring = {};
+  }
+
+  const totalPlanted = Number(
+    targetProperties.Jumlah_Bib ||
+    targetProperties.Jumlah_Bibit ||
+    targetProperties.jumlah_bibit ||
+    targetProperties.jumlahBibit
+  );
+  const deadOrDamaged = Number(monitoring.deadOrDamagedCount);
+  if (
+    Number.isInteger(totalPlanted) &&
+    totalPlanted > 0 &&
+    Number.isInteger(deadOrDamaged) &&
+    deadOrDamaged >= 0 &&
+    deadOrDamaged <= totalPlanted
+  ) {
+    const aliveCount = totalPlanted - deadOrDamaged;
+    const survivalPercent = aliveCount / totalPlanted * 100;
+    monitoring.aliveCount = aliveCount;
+    monitoring.survivalPercent = Number(survivalPercent.toFixed(1));
+    monitoring.condition = mangroveConditionFromSurvival_(survivalPercent);
+    data.proposedInformation = JSON.stringify(monitoring);
+  }
+}
+
+function mangroveConditionFromSurvival_(survival) {
+  const value = Number(survival);
+  if (!Number.isFinite(value)) return '';
+  if (value >= 80) return 'Sangat Baik';
+  if (value >= 60) return 'Baik';
+  if (value >= 40) return 'Sedang';
+  if (value >= 20) return 'Rusak Ringan';
+  if (value > 0) return 'Rusak Berat';
+  return 'Tidak Ditemukan';
 }
 
 function validateGeometryForIncomingReport_(reportType, geometry) {

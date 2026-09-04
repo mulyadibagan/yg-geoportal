@@ -729,6 +729,15 @@
     return String(permanent || makeLegacyObjectId(feature,config)).trim();
   }
 
+  function geometryMatchKey(geometry){
+    if(!geometry) return '';
+    return JSON.stringify(geometry,function(key,value){
+      return typeof value === 'number'
+        ? Number(value.toFixed(6))
+        : value;
+    });
+  }
+
   async function loadCorrectionLayer(layerId, preferredObjectId){
     clearSelectedCorrectionFeature();
 
@@ -836,15 +845,34 @@
                 var objectId = String(
                   properties.Object_ID || properties.objectId || ''
                 ).trim();
-                var alreadyIncluded = mergedFeatures.some(function(existing){
+                var masterGeometryKey = geometryMatchKey(
+                  feature && feature.geometry
+                );
+                var existingIndex = mergedFeatures.findIndex(function(existing){
                   var existingProperties = existing && existing.properties || {};
-                  return objectId && String(
+                  var sameObjectId = objectId && String(
                     existingProperties.Object_ID ||
                     existingProperties.objectId ||
                     ''
                   ).trim() === objectId;
+                  var sameGeometry = masterGeometryKey &&
+                    geometryMatchKey(existing && existing.geometry) === masterGeometryKey;
+                  return sameObjectId || sameGeometry;
                 });
-                if(!alreadyIncluded) mergedFeatures.push(feature);
+                if(existingIndex === -1){
+                  mergedFeatures.push(feature);
+                  return;
+                }
+                var existingFeature = mergedFeatures[existingIndex] || {};
+                mergedFeatures[existingIndex] = {
+                  type:'Feature',
+                  geometry:feature.geometry || existingFeature.geometry,
+                  properties:Object.assign(
+                    {},
+                    existingFeature.properties || {},
+                    properties
+                  )
+                };
               });
               data = {type:'FeatureCollection',features:mergedFeatures};
             }
@@ -1168,9 +1196,12 @@
       district:['district','kecamatan','Kecamatan','KECAMATAN'],
       village:['village','desa','Desa','kelurahan','DESA_KELURAHAN']
     };
+    var lockToMangrovePolygon = selectedType === 'Monitoring' &&
+      config.id === 'area_mangrove';
     Object.keys(fieldMap).forEach(function(id){
       var el = document.getElementById(id);
-      if(!el || el.value.trim()) return;
+      if(!el || (!lockToMangrovePolygon && el.value.trim())) return;
+      if(lockToMangrovePolygon) el.value = '';
       var keys = fieldMap[id];
       for(var k=0;k<keys.length;k++){
         if(fp[keys[k]]){ el.value = fp[keys[k]]; break; }
@@ -2263,6 +2294,17 @@
     });
   }
 
+  function mangroveConditionFromSurvival(survival){
+    var value = Number(survival);
+    if(!Number.isFinite(value)) return '';
+    if(value >= 80) return 'Sangat Baik';
+    if(value >= 60) return 'Baik';
+    if(value >= 40) return 'Sedang';
+    if(value >= 20) return 'Rusak Ringan';
+    if(value > 0) return 'Rusak Berat';
+    return 'Tidak Ditemukan';
+  }
+
   function updateAutomaticPlantCounts(){
     var type = monitoringValue('monitoring-type');
     var isAutomatic = type === 'Penanaman Mangrove';
@@ -2271,6 +2313,7 @@
     var deadInput = document.getElementById('monitoring-dead');
     var diameterInput = document.getElementById('monitoring-diameter');
     var areaInput = document.getElementById('monitoring-area');
+    var conditionInput = document.getElementById('monitoring-condition');
     var help = document.getElementById('monitoring-plant-count-help');
 
     if(survivalInput) survivalInput.readOnly = isAutomatic;
@@ -2278,6 +2321,12 @@
     if(areaInput) areaInput.readOnly = isAutomatic;
     if(deadInput) deadInput.required = isAutomatic;
     if(diameterInput) diameterInput.required = isAutomatic;
+    if(conditionInput){
+      conditionInput.disabled = isAutomatic;
+      conditionInput.title = isAutomatic
+        ? 'Dihitung otomatis dari persentase survival'
+        : '';
+    }
 
     if(!isAutomatic){
       if(help){
@@ -2292,6 +2341,7 @@
     if(total === null || areaHa === null){
       if(survivalInput) survivalInput.value = '';
       if(aliveInput) aliveInput.value = '';
+      if(conditionInput) conditionInput.value = '';
       if(help){
         help.textContent = selectedCorrectionFeature
           ? 'Jumlah bibit atau luas tidak tersedia pada atribut objek terpilih. Pilih objek yang memiliki Jumlah_Bib dan Luas_Ha.'
@@ -2304,6 +2354,7 @@
     if(deadText === ''){
       if(survivalInput) survivalInput.value = '';
       if(aliveInput) aliveInput.value = '';
+      if(conditionInput) conditionInput.value = '';
       if(help){
         help.textContent = 'Atribut objek: ' + formatPlantCount(total) +
           ' bibit pada ' + formatAreaHa(areaHa) +
@@ -2316,6 +2367,7 @@
     if(!Number.isInteger(dead) || dead < 0 || dead > total){
       if(survivalInput) survivalInput.value = '';
       if(aliveInput) aliveInput.value = '';
+      if(conditionInput) conditionInput.value = '';
       if(help){
         help.textContent = 'Jumlah mati/rusak harus bilangan bulat antara 0 dan ' +
           formatPlantCount(total) + '.';
@@ -2329,11 +2381,16 @@
     if(survivalInput){
       survivalInput.value = survival.toFixed(1).replace(/\.0$/,'');
     }
+    if(conditionInput){
+      conditionInput.value = mangroveConditionFromSurvival(survival);
+    }
     if(help){
+      var automaticCondition = mangroveConditionFromSurvival(survival);
       help.textContent = 'Atribut objek: ' + formatAreaHa(areaHa) +
         ' ha · ' + formatPlantCount(total) + ' bibit − ' +
         formatPlantCount(dead) + ' mati/rusak = ' +
-        formatPlantCount(alive) + ' hidup.';
+        formatPlantCount(alive) + ' hidup. Kondisi otomatis: ' +
+        automaticCondition + '.';
     }
     return true;
   }
@@ -3249,12 +3306,23 @@
       ['Polygon','MultiPolygon'].indexOf(geometryType) !== -1;
     var context = document.getElementById('mangrove-monitoring-context');
     var typeInput = document.getElementById('monitoring-type');
+    var conditionInput = document.getElementById('monitoring-condition');
+    var conditionLabel = document.getElementById('monitoring-condition-label');
     if(context) context.hidden = !active;
     if(!active){
       if(typeInput){
         typeInput.disabled = false;
         typeInput.title = '';
       }
+      if(conditionInput){
+        conditionInput.disabled = false;
+        conditionInput.title = '';
+      }
+      if(conditionLabel) conditionLabel.textContent = 'Kondisi umum *';
+      ['province','regency','district','village','location-name'].forEach(function(id){
+        var input = document.getElementById(id);
+        if(input) input.readOnly = false;
+      });
       mangroveHistorySequence += 1;
       selectedMangrovePreviousMonitoring = null;
       updateMangroveComparisons();
@@ -3268,6 +3336,11 @@
       typeInput.disabled = true;
       typeInput.title = 'Ditentukan otomatis dari polygon Area Penanaman Mangrove';
     }
+    if(conditionLabel) conditionLabel.textContent = 'Kondisi umum otomatis *';
+    ['province','regency','district','village','location-name'].forEach(function(id){
+      var input = document.getElementById(id);
+      if(input) input.readOnly = true;
+    });
     var titleNode = document.getElementById('mangrove-context-title');
     var idNode = document.getElementById('mangrove-context-object-id');
     var detailsNode = document.getElementById('mangrove-context-details');
@@ -3278,6 +3351,7 @@
       ['Fase',mangroveProperty(properties,['Ket','Keterangan','Phase','Fase'])],
       ['Tahun',mangroveProperty(properties,['Tahun','Year'])],
       ['Luas',formatMonitoringNumber(mangroveProperty(properties,['Luas_Ha','luas_ha','areaHa']),'ha')],
+      ['Jumlah bibit',formatMonitoringNumber(mangroveProperty(properties,['Jumlah_Bib','Jumlah_Bibit','jumlah_bibit','jumlahBibit']),'batang')],
       ['Donor',mangroveProperty(properties,['Donor','Nama_Donor','Donor_Cluster'])]
     ].filter(function(item){ return item[1] && item[1] !== '—'; });
     if(detailsNode){
