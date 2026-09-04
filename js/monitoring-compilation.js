@@ -120,7 +120,7 @@
     return values.some(function(value){return /monitoring|pemantauan/i.test(String(value||''));});
   }
   function reportType(p,m){
-    var id=String(p.targetLayerId||m.monitoringType||p.targetLayerLabel||'').toLowerCase();
+    var id=[p.targetLayerId,m.monitoringType,p.targetLayerLabel].map(function(value){return String(value||'');}).join(' ').toLowerCase();
     if(id==='fdrs'||/water|muka air|fdrs/.test(id))return'Tinggi Muka Air/FDRS';
     if(/restorasi.*hutan|imbo putuih/.test(id))return'Restorasi Hutan';
     if(/restorasi.*gambut/.test(id))return'Restorasi Gambut';
@@ -493,7 +493,8 @@
   });
 
   var saved=null;
-  var requestedType=new URLSearchParams(location.search).get('type')||'';
+  var requestedTypeParam=new URLSearchParams(location.search).get('type')||'';
+  var requestedType=requestedTypeParam?reportType({},{monitoringType:requestedTypeParam}):'';
   var storageKey=requestedType?'monitoring-compilation:'+String(requestedType).toLowerCase().replace(/[^a-z0-9]+/g,' ').trim():'monitoring-compilation';
   try{saved=JSON.parse(sessionStorage.getItem(storageKey)||'null');}catch(e){}
   if(requestedType){

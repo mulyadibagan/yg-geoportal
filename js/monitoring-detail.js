@@ -267,7 +267,7 @@
     return isFinite(bounds[0])?bounds.map(function(v){return v.toFixed(5);}).join(''):'';
   }
   function typeOf(p,m){
-    var id=String(p.targetLayerId||m.monitoringType||p.targetLayerLabel||'').toLowerCase();
+    var id=[p.targetLayerId,m.monitoringType,p.targetLayerLabel].map(function(value){return String(value||'');}).join(' ').toLowerCase();
     if(id==='fdrs'||/water|muka air|fdrs/.test(id))return'Tinggi Muka Air/FDRS';
     if(/restorasi.*hutan|imbo putuih/.test(id))return'Restorasi Hutan';
     if(/restorasi.*gambut/.test(id))return'Restorasi Gambut';
