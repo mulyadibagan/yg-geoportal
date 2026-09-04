@@ -91,8 +91,10 @@ test("verified late-2025 profiles keep their authoritative decree and regency", 
 
   const byKey = new Map(summary.profiles.map(profile => [profile.key, profile]));
   assert.equal(byKey.get("3577.0").regency, "Kuantan Singingi");
+  assert.match(byKey.get("3577.0").signature, /kuantan singingi$/);
   assert.equal(byKey.get("3578.0").decree, "11976 TAHUN 2025");
   assert.equal(byKey.get("3579.0").regency, "Pelalawan");
+  assert.match(byKey.get("3579.0").signature, /pelalawan$/);
 });
 
 test("document completeness cards filter available and missing profiles", () => {
