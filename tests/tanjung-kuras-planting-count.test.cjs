@@ -59,5 +59,5 @@ test("monitoring form accepts the verified indicative area for Tanjung Kuras", (
     reportSource,
     /function selectedPlantingAreaHa\(\)[\s\S]*?String\(properties\[keys\[i\]\]\)\.trim\(\) !== ''/
   );
-  assert.match(reportHtml, /report-v6\.js\?v=20260903-monitoring-duplicate-guard1/);
+  assert.match(reportHtml, /report-v6\.js\?v=20260904-mangrove-polygon-auto1/);
 });

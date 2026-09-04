@@ -76,8 +76,28 @@ test("scheme summary cards are accessible directory filters", () => {
   assert.match(directory, /data-area-scheme=/);
   assert.match(directory, /aria-pressed=/);
   assert.match(directory, /schemeGrid\.addEventListener\("click"/);
-  assert.match(page, /social-forestry-directory-clickable\.css\?v=20260901-clickable-schemes1/);
-  assert.match(page, /social-forestry-directory\.js\?v=20260901-official-geometry1/);
+  assert.match(page, /social-forestry-directory-clickable\.css\?v=20260904-document-filters1/);
+  assert.match(page, /social-forestry-directory\.js\?v=20260904-document-filters1/);
   assert.match(styles, /\.psd-area-card:focus-visible/);
   assert.match(styles, /\.psd-area-card\.is-active/);
+});
+
+test("document completeness cards filter available and missing profiles", () => {
+  const directory = fs.readFileSync(path.join(root, "js/social-forestry-directory.js"), "utf8");
+  const page = fs.readFileSync(path.join(root, "social-forestry-directory.html"), "utf8");
+  const styles = fs.readFileSync(path.join(root, "css/social-forestry-directory-clickable.css"), "utf8");
+
+  ["sk", "map", "rkps", "rkt", "kups"].forEach(type => {
+    assert.match(page, new RegExp(`data-document-filter="available-${type}"`));
+    assert.match(page, new RegExp(`data-document-filter="missing-${type}"`));
+    assert.match(page, new RegExp(`<option value="available-${type}">`));
+    assert.match(page, new RegExp(`<option value="missing-${type}">`));
+  });
+  assert.match(directory, /documentStats\.addEventListener\("click"/);
+  assert.match(directory, /legalFilter\.value="approved"/);
+  assert.match(directory, /button\.classList\.toggle\("is-active",active\)/);
+  assert.match(styles, /\.psd-completeness-filter:focus-visible/);
+  assert.match(styles, /\.psd-completeness-missing\.is-active/);
+  assert.match(page, /social-forestry-directory-clickable\.css\?v=20260904-document-filters1/);
+  assert.match(page, /social-forestry-directory\.js\?v=20260904-document-filters1/);
 });
