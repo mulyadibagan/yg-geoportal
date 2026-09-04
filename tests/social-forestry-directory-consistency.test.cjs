@@ -82,6 +82,19 @@ test("scheme summary cards are accessible directory filters", () => {
   assert.match(styles, /\.psd-area-card\.is-active/);
 });
 
+test("verified late-2025 profiles keep their authoritative decree and regency", () => {
+  assert.equal(details["3577.0"].regency, "Kuantan Singingi");
+  assert.equal(details["3577.0"].bpsklVerification.sourceSheet, "Kuantan Singingi");
+  assert.equal(details["3578.0"].decree, "11976 TAHUN 2025");
+  assert.equal(details["3579.0"].regency, "Pelalawan");
+  assert.equal(details["3579.0"].bpsklVerification.sourceSheet, "Pelalawan");
+
+  const byKey = new Map(summary.profiles.map(profile => [profile.key, profile]));
+  assert.equal(byKey.get("3577.0").regency, "Kuantan Singingi");
+  assert.equal(byKey.get("3578.0").decree, "11976 TAHUN 2025");
+  assert.equal(byKey.get("3579.0").regency, "Pelalawan");
+});
+
 test("document completeness cards filter available and missing profiles", () => {
   const directory = fs.readFileSync(path.join(root, "js/social-forestry-directory.js"), "utf8");
   const page = fs.readFileSync(path.join(root, "social-forestry-directory.html"), "utf8");
