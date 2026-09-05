@@ -644,8 +644,8 @@
         "concession": 27160.69,
         "socialForestry": 1359.18
       },
-      "hotspot7d": 5,
-      "hotspot30d": 5,
+      "hotspot7d": 13,
+      "hotspot30d": 15,
       "hotspot90d": null,
       "hotspotYearly5y": [
         {
@@ -5687,7 +5687,7 @@
         "socialForestry": 592.24
       },
       "hotspot7d": 0,
-      "hotspot30d": 0,
+      "hotspot30d": 1,
       "hotspot90d": null,
       "hotspotYearly5y": [
         {
@@ -6226,8 +6226,8 @@
         "concession": 770.83,
         "socialForestry": 1350.69
       },
-      "hotspot7d": 0,
-      "hotspot30d": 0,
+      "hotspot7d": 1,
+      "hotspot30d": 2,
       "hotspot90d": null,
       "hotspotYearly5y": [
         {
@@ -9017,8 +9017,8 @@
       "VIIRS_NOAA20_NRT",
       "VIIRS_NOAA21_NRT"
     ],
-    "updatedAt": "2026-09-04T21:32:18.015Z",
-    "recentUpdatedAt": "2026-09-04T21:32:18.015Z",
+    "updatedAt": "2026-09-05T00:07:31.398Z",
+    "recentUpdatedAt": "2026-09-05T00:07:31.398Z",
     "historyUpdatedAt": "2026-08-01T05:04:04.349Z",
     "mode": "recent",
     "periodDays": [
@@ -9026,93 +9026,8 @@
       30
     ],
     "yearlyTrendYears": 6,
-    "status": "partial",
-    "skippedChunks": [
-      {
-        "source": "MODIS_NRT",
-        "start": "2026-08-06",
-        "end": "2026-08-10",
-        "error": "HTTP 500: "
-      },
-      {
-        "source": "MODIS_NRT",
-        "start": "2026-08-11",
-        "end": "2026-08-15",
-        "error": "HTTP 500: "
-      },
-      {
-        "source": "MODIS_NRT",
-        "start": "2026-08-16",
-        "end": "2026-08-20",
-        "error": "HTTP 500: "
-      },
-      {
-        "source": "MODIS_NRT",
-        "start": "2026-08-21",
-        "end": "2026-08-25",
-        "error": "HTTP 500: "
-      },
-      {
-        "source": "MODIS_NRT",
-        "start": "2026-08-26",
-        "end": "2026-08-30",
-        "error": "HTTP 500: "
-      },
-      {
-        "source": "MODIS_NRT",
-        "start": "2026-08-31",
-        "end": "2026-09-04",
-        "error": "HTTP 500: "
-      },
-      {
-        "source": "VIIRS_SNPP_NRT",
-        "start": "2026-08-06",
-        "end": "2026-08-10",
-        "error": "HTTP 500: "
-      },
-      {
-        "source": "VIIRS_SNPP_NRT",
-        "start": "2026-08-11",
-        "end": "2026-08-15",
-        "error": "HTTP 500: "
-      },
-      {
-        "source": "VIIRS_SNPP_NRT",
-        "start": "2026-08-16",
-        "end": "2026-08-20",
-        "error": "HTTP 500: "
-      },
-      {
-        "source": "VIIRS_SNPP_NRT",
-        "start": "2026-08-21",
-        "end": "2026-08-25",
-        "error": "HTTP 500: "
-      },
-      {
-        "source": "VIIRS_SNPP_NRT",
-        "start": "2026-08-26",
-        "end": "2026-08-30",
-        "error": "HTTP 500: "
-      },
-      {
-        "source": "VIIRS_SNPP_NRT",
-        "start": "2026-08-31",
-        "end": "2026-09-04",
-        "error": "HTTP 500: "
-      },
-      {
-        "source": "VIIRS_NOAA20_NRT",
-        "start": "2026-08-06",
-        "end": "2026-08-10",
-        "error": "HTTP 500: "
-      },
-      {
-        "source": "VIIRS_NOAA20_NRT",
-        "start": "2026-08-11",
-        "end": "2026-08-15",
-        "error": "HTTP 500: "
-      }
-    ],
+    "status": "complete",
+    "skippedChunks": [],
     "units": {
       "villages": 14,
       "socialForestryFeatures": 176,
