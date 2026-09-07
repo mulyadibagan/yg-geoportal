@@ -2,7 +2,11 @@
   'use strict';
   var indonesiaBounds=L.latLngBounds([[-11.2,94.5],[6.2,141.5]]);
   var map=L.map('fire-map',{preferCanvas:true,minZoom:3}).fitBounds(indonesiaBounds,{padding:[8,8]});
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'&copy; OpenStreetMap'}).addTo(map);
+  var streetBasemap=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'&copy; OpenStreetMap contributors'});
+  var satelliteBasemap=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxNativeZoom:17,maxZoom:18,attribution:'Tiles &copy; Esri'});
+  var activeBasemap=localStorage.getItem('yg-fire-basemap')==='street'?'street':'satellite';
+  (activeBasemap==='street'?streetBasemap:satelliteBasemap).addTo(map);
+  function setBasemap(kind){kind=kind==='street'?'street':'satellite';map.removeLayer(kind==='street'?satelliteBasemap:streetBasemap);(kind==='street'?streetBasemap:satelliteBasemap).addTo(map);activeBasemap=kind;localStorage.setItem('yg-fire-basemap',kind)}
   map.createPane('satellitePane');map.getPane('satellitePane').style.zIndex=205;
   map.createPane('smokePane');map.getPane('smokePane').style.zIndex=360;
   map.createPane('rainPane');map.getPane('rainPane').style.zIndex=410;map.getPane('rainPane').style.pointerEvents='none';
@@ -277,13 +281,15 @@
   Promise.all([fetch('data/desa_intervensi.geojson').then(function(r){return r.json()}),fetch('data/village-forest-analytics.json').then(function(r){return r.json()}),fetch('data/hotspot-high-confidence.geojson?v='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw Error('hotspot');return r.json()}),fetch('data/indonesia-boundary.geojson').then(function(r){if(!r.ok)throw Error('batas daratan');return r.json()}),pointLayer('data/fdrs.geojson',groups.fdrs,'fdrs','FDRS'),pointLayer('data/sekat_kanal.geojson',groups.canals,'canal','Sekat kanal'),loadWeather(),loadAerosol(),loadSurfaceObservations(),loadTransportWeather(),loadEnsembleWeather(),loadValidationStatus()]).then(function(v){villageGeo=v[0];analytics=v[1];hotspotGeo=v[2];var landFeature=v[3]&&v[3].features&&v[3].features[0],before=(hotspotGeo.features||[]).length;if(landFeature&&landFeature.geometry){hotspotGeo.features=(hotspotGeo.features||[]).filter(function(f){return f.geometry&&pointInGeometry(f.geometry.coordinates,landFeature.geometry)});hotspotGeo.offshoreFiltered=before-hotspotGeo.features.length}document.getElementById('kpi-fdrs').textContent=v[4];document.getElementById('kpi-canals').textContent=v[5];renderSurfaceObservations();updateHotspotFreshness();refreshHotspots();renderSmoke()}).catch(function(){hotspotStatusText='Data hotspot gagal dimuat';document.getElementById('data-status').textContent=hotspotStatusText;document.getElementById('updated-at').textContent='Periksa koneksi atau pembaruan FIRMS';renderSmoke()});
   document.getElementById('period-control').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;period=Number(b.dataset.period);this.querySelectorAll('button').forEach(function(x){x.classList.toggle('active',x===b)});document.getElementById('kpi-period').textContent=b.textContent+' · buka analisis →';refreshHotspots();renderSmoke()});
   document.querySelectorAll('[data-layer]').forEach(function(c){c.addEventListener('change',function(){setLayerChecked(c.dataset.layer,c.checked);updateZoomDeclutter()})});
+  var basemapSelect=document.getElementById('fire-basemap');if(basemapSelect){basemapSelect.value=activeBasemap;basemapSelect.addEventListener('change',function(){setBasemap(basemapSelect.value)})}
   document.querySelectorAll('[data-product]').forEach(function(b){b.addEventListener('click',function(){selectProduct(b.dataset.product)})});
   document.querySelectorAll('[data-analysis-scope]').forEach(function(card){function openAnalysis(){location.href='hotspot-analysis.html?scope='+encodeURIComponent(card.dataset.analysisScope)+'&period='+period+'&date='+encodeURIComponent(observationDate)}card.addEventListener('click',openAnalysis);card.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();openAnalysis()}})});
   dateInput.addEventListener('change',function(){if(dateInput.value){if(dateInput.value>currentDate)dateInput.value=currentDate;updateObservationDate(dateInput.value);refreshHotspots();renderSmoke()}});updateObservationDate(observationDate);
   document.getElementById('zoom-id').onclick=function(){map.fitBounds(indonesiaBounds,{padding:[8,8]})};
   document.getElementById('zoom-yg').onclick=function(){if(ygBounds&&ygBounds.isValid())map.fitBounds(ygBounds.pad(.08))};
-  window.addEventListener('yg:languagechange',function(){updateStaticLanguage();renderSmoke()});
+  function updateBasemapLanguage(){var en=smokeEnglish(),heading=document.getElementById('basemap-heading'),satellite=document.getElementById('basemap-satellite-label'),street=document.getElementById('basemap-street-label');if(heading)heading.textContent=en?'Base map':'Peta dasar';if(satellite)satellite.textContent=en?'Satellite':'Satelit';if(street)street.textContent=en?'Street map':'Peta jalan'}
+  window.addEventListener('yg:languagechange',function(){updateStaticLanguage();updateBasemapLanguage();renderSmoke()});
   map.on('moveend',updateSourceVisibility);map.on('zoomend',updateZoomDeclutter);
-  setupPanelToggles();updateStaticLanguage();updateZoomDeclutter();
+  setupPanelToggles();updateStaticLanguage();updateBasemapLanguage();updateZoomDeclutter();
   var windLevel=document.getElementById('wind-level');if(windLevel)windLevel.onchange=function(e){var note=document.getElementById('map-message');if(e.target.value==='800'){note.hidden=false;note.textContent='Data angin 2.500 kaki belum tersedia; peta tetap menampilkan angin permukaan agar tidak memberi visual yang keliru.';e.target.value='10';setTimeout(function(){note.hidden=true},5000)}};
 })();

@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="css/style.css?v=20260723-revert-layout">
   <link rel="stylesheet" href="css/language-switcher.css?v=20260721-all-pages1">
   <link rel="stylesheet" href="css/navigation-v2.css?v=20260807-mobile-submenu-links1">
-  <link rel="stylesheet" href="css/fire-weather.css?v=20260826-radar-fix1">
+  <link rel="stylesheet" href="css/fire-weather.css?v=20260907-satellite-basemap1">
   <style>.fw-hotspot-source-head{margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}.fw-hotspot-source-tools{display:grid;gap:7px;margin:0 0 10px}.fw-hotspot-source-scroll{max-height:none;overflow:visible;padding-right:0}.fw-hotspot-source-scroll .fw-alert-card{padding:7px 8px;margin-bottom:5px}.fw-hotspot-source-scroll .fw-source-main{display:flex;align-items:center;justify-content:space-between;gap:8px}.fw-hotspot-source-scroll .fw-source-main strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.fw-hotspot-source-scroll .fw-source-main b{flex:none;color:var(--red);font-size:12px}.fw-hotspot-source-scroll small{display:block;margin-top:2px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.fw-hotspot-source-more{width:100%;padding:8px;border:1px solid var(--green);border-radius:9px;background:#fff;color:var(--green);font-weight:800;cursor:pointer}.fw-hotspot-source-more[hidden]{display:none}.fw-iuphhk-head{margin-top:18px;padding-top:14px;border-top:1px solid var(--line)}.fw-iuphhk-summary{margin:0 0 8px;color:var(--muted);font-size:12px}.fw-iuphhk-note{display:block;margin-top:6px;color:var(--muted);font-size:10px;line-height:1.35}</style>
   <style>.fw-kpis{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}.fw-kpi-link{cursor:pointer;transition:border-color .16s,transform .16s,box-shadow .16s}.fw-kpi-link:hover,.fw-kpi-link:focus{border-color:var(--green);box-shadow:0 5px 16px #0f72551a;transform:translateY(-1px);outline:none}</style>
   <link rel="stylesheet" href="css/fire-weather-national.css?v=20260805-infra-fs1">
@@ -73,6 +73,7 @@
       <aside class="fw-controls" aria-label="Kontrol peta">
         <div class="fw-control-group"><h2>Periode deteksi satelit</h2><div class="segmented" id="period-control"><button class="active" data-period="1">24 jam</button><button data-period="7">7 hari berulang</button><button data-period="30">30 hari</button></div><p class="control-note" id="period-note">Deteksi bukan status api saat ini. Periode 24 jam dapat membentuk koridor dukungan transport; 7 hari hanya sumber berulang; 30 hari tanpa koridor.</p></div>
         <div class="fw-control-group"><h2>Layer peta</h2>
+          <div class="fw-basemap-control"><label id="basemap-heading" for="fire-basemap">Peta dasar</label><select id="fire-basemap"><option id="basemap-satellite-label" value="satellite" selected>Satelit</option><option id="basemap-street-label" value="street">Peta jalan</option></select></div>
           <label><input type="checkbox" data-layer="hotspots" checked> Hotspot interaktif confidence tinggi</label>
           <label><input type="checkbox" data-layer="satellite"> Citra satelit MODIS</label>
           <label><input type="checkbox" data-layer="villages" checked> Desa intervensi & risiko</label>
@@ -108,7 +109,7 @@
   <script src="js/i18n.js?v=20260811-remove-current-detection1"></script>
   <script src="js/navigation-v2.js?v=20260807-mobile-menu-fix2"></script>
   <script src="js/smoke-transport-model.js?v=20260811-recurrence1"></script>
-  <script src="js/fire-weather.js?v=20260831-pbph1"></script>
+  <script src="js/fire-weather.js?v=20260907-satellite-basemap1"></script>
   <script src="js/fire-monthly-summary.js?v=20260825-index3"></script>
 </body>
 </html>

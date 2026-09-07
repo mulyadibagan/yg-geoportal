@@ -33,6 +33,11 @@ test("page labels the GEFS corridor product and wires the controller", () => {
   assert.match(html, /Model GEFS eksperimental/);
   assert.match(html, /Potensi sebaran kabut asap · eksperimental/);
   assert.match(html, /data-layer="smoke" checked/);
+  assert.match(html, /id="fire-basemap"/);
+  assert.match(html, /value="satellite" selected>Satelit/);
+  assert.match(controller, /World_Imagery\/MapServer\/tile/);
+  assert.match(controller, /localStorage\.getItem\('yg-fire-basemap'\)/);
+  assert.match(controller, /function setBasemap/);
   assert.match(html, /data-layer="surface" checked/);
   assert.match(controller, /smoke:L\.layerGroup\(\)\.addTo\(map\)/);
   assert.doesNotMatch(html, /data-layer="dispersion"/);
