@@ -49,6 +49,15 @@ const kph = await request("/references/kph_2019_riau.geojson");
 if (kph.response.status !== 200 || kph.response.headers.get("x-yg-data-source") !== "r2") {
   throw new Error("KPH Riau reference did not come from R2");
 }
+
+const liberica = await request("/research/liberica-morphology-2026.json");
+if (liberica.response.status !== 200 || liberica.response.headers.get("x-yg-data-source") !== "r2") {
+  throw new Error("Liberica research dataset did not come from R2");
+}
+if (!Array.isArray(liberica.data?.observations) || liberica.data.observations.length !== 60 ||
+    !Array.isArray(liberica.data?.populations) || liberica.data.populations.length !== 6) {
+  throw new Error("Liberica research dataset has an invalid record count");
+}
 if (!Array.isArray(kph.data?.features) || kph.data.features.length !== 1382) {
   throw new Error("KPH Riau reference feature count mismatch");
 }
