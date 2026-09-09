@@ -123,6 +123,19 @@
       count: null,
       type: "village_boundary",
       section: "administrative"
+    },
+    upt_faperta_ur: {
+      id: "upt_faperta_ur",
+      label: "UPT Kebun Percobaan Faperta UR",
+      file: "data/faperta-ur-site.geojson?v=20260910-1",
+      color: "#b7791f",
+      count: 3,
+      type: "agriculture_site",
+      focusOnEnable: true,
+      section: "partnership",
+      sourceLabel: "UPT Faperta Universitas Riau — SHP 9 September 2026",
+      scale: "WGS 84 · 3 polygon operasional",
+      policyUrl: "faperta-ur.html"
     }
   };
 
@@ -2424,12 +2437,16 @@ L.control.scale({
     const administrativeLayerIds = Object.keys(REFERENCE_LAYERS).filter(layerId =>
       REFERENCE_LAYERS[layerId].section === "administrative"
     );
+    const partnershipLayerIds = Object.keys(REFERENCE_LAYERS).filter(layerId =>
+      REFERENCE_LAYERS[layerId].section === "partnership"
+    );
     const referenceLayerIds = Object.keys(REFERENCE_LAYERS).filter(layerId =>
-      REFERENCE_LAYERS[layerId].section !== "administrative"
+      !["administrative", "partnership"].includes(REFERENCE_LAYERS[layerId].section)
     );
 
     appendReferenceSection("BATAS ADMINISTRASI", administrativeLayerIds);
     appendReferenceSection("DATA REFERENSI", referenceLayerIds);
+    appendReferenceSection("KOLABORASI AKADEMIK", partnershipLayerIds);
 
     const programTitle = document.createElement("div");
     programTitle.className = "yg-layer-section-title yg-program-title";
@@ -2653,7 +2670,7 @@ L.control.scale({
     return true;
   }
 
-  function applyInitialDashboardLink() {
+  async function applyInitialDashboardLink() {
     const params = new URLSearchParams(window.location.search);
     const objectId = String(params.get("object") || "").trim();
     const layerId = String(params.get("layer") || "").trim();
@@ -2662,6 +2679,22 @@ L.control.scale({
     const village = String(params.get("village") || "").trim();
     const search = String(params.get("search") || "").trim();
     const donor = String(params.get("donor") || "").trim().toLowerCase();
+
+    if (layerId && REFERENCE_LAYERS[layerId]) {
+      try {
+        const referenceLayer = await loadReferenceLayer(layerId);
+        if (referenceLayer && !map.hasLayer(referenceLayer)) referenceLayer.addTo(map);
+        const checkbox = document.getElementById("layer-" + layerId);
+        if (checkbox) checkbox.checked = true;
+        const bounds = referenceLayer && referenceLayer.getBounds();
+        if (bounds && bounds.isValid()) {
+          map.fitBounds(bounds, { padding: [30, 30], maxZoom: 17 });
+        }
+        return;
+      } catch (error) {
+        console.warn("Tautan layer referensi gagal dibuka:", layerId, error);
+      }
+    }
 
     if (objectId) {
       const normalizedObjectId = normalizedMatchValue(objectId);
