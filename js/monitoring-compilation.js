@@ -46,6 +46,9 @@
     'YG-20260713-202057-344':{aliveCount:10200,deadOrDamagedCount:0},
     'YG-20260826-135016-915':{aliveCount:600,deadOrDamagedCount:0}
   };
+  var REPORT_PHASE_OVERRIDES={
+    'YG-20260819-192001-579':'Fase II'
+  };
 
   function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
   function numberFormat(v){
@@ -185,6 +188,7 @@
     var reporter=firstText(p,['name','namaPelapor','nama_pelapor','pelapor','reporter','reporterName','createdBy','authorName','submittedBy','submitterName','fullName','namaLengkap','organization'])||firstText(m,['reporter','name','namaPelapor','pelapor','createdBy','authorName','nama','petugas']);
     var donor=firstText(p,['Donor','Donor_Cluster','Nama_Donor','Funding_Source','donor'])||firstText(target,['Donor','Donor_Cluster','Nama_Donor','Funding_Source','donor']);
     var phase=phaseOf(p)||phaseOf(target);
+    phase=REPORT_PHASE_OVERRIDES[String(p.reportId||p.Source_Report_ID||'').trim()]||phase;
     var condition=String(m.condition||p.condition||p.description||'').toLowerCase();
     var status=/rusak berat|hilang|kritis|tindak lanjut|kering parah|gagal/.test(condition)?{key:'masalah',label:'Perlu tindak lanjut'}:/sedang|rusak ringan|pantau|waspada|abrasi|hama/.test(condition)?{key:'waspada',label:'Perlu dipantau'}:{key:'baik',label:m.condition||p.condition||'Baik/normal'};
     var objectCode=String(target.Object_ID||target.OBJECT_ID||target.objectId||p.Object_ID||p.targetObjectId||'').trim();

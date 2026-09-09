@@ -157,3 +157,12 @@ test("monitoring compilation maps donor, village, and planting phase clusters", 
   assert.match(source, /RINGKASAN HASIL KLASTER/);
   assert.match(source, /Hanya laporan terbaru setiap objek/);
 });
+
+test("Kelapa Pati monitoring dated 19 August is classified as Phase II", () => {
+  const compilation = read("js/monitoring-compilation.js");
+  const monitoring = read("js/monitoring.js");
+  assert.match(compilation, /'YG-20260819-192001-579':'Fase II'/);
+  assert.match(compilation, /REPORT_PHASE_OVERRIDES\[String\(p\.reportId\|\|p\.Source_Report_ID/);
+  assert.match(monitoring, /YG-20260819-192001-579'\)return'Fase 2'/);
+  assert.match(monitoring, /verifiedMonitoringPhase\(p\.reportId\|\|p\.Source_Report_ID,phase\)/);
+});

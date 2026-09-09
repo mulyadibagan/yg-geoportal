@@ -330,6 +330,11 @@ var LEGACY_OBJECT_ALIASES={
     return'';
   }
 
+  function verifiedMonitoringPhase(reportId,phase){
+    if(String(reportId||'').trim()==='YG-20260819-192001-579')return'Fase 2';
+    return phase;
+  }
+
   function inferMonitoringDonor(p,targetProperties,type,title,village){
     var haystack=[title,village,p.locationName,p.district,p.regency,
       targetProperties.Nama_Objek,targetProperties.Kategori,type].join(' ').toLowerCase();
@@ -424,6 +429,7 @@ var LEGACY_OBJECT_ALIASES={
       firstText(targetProperties,['Donor','Donor_Cluster','Nama_Donor','Funding_Source','donor'])||masterObject.donor||
       inferMonitoringDonor(p,targetProperties,typeOf(p,m),title,village)||'';
     var phase=phaseOf(p)||phaseOf(targetProperties)||masterObject.phase||'';
+    phase=verifiedMonitoringPhase(p.reportId||p.Source_Report_ID,phase);
     if(!phase&&donor==='Aramco Asia Singapore'&&dateValue(p.activityDate||p.publishedAt)>=dateValue('2025-07-01'))phase='Fase 3';
     // Koreksi rekaman Kelapa Pati berdasarkan catatan lapangan tervalidasi:
     // 3.330 bibit, sekitar 600 mati, dan survival sekitar 82%.
