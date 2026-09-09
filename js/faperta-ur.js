@@ -2,7 +2,7 @@
   "use strict";
   const DATA_URL = "data/faperta-ur.json?v=20260910-1";
   const BOUNDARY_URL = "data/faperta-ur-site.geojson?v=20260910-1";
-  const state = { data: null, boundary: null, map: null, boundaryLayer: null };
+  const state = { data: null, boundary: null, map: null, boundaryLayer: null, basemaps: {} };
   const $ = (selector) => document.querySelector(selector);
   const all = (selector) => Array.from(document.querySelectorAll(selector));
   const num = (value, digits = 2) => new Intl.NumberFormat("id-ID", { maximumFractionDigits: digits }).format(Number(value) || 0);
@@ -57,29 +57,28 @@
     });
     $("#today-tasks").innerHTML = tasks.length
       ? tasks.slice(0, 6).map((x) => `<div><strong>${x.title}</strong><small>${x.due ? x.due.toLocaleDateString("id-ID") : "Tanggal belum dihitung"}</small></div>`).join("")
-      : emptyMessage("Belum ada pekerjaan terjadwal", "Buat plot dan crop cycle, lalu hubungkan SOP resmi yang telah disetujui.");
+      : emptyMessage("Belum ada kegiatan terjadwal", "Jadwal akan tampil setelah petak, masa tanam, dan panduan budidaya resmi tersedia.");
     $("#calendar-list").innerHTML = tasks.length
-      ? tasks.map((x) => `<article><strong>${x.title}</strong><span>${x.bucket} · ${x.due ? x.due.toLocaleDateString("id-ID") : "tanpa tanggal"}</span></article>`).join("")
-      : emptyMessage("Kalender belum aktif", "Tidak ada tanggal atau dosis yang dibuat berdasarkan asumsi.");
+      ? tasks.map((x) => `<article><strong>${x.title}</strong><span>${x.bucket === "today" ? "Hari ini" : x.bucket === "overdue" ? "Terlambat" : "Akan datang"} · ${x.due ? x.due.toLocaleDateString("id-ID") : "tanggal belum tersedia"}</span></article>`).join("")
+      : emptyMessage("Jadwal belum tersedia", "Jadwal akan ditampilkan setelah tanggal tanam dan panduan resmi tersedia.");
   }
 
   function renderBlocks() {
     const byId = Object.fromEntries((state.boundary.features || []).map((x) => [x.properties.block_id, x.properties]));
     $("#block-list").innerHTML = state.data.blocks.map((block) => {
       const spatial = byId[block.id] || {};
-      const pdf = spatial.pdf_reference_area_ha;
-      return `<article><span>${block.id}</span><strong>${block.name}</strong><small>SHP: ${num(block.area_ha, 4)} ha</small><small>PDF: ${pdf ? num(pdf, 4) + " ha" : "–"}</small><button type="button" data-focus-block="${block.id}">Fokus di peta →</button></article>`;
+      return `<article><span>${block.id}</span><strong>${block.name}</strong><small>Luas terpetakan: ${num(spatial.source_area_ha || block.area_ha, 2)} hektare</small><button type="button" data-focus-block="${block.id}">Lihat di peta →</button></article>`;
     }).join("");
   }
 
   function renderCollections() {
     const d = state.data;
     const configs = [
-      ["#plots-list", d.plots, "Belum ada Plot Budidaya", "Digitasi plot dilakukan di dalam salah satu boundary blok UPT."],
-      ["#sop-list", d.sops, "Belum ada SOP resmi", "Template siap diisi setelah SOP Faperta UR diterima dan disahkan."],
-      ["#monitoring-list", d.monitoring, "Belum ada monitoring", "Form pertumbuhan, survival, OPT, kondisi, dan foto akan mengikuti crop cycle."],
-      ["#harvest-list", d.harvests, "Belum ada catatan panen", "Produktivitas akan dihitung dari hasil panen dan luas efektif plot."],
-      ["#research-list", d.research, "Belum ada Research Plot", "Struktur protokol, perlakuan, variabel, dan peneliti sudah tersedia pada skema data."]
+      ["#plots-list", d.plots, "Belum ada petak budidaya", "Petak budidaya akan ditampilkan setelah batas dan informasi tanamnya disahkan."],
+      ["#sop-list", d.sops, "Belum ada panduan budidaya", "Panduan akan ditampilkan setelah dokumen resmi Faperta UR diterima dan disahkan."],
+      ["#monitoring-list", d.monitoring, "Belum ada hasil pemantauan", "Catatan pertumbuhan, daya hidup, OPT, kondisi, dan foto akan tampil di sini."],
+      ["#harvest-list", d.harvests, "Belum ada catatan panen", "Produktivitas akan dihitung dari hasil panen dan luas efektif petak."],
+      ["#research-list", d.research, "Belum ada kegiatan penelitian", "Informasi kegiatan penelitian lapangan akan ditampilkan di bagian ini."]
     ];
     configs.forEach(([selector, rows, title, detail]) => {
       $(selector).innerHTML = rows.length ? rows.map((x) => `<article><strong>${x.name || x.title || x.id}</strong></article>`).join("") : emptyMessage(title, detail);
@@ -88,16 +87,24 @@
 
   function initMap() {
     state.map = L.map("faperta-map", { zoomControl: true }).setView([0.4822, 101.3808], 16);
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 20, attribution: "&copy; OpenStreetMap contributors" }).addTo(state.map);
+    state.basemaps.street = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 20, attribution: "&copy; OpenStreetMap contributors" });
+    state.basemaps.satellite = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", { maxZoom: 19, attribution: "Tiles &copy; Esri — Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community" });
+    state.basemaps.street.addTo(state.map);
     state.boundaryLayer = L.geoJSON(state.boundary, {
       style: { color: "#b7791f", weight: 3, fillColor: "#e5b64d", fillOpacity: .23 },
       onEachFeature(feature, layer) {
         const p = feature.properties;
-        layer.bindPopup(`<strong>${p.name}</strong><span>${p.block_id} · ${num(p.source_area_ha, 4)} ha (SHP)</span><span>Status verifikasi luas: perlu rekonsiliasi</span>`);
+        layer.bindPopup(`<strong>${p.name}</strong><span>${p.block_id} · ${num(p.source_area_ha, 2)} hektare</span><span>Area Kebun Percobaan Faperta UR</span>`);
       }
     }).addTo(state.map);
     state.map.fitBounds(state.boundaryLayer.getBounds(), { padding: [24, 24] });
     $("#fit-boundary").addEventListener("click", () => state.map.fitBounds(state.boundaryLayer.getBounds(), { padding: [24, 24] }));
+    all("[data-basemap]").forEach((button) => button.addEventListener("click", () => {
+      const selected = button.dataset.basemap;
+      Object.values(state.basemaps).forEach((layer) => state.map.removeLayer(layer));
+      state.basemaps[selected].addTo(state.map).bringToBack();
+      all("[data-basemap]").forEach((item) => item.classList.toggle("active", item === button));
+    }));
   }
 
   function bindUi() {
@@ -117,11 +124,11 @@
   async function boot() {
     try {
       const [dataResponse, boundaryResponse] = await Promise.all([fetch(DATA_URL), fetch(BOUNDARY_URL)]);
-      if (!dataResponse.ok || !boundaryResponse.ok) throw new Error("Data workspace tidak dapat dimuat.");
+      if (!dataResponse.ok || !boundaryResponse.ok) throw new Error("Informasi kebun tidak dapat dimuat.");
       [state.data, state.boundary] = await Promise.all([dataResponse.json(), boundaryResponse.json()]);
       renderSummary(); renderTasks(); renderBlocks(); renderCollections(); initMap(); bindUi();
     } catch (error) {
-      document.querySelector("main").innerHTML = `<div class="fu-empty"><span><strong>Workspace belum dapat dimuat</strong><br>${error.message}</span></div>`;
+      document.querySelector("main").innerHTML = `<div class="fu-empty"><span><strong>Informasi belum dapat ditampilkan</strong><br>${error.message}</span></div>`;
     }
   }
   boot();
