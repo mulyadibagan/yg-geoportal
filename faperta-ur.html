@@ -1,5 +1,3 @@
-[codex/faperta-public-polish-20260910 a445da5] Use public Indonesian wording for harvest quality
- 1 file changed, 1 insertion(+), 1 deletion(-)
 <!doctype html>
 <html lang="id">
 <head>
@@ -9,7 +7,7 @@
   <meta name="description" content="Informasi kebun percobaan, budidaya, pemantauan tanaman, panen, dan penelitian Fakultas Pertanian Universitas Riau.">
   <link rel="icon" href="assets/logo-yayasan-gambut.png">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="css/faperta-ur.css?v=20260910-3">
+  <link rel="stylesheet" href="css/faperta-ur.css?v=20260910-4">
 </head>
 <body>
   <header class="fu-header">
@@ -31,18 +29,18 @@
       <div class="fu-hero-meta">
         <span><strong id="metric-blocks">–</strong><small>area kebun</small></span>
         <span><strong id="metric-area">–</strong><small>hektare terpetakan</small></span>
-        <span><strong id="metric-cycles">–</strong><small>musim tanam berjalan</small></span>
+        <span id="metric-cycles-card" hidden><strong id="metric-cycles">–</strong><small>musim tanam berjalan</small></span>
       </div>
     </section>
 
-    <nav class="fu-tabs" aria-label="Menu informasi kebun">
+    <nav id="module-tabs" class="fu-tabs" aria-label="Menu informasi kebun" hidden>
       <button class="active" data-view="overview">Ringkasan</button>
-      <button data-view="plots">Plot Budidaya</button>
-      <button data-view="calendar">Jadwal Kegiatan</button>
-      <button data-view="sop">Panduan Budidaya</button>
-      <button data-view="monitoring">Pemantauan Tanaman</button>
-      <button data-view="harvest">Hasil Panen</button>
-      <button data-view="research">Kegiatan Penelitian</button>
+      <button data-view="plots" hidden>Plot Budidaya</button>
+      <button data-view="calendar" hidden>Jadwal Kegiatan</button>
+      <button data-view="sop" hidden>Panduan Budidaya</button>
+      <button data-view="monitoring" hidden>Pemantauan Tanaman</button>
+      <button data-view="harvest" hidden>Hasil Panen</button>
+      <button data-view="research" hidden>Kegiatan Penelitian</button>
     </nav>
 
     <section class="fu-view active" data-panel="overview">
@@ -54,7 +52,7 @@
           <footer><span><i class="fu-legend-swatch"></i> Area Kebun Percobaan Faperta UR</span><a href="webgis.html?layer=upt_faperta_ur">Buka peta interaktif →</a></footer>
         </article>
 
-        <aside class="fu-today">
+        <aside id="garden-activity" class="fu-today" hidden>
           <header><span>KEGIATAN KEBUN</span><h2>Kegiatan Hari Ini</h2></header>
           <div id="today-tasks" class="fu-empty"></div>
           <div class="fu-task-counts">
@@ -63,7 +61,7 @@
         </aside>
       </div>
 
-      <section class="fu-section">
+      <section id="garden-progress" class="fu-section" hidden>
         <header><div><span>KEMAJUAN KEGIATAN</span><h2>Rencana dan pelaksanaan</h2></div><small>Diperbarui mengikuti kegiatan di setiap petak</small></header>
         <div class="fu-kpis">
           <article><span>Petak aktif</span><strong id="kpi-plots">0</strong><small>Belum ada petak budidaya aktif</small></article>
@@ -89,6 +87,6 @@
   </main>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="js/faperta-ur.js?v=20260910-2"></script>
+  <script src="js/faperta-ur.js?v=20260910-3"></script>
 </body>
 </html>
