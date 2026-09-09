@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Workspace Faperta UR | YG GeoPortal</title>
+  <meta name="description" content="Workspace pemetaan, budidaya, monitoring, dan riset UPT Kebun Percobaan Fakultas Pertanian Universitas Riau.">
+  <link rel="icon" href="assets/logo-yayasan-gambut.png">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="css/faperta-ur.css?v=20260910-1">
+</head>
+<body>
+  <header class="fu-header">
+    <a class="fu-back" href="webgis.html" aria-label="Kembali ke peta WebGIS YG">← <span>WebGIS YG</span></a>
+    <div class="fu-brand" aria-label="YG bekerja sama dengan Fakultas Pertanian Universitas Riau">
+      <span class="fu-mark fu-mark--yg">YG</span><i>×</i><span class="fu-mark fu-mark--ur">UR</span>
+      <span><strong>Workspace Faperta UR</strong><small>UPT Kebun Percobaan · Universitas Riau</small></span>
+    </div>
+    <span class="fu-status"><i></i> Tahap awal</span>
+  </header>
+
+  <main class="fu-shell">
+    <section class="fu-hero">
+      <div>
+        <span class="fu-eyebrow">YG × FAKULTAS PERTANIAN UNIVERSITAS RIAU</span>
+        <h1>Monitoring budidaya berbasis plot dan siklus tanam</h1>
+        <p>Boundary UPT menjadi induk bagi plot budidaya, pekerjaan kebun, monitoring pertumbuhan, panen, dan penelitian. Struktur disiapkan untuk berkembang tanpa mengubah modul WebGIS YG lainnya.</p>
+      </div>
+      <div class="fu-hero-meta">
+        <span><strong id="metric-blocks">–</strong><small>boundary blok</small></span>
+        <span><strong id="metric-area">–</strong><small>ha dari SHP</small></span>
+        <span><strong id="metric-cycles">–</strong><small>siklus aktif</small></span>
+      </div>
+    </section>
+
+    <nav class="fu-tabs" aria-label="Menu workspace">
+      <button class="active" data-view="overview">Ringkasan</button>
+      <button data-view="plots">Plot Budidaya</button>
+      <button data-view="calendar">Pekerjaan Kebun</button>
+      <button data-view="sop">SOP Budidaya</button>
+      <button data-view="monitoring">Monitoring</button>
+      <button data-view="harvest">Panen</button>
+      <button data-view="research">Research Plot</button>
+    </nav>
+
+    <section class="fu-view active" data-panel="overview">
+      <div class="fu-layout">
+        <article class="fu-map-card">
+          <header><div><span>BOUNDARY SPASIAL UTAMA</span><h2>UPT Faperta Universitas Riau</h2></div><button id="fit-boundary" type="button">Tampilkan semua</button></header>
+          <div id="faperta-map" aria-label="Peta boundary UPT Faperta Universitas Riau"></div>
+          <footer><span><i class="fu-legend-swatch"></i> Boundary UPT dari SHP</span><a href="webgis.html?layer=upt_faperta_ur">Buka pada peta utama →</a></footer>
+        </article>
+
+        <aside class="fu-today">
+          <header><span>OPERASIONAL</span><h2>Pekerjaan Kebun Hari Ini</h2></header>
+          <div id="today-tasks" class="fu-empty"></div>
+          <div class="fu-task-counts">
+            <span><b id="count-today">0</b>Hari ini</span><span><b id="count-upcoming">0</b>Upcoming</span><span><b id="count-overdue">0</b>Overdue</span>
+          </div>
+        </aside>
+      </div>
+
+      <section class="fu-section">
+        <header><div><span>ALUR DATA</span><h2>Rencana dan realisasi</h2></div><small>Aktif setelah plot, siklus tanam, dan SOP resmi dibuat</small></header>
+        <div class="fu-kpis">
+          <article><span>Plot aktif</span><strong id="kpi-plots">0</strong><small>Belum ada plot turunan</small></article>
+          <article><span>Realisasi kegiatan</span><strong id="kpi-realization">0%</strong><small>Dari pekerjaan terjadwal</small></article>
+          <article><span>Monitoring terbaru</span><strong id="kpi-monitoring">–</strong><small>Belum ada pengamatan</small></article>
+          <article><span>Produktivitas</span><strong id="kpi-yield">–</strong><small>Belum ada panen</small></article>
+        </div>
+      </section>
+
+      <section class="fu-section">
+        <header><div><span>BOUNDARY</span><h2>Daftar blok UPT</h2></div><small>Atribut SHP ditampilkan tanpa pembulatan data sumber</small></header>
+        <div id="block-list" class="fu-block-grid"></div>
+        <div class="fu-data-note"><strong>Catatan verifikasi:</strong> angka luas pada PDF tidak seluruhnya sama dengan atribut SHP. SHP dipakai untuk operasional; perbedaan tetap ditandai sampai Faperta UR mengesahkan rekonsiliasi.</div>
+      </section>
+    </section>
+
+    <section class="fu-view" data-panel="plots"><div class="fu-page-head"><span>PLOT BUDIDAYA</span><h2>Plot turunan di dalam boundary UPT</h2><p>Setiap plot akan terikat ke satu blok, komoditas, luas/populasi, dan siklus tanam. Belum ada plot yang dibuat dari asumsi.</p></div><div id="plots-list" class="fu-empty"></div></section>
+    <section class="fu-view" data-panel="calendar"><div class="fu-page-head"><span>KALENDER OTOMATIS</span><h2>Hari Setelah Tanam (HST) dan fase tanaman</h2><p>Tugas dibuat dari tanggal tanam × versi SOP yang disahkan. Upcoming, overdue, kebutuhan bahan, serta rencana vs realisasi dihitung tanpa mengubah riwayat SOP lama.</p></div><div id="calendar-list" class="fu-empty"></div></section>
+    <section class="fu-view" data-panel="sop"><div class="fu-page-head"><span>SOP BUDIDAYA</span><h2>Template resmi dan versioning</h2><p>Dosis pupuk atau bahan tidak diisi dengan asumsi. Perhitungan baru aktif setelah komoditas, formula dosis, satuan, fase/HST, dan persetujuan Faperta UR tersedia.</p></div><div class="fu-schema-grid"><article><b>Identitas SOP</b><span>Komoditas · versi · berlaku sejak · status · approver</span></article><article><b>Tahapan</b><span>Fase · rentang HST · pekerjaan · toleransi waktu</span></article><article><b>Kebutuhan input</b><span>Dosis per tanaman/per ha · satuan · formula · catatan keselamatan</span></article><article><b>Versioning</b><span>Draft → review → approved → superseded; histori tidak ditimpa</span></article></div><div id="sop-list" class="fu-empty"></div></section>
+    <section class="fu-view" data-panel="monitoring"><div class="fu-page-head"><span>MONITORING</span><h2>Pertumbuhan, survival, OPT, kondisi, dan foto</h2><p>Pengamatan terikat ke crop cycle dan tanggal. Foto disusun sebagai timeline agar perubahan antarperiode dapat dibandingkan.</p></div><div id="monitoring-list" class="fu-empty"></div></section>
+    <section class="fu-view" data-panel="harvest"><div class="fu-page-head"><span>PANEN</span><h2>Hasil dan produktivitas</h2><p>Catatan panen menyimpan hasil kotor/bersih, grade, luas efektif, produktivitas, dan tujuan pemanfaatan.</p></div><div id="harvest-list" class="fu-empty"></div></section>
+    <section class="fu-view" data-panel="research"><div class="fu-page-head"><span>RESEARCH PLOT</span><h2>Struktur penelitian yang dapat berkembang</h2><p>Siap untuk protokol, peneliti/mahasiswa, perlakuan, variabel, sensor/IoT, cuaca, foto drone, dan indeks NDVI.</p></div><div id="research-list" class="fu-empty"></div></section>
+  </main>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/faperta-ur.js?v=20260910-1"></script>
+</body>
+</html>
