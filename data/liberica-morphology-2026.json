@@ -1,0 +1,2369 @@
+{
+  "schema_version": "1.0.0",
+  "dataset_id": "azrul-liberica-morphology-bengkalis-2026",
+  "status": "Research Dataset — Morphological Characterization, 2026",
+  "title": "Karakterisasi Morfologi Tanaman Kopi Liberika Lokal pada Beberapa Lahan Gambut di Pulau Bengkalis",
+  "species": {
+    "common_name": "Kopi Liberika",
+    "scientific_name": "Coffea liberica",
+    "family": "Rubiaceae"
+  },
+  "scope_note": "Observasi penelitian; bukan data penanaman atau restorasi program Yayasan Gambut.",
+  "coordinate_note": "Koordinat mewakili lokasi/populasi penelitian. Titik yang sama tidak ditafsirkan sebagai posisi presisi setiap pohon.",
+  "method": {
+    "period": "Februari–Maret 2026",
+    "approach": "Survei lapangan dengan purposive sampling",
+    "descriptor": "UPOV (2008)",
+    "sample_size": 60,
+    "population_count": 6
+  },
+  "source": {
+    "authors": "Azrul, M. Amrul Khoiri & Joni Irawan",
+    "institution": "Fakultas Pertanian Universitas Riau",
+    "year": 2026,
+    "document": "Laporan Azrul_2206135664 final.pdf"
+  },
+  "populations": [
+    {
+      "code": "KB1",
+      "name": "Kembung Baru 1",
+      "village": "Kembung Baru",
+      "district": "Bantan",
+      "lat": 1.444833,
+      "lon": 102.4385,
+      "dms": "1°26'41.4\"N 102°26'18.6\"E",
+      "sample_count": 10,
+      "coordinate_precision": "population"
+    },
+    {
+      "code": "KB2",
+      "name": "Kembung Baru 2",
+      "village": "Kembung Baru",
+      "district": "Bantan",
+      "lat": 1.44475,
+      "lon": 102.438944,
+      "dms": "1°26'41.1\"N 102°26'20.2\"E",
+      "sample_count": 10,
+      "coordinate_precision": "population"
+    },
+    {
+      "code": "BT",
+      "name": "Bantan Tengah",
+      "village": "Bantan Tengah",
+      "district": "Bantan",
+      "lat": 1.51225,
+      "lon": 102.303361,
+      "dms": "1°30'44.1\"N 102°18'12.1\"E",
+      "sample_count": 10,
+      "coordinate_precision": "population"
+    },
+    {
+      "code": "PN",
+      "name": "Pasiran",
+      "village": "Pasiran",
+      "district": "Bantan",
+      "lat": 1.537333,
+      "lon": 102.180111,
+      "dms": "1°32'14.4\"N 102°10'48.4\"E",
+      "sample_count": 10,
+      "coordinate_precision": "population"
+    },
+    {
+      "code": "PK1",
+      "name": "Pedekik 1",
+      "village": "Pedekik",
+      "district": "Bengkalis",
+      "lat": 1.512472,
+      "lon": 102.110361,
+      "dms": "1°30'44.9\"N 102°06'37.3\"E",
+      "sample_count": 10,
+      "coordinate_precision": "population"
+    },
+    {
+      "code": "PK2",
+      "name": "Pedekik 2",
+      "village": "Pedekik",
+      "district": "Bengkalis",
+      "lat": 1.5135,
+      "lon": 102.110639,
+      "dms": "1°30'48.6\"N 102°06'38.3\"E",
+      "sample_count": 10,
+      "coordinate_precision": "population"
+    }
+  ],
+  "statistics": {
+    "numeric": {
+      "height_cm": {
+        "min": 155.0,
+        "max": 700.0,
+        "mean": 403.43
+      },
+      "leaf_length_cm": {
+        "min": 18.0,
+        "max": 25.6,
+        "mean": 21.93
+      },
+      "leaf_width_cm": {
+        "min": 7.1,
+        "max": 11.2,
+        "mean": 9.08
+      },
+      "fruit_diameter_mm": {
+        "min": 12.9,
+        "max": 18.0,
+        "mean": 15.6
+      },
+      "fresh_100_fruit_g": {
+        "min": 243.1,
+        "max": 304.7,
+        "mean": 262.31
+      },
+      "seed_length_mm": {
+        "min": 12.5,
+        "max": 16.1,
+        "mean": 14.43
+      },
+      "seed_width_mm": {
+        "min": 7.3,
+        "max": 10.0,
+        "mean": 8.94
+      },
+      "seed_thickness_mm": {
+        "min": 5.2,
+        "max": 9.2,
+        "mean": 6.14
+      },
+      "dry_100_seed_g": {
+        "min": 37.9,
+        "max": 47.1,
+        "mean": 42.35
+      }
+    },
+    "categorical": {
+      "plant_shape": [
+        {
+          "value": "Silinder",
+          "count": 36,
+          "percent": 60.0
+        },
+        {
+          "value": "Elips",
+          "count": 12,
+          "percent": 20.0
+        },
+        {
+          "value": "Kerucut",
+          "count": 12,
+          "percent": 20.0
+        }
+      ],
+      "leaf_tip": [
+        {
+          "value": "Apiculate",
+          "count": 43,
+          "percent": 71.67
+        },
+        {
+          "value": "Runcing",
+          "count": 15,
+          "percent": 25.0
+        },
+        {
+          "value": "Bulat",
+          "count": 2,
+          "percent": 3.33
+        }
+      ],
+      "leaf_shape": [
+        {
+          "value": "Pisau pembedah",
+          "count": 59,
+          "percent": 98.33
+        },
+        {
+          "value": "Ovate",
+          "count": 1,
+          "percent": 1.67
+        }
+      ],
+      "leaf_colour": [
+        {
+          "value": "Hijau pekat",
+          "count": 53,
+          "percent": 88.33
+        },
+        {
+          "value": "Hijau",
+          "count": 6,
+          "percent": 10.0
+        },
+        {
+          "value": "Hijau pucat",
+          "count": 1,
+          "percent": 1.67
+        }
+      ],
+      "fruit_shape": [
+        {
+          "value": "Melingkar",
+          "count": 45,
+          "percent": 75.0
+        },
+        {
+          "value": "Elips",
+          "count": 8,
+          "percent": 13.33
+        },
+        {
+          "value": "Obovate",
+          "count": 7,
+          "percent": 11.67
+        }
+      ],
+      "fruit_colour": [
+        {
+          "value": "Merah tua",
+          "count": 37,
+          "percent": 61.67
+        },
+        {
+          "value": "Merah ke orangean",
+          "count": 21,
+          "percent": 35.0
+        },
+        {
+          "value": "Merah",
+          "count": 2,
+          "percent": 3.33
+        }
+      ],
+      "seed_shape": [
+        {
+          "value": "Obovate",
+          "count": 46,
+          "percent": 76.67
+        },
+        {
+          "value": "Bulat panjang",
+          "count": 14,
+          "percent": 23.33
+        }
+      ]
+    }
+  },
+  "variability": {
+    "broad": [
+      "height_cm",
+      "leaf_length_cm",
+      "fresh_100_fruit_g",
+      "dry_100_seed_g"
+    ],
+    "note": "Klasifikasi luas/sempit mengikuti analisis variabilitas fenotipik laporan; statistik ringkas di halaman dihitung ulang dari 60 record Lampiran 1."
+  },
+  "similarity": {
+    "method": "Analisis kemiripan SPSS 26",
+    "result_note": "Dendrogram menunjukkan pengelompokan morfologi antarsampel; gunakan hasil ini sebagai eksplorasi fenotipik, bukan identitas varietas final."
+  },
+  "observations": [
+    {
+      "observation_id": "LIB-2026-001",
+      "sample_number": 1,
+      "population_code": "KB1",
+      "plant_shape": "Silinder",
+      "height_cm": 520,
+      "leaf_tip": "Apiculate",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 22.7,
+      "leaf_width_cm": 10,
+      "fruit_diameter_mm": 15.6,
+      "fruit_shape": "Elips",
+      "fruit_colour": "Merah tua",
+      "fresh_100_fruit_g": 249.2,
+      "seed_length_mm": 15.7,
+      "seed_width_mm": 8.9,
+      "seed_shape": "Obovate",
+      "seed_thickness_mm": 6.3,
+      "dry_100_seed_g": 41,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/001-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-001"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/001-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-001"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-002",
+      "sample_number": 2,
+      "population_code": "KB1",
+      "plant_shape": "Silinder",
+      "height_cm": 700,
+      "leaf_tip": "Apiculate",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 19.9,
+      "leaf_width_cm": 8.1,
+      "fruit_diameter_mm": 15.6,
+      "fruit_shape": "Melingkar",
+      "fruit_colour": "Merah tua",
+      "fresh_100_fruit_g": 258.4,
+      "seed_length_mm": 16,
+      "seed_width_mm": 9.3,
+      "seed_shape": "Obovate",
+      "seed_thickness_mm": 8.6,
+      "dry_100_seed_g": 41.6,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/002-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-002"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/002-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-002"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-003",
+      "sample_number": 3,
+      "population_code": "KB1",
+      "plant_shape": "Silinder",
+      "height_cm": 510,
+      "leaf_tip": "Apiculate",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 18.8,
+      "leaf_width_cm": 9.2,
+      "fruit_diameter_mm": 15.7,
+      "fruit_shape": "Melingkar",
+      "fruit_colour": "Merah ke orangean",
+      "fresh_100_fruit_g": 246.2,
+      "seed_length_mm": 16.1,
+      "seed_width_mm": 7.9,
+      "seed_shape": "Obovate",
+      "seed_thickness_mm": 6.6,
+      "dry_100_seed_g": 40.8,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/003-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-003"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/003-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-003"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-004",
+      "sample_number": 4,
+      "population_code": "KB1",
+      "plant_shape": "Silinder",
+      "height_cm": 615,
+      "leaf_tip": "Apiculate",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau",
+      "leaf_length_cm": 21.1,
+      "leaf_width_cm": 9.5,
+      "fruit_diameter_mm": 14,
+      "fruit_shape": "Melingkar",
+      "fruit_colour": "Merah tua",
+      "fresh_100_fruit_g": 268.9,
+      "seed_length_mm": 14.5,
+      "seed_width_mm": 8.3,
+      "seed_shape": "Bulat panjang",
+      "seed_thickness_mm": 5.7,
+      "dry_100_seed_g": 41.8,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/004-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-004"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/004-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-004"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-005",
+      "sample_number": 5,
+      "population_code": "KB1",
+      "plant_shape": "Silinder",
+      "height_cm": 634,
+      "leaf_tip": "Bulat",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 24,
+      "leaf_width_cm": 10.2,
+      "fruit_diameter_mm": 15.1,
+      "fruit_shape": "Melingkar",
+      "fruit_colour": "Merah ke orangean",
+      "fresh_100_fruit_g": 253.1,
+      "seed_length_mm": 13.9,
+      "seed_width_mm": 9.2,
+      "seed_shape": "Obovate",
+      "seed_thickness_mm": 5.8,
+      "dry_100_seed_g": 42.8,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/005-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-005"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/005-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-005"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-006",
+      "sample_number": 6,
+      "population_code": "KB1",
+      "plant_shape": "Silinder",
+      "height_cm": 575,
+      "leaf_tip": "Bulat",
+      "leaf_shape": "Ovate",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 20.5,
+      "leaf_width_cm": 7.1,
+      "fruit_diameter_mm": 16.8,
+      "fruit_shape": "Melingkar",
+      "fruit_colour": "Merah tua",
+      "fresh_100_fruit_g": 289.4,
+      "seed_length_mm": 13.2,
+      "seed_width_mm": 9.1,
+      "seed_shape": "Obovate",
+      "seed_thickness_mm": 5.5,
+      "dry_100_seed_g": 40.7,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/006-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-006"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/006-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-006"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-007",
+      "sample_number": 7,
+      "population_code": "KB1",
+      "plant_shape": "Silinder",
+      "height_cm": 590,
+      "leaf_tip": "Apiculate",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 22.5,
+      "leaf_width_cm": 9.6,
+      "fruit_diameter_mm": 16,
+      "fruit_shape": "Melingkar",
+      "fruit_colour": "Merah tua",
+      "fresh_100_fruit_g": 245.8,
+      "seed_length_mm": 14.8,
+      "seed_width_mm": 8.1,
+      "seed_shape": "Obovate",
+      "seed_thickness_mm": 6.2,
+      "dry_100_seed_g": 41,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/007-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-007"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/007-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-007"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-008",
+      "sample_number": 8,
+      "population_code": "KB1",
+      "plant_shape": "Silinder",
+      "height_cm": 695,
+      "leaf_tip": "Runcing",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 23,
+      "leaf_width_cm": 8.2,
+      "fruit_diameter_mm": 16.6,
+      "fruit_shape": "Melingkar",
+      "fruit_colour": "Merah tua",
+      "fresh_100_fruit_g": 261.5,
+      "seed_length_mm": 13.8,
+      "seed_width_mm": 7.9,
+      "seed_shape": "Obovate",
+      "seed_thickness_mm": 5.5,
+      "dry_100_seed_g": 42.9,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/008-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-008"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/008-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-008"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-009",
+      "sample_number": 9,
+      "population_code": "KB1",
+      "plant_shape": "Silinder",
+      "height_cm": 539,
+      "leaf_tip": "Apiculate",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 19.3,
+      "leaf_width_cm": 9.1,
+      "fruit_diameter_mm": 18,
+      "fruit_shape": "Melingkar",
+      "fruit_colour": "Merah tua",
+      "fresh_100_fruit_g": 257.3,
+      "seed_length_mm": 15.9,
+      "seed_width_mm": 9.1,
+      "seed_shape": "Obovate",
+      "seed_thickness_mm": 5.3,
+      "dry_100_seed_g": 41.9,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/009-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-009"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/009-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-009"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-010",
+      "sample_number": 10,
+      "population_code": "KB1",
+      "plant_shape": "Silinder",
+      "height_cm": 598,
+      "leaf_tip": "Apiculate",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 21,
+      "leaf_width_cm": 9.1,
+      "fruit_diameter_mm": 15.8,
+      "fruit_shape": "Melingkar",
+      "fruit_colour": "Merah tua",
+      "fresh_100_fruit_g": 273.6,
+      "seed_length_mm": 14.6,
+      "seed_width_mm": 9.5,
+      "seed_shape": "Obovate",
+      "seed_thickness_mm": 7.3,
+      "dry_100_seed_g": 40.4,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/010-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-010"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/010-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-010"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-011",
+      "sample_number": 11,
+      "population_code": "KB2",
+      "plant_shape": "Silinder",
+      "height_cm": 610,
+      "leaf_tip": "Apiculate",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 23.4,
+      "leaf_width_cm": 9,
+      "fruit_diameter_mm": 15.9,
+      "fruit_shape": "Melingkar",
+      "fruit_colour": "Merah tua",
+      "fresh_100_fruit_g": 304.7,
+      "seed_length_mm": 14.3,
+      "seed_width_mm": 8,
+      "seed_shape": "Obovate",
+      "seed_thickness_mm": 5.4,
+      "dry_100_seed_g": 40.2,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/011-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-011"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/011-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-011"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-012",
+      "sample_number": 12,
+      "population_code": "KB2",
+      "plant_shape": "Silinder",
+      "height_cm": 526,
+      "leaf_tip": "Runcing",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau",
+      "leaf_length_cm": 22.9,
+      "leaf_width_cm": 7.7,
+      "fruit_diameter_mm": 15.6,
+      "fruit_shape": "Melingkar",
+      "fruit_colour": "Merah ke orangean",
+      "fresh_100_fruit_g": 250.8,
+      "seed_length_mm": 14.4,
+      "seed_width_mm": 8.2,
+      "seed_shape": "Obovate",
+      "seed_thickness_mm": 5.8,
+      "dry_100_seed_g": 40.9,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/012-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-012"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/012-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-012"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-013",
+      "sample_number": 13,
+      "population_code": "KB2",
+      "plant_shape": "Silinder",
+      "height_cm": 585,
+      "leaf_tip": "Runcing",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 24.2,
+      "leaf_width_cm": 11,
+      "fruit_diameter_mm": 15.8,
+      "fruit_shape": "Melingkar",
+      "fruit_colour": "Merah ke orangean",
+      "fresh_100_fruit_g": 264.4,
+      "seed_length_mm": 14.7,
+      "seed_width_mm": 8.4,
+      "seed_shape": "Obovate",
+      "seed_thickness_mm": 6.1,
+      "dry_100_seed_g": 39.6,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/013-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-013"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/013-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-013"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-014",
+      "sample_number": 14,
+      "population_code": "KB2",
+      "plant_shape": "Silinder",
+      "height_cm": 692,
+      "leaf_tip": "Runcing",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 19,
+      "leaf_width_cm": 7.8,
+      "fruit_diameter_mm": 16.3,
+      "fruit_shape": "Melingkar",
+      "fruit_colour": "Merah ke orangean",
+      "fresh_100_fruit_g": 248.3,
+      "seed_length_mm": 14.5,
+      "seed_width_mm": 8.5,
+      "seed_shape": "Obovate",
+      "seed_thickness_mm": 5.7,
+      "dry_100_seed_g": 40,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/014-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-014"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/014-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-014"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-015",
+      "sample_number": 15,
+      "population_code": "KB2",
+      "plant_shape": "Silinder",
+      "height_cm": 540,
+      "leaf_tip": "Apiculate",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau",
+      "leaf_length_cm": 25.2,
+      "leaf_width_cm": 11.1,
+      "fruit_diameter_mm": 14.9,
+      "fruit_shape": "Melingkar",
+      "fruit_colour": "Merah ke orangean",
+      "fresh_100_fruit_g": 292.7,
+      "seed_length_mm": 14.4,
+      "seed_width_mm": 8.2,
+      "seed_shape": "Obovate",
+      "seed_thickness_mm": 6.2,
+      "dry_100_seed_g": 37.9,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/015-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-015"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/015-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-015"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-016",
+      "sample_number": 16,
+      "population_code": "KB2",
+      "plant_shape": "Silinder",
+      "height_cm": 677,
+      "leaf_tip": "Runcing",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 21.4,
+      "leaf_width_cm": 9.3,
+      "fruit_diameter_mm": 14.4,
+      "fruit_shape": "Elips",
+      "fruit_colour": "Merah ke orangean",
+      "fresh_100_fruit_g": 255.9,
+      "seed_length_mm": 15.7,
+      "seed_width_mm": 7.9,
+      "seed_shape": "Bulat panjang",
+      "seed_thickness_mm": 6.5,
+      "dry_100_seed_g": 38.1,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/016-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-016"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/016-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-016"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-017",
+      "sample_number": 17,
+      "population_code": "KB2",
+      "plant_shape": "Silinder",
+      "height_cm": 668,
+      "leaf_tip": "Apiculate",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 24.2,
+      "leaf_width_cm": 8.3,
+      "fruit_diameter_mm": 17,
+      "fruit_shape": "Melingkar",
+      "fruit_colour": "Merah ke orangean",
+      "fresh_100_fruit_g": 260.2,
+      "seed_length_mm": 13.5,
+      "seed_width_mm": 9.1,
+      "seed_shape": "Obovate",
+      "seed_thickness_mm": 5.7,
+      "dry_100_seed_g": 39.5,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/017-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-017"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/017-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-017"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-018",
+      "sample_number": 18,
+      "population_code": "KB2",
+      "plant_shape": "Silinder",
+      "height_cm": 513,
+      "leaf_tip": "Apiculate",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 24.6,
+      "leaf_width_cm": 9.9,
+      "fruit_diameter_mm": 16.8,
+      "fruit_shape": "Obovate",
+      "fruit_colour": "Merah tua",
+      "fresh_100_fruit_g": 277.5,
+      "seed_length_mm": 14.2,
+      "seed_width_mm": 9.4,
+      "seed_shape": "Obovate",
+      "seed_thickness_mm": 6.1,
+      "dry_100_seed_g": 39,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/018-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-018"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/018-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-018"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-019",
+      "sample_number": 19,
+      "population_code": "KB2",
+      "plant_shape": "Silinder",
+      "height_cm": 650,
+      "leaf_tip": "Apiculate",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 22.0,
+      "leaf_width_cm": 8.8,
+      "fruit_diameter_mm": 15.5,
+      "fruit_shape": "Melingkar",
+      "fruit_colour": "Merah tua",
+      "fresh_100_fruit_g": 243.1,
+      "seed_length_mm": 15.6,
+      "seed_width_mm": 8.2,
+      "seed_shape": "Bulat panjang",
+      "seed_thickness_mm": 6.0,
+      "dry_100_seed_g": 40.8,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/019-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-019"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/019-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-019"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-020",
+      "sample_number": 20,
+      "population_code": "KB2",
+      "plant_shape": "Silinder",
+      "height_cm": 622,
+      "leaf_tip": "Runcing",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau",
+      "leaf_length_cm": 23.5,
+      "leaf_width_cm": 9,
+      "fruit_diameter_mm": 15.1,
+      "fruit_shape": "Melingkar",
+      "fruit_colour": "Merah ke orangean",
+      "fresh_100_fruit_g": 269.8,
+      "seed_length_mm": 14.2,
+      "seed_width_mm": 8.9,
+      "seed_shape": "Obovate",
+      "seed_thickness_mm": 5.9,
+      "dry_100_seed_g": 40.6,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/020-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-020"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/020-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-020"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-021",
+      "sample_number": 21,
+      "population_code": "BT",
+      "plant_shape": "Elips",
+      "height_cm": 550,
+      "leaf_tip": "Runcing",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 22.5,
+      "leaf_width_cm": 10.1,
+      "fruit_diameter_mm": 14.4,
+      "fruit_shape": "Elips",
+      "fruit_colour": "Merah ke orangean",
+      "fresh_100_fruit_g": 265.1,
+      "seed_length_mm": 14.5,
+      "seed_width_mm": 9.8,
+      "seed_shape": "Obovate",
+      "seed_thickness_mm": 6.8,
+      "dry_100_seed_g": 41.5,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/021-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-021"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/021-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-021"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-022",
+      "sample_number": 22,
+      "population_code": "BT",
+      "plant_shape": "Silinder",
+      "height_cm": 646,
+      "leaf_tip": "Apiculate",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau",
+      "leaf_length_cm": 19,
+      "leaf_width_cm": 8.2,
+      "fruit_diameter_mm": 14.9,
+      "fruit_shape": "Melingkar",
+      "fruit_colour": "Merah ke orangean",
+      "fresh_100_fruit_g": 262.1,
+      "seed_length_mm": 14.3,
+      "seed_width_mm": 9.1,
+      "seed_shape": "Obovate",
+      "seed_thickness_mm": 6,
+      "dry_100_seed_g": 40.4,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/022-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-022"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/022-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-022"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-023",
+      "sample_number": 23,
+      "population_code": "BT",
+      "plant_shape": "Silinder",
+      "height_cm": 678,
+      "leaf_tip": "Apiculate",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 25.4,
+      "leaf_width_cm": 9.5,
+      "fruit_diameter_mm": 14.1,
+      "fruit_shape": "Elips",
+      "fruit_colour": "Merah tua",
+      "fresh_100_fruit_g": 249.7,
+      "seed_length_mm": 14.7,
+      "seed_width_mm": 9.6,
+      "seed_shape": "Obovate",
+      "seed_thickness_mm": 6.4,
+      "dry_100_seed_g": 39.8,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/023-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-023"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/023-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-023"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-024",
+      "sample_number": 24,
+      "population_code": "BT",
+      "plant_shape": "Elips",
+      "height_cm": 513,
+      "leaf_tip": "Apiculate",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 23.1,
+      "leaf_width_cm": 8.1,
+      "fruit_diameter_mm": 14.8,
+      "fruit_shape": "Elips",
+      "fruit_colour": "Merah tua",
+      "fresh_100_fruit_g": 274.5,
+      "seed_length_mm": 15.4,
+      "seed_width_mm": 10,
+      "seed_shape": "Obovate",
+      "seed_thickness_mm": 6.8,
+      "dry_100_seed_g": 43.3,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/024-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-024"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/024-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-024"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-025",
+      "sample_number": 25,
+      "population_code": "BT",
+      "plant_shape": "Silinder",
+      "height_cm": 557,
+      "leaf_tip": "Apiculate",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau",
+      "leaf_length_cm": 25.1,
+      "leaf_width_cm": 11.2,
+      "fruit_diameter_mm": 14.3,
+      "fruit_shape": "Melingkar",
+      "fruit_colour": "Merah ke orangean",
+      "fresh_100_fruit_g": 251.9,
+      "seed_length_mm": 13.6,
+      "seed_width_mm": 9.4,
+      "seed_shape": "Bulat panjang",
+      "seed_thickness_mm": 5.2,
+      "dry_100_seed_g": 41.2,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/025-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-025"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/025-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-025"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-026",
+      "sample_number": 26,
+      "population_code": "BT",
+      "plant_shape": "Silinder",
+      "height_cm": 603,
+      "leaf_tip": "Apiculate",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 19.9,
+      "leaf_width_cm": 8.3,
+      "fruit_diameter_mm": 14.4,
+      "fruit_shape": "Melingkar",
+      "fruit_colour": "Merah tua",
+      "fresh_100_fruit_g": 295.6,
+      "seed_length_mm": 13.7,
+      "seed_width_mm": 9.8,
+      "seed_shape": "Bulat panjang",
+      "seed_thickness_mm": 5.9,
+      "dry_100_seed_g": 41.6,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/026-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-026"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/026-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-026"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-027",
+      "sample_number": 27,
+      "population_code": "BT",
+      "plant_shape": "Silinder",
+      "height_cm": 589,
+      "leaf_tip": "Apiculate",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 19.7,
+      "leaf_width_cm": 8.8,
+      "fruit_diameter_mm": 12.9,
+      "fruit_shape": "Elips",
+      "fruit_colour": "Merah tua",
+      "fresh_100_fruit_g": 263.8,
+      "seed_length_mm": 14.6,
+      "seed_width_mm": 10,
+      "seed_shape": "Obovate",
+      "seed_thickness_mm": 6.3,
+      "dry_100_seed_g": 39.8,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/027-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-027"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/027-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-027"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-028",
+      "sample_number": 28,
+      "population_code": "BT",
+      "plant_shape": "Elips",
+      "height_cm": 632,
+      "leaf_tip": "Apiculate",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 18.8,
+      "leaf_width_cm": 8.1,
+      "fruit_diameter_mm": 14.2,
+      "fruit_shape": "Melingkar",
+      "fruit_colour": "Merah tua",
+      "fresh_100_fruit_g": 247.2,
+      "seed_length_mm": 13.5,
+      "seed_width_mm": 9.1,
+      "seed_shape": "Obovate",
+      "seed_thickness_mm": 7.2,
+      "dry_100_seed_g": 40.8,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/028-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-028"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/028-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-028"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-029",
+      "sample_number": 29,
+      "population_code": "BT",
+      "plant_shape": "Silinder",
+      "height_cm": 574,
+      "leaf_tip": "Apiculate",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 23.9,
+      "leaf_width_cm": 8.5,
+      "fruit_diameter_mm": 16.6,
+      "fruit_shape": "Obovate",
+      "fruit_colour": "Merah ke orangean",
+      "fresh_100_fruit_g": 258.9,
+      "seed_length_mm": 14.5,
+      "seed_width_mm": 9,
+      "seed_shape": "Obovate",
+      "seed_thickness_mm": 9.2,
+      "dry_100_seed_g": 41.6,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/029-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-029"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/029-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-029"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-030",
+      "sample_number": 30,
+      "population_code": "BT",
+      "plant_shape": "Silinder",
+      "height_cm": 568,
+      "leaf_tip": "Runcing",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pucat",
+      "leaf_length_cm": 20.1,
+      "leaf_width_cm": 9.3,
+      "fruit_diameter_mm": 15.5,
+      "fruit_shape": "Melingkar",
+      "fruit_colour": "Merah tua",
+      "fresh_100_fruit_g": 266.3,
+      "seed_length_mm": 15.4,
+      "seed_width_mm": 7.7,
+      "seed_shape": "Obovate",
+      "seed_thickness_mm": 5.5,
+      "dry_100_seed_g": 40.1,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/030-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-030"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/030-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-030"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-031",
+      "sample_number": 31,
+      "population_code": "PN",
+      "plant_shape": "Silinder",
+      "height_cm": 245,
+      "leaf_tip": "Runcing",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 23.2,
+      "leaf_width_cm": 9.3,
+      "fruit_diameter_mm": 14.4,
+      "fruit_shape": "Obovate",
+      "fruit_colour": "Merah tua",
+      "fresh_100_fruit_g": 250.3,
+      "seed_length_mm": 12.7,
+      "seed_width_mm": 9.5,
+      "seed_shape": "Obovate",
+      "seed_thickness_mm": 6,
+      "dry_100_seed_g": 44.9,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/031-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-031"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/031-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-031"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-032",
+      "sample_number": 32,
+      "population_code": "PN",
+      "plant_shape": "Elips",
+      "height_cm": 210,
+      "leaf_tip": "Apiculate",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 19.6,
+      "leaf_width_cm": 7.9,
+      "fruit_diameter_mm": 13.1,
+      "fruit_shape": "Melingkar",
+      "fruit_colour": "Merah tua",
+      "fresh_100_fruit_g": 282.1,
+      "seed_length_mm": 15.4,
+      "seed_width_mm": 8,
+      "seed_shape": "Bulat panjang",
+      "seed_thickness_mm": 5.3,
+      "dry_100_seed_g": 45.4,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/032-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-032"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/032-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-032"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-033",
+      "sample_number": 33,
+      "population_code": "PN",
+      "plant_shape": "Silinder",
+      "height_cm": 289,
+      "leaf_tip": "Apiculate",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 23.1,
+      "leaf_width_cm": 10.3,
+      "fruit_diameter_mm": 15.2,
+      "fruit_shape": "Melingkar",
+      "fruit_colour": "Merah tua",
+      "fresh_100_fruit_g": 254.7,
+      "seed_length_mm": 14.9,
+      "seed_width_mm": 9.7,
+      "seed_shape": "Obovate",
+      "seed_thickness_mm": 6.1,
+      "dry_100_seed_g": 44.2,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/033-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-033"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/033-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-033"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-034",
+      "sample_number": 34,
+      "population_code": "PN",
+      "plant_shape": "Silinder",
+      "height_cm": 233,
+      "leaf_tip": "Apiculate",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 22,
+      "leaf_width_cm": 8.2,
+      "fruit_diameter_mm": 16.7,
+      "fruit_shape": "Melingkar",
+      "fruit_colour": "Merah tua",
+      "fresh_100_fruit_g": 259.2,
+      "seed_length_mm": 13.6,
+      "seed_width_mm": 9.8,
+      "seed_shape": "Obovate",
+      "seed_thickness_mm": 5.8,
+      "dry_100_seed_g": 44.5,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/034-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-034"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/034-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-034"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-035",
+      "sample_number": 35,
+      "population_code": "PN",
+      "plant_shape": "Elips",
+      "height_cm": 267,
+      "leaf_tip": "Apiculate",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 23.7,
+      "leaf_width_cm": 9.2,
+      "fruit_diameter_mm": 14.4,
+      "fruit_shape": "Melingkar",
+      "fruit_colour": "Merah tua",
+      "fresh_100_fruit_g": 246.5,
+      "seed_length_mm": 14.1,
+      "seed_width_mm": 9.4,
+      "seed_shape": "Obovate",
+      "seed_thickness_mm": 6,
+      "dry_100_seed_g": 44.2,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/035-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-035"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/035-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-035"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-036",
+      "sample_number": 36,
+      "population_code": "PN",
+      "plant_shape": "Silinder",
+      "height_cm": 205,
+      "leaf_tip": "Apiculate",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 22,
+      "leaf_width_cm": 7.6,
+      "fruit_diameter_mm": 13.4,
+      "fruit_shape": "Elips",
+      "fruit_colour": "Merah tua",
+      "fresh_100_fruit_g": 271.8,
+      "seed_length_mm": 14.2,
+      "seed_width_mm": 8,
+      "seed_shape": "Obovate",
+      "seed_thickness_mm": 5.8,
+      "dry_100_seed_g": 47.1,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/036-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-036"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/036-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-036"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-037",
+      "sample_number": 37,
+      "population_code": "PN",
+      "plant_shape": "Silinder",
+      "height_cm": 254,
+      "leaf_tip": "Apiculate",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 24.3,
+      "leaf_width_cm": 9.4,
+      "fruit_diameter_mm": 14.7,
+      "fruit_shape": "Melingkar",
+      "fruit_colour": "Merah tua",
+      "fresh_100_fruit_g": 268.4,
+      "seed_length_mm": 13.7,
+      "seed_width_mm": 8.9,
+      "seed_shape": "Bulat panjang",
+      "seed_thickness_mm": 5.8,
+      "dry_100_seed_g": 44.9,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/037-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-037"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/037-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-037"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-038",
+      "sample_number": 38,
+      "population_code": "PN",
+      "plant_shape": "Silinder",
+      "height_cm": 291,
+      "leaf_tip": "Apiculate",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 23.7,
+      "leaf_width_cm": 9.2,
+      "fruit_diameter_mm": 14.1,
+      "fruit_shape": "Melingkar",
+      "fruit_colour": "Merah ke orangean",
+      "fresh_100_fruit_g": 256.1,
+      "seed_length_mm": 13.2,
+      "seed_width_mm": 8.3,
+      "seed_shape": "Obovate",
+      "seed_thickness_mm": 7.5,
+      "dry_100_seed_g": 43.6,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/038-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-038"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/038-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-038"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-039",
+      "sample_number": 39,
+      "population_code": "PN",
+      "plant_shape": "Elips",
+      "height_cm": 218,
+      "leaf_tip": "Apiculate",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 24.9,
+      "leaf_width_cm": 10.2,
+      "fruit_diameter_mm": 14.2,
+      "fruit_shape": "Melingkar",
+      "fruit_colour": "Merah ke orangean",
+      "fresh_100_fruit_g": 250.4,
+      "seed_length_mm": 13.2,
+      "seed_width_mm": 9.2,
+      "seed_shape": "Obovate",
+      "seed_thickness_mm": 5.9,
+      "dry_100_seed_g": 45.9,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/039-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-039"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/039-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-039"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-040",
+      "sample_number": 40,
+      "population_code": "PN",
+      "plant_shape": "Silinder",
+      "height_cm": 277,
+      "leaf_tip": "Apiculate",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 20.6,
+      "leaf_width_cm": 9.3,
+      "fruit_diameter_mm": 15.6,
+      "fruit_shape": "Melingkar",
+      "fruit_colour": "Merah tua",
+      "fresh_100_fruit_g": 288.2,
+      "seed_length_mm": 15.4,
+      "seed_width_mm": 8.4,
+      "seed_shape": "Bulat panjang",
+      "seed_thickness_mm": 5.6,
+      "dry_100_seed_g": 43.4,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/040-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-040"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/040-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-040"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-041",
+      "sample_number": 41,
+      "population_code": "PK1",
+      "plant_shape": "Kerucut",
+      "height_cm": 165,
+      "leaf_tip": "Runcing",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 21.6,
+      "leaf_width_cm": 8.4,
+      "fruit_diameter_mm": 15.7,
+      "fruit_shape": "Melingkar",
+      "fruit_colour": "Merah tua",
+      "fresh_100_fruit_g": 247.5,
+      "seed_length_mm": 12.6,
+      "seed_width_mm": 8.9,
+      "seed_shape": "Obovate",
+      "seed_thickness_mm": 5.4,
+      "dry_100_seed_g": 45.3,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/041-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-041"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/041-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-041"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-042",
+      "sample_number": 42,
+      "population_code": "PK1",
+      "plant_shape": "Kerucut",
+      "height_cm": 192,
+      "leaf_tip": "Apiculate",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 25.6,
+      "leaf_width_cm": 9.7,
+      "fruit_diameter_mm": 17.6,
+      "fruit_shape": "Melingkar",
+      "fruit_colour": "Merah tua",
+      "fresh_100_fruit_g": 260.8,
+      "seed_length_mm": 14.7,
+      "seed_width_mm": 9.3,
+      "seed_shape": "Obovate",
+      "seed_thickness_mm": 6,
+      "dry_100_seed_g": 45.6,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/042-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-042"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/042-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-042"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-043",
+      "sample_number": 43,
+      "population_code": "PK1",
+      "plant_shape": "Elips",
+      "height_cm": 180,
+      "leaf_tip": "Runcing",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 23.8,
+      "leaf_width_cm": 9.2,
+      "fruit_diameter_mm": 17,
+      "fruit_shape": "Melingkar",
+      "fruit_colour": "Merah ke orangean",
+      "fresh_100_fruit_g": 271.3,
+      "seed_length_mm": 15.5,
+      "seed_width_mm": 9.9,
+      "seed_shape": "Bulat panjang",
+      "seed_thickness_mm": 6.2,
+      "dry_100_seed_g": 42.9,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/043-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-043"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/043-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-043"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-044",
+      "sample_number": 44,
+      "population_code": "PK1",
+      "plant_shape": "Kerucut",
+      "height_cm": 185,
+      "leaf_tip": "Apiculate",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 25.2,
+      "leaf_width_cm": 11.2,
+      "fruit_diameter_mm": 14.5,
+      "fruit_shape": "Melingkar",
+      "fruit_colour": "Merah ke orangean",
+      "fresh_100_fruit_g": 255.4,
+      "seed_length_mm": 13.9,
+      "seed_width_mm": 9.7,
+      "seed_shape": "Obovate",
+      "seed_thickness_mm": 5.8,
+      "dry_100_seed_g": 43.7,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/044-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-044"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/044-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-044"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-045",
+      "sample_number": 45,
+      "population_code": "PK1",
+      "plant_shape": "Elips",
+      "height_cm": 171,
+      "leaf_tip": "Apiculate",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 22.7,
+      "leaf_width_cm": 9.5,
+      "fruit_diameter_mm": 17.9,
+      "fruit_shape": "Melingkar",
+      "fruit_colour": "Merah tua",
+      "fresh_100_fruit_g": 266.7,
+      "seed_length_mm": 12.5,
+      "seed_width_mm": 7.6,
+      "seed_shape": "Bulat panjang",
+      "seed_thickness_mm": 7,
+      "dry_100_seed_g": 45.5,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/045-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-045"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/045-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-045"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-046",
+      "sample_number": 46,
+      "population_code": "PK1",
+      "plant_shape": "Kerucut",
+      "height_cm": 160,
+      "leaf_tip": "Apiculate",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 24.7,
+      "leaf_width_cm": 9.7,
+      "fruit_diameter_mm": 14.4,
+      "fruit_shape": "Melingkar",
+      "fruit_colour": "Merah tua",
+      "fresh_100_fruit_g": 248.9,
+      "seed_length_mm": 13.2,
+      "seed_width_mm": 8.7,
+      "seed_shape": "Obovate",
+      "seed_thickness_mm": 5.3,
+      "dry_100_seed_g": 46.2,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/046-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-046"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/046-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-046"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-047",
+      "sample_number": 47,
+      "population_code": "PK1",
+      "plant_shape": "Kerucut",
+      "height_cm": 177,
+      "leaf_tip": "Apiculate",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 20.5,
+      "leaf_width_cm": 9.2,
+      "fruit_diameter_mm": 17,
+      "fruit_shape": "Melingkar",
+      "fruit_colour": "Merah tua",
+      "fresh_100_fruit_g": 252.1,
+      "seed_length_mm": 13.5,
+      "seed_width_mm": 9.7,
+      "seed_shape": "Obovate",
+      "seed_thickness_mm": 5.8,
+      "dry_100_seed_g": 44.5,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/047-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-047"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/047-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-047"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-048",
+      "sample_number": 48,
+      "population_code": "PK1",
+      "plant_shape": "Elips",
+      "height_cm": 173,
+      "leaf_tip": "Apiculate",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 19.2,
+      "leaf_width_cm": 8.4,
+      "fruit_diameter_mm": 15.7,
+      "fruit_shape": "Elips",
+      "fruit_colour": "Merah tua",
+      "fresh_100_fruit_g": 278.4,
+      "seed_length_mm": 13.6,
+      "seed_width_mm": 8.3,
+      "seed_shape": "Obovate",
+      "seed_thickness_mm": 7.2,
+      "dry_100_seed_g": 45.2,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/048-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-048"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/048-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-048"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-049",
+      "sample_number": 49,
+      "population_code": "PK1",
+      "plant_shape": "Kerucut",
+      "height_cm": 188,
+      "leaf_tip": "Runcing",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 22.7,
+      "leaf_width_cm": 8.1,
+      "fruit_diameter_mm": 17.7,
+      "fruit_shape": "Melingkar",
+      "fruit_colour": "Merah ke orangean",
+      "fresh_100_fruit_g": 264.2,
+      "seed_length_mm": 14.2,
+      "seed_width_mm": 9.7,
+      "seed_shape": "Obovate",
+      "seed_thickness_mm": 6,
+      "dry_100_seed_g": 44.9,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/049-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-049"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/049-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-049"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-050",
+      "sample_number": 50,
+      "population_code": "PK1",
+      "plant_shape": "Silinder",
+      "height_cm": 195,
+      "leaf_tip": "Runcing",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 19.4,
+      "leaf_width_cm": 8.6,
+      "fruit_diameter_mm": 15.6,
+      "fruit_shape": "Melingkar",
+      "fruit_colour": "Merah tua",
+      "fresh_100_fruit_g": 259.5,
+      "seed_length_mm": 14,
+      "seed_width_mm": 9.4,
+      "seed_shape": "Bulat panjang",
+      "seed_thickness_mm": 5.9,
+      "dry_100_seed_g": 43.5,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/050-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-050"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/050-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-050"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-051",
+      "sample_number": 51,
+      "population_code": "PK2",
+      "plant_shape": "Kerucut",
+      "height_cm": 168,
+      "leaf_tip": "Apiculate",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 18,
+      "leaf_width_cm": 9.5,
+      "fruit_diameter_mm": 17.3,
+      "fruit_shape": "Melingkar",
+      "fruit_colour": "Merah",
+      "fresh_100_fruit_g": 251.5,
+      "seed_length_mm": 15.7,
+      "seed_width_mm": 9.5,
+      "seed_shape": "Obovate",
+      "seed_thickness_mm": 6.2,
+      "dry_100_seed_g": 42.6,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/051-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-051"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/051-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-051"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-052",
+      "sample_number": 52,
+      "population_code": "PK2",
+      "plant_shape": "Elips",
+      "height_cm": 155,
+      "leaf_tip": "Apiculate",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 19.9,
+      "leaf_width_cm": 7.9,
+      "fruit_diameter_mm": 17.5,
+      "fruit_shape": "Melingkar",
+      "fruit_colour": "Merah tua",
+      "fresh_100_fruit_g": 244.7,
+      "seed_length_mm": 15.8,
+      "seed_width_mm": 9.6,
+      "seed_shape": "Obovate",
+      "seed_thickness_mm": 5.8,
+      "dry_100_seed_g": 41.7,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/052-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-052"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/052-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-052"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-053",
+      "sample_number": 53,
+      "population_code": "PK2",
+      "plant_shape": "Kerucut",
+      "height_cm": 172,
+      "leaf_tip": "Apiculate",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 18.4,
+      "leaf_width_cm": 7.5,
+      "fruit_diameter_mm": 16.9,
+      "fruit_shape": "Melingkar",
+      "fruit_colour": "Merah tua",
+      "fresh_100_fruit_g": 267.8,
+      "seed_length_mm": 14.5,
+      "seed_width_mm": 9.1,
+      "seed_shape": "Obovate",
+      "seed_thickness_mm": 7.3,
+      "dry_100_seed_g": 42,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/053-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-053"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/053-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-053"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-054",
+      "sample_number": 54,
+      "population_code": "PK2",
+      "plant_shape": "Kerucut",
+      "height_cm": 160,
+      "leaf_tip": "Runcing",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 20.8,
+      "leaf_width_cm": 8.9,
+      "fruit_diameter_mm": 17,
+      "fruit_shape": "Melingkar",
+      "fruit_colour": "Merah tua",
+      "fresh_100_fruit_g": 251.3,
+      "seed_length_mm": 14.5,
+      "seed_width_mm": 7.3,
+      "seed_shape": "Obovate",
+      "seed_thickness_mm": 6.7,
+      "dry_100_seed_g": 43.9,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/054-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-054"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/054-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-054"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-055",
+      "sample_number": 55,
+      "population_code": "PK2",
+      "plant_shape": "Elips",
+      "height_cm": 194,
+      "leaf_tip": "Apiculate",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 23.7,
+      "leaf_width_cm": 9.7,
+      "fruit_diameter_mm": 16.1,
+      "fruit_shape": "Obovate",
+      "fruit_colour": "Merah tua",
+      "fresh_100_fruit_g": 270.1,
+      "seed_length_mm": 13.8,
+      "seed_width_mm": 9.2,
+      "seed_shape": "Bulat panjang",
+      "seed_thickness_mm": 5.6,
+      "dry_100_seed_g": 43,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/055-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-055"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/055-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-055"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-056",
+      "sample_number": 56,
+      "population_code": "PK2",
+      "plant_shape": "Kerucut",
+      "height_cm": 204,
+      "leaf_tip": "Apiculate",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 21.2,
+      "leaf_width_cm": 10.5,
+      "fruit_diameter_mm": 16.9,
+      "fruit_shape": "Obovate",
+      "fruit_colour": "Merah ke orangean",
+      "fresh_100_fruit_g": 258.6,
+      "seed_length_mm": 15.3,
+      "seed_width_mm": 8.1,
+      "seed_shape": "Obovate",
+      "seed_thickness_mm": 5.6,
+      "dry_100_seed_g": 40.5,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/056-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-056"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/056-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-056"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-057",
+      "sample_number": 57,
+      "population_code": "PK2",
+      "plant_shape": "Kerucut",
+      "height_cm": 198,
+      "leaf_tip": "Apiculate",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 19,
+      "leaf_width_cm": 8.9,
+      "fruit_diameter_mm": 17.6,
+      "fruit_shape": "Obovate",
+      "fruit_colour": "Merah ke orangean",
+      "fresh_100_fruit_g": 249.3,
+      "seed_length_mm": 15.5,
+      "seed_width_mm": 9.3,
+      "seed_shape": "Obovate",
+      "seed_thickness_mm": 6.4,
+      "dry_100_seed_g": 43,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/057-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-057"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/057-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-057"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-058",
+      "sample_number": 58,
+      "population_code": "PK2",
+      "plant_shape": "Elips",
+      "height_cm": 230,
+      "leaf_tip": "Apiculate",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 18.3,
+      "leaf_width_cm": 9.2,
+      "fruit_diameter_mm": 15.1,
+      "fruit_shape": "Melingkar",
+      "fruit_colour": "Merah",
+      "fresh_100_fruit_g": 263.5,
+      "seed_length_mm": 14.2,
+      "seed_width_mm": 9.7,
+      "seed_shape": "Bulat panjang",
+      "seed_thickness_mm": 5.9,
+      "dry_100_seed_g": 42.1,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/058-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-058"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/058-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-058"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-059",
+      "sample_number": 59,
+      "population_code": "PK2",
+      "plant_shape": "Kerucut",
+      "height_cm": 245,
+      "leaf_tip": "Apiculate",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 22.7,
+      "leaf_width_cm": 10,
+      "fruit_diameter_mm": 15,
+      "fruit_shape": "Melingkar",
+      "fruit_colour": "Merah tua",
+      "fresh_100_fruit_g": 285.9,
+      "seed_length_mm": 15.2,
+      "seed_width_mm": 9.4,
+      "seed_shape": "Bulat panjang",
+      "seed_thickness_mm": 5.6,
+      "dry_100_seed_g": 41.8,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/059-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-059"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/059-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-059"
+        }
+      ]
+    },
+    {
+      "observation_id": "LIB-2026-060",
+      "sample_number": 60,
+      "population_code": "PK2",
+      "plant_shape": "Silinder",
+      "height_cm": 236,
+      "leaf_tip": "Runcing",
+      "leaf_shape": "Pisau pembedah",
+      "leaf_colour": "Hijau pekat",
+      "leaf_length_cm": 20.5,
+      "leaf_width_cm": 8.2,
+      "fruit_diameter_mm": 15.4,
+      "fruit_shape": "Obovate",
+      "fruit_colour": "Merah ke orangean",
+      "fresh_100_fruit_g": 257.7,
+      "seed_length_mm": 14.7,
+      "seed_width_mm": 9.4,
+      "seed_shape": "Obovate",
+      "seed_thickness_mm": 5.6,
+      "dry_100_seed_g": 43.3,
+      "photos": [
+        {
+          "slot": "plant",
+          "src": "assets/liberica-research/observations/060-plant.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-060"
+        },
+        {
+          "slot": "leaf",
+          "src": "assets/liberica-research/observations/060-leaf.png",
+          "temporary": true,
+          "observation_id": "LIB-2026-060"
+        }
+      ]
+    }
+  ]
+}
