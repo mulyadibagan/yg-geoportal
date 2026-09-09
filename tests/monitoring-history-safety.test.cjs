@@ -152,4 +152,8 @@ test("monitoring compilation maps donor, village, and planting phase clusters", 
   assert.match(source, /function monitoringResultHtml/);
   assert.match(source, /Hasil monitoring terbaru/);
   assert.match(source, /Buka seluruh histori monitoring/);
+  assert.match(html, /id="cluster-result-summary"/);
+  assert.match(source, /function renderClusterResultSummary/);
+  assert.match(source, /RINGKASAN HASIL KLASTER/);
+  assert.match(source, /Hanya laporan terbaru setiap objek/);
 });
