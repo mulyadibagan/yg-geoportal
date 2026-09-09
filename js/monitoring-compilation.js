@@ -9,6 +9,12 @@
   var clusterValue=document.getElementById('compilation-cluster-value');
   var search=document.getElementById('compilation-search');
   var villageChart=document.getElementById('compilation-village-chart');
+  var clusterMapDonor=document.getElementById('cluster-map-donor');
+  var clusterMapVillage=document.getElementById('cluster-map-village');
+  var clusterMapPhase=document.getElementById('cluster-map-phase');
+  var clusterMapChips=document.getElementById('cluster-map-chips');
+  var clusterMapSummary=document.getElementById('cluster-map-summary');
+  var clusterMap=null,clusterMapLayer=null,clusterMapReady=false;
   var activeData=null;
   var SNAPSHOT_URL='https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/snapshots/current/dashboard.json';
   var OBJECT_ALIASES={
@@ -141,6 +147,14 @@
     }
     return'';
   }
+  function legacyMangroveDonor(objectCode){
+    var id=String(objectCode||'').toUpperCase();
+    if(/^MANGROVE-BURUK-BAKUL-(?:2025-00[1-3]|PHASE-(?:I-2023-00[1-6]|II-(?:2024-)?001|III-2025-00[1-3]))$/.test(id))return'Aramco Asia Singapore';
+    if(/^MANGROVE-KELAPA-PATI-PHASE-(?:II-2025-0(?:0[1-9]|10)|II-003|III-(?:2025-001|2026-00[1-3]|001))$/.test(id))return'Aramco Asia Singapore';
+    if(/^MANGROVE-SEPAHAT-(?:2025-001|PHASE-III-2025-001)$/.test(id))return'Aramco Asia Singapore';
+    if(/^MANGROVE-TANJUNG-KURAS-(?:2026-001|PHASE-III-2026-001)$/.test(id))return'Aramco Asia Singapore';
+    return'';
+  }
   function normalizePublished(feature,index){
     var p=feature&&feature.properties||feature||{};
     if(!isMonitoringRecord(p))return null;
@@ -172,6 +186,8 @@
     var status=/rusak berat|hilang|kritis|tindak lanjut|kering parah|gagal/.test(condition)?{key:'masalah',label:'Perlu tindak lanjut'}:/sedang|rusak ringan|pantau|waspada|abrasi|hama/.test(condition)?{key:'waspada',label:'Perlu dipantau'}:{key:'baik',label:m.condition||p.condition||'Baik/normal'};
     var objectCode=String(target.Object_ID||target.OBJECT_ID||target.objectId||p.Object_ID||p.targetObjectId||'').trim();
     objectCode=OBJECT_ALIASES[objectCode]||objectCode;
+    if(!donor)donor=legacyMangroveDonor(objectCode);
+    if(!phase&&donor==='Aramco Asia Singapore'&&dateValue(p.activityDate||p.publishedAt)>=dateValue('2025-07-01'))phase='Fase III';
     var masterOverride=OBJECT_MASTER_OVERRIDES[objectCode];
     if(masterOverride){plantedCount=masterOverride.plantedCount;m.monitoredAreaHa=masterOverride.areaHa;}
     var objectKey=objectCode||[p.targetLayerId||p.targetLayerLabel||'monitoring',title,targetArea||''].map(keyText).join('|');
@@ -180,7 +196,7 @@
       title:title,type:reportType(p,m),date:p.activityDate||p.publishedAt||p.verifiedAt||p.receivedAt,
       village:village,villageKey:keyText(village),location:[village,p.district,p.regency].filter(Boolean).join(', '),
       reporter:reporter,reporterKey:keyText(reporter),donor:donor,donorKey:keyText(donor),
-      phase:phase,phaseKey:keyText(phase),plantedCount:plantedCount,metrics:m,status:status
+      phase:phase,phaseKey:keyText(phase),plantedCount:plantedCount,metrics:m,status:status,geometry:feature&&feature.geometry||null
     };
   }
   function compilePublished(records,type){
@@ -394,6 +410,63 @@
     data.summary=summary;
   }
 
+  function clusterDimension(group,keyField,labelField,missingKey,missingLabel){
+    var records=(group&&group.history||[]).slice();
+    if(group&&group.latest)records.unshift(group.latest);
+    for(var i=0;i<records.length;i+=1){
+      var key=String(records[i][keyField]||'').trim();
+      if(key)return{key:key,label:String(records[i][labelField]||key).trim()};
+    }
+    return{key:missingKey,label:missingLabel};
+  }
+  function clusterDimensions(group){
+    return{
+      donor:clusterDimension(group,'donorKey','donor','donor-belum-ditautkan','Donor belum ditautkan'),
+      village:clusterDimension(group,'villageKey','village','desa-belum-ditautkan','Desa belum ditautkan'),
+      phase:clusterDimension(group,'phaseKey','phase','fase-belum-ditautkan','Fase belum ditautkan')
+    };
+  }
+  function mapGeometry(group){
+    var records=(group&&group.history||[]).slice().sort(function(a,b){return dateValue(b.date)-dateValue(a.date);});
+    for(var i=0;i<records.length;i+=1)if(records[i].geometry&&records[i].geometry.coordinates)return records[i].geometry;
+    return null;
+  }
+  function fillClusterMapSelect(select,values,allLabel){
+    if(!select)return;
+    var current=select.value;
+    select.innerHTML='<option value="">'+esc(allLabel)+'</option>'+Object.keys(values).sort(function(a,b){return values[a].localeCompare(values[b],'id');}).map(function(key){return'<option value="'+esc(key)+'">'+esc(values[key])+'</option>';}).join('');
+    if(current&&values[current])select.value=current;
+  }
+  function ensureClusterMap(){
+    if(clusterMapReady||!window.L||!document.getElementById('cluster-map'))return;
+    clusterMap=L.map('cluster-map',{preferCanvas:true}).setView([1.45,102.05],10);
+    var satellite=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxNativeZoom:17,maxZoom:20,attribution:'Tiles &copy; Esri'}).addTo(clusterMap);
+    var streets=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:20,attribution:'&copy; OpenStreetMap contributors'});
+    L.control.layers({'Satelit':satellite,'Peta jalan':streets},null,{collapsed:true,position:'topright'}).addTo(clusterMap);
+    clusterMapLayer=L.layerGroup().addTo(clusterMap);clusterMapReady=true;
+  }
+  function phaseColor(label){var key=keyText(label);if(/fase 1/.test(key))return'#e6a817';if(/fase 2/.test(key))return'#1591a3';if(/fase 3/.test(key))return'#0b7a53';return'#7b61a8';}
+  function renderClusterMap(data){
+    var panel=document.getElementById('cluster-map-panel');
+    if(!panel)return;
+    if(data&&data.type&&data.type!=='Penanaman Mangrove'){panel.hidden=true;return;}panel.hidden=false;
+    var groups=data&&data.groups||[],donors={},villages={},phases={},combinations={};
+    groups.forEach(function(group){var d=clusterDimensions(group);donors[d.donor.key]=d.donor.label;villages[d.village.key]=d.village.label;phases[d.phase.key]=d.phase.label;var key=[d.donor.key,d.village.key,d.phase.key].join('|');if(!combinations[key])combinations[key]={donor:d.donor,village:d.village,phase:d.phase,count:0};combinations[key].count+=1;});
+    fillClusterMapSelect(clusterMapDonor,donors,'Semua donor');fillClusterMapSelect(clusterMapVillage,villages,'Semua desa');fillClusterMapSelect(clusterMapPhase,phases,'Semua fase');
+    if(clusterMapChips)clusterMapChips.innerHTML=Object.keys(combinations).sort(function(a,b){var x=combinations[a],y=combinations[b];return x.donor.label.localeCompare(y.donor.label,'id')||x.village.label.localeCompare(y.village.label,'id')||x.phase.label.localeCompare(y.phase.label,'id');}).map(function(key){var item=combinations[key];return'<button type="button" class="cluster-map-chip" data-map-donor="'+esc(item.donor.key)+'" data-map-village="'+esc(item.village.key)+'" data-map-phase="'+esc(item.phase.key)+'"><b>'+esc(item.donor.label)+'</b> · '+esc(item.village.label)+' · '+esc(item.phase.label)+' ('+item.count+')</button>';}).join('');
+    updateClusterMap(data);
+  }
+  function updateClusterMap(data){
+    ensureClusterMap();if(!clusterMapReady)return;
+    var donor=clusterMapDonor&&clusterMapDonor.value||'',village=clusterMapVillage&&clusterMapVillage.value||'',phase=clusterMapPhase&&clusterMapPhase.value||'';
+    var groups=(data&&data.groups||[]).filter(function(group){var d=clusterDimensions(group);return(!donor||d.donor.key===donor)&&(!village||d.village.key===village)&&(!phase||d.phase.key===phase);});
+    clusterMapLayer.clearLayers();var bounds=L.latLngBounds([]),mapped=0,totalArea=0,totalPlanted=0;
+    groups.forEach(function(group){var geometry=mapGeometry(group),latest=group.latest||{},d=clusterDimensions(group);if(!geometry)return;var feature={type:'Feature',geometry:geometry,properties:{}};var layer=L.geoJSON(feature,{style:{color:phaseColor(d.phase.label),weight:3,fillColor:phaseColor(d.phase.label),fillOpacity:.3}}).bindPopup('<strong>'+esc(group.label||latest.title||'Objek monitoring')+'</strong><br>'+esc(d.donor.label)+'<br>'+esc(d.village.label)+' · '+esc(d.phase.label)+'<br><a href="monitoring-detail.html?object='+encodeURIComponent(group.key)+'&title='+encodeURIComponent(group.label||latest.title||'Objek monitoring')+'">Buka detail monitoring →</a>');layer.addTo(clusterMapLayer);var layerBounds=layer.getBounds();if(layerBounds.isValid())bounds.extend(layerBounds);mapped+=1;var area=metricValue(latest.metrics||{},metricDefs[6]);if(area!==null)totalArea+=area;if(latest.plantedCount!==null&&latest.plantedCount!==undefined)totalPlanted+=Number(latest.plantedCount)||0;});
+    if(bounds.isValid())clusterMap.fitBounds(bounds.pad(.12),{maxZoom:17});else clusterMap.setView([1.45,102.05],10);setTimeout(function(){clusterMap.invalidateSize()},0);
+    var selected=[clusterMapDonor&&clusterMapDonor.options[clusterMapDonor.selectedIndex].text,clusterMapVillage&&clusterMapVillage.options[clusterMapVillage.selectedIndex].text,clusterMapPhase&&clusterMapPhase.options[clusterMapPhase.selectedIndex].text].filter(function(label){return label&&!/^Semua /.test(label);});
+    if(clusterMapSummary)clusterMapSummary.innerHTML='<strong>'+mapped+' polygon ditampilkan</strong><p>'+(selected.length?esc(selected.join(' · ')):'Semua donor, desa, dan fase')+'<br>'+esc(numberFormat(totalArea))+' ha terpantau · '+esc(numberFormat(totalPlanted))+' bibit tertanam.</p><div class="cluster-map-summary-list">'+groups.slice(0,12).map(function(group){var d=clusterDimensions(group),latest=group.latest||{};return'<a href="monitoring-detail.html?object='+encodeURIComponent(group.key)+'&title='+encodeURIComponent(group.label||latest.title||'Objek monitoring')+'"><b>'+esc(group.label||latest.title||'Objek monitoring')+'</b>'+esc(d.village.label)+' · '+esc(d.phase.label)+'</a>';}).join('')+'</div>';
+  }
+
   function render(data){
     applyMasterObjectData(data);
     normalizeCompiledVillages(data.groups);
@@ -433,6 +506,7 @@
         '<div class="compilation-object-actions"><small>'+group.history.length+' laporan · terakhir '+esc(fmtDate(latest.date))+'</small><a href="'+href+'" data-object-key="'+esc(group.key)+'">Buka detail objek →</a></div>'+
       '</article>';
     }).join('')||'<div class="empty">Belum ada objek dalam kompilasi ini.</div>';
+    renderClusterMap(data);
   }
 
   function refreshClusterValues(){
@@ -460,6 +534,9 @@
   if(cluster)cluster.addEventListener('change',refreshClusterValues);
   if(clusterValue)clusterValue.addEventListener('change',function(){render(activeData);});
   if(search)search.addEventListener('input',function(){render(activeData);});
+  [clusterMapDonor,clusterMapVillage,clusterMapPhase].forEach(function(select){if(select)select.addEventListener('change',function(){updateClusterMap(activeData);});});
+  var clusterMapReset=document.getElementById('cluster-map-reset');if(clusterMapReset)clusterMapReset.addEventListener('click',function(){clusterMapDonor.value='';clusterMapVillage.value='';clusterMapPhase.value='';updateClusterMap(activeData);});
+  if(clusterMapChips)clusterMapChips.addEventListener('click',function(event){var button=event.target.closest('[data-map-donor]');if(!button)return;clusterMapDonor.value=button.getAttribute('data-map-donor');clusterMapVillage.value=button.getAttribute('data-map-village');clusterMapPhase.value=button.getAttribute('data-map-phase');updateClusterMap(activeData);document.getElementById('cluster-map').scrollIntoView({behavior:'smooth',block:'center'});});
 
   if(villageChart)villageChart.addEventListener('click',function(event){
     var row=event.target.closest('[data-village-chart-key]');

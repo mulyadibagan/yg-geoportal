@@ -128,3 +128,21 @@ test("monitoring pages prefer the fast public snapshot and keep the source API a
   assert.match(detail, /fetch\(SNAPSHOT_URL,\{cache:'default'\}\)/);
   assert.match(compilation, /loadPublishedJsonp\(type,storageKey\)/);
 });
+
+test("monitoring compilation maps donor, village, and planting phase clusters", () => {
+  const source = read("js/monitoring-compilation.js");
+  const html = read("monitoring-compilation.html");
+
+  assert.match(html, /id="cluster-map-donor"/);
+  assert.match(html, /id="cluster-map-village"/);
+  assert.match(html, /id="cluster-map-phase"/);
+  assert.match(html, /id="cluster-map"/);
+  assert.match(source, /function renderClusterMap/);
+  assert.match(source, /function updateClusterMap/);
+  assert.match(source, /data-map-donor=/);
+  assert.match(source, /geometry:feature&&feature\.geometry\|\|null/);
+  assert.match(source, /World_Imagery\/MapServer\/tile/);
+  assert.match(source, /Donor belum ditautkan/);
+  assert.match(source, /function legacyMangroveDonor/);
+  assert.match(source, /if\(!donor\)donor=legacyMangroveDonor\(objectCode\)/);
+});
