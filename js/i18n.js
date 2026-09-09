@@ -929,6 +929,15 @@
     ,"Merah tua": "Dark red"
     ,"Merah ke orangean": "Reddish orange"
     ,"Data penelitian belum dapat ditampilkan. Silakan muat ulang halaman.": "Research data cannot be displayed yet. Please reload the page."
+    ,"Dataset Penelitian · Karakterisasi Morfologi · 2026": "Research Dataset · Morphological Characterization · 2026"
+    ,"Survei dengan sampel purposif": "Purposive sampling survey"
+    ,"Statistik dihitung dari seluruh data individu penelitian.": "Statistics were calculated from all individual research records."
+    ,"Catatan data": "Data note"
+    ,"Berdasarkan 60 data individu, daun berwarna hijau pekat tercatat pada 53 individu (88,33%). Nilai ini berbeda dari ringkasan laporan yang mencantumkan 98,33%.": "Across the 60 individual records, dark green leaves were recorded for 53 individuals (88.33%). This differs from the report summary, which states 98.33%."
+    ,"Dataset Penelitian": "Research Dataset"
+    ,"Lanset": "Lanceolate"
+    ,"Merah jingga": "Reddish orange"
+    ,"Apikulat": "Apiculate"
   });
   if (dictionaries.en) dictionaries.en["Cetak Peta"] = "Print Map";
   const reverse = Object.fromEntries(
