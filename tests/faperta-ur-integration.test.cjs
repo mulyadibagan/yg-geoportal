@@ -6,7 +6,7 @@ const path = require("node:path");
 const ROOT = path.resolve(__dirname, "..");
 const read = (file) => fs.readFileSync(path.join(ROOT, file), "utf8");
 
-test("Faperta workspace is additive and linked from the existing WebGIS", () => {
+test("Faperta public module is additive and linked from the existing WebGIS", () => {
   assert.match(read("webgis.html"), /href="faperta-ur\.html"/);
   assert.match(read("js/map-v4.js"), /upt_faperta_ur/);
   assert.match(read("js/map-v4.js"), /data\/faperta-ur-site\.geojson/);
@@ -38,9 +38,19 @@ test("Faperta data follows the scalable hierarchy without invented SOP doses", (
   assert.equal(data.blocks.length, 3);
 });
 
-test("workspace supports required first-stage functions and future extensions", () => {
+test("public module supports required first-stage functions and future extensions", () => {
   const html = read("faperta-ur.html");
-  ["Plot Budidaya", "Pekerjaan Kebun", "SOP Budidaya", "Monitoring", "Panen", "Research Plot", "Rencana dan realisasi"].forEach((label) => assert.match(html, new RegExp(label)));
+  ["Plot Budidaya", "Jadwal Kegiatan", "Panduan Budidaya", "Pemantauan Tanaman", "Hasil Panen", "Kegiatan Penelitian", "Rencana dan pelaksanaan"].forEach((label) => assert.match(html, new RegExp(label)));
   const data = JSON.parse(read("data/faperta-ur.json"));
   ["sensor_iot", "weather", "drone_ndvi", "student_research", "additional_sites", "partner_farmers"].forEach((item) => assert.ok(data.future_extensions.includes(item)));
+});
+
+test("public module uses official identity assets and offers satellite imagery", () => {
+  const html = read("faperta-ur.html");
+  const script = read("js/faperta-ur.js");
+  assert.match(html, /assets\/logo-yayasan-gambut\.png/);
+  assert.match(html, /assets\/logo-faperta-unri\.png/);
+  assert.ok(fs.existsSync(path.join(ROOT, "assets/logo-faperta-unri.png")));
+  assert.match(html, /data-basemap="satellite"/);
+  assert.match(script, /World_Imagery/);
 });
