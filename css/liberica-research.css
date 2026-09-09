@@ -46,6 +46,9 @@
 .trait-bar{grid-column:1/-1;height:6px;overflow:hidden;border-radius:99px;background:#e8eee9}
 .trait-bar i{display:block;height:100%;border-radius:99px;background:var(--lib-green)}
 .integrity-note{display:flex;gap:12px;margin-top:18px;padding:14px;border-radius:12px;background:#fff5df;color:#66502e;font-size:12px}
+.insight-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}.insight-grid article{padding:16px;border-radius:14px;background:linear-gradient(145deg,#eaf5ef,#f8fbf9)}.insight-grid span,.insight-grid small,.insight-grid strong{display:block}.insight-grid span{color:var(--lib-muted);font-size:10px;font-weight:800;text-transform:uppercase}.insight-grid strong{margin:8px 0 4px;color:var(--lib-dark);font-size:18px}.insight-grid small{color:var(--lib-green)}
+.comparison-scroll{overflow-x:auto;border:1px solid var(--lib-line);border-radius:14px}.comparison-table{width:100%;min-width:760px;border-collapse:collapse}.comparison-table th,.comparison-table td{padding:13px 14px;border-bottom:1px solid var(--lib-line);text-align:right;font-size:12px;white-space:nowrap}.comparison-table thead th{background:#f0f7f3;color:var(--lib-dark);font-size:10px;text-transform:uppercase}.comparison-table thead th:first-child,.comparison-table tbody th{text-align:left}.comparison-table tbody tr:last-child th,.comparison-table tbody tr:last-child td{border-bottom:0}.comparison-table tbody th strong,.comparison-table tbody th span{display:block}.comparison-table tbody th strong{color:var(--lib-dark)}.comparison-table tbody th span{margin-top:3px;color:var(--lib-muted);font-size:10px;font-weight:500}
+.dataset-actions{display:flex;gap:20px;align-items:center;justify-content:space-between;margin-top:16px;padding:14px 16px;border-radius:13px;background:#f8fbf9}.dataset-actions p{margin:0;font-size:12px}.dataset-actions button{flex:none;padding:10px 14px;border:0;border-radius:10px;background:var(--lib-green);color:white;font-weight:850;cursor:pointer}.dataset-actions button:hover{background:var(--lib-dark)}
 .filter-row{display:grid;grid-template-columns:1fr 280px;gap:12px;margin-bottom:16px}
 .filter-row label{color:var(--lib-muted);font-size:11px;font-weight:800}
 .filter-row input,.filter-row select{display:block;width:100%;margin-top:6px;padding:11px 12px;border:1px solid #cdded6;border-radius:10px;background:white;color:#24372f}
@@ -89,7 +92,8 @@
 .hero-metrics strong{font-size:26px}
 .lib-section{margin:16px 12px;padding:20px}
 .separation-note{margin:14px 12px;align-items:flex-start;flex-direction:column}
-.profile-grid dl,.numeric-grid,.trait-grid,.filter-row{grid-template-columns:1fr}.reference-gallery{grid-template-columns:repeat(2,1fr)}
+.profile-grid dl,.numeric-grid,.trait-grid,.filter-row,.insight-grid{grid-template-columns:1fr}.reference-gallery{grid-template-columns:repeat(2,1fr)}
+.dataset-actions{align-items:stretch;flex-direction:column}.dataset-actions button{width:100%}
 .observation-grid{grid-template-columns:repeat(2,1fr)}
 .section-head{align-items:start;flex-direction:column}
 .section-head>p{text-align:left}
