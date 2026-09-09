@@ -54,3 +54,14 @@ test("public module uses official identity assets and offers satellite imagery",
   assert.match(html, /data-basemap="satellite"/);
   assert.match(script, /World_Imagery/);
 });
+
+test("empty operational sections and internal documentation stay off the public site", () => {
+  const html = read("faperta-ur.html");
+  const script = read("js/faperta-ur.js");
+  const workflow = read(".github/workflows/deploy-pages.yml");
+  assert.match(html, /id="module-tabs"[^>]*hidden/);
+  assert.match(html, /id="garden-activity"[^>]*hidden/);
+  assert.match(html, /id="garden-progress"[^>]*hidden/);
+  assert.match(script, /hasAdditionalSection/);
+  assert.match(workflow, /--exclude 'docs\/'/);
+});

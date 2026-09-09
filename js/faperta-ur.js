@@ -29,6 +29,37 @@
     $("#kpi-yield").textContent = harvests.length ? num(kg, 1) + " kg" : "–";
   }
 
+  function configurePublicSections() {
+    const d = state.data;
+    const collections = {
+      plots: d.plots || [],
+      calendar: d.scheduled_tasks || [],
+      sop: d.sops || [],
+      monitoring: d.monitoring || [],
+      harvest: d.harvests || [],
+      research: d.research || []
+    };
+    let hasAdditionalSection = false;
+    Object.entries(collections).forEach(([view, rows]) => {
+      const available = rows.length > 0;
+      const button = document.querySelector(`[data-view="${view}"]`);
+      if (button) button.hidden = !available;
+      hasAdditionalSection ||= available;
+    });
+    $("#module-tabs").hidden = !hasAdditionalSection;
+
+    const activeCycles = (d.crop_cycles || []).filter((item) => item.status === "active");
+    $("#metric-cycles-card").hidden = activeCycles.length === 0;
+
+    const tasks = d.scheduled_tasks || [];
+    $("#garden-activity").hidden = tasks.length === 0;
+    $(".fu-layout").classList.toggle("public-map-only", tasks.length === 0);
+
+    const hasProgress = [d.plots, d.crop_cycles, d.scheduled_tasks, d.realizations, d.monitoring, d.harvests]
+      .some((rows) => Array.isArray(rows) && rows.length > 0);
+    $("#garden-progress").hidden = !hasProgress;
+  }
+
   function taskDate(task, cycle) {
     if (task.due_date) return new Date(task.due_date + "T00:00:00");
     if (!cycle || !cycle.planted_at || !Number.isFinite(Number(task.hst_offset))) return null;
@@ -126,7 +157,7 @@
       const [dataResponse, boundaryResponse] = await Promise.all([fetch(DATA_URL), fetch(BOUNDARY_URL)]);
       if (!dataResponse.ok || !boundaryResponse.ok) throw new Error("Informasi kebun tidak dapat dimuat.");
       [state.data, state.boundary] = await Promise.all([dataResponse.json(), boundaryResponse.json()]);
-      renderSummary(); renderTasks(); renderBlocks(); renderCollections(); initMap(); bindUi();
+      configurePublicSections(); renderSummary(); renderTasks(); renderBlocks(); renderCollections(); initMap(); bindUi();
     } catch (error) {
       document.querySelector("main").innerHTML = `<div class="fu-empty"><span><strong>Informasi belum dapat ditampilkan</strong><br>${error.message}</span></div>`;
     }

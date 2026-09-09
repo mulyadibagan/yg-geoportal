@@ -32,6 +32,7 @@ body{margin:0}
 .fu-view{display:none}
 .fu-view.active{display:block}
 .fu-layout{display:grid;grid-template-columns:minmax(0,2fr) minmax(280px,1fr);gap:18px}
+.fu-layout.public-map-only{grid-template-columns:minmax(0,1fr)}
 .fu-map-card,.fu-today,.fu-section,.fu-view:not([data-panel="overview"]){border:1px solid var(--line);border-radius:18px;background:#fff;box-shadow:0 9px 24px rgba(34,73,55,.06)}
 .fu-map-card header,.fu-section>header,.fu-today header{display:flex;align-items:center;justify-content:space-between;padding:18px 20px}
 .fu-map-card h2,.fu-section h2,.fu-today h2{margin:4px 0 0;font-size:18px}
