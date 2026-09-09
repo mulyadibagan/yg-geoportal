@@ -15,6 +15,7 @@
   var clusterMapChips=document.getElementById('cluster-map-chips');
   var clusterMapSummary=document.getElementById('cluster-map-summary');
   var clusterMap=null,clusterMapLayer=null,clusterMapReady=false;
+  var masterMangroveGroups=[];
   var activeData=null;
   var SNAPSHOT_URL='https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/snapshots/current/dashboard.json';
   var OBJECT_ALIASES={
@@ -31,6 +32,7 @@
     'area_mangrove:auto:56906758':'MANGROVE-BURUK-BAKUL-2025-002',
     'MANGROVE-BURUK-BAKUL-PHASE-III-2025-002':'MANGROVE-BURUK-BAKUL-2025-002',
     'MANGROVE-BURUK-BAKUL-PHASE-III-2025-003':'MANGROVE-BURUK-BAKUL-2025-003',
+    'MANGROVE-KELAPA-PATI-PHASE-II-2025-003':'MANGROVE-KELAPA-PATI-PHASE-II-003',
     'MANGROVE-TANJUNG-KURAS-PHASE-III-2026-001':'MANGROVE-TANJUNG-KURAS-2026-001'
   };
   var OBJECT_MASTER_OVERRIDES={
@@ -426,6 +428,22 @@
       phase:clusterDimension(group,'phaseKey','phase','fase-belum-ditautkan','Fase belum ditautkan')
     };
   }
+  function normalizeMasterMangrove(feature,index){
+    var p=feature&&feature.properties||{},objectCode=String(p.Object_ID||p.OBJECT_ID||'').trim();
+    objectCode=OBJECT_ALIASES[objectCode]||objectCode;
+    if(!objectCode||!feature.geometry)return null;
+    var donor=firstText(p,['Donor','Donor_Cluster','Nama_Donor','Funding_Source','donor'])||legacyMangroveDonor(objectCode);
+    var phase=phaseOf(p),village=canonicalVillage(p.Desa||p.WADMKD||p.village||'');
+    var area=publishedAreaNumber(p.Luas_Ha||p.Luas||p.areaHa),planted=publishedNumber(p.Jumlah_Bib||p.Jumlah_Tanam||p.plantedCount);
+    var record={id:'master-'+index,objectId:objectCode,masterObjectId:objectCode,title:p.Nama_Objek||'Area penanaman mangrove',type:'Penanaman Mangrove',date:'',village:village,villageKey:keyText(village),location:village,reporter:'',reporterKey:'',donor:donor,donorKey:keyText(donor),phase:phase,phaseKey:keyText(phase),plantedCount:planted,metrics:{monitoredAreaHa:area},status:{key:'belum',label:'Belum dimonitor'},geometry:feature.geometry};
+    return{key:objectCode,label:record.title,history:[record],latest:record,objectCode:objectCode,unmonitored:true};
+  }
+  function clusterMapGroups(data){
+    var groups=(data&&data.groups||[]).slice(),known={};
+    groups.forEach(function(group){known[OBJECT_ALIASES[group.key]||group.key]=1;});
+    masterMangroveGroups.forEach(function(group){if(!known[group.key])groups.push(group);});
+    return groups;
+  }
   function mapGeometry(group){
     var records=(group&&group.history||[]).slice().sort(function(a,b){return dateValue(b.date)-dateValue(a.date);});
     for(var i=0;i<records.length;i+=1)if(records[i].geometry&&records[i].geometry.coordinates)return records[i].geometry;
@@ -450,7 +468,7 @@
     var panel=document.getElementById('cluster-map-panel');
     if(!panel)return;
     if(data&&data.type&&data.type!=='Penanaman Mangrove'){panel.hidden=true;return;}panel.hidden=false;
-    var groups=data&&data.groups||[],donors={},villages={},phases={},combinations={};
+    var groups=clusterMapGroups(data),donors={},villages={},phases={},combinations={};
     groups.forEach(function(group){var d=clusterDimensions(group);donors[d.donor.key]=d.donor.label;villages[d.village.key]=d.village.label;phases[d.phase.key]=d.phase.label;var key=[d.donor.key,d.village.key,d.phase.key].join('|');if(!combinations[key])combinations[key]={donor:d.donor,village:d.village,phase:d.phase,count:0};combinations[key].count+=1;});
     fillClusterMapSelect(clusterMapDonor,donors,'Semua donor');fillClusterMapSelect(clusterMapVillage,villages,'Semua desa');fillClusterMapSelect(clusterMapPhase,phases,'Semua fase');
     if(clusterMapChips)clusterMapChips.innerHTML=Object.keys(combinations).sort(function(a,b){var x=combinations[a],y=combinations[b];return x.donor.label.localeCompare(y.donor.label,'id')||x.village.label.localeCompare(y.village.label,'id')||x.phase.label.localeCompare(y.phase.label,'id');}).map(function(key){var item=combinations[key];return'<button type="button" class="cluster-map-chip" data-map-donor="'+esc(item.donor.key)+'" data-map-village="'+esc(item.village.key)+'" data-map-phase="'+esc(item.phase.key)+'"><b>'+esc(item.donor.label)+'</b> · '+esc(item.village.label)+' · '+esc(item.phase.label)+' ('+item.count+')</button>';}).join('');
@@ -459,12 +477,17 @@
   function updateClusterMap(data){
     ensureClusterMap();if(!clusterMapReady)return;
     var donor=clusterMapDonor&&clusterMapDonor.value||'',village=clusterMapVillage&&clusterMapVillage.value||'',phase=clusterMapPhase&&clusterMapPhase.value||'';
-    var groups=(data&&data.groups||[]).filter(function(group){var d=clusterDimensions(group);return(!donor||d.donor.key===donor)&&(!village||d.village.key===village)&&(!phase||d.phase.key===phase);});
-    clusterMapLayer.clearLayers();var bounds=L.latLngBounds([]),mapped=0,totalArea=0,totalPlanted=0;
-    groups.forEach(function(group){var geometry=mapGeometry(group),latest=group.latest||{},d=clusterDimensions(group);if(!geometry)return;var feature={type:'Feature',geometry:geometry,properties:{}};var layer=L.geoJSON(feature,{style:{color:phaseColor(d.phase.label),weight:3,fillColor:phaseColor(d.phase.label),fillOpacity:.3}}).bindPopup('<strong>'+esc(group.label||latest.title||'Objek monitoring')+'</strong><br>'+esc(d.donor.label)+'<br>'+esc(d.village.label)+' · '+esc(d.phase.label)+'<br><a href="monitoring-detail.html?object='+encodeURIComponent(group.key)+'&title='+encodeURIComponent(group.label||latest.title||'Objek monitoring')+'">Buka detail monitoring →</a>');layer.addTo(clusterMapLayer);var layerBounds=layer.getBounds();if(layerBounds.isValid())bounds.extend(layerBounds);mapped+=1;var area=metricValue(latest.metrics||{},metricDefs[6]);if(area!==null)totalArea+=area;if(latest.plantedCount!==null&&latest.plantedCount!==undefined)totalPlanted+=Number(latest.plantedCount)||0;});
+    var groups=clusterMapGroups(data).filter(function(group){var d=clusterDimensions(group);return(!donor||d.donor.key===donor)&&(!village||d.village.key===village)&&(!phase||d.phase.key===phase);});
+    clusterMapLayer.clearLayers();var bounds=L.latLngBounds([]),mapped=0,monitored=0,pending=0,totalArea=0,totalPlanted=0;
+    groups.forEach(function(group){var geometry=mapGeometry(group),latest=group.latest||{},d=clusterDimensions(group);if(!geometry)return;var feature={type:'Feature',geometry:geometry,properties:{}},detailHref=group.unmonitored?'webgis.html?layer=area_mangrove&object='+encodeURIComponent(group.key):'monitoring-detail.html?object='+encodeURIComponent(group.key)+'&title='+encodeURIComponent(group.label||latest.title||'Objek monitoring'),detailLabel=group.unmonitored?'Buka objek pada peta →':'Buka detail monitoring →';var layer=L.geoJSON(feature,{style:{color:phaseColor(d.phase.label),weight:3,dashArray:group.unmonitored?'7 6':null,fillColor:phaseColor(d.phase.label),fillOpacity:group.unmonitored?0.12:0.3}}).bindPopup('<strong>'+esc(group.label||latest.title||'Objek monitoring')+'</strong><br>'+esc(d.donor.label)+'<br>'+esc(d.village.label)+' · '+esc(d.phase.label)+'<br><b>'+(group.unmonitored?'Belum dimonitor':'Sudah dimonitor')+'</b><br><a href="'+detailHref+'">'+detailLabel+'</a>');layer.addTo(clusterMapLayer);var layerBounds=layer.getBounds();if(layerBounds.isValid())bounds.extend(layerBounds);mapped+=1;if(group.unmonitored)pending+=1;else monitored+=1;var area=metricValue(latest.metrics||{},metricDefs[6]);if(area!==null)totalArea+=area;if(latest.plantedCount!==null&&latest.plantedCount!==undefined)totalPlanted+=Number(latest.plantedCount)||0;});
     if(bounds.isValid())clusterMap.fitBounds(bounds.pad(.12),{maxZoom:17});else clusterMap.setView([1.45,102.05],10);setTimeout(function(){clusterMap.invalidateSize()},0);
     var selected=[clusterMapDonor&&clusterMapDonor.options[clusterMapDonor.selectedIndex].text,clusterMapVillage&&clusterMapVillage.options[clusterMapVillage.selectedIndex].text,clusterMapPhase&&clusterMapPhase.options[clusterMapPhase.selectedIndex].text].filter(function(label){return label&&!/^Semua /.test(label);});
-    if(clusterMapSummary)clusterMapSummary.innerHTML='<strong>'+mapped+' polygon ditampilkan</strong><p>'+(selected.length?esc(selected.join(' · ')):'Semua donor, desa, dan fase')+'<br>'+esc(numberFormat(totalArea))+' ha terpantau · '+esc(numberFormat(totalPlanted))+' bibit tertanam.</p><div class="cluster-map-summary-list">'+groups.slice(0,12).map(function(group){var d=clusterDimensions(group),latest=group.latest||{};return'<a href="monitoring-detail.html?object='+encodeURIComponent(group.key)+'&title='+encodeURIComponent(group.label||latest.title||'Objek monitoring')+'"><b>'+esc(group.label||latest.title||'Objek monitoring')+'</b>'+esc(d.village.label)+' · '+esc(d.phase.label)+'</a>';}).join('')+'</div>';
+    if(clusterMapSummary)clusterMapSummary.innerHTML='<strong>'+mapped+' polygon program</strong><p>'+(selected.length?esc(selected.join(' · ')):'Semua donor, desa, dan fase')+'<br>'+monitored+' sudah dimonitor · '+pending+' belum dimonitor<br>'+esc(numberFormat(totalArea))+' ha area program · '+esc(numberFormat(totalPlanted))+' bibit tertanam.</p><div class="cluster-map-summary-list">'+groups.slice(0,12).map(function(group){var d=clusterDimensions(group),latest=group.latest||{},href=group.unmonitored?'webgis.html?layer=area_mangrove&object='+encodeURIComponent(group.key):'monitoring-detail.html?object='+encodeURIComponent(group.key)+'&title='+encodeURIComponent(group.label||latest.title||'Objek monitoring');return'<a href="'+href+'"><b>'+esc(group.label||latest.title||'Objek monitoring')+'</b>'+esc(d.village.label)+' · '+esc(d.phase.label)+' · '+(group.unmonitored?'Belum dimonitor':'Sudah dimonitor')+'</a>';}).join('')+'</div>';
+  }
+
+  function loadMasterMangrove(){
+    if(typeof fetch!=='function')return;
+    fetch('data/area_mangrove.geojson?v=20260909-cluster-map1',{cache:'default'}).then(function(response){if(!response.ok)throw new Error('HTTP '+response.status);return response.json();}).then(function(payload){masterMangroveGroups=(payload.features||[]).map(normalizeMasterMangrove).filter(Boolean);if(activeData)renderClusterMap(activeData);}).catch(function(){});
   }
 
   function render(data){
@@ -588,6 +611,7 @@
     if(villageChart)villageChart.innerHTML='<div class="village-chart-empty">Menghubungkan ke sumber data publik…</div>';
   }
   loadPublished(requestedType,storageKey);
+  loadMasterMangrove();
 })();
 
 

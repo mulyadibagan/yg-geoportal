@@ -145,4 +145,8 @@ test("monitoring compilation maps donor, village, and planting phase clusters", 
   assert.match(source, /Donor belum ditautkan/);
   assert.match(source, /function legacyMangroveDonor/);
   assert.match(source, /if\(!donor\)donor=legacyMangroveDonor\(objectCode\)/);
+  assert.match(source, /data\/area_mangrove\.geojson/);
+  assert.match(source, /function normalizeMasterMangrove/);
+  assert.match(source, /function clusterMapGroups/);
+  assert.match(source, /Belum dimonitor/);
 });
