@@ -11,7 +11,7 @@ body{margin:0}
 .fu-brand small{color:var(--muted);font-size:10px}
 .fu-logo{display:block;object-fit:contain}
 .fu-logo--yg{width:42px;height:42px}
-.fu-logo--faperta{width:112px;height:40px}
+.fu-logo--faperta{width:148px;height:44px;padding:7px 10px;border-radius:9px;background:var(--green-dark)}
 .fu-status{justify-self:end;padding:8px 12px;border:1px solid #cfe5d9;border-radius:999px;background:var(--green-soft);color:var(--green);font-size:11px;font-weight:800;text-decoration:none}
 .fu-status:hover,.fu-status:focus{background:#e1f3e8}
 .fu-status span{margin-left:5px}
@@ -82,7 +82,7 @@ body{margin:0}
 .fu-header{min-height:60px}
 .fu-back span,.fu-brand small,.fu-brand>span:last-child{display:none}
 .fu-logo--yg{width:32px;height:32px}
-.fu-logo--faperta{width:88px;height:32px}
+.fu-logo--faperta{width:112px;height:34px;padding:6px 8px}
 .fu-brand{gap:6px}
 .fu-hero h1{font-size:30px}
 .fu-hero-meta span{min-width:95px}
