@@ -16,7 +16,7 @@
 .hero-metrics strong{font:700 36px Georgia,serif}
 .hero-metrics span{margin-top:5px;color:#d8eee5;font-size:11px}
 .separation-note{display:flex;gap:14px;align-items:center;max-width:1140px;margin:24px auto 0;padding:14px 18px;border-left:4px solid #d49b4d;border-radius:10px;background:#fff5df;color:#5e4827;font-size:13px}
-.section-nav{position:sticky;z-index:500;top:0;display:flex;gap:4px;align-items:center;max-width:1140px;margin:20px auto 0;padding:7px;border:1px solid var(--lib-line);border-radius:15px;background:rgba(255,255,255,.94);box-shadow:0 8px 25px rgba(7,63,50,.09);backdrop-filter:blur(12px)}.section-nav a{padding:9px 11px;border-radius:9px;color:var(--lib-dark);font-size:11px;font-weight:800;text-decoration:none;white-space:nowrap}.section-nav a:hover{background:#e8f4ee;color:var(--lib-green)}.data-source{margin-left:auto;padding:8px 10px;border-radius:9px;background:#e8f4ee;color:var(--lib-green);font-size:10px;font-weight:850;white-space:nowrap}
+.section-nav{position:sticky;z-index:500;top:0;display:flex;gap:4px;align-items:center;justify-content:center;max-width:1140px;margin:20px auto 0;padding:7px;border:1px solid var(--lib-line);border-radius:15px;background:rgba(255,255,255,.94);box-shadow:0 8px 25px rgba(7,63,50,.09);backdrop-filter:blur(12px)}.section-nav a{padding:9px 11px;border-radius:9px;color:var(--lib-dark);font-size:11px;font-weight:800;text-decoration:none;white-space:nowrap}.section-nav a:hover{background:#e8f4ee;color:var(--lib-green)}
 .lib-section{max-width:1140px;margin:28px auto;padding:30px;border:1px solid var(--lib-line);border-radius:22px;background:white;box-shadow:0 12px 32px rgba(7,63,50,.06)}
 .lib-section h2{margin:0 0 12px;color:var(--lib-dark);font:700 30px Georgia,serif}
 .lib-section p{color:var(--lib-muted);line-height:1.7}
@@ -83,7 +83,7 @@
 .trait-grid{grid-template-columns:repeat(2,1fr)}
 }
 @media(max-width:700px){.lib-hero{padding:38px 20px}
-.hero-visual>img{height:260px}.section-nav{top:0;overflow-x:auto;margin:12px;border-radius:12px}.section-nav a{padding:8px}.data-source{position:sticky;right:0}
+.hero-visual>img{height:260px}.section-nav{top:0;justify-content:flex-start;overflow-x:auto;margin:12px;border-radius:12px}.section-nav a{padding:8px}
 .hero-metrics{grid-template-columns:repeat(3,1fr)}
 .hero-metrics article{padding:14px 5px}
 .hero-metrics strong{font-size:26px}
