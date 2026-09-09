@@ -9,6 +9,7 @@ from collections import Counter
 from pathlib import Path
 
 import pdfplumber
+from PIL import Image
 
 
 COLUMNS = [
@@ -31,6 +32,26 @@ POPULATIONS = {
     "PK1": {"name": "Pedekik 1", "village": "Pedekik", "district": "Bengkalis", "lat": 1.512472, "lon": 102.110361, "dms": "1°30'44.9\"N 102°06'37.3\"E"},
     "PK2": {"name": "Pedekik 2", "village": "Pedekik", "district": "Bengkalis", "lat": 1.513500, "lon": 102.110639, "dms": "1°30'48.6\"N 102°06'38.3\"E"},
 }
+
+
+def source_image_numbers(sequence):
+    """Return plant/leaf image numbers in visual row order.
+
+    PDF image objects are stored bottom-to-top within each table page. Pages
+    34 and 49 contain two samples; pages 35-48 contain four samples each.
+    """
+    if sequence <= 2:
+        first_sample, last_sample, first_image = 1, 2, 15
+    elif sequence <= 58:
+        page_index = (sequence - 3) // 4
+        first_sample = 3 + page_index * 4
+        last_sample = first_sample + 3
+        first_image = 19 + page_index * 8
+    else:
+        first_sample, last_sample, first_image = 59, 60, 131
+    reversed_offset = last_sample - sequence
+    plant = first_image + reversed_offset * 2
+    return plant, plant + 1
 
 
 def number(value):
@@ -73,12 +94,12 @@ def parse_appendix(pdf_path):
                 numeric = {"height_cm", "leaf_length_cm", "leaf_width_cm", "fruit_diameter_mm", "fresh_100_fruit_g", "seed_length_mm", "seed_width_mm", "seed_thickness_mm", "dry_100_seed_g"}
                 for key, value in fields.items():
                     row[key] = number(value) if key in numeric else clean_text(value)
-                photo_no = 15 + (sequence - 1) * 2
+                photo_no, leaf_photo_no = source_image_numbers(sequence)
                 row["photos"] = [
                     {"slot": "plant", "src": f"assets/liberica-research/observations/{sequence:03d}-plant.png", "temporary": True, "observation_id": row["observation_id"]},
                     {"slot": "leaf", "src": f"assets/liberica-research/observations/{sequence:03d}-leaf.png", "temporary": True, "observation_id": row["observation_id"]},
                 ]
-                row["_source_image_numbers"] = [photo_no, photo_no + 1]
+                row["_source_image_numbers"] = [photo_no, leaf_photo_no]
                 rows.append(row)
     rows.sort(key=lambda r: r["sample_number"])
     if [r["sample_number"] for r in rows] != list(range(1, 61)):
@@ -106,7 +127,9 @@ def copy_photos(rows, extracted_dir, output_dir):
             target = output_dir / Path(item["src"]).name
             if not source.exists():
                 raise FileNotFoundError(source)
-            shutil.copy2(source, target)
+            with Image.open(source) as image:
+                corrected = image.transpose(Image.Transpose.ROTATE_90) if item["slot"] == "plant" and image.width > image.height else image.copy()
+                corrected.save(target, format="PNG", optimize=True)
 
 
 def main():
@@ -132,7 +155,7 @@ def main():
         "statistics": stats(rows),
         "variability": {
             "broad": ["height_cm", "leaf_length_cm", "fresh_100_fruit_g", "dry_100_seed_g"],
-            "note": "Klasifikasi luas/sempit mengikuti analisis variabilitas fenotipik laporan; statistik ringkas di halaman dihitung ulang dari 60 record Lampiran 1."
+            "note": "Klasifikasi luas/sempit mengikuti analisis variabilitas fenotipik laporan; statistik ringkas di halaman dihitung ulang dari 60 individu pada Lampiran 1."
         },
         "similarity": {"method": "Analisis kemiripan SPSS 26", "result_note": "Dendrogram menunjukkan pengelompokan morfologi antarsampel; gunakan hasil ini sebagai eksplorasi fenotipik, bukan identitas varietas final."},
         "observations": rows,

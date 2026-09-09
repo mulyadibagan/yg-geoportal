@@ -1,6 +1,9 @@
 import json
 from pathlib import Path
 import unittest
+from PIL import Image
+
+from scripts.extract_liberica_research import source_image_numbers
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -30,6 +33,17 @@ class LibericaResearchDatasetTest(unittest.TestCase):
                 self.assertEqual(photo["observation_id"], row["observation_id"])
                 self.assertTrue(photo["temporary"])
                 self.assertTrue((ROOT / photo["src"]).exists())
+
+    def test_pdf_photo_order_and_plant_orientation(self):
+        self.assertEqual(source_image_numbers(1), (17, 18))
+        self.assertEqual(source_image_numbers(2), (15, 16))
+        self.assertEqual(source_image_numbers(3), (25, 26))
+        self.assertEqual(source_image_numbers(6), (19, 20))
+        self.assertEqual(source_image_numbers(59), (133, 134))
+        self.assertEqual(source_image_numbers(60), (131, 132))
+        for path in sorted((ROOT / "assets/liberica-research/observations").glob("*-plant.png")):
+            with Image.open(path) as image:
+                self.assertGreater(image.height, image.width, path.name)
 
     def test_statistics_are_recomputed_from_individual_rows(self):
         rows = self.data["observations"]
