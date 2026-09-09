@@ -149,4 +149,7 @@ test("monitoring compilation maps donor, village, and planting phase clusters", 
   assert.match(source, /function normalizeMasterMangrove/);
   assert.match(source, /function clusterMapGroups/);
   assert.match(source, /Belum dimonitor/);
+  assert.match(source, /function monitoringResultHtml/);
+  assert.match(source, /Hasil monitoring terbaru/);
+  assert.match(source, /Buka seluruh histori monitoring/);
 });
