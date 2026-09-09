@@ -9,6 +9,7 @@ on:
       - 'data/dashboard-summary-snapshot.json'
       - 'data/master-database-snapshot.json'
       - 'data/kph_2019_riau.geojson'
+      - 'data/liberica-morphology-2026.json'
       - 'cloudflare/yg-webgis-public-data/**'
       - '.github/workflows/publish-cloudflare-snapshots.yml'
   workflow_run:
@@ -61,6 +62,8 @@ jobs:
           npx wrangler r2 object put "yg-webgis-public-snapshots/snapshots/current/objects.json" --remote --file ../../data/master-database-snapshot.json --content-type application/json
           npx wrangler r2 object put "yg-webgis-public-snapshots-staging/references/kph_2019_riau.geojson" --remote --file ../../data/kph_2019_riau.geojson --content-type application/geo+json
           npx wrangler r2 object put "yg-webgis-public-snapshots/references/kph_2019_riau.geojson" --remote --file ../../data/kph_2019_riau.geojson --content-type application/geo+json
+          npx wrangler r2 object put "yg-webgis-public-snapshots-staging/research/liberica-morphology-2026.json" --remote --file ../../data/liberica-morphology-2026.json --content-type application/json
+          npx wrangler r2 object put "yg-webgis-public-snapshots/research/liberica-morphology-2026.json" --remote --file ../../data/liberica-morphology-2026.json --content-type application/json
       - name: Build and upload manifest last
         shell: bash
         working-directory: cloudflare/yg-webgis-public-data

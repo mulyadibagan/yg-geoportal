@@ -61,6 +61,16 @@ test("serves the Riau KPH reference layer from R2", async () => {
   assert.equal((await response.json()).features.length, 1);
 });
 
+test("serves the Liberica research dataset from R2", async () => {
+  const response = await worker.fetch(
+    new Request("https://data.test/research/liberica-morphology-2026.json"),
+    envWith({ dataset_status: "Research Dataset — Morphological Characterization, 2026", observations: new Array(60).fill({}) })
+  );
+  assert.equal(response.status, 200);
+  assert.equal(response.headers.get("x-yg-data-source"), "r2");
+  assert.equal((await response.json()).observations.length, 60);
+});
+
 test("falls back to GitHub Pages when an R2 object is unavailable", async () => {
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async url => {
