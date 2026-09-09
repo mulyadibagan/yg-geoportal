@@ -823,6 +823,113 @@
     ,"7 hari berulang": "7-day recurrence"
     ,"Sekarang dan 24 jam membentuk lintasan asap; 7 hari menampilkan sumber berulang; 30 hari tanpa poligon.": "Current and 24-hour periods generate smoke trajectories; 7 days shows recurring sources; 30 days has no polygon."
   });
+  Object.assign(dictionaries.en, {
+    "Flora Gambut": "Peatland Flora",
+    "Kopi Liberika": "Liberica Coffee",
+    "FLORA GAMBUT · DATASET PENELITIAN 2026": "PEATLAND FLORA · 2026 RESEARCH DATASET",
+    "Karakterisasi morfologi 60 individu pada enam populasi di lahan gambut Pulau Bengkalis.": "Morphological characterization of 60 individuals across six populations on the peatlands of Bengkalis Island.",
+    "individu": "individuals",
+    "lokasi/populasi": "locations/populations",
+    "karakter diamati": "observed traits",
+    "Profil": "Profile",
+    "Sebaran": "Distribution",
+    "Morfologi": "Morphology",
+    "Perbandingan": "Comparison",
+    "60 individu": "60 individuals",
+    "Analisis": "Analysis",
+    "Sumber": "Source",
+    "Dataset observasi penelitian": "Research observation dataset",
+    "Dipisahkan dari data penanaman dan restorasi Kopi Liberika dalam program Yayasan Gambut.": "Presented separately from Liberica Coffee planting and restoration data under Yayasan Gambut programmes.",
+    "PROFIL SPESIES": "SPECIES PROFILE",
+    "Liberika pada gambut Bengkalis": "Liberica Coffee on Bengkalis peatlands",
+    "Kopi Liberika dikenal mampu beradaptasi pada lahan gambut basah dan tanah masam. Penelitian ini mendokumentasikan variasi batang, daun, buah, dan biji sebagai dasar pelestarian plasma nutfah serta seleksi calon varietas lokal.": "Liberica Coffee is known for its ability to adapt to wet peatlands and acidic soils. This research documents variation in stems, leaves, fruits, and seeds to support germplasm conservation and the selection of potential local varieties.",
+    "Nama ilmiah": "Scientific name",
+    "Famili": "Family",
+    "Metode": "Method",
+    "Survei purposive sampling": "Purposive sampling survey",
+    "Acuan karakter": "Trait reference",
+    "Deskriptor UPOV (2008)": "UPOV descriptors (2008)",
+    "Waktu": "Period",
+    "Februari–Maret 2026": "February–March 2026",
+    "Wilayah": "Study area",
+    "Kecamatan Bantan dan Bengkalis": "Bantan and Bengkalis Districts",
+    "SEBARAN PENELITIAN": "RESEARCH DISTRIBUTION",
+    "Enam lokasi/populasi": "Six locations/populations",
+    "Titik menunjukkan lokasi populasi, bukan koordinat presisi setiap pohon.": "Points indicate population locations, not the precise coordinates of individual trees.",
+    "MORFOLOGI": "MORPHOLOGY",
+    "Ringkasan 60 individu penelitian": "Summary of 60 research individuals",
+    "Angka dihitung ulang dari data individual pada Lampiran 1.": "Values were recalculated from the individual data in Appendix 1.",
+    "Tanaman & buah": "Plant & fruit",
+    "Daun": "Leaf",
+    "Buah": "Fruit",
+    "Biji": "Seed",
+    "Dokumentasi visual bersumber dari laporan penelitian Azrul 2026.": "Visual documentation is sourced from Azrul's 2026 research report.",
+    "Catatan pengolahan data": "Data processing note",
+    "Perhitungan data individual menunjukkan warna daun “Hijau pekat” sebesar 88,33% (53 dari 60 individu), berbeda dari angka 98,33% pada ringkasan laporan. Halaman ini menyajikan hasil perhitungan ulang berdasarkan Lampiran 1.": "Individual-level calculations show dark green leaves in 88.33% of observations (53 of 60 individuals), differing from the 98.33% stated in the report summary. This page presents recalculated results based on Appendix 1.",
+    "PERBANDINGAN POPULASI": "POPULATION COMPARISON",
+    "Karakter morfologi pada enam populasi": "Morphological traits across six populations",
+    "Setiap nilai merupakan rata-rata dari 10 individu pada masing-masing populasi.": "Each value is the mean of 10 individuals in each population.",
+    "Perbandingan nilai rata-rata": "Comparison of mean values",
+    "Pilih karakter untuk melihat variasi antarpopulasi.": "Select a trait to compare variation among populations.",
+    "Karakter": "Trait",
+    "Tinggi tanaman": "Plant height",
+    "Panjang daun": "Leaf length",
+    "Diameter buah": "Fruit diameter",
+    "Bobot 100 buah": "Weight of 100 fruits",
+    "Berat 100 biji": "Weight of 100 seeds",
+    "Populasi dengan tanaman tertinggi": "Population with the tallest plants",
+    "Diameter buah terbesar": "Largest fruit diameter",
+    "Berat biji kering tertinggi": "Highest dry seed weight",
+    "Populasi": "Population",
+    "Data individual tersedia untuk penelaahan dan penggunaan ilmiah dengan mencantumkan sumber penelitian.": "Individual-level data are available for review and scientific use with appropriate citation of the research source.",
+    "Unduh data penelitian (CSV)": "Download research data (CSV)",
+    "DATA INDIVIDUAL": "INDIVIDUAL DATA",
+    "Daftar 60 individu penelitian": "List of 60 research individuals",
+    "Cari kode individu atau lokasi": "Search individual code or location",
+    "Contoh: LIB-2026-041 atau Pedekik": "Example: LIB-2026-041 or Pedekik",
+    "Semua populasi": "All populations",
+    "Tampilkan lebih banyak": "Show more",
+    "VARIABILITAS FENOTIPIK": "PHENOTYPIC VARIABILITY",
+    "Peluang seleksi sifat kuantitatif": "Potential selection of quantitative traits",
+    "Analisis laporan menggolongkan tinggi tanaman, panjang daun, bobot segar 100 buah, dan berat 100 biji kering sebagai karakter dengan variabilitas luas. Karakter kualitatif cenderung lebih homogen.": "The report classifies plant height, leaf length, fresh weight of 100 fruits, and dry weight of 100 seeds as traits with broad variability. Qualitative traits tend to be more homogeneous.",
+    "Makna hasil": "Interpretation",
+    "Karakter dengan variasi luas dapat menjadi bahan awal untuk memilih individu yang memiliki sifat berbeda. Penilaian lanjutan tetap diperlukan sebelum menetapkan calon varietas atau bahan pemuliaan.": "Traits with broad variation can provide an initial basis for selecting individuals with distinct characteristics. Further assessment is required before identifying candidate varieties or breeding material.",
+    "ANALISIS KEMIRIPAN": "SIMILARITY ANALYSIS",
+    "Pengelompokan morfologi": "Morphological clustering",
+    "Kelompok utama 1": "Main group 1",
+    "Didominasi populasi PN dan mencakup sebagian individu PK2 menurut interpretasi laporan.": "Dominated by the PN population and includes several PK2 individuals according to the report's interpretation.",
+    "Kelompok utama 2": "Main group 2",
+    "Mencakup populasi KB1, KB2, BT, PK1, serta individu PK2 lainnya.": "Includes the KB1, KB2, BT, and PK1 populations, together with the remaining PK2 individuals.",
+    "Pengelompokan didasarkan pada kemiripan karakter morfologi. Hasil ini tidak menunjukkan hubungan genetik dan bukan penetapan varietas final.": "Clustering is based on morphological similarity. It does not demonstrate genetic relationships and does not constitute final variety identification.",
+    "SUMBER PENELITIAN": "RESEARCH SOURCE",
+    "Kembali ke Biodiversitas": "Back to Biodiversity",
+    "Bentuk tanaman": "Plant form",
+    "Ujung daun": "Leaf tip",
+    "Bentuk daun": "Leaf shape",
+    "Warna daun": "Leaf colour",
+    "Lebar daun": "Leaf width",
+    "Bentuk buah": "Fruit shape",
+    "Warna buah": "Fruit colour",
+    "Panjang biji": "Seed length",
+    "Lebar biji": "Seed width",
+    "Bentuk biji": "Seed shape",
+    "Ketebalan biji": "Seed thickness",
+    "Berat 100 biji kering": "Dry weight of 100 seeds",
+    "Silinder": "Cylindrical",
+    "Kerucut": "Conical",
+    "Elips": "Elliptical",
+    "Runcing": "Pointed",
+    "Bulat": "Rounded",
+    "Hijau pekat": "Dark green",
+    "Hijau": "Green",
+    "Melingkar": "Round",
+    "Bulat panjang": "Elongated round"
+    ,"Pisau pembedah": "Scalpel-shaped"
+    ,"Merah": "Red"
+    ,"Merah tua": "Dark red"
+    ,"Merah ke orangean": "Reddish orange"
+    ,"Data penelitian belum dapat ditampilkan. Silakan muat ulang halaman.": "Research data cannot be displayed yet. Please reload the page."
+  });
   if (dictionaries.en) dictionaries.en["Cetak Peta"] = "Print Map";
   const reverse = Object.fromEntries(
     Object.entries(dictionaries.en).map(([id, en]) => [en, id])
@@ -893,6 +1000,16 @@
         .replace(/^Foto (\d+)$/, "Photo $1")
         .replace(/^(\d+) dari (\d+) (.+) ditampilkan$/, "$1 of $2 $3 displayed")
         .replace(/^Lokasi:\s*/, "Location: ")
+        .replace(/, Kecamatan /g, ", District ")
+        .replace(/ · Kecamatan /g, " · District ")
+        .replace(/^(\d+) individu · (\d+) ditampilkan$/, "$1 individuals · $2 displayed")
+        .replace(/^Tampilkan (\d+) individu berikutnya$/, "Show the next $1 individuals")
+        .replace(/^10 observasi · /, "10 observations · ")
+        .replace(/^10 individu penelitian · lokasi populasi$/, "10 research individuals · population location")
+        .replace(/^Individu ini diamati pada populasi (.+)\. Titik peta menunjukkan lokasi populasi dan bukan posisi presisi setiap pohon\.$/, "This individual was observed in the $1 population. Map points indicate population locations, not the precise position of each tree.")
+        .replace(/^Rentang (.+)$/, "Range $1")
+        .replace(/^Grafik (.+) rata-rata pada enam populasi$/, "Chart of mean $1 across six populations")
+        .replace(/^Dokumentasi (LIB-2026-\d+)$/, "Documentation for $1")
         .replace(/^(\d+) lokasi$/, "$1 locations")
         .replace(/^(\d+)% capaian$/, "$1% achieved")
         .replace(/^Aktif · (\d+) program$/, "Active · $1 programme")
