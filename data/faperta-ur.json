@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0.0",
+  "generated_at": "2026-09-10T00:00:00Z",
+  "organization": {"id":"ORG-FAPERTA-UR","name":"Fakultas Pertanian Universitas Riau","partner":"Yayasan Gambut","identity":"YG × Fakultas Pertanian Universitas Riau"},
+  "sites": [{"id":"SITE-UPT-FAPERTA-UR","organization_id":"ORG-FAPERTA-UR","name":"UPT Kebun Percobaan Faperta Universitas Riau","boundary_file":"faperta-ur-site.geojson","crs":"EPSG:4326","status":"active"}],
+  "blocks": [
+    {"id":"UPT-UR-B01","site_id":"SITE-UPT-FAPERTA-UR","name":"Blok UPT 1","area_ha":5.45461340695,"status":"available"},
+    {"id":"UPT-UR-B02","site_id":"SITE-UPT-FAPERTA-UR","name":"Blok UPT 2","area_ha":1.9809252119,"status":"available"},
+    {"id":"UPT-UR-B03","site_id":"SITE-UPT-FAPERTA-UR","name":"Blok UPT 3","area_ha":2.02885869496,"status":"available"}
+  ],
+  "plots": [],
+  "crop_cycles": [],
+  "sops": [],
+  "scheduled_tasks": [],
+  "realizations": [],
+  "monitoring": [],
+  "harvests": [],
+  "research": [],
+  "future_extensions": ["sensor_iot","weather","drone_ndvi","student_research","additional_sites","partner_farmers"],
+  "templates": {
+    "sop": {"id":null,"commodity":null,"version":null,"effective_from":null,"approved_by":null,"status":"draft","stages":[],"inputs":[],"source_document":null},
+    "scheduled_task": {"id":null,"crop_cycle_id":null,"sop_id":null,"sop_version":null,"title":null,"hst_offset":null,"phase":null,"quantity_formula":null,"status":"planned"},
+    "monitoring": {"id":null,"crop_cycle_id":null,"observed_at":null,"sample_count":null,"height_cm":null,"survival_percent":null,"pest_disease":null,"condition":null,"photos":[]},
+    "research": {"id":null,"plot_id":null,"title":null,"lead_researcher":null,"protocol_version":null,"variables":[],"status":"planned"}
+  }
+}
