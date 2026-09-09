@@ -391,6 +391,21 @@ L.control.scale({
     return new Intl.NumberFormat(currentLocale(), options || {}).format(value);
   }
 
+  function formatDate(value) {
+    const text = String(value || "").trim();
+    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(text);
+    if (!match) return text;
+    const date = new Date(Date.UTC(
+      Number(match[1]), Number(match[2]) - 1, Number(match[3])
+    ));
+    return new Intl.DateTimeFormat(currentLocale(), {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      timeZone: "UTC"
+    }).format(date);
+  }
+
   function hashColor(value) {
     let hash = 0;
     const text = String(value || "");
@@ -628,11 +643,18 @@ L.control.scale({
     return layerConfigs[layerId];
   }
 
+  const localProgramPhotoAssets = {
+    "fdrs pedekik (1).jpg": "assets/program-photos/fdrs-pedekik-2026-01.jpg",
+    "fdrs pedekik (4).jpg": "assets/program-photos/fdrs-pedekik-2026-04.jpg"
+  };
+
   function normalizePhotoUrl(value) {
-    return String(value || "")
+    const normalized = String(value || "")
       .trim()
       .replace(/^["']+|["']+$/g, "")
       .replace(/&amp;/g, "&");
+
+    return localProgramPhotoAssets[normalized.toLowerCase()] || normalized;
   }
 
   function driveId(url) {
@@ -784,14 +806,14 @@ L.control.scale({
           if (!item) return false;
 
           /*
-           * Nama file lokal seperti "FDRS_sepahat 2023.JPG"
-           * tidak boleh dijadikan tautan GitHub Pages karena akan 404.
-           * Foto program yang sudah diverifikasi akan tersedia melalui
-           * props._ygPhotos dari data-updates.js.
+           * Nama file lokal tanpa aset tidak boleh dijadikan tautan karena
+           * akan 404. Jalur assets/ diizinkan untuk foto program yang memang
+           * disertakan bersama situs.
            */
           return (
             /^https?:\/\//i.test(item) ||
-            /^[A-Za-z0-9_-]{20,}$/.test(item)
+            /^[A-Za-z0-9_-]{20,}$/.test(item) ||
+            /^(?:\.\/)?assets\/[A-Za-z0-9_./%() -]+\.(?:jpe?g|png|webp)$/i.test(item)
           );
         });
     }
@@ -952,6 +974,11 @@ L.control.scale({
       );
 
       rows += row(
+        "Tanggal kegiatan",
+        formatDate(valueOf(["Tanggal", "activityDate"]))
+      );
+
+      rows += row(
         "Fase/keterangan",
         valueOf(["Ket", "Keterangan"])
       );
@@ -1006,7 +1033,9 @@ L.control.scale({
 
       rows += row(
         "Proyek",
-        valueOf(["Nama_Proyek", "Project_Name", "Proyek"])
+        valueOf([
+          "Nama_Proyek", "Project_Name", "Proyek", "Program", "Programme"
+        ])
       );
 
       rows += row(
@@ -4053,6 +4082,96 @@ L.control.scale({
     return data;
   }
 
+  function mergeOfficialFdrsPoints(data, fdrsPoints) {
+    if (
+      !data ||
+      !Array.isArray(data.features) ||
+      !fdrsPoints ||
+      fdrsPoints.type !== "FeatureCollection" ||
+      !Array.isArray(fdrsPoints.features)
+    ) {
+      return data;
+    }
+
+    const databaseFdrs = data.features.filter(feature => {
+      const props = feature && feature.properties || {};
+      return normalizedMatchValue(
+        props.Layer_ID || props.Source_Layer
+      ) === "fdrs";
+    });
+    const officialFdrsIds = new Set(
+      fdrsPoints.features
+        .map(feature => normalizedMatchValue(
+          feature && feature.properties && feature.properties.Object_ID
+        ))
+        .filter(Boolean)
+    );
+
+    fdrsPoints.features.forEach(feature => {
+      if (!feature.properties) feature.properties = {};
+      const props = feature.properties;
+      const objectId = normalizedMatchValue(props.Object_ID);
+      const databaseFeature = databaseFdrs.find(candidate =>
+        normalizedMatchValue(
+          candidate && candidate.properties && candidate.properties.Object_ID
+        ) === objectId
+      );
+      const databaseProps = databaseFeature && databaseFeature.properties || {};
+
+      props.Layer_ID = "fdrs";
+      props.Source_Layer = "fdrs";
+      props.Layer_Label = "FDRS / Water Table";
+      props.Kategori = props.Kategori || "FDRS";
+
+      [
+        "Donor",
+        "Nama_Proyek",
+        "Project_ID",
+        "Nomor_Perjanjian",
+        "Program",
+        "Programme",
+        "Status_Objek",
+        "Revision",
+        "Updated_At",
+        "Updated_By"
+      ].forEach(key => {
+        if (
+          databaseProps[key] !== undefined &&
+          databaseProps[key] !== null &&
+          String(databaseProps[key]).trim() !== ""
+        ) {
+          props[key] = databaseProps[key];
+        }
+      });
+
+      if (!getDonor(props)) {
+        props.Donor = "Global Environment Centre";
+      }
+      props.Donor_Cluster = getDonor(props);
+    });
+
+    const newDatabaseFdrs = databaseFdrs.filter(feature => {
+      const props = feature && feature.properties || {};
+      const objectId = normalizedMatchValue(
+        props.Object_ID || props.objectId
+      );
+      return !objectId || !officialFdrsIds.has(objectId);
+    });
+
+    data.features = [
+      ...data.features.filter(feature => {
+        const props = feature && feature.properties || {};
+        return normalizedMatchValue(
+          props.Layer_ID || props.Source_Layer
+        ) !== "fdrs";
+      }),
+      ...newDatabaseFdrs,
+      ...fdrsPoints.features
+    ];
+
+    return data;
+  }
+
   function mergeOfficialInterventionVillages(
     data,
     interventionVillages,
@@ -4185,6 +4304,15 @@ L.control.scale({
     return response.json();
   }
 
+  async function loadOfficialFdrsPoints() {
+    const response = await fetch(
+      "data/fdrs.geojson?v=" + Date.now(),
+      { cache: "no-store" }
+    );
+    if (!response.ok) throw new Error("HTTP " + response.status);
+    return response.json();
+  }
+
   async function mergeProgramPhotoIndex(data) {
     const response = await fetch(
       "data/program-photo-index.json?v=20260825-tanjung-kuras-nursery1",
@@ -4209,7 +4337,8 @@ L.control.scale({
     const tasks = [
       [loadOfficialMangrove, mergeOfficialMangroveData, "area_mangrove.geojson"],
       [loadOfficialCoffeeAreas, mergeOfficialCoffeeAreas, "area_kopi.geojson"],
-      [loadOfficialCoffeePoints, mergeOfficialCoffeePoints, "kopi.geojson"]
+      [loadOfficialCoffeePoints, mergeOfficialCoffeePoints, "kopi.geojson"],
+      [loadOfficialFdrsPoints, mergeOfficialFdrsPoints, "fdrs.geojson"]
     ];
     const settled = await Promise.allSettled(tasks.map(task => task[0]()));
     settled.forEach((result, index) => {
@@ -4315,6 +4444,13 @@ L.control.scale({
     }
 
     try {
+      const fdrsPoints = await loadOfficialFdrsPoints();
+      mergeOfficialFdrsPoints(data, fdrsPoints);
+    } catch (fdrsPointError) {
+      console.warn("fdrs.geojson tidak dapat dimuat", fdrsPointError);
+    }
+
+    try {
       const [interventionVillages, administrativeVillages] =
         await loadOfficialInterventionVillages();
       mergeOfficialInterventionVillages(
@@ -4366,6 +4502,15 @@ L.control.scale({
         console.warn(
           "kopi.geojson tidak dapat dimuat melalui jalur cadangan",
           coffeePointError
+        );
+      }
+      try {
+        const fdrsPoints = await loadOfficialFdrsPoints();
+        mergeOfficialFdrsPoints(data, fdrsPoints);
+      } catch (fdrsPointError) {
+        console.warn(
+          "fdrs.geojson tidak dapat dimuat melalui jalur cadangan",
+          fdrsPointError
         );
       }
       try {
