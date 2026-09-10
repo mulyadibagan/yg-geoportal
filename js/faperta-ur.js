@@ -2,6 +2,9 @@
   "use strict";
   const DATA_URL = "data/faperta-ur.json?v=20260910-1";
   const BOUNDARY_URL = "data/faperta-ur-site.geojson?v=20260910-1";
+  const WEATHER_CACHE_KEY = "yg-faperta-weather-v1";
+  const WEATHER_CACHE_MS = 30 * 60 * 1000;
+  const WEATHER_URL = "https://api.open-meteo.com/v1/forecast?latitude=0.4822&longitude=101.3808&current=temperature_2m,relative_humidity_2m,precipitation,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum&past_days=30&forecast_days=7&timezone=Asia%2FJakarta";
   const state = { data: null, boundary: null, map: null, boundaryLayer: null, basemaps: {} };
   const $ = (selector) => document.querySelector(selector);
   const all = (selector) => Array.from(document.querySelectorAll(selector));
@@ -59,6 +62,72 @@
       .some((rows) => Array.isArray(rows) && rows.length > 0);
     $("#garden-progress").hidden = !hasProgress;
   }
+
+
+function weatherLabel(code) {
+  const labels = {
+    0: "Cerah", 1: "Cerah berawan", 2: "Berawan", 3: "Mendung",
+    45: "Berkabut", 48: "Kabut tebal", 51: "Gerimis ringan", 53: "Gerimis",
+    55: "Gerimis lebat", 61: "Hujan ringan", 63: "Hujan sedang", 65: "Hujan lebat",
+    80: "Hujan setempat", 81: "Hujan sedang", 82: "Hujan lebat",
+    95: "Hujan petir", 96: "Hujan petir", 99: "Hujan petir"
+  };
+  return labels[Number(code)] || "Cuaca berubah";
+}
+
+function renderWeather(weather) {
+  const current = weather.current || {};
+  const daily = weather.daily || {};
+  const todayKey = new Date().toLocaleDateString("sv-SE", { timeZone: "Asia/Jakarta" });
+  const rows = (daily.time || []).map((date, index) => ({
+    date,
+    code: daily.weather_code[index],
+    min: daily.temperature_2m_min[index],
+    max: daily.temperature_2m_max[index],
+    rain: daily.precipitation_sum[index]
+  }));
+  const history = rows.filter((row) => row.date < todayKey);
+  const forecast = rows.filter((row) => row.date >= todayKey).slice(0, 7);
+  const rainTotal = (days) => history.slice(-days).reduce((sum, row) => sum + Number(row.rain || 0), 0);
+  $("#weather-current").innerHTML = [
+    ["Suhu", num(current.temperature_2m, 1) + " °C"],
+    ["Kelembapan", num(current.relative_humidity_2m, 0) + "%"],
+    ["Hujan saat ini", num(current.precipitation, 1) + " mm"],
+    ["Angin", num(current.wind_speed_10m, 1) + " km/jam"]
+  ].map(([label, value]) => `<article><small>${label}</small><strong>${value}</strong></article>`).join("");
+  $("#rain-7d").textContent = num(rainTotal(7), 1) + " mm";
+  $("#rain-30d").textContent = num(rainTotal(30), 1) + " mm";
+  $("#weather-forecast").innerHTML = forecast.map((row) => {
+    const day = new Intl.DateTimeFormat("id-ID", { weekday: "short", day: "numeric", month: "short", timeZone: "Asia/Jakarta" }).format(new Date(row.date + "T12:00:00+07:00"));
+    return `<article><small>${day}</small><strong>${weatherLabel(row.code)}</strong><span>${num(row.min, 0)}–${num(row.max, 0)} °C</span><span>Hujan ${num(row.rain, 1)} mm</span></article>`;
+  }).join("");
+  $("#weather-updated").textContent = current.time
+    ? "Diperbarui " + new Intl.DateTimeFormat("id-ID", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", timeZone: "Asia/Jakarta" }).format(new Date(current.time + ":00+07:00")) + " WIB"
+    : "";
+  $("#garden-weather").hidden = false;
+}
+
+async function loadWeather() {
+  const cached = (() => {
+    try {
+      const value = JSON.parse(localStorage.getItem(WEATHER_CACHE_KEY) || "null");
+      return value && Date.now() - value.savedAt < WEATHER_CACHE_MS ? value.data : null;
+    } catch (_) {
+      return null;
+    }
+  })();
+  if (cached) {
+    renderWeather(cached);
+    return;
+  }
+  const response = await fetch(WEATHER_URL);
+  if (!response.ok) throw new Error("Cuaca tidak tersedia");
+  const weather = await response.json();
+  renderWeather(weather);
+  try {
+    localStorage.setItem(WEATHER_CACHE_KEY, JSON.stringify({ savedAt: Date.now(), data: weather }));
+  } catch (_) {}
+}
 
   function taskDate(task, cycle) {
     if (task.due_date) return new Date(task.due_date + "T00:00:00");
@@ -158,6 +227,7 @@
       if (!dataResponse.ok || !boundaryResponse.ok) throw new Error("Informasi kebun tidak dapat dimuat.");
       [state.data, state.boundary] = await Promise.all([dataResponse.json(), boundaryResponse.json()]);
       configurePublicSections(); renderSummary(); renderTasks(); renderBlocks(); renderCollections(); initMap(); bindUi();
+      loadWeather().catch(() => {});
     } catch (error) {
       document.querySelector("main").innerHTML = `<div class="fu-empty"><span><strong>Informasi belum dapat ditampilkan</strong><br>${error.message}</span></div>`;
     }

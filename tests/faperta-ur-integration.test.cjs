@@ -65,3 +65,15 @@ test("empty operational sections and internal documentation stay off the public 
   assert.match(script, /hasAdditionalSection/);
   assert.match(workflow, /--exclude 'docs\/'/);
 });
+
+test("Faperta weather uses the garden location and keeps public wording", () => {
+  const html = read("faperta-ur.html");
+  const script = read("js/faperta-ur.js");
+  assert.match(html, /id="garden-weather"[^>]*hidden/);
+  assert.match(html, /Hujan 7 hari terakhir/);
+  assert.match(html, /bukan alat ukur lapangan/);
+  assert.match(script, /latitude=0\.4822&longitude=101\.3808/);
+  assert.match(script, /past_days=30&forecast_days=7/);
+  assert.match(script, /WEATHER_CACHE_MS = 30 \* 60 \* 1000/);
+  assert.match(script, /loadWeather\(\)\.catch/);
+});

@@ -94,3 +94,18 @@ body{margin:0}
 .fu-map-card header button{font-size:10px}
 .fu-map-card footer{align-items:flex-start;gap:7px;flex-direction:column}
 }
+
+.fu-weather-current{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:0 18px}
+.fu-weather-current article,.fu-rain-summary article,.fu-weather-forecast article{padding:15px;border:1px solid var(--line);border-radius:13px;background:#fbfdfc}
+.fu-weather-current small,.fu-rain-summary small,.fu-weather-forecast small,.fu-weather-forecast span{display:block;color:var(--muted);font-size:10px}
+.fu-weather-current strong,.fu-rain-summary strong{display:block;margin-top:6px;font-size:21px}
+.fu-rain-summary{display:grid;grid-template-columns:repeat(2,minmax(140px,220px)) 1fr;gap:12px;align-items:stretch;padding:12px 18px 0}
+.fu-rain-summary p{align-self:center;margin:0;color:var(--muted);font-size:11px;line-height:1.5}
+.fu-weather-forecast{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;padding:12px 18px 0}
+.fu-weather-forecast article{padding:12px}
+.fu-weather-forecast strong{display:block;min-height:32px;margin:6px 0;font-size:12px}
+.fu-weather-forecast span+span{margin-top:3px}
+.fu-weather footer{padding:13px 18px 0;color:var(--muted);font-size:10px}
+.fu-weather footer a{color:var(--green);font-weight:800}
+@media(max-width:900px){.fu-weather-forecast{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:560px){.fu-weather-current{grid-template-columns:repeat(2,1fr)}.fu-rain-summary{grid-template-columns:1fr 1fr}.fu-rain-summary p{grid-column:1/-1}.fu-weather-forecast{grid-template-columns:repeat(2,1fr)}}
