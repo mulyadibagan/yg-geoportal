@@ -8,3 +8,37 @@
 .rad-filters{grid-template-columns:minmax(260px,1.35fr) repeat(3,minmax(165px,.65fr))}.rad-action{grid-template-columns:58px minmax(0,1fr) auto;align-items:start}.rad-action-main h4{padding-right:10px}.rad-action-summary{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:11px}.rad-action-summary div{padding:9px 10px;border-radius:10px;background:#f4f8f6;font-size:12px;line-height:1.4}.rad-action-summary strong{display:block;margin-bottom:3px;color:#31564a}.rad-action-details{grid-column:2/-1;margin-top:0}.rad-action-details summary{cursor:pointer;color:var(--kkmd-green);font-size:12px;font-weight:900;list-style:none}.rad-action-details summary::-webkit-details-marker{display:none}.rad-action-details summary::after{content:' +';}.rad-action-details[open] summary::after{content:' −'}.rad-action-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;padding:15px;border-radius:14px;background:#f5faf8}.rad-action-detail-grid>div{font-size:13px;line-height:1.55}.rad-action-detail-grid strong{display:block;margin-bottom:4px;color:#31564a}.rad-action-rationale{grid-column:1/-1}.rad-evidence-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.rad-evidence-links a{padding:8px 10px;border-radius:9px;background:#e5f5ee;color:var(--kkmd-green);font-size:12px;font-weight:900;text-decoration:none}.rad-gap{padding:18px 20px;border-top:1px solid #e4ede9;background:#fff9ed;color:#6b572d;line-height:1.55}.rad-gap strong{display:block;margin-bottom:5px;color:#604816}
 @media(max-width:1100px){.rad-stats{grid-template-columns:repeat(3,minmax(0,1fr))}.rad-formal-targets{grid-template-columns:repeat(3,minmax(0,1fr))}.rad-filters{grid-template-columns:1fr 1fr}.rad-filters label:first-child{grid-column:1/-1}}
 @media(max-width:760px){.rad-stats{grid-template-columns:1fr 1fr}.rad-stats article:last-child{grid-column:1/-1}.rad-status-key,.rad-goals,.rad-formal-targets,.rad-action-summary,.rad-action-detail-grid{grid-template-columns:1fr}.rad-filters{grid-template-columns:1fr}.rad-filters label:first-child{grid-column:auto}.rad-action{grid-template-columns:1fr}.rad-action-details{grid-column:auto}.rad-action-rationale{grid-column:auto}.rad-badge{white-space:normal}.rad-source-list a{padding:14px}}
+
+
+/* Public presentation refinements — September 2026 */
+.yg-page-header__inner>.yg-page-brand{margin-right:auto}
+.rad-header-language{flex:0 0 auto;margin-left:8px}
+.rad-hierarchy{margin:-4px 0 20px;padding:12px 16px;border:1px solid #cfe3da;border-radius:14px;background:#f5faf8;color:#31564a;font-size:14px;font-weight:800;line-height:1.5;text-align:center}
+.rad-result-actions{display:flex;align-items:center;gap:8px}
+.rad-result-actions #rad-show-all{padding:8px 12px;border:1px solid #b8d6ca;border-radius:10px;background:#f2f8f5;color:var(--kkmd-green)}
+.rad-result-actions #rad-show-all:hover,.rad-result-actions #rad-show-all:focus-visible{border-color:var(--kkmd-green);background:#e4f4ed;outline:none}
+.rad-methodology{margin-top:38px;padding:28px;border:1px solid var(--kkmd-line);border-radius:24px;background:linear-gradient(135deg,#f4faf7,#fff)}
+.rad-methodology h2{margin:7px 0 8px;color:#35180e;font-family:Georgia,serif;font-size:30px}
+.rad-methodology>p{max-width:900px;margin:0;color:var(--kkmd-muted);font-size:16px;line-height:1.65}
+.rad-method-grid{display:grid;grid-template-columns:1.15fr 1.15fr .75fr .95fr;gap:10px;margin-top:18px}
+.rad-method-card{display:flex;flex-direction:column;gap:7px;padding:15px;border:1px solid var(--kkmd-line);border-radius:14px;background:#fff;color:var(--kkmd-muted);font-size:13px;line-height:1.5}
+.rad-method-card strong{color:#31564a}
+.rad-method-card a{color:var(--kkmd-green);font-weight:800;text-decoration:none}
+.rad-method-card a:hover,.rad-method-card a:focus-visible{text-decoration:underline;outline:none}
+@media(max-width:1100px){
+  .rad-method-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:980px){
+  .rad-header-language{margin-left:0}
+}
+@media(max-width:760px){
+  .rad-hierarchy{font-size:13px;text-align:left}
+  .kkmd-result-bar{align-items:flex-start;flex-direction:column}
+  .rad-result-actions{width:100%;justify-content:space-between}
+  .rad-methodology{padding:22px}
+  .rad-method-grid{grid-template-columns:1fr}
+}
+@media(max-width:480px){
+  .rad-header-language{gap:1px;padding:3px}
+  .rad-header-language button{min-width:32px;padding:6px 7px}
+}
