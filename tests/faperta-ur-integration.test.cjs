@@ -77,3 +77,12 @@ test("Faperta weather uses the garden location and keeps public wording", () => 
   assert.match(script, /WEATHER_CACHE_MS = 30 \* 60 \* 1000/);
   assert.match(script, /loadWeather\(\)\.catch/);
 });
+
+
+test("public page keeps one clear WebGIS route and no duplicate map links", () => {
+  const html = read("faperta-ur.html");
+  const webgisLinks = html.match(/href="webgis\.html(?:\?[^"]*)?"/g) || [];
+  assert.equal(webgisLinks.length, 1);
+  assert.doesNotMatch(html, /Lihat peta utama|Buka peta interaktif/);
+  assert.match(html, /class="fu-back" href="webgis\.html"/);
+});
