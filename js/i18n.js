@@ -958,6 +958,8 @@
     ,"Jelajahi flora gambut →": "Explore peatland flora →"
     ,"Ringkasan katalog flora gambut": "Peatland flora catalogue summary"
     ,"Tanaman dan buah Kopi Liberika": "Liberica Coffee plant and fruit"
+    ,"6 populasi": "6 populations"
+    ,"18 karakter": "18 traits"
   });
   if (dictionaries.en) dictionaries.en["Cetak Peta"] = "Print Map";
   const reverse = Object.fromEntries(
