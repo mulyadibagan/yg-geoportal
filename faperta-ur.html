@@ -7,7 +7,7 @@
   <meta name="description" content="Informasi kebun percobaan, budidaya, pemantauan tanaman, panen, dan penelitian Fakultas Pertanian Universitas Riau.">
   <link rel="icon" href="assets/logo-yayasan-gambut.png">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="css/faperta-ur.css?v=20260910-5">
+  <link rel="stylesheet" href="css/faperta-ur.css?v=20260910-6">
 </head>
 <body>
   <header class="fu-header">
@@ -61,6 +61,22 @@
         </aside>
       </div>
 
+
+      <section id="garden-weather" class="fu-section fu-weather" hidden>
+        <header>
+          <div><span>CUACA KEBUN</span><h2>Kondisi dan prakiraan cuaca</h2></div>
+          <small id="weather-updated"></small>
+        </header>
+        <div id="weather-current" class="fu-weather-current"></div>
+        <div class="fu-rain-summary">
+          <article><small>Hujan 7 hari terakhir</small><strong id="rain-7d">–</strong></article>
+          <article><small>Hujan 30 hari terakhir</small><strong id="rain-30d">–</strong></article>
+          <p>Akumulasi hujan berasal dari data model cuaca pada lokasi kebun, bukan alat ukur lapangan.</p>
+        </div>
+        <div id="weather-forecast" class="fu-weather-forecast"></div>
+        <footer>Prakiraan cuaca: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a></footer>
+      </section>
+
       <section id="garden-progress" class="fu-section" hidden>
         <header><div><span>KEMAJUAN KEGIATAN</span><h2>Rencana dan pelaksanaan</h2></div><small>Diperbarui mengikuti kegiatan di setiap petak</small></header>
         <div class="fu-kpis">
@@ -86,6 +102,6 @@
   </main>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="js/faperta-ur.js?v=20260910-4"></script>
+  <script src="js/faperta-ur.js?v=20260910-5"></script>
 </body>
 </html>
