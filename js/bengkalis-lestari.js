@@ -97,13 +97,13 @@
       officialSource:"Sumber resmi",methodStatus:"Dasar klasifikasi",methodStatusText:"Pencantuman resmi, bukti publik YG, keselarasan tema, atau bukti yang belum tersedia.",
       updated:"Terakhir diperbarui",contact:"Pertanyaan atau koreksi",contactText:"Sampaikan temuan melalui YG GeoPortal."
     };
-    setText(".kkmd-breadcrumb a", text.breadcrumb);
+    setText(".kkmd-breadcrumb a", text.breadcrumb); const navToggle=document.querySelector(".yg-nav-toggle"); if(navToggle)navToggle.setAttribute("aria-label",isEn?"Open menu":"Buka menu");
     setText(".rad-hero .kkmd-eyebrow", text.eyebrow);
     setText(".rad-hero h1", text.hero);
     setText(".rad-hero > div:first-child p", text.heroIntro);
     const cards = document.querySelectorAll(".rad-source-list a");
-    if (cards[0]) { cards[0].querySelector("span").textContent=text.regulation; cards[0].querySelector("strong").textContent=text.regulationTitle; cards[0].querySelector("small").textContent=text.regulationMeta; }
-    if (cards[1]) { cards[1].querySelector("span").textContent=text.annex; cards[1].querySelector("strong").textContent=text.annexTitle; cards[1].querySelector("small").textContent=text.annexMeta; }
+    if (cards[0]) { cards[0].querySelector("span").textContent=text.regulation; cards[0].querySelector("strong").textContent=text.regulationTitle; cards[0].querySelector("small").textContent=text.regulationMeta; cards[0].setAttribute("aria-label",isEn?"Open Bengkalis Regent Regulation No. 13 of 2026 in Google Drive":"Buka Peraturan Bupati Bengkalis Nomor 13 Tahun 2026 di Google Drive"); }
+    if (cards[1]) { cards[1].querySelector("span").textContent=text.annex; cards[1].querySelector("strong").textContent=text.annexTitle; cards[1].querySelector("small").textContent=text.annexMeta; cards[1].setAttribute("aria-label",isEn?"Open the Bengkalis Lestari Regional Action Plan annex in Google Drive":"Buka Lampiran RAD Kabupaten Bengkalis Lestari di Google Drive"); }
     const statLabels=[text.goals,text.targets,text.actions,text.explicit,text.linked];
     document.querySelectorAll(".rad-stats article span").forEach((node,index)=>{ if(statLabels[index]) node.textContent=statLabels[index]; });
     setText(".rad-hierarchy",text.hierarchy);
@@ -124,7 +124,7 @@
     setText(".rad-methodology .kkmd-section-label",text.methodLabel); setText(".rad-methodology h2",text.methodTitle);
     setText(".rad-methodology > p",text.methodText);
     const methodCards=document.querySelectorAll(".rad-method-card");
-    if(methodCards[0]) {methodCards[0].querySelector("strong").textContent=text.officialSource;}
+    if(methodCards[0]) {methodCards[0].querySelector("strong").textContent=text.officialSource;methodCards[0].querySelector("span").textContent=isEn?"Bengkalis Regent Regulation No. 13 of 2026 and the Bengkalis Lestari RAD annex.":"Perbup Bengkalis Nomor 13 Tahun 2026 dan Lampiran RAD Kabupaten Bengkalis Lestari.";}
     if(methodCards[1]) {methodCards[1].querySelector("strong").textContent=text.methodStatus;methodCards[1].querySelector("span").textContent=text.methodStatusText;}
     if(methodCards[2]) {methodCards[2].querySelector("strong").textContent=text.updated;}
     if(methodCards[3]) {methodCards[3].querySelector("strong").textContent=text.contact;methodCards[3].querySelector("a").textContent=text.contactText;}
