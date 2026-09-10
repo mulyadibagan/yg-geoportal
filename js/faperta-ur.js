@@ -4,7 +4,9 @@
   const BOUNDARY_URL = "data/faperta-ur-site.geojson?v=20260910-1";
   const WEATHER_CACHE_KEY = "yg-faperta-weather-v1";
   const WEATHER_CACHE_MS = 30 * 60 * 1000;
-  const WEATHER_URL = "https://api.open-meteo.com/v1/forecast?latitude=0.4822&longitude=101.3808&current=temperature_2m,relative_humidity_2m,precipitation,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum&past_days=30&forecast_days=7&timezone=Asia%2FJakarta";
+  const RAIN_CACHE_KEY = "yg-faperta-nasa-rain-v1";
+  const RAIN_CACHE_MS = 6 * 60 * 60 * 1000;
+  const WEATHER_URL = "https://api.open-meteo.com/v1/forecast?latitude=0.4822&longitude=101.3808&current=temperature_2m,relative_humidity_2m,precipitation,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum&forecast_days=7&timezone=Asia%2FJakarta";
   const state = { data: null, boundary: null, map: null, boundaryLayer: null, basemaps: {} };
   const $ = (selector) => document.querySelector(selector);
   const all = (selector) => Array.from(document.querySelectorAll(selector));
@@ -86,25 +88,80 @@ function renderWeather(weather) {
     max: daily.temperature_2m_max[index],
     rain: daily.precipitation_sum[index]
   }));
-  const history = rows.filter((row) => row.date < todayKey);
   const forecast = rows.filter((row) => row.date >= todayKey).slice(0, 7);
-  const rainTotal = (days) => history.slice(-days).reduce((sum, row) => sum + Number(row.rain || 0), 0);
   $("#weather-current").innerHTML = [
     ["Suhu", num(current.temperature_2m, 1) + " °C"],
     ["Kelembapan", num(current.relative_humidity_2m, 0) + "%"],
-    ["Hujan saat ini", num(current.precipitation, 1) + " mm"],
+    ["Kondisi model", weatherLabel(current.weather_code)],
     ["Angin", num(current.wind_speed_10m, 1) + " km/jam"]
   ].map(([label, value]) => `<article><small>${label}</small><strong>${value}</strong></article>`).join("");
-  $("#rain-7d").textContent = num(rainTotal(7), 1) + " mm";
-  $("#rain-30d").textContent = num(rainTotal(30), 1) + " mm";
   $("#weather-forecast").innerHTML = forecast.map((row) => {
     const day = new Intl.DateTimeFormat("id-ID", { weekday: "short", day: "numeric", month: "short", timeZone: "Asia/Jakarta" }).format(new Date(row.date + "T12:00:00+07:00"));
     return `<article><small>${day}</small><strong>${weatherLabel(row.code)}</strong><span>${num(row.min, 0)}–${num(row.max, 0)} °C</span><span>Hujan ${num(row.rain, 1)} mm</span></article>`;
   }).join("");
   $("#weather-updated").textContent = current.time
-    ? "Diperbarui " + new Intl.DateTimeFormat("id-ID", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", timeZone: "Asia/Jakarta" }).format(new Date(current.time + ":00+07:00")) + " WIB"
+    ? "Model Open-Meteo · diperbarui " + new Intl.DateTimeFormat("id-ID", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", timeZone: "Asia/Jakarta" }).format(new Date(current.time + ":00+07:00")) + " WIB"
     : "";
   $("#garden-weather").hidden = false;
+}
+
+function dateKey(date) {
+  return date.toLocaleDateString("sv-SE", { timeZone: "Asia/Jakarta" }).replaceAll("-", "");
+}
+
+function nasaRainUrl() {
+  const end = new Date();
+  const start = new Date(end);
+  start.setDate(start.getDate() - 45);
+  return "https://power.larc.nasa.gov/api/temporal/daily/point" +
+    `?parameters=PRECTOTCORR&community=AG&longitude=101.3808&latitude=0.4822&start=${dateKey(start)}&end=${dateKey(end)}&format=JSON`;
+}
+
+function displayRainDate(key) {
+  const iso = `${key.slice(0, 4)}-${key.slice(4, 6)}-${key.slice(6, 8)}`;
+  return new Intl.DateTimeFormat("id-ID", { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Jakarta" })
+    .format(new Date(iso + "T12:00:00+07:00"));
+}
+
+function renderRainfall(payload, cached = false) {
+  const values = payload?.properties?.parameter?.PRECTOTCORR || {};
+  const rows = Object.entries(values)
+    .map(([date, rain]) => ({ date, rain: Number(rain) }))
+    .filter((row) => Number.isFinite(row.rain) && row.rain >= 0)
+    .sort((a, b) => a.date.localeCompare(b.date));
+  if (!rows.length) throw new Error("Data hujan NASA belum tersedia");
+  const total = (days) => rows.slice(-days).reduce((sum, row) => sum + row.rain, 0);
+  const latest = rows[rows.length - 1].date;
+  const sevenStart = rows[Math.max(0, rows.length - 7)].date;
+  $("#rain-7d").textContent = num(total(7), 1) + " mm";
+  $("#rain-30d").textContent = num(total(30), 1) + " mm";
+  $("#rain-source-note").textContent =
+    `Estimasi NASA POWER, bukan alat ukur lapangan. Periode 7 data terbaru: ${displayRainDate(sevenStart)}–${displayRainDate(latest)}${cached ? " · cache" : ""}.`;
+  $("#garden-weather").hidden = false;
+}
+
+async function loadRainfall() {
+  let stored = null;
+  try { stored = JSON.parse(localStorage.getItem(RAIN_CACHE_KEY) || "null"); } catch (_) {}
+  if (stored?.data && Date.now() - stored.savedAt < RAIN_CACHE_MS) {
+    renderRainfall(stored.data, true);
+    return;
+  }
+  try {
+    const response = await fetch(nasaRainUrl());
+    if (!response.ok) throw new Error("Data hujan NASA tidak tersedia");
+    const rainfall = await response.json();
+    renderRainfall(rainfall);
+    try { localStorage.setItem(RAIN_CACHE_KEY, JSON.stringify({ savedAt: Date.now(), data: rainfall })); } catch (_) {}
+  } catch (error) {
+    if (stored?.data) {
+      renderRainfall(stored.data, true);
+      return;
+    }
+    $("#rain-7d").textContent = "Belum tersedia";
+    $("#rain-30d").textContent = "Belum tersedia";
+    $("#rain-source-note").textContent = "Data NASA sementara tidak dapat dimuat; prakiraan Open-Meteo tetap tersedia.";
+  }
 }
 
 async function loadWeather() {
@@ -228,6 +285,7 @@ async function loadWeather() {
       [state.data, state.boundary] = await Promise.all([dataResponse.json(), boundaryResponse.json()]);
       configurePublicSections(); renderSummary(); renderTasks(); renderBlocks(); renderCollections(); initMap(); bindUi();
       loadWeather().catch(() => {});
+      loadRainfall();
     } catch (error) {
       document.querySelector("main").innerHTML = `<div class="fu-empty"><span><strong>Informasi belum dapat ditampilkan</strong><br>${error.message}</span></div>`;
     }

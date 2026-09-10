@@ -66,16 +66,22 @@ test("empty operational sections and internal documentation stay off the public 
   assert.match(workflow, /--exclude 'docs\/'/);
 });
 
-test("Faperta weather uses the garden location and keeps public wording", () => {
+test("Faperta weather separates NASA rainfall estimates from Open-Meteo forecasts", () => {
   const html = read("faperta-ur.html");
   const script = read("js/faperta-ur.js");
   assert.match(html, /id="garden-weather"[^>]*hidden/);
-  assert.match(html, /Hujan 7 hari terakhir/);
-  assert.match(html, /bukan alat ukur lapangan/);
+  assert.match(html, /7 hari data NASA terbaru/);
+  assert.match(html, /NASA POWER/);
+  assert.match(script, /Estimasi NASA POWER, bukan alat ukur lapangan/);
   assert.match(script, /latitude=0\.4822&longitude=101\.3808/);
-  assert.match(script, /past_days=30&forecast_days=7/);
+  assert.match(script, /power\.larc\.nasa\.gov\/api\/temporal\/daily\/point/);
+  assert.match(script, /parameters=PRECTOTCORR/);
+  assert.doesNotMatch(script, /past_days=30/);
+  assert.match(script, /forecast_days=7/);
   assert.match(script, /WEATHER_CACHE_MS = 30 \* 60 \* 1000/);
+  assert.match(script, /RAIN_CACHE_MS = 6 \* 60 \* 60 \* 1000/);
   assert.match(script, /loadWeather\(\)\.catch/);
+  assert.match(script, /loadRainfall\(\)/);
 });
 
 
@@ -84,6 +90,6 @@ test("public page keeps one clear WebGIS route and no duplicate map links", () =
   const webgisLinks = html.match(/href="webgis\.html(?:\?[^"]*)?"/g) || [];
   assert.equal(webgisLinks.length, 1);
   assert.doesNotMatch(html, /Lihat peta utama|Buka peta interaktif/);
-  assert.match(html, /class="fu-home-logo" href="webgis\\.html"/);
+  assert.match(html, /class="fu-home-logo" href="webgis\.html"/);
   assert.doesNotMatch(html, /class="fu-back"/);
 });
