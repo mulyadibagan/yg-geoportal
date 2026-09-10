@@ -98,7 +98,7 @@
     const byId = Object.fromEntries((state.boundary.features || []).map((x) => [x.properties.block_id, x.properties]));
     $("#block-list").innerHTML = state.data.blocks.map((block) => {
       const spatial = byId[block.id] || {};
-      return `<article><span>${block.id}</span><strong>${block.name}</strong><small>Luas terpetakan: ${num(spatial.source_area_ha || block.area_ha, 2)} hektare</small><button type="button" data-focus-block="${block.id}">Lihat di peta →</button></article>`;
+      return `<article><strong>${block.name}</strong><small>Luas area: ${num(spatial.source_area_ha || block.area_ha, 2)} hektare</small><button type="button" data-focus-block="${block.id}">Lihat di peta →</button></article>`;
     }).join("");
   }
 
@@ -125,7 +125,7 @@
       style: { color: "#b7791f", weight: 3, fillColor: "#e5b64d", fillOpacity: .23 },
       onEachFeature(feature, layer) {
         const p = feature.properties;
-        layer.bindPopup(`<strong>${p.name}</strong><span>${p.block_id} · ${num(p.source_area_ha, 2)} hektare</span><span>Area Kebun Percobaan Faperta UR</span>`);
+        layer.bindPopup(`<strong>${p.name}</strong><span>Luas area: ${num(p.source_area_ha, 2)} hektare</span><span>Kebun Percobaan Faperta UR</span>`);
       }
     }).addTo(state.map);
     state.map.fitBounds(state.boundaryLayer.getBounds(), { padding: [24, 24] });
