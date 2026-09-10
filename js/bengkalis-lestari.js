@@ -140,7 +140,7 @@
     const goals = lang()==="en" ? EN.goals : state.data.goals;
     const formalTargets = lang()==="en" ? EN.formalTargets : state.data.formalTargets;
     elements.goals.innerHTML = goals.map((goal,index)=>'<article class="rad-goal"><span>'+(index+1)+'</span>'+escapeHtml(goal)+'</article>').join("");
-    elements.formalTargets.innerHTML = formalTargets.map((target,index)=>'<article class="rad-formal-target"><strong>'+escapeHtml(copy().formalTarget(index+1))+'</strong>'+escapeHtml(target)+'</article>').join("");
+    elements.formalTargets.innerHTML = formalTargets.map((target,index)=>'<article class="rad-formal-target"><strong>'+escapeHtml((lang()==="en"?"Formal target ":"Sasaran formal ")+(index+1))+'</strong>'+escapeHtml(target)+'</article>').join("");
     if(elements.updatedAt){
       const date=new Date(state.data.updatedAt+"T00:00:00");
       elements.updatedAt.textContent=date.toLocaleDateString(copy().locale,{day:"numeric",month:"long",year:"numeric"});
@@ -191,13 +191,13 @@
   function renderActions() {
     const targets=filteredTargets();
     const visible=targets.reduce((sum,target)=>sum+target.actions.length,0);
-    elements.count.textContent=copy().shown(visible,state.data.summary.actions);
+    elements.count.textContent=lang()==="en"?visible+" of "+state.data.summary.actions+" action-plan items displayed":visible+" dari "+state.data.summary.actions+" rencana aksi ditampilkan";
     if(!targets.length){elements.groups.innerHTML='<div class="kkmd-empty"><strong>'+escapeHtml(copy().empty)+'</strong><br>'+escapeHtml(copy().emptyHelp)+'</div>';return;}
     elements.groups.innerHTML=targets.map(target=>{
       const t=localTarget(target), linked=target.actions.filter(hasLink).length;
       const rows=target.actions.map(action=>renderAction(target,action)).join("");
       const gap=!target.actions.length && t.note?'<div class="rad-gap"><strong>'+escapeHtml(copy().structureNote)+'</strong>'+escapeHtml(t.note)+(t.indicators?'<br><small>'+escapeHtml(copy().indicators)+': '+escapeHtml(t.indicators.join("; "))+'</small>':"")+'</div>':"";
-      return '<section class="kkmd-issue-group"><header class="kkmd-issue-head"><div class="kkmd-issue-title"><span class="kkmd-issue-number">'+target.number+'</span><div><small>'+escapeHtml(t.theme)+'</small><h3>'+escapeHtml(t.title)+'</h3></div></div><span class="kkmd-issue-count">'+escapeHtml(copy().related(linked,target.actions.length))+'</span></header><div class="kkmd-action-list">'+rows+gap+'</div></section>';
+      return '<section class="kkmd-issue-group"><header class="kkmd-issue-head"><div class="kkmd-issue-title"><span class="kkmd-issue-number">'+target.number+'</span><div><small>'+escapeHtml(t.theme)+'</small><h3>'+escapeHtml(t.title)+'</h3></div></div><span class="kkmd-issue-count">'+escapeHtml(lang()==="en"?linked+" linked · "+target.actions.length+" actions":linked+" terkait · "+target.actions.length+" aksi")+'</span></header><div class="kkmd-action-list">'+rows+gap+'</div></section>';
     }).join("");
   }
 
