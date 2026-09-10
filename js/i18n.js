@@ -962,6 +962,8 @@
     ,"18 karakter": "18 traits"
     ,"populasi": "populations"
     ,"karakter": "traits"
+    ,"Peta Dasar": "Base Map"
+    ,"Citra Satelit": "Satellite Imagery"
   });
   if (dictionaries.en) dictionaries.en["Cetak Peta"] = "Print Map";
   const reverse = Object.fromEntries(
