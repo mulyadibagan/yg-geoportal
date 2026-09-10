@@ -84,5 +84,6 @@ test("public page keeps one clear WebGIS route and no duplicate map links", () =
   const webgisLinks = html.match(/href="webgis\.html(?:\?[^"]*)?"/g) || [];
   assert.equal(webgisLinks.length, 1);
   assert.doesNotMatch(html, /Lihat peta utama|Buka peta interaktif/);
-  assert.match(html, /class="fu-back" href="webgis\.html"/);
+  assert.match(html, /class="fu-home-logo" href="webgis\\.html"/);
+  assert.doesNotMatch(html, /class="fu-back"/);
 });
