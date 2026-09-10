@@ -1153,6 +1153,24 @@
     document.body.appendChild(switcher);
   }
 
+  Object.assign(dictionaries.en, {
+    "KEBIJAKAN & KELEMBAGAAN PS RIAU": "RIAU SOCIAL FORESTRY POLICY & GOVERNANCE",
+    "Pokja Percepatan Perhutanan Sosial Provinsi Riau": "Riau Provincial Social Forestry Acceleration Working Group",
+    "Keputusan Gubernur Riau Nomor Kpts.123/II/2026 membentuk Pokja PPS untuk mempercepat akses dan meningkatkan kualitas pengelolaan Perhutanan Sosial di tingkat provinsi.": "Riau Governor Decree No. Kpts.123/II/2026 establishes the working group to accelerate access to and improve the quality of social forestry management at the provincial level.",
+    "Ditetapkan": "Established",
+    "25 Februari 2026": "25 February 2026",
+    "Masa kerja": "Term",
+    "2 tahun sejak ditetapkan": "Two years from the date of establishment",
+    "Penanggung jawab": "Accountable to",
+    "Gubernur Riau": "Governor of Riau",
+    "Mandat dan keterlibatan YG": "Mandate and YG participation",
+    "Pencermatan PIAPS, fasilitasi permohonan, dan verifikasi teknis.": "PIAPS review, application facilitation, and technical verification.",
+    "Penataan areal, perencanaan, pengembangan usaha, penyelesaian konflik, dan manajemen informasi.": "Area arrangement, planning, enterprise development, conflict resolution, and information management.",
+    "Mulyadi dari Yayasan Gambut tercantum sebagai anggota Sekretariat Pokja PPS Riau.": "Mulyadi of Yayasan Gambut is listed as a member of the Riau Social Forestry Working Group Secretariat.",
+    "Buka SK Pokja PPS 2026": "Open the 2026 Working Group Decree",
+    "Dokumen kelembagaan tingkat provinsi · tidak dihitung sebagai SK persetujuan profil PS.": "Provincial institutional document · not counted as an approval decree for an individual social forestry profile."
+  });
+
   document.addEventListener("click", event => {
     const button = event.target.closest("[data-lang]");
     if (button) setLanguage(button.dataset.lang);
