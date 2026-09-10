@@ -20,10 +20,8 @@ window.YG_ARAMCO_PHOTO_TIMELINE = [
   {id:'kp-p2-2026-08-20',village:'Kelapa Pati',phase:'Fase 2',series:'Area Penanaman Fase 2',date:'2026-08-20',stage:'Monitoring',fileId:'1OwqUmdPI2EU8wzSJkBQ4jQePTIk5u29O',caption:'Perkembangan penanaman mangrove Kelapa Pati pada 20 Agustus 2026',verified:true},
   {id:'kp-p3-2025',village:'Kelapa Pati',phase:'Fase 3',series:'Area Penanaman Fase 3',date:'2025-10-01',stage:'Sebelum',fileId:'1yI3Aby5shVZMj2vQWLNgrsKLhD6Y62Fl',caption:'Kondisi area penanaman Oktober 2025',verified:true},
 
-  {id:'sp-p3-2025a',village:'Sepahat',phase:'Fase 3',series:'Area Penanaman Fase 3',date:'2025-01-01',stage:'Sebelum',fileId:'1GjS1nl2mSJS6CvK4ebn8Ek7-kdcXLW7u',caption:'Kondisi awal area penanaman',verified:true},
-  {id:'sp-p3-2025b',village:'Sepahat',phase:'Fase 3',series:'Area Penanaman Fase 3',date:'2025-01-01',stage:'Sebelum',fileId:'1rdgTvUpjwzZb7acW5YPQpP2WtW0lcVeV',caption:'Sudut dokumentasi tambahan',verified:true},
-  {id:'sp-p3-2026a',village:'Sepahat',phase:'Fase 3',series:'Area Penanaman Fase 3',date:'2026-02-03',stage:'Monitoring',fileId:'1n5FJ6QmX01xgRD_qjVWOuqO7c6EYkMwQ',caption:'Monitoring 3 Februari 2026',verified:true},
-  {id:'sp-p3-2026b',village:'Sepahat',phase:'Fase 3',series:'Area Penanaman Fase 3',date:'2026-02-03',stage:'Monitoring',fileId:'1HSdQEUcEJ7MyPpXa_Cl_psWBn6V1ajIC',caption:'Sudut dokumentasi tambahan',verified:true},
+  {id:'sp-p3-2026b',village:'Sepahat',phase:'Fase 3',series:'Area Penanaman Fase 3',date:'2026-02-03',stage:'Kondisi awal',fileId:'1HSdQEUcEJ7MyPpXa_Cl_psWBn6V1ajIC',caption:'Kondisi awal pemantauan · 3 Februari 2026',verified:true},
+  {id:'sp-p3-2026-09-10',village:'Sepahat',phase:'Fase 3',series:'Area Penanaman Fase 3',date:'2026-09-10',stage:'Kondisi terkini',fileId:'1LZd5ugJWYZoYiPzvMI_kXJwUynZ_pSfH',caption:'Kondisi terkini penanaman mangrove Sepahat · 10 September 2026',verified:true},
 
   {id:'tk-drone-2026-before',village:'Tanjung Kuras',phase:'Fase 3',series:'Area Penanaman – Drone View',date:'2026-02-04',stage:'Sebelum',fileId:'1RFto5mCzor-Nwk6a-8wVTTEMWO7bXkf7',caption:'Kondisi awal area penanaman dari udara',verified:true},
   {id:'tk-drone-2026-after',village:'Tanjung Kuras',phase:'Fase 3',series:'Area Penanaman – Drone View',date:'2026-08-10',stage:'Monitoring',fileId:'1ZDrRm-oHinlq-cMIUbpaIoIPL3lAPWy3',caption:'Perkembangan area penanaman dari udara',verified:true}
