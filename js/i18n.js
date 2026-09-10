@@ -1045,6 +1045,8 @@
         .replace(/^Rentang (.+)$/, "Range $1")
         .replace(/^Grafik (.+) rata-rata pada enam populasi$/, "Chart of mean $1 across six populations")
         .replace(/^Dokumentasi (LIB-2026-\d+)$/, "Documentation for $1")
+        .replace(/^Perhutanan Sosial · (.+)$/, "Social Forestry · $1")
+        .replace(/^(\d+) wilayah PS dengan geometri ditampilkan\.$/, "$1 Social Forestry areas with geometry displayed.")
         .replace(/^(\d+) lokasi$/, "$1 locations")
         .replace(/^(\d+)% capaian$/, "$1% achieved")
         .replace(/^Aktif · (\d+) program$/, "Active · $1 programme")
