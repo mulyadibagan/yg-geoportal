@@ -2279,6 +2279,7 @@ L.control.scale({
       config.type === "khg" ||
       config.type === "social_forestry" ||
       config.type === "active_concession" ||
+      config.type === "oil_palm_company" ||
       config.type === "concession" ||
       config.type === "kph" ||
       config.type === "village_boundary";

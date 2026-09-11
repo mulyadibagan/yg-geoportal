@@ -35,10 +35,11 @@ test("fire dashboard links to the company report and keeps a non-attribution war
 test("interactive map exposes the Riau oil-palm company reference on demand", () => {
   const html = read("webgis.html");
   const controller = read("js/map-v4.js");
-  assert.match(html, /map-v4\.js\?v=20260912-oil-palm-reference1/);
+  assert.match(html, /map-v4\.js\?v=20260912-oil-palm-click1/);
   assert.match(controller, /perusahaan_sawit_riau/);
   assert.match(controller, /label: "Perusahaan Sawit Riau"/);
   assert.match(controller, /type: "oil_palm_company"/);
+  assert.match(controller, /config\.type === "oil_palm_company" \|\|/);
   assert.match(controller, /PERUSAHAAN_SAWIT_RIAU_REFERENSI\.geojson/);
 });
 
