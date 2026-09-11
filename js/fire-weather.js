@@ -61,7 +61,51 @@
     box.innerHTML=items.map(function(x,i){return '<article class="fw-alert-card '+x.risk+'"><button type="button" data-alert="'+i+'"><strong>'+esc(x.name)+'</strong><span>'+x.count+' hotspot · klik untuk melihat peta</span></button></article>'}).join('');
     box.querySelectorAll('[data-alert]').forEach(function(b){b.onclick=function(){var x=items[Number(b.dataset.alert)];map.fitBounds(x.layer.getBounds(),{maxZoom:13});x.layer.openPopup()}})
   }
-  function pointLayer(url,group,kind,label){return fetch(url).then(function(r){if(!r.ok)throw Error(label);return r.json()}).then(function(g){var letter=kind==='fdrs'?'F':'S';L.geoJSON(g,{pane:'infrastructurePane',pointToLayer:function(f,ll){return L.marker(ll,{pane:'infrastructurePane',riseOnHover:true,zIndexOffset:1000,icon:L.divIcon({className:'fw-infrastructure-icon',html:'<div class="fw-point '+kind+'" role="img" aria-label="'+esc(label)+'">'+letter+'</div>',iconSize:[18,18],iconAnchor:[9,9],popupAnchor:[0,-10]})})},onEachFeature:function(f,l){var p=f.properties||{},c=f.geometry&&f.geometry.coordinates||[];l.bindPopup('<strong>'+esc(p.Nama_Objek||label)+'</strong><br>'+esc(p.Desa||'')+' · '+esc(p.Tahun||'')+(c.length>1?'<br><small>Koordinat: '+Number(c[1]).toFixed(6)+', '+Number(c[0]).toFixed(6)+'</small>':''))}}).addTo(group);return (g.features||[]).length})}
+  function infrastructureJson(url){
+    var controller=new AbortController(),timer=setTimeout(function(){controller.abort()},20000);
+    return fetch(url+(url.indexOf('?')===-1?'?':'&')+'t='+Date.now(),{cache:'no-store',signal:controller.signal}).then(function(r){if(!r.ok)throw Error('Infrastructure');return r.json()}).then(function(g){if(!g||!Array.isArray(g.features))throw Error('Invalid infrastructure');return g}).finally(function(){clearTimeout(timer)});
+  }
+  function infrastructureFeatures(database,official,kind){
+    var seen=new Set(),reports=new Set(),features=[];
+    function norm(v){return String(v||'').trim().toLowerCase()}
+    var candidates=(official.features||[]).concat((database.features||[]).filter(function(f){var p=f.properties||{};return norm(p.Layer_ID||p.Source_Layer)===kind}));
+    candidates.forEach(function(f){
+      var p=f.properties||{},g=f.geometry,id=norm(p.Object_ID||p.objectId),report=norm(p.Source_Report_ID||p.reportId||p.Report_ID);
+      var type=norm(p.reportType||p.Report_Type||p.Jenis_Laporan),target=norm(p.Target_Object_ID_Current||p.Target_Object_ID);
+      if(!g||g.type!=='Point'||!Array.isArray(g.coordinates)||g.coordinates.length<2||!g.coordinates.slice(0,2).every(function(n){return typeof n==='number'&&Number.isFinite(n)}))return;
+      if(/pemeliharaan|maintenance/.test(type)||(norm(p.Source_Type)==='community_report'&&target))return;
+      var key=id||kind+':'+g.coordinates.slice(0,2).join(',')+':'+norm(p.Nama_Objek||p.title);
+      if(seen.has(key)||(report&&reports.has(report)))return;
+      seen.add(key);if(report)reports.add(report);features.push(f);
+    });
+    return features;
+  }
+  function renderInfrastructure(features,group,kind,label){
+    var letter=kind==='fdrs'?'F':'S';
+    var layer=L.geoJSON({type:'FeatureCollection',features:features},{pane:'infrastructurePane',pointToLayer:function(f,ll){return L.marker(ll,{pane:'infrastructurePane',riseOnHover:true,zIndexOffset:1000,icon:L.divIcon({className:'fw-infrastructure-icon',html:'<div class="fw-point '+kind+'" role="img" aria-label="'+esc(label)+'">'+letter+'</div>',iconSize:[18,18],iconAnchor:[9,9],popupAnchor:[0,-10]})})},onEachFeature:function(f,l){var p=f.properties||{},c=f.geometry.coordinates;l.bindPopup('<strong>'+esc(p.Nama_Objek||p.title||label)+'</strong><br>'+esc(p.Desa||p.village||p.locationName||'')+' · '+esc(p.Tahun||p.activityDate||'')+'<br><small>Koordinat: '+Number(c[1]).toFixed(6)+', '+Number(c[0]).toFixed(6)+'</small>')}});
+    group.clearLayers();layer.addTo(group);
+  }
+  var infrastructureBusy=false;
+  function loadInfrastructure(){
+    if(infrastructureBusy)return Promise.resolve();
+    infrastructureBusy=true;
+    var master=infrastructureJson('https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/snapshots/current/objects.json').catch(function(){
+      return infrastructureJson('https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec?page=objects');
+    });
+    return Promise.allSettled([master,infrastructureJson('data/fdrs.geojson'),infrastructureJson('data/sekat_kanal.geojson')]).then(function(results){
+      ['fdrs','sekat_kanal'].forEach(function(kind,i){
+        var masterOk=results[0].status==='fulfilled',localOk=results[i+1].status==='fulfilled';
+        var el=document.getElementById(i?'kpi-canals':'kpi-fdrs'),note=el.parentElement.querySelector('small');
+        if(!masterOk&&!localOk){if(note)note.textContent='Pembaruan belum tersedia';return}
+        var features=infrastructureFeatures(masterOk?results[0].value:{features:[]},localOk?results[i+1].value:{features:[]},kind);
+        renderInfrastructure(features,i?groups.canals:groups.fdrs,i?'canal':'fdrs',i?'Sekat kanal':'FDRS');
+        el.textContent=features.length;if(note)note.textContent=masterOk?'terpetakan':'terpetakan · data cadangan';
+        el.title=masterOk?'Diperbarui dari data peta utama':'Sumber terbaru belum dapat diakses';
+      });
+    }).finally(function(){infrastructureBusy=false});
+  }
+  loadInfrastructure();
+  setInterval(loadInfrastructure,300000);
   function distanceKm(a,b){var dy=(a[0]-b[0])*111,dx=(a[1]-b[1])*111*Math.cos((a[0]+b[0])*Math.PI/360);return Math.sqrt(dx*dx+dy*dy)}
   function nearestWeather(lat,lon){return weatherReadings.reduce(function(best,row){var d=distanceKm([lat,lon],[row.lat,row.lon]);return !best||d<best.distance?Object.assign({distance:d},row):best},null)}
   function nearestAerosol(lat,lon){return aerosolReadings.reduce(function(best,row){var d=distanceKm([lat,lon],[row.lat,row.lon]);return !best||d<best.distance?Object.assign({distance:d},row):best},null)}
@@ -281,7 +325,7 @@
   addMapDateBadge();
   addRainBadge();
   loadDispersionProduct();
-  Promise.all([fetch('data/desa_intervensi.geojson').then(function(r){return r.json()}),fetch('data/village-forest-analytics.json').then(function(r){return r.json()}),fetch('data/hotspot-high-confidence.geojson?v='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw Error('hotspot');return r.json()}),fetch('data/indonesia-boundary.geojson').then(function(r){if(!r.ok)throw Error('batas daratan');return r.json()}),pointLayer('data/fdrs.geojson',groups.fdrs,'fdrs','FDRS'),pointLayer('data/sekat_kanal.geojson',groups.canals,'canal','Sekat kanal'),loadWeather(),loadAerosol(),loadSurfaceObservations(),loadTransportWeather(),loadEnsembleWeather(),loadValidationStatus(),loadBurnedArea()]).then(function(v){villageGeo=v[0];analytics=v[1];hotspotGeo=v[2];(hotspotGeo.features||[]).forEach(function(f){if(f.properties)delete f.properties.oilPalmCompanyRef});var landFeature=v[3]&&v[3].features&&v[3].features[0],before=(hotspotGeo.features||[]).length;if(landFeature&&landFeature.geometry){hotspotGeo.features=(hotspotGeo.features||[]).filter(function(f){return f.geometry&&pointInGeometry(f.geometry.coordinates,landFeature.geometry)});hotspotGeo.offshoreFiltered=before-hotspotGeo.features.length}document.getElementById('kpi-fdrs').textContent=v[4];document.getElementById('kpi-canals').textContent=v[5];renderSurfaceObservations();updateHotspotFreshness();refreshHotspots();renderSmoke()}).catch(function(){hotspotStatusText='Data hotspot gagal dimuat';document.getElementById('data-status').textContent=hotspotStatusText;document.getElementById('updated-at').textContent='Periksa koneksi atau pembaruan FIRMS';renderSmoke()});
+  Promise.all([fetch('data/desa_intervensi.geojson').then(function(r){return r.json()}),fetch('data/village-forest-analytics.json').then(function(r){return r.json()}),fetch('data/hotspot-high-confidence.geojson?v='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw Error('hotspot');return r.json()}),fetch('data/indonesia-boundary.geojson').then(function(r){if(!r.ok)throw Error('batas daratan');return r.json()}),Promise.resolve(),Promise.resolve(),loadWeather(),loadAerosol(),loadSurfaceObservations(),loadTransportWeather(),loadEnsembleWeather(),loadValidationStatus(),loadBurnedArea()]).then(function(v){villageGeo=v[0];analytics=v[1];hotspotGeo=v[2];(hotspotGeo.features||[]).forEach(function(f){if(f.properties)delete f.properties.oilPalmCompanyRef});var landFeature=v[3]&&v[3].features&&v[3].features[0],before=(hotspotGeo.features||[]).length;if(landFeature&&landFeature.geometry){hotspotGeo.features=(hotspotGeo.features||[]).filter(function(f){return f.geometry&&pointInGeometry(f.geometry.coordinates,landFeature.geometry)});hotspotGeo.offshoreFiltered=before-hotspotGeo.features.length}renderSurfaceObservations();updateHotspotFreshness();refreshHotspots();renderSmoke()}).catch(function(){hotspotStatusText='Data hotspot gagal dimuat';document.getElementById('data-status').textContent=hotspotStatusText;document.getElementById('updated-at').textContent='Periksa koneksi atau pembaruan FIRMS';renderSmoke()});
   document.getElementById('period-control').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;period=Number(b.dataset.period);this.querySelectorAll('button').forEach(function(x){x.classList.toggle('active',x===b)});document.getElementById('kpi-period').textContent=b.textContent+' · buka analisis →';refreshHotspots();renderSmoke()});
   document.querySelectorAll('[data-layer]').forEach(function(c){c.addEventListener('change',function(){setLayerChecked(c.dataset.layer,c.checked);updateZoomDeclutter()})});
   var basemapSelect=document.getElementById('fire-basemap');if(basemapSelect){basemapSelect.value=activeBasemap;basemapSelect.addEventListener('change',function(){setBasemap(basemapSelect.value)})}
