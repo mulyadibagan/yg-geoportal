@@ -6,8 +6,9 @@ const path = require("node:path");
 const ROOT = path.resolve(__dirname, "..");
 const read = (file) => fs.readFileSync(path.join(ROOT, file), "utf8");
 
-test("Faperta public module is additive and linked from the existing WebGIS", () => {
-  assert.match(read("webgis.html"), /href="faperta-ur\.html"/);
+test("Faperta public module is additive and entered from the main dashboard", () => {
+  assert.match(read("index.html"), /class="home-faperta-card" href="faperta-ur\.html"/);
+  assert.doesNotMatch(read("webgis.html"), /href="faperta-ur\.html"/);
   assert.match(read("js/map-v4.js"), /upt_faperta_ur/);
   assert.match(read("js/map-v4.js"), /data\/faperta-ur-site\.geojson/);
   assert.match(read("js/map-v4.js"), /KOLABORASI AKADEMIK/);
@@ -85,11 +86,11 @@ test("Faperta weather separates NASA rainfall estimates from Open-Meteo forecast
 });
 
 
-test("public page keeps one clear WebGIS route and no duplicate map links", () => {
+test("Faperta page returns to the dashboard and has no duplicate map routes", () => {
   const html = read("faperta-ur.html");
   const webgisLinks = html.match(/href="webgis\.html(?:\?[^"]*)?"/g) || [];
-  assert.equal(webgisLinks.length, 1);
+  assert.equal(webgisLinks.length, 0);
   assert.doesNotMatch(html, /Lihat peta utama|Buka peta interaktif/);
-  assert.match(html, /class="fu-home-logo" href="webgis\.html"/);
+  assert.match(html, /class="fu-home-logo" href="index\.html"/);
   assert.doesNotMatch(html, /class="fu-back"/);
 });
