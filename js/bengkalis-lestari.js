@@ -39,7 +39,7 @@
     return Object.assign({}, action, {
       name: translated.name || action.name,
       rationale: translated.rationale || action.rationale,
-      evidence: Array.isArray(action.evidence) ? action.evidence.map(item => Object.assign({}, item, { label: EN.evidence[item.label] || item.label })) : []
+      evidence: (Array.isArray(action.bukti) ? action.bukti : (Array.isArray(action.evidence) ? action.evidence : [])).map(item => Object.assign({}, item, { label: EN.evidence[item.label] || item.label }))
     });
   };
   const searchable = (target, action) => {
@@ -64,14 +64,14 @@
       heroIntro:"A transparent mapping of Yayasan Gambut's documented position and programme contributions against Bengkalis Regent Regulation No. 13 of 2026 and its action-plan annex.",
       regulation:"REGULATION",regulationTitle:"Bengkalis Regent Regulation No. 13 of 2026",regulationMeta:"6 pages · open in Google Drive →",
       annex:"ANNEX",annexTitle:"Bengkalis Lestari Regional Action Plan",annexMeta:"48 pages · open in Google Drive →",
-      goals:"goals",targets:"operational targets",actions:"action-plan items",explicit:"list YG directly",linked:"linked to YG",
-      hierarchy:"Policy structure: 3 goals → 5 formal targets → 11 operational targets → 47 action-plan items.",
+      goals:"Bengkalis Lestari goals",targets:"operational targets",actions:"action-plan items",explicit:"list YG directly",linked:"linked to YG",
+      hierarchy:"The RAD annex sets out 3 Bengkalis Lestari goals and 11 operational targets, while the Regent Regulation establishes 5 formal targets.",
       positionLabel:"CONTRIBUTION POSITION",positionTitle:"Official listing is distinguished from programme alignment",
       positionIntro:'The label <strong>Listed in the RAD</strong> is used only when Yayasan Gambut appears in the development-partner column. Other actions are classified using documented YG evidence or thematic alignment; this does not constitute a government mandate.',
       statusDescriptions:["Yayasan Gambut is explicitly named.","Specific public YG evidence supports the alignment.","Relevant, but does not yet demonstrate delivery of the action.","No matching public YG evidence is currently available."],
-      policyLabel:"POLICY DIRECTION",policyTitle:"Goals and formal targets",policyIntro:"The regulation establishes five formal targets; the annex translates them into eleven operational targets.",
+      policyLabel:"POLICY DIRECTION",policyTitle:"Goals and formal targets",policyIntro:"The annex sets out three Bengkalis Lestari goals and eleven operational targets; the regulation establishes five formal targets.",
       actionLabel:"ACTION PLAN",actionTitle:"Bengkalis Lestari RAD actions",actionIntro:"The initial view shows the 34 actions linked to YG. Use the filters to review all 47 actions and the basis for each classification.",
-      search:"Search actions",searchPlaceholder:"Search actions, lead agencies, partners, or themes",target:"Target",status:"Contribution status",period:"Period",
+      search:"Search actions",searchPlaceholder:"Search actions, lead agencies, partners, or themes",target:"Target",status:"Contribution status",period:"Period",themeLabel:"YG mapping theme",
       reset:"Reset filters",showAll:"Show all 47 actions",
       methodLabel:"METHODOLOGY & SOURCE",methodTitle:"How to read this mapping",
       methodText:"This page is Yayasan Gambut's evidence-based mapping of programme alignment. It is not an official evaluation by the Bengkalis Regency Government and does not change the roles assigned in the RAD.",
@@ -83,14 +83,14 @@
       heroIntro:"Pemetaan terbuka mengenai posisi dan kontribusi program Yayasan Gambut berdasarkan Peraturan Bupati Bengkalis Nomor 13 Tahun 2026 beserta lampiran rencana aksinya.",
       regulation:"PERATURAN",regulationTitle:"Perbup Bengkalis Nomor 13 Tahun 2026",regulationMeta:"6 halaman · buka di Google Drive →",
       annex:"LAMPIRAN",annexTitle:"RAD Kabupaten Bengkalis Lestari",annexMeta:"48 halaman · buka di Google Drive →",
-      goals:"tujuan",targets:"sasaran operasional",actions:"rencana aksi",explicit:"menyebut YG langsung",linked:"memiliki keterkaitan YG",
-      hierarchy:"Struktur kebijakan: 3 tujuan → 5 sasaran formal → 11 sasaran operasional → 47 rencana aksi.",
+      goals:"tujuan Kabupaten Lestari",targets:"sasaran operasional",actions:"rencana aksi",explicit:"menyebut YG langsung",linked:"memiliki keterkaitan YG",
+      hierarchy:"Lampiran RAD merumuskan 3 tujuan Kabupaten Lestari dan 11 sasaran operasional, sedangkan Perbup menetapkan 5 sasaran formal.",
       positionLabel:"POSISI KONTRIBUSI",positionTitle:"Pencantuman dalam RAD dibedakan dari keselarasan program",
       positionIntro:'Label <strong>Tercantum dalam RAD</strong> hanya digunakan ketika Yayasan Gambut disebut pada kolom mitra pembangunan. Aksi lain dikelompokkan berdasarkan bukti publik YG atau keselarasan tema; pengelompokan ini bukan mandat dari pemerintah.',
       statusDescriptions:["Nama Yayasan Gambut tercantum langsung.","Bukti publik YG mendukung keterkaitan secara spesifik.","Relevan, tetapi belum membuktikan pelaksanaan aksi.","Belum tersedia bukti publik YG yang sesuai."],
-      policyLabel:"ARAH KEBIJAKAN",policyTitle:"Tujuan dan sasaran formal",policyIntro:"Perbup menetapkan lima sasaran formal; lampiran menerjemahkannya menjadi sebelas sasaran operasional.",
+      policyLabel:"ARAH KEBIJAKAN",policyTitle:"Tujuan dan sasaran formal",policyIntro:"Lampiran memuat tiga tujuan Kabupaten Lestari dan sebelas sasaran operasional; Perbup menetapkan lima sasaran formal.",
       actionLabel:"RENCANA AKSI",actionTitle:"Aksi RAD Bengkalis Lestari",actionIntro:"Tampilan awal memuat 34 aksi yang terkait dengan YG. Gunakan filter untuk meninjau seluruh 47 aksi dan dasar setiap klasifikasi.",
-      search:"Cari aksi",searchPlaceholder:"Cari aksi, perangkat daerah, mitra, atau tema",target:"Sasaran",status:"Status kontribusi",period:"Periode",
+      search:"Cari aksi",searchPlaceholder:"Cari aksi, perangkat daerah, mitra, atau tema",target:"Sasaran",status:"Status kontribusi",period:"Periode",themeLabel:"Tema pemetaan YG",
       reset:"Reset filter",showAll:"Tampilkan seluruh 47 aksi",
       methodLabel:"METODOLOGI & SUMBER",methodTitle:"Cara membaca pemetaan ini",
       methodText:"Halaman ini merupakan pemetaan berbasis bukti oleh Yayasan Gambut, bukan evaluasi resmi Pemerintah Kabupaten Bengkalis, dan tidak mengubah pembagian peran dalam RAD.",
@@ -176,11 +176,11 @@
 
   function renderAction(target, action) {
     const t=localTarget(target),a=localAction(target,action);
-    const evidence=Array.isArray(a.evidence)?a.evidence:[];
+    const evidence=Array.isArray(a.evidence)?a.evidence:(Array.isArray(action.bukti)?action.bukti:[]);
     const links=evidence.map(item=>'<a href="'+escapeHtml(item.url)+'" target="_blank" rel="noopener">'+escapeHtml(item.label)+' ↗</a>').join("");
     return '<article class="kkmd-action rad-action">'+
       '<div class="kkmd-action-code">'+target.number+'.'+action.no+'</div>'+
-      '<div class="kkmd-action-main"><h4>'+escapeHtml(a.name)+'</h4><div class="rad-action-summary"><div><strong>'+escapeHtml(copy().periodTarget)+'</strong>'+escapeHtml(action.period)+'</div><div><strong>'+escapeHtml(copy().theme)+'</strong>'+escapeHtml(t.theme)+'</div></div></div>'+
+      '<div class="kkmd-action-main"><h4>'+escapeHtml(a.name)+'</h4><div class="rad-action-summary"><div><strong>'+escapeHtml(copy().periodTarget)+'</strong>'+escapeHtml(action.period)+'</div><div><strong>'+escapeHtml(copy().themeLabel)+'</strong>'+escapeHtml(t.theme)+'</div></div></div>'+
       '<div class="kkmd-action-links"><span class="rad-badge is-'+escapeHtml(action.status)+'">'+escapeHtml(copy().labels[action.status])+'</span>'+(links?'<div class="rad-evidence-links">'+links+'</div>':"")+'</div>'+
       '<details class="rad-action-details"><summary>'+escapeHtml(copy().details)+'</summary><div class="rad-action-detail-grid">'+
       '<div><strong>'+escapeHtml(copy().lead)+'</strong>'+escapeHtml(action.lead)+'</div>'+
@@ -214,8 +214,8 @@
 
   state.language=window.YG_I18N && window.YG_I18N.language==="en"?"en":"id";
   bindEvents(); applyStaticLanguage();
-  fetch("data/bengkalis-lestari.json?v=20260911-public2")
+  fetch("data/bengkalis-lestari.json?v=20260911-public3")
     .then(response=>{if(!response.ok)throw new Error(copy().loadError);return response.json();})
-    .then(data=>{state.data=data;renderAll();})
+    .then(data=>{state.data=data;state.data.targets.sort((a,b)=>a.number-b.number);renderAll();})
     .catch(error=>{elements.count.textContent=copy().unavailable;elements.groups.innerHTML='<div class="kkmd-empty">'+escapeHtml(error.message)+'</div>';});
 })();
