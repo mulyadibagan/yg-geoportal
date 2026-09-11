@@ -6,7 +6,7 @@ const path = require("node:path");
 const ROOT = path.resolve(__dirname, "..");
 const read = (file) => fs.readFileSync(path.join(ROOT, file), "utf8");
 
-test("oil-palm reference layer has the expected Riau coverage and public caution", () => {
+test("oil-palm reference layer has the expected Riau coverage and a clean public report", () => {
   const data = JSON.parse(read("data/PERUSAHAAN_SAWIT_RIAU_REFERENSI.geojson"));
   assert.equal(data.type, "FeatureCollection");
   assert.equal(data.features.length, 241);
@@ -15,7 +15,7 @@ test("oil-palm reference layer has the expected Riau coverage and public caution
 
   const html = read("hotspot-analysis.html");
   const controller = read("js/hotspot-analysis.js");
-  assert.match(html, /bukan bukti batas HGU terkini/);
+  assert.doesNotMatch(html, /Catatan metodologi|method-note/);
   assert.match(controller, /'oil-palm':\{title:'Hotspot dalam referensi perusahaan sawit'/);
   assert.match(controller, /oilPalmCompanyRef/);
   assert.match(controller, /PERUSAHAAN_SAWIT_RIAU_REFERENSI\.geojson/);
