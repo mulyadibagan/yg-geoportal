@@ -1,33 +1,58 @@
-const test = require('node:test');
-const assert = require('node:assert/strict');
-const fs = require('node:fs');
-const path = require('node:path');
-const vm = require('node:vm');
-const read = f => fs.readFileSync(path.join(__dirname,'..',f),'utf8');
-test('legacy company layer is unavailable on main map',()=>{
- assert.doesNotMatch(read('js/map-v4.js'), /perusahaan_sawit_riau:|PERUSAHAAN_SAWIT_RIAU_REFERENSI/);
+const test=require('node:test');
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const {spawnSync}=require('node:child_process');
+const os=require('node:os');
+const vm=require('node:vm');
+const ref=require('../js/oil-palm-reference.js');
+const root=path.resolve(__dirname,'..');
+const read=p=>fs.readFileSync(path.join(root,p),'utf8');
+const ring=[[0,0],[10,0],[10,10],[0,10],[0,0]],hole=[[4,4],[6,4],[6,6],[4,6],[4,4]];
+const unit=(id,rings,type='Polygon')=>({type:'Feature',properties:{COMPANY_ID:id,PO_COMPANY:id,REFERENCE_DISTRICTS:'Kampar'},geometry:{type,coordinates:rings}});
+const point=(x,y)=>({type:'Feature',geometry:{type:'Point',coordinates:[x,y]},properties:{village:'Desa tetap',pbph052026:[{name:'PBPH tetap'}],oilPalmCompanyRef:[{name:'Lama'}]}});
+test('polygon holes, multipart, duplicate units, stale references and unaffected attributes',()=>{
+ const geo={type:'FeatureCollection',referenceVersion:ref.version,features:[unit('A',[ring,hole]),unit('A',[ring,hole]),unit('B',[[ring,hole]],'MultiPolygon')]};
+ const points={features:[point(2,2),point(5,5),point(11,11)]};
+ assert.equal(ref.attach(points,geo),1);
+ assert.deepEqual(points.features[0].properties.oilPalmCompanyRef.map(x=>x.id),['A','B']);
+ assert.ok(!points.features[1].properties.oilPalmCompanyRef);
+ assert.ok(!points.features[2].properties.oilPalmCompanyRef);
+ assert.ok(points.features.every(f=>f.properties.village==='Desa tetap'&&f.properties.pbph052026[0].name==='PBPH tetap'));
+ assert.throws(()=>ref.attach(points,{...geo,referenceVersion:'old'}));
 });
-test('old company report exits before map or data load, without reporting zero hotspots',()=>{
- const els={}; const sections=[{},{}];
- const document={getElementById:id=>els[id]||(els[id]={}),querySelectorAll:()=>sections};
- sections.forEach(x=>x.style={});
- vm.runInNewContext(read('js/hotspot-analysis.js'),{location:{search:'?scope=oil-palm&date=2026-09-12'},URLSearchParams,document});
- assert.match(els['analysis-status'].textContent,/belum tersedia/);
- assert.ok(sections.every(x=>x.hidden&&x.style.display==='none'));
+test('interactive reference layer binds and opens a company popup',async()=>{
+ const script=read('js/map-v4.js');
+ const start=script.indexOf('  async function loadReferenceLayer('),end=script.indexOf('  function appendReferenceControls(',start);
+ let click,opened=false,options,popup;
+ const feature={type:'Feature',properties:{COMPANY_ID:'A',PO_COMPANY:'PT A'},geometry:{type:'Polygon',coordinates:[ring]}};
+ const layer={getBounds:()=>({isValid:()=>true})};
+ const context={REFERENCE_LAYERS:{test:{type:'oil_palm_company',file:'data/test.geojson',label:'Referensi',version:'test'}},referenceLayerObjects:{},referenceLayerState:{},setStatus(){},fetch:async()=>({ok:true,json:async()=>({type:'FeatureCollection',features:[feature]})}),mergeReferenceSupplements:async(c,d)=>d,MAP_PANES:{reference:'reference'},vectorRendererFor:()=>({}),referenceStyle:()=>({}),referencePopup:(c,f)=>f.properties.PO_COMPANY,referenceCountInfo:()=>({count:1,featureCount:1,label:'1',statusLabel:'1'}),document:{querySelector:()=>null},L:{DomEvent:{stopPropagation(){}},geoJSON:(data,opts)=>{options=opts;opts.onEachFeature(feature,{bindPopup(v){popup=v},on(event,fn){click=fn},openPopup(){opened=true}});return layer}}};
+ vm.createContext(context);vm.runInContext(script.slice(start,end)+'\nthis.load=loadReferenceLayer;',context);
+ await context.load('test');assert.equal(options.interactive,true);assert.equal(options.bubblingMouseEvents,false);assert.equal(popup,'PT A');click({latlng:{lat:1,lng:1}});assert.equal(opened,true);
 });
-test('historical matching is suspended and village/PBPH matching remains',()=>{
- const s=read('scripts/enrich_hotspot_villages.mjs');
- assert.doesNotMatch(s,/readFile\(oilPalmPath|HOTSPOT_OIL_PALM_BOUNDARY/);
- assert.ok(s.includes('Promise.resolve({ type: "FeatureCollection", features: [] })'));
- assert.ok(s.includes('feature.properties.pbph052026 ='));
- assert.ok(s.includes('feature.properties.village ='));
- assert.ok(s.includes('delete feature.properties.oilPalmCompanyRef'));
+test('release has only screened references, without obsolete legal or group claims',()=>{
+ const data=JSON.parse(read('data/PERUSAHAAN_SAWIT_RIAU_REFERENSI.geojson'));
+ assert.equal(data.features.length,88);
+ assert.equal(new Set(data.features.map(f=>f.properties.COMPANY_ID)).size,63);
+ assert.ok(data.features.every(f=>!('PO_HGU' in f.properties)&&!('PO_GROUP' in f.properties)&&f.properties.ACTIVE_STATUS_VERIFIED===false));
+ assert.ok(!data.features.some(f=>f.properties.COMPANY_ID==='PRIATAMARIAU'));
 });
-test('cached company references are removed before rendering other hotspot reports',()=>{
- for(const f of ['js/fire-weather.js','js/hotspot-analysis.js']){
-  assert.ok(read(f).includes('if(f.properties)delete f.properties.oilPalmCompanyRef'));
- }
- const lines=read('fire-weather.html').split('\n').filter(x=>x.includes('data-analysis-scope="oil-palm"')||x.includes('id="oil-palm-source-count"'));
- assert.equal(lines.length,2);
- assert.ok(lines.every(x=>x.startsWith('<div hidden style="display:none">')));
+test('hourly enrichment uses same matching and keeps village and PBPH enrichment',()=>{
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'sawit-test-'));
+ try{
+  const village=unit('v',[ring]);village.properties={WADMKD:'Desa uji',WADMKC:'Kecamatan uji',WADMKK:'Kampar'};
+  const permit=unit('p',[ring]);permit.properties={NAMOBJ:'PBPH uji',NO_SK:'SK uji'};
+  const geo={type:'FeatureCollection',referenceVersion:ref.version,features:[unit('A',[ring,hole])]};
+  for(const [name,data] of Object.entries({village:{features:[village]},permit:{features:[permit]},company:geo,hotspots:{features:[point(2,2),point(5,5),point(11,11)]}}))fs.writeFileSync(path.join(dir,name+'.json'),JSON.stringify(data));
+  const run=spawnSync(process.execPath,[path.join(root,'scripts/enrich_hotspot_villages.mjs')],{env:{...process.env,HOTSPOT_VILLAGE_BOUNDARY:path.relative(root,path.join(dir,'village.json')),HOTSPOT_PBPH_BOUNDARY:path.relative(root,path.join(dir,'permit.json')),HOTSPOT_OIL_PALM_BOUNDARY:path.relative(root,path.join(dir,'company.json')),HOTSPOT_POINTS_FILE:path.relative(root,path.join(dir,'hotspots.json'))},encoding:'utf8'});
+  assert.equal(run.status,0,run.stderr);
+  const out=JSON.parse(fs.readFileSync(path.join(dir,'hotspots.json'))).features;
+  assert.equal(out[0].properties.oilPalmCompanyRef[0].name,'A');
+  assert.equal(out[0].properties.village,'Desa uji');
+  assert.equal(out[0].properties.pbph052026[0].name,'PBPH uji');
+  assert.ok(!out[1].properties.oilPalmCompanyRef);
+  assert.equal(out[1].properties.village,'Desa uji');
+  assert.ok(!out[2].properties.oilPalmCompanyRef);
+ }finally{fs.rmSync(dir,{recursive:true,force:true})}
 });

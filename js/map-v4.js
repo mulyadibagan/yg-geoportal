@@ -38,6 +38,20 @@
 
 
   const REFERENCE_LAYERS = {
+    perusahaan_sawit_riau: {
+      id: "perusahaan_sawit_riau",
+      label: "Referensi Perusahaan Sawit",
+      file: "data/PERUSAHAAN_SAWIT_RIAU_REFERENSI.geojson",
+      version: "disbun2024-location88-v1",
+      color: "#f97316",
+      count: 63,
+      countLabel: "63 perusahaan · 88 polygon",
+      type: "oil_palm_company",
+      focusOnEnable: true,
+      sourceLabel: "Nama: Disbun Riau 2024 · polygon historis",
+      sourceUrl: "https://ppid.riau.go.id/informasi-publik/844/buku-statistik-perkebunan-tahun-2024",
+      scale: "Batas indikatif"
+    },
     kawasan_hutan_sk_903: {
       id: "kawasan_hutan_sk_903",
       label: "Kawasan Hutan SK 903",
@@ -224,6 +238,10 @@
         statusLabel: formatNumber(permitCount) + " izin unik · " +
           formatNumber(featureCount) + " bagian geometri"
       };
+    }
+    if (layerId === "perusahaan_sawit_riau") {
+      const count = new Set(features.map(f => f.properties.COMPANY_ID)).size;
+      return { count, featureCount, label: count + " perusahaan · " + featureCount + " polygon", statusLabel: count + " perusahaan · " + featureCount + " polygon" };
     }
     if (layerId !== "perhutanan_sosial_riau") {
       return {
@@ -2071,10 +2089,9 @@ L.control.scale({
       rows += item("Kegiatan", props.KEGIATAN);
     } else if (config.type === "oil_palm_company") {
       rows += item("Perusahaan", props.PO_COMPANY);
-      rows += item("Grup perusahaan", props.PO_GROUP || props.group_comp);
-      rows += item("Status pada sumber", props.PO_LEGALST || props.PO_Legal_1);
-      rows += item("Nomor HGU pada sumber", props.PO_HGU);
-      rows += item("Luas referensi (ha)", areaValue(props.PO_AREA_HG || props.PO_HECTARE));
+      rows += item("Kabupaten rujukan", props.REFERENCE_DISTRICTS);
+      rows += item("Rujukan nama", "Disbun Riau 2024 · hlm. " + props.SOURCE_PAGES);
+      rows += item("Batas", "Indikatif historis");
       rows += item("Provinsi", props.PO_PROVINC);
     } else if (config.type === "concession") {
       rows += item("Pemegang izin", props.NAMA_PRH);
@@ -2214,7 +2231,7 @@ L.control.scale({
     setStatus("Memuat " + config.label + "…", false);
 
     const response = await fetch(
-      config.file + "?v=20260901-basilam-geniot1",
+      config.file + (config.file.includes("?") ? "&" : "?") + "v=" + (config.version || "20260901-basilam-geniot1"),
       {
         cache: "force-cache"
       }
