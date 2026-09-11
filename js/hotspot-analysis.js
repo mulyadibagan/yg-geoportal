@@ -98,7 +98,7 @@
     scope==='yg'?Promise.resolve(null):fetch('data/batas_administrasi_desa_riau.geojson').then(function(r){if(!r.ok)throw Error('desa-admin');return r.json()}),
     fetch('data/indonesia-boundary.geojson').then(function(r){if(!r.ok)throw Error('batas');return r.json()}),
     fetch('data/PBPH_RIAU_052026.geojson').then(function(r){if(!r.ok)throw Error('pbph');return r.json()}),
-    fetch('data/PERUSAHAAN_SAWIT_RIAU_REFERENSI.geojson?v=disbun2024-location88-v1').then(function(r){if(!r.ok)throw Error('referensi sawit');return r.json()}).catch(function(e){if(scope==='oil-palm')throw e;return null})
+    fetch('data/PERUSAHAAN_SAWIT_RIAU_REFERENSI.geojson?v=disbun2024-location88-v1-g2').then(function(r){if(!r.ok)throw Error('referensi sawit');return r.json()}).catch(function(e){if(scope==='oil-palm')throw e;return null})
   ]).then(function(v){hotspotGeo=v[0];if(v[5])YGOilPalmReference.attach(hotspotGeo,v[5]);else hotspotGeo.features.forEach(function(f){if(f.properties)delete f.properties.oilPalmCompanyRef});villageGeo=v[1];adminVillageGeo=v[2];landGeo=v[3];pbphGeo=v[4];oilPalmGeo=v[5];render()}).catch(function(e){var status=document.getElementById('analysis-status');status.className='ha-status error';status.textContent='Laporan gagal dimuat. Periksa koneksi atau data sumber.';console.error(e)});
 })();
 

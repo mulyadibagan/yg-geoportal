@@ -42,7 +42,7 @@
       id: "perusahaan_sawit_riau",
       label: "Referensi Perusahaan Sawit",
       file: "data/PERUSAHAAN_SAWIT_RIAU_REFERENSI.geojson",
-      version: "disbun2024-location88-v1",
+      version: "disbun2024-location88-v1-g2",
       color: "#f97316",
       count: 63,
       countLabel: "63 perusahaan · 88 polygon",
