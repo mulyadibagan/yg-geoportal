@@ -657,8 +657,8 @@ L.control.scale({
   }
 
   const localProgramPhotoAssets = {
-    "fdrs pedekik (1).jpg": "assets/program-photos/fdrs-pedekik-2026-01.jpg",
-    "fdrs pedekik (4).jpg": "assets/program-photos/fdrs-pedekik-2026-04.jpg"
+    "fdrs pedekik (1).jpg": "assets/program-photos/fdrs-pedekik-2026-01.jpg?v=20260911-2",
+    "fdrs pedekik (4).jpg": "assets/program-photos/fdrs-pedekik-2026-04.jpg?v=20260911-2"
   };
 
   function normalizePhotoUrl(value) {
