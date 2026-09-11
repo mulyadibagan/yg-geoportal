@@ -1,0 +1,47 @@
+name: Update Burned Area Estimates
+
+on:
+  schedule:
+    # Check once daily. Publication only changes after a usable post-event image exists.
+    - cron: "35 3 * * *"
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/update-burned-area-estimates.yml"
+      - "scripts/update_burned_area_estimates.py"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: burned-area-estimates-main
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Install satellite-analysis dependencies
+        run: pip install numpy planetary-computer pystac-client rasterio pyproj scipy shapely scikit-image
+      - name: Build conservative Riau estimates
+        run: python scripts/update_burned_area_estimates.py
+      - name: Publish only when the estimate changed
+        run: |
+          if git diff --quiet -- data/burned-area-estimates.geojson data/burned-area-summary.json; then
+            echo "No burned-area estimate changes to publish."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/burned-area-estimates.geojson data/burned-area-summary.json
+          git commit -m "chore(data): update burned-area estimates"
+          git pull --rebase origin main
+          git push origin HEAD:main
