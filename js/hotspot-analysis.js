@@ -4,8 +4,8 @@
   // Historical company polygons are suspended pending official spatial verification.
   if(scope==='oil-palm'){
     document.getElementById('report-title').textContent='Perusahaan sawit Riau';
-    document.getElementById('report-subtitle').textContent='Data sedang diperbarui';
-    document.getElementById('analysis-status').textContent='Analisis perusahaan sawit belum tersedia selama pemeriksaan data resmi.';
+    document.getElementById('report-subtitle').textContent='Data referensi belum tersedia';
+    document.getElementById('analysis-status').textContent='Analisis titik api per perusahaan sawit belum tersedia.';
     document.querySelectorAll('.ha-shell > section:not(.ha-title), .ha-controls').forEach(function(el){el.hidden=true;el.style.display='none'});
     document.title='Perusahaan sawit Riau | YG GeoPortal';
     return;
