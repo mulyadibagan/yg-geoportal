@@ -681,3 +681,23 @@ main.container{width:100%;max-width:none;padding:0}
 .dashboard-hero .hero-copy .hero-eyebrow::before,
 .dashboard-hero .hero-copy .kicker::before,
 .dashboard-hero .hero-copy .hero-kicker::before{display:none!important}
+
+
+/* Academic collaboration module */
+.home-collaboration{margin-top:1.25rem;padding:1.25rem;border:1px solid rgba(7,84,58,.12);border-radius:1.35rem;background:linear-gradient(135deg,rgba(255,255,255,.96),rgba(238,248,242,.96));box-shadow:0 16px 42px rgba(23,67,49,.08)}
+.home-collaboration__head{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;margin-bottom:.9rem}
+.home-collaboration__head span{color:#08724a;font-size:.75rem;font-weight:800;letter-spacing:.14em}
+.home-collaboration__head h2{margin:0;color:#173b2c;font-size:1.25rem;letter-spacing:-.02em}
+.home-faperta-card{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:1.25rem;padding:1.25rem 1.35rem;border:1px solid rgba(7,84,58,.12);border-radius:1rem;background:#fff;color:#173b2c;text-decoration:none;transition:border-color .2s ease,box-shadow .2s ease,transform .2s ease}
+.home-faperta-card:hover,.home-faperta-card:focus-visible{border-color:rgba(7,114,74,.35);box-shadow:0 14px 34px rgba(23,67,49,.1);transform:translateY(-2px)}
+.home-faperta-card__marks{display:flex;align-items:center;gap:.65rem}
+.home-faperta-card__marks img:first-child{width:3.25rem;height:3.25rem;object-fit:contain}
+.home-faperta-card__marks img:last-child{width:9.5rem;height:3.25rem;padding:.45rem .65rem;border-radius:.65rem;background:#164430;object-fit:contain}
+.home-faperta-card__marks i{color:#74887e;font-style:normal}
+.home-faperta-card__copy{display:flex;min-width:0;flex-direction:column;gap:.28rem}
+.home-faperta-card__copy strong{font-size:1.05rem}
+.home-faperta-card__copy span{color:#53695f;font-size:.9rem;line-height:1.5}
+.home-faperta-card__copy small{color:#08724a;font-size:.8rem;font-weight:700}
+.home-faperta-card__action{white-space:nowrap;color:#08724a;font-size:.9rem;font-weight:800}
+.home-faperta-card__action i{margin-left:.35rem;font-style:normal}
+@media(max-width:760px){.home-collaboration{padding:1rem}.home-collaboration__head{display:block}.home-collaboration__head h2{margin-top:.35rem}.home-faperta-card{grid-template-columns:1fr;padding:1rem}.home-faperta-card__marks img:last-child{width:8.5rem}.home-faperta-card__action{padding-top:.35rem;border-top:1px solid rgba(7,84,58,.1)}}
