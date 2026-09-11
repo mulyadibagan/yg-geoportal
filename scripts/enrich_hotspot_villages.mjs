@@ -6,6 +6,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const boundaryPath = path.join(ROOT, process.env.HOTSPOT_VILLAGE_BOUNDARY || "data/batas_administrasi_desa_riau.geojson");
 const hotspotPath = path.join(ROOT, process.env.HOTSPOT_POINTS_FILE || "data/hotspot-high-confidence.geojson");
 const pbphPath = path.join(ROOT, process.env.HOTSPOT_PBPH_BOUNDARY || "data/PBPH_RIAU_052026.geojson");
+const oilPalmPath = path.join(ROOT, process.env.HOTSPOT_OIL_PALM_BOUNDARY || "data/PERUSAHAAN_SAWIT_RIAU_REFERENSI.geojson");
 
 function ringContains(point, ring) {
   let inside = false;
@@ -39,10 +40,11 @@ function boundsOf(geometry) {
   return bounds;
 }
 
-const [boundary, hotspots, pbphGeo] = await Promise.all([
+const [boundary, hotspots, pbphGeo, oilPalmGeo] = await Promise.all([
   readFile(boundaryPath, "utf8").then(JSON.parse),
   readFile(hotspotPath, "utf8").then(JSON.parse),
-  readFile(pbphPath, "utf8").then(JSON.parse)
+  readFile(pbphPath, "utf8").then(JSON.parse),
+  readFile(oilPalmPath, "utf8").then(JSON.parse)
 ]);
 const villages = (boundary.features || []).map((feature) => ({
   feature,
@@ -58,8 +60,18 @@ const pbphUnits = (pbphGeo.features || []).filter((feature) => feature.geometry 
   sk: feature.properties?.NO_SK || "",
   areaHa: feature.properties?.LSSK ?? null
 }));
+const oilPalmUnits = (oilPalmGeo.features || []).filter((feature) => feature.geometry && (feature.geometry.type === "Polygon" || feature.geometry.type === "MultiPolygon")).map((feature) => ({
+  feature,
+  bounds: boundsOf(feature.geometry),
+  name: feature.properties?.PO_COMPANY || feature.properties?.Name || "Nama perusahaan tidak tersedia",
+  group: feature.properties?.PO_GROUP || feature.properties?.group_comp || "",
+  hgu: feature.properties?.PO_HGU || "",
+  legalStatus: feature.properties?.PO_LEGALST || feature.properties?.PO_Legal_1 || "",
+  areaHa: feature.properties?.PO_AREA_HG ?? feature.properties?.PO_HECTARE ?? feature.properties?.AREA_HA ?? null
+}));
 let identified = 0;
 let insidePbph = 0;
+let insideOilPalm = 0;
 for (const feature of hotspots.features || []) {
   const point = feature.geometry?.type === "Point" ? feature.geometry.coordinates : null;
   if (!point) continue;
@@ -90,8 +102,26 @@ for (const feature of hotspots.features || []) {
   } else {
     delete feature.properties.pbph052026;
   }
+  const oilPalmMatches = oilPalmUnits.filter((item) => point[0] >= item.bounds[0] && point[0] <= item.bounds[2] && point[1] >= item.bounds[1] && point[1] <= item.bounds[3] && geometryContains(point, item.feature.geometry));
+  if (oilPalmMatches.length) {
+    const uniqueCompanies = new Map();
+    oilPalmMatches.forEach((item) => {
+      uniqueCompanies.set([item.name, item.hgu].join("|"), {
+        name: item.name,
+        group: item.group,
+        hgu: item.hgu,
+        legalStatus: item.legalStatus,
+        areaHa: item.areaHa
+      });
+    });
+    feature.properties.oilPalmCompanyRef = Array.from(uniqueCompanies.values());
+    insideOilPalm++;
+  } else {
+    delete feature.properties.oilPalmCompanyRef;
+  }
   delete feature.properties.iuphhkHt2014;
 }
 await writeFile(hotspotPath, JSON.stringify(hotspots, null, 2) + "\n");
 console.log(`Identified ${identified} of ${(hotspots.features || []).length} hotspots in Riau villages.`);
 console.log(`Identified ${insidePbph} hotspots inside PBPH Riau May 2026 reference polygons.`);
+console.log(`Identified ${insideOilPalm} hotspots inside historical oil-palm company reference polygons.`);
