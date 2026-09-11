@@ -38,7 +38,7 @@
     var burnedDialog=document.createElement('dialog');
     burnedDialog.setAttribute('aria-labelledby','burned-locations-title');
     burnedDialog.style.cssText='width:min(680px,calc(100% - 32px));max-height:80vh;box-sizing:border-box;border:1px solid #bccdc7;border-radius:16px;padding:24px;color:#163b32;background:#fff;overflow:auto';
-    burnedDialog.innerHTML='<button type="button" aria-label="Tutup daftar lokasi" style="float:right;min-height:44px;padding:8px 16px">Tutup</button><h2 id="burned-locations-title">Estimasi area terindikasi terbakar</h2><p>Riau · estimasi citra satelit, bukan verifikasi lapangan.</p><div id="burned-locations-list" aria-live="polite"></div>';
+    burnedDialog.innerHTML='<button type="button" aria-label="Tutup daftar lokasi" style="float:right;min-height:44px;padding:8px 16px">Tutup</button><h2 id="burned-locations-title">Estimasi area terindikasi terbakar</h2><p>Estimasi berdasarkan perbandingan citra satelit sebelum dan sesudah kejadian, didukung data hotspot. Angka diperbarui saat citra yang layak tersedia dan bukan hasil verifikasi lapangan.</p><p id="burned-locations-updated" style="font-size:14px" aria-live="polite"></p><div id="burned-locations-list" aria-live="polite"></div>';
     document.body.appendChild(burnedDialog);
     var burnedList=burnedDialog.querySelector('#burned-locations-list');
     burnedDialog.querySelector('button').addEventListener('click',function(){burnedDialog.close()});
@@ -46,8 +46,12 @@
     burnedCard.setAttribute('role','button');burnedCard.setAttribute('tabindex','0');
     burnedCard.setAttribute('aria-haspopup','dialog');burnedCard.setAttribute('aria-label','Buka daftar lokasi estimasi area terindikasi terbakar');
     burnedCard.style.cursor='pointer';
+    var burnedPeriod=document.createElement('small');burnedPeriod.textContent='Estimasi luas terindikasi terbakar dari kejadian dalam 75 hari terakhir · diperbarui harian.';burnedCard.insertBefore(burnedPeriod,document.getElementById('kpi-burned-detail'));
     var burnedHint=document.createElement('small');burnedHint.textContent='Lihat lokasi dan luas →';burnedCard.appendChild(burnedHint);
+    function syncBurnedUpdated(){burnedDialog.querySelector('#burned-locations-updated').textContent=document.getElementById('burned-area-updated').textContent}
+    new MutationObserver(syncBurnedUpdated).observe(document.getElementById('burned-area-updated'),{childList:true,subtree:true,characterData:true});
     function renderBurnedLocations(){
+      syncBurnedUpdated();
       var events=Object.create(null);
       groups.burnedArea.eachLayer(function(geo){if(!geo.eachLayer)return;geo.eachLayer(function(layer){
         var p=layer.feature&&layer.feature.properties;if(!p||!p.eventId)return;
