@@ -32,6 +32,16 @@ test("fire dashboard links to the company report and keeps a non-attribution war
   assert.match(controller, /oilPalmCompanyRef/);
 });
 
+test("interactive map exposes the Riau oil-palm company reference on demand", () => {
+  const html = read("webgis.html");
+  const controller = read("js/map-v4.js");
+  assert.match(html, /map-v4\.js\?v=20260912-oil-palm-reference1/);
+  assert.match(controller, /perusahaan_sawit_riau/);
+  assert.match(controller, /label: "Perusahaan Sawit Riau"/);
+  assert.match(controller, /type: "oil_palm_company"/);
+  assert.match(controller, /PERUSAHAAN_SAWIT_RIAU_REFERENSI\.geojson/);
+});
+
 test("hourly enrichment attaches oil-palm company references", () => {
   const script = read("scripts/enrich_hotspot_villages.mjs");
   const workflow = read(".github/workflows/update-hotspot-analytics.yml");

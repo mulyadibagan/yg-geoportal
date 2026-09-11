@@ -100,6 +100,17 @@
       sourceUrl: "https://geoportal.planologi.kehutanan.go.id/server/rest/services/Peta_Interaktif_2026/PBPH_AR_50K/MapServer/0",
       scale: "1:50.000; snapshot pembaruan Mei 2026"
     },
+    perusahaan_sawit_riau: {
+      id: "perusahaan_sawit_riau",
+      label: "Perusahaan Sawit Riau",
+      file: "data/PERUSAHAAN_SAWIT_RIAU_REFERENSI.geojson",
+      color: "#f97316",
+      count: 241,
+      type: "oil_palm_company",
+      focusOnEnable: true,
+      sourceLabel: "Referensi perusahaan sawit Riau",
+      scale: "Referensi indikatif"
+    },
     perhutanan_sosial_riau: {
       id: "perhutanan_sosial_riau",
       label: "Perhutanan Sosial Riau",
@@ -1896,6 +1907,16 @@ L.control.scale({
       };
     }
 
+    if (config.type === "oil_palm_company") {
+      return {
+        color: config.color,
+        weight: 1.3,
+        opacity: 0.95,
+        fillColor: config.color,
+        fillOpacity: 0.1
+      };
+    }
+
     return {
       color: config.color,
       weight: 0.9,
@@ -2059,6 +2080,13 @@ L.control.scale({
       rows += item("Luas SK akhir (ha)", areaValue(props.LSSK));
       rows += item("Jenis PBPH", props.JENIS);
       rows += item("Kegiatan", props.KEGIATAN);
+    } else if (config.type === "oil_palm_company") {
+      rows += item("Perusahaan", props.PO_COMPANY);
+      rows += item("Grup perusahaan", props.PO_GROUP || props.group_comp);
+      rows += item("Status pada sumber", props.PO_LEGALST || props.PO_Legal_1);
+      rows += item("Nomor HGU pada sumber", props.PO_HGU);
+      rows += item("Luas referensi (ha)", areaValue(props.PO_AREA_HG || props.PO_HECTARE));
+      rows += item("Provinsi", props.PO_PROVINC);
     } else if (config.type === "concession") {
       rows += item("Pemegang izin", props.NAMA_PRH);
       rows += item("Nomor SK", props.SK_PBH || props.SK_LAMA);

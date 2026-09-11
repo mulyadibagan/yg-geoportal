@@ -519,6 +519,7 @@
     "Titik Penanaman": "Planting Points",
     "Wilayah Penanaman Kopi": "Coffee Cultivation Areas",
     "Perhutanan Sosial Riau": "Riau Social Forestry",
+    "Perusahaan Sawit Riau": "Riau Oil Palm Companies",
     "Batas Administrasi Desa Riau": "Riau Village Administrative Boundaries",
     "Fase/keterangan": "Phase/notes",
     "Jumlah bibit": "Number of seedlings",
