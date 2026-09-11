@@ -6,7 +6,6 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const boundaryPath = path.join(ROOT, process.env.HOTSPOT_VILLAGE_BOUNDARY || "data/batas_administrasi_desa_riau.geojson");
 const hotspotPath = path.join(ROOT, process.env.HOTSPOT_POINTS_FILE || "data/hotspot-high-confidence.geojson");
 const pbphPath = path.join(ROOT, process.env.HOTSPOT_PBPH_BOUNDARY || "data/PBPH_RIAU_052026.geojson");
-const oilPalmPath = path.join(ROOT, process.env.HOTSPOT_OIL_PALM_BOUNDARY || "data/PERUSAHAAN_SAWIT_RIAU_REFERENSI.geojson");
 
 function ringContains(point, ring) {
   let inside = false;
@@ -44,7 +43,7 @@ const [boundary, hotspots, pbphGeo, oilPalmGeo] = await Promise.all([
   readFile(boundaryPath, "utf8").then(JSON.parse),
   readFile(hotspotPath, "utf8").then(JSON.parse),
   readFile(pbphPath, "utf8").then(JSON.parse),
-  readFile(oilPalmPath, "utf8").then(JSON.parse)
+  Promise.resolve({ type: "FeatureCollection", features: [] })
 ]);
 const villages = (boundary.features || []).map((feature) => ({
   feature,
@@ -124,4 +123,4 @@ for (const feature of hotspots.features || []) {
 await writeFile(hotspotPath, JSON.stringify(hotspots, null, 2) + "\n");
 console.log(`Identified ${identified} of ${(hotspots.features || []).length} hotspots in Riau villages.`);
 console.log(`Identified ${insidePbph} hotspots inside PBPH Riau May 2026 reference polygons.`);
-console.log(`Identified ${insideOilPalm} hotspots inside historical oil-palm company reference polygons.`);
+console.log(`Identified ${insideOilPalm} hotspots inside verified oil-palm company polygons (historical matching suspended).`);

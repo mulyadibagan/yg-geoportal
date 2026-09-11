@@ -100,17 +100,6 @@
       sourceUrl: "https://geoportal.planologi.kehutanan.go.id/server/rest/services/Peta_Interaktif_2026/PBPH_AR_50K/MapServer/0",
       scale: "1:50.000; snapshot pembaruan Mei 2026"
     },
-    perusahaan_sawit_riau: {
-      id: "perusahaan_sawit_riau",
-      label: "Perusahaan Sawit Riau",
-      file: "data/PERUSAHAAN_SAWIT_RIAU_REFERENSI.geojson",
-      color: "#f97316",
-      count: 241,
-      type: "oil_palm_company",
-      focusOnEnable: true,
-      sourceLabel: "Referensi perusahaan sawit Riau",
-      scale: "Referensi indikatif"
-    },
     perhutanan_sosial_riau: {
       id: "perhutanan_sosial_riau",
       label: "Perhutanan Sosial Riau",

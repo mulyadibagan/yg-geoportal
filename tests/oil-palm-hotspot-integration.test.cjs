@@ -1,52 +1,33 @@
-const test = require("node:test");
-const assert = require("node:assert/strict");
-const fs = require("node:fs");
-const path = require("node:path");
-
-const ROOT = path.resolve(__dirname, "..");
-const read = (file) => fs.readFileSync(path.join(ROOT, file), "utf8");
-
-test("oil-palm reference layer has the expected Riau coverage and a clean public report", () => {
-  const data = JSON.parse(read("data/PERUSAHAAN_SAWIT_RIAU_REFERENSI.geojson"));
-  assert.equal(data.type, "FeatureCollection");
-  assert.equal(data.features.length, 241);
-  assert.ok(data.features.every((feature) => feature.properties.PO_PROVINC === "Riau"));
-  assert.ok(new Set(data.features.map((feature) => feature.properties.PO_COMPANY)).size >= 160);
-
-  const html = read("hotspot-analysis.html");
-  const controller = read("js/hotspot-analysis.js");
-  assert.doesNotMatch(html, /Catatan metodologi|method-note/);
-  assert.match(controller, /'oil-palm':\{title:'Hotspot dalam referensi perusahaan sawit'/);
-  assert.match(controller, /oilPalmCompanyRef/);
-  assert.match(controller, /PERUSAHAAN_SAWIT_RIAU_REFERENSI\.geojson/);
-  assert.match(controller, /bukan batas hukum HGU atau status penguasaan terkini/);
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const vm = require('node:vm');
+const read = f => fs.readFileSync(path.join(__dirname,'..',f),'utf8');
+test('legacy company layer is unavailable on main map',()=>{
+ assert.doesNotMatch(read('js/map-v4.js'), /perusahaan_sawit_riau:|PERUSAHAAN_SAWIT_RIAU_REFERENSI/);
 });
-
-test("fire dashboard links to the company report and keeps a non-attribution warning", () => {
-  const html = read("fire-weather.html");
-  const controller = read("js/fire-weather.js");
-  assert.match(html, /data-analysis-scope="oil-palm"/);
-  assert.match(html, /id="kpi-hotspots-oil-palm"/);
-  assert.match(html, /tidak membuktikan kebakaran, penyebab, penguasaan lahan saat ini, atau tanggung jawab perusahaan/);
-  assert.match(controller, /function renderOilPalmSources/);
-  assert.match(controller, /oilPalmCompanyRef/);
+test('old company report exits before map or data load, without reporting zero hotspots',()=>{
+ const els={}; const sections=[{},{}];
+ const document={getElementById:id=>els[id]||(els[id]={}),querySelectorAll:()=>sections};
+ sections.forEach(x=>x.style={});
+ vm.runInNewContext(read('js/hotspot-analysis.js'),{location:{search:'?scope=oil-palm&date=2026-09-12'},URLSearchParams,document});
+ assert.match(els['analysis-status'].textContent,/belum tersedia/);
+ assert.ok(sections.every(x=>x.hidden&&x.style.display==='none'));
 });
-
-test("interactive map exposes the Riau oil-palm company reference on demand", () => {
-  const html = read("webgis.html");
-  const controller = read("js/map-v4.js");
-  assert.match(html, /map-v4\.js\?v=20260912-oil-palm-click1/);
-  assert.match(controller, /perusahaan_sawit_riau/);
-  assert.match(controller, /label: "Perusahaan Sawit Riau"/);
-  assert.match(controller, /type: "oil_palm_company"/);
-  assert.match(controller, /config\.type === "oil_palm_company" \|\|/);
-  assert.match(controller, /PERUSAHAAN_SAWIT_RIAU_REFERENSI\.geojson/);
+test('historical matching is suspended and village/PBPH matching remains',()=>{
+ const s=read('scripts/enrich_hotspot_villages.mjs');
+ assert.doesNotMatch(s,/readFile\(oilPalmPath|HOTSPOT_OIL_PALM_BOUNDARY/);
+ assert.ok(s.includes('Promise.resolve({ type: "FeatureCollection", features: [] })'));
+ assert.ok(s.includes('feature.properties.pbph052026 ='));
+ assert.ok(s.includes('feature.properties.village ='));
+ assert.ok(s.includes('delete feature.properties.oilPalmCompanyRef'));
 });
-
-test("hourly enrichment attaches oil-palm company references", () => {
-  const script = read("scripts/enrich_hotspot_villages.mjs");
-  const workflow = read(".github/workflows/update-hotspot-analytics.yml");
-  assert.match(script, /HOTSPOT_OIL_PALM_BOUNDARY/);
-  assert.match(script, /oilPalmCompanyRef/);
-  assert.match(workflow, /node scripts\/enrich_hotspot_villages\.mjs/);
+test('cached company references are removed before rendering other hotspot reports',()=>{
+ for(const f of ['js/fire-weather.js','js/hotspot-analysis.js']){
+  assert.ok(read(f).includes('if(f.properties)delete f.properties.oilPalmCompanyRef'));
+ }
+ const lines=read('fire-weather.html').split('\n').filter(x=>x.includes('data-analysis-scope="oil-palm"')||x.includes('id="oil-palm-source-count"'));
+ assert.equal(lines.length,2);
+ assert.ok(lines.every(x=>x.startsWith('<div hidden style="display:none">')));
 });

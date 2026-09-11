@@ -1,6 +1,15 @@
 (function(){
   'use strict';
   var params=new URLSearchParams(location.search),scope=((params.get('scope')==='iuphhk'?'pbph':params.get('scope'))||'yg'),period=[1,7,30].includes(Number(params.get('period')))?Number(params.get('period')):1,date=params.get('date')||jakartaDate(),hotspotGeo=null,villageGeo=null,adminVillageGeo=null,landGeo=null,pbphGeo=null,oilPalmGeo=null,selected=[],previousSelected=[],previousComplete=false;
+  // Historical company polygons are suspended pending official spatial verification.
+  if(scope==='oil-palm'){
+    document.getElementById('report-title').textContent='Perusahaan sawit Riau';
+    document.getElementById('report-subtitle').textContent='Data sedang diperbarui';
+    document.getElementById('analysis-status').textContent='Analisis perusahaan sawit belum tersedia selama pemeriksaan data resmi.';
+    document.querySelectorAll('.ha-shell > section:not(.ha-title), .ha-controls').forEach(function(el){el.hidden=true;el.style.display='none'});
+    document.title='Perusahaan sawit Riau | YG GeoPortal';
+    return;
+  }
   var scopes={
     yg:{title:'Hotspot di desa intervensi YG',location:'Desa intervensi',ranking:'Desa dengan hotspot terbanyak'},
     'outside-yg':{title:'Hotspot desa Riau di luar desa YG',location:'Desa Riau',ranking:'Desa Riau dengan hotspot terbanyak'},
@@ -16,7 +25,7 @@
   map.createPane('placeLabels');map.getPane('placeLabels').style.zIndex=350;map.getPane('placeLabels').style.pointerEvents='none';
   var villagePolygonRenderer=L.svg({pane:'villagePolygons',padding:.5}),permitPolygonRenderer=L.svg({pane:'pbphPolygons',padding:.5}),oilPalmPolygonRenderer=L.svg({pane:'oilPalmPolygons',padding:.5});
   var streetLayer=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap'}),satelliteLayer=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:19,attribution:'Tiles &copy; Esri'}).addTo(map),satelliteLabels=L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',{maxZoom:19,pane:'placeLabels',attribution:'Labels &copy; Esri'}).addTo(map);
-  L.control.layers({'Citra satelit':satelliteLayer,'Peta jalan':streetLayer},{'Desa berhotspot':villagePolygons,'PBPH Mei 2026 berhotspot':permitPolygons,'Referensi perusahaan sawit berhotspot':oilPalmPolygons,'Label lokasi':satelliteLabels},{collapsed:false}).addTo(map);
+  L.control.layers({'Citra satelit':satelliteLayer,'Peta jalan':streetLayer},{'Desa berhotspot':villagePolygons,'PBPH Mei 2026 berhotspot':permitPolygons,'Label lokasi':satelliteLabels},{collapsed:false}).addTo(map);
 
   function jakartaDate(){var parts=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Jakarta',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date()),v={};parts.forEach(function(p){v[p.type]=p.value});return v.year+'-'+v.month+'-'+v.day}
   function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
@@ -91,6 +100,6 @@
     scope==='yg'?Promise.resolve(null):fetch('data/batas_administrasi_desa_riau.geojson').then(function(r){if(!r.ok)throw Error('desa-admin');return r.json()}),
     fetch('data/indonesia-boundary.geojson').then(function(r){if(!r.ok)throw Error('batas');return r.json()}),
     fetch('data/PBPH_RIAU_052026.geojson').then(function(r){if(!r.ok)throw Error('pbph');return r.json()}),
-    fetch('data/PERUSAHAAN_SAWIT_RIAU_REFERENSI.geojson').then(function(r){if(!r.ok)throw Error('oil-palm');return r.json()})
-  ]).then(function(v){hotspotGeo=v[0];villageGeo=v[1];adminVillageGeo=v[2];landGeo=v[3];pbphGeo=v[4];oilPalmGeo=v[5];render()}).catch(function(e){var status=document.getElementById('analysis-status');status.className='ha-status error';status.textContent='Laporan gagal dimuat. Periksa koneksi atau data sumber.';console.error(e)});
+    Promise.resolve({type:'FeatureCollection',features:[]})
+  ]).then(function(v){hotspotGeo=v[0];(hotspotGeo.features||[]).forEach(function(f){if(f.properties)delete f.properties.oilPalmCompanyRef});villageGeo=v[1];adminVillageGeo=v[2];landGeo=v[3];pbphGeo=v[4];oilPalmGeo=v[5];render()}).catch(function(e){var status=document.getElementById('analysis-status');status.className='ha-status error';status.textContent='Laporan gagal dimuat. Periksa koneksi atau data sumber.';console.error(e)});
 })();
