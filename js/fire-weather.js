@@ -32,53 +32,6 @@
   };
   var villageGeo=null,analytics=null,hotspotGeo=null,ygBounds=null,period=1,rainLayer=null,rainBadge=null,rainLegend=document.getElementById('rain-legend'),rainAbortController=null,rainRequestId=0,rainMetadataCache=null,rainActiveFrame=null,rainUsingFallback=false,mapDateBadge=null,hotspotStatusText='Memuat…',validationStatus=null,weatherReadings=[],weatherReady=false,aerosolReadings=[],aerosolReady=false,aerosolTime='',aerosolValidUntil=0,aerosolProvenance=null,surfaceObservations=[],surfaceReady=false,surfaceValidUntil=0,surfaceProvenance=null,transportReadings=[],transportReady=false,transportTime='',transportCoverageStart=0,transportCoverageEnd=0,transportProvenance=null,ensembleReadings=[],ensembleReady=false,ensembleTime='',ensembleStatus='',ensembleCoverageStart=0,ensembleCoverageEnd=0,ensembleProvenance=null,lastSmokeField=null,smokeEntryLayers=[];
   var weatherSites=[['Aceh',5.55,95.32],['Riau',1.45,102.1],['Sumatera Selatan',-3.0,104.8],['Jakarta',-6.2,106.8],['Kalimantan Barat',-.1,109.3],['Kalimantan Tengah',-2.2,113.9],['Kalimantan Timur',.5,117.1],['Sulawesi',-2.0,121.0],['Bali',-8.4,115.2],['Maluku',-3.2,129.0],['Papua Selatan',-7.5,139.5],['Papua Utara',-2.5,140.7]];
-  // Reuse the loaded polygons: no duplicate imagery or GeoJSON request.
-  var burnedCard=document.querySelector('.fw-burned-kpi');
-  if(burnedCard){
-    var burnedDialog=document.createElement('dialog');
-    burnedDialog.setAttribute('aria-labelledby','burned-locations-title');
-    burnedDialog.style.cssText='width:min(680px,calc(100% - 32px));max-height:80vh;box-sizing:border-box;border:1px solid #bccdc7;border-radius:16px;padding:24px;color:#163b32;background:#fff;overflow:auto';
-    burnedDialog.innerHTML='<button type="button" aria-label="Tutup daftar lokasi" style="float:right;min-height:44px;padding:8px 16px">Tutup</button><h2 id="burned-locations-title">Estimasi area terindikasi terbakar</h2><p>Estimasi berdasarkan perbandingan citra satelit sebelum dan sesudah kejadian, didukung data hotspot. Angka diperbarui saat citra yang layak tersedia dan bukan hasil verifikasi lapangan.</p><p id="burned-locations-updated" style="font-size:14px" aria-live="polite"></p><div id="burned-locations-list" aria-live="polite"></div>';
-    document.body.appendChild(burnedDialog);
-    var burnedList=burnedDialog.querySelector('#burned-locations-list');
-    burnedDialog.querySelector('button').addEventListener('click',function(){burnedDialog.close()});
-    burnedDialog.addEventListener('close',function(){burnedCard.focus({preventScroll:true})});
-    burnedCard.setAttribute('role','button');burnedCard.setAttribute('tabindex','0');
-    burnedCard.setAttribute('aria-haspopup','dialog');burnedCard.setAttribute('aria-label','Buka daftar lokasi estimasi area terindikasi terbakar');
-    burnedCard.style.cursor='pointer';
-    var burnedPeriod=document.createElement('small');burnedPeriod.textContent='Estimasi luas terindikasi terbakar dari kejadian dalam 75 hari terakhir · diperbarui harian.';burnedCard.insertBefore(burnedPeriod,document.getElementById('kpi-burned-detail'));
-    var burnedHint=document.createElement('small');burnedHint.textContent='Lihat lokasi dan luas →';burnedCard.appendChild(burnedHint);
-    function syncBurnedUpdated(){burnedDialog.querySelector('#burned-locations-updated').textContent=document.getElementById('burned-area-updated').textContent}
-    new MutationObserver(syncBurnedUpdated).observe(document.getElementById('burned-area-updated'),{childList:true,subtree:true,characterData:true});
-    function renderBurnedLocations(){
-      syncBurnedUpdated();
-      var events=Object.create(null);
-      groups.burnedArea.eachLayer(function(geo){if(!geo.eachLayer)return;geo.eachLayer(function(layer){
-        var p=layer.feature&&layer.feature.properties;if(!p||!p.eventId)return;
-        if(!events[p.eventId])events[p.eventId]={properties:p,layers:[],bounds:L.latLngBounds([])};
-        events[p.eventId].layers.push(layer);events[p.eventId].bounds.extend(layer.getBounds());
-      })});
-      burnedList.replaceChildren();
-      var entries=Object.keys(events).map(function(id){return events[id]}).sort(function(a,b){return Number(b.properties.estimatedAreaHa)-Number(a.properties.estimatedAreaHa)});
-      if(!entries.length){burnedList.textContent=document.getElementById('kpi-burned-detail').textContent;return}
-      entries.forEach(function(event){
-        var p=event.properties,button=document.createElement('button');button.type='button';
-        button.style.cssText='display:block;width:100%;text-align:left;padding:16px;margin:10px 0;border:1px solid #ccd9d4;border-radius:10px;background:#f5f9f7;color:#163b32;font:inherit;cursor:pointer;line-height:1.6';
-        var place=(p.villages||[]).join(', ')||'Lokasi belum teridentifikasi';
-        button.innerHTML='<strong>'+esc(place)+'</strong><br>'+esc((p.regencies||[]).join(', '))+'<br><strong>'+Number(p.estimatedAreaHa||0).toLocaleString('id-ID',{maximumFractionDigits:2})+' ha</strong> · '+Number(p.hotspotCount||0)+' hotspot<br><small>Lihat area di peta →</small>';
-        button.addEventListener('click',function(){
-          burnedDialog.close();groups.burnedArea.addTo(map);
-          var toggle=document.querySelector('[data-layer="burnedArea"]');if(toggle)toggle.checked=true;
-          document.getElementById('fire-map').scrollIntoView({block:'center'});map.invalidateSize();
-          map.fitBounds(event.bounds,{padding:[36,36],maxZoom:15,animate:false});
-          L.popup().setLatLng(event.bounds.getCenter()).setContent(event.layers[0].getPopup().getContent()).openOn(map);
-        });burnedList.appendChild(button);
-      });
-    }
-    burnedCard.addEventListener('click',function(){renderBurnedLocations();burnedDialog.showModal()});
-    burnedCard.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();burnedCard.click()}});
-    new MutationObserver(function(){if(burnedDialog.open)renderBurnedLocations()}).observe(document.getElementById('kpi-burned-detail'),{childList:true,subtree:true,characterData:true});
-  }
   var hotspotModelReady=false,hotspotLatestObservation=null;
   function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
   function nameOf(p){return p.Desa||p.WADMKD||p.Nama_Desa||p.NAMOBJ||'Desa intervensi'}
