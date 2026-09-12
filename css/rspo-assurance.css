@@ -21,5 +21,9 @@
 #proses-sertifikasi a,.ish-principles>a{display:inline-block;color:var(--green);font-size:13px;margin-top:16px}
 .ish-guide .guide-actions a{color:var(--green);border-color:var(--line)}
 summary:focus-visible{outline:3px solid #267346;outline-offset:2px}
+.ish-stage-table{width:100%;border-collapse:collapse;margin:20px 0;font-size:14px;line-height:1.6;table-layout:fixed}
+.ish-stage-table caption{text-align:left;font-weight:700;margin-bottom:10px;color:var(--deep)}
+.ish-stage-table th,.ish-stage-table td{padding:12px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line);overflow-wrap:anywhere}
+.ish-stage-table th{width:36%;background:#edf4ef;font-weight:600}
 @media(max-width:800px){.standard-nav{grid-template-columns:1fr}.guide-detail{grid-template-columns:1fr}.assurance-timeline{grid-template-columns:1fr}.guide-hero{grid-template-columns:1fr}.guide-hero aside{border-left:0;padding-left:0}}
 @media(max-width:480px){.assurance-evidence{padding:14px}.ish-guide .assurance-criterion{margin:8px}.standard-scope,.ish-guide,#proses-sertifikasi{width:calc(100% - 20px);padding:18px}}
