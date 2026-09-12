@@ -2,6 +2,7 @@
   'use strict';
 
   var cardSelectors = {
+    april: '.funding-card-april',
     aramco: '[data-open-aramco]',
     gec: '[data-open-gec]',
     ppcf: '[data-open-ppcf]',
@@ -70,6 +71,12 @@
     if (badge.className !== badgeClass) badge.className = badgeClass;
     if (badge.textContent !== badgeText) badge.textContent = badgeText;
     card.dataset.programmeStatus = active ? 'active' : 'complete';
+    if (donor.slug === 'april') {
+      var period = card.querySelector(':scope > strong');
+      var description = card.querySelector(':scope > small');
+      if (period) period.textContent = donor.period || 'Oktober 2026–September 2027';
+      if (description) description.textContent = 'Program Dayun · KUPS Rimba Sejahtera';
+    }
   }
 
   function refresh() {
