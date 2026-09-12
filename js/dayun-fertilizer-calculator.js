@@ -5,6 +5,8 @@
   const $=id=>document.getElementById(id);
   const fmt=(v,d=2)=>new Intl.NumberFormat("id-ID",{maximumFractionDigits:d}).format(v);
   const number=id=>Number(String($(id).value||"").replace(",","."));
+  let gawangan={};
+  let selectedArea=0;
   const programs={
     base:{name:"Pemupukan dasar",time:"7 hari sebelum tanam atau saat tanam",note:"Pupuk organik 5–10 ton/ha.",materials:[{name:"Pupuk organik",min:5000,max:10000}]},
     phase1:{name:"Pemupukan I",time:"Akar mulai terlihat, sekitar 3 BST",note:"Urea 300–400 kg/ha dan NPK 15-15-15 100–200 kg/ha.",materials:[{name:"Urea",min:300,max:400},{name:"NPK 15-15-15",min:100,max:200}]},
@@ -13,18 +15,39 @@
   };
   function phase(){return programs[$("fert-phase").value]}
   function syncPhase(){$("fert-phase-note").textContent=phase().note;clearResult()}
+  function syncGawangan(){
+    const item=gawangan[$("fert-gawangan").value];
+    selectedArea=item?item.areaHa:0;
+    $("fert-area").value=item?fmt(item.areaHa,4):"—";
+    clearResult();
+  }
+  function loadGawangan(){
+    fetch("data/dayun-map.geojson?v=20260910-3").then(r=>{if(!r.ok)throw new Error("Data gawangan tidak dapat dimuat.");return r.json()}).then(data=>{
+      const items=(data.features||[]).filter(f=>f.properties&&f.properties.category==="Gawangan Tanam"&&Number(f.properties.areaHa)>0).map(f=>({id:f.properties.objectId,label:f.properties.shortId||f.properties.objectId,areaHa:Number(f.properties.areaHa)})).sort((a,b)=>a.label.localeCompare(b.label,undefined,{numeric:true}));
+      gawangan={};items.forEach(x=>gawangan[x.id]=x);
+      const select=$("fert-gawangan");select.innerHTML='<option value="">Pilih gawangan</option>'+items.map(x=>'<option value="'+x.id+'">'+x.label+' · '+fmt(x.areaHa,4)+' ha</option>').join("");
+      select.disabled=false;
+      const requested=new URLSearchParams(location.search).get("gawangan");
+      if(requested&&gawangan[requested]){select.value=requested;syncGawangan()}
+    }).catch(()=>{
+      $("fert-gawangan").innerHTML='<option value="">Data gawangan belum tersedia</option>';
+      $("fert-error").textContent="Luas gawangan gagal dimuat. Muat ulang halaman atau buka kembali dari peta Dayun.";
+      $("fert-error").hidden=false;
+    });
+  }
   function clearResult(){$("fert-result").hidden=true;$("fert-error").hidden=true}
   $("fert-phase").addEventListener("change",syncPhase);
+  $("fert-gawangan").addEventListener("change",syncGawangan);
   actualForm.addEventListener("input",clearResult);
   actualForm.addEventListener("reset",()=>setTimeout(syncPhase,0));
   actualForm.addEventListener("submit",ev=>{
     ev.preventDefault();
-    const area=number("fert-area"),reserve=number("fert-reserve"),bag=number("fert-bag");
+    const area=selectedArea,reserve=number("fert-reserve"),bag=number("fert-bag");
     const plantsRaw=String($("fert-plant-count").value||"").trim();
     const plants=plantsRaw?number("fert-plant-count"):null;
     const error=$("fert-error");
     if(!Number.isFinite(area)||area<=0||!Number.isFinite(reserve)||reserve<0||reserve>25||!Number.isFinite(bag)||bag<=0||(plants!==null&&(!Number.isFinite(plants)||plants<1))){
-      error.textContent="Isi luas gawangan dengan benar. Populasi bersifat opsional; cadangan 0–25%.";
+      error.textContent=area<=0?"Pilih gawangan tanam terlebih dahulu.":"Periksa populasi, cadangan, dan berat kemasan.";
       error.hidden=false;return;
     }
     const p=phase(),factor=1+reserve/100;
@@ -43,4 +66,5 @@
     $("fert-result").hidden=false;error.hidden=true;
   });
   syncPhase();
+  loadGawangan();
 })();
