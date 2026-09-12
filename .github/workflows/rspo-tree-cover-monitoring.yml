@@ -9,6 +9,7 @@ on:
       - "scripts/build_rspo_tree_cover_monitoring.py"
       - "scripts/build_forest_analytics.py"
       - "data/PERUSAHAAN_SAWIT_RIAU_REFERENSI.geojson"
+      - ".github/workflows/rspo-tree-cover-monitoring.yml"
 
 permissions:
   contents: write
