@@ -2093,7 +2093,6 @@ L.control.scale({
       rows += item("Estate/supply base", props.SUPPLY_BASE);
       rows += item("Kabupaten", props.REFERENCE_DISTRICTS);
       rows += item("Diperbarui", props.REFERENCE_UPDATED);
-      rows += item("Sumber", props.NAME_SOURCE);
     } else if (config.type === "concession") {
       rows += item("Pemegang izin", props.NAMA_PRH);
       rows += item("Nomor SK", props.SK_PBH || props.SK_LAMA);
