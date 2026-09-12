@@ -7,7 +7,7 @@ var map,mapReady=false,street,satellite,areaLayer,millLayer,mills=[],groups=[],m
 var groupFilter=document.getElementById('rspo-group-filter'),statusFilter=document.getElementById('rspo-status-filter'),search=document.getElementById('rspo-search');
 function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function colorFor(name){var n=0,s=String(name||'');for(var i=0;i<s.length;i++)n=(n*31+s.charCodeAt(i))>>>0;return colors[n%colors.length]}
-function certified(a){return /certified/i.test(String(a.CertStatus||''))}
+function certified(a){return /^certified$/i.test(String(a.CertStatus||'').trim())}
 function certificationKey(value){return String(value||'').toLowerCase().replace(/\([^)]*\)/g,' ').replace(/subsidiary.*$/g,' ').replace(/\b(palm|oil|mill|pom|estate|multimill|pt|pte|ltd|tbk|persero)\b/g,' ').replace(/[^a-z0-9]/g,'')}
 function openTab(name){document.querySelectorAll('[data-tab]').forEach(function(b){b.classList.toggle('is-active',b.dataset.tab===name)});document.querySelectorAll('[data-panel]').forEach(function(p){var active=p.dataset.panel===name;p.classList.toggle('is-active',active);p.hidden=!active});if(name==='peta'){ensureMap();setTimeout(function(){map.invalidateSize();render()},80)}}
 document.querySelectorAll('[data-tab]').forEach(function(b){b.addEventListener('click',function(){openTab(b.dataset.tab)})});document.querySelectorAll('[data-open-tab]').forEach(function(b){b.addEventListener('click',function(){openTab(b.dataset.openTab)})});
