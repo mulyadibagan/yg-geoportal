@@ -97,11 +97,7 @@
       else{var response=await fetch('https://api.open-meteo.com/v1/forecast?latitude='+DAYUN_LAT+'&longitude='+DAYUN_LON+'&current=temperature_2m,relative_humidity_2m,precipitation,weather_code,wind_speed_10m&hourly=temperature_2m,precipitation_probability,precipitation,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum&forecast_days=7&timezone=Asia%2FJakarta');if(!response.ok)throw new Error('Cuaca tidak tersedia');weather=await response.json();try{localStorage.setItem(weatherKey,JSON.stringify({savedAt:Date.now(),data:weather}));}catch(_){}}
       renderDayunWeather(weather);
     }catch(error){document.getElementById('dayun-weather-current').innerHTML='<div class="dy-weather-loading">Cuaca kebun sementara belum dapat dimuat.</div>';}
-    try{
-      var saved=JSON.parse(localStorage.getItem(rainKey)||'null'),rain;
-      if(saved&&Date.now()-saved.savedAt<21600000){rain=saved.data;renderDayunRain(rain,true);}
-      else{var end=new Date(),start=new Date(end);start.setDate(start.getDate()-45);var rainResponse=await fetch('https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&longitude='+DAYUN_LON+'&latitude='+DAYUN_LAT+'&start='+dayunDateKey(start)+'&end='+dayunDateKey(end)+'&format=JSON');if(!rainResponse.ok)throw new Error('Hujan tidak tersedia');rain=await rainResponse.json();renderDayunRain(rain,false);try{localStorage.setItem(rainKey,JSON.stringify({savedAt:Date.now(),data:rain}));}catch(_){}}
-    }catch(error){document.getElementById('dayun-rain-7d').textContent='Belum tersedia';document.getElementById('dayun-rain-30d').textContent='Belum tersedia';document.getElementById('dayun-rain-note').textContent='Estimasi hujan sementara tidak dapat dimuat.';}
+
   }
 
   function monthLabel(value){return new Intl.DateTimeFormat('id-ID',{month:'long',year:'numeric',timeZone:'Asia/Jakarta'}).format(new Date(value+'T12:00:00+07:00'));}
