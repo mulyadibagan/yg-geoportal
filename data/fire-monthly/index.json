@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-09-01T04:29:44.473Z",
+  "updatedAt": "2026-09-12T06:38:46.722Z",
   "latest": "2026-08",
   "retention": {
     "rawArchiveMonths": 60,
@@ -20,7 +20,9 @@
         "villages": 55,
         "regencies": 10,
         "companies": 4,
-        "companyHotspots": 18
+        "companyHotspots": 18,
+        "rspoAreas": 1,
+        "rspoHotspots": 11
       },
       "href": "fire-monthly-report.html?month=2026-08",
       "data": "data/fire-monthly/2026-08.json"
@@ -38,7 +40,9 @@
         "villages": 5,
         "regencies": 3,
         "companies": 1,
-        "companyHotspots": 2
+        "companyHotspots": 2,
+        "rspoAreas": 0,
+        "rspoHotspots": 0
       },
       "href": "fire-monthly-report.html?month=2026-07",
       "data": "data/fire-monthly/2026-07.json"

@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "month": "2026-08",
   "period": {
     "start": "2026-08-01",
@@ -14,7 +14,8 @@
     "Terra",
     "Aqua",
     "N21",
-    "N"
+    "N",
+    "GeoRSPO / RSPO"
   ],
   "methodology": "Deteksi kategori high confidence di dalam polygon Provinsi Riau; pencocokan desa dan PBPH Riau pembaruan Mei 2026 dilakukan secara spasial.",
   "disclaimer": "PBPH Mei 2026 adalah referensi areal kerja terkini pada sumber. Irisan hotspot bukan bukti penyebab atau tanggung jawab pemegang PBPH.",
@@ -23,7 +24,9 @@
     "villages": 55,
     "regencies": 10,
     "companies": 4,
-    "companyHotspots": 18
+    "companyHotspots": 18,
+    "rspoAreas": 1,
+    "rspoHotspots": 11
   },
   "daily": [
     {
@@ -649,7 +652,8 @@
       "village": "Area Tidak Terdefinisi",
       "district": "",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-02",
@@ -663,7 +667,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-03",
@@ -677,7 +682,8 @@
       "village": "Kuantan Baru",
       "district": "Rengat",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-04",
@@ -697,7 +703,8 @@
           "sk": "SK.718/MENLHK/SETJEN/HPL.0/9/2021",
           "areaHa": 89155
         }
-      ]
+      ],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-04",
@@ -711,7 +718,8 @@
       "village": "Rantai Langsat/Sungai Akar",
       "district": "Batang Gangsal",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-04",
@@ -725,7 +733,8 @@
       "village": "Telukkiambang",
       "district": "Tempuling",
       "regency": "Indragiri Hilir",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-05",
@@ -739,7 +748,8 @@
       "village": "Kuantan Baru",
       "district": "Rengat",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-05",
@@ -753,7 +763,8 @@
       "village": "Kuantan Baru",
       "district": "Rengat",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-05",
@@ -767,7 +778,8 @@
       "village": "Cenaku Kecil/Alim",
       "district": "Batang Cenaku",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-05",
@@ -781,7 +793,8 @@
       "village": "Keritang",
       "district": "Kemuning",
       "regency": "Indragiri Hilir",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-05",
@@ -795,7 +808,8 @@
       "village": "Keritang",
       "district": "Kemuning",
       "regency": "Indragiri Hilir",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-06",
@@ -809,7 +823,8 @@
       "village": "Pasir Limau Kapas",
       "district": "Pasir Limau Kapas",
       "regency": "Rokan Hilir",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-07",
@@ -823,7 +838,8 @@
       "village": "Pasir Limau Kapas",
       "district": "Pasir Limau Kapas",
       "regency": "Rokan Hilir",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-07",
@@ -837,7 +853,8 @@
       "village": "Pasir Limau Kapas",
       "district": "Pasir Limau Kapas",
       "regency": "Rokan Hilir",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-07",
@@ -857,7 +874,8 @@
           "sk": "SK.718/MENLHK/SETJEN/HPL.0/9/2021",
           "areaHa": 89155
         }
-      ]
+      ],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-07",
@@ -877,7 +895,8 @@
           "sk": "SK.718/MENLHK/SETJEN/HPL.0/9/2021",
           "areaHa": 89155
         }
-      ]
+      ],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-07",
@@ -891,7 +910,8 @@
       "village": "Temusai",
       "district": "Bunga Raya",
       "regency": "Siak",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-07",
@@ -905,7 +925,8 @@
       "village": "Kuantan Baru",
       "district": "Rengat",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-07",
@@ -919,7 +940,8 @@
       "village": "Pasir Limau Kapas",
       "district": "Pasir Limau Kapas",
       "regency": "Rokan Hilir",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-07",
@@ -939,7 +961,8 @@
           "sk": "SK.718/MENLHK/SETJEN/HPL.0/9/2021",
           "areaHa": 89155
         }
-      ]
+      ],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-07",
@@ -953,7 +976,8 @@
       "village": "Langgadai Hulu",
       "district": "Rimba Melintang",
       "regency": "Rokan Hilir",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-07",
@@ -967,7 +991,8 @@
       "village": "Bandar Jaya",
       "district": "Siak Kecil",
       "regency": "Bengkalis",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-07",
@@ -981,7 +1006,8 @@
       "village": "Bandar Jaya",
       "district": "Siak Kecil",
       "regency": "Bengkalis",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-07",
@@ -995,7 +1021,8 @@
       "village": "Tuah Indrapura",
       "district": "Bunga Raya",
       "regency": "Siak",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-07",
@@ -1009,7 +1036,8 @@
       "village": "Pasir Limau Kapas",
       "district": "Pasir Limau Kapas",
       "regency": "Rokan Hilir",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-07",
@@ -1023,7 +1051,8 @@
       "village": "Pasir Limau Kapas",
       "district": "Pasir Limau Kapas",
       "regency": "Rokan Hilir",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-07",
@@ -1037,7 +1066,8 @@
       "village": "Tuah Indrapura",
       "district": "Bunga Raya",
       "regency": "Siak",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-07",
@@ -1051,7 +1081,8 @@
       "village": "Sungai Guntung Tengah / Sungai Guntung Hilir",
       "district": "",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-07",
@@ -1065,7 +1096,8 @@
       "village": "Kuantan Baru",
       "district": "Rengat",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-07",
@@ -1079,7 +1111,8 @@
       "village": "Kampung Pulau",
       "district": "Rengat",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-07",
@@ -1093,7 +1126,8 @@
       "village": "Sungai Guntung Tengah / Sungai Guntung Hilir",
       "district": "",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-07",
@@ -1107,7 +1141,8 @@
       "village": "Kuantan Baru",
       "district": "Rengat",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-07",
@@ -1121,7 +1156,8 @@
       "village": "Kuantan Baru",
       "district": "Rengat",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-07",
@@ -1135,7 +1171,8 @@
       "village": "Sungai Guntung Tengah / Sungai Guntung Hilir",
       "district": "",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-07",
@@ -1149,7 +1186,8 @@
       "village": "Kuantan Baru",
       "district": "Rengat",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-07",
@@ -1163,7 +1201,8 @@
       "village": "Kuantan Baru",
       "district": "Rengat",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-07",
@@ -1177,7 +1216,8 @@
       "village": "Sungai Guntung Tengah / Sungai Guntung Hilir",
       "district": "",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-07",
@@ -1191,7 +1231,8 @@
       "village": "Kampung Pulau",
       "district": "Rengat",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-07",
@@ -1205,7 +1246,8 @@
       "village": "Kampung Pulau",
       "district": "Rengat",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-08",
@@ -1219,7 +1261,8 @@
       "village": "Bandar Jaya",
       "district": "Siak Kecil",
       "regency": "Bengkalis",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-08",
@@ -1233,7 +1276,8 @@
       "village": "Sungai Guntung Tengah / Sungai Guntung Hilir",
       "district": "",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-08",
@@ -1247,7 +1291,8 @@
       "village": "Sungai Guntung Tengah / Sungai Guntung Hilir",
       "district": "",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-08",
@@ -1261,7 +1306,8 @@
       "village": "Kuantan Baru",
       "district": "Rengat",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-08",
@@ -1275,7 +1321,8 @@
       "village": "Sungai Guntung Tengah / Sungai Guntung Hilir",
       "district": "",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-08",
@@ -1289,7 +1336,8 @@
       "village": "Kuantan Baru",
       "district": "Rengat",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-08",
@@ -1303,7 +1351,8 @@
       "village": "Kampung Pulau",
       "district": "Rengat",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-08",
@@ -1317,7 +1366,8 @@
       "village": "Sungai Guntung Tengah / Sungai Guntung Hilir",
       "district": "",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-08",
@@ -1331,7 +1381,8 @@
       "village": "Kuantan Baru",
       "district": "Rengat",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-08",
@@ -1345,7 +1396,8 @@
       "village": "Kuantan Baru",
       "district": "Rengat",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-08",
@@ -1359,7 +1411,8 @@
       "village": "Kuantan Baru",
       "district": "Rengat",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-08",
@@ -1373,7 +1426,8 @@
       "village": "Damai",
       "district": "Bengkalis",
       "regency": "Bengkalis",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-08",
@@ -1387,7 +1441,8 @@
       "village": "Sungai Guntung Tengah / Sungai Guntung Hilir",
       "district": "",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-08",
@@ -1401,7 +1456,8 @@
       "village": "Kuantan Baru",
       "district": "Rengat",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-08",
@@ -1415,7 +1471,8 @@
       "village": "Kuantan Baru",
       "district": "Rengat",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-08",
@@ -1429,7 +1486,8 @@
       "village": "Kuantan Baru",
       "district": "Rengat",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-08",
@@ -1443,7 +1501,8 @@
       "village": "Kampung Pulau",
       "district": "Rengat",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-08",
@@ -1457,7 +1516,8 @@
       "village": "Buluh Apo",
       "district": "Pinggir",
       "regency": "Bengkalis",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-08",
@@ -1471,7 +1531,8 @@
       "village": "Sungai Guntung Tengah",
       "district": "Rengat",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-08",
@@ -1485,7 +1546,8 @@
       "village": "Sungai Guntung Tengah",
       "district": "Rengat",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-08",
@@ -1499,7 +1561,8 @@
       "village": "Kuantan Baru",
       "district": "Rengat",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-08",
@@ -1513,7 +1576,8 @@
       "village": "Sungai Guntung Tengah / Sungai Guntung Hilir",
       "district": "",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-09",
@@ -1527,7 +1591,8 @@
       "village": "Buluh Apo",
       "district": "Pinggir",
       "regency": "Bengkalis",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-09",
@@ -1541,7 +1606,8 @@
       "village": "Buluh Apo",
       "district": "Pinggir",
       "regency": "Bengkalis",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-09",
@@ -1555,7 +1621,8 @@
       "village": "Sungai Guntung Tengah / Sungai Guntung Hilir",
       "district": "",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-09",
@@ -1569,7 +1636,8 @@
       "village": "Kuantan Baru",
       "district": "Rengat",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-09",
@@ -1583,7 +1651,8 @@
       "village": "Buluh Apo",
       "district": "Pinggir",
       "regency": "Bengkalis",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-09",
@@ -1597,7 +1666,8 @@
       "village": "Buluh Apo",
       "district": "Pinggir",
       "regency": "Bengkalis",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-09",
@@ -1611,7 +1681,8 @@
       "village": "Buluh Apo",
       "district": "Pinggir",
       "regency": "Bengkalis",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-09",
@@ -1625,7 +1696,8 @@
       "village": "Sungai Guntung Tengah / Sungai Guntung Hilir",
       "district": "",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-09",
@@ -1639,7 +1711,8 @@
       "village": "Kuantan Baru",
       "district": "Rengat",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-10",
@@ -1653,7 +1726,8 @@
       "village": "Buluh Apo",
       "district": "Pinggir",
       "regency": "Bengkalis",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-10",
@@ -1667,7 +1741,8 @@
       "village": "Sungai Guntung Tengah / Sungai Guntung Hilir",
       "district": "",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-10",
@@ -1681,7 +1756,8 @@
       "village": "Kuantan Baru",
       "district": "Rengat",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-10",
@@ -1695,7 +1771,8 @@
       "village": "Buluh Apo",
       "district": "Pinggir",
       "regency": "Bengkalis",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-10",
@@ -1709,7 +1786,8 @@
       "village": "Buluh Apo",
       "district": "Pinggir",
       "regency": "Bengkalis",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-11",
@@ -1723,7 +1801,8 @@
       "village": "Sungai Guntung Tengah / Sungai Guntung Hilir",
       "district": "",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-12",
@@ -1737,7 +1816,8 @@
       "village": "Buluh Apo",
       "district": "Pinggir",
       "regency": "Bengkalis",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-12",
@@ -1757,7 +1837,8 @@
           "sk": "SK.1122/MENLHK/SETJEN/HPL.0/11/2021",
           "areaHa": 13600
         }
-      ]
+      ],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-12",
@@ -1771,7 +1852,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-12",
@@ -1785,7 +1867,8 @@
       "village": "Seberang Cengar",
       "district": "Kuantan Mudik",
       "regency": "Kuantan Singingi",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-12",
@@ -1799,7 +1882,8 @@
       "village": "Seberang Cengar",
       "district": "Kuantan Mudik",
       "regency": "Kuantan Singingi",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-12",
@@ -1813,7 +1897,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-14",
@@ -1827,7 +1912,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-15",
@@ -1841,7 +1927,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-15",
@@ -1855,7 +1942,8 @@
       "village": "Koto Baru/Sungai Paku",
       "district": "Singingi Hilir",
       "regency": "Kuantan Singingi",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-15",
@@ -1869,7 +1957,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-15",
@@ -1883,7 +1972,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-15",
@@ -1897,7 +1987,8 @@
       "village": "Cenaku Kecil/Alim",
       "district": "Batang Cenaku",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-15",
@@ -1911,7 +2002,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-15",
@@ -1925,7 +2017,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-15",
@@ -1939,7 +2032,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-15",
@@ -1953,7 +2047,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-15",
@@ -1967,7 +2062,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-17",
@@ -1981,7 +2077,8 @@
       "village": "Babussalam Rokan",
       "district": "Pujud",
       "regency": "Rokan Hilir",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-17",
@@ -1995,7 +2092,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-17",
@@ -2009,7 +2107,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-17",
@@ -2023,7 +2122,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-17",
@@ -2037,7 +2137,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-17",
@@ -2051,7 +2152,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-17",
@@ -2065,7 +2167,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-18",
@@ -2079,7 +2182,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-18",
@@ -2093,7 +2197,8 @@
       "village": "Sungailiti",
       "district": "Kampar Kiri",
       "regency": "Kampar",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-18",
@@ -2107,7 +2212,17 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": [
+        {
+          "id": "RSPO-056",
+          "name": "PT Gandaerah Hendana",
+          "group": "S&G BIOFUEL PTE. LTD",
+          "supplyBase": "Kebun 1 Estate, Kebun 2 Estate, Kebun 3 Estate",
+          "regency": "Indragiri Hulu, Pelalawan",
+          "referenceVersion": "georspo-riau-growers-20260912-v1"
+        }
+      ]
     },
     {
       "date": "2026-08-18",
@@ -2121,7 +2236,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-18",
@@ -2135,7 +2251,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-18",
@@ -2149,7 +2266,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-19",
@@ -2163,7 +2281,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-19",
@@ -2177,7 +2296,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-19",
@@ -2191,7 +2311,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-19",
@@ -2205,7 +2326,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-19",
@@ -2219,7 +2341,8 @@
       "village": "Batang Sari",
       "district": "Mandah",
       "regency": "Indragiri Hilir",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-19",
@@ -2233,7 +2356,8 @@
       "village": "Batang Sari",
       "district": "Mandah",
       "regency": "Indragiri Hilir",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-20",
@@ -2247,7 +2371,8 @@
       "village": "Punti Anai",
       "district": "Batang Cenaku",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-20",
@@ -2261,7 +2386,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-20",
@@ -2275,7 +2401,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-20",
@@ -2289,7 +2416,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-20",
@@ -2303,7 +2431,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-20",
@@ -2317,7 +2446,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-20",
@@ -2331,7 +2461,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-21",
@@ -2345,7 +2476,17 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": [
+        {
+          "id": "RSPO-056",
+          "name": "PT Gandaerah Hendana",
+          "group": "S&G BIOFUEL PTE. LTD",
+          "supplyBase": "Kebun 1 Estate, Kebun 2 Estate, Kebun 3 Estate",
+          "regency": "Indragiri Hulu, Pelalawan",
+          "referenceVersion": "georspo-riau-growers-20260912-v1"
+        }
+      ]
     },
     {
       "date": "2026-08-21",
@@ -2359,7 +2500,17 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": [
+        {
+          "id": "RSPO-056",
+          "name": "PT Gandaerah Hendana",
+          "group": "S&G BIOFUEL PTE. LTD",
+          "supplyBase": "Kebun 1 Estate, Kebun 2 Estate, Kebun 3 Estate",
+          "regency": "Indragiri Hulu, Pelalawan",
+          "referenceVersion": "georspo-riau-growers-20260912-v1"
+        }
+      ]
     },
     {
       "date": "2026-08-21",
@@ -2373,7 +2524,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-21",
@@ -2387,7 +2539,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-21",
@@ -2401,7 +2554,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-21",
@@ -2415,7 +2569,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-21",
@@ -2435,7 +2590,8 @@
           "sk": "01032200340080008",
           "areaHa": 25248
         }
-      ]
+      ],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-21",
@@ -2449,7 +2605,8 @@
       "village": "Domo",
       "district": "Kampar Kiri",
       "regency": "Kampar",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-21",
@@ -2463,7 +2620,8 @@
       "village": "Sungailiti",
       "district": "Kampar Kiri",
       "regency": "Kampar",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-21",
@@ -2477,7 +2635,17 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": [
+        {
+          "id": "RSPO-056",
+          "name": "PT Gandaerah Hendana",
+          "group": "S&G BIOFUEL PTE. LTD",
+          "supplyBase": "Kebun 1 Estate, Kebun 2 Estate, Kebun 3 Estate",
+          "regency": "Indragiri Hulu, Pelalawan",
+          "referenceVersion": "georspo-riau-growers-20260912-v1"
+        }
+      ]
     },
     {
       "date": "2026-08-21",
@@ -2491,7 +2659,17 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": [
+        {
+          "id": "RSPO-056",
+          "name": "PT Gandaerah Hendana",
+          "group": "S&G BIOFUEL PTE. LTD",
+          "supplyBase": "Kebun 1 Estate, Kebun 2 Estate, Kebun 3 Estate",
+          "regency": "Indragiri Hulu, Pelalawan",
+          "referenceVersion": "georspo-riau-growers-20260912-v1"
+        }
+      ]
     },
     {
       "date": "2026-08-21",
@@ -2505,7 +2683,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-21",
@@ -2519,7 +2698,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-21",
@@ -2533,7 +2713,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-21",
@@ -2547,7 +2728,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-21",
@@ -2561,7 +2743,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-21",
@@ -2575,7 +2758,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-21",
@@ -2589,7 +2773,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-21",
@@ -2603,7 +2788,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-21",
@@ -2617,7 +2803,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-21",
@@ -2631,7 +2818,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-21",
@@ -2645,7 +2833,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-21",
@@ -2659,7 +2848,17 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": [
+        {
+          "id": "RSPO-056",
+          "name": "PT Gandaerah Hendana",
+          "group": "S&G BIOFUEL PTE. LTD",
+          "supplyBase": "Kebun 1 Estate, Kebun 2 Estate, Kebun 3 Estate",
+          "regency": "Indragiri Hulu, Pelalawan",
+          "referenceVersion": "georspo-riau-growers-20260912-v1"
+        }
+      ]
     },
     {
       "date": "2026-08-21",
@@ -2673,7 +2872,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-21",
@@ -2687,7 +2887,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -2701,7 +2902,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -2715,7 +2917,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -2729,7 +2932,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -2749,7 +2953,8 @@
           "sk": "16082100232240008",
           "areaHa": 15170
         }
-      ]
+      ],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -2769,7 +2974,8 @@
           "sk": "16082100232240008",
           "areaHa": 15170
         }
-      ]
+      ],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -2783,7 +2989,8 @@
       "village": "Pasenggerahan",
       "district": "Sungai Batang",
       "regency": "Indragiri Hilir",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -2797,7 +3004,8 @@
       "village": "Bagan Cempedak",
       "district": "Rantau Kopar",
       "regency": "Rokan Hilir",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -2811,7 +3019,8 @@
       "village": "Tarai Bangun",
       "district": "Tambang",
       "regency": "Kampar",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -2825,7 +3034,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -2839,7 +3049,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -2853,7 +3064,8 @@
       "village": "Pulau Muda",
       "district": "Teluk Meranti",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -2867,7 +3079,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -2881,7 +3094,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -2895,7 +3109,17 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": [
+        {
+          "id": "RSPO-056",
+          "name": "PT Gandaerah Hendana",
+          "group": "S&G BIOFUEL PTE. LTD",
+          "supplyBase": "Kebun 1 Estate, Kebun 2 Estate, Kebun 3 Estate",
+          "regency": "Indragiri Hulu, Pelalawan",
+          "referenceVersion": "georspo-riau-growers-20260912-v1"
+        }
+      ]
     },
     {
       "date": "2026-08-22",
@@ -2909,7 +3133,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -2923,7 +3148,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -2937,7 +3163,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -2951,7 +3178,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -2965,7 +3193,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -2979,7 +3208,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -2993,7 +3223,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -3007,7 +3238,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -3021,7 +3253,8 @@
       "village": "Punti Anai",
       "district": "Batang Cenaku",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -3035,7 +3268,8 @@
       "village": "Sipang",
       "district": "Batang Cenaku",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -3055,7 +3289,8 @@
           "sk": "16082100232240008",
           "areaHa": 15170
         }
-      ]
+      ],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -3069,7 +3304,8 @@
       "village": "Pasenggerahan",
       "district": "Sungai Batang",
       "regency": "Indragiri Hilir",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -3083,7 +3319,17 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": [
+        {
+          "id": "RSPO-056",
+          "name": "PT Gandaerah Hendana",
+          "group": "S&G BIOFUEL PTE. LTD",
+          "supplyBase": "Kebun 1 Estate, Kebun 2 Estate, Kebun 3 Estate",
+          "regency": "Indragiri Hulu, Pelalawan",
+          "referenceVersion": "georspo-riau-growers-20260912-v1"
+        }
+      ]
     },
     {
       "date": "2026-08-22",
@@ -3097,7 +3343,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -3111,7 +3358,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -3125,7 +3373,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -3139,7 +3388,8 @@
       "village": "Rantai Langsat/Sungai Akar",
       "district": "Batang Gangsal",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -3159,7 +3409,8 @@
           "sk": "16082100232240008",
           "areaHa": 15170
         }
-      ]
+      ],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -3179,7 +3430,8 @@
           "sk": "16082100232240008",
           "areaHa": 15170
         }
-      ]
+      ],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -3193,7 +3445,8 @@
       "village": "Pasenggerahan",
       "district": "Sungai Batang",
       "regency": "Indragiri Hilir",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -3207,7 +3460,17 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": [
+        {
+          "id": "RSPO-056",
+          "name": "PT Gandaerah Hendana",
+          "group": "S&G BIOFUEL PTE. LTD",
+          "supplyBase": "Kebun 1 Estate, Kebun 2 Estate, Kebun 3 Estate",
+          "regency": "Indragiri Hulu, Pelalawan",
+          "referenceVersion": "georspo-riau-growers-20260912-v1"
+        }
+      ]
     },
     {
       "date": "2026-08-22",
@@ -3221,7 +3484,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -3235,7 +3499,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -3249,7 +3514,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -3263,7 +3529,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -3277,7 +3544,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -3291,7 +3559,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -3305,7 +3574,8 @@
       "village": "Pulau Muda",
       "district": "Teluk Meranti",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -3325,7 +3595,8 @@
           "sk": "16082100232240008",
           "areaHa": 15170
         }
-      ]
+      ],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -3345,7 +3616,8 @@
           "sk": "16082100232240008",
           "areaHa": 15170
         }
-      ]
+      ],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -3359,7 +3631,8 @@
       "village": "Idaman",
       "district": "Gaung Anak Serka",
       "regency": "Indragiri Hilir",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -3373,7 +3646,8 @@
       "village": "Kelurahan Pelangiran",
       "district": "Pelangiran",
       "regency": "Indragiri Hilir",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -3387,7 +3661,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -3401,7 +3676,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -3415,7 +3691,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -3429,7 +3706,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -3443,7 +3721,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -3457,7 +3736,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -3471,7 +3751,17 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": [
+        {
+          "id": "RSPO-056",
+          "name": "PT Gandaerah Hendana",
+          "group": "S&G BIOFUEL PTE. LTD",
+          "supplyBase": "Kebun 1 Estate, Kebun 2 Estate, Kebun 3 Estate",
+          "regency": "Indragiri Hulu, Pelalawan",
+          "referenceVersion": "georspo-riau-growers-20260912-v1"
+        }
+      ]
     },
     {
       "date": "2026-08-22",
@@ -3485,7 +3775,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -3499,7 +3790,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -3513,7 +3805,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -3527,7 +3820,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-22",
@@ -3541,7 +3835,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-23",
@@ -3555,7 +3850,17 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": [
+        {
+          "id": "RSPO-056",
+          "name": "PT Gandaerah Hendana",
+          "group": "S&G BIOFUEL PTE. LTD",
+          "supplyBase": "Kebun 1 Estate, Kebun 2 Estate, Kebun 3 Estate",
+          "regency": "Indragiri Hulu, Pelalawan",
+          "referenceVersion": "georspo-riau-growers-20260912-v1"
+        }
+      ]
     },
     {
       "date": "2026-08-23",
@@ -3569,7 +3874,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-23",
@@ -3583,7 +3889,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-23",
@@ -3597,7 +3904,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-23",
@@ -3611,7 +3919,8 @@
       "village": "Kayu Raja",
       "district": "Keritang",
       "regency": "Indragiri Hilir",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-23",
@@ -3625,7 +3934,8 @@
       "village": "Kayu Raja",
       "district": "Keritang",
       "regency": "Indragiri Hilir",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-23",
@@ -3639,7 +3949,8 @@
       "village": "Sungaigantang",
       "district": "Kempas",
       "regency": "Indragiri Hilir",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-23",
@@ -3653,7 +3964,8 @@
       "village": "Metro",
       "district": "Reteh",
       "regency": "Indragiri Hilir",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-23",
@@ -3667,7 +3979,8 @@
       "village": "Metro",
       "district": "Reteh",
       "regency": "Indragiri Hilir",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-23",
@@ -3687,7 +4000,8 @@
           "sk": "16082100232240008",
           "areaHa": 15170
         }
-      ]
+      ],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-23",
@@ -3707,7 +4021,8 @@
           "sk": "16082100232240008",
           "areaHa": 15170
         }
-      ]
+      ],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-23",
@@ -3727,7 +4042,8 @@
           "sk": "16082100232240008",
           "areaHa": 15170
         }
-      ]
+      ],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-23",
@@ -3741,7 +4057,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-23",
@@ -3755,7 +4072,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-23",
@@ -3769,7 +4087,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-23",
@@ -3783,7 +4102,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-23",
@@ -3797,7 +4117,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-23",
@@ -3811,7 +4132,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-23",
@@ -3825,7 +4147,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-23",
@@ -3839,7 +4162,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-23",
@@ -3853,7 +4177,8 @@
       "village": "Kayu Raja",
       "district": "Keritang",
       "regency": "Indragiri Hilir",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-23",
@@ -3873,7 +4198,8 @@
           "sk": "16082100232240008",
           "areaHa": 15170
         }
-      ]
+      ],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-23",
@@ -3887,7 +4213,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-23",
@@ -3901,7 +4228,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-23",
@@ -3915,7 +4243,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-23",
@@ -3929,7 +4258,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-23",
@@ -3943,7 +4273,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-23",
@@ -3957,7 +4288,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-23",
@@ -3971,7 +4303,8 @@
       "village": "Kayu Raja",
       "district": "Keritang",
       "regency": "Indragiri Hilir",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-23",
@@ -3991,7 +4324,8 @@
           "sk": "16082100232240008",
           "areaHa": 15170
         }
-      ]
+      ],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-23",
@@ -4005,7 +4339,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-23",
@@ -4019,7 +4354,8 @@
       "village": "Kayu Raja",
       "district": "Keritang",
       "regency": "Indragiri Hilir",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-23",
@@ -4033,7 +4369,8 @@
       "village": "Pemandang",
       "district": "Rokan Iv Koto",
       "regency": "Rokan Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-23",
@@ -4047,7 +4384,8 @@
       "village": "Buluh Apo",
       "district": "Pinggir",
       "regency": "Bengkalis",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-23",
@@ -4061,7 +4399,8 @@
       "village": "Semelinang Tebing/Anak Talang",
       "district": "Peranap/Batang Cenaku",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-23",
@@ -4075,7 +4414,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-23",
@@ -4089,7 +4429,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-23",
@@ -4103,7 +4444,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-23",
@@ -4117,7 +4459,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-23",
@@ -4131,7 +4474,8 @@
       "village": "Kerta Jaya",
       "district": "Kempas",
       "regency": "Indragiri Hilir",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-23",
@@ -4145,7 +4489,8 @@
       "village": "Telukkiambang",
       "district": "Tempuling",
       "regency": "Indragiri Hilir",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-23",
@@ -4159,7 +4504,8 @@
       "village": "Kayu Raja",
       "district": "Keritang",
       "regency": "Indragiri Hilir",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-23",
@@ -4173,7 +4519,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-23",
@@ -4187,7 +4534,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-23",
@@ -4201,7 +4549,8 @@
       "village": "Kerta Jaya",
       "district": "Kempas",
       "regency": "Indragiri Hilir",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-24",
@@ -4215,7 +4564,8 @@
       "village": "Buluh Apo",
       "district": "Pinggir",
       "regency": "Bengkalis",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-24",
@@ -4229,7 +4579,8 @@
       "village": "Buluh Apo",
       "district": "Pinggir",
       "regency": "Bengkalis",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-24",
@@ -4243,7 +4594,8 @@
       "village": "Rantau Baru",
       "district": "Pangkalan Kerinci",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-24",
@@ -4257,7 +4609,8 @@
       "village": "Rantau Baru",
       "district": "Pangkalan Kerinci",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-24",
@@ -4271,7 +4624,8 @@
       "village": "Kayu Raja",
       "district": "Keritang",
       "regency": "Indragiri Hilir",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-24",
@@ -4285,7 +4639,8 @@
       "village": "Kayu Raja",
       "district": "Keritang",
       "regency": "Indragiri Hilir",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-25",
@@ -4299,7 +4654,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-25",
@@ -4313,7 +4669,8 @@
       "village": "Buluh Apo",
       "district": "Pinggir",
       "regency": "Bengkalis",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-25",
@@ -4327,7 +4684,8 @@
       "village": "Rantau Panjang",
       "district": "Koto Gasib",
       "regency": "Siak",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-25",
@@ -4341,7 +4699,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-25",
@@ -4355,7 +4714,8 @@
       "village": "Sungairukam",
       "district": "Enok",
       "regency": "Indragiri Hilir",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-25",
@@ -4369,7 +4729,8 @@
       "village": "Buluh Apo",
       "district": "Pinggir",
       "regency": "Bengkalis",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-25",
@@ -4383,7 +4744,8 @@
       "village": "Buluh Apo",
       "district": "Pinggir",
       "regency": "Bengkalis",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-25",
@@ -4397,7 +4759,8 @@
       "village": "Buluh Apo",
       "district": "Pinggir",
       "regency": "Bengkalis",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-25",
@@ -4411,7 +4774,8 @@
       "village": "Rantau Baru",
       "district": "Pangkalan Kerinci",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-25",
@@ -4425,7 +4789,8 @@
       "village": "Rantau Baru",
       "district": "Pangkalan Kerinci",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-25",
@@ -4439,7 +4804,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-25",
@@ -4453,7 +4819,8 @@
       "village": "Kelurahan Kerumutan",
       "district": "Kerumutan",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-26",
@@ -4467,7 +4834,8 @@
       "village": "Rantai Langsat",
       "district": "Batang Gangsal",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-26",
@@ -4481,7 +4849,8 @@
       "village": "Sekara",
       "district": "Kemuning",
       "regency": "Indragiri Hilir",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-27",
@@ -4495,7 +4864,8 @@
       "village": "Sungaipaku",
       "district": "Singingi Hilir",
       "regency": "Kuantan Singingi",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-27",
@@ -4509,7 +4879,8 @@
       "village": "Rantau Baru",
       "district": "Pangkalan Kerinci",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-27",
@@ -4523,7 +4894,8 @@
       "village": "Sungaipaku",
       "district": "Singingi Hilir",
       "regency": "Kuantan Singingi",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-27",
@@ -4537,7 +4909,8 @@
       "village": "Sungaipaku",
       "district": "Singingi Hilir",
       "regency": "Kuantan Singingi",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-27",
@@ -4551,7 +4924,8 @@
       "village": "Tasiktebingserai",
       "district": "Talang Muandau",
       "regency": "Bengkalis",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-27",
@@ -4565,7 +4939,8 @@
       "village": "Rantau Baru",
       "district": "Pangkalan Kerinci",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-27",
@@ -4579,7 +4954,8 @@
       "village": "Rantau Baru",
       "district": "Pangkalan Kerinci",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-27",
@@ -4593,7 +4969,8 @@
       "village": "Rantau Baru",
       "district": "Pangkalan Kerinci",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-27",
@@ -4607,7 +4984,8 @@
       "village": "Semelinang Tebing/Pauh Ranap/Pesajian",
       "district": "Peranap/Batang Peranap",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-27",
@@ -4621,7 +4999,8 @@
       "village": "Dayun",
       "district": "Siak",
       "regency": "Siak",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-27",
@@ -4635,7 +5014,8 @@
       "village": "Belantaraya",
       "district": "Gaung",
       "regency": "Indragiri Hilir",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-27",
@@ -4649,7 +5029,8 @@
       "village": "Rantau Baru",
       "district": "Pangkalan Kerinci",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-27",
@@ -4663,7 +5044,8 @@
       "village": "Rantau Baru",
       "district": "Pangkalan Kerinci",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-27",
@@ -4677,7 +5059,8 @@
       "village": "Rantau Baru",
       "district": "Pangkalan Kerinci",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-27",
@@ -4691,7 +5074,8 @@
       "village": "Rantau Baru",
       "district": "Pangkalan Kerinci",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-27",
@@ -4705,7 +5089,8 @@
       "village": "Rantau Baru",
       "district": "Pangkalan Kerinci",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-27",
@@ -4719,7 +5104,8 @@
       "village": "Lahang Hulu",
       "district": "Gaung",
       "regency": "Indragiri Hilir",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-27",
@@ -4733,7 +5119,8 @@
       "village": "Lahang Hulu",
       "district": "Gaung",
       "regency": "Indragiri Hilir",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-28",
@@ -4747,7 +5134,8 @@
       "village": "Dayun",
       "district": "Siak",
       "regency": "Siak",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-28",
@@ -4761,7 +5149,8 @@
       "village": "Tasiktebingserai",
       "district": "Talang Muandau",
       "regency": "Bengkalis",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-28",
@@ -4775,7 +5164,8 @@
       "village": "Rantau Baru",
       "district": "Pangkalan Kerinci",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-28",
@@ -4789,7 +5179,8 @@
       "village": "Belantaraya",
       "district": "Gaung",
       "regency": "Indragiri Hilir",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-28",
@@ -4803,7 +5194,8 @@
       "village": "Rantau Baru",
       "district": "Pangkalan Kerinci",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-28",
@@ -4817,7 +5209,8 @@
       "village": "Punti Anai",
       "district": "Batang Cenaku",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-28",
@@ -4831,7 +5224,8 @@
       "village": "Punti Anai",
       "district": "Batang Cenaku",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-28",
@@ -4845,7 +5239,8 @@
       "village": "Sungai Guntung Tengah / Sungai Guntung Hilir",
       "district": "",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-28",
@@ -4859,7 +5254,8 @@
       "village": "Telukkabung",
       "district": "Gaung",
       "regency": "Indragiri Hilir",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-28",
@@ -4873,7 +5269,8 @@
       "village": "Belantaraya",
       "district": "Gaung",
       "regency": "Indragiri Hilir",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-28",
@@ -4887,7 +5284,8 @@
       "village": "Lahang Hulu",
       "district": "Gaung",
       "regency": "Indragiri Hilir",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-28",
@@ -4901,7 +5299,8 @@
       "village": "Lahang Hulu",
       "district": "Gaung",
       "regency": "Indragiri Hilir",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-28",
@@ -4915,7 +5314,8 @@
       "village": "Lahang Hulu",
       "district": "Gaung",
       "regency": "Indragiri Hilir",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-28",
@@ -4929,7 +5329,8 @@
       "village": "Tasiktebingserai",
       "district": "Talang Muandau",
       "regency": "Bengkalis",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-28",
@@ -4943,7 +5344,8 @@
       "village": "Tasiktebingserai",
       "district": "Talang Muandau",
       "regency": "Bengkalis",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-28",
@@ -4957,7 +5359,8 @@
       "village": "Sungaipaku",
       "district": "Singingi Hilir",
       "regency": "Kuantan Singingi",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-28",
@@ -4971,7 +5374,8 @@
       "village": "Tasiktebingserai",
       "district": "Talang Muandau",
       "regency": "Bengkalis",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-28",
@@ -4985,7 +5389,8 @@
       "village": "Tasiktebingserai",
       "district": "Talang Muandau",
       "regency": "Bengkalis",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-28",
@@ -4999,7 +5404,8 @@
       "village": "Kuantan Baru",
       "district": "Rengat",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-28",
@@ -5013,7 +5419,8 @@
       "village": "Telukkiambang",
       "district": "Tempuling",
       "regency": "Indragiri Hilir",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-28",
@@ -5027,7 +5434,8 @@
       "village": "Rantau Baru",
       "district": "Pangkalan Kerinci",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-28",
@@ -5041,7 +5449,8 @@
       "village": "Rantau Baru",
       "district": "Pangkalan Kerinci",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-28",
@@ -5055,7 +5464,8 @@
       "village": "Rantau Baru",
       "district": "Pangkalan Kerinci",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-28",
@@ -5069,7 +5479,8 @@
       "village": "Sungai Guntung Tengah / Sungai Guntung Hilir",
       "district": "",
       "regency": "Indragiri Hulu",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-29",
@@ -5083,7 +5494,8 @@
       "village": "Rantau Baru",
       "district": "Pangkalan Kerinci",
       "regency": "Pelalawan",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-29",
@@ -5097,7 +5509,8 @@
       "village": "Lahang Hulu",
       "district": "Gaung",
       "regency": "Indragiri Hilir",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
     },
     {
       "date": "2026-08-29",
@@ -5111,7 +5524,22 @@
       "village": "Pungkat",
       "district": "Gaung",
       "regency": "Indragiri Hilir",
-      "permits": []
+      "permits": [],
+      "rspoAreas": []
+    }
+  ],
+  "rspoAreas": [
+    {
+      "id": "RSPO-056",
+      "name": "PT Gandaerah Hendana",
+      "group": "S&G BIOFUEL PTE. LTD",
+      "supplyBase": "Kebun 1 Estate, Kebun 2 Estate, Kebun 3 Estate",
+      "regency": "Indragiri Hulu, Pelalawan",
+      "hotspots": 11,
+      "villages": [
+        "Kelurahan Kerumutan"
+      ],
+      "detectionDays": 4
     }
   ]
 }
