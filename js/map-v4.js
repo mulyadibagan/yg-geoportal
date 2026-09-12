@@ -2176,7 +2176,7 @@ L.control.scale({
               'target="_blank" rel="noopener noreferrer" ' +
               'href="pbph-profile.html?id=' +
                 encodeURIComponent(activeConcessionId) + '">' +
-              'Buka Profil PBPH&nbsp; →' +
+              'Buka Profil PHL &amp; SVLK&nbsp; →' +
             '</a>' +
           '</div>'
         )

@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="description" content="Pemantauan status PHL, dokumen SVLK, dan analisis spasial PBPH di Provinsi Riau.">
+  <title>Pemantauan PHL &amp; SVLK Riau | YG GeoPortal</title>
+  <link rel="icon" href="assets/logo-yayasan-gambut.png">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/phl-svlk-riau.css?v=20260912-1">
+</head>
+<body>
+  <header class="ps-topbar">
+    <a class="ps-brand" href="index.html"><img src="assets/logo-yayasan-gambut.png" alt="Logo Yayasan Gambut"><span><strong>YG GeoPortal</strong><small>Pemantauan PHL &amp; SVLK Riau</small></span></a>
+    <nav aria-label="Navigasi halaman"><a href="index.html">Beranda</a><a href="webgis.html">Peta Interaktif</a><a href="fire-monthly-report.html">Laporan Karhutla</a></nav>
+  </header>
+
+  <main class="ps-shell">
+    <section class="ps-heading">
+      <div><p class="ps-eyebrow">KEHUTANAN &amp; TATA KELOLA · PROVINSI RIAU</p><h1>Pemantauan PHL &amp; SVLK</h1><p>Status sertifikasi dan dokumen audit resmi disandingkan dengan analisis spasial YG untuk membantu penelusuran PBPH.</p></div>
+      <div class="ps-heading__actions"><a class="ps-button" href="https://silk.phl.kehutanan.go.id/" target="_blank" rel="noopener noreferrer">Buka SILK resmi ↗</a><span id="ps-updated">Memuat pembaruan…</span></div>
+    </section>
+
+    <aside class="ps-boundary-note"><strong>Dua sumber, dua makna.</strong> Status PHL/SVLK mengikuti dokumen publik SILK atau LPVI yang telah ditelusuri. Hotspot dan analisis spasial merupakan indikasi YG, bukan penilaian kepatuhan, penyebab kebakaran, atau tanggung jawab pemegang PBPH.</aside>
+
+    <section class="ps-kpis" aria-label="Ringkasan pemantauan">
+      <button type="button" data-filter="all"><span>PBPH dalam data Riau</span><strong id="ps-total">—</strong><small>pembaruan batas Mei 2026</small></button>
+      <button type="button" data-filter="verified"><span>S-PHL terverifikasi</span><strong id="ps-verified">—</strong><small>nomor dan sumber tersedia</small></button>
+      <button type="button" data-filter="followup"><span>Perlu penelusuran</span><strong id="ps-followup">—</strong><small>sertifikat belum terverifikasi</small></button>
+      <button type="button" data-filter="expired"><span>Masa berlaku berakhir</span><strong id="ps-expired">—</strong><small>berdasarkan dokumen dihimpun</small></button>
+      <button type="button" data-filter="hotspots"><span>PBPH dengan hotspot</span><strong id="ps-hotspots">—</strong><small id="ps-hotspot-period">laporan bulanan final</small></button>
+    </section>
+
+    <section class="ps-workspace">
+      <article class="ps-panel ps-map-panel">
+        <div class="ps-panel-head"><div><span>PETA PBPH</span><h2>Status dokumen &amp; indikasi hotspot</h2></div><button id="ps-reset-map" type="button">Lihat seluruh Riau</button></div>
+        <div id="ps-map" class="ps-map" aria-label="Peta PBPH Riau"></div>
+        <div class="ps-legend"><span><i class="is-verified"></i>S-PHL terverifikasi</span><span><i class="is-followup"></i>Perlu penelusuran</span><span><i class="is-expired"></i>Masa berlaku berakhir</span><span><b></b>Hotspot laporan final</span></div>
+      </article>
+
+      <article class="ps-panel ps-attention">
+        <div class="ps-panel-head"><div><span>PERLU PERHATIAN</span><h2>Prioritas penelusuran dokumen</h2></div></div>
+        <div id="ps-attention-list" class="ps-attention-list"><p class="ps-empty">Menyiapkan daftar…</p></div>
+        <p class="ps-caption">Label ini menunjukkan kebutuhan pemeriksaan data publik, bukan temuan pelanggaran.</p>
+      </article>
+    </section>
+
+    <section class="ps-panel ps-directory">
+      <div class="ps-directory-head"><div><span>DIREKTORI PBPH</span><h2>Status dan profil pemantauan</h2></div><div class="ps-controls"><label><span class="sr-only">Cari PBPH</span><input id="ps-search" type="search" placeholder="Cari nama, SK, LPVI…" autocomplete="off"></label><label><span class="sr-only">Filter status</span><select id="ps-filter"><option value="all">Semua status</option><option value="verified">S-PHL terverifikasi</option><option value="followup">Perlu penelusuran</option><option value="expired">Masa berlaku berakhir</option><option value="hotspots">Ada hotspot dalam laporan</option></select></label></div></div>
+      <p class="ps-result-note" id="ps-result-note">Memuat direktori…</p>
+      <div class="ps-table-wrap"><table><thead><tr><th>Pemegang PBPH</th><th>Status dokumen</th><th>LPVI / masa berlaku</th><th>Hotspot laporan final</th><th></th></tr></thead><tbody id="ps-rows"><tr><td colspan="5">Memuat data…</td></tr></tbody></table></div>
+      <div id="ps-cards" class="ps-cards"></div>
+    </section>
+
+    <section class="ps-method">
+      <div><span>STATUS RESMI</span><h2>Dokumen yang telah ditelusuri</h2><p>Nomor sertifikat, LPVI, masa berlaku, serta pengumuman atau hasil audit ditampilkan hanya jika sumber publiknya tersedia. “Belum ditemukan” tidak berarti tidak bersertifikat.</p></div>
+      <div><span>ANALISIS YG</span><h2>Konteks spasial untuk pemantauan</h2><p>Profil PBPH menghubungkan batas areal dengan arsip hotspot bulanan. Irisan spasial tidak membuktikan penyebab, pelanggaran, ataupun tanggung jawab pihak tertentu.</p></div>
+      <div><span>CAKUPAN SAAT INI</span><h2>S-PHL sebagai tahap awal</h2><p>Register S-PHL telah dihimpun. Informasi S-Legalitas dan riwayat perubahan akan ditambahkan setelah dokumen resmi dapat diverifikasi secara konsisten.</p></div>
+    </section>
+  </main>
+
+  <div class="ps-toast" id="ps-toast" role="status"></div>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/phl-svlk-riau.js?v=20260912-1"></script>
+</body>
+</html>
