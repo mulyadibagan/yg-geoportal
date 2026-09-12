@@ -284,8 +284,8 @@
     var status = document.getElementById('penabulu-evidence-status');
     if (!list || !status) return;
     status.textContent = rows.length
-      ? rows.length + ' evidence terverifikasi'
-      : 'Belum ada evidence terverifikasi';
+      ? rows.length + ' dokumentasi terverifikasi'
+      : 'Belum ada dokumentasi terverifikasi';
     if (!rows.length) {
       list.innerHTML = '<p class="penabulu-evidence-empty">Belum ada paket bukti yang dapat ditampilkan.</p>';
       return;
@@ -500,10 +500,10 @@
           evidenceCount = fallbackCount;
         }
         var badgeText = !ready
-          ? 'Memuat evidence...'
+          ? 'Memuat dokumentasi...'
           : evidenceCount
-            ? evidenceCount + ' evidence terverifikasi'
-            : 'Belum ada evidence terverifikasi';
+            ? evidenceCount + ' dokumentasi terverifikasi'
+            : 'Belum ada dokumentasi terverifikasi';
         if (badge.textContent !== badgeText) badge.textContent = badgeText;
         if (badge.classList.contains('has-evidence') !== (evidenceCount > 0)) {
           badge.classList.toggle('has-evidence', evidenceCount > 0);
