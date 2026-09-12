@@ -87,23 +87,23 @@
 <style>
 /* Programme summary: aligned titles, totals, three readable metric rows. */
 #programme-overview #category-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;align-items:stretch}
-#programme-overview #category-grid .programme-card{display:grid!important;grid-template-rows:76px 86px 132px auto!important;gap:0!important;height:auto!important;min-height:0!important;padding:20px!important;border:1px solid #d8e3dc!important;border-top:4px solid #23705a!important;border-radius:10px!important;background:#fff!important;color:#173b2c!important;box-shadow:0 4px 16px #173b2c06!important;overflow:visible!important;text-decoration:none}
+#programme-overview #category-grid .programme-card{display:grid!important;grid-template-rows:76px 86px 132px auto!important;gap:0!important;height:auto!important;min-height:0!important;padding:20px!important;border:1px solid #d8e3dc!important;border-top:4px solid #23705a!important;border-radius:10px!important;background-size:cover!important;background-position:center!important;background-blend-mode:normal!important;color:#fff!important;box-shadow:0 4px 16px #173b2c06!important;overflow:hidden!important;text-decoration:none}
 #programme-overview #category-grid .programme-card::before,#programme-overview #category-grid .programme-card::after{display:none!important}
 #programme-overview #category-grid .programme-card header{display:flex!important;align-items:flex-start!important;justify-content:space-between;gap:10px;margin:0!important;padding:0 0 12px!important;border:0!important;min-height:0!important}
 #programme-overview #category-grid .programme-card header i{display:none!important}
-#programme-overview #category-grid .programme-card h3{margin:0!important;font-family:"DM Sans",Arial,sans-serif!important;font-size:18px!important;font-weight:700!important;line-height:1.3!important;color:#173b2c!important}
-#programme-overview #category-grid .programme-card header>span{display:grid!important;place-items:center;flex:0 0 28px;width:28px!important;height:28px!important;border:1px solid #c9dad0!important;border-radius:50%;font-size:16px!important;color:#23705a!important;background:none!important}
+#programme-overview #category-grid .programme-card h3{margin:0!important;font-family:"DM Sans",Arial,sans-serif!important;font-size:18px!important;font-weight:700!important;line-height:1.3!important;color:#fff!important}
+#programme-overview #category-grid .programme-card header>span{display:grid!important;place-items:center;flex:0 0 28px;width:28px!important;height:28px!important;border:1px solid #c9dad0!important;border-radius:50%;font-size:16px!important;color:#fff!important;background:none!important}
 #programme-overview #category-grid .programme-current{display:flex!important;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:6px;padding:0 0 16px!important;margin:0!important;min-height:0!important;border:0!important}
-#programme-overview #category-grid .programme-current>span{color:#586d62!important;font-size:11px!important;line-height:1.4!important;letter-spacing:.06em}
-#programme-overview #category-grid .programme-current>strong{color:#17664e!important;font-size:28px!important;line-height:1.2!important;margin:0!important;white-space:nowrap}
+#programme-overview #category-grid .programme-current>span{color:#edf5f0!important;font-size:11px!important;line-height:1.4!important;letter-spacing:.06em}
+#programme-overview #category-grid .programme-current>strong{color:#fff!important;font-size:28px!important;line-height:1.2!important;margin:0!important;white-space:nowrap}
 #programme-overview #category-grid .programme-current>small{display:none!important}
-#programme-overview #category-grid .programme-support-grid{display:grid!important;grid-template-columns:1fr!important;grid-template-rows:repeat(3,44px)!important;height:auto!important;gap:0!important;margin:0!important;border-top:1px solid #e0e8e2}
-#programme-overview #category-grid .programme-support-grid>span{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:center;gap:12px;padding:6px 0!important;border:0!important;border-bottom:1px solid #e0e8e2!important;min-width:0}
-#programme-overview #category-grid .programme-support-grid>span small{color:#52665b!important;font-size:12px!important;line-height:1.3!important;margin:0!important;min-height:0!important}
-#programme-overview #category-grid .programme-support-grid>span strong{color:#173b2c!important;font-size:16px!important;line-height:1.3!important;margin:0!important;text-align:right;white-space:nowrap}
-#programme-overview #category-grid .programme-card__meta{display:block!important;margin:0!important;padding:12px 0 0!important;border:0!important;color:#64786b!important;font-size:11px!important;line-height:1.4!important}
+#programme-overview #category-grid .programme-support-grid{display:grid!important;grid-template-columns:1fr!important;grid-template-rows:repeat(3,44px)!important;height:auto!important;gap:0!important;margin:0!important;border-top:1px solid rgba(255,255,255,.24)}
+#programme-overview #category-grid .programme-support-grid>span{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:center;gap:12px;padding:6px 0!important;border:0!important;border-bottom:1px solid rgba(255,255,255,.24)!important;min-width:0}
+#programme-overview #category-grid .programme-support-grid>span small{color:#edf5f0!important;font-size:12px!important;line-height:1.3!important;margin:0!important;min-height:0!important}
+#programme-overview #category-grid .programme-support-grid>span strong{color:#fff!important;font-size:16px!important;line-height:1.3!important;margin:0!important;text-align:right;white-space:nowrap}
+#programme-overview #category-grid .programme-card__meta{display:block!important;margin:0!important;padding:12px 0 0!important;border:0!important;color:#edf5f0!important;font-size:11px!important;line-height:1.4!important}
 #programme-overview #category-grid .programme-card__meta .programme-verified{display:none!important}
-#programme-overview #category-grid .programme-card:hover{border-color:#23705a!important;transform:translateY(-2px)}
+#programme-overview #category-grid .programme-card:hover{border-color:#fff!important;transform:translateY(-2px)}
 #programme-overview #category-grid .programme-card:focus-visible{outline:3px solid #23705a;outline-offset:3px}
 @media(max-width:1179px){#programme-overview #category-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
 @media(max-width:600px){#programme-overview #category-grid{grid-template-columns:1fr!important}#programme-overview #category-grid .programme-card{grid-template-rows:60px 86px 132px auto!important}}
