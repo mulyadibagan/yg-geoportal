@@ -25,6 +25,15 @@ test('guide remains a public learning resource', () => {
   assert.doesNotMatch(guide, /checklist audit|nilai kepatuhan|status lulus/i);
 });
 
+test('guide presents all 38 criteria as a learning summary', () => {
+  assert.match(guide, /38 KRITERIA/);
+  assert.match(guide, /Kriteria adalah kondisi atau hasil/);
+  assert.equal((guide.match(/<li><b>[1-7]\.[1-9]<\/b>/g) || []).length, 38);
+  assert.match(guide, /<b>1\.1<\/b>/);
+  assert.match(guide, /<b>7\.7<\/b>/);
+  assert.doesNotMatch(guide, /indikator kritis|skor audit/i);
+});
+
 test('portal exposes the guide from principles and documents', () => {
   assert.equal((portal.match(/href="rspo-prinsip-kriteria\.html"/g) || []).length, 2);
   assert.match(portal, /Buka panduan prinsip/);
