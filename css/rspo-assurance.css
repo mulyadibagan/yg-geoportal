@@ -25,5 +25,20 @@ summary:focus-visible{outline:3px solid #267346;outline-offset:2px}
 .ish-stage-table caption{text-align:left;font-weight:700;margin-bottom:10px;color:var(--deep)}
 .ish-stage-table th,.ish-stage-table td{padding:12px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line);overflow-wrap:anywhere}
 .ish-stage-table th{width:36%;background:#edf4ef;font-weight:600}
+.standard-nav[role=tablist]{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.standard-tab{font:inherit;text-align:left;cursor:pointer;padding:20px 24px;border:1px solid var(--line);border-radius:8px;background:white;color:var(--deep);transition:background .15s,border-color .15s}
+.standard-tab strong,.standard-tab span{display:block}.standard-tab strong{font-size:18px}.standard-tab span{margin-top:6px;font-size:13px;color:var(--muted)}
+.standard-tab[aria-selected=true]{background:var(--deep);border-color:var(--deep);color:white;box-shadow:0 3px 12px #163b2020}.standard-tab[aria-selected=true] span{color:#e0ece3}
+.standard-tab:focus-visible{outline:3px solid #267346;outline-offset:3px}
+.standard-panel[hidden]{display:none!important}
+.guide-fold{border:1px solid var(--line);border-radius:6px;background:white;margin:16px 0;overflow:hidden}
+.guide-fold>summary{padding:16px 20px;cursor:pointer;font-weight:600;color:var(--deep)}
+.guide-fold>summary:hover{background:#edf4ef}
+.guide-fold-shared{width:min(1240px,calc(100% - 40px));margin:16px auto}
+.guide-fold>.standard-scope,.guide-fold>#proses-sertifikasi{width:auto;margin:0;border:0}
+.guide-fold>.guide-intro,.guide-fold>.guide-glossary{border:0;margin:0}
+.guide-hero{padding-top:28px;padding-bottom:28px}.guide-hero h1{font-size:clamp(26px,3vw,40px)}
+.standard-panel .guide-facts{margin-top:16px;margin-bottom:16px}
+@media(max-width:600px){.standard-tab{padding:16px 12px}.standard-tab strong{font-size:15px}.standard-tab span{font-size:12px}.guide-fold-shared{width:calc(100% - 20px)}}
 @media(max-width:800px){.standard-nav{grid-template-columns:1fr}.guide-detail{grid-template-columns:1fr}.assurance-timeline{grid-template-columns:1fr}.guide-hero{grid-template-columns:1fr}.guide-hero aside{border-left:0;padding-left:0}}
 @media(max-width:480px){.assurance-evidence{padding:14px}.ish-guide .assurance-criterion{margin:8px}.standard-scope,.ish-guide,#proses-sertifikasi{width:calc(100% - 20px);padding:18px}}
