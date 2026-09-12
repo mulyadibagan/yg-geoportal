@@ -7,7 +7,7 @@
   <link rel="icon" href="assets/logo-yayasan-gambut.png">
   <link rel="stylesheet" href="css/site-brand.css?v=20260720-program-dashboard1">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="css/rspo-area-profile.css?v=20260912-profile1">
+  <link rel="stylesheet" href="css/rspo-area-profile.css?v=20260912-portfolio1">
 </head>
 <body>
 <header class="site-header yg-page-header"><div class="header-inner yg-page-header__inner"><a class="brand yg-page-brand" href="index.html"><img src="assets/logo-yayasan-gambut.png" alt="Logo Yayasan Gambut"><span><strong>YG GeoPortal</strong><span>Perkebunan &amp; Komoditas</span></span></a><nav class="nav yg-page-nav"><a href="webgis.html">Peta Interaktif</a><a href="sawit-riau-rspo.html">Sawit Riau &amp; RSPO</a></nav></div></header>
@@ -15,11 +15,24 @@
   <div id="rap-status" class="rap-status">Memuat profil area…</div>
   <section class="rap-hero"><div><span class="rap-eyebrow" id="rap-type">PROFIL AREA ANGGOTA RSPO</span><h1 id="rap-title">—</h1><p id="rap-subtitle">—</p><div class="rap-actions"><a href="#rap-map">Lihat peta</a><a class="secondary" id="rap-group-link" href="#">Profil grup</a></div></div><aside><span>REFERENSI PUBLIK</span><p>Profil menyatukan batas area anggota RSPO dengan catatan hotspot bulanan yang tersedia di YG GeoPortal.</p><small id="rap-updated">—</small></aside></section>
   <section class="rap-kpis"><article><span>Area/unit</span><strong id="rap-unit-count">—</strong></article><article><span>Luas poligon</span><strong id="rap-area">—</strong><small>hektare</small></article><article><span>Hotspot bulanan</span><strong id="rap-hotspots">—</strong><small id="rap-month-range">—</small></article><article><span>Hari deteksi</span><strong id="rap-days">—</strong><small>unik dalam arsip</small></article></section>
+  <section class="rap-panel rap-portfolio" id="rap-portfolio">
+    <div class="rap-heading"><div><span>PORTOFOLIO VERIFIKASI</span><h2>Fakta, status, dan sumber</h2></div><p id="rap-portfolio-version">Format percontohan</p></div>
+    <div class="rap-verification-banner">
+      <div><span>STATUS PUBLIK</span><strong id="rap-public-status">Memuat…</strong></div>
+      <div><span>SERTIFIKASI KEBUN/UNIT</span><strong id="rap-certification-status">Memuat…</strong></div>
+    </div>
+    <p class="rap-verification-summary" id="rap-verification-summary"></p>
+    <div class="rap-fact-grid" id="rap-fact-grid"></div>
+    <div class="rap-portfolio-lower">
+      <section><div class="rap-subheading"><span>SUMBER TERBUKA</span><h3>Dokumen dan laman rujukan</h3></div><div class="rap-source-list" id="rap-source-list"></div></section>
+      <section><div class="rap-subheading"><span>DATA LANJUTAN</span><h3>Bukti yang masih diperlukan</h3></div><ul class="rap-evidence-list" id="rap-evidence-list"></ul></section>
+    </div>
+  </section>
   <section class="rap-layout"><article class="rap-panel rap-map-panel" id="rap-map"><div class="rap-heading"><div><span>CAKUPAN SPASIAL</span><h2>Peta area dan hotspot</h2></div><p>Pilih citra satelit atau peta jalan.</p></div><div id="rap-leaflet"></div></article><aside class="rap-panel rap-identity"><div class="rap-heading"><div><span>IDENTITAS REFERENSI</span><h2>Ringkasan area</h2></div></div><dl id="rap-identity"></dl></aside></section>
   <section class="rap-panel"><div class="rap-heading"><div><span>RIWAYAT BULANAN</span><h2>Irisan hotspot</h2></div><p>Irisan spasial bukan bukti penyebab kebakaran atau tanggung jawab pihak tertentu.</p></div><div id="rap-chart" class="rap-chart"></div><div class="rap-table-wrap"><table><thead><tr><th>Bulan</th><th>Hotspot</th><th>Hari deteksi</th><th>Desa terkait</th><th>Status</th></tr></thead><tbody id="rap-monthly"></tbody></table></div></section>
   <section class="rap-panel rap-related-panel"><div class="rap-heading"><div><span>AREA TERKAIT</span><h2 id="rap-related-title">Area dalam grup yang sama</h2></div></div><div id="rap-related" class="rap-related"></div></section>
   <aside class="rap-note"><strong>Catatan penggunaan:</strong> batas merupakan referensi area perkebunan anggota RSPO, bukan batas hukum HGU. Informasi keanggotaan dan cakupan area dapat berubah mengikuti pembaruan data.</aside>
 </main>
 <footer class="rap-footer"><span>© Yayasan Gambut</span><span>Memetakan aksi. Merekam perubahan.</span></footer>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script src="js/rspo-area-profile.js?v=20260912-profile1"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script src="js/rspo-area-profile.js?v=20260912-portfolio1"></script>
 </body></html>
