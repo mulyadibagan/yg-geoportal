@@ -119,6 +119,14 @@ test("protects and serves the RSPO group overview from R2", async () => {
   } finally { globalThis.fetch = originalFetch; }
 });
 
+test("serves the aggregated RSPO group overview publicly", async () => {
+  const env = envWith({ type: "FeatureCollection", features: new Array(23).fill({ type: "Feature" }) });
+  const response = await worker.fetch(new Request("https://data.test/references/rspo-riau-groups.geojson"), env);
+  assert.equal(response.status, 200);
+  assert.equal(response.headers.get("access-control-allow-origin"), "*");
+  assert.equal((await response.json()).features.length, 23);
+});
+
 test("serves a no-store redacted prepost session list for webgisyg.id", async () => {
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async url => {

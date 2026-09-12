@@ -69,6 +69,8 @@ jobs:
           npx wrangler r2 object put "yg-webgis-public-snapshots/research/liberica-morphology-2026.json" --remote --file ../../data/liberica-morphology-2026.json --content-type application/json
           npx wrangler r2 object put "yg-webgis-public-snapshots-staging/internal/rspo/riau-groups.geojson" --remote --file tmp/rspo-riau-groups.geojson --content-type application/geo+json
           npx wrangler r2 object put "yg-webgis-public-snapshots/internal/rspo/riau-groups.geojson" --remote --file tmp/rspo-riau-groups.geojson --content-type application/geo+json
+          npx wrangler r2 object put "yg-webgis-public-snapshots-staging/references/rspo-riau-groups.geojson" --remote --file tmp/rspo-riau-groups.geojson --content-type application/geo+json
+          npx wrangler r2 object put "yg-webgis-public-snapshots/references/rspo-riau-groups.geojson" --remote --file tmp/rspo-riau-groups.geojson --content-type application/geo+json
       - name: Build and upload manifest last
         shell: bash
         working-directory: cloudflare/yg-webgis-public-data
