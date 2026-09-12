@@ -52,7 +52,32 @@
     ['Lingkungan dan sumber daya alam', [
       ['4.1','Perlindungan HCV dan HCS','Identifikasi kawasan penting dan pengelolaannya.'],['4.2','Remediasi dan kompensasi','Riwayat perubahan lahan serta rencana pemulihan yang berlaku.'],['4.3','Persyaratan tanam baru','Rencana tanam dan identifikasi risiko lokasi.'],['4.4','Pengelolaan gambut eksisting','Keadaan gambut, air dan pelaksanaan rencana pengelolaan.'],['4.5','Risiko peremajaan di gambut','Kajian banjir dan intrusi air asin sebelum peremajaan.'],['4.6','Pencegahan penggunaan api','Riwayat pembukaan dan praktik pencegahan kebakaran.'],['4.7','Perlindungan sempadan','Lokasi sungai dan pengelolaan sempadan.'],['4.8','Penggunaan pestisida','Jenis bahan, penyimpanan dan perlindungan pengguna.'],['4.9','Pengendalian hama terpadu','Pemantauan hama dan pilihan pengendalian.']]]
   ];
-  if (typeof module !== 'undefined' && module.exports) module.exports = { evidence, ish };
+  // Concise learning summaries of the Indonesia NI; not full indicators.
+  const stages = {
+    '1.1':['Komitmen belajar.','Pelatihan pencatatan.','Kelola; catat produksi/penjualan.'],
+    '1.2':['Komitmen budidaya baik.','Pelatihan budidaya.','Terapkan.'],
+    '2.1':['Bukti/proses pengakuan hak.','Lanjutkan pembuktian.','Hak/batas terbukti.'],
+    '2.2':['Perolehan menghormati PADIATAPA.','Tetap dipenuhi.','Tetap dipenuhi.'],
+    '2.3':['Nyatakan sengketa.','Pelatihan konflik.','Kelola konflik.'],
+    '2.4':['Di luar kawasan terlarang.','Tetap dipenuhi.','Tetap dipenuhi.'],
+    '2.5':['Komitmen PADIATAPA.','Pelatihan.','Laksanakan proses.'],
+    '3.1':['Hentikan kerja paksa.','Pelatihan pencegahan.','Tanpa kerja paksa.'],
+    '3.2':['Hentikan pekerja anak.','Pelatihan perlindungan.','Perlindungan diterapkan.'],
+    '3.3':['Komitmen upah minimum.','Bayar minimum.','Pertahankan.'],
+    '3.4':['Komitmen hak pengaduan.','Sosialisasi hak.','Pengaduan dapat diakses.'],
+    '3.5':['Kenali risiko.','Pelatihan keselamatan.','Kondisi aman.'],
+    '3.6':['Komitmen tanpa kekerasan/diskriminasi.','Pelatihan.','Akses pengaduan.'],
+    '4.1':['Komitmen perlindungan.','Pelatihan konservasi.','Lindungi kawasan/spesies.'],
+    '4.2':['Riwayat pembukaan.','Rencana pemulihan.','Laksanakan rencana.'],
+    '4.3':['Nyatakan rencana.','Rencana pengelolaan partisipatif.','Terapkan sebelum pembukaan.'],
+    '4.4':['Nyatakan gambut.','Pelatihan/rencana pengelolaan.','Terapkan/pantau.'],
+    '4.5':['Nyatakan rencana peremajaan.','Pelatihan risiko.','Kajian menentukan peremajaan/alternatif.'],
+    '4.6':['Komitmen tanpa api.','Tanpa pembakaran; pelatihan.','Pertahankan tanpa api.'],
+    '4.7':['Komitmen perlindungan sempadan.','Pelatihan/rencana.','Terapkan rencana.'],
+    '4.8':['Hentikan pembelian terlarang.','Pelatihan penggunaan aman.','Terapkan pembatasan.'],
+    '4.9':['Komitmen pengendalian terpadu.','Pelatihan.','Terapkan.']
+  };
+  if (typeof module !== 'undefined' && module.exports) module.exports = { evidence, ish, stages };
   if (typeof document === 'undefined') return;
   function el(tag, text, cls) { const node=document.createElement(tag); if(text)node.textContent=text; if(cls)node.className=cls; return node; }
   function paragraph(parent,title,text) { parent.append(el('h4',title),el('p',text)); }
@@ -76,6 +101,15 @@
         const d=el('details',null,'assurance-criterion');d.id='ish-kriteria-'+code.replace('.','-');d.append(el('summary',`${code} · ${name}`));
         const body=el('div',null,'learning-body');
         paragraph(body,'Fokus pembelajaran',name+'.');
+        const table=el('table',null,'ish-stage-table');
+        table.append(el('caption','Ringkasan tahapan · '+code));
+        const rows=el('tbody');
+        ['Eligibility · E','Milestone A · MS A','Milestone B · MS B'].forEach((label,index)=>{
+          const row=el('tr');const heading=el('th',label);heading.scope='row';
+          row.append(heading,el('td',stages[code][index]));rows.append(row);
+        });
+        table.append(rows);body.append(table);
+        body.append(el('p','Ringkasan singkat, bukan seluruh indikator. Penerapan dan pengecualian mengikuti kondisi kebun serta ketentuan resmi pada tahap yang diaudit.','learning-note'));
         paragraph(body,'Contoh bukti untuk dibahas saat audit',proof);
         paragraph(body,'Cara verifikasi','Auditor membandingkan catatan kelompok, keterangan anggota atau pekerja, dan keadaan kebun pada sampel audit. Bukti dinilai terhadap indikator tahap yang sedang diaudit; tidak semua persyaratan boleh ditunda ke tahap berikutnya.');
         body.append(el('p','Penjelasan bukti adalah panduan pembelajaran, bukan pengganti indikator resmi.','learning-note'));
