@@ -146,5 +146,5 @@
     initDayunMap(data);
     initDayunWeather();
   }
-  fetch('data/dayun-program.json', {cache:'no-store'}).then(function(response){if(!response.ok)throw new Error('Informasi program belum dapat dimuat.');return response.json();}).then(function(data){data.objects=[];if(page==='map'){initDayunMap(data);initDayunRainHistory();}else initLanding(data);}).catch(function(error){console.error(error);toast(error.message);});
+  fetch('data/dayun-program.json', {cache:'no-store'}).then(function(response){if(!response.ok)throw new Error('Informasi program belum dapat dimuat.');return response.json();}).then(function(data){data.objects=[];if(page==='map'){initDayunMap(data);initDayunWeather();initDayunRainHistory();}else initLanding(data);}).catch(function(error){console.error(error);toast(error.message);});
 })();
