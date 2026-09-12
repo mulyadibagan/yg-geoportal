@@ -9,7 +9,7 @@
     var header=document.querySelector('.dy-header');
     if(header){
       header.className='site-header';
-      header.innerHTML='<div class="header-inner"><a class="brand" href="index.html"><img src="assets/logo-yayasan-gambut.png" alt="Logo Yayasan Gambut"><span><strong>YG GeoPortal</strong><span>WebGIS Yayasan Gambut</span></span></a><button class="yg-nav-toggle" type="button" aria-label="Buka menu" aria-expanded="false" data-yg-nav-toggle="main-navigation">☰</button><nav class="nav yg-nav-v2" id="main-navigation" aria-label="Navigasi utama" data-yg-navigation><a href="index.html">Beranda</a><a href="webgis.html">Peta Interaktif</a><div class="yg-nav-group"><button class="yg-nav-trigger" type="button" aria-expanded="false">Jelajahi</button><div class="yg-nav-menu"><a href="biodiversity.html">Biodiversitas</a><a href="fire-weather.html">Karhutla &amp; Cuaca</a><a href="coastal-monitoring.html">Pesisir &amp; Mangrove</a><a href="social-forestry-directory.html">Direktori Perhutanan Sosial<small>Profil spasial dan dokumen nonspasial</small></a></div></div><div class="yg-nav-group"><button class="yg-nav-trigger" type="button" aria-expanded="false">Program Dayun</button><div class="yg-nav-menu"><a href="dayun.html">Ringkasan Program<small>KUPS Rimba Sejahtera</small></a><a href="dayun.html#peta-dayun">Peta Program<small>Lokasi dan pembagian areal</small></a><a href="dayun.html#arah-program">Tujuan Program<small>Perubahan yang ingin dicapai</small></a><a href="dayun.html#perjalanan-program">Perjalanan Program<small>Rencana kegiatan 12 bulan</small></a></div></div><a href="report.html">Laporkan Temuan</a><a href="staff-login.html">Login Staf</a><span class="yg-public-language-switcher" role="group" aria-label="Pilihan bahasa / Language selection"><button type="button" data-lang="id" aria-pressed="true">ID</button><button type="button" data-lang="en" aria-pressed="false">EN</button></span></nav></div>';
+      header.innerHTML='<div class="header-inner"><a class="brand" href="index.html"><img src="assets/logo-yayasan-gambut.png" alt="Logo Yayasan Gambut"><span><strong>YG GeoPortal</strong><span>WebGIS Yayasan Gambut</span></span></a><button class="yg-nav-toggle" type="button" aria-label="Buka menu" aria-expanded="false" data-yg-nav-toggle="main-navigation">☰</button><nav class="nav yg-nav-v2" id="main-navigation" aria-label="Navigasi utama" data-yg-navigation><a href="index.html">Beranda</a><a href="webgis.html">Peta Interaktif</a><div class="yg-nav-group"><button class="yg-nav-trigger" type="button" aria-expanded="false">Jelajahi</button><div class="yg-nav-menu"><a href="biodiversity.html">Biodiversitas</a><a href="fire-weather.html">Karhutla &amp; Cuaca</a><a href="coastal-monitoring.html">Pesisir &amp; Mangrove</a><a href="social-forestry-directory.html">Direktori Perhutanan Sosial<small>Profil spasial dan dokumen nonspasial</small></a></div></div><div class="yg-nav-group"><button class="yg-nav-trigger" type="button" aria-expanded="false">Program Dayun</button><div class="yg-nav-menu"><a href="dayun.html">Ringkasan Program<small>KUPS Rimba Sejahtera</small></a><a href="dayun-map.html">Peta Agroforestri<small>Lokasi dan pembagian areal</small></a><a href="dayun.html#arah-program">Tujuan Program<small>Perubahan yang ingin dicapai</small></a><a href="dayun.html#perjalanan-program">Perjalanan Program<small>Rencana kegiatan 12 bulan</small></a></div></div><a href="report.html">Laporkan Temuan</a><a href="staff-login.html">Login Staf</a><span class="yg-public-language-switcher" role="group" aria-label="Pilihan bahasa / Language selection"><button type="button" data-lang="id" aria-pressed="true">ID</button><button type="button" data-lang="en" aria-pressed="false">EN</button></span></nav></div>';
     }
     var font=document.createElement('link');font.rel='stylesheet';font.href='https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap';document.head.appendChild(font);
     var nav=document.createElement('script');nav.src='js/navigation-v2.js?v=20260821-staff-name1';nav.defer=true;document.head.appendChild(nav);
@@ -64,12 +64,51 @@
     }).catch(function(error){console.error(error);mapEl.innerHTML='<div class="dy-map-loading">Peta objek belum dapat dimuat.</div>';});
   }
 
+  var DAYUN_LAT=0.5844,DAYUN_LON=102.009;
+  function weatherLabel(code){return ({0:'Cerah',1:'Cerah berawan',2:'Berawan',3:'Mendung',45:'Berkabut',48:'Kabut tebal',51:'Gerimis ringan',53:'Gerimis',55:'Gerimis lebat',61:'Hujan ringan',63:'Hujan sedang',65:'Hujan lebat',80:'Hujan setempat',81:'Hujan sedang',82:'Hujan lebat',95:'Hujan petir',96:'Hujan petir',99:'Hujan petir'})[Number(code)]||'Cuaca berubah';}
+  function weatherIcon(code){code=Number(code);if(code===0)return '☀';if(code<=3)return '☁';if(code===45||code===48)return '≋';if(code>=95)return '⚡';return '☂';}
+  function dayunNum(value,digits){return new Intl.NumberFormat('id-ID',{maximumFractionDigits:digits==null?1:digits}).format(Number(value)||0);}
+  function renderDayunWeather(weather){
+    var target=document.getElementById('dayun-weather-current');if(!target)return;
+    var current=weather.current||{},daily=weather.daily||{};
+    target.innerHTML='<div class="dy-weather-main"><span class="dy-weather-icon">'+weatherIcon(current.weather_code)+'</span><div><small>Saat ini di areal agroforestri</small><strong>'+dayunNum(current.temperature_2m,1)+' °C</strong><span>'+weatherLabel(current.weather_code)+'</span></div></div><div class="dy-weather-facts"><article><small>Kelembapan</small><strong>'+dayunNum(current.relative_humidity_2m,0)+'%</strong></article><article><small>Angin</small><strong>'+dayunNum(current.wind_speed_10m,1)+' km/jam</strong></article><article><small>Hujan saat ini</small><strong>'+dayunNum(current.precipitation,1)+' mm</strong></article></div>';
+    var rows=(daily.time||[]).slice(0,7).map(function(date,index){return {date:date,code:daily.weather_code[index],min:daily.temperature_2m_min[index],max:daily.temperature_2m_max[index],rain:daily.precipitation_sum[index]};});
+    document.getElementById('dayun-weather-forecast').innerHTML=rows.map(function(row){var day=new Intl.DateTimeFormat('id-ID',{weekday:'short',day:'numeric',month:'short',timeZone:'Asia/Jakarta'}).format(new Date(row.date+'T12:00:00+07:00'));return '<article><span class="dy-forecast-icon">'+weatherIcon(row.code)+'</span><small>'+day+'</small><strong>'+weatherLabel(row.code)+'</strong><span>'+dayunNum(row.min,0)+'–'+dayunNum(row.max,0)+' °C</span><span>Hujan '+dayunNum(row.rain,1)+' mm</span></article>';}).join('');
+    document.getElementById('dayun-weather-updated').textContent=current.time?'Model cuaca diperbarui '+new Intl.DateTimeFormat('id-ID',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',timeZone:'Asia/Jakarta'}).format(new Date(current.time+':00+07:00'))+' WIB':'';
+  }
+  function dayunDateKey(date){return date.toLocaleDateString('sv-SE',{timeZone:'Asia/Jakarta'}).replaceAll('-','');}
+  function renderDayunRain(payload,cached){
+    var values=payload&&payload.properties&&payload.properties.parameter&&payload.properties.parameter.PRECTOTCORR||{};
+    var rows=Object.entries(values).map(function(entry){return {date:entry[0],rain:Number(entry[1])};}).filter(function(row){return Number.isFinite(row.rain)&&row.rain>=0;}).sort(function(a,b){return a.date.localeCompare(b.date);});
+    if(!rows.length)throw new Error('Data hujan belum tersedia');
+    var total=function(days){return rows.slice(-days).reduce(function(sum,row){return sum+row.rain;},0);},latest=rows[rows.length-1].date,iso=latest.slice(0,4)+'-'+latest.slice(4,6)+'-'+latest.slice(6,8);
+    document.getElementById('dayun-rain-7d').textContent=dayunNum(total(7),1)+' mm';
+    document.getElementById('dayun-rain-30d').textContent=dayunNum(total(30),1)+' mm';
+    document.getElementById('dayun-rain-note').textContent='Estimasi NASA POWER sampai '+new Intl.DateTimeFormat('id-ID',{day:'numeric',month:'short',year:'numeric',timeZone:'Asia/Jakarta'}).format(new Date(iso+'T12:00:00+07:00'))+(cached?' · data tersimpan':'')+'. Nilai ini mewakili titik kebun, bukan alat ukur lapangan.';
+  }
+  async function initDayunWeather(){
+    if(!document.getElementById('dayun-weather-current'))return;
+    var weatherKey='yg-dayun-weather-v1',rainKey='yg-dayun-rain-v1';
+    try{
+      var stored=JSON.parse(localStorage.getItem(weatherKey)||'null'),weather;
+      if(stored&&Date.now()-stored.savedAt<1800000)weather=stored.data;
+      else{var response=await fetch('https://api.open-meteo.com/v1/forecast?latitude='+DAYUN_LAT+'&longitude='+DAYUN_LON+'&current=temperature_2m,relative_humidity_2m,precipitation,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum&forecast_days=7&timezone=Asia%2FJakarta');if(!response.ok)throw new Error('Cuaca tidak tersedia');weather=await response.json();try{localStorage.setItem(weatherKey,JSON.stringify({savedAt:Date.now(),data:weather}));}catch(_){}}
+      renderDayunWeather(weather);
+    }catch(error){document.getElementById('dayun-weather-current').innerHTML='<div class="dy-weather-loading">Cuaca kebun sementara belum dapat dimuat.</div>';}
+    try{
+      var saved=JSON.parse(localStorage.getItem(rainKey)||'null'),rain;
+      if(saved&&Date.now()-saved.savedAt<21600000){rain=saved.data;renderDayunRain(rain,true);}
+      else{var end=new Date(),start=new Date(end);start.setDate(start.getDate()-45);var rainResponse=await fetch('https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&longitude='+DAYUN_LON+'&latitude='+DAYUN_LAT+'&start='+dayunDateKey(start)+'&end='+dayunDateKey(end)+'&format=JSON');if(!rainResponse.ok)throw new Error('Hujan tidak tersedia');rain=await rainResponse.json();renderDayunRain(rain,false);try{localStorage.setItem(rainKey,JSON.stringify({savedAt:Date.now(),data:rain}));}catch(_){}}
+    }catch(error){document.getElementById('dayun-rain-7d').textContent='Belum tersedia';document.getElementById('dayun-rain-30d').textContent='Belum tersedia';document.getElementById('dayun-rain-note').textContent='Estimasi hujan sementara tidak dapat dimuat.';}
+  }
+
   function initLanding(data){
     var eyebrow=document.querySelector('.dy-hero .dy-eyebrow');if(eyebrow)eyebrow.textContent='APRIL Group · Yayasan Gambut · Kampung Dayun';
     document.getElementById('dayun-outcomes').innerHTML=data.outcomes.map(function(x,i){return '<article class="dy-card"><div class="dy-number">0'+(i+1)+'</div><h3>'+esc(x.title)+'</h3><p>'+esc(x.description)+'</p></article>';}).join('');
     var months=Array.from({length:12},function(_,i){return i+1;});
     document.getElementById('dayun-timeline').innerHTML='<div class="dy-workplan-scroll" role="region" aria-label="Tahapan 23 kegiatan, dapat digeser" tabindex="0"><table class="dy-workplan"><thead><tr><th scope="col">Kegiatan utama</th>'+months.map(function(month){return '<th scope="col"><span>Bulan </span>'+month+'</th>';}).join('')+'</tr></thead><tbody>'+data.timeline.map(function(item){return '<tr><th scope="row">'+esc(item.title)+'</th>'+months.map(function(month){var scheduled=item.months.indexOf(month)!==-1;return '<td class="'+(scheduled?'scheduled':'')+'">'+(scheduled?'<span aria-label="Direncanakan pada bulan '+month+'">●</span>':'')+'</td>';}).join('')+'</tr>';}).join('')+'</tbody></table></div><div class="dy-workplan-note"><span><i></i>Periode kegiatan yang direncanakan</span><small>Jadwal mengikuti waktu mulai dan perkembangan pelaksanaan program.</small></div>';
     initDayunMap(data);
+    initDayunWeather();
   }
-  fetch('data/dayun-program.json', {cache:'no-store'}).then(function(response){if(!response.ok)throw new Error('Informasi program belum dapat dimuat.');return response.json();}).then(function(data){data.objects=[];initLanding(data);}).catch(function(error){console.error(error);toast(error.message);});
+  fetch('data/dayun-program.json', {cache:'no-store'}).then(function(response){if(!response.ok)throw new Error('Informasi program belum dapat dimuat.');return response.json();}).then(function(data){data.objects=[];if(page==='map')initDayunMap(data);else initLanding(data);}).catch(function(error){console.error(error);toast(error.message);});
 })();
