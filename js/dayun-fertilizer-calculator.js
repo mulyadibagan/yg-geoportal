@@ -1,6 +1,5 @@
 (function(){
   "use strict";
-  const form=document.getElementByById?document:null;
   const actualForm=document.getElementById("fertilizer-calculator");
   if(!actualForm)return;
   const $=id=>document.getElementById(id);
