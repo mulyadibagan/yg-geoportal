@@ -40,12 +40,18 @@ def build_archive():
     previous = json.loads(registry_path.read_text()).get('events', {}) if registry_path.exists() else {}
     events = merge_events(previous, source['features'])
     registry_path.write_text(json.dumps({'schemaVersion': 1, 'events': events}, ensure_ascii=False, separators=(',', ':')))
-    now = datetime.now(timezone.utc).isoformat()
-    months = sorted({f['properties']['reportMonth'] for f in events.values()}, reverse=True)
+    now_dt = datetime.now(timezone.utc)
+    now = now_dt.isoformat()
+    current_wib_month = now_dt.astimezone(timezone(timedelta(hours=7))).strftime('%Y-%m')
+    # The running month stays in the event registry, but is not published as a
+    # monthly report until the calendar month has closed.
+    months = sorted({f['properties']['reportMonth'] for f in events.values()
+                     if f['properties']['reportMonth'] < current_wib_month}, reverse=True)
     # Include previously archived months even if a revised first detection moves an event.
     old_index = ARCHIVE / 'index.json'
     if old_index.exists():
-        months = sorted(set(months) | {r['month'] for r in json.loads(old_index.read_text())['reports']}, reverse=True)
+        months = sorted(set(months) | {r['month'] for r in json.loads(old_index.read_text())['reports']
+                                      if r['month'] < current_wib_month}, reverse=True)
     reports = []
     for month in months:
         features = [f for f in events.values() if f['properties']['reportMonth'] == month]
