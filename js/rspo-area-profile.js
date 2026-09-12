@@ -1,5 +1,5 @@
 (function(){'use strict';
-var query=new URLSearchParams(location.search),requestedId=query.get('id'),requestedGroup=query.get('group'),map;
+var query=new URLSearchParams(location.search),requestedId=query.get('id'),requestedGroup=query.get('group'),map,millsUrl='https://services3.arcgis.com/mKcWKyEU5Tl36xeT/arcgis/rest/services/RSPO_Certified_Mill_(Prisma)_view_only/FeatureServer/0/query';
 function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function ringArea(ring){if(!ring||ring.length<3)return 0;var sum=0,R=6378137,d=Math.PI/180;for(var i=0;i<ring.length;i++){var a=ring[i],b=ring[(i+1)%ring.length];sum+=(b[0]-a[0])*d*(2+Math.sin(a[1]*d)+Math.sin(b[1]*d))}return Math.abs(sum*R*R/2)}
 function geometryArea(g){if(!g)return 0;var polygons=g.type==='Polygon'?[g.coordinates]:g.coordinates||[];return polygons.reduce(function(total,p){return total+Math.max(0,ringArea(p[0])-p.slice(1).reduce(function(s,r){return s+ringArea(r)},0))},0)/10000}
@@ -11,7 +11,8 @@ Promise.all([
  fetch('data/rspo-area-portfolios.json?v=20260912-all-areas1',{cache:'no-store'}).then(function(r){return r.ok?r.json():{}}).catch(function(){return{}}),
  fetch('data/rspo-burned-area-monitoring.json?v=20260912-v1',{cache:'no-store'}).then(function(r){return r.ok?r.json():{areas:{}}}).catch(function(){return{areas:{}}}),
  fetch('data/rspo-tree-cover-monitoring.json?v=20260912-v1',{cache:'no-store'}).then(function(r){return r.ok?r.json():{areas:{}}}).catch(function(){return{areas:{}}}),
- fetch('data/rspo-complaint-monitoring.json?v=20260912-v1',{cache:'no-store'}).then(function(r){return r.ok?r.json():{groups:{}}}).catch(function(){return{groups:{}}})
+ fetch('data/rspo-complaint-monitoring.json?v=20260912-v1',{cache:'no-store'}).then(function(r){return r.ok?r.json():{groups:{}}}).catch(function(){return{groups:{}}}),
+ fetch(millsUrl+'?'+new URLSearchParams({where:"Province='Riau'",outFields:'MemberNum,Parent,MemberStat,MU_Type,MU_Name,CertStatus',returnGeometry:'false',f:'json'})).then(function(r){return r.ok?r.json():{features:[]}}).catch(function(){return{features:[]}})
 ]).then(function(base){
  var geo=base[0],index=base[1],all=geo.features||[],selected,mode='area';
  if(requestedGroup){selected=all.filter(function(f){return f.properties.RSPO_GROUP===requestedGroup});mode='group'}else{var found=all.find(function(f){return f.properties.COMPANY_ID===requestedId})||all[0];selected=found?[found]:[];requestedId=found&&found.properties.COMPANY_ID}
@@ -22,6 +23,7 @@ Promise.all([
  var locations=Array.from(new Set(selected.map(function(f){return f.properties.REFERENCE_DISTRICTS}).filter(Boolean))).join(', '),identity=[['Perusahaan/unit',mode==='group'?selected.length+' area dari '+new Set(selected.map(function(f){return f.properties.PO_COMPANY})).size+' perusahaan':p.PO_COMPANY],['Grup RSPO',group],['Estate/supply base',mode==='group'?'Beragam unit':p.SUPPLY_BASE],['Kabupaten',locations],['Jenis referensi',p.REFERENCE_TYPE],['Pembaruan',p.REFERENCE_UPDATED]];
  document.getElementById('rap-identity').innerHTML=identity.map(function(x){return'<div><dt>'+esc(x[0])+'</dt><dd>'+esc(x[1]||'Belum tersedia')+'</dd></div>'}).join('');
  renderPortfolio(mode==='area'?(base[2]||{})[requestedId]:null,p,selected);
+ renderCertificationEvidence((base[6]||{}).features||[],group,selected,mode);
  renderBurnedMonitoring(mode==='area'?((base[3]||{}).areas||{})[requestedId]:null);
  renderTreeCoverMonitoring(mode==='area'?((base[4]||{}).areas||{})[requestedId]:null,(base[4]||{}).method||{});
  renderComplaintMonitoring(((base[5]||{}).groups||{})[group],mode==='area'?requestedId:null,(base[5]||{}).method||{},(base[5]||{}).checkedAt);
@@ -68,6 +70,15 @@ function renderComplaintMonitoring(summary,areaId,method,checkedAt){
  else el.textContent=total+' perkara grup · seluruhnya ditutup';
  var note=el.nextElementSibling;if(note)note.textContent=scope+total+' perkara terkait grup ditemukan pada Case Tracker RSPO'+(decision?'; '+decision+' keputusan masih dalam masa banding':'')+'. Pengaduan bukan bukti pelanggaran.'+(checkedAt?' Diperiksa '+new Date(checkedAt).toLocaleDateString('id-ID',{timeZone:'UTC'})+'.':'');
  if(signal){signal.dataset.complaintReview=active?'yes':'no';signal.dataset.complaintDecision=decision?'yes':'no';signal.dataset.complaintGroupOnly=areaId&&!direct.length?'yes':'no'}
+}
+function certificationKey(value){return String(value||'').toLowerCase().replace(/\([^)]*\)/g,' ').replace(/\bsubsidiary\b.*$/,' ').replace(/\b(palm|oil|mill|pom|estate|multimill|pt|pte|ltd|tbk|persero)\b/g,' ').replace(/[^a-z0-9]+/g,'')}
+function renderCertificationEvidence(features,group,selected,mode){
+ var rows=features.map(function(x){return x.attributes||{}}).filter(function(x){return x.Parent===group}),companyKeys=selected.map(function(f){return certificationKey((f.properties||{}).PO_COMPANY)}).filter(Boolean),direct=rows.filter(function(x){var mk=certificationKey(x.MU_Name);return companyKeys.some(function(ck){return ck.length>5&&mk.length>5&&(mk.indexOf(ck)>-1||ck.indexOf(mk)>-1)})}),certifiedRows=rows.filter(function(x){return/^(certified)$/i.test(x.CertStatus||'')}),certifiedDirect=direct.filter(function(x){return/^(certified)$/i.test(x.CertStatus||'')}),memberNumbers=Array.from(new Set(rows.map(function(x){return x.MemberNum}).filter(Boolean))),memberActive=rows.some(function(x){return/active/i.test(x.MemberStat||'')}),el=document.getElementById('rap-monitor-certificate'),note=document.getElementById('rap-monitor-certificate-note');
+ if(!rows.length){if(el)el.textContent='Data keanggotaan belum ditemukan';if(note)note.textContent='Belum ada kecocokan grup pada daftar pabrik resmi yang tersedia; sertifikasi unit kebun belum dapat dinyatakan.';return}
+ if(el)el.textContent=certifiedDirect.length?certifiedDirect.length+' pabrik perusahaan tercatat tersertifikasi':'Keanggotaan grup '+(memberActive?'aktif':'tercatat');
+ if(note)note.textContent=(memberNumbers.length?'Nomor anggota '+memberNumbers.join(', ')+'. ':'')+(direct.length?direct.length+' pabrik cocok dengan nama perusahaan pada profil. ':'Tidak ada pabrik yang cocok langsung dengan nama perusahaan area. ')+ 'Status pabrik tidak digunakan sebagai bukti sertifikasi kebun, supply base, HGU, atau seluruh poligon.';
+ var facts=document.getElementById('rap-fact-grid');if(facts){facts.insertAdjacentHTML('beforeend','<article><span>Keanggotaan grup RSPO</span><strong>'+esc((memberActive?'ACTIVE':'Tercatat')+(memberNumbers.length?' · '+memberNumbers.join(', '):''))+'</strong><em>Sumber resmi</em><p>Identitas grup dicocokkan dengan daftar pabrik RSPO di Riau.</p></article><article><span>Pabrik pada daftar RSPO</span><strong>'+rows.length+' unit · '+certifiedRows.length+' tersertifikasi</strong><em>'+(direct.length?direct.length+' cocok nama perusahaan':'Tingkat grup')+'</em><p>Status ini berlaku pada pabrik yang tercantum, bukan otomatis pada kebun atau poligon referensi.</p></article>')}
+ var sources=document.getElementById('rap-source-list');if(sources)sources.insertAdjacentHTML('beforeend','<a href="https://rspo.org/search-members/" target="_blank" rel="noopener"><span>Roundtable on Sustainable Palm Oil</span><strong>Daftar pabrik RSPO / Prisma ↗</strong><p>Nomor anggota, status keanggotaan, nama pabrik, dan status sertifikasi pabrik di Riau.</p><small>Diakses 12 September 2026</small></a>');
 }
 function renderPortfolio(profile,p,selected){
  var area=Math.round(selected.reduce(function(s,f){return s+geometryArea(f.geometry)},0)).toLocaleString('id-ID')+' ha';
