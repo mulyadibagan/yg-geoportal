@@ -40,17 +40,17 @@
   const REFERENCE_LAYERS = {
     perusahaan_sawit_riau: {
       id: "perusahaan_sawit_riau",
-      label: "Referensi Perusahaan Sawit",
+      label: "Area Perkebunan Anggota RSPO",
       file: "data/PERUSAHAAN_SAWIT_RIAU_REFERENSI.geojson",
-      version: "ispo-registry-20260912-v1",
+      version: "georspo-riau-growers-20260912-v1",
       color: "#f97316",
-      count: 13,
-      countLabel: "13 perusahaan · 16 polygon",
+      count: 8,
+      countLabel: "8 grup · 58 area",
       type: "oil_palm_company",
       focusOnEnable: true,
-      sourceLabel: "Disbun Riau · rujukan ISPO · batas indikatif",
-      sourceUrl: "https://ditjenbun.pertanian.go.id/informasi-ispo/",
-      scale: "Batas indikatif"
+      sourceLabel: "GeoRSPO / RSPO",
+      sourceUrl: "https://rspo.org/as-an-organisation/tools/georspo/",
+      scale: "Diperbarui 14 Juli 2026"
     },
     kawasan_hutan_sk_903: {
       id: "kawasan_hutan_sk_903",
@@ -240,8 +240,8 @@
       };
     }
     if (layerId === "perusahaan_sawit_riau") {
-      const count = new Set(features.map(f => f.properties.COMPANY_ID)).size;
-      return { count, featureCount, label: count + " perusahaan · " + featureCount + " polygon", statusLabel: count + " perusahaan · " + featureCount + " polygon" };
+      const count = new Set(features.map(f => f.properties.RSPO_GROUP)).size;
+      return { count, featureCount, label: count + " grup · " + featureCount + " area", statusLabel: count + " grup RSPO · " + featureCount + " area" };
     }
     if (layerId !== "perhutanan_sosial_riau") {
       return {
@@ -2088,13 +2088,12 @@ L.control.scale({
       rows += item("Jenis PBPH", props.JENIS);
       rows += item("Kegiatan", props.KEGIATAN);
     } else if (config.type === "oil_palm_company") {
-      rows += item("Perusahaan", props.PO_COMPANY);
-      rows += item("Kabupaten rujukan", props.REFERENCE_DISTRICTS);
-      rows += item("Rujukan nama", "Disbun Riau 2024 · hlm. " + props.SOURCE_PAGES);
-      rows += item("Rujukan ISPO", props.CERTIFICATION_NUMBER);
-      rows += item("Sumber sertifikasi", props.CERTIFICATION_SOURCE);
-      rows += item("Batas", "Indikatif historis");
-      rows += item("Provinsi", props.PO_PROVINC);
+      rows += item("Perusahaan/unit", props.PO_COMPANY);
+      rows += item("Grup RSPO", props.RSPO_GROUP);
+      rows += item("Estate/supply base", props.SUPPLY_BASE);
+      rows += item("Kabupaten", props.REFERENCE_DISTRICTS);
+      rows += item("Diperbarui", props.REFERENCE_UPDATED);
+      rows += item("Sumber", props.NAME_SOURCE);
     } else if (config.type === "concession") {
       rows += item("Pemegang izin", props.NAMA_PRH);
       rows += item("Nomor SK", props.SK_PBH || props.SK_LAMA);

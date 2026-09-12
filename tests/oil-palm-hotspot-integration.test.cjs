@@ -9,7 +9,7 @@ const ref=require('../js/oil-palm-reference.js');
 const root=path.resolve(__dirname,'..');
 const read=p=>fs.readFileSync(path.join(root,p),'utf8');
 const ring=[[0,0],[10,0],[10,10],[0,10],[0,0]],hole=[[4,4],[6,4],[6,6],[4,6],[4,4]];
-const unit=(id,rings,type='Polygon')=>({type:'Feature',properties:{COMPANY_ID:id,PO_COMPANY:id,REFERENCE_DISTRICTS:'Kampar'},geometry:{type,coordinates:rings}});
+const unit=(id,rings,type='Polygon')=>({type:'Feature',properties:{COMPANY_ID:id,PO_COMPANY:id,RSPO_GROUP:'Grup '+id,SUPPLY_BASE:'Estate '+id,REFERENCE_DISTRICTS:'Kampar'},geometry:{type,coordinates:rings}});
 const point=(x,y)=>({type:'Feature',geometry:{type:'Point',coordinates:[x,y]},properties:{village:'Desa tetap',pbph052026:[{name:'PBPH tetap'}],oilPalmCompanyRef:[{name:'Lama'}]}});
 test('polygon holes, multipart, duplicate units, stale references and unaffected attributes',()=>{
  const geo={type:'FeatureCollection',referenceVersion:ref.version,features:[unit('A',[ring,hole]),unit('A',[ring,hole]),unit('B',[[ring,hole]],'MultiPolygon')]};
@@ -31,14 +31,16 @@ test('interactive reference layer binds and opens a company popup',async()=>{
  vm.createContext(context);vm.runInContext(script.slice(start,end)+'\nthis.load=loadReferenceLayer;',context);
  await context.load('test');assert.equal(options.interactive,true);assert.equal(options.bubblingMouseEvents,false);assert.equal(popup,'PT A');click({latlng:{lat:1,lng:1}});assert.equal(opened,true);
 });
-test('release has only screened references, without obsolete legal or group claims',()=>{
+test('public release contains only compact GeoRSPO grower areas',()=>{
  const data=JSON.parse(read('data/PERUSAHAAN_SAWIT_RIAU_REFERENSI.geojson'));
- assert.equal(data.features.length,16);
- assert.equal(new Set(data.features.map(f=>f.properties.COMPANY_ID)).size,13);
- assert.ok(data.features.every(f=>['Certified','Aktif'].includes(f.properties.CERTIFICATION_STATUS)&&f.properties.CERTIFICATION_SOURCE.startsWith('https://')));
- assert.ok(!data.features.some(f=>['PADASAENAMUTAMA','GANDAERAHHENDANA','SURYAINTISARIRAYA','CILIANDRAPERKASA'].includes(f.properties.COMPANY_ID)));
- assert.ok(data.features.every(f=>!('PO_HGU' in f.properties)&&!('PO_GROUP' in f.properties)&&f.properties.ACTIVE_STATUS_VERIFIED===false));
- assert.ok(!data.features.some(f=>f.properties.COMPANY_ID==='PRIATAMARIAU'));
+ assert.equal(data.referenceVersion,ref.version);
+ assert.equal(data.features.length,58);
+ assert.equal(new Set(data.features.map(f=>f.properties.RSPO_GROUP)).size,8);
+ assert.equal(new Set(data.features.map(f=>f.properties.PO_COMPANY)).size,33);
+ assert.ok(data.features.every(f=>f.properties.NAME_SOURCE==='GeoRSPO / RSPO'&&f.properties.SUPPLY_BASE&&f.properties.REFERENCE_DISTRICTS));
+ assert.ok(!data.features.some(f=>/Permata Group|PT\. PHI/i.test(JSON.stringify(f.properties))));
+ assert.ok(data.features.every(f=>!['MemberNum','FID','MemberCat','Subsidiary','ManageUnit','CERTIFICATION_NUMBER','PO_HGU'].some(key=>key in f.properties)));
+ assert.deepEqual(Object.keys(data.features[0].properties).sort(),['COMPANY_ID','NAME_SOURCE','PO_COMPANY','REFERENCE_DISTRICTS','REFERENCE_TYPE','REFERENCE_UPDATED','RSPO_GROUP','SUPPLY_BASE'].sort());
 });
 test('hourly enrichment uses same matching and keeps village and PBPH enrichment',()=>{
  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'sawit-test-'));
