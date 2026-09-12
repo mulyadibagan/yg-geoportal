@@ -5,10 +5,12 @@
   "scripts": {
     "test": "node --test test/*.test.mjs",
     "validate:snapshots": "node scripts/validate-snapshots.mjs",
+    "build:rspo-groups": "node scripts/build-rspo-groups.mjs",
     "check": "wrangler deploy --dry-run --env staging",
     "smoke:staging": "node scripts/smoke-staging.mjs"
   },
   "devDependencies": {
+    "mapshaper": "^0.6.113",
     "wrangler": "4.124.0"
   }
 }

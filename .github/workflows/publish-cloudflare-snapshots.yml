@@ -46,6 +46,9 @@ jobs:
         working-directory: cloudflare/yg-webgis-public-data
       - run: npm run validate:snapshots
         working-directory: cloudflare/yg-webgis-public-data
+      - name: Build private RSPO organisation overview
+        run: npm run build:rspo-groups
+        working-directory: cloudflare/yg-webgis-public-data
       - name: Upload versioned and current snapshots
         working-directory: cloudflare/yg-webgis-public-data
         env:
@@ -64,6 +67,8 @@ jobs:
           npx wrangler r2 object put "yg-webgis-public-snapshots/references/kph_2019_riau.geojson" --remote --file ../../data/kph_2019_riau.geojson --content-type application/geo+json
           npx wrangler r2 object put "yg-webgis-public-snapshots-staging/research/liberica-morphology-2026.json" --remote --file ../../data/liberica-morphology-2026.json --content-type application/json
           npx wrangler r2 object put "yg-webgis-public-snapshots/research/liberica-morphology-2026.json" --remote --file ../../data/liberica-morphology-2026.json --content-type application/json
+          npx wrangler r2 object put "yg-webgis-public-snapshots-staging/internal/rspo/riau-groups.geojson" --remote --file tmp/rspo-riau-groups.geojson --content-type application/geo+json
+          npx wrangler r2 object put "yg-webgis-public-snapshots/internal/rspo/riau-groups.geojson" --remote --file tmp/rspo-riau-groups.geojson --content-type application/geo+json
       - name: Build and upload manifest last
         shell: bash
         working-directory: cloudflare/yg-webgis-public-data

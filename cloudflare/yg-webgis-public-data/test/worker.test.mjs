@@ -99,6 +99,26 @@ test("rejects write methods and unknown paths", async () => {
   assert.equal(missing.status, 404);
 });
 
+test("protects and serves the RSPO group overview from R2", async () => {
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async url => {
+    assert.match(String(url), /page=staff-reports/);
+    assert.match(String(url), /sessionToken=valid-session/);
+    return new Response(JSON.stringify({ reports: [], stats: {} }), { headers: { "content-type": "application/json" } });
+  };
+  try {
+    const env = envWith({ type: "FeatureCollection", features: new Array(23).fill({ type: "Feature" }) });
+    const denied = await worker.fetch(new Request("https://data.test/api/staff/rspo-groups"), env);
+    assert.equal(denied.status, 401);
+    const response = await worker.fetch(new Request("https://data.test/api/staff/rspo-groups", { headers: { authorization: "Bearer valid-session" } }), env);
+    assert.equal(response.status, 200);
+    assert.equal(response.headers.get("access-control-allow-origin"), "https://webgisyg.id");
+    assert.equal(response.headers.get("x-yg-data-source"), "r2-private-route");
+    assert.match(response.headers.get("cache-control"), /private/);
+    assert.equal((await response.json()).features.length, 23);
+  } finally { globalThis.fetch = originalFetch; }
+});
+
 test("serves a no-store redacted prepost session list for webgisyg.id", async () => {
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async url => {
