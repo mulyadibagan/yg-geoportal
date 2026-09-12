@@ -1,14 +1,21 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-12T07:25:44.693959+00:00",
+  "generatedAt": "2026-09-12T08:00:37.440922+00:00",
   "retention": "permanent",
   "reports": [
     {
       "month": "2026-08",
       "status": "partial",
-      "estimatedAreaHa": 1703.12,
-      "eventCount": 12,
+      "estimatedAreaHa": 459.68,
+      "eventCount": 4,
       "data": "data/burned-area-monthly/2026-08.geojson"
+    },
+    {
+      "month": "2026-07",
+      "status": "partial",
+      "estimatedAreaHa": 921.32,
+      "eventCount": 3,
+      "data": "data/burned-area-monthly/2026-07.geojson"
     }
   ]
 }
