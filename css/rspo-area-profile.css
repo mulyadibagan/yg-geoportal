@@ -88,3 +88,22 @@ th{color:var(--muted);font-size:9px;text-transform:uppercase}
 .rap-evidence-list li:before{content:counter(evidence);position:absolute;left:10px;top:9px;display:grid;place-items:center;width:17px;height:17px;border-radius:50%;background:#dfece6;color:#17614d;font-size:8px;font-weight:800}
 @media(max-width:900px){.rap-fact-grid{grid-template-columns:1fr 1fr}.rap-portfolio-lower{grid-template-columns:1fr}}
 @media(max-width:560px){.rap-verification-banner,.rap-fact-grid{grid-template-columns:1fr}}
+
+/* Compliance screening: signals, not violation verdicts. */
+.rap-compliance{margin:16px 0}
+.rap-compliance-intro{margin:0 0 14px;max-width:980px;color:var(--muted);font-size:11px;line-height:1.6}
+.rap-signal{padding:7px 10px;border-radius:99px;background:#f1f3f2;color:#58665f;font-size:9px;font-weight:800;white-space:nowrap}
+.rap-signal.is-clear{background:#e5f4ec;color:#17614d}.rap-signal.is-review{background:#fff1d7;color:#97590f}
+.rap-monitor-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px}
+.rap-monitor-grid article{display:flex;min-width:0;min-height:180px;flex-direction:column;padding:14px;border:1px solid var(--line);border-top:3px solid #d8b049;border-radius:12px;background:#fff}
+.rap-monitor-grid article>span{color:var(--muted);font-size:8px;font-weight:800;letter-spacing:.08em}
+.rap-monitor-grid article>strong{margin-top:9px;font-size:13px;line-height:1.35}
+.rap-monitor-grid article>p{flex:1;margin:8px 0;color:var(--muted);font-size:9px;line-height:1.55}
+.rap-monitor-grid article>a{color:var(--teal);font-size:9px;font-weight:800;text-decoration:none}
+.rap-monitor-grid article>a:hover{text-decoration:underline}
+.rap-monitor-legend{display:flex;flex-wrap:wrap;gap:15px;margin-top:13px;color:var(--muted);font-size:9px}
+.rap-monitor-legend span{display:flex;align-items:center;gap:6px}.rap-monitor-legend i{width:8px;height:8px;border-radius:50%;background:#a8b1ad}
+.rap-monitor-legend i.clear{background:#2f9a71}.rap-monitor-legend i.review{background:#d89028}.rap-monitor-legend i.official{background:#b53c35}
+@media(max-width:1100px){.rap-monitor-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:720px){.rap-monitor-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.rap-monitor-grid{grid-template-columns:1fr}.rap-monitor-grid article{min-height:0}.rap-signal{white-space:normal}}
