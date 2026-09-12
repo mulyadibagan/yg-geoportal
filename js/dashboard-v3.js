@@ -1749,8 +1749,7 @@
     if (participantDetail) {
       participantDetail.textContent =
         formatNumber(programmeMetrics.capacity.trainingParticipants || 0) + " pelatihan · " +
-        formatNumber(programmeMetrics.capacity.engagementParticipants || 0) + " kegiatan lapangan · " +
-        formatNumber(programmeMetrics.capacity.postTestRespondents || 0) + " post-test";
+        formatNumber(programmeMetrics.capacity.engagementParticipants || 0) + " kegiatan lapangan";
     }
     setMetric("dash-regencies", regencies.size);
     setMetric("dash-villages", villages.size);
@@ -1782,7 +1781,7 @@
         baselineLabel: "Luas awal",
         additionLabel: "Penanaman baru",
         currentLabel: "Total restorasi",
-        status: "Data tersinkron",
+        status: "Data kegiatan",
         updated: dashboardUpdateDate,
         rows: [
           ["Total Bibit Ditanam", programmeMetrics.mangrove.seedlings],
@@ -1801,7 +1800,7 @@
         baselineLabel: "Luas penanaman",
         additionLabel: "Rewetting + penanaman baru",
         currentLabel: "Total restorasi",
-        status: "Data tersinkron",
+        status: "Data kegiatan",
         updated: dashboardUpdateDate,
         rows: [
           ["Total Bibit Ditanam", peatPlantedSeedlings],
@@ -1822,7 +1821,7 @@
         baselineLabel: "Luas awal",
         additionLabel: "Rehabilitasi baru",
         currentLabel: "Total rehabilitasi",
-        status: "Data tersinkron",
+        status: "Data kegiatan",
         updated: dashboardUpdateDate,
         rows: [
           ["Total Bibit Ditanam", mineralSeedlings],
@@ -1841,7 +1840,7 @@
         baselineLabel: "Baseline orang",
         additionLabel: "Orang baru",
         currentLabel: "Total terlibat",
-        status: "Data tersinkron",
+        status: "Data kegiatan",
         updated: dashboardUpdateDate,
         rows: [
           ["Kegiatan Tercatat", programmeMetrics.capacity.trainings + (programmeMetrics.capacity.engagementActivities || 0)],
