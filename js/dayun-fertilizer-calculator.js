@@ -1,56 +1,47 @@
 (function(){
   "use strict";
-  const form=document.getElementById("fertilizer-calculator");
-  if(!form)return;
+  const form=document.getElementByById?document:null;
+  const actualForm=document.getElementById("fertilizer-calculator");
+  if(!actualForm)return;
   const $=id=>document.getElementById(id);
-  const number=id=>{const v=String($(id).value||"").replace(",",".");return Number(v)};
-  const fmt=(v,d=1)=>new Intl.NumberFormat("id-ID",{maximumFractionDigits:d}).format(v);
-  const modeInputs=form.querySelectorAll('input[name="population_mode"]');
-  const manual=$("fert-manual-fields"), area=$("fert-area-fields");
-  function syncMode(){
-    const mode=form.querySelector('input[name="population_mode"]:checked').value;
-    manual.hidden=mode!=="manual"; area.hidden=mode!=="area";
-    $("fert-plant-count").required=mode==="manual";
-    ["fert-area","fert-row-spacing","fert-plant-spacing"].forEach(id=>$(id).required=mode==="area");
-    clearResult();
-  }
-  function clearResult(){
-    $("fert-result").hidden=true;
-    $("fert-error").hidden=true;
-  }
-  modeInputs.forEach(el=>el.addEventListener("change",syncMode));
-  form.addEventListener("reset",()=>setTimeout(syncMode,0));
-  form.addEventListener("input",clearResult);
-  form.addEventListener("submit",ev=>{
+  const fmt=(v,d=2)=>new Intl.NumberFormat("id-ID",{maximumFractionDigits:d}).format(v);
+  const number=id=>Number(String($(id).value||"").replace(",","."));
+  const programs={
+    base:{name:"Pemupukan dasar",time:"7 hari sebelum tanam atau saat tanam",note:"Pupuk organik 5–10 ton/ha.",materials:[{name:"Pupuk organik",min:5000,max:10000}]},
+    phase1:{name:"Pemupukan I",time:"Akar mulai terlihat, sekitar 3 BST",note:"Urea 300–400 kg/ha dan NPK 15-15-15 100–200 kg/ha.",materials:[{name:"Urea",min:300,max:400},{name:"NPK 15-15-15",min:100,max:200}]},
+    phase2:{name:"Pemupukan II",time:"1 bulan sebelum induksi pembungaan",note:"Urea 300 kg/ha dan NPK 15-15-15 150–200 kg/ha.",materials:[{name:"Urea",min:300,max:300},{name:"NPK 15-15-15",min:150,max:200}]},
+    phase3:{name:"Pemupukan III",time:"Setelah bunga keluar",note:"NPK 15-15-15 50–150 kg/ha.",materials:[{name:"NPK 15-15-15",min:50,max:150}]}
+  };
+  function phase(){return programs[$("fert-phase").value]}
+  function syncPhase(){$("fert-phase-note").textContent=phase().note;clearResult()}
+  function clearResult(){$("fert-result").hidden=true;$("fert-error").hidden=true}
+  $("fert-phase").addEventListener("change",syncPhase);
+  actualForm.addEventListener("input",clearResult);
+  actualForm.addEventListener("reset",()=>setTimeout(syncPhase,0));
+  actualForm.addEventListener("submit",ev=>{
     ev.preventDefault();
-    const mode=form.querySelector('input[name="population_mode"]:checked').value;
-    let plants;
-    if(mode==="manual"){
-      plants=number("fert-plant-count");
-    }else{
-      const hectares=number("fert-area"), row=number("fert-row-spacing"), plant=number("fert-plant-spacing");
-      plants=(hectares*10000)/(row*plant);
-    }
-    const dose=number("fert-dose"), applications=number("fert-applications");
-    const reserve=number("fert-reserve"), bag=number("fert-bag");
+    const area=number("fert-area"),reserve=number("fert-reserve"),bag=number("fert-bag");
+    const plantsRaw=String($("fert-plant-count").value||"").trim();
+    const plants=plantsRaw?number("fert-plant-count"):null;
     const error=$("fert-error");
-    if(![plants,dose,applications,reserve,bag].every(Number.isFinite)||plants<=0||dose<=0||applications<1||reserve<0||bag<=0){
-      error.textContent="Lengkapi semua angka dengan nilai lebih dari nol. Cadangan boleh diisi 0%.";
-      error.hidden=false; $("fert-result").hidden=true; return;
+    if(!Number.isFinite(area)||area<=0||!Number.isFinite(reserve)||reserve<0||reserve>25||!Number.isFinite(bag)||bag<=0||(plants!==null&&(!Number.isFinite(plants)||plants<1))){
+      error.textContent="Isi luas gawangan dengan benar. Populasi bersifat opsional; cadangan 0–25%.";
+      error.hidden=false;return;
     }
-    const roundedPlants=Math.floor(plants+1e-6);
-    const perApplication=roundedPlants*dose/1000;
-    const cycle=perApplication*Math.floor(applications);
-    const prepared=cycle*(1+reserve/100);
-    const bags=prepared/bag;
-    $("fert-result-plants").textContent=fmt(roundedPlants,0)+" tanaman";
-    $("fert-result-application").textContent=fmt(perApplication,2)+" kg";
-    $("fert-result-cycle").textContent=fmt(cycle,2)+" kg";
-    $("fert-result-prepared").textContent=fmt(prepared,2)+" kg";
-    $("fert-result-bags").textContent=fmt(bags,2)+" karung";
-    $("fert-result-round").textContent=Math.ceil(bags)+" karung jika pembelian hanya dapat dilakukan per karung penuh.";
-    $("fert-result-formula").textContent=fmt(roundedPlants,0)+" tanaman × "+fmt(dose,2)+" g × "+Math.floor(applications)+" aplikasi, ditambah cadangan "+fmt(reserve,1)+"%.";
-    $("fert-result").hidden=false; error.hidden=true;
+    const p=phase(),factor=1+reserve/100;
+    $("fert-result-phase").textContent=p.name;
+    $("fert-result-phase-label").textContent=p.time;
+    $("fert-result-context").textContent=fmt(area,3)+" ha"+(plants?" · "+fmt(Math.floor(plants),0)+" tanaman aktif":"");
+    $("fert-material-results").innerHTML=p.materials.map(m=>{
+      const low=m.min*area,high=m.max*area,prepLow=low*factor,prepHigh=high*factor;
+      const dose=plants?((low*1000/plants).toFixed(2)+(low===high?"":"–"+(high*1000/plants).toFixed(2))+" g/tanaman"):"Isi populasi untuk dosis/tanaman";
+      const packs=prepLow/bag===prepHigh/bag?fmt(prepLow/bag,2):fmt(prepLow/bag,2)+"–"+fmt(prepHigh/bag,2);
+      const need=low===high?fmt(low,2)+" kg":fmt(low,2)+"–"+fmt(high,2)+" kg";
+      const prepared=prepLow===prepHigh?fmt(prepLow,2)+" kg":fmt(prepLow,2)+"–"+fmt(prepHigh,2)+" kg";
+      return '<article><header><span>'+m.name+'</span><small>'+fmt(m.min,0)+(m.min===m.max?'':'–'+fmt(m.max,0))+' kg/ha</small></header><strong>'+need+'</strong><p>Kebutuhan sesuai luas</p><dl><div><dt>Per tanaman</dt><dd>'+dose+'</dd></div><div><dt>Dengan cadangan</dt><dd>'+prepared+'</dd></div><div><dt>Setara kemasan</dt><dd>'+packs+' kemasan</dd></div></dl></article>';
+    }).join("");
+    $("fert-result-formula").textContent="Perhitungan: dosis SOP (kg/ha) × "+fmt(area,3)+" ha"+(reserve?" × "+fmt(factor,3)+" untuk pengadaan dengan cadangan.":". Cadangan pengadaan tidak ditambahkan.");
+    $("fert-result").hidden=false;error.hidden=true;
   });
-  syncMode();
+  syncPhase();
 })();
