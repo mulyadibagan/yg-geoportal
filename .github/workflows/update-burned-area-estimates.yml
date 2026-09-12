@@ -11,6 +11,7 @@ on:
       - ".github/workflows/update-burned-area-estimates.yml"
       - "scripts/update_burned_area_estimates.py"
       - "scripts/burned_area_geography.py"
+      - "scripts/archive_burned_area_monthly.py"
       - "data/batas_provinsi_riau_dissolve.geojson"
       - "data/batas_administrasi_desa_riau.geojson"
 
@@ -36,15 +37,17 @@ jobs:
         run: pip install numpy planetary-computer pystac-client rasterio pyproj scipy shapely scikit-image
       - name: Build conservative Riau estimates
         run: python scripts/update_burned_area_estimates.py
+      - name: Preserve monthly burned-area archive
+        run: python scripts/archive_burned_area_monthly.py
       - name: Publish only when the estimate changed
         run: |
-          if git diff --quiet -- data/burned-area-estimates.geojson data/burned-area-summary.json; then
+          if [ -z "$(git status --porcelain -- data/burned-area-estimates.geojson data/burned-area-summary.json data/burned-area-monthly)" ]; then
             echo "No burned-area estimate changes to publish."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/burned-area-estimates.geojson data/burned-area-summary.json
+          git add data/burned-area-estimates.geojson data/burned-area-summary.json data/burned-area-monthly
           git commit -m "chore(data): update burned-area estimates"
           git pull --rebase origin main
           git push origin HEAD:main
