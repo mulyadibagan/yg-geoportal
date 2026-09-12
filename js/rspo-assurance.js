@@ -173,6 +173,7 @@
       return button;
     });
     nav.replaceChildren(...buttons);
+    company.querySelectorAll('.guide-principle[open]').forEach(detail=>{detail.open=false;});
     function select(index){
       panels.forEach((panel,i)=>{panel.hidden=i!==index;buttons[i].setAttribute('aria-selected',String(i===index));buttons[i].tabIndex=i===index?0:-1;});
     }
