@@ -116,7 +116,7 @@
       var coastTitle = evidenceCards[0].querySelector('b');
       var coastMeta = evidenceCards[0].querySelector('small');
       if (coastTitle) coastTitle.textContent = english ? 'Coastal Protection' : 'Perlindungan pesisir';
-      if (coastMeta) coastMeta.textContent = english ? 'Kelapa Pati · view evidence →' : 'Kelapa Pati · buka evidence →';
+      if (coastMeta) coastMeta.textContent = english ? 'Kelapa Pati · view documentation →' : 'Kelapa Pati · lihat dokumentasi →';
     }
     if (evidenceCards[1]) {
       var nurseryTitle = evidenceCards[1].querySelector('b');
