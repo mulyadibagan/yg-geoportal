@@ -143,6 +143,10 @@ main.container{width:100%;max-width:none;padding:0}
   --ecosystem-base:rgba(38,72,48,.94);
   background-image:url("https://drive.google.com/thumbnail?id=1O3i6D__XrYTwn-5QKM6MTruZaK4Ic6pz&sz=w1200");
 }
+
+.home-rspo-card{background:linear-gradient(135deg,#f6fbf5,#e7f3e4);border-color:#bfd8b8}
+.home-rspo-card__mark{display:grid;place-items:center;width:70px;height:70px;border-radius:20px;background:#28683b;color:#fff;font-size:34px;box-shadow:0 10px 24px rgba(40,104,59,.2)}
+@media(max-width:640px){.home-rspo-card__mark{width:52px;height:52px;border-radius:15px;font-size:26px}}
 #programme-overview #category-grid .programme-card header,
 #programme-overview #category-grid .programme-compare__value.is-current,
 #programme-overview #category-grid .programme-support-grid>span,
