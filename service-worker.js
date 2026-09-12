@@ -1,4 +1,4 @@
-const CACHE_NAME = "yg-geoportal-v24-20260901-fdrs-sync";
+const CACHE_NAME = "yg-geoportal-v25-20260912-april-dayun";
 
 const OFFLINE_ASSETS = [
   "./assets/logo-yayasan-gambut.png",
