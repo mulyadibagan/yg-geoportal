@@ -57,6 +57,32 @@
 .dashboard-hero:has(.home-module-grid) .hero-programmes{padding-bottom:24px}
 @media(max-width:760px){.home-module-grid{grid-template-columns:1fr;padding:0 14px;gap:12px;margin-bottom:20px}.home-module-grid .home-collaboration{padding:16px}}
 </style>
+<style>
+/* Beranda: consistent reading width, typography and compact partner cards. */
+.home-module-grid{padding-left:0;padding-right:0;width:calc(100% - 64px)}
+#partnerships #donor-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:16px!important}
+#partnerships #donor-grid .funding-card{min-height:280px!important;padding:20px!important;border-radius:10px!important;box-shadow:0 4px 16px #173b2c08!important}
+#partnerships #donor-grid .funding-card .category-icon{flex:0 0 48px!important;height:48px!important}
+#partnerships #donor-grid .funding-card>span{flex:0 0 48px!important;font-size:14px!important;line-height:1.35!important;padding-top:10px!important}
+#partnerships #donor-grid .funding-card>strong{flex:0 0 auto!important;font-size:12px!important;height:auto!important;min-height:28px!important;margin:10px auto!important;white-space:normal!important}
+#partnerships #donor-grid .funding-card>small{flex:1 0 auto!important;font-size:12px!important;line-height:1.5!important;padding:12px 0!important}
+#partnerships #donor-grid .funding-card .donor-status-badge,#partnerships #donor-grid .funding-card>*:last-child{font-size:11px!important;line-height:1.4!important}
+#programme-overview #category-grid .programme-support-grid>span small,#programme-overview #category-grid .programme-support-grid>span>span{color:#f4f8f5!important;font-size:12px!important;line-height:1.4}
+#programme-overview #category-grid .programme-card__meta{color:#edf4ef!important;font-size:11px!important}
+#programme-overview #category-grid .programme-card__meta>*{color:inherit!important}
+#programme-overview #category-grid .programme-card{background-blend-mode:multiply}
+.hero-data-summary__grid small{font-size:12px!important;line-height:1.45!important}
+.hero-data-summary__head small{display:none}
+.home-evidence-gallery a small{font-size:12px}
+.climate-panel .climate-bar{display:none}
+.climate-panel .climate-card-head{gap:12px;flex-wrap:wrap}
+.climate-panel .climate-card-head strong{font-size:clamp(22px,2vw,28px)}
+.climate-panel .climate-footnote{font-size:12px;line-height:1.6}
+.dashboard-hero .hero-actions .btn:nth-child(n+3){background:transparent;border-color:transparent;font-size:12px;box-shadow:none}
+@media(max-width:1050px){#partnerships #donor-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+@media(max-width:760px){#partnerships #donor-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}.home-module-grid{width:calc(100% - 28px);padding:0}.hero-data-summary__grid small{font-size:11px!important}}
+@media(max-width:480px){#partnerships #donor-grid{grid-template-columns:1fr!important}#partnerships #donor-grid .funding-card{min-height:240px!important}}
+</style>
 </head>
 <body>
 <header class="site-header">
@@ -93,7 +119,7 @@
       <div class="hero-copy">
       <div class="eyebrow" data-editable-id="hero-eyebrow">PENGELOLAAN LAHAN BASAH BERKELANJUTAN</div>
       <h1 data-editable-id="hero-title">Memetakan aksi. Merekam perubahan.</h1>
-      <p class="hero-description" data-editable-id="hero-description">Mendukung pengelolaan sumber daya alam lahan basah dan ekosistem lain yang berkelanjutan melalui kemitraan strategis dengan berbagai pemangku kepentingan dan masyarakat lokal.</p>
+      <p class="hero-description" data-editable-id="hero-description">Data, dokumentasi, dan capaian program untuk mendukung pemulihan ekosistem bersama masyarakat dan mitra.</p>
       <p class="hero-tagline" data-editable-id="hero-tagline">Menghubungkan lokasi, capaian, foto evidence, dan laporan program dalam satu platform.</p>
       <div class="hero-actions">
         <a class="btn home-primary-action" href="webgis.html">Jelajahi Peta <span aria-hidden="true">→</span></a>
@@ -105,7 +131,7 @@
       <aside class="home-evidence-gallery" aria-label="Dokumentasi lapangan terverifikasi">
         <a class="home-evidence-main" href="webgis.html?object=APO-KELAPA-PATI-NA-001">
           <img data-home-photo="APO-KELAPA-PATI-NA-001" alt="Dokumentasi wave breaker Kelapa Pati" loading="eager"/>
-          <span><b>Perlindungan pesisir</b><small>Kelapa Pati · buka evidence →</small></span>
+          <span><b>Perlindungan pesisir</b><small>Kelapa Pati · lihat dokumentasi →</small></span>
         </a>
         <a href="webgis.html?object=NURSERY-TANJUNG-KURAS-NA-001">
           <img data-home-photo="NURSERY-TANJUNG-KURAS-NA-001" alt="Dokumentasi rumah bibit Tanjung Kuras" loading="eager"/>
@@ -117,11 +143,11 @@
         </a>
       </aside>
       <aside class="hero-data-summary" aria-label="Ringkasan data WebGIS">
-        <div class="hero-data-summary__head"><span>DATA FINAL TERKINI</span><small>Terhubung ke WebGIS</small></div>
+        <div class="hero-data-summary__head"><span>CAPAIAN PROGRAM</span><small>Terhubung ke WebGIS</small></div>
         <div class="hero-data-summary__grid">
           <a href="webgis.html?search=Restorasi"><strong id="dash-restoration-area">-</strong><span>Total restorasi</span><small>hektare</small></a>
           <a href="webgis.html?search=Penanaman"><strong id="dash-seedlings-planted">-</strong><span>Bibit tertanam</span><small>seluruh ekosistem</small></a>
-          <a href="community-engagement.html"><strong id="dash-participants">-</strong><span>Orang terlibat</span><small id="dash-participants-detail">pelatihan + kegiatan lapangan</small></a>
+          <a href="community-engagement.html"><strong id="dash-participants">-</strong><span>Partisipasi tercatat</span><small id="dash-participants-detail">pelatihan + kegiatan lapangan</small></a>
           <a href="webgis.html?layer=desa_intervensi"><strong id="dash-villages">-</strong><span>Desa cakupan</span><small>wilayah program</small></a>
           <a href="webgis.html?layer=desa_intervensi"><strong id="dash-regencies">-</strong><span>Kabupaten</span><small>cakupan kerja</small></a>
         </div>
@@ -157,7 +183,7 @@
           <span>Informasi kebun, cuaca, budidaya, pemantauan tanaman, hasil panen, dan penelitian.</span>
           <small>3 area kebun · 9,46 hektare terpetakan</small>
         </span>
-        <span class="home-faperta-card__action">Buka modul <i aria-hidden="true">→</i></span>
+        <span class="home-faperta-card__action">Jelajahi kebun <i aria-hidden="true">→</i></span>
       </a>
     </section>
 
@@ -171,7 +197,7 @@
         <span class="home-faperta-card__copy">
           <strong>Peta Sawit &amp; Keanggotaan RSPO Riau</strong>
           <span>Jelajahi sebaran grup, organisasi, pabrik kelapa sawit, dan status sertifikasi RSPO di Riau.</span>
-          <small>23 grup · 26 organisasi · 54 pabrik · 52 bersertifikat</small>
+          <small>Direktori pabrik: 23 grup · 26 organisasi · 54 pabrik · 52 bersertifikat</small>
         </span>
         <span class="home-faperta-card__action">Buka peta &amp; direktori <i aria-hidden="true">→</i></span>
       </a>
@@ -737,10 +763,10 @@
   </div>
 </footer>
 
-<script src="js/dashboard-v3.js?v=20260903-dashboard-live1"></script>
-  <script src="js/home-modern.js?v=20260903-ma-earth-1000-1"></script>
+<script src="js/dashboard-v3.js?v=20260912-home-audit1"></script>
+  <script src="js/home-modern.js?v=20260912-home-audit1"></script>
    <script src="js/donor-program-status.js?v=20260903-ma-earth-1000-1"></script>
-   <script src="js/donor-evidence-summary.js?v=20260903-ma-earth-1000-1"></script>
+   <script src="js/donor-evidence-summary.js?v=20260912-home-audit1"></script>
   <script src="js/dashboard-sdg.js?v=20260827-public-climate-copy1"></script>
   <script src="js/i18n.js?v=20260911-faperta-dashboard1"></script>
   <script src="js/content-config.js?v=20260723-content-admin1"></script>
