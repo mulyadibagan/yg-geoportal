@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "reports": [
+    {
+      "month": "2026-08",
+      "status": "final",
+      "generatedAt": "2026-09-12T17:53:37.718Z",
+      "sourceUpdatedAt": "2026-08-31",
+      "summary": {
+        "pbph": 56,
+        "verified": 32,
+        "followup": 21,
+        "expired": 3,
+        "suspended": 0,
+        "revoked": 0
+      },
+      "data": "data/phl-svlk-monthly/2026-08.json",
+      "href": "phl-svlk-monthly-report.html?month=2026-08"
+    }
+  ],
+  "updatedAt": "2026-09-12T17:53:37.718Z"
+}

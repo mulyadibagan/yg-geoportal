@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Arsip laporan bulanan pemantauan PHL dan SVLK PBPH Riau.">
+  <title>Laporan Bulanan PHL &amp; SVLK Riau | YG GeoPortal</title>
+  <link rel="icon" href="assets/logo-yayasan-gambut.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/phl-svlk-monthly-report.css?v=20260912-1">
+</head>
+<body>
+  <header><a href="index.html"><img src="assets/logo-yayasan-gambut.png" alt="Logo Yayasan Gambut"><span><strong>YG GeoPortal</strong><small>Laporan PHL &amp; SVLK Riau</small></span></a><nav><a href="phl-svlk-riau.html">← Pemantauan utama</a><button type="button" id="pm-print">Unduh / cetak</button></nav></header>
+  <main>
+    <section class="pm-title"><div><p>LAPORAN BULANAN · PROVINSI RIAU</p><h1 id="pm-title">Memuat laporan…</h1><span id="pm-status">Memeriksa snapshot data</span></div><label>Pilih laporan<select id="pm-month"></select></label></section>
+    <aside><strong>Catatan penggunaan:</strong> laporan ini adalah snapshot dokumen publik yang telah ditelusuri. “Belum ditemukan” tidak berarti pemegang PBPH tidak memiliki sertifikat.</aside>
+    <section class="pm-kpis"><article><span>PBPH</span><strong id="pm-total">—</strong></article><article><span>S-PHL terverifikasi</span><strong id="pm-verified">—</strong></article><article><span>Perlu penelusuran</span><strong id="pm-followup">—</strong></article><article><span>Masa berlaku berakhir</span><strong id="pm-expired">—</strong></article></section>
+    <section class="pm-panel"><div class="pm-panel-head"><div><p>DIREKTORI SNAPSHOT</p><h2>Status per pemegang PBPH</h2></div><input id="pm-search" type="search" placeholder="Cari PBPH, SK, atau LPVI…"></div><p id="pm-result">Memuat data…</p><div class="pm-table-wrap"><table><thead><tr><th>Pemegang PBPH</th><th>Status</th><th>LPVI</th><th>Nomor / masa berlaku</th><th>Dokumen</th></tr></thead><tbody id="pm-rows"></tbody></table></div></section>
+    <footer><p id="pm-method"></p><p id="pm-disclaimer"></p></footer>
+  </main>
+  <script src="js/phl-svlk-monthly-report.js?v=20260912-1"></script>
+</body>
+</html>

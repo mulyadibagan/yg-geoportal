@@ -1,0 +1,1705 @@
+{
+  "schemaVersion": 1,
+  "month": "2026-08",
+  "status": "final",
+  "sourceUpdatedAt": "2026-08-31",
+  "generatedAt": "2026-09-12T17:53:37.718Z",
+  "scope": "PBPH aktif dalam referensi batas Provinsi Riau pembaruan Mei 2026",
+  "summary": {
+    "pbph": 56,
+    "verified": 32,
+    "followup": 21,
+    "expired": 3,
+    "suspended": 0,
+    "revoked": 0
+  },
+  "methodology": "Snapshot bulanan dari register dokumen publik yang telah ditelusuri YG. Status hanya dicatat bila nomor, masa berlaku, LPVI, dan sumber pendukung tersedia.",
+  "disclaimer": "Belum ditemukan atau perlu penelusuran tidak berarti pemegang PBPH tidak memiliki sertifikat.",
+  "profiles": {
+    "015,2003": {
+      "id": "015,2003",
+      "name": "CV ALAM LESTARI",
+      "sk": "SK.805/MENLHK/SETJEN/HPL.0/9/2021",
+      "areaHa": 4868.65,
+      "parts": 1,
+      "svlk": {
+        "status": "certificate-verified",
+        "statusLabel": "S-PHL terverifikasi",
+        "certificateStatus": "Terpelihara; berlaku sampai 14 November 2029",
+        "scope": "PBPH Hutan Produksi — Kabupaten Pelalawan",
+        "auditType": "Penilikan ke-1 PHL",
+        "auditPeriod": "6–13 September 2025",
+        "lpvi": "PT Ayamaru Sertifikasi",
+        "certificateNumber": "SPHL.43/ASERT/LPVI-001-IDN",
+        "validUntil": "14 November 2029",
+        "checkedAt": "2026-08-31",
+        "note": "Hasil penilikan ke-1 menyatakan sertifikat terpelihara dan berlanjut dengan predikat baik. Identitas SK.805/MENLHK/SETJEN/HPL.0/9/2021 dan luas 4.868,65 hektar konsisten dengan snapshot. Dokumen audit bukan salinan keputusan PBPH beserta peta lampirannya.",
+        "documents": [
+          {
+            "category": "Keputusan hasil penilikan S-PHL",
+            "label": "Penilikan ke-1 PHL CV Alam Lestari — 2025",
+            "url": "https://www.ayamarusertifikasi.co.id/storage/dokumen/hasil/OVeYpXCFwRHJUYTzXDarXnBpUjT6CIbOfLdIsEeR.pdf",
+            "publisher": "LPVI PT Ayamaru Sertifikasi"
+          }
+        ]
+      },
+      "documentCount": 0,
+      "svlkDocumentCount": 1
+    },
+    "011,2003": {
+      "id": "011,2003",
+      "name": "CV BHAKTI PRAJA MULIA",
+      "sk": "SK.806/MENLHK/SETJEN/HPL.0/9/2021",
+      "areaHa": 5868.99,
+      "parts": 1,
+      "svlk": {
+        "status": "certificate-verified",
+        "statusLabel": "S-PHL terverifikasi",
+        "certificateStatus": "Terpelihara; berlaku sampai 17 Desember 2029",
+        "scope": "PBPH Hutan Produksi — Kabupaten Pelalawan",
+        "auditType": "Penilikan ke-1 PHL",
+        "auditPeriod": "2–8 September 2025",
+        "lpvi": "PT Mutuagung Lestari Tbk",
+        "certificateNumber": "LPVI-008/MUTU/FM-028",
+        "validUntil": "17 Desember 2029",
+        "checkedAt": "2026-08-31",
+        "note": "Keputusan hasil penilikan ke-1 mempertahankan sertifikat dengan predikat baik. Identitas SK.806/MENLHK/SETJEN/HPL.0/9/2021 dan luas 5.868,99 hektar konsisten dengan snapshot. Dokumen audit menyebut ketersediaan peta lampiran, tetapi bukan salinan keputusan PBPH atau petanya.",
+        "documents": [
+          {
+            "category": "Keputusan dan ringkasan penilikan S-PHL",
+            "label": "Penilikan ke-1 PHL CV Bhakti Praja Mulia — 2025",
+            "url": "https://mutucertification.com/wp-content/uploads/2025/10/UPLOAD-Pengumuman-publik-hasil-S1-PHL-CV-BPM.docx.pdf",
+            "publisher": "LPVI PT Mutuagung Lestari Tbk"
+          }
+        ]
+      },
+      "documentCount": 0,
+      "svlkDocumentCount": 1
+    },
+    "007,2003": {
+      "id": "007,2003",
+      "name": "CV MUTIARA LESTARI",
+      "sk": "SK.808/MENLHK/SETJEN/HPL.0/9/2021",
+      "areaHa": 4000,
+      "parts": 3,
+      "svlk": {
+        "status": "certificate-verified",
+        "statusLabel": "S-PHL terverifikasi",
+        "certificateStatus": "Terpelihara; berlaku sampai 26 Desember 2029",
+        "scope": "PBPH Hutan Produksi — Kabupaten Pelalawan",
+        "auditType": "Penilikan ke-1 PHL",
+        "auditPeriod": "10–17 Maret 2025",
+        "lpvi": "PT Ayamaru Sertifikasi",
+        "certificateNumber": "SPHL.46/ASERT/LPVI-001-IDN",
+        "validUntil": "26 Desember 2029",
+        "checkedAt": "2026-08-31",
+        "note": "Keputusan hasil penilikan ke-1 menyatakan unit konsisten dengan standar PHL dan VLHH. Identitas SK.808/MENLHK/SETJEN/HPL.0/9/2021 dan luas 4.000 hektar konsisten dengan snapshot. Dokumen audit bukan salinan keputusan PBPH beserta peta lampirannya.",
+        "documents": [
+          {
+            "category": "Keputusan hasil penilikan S-PHL",
+            "label": "Penilikan ke-1 PHL CV Mutiara Lestari — 2025",
+            "url": "https://ayamarusertifikasi.co.id/storage/dokumen/hasil/Y9aX72AmBEr860qGQa5Ypa9DQjStNlokh7CMl11U.pdf",
+            "publisher": "LPVI PT Ayamaru Sertifikasi"
+          }
+        ]
+      },
+      "documentCount": 0,
+      "svlkDocumentCount": 1
+    },
+    "005,2003": {
+      "id": "005,2003",
+      "name": "CV PUTRI LINDUNG BULAN",
+      "sk": "SK.1213/MENLHK/SETJEN/HPL.0/12/2021",
+      "areaHa": 2085.54,
+      "parts": 1,
+      "svlk": {
+        "status": "certificate-verified",
+        "statusLabel": "S-PHL terverifikasi",
+        "certificateStatus": "Terpelihara; berlaku sampai 23 November 2029",
+        "scope": "PBPH Hutan Produksi — Kabupaten Pelalawan",
+        "auditType": "Penilikan ke-1 PHL",
+        "auditPeriod": "21–26 Oktober 2025",
+        "lpvi": "PT Ayamaru Sertifikasi",
+        "certificateNumber": "SPHL.44/ASERT/LPVI-001-IDN",
+        "validUntil": "23 November 2029",
+        "checkedAt": "2026-08-31",
+        "note": "Keputusan hasil penilikan ke-1 menyatakan sertifikat tetap terpelihara dengan predikat baik. Identitas SK.1213/MENLHK/SETJEN/HPL.0/12/2021 dan luas 2.085,54 hektar konsisten dengan snapshot. Dokumen audit bukan salinan keputusan PBPH beserta peta lampirannya.",
+        "documents": [
+          {
+            "category": "Keputusan hasil penilikan S-PHL",
+            "label": "Penilikan ke-1 PHL CV Putri Lindung Bulan — 2025",
+            "url": "https://ayamarusertifikasi.co.id/storage/audit_documents/NOr3gg9ST3Ekfa7qhoL1atxpTZLRDMDlIxsz2sFt.pdf",
+            "publisher": "LPVI PT Ayamaru Sertifikasi"
+          }
+        ]
+      },
+      "documentCount": 0,
+      "svlkDocumentCount": 1
+    },
+    "215,2007": {
+      "id": "215,2007",
+      "name": "CV TUAH NEGERI",
+      "sk": "SK.951/MENLHK/SETJEN/HPL.0/10/2021",
+      "areaHa": 1676.68,
+      "parts": 1,
+      "svlk": {
+        "status": "certificate-verified",
+        "statusLabel": "S-PHL terverifikasi",
+        "certificateStatus": "Berlaku sampai 4 Mei 2029",
+        "scope": "PBPH Hutan Produksi",
+        "auditType": "Status pada register klien aktif",
+        "auditPeriod": "Belum tersedia",
+        "lpvi": "PT Ayamaru Sertifikasi",
+        "certificateNumber": "SPHL.40/ASERT/LPVI-001-IDN",
+        "validUntil": "4 Mei 2029",
+        "checkedAt": "2026-08-31",
+        "note": "Nomor dan masa berlaku sertifikat diverifikasi melalui register klien aktif LPVI. Berkas keputusan audit atau sertifikat individual belum ditemukan pada register publik.",
+        "documents": [
+          {
+            "category": "Register klien aktif LPVI",
+            "label": "Register klien PHL aktif — CV Tuah Negeri",
+            "url": "https://ayamarusertifikasi.co.id/daftar-klien",
+            "publisher": "LPVI PT Ayamaru Sertifikasi"
+          }
+        ]
+      },
+      "documentCount": 0,
+      "svlkDocumentCount": 1
+    },
+    "743,1996": {
+      "id": "743,1996",
+      "name": "PT ARARA ABADI",
+      "sk": "SK.1131/MENLHK/SETJEN/HPL.2/11/2022",
+      "areaHa": 296164,
+      "parts": 22,
+      "svlk": {
+        "status": "certificate-verified",
+        "statusLabel": "S-PHL terverifikasi",
+        "certificateStatus": "Berlaku sampai 24 Juli 2031",
+        "scope": "PBPH Hutan Produksi",
+        "auditType": "Re-sertifikasi PHL dan VLHH",
+        "auditPeriod": "10–19 Juni 2025",
+        "lpvi": "PT Ayamaru Sertifikasi",
+        "certificateNumber": "SPHL.72/ASERT/LPVI-001-IDN",
+        "validUntil": "24 Juli 2031",
+        "checkedAt": "2026-08-31",
+        "note": "Keputusan LPVI, sertifikat, dan ringkasan hasil re-sertifikasi tersedia dalam satu berkas. Dokumen ini bukan salinan keputusan Menteri beserta peta lampirannya.",
+        "documents": [
+          {
+            "category": "Keputusan dan sertifikat S-PHL",
+            "label": "Re-sertifikasi PHL PT Arara Abadi — 2025",
+            "url": "https://www.ayamarusertifikasi.co.id/storage/dokumen/hasil/3TzR2GjfsiXWdiEIzNFgbkMQ1coJ1GlxqtnGhLtL.pdf",
+            "publisher": "LPVI PT Ayamaru Sertifikasi"
+          }
+        ]
+      },
+      "documentCount": 1,
+      "svlkDocumentCount": 1
+    },
+    "122,2007": {
+      "id": "122,2007",
+      "name": "PT ARTELINDO WIRATAMA",
+      "sk": "SK.809/MENLHK/SETJEN/HPL.0/9/2021",
+      "areaHa": 9743.69,
+      "parts": 1,
+      "svlk": {
+        "status": "audit-announcement-found",
+        "statusLabel": "Status aktif pada register LPVI",
+        "certificateStatus": "Aktif pada register LPVI; masa berlaku belum tersedia",
+        "scope": "PBPH di Hutan Produksi — Kabupaten Indragiri Hulu",
+        "auditType": "Status pada register klien aktif",
+        "auditPeriod": "Belum tersedia",
+        "lpvi": "PT Inti Multima Sertifikasi",
+        "certificateNumber": "IMS-SPHL-027",
+        "validUntil": null,
+        "checkedAt": "2026-08-31",
+        "note": "Register resmi LPVI mencantumkan PT Artelindo Wiratama sebagai klien PBPH aktif dengan sertifikat IMS-SPHL-027, tetapi tidak menampilkan tanggal terbit atau masa berlaku. Karena informasi masa berlaku dan keputusan audit individual belum ditemukan, profil tidak menyimpulkan S-PHL terverifikasi penuh. Dokumen VLK lama merupakan sertifikat berbeda dan tidak digunakan sebagai bukti S-PHL aktif. Dokumen audit bukan salinan keputusan PBPH.",
+        "documents": [
+          {
+            "category": "Register klien aktif LPVI",
+            "label": "Daftar klien PHL aktif — PT Artelindo Wiratama",
+            "url": "https://www.intimultimasertifikasi.com/lpvi/daftar-klien-phpl/",
+            "publisher": "LPVI PT Inti Multima Sertifikasi"
+          }
+        ]
+      },
+      "documentCount": 0,
+      "svlkDocumentCount": 1
+    },
+    "642,2018": {
+      "id": "642,2018",
+      "name": "PT BALAI KAYANG MANDIRI",
+      "sk": "SK.772/MENLHK/SETJEN/HPL.0/7/2022",
+      "areaHa": 16514,
+      "parts": 3,
+      "svlk": {
+        "status": "certificate-verified",
+        "statusLabel": "S-PHL terverifikasi",
+        "certificateStatus": "Berlaku sampai 1 Agustus 2031",
+        "scope": "PBPH Hutan Tanaman — Kabupaten Siak",
+        "auditType": "Re-sertifikasi PHL",
+        "auditPeriod": "30 Juni–8 Juli 2025",
+        "lpvi": "PT Almasentra Sertifikasi",
+        "certificateNumber": "23-PHL-024",
+        "validUntil": "1 Agustus 2031",
+        "checkedAt": "2026-08-31",
+        "note": "Sertifikat baru mencantumkan SK.772/MENLHK/SETJEN/HPL.0.7/2022, luas 16.514 hektar, predikat baik, tanggal terbit 2 Agustus 2025, dan masa berlaku sampai 1 Agustus 2031. Sertifikat PHL bukan salinan keputusan PBPH beserta peta lampirannya.",
+        "documents": [
+          {
+            "category": "Sertifikat S-PHL",
+            "label": "Sertifikat PHL PT Balai Kayang Mandiri — 2025–2031",
+            "url": "https://sustainability-dashboard.com/documents/115225/123228/20310801_Sertifikat%2BPHPL%2BBKM.pdf/3682eaf0-4a18-57fb-e583-62caeda3b0fb?t=1769485590701",
+            "publisher": "PT Almasentra Sertifikasi"
+          }
+        ]
+      },
+      "documentCount": 0,
+      "svlkDocumentCount": 1
+    },
+    "555,2006": {
+      "id": "555,2006",
+      "name": "PT BINA DAYA BENTALA",
+      "sk": "SK.818/MENLHK/SETJEN/HPL.0/9/2021",
+      "areaHa": 20142.1,
+      "parts": 1,
+      "svlk": {
+        "status": "certificate-expired",
+        "statusLabel": "S-PHL kedaluwarsa",
+        "certificateStatus": "Berakhir 28 Juni 2023",
+        "scope": "PBPH Hutan Tanaman — Kabupaten Rokan Hulu",
+        "auditType": "Sertifikasi PHPL",
+        "auditPeriod": "Ditetapkan 29 Juni 2018",
+        "lpvi": "PT Equality Indonesia",
+        "certificateNumber": "013.4/EQC-PHPL/VI/2018",
+        "validUntil": "28 Juni 2023",
+        "checkedAt": "2026-08-31",
+        "note": "Sertifikat publik yang ditemukan telah berakhir pada 28 Juni 2023. Profil pemasok masih menampilkan label PHPL, tetapi tidak memuat nomor dan masa berlaku sertifikat pengganti sehingga label tersebut tidak digunakan sebagai bukti sertifikat aktif. Ringkasan publik dan sertifikat PHL bukan salinan keputusan PBPH beserta peta lampirannya.",
+        "documents": [
+          {
+            "category": "Sertifikat PHPL kedaluwarsa",
+            "label": "Sertifikat PHPL PT Bina Daya Bentala — 2018–2023",
+            "url": "https://sustainability-dashboard.com/documents/115225/123222/Sertifikat%2BPHPL%2BBDB_until%2B280623.pdf/8f2b7fbd-ec3f-e76e-f8d3-ddda5d17799e?t=1588360970891",
+            "publisher": "PT Equality Indonesia"
+          }
+        ]
+      },
+      "documentCount": 1,
+      "svlkDocumentCount": 1
+    },
+    "64,2007": {
+      "id": "64,2007",
+      "name": "PT BINA DAYA BINTARA",
+      "sk": "SK.810/MENLHK/SETJEN/HPL.0/9/2021",
+      "areaHa": 7827.74,
+      "parts": 2,
+      "svlk": {
+        "status": "certificate-verified",
+        "statusLabel": "S-PHL terverifikasi",
+        "certificateStatus": "Berlaku sampai 11 Maret 2027",
+        "scope": "PBPH di Hutan Produksi",
+        "auditType": "Penilikan PHL",
+        "auditPeriod": "19–25 November 2025",
+        "lpvi": "PT Equality Indonesia",
+        "certificateNumber": "EQC-PHL-035",
+        "validUntil": "11 Maret 2027",
+        "checkedAt": "2026-08-31",
+        "note": "Pengumuman penilikan resmi mencantumkan kepemilikan S-PHL EQC-PHL-035 dan masa berlaku 12 Maret 2021–11 Maret 2027. Keputusan hasil penilikan 2025 belum ditemukan; pengumuman audit ini bukan salinan keputusan PBPH beserta peta lampirannya.",
+        "documents": [
+          {
+            "category": "Pengumuman penilikan PHL",
+            "label": "Rencana penilikan PHL PT Bina Daya Bintara — November 2025",
+            "url": "https://silk.phl.kehutanan.go.id/app/Upload/phpl/20251104/05520f9b47e32febe002b5ccbf0dad7f.pdf",
+            "publisher": "SILK Kementerian Kehutanan"
+          }
+        ]
+      },
+      "documentCount": 0,
+      "svlkDocumentCount": 1
+    },
+    "46,2019": {
+      "id": "46,2019",
+      "name": "PT BINA DUTA LAKSANA",
+      "sk": "SK.984/MENHK/SETJEN/HPL.0/10/2021",
+      "areaHa": 25093,
+      "parts": 1,
+      "svlk": {
+        "status": "certificate-verified",
+        "statusLabel": "S-PHL terverifikasi",
+        "certificateStatus": "Aktif; berlaku sampai 25 Oktober 2027",
+        "scope": "PBPH Hutan Produksi",
+        "auditType": "Penilikan ke-2 PHL",
+        "auditPeriod": "20–28 Agustus 2025",
+        "lpvi": "PT Global Resource Sertifikasi",
+        "certificateNumber": "026/S-PHPL/GRS/X/2021",
+        "validUntil": "25 Oktober 2027",
+        "checkedAt": "2026-08-31",
+        "note": "Register klien aktif dan paket Penilikan II memverifikasi status sertifikat. Sertifikat awal yang ditemukan masih mencantumkan keputusan izin sebelumnya; legalitas pada Penilikan II telah memakai SK.984/MENLHK/SETJEN/HPL.0/10/2021 dan luas 25.093 hektar.",
+        "documents": [
+          {
+            "category": "Keputusan hasil penilikan S-PHL",
+            "label": "Penilikan ke-2 PHL PT Bina Duta Laksana — 2025",
+            "url": "https://global-resource.co.id/wp-content/uploads/2026/02/SK-Penilikan-II-Penilaian-Kinerja-PHL-PT-Bina-Duta-Laksana.pdf",
+            "publisher": "LPVI PT Global Resource Sertifikasi"
+          },
+          {
+            "category": "Sertifikat S-PHL",
+            "label": "Sertifikat PHL PT Bina Duta Laksana",
+            "url": "https://global-resource.co.id/wp-content/uploads/2026/02/S-PHL-Penilikan-II-PT-Bina-Duta-Laksana.pdf",
+            "publisher": "LPVI PT Global Resource Sertifikasi"
+          }
+        ]
+      },
+      "documentCount": 0,
+      "svlkDocumentCount": 2
+    },
+    "67,2007": {
+      "id": "67,2007",
+      "name": "PT BUKIT BATABUH SEI INDAH",
+      "sk": "SK.811/MENLHK/SETJEN/HPL.0/9/2021",
+      "areaHa": 13420,
+      "parts": 1,
+      "svlk": {
+        "status": "certificate-not-found",
+        "statusLabel": "S-PHL nasional belum ditemukan",
+        "certificateStatus": "Sertifikat IFCC tersedia; bukan S-PHL nasional",
+        "scope": "PBPH Hutan Tanaman — Kabupaten Indragiri Hulu",
+        "auditType": "Re-sertifikasi IFCC (skema berbeda)",
+        "auditPeriod": "Audit re-sertifikasi 2023",
+        "lpvi": "PT AJA Sertifikasi Indonesia (IFCC)",
+        "certificateNumber": null,
+        "validUntil": null,
+        "checkedAt": "2026-08-31",
+        "note": "Laporan IFCC memverifikasi SK.811/MENLHK/SETJEN/HPL.0/9/2021 dan luas 13.420 hektar serta sertifikat IFCC AJA/IFCC-PEFC/FMC-HT/00023/VII/2016 sampai 30 Juni 2026. IFCC adalah skema sertifikasi berbeda dan tidak digunakan sebagai bukti S-PHL nasional. Sertifikat S-PHL nasional belum ditemukan; laporan IFCC bukan salinan keputusan PBPH.",
+        "documents": [
+          {
+            "category": "Laporan sertifikasi IFCC — skema berbeda",
+            "label": "Laporan publik re-sertifikasi IFCC PT Bukit Batabuh Sei Indah — 2023",
+            "url": "https://ajaindonesia.com/PR/22.PT%20Bukit%20Batabuh%20Sei%20Indah/2023PR_PT%20BBSI%20_Recertification.pdf",
+            "publisher": "PT AJA Sertifikasi Indonesia"
+          }
+        ]
+      },
+      "documentCount": 0,
+      "svlkDocumentCount": 1
+    },
+    "365,2003": {
+      "id": "365,2003",
+      "name": "PT BUKIT BATU HUTANI ALAM",
+      "sk": "SK.812/MENLHK/SETJEN/HPL.0/9/2021",
+      "areaHa": 32208,
+      "parts": 1,
+      "svlk": {
+        "status": "certificate-verified",
+        "statusLabel": "S-PHL terverifikasi",
+        "certificateStatus": "Berlaku sampai 24 Oktober 2030",
+        "scope": "PBPH Hutan Produksi",
+        "auditType": "Re-sertifikasi PHL dan VLHH",
+        "auditPeriod": "19–28 Agustus 2024",
+        "lpvi": "PT Ayamaru Sertifikasi",
+        "certificateNumber": "SPHL.69/ASERT/LPVI-001-IDN",
+        "validUntil": "24 Oktober 2030",
+        "checkedAt": "2026-08-31",
+        "note": "Keputusan LPVI dan ringkasan hasil re-sertifikasi memverifikasi status S-PHL. Berkas audit mencantumkan rantai keputusan PBPH, tetapi bukan salinan keputusan Menteri beserta peta lampirannya.",
+        "documents": [
+          {
+            "category": "Keputusan dan ringkasan audit S-PHL",
+            "label": "Re-sertifikasi PHL PT Bukit Batu Hutani Alam — 2024",
+            "url": "https://ayamarusertifikasi.co.id/storage/dok-upload/Nnphnr8kVWPkY3yWXaYGTPP46iBOWkpYk2n8sUOu.pdf",
+            "publisher": "LPVI PT Ayamaru Sertifikasi"
+          }
+        ]
+      },
+      "documentCount": 0,
+      "svlkDocumentCount": 1
+    },
+    "14012200375810004,2024": {
+      "id": "14012200375810004,2024",
+      "name": "PT CAHAYA PERMATA INDRAGIRI",
+      "sk": "14012200375810004",
+      "areaHa": 29492,
+      "parts": 19,
+      "svlk": {
+        "status": "certificate-not-found",
+        "statusLabel": "S-PHL belum ditemukan",
+        "certificateStatus": "Belum dapat diverifikasi",
+        "scope": "PBPH jasa lingkungan, hasil hutan bukan kayu, dan pemanfaatan kawasan",
+        "auditType": "Dokumen S-PHL nasional belum ditemukan",
+        "auditPeriod": "Belum tersedia",
+        "lpvi": "Belum terverifikasi",
+        "certificateNumber": null,
+        "validUntil": null,
+        "checkedAt": "2026-08-31",
+        "note": "Laporan kinerja pemerintah mencatat SK pemberian nomor 14012200375810004 tanggal 7 Oktober 2024 dengan luas 29.492 hektar, konsisten dengan snapshot spasial. Berkas tersebut adalah laporan kinerja, bukan salinan keputusan Menteri atau peta lampirannya. S-PHL belum ditemukan pada register publik.",
+        "documents": []
+      },
+      "documentCount": 1,
+      "svlkDocumentCount": 0
+    },
+    "68,2007": {
+      "id": "68,2007",
+      "name": "PT CITRA SUMBER SEJAHTERA SEJATI",
+      "sk": "SK.813/MENLHK/SETJEN/HPL.0/9/2021",
+      "areaHa": 15360,
+      "parts": 1,
+      "svlk": {
+        "status": "certificate-verified",
+        "statusLabel": "S-PHL terverifikasi",
+        "certificateStatus": "Berlaku sampai 18 Januari 2027",
+        "scope": "PBPH di Hutan Produksi",
+        "auditType": "Penilikan PHL",
+        "auditPeriod": "19–25 November 2025",
+        "lpvi": "PT Equality Indonesia",
+        "certificateNumber": "EQC-PHL-027",
+        "validUntil": "18 Januari 2027",
+        "checkedAt": "2026-08-31",
+        "note": "Pengumuman penilikan resmi mencantumkan kepemilikan S-PHL EQC-PHL-027 dan masa berlaku 19 Januari 2021–18 Januari 2027. Keputusan hasil penilikan 2025 belum ditemukan; pengumuman audit ini bukan salinan keputusan PBPH beserta peta lampirannya.",
+        "documents": [
+          {
+            "category": "Pengumuman penilikan PHL",
+            "label": "Rencana penilikan PHL PT Citra Sumber Sejahtera Sejati — November 2025",
+            "url": "https://silk.phl.kehutanan.go.id/app/Upload/phpl/20251104/ba7f36f0102e9088a2ce05969abdb902.pdf",
+            "publisher": "SILK Kementerian Kehutanan"
+          }
+        ]
+      },
+      "documentCount": 0,
+      "svlkDocumentCount": 1
+    },
+    "443,1998": {
+      "id": "443,1998",
+      "name": "PT DIAMOND RAYA TIMBER",
+      "sk": "SK.718/MENLHK/SETJEN/HPL.0/9/2021",
+      "areaHa": 89155,
+      "parts": 1,
+      "svlk": {
+        "status": "audit-announcement-found",
+        "statusLabel": "Pengumuman audit ditemukan",
+        "certificateStatus": "S-PHL belum terverifikasi",
+        "scope": "PBPH di Hutan Produksi",
+        "auditType": "Sertifikasi/Penilikan",
+        "auditPeriod": "17–25 Mei 2024",
+        "lpvi": "PT Equality Indonesia",
+        "certificateNumber": null,
+        "validUntil": null,
+        "checkedAt": "2026-08-31",
+        "note": "Dokumen SILK yang ditemukan adalah pengumuman rencana penilaian, bukan sertifikat dan bukan keputusan PBPH.",
+        "documents": [
+          {
+            "category": "Pengumuman audit PHL",
+            "label": "Rencana penilaian PHL PT Diamond Raya Timber — Mei 2024",
+            "url": "https://silk.menlhk.go.id/app/Upload/phpl/20240503/a5fcea4ffeb58d91d74ec9267b1d63e6.pdf",
+            "publisher": "SILK Kementerian Lingkungan Hidup dan Kehutanan"
+          }
+        ]
+      },
+      "documentCount": 0,
+      "svlkDocumentCount": 1
+    },
+    "733,1997": {
+      "id": "733,1997",
+      "name": "PT EKAWANA LESTARIDHARMA",
+      "sk": "SK.825/MENLHK/SETJEN/HPL.0/9/2021",
+      "areaHa": 9300,
+      "parts": 1,
+      "svlk": {
+        "status": "certificate-not-found",
+        "statusLabel": "S-PHL belum ditemukan",
+        "certificateStatus": "Dokumen IFCC tersedia; bukan S-PHL nasional",
+        "scope": "PBPH Hutan Tanaman — Kabupaten Siak",
+        "auditType": "Penilikan IFCC (skema berbeda)",
+        "auditPeriod": "Surveillance 2 tahun 2025",
+        "lpvi": "PT ACube TIC International (IFCC)",
+        "certificateNumber": null,
+        "validUntil": null,
+        "checkedAt": "2026-08-31",
+        "note": "Laporan audit IFCC 2025 memverifikasi SK.825/MENLHK/SETJEN/HPL.0/9/2021 dan luas 10.982,56 hektar. Snapshot PBPH memuat luas 9.300 hektar. Sertifikat IFCC pada laporan berlaku sampai 2 Februari 2026 dan merupakan skema berbeda, sehingga tidak digunakan sebagai bukti S-PHL nasional. Salinan keputusan PBPH, lampiran peta, dan S-PHL nasional belum ditemukan.",
+        "documents": [
+          {
+            "category": "Laporan audit IFCC — skema berbeda",
+            "label": "Laporan publik Surveillance 2 IFCC PT Ekawana Lestaridharma — 2025",
+            "url": "https://ajaindonesia.com/PR/60.PT%20Ekawana%20Lestari%20Dharma/2025PR_PT%20ELD_Surv%202_EN.pdf",
+            "publisher": "PT ACube TIC International"
+          }
+        ]
+      },
+      "documentCount": 1,
+      "svlkDocumentCount": 1
+    },
+    "12,2003": {
+      "id": "12,2003",
+      "name": "PT ESSA INDAH TIMBER",
+      "sk": "SK.1125/MENLHK/SETJEN/HPL.0/11/2021",
+      "areaHa": 10011.78,
+      "parts": 1,
+      "svlk": {
+        "status": "certificate-verified",
+        "statusLabel": "S-PHL terverifikasi",
+        "certificateStatus": "Berlaku sampai 14 Maret 2027",
+        "scope": "PBPH di Hutan Produksi — Kabupaten Pelalawan",
+        "auditType": "Penilikan PHL",
+        "auditPeriod": "12–17 Februari 2025",
+        "lpvi": "PT Equality Indonesia",
+        "certificateNumber": "EQC-PHL-036",
+        "validUntil": "14 Maret 2027",
+        "checkedAt": "2026-08-31",
+        "note": "Pengumuman penilikan resmi mencantumkan kepemilikan S-PHL EQC-PHL-036 dan masa berlaku 15 Maret 2021–14 Maret 2027. Dokumen audit dan statistik 2022 memakai SK.1125/MENLHK/SETJEN/HPL.0/11/2021 dengan luas 9.625 hektar, sedangkan snapshot terbaru memuat 10.011,78 hektar. Perbedaan luas dipertahankan sampai dokumen perubahan atau lampiran peta ditemukan. Pengumuman audit dan statistik bukan salinan keputusan PBPH.",
+        "documents": [
+          {
+            "category": "Pengumuman penilikan PHL",
+            "label": "Rencana penilikan PHL PT Essa Indah Timber — Februari 2025",
+            "url": "https://silk.menlhk.go.id/app/Upload/phpl/20250204/45e51e9aeb896f2c4a7d48d52a5233b1.pdf",
+            "publisher": "SILK Kementerian Lingkungan Hidup dan Kehutanan"
+          }
+        ]
+      },
+      "documentCount": 1,
+      "svlkDocumentCount": 1
+    },
+    "395,2012": {
+      "id": "395,2012",
+      "name": "PT GEMILANG CIPTA NUSANTARA (UNIT I)",
+      "sk": "SK.1102/MENLHK/SETJEN/HPL.0/11/2021",
+      "areaHa": 20265,
+      "parts": 1,
+      "svlk": {
+        "status": "certificate-verified",
+        "statusLabel": "S-PHL terverifikasi",
+        "certificateStatus": "Berlaku sampai 20 Agustus 2030",
+        "scope": "PBPH Restorasi Ekosistem — Kabupaten Pelalawan",
+        "auditType": "Sertifikasi PHL dan VLHH",
+        "auditPeriod": "15–23 Juli 2024",
+        "lpvi": "PT Mutuagung Lestari Tbk",
+        "certificateNumber": "LPVI-008/MUTU/FM-036",
+        "validUntil": "20 Agustus 2030",
+        "checkedAt": "2026-08-31",
+        "note": "Keputusan dan ringkasan hasil sertifikasi memverifikasi penerbitan S-PHL dengan predikat sedang dan VLHH memenuhi. Profil ini khusus unit Kabupaten Pelalawan dan tidak digabung dengan unit Kabupaten Kepulauan Meranti. Luas penetapan areal 20.123,33 hektar pada audit dibedakan dari luas SK 20.265 hektar pada snapshot.",
+        "documents": [
+          {
+            "category": "Keputusan dan ringkasan audit S-PHL",
+            "label": "Sertifikasi PHL PT Gemilang Cipta Nusantara Kabupaten Pelalawan — 2024",
+            "url": "https://mutucertification.com/wp-content/uploads/2024/09/UPLAOD-Pengumuman-publik-hasil-Sertifikasi-PHL-RER-PT-GCN-PELALAWAN.pdf",
+            "publisher": "LPVI PT Mutuagung Lestari Tbk"
+          }
+        ]
+      },
+      "documentCount": 0,
+      "svlkDocumentCount": 1
+    },
+    "825,2013": {
+      "id": "825,2013",
+      "name": "PT GEMILANG CIPTA NUSANTARA (UNIT II)",
+      "sk": "SK.1103/MENLHK/SETJEN/HPL.0/11/2021",
+      "areaHa": 20450,
+      "parts": 1,
+      "svlk": {
+        "status": "certificate-verified",
+        "statusLabel": "S-PHL terverifikasi",
+        "certificateStatus": "Berlaku sampai 15 Agustus 2030",
+        "scope": "PBPH Restorasi Ekosistem — Kabupaten Kepulauan Meranti",
+        "auditType": "Sertifikasi PHL dan VLHH",
+        "auditPeriod": "15–29 Juli 2024",
+        "lpvi": "PT Mutuagung Lestari Tbk",
+        "certificateNumber": "LPVI-008/MUTU/FM-035",
+        "validUntil": "15 Agustus 2030",
+        "checkedAt": "2026-08-31",
+        "note": "Keputusan dan ringkasan hasil sertifikasi memverifikasi penerbitan S-PHL dengan predikat sedang dan VLHH memenuhi. Profil ini khusus unit Kabupaten Kepulauan Meranti dan tidak digabung dengan unit Kabupaten Pelalawan.",
+        "documents": [
+          {
+            "category": "Keputusan dan ringkasan audit S-PHL",
+            "label": "Sertifikasi PHL PT Gemilang Cipta Nusantara Kabupaten Kepulauan Meranti — 2024",
+            "url": "https://mutucertification.com/wp-content/uploads/2024/09/UPLOAD-Pengumuman-publik-hasil-Sertifikasi-PHL-RER-PT-GCN-MERANTI.pdf",
+            "publisher": "LPVI PT Mutuagung Lestari Tbk"
+          }
+        ]
+      },
+      "documentCount": 0,
+      "svlkDocumentCount": 1
+    },
+    "230,2014": {
+      "id": "230,2014",
+      "name": "PT GLOBAL ALAM NUSANTARA",
+      "sk": "SK.1104/MENLHK/SETJEN/HPL.0/11/2021",
+      "areaHa": 36850,
+      "parts": 1,
+      "svlk": {
+        "status": "certificate-verified",
+        "statusLabel": "S-PHL terverifikasi",
+        "certificateStatus": "Berlaku sampai 22 Agustus 2030",
+        "scope": "PBPH Restorasi Ekosistem",
+        "auditType": "Sertifikasi PHL dan VLHH",
+        "auditPeriod": "21–26 Juli 2024",
+        "lpvi": "PT Mutuagung Lestari Tbk",
+        "certificateNumber": "LPVI-008/MUTU/FM-037",
+        "validUntil": "22 Agustus 2030",
+        "checkedAt": "2026-08-31",
+        "note": "Keputusan dan ringkasan hasil sertifikasi memverifikasi penerbitan S-PHL dengan predikat sedang dan VLHH memenuhi. Dokumen mencantumkan izin dan penetapan areal, tetapi bukan salinan keputusan Menteri beserta peta lampirannya.",
+        "documents": [
+          {
+            "category": "Keputusan dan ringkasan audit S-PHL",
+            "label": "Sertifikasi PHL PT Global Alam Nusantara — 2024",
+            "url": "https://mutucertification.com/wp-content/uploads/2024/08/UPLOAD-Pengumuman-publik-hasil-Sertifikasi-PHL-RER-PT-GAN.pdf",
+            "publisher": "LPVI PT Mutuagung Lestari Tbk"
+          }
+        ]
+      },
+      "documentCount": 0,
+      "svlkDocumentCount": 1
+    },
+    "016,2003": {
+      "id": "016,2003",
+      "name": "PT HARAPANJAYA MAKMUR LESTARI",
+      "sk": "SK.807/MENLHK/SETJEN/HPL.0/9/2021",
+      "areaHa": 5086.44,
+      "parts": 1,
+      "svlk": {
+        "status": "certificate-verified",
+        "statusLabel": "S-PHL terverifikasi",
+        "certificateStatus": "Aktif; berlaku sampai 3 Januari 2030",
+        "scope": "PBPH Hutan Produksi — Kabupaten Pelalawan",
+        "auditType": "Re-sertifikasi PHL",
+        "auditPeriod": "9–15 November 2023",
+        "lpvi": "PT Ayamaru Sertifikasi",
+        "certificateNumber": "SPHL.47/ASERT/LPVI-001-IDN",
+        "validUntil": "3 Januari 2030",
+        "checkedAt": "2026-08-31",
+        "note": "Keputusan perpanjangan dan sertifikat S-PHL memverifikasi SK.807/MENLHK/SETJEN/HPL.0/9/2021, luas 5.086,44 hektar, predikat baik, dan masa berlaku 4 Januari 2024–3 Januari 2030. Paket audit ini bukan salinan keputusan PBPH beserta peta lampirannya.",
+        "documents": [
+          {
+            "category": "Keputusan dan sertifikat S-PHL",
+            "label": "Re-sertifikasi PHL PT Harapanjaya Makmur Lestari — 2023/2024",
+            "url": "https://ayamarusertifikasi.co.id/storage/audit_documents/uEltQxHAbrNOQixSmmu0PaxCbEjBmqPB0jovuUHV.pdf",
+            "publisher": "LPVI PT Ayamaru Sertifikasi"
+          }
+        ]
+      },
+      "documentCount": 0,
+      "svlkDocumentCount": 1
+    },
+    "10022200574330004, 2025": {
+      "id": "10022200574330004, 2025",
+      "name": "PT HIJAU BAKAU SENTOSA",
+      "sk": "10022200574330004",
+      "areaHa": 19719,
+      "parts": 8,
+      "svlk": {
+        "status": "certificate-not-found",
+        "statusLabel": "S-PHL belum ditemukan",
+        "certificateStatus": "Belum dapat diverifikasi",
+        "scope": "PBPH pemanfaatan jasa lingkungan",
+        "auditType": "Dokumen S-PHL nasional belum ditemukan",
+        "auditPeriod": "Belum tersedia",
+        "lpvi": "Belum terverifikasi",
+        "certificateNumber": null,
+        "validUntil": null,
+        "checkedAt": "2026-08-31",
+        "note": "Laporan pemerintah 2024 mencatat PT Hijau Bakau Sentosa pada tahap konsep SK pemberian dan proses working area. Snapshot terbaru memuat izin 10022200574330004 tahun 2025 seluas 19.719 hektar untuk pemanfaatan jasa lingkungan. Karena laporan tersebut mendahului keputusan terbaru, laporan tidak digunakan sebagai salinan SK atau bukti luas terkini. S-PHL belum ditemukan pada register publik.",
+        "documents": []
+      },
+      "documentCount": 1,
+      "svlkDocumentCount": 0
+    },
+    "017,2003": {
+      "id": "017,2003",
+      "name": "PT MADUKORO LESTARI",
+      "sk": "SK.835/MENLHK/SETJEN/HPL.0/9/2021",
+      "areaHa": 14900.7,
+      "parts": 1,
+      "svlk": {
+        "status": "certificate-verified",
+        "statusLabel": "S-PHL terverifikasi",
+        "certificateStatus": "Aktif; berlaku sampai 3 Desember 2029",
+        "scope": "PBPH Hutan Produksi — Kabupaten Pelalawan",
+        "auditType": "Re-sertifikasi PHL",
+        "auditPeriod": "9–18 Oktober 2023",
+        "lpvi": "PT Ayamaru Sertifikasi",
+        "certificateNumber": "SPHL.45/ASERT/LPVI-001-IDN",
+        "validUntil": "3 Desember 2029",
+        "checkedAt": "2026-08-31",
+        "note": "Keputusan perpanjangan, sertifikat, dan ringkasan hasil re-sertifikasi memverifikasi SK.835/MENLHK/SETJEN/HPL.0/9/2021, luas 14.900,70 hektar, predikat baik, dan masa berlaku 4 Desember 2023–3 Desember 2029. Paket audit ini bukan salinan keputusan PBPH beserta peta lampirannya.",
+        "documents": [
+          {
+            "category": "Keputusan, sertifikat, dan ringkasan S-PHL",
+            "label": "Re-sertifikasi PHL PT Madukoro Lestari — 2023",
+            "url": "https://ayamarusertifikasi.co.id/storage/audit_documents/2L51yzYdoAbcmhT3PVJbzqTLyy9W1TNkjN8HtHjQ.pdf",
+            "publisher": "LPVI PT Ayamaru Sertifikasi"
+          }
+        ]
+      },
+      "documentCount": 0,
+      "svlkDocumentCount": 1
+    },
+    "01032200340080008, 2025": {
+      "id": "01032200340080008, 2025",
+      "name": "PT MERANTI FORESTA JORE",
+      "sk": "01032200340080008",
+      "areaHa": 25248,
+      "parts": 5,
+      "svlk": {
+        "status": "certificate-not-found",
+        "statusLabel": "S-PHL belum ditemukan",
+        "certificateStatus": "Belum dapat diverifikasi",
+        "scope": "PBPH pemanfaatan jasa lingkungan",
+        "auditType": "Dokumen S-PHL nasional belum ditemukan",
+        "auditPeriod": "Belum tersedia",
+        "lpvi": "Belum terverifikasi",
+        "certificateNumber": null,
+        "validUntil": null,
+        "checkedAt": "2026-08-31",
+        "note": "Laporan pemerintah tahun 2022 hanya mencatat proses/komitmen historis PT Meranti Foresta Jore seluas 20.723 hektar. Snapshot terbaru memuat izin 01032200340080008 tahun 2025 seluas 25.248 hektar. Karena angka dan tahapnya berbeda, laporan historis tidak digunakan sebagai bukti salinan keputusan 2025. S-PHL belum ditemukan pada register publik.",
+        "documents": []
+      },
+      "documentCount": 1,
+      "svlkDocumentCount": 0
+    },
+    "101,2006": {
+      "id": "101,2006",
+      "name": "PT MITRA HUTANI JAYA",
+      "sk": "SK.1211/MENLHK/SETJEN/HPL.0/12/2021",
+      "areaHa": 9332.99,
+      "parts": 1,
+      "svlk": {
+        "status": "audit-announcement-found",
+        "statusLabel": "Status aktif pada register LPVI",
+        "certificateStatus": "Aktif pada register LPVI; masa berlaku terbaru belum tersedia",
+        "scope": "PBPH Hutan Tanaman — Kabupaten Pelalawan",
+        "auditType": "Status pada register klien aktif",
+        "auditPeriod": "Belum tersedia",
+        "lpvi": "PT Inti Multima Sertifikasi",
+        "certificateNumber": "IMS-SPHPL-008",
+        "validUntil": null,
+        "checkedAt": "2026-08-31",
+        "note": "Register resmi LPVI mencantumkan PT Mitra Hutani Jaya dan sertifikat IMS-SPHPL-008 berstatus aktif, tetapi tidak menampilkan masa berlaku terbaru. Sertifikat publik terdahulu dengan nomor yang sama berakhir 13 November 2023 dan tidak disajikan sebagai sertifikat aktif saat ini. Karena dokumen perpanjangan dan masa berlaku baru belum ditemukan, profil tidak menyimpulkan S-PHL terverifikasi penuh. Dokumen sertifikasi bukan salinan keputusan PBPH.",
+        "documents": [
+          {
+            "category": "Register klien aktif LPVI",
+            "label": "Daftar klien PHL aktif — PT Mitra Hutani Jaya",
+            "url": "https://www.intimultimasertifikasi.com/lpvi/daftar-klien-phpl/",
+            "publisher": "LPVI PT Inti Multima Sertifikasi"
+          },
+          {
+            "category": "Sertifikat PHPL sebelumnya",
+            "label": "Sertifikat PHPL PT Mitra Hutani Jaya — berakhir November 2023",
+            "url": "https://sustainability-dashboard.com/documents/115225/123197/Sertifikat%2BPHPL%2BMHJ_until%2B131123.pdf/91887536-0055-f329-1de1-a67e2fa45e6e?t=1588361083303",
+            "publisher": "LPVI PT Inti Multima Sertifikasi"
+          }
+        ]
+      },
+      "documentCount": 0,
+      "svlkDocumentCount": 2
+    },
+    "71,2007": {
+      "id": "71,2007",
+      "name": "PT MITRA KEMBANG SELARAS",
+      "sk": "SK.814/MENLHK/SETJEN/HPL.0/9/2021",
+      "areaHa": 15028,
+      "parts": 1,
+      "svlk": {
+        "status": "audit-announcement-found",
+        "statusLabel": "Pengumuman audit ditemukan",
+        "certificateStatus": "S-PHL belum terverifikasi",
+        "scope": "PBPH Hutan Tanaman — Kabupaten Indragiri Hulu",
+        "auditType": "Penilikan II PHL",
+        "auditPeriod": "25–30 Oktober 2023",
+        "lpvi": "PT Equality Indonesia",
+        "certificateNumber": null,
+        "validUntil": null,
+        "checkedAt": "2026-08-31",
+        "note": "Pengumuman resmi penilikan memverifikasi SK.814/MENLHK/SETJEN/HPL.0/9/2021 dan luas penetapan areal 15.028,09 hektar berdasarkan SK.1010/MENLHK/SETJEN/PLA.2/9/2022. Snapshot memuat 15.028 hektar. Pengumuman rencana audit tidak membuktikan hasil atau masa berlaku sertifikat. Sertifikasi IFCC yang tercatat aktif merupakan skema berbeda dan tidak digunakan sebagai bukti S-PHL nasional.",
+        "documents": [
+          {
+            "category": "Pengumuman audit PHL",
+            "label": "Rencana Penilikan II PHL PT Mitra Kembang Selaras — Oktober 2023",
+            "url": "https://silk.menlhk.go.id/app/Upload/phpl/20231019/338a8703b7e7f4de41e7496445a3cd0c.pdf",
+            "publisher": "SILK Kementerian Lingkungan Hidup dan Kehutanan"
+          }
+        ]
+      },
+      "documentCount": 1,
+      "svlkDocumentCount": 1
+    },
+    "66,2007": {
+      "id": "66,2007",
+      "name": "PT MITRA TANINUSA SEJATI",
+      "sk": "SK.826/MENLHK/SETJEN/HPL.0/9/2021",
+      "areaHa": 7480,
+      "parts": 1,
+      "svlk": {
+        "status": "certificate-not-found",
+        "statusLabel": "S-PHL belum ditemukan",
+        "certificateStatus": "Register IFCC tersedia; bukan S-PHL nasional",
+        "scope": "PBPH Hutan Tanaman — Kabupaten Pelalawan",
+        "auditType": "Register IFCC (skema berbeda)",
+        "auditPeriod": "Status register diperiksa 31 Agustus 2026",
+        "lpvi": "PT ACube TIC International (IFCC)",
+        "certificateNumber": null,
+        "validUntil": null,
+        "checkedAt": "2026-08-31",
+        "note": "Statistik resmi memverifikasi SK.826/MENLHK/SETJEN/HPL.0/9/2021 dan luas 7.480 hektar, konsisten dengan snapshot. Register PT ACube TIC International mencantumkan sertifikat IFCC aktif, tetapi IFCC merupakan skema berbeda dan tidak digunakan sebagai bukti S-PHL nasional. Salinan keputusan PBPH, lampiran peta, dan S-PHL nasional belum ditemukan.",
+        "documents": [
+          {
+            "category": "Register IFCC — skema berbeda",
+            "label": "Register publik IFCC PT ACube TIC International",
+            "url": "https://ajaindonesia.com/ifcc-pa/",
+            "publisher": "PT ACube TIC International"
+          }
+        ]
+      },
+      "documentCount": 1,
+      "svlkDocumentCount": 1
+    },
+    "16082100232240008,2024": {
+      "id": "16082100232240008,2024",
+      "name": "PT MUSTIKA ANUGRAH SUKSES",
+      "sk": "16082100232240008",
+      "areaHa": 15170,
+      "parts": 2,
+      "svlk": {
+        "status": "certificate-not-found",
+        "statusLabel": "S-PHL belum ditemukan",
+        "certificateStatus": "Belum dapat diverifikasi",
+        "scope": "PBPH jasa lingkungan dan hasil hutan bukan kayu",
+        "auditType": "Dokumen S-PHL nasional belum ditemukan",
+        "auditPeriod": "Belum tersedia",
+        "lpvi": "Belum terverifikasi",
+        "certificateNumber": null,
+        "validUntil": null,
+        "checkedAt": "2026-08-31",
+        "note": "Laporan pemerintah mencatat pemberian PBPH nomor 16082100232240008 kepada PT Mustika Anugrah Sukses pada 2024 dan proses working area. Snapshot memuat luas 15.170 hektar dengan kegiatan jasa lingkungan dan hasil hutan bukan kayu. Laporan tersebut bukan salinan keputusan Menteri atau peta lampirannya. S-PHL belum ditemukan pada register publik.",
+        "documents": []
+      },
+      "documentCount": 1,
+      "svlkDocumentCount": 0
+    },
+    "643,2019": {
+      "id": "643,2019",
+      "name": "PT MUTIARA SABUK KHATULISTIWA",
+      "sk": "SK.705/MENLHK/SETJEN/HPL.0/9/2021",
+      "areaHa": 44520,
+      "parts": 1,
+      "svlk": {
+        "status": "certificate-verified",
+        "statusLabel": "S-PHL terverifikasi",
+        "certificateStatus": "Berlaku sampai 27 Desember 2030",
+        "scope": "PBPH Hutan Produksi",
+        "auditType": "Re-sertifikasi PHL dan VLHH",
+        "auditPeriod": "29 Oktober–6 November 2024",
+        "lpvi": "PT Ayamaru Sertifikasi",
+        "certificateNumber": "SPHL.26/ASERT/LPVI-001-IDN",
+        "validUntil": "27 Desember 2030",
+        "checkedAt": "2026-08-31",
+        "note": "Keputusan LPVI, sertifikat, dan ringkasan hasil audit tersedia dalam satu berkas. Dokumen ini memverifikasi status S-PHL dan bukan salinan keputusan PBPH.",
+        "documents": [
+          {
+            "category": "Keputusan dan sertifikat S-PHL",
+            "label": "Re-sertifikasi PHL PT Mutiara Sabuk Khatulistiwa — 2024",
+            "url": "https://ayamarusertifikasi.co.id/storage/audit_documents/67F8DpEDFun1DpXDsaZjbThQNzcXyczzNhZukX0v.pdf",
+            "publisher": "LPVI PT Ayamaru Sertifikasi"
+          }
+        ]
+      },
+      "documentCount": 0,
+      "svlkDocumentCount": 1
+    },
+    "380,2009": {
+      "id": "380,2009",
+      "name": "PT NATIONAL SAGO PRIMA",
+      "sk": "927 TAHUN 2024",
+      "areaHa": 21418,
+      "parts": 1,
+      "svlk": {
+        "status": "certificate-not-found",
+        "statusLabel": "S-PHL belum ditemukan",
+        "certificateStatus": "Belum dapat diverifikasi",
+        "scope": "PBPH hasil hutan bukan kayu — sagu",
+        "auditType": "Dokumen S-PHL nasional belum ditemukan",
+        "auditPeriod": "Belum tersedia",
+        "lpvi": "Belum terverifikasi",
+        "certificateNumber": null,
+        "validUntil": null,
+        "checkedAt": "2026-08-31",
+        "note": "Areal pada snapshot merupakan PBPH pemanfaatan hasil hutan bukan kayu (sagu), bukan PBPH kayu. Penelusuran register publik LPVI/SVLK belum menemukan sertifikat S-PHL yang dapat diverifikasi; dokumen perusahaan, perkara lingkungan, atau perubahan kepemilikan tidak digunakan sebagai bukti sertifikasi.",
+        "documents": []
+      },
+      "documentCount": 0,
+      "svlkDocumentCount": 0
+    },
+    "02202028800340009,2026": {
+      "id": "02202028800340009,2026",
+      "name": "PT NUR MUTIARA RIAU",
+      "sk": "02202028800340009",
+      "areaHa": 34682,
+      "parts": 28,
+      "svlk": {
+        "status": "certificate-not-found",
+        "statusLabel": "S-PHL belum ditemukan",
+        "certificateStatus": "Belum dapat diverifikasi",
+        "scope": "PBPH pemanfaatan jasa lingkungan",
+        "auditType": "Dokumen S-PHL nasional belum ditemukan",
+        "auditPeriod": "Belum tersedia",
+        "lpvi": "Belum terverifikasi",
+        "certificateNumber": null,
+        "validUntil": null,
+        "checkedAt": "2026-08-31",
+        "note": "Snapshot spasial memuat izin 02202028800340009 dengan luas 34.682 hektar dan kegiatan pemanfaatan jasa lingkungan. Laporan pemerintah yang ditemukan hanya membuktikan proses working area sebelumnya; salinan keputusan 2026 dan S-PHL belum ditemukan pada register publik. Dokumen proses tersebut bukan salinan SK.",
+        "documents": []
+      },
+      "documentCount": 1,
+      "svlkDocumentCount": 0
+    },
+    "2,2002": {
+      "id": "2,2002",
+      "name": "PT NUSA PRIMA MANUNGGAL",
+      "sk": "843 TAHUN 2025",
+      "areaHa": 4287,
+      "parts": 1,
+      "svlk": {
+        "status": "audit-announcement-found",
+        "statusLabel": "Pengumuman audit ditemukan",
+        "certificateStatus": "Nomor sertifikat ditemukan; masa berlaku belum terverifikasi",
+        "scope": "PBPH Hutan Tanaman — Kabupaten Pelalawan",
+        "auditType": "Penilikan 2 PHL",
+        "auditPeriod": "11–16 Juni 2025",
+        "lpvi": "PT TRANsTRA PERMADA",
+        "certificateNumber": "007/LPVI-007/TRANsTRA",
+        "validUntil": null,
+        "checkedAt": "2026-08-31",
+        "note": "Pengumuman resmi Penilikan 2 PHL mencantumkan sertifikat 007/LPVI-007/TRANsTRA, SK.1126/MENLHK/SETJEN/HPL.0/11/2021, dan luas sekitar 4.298 hektar. Statistik resmi 2022 memuat 4.289 hektar. Snapshot terbaru memuat keputusan 843 Tahun 2025 dan luas 4.287 hektar. Perubahan nomor keputusan dan selisih luas dipertahankan sampai salinan keputusan 2025 serta lampiran petanya ditemukan. Pengumuman audit tidak memuat masa berlaku sertifikat.",
+        "documents": [
+          {
+            "category": "Pengumuman audit PHL",
+            "label": "Rencana Penilikan 2 PHL PT Nusa Prima Manunggal — Juni 2025",
+            "url": "https://silk.menlhk.go.id/app/Upload/phpl/20250603/9fab2e6805bf9f99aea324a50703edff.pdf",
+            "publisher": "SILK Kementerian Lingkungan Hidup dan Kehutanan"
+          }
+        ]
+      },
+      "documentCount": 1,
+      "svlkDocumentCount": 1
+    },
+    "241,2007": {
+      "id": "241,2007",
+      "name": "PT NUSA WANA RAYA",
+      "sk": "842 TAHUN 2025",
+      "areaHa": 25845,
+      "parts": 3,
+      "svlk": {
+        "status": "certificate-verified",
+        "statusLabel": "S-PHL terverifikasi",
+        "certificateStatus": "Berlaku sampai 12 Januari 2027",
+        "scope": "PBPH Hutan Produksi — budidaya tanaman",
+        "auditType": "Penilikan ke-2 PHL dan VLHH",
+        "auditPeriod": "4–12 Desember 2023",
+        "lpvi": "PT Sarbi International Certification",
+        "certificateNumber": "40-SIC-04.01",
+        "validUntil": "12 Januari 2027",
+        "checkedAt": "2026-08-31",
+        "note": "Keputusan Penilikan II menyatakan sertifikat dapat dilanjutkan. Dokumen audit masih memakai SK.1121/MENLHK/SETJEN/HPL.0/11/2021 dan luas 26.880 hektar; perubahan menjadi Keputusan Menteri Kehutanan Nomor 842 Tahun 2025 dan luas 25.845 hektar pada snapshot spasial belum ditemukan pada dokumen publik LPVI, sehingga keduanya tidak disamakan.",
+        "documents": [
+          {
+            "category": "Keputusan, resume, dan sertifikat S-PHL",
+            "label": "Penilikan ke-2 PHL PT Nusa Wana Raya — 2023",
+            "url": "https://sarbisertifikasi.com/adminwp/uploads/lampiran/1705475951_30d09fbff7f97c914d20.pdf",
+            "publisher": "LPVI PT Sarbi International Certification"
+          }
+        ]
+      },
+      "documentCount": 0,
+      "svlkDocumentCount": 1
+    },
+    "550,2012": {
+      "id": "550,2012",
+      "name": "PT NUSANTARA SENTOSA RAYA",
+      "sk": "SK.1212/MENLHK/SETJEN/HPL.0/12/2021",
+      "areaHa": 23030,
+      "parts": 3,
+      "svlk": {
+        "status": "certificate-verified",
+        "statusLabel": "S-PHL terverifikasi",
+        "certificateStatus": "Terpelihara; berlaku sampai 27 Februari 2027",
+        "scope": "PBPH Hutan Produksi",
+        "auditType": "Penilikan ke-3 PHL dan VLHH",
+        "auditPeriod": "2026",
+        "lpvi": "PT Ayamaru Sertifikasi",
+        "certificateNumber": "SPHL.35/ASERT/LPVI-001-IDN",
+        "validUntil": "27 Februari 2027",
+        "checkedAt": "2026-08-31",
+        "note": "Keputusan penilikan ke-3 tanggal 28 April 2026 menyatakan sertifikat terpelihara dan berlanjut. Dokumen ini bukan salinan keputusan Menteri beserta peta lampirannya.",
+        "documents": [
+          {
+            "category": "Keputusan hasil penilikan S-PHL",
+            "label": "Penilikan ke-3 PHL PT Nusantara Sentosa Raya — 2026",
+            "url": "https://www.ayamarusertifikasi.co.id/storage/dokumen/hasil/5kwP9GPz57KwY0RD7yUAEWdR5SKsvEl3lfO2qq4e.pdf",
+            "publisher": "LPVI PT Ayamaru Sertifikasi"
+          }
+        ]
+      },
+      "documentCount": 0,
+      "svlkDocumentCount": 1
+    },
+    "214,2007": {
+      "id": "214,2007",
+      "name": "PT PERANAP TIMBER",
+      "sk": "SK.1127/MENLHK/SETJEN/HPL.0/11/2021",
+      "areaHa": 32533.95,
+      "parts": 1,
+      "svlk": {
+        "status": "audit-announcement-found",
+        "statusLabel": "S-PHL belum terverifikasi",
+        "certificateStatus": "S-PHL nasional belum ditemukan",
+        "scope": "PBPH Hutan Produksi",
+        "auditType": "Audit IFCC ditemukan; bukan S-PHL nasional",
+        "auditPeriod": "14–17 Januari 2026",
+        "lpvi": "Belum terverifikasi untuk S-PHL",
+        "certificateNumber": null,
+        "validUntil": null,
+        "checkedAt": "2026-08-31",
+        "note": "Pengumuman yang ditemukan merupakan audit sertifikasi IFCC oleh PT ACube TIC International. IFCC berbeda dari S-PHL nasional dan tidak digunakan untuk menyimpulkan status SVLK/PHL PT Peranap Timber.",
+        "documents": [
+          {
+            "category": "Pengumuman audit IFCC",
+            "label": "Rencana sertifikasi IFCC PT Peranap Timber — Januari 2026",
+            "url": "https://ajaindonesia.com/PA/IFCC/65.PT%20Peranap%20Timber/2025WEB%20-%20Resertifikasi%20-%20PT%20PRT.pdf",
+            "publisher": "PT ACube TIC International"
+          }
+        ]
+      },
+      "documentCount": 0,
+      "svlkDocumentCount": 1
+    },
+    "249,1996": {
+      "id": "249,1996",
+      "name": "PT PERAWANG SUKSES PERKASA IND.",
+      "sk": "SK.983/MENLHK/SETJEN/HPL.0/10/2021",
+      "areaHa": 53509.97,
+      "parts": 3,
+      "svlk": {
+        "status": "certificate-verified",
+        "statusLabel": "S-PHL terverifikasi",
+        "certificateStatus": "Berlaku sampai 27 November 2030",
+        "scope": "PBPH Hutan Produksi",
+        "auditType": "Perpanjangan masa berlaku S-PHL",
+        "auditPeriod": "2024",
+        "lpvi": "PT Equality Indonesia",
+        "certificateNumber": "EQC-PHL-005",
+        "validUntil": "27 November 2030",
+        "checkedAt": "2026-08-31",
+        "note": "Sertifikat dengan kode penerbitan 2010-4.0 memverifikasi masa berlaku baru dan mencantumkan SK PBPH serta penetapan areal. Dokumen ini bukan salinan keputusan Menteri beserta peta lampirannya.",
+        "documents": [
+          {
+            "category": "Sertifikat S-PHL",
+            "label": "Sertifikat PHL PT Perawang Sukses Perkasa Industri",
+            "url": "https://sustainability-dashboard.com/documents/115225/123240/20301127_Sertifikat%2BPHPL%2BPSPI.pdf/f2bc4ef9-0d01-2f01-0512-ad3a1e5b7a2b?t=1770026009601",
+            "publisher": "LPVI PT Equality Indonesia"
+          }
+        ]
+      },
+      "documentCount": 1,
+      "svlkDocumentCount": 1
+    },
+    "104,2006": {
+      "id": "104,2006",
+      "name": "PT PUTRA RIAU PERKASA",
+      "sk": "SK.953/MENLHK/SETJEN/HPL.0/10/2021",
+      "areaHa": 15673.55,
+      "parts": 1,
+      "svlk": {
+        "status": "certificate-not-found",
+        "statusLabel": "S-PHL belum ditemukan",
+        "certificateStatus": "Belum dapat diverifikasi",
+        "scope": "PBPH Hutan Tanaman — Kabupaten Pelalawan",
+        "auditType": "Dokumen S-PHL nasional belum ditemukan",
+        "auditPeriod": "Belum tersedia",
+        "lpvi": "Belum terverifikasi",
+        "certificateNumber": null,
+        "validUntil": null,
+        "checkedAt": "2026-08-31",
+        "note": "Statistik resmi mencatat PT Putra Riau Perkasa dengan SK.953/MENLHK/SETJEN/HPL.0/10/2021 dan luas dibulatkan 15.640 hektar. Snapshot spasial memuat 15.673,55 hektar; perbedaan angka dipertahankan sampai salinan keputusan dan lampiran peta ditemukan. Statistik tersebut bukan salinan SK. S-PHL belum ditemukan pada register publik.",
+        "documents": []
+      },
+      "documentCount": 1,
+      "svlkDocumentCount": 0
+    },
+    "542,1997": {
+      "id": "542,1997",
+      "name": "PT RIAU ABADI LESTARI",
+      "sk": "SK.985/MENLHK/SETJEN/HPL.0/10/2021",
+      "areaHa": 12000,
+      "parts": 3,
+      "svlk": {
+        "status": "certificate-verified",
+        "statusLabel": "S-PHL terverifikasi",
+        "certificateStatus": "Aktif; berlaku sampai 3 November 2031",
+        "scope": "PBPH Hutan Tanaman — Provinsi Riau",
+        "auditType": "Re-sertifikasi PHL",
+        "auditPeriod": "14–22 Juli 2025",
+        "lpvi": "PT Almasentra Sertifikasi",
+        "certificateNumber": "26-PHL-024",
+        "validUntil": "3 November 2031",
+        "checkedAt": "2026-08-31",
+        "note": "Register klien LPVI memverifikasi S-PHL 26-PHL-024 berstatus aktif untuk periode 4 November 2025–3 November 2031. Pengumuman re-sertifikasi mencantumkan SK.985/MENLHK/SETJEN/HPL.0/10/2021 dan luas 15.226,20 hektar, sedangkan statistik resmi dan snapshot memuat 12.000 hektar. Perbedaan luas dipertahankan sampai salinan keputusan penetapan areal dan lampiran peta terbaru ditemukan.",
+        "documents": [
+          {
+            "category": "Register sertifikat S-PHL",
+            "label": "Register klien PHL aktif PT Almasentra Sertifikasi",
+            "url": "https://www.almasentra.com/home/klienphlnew",
+            "publisher": "LPVI PT Almasentra Sertifikasi"
+          },
+          {
+            "category": "Pengumuman re-sertifikasi PHL",
+            "label": "Rencana re-sertifikasi PHL PT Riau Abadi Lestari — Juli 2025",
+            "url": "https://silk.menlhk.go.id/app/Upload/phpl/20250630/6b36a4c7fe4a0a5a64e344b6b8656470.pdf",
+            "publisher": "SILK Kementerian Lingkungan Hidup dan Kehutanan"
+          }
+        ]
+      },
+      "documentCount": 1,
+      "svlkDocumentCount": 2
+    },
+    "180,2013": {
+      "id": "180,2013",
+      "name": "PT RIAU ANDALAN PULP & PAPER",
+      "sk": "SK.827/MENLHK/SETJEN/HPL.0/9/2021",
+      "areaHa": 338536,
+      "parts": 11,
+      "svlk": {
+        "status": "certificate-verified",
+        "statusLabel": "S-PHL terverifikasi",
+        "certificateStatus": "Berlaku sampai 19 Oktober 2030",
+        "scope": "PBPH Hutan Produksi",
+        "auditType": "Re-sertifikasi PHL dan VLHH",
+        "auditPeriod": "19 Agustus–5 September 2024",
+        "lpvi": "PT Mutuagung Lestari Tbk",
+        "certificateNumber": "LPVI-008/MUTU/FM-001",
+        "validUntil": "19 Oktober 2030",
+        "checkedAt": "2026-08-31",
+        "note": "Keputusan dan ringkasan hasil re-sertifikasi memverifikasi status S-PHL. Berkas audit mencantumkan keputusan PBPH, tetapi bukan salinan keputusan Menteri beserta peta lampirannya.",
+        "documents": [
+          {
+            "category": "Keputusan dan ringkasan audit S-PHL",
+            "label": "Re-sertifikasi PHL PT Riau Andalan Pulp & Paper — 2024",
+            "url": "https://mutucertification.com/wp-content/uploads/2024/10/UPLOAD-Pengumuman-publik-hasil-RESERTIFIKASI-PHL-PT-RAPP-1.pdf",
+            "publisher": "LPVI PT Mutuagung Lestari Tbk"
+          }
+        ]
+      },
+      "documentCount": 0,
+      "svlkDocumentCount": 1
+    },
+    "61,2006": {
+      "id": "61,2006",
+      "name": "PT RIAU INDO AGROPALMA",
+      "sk": "SK.1128/MENLHK/SETJEN/HPL.0/11/2021",
+      "areaHa": 10113.91,
+      "parts": 1,
+      "svlk": {
+        "status": "certificate-not-found",
+        "statusLabel": "S-PHL belum ditemukan",
+        "certificateStatus": "Sertifikat IFCC tersedia; bukan S-PHL nasional",
+        "scope": "PBPH Hutan Tanaman — Provinsi Riau",
+        "auditType": "Register IFCC (skema berbeda)",
+        "auditPeriod": "Register diperiksa 31 Agustus 2026",
+        "lpvi": "PT Bureau Veritas Indonesia (IFCC)",
+        "certificateNumber": null,
+        "validUntil": null,
+        "checkedAt": "2026-08-31",
+        "note": "Statistik resmi memverifikasi SK.1128/MENLHK/SETJEN/HPL.0/11/2021 dan luas dibulatkan 10.114 hektar, konsisten dengan snapshot 10.113,91 hektar. Register IFCC mencantumkan sertifikat IDN23200010 sampai 27 Februari 2028 untuk area tersertifikasi 7.371,65 hektar. IFCC merupakan skema berbeda dan tidak digunakan sebagai bukti S-PHL nasional; salinan keputusan PBPH, lampiran peta, dan S-PHL nasional belum ditemukan.",
+        "documents": [
+          {
+            "category": "Register IFCC — skema berbeda",
+            "label": "Daftar pemegang sertifikat Pengelolaan Hutan Lestari IFCC",
+            "url": "https://ifcc-ksk.org/documents/PEMEGANG%20SERTIFIKAT%20PHL.pdf",
+            "publisher": "Indonesian Forestry Certification Cooperation"
+          }
+        ]
+      },
+      "documentCount": 1,
+      "svlkDocumentCount": 1
+    },
+    "361,1996": {
+      "id": "361,1996",
+      "name": "PT RIMBA LAZUARDI",
+      "sk": "841 TAHUN 2025",
+      "areaHa": 19419,
+      "parts": 12,
+      "svlk": {
+        "status": "certificate-verified",
+        "statusLabel": "S-PHL terverifikasi",
+        "certificateStatus": "Berlaku sampai 2 Maret 2027",
+        "scope": "PBPH di Hutan Produksi",
+        "auditType": "Penilikan PHL",
+        "auditPeriod": "17–23 Januari 2024",
+        "lpvi": "PT Equality Indonesia",
+        "certificateNumber": "034.4/EQC-PHPL/III/2021",
+        "validUntil": "2 Maret 2027",
+        "checkedAt": "2026-08-31",
+        "note": "Pengumuman penilikan resmi tahun 2024 mencantumkan kepemilikan S-PHL, nomor, ruang lingkup, dan masa berlaku sertifikat. Berkas keputusan hasil penilikan individual belum ditemukan; pengumuman audit ini bukan salinan keputusan PBPH.",
+        "documents": [
+          {
+            "category": "Pengumuman penilikan PHL",
+            "label": "Rencana penilikan PHL PT Rimba Lazuardi — 2024",
+            "url": "https://silk.menlhk.go.id/app/Upload/phpl/20240110/146e0a7acfcb04ab5ce957230ed84c89.pdf",
+            "publisher": "SILK Kementerian Lingkungan Hidup dan Kehutanan"
+          }
+        ]
+      },
+      "documentCount": 0,
+      "svlkDocumentCount": 1
+    },
+    "552,2006": {
+      "id": "552,2006",
+      "name": "PT RIMBA MANDAU LESTARI",
+      "sk": "SK.828/MENLHK/SETJEN/HPL.0/9/2021",
+      "areaHa": 5632.52,
+      "parts": 1,
+      "svlk": {
+        "status": "certificate-expired",
+        "statusLabel": "S-PHL habis masa berlaku",
+        "certificateStatus": "Berakhir 14 Oktober 2024",
+        "scope": "PBPH Hutan Tanaman — Kabupaten Siak",
+        "auditType": "Penilikan ke-4 PHL",
+        "auditPeriod": "9–16 Oktober 2023",
+        "lpvi": "PT Ayamaru Sertifikasi",
+        "certificateNumber": "SPHL.24/ASERT/LPVI-001-IDN",
+        "validUntil": "14 Oktober 2024",
+        "checkedAt": "2026-08-31",
+        "note": "Register LPVI mencantumkan S-PHL SPHL.24/ASERT/LPVI-001-IDN dengan status habis masa berlaku pada 14 Oktober 2024. Keputusan Penilikan ke-4 tahun 2023 hanya mempertahankan sertifikat sampai tanggal tersebut; bukti re-sertifikasi baru belum ditemukan. Statistik resmi mencatat luas 5.630 hektar, sedangkan snapshot memuat 5.632,52 hektar.",
+        "documents": [
+          {
+            "category": "Register dan hasil audit S-PHL",
+            "label": "Register PHL dan hasil Penilikan ke-4 PT Rimba Mandau Lestari",
+            "url": "https://ayamarusertifikasi.co.id/pengumuman-phl?jenis_audit%5B0%5D=Penilikan+Ke-1&jenis_audit%5B1%5D=Penilikan+Ke-2&jenis_audit%5B2%5D=Penilikan+Ke-3&jenis_audit%5B3%5D=Penilikan+Ke-4&sort=desc",
+            "publisher": "LPVI PT Ayamaru Sertifikasi"
+          },
+          {
+            "category": "Keputusan hasil penilikan S-PHL",
+            "label": "Penilikan ke-4 PHL PT Rimba Mandau Lestari — 2023",
+            "url": "https://www.ayamarusertifikasi.co.id/storage/audit_documents/6Ch6iasNxjxq4iYCWEALQvhTwINiRx1Tl1oXzKYc.pdf",
+            "publisher": "LPVI PT Ayamaru Sertifikasi"
+          }
+        ]
+      },
+      "documentCount": 1,
+      "svlkDocumentCount": 2
+    },
+    "65,2007": {
+      "id": "65,2007",
+      "name": "PT RIMBA MUTIARA PERMAI",
+      "sk": "SK.715/MENLHK/SETJEN/HPL.0/9/2021",
+      "areaHa": 8030,
+      "parts": 1,
+      "svlk": {
+        "status": "certificate-not-found",
+        "statusLabel": "S-PHL belum ditemukan",
+        "certificateStatus": "Dokumen IFCC tersedia; bukan S-PHL nasional",
+        "scope": "PBPH Hutan Tanaman — Kabupaten Pelalawan",
+        "auditType": "Surveillance 2 IFCC (skema berbeda)",
+        "auditPeriod": "Tahun 2025",
+        "lpvi": "PT ACube TIC International (IFCC)",
+        "certificateNumber": null,
+        "validUntil": null,
+        "checkedAt": "2026-08-31",
+        "note": "Statistik resmi, snapshot, dan laporan IFCC konsisten mencatat SK.715/MENLHK/SETJEN/HPL.0/9/2021 serta luas 8.030 hektar. Laporan IFCC memuat sertifikat AJA/IFCC-PEFC/FMC-HT/00061/I/2024 sampai 2 Februari 2026, sementara register IFCC kini menandai perusahaan aktif tanpa menampilkan dokumen sertifikat pengganti. IFCC merupakan skema berbeda dan tidak digunakan sebagai bukti S-PHL nasional; S-PHL nasional belum ditemukan.",
+        "documents": [
+          {
+            "category": "Laporan audit IFCC — skema berbeda",
+            "label": "Laporan publik Surveillance 2 IFCC PT Rimba Mutiara Permai — 2025",
+            "url": "https://ajaindonesia.com/PR/62.PT%20Rimba%20Mutiara%20Permai/2025PR_PT%20RMP_Surv%202_EN.pdf",
+            "publisher": "PT ACube TIC International"
+          },
+          {
+            "category": "Register IFCC — skema berbeda",
+            "label": "Register publik IFCC PT ACube TIC International",
+            "url": "https://ajaindonesia.com/ifcc-pa/",
+            "publisher": "PT ACube TIC International"
+          }
+        ]
+      },
+      "documentCount": 1,
+      "svlkDocumentCount": 2
+    },
+    "598,1996": {
+      "id": "598,1996",
+      "name": "PT RIMBA PERANAP INDAH",
+      "sk": "844 TAHUN 2025",
+      "areaHa": 14039,
+      "parts": 15,
+      "svlk": {
+        "status": "certificate-not-found",
+        "statusLabel": "S-PHL belum ditemukan",
+        "certificateStatus": "Dokumen IFCC tersedia; bukan S-PHL nasional",
+        "scope": "PBPH Hutan Tanaman — Provinsi Riau",
+        "auditType": "Re-sertifikasi IFCC (skema berbeda)",
+        "auditPeriod": "Tahun 2022",
+        "lpvi": "PT ACube TIC International (IFCC)",
+        "certificateNumber": null,
+        "validUntil": null,
+        "checkedAt": "2026-08-31",
+        "note": "Statistik resmi mencatat SK.723/MENLHK/SETJEN/HPL.0/9/2021 dan luas 14.434 hektar, sedangkan snapshot terbaru memuat Keputusan 844 Tahun 2025 dan luas 14.039 hektar. Salinan keputusan 2025 dan S-PHL nasional belum ditemukan. Laporan serta register IFCC dipisahkan karena merupakan skema sertifikasi berbeda.",
+        "documents": [
+          {
+            "category": "Laporan audit IFCC — skema berbeda",
+            "label": "Laporan publik re-sertifikasi IFCC PT Rimba Peranap Indah — 2022",
+            "url": "https://ajaindonesia.com/PR/26.PT%20Rimba%20Peranap%20Indah/2022PR_PT_RPI_Reser.pdf",
+            "publisher": "PT ACube TIC International"
+          },
+          {
+            "category": "Register IFCC — skema berbeda",
+            "label": "Register publik IFCC PT ACube TIC International",
+            "url": "https://ajaindonesia.com/ifcc-pa/",
+            "publisher": "PT ACube TIC International"
+          }
+        ]
+      },
+      "documentCount": 1,
+      "svlkDocumentCount": 2
+    },
+    "641,2018": {
+      "id": "641,2018",
+      "name": "PT RUAS UTAMA JAYA",
+      "sk": "SK.986/MENLHK/SETJEN/HPL.0/10/2021",
+      "areaHa": 39783.59,
+      "parts": 2,
+      "svlk": {
+        "status": "certificate-verified",
+        "statusLabel": "S-PHL terverifikasi",
+        "certificateStatus": "Terpelihara; berlaku sampai 9 April 2029",
+        "scope": "PBPH Hutan Produksi",
+        "auditType": "Penilikan ke-1 PHL dan VLHH",
+        "auditPeriod": "17–24 Februari 2025",
+        "lpvi": "PT Ayamaru Sertifikasi",
+        "certificateNumber": "SPHL.64/ASERT/LPVI-001-IDN",
+        "validUntil": "9 April 2029",
+        "checkedAt": "2026-08-31",
+        "note": "Keputusan hasil penilikan menyatakan sertifikat terpelihara dan berlanjut. Berkas audit mencantumkan rantai keputusan PBPH, tetapi bukan salinan keputusan Menteri beserta peta lampirannya.",
+        "documents": [
+          {
+            "category": "Keputusan hasil penilikan S-PHL",
+            "label": "Penilikan ke-1 PHL PT Ruas Utama Jaya — 2025",
+            "url": "https://www.ayamarusertifikasi.co.id/storage/audit_documents/vY4ZHrdc1uvUmTTCGEs6nCWVDigT7nj7wPmikKOQ.pdf",
+            "publisher": "LPVI PT Ayamaru Sertifikasi"
+          }
+        ]
+      },
+      "documentCount": 1,
+      "svlkDocumentCount": 1
+    },
+    "244,2000": {
+      "id": "244,2000",
+      "name": "PT SATRIA PERKASA AGUNG",
+      "sk": "SK.725/MENLHK/SETJEN/HPL.0/9/2021",
+      "areaHa": 77702,
+      "parts": 3,
+      "svlk": {
+        "status": "certificate-expired",
+        "statusLabel": "Masa berlaku berakhir",
+        "certificateStatus": "Berakhir 12 November 2024",
+        "scope": "PBPH Hutan Produksi",
+        "auditType": "Sertifikat PHL yang terakhir ditemukan",
+        "auditPeriod": "Belum tersedia",
+        "lpvi": "PT Equality Indonesia",
+        "certificateNumber": "EQC-PHL-004",
+        "validUntil": "12 November 2024",
+        "checkedAt": "2026-08-31",
+        "note": "Sertifikat ini khusus areal PT Satria Perkasa Agung seluas 77.702 hektar. Statusnya tidak digabung dengan unit Serapung atau KTH Sinar Merawang. Keputusan perpanjangan untuk areal ini belum ditemukan.",
+        "documents": [
+          {
+            "category": "Sertifikat S-PHL sebelumnya",
+            "label": "Sertifikat PHL PT Satria Perkasa Agung — berakhir November 2024",
+            "url": "https://sustainability-dashboard.com/documents/115225/123185/29%2B%2BSPA_Sertifikat%2BPHL.pdf/18f2739b-55b0-8795-1a11-a3b39893524b?t=1722767524818",
+            "publisher": "LPVI PT Equality Indonesia"
+          }
+        ]
+      },
+      "documentCount": 0,
+      "svlkDocumentCount": 1
+    },
+    "19,2007": {
+      "id": "19,2007",
+      "name": "PT SATRIA PERKASA AGUNG (KTH-SM)",
+      "sk": "SK.135/MENLHK/SETJEN/HPL.0/2/2022",
+      "areaHa": 10070,
+      "parts": 1,
+      "svlk": {
+        "status": "certificate-verified",
+        "statusLabel": "S-PHL terverifikasi",
+        "certificateStatus": "Berlaku sampai 11 November 2031",
+        "scope": "PBPH Hutan Produksi — Kabupaten Pelalawan dan Indragiri Hilir",
+        "auditType": "Re-sertifikasi PHL",
+        "auditPeriod": "10–18 September 2025",
+        "lpvi": "PT Almasentra Sertifikasi",
+        "certificateNumber": "28-PHL-024",
+        "validUntil": "11 November 2031",
+        "checkedAt": "2026-08-31",
+        "note": "Sertifikat baru memverifikasi SK.135/MENLHK/SETJEN/HPL.0/2/2022, luas 10.070 hektar, predikat baik, dan masa berlaku sampai 11 November 2031. Unit KTH Sinar Merawang tidak digabung dengan PBPH utama PT Satria Perkasa Agung maupun Unit Serapung.",
+        "documents": [
+          {
+            "category": "Sertifikat S-PHL",
+            "label": "Sertifikat PHL PT Satria Perkasa Agung–KTH Sinar Merawang — 2025",
+            "url": "https://sustainability-dashboard.com/documents/115225/123194/20311111_Sertifikat%2BPHPL%2BSPA%2BKTHSM.pdf/e50a4801-e634-24d9-2870-32011a60b397?t=1769656306056",
+            "publisher": "PT Almasentra Sertifikasi"
+          },
+          {
+            "category": "Pengumuman re-sertifikasi PHL",
+            "label": "Rencana re-sertifikasi PHL PT SPA–KTH Sinar Merawang — 2025",
+            "url": "https://silk.menlhk.go.id/app/Upload/vlk/20250911/733cd953e95b89ca96bf67d1bdfd02c6.pdf",
+            "publisher": "SILK Kementerian Lingkungan Hidup dan Kehutanan"
+          }
+        ]
+      },
+      "documentCount": 0,
+      "svlkDocumentCount": 2
+    },
+    "102,2006": {
+      "id": "102,2006",
+      "name": "PT SATRIA PERKASA AGUNG (SERAPUNG)",
+      "sk": "SK.134/MENLHK/SETJEN/HPL.0/2/2022",
+      "areaHa": 11830,
+      "parts": 1,
+      "svlk": {
+        "status": "certificate-verified",
+        "statusLabel": "S-PHL terverifikasi",
+        "certificateStatus": "Berlaku sampai 24 Oktober 2030",
+        "scope": "PBPH di Hutan Produksi — Unit Serapung",
+        "auditType": "Sertifikasi PHL",
+        "auditPeriod": "Ditetapkan 15 Oktober 2024",
+        "lpvi": "PT Equality Indonesia",
+        "certificateNumber": "EQC-PHL-001",
+        "validUntil": "24 Oktober 2030",
+        "checkedAt": "2026-08-31",
+        "note": "Sertifikat S-PHL khusus PT Satria Perkasa Agung Unit Serapung mencantumkan SK.134/MENLHK/SETJEN/HPL.0/2/2022, predikat baik, dan masa berlaku 25 Oktober 2024–24 Oktober 2030. Sertifikat memakai luas penetapan areal 11.927,15 hektar berdasarkan SK.60/Menhut-II/2013, sedangkan snapshot PBPH memuat luas SK 11.830 hektar. Unit Serapung tidak digabung dengan izin utama PT Satria Perkasa Agung atau unit KTH Sinar Merawang. Sertifikat PHL bukan salinan keputusan PBPH.",
+        "documents": [
+          {
+            "category": "Sertifikat S-PHL",
+            "label": "Sertifikat PHL PT Satria Perkasa Agung Unit Serapung — 2024–2030",
+            "url": "https://sustainability-dashboard.com/documents/115225/123188/20301024_Sertifikat%2BPHPL%2BSPA%2BSerapung.pdf/1807402f-04d6-f22c-9620-8821f75c2f1c?t=1769656008478",
+            "publisher": "LPVI PT Equality Indonesia"
+          }
+        ]
+      },
+      "documentCount": 0,
+      "svlkDocumentCount": 1
+    },
+    "366,2003": {
+      "id": "366,2003",
+      "name": "PT SEKATO PRATAMA MAKMUR",
+      "sk": "SK.726/MENLHK/SETJEN/HPL.0/9/2021",
+      "areaHa": 46062.2,
+      "parts": 2,
+      "svlk": {
+        "status": "certificate-verified",
+        "statusLabel": "S-PHL terverifikasi",
+        "certificateStatus": "Berlaku sampai 29 September 2030",
+        "scope": "PBPH Hutan Produksi",
+        "auditType": "Perpanjangan masa berlaku S-PHL",
+        "auditPeriod": "28 Agustus–4 September 2024",
+        "lpvi": "PT Equality Indonesia",
+        "certificateNumber": "EQC-PHL-045",
+        "validUntil": "29 September 2030",
+        "checkedAt": "2026-08-31",
+        "note": "Sertifikat terbaru ditautkan pada profil pemasok publik dan menggantikan masa berlaku sebelumnya yang berakhir 29 September 2024. Dokumen ini bukan salinan keputusan Menteri beserta peta lampirannya.",
+        "documents": [
+          {
+            "category": "Sertifikat S-PHL",
+            "label": "Sertifikat PHL PT Sekato Pratama Makmur",
+            "url": "https://sustainability-dashboard.com/documents/115225/123234/20300929_Sertifikat%2BPHPL%2BSPM.pdf/0c630449-89cd-b256-41c4-a4ebb8b03a53?t=1770026506807",
+            "publisher": "LPVI PT Equality Indonesia"
+          },
+          {
+            "category": "Pengumuman audit PHL",
+            "label": "Rencana penilaian PHL PT Sekato Pratama Makmur — 2024",
+            "url": "https://silk.menlhk.go.id/app/Upload/phpl/20240808/67c606f03c1b3a262b2f2cda768fd91a.pdf",
+            "publisher": "SILK Kementerian Lingkungan Hidup dan Kehutanan"
+          }
+        ]
+      },
+      "documentCount": 0,
+      "svlkDocumentCount": 2
+    },
+    "5,2002": {
+      "id": "5,2002",
+      "name": "PT SELARAS ABADI UTAMA",
+      "sk": "SK.1122/MENLHK/SETJEN/HPL.0/11/2021",
+      "areaHa": 13600,
+      "parts": 2,
+      "svlk": {
+        "status": "certificate-verified",
+        "statusLabel": "S-PHL terverifikasi",
+        "certificateStatus": "Berlaku sampai 21 Juli 2032",
+        "scope": "PBPH Hutan Produksi — Kabupaten Pelalawan",
+        "auditType": "Re-sertifikasi PHL",
+        "auditPeriod": "4–13 Mei 2026",
+        "lpvi": "PT Mutuagung Lestari Tbk",
+        "certificateNumber": "LPVI-008/MUTU/FM-022",
+        "validUntil": "21 Juli 2032",
+        "checkedAt": "2026-08-31",
+        "note": "Keputusan hasil re-sertifikasi memverifikasi SK.1122/MENLHK/SETJEN/HPL.0/11/2021, luas 13.600 hektar, predikat baik, dan perpanjangan masa berlaku sertifikat sampai 21 Juli 2032.",
+        "documents": [
+          {
+            "category": "Keputusan hasil re-sertifikasi S-PHL",
+            "label": "Hasil re-sertifikasi PHL PT Selaras Abadi Utama — 2026",
+            "url": "https://mutucertification.com/wp-content/uploads/2026/06/UPLOAD-Pengumuman-publik-hasil-RESERTIFIKASI-PHL-PT-SAU.pdf",
+            "publisher": "LPVI PT Mutuagung Lestari Tbk"
+          }
+        ]
+      },
+      "documentCount": 0,
+      "svlkDocumentCount": 1
+    },
+    "22,2007": {
+      "id": "22,2007",
+      "name": "PT SERAYA SUMBER LESTARI",
+      "sk": "SK.716/MENLHK/SETJEN/HPL.0/9/2021",
+      "areaHa": 19685.77,
+      "parts": 1,
+      "svlk": {
+        "status": "audit-announcement-found",
+        "statusLabel": "Pengumuman audit ditemukan",
+        "certificateStatus": "S-PHL belum terverifikasi",
+        "scope": "PBPH Hutan Tanaman — Kabupaten Siak",
+        "auditType": "Re-sertifikasi PHPL jarak jauh",
+        "auditPeriod": "14–19 Januari 2021",
+        "lpvi": "PT Equality Indonesia",
+        "certificateNumber": null,
+        "validUntil": null,
+        "checkedAt": "2026-08-31",
+        "note": "Pengumuman resmi hanya membuktikan rencana re-sertifikasi tahun 2021 dan tidak memuat keputusan hasil audit, nomor sertifikat baru, atau masa berlaku. Sertifikasi IFCC yang ditemukan merupakan skema berbeda dan tidak digunakan sebagai bukti S-PHL nasional. Dokumen audit bukan salinan keputusan PBPH.",
+        "documents": [
+          {
+            "category": "Pengumuman audit PHPL",
+            "label": "Rencana re-sertifikasi PHPL PT Seraya Sumber Lestari — 2021",
+            "url": "https://silk.menlhk.go.id/app/Upload/phpl/20201230/c6f5888d96e646fc66a9535e51b210b4.pdf",
+            "publisher": "SILK Kementerian Lingkungan Hidup dan Kehutanan"
+          }
+        ]
+      },
+      "documentCount": 0,
+      "svlkDocumentCount": 1
+    },
+    "162,2014": {
+      "id": "162,2014",
+      "name": "PT SINAR MUTIARA NUSANTARA",
+      "sk": "SK.1105/MENLHK/SETJEN/HPL.0/11/2021",
+      "areaHa": 32830,
+      "parts": 1,
+      "svlk": {
+        "status": "certificate-verified",
+        "statusLabel": "S-PHL terverifikasi",
+        "certificateStatus": "Berlaku sampai 26 Agustus 2030",
+        "scope": "PBPH Restorasi Ekosistem",
+        "auditType": "Sertifikasi PHL dan VLHH",
+        "auditPeriod": "27–29 Juli 2024",
+        "lpvi": "PT Mutuagung Lestari Tbk",
+        "certificateNumber": "LPVI-008/MUTU/FM-038",
+        "validUntil": "26 Agustus 2030",
+        "checkedAt": "2026-08-31",
+        "note": "Keputusan dan ringkasan hasil sertifikasi memverifikasi penerbitan S-PHL dengan predikat sedang dan VLHH memenuhi. Dokumen mencantumkan izin dan penetapan areal, tetapi bukan salinan keputusan Menteri beserta peta lampirannya.",
+        "documents": [
+          {
+            "category": "Keputusan dan ringkasan audit S-PHL",
+            "label": "Sertifikasi PHL PT Sinar Mutiara Nusantara — 2024",
+            "url": "https://mutucertification.com/wp-content/uploads/2024/09/UPLOAD-Pengumuman-publik-hasil-Sertifikasi-PHL-RER-PT-SMN.pdf",
+            "publisher": "LPVI PT Mutuagung Lestari Tbk"
+          }
+        ]
+      },
+      "documentCount": 0,
+      "svlkDocumentCount": 1
+    },
+    "71,2001": {
+      "id": "71,2001",
+      "name": "PT SUNTARA GAJAPATI",
+      "sk": "SK.952/MENLHK/SETJEN/HPL.0/10/2021",
+      "areaHa": 35644.39,
+      "parts": 1,
+      "svlk": {
+        "status": "audit-announcement-found",
+        "statusLabel": "Status aktif pada register LPVI",
+        "certificateStatus": "Aktif sampai 18 Januari 2032; nomor baru belum tersedia",
+        "scope": "PBPH Hutan Produksi",
+        "auditType": "Status pada register klien aktif",
+        "auditPeriod": "Belum tersedia",
+        "lpvi": "PT Global Resource Sertifikasi",
+        "certificateNumber": null,
+        "validUntil": "18 Januari 2032",
+        "checkedAt": "2026-08-31",
+        "note": "Register LPVI menyatakan sertifikasi aktif untuk periode 19 Januari 2026–18 Januari 2032, tetapi nomor sertifikat baru belum ditampilkan. PDF yang masih ditautkan profil pemasok adalah sertifikat lama PT TUV Rheinland Indonesia yang berakhir 18 Januari 2026 dan tidak digunakan sebagai bukti sertifikat aktif.",
+        "documents": [
+          {
+            "category": "Register klien aktif LPVI",
+            "label": "Direktori klien PHL — PT Suntara Gajapati",
+            "url": "https://global-resource.co.id/direktori-klien/direktori-klien-phpl/",
+            "publisher": "LPVI PT Global Resource Sertifikasi"
+          },
+          {
+            "category": "Sertifikat S-PHL sebelumnya",
+            "label": "Sertifikat PHL PT Suntara Gajapati — berakhir Januari 2026",
+            "url": "https://sustainability-dashboard.com/documents/115225/123231/20260118_Sertifikat%2BPHPL%2BSGP.pdf/36521428-14d9-a691-21f0-f30f6b9abf42?t=1770026596839",
+            "publisher": "PT TUV Rheinland Indonesia"
+          }
+        ]
+      },
+      "documentCount": 1,
+      "svlkDocumentCount": 2
+    },
+    "747,2014": {
+      "id": "747,2014",
+      "name": "PT THE BEST ONE UNITIMBER",
+      "sk": "SK.1106/MENLHK/SETJEN/HPL.0/11/2021",
+      "areaHa": 39412,
+      "parts": 1,
+      "svlk": {
+        "status": "certificate-verified",
+        "statusLabel": "S-PHL terverifikasi",
+        "certificateStatus": "Berlaku sampai 29 Agustus 2030",
+        "scope": "PBPH Restorasi Ekosistem",
+        "auditType": "Sertifikasi PHL dan VLHH",
+        "auditPeriod": "30 Juli–3 Agustus 2024",
+        "lpvi": "PT Mutuagung Lestari Tbk",
+        "certificateNumber": "LPVI-008/MUTU/FM-039",
+        "validUntil": "29 Agustus 2030",
+        "checkedAt": "2026-08-31",
+        "note": "Keputusan dan ringkasan hasil sertifikasi memverifikasi penerbitan S-PHL dengan predikat sedang dan VLHH memenuhi. Dokumen ini bukan salinan keputusan Menteri beserta peta lampirannya.",
+        "documents": [
+          {
+            "category": "Keputusan dan ringkasan audit S-PHL",
+            "label": "Sertifikasi PHL PT The Best One Unitimber — 2024",
+            "url": "https://mutucertification.com/wp-content/uploads/2024/10/UPLOAD-Pengumuman-publik-hasil-Sertifikasi-PHL-RER-PT-TBO.pdf",
+            "publisher": "LPVI PT Mutuagung Lestari Tbk"
+          }
+        ]
+      },
+      "documentCount": 0,
+      "svlkDocumentCount": 1
+    },
+    "362,2007": {
+      "id": "362,2007",
+      "name": "PT WANANUGRAHA BIMALESTARI",
+      "sk": "SK.136/MENLHK/SETJEN/HPL.0/2/2022",
+      "areaHa": 7465,
+      "parts": 1,
+      "svlk": {
+        "status": "certificate-verified",
+        "statusLabel": "S-PHL terverifikasi",
+        "certificateStatus": "Terpelihara; berlaku sampai 3 Agustus 2027",
+        "scope": "PBPH Hutan Produksi — Kabupaten Kampar",
+        "auditType": "Penilikan ke-2 PHL",
+        "auditPeriod": "23 Juni–1 Juli 2025",
+        "lpvi": "PT Mutuagung Lestari Tbk",
+        "certificateNumber": "LPVI-008/MUTU/FM-003",
+        "validUntil": "3 Agustus 2027",
+        "checkedAt": "2026-08-31",
+        "note": "Keputusan Penilikan ke-2 memverifikasi SK.136/MENLHK/SETJEN/HPL.0/2/2022, luas 7.465 hektar, predikat baik, dan sertifikat tetap berlaku sampai 3 Agustus 2027.",
+        "documents": [
+          {
+            "category": "Keputusan hasil penilikan S-PHL",
+            "label": "Penilikan ke-2 PHL PT Wananugraha Bimalestari — 2025",
+            "url": "https://mutucertification.com/wp-content/uploads/2025/07/UPLOAD-Pengumuman-publik-hasil-S2-PHL-PT-WBL.pdf",
+            "publisher": "LPVI PT Mutuagung Lestari Tbk"
+          }
+        ]
+      },
+      "documentCount": 0,
+      "svlkDocumentCount": 1
+    }
+  }
+}

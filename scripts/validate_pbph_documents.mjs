@@ -17,4 +17,6 @@ for(const[id,profile]of Object.entries(registry.profiles||{})){
   if(svlk.status==="certificate-verified"&&(!svlk.certificateNumber||!svlk.validUntil||!svlk.lpvi||(svlk.documents||[]).length===0))throw new Error(`${id}: sertifikat terverifikasi memerlukan nomor, masa berlaku, LPVI, dan dokumen sumber.`);
   for(const document of svlk.documents||[]){if(!/^https:\/\//.test(document.url||""))throw new Error(`${id}: dokumen SVLK wajib memakai URL HTTPS publik.`)}
 }
+const missing=[...ids].filter(id=>!(registry.profiles||{})[id]);
+if(missing.length)throw new Error(`${missing.length} PBPH_ID belum memiliki entri register dokumen: ${missing.join(", ")}`);
 console.log(`PBPH document registry valid: ${Object.keys(registry.profiles||{}).length} profile(s).`);

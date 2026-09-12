@@ -13,6 +13,9 @@ on:
       - "scripts/validate_smoke_annotations.mjs"
       - "scripts/build_smoke_validation_status.mjs"
       - "scripts/validate_smoke_validation_status.mjs"
+      - "data/pbph-documents.json"
+      - "data/PBPH_RIAU_052026.geojson"
+      - "scripts/validate_pbph_documents.mjs"
       - ".github/workflows/validate-data-sources.yml"
   workflow_dispatch:
 
@@ -28,3 +31,4 @@ jobs:
       - run: node scripts/validate_smoke_annotations.mjs
       - run: node scripts/build_smoke_validation_status.mjs
       - run: node scripts/validate_smoke_validation_status.mjs
+      - run: node scripts/validate_pbph_documents.mjs

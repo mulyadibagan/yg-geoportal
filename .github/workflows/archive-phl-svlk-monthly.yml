@@ -1,0 +1,52 @@
+name: Archive Monthly PHL and SVLK Monitoring
+
+on:
+  schedule:
+    - cron: "20 4 2 * *"
+  workflow_dispatch:
+    inputs:
+      month:
+        description: "Closed month to archive (YYYY-MM); blank uses previous month"
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: phl-svlk-monthly-main
+  cancel-in-progress: false
+
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+      - name: Validate and archive closed month
+        env:
+          REQUESTED_MONTH: ${{ inputs.month }}
+        run: |
+          month="${REQUESTED_MONTH:-$(date -u -d "$(date -u +%Y-%m-01) -1 day" +%Y-%m)}"
+          node scripts/validate_pbph_documents.mjs
+          node scripts/archive_phl_svlk_monthly.mjs --month "$month"
+          echo "MONTH=$month" >> "$GITHUB_ENV"
+      - name: Publish snapshot
+        run: |
+          cp "data/phl-svlk-monthly/${MONTH}.json" "/tmp/${MONTH}.json"
+          cp data/phl-svlk-monthly/index.json /tmp/phl-svlk-index.json
+          git restore data/phl-svlk-monthly
+          git pull --rebase origin main
+          mkdir -p data/phl-svlk-monthly
+          cp "/tmp/${MONTH}.json" "data/phl-svlk-monthly/${MONTH}.json"
+          cp /tmp/phl-svlk-index.json data/phl-svlk-monthly/index.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "data/phl-svlk-monthly/${MONTH}.json" data/phl-svlk-monthly/index.json
+          git diff --cached --quiet && exit 0
+          git commit -m "data: archive ${MONTH} PHL and SVLK monitoring"
+          git push origin HEAD:main
