@@ -38,7 +38,7 @@
       error.textContent="Lengkapi semua angka dengan nilai lebih dari nol. Cadangan boleh diisi 0%.";
       error.hidden=false; $("fert-result").hidden=true; return;
     }
-    const roundedPlants=Math.floor(plants);
+    const roundedPlants=Math.floor(plants+1e-6);
     const perApplication=roundedPlants*dose/1000;
     const cycle=perApplication*Math.floor(applications);
     const prepared=cycle*(1+reserve/100);
