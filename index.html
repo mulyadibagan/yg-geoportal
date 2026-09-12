@@ -34,6 +34,29 @@
   <link rel="apple-touch-icon" href="assets/logo-yayasan-gambut-192.png">
   <link rel="icon" type="image/png" sizes="192x192" href="assets/logo-yayasan-gambut-192.png">
 
+<style>
+/* Compact dashboard entry cards; isolated from module pages. */
+.home-module-grid{box-sizing:border-box;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;max-width:1280px;margin:0 auto 28px;padding:0 32px}
+.home-module-grid .home-collaboration{display:flex;flex-direction:column;min-width:0;margin:0;padding:20px;border:1px solid #d7e3db;border-radius:10px;background:#fff;box-shadow:none}
+.home-module-grid .home-collaboration__head{display:block;margin:0 0 12px}
+.home-module-grid .home-collaboration__head>span{font-size:10px;letter-spacing:.1em}
+.home-module-grid .home-collaboration__head h2{margin:6px 0 0;font-size:20px;line-height:1.25}
+.home-module-grid .home-faperta-card{flex:1;display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto 1fr;gap:12px;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;transform:none}
+.home-module-grid .home-faperta-card:focus-visible{outline:2px solid #08724a;outline-offset:5px}
+.home-module-grid .home-faperta-card:hover .home-faperta-card__action{text-decoration:underline}
+.home-module-grid .home-faperta-card__marks,.home-module-grid .home-rspo-card__mark{grid-column:1;grid-row:1;justify-self:start}
+.home-module-grid .home-faperta-card__marks{gap:8px}
+.home-module-grid .home-faperta-card__marks img:first-child{width:32px;height:32px}
+.home-module-grid .home-faperta-card__marks img:last-child{width:112px;height:36px;padding:5px 8px;border-radius:5px}
+.home-module-grid .home-rspo-card__mark{width:36px;height:36px;border-radius:6px;font-size:22px;box-shadow:none}
+.home-module-grid .home-faperta-card__action{grid-column:2;grid-row:1;padding:0;border:0;white-space:normal;text-align:right;font-size:12px;line-height:1.4}
+.home-module-grid .home-faperta-card__copy{grid-column:1/-1;grid-row:2;align-self:start;gap:8px}
+.home-module-grid .home-faperta-card__copy>strong{display:none}
+.home-module-grid .home-faperta-card__copy>span{font-size:13px;line-height:1.5}
+.home-module-grid .home-faperta-card__copy>small{font-size:12px;line-height:1.5}
+.dashboard-hero:has(.home-module-grid) .hero-programmes{padding-bottom:24px}
+@media(max-width:760px){.home-module-grid{grid-template-columns:1fr;padding:0 14px;gap:12px;margin-bottom:20px}.home-module-grid .home-collaboration{padding:16px}}
+</style>
 </head>
 <body>
 <header class="site-header">
@@ -117,6 +140,7 @@
       </div>
     </div>
 
+    <div class="home-module-grid">
     <section class="home-collaboration" aria-labelledby="faperta-module-title">
       <div class="home-collaboration__head">
         <span>KOLABORASI AKADEMIK</span>
@@ -152,6 +176,7 @@
         <span class="home-faperta-card__action">Buka peta &amp; direktori <i aria-hidden="true">→</i></span>
       </a>
     </section>
+    </div>
   </section>
 
   <section class="section dashboard-panel climate-panel">
