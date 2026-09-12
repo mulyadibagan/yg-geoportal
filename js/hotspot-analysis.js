@@ -52,7 +52,7 @@
     var active={};selected.forEach(function(f){((f.properties||{}).oilPalmCompanyRef||[]).forEach(function(x){active[x.id]=true})});
     var matched=oilPalmGeo.features.filter(function(f){return active[f.properties.COMPANY_ID]});
     if(!matched.length)return {bounds:null,count:0};
-    var layer=L.geoJSON({type:'FeatureCollection',features:matched},{pane:'oilPalmPolygons',renderer:oilPalmPolygonRenderer,interactive:true,bubblingMouseEvents:false,style:{color:'#f97316',weight:2,opacity:.95,fillColor:'#fb923c',fillOpacity:.14},onEachFeature:function(f,l){var p=f.properties;l.bindPopup('<strong>'+esc(p.PO_COMPANY)+'</strong><br>'+esc(p.REFERENCE_DISTRICTS)+'<br>Nama: Disbun Riau 2024 · hlm. '+esc(p.SOURCE_PAGES)+'<br><small>Batas indikatif historis</small>')}}).addTo(oilPalmPolygons);
+    var layer=L.geoJSON({type:'FeatureCollection',features:matched},{pane:'oilPalmPolygons',renderer:oilPalmPolygonRenderer,interactive:true,bubblingMouseEvents:false,style:{color:'#f97316',weight:2,opacity:.95,fillColor:'#fb923c',fillOpacity:.14},onEachFeature:function(f,l){var p=f.properties;l.bindPopup('<strong>'+esc(p.PO_COMPANY)+'</strong><br>'+esc(p.REFERENCE_DISTRICTS)+'<br>Nama: Disbun Riau 2024 · hlm. '+esc(p.SOURCE_PAGES)+'<br>ISPO: '+esc(p.CERTIFICATION_NUMBER)+'<br><small>Batas indikatif historis</small>')}}).addTo(oilPalmPolygons);
     return {bounds:layer.getBounds().isValid()?layer.getBounds():null,count:Object.keys(active).length};
   }
   function adminGroups(){var grouped={};selected.forEach(function(f){var p=f.properties||{},a=f._analysisAdmin||normalizedAdmin(p),key=[a.village,a.district,a.regency].join('|');if(!grouped[key])grouped[key]={village:a.village,district:a.district,regency:a.regency,count:0,permits:{},companies:{}};grouped[key].count++;(p.pbph052026||[]).forEach(function(x){var name=permitName(x);if(name)grouped[key].permits[name]=true});(p.oilPalmCompanyRef||[]).forEach(function(x){var name=companyName(x);if(name)grouped[key].companies[name]=true})});return Object.keys(grouped).map(function(k){var row=grouped[k];row.permits=Object.keys(row.permits).sort();row.companies=Object.keys(row.companies).sort();return row}).sort(function(a,b){return b.count-a.count})}
@@ -98,7 +98,8 @@
     scope==='yg'?Promise.resolve(null):fetch('data/batas_administrasi_desa_riau.geojson').then(function(r){if(!r.ok)throw Error('desa-admin');return r.json()}),
     fetch('data/indonesia-boundary.geojson').then(function(r){if(!r.ok)throw Error('batas');return r.json()}),
     fetch('data/PBPH_RIAU_052026.geojson').then(function(r){if(!r.ok)throw Error('pbph');return r.json()}),
-    fetch('data/PERUSAHAAN_SAWIT_RIAU_REFERENSI.geojson?v=disbun2024-location88-v1-g2').then(function(r){if(!r.ok)throw Error('referensi sawit');return r.json()}).catch(function(e){if(scope==='oil-palm')throw e;return null})
+    fetch('data/PERUSAHAAN_SAWIT_RIAU_REFERENSI.geojson?v=ispo-registry-20260912-v1').then(function(r){if(!r.ok)throw Error('referensi sawit');return r.json()}).catch(function(e){if(scope==='oil-palm')throw e;return null})
   ]).then(function(v){hotspotGeo=v[0];if(v[5])YGOilPalmReference.attach(hotspotGeo,v[5]);else hotspotGeo.features.forEach(function(f){if(f.properties)delete f.properties.oilPalmCompanyRef});villageGeo=v[1];adminVillageGeo=v[2];landGeo=v[3];pbphGeo=v[4];oilPalmGeo=v[5];render()}).catch(function(e){var status=document.getElementById('analysis-status');status.className='ha-status error';status.textContent='Laporan gagal dimuat. Periksa koneksi atau data sumber.';console.error(e)});
 })();
+
 

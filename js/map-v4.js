@@ -42,14 +42,14 @@
       id: "perusahaan_sawit_riau",
       label: "Referensi Perusahaan Sawit",
       file: "data/PERUSAHAAN_SAWIT_RIAU_REFERENSI.geojson",
-      version: "disbun2024-location88-v1-g2",
+      version: "ispo-registry-20260912-v1",
       color: "#f97316",
-      count: 63,
-      countLabel: "63 perusahaan · 88 polygon",
+      count: 13,
+      countLabel: "13 perusahaan · 16 polygon",
       type: "oil_palm_company",
       focusOnEnable: true,
-      sourceLabel: "Nama: Disbun Riau 2024 · polygon historis",
-      sourceUrl: "https://ppid.riau.go.id/informasi-publik/844/buku-statistik-perkebunan-tahun-2024",
+      sourceLabel: "Disbun Riau · rujukan ISPO · batas indikatif",
+      sourceUrl: "https://ditjenbun.pertanian.go.id/informasi-ispo/",
       scale: "Batas indikatif"
     },
     kawasan_hutan_sk_903: {
@@ -2091,6 +2091,8 @@ L.control.scale({
       rows += item("Perusahaan", props.PO_COMPANY);
       rows += item("Kabupaten rujukan", props.REFERENCE_DISTRICTS);
       rows += item("Rujukan nama", "Disbun Riau 2024 · hlm. " + props.SOURCE_PAGES);
+      rows += item("Rujukan ISPO", props.CERTIFICATION_NUMBER);
+      rows += item("Sumber sertifikasi", props.CERTIFICATION_SOURCE);
       rows += item("Batas", "Indikatif historis");
       rows += item("Provinsi", props.PO_PROVINC);
     } else if (config.type === "concession") {

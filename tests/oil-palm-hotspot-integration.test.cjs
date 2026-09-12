@@ -33,8 +33,10 @@ test('interactive reference layer binds and opens a company popup',async()=>{
 });
 test('release has only screened references, without obsolete legal or group claims',()=>{
  const data=JSON.parse(read('data/PERUSAHAAN_SAWIT_RIAU_REFERENSI.geojson'));
- assert.equal(data.features.length,88);
- assert.equal(new Set(data.features.map(f=>f.properties.COMPANY_ID)).size,63);
+ assert.equal(data.features.length,16);
+ assert.equal(new Set(data.features.map(f=>f.properties.COMPANY_ID)).size,13);
+ assert.ok(data.features.every(f=>['Certified','Aktif'].includes(f.properties.CERTIFICATION_STATUS)&&f.properties.CERTIFICATION_SOURCE.startsWith('https://')));
+ assert.ok(!data.features.some(f=>['PADASAENAMUTAMA','GANDAERAHHENDANA','SURYAINTISARIRAYA','CILIANDRAPERKASA'].includes(f.properties.COMPANY_ID)));
  assert.ok(data.features.every(f=>!('PO_HGU' in f.properties)&&!('PO_GROUP' in f.properties)&&f.properties.ACTIVE_STATUS_VERIFIED===false));
  assert.ok(!data.features.some(f=>f.properties.COMPANY_ID==='PRIATAMARIAU'));
 });
