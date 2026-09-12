@@ -1,0 +1,71 @@
+{
+  "RSPO-013": {
+    "portfolioVersion": "Percontohan 1.0",
+    "verificationDate": "12 September 2026",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas perusahaan, grup, lokasi, dan poligon referensi telah tersedia. Nomor sertifikat, masa berlaku, badan sertifikasi, luas tersertifikasi, serta dokumen HGU/IUP belum dicocokkan dengan dokumen publik resmi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "Surya Dumai Agrindo",
+        "status": "Tersedia",
+        "note": "Nama perusahaan dan supply base pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "First Resources Limited",
+        "status": "Tersedia",
+        "note": "First Resources menyatakan telah menjadi anggota RSPO sejak 2008."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Kabupaten Bengkalis, Riau",
+        "status": "Tersedia",
+        "note": "Lokasi administratif berdasarkan referensi area."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya akan ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      },
+      {
+        "label": "Sustainability",
+        "publisher": "First Resources Limited",
+        "url": "https://www.first-resources.com/sustainability/",
+        "use": "Pernyataan grup mengenai keanggotaan RSPO dan kebijakan keberlanjutan",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  }
+}
