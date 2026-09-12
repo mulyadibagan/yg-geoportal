@@ -1005,6 +1005,7 @@
   function translateDynamic(text, language) {
     if (language === "en") {
       return text
+        .replace(/^(\\d+) dokumentasi terverifikasi$/, "$1 verified records")
         .replace(/^Sumber: Master Database/, "Source: Master Database")
         .replace(/layer resmi WebGIS/g, "official WebGIS layers")
         .replace(/diperbarui/g, "updated")
@@ -1328,6 +1329,23 @@
     "Estimasi berbasis citra satelit; bukan hasil pengukuran atau verifikasi lapangan.": "Satellite-based estimate; not a field measurement or field-verified perimeter.",
     "Data estimasi belum dapat dimuat; hotspot tetap berfungsi seperti biasa.": "The estimate is currently unavailable; hotspot monitoring continues to work normally."
   });
+
+  Object.assign(dictionaries.en, {
+  "Data, dokumentasi, dan capaian program untuk mendukung pemulihan ekosistem bersama masyarakat dan mitra.": "Data, documentation, and programme results supporting ecosystem recovery with communities and partners.",
+  "CAPAIAN PROGRAM": "PROGRAMME RESULTS",
+  "Partisipasi tercatat": "Recorded participation",
+  "Bibit tertanam": "Seedlings planted",
+  "seluruh ekosistem": "across ecosystems",
+  "Jelajahi kebun": "Explore the farm",
+  "PERKEBUNAN & KOMODITAS": "PLANTATIONS & COMMODITIES",
+  "Sawit Riau & RSPO": "Riau Palm Oil & RSPO",
+  "Jelajahi sebaran grup, organisasi, pabrik kelapa sawit, dan status sertifikasi RSPO di Riau.": "Explore groups, organisations, palm oil mills, and RSPO certification status in Riau.",
+  "Direktori pabrik: 23 grup · 26 organisasi · 54 pabrik · 52 bersertifikat": "Mill directory: 23 groups · 26 organisations · 54 mills · 52 certified",
+  "Buka peta & direktori": "Open map & directory",
+  "Data kegiatan": "Activity data",
+  "Memuat dokumentasi...": "Loading documentation...",
+  "Belum ada dokumentasi terverifikasi": "No verified documentation yet"
+});
 
   document.addEventListener("click", event => {
     const button = event.target.closest("[data-lang]");
