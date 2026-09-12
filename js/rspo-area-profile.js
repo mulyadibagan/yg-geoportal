@@ -64,9 +64,10 @@ function renderComplaintMonitoring(summary,areaId,method,checkedAt){
  if(directActive.length)el.textContent=directActive.length+' pengaduan aktif terkait langsung';
  else if(active)el.textContent=active+' pengaduan aktif pada grup';
  else if(post&&direct.length)el.textContent='Ditutup · pemantauan pascapengaduan';
+ else if(direct.length)el.textContent=direct.length+' perkara terkait langsung · ditutup';
  else el.textContent=total+' perkara grup · seluruhnya ditutup';
  var note=el.nextElementSibling;if(note)note.textContent=scope+total+' perkara terkait grup ditemukan pada Case Tracker RSPO'+(decision?'; '+decision+' keputusan masih dalam masa banding':'')+'. Pengaduan bukan bukti pelanggaran.'+(checkedAt?' Diperiksa '+new Date(checkedAt).toLocaleDateString('id-ID',{timeZone:'UTC'})+'.':'');
- if(signal){signal.dataset.complaintReview=active?'yes':'no';signal.dataset.complaintDecision=decision?'yes':'no'}
+ if(signal){signal.dataset.complaintReview=active?'yes':'no';signal.dataset.complaintDecision=decision?'yes':'no';signal.dataset.complaintGroupOnly=areaId&&!direct.length?'yes':'no'}
 }
 function renderPortfolio(profile,p,selected){
  var area=Math.round(selected.reduce(function(s,f){return s+geometryArea(f.geometry)},0)).toLocaleString('id-ID')+' ha';
@@ -104,6 +105,6 @@ function renderArchive(archives,ids,selected){var rows=[],points=[],total=0,days
 var hotspotEl=document.getElementById('rap-monitor-hotspot'),hotspotNote=document.getElementById('rap-monitor-hotspot-note'),signal=document.getElementById('rap-signal');
 if(hotspotEl)hotspotEl.textContent=total?total+' hotspot terdeteksi':'0 hotspot terdeteksi';
 if(hotspotNote)hotspotNote.textContent=total?days.size+' hari deteksi dalam '+rows.length+' laporan; perlu pemeriksaan citra dan lapangan.':'Tidak ada irisan hotspot pada '+rows.length+' laporan bulanan yang tersedia.';
-if(signal){var coverReview=signal.dataset.coverLoss==='yes',complaintReview=signal.dataset.complaintReview==='yes',complaintDecision=signal.dataset.complaintDecision==='yes',review=total||coverReview||complaintReview||complaintDecision;signal.textContent=complaintDecision?'Keputusan RSPO tersedia · periksa status banding':total?'Indikasi hotspot perlu pemeriksaan':complaintReview?'Pengaduan aktif · belum merupakan pelanggaran':coverReview?'Indikasi perubahan tutupan':'Tidak ada indikasi pada data tersedia';signal.className='rap-signal '+(review?'is-review':'is-clear')}}
+if(signal){var coverReview=signal.dataset.coverLoss==='yes',complaintReview=signal.dataset.complaintReview==='yes',complaintDecision=signal.dataset.complaintDecision==='yes',groupOnly=signal.dataset.complaintGroupOnly==='yes',review=total||coverReview||complaintReview||complaintDecision;signal.textContent=complaintDecision?(groupOnly?'Keputusan RSPO pada entitas lain dalam grup':'Keputusan RSPO tersedia · periksa status banding'):total?'Indikasi hotspot perlu pemeriksaan':complaintReview?'Pengaduan aktif pada grup · belum merupakan pelanggaran':coverReview?'Indikasi perubahan tutupan':'Tidak ada indikasi pada data tersedia';signal.className='rap-signal '+(review?'is-review':'is-clear')}}
 function renderRelated(all,group,mode,id){var related=all.filter(function(f){return f.properties.RSPO_GROUP===group&&(mode==='group'||f.properties.COMPANY_ID!==id)});document.getElementById('rap-related-title').textContent=mode==='group'?'Daftar area dalam grup':'Area lain dalam grup yang sama';document.getElementById('rap-related').innerHTML=related.length?related.map(function(f){var p=f.properties;return'<a href="'+profileUrl(f)+'"><strong>'+esc(p.PO_COMPANY)+'</strong><small>'+esc([p.SUPPLY_BASE,p.REFERENCE_DISTRICTS].filter(Boolean).join(' · '))+'</small></a>'}).join(''):'<p>Tidak ada area lain dalam grup yang sama.</p>'}
 }());
