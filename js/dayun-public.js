@@ -90,7 +90,7 @@
   }
   async function initDayunWeather(){
     if(!document.getElementById('dayun-weather-current'))return;
-    var weatherKey='yg-dayun-weather-v1',rainKey='yg-dayun-rain-v1';
+    var weatherKey='yg-dayun-weather-v2',rainKey='yg-dayun-rain-v1';
     try{
       var stored=JSON.parse(localStorage.getItem(weatherKey)||'null'),weather;
       if(stored&&Date.now()-stored.savedAt<1800000)weather=stored.data;
