@@ -679,3 +679,5 @@ body.modal-open{overflow:hidden}
 .aramco-staff-report-list{display:grid;gap:8px}.aramco-staff-report-list>a{display:grid;grid-template-columns:72px minmax(0,1fr) auto;align-items:center;gap:10px;padding:11px 14px;border:1px solid #d5e6dd;border-radius:12px;background:#fff;color:#173c31;text-decoration:none}.aramco-staff-report-list>a:hover{border-color:#087653}.aramco-staff-report-list strong{font-size:13px}.aramco-staff-report-list small{color:#67756f}.aramco-staff-report-list em{color:#087653;font-style:normal;font-weight:900}
 @media(max-width:760px){.aramco-staff-report{grid-template-columns:1fr}.aramco-staff-report-list>a{grid-template-columns:58px minmax(0,1fr) auto}}
 @media(max-width:680px){.ppcf-evidence-heading{align-items:flex-start;flex-direction:column}.ppcf-evidence-grid{grid-template-columns:1fr}.ppcf-evidence-grid article{grid-template-columns:30px minmax(0,1fr);padding:14px}.ppcf-evidence-grid article>b{width:28px;height:28px}.funding-heading h3{font-size:22px}}
+
+.funding-card-logo-april{background:#fff!important}.funding-card-logo-april img{padding:4px;object-fit:contain}
