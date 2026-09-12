@@ -1,5 +1,31 @@
 [
   {
+    "id": "DNR-APRIL",
+    "name": "APRIL Group",
+    "slug": "april",
+    "period": "Oktober 2026–September 2027",
+    "focus": "Penguatan KUPS Rimba Sejahtera dan pengelolaan agroforestri berkelanjutan",
+    "locations": ["Kampung Dayun"],
+    "indicators": [],
+    "programs": [
+      {
+        "id": "PRG-APRIL-DAYUN-2026-2027",
+        "name": "Program Dayun · KUPS Rimba Sejahtera",
+        "period": "Oktober 2026–September 2027",
+        "status": "Aktif",
+        "summary": "Pendampingan KUPS Rimba Sejahtera dan pengelolaan agroforestri berkelanjutan di Kampung Dayun.",
+        "phases": [
+          {
+            "name": "Pelaksanaan 12 bulan",
+            "period": "Oktober 2026–September 2027",
+            "status": "Aktif"
+          }
+        ]
+      }
+    ],
+    "timeline": []
+  },
+  {
     "id": "DNR-ARAMCO",
     "name": "Aramco Asia Singapore",
     "slug": "aramco",
