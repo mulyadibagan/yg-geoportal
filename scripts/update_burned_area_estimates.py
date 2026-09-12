@@ -27,6 +27,7 @@ from scipy import ndimage
 from shapely.geometry import Point, mapping, shape
 from shapely.ops import transform as geom_transform, unary_union
 from skimage import morphology
+from burned_area_geography import RiauGeography, apply_geography
 
 ROOT = Path(__file__).resolve().parents[1]
 HOTSPOTS = ROOT / "data" / "hotspot-high-confidence.geojson"
@@ -54,13 +55,13 @@ def choose_utm(lon):
     return 32600 + int((lon + 180) // 6) + 1
 
 
-def cluster_hotspots(features):
+def cluster_hotspots(features, geography):
     """Connect detections whose 1.5 km buffers touch, then retain recent events."""
     rows = []
     for feature in features:
         when = point_time(feature)
         coords = feature.get("geometry", {}).get("coordinates", [])
-        if when and len(coords) >= 2 and RI_BBOX[0] <= coords[0] <= RI_BBOX[2] and RI_BBOX[1] <= coords[1] <= RI_BBOX[3]:
+        if when and len(coords) >= 2 and geography.boundary.covers(Point(coords)):
             rows.append((feature, when, Point(coords)))
     if not rows:
         return []
@@ -188,10 +189,11 @@ def analyse_event(event, catalog, index):
 
 
 def main():
+    geography = RiauGeography()
     source = json.loads(HOTSPOTS.read_text(encoding="utf-8"))
     cutoff = datetime.now(timezone.utc) - timedelta(days=75)
     candidates = [f for f in source.get("features", []) if point_time(f) and point_time(f) >= cutoff]
-    events = cluster_hotspots(candidates)
+    events = cluster_hotspots(candidates, geography)
     catalog = Client.open("https://planetarycomputer.microsoft.com/api/stac/v1")
     output, states = [], []
     for index, event in enumerate(events, 1):
@@ -217,6 +219,7 @@ def main():
     if not output and any(x["status"] == "processing-error" for x in states) and OUTPUT.exists():
         print("processing errors produced no replacement; preserving previous public snapshot")
         return
+    payload, summary = apply_geography(payload, summary, geography)
     OUTPUT.write_text(json.dumps(payload, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     SUMMARY.write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
 

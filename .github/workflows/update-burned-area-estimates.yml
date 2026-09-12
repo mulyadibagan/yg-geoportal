@@ -10,6 +10,9 @@ on:
     paths:
       - ".github/workflows/update-burned-area-estimates.yml"
       - "scripts/update_burned_area_estimates.py"
+      - "scripts/burned_area_geography.py"
+      - "data/batas_provinsi_riau_dissolve.geojson"
+      - "data/batas_administrasi_desa_riau.geojson"
 
 permissions:
   contents: write
