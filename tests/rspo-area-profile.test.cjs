@@ -32,3 +32,14 @@ test('interactive-map RSPO popup opens the matching profile', () => {
   assert.match(controller, /Buka Profil &amp; Analisis Area/);
   assert.match(webgis, /map-v4\.js\?v=20260912-rspo-profile1/);
 });
+
+test('RSPO monitoring worklist export is available to staff, not the public page', () => {
+  const publicPage = read('sawit-riau-rspo.html');
+  const staffPage = read('staff-rspo-riau.html');
+  const exporter = read('js', 'rspo-monitor-export-internal.js');
+  assert.doesNotMatch(publicPage, /Unduh daftar CSV|rspo-monitor-download/);
+  assert.match(staffPage, /id="rspo-internal-content" hidden/);
+  assert.match(staffPage, /id="rspo-download-worklist"/);
+  assert.match(staffPage, /rspo-monitor-export-internal\.js/);
+  assert.match(exporter, /Sinyal dan pengaduan bukan bukti pelanggaran/);
+});
