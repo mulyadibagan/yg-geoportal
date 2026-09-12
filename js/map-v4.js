@@ -2181,6 +2181,21 @@ L.control.scale({
           '</div>'
         )
       : "";
+    const oilPalmProfileId = config.type === "oil_palm_company"
+      ? String(props.COMPANY_ID || "").trim()
+      : "";
+    const oilPalmProfileAction = oilPalmProfileId
+      ? (
+          '<div class="yg-popup-actions yg-popup-profile-action">' +
+            '<a class="yg-popup-monitoring-link yg-popup-profile-link" ' +
+              'target="_blank" rel="noopener noreferrer" ' +
+              'href="rspo-area-profile.html?id=' +
+                encodeURIComponent(oilPalmProfileId) + '">' +
+              'Buka Profil &amp; Analisis Area&nbsp; →' +
+            '</a>' +
+          '</div>'
+        )
+      : "";
     const administrativeVillageKey = config.type === "village_boundary"
       ? villageProfileKey(feature)
       : "";
@@ -2207,6 +2222,7 @@ L.control.scale({
         '<div class="popup-body">' + rows + sourceRows + referenceLinks +
           activeConcessionAction +
           socialForestryAction +
+          oilPalmProfileAction +
           administrativeVillageAction + '</div>' +
       '</div>'
     );
