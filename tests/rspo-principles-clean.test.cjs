@@ -16,8 +16,8 @@ test('public certification panel stays concise', () => {
   assert.doesNotMatch(html, /Perhatikan jenis informasi|Periksa cakupannya|Lihat tanggal pembaruan/);
 });
 
-test('principles panel links to the document tab and remains responsive', () => {
-  assert.match(html, /data-open-tab="dokumen">Lihat dokumen/);
+test('principles panel links to the detailed guide and remains responsive', () => {
+  assert.match(html, /href="rspo-prinsip-kriteria\.html">Buka panduan prinsip/);
   assert.match(css, /\.rspo-principle-note\{[^}]*display:flex/);
   assert.match(css, /@media\(max-width:620px\)[\s\S]*\.rspo-principle-note\{[^}]*flex-direction:column/);
 });
