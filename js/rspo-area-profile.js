@@ -8,7 +8,8 @@ function profileUrl(f){return'rspo-area-profile.html?id='+encodeURIComponent(f.p
 Promise.all([
  fetch('data/PERUSAHAAN_SAWIT_RIAU_REFERENSI.geojson').then(function(r){if(!r.ok)throw Error('referensi area tidak tersedia');return r.json()}),
  fetch('data/fire-monthly/index.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw Error('indeks laporan tidak tersedia');return r.json()}),
- fetch('data/rspo-area-portfolios.json?v=20260912-all-areas1',{cache:'no-store'}).then(function(r){return r.ok?r.json():{}}).catch(function(){return{}})
+ fetch('data/rspo-area-portfolios.json?v=20260912-all-areas1',{cache:'no-store'}).then(function(r){return r.ok?r.json():{}}).catch(function(){return{}}),
+ fetch('data/rspo-burned-area-monitoring.json?v=20260912-v1',{cache:'no-store'}).then(function(r){return r.ok?r.json():{areas:{}}}).catch(function(){return{areas:{}}})
 ]).then(function(base){
  var geo=base[0],index=base[1],all=geo.features||[],selected,mode='area';
  if(requestedGroup){selected=all.filter(function(f){return f.properties.RSPO_GROUP===requestedGroup});mode='group'}else{var found=all.find(function(f){return f.properties.COMPANY_ID===requestedId})||all[0];selected=found?[found]:[];requestedId=found&&found.properties.COMPANY_ID}
@@ -19,9 +20,23 @@ Promise.all([
  var locations=Array.from(new Set(selected.map(function(f){return f.properties.REFERENCE_DISTRICTS}).filter(Boolean))).join(', '),identity=[['Perusahaan/unit',mode==='group'?selected.length+' area dari '+new Set(selected.map(function(f){return f.properties.PO_COMPANY})).size+' perusahaan':p.PO_COMPANY],['Grup RSPO',group],['Estate/supply base',mode==='group'?'Beragam unit':p.SUPPLY_BASE],['Kabupaten',locations],['Jenis referensi',p.REFERENCE_TYPE],['Pembaruan',p.REFERENCE_UPDATED]];
  document.getElementById('rap-identity').innerHTML=identity.map(function(x){return'<div><dt>'+esc(x[0])+'</dt><dd>'+esc(x[1]||'Belum tersedia')+'</dd></div>'}).join('');
  renderPortfolio(mode==='area'?(base[2]||{})[requestedId]:null,p,selected);
+ renderBurnedMonitoring(mode==='area'?((base[3]||{}).areas||{})[requestedId]:null);
  map=L.map('rap-leaflet',{preferCanvas:true});var street=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap'}),satellite=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:19,attribution:'Tiles &copy; Esri'}).addTo(map),areaLayer=L.geoJSON({type:'FeatureCollection',features:selected},{style:{color:'#f97316',weight:2.4,fillColor:'#ef7b2d',fillOpacity:.18},onEachFeature:function(f,l){l.bindTooltip('<strong>'+esc(f.properties.PO_COMPANY)+'</strong><br>'+esc(f.properties.SUPPLY_BASE||''))}}).addTo(map);L.control.layers({'Citra satelit':satellite,'Peta jalan':street},{'Area anggota RSPO':areaLayer},{collapsed:false}).addTo(map);map.fitBounds(areaLayer.getBounds().pad(.08));
  var ids=new Set(selected.map(function(f){return f.properties.COMPANY_ID}));return Promise.all((index.reports||[]).map(function(entry){return fetch(entry.data+'?v='+encodeURIComponent(entry.generatedAt||'1'),{cache:'no-store'}).then(function(r){return r.json()}).then(function(report){return{entry:entry,report:report}})})).then(function(archives){renderArchive(archives,ids,selected);renderRelated(all,group,mode,requestedId)})
 }).catch(function(error){var status=document.getElementById('rap-status');status.className='rap-status error';status.textContent='Profil belum dapat dimuat: '+error.message});
+function renderBurnedMonitoring(summary){
+ var el=document.getElementById('rap-monitor-burned');
+ if(!el)return;
+ if(!summary){el.textContent='Data belum tersedia';return}
+ var rows=summary.monthly||[],positive=rows.filter(function(x){return Number(x.estimatedAreaHa||0)>0}),total=Number(summary.estimatedAreaHa||0);
+ if(total>0){
+  el.textContent=total.toLocaleString('id-ID',{maximumFractionDigits:2})+' ha indikatif';
+  var note=el.nextElementSibling;if(note)note.textContent=positive.length+' bulan memiliki irisan poligon estimasi. Hasil citra bukan bukti penyebab atau tanggung jawab.';
+ }else{
+  el.textContent='0 ha terdeteksi pada arsip';
+  var noteZero=el.nextElementSibling;if(noteZero)noteZero.textContent='Tidak ada irisan dengan poligon estimasi area terbakar pada '+rows.length+' laporan yang tersedia; ini bukan jaminan tidak terjadi kebakaran.';
+ }
+}
 function renderPortfolio(profile,p,selected){
  var area=Math.round(selected.reduce(function(s,f){return s+geometryArea(f.geometry)},0)).toLocaleString('id-ID')+' ha';
  var fallback={
