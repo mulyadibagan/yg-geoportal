@@ -4,7 +4,7 @@
   var proposalMode = true; // Public information only; no local submission routes.
   function alignWithLiveShell() {
     ['css/style.css?v=20260723-revert-layout','css/language-switcher.css?v=20260721-all-pages1','css/navigation-v2.css?v=20260807-mobile-submenu-links1'].forEach(function(href){
-      var link=document.createElement('link');link.rel='stylesheet';link.href=href;document.head.appendChild(link);
+      if(!document.querySelector('link[href="'+href+'"]')){var link=document.createElement('link');link.rel='stylesheet';link.href=href;document.head.appendChild(link);}
     });
     var header=document.querySelector('.dy-header');
     if(header){
