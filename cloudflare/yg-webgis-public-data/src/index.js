@@ -224,3 +224,4 @@ var index_default = { async fetch(request, env) {
 export {
   index_default as default
 };
+// RSPO public overview route enabled; static public layer remains the resilient fallback.
