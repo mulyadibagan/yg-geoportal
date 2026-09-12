@@ -104,6 +104,31 @@
     }catch(error){document.getElementById('dayun-rain-7d').textContent='Belum tersedia';document.getElementById('dayun-rain-30d').textContent='Belum tersedia';document.getElementById('dayun-rain-note').textContent='Estimasi hujan sementara tidak dapat dimuat.';}
   }
 
+  function monthLabel(value){return new Intl.DateTimeFormat('id-ID',{month:'long',year:'numeric',timeZone:'Asia/Jakarta'}).format(new Date(value+'T12:00:00+07:00'));}
+  function renderDayunRainHistory(payload){
+    var values=payload&&payload.properties&&payload.properties.parameter&&payload.properties.parameter.PRECTOTCORR||{};
+    var rows=Object.entries(values).map(function(entry){var k=entry[0],v=Number(entry[1]);return {key:k,date:k.slice(0,4)+'-'+k.slice(4,6)+'-'+k.slice(6,8),rain:v};}).filter(function(row){return Number.isFinite(row.rain)&&row.rain>=0;}).sort(function(a,b){return a.key.localeCompare(b.key);});
+    if(!rows.length)throw new Error('Riwayat hujan belum tersedia');
+    var monthly={};rows.forEach(function(row){var key=row.date.slice(0,7);monthly[key]=(monthly[key]||0)+row.rain;});
+    document.getElementById('dayun-rain-months').innerHTML=Object.entries(monthly).map(function(entry){return '<article><small>'+monthLabel(entry[0]+'-01')+'</small><strong>'+dayunNum(entry[1],1)+' mm</strong><span>'+rows.filter(function(r){return r.date.slice(0,7)===entry[0]&&r.rain>0;}).length+' hari dengan hujan</span></article>';}).join('');
+    var max=Math.max.apply(null,rows.map(function(row){return row.rain;})),chartH=230,base=184,top=18,barW=7,gap=3,left=42,width=Math.max(760,left+rows.length*(barW+gap)+18),scale=max?((base-top)/max):1;
+    var grid=[0,.25,.5,.75,1].map(function(part){var value=max*part,y=base-value*scale;return '<line x1="'+left+'" y1="'+y+'" x2="'+(width-12)+'" y2="'+y+'" stroke="#dce7e1" stroke-width="1"/><text x="'+(left-7)+'" y="'+(y+3)+'" text-anchor="end" fill="#66776f" font-size="9">'+dayunNum(value,0)+'</text>';}).join('');
+    var bars=rows.map(function(row,index){var height=row.rain*scale,x=left+index*(barW+gap),y=base-height;return '<rect x="'+x+'" y="'+y+'" width="'+barW+'" height="'+Math.max(height,row.rain>0?1:0)+'" rx="2" fill="#1687a7"><title>'+new Intl.DateTimeFormat('id-ID',{day:'numeric',month:'short',year:'numeric',timeZone:'Asia/Jakarta'}).format(new Date(row.date+'T12:00:00+07:00'))+': '+dayunNum(row.rain,1)+' mm</title></rect>';}).join('');
+    var monthTicks=[],seen={};rows.forEach(function(row,index){var key=row.date.slice(0,7);if(!seen[key]){seen[key]=true;monthTicks.push('<text x="'+(left+index*(barW+gap))+'" y="211" fill="#52675e" font-size="10" font-weight="700">'+new Intl.DateTimeFormat('id-ID',{month:'short',timeZone:'Asia/Jakarta'}).format(new Date(row.date+'T12:00:00+07:00'))+'</text>');}});
+    document.getElementById('dayun-rain-chart').innerHTML='<svg viewBox="0 0 '+width+' '+chartH+'" width="'+width+'" height="'+chartH+'" aria-hidden="true">'+grid+'<line x1="'+left+'" y1="'+base+'" x2="'+(width-12)+'" y2="'+base+'" stroke="#9db3a8" stroke-width="1"/>'+bars+monthTicks.join('')+'</svg>';
+    var first=rows[0].date,last=rows[rows.length-1].date,total=rows.reduce(function(sum,row){return sum+row.rain;},0);
+    document.getElementById('dayun-rain-history-note').textContent='Estimasi NASA POWER pada titik kebun · '+new Intl.DateTimeFormat('id-ID',{day:'numeric',month:'short',year:'numeric',timeZone:'Asia/Jakarta'}).format(new Date(first+'T12:00:00+07:00'))+'–'+new Intl.DateTimeFormat('id-ID',{day:'numeric',month:'short',year:'numeric',timeZone:'Asia/Jakarta'}).format(new Date(last+'T12:00:00+07:00'))+' · Total periode '+dayunNum(total,1)+' mm. Nilai mewakili estimasi satelit, bukan alat ukur lapangan.';
+  }
+  async function initDayunRainHistory(){
+    if(!document.getElementById('dayun-rain-chart'))return;
+    var key='yg-dayun-rain-history-202607-v1',stored=null;try{stored=JSON.parse(localStorage.getItem(key)||'null');}catch(_){}
+    try{
+      var payload;if(stored&&Date.now()-stored.savedAt<21600000)payload=stored.data;
+      else{var end=new Date(),response=await fetch('https://power.larc.nasa.gov/api/temporal/daily/point?parameters=PRECTOTCORR&community=AG&longitude='+DAYUN_LON+'&latitude='+DAYUN_LAT+'&start=20260701&end='+dayunDateKey(end)+'&format=JSON');if(!response.ok)throw new Error('Riwayat hujan tidak tersedia');payload=await response.json();try{localStorage.setItem(key,JSON.stringify({savedAt:Date.now(),data:payload}));}catch(_){}}
+      renderDayunRainHistory(payload);
+    }catch(error){document.getElementById('dayun-rain-months').innerHTML='<div class="dy-weather-loading">Riwayat curah hujan sementara belum dapat dimuat.</div>';document.getElementById('dayun-rain-history-note').textContent='Silakan muat ulang halaman beberapa saat lagi.';}
+  }
+
   function initLanding(data){
     var eyebrow=document.querySelector('.dy-hero .dy-eyebrow');if(eyebrow)eyebrow.textContent='APRIL Group · Yayasan Gambut · Kampung Dayun';
     document.getElementById('dayun-outcomes').innerHTML=data.outcomes.map(function(x,i){return '<article class="dy-card"><div class="dy-number">0'+(i+1)+'</div><h3>'+esc(x.title)+'</h3><p>'+esc(x.description)+'</p></article>';}).join('');
@@ -112,5 +137,5 @@
     initDayunMap(data);
     initDayunWeather();
   }
-  fetch('data/dayun-program.json', {cache:'no-store'}).then(function(response){if(!response.ok)throw new Error('Informasi program belum dapat dimuat.');return response.json();}).then(function(data){data.objects=[];if(page==='map')initDayunMap(data);else initLanding(data);}).catch(function(error){console.error(error);toast(error.message);});
+  fetch('data/dayun-program.json', {cache:'no-store'}).then(function(response){if(!response.ok)throw new Error('Informasi program belum dapat dimuat.');return response.json();}).then(function(data){data.objects=[];if(page==='map'){initDayunMap(data);initDayunRainHistory();}else initLanding(data);}).catch(function(error){console.error(error);toast(error.message);});
 })();
