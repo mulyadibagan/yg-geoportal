@@ -9,7 +9,8 @@ Promise.all([
  fetch('data/PERUSAHAAN_SAWIT_RIAU_REFERENSI.geojson').then(function(r){if(!r.ok)throw Error('referensi area tidak tersedia');return r.json()}),
  fetch('data/fire-monthly/index.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw Error('indeks laporan tidak tersedia');return r.json()}),
  fetch('data/rspo-area-portfolios.json?v=20260912-all-areas1',{cache:'no-store'}).then(function(r){return r.ok?r.json():{}}).catch(function(){return{}}),
- fetch('data/rspo-burned-area-monitoring.json?v=20260912-v1',{cache:'no-store'}).then(function(r){return r.ok?r.json():{areas:{}}}).catch(function(){return{areas:{}}})
+ fetch('data/rspo-burned-area-monitoring.json?v=20260912-v1',{cache:'no-store'}).then(function(r){return r.ok?r.json():{areas:{}}}).catch(function(){return{areas:{}}}),
+ fetch('data/rspo-tree-cover-monitoring.json?v=20260912-v1',{cache:'no-store'}).then(function(r){return r.ok?r.json():{areas:{}}}).catch(function(){return{areas:{}}})
 ]).then(function(base){
  var geo=base[0],index=base[1],all=geo.features||[],selected,mode='area';
  if(requestedGroup){selected=all.filter(function(f){return f.properties.RSPO_GROUP===requestedGroup});mode='group'}else{var found=all.find(function(f){return f.properties.COMPANY_ID===requestedId})||all[0];selected=found?[found]:[];requestedId=found&&found.properties.COMPANY_ID}
@@ -21,9 +22,20 @@ Promise.all([
  document.getElementById('rap-identity').innerHTML=identity.map(function(x){return'<div><dt>'+esc(x[0])+'</dt><dd>'+esc(x[1]||'Belum tersedia')+'</dd></div>'}).join('');
  renderPortfolio(mode==='area'?(base[2]||{})[requestedId]:null,p,selected);
  renderBurnedMonitoring(mode==='area'?((base[3]||{}).areas||{})[requestedId]:null);
+ renderTreeCoverMonitoring(mode==='area'?((base[4]||{}).areas||{})[requestedId]:null,(base[4]||{}).method||{});
  map=L.map('rap-leaflet',{preferCanvas:true});var street=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap'}),satellite=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:19,attribution:'Tiles &copy; Esri'}).addTo(map),areaLayer=L.geoJSON({type:'FeatureCollection',features:selected},{style:{color:'#f97316',weight:2.4,fillColor:'#ef7b2d',fillOpacity:.18},onEachFeature:function(f,l){l.bindTooltip('<strong>'+esc(f.properties.PO_COMPANY)+'</strong><br>'+esc(f.properties.SUPPLY_BASE||''))}}).addTo(map);L.control.layers({'Citra satelit':satellite,'Peta jalan':street},{'Area anggota RSPO':areaLayer},{collapsed:false}).addTo(map);map.fitBounds(areaLayer.getBounds().pad(.08));
  var ids=new Set(selected.map(function(f){return f.properties.COMPANY_ID}));return Promise.all((index.reports||[]).map(function(entry){return fetch(entry.data+'?v='+encodeURIComponent(entry.generatedAt||'1'),{cache:'no-store'}).then(function(r){return r.json()}).then(function(report){return{entry:entry,report:report}})})).then(function(archives){renderArchive(archives,ids,selected);renderRelated(all,group,mode,requestedId)})
 }).catch(function(error){var status=document.getElementById('rap-status');status.className='rap-status error';status.textContent='Profil belum dapat dimuat: '+error.message});
+function renderTreeCoverMonitoring(summary,method){
+ var el=document.getElementById('rap-monitor-cover'),signal=document.getElementById('rap-signal');
+ if(!el)return;
+ if(!summary){el.textContent='Data belum tersedia';return}
+ var annual=summary.annualLossHa||{},years=Object.keys(annual).filter(function(y){return annual[y]!=null}).sort(),year=years[years.length-1],loss=Number(annual[year]||0);
+ el.textContent=loss.toLocaleString('id-ID',{maximumFractionDigits:2})+' ha pada '+year;
+ var note=el.nextElementSibling;
+ if(note)note.textContent='Kehilangan tutupan pohon ≥30% berdasarkan Hansen/UMD. Sinyal dapat mencakup peremajaan atau panen dan bukan bukti deforestasi ilegal.';
+ if(signal)signal.dataset.coverLoss=loss>0?'yes':'no';
+}
 function renderBurnedMonitoring(summary){
  var el=document.getElementById('rap-monitor-burned');
  if(!el)return;
@@ -73,6 +85,6 @@ function renderArchive(archives,ids,selected){var rows=[],points=[],total=0,days
 var hotspotEl=document.getElementById('rap-monitor-hotspot'),hotspotNote=document.getElementById('rap-monitor-hotspot-note'),signal=document.getElementById('rap-signal');
 if(hotspotEl)hotspotEl.textContent=total?total+' hotspot terdeteksi':'0 hotspot terdeteksi';
 if(hotspotNote)hotspotNote.textContent=total?days.size+' hari deteksi dalam '+rows.length+' laporan; perlu pemeriksaan citra dan lapangan.':'Tidak ada irisan hotspot pada '+rows.length+' laporan bulanan yang tersedia.';
-if(signal){signal.textContent=total?'Indikasi perlu pemeriksaan':'Tidak ada indikasi hotspot terdeteksi';signal.className='rap-signal '+(total?'is-review':'is-clear')}}
+if(signal){var coverReview=signal.dataset.coverLoss==='yes',review=total||coverReview;signal.textContent=total?'Indikasi hotspot perlu pemeriksaan':coverReview?'Indikasi perubahan tutupan':'Tidak ada indikasi pada data tersedia';signal.className='rap-signal '+(review?'is-review':'is-clear')}}
 function renderRelated(all,group,mode,id){var related=all.filter(function(f){return f.properties.RSPO_GROUP===group&&(mode==='group'||f.properties.COMPANY_ID!==id)});document.getElementById('rap-related-title').textContent=mode==='group'?'Daftar area dalam grup':'Area lain dalam grup yang sama';document.getElementById('rap-related').innerHTML=related.length?related.map(function(f){var p=f.properties;return'<a href="'+profileUrl(f)+'"><strong>'+esc(p.PO_COMPANY)+'</strong><small>'+esc([p.SUPPLY_BASE,p.REFERENCE_DISTRICTS].filter(Boolean).join(' · '))+'</small></a>'}).join(''):'<p>Tidak ada area lain dalam grup yang sama.</p>'}
 }());
