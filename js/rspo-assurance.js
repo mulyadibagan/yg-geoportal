@@ -142,5 +142,54 @@
     document.querySelector('main').append(cert);
   }
   const nav=document.querySelector('.standard-nav');
-  if(nav){const a=el('a');a.href='#proses-sertifikasi';a.append(el('strong','Proses Sertifikasi'),el('span','Audit, verifikasi bukti, keputusan, dan pengawasan.'));nav.append(a);}
+  if(nav && ishRoot){
+    const heading=document.getElementById('standar-pnc');
+    const layout=document.querySelector('.guide-layout');
+    if(!heading || !layout || heading.parentNode!==layout.parentNode)return;
+    const company=el('section',null,'standard-panel');company.id='panel-pnc';
+    heading.before(company);
+    let next=heading;
+    while(next){const after=next.nextElementSibling;company.append(next);if(next===layout)break;next=after;}
+    ishRoot.classList.add('standard-panel');
+    function fold(node,label){
+      if(!node)return;
+      const wrapper=el('details',null,'guide-fold');
+      wrapper.append(el('summary',label));node.before(wrapper);wrapper.append(node);return wrapper;
+    }
+    fold(company.querySelector('.guide-intro'),'Tiga tema P&C: kemakmuran, manusia, lingkungan');
+    fold(company.querySelector('.guide-glossary'),'Istilah penting');
+    const scope=fold(document.querySelector('.standard-scope'),'Perbedaan perusahaan, plasma, dan pekebun swadaya');
+    if(scope){scope.classList.add('guide-fold-shared');nav.after(scope);}
+    const process=fold(cert,'Bagaimana proses audit dan sertifikasi?');
+    if(process)process.classList.add('guide-fold-shared');
+    nav.setAttribute('role','tablist');
+    const panels=[company,ishRoot];
+    const labels=[['Perusahaan & Plasma','P&C · 7 prinsip · 38 kriteria'],['Pekebun Swadaya','ISH · 4 prinsip · 22 kriteria']];
+    const buttons=labels.map(([title,desc],i)=>{
+      const button=el('button',null,'standard-tab');button.type='button';button.id='standard-tab-'+i;
+      button.setAttribute('role','tab');button.setAttribute('aria-controls',panels[i].id);
+      button.append(el('strong',title),el('span',desc));
+      panels[i].setAttribute('role','tabpanel');panels[i].setAttribute('aria-labelledby',button.id);
+      return button;
+    });
+    nav.replaceChildren(...buttons);
+    function select(index){
+      panels.forEach((panel,i)=>{panel.hidden=i!==index;buttons[i].setAttribute('aria-selected',String(i===index));buttons[i].tabIndex=i===index?0:-1;});
+    }
+    buttons.forEach((button,i)=>{
+      button.addEventListener('click',()=>{select(i);history.replaceState(null,'',i?'#standar-ish':'#standar-pnc');});
+      button.addEventListener('keydown',event=>{
+        let index;
+        if(event.key==='ArrowRight'||event.key==='ArrowLeft')index=1-i;
+        if(event.key==='Home')index=0;if(event.key==='End')index=1;
+        if(index!==undefined){event.preventDefault();buttons[index].click();buttons[index].focus();}
+      });
+    });
+    function revealHash(){
+      const id=location.hash.slice(1);const target=document.getElementById(id);
+      select(target && ishRoot.contains(target)?1:0);
+      if(target){let parent=target;while(parent){if(parent.tagName==='DETAILS')parent.open=true;parent=parent.parentElement;}}
+    }
+    revealHash();window.addEventListener('hashchange',revealHash);
+  }
 })();
