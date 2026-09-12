@@ -137,8 +137,13 @@
   function initLanding(data){
     var eyebrow=document.querySelector('.dy-hero .dy-eyebrow');if(eyebrow)eyebrow.textContent='APRIL Group · Yayasan Gambut · Kampung Dayun';
     document.getElementById('dayun-outcomes').innerHTML=data.outcomes.map(function(x,i){return '<article class="dy-card"><div class="dy-number">0'+(i+1)+'</div><h3>'+esc(x.title)+'</h3><p>'+esc(x.description)+'</p></article>';}).join('');
-    var months=Array.from({length:12},function(_,i){return i+1;});
-    document.getElementById('dayun-timeline').innerHTML='<div class="dy-workplan-scroll" role="region" aria-label="Tahapan 23 kegiatan, dapat digeser" tabindex="0"><table class="dy-workplan"><thead><tr><th scope="col">Kegiatan utama</th>'+months.map(function(month){return '<th scope="col"><span>Bulan </span>'+month+'</th>';}).join('')+'</tr></thead><tbody>'+data.timeline.map(function(item){return '<tr><th scope="row">'+esc(item.title)+'</th>'+months.map(function(month){var scheduled=item.months.indexOf(month)!==-1;return '<td class="'+(scheduled?'scheduled':'')+'">'+(scheduled?'<span aria-label="Direncanakan pada bulan '+month+'">●</span>':'')+'</td>';}).join('')+'</tr>';}).join('')+'</tbody></table></div><div class="dy-workplan-note"><span><i></i>Periode kegiatan yang direncanakan</span><small>Jadwal mengikuti waktu mulai dan perkembangan pelaksanaan program.</small></div>';
+    var months=[
+      {number:1,label:'Okt 2026'},{number:2,label:'Nov 2026'},{number:3,label:'Des 2026'},
+      {number:4,label:'Jan 2027'},{number:5,label:'Feb 2027'},{number:6,label:'Mar 2027'},
+      {number:7,label:'Apr 2027'},{number:8,label:'Mei 2027'},{number:9,label:'Jun 2027'},
+      {number:10,label:'Jul 2027'},{number:11,label:'Agu 2027'},{number:12,label:'Sep 2027'}
+    ];
+    document.getElementById('dayun-timeline').innerHTML='<div class="dy-workplan-scroll" role="region" aria-label="Tahapan 23 kegiatan Oktober 2026 sampai September 2027, dapat digeser" tabindex="0"><table class="dy-workplan"><thead><tr><th scope="col">Kegiatan utama</th>'+months.map(function(month){return '<th scope="col">'+month.label+'</th>';}).join('')+'</tr></thead><tbody>'+data.timeline.map(function(item){return '<tr><th scope="row">'+esc(item.title)+'</th>'+months.map(function(month){var scheduled=item.months.indexOf(month.number)!==-1;return '<td class="'+(scheduled?'scheduled':'')+'">'+(scheduled?'<span aria-label="Direncanakan pada '+month.label+'">●</span>':'')+'</td>';}).join('')+'</tr>';}).join('')+'</tbody></table></div><div class="dy-workplan-note"><span><i></i>Periode kegiatan yang direncanakan</span><small>Jadwal program: Oktober 2026–September 2027; dapat menyesuaikan perkembangan pelaksanaan.</small></div>';
     initDayunMap(data);
     initDayunWeather();
   }
