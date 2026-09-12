@@ -1,4 +1,820 @@
 {
+  "RSPO-001": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT. ROHUL SAWIT INDUSTRI & PT. MASUBA CITRA MANDIRI",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "BUMITAMA AGRI LTD",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "PENDALIAN ESTATE",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Rokan Hulu",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-002": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "Ciliandra Perkasa",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "First Resources Limited",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "Ciliandra Perkasa",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Kampar",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-003": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "Gerbang Sawit Indah",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "First Resources Limited",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "Gerbang Sawit Indah Estate",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Rokan Hulu, Siak",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-004": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "Muriniwood Indah Industry",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "First Resources Limited",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "Muriniwood Indah Industry",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Bengkalis",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-005": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT. SUBUR ARUMMAKMUR",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "First Resources Limited",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "PETAPAHAN 1",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Kampar",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-006": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT. SUBUR ARUMMAKMUR",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "First Resources Limited",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "PETAPAHAN 2",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Kampar",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-007": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "Panca Surya Agrindo",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "First Resources Limited",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "Panca Surya Agrindo",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Rokan Hulu",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-008": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "Perdana Intisawit Perkasa",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "First Resources Limited",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "Perdana Intisawit Perkasa 2 Estate",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Rokan Hulu, Siak",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-009": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT. PERDANA INTISAWIT PERKASA",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "First Resources Limited",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "Perdana Intisawit Perkasa Estate",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Rokan Hulu",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-010": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "Priatama Riau",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "First Resources Limited",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "Priatama Riau",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Bengkalis",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-011": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT. MERIDAN SEJATISURYA PLANTATION",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "First Resources Limited",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "SEI PINGAI ESTATE",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Kota Pekanbaru/Siak, Pelalawan, Siak",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-012": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT. SUBUR ARUMMAKMUR",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "First Resources Limited",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "SUBUR ARUM MAKMUR ESTATE",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Kampar",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
   "RSPO-013": {
     "portfolioVersion": "Percontohan 1.0",
     "verificationDate": "12 September 2026",
@@ -57,6 +873,3066 @@
         "publisher": "First Resources Limited",
         "url": "https://www.first-resources.com/sustainability/",
         "use": "Pernyataan grup mengenai keanggotaan RSPO dan kebijakan keberlanjutan",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-014": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT. SUBUR ARUMMAKMUR",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "First Resources Limited",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "Surya intisari Raya - Lukut Estate",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Kota Pekanbaru, Siak",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-015": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT. SUBUR ARUMMAKMUR",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "First Resources Limited",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "Surya intisari Raya - Mandau Estate",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Siak",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-016": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT. ADEI PLANTATION AND INDUSTRY",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "Kuala Lumpur Kepong Berhad",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "KEBUN MANDAU SELATAN & KEBUN MANDAU UTARA",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Bengkalis",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-017": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT. Adei Plantation & Industry - Nilo Palm Oil Mill 1",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "Kuala Lumpur Kepong Berhad",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "KKPA BATANG NILO KECIL",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Pelalawan",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-018": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "Kuala Lumpur Kepong Berhad",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "Kuala Lumpur Kepong Berhad",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "KKPA SUNGAI BULUH",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Pelalawan",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-019": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT. Adei Plantation & Industry - Nilo Palm Oil Mill 2",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "Kuala Lumpur Kepong Berhad",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "LADANG MUTIARA ESTATE",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Pelalawan",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-020": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT. ADEI PLANTATION & INDUSTRY",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "Kuala Lumpur Kepong Berhad",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "NILO BARAT ESTATE;NILO TIMUR ESTATE",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Pelalawan",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-021": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT Safari Riau",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "Kuala Lumpur Kepong Berhad",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "PT. Safari Riau (HGU II)",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Pelalawan",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-022": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT. SEKARBUMI ALAMLESTARI",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "Kuala Lumpur Kepong Berhad",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "TAPUNG KANAN 1;TAPUNG KANAN 2;TAPUNG KANAN 3",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Kampar",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-023": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT. GUNTUNG IDAMANNUSA",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "Musim Mas Holdings Pte. Ltd.",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "ESTATE I ESTATE II ESTATE III",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Indragiri Hilir",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-024": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT. MUSIM MAS",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "Musim Mas Holdings Pte. Ltd.",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "Estate I, Estate II, Estate III, Estate IV, Estate V, Estate VI",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Pelalawan",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-025": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT Mitra Unggul Pusaka (Multimill)",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "PT. Inti Indosawit Subur",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "GONDAI ESTATE",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Pelalawan",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-026": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT Inti Indosawit Subur",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "PT. Inti Indosawit Subur",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "IIS UKUI",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Indragiri Hulu, Indragiri Hulu - Pelalawan, Indragiri Hulu / Pelalawan, Indragiri Hulu/Pelalawan, Pelalawan",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-027": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT Inti Indosawit Subur",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "PT. Inti Indosawit Subur",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "KKPA Inti Buatan",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Pelalawan",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-028": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT. RIGUNAS AGRI UTAMA",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "PT. Inti Indosawit Subur",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "KOPERASI BAROKAH",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Pelalawan, Siak",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-029": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT Mitra Unggul Pusaka (Multimill)",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "PT. Inti Indosawit Subur",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "PENARIKAN ESTATE",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Pelalawan",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-030": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT. RIGUNAS AGRI UTAMA",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "PT. Inti Indosawit Subur",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "PERANAP ESTATE",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Indragiri Hulu",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-031": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT Inti Indosawit Subur",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "PT. Inti Indosawit Subur",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "Plasma Ukui KLU",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Indragiri Hulu, Pelalawan",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-032": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT Mitra Unggul Pusaka (Multimill)",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "PT. Inti Indosawit Subur",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "SEGATI ESTATE",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Pelalawan",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-033": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT. Inti Indosawit Subur",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "PT. Inti Indosawit Subur",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "SOGA ESTATE; SEI LALA ESTATE",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Pelalawan",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-034": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT. TUNGGAL YUNUS ESTATE",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "PT. Inti Indosawit Subur",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "TOPAZ ESTATE",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Kampar",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-035": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT. Perkebunan Nusantara V",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "PT. Perkebunan Nusantara III",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "Kebun Air Molek I",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Indragiri Hulu, Indragiri Hulu - Pelalawan",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-036": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT. Perkebunan Nusantara IV",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "PT. Perkebunan Nusantara III",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "Kebun Air Molek II",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Indragiri Hulu",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-037": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT. Perkebunan Nusantara V",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "PT. Perkebunan Nusantara III",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "Kebun Sei Buatan",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Siak",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-038": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT. Perkebunan Nusantara V",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "PT. Perkebunan Nusantara III",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "Kebun Sei Kencana",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Kampar",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-039": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT. Perkebunan Nusantara V",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "PT. Perkebunan Nusantara III",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "Kebun Tanjung Medan",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Rokan Hilir",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-040": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT. Perkebunan Nusantara V",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "PT. Perkebunan Nusantara III",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "Lubuk Dalam",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Siak",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-041": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT. PERKEBUNAN NUSANTARA V",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "PT. Perkebunan Nusantara III",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "SEI BERLIAN ESTATE",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Kampar",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-042": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT. Perkebunan Nusantara V",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "PT. Perkebunan Nusantara III",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "SEI GALUH PLANTATION",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Kampar",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-043": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT. PERKEBUNAN NUSANTARA V",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "PT. Perkebunan Nusantara III",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "SEI INTAN ESTATE",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Kampar, Kampar/Rokan Hulu, Rokan Hulu, Rokan Hulu/Kampar",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-044": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT. PERKEBUNAN NUSANTARA V",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "PT. Perkebunan Nusantara III",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "SEI LINDAI ESTATE",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Kampar",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-045": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT. PERKEBUNAN NUSANTARA V",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "PT. Perkebunan Nusantara III",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "SEI ROKAN ESTATE",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Kampar, Kampar/Rokan Hulu, Rokan Hulu",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-046": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT. PERKEBUNAN NUSANTARA V",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "PT. Perkebunan Nusantara III",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "SEI SIASAM",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Kampar, Rokan Hulu",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-047": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT. PERKEBUNAN NUSANTARA V",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "PT. Perkebunan Nusantara III",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "SEI TAPUNG",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Rokan Hulu",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-048": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT. Perkebunan Nusantara V",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "PT. Perkebunan Nusantara III",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "Sei Garo Estate",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Kampar",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-049": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT. Perkebunan Nusantara V",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "PT. Perkebunan Nusantara III",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "Sei Pagar",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Kampar",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-050": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT. PERKEBUNAN NUSANTARA V",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "PT. Perkebunan Nusantara III",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "TAMORA ESTATE",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Kampar, Rokan Hulu, Rokan Hulu/Kampar",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-051": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT. PERKEBUNAN NUSANTARA V",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "PT. Perkebunan Nusantara III",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "TANDUN ESTATE",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Kampar, Kampar/Rokan Hulu, Rokan Hulu, Rokan Hulu/Kampar",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-052": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT. PERKEBUNAN NUSANTARA V",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "PT. Perkebunan Nusantara III",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "TERANTAM ESTATE",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Kampar, Rokan Hulu/Kampar",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-053": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT. Perkebunan Nusantara V",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "PT. Perkebunan Nusantara III",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "Tanah Putih Estate",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Rokan Hilir",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-054": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT Inecda subsidiary of S&G Biofuel PTE. LTD",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "S&G BIOFUEL PTE. LTD",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "ESTATE 1;ESTATE 2",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Indragiri Hulu",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-055": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT Gandaerah Hendana Subsidiary of S&G Biofuel PTE.LTD",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "S&G BIOFUEL PTE. LTD",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "ESTATE 1;ESTATE 2;ESTATE 3",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Pelalawan",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-056": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT Gandaerah Hendana",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "S&G BIOFUEL PTE. LTD",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "Kebun 1 Estate, Kebun 2 Estate, Kebun 3 Estate",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Indragiri Hulu, Pelalawan",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-057": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT MURINI SAMSAM",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "Wilmar International Limited",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "MURINI SAMSAM ESTATE",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Bengkalis",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
+        "accessed": "12 September 2026"
+      }
+    ],
+    "nextEvidence": [
+      "Profil anggota RSPO dan nomor keanggotaan yang dapat dicocokkan",
+      "Sertifikat unit/supply base beserta masa berlaku dan badan sertifikasi",
+      "Daftar estate dan pabrik yang tercakup dalam sertifikat",
+      "Luas tersertifikasi yang tercantum dalam dokumen",
+      "Dokumen legal HGU/IUP dari sumber publik resmi"
+    ]
+  },
+  "RSPO-058": {
+    "portfolioVersion": "Portofolio verifikasi 1.0",
+    "verificationDate": "2026-07-14",
+    "publicStatus": "Referensi area perusahaan dalam ekosistem data RSPO",
+    "certificationStatus": "Belum diverifikasi pada tingkat kebun/unit",
+    "certificationTone": "pending",
+    "verificationSummary": "Identitas, grup, lokasi, dan poligon referensi telah tersedia. Keberadaan area dalam referensi RSPO tidak digunakan sebagai bukti bahwa kebun, estate, pabrik, atau seluruh poligon telah tersertifikasi.",
+    "facts": [
+      {
+        "label": "Entitas",
+        "value": "PT Sinarsiak Dian Permai",
+        "status": "Tersedia",
+        "note": "Nama perusahaan pada dataset referensi YG."
+      },
+      {
+        "label": "Grup perusahaan",
+        "value": "Wilmar International Limited",
+        "status": "Referensi",
+        "note": "Hubungan grup perlu dicocokkan dengan profil anggota resmi."
+      },
+      {
+        "label": "Estate/supply base",
+        "value": "Sinarsiak Dian Permai",
+        "status": "Tersedia",
+        "note": "Nama unit sebagaimana tercatat pada referensi area."
+      },
+      {
+        "label": "Cakupan lokasi",
+        "value": "Pelalawan, Siak",
+        "status": "Tersedia",
+        "note": "Kabupaten/kota pada dataset referensi."
+      },
+      {
+        "label": "Luas spasial",
+        "value": "Dihitung otomatis dari poligon",
+        "status": "Referensi",
+        "note": "Bukan luas HGU dan bukan luas tersertifikasi."
+      },
+      {
+        "label": "Sertifikasi unit",
+        "value": "Belum dikonfirmasi",
+        "status": "Perlu dokumen",
+        "note": "Memerlukan sertifikat publik yang menyebut unit, nomor, cakupan, dan masa berlaku."
+      },
+      {
+        "label": "Legalitas lahan",
+        "value": "Belum tersedia",
+        "status": "Perlu sumber resmi",
+        "note": "Nomor dan luas HGU/IUP hanya ditampilkan dari dokumen pemerintah atau dokumen publik resmi."
+      }
+    ],
+    "sourceLinks": [
+      {
+        "label": "GeoRSPO",
+        "publisher": "Roundtable on Sustainable Palm Oil",
+        "url": "https://rspo.org/as-an-organisation/tools/georspo/",
+        "use": "Rujukan metodologi dan konteks batas konsesi anggota RSPO",
         "accessed": "12 September 2026"
       }
     ],
