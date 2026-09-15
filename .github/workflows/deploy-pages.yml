@@ -57,6 +57,7 @@ jobs:
             ./ _site/
           node scripts/sanitize-public-pbph.mjs _site
           node scripts/assert-public-pbph-private.mjs _site
+          node scripts/assert-repository-pbph-data-private.mjs
           node --test tests/staff-auth.test.cjs
 
       - name: Upload Pages artifact
