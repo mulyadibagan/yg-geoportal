@@ -10,10 +10,6 @@ on:
       - 'data/master-database-snapshot.json'
       - 'data/kph_2019_riau.geojson'
       - 'data/liberica-morphology-2026.json'
-      - 'data/PBPH_RIAU_052026.geojson'
-      - 'data/pbph-documents.json'
-      - 'data/fire-monthly/**'
-      - 'data/phl-svlk-monthly/**'
       - 'cloudflare/yg-webgis-public-data/**'
       - '.github/workflows/publish-cloudflare-snapshots.yml'
   workflow_run:
@@ -73,16 +69,6 @@ jobs:
           npx wrangler r2 object put "yg-webgis-public-snapshots/research/liberica-morphology-2026.json" --remote --file ../../data/liberica-morphology-2026.json --content-type application/json
           npx wrangler r2 object put "yg-webgis-public-snapshots-staging/internal/rspo/riau-groups.geojson" --remote --file tmp/rspo-riau-groups.geojson --content-type application/geo+json
           npx wrangler r2 object put "yg-webgis-public-snapshots/internal/rspo/riau-groups.geojson" --remote --file tmp/rspo-riau-groups.geojson --content-type application/geo+json
-          npx wrangler r2 object put "yg-webgis-public-snapshots-staging/internal/pbph/riau.geojson" --remote --file ../../data/PBPH_RIAU_052026.geojson --content-type application/geo+json
-          npx wrangler r2 object put "yg-webgis-public-snapshots/internal/pbph/riau.geojson" --remote --file ../../data/PBPH_RIAU_052026.geojson --content-type application/geo+json
-          npx wrangler r2 object put "yg-webgis-public-snapshots-staging/internal/pbph/documents.json" --remote --file ../../data/pbph-documents.json --content-type application/json
-          npx wrangler r2 object put "yg-webgis-public-snapshots/internal/pbph/documents.json" --remote --file ../../data/pbph-documents.json --content-type application/json
-          npx wrangler r2 object put "yg-webgis-public-snapshots-staging/internal/fire-monthly/index.json" --remote --file ../../data/fire-monthly/index.json --content-type application/json
-          npx wrangler r2 object put "yg-webgis-public-snapshots/internal/fire-monthly/index.json" --remote --file ../../data/fire-monthly/index.json --content-type application/json
-          npx wrangler r2 object put "yg-webgis-public-snapshots-staging/internal/phl-svlk-monthly/index.json" --remote --file ../../data/phl-svlk-monthly/index.json --content-type application/json
-          npx wrangler r2 object put "yg-webgis-public-snapshots/internal/phl-svlk-monthly/index.json" --remote --file ../../data/phl-svlk-monthly/index.json --content-type application/json
-          for report in ../../data/fire-monthly/20??-??.json; do month="$(basename "$report" .json)"; npx wrangler r2 object put "yg-webgis-public-snapshots-staging/internal/fire-monthly/${month}.json" --remote --file "$report" --content-type application/json; npx wrangler r2 object put "yg-webgis-public-snapshots/internal/fire-monthly/${month}.json" --remote --file "$report" --content-type application/json; done
-          for report in ../../data/phl-svlk-monthly/20??-??.json; do month="$(basename "$report" .json)"; npx wrangler r2 object put "yg-webgis-public-snapshots-staging/internal/phl-svlk-monthly/${month}.json" --remote --file "$report" --content-type application/json; npx wrangler r2 object put "yg-webgis-public-snapshots/internal/phl-svlk-monthly/${month}.json" --remote --file "$report" --content-type application/json; done
           npx wrangler r2 object put "yg-webgis-public-snapshots-staging/references/rspo-riau-groups.geojson" --remote --file tmp/rspo-riau-groups.geojson --content-type application/geo+json
           npx wrangler r2 object put "yg-webgis-public-snapshots/references/rspo-riau-groups.geojson" --remote --file tmp/rspo-riau-groups.geojson --content-type application/geo+json
       - name: Build and upload manifest last
