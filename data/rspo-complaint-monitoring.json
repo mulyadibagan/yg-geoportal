@@ -1,0 +1,119 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-09-12T16:45:00Z",
+  "source": {
+    "publisher": "Roundtable on Sustainable Palm Oil (RSPO)",
+    "name": "RSPO Complaints Portal — Status of Complaints",
+    "url": "https://rspo.my.site.com/Complaint/s/casetracker",
+    "coverage": "184 baris pada 19 halaman portal diperiksa; kecocokan dilakukan terhadap nama entitas dan grup pada referensi YG."
+  },
+  "method": {
+    "scope": "Kecocokan nama responden langsung atau hubungan anak perusahaan yang dinyatakan oleh portal RSPO.",
+    "warning": "Pengaduan adalah dugaan yang diproses melalui mekanisme RSPO, bukan bukti pelanggaran. Status terbukti hanya boleh mengikuti keputusan resmi yang dapat diperiksa.",
+    "noMatchWarning": "Tidak ditemukannya kecocokan nama pada tanggal pemeriksaan bukan jaminan bahwa tidak pernah ada pengaduan."
+  },
+  "groups": {
+    "BUMITAMA AGRI LTD": {
+      "totalMatched": 8,
+      "active": 0,
+      "officialDecisionPendingAppeal": 0,
+      "postComplaintMonitoring": 0,
+      "closed": 8,
+      "directAreaCases": [],
+      "latest": [
+        {"reference":"RSPO/2023/04/RH","respondent":"PT BUMITAMA GUNAJAYA AGRO (a subsidiary of BUMITAMA AGRI LTD)","status":"Complaint closed","dateFiled":"2023-04-10"},
+        {"reference":"RSPO/2021/10/LSL","respondent":"PT NABATINDO KARYA UTAMA (a subsidiary of BUMITAMA AGRI LTD)","status":"Complaint closed","dateFiled":"2021-07-01"}
+      ]
+    },
+    "First Resources Limited": {
+      "totalMatched": 8,
+      "active": 0,
+      "officialDecisionPendingAppeal": 0,
+      "postComplaintMonitoring": 0,
+      "closed": 8,
+      "directAreaCases": [],
+      "latest": [
+        {"reference":"RSPO/2024/10/RH","respondent":"PT Mitra Karya Sentosa (a subsidiary of First Resources Limited)","status":"Complaint closed","dateFiled":"2024-07-10"},
+        {"reference":"RSPO/2024/05/RR","respondent":"PT Swadaya Mukti Prakarsa (a subsidiary of First Resources Limited)","status":"Complaint closed","dateFiled":"2024-03-20"}
+      ]
+    },
+    "Kuala Lumpur Kepong Berhad": {
+      "totalMatched": 2,
+      "active": 0,
+      "officialDecisionPendingAppeal": 0,
+      "postComplaintMonitoring": 0,
+      "closed": 2,
+      "directAreaCases": [],
+      "latest": [
+        {"reference":"legacy-2013-10-02","respondent":"Equatorial Palm Oil (Liberia) Incorporated (a subsidiary of Kuala Lumpur Kepong Berhad)","status":"Complaint closed","dateFiled":"2013-10-02"},
+        {"reference":"legacy-2013-04-24","respondent":"Collingwood Plantation Pte Ltd (a subsidiary of Kuala Lumpur Kepong Berhad)","status":"Complaint closed","dateFiled":"2013-04-24"}
+      ]
+    },
+    "Musim Mas Holdings Pte. Ltd.": {
+      "totalMatched": 6,
+      "active": 1,
+      "officialDecisionPendingAppeal": 0,
+      "postComplaintMonitoring": 0,
+      "closed": 5,
+      "directAreaCases": [
+        {"areaIds":["RSPO-024"],"reference":"RSPO/2026/11/RH","respondent":"PT Musim Mas (a subsidiary of Musim Mas Holdings Pte. Ltd.)","status":"Investigation / Deliberation","dateFiled":"2026-06-18"},
+        {"areaIds":["RSPO-023"],"reference":"RSPO/2024/14/RH","respondent":"PT Guntung Idamannusa (a subsidiary of Musim Mas Holdings Pte. Ltd.)","status":"Complaint closed","dateFiled":"2024-10-16"}
+      ],
+      "latest": [
+        {"reference":"RSPO/2026/11/RH","respondent":"PT Musim Mas (a subsidiary of Musim Mas Holdings Pte. Ltd.)","status":"Investigation / Deliberation","dateFiled":"2026-06-18"},
+        {"reference":"RSPO/2024/14/RH","respondent":"PT Guntung Idamannusa (a subsidiary of Musim Mas Holdings Pte. Ltd.)","status":"Complaint closed","dateFiled":"2024-10-16"}
+      ]
+    },
+    "PT. Inti Indosawit Subur": {
+      "totalMatched": 1,
+      "active": 0,
+      "officialDecisionPendingAppeal": 0,
+      "postComplaintMonitoring": 0,
+      "closed": 1,
+      "directAreaCases": [],
+      "latest": [
+        {"reference":"RSPO/2017/02/CH","respondent":"PT Hari Sawit Jaya (a subsidiary of PT. Inti Indosawit Subur)","status":"Complaint closed","dateFiled":"2017-09-25"}
+      ]
+    },
+    "PT. Perkebunan Nusantara III": {
+      "totalMatched": 6,
+      "active": 0,
+      "officialDecisionPendingAppeal": 0,
+      "postComplaintMonitoring": 1,
+      "closed": 6,
+      "directAreaCases": [
+        {"areaIds":["RSPO-035","RSPO-037","RSPO-038","RSPO-039","RSPO-040","RSPO-041","RSPO-042","RSPO-043","RSPO-044","RSPO-045","RSPO-046","RSPO-047","RSPO-048","RSPO-049","RSPO-050","RSPO-051","RSPO-052","RSPO-053"],"reference":"RSPO/2022/03/CRP","respondent":"PT. Perkebunan Nusantara V (PERSERO)","status":"Complaint closed for Post Complaints Monitoring","dateFiled":"2022-03-04"},
+        {"areaIds":["RSPO-036"],"reference":"RSPO/2019/12/IR","respondent":"PT. Perkebunan Nusantara IV (PERSERO)","status":"Complaint closed","dateFiled":"2019-05-06"}
+      ],
+      "latest": [
+        {"reference":"RSPO/2022/03/CRP","respondent":"PT. Perkebunan Nusantara V (PERSERO)","status":"Complaint closed for Post Complaints Monitoring","dateFiled":"2022-03-04"},
+        {"reference":"RSPO/2019/12/IR","respondent":"PT. Perkebunan Nusantara IV (PERSERO)","status":"Complaint closed","dateFiled":"2019-05-06"}
+      ]
+    },
+    "S&G BIOFUEL PTE. LTD": {
+      "totalMatched": 1,
+      "active": 0,
+      "officialDecisionPendingAppeal": 0,
+      "postComplaintMonitoring": 0,
+      "closed": 1,
+      "directAreaCases": [
+        {"areaIds":["RSPO-054"],"reference":"RSPO/2021/06/SW","respondent":"PT Inecda (a subsidiary of S&G BIOFUEL PTE. LTD)","status":"Complaint closed","dateFiled":"2021-03-19"}
+      ],
+      "latest": [
+        {"reference":"RSPO/2021/06/SW","respondent":"PT Inecda (a subsidiary of S&G BIOFUEL PTE. LTD)","status":"Complaint closed","dateFiled":"2021-03-19"}
+      ]
+    },
+    "Wilmar International Limited": {
+      "totalMatched": 15,
+      "active": 1,
+      "officialDecisionPendingAppeal": 1,
+      "postComplaintMonitoring": 0,
+      "closed": 13,
+      "directAreaCases": [],
+      "latest": [
+        {"reference":"RSPO/2025/12/RR","respondent":"PT AMP Plantation (a subsidiary of Wilmar International Limited)","status":"Investigation / Deliberation","dateFiled":"2025-10-22"},
+        {"reference":"RSPO/2025/05/CRP","respondent":"PT Gersindo Minang Plantation (a subsidiary of Wilmar International Limited)","status":"Decision delivered with period to appeal (60 working days)","dateFiled":"2025-06-24"}
+      ]
+    }
+  }
+}

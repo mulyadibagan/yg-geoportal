@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Perbaiki Objek Monitoring</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <style>
+    :root{--green:#087452;--brown:#4c1d0b;--bg:#eff6f2;--border:#d6e3dc;--text:#23352e;--muted:#697a73}
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}
+    .shell{width:min(1280px,calc(100% - 24px));margin:18px auto}
+    .head{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:14px}
+    h1{margin:0;color:var(--brown);font-size:28px}.head p{margin:4px 0 0;color:var(--muted)}
+    .panel{padding:18px;border:1px solid var(--border);border-radius:16px;background:#fff;box-shadow:0 12px 30px rgba(30,70,54,.08)}
+    .login{display:grid;grid-template-columns:1fr auto;gap:10px;margin-bottom:14px}
+    input,select,button{font:inherit}input,select{width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:10px;background:#fff}
+    button{padding:11px 15px;border:0;border-radius:10px;font-weight:800;cursor:pointer}
+    .primary{background:var(--green);color:#fff}.secondary{background:#e7f2ed;color:var(--green)}
+    .danger{background:#fff0ed;color:#a63524}.hidden{display:none!important}
+    .report-card{display:grid;grid-template-columns:1fr auto;gap:16px;padding:13px 15px;border:1px solid var(--border);border-radius:12px;background:#f9fcfa;margin-bottom:14px}
+    .report-card strong{display:block}.report-card span{display:block;color:var(--muted);font-size:13px}
+    .picker-tools{display:grid;grid-template-columns:minmax(220px,1fr) auto;gap:10px;margin-bottom:10px}
+    #map{height:62vh;min-height:480px;border:1px solid var(--border);border-radius:14px;background:#dfe9e4}
+    .summary{margin-top:12px;padding:13px;border:1px solid var(--border);border-radius:11px;background:#f8fbf9}
+    .summary.success{border-color:#8cc9ad;background:#edf9f3}.summary.error{border-color:#e4a59c;background:#fff2ef}
+    .summary strong,.summary span{display:block}.summary span{color:var(--muted);font-size:13px}
+    .actions{display:flex;justify-content:flex-end;gap:10px;margin-top:14px}
+    .status{min-height:24px;margin-top:10px;color:var(--muted);font-size:13px}
+    .legend{display:flex;gap:16px;flex-wrap:wrap;margin:8px 0;color:var(--muted);font-size:12px}
+    .legend i{display:inline-block;width:18px;height:8px;margin-right:5px;border-radius:4px}.old{background:#d32f2f}.new{background:#ffb300}
+    @media(max-width:700px){.shell{width:calc(100% - 12px);margin:8px auto}.head{align-items:flex-start;flex-direction:column}h1{font-size:23px}.login,.picker-tools{grid-template-columns:1fr}#map{height:58vh;min-height:430px}.actions{flex-direction:column}.actions button{width:100%}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="head">
+      <div>
+        <h1>Perbaiki Objek Monitoring</h1>
+        <p>Klik polygon, garis, atau titik yang benar. Data monitoring dan foto tidak berubah.</p>
+      </div>
+      <a href="https://www.webgisyg.id/p/monitoring.html" style="color:#087452;font-weight:800">Kembali ke Monitoring</a>
+    </header>
+
+    <section class="panel">
+      <div class="login" id="login-box">
+        <input id="admin-token" type="password" autocomplete="current-password" placeholder="Masukkan token admin">
+        <button class="primary" id="load-report" type="button">Buka laporan</button>
+      </div>
+
+      <div id="editor" class="hidden">
+        <div class="report-card">
+          <div>
+            <strong id="report-title">Memuat laporan…</strong>
+            <span id="report-meta"></span>
+          </div>
+          <span id="report-status"></span>
+        </div>
+
+        <div class="picker-tools">
+          <select id="layer-select">
+            <option value="">Pilih layer objek baru…</option>
+          </select>
+          <button class="secondary" id="reload-layer" type="button">Muat ulang layer</button>
+        </div>
+
+        <div class="legend">
+          <span><i class="old"></i>Objek lama</span>
+          <span><i class="new"></i>Objek baru yang dipilih</span>
+        </div>
+
+        <div id="map"></div>
+
+        <div class="summary" id="selection-summary">
+          Pilih layer, lalu klik objek yang benar pada peta.
+        </div>
+
+        <div class="actions">
+          <button class="danger" id="clear-selection" type="button">Batalkan pilihan baru</button>
+          <button class="primary" id="save-object" type="button" disabled>Simpan perubahan objek</button>
+        </div>
+        <div class="status" id="save-status"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://mulyadibagan.github.io/yg-geoportal/js/config.js?v=20260713-50"></script>
+  <script>
+  (function(){
+    'use strict';
+
+    var REPORT_ID = <?!= JSON.stringify(reportId) ?>;
+    var DATA_BASE = 'https://mulyadibagan.github.io/yg-geoportal/data/';
+    var COMMUNITY_API = 'https://script.google.com/macros/s/AKfycbxeGTDZXkR0DyLZmBHTq2M-52Iu4dTTGpH164S7sYHg8qPzvffobC6-r-TBLVHMT3HU-A/exec?page=public-reports';
+    var token = '';
+    var report = null;
+    var map = null;
+    var oldLayer = null;
+    var candidateGroup = null;
+    var selectedLayer = null;
+    var selectedObject = null;
+
+    var layerSelect = document.getElementById('layer-select');
+    var summary = document.getElementById('selection-summary');
+    var saveButton = document.getElementById('save-object');
+    var statusBox = document.getElementById('save-status');
+
+    function esc(value){
+      return String(value == null ? '' : value).replace(/[&<>"']/g,function(c){
+        return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+      });
+    }
+
+    function initMap(){
+      if(map) return;
+      map = L.map('map').setView([1.42,102.05],12);
+      var street = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+        maxZoom:19,attribution:'&copy; OpenStreetMap contributors'
+      }).addTo(map);
+      var satellite = L.tileLayer(
+        'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+        {maxZoom:19,attribution:'Tiles &copy; Esri'}
+      );
+      L.control.layers({'Peta Jalan':street,'Citra Satelit':satellite},null,{collapsed:true}).addTo(map);
+    }
+
+    function populateLayers(){
+      var configs = (window.YG_LAYER_CONFIG || []).slice();
+      configs.push({
+        id:'community_reports',
+        label:'Laporan Masyarakat Terverifikasi',
+        color:'#7b1fa2',
+        sourceType:'community_report'
+      });
+      layerSelect.innerHTML = '<option value="">Pilih layer objek baru…</option>' +
+        configs.map(function(item){
+          return '<option value="'+esc(item.id)+'">'+esc(item.label)+'</option>';
+        }).join('');
+      if(report && report.targetLayerId) layerSelect.value = report.targetLayerId;
+    }
+
+    function drawOldGeometry(){
+      if(oldLayer){ map.removeLayer(oldLayer); oldLayer=null; }
+      if(!report || !report.geometry) return;
+      oldLayer = L.geoJSON({type:'Feature',geometry:report.geometry,properties:{}},{
+        style:{color:'#d32f2f',fillColor:'#ef5350',fillOpacity:.20,weight:5,dashArray:'8 6'},
+        pointToLayer:function(feature,latlng){
+          return L.circleMarker(latlng,{radius:11,color:'#fff',weight:3,fillColor:'#d32f2f',fillOpacity:1});
+        }
+      }).addTo(map);
+      var bounds = oldLayer.getBounds();
+      if(bounds.isValid()) map.fitBounds(bounds,{padding:[30,30],maxZoom:17});
+    }
+
+    function objectName(feature, fallback){
+      var p = feature.properties || {};
+      var keys = ['Nama_Objek','nama_objek','Nama','nama','Desa','desa','Lokasi','lokasi','title','name'];
+      for(var i=0;i<keys.length;i++){
+        if(p[keys[i]] !== undefined && p[keys[i]] !== null && String(p[keys[i]]).trim()){
+          var name = String(p[keys[i]]).trim();
+          var phase = p.Fase || p.fase || p.Tahun || p.tahun || '';
+          return phase && name.indexOf(String(phase)) === -1 ? name+' – '+phase : name;
+        }
+      }
+      return fallback || 'Objek WebGIS';
+    }
+
+    function stableId(feature, config){
+      var p = feature.properties || {};
+      var explicit = p.Object_ID || p.object_id || p.objectId || p.OBJECTID || p.FID;
+      if(explicit !== undefined && explicit !== null && String(explicit).trim() && String(explicit) !== '0'){
+        return config.id+':'+String(explicit).trim();
+      }
+      var raw = config.id+'|'+objectName(feature,config.label)+'|'+JSON.stringify(feature.geometry);
+      var hash = 0;
+      for(var i=0;i<raw.length;i++) hash=((hash<<5)-hash+raw.charCodeAt(i))|0;
+      return config.id+':auto:'+Math.abs(hash);
+    }
+
+    function configFor(id){
+      if(id === 'community_reports'){
+        return {id:id,label:'Laporan Masyarakat Terverifikasi',color:'#7b1fa2',sourceType:'community_report'};
+      }
+      return (window.YG_LAYER_CONFIG || []).find(function(item){return item.id===id;});
+    }
+
+    function loadCommunity(){
+      return new Promise(function(resolve,reject){
+        var callback = 'ygEditCommunity'+Date.now();
+        var script = document.createElement('script');
+        var timer = setTimeout(function(){
+          cleanup(); reject(new Error('Waktu memuat laporan masyarakat habis.'));
+        },15000);
+        function cleanup(){
+          clearTimeout(timer);
+          try{delete window[callback];}catch(e){window[callback]=undefined;}
+          if(script.parentNode) script.parentNode.removeChild(script);
+        }
+        window[callback]=function(data){cleanup();resolve(data);};
+        script.onerror=function(){cleanup();reject(new Error('Laporan masyarakat gagal dimuat.'));};
+        script.src=COMMUNITY_API+'&callback='+callback+'&t='+Date.now();
+        document.head.appendChild(script);
+      });
+    }
+
+    async function loadLayer(){
+      var id = layerSelect.value;
+      clearSelection();
+      if(candidateGroup){map.removeLayer(candidateGroup);candidateGroup=null;}
+      if(!id){summary.textContent='Pilih layer terlebih dahulu.';return;}
+      var config = configFor(id);
+      if(!config){summary.textContent='Konfigurasi layer tidak ditemukan.';return;}
+      summary.className='summary';
+      summary.textContent='Memuat '+config.label+'…';
+      try{
+        var data;
+        if(id==='community_reports'){
+          data=await loadCommunity();
+        }else{
+          var response=await fetch(DATA_BASE+id+'.geojson?t='+Date.now(),{cache:'no-store'});
+          if(!response.ok) throw new Error('HTTP '+response.status);
+          data=await response.json();
+        }
+        candidateGroup=L.geoJSON(data,{
+          style:function(){return{color:config.color||'#087452',fillColor:config.color||'#087452',fillOpacity:.18,weight:3};},
+          pointToLayer:function(feature,latlng){
+            return L.circleMarker(latlng,{radius:9,color:'#fff',weight:2,fillColor:config.color||'#087452',fillOpacity:.95});
+          },
+          onEachFeature:function(feature,layer){
+            layer.bindTooltip(objectName(feature,config.label),{sticky:true});
+            layer.on('click',function(event){
+              if(event&&event.originalEvent)L.DomEvent.stopPropagation(event);
+              selectObject(feature,layer,config);
+            });
+          }
+        }).addTo(map);
+        var bounds=candidateGroup.getBounds();
+        if(bounds.isValid())map.fitBounds(bounds,{padding:[25,25],maxZoom:16});
+        summary.textContent='Klik polygon, garis, atau titik yang benar pada peta.';
+      }catch(error){
+        summary.className='summary error';
+        summary.textContent='Layer gagal dimuat: '+error.message;
+      }
+    }
+
+    function selectObject(feature, layer, config){
+      if(selectedLayer && selectedLayer!==layer && selectedLayer.setStyle){
+        candidateGroup.resetStyle(selectedLayer);
+      }
+      selectedLayer=layer;
+      if(layer.setStyle){
+        layer.setStyle({color:'#ff8f00',fillColor:'#ffca28',fillOpacity:.45,weight:6});
+      }
+      if(layer.setRadius){
+        layer.setRadius(12);
+        layer.setStyle({color:'#fff',weight:3,fillColor:'#ffb300',fillOpacity:1});
+      }
+      var name=objectName(feature,config.label);
+      selectedObject={
+        objectId:stableId(feature,config),
+        objectName:name,
+        layerId:config.id,
+        layerLabel:config.label,
+        sourceType:config.sourceType||'program_layer',
+        geometry:feature.geometry,
+        properties:feature.properties||{}
+      };
+      summary.className='summary success';
+      summary.innerHTML='<strong>'+esc(name)+'</strong><span>'+esc(config.label)+' • '+esc(feature.geometry.type)+'</span>';
+      saveButton.disabled=false;
+      if(layer.getBounds && layer.getBounds().isValid()){
+        map.fitBounds(layer.getBounds(),{padding:[35,35],maxZoom:18});
+      }else if(layer.getLatLng){
+        map.setView(layer.getLatLng(),17);
+      }
+    }
+
+    function clearSelection(){
+      if(selectedLayer && candidateGroup){
+        try{candidateGroup.resetStyle(selectedLayer);}catch(e){}
+      }
+      selectedLayer=null;
+      selectedObject=null;
+      saveButton.disabled=true;
+      summary.className='summary';
+      summary.textContent='Pilih layer, lalu klik objek yang benar pada peta.';
+    }
+
+    function openReport(){
+      token=document.getElementById('admin-token').value.trim();
+      if(!token){alert('Masukkan token admin.');return;}
+      if(!REPORT_ID){alert('ID laporan tidak tersedia pada alamat halaman.');return;}
+      document.getElementById('load-report').disabled=true;
+      google.script.run
+        .withSuccessHandler(function(data){
+          report=data;
+          document.getElementById('editor').classList.remove('hidden');
+          document.getElementById('report-title').textContent=data.title||data.reportId;
+          document.getElementById('report-meta').textContent=
+            data.reportId+' • Objek lama: '+(data.locationName||'-')+
+            ' • '+(data.targetLayerLabel||'-');
+          document.getElementById('report-status').textContent=data.status||'';
+          initMap();
+          populateLayers();
+          drawOldGeometry();
+          setTimeout(function(){map.invalidateSize(true);},100);
+          if(layerSelect.value)loadLayer();
+          document.getElementById('load-report').disabled=false;
+        })
+        .withFailureHandler(function(error){
+          document.getElementById('load-report').disabled=false;
+          alert(error.message||String(error));
+        })
+        .getReportForObjectEdit(token,REPORT_ID);
+    }
+
+    function saveObject(){
+      if(!selectedObject)return;
+      if(!confirm('Ganti objek laporan '+REPORT_ID+' ke '+selectedObject.objectName+'?'))return;
+      saveButton.disabled=true;
+      statusBox.textContent='Menyimpan perubahan objek…';
+      google.script.run
+        .withSuccessHandler(function(result){
+          statusBox.textContent='Berhasil. Objek laporan telah diganti ke '+result.objectName+'.';
+          summary.innerHTML='<strong>Perubahan berhasil disimpan</strong><span>'+esc(result.objectName)+' • '+esc(result.geometryType)+'</span>';
+          report.geometry=selectedObject.geometry;
+          drawOldGeometry();
+          setTimeout(function(){
+            window.location.href='https://www.webgisyg.id/p/monitoring.html?updated='+Date.now();
+          },1800);
+        })
+        .withFailureHandler(function(error){
+          saveButton.disabled=false;
+          statusBox.textContent='Gagal: '+(error.message||String(error));
+        })
+        .updateReportObject(token,REPORT_ID,selectedObject);
+    }
+
+    document.getElementById('load-report').addEventListener('click',openReport);
+    document.getElementById('admin-token').addEventListener('keydown',function(e){if(e.key==='Enter')openReport();});
+    layerSelect.addEventListener('change',loadLayer);
+    document.getElementById('reload-layer').addEventListener('click',loadLayer);
+    document.getElementById('clear-selection').addEventListener('click',clearSelection);
+    saveButton.addEventListener('click',saveObject);
+  })();
+  </script>
+</body>
+</html>

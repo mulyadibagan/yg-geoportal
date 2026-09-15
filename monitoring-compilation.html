@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta name="theme-color" content="#086b4c">
+  <title>Kompilasi Hasil Monitoring</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+  <link rel="stylesheet" href="css/monitoring.css?v=20260828-compilation-modern1">
+  <style>
+    .compilation-page{--compilation-green:#086b4c;--compilation-green-dark:#064d38;--compilation-green-soft:#eaf4ef;--compilation-blue:#1d70a2;--compilation-amber:#b76a08;--compilation-red:#b5483e;background:#f3f7f5}
+    .compilation-page .monitor-header{min-height:64px;padding-top:9px;padding-bottom:9px;background:rgba(255,255,255,.97)}
+    .compilation-page .dashboard-shell{width:min(1440px,calc(100% - 32px))}
+    .compilation-shell{padding-top:18px}
+    .compilation-hero{position:relative;padding:21px 24px;border-radius:18px;background:linear-gradient(125deg,var(--compilation-green-dark),var(--compilation-green));color:#fff;box-shadow:0 14px 34px rgba(22,67,51,.12);overflow:hidden}
+    .compilation-hero:after{position:absolute;right:-58px;bottom:-118px;width:270px;height:270px;border:42px solid rgba(255,255,255,.08);border-radius:50%;content:""}
+    .compilation-hero h1{position:relative;z-index:1;margin:6px 0;font-size:clamp(28px,3.6vw,40px);line-height:1.08}
+    .compilation-hero p{position:relative;z-index:1;max-width:820px;margin:0;color:rgba(255,255,255,.84);line-height:1.5}
+    .compilation-kpis{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:9px;margin:12px 0}
+    .compilation-kpis article{min-width:0;padding:12px 13px;border:1px solid #d8e5df;border-radius:13px;background:#fff;box-shadow:0 7px 20px rgba(22,67,51,.055)}
+    .compilation-kpis span,.compilation-kpis small{display:block;color:#667b73;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .compilation-kpis strong{display:block;margin:4px 0 2px;font-size:22px;line-height:1;color:var(--compilation-green)}
+    .compilation-toolbar{position:sticky;top:65px;z-index:35;grid-template-columns:minmax(170px,.8fr) minmax(170px,.8fr) minmax(280px,1.7fr);gap:10px;padding:12px;border-color:#d8e5df;border-radius:14px;box-shadow:0 9px 24px rgba(22,67,51,.09)}
+    .compilation-toolbar label{font-size:10px}
+    .compilation-toolbar input,.compilation-toolbar select{min-height:40px;border-color:#d3e1db;background:#f8fbf9}
+    .cluster-map-panel{margin-top:12px;padding:16px;border:1px solid #d8e5df;border-radius:16px;background:#fff;box-shadow:0 8px 22px rgba(22,67,51,.06)}
+    .cluster-map-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:12px}.cluster-map-head h2{margin:3px 0 2px;font-size:21px}.cluster-map-head p{margin:0;color:#667b73;font-size:11px}
+    .cluster-map-filters{display:grid;grid-template-columns:repeat(3,minmax(150px,1fr)) auto;gap:9px;align-items:end;margin-bottom:10px}.cluster-map-filters label{color:#667b73;font-size:10px;font-weight:800}.cluster-map-filters select{display:block;width:100%;min-height:40px;margin-top:5px;border:1px solid #d3e1db;border-radius:10px;background:#f8fbf9}.cluster-map-reset{min-height:40px;padding:0 15px;border:1px solid #9bc8b5;border-radius:10px;background:#eef8f3;color:var(--compilation-green);font-weight:850;cursor:pointer}
+    .cluster-map-chips{display:flex;gap:7px;padding:2px 0 11px;overflow-x:auto}.cluster-map-chip{flex:0 0 auto;padding:8px 10px;border:1px solid #d8e5df;border-radius:999px;background:#f8fbf9;color:var(--ink);font:inherit;font-size:10px;cursor:pointer}.cluster-map-chip:hover,.cluster-map-chip:focus-visible{border-color:#6cad91;background:#eaf6f0;outline:0}.cluster-map-chip b{color:var(--compilation-green)}
+    .cluster-map-layout{display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:12px}.cluster-map-canvas{min-height:430px;border:1px solid #d8e5df;border-radius:13px;background:#dae8e2;overflow:hidden}.cluster-map-summary{padding:13px;border-radius:13px;background:#f6faf8}.cluster-map-summary strong{display:block;margin-bottom:6px;color:var(--compilation-green);font-size:16px}.cluster-map-summary p{margin:0 0 11px;color:#667b73;font-size:11px;line-height:1.5}.cluster-map-summary-list{display:grid;gap:7px}.cluster-map-summary-list a{display:block;padding:8px;border:1px solid #dce9e3;border-radius:9px;background:#fff;color:var(--ink);font-size:10px;text-decoration:none}.cluster-map-summary-list a b{display:block;margin-bottom:2px;color:var(--compilation-green);font-size:11px}
+    .cluster-map-popup>strong{display:block;color:#086b4c;font-size:14px}.cluster-map-popup>p{margin:4px 0 8px;color:#60736c;line-height:1.4}.cluster-monitoring-result{margin:8px 0;padding:8px;border-radius:8px;background:#eef7f3}.cluster-monitoring-result>b{color:#086b4c}.cluster-monitoring-result table{width:100%;margin:5px 0;border-collapse:collapse;font-size:11px}.cluster-monitoring-result th,.cluster-monitoring-result td{padding:2px 0;border:0;text-align:left}.cluster-monitoring-result th{color:#596b64;font-weight:600}.cluster-monitoring-result td{text-align:right;font-weight:750}.cluster-monitoring-result small{color:#667b73}
+    .cluster-result-card{margin-top:13px;padding:15px;border:1px solid #d8e5df;border-radius:13px;background:#f8fbf9}.cluster-result-head{display:flex;justify-content:space-between;gap:12px;margin-bottom:11px}.cluster-result-head h3{margin:2px 0;font-size:17px}.cluster-result-head p{margin:0;color:#667b73;font-size:10px}.cluster-result-row{display:grid;grid-template-columns:minmax(170px,.8fr) minmax(300px,2.2fr) 54px minmax(390px,1.35fr);gap:12px;align-items:center}.cluster-result-name b{display:block;font-size:13px}.cluster-result-name small{color:#667b73}.cluster-result-bar{display:flex;height:20px;overflow:hidden;border-radius:999px;background:#e4ede9}.cluster-result-bar .alive{background:#087352}.cluster-result-bar .dead{background:#bb4d43}.cluster-result-rate{color:#087352;font-weight:900}.cluster-result-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.cluster-result-stats b,.cluster-result-stats small{display:block}.cluster-result-stats b{font-size:12px}.cluster-result-stats small{color:#667b73;font-size:9px}
+    .village-overview{margin-top:12px;padding:16px;border:1px solid #d8e5df;border-radius:16px;background:#fff;box-shadow:0 8px 22px rgba(22,67,51,.06)}
+    .village-overview-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:13px}
+    .village-overview-head h2{margin:3px 0 2px;font-size:21px}
+    .village-overview-head p{margin:0;color:#667b73;font-size:11px}
+    .village-chart-legend{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:12px;color:#667b73;font-size:11px}
+    .village-chart-legend span{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+    .village-chart-legend i{width:9px;height:9px;border-radius:3px;background:var(--compilation-green)}
+    .village-chart-legend .dead i{background:var(--compilation-red)}
+    .village-chart{display:grid;gap:7px}
+    .village-chart-row{display:grid;grid-template-columns:minmax(125px,1.05fr) minmax(220px,3fr) minmax(255px,1.55fr);align-items:center;gap:13px;width:100%;padding:9px 10px;border:0;border-radius:10px;background:#f8fbf9;color:var(--ink);font:inherit;text-align:left;cursor:pointer;transition:background .18s ease,transform .18s ease}
+    .village-chart-row:hover{background:#eef7f2;transform:translateX(2px)}
+    .village-chart-row:focus-visible{outline:3px solid rgba(8,107,76,.25);outline-offset:2px}
+    .village-chart-name strong,.village-chart-name small{display:block}
+    .village-chart-name strong{font-size:13px}.village-chart-name small{margin-top:2px;color:#667b73;font-size:10px}
+    .village-bar-line{display:flex;align-items:center;gap:9px;min-width:0}
+    .village-bar-track{display:flex;flex:1;height:15px;border-radius:999px;background:#e7efeb;overflow:hidden}
+    .village-bar-alive{background:var(--compilation-green)}.village-bar-dead{background:var(--compilation-red)}
+    .village-bar-line b{min-width:38px;color:var(--compilation-green);font-size:12px;text-align:right}
+    .village-chart-stats{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:12px;color:#667b73;font-size:10px}
+    .village-chart-stats span{white-space:nowrap}.village-chart-stats b{display:block;margin-bottom:1px;color:var(--ink);font-size:12px}
+    .village-chart-stats .village-planted-total b{color:var(--compilation-green)}
+    .village-chart-empty{padding:18px;border-radius:10px;background:#f8fbf9;color:#667b73;text-align:center}
+    .compilation-reporters{margin-top:12px;padding:0;border:1px solid #d8e5df;border-radius:14px;background:#fff;box-shadow:0 7px 20px rgba(22,67,51,.05);overflow:hidden}
+    .compilation-reporters summary{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:13px 15px;cursor:pointer;list-style:none}
+    .compilation-reporters summary::-webkit-details-marker{display:none}
+    .compilation-reporters summary:after{content:"＋";color:var(--compilation-green);font-size:18px;font-weight:800}
+    .compilation-reporters[open] summary:after{content:"−"}
+    .compilation-reporters summary strong{display:block;margin:2px 0 0;font-size:16px;color:var(--ink)}
+    .compilation-reporters .reporter-pills{display:flex;flex-wrap:wrap;gap:7px;padding:0 15px 14px}
+    .reporter-pill{padding:8px 11px;border:1px solid #d8e5df;border-radius:999px;background:#f8fbf9;color:var(--ink);font:inherit;font-size:11px;text-align:left;cursor:pointer;transition:background .18s ease,border-color .18s ease,transform .18s ease}
+    .reporter-pill:hover{border-color:#8dc5ae;background:#eef8f3;transform:translateY(-1px)}
+    .reporter-pill:focus-visible{outline:3px solid rgba(8,107,76,.24);outline-offset:2px}
+    .reporter-pill b{color:var(--compilation-green)}
+    .compilation-section-heading{margin:17px 0 9px}
+    .compilation-section-heading h2{font-size:21px}
+    .compilation-count{padding:6px 9px;border-radius:999px;background:var(--compilation-green-soft);color:var(--compilation-green);font-size:11px;font-weight:850}
+    .compilation-objects{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+    .compilation-object{min-width:0;padding:17px;border:1px solid #d8e5df;border-radius:16px;background:#fff;box-shadow:0 9px 24px rgba(22,67,51,.065);transition:transform .18s ease,box-shadow .18s ease}
+    .compilation-object:hover{transform:translateY(-2px);box-shadow:0 14px 31px rgba(22,67,51,.11)}
+    .compilation-object-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+    .compilation-object-head h3{margin:4px 0 3px;font-size:18px;line-height:1.25}
+    .compilation-object-meta{display:block;color:#667b73;font-size:11px;line-height:1.45}
+    .compilation-object .status{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+    .compilation-object .status:before{width:7px;height:7px;border-radius:50%;background:currentColor;content:""}
+    .object-quick-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(105px,1fr));gap:7px;margin:12px 0}
+    .object-quick-metrics span{min-width:0;padding:9px;border-radius:9px;background:var(--compilation-green-soft)}
+    .object-quick-metrics small,.object-quick-metrics b{display:block}
+    .object-quick-metrics small{color:#667b73;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .object-quick-metrics b{margin-top:3px;font-size:13px}
+    .compilation-trend{margin-top:11px;padding:11px;border:1px solid #e0ebe6;border-radius:11px;background:linear-gradient(180deg,#f3faf6,#fbfefd)}
+    .compilation-trend h4{margin:0 0 5px;font-size:13px}
+    .compilation-trend svg{display:block;width:100%;height:auto;max-height:160px}
+    .compilation-trend .axis{stroke:#d3e2db;stroke-width:1}
+    .compilation-trend .trend{fill:none;stroke:var(--compilation-green);stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+    .compilation-trend circle{fill:#fff;stroke:var(--compilation-green);stroke-width:3}
+    .compilation-trend text{fill:#667b73;font-size:11px}
+    .compilation-object-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;padding-top:11px;border-top:1px solid #edf2ef}
+    .compilation-object-actions small{color:#667b73;font-size:11px}
+    .compilation-object-actions a{color:var(--compilation-green);font-size:12px;font-weight:850;text-decoration:none}
+    .compilation-object-actions a:hover{text-decoration:underline}
+    .compilation-page .status.baik{background:#dff5e9;color:#146640}.compilation-page .status.waspada{background:#fff0d3;color:var(--compilation-amber)}.compilation-page .status.masalah{background:#fde2e2;color:var(--compilation-red)}
+    @media(max-width:1180px){.compilation-kpis{grid-template-columns:repeat(4,minmax(0,1fr))}.compilation-objects{grid-template-columns:1fr}}
+    @media(max-width:900px){.compilation-toolbar{position:static;grid-template-columns:1fr 1fr}.compilation-toolbar label:last-child{grid-column:1/-1}.cluster-map-filters{grid-template-columns:1fr 1fr}.cluster-map-layout{grid-template-columns:1fr}.cluster-map-summary{display:grid;grid-template-columns:1fr 2fr;gap:12px}.cluster-result-row{grid-template-columns:1fr minmax(220px,2fr) 50px}.cluster-result-stats{grid-column:1/-1}.object-quick-metrics{grid-template-columns:repeat(2,1fr)}.village-chart-row{grid-template-columns:minmax(115px,1fr) minmax(190px,2.4fr)}.village-chart-stats{grid-column:2;justify-content:flex-start}}
+    @media(max-width:560px){.compilation-page .dashboard-shell{width:min(100% - 20px,1440px)}.compilation-shell{padding-top:12px}.compilation-hero{padding:18px;border-radius:15px}.compilation-hero h1{font-size:27px}.compilation-hero p{font-size:13px}.compilation-kpis{grid-template-columns:1fr 1fr;gap:7px}.compilation-kpis article{padding:11px}.compilation-kpis strong{font-size:20px}.compilation-toolbar{grid-template-columns:1fr 1fr;padding:10px}.compilation-toolbar label:last-child{grid-column:1/-1}.village-overview{padding:13px}.village-overview-head{display:block}.village-chart-legend{justify-content:flex-start;margin-top:9px}.village-chart-row{grid-template-columns:1fr;gap:7px}.village-chart-stats{grid-column:auto;justify-content:flex-start}.village-bar-line b{min-width:34px}.compilation-reporters summary{padding:12px}.compilation-reporters .reporter-pills{padding:0 12px 12px}.compilation-object-head,.compilation-object-actions{flex-direction:column}.compilation-object-actions{align-items:flex-start}.compilation-section-heading{align-items:center}.compilation-section-heading h2{font-size:19px}}
+    @media(max-width:560px){.cluster-map-head{display:block}.cluster-map-filters{grid-template-columns:1fr}.cluster-map-canvas{min-height:350px}.cluster-map-summary{display:block}.cluster-result-row{grid-template-columns:1fr}.cluster-result-stats{grid-template-columns:1fr 1fr}.cluster-result-rate{grid-row:2;justify-self:end}}
+    @media(max-width:390px){.compilation-toolbar{grid-template-columns:1fr}.compilation-toolbar label:last-child{grid-column:auto}.compilation-kpis{grid-template-columns:1fr}.object-quick-metrics{grid-template-columns:1fr 1fr}}
+  </style>
+</head>
+<body class="compilation-page">
+  <header class="monitor-header">
+    <a class="brand" href="monitoring.html"><img src="assets/logo-yayasan-gambut.png" alt="Logo YG"><span><strong>YG GeoPortal</strong><small>Kompilasi Monitoring</small></span></a>
+    <nav><a href="monitoring.html">Kembali ke monitoring</a></nav>
+  </header>
+  <main class="dashboard-shell compilation-shell">
+    <section class="compilation-hero">
+      <span class="eyebrow">HASIL KOMPILASI LAPORAN</span>
+      <h1>Seluruh hasil monitoring lapangan</h1>
+      <p>Angka total dihitung dari laporan terbaru setiap objek. Riwayat dan grafik di bawah tetap dipisahkan per objek agar perkembangan lokasi tidak tercampur.</p>
+    </section>
+    <section id="compilation-kpis" class="compilation-kpis"></section>
+    <section class="toolbar compilation-toolbar" aria-label="Klaster detail monitoring">
+      <label>Klaster
+        <select id="compilation-cluster">
+          <option value="object">Objek</option>
+          <option value="village">Nama desa</option>
+          <option value="reporter">Nama pelapor</option>
+          <option value="donor">Donor</option>
+          <option value="phase">Fase</option>
+        </select>
+      </label>
+      <label>Nilai klaster
+        <select id="compilation-cluster-value"><option value="">Semua</option></select>
+      </label>
+      <label>Cari detail
+        <input id="compilation-search" type="search" placeholder="Objek, lokasi, pelapor, donor, atau fase">
+      </label>
+    </section>
+    <section class="cluster-map-panel" id="cluster-map-panel" aria-labelledby="cluster-map-title">
+      <div class="cluster-map-head"><div><span class="eyebrow">PETA KLASTER PENANAMAN</span><h2 id="cluster-map-title">Polygon menurut donor, desa, dan fase</h2><p>Pilih tiga filter sekaligus atau klik kombinasi klaster untuk menampilkan polygon masing-masing.</p></div></div>
+      <div class="cluster-map-filters">
+        <label>Donor<select id="cluster-map-donor"><option value="">Semua donor</option></select></label>
+        <label>Desa<select id="cluster-map-village"><option value="">Semua desa</option></select></label>
+        <label>Fase penanaman<select id="cluster-map-phase"><option value="">Semua fase</option></select></label>
+        <button type="button" class="cluster-map-reset" id="cluster-map-reset">Reset peta</button>
+      </div>
+      <div id="cluster-map-chips" class="cluster-map-chips" aria-label="Kombinasi klaster tersedia"></div>
+      <div class="cluster-map-layout"><div id="cluster-map" class="cluster-map-canvas" aria-label="Peta polygon monitoring berdasarkan klaster"></div><aside id="cluster-map-summary" class="cluster-map-summary" aria-live="polite"><strong>Memuat polygon…</strong></aside></div>
+      <section id="cluster-result-summary" class="cluster-result-card" aria-live="polite"><strong>Memuat ringkasan hasil klaster…</strong></section>
+    </section>
+    <section class="village-overview" aria-labelledby="village-overview-title">
+      <div class="village-overview-head">
+        <div><span class="eyebrow">RINGKASAN WILAYAH</span><h2 id="village-overview-title">Kondisi tanaman per desa</h2><p>Laporan terbaru setiap objek; klik desa untuk menyaring daftar objek.</p></div>
+        <div class="village-chart-legend" aria-label="Legenda grafik"><span><i></i>Hidup</span><span class="dead"><i></i>Mati/rusak</span></div>
+      </div>
+      <div id="compilation-village-chart" class="village-chart" aria-live="polite"><div class="village-chart-empty">Memuat ringkasan desa…</div></div>
+    </section>
+    <details class="compilation-reporters" open>
+      <summary><span><span class="eyebrow">PELAPOR AKTIF</span><strong>Pelapor yang sudah mengirim data</strong></span></summary>
+      <div id="compilation-reporters" class="reporter-pills"></div>
+    </details>
+    <div class="section-heading compilation-section-heading">
+      <div><span class="eyebrow">PER OBJEK</span><h2>Grafik pertumbuhan dan laporan</h2></div>
+      <span id="compilation-count" class="compilation-count">0 objek</span>
+    </div>
+    <section id="compilation-objects" class="compilation-objects"><div class="loading">Memuat hasil kompilasi…</div></section>
+  </main>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script src="js/monitoring-compilation.js?v=20260909-kelapa-pati-phase2-fix1"></script>
+</body>
+</html>
+

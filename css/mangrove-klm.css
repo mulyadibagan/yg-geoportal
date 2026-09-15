@@ -1,0 +1,43 @@
+.klm-section{scroll-margin-top:65px}
+.overview-grid .overview-indicative{border-color:#b9ddd3;background:#f3faf7}
+.klm-baseline{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:13px}
+.klm-baseline article{padding:18px;border:1px solid var(--line);border-radius:14px;background:#fff}
+.klm-baseline span,.klm-baseline small{display:block;color:var(--muted)}
+.klm-baseline span{font-size:9px;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+.klm-baseline strong{display:block;margin:8px 0 4px;color:var(--deep);font-size:22px}
+.klm-baseline small{font-size:9px}
+.klm-workspace{display:grid;grid-template-columns:1fr;min-height:620px;border:1px solid var(--line);border-radius:18px;background:#fff;overflow:hidden}
+.klm-map-wrap{position:relative;min-height:620px;background:#dcebe7;overflow:hidden}
+.klm-map-wrap #klm-map{position:absolute;inset:0}
+.klm-map-status{position:absolute;z-index:500;top:14px;left:50px;padding:7px 10px;border-radius:8px;background:#073f3be8;color:#fff;font-size:9px;font-weight:800;box-shadow:0 6px 16px #053b3430}
+.klm-map-legend{position:absolute;z-index:500;left:14px;bottom:14px;display:grid;gap:5px;max-width:250px;padding:10px;border-radius:10px;background:#fffffff2;box-shadow:0 8px 22px #124f4630}
+.klm-map-legend>b{margin-bottom:2px;color:#163f39;font-size:8px;letter-spacing:.08em}
+.klm-map-legend span{display:flex;gap:7px;align-items:center;color:#365c57;font-size:9px;font-weight:700}
+.klm-map-legend i{width:9px;height:9px;border-radius:3px}
+.klm-map-legend .boundary-key i{width:18px;height:0;border-top:2px solid #7c3aed;border-radius:0;box-shadow:none}
+.klm-map-legend small{margin-top:2px;color:#607a75;font-size:8px;line-height:1.35}
+.klm-cluster-heading{display:flex;justify-content:space-between;gap:25px;align-items:end;margin:34px 0 13px}
+.klm-map-heading{margin-top:0}
+.klm-cluster-heading h3{margin:0;font-family:Georgia,serif;font-size:28px;font-weight:500}
+.klm-cluster-heading>p{max-width:530px;margin:0;color:var(--muted);font-size:10px;line-height:1.6}
+.klm-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-top:13px}
+.klm-card,.klm-loading{padding:19px;border:1px solid var(--line);border-radius:14px;background:#fff}
+.klm-card{cursor:pointer;color:var(--ink);font-family:inherit;text-align:left}
+.klm-card:hover,.klm-card.is-active{border-color:var(--klm-color);box-shadow:0 8px 22px #124f4617}
+.klm-card header{display:flex;justify-content:space-between;gap:12px;align-items:start}
+.klm-card header div{display:grid}
+.klm-card header small{color:var(--klm-color);font-size:9px;font-weight:900;letter-spacing:.09em}
+.klm-card header strong{margin-top:4px;font-family:Georgia,serif;font-size:18px;font-weight:500}
+.klm-card header b{padding:4px 7px;border-radius:6px;background:#edf5f2;color:var(--klm-color);font-size:9px}
+.klm-card-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:17px}
+.klm-card-stats span{padding-top:8px;border-top:1px solid #e4edeb;color:var(--muted);font-size:9px}
+.klm-card-stats .total{grid-column:1/-1}
+.klm-card-stats strong{display:block;margin-bottom:3px;color:var(--deep);font-size:15px}
+.klm-bar{height:5px;margin-top:14px;border-radius:99px;background:#edf2f0;overflow:hidden}
+.klm-bar i{display:block;height:100%;border-radius:inherit;background:var(--klm-color)}
+.boundary-assurance{display:flex;gap:15px;align-items:start;margin-top:12px;padding:15px 17px;border-left:4px solid var(--green);border-radius:8px;background:#edf7f3}
+.boundary-assurance strong{white-space:nowrap;font-size:11px}
+.boundary-assurance p{margin:0;color:#526c67;font-size:10px;line-height:1.55}
+.transition-table table{min-width:900px}.transition-table td{white-space:nowrap}.transition-table td small{color:var(--muted)}.transition-table .analysis-value{background:#edf7f3;color:#075b53;font-weight:800}.transition-caveat{margin:11px 0 0;color:var(--muted);font-size:10px;line-height:1.6}
+@media(max-width:1020px){.klm-cards{grid-template-columns:1fr}}
+@media(max-width:680px){.klm-map-wrap,.klm-workspace{min-height:430px}.boundary-assurance{flex-direction:column}.boundary-assurance strong{white-space:normal}.klm-baseline{grid-template-columns:1fr}.klm-baseline strong{font-size:19px}.klm-cluster-heading{align-items:start;flex-direction:column}.klm-card-stats{grid-template-columns:1fr 1fr}}

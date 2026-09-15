@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "villages": [
+    { "name": "Temiang", "district": "Bandar Laksamana", "regency": "Bengkalis" },
+    { "name": "Sepahat", "district": "Bandar Laksamana", "regency": "Bengkalis" },
+    { "name": "Pedekik", "district": "Bengkalis", "regency": "Bengkalis" },
+    { "name": "Pematang Duku", "district": "Bengkalis", "regency": "Bengkalis" },
+    { "name": "Buruk Bakul", "district": "Bukit Batu", "regency": "Bengkalis" },
+    { "name": "Simpang Ayam", "district": "Bengkalis", "regency": "Bengkalis" },
+    { "name": "Kelapa Pati", "sourceName": "Kelapapati", "district": "Bengkalis", "regency": "Bengkalis" },
+    { "name": "Penampi", "district": "Bengkalis", "regency": "Bengkalis" },
+    { "name": "Tanjung Kuras", "district": "Sungai Apit", "regency": "Siak" },
+    { "name": "Pencing Bekuto", "aliases": ["Pencing Bekulo"], "district": "Kandis", "regency": "Siak" },
+    { "name": "Dayun", "district": "Siak", "regency": "Siak" },
+    { "name": "Merempan", "sourceName": "Merempan Hulu", "district": "Siak", "regency": "Siak" },
+    { "name": "Petapahan", "district": "Tapung", "regency": "Kampar" },
+    { "name": "Siarang-Arang", "district": "Pujud", "regency": "Rokan Hilir" }
+  ]
+}

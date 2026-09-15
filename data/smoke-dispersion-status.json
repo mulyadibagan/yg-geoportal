@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "status": "not-configured",
+  "model": "HYSPLIT",
+  "product": "smoke-dispersion",
+  "generatedAt": null,
+  "validUntil": null,
+  "sourceObservationStart": null,
+  "sourceObservationEnd": null,
+  "meteorology": null,
+  "emissions": null,
+  "validation": [],
+  "featureCount": 0,
+  "message": "Backend HYSPLIT dan sumber emisi GFAS belum dikonfigurasi."
+}

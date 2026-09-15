@@ -1,0 +1,95 @@
+.psd-stat-grid > .psd-area-card {
+  min-width: 0;
+  min-height: 110px;
+  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.075);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  appearance: none;
+  transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease, box-shadow 0.16s ease;
+}
+
+.psd-stat-grid > .psd-area-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(155, 230, 206, 0.78);
+  background: rgba(255, 255, 255, 0.13);
+}
+
+.psd-stat-grid > .psd-area-card:focus-visible {
+  outline: 3px solid #ffd27a;
+  outline-offset: 3px;
+}
+
+.psd-stat-grid > .psd-area-card.is-active {
+  border-color: #9be6ce;
+  background: rgba(155, 230, 206, 0.22);
+  box-shadow: inset 0 0 0 1px rgba(155, 230, 206, 0.34), 0 10px 24px rgba(0, 27, 24, 0.18);
+}
+
+.psd-stat-grid > .psd-area-card.is-active::after {
+  content: "Filter aktif";
+  display: block;
+  margin-top: 9px;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.psd-stat-grid--documents > .psd-completeness-card {
+  display: flex;
+  min-width: 0;
+  min-height: 110px;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+}
+
+.psd-completeness-filter,
+.psd-completeness-missing {
+  width: 100%;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  appearance: none;
+}
+
+.psd-completeness-filter {
+  flex: 1;
+  padding: 16px 16px 8px;
+  background: transparent;
+  text-align: center;
+}
+
+.psd-completeness-missing {
+  padding: 7px 16px 12px;
+  background: transparent;
+  color: #ffd27a;
+  font-size: 9px;
+  font-weight: 750;
+}
+
+.psd-completeness-filter:hover,
+.psd-completeness-missing:hover {
+  background: rgba(255, 255, 255, 0.11);
+}
+
+.psd-completeness-filter:focus-visible,
+.psd-completeness-missing:focus-visible {
+  position: relative;
+  z-index: 1;
+  outline: 3px solid #ffd27a;
+  outline-offset: -3px;
+}
+
+.psd-completeness-filter.is-active,
+.psd-completeness-missing.is-active {
+  background: rgba(155, 230, 206, 0.24);
+  box-shadow: inset 0 0 0 1px rgba(155, 230, 206, 0.55);
+}

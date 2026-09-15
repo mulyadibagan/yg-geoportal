@@ -1,0 +1,60 @@
+
+/* Dashboard cards menjadi tombol pintas peta */
+.stats .stat.dashboard-clickable{
+  position:relative;
+  cursor:pointer;
+  user-select:none;
+  transition:
+    transform .18s ease,
+    border-color .18s ease,
+    box-shadow .18s ease,
+    background .18s ease;
+}
+
+.stats .stat.dashboard-clickable::after{
+  content:"Lihat di peta";
+  position:absolute;
+  right:10px;
+  bottom:8px;
+  color:#0876a5;
+  font-size:8px;
+  font-weight:900;
+  opacity:0;
+  transform:translateY(3px);
+  transition:opacity .18s ease,transform .18s ease;
+}
+
+.stats .stat.dashboard-clickable:hover,
+.stats .stat.dashboard-clickable:focus-visible{
+  transform:translateY(-2px);
+  border-color:#079cde;
+  background:#f2fbff;
+  box-shadow:0 8px 18px rgba(7,156,222,.13);
+  outline:none;
+}
+
+.stats .stat.dashboard-clickable:hover::after,
+.stats .stat.dashboard-clickable:focus-visible::after{
+  opacity:1;
+  transform:translateY(0);
+}
+
+.stats .stat.dashboard-active{
+  border-color:#079cde;
+  background:#eaf8fd;
+  box-shadow:0 0 0 2px rgba(7,156,222,.12);
+}
+
+.stats .stat.dashboard-active::after{
+  content:"Aktif";
+  opacity:1;
+  transform:translateY(0);
+}
+
+@media(max-width:720px){
+  .stats .stat.dashboard-clickable::after{
+    right:7px;
+    bottom:5px;
+    font-size:7px;
+  }
+}

@@ -1,0 +1,34 @@
+name: Validate data-source compliance
+
+on:
+  pull_request:
+  push:
+    paths:
+      - "data/source-registry.json"
+      - "data/smoke-validation-catalog.json"
+      - "data/smoke-validation-observed.geojson"
+      - "data/smoke-calibration-plan.json"
+      - "data/smoke-validation-status.json"
+      - "scripts/validate_source_registry.mjs"
+      - "scripts/validate_smoke_annotations.mjs"
+      - "scripts/build_smoke_validation_status.mjs"
+      - "scripts/validate_smoke_validation_status.mjs"
+      - "data/pbph-documents.json"
+      - "data/PBPH_RIAU_052026.geojson"
+      - "scripts/validate_pbph_documents.mjs"
+      - ".github/workflows/validate-data-sources.yml"
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+      - run: node scripts/validate_source_registry.mjs
+      - run: node scripts/validate_smoke_annotations.mjs
+      - run: node scripts/build_smoke_validation_status.mjs
+      - run: node scripts/validate_smoke_validation_status.mjs
+      - run: node scripts/validate_pbph_documents.mjs

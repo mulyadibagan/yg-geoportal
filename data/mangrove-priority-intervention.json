@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "product": "Fondasi analisis prioritas rehabilitasi mangrove desa intervensi YG",
+  "status": "foundation",
+  "baseline": "2016",
+  "comparison": "2025",
+  "generatedAt": "2026-08-12T10:30:00Z",
+  "disclaimer": "Fondasi analisis. Skor, luas kandidat, dan polygon belum dihitung dan tidak boleh digunakan untuk keputusan penanaman.",
+  "villages": [
+    {"id":"buruk-bakul","village":"Buruk Bakul","district":"Bukit Batu","regency":"Bengkalis","lat":1.419895,"lon":102.057985},
+    {"id":"sepahat","village":"Sepahat","district":"Bandar Laksamana","regency":"Bengkalis","lat":1.560556,"lon":101.875580},
+    {"id":"kelapa-pati","village":"Kelapa Pati","district":"Bengkalis","regency":"Bengkalis","lat":1.487850,"lon":102.082154},
+    {"id":"pematang-duku","village":"Pematang Duku","district":"Bengkalis","regency":"Bengkalis","lat":1.453219,"lon":102.316952},
+    {"id":"penampi","village":"Penampi","district":"Bengkalis","regency":"Bengkalis","lat":1.458691,"lon":102.181837},
+    {"id":"simpang-ayam","village":"Simpang Ayam","district":"Bengkalis","regency":"Bengkalis","lat":1.590707,"lon":102.040209},
+    {"id":"tanjung-kuras","village":"Tanjung Kuras","district":"Sungai Apit","regency":"Siak","lat":1.228433,"lon":102.176332}
+  ]
+}

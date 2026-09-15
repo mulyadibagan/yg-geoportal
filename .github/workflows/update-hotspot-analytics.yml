@@ -1,0 +1,148 @@
+name: Update Hotspot Analytics
+
+on:
+  schedule:
+    # NASA FIRMS global NRT is normally available within a few hours of an
+    # overpass. Refresh hourly so the public map follows new detections.
+    - cron: "17 * * * *"
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/update-hotspot-analytics.yml"
+      - "scripts/update_hotspot_firms.mjs"
+      - "scripts/enrich_hotspot_villages.mjs"
+      - "scripts/archive_hotspot_monthly.mjs"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: village-analytics-main
+  cancel-in-progress: false
+
+jobs:
+  update:
+    name: Refresh VIIRS analytics data
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install Cloudflare CLI
+        working-directory: cloudflare/yg-webgis-public-data
+        run: npm ci
+
+      - name: Ensure five-year R2 archive retention
+        continue-on-error: true
+        working-directory: cloudflare/yg-webgis-public-data
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "R2 archive credentials are not configured; skipping lifecycle setup."
+            exit 0
+          fi
+          npx wrangler r2 bucket lifecycle list yg-webgis-public-snapshots | grep -q "fire-archive-60-months" || \
+            npx wrangler r2 bucket lifecycle add yg-webgis-public-snapshots fire-archive-60-months fire-archive/ --expire-days 1826
+
+      - name: Restore monthly hotspot archive from R2
+        working-directory: cloudflare/yg-webgis-public-data
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          mkdir -p ../../../data/fire-archive
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "R2 archive credentials are not configured; starting without a remote archive restore."
+            exit 0
+          fi
+          current_month=$(date -u +%Y-%m)
+          previous_month=$(date -u -d "$(date -u +%Y-%m-01) -1 day" +%Y-%m)
+          for month in "$previous_month" "$current_month"; do
+            npx wrangler r2 object get "yg-webgis-public-snapshots/fire-archive/${month}.geojson" \
+              --file="../../../data/fire-archive/${month}.geojson" --remote || true
+          done
+
+      - name: Install WorldCover reader
+        run: python -m pip install rasterio==1.4.3
+      - name: Update hotspot metrics
+        env:
+          FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
+          FIRMS_SOURCES: MODIS_NRT,VIIRS_SNPP_NRT,VIIRS_NOAA20_NRT,VIIRS_NOAA21_NRT
+          FIRMS_MODE: recent
+          FIRMS_CHUNK_DAYS: 5
+          # Seluruh Indonesia: marker interaktif nasional; analitik tetap khusus desa YG.
+          FIRMS_QUERY_BBOX: 94.50,-11.20,141.50,6.20
+          FIRMS_VILLAGE_GEOJSON: data/desa_intervensi.geojson
+          FIRMS_PS_GEOJSON: data/PERHUTANAN_SOSIAL_RIAU.geojson
+        run: |
+          if [ -z "$FIRMS_MAP_KEY" ]; then
+            echo "FIRMS_MAP_KEY belum diset di GitHub Secrets."
+            exit 1
+          fi
+          node scripts/sync_intervention_villages.mjs
+          node scripts/update_hotspot_firms.mjs
+          python scripts/enrich_hotspot_landcover.py
+          node scripts/enrich_hotspot_villages.mjs
+          node scripts/archive_hotspot_monthly.mjs
+
+      - name: Upload monthly hotspot archive to R2
+        working-directory: cloudflare/yg-webgis-public-data
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "R2 archive credentials are not configured; skipping the optional archive upload."
+            exit 0
+          fi
+          for file in ../../../data/fire-archive/*.geojson; do
+            [ -e "$file" ] || continue
+            name=$(basename "$file")
+            npx wrangler r2 object put "yg-webgis-public-snapshots/fire-archive/${name}" \
+              --file="$file" --remote
+          done
+
+      - name: Commit and push if changed
+        run: |
+          if git diff --quiet -- data/village-forest-analytics.json data/desa_intervensi.geojson data/hotspot-high-confidence.geojson; then
+            echo "No hotspot data changes to commit."
+            exit 0
+          fi
+
+          cp data/village-forest-analytics.json /tmp/hotspot-results.json
+          cp data/desa_intervensi.geojson /tmp/desa-intervensi.geojson
+          cp data/hotspot-high-confidence.geojson /tmp/hotspot-high-confidence.geojson
+          git restore data/village-forest-analytics.json data/desa_intervensi.geojson data/hotspot-high-confidence.geojson
+          git pull --rebase origin main
+          cp /tmp/desa-intervensi.geojson data/desa_intervensi.geojson
+          cp /tmp/hotspot-high-confidence.geojson data/hotspot-high-confidence.geojson
+          node scripts/merge_hotspot_results.mjs \
+            /tmp/hotspot-results.json \
+            data/village-forest-analytics.json
+
+          if git diff --quiet -- data/village-forest-analytics.json data/desa_intervensi.geojson data/hotspot-high-confidence.geojson; then
+            echo "Latest main already contains these hotspot results."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/village-forest-analytics.json data/desa_intervensi.geojson data/hotspot-high-confidence.geojson
+          git commit -m "chore(data): auto-update FIRMS hotspot analytics"
+          git pull --rebase origin main
+          git push origin HEAD:main

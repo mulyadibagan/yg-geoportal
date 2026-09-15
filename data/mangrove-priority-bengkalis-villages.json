@@ -1,0 +1,627 @@
+{
+  "schemaVersion": 1,
+  "product": "Prioritas Rehabilitasi Mangrove 2016–2025",
+  "status": "foundation",
+  "baseline": "2016",
+  "comparison": "2025",
+  "generatedAt": "2026-08-12T10:30:00Z",
+  "disclaimer": "Fondasi analisis. Skor, luas kandidat, dan polygon belum dihitung dan tidak boleh digunakan untuk keputusan penanaman.",
+  "villages": [
+    {
+      "id": "api-api",
+      "village": "Api-Api",
+      "district": "Bandar Laksamana",
+      "regency": "Bengkalis",
+      "lat": 1.398194,
+      "lon": 101.770643,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "paritsatuapi-api",
+      "village": "Paritsatuapi-Api",
+      "district": "Bandar Laksamana",
+      "regency": "Bengkalis",
+      "lat": 1.482094,
+      "lon": 101.964931,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "sepahat",
+      "village": "Sepahat",
+      "district": "Bandar Laksamana",
+      "regency": "Bengkalis",
+      "lat": 1.560556,
+      "lon": 101.87558
+    },
+    {
+      "id": "tanjungleban",
+      "village": "Tanjungleban",
+      "district": "Bandar Laksamana",
+      "regency": "Bengkalis",
+      "lat": 1.539094,
+      "lon": 101.712413,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "tenggayun",
+      "village": "Tenggayun",
+      "district": "Bandar Laksamana",
+      "regency": "Bengkalis",
+      "lat": 1.432644,
+      "lon": 101.74684,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "bantan-air",
+      "village": "Bantan Air",
+      "district": "Bantan",
+      "regency": "Bengkalis",
+      "lat": 1.519644,
+      "lon": 102.31709,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "bantan-sari",
+      "village": "Bantan Sari",
+      "district": "Bantan",
+      "regency": "Bengkalis",
+      "lat": 1.514294,
+      "lon": 102.344679,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "bantan-timur",
+      "village": "Bantan Timur",
+      "district": "Bantan",
+      "regency": "Bengkalis",
+      "lat": 1.509794,
+      "lon": 102.36244,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "deluk",
+      "village": "Deluk",
+      "district": "Bantan",
+      "regency": "Bengkalis",
+      "lat": 1.559094,
+      "lon": 102.198502,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "jangkang",
+      "village": "Jangkang",
+      "district": "Bantan",
+      "regency": "Bengkalis",
+      "lat": 1.555994,
+      "lon": 102.171371,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "kembung-luar",
+      "village": "Kembung Luar",
+      "district": "Bantan",
+      "regency": "Bengkalis",
+      "lat": 1.408506,
+      "lon": 102.462117,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "mentayan",
+      "village": "Mentayan",
+      "district": "Bantan",
+      "regency": "Bengkalis",
+      "lat": 1.542194,
+      "lon": 102.269886,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "muntai",
+      "village": "Muntai",
+      "district": "Bantan",
+      "regency": "Bengkalis",
+      "lat": 1.511294,
+      "lon": 102.430172,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "muntai-barat",
+      "village": "Muntai Barat",
+      "district": "Bantan",
+      "regency": "Bengkalis",
+      "lat": 1.520994,
+      "lon": 102.400902,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "pampang-baru",
+      "village": "Pampang Baru",
+      "district": "Bantan",
+      "regency": "Bengkalis",
+      "lat": 1.490594,
+      "lon": 102.448942,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "pampang-pesisir",
+      "village": "Pampang Pesisir",
+      "district": "Bantan",
+      "regency": "Bengkalis",
+      "lat": 1.502094,
+      "lon": 102.46699,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "selat-baru",
+      "village": "Selat Baru",
+      "district": "Bantan",
+      "regency": "Bengkalis",
+      "lat": 1.538294,
+      "lon": 102.218795,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "teluklancar",
+      "village": "Teluklancar",
+      "district": "Bantan",
+      "regency": "Bengkalis",
+      "lat": 1.350612,
+      "lon": 102.469458,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "telukpambang",
+      "village": "Telukpambang",
+      "district": "Bantan",
+      "regency": "Bengkalis",
+      "lat": 1.462732,
+      "lon": 102.470393,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "telukpapal",
+      "village": "Telukpapal",
+      "district": "Bantan",
+      "regency": "Bengkalis",
+      "lat": 1.537494,
+      "lon": 102.303602,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "air-putih",
+      "village": "Air Putih",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "lat": 1.472044,
+      "lon": 102.143272,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "damai",
+      "village": "Damai",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "lat": 1.458494,
+      "lon": 102.211368,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "kelapa-pati",
+      "village": "Kelapa Pati",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "lat": 1.48785,
+      "lon": 102.082154
+    },
+    {
+      "id": "kelebuk",
+      "village": "Kelebuk",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "lat": 1.463344,
+      "lon": 102.195651,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "kelemantan",
+      "village": "Kelemantan",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "lat": 1.332494,
+      "lon": 102.432941,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "kelemantan-barat",
+      "village": "Kelemantan Barat",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "lat": 1.376744,
+      "lon": 102.393486,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "kelurahan-damon",
+      "village": "Kelurahan Damon",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "lat": 1.475544,
+      "lon": 102.10784,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "kelurahan-kota-bengkalis",
+      "village": "Kelurahan Kota Bengkalis",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "lat": 1.471144,
+      "lon": 102.112016,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "kelurahan-rimba-sekampung",
+      "village": "Kelurahan Rimba Sekampung",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "lat": 1.468044,
+      "lon": 102.118265,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "ketam-putih",
+      "village": "Ketam Putih",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "lat": 1.410294,
+      "lon": 102.369272,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "kuala-alam",
+      "village": "Kuala Alam",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "lat": 1.450144,
+      "lon": 102.160927,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "meskom",
+      "village": "Meskom",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "lat": 1.559194,
+      "lon": 102.026988,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "palkun",
+      "village": "Palkun",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "lat": 1.314717,
+      "lon": 102.454581,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "pangkalan-batang",
+      "village": "Pangkalan Batang",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "lat": 1.538744,
+      "lon": 102.09206,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "pangkalan-batang-barat",
+      "village": "Pangkalan Batang Barat",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "lat": 1.505644,
+      "lon": 102.068071,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "pematang-duku",
+      "village": "Pematang Duku",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "lat": 1.453219,
+      "lon": 102.316952
+    },
+    {
+      "id": "penampi",
+      "village": "Penampi",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "lat": 1.458691,
+      "lon": 102.181837
+    },
+    {
+      "id": "penebal",
+      "village": "Penebal",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "lat": 1.456594,
+      "lon": 102.273785,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "prapat-tunggal",
+      "village": "Prapat Tunggal",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "lat": 1.585794,
+      "lon": 102.011321,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "sebauk",
+      "village": "Sebauk",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "lat": 1.544494,
+      "lon": 102.074719,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "sei-alam",
+      "village": "Sei Alam",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "lat": 1.471894,
+      "lon": 102.164223,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "sekodi",
+      "village": "Sekodi",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "lat": 1.28842,
+      "lon": 102.482232,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "senderek",
+      "village": "Senderek",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "lat": 1.559444,
+      "lon": 102.065461,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "senggoro",
+      "village": "Senggoro",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "lat": 1.476594,
+      "lon": 102.130884,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "simpang-ayam",
+      "village": "Simpang Ayam",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "lat": 1.590707,
+      "lon": 102.040209
+    },
+    {
+      "id": "sungaibatang",
+      "village": "Sungaibatang",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "lat": 1.392794,
+      "lon": 102.350075,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "teluklatak",
+      "village": "Teluklatak",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "lat": 1.566394,
+      "lon": 102.052659,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "temeran",
+      "village": "Temeran",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "lat": 1.460544,
+      "lon": 102.233924,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "wonosari",
+      "village": "Wonosari",
+      "district": "Bengkalis",
+      "regency": "Bengkalis",
+      "lat": 1.528444,
+      "lon": 102.135174,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "batang-duku",
+      "village": "Batang Duku",
+      "district": "Bukit Batu",
+      "regency": "Bengkalis",
+      "lat": 1.381094,
+      "lon": 102.105189,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "bukit-batu",
+      "village": "Bukit Batu",
+      "district": "Bukit Batu",
+      "regency": "Bengkalis",
+      "lat": 1.381344,
+      "lon": 101.956442,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "buruk-bakul",
+      "village": "Buruk Bakul",
+      "district": "Bukit Batu",
+      "regency": "Bengkalis",
+      "lat": 1.419895,
+      "lon": 102.057985
+    },
+    {
+      "id": "sukajadi",
+      "village": "Sukajadi",
+      "district": "Bukit Batu",
+      "regency": "Bengkalis",
+      "lat": 1.389594,
+      "lon": 101.913278,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "sungaiselari",
+      "village": "Sungaiselari",
+      "district": "Bukit Batu",
+      "regency": "Bengkalis",
+      "lat": 1.369494,
+      "lon": 102.144077,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "darul-aman",
+      "village": "Darul Aman",
+      "district": "Rupat",
+      "regency": "Bengkalis",
+      "lat": 1.909044,
+      "lon": 101.417696,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "kelurahan-batu-panjang",
+      "village": "Kelurahan Batu Panjang",
+      "district": "Rupat",
+      "regency": "Bengkalis",
+      "lat": 1.796344,
+      "lon": 101.539316,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "kelurahan-pergam",
+      "village": "Kelurahan Pergam",
+      "district": "Rupat",
+      "regency": "Bengkalis",
+      "lat": 1.771344,
+      "lon": 101.640918,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "kelurahan-tanjungkapal",
+      "village": "Kelurahan Tanjungkapal",
+      "district": "Rupat",
+      "regency": "Bengkalis",
+      "lat": 1.848094,
+      "lon": 101.485974,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "kelurahan-terkul",
+      "village": "Kelurahan Terkul",
+      "district": "Rupat",
+      "regency": "Bengkalis",
+      "lat": 1.759144,
+      "lon": 101.583687,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "makeruh",
+      "village": "Makeruh",
+      "district": "Rupat",
+      "regency": "Bengkalis",
+      "lat": 2.016544,
+      "lon": 101.734597,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "sungaicingam",
+      "village": "Sungaicingam",
+      "district": "Rupat",
+      "regency": "Bengkalis",
+      "lat": 1.948694,
+      "lon": 101.759485,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "puteri-sembilan",
+      "village": "Puteri Sembilan",
+      "district": "Rupat Utara",
+      "regency": "Bengkalis",
+      "lat": 2.066494,
+      "lon": 101.693126,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "suka-damai",
+      "village": "Suka Damai",
+      "district": "Rupat Utara",
+      "regency": "Bengkalis",
+      "lat": 2.067194,
+      "lon": 101.592955,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "tanjungmedang",
+      "village": "Tanjungmedang",
+      "district": "Rupat Utara",
+      "regency": "Bengkalis",
+      "lat": 2.067994,
+      "lon": 101.63024,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "tanjungpunak",
+      "village": "Tanjungpunak",
+      "district": "Rupat Utara",
+      "regency": "Bengkalis",
+      "lat": 2.071144,
+      "lon": 101.671192,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "telukrhu",
+      "village": "Telukrhu",
+      "district": "Rupat Utara",
+      "regency": "Bengkalis",
+      "lat": 2.071144,
+      "lon": 101.656584,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "titi-akar",
+      "village": "Titi Akar",
+      "district": "Rupat Utara",
+      "regency": "Bengkalis",
+      "lat": 1.997794,
+      "lon": 101.503217,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "lubuk-muda",
+      "village": "Lubuk Muda",
+      "district": "Siak Kecil",
+      "regency": "Bengkalis",
+      "lat": 1.232494,
+      "lon": 102.080399,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "sungaisiput",
+      "village": "Sungaisiput",
+      "district": "Siak Kecil",
+      "regency": "Bengkalis",
+      "lat": 1.232494,
+      "lon": 102.147019,
+      "scope": "Bengkalis coastal screening"
+    }
+  ],
+  "scope": "Kabupaten/Kota Bengkalis"
+}

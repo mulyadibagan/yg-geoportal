@@ -1,0 +1,10 @@
+.sv-panel a.export {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-decoration: none;
+}
+
+.sv-panel a.export:hover {
+  background: #0a6d52;
+}

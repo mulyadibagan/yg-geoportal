@@ -1,0 +1,254 @@
+{
+  "program": {
+    "id": "PRG-DAYUN-KUPS-2026",
+    "name": "Program Dayun – KUPS Rimba Sejahtera",
+    "organization": "KUPS Rimba Sejahtera",
+    "partner": "APRIL Group",
+    "location": "Kampung Dayun, Kabupaten Siak, Riau",
+    "duration": "12 bulan",
+    "status": "Persiapan baseline",
+    "dataStatus": "Data awal — perlu validasi baseline lapangan."
+  },
+  "outcomes": [
+    {
+      "id": "OUT-01",
+      "title": "Kelompok yang Mandiri",
+      "description": "Penguatan tata kelola, administrasi, pembukuan, dan kemampuan anggota menjalankan usaha kelompok."
+    },
+    {
+      "id": "OUT-02",
+      "title": "Agroforestri Nanas",
+      "description": "Pemetaan kebun, panduan perawatan, serta pemantauan kondisi tanaman dan produksi untuk mendukung pengelolaan."
+    },
+    {
+      "id": "OUT-03",
+      "title": "Produk dan Akses Pasar",
+      "description": "Pengembangan satu produk turunan nanas prioritas, kesiapan produksi, kemasan, dan hubungan dengan calon pembeli."
+    },
+    {
+      "id": "OUT-04",
+      "title": "Kader dan Keberlanjutan",
+      "description": "Penguatan kader lokal dalam pencatatan dan pemantauan agar pengelolaan dapat diteruskan oleh kelompok."
+    }
+  ],
+  "timeline": [
+    {
+      "title": "Pemetaan kondisi awal, tingkat kemandirian KUPS, dan kebutuhan penguatan",
+      "months": [
+        1
+      ]
+    },
+    {
+      "title": "Penyusunan dan peninjauan awal rencana usaha",
+      "months": [
+        1,
+        2
+      ]
+    },
+    {
+      "title": "Pemetaan dan pencatatan lokasi kebun nanas",
+      "months": [
+        1,
+        2
+      ]
+    },
+    {
+      "title": "Panduan pengelolaan dan pemantauan kebun",
+      "months": [
+        2,
+        3
+      ]
+    },
+    {
+      "title": "Pendampingan 1 – Perhutanan sosial, pengelolaan KUPS, dan kemandirian organisasi",
+      "months": [
+        2
+      ]
+    },
+    {
+      "title": "Pendampingan 2 – Gambut dan praktik tanpa bakar",
+      "months": [
+        3
+      ]
+    },
+    {
+      "title": "Pemetaan pasar dan penetapan produk prioritas",
+      "months": [
+        2,
+        3
+      ]
+    },
+    {
+      "title": "Pengembangan dan pengujian produk prioritas",
+      "months": [
+        3,
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "title": "Pendampingan 3 – Administrasi, pembukuan, persediaan, dan keuangan",
+      "months": [
+        4
+      ]
+    },
+    {
+      "title": "Kesiapan dan panduan kerja produksi",
+      "months": [
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "title": "Identitas, label, kemasan, dan proses legalitas",
+      "months": [
+        5,
+        6,
+        7,
+        8,
+        9
+      ]
+    },
+    {
+      "title": "Pendampingan 4 – Mutu, kebersihan, kemasan, dan legalitas",
+      "months": [
+        6
+      ]
+    },
+    {
+      "title": "Pendampingan teknis dan pemantauan kebun",
+      "months": [
+        3,
+        6,
+        9,
+        12
+      ]
+    },
+    {
+      "title": "Pencatatan produksi, persediaan, biaya, harga pokok, dan penjualan",
+      "months": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ]
+    },
+    {
+      "title": "Penjajakan dan tindak lanjut calon pembeli",
+      "months": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "title": "Analisis kebutuhan dan pilihan pembiayaan usaha",
+      "months": [
+        7,
+        8,
+        9,
+        10
+      ]
+    },
+    {
+      "title": "Pendampingan 5 – Harga pokok, pengelolaan usaha, pemasaran, dan hubungan pembeli",
+      "months": [
+        8
+      ]
+    },
+    {
+      "title": "Pelatihan penggerak lokal dalam pengelolaan informasi",
+      "months": [
+        5,
+        8
+      ]
+    },
+    {
+      "title": "Peninjauan kualitas informasi bersama penggerak lokal",
+      "months": [
+        7,
+        10
+      ]
+    },
+    {
+      "title": "Pendampingan fasilitator desa",
+      "months": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ]
+    },
+    {
+      "title": "Peninjauan dan penyempurnaan rencana usaha",
+      "months": [
+        11,
+        12
+      ]
+    },
+    {
+      "title": "Penilaian akhir tingkat kemandirian KUPS",
+      "months": [
+        12
+      ]
+    },
+    {
+      "title": "Rencana keberlanjutan, uji praktik, dan penyerahan peran",
+      "months": [
+        11,
+        12
+      ]
+    }
+  ],
+  "layers": [
+    {
+      "id": "agroforestry",
+      "name": "Agro Mandiri Sejahtera",
+      "publicName": "Areal Agroforestri",
+      "reportedTotalHa": 28.0639,
+      "status": "source-2026-09-10",
+      "items": [
+        {
+          "name": "Gawangan tanam",
+          "category": "Gawangan Tanam",
+          "areaHa": 20.508,
+          "featureCount": 87,
+          "color": "#5f9f62"
+        },
+        {
+          "name": "Gawangan mati",
+          "category": "Gawangan mati",
+          "areaHa": 5.2003,
+          "featureCount": 78,
+          "color": "#b9834e"
+        },
+        {
+          "name": "Sarana kebun",
+          "category": "Infrastructure",
+          "areaHa": 2.3556,
+          "featureCount": 6,
+          "color": "#788891"
+        }
+      ]
+    }
+  ],
+  "objects": []
+}

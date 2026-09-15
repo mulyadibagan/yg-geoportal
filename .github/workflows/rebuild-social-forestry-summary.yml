@@ -1,0 +1,100 @@
+name: Rebuild Social Forestry Summary
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'data/social-forestry-details.json'
+      - 'data/PERHUTANAN_SOSIAL_RIAU.geojson'
+      - 'data/social-forestry-pkk-samj.geojson'
+      - 'data/social-forestry-kud-agro-lestari.geojson'
+      - 'data/social-forestry-derived-2025.geojson'
+      - 'data/social-forestry-official-2026.geojson'
+      - 'tools/build-social-forestry-summary.js'
+      - '.github/workflows/rebuild-social-forestry-summary.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Preserve current summary for diagnostics
+        run: cp data/social-forestry-summary.json /tmp/social-forestry-summary-before.json
+
+      - name: Rebuild summary
+        run: node tools/build-social-forestry-summary.js
+
+      - name: Validate summary
+        run: |
+          node - <<'NODE'
+          const fs = require('fs');
+          const before = JSON.parse(fs.readFileSync('/tmp/social-forestry-summary-before.json','utf8'));
+          const s = JSON.parse(fs.readFileSync('data/social-forestry-summary.json','utf8'));
+          const identity = p => [p.key || '', p.decree || '', p.name || '', p.regency || ''].join('|').toLowerCase();
+          const beforeMap = new Map(before.profiles.map(p => [identity(p), p]));
+          const afterMap = new Map(s.profiles.map(p => [identity(p), p]));
+          const onlyBefore = [...beforeMap].filter(([k]) => !afterMap.has(k)).map(([,p]) => p);
+          const onlyAfter = [...afterMap].filter(([k]) => !beforeMap.has(k)).map(([,p]) => p);
+          console.log('Before totals:', before.totals);
+          console.log('After totals:', s.totals);
+          console.log('After schemes:', s.schemes.map(x => [x.scheme,x.profileCount,x.totalAreaHa]));
+          console.log('Only before:', onlyBefore.map(p => ({key:p.key,decree:p.decree,name:p.name,regency:p.regency,scheme:p.scheme,areaHa:p.areaHa,spatial:p.spatial})));
+          console.log('Only after:', onlyAfter.map(p => ({key:p.key,decree:p.decree,name:p.name,regency:p.regency,scheme:p.scheme,areaHa:p.areaHa,spatial:p.spatial})));
+          console.log('Unclassified:', s.profiles.filter(p => /Persetujuan Perhutanan Sosial|Belum terklasifikasi/i.test(p.scheme)).map(p => ({key:p.key,decree:p.decree,name:p.name,regency:p.regency,scheme:p.scheme,areaHa:p.areaHa,spatial:p.spatial})));
+          console.log('HTR:', s.profiles.filter(p => p.scheme === 'Hutan Tanaman Rakyat').map(p => ({key:p.key,decree:p.decree,name:p.name,regency:p.regency,areaHa:p.areaHa,spatial:p.spatial})));
+          if (s.totals.profileCount !== 181) throw new Error(`Expected 181 unique profiles, got ${s.totals.profileCount}`);
+          if (Math.abs(s.totals.totalAreaHa - 172547.21) > 0.01) throw new Error(`Unexpected total area ${s.totals.totalAreaHa}`);
+          const generic = s.schemes.find(x => /Persetujuan Perhutanan Sosial|Belum terklasifikasi/i.test(x.scheme));
+          if (generic) throw new Error(`Generic scheme remains: ${generic.scheme}`);
+          const htr = s.schemes.find(x => x.scheme === 'Hutan Tanaman Rakyat');
+          if (!htr || htr.profileCount !== 4) throw new Error(`Expected 4 HTR profiles, got ${htr ? htr.profileCount : 0}`);
+          const rohil = s.profiles.filter(p => p.regency === 'Rokan Hilir');
+          const rohilArea = rohil.reduce((sum, p) => sum + (p.areaHa || 0), 0);
+          if (rohil.length !== 10) throw new Error(`Expected 10 Rokan Hilir profiles, got ${rohil.length}`);
+          if (Math.abs(rohilArea - 6724.55) > 0.01) throw new Error(`Unexpected Rokan Hilir area ${rohilArea}`);
+          if (rohil.some(p => /SUMBER ALAM MAKMUR JAYA/i.test(p.name))) throw new Error('Dumai profile SAMJ remains in Rokan Hilir');
+          const makmurJaya = rohil.find(p => /MAKMUR JAYA BERSAMA/i.test(p.name));
+          const makmurPesisir = rohil.find(p => /MAKMUR PESISIR/i.test(p.name));
+          if (!makmurJaya || !/9864/.test(makmurJaya.decree) || makmurJaya.areaHa !== 184) throw new Error('Makmur Jaya Bersama identity is inconsistent');
+          if (!makmurPesisir || !/9863/.test(makmurPesisir.decree) || makmurPesisir.areaHa !== 143) throw new Error('Makmur Pesisir identity is inconsistent');
+          const samj = s.profiles.find(p => /SUMBER ALAM MAKMUR JAYA/i.test(p.name));
+          if (!samj || !samj.spatial || samj.regency !== 'Dumai' || samj.areaHa !== 4000) throw new Error('SAMJ official spatial profile is inconsistent');
+          const assertUniqueSpatial = (pattern, decreePattern) => {
+            const matches = s.profiles.filter(p => pattern.test(p.name));
+            if (matches.length !== 1 || !matches[0].spatial || !decreePattern.test(matches[0].decree)) {
+              throw new Error(`Spatial identity is inconsistent for ${pattern}: ${JSON.stringify(matches)}`);
+            }
+          };
+          assertUniqueSpatial(/KTH ALAM HIJAU/i, /8494/);
+          assertUniqueSpatial(/MUARA DUA/i, /4391/);
+          assertUniqueSpatial(/LPHD PENDALIAN/i, /3324/);
+          assertUniqueSpatial(/MABLOE SEJAHTERA/i, /8947/);
+          assertUniqueSpatial(/KTH FLAMBOYAN/i, /5143/);
+          assertUniqueSpatial(/KUD AGRO LESTARI/i, /522\/DISHUT\/285\/2011/i);
+          assertUniqueSpatial(/KTH MITRA BUMI/i, /9637/);
+          assertUniqueSpatial(/SIKEBAU JAYA/i, /8617/);
+          assertUniqueSpatial(/SUKA DAMAI/i, /8606/);
+          const nonspatial = s.profiles.filter(p => !p.spatial);
+          if (nonspatial.length !== 2) throw new Error(`Expected 2 nonspatial profiles, got ${nonspatial.length}`);
+          console.log('Validated:', s.totals, s.schemes.map(x => [x.scheme,x.profileCount,x.totalAreaHa]));
+          NODE
+
+      - name: Commit rebuilt summary
+        run: |
+          if git diff --quiet -- data/social-forestry-summary.json; then
+            echo 'Summary already current.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/social-forestry-summary.json
+          git commit -m 'Rebuild social forestry summary'
+          git pull --rebase origin main
+          git push

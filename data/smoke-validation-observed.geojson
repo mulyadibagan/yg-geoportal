@@ -1,0 +1,62 @@
+{
+  "type": "FeatureCollection",
+  "metadata": {
+    "schemaVersion": 1,
+    "purpose": "Independent manual outlines of satellite-visible plume-like material",
+    "crs": "EPSG:4326",
+    "protocol": "docs/plume-annotation-protocol.md",
+    "source": "NASA Worldview/GIBS",
+    "modelVisibleDuringAnnotation": false,
+    "cases": [
+      {
+        "caseId": "sumatra-2026-02-07",
+        "annotationStatus": "pending",
+        "visibility": null,
+        "confidence": null,
+        "layers": [],
+        "imageryDate": "2026-02-07",
+        "imageryAcquiredAt": null,
+        "worldviewUrl": null,
+        "accessedAt": null,
+        "annotator": null,
+        "reviewer": null,
+        "blindToModel": true,
+        "obstructionNotes": null,
+        "exclusionReason": null
+      },
+      {
+        "caseId": "sumatra-2026-06-03",
+        "annotationStatus": "pending",
+        "visibility": null,
+        "confidence": null,
+        "layers": [],
+        "imageryDate": "2026-06-03",
+        "imageryAcquiredAt": null,
+        "worldviewUrl": null,
+        "accessedAt": null,
+        "annotator": null,
+        "reviewer": null,
+        "blindToModel": true,
+        "obstructionNotes": null,
+        "exclusionReason": null
+      },
+      {
+        "caseId": "west-kalimantan-2026-06-05",
+        "annotationStatus": "pending",
+        "visibility": null,
+        "confidence": null,
+        "layers": [],
+        "imageryDate": "2026-06-05",
+        "imageryAcquiredAt": null,
+        "worldviewUrl": null,
+        "accessedAt": null,
+        "annotator": null,
+        "reviewer": null,
+        "blindToModel": true,
+        "obstructionNotes": null,
+        "exclusionReason": null
+      }
+    ]
+  },
+  "features": []
+}

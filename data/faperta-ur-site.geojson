@@ -1,0 +1,16 @@
+{
+  "type": "FeatureCollection",
+  "name": "UPT Faperta Universitas Riau",
+  "source": {
+    "primary": "UPT_Faperta_UNRI.shp",
+    "verification": "PETA UPDATE LAHAN UPT 1-1.pdf",
+    "captured_at": "2026-09-10",
+    "crs": "EPSG:4326",
+    "note": "Luas atribut SHP dipertahankan. Angka pada PDF berbeda untuk sebagian blok dan dicatat untuk rekonsiliasi."
+  },
+  "features": [
+    {"type":"Feature","properties":{"block_id":"UPT-UR-B01","name":"Blok UPT 1","source_area_ha":5.45461340695,"pdf_reference_area_ha":5.444743,"reconciliation_status":"needs_review","status":"boundary_verified","source":"UPT_Faperta_UNRI.shp","crs":"EPSG:4326"},"geometry":{"type":"Polygon","coordinates":[[[101.37871333,0.4804842],[101.37870297,0.48148914],[101.37870534,0.48148436],[101.3788432,0.48277643],[101.38139512,0.48272456],[101.38125973,0.48152551],[101.38005194,0.48145966],[101.38006867,0.48084406],[101.37977205,0.48083947],[101.37974923,0.48055464],[101.37871333,0.4804842]]]}},
+    {"type":"Feature","properties":{"block_id":"UPT-UR-B02","name":"Blok UPT 2","source_area_ha":1.9809252119,"pdf_reference_area_ha":2.0017681,"reconciliation_status":"needs_review","status":"boundary_verified","source":"UPT_Faperta_UNRI.shp","crs":"EPSG:4326"},"geometry":{"type":"Polygon","coordinates":[[[101.38021894,0.48313552],[101.3801762,0.48393102],[101.38234146,0.4838712],[101.38231042,0.48315438],[101.38021894,0.48313552]]]}},
+    {"type":"Feature","properties":{"block_id":"UPT-UR-B03","name":"Blok UPT 3","source_area_ha":2.02885869496,"pdf_reference_area_ha":3.2960828,"reconciliation_status":"needs_review","status":"boundary_verified","source":"UPT_Faperta_UNRI.shp","crs":"EPSG:4326"},"geometry":{"type":"Polygon","coordinates":[[[101.38139512,0.48272456],[101.3788432,0.48277643],[101.37887752,0.48314716],[101.37917414,0.48312802],[101.38021894,0.48313552],[101.38231042,0.48315438],[101.38269789,0.48315865],[101.38299147,0.48312955],[101.38284088,0.48270077],[101.38139512,0.48272456]]]}}
+  ]
+}

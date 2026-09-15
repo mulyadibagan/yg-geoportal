@@ -1,0 +1,687 @@
+{
+  "schemaVersion": 1,
+  "product": "Prioritas Rehabilitasi Mangrove 2016–2025",
+  "status": "foundation",
+  "baseline": "2016",
+  "comparison": "2025",
+  "generatedAt": "2026-08-12T10:30:00Z",
+  "disclaimer": "Fondasi analisis. Skor, luas kandidat, dan polygon belum dihitung dan tidak boleh digunakan untuk keputusan penanaman.",
+  "villages": [
+    {
+      "id": "kelurahan-teluk-belitung",
+      "village": "Kelurahan Teluk Belitung",
+      "district": "Merbau",
+      "regency": "Kepulauan Meranti",
+      "lat": 1.047694,
+      "lon": 102.398648,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "lukit",
+      "village": "Lukit",
+      "district": "Merbau",
+      "regency": "Kepulauan Meranti",
+      "lat": 1.082244,
+      "lon": 102.302958,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "mekar-sari",
+      "village": "Mekar Sari",
+      "district": "Merbau",
+      "regency": "Kepulauan Meranti",
+      "lat": 1.010894,
+      "lon": 102.434719,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "baran-melintang",
+      "village": "Baran Melintang",
+      "district": "Pulaumerbau",
+      "regency": "Kepulauan Meranti",
+      "lat": 1.057694,
+      "lon": 102.48311,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "centai",
+      "village": "Centai",
+      "district": "Pulaumerbau",
+      "regency": "Kepulauan Meranti",
+      "lat": 1.058944,
+      "lon": 102.582499,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "ketapang-permai",
+      "village": "Ketapang Permai",
+      "district": "Pulaumerbau",
+      "regency": "Kepulauan Meranti",
+      "lat": 1.001694,
+      "lon": 102.503882,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "kuala-merbau",
+      "village": "Kuala Merbau",
+      "district": "Pulaumerbau",
+      "regency": "Kepulauan Meranti",
+      "lat": 1.117994,
+      "lon": 102.510926,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "padang-kamal",
+      "village": "Padang Kamal",
+      "district": "Pulaumerbau",
+      "regency": "Kepulauan Meranti",
+      "lat": 0.980444,
+      "lon": 102.524532,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "pangkalan-balai",
+      "village": "Pangkalan Balai",
+      "district": "Pulaumerbau",
+      "regency": "Kepulauan Meranti",
+      "lat": 1.095794,
+      "lon": 102.490032,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "semukut",
+      "village": "Semukut",
+      "district": "Pulaumerbau",
+      "regency": "Kepulauan Meranti",
+      "lat": 1.003294,
+      "lon": 102.564938,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "tanjungbunga",
+      "village": "Tanjungbunga",
+      "district": "Pulaumerbau",
+      "regency": "Kepulauan Meranti",
+      "lat": 1.080894,
+      "lon": 102.560312,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "teluk-ketapang",
+      "village": "Teluk Ketapang",
+      "district": "Pulaumerbau",
+      "regency": "Kepulauan Meranti",
+      "lat": 0.963794,
+      "lon": 102.503626,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "dwi-tunggal",
+      "village": "Dwi Tunggal",
+      "district": "Rangsang",
+      "regency": "Kepulauan Meranti",
+      "lat": 0.857644,
+      "lon": 103.102499,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "gemala-sari",
+      "village": "Gemala Sari",
+      "district": "Rangsang",
+      "regency": "Kepulauan Meranti",
+      "lat": 0.922644,
+      "lon": 102.994356,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "penyagun",
+      "village": "Penyagun",
+      "district": "Rangsang",
+      "regency": "Kepulauan Meranti",
+      "lat": 0.968594,
+      "lon": 102.950856,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "repan",
+      "village": "Repan",
+      "district": "Rangsang",
+      "regency": "Kepulauan Meranti",
+      "lat": 0.981544,
+      "lon": 102.914999,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "sungai-gayung-kiri",
+      "village": "Sungai Gayung Kiri",
+      "district": "Rangsang",
+      "regency": "Kepulauan Meranti",
+      "lat": 0.989294,
+      "lon": 103.025356,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "tanjung-bakau",
+      "village": "Tanjung Bakau",
+      "district": "Rangsang",
+      "regency": "Kepulauan Meranti",
+      "lat": 0.853694,
+      "lon": 103.119405,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "tanjung-gemuk",
+      "village": "Tanjung Gemuk",
+      "district": "Rangsang",
+      "regency": "Kepulauan Meranti",
+      "lat": 0.859844,
+      "lon": 103.141707,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "tanjung-medang",
+      "village": "Tanjung Medang",
+      "district": "Rangsang",
+      "regency": "Kepulauan Meranti",
+      "lat": 0.909494,
+      "lon": 103.105327,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "tanjung-samak",
+      "village": "Tanjung Samak",
+      "district": "Rangsang",
+      "regency": "Kepulauan Meranti",
+      "lat": 0.843844,
+      "lon": 103.076074,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "tebun",
+      "village": "Tebun",
+      "district": "Rangsang",
+      "regency": "Kepulauan Meranti",
+      "lat": 0.995344,
+      "lon": 102.886094,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "teluk-samak",
+      "village": "Teluk Samak",
+      "district": "Rangsang",
+      "regency": "Kepulauan Meranti",
+      "lat": 0.889294,
+      "lon": 103.051795,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "topang",
+      "village": "Topang",
+      "district": "Rangsang",
+      "regency": "Kepulauan Meranti",
+      "lat": 0.758144,
+      "lon": 103.095289,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "anak-setatah",
+      "village": "Anak Setatah",
+      "district": "Rangsang Barat",
+      "regency": "Kepulauan Meranti",
+      "lat": 1.050794,
+      "lon": 102.671732,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "bantar",
+      "village": "Bantar",
+      "district": "Rangsang Barat",
+      "regency": "Kepulauan Meranti",
+      "lat": 1.025644,
+      "lon": 102.660079,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "bina-maju",
+      "village": "Bina Maju",
+      "district": "Rangsang Barat",
+      "regency": "Kepulauan Meranti",
+      "lat": 1.086344,
+      "lon": 102.703553,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "bokor",
+      "village": "Bokor",
+      "district": "Rangsang Barat",
+      "regency": "Kepulauan Meranti",
+      "lat": 1.053044,
+      "lon": 102.759557,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "lemang",
+      "village": "Lemang",
+      "district": "Rangsang Barat",
+      "regency": "Kepulauan Meranti",
+      "lat": 1.044544,
+      "lon": 102.712529,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "mekar-baru",
+      "village": "Mekar Baru",
+      "district": "Rangsang Barat",
+      "regency": "Kepulauan Meranti",
+      "lat": 1.106244,
+      "lon": 102.701585,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "melai",
+      "village": "Melai",
+      "district": "Rangsang Barat",
+      "regency": "Kepulauan Meranti",
+      "lat": 1.126244,
+      "lon": 102.713838,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "permai",
+      "village": "Permai",
+      "district": "Rangsang Barat",
+      "regency": "Kepulauan Meranti",
+      "lat": 1.018544,
+      "lon": 102.637275,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "segomeng",
+      "village": "Segomeng",
+      "district": "Rangsang Barat",
+      "regency": "Kepulauan Meranti",
+      "lat": 1.063244,
+      "lon": 102.690421,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "sialang-pasung",
+      "village": "Sialang Pasung",
+      "district": "Rangsang Barat",
+      "regency": "Kepulauan Meranti",
+      "lat": 1.034494,
+      "lon": 102.685543,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "sungai-cina",
+      "village": "Sungai Cina",
+      "district": "Rangsang Barat",
+      "regency": "Kepulauan Meranti",
+      "lat": 1.066844,
+      "lon": 102.70625,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "sungai-cina-bina-maju",
+      "village": "Sungai Cina / Bina Maju",
+      "district": "Rangsang Barat",
+      "regency": "Kepulauan Meranti",
+      "lat": 1.086794,
+      "lon": 102.673313,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "telaga-baru",
+      "village": "Telaga Baru",
+      "district": "Rangsang Barat",
+      "regency": "Kepulauan Meranti",
+      "lat": 1.068894,
+      "lon": 102.734214,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "beting",
+      "village": "Beting",
+      "district": "Rangsang Pesisir",
+      "regency": "Kepulauan Meranti",
+      "lat": 1.012044,
+      "lon": 102.812742,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "bungur",
+      "village": "Bungur",
+      "district": "Rangsang Pesisir",
+      "regency": "Kepulauan Meranti",
+      "lat": 1.087394,
+      "lon": 102.875555,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "kedabu-rapat",
+      "village": "Kedabu Rapat",
+      "district": "Rangsang Pesisir",
+      "regency": "Kepulauan Meranti",
+      "lat": 1.133794,
+      "lon": 102.750701,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "sokop",
+      "village": "Sokop",
+      "district": "Rangsang Pesisir",
+      "regency": "Kepulauan Meranti",
+      "lat": 1.015644,
+      "lon": 102.857463,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "sonde",
+      "village": "Sonde",
+      "district": "Rangsang Pesisir",
+      "regency": "Kepulauan Meranti",
+      "lat": 1.107344,
+      "lon": 102.836552,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "tanah-merah",
+      "village": "Tanah Merah",
+      "district": "Rangsang Pesisir",
+      "regency": "Kepulauan Meranti",
+      "lat": 1.134044,
+      "lon": 102.795867,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "tanjung-kedabu",
+      "village": "Tanjung Kedabu",
+      "district": "Rangsang Pesisir",
+      "regency": "Kepulauan Meranti",
+      "lat": 1.038744,
+      "lon": 102.95763,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "telesung",
+      "village": "Telesung",
+      "district": "Rangsang Pesisir",
+      "regency": "Kepulauan Meranti",
+      "lat": 1.082444,
+      "lon": 102.904113,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "tenggayun-raya",
+      "village": "Tenggayun Raya",
+      "district": "Rangsang Pesisir",
+      "regency": "Kepulauan Meranti",
+      "lat": 1.113544,
+      "lon": 102.86941,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "bandul",
+      "village": "Bandul",
+      "district": "Tasik Putri Puyu",
+      "regency": "Kepulauan Meranti",
+      "lat": 1.241544,
+      "lon": 102.459957,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "kudap",
+      "village": "Kudap",
+      "district": "Tasik Putri Puyu",
+      "regency": "Kepulauan Meranti",
+      "lat": 1.248594,
+      "lon": 102.387707,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "mengkopot",
+      "village": "Mengkopot",
+      "district": "Tasik Putri Puyu",
+      "regency": "Kepulauan Meranti",
+      "lat": 1.153294,
+      "lon": 102.399639,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "putri-puyu",
+      "village": "Putri Puyu",
+      "district": "Tasik Putri Puyu",
+      "regency": "Kepulauan Meranti",
+      "lat": 1.366794,
+      "lon": 102.310007,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "tanjung-padang",
+      "village": "Tanjung Padang",
+      "district": "Tasik Putri Puyu",
+      "regency": "Kepulauan Meranti",
+      "lat": 1.331494,
+      "lon": 102.272197,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "tanjung-pisang",
+      "village": "Tanjung Pisang",
+      "district": "Tasik Putri Puyu",
+      "regency": "Kepulauan Meranti",
+      "lat": 1.168294,
+      "lon": 102.421851,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "alah-air",
+      "village": "Alah Air",
+      "district": "Tebing Tinggi",
+      "regency": "Kepulauan Meranti",
+      "lat": 0.994744,
+      "lon": 102.685283,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "banglas",
+      "village": "Banglas",
+      "district": "Tebing Tinggi",
+      "regency": "Kepulauan Meranti",
+      "lat": 0.987444,
+      "lon": 102.749075,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "banglas-barat",
+      "village": "Banglas Barat",
+      "district": "Tebing Tinggi",
+      "regency": "Kepulauan Meranti",
+      "lat": 0.973044,
+      "lon": 102.720151,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "kelurahan-selatpanjang-barat",
+      "village": "Kelurahan Selatpanjang Barat",
+      "district": "Tebing Tinggi",
+      "regency": "Kepulauan Meranti",
+      "lat": 1.010244,
+      "lon": 102.701594,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "kelurahan-selatpanjang-kota",
+      "village": "Kelurahan Selatpanjang Kota",
+      "district": "Tebing Tinggi",
+      "regency": "Kepulauan Meranti",
+      "lat": 1.015044,
+      "lon": 102.728145,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "kelurahan-selatpanjang-selatan",
+      "village": "Kelurahan Selatpanjang Selatan",
+      "district": "Tebing Tinggi",
+      "regency": "Kepulauan Meranti",
+      "lat": 1.005694,
+      "lon": 102.700651,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "sesap",
+      "village": "Sesap",
+      "district": "Tebing Tinggi",
+      "regency": "Kepulauan Meranti",
+      "lat": 0.965944,
+      "lon": 102.683949,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "gogok-darussalam",
+      "village": "Gogok Darussalam",
+      "district": "Tebing Tinggi Barat",
+      "regency": "Kepulauan Meranti",
+      "lat": 0.984144,
+      "lon": 102.649578,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "insit",
+      "village": "Insit",
+      "district": "Tebing Tinggi Barat",
+      "regency": "Kepulauan Meranti",
+      "lat": 0.987594,
+      "lon": 102.670484,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "kundur",
+      "village": "Kundur",
+      "district": "Tebing Tinggi Barat",
+      "regency": "Kepulauan Meranti",
+      "lat": 0.952194,
+      "lon": 102.547434,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "mekong",
+      "village": "Mekong",
+      "district": "Tebing Tinggi Barat",
+      "regency": "Kepulauan Meranti",
+      "lat": 0.988744,
+      "lon": 102.59516,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "mengkikip",
+      "village": "Mengkikip",
+      "district": "Tebing Tinggi Barat",
+      "regency": "Kepulauan Meranti",
+      "lat": 0.841894,
+      "lon": 102.504021,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "tanjung-darul-takzim",
+      "village": "Tanjung Darul Takzim",
+      "district": "Tebing Tinggi Barat",
+      "regency": "Kepulauan Meranti",
+      "lat": 0.895794,
+      "lon": 102.647923,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "tanjung-peranap",
+      "village": "Tanjung Peranap",
+      "district": "Tebing Tinggi Barat",
+      "regency": "Kepulauan Meranti",
+      "lat": 0.902294,
+      "lon": 102.482454,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "banglas-barat-batin-suir",
+      "village": "Banglas Barat / Batin Suir",
+      "district": "Tebing Tinggi Timur",
+      "regency": "Kepulauan Meranti",
+      "lat": 0.949994,
+      "lon": 102.732965,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "batin-suir",
+      "village": "Batin Suir",
+      "district": "Tebing Tinggi Timur",
+      "regency": "Kepulauan Meranti",
+      "lat": 0.910994,
+      "lon": 102.71,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "kepau-baru",
+      "village": "Kepau Baru",
+      "district": "Tebing Tinggi Timur",
+      "regency": "Kepulauan Meranti",
+      "lat": 0.814994,
+      "lon": 102.761854,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "lukun",
+      "village": "Lukun",
+      "district": "Tebing Tinggi Timur",
+      "regency": "Kepulauan Meranti",
+      "lat": 0.881294,
+      "lon": 102.801485,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "nipah-sendanu",
+      "village": "Nipah Sendanu",
+      "district": "Tebing Tinggi Timur",
+      "regency": "Kepulauan Meranti",
+      "lat": 0.838194,
+      "lon": 102.969075,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "sendanu-darul-ihsan",
+      "village": "Sendanu Darul Ihsan",
+      "district": "Tebing Tinggi Timur",
+      "regency": "Kepulauan Meranti",
+      "lat": 0.824044,
+      "lon": 102.99456,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "sungai-tohor",
+      "village": "Sungai Tohor",
+      "district": "Tebing Tinggi Timur",
+      "regency": "Kepulauan Meranti",
+      "lat": 0.890294,
+      "lon": 102.897705,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "tanjung-gadai",
+      "village": "Tanjung Gadai",
+      "district": "Tebing Tinggi Timur",
+      "regency": "Kepulauan Meranti",
+      "lat": 0.728494,
+      "lon": 103.029177,
+      "scope": "Kepulauan Meranti coastal screening"
+    },
+    {
+      "id": "teluk-buntal",
+      "village": "Teluk Buntal",
+      "district": "Tebing Tinggi Timur",
+      "regency": "Kepulauan Meranti",
+      "lat": 0.754644,
+      "lon": 102.980944,
+      "scope": "Kepulauan Meranti coastal screening"
+    }
+  ],
+  "scope": "Kabupaten/Kota Kepulauan Meranti"
+}

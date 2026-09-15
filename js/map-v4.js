@@ -1,0 +1,4756 @@
+(() => {
+  "use strict";
+  const fetch = window.YG_STAFF_DATA.fetch;
+  const staffSession = window.YG_STAFF_DATA.session();
+
+  const API = "https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec?page=objects";
+  const PUBLIC_OBJECTS_SNAPSHOT_URL = "https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/snapshots/current/objects.json";
+  const PUBLIC_OBJECTS_MANIFEST_URL = "https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/manifests/current.json";
+  const DEFAULT_VIEW = [1.25, 102.05];
+  const DEFAULT_ZOOM = 9;
+
+  const STYLE = {
+    desa_intervensi: { label: "Batas Desa Intervensi", color: "#2e7d32", visible: true },
+    apo: { label: "Alat Pemecah Ombak (APO)", color: "#d32f2f", visible: true },
+    area_mangrove: { label: "Area Penanaman Mangrove", color: "#00796b", visible: true },
+    mineral_land_restoration_area: { label: "Area Restorasi Lahan Mineral", color: "#558b2f", visible: true },
+    permanent_measurement_plots: { label: "Petak Ukur Permanen", color: "#8e24aa", visible: true },
+    measurement_points: { label: "Titik Tapak Ukur", color: "#ef6c00", visible: true },
+    titik_penanaman: { label: "Titik Tanam Mangrove", color: "#009688", visible: true },
+    monitoring_reports: { label: "Hasil Monitoring Terverifikasi", color: "#f9a825", visible: true },
+    community_reports: { label: "Laporan Masyarakat Terverifikasi", color: "#7b1fa2", visible: true },
+    forest_land_restoration: { label: "Restorasi Hutan & Lahan", color: "#388e3c", visible: true },
+    nursery_coffee: { label: "Rumah Pembibitan Kopi", color: "#795548", visible: true },
+    information_signs: { label: "Plang Informasi & Perlindungan", color: "#5e35b1", visible: true },
+    supporting_infrastructure: { label: "Infrastruktur Pendukung", color: "#546e7a", visible: true },
+    kopi: { label: "Titik Tanam Kopi", color: "#6d4c41", visible: true },
+    area_kopi: { label: "Wilayah Penanaman Kopi", color: "#8e5a2b", visible: true },
+    fdrs: { label: "FDRS / Water Table", color: "#e65100", visible: true },
+    sekat_kanal: { label: "Sekat Kanal", color: "#00838f", visible: true },
+    nursery_mangrove: { label: "Rumah Pembibitan Mangrove", color: "#8fa600", visible: true },
+    kawasan_hutan_sk_903: { label: "Kawasan Hutan SK 903", color: "#455a64", visible: false }
+  };
+
+  const EXTRA_COLORS = [
+    "#ad1457", "#5e35b1", "#0277bd", "#558b2f",
+    "#ef6c00", "#6a1b9a", "#00897b", "#37474f"
+  ];
+
+  const HIDDEN_LAYER_IDS = new Set(["titik_desa"]);
+
+
+  const REFERENCE_LAYERS = {
+    ...(staffSession ? { pbph_riau_052026: { id: "pbph_riau_052026", label: "PBPH Riau · internal staf", file: "data/PBPH_RIAU_052026.geojson", color: "#d84315", count: 56, type: "active_concession", focusOnEnable: true, sourceLabel: "Referensi internal PBPH Mei 2026", scale: "1:50.000" } } : {}),
+    perusahaan_sawit_riau: {
+      id: "perusahaan_sawit_riau",
+      label: "Area Perkebunan Anggota RSPO",
+      file: "data/PERUSAHAAN_SAWIT_RIAU_REFERENSI.geojson",
+      version: "georspo-riau-growers-20260912-v1",
+      color: "#f97316",
+      count: 8,
+      countLabel: "8 grup · 58 area",
+      type: "oil_palm_company",
+      focusOnEnable: true,
+      sourceLabel: "GeoRSPO / RSPO",
+      sourceUrl: "https://rspo.org/as-an-organisation/tools/georspo/",
+      scale: "Diperbarui 14 Juli 2026"
+    },
+    kawasan_hutan_sk_903: {
+      id: "kawasan_hutan_sk_903",
+      label: "Kawasan Hutan SK 903",
+      file: "data/kawasan_hutan_sk_903.geojson",
+      color: "#455a64",
+      count: 4185,
+      type: "forest"
+    },
+    gambut_bbsdlp_2019: {
+      id: "gambut_bbsdlp_2019",
+      label: "Peta Gambut BBSDLP 2019",
+      file: "data/Gambut_BBSDLP_2019.geojson",
+      color: "#6a4a3a",
+      count: 736,
+      type: "peat"
+    },
+    kph_2019_riau: {
+      id: "kph_2019_riau",
+      label: "Wilayah KPH 2019 Provinsi Riau",
+      file: "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/references/kph_2019_riau.geojson",
+      color: "#827717",
+      count: 1382,
+      type: "kph",
+      sourceLabel: "Shapefile KPH 2019 Provinsi Riau",
+      scale: "Sumber World Mercator; ditransformasikan ke WGS 84"
+    },
+    perhutanan_sosial_riau: {
+      id: "perhutanan_sosial_riau",
+      label: "Perhutanan Sosial Riau",
+      file: "data/PERHUTANAN_SOSIAL_RIAU.geojson?v=20260828-175-polygons1",
+      supplementFiles: [
+        "data/social-forestry-pkk-samj.geojson?v=20260831-samj-pkk1",
+        "data/social-forestry-kud-agro-lestari.geojson?v=20260831-agro1",
+        "data/social-forestry-derived-2025.geojson?v=20260831-derived1",
+        "data/social-forestry-official-2026.geojson?v=20260901-official1"
+      ],
+      color: "#00897b",
+      count: null,
+      type: "social_forestry",
+      focusOnEnable: true
+    },
+    batas_administrasi_desa_riau: {
+      id: "batas_administrasi_desa_riau",
+      label: "Batas Administrasi Desa Riau",
+      file: "data/batas_administrasi_desa_riau.geojson",
+      color: "#1e88e5",
+      count: null,
+      type: "village_boundary",
+      section: "administrative"
+    },
+    upt_faperta_ur: {
+      id: "upt_faperta_ur",
+      label: "UPT Kebun Percobaan Faperta UR",
+      file: "data/faperta-ur-site.geojson?v=20260910-1",
+      color: "#b7791f",
+      count: 3,
+      type: "agriculture_site",
+      focusOnEnable: true,
+      section: "partnership",
+      sourceLabel: "UPT Faperta Universitas Riau — SHP 9 September 2026",
+      scale: "WGS 84 · 3 polygon operasional",
+      policyUrl: "faperta-ur.html"
+    }
+  };
+
+  const referenceLayerObjects = {};
+  let socialForestryDocumentDetails = {};
+  let socialForestryDocumentIndex = {};
+  let socialForestryDocumentDetailsLoaded = false;
+  let socialForestryDocumentLegend = null;
+
+  function socialForestryIdentity(feature, index) {
+    const properties = feature && feature.properties ? feature.properties : {};
+    const value =
+      properties.NO_IUPHKM || properties.NOMOR_SK || properties.NO_SK ||
+      properties.SK || properties.OBJECTID || properties.ID ||
+      [properties.NAMA_HKM, properties.NAMA_DESA, properties.NAMA_KAB]
+        .filter(Boolean).join("|") || "feature-" + index;
+    return String(value).trim().toLowerCase().replace(/\s+/g, " ");
+  }
+
+  async function mergeReferenceSupplements(config, data) {
+    const files = Array.isArray(config.supplementFiles)
+      ? config.supplementFiles
+      : [];
+    if (!files.length) return data;
+
+    const features = Array.isArray(data && data.features)
+      ? data.features.slice()
+      : [];
+    const supplements = await Promise.all(files.map(async file => {
+      try {
+        const response = await fetch(file, { cache: "force-cache" });
+        if (!response.ok) throw new Error("HTTP " + response.status);
+        const collection = await response.json();
+        if (!collection || !Array.isArray(collection.features)) {
+          throw new Error("GeoJSON tambahan tidak valid.");
+        }
+        return collection.features;
+      } catch (error) {
+        console.warn("Layer tambahan PS belum dapat dimuat:", file, error);
+        return [];
+      }
+    }));
+    const identities = new Set(features.map(socialForestryIdentity));
+    supplements.forEach(rows => rows.forEach(feature => {
+      const identity = socialForestryIdentity(feature, features.length);
+      if (!identities.has(identity)) {
+        identities.add(identity);
+        features.push(feature);
+      }
+    }));
+    return Object.assign({}, data, { features });
+  }
+
+  function correctSocialForestryAttributes(data) {
+    const corrections = {
+      "2941": {
+        NO_IUPHKM: "SK.4391/MENLHK-PSKL/PKPS/PSL.0/7/2020",
+        TGL_IUPHKM: "2020-07-08"
+      }
+    };
+    (data && data.features || []).forEach(feature => {
+      const props = feature && feature.properties || {};
+      const correction = corrections[String(props.OBJECTID || "")];
+      if (correction) Object.assign(props, correction);
+    });
+    return data;
+  }
+
+  function referenceCountInfo(layerId, features) {
+    const featureCount = Array.isArray(features) ? features.length : 0;
+    if (layerId === "pbph_riau_052026") {
+      const permitIds = new Set(
+        features.map((feature, index) => {
+          const properties = feature && feature.properties
+            ? feature.properties
+            : {};
+          return String(properties.OBJECTID || properties.PBPH_ID || index);
+        })
+      );
+      const permitCount = permitIds.size;
+      return {
+        count: permitCount,
+        featureCount,
+        label: formatNumber(permitCount) + " izin · " +
+          formatNumber(featureCount) + " bagian",
+        statusLabel: formatNumber(permitCount) + " izin unik · " +
+          formatNumber(featureCount) + " bagian geometri"
+      };
+    }
+    if (layerId === "perusahaan_sawit_riau") {
+      const count = new Set(features.map(f => f.properties.RSPO_GROUP)).size;
+      return { count, featureCount, label: count + " grup · " + featureCount + " area", statusLabel: count + " grup RSPO · " + featureCount + " area" };
+    }
+    if (layerId !== "perhutanan_sosial_riau") {
+      return {
+        count: featureCount,
+        label: formatNumber(featureCount),
+        statusLabel: formatNumber(featureCount) + " fitur"
+      };
+    }
+
+    const identities = new Set();
+    features.forEach((feature, index) => {
+      identities.add(socialForestryIdentity(feature, index));
+    });
+    const psCount = identities.size;
+    return {
+      count: psCount,
+      featureCount,
+      label: formatNumber(psCount) + " PS · " + formatNumber(featureCount) + " polygon",
+      statusLabel: formatNumber(psCount) + " PS unik · " + formatNumber(featureCount) + " polygon"
+    };
+  }
+  const referenceLayerState = {};
+  let referenceCountsPreloaded = false;
+
+  async function preloadReferenceCounts() {
+    if (referenceCountsPreloaded) return;
+    referenceCountsPreloaded = true;
+
+    await Promise.all(Object.keys(REFERENCE_LAYERS).map(async layerId => {
+      const config = REFERENCE_LAYERS[layerId];
+      if (Number.isFinite(config.count)) return;
+
+      try {
+        const response = await fetch(
+          config.file + "?v=20260901-basilam-geniot1",
+          { cache: "force-cache" }
+        );
+        if (!response.ok) return;
+
+        let data = await response.json();
+        data = await mergeReferenceSupplements(config, data);
+        if (
+          !data ||
+          data.type !== "FeatureCollection" ||
+          !Array.isArray(data.features)
+        ) {
+          return;
+        }
+
+        const countInfo = referenceCountInfo(layerId, data.features);
+        config.count = countInfo.count;
+        config.featureCount = countInfo.featureCount;
+        config.countLabel = countInfo.label;
+        const countText = countInfo.label;
+        document
+          .querySelectorAll('[data-reference-count-id="' + layerId + '"]')
+          .forEach(element => {
+            element.textContent = countText;
+          });
+      } catch (_error) {
+        // Keep placeholder dash when count fetch fails.
+      }
+    }));
+  }
+
+  const map = L.map("map", {
+    zoomControl: true,
+    preferCanvas: true
+  }).setView(DEFAULT_VIEW, DEFAULT_ZOOM);
+
+  /*
+   * Urutan visual tidak boleh bergantung pada urutan data dari API.
+   * Setiap keluarga layer mendapat pane sendiri agar batas administrasi
+   * tetap terlihat, sementara monitoring dan titik lapangan tidak tertutup
+   * oleh polygon program yang dimuat sesudahnya.
+   */
+  const MAP_PANES = {
+    boundary: "yg-boundary-pane",
+    reference: "yg-reference-pane",
+    program: "yg-program-pane",
+    points: "yg-points-pane",
+    community: "yg-community-pane",
+    monitoring: "yg-monitoring-pane"
+  };
+
+  [
+    [MAP_PANES.boundary, 390],
+    [MAP_PANES.reference, 400],
+    [MAP_PANES.program, 410],
+    [MAP_PANES.points, 430],
+    [MAP_PANES.community, 450],
+    [MAP_PANES.monitoring, 470]
+  ].forEach(([name, zIndex]) => {
+    const pane = map.createPane(name);
+    pane.style.zIndex = String(zIndex);
+  });
+
+  /*
+   * Canvas memenuhi seluruh pane sehingga pane yang lebih tinggi dapat
+   * menangkap klik di area kosong dan menutup marker di bawahnya. SVG hanya
+   * interaktif pada bentuk yang benar-benar tergambar.
+   */
+  const vectorRenderers = {};
+
+  function vectorRendererFor(pane) {
+    if (!vectorRenderers[pane]) {
+      vectorRenderers[pane] = L.svg({
+        pane: pane,
+        padding: 0.5
+      });
+    }
+    return vectorRenderers[pane];
+  }
+
+// Scale Bar
+L.control.scale({
+    position: 'bottomleft',   // kiri bawah
+    metric: true,             // meter & kilometer
+    imperial: false,          // sembunyikan mil & feet
+    maxWidth: 150
+}).addTo(map);
+  
+  const baseMaps = {
+    "OpenStreetMap": L.tileLayer(
+      "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+      {
+        maxZoom: 19,
+        attribution: "&copy; OpenStreetMap contributors"
+      }
+    ),
+    "Satelit": L.tileLayer(
+      "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+      {
+        /*
+         * Sebagian lokasi pedesaan tidak memiliki tile Esri pada zoom 18–19.
+         * Leaflet memperbesar tile zoom 17 secara digital sehingga pengguna
+         * tetap dapat zoom tanpa mendapat tile "Map data not yet available".
+         */
+        maxNativeZoom: 17,
+        maxZoom: 20,
+        attribution: "Tiles &copy; Esri"
+      }
+    )
+  };
+
+  baseMaps.OpenStreetMap.addTo(map);
+  L.control.layers(baseMaps, null, { position: "topright" }).addTo(map);
+
+  const layerObjects = {};
+  const layerConfigs = {};
+  const pendingLiveFeatures = {};
+  const monitoringReportsByTarget = new Map();
+  const monitoringHistoryIdsByTarget = new Map();
+  const searchItems = [];
+  let allBounds = L.latLngBounds([]);
+  let rawFeatures = [];
+  let lastGeneratedAt = null;
+  let observedSnapshotVersion = "";
+  let snapshotRefreshTimer = null;
+
+  function escapeHtml(value) {
+    return String(value == null ? "" : value).replace(/[&<>"']/g, char => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    })[char]);
+  }
+
+  function currentLocale() {
+    return window.YG_I18N && typeof window.YG_I18N.locale === "function"
+      ? window.YG_I18N.locale()
+      : "id-ID";
+  }
+
+  function formatNumber(value, options) {
+    return new Intl.NumberFormat(currentLocale(), options || {}).format(value);
+  }
+
+  function formatDate(value) {
+    const text = String(value || "").trim();
+    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(text);
+    if (!match) return text;
+    const date = new Date(Date.UTC(
+      Number(match[1]), Number(match[2]) - 1, Number(match[3])
+    ));
+    return new Intl.DateTimeFormat(currentLocale(), {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      timeZone: "UTC"
+    }).format(date);
+  }
+
+  function hashColor(value) {
+    let hash = 0;
+    const text = String(value || "");
+    for (let i = 0; i < text.length; i += 1) {
+      hash = ((hash << 5) - hash) + text.charCodeAt(i);
+      hash |= 0;
+    }
+    return EXTRA_COLORS[Math.abs(hash) % EXTRA_COLORS.length];
+  }
+
+  function getLayerId(feature) {
+    const props = feature.properties || {};
+    return props.Layer_ID || props.Source_Layer || "lainnya";
+  }
+
+  function getObjectName(feature) {
+    const props = feature.properties || {};
+    return props.Nama_Objek || props.title || props.NAMOBJ || props.Desa || props.WADMKD || "Objek WebGIS";
+  }
+
+  function canonicalDonorName(value) {
+    const donor = String(value == null ? "" : value).trim();
+    return /^(?:yayasan\s+)?penabulu$/i.test(donor)
+      ? "Yayasan Penabulu"
+      : donor;
+  }
+
+  function applyMeasurementPointPolicy(feature) {
+    const props = feature && feature.properties || {};
+    const identity = [
+      props.title,
+      props.locationName,
+      props.Nama_Objek,
+      props.description,
+      props.Keterangan
+    ].filter(Boolean).join(" ").toLowerCase();
+
+    if (!identity.includes("titik tapak ukur")) return feature;
+
+    props.Audit_Source_Layer =
+      props.Audit_Source_Layer || props.Layer_ID || props.Source_Layer || "lainnya";
+    props.Layer_ID = "measurement_points";
+    props.Source_Layer = "measurement_points";
+    props.Layer_Tujuan = "measurement_points";
+    props.Layer_Label = "Titik Tapak Ukur";
+    props.Jenis_Titik = "Titik Tapak Ukur";
+    props.Kategori = "Titik Tapak Ukur";
+    props.Donor = "Aliansi Kolibri";
+    props.Donor_Cluster = "Aliansi Kolibri";
+    props.Nama_Donor = "Aliansi Kolibri";
+
+    return feature;
+  }
+
+  function getDonor(props, visited) {
+    const source = props && typeof props === "object" ? props : {};
+    const seen = visited || new Set();
+
+    /*
+     * Data lama dapat menyimpan atribut target secara bertingkat. Hindari
+     * membaca objek yang sama berulang kali dan jangan membuat objek kosong
+     * baru sebagai kandidat, karena itu menyebabkan rekursi tanpa akhir pada
+     * objek yang memang belum memiliki donor.
+     */
+    if (seen.has(source)) return "";
+    seen.add(source);
+    const keys = [
+      "Donor", "Nama_Donor", "Funding_Source",
+      "donor", "nama_donor", "funding_source"
+    ];
+
+    for (let index = 0; index < keys.length; index += 1) {
+      const value = source[keys[index]];
+      if (
+        value !== null &&
+        value !== undefined &&
+        String(value).trim() !== ""
+      ) {
+        return canonicalDonorName(value);
+      }
+    }
+
+    const nestedCandidates = [
+      source.targetFeatureProperties,
+      source.proposedChanges
+    ];
+
+    for (let index = 0; index < nestedCandidates.length; index += 1) {
+      let nested = nestedCandidates[index];
+      if (!nested) continue;
+
+      if (typeof nested === "string") {
+        try {
+          nested = JSON.parse(nested);
+        } catch (error) {
+          continue;
+        }
+      }
+
+      if (nested && typeof nested === "object" && nested !== source) {
+        const donor = getDonor(nested, seen);
+        if (donor) return donor;
+      }
+    }
+
+    return "";
+  }
+
+  function normalizeVerifiedCommunityAssets(feature) {
+    const props = feature && feature.properties || {};
+    const layerId = String(
+      props.Layer_ID || props.Source_Layer || ""
+    ).trim().toLowerCase();
+    const geometryType = String(
+      feature && feature.geometry && feature.geometry.type || ""
+    );
+
+    if (layerId !== "community_reports") {
+      return feature;
+    }
+
+    const identity = [
+      props.title,
+      props.locationName,
+      props.Nama_Objek,
+      props.description,
+      props.reportType
+    ].filter(Boolean).join(" ").toLowerCase();
+
+    /*
+     * Laporan masyarakat tetap menyimpan reportId dan atribut aslinya
+     * sebagai jejak audit. Setelah diverifikasi, aset permanen ditampilkan
+     * pada layer operasional yang sesuai.
+     */
+    const originalLayerId = props.Layer_ID || props.Source_Layer || "community_reports";
+    let target = null;
+
+    if (
+      [
+        "YG-20260713-162454-182",
+        "YG-20260713-165007-843"
+      ].includes(props.reportId) &&
+      ["Polygon", "MultiPolygon"].includes(geometryType)
+    ) {
+      target = {
+        id: "mineral_land_restoration_area",
+        label: "Area Restorasi Lahan Mineral",
+        category: "Restorasi Lahan Mineral",
+        sourceType: "verified_mineral_land_restoration_area"
+      };
+    } else if (geometryType !== "Point") {
+      return feature;
+    } else if (
+      identity.includes("menara tampung air") ||
+      identity.includes("tower air") ||
+      identity.includes("pendopo")
+    ) {
+      target = {
+        id: "supporting_infrastructure",
+        label: "Infrastruktur Pendukung",
+        category: "Infrastruktur Pendukung Program",
+        sourceType: "verified_supporting_infrastructure"
+      };
+    } else if (
+      identity.includes("nursery ktwmj") ||
+      identity.includes("rumah bibit kopi") ||
+      identity.includes("nursery kopi")
+    ) {
+      target = {
+        id: "nursery_coffee",
+        label: "Rumah Pembibitan Kopi",
+        category: "Pembibitan Kopi",
+        sourceType: "verified_coffee_nursery"
+      };
+    } else if (identity.includes("plang")) {
+      target = {
+        id: "information_signs",
+        label: "Plang Informasi & Perlindungan",
+        category: "Plang Informasi dan Perlindungan",
+        sourceType: "verified_information_sign"
+      };
+    } else if (
+      identity.includes("nursery sepahat") ||
+      identity.includes("rumah bibit sepahat") ||
+      identity.includes("rumah bibit kelapa pati")
+    ) {
+      target = {
+        id: "nursery_mangrove",
+        label: "Rumah Pembibitan Mangrove",
+        category: "Pembibitan Mangrove",
+        sourceType: "verified_community_mangrove_nursery"
+      };
+    } else if (
+      identity.includes("restorasi hutan adat imbo putui") ||
+      identity.includes("lokasi pup 2")
+    ) {
+      target = {
+        id: "forest_land_restoration",
+        label: "Restorasi Hutan & Lahan",
+        category: "Restorasi Hutan dan Lahan",
+        sourceType: "verified_forest_land_restoration"
+      };
+    }
+
+    if (!target) return feature;
+
+    props.Audit_Source_Layer = originalLayerId;
+    props.Layer_ID = target.id;
+    props.Source_Layer = target.id;
+    props.Layer_Label = target.label;
+    props.Kategori = target.category;
+    props.Nama_Objek =
+      props.locationName ||
+      props.title ||
+      props.Nama_Objek ||
+      target.category;
+    props.Source_Type = target.sourceType;
+
+    return feature;
+  }
+
+  function getLayerConfig(layerId, feature) {
+    if (layerConfigs[layerId]) return layerConfigs[layerId];
+
+    const props = feature && feature.properties || {};
+    const preset = STYLE[layerId] || {};
+
+    layerConfigs[layerId] = {
+      id: layerId,
+      label: preset.label || props.Layer_Label || props.Kategori || layerId.replace(/_/g, " "),
+      color: preset.color || hashColor(layerId),
+      visible: typeof preset.visible === "boolean" ? preset.visible : false
+    };
+
+    return layerConfigs[layerId];
+  }
+
+  const localProgramPhotoAssets = {
+    "fdrs pedekik (1).jpg": "assets/program-photos/fdrs-pedekik-2026-01-v2.jpg",
+    "fdrs pedekik (4).jpg": "assets/program-photos/fdrs-pedekik-2026-04-v2.jpg"
+  };
+
+  function normalizePhotoUrl(value) {
+    const normalized = String(value || "")
+      .trim()
+      .replace(/^["']+|["']+$/g, "")
+      .replace(/&amp;/g, "&");
+
+    return localProgramPhotoAssets[normalized.toLowerCase()] || normalized;
+  }
+
+  function driveId(url) {
+    const text = normalizePhotoUrl(url);
+
+    const patterns = [
+      /\/file\/d\/([A-Za-z0-9_-]+)/i,
+      /\/d\/([A-Za-z0-9_-]+)/i,
+      /[?&]id=([A-Za-z0-9_-]+)/i,
+      /\/uc\?(?:[^#]*&)?id=([A-Za-z0-9_-]+)/i,
+      /\/thumbnail\?(?:[^#]*&)?id=([A-Za-z0-9_-]+)/i
+    ];
+
+    for (let i = 0; i < patterns.length; i += 1) {
+      const match = text.match(patterns[i]);
+      if (match) return match[1];
+    }
+
+    if (/^[A-Za-z0-9_-]{20,}$/.test(text)) {
+      return text;
+    }
+
+    return "";
+  }
+
+  function photoThumb(url) {
+    const cleanUrl = normalizePhotoUrl(url);
+    const id = driveId(cleanUrl);
+
+    return id
+      ? "https://drive.google.com/thumbnail?id=" +
+          encodeURIComponent(id) +
+          "&sz=w1000"
+      : cleanUrl;
+  }
+
+  function photoOriginal(url) {
+    const cleanUrl = normalizePhotoUrl(url);
+    const id = driveId(cleanUrl);
+
+    return id
+      ? "https://drive.google.com/file/d/" +
+          encodeURIComponent(id) +
+          "/view?usp=sharing"
+      : cleanUrl;
+  }
+
+  function photoGalleryItem(url, index) {
+    const cleanUrl = normalizePhotoUrl(url);
+    const originalUrl = photoOriginal(cleanUrl);
+    const thumbnailUrl = photoThumb(cleanUrl);
+
+    if (!originalUrl) return "";
+
+    return (
+      '<a class="yg-photo-card" ' +
+        'href="' + escapeHtml(originalUrl) + '" ' +
+        'target="_blank" rel="noopener noreferrer" ' +
+        'title="Buka foto resolusi penuh">' +
+        '<img src="' + escapeHtml(thumbnailUrl) + '" ' +
+          'loading="lazy" alt="Foto ' + (index + 1) + '" ' +
+          'onerror="this.style.display=&quot;none&quot;;' +
+          'this.nextElementSibling.style.display=&quot;flex&quot;;">' +
+        '<span class="yg-photo-fallback" style="display:none">' +
+          'Buka Foto ' + (index + 1) +
+        '</span>' +
+      '</a>'
+    );
+  }
+
+  function buildPopup(feature, config) {
+    const props = feature.properties || {};
+
+    const isMonitoring =
+      config.id === "monitoring_reports" ||
+      props.Source_Type === "monitoring_report";
+
+    const isCommunity =
+      config.id === "community_reports" ||
+      props.Source_Type === "community_report";
+
+    function valueOf(keys) {
+      const english = window.YG_I18N && window.YG_I18N.language === "en";
+      const localizedKeys = english
+        ? keys.reduce((all, key) => all.concat([
+            key + "_EN", key + "_En", key + "_en", key + "_English", key
+          ]), [])
+        : keys;
+      for (let i = 0; i < localizedKeys.length; i += 1) {
+        const value = props[localizedKeys[i]];
+
+        if (
+          value !== null &&
+          value !== undefined &&
+          String(value).trim() !== ""
+        ) {
+          return value;
+        }
+      }
+
+      return "";
+    }
+
+    function row(label, value, suffix) {
+      if (
+        value === null ||
+        value === undefined ||
+        String(value).trim() === ""
+      ) {
+        return "";
+      }
+
+      return (
+        '<div class="popup-row">' +
+          '<b>' + escapeHtml(label) + '</b>' +
+          '<span>' +
+            escapeHtml(value) +
+            (suffix ? " " + escapeHtml(suffix) : "") +
+          '</span>' +
+        '</div>'
+      );
+    }
+
+    function communityObjectType() {
+      /*
+       * reportType menjelaskan jalur formulir (mis. "Titik Baru"), bukan
+       * jenis objek yang akhirnya dipublikasikan. Pada popup peta, tampilkan
+       * klasifikasi objek agar FDRS/TMA tidak terbaca sebagai "New Location".
+       */
+      return valueOf([
+        "Jenis_Titik",
+        "Layer_Label",
+        "targetLayerLabel",
+        "Kategori",
+        "reportType"
+      ]);
+    }
+
+    function cleanPhotoList(value) {
+      if (!value) return [];
+
+      const rawItems = Array.isArray(value)
+        ? value
+        : String(value).split(/\r?\n|,\s*(?=https?:\/\/)/);
+
+      return rawItems
+        .map(item => normalizePhotoUrl(item))
+        .filter(item => {
+          if (!item) return false;
+
+          /*
+           * Nama file lokal tanpa aset tidak boleh dijadikan tautan karena
+           * akan 404. Jalur assets/ diizinkan untuk foto program yang memang
+           * disertakan bersama situs.
+           */
+          return (
+            /^https?:\/\//i.test(item) ||
+            /^[A-Za-z0-9_-]{20,}$/.test(item) ||
+            /^(?:\.\/)?assets\/[A-Za-z0-9_./%() -]+\.(?:jpe?g|png|webp)$/i.test(item)
+          );
+        });
+    }
+
+    let rows = "";
+
+    if (isMonitoring) {
+      rows += row(
+        "Lokasi",
+        [
+          valueOf(["Desa"]),
+          valueOf(["Kecamatan"]),
+          valueOf(["Kabupaten"])
+        ].filter(Boolean).join(", ")
+      );
+
+      rows += row(
+        "Tanggal",
+        valueOf(["activityDate", "Tanggal", "publishedAt"])
+      );
+
+      rows += row(
+        "Jenis monitoring",
+        valueOf(["Monitoring_Type", "monitoringType", "Kategori"])
+      );
+
+      rows += row(
+        "Kondisi",
+        valueOf(["Kondisi", "condition"])
+      );
+
+      rows += row(
+        "Survival",
+        valueOf(["Survival", "survivalPercent"]),
+        "%"
+      );
+
+      rows += row(
+        "Hidup",
+        valueOf(["Jumlah_Hidup", "aliveCount"])
+      );
+
+      rows += row(
+        "Mati/rusak",
+        valueOf(["Jumlah_Mati_Rusak", "deadOrDamagedCount"])
+      );
+
+      rows += row(
+        "Luas terpantau",
+        valueOf(["Luas_Terpantau_Ha", "monitoredAreaHa", "Luas_Ha"]),
+        "ha"
+      );
+
+      rows += row(
+        "Tinggi rata-rata",
+        valueOf(["Tinggi_Rata_Rata_Cm", "averageHeightCm"]),
+        "cm"
+      );
+
+      rows += row(
+        "Diameter rata-rata",
+        valueOf(["Diameter_Rata_Rata_Cm", "averageDiameterCm"]),
+        "cm"
+      );
+
+      rows += row(
+        "Sedimentasi",
+        valueOf(["Sedimentasi_Cm", "sedimentationCm"]),
+        "cm"
+      );
+
+      rows += row(
+        "Water table",
+        valueOf(["Water_Table_Cm", "waterTableCm"]),
+        "cm"
+      );
+
+      rows += row(
+        "Temuan",
+        valueOf(["Temuan", "notes", "description"])
+      );
+
+      rows += row(
+        "Tindak lanjut",
+        valueOf(["Tindak_Lanjut", "followUp"])
+      );
+    } else if (isCommunity) {
+      rows += row(
+        "Jenis objek",
+        communityObjectType()
+      );
+
+      rows += row(
+        "Tanggal",
+        valueOf(["activityDate", "publishedAt"])
+      );
+
+      rows += row(
+        "Lokasi",
+        [
+          valueOf(["Desa"]),
+          valueOf(["Kecamatan"]),
+          valueOf(["Kabupaten"])
+        ].filter(Boolean).join(", ")
+      );
+
+      rows += row(
+        "Judul",
+        valueOf(["title", "Nama_Objek"])
+      );
+
+      rows += row(
+        "Jumlah bibit",
+        valueOf(["Jumlah_Bib", "Jumlah_Bibit", "Jumlah_Tanam"])
+      );
+
+      rows += row(
+        "Deskripsi",
+        valueOf(["description"])
+      );
+
+      rows += row(
+        "Pelapor/kelompok",
+        [
+          valueOf(["reporterName"]),
+          valueOf(["organization"])
+        ].filter(Boolean).join(" · ")
+      );
+    } else {
+      rows += row(
+        "No",
+        valueOf(["No", "NO", "Id", "ID"])
+      );
+
+      rows += row(
+        "Object ID",
+        valueOf(["Object_ID", "objectId", "OBJECTID"])
+      );
+
+      rows += row(
+        "Kabupaten",
+        valueOf(["Kabupaten", "WADMKK"])
+      );
+
+      rows += row(
+        "Kecamatan",
+        valueOf(["Kecamatan", "WADMKC"])
+      );
+
+      rows += row(
+        "Desa",
+        valueOf(["Desa", "WADMKD"])
+      );
+
+      rows += row(
+        "Tahun",
+        valueOf(["Tahun"])
+      );
+
+      rows += row(
+        "Tanggal kegiatan",
+        formatDate(valueOf(["Tanggal", "activityDate"]))
+      );
+
+      rows += row(
+        "Fase/keterangan",
+        valueOf(["Ket", "Keterangan"])
+      );
+
+      rows += row(
+        "Luas",
+        valueOf(["Luas_Ha"]),
+        "ha"
+      );
+
+      rows += row(
+        "Jumlah bibit",
+        valueOf(["Jumlah_Bib", "Jumlah_Bibit", "Jumlah_Tanam"])
+      );
+
+      rows += row(
+        "Jenis pohon",
+        valueOf(["Jenis_Pohon", "Jenis_Tanaman"])
+      );
+
+      rows += row(
+        "Riwayat penanaman",
+        valueOf(["Riwayat_Penanaman"])
+      );
+
+      rows += row(
+        "Status koordinat",
+        valueOf(["Koordinat_Status"])
+      );
+
+      if (config.id === "area_kopi") {
+        rows += row(
+          "Pemilik lahan",
+          valueOf(["Pemilik_Lahan"])
+        );
+
+        rows += row(
+          "Tumpang sari",
+          valueOf(["Tumpang_Sari", "Tumpang_Sari_Lainnya"])
+        );
+      }
+
+      rows += row(
+        "Nama objek",
+        valueOf(["Nama_Objek", "Nama", "Lokasi"])
+      );
+
+      rows += row(
+        "Kategori",
+        valueOf(["Kategori", "Layer_Label"])
+      );
+
+      rows += row(
+        "Proyek",
+        valueOf([
+          "Nama_Proyek", "Project_Name", "Proyek", "Program", "Programme"
+        ])
+      );
+
+      rows += row(
+        "Kode proyek",
+        valueOf(["Project_ID", "Kode_Proyek"])
+      );
+    }
+
+    const maintenanceDate = valueOf(["Perawatan_Terakhir"]);
+    if (maintenanceDate) {
+      rows += row("Riwayat perbaikan", maintenanceDate);
+      rows += row("Objek yang diperbaiki", valueOf(["Objek_Induk_Perawatan"]));
+      rows += row("Donor perbaikan", valueOf(["Donor_Perawatan"]));
+      rows += row("Pelaksana perbaikan", valueOf(["Pelaksana_Perawatan"]));
+      rows += row("Kondisi sebelum", valueOf(["Kondisi_Sebelum_Perawatan"]));
+      rows += row("Kondisi setelah", valueOf(["Kondisi_Setelah_Perawatan"]));
+      rows += row("Fungsi setelah", valueOf(["Fungsi_Setelah_Perawatan"]));
+      rows += row("Pekerjaan perbaikan", valueOf(["Pekerjaan_Perawatan"]));
+      rows += row("Laporan perbaikan", valueOf(["Laporan_Perawatan_ID"]));
+      rows += row("Diverifikasi", valueOf(["Verifikasi_Perawatan"]));
+    }
+
+    // Batas administrasi bukan objek program dan tidak memiliki donor.
+    if (config.id !== "desa_intervensi") {
+      const targetLayerForDonor = String(
+        props.Target_Layer_ID_Current || props.targetLayerId ||
+        props.Target_Layer_ID || ""
+      ).trim().toLowerCase();
+      const sourceLayerForDonor = String(props.Source_Layer || "")
+        .trim().toLowerCase();
+      const monitoringTypeForDonor = String(
+        props.Monitoring_Type || props.monitoringType || props.Kategori || ""
+      ).trim().toLowerCase();
+      const isMangroveMonitoring = isMonitoring && (
+        targetLayerForDonor === "area_mangrove" ||
+        sourceLayerForDonor === "area_mangrove" ||
+        monitoringTypeForDonor.includes("mangrove")
+      );
+      const popupDonor = getDonor(props) ||
+        (isMangroveMonitoring ? "Aramco Asia Singapore" : "");
+      rows += row("Donor", popupDonor || "Belum diisi");
+    }
+
+    const photos = [
+      ...(isMonitoring ? [] : cleanPhotoList(props._ygPhotos)),
+      ...cleanPhotoList(props.photos),
+      ...cleanPhotoList(props.Foto),
+      ...cleanPhotoList(props.Foto_2)
+    ].filter((url, index, array) => array.indexOf(url) === index);
+
+    let gallery = "";
+
+    if (photos.length) {
+      gallery =
+        '<div class="yg-v3-gallery">' +
+        photos.map((url, index) => photoGalleryItem(url, index)).join("") +
+        '</div>';
+    }
+
+    const geometryType = String(
+      feature && feature.geometry && feature.geometry.type || ""
+    );
+    const monitoringTargetObjectId = String(
+      props.Target_Object_ID_Current ||
+      props.targetObjectId ||
+      props.Target_Object_ID ||
+      ""
+    ).trim();
+    const monitoringTargetLayerId = String(
+      props.Target_Layer_ID_Current ||
+      props.targetLayerId ||
+      props.Target_Layer_ID ||
+      ""
+    ).trim();
+    const objectId = isMonitoring
+      ? monitoringTargetObjectId
+      : String(
+          props.Object_ID ||
+          props.objectId ||
+          props.OBJECTID ||
+          props.ID ||
+          ""
+        ).trim();
+    const actionLayerId = isMonitoring
+      ? monitoringTargetLayerId
+      : config.id;
+    const canSendMonitoring =
+      ["Polygon", "MultiPolygon"].includes(geometryType) &&
+      config.id !== "community_reports" &&
+      actionLayerId === "area_mangrove" &&
+      Boolean(objectId) &&
+      Boolean(actionLayerId);
+    const monitoringActionLabel = isMonitoring
+      ? "Kirim Monitoring Lagi"
+      : "Kirim Monitoring";
+    const canAddPhoto =
+      !["desa_intervensi", "community_reports"].includes(config.id) &&
+      Boolean(objectId) &&
+      Boolean(actionLayerId);
+    const existingMonitoringIds = !isMonitoring && config.id === "area_mangrove"
+      ? monitoringReportsByTarget.get(normalizedMatchValue(objectId))
+      : null;
+    const existingMonitoringCount = existingMonitoringIds
+      ? existingMonitoringIds.size
+      : 0;
+    const monitoringDetailUrl = existingMonitoringCount
+      ? 'monitoring-detail.html?object=' + encodeURIComponent(objectId) +
+        '&title=' + encodeURIComponent(getObjectName(feature))
+      : "";
+    const existingMonitoringLink = monitoringDetailUrl
+      ? '<a class="yg-popup-monitoring-link yg-popup-existing-monitoring" href="' +
+        escapeHtml(monitoringDetailUrl) + '">Lihat Monitoring (' +
+        formatNumber(existingMonitoringCount) + ')</a>'
+      : "";
+    const buildReportLink = (mode, label) => {
+      const reportUrl = 'report.html?type=' + encodeURIComponent(mode) + '&layer=' + encodeURIComponent(actionLayerId) + '&object=' + encodeURIComponent(objectId);
+      return '<a class="yg-popup-monitoring-link" href="' + escapeHtml(reportUrl) + '">' + escapeHtml(label) + '</a>';
+    };
+    const actionLinks = [
+      existingMonitoringLink,
+      canAddPhoto
+        ? buildReportLink("photo", "Tambah Foto")
+        : "",
+      canSendMonitoring
+        ? buildReportLink("monitoring", monitoringActionLabel)
+        : ""
+    ].filter(Boolean).join("");
+    const monitoringAction = actionLinks
+      ? '<div class="yg-popup-actions">' + actionLinks + '</div>'
+      : "";
+    const interventionVillageKey = config.id === "desa_intervensi"
+      ? villageProfileKey(feature)
+      : "";
+    const villageProfileAction = interventionVillageKey
+      ? (
+          '<div class="yg-popup-actions yg-popup-profile-action">' +
+            '<a class="yg-popup-monitoring-link yg-popup-profile-link" ' +
+              'target="_blank" rel="noopener noreferrer" ' +
+              'href="village-profile.html?key=' +
+                encodeURIComponent(interventionVillageKey) + '">' +
+              'Buka Profil &amp; Analisis Desa&nbsp; →' +
+            '</a>' +
+          '</div>'
+        )
+      : "";
+
+    const floraVillage = String(
+      props.Desa || props.Village || props.Lokasi || props.Location || ""
+    ).trim();
+    const floraLocation = /buruk\s*bakul/i.test(floraVillage)
+      ? "Buruk Bakul"
+      : /kelapa\s*pati|kelapapati/i.test(floraVillage)
+        ? "Kelapa Pati"
+        : "";
+    const floraAction = config.id === "area_mangrove" && floraLocation
+      ? '<div class="yg-popup-actions yg-popup-flora-action"><a class="yg-popup-monitoring-link" href="flora-mangrove.html?location=' + encodeURIComponent(floraLocation) + '">Lihat Jenis Flora Mangrove</a></div>'
+      : "";
+
+    if (!rows) {
+      rows =
+        '<div class="popup-row">' +
+          '<span>Belum ada informasi rinci.</span>' +
+        '</div>';
+    }
+
+    let sdgHtml = "";
+    if (config.id === "sekat_kanal") {
+      const sdgIds = [13, 15];
+      let sdgIconsHtml = "";
+      sdgIds.forEach(id => {
+        const localSdgIcon = `assets/sdg-icons/sdg-${id}.svg`;
+        sdgIconsHtml += `<img src="${localSdgIcon}" alt="SDG ${id}" title="SDG ${id}" style="width:40px; height:40px;" onerror="this.onerror=null;this.replaceWith(document.createTextNode('SDG ${id}'));">`;
+      });
+      sdgHtml = `
+        <div class="popup-row" style="margin-top:5px; padding-top:5px; border-top:1px solid #f0f0f0;">
+          <b>Kontribusi SDGs</b>
+          <span style="display:flex; gap:6px; padding-top:2px;">${sdgIconsHtml}</span>
+        </div>
+      `;
+    }
+
+    return (
+      '<div class="popup-card">' +
+        '<div class="popup-head" style="background:' +
+          escapeHtml(config.color) + '">' +
+          '<strong>' + escapeHtml(getObjectName(feature)) + '</strong>' +
+          '<span>' + escapeHtml(config.label) + '</span>' +
+        '</div>' +
+        '<div class="popup-body">' +
+          rows + gallery + sdgHtml + floraAction + monitoringAction +
+          villageProfileAction +
+        '</div>' +
+      '</div>'
+    );
+  }
+
+  function paneFor(config, feature) {
+    if (config.id === "desa_intervensi") return MAP_PANES.boundary;
+    if (config.id === "monitoring_reports") return MAP_PANES.monitoring;
+    if (config.id === "community_reports") return MAP_PANES.community;
+
+    const geometryType = String(
+      feature && feature.geometry && feature.geometry.type || ""
+    );
+    if (/Point$/.test(geometryType)) return MAP_PANES.points;
+    return MAP_PANES.program;
+  }
+
+  function styleFor(config) {
+    const monitoring = config.id === "monitoring_reports";
+    const boundary = config.id === "desa_intervensi";
+    return {
+      color: config.color,
+      weight: monitoring ? 4 : (boundary ? 3 : 2.5),
+      opacity: 1,
+      dashArray: monitoring ? "8 5" : null,
+      fillColor: config.color,
+      fillOpacity: monitoring ? 0.12 : (boundary ? 0.025 : 0.2)
+    };
+  }
+
+  function pointSymbolFor(layerId) {
+    const symbols = {
+      monitoring_reports: "M",
+      community_reports: "L",
+      nursery_mangrove: "N",
+      nursery_coffee: "K",
+      kopi: "K",
+      fdrs: "F",
+      sekat_kanal: "S",
+      supporting_infrastructure: "I",
+      information_signs: "P"
+    };
+
+    return symbols[layerId] || "•";
+  }
+
+  function pointFor(config, latlng, pane) {
+    const visibleSize = config.id === "monitoring_reports" ? 18 : 14;
+    const symbol = pointSymbolFor(config.id);
+
+    /*
+     * Marker HTML memberi setiap titik sasaran klik 40 x 40 piksel.
+     * Lingkaran yang terlihat tetap kecil sehingga peta tidak menjadi penuh,
+     * tetapi FDRS dan infrastruktur tetap mudah dibuka di desktop maupun HP.
+     */
+    return L.marker(latlng, {
+      pane: pane,
+      interactive: true,
+      bubblingMouseEvents: false,
+      keyboard: true,
+      icon: L.divIcon({
+        className: "yg-point-hit-marker",
+        html:
+          '<span class="yg-point-dot" style="--yg-point-color:' +
+          escapeHtml(config.color) +
+          ";--yg-point-size:" + visibleSize +
+          'px"><span class="yg-point-dot__symbol">' +
+          escapeHtml(symbol) +
+          '</span></span>',
+        iconSize: [40, 40],
+        iconAnchor: [20, 20],
+        popupAnchor: [0, -16]
+      })
+    });
+  }
+
+  function addFeatureToSearch(feature, layer, parent, config) {
+    const props = feature.properties || {};
+    const searchText = [
+      getObjectName(feature),
+      config.label,
+      window.YG_I18N && typeof window.YG_I18N.forLanguage === "function"
+        ? window.YG_I18N.forLanguage(config.label, "en")
+        : config.label,
+      props.Object_ID,
+      props.Kategori,
+      props.Program,
+      props.Donor,
+      props.Nama_Donor,
+      props.Nama_Proyek,
+      props.Project_Name,
+      props.Project_ID,
+      props.Kabupaten,
+      props.Kecamatan,
+      props.Desa,
+      props.WADMKD,
+      props.WADMKC,
+      props.WADMKK,
+      props.Monitoring_Type,
+      props.Ket,
+      props.Jumlah_Bib,
+      props.description
+    ].filter(Boolean).join(" ").toLowerCase();
+
+    searchItems.push({
+      text: searchText,
+      label: getObjectName(feature),
+      layerId: config.id,
+      objectId: String(
+        props.Object_ID || props.objectId || props.OBJECTID || ""
+      ).trim(),
+      donorMissing: !getDonor(props),
+      meta: [props.Desa || props.WADMKD, config.label].filter(Boolean).join(" · "),
+      layer: layer,
+      parent: parent
+    });
+  }
+
+  function createLayer(layerId, features, options) {
+    const config = getLayerConfig(layerId, features[0]);
+    const append = options && options.append;
+    const group = append && layerObjects[layerId]
+      ? layerObjects[layerId]
+      : L.featureGroup();
+
+    features.forEach(feature => {
+      try {
+        const featureProps = feature && feature.properties || {};
+        const featureReportIds = [
+          featureProps.reportId,
+          featureProps.Report_ID,
+          featureProps.Source_Report_ID,
+          featureProps.Monitoring_ID,
+          featureProps.Object_ID
+        ].map(value => String(value || "").trim());
+        if (featureReportIds.some(value =>
+          value === "YG-20260717-205241-378" ||
+          value === "MONITORING-YG-20260717-205241-378"
+        )) {
+          return;
+        }
+        const pane = paneFor(config, feature);
+        const single = L.geoJSON(feature, {
+          pane: pane,
+          renderer: vectorRendererFor(pane),
+          interactive: true,
+          bubblingMouseEvents: false,
+          style: () => styleFor(config),
+          pointToLayer: (_feature, latlng) => pointFor(config, latlng, pane)
+        });
+        single.eachLayer(layer => {
+          const reportId = String(
+            feature && feature.properties && (
+              feature.properties.reportId || feature.properties.Source_Report_ID
+            ) || ""
+          ).trim();
+          const isPupMonitoringPopup = config.id === "monitoring_reports" && [
+            "YG-20260820-202849-964",
+            "YG-20260820-202852-996"
+          ].includes(reportId);
+          layer.bindPopup(buildPopup(feature, config), {
+            maxWidth: config.id === "monitoring_reports" ? 280 : 400,
+            autoPan: config.id !== "monitoring_reports" && !isPupMonitoringPopup,
+            keepInView: false,
+            autoPanPadding: config.id === "monitoring_reports" ? [22, 22] : [5, 5],
+            className: config.id === "monitoring_reports"
+              ? "yg-monitoring-popup"
+              : ""
+          });
+
+          layer.on("popupopen", event => {
+            if (!isPupMonitoringPopup) return;
+            const popupElement = event && event.popup && event.popup.getElement();
+            if (!popupElement) return;
+            L.DomEvent.disableClickPropagation(popupElement);
+            L.DomEvent.disableScrollPropagation(popupElement);
+          });
+
+          /*
+           * Buka popup secara eksplisit. Pada beberapa browser, objek SVG yang
+           * saling bertumpuk dapat menerima event tetapi popup bawaan Leaflet
+           * tidak selalu terbuka. Handler ini membuat polygon, garis, dan titik
+           * tetap dapat diklik tanpa mengubah urutan maupun bentuk layer.
+           */
+          layer.on("click", event => {
+            if (event && event.originalEvent) {
+              L.DomEvent.stopPropagation(event.originalEvent);
+            }
+            layer.openPopup(event && event.latlng ? event.latlng : undefined);
+          });
+
+          layer.on("add", () => {
+            if (layer._path) {
+              layer._path.style.pointerEvents = "auto";
+              layer._path.setAttribute("tabindex", "0");
+              layer._path.setAttribute("role", "button");
+              layer._path.setAttribute(
+                "aria-label",
+                "Buka informasi " + getObjectName(feature)
+              );
+            }
+          });
+
+          addFeatureToSearch(feature, layer, group, config);
+          group.addLayer(layer);
+
+        });
+      } catch (error) {
+        console.error("Feature gagal diproses:", layerId, feature, error);
+      }
+    });
+
+    layerObjects[layerId] = group;
+
+    if (!append && Array.isArray(pendingLiveFeatures[layerId])) {
+      const pending = pendingLiveFeatures[layerId];
+      delete pendingLiveFeatures[layerId];
+      window.setTimeout(() => addLiveFeatures(layerId, pending), 0);
+    }
+
+    const bounds = group.getBounds();
+    if (bounds.isValid()) allBounds.extend(bounds);
+
+    if (config.visible && !map.hasLayer(group)) group.addTo(map);
+    return group;
+  }
+
+  function refreshAreaMangrovePopups() {
+    const areaGroup = layerObjects.area_mangrove;
+    if (!areaGroup || typeof areaGroup.eachLayer !== "function") return;
+    const config = getLayerConfig("area_mangrove");
+    areaGroup.eachLayer(layer => {
+      if (
+        !layer || !layer.feature ||
+        typeof layer.setPopupContent !== "function"
+      ) return;
+      layer.setPopupContent(buildPopup(layer.feature, config));
+    });
+  }
+
+  function indexMonitoringReports(features) {
+    monitoringReportsByTarget.clear();
+    monitoringHistoryIdsByTarget.forEach((reportIds, targetId) => {
+      monitoringReportsByTarget.set(targetId, new Set(reportIds));
+    });
+    (features || []).forEach(feature => {
+      const props = feature && feature.properties || {};
+      const permanentObjectId = canonicalMangroveObjectId(props.Object_ID)
+        ? String(props.Object_ID || "").trim()
+        : "";
+      const historyIds = Array.isArray(props.Monitoring_Report_IDs)
+        ? props.Monitoring_Report_IDs
+        : [];
+      if (permanentObjectId && historyIds.length) {
+        const key = normalizedMatchValue(permanentObjectId);
+        if (!monitoringReportsByTarget.has(key)) {
+          monitoringReportsByTarget.set(key, new Set());
+        }
+        historyIds.forEach(reportId => {
+          if (String(reportId || "").trim()) {
+            monitoringReportsByTarget.get(key).add(String(reportId).trim());
+          }
+        });
+      }
+      const reportId = String(
+        props.reportId || props.Source_Report_ID || props.Object_ID || ""
+      ).trim();
+      if (!reportId) return;
+      monitoringTargetObjectIds(props).forEach(targetId => {
+        const key = normalizedMatchValue(targetId);
+        if (!key) return;
+        if (!monitoringReportsByTarget.has(key)) {
+          monitoringReportsByTarget.set(key, new Set());
+        }
+        monitoringReportsByTarget.get(key).add(reportId);
+      });
+    });
+    refreshAreaMangrovePopups();
+  }
+
+  function addLiveFeatures(layerId, features) {
+    const group = layerObjects[layerId];
+    if (!Array.isArray(features) || !features.length) return 0;
+    if (!group) {
+      pendingLiveFeatures[layerId] = features;
+      return 0;
+    }
+    if (layerId === "monitoring_reports") {
+      indexMonitoringReports(features);
+    }
+
+    const incomingById = new Map();
+    features.forEach(feature => {
+      const props = feature && feature.properties || {};
+      const id = String(
+        props.reportId || props.Source_Report_ID || props.Object_ID || ""
+      ).trim();
+      if (id) incomingById.set(id, feature);
+    });
+
+    /*
+     * Live monitoring hanya menggambar laporan terbaru per objek. Snapshot
+     * database awal dapat masih memuat laporan lama untuk objek yang sama;
+     * hapus layer visual lamanya sebelum laporan live diperbarui. Riwayat
+     * laporan tetap tersimpan dan tetap tersedia pada halaman detail.
+     */
+    if (layerId === "monitoring_reports") {
+      const incomingTargetKeys = new Set();
+      features.forEach(feature => {
+        const props = feature && feature.properties || {};
+        monitoringTargetObjectIds(props).forEach(targetId => {
+          const key = normalizedMatchValue(targetId);
+          if (key) incomingTargetKeys.add(key);
+        });
+      });
+
+      const staleLayers = [];
+      group.eachLayer(layer => {
+        const props = layer && layer.feature && layer.feature.properties || {};
+        const id = String(
+          props.reportId || props.Source_Report_ID || props.Object_ID || ""
+        ).trim();
+        if (!id || incomingById.has(id)) return;
+        const sharesTarget = monitoringTargetObjectIds(props).some(targetId =>
+          incomingTargetKeys.has(normalizedMatchValue(targetId))
+        );
+        if (sharesTarget) staleLayers.push(layer);
+      });
+      staleLayers.forEach(layer => group.removeLayer(layer));
+    }
+
+    const existing = new Set();
+    let updated = 0;
+    group.eachLayer(layer => {
+      const props = layer && layer.feature && layer.feature.properties || {};
+      const id = String(
+        props.reportId || props.Source_Report_ID || props.Object_ID || ""
+      ).trim();
+      if (!id) return;
+
+      existing.add(id);
+      const incoming = incomingById.get(id);
+      if (!incoming) return;
+
+      const incomingProps = incoming.properties || {};
+      layer.feature.properties = Object.assign({}, props, incomingProps);
+      if (incoming.geometry) {
+        const replacement = L.geoJSON(incoming);
+        const replacementLayers = replacement.getLayers();
+        const replacementLayer = replacementLayers[0];
+        if (replacementLayer) {
+          if (
+            typeof layer.setLatLngs === "function" &&
+            typeof replacementLayer.getLatLngs === "function"
+          ) {
+            layer.setLatLngs(replacementLayer.getLatLngs());
+          } else if (
+            typeof layer.setLatLng === "function" &&
+            typeof replacementLayer.getLatLng === "function"
+          ) {
+            layer.setLatLng(replacementLayer.getLatLng());
+          } else if (
+            typeof layer.setLatLng === "function" &&
+            typeof replacementLayer.getBounds === "function" &&
+            replacementLayer.getBounds().isValid()
+          ) {
+            layer.setLatLng(replacementLayer.getBounds().getCenter());
+          }
+          layer.feature.geometry = incoming.geometry;
+        }
+      }
+      if (typeof layer.setPopupContent === "function") {
+        layer.setPopupContent(
+          buildPopup(layer.feature, getLayerConfig(layerId, layer.feature))
+        );
+      }
+      updated += 1;
+    });
+
+    const missing = features.filter(feature => {
+      const props = feature && feature.properties || {};
+      const id = String(
+        props.reportId || props.Source_Report_ID || props.Object_ID || ""
+      ).trim();
+      return id && !existing.has(id) && feature.geometry;
+    });
+
+    if (missing.length) createLayer(layerId, missing, { append: true });
+    const uniqueFeatureIds = new Set();
+    group.eachLayer(layer => {
+      const props = layer && layer.feature && layer.feature.properties || {};
+      const id = String(
+        props.reportId || props.Source_Report_ID || props.Object_ID || ""
+      ).trim();
+      if (id) uniqueFeatureIds.add(id);
+    });
+    const updateCount = () => {
+      const checkbox = document.getElementById("layer-" + layerId);
+      const countElement = document.querySelector(
+        '[data-layer-count-id="' + layerId + '"]'
+      ) || (
+        checkbox && checkbox.closest(".layer-row") &&
+        checkbox.closest(".layer-row").querySelector(".count")
+      );
+      if (countElement) {
+        countElement.textContent = formatNumber(uniqueFeatureIds.size);
+      }
+    };
+    updateCount();
+    window.setTimeout(updateCount, 0);
+    return updated + missing.length;
+  }
+
+
+  function forestColor(value) {
+    const key = String(value || "").toUpperCase();
+
+    const colors = {
+      "APL": "#FFFFFF",
+      "HPK": "#FEA9A9",
+      "HPT": "#C0FEA7",
+      "HP": "#FEFEAA",
+      "HL": "#7BFB00",
+      "CA": "#C589FE",
+      "KSA/KPA": "#C589FE",
+      "TN": "#C589FE",
+      "SM": "#C589FE",
+      "SA": "#C589FE",
+      "TWA": "#C589FE"
+    };
+
+    return colors[key] || "#78909c";
+  }
+
+  function peatColor(value) {
+    const text = String(value || "");
+
+    if (text.indexOf(">700") !== -1) return "#4a148c";
+    if (text.indexOf("500-<700") !== -1) return "#6a1b9a";
+    if (text.indexOf("300-<500") !== -1) return "#8e24aa";
+    if (text.indexOf("200-<300") !== -1) return "#ab47bc";
+    if (text.indexOf("100-<200") !== -1) return "#ce93d8";
+    if (text.indexOf("50-<100") !== -1) return "#e1bee7";
+
+    return "#b39ddb";
+  }
+
+  function socialForestryDocumentLookupKey(value) {
+    return String(value == null ? "" : value)
+      .trim()
+      .toLowerCase()
+      .replace(/\.0$/, "")
+      .replace(/\s+/g, " ");
+  }
+
+  function indexSocialForestryDocumentDetails(details) {
+    const index = {};
+    Object.keys(details || {}).forEach(key => {
+      const detail = details[key] || {};
+      const extraction = detail.skExtraction || {};
+      [
+        key,
+        detail.decree,
+        detail.name,
+        detail.spatialObjectKey,
+        extraction.decreeNumber,
+        extraction.institution
+      ].forEach(value => {
+        const normalized = socialForestryDocumentLookupKey(value);
+        if (normalized && !index[normalized]) index[normalized] = detail;
+      });
+    });
+    return index;
+  }
+
+  function socialForestryDocumentDetail(feature) {
+    const props = feature && feature.properties || {};
+    const candidates = [
+      props.OBJECTID,
+      props.ID,
+      props.NO_IUPHKM,
+      props.NOMOR_SK,
+      props.NO_SK,
+      props.SK,
+      props.NAMA_HKM
+    ];
+
+    for (let index = 0; index < candidates.length; index += 1) {
+      const key = socialForestryDocumentLookupKey(candidates[index]);
+      if (key && socialForestryDocumentIndex[key]) {
+        return socialForestryDocumentIndex[key];
+      }
+    }
+    return {};
+  }
+
+  function socialForestryProfileKey(feature) {
+    const props = feature && feature.properties || {};
+    const raw =
+      props.PROFILE_KEY || props.NO_IUPHKM || props.NOMOR_SK || props.NO_SK || props.SK ||
+      props.OBJECTID || props.ID ||
+      [props.NAMA_HKM, props.NAMA_DESA, props.NAMA_KAB]
+        .filter(Boolean).join("|");
+    return typeof raw === "number" && Number.isInteger(raw)
+      ? raw.toFixed(1)
+      : String(raw == null ? "" : raw).trim().toLowerCase();
+  }
+
+  function activeConcessionProfileId(feature) {
+    const props = feature && feature.properties || {};
+    return String(
+      props.PBPH_ID || [props.NAMOBJ, props.NO_SK].filter(Boolean).join("|")
+    ).trim();
+  }
+
+  function villageProfileKey(feature) {
+    const props = feature && feature.properties || {};
+    const stable = props.Village_ID || props.VILLAGE_ID ||
+      props.Kode_Desa || props.KODE_DESA || props.KODE_WIL;
+    if (stable) {
+      return String(stable).trim().toLowerCase();
+    }
+    return [
+      props.WADMKD || props.Desa || props.NAMOBJ ||
+        props.Nama_Desa || props.NAMA_DESA,
+      props.WADMKC || props.Kecamatan || props.NAMA_KEC,
+      props.WADMKK || props.Kabupaten || props.NAMA_KAB
+    ].filter(Boolean).join("|").trim().toLowerCase();
+  }
+
+  function socialForestryDocumentClass(feature) {
+    const detail = socialForestryDocumentDetail(feature);
+    const documents = Array.isArray(detail.documents)
+      ? detail.documents.filter(document => document && typeof document === "object")
+      : [];
+    const categories = new Set(documents.map(document => {
+      const category = String(document.category || "").toLowerCase();
+      if (category.includes("legal")) return "legalitas";
+      if (category.includes("peta")) return "peta";
+      if (
+        category.includes("rencana") ||
+        category.includes("rkps") ||
+        category.includes("rkt")
+      ) return "rencana";
+      if (category.includes("kups")) return "kups";
+      return "";
+    }).filter(Boolean));
+    const count = categories.size;
+
+    if (count >= 4) return { count, color: "#7e22ce", label: "Lengkap (4 kelompok)" };
+    if (count === 3) return { count, color: "#0f766e", label: "Hampir lengkap (3 kelompok)" };
+    if (count === 2) return { count, color: "#d97706", label: "Sebagian (2 kelompok)" };
+    if (count === 1) return { count, color: "#dc5f21", label: "Terbatas (1 kelompok)" };
+    return { count: 0, color: "#94a3b8", label: "Belum tercatat" };
+  }
+
+  const SOCIAL_FORESTRY_DOCUMENT_CLASSES = [
+    ["#7e22ce", "Lengkap · 4 kelompok"],
+    ["#0f766e", "Hampir lengkap · 3"],
+    ["#d97706", "Sebagian · 2"],
+    ["#dc5f21", "Terbatas · 1"],
+    ["#94a3b8", "Belum tercatat"]
+  ];
+
+  function showSocialForestryDocumentLegend() {
+    if (socialForestryDocumentLegend) return;
+    socialForestryDocumentLegend = L.control({ position: "bottomright" });
+    socialForestryDocumentLegend.onAdd = function() {
+      const container = L.DomUtil.create(
+        "div",
+        "leaflet-control yg-ps-document-legend"
+      );
+      container.innerHTML =
+        '<strong>Kelengkapan dokumen PS</strong>' +
+        SOCIAL_FORESTRY_DOCUMENT_CLASSES.map(entry =>
+          '<span><i style="--yg-ps-color:' + escapeHtml(entry[0]) +
+          '"></i>' + escapeHtml(entry[1]) + '</span>'
+        ).join("");
+      L.DomEvent.disableClickPropagation(container);
+      L.DomEvent.disableScrollPropagation(container);
+      return container;
+    };
+    socialForestryDocumentLegend.addTo(map);
+  }
+
+  function hideSocialForestryDocumentLegend() {
+    if (!socialForestryDocumentLegend) return;
+    map.removeControl(socialForestryDocumentLegend);
+    socialForestryDocumentLegend = null;
+  }
+
+  function referenceStyle(config, feature) {
+    const props = feature.properties || {};
+
+    if (config.type === "social_forestry") {
+      const documentClass = socialForestryDocumentClass(feature);
+      return {
+        color: documentClass.color,
+        weight: documentClass.count >= 4
+          ? 2.8
+          : documentClass.count > 0 ? 2.1 : 1.2,
+        opacity: documentClass.count > 0 ? 1 : 0.75,
+        fillColor: documentClass.color,
+        fillOpacity: documentClass.count > 0 ? 0.18 : 0.07
+      };
+    }
+
+    if (config.type === "forest") {
+      const color = forestColor(props.fungsi);
+
+      return {
+        color: color,
+        weight: 0.8,
+        opacity: 0.85,
+        fillColor: color,
+        fillOpacity: 0.23
+      };
+    }
+
+    if (config.type === "peat") {
+      const color = peatColor(props.KELAS_GBT || props.KETEBALAN);
+
+      return {
+        color: color,
+        weight: 0.7,
+        opacity: 0.8,
+        fillColor: color,
+        fillOpacity: 0.20
+      };
+    }
+
+    if (config.type === "peat_function") {
+      const functionName = String(
+        props.feg_50k || props.fungsi_feg || props.feg_peat || ""
+      ).toLowerCase();
+      const isProtection = functionName.includes("lindung");
+      const color = isProtection ? "#238b45" : "#f2c94c";
+
+      return {
+        color: isProtection ? "#176b35" : "#9a6b00",
+        weight: 0.9,
+        opacity: 0.95,
+        fillColor: color,
+        fillOpacity: 0.34
+      };
+    }
+
+    if (config.type === "kph") {
+      const color = String(props.KPH || "").toUpperCase() === "LINDUNG"
+        ? "#2e7d32"
+        : config.color;
+
+      return {
+        color: color,
+        weight: 1.2,
+        opacity: 0.9,
+        dashArray: "5 4",
+        fillColor: color,
+        fillOpacity: 0.08
+      };
+    }
+
+    if (config.type === "active_concession") {
+      return {
+        color: config.color,
+        weight: 1.35,
+        opacity: 0.95,
+        fillColor: config.color,
+        fillOpacity: 0.11
+      };
+    }
+
+    if (config.type === "oil_palm_company") {
+      return {
+        color: config.color,
+        weight: 1.3,
+        opacity: 0.95,
+        fillColor: config.color,
+        fillOpacity: 0.1
+      };
+    }
+
+    return {
+      color: config.color,
+      weight: 0.9,
+      opacity: 0.9,
+      fillColor: config.color,
+      fillOpacity: config.type === "social_forestry" ? 0.26 : 0.16
+    };
+  }
+
+  function referencePopup(config, feature) {
+    const props = feature.properties || {};
+    let rows = "";
+
+    function item(label, value) {
+      if (
+        value === null ||
+        value === undefined ||
+        String(value).trim() === ""
+      ) {
+        return "";
+      }
+
+      return (
+        '<div class="popup-row">' +
+          '<b>' + escapeHtml(label) + '</b>' +
+          '<span>' + escapeHtml(value) + '</span>' +
+        '</div>'
+      );
+    }
+
+    function formatArea(value) {
+      return new Intl.NumberFormat(currentLocale(), {
+        maximumFractionDigits: 2
+      }).format(value);
+    }
+
+    function areaValue(value) {
+      const number = Number(value);
+      return Number.isFinite(number) && number > 0
+        ? formatArea(number)
+        : "Belum tersedia";
+    }
+
+    function dateValue(value) {
+      if (value === null || value === undefined || value === "") return "";
+      const date = new Date(Number(value));
+      if (Number.isNaN(date.getTime())) return value;
+      return new Intl.DateTimeFormat(currentLocale(), {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+        timeZone: "Asia/Jakarta"
+      }).format(date);
+    }
+
+    function ringAreaSquareMeters(ring) {
+      if (!Array.isArray(ring) || ring.length < 3) return 0;
+
+      const radius = 6378137;
+      const toRadians = Math.PI / 180;
+      let area = 0;
+
+      for (let index = 0; index < ring.length; index += 1) {
+        const current = ring[index];
+        const next = ring[(index + 1) % ring.length];
+        if (!current || !next) continue;
+
+        area +=
+          (next[0] - current[0]) * toRadians *
+          (2 + Math.sin(current[1] * toRadians) +
+          Math.sin(next[1] * toRadians));
+      }
+
+      return Math.abs(area * radius * radius / 2);
+    }
+
+    function polygonAreaSquareMeters(rings) {
+      if (!Array.isArray(rings) || !rings.length) return 0;
+
+      let area = ringAreaSquareMeters(rings[0]);
+      for (let index = 1; index < rings.length; index += 1) {
+        area -= ringAreaSquareMeters(rings[index]);
+      }
+      return Math.max(0, area);
+    }
+
+    function geometryAreaHa(geometry) {
+      if (!geometry || !Array.isArray(geometry.coordinates)) return 0;
+
+      let squareMeters = 0;
+      if (geometry.type === "Polygon") {
+        squareMeters = polygonAreaSquareMeters(geometry.coordinates);
+      } else if (geometry.type === "MultiPolygon") {
+        squareMeters = geometry.coordinates.reduce(
+          (total, polygon) => total + polygonAreaSquareMeters(polygon),
+          0
+        );
+      }
+
+      return squareMeters / 10000;
+    }
+
+    function polygonAreaValue(value) {
+      const sourceArea = Number(value);
+      if (Number.isFinite(sourceArea) && sourceArea > 0) {
+        return {
+          label: "Luas poligon (ha)",
+          value: formatArea(sourceArea)
+        };
+      }
+
+      const calculatedArea = geometryAreaHa(feature.geometry);
+      return calculatedArea > 0
+        ? {
+            label: "Luas poligon otomatis (ha)",
+            value: formatArea(calculatedArea)
+          }
+        : {
+            label: "Luas poligon (ha)",
+            value: "Belum tersedia"
+          };
+    }
+
+    if (config.type === "forest") {
+      rows += item("Fungsi kawasan", props.fungsi || "Belum terisi");
+      rows += item("Sumber", "Kawasan Hutan SK 903");
+    } else if (config.type === "khg") {
+      rows += item("Kode KHG", props.kode_khg);
+      rows += item("Nama KHG", props.nama_khg);
+      rows += item("Status KHG", props.status_khg);
+      rows += item("Jumlah bagian FEG", props.jml_feg);
+      const khgArea = polygonAreaValue(props.luas_ha || props.LUAS_HA);
+      rows += item(khgArea.label, khgArea.value);
+    } else if (config.type === "peat_function") {
+      rows += item("Kode KHG", props.kode_khg);
+      rows += item("Nama KHG", props.nama_khg);
+      rows += item("Status KHG", props.status_khg);
+      rows += item(
+        "Fungsi ekosistem",
+        props.fungsi_feg || props.feg_kghltr || props.feg_50k || props.feg_peat
+      );
+      rows += item("Kubah gambut", props.kubah_gmbt);
+      rows += item("Ketebalan gambut", props.peat_thick);
+      rows += item("Tanah gambut", props.tnh_gambut);
+      rows += item("Status data", props.status_data);
+      rows += item("Dasar", props.dasar);
+      rows += item("Cakupan", props.cakupan);
+      const peatFunctionArea = polygonAreaValue(
+        props.luas_ha || props.LUAS_HA
+      );
+      rows += item(peatFunctionArea.label, peatFunctionArea.value);
+    } else if (config.type === "peat") {
+      rows += item("Kabupaten/Kota", props.KABKOT || props.KK);
+      rows += item("Kelas gambut", props.KELAS_GBT);
+      rows += item("Ketebalan", props.KETEBALAN);
+      rows += item("Jenis tanah utama", props.JNTNH1);
+      rows += item("pH", props.pH);
+      rows += item("Substratum", props.SUBSTRATUM);
+      rows += item("Tahun", props.TAHUN || 2019);
+    } else if (config.type === "active_concession") {
+      rows += item("Pemegang PBPH", props.NAMOBJ);
+      rows += item("Nomor SK", props.NO_SK);
+      rows += item("Tanggal SK", dateValue(props.TGL_SK));
+      rows += item("Luas SK akhir (ha)", areaValue(props.LSSK));
+      rows += item("Jenis PBPH", props.JENIS);
+      rows += item("Kegiatan", props.KEGIATAN);
+    } else if (config.type === "oil_palm_company") {
+      rows += item("Perusahaan/unit", props.PO_COMPANY);
+      rows += item("Grup RSPO", props.RSPO_GROUP);
+      rows += item("Estate/supply base", props.SUPPLY_BASE);
+      rows += item("Kabupaten", props.REFERENCE_DISTRICTS);
+      rows += item("Diperbarui", props.REFERENCE_UPDATED);
+    } else if (config.type === "concession") {
+      rows += item("Pemegang izin", props.NAMA_PRH);
+      rows += item("Nomor SK", props.SK_PBH || props.SK_LAMA);
+      rows += item("Tanggal SK", props.TGL_PBH || props.TGL_LAMA);
+      rows += item("Luas izin (ha)", areaValue(props.LUAS_HA));
+      const concessionArea = polygonAreaValue(props.LUAS_UKURA);
+      rows += item(concessionArea.label, concessionArea.value);
+      rows += item("Kabupaten/Kota", props.KAB_KOTA);
+      rows += item("Distrik", props.DISTRIK);
+    } else if (config.type === "social_forestry") {
+      const documentClass = socialForestryDocumentClass(feature);
+      rows += item("Kelompok/Hutan Desa", props.NAMA_HKM);
+      rows += item("Skema", props.Ket);
+      rows += item("Nomor izin", props.NO_IUPHKM);
+      rows += item("Tanggal izin", props.TGL_IUPHKM);
+      rows += item("Luas izin (ha)", areaValue(props.L_IUPHKM));
+      const socialForestryArea = polygonAreaValue(props.LUAS_POLI);
+      rows += item(socialForestryArea.label, socialForestryArea.value);
+      rows += item("Desa", props.NAMA_DESA);
+      rows += item("Kecamatan", props.NAMA_KEC);
+      rows += item("Kabupaten", props.NAMA_KAB);
+      rows += item("Provinsi", props.NAMA_PROV);
+      rows += item("Kelengkapan dokumen", documentClass.count + " dari 4 kelompok");
+      rows += item("Kluster warna", documentClass.label);
+    } else if (config.type === "kph") {
+      rows += item("Lembaga KPH", props.LEMBAGA);
+      rows += item("Kategori KPH", props.KPH);
+      rows += item("Unit", props.UNIT);
+      rows += item("Fungsi kawasan", props.Fungsi || props.F_KWS);
+      rows += item("Nomor SK kawasan", props.SK_Kawasan);
+      rows += item("Kabupaten", props.KABUPATEN);
+      rows += item("Kecamatan", props.KECAMATAN || props.KEC);
+      rows += item("Luas (ha)", areaValue(props.HEKTAR));
+      rows += item("Sumber", "KPH 2019 - Giam Siak Kecil Bukit Batu");
+    } else {
+      Object.keys(props).slice(0, 8).forEach(key => {
+        rows += item(key, props[key]);
+      });
+    }
+
+    const showReferenceDetails = config.type !== "active_concession";
+    const sourceRows = showReferenceDetails
+      ? item("Sumber", config.sourceLabel) + item("Skala", config.scale)
+      : "";
+    const sourceLink = showReferenceDetails && config.sourceUrl
+      ? '<a href="' + escapeHtml(config.sourceUrl) +
+        '" target="_blank" rel="noopener noreferrer">Buka layanan resmi</a>'
+      : "";
+    const policyLink = showReferenceDetails && config.policyUrl
+      ? '<a href="' + escapeHtml(config.policyUrl) +
+        '">Lihat keterkaitan RPPEG</a>'
+      : "";
+    const referenceLinks = sourceLink || policyLink
+      ? '<div class="popup-row popup-reference-links"><b>Referensi</b><span>' +
+        [sourceLink, policyLink].filter(Boolean).join(" · ") +
+        '</span></div>'
+      : "";
+
+    const socialForestryKey = config.type === "social_forestry"
+      ? socialForestryProfileKey(feature)
+      : "";
+    const socialForestryAction = socialForestryKey
+      ? (
+          '<div class="yg-popup-actions yg-popup-profile-action">' +
+            '<a class="yg-popup-monitoring-link yg-popup-profile-link" ' +
+              'target="_blank" rel="noopener noreferrer" ' +
+              'href="social-forestry-profile.html?key=' +
+                encodeURIComponent(socialForestryKey) + '">' +
+              'Buka Profil &amp; Analisis Areal&nbsp; →' +
+            '</a>' +
+          '</div>'
+        )
+      : "";
+    const activeConcessionId = config.type === "active_concession"
+      ? activeConcessionProfileId(feature)
+      : "";
+    const activeConcessionAction = activeConcessionId
+      ? (
+          '<div class="yg-popup-actions yg-popup-profile-action">' +
+            '<a class="yg-popup-monitoring-link yg-popup-profile-link" ' +
+              'target="_blank" rel="noopener noreferrer" ' +
+              'href="pbph-profile.html?id=' +
+                encodeURIComponent(activeConcessionId) + '">' +
+              'Buka Profil PHL &amp; SVLK&nbsp; →' +
+            '</a>' +
+          '</div>'
+        )
+      : "";
+    const oilPalmProfileId = config.type === "oil_palm_company"
+      ? String(props.COMPANY_ID || "").trim()
+      : "";
+    const oilPalmProfileAction = oilPalmProfileId
+      ? (
+          '<div class="yg-popup-actions yg-popup-profile-action">' +
+            '<a class="yg-popup-monitoring-link yg-popup-profile-link" ' +
+              'target="_blank" rel="noopener noreferrer" ' +
+              'href="rspo-area-profile.html?id=' +
+                encodeURIComponent(oilPalmProfileId) + '">' +
+              'Buka Profil &amp; Analisis Area&nbsp; →' +
+            '</a>' +
+          '</div>'
+        )
+      : "";
+    const administrativeVillageKey = config.type === "village_boundary"
+      ? villageProfileKey(feature)
+      : "";
+    const administrativeVillageAction = administrativeVillageKey
+      ? (
+          '<div class="yg-popup-actions yg-popup-profile-action">' +
+            '<a class="yg-popup-monitoring-link yg-popup-profile-link" ' +
+              'target="_blank" rel="noopener noreferrer" ' +
+              'href="village-profile.html?source=administrative&amp;key=' +
+                encodeURIComponent(administrativeVillageKey) + '">' +
+              'Buka Profil &amp; Analisis Desa&nbsp; →' +
+            '</a>' +
+          '</div>'
+        )
+      : "";
+
+    return (
+      '<div class="popup-card">' +
+        '<div class="popup-head" style="background:' +
+          escapeHtml(config.color) + '">' +
+          '<strong>' + escapeHtml(config.label) + '</strong>' +
+          '<span>Layer referensi — tidak dihitung dalam dashboard</span>' +
+        '</div>' +
+        '<div class="popup-body">' + rows + sourceRows + referenceLinks +
+          activeConcessionAction +
+          socialForestryAction +
+          oilPalmProfileAction +
+          administrativeVillageAction + '</div>' +
+      '</div>'
+    );
+  }
+
+  async function loadReferenceLayer(layerId) {
+    const config = REFERENCE_LAYERS[layerId];
+
+    if (!config) {
+      throw new Error("Konfigurasi layer referensi tidak ditemukan.");
+    }
+
+    if (referenceLayerObjects[layerId]) {
+      return referenceLayerObjects[layerId];
+    }
+
+    if (referenceLayerState[layerId] === "loading") {
+      return null;
+    }
+
+    referenceLayerState[layerId] = "loading";
+    setStatus("Memuat " + config.label + "…", false);
+
+    const response = await fetch(
+      config.file + (config.file.includes("?") ? "&" : "?") + "v=" + (config.version || "20260901-basilam-geniot1"),
+      {
+        cache: "force-cache"
+      }
+    );
+
+    if (!response.ok) {
+      referenceLayerState[layerId] = "error";
+      throw new Error("HTTP " + response.status);
+    }
+
+    let data = await response.json();
+    data = await mergeReferenceSupplements(config, data);
+    if (config.type === "social_forestry") {
+      data = correctSocialForestryAttributes(data);
+    }
+
+    if (config.type === "social_forestry" && !socialForestryDocumentDetailsLoaded) {
+      try {
+        const detailsResponse = await fetch(
+          "data/social-forestry-details.json?v=20260901-official1",
+          { cache: "no-store" }
+        );
+        if (detailsResponse.ok) {
+          socialForestryDocumentDetails = await detailsResponse.json();
+          socialForestryDocumentIndex = indexSocialForestryDocumentDetails(
+            socialForestryDocumentDetails
+          );
+        }
+      } catch (documentError) {
+        console.warn(
+          "Data kelengkapan dokumen PS belum dapat dimuat:",
+          documentError
+        );
+      }
+      socialForestryDocumentDetailsLoaded = true;
+    }
+
+    if (
+      !data ||
+      data.type !== "FeatureCollection" ||
+      !Array.isArray(data.features)
+    ) {
+      referenceLayerState[layerId] = "error";
+      throw new Error("GeoJSON referensi tidak valid.");
+    }
+
+    const isInteractiveReference =
+      config.type === "forest" ||
+      config.type === "peat" ||
+      config.type === "peat_function" ||
+      config.type === "khg" ||
+      config.type === "social_forestry" ||
+      config.type === "active_concession" ||
+      config.type === "oil_palm_company" ||
+      config.type === "concession" ||
+      config.type === "kph" ||
+      config.type === "village_boundary";
+
+    const layer = L.geoJSON(data, {
+      pane: MAP_PANES.reference,
+      renderer: vectorRendererFor(MAP_PANES.reference),
+      /*
+       * Jangan memakai renderer Canvas bawaan map untuk layer referensi.
+       * Elemen Canvas memenuhi seluruh peta dan dapat menahan klik yang
+       * seharusnya diterima batas desa di pane bawah. SVG hanya menangkap
+       * klik tepat pada geometri yang tergambar.
+       */
+      interactive: isInteractiveReference,
+      bubblingMouseEvents: false,
+      style: feature => referenceStyle(config, feature),
+      onEachFeature: (feature, leafletLayer) => {
+        if (isInteractiveReference) {
+          leafletLayer.bindPopup(
+            referencePopup(config, feature),
+            { maxWidth: 360 }
+          );
+          leafletLayer.on("click", event => {
+            if (event && event.originalEvent) {
+              L.DomEvent.stopPropagation(event.originalEvent);
+            }
+            leafletLayer.openPopup(
+              event && event.latlng ? event.latlng : undefined
+            );
+          });
+        }
+      }
+    });
+
+    referenceLayerObjects[layerId] = layer;
+    referenceLayerState[layerId] = "ready";
+    const countInfo = referenceCountInfo(layerId, data.features);
+    config.count = countInfo.count;
+    config.featureCount = countInfo.featureCount;
+    config.countLabel = countInfo.label;
+
+    const countElement = document.querySelector(
+      '[data-reference-count-id="' + layerId + '"]'
+    );
+    if (countElement) {
+      countElement.textContent = countInfo.label;
+    }
+
+    setStatus(
+      config.label + " berhasil dimuat (" +
+      countInfo.statusLabel + ")",
+      false
+    );
+
+    return layer;
+  }
+
+  function appendReferenceControls(list, legend) {
+    const canRenderLegend = Boolean(legend);
+
+    function appendLegendSectionTitle(text) {
+      if (!canRenderLegend) return;
+      const title = document.createElement("div");
+      title.className = "legend-section-title";
+      title.textContent = text;
+      legend.appendChild(title);
+    }
+
+    function appendReferenceSection(sectionTitle, layerIds) {
+      if (!layerIds.length) return;
+
+      const title = document.createElement("div");
+      title.className = "yg-layer-section-title";
+      title.textContent = sectionTitle;
+      list.appendChild(title);
+      appendLegendSectionTitle(sectionTitle);
+
+      layerIds.forEach(layerId => {
+      const config = REFERENCE_LAYERS[layerId];
+
+      const row = document.createElement("div");
+      row.className = "layer-row reference-layer-row";
+      row.innerHTML =
+        '<input id="layer-' + escapeHtml(layerId) +
+        '" data-reference-layer-id="' + escapeHtml(layerId) +
+        '" type="checkbox">' +
+        '<span class="swatch" style="background:' +
+          escapeHtml(config.swatch || config.color) + '"></span>' +
+        '<label for="layer-' + escapeHtml(layerId) + '">' +
+          escapeHtml(config.label) + '</label>' +
+        '<span class="count" data-reference-count-id="' +
+          escapeHtml(layerId) + '">' +
+          (Number.isFinite(config.count)
+            ? formatNumber(config.count)
+            : "—") +
+        '</span>';
+
+      list.appendChild(row);
+
+      const checkbox = row.querySelector("input");
+
+      checkbox.addEventListener("change", async event => {
+        checkbox.disabled = true;
+
+        try {
+          if (event.target.checked) {
+            const layer = await loadReferenceLayer(layerId);
+
+            if (layer && checkbox.checked) {
+              layer.addTo(map);
+              if (config.type === "social_forestry") {
+                showSocialForestryDocumentLegend();
+              }
+
+              /*
+               * Layer PS mencakup seluruh Riau dan sering diaktifkan dari
+               * panel yang menutupi peta pada layar sempit. Arahkan viewport
+               * ke geometri dan tutup panel mobile supaya hasil pilihan
+               * langsung terlihat, bukan seolah-olah layer gagal dimuat.
+               */
+              if (
+                config.focusOnEnable &&
+                typeof layer.getBounds === "function"
+              ) {
+                const bounds = layer.getBounds();
+                if (bounds && bounds.isValid()) {
+                  map.fitBounds(bounds, {
+                    padding: [20, 20],
+                    maxZoom: 11
+                  });
+                }
+
+                if (
+                  window.matchMedia("(max-width: 760px)").matches &&
+                  window.YG_UI &&
+                  typeof window.YG_UI.closeMobileSidebar === "function"
+                ) {
+                  window.YG_UI.closeMobileSidebar();
+                }
+
+                requestAnimationFrame(() => map.invalidateSize(false));
+              }
+            } else if (layer && map.hasLayer(layer)) {
+              map.removeLayer(layer);
+              if (config.type === "social_forestry") {
+                hideSocialForestryDocumentLegend();
+              }
+            }
+          } else {
+            const layer = referenceLayerObjects[layerId];
+
+            if (layer && map.hasLayer(layer)) {
+              map.removeLayer(layer);
+            }
+            if (config.type === "social_forestry") {
+              hideSocialForestryDocumentLegend();
+            }
+          }
+        } catch (error) {
+          console.error("Layer referensi gagal dimuat:", layerId, error);
+          event.target.checked = false;
+          setStatus(
+            config.label + " gagal dimuat: " + error.message,
+            true
+          );
+        } finally {
+          checkbox.disabled = false;
+        }
+      });
+
+      const legendItem = document.createElement("div");
+      if (canRenderLegend) {
+        if (Array.isArray(config.legendItems)) {
+          config.legendItems.forEach(entry => {
+            const item = document.createElement("div");
+            item.className = "legend-item";
+            item.innerHTML =
+              '<span class="legend-mark area" style="--yg-legend-color:' +
+                escapeHtml(entry[0]) + '"></span>' +
+              '<span>' + escapeHtml(entry[1]) + '</span>';
+            legend.appendChild(item);
+          });
+        } else {
+          legendItem.className = "legend-item";
+          legendItem.innerHTML =
+            '<span class="legend-mark area" style="--yg-legend-color:' +
+              escapeHtml(config.color) + '"></span>' +
+            '<span>' + escapeHtml(config.label) + '</span>';
+          legend.appendChild(legendItem);
+        }
+      }
+      });
+    }
+
+    const administrativeLayerIds = Object.keys(REFERENCE_LAYERS).filter(layerId =>
+      REFERENCE_LAYERS[layerId].section === "administrative"
+    );
+    const partnershipLayerIds = Object.keys(REFERENCE_LAYERS).filter(layerId =>
+      REFERENCE_LAYERS[layerId].section === "partnership"
+    );
+    const referenceLayerIds = Object.keys(REFERENCE_LAYERS).filter(layerId =>
+      !["administrative", "partnership"].includes(REFERENCE_LAYERS[layerId].section)
+    );
+
+    appendReferenceSection("BATAS ADMINISTRASI", administrativeLayerIds);
+    appendReferenceSection("DATA REFERENSI", referenceLayerIds);
+    appendReferenceSection("KOLABORASI AKADEMIK", partnershipLayerIds);
+
+    const programTitle = document.createElement("div");
+    programTitle.className = "yg-layer-section-title yg-program-title";
+    programTitle.textContent = "PROGRAM & LAPORAN YG";
+    list.appendChild(programTitle);
+  }
+
+  function renderLayerControls(groups) {
+    const list = document.getElementById("layer-list");
+    const legend = document.getElementById("legend");
+    const legendPanel = legend && legend.closest(".panel");
+
+    list.innerHTML = "";
+    if (legend) legend.innerHTML = "";
+
+    if (legendPanel) {
+      legendPanel.hidden = true;
+    }
+
+    appendReferenceControls(list, null);
+    preloadReferenceCounts();
+
+    Object.keys(groups)
+      .sort((a, b) =>
+        getLayerConfig(a, groups[a][0]).label.localeCompare(
+          getLayerConfig(b, groups[b][0]).label,
+          "id"
+        )
+      )
+      .forEach(layerId => {
+        if (HIDDEN_LAYER_IDS.has(layerId)) return;
+        const config = getLayerConfig(layerId, groups[layerId][0]);
+        const count = groups[layerId].length;
+        const countLabel = layerId === "monitoring_reports" ? "…" : count;
+        const geometryType =
+          groups[layerId][0].geometry &&
+          groups[layerId][0].geometry.type || "";
+        const isPoint = geometryType.includes("Point");
+        const symbol = isPoint ? pointSymbolFor(layerId) : "";
+
+        const row = document.createElement("div");
+        row.className = "layer-row";
+        row.innerHTML =
+          '<input id="layer-' + escapeHtml(layerId) +
+          '" data-layer-id="' + escapeHtml(layerId) +
+          '" type="checkbox"' + (config.visible ? " checked" : "") + '>' +
+          '<span class="swatch ' + (isPoint ? "point" : "area") +
+          '" style="--yg-swatch-color:' + escapeHtml(config.color) + '">' +
+            (isPoint
+              ? '<span class="swatch-symbol">' + escapeHtml(symbol) + '</span>'
+              : "") +
+          '</span>' +
+          '<label for="layer-' + escapeHtml(layerId) + '">' + escapeHtml(config.label) + '</label>' +
+          '<span class="count">' + countLabel + '</span>';
+
+        list.appendChild(row);
+
+        row.querySelector("input").addEventListener("change", event => {
+          const layer = layerObjects[layerId];
+          if (!layer) return;
+          if (event.target.checked) layer.addTo(map);
+          else map.removeLayer(layer);
+        });
+
+      });
+  }
+
+  function updateStats(features) {
+    const villages = new Set();
+    let mangroveArea = 0;
+    let fdrs = 0;
+    let canalBlocks = 0;
+
+    features.forEach(feature => {
+      const props = feature.properties || {};
+      const layerId = getLayerId(feature);
+      const village = props.Desa || props.WADMKD || props.village;
+
+      if (village) villages.add(String(village).trim().toLowerCase());
+      if (layerId === "area_mangrove") mangroveArea += Number(props.Luas_Ha || 0);
+      if (layerId === "fdrs") fdrs += 1;
+      if (layerId === "sekat_kanal") canalBlocks += 1;
+    });
+
+    const setText = (id, value) => {
+      const element = document.getElementById(id);
+      if (element) element.textContent = value;
+    };
+
+    setText("stat-villages", formatNumber(villages.size));
+    setText(
+      "stat-mangrove-area",
+      formatNumber(mangroveArea, { maximumFractionDigits: 2 }) + " ha"
+    );
+    setText("stat-fdrs", fdrs);
+    setText("stat-canal-blocks", canalBlocks);
+  }
+
+  function renderDatabaseUpdated() {
+    const updated = document.getElementById("database-updated");
+    if (!updated || !rawFeatures.length) return;
+    updated.textContent =
+      "Sumber: Master Database · " +
+      formatNumber(rawFeatures.length) +
+      " objek · diperbarui " +
+      new Date(lastGeneratedAt || Date.now()).toLocaleString(currentLocale());
+  }
+
+  function refreshLocalizedMapContent() {
+    updateStats(rawFeatures);
+    renderDatabaseUpdated();
+    Object.keys(REFERENCE_LAYERS).forEach(layerId => {
+      const config = REFERENCE_LAYERS[layerId];
+      const element = document.querySelector(
+        '[data-reference-count-id="' + layerId + '"]'
+      );
+      if (element && Number.isFinite(config.count)) {
+        element.textContent = config.countLabel || formatNumber(config.count);
+      }
+    });
+    Object.keys(layerObjects).forEach(layerId => {
+      const group = layerObjects[layerId];
+      if (!group || typeof group.eachLayer !== "function") return;
+      group.eachLayer(layer => {
+        if (!layer || !layer.feature || typeof layer.setPopupContent !== "function") return;
+        layer.setPopupContent(buildPopup(layer.feature, getLayerConfig(layerId, layer.feature)));
+      });
+    });
+    const input = document.getElementById("search-input");
+    if (input && input.value.trim()) renderSearch(input.value);
+  }
+
+  function renderSearch(query) {
+    const results = document.getElementById("search-results");
+    const value = String(query || "").trim().toLowerCase();
+    const missingDonorQuery = value === "__donor_missing__";
+
+    if (!value) {
+      results.hidden = true;
+      results.innerHTML = "";
+      return;
+    }
+
+    const matches = searchItems
+      .filter(item =>
+        missingDonorQuery ? item.donorMissing : item.text.includes(value)
+      )
+      .slice(0, missingDonorQuery ? 100 : 12);
+
+    if (!matches.length) {
+      results.innerHTML = '<div class="yg-search-empty">Objek tidak ditemukan.</div>';
+      results.hidden = false;
+      return;
+    }
+
+    results.innerHTML = "";
+
+    matches.forEach(item => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "yg-search-result";
+      button.innerHTML =
+        '<strong>' + escapeHtml(item.label) + '</strong>' +
+        '<span>' + escapeHtml(item.meta || "Objek WebGIS") + '</span>';
+
+      button.addEventListener("click", () => {
+        focusSearchItem(item);
+        results.hidden = true;
+      });
+
+      results.appendChild(button);
+    });
+
+    results.hidden = false;
+  }
+
+  function focusSearchItem(item) {
+    if (!item || !item.layer || !item.parent) return false;
+    if (!map.hasLayer(item.parent)) item.parent.addTo(map);
+
+    const checkbox = document.getElementById("layer-" + item.layerId);
+    if (checkbox) checkbox.checked = true;
+
+    if (typeof item.layer.getBounds === "function") {
+      const bounds = item.layer.getBounds();
+      if (bounds && bounds.isValid()) {
+        map.fitBounds(bounds, { padding: [40, 40], maxZoom: 16 });
+      }
+    } else if (typeof item.layer.getLatLng === "function") {
+      map.setView(item.layer.getLatLng(), 16);
+    }
+
+    item.layer.openPopup();
+    return true;
+  }
+
+  function setStatus(message, error) {
+    const box = document.getElementById("status-box");
+    const text = document.getElementById("status-text");
+
+    if (box) {
+      box.classList.toggle("error", Boolean(error));
+      box.classList.toggle("ok", !error);
+    }
+
+    if (text) text.textContent = message;
+  }
+
+  function showLayerFromDashboard(layerId) {
+    const layer = layerObjects[layerId];
+    if (!layer) return false;
+
+    if (!map.hasLayer(layer)) layer.addTo(map);
+    const checkbox = document.getElementById("layer-" + layerId);
+    if (checkbox) checkbox.checked = true;
+
+    const bounds = layer.getBounds();
+    if (bounds.isValid()) {
+      map.fitBounds(bounds, { padding: [30, 30], maxZoom: 15 });
+    }
+    return true;
+  }
+
+  async function applyInitialDashboardLink() {
+    const params = new URLSearchParams(window.location.search);
+    const objectId = String(params.get("object") || "").trim();
+    const layerId = String(params.get("layer") || "").trim();
+    const layerIds = String(params.get("layers") || "")
+      .split(",").map(value => value.trim()).filter(Boolean);
+    const village = String(params.get("village") || "").trim();
+    const search = String(params.get("search") || "").trim();
+    const donor = String(params.get("donor") || "").trim().toLowerCase();
+
+    if (layerId && REFERENCE_LAYERS[layerId]) {
+      try {
+        const referenceLayer = await loadReferenceLayer(layerId);
+        if (referenceLayer && !map.hasLayer(referenceLayer)) referenceLayer.addTo(map);
+        const checkbox = document.getElementById("layer-" + layerId);
+        if (checkbox) checkbox.checked = true;
+        const bounds = referenceLayer && referenceLayer.getBounds();
+        if (bounds && bounds.isValid()) {
+          map.fitBounds(bounds, { padding: [30, 30], maxZoom: 17 });
+        }
+        return;
+      } catch (error) {
+        console.warn("Tautan layer referensi gagal dibuka:", layerId, error);
+      }
+    }
+
+    if (objectId) {
+      const normalizedObjectId = normalizedMatchValue(objectId);
+      const match = searchItems.find(item =>
+        normalizedMatchValue(item.objectId) === normalizedObjectId
+      );
+
+      if (match && focusSearchItem(match)) return;
+    }
+
+    if (layerIds.length) {
+      const bounds = L.latLngBounds([]);
+      layerIds.forEach(id => {
+        const layer = layerObjects[id];
+        if (!layer) return;
+        if (!map.hasLayer(layer)) layer.addTo(map);
+        const checkbox = document.getElementById("layer-" + id);
+        if (checkbox) checkbox.checked = true;
+        const layerBounds = layer.getBounds();
+        if (layerBounds.isValid()) bounds.extend(layerBounds);
+      });
+      if (bounds.isValid()) {
+        map.fitBounds(bounds, { padding: [30, 30], maxZoom: 15 });
+      }
+      return;
+    }
+
+    if (donor && donor !== "missing") {
+      const donorTerm = donor === "aramco" ? "aramco asia singapore" : donor;
+      const normalizedVillage = village.toLowerCase();
+      const matches = searchItems.filter(item =>
+        (!layerId || item.layerId === layerId) &&
+        (!village || item.text.includes(normalizedVillage)) &&
+        (item.text.includes(donorTerm) || item.text.includes(donor))
+      );
+      const bounds = L.latLngBounds([]);
+
+      matches.forEach(item => {
+        if (item.parent && !map.hasLayer(item.parent)) item.parent.addTo(map);
+        if (item.layer && typeof item.layer.getBounds === "function") {
+          const itemBounds = item.layer.getBounds();
+          if (itemBounds.isValid()) bounds.extend(itemBounds);
+        } else if (item.layer && typeof item.layer.getLatLng === "function") {
+          bounds.extend(item.layer.getLatLng());
+        }
+      });
+
+      if (layerId) {
+        const checkbox = document.getElementById("layer-" + layerId);
+        if (checkbox) checkbox.checked = true;
+      }
+      const input = document.getElementById("search-input");
+      if (input) input.value = donor === "aramco" ? "Aramco Asia Singapore" : donor;
+      renderSearch(donor);
+      if (bounds.isValid()) {
+        map.fitBounds(bounds, { padding: [30, 30], maxZoom: 17 });
+      } else if (layerId) {
+        showLayerFromDashboard(layerId);
+      }
+      return;
+    }
+
+    if (layerId && village) {
+      const normalizedVillage = village.toLowerCase();
+      const matches = searchItems.filter(item =>
+        item.layerId === layerId && item.text.includes(normalizedVillage)
+      );
+      const bounds = L.latLngBounds([]);
+
+      matches.forEach(item => {
+        if (item.parent && !map.hasLayer(item.parent)) item.parent.addTo(map);
+        if (item.layer && typeof item.layer.getBounds === "function") {
+          const itemBounds = item.layer.getBounds();
+          if (itemBounds.isValid()) bounds.extend(itemBounds);
+        } else if (item.layer && typeof item.layer.getLatLng === "function") {
+          bounds.extend(item.layer.getLatLng());
+        }
+      });
+
+      const checkbox = document.getElementById("layer-" + layerId);
+      if (checkbox) checkbox.checked = true;
+      const input = document.getElementById("search-input");
+      if (input) input.value = village;
+      renderSearch(village);
+      if (bounds.isValid()) {
+        map.fitBounds(bounds, { padding: [30, 30], maxZoom: 17 });
+      } else {
+        showLayerFromDashboard(layerId);
+      }
+      return;
+    }
+
+    if (layerId && showLayerFromDashboard(layerId)) return;
+
+    if (donor === "missing") {
+      const input = document.getElementById("search-input");
+      if (input) input.value = "Donor belum diisi";
+      renderSearch("__donor_missing__");
+      return;
+    }
+
+    if (village) {
+      const normalizedVillage = village.toLowerCase();
+      const matches = searchItems.filter(item =>
+        item.text.includes(normalizedVillage)
+      );
+      const bounds = L.latLngBounds([]);
+
+      matches.forEach(item => {
+        if (item.parent && !map.hasLayer(item.parent)) item.parent.addTo(map);
+        if (item.layer && typeof item.layer.getBounds === "function") {
+          const itemBounds = item.layer.getBounds();
+          if (itemBounds.isValid()) bounds.extend(itemBounds);
+        } else if (item.layer && typeof item.layer.getLatLng === "function") {
+          bounds.extend(item.layer.getLatLng());
+        }
+      });
+
+      const input = document.getElementById("search-input");
+      if (input) input.value = village;
+      renderSearch(village);
+      if (bounds.isValid()) {
+        map.fitBounds(bounds, { padding: [30, 30], maxZoom: 15 });
+      }
+      return;
+    }
+
+    if (search) {
+      const input = document.getElementById("search-input");
+      if (input) input.value = search;
+      renderSearch(search);
+    }
+  }
+
+  function applyPematangDukuDonorPolicy(feature) {
+    const props = feature && feature.properties || {};
+    const village = [
+      props.Desa, props.WADMKD, props.NAMA_DESA,
+      props.village, props.locationName
+    ].filter(Boolean).join(" ").trim().toLowerCase();
+
+    if (village.includes("pematang duku")) {
+      props.Donor = "Pan Pacific Conservation Foundation";
+      props.Donor_Cluster = "Pan Pacific Conservation Foundation";
+    }
+    return feature;
+  }
+
+  function applyAramcoCoastalAssetPolicy(feature) {
+    const props = feature && feature.properties || {};
+    const layerId = String(
+      props.Layer_ID || props.Source_Layer || ""
+    ).trim().toLowerCase();
+    let targetProps = props.targetFeatureProperties || {};
+    if (typeof targetProps === "string") {
+      try {
+        targetProps = JSON.parse(targetProps);
+      } catch (_error) {
+        targetProps = {};
+      }
+    }
+    const targetLayerId = String(
+      targetProps.Layer_ID || targetProps.Source_Layer || ""
+    ).trim().toLowerCase();
+    const sourceLayerId = String(props.Source_Layer || "")
+      .trim().toLowerCase();
+    const monitoringType = String(
+      props.Monitoring_Type || props.monitoringType || props.Kategori || ""
+    ).trim().toLowerCase();
+    const targetDonor = getDonor(targetProps);
+
+    if (layerId === "area_mangrove" && !getDonor(props)) {
+      props.Donor = "Aramco Asia Singapore";
+      props.Donor_Cluster = "Aramco Asia Singapore";
+      props.Nama_Donor = "Aramco Asia Singapore";
+    }
+    if (layerId === "monitoring_reports" && (
+      targetLayerId === "area_mangrove" ||
+      sourceLayerId === "area_mangrove" ||
+      monitoringType.includes("mangrove")
+    )) {
+      const inheritedDonor = targetDonor || getDonor(props) ||
+        "Aramco Asia Singapore";
+      props.Donor = inheritedDonor;
+      props.Donor_Cluster = inheritedDonor;
+      props.Nama_Donor = inheritedDonor;
+    }
+    if (layerId === "nursery_mangrove" || layerId === "apo") {
+      props.Donor = "Aramco Asia Singapore";
+      props.Donor_Cluster = "Aramco Asia Singapore";
+      props.Nama_Donor = "Aramco Asia Singapore";
+    }
+    return feature;
+  }
+
+  function applyExternalPeatInfrastructureDonorPolicy(feature) {
+    const props = feature && feature.properties || {};
+    const layerId = String(
+      props.Layer_ID || props.Source_Layer || ""
+    ).trim().toLowerCase();
+    const village = [
+      props.Desa, props.WADMKD, props.NAMA_DESA,
+      props.village, props.locationName
+    ].filter(Boolean).join(" ").trim().toLowerCase();
+    const reportType = String(
+      props.reportType || props.Report_Type || props.Jenis_Laporan || ""
+    ).trim().toLowerCase();
+    const reportId = String(
+      props.reportId || props.Source_Report_ID || props.Report_ID || ""
+    ).trim().toUpperCase();
+    const existingDonor = String(
+      props.Donor || props.Donor_Cluster || props.Nama_Donor || ""
+    ).trim().toLowerCase();
+    const sourceType = String(props.Source_Type || "")
+      .trim().toLowerCase();
+    const hasVerifiedCommunityDonor =
+      sourceType === "community_report" && Boolean(existingDonor);
+    const isPenabuluMaintenance =
+      reportType === "pemeliharaan infrastruktur" && (
+        existingDonor.includes("penabulu") ||
+        reportId === "YG-20260823-001222-487" ||
+        reportId === "YG-20260823-002945-756"
+      );
+
+    if ((layerId === "sekat_kanal" || layerId === "fdrs") &&
+        !village.includes("pematang duku") &&
+        !hasVerifiedCommunityDonor &&
+        !isPenabuluMaintenance) {
+      props.Donor = "Global Environment Centre";
+      props.Donor_Cluster = "Global Environment Centre";
+    }
+    return feature;
+  }
+
+  function applyVerifiedMonitoringInstallationPolicy(feature) {
+    const props = feature && feature.properties || {};
+    const layerId = String(
+      props.Layer_ID || props.Source_Layer || ""
+    ).trim().toLowerCase();
+    const sourceType = String(props.Source_Type || "")
+      .trim().toLowerCase();
+    const reportId = String(
+      props.reportId || props.Source_Report_ID || ""
+    ).trim().toUpperCase();
+    const identity = [
+      props.title, props.Nama_Objek, props.locationName,
+      props.description, props.Jenis_Titik
+    ].filter(Boolean).join(" ").toLowerCase();
+
+    if (
+      layerId !== "fdrs" ||
+      sourceType !== "community_report" ||
+      !/(?:instalasi|installasi|fdrs|tmat|tinggi muka air)/.test(identity)
+    ) {
+      return feature;
+    }
+
+    props.Kategori = "Instalasi Titik Monitoring FDRS / TMAT";
+    props.Jenis_Instalasi = "FDRS / TMAT";
+    props.Status_Instalasi = "Terverifikasi";
+
+    if (reportId === "YG-20260901-201544-276") {
+      props.activityDate = "24/08/2026";
+      props.Tanggal_Kegiatan_Terverifikasi = "23–26 Agustus 2026";
+      props.Donor = "Yayasan Penabulu";
+      props.Donor_Cluster = "Yayasan Penabulu";
+      props.Nama_Donor = "Yayasan Penabulu";
+    }
+    if (reportId === "YG-20260901-202530-896") {
+      props.activityDate = "26/08/2026";
+      props.Tanggal_Kegiatan_Terverifikasi = "23–26 Agustus 2026";
+      props.Donor = "Yayasan Penabulu";
+      props.Donor_Cluster = "Yayasan Penabulu";
+      props.Nama_Donor = "Yayasan Penabulu";
+    }
+
+    return feature;
+  }
+
+  function applyVerifiedTemiangCanalMaintenance(feature) {
+    const props = feature && feature.properties || {};
+    const objectId = String(
+      props.Object_ID || props.objectId || props.OBJECTID || ""
+    ).trim().toUpperCase();
+    const reportId = String(
+      props.reportId || props.Source_Report_ID || props.Report_ID || ""
+    ).trim().toUpperCase();
+    const records = {
+      "SEKAT-TEMIANG-2022-001": {
+        date: "3–6 Agustus 2026",
+        reportId: "YG-20260823-001222-487",
+        objectName: "Sekat Kanal – Temiang – 2022",
+        conditionBefore: "Rusak berat",
+        functionAfter: "Tidak berfungsi (sesuai laporan)",
+        workPerformed: "Penggantian kayu pancang, pemadatan, penambahan tanah, dan semenisasi bagian atas sekat kanal.",
+        photos: [
+          "https://drive.google.com/file/d/1rAq5XTADwc4PpERI_K6LVAMDKIAr0m55/view?usp=drivesdk",
+          "https://drive.google.com/file/d/1CfEkpc4lGHNLQndo6Cn73rRkv1_fP8BC/view?usp=drivesdk"
+        ]
+      },
+      "SEKAT-TEMIANG-2023-001": {
+        date: "7–11 Agustus 2026",
+        reportId: "YG-20260823-002945-756",
+        objectName: "Sekat Kanal – Temiang – 2023",
+        conditionBefore: "Rusak berat",
+        functionAfter: "Berfungsi baik",
+        workPerformed: "Penggantian kayu pancang, pemadatan, penambahan tanah, dan semenisasi bagian atas sekat kanal.",
+        photos: [
+          "https://drive.google.com/file/d/1KHsl79Fo_Xg1GBM-HO8ZQo6Q1Ze0irsR/view?usp=drivesdk",
+          "https://drive.google.com/file/d/1S4VJAY-iL4cuq-H5xQ8MXCojPR4Wq50r/view?usp=drivesdk"
+        ]
+      }
+    };
+    const record = records[objectId] || Object.values(records).find(item =>
+      item.reportId === reportId
+    );
+    if (!record) return feature;
+
+    props.Perawatan_Terakhir = record.date;
+    props.Objek_Induk_Perawatan = record.objectName;
+    props.Donor_Perawatan = "Yayasan Penabulu";
+    props.Pelaksana_Perawatan = "Kelompok Tani Wanita Makmur Jaya";
+    props.Kondisi_Sebelum_Perawatan = record.conditionBefore;
+    props.Kondisi_Setelah_Perawatan = "Baik";
+    props.Fungsi_Setelah_Perawatan = record.functionAfter;
+    props.Pekerjaan_Perawatan = record.workPerformed;
+    props.Laporan_Perawatan_ID = record.reportId;
+    props.Verifikasi_Perawatan = "23 Agustus 2026";
+    if (reportId === record.reportId) {
+      props.Donor = "Yayasan Penabulu";
+      props.Donor_Cluster = "Yayasan Penabulu";
+      props.Nama_Donor = "Yayasan Penabulu";
+    }
+    props._ygPhotos = Array.from(new Set(
+      (Array.isArray(props._ygPhotos) ? props._ygPhotos : []).concat(record.photos)
+    ));
+    return feature;
+  }
+
+  function applyRequestedDonorCorrections(feature) {
+    const props = feature && feature.properties || {};
+    const layerId = String(
+      props.Layer_ID || props.Source_Layer || ""
+    ).trim().toLowerCase();
+    const reportId = String(
+      props.reportId || props.Report_ID || props.Source_Report_ID || ""
+    ).trim().toUpperCase();
+    const objectId = String(props.Object_ID || "").trim().toUpperCase();
+    const identity = [
+      props.title, props.locationName, props.Nama_Objek,
+      props.description, props.Keterangan
+    ].filter(Boolean).join(" ").toLowerCase();
+    const hasExistingDonor = Boolean(
+      String(
+        props.Donor ||
+        props.Donor_Cluster ||
+        props.Nama_Donor ||
+        props.Funding_Source ||
+        ""
+      ).trim()
+    );
+    let donor = "";
+
+    if (objectId === "YG-KOPI-MRXLKJCH") {
+      donor = "Badan Pengelola Dana Perkebunan";
+    }
+    if (!donor && layerId === "kopi" && !hasExistingDonor) {
+      donor = "Global Environment Centre";
+    }
+    if (identity.includes("rumah jemur semi permanen kopi liberika")) {
+      donor = "Yayasan Penabulu";
+    }
+    if (identity.includes("menara tampung air nursery ktwmj")) {
+      donor = "Yayasan Penabulu";
+    }
+    if (!identity.includes("menara tampung air") &&
+        (identity.includes("nursery ktwmj desa temiang") ||
+        identity.includes("nursery ktwmj"))) {
+      donor = "Global Environment Centre";
+    }
+    if (identity.includes("plang restorasi hutan adat imbo putui") ||
+        identity.includes("restorasi hutan adat imbo putui") ||
+        identity.includes("lokasi pup 2") ||
+        reportId === "COMMUNITY-YG-20260713-192917-711" ||
+        objectId === "COMMUNITY-YG-20260713-192917-711") {
+      donor = "Aliansi Kolibri";
+    }
+    if (reportId === "COMMUNITY-YG-20260716-163039-924" ||
+        objectId === "COMMUNITY-YG-20260716-163039-924") {
+      donor = "Aramco Asia Singapore";
+    }
+
+    if (donor) {
+      props.Donor = donor;
+      props.Donor_Cluster = donor;
+    }
+    return feature;
+  }
+
+  function dedupeNormalizedFeatures(features) {
+    const seenObjectIds = new Set();
+    const seenMangroveNurseries = new Set();
+
+    return (features || []).filter(feature => {
+      const props = feature && feature.properties || {};
+      const layerId = normalizedMatchValue(
+        props.Layer_ID || props.Source_Layer
+      );
+      const objectId = normalizedMatchValue(
+        props.Object_ID || props.objectId || props.OBJECTID
+      );
+
+      if (layerId === "nursery_mangrove") {
+        const village = normalizedMatchValue(
+          props.Desa || props.desa || props.WADMKD
+        );
+        const name = normalizedMatchValue(
+          props.Nama_Objek || props.title || props.locationName
+        );
+        const nurseryKey = village
+          ? "village:" + village
+          : name
+            ? "name:" + name
+            : objectId
+              ? "object:" + objectId
+              : "";
+
+        if (nurseryKey) {
+          if (seenMangroveNurseries.has(nurseryKey)) return false;
+          seenMangroveNurseries.add(nurseryKey);
+        }
+      }
+
+      if (objectId) {
+        if (seenObjectIds.has(objectId)) return false;
+        seenObjectIds.add(objectId);
+      }
+
+      return true;
+    });
+  }
+
+  function initialize(data) {
+    if (!data || data.type !== "FeatureCollection" || !Array.isArray(data.features)) {
+      setStatus("Respons database tidak valid.", true);
+      return;
+    }
+
+    lastGeneratedAt = data.generatedAt || Date.now();
+    const permanentReportIds = new Set(data.features.map(feature => {
+      const p = feature && feature.properties || {};
+      const layerId = String(p.Layer_ID || p.Source_Layer || "").toLowerCase();
+      return layerId !== "community_reports"
+        ? String(p.Source_Report_ID || "").trim()
+        : "";
+    }).filter(Boolean));
+
+    rawFeatures = dedupeNormalizedFeatures(data.features
+      .filter(feature => {
+        if (!feature) return false;
+        const p = feature.properties || {};
+        const reportType = String(
+          p.reportType || p.Jenis_Laporan || p.Report_Type || ""
+        ).trim().toLowerCase();
+        if (reportType === "capacity building" ||
+            reportType === "peningkatan kapasitas") {
+          return false;
+        }
+        if (!feature.geometry) return false;
+        const layerId = String(p.Layer_ID || p.Source_Layer || "").toLowerCase();
+        const reportId = String(
+          p.reportId || p.Report_ID || p.Source_Report_ID ||
+          p.Monitoring_ID || ""
+        ).trim();
+        if ([
+          "YG-20260717-205241-378"
+        ].includes(reportId)) {
+          return false;
+        }
+        return !(
+          layerId === "community_reports" &&
+          reportId &&
+          permanentReportIds.has(reportId)
+        );
+      })
+      .map(normalizeVerifiedCommunityAssets)
+      .map(applyMeasurementPointPolicy)
+      .map(applyPematangDukuDonorPolicy)
+      .map(applyAramcoCoastalAssetPolicy)
+      .map(applyVerifiedMonitoringInstallationPolicy)
+      .map(applyExternalPeatInfrastructureDonorPolicy)
+      .map(applyVerifiedTemiangCanalMaintenance)
+      .map(applyRequestedDonorCorrections));
+    const groups = {};
+
+    rawFeatures.forEach(feature => {
+      const layerId = getLayerId(feature);
+      if (HIDDEN_LAYER_IDS.has(layerId)) return;
+      if (!groups[layerId]) groups[layerId] = [];
+      groups[layerId].push(feature);
+    });
+
+    updateStats(rawFeatures);
+
+    Object.keys(groups).forEach(layerId => {
+      try {
+        createLayer(layerId, groups[layerId]);
+      } catch (error) {
+        console.error("Layer gagal diproses:", layerId, error);
+      }
+    });
+
+    renderLayerControls(groups);
+
+    if (allBounds.isValid()) {
+      map.fitBounds(allBounds, { padding: [24, 24], maxZoom: 13 });
+    }
+
+    applyInitialDashboardLink();
+
+    renderDatabaseUpdated();
+
+    setStatus(
+      rawFeatures.length + " objek dari Master Database berhasil dimuat",
+      false
+    );
+
+    requestAnimationFrame(() => map.invalidateSize(true));
+    setTimeout(() => map.invalidateSize(true), 400);
+  }
+
+  function loadByJsonp() {
+    return new Promise((resolve, reject) => {
+      const callbackName = "ygObjectsV4_" + Date.now();
+      const script = document.createElement("script");
+      const timer = window.setTimeout(() => {
+        script.remove();
+        try { delete window[callbackName]; } catch (error) {}
+        reject(new Error("JSONP tidak memberi respons."));
+      }, 30000);
+
+      window[callbackName] = data => {
+        window.clearTimeout(timer);
+        script.remove();
+        try { delete window[callbackName]; } catch (error) {}
+        resolve(data);
+      };
+
+      script.src =
+        API +
+        "&callback=" +
+        encodeURIComponent(callbackName) +
+        "&t=" +
+        Date.now();
+      script.async = true;
+      script.onerror = () => {
+        window.clearTimeout(timer);
+        script.remove();
+        try { delete window[callbackName]; } catch (error) {}
+        reject(new Error("Script JSONP gagal dimuat."));
+      };
+
+      document.head.appendChild(script);
+    });
+  }
+
+  const LOCAL_FALLBACK_LAYERS = [
+    "desa_intervensi", "apo", "area_mangrove",
+    "mineral_land_restoration_area", "titik_penanaman", "fdrs",
+    "kopi", "area_kopi", "nursery_mangrove", "sekat_kanal"
+  ];
+
+  async function loadLocalSnapshot() {
+    const settled = await Promise.allSettled(
+      LOCAL_FALLBACK_LAYERS.map(async layerId => {
+        const response = await fetch(
+          "data/" + layerId + ".geojson?v=20260825-maintenance-history2",
+          { cache: "force-cache" }
+        );
+        if (!response.ok) throw new Error(layerId + " HTTP " + response.status);
+        const data = await response.json();
+        if (!data || !Array.isArray(data.features)) {
+          throw new Error(layerId + " tidak valid");
+        }
+        return data.features
+          .filter(feature => feature && feature.geometry)
+          .map(feature => {
+            const properties = Object.assign({}, feature.properties || {});
+            if (!properties.Layer_ID) properties.Layer_ID = layerId;
+            if (!properties.Source_Layer) properties.Source_Layer = layerId;
+            return Object.assign({}, feature, { properties: properties });
+          });
+      })
+    );
+    const features = [];
+    settled.forEach(result => {
+      if (result.status === "fulfilled") {
+        features.push.apply(features, result.value);
+      } else {
+        console.warn("Layer snapshot lokal dilewati", result.reason);
+      }
+    });
+    if (!features.length) {
+      throw new Error("Snapshot GeoJSON lokal tidak tersedia.");
+    }
+    return {
+      type: "FeatureCollection",
+      generatedAt: new Date().toISOString(),
+      sourceMode: "local-fallback",
+      features: features
+    };
+  }
+
+  function geometryPolygons(geometry) {
+    if (!geometry || !Array.isArray(geometry.coordinates)) return [];
+
+    if (geometry.type === "Polygon") {
+      return [geometry.coordinates];
+    }
+
+    if (geometry.type === "MultiPolygon") {
+      return geometry.coordinates;
+    }
+
+    return [];
+  }
+
+  function pointOnSegment(point, start, end) {
+    const cross =
+      (point[1] - start[1]) * (end[0] - start[0]) -
+      (point[0] - start[0]) * (end[1] - start[1]);
+
+    if (Math.abs(cross) > 1e-12) return false;
+
+    return (
+      point[0] >= Math.min(start[0], end[0]) - 1e-12 &&
+      point[0] <= Math.max(start[0], end[0]) + 1e-12 &&
+      point[1] >= Math.min(start[1], end[1]) - 1e-12 &&
+      point[1] <= Math.max(start[1], end[1]) + 1e-12
+    );
+  }
+
+  function pointInRing(point, ring) {
+    let inside = false;
+
+    for (let i = 0, j = ring.length - 1; i < ring.length; j = i, i += 1) {
+      const start = ring[j];
+      const end = ring[i];
+
+      if (pointOnSegment(point, start, end)) return true;
+
+      const crosses =
+        (end[1] > point[1]) !== (start[1] > point[1]) &&
+        point[0] <
+          ((start[0] - end[0]) * (point[1] - end[1])) /
+            (start[1] - end[1]) +
+          end[0];
+
+      if (crosses) inside = !inside;
+    }
+
+    return inside;
+  }
+
+  function pointInPolygon(point, polygon) {
+    if (!polygon.length || !pointInRing(point, polygon[0])) return false;
+
+    for (let i = 1; i < polygon.length; i += 1) {
+      if (pointInRing(point, polygon[i])) return false;
+    }
+
+    return true;
+  }
+
+  function segmentOrientation(a, b, c) {
+    const value =
+      (b[1] - a[1]) * (c[0] - b[0]) -
+      (b[0] - a[0]) * (c[1] - b[1]);
+
+    if (Math.abs(value) < 1e-12) return 0;
+    return value > 0 ? 1 : 2;
+  }
+
+  function segmentsIntersect(a, b, c, d) {
+    const o1 = segmentOrientation(a, b, c);
+    const o2 = segmentOrientation(a, b, d);
+    const o3 = segmentOrientation(c, d, a);
+    const o4 = segmentOrientation(c, d, b);
+
+    if (o1 !== o2 && o3 !== o4) return true;
+    if (o1 === 0 && pointOnSegment(c, a, b)) return true;
+    if (o2 === 0 && pointOnSegment(d, a, b)) return true;
+    if (o3 === 0 && pointOnSegment(a, c, d)) return true;
+    if (o4 === 0 && pointOnSegment(b, c, d)) return true;
+
+    return false;
+  }
+
+  function ringsIntersect(first, second) {
+    for (let i = 1; i < first.length; i += 1) {
+      for (let j = 1; j < second.length; j += 1) {
+        if (
+          segmentsIntersect(
+            first[i - 1],
+            first[i],
+            second[j - 1],
+            second[j]
+          )
+        ) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  function polygonsIntersect(first, second) {
+    if (!first.length || !second.length) return false;
+
+    if (ringsIntersect(first[0], second[0])) return true;
+    if (pointInPolygon(first[0][0], second)) return true;
+    if (pointInPolygon(second[0][0], first)) return true;
+
+    return false;
+  }
+
+  function geometriesIntersect(firstGeometry, secondGeometry) {
+    const firstPolygons = geometryPolygons(firstGeometry);
+    const secondPolygons = geometryPolygons(secondGeometry);
+
+    return firstPolygons.some(first =>
+      secondPolygons.some(second => polygonsIntersect(first, second))
+    );
+  }
+
+  function numericArea(value) {
+    const normalized = String(value == null ? "" : value)
+      .replace(",", ".")
+      .match(/-?\d+(?:\.\d+)?/);
+
+    return normalized ? Number(normalized[0]) : NaN;
+  }
+
+  function ringSurface(ring) {
+    let surface = 0;
+
+    for (let i = 0, j = ring.length - 1; i < ring.length; j = i, i += 1) {
+      surface +=
+        (ring[j][0] * ring[i][1]) -
+        (ring[i][0] * ring[j][1]);
+    }
+
+    return Math.abs(surface / 2);
+  }
+
+  function keepLargestPolygonPart(feature) {
+    if (
+      !feature ||
+      !feature.geometry ||
+      feature.geometry.type !== "MultiPolygon" ||
+      !Array.isArray(feature.geometry.coordinates)
+    ) {
+      return feature;
+    }
+
+    const polygons = feature.geometry.coordinates;
+    if (!polygons.length) return feature;
+
+    const largest = polygons.reduce((best, polygon) => {
+      const surface = polygon && polygon[0]
+        ? ringSurface(polygon[0])
+        : 0;
+
+      return surface > best.surface
+        ? { polygon: polygon, surface: surface }
+        : best;
+    }, { polygon: polygons[0], surface: -1 });
+
+    return {
+      ...feature,
+      geometry: {
+        type: "Polygon",
+        coordinates: largest.polygon
+      }
+    };
+  }
+
+  function normalizedMatchValue(value) {
+    return String(value == null ? "" : value)
+      .trim()
+      .toLowerCase()
+      .replace(/[–—]/g, "-")
+      .replace(/\s+/g, " ");
+  }
+
+  function phaseValue(value) {
+    const match = normalizedMatchValue(value).match(
+      /\b(?:phase|fase)\s*(i{1,3}|iv|v|\d+)\b/i
+    );
+    return match ? match[1].toLowerCase() : "";
+  }
+
+  function canonicalMangroveObjectId(value) {
+    const normalized = normalizedMatchValue(value);
+    if (!normalized || normalized.indexOf("mangrove-") !== 0) return "";
+
+    // Plot laporan 19 Agustus 2026 memiliki geometri sendiri dan harus tetap
+    // terpisah dari Plot 1 tahun 2026 walaupun nomor urutnya sama.
+    if (normalized === "mangrove-kelapa-pati-phase-iii-2025-001") {
+      return normalized;
+    }
+
+    /*
+     * ID legacy belum menyimpan tahun, misalnya:
+     * MANGROVE-BURUK-BAKUL-PHASE-I-004
+     * ID permanennya menjadi:
+     * MANGROVE-BURUK-BAKUL-PHASE-I-2023-004
+     * Keduanya mewakili plot yang sama, sehingga tahun diabaikan hanya untuk
+     * keperluan rekonsiliasi. Nomor plot tetap wajib sama.
+     */
+    return normalized.replace(/-\d{4}-(\d{3})$/, "-$1");
+  }
+
+  const VERIFIED_MONITORING_TARGETS = Object.freeze({
+    "YG-20260713-202057-344": [
+      "MANGROVE-BURUK-BAKUL-PHASE-II-001"
+    ],
+    "YG-20260713-230541-911": [
+      "MANGROVE-SEPAHAT-2025-001"
+    ],
+    "YG-20260717-205241-378": [
+      "MANGROVE-KELAPA-PATI-PHASE-III-001"
+    ],
+    "YG-20260827-154822-115": [
+      "MANGROVE-KELAPA-PATI-PHASE-III-001"
+    ],
+    "YG-20260717-210140-375": [
+      "MANGROVE-BURUK-BAKUL-2025-001"
+    ],
+    "YG-20260717-211305-543": [
+      "MANGROVE-BURUK-BAKUL-2025-002"
+    ],
+    "YG-20260721-012602-224": [
+      "MANGROVE-SEPAHAT-2025-001"
+    ]
+  });
+
+  const MANGROVE_TARGET_ALIASES = Object.freeze({
+    "mangrove-kelapa-pati-phase-iii-2026-001":
+      "MANGROVE-KELAPA-PATI-PHASE-III-001",
+    "mangrove-buruk-bakul-phase-ii-2024-001":
+      "MANGROVE-BURUK-BAKUL-PHASE-II-001",
+    "mangrove-buruk-bakul-phase-iii-2025-001":
+      "MANGROVE-BURUK-BAKUL-2025-001",
+    "mangrove-buruk-bakul-phase-iii-2025-002":
+      "MANGROVE-BURUK-BAKUL-2025-002",
+    "mangrove-buruk-bakul-phase-iii-2025-003":
+      "MANGROVE-BURUK-BAKUL-2025-003",
+    "mangrove-sepahat-phase-iii-2025-001":
+      "MANGROVE-SEPAHAT-2025-001",
+    "mangrove-tanjung-kuras-phase-iii-2026-001":
+      "MANGROVE-TANJUNG-KURAS-2026-001"
+  });
+
+  function monitoringTargetObjectIds(props) {
+    let targetProperties = props.targetFeatureProperties ||
+      props.Target_Feature_Properties || {};
+    let changes = props.proposedChanges || props.Proposed_Changes_JSON || {};
+
+    try {
+      if (typeof targetProperties === "string") {
+        targetProperties = JSON.parse(targetProperties);
+      }
+    } catch (error) {
+      targetProperties = {};
+    }
+    try {
+      if (typeof changes === "string") changes = JSON.parse(changes);
+    } catch (error) {
+      changes = {};
+    }
+
+    const storedTargetCandidates = [
+      props.Target_Object_ID_Current,
+      targetProperties.Object_ID,
+      targetProperties.objectId,
+      changes.Target_Object_ID_Current,
+      changes.targetObjectId,
+      changes.Target_Object_ID,
+      props.targetObjectId,
+      props.Target_Object_ID
+    ].map(value => String(value || "").trim()).filter(Boolean);
+    const storedTargetId = storedTargetCandidates.find(
+      candidate => Boolean(canonicalMangroveObjectId(candidate))
+    ) || storedTargetCandidates[0] || "";
+
+    const reportId = String(
+      props.reportId || props.Source_Report_ID || props.Monitoring_ID || ""
+    ).trim();
+
+    if (VERIFIED_MONITORING_TARGETS[reportId]) {
+      return VERIFIED_MONITORING_TARGETS[reportId].slice();
+    }
+
+    /*
+     * ID area_mangrove:auto:* berasal dari geometry lama dan tidak permanen.
+     * Jangan pernah menebak penggantinya dari nama desa, fase, atau luas:
+     * satu fase dapat terdiri dari beberapa plot dan tebakan dapat berubah
+     * setiap kali SHP diperbarui.
+     */
+    const resolvedTargetId =
+      MANGROVE_TARGET_ALIASES[normalizedMatchValue(storedTargetId)] ||
+      storedTargetId;
+    if (!resolvedTargetId || /:auto:/i.test(resolvedTargetId)) return [];
+    if (/^monitoring-/i.test(resolvedTargetId)) return [];
+    return [resolvedTargetId];
+  }
+
+  function isMangroveMonitoringFeature(feature) {
+    const props = feature && feature.properties || {};
+    const layerId = normalizedMatchValue(
+      props.Layer_ID || props.Source_Layer
+    );
+    const sourceType = normalizedMatchValue(props.Source_Type);
+    const monitoringType = normalizedMatchValue(
+      props.Monitoring_Type || props.monitoringType || props.Kategori
+    );
+
+    return (
+      (layerId === "monitoring_reports" ||
+        sourceType === "monitoring_report") &&
+      monitoringType.includes("mangrove")
+    );
+  }
+
+  function matchOfficialMangroveFeatures(monitoring, officialFeatures) {
+    const props = monitoring && monitoring.properties || {};
+    const targetObjectIds = monitoringTargetObjectIds(props);
+    if (!targetObjectIds.length) return [];
+
+    const matches = targetObjectIds.map(targetObjectId => {
+      const normalizedTargetId = normalizedMatchValue(targetObjectId);
+      const canonicalTargetId = canonicalMangroveObjectId(targetObjectId);
+      return (officialFeatures || []).find(feature => {
+        const officialId = feature && feature.properties &&
+          feature.properties.Object_ID;
+        return (
+          normalizedMatchValue(officialId) === normalizedTargetId ||
+          (
+            canonicalTargetId &&
+            canonicalMangroveObjectId(officialId) === canonicalTargetId
+          )
+        );
+      });
+    });
+    return matches.every(Boolean) ? matches : [];
+  }
+
+  function combinedOfficialMangroveGeometry(features) {
+    if (features.length === 1) {
+      return JSON.parse(JSON.stringify(features[0].geometry));
+    }
+
+    const coordinates = [];
+    features.forEach(feature => {
+      const geometry = feature && feature.geometry;
+      if (!geometry) return;
+      if (geometry.type === "Polygon") coordinates.push(geometry.coordinates);
+      if (geometry.type === "MultiPolygon") {
+        coordinates.push(...geometry.coordinates);
+      }
+    });
+
+    return coordinates.length
+      ? { type: "MultiPolygon", coordinates }
+      : null;
+  }
+
+  function mergeOfficialMangroveData(data, mangrove) {
+    if (
+      !data ||
+      !Array.isArray(data.features) ||
+      !mangrove ||
+      mangrove.type !== "FeatureCollection" ||
+      !Array.isArray(mangrove.features)
+    ) {
+      return data;
+    }
+
+    function isDatabaseMangroveFeature(feature) {
+      const props = feature && feature.properties || {};
+      const layerId = normalizedMatchValue(
+        props.Layer_ID || props.Source_Layer
+      );
+      const objectId = normalizedMatchValue(
+        props.Object_ID || props.objectId
+      );
+      const category = normalizedMatchValue(
+        props.Kategori || props.Category || props.category
+      );
+      const reportType = normalizedMatchValue(
+        props.reportType || props.Jenis_Laporan
+      );
+
+      /*
+       * OBJECTS lama tidak selalu memiliki Layer_ID/Source_Layer, tetapi ID
+       * permanen/legacy dan kategorinya tetap menandai area mangrove. Semua
+       * objek master lama ini harus diganti oleh GeoJSON resmi terbaru agar
+       * polygon, luas, jumlah bibit, dan ID tidak kembali ke versi sebelum
+       * rekonsiliasi. Laporan monitoring tetap dipertahankan.
+       */
+      if (reportType) return false;
+      return (
+        layerId === "area_mangrove" ||
+        objectId.indexOf("mangrove-") === 0 ||
+        category === "penanaman mangrove" ||
+        category === "mangrove planting"
+      );
+    }
+
+    const databaseMangroveFeatures = data.features.filter(
+      isDatabaseMangroveFeature
+    );
+
+    function findDatabaseMangrove(officialFeature) {
+      const officialProps = officialFeature && officialFeature.properties || {};
+      const officialId = normalizedMatchValue(officialProps.Object_ID);
+      const exact = databaseMangroveFeatures.find(feature =>
+        normalizedMatchValue(
+          feature && feature.properties && feature.properties.Object_ID
+        ) === officialId
+      );
+      if (exact) return exact;
+
+      const officialVillage = normalizedMatchValue(officialProps.Desa);
+      const officialYear = normalizedMatchValue(officialProps.Tahun);
+      const officialArea = numericArea(officialProps.Luas_Ha);
+      if (!officialVillage || !officialYear || !Number.isFinite(officialArea)) {
+        return null;
+      }
+
+      const candidates = databaseMangroveFeatures
+        .map(feature => {
+          const props = feature && feature.properties || {};
+          const area = numericArea(props.Luas_Ha);
+          if (
+            normalizedMatchValue(props.Desa) !== officialVillage ||
+            normalizedMatchValue(props.Tahun) !== officialYear ||
+            !Number.isFinite(area)
+          ) {
+            return null;
+          }
+          return { feature, difference: Math.abs(area - officialArea) };
+        })
+        .filter(Boolean)
+        .sort((left, right) => left.difference - right.difference);
+
+      if (!candidates.length) return null;
+      const tolerance = Math.max(0.0005, officialArea * 0.001);
+      return candidates[0].difference <= tolerance
+        ? candidates[0].feature
+        : null;
+    }
+
+    mangrove.features.forEach(feature => {
+      if (!feature.properties) feature.properties = {};
+      if (!feature.properties.Layer_ID) {
+        feature.properties.Layer_ID = "area_mangrove";
+      }
+      if (!feature.properties.Layer_Label) {
+        feature.properties.Layer_Label = "Area Penanaman Mangrove";
+      }
+      if (!feature.properties.Nama_Objek) {
+        feature.properties.Nama_Objek = "Area Penanaman Mangrove";
+      }
+
+      const databaseFeature = findDatabaseMangrove(feature);
+      const databaseProps = databaseFeature && databaseFeature.properties || {};
+
+      const officialObjectId = normalizedMatchValue(
+        feature.properties.Object_ID
+      );
+      const databaseObjectId = normalizedMatchValue(databaseProps.Object_ID);
+      const exactMasterObject =
+        officialObjectId && databaseObjectId === officialObjectId;
+
+      /*
+       * Geometry dan atribut capaian mangrove selalu berasal dari GeoJSON resmi
+       * hasil rekonsiliasi laporan. OBJECTS hanya melengkapi metadata donor dan
+       * proyek untuk Object ID permanen yang sama. Nilai lama di OBJECTS tidak
+       * boleh mengembalikan polygon atau angka capaian sebelum rekonsiliasi.
+       */
+      if (exactMasterObject) {
+        feature.properties.Geometry_Source = "official_mangrove_geojson";
+      }
+      [
+        "Donor",
+        "Nama_Proyek",
+        "Project_ID",
+        "Nomor_Perjanjian",
+        "Program",
+        "Status_Objek",
+        "Revision",
+        "Updated_At",
+        "Updated_By"
+      ].forEach(key => {
+        if (
+          databaseProps[key] !== undefined &&
+          databaseProps[key] !== null &&
+          String(databaseProps[key]).trim() !== ""
+        ) {
+          feature.properties[key] = databaseProps[key];
+        }
+      });
+
+      /*
+       * Kebijakan kluster V1: seluruh Area Penanaman Mangrove
+       * merupakan bagian dari dukungan Aramco Asia Singapore.
+       * Nilai ini mengatasi donor kosong maupun alias donor lama.
+       */
+      const polygonDonor = getDonor(feature.properties) || "Aramco Asia Singapore";
+      feature.properties.Donor = polygonDonor;
+      feature.properties.Donor_Cluster = polygonDonor;
+      feature.properties.Nama_Donor = polygonDonor;
+
+      if (databaseProps.Object_ID) {
+        feature.properties.Master_Object_ID = databaseProps.Object_ID;
+      }
+    });
+
+    const nonMangroveFeatures = data.features.filter(
+      feature => !isDatabaseMangroveFeature(feature)
+    );
+
+    /*
+     * Laporan monitoring menyimpan geometri saat laporan dibuat.
+     * Setelah tim GIS memperbaiki SHP, properti laporan tetap dipakai,
+     * sedangkan bentuk pada peta mengikuti objek resmi terbaru.
+     */
+    const alignedFeatures = nonMangroveFeatures.flatMap(feature => {
+      if (!isMangroveMonitoringFeature(feature)) return [feature];
+
+      const officialTargets = matchOfficialMangroveFeatures(
+        feature,
+        mangrove.features
+      );
+      /*
+       * Jangan tampilkan geometry lama jika relasi permanennya belum valid.
+       * Lebih aman menyembunyikan satu laporan yang perlu direkonsiliasi
+       * daripada menampilkan monitoring pada polygon yang salah.
+       */
+      if (!officialTargets.length) return [];
+
+      const geometry = combinedOfficialMangroveGeometry(officialTargets);
+      if (!geometry) return [];
+
+      const officialProps = officialTargets[0].properties || {};
+      const permanentIds = officialTargets.map(target =>
+        target.properties && target.properties.Object_ID || ""
+      ).filter(Boolean);
+      const inheritedDonor =
+        getDonor(officialProps) ||
+        getDonor(feature.properties || {}) ||
+        "Aramco Asia Singapore";
+      return [{
+        ...feature,
+        geometry,
+        properties: {
+          ...(feature.properties || {}),
+          Target_Object_ID_Current: permanentIds.join(" | "),
+          Target_Object_IDs_Current: permanentIds,
+          Target_Object_Name_Current: officialTargets.length === 1
+            ? officialProps.Nama_Objek || ""
+            : "Gabungan plot monitoring Fase III",
+          Target_Layer_ID_Current: "area_mangrove",
+          Geometry_Source: "permanent_monitoring_registry",
+          Donor: inheritedDonor,
+          Donor_Cluster: inheritedDonor
+        }
+      }];
+    });
+
+    /*
+     * Peta hanya menggambar monitoring terbaru untuk setiap target agar
+     * polygon tidak bertumpuk. Daftar ID berikut tetap membawa seluruh
+     * histori terverifikasi ke popup objek resmi dan halaman detail.
+     */
+    monitoringHistoryIdsByTarget.clear();
+    alignedFeatures.forEach(feature => {
+      if (!isMangroveMonitoringFeature(feature)) return;
+      const props = feature && feature.properties || {};
+      const reportId = String(
+        props.reportId || props.Source_Report_ID || props.Object_ID || ""
+      ).trim();
+      const targetIds = Array.isArray(props.Target_Object_IDs_Current)
+        ? props.Target_Object_IDs_Current
+        : String(
+            props.Target_Object_ID_Current || props.Target_Object_ID || ""
+          ).split("|");
+      if (!reportId) return;
+      targetIds.map(value => String(value || "").trim()).filter(Boolean)
+        .forEach(targetId => {
+          const key = normalizedMatchValue(targetId);
+          if (!monitoringHistoryIdsByTarget.has(key)) {
+            monitoringHistoryIdsByTarget.set(key, new Set());
+          }
+          monitoringHistoryIdsByTarget.get(key).add(reportId);
+        });
+    });
+    mangrove.features.forEach(feature => {
+      const props = feature && feature.properties || {};
+      const history = monitoringHistoryIdsByTarget.get(
+        normalizedMatchValue(props.Object_ID)
+      );
+      if (history && history.size) {
+        props.Monitoring_Report_IDs = Array.from(history).sort();
+      }
+    });
+
+    const latestMonitoringByTarget = new Map();
+    alignedFeatures.forEach(feature => {
+      if (!isMangroveMonitoringFeature(feature)) return;
+      const props = feature && feature.properties || {};
+      const targetKey = normalizedMatchValue(
+        props.Target_Object_ID_Current || props.Target_Object_ID
+      );
+      if (!targetKey) return;
+
+      const rawDate = String(
+        props.activityDate || props.Tanggal || props.publishedAt ||
+        props.receivedAt || ""
+      ).trim();
+      const dayFirst = rawDate.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+      const timestamp = dayFirst
+        ? Date.UTC(
+            Number(dayFirst[3]),
+            Number(dayFirst[2]) - 1,
+            Number(dayFirst[1])
+          )
+        : (Date.parse(rawDate) || 0);
+      const current = latestMonitoringByTarget.get(targetKey);
+      if (!current || timestamp >= current.timestamp) {
+        latestMonitoringByTarget.set(targetKey, { feature, timestamp });
+      }
+    });
+
+    const latestAlignedFeatures = alignedFeatures.filter(feature => {
+      if (!isMangroveMonitoringFeature(feature)) return true;
+      const props = feature && feature.properties || {};
+      const targetKey = normalizedMatchValue(
+        props.Target_Object_ID_Current || props.Target_Object_ID
+      );
+      const latest = latestMonitoringByTarget.get(targetKey);
+      return !latest || latest.feature === feature;
+    });
+
+    data.features = [
+      ...latestAlignedFeatures,
+      ...mangrove.features
+    ];
+    return data;
+  }
+
+  function mergeOfficialCoffeeAreas(data, coffeeAreas) {
+    if (
+      !data ||
+      !Array.isArray(data.features) ||
+      !coffeeAreas ||
+      coffeeAreas.type !== "FeatureCollection" ||
+      !Array.isArray(coffeeAreas.features)
+    ) {
+      return data;
+    }
+
+    const sourceReportIds = new Set();
+
+    coffeeAreas.features.forEach(feature => {
+      if (!feature.properties) feature.properties = {};
+
+      feature.properties.Layer_ID = "area_kopi";
+      feature.properties.Source_Layer = "area_kopi";
+      feature.properties.Layer_Label = "Wilayah Penanaman Kopi";
+      feature.properties.Kategori =
+        feature.properties.Kategori || "Agroforestri/Kopi";
+
+      if (feature.properties.Source_Report_ID) {
+        sourceReportIds.add(
+          normalizedMatchValue(feature.properties.Source_Report_ID)
+        );
+      }
+    });
+
+    /*
+     * Satu laporan Area/Poligon Baru dapat berisi MultiPolygon. Setelah
+     * diverifikasi tim GIS, laporan sumber diganti pada peta oleh setiap
+     * Polygon resmi dengan Object_ID permanen agar dapat dipilih dan
+     * diperbarui secara terpisah.
+     */
+    const retainedFeatures = data.features.filter(feature => {
+      const props = feature && feature.properties || {};
+      const reportId = normalizedMatchValue(
+        props.reportId || props.Report_ID || props.Source_Report_ID
+      );
+
+      return !sourceReportIds.has(reportId);
+    });
+
+    data.features = [
+      ...retainedFeatures,
+      ...coffeeAreas.features
+    ];
+
+    return data;
+  }
+
+  function mergeOfficialCoffeePoints(data, coffeePoints) {
+    if (
+      !data ||
+      !Array.isArray(data.features) ||
+      !coffeePoints ||
+      coffeePoints.type !== "FeatureCollection" ||
+      !Array.isArray(coffeePoints.features)
+    ) {
+      return data;
+    }
+
+    const databaseCoffee = data.features.filter(feature => {
+      const props = feature && feature.properties || {};
+      return normalizedMatchValue(
+        props.Layer_ID || props.Source_Layer
+      ) === "kopi";
+    });
+    const officialCoffeeIds = new Set(
+      coffeePoints.features
+        .map(feature => normalizedMatchValue(
+          feature && feature.properties && feature.properties.Object_ID
+        ))
+        .filter(Boolean)
+    );
+
+    coffeePoints.features.forEach(feature => {
+      if (!feature.properties) feature.properties = {};
+      const props = feature.properties;
+      const objectId = normalizedMatchValue(props.Object_ID);
+      const isTanjungKurasCoffeeNursery =
+        objectId === "kopi-tanjung-kuras-na-001";
+      const databaseFeature = databaseCoffee.find(candidate =>
+        normalizedMatchValue(
+          candidate && candidate.properties && candidate.properties.Object_ID
+        ) === objectId
+      );
+      const databaseProps = databaseFeature && databaseFeature.properties || {};
+
+      if (isTanjungKurasCoffeeNursery) {
+        props.Layer_ID = "nursery_coffee";
+        props.Source_Layer = "nursery_coffee";
+        props.Layer_Label = "Rumah Pembibitan Kopi";
+        props.Kategori = "Pembibitan Kopi";
+      } else {
+        props.Layer_ID = "kopi";
+        props.Source_Layer = "kopi";
+        props.Layer_Label = "Titik Tanam Kopi";
+        props.Kategori = props.Kategori || "Agroforestri/Kopi";
+      }
+
+      [
+        "Donor",
+        "Nama_Proyek",
+        "Project_ID",
+        "Nomor_Perjanjian",
+        "Program",
+        "Status_Objek",
+        "Revision",
+        "Updated_At",
+        "Updated_By"
+      ].forEach(key => {
+        if (
+          databaseProps[key] !== undefined &&
+          databaseProps[key] !== null &&
+          String(databaseProps[key]).trim() !== ""
+        ) {
+          props[key] = databaseProps[key];
+        }
+      });
+
+      if (!getDonor(props)) {
+        props.Donor = "Global Environment Centre";
+      }
+      props.Donor_Cluster = getDonor(props);
+    });
+
+    /*
+     * GeoJSON resmi menggantikan objek master hanya jika Object_ID-nya sama.
+     * Titik baru yang dibuat melalui Polygon Editor belum tentu sudah masuk ke
+     * kopi.geojson, sehingga harus tetap diambil dari Master Database agar
+     * langsung terlihat di WebGIS.
+     */
+    const newDatabaseCoffee = databaseCoffee.filter(feature => {
+      const props = feature && feature.properties || {};
+      const objectId = normalizedMatchValue(
+        props.Object_ID || props.objectId
+      );
+      return !objectId || !officialCoffeeIds.has(objectId);
+    });
+
+    data.features = [
+      ...data.features.filter(feature => {
+        const props = feature && feature.properties || {};
+        return normalizedMatchValue(
+          props.Layer_ID || props.Source_Layer
+        ) !== "kopi";
+      }),
+      ...newDatabaseCoffee,
+      ...coffeePoints.features
+    ];
+
+    return data;
+  }
+
+  function mergeOfficialFdrsPoints(data, fdrsPoints) {
+    if (
+      !data ||
+      !Array.isArray(data.features) ||
+      !fdrsPoints ||
+      fdrsPoints.type !== "FeatureCollection" ||
+      !Array.isArray(fdrsPoints.features)
+    ) {
+      return data;
+    }
+
+    const databaseFdrs = data.features.filter(feature => {
+      const props = feature && feature.properties || {};
+      return normalizedMatchValue(
+        props.Layer_ID || props.Source_Layer
+      ) === "fdrs";
+    });
+    const officialFdrsIds = new Set(
+      fdrsPoints.features
+        .map(feature => normalizedMatchValue(
+          feature && feature.properties && feature.properties.Object_ID
+        ))
+        .filter(Boolean)
+    );
+
+    fdrsPoints.features.forEach(feature => {
+      if (!feature.properties) feature.properties = {};
+      const props = feature.properties;
+      const objectId = normalizedMatchValue(props.Object_ID);
+      const databaseFeature = databaseFdrs.find(candidate =>
+        normalizedMatchValue(
+          candidate && candidate.properties && candidate.properties.Object_ID
+        ) === objectId
+      );
+      const databaseProps = databaseFeature && databaseFeature.properties || {};
+
+      props.Layer_ID = "fdrs";
+      props.Source_Layer = "fdrs";
+      props.Layer_Label = "FDRS / Water Table";
+      props.Kategori = props.Kategori || "FDRS";
+
+      [
+        "Donor",
+        "Nama_Proyek",
+        "Project_ID",
+        "Nomor_Perjanjian",
+        "Program",
+        "Programme",
+        "Status_Objek",
+        "Revision",
+        "Updated_At",
+        "Updated_By"
+      ].forEach(key => {
+        if (
+          databaseProps[key] !== undefined &&
+          databaseProps[key] !== null &&
+          String(databaseProps[key]).trim() !== ""
+        ) {
+          props[key] = databaseProps[key];
+        }
+      });
+
+      if (!getDonor(props)) {
+        props.Donor = "Global Environment Centre";
+      }
+      props.Donor_Cluster = getDonor(props);
+    });
+
+    const newDatabaseFdrs = databaseFdrs.filter(feature => {
+      const props = feature && feature.properties || {};
+      const objectId = normalizedMatchValue(
+        props.Object_ID || props.objectId
+      );
+      return !objectId || !officialFdrsIds.has(objectId);
+    });
+
+    data.features = [
+      ...data.features.filter(feature => {
+        const props = feature && feature.properties || {};
+        return normalizedMatchValue(
+          props.Layer_ID || props.Source_Layer
+        ) !== "fdrs";
+      }),
+      ...newDatabaseFdrs,
+      ...fdrsPoints.features
+    ];
+
+    return data;
+  }
+
+  function mergeOfficialInterventionVillages(
+    data,
+    interventionVillages,
+    administrativeVillages
+  ) {
+    if (
+      !data ||
+      !Array.isArray(data.features) ||
+      !interventionVillages ||
+      !Array.isArray(interventionVillages.features)
+    ) {
+      return data;
+    }
+
+    const officialVillages = [...interventionVillages.features];
+    const merempanHulu = administrativeVillages &&
+      Array.isArray(administrativeVillages.features)
+      ? administrativeVillages.features.find(feature => {
+          const props = feature && feature.properties || {};
+          return normalizedMatchValue(props.WADMKD || props.NAMOBJ) ===
+            "merempan hulu";
+        })
+      : null;
+
+    if (merempanHulu) {
+      officialVillages.push({
+        ...merempanHulu,
+        properties: {
+          ...(merempanHulu.properties || {}),
+          Layer_ID: "desa_intervensi",
+          Source_Layer: "desa_intervensi",
+          Layer_Label: "Batas Desa Intervensi",
+          Nama_Objek: "Desa Intervensi Merempan Hulu",
+          Kategori: "Desa Intervensi",
+          Intervensi: "Penanaman Kopi",
+          Komoditas: "Kopi",
+          Status_Data: "Final",
+          Geometry_Source: "batas_administrasi_desa_riau"
+        }
+      });
+    }
+
+    const villageKeys = new Set();
+    officialVillages.forEach(feature => {
+      if (!feature.properties) feature.properties = {};
+      const props = feature.properties;
+      props.Layer_ID = "desa_intervensi";
+      props.Source_Layer = "desa_intervensi";
+      props.Layer_Label = "Batas Desa Intervensi";
+      props.Nama_Objek = props.Nama_Objek ||
+        "Desa Intervensi " + (props.WADMKD || props.NAMOBJ || "");
+
+      villageKeys.add([
+        normalizedMatchValue(props.WADMKD || props.NAMOBJ),
+        normalizedMatchValue(props.WADMKC),
+        normalizedMatchValue(props.WADMKK)
+      ].join("|"));
+    });
+
+    data.features = [
+      ...data.features.filter(feature => {
+        const props = feature && feature.properties || {};
+        if (
+          normalizedMatchValue(props.Layer_ID || props.Source_Layer) !==
+          "desa_intervensi"
+        ) {
+          return true;
+        }
+
+        const key = [
+          normalizedMatchValue(props.WADMKD || props.Desa || props.NAMOBJ),
+          normalizedMatchValue(props.WADMKC || props.Kecamatan),
+          normalizedMatchValue(props.WADMKK || props.Kabupaten)
+        ].join("|");
+        return !villageKeys.has(key);
+      }),
+      ...officialVillages
+    ];
+
+    return data;
+  }
+
+  async function loadOfficialInterventionVillages() {
+    const [interventionResponse, administrativeResponse] = await Promise.all([
+      fetch("data/desa_intervensi.geojson?v=" + Date.now(), {
+        cache: "no-store"
+      }),
+      fetch("data/batas_administrasi_desa_riau.geojson?v=" + Date.now(), {
+        cache: "no-store"
+      })
+    ]);
+
+    if (!interventionResponse.ok) {
+      throw new Error("HTTP desa intervensi " + interventionResponse.status);
+    }
+    if (!administrativeResponse.ok) {
+      throw new Error("HTTP batas administrasi " + administrativeResponse.status);
+    }
+
+    return Promise.all([
+      interventionResponse.json(),
+      administrativeResponse.json()
+    ]);
+  }
+
+  async function loadOfficialMangrove() {
+    const response = await fetch(
+      "data/area_mangrove.geojson?v=" + Date.now(),
+      { cache: "no-store" }
+    );
+    if (!response.ok) throw new Error("HTTP " + response.status);
+    return response.json();
+  }
+
+  async function loadOfficialCoffeeAreas() {
+    const response = await fetch(
+      "data/area_kopi.geojson?v=" + Date.now(),
+      { cache: "no-store" }
+    );
+    if (!response.ok) throw new Error("HTTP " + response.status);
+    return response.json();
+  }
+
+  async function loadOfficialCoffeePoints() {
+    const response = await fetch(
+      "data/kopi.geojson?v=" + Date.now(),
+      { cache: "no-store" }
+    );
+    if (!response.ok) throw new Error("HTTP " + response.status);
+    return response.json();
+  }
+
+  async function loadOfficialFdrsPoints() {
+    const response = await fetch(
+      "data/fdrs.geojson?v=" + Date.now(),
+      { cache: "no-store" }
+    );
+    if (!response.ok) throw new Error("HTTP " + response.status);
+    return response.json();
+  }
+
+  async function mergeProgramPhotoIndex(data) {
+    const response = await fetch(
+      "data/program-photo-index.json?v=20260825-tanjung-kuras-nursery1",
+      { cache: "force-cache" }
+    );
+    if (!response.ok) throw new Error("HTTP " + response.status);
+    const photoIndex = await response.json();
+    (data.features || []).forEach(feature => {
+      const props = feature && feature.properties || {};
+      const objectId = String(
+        props.Object_ID || props.objectId || props.OBJECTID || ""
+      ).trim();
+      const photos = photoIndex[objectId];
+      if (!Array.isArray(photos) || !photos.length) return;
+      props._ygPhotos = Array.from(new Set(
+        (Array.isArray(props._ygPhotos) ? props._ygPhotos : []).concat(photos)
+      ));
+    });
+  }
+
+  async function enrichDatabaseData(data) {
+    const tasks = [
+      [loadOfficialMangrove, mergeOfficialMangroveData, "area_mangrove.geojson"],
+      [loadOfficialCoffeeAreas, mergeOfficialCoffeeAreas, "area_kopi.geojson"],
+      [loadOfficialCoffeePoints, mergeOfficialCoffeePoints, "kopi.geojson"],
+      [loadOfficialFdrsPoints, mergeOfficialFdrsPoints, "fdrs.geojson"]
+    ];
+    const settled = await Promise.allSettled(tasks.map(task => task[0]()));
+    settled.forEach((result, index) => {
+      if (result.status === "fulfilled") {
+        tasks[index][1](data, result.value);
+      } else {
+        console.warn(tasks[index][2] + " tidak dapat dimuat", result.reason);
+      }
+    });
+    try {
+      await mergeProgramPhotoIndex(data);
+    } catch (error) {
+      console.warn("Indeks foto program tidak dapat dimuat", error);
+    }
+    try {
+      const [interventionVillages, administrativeVillages] =
+        await loadOfficialInterventionVillages();
+      mergeOfficialInterventionVillages(
+        data,
+        interventionVillages,
+        administrativeVillages
+      );
+    } catch (error) {
+      console.warn("Batas desa intervensi tidak dapat dimuat", error);
+    }
+    return data;
+  }
+
+  async function loadDatabase() {
+    setStatus("Memuat snapshot Master Database...", false);
+    try {
+      const snapshotController = new AbortController();
+      const snapshotTimeout = window.setTimeout(
+        () => snapshotController.abort(),
+        8000
+      );
+      let snapshotResponse;
+      try {
+        snapshotResponse = await fetch(
+          PUBLIC_OBJECTS_SNAPSHOT_URL,
+          { cache: "no-store", signal: snapshotController.signal }
+        );
+      } finally {
+        window.clearTimeout(snapshotTimeout);
+      }
+      if (!snapshotResponse.ok) {
+        throw new Error("HTTP " + snapshotResponse.status);
+      }
+      const snapshotData = await snapshotResponse.json();
+      if (!snapshotData || !Array.isArray(snapshotData.features)) {
+        throw new Error("Snapshot Master Database tidak valid");
+      }
+      await enrichDatabaseData(snapshotData);
+      initialize(snapshotData);
+      return;
+    } catch (snapshotError) {
+      console.warn(
+        "Snapshot Master Database gagal; mencoba sumber langsung.",
+        snapshotError
+      );
+    }
+
+  setStatus("Mengambil objek dari Master Database…", false);
+
+  try {
+    // Batasi waktu tunggu sumber utama agar fallback tetap dapat mengambil alih.
+    const fetchController = new AbortController();
+    const fetchTimeout = window.setTimeout(() => fetchController.abort(), 12000);
+    let data;
+    try {
+      const response = await fetch(API + "&t=" + Date.now(), {
+        method: "GET",
+        cache: "no-store",
+        redirect: "follow",
+        signal: fetchController.signal
+      });
+      if (!response.ok) throw new Error("HTTP " + response.status);
+      data = await response.json();
+    } finally {
+      window.clearTimeout(fetchTimeout);
+    }
+
+    // 2. Selaraskan geometri laporan dengan SHP mangrove resmi terbaru.
+    try {
+      const mangrove = await loadOfficialMangrove();
+      mergeOfficialMangroveData(data, mangrove);
+    } catch (mangroveError) {
+      console.warn("area_mangrove.geojson tidak dapat dimuat", mangroveError);
+    }
+
+    try {
+      const coffeeAreas = await loadOfficialCoffeeAreas();
+      mergeOfficialCoffeeAreas(data, coffeeAreas);
+    } catch (coffeeAreaError) {
+      console.warn("area_kopi.geojson tidak dapat dimuat", coffeeAreaError);
+    }
+
+    try {
+      const coffeePoints = await loadOfficialCoffeePoints();
+      mergeOfficialCoffeePoints(data, coffeePoints);
+    } catch (coffeePointError) {
+      console.warn("kopi.geojson tidak dapat dimuat", coffeePointError);
+    }
+
+    try {
+      const fdrsPoints = await loadOfficialFdrsPoints();
+      mergeOfficialFdrsPoints(data, fdrsPoints);
+    } catch (fdrsPointError) {
+      console.warn("fdrs.geojson tidak dapat dimuat", fdrsPointError);
+    }
+
+    try {
+      const [interventionVillages, administrativeVillages] =
+        await loadOfficialInterventionVillages();
+      mergeOfficialInterventionVillages(
+        data,
+        interventionVillages,
+        administrativeVillages
+      );
+    } catch (villageError) {
+      console.warn("Batas desa intervensi tidak dapat dimuat", villageError);
+    }
+
+    try {
+      await mergeProgramPhotoIndex(data);
+    } catch (photoIndexError) {
+      console.warn("Indeks foto program tidak dapat dimuat", photoIndexError);
+    }
+
+    initialize(data);
+    return;
+
+  } catch (fetchError) {
+
+    console.warn("Fetch gagal, mencoba JSONP.", fetchError);
+
+    try {
+      const data = await loadByJsonp();
+      try {
+        const mangrove = await loadOfficialMangrove();
+        mergeOfficialMangroveData(data, mangrove);
+      } catch (mangroveError) {
+        console.warn(
+          "area_mangrove.geojson tidak dapat dimuat melalui jalur cadangan",
+          mangroveError
+        );
+      }
+      try {
+        const coffeeAreas = await loadOfficialCoffeeAreas();
+        mergeOfficialCoffeeAreas(data, coffeeAreas);
+      } catch (coffeeAreaError) {
+        console.warn(
+          "area_kopi.geojson tidak dapat dimuat melalui jalur cadangan",
+          coffeeAreaError
+        );
+      }
+      try {
+        const coffeePoints = await loadOfficialCoffeePoints();
+        mergeOfficialCoffeePoints(data, coffeePoints);
+      } catch (coffeePointError) {
+        console.warn(
+          "kopi.geojson tidak dapat dimuat melalui jalur cadangan",
+          coffeePointError
+        );
+      }
+      try {
+        const fdrsPoints = await loadOfficialFdrsPoints();
+        mergeOfficialFdrsPoints(data, fdrsPoints);
+      } catch (fdrsPointError) {
+        console.warn(
+          "fdrs.geojson tidak dapat dimuat melalui jalur cadangan",
+          fdrsPointError
+        );
+      }
+      try {
+        const [interventionVillages, administrativeVillages] =
+          await loadOfficialInterventionVillages();
+        mergeOfficialInterventionVillages(
+          data,
+          interventionVillages,
+          administrativeVillages
+        );
+      } catch (villageError) {
+        console.warn(
+          "Batas desa intervensi tidak dapat dimuat melalui jalur cadangan",
+          villageError
+        );
+      }
+      try {
+        await mergeProgramPhotoIndex(data);
+      } catch (photoIndexError) {
+        console.warn(
+          "Indeks foto program tidak dapat dimuat melalui jalur cadangan",
+          photoIndexError
+        );
+      }
+      initialize(data);
+    } catch (jsonpError) {
+      console.warn(
+        "Master Database dan JSONP gagal; memakai snapshot lokal.",
+        jsonpError
+      );
+      try {
+        const localData = await loadLocalSnapshot();
+        initialize(localData);
+        setStatus(
+          localData.features.length + " objek dimuat dari cadangan lokal",
+          false
+        );
+        const updated = document.getElementById("database-updated");
+        if (updated) {
+          updated.textContent =
+            "Mode cadangan lokal · sinkronisasi database tertunda";
+        }
+      } catch (localError) {
+        console.error("Master Database dan snapshot lokal gagal dimuat.", localError);
+        setStatus("Data belum dapat dimuat: " + localError.message, true);
+      }
+    }
+  }
+}
+
+  async function readPublishedSnapshotVersion() {
+    const response = await fetch(
+      PUBLIC_OBJECTS_MANIFEST_URL + "?t=" + Date.now(),
+      { cache: "no-store" }
+    );
+    if (!response.ok) throw new Error("HTTP " + response.status);
+    const manifest = await response.json();
+    return String(manifest && manifest.version || "").trim();
+  }
+
+  async function checkForPublishedSnapshotUpdate() {
+    try {
+      const version = await readPublishedSnapshotVersion();
+      if (!version) return;
+      if (!observedSnapshotVersion) {
+        observedSnapshotVersion = version;
+        return;
+      }
+      if (version !== observedSnapshotVersion) {
+        observedSnapshotVersion = version;
+        window.location.reload();
+      }
+    } catch (error) {
+      console.warn("Pemeriksaan pembaruan snapshot ditunda", error);
+    }
+  }
+
+  function startPublishedSnapshotWatch() {
+    if (snapshotRefreshTimer) return;
+    checkForPublishedSnapshotUpdate();
+    snapshotRefreshTimer = window.setInterval(
+      checkForPublishedSnapshotUpdate,
+      30000
+    );
+  }
+
+
+  const searchInput = document.getElementById("search-input");
+  const searchButton = document.getElementById("search-button");
+
+  if (searchInput) {
+    searchInput.addEventListener("input", event =>
+      renderSearch(event.target.value)
+    );
+  }
+
+  if (searchButton) {
+    searchButton.addEventListener("click", () =>
+      renderSearch(searchInput ? searchInput.value : "")
+    );
+  }
+
+  document.addEventListener("click", event => {
+    if (!event.target.closest(".search")) {
+      const results = document.getElementById("search-results");
+      if (results) results.hidden = true;
+    }
+  });
+
+  const fitAll = document.getElementById("fit-all");
+  if (fitAll) {
+    fitAll.addEventListener("click", () => {
+      if (allBounds.isValid()) {
+        map.fitBounds(allBounds, { padding: [24, 24], maxZoom: 13 });
+      }
+    });
+  }
+
+  const resetMap = document.getElementById("reset-map");
+  if (resetMap) {
+    resetMap.addEventListener("click", () =>
+      map.setView(DEFAULT_VIEW, DEFAULT_ZOOM)
+    );
+  }
+
+  const locateMe = document.getElementById("locate-me");
+  if (locateMe) {
+    locateMe.addEventListener("click", () =>
+      map.locate({ setView: true, maxZoom: 15 })
+    );
+  }
+
+  document.querySelectorAll("[data-focus-layer]").forEach(card => {
+    card.addEventListener("click", () => {
+      const layerId = card.getAttribute("data-focus-layer");
+      const layer = layerObjects[layerId];
+      if (!layer) return;
+
+      if (!map.hasLayer(layer)) layer.addTo(map);
+
+      const bounds = layer.getBounds();
+      if (bounds.isValid()) {
+        map.fitBounds(bounds, { padding: [30, 30], maxZoom: 15 });
+      }
+    });
+  });
+
+  window.addEventListener("yg:languagechange", refreshLocalizedMapContent);
+
+  window.YG_MAP = {
+    map: map,
+    layerObjects: layerObjects,
+    searchItems: searchItems,
+    referenceLayerObjects: referenceLayerObjects,
+    addLiveFeatures: addLiveFeatures,
+    get rawFeatures() {
+      return rawFeatures;
+    }
+  };
+
+  loadDatabase().finally(startPublishedSnapshotWatch);
+})();

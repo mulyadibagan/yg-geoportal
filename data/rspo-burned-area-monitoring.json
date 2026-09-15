@@ -1,0 +1,1459 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-12T16:07:10.940298+00:00",
+  "method": "Geodesic area of polygon intersections between RSPO reference areas and Sentinel-2 dNBR/NBR burned-area estimates",
+  "disclaimer": "Satellite-derived screening estimate; not field verification and not evidence of fire cause or responsibility.",
+  "sourceIndex": "data/burned-area-monthly/index.json",
+  "areas": {
+    "RSPO-001": {
+      "company": "PT. ROHUL SAWIT INDUSTRI & PT. MASUBA CITRA MANDIRI",
+      "group": "BUMITAMA AGRI LTD",
+      "supplyBase": "PENDALIAN ESTATE",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-002": {
+      "company": "Ciliandra Perkasa",
+      "group": "First Resources Limited",
+      "supplyBase": "Ciliandra Perkasa",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-003": {
+      "company": "Gerbang Sawit Indah",
+      "group": "First Resources Limited",
+      "supplyBase": "Gerbang Sawit Indah Estate",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-004": {
+      "company": "Muriniwood Indah Industry",
+      "group": "First Resources Limited",
+      "supplyBase": "Muriniwood Indah Industry",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-005": {
+      "company": "PT. SUBUR ARUMMAKMUR",
+      "group": "First Resources Limited",
+      "supplyBase": "PETAPAHAN 1",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-006": {
+      "company": "PT. SUBUR ARUMMAKMUR",
+      "group": "First Resources Limited",
+      "supplyBase": "PETAPAHAN 2",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-007": {
+      "company": "Panca Surya Agrindo",
+      "group": "First Resources Limited",
+      "supplyBase": "Panca Surya Agrindo",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-008": {
+      "company": "Perdana Intisawit Perkasa",
+      "group": "First Resources Limited",
+      "supplyBase": "Perdana Intisawit Perkasa 2 Estate",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-009": {
+      "company": "PT. PERDANA INTISAWIT PERKASA",
+      "group": "First Resources Limited",
+      "supplyBase": "Perdana Intisawit Perkasa Estate",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-010": {
+      "company": "Priatama Riau",
+      "group": "First Resources Limited",
+      "supplyBase": "Priatama Riau",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-011": {
+      "company": "PT. MERIDAN SEJATISURYA PLANTATION",
+      "group": "First Resources Limited",
+      "supplyBase": "SEI PINGAI ESTATE",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-012": {
+      "company": "PT. SUBUR ARUMMAKMUR",
+      "group": "First Resources Limited",
+      "supplyBase": "SUBUR ARUM MAKMUR ESTATE",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-013": {
+      "company": "Surya Dumai Agrindo",
+      "group": "First Resources Limited",
+      "supplyBase": "Surya Dumai Agrindo",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-014": {
+      "company": "PT. SUBUR ARUMMAKMUR",
+      "group": "First Resources Limited",
+      "supplyBase": "Surya intisari Raya - Lukut Estate",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-015": {
+      "company": "PT. SUBUR ARUMMAKMUR",
+      "group": "First Resources Limited",
+      "supplyBase": "Surya intisari Raya - Mandau Estate",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-016": {
+      "company": "PT. ADEI PLANTATION AND INDUSTRY",
+      "group": "Kuala Lumpur Kepong Berhad",
+      "supplyBase": "KEBUN MANDAU SELATAN & KEBUN MANDAU UTARA",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-017": {
+      "company": "PT. Adei Plantation & Industry - Nilo Palm Oil Mill 1",
+      "group": "Kuala Lumpur Kepong Berhad",
+      "supplyBase": "KKPA BATANG NILO KECIL",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-018": {
+      "company": "Kuala Lumpur Kepong Berhad",
+      "group": "Kuala Lumpur Kepong Berhad",
+      "supplyBase": "KKPA SUNGAI BULUH",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-019": {
+      "company": "PT. Adei Plantation & Industry - Nilo Palm Oil Mill 2",
+      "group": "Kuala Lumpur Kepong Berhad",
+      "supplyBase": "LADANG MUTIARA ESTATE",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-020": {
+      "company": "PT. ADEI PLANTATION & INDUSTRY",
+      "group": "Kuala Lumpur Kepong Berhad",
+      "supplyBase": "NILO BARAT ESTATE;NILO TIMUR ESTATE",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-021": {
+      "company": "PT Safari Riau",
+      "group": "Kuala Lumpur Kepong Berhad",
+      "supplyBase": "PT. Safari Riau (HGU II)",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-022": {
+      "company": "PT. SEKARBUMI ALAMLESTARI",
+      "group": "Kuala Lumpur Kepong Berhad",
+      "supplyBase": "TAPUNG KANAN 1;TAPUNG KANAN 2;TAPUNG KANAN 3",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-023": {
+      "company": "PT. GUNTUNG IDAMANNUSA",
+      "group": "Musim Mas Holdings Pte. Ltd.",
+      "supplyBase": "ESTATE I ESTATE II ESTATE III",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-024": {
+      "company": "PT. MUSIM MAS",
+      "group": "Musim Mas Holdings Pte. Ltd.",
+      "supplyBase": "Estate I, Estate II, Estate III, Estate IV, Estate V, Estate VI",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-025": {
+      "company": "PT Mitra Unggul Pusaka (Multimill)",
+      "group": "PT. Inti Indosawit Subur",
+      "supplyBase": "GONDAI ESTATE",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-026": {
+      "company": "PT Inti Indosawit Subur",
+      "group": "PT. Inti Indosawit Subur",
+      "supplyBase": "IIS UKUI",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-027": {
+      "company": "PT Inti Indosawit Subur",
+      "group": "PT. Inti Indosawit Subur",
+      "supplyBase": "KKPA Inti Buatan",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-028": {
+      "company": "PT. RIGUNAS AGRI UTAMA",
+      "group": "PT. Inti Indosawit Subur",
+      "supplyBase": "KOPERASI BAROKAH",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-029": {
+      "company": "PT Mitra Unggul Pusaka (Multimill)",
+      "group": "PT. Inti Indosawit Subur",
+      "supplyBase": "PENARIKAN ESTATE",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-030": {
+      "company": "PT. RIGUNAS AGRI UTAMA",
+      "group": "PT. Inti Indosawit Subur",
+      "supplyBase": "PERANAP ESTATE",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-031": {
+      "company": "PT Inti Indosawit Subur",
+      "group": "PT. Inti Indosawit Subur",
+      "supplyBase": "Plasma Ukui KLU",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-032": {
+      "company": "PT Mitra Unggul Pusaka (Multimill)",
+      "group": "PT. Inti Indosawit Subur",
+      "supplyBase": "SEGATI ESTATE",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-033": {
+      "company": "PT. Inti Indosawit Subur",
+      "group": "PT. Inti Indosawit Subur",
+      "supplyBase": "SOGA ESTATE; SEI LALA ESTATE",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-034": {
+      "company": "PT. TUNGGAL YUNUS ESTATE",
+      "group": "PT. Inti Indosawit Subur",
+      "supplyBase": "TOPAZ ESTATE",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-035": {
+      "company": "PT. Perkebunan Nusantara V",
+      "group": "PT. Perkebunan Nusantara III",
+      "supplyBase": "Kebun Air Molek I",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-036": {
+      "company": "PT. Perkebunan Nusantara IV",
+      "group": "PT. Perkebunan Nusantara III",
+      "supplyBase": "Kebun Air Molek II",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-037": {
+      "company": "PT. Perkebunan Nusantara V",
+      "group": "PT. Perkebunan Nusantara III",
+      "supplyBase": "Kebun Sei Buatan",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-038": {
+      "company": "PT. Perkebunan Nusantara V",
+      "group": "PT. Perkebunan Nusantara III",
+      "supplyBase": "Kebun Sei Kencana",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-039": {
+      "company": "PT. Perkebunan Nusantara V",
+      "group": "PT. Perkebunan Nusantara III",
+      "supplyBase": "Kebun Tanjung Medan",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-040": {
+      "company": "PT. Perkebunan Nusantara V",
+      "group": "PT. Perkebunan Nusantara III",
+      "supplyBase": "Lubuk Dalam",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-041": {
+      "company": "PT. PERKEBUNAN NUSANTARA V",
+      "group": "PT. Perkebunan Nusantara III",
+      "supplyBase": "SEI BERLIAN ESTATE",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-042": {
+      "company": "PT. Perkebunan Nusantara V",
+      "group": "PT. Perkebunan Nusantara III",
+      "supplyBase": "SEI GALUH PLANTATION",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-043": {
+      "company": "PT. PERKEBUNAN NUSANTARA V",
+      "group": "PT. Perkebunan Nusantara III",
+      "supplyBase": "SEI INTAN ESTATE",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-044": {
+      "company": "PT. PERKEBUNAN NUSANTARA V",
+      "group": "PT. Perkebunan Nusantara III",
+      "supplyBase": "SEI LINDAI ESTATE",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-045": {
+      "company": "PT. PERKEBUNAN NUSANTARA V",
+      "group": "PT. Perkebunan Nusantara III",
+      "supplyBase": "SEI ROKAN ESTATE",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-046": {
+      "company": "PT. PERKEBUNAN NUSANTARA V",
+      "group": "PT. Perkebunan Nusantara III",
+      "supplyBase": "SEI SIASAM",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-047": {
+      "company": "PT. PERKEBUNAN NUSANTARA V",
+      "group": "PT. Perkebunan Nusantara III",
+      "supplyBase": "SEI TAPUNG",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-048": {
+      "company": "PT. Perkebunan Nusantara V",
+      "group": "PT. Perkebunan Nusantara III",
+      "supplyBase": "Sei Garo Estate",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-049": {
+      "company": "PT. Perkebunan Nusantara V",
+      "group": "PT. Perkebunan Nusantara III",
+      "supplyBase": "Sei Pagar",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-050": {
+      "company": "PT. PERKEBUNAN NUSANTARA V",
+      "group": "PT. Perkebunan Nusantara III",
+      "supplyBase": "TAMORA ESTATE",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-051": {
+      "company": "PT. PERKEBUNAN NUSANTARA V",
+      "group": "PT. Perkebunan Nusantara III",
+      "supplyBase": "TANDUN ESTATE",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-052": {
+      "company": "PT. PERKEBUNAN NUSANTARA V",
+      "group": "PT. Perkebunan Nusantara III",
+      "supplyBase": "TERANTAM ESTATE",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-053": {
+      "company": "PT. Perkebunan Nusantara V",
+      "group": "PT. Perkebunan Nusantara III",
+      "supplyBase": "Tanah Putih Estate",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-054": {
+      "company": "PT Inecda subsidiary of S&G Biofuel PTE. LTD",
+      "group": "S&G BIOFUEL PTE. LTD",
+      "supplyBase": "ESTATE 1;ESTATE 2",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-055": {
+      "company": "PT Gandaerah Hendana Subsidiary of S&G Biofuel PTE.LTD",
+      "group": "S&G BIOFUEL PTE. LTD",
+      "supplyBase": "ESTATE 1;ESTATE 2;ESTATE 3",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-056": {
+      "company": "PT Gandaerah Hendana",
+      "group": "S&G BIOFUEL PTE. LTD",
+      "supplyBase": "Kebun 1 Estate, Kebun 2 Estate, Kebun 3 Estate",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-057": {
+      "company": "PT MURINI SAMSAM",
+      "group": "Wilmar International Limited",
+      "supplyBase": "MURINI SAMSAM ESTATE",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    },
+    "RSPO-058": {
+      "company": "PT Sinarsiak Dian Permai",
+      "group": "Wilmar International Limited",
+      "supplyBase": "Sinarsiak Dian Permai",
+      "estimatedAreaHa": 0,
+      "monthsWithEstimate": 0,
+      "monthly": [
+        {
+          "month": "2026-08",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        },
+        {
+          "month": "2026-07",
+          "archiveStatus": "partial",
+          "estimatedAreaHa": 0.0,
+          "eventCount": 0,
+          "eventIds": [],
+          "confidenceLabels": []
+        }
+      ]
+    }
+  }
+}

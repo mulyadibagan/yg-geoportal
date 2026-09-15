@@ -1,0 +1,31 @@
+.function-section .section-heading a{color:#075b53;font-weight:800;text-decoration-thickness:1px;text-underline-offset:2px}
+.decision-rule{display:grid;grid-template-columns:minmax(180px,.7fr) minmax(0,1.3fr);gap:18px;padding:19px;border:1px solid #cfe3dd;border-radius:14px;background:#fff}
+.decision-rule strong{font-size:13px}
+.decision-rule p{margin:7px 0 0;color:var(--muted);font-size:10px;line-height:1.55}
+.decision-rule ol{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:0;padding:0;list-style:none;counter-reset:decision}
+.decision-rule li{counter-increment:decision;padding:10px;border-radius:9px;background:#edf5f2}
+.decision-rule li:before{content:counter(decision);display:grid;place-items:center;width:19px;height:19px;margin-bottom:8px;border-radius:50%;background:var(--deep);color:#fff;font-size:8px;font-weight:900}
+.decision-rule li b,.decision-rule li span{display:block}
+.decision-rule li b{font-size:9px}
+.decision-rule li span{margin-top:3px;color:var(--muted);font-size:8px}
+.decision-rule>small{grid-column:1/-1;padding-top:11px;border-top:1px solid #e0ebe7;color:#79541e;font-size:9px;line-height:1.55}
+.function-section .reading-rule{margin-top:10px;padding:12px 14px}
+.function-section .criteria-heading{margin-top:38px}
+.criteria-grid{align-items:start}
+.criterion-card{display:flex;min-height:282px;flex-direction:column}
+.criteria-grid .criterion-card>b{align-self:flex-start}
+.criterion-card .state{align-self:flex-start}
+.criterion-card details{margin-top:auto;padding-top:14px}
+.criterion-card summary{cursor:pointer;padding-top:11px;border-top:1px solid #e1ece8;color:#075b53;font-size:9px;font-weight:900;list-style:none}
+.criterion-card summary::-webkit-details-marker{display:none}
+.criterion-card summary:after{content:"+";float:right;font-size:14px;line-height:.7}
+.criterion-card details[open] summary:after{content:"−"}
+.criterion-detail{display:grid;gap:10px;margin-top:13px;padding:13px;border-radius:10px;background:#f3f8f6}
+.criteria-grid .criterion-detail p{min-height:0;margin:0}
+.criterion-detail p b,.criterion-detail p span{display:block}
+.criterion-detail p b{color:#214f49;font-size:8px;text-transform:uppercase;letter-spacing:.05em}
+.criterion-detail p span{margin-top:3px;color:#536e69;font-size:9px;line-height:1.55}
+.criterion-detail a{color:#075b53;font-size:9px;font-weight:800;text-decoration:none}
+.criterion-detail a:hover{text-decoration:underline}
+@media(max-width:1020px){.decision-rule{grid-template-columns:1fr}.decision-rule ol{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:680px){.decision-rule ol{grid-template-columns:1fr}.criterion-card{min-height:0}}

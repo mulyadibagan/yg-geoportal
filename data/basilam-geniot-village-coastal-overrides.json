@@ -1,0 +1,139 @@
+{
+  "metadata": {
+    "schemaVersion": 1,
+    "generatedAt": "2026-09-01T11:21:27.330137+00:00",
+    "sourceScopeId": "basilam-geniot-coastal-landscape",
+    "method": "Sentinel-2 change polygons classified on the physical coast and divided only by the locked official inter-village boundary",
+    "coastlineLengthMethod": "Calibrated half-perimeter of image-derived coastal support divided by the extended inter-village boundary",
+    "administrativeSeawardBoundaryUsedForClipping": false,
+    "lockedInterVillageBoundary": true,
+    "lockedInterVillageBoundaryLengthKm": 31.793,
+    "attributionZoneOverlapAreaM2": 0.0,
+    "sourceCoastlineLengthKm": 25.08,
+    "coastlineProxyTotalKm": 21.055888,
+    "coastlineCalibrationFactor": 1.191116,
+    "boundarySources": [
+      "Perwali Kota Dumai Nomor 39 Tahun 2025",
+      "Perwali Kota Dumai Nomor 40 Tahun 2025"
+    ],
+    "sourceAreaHa": {
+      "erosion": 13.93,
+      "accretion": 19.53
+    },
+    "sourceVectorAreaHa": {
+      "erosion": 14.01,
+      "accretion": 19.64
+    },
+    "reportedAreaScale": {
+      "erosion": 0.994167,
+      "accretion": 0.99416567
+    },
+    "assignedAreaHa": {
+      "erosion": 13.93,
+      "accretion": 19.53
+    },
+    "outsideTargetBoundariesHa": {
+      "erosion": 0.0,
+      "accretion": 0.0
+    },
+    "boundaryOverlapAreaM2": 0.0
+  },
+  "villages": [
+    {
+      "id": "kota-dumai-sungai-sembilan-kelurahan-basilam-baru",
+      "village": "Kelurahan Basilam Baru",
+      "district": "Sungai Sembilan",
+      "regency": "Kota Dumai",
+      "status": "analysed",
+      "baseline": "2016",
+      "current": "2025",
+      "erosionAreaHa": 3.5,
+      "accretionAreaHa": 3.41,
+      "netAreaChangeHa": -0.09,
+      "coastlineLengthKm": 11.94,
+      "coastlineProxyKm": 10.024,
+      "coastlineCalibrationFactor": 1.191116,
+      "coastlineLengthMethod": "Calibrated half-perimeter of image-derived coastal support attributed by the locked inter-village boundary; administrative seaward edges excluded",
+      "indicativeMeanRetreatM": 2.9,
+      "indicativeMeanAdvanceM": 2.9,
+      "elapsedYears": 9,
+      "indicativeRetreatRateMPerYear": 0.33,
+      "indicativeAdvanceRateMPerYear": 0.32,
+      "clearCoveragePct": 100.0,
+      "baselineSceneCount": 3,
+      "currentSceneCount": 5,
+      "baselineScenes": [
+        "S2A_MSIL2A_20160608T032542_R018_T47NQC_20210211T173049",
+        "S2A_MSIL2A_20160807T032542_R018_T47NQC_20210212T115107",
+        "S2A_MSIL2A_20160519T032542_R018_T47NQC_20210211T122533"
+      ],
+      "currentScenes": [
+        "S2C_MSIL2A_20250711T032601_R018_T47NQC_20250711T082105",
+        "S2B_MSIL2A_20250706T032519_R018_T47NQC_20250706T071937",
+        "S2B_MSIL2A_20250716T032519_R018_T47NQC_20250716T071205",
+        "S2C_MSIL2A_20250731T032601_R018_T47NQC_20250731T082914",
+        "S2B_MSIL2A_20250517T032519_R018_T47NQC_20250517T071427"
+      ],
+      "positionalUncertaintyM": 14.1,
+      "confidence": "rendah",
+      "intervention": false,
+      "programmeStatus": "regional",
+      "administrativeCode": "14.72.04.1004",
+      "boundarySource": "Perwali Kota Dumai Nomor 39 Tahun 2025",
+      "analysisMethod": "Image-derived change polygons attributed using the locked 2025 inter-village boundary; the land-water edge remains image-derived",
+      "imageDerivedBeforeBoundaryClip": true,
+      "administrativeBoundaryUsedForAttribution": true,
+      "administrativeSeawardBoundaryUsedForClipping": false,
+      "lockedInterVillageBoundary": true,
+      "featureCount": 112
+    },
+    {
+      "id": "kota-dumai-sungai-sembilan-kelurahan-sungai-geniot",
+      "village": "Kelurahan Sungai Geniot",
+      "district": "Sungai Sembilan",
+      "regency": "Kota Dumai",
+      "status": "analysed",
+      "baseline": "2016",
+      "current": "2025",
+      "erosionAreaHa": 10.43,
+      "accretionAreaHa": 16.12,
+      "netAreaChangeHa": 5.69,
+      "coastlineLengthKm": 13.14,
+      "coastlineProxyKm": 11.032,
+      "coastlineCalibrationFactor": 1.191116,
+      "coastlineLengthMethod": "Calibrated half-perimeter of image-derived coastal support attributed by the locked inter-village boundary; administrative seaward edges excluded",
+      "indicativeMeanRetreatM": 7.9,
+      "indicativeMeanAdvanceM": 12.3,
+      "elapsedYears": 9,
+      "indicativeRetreatRateMPerYear": 0.88,
+      "indicativeAdvanceRateMPerYear": 1.36,
+      "clearCoveragePct": 100.0,
+      "baselineSceneCount": 3,
+      "currentSceneCount": 5,
+      "baselineScenes": [
+        "S2A_MSIL2A_20160608T032542_R018_T47NQC_20210211T173049",
+        "S2A_MSIL2A_20160807T032542_R018_T47NQC_20210212T115107",
+        "S2A_MSIL2A_20160519T032542_R018_T47NQC_20210211T122533"
+      ],
+      "currentScenes": [
+        "S2C_MSIL2A_20250711T032601_R018_T47NQC_20250711T082105",
+        "S2B_MSIL2A_20250706T032519_R018_T47NQC_20250706T071937",
+        "S2B_MSIL2A_20250716T032519_R018_T47NQC_20250716T071205",
+        "S2C_MSIL2A_20250731T032601_R018_T47NQC_20250731T082914",
+        "S2B_MSIL2A_20250517T032519_R018_T47NQC_20250517T071427"
+      ],
+      "positionalUncertaintyM": 14.1,
+      "confidence": "rendah",
+      "intervention": false,
+      "programmeStatus": "regional",
+      "administrativeCode": "14.72.04.1006",
+      "boundarySource": "Perwali Kota Dumai Nomor 40 Tahun 2025",
+      "analysisMethod": "Image-derived change polygons attributed using the locked 2025 inter-village boundary; the land-water edge remains image-derived",
+      "imageDerivedBeforeBoundaryClip": true,
+      "administrativeBoundaryUsedForAttribution": true,
+      "administrativeSeawardBoundaryUsedForClipping": false,
+      "lockedInterVillageBoundary": true,
+      "featureCount": 65
+    }
+  ]
+}

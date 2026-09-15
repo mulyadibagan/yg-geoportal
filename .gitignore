@@ -1,0 +1,21 @@
+# General temporary files
+*.tmp
+tmp-*.txt
+
+# OS-specific
+.DS_Store
+Thumbs.db
+.coastal-tools/
+.coastal-cache/
+.coastal-runtime/
+coastal_runtime/
+runtime_local/
+scripts/__pycache__/
+.wrangler/
+data/fire-monthly/source-*/
+data/fire-archive/
+
+# PBPH datasets are private and must never be committed to this public repository.
+data/PBPH*.geojson
+data/pbph-documents.json
+data/phl-svlk-monthly/

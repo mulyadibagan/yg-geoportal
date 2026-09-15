@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Master Object Manager YG</title>
+  <style>
+    :root{--green:#087653;--dark:#17372d;--line:#dbe7e1;--bg:#f4f8f6;--red:#b42318}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Arial,sans-serif;color:#27352f}
+    header{display:flex;align-items:center;justify-content:space-between;padding:16px 22px;background:#fff;border-bottom:1px solid var(--line)}
+    header strong{color:var(--dark);font-size:18px}header small{display:block;color:#708079;margin-top:3px}
+    main{width:min(1240px,calc(100% - 24px));margin:22px auto;display:grid;grid-template-columns:330px 1fr;gap:18px}
+    .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:0 8px 24px rgba(20,70,52,.06)}
+    label{display:block;font-size:12px;font-weight:700;margin:11px 0 5px;color:#40564d}input,select,textarea{width:100%;padding:10px;border:1px solid #cbdad3;border-radius:8px;font:inherit}textarea{min-height:110px;font-family:monospace;font-size:12px}
+    button{border:0;border-radius:9px;padding:10px 14px;background:var(--green);color:#fff;font-weight:800;cursor:pointer}button.secondary{background:#e5f3ed;color:var(--green)}
+    .toolbar{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}.status{margin-top:12px;padding:10px;border-radius:8px;background:#edf5f1;font-size:12px}.status.error{background:#fde8e6;color:var(--red)}
+    .object-list{max-height:70vh;overflow:auto;margin-top:12px}.object-item{width:100%;display:block;text-align:left;margin:0 0 7px;padding:10px;border:1px solid var(--line);background:#fff;color:#263b32}.object-item.active{border-color:var(--green);background:#eaf7f1}.object-item small{display:block;color:#74827c;margin-top:3px}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 14px}.wide{grid-column:1/-1}
+    h2{margin:0 0 4px;color:var(--dark)}.muted{color:#72817a;font-size:12px;margin:0}
+    @media(max-width:800px){main{grid-template-columns:1fr}.object-list{max-height:320px}.grid{grid-template-columns:1fr}.wide{grid-column:auto}}
+  </style>
+</head>
+<body>
+<header>
+  <div><strong>Master Object Manager YG</strong><small>Edit data langsung di Google Sheets</small></div>
+  <button class="secondary" type="button" onclick="loadObjects()">Muat ulang</button>
+</header>
+<main>
+  <aside class="card">
+    <h2>Daftar objek</h2>
+    <p class="muted">Cari berdasarkan nama, ID, layer, atau desa.</p>
+    <label>Cari</label>
+    <input id="search" type="search" placeholder="Buruk Bakul, FDRS, Imbo Putuih…">
+    <label>Layer</label>
+    <select id="layer-filter"><option value="">Semua layer</option></select>
+    <div id="list" class="object-list"></div>
+  </aside>
+
+  <section class="card">
+    <h2 id="form-title">Pilih objek</h2>
+    <p class="muted">Perubahan tersimpan ke sheet OBJECTS dan dicatat di CHANGE_LOG.</p>
+    <form id="form" class="grid">
+      <label>Object ID<input id="objectId" required></label>
+      <label>Nama objek<input id="objectName" required></label>
+      <label>Layer ID<input id="layerId" required></label>
+      <label>Layer label<input id="layerLabel"></label>
+      <label>Kategori<input id="category" required></label>
+      <label>Status<select id="status"><option>Aktif</option><option>Dalam Pemantauan</option><option>Selesai</option><option>Arsip</option></select></label>
+      <label>Program<input id="program"></label>
+      <label>Fase<input id="phase"></label>
+      <label>Tahun<input id="year"></label>
+      <label>Provinsi<input id="province" value="Riau"></label>
+      <label>Kabupaten<input id="regency"></label>
+      <label>Kecamatan<input id="district"></label>
+      <label>Desa<input id="village"></label>
+      <label>Luas (ha)<input id="areaHa" type="number" step="any"></label>
+      <label>Panjang (m)<input id="lengthM" type="number" step="any"></label>
+      <label>Jumlah tanam<input id="plantedCount" type="number" step="1"></label>
+      <label class="wide">Geometry GeoJSON<textarea id="geometry" required></textarea></label>
+      <label class="wide">Properties JSON<textarea id="properties"></textarea></label>
+      <label class="wide">Alasan perubahan<input id="reason" placeholder="Contoh: koreksi batas berdasarkan GPS lapangan" required></label>
+      <div class="toolbar wide"><button type="submit">Simpan perubahan</button></div>
+    </form>
+    <div id="status-box" class="status">Memuat data…</div>
+  </section>
+</main>
+<script>
+  const ADMIN_TOKEN = <?!= JSON.stringify(adminToken) ?>;
+  let objects = [];
+  let selectedId = '';
+
+  const byId = id => document.getElementById(id);
+
+  function setStatus(text, error){
+    const box = byId('status-box');
+    box.textContent = text;
+    box.className = 'status' + (error ? ' error' : '');
+  }
+
+  function loadObjects(){
+    setStatus('Memuat objek…');
+    google.script.run
+      .withSuccessHandler(data => {
+        objects = data || [];
+        buildLayerFilter();
+        renderList();
+        setStatus(objects.length + ' objek berhasil dimuat.');
+      })
+      .withFailureHandler(error => setStatus(error.message || String(error), true))
+      .getMasterObjectsForAdmin(ADMIN_TOKEN);
+  }
+
+  function buildLayerFilter(){
+    const select = byId('layer-filter');
+    const current = select.value;
+    const layers = [...new Set(objects.map(o => o.layerId).filter(Boolean))].sort();
+    select.innerHTML = '<option value="">Semua layer</option>' + layers.map(id => '<option>'+escapeHtml(id)+'</option>').join('');
+    select.value = current;
+  }
+
+  function renderList(){
+    const query = byId('search').value.trim().toLowerCase();
+    const layer = byId('layer-filter').value;
+    const filtered = objects.filter(o => {
+      if(layer && o.layerId !== layer) return false;
+      const text = [o.objectId,o.objectName,o.layerId,o.village,o.regency,o.category].join(' ').toLowerCase();
+      return !query || text.includes(query);
+    });
+
+    byId('list').innerHTML = filtered.map(o =>
+      '<button type="button" class="object-item '+(o.objectId===selectedId?'active':'')+'" data-id="'+escapeHtml(o.objectId)+'">'+
+      '<strong>'+escapeHtml(o.objectName || o.objectId)+'</strong>'+
+      '<small>'+escapeHtml(o.objectId)+' · '+escapeHtml(o.layerId)+' · '+escapeHtml(o.village || '-')+'</small></button>'
+    ).join('') || '<p class="muted">Tidak ada objek.</p>';
+  }
+
+  function selectObject(id){
+    const o = objects.find(item => item.objectId === id);
+    if(!o) return;
+    selectedId = id;
+    byId('form-title').textContent = o.objectName || o.objectId;
+    ['objectId','objectName','layerId','layerLabel','category','status','program','phase','year','province','regency','district','village','areaHa','lengthM','plantedCount'].forEach(key => {
+      byId(key).value = o[key] == null ? '' : o[key];
+    });
+    byId('geometry').value = JSON.stringify(o.geometry,null,2);
+    byId('properties').value = JSON.stringify(o.properties || {},null,2);
+    byId('reason').value = '';
+    renderList();
+  }
+
+  byId('list').addEventListener('click', e => {
+    const button = e.target.closest('[data-id]');
+    if(button) selectObject(button.dataset.id);
+  });
+  byId('search').addEventListener('input', renderList);
+  byId('layer-filter').addEventListener('change', renderList);
+
+  byId('form').addEventListener('submit', e => {
+    e.preventDefault();
+    if(!selectedId){ setStatus('Pilih objek terlebih dahulu.', true); return; }
+
+    let geometry, properties;
+    try{ geometry = JSON.parse(byId('geometry').value); }
+    catch(error){ setStatus('Geometry JSON tidak valid: '+error.message,true); return; }
+    try{ properties = JSON.parse(byId('properties').value || '{}'); }
+    catch(error){ setStatus('Properties JSON tidak valid: '+error.message,true); return; }
+
+    const payload = {};
+    ['objectId','objectName','layerId','layerLabel','category','status','program','phase','year','province','regency','district','village','areaHa','lengthM','plantedCount'].forEach(key => payload[key] = byId(key).value);
+    payload.geometry = geometry;
+    payload.properties = properties;
+    const reason = byId('reason').value.trim();
+
+    setStatus('Menyimpan perubahan…');
+    google.script.run
+      .withSuccessHandler(result => {
+        setStatus('Berhasil disimpan. Revisi '+result.revision+'.');
+        selectedId = payload.objectId;
+        loadObjects();
+      })
+      .withFailureHandler(error => setStatus(error.message || String(error), true))
+      .updateMasterObject(ADMIN_TOKEN, payload, reason);
+  });
+
+  function escapeHtml(value){
+    return String(value == null ? '' : value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  }
+
+  loadObjects();
+</script>
+</body>
+</html>

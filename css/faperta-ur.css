@@ -1,0 +1,169 @@
+:root{--green:#0b6b45;--green-dark:#164430;--green-soft:#edf7f1;--gold:#d39a24;--ink:#1e3028;--muted:#65756d;--line:#dfe9e3;--paper:#fff;--bg:#f4f7f5}
+*{box-sizing:border-box}
+html{font-family:"DM Sans",Inter,system-ui,-apple-system,sans-serif;color:var(--ink);background:var(--bg)}
+body{margin:0}
+[hidden]{display:none!important}
+.fu-header{position:sticky;top:0;z-index:1000;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;min-height:70px;padding:10px 28px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.96);backdrop-filter:blur(12px)}
+.fu-back{justify-self:start;color:var(--green);font-size:13px;font-weight:800;text-decoration:none}
+.fu-brand{display:flex;align-items:center;gap:10px}
+.fu-brand>i{color:#819087;font-style:normal}
+.fu-brand>span:last-child{display:flex;flex-direction:column;margin-left:5px}
+.fu-brand strong{font-size:14px}
+.fu-brand small{color:var(--muted);font-size:10px}
+.fu-logo{display:block;object-fit:contain}
+.fu-logo--yg{width:42px;height:42px}
+.fu-logo--faperta{width:148px;height:44px;padding:7px 10px;border-radius:9px;background:var(--green-dark)}
+.fu-status{justify-self:end;padding:8px 12px;border:1px solid #cfe5d9;border-radius:999px;background:var(--green-soft);color:var(--green);font-size:11px;font-weight:800;text-decoration:none}
+.fu-status:hover,.fu-status:focus{background:#e1f3e8}
+.fu-status span{margin-left:5px}
+.fu-shell{width:min(1420px,100%);margin:auto;padding:24px}
+.fu-hero{display:flex;justify-content:space-between;gap:30px;padding:30px;border-radius:22px;background:linear-gradient(120deg,#143f2e,#0b6b45);color:#fff;box-shadow:0 18px 40px rgba(20,68,48,.13)}
+.fu-hero>div:first-child{max-width:760px}
+.fu-eyebrow,.fu-section header span,.fu-today header span,.fu-map-card header span,.fu-page-head>span{font-size:10px;font-weight:900;letter-spacing:.12em}
+.fu-hero h1{max-width:680px;margin:9px 0;font-family:Georgia,serif;font-size:clamp(28px,4vw,48px);line-height:1.06}
+.fu-hero p{margin:0;color:#d8ece2;font-size:14px;line-height:1.65}
+.fu-hero-meta{display:flex;align-self:flex-end;gap:10px}
+.fu-hero-meta span{min-width:105px;padding:16px;border:1px solid rgba(255,255,255,.18);border-radius:14px;background:rgba(255,255,255,.08)}
+.fu-hero-meta strong,.fu-hero-meta small{display:block}
+.fu-hero-meta strong{font-size:22px}
+.fu-hero-meta small{margin-top:3px;color:#cfe7dc;font-size:10px}
+.fu-tabs{display:flex;gap:7px;margin:18px 0;overflow:auto}
+.fu-tabs button{white-space:nowrap;padding:10px 14px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#4c6258;font-weight:800;cursor:pointer}
+.fu-tabs button.active{border-color:var(--green);background:var(--green);color:#fff}
+.fu-view{display:none}
+.fu-view.active{display:block}
+.fu-layout{display:grid;grid-template-columns:minmax(0,2fr) minmax(280px,1fr);gap:18px}
+.fu-layout.public-map-only{grid-template-columns:minmax(0,1fr)}
+.fu-map-card,.fu-today,.fu-section,.fu-view:not([data-panel="overview"]){border:1px solid var(--line);border-radius:18px;background:#fff;box-shadow:0 9px 24px rgba(34,73,55,.06)}
+.fu-map-card header,.fu-section>header,.fu-today header{display:flex;align-items:center;justify-content:space-between;padding:18px 20px}
+.fu-map-card h2,.fu-section h2,.fu-today h2{margin:4px 0 0;font-size:18px}
+.fu-map-card button{padding:8px 11px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--green);font-weight:800;cursor:pointer}
+.fu-map-toolbar{display:flex;gap:4px;padding:8px 18px;border-top:1px solid var(--line);background:#f8fbf9}
+.fu-map-toolbar button{padding:7px 12px;border-radius:999px;font-size:11px}
+.fu-map-toolbar button.active{border-color:var(--green);background:var(--green);color:#fff}
+#faperta-map{height:440px;background:#e8efeb}
+.fu-map-card footer{display:flex;justify-content:space-between;padding:12px 18px;color:var(--muted);font-size:11px}
+.fu-map-card footer a{color:var(--green);font-weight:800;text-decoration:none}
+.fu-legend-swatch{display:inline-block;width:18px;height:9px;margin-right:5px;border:2px solid var(--gold);background:rgba(211,154,36,.2)}
+.fu-today{display:flex;flex-direction:column}
+.fu-today .fu-empty{flex:1;margin:0 18px}
+.fu-task-counts{display:grid;grid-template-columns:repeat(3,1fr);margin:18px;border:1px solid var(--line);border-radius:12px}
+.fu-task-counts span{padding:12px;text-align:center;color:var(--muted);font-size:9px}
+.fu-task-counts span+span{border-left:1px solid var(--line)}
+.fu-task-counts b{display:block;color:var(--ink);font-size:19px}
+.fu-section{margin-top:18px;padding-bottom:18px}
+.fu-section>header small{color:var(--muted)}
+.fu-kpis,.fu-block-grid,.fu-schema-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:0 18px}
+.fu-kpis article,.fu-block-grid article,.fu-schema-grid article{padding:16px;border:1px solid var(--line);border-radius:13px;background:#fbfdfc}
+.fu-kpis span,.fu-kpis small,.fu-block-grid span,.fu-block-grid small,.fu-schema-grid span{display:block;color:var(--muted);font-size:10px}
+.fu-kpis strong{display:block;margin:6px 0;font-size:24px}
+.fu-block-grid{grid-template-columns:repeat(3,1fr)}
+.fu-block-grid strong{display:block;margin:5px 0;font-size:17px}
+.fu-block-grid button{margin-top:10px;border:0;background:none;color:var(--green);font-weight:800;cursor:pointer}
+.fu-data-note{margin:14px 18px 0;padding:13px;border-left:3px solid var(--gold);background:#fff9eb;color:#6d582e;font-size:11px;line-height:1.5}
+.fu-page-head{padding:26px;border-bottom:1px solid var(--line)}
+.fu-page-head h2{margin:6px 0;font-size:25px}
+.fu-page-head p{max-width:780px;margin:0;color:var(--muted);line-height:1.55}
+.fu-view:not([data-panel="overview"])>.fu-empty{margin:22px}
+.fu-empty{display:grid;place-items:center;min-height:150px;padding:20px;border:1px dashed #cbdad1;border-radius:13px;background:#f8fbf9;color:var(--muted);font-size:12px;text-align:center}
+.fu-schema-grid{margin:20px 0;grid-template-columns:repeat(4,1fr)}
+.fu-schema-grid b{display:block;margin-bottom:7px}
+.fu-schema-grid span{line-height:1.5}
+.leaflet-popup-content strong,.leaflet-popup-content span{display:block}
+.leaflet-popup-content span{margin-top:4px;color:#60756a;font-size:11px}
+@media(max-width:900px){.fu-header{grid-template-columns:auto 1fr;padding:9px 14px}
+.fu-brand{justify-self:center}
+.fu-status{display:none}
+.fu-hero{display:block;padding:23px}
+.fu-hero-meta{margin-top:20px;overflow:auto}
+.fu-layout{grid-template-columns:1fr}
+.fu-kpis,.fu-schema-grid{grid-template-columns:repeat(2,1fr)}
+.fu-block-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:560px){.fu-shell{padding:12px}
+.fu-header{min-height:60px}
+.fu-back span,.fu-brand small,.fu-brand>span:last-child{display:none}
+.fu-logo--yg{width:32px;height:32px}
+.fu-logo--faperta{width:112px;height:34px;padding:6px 8px}
+.fu-brand{gap:6px}
+.fu-hero h1{font-size:30px}
+.fu-hero-meta span{min-width:95px}
+.fu-kpis,.fu-block-grid,.fu-schema-grid{grid-template-columns:1fr}
+#faperta-map{height:370px}
+.fu-map-card header{align-items:flex-start;gap:10px}
+.fu-map-card header button{font-size:10px}
+.fu-map-card footer{align-items:flex-start;gap:7px;flex-direction:column}
+}
+
+.fu-weather-current{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:0 18px}
+.fu-weather-current article,.fu-rain-summary article,.fu-weather-forecast article{padding:15px;border:1px solid var(--line);border-radius:13px;background:#fbfdfc}
+.fu-weather-current small,.fu-rain-summary small,.fu-weather-forecast small,.fu-weather-forecast span{display:block;color:var(--muted);font-size:10px}
+.fu-weather-current strong,.fu-rain-summary strong{display:block;margin-top:6px;font-size:21px}
+.fu-rain-summary{display:grid;grid-template-columns:repeat(2,minmax(140px,220px)) 1fr;gap:12px;align-items:stretch;padding:12px 18px 0}
+.fu-rain-summary p{align-self:center;margin:0;color:var(--muted);font-size:11px;line-height:1.5}
+.fu-weather-forecast{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;padding:12px 18px 0}
+.fu-weather-forecast article{padding:12px}
+.fu-weather-forecast strong{display:block;min-height:32px;margin:6px 0;font-size:12px}
+.fu-weather-forecast span+span{margin-top:3px}
+.fu-weather footer{padding:13px 18px 0;color:var(--muted);font-size:10px}
+.fu-weather footer a{color:var(--green);font-weight:800}
+@media(max-width:900px){.fu-weather-forecast{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:560px){.fu-weather-current{grid-template-columns:repeat(2,1fr)}.fu-rain-summary{grid-template-columns:1fr 1fr}.fu-rain-summary p{grid-column:1/-1}.fu-weather-forecast{grid-template-columns:repeat(2,1fr)}}
+
+
+/* Modern public presentation */
+:root{--surface:#ffffff;--surface-soft:#f7faf8;--shadow:0 18px 50px rgba(21,56,40,.08)}
+body{min-height:100vh;background:radial-gradient(circle at 8% 0%,rgba(28,133,89,.08),transparent 28rem),var(--bg)}
+.fu-header{grid-template-columns:auto 1fr;min-height:76px;padding:10px clamp(16px,3vw,42px);box-shadow:0 1px 0 rgba(18,69,48,.04)}
+.fu-back{display:inline-flex;align-items:center;gap:7px;padding:9px 13px;border:1px solid var(--line);border-radius:999px;background:#fff;transition:.2s ease}
+.fu-back:hover,.fu-back:focus-visible{border-color:#b7d6c6;background:var(--green-soft);transform:translateY(-1px)}
+.fu-brand{justify-self:center;margin-right:96px}
+.fu-brand strong{font-size:15px;letter-spacing:-.01em}
+.fu-brand small{margin-top:2px;font-size:11px}
+.fu-shell{width:min(1380px,100%);padding:30px clamp(16px,3vw,36px) 48px}
+.fu-hero{position:relative;isolation:isolate;overflow:hidden;align-items:flex-end;padding:clamp(30px,5vw,60px);border-radius:28px;background:linear-gradient(135deg,#103d2b 0%,#086642 64%,#0a8051 100%);box-shadow:0 24px 70px rgba(16,61,43,.18)}
+.fu-hero:after{position:absolute;z-index:-1;right:-90px;top:-180px;width:430px;height:430px;border:1px solid rgba(255,255,255,.14);border-radius:50%;box-shadow:0 0 0 70px rgba(255,255,255,.035),0 0 0 140px rgba(255,255,255,.025);content:""}
+.fu-eyebrow,.fu-section header span,.fu-today header span,.fu-map-card header span,.fu-page-head>span{letter-spacing:.16em}
+.fu-hero h1{max-width:800px;margin:13px 0 14px;font-family:inherit;font-size:clamp(34px,4.4vw,62px);font-weight:750;letter-spacing:-.045em;line-height:1.02}
+.fu-hero p{max-width:720px;font-size:15px;line-height:1.7}
+.fu-hero-meta{gap:12px}
+.fu-hero-meta span{min-width:132px;padding:19px;border-radius:18px;background:rgba(255,255,255,.1);backdrop-filter:blur(8px)}
+.fu-hero-meta strong{font-size:28px;letter-spacing:-.03em}
+.fu-hero-meta small{font-size:11px}
+.fu-layout{margin-top:22px}
+.fu-map-card,.fu-today,.fu-section,.fu-view:not([data-panel="overview"]){border-color:rgba(22,68,48,.11);border-radius:22px;box-shadow:var(--shadow)}
+.fu-map-card{overflow:hidden}
+.fu-map-card header,.fu-section>header,.fu-today header{padding:22px 24px}
+.fu-map-card h2,.fu-section h2,.fu-today h2{margin-top:6px;font-size:21px;letter-spacing:-.025em}
+.fu-map-card header button{padding:10px 14px;border-radius:999px;transition:.2s ease}
+.fu-map-card header button:hover,.fu-map-card header button:focus-visible{border-color:#b7d6c6;background:var(--green-soft)}
+.fu-map-toolbar{padding:10px 22px;border-top-color:rgba(22,68,48,.08);background:var(--surface-soft)}
+.fu-map-toolbar button{padding:8px 14px}
+#faperta-map{height:470px}
+.fu-map-card footer{justify-content:flex-start;padding:13px 22px;background:#fff}
+.fu-section{margin-top:22px;padding-bottom:22px;overflow:hidden}
+.fu-weather-current{gap:14px;padding:0 22px}
+.fu-weather-current article,.fu-rain-summary article,.fu-weather-forecast article{border-color:rgba(22,68,48,.1);border-radius:16px;background:linear-gradient(145deg,#fff,#f7faf8)}
+.fu-weather-current article{position:relative;padding:18px}
+.fu-weather-current article:before{position:absolute;left:18px;top:0;width:34px;height:3px;border-radius:0 0 3px 3px;background:var(--green);content:""}
+.fu-weather-current strong,.fu-rain-summary strong{margin-top:9px;font-size:24px;letter-spacing:-.03em}
+.fu-rain-summary{grid-template-columns:repeat(2,minmax(150px,230px)) 1fr;gap:14px;padding:14px 22px 0}
+.fu-weather-forecast{gap:10px;padding:14px 22px 0}
+.fu-weather-forecast article{min-height:116px}
+.fu-weather-forecast strong{font-size:13px;line-height:1.35}
+.fu-weather footer{padding:15px 22px 0}
+.fu-block-grid{gap:14px;padding:0 22px}
+.fu-block-grid article{position:relative;min-height:142px;padding:20px;border-color:rgba(22,68,48,.1);border-radius:17px;background:linear-gradient(145deg,#fff 0%,#f6faf7 100%);transition:.2s ease}
+.fu-block-grid article:hover{border-color:#bdd9ca;box-shadow:0 12px 28px rgba(21,82,55,.08);transform:translateY(-2px)}
+.fu-block-grid strong{font-size:19px;letter-spacing:-.02em}
+.fu-block-grid button{padding:0;font-size:12px}
+@media(max-width:900px){.fu-header{grid-template-columns:auto 1fr}.fu-brand{margin-right:0}.fu-hero{display:block}.fu-hero-meta{margin-top:26px}.fu-weather-forecast{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:560px){.fu-shell{padding:14px 12px 32px}.fu-header{min-height:64px}.fu-back{width:38px;height:38px;justify-content:center;padding:0}.fu-hero{padding:28px 22px;border-radius:22px}.fu-hero h1{font-size:34px}.fu-hero p{font-size:14px}.fu-hero-meta{display:grid;grid-template-columns:1fr 1fr}.fu-hero-meta span{min-width:0}.fu-map-card header,.fu-section>header{padding:19px}.fu-map-toolbar{padding:9px 16px}#faperta-map{height:390px}.fu-weather-current,.fu-rain-summary,.fu-weather-forecast,.fu-block-grid{padding-left:16px;padding-right:16px}}
+
+
+/* Logo-only WebGIS entry */
+.fu-header{display:flex;justify-content:center}
+.fu-brand{justify-self:auto;margin-right:0}
+.fu-home-logo{display:inline-flex;align-items:center;justify-content:center;border-radius:50%;outline-offset:4px;transition:transform .2s ease,filter .2s ease}
+.fu-home-logo:hover,.fu-home-logo:focus-visible{filter:drop-shadow(0 6px 10px rgba(11,107,69,.2));transform:translateY(-1px) scale(1.04)}
+@media(max-width:900px){.fu-brand{margin-right:0}}

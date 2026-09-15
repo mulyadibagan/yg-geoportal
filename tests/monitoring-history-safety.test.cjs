@@ -1,0 +1,168 @@
+const test = require("node:test");
+const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const path = require("node:path");
+
+const ROOT = path.resolve(__dirname, "..");
+
+function read(relativePath) {
+  return fs.readFileSync(path.join(ROOT, relativePath), "utf8");
+}
+
+test("monitoring detail keeps permanent object identity and renders time-series charts", () => {
+  const source = read("js/monitoring-detail.js");
+
+  assert.match(source, /targetProperties\.Object_ID\|\|targetProperties\.OBJECT_ID/);
+  assert.match(source, /var objectId=permanentObjectId\|\|spatialObjectId/);
+  assert.match(source, /class="dumbbell-chart"/);
+  assert.doesNotMatch(source, /Grafik riwayat per indikator/);
+  assert.doesNotMatch(source, /function chartSVG\(/);
+  assert.match(source, /Foto monitoring sebelumnya/);
+  assert.match(source, /class="photo-archive"/);
+});
+
+test("legacy monitoring ids resolve to the current official polygon ids everywhere", () => {
+  const sources = [
+    "js/monitoring-live-sync-v2.js",
+    "js/map-v4.js",
+    "js/monitoring-detail.js",
+    "js/monitoring-compilation.js",
+    "js/monitoring.js"
+  ].map(read);
+  const aliases = [
+    ["MANGROVE-BURUK-BAKUL-PHASE-III-2025-001", "MANGROVE-BURUK-BAKUL-2025-001"],
+    ["MANGROVE-BURUK-BAKUL-PHASE-III-2025-002", "MANGROVE-BURUK-BAKUL-2025-002"],
+    ["MANGROVE-BURUK-BAKUL-PHASE-III-2025-003", "MANGROVE-BURUK-BAKUL-2025-003"],
+    ["MANGROVE-SEPAHAT-PHASE-III-2025-001", "MANGROVE-SEPAHAT-2025-001"],
+    ["MANGROVE-TANJUNG-KURAS-PHASE-III-2026-001", "MANGROVE-TANJUNG-KURAS-2026-001"]
+  ];
+
+  sources.forEach(source => {
+    const normalizedSource = source.toLowerCase();
+    aliases.forEach(([legacyId, currentId]) => {
+      assert.ok(normalizedSource.includes(legacyId.toLowerCase()), `${legacyId} missing`);
+      assert.ok(normalizedSource.includes(currentId.toLowerCase()), `${currentId} missing`);
+    });
+  });
+
+  const detail = sources[2];
+  assert.match(detail, /objectKey=OBJECT_ALIASES\[objectKey\]\|\|objectKey/);
+});
+
+test("published report photos take priority over historical photo fallback", () => {
+  const source = read("js/data-updates.js");
+  const detail = read("js/monitoring-detail.js");
+
+  assert.match(source, /function verifiedMonitoringPhotos\(properties\)/);
+  assert.match(source, /if \(directPhotos\.length\) return null/);
+  assert.match(detail, /var HISTORICAL_PHOTOS_BY_REPORT=/);
+  assert.match(detail, /'YG-20260717-205241-378':\[/);
+  assert.match(detail, /'YG-20260717-210140-375':\[/);
+  assert.match(detail, /'YG-20260717-211305-543':\[/);
+  assert.match(detail, /if\(!photos\.length&&HISTORICAL_PHOTOS_BY_REPORT\[reportId\]\)/);
+  assert.match(detail, /photos=HISTORICAL_PHOTOS_BY_REPORT\[reportId\]\.slice\(\)/);
+  assert.doesNotMatch(detail, /label\.indexOf\('kelapa pati'\)/);
+  assert.doesNotMatch(detail, /date:'16\/07\/2026'/);
+});
+
+test("live sync keeps the latest report when the official polygon loads later", () => {
+  const source = read("js/monitoring-live-sync-v2.js");
+
+  assert.match(source, /props\.Geometry_Source = "monitoring_report_fallback"/);
+  assert.match(source, /props\.Target_Object_ID_Current = targetId/);
+  assert.doesNotMatch(source, /if \(!target \|\| !target\.geometry\) return null/);
+});
+
+test("map reconciliation also groups non-mangrove monitoring by permanent target", () => {
+  const source = read("js/map-v4.js");
+
+  assert.match(source, /if \(!resolvedTargetId \|\| \/:auto:\/i\.test\(resolvedTargetId\)\) return \[\]/);
+  assert.match(source, /return \[resolvedTargetId\]/);
+  assert.doesNotMatch(source, /if \(!canonicalMangroveObjectId\(resolvedTargetId\)\) return \[\]/);
+});
+
+test("report form warns before a same-object same-day monitoring submission", () => {
+  const source = read("js/report-v6.js");
+
+  assert.match(source, /function findMonitoringDuplicates\(data,activityDate\)/);
+  assert.match(source, /reportTarget === targetId && monitoringDateKey\(p\.activityDate\) === dateKey/);
+  assert.match(source, /await confirmSameDayMonitoring\(\)/);
+  assert.match(source, /monitoringDuplicateCandidates:selectedType === 'Monitoring'/);
+});
+
+test("Apps Script makes retries idempotent and flags same-day monitoring duplicates", () => {
+  const source = read("apps-script/webgis-backend/Kode.js");
+  const admin = read("apps-script/webgis-backend/Admin.html");
+
+  assert.match(source, /claimReportSubmission_\(clientSubmissionId\)/);
+  assert.match(source, /LockService\.getScriptLock\(\)/);
+  assert.match(source, /findSameDayMonitoringDuplicates_\(sheet, data\)/);
+  assert.match(source, /Potensi_Duplikat_Monitoring/);
+  assert.match(source, /Monitoring wajib terhubung ke satu objek WebGIS yang dipilih/);
+  assert.match(admin, /Potensi laporan monitoring ganda/);
+});
+
+test("monitoring reporter chips filter historical reporters and remain keyboard accessible", () => {
+  const source = read("js/monitoring-compilation.js");
+  const html = read("monitoring-compilation.html");
+
+  assert.match(source, /key:key,name:record\.reporter/);
+  assert.match(source, /<button type="button" class="reporter-pill" data-reporter-key=/);
+  assert.match(source, /group\.history\|\|\[\]\)\.forEach\(function\(record\)/);
+  assert.match(source, /reporters\.addEventListener\('click'/);
+  assert.match(source, /cluster\.value='reporter'/);
+  assert.match(html, /\.reporter-pill:focus-visible/);
+});
+
+test("monitoring pages prefer the fast public snapshot and keep the source API as fallback", () => {
+  const detail = read("js/monitoring-detail.js");
+  const compilation = read("js/monitoring-compilation.js");
+
+  [detail, compilation].forEach(source => {
+    assert.match(source, /snapshots\/current\/dashboard\.json/);
+    assert.match(source, /capacitySources&&.*capacitySources\.reports/);
+  });
+  assert.match(detail, /restoreDataCache\(\)/);
+  assert.match(detail, /localStorage\.setItem\(DATA_CACHE_KEY/);
+  assert.match(compilation, /localStorage\.setItem\('monitoring-detail-public-data-v1'/);
+  assert.match(detail, /fetch\(SNAPSHOT_URL,\{cache:'default'\}\)/);
+  assert.match(compilation, /loadPublishedJsonp\(type,storageKey\)/);
+});
+
+test("monitoring compilation maps donor, village, and planting phase clusters", () => {
+  const source = read("js/monitoring-compilation.js");
+  const html = read("monitoring-compilation.html");
+
+  assert.match(html, /id="cluster-map-donor"/);
+  assert.match(html, /id="cluster-map-village"/);
+  assert.match(html, /id="cluster-map-phase"/);
+  assert.match(html, /id="cluster-map"/);
+  assert.match(source, /function renderClusterMap/);
+  assert.match(source, /function updateClusterMap/);
+  assert.match(source, /data-map-donor=/);
+  assert.match(source, /geometry:feature&&feature\.geometry\|\|null/);
+  assert.match(source, /World_Imagery\/MapServer\/tile/);
+  assert.match(source, /Donor belum ditautkan/);
+  assert.match(source, /function legacyMangroveDonor/);
+  assert.match(source, /if\(!donor\)donor=legacyMangroveDonor\(objectCode\)/);
+  assert.match(source, /data\/area_mangrove\.geojson/);
+  assert.match(source, /function normalizeMasterMangrove/);
+  assert.match(source, /function clusterMapGroups/);
+  assert.match(source, /Belum dimonitor/);
+  assert.match(source, /function monitoringResultHtml/);
+  assert.match(source, /Hasil monitoring terbaru/);
+  assert.match(source, /Buka seluruh histori monitoring/);
+  assert.match(html, /id="cluster-result-summary"/);
+  assert.match(source, /function renderClusterResultSummary/);
+  assert.match(source, /RINGKASAN HASIL KLASTER/);
+  assert.match(source, /Hanya laporan terbaru setiap objek/);
+});
+
+test("Kelapa Pati monitoring dated 19 August is classified as Phase II", () => {
+  const compilation = read("js/monitoring-compilation.js");
+  const monitoring = read("js/monitoring.js");
+  assert.match(compilation, /'YG-20260819-192001-579':'Fase II'/);
+  assert.match(compilation, /REPORT_PHASE_OVERRIDES\[String\(p\.reportId\|\|p\.Source_Report_ID/);
+  assert.match(monitoring, /YG-20260819-192001-579'\)return'Fase 2'/);
+  assert.match(monitoring, /verifiedMonitoringPhase\(p\.reportId\|\|p\.Source_Report_ID,phase\)/);
+});

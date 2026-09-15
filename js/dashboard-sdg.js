@@ -1,0 +1,427 @@
+(function() {
+  'use strict';
+  window.YG_CLIMATE_DASHBOARD_READY = true;
+
+  const style = document.createElement('style');
+  style.textContent = `
+    .sdg-card-contribution ul {
+      margin: 8px 0 0;
+      padding-left: 19px;
+      font-size: 13px;
+      line-height: 1.55;
+      color: #37474f;
+    }
+    .sdg-card-contribution li + li {
+      margin-top: 6px;
+    }
+  `;
+  document.head.appendChild(style);
+
+  /**
+   * Data for Sustainable Development Goals (SDGs) contributions.
+   * Each object contains the goal number, title, a brief description of the contribution,
+   * and the path to its icon.
+   */
+  const sdgContributions = [
+    {
+      goal: 1,
+      title: 'Tanpa Kemiskinan',
+      contribution: '<ul><li>Peningkatan pendapatan melalui agroforestri kopi Liberika.</li><li>Pengembangan mata pencaharian alternatif berbasis sumber daya lokal.</li><li>Menciptakan lapangan kerja hijau (restorasi, pembibitan, pemantauan).</li></ul>',
+      icon: 'assets/sdg-icons/sdg-1.png'
+    },
+    {
+      goal: 2,
+      title: 'Tanpa Kelaparan',
+      contribution: '<ul><li>Mendukung ketahanan pangan melalui kebun kopi dan tanaman tumpang sari.</li><li>Pelatihan pertanian berkelanjutan tanpa bakar.</li><li>Diversifikasi sumber pangan dan gizi keluarga.</li></ul>',
+      icon: 'assets/sdg-icons/sdg-2.png'
+    },
+    {
+      goal: 4,
+      title: 'Pendidikan Berkualitas',
+      contribution: '<ul><li>Pelatihan pembibitan, restorasi, agroforestri, pengolahan kopi, dan pertanian tanpa bakar.</li><li>Peningkatan kapasitas kelompok masyarakat dalam pemantauan ekosistem.</li><li>Penyusunan panduan dan materi pembelajaran berbasis pengalaman lapangan.</li></ul>',
+      icon: 'assets/sdg-icons/sdg-4.jpg'
+    },
+    {
+      goal: 5,
+      title: 'Kesetaraan Gender',
+      contribution: '<ul><li>Mendorong partisipasi perempuan dalam pengambilan keputusan di tingkat desa.</li><li>Mendukung kewirausahaan perempuan melalui kelompok tani kopi Liberika.</li><li>Memastikan keterlibatan perempuan dalam semua sesi pelatihan dan kegiatan.</li></ul>',
+      icon: 'assets/sdg-icons/sdg-5.jpg'
+    },
+    {
+      goal: 6,
+      title: 'Air Bersih dan Sanitasi Layak',
+      contribution: '<ul><li>Menjaga kualitas air melalui restorasi ekosistem gambut.</li><li>Membangun sekat kanal untuk menaikkan muka air tanah.</li><li>Pemasangan unit FDRS untuk pemantauan tinggi muka air.</li></ul>',
+      icon: 'assets/sdg-icons/sdg-6.png'
+    },
+    {
+      goal: 8,
+      title: 'Pekerjaan Layak dan Pertumbuhan Ekonomi',
+      contribution: '<ul><li>Menciptakan green jobs di tingkat desa (pembibitan, penanaman, pemantauan).</li><li>Mendukung wirausaha perempuan melalui kelompok tani kopi.</li><li>Membangun kemitraan pasar untuk produk kopi Liberika.</li></ul>',
+      icon: 'assets/sdg-icons/sdg-8.png'
+    },
+    {
+      goal: 10,
+      title: 'Berkurangnya Kesenjangan',
+      contribution: '<ul><li>Mendorong partisipasi kelompok rentan dan penyandang disabilitas dalam kegiatan lingkungan.</li><li>Mendukung kepemimpinan inklusif dalam kelompok masyarakat pesisir.</li><li>Salah satu kelompok mangrove di Sepahat dipimpin oleh penyandang disabilitas dan berperan aktif dalam pengelolaan restorasi mangrove.</li></ul>',
+      icon: 'assets/sdg-icons/sdg-10.jpg'
+    },
+    {
+      goal: 11,
+      title: 'Kota dan Permukiman Berkelanjutan',
+      contribution: '<ul><li>Pembangunan hybrid engineering (APO) untuk melindungi garis pantai dan permukiman.</li><li>Pemasangan sistem peringatan dini kebakaran (FDRS).</li><li>Peningkatan kapasitas masyarakat dalam pencegahan kebakaran lahan.</li></ul>',
+      icon: 'assets/sdg-icons/sdg-11.png'
+    },
+    {
+      goal: 12,
+      title: 'Konsumsi dan Produksi yang Bertanggung Jawab',
+      contribution: '<ul><li>Pengembangan kopi Liberika dan produk lokal melalui praktik produksi berkelanjutan.</li><li>Penerapan pertanian tanpa bakar dan agroforestri ramah gambut.</li><li>Peningkatan pengolahan pascapanen, SOP produksi, kualitas produk, dan pemanfaatan sumber daya lokal secara bertanggung jawab.</li></ul>',
+      icon: 'assets/sdg-icons/sdg-12.jpg'
+    },
+    {
+      goal: 13,
+      title: 'Penanganan Perubahan Iklim',
+      contribution: '<ul><li>Menyerap dan menyimpan karbon melalui restorasi hutan mangrove.</li><li>Mengurangi emisi gas rumah kaca dengan mencegah dekomposisi gambut melalui pembasahan kembali (rewetting).</li><li>Mempromosikan pertanian tanpa bakar.</li></ul>',
+      icon: 'assets/sdg-icons/sdg-13.png'
+    },
+    {
+      goal: 14,
+      title: 'Ekosistem Lautan',
+      contribution: '<ul><li>Restorasi habitat pesisir melalui penanaman mangrove.</li><li>Melindungi biodiversitas laut dengan mengurangi abrasi melalui APO.</li><li>Peningkatan kesadaran masyarakat tentang pentingnya ekosistem mangrove.</li></ul>',
+      icon: 'assets/sdg-icons/sdg-14.png'
+    },
+    {
+      goal: 15,
+      title: 'Ekosistem Daratan',
+      contribution: '<ul><li>Restorasi ekosistem gambut hidrologis melalui pembangunan sekat kanal.</li><li>Rehabilitasi lahan dengan penanaman pohon hutan dan MPTS.</li><li>Perlindungan keanekaragaman hayati di Hutan Adat Imbo Putui.</li></ul>',
+      icon: 'assets/sdg-icons/sdg-15.png'
+    },
+    {
+      goal: 16,
+      title: 'Perdamaian, Keadilan dan Kelembagaan yang Tangguh',
+      contribution: '<ul><li>Penguatan kapasitas KTH, KUPS, kelompok perempuan, dan kelompok pengelola mangrove.</li><li>Mendukung penyusunan rencana kerja perhutanan sosial dan pengambilan keputusan partisipatif.</li><li>Mendorong kolaborasi masyarakat dengan pemerintah desa, Balai PSKL, perguruan tinggi, dan mitra program.</li></ul>',
+      icon: 'assets/sdg-icons/sdg-16.jpg'
+    },
+    {
+      goal: 17,
+      title: 'Kemitraan untuk Mencapai Tujuan',
+      contribution: '<ul><li>Kemitraan dengan donor internasional (Aramco, PPCF, GEC).</li><li>Kolaborasi dengan pemerintah daerah (kabupaten dan desa).</li><li>Pemberdayaan kelompok masyarakat dan lembaga adat lokal.</li></ul>',
+      icon: 'assets/sdg-icons/sdg-17.png'
+    }
+  ];
+
+  function isEnglish() {
+    return window.YG_I18N && window.YG_I18N.language === 'en';
+  }
+
+  function formatNumber(value, digits = 0) {
+    return new Intl.NumberFormat(isEnglish() ? 'en-US' : 'id-ID', { maximumFractionDigits: digits })
+      .format(Number(value || 0));
+  }
+
+  function renderMangroveCandidateScenarios() {
+    const stats = window.YG_DASHBOARD_STATS || {};
+    const area = Number(stats.mangroveArea || 13.235);
+    const factors = {
+      low: 336.923309406876,
+      mid: 632.934642992067,
+      high: 848.948998866642
+    };
+    const values = {
+      'carbon-candidate-low': area * factors.low,
+      'carbon-candidate-mid': area * factors.mid,
+      'carbon-candidate-high': area * factors.high
+    };
+
+    Object.entries(values).forEach(([id, value]) => {
+      const node = document.getElementById(id);
+      if (node) node.textContent = formatNumber(value, 2);
+    });
+    const areaNode = document.getElementById('carbon-candidate-area');
+    if (areaNode) areaNode.textContent = formatNumber(area, 3) + ' ha';
+  }
+
+  function renderClimateImpactDashboard(containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    const stats = window.YG_DASHBOARD_STATS || {};
+    const english = isEnglish();
+    const cards = Array.from(document.querySelectorAll('#category-grid .programme-card'));
+
+    function parseMetricNumber(value) {
+      const raw = String(value == null ? '' : value).replace(/\s+/g, ' ').trim();
+      if (!raw) return 0;
+      const normalized = raw
+        .replace(/\./g, '')
+        .replace(',', '.')
+        .replace(/[^0-9.-]/g, '');
+      const number = Number(normalized);
+      return Number.isFinite(number) ? number : 0;
+    }
+
+    function readCardMetric(cardIndex, labelText) {
+      const card = cards[cardIndex];
+      if (!card) return 0;
+      const items = Array.from(card.querySelectorAll('li'));
+      const match = items.find(item => item.textContent.toLowerCase().includes(labelText.toLowerCase()));
+      if (!match) return 0;
+      const strong = match.querySelector('strong');
+      return parseMetricNumber(strong ? strong.textContent : match.textContent);
+    }
+
+    function readTextMetric(selector) {
+      const element = document.querySelector(selector);
+      return element ? parseMetricNumber(element.textContent) : 0;
+    }
+
+    const mangroveArea = Number(stats.mangroveArea || readCardMetric(0, english ? 'Restoration Area' : 'Luas Restorasi'));
+    const peatArea = Number(stats.peatArea || readCardMetric(1, english ? 'Peatland / Agroforestry Area' : 'Luas Gambut / Agroforestri'));
+    const mineralArea = Number(stats.mineralArea || readCardMetric(2, english ? 'Restoration Area' : 'Luas Restorasi'));
+    const rewettingArea = Number(stats.rewettingArea || readCardMetric(1, english ? 'Estimated Rewetting Area' : 'Estimasi Area Rewetting') || 550);
+    const methodology = english ? 'IPCC 2006 Guidelines + 2013 Wetlands Supplement (conservative proxy)' : 'IPCC 2006 Guidelines + 2013 Wetlands Supplement (proxy konservatif)';
+
+    // Koefisien proxy konservatif untuk visualisasi kebijakan.
+    // Jika tersedia faktor emisi resmi per lokasi, nilai ini dapat diganti.
+    const factors = {
+      mangroveAbsorption: 31.6,
+      peatAbsorption: 20.0,
+      mineralAbsorption: 5.0,
+      rewettingReduction: 35.0
+    };
+
+    const absorptionEstimate = (mangroveArea * factors.mangroveAbsorption) +
+      (peatArea * factors.peatAbsorption) +
+      (mineralArea * factors.mineralAbsorption);
+    const reductionEstimate = rewettingArea * factors.rewettingReduction;
+    const totalEstimate = absorptionEstimate + reductionEstimate || 1;
+    const absorptionShare = Math.round((absorptionEstimate / totalEstimate) * 100);
+    const reductionShare = 100 - absorptionShare;
+
+    const directSources = [
+      {
+        label: english ? 'Mangrove restoration area' : 'Area restorasi mangrove',
+        value: mangroveArea,
+        unit: "ha",
+        note: english ? 'Direct activity input for removals' : 'Input aktivitas langsung untuk penyerapan',
+        hint: english ? 'Sum of validated Luas_Ha field attributes' : 'Penjumlahan atribut lapangan Luas_Ha yang tervalidasi',
+        group: "penyerapan"
+      },
+      {
+        label: english ? 'Peatland / agroforestry restoration' : 'Restorasi gambut / agroforestri',
+        value: peatArea,
+        unit: "ha",
+        note: english ? 'Direct activity input for removals' : 'Input aktivitas langsung untuk penyerapan',
+        hint: english ? 'Unique coffee polygons plus planting points converted at 3 × 3 m spacing' : 'Poligon kopi unik ditambah titik tanam yang dikonversi dengan jarak 3 × 3 m',
+        group: "penyerapan"
+      },
+      {
+        label: english ? 'Mineral land rehabilitation' : 'Rehabilitasi lahan mineral',
+        value: mineralArea,
+        unit: "ha",
+        note: english ? 'Direct activity input for removals' : 'Input aktivitas langsung untuk penyerapan',
+        hint: english ? 'Land area used in removals proxy' : 'Luas lahan untuk proxy penyerapan',
+        group: "penyerapan"
+      },
+      {
+        label: english ? 'Estimated rewetting area' : 'Estimasi area rewetting',
+        value: rewettingArea,
+        unit: "ha",
+        note: english ? 'Project assumption: 50 ha per active canal block' : 'Asumsi proyek: 50 ha per sekat kanal aktif',
+        hint: english ? '11 canal blocks × 50 ha; target water table ≤40 cm below ground' : '11 sekat kanal × 50 ha; target muka air ≤40 cm di bawah permukaan',
+        group: "pengurangan"
+      }
+    ];
+
+    const supportingSources = english
+      ? [
+          'Seedlings planted',
+          'Field monitoring',
+          'Community training',
+          'Documentation',
+          'Publications'
+        ]
+      : [
+          'bibit tertanam',
+          'monitoring lapangan',
+          'pelatihan masyarakat',
+          'dokumentasi kegiatan',
+          'publikasi program'
+        ];
+
+    const renderRows = group => directSources
+      .filter(item => item.group === group)
+      .map(item => `
+        <div class="climate-source-row">
+          <div class="climate-source-label">
+            <strong title="${item.hint}">${item.label}</strong>
+            <small>${item.note}</small>
+          </div>
+          <div class="climate-source-value">${formatNumber(item.value, item.unit === 'ha' ? 2 : 0)} ${item.unit}</div>
+        </div>
+      `).join('');
+
+    container.innerHTML = `
+      <div class="climate-grid">
+        <details class="climate-card climate-card-absorb">
+          <summary>
+            <div class="climate-card-head">
+              <span>${english ? 'Gross removals per year' : 'Penyerapan bruto per tahun'}</span>
+              <strong title="${english ? 'Annual proxy estimate' : 'Estimasi proksi tahunan'}">${formatNumber(absorptionEstimate, 1)} ${english ? 'tCO₂e/year' : 'tCO₂e/tahun'}*</strong>
+            </div>
+            <div class="climate-bar"><span style="width:${absorptionShare}%"></span></div>
+            <small class="climate-open-hint">${english ? 'View data sources and calculation method' : 'Lihat sumber data dan metode perhitungan'}</small>
+          </summary>
+          <div class="climate-expanded">
+            <p class="climate-card-caption">${english ? 'Current estimate uses the agreed programme activity areas. Ecological baseline areas validate land context and are not counted as programme achievements.' : 'Estimasi saat ini menggunakan luas kegiatan program yang telah disepakati. Luas baseline ekologis memvalidasi konteks lahan dan tidak dihitung sebagai capaian program.'}</p>
+            <div class="climate-source-list">${renderRows('penyerapan')}</div>
+            <div class="climate-baseline-brief">
+              <strong>${english ? 'Baseline context' : 'Konteks baseline'}</strong>
+              <span>${english ? 'Analysis unit — intervention villages: 180,410.23 ha' : 'Unit analisis — desa intervensi: 180.410,23 ha'}</span>
+              <span>${english ? 'Peat in intervention villages: 113,830.30 ha' : 'Gambut dalam desa analisis: 113.830,30 ha'}</span>
+              <span>${english ? 'Forest-estate status: 180,392.62 ha (not actual tree cover)' : 'Status kawasan hutan: 180.392,62 ha (bukan tutupan pohon aktual)'}</span>
+              <span>${english ? 'Mangrove programme footprint: 13.235 ha validated attribute' : 'Footprint kegiatan mangrove: atribut tervalidasi 13,235 ha'}</span>
+            </div>
+            <p class="climate-detail-note"><strong>${english ? 'Supporting data:' : 'Data pendukung:'}</strong> ${supportingSources.join(', ')}.</p>
+            <p class="climate-detail-note"><strong>${english ? 'Living estimate:' : 'Estimasi berkembang:'}</strong> ${english ? 'recalculated when intervention villages, programme activities, monitoring data, baseline overlays, or emission factors change.' : 'dihitung ulang ketika desa intervensi, kegiatan program, data monitoring, hasil overlay baseline, atau faktor emisi berubah.'}</p>
+          </div>
+        </details>
+        <details class="climate-card climate-card-reduce">
+          <summary>
+            <div class="climate-card-head">
+              <span>${english ? 'Emission reductions per year' : 'Pengurangan emisi per tahun'}</span>
+              <strong title="${english ? 'Annual proxy estimate' : 'Estimasi proksi tahunan'}">${formatNumber(reductionEstimate, 1)} ${english ? 'tCO₂e/year' : 'tCO₂e/tahun'}*</strong>
+            </div>
+            <div class="climate-bar"><span style="width:${reductionShare}%"></span></div>
+            <small class="climate-open-hint">${english ? 'View the emission-reduction calculation basis' : 'Lihat dasar perhitungan pengurangan emisi'}</small>
+          </summary>
+          <div class="climate-expanded">
+            <p class="climate-card-caption">${english ? 'Calculation basis: 11 active canal blocks × 50 ha = 550 ha of estimated rewetting area. The target water table is no deeper than 40 cm below ground.' : 'Dasar perhitungan: 11 sekat kanal aktif × 50 ha = estimasi area pembasahan kembali (rewetting) seluas 550 ha. Target muka air tanah tidak lebih dalam dari 40 cm di bawah permukaan.'}</p>
+            <div class="climate-source-list">${renderRows('pengurangan')}</div>
+            <div class="climate-baseline-brief">
+              <strong>${english ? 'Important distinction' : 'Pembedaan penting'}</strong>
+              <span>${english ? 'The 113,830.30 ha peat baseline is ecological context, not rewetting credited to the programme.' : 'Baseline gambut 113.830,30 ha adalah konteks ekologis, bukan luas rewetting yang dikreditkan kepada program.'}</span>
+              <span>${english ? 'Canal blocks and FDRS receive no separate carbon credit.' : 'Sekat kanal dan FDRS tidak memperoleh kredit karbon terpisah.'}</span>
+            </div>
+            <p class="climate-detail-note"><strong>${english ? 'Living estimate:' : 'Estimasi berkembang:'}</strong> ${english ? 'recalculated when canal blocks, intervention villages, water-table monitoring, rewetting delineation, or emission factors change.' : 'dihitung ulang ketika sekat kanal, desa intervensi, monitoring muka air, delineasi rewetting, atau faktor emisi berubah.'}</p>
+          </div>
+        </details>
+      </div>
+      <div class="climate-footnote"><strong>${english ? '*Estimate note:' : '*Catatan estimasi:'}</strong> ${english ? 'Figures are proxy estimates, not verified results or issued carbon credits. The method refers to the IPCC 2006 Guidelines and 2013 Wetlands Supplement; site-specific factors will be used when available.' : 'Angka merupakan estimasi proksi, bukan hasil verifikasi atau penerbitan kredit karbon. Metode mengacu pada IPCC 2006 Guidelines dan 2013 Wetlands Supplement; faktor spesifik lokasi akan digunakan ketika tersedia.'}</div>
+    `;
+    renderMangroveCandidateScenarios();
+  }
+
+  function showSdgModal(sdg) {
+    const modalContainer = document.getElementById('sdg-modal-container');
+    if (!modalContainer || !sdg) return;
+
+    const modalHtml = `
+      <div class="sdg-modal" role="dialog" aria-modal="true" aria-labelledby="sdg-modal-title">
+        <div class="sdg-modal-overlay"></div>
+        <div class="sdg-modal-content">
+          <button class="sdg-modal-close" aria-label="Tutup">×</button>
+          <div class="sdg-modal-header">
+            <img src="${sdg.icon}" alt="" loading="lazy" decoding="async">
+            <h3 id="sdg-modal-title"><span class="sdg-number">SDG ${sdg.goal}</span>${sdg.title}</h3>
+          </div>
+          <div class="sdg-modal-body">
+            ${sdg.contribution}
+          </div>
+        </div>
+      </div>
+    `;
+    modalContainer.innerHTML = modalHtml;
+    document.body.classList.add('sdg-modal-open');
+
+    const close = () => {
+      modalContainer.innerHTML = '';
+      document.body.classList.remove('sdg-modal-open');
+    };
+
+    modalContainer.querySelector('.sdg-modal-close').addEventListener('click', close);
+    modalContainer.querySelector('.sdg-modal-overlay').addEventListener('click', close);
+    document.addEventListener('keydown', function onKeydown(e) {
+      if (e.key === 'Escape') {
+        close();
+        document.removeEventListener('keydown', onKeydown);
+      }
+    });
+  }
+
+  /**
+   * Renders the SDG contribution cards into the specified container.
+   * @param {string} containerId - The ID of the HTML element to render the cards in.
+   */
+  function renderSdgDashboard(containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) {
+      console.warn(`Element with ID "${containerId}" not found for SDG dashboard.`);
+      return;
+    }
+
+    const stats = window.YG_DASHBOARD_STATS;
+    if (stats) {
+      const sdg6 = sdgContributions.find(s => s.goal === 6);
+      if (sdg6) {
+        sdg6.contribution = `<ul><li>Menjaga kualitas air melalui restorasi ekosistem gambut.</li><li>Membangun sekat kanal untuk menaikkan muka air tanah (estimasi <strong>${formatNumber(stats.rewettingArea, 0)} ha</strong> area terbasahkan).</li><li>Pemasangan unit FDRS untuk pemantauan tinggi muka air.</li></ul>`;
+      }
+      const sdg13 = sdgContributions.find(s => s.goal === 13);
+      if (sdg13) {
+        sdg13.contribution = `<ul><li>Menyerap dan menyimpan karbon melalui restorasi <strong>${formatNumber(stats.totalRestorationArea, 2)} ha</strong> lahan.</li><li>Mengurangi emisi dengan mencegah dekomposisi gambut melalui pembasahan kembali (estimasi <strong>${formatNumber(stats.rewettingArea, 0)} ha</strong>).</li><li>Mempromosikan pertanian tanpa bakar.</li></ul>`;
+      }
+      const sdg15 = sdgContributions.find(s => s.goal === 15);
+      if (sdg15) {
+        sdg15.contribution = `<ul><li>Restorasi ekosistem gambut dan mangrove seluas <strong>${formatNumber(stats.totalRestorationArea, 2)} ha</strong>.</li><li>Rehabilitasi lahan dengan menanam <strong>${formatNumber(stats.totalPlantedSeedlings)} bibit</strong> pohon.</li><li>Perlindungan keanekaragaman hayati di Hutan Adat Imbo Putui.</li></ul>`;
+      }
+    }
+
+    const cardsHtml = sdgContributions.map(item => `
+      <button type="button" class="sdg-card" data-sdg-goal="${item.goal}">
+        <div class="sdg-card-icon" aria-hidden="true">
+          <img src="${item.icon}" alt="" loading="lazy" decoding="async">
+        </div>
+        <div class="sdg-card-content">
+          <h4 class="sdg-card-title"><span class="sdg-number">SDG ${item.goal}</span>${item.title}</h4>
+        </div>
+      </button>
+    `).join('');
+
+    container.innerHTML = `<div class="sdg-grid">${cardsHtml}</div><div id="sdg-modal-container"></div>`;
+
+    container.addEventListener('click', function(event) {
+      const card = event.target.closest('[data-sdg-goal]');
+      if (card) {
+        const goal = parseInt(card.dataset.sdgGoal, 10);
+        const sdg = sdgContributions.find(s => s.goal === goal);
+        showSdgModal(sdg);
+      }
+    });
+
+    if (window.YG_I18N && typeof window.YG_I18N.translateElement === 'function') {
+      window.YG_I18N.translateElement(container);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // Give dashboard-v3.js a moment to calculate and expose the stats
+    setTimeout(() => renderSdgDashboard('sdg-dashboard-container'), 200);
+
+    const renderClimateWhenReady = (attempt = 0) => {
+      const stats = window.YG_DASHBOARD_STATS || {};
+      const cardsReady = document.querySelectorAll('#category-grid .programme-card li strong').length > 0;
+      const statsReady = Object.prototype.hasOwnProperty.call(stats, 'mangroveArea') || cardsReady;
+      if (!cardsReady && !statsReady && attempt < 30) {
+        setTimeout(() => renderClimateWhenReady(attempt + 1), 150);
+        return;
+      }
+      renderClimateImpactDashboard('climate-dashboard-container');
+    };
+
+    renderClimateWhenReady();
+    window.addEventListener('yg:languagechange', () => renderClimateWhenReady());
+  });
+
+  window.addEventListener('yg:dashboardstatsready', () => {
+    renderClimateImpactDashboard('climate-dashboard-container');
+  });
+})();

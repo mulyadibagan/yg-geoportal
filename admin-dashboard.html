@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Admin Dashboard | YG GeoPortal</title>
+  <link rel="icon" href="assets/logo-yayasan-gambut.png"/>
+  <link rel="stylesheet" href="css/site-brand.css?v=20260720-program-dashboard1"/>
+  <link rel="stylesheet" href="css/dashboard-v3.css?v=20260722-funding-logo1"/>
+  <link rel="stylesheet" href="css/admin-dashboard.css?v=20260831-report-inbox1"/>
+  <link rel="stylesheet" href="css/language-switcher.css?v=20260721-all-pages1"/>
+  <meta name="theme-color" content="#079cde">
+</head>
+<body>
+  <header class="site-header yg-page-header">
+    <div class="header-inner yg-page-header__inner">
+      <a class="brand yg-page-brand" href="index.html">
+        <img src="assets/logo-yayasan-gambut.png" alt="Logo Yayasan Gambut"/>
+        <span><strong>YG GeoPortal</strong><span>Admin Dashboard</span></span>
+      </a>
+      <nav class="nav yg-page-nav">
+        <a href="index.html">Beranda</a>
+        <a href="monitoring.html">Monitoring</a>
+        <a href="object-manager.html">Object Manager</a>
+        <a class="primary" href="report.html">Kirim Laporan</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="dashboard-shell admin-shell">
+    <section class="admin-card" id="admin-auth-panel">
+      <div id="admin-auth-form" class="assignment-form">
+        <div class="wide"><strong>Akses staf</strong><p id="admin-auth-status">Silakan masuk dengan email resmi Yayasan Gambut.</p></div>
+        <div class="wide assignment-actions"><a class="btn btn-outline" href="staff-login.html">Login Staf</a></div>
+      </div>
+    </section>
+    <section class="hero hero-compact">
+      <div class="hero-main">
+        <div class="eyebrow">DASHBOARD ADMIN</div>
+        <h1>Administrasi Data &amp; Capaian</h1>
+        <p class="hero-description">Kelola kelengkapan profil Perhutanan Sosial dan hubungkan laporan kegiatan terverifikasi ke output program donor melalui dua antrean yang terpisah.</p>
+        <p class="hero-tagline">Perubahan disimpan ke database pusat ketika layanan aktif; browser digunakan sebagai penyimpanan sementara saat layanan belum tersedia.</p>
+      </div>
+    </section>
+
+    <section class="admin-panel" aria-labelledby="rspo-internal-title">
+      <div class="admin-column admin-column--wide">
+        <div class="section-heading">
+          <div><span class="eyebrow">DATA SPASIAL INTERNAL</span><h2 id="rspo-internal-title">Sawit Riau &amp; RSPO</h2></div>
+          <a class="btn btn-outline" href="staff-rspo-riau.html">Buka pemeriksaan polygon</a>
+        </div>
+        <div class="admin-card"><p>Periksa polygon anggota, unit pengelola, supply base, luas, dan atribut GeoRSPO. Halaman ini hanya terbuka untuk staf yang sudah login.</p></div>
+      </div>
+    </section>
+
+    <section class="admin-panel" aria-labelledby="pbph-internal-title">
+      <div class="admin-column admin-column--wide">
+        <div class="section-heading">
+          <div><span class="eyebrow">DATA REFERENSI INTERNAL</span><h2 id="pbph-internal-title">PBPH, PHL &amp; SVLK Riau</h2></div>
+          <a class="btn btn-outline" href="phl-svlk-riau.html">Buka pemantauan internal</a>
+        </div>
+        <div class="admin-card"><p>Batas PBPH, dokumen, arsip status, dan analisis hotspot hanya dimuat setelah sesi admin diverifikasi. Data ini tidak ditampilkan pada halaman publik.</p></div>
+      </div>
+    </section>
+
+    <section class="admin-panel report-inbox-panel" aria-labelledby="report-inbox-title">
+      <div class="admin-column admin-column--wide">
+        <div class="section-heading">
+          <div><span class="eyebrow">LAPORAN TIM</span><h2 id="report-inbox-title">Antrean Laporan Masuk</h2></div>
+          <button id="refresh-report-inbox" class="btn btn-light" type="button">Muat ulang</button>
+        </div>
+        <div class="admin-card">
+          <div class="report-inbox-summary" aria-label="Ringkasan laporan tim">
+            <span><b id="report-stat-total">0</b>Total</span>
+            <span><b id="report-stat-pending">0</b>Menunggu</span>
+            <span><b id="report-stat-revision">0</b>Perlu perbaikan</span>
+            <span><b id="report-stat-published">0</b>Dipublikasikan</span>
+          </div>
+          <div class="report-inbox-toolbar">
+            <label>Status laporan
+              <select id="report-inbox-filter"><option value="all">Semua status</option><option value="Menunggu Verifikasi">Menunggu Verifikasi</option><option value="Perlu Perbaikan">Perlu Perbaikan</option><option value="Disetujui">Disetujui</option><option value="Sudah Dipublikasikan">Sudah Dipublikasikan</option><option value="Ditolak">Ditolak</option></select>
+            </label>
+            <span id="report-inbox-feedback" role="status">Masuk sebagai staf untuk memuat laporan tim.</span>
+          </div>
+          <div id="report-inbox-list" class="report-inbox-list"><div class="assignment-empty">Belum ada data laporan yang dimuat.</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="admin-panel ps-inbox-panel" aria-labelledby="ps-inbox-title">
+      <div class="admin-column admin-column--wide">
+        <div class="section-heading">
+          <div><span class="eyebrow">KELENGKAPAN PERHUTANAN SOSIAL</span><h2 id="ps-inbox-title">Inbox Data PS</h2></div>
+          <button id="refresh-ps-inbox" class="btn btn-light" type="button">Periksa Drive</button>
+        </div>
+        <div class="admin-card">
+          <p class="ps-inbox-rule"><strong>Jalur khusus profil PS.</strong> SK/legalitas, profil kelompok, KUPS, RKPS/RKT, peta dan data pendukung tidak dapat dikaitkan ke kartu donor.</p>
+          <div id="ps-inbox-feedback" role="status"></div>
+          <div id="ps-inbox-list" class="ps-inbox-list"><div class="assignment-empty">Masuk sebagai staf untuk memuat Inbox Data PS.</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="admin-panel donor-card-panel" aria-labelledby="donor-card-title">
+      <div class="admin-column admin-column--wide">
+        <div class="section-heading">
+          <div><span class="eyebrow">PILIH DONOR</span><h2 id="donor-card-title">Kartu program donor</h2></div>
+          <span class="donor-card-hint">Klik kartu untuk memilih donor</span>
+        </div>
+        <div id="admin-donor-card-grid" class="admin-donor-card-grid" aria-live="polite">
+          <div class="assignment-empty">Memuat donor...</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="admin-panel nonspatial-evidence-panel" aria-labelledby="nonspatial-evidence-title">
+      <div class="admin-column admin-column--wide">
+        <div class="section-heading">
+          <div><span class="eyebrow">EVIDENCE NONSPASIAL</span><h2 id="nonspatial-evidence-title">Tambah dokumen atau bukti kegiatan</h2></div>
+        </div>
+        <div class="admin-card">
+          <form id="nonspatial-evidence-form" class="assignment-form">
+            <label>Jenis evidence
+              <select id="nonspatial-evidence-type" required>
+                <option value="">Pilih jenis evidence</option>
+                <option>Laporan kegiatan</option>
+                <option>Laporan program</option>
+                <option>Dokumen pendukung</option>
+                <option>Dokumentasi foto/video</option>
+                <option>Lainnya</option>
+              </select>
+            </label>
+            <label>Tanggal evidence
+              <input id="nonspatial-evidence-date" type="date" required>
+            </label>
+            <label class="wide">Judul evidence
+              <input id="nonspatial-evidence-title-input" required placeholder="Contoh: Laporan peer learning visit ke Malaysia">
+            </label>
+            <label>Lokasi <small>(opsional)</small>
+              <input id="nonspatial-evidence-location" placeholder="Contoh: Selangor, Malaysia">
+            </label>
+            <label>Upload laporan/dokumen
+              <input id="nonspatial-evidence-file" type="file" required
+                accept=".doc,.docx,.pdf,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png,.webp">
+              <small>Maksimal 20 MB. File disimpan otomatis ke Google Drive evidence YG.</small>
+            </label>
+            <label class="wide">Ringkasan hasil
+              <textarea id="nonspatial-evidence-description" rows="3" required placeholder="Jelaskan kegiatan, hasil, dan alasan evidence ini mendukung capaian"></textarea>
+            </label>
+            <div class="wide assignment-actions">
+              <button type="submit" class="btn btn-outline">Simpan evidence terverifikasi</button>
+              <span id="nonspatial-evidence-feedback" role="status"></span>
+            </div>
+          </form>
+        </div>
+        <div class="admin-card admin-card--list">
+          <h3>Evidence nonspasial tersimpan</h3>
+          <div id="nonspatial-evidence-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="admin-panel assignment-panel" aria-labelledby="assignment-title">
+      <div class="admin-column admin-column--wide">
+        <div class="section-heading">
+          <div><span class="eyebrow">KEGIATAN TERVERIFIKASI</span><h2 id="assignment-title">Pilih output program donor</h2></div>
+          <span id="assignment-mode" class="admin-mode-badge">DATABASE PUSAT</span>
+        </div>
+        <div class="admin-card">
+          <form id="evidence-assignment-form" class="assignment-form">
+            <label class="wide">Laporan/kegiatan terverifikasi
+              <select id="assignment-evidence" required><option value="">Memuat evidence...</option></select>
+            </label>
+            <label>Donor
+              <select id="assignment-donor" required><option value="">Pilih donor</option></select>
+            </label>
+            <label>Program/fase
+              <select id="assignment-programme" required disabled><option value="">Pilih program</option></select>
+            </label>
+            <label class="wide">Capaian/indikator
+              <select id="assignment-indicator" required disabled><option value="">Pilih capaian</option></select>
+            </label>
+            <label class="wide">Catatan verifikasi
+              <textarea id="assignment-note" rows="3" placeholder="Catatan admin mengenai kesesuaian evidence dan capaian"></textarea>
+            </label>
+            <div class="wide assignment-actions">
+              <button type="submit" class="btn btn-outline">Verifikasi &amp; simpan assignment</button>
+              <span id="assignment-feedback" role="status"></span>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="admin-column admin-column--narrow">
+        <div class="section-heading"><div><span class="eyebrow">STATUS PROGRAM</span><h2>Donor tersedia</h2></div></div>
+        <div class="admin-card"><div id="admin-donor-status-list" class="admin-donor-list">Memuat program...</div></div>
+      </div>
+    </section>
+
+    <section class="admin-panel assignment-history-panel">
+      <div class="admin-column admin-column--wide">
+        <div class="section-heading"><div><span class="eyebrow">RIWAYAT PUSAT</span><h2>Evidence yang sudah dihubungkan</h2></div></div>
+        <div class="admin-card admin-card--list"><div id="assignment-history"></div></div>
+      </div>
+    </section>
+
+    <section class="admin-panel programme-admin-panel" aria-labelledby="programme-admin-title">
+      <div class="admin-column admin-column--wide">
+        <div class="section-heading"><div><span class="eyebrow">KONFIGURASI PUSAT</span><h2 id="programme-admin-title">Kelola program/project donor</h2></div></div>
+        <div class="admin-card">
+          <form id="programme-admin-form" class="assignment-form">
+            <label>Donor
+              <select id="programme-admin-donor" required><option value="">Pilih donor</option></select>
+            </label>
+            <label>Program/project
+              <select id="programme-admin-record"><option value="">Tambah program/project baru</option></select>
+            </label>
+            <label>Fase
+              <input id="programme-admin-phase" placeholder="Contoh: Fase 3">
+            </label>
+            <label>Judul program/project
+              <input id="programme-admin-name" required placeholder="Isi judul resmi program/project">
+            </label>
+            <label>Periode
+              <input id="programme-admin-period" required placeholder="2027–2028">
+            </label>
+            <label>Status
+              <select id="programme-admin-status"><option>Aktif</option><option>Direncanakan</option><option>Selesai</option></select>
+            </label>
+            <label>Organisasi pelaksana
+              <input id="programme-admin-organization" placeholder="Contoh: Yayasan Gambut">
+            </label>
+            <label>Lokasi project
+              <input id="programme-admin-locations" placeholder="Pisahkan lokasi dengan koma">
+            </label>
+            <label class="wide">Ringkasan
+              <textarea id="programme-admin-summary" rows="2" placeholder="Fokus project atau fase"></textarea>
+            </label>
+            <label class="wide">Goal
+              <textarea id="programme-admin-goal" rows="2" placeholder="Tujuan utama program/project"></textarea>
+            </label>
+            <div class="wide logframe-builder">
+              <div class="logframe-builder-head">
+                <div><span>LOGICAL FRAMEWORK</span><h3>Outcome, output, aktivitas, dan indikator</h3></div>
+                <button id="add-logframe-row" class="btn btn-light" type="button">+ Tambah baris</button>
+              </div>
+              <p class="logframe-help">Gunakan outcome dan output yang sama pada beberapa baris jika memiliki lebih dari satu aktivitas.</p>
+              <div id="logframe-rows" class="logframe-rows"></div>
+            </div>
+            <div class="wide assignment-actions">
+              <button class="btn btn-outline" type="submit">Simpan program/project</button>
+              <button id="reset-programme-config" class="btn btn-light" type="button">Muat ulang data pusat</button>
+              <span id="programme-admin-feedback" role="status"></span>
+            </div>
+          </form>
+        </div>
+        <div id="programme-register" class="programme-register"></div>
+      </div>
+    </section>
+
+    <section class="summary-grid admin-summary-grid legacy-admin-tools" aria-label="Statistik admin" hidden>
+      <article>
+        <span>Total kunjungan</span>
+        <strong id="stat-total-visits">0</strong>
+        <small>Berdasarkan jumlah rekaman di browser</small>
+      </article>
+      <article>
+        <span>Kunjungan hari ini</span>
+        <strong id="stat-today-visits">0</strong>
+        <small>Kunjungan yang tercatat hari ini</small>
+      </article>
+      <article>
+        <span>Blok teks tersimpan</span>
+        <strong id="stat-text-blocks">0</strong>
+        <small>Konten teks bebas yang dapat disunting</small>
+      </article>
+      <article>
+        <span>Update terakhir</span>
+        <strong id="stat-last-updated">—</strong>
+        <small>Waktu perubahan terakhir</small>
+      </article>
+    </section>
+
+    <section class="admin-panel legacy-admin-tools" hidden>
+      <div class="admin-column admin-column--wide">
+        <div class="section-heading">
+          <div><span class="eyebrow">Statistik Pengunjung</span><h2>Ringkasan kunjungan</h2></div>
+        </div>
+        <div class="admin-card">
+          <div class="admin-action-row">
+            <button id="log-visit" type="button" class="btn btn-outline">Catat kunjungan baru</button>
+            <button id="reset-stats" type="button" class="btn btn-light">Reset statistik</button>
+          </div>
+          <div class="admin-list" id="visit-history"></div>
+        </div>
+      </div>
+
+      <div class="admin-column admin-column--narrow">
+        <div class="section-heading">
+          <div><span class="eyebrow">Konten Teks</span><h2>Kelola teks bebas</h2></div>
+        </div>
+        <div class="admin-card">
+          <form id="text-block-form">
+            <label>Judul kunci
+              <input id="text-block-key" type="text" placeholder="contoh: hero-tagline" required>
+            </label>
+            <label>Nama tampilan
+              <input id="text-block-label" type="text" placeholder="contoh: Hero tagline">
+            </label>
+            <label>Isi teks
+              <textarea id="text-block-content" rows="5" placeholder="Masukkan teks bebas..." required></textarea>
+            </label>
+            <div class="admin-action-row">
+              <button type="submit" class="btn btn-outline">Simpan teks</button>
+              <button id="clear-form" type="button" class="btn btn-light">Bersihkan</button>
+            </div>
+          </form>
+        </div>
+        <div class="admin-card admin-card--list">
+          <h3>Daftar blok teks</h3>
+          <div id="text-block-list"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="ps-review-dialog" class="ps-review-dialog" aria-labelledby="ps-review-title">
+    <form method="dialog" class="ps-review-card">
+      <div class="ps-review-head">
+        <div><span class="eyebrow">PRATINJAU PERSETUJUAN</span><h2 id="ps-review-title">Rencana penempatan dokumen</h2></div>
+        <button class="ps-review-close" value="cancel" aria-label="Tutup pratinjau">×</button>
+      </div>
+      <div class="ps-review-grid">
+        <section><span>Dokumen yang ditinjau</span><strong id="ps-review-file">—</strong><a id="ps-review-drive" href="#" target="_blank" rel="noopener">Preview dokumen di Drive ↗</a></section>
+        <section><span>Profil PS tujuan</span><strong id="ps-review-profile">—</strong><small id="ps-review-location">—</small><a id="ps-review-profile-link" href="#" target="_blank" rel="noopener">Preview profil PS ↗</a></section>
+        <section class="ps-review-placement"><span>Rencana penempatan</span><strong>Profil PS → Pengelolaan Perhutanan Sosial → Dokumen pendukung</strong><small id="ps-review-category">Kategori: —</small></section>
+      </div>
+      <p id="ps-review-message" class="ps-review-message">Pastikan dokumen dan profil tujuan sudah benar sebelum menyetujui.</p>
+      <div class="ps-review-actions">
+        <button class="btn btn-light" value="cancel">Batal</button>
+        <button class="btn btn-outline" id="ps-review-confirm" value="default" type="button">Setujui &amp; buka profil</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="js/config.js?v=20260727-all-layers1"></script>
+  <script src="js/auth.js?v=20260915-logout3"></script>
+  <script src="js/admin-dashboard.js?v=20260831-report-inbox1"></script>
+</body>
+</html>

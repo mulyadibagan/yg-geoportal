@@ -1,0 +1,291 @@
+{
+  "schemaVersion": 1,
+  "product": "Prioritas Rehabilitasi Mangrove 2016–2025",
+  "status": "foundation",
+  "baseline": "2016",
+  "comparison": "2025",
+  "generatedAt": "2026-08-12T10:30:00Z",
+  "disclaimer": "Fondasi analisis. Skor, luas kandidat, dan polygon belum dihitung dan tidak boleh digunakan untuk keputusan penanaman.",
+  "villages": [
+    {
+      "id": "kampung-baru",
+      "village": "Kampung Baru",
+      "district": "Concong",
+      "regency": "Indragiri Hilir",
+      "lat": -0.262356,
+      "lon": 103.566614,
+      "scope": "Indragiri Hilir coastal screening"
+    },
+    {
+      "id": "panglima-raja",
+      "village": "Panglima Raja",
+      "district": "Concong",
+      "regency": "Indragiri Hilir",
+      "lat": -0.289256,
+      "lon": 103.701193,
+      "scope": "Indragiri Hilir coastal screening"
+    },
+    {
+      "id": "kuala-gaung",
+      "village": "Kuala Gaung",
+      "district": "Gaung Anak Serka",
+      "regency": "Indragiri Hilir",
+      "lat": -0.113856,
+      "lon": 103.43358,
+      "scope": "Indragiri Hilir coastal screening"
+    },
+    {
+      "id": "air-tawar",
+      "village": "Air Tawar",
+      "district": "Kateman",
+      "regency": "Indragiri Hilir",
+      "lat": 0.342944,
+      "lon": 103.574945,
+      "scope": "Indragiri Hilir coastal screening"
+    },
+    {
+      "id": "kelurahan-bandar-sri-gemilang",
+      "village": "Kelurahan Bandar Sri Gemilang",
+      "district": "Kateman",
+      "regency": "Indragiri Hilir",
+      "lat": 0.315344,
+      "lon": 103.626194,
+      "scope": "Indragiri Hilir coastal screening"
+    },
+    {
+      "id": "kuala-selat",
+      "village": "Kuala Selat",
+      "district": "Kateman",
+      "regency": "Indragiri Hilir",
+      "lat": 0.156644,
+      "lon": 103.7318,
+      "scope": "Indragiri Hilir coastal screening"
+    },
+    {
+      "id": "makmur-jaya",
+      "village": "Makmur Jaya",
+      "district": "Kateman",
+      "regency": "Indragiri Hilir",
+      "lat": 0.116844,
+      "lon": 103.696059,
+      "scope": "Indragiri Hilir coastal screening"
+    },
+    {
+      "id": "sungaisimbar",
+      "village": "Sungaisimbar",
+      "district": "Kateman",
+      "regency": "Indragiri Hilir",
+      "lat": 0.091394,
+      "lon": 103.722126,
+      "scope": "Indragiri Hilir coastal screening"
+    },
+    {
+      "id": "sungaiteritip",
+      "village": "Sungaiteritip",
+      "district": "Kateman",
+      "regency": "Indragiri Hilir",
+      "lat": 0.291694,
+      "lon": 103.674881,
+      "scope": "Indragiri Hilir coastal screening"
+    },
+    {
+      "id": "perigi-raja",
+      "village": "Perigi Raja",
+      "district": "Kuala Indragiri",
+      "regency": "Indragiri Hilir",
+      "lat": -0.254106,
+      "lon": 103.452997,
+      "scope": "Indragiri Hilir coastal screening"
+    },
+    {
+      "id": "sungaibela",
+      "village": "Sungaibela",
+      "district": "Kuala Indragiri",
+      "regency": "Indragiri Hilir",
+      "lat": -0.348056,
+      "lon": 103.604465,
+      "scope": "Indragiri Hilir coastal screening"
+    },
+    {
+      "id": "sungaibuluh",
+      "village": "Sungaibuluh",
+      "district": "Kuala Indragiri",
+      "regency": "Indragiri Hilir",
+      "lat": -0.437406,
+      "lon": 103.556954,
+      "scope": "Indragiri Hilir coastal screening"
+    },
+    {
+      "id": "tanjungmelayu",
+      "village": "Tanjungmelayu",
+      "district": "Kuala Indragiri",
+      "regency": "Indragiri Hilir",
+      "lat": -0.247256,
+      "lon": 103.402027,
+      "scope": "Indragiri Hilir coastal screening"
+    },
+    {
+      "id": "bakau-aceh",
+      "village": "Bakau Aceh",
+      "district": "Mandah",
+      "regency": "Indragiri Hilir",
+      "lat": -0.051356,
+      "lon": 103.445917,
+      "scope": "Indragiri Hilir coastal screening"
+    },
+    {
+      "id": "batang-sari",
+      "village": "Batang Sari",
+      "district": "Mandah",
+      "regency": "Indragiri Hilir",
+      "lat": 0.022644,
+      "lon": 103.691952,
+      "scope": "Indragiri Hilir coastal screening"
+    },
+    {
+      "id": "belaras",
+      "village": "Belaras",
+      "district": "Mandah",
+      "regency": "Indragiri Hilir",
+      "lat": 0.023194,
+      "lon": 103.586056,
+      "scope": "Indragiri Hilir coastal screening"
+    },
+    {
+      "id": "bente",
+      "village": "Bente",
+      "district": "Mandah",
+      "regency": "Indragiri Hilir",
+      "lat": 0.057144,
+      "lon": 103.5228,
+      "scope": "Indragiri Hilir coastal screening"
+    },
+    {
+      "id": "bidari-tanjung-datuk",
+      "village": "Bidari Tanjung Datuk",
+      "district": "Mandah",
+      "regency": "Indragiri Hilir",
+      "lat": 0.035444,
+      "lon": 103.756021,
+      "scope": "Indragiri Hilir coastal screening"
+    },
+    {
+      "id": "bolak-raya",
+      "village": "Bolak Raya",
+      "district": "Mandah",
+      "regency": "Indragiri Hilir",
+      "lat": -0.030456,
+      "lon": 103.547113,
+      "scope": "Indragiri Hilir coastal screening"
+    },
+    {
+      "id": "pulaucawan",
+      "village": "Pulaucawan",
+      "district": "Mandah",
+      "regency": "Indragiri Hilir",
+      "lat": -0.098206,
+      "lon": 103.555797,
+      "scope": "Indragiri Hilir coastal screening"
+    },
+    {
+      "id": "pulauburung",
+      "village": "Pulauburung",
+      "district": "Pulau Burung",
+      "regency": "Indragiri Hilir",
+      "lat": 0.393744,
+      "lon": 103.526629,
+      "scope": "Indragiri Hilir coastal screening"
+    },
+    {
+      "id": "sungaidanai",
+      "village": "Sungaidanai",
+      "district": "Pulau Burung",
+      "regency": "Indragiri Hilir",
+      "lat": 0.488644,
+      "lon": 103.42254,
+      "scope": "Indragiri Hilir coastal screening"
+    },
+    {
+      "id": "teluknibung",
+      "village": "Teluknibung",
+      "district": "Pulau Burung",
+      "regency": "Indragiri Hilir",
+      "lat": 0.417594,
+      "lon": 103.46491,
+      "scope": "Indragiri Hilir coastal screening"
+    },
+    {
+      "id": "metro",
+      "village": "Metro",
+      "district": "Reteh",
+      "regency": "Indragiri Hilir",
+      "lat": -0.725306,
+      "lon": 103.221975,
+      "scope": "Indragiri Hilir coastal screening"
+    },
+    {
+      "id": "pulauruku",
+      "village": "Pulauruku",
+      "district": "Reteh",
+      "regency": "Indragiri Hilir",
+      "lat": -0.750806,
+      "lon": 103.416004,
+      "scope": "Indragiri Hilir coastal screening"
+    },
+    {
+      "id": "seberang-pulau-kijang",
+      "village": "Seberang Pulau Kijang",
+      "district": "Reteh",
+      "regency": "Indragiri Hilir",
+      "lat": -0.667056,
+      "lon": 103.29817,
+      "scope": "Indragiri Hilir coastal screening"
+    },
+    {
+      "id": "sungaiundan",
+      "village": "Sungaiundan",
+      "district": "Reteh",
+      "regency": "Indragiri Hilir",
+      "lat": -0.719256,
+      "lon": 103.276095,
+      "scope": "Indragiri Hilir coastal screening"
+    },
+    {
+      "id": "kuala-patah-parang",
+      "village": "Kuala Patah Parang",
+      "district": "Sungai Batang",
+      "regency": "Indragiri Hilir",
+      "lat": -0.599106,
+      "lon": 103.386079,
+      "scope": "Indragiri Hilir coastal screening"
+    },
+    {
+      "id": "kuala-sungai-batang",
+      "village": "Kuala Sungai Batang",
+      "district": "Sungai Batang",
+      "regency": "Indragiri Hilir",
+      "lat": -0.640106,
+      "lon": 103.318517,
+      "scope": "Indragiri Hilir coastal screening"
+    },
+    {
+      "id": "pandan-sari",
+      "village": "Pandan Sari",
+      "district": "Sungai Batang",
+      "regency": "Indragiri Hilir",
+      "lat": -0.604456,
+      "lon": 103.329037,
+      "scope": "Indragiri Hilir coastal screening"
+    },
+    {
+      "id": "tanjungpasir",
+      "village": "Tanjungpasir",
+      "district": "Tanah Merah",
+      "regency": "Indragiri Hilir",
+      "lat": -0.443256,
+      "lon": 103.413133,
+      "scope": "Indragiri Hilir coastal screening"
+    }
+  ],
+  "scope": "Kabupaten/Kota Indragiri Hilir"
+}

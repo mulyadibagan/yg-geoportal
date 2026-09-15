@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "product": "Prioritas Rehabilitasi Mangrove 2016–2025",
+  "status": "foundation",
+  "baseline": "2016",
+  "comparison": "2025",
+  "generatedAt": "2026-08-12T10:30:00Z",
+  "disclaimer": "Fondasi analisis. Skor, luas kandidat, dan polygon belum dihitung dan tidak boleh digunakan untuk keputusan penanaman.",
+  "villages": [
+    {
+      "id": "api-api",
+      "village": "Api-Api",
+      "district": "Bandar Laksamana",
+      "regency": "Bengkalis",
+      "lat": 1.398194,
+      "lon": 101.770643,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "paritsatuapi-api",
+      "village": "Paritsatuapi-Api",
+      "district": "Bandar Laksamana",
+      "regency": "Bengkalis",
+      "lat": 1.482094,
+      "lon": 101.964931,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "sepahat",
+      "village": "Sepahat",
+      "district": "Bandar Laksamana",
+      "regency": "Bengkalis",
+      "lat": 1.560556,
+      "lon": 101.87558
+    },
+    {
+      "id": "tanjungleban",
+      "village": "Tanjungleban",
+      "district": "Bandar Laksamana",
+      "regency": "Bengkalis",
+      "lat": 1.539094,
+      "lon": 101.712413,
+      "scope": "Bengkalis coastal screening"
+    },
+    {
+      "id": "tenggayun",
+      "village": "Tenggayun",
+      "district": "Bandar Laksamana",
+      "regency": "Bengkalis",
+      "lat": 1.432644,
+      "lon": 101.74684,
+      "scope": "Bengkalis coastal screening"
+    }
+  ],
+  "scope": "Kecamatan Bandar Laksamana"
+}

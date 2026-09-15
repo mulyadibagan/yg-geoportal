@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "product": "Prioritas Rehabilitasi Mangrove 2016–2025",
+  "status": "foundation",
+  "baseline": "2016",
+  "comparison": "2025",
+  "generatedAt": "2026-08-12T10:30:00Z",
+  "disclaimer": "Fondasi analisis. Skor, luas kandidat, dan polygon belum dihitung dan tidak boleh digunakan untuk keputusan penanaman.",
+  "villages": [
+    {
+      "id": "kelurahan-teluk-dalam",
+      "village": "Kelurahan Teluk Dalam",
+      "district": "Kuala Kampar",
+      "regency": "Pelalawan",
+      "lat": 0.569494,
+      "lon": 103.226536,
+      "scope": "Pelalawan coastal screening"
+    },
+    {
+      "id": "serapung",
+      "village": "Serapung",
+      "district": "Kuala Kampar",
+      "regency": "Pelalawan",
+      "lat": 0.574294,
+      "lon": 102.987319,
+      "scope": "Pelalawan coastal screening"
+    },
+    {
+      "id": "sokoi",
+      "village": "Sokoi",
+      "district": "Kuala Kampar",
+      "regency": "Pelalawan",
+      "lat": 0.491044,
+      "lon": 103.306183,
+      "scope": "Pelalawan coastal screening"
+    },
+    {
+      "id": "sungai-mas",
+      "village": "Sungai Mas",
+      "district": "Kuala Kampar",
+      "regency": "Pelalawan",
+      "lat": 0.446194,
+      "lon": 103.224795,
+      "scope": "Pelalawan coastal screening"
+    },
+    {
+      "id": "sungai-solok",
+      "village": "Sungai Solok",
+      "district": "Kuala Kampar",
+      "regency": "Pelalawan",
+      "lat": 0.646894,
+      "lon": 103.246274,
+      "scope": "Pelalawan coastal screening"
+    },
+    {
+      "id": "sungai-upih",
+      "village": "Sungai Upih",
+      "district": "Kuala Kampar",
+      "regency": "Pelalawan",
+      "lat": 0.654894,
+      "lon": 103.184413,
+      "scope": "Pelalawan coastal screening"
+    },
+    {
+      "id": "tanjung-sum",
+      "village": "Tanjung Sum",
+      "district": "Kuala Kampar",
+      "regency": "Pelalawan",
+      "lat": 0.580494,
+      "lon": 103.280505,
+      "scope": "Pelalawan coastal screening"
+    },
+    {
+      "id": "teluk",
+      "village": "Teluk",
+      "district": "Kuala Kampar",
+      "regency": "Pelalawan",
+      "lat": 0.532144,
+      "lon": 103.176353,
+      "scope": "Pelalawan coastal screening"
+    },
+    {
+      "id": "teluk-bakau",
+      "village": "Teluk Bakau",
+      "district": "Kuala Kampar",
+      "regency": "Pelalawan",
+      "lat": 0.582344,
+      "lon": 103.163937,
+      "scope": "Pelalawan coastal screening"
+    },
+    {
+      "id": "teluk-beringin",
+      "village": "Teluk Beringin",
+      "district": "Kuala Kampar",
+      "regency": "Pelalawan",
+      "lat": 0.604944,
+      "lon": 103.183898,
+      "scope": "Pelalawan coastal screening"
+    }
+  ],
+  "scope": "Kabupaten/Kota Pelalawan"
+}

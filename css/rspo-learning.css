@@ -1,0 +1,16 @@
+.learning-criteria{padding:24px;border-top:1px solid var(--line)}
+.learning-criteria>h3{margin:0 0 14px;font-size:18px}
+.learning-criterion{margin:8px 0;border:1px solid var(--line);background:#fff}
+.guide-principle .learning-criterion>summary{display:grid;grid-template-columns:40px minmax(0,1fr);gap:12px;padding:18px 42px 18px 16px;min-height:56px}
+.learning-criterion>summary>b{color:var(--green)}
+.guide-principle .learning-criterion>summary>span{font-size:14px;line-height:1.55;letter-spacing:0;color:var(--ink);font-weight:600}
+.learning-criterion>summary:after{content:'+';position:absolute;right:16px;top:18px;font-size:20px;color:var(--green)}
+.learning-criterion[open]>summary:after{content:'−'}
+.learning-criterion[open]>summary{background:#edf4ee;border-bottom:1px solid var(--line)}
+.learning-body{padding:20px 24px}
+.learning-body h4{margin:0 0 6px;font-size:14px}
+.learning-body h4:not(:first-child){margin-top:20px}
+.learning-body p,.learning-note{color:var(--muted);font-size:14px;line-height:1.7;margin:0}
+.learning-note{font-size:12px;margin-top:16px}
+.learning-criterion>summary:focus-visible{outline:3px solid #267346;outline-offset:2px}
+@media(max-width:640px){.learning-criteria{padding:16px}.learning-body{padding:16px}.guide-principle .learning-criterion>summary{grid-template-columns:32px minmax(0,1fr);gap:8px}}

@@ -1,0 +1,270 @@
+{
+  "type": "FeatureCollection",
+  "name": "area_kopi",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "Id": 1,
+        "Object_ID": "KOPI-PEMATANG-DUKU-2026-P01",
+        "Nama_Objek": "Wilayah Penanaman Kopi – Pematang Duku – Plot 01",
+        "Kategori": "Agroforestri/Kopi",
+        "Kabupaten": "Bengkalis",
+        "Kecamatan": "Bengkalis",
+        "Desa": "Pematang Duku",
+        "Tahun": "2026",
+        "Luas_Ha": 0.879046,
+        "Jumlah_Tanam": 2500,
+        "Jenis_Pohon": "Kopi",
+        "Riwayat_Penanaman": "Okt 2025: 2.500 bibit (total lokasi Pematang Duku; tidak dikalikan per polygon)",
+        "Sumber_Data_Penanaman": "Rekap penanaman Yayasan Gambut",
+        "Cakupan_Data_Penanaman": "Total seluruh area Pematang Duku",
+        "Pemilik_Lahan": null,
+        "Tumpang_Sari": null,
+        "Layer_ID": "area_kopi",
+        "Layer_Label": "Wilayah Penanaman Kopi",
+        "Source_Layer": "area_kopi",
+        "Source_Report_ID": "YG-20260720-132156-867",
+        "Status_Objek": "Aktif"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[102.2943050870477,1.463189748714773,0],[102.2943341992103,1.462687658423115,0],[102.2957595718348,1.462804160153516,0],[102.2957257196645,1.463296680990885,0],[102.2943050870477,1.463189748714773,0]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Id": 2,
+        "Object_ID": "KOPI-PEMATANG-DUKU-2026-P02",
+        "Nama_Objek": "Wilayah Penanaman Kopi – Pematang Duku – Plot 02",
+        "Kategori": "Agroforestri/Kopi",
+        "Kabupaten": "Bengkalis",
+        "Kecamatan": "Bengkalis",
+        "Desa": "Pematang Duku",
+        "Tahun": "2026",
+        "Luas_Ha": 0.580399,
+        "Jumlah_Tanam": null,
+        "Pemilik_Lahan": null,
+        "Tumpang_Sari": null,
+        "Layer_ID": "area_kopi",
+        "Layer_Label": "Wilayah Penanaman Kopi",
+        "Source_Layer": "area_kopi",
+        "Source_Report_ID": "YG-20260720-132156-867",
+        "Status_Objek": "Aktif"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[102.2970807987818,1.448673645082976,0],[102.2968883670556,1.448742982847,0],[102.2966967184802,1.448822772267649,0],[102.2963240637878,1.44775153305876,0],[102.2965161623108,1.447673037541779,0],[102.2965157121568,1.44767174352368,0],[102.2967082485245,1.447593069057319,0],[102.2970807987818,1.448673645082976,0]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Id": 3,
+        "Object_ID": "KOPI-PEMATANG-DUKU-2026-P03",
+        "Nama_Objek": "Wilayah Penanaman Kopi – Pematang Duku – Plot 03",
+        "Kategori": "Agroforestri/Kopi",
+        "Kabupaten": "Bengkalis",
+        "Kecamatan": "Bengkalis",
+        "Desa": "Pematang Duku",
+        "Tahun": "2026",
+        "Luas_Ha": 0.284343,
+        "Jumlah_Tanam": null,
+        "Pemilik_Lahan": null,
+        "Tumpang_Sari": null,
+        "Layer_ID": "area_kopi",
+        "Layer_Label": "Wilayah Penanaman Kopi",
+        "Source_Layer": "area_kopi",
+        "Source_Report_ID": "YG-20260720-132156-867",
+        "Status_Objek": "Aktif"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[102.296299957419,1.447612205647237,0],[102.2961040413575,1.447034525003206,0],[102.2964754514043,1.446932599833225,0],[102.2966564463663,1.447516990471147,0],[102.296299957419,1.447612205647237,0]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Id": 4,
+        "Object_ID": "KOPI-PEMATANG-DUKU-2026-P04",
+        "Nama_Objek": "Wilayah Penanaman Kopi – Pematang Duku – Plot 04",
+        "Kategori": "Agroforestri/Kopi",
+        "Kabupaten": "Bengkalis",
+        "Kecamatan": "Bengkalis",
+        "Desa": "Pematang Duku",
+        "Tahun": "2026",
+        "Luas_Ha": 0.564643,
+        "Jumlah_Tanam": null,
+        "Pemilik_Lahan": null,
+        "Tumpang_Sari": null,
+        "Layer_ID": "area_kopi",
+        "Layer_Label": "Wilayah Penanaman Kopi",
+        "Source_Layer": "area_kopi",
+        "Source_Report_ID": "YG-20260720-132156-867",
+        "Status_Objek": "Aktif"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[102.2973160888616,1.443537703716893,0],[102.2974345060791,1.443726148189246,0],[102.2977509477743,1.444346175727373,0],[102.2979350307074,1.4448641878455,0],[102.2976255237036,1.444931840478282,0],[102.2970658197723,1.443609014142505,0],[102.2973160888616,1.443537703716893,0]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Id": 5,
+        "Object_ID": "KOPI-PEMATANG-DUKU-2026-P05",
+        "Nama_Objek": "Wilayah Penanaman Kopi – Pematang Duku – Plot 05",
+        "Kategori": "Agroforestri/Kopi",
+        "Kabupaten": "Bengkalis",
+        "Kecamatan": "Bengkalis",
+        "Desa": "Pematang Duku",
+        "Tahun": "2026",
+        "Luas_Ha": 0.281863,
+        "Jumlah_Tanam": null,
+        "Pemilik_Lahan": null,
+        "Tumpang_Sari": null,
+        "Layer_ID": "area_kopi",
+        "Layer_Label": "Wilayah Penanaman Kopi",
+        "Source_Layer": "area_kopi",
+        "Source_Report_ID": "YG-20260720-132156-867",
+        "Status_Objek": "Aktif"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[102.2989732144984,1.444657348793227,0],[102.2987944274195,1.444676123418994,0],[102.2984021633493,1.443426408363074,0],[102.2985633009998,1.443379257674205,0],[102.2989732144984,1.444657348793227,0]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Id": 6,
+        "Object_ID": "KOPI-PEMATANG-DUKU-2026-P06",
+        "Nama_Objek": "Wilayah Penanaman Kopi – Pematang Duku – Plot 06",
+        "Kategori": "Agroforestri/Kopi",
+        "Kabupaten": "Bengkalis",
+        "Kecamatan": "Bengkalis",
+        "Desa": "Pematang Duku",
+        "Tahun": "2026",
+        "Luas_Ha": 0.567787,
+        "Jumlah_Tanam": null,
+        "Pemilik_Lahan": null,
+        "Tumpang_Sari": null,
+        "Layer_ID": "area_kopi",
+        "Layer_Label": "Wilayah Penanaman Kopi",
+        "Source_Layer": "area_kopi",
+        "Source_Report_ID": "YG-20260720-132156-867",
+        "Status_Objek": "Aktif"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[102.2989980411152,1.448032428674209,0],[102.2972915069471,1.448604239839082,0],[102.2971984481112,1.448340737890504,0],[102.2989198960483,1.447814746282789,0],[102.2989980411152,1.448032428674209,0]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Id": 7,
+        "Object_ID": "KOPI-PEMATANG-DUKU-2026-P07",
+        "Nama_Objek": "Wilayah Penanaman Kopi – Pematang Duku – Plot 07",
+        "Kategori": "Agroforestri/Kopi",
+        "Kabupaten": "Bengkalis",
+        "Kecamatan": "Bengkalis",
+        "Desa": "Pematang Duku",
+        "Tahun": "2026",
+        "Luas_Ha": 0.26808,
+        "Jumlah_Tanam": null,
+        "Pemilik_Lahan": null,
+        "Tumpang_Sari": null,
+        "Layer_ID": "area_kopi",
+        "Layer_Label": "Wilayah Penanaman Kopi",
+        "Source_Layer": "area_kopi",
+        "Source_Report_ID": "YG-20260720-132156-867",
+        "Status_Objek": "Aktif"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[102.2981350352283,1.447743322221067,0],[102.2988313244262,1.44752955374421,0],[102.2989198960483,1.447814746282789,0],[102.2982250533275,1.448027057050811,0],[102.2981350352283,1.447743322221067,0]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Id": 8,
+        "Object_ID": "KOPI-PEMATANG-DUKU-2026-P08",
+        "Nama_Objek": "Wilayah Penanaman Kopi – Pematang Duku – Plot 08",
+        "Kategori": "Agroforestri/Kopi",
+        "Kabupaten": "Bengkalis",
+        "Kecamatan": "Bengkalis",
+        "Desa": "Pematang Duku",
+        "Tahun": "2026",
+        "Luas_Ha": 0.258137,
+        "Jumlah_Tanam": null,
+        "Pemilik_Lahan": null,
+        "Tumpang_Sari": null,
+        "Layer_ID": "area_kopi",
+        "Layer_Label": "Wilayah Penanaman Kopi",
+        "Source_Layer": "area_kopi",
+        "Source_Report_ID": "YG-20260720-132156-867",
+        "Status_Objek": "Aktif"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[102.3004115824536,1.456981980210692,0],[102.2996512236803,1.457052795188626,0],[102.299615870799,1.456813644010029,0],[102.3004416224147,1.456695086051364,0],[102.3004115824536,1.456981980210692,0]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Id": 9,
+        "Object_ID": "KOPI-PEMATANG-DUKU-2026-P09",
+        "Nama_Objek": "Wilayah Penanaman Kopi – Pematang Duku – Plot 09",
+        "Kategori": "Agroforestri/Kopi",
+        "Kabupaten": "Bengkalis",
+        "Kecamatan": "Bengkalis",
+        "Desa": "Pematang Duku",
+        "Tahun": "2026",
+        "Luas_Ha": 0.268074,
+        "Jumlah_Tanam": null,
+        "Pemilik_Lahan": null,
+        "Tumpang_Sari": null,
+        "Layer_ID": "area_kopi",
+        "Layer_Label": "Wilayah Penanaman Kopi",
+        "Source_Layer": "area_kopi",
+        "Source_Report_ID": "YG-20260720-132156-867",
+        "Status_Objek": "Aktif"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[102.2941490584237,1.463414374925266,0],[102.2941273574398,1.463679757788429,0],[102.2933932374002,1.463664519301108,0],[102.2934577897627,1.463327456489676,0],[102.2941490584237,1.463414374925266,0]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Id": 10,
+        "Object_ID": "KOPI-PEMATANG-DUKU-2026-P10",
+        "Nama_Objek": "Wilayah Penanaman Kopi – Pematang Duku – Plot 10",
+        "Kategori": "Agroforestri/Kopi",
+        "Kabupaten": "Bengkalis",
+        "Kecamatan": "Bengkalis",
+        "Desa": "Pematang Duku",
+        "Tahun": "2026",
+        "Luas_Ha": 0.351712,
+        "Jumlah_Tanam": null,
+        "Pemilik_Lahan": null,
+        "Tumpang_Sari": null,
+        "Layer_ID": "area_kopi",
+        "Layer_Label": "Wilayah Penanaman Kopi",
+        "Source_Layer": "area_kopi",
+        "Source_Report_ID": "YG-20260720-132156-867",
+        "Status_Objek": "Aktif"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[102.2940903768498,1.464798735493452,0],[102.2940685721874,1.465150196851755,0],[102.2931704147274,1.465220836486092,0],[102.2931136959138,1.464969704911138,0],[102.2940903768498,1.464798735493452,0]]]
+      }
+    }
+  ]
+}

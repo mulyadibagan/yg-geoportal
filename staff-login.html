@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Login Staf | YG GeoPortal</title>
+  <link rel="icon" href="assets/logo-yayasan-gambut.png">
+  <link rel="stylesheet" href="css/site-brand.css?v=20260821-staff-login1">
+  <link rel="stylesheet" href="css/staff-login.css?v=20260823-password-toggle1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#087653">
+</head>
+<body>
+  <main class="staff-login-shell">
+    <section class="staff-login-card" aria-labelledby="staff-login-title">
+      <a class="staff-login-brand" href="index.html" aria-label="Kembali ke beranda YG GeoPortal">
+        <img src="assets/logo-yayasan-gambut.png" alt="Logo Yayasan Gambut">
+        <span><strong>YG GeoPortal</strong><small>Dashboard Review Capaian Program</small></span>
+      </a>
+
+      <div id="staff-request-panel">
+        <p class="staff-login-eyebrow">AKSES INTERNAL</p>
+        <h1 id="staff-login-title">Login Staf Yayasan Gambut</h1>
+        <p class="staff-login-intro">Masuk untuk meninjau dan memperbarui capaian seluruh program donor.</p>
+        <form id="staff-login-form">
+          <label for="staff-username">Username</label>
+          <input id="staff-username" name="username" autocomplete="username" required>
+          <label for="staff-password">Password</label>
+          <div class="password-field">
+            <input id="staff-password" name="password" type="password" autocomplete="current-password" required>
+            <button class="password-toggle" type="button" data-password-toggle="staff-password" aria-label="Tampilkan password" aria-pressed="false">Lihat</button>
+          </div>
+          <button id="staff-login-submit" type="submit">Login</button>
+        </form>
+        <p id="staff-login-status" class="staff-login-status" role="status" aria-live="polite"></p>
+        <button id="show-password-reset-request" class="staff-text-button" type="button">Lupa password?</button>
+        <button id="show-registration" class="staff-text-button" type="button">Aktivasi akun staf pertama kali</button>
+        <p class="staff-login-note">Akun hanya dapat digunakan setelah email resmi Yayasan Gambut diverifikasi. Sesi admin berlaku 7 hari; sesi staf berlaku 24 jam.</p>
+      </div>
+
+      <div id="staff-password-reset-request-panel" hidden>
+        <p class="staff-login-eyebrow">PEMULIHAN AKUN</p>
+        <h1>Reset password</h1>
+        <p class="staff-login-intro">Masukkan email resmi yang terhubung dengan akun staf.</p>
+        <form id="staff-password-reset-request-form">
+          <label for="password-reset-email">Email resmi Yayasan Gambut</label>
+          <input id="password-reset-email" type="email" autocomplete="email" placeholder="nama@yayasangambut.org" required>
+          <button id="staff-password-reset-request-submit" type="submit">Kirim tautan reset</button>
+        </form>
+        <p id="staff-password-reset-request-status" class="staff-login-status" role="status" aria-live="polite"></p>
+        <button class="staff-text-button show-login" type="button">Kembali ke login</button>
+      </div>
+
+      <div id="staff-password-reset-panel" hidden>
+        <p class="staff-login-eyebrow">PASSWORD BARU</p>
+        <h1>Buat password baru</h1>
+        <p class="staff-login-intro">Password minimal 10 karakter. Tautan hanya dapat digunakan satu kali.</p>
+        <form id="staff-password-reset-form">
+          <label for="password-reset-new">Password baru</label>
+          <div class="password-field">
+            <input id="password-reset-new" type="password" autocomplete="new-password" minlength="10" required>
+            <button class="password-toggle" type="button" data-password-toggle="password-reset-new" aria-label="Tampilkan password baru" aria-pressed="false">Lihat</button>
+          </div>
+          <label for="password-reset-confirm">Ulangi password baru</label>
+          <div class="password-field">
+            <input id="password-reset-confirm" type="password" autocomplete="new-password" minlength="10" required>
+            <button class="password-toggle" type="button" data-password-toggle="password-reset-confirm" aria-label="Tampilkan ulang password baru" aria-pressed="false">Lihat</button>
+          </div>
+          <button id="staff-password-reset-submit" type="submit">Simpan password baru</button>
+        </form>
+        <p id="staff-password-reset-status" class="staff-login-status" role="status" aria-live="polite"></p>
+        <a class="staff-secondary-link" href="staff-login.html">Kembali ke login</a>
+      </div>
+
+      <div id="staff-registration-panel" hidden>
+        <p class="staff-login-eyebrow">AKTIVASI PERTAMA</p>
+        <h1>Buat akun staf</h1>
+        <p class="staff-login-intro">Tautan verifikasi akan dikirim ke email aktif @yayasangambut.org.</p>
+        <form id="staff-registration-form">
+          <label for="registration-username">Username</label>
+          <input id="registration-username" autocomplete="username" minlength="3" maxlength="32" required>
+          <label for="registration-email">Email resmi Yayasan Gambut</label>
+          <input id="registration-email" type="email" autocomplete="email" placeholder="nama@yayasangambut.org" required>
+          <label for="registration-password">Buat password</label>
+          <div class="password-field">
+            <input id="registration-password" type="password" autocomplete="new-password" minlength="10" required>
+            <button class="password-toggle" type="button" data-password-toggle="registration-password" aria-label="Tampilkan password" aria-pressed="false">Lihat</button>
+          </div>
+          <label for="registration-password-confirm">Ulangi password</label>
+          <div class="password-field">
+            <input id="registration-password-confirm" type="password" autocomplete="new-password" minlength="10" required>
+            <button class="password-toggle" type="button" data-password-toggle="registration-password-confirm" aria-label="Tampilkan ulang password" aria-pressed="false">Lihat</button>
+          </div>
+          <button id="staff-registration-submit" type="submit">Kirim tautan verifikasi</button>
+        </form>
+        <p id="staff-registration-status" class="staff-login-status" role="status" aria-live="polite"></p>
+        <button id="show-login" class="staff-text-button" type="button">Kembali ke login</button>
+      </div>
+
+      <div id="staff-processing-panel" hidden>
+        <p class="staff-login-eyebrow">VERIFIKASI AKSES</p>
+        <h1>Memverifikasi akun</h1>
+        <p id="staff-processing-status" class="staff-login-intro" role="status" aria-live="polite">Mohon tunggu sebentar…</p>
+        <a id="staff-retry-link" class="staff-secondary-link" href="staff-login.html" hidden>Kembali ke login</a>
+      </div>
+    </section>
+  </main>
+  <script src="js/auth.js?v=20260915-logout3"></script>
+  <script src="js/staff-login.js?v=20260823-password-toggle1"></script>
+</body>
+</html>

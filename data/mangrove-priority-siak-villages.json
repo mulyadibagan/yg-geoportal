@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "product": "Prioritas Rehabilitasi Mangrove 2016–2025",
+  "status": "foundation",
+  "baseline": "2016",
+  "comparison": "2025",
+  "generatedAt": "2026-08-12T10:30:00Z",
+  "disclaimer": "Fondasi analisis. Skor, luas kandidat, dan polygon belum dihitung dan tidak boleh digunakan untuk keputusan penanaman.",
+  "villages": [
+    {
+      "id": "bungsur",
+      "village": "Bungsur",
+      "district": "Sungai Apit",
+      "regency": "Siak",
+      "lat": 1.029044,
+      "lon": 102.181916,
+      "scope": "Siak coastal screening"
+    },
+    {
+      "id": "kayu-ara-permai",
+      "village": "Kayu Ara Permai",
+      "district": "Sungai Apit",
+      "regency": "Siak",
+      "lat": 1.188594,
+      "lon": 102.196026,
+      "scope": "Siak coastal screening"
+    },
+    {
+      "id": "mengkapan",
+      "village": "Mengkapan",
+      "district": "Sungai Apit",
+      "regency": "Siak",
+      "lat": 0.940044,
+      "lon": 102.221169,
+      "scope": "Siak coastal screening"
+    },
+    {
+      "id": "penyengat",
+      "village": "Penyengat",
+      "district": "Sungai Apit",
+      "regency": "Siak",
+      "lat": 0.740694,
+      "lon": 102.454212,
+      "scope": "Siak coastal screening"
+    },
+    {
+      "id": "rawa-mekar-jaya",
+      "village": "Rawa Mekar Jaya",
+      "district": "Sungai Apit",
+      "regency": "Siak",
+      "lat": 0.767794,
+      "lon": 102.325773,
+      "scope": "Siak coastal screening"
+    },
+    {
+      "id": "sungai-rawa",
+      "village": "Sungai Rawa",
+      "district": "Sungai Apit",
+      "regency": "Siak",
+      "lat": 0.823094,
+      "lon": 102.287538,
+      "scope": "Siak coastal screening"
+    },
+    {
+      "id": "tanjung-kuras",
+      "village": "Tanjung Kuras",
+      "district": "Sungai Apit",
+      "regency": "Siak",
+      "lat": 1.228433,
+      "lon": 102.176332
+    },
+    {
+      "id": "teluk-lanus",
+      "village": "Teluk Lanus",
+      "district": "Sungai Apit",
+      "regency": "Siak",
+      "lat": 0.684794,
+      "lon": 102.726292,
+      "scope": "Siak coastal screening"
+    }
+  ],
+  "scope": "Kabupaten/Kota Siak"
+}

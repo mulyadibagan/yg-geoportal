@@ -1,0 +1,77 @@
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+  workflow_run:
+    workflows:
+      - Update GEFS transport cache
+      - Update Hotspot Analytics
+      - Update Hotspot History
+      - Update Master Database snapshot
+      - Rebuild Full Village Analytics
+      - Rebuild Social Forestry Summary
+    types:
+      - completed
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build static site
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Prepare static artifact
+        shell: bash
+        run: |
+          mkdir -p _site
+          rsync -a \
+            --exclude '.git/' \
+            --exclude '.github/' \
+            --exclude '.codex-worktrees/' \
+            --exclude '.tablet-preview/' \
+            --exclude 'apps-script/' \
+            --exclude 'docs/' \
+            --exclude 'scripts/' \
+            --exclude 'data/kph_2019_riau.geojson' \
+            --exclude 'data/PBPH_RIAU_052026.geojson' \
+            --exclude 'data/pbph-documents.json' \
+            --exclude 'data/phl-svlk-monthly/' \
+            --exclude '_site/' \
+            ./ _site/
+          node scripts/sanitize-public-pbph.mjs _site
+          node scripts/assert-public-pbph-private.mjs _site
+          node --test tests/staff-auth.test.cjs
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    name: Deploy site
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
