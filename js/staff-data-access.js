@@ -3,6 +3,7 @@
   const base = 'https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev';
   const routes = {
     'data/PBPH_RIAU_052026.geojson': '/api/staff/pbph-riau',
+    'data/PERHUTANAN_SOSIAL_RIAU.geojson': '/api/staff/social-forestry-riau',
     'data/faperta-ur.json': '/api/staff/faperta-ur-data',
     'data/faperta-ur-site.geojson': '/api/staff/faperta-ur-site',
     'data/pbph-documents.json': '/api/staff/pbph-documents',

@@ -18,7 +18,7 @@ function render(){var q=norm(search.value),area=regency.value,legal=legalFilter.
 async function init(){
   try{
     var result=await Promise.all([
-      fetch("data/PERHUTANAN_SOSIAL_RIAU.geojson?v=20260828-area-summary1",{cache:"no-store"}).then(function(r){return r.json()}),
+      (window.YG_STAFF_DATA?window.YG_STAFF_DATA.fetch("data/PERHUTANAN_SOSIAL_RIAU.geojson?v=20260828-area-summary1",{cache:"no-store"}):fetch("data/PERHUTANAN_SOSIAL_RIAU.geojson?v=20260828-area-summary1",{cache:"no-store"})).then(function(r){return r.json()}),
       fetch("data/social-forestry-details.json?v=20260901-official1",{cache:"no-store"}).then(function(r){return r.json()}),
       fetch("data/social-forestry-summary.json?v=20260901-official1",{cache:"no-store"}).then(function(r){return r.json()}),
       fetch("data/social-forestry-pkk-samj.geojson?v=20260831-samj-pkk1",{cache:"no-store"}).then(function(r){return r.ok?r.json():{features:[]}}).catch(function(){return{features:[]}}),

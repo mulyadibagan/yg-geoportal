@@ -19,7 +19,7 @@ function kpi(icon,label,value,note){return'<article class="vp-kpi"><div class="v
 function item(label,value){return'<div><span>'+esc(label)+'</span><strong>'+esc(value==null||value===""?"—":value)+'</strong></div>'}
 function showError(message){el("loading-state").hidden=true;el("error-message").textContent=message;el("error-state").hidden=false}
 function toast(message){var n=el("toast");n.textContent=message;n.classList.add("is-visible");setTimeout(function(){n.classList.remove("is-visible")},2200)}
-async function json(url){var r=await fetch(url,{cache:"no-store"});if(!r.ok)throw new Error("HTTP "+r.status);return r.json()}
+async function json(url){var r=await (window.YG_STAFF_DATA?window.YG_STAFF_DATA.fetch(url,{cache:"no-store"}):fetch(url,{cache:"no-store"}));if(!r.ok)throw new Error("HTTP "+r.status);return r.json()}
 function renderMap(feature,name){
   map=L.map("village-map",{zoomControl:true,scrollWheelZoom:false});
   L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{maxNativeZoom:17,maxZoom:20,attribution:"Tiles © Esri"}).addTo(map);
