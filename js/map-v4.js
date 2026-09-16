@@ -41,7 +41,7 @@
 
   const REFERENCE_LAYERS = {
     ...(staffSession ? { pbph_riau_052026: { id: "pbph_riau_052026", label: "PBPH Riau · internal staf", file: "data/PBPH_RIAU_052026.geojson", color: "#d84315", count: 56, type: "active_concession", focusOnEnable: true, sourceLabel: "Referensi internal PBPH Mei 2026", scale: "1:50.000" } } : {}),
-    perusahaan_sawit_riau: {
+    ...(staffSession ? { perusahaan_sawit_riau: {
       id: "perusahaan_sawit_riau",
       label: "Area Perkebunan Anggota RSPO",
       file: "data/PERUSAHAAN_SAWIT_RIAU_REFERENSI.geojson",
@@ -54,7 +54,7 @@
       sourceLabel: "GeoRSPO / RSPO",
       sourceUrl: "https://rspo.org/as-an-organisation/tools/georspo/",
       scale: "Diperbarui 14 Juli 2026"
-    },
+    } } : {}),
     kawasan_hutan_sk_903: {
       id: "kawasan_hutan_sk_903",
       label: "Kawasan Hutan SK 903",
