@@ -35,7 +35,7 @@
     document.getElementById('dg-events').innerHTML=eventCards(events);
     var select=document.getElementById('dg-object-select');select.innerHTML=allIds.map(function(id){return '<option value="'+esc(id)+'"'+(id===(p.objectId||record.objectId)?' selected':'')+'>'+esc(id.replace('DAYUN-GT-',''))+'</option>';}).join('');select.addEventListener('change',function(){location.href='dayun-gawangan.html?object='+encodeURIComponent(select.value);});
     var prev=document.getElementById('dg-prev'),next=document.getElementById('dg-next');if(index>0)prev.href='dayun-gawangan.html?object='+encodeURIComponent(allIds[index-1]);else prev.hidden=true;if(index>=0&&index<allIds.length-1)next.href='dayun-gawangan.html?object='+encodeURIComponent(allIds[index+1]);else next.hidden=true;
-    var staffAction=document.getElementById('dg-staff-action'),staffSession=window.YG_AUTH&&window.YG_AUTH.readStoredSession();if(staffSession){staffAction.href='dayun-monitoring.html?object='+encodeURIComponent(p.objectId||record.objectId);staffAction.hidden=false;}
+    document.getElementById('dg-monitoring-action').href='dayun-monitoring.html?object='+encodeURIComponent(p.objectId||record.objectId);
     document.getElementById('dg-status').hidden=true;document.getElementById('dg-content').hidden=false;initMap(features);
   }
   var objectId=new URLSearchParams(location.search).get('object')||'';

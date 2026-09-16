@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Input Monitoring Gawangan Dayun | YG GeoPortal</title>
-  <meta name="robots" content="noindex,nofollow">
+  <meta name="description" content="Form publik untuk mengirim catatan monitoring gawangan Agroforestri Dayun. Setiap kiriman diperiksa admin sebelum dipublikasikan.">
   <link rel="icon" href="assets/logo-yayasan-gambut.png">
   <link rel="stylesheet" href="css/style.css?v=20260723-revert-layout">
   <link rel="stylesheet" href="css/navigation-v2.css?v=20260807-mobile-submenu-links1">
@@ -14,18 +14,23 @@
   <header class="site-header">
     <div class="header-inner">
       <a class="brand" href="index.html"><img src="assets/logo-yayasan-gambut.png" alt="Logo Yayasan Gambut"><span><strong>YG GeoPortal</strong><span>Monitoring Agroforestri Dayun</span></span></a>
-      <nav class="nav"><a href="admin-dashboard.html">Dashboard Admin</a><a href="dayun-map.html">Peta Dayun</a></nav>
+      <nav class="nav"><a href="dayun-map.html">Peta Dayun</a><a href="dayun.html">Program Dayun</a></nav>
     </div>
   </header>
   <main class="dm-shell">
     <section class="dm-hero">
-      <div><span>INPUT DATA LAPANGAN</span><h1>Monitoring gawangan Dayun</h1><p>Catat kegiatan berdasarkan gawangan. Data disimpan sebagai draf dan baru tampil pada profil publik setelah dikonfirmasi oleh admin.</p></div>
-      <aside><b id="dm-staff-name">Memverifikasi sesi staf…</b><small>Alur publikasi</small><ol><li>Staf mengirim data</li><li>Admin memeriksa</li><li>Admin mempublikasikan</li></ol></aside>
+      <div><span>FORM PUBLIK</span><h1>Monitoring gawangan Dayun</h1><p>Kelompok, pendamping, dan masyarakat dapat menyampaikan catatan kegiatan berdasarkan gawangan. Data baru tampil pada profil publik setelah diperiksa admin.</p></div>
+      <aside><b>Terbuka untuk pelapor lapangan</b><small>Alur publikasi</small><ol><li>Pelapor mengirim data</li><li>Admin memeriksa</li><li>Admin mempublikasikan</li></ol></aside>
     </section>
     <section class="dm-grid">
       <form id="dm-form" class="dm-form" novalidate>
         <div class="dm-form-head"><div><span>FORM MONITORING</span><h2>Catatan kegiatan gawangan</h2></div><p>Kolom bertanda * wajib diisi.</p></div>
         <div class="dm-fields">
+          <label><span>Nama pelapor *</span><input id="dm-reporter" required maxlength="100" autocomplete="name" placeholder="Nama lengkap"></label>
+          <label><span>Kelompok atau organisasi</span><input id="dm-organization" maxlength="120" autocomplete="organization" placeholder="Contoh: KUPS Rimba Sejahtera"></label>
+          <label><span>Nomor WhatsApp</span><input id="dm-phone" type="tel" maxlength="30" autocomplete="tel" inputmode="tel" placeholder="Contoh: 0812…"></label>
+          <label><span>Email</span><input id="dm-email" type="email" maxlength="120" autocomplete="email" placeholder="nama@contoh.id"><small>Isi email atau nomor WhatsApp agar admin dapat melakukan klarifikasi.</small></label>
+          <label class="dm-trap" hidden aria-hidden="true"><span>Alamat situs</span><input id="dm-website" tabindex="-1" autocomplete="off"></label>
           <label><span>Gawangan *</span><select id="dm-object" required><option value="">Memuat gawangan…</option></select><small id="dm-object-note">Pilih polygon yang dikerjakan.</small></label>
           <label><span>Komoditas *</span><input id="dm-crop" list="dm-crop-list" required placeholder="Contoh: Nanas"><datalist id="dm-crop-list"></datalist><small>Dapat memilih komoditas yang sudah tercatat atau mengetik baru.</small></label>
           <label><span>Jenis kegiatan *</span><select id="dm-activity" required><option value="">Pilih kegiatan</option><option>Penanaman</option><option>Penyisipan</option><option>Pemupukan</option><option>Penyiangan</option><option>Pengendalian HPT</option><option>Ethrel</option><option>Panen</option><option>Monitoring umum</option></select></label>
@@ -51,7 +56,6 @@
       </aside>
     </section>
   </main>
-  <script src="js/auth.js?v=20260916-login-fallback1"></script>
-  <script src="js/dayun-monitoring.js?v=20260917-1"></script>
+  <script src="js/dayun-monitoring.js?v=20260917-public1"></script>
 </body>
 </html>

@@ -6,13 +6,17 @@ const test = require('node:test');
 const root = path.resolve(__dirname, '..');
 const read = file => fs.readFileSync(path.join(root, file), 'utf8');
 
-test('Dayun field input requires a staff session and creates a pending monitoring report', () => {
+test('Dayun field input is public and creates a pending monitoring report', () => {
   const html = read('dayun-monitoring.html');
   const script = read('js/dayun-monitoring.js');
-  assert.match(html, /name="robots" content="noindex,nofollow"/);
+  assert.match(html, /FORM PUBLIK/);
+  assert.match(html, /id="dm-reporter" required/);
+  assert.match(html, /id="dm-phone"/);
+  assert.match(html, /id="dm-email"/);
   assert.match(html, /Kirim untuk verifikasi/);
-  assert.match(script, /YG_AUTH\.readStoredSession/);
-  assert.match(script, /staff-login\.html\?return=/);
+  assert.doesNotMatch(script, /YG_AUTH\.readStoredSession/);
+  assert.doesNotMatch(script, /staff-login\.html\?return=/);
+  assert.match(script, /if\(!phone&&!email\)/);
   assert.match(script, /reportType:'Monitoring'/);
   assert.match(script, /targetLayerId:'dayun_gawangan'/);
   assert.match(script, /monitoringType:'Agroforestri Dayun'/);
