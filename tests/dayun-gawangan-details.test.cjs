@@ -29,14 +29,18 @@ test('every published crop belongs to one gawangan and has a crop name', () => {
   }
 });
 
-test('each planting polygon opens a dedicated public profile page', () => {
+test('each planting polygon popup shows block and gawangan areas with a profile link', () => {
   const html = fs.readFileSync(path.join(root, 'dayun-map.html'), 'utf8');
   const script = fs.readFileSync(path.join(root, 'js/dayun-public.js'), 'utf8');
   const profile = fs.readFileSync(path.join(root, 'dayun-gawangan.html'), 'utf8');
   const profileScript = fs.readFileSync(path.join(root, 'js/dayun-gawangan.js'), 'utf8');
   assert.doesNotMatch(html, /id="dayun-gawangan-detail"/);
   assert.match(script, /data\/dayun-gawangan-details\.json/);
-  assert.match(script, /window\.open\(profileUrl,'_blank','noopener'\)/);
+  assert.match(script, /Luas blok/);
+  assert.match(script, /Gawangan tanam/);
+  assert.match(script, /sourceGawanganAreaHa/);
+  assert.match(script, /target="_blank" rel="noopener"/);
+  assert.doesNotMatch(script, /window\.open\(profileUrl/);
   assert.match(script, /dy-gawangan-picker/);
   assert.match(profile, /id="dg-map"/);
   assert.match(profileScript, /data\/dayun-gawangan-details\.json/);
