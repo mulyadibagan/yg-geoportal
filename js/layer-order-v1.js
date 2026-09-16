@@ -4,6 +4,13 @@
   const ADMIN_REFERENCE_IDS = new Set([
     "batas_administrasi_desa_riau"
   ]);
+  const STAFF_ONLY_REFERENCE_IDS = new Set([
+    "perusahaan_sawit_riau"
+  ]);
+
+  function hasStaffSession() {
+    return Boolean(window.YG_STAFF_DATA && window.YG_STAFF_DATA.session && window.YG_STAFF_DATA.session());
+  }
 
   function sortRowsByVisibleLabel(rows) {
     const language = document.documentElement.lang === "en" ? "en" : "id";
@@ -23,6 +30,11 @@
     )?.closest(".layer-row") || null;
   }
 
+  function referenceId(row) {
+    return row.querySelector("input[data-reference-layer-id]")
+      ?.getAttribute("data-reference-layer-id") || "";
+  }
+
   function makeTitle(text, className) {
     const title = document.createElement("div");
     title.className = "yg-layer-section-title " + (className || "");
@@ -39,13 +51,12 @@
     const environmentalRows = sortRowsByVisibleLabel(Array.from(
       list.querySelectorAll(".environment-layer-row")
     ));
+    const allowStaffOnly = hasStaffSession();
     const referenceRows = Array.from(
       list.querySelectorAll(".reference-layer-row")
-    );
+    ).filter(row => allowStaffOnly || !STAFF_ONLY_REFERENCE_IDS.has(referenceId(row)));
     const administrativeReferenceRows = sortRowsByVisibleLabel(referenceRows.filter(row => {
-      const referenceId = row.querySelector("input[data-reference-layer-id]")
-        ?.getAttribute("data-reference-layer-id");
-      return ADMIN_REFERENCE_IDS.has(referenceId || "");
+      return ADMIN_REFERENCE_IDS.has(referenceId(row));
     }));
     const generalReferenceRows = sortRowsByVisibleLabel(referenceRows.filter(
       row => !administrativeReferenceRows.includes(row)
@@ -97,10 +108,17 @@
     const items = Array.from(legend.querySelectorAll(".legend-item"));
     if (!items.length) return;
 
-    const monitoring = items.find(item =>
+    if (!hasStaffSession()) {
+      items.forEach(item => {
+        if (/rspo|perkebunan anggota/i.test(item.textContent || "")) item.remove();
+      });
+    }
+
+    const remainingItems = Array.from(legend.querySelectorAll(".legend-item"));
+    const monitoring = remainingItems.find(item =>
       /monitoring/i.test(item.textContent || "")
     );
-    const villageBoundary = items.find(item =>
+    const villageBoundary = remainingItems.find(item =>
       /batas desa intervensi/i.test(item.textContent || "")
     );
 
