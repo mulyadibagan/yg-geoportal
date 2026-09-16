@@ -28,6 +28,17 @@ test('operational area is counted once per gawangan and never exceeds summed cro
   }
 });
 
+test('MPTS and horticulture stay separate and trace back to gawangan profiles', () => {
+  assert.deepEqual(require(path.join(root, 'js/dayun-agro-summary.js')).MPTS, ['RAMBUTAN', 'ASAM KANDIS', 'NANGKA', 'PETAI', 'JENGKOL']);
+  assert.deepEqual(require(path.join(root, 'js/dayun-agro-summary.js')).HORTICULTURE, ['NANAS', 'TERONG', 'CABAI']);
+  assert.equal(summary.all.mptsTypes, 5);
+  assert.equal(summary.all.horticultureTypes, 3);
+  assert.equal(Math.round(summary.all.horticulturePlants), 69299);
+  assert.equal(summary.all.cropTotals.RAMBUTAN.gawanganIds.length, 12);
+  assert.deepEqual(summary.all.cropTotals.RAMBUTAN.plantingPeriods, ['Jan 2024']);
+  assert.equal(summary.blocks.B.cropTotals.RAMBUTAN.operationalAreaKnownCount, 0);
+});
+
 test('public map and block page use the shared aggregation source', () => {
   const mapHtml = fs.readFileSync(path.join(root, 'dayun-map.html'), 'utf8');
   const mapScript = fs.readFileSync(path.join(root, 'js/dayun-public.js'), 'utf8');
@@ -36,7 +47,10 @@ test('public map and block page use the shared aggregation source', () => {
   assert.match(mapHtml, /js\/dayun-agro-summary\.js/);
   assert.match(mapScript, /DayunAgroSummary\.build/);
   assert.match(mapScript, /dayun-blok\.html\?block=/);
+  assert.match(mapScript, /HORTICULTURE/);
+  assert.match(mapScript, /Periode tanam tercatat/);
   assert.match(blockHtml, /id="db-gawangan"/);
   assert.match(blockScript, /DayunAgroSummary\.build/);
   assert.match(blockScript, /dayun-gawangan\.html\?object=/);
+  assert.match(blockScript, /dayun-sop-rambutan\.html/);
 });

@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="css/style.css?v=20260723-revert-layout">
   <link rel="stylesheet" href="css/navigation-v2.css?v=20260807-mobile-submenu-links1">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="css/dayun.css?v=20260917-block-summary1">
+  <link rel="stylesheet" href="css/dayun.css?v=20260917-crop-detail1">
 </head>
 <body data-dayun-page="block" data-dayun-mode="public">
   <header class="site-header">
@@ -33,7 +33,7 @@
         <aside class="dy-block-map-copy"><span>PETA BLOK</span><h2 id="db-map-title">Sebaran gawangan</h2><p>Klik poligon gawangan untuk membuka profil tanaman dan riwayat kegiatan lapangan.</p><div id="db-data-status"></div></aside>
       </section>
       <section class="dy-section">
-        <div class="dy-section-head"><div><span>KOMPOSISI TANAMAN</span><h2>Informasi tanaman dari seluruh gawangan</h2></div><p>Jumlah merupakan agregasi profil gawangan dalam blok terpilih dan dibulatkan ke bilangan utuh pada tampilan.</p></div>
+        <div class="dy-section-head"><div><span>KOMPOSISI TANAMAN</span><h2>MPTS dan hortikultura</h2></div><p>Setiap jenis menampilkan jumlah, luas operasional, periode tanam, dan gawangan penyusunnya.</p></div>
         <div class="dy-block-crops" id="db-crops"></div>
       </section>
       <section class="dy-section" id="db-harvest-section">
@@ -42,7 +42,7 @@
       </section>
       <section class="dy-section">
         <div class="dy-section-head"><div><span>RINCIAN GAWANGAN</span><h2>Gawangan penyusun blok</h2></div><p>Angka blok di atas dapat ditelusuri kembali ke setiap gawangan.</p></div>
-        <div class="dy-block-table-wrap"><table class="dy-block-table"><thead><tr><th>Gawangan</th><th>Luas poligon</th><th>Luas operasional</th><th>Komoditas</th><th>Nanas</th><th>Dipanen</th><th>MPTS</th><th></th></tr></thead><tbody id="db-gawangan"></tbody></table></div>
+        <div class="dy-block-table-wrap"><table class="dy-block-table"><thead><tr><th>Gawangan</th><th>Luas poligon</th><th>Luas operasional</th><th>Komoditas</th><th>Hortikultura</th><th>Dipanen</th><th>MPTS</th><th></th></tr></thead><tbody id="db-gawangan"></tbody></table></div>
       </section>
       <aside class="dy-summary-note" id="db-note"></aside>
     </div>
@@ -51,7 +51,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="js/auth.js?v=20260915-logout3"></script>
   <script src="js/navigation-v2.js?v=20260821-staff-name1"></script>
-  <script src="js/dayun-agro-summary.js?v=20260917-block-summary1"></script>
-  <script src="js/dayun-blok.js?v=20260917-block-summary1"></script>
+  <script src="js/dayun-agro-summary.js?v=20260917-crop-detail1"></script>
+  <script src="js/dayun-blok.js?v=20260917-crop-detail1"></script>
 </body>
 </html>
