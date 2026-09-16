@@ -1,0 +1,133 @@
+name: Enable staff social forestry detail
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/enable-staff-social-forestry.yml'
+
+permissions:
+  contents: write
+
+env:
+  PS_SOURCE_COMMIT: b3397aefedd81181cada381ef85dc285d81626f8
+
+jobs:
+  enable:
+    runs-on: ubuntu-latest
+    environment: yg-webgis-staging
+    steps:
+      - name: Checkout full history
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Restore PS geometry to temporary private file
+        shell: bash
+        run: |
+          mkdir -p /tmp/yg-private
+          git show "${PS_SOURCE_COMMIT}:data/PERHUTANAN_SOSIAL_RIAU.geojson" > /tmp/yg-private/social-forestry-riau.geojson
+          node -e "const fs=require('fs'); const d=JSON.parse(fs.readFileSync('/tmp/yg-private/social-forestry-riau.geojson','utf8')); if(!Array.isArray(d.features)||!d.features.length) throw new Error('PS private geometry is empty'); console.log('PS features:', d.features.length)"
+
+      - name: Patch staff-only PS access
+        shell: python
+        run: |
+          from pathlib import Path
+
+          def replace_once(path, old, new):
+              p = Path(path)
+              text = p.read_text(encoding='utf-8')
+              if new in text:
+                  return
+              if old not in text:
+                  raise SystemExit(f'Expected pattern not found in {path}: {old[:120]}')
+              p.write_text(text.replace(old, new, 1), encoding='utf-8')
+
+          # Browser-side staff gateway route.
+          replace_once(
+              'js/staff-data-access.js',
+              "    'data/PBPH_RIAU_052026.geojson': '/api/staff/pbph-riau',\n",
+              "    'data/PBPH_RIAU_052026.geojson': '/api/staff/pbph-riau',\n    'data/PERHUTANAN_SOSIAL_RIAU.geojson': '/api/staff/social-forestry-riau',\n",
+          )
+
+          # Worker private R2 route, protected by the existing staff-token validator.
+          replace_once(
+              'cloudflare/yg-webgis-public-data/src/index.js',
+              '  "/api/staff/pbph-riau": ["internal/pbph/riau.geojson", "application/geo+json; charset=utf-8"],\n',
+              '  "/api/staff/pbph-riau": ["internal/pbph/riau.geojson", "application/geo+json; charset=utf-8"],\n  "/api/staff/social-forestry-riau": ["internal/social-forestry/riau.geojson", "application/geo+json; charset=utf-8"],\n',
+          )
+
+          # Profile page must load staff auth/data gateway before its profile script.
+          replace_once(
+              'social-forestry-profile.html',
+              '  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>\n',
+              '  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>\n  <script src="js/auth.js?v=20260916-ps-staff1"></script>\n  <script src="js/staff-data-access.js?v=20260916-ps-staff1"></script>\n',
+          )
+
+          # Directory page gets the same staff-aware fetch path, so staff can see PS map geometry there too.
+          replace_once(
+              'social-forestry-directory.html',
+              ' <script src="js/i18n.js?v=20260911-regency-map2"></script>\n',
+              ' <script src="js/auth.js?v=20260916-ps-staff1"></script>\n<script src="js/staff-data-access.js?v=20260916-ps-staff1"></script>\n<script src="js/i18n.js?v=20260911-regency-map2"></script>\n',
+          )
+
+          # Route only the PS geometry request through the staff gateway when available;
+          # all public metadata/details remain on their existing public paths.
+          for path in ['js/social-forestry-profile.js', 'js/social-forestry-directory.js']:
+              p = Path(path)
+              text = p.read_text(encoding='utf-8')
+              marker = 'window.YG_STAFF_DATA.fetch(url,{cache:"no-store"})'
+              if marker in text:
+                  continue
+              old = 'fetch(url,{cache:"no-store"})'
+              if old not in text:
+                  raise SystemExit(f'Expected fetch helper not found in {path}')
+              text = text.replace(old, '(window.YG_STAFF_DATA?window.YG_STAFF_DATA.fetch(url,{cache:"no-store"}):fetch(url,{cache:"no-store"}))', 1)
+              p.write_text(text, encoding='utf-8')
+
+      - name: Validate patched sources
+        shell: bash
+        run: |
+          grep -q "/api/staff/social-forestry-riau" js/staff-data-access.js
+          grep -q "internal/social-forestry/riau.geojson" cloudflare/yg-webgis-public-data/src/index.js
+          grep -q "staff-data-access.js?v=20260916-ps-staff1" social-forestry-profile.html
+          grep -q "staff-data-access.js?v=20260916-ps-staff1" social-forestry-directory.html
+          grep -q "YG_STAFF_DATA.fetch" js/social-forestry-profile.js
+          grep -q "YG_STAFF_DATA.fetch" js/social-forestry-directory.js
+          node --check js/staff-data-access.js
+          node --check js/social-forestry-profile.js
+          node --check js/social-forestry-directory.js
+          node --check cloudflare/yg-webgis-public-data/src/index.js
+
+      - name: Install Cloudflare dependencies
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: cloudflare/yg-webgis-public-data/package-lock.json
+      - run: npm ci
+        working-directory: cloudflare/yg-webgis-public-data
+
+      - name: Upload PS geometry to private R2 path
+        working-directory: cloudflare/yg-webgis-public-data
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          npx wrangler r2 object put "yg-webgis-public-snapshots-staging/internal/social-forestry/riau.geojson" --remote --file /tmp/yg-private/social-forestry-riau.geojson --content-type application/geo+json
+          npx wrangler r2 object put "yg-webgis-public-snapshots/internal/social-forestry/riau.geojson" --remote --file /tmp/yg-private/social-forestry-riau.geojson --content-type application/geo+json
+
+      - name: Commit staff PS access wiring
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo "No source changes required"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add js/staff-data-access.js js/social-forestry-profile.js js/social-forestry-directory.js social-forestry-profile.html social-forestry-directory.html cloudflare/yg-webgis-public-data/src/index.js
+          git commit -m "fix: restore social forestry detail for staff"
+          git pull --rebase origin main
+          git push
