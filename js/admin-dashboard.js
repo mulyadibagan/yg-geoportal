@@ -240,6 +240,28 @@
     try { info = JSON.parse(report.proposedInformation || '{}'); } catch (error) {}
     if (info.monitoringType !== 'Agroforestri Dayun') return '';
     var fertilizer = info.fertilizer || null;
+    var detail = info.activityDetails || {};
+    var activityRows = [];
+    if (info.activityType === 'Penanaman' || info.activityType === 'Penyisipan') {
+      activityRows = [
+        [info.activityType === 'Penyisipan' ? 'Jumlah disisipkan' : 'Jumlah ditanam', detail.plantCount != null ? detail.plantCount + ' batang' : ''],
+        ['Jarak tanam', detail.spacing],
+        ['Asal bibit', detail.seedlingSource],
+        ['Alasan penyisipan', detail.replacementReason]
+      ];
+    } else if (info.activityType === 'Penyiangan') {
+      activityRows = [['Luas penyiangan', detail.treatedAreaHa != null ? detail.treatedAreaHa + ' ha' : ''], ['Metode', detail.method], ['Kondisi gulma', detail.weedCondition], ['Tenaga kerja', detail.workerCount != null ? detail.workerCount + ' orang' : '']];
+    } else if (info.activityType === 'Pengendalian HPT') {
+      activityRows = [['Tanaman terdampak', detail.affectedPlantCount != null ? detail.affectedPlantCount + ' tanaman' : ''], ['Tingkat serangan', detail.severity], ['Gejala/HPT', detail.symptoms], ['Pengendalian', detail.controlAction], ['Bahan', detail.material]];
+    } else if (info.activityType === 'Ethrel') {
+      activityRows = [['Tanaman diaplikasi', detail.treatedPlantCount != null ? detail.treatedPlantCount + ' tanaman' : ''], ['Larutan', detail.solutionLiters != null ? detail.solutionLiters + ' liter' : ''], ['Produk ethrel', detail.ethrelProductMl != null ? detail.ethrelProductMl + ' ml' : ''], ['Metode', detail.method], ['Kesiapan tanaman', detail.plantReadiness], ['Cuaca', detail.weather]];
+    } else if (info.activityType === 'Panen') {
+      activityRows = [['Jumlah panen', detail.harvestCount != null ? detail.harvestCount + (detail.unit ? ' ' + detail.unit : '') : ''], ['Berat total', detail.totalWeightKg != null ? detail.totalWeightKg + ' kg' : ''], ['Mutu dominan', detail.dominantGrade], ['Tujuan hasil', detail.destination]];
+    } else if (info.activityType === 'Monitoring umum') {
+      activityRows = [['Tanaman diamati', detail.observedPlantCount != null ? detail.observedPlantCount + ' tanaman' : ''], ['Kondisi umum', detail.condition], ['Fokus', detail.focus]];
+    } else if (info.activityType === 'Pemupukan' && !fertilizer) {
+      activityRows = [['Luas aplikasi', detail.treatedAreaHa != null ? detail.treatedAreaHa + ' ha' : ''], ['Tanaman sasaran', detail.targetPlantCount != null ? detail.targetPlantCount + ' tanaman' : ''], ['Pupuk aktual', detail.material], ['Metode', detail.method], ['Pendamping', detail.supervisor]];
+    }
     var fertilizerMaterials = fertilizer && Array.isArray(fertilizer.materials)
       ? fertilizer.materials.map(function (item) {
         return item.name + ': ' + item.actualKg + ' kg · ' + item.status;
@@ -247,10 +269,11 @@
       : '';
     var values = [
       ['Gawangan', report.locationName || report.targetObjectId],
+      ['Kelompok kegiatan', info.activityCluster],
       ['Kegiatan', info.activityType],
       ['Komoditas', info.crop],
       ['Tanggal tanam', info.plantingDate],
-      ['Jumlah', info.quantity != null && info.quantity !== '' ? info.quantity + (info.unit ? ' ' + info.unit : '') : ''],
+      ['Jumlah', !info.activityDetails && info.quantity != null && info.quantity !== '' ? info.quantity + (info.unit ? ' ' + info.unit : '') : ''],
       ['Fase SOP', fertilizer ? fertilizer.phaseName : ''],
       ['Luas aplikasi', fertilizer ? fertilizer.areaHa + ' ha' : ''],
       ['Tanaman sasaran', fertilizer && fertilizer.activePlantCount ? fertilizer.activePlantCount + ' tanaman' : ''],
@@ -261,7 +284,7 @@
       ['Alasan penyimpangan', fertilizer ? fertilizer.deviationReason : ''],
       ['Kondisi', info.condition],
       ['Tindak lanjut', info.nextAction ? info.nextAction + (info.nextActionDate ? ' · ' + info.nextActionDate : '') : '']
-    ].filter(function (item) { return item[1] != null && item[1] !== ''; });
+    ].concat(activityRows).filter(function (item) { return item[1] != null && item[1] !== ''; });
     return '<div class="report-inbox-meta">' + values.map(function (item) {
       return '<span><b>' + esc(item[0]) + '</b>' + esc(item[1]) + '</span>';
     }).join('') + '</div>';
