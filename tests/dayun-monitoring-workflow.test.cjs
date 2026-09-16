@@ -16,21 +16,46 @@ test('Dayun field input is public and creates a pending monitoring report', () =
   assert.match(html, /Kirim untuk verifikasi/);
   assert.doesNotMatch(script, /YG_AUTH\.readStoredSession/);
   assert.doesNotMatch(script, /staff-login\.html\?return=/);
-  assert.match(script, /if\(!phone&&!email\)/);
-  assert.match(script, /reportType:'Monitoring'/);
-  assert.match(script, /targetLayerId:'dayun_gawangan'/);
-  assert.match(script, /monitoringType:'Agroforestri Dayun'/);
+  assert.match(script, /if \(!phone && !email\)/);
+  assert.match(script, /reportType: 'Monitoring'/);
+  assert.match(script, /targetLayerId: 'dayun_gawangan'/);
+  assert.match(script, /monitoringType: 'Agroforestri Dayun'/);
   assert.match(html, /SOP PEMUPUKAN NANAS/);
   assert.match(script, /Realisasi aplikasi \(kg\)/);
   assert.match(html, /Pendamping\/penanggung jawab/);
   assert.match(script, /YG_DAYUN_NANAS_FERTILIZER_PROGRAMS/);
   assert.match(script, /nanas-fertilizer-sop-2020-v1/);
   assert.match(script, /Sesuai rentang SOP/);
-  assert.match(script, /Minimal satu foto wajib untuk verifikasi pemupukan/);
-  assert.match(script, /maximumFractionDigits:digits==null\?2:digits/);
+  assert.match(script, /Minimal satu foto wajib untuk verifikasi kegiatan ini/);
+  assert.match(script, /maximumFractionDigits: digits == null \? 2 : digits/);
   assert.doesNotMatch(script, /maximumFractionDigits:4/);
   assert.match(script, /page=report-submission-status/);
   assert.doesNotMatch(script, /adminToken|ADMIN_TOKEN/);
+});
+
+test('commodity and activity fields follow the selected gawangan and work type', () => {
+  const html = read('dayun-monitoring.html');
+  const script = read('js/dayun-monitoring.js');
+  assert.match(html, /<select id="dm-crop" required disabled>/);
+  assert.doesNotMatch(html, /id="dm-crop"[^>]*list=/);
+  assert.match(script, /function populateCrops/);
+  assert.match(script, /crops\.map/);
+  assert.match(script, /ACTIVITY_GROUPS/);
+  assert.match(script, /Penanaman dan penyisipan/);
+  assert.match(script, /Pemeliharaan tanaman/);
+  assert.match(script, /Pembungaan dan produksi/);
+  assert.match(script, /Observasi lapangan/);
+  assert.match(script, /meta\.crop === normalizeCrop\(crop\.value\)/);
+  assert.match(html, /id="dm-panel-establishment"/);
+  assert.match(html, /id="dm-panel-weeding"/);
+  assert.match(html, /id="dm-panel-hpt"/);
+  assert.match(html, /id="dm-panel-ethrel"/);
+  assert.match(html, /id="dm-panel-harvest"/);
+  assert.match(html, /id="dm-panel-observation"/);
+  assert.match(script, /schemaVersion: 'dayun-monitoring-v3'/);
+  assert.match(script, /activityDetails: details/);
+  assert.match(script, /document\.querySelectorAll\('\.dm-fert-actual'\)/);
+  assert.match(script, /Pilih komoditas dan jenis kegiatan sebelum mengirim laporan/);
 });
 
 test('public gawangan profile reads only the published report endpoint and calculates current age', () => {
@@ -60,6 +85,9 @@ test('admin dashboard exposes the Dayun queue context without exposing drafts pu
   assert.match(script, /report\.targetLayerId !== 'dayun_gawangan'/);
   assert.match(script, /Kesesuaian SOP/);
   assert.match(script, /Realisasi pupuk/);
+  assert.match(script, /Kelompok kegiatan/);
+  assert.match(script, /Tanaman diaplikasi/);
+  assert.match(script, /Jumlah panen/);
 });
 
 test('monitoring and calculator use the same pineapple fertilizer SOP programs', () => {

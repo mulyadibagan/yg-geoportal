@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="css/style.css?v=20260723-revert-layout">
   <link rel="stylesheet" href="css/navigation-v2.css?v=20260807-mobile-submenu-links1">
   <link rel="stylesheet" href="css/dayun-monitoring.css?v=20260917-1">
-  <link rel="stylesheet" href="css/dayun-monitoring-sop.css?v=20260917-1">
+  <link rel="stylesheet" href="css/dayun-monitoring-sop.css?v=20260917-activity1">
 </head>
 <body>
   <header class="site-header">
@@ -33,11 +33,68 @@
           <label><span>Email</span><input id="dm-email" type="email" maxlength="120" autocomplete="email" placeholder="nama@contoh.id"><small>Isi email atau nomor WhatsApp agar admin dapat melakukan klarifikasi.</small></label>
           <label class="dm-trap" hidden style="display:none!important" aria-hidden="true"><span>Alamat situs</span><input id="dm-website" tabindex="-1" autocomplete="off"></label>
           <label><span>Gawangan *</span><select id="dm-object" required><option value="">Memuat gawangan…</option></select><small id="dm-object-note">Pilih polygon yang dikerjakan.</small></label>
-          <label><span>Komoditas *</span><input id="dm-crop" list="dm-crop-list" required placeholder="Contoh: Nanas"><datalist id="dm-crop-list"></datalist><small>Dapat memilih komoditas yang sudah tercatat atau mengetik baru.</small></label>
-          <label><span>Jenis kegiatan *</span><select id="dm-activity" required><option value="">Pilih kegiatan</option><option>Penanaman</option><option>Penyisipan</option><option>Pemupukan</option><option>Penyiangan</option><option>Pengendalian HPT</option><option>Ethrel</option><option>Panen</option><option>Monitoring umum</option></select></label>
+          <label><span>Komoditas *</span><select id="dm-crop" required disabled><option value="">Pilih gawangan terlebih dahulu</option></select><small id="dm-crop-note">Komoditas diambil otomatis dari data gawangan.</small></label>
+          <label><span>Jenis kegiatan *</span><select id="dm-activity" required disabled><option value="">Pilih komoditas terlebih dahulu</option></select><small id="dm-activity-note">Isian berikutnya akan menyesuaikan jenis kegiatan.</small></label>
           <label><span>Tanggal kegiatan *</span><input id="dm-date" type="date" required></label>
-          <label><span>Tanggal tanam</span><input id="dm-planting-date" type="date"><small>Wajib untuk penanaman; digunakan menghitung umur secara otomatis.</small></label>
-          <label><span>Kondisi tanaman</span><select id="dm-condition"><option value="">Belum dinilai</option><option>Baik</option><option>Perlu perhatian</option><option>Terdampak HPT</option><option>Perlu penyisipan</option><option>Siap ethrel</option><option>Siap panen</option></select></label>
+          <div class="dm-activity-intro" id="dm-activity-intro"><strong>Pilih jenis kegiatan.</strong><span>Form teknis yang relevan akan muncul di bagian ini.</span></div>
+          <section class="dm-activity-panel" id="dm-panel-establishment" hidden>
+            <div class="dm-activity-head"><span>PENANAMAN & PENYISIPAN</span><h3 id="dm-establishment-title">Data tanaman</h3></div>
+            <div class="dm-activity-fields">
+              <label><span>Tanggal tanam *</span><input id="dm-planting-date" type="date" data-required="true"><small>Menjadi dasar perhitungan umur tanaman.</small></label>
+              <label><span id="dm-est-count-label">Jumlah ditanam *</span><input id="dm-est-count" type="number" min="1" step="1" inputmode="numeric" data-required="true"></label>
+              <label id="dm-est-spacing-wrap"><span>Jarak tanam</span><input id="dm-est-spacing" maxlength="50" placeholder="Contoh: 0,8 × 0,8 m"></label>
+              <label><span>Asal bibit/bahan tanam</span><input id="dm-est-source" maxlength="120" placeholder="Sumber atau kelompok penyedia"></label>
+              <label class="dm-wide" id="dm-est-reason-wrap" hidden><span>Alasan penyisipan *</span><textarea id="dm-est-reason" data-required="true" placeholder="Contoh: tanaman mati, pertumbuhan tidak normal, atau ruang tanam kosong."></textarea></label>
+            </div>
+          </section>
+          <section class="dm-activity-panel" id="dm-panel-weeding" hidden>
+            <div class="dm-activity-head"><span>PEMELIHARAAN</span><h3>Realisasi penyiangan</h3></div>
+            <div class="dm-activity-fields">
+              <label><span>Luas dikerjakan (ha) *</span><input id="dm-weed-area" type="number" min="0.01" step="0.01" inputmode="decimal" data-required="true"></label>
+              <label><span>Metode *</span><select id="dm-weed-method" data-required="true"><option value="">Pilih metode</option><option>Manual</option><option>Mekanis</option><option>Manual dan mekanis</option><option>Metode lain</option></select></label>
+              <label><span>Kondisi gulma sebelum kegiatan *</span><select id="dm-weed-level" data-required="true"><option value="">Pilih kondisi</option><option>Ringan</option><option>Sedang</option><option>Berat</option></select></label>
+              <label><span>Jumlah tenaga kerja</span><input id="dm-weed-workers" type="number" min="1" step="1" inputmode="numeric"></label>
+            </div>
+          </section>
+          <section class="dm-activity-panel" id="dm-panel-hpt" hidden>
+            <div class="dm-activity-head"><span>KESEHATAN TANAMAN</span><h3>Temuan dan pengendalian HPT</h3></div>
+            <div class="dm-activity-fields">
+              <label><span>Tanaman terdampak *</span><input id="dm-hpt-count" type="number" min="1" step="1" inputmode="numeric" data-required="true"></label>
+              <label><span>Tingkat serangan *</span><select id="dm-hpt-severity" data-required="true"><option value="">Pilih tingkat</option><option>Ringan</option><option>Sedang</option><option>Berat</option></select></label>
+              <label class="dm-wide"><span>Gejala atau organisme pengganggu *</span><textarea id="dm-hpt-symptom" data-required="true" placeholder="Tuliskan gejala, bagian tanaman terdampak, atau nama HPT bila diketahui."></textarea></label>
+              <label class="dm-wide"><span>Tindakan pengendalian *</span><textarea id="dm-hpt-control" data-required="true" placeholder="Tindakan yang sudah dilakukan di lapangan."></textarea></label>
+              <label class="dm-wide"><span>Bahan yang digunakan</span><input id="dm-hpt-material" maxlength="160" placeholder="Nama bahan dan jumlah aktual, bila digunakan"></label>
+            </div>
+          </section>
+          <section class="dm-activity-panel" id="dm-panel-ethrel" hidden>
+            <div class="dm-activity-head"><span>INDUKSI PEMBUNGAAN NANAS</span><h3>Realisasi aplikasi ethrel</h3></div>
+            <div class="dm-activity-fields">
+              <label><span>Tanaman diaplikasi *</span><input id="dm-ethrel-count" type="number" min="1" step="1" inputmode="numeric" data-required="true"></label>
+              <label><span>Volume larutan (liter) *</span><input id="dm-ethrel-solution" type="number" min="0.01" step="0.01" inputmode="decimal" data-required="true"></label>
+              <label><span>Volume produk ethrel (ml) *</span><input id="dm-ethrel-product" type="number" min="0.01" step="0.01" inputmode="decimal" data-required="true"></label>
+              <label><span>Metode aplikasi *</span><select id="dm-ethrel-method" data-required="true"><option value="">Pilih metode</option><option>Dituang ke titik tumbuh</option><option>Disemprot terarah</option><option>Metode lain sesuai SOP</option></select></label>
+              <label><span>Kondisi tanaman *</span><select id="dm-ethrel-readiness" data-required="true"><option value="">Pilih kondisi</option><option>Layak induksi</option><option>Belum seragam</option><option>Perlu pemeriksaan pendamping</option></select></label>
+              <label><span>Cuaca saat aplikasi *</span><select id="dm-ethrel-weather" data-required="true"><option value="">Pilih cuaca</option><option>Cerah</option><option>Berawan</option><option>Hujan ringan</option><option>Baru selesai hujan</option></select></label>
+            </div>
+          </section>
+          <section class="dm-activity-panel" id="dm-panel-harvest" hidden>
+            <div class="dm-activity-head"><span>HASIL PRODUKSI</span><h3>Realisasi panen</h3></div>
+            <div class="dm-activity-fields">
+              <label><span>Jumlah hasil panen *</span><input id="dm-harvest-count" type="number" min="1" step="1" inputmode="numeric" data-required="true"></label>
+              <label><span>Satuan *</span><select id="dm-harvest-unit" data-required="true"><option value="">Pilih satuan</option><option>buah</option><option>kg</option><option>ikat</option></select></label>
+              <label><span>Berat total (kg)</span><input id="dm-harvest-weight" type="number" min="0" step="0.01" inputmode="decimal"></label>
+              <label><span>Mutu dominan</span><select id="dm-harvest-grade"><option value="">Belum dinilai</option><option>Baik/layak jual</option><option>Campuran</option><option>Rusak/afkir</option></select></label>
+              <label class="dm-wide"><span>Tujuan hasil panen</span><input id="dm-harvest-destination" maxlength="160" placeholder="Contoh: dijual, konsumsi kelompok, atau bibit"></label>
+            </div>
+          </section>
+          <section class="dm-activity-panel" id="dm-panel-observation" hidden>
+            <div class="dm-activity-head"><span>OBSERVASI LAPANGAN</span><h3>Kondisi tanaman saat ini</h3></div>
+            <div class="dm-activity-fields">
+              <label><span>Jumlah tanaman diamati *</span><input id="dm-observation-count" type="number" min="1" step="1" inputmode="numeric" data-required="true"></label>
+              <label><span>Kondisi umum *</span><select id="dm-observation-condition" data-required="true"><option value="">Pilih kondisi</option><option>Baik</option><option>Perlu perhatian</option><option>Terdampak HPT</option><option>Perlu penyisipan</option><option>Siap ethrel</option><option>Siap panen</option></select></label>
+              <label class="dm-wide"><span>Fokus pengamatan *</span><input id="dm-observation-focus" maxlength="160" data-required="true" placeholder="Contoh: pertumbuhan, buah, bunga, drainase, atau kerusakan"></label>
+            </div>
+          </section>
           <section class="dm-sop-panel" id="dm-fertilizer-panel" hidden aria-labelledby="dm-fertilizer-title">
             <div class="dm-sop-head"><div><span>SOP PEMUPUKAN NANAS</span><h3 id="dm-fertilizer-title">Realisasi pemupukan berbasis gawangan</h3><p>Dosis acuan diambil otomatis dari SOP. Pelapor mencatat jumlah yang benar-benar diaplikasikan; admin atau pendamping memeriksa kesesuaiannya sebelum publikasi.</p></div><a href="dayun-sop-nanas.html#kalkulator-pupuk" target="_blank" rel="noopener">Buka SOP dan kalkulator ↗</a></div>
             <div class="dm-sop-fields">
@@ -53,10 +110,16 @@
             <label class="dm-fert-deviation" id="dm-fert-deviation-wrap" hidden><span>Alasan penyimpangan atau kondisi berisiko *</span><textarea id="dm-fert-deviation" placeholder="Jelaskan arahan pendamping bila dosis di luar SOP atau aplikasi dilakukan pada kondisi yang perlu perhatian."></textarea></label>
             <div class="dm-fert-summary" id="dm-fert-summary">Pilih fase, isi populasi aktif, lalu masukkan realisasi setiap bahan.</div>
           </section>
-          <div class="dm-sop-unsupported" id="dm-fertilizer-unsupported" hidden><strong>SOP pemupukan belum tersedia untuk komoditas ini.</strong> Catat bahan dan jumlah aktual pada kolom umum; admin atau pendamping akan memeriksanya sebelum publikasi.</div>
-          <label id="dm-generic-quantity"><span>Jumlah</span><input id="dm-quantity" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Contoh: 1125"></label>
-          <label id="dm-generic-unit"><span>Satuan</span><select id="dm-unit"><option value="">Pilih satuan</option><option>batang</option><option>buah</option><option>kg</option><option>liter</option><option>karung</option><option>ha</option></select></label>
-          <label class="dm-wide" id="dm-generic-material"><span>Bahan atau input</span><input id="dm-material" placeholder="Contoh: NPK 15-15-15 sebanyak 50 kg"></label>
+          <section class="dm-activity-panel" id="dm-panel-generic-fertilizer" hidden>
+            <div class="dm-activity-head"><span>PEMUPUKAN</span><h3>Realisasi pemupukan komoditas</h3><p>SOP terperinci saat ini tersedia untuk nanas. Data komoditas lain tetap diperiksa admin atau pendamping sebelum dipublikasikan.</p></div>
+            <div class="dm-activity-fields">
+              <label><span>Luas aplikasi (ha) *</span><input id="dm-generic-fert-area" type="number" min="0.01" step="0.01" inputmode="decimal" data-required="true"></label>
+              <label><span>Jumlah tanaman sasaran *</span><input id="dm-generic-fert-count" type="number" min="1" step="1" inputmode="numeric" data-required="true"></label>
+              <label class="dm-wide"><span>Jenis pupuk dan jumlah aktual *</span><input id="dm-generic-fert-material" data-required="true" maxlength="180" placeholder="Contoh: NPK 15-15-15 sebanyak 25 kg"></label>
+              <label><span>Metode aplikasi *</span><select id="dm-generic-fert-method" data-required="true"><option value="">Pilih metode</option><option>Ditabur pada zona akar</option><option>Dilarutkan dan disiram</option><option>Aplikasi terbagi</option><option>Metode lain</option></select></label>
+              <label><span>Pendamping/penanggung jawab *</span><input id="dm-generic-fert-supervisor" data-required="true" maxlength="100"></label>
+            </div>
+          </section>
           <label><span>Tindak lanjut</span><input id="dm-next-action" placeholder="Contoh: Pemeriksaan pertumbuhan"></label>
           <label><span>Rencana tanggal berikutnya</span><input id="dm-next-date" type="date"></label>
           <label class="dm-wide"><span>Catatan lapangan *</span><textarea id="dm-notes" required placeholder="Kondisi sebelum/sesudah kegiatan, kendala, hasil pengamatan, dan informasi penting lainnya."></textarea></label>
@@ -74,6 +137,6 @@
     </section>
   </main>
   <script src="js/dayun-fertilizer-calculator.js?v=20260917-programs1"></script>
-  <script src="js/dayun-monitoring.js?v=20260917-sop1"></script>
+  <script src="js/dayun-monitoring.js?v=20260917-activity1"></script>
 </body>
 </html>
