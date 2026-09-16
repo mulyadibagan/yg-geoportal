@@ -21,11 +21,7 @@
     else setTimeout(load,300);
   }
 
-  window.addEventListener('yg:languagechange',function(event){
-    if(event&&event.detail&&event.detail.language==='en')ensureAutoI18n();
-  });
-
-  function readStaffSession(){
+  function readSession(){
     var session=null;
     try{
       session=JSON.parse(localStorage.getItem('ygEditorSessionV1')||sessionStorage.getItem('ygEditorSessionV1')||'null');
@@ -38,26 +34,33 @@
     return session;
   }
 
-  function secureHomepageStaffModules(session){
-    var rspoCard=document.querySelector('.home-rspo-card');
-    if(rspoCard){
-      var rspoSection=rspoCard.closest('.home-collaboration');
-      if(rspoSection){
-        rspoSection.setAttribute('data-staff-only-module','');
-        rspoSection.hidden=!session;
-      }
-      if(session)rspoCard.href='staff-rspo-dashboard.html';
-    }
+  function applyStaffOnlyVisibility(session){
     document.querySelectorAll('[data-staff-only-module]').forEach(function(module){
       module.hidden=!session;
     });
+
+    /* RSPO is internal-only. Keep legacy markup hidden for public visitors
+       even when an older HTML document is still cached by the browser/CDN. */
+    document.querySelectorAll('a[href="sawit-riau-rspo.html"],a[href="staff-rspo-dashboard.html"]').forEach(function(link){
+      var section=link.closest('.home-collaboration');
+      if(section){
+        section.hidden=!session;
+        section.setAttribute('data-staff-only-module','');
+      }
+      if(session && link.getAttribute('href')==='sawit-riau-rspo.html'){
+        link.setAttribute('href','staff-rspo-dashboard.html');
+      }
+    });
   }
 
-  function applyStaffAccount(nav){
+  window.addEventListener('yg:languagechange',function(event){
+    if(event&&event.detail&&event.detail.language==='en')ensureAutoI18n();
+  });
+
+  function applyStaffAccount(nav,session){
     var link=nav.querySelector('a[href="staff-login.html"]');
-    var session=readStaffSession();
-    secureHomepageStaffModules(session);
-    if(!link||!session)return;
+    if(!link)return;
+    if(!session)return;
     var label=String(session.name||session.username).trim();
     if(!label)return;
     link.textContent=label;
@@ -81,10 +84,11 @@
   }
 
   document.addEventListener('DOMContentLoaded',function(){
-    var session=readStaffSession();
-    secureHomepageStaffModules(session);
+    var session=readSession();
+    applyStaffOnlyVisibility(session);
+
     document.querySelectorAll('[data-yg-navigation]').forEach(function(nav){
-      applyStaffAccount(nav);
+      applyStaffAccount(nav,session);
       var toggle = document.querySelector('[data-yg-nav-toggle="' + nav.id + '"]');
       if(toggle){
         toggle.addEventListener('click',function(){
