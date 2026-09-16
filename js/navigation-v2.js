@@ -36,7 +36,11 @@
 
   function applyStaffOnlyVisibility(session){
     document.querySelectorAll('[data-staff-only-module]').forEach(function(module){
-      module.hidden=!session;
+      if(session){
+        module.hidden=false;
+      }else{
+        module.hidden=true;
+      }
     });
 
     /* RSPO is internal-only. Keep legacy markup hidden for public visitors
@@ -44,7 +48,8 @@
     document.querySelectorAll('a[href="sawit-riau-rspo.html"],a[href="staff-rspo-dashboard.html"]').forEach(function(link){
       var section=link.closest('.home-collaboration');
       if(section){
-        section.hidden=!session;
+        if(session){ section.hidden=false; }
+        else{ section.hidden=true; }
         section.setAttribute('data-staff-only-module','');
       }
       if(session && link.getAttribute('href')==='sawit-riau-rspo.html'){
