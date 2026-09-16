@@ -1,5 +1,6 @@
 const ROUTES = { "/snapshots/current/dashboard.json": { name: "dashboard", github: "/data/dashboard-summary-snapshot.json" }, "/snapshots/current/objects.json": { name: "objects", github: "/data/master-database-snapshot.json" }, "/research/liberica-morphology-2026.json": { key: "research/liberica-morphology-2026.json", github: "/data/liberica-morphology-2026.json" }, "/references/kph_2019_riau.geojson": { key: "references/kph_2019_riau.geojson" }, "/manifests/current.json": { key: "manifests/current.json" } }, PUBLIC_HEADERS = { "access-control-allow-origin": "*", "access-control-allow-methods": "GET, HEAD, OPTIONS", "access-control-max-age": "86400", "x-content-type-options": "nosniff" }, STAFF_API_HEADERS = { "access-control-allow-origin": "https://webgisyg.id", "access-control-allow-methods": "GET, HEAD, OPTIONS", "access-control-allow-headers": "authorization", "access-control-max-age": "3600", vary: "Origin", "x-content-type-options": "nosniff" }, META = { httpMetadata: { contentType: "application/json; charset=utf-8", cacheControl: "public, max-age=300" } };
 ROUTES["/references/rspo-riau-groups.geojson"] = { key: "references/rspo-riau-groups.geojson" };
+// Faperta UR operational data is served only by authenticated staff routes below.
 function json(value, status = 200, headers = {}) {
   return new Response(JSON.stringify(value), { status, headers: { "content-type": "application/json; charset=utf-8", ...PUBLIC_HEADERS, ...headers } });
 }
@@ -127,7 +128,7 @@ async function donorAdminResultApi(request, env, url) {
   const upstream = new URL(env.APPS_SCRIPT_BASE);
   upstream.searchParams.set("page", "donor-admin-result"), upstream.searchParams.set("requestId", requestId), upstream.searchParams.set("sessionToken", supplied);
   try {
-    const response = await fetch(upstream.toString(), { headers: { accept: "application/json", "user-agent": "YG-GeoPortal-Cloudflare-Donor-Admin-API/1.0" }, redirect: "follow" });
+    const response = await fetch(upstream.toString(), { headers: { accept: "application/json", "user-agent": "YG-GeoPortal-Cloudflare-Donor-Admin/1.0" }, redirect: "follow" });
     if (!response.ok) throw new Error(`upstream_http_${response.status}`);
     const data = normalizeJson(await response.json());
     if (!data) throw new Error("invalid_upstream_json");
@@ -262,4 +263,3 @@ var index_default = { async fetch(request, env) {
 export {
   index_default as default
 };
-// RSPO public overview route enabled; static public layer remains the resilient fallback.
