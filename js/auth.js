@@ -2,7 +2,10 @@
   "use strict";
 
   const API = "https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec";
-  const AUTH_RESULT_API = "https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/api/staff/auth-result";
+  const AUTH_RESULT_APIS = [
+    "https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/api/staff/auth-result",
+    "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/staff/auth-result"
+  ];
   const SESSION_KEY = "ygEditorSessionV1";
 
   function readStoredSession() {
@@ -64,9 +67,20 @@
     while (Date.now() < deadline) {
       await new Promise(resolve => setTimeout(resolve, 700));
       try {
-        const response = await fetch(`${AUTH_RESULT_API}?requestId=${encodeURIComponent(requestId)}&t=${Date.now()}`, { cache: "no-store" });
-        if (!response.ok) throw new Error("Hasil autentikasi belum dapat dimuat.");
-        const result = await response.json();
+        let result = null;
+        let resultError = null;
+        for (const endpoint of AUTH_RESULT_APIS) {
+          try {
+            const response = await fetch(`${endpoint}?requestId=${encodeURIComponent(requestId)}&t=${Date.now()}`, { cache: "no-store" });
+            if (!response.ok) throw new Error("Hasil autentikasi belum dapat dimuat.");
+            result = await response.json();
+            resultError = null;
+            break;
+          } catch (error) {
+            resultError = error;
+          }
+        }
+        if (!result) throw resultError || new Error("Hasil autentikasi belum dapat dimuat.");
         lastLoadError = null;
         if (result && result.pending) continue;
         if (result && result.ok) return result;
