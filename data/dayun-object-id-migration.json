@@ -1,0 +1,796 @@
+{
+  "schemaVersion": "1.0",
+  "programme": "Agroforestri KUPS Rimba Sejahtera",
+  "migratedAt": "2026-09-16",
+  "description": "Pemetaan ID WebGIS lama ke objectId gawangan resmi berdasarkan atribut SHP terbaru.",
+  "objectIdScheme": "DAYUN-GT-{blok}-{nomor gawangan}",
+  "featureIdScheme": "{objectId}-P{nomor bagian}",
+  "legacyObjectCount": 87,
+  "canonicalObjectCount": 60,
+  "multiPartObjectCount": 23,
+  "mappings": [
+    {
+      "legacyObjectId": "DAYUN-GT-001",
+      "legacyShortId": "GT-001",
+      "objectId": "DAYUN-GT-B-01",
+      "shortId": "GT-B-01",
+      "featureId": "DAYUN-GT-B-01-P01",
+      "partIndex": 1,
+      "partCount": 1
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-002",
+      "legacyShortId": "GT-002",
+      "objectId": "DAYUN-GT-B-02",
+      "shortId": "GT-B-02",
+      "featureId": "DAYUN-GT-B-02-P01",
+      "partIndex": 1,
+      "partCount": 1
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-003",
+      "legacyShortId": "GT-003",
+      "objectId": "DAYUN-GT-B-03",
+      "shortId": "GT-B-03",
+      "featureId": "DAYUN-GT-B-03-P01",
+      "partIndex": 1,
+      "partCount": 1
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-004",
+      "legacyShortId": "GT-004",
+      "objectId": "DAYUN-GT-B-04",
+      "shortId": "GT-B-04",
+      "featureId": "DAYUN-GT-B-04-P01",
+      "partIndex": 1,
+      "partCount": 1
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-005",
+      "legacyShortId": "GT-005",
+      "objectId": "DAYUN-GT-B-05",
+      "shortId": "GT-B-05",
+      "featureId": "DAYUN-GT-B-05-P01",
+      "partIndex": 1,
+      "partCount": 1
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-006",
+      "legacyShortId": "GT-006",
+      "objectId": "DAYUN-GT-B-06",
+      "shortId": "GT-B-06",
+      "featureId": "DAYUN-GT-B-06-P01",
+      "partIndex": 1,
+      "partCount": 1
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-007",
+      "legacyShortId": "GT-007",
+      "objectId": "DAYUN-GT-B-07",
+      "shortId": "GT-B-07",
+      "featureId": "DAYUN-GT-B-07-P01",
+      "partIndex": 1,
+      "partCount": 1
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-008",
+      "legacyShortId": "GT-008",
+      "objectId": "DAYUN-GT-B-08",
+      "shortId": "GT-B-08",
+      "featureId": "DAYUN-GT-B-08-P01",
+      "partIndex": 1,
+      "partCount": 1
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-009",
+      "legacyShortId": "GT-009",
+      "objectId": "DAYUN-GT-B-10",
+      "shortId": "GT-B-10",
+      "featureId": "DAYUN-GT-B-10-P02",
+      "partIndex": 2,
+      "partCount": 2
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-010",
+      "legacyShortId": "GT-010",
+      "objectId": "DAYUN-GT-B-09",
+      "shortId": "GT-B-09",
+      "featureId": "DAYUN-GT-B-09-P01",
+      "partIndex": 1,
+      "partCount": 1
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-011",
+      "legacyShortId": "GT-011",
+      "objectId": "DAYUN-GT-B-10",
+      "shortId": "GT-B-10",
+      "featureId": "DAYUN-GT-B-10-P01",
+      "partIndex": 1,
+      "partCount": 2
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-012",
+      "legacyShortId": "GT-012",
+      "objectId": "DAYUN-GT-B-11",
+      "shortId": "GT-B-11",
+      "featureId": "DAYUN-GT-B-11-P01",
+      "partIndex": 1,
+      "partCount": 1
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-013",
+      "legacyShortId": "GT-013",
+      "objectId": "DAYUN-GT-B-12",
+      "shortId": "GT-B-12",
+      "featureId": "DAYUN-GT-B-12-P01",
+      "partIndex": 1,
+      "partCount": 1
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-014",
+      "legacyShortId": "GT-014",
+      "objectId": "DAYUN-GT-A-01",
+      "shortId": "GT-A-01",
+      "featureId": "DAYUN-GT-A-01-P03",
+      "partIndex": 3,
+      "partCount": 3
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-015",
+      "legacyShortId": "GT-015",
+      "objectId": "DAYUN-GT-B-13",
+      "shortId": "GT-B-13",
+      "featureId": "DAYUN-GT-B-13-P01",
+      "partIndex": 1,
+      "partCount": 1
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-016",
+      "legacyShortId": "GT-016",
+      "objectId": "DAYUN-GT-A-01",
+      "shortId": "GT-A-01",
+      "featureId": "DAYUN-GT-A-01-P02",
+      "partIndex": 2,
+      "partCount": 3
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-017",
+      "legacyShortId": "GT-017",
+      "objectId": "DAYUN-GT-B-14",
+      "shortId": "GT-B-14",
+      "featureId": "DAYUN-GT-B-14-P01",
+      "partIndex": 1,
+      "partCount": 1
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-018",
+      "legacyShortId": "GT-018",
+      "objectId": "DAYUN-GT-A-03",
+      "shortId": "GT-A-03",
+      "featureId": "DAYUN-GT-A-03-P02",
+      "partIndex": 2,
+      "partCount": 2
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-019",
+      "legacyShortId": "GT-019",
+      "objectId": "DAYUN-GT-A-02",
+      "shortId": "GT-A-02",
+      "featureId": "DAYUN-GT-A-02-P01",
+      "partIndex": 1,
+      "partCount": 1
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-020",
+      "legacyShortId": "GT-020",
+      "objectId": "DAYUN-GT-B-15",
+      "shortId": "GT-B-15",
+      "featureId": "DAYUN-GT-B-15-P01",
+      "partIndex": 1,
+      "partCount": 1
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-021",
+      "legacyShortId": "GT-021",
+      "objectId": "DAYUN-GT-A-01",
+      "shortId": "GT-A-01",
+      "featureId": "DAYUN-GT-A-01-P01",
+      "partIndex": 1,
+      "partCount": 3
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-022",
+      "legacyShortId": "GT-022",
+      "objectId": "DAYUN-GT-A-04",
+      "shortId": "GT-A-04",
+      "featureId": "DAYUN-GT-A-04-P03",
+      "partIndex": 3,
+      "partCount": 3
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-023",
+      "legacyShortId": "GT-023",
+      "objectId": "DAYUN-GT-C-02",
+      "shortId": "GT-C-02",
+      "featureId": "DAYUN-GT-C-02-P01",
+      "partIndex": 1,
+      "partCount": 1
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-024",
+      "legacyShortId": "GT-024",
+      "objectId": "DAYUN-GT-A-05",
+      "shortId": "GT-A-05",
+      "featureId": "DAYUN-GT-A-05-P01",
+      "partIndex": 1,
+      "partCount": 2
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-025",
+      "legacyShortId": "GT-025",
+      "objectId": "DAYUN-GT-A-07",
+      "shortId": "GT-A-07",
+      "featureId": "DAYUN-GT-A-07-P01",
+      "partIndex": 1,
+      "partCount": 3
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-026",
+      "legacyShortId": "GT-026",
+      "objectId": "DAYUN-GT-A-06",
+      "shortId": "GT-A-06",
+      "featureId": "DAYUN-GT-A-06-P01",
+      "partIndex": 1,
+      "partCount": 2
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-027",
+      "legacyShortId": "GT-027",
+      "objectId": "DAYUN-GT-C-01",
+      "shortId": "GT-C-01",
+      "featureId": "DAYUN-GT-C-01-P01",
+      "partIndex": 1,
+      "partCount": 1
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-028",
+      "legacyShortId": "GT-028",
+      "objectId": "DAYUN-GT-A-04",
+      "shortId": "GT-A-04",
+      "featureId": "DAYUN-GT-A-04-P02",
+      "partIndex": 2,
+      "partCount": 3
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-029",
+      "legacyShortId": "GT-029",
+      "objectId": "DAYUN-GT-C-03",
+      "shortId": "GT-C-03",
+      "featureId": "DAYUN-GT-C-03-P01",
+      "partIndex": 1,
+      "partCount": 1
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-030",
+      "legacyShortId": "GT-030",
+      "objectId": "DAYUN-GT-C-04",
+      "shortId": "GT-C-04",
+      "featureId": "DAYUN-GT-C-04-P01",
+      "partIndex": 1,
+      "partCount": 1
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-031",
+      "legacyShortId": "GT-031",
+      "objectId": "DAYUN-GT-A-03",
+      "shortId": "GT-A-03",
+      "featureId": "DAYUN-GT-A-03-P01",
+      "partIndex": 1,
+      "partCount": 2
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-032",
+      "legacyShortId": "GT-032",
+      "objectId": "DAYUN-GT-A-07",
+      "shortId": "GT-A-07",
+      "featureId": "DAYUN-GT-A-07-P02",
+      "partIndex": 2,
+      "partCount": 3
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-033",
+      "legacyShortId": "GT-033",
+      "objectId": "DAYUN-GT-A-09",
+      "shortId": "GT-A-09",
+      "featureId": "DAYUN-GT-A-09-P02",
+      "partIndex": 2,
+      "partCount": 2
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-034",
+      "legacyShortId": "GT-034",
+      "objectId": "DAYUN-GT-C-05",
+      "shortId": "GT-C-05",
+      "featureId": "DAYUN-GT-C-05-P01",
+      "partIndex": 1,
+      "partCount": 1
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-035",
+      "legacyShortId": "GT-035",
+      "objectId": "DAYUN-GT-A-04",
+      "shortId": "GT-A-04",
+      "featureId": "DAYUN-GT-A-04-P01",
+      "partIndex": 1,
+      "partCount": 3
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-036",
+      "legacyShortId": "GT-036",
+      "objectId": "DAYUN-GT-A-05",
+      "shortId": "GT-A-05",
+      "featureId": "DAYUN-GT-A-05-P02",
+      "partIndex": 2,
+      "partCount": 2
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-037",
+      "legacyShortId": "GT-037",
+      "objectId": "DAYUN-GT-A-08",
+      "shortId": "GT-A-08",
+      "featureId": "DAYUN-GT-A-08-P01",
+      "partIndex": 1,
+      "partCount": 1
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-038",
+      "legacyShortId": "GT-038",
+      "objectId": "DAYUN-GT-A-06",
+      "shortId": "GT-A-06",
+      "featureId": "DAYUN-GT-A-06-P02",
+      "partIndex": 2,
+      "partCount": 2
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-039",
+      "legacyShortId": "GT-039",
+      "objectId": "DAYUN-GT-A-11",
+      "shortId": "GT-A-11",
+      "featureId": "DAYUN-GT-A-11-P02",
+      "partIndex": 2,
+      "partCount": 3
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-040",
+      "legacyShortId": "GT-040",
+      "objectId": "DAYUN-GT-C-06",
+      "shortId": "GT-C-06",
+      "featureId": "DAYUN-GT-C-06-P01",
+      "partIndex": 1,
+      "partCount": 1
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-041",
+      "legacyShortId": "GT-041",
+      "objectId": "DAYUN-GT-A-07",
+      "shortId": "GT-A-07",
+      "featureId": "DAYUN-GT-A-07-P03",
+      "partIndex": 3,
+      "partCount": 3
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-042",
+      "legacyShortId": "GT-042",
+      "objectId": "DAYUN-GT-C-07",
+      "shortId": "GT-C-07",
+      "featureId": "DAYUN-GT-C-07-P01",
+      "partIndex": 1,
+      "partCount": 1
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-043",
+      "legacyShortId": "GT-043",
+      "objectId": "DAYUN-GT-A-10",
+      "shortId": "GT-A-10",
+      "featureId": "DAYUN-GT-A-10-P01",
+      "partIndex": 1,
+      "partCount": 1
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-044",
+      "legacyShortId": "GT-044",
+      "objectId": "DAYUN-GT-A-09",
+      "shortId": "GT-A-09",
+      "featureId": "DAYUN-GT-A-09-P01",
+      "partIndex": 1,
+      "partCount": 2
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-045",
+      "legacyShortId": "GT-045",
+      "objectId": "DAYUN-GT-A-11",
+      "shortId": "GT-A-11",
+      "featureId": "DAYUN-GT-A-11-P03",
+      "partIndex": 3,
+      "partCount": 3
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-046",
+      "legacyShortId": "GT-046",
+      "objectId": "DAYUN-GT-C-08",
+      "shortId": "GT-C-08",
+      "featureId": "DAYUN-GT-C-08-P01",
+      "partIndex": 1,
+      "partCount": 2
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-047",
+      "legacyShortId": "GT-047",
+      "objectId": "DAYUN-GT-C-08",
+      "shortId": "GT-C-08",
+      "featureId": "DAYUN-GT-C-08-P02",
+      "partIndex": 2,
+      "partCount": 2
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-048",
+      "legacyShortId": "GT-048",
+      "objectId": "DAYUN-GT-A-12",
+      "shortId": "GT-A-12",
+      "featureId": "DAYUN-GT-A-12-P01",
+      "partIndex": 1,
+      "partCount": 1
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-049",
+      "legacyShortId": "GT-049",
+      "objectId": "DAYUN-GT-A-13",
+      "shortId": "GT-A-13",
+      "featureId": "DAYUN-GT-A-13-P01",
+      "partIndex": 1,
+      "partCount": 1
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-050",
+      "legacyShortId": "GT-050",
+      "objectId": "DAYUN-GT-C-09",
+      "shortId": "GT-C-09",
+      "featureId": "DAYUN-GT-C-09-P01",
+      "partIndex": 1,
+      "partCount": 1
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-051",
+      "legacyShortId": "GT-051",
+      "objectId": "DAYUN-GT-A-11",
+      "shortId": "GT-A-11",
+      "featureId": "DAYUN-GT-A-11-P01",
+      "partIndex": 1,
+      "partCount": 3
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-052",
+      "legacyShortId": "GT-052",
+      "objectId": "DAYUN-GT-A-14",
+      "shortId": "GT-A-14",
+      "featureId": "DAYUN-GT-A-14-P01",
+      "partIndex": 1,
+      "partCount": 1
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-053",
+      "legacyShortId": "GT-053",
+      "objectId": "DAYUN-GT-A-15",
+      "shortId": "GT-A-15",
+      "featureId": "DAYUN-GT-A-15-P01",
+      "partIndex": 1,
+      "partCount": 1
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-054",
+      "legacyShortId": "GT-054",
+      "objectId": "DAYUN-GT-C-10",
+      "shortId": "GT-C-10",
+      "featureId": "DAYUN-GT-C-10-P01",
+      "partIndex": 1,
+      "partCount": 1
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-055",
+      "legacyShortId": "GT-055",
+      "objectId": "DAYUN-GT-D-07",
+      "shortId": "GT-D-07",
+      "featureId": "DAYUN-GT-D-07-P02",
+      "partIndex": 2,
+      "partCount": 2
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-056",
+      "legacyShortId": "GT-056",
+      "objectId": "DAYUN-GT-D-01",
+      "shortId": "GT-D-01",
+      "featureId": "DAYUN-GT-D-01-P01",
+      "partIndex": 1,
+      "partCount": 1
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-057",
+      "legacyShortId": "GT-057",
+      "objectId": "DAYUN-GT-D-02",
+      "shortId": "GT-D-02",
+      "featureId": "DAYUN-GT-D-02-P01",
+      "partIndex": 1,
+      "partCount": 1
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-058",
+      "legacyShortId": "GT-058",
+      "objectId": "DAYUN-GT-D-08",
+      "shortId": "GT-D-08",
+      "featureId": "DAYUN-GT-D-08-P02",
+      "partIndex": 2,
+      "partCount": 2
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-059",
+      "legacyShortId": "GT-059",
+      "objectId": "DAYUN-GT-D-03",
+      "shortId": "GT-D-03",
+      "featureId": "DAYUN-GT-D-03-P01",
+      "partIndex": 1,
+      "partCount": 1
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-060",
+      "legacyShortId": "GT-060",
+      "objectId": "DAYUN-GT-E-01",
+      "shortId": "GT-E-01",
+      "featureId": "DAYUN-GT-E-01-P02",
+      "partIndex": 2,
+      "partCount": 2
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-061",
+      "legacyShortId": "GT-061",
+      "objectId": "DAYUN-GT-D-04",
+      "shortId": "GT-D-04",
+      "featureId": "DAYUN-GT-D-04-P01",
+      "partIndex": 1,
+      "partCount": 1
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-062",
+      "legacyShortId": "GT-062",
+      "objectId": "DAYUN-GT-E-02",
+      "shortId": "GT-E-02",
+      "featureId": "DAYUN-GT-E-02-P02",
+      "partIndex": 2,
+      "partCount": 2
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-063",
+      "legacyShortId": "GT-063",
+      "objectId": "DAYUN-GT-D-05",
+      "shortId": "GT-D-05",
+      "featureId": "DAYUN-GT-D-05-P01",
+      "partIndex": 1,
+      "partCount": 1
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-064",
+      "legacyShortId": "GT-064",
+      "objectId": "DAYUN-GT-D-06",
+      "shortId": "GT-D-06",
+      "featureId": "DAYUN-GT-D-06-P01",
+      "partIndex": 1,
+      "partCount": 1
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-065",
+      "legacyShortId": "GT-065",
+      "objectId": "DAYUN-GT-E-03",
+      "shortId": "GT-E-03",
+      "featureId": "DAYUN-GT-E-03-P02",
+      "partIndex": 2,
+      "partCount": 2
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-066",
+      "legacyShortId": "GT-066",
+      "objectId": "DAYUN-GT-E-04",
+      "shortId": "GT-E-04",
+      "featureId": "DAYUN-GT-E-04-P02",
+      "partIndex": 2,
+      "partCount": 2
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-067",
+      "legacyShortId": "GT-067",
+      "objectId": "DAYUN-GT-D-07",
+      "shortId": "GT-D-07",
+      "featureId": "DAYUN-GT-D-07-P01",
+      "partIndex": 1,
+      "partCount": 2
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-068",
+      "legacyShortId": "GT-068",
+      "objectId": "DAYUN-GT-D-08",
+      "shortId": "GT-D-08",
+      "featureId": "DAYUN-GT-D-08-P01",
+      "partIndex": 1,
+      "partCount": 2
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-069",
+      "legacyShortId": "GT-069",
+      "objectId": "DAYUN-GT-E-05",
+      "shortId": "GT-E-05",
+      "featureId": "DAYUN-GT-E-05-P02",
+      "partIndex": 2,
+      "partCount": 2
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-070",
+      "legacyShortId": "GT-070",
+      "objectId": "DAYUN-GT-F-01",
+      "shortId": "GT-F-01",
+      "featureId": "DAYUN-GT-F-01-P02",
+      "partIndex": 2,
+      "partCount": 2
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-071",
+      "legacyShortId": "GT-071",
+      "objectId": "DAYUN-GT-E-01",
+      "shortId": "GT-E-01",
+      "featureId": "DAYUN-GT-E-01-P01",
+      "partIndex": 1,
+      "partCount": 2
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-072",
+      "legacyShortId": "GT-072",
+      "objectId": "DAYUN-GT-F-02",
+      "shortId": "GT-F-02",
+      "featureId": "DAYUN-GT-F-02-P02",
+      "partIndex": 2,
+      "partCount": 2
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-073",
+      "legacyShortId": "GT-073",
+      "objectId": "DAYUN-GT-E-02",
+      "shortId": "GT-E-02",
+      "featureId": "DAYUN-GT-E-02-P01",
+      "partIndex": 1,
+      "partCount": 2
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-074",
+      "legacyShortId": "GT-074",
+      "objectId": "DAYUN-GT-F-03",
+      "shortId": "GT-F-03",
+      "featureId": "DAYUN-GT-F-03-P02",
+      "partIndex": 2,
+      "partCount": 2
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-075",
+      "legacyShortId": "GT-075",
+      "objectId": "DAYUN-GT-E-03",
+      "shortId": "GT-E-03",
+      "featureId": "DAYUN-GT-E-03-P01",
+      "partIndex": 1,
+      "partCount": 2
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-076",
+      "legacyShortId": "GT-076",
+      "objectId": "DAYUN-GT-F-04",
+      "shortId": "GT-F-04",
+      "featureId": "DAYUN-GT-F-04-P02",
+      "partIndex": 2,
+      "partCount": 2
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-077",
+      "legacyShortId": "GT-077",
+      "objectId": "DAYUN-GT-E-04",
+      "shortId": "GT-E-04",
+      "featureId": "DAYUN-GT-E-04-P01",
+      "partIndex": 1,
+      "partCount": 2
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-078",
+      "legacyShortId": "GT-078",
+      "objectId": "DAYUN-GT-F-05",
+      "shortId": "GT-F-05",
+      "featureId": "DAYUN-GT-F-05-P02",
+      "partIndex": 2,
+      "partCount": 2
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-079",
+      "legacyShortId": "GT-079",
+      "objectId": "DAYUN-GT-E-05",
+      "shortId": "GT-E-05",
+      "featureId": "DAYUN-GT-E-05-P01",
+      "partIndex": 1,
+      "partCount": 2
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-080",
+      "legacyShortId": "GT-080",
+      "objectId": "DAYUN-GT-F-06",
+      "shortId": "GT-F-06",
+      "featureId": "DAYUN-GT-F-06-P01",
+      "partIndex": 1,
+      "partCount": 2
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-081",
+      "legacyShortId": "GT-081",
+      "objectId": "DAYUN-GT-F-01",
+      "shortId": "GT-F-01",
+      "featureId": "DAYUN-GT-F-01-P01",
+      "partIndex": 1,
+      "partCount": 2
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-082",
+      "legacyShortId": "GT-082",
+      "objectId": "DAYUN-GT-F-02",
+      "shortId": "GT-F-02",
+      "featureId": "DAYUN-GT-F-02-P01",
+      "partIndex": 1,
+      "partCount": 2
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-083",
+      "legacyShortId": "GT-083",
+      "objectId": "DAYUN-GT-F-03",
+      "shortId": "GT-F-03",
+      "featureId": "DAYUN-GT-F-03-P01",
+      "partIndex": 1,
+      "partCount": 2
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-084",
+      "legacyShortId": "GT-084",
+      "objectId": "DAYUN-GT-F-04",
+      "shortId": "GT-F-04",
+      "featureId": "DAYUN-GT-F-04-P01",
+      "partIndex": 1,
+      "partCount": 2
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-085",
+      "legacyShortId": "GT-085",
+      "objectId": "DAYUN-GT-F-05",
+      "shortId": "GT-F-05",
+      "featureId": "DAYUN-GT-F-05-P01",
+      "partIndex": 1,
+      "partCount": 2
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-086",
+      "legacyShortId": "GT-086",
+      "objectId": "DAYUN-GT-F-06",
+      "shortId": "GT-F-06",
+      "featureId": "DAYUN-GT-F-06-P02",
+      "partIndex": 2,
+      "partCount": 2
+    },
+    {
+      "legacyObjectId": "DAYUN-GT-087",
+      "legacyShortId": "GT-087",
+      "objectId": "DAYUN-GT-F-07",
+      "shortId": "GT-F-07",
+      "featureId": "DAYUN-GT-F-07-P01",
+      "partIndex": 1,
+      "partCount": 1
+    }
+  ]
+}
