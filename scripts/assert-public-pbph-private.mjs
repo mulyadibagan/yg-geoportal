@@ -17,6 +17,27 @@ if (fs.existsSync(path.join(root, "data", "phl-svlk-monthly"))) {
   throw new Error("Arsip PHL/SVLK internal ikut masuk artefak publik.");
 }
 
+const geometryWithheldFiles = [
+  "data/PERUSAHAAN_SAWIT_RIAU_REFERENSI.geojson",
+  "data/PERHUTANAN_SOSIAL_RIAU.geojson",
+  "data/social-forestry-official-2026.geojson"
+];
+
+for (const relative of geometryWithheldFiles) {
+  const file = path.join(root, relative);
+  if (!fs.existsSync(file)) continue;
+  const value = JSON.parse(fs.readFileSync(file, "utf8"));
+  if (!Array.isArray(value.features)) {
+    throw new Error(`Placeholder geometri publik tidak valid: ${relative}`);
+  }
+  if (value.features.length) {
+    throw new Error(`Geometri referensi internal ikut masuk artefak publik: ${relative}`);
+  }
+  if (value.visibility !== "internal") {
+    throw new Error(`Status internal hilang dari placeholder publik: ${relative}`);
+  }
+}
+
 const protectedKeys = new Set(["concession", "pbph052026", "permits"]);
 function assertRedacted(value, file) {
   if (Array.isArray(value)) {
@@ -56,4 +77,4 @@ if (fs.existsSync(fireDir)) {
   }
 }
 
-console.log("Artefak publik bersih dari data PBPH internal.");
+console.log("Artefak publik bersih dari PBPH serta geometri mentah RSPO/Perhutanan Sosial internal.");
