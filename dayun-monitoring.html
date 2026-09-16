@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="css/style.css?v=20260723-revert-layout">
   <link rel="stylesheet" href="css/navigation-v2.css?v=20260807-mobile-submenu-links1">
   <link rel="stylesheet" href="css/dayun-monitoring.css?v=20260917-1">
+  <link rel="stylesheet" href="css/dayun-monitoring-sop.css?v=20260917-1">
 </head>
 <body>
   <header class="site-header">
@@ -30,20 +31,36 @@
           <label><span>Kelompok atau organisasi</span><input id="dm-organization" maxlength="120" autocomplete="organization" placeholder="Contoh: KUPS Rimba Sejahtera"></label>
           <label><span>Nomor WhatsApp</span><input id="dm-phone" type="tel" maxlength="30" autocomplete="tel" inputmode="tel" placeholder="Contoh: 0812…"></label>
           <label><span>Email</span><input id="dm-email" type="email" maxlength="120" autocomplete="email" placeholder="nama@contoh.id"><small>Isi email atau nomor WhatsApp agar admin dapat melakukan klarifikasi.</small></label>
-          <label class="dm-trap" hidden aria-hidden="true"><span>Alamat situs</span><input id="dm-website" tabindex="-1" autocomplete="off"></label>
+          <label class="dm-trap" hidden style="display:none!important" aria-hidden="true"><span>Alamat situs</span><input id="dm-website" tabindex="-1" autocomplete="off"></label>
           <label><span>Gawangan *</span><select id="dm-object" required><option value="">Memuat gawangan…</option></select><small id="dm-object-note">Pilih polygon yang dikerjakan.</small></label>
           <label><span>Komoditas *</span><input id="dm-crop" list="dm-crop-list" required placeholder="Contoh: Nanas"><datalist id="dm-crop-list"></datalist><small>Dapat memilih komoditas yang sudah tercatat atau mengetik baru.</small></label>
           <label><span>Jenis kegiatan *</span><select id="dm-activity" required><option value="">Pilih kegiatan</option><option>Penanaman</option><option>Penyisipan</option><option>Pemupukan</option><option>Penyiangan</option><option>Pengendalian HPT</option><option>Ethrel</option><option>Panen</option><option>Monitoring umum</option></select></label>
           <label><span>Tanggal kegiatan *</span><input id="dm-date" type="date" required></label>
           <label><span>Tanggal tanam</span><input id="dm-planting-date" type="date"><small>Wajib untuk penanaman; digunakan menghitung umur secara otomatis.</small></label>
           <label><span>Kondisi tanaman</span><select id="dm-condition"><option value="">Belum dinilai</option><option>Baik</option><option>Perlu perhatian</option><option>Terdampak HPT</option><option>Perlu penyisipan</option><option>Siap ethrel</option><option>Siap panen</option></select></label>
-          <label><span>Jumlah</span><input id="dm-quantity" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Contoh: 1125"></label>
-          <label><span>Satuan</span><select id="dm-unit"><option value="">Pilih satuan</option><option>batang</option><option>buah</option><option>kg</option><option>liter</option><option>karung</option><option>ha</option></select></label>
-          <label class="dm-wide"><span>Bahan atau input</span><input id="dm-material" placeholder="Contoh: NPK 15-15-15 sebanyak 50 kg"></label>
+          <section class="dm-sop-panel" id="dm-fertilizer-panel" hidden aria-labelledby="dm-fertilizer-title">
+            <div class="dm-sop-head"><div><span>SOP PEMUPUKAN NANAS</span><h3 id="dm-fertilizer-title">Realisasi pemupukan berbasis gawangan</h3><p>Dosis acuan diambil otomatis dari SOP. Pelapor mencatat jumlah yang benar-benar diaplikasikan; admin atau pendamping memeriksa kesesuaiannya sebelum publikasi.</p></div><a href="dayun-sop-nanas.html#kalkulator-pupuk" target="_blank" rel="noopener">Buka SOP dan kalkulator ↗</a></div>
+            <div class="dm-sop-fields">
+              <label><span>Fase pemupukan *</span><select id="dm-fert-phase"><option value="base">Dasar · sebelum/saat tanam</option><option value="phase1">I · akar terlihat/sekitar 3 BST</option><option value="phase2">II · 1 bulan sebelum induksi</option><option value="phase3">III · setelah bunga keluar</option></select><small id="dm-fert-phase-note"></small></label>
+              <label><span>Luas gawangan</span><input id="dm-fert-area" readonly aria-readonly="true"><small>Diambil otomatis dari polygon resmi.</small></label>
+              <label><span>Tanaman nanas aktif *</span><input id="dm-fert-population" type="number" min="1" step="1" inputmode="numeric"><small>Jumlah tanaman hidup yang benar-benar menjadi sasaran.</small></label>
+              <label><span>pH tanah aktual</span><input id="dm-fert-ph" type="number" min="0" max="14" step="0.1" inputmode="decimal" placeholder="Jika telah diukur"><small>Rentang acuan nanas 4,5–6,5; kosongkan bila belum diukur.</small></label>
+              <label><span>Cuaca/kondisi saat aplikasi *</span><select id="dm-fert-weather"><option value="">Pilih kondisi</option><option>Cerah</option><option>Berawan</option><option>Hujan ringan</option><option>Hujan lebat</option><option>Baru selesai hujan</option><option>Lahan tergenang</option><option>Angin kuat</option></select></label>
+              <label><span>Metode aplikasi *</span><select id="dm-fert-method"><option value="">Pilih metode</option><option>Ditabur pada zona akar</option><option>Dilarutkan dan disiram</option><option>Aplikasi terbagi</option><option>Metode lain sesuai arahan pendamping</option></select></label>
+              <label class="dm-wide"><span>Pendamping/penanggung jawab *</span><input id="dm-fert-supervisor" maxlength="100" placeholder="Nama yang memeriksa keputusan dosis"></label>
+            </div>
+            <div class="dm-fert-materials" id="dm-fert-materials"></div>
+            <label class="dm-fert-deviation" id="dm-fert-deviation-wrap" hidden><span>Alasan penyimpangan atau kondisi berisiko *</span><textarea id="dm-fert-deviation" placeholder="Jelaskan arahan pendamping bila dosis di luar SOP atau aplikasi dilakukan pada kondisi yang perlu perhatian."></textarea></label>
+            <div class="dm-fert-summary" id="dm-fert-summary">Pilih fase, isi populasi aktif, lalu masukkan realisasi setiap bahan.</div>
+          </section>
+          <div class="dm-sop-unsupported" id="dm-fertilizer-unsupported" hidden><strong>SOP pemupukan belum tersedia untuk komoditas ini.</strong> Catat bahan dan jumlah aktual pada kolom umum; admin atau pendamping akan memeriksanya sebelum publikasi.</div>
+          <label id="dm-generic-quantity"><span>Jumlah</span><input id="dm-quantity" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Contoh: 1125"></label>
+          <label id="dm-generic-unit"><span>Satuan</span><select id="dm-unit"><option value="">Pilih satuan</option><option>batang</option><option>buah</option><option>kg</option><option>liter</option><option>karung</option><option>ha</option></select></label>
+          <label class="dm-wide" id="dm-generic-material"><span>Bahan atau input</span><input id="dm-material" placeholder="Contoh: NPK 15-15-15 sebanyak 50 kg"></label>
           <label><span>Tindak lanjut</span><input id="dm-next-action" placeholder="Contoh: Pemeriksaan pertumbuhan"></label>
           <label><span>Rencana tanggal berikutnya</span><input id="dm-next-date" type="date"></label>
           <label class="dm-wide"><span>Catatan lapangan *</span><textarea id="dm-notes" required placeholder="Kondisi sebelum/sesudah kegiatan, kendala, hasil pengamatan, dan informasi penting lainnya."></textarea></label>
-          <label class="dm-wide"><span>Foto kegiatan <small>(opsional, maksimal 3)</small></span><input id="dm-photos" type="file" accept="image/*" multiple><small id="dm-photo-note">Foto dikompresi sebelum dikirim.</small></label>
+          <label class="dm-wide"><span>Foto kegiatan <small id="dm-photo-label">(opsional, maksimal 3)</small></span><input id="dm-photos" type="file" accept="image/*" multiple><small id="dm-photo-note">Foto dikompresi sebelum dikirim.</small></label>
         </div>
         <label class="dm-confirm"><input id="dm-confirm" type="checkbox" required><span>Saya memastikan gawangan, tanggal, kegiatan, dan catatan sudah diperiksa sebelum dikirim untuk verifikasi admin.</span></label>
         <div class="dm-actions"><button id="dm-submit" type="submit">Kirim untuk verifikasi</button><button type="reset">Bersihkan</button></div>
@@ -56,6 +73,7 @@
       </aside>
     </section>
   </main>
-  <script src="js/dayun-monitoring.js?v=20260917-public1"></script>
+  <script src="js/dayun-fertilizer-calculator.js?v=20260917-programs1"></script>
+  <script src="js/dayun-monitoring.js?v=20260917-sop1"></script>
 </body>
 </html>
