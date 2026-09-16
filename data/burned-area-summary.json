@@ -1,17 +1,17 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-15T09:00:26.424725+00:00",
+  "generatedAt": "2026-09-16T08:55:30.947585+00:00",
   "status": "ready",
-  "eventCount": 17,
-  "estimatedAreaHa": 2769.92,
-  "candidateEventCount": 35,
+  "eventCount": 16,
+  "estimatedAreaHa": 2768.16,
+  "candidateEventCount": 38,
   "processing": {
-    "waiting-post-image": 4,
+    "waiting-post-image": 8,
     "waiting-clear-image": 14,
-    "published": 17,
+    "published": 16,
     "excludedByRiauBoundary": 0
   },
-  "latestDetection": "2026-09-14T13:55:00+00:00",
+  "latestDetection": "2026-09-15T21:14:00+00:00",
   "method": "Sentinel-2 dNBR/NBR with FIRMS candidate events",
   "disclaimer": "Estimasi berbasis citra satelit; bukan hasil pengukuran atau verifikasi lapangan.",
   "province": "Riau",
@@ -19,7 +19,7 @@
   "villageSource": "data/batas_administrasi_desa_riau.geojson",
   "spatiallyClipped": true,
   "areaCrs": "EPSG:32647",
-  "administrativeUpdatedAt": "2026-09-15T09:00:27.120425+00:00",
+  "administrativeUpdatedAt": "2026-09-16T08:55:31.654032+00:00",
   "unassignedAreaHa": 0.0,
   "villageTotals": [
     {
@@ -153,12 +153,6 @@
       "district": "",
       "village": "Sungai Guntung Tengah / Sungai Guntung Hilir",
       "areaHa": 73.63
-    },
-    {
-      "regency": "Indragiri Hulu",
-      "district": "Batang Cenaku",
-      "village": "Alim",
-      "areaHa": 1.76
     },
     {
       "regency": "Indragiri Hulu",
@@ -325,11 +319,6 @@
     },
     {
       "regency": "Indragiri Hulu",
-      "district": "Batang Cenaku",
-      "areaHa": 1.76
-    },
-    {
-      "regency": "Indragiri Hulu",
       "district": "Rengat",
       "areaHa": 90.09
     },
@@ -385,7 +374,7 @@
     },
     {
       "regency": "Indragiri Hulu",
-      "areaHa": 165.48
+      "areaHa": 163.72
     },
     {
       "regency": "Kampar",
