@@ -7,6 +7,9 @@
     'data/fire-monthly/index.json': '/api/staff/fire-monthly-index',
     'data/phl-svlk-monthly/index.json': '/api/staff/phl-svlk-monthly-index'
   };
+  const STAFF_ONLY_PUBLIC_PATHS = new Set([
+    '/data/PERUSAHAAN_SAWIT_RIAU_REFERENSI.geojson'
+  ]);
   const session = () => window.YG_AUTH && window.YG_AUTH.readStoredSession();
   let geometry;
   function route(url) {
@@ -72,9 +75,16 @@
     return data;
   }
   async function fetchData(url, options) {
+    const parsed = new URL(url, location.href);
+    if (STAFF_ONLY_PUBLIC_PATHS.has(parsed.pathname) && !session()) {
+      return new Response(JSON.stringify({ error: 'staff_login_required' }), {
+        status: 403,
+        headers: { 'content-type': 'application/json', 'cache-control': 'no-store' }
+      });
+    }
     if (route(url) && session()) return privateFetch(url);
     const response = await window.fetch(url, options);
-    if (new URL(url, location.href).pathname === '/data/hotspot-high-confidence.geojson' && response.ok) {
+    if (parsed.pathname === '/data/hotspot-high-confidence.geojson' && response.ok) {
       return new Response(JSON.stringify(await enrich(await response.json())), { headers: { 'content-type': 'application/json', 'cache-control': 'no-store' } });
     }
     return response;
