@@ -29,9 +29,12 @@
     var link=nav.querySelector('a[href="staff-login.html"]');
     if(!link)return;
     var session=null;
-    try{session=JSON.parse(sessionStorage.getItem('ygEditorSessionV1')||'null');}catch(error){}
+    try{
+      session=JSON.parse(localStorage.getItem('ygEditorSessionV1')||sessionStorage.getItem('ygEditorSessionV1')||'null');
+    }catch(error){}
     if(!session||!session.token||!session.username||Number(session.expiresAt||0)<=Date.now()){
       try{sessionStorage.removeItem('ygEditorSessionV1');}catch(error){}
+      try{localStorage.removeItem('ygEditorSessionV1');}catch(error){}
       return;
     }
     document.querySelectorAll('[data-staff-only-module]').forEach(function(module){
