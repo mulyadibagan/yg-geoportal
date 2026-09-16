@@ -1,0 +1,81 @@
+name: Enforce RSPO internal-only
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  enforce:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Make RSPO staff-only at source
+        shell: python
+        run: |
+          from pathlib import Path
+          import re
+
+          index = Path('index.html')
+          text = index.read_text(encoding='utf-8')
+          text = text.replace(
+              '<section class="home-collaboration" aria-labelledby="sawit-riau-title">',
+              '<section class="home-collaboration" aria-labelledby="sawit-riau-title" data-staff-only-module hidden>',
+              1,
+          )
+          text = text.replace(
+              'href="sawit-riau-rspo.html"',
+              'href="staff-rspo-dashboard.html"',
+              1,
+          )
+          text = text.replace(
+              'js/navigation-v2.js?v=20260916-staff-session2',
+              'js/navigation-v2.js?v=20260916-rspo-internal3',
+          )
+          index.write_text(text, encoding='utf-8')
+
+          webgis = Path('webgis.html')
+          text = webgis.read_text(encoding='utf-8')
+          text = text.replace(
+              'js/layer-order-v1.js?v=20260903-sidebar-cache-fix1',
+              'js/layer-order-v1.js?v=20260916-rspo-internal3',
+          )
+          webgis.write_text(text, encoding='utf-8')
+
+          map_js = Path('js/map-v4.js')
+          text = map_js.read_text(encoding='utf-8')
+          if '...(staffSession ? { perusahaan_sawit_riau:' not in text:
+              pattern = re.compile(
+                  r'\n    (perusahaan_sawit_riau: \{.*?\n    \}),\n    kawasan_hutan_sk_903:',
+                  re.S,
+              )
+              match = pattern.search(text)
+              if not match:
+                  raise SystemExit('RSPO reference-layer block not found')
+              block = match.group(1)
+              replacement = '\n    ...(staffSession ? { ' + block + ' } : {}),\n    kawasan_hutan_sk_903:'
+              text = text[:match.start()] + replacement + text[match.end():]
+          map_js.write_text(text, encoding='utf-8')
+
+          # Guard: public source must not register the RSPO reference layer unconditionally.
+          result = map_js.read_text(encoding='utf-8')
+          if '\n    perusahaan_sawit_riau: {' in result:
+              raise SystemExit('RSPO layer is still registered unconditionally')
+
+      - name: Commit source privacy fix
+        run: |
+          if git diff --quiet; then
+            echo "No changes required"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html webgis.html js/map-v4.js
+          git commit -m "privacy: make RSPO source staff-only"
+          git push
