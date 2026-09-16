@@ -5,8 +5,8 @@
 /* Live monitoring and automatically calculated field status. */
 .dg-kpis{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}.dg-staff-action{display:inline-flex;align-self:flex-start;margin-top:16px;padding:10px 13px;border-radius:9px;background:#dff08f;color:#244c23;font-size:11px;font-weight:900;text-decoration:none}.dg-staff-action[hidden]{display:none}.dg-events{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.dg-event{padding:17px;border:1px solid #d5e3dc;border-radius:14px;background:#fff}.dg-event header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.dg-event header span{color:#087653;font-size:9px;font-weight:850}.dg-event h3{margin:4px 0 0;font-size:17px}.dg-event header>b{padding:5px 8px;border-radius:999px;background:#eef7f2;color:#315b4b;font-size:9px}.dg-event p{margin:12px 0 0;color:#4c655a;font-size:11px;line-height:1.55}.dg-event footer{display:grid;gap:3px;margin-top:12px;padding-top:11px;border-top:1px solid #e2ebe6}.dg-event footer small{color:#687b72;font-size:9px}.dg-event footer strong{font-size:11px}@media(max-width:650px){.dg-kpis,.dg-crops,.dg-events{grid-template-columns:1fr}}
 
-/* A-01 pineapple audit: chart and evidence-aware recommendations. */
-.dg-crops.is-pilot{grid-template-columns:1fr}
+/* Detailed crop profiles, harvest chart, and evidence-aware recommendations. */
+.dg-crops.is-detailed{grid-template-columns:1fr}
 .dg-harvest-panel,.dg-pineapple-plan{margin-top:18px;padding:16px;border:1px solid #dce7e1;border-radius:13px;background:#f8fbf9}
 .dg-harvest-panel>header,.dg-pineapple-plan>header{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
 .dg-harvest-panel>header small,.dg-pineapple-plan>header small{display:block;color:#087653;font-size:9px;font-weight:900;letter-spacing:.08em}
