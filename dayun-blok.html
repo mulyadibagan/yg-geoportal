@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Profil Blok Agroforestri Dayun | YG GeoPortal</title>
+  <meta name="description" content="Ringkasan terintegrasi blok dan gawangan agroforestri KUPS Rimba Sejahtera di Dayun.">
+  <link rel="icon" href="assets/logo-yayasan-gambut.png">
+  <link rel="stylesheet" href="css/style.css?v=20260723-revert-layout">
+  <link rel="stylesheet" href="css/navigation-v2.css?v=20260807-mobile-submenu-links1">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="css/dayun.css?v=20260917-block-summary1">
+</head>
+<body data-dayun-page="block" data-dayun-mode="public">
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html"><img src="assets/logo-yayasan-gambut.png" alt="Logo Yayasan Gambut"><span><strong>YG GeoPortal</strong><span>WebGIS Yayasan Gambut</span></span></a>
+      <button class="yg-nav-toggle" type="button" aria-label="Buka menu" aria-expanded="false" data-yg-nav-toggle="main-navigation">☰</button>
+      <nav class="nav yg-nav-v2" id="main-navigation" aria-label="Navigasi utama" data-yg-navigation><a href="index.html">Beranda</a><a href="webgis.html">Peta Interaktif</a><a href="dayun.html">Program Dayun</a><a href="dayun-map.html">Peta Agroforestri</a><a href="staff-login.html">Login Staf</a></nav>
+    </div>
+  </header>
+  <main class="dy-shell dy-block-page">
+    <nav class="dy-map-breadcrumb" aria-label="Navigasi halaman"><a class="dy-back-link" href="dayun-map.html">← Kembali ke peta agroforestri</a><span id="db-breadcrumb">Profil blok</span></nav>
+    <div id="db-status" class="dy-summary-loading" role="status">Menghitung informasi blok dari seluruh gawangan…</div>
+    <div id="db-content" hidden>
+      <section class="dy-block-hero">
+        <div><span>AGROFORESTRI DAYUN · PROFIL BLOK</span><h1 id="db-title">Blok</h1><p id="db-meta"></p></div>
+        <label for="db-block-select"><span>Buka blok lain</span><select id="db-block-select"></select></label>
+      </section>
+      <section class="dy-summary-kpis" id="db-kpis" aria-label="Ringkasan blok"></section>
+      <section class="dy-block-map-layout">
+        <div class="dy-block-map" id="db-map" aria-label="Peta blok dan gawangan"></div>
+        <aside class="dy-block-map-copy"><span>PETA BLOK</span><h2 id="db-map-title">Sebaran gawangan</h2><p>Klik poligon gawangan untuk membuka profil tanaman dan riwayat kegiatan lapangan.</p><div id="db-data-status"></div></aside>
+      </section>
+      <section class="dy-section">
+        <div class="dy-section-head"><div><span>KOMPOSISI TANAMAN</span><h2>Informasi tanaman dari seluruh gawangan</h2></div><p>Jumlah merupakan agregasi profil gawangan dalam blok terpilih dan dibulatkan ke bilangan utuh pada tampilan.</p></div>
+        <div class="dy-block-crops" id="db-crops"></div>
+      </section>
+      <section class="dy-section" id="db-harvest-section">
+        <div class="dy-section-head"><div><span>RIWAYAT PANEN NANAS</span><h2>Panen menurut periode</h2></div><p>Grafik menggabungkan catatan panen nanas dari setiap gawangan dalam blok.</p></div>
+        <div class="dy-block-harvest" id="db-harvest"></div>
+      </section>
+      <section class="dy-section">
+        <div class="dy-section-head"><div><span>RINCIAN GAWANGAN</span><h2>Gawangan penyusun blok</h2></div><p>Angka blok di atas dapat ditelusuri kembali ke setiap gawangan.</p></div>
+        <div class="dy-block-table-wrap"><table class="dy-block-table"><thead><tr><th>Gawangan</th><th>Luas poligon</th><th>Luas operasional</th><th>Komoditas</th><th>Nanas</th><th>Dipanen</th><th>MPTS</th><th></th></tr></thead><tbody id="db-gawangan"></tbody></table></div>
+      </section>
+      <aside class="dy-summary-note" id="db-note"></aside>
+    </div>
+  </main>
+  <footer class="dy-footer">YG GeoPortal · Agroforestri KUPS Rimba Sejahtera</footer>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/auth.js?v=20260915-logout3"></script>
+  <script src="js/navigation-v2.js?v=20260821-staff-name1"></script>
+  <script src="js/dayun-agro-summary.js?v=20260917-block-summary1"></script>
+  <script src="js/dayun-blok.js?v=20260917-block-summary1"></script>
+</body>
+</html>

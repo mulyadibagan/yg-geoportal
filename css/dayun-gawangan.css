@@ -27,4 +27,5 @@
 .dg-plan-actions article{padding:13px;border-left:3px solid #d1a415;border-radius:9px;background:#fff9e7}
 .dg-plan-actions strong{font-size:11px}
 .dg-plan-actions p{margin:5px 0 0;color:#586b62;font-size:10px;line-height:1.6}
+.dg-block-link{display:inline-flex;margin-left:7px;padding:5px 8px;border-radius:8px;background:#e7f3ed;color:#087653;font-size:9px;font-weight:850;text-decoration:none}.dg-block-link:hover{background:#d8ece2}
 @media(max-width:650px){.dg-plan-metrics,.dg-plan-actions{grid-template-columns:1fr}.dg-harvest-panel,.dg-pineapple-plan{padding:13px}.dg-harvest-chart{grid-template-columns:repeat(5,74px)}}
