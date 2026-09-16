@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Input Monitoring Gawangan Dayun | YG GeoPortal</title>
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="icon" href="assets/logo-yayasan-gambut.png">
+  <link rel="stylesheet" href="css/style.css?v=20260723-revert-layout">
+  <link rel="stylesheet" href="css/navigation-v2.css?v=20260807-mobile-submenu-links1">
+  <link rel="stylesheet" href="css/dayun-monitoring.css?v=20260917-1">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html"><img src="assets/logo-yayasan-gambut.png" alt="Logo Yayasan Gambut"><span><strong>YG GeoPortal</strong><span>Monitoring Agroforestri Dayun</span></span></a>
+      <nav class="nav"><a href="admin-dashboard.html">Dashboard Admin</a><a href="dayun-map.html">Peta Dayun</a></nav>
+    </div>
+  </header>
+  <main class="dm-shell">
+    <section class="dm-hero">
+      <div><span>INPUT DATA LAPANGAN</span><h1>Monitoring gawangan Dayun</h1><p>Catat kegiatan berdasarkan gawangan. Data disimpan sebagai draf dan baru tampil pada profil publik setelah dikonfirmasi oleh admin.</p></div>
+      <aside><b id="dm-staff-name">Memverifikasi sesi staf…</b><small>Alur publikasi</small><ol><li>Staf mengirim data</li><li>Admin memeriksa</li><li>Admin mempublikasikan</li></ol></aside>
+    </section>
+    <section class="dm-grid">
+      <form id="dm-form" class="dm-form" novalidate>
+        <div class="dm-form-head"><div><span>FORM MONITORING</span><h2>Catatan kegiatan gawangan</h2></div><p>Kolom bertanda * wajib diisi.</p></div>
+        <div class="dm-fields">
+          <label><span>Gawangan *</span><select id="dm-object" required><option value="">Memuat gawangan…</option></select><small id="dm-object-note">Pilih polygon yang dikerjakan.</small></label>
+          <label><span>Komoditas *</span><input id="dm-crop" list="dm-crop-list" required placeholder="Contoh: Nanas"><datalist id="dm-crop-list"></datalist><small>Dapat memilih komoditas yang sudah tercatat atau mengetik baru.</small></label>
+          <label><span>Jenis kegiatan *</span><select id="dm-activity" required><option value="">Pilih kegiatan</option><option>Penanaman</option><option>Penyisipan</option><option>Pemupukan</option><option>Penyiangan</option><option>Pengendalian HPT</option><option>Ethrel</option><option>Panen</option><option>Monitoring umum</option></select></label>
+          <label><span>Tanggal kegiatan *</span><input id="dm-date" type="date" required></label>
+          <label><span>Tanggal tanam</span><input id="dm-planting-date" type="date"><small>Wajib untuk penanaman; digunakan menghitung umur secara otomatis.</small></label>
+          <label><span>Kondisi tanaman</span><select id="dm-condition"><option value="">Belum dinilai</option><option>Baik</option><option>Perlu perhatian</option><option>Terdampak HPT</option><option>Perlu penyisipan</option><option>Siap ethrel</option><option>Siap panen</option></select></label>
+          <label><span>Jumlah</span><input id="dm-quantity" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Contoh: 1125"></label>
+          <label><span>Satuan</span><select id="dm-unit"><option value="">Pilih satuan</option><option>batang</option><option>buah</option><option>kg</option><option>liter</option><option>karung</option><option>ha</option></select></label>
+          <label class="dm-wide"><span>Bahan atau input</span><input id="dm-material" placeholder="Contoh: NPK 15-15-15 sebanyak 50 kg"></label>
+          <label><span>Tindak lanjut</span><input id="dm-next-action" placeholder="Contoh: Pemeriksaan pertumbuhan"></label>
+          <label><span>Rencana tanggal berikutnya</span><input id="dm-next-date" type="date"></label>
+          <label class="dm-wide"><span>Catatan lapangan *</span><textarea id="dm-notes" required placeholder="Kondisi sebelum/sesudah kegiatan, kendala, hasil pengamatan, dan informasi penting lainnya."></textarea></label>
+          <label class="dm-wide"><span>Foto kegiatan <small>(opsional, maksimal 3)</small></span><input id="dm-photos" type="file" accept="image/*" multiple><small id="dm-photo-note">Foto dikompresi sebelum dikirim.</small></label>
+        </div>
+        <label class="dm-confirm"><input id="dm-confirm" type="checkbox" required><span>Saya memastikan gawangan, tanggal, kegiatan, dan catatan sudah diperiksa sebelum dikirim untuk verifikasi admin.</span></label>
+        <div class="dm-actions"><button id="dm-submit" type="submit">Kirim untuk verifikasi</button><button type="reset">Bersihkan</button></div>
+        <div id="dm-feedback" class="dm-feedback" role="status" aria-live="polite">Data belum dikirim.</div>
+      </form>
+      <aside class="dm-side">
+        <article><span>STATUS AWAL</span><h3>Menunggu Verifikasi</h3><p>Data yang baru dikirim tidak langsung muncul pada peta atau profil publik.</p></article>
+        <article><span>KONFIRMASI ADMIN</span><h3>Pemeriksaan sebelum publikasi</h3><p>Admin memeriksa identitas gawangan, tanggal, isi kegiatan, dan bukti. Hanya status <b>Sudah Dipublikasikan</b> yang dibaca halaman publik.</p></article>
+        <article><span>PEMBARUAN OTOMATIS</span><h3>Umur dan jadwal</h3><p>Umur dihitung dari tanggal tanam. Hari sejak monitoring dan rencana kegiatan berikutnya dihitung ulang setiap halaman dibuka.</p></article>
+      </aside>
+    </section>
+  </main>
+  <script src="js/auth.js?v=20260916-login-fallback1"></script>
+  <script src="js/dayun-monitoring.js?v=20260917-1"></script>
+</body>
+</html>
