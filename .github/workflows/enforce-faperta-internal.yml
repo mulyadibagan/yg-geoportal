@@ -1,0 +1,123 @@
+name: Enforce Faperta internal-only
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/enforce-faperta-internal.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+jobs:
+  privatize:
+    runs-on: ubuntu-latest
+    environment: yg-webgis-staging
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+      - name: Install Wrangler
+        run: npm ci
+        working-directory: cloudflare/yg-webgis-public-data
+      - name: Preserve Faperta datasets in private R2
+        working-directory: cloudflare/yg-webgis-public-data
+        run: |
+          test -s ../../data/faperta-ur.json
+          test -s ../../data/faperta-ur-site.geojson
+          npx wrangler r2 object put "yg-webgis-public-snapshots-staging/internal/faperta/ur-data.json" --remote --file ../../data/faperta-ur.json --content-type application/json
+          npx wrangler r2 object put "yg-webgis-public-snapshots-staging/internal/faperta/ur-site.geojson" --remote --file ../../data/faperta-ur-site.geojson --content-type application/geo+json
+          npx wrangler r2 object put "yg-webgis-public-snapshots/internal/faperta/ur-data.json" --remote --file ../../data/faperta-ur.json --content-type application/json
+          npx wrangler r2 object put "yg-webgis-public-snapshots/internal/faperta/ur-site.geojson" --remote --file ../../data/faperta-ur-site.geojson --content-type application/geo+json
+      - name: Make Faperta staff-only at source
+        shell: python
+        run: |
+          from pathlib import Path
+          import json, re
+
+          # Home card: hidden by default, exposed only by valid staff session handling.
+          p = Path('index.html'); s = p.read_text()
+          s = s.replace('<section class="home-collaboration" aria-labelledby="faperta-module-title">', '<section class="home-collaboration" aria-labelledby="faperta-module-title" data-staff-only-module hidden>', 1)
+          s = s.replace('href="faperta-ur.html"', 'href="staff-faperta-ur.html"', 1)
+          p.write_text(s)
+
+          # Public URL becomes a login gateway only.
+          Path('faperta-ur.html').write_text('''<!doctype html>\n<html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Akses Staf | YG GeoPortal</title><script>location.replace("staff-login.html?return=staff-faperta-ur.html");</script></head><body><p>Modul Kebun Percobaan Faperta UR tersedia untuk staf Yayasan Gambut.</p><p><a href="staff-login.html?return=staff-faperta-ur.html">Login staf</a></p></body></html>\n''')
+
+          # Staff page: hide until token is validated server-side, then load shared auth/private-data bridge.
+          p = Path('staff-faperta-ur.html'); s = p.read_text()
+          if 'faperta-staff-gate' not in s:
+              gate = '''<style id="faperta-staff-gate">html{visibility:hidden}</style>\n<script>\n(async function(){\n  const key='ygEditorSessionV1'; let session=null;\n  try{session=JSON.parse(localStorage.getItem(key)||sessionStorage.getItem(key)||'null');}catch(e){}\n  if(!session||!session.token||Number(session.expiresAt||0)<=Date.now()){location.replace('staff-login.html?return=staff-faperta-ur.html');return;}\n  try{\n    const r=await fetch('https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/staff/pbph-riau',{headers:{authorization:'Bearer '+session.token},cache:'no-store'});\n    if(r.status===401){localStorage.removeItem(key);sessionStorage.removeItem(key);location.replace('staff-login.html?return=staff-faperta-ur.html');return;}\n    document.documentElement.style.visibility='visible';\n  }catch(e){location.replace('staff-login.html?return=staff-faperta-ur.html');}\n})();\n</script>'''
+              s = s.replace('</head>', gate + '\n</head>', 1)
+          old = '<script src="js/faperta-ur.js?v=20260910-7"></script>'
+          new = '<script src="js/auth.js?v=20260915-logout3"></script>\n  <script src="js/staff-data-access.js?v=20260916-faperta-private1"></script>\n  <script src="js/faperta-ur.js?v=20260916-private1"></script>'
+          s = s.replace(old, new)
+          p.write_text(s)
+
+          # Interactive map: Faperta reference exists only during a staff session.
+          p = Path('js/map-v4.js'); s = p.read_text()
+          pattern = r'\n    upt_faperta_ur: \{(.*?)\n    \},\n    batas_administrasi_desa_riau:'
+          m = re.search(pattern, s, flags=re.S)
+          if m:
+              s = s[:m.start()] + '\n    ...(staffSession ? { upt_faperta_ur: {' + m.group(1) + '\n    } } : {}),\n    batas_administrasi_desa_riau:' + s[m.end():]
+          p.write_text(s)
+
+          # Layer ordering additionally strips any cached/legacy Faperta row for public visitors.
+          p = Path('js/layer-order-v1.js'); s = p.read_text()
+          s = s.replace('"perusahaan_sawit_riau"\n  ]);', '"perusahaan_sawit_riau",\n    "upt_faperta_ur"\n  ]);')
+          s = s.replace('/rspo|perkebunan anggota/i', '/rspo|perkebunan anggota|faperta|kebun percobaan/i')
+          p.write_text(s)
+
+          # Local-looking paths are transparently served from authenticated private R2 routes.
+          p = Path('js/staff-data-access.js'); s = p.read_text()
+          s = s.replace("'data/PBPH_RIAU_052026.geojson': '/api/staff/pbph-riau',", "'data/PBPH_RIAU_052026.geojson': '/api/staff/pbph-riau',\n    'data/faperta-ur.json': '/api/staff/faperta-ur-data',\n    'data/faperta-ur-site.geojson': '/api/staff/faperta-ur-site',")
+          p.write_text(s)
+
+          # Faperta loader uses the shared authenticated fetch bridge.
+          p = Path('js/faperta-ur.js'); s = p.read_text()
+          marker = 'const RAIN_CACHE_MS = 6 * 60 * 60 * 1000;'
+          if 'const fetchData =' not in s:
+              s = s.replace(marker, marker + '\n  const fetchData = (window.YG_STAFF_DATA && window.YG_STAFF_DATA.fetch) ? window.YG_STAFF_DATA.fetch : window.fetch.bind(window);')
+          s = s.replace('Promise.all([fetch(DATA_URL), fetch(BOUNDARY_URL)])', 'Promise.all([fetchData(DATA_URL), fetchData(BOUNDARY_URL)])')
+          p.write_text(s)
+
+          # Worker private routes.
+          p = Path('cloudflare/yg-webgis-public-data/src/index.js'); s = p.read_text()
+          needle = '"/api/staff/pbph-riau": ["internal/pbph/riau.geojson", "application/geo+json; charset=utf-8"],'
+          replacement = needle + '\n  "/api/staff/faperta-ur-data": ["internal/faperta/ur-data.json", "application/json; charset=utf-8"],\n  "/api/staff/faperta-ur-site": ["internal/faperta/ur-site.geojson", "application/geo+json; charset=utf-8"],'
+          s = s.replace(needle, replacement)
+          p.write_text(s)
+
+          # Pages never receives Faperta raw files.
+          p = Path('.github/workflows/deploy-pages.yml'); s = p.read_text()
+          needle = "  --exclude 'data/PBPH_RIAU_052026.geojson' \\\n"
+          if "data/faperta-ur-site.geojson" not in s:
+              s = s.replace(needle, needle + "  --exclude 'data/faperta-ur.json' \\\n  --exclude 'data/faperta-ur-site.geojson' \\\n")
+          p.write_text(s)
+
+          # Current public-repo copies become non-sensitive placeholders after private R2 preservation.
+          Path('data/faperta-ur-site.geojson').write_text(json.dumps({"type":"FeatureCollection","metadata":{"visibility":"internal","source":"UPT Faperta Universitas Riau","note":"Geometry is served only through the authenticated staff gateway."},"features":[]}, ensure_ascii=False, indent=2) + '\n')
+          Path('data/faperta-ur.json').write_text(json.dumps({"visibility":"internal","module":"Kebun Percobaan Faperta UR","note":"Operational garden data is available only to authenticated staff."}, ensure_ascii=False, indent=2) + '\n')
+      - name: Validate privacy edits
+        run: |
+          grep -q 'faperta-module-title" data-staff-only-module hidden' index.html
+          grep -q 'staff-faperta-ur.html' index.html
+          grep -q 'staffSession ? { upt_faperta_ur' js/map-v4.js
+          grep -q '/api/staff/faperta-ur-site' cloudflare/yg-webgis-public-data/src/index.js
+          grep -q '"features": \[\]' data/faperta-ur-site.geojson
+      - name: Commit privacy migration
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html faperta-ur.html staff-faperta-ur.html js/map-v4.js js/layer-order-v1.js js/staff-data-access.js js/faperta-ur.js cloudflare/yg-webgis-public-data/src/index.js .github/workflows/deploy-pages.yml data/faperta-ur.json data/faperta-ur-site.geojson
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'privacy: make Faperta garden staff-only'
+          git push origin HEAD:main
