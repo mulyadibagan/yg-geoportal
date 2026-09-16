@@ -30,17 +30,18 @@ test("PBPH staff surfaces load the shared authentication module", () => {
   }
 });
 
-test("dashboard reveals the PHL and SVLK module only for a valid staff session", () => {
+test("dashboard reveals staff-only modules only for a valid staff session", () => {
   const home = fs.readFileSync(path.join(ROOT, "index.html"), "utf8");
   const navigation = fs.readFileSync(path.join(ROOT, "js", "navigation-v2.js"), "utf8");
 
   assert.match(home, /data-staff-only-module hidden/);
   assert.match(home, /href="phl-svlk-riau\.html"/);
+  assert.match(home, /href="staff-rspo-dashboard\.html"/);
   assert.match(home, /Hanya tersedia selama sesi staf terverifikasi\./);
   assert.match(navigation, /localStorage\.getItem\('ygEditorSessionV1'\)\|\|sessionStorage\.getItem\('ygEditorSessionV1'\)/);
   assert.match(navigation, /!session\.token\|\|!session\.username\|\|Number\(session\.expiresAt\|\|0\)<=Date\.now\(\)/);
   assert.match(navigation, /localStorage\.removeItem\('ygEditorSessionV1'\)/);
   assert.match(navigation, /querySelectorAll\('\[data-staff-only-module\]'\)/);
   assert.match(navigation, /module\.hidden=false/);
-  assert.match(home, /navigation-v2\.js\?v=20260916-staff-session2/);
+  assert.match(home, /navigation-v2\.js\?v=20260916-rspo-internal3/);
 });
