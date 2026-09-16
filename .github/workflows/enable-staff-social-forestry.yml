@@ -44,47 +44,45 @@ jobs:
                   raise SystemExit(f'Expected pattern not found in {path}: {old[:120]}')
               p.write_text(text.replace(old, new, 1), encoding='utf-8')
 
-          # Browser-side staff gateway route.
           replace_once(
               'js/staff-data-access.js',
               "    'data/PBPH_RIAU_052026.geojson': '/api/staff/pbph-riau',\n",
               "    'data/PBPH_RIAU_052026.geojson': '/api/staff/pbph-riau',\n    'data/PERHUTANAN_SOSIAL_RIAU.geojson': '/api/staff/social-forestry-riau',\n",
           )
 
-          # Worker private R2 route, protected by the existing staff-token validator.
           replace_once(
               'cloudflare/yg-webgis-public-data/src/index.js',
               '  "/api/staff/pbph-riau": ["internal/pbph/riau.geojson", "application/geo+json; charset=utf-8"],\n',
               '  "/api/staff/pbph-riau": ["internal/pbph/riau.geojson", "application/geo+json; charset=utf-8"],\n  "/api/staff/social-forestry-riau": ["internal/social-forestry/riau.geojson", "application/geo+json; charset=utf-8"],\n',
           )
 
-          # Profile page must load staff auth/data gateway before its profile script.
           replace_once(
               'social-forestry-profile.html',
               '  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>\n',
               '  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>\n  <script src="js/auth.js?v=20260916-ps-staff1"></script>\n  <script src="js/staff-data-access.js?v=20260916-ps-staff1"></script>\n',
           )
 
-          # Directory page gets the same staff-aware fetch path, so staff can see PS map geometry there too.
           replace_once(
               'social-forestry-directory.html',
               ' <script src="js/i18n.js?v=20260911-regency-map2"></script>\n',
               ' <script src="js/auth.js?v=20260916-ps-staff1"></script>\n<script src="js/staff-data-access.js?v=20260916-ps-staff1"></script>\n<script src="js/i18n.js?v=20260911-regency-map2"></script>\n',
           )
 
-          # Route only the PS geometry request through the staff gateway when available;
-          # all public metadata/details remain on their existing public paths.
-          for path in ['js/social-forestry-profile.js', 'js/social-forestry-directory.js']:
-              p = Path(path)
-              text = p.read_text(encoding='utf-8')
-              marker = 'window.YG_STAFF_DATA.fetch(url,{cache:"no-store"})'
-              if marker in text:
-                  continue
-              old = 'fetch(url,{cache:"no-store"})'
-              if old not in text:
-                  raise SystemExit(f'Expected fetch helper not found in {path}')
-              text = text.replace(old, '(window.YG_STAFF_DATA?window.YG_STAFF_DATA.fetch(url,{cache:"no-store"}):fetch(url,{cache:"no-store"}))', 1)
-              p.write_text(text, encoding='utf-8')
+          # Profile helper: all requests still use the same URLs; only staff-mapped
+          # paths are intercepted by YG_STAFF_DATA.
+          replace_once(
+              'js/social-forestry-profile.js',
+              'var r=await fetch(url,{cache:"no-store"});',
+              'var r=await (window.YG_STAFF_DATA?window.YG_STAFF_DATA.fetch(url,{cache:"no-store"}):fetch(url,{cache:"no-store"}));',
+          )
+
+          # Directory has direct Promise.all fetches rather than a helper. Route only
+          # the main PS geometry request; public metadata/detail fetches are unchanged.
+          replace_once(
+              'js/social-forestry-directory.js',
+              'fetch("data/PERHUTANAN_SOSIAL_RIAU.geojson?v=20260828-area-summary1",{cache:"no-store"})',
+              '(window.YG_STAFF_DATA?window.YG_STAFF_DATA.fetch("data/PERHUTANAN_SOSIAL_RIAU.geojson?v=20260828-area-summary1",{cache:"no-store"}):fetch("data/PERHUTANAN_SOSIAL_RIAU.geojson?v=20260828-area-summary1",{cache:"no-store"}))',
+          )
 
       - name: Validate patched sources
         shell: bash
