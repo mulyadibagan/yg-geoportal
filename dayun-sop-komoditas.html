@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>SOP Komoditas Dayun | YG GeoPortal</title>
+  <meta name="description" content="Panduan budidaya komoditas MPTS dan hortikultura pada gawangan agroforestri Dayun.">
+  <link rel="icon" href="assets/logo-yayasan-gambut.png">
+  <link rel="stylesheet" href="css/style.css?v=20260723-revert-layout">
+  <link rel="stylesheet" href="css/dayun.css?v=20260918-allcrop1">
+  <style>.dy-header .dy-brand img{width:48px;height:48px;object-fit:contain}</style>
+</head>
+<body data-dayun-page="sop-komoditas" data-dayun-mode="public">
+<header class="dy-header"><div class="dy-header-inner"><a class="dy-brand" href="index.html"><img src="assets/logo-yayasan-gambut.png" alt="Logo Yayasan Gambut"><span><strong>YG GeoPortal</strong><small>Program Dayun</small></span></a></div></header>
+<main class="dy-shell dy-guide-page">
+  <div class="dy-map-breadcrumb"><a class="dy-back-link" href="dayun-panduan-budidaya.html">← Kembali ke Panduan</a><span id="crop-breadcrumb">Komoditas</span></div>
+  <div class="dy-calc-error" id="crop-page-error" role="alert" hidden></div>
+  <div id="crop-page">
+    <header class="dy-sop-page-head"><span class="dy-eyebrow" style="color:#087653" id="crop-category">PANDUAN KOMODITAS</span><h1 id="crop-title">Budidaya komoditas</h1><p id="crop-intro">Memuat panduan budidaya…</p></header>
+    <div class="dy-sop-photo-note"><span><strong>Data gawangan terhubung</strong><br><span id="crop-data-summary">Jumlah tanaman dan umur dibaca dari data gawangan.</span></span><span id="crop-unit-note">Satuan tanaman utuh</span></div>
+    <nav class="dy-sop-jump" aria-label="Navigasi SOP"><a href="#parameter-dayun">Parameter Dayun</a><a href="#program-fase">Program fase</a><a href="#kalkulator-komoditas">Kalkulator</a><a href="#tahapan-budidaya">Tahapan</a><a href="#catatan-lapangan">Catatan</a></nav>
+
+    <section class="dy-tech-panel" id="parameter-dayun" aria-labelledby="parameter-title">
+      <div class="dy-tech-head"><div><span class="dy-eyebrow" style="color:#087653">KONTROL SEBELUM TINDAKAN</span><h2 id="parameter-title">Parameter kerja</h2></div><p id="parameter-copy">Periksa kondisi tanaman dan tapak sebelum menetapkan tindakan.</p></div>
+      <div class="dy-tech-grid">
+        <article><small>pH tanah aktual</small><strong>Belum diisi</strong><span>Gunakan hasil pengukuran di zona akar, bukan kategori umum.</span></article>
+        <article><small>Umur tanaman</small><strong>Otomatis</strong><span>Dihitung dari periode tanam pada data gawangan.</span></article>
+        <article><small id="population-label">Populasi aktif</small><strong id="population-rule">Bilangan utuh</strong><span>Sensus lapangan menggantikan angka teoritis.</span></article>
+        <article><small>Status dosis</small><strong>Perlu disahkan</strong><span>Dosis kerja ditetapkan setelah pemeriksaan tanaman dan tapak.</span></article>
+      </div>
+      <div class="dy-decision-note" id="crop-safety-note"><strong>Jaga tata air gambut.</strong> Tindakan tidak boleh menyebabkan pengeringan gambut, genangan berkepanjangan, atau kerusakan komoditas lain dalam gawangan.</div>
+    </section>
+
+    <section class="dy-tech-panel" id="program-fase" aria-labelledby="phase-title">
+      <div class="dy-tech-head"><div><span class="dy-eyebrow" style="color:#087653">PROGRAM BERDASARKAN FASE</span><h2 id="phase-title">Program pemeliharaan</h2></div><p>Jadwal berikut adalah waktu pemeriksaan dan pengambilan keputusan, bukan dosis tetap untuk semua gawangan.</p></div>
+      <div class="dy-table-wrap"><table class="dy-tech-table"><thead><tr><th>Fase</th><th>Waktu pemeriksaan</th><th>Fokus kerja</th><th>Dasar keputusan</th></tr></thead><tbody id="phase-table"></tbody></table></div>
+      <div class="dy-dose-rule"><strong>Aturan perhitungan:</strong> gunakan jumlah tanaman hidup yang benar-benar menjadi sasaran. Hitung dan catat setiap bahan secara terpisah; jangan menggabungkan pupuk, pembenah tanah, dan bahan pengendali menjadi satu angka.</div>
+    </section>
+
+    <section class="dy-calc" id="kalkulator-komoditas" aria-labelledby="calculator-title">
+      <div class="dy-calc-head"><div><span class="dy-eyebrow" style="color:#087653">ALAT RENCANA BERBASIS POPULASI</span><h2 id="calculator-title">Kalkulator kebutuhan bahan</h2><p id="calculator-copy">Pilih gawangan. Sistem membaca periode tanam dan populasi, lalu menghitung kebutuhan dari dosis kerja per tanaman.</p></div><aside class="dy-calc-safety"><strong>Bukan penetapan dosis otomatis</strong>Masukkan hanya dosis kerja yang telah disahkan berdasarkan SOP, pH, kondisi tanaman, cuaca, serta label bahan yang berlaku.</aside></div>
+      <form id="crop-calculator" novalidate>
+        <div class="dy-calc-grid">
+          <div class="dy-calc-field"><label for="crop-gawangan">Gawangan</label><select id="crop-gawangan" required disabled><option value="">Memuat data gawangan…</option></select><small>Hanya gawangan komoditas ini yang ditampilkan.</small></div>
+          <div class="dy-calc-field"><label for="crop-phase">Fase tanaman</label><input id="crop-phase" type="text" value="—" readonly aria-readonly="true"><small id="crop-age-note">Umur dihitung dari periode tanam.</small></div>
+          <div class="dy-calc-field"><label for="crop-count" id="crop-count-label">Tanaman sasaran</label><input id="crop-count" type="number" min="1" step="1" inputmode="numeric" required><small>Awalnya dari data; sesuaikan dengan sensus hidup.</small></div>
+          <div class="dy-calc-field"><label for="crop-material">Bahan</label><select id="crop-material" required><option value="Pupuk organik">Pupuk organik</option><option value="Pupuk majemuk">Pupuk majemuk</option><option value="Pupuk tunggal">Pupuk tunggal</option><option value="Pembenah tanah">Pembenah tanah</option><option value="Bahan pengendali">Bahan pengendali</option><option value="Bahan lain">Bahan lain</option></select><small>Hitung setiap bahan secara terpisah.</small></div>
+          <div class="dy-calc-field"><label for="crop-dose" id="crop-dose-label">Dosis kerja per tanaman</label><input id="crop-dose" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="Masukkan dosis disahkan" required><small>Jangan mengisi dari perkiraan tanpa pemeriksaan.</small></div>
+          <div class="dy-calc-field"><label for="crop-dose-unit">Satuan dosis</label><select id="crop-dose-unit" required><option value="g">gram/tanaman</option><option value="kg">kg/tanaman</option><option value="ml">ml/tanaman</option></select><small>Sama dengan satuan dalam catatan kerja.</small></div>
+          <div class="dy-calc-field"><label for="crop-reserve">Cadangan operasional (%)</label><input id="crop-reserve" type="number" min="0" max="25" step="0.5" value="0" inputmode="decimal" required><small>Default 0%; hanya untuk rencana pengadaan.</small></div>
+          <div class="dy-calc-field"><label for="crop-package">Isi kemasan</label><input id="crop-package" type="number" min="0.1" step="0.1" value="1" inputmode="decimal" required><small id="package-note">Dalam kg atau liter, mengikuti satuan bahan.</small></div>
+        </div>
+        <div class="dy-calc-actions"><button class="dy-calc-button" type="submit">Hitung kebutuhan</button><button class="dy-calc-button dy-calc-reset" type="reset">Bersihkan</button></div>
+        <div class="dy-calc-error" id="crop-calc-error" role="alert" hidden></div>
+        <output class="dy-calc-result" id="crop-result" hidden>
+          <div class="dy-result-heading"><div><small id="result-label">KOMODITAS</small><h3 id="result-title">—</h3></div><span id="result-context">—</span></div>
+          <div class="dy-calc-kpis"><article><small>Sasaran</small><strong id="result-count">—</strong></article><article><small>Dosis/sasaran</small><strong id="result-dose">—</strong></article><article><small>Kebutuhan dasar</small><strong id="result-base">—</strong></article><article><small>Dengan cadangan</small><strong id="result-total">—</strong></article><article><small>Kemasan penuh</small><strong id="result-packages">—</strong></article></div>
+          <p id="result-formula"></p><div class="dy-result-decision"><strong>Sebelum aplikasi:</strong> cocokkan bahan, dosis, populasi sasaran, cuaca, kondisi air, petugas, dan label. Catat sisa bahan serta respons tanaman.</div>
+        </output>
+      </form>
+    </section>
+
+    <section class="dy-section" id="tahapan-budidaya" aria-labelledby="steps-title">
+      <div class="dy-section-head"><div><span>Panduan kebun</span><h2 id="steps-title">Tahapan budidaya</h2></div><p id="steps-copy">Buka setiap tahap untuk melihat langkah kerja dan catatan minimum.</p></div>
+      <div class="dy-sop-intro"><div class="dy-sop-flow" id="crop-flow"></div><div class="dy-sop-alert" id="crop-alert"><strong>Kondisi Dayun</strong>Sesuaikan tindakan dengan sistem agroforestri dan tata air gambut.</div></div>
+      <div class="dy-sop-list" id="crop-steps"></div>
+      <div class="dy-sop-close" id="catatan-lapangan"><strong>Format catatan minimum:</strong> tanggal dan jam · blok/gawangan · komoditas dan fase · jumlah tanaman · cuaca dan air · kegiatan · bahan, dosis, dan total · petugas · kondisi sebelum/sesudah · foto · tindak lanjut.</div>
+      <div class="dy-source-card"><div><strong>Rujukan teknis</strong><p id="source-copy">Panduan lapangan disusun dari rujukan teknis pertanian dan kondisi operasional Dayun.</p></div><a id="source-link" href="https://repository.pertanian.go.id/" target="_blank" rel="noopener noreferrer">Buka sumber resmi ↗</a></div>
+    </section>
+  </div>
+</main>
+<footer class="dy-footer">YG GeoPortal · SOP Budidaya Komoditas Dayun</footer>
+<script src="js/dayun-crop-sop.js?v=20260918-allcrop1"></script>
+</body>
+</html>
