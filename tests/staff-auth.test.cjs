@@ -45,3 +45,12 @@ test("dashboard reveals staff-only modules only for a valid staff session", () =
   assert.match(navigation, /module\.hidden=false/);
   assert.match(home, /navigation-v2\.js\?v=20260916-rspo-internal3/);
 });
+
+test("interactive map exposes the social forestry layer only to authenticated staff", () => {
+  const map = fs.readFileSync(path.join(ROOT, "js", "map-v4.js"), "utf8");
+  const page = fs.readFileSync(path.join(ROOT, "webgis.html"), "utf8");
+
+  assert.match(map, /\.\.\.\(staffSession \? \{ perhutanan_sosial_riau: \{/);
+  assert.match(map, /label: "Perhutanan Sosial Riau · internal staf"/);
+  assert.match(page, /map-v4\.js\?v=20260916-private-ps1/);
+});
