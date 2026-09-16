@@ -81,9 +81,9 @@
       sourceLabel: "Shapefile KPH 2019 Provinsi Riau",
       scale: "Sumber World Mercator; ditransformasikan ke WGS 84"
     },
-    perhutanan_sosial_riau: {
+    ...(staffSession ? { perhutanan_sosial_riau: {
       id: "perhutanan_sosial_riau",
-      label: "Perhutanan Sosial Riau",
+      label: "Perhutanan Sosial Riau · internal staf",
       file: "data/PERHUTANAN_SOSIAL_RIAU.geojson?v=20260828-175-polygons1",
       supplementFiles: [
         "data/social-forestry-pkk-samj.geojson?v=20260831-samj-pkk1",
@@ -95,7 +95,7 @@
       count: null,
       type: "social_forestry",
       focusOnEnable: true
-    },
+    } } : {}),
     batas_administrasi_desa_riau: {
       id: "batas_administrasi_desa_riau",
       label: "Batas Administrasi Desa Riau",
