@@ -8,7 +8,8 @@
     'data/faperta-ur-site.geojson': '/api/staff/faperta-ur-site',
     'data/pbph-documents.json': '/api/staff/pbph-documents',
     'data/fire-monthly/index.json': '/api/staff/fire-monthly-index',
-    'data/phl-svlk-monthly/index.json': '/api/staff/phl-svlk-monthly-index'
+    'data/phl-svlk-monthly/index.json': '/api/staff/phl-svlk-monthly-index',
+    'data/PERUSAHAAN_SAWIT_RIAU_REFERENSI.geojson': '/api/staff/rspo-groups'
   };
   const STAFF_ONLY_PUBLIC_PATHS = new Set([
     '/data/PERUSAHAAN_SAWIT_RIAU_REFERENSI.geojson'
