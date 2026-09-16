@@ -34,6 +34,9 @@
       try{sessionStorage.removeItem('ygEditorSessionV1');}catch(error){}
       return;
     }
+    document.querySelectorAll('[data-staff-only-module]').forEach(function(module){
+      module.hidden=false;
+    });
     var label=String(session.name||session.username).trim();
     if(!label)return;
     link.textContent=label;
