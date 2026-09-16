@@ -40,8 +40,8 @@ form.addEventListener("submit",e=>{
   if(guide){link.href="#"+guide.id;link.hidden=false}else{link.href="#hpt-guide-title";link.hidden=true}
   $("hpt-result").hidden=false;error.hidden=true;
 });
-fetch("data/dayun-map.geojson?v=20260910-3").then(r=>{if(!r.ok)throw new Error();return r.json()}).then(data=>{
-  const items=data.features.filter(f=>f.properties&&f.properties.category==="Gawangan Tanam").map(f=>({id:f.properties.objectId,label:f.properties.shortId,area:Number(f.properties.areaHa)})).sort((a,b)=>a.label.localeCompare(b.label,undefined,{numeric:true}));
+fetch("data/dayun-map.geojson?v=20260916-gawangan1").then(r=>{if(!r.ok)throw new Error();return r.json()}).then(data=>{
+  const items=data.features.filter(f=>f.properties&&f.properties.category==="Gawangan Tanam").map(f=>({id:f.properties.objectId,label:f.properties.displayId||f.properties.shortId,area:Number(f.properties.areaHa)})).sort((a,b)=>a.label.localeCompare(b.label,undefined,{numeric:true}));
   areas={};items.forEach(x=>areas[x.id]=x.area);
   const s=$("hpt-gawangan");
   s.innerHTML='<option value="">Pilih gawangan</option>'+items.map(x=>'<option value="'+x.id+'">'+x.label+' · '+fmt(x.area,4)+' ha</option>').join("");

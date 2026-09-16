@@ -22,8 +22,8 @@
     clearResult();
   }
   function loadGawangan(){
-    fetch("data/dayun-map.geojson?v=20260910-3").then(r=>{if(!r.ok)throw new Error("Data gawangan tidak dapat dimuat.");return r.json()}).then(data=>{
-      const items=(data.features||[]).filter(f=>f.properties&&f.properties.category==="Gawangan Tanam"&&Number(f.properties.areaHa)>0).map(f=>({id:f.properties.objectId,label:f.properties.shortId||f.properties.objectId,areaHa:Number(f.properties.areaHa)})).sort((a,b)=>a.label.localeCompare(b.label,undefined,{numeric:true}));
+    fetch("data/dayun-map.geojson?v=20260916-gawangan1").then(r=>{if(!r.ok)throw new Error("Data gawangan tidak dapat dimuat.");return r.json()}).then(data=>{
+      const items=(data.features||[]).filter(f=>f.properties&&f.properties.category==="Gawangan Tanam"&&Number(f.properties.areaHa)>0).map(f=>({id:f.properties.objectId,label:f.properties.displayId||f.properties.shortId||f.properties.objectId,areaHa:Number(f.properties.areaHa)})).sort((a,b)=>a.label.localeCompare(b.label,undefined,{numeric:true}));
       gawangan={};items.forEach(x=>gawangan[x.id]=x);
       const select=$("fert-gawangan");select.innerHTML='<option value="">Pilih gawangan</option>'+items.map(x=>'<option value="'+x.id+'">'+x.label+' · '+fmt(x.areaHa,4)+' ha</option>').join("");
       select.disabled=false;

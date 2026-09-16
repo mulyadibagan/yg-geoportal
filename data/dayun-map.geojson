@@ -1,9 +1,13 @@
 {
   "type": "FeatureCollection",
-  "name": "Agro Mandiri Sejahtera",
+  "name": "Agroforestri KUPS Rimba Sejahtera",
   "numbering": {
-    "scheme": "GT-001–GT-087",
-    "order": "south-to-north, then west-to-east"
+    "sourceScheme": "GT-{blok}-{nomor gawangan}",
+    "sourceExample": "GT-A-01",
+    "sourceCoverage": "15 nomor gawangan pada 27 poligon di Blok A",
+    "fallbackScheme": "GT-001–GT-087",
+    "fallbackStatus": "sementara untuk poligon yang atribut Gawangan sumbernya masih kosong",
+    "fallbackOrder": "south-to-north, then west-to-east"
   },
   "features": [
     {
@@ -22,7 +26,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok B",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-001",
+        "displayName": "Gawangan tanam GT-001",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -248,7 +262,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok B",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-002",
+        "displayName": "Gawangan tanam GT-002",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -354,7 +378,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok B",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-003",
+        "displayName": "Gawangan tanam GT-003",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -456,7 +490,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok B",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-004",
+        "displayName": "Gawangan tanam GT-004",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -550,7 +594,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok B",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-005",
+        "displayName": "Gawangan tanam GT-005",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -644,7 +698,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok B",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-006",
+        "displayName": "Gawangan tanam GT-006",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -770,7 +834,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok B",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-007",
+        "displayName": "Gawangan tanam GT-007",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -868,7 +942,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok B",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-008",
+        "displayName": "Gawangan tanam GT-008",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -998,7 +1082,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok B",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-009",
+        "displayName": "Gawangan tanam GT-009",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -1064,7 +1158,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok B",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-010",
+        "displayName": "Gawangan tanam GT-010",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -1202,7 +1306,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok B",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-011",
+        "displayName": "Gawangan tanam GT-011",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -1304,7 +1418,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok B",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-012",
+        "displayName": "Gawangan tanam GT-012",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -1390,7 +1514,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok B",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-013",
+        "displayName": "Gawangan tanam GT-013",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -1468,7 +1602,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok A",
+        "sourceGawangan": "1",
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": "GT-A-01",
+        "displayId": "GT-A-01",
+        "displayName": "Gawangan tanam GT-A-01",
+        "idStatus": "Sumber SHP"
       },
       "geometry": {
         "type": "Polygon",
@@ -1526,7 +1670,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok B",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-015",
+        "displayName": "Gawangan tanam GT-015",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -1596,7 +1750,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok A",
+        "sourceGawangan": "1",
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": "GT-A-01",
+        "displayId": "GT-A-01",
+        "displayName": "Gawangan tanam GT-A-01",
+        "idStatus": "Sumber SHP"
       },
       "geometry": {
         "type": "Polygon",
@@ -1646,7 +1810,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok B",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-017",
+        "displayName": "Gawangan tanam GT-017",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -1712,7 +1886,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok A",
+        "sourceGawangan": "3",
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": "GT-A-03",
+        "displayId": "GT-A-03",
+        "displayName": "Gawangan tanam GT-A-03",
+        "idStatus": "Sumber SHP"
       },
       "geometry": {
         "type": "Polygon",
@@ -1818,7 +2002,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok A",
+        "sourceGawangan": "2",
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": "GT-A-02",
+        "displayId": "GT-A-02",
+        "displayName": "Gawangan tanam GT-A-02",
+        "idStatus": "Sumber SHP"
       },
       "geometry": {
         "type": "Polygon",
@@ -1908,7 +2102,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok B",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-020",
+        "displayName": "Gawangan tanam GT-020",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -1970,7 +2174,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok A",
+        "sourceGawangan": "1",
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": "GT-A-01",
+        "displayId": "GT-A-01",
+        "displayName": "Gawangan tanam GT-A-01",
+        "idStatus": "Sumber SHP"
       },
       "geometry": {
         "type": "Polygon",
@@ -2020,7 +2234,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok A",
+        "sourceGawangan": "4",
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": "GT-A-04",
+        "displayId": "GT-A-04",
+        "displayName": "Gawangan tanam GT-A-04",
+        "idStatus": "Sumber SHP"
       },
       "geometry": {
         "type": "Polygon",
@@ -2114,7 +2338,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok C",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-023",
+        "displayName": "Gawangan tanam GT-023",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -2172,7 +2406,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok A",
+        "sourceGawangan": "5",
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": "GT-A-05",
+        "displayId": "GT-A-05",
+        "displayName": "Gawangan tanam GT-A-05",
+        "idStatus": "Sumber SHP"
       },
       "geometry": {
         "type": "Polygon",
@@ -2250,7 +2494,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok A",
+        "sourceGawangan": "7",
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": "GT-A-07",
+        "displayId": "GT-A-07",
+        "displayName": "Gawangan tanam GT-A-07",
+        "idStatus": "Sumber SHP"
       },
       "geometry": {
         "type": "Polygon",
@@ -2320,7 +2574,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok A",
+        "sourceGawangan": "6",
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": "GT-A-06",
+        "displayId": "GT-A-06",
+        "displayName": "Gawangan tanam GT-A-06",
+        "idStatus": "Sumber SHP"
       },
       "geometry": {
         "type": "Polygon",
@@ -2414,7 +2678,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok C",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-027",
+        "displayName": "Gawangan tanam GT-027",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -2476,7 +2750,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok A",
+        "sourceGawangan": "4",
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": "GT-A-04",
+        "displayId": "GT-A-04",
+        "displayName": "Gawangan tanam GT-A-04",
+        "idStatus": "Sumber SHP"
       },
       "geometry": {
         "type": "Polygon",
@@ -2542,7 +2826,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok C",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-029",
+        "displayName": "Gawangan tanam GT-029",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -2596,7 +2890,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok C",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-030",
+        "displayName": "Gawangan tanam GT-030",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -2650,7 +2954,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok A",
+        "sourceGawangan": "3",
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": "GT-A-03",
+        "displayId": "GT-A-03",
+        "displayName": "Gawangan tanam GT-A-03",
+        "idStatus": "Sumber SHP"
       },
       "geometry": {
         "type": "Polygon",
@@ -2708,7 +3022,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok A",
+        "sourceGawangan": "7",
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": "GT-A-07",
+        "displayId": "GT-A-07",
+        "displayName": "Gawangan tanam GT-A-07",
+        "idStatus": "Sumber SHP"
       },
       "geometry": {
         "type": "Polygon",
@@ -2758,7 +3082,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok A",
+        "sourceGawangan": "9",
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": "GT-A-09",
+        "displayId": "GT-A-09",
+        "displayName": "Gawangan tanam GT-A-09",
+        "idStatus": "Sumber SHP"
       },
       "geometry": {
         "type": "Polygon",
@@ -2804,7 +3138,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok C",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-034",
+        "displayName": "Gawangan tanam GT-034",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -2866,7 +3210,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok A",
+        "sourceGawangan": "4",
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": "GT-A-04",
+        "displayId": "GT-A-04",
+        "displayName": "Gawangan tanam GT-A-04",
+        "idStatus": "Sumber SHP"
       },
       "geometry": {
         "type": "Polygon",
@@ -2924,7 +3278,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok A",
+        "sourceGawangan": "5",
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": "GT-A-05",
+        "displayId": "GT-A-05",
+        "displayName": "Gawangan tanam GT-A-05",
+        "idStatus": "Sumber SHP"
       },
       "geometry": {
         "type": "Polygon",
@@ -3010,7 +3374,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok A",
+        "sourceGawangan": "8",
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": "GT-A-08",
+        "displayId": "GT-A-08",
+        "displayName": "Gawangan tanam GT-A-08",
+        "idStatus": "Sumber SHP"
       },
       "geometry": {
         "type": "Polygon",
@@ -3128,7 +3502,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok A",
+        "sourceGawangan": "6",
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": "GT-A-06",
+        "displayId": "GT-A-06",
+        "displayName": "Gawangan tanam GT-A-06",
+        "idStatus": "Sumber SHP"
       },
       "geometry": {
         "type": "Polygon",
@@ -3206,7 +3590,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok A",
+        "sourceGawangan": "11",
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": "GT-A-11",
+        "displayId": "GT-A-11",
+        "displayName": "Gawangan tanam GT-A-11",
+        "idStatus": "Sumber SHP"
       },
       "geometry": {
         "type": "Polygon",
@@ -3256,7 +3650,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok C",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-040",
+        "displayName": "Gawangan tanam GT-040",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -3318,7 +3722,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok A",
+        "sourceGawangan": "7",
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": "GT-A-07",
+        "displayId": "GT-A-07",
+        "displayName": "Gawangan tanam GT-A-07",
+        "idStatus": "Sumber SHP"
       },
       "geometry": {
         "type": "Polygon",
@@ -3384,7 +3798,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok C",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-042",
+        "displayName": "Gawangan tanam GT-042",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -3462,7 +3886,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok A",
+        "sourceGawangan": "10",
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": "GT-A-10",
+        "displayId": "GT-A-10",
+        "displayName": "Gawangan tanam GT-A-10",
+        "idStatus": "Sumber SHP"
       },
       "geometry": {
         "type": "Polygon",
@@ -3524,7 +3958,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok A",
+        "sourceGawangan": "9",
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": "GT-A-09",
+        "displayId": "GT-A-09",
+        "displayName": "Gawangan tanam GT-A-09",
+        "idStatus": "Sumber SHP"
       },
       "geometry": {
         "type": "Polygon",
@@ -3598,7 +4042,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok A",
+        "sourceGawangan": "11",
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": "GT-A-11",
+        "displayId": "GT-A-11",
+        "displayName": "Gawangan tanam GT-A-11",
+        "idStatus": "Sumber SHP"
       },
       "geometry": {
         "type": "Polygon",
@@ -3644,7 +4098,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok C",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-046",
+        "displayName": "Gawangan tanam GT-046",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -3750,7 +4214,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok C",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-047",
+        "displayName": "Gawangan tanam GT-047",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -3848,7 +4322,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok A",
+        "sourceGawangan": "12",
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": "GT-A-12",
+        "displayId": "GT-A-12",
+        "displayName": "Gawangan tanam GT-A-12",
+        "idStatus": "Sumber SHP"
       },
       "geometry": {
         "type": "Polygon",
@@ -3922,7 +4406,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok A",
+        "sourceGawangan": "13",
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": "GT-A-13",
+        "displayId": "GT-A-13",
+        "displayName": "Gawangan tanam GT-A-13",
+        "idStatus": "Sumber SHP"
       },
       "geometry": {
         "type": "Polygon",
@@ -4048,7 +4542,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok C",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-050",
+        "displayName": "Gawangan tanam GT-050",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -4138,7 +4642,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok A",
+        "sourceGawangan": "11",
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": "GT-A-11",
+        "displayId": "GT-A-11",
+        "displayName": "Gawangan tanam GT-A-11",
+        "idStatus": "Sumber SHP"
       },
       "geometry": {
         "type": "Polygon",
@@ -4188,7 +4702,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok A",
+        "sourceGawangan": "14",
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": "GT-A-14",
+        "displayId": "GT-A-14",
+        "displayName": "Gawangan tanam GT-A-14",
+        "idStatus": "Sumber SHP"
       },
       "geometry": {
         "type": "Polygon",
@@ -4270,7 +4794,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok A",
+        "sourceGawangan": "15",
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": "GT-A-15",
+        "displayId": "GT-A-15",
+        "displayName": "Gawangan tanam GT-A-15",
+        "idStatus": "Sumber SHP"
       },
       "geometry": {
         "type": "Polygon",
@@ -4332,7 +4866,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok C",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-054",
+        "displayName": "Gawangan tanam GT-054",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -4438,7 +4982,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok D",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-055",
+        "displayName": "Gawangan tanam GT-055",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -4520,7 +5074,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok D",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-056",
+        "displayName": "Gawangan tanam GT-056",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -4614,7 +5178,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok D",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-057",
+        "displayName": "Gawangan tanam GT-057",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -4700,7 +5274,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok D",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-058",
+        "displayName": "Gawangan tanam GT-058",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -4794,7 +5378,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok D",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-059",
+        "displayName": "Gawangan tanam GT-059",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -4856,7 +5450,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok E",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-060",
+        "displayName": "Gawangan tanam GT-060",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -4950,7 +5554,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok D",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-061",
+        "displayName": "Gawangan tanam GT-061",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -5012,7 +5626,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok E",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-062",
+        "displayName": "Gawangan tanam GT-062",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -5098,7 +5722,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok D",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-063",
+        "displayName": "Gawangan tanam GT-063",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -5180,7 +5814,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok D",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-064",
+        "displayName": "Gawangan tanam GT-064",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -5250,7 +5894,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok E",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-065",
+        "displayName": "Gawangan tanam GT-065",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -5312,7 +5966,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok E",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-066",
+        "displayName": "Gawangan tanam GT-066",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -5366,7 +6030,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok D",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-067",
+        "displayName": "Gawangan tanam GT-067",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -5432,7 +6106,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok D",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-068",
+        "displayName": "Gawangan tanam GT-068",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -5494,7 +6178,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok E",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-069",
+        "displayName": "Gawangan tanam GT-069",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -5556,7 +6250,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok F",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-070",
+        "displayName": "Gawangan tanam GT-070",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -5622,7 +6326,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok E",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-071",
+        "displayName": "Gawangan tanam GT-071",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -5692,7 +6406,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok F",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-072",
+        "displayName": "Gawangan tanam GT-072",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -5766,7 +6490,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok E",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-073",
+        "displayName": "Gawangan tanam GT-073",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -5836,7 +6570,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok F",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-074",
+        "displayName": "Gawangan tanam GT-074",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -5902,7 +6646,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok E",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-075",
+        "displayName": "Gawangan tanam GT-075",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -5972,7 +6726,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok F",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-076",
+        "displayName": "Gawangan tanam GT-076",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -6042,7 +6806,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok E",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-077",
+        "displayName": "Gawangan tanam GT-077",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -6120,7 +6894,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok F",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-078",
+        "displayName": "Gawangan tanam GT-078",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -6186,7 +6970,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok E",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-079",
+        "displayName": "Gawangan tanam GT-079",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -6268,7 +7062,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok F",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-080",
+        "displayName": "Gawangan tanam GT-080",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -6442,7 +7246,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok F",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-081",
+        "displayName": "Gawangan tanam GT-081",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -6516,7 +7330,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok F",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-082",
+        "displayName": "Gawangan tanam GT-082",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -6574,7 +7398,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok F",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-083",
+        "displayName": "Gawangan tanam GT-083",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -6648,7 +7482,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok F",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-084",
+        "displayName": "Gawangan tanam GT-084",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -6706,7 +7550,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok F",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-085",
+        "displayName": "Gawangan tanam GT-085",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -6764,7 +7618,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok F",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-086",
+        "displayName": "Gawangan tanam GT-086",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -6870,7 +7734,17 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": true,
-        "monitoringEnabled": true
+        "monitoringEnabled": true,
+        "block": "Blok F",
+        "sourceGawangan": null,
+        "sourceFeatureId": "HDB0702",
+        "sourceFeatureNo": "702",
+        "sourceReceivedFile": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+        "sourceReceivedDate": "2026-09-16",
+        "sourceGawanganId": null,
+        "displayId": "GT-087",
+        "displayName": "Gawangan tanam GT-087",
+        "idStatus": "ID WebGIS sementara; atribut Gawangan sumber kosong"
       },
       "geometry": {
         "type": "Polygon",
@@ -6926,7 +7800,40 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": false,
-        "monitoringEnabled": false
+        "monitoringEnabled": false,
+        "blocks": [
+          {
+            "block": "Blok A",
+            "featureCount": 1,
+            "areaHa": 0.523
+          },
+          {
+            "block": "Blok B",
+            "featureCount": 2,
+            "areaHa": 0.1953
+          },
+          {
+            "block": "Blok C",
+            "featureCount": 2,
+            "areaHa": 0.3078
+          },
+          {
+            "block": "Blok D",
+            "featureCount": 5,
+            "areaHa": 0.6638
+          },
+          {
+            "block": "Blok E",
+            "featureCount": 3,
+            "areaHa": 0.2356
+          },
+          {
+            "block": "Blok F",
+            "featureCount": 3,
+            "areaHa": 0.4301
+          }
+        ],
+        "blockCoverage": "Blok A–F"
       },
       "geometry": {
         "type": "MultiPolygon",
@@ -7704,7 +8611,40 @@
         "sourceCrs": "WGS 84 / UTM zone 48N",
         "receivedDate": "2026-09-10",
         "publicDetail": false,
-        "monitoringEnabled": false
+        "monitoringEnabled": false,
+        "blocks": [
+          {
+            "block": "Blok A",
+            "featureCount": 16,
+            "areaHa": 0.9145
+          },
+          {
+            "block": "Blok B",
+            "featureCount": 18,
+            "areaHa": 1.5375
+          },
+          {
+            "block": "Blok C",
+            "featureCount": 11,
+            "areaHa": 0.9059
+          },
+          {
+            "block": "Blok D",
+            "featureCount": 10,
+            "areaHa": 0.5448
+          },
+          {
+            "block": "Blok E",
+            "featureCount": 10,
+            "areaHa": 0.6028
+          },
+          {
+            "block": "Blok F",
+            "featureCount": 13,
+            "areaHa": 0.6948
+          }
+        ],
+        "blockCoverage": "Blok A–F"
       },
       "geometry": {
         "type": "MultiPolygon",
@@ -12192,5 +13132,12 @@
         ]
       }
     }
-  ]
+  ],
+  "programme": "Agroforestri Rimba Sejahtera",
+  "managementArea": "HKm Mandiri Sejahtera",
+  "sourceDataset": "SHP file Agro Mandiri Sejahtera_Blok.rar",
+  "sourceCrs": "WGS 84 / UTM zone 48N (EPSG:32648)",
+  "sourceFeatureCount": 181,
+  "sourceAreaHa": 28.0639,
+  "integratedAt": "2026-09-16"
 }
