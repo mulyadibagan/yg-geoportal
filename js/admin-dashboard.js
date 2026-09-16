@@ -239,12 +239,26 @@
     var info = {};
     try { info = JSON.parse(report.proposedInformation || '{}'); } catch (error) {}
     if (info.monitoringType !== 'Agroforestri Dayun') return '';
+    var fertilizer = info.fertilizer || null;
+    var fertilizerMaterials = fertilizer && Array.isArray(fertilizer.materials)
+      ? fertilizer.materials.map(function (item) {
+        return item.name + ': ' + item.actualKg + ' kg · ' + item.status;
+      }).join(' | ')
+      : '';
     var values = [
       ['Gawangan', report.locationName || report.targetObjectId],
       ['Kegiatan', info.activityType],
       ['Komoditas', info.crop],
       ['Tanggal tanam', info.plantingDate],
       ['Jumlah', info.quantity != null && info.quantity !== '' ? info.quantity + (info.unit ? ' ' + info.unit : '') : ''],
+      ['Fase SOP', fertilizer ? fertilizer.phaseName : ''],
+      ['Luas aplikasi', fertilizer ? fertilizer.areaHa + ' ha' : ''],
+      ['Tanaman sasaran', fertilizer && fertilizer.activePlantCount ? fertilizer.activePlantCount + ' tanaman' : ''],
+      ['Realisasi pupuk', fertilizerMaterials],
+      ['Kesesuaian SOP', fertilizer ? (fertilizer.withinSop ? 'Sesuai rentang SOP' : 'Perlu pemeriksaan') : ''],
+      ['pH dan cuaca', fertilizer ? [(fertilizer.soilPh != null ? 'pH ' + fertilizer.soilPh : ''), fertilizer.weather].filter(Boolean).join(' · ') : ''],
+      ['Pendamping', fertilizer ? fertilizer.supervisor : ''],
+      ['Alasan penyimpangan', fertilizer ? fertilizer.deviationReason : ''],
       ['Kondisi', info.condition],
       ['Tindak lanjut', info.nextAction ? info.nextAction + (info.nextActionDate ? ' · ' + info.nextActionDate : '') : '']
     ].filter(function (item) { return item[1] != null && item[1] !== ''; });

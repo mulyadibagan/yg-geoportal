@@ -1,5 +1,12 @@
 (function(){
   "use strict";
+  const programs={
+    base:{name:"Pemupukan dasar",time:"7 hari sebelum tanam atau saat tanam",note:"Pupuk organik 5–10 ton/ha.",materials:[{id:"organic",name:"Pupuk organik",min:5000,max:10000}]},
+    phase1:{name:"Pemupukan I",time:"Akar mulai terlihat, sekitar 3 BST",note:"Urea 300–400 kg/ha dan NPK 15-15-15 100–200 kg/ha.",materials:[{id:"urea",name:"Urea",min:300,max:400},{id:"npk151515",name:"NPK 15-15-15",min:100,max:200}]},
+    phase2:{name:"Pemupukan II",time:"1 bulan sebelum induksi pembungaan",note:"Urea 300 kg/ha dan NPK 15-15-15 150–200 kg/ha.",materials:[{id:"urea",name:"Urea",min:300,max:300},{id:"npk151515",name:"NPK 15-15-15",min:150,max:200}]},
+    phase3:{name:"Pemupukan III",time:"Setelah bunga keluar",note:"NPK 15-15-15 50–150 kg/ha.",materials:[{id:"npk151515",name:"NPK 15-15-15",min:50,max:150}]}
+  };
+  window.YG_DAYUN_NANAS_FERTILIZER_PROGRAMS=programs;
   const actualForm=document.getElementById("fertilizer-calculator");
   if(!actualForm)return;
   const $=id=>document.getElementById(id);
@@ -7,12 +14,6 @@
   const number=id=>Number(String($(id).value||"").replace(",","."));
   let gawangan={};
   let selectedArea=0;
-  const programs={
-    base:{name:"Pemupukan dasar",time:"7 hari sebelum tanam atau saat tanam",note:"Pupuk organik 5–10 ton/ha.",materials:[{name:"Pupuk organik",min:5000,max:10000}]},
-    phase1:{name:"Pemupukan I",time:"Akar mulai terlihat, sekitar 3 BST",note:"Urea 300–400 kg/ha dan NPK 15-15-15 100–200 kg/ha.",materials:[{name:"Urea",min:300,max:400},{name:"NPK 15-15-15",min:100,max:200}]},
-    phase2:{name:"Pemupukan II",time:"1 bulan sebelum induksi pembungaan",note:"Urea 300 kg/ha dan NPK 15-15-15 150–200 kg/ha.",materials:[{name:"Urea",min:300,max:300},{name:"NPK 15-15-15",min:150,max:200}]},
-    phase3:{name:"Pemupukan III",time:"Setelah bunga keluar",note:"NPK 15-15-15 50–150 kg/ha.",materials:[{name:"NPK 15-15-15",min:50,max:150}]}
-  };
   function phase(){return programs[$("fert-phase").value]}
   function syncPhase(){$("fert-phase-note").textContent=phase().note;clearResult()}
   function syncGawangan(){

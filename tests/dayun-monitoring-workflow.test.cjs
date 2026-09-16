@@ -20,6 +20,15 @@ test('Dayun field input is public and creates a pending monitoring report', () =
   assert.match(script, /reportType:'Monitoring'/);
   assert.match(script, /targetLayerId:'dayun_gawangan'/);
   assert.match(script, /monitoringType:'Agroforestri Dayun'/);
+  assert.match(html, /SOP PEMUPUKAN NANAS/);
+  assert.match(script, /Realisasi aplikasi \(kg\)/);
+  assert.match(html, /Pendamping\/penanggung jawab/);
+  assert.match(script, /YG_DAYUN_NANAS_FERTILIZER_PROGRAMS/);
+  assert.match(script, /nanas-fertilizer-sop-2020-v1/);
+  assert.match(script, /Sesuai rentang SOP/);
+  assert.match(script, /Minimal satu foto wajib untuk verifikasi pemupukan/);
+  assert.match(script, /maximumFractionDigits:digits==null\?2:digits/);
+  assert.doesNotMatch(script, /maximumFractionDigits:4/);
   assert.match(script, /page=report-submission-status/);
   assert.doesNotMatch(script, /adminToken|ADMIN_TOKEN/);
 });
@@ -49,4 +58,16 @@ test('admin dashboard exposes the Dayun queue context without exposing drafts pu
   assert.match(html, /Sudah Dipublikasikan/);
   assert.match(script, /function dayunMonitoringSummary/);
   assert.match(script, /report\.targetLayerId !== 'dayun_gawangan'/);
+  assert.match(script, /Kesesuaian SOP/);
+  assert.match(script, /Realisasi pupuk/);
+});
+
+test('monitoring and calculator use the same pineapple fertilizer SOP programs', () => {
+  const calculator = read('js/dayun-fertilizer-calculator.js');
+  const monitoring = read('js/dayun-monitoring.js');
+  assert.match(calculator, /window\.YG_DAYUN_NANAS_FERTILIZER_PROGRAMS=programs/);
+  assert.match(calculator, /Pupuk organik 5–10 ton\/ha/);
+  assert.match(calculator, /Urea 300–400 kg\/ha/);
+  assert.match(calculator, /NPK 15-15-15 50–150 kg\/ha/);
+  assert.match(monitoring, /window\.YG_DAYUN_NANAS_FERTILIZER_PROGRAMS/);
 });
