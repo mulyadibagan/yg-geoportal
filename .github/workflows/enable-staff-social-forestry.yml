@@ -68,16 +68,12 @@ jobs:
               ' <script src="js/auth.js?v=20260916-ps-staff1"></script>\n<script src="js/staff-data-access.js?v=20260916-ps-staff1"></script>\n<script src="js/i18n.js?v=20260911-regency-map2"></script>\n',
           )
 
-          # Profile helper: all requests still use the same URLs; only staff-mapped
-          # paths are intercepted by YG_STAFF_DATA.
           replace_once(
               'js/social-forestry-profile.js',
               'var r=await fetch(url,{cache:"no-store"});',
               'var r=await (window.YG_STAFF_DATA?window.YG_STAFF_DATA.fetch(url,{cache:"no-store"}):fetch(url,{cache:"no-store"}));',
           )
 
-          # Directory has direct Promise.all fetches rather than a helper. Route only
-          # the main PS geometry request; public metadata/detail fetches are unchanged.
           replace_once(
               'js/social-forestry-directory.js',
               'fetch("data/PERHUTANAN_SOSIAL_RIAU.geojson?v=20260828-area-summary1",{cache:"no-store"})',
@@ -115,6 +111,15 @@ jobs:
         run: |
           npx wrangler r2 object put "yg-webgis-public-snapshots-staging/internal/social-forestry/riau.geojson" --remote --file /tmp/yg-private/social-forestry-riau.geojson --content-type application/geo+json
           npx wrangler r2 object put "yg-webgis-public-snapshots/internal/social-forestry/riau.geojson" --remote --file /tmp/yg-private/social-forestry-riau.geojson --content-type application/geo+json
+
+      - name: Deploy staff PS route to Cloudflare Workers
+        working-directory: cloudflare/yg-webgis-public-data
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          npx wrangler deploy --env staging
+          npx wrangler deploy --env production
 
       - name: Commit staff PS access wiring
         shell: bash
