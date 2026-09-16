@@ -37,7 +37,10 @@ test("dashboard reveals the PHL and SVLK module only for a valid staff session",
   assert.match(home, /data-staff-only-module hidden/);
   assert.match(home, /href="phl-svlk-riau\.html"/);
   assert.match(home, /Hanya tersedia selama sesi staf terverifikasi\./);
+  assert.match(navigation, /localStorage\.getItem\('ygEditorSessionV1'\)\|\|sessionStorage\.getItem\('ygEditorSessionV1'\)/);
   assert.match(navigation, /!session\.token\|\|!session\.username\|\|Number\(session\.expiresAt\|\|0\)<=Date\.now\(\)/);
+  assert.match(navigation, /localStorage\.removeItem\('ygEditorSessionV1'\)/);
   assert.match(navigation, /querySelectorAll\('\[data-staff-only-module\]'\)/);
   assert.match(navigation, /module\.hidden=false/);
+  assert.match(home, /navigation-v2\.js\?v=20260916-staff-session2/);
 });
