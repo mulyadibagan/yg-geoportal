@@ -3,7 +3,7 @@
   var page = document.body.getAttribute('data-dayun-page');
   var proposalMode = true; // Public information only; no local submission routes.
   function alignWithLiveShell() {
-    ['css/style.css?v=20260723-revert-layout','css/language-switcher.css?v=20260721-all-pages1','css/navigation-v2.css?v=20260807-mobile-submenu-links1','css/dayun.css?v=20260917-gawangan-profile2'].forEach(function(href){
+    ['css/style.css?v=20260723-revert-layout','css/language-switcher.css?v=20260721-all-pages1','css/navigation-v2.css?v=20260807-mobile-submenu-links1','css/dayun.css?v=20260917-popup-area1'].forEach(function(href){
       if(!document.querySelector('link[href="'+href+'"]')){var link=document.createElement('link');link.rel='stylesheet';link.href=href;document.head.appendChild(link);}
     });
     var header=document.querySelector('.dy-header');
@@ -17,7 +17,7 @@
   alignWithLiveShell();
   function esc(value) { return String(value == null ? '' : value).replace(/[&<>"']/g, function (c) { return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]; }); }
   function fmtDate(value) { if (!value) return 'Belum tersedia'; return new Date(value.length === 10 ? value + 'T00:00:00' : value).toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}); }
-  function fmtArea(value) { return value == null ? 'Belum dihitung' : Number(value).toLocaleString('id-ID') + ' ha'; }
+  function fmtArea(value) { return value == null ? 'Belum dihitung' : Number(value).toLocaleString('id-ID',{maximumFractionDigits:4}) + ' ha'; }
   function statusBadge(status) { return '<span class="dy-badge ' + String(status || '').toLowerCase() + '">' + esc(status || '-') + '</span>'; }
   function progressLabel(status) { return ({NOT_STARTED:'Belum dimulai',IN_PROGRESS:'Berjalan',COMPLETED:'Selesai',DELAYED:'Tertunda'})[status] || 'Belum dimulai'; }
   function publicObjectName(value) { return String(value || ''); }
@@ -30,7 +30,7 @@
   function initDayunMap(data){
     var mapEl=document.getElementById('dayun-map'),legendEl=document.getElementById('dayun-layers');
     if(!mapEl||!legendEl)return;
-    var intro=document.querySelector('.dy-map-page-intro p');if(intro)intro.textContent='Klik polygon gawangan tanam untuk membuka profil lengkapnya pada halaman baru.';
+    var intro=document.querySelector('.dy-map-page-intro p');if(intro)intro.textContent='Klik polygon untuk melihat luas blok dan gawangan tanam, lalu buka profil lengkapnya pada halaman baru.';
     if(typeof L==='undefined'){mapEl.innerHTML='<div class="dy-map-loading">Pustaka peta tidak dapat dimuat.</div>';return;}
     var satellite=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxNativeZoom:18,maxZoom:20,attribution:'Tiles &copy; Esri'});
     var osm=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxNativeZoom:19,maxZoom:20,attribution:'&copy; OpenStreetMap contributors'});
@@ -39,13 +39,14 @@
     expandControl.onAdd=function(){var button=L.DomUtil.create('button','dy-map-expand leaflet-bar');button.type='button';button.title='Buka peta layar penuh';button.setAttribute('aria-label','Buka peta layar penuh');button.innerHTML='⛶';L.DomEvent.disableClickPropagation(button);L.DomEvent.on(button,'click',function(){var expanded=mapEl.classList.toggle('is-fullscreen');document.body.classList.toggle('dy-map-open',expanded);button.innerHTML=expanded?'×':'⛶';button.title=expanded?'Tutup peta layar penuh':'Buka peta layar penuh';button.setAttribute('aria-label',button.title);setTimeout(function(){map.invalidateSize();},100);});return button;};
     expandControl.addTo(map);document.addEventListener('keydown',function(event){if(event.key==='Escape'&&mapEl.classList.contains('is-fullscreen')){mapEl.classList.remove('is-fullscreen');document.body.classList.remove('dy-map-open');var button=mapEl.querySelector('.dy-map-expand');if(button){button.innerHTML='⛶';button.title='Buka peta layar penuh';button.setAttribute('aria-label',button.title);}setTimeout(function(){map.invalidateSize();},100);}});
     Promise.all([fetch('data/dayun-map.geojson?v=20260916-objectid1'),fetch('data/dayun-context.geojson?v=20260908-1'),fetch('data/dayun-gawangan-details.json?v=20260916-1'),fetch('data/dayun-blocks.geojson?v=20260916-official1')]).then(function(responses){if(responses.some(function(response){return !response.ok;}))throw new Error('Data peta atau rincian gawangan tidak dapat dimuat.');return Promise.all(responses.map(function(response){return response.json();}));}).then(function(results){
-      var geojson=results[0],contextGeojson=results[1],gawanganData=results[2],blockGeojson=results[3],gawanganById={},objectProperties={},groups={},featureLayers={},categoryBounds={},contextLayers={},active=data.layers[0].id;
+      var geojson=results[0],contextGeojson=results[1],gawanganData=results[2],blockGeojson=results[3],gawanganById={},blockByName={},objectProperties={},groups={},featureLayers={},categoryBounds={},contextLayers={},active=data.layers[0].id;
       (gawanganData.objects||[]).forEach(function(item){gawanganById[item.objectId]=item;});
+      (blockGeojson.features||[]).forEach(function(feature){var p=feature.properties||{},name=p.name||('Blok '+p.blockCode);if(name)blockByName[name]={name:name,areaHa:p.areaHa};});
       data.layers.forEach(function(layer){groups[layer.id]=L.featureGroup();});
       contextGeojson.features.forEach(function(feature){var p=feature.properties||{},isVillage=p.contextId==='desa-dayun';var layer=L.geoJSON(feature,{style:isVillage?{color:'#49a7ff',weight:3,opacity:.95,fillColor:'#49a7ff',fillOpacity:.035,dashArray:'12 8'}:{color:'#ffe14f',weight:3,opacity:1,fillColor:'#ffe14f',fillOpacity:.07,dashArray:'7 5'},onEachFeature:function(f,l){l.bindPopup(isVillage?'<div class="dy-map-popup"><b>Desa Dayun</b><span>Wilayah pelaksanaan Program Dayun</span></div>':'<div class="dy-map-popup"><b>HKm Mandiri Sejahtera</b><span>Wilayah kelola masyarakat seluas '+Number(p.permitAreaHa||0).toLocaleString('id-ID')+' ha</span></div>');}});contextLayers[p.contextId]=layer;layer.addTo(map);});
       map.createPane('blockBoundaryPane');map.getPane('blockBoundaryPane').style.zIndex=460;
       var blockHalo=L.geoJSON(blockGeojson,{pane:'blockBoundaryPane',interactive:false,style:{color:'#ffffff',weight:7,opacity:.9,fill:false,lineCap:'round',lineJoin:'round'}});
-      var blockLines=L.geoJSON(blockGeojson,{pane:'blockBoundaryPane',style:function(feature){var p=feature.properties||{};return{color:p.color||'#7c3aed',weight:4,opacity:1,fillColor:p.color||'#7c3aed',fillOpacity:.015,lineCap:'round',lineJoin:'round'};},onEachFeature:function(feature,layer){var p=feature.properties||{};layer.bindTooltip(esc(p.name||'Blok'),{permanent:true,direction:'center',className:'dy-block-label'});layer.bindPopup('<div class="dy-map-popup"><b>'+esc(p.name||'Blok')+'</b><span>Luas '+fmtArea(p.areaHa)+'</span><small>Areal Agroforestri KUPS Rimba Sejahtera</small></div>');}});
+      var blockLines=L.geoJSON(blockGeojson,{pane:'blockBoundaryPane',style:function(feature){var p=feature.properties||{};return{color:p.color||'#7c3aed',weight:4,opacity:1,fillColor:p.color||'#7c3aed',fillOpacity:.015,lineCap:'round',lineJoin:'round'};},onEachFeature:function(feature,layer){var p=feature.properties||{},blockName=p.name||'Blok';layer.bindTooltip(esc(blockName),{permanent:true,direction:'center',className:'dy-block-label'});layer.bindPopup('<div class="dy-map-popup"><b>'+esc(blockName)+'</b><div class="dy-map-popup-metrics"><span><small>Luas blok</small><strong>'+fmtArea(p.areaHa)+'</strong></span></div><small>Areal Agroforestri KUPS Rimba Sejahtera</small></div>');}});
       var blockLayer=L.layerGroup([blockHalo,blockLines]).addTo(map);contextLayers.blocks=blockLayer;
       L.control.layers({'Satelit':satellite,'OpenStreetMap':osm},{'Batas Desa Dayun':contextLayers['desa-dayun'],'PS HKm Mandiri Sejahtera':contextLayers['ps-hkm'],'Blok A–F':blockLayer},{position:'topright'}).addTo(map);
       function featureStyle(feature){var p=feature.properties||{};return p.line?{color:p.color||'#ef7d00',weight:3,opacity:.92,dashArray:'7 5'}:{color:'#173f32',weight:1.5,opacity:.95,fillColor:p.color||'#6baa91',fillOpacity:.18};}
@@ -53,14 +54,14 @@
         var p=feature.properties||{},object=byId(data.objects,p.objectId);
         if(p.objectId&&!objectProperties[p.objectId])objectProperties[p.objectId]=p;
         var areaText=p.sourceGawanganId?'Luas gawangan '+fmtArea(p.sourceGawanganAreaHa):(p.areaHa==null?'Bagian dari kebun nanas seluas '+Number(p.parentAreaHa||0).toLocaleString('id-ID')+' ha':'Luas pada peta '+fmtArea(p.areaHa));
-        var blockText=p.block ? p.block+(p.objectId?' · Object ID '+p.objectId:'') : (p.blockCoverage||'');
-        var blockLine=blockText?'<span>'+esc(blockText)+'</span>':'';
+        var blockInfo=blockByName[p.block]||null,blockText=p.block||(p.blockCoverage||''),gawanganName=p.displayId||p.shortId||p.displayName||p.name;
+        var areaMetrics=p.category==='Gawangan Tanam'?'<div class="dy-map-popup-metrics">'+(blockText?'<span><small>Blok</small><b>'+esc(blockText)+'</b><strong>'+fmtArea(blockInfo&&blockInfo.areaHa)+'</strong></span>':'')+'<span><small>Gawangan tanam</small><b>'+esc(gawanganName)+'</b><strong>'+fmtArea(p.sourceGawanganAreaHa!=null?p.sourceGawanganAreaHa:p.areaHa)+'</strong></span></div>':(blockText?'<span>'+esc(blockText)+'</span>':'')+'<span>'+areaText+'</span>';
         var partLine=Number(p.sourcePartCount)>1?'<span>Bagian '+Number(p.sourcePartIndex)+' dari '+Number(p.sourcePartCount)+' · luas poligon '+fmtArea(p.areaHa)+'</span>':'';
         var profileUrl=p.category==='Gawangan Tanam'&&p.objectId?'dayun-gawangan.html?object='+encodeURIComponent(p.objectId):'',detailLink=profileUrl?'<div class="dy-map-popup-actions"><a href="'+profileUrl+'" target="_blank" rel="noopener">Buka profil gawangan ↗</a></div>':'';
         var gawanganRecord=gawanganById[p.objectId],cropLine=gawanganRecord&&gawanganRecord.crops.length?'<span>'+esc(gawanganRecord.crops.map(function(crop){return crop.crop;}).join(' · '))+'</span>':'<span>Data tanaman belum tersedia</span>';
-        layer.bindPopup('<div class="dy-map-popup"><b>'+esc(publicObjectName(p.displayName||p.name))+'</b>'+blockLine+'<span>'+areaText+'</span>'+partLine+cropLine+'<small>Klik polygon untuk membuka profil gawangan</small>'+detailLink+'</div>');
+        layer.bindPopup('<div class="dy-map-popup"><b>'+esc(publicObjectName(p.displayName||p.name))+'</b>'+areaMetrics+partLine+cropLine+(profileUrl?'<small>Buka halaman profil untuk melihat informasi tanaman.</small>':'')+detailLink+'</div>');
         if(p.displayId||p.shortId)layer.bindTooltip(esc(p.displayId||p.shortId),{sticky:true,direction:'top'});
-        layer.on('click',function(){document.querySelectorAll('.dy-object-key').forEach(function(x){x.classList.toggle('active',x.getAttribute('data-category')===p.category);});if(profileUrl)window.open(profileUrl,'_blank','noopener');});
+        layer.on('click',function(){document.querySelectorAll('.dy-object-key').forEach(function(x){x.classList.toggle('active',x.getAttribute('data-category')===p.category);});});
         if(groups[p.layerId])groups[p.layerId].addLayer(layer);if(!featureLayers[p.objectId])featureLayers[p.objectId]=[];featureLayers[p.objectId].push(layer);if(!categoryBounds[p.category])categoryBounds[p.category]=L.latLngBounds([]);categoryBounds[p.category].extend(layer.getBounds());
       }});
       function renderLegend(){
