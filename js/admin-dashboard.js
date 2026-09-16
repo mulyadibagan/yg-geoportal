@@ -234,6 +234,25 @@
     return /^https:\/\//i.test(url) ? url : '';
   }
 
+  function dayunMonitoringSummary(report) {
+    if (report.targetLayerId !== 'dayun_gawangan') return '';
+    var info = {};
+    try { info = JSON.parse(report.proposedInformation || '{}'); } catch (error) {}
+    if (info.monitoringType !== 'Agroforestri Dayun') return '';
+    var values = [
+      ['Gawangan', report.locationName || report.targetObjectId],
+      ['Kegiatan', info.activityType],
+      ['Komoditas', info.crop],
+      ['Tanggal tanam', info.plantingDate],
+      ['Jumlah', info.quantity != null && info.quantity !== '' ? info.quantity + (info.unit ? ' ' + info.unit : '') : ''],
+      ['Kondisi', info.condition],
+      ['Tindak lanjut', info.nextAction ? info.nextAction + (info.nextActionDate ? ' · ' + info.nextActionDate : '') : '']
+    ].filter(function (item) { return item[1] != null && item[1] !== ''; });
+    return '<div class="report-inbox-meta">' + values.map(function (item) {
+      return '<span><b>' + esc(item[0]) + '</b>' + esc(item[1]) + '</span>';
+    }).join('') + '</div>';
+  }
+
   function renderStaffReportInbox() {
     var list = document.getElementById('report-inbox-list');
     var filter = document.getElementById('report-inbox-filter').value;
@@ -270,7 +289,9 @@
         '<span><b>Pelapor</b>' + esc(reporter || '-') + '</span>' +
         '<span><b>Lokasi</b>' + esc(location || report.locationName || '-') + '</span>' +
         '<span><b>Diterima</b>' + esc(report.receivedAt || '-') + '</span></div>' +
+        dayunMonitoringSummary(report) +
         (report.description ? '<p>' + esc(report.description) + '</p>' : '') +
+        (report.adminNote ? '<p><b>Catatan admin:</b> ' + esc(report.adminNote) + '</p>' : '') +
         (evidenceLinks.length ? '<div class="report-inbox-evidence">' + evidenceLinks.join('') + '</div>' : '') +
         '</article>';
     }).join('');

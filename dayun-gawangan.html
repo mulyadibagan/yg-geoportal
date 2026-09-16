@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="css/navigation-v2.css?v=20260807-mobile-submenu-links1">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="css/dayun.css?v=20260917-gawangan-profile1">
-  <link rel="stylesheet" href="css/dayun-gawangan.css?v=20260917-1">
+  <link rel="stylesheet" href="css/dayun-gawangan.css?v=20260917-live-monitoring1">
 </head>
 <body data-dayun-page="gawangan" data-dayun-mode="public">
   <header class="site-header">
@@ -27,13 +27,17 @@
     <div id="dg-status" class="dg-status" role="status">Memuat profil gawangan…</div>
     <div id="dg-content" hidden>
       <section class="dg-hero">
-        <div class="dg-hero-copy"><span>AGROFORESTRI DAYUN · PROFIL GAWANGAN</span><h1 id="dg-title">Gawangan</h1><p id="dg-meta"></p><div class="dg-switcher"><label for="dg-object-select">Buka gawangan lain</label><select id="dg-object-select"></select></div><div class="dg-neighbours"><a id="dg-prev" href="#">← Sebelumnya</a><a id="dg-next" href="#">Berikutnya →</a></div></div>
+        <div class="dg-hero-copy"><span>AGROFORESTRI DAYUN · PROFIL GAWANGAN</span><h1 id="dg-title">Gawangan</h1><p id="dg-meta"></p><div class="dg-switcher"><label for="dg-object-select">Buka gawangan lain</label><select id="dg-object-select"></select></div><div class="dg-neighbours"><a id="dg-prev" href="#">← Sebelumnya</a><a id="dg-next" href="#">Berikutnya →</a></div><a class="dg-staff-action" id="dg-staff-action" href="dayun-monitoring.html" hidden>Input monitoring gawangan</a></div>
         <div class="dg-map" id="dg-map" aria-label="Polygon gawangan terpilih"></div>
       </section>
       <section class="dg-kpis" id="dg-kpis" aria-label="Ringkasan gawangan"></section>
       <section class="dg-section">
         <header><div><span>INFORMASI TANAMAN</span><h2>Komoditas dalam gawangan</h2></div><p>Satu gawangan dapat memuat beberapa jenis tanaman agroforestri.</p></header>
         <div class="dg-crops" id="dg-crops"></div>
+      </section>
+      <section class="dg-section">
+        <header><div><span>RIWAYAT TERVERIFIKASI</span><h2>Kegiatan lapangan</h2></div><p>Hanya catatan yang telah diperiksa dan dipublikasikan oleh admin.</p></header>
+        <div class="dg-events" id="dg-events"></div>
       </section>
       <aside class="dg-note">Luas polygon merupakan hasil pemetaan spasial. Luas operasional, dimensi, jumlah tanaman, dan riwayat kegiatan mengikuti informasi yang tercatat untuk masing-masing komoditas.</aside>
     </div>
@@ -42,6 +46,6 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="js/auth.js?v=20260915-logout3"></script>
   <script src="js/navigation-v2.js?v=20260821-staff-name1"></script>
-  <script src="js/dayun-gawangan.js?v=20260917-1"></script>
+  <script src="js/dayun-gawangan.js?v=20260917-live-monitoring1"></script>
 </body>
 </html>
