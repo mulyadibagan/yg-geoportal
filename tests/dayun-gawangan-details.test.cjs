@@ -20,6 +20,7 @@ test('public Dayun details match the official gawangan polygons', () => {
 });
 
 test('every published crop belongs to one gawangan and has a crop name', () => {
+  assert.equal(details.source, undefined);
   assert.equal(details.objects.reduce((total, item) => total + item.crops.length, 0), 139);
   for (const item of details.objects) {
     assert.match(item.objectId, /^DAYUN-GT-[A-F]-\d{2}$/);
@@ -28,11 +29,16 @@ test('every published crop belongs to one gawangan and has a crop name', () => {
   }
 });
 
-test('Dayun map loads and opens the public detail panel', () => {
+test('each planting polygon opens a dedicated public profile page', () => {
   const html = fs.readFileSync(path.join(root, 'dayun-map.html'), 'utf8');
   const script = fs.readFileSync(path.join(root, 'js/dayun-public.js'), 'utf8');
-  assert.match(html, /id="dayun-gawangan-detail"/);
+  const profile = fs.readFileSync(path.join(root, 'dayun-gawangan.html'), 'utf8');
+  const profileScript = fs.readFileSync(path.join(root, 'js/dayun-gawangan.js'), 'utf8');
+  assert.doesNotMatch(html, /id="dayun-gawangan-detail"/);
   assert.match(script, /data\/dayun-gawangan-details\.json/);
-  assert.match(script, /openGawanganDetail\(gawanganRecord,p\)/);
+  assert.match(script, /window\.open\(profileUrl,'_blank','noopener'\)/);
   assert.match(script, /dy-gawangan-picker/);
+  assert.match(profile, /id="dg-map"/);
+  assert.match(profileScript, /data\/dayun-gawangan-details\.json/);
+  assert.doesNotMatch(profile + profileScript, /DATA GAWANG|Sumber:/i);
 });
