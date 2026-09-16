@@ -6,6 +6,7 @@
   const WEATHER_CACHE_MS = 30 * 60 * 1000;
   const RAIN_CACHE_KEY = "yg-faperta-nasa-rain-v1";
   const RAIN_CACHE_MS = 6 * 60 * 60 * 1000;
+  const fetchData = (window.YG_STAFF_DATA && window.YG_STAFF_DATA.fetch) ? window.YG_STAFF_DATA.fetch : window.fetch.bind(window);
   const WEATHER_URL = "https://api.open-meteo.com/v1/forecast?latitude=0.4822&longitude=101.3808&current=temperature_2m,relative_humidity_2m,precipitation,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum&forecast_days=7&timezone=Asia%2FJakarta";
   const state = { data: null, boundary: null, map: null, boundaryLayer: null, basemaps: {} };
   const $ = (selector) => document.querySelector(selector);
@@ -280,7 +281,7 @@ async function loadWeather() {
 
   async function boot() {
     try {
-      const [dataResponse, boundaryResponse] = await Promise.all([fetch(DATA_URL), fetch(BOUNDARY_URL)]);
+      const [dataResponse, boundaryResponse] = await Promise.all([fetchData(DATA_URL), fetchData(BOUNDARY_URL)]);
       if (!dataResponse.ok || !boundaryResponse.ok) throw new Error("Informasi kebun tidak dapat dimuat.");
       [state.data, state.boundary] = await Promise.all([dataResponse.json(), boundaryResponse.json()]);
       configurePublicSections(); renderSummary(); renderTasks(); renderBlocks(); renderCollections(); initMap(); bindUi();

@@ -105,7 +105,7 @@
       type: "village_boundary",
       section: "administrative"
     },
-    upt_faperta_ur: {
+    ...(staffSession ? { upt_faperta_ur: {
       id: "upt_faperta_ur",
       label: "UPT Kebun Percobaan Faperta UR",
       file: "data/faperta-ur-site.geojson?v=20260910-1",
@@ -116,8 +116,8 @@
       section: "partnership",
       sourceLabel: "UPT Faperta Universitas Riau — SHP 9 September 2026",
       scale: "WGS 84 · 3 polygon operasional",
-      policyUrl: "faperta-ur.html"
-    }
+      policyUrl: "staff-faperta-ur.html"
+    } } : {})
   };
 
   const referenceLayerObjects = {};

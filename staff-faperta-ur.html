@@ -8,6 +8,15 @@
   <link rel="icon" href="assets/logo-yayasan-gambut.png">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="css/faperta-ur.css?v=20260910-10">
+<style id="faperta-staff-gate">html{visibility:hidden}</style>
+<script>
+(async function(){
+ const key='ygEditorSessionV1'; let session=null;
+ try{session=JSON.parse(localStorage.getItem(key)||sessionStorage.getItem(key)||'null');}catch(e){}
+ if(!session||!session.token||Number(session.expiresAt||0)<=Date.now()){location.replace('staff-login.html?return=staff-faperta-ur.html');return;}
+ try{const r=await fetch('https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/staff/pbph-riau',{headers:{authorization:'Bearer '+session.token},cache:'no-store'});if(r.status===401){localStorage.removeItem(key);sessionStorage.removeItem(key);location.replace('staff-login.html?return=staff-faperta-ur.html');return;}document.documentElement.style.visibility='visible';}catch(e){location.replace('staff-login.html?return=staff-faperta-ur.html');}
+})();
+</script>
 </head>
 <body>
   <header class="fu-header">
@@ -100,6 +109,8 @@
   </main>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="js/faperta-ur.js?v=20260910-7"></script>
+  <script src="js/auth.js?v=20260915-logout3"></script>
+  <script src="js/staff-data-access.js?v=20260916-faperta-private1"></script>
+  <script src="js/faperta-ur.js?v=20260916-private1"></script>
 </body>
 </html>

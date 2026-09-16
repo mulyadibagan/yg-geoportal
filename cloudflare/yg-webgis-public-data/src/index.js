@@ -163,6 +163,8 @@ async function rspoGroupsApi(request, env) {
 }
 const PRIVATE_DATA_ROUTES = {
   "/api/staff/pbph-riau": ["internal/pbph/riau.geojson", "application/geo+json; charset=utf-8"],
+  "/api/staff/faperta-ur-data": ["internal/faperta/ur-data.json", "application/json; charset=utf-8"],
+  "/api/staff/faperta-ur-site": ["internal/faperta/ur-site.geojson", "application/geo+json; charset=utf-8"],
   "/api/staff/pbph-documents": ["internal/pbph/documents.json", "application/json; charset=utf-8"],
   "/api/staff/fire-monthly-index": ["internal/fire-monthly/index.json", "application/json; charset=utf-8"],
   "/api/staff/phl-svlk-monthly-index": ["internal/phl-svlk-monthly/index.json", "application/json; charset=utf-8"]

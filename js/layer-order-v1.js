@@ -5,7 +5,8 @@
     "batas_administrasi_desa_riau"
   ]);
   const STAFF_ONLY_REFERENCE_IDS = new Set([
-    "perusahaan_sawit_riau"
+    "perusahaan_sawit_riau",
+    "upt_faperta_ur"
   ]);
 
   function hasStaffSession() {
@@ -110,7 +111,7 @@
 
     if (!hasStaffSession()) {
       items.forEach(item => {
-        if (/rspo|perkebunan anggota/i.test(item.textContent || "")) item.remove();
+        if (/rspo|perkebunan anggota|faperta|kebun percobaan/i.test(item.textContent || "")) item.remove();
       });
     }
 
