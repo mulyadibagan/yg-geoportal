@@ -1,0 +1,2962 @@
+{
+  "schemaVersion": 1,
+  "title": "Data gawangan agroforestri KUPS Rimba Sejahtera",
+  "source": {
+    "file": "DATA GAWANG UP. JUNI.xlsx",
+    "sheet": "DATA GAWANGAN",
+    "owner": "KUPS Rimba Sejahtera",
+    "importedAt": "2026-09-16"
+  },
+  "notes": [
+    "Satu gawangan dapat memuat lebih dari satu komoditas.",
+    "Luas operasional berasal dari lembar kerja dan tidak dijumlahkan sebagai luas polygon.",
+    "Luas polygon pada peta berasal dari GeoJSON hasil pengolahan data spasial."
+  ],
+  "summary": {
+    "spreadsheetRows": 140,
+    "gawanganWithData": 59,
+    "mappedGawangan": 60,
+    "missingObjectIds": [
+      "DAYUN-GT-B-15"
+    ]
+  },
+  "objects": [
+    {
+      "objectId": "DAYUN-GT-A-01",
+      "block": "A",
+      "gawangan": 1,
+      "crops": [
+        {
+          "crop": "RAMBUTAN",
+          "spacingM2": 83.33333333333333,
+          "widthM": 6,
+          "lengthM": 150,
+          "vegetationCount": 10.8,
+          "ageMonths": 24,
+          "rotation": 1,
+          "plantingPeriod": "Jan 2024",
+          "operationalAreaHa": 0.09
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.64,
+          "widthM": 6,
+          "lengthM": 150,
+          "vegetationCount": 1125,
+          "ageMonths": 18,
+          "rotation": 1,
+          "plantingPeriod": "agustus 2024",
+          "operationalAreaHa": 0.09,
+          "fertilizedCount": 1125,
+          "pineappleHarvest": [
+            {
+              "period": "2025-09-01",
+              "count": 60
+            },
+            {
+              "period": "2025-10-01",
+              "count": 120
+            },
+            {
+              "period": "2025-11-01",
+              "count": 275
+            },
+            {
+              "period": "2026-01-01",
+              "count": 20
+            },
+            {
+              "period": "2026-03-01",
+              "count": 38
+            }
+          ],
+          "pineappleHarvestTotal": 513,
+          "ethrel": [
+            {
+              "period": "2026-01-01",
+              "count": 670
+            }
+          ],
+          "ethrelTotal": 670,
+          "pineappleFlowerCount": 112,
+          "fruitAvailability22Dec2025": 151,
+          "fruitAvailability27Dec2025": 74,
+          "seedlingAvailability": 790,
+          "notes": "layak ethrel"
+        }
+      ],
+      "sourceRows": [
+        14,
+        63
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-A-02",
+      "block": "A",
+      "gawangan": 2,
+      "crops": [
+        {
+          "crop": "RAMBUTAN",
+          "spacingM2": 83.33333333333333,
+          "widthM": 5,
+          "lengthM": 150,
+          "vegetationCount": 9,
+          "ageMonths": 24,
+          "rotation": 1,
+          "plantingPeriod": "Jan 2024",
+          "operationalAreaHa": 0.075
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.64,
+          "widthM": 6,
+          "lengthM": 150,
+          "vegetationCount": 1406.25,
+          "ageMonths": 18,
+          "rotation": 1,
+          "plantingPeriod": "agustus 2024",
+          "operationalAreaHa": 0.09,
+          "fertilizedCount": 1406.25,
+          "pineappleHarvest": [
+            {
+              "period": "2025-09-01",
+              "count": 450
+            },
+            {
+              "period": "2025-10-01",
+              "count": 45
+            },
+            {
+              "period": "2026-01-01",
+              "count": 25
+            },
+            {
+              "period": "2026-03-01",
+              "count": 318
+            }
+          ],
+          "pineappleHarvestTotal": 838,
+          "ethrel": [
+            {
+              "period": "2026-01-01",
+              "count": 956
+            }
+          ],
+          "ethrelTotal": 956,
+          "pineappleFlowerCount": 640,
+          "fruitAvailability22Dec2025": 75,
+          "fruitAvailability27Dec2025": 39,
+          "seedlingAvailability": 700,
+          "notes": "layak ethrel"
+        }
+      ],
+      "sourceRows": [
+        16,
+        64
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-A-03",
+      "block": "A",
+      "gawangan": 3,
+      "crops": [
+        {
+          "crop": "TERONG",
+          "spacingM2": 0.36,
+          "widthM": 6,
+          "lengthM": 90,
+          "vegetationCount": 242,
+          "ageMonths": 1,
+          "rotation": 2,
+          "plantingPeriod": "2026-03-01",
+          "operationalAreaHa": 0.054
+        },
+        {
+          "crop": "RAMBUTAN",
+          "spacingM2": 83.33333333333333,
+          "widthM": 5,
+          "lengthM": 150,
+          "vegetationCount": 9,
+          "ageMonths": 24,
+          "rotation": 1,
+          "plantingPeriod": "Jan 2024",
+          "operationalAreaHa": 0.075
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.64,
+          "widthM": 6,
+          "lengthM": 150,
+          "vegetationCount": 562.5,
+          "ageMonths": 18,
+          "rotation": 1,
+          "plantingPeriod": "agustus 2024",
+          "operationalAreaHa": 0.09,
+          "fertilizedCount": 562.5,
+          "pineappleHarvest": [
+            {
+              "period": "2025-09-01",
+              "count": 236
+            },
+            {
+              "period": "2026-01-01",
+              "count": 17
+            },
+            {
+              "period": "2026-03-01",
+              "count": 83
+            },
+            {
+              "period": "2026-04-01",
+              "count": 176
+            }
+          ],
+          "pineappleHarvestTotal": 512,
+          "ethrel": [
+            {
+              "period": "2026-01-01",
+              "count": 327
+            }
+          ],
+          "ethrelTotal": 327,
+          "pineappleFlowerCount": 174,
+          "fruitAvailability22Dec2025": 60,
+          "fruitAvailability27Dec2025": 30,
+          "seedlingAvailability": 358,
+          "notes": "layak ethrel"
+        }
+      ],
+      "sourceRows": [
+        6,
+        18,
+        65
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-A-04",
+      "block": "A",
+      "gawangan": 4,
+      "crops": [
+        {
+          "crop": "TERONG",
+          "spacingM2": 0.36,
+          "widthM": 6,
+          "lengthM": 90,
+          "vegetationCount": 179,
+          "ageMonths": 1,
+          "rotation": 2,
+          "plantingPeriod": "2026-03-01",
+          "operationalAreaHa": 0.054
+        },
+        {
+          "crop": "RAMBUTAN",
+          "spacingM2": 83.33333333333333,
+          "widthM": 5,
+          "lengthM": 150,
+          "vegetationCount": 9,
+          "ageMonths": 24,
+          "rotation": 1,
+          "plantingPeriod": "Jan 2024",
+          "operationalAreaHa": 0.075
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.64,
+          "widthM": 6,
+          "lengthM": 150,
+          "vegetationCount": 562.5,
+          "ageMonths": 14,
+          "rotation": 1,
+          "plantingPeriod": "des 2024",
+          "operationalAreaHa": 0.09,
+          "fertilizedCount": 562.5,
+          "pineappleHarvest": [
+            {
+              "period": "2026-03-01",
+              "count": 122
+            }
+          ],
+          "pineappleHarvestTotal": 122,
+          "ethrel": [
+            {
+              "period": "2026-01-01",
+              "count": 563
+            }
+          ],
+          "ethrelTotal": 563,
+          "pineappleFlowerCount": 348,
+          "fruitAvailability27Dec2025": 5,
+          "notes": "layak ethrel"
+        }
+      ],
+      "sourceRows": [
+        7,
+        20,
+        66
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-A-05",
+      "block": "A",
+      "gawangan": 5,
+      "crops": [
+        {
+          "crop": "TERONG",
+          "spacingM2": 0.36,
+          "widthM": 6,
+          "lengthM": 90,
+          "vegetationCount": 154,
+          "ageMonths": 1,
+          "rotation": 2,
+          "plantingPeriod": "2026-03-01",
+          "operationalAreaHa": 0.054
+        },
+        {
+          "crop": "RAMBUTAN",
+          "spacingM2": 83.33333333333333,
+          "widthM": 4,
+          "lengthM": 150,
+          "vegetationCount": 7.2,
+          "ageMonths": 24,
+          "rotation": 1,
+          "plantingPeriod": "Jan 2024",
+          "operationalAreaHa": 0.06
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.64,
+          "widthM": 6,
+          "lengthM": 150,
+          "vegetationCount": 590.625,
+          "ageMonths": 14,
+          "rotation": 1,
+          "plantingPeriod": "des 2024",
+          "operationalAreaHa": 0.09,
+          "fertilizedCount": 590.625,
+          "pineappleHarvest": [
+            {
+              "period": "2026-02-01",
+              "count": 3
+            },
+            {
+              "period": "2026-03-01",
+              "count": 101
+            }
+          ],
+          "pineappleHarvestTotal": 104,
+          "ethrel": [
+            {
+              "period": "2026-01-01",
+              "count": 591
+            }
+          ],
+          "ethrelTotal": 591,
+          "pineappleFlowerCount": 223,
+          "notes": "layak ethrel"
+        },
+        {
+          "crop": "CABAI",
+          "spacingM2": 1,
+          "widthM": 5,
+          "lengthM": 20,
+          "vegetationCount": 25,
+          "ageMonths": 2,
+          "rotation": 1,
+          "plantingPeriod": "2026-04-01",
+          "operationalAreaHa": 0.01,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0
+        },
+        {
+          "crop": "ASAM KANDIS",
+          "spacingM2": 100,
+          "widthM": 5,
+          "lengthM": 150,
+          "vegetationCount": 7.5,
+          "ageMonths": 14,
+          "rotation": 1,
+          "plantingPeriod": "Sept 2024",
+          "operationalAreaHa": 0.075,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0
+        }
+      ],
+      "sourceRows": [
+        8,
+        22,
+        67,
+        139,
+        141
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-A-06",
+      "block": "A",
+      "gawangan": 6,
+      "crops": [
+        {
+          "crop": "TERONG",
+          "spacingM2": 0.36,
+          "widthM": 8,
+          "lengthM": 40,
+          "vegetationCount": 314,
+          "ageMonths": 1,
+          "rotation": 3,
+          "plantingPeriod": "2026-03-01",
+          "operationalAreaHa": 0.032
+        },
+        {
+          "crop": "RAMBUTAN",
+          "spacingM2": 83.33333333333333,
+          "widthM": 5,
+          "lengthM": 150,
+          "vegetationCount": 9,
+          "ageMonths": 24,
+          "rotation": 1,
+          "plantingPeriod": "Jan 2024",
+          "operationalAreaHa": 0.075
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.64,
+          "widthM": 8,
+          "lengthM": 150,
+          "vegetationCount": 875,
+          "ageMonths": 14,
+          "rotation": 1,
+          "plantingPeriod": "des 2024",
+          "operationalAreaHa": 0.12,
+          "fertilizedCount": 875,
+          "pineappleHarvest": [
+            {
+              "period": "2026-03-01",
+              "count": 341
+            },
+            {
+              "period": "2026-04-01",
+              "count": 86
+            },
+            {
+              "period": "2026-05-01",
+              "count": 130
+            }
+          ],
+          "pineappleHarvestTotal": 557,
+          "ethrel": [
+            {
+              "period": "2026-01-01",
+              "count": 875
+            }
+          ],
+          "ethrelTotal": 875,
+          "pineappleFlowerCount": 513,
+          "fruitAvailability27Dec2025": 7,
+          "notes": "layak ethrel"
+        },
+        {
+          "crop": "CABAI",
+          "spacingM2": 1,
+          "widthM": 5,
+          "lengthM": 30,
+          "vegetationCount": 234,
+          "ageMonths": 2,
+          "rotation": 1,
+          "plantingPeriod": "2026-04-01",
+          "operationalAreaHa": 0.015,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0
+        },
+        {
+          "crop": "ASAM KANDIS",
+          "spacingM2": 100,
+          "widthM": 6,
+          "lengthM": 150,
+          "vegetationCount": 9,
+          "ageMonths": 14,
+          "rotation": 1,
+          "plantingPeriod": "Sept 2024",
+          "operationalAreaHa": 0.09,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0
+        }
+      ],
+      "sourceRows": [
+        9,
+        24,
+        68,
+        140,
+        143
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-A-07",
+      "block": "A",
+      "gawangan": 7,
+      "crops": [
+        {
+          "crop": "TERONG",
+          "spacingM2": 0.36,
+          "widthM": 8,
+          "lengthM": 90,
+          "vegetationCount": 210,
+          "ageMonths": 1,
+          "plantingPeriod": "2026-03-01",
+          "operationalAreaHa": 0.072
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.64,
+          "widthM": 8,
+          "lengthM": 150,
+          "vegetationCount": 750,
+          "ageMonths": 14,
+          "rotation": 1,
+          "plantingPeriod": "des 2024",
+          "operationalAreaHa": 0.12,
+          "fertilizedCount": 750,
+          "pineappleHarvest": [
+            {
+              "period": "2026-03-01",
+              "count": 159
+            }
+          ],
+          "pineappleHarvestTotal": 159,
+          "ethrel": [
+            {
+              "period": "2026-01-01",
+              "count": 750
+            }
+          ],
+          "ethrelTotal": 750,
+          "pineappleFlowerCount": 228,
+          "notes": "layak ethrel"
+        }
+      ],
+      "sourceRows": [
+        10,
+        69
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-A-08",
+      "block": "A",
+      "gawangan": 8,
+      "crops": [
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.64,
+          "widthM": 6,
+          "lengthM": 150,
+          "vegetationCount": 1406.25,
+          "ageMonths": 18,
+          "rotation": 1,
+          "plantingPeriod": "agustus 2024",
+          "operationalAreaHa": 0.09,
+          "fertilizedCount": 1406.25,
+          "pineappleHarvest": [
+            {
+              "period": "2025-09-01",
+              "count": 980
+            },
+            {
+              "period": "2026-03-01",
+              "count": 103
+            },
+            {
+              "period": "2026-05-01",
+              "count": 9
+            }
+          ],
+          "pineappleHarvestTotal": 1092,
+          "ethrel": [
+            {
+              "period": "2026-01-01",
+              "count": 426
+            }
+          ],
+          "ethrelTotal": 426,
+          "fruitAvailability22Dec2025": 44,
+          "seedlingAvailability": 796,
+          "notes": "layak ethrel"
+        }
+      ],
+      "sourceRows": [
+        70
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-A-09",
+      "block": "A",
+      "gawangan": 9,
+      "crops": [
+        {
+          "crop": "TERONG",
+          "spacingM2": 0.36,
+          "widthM": 5,
+          "lengthM": 90,
+          "ageMonths": 1,
+          "operationalAreaHa": 0.045
+        },
+        {
+          "crop": "NANGKA",
+          "spacingM2": 69.44444444444444,
+          "widthM": 5,
+          "lengthM": 150,
+          "vegetationCount": 10.8,
+          "ageMonths": 24,
+          "rotation": 1,
+          "plantingPeriod": "Apr 24",
+          "operationalAreaHa": 0.075
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.64,
+          "widthM": 5,
+          "lengthM": 150,
+          "vegetationCount": 468.75,
+          "ageMonths": 14,
+          "rotation": 1,
+          "plantingPeriod": "des 2024",
+          "operationalAreaHa": 0.075,
+          "fertilizedCount": 468.75,
+          "pineappleHarvest": [
+            {
+              "period": "2026-03-01",
+              "count": 15
+            },
+            {
+              "period": "2026-04-01",
+              "count": 24
+            }
+          ],
+          "pineappleHarvestTotal": 39,
+          "ethrel": [
+            {
+              "period": "2025",
+              "count": 435
+            },
+            {
+              "period": "2026-01-01",
+              "count": 34
+            }
+          ],
+          "ethrelTotal": 469,
+          "fruitAvailability27Dec2025": 11,
+          "notes": "layak ethrel"
+        }
+      ],
+      "sourceRows": [
+        11,
+        53,
+        71
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-A-10",
+      "block": "A",
+      "gawangan": 10,
+      "crops": [
+        {
+          "crop": "TERONG",
+          "spacingM2": 0.36,
+          "widthM": 5,
+          "lengthM": 90,
+          "ageMonths": 1,
+          "operationalAreaHa": 0.045
+        },
+        {
+          "crop": "NANGKA",
+          "spacingM2": 69.44444444444444,
+          "widthM": 5,
+          "lengthM": 150,
+          "vegetationCount": 10.8,
+          "ageMonths": 24,
+          "rotation": 1,
+          "plantingPeriod": "Apr 24",
+          "operationalAreaHa": 0.075
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.64,
+          "widthM": 5,
+          "lengthM": 150,
+          "vegetationCount": 468.75,
+          "ageMonths": 14,
+          "rotation": 1,
+          "plantingPeriod": "des 2024",
+          "operationalAreaHa": 0.075,
+          "fertilizedCount": 468.75,
+          "pineappleHarvest": [
+            {
+              "period": "2026-03-01",
+              "count": 37
+            },
+            {
+              "period": "2026-04-01",
+              "count": 23
+            }
+          ],
+          "pineappleHarvestTotal": 60,
+          "ethrel": [
+            {
+              "period": "2026-01-01",
+              "count": 469
+            }
+          ],
+          "ethrelTotal": 469,
+          "pineappleFlowerCount": 7,
+          "fruitAvailability27Dec2025": 1,
+          "notes": "layak ethrel"
+        }
+      ],
+      "sourceRows": [
+        12,
+        55,
+        72
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-A-11",
+      "block": "A",
+      "gawangan": 11,
+      "crops": [
+        {
+          "crop": "TERONG",
+          "spacingM2": 0.36,
+          "widthM": 6,
+          "lengthM": 90,
+          "ageMonths": 1,
+          "operationalAreaHa": 0.054
+        },
+        {
+          "crop": "NANGKA",
+          "spacingM2": 69.44444444444444,
+          "widthM": 6,
+          "lengthM": 150,
+          "vegetationCount": 12.96,
+          "ageMonths": 24,
+          "rotation": 1,
+          "plantingPeriod": "Apr 24",
+          "operationalAreaHa": 0.09
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.64,
+          "widthM": 6,
+          "lengthM": 150,
+          "vegetationCount": 562.5,
+          "ageMonths": 14,
+          "rotation": 1,
+          "plantingPeriod": "des 2024",
+          "operationalAreaHa": 0.09,
+          "fertilizedCount": 562.5,
+          "pineappleHarvest": [
+            {
+              "period": "2026-03-01",
+              "count": 60
+            },
+            {
+              "period": "2026-04-01",
+              "count": 73
+            }
+          ],
+          "pineappleHarvestTotal": 133,
+          "ethrel": [
+            {
+              "period": "2026-01-01",
+              "count": 416
+            }
+          ],
+          "ethrelTotal": 416,
+          "notes": "layak ethrel"
+        }
+      ],
+      "sourceRows": [
+        13,
+        57,
+        73
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-A-12",
+      "block": "A",
+      "gawangan": 12,
+      "crops": [
+        {
+          "crop": "NANGKA",
+          "spacingM2": 69.44444444444444,
+          "widthM": 5,
+          "lengthM": 150,
+          "vegetationCount": 10.8,
+          "ageMonths": 24,
+          "rotation": 1,
+          "plantingPeriod": "Apr 24",
+          "operationalAreaHa": 0.075
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.64,
+          "widthM": 6,
+          "lengthM": 150,
+          "vegetationCount": 1406.25,
+          "ageMonths": 18,
+          "rotation": 1,
+          "plantingPeriod": "agustus 2024",
+          "operationalAreaHa": 0.09,
+          "fertilizedCount": 1406.25,
+          "pineappleHarvest": [
+            {
+              "period": "2025-10-01",
+              "count": 78
+            },
+            {
+              "period": "2025-11-01",
+              "count": 56
+            },
+            {
+              "period": "2026-02-01",
+              "count": 20
+            },
+            {
+              "period": "2026-03-01",
+              "count": 109
+            },
+            {
+              "period": "2026-04-01",
+              "count": 122
+            }
+          ],
+          "pineappleHarvestTotal": 385,
+          "ethrel": [
+            {
+              "period": "2026-01-01",
+              "count": 1406
+            }
+          ],
+          "ethrelTotal": 1406,
+          "fruitAvailability22Dec2025": 99,
+          "fruitAvailability27Dec2025": 92,
+          "seedlingAvailability": 496,
+          "notes": "layak ethrel"
+        }
+      ],
+      "sourceRows": [
+        59,
+        74
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-A-13",
+      "block": "A",
+      "gawangan": 13,
+      "crops": [
+        {
+          "crop": "NANGKA",
+          "spacingM2": 69.44444444444444,
+          "widthM": 5,
+          "lengthM": 150,
+          "vegetationCount": 10.8,
+          "ageMonths": 24,
+          "rotation": 1,
+          "plantingPeriod": "Apr 24",
+          "operationalAreaHa": 0.075
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.64,
+          "widthM": 5,
+          "lengthM": 150,
+          "vegetationCount": 1171.875,
+          "ageMonths": 18,
+          "rotation": 1,
+          "plantingPeriod": "agustus 2024",
+          "operationalAreaHa": 0.075,
+          "fertilizedCount": 1171.875,
+          "pineappleHarvest": [
+            {
+              "period": "2025-11-01",
+              "count": 46
+            },
+            {
+              "period": "2025-12-01",
+              "count": 477
+            },
+            {
+              "period": "2026-02-01",
+              "count": 21
+            },
+            {
+              "period": "2026-03-01",
+              "count": 89
+            },
+            {
+              "period": "2026-04-01",
+              "count": 194
+            }
+          ],
+          "pineappleHarvestTotal": 827,
+          "ethrel": [
+            {
+              "period": "2026-01-01",
+              "count": 695
+            }
+          ],
+          "ethrelTotal": 695,
+          "fruitAvailability22Dec2025": 116,
+          "fruitAvailability27Dec2025": 49,
+          "seedlingAvailability": 426,
+          "notes": "layak ethrel"
+        }
+      ],
+      "sourceRows": [
+        61,
+        75
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-A-14",
+      "block": "A",
+      "gawangan": 14,
+      "crops": [
+        {
+          "crop": "PETAI",
+          "spacingM2": 59.171597633136095,
+          "widthM": 6,
+          "lengthM": 150,
+          "vegetationCount": 15.209999999999999,
+          "ageMonths": 14,
+          "rotation": 1,
+          "plantingPeriod": "okt 2024",
+          "operationalAreaHa": 0.09
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.64,
+          "widthM": 6,
+          "lengthM": 150,
+          "vegetationCount": 937.5,
+          "ageMonths": 18,
+          "rotation": 1,
+          "plantingPeriod": "agustus 2024",
+          "operationalAreaHa": 0.09,
+          "fertilizedCount": 937.5,
+          "pineappleHarvest": [
+            {
+              "period": "2025-11-01",
+              "count": 56
+            },
+            {
+              "period": "2025-12-01",
+              "count": 558
+            },
+            {
+              "period": "2026-01-01",
+              "count": 22
+            },
+            {
+              "period": "2026-02-01",
+              "count": 6
+            },
+            {
+              "period": "2026-03-01",
+              "count": 93
+            },
+            {
+              "period": "2026-04-01",
+              "count": 65
+            }
+          ],
+          "pineappleHarvestTotal": 800,
+          "ethrel": [
+            {
+              "period": "2026-01-01",
+              "count": 358
+            }
+          ],
+          "ethrelTotal": 358,
+          "pineappleFlowerCount": 77,
+          "fruitAvailability22Dec2025": 53,
+          "fruitAvailability27Dec2025": 63,
+          "seedlingAvailability": 506,
+          "notes": "layak ethrel"
+        }
+      ],
+      "sourceRows": [
+        51,
+        76
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-A-15",
+      "block": "A",
+      "gawangan": 15,
+      "crops": [
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.64,
+          "widthM": 7,
+          "lengthM": 100,
+          "vegetationCount": 1093.75,
+          "ageMonths": 14,
+          "rotation": 1,
+          "plantingPeriod": "des 2024",
+          "operationalAreaHa": 0.07,
+          "fertilizedCount": 1093.75,
+          "pineappleHarvest": [
+            {
+              "period": "2025-09-01",
+              "count": 320
+            },
+            {
+              "period": "2025-11-01",
+              "count": 88
+            },
+            {
+              "period": "2026-01-01",
+              "count": 67
+            },
+            {
+              "period": "2026-02-01",
+              "count": 43
+            },
+            {
+              "period": "2026-03-01",
+              "count": 17
+            },
+            {
+              "period": "2026-04-01",
+              "count": 81
+            }
+          ],
+          "pineappleHarvestTotal": 616,
+          "ethrel": [
+            {
+              "period": "2026-01-01",
+              "count": 774
+            }
+          ],
+          "ethrelTotal": 774,
+          "fruitAvailability22Dec2025": 39,
+          "seedlingAvailability": 410,
+          "notes": "layak ethrel"
+        },
+        {
+          "crop": "JENGKOL",
+          "spacingM2": 59.171597633136095,
+          "widthM": 6,
+          "lengthM": 100,
+          "vegetationCount": 10.14,
+          "ageMonths": 15,
+          "rotation": 1,
+          "plantingPeriod": "Sept 2024",
+          "operationalAreaHa": 0.06,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0
+        }
+      ],
+      "sourceRows": [
+        77,
+        138
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-B-01",
+      "block": "B",
+      "gawangan": 1,
+      "crops": [
+        {
+          "crop": "RAMBUTAN",
+          "spacingM2": 83.33333333333333,
+          "widthM": 6,
+          "lengthM": 307,
+          "vegetationCount": 22.104000000000003,
+          "ageMonths": 24,
+          "rotation": 1,
+          "plantingPeriod": "Jan 2024"
+        }
+      ],
+      "sourceRows": [
+        15,
+        145
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-B-02",
+      "block": "B",
+      "gawangan": 2,
+      "crops": [
+        {
+          "crop": "RAMBUTAN",
+          "spacingM2": 83.33333333333333,
+          "widthM": 6,
+          "lengthM": 307,
+          "vegetationCount": 22.104000000000003,
+          "ageMonths": 24,
+          "rotation": 1,
+          "plantingPeriod": "Jan 2024"
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.64,
+          "widthM": 10,
+          "lengthM": 307,
+          "vegetationCount": 93.75,
+          "ageMonths": 14,
+          "rotation": 1,
+          "plantingPeriod": "des 2024",
+          "operationalAreaHa": 0.307,
+          "fertilizedCount": 93.75,
+          "pineappleHarvestTotal": 0,
+          "ethrel": [
+            {
+              "period": "2026-01-01",
+              "count": 94
+            }
+          ],
+          "ethrelTotal": 94,
+          "notes": "layak ethrel"
+        }
+      ],
+      "sourceRows": [
+        17,
+        78
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-B-03",
+      "block": "B",
+      "gawangan": 3,
+      "crops": [
+        {
+          "crop": "RAMBUTAN",
+          "spacingM2": 83.33333333333333,
+          "widthM": 7,
+          "lengthM": 307,
+          "vegetationCount": 25.788,
+          "ageMonths": 24,
+          "rotation": 1,
+          "plantingPeriod": "Jan 2024"
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.64,
+          "widthM": 11,
+          "lengthM": 307,
+          "vegetationCount": 2578.125,
+          "ageMonths": 14,
+          "rotation": 1,
+          "plantingPeriod": "des 2024",
+          "operationalAreaHa": 0.3377,
+          "fertilizedCount": 2578.125,
+          "pineappleHarvest": [
+            {
+              "period": "2026-04-01",
+              "count": 102
+            },
+            {
+              "period": "2026-05-01",
+              "count": 438
+            }
+          ],
+          "pineappleHarvestTotal": 540,
+          "ethrel": [
+            {
+              "period": "2025",
+              "count": 800
+            },
+            {
+              "period": "2026-01-01",
+              "count": 1778
+            }
+          ],
+          "ethrelTotal": 2578,
+          "notes": "layak ethrel"
+        }
+      ],
+      "sourceRows": [
+        19,
+        79
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-B-04",
+      "block": "B",
+      "gawangan": 4,
+      "crops": [
+        {
+          "crop": "RAMBUTAN",
+          "spacingM2": 83.33333333333333,
+          "widthM": 7,
+          "lengthM": 307,
+          "vegetationCount": 25.788,
+          "ageMonths": 24,
+          "rotation": 1,
+          "plantingPeriod": "Jan 2024"
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.64,
+          "widthM": 13,
+          "lengthM": 307,
+          "vegetationCount": 3046.875,
+          "ageMonths": 14,
+          "rotation": 1,
+          "plantingPeriod": "des 2024",
+          "operationalAreaHa": 0.3991,
+          "fertilizedCount": 3046.875,
+          "pineappleHarvest": [
+            {
+              "period": "2026-04-01",
+              "count": 90
+            },
+            {
+              "period": "2026-05-01",
+              "count": 428
+            },
+            {
+              "period": "2026-06-01",
+              "count": 300
+            }
+          ],
+          "pineappleHarvestTotal": 818,
+          "ethrel": [
+            {
+              "period": "2025",
+              "count": 515
+            },
+            {
+              "period": "2026-01-01",
+              "count": 2532
+            }
+          ],
+          "ethrelTotal": 3047,
+          "notes": "layak ethrel"
+        }
+      ],
+      "sourceRows": [
+        21,
+        80
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-B-05",
+      "block": "B",
+      "gawangan": 5,
+      "crops": [
+        {
+          "crop": "RAMBUTAN",
+          "spacingM2": 83.33333333333333,
+          "widthM": 7,
+          "lengthM": 307,
+          "vegetationCount": 25.788,
+          "ageMonths": 24,
+          "rotation": 1,
+          "plantingPeriod": "Jan 2024"
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.64,
+          "widthM": 8,
+          "lengthM": 307,
+          "vegetationCount": 500,
+          "ageMonths": 14,
+          "rotation": 1,
+          "plantingPeriod": "des 2024",
+          "operationalAreaHa": 0.2456,
+          "fertilizedCount": 500,
+          "pineappleHarvest": [
+            {
+              "period": "2026-04-01",
+              "count": 61
+            },
+            {
+              "period": "2026-05-01",
+              "count": 320
+            }
+          ],
+          "pineappleHarvestTotal": 381,
+          "ethrel": [
+            {
+              "period": "2025",
+              "count": 390
+            },
+            {
+              "period": "2026-01-01",
+              "count": 110
+            }
+          ],
+          "ethrelTotal": 500,
+          "notes": "layak ethrel"
+        },
+        {
+          "crop": "ASAM KANDIS",
+          "spacingM2": 100,
+          "widthM": 8,
+          "lengthM": 307,
+          "vegetationCount": 18,
+          "ageMonths": 14,
+          "rotation": 1,
+          "plantingPeriod": "Sept 2024",
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0
+        }
+      ],
+      "sourceRows": [
+        23,
+        81,
+        142
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-B-06",
+      "block": "B",
+      "gawangan": 6,
+      "crops": [
+        {
+          "crop": "RAMBUTAN",
+          "spacingM2": 83.33333333333333,
+          "widthM": 6,
+          "lengthM": 307,
+          "vegetationCount": 22.104000000000003,
+          "ageMonths": 24,
+          "rotation": 1,
+          "plantingPeriod": "Jan 2024"
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.64,
+          "widthM": 6,
+          "lengthM": 307,
+          "vegetationCount": 1406.25,
+          "ageMonths": 14,
+          "rotation": 1,
+          "plantingPeriod": "des 2024",
+          "operationalAreaHa": 0.1842,
+          "fertilizedCount": 1406.25,
+          "pineappleHarvest": [
+            {
+              "period": "2026-04-01",
+              "count": 114
+            },
+            {
+              "period": "2026-05-01",
+              "count": 272
+            },
+            {
+              "period": "2026-06-01",
+              "count": 300
+            }
+          ],
+          "pineappleHarvestTotal": 686,
+          "ethrel": [
+            {
+              "period": "2025",
+              "count": 585
+            },
+            {
+              "period": "2026-01-01",
+              "count": 821
+            }
+          ],
+          "ethrelTotal": 1406,
+          "fruitAvailability27Dec2025": 10,
+          "notes": "layak ethrel"
+        },
+        {
+          "crop": "ASAM KANDIS",
+          "spacingM2": 100,
+          "widthM": 6,
+          "lengthM": 307,
+          "vegetationCount": 16,
+          "ageMonths": 14,
+          "rotation": 1,
+          "plantingPeriod": "Sept 2024",
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0
+        }
+      ],
+      "sourceRows": [
+        25,
+        82,
+        144
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-B-07",
+      "block": "B",
+      "gawangan": 7,
+      "crops": [
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.64,
+          "widthM": 11,
+          "lengthM": 307,
+          "vegetationCount": 2578.125,
+          "ageMonths": 14,
+          "rotation": 1,
+          "plantingPeriod": "des 2024",
+          "operationalAreaHa": 0.3377,
+          "fertilizedCount": 2578.125,
+          "pineappleHarvest": [
+            {
+              "period": "2026-04-01",
+              "count": 88
+            },
+            {
+              "period": "2026-05-01",
+              "count": 378
+            },
+            {
+              "period": "2026-06-01",
+              "count": 500
+            }
+          ],
+          "pineappleHarvestTotal": 966,
+          "ethrel": [
+            {
+              "period": "2025",
+              "count": 800
+            },
+            {
+              "period": "2026-01-01",
+              "count": 1778
+            }
+          ],
+          "ethrelTotal": 2578,
+          "notes": "layak ethrel"
+        }
+      ],
+      "sourceRows": [
+        83
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-B-08",
+      "block": "B",
+      "gawangan": 8,
+      "crops": [
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.64,
+          "widthM": 9,
+          "lengthM": 307,
+          "vegetationCount": 4317.1875,
+          "ageMonths": 18,
+          "rotation": 1,
+          "plantingPeriod": "agustus 2024",
+          "operationalAreaHa": 0.2763,
+          "fertilizedCount": 4317.1875,
+          "pineappleHarvest": [
+            {
+              "period": "2025-09-01",
+              "count": 114
+            },
+            {
+              "period": "2026-03-01",
+              "count": 72
+            },
+            {
+              "period": "2026-04-01",
+              "count": 44
+            },
+            {
+              "period": "2026-05-01",
+              "count": 887
+            },
+            {
+              "period": "2026-06-01",
+              "count": 500
+            }
+          ],
+          "pineappleHarvestTotal": 1617,
+          "ethrel": [
+            {
+              "period": "2026-01-01",
+              "count": 423
+            }
+          ],
+          "ethrelTotal": 423,
+          "pineappleFlowerCount": 75,
+          "seedlingAvailability": 476,
+          "notes": "layak ethrel"
+        }
+      ],
+      "sourceRows": [
+        84
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-B-09",
+      "block": "B",
+      "gawangan": 9,
+      "crops": [
+        {
+          "crop": "NANGKA",
+          "spacingM2": 69.44444444444444,
+          "widthM": 3,
+          "lengthM": 307,
+          "vegetationCount": 13.2624,
+          "ageMonths": 24,
+          "rotation": 1,
+          "plantingPeriod": "Apr 24"
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.64,
+          "widthM": 6,
+          "lengthM": 307,
+          "vegetationCount": 2878.125,
+          "ageMonths": 14,
+          "rotation": 1,
+          "plantingPeriod": "des 2024",
+          "operationalAreaHa": 0.1842,
+          "fertilizedCount": 2878.125,
+          "pineappleHarvest": [
+            {
+              "period": "2026-03-01",
+              "count": 12
+            },
+            {
+              "period": "2026-04-01",
+              "count": 99
+            }
+          ],
+          "pineappleHarvestTotal": 111,
+          "ethrel": [
+            {
+              "period": "2026-01-01",
+              "count": 1200
+            }
+          ],
+          "ethrelTotal": 1200,
+          "pineappleFlowerCount": 28,
+          "notes": "layak ethrel"
+        }
+      ],
+      "sourceRows": [
+        54,
+        85
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-B-10",
+      "block": "B",
+      "gawangan": 10,
+      "crops": [
+        {
+          "crop": "NANGKA",
+          "spacingM2": 69.44444444444444,
+          "widthM": 7,
+          "lengthM": 307,
+          "vegetationCount": 30.945600000000002,
+          "ageMonths": 24,
+          "rotation": 1,
+          "plantingPeriod": "Apr 24"
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.64,
+          "widthM": 10,
+          "lengthM": 307,
+          "vegetationCount": 4796.875,
+          "ageMonths": 14,
+          "rotation": 1,
+          "plantingPeriod": "des 2024",
+          "operationalAreaHa": 0.307,
+          "fertilizedCount": 4796.875,
+          "pineappleHarvest": [
+            {
+              "period": "2026-04-01",
+              "count": 101
+            },
+            {
+              "period": "2026-06-01",
+              "count": 398
+            }
+          ],
+          "pineappleHarvestTotal": 499,
+          "ethrel": [
+            {
+              "period": "2026-01-01",
+              "count": 400
+            }
+          ],
+          "ethrelTotal": 400,
+          "pineappleFlowerCount": 10,
+          "notes": "layak ethrel"
+        }
+      ],
+      "sourceRows": [
+        56,
+        86
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-B-11",
+      "block": "B",
+      "gawangan": 11,
+      "crops": [
+        {
+          "crop": "NANGKA",
+          "spacingM2": 69.44444444444444,
+          "widthM": 5,
+          "lengthM": 307,
+          "vegetationCount": 22.104,
+          "ageMonths": 24,
+          "rotation": 1,
+          "plantingPeriod": "Apr 24"
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.64,
+          "widthM": 8,
+          "lengthM": 307,
+          "vegetationCount": 3837.5,
+          "ageMonths": 14,
+          "rotation": 1,
+          "plantingPeriod": "des 2024",
+          "operationalAreaHa": 0.2456,
+          "fertilizedCount": 3837.5,
+          "pineappleHarvest": [
+            {
+              "period": "2026-03-01",
+              "count": 69
+            },
+            {
+              "period": "2026-04-01",
+              "count": 118
+            },
+            {
+              "period": "2026-06-01",
+              "count": 500
+            }
+          ],
+          "pineappleHarvestTotal": 687,
+          "ethrel": [
+            {
+              "period": "2026-01-01",
+              "count": 1290
+            }
+          ],
+          "ethrelTotal": 1290,
+          "notes": "layak ethrel"
+        }
+      ],
+      "sourceRows": [
+        58,
+        87
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-B-12",
+      "block": "B",
+      "gawangan": 12,
+      "crops": [
+        {
+          "crop": "NANGKA",
+          "spacingM2": 69.44444444444444,
+          "widthM": 5,
+          "lengthM": 307,
+          "vegetationCount": 22.104,
+          "ageMonths": 24,
+          "rotation": 1,
+          "plantingPeriod": "Apr 24"
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.64,
+          "widthM": 7,
+          "lengthM": 307,
+          "vegetationCount": 3357.8125,
+          "ageMonths": 14,
+          "rotation": 1,
+          "plantingPeriod": "des 2024",
+          "operationalAreaHa": 0.2149,
+          "fertilizedCount": 3357.8125,
+          "pineappleHarvest": [
+            {
+              "period": "2026-02-01",
+              "count": 2
+            },
+            {
+              "period": "2026-03-01",
+              "count": 102
+            },
+            {
+              "period": "2026-04-01",
+              "count": 136
+            },
+            {
+              "period": "2026-06-01",
+              "count": 488
+            }
+          ],
+          "pineappleHarvestTotal": 728,
+          "ethrelTotal": 0,
+          "pineappleFlowerCount": 109,
+          "fruitAvailability27Dec2025": 20,
+          "notes": "layak ethrel"
+        }
+      ],
+      "sourceRows": [
+        60,
+        88
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-B-13",
+      "block": "B",
+      "gawangan": 13,
+      "crops": [
+        {
+          "crop": "NANGKA",
+          "spacingM2": 69.44444444444444,
+          "widthM": 6,
+          "lengthM": 307,
+          "vegetationCount": 26.5248,
+          "ageMonths": 24,
+          "rotation": 1,
+          "plantingPeriod": "Apr 24"
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.64,
+          "widthM": 6,
+          "lengthM": 307,
+          "vegetationCount": 2878.125,
+          "ageMonths": 14,
+          "rotation": 1,
+          "plantingPeriod": "des 2024",
+          "operationalAreaHa": 0.1842,
+          "fertilizedCount": 2878.125,
+          "pineappleHarvest": [
+            {
+              "period": "2026-02-01",
+              "count": 2
+            },
+            {
+              "period": "2026-03-01",
+              "count": 190
+            },
+            {
+              "period": "2026-04-01",
+              "count": 155
+            }
+          ],
+          "pineappleHarvestTotal": 347,
+          "ethrelTotal": 0,
+          "pineappleFlowerCount": 141,
+          "fruitAvailability27Dec2025": 126,
+          "notes": "layak ethrel"
+        }
+      ],
+      "sourceRows": [
+        62,
+        89
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-B-14",
+      "block": "B",
+      "gawangan": 14,
+      "crops": [
+        {
+          "crop": "PETAI",
+          "spacingM2": 59.171597633136095,
+          "widthM": 7,
+          "lengthM": 307,
+          "vegetationCount": 36.3181,
+          "ageMonths": 14,
+          "rotation": 1,
+          "plantingPeriod": "okt 2024"
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.64,
+          "widthM": 7,
+          "lengthM": 307,
+          "vegetationCount": 3357.8125,
+          "ageMonths": 14,
+          "rotation": 1,
+          "plantingPeriod": "des 2024",
+          "operationalAreaHa": 0.2149,
+          "fertilizedCount": 3357.8125,
+          "pineappleHarvest": [
+            {
+              "period": "2026-02-01",
+              "count": 2
+            },
+            {
+              "period": "2026-03-01",
+              "count": 161
+            },
+            {
+              "period": "2026-04-01",
+              "count": 190
+            }
+          ],
+          "pineappleHarvestTotal": 353,
+          "ethrelTotal": 0,
+          "notes": "layak ethrel"
+        }
+      ],
+      "sourceRows": [
+        52,
+        90
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-C-01",
+      "block": "C",
+      "gawangan": 1,
+      "crops": [
+        {
+          "crop": "PETAI",
+          "spacingM2": 100,
+          "widthM": 7,
+          "lengthM": 181,
+          "vegetationCount": 12.67,
+          "ageMonths": 3,
+          "rotation": 1,
+          "plantingPeriod": "Mar 2026",
+          "operationalAreaHa": 0.1267
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.64,
+          "widthM": 7,
+          "lengthM": 181,
+          "vegetationCount": 1979.6875,
+          "ageMonths": 13,
+          "rotation": 1,
+          "plantingPeriod": "jan 2025",
+          "operationalAreaHa": 0.1267,
+          "fertilizedCount": 1979.6875,
+          "pineappleHarvest": [
+            {
+              "period": "2026-04-01",
+              "count": 42
+            },
+            {
+              "period": "2026-06-01",
+              "count": 6
+            }
+          ],
+          "pineappleHarvestTotal": 48,
+          "ethrel": [
+            {
+              "period": "2026-01-01",
+              "count": 1720
+            }
+          ],
+          "ethrelTotal": 1720,
+          "notes": "layak ethrel"
+        }
+      ],
+      "sourceRows": [
+        26,
+        91
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-C-02",
+      "block": "C",
+      "gawangan": 2,
+      "crops": [
+        {
+          "crop": "PETAI",
+          "spacingM2": 100,
+          "widthM": 8,
+          "lengthM": 181,
+          "vegetationCount": 14.48,
+          "ageMonths": 14,
+          "rotation": 1,
+          "plantingPeriod": "okt 2024",
+          "operationalAreaHa": 0.1448
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.64,
+          "widthM": 8,
+          "lengthM": 181,
+          "vegetationCount": 2262.5,
+          "ageMonths": 13,
+          "rotation": 1,
+          "plantingPeriod": "jan 2025",
+          "operationalAreaHa": 0.1448,
+          "fertilizedCount": 2262.5,
+          "pineappleHarvest": [
+            {
+              "period": "2026-04-01",
+              "count": 3
+            }
+          ],
+          "pineappleHarvestTotal": 3,
+          "ethrel": [
+            {
+              "period": "2026-01-01",
+              "count": 300
+            }
+          ],
+          "ethrelTotal": 300,
+          "notes": "layak ethrel"
+        }
+      ],
+      "sourceRows": [
+        30,
+        92
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-C-03",
+      "block": "C",
+      "gawangan": 3,
+      "crops": [
+        {
+          "crop": "PETAI",
+          "spacingM2": 100,
+          "widthM": 7,
+          "lengthM": 181,
+          "vegetationCount": 12.67,
+          "ageMonths": 14,
+          "rotation": 1,
+          "plantingPeriod": "okt 2024",
+          "operationalAreaHa": 0.1267
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.64,
+          "widthM": 7,
+          "lengthM": 181,
+          "vegetationCount": 1979.6875,
+          "ageMonths": 13,
+          "rotation": 1,
+          "plantingPeriod": "jan 2025",
+          "operationalAreaHa": 0.1267,
+          "fertilizedCount": 1979.6875,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0,
+          "notes": "layak ethrel"
+        }
+      ],
+      "sourceRows": [
+        34,
+        93
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-C-04",
+      "block": "C",
+      "gawangan": 4,
+      "crops": [
+        {
+          "crop": "PETAI",
+          "spacingM2": 100,
+          "widthM": 7,
+          "lengthM": 181,
+          "vegetationCount": 12.67,
+          "ageMonths": 14,
+          "rotation": 1,
+          "plantingPeriod": "okt 2024",
+          "operationalAreaHa": 0.1267
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.64,
+          "widthM": 7,
+          "lengthM": 181,
+          "vegetationCount": 1979.6875,
+          "ageMonths": 13,
+          "rotation": 1,
+          "plantingPeriod": "jan 2025",
+          "operationalAreaHa": 0.1267,
+          "fertilizedCount": 1979.6875,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0,
+          "notes": "layak ethrel"
+        }
+      ],
+      "sourceRows": [
+        37,
+        94
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-C-05",
+      "block": "C",
+      "gawangan": 5,
+      "crops": [
+        {
+          "crop": "PETAI",
+          "spacingM2": 100,
+          "widthM": 9,
+          "lengthM": 181,
+          "vegetationCount": 16.29,
+          "ageMonths": 14,
+          "rotation": 1,
+          "plantingPeriod": "okt 2024",
+          "operationalAreaHa": 0.1629
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.64,
+          "widthM": 9,
+          "lengthM": 181,
+          "vegetationCount": 2545.3125,
+          "ageMonths": 13,
+          "rotation": 1,
+          "plantingPeriod": "jan 2025",
+          "operationalAreaHa": 0.1629,
+          "fertilizedCount": 2545.3125,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0,
+          "notes": "layak ethrel"
+        }
+      ],
+      "sourceRows": [
+        40,
+        95
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-C-06",
+      "block": "C",
+      "gawangan": 6,
+      "crops": [
+        {
+          "crop": "PETAI",
+          "spacingM2": 100,
+          "widthM": 9,
+          "lengthM": 181,
+          "vegetationCount": 16.29,
+          "ageMonths": 14,
+          "rotation": 1,
+          "plantingPeriod": "okt 2024",
+          "operationalAreaHa": 0.1629
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.64,
+          "widthM": 9,
+          "lengthM": 181,
+          "vegetationCount": 2545.3125,
+          "ageMonths": 13,
+          "rotation": 1,
+          "plantingPeriod": "jan 2025",
+          "operationalAreaHa": 0.1629,
+          "fertilizedCount": 2545.3125,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0,
+          "notes": "layak ethrel"
+        }
+      ],
+      "sourceRows": [
+        43,
+        96
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-C-07",
+      "block": "C",
+      "gawangan": 7,
+      "crops": [
+        {
+          "crop": "PETAI",
+          "spacingM2": 100,
+          "widthM": 18,
+          "lengthM": 90.5,
+          "vegetationCount": 16.29,
+          "ageMonths": 1,
+          "rotation": 1,
+          "plantingPeriod": "20 des 2025",
+          "operationalAreaHa": 0.1629
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.36,
+          "widthM": 18,
+          "lengthM": 181,
+          "vegetationCount": 5635.000000000001,
+          "ageMonths": 3,
+          "rotation": 1,
+          "plantingPeriod": "nov 2025",
+          "operationalAreaHa": 0.3258,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0
+        },
+        {
+          "crop": "JENGKOL",
+          "spacingM2": 100,
+          "widthM": 18,
+          "lengthM": 90.5,
+          "vegetationCount": 16.29,
+          "ageMonths": 1,
+          "rotation": 1,
+          "plantingPeriod": "20 des 2025",
+          "operationalAreaHa": 0.1629,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0
+        }
+      ],
+      "sourceRows": [
+        45,
+        97,
+        131
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-C-08",
+      "block": "C",
+      "gawangan": 8,
+      "crops": [
+        {
+          "crop": "PETAI",
+          "spacingM2": 100,
+          "widthM": 18,
+          "lengthM": 90.5,
+          "vegetationCount": 16.29,
+          "ageMonths": 1,
+          "rotation": 1,
+          "plantingPeriod": "20 des 2025",
+          "operationalAreaHa": 0.1629
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.36,
+          "widthM": 18,
+          "lengthM": 181,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0
+        },
+        {
+          "crop": "JENGKOL",
+          "spacingM2": 100,
+          "widthM": 18,
+          "lengthM": 90.5,
+          "vegetationCount": 16.29,
+          "ageMonths": 1,
+          "rotation": 1,
+          "plantingPeriod": "20 des 2025",
+          "operationalAreaHa": 0.1629,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0
+        }
+      ],
+      "sourceRows": [
+        47,
+        98,
+        134
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-C-09",
+      "block": "C",
+      "gawangan": 9,
+      "crops": [
+        {
+          "crop": "PETAI",
+          "spacingM2": 100,
+          "widthM": 23,
+          "lengthM": 90.5,
+          "vegetationCount": 20.815,
+          "ageMonths": 1,
+          "rotation": 1,
+          "plantingPeriod": "20 des 2025",
+          "operationalAreaHa": 0.20815
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.36,
+          "widthM": 23,
+          "lengthM": 181,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0
+        },
+        {
+          "crop": "JENGKOL",
+          "spacingM2": 100,
+          "widthM": 23,
+          "lengthM": 90.5,
+          "vegetationCount": 20.815,
+          "ageMonths": 1,
+          "rotation": 1,
+          "plantingPeriod": "20 des 2025",
+          "operationalAreaHa": 0.20815,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0
+        }
+      ],
+      "sourceRows": [
+        49,
+        99,
+        136
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-C-10",
+      "block": "C",
+      "gawangan": 10,
+      "crops": [
+        {
+          "crop": "PETAI",
+          "spacingM2": 100,
+          "widthM": 17,
+          "lengthM": 90.5,
+          "vegetationCount": 15.385,
+          "ageMonths": 1,
+          "rotation": 1,
+          "plantingPeriod": "20 des 2025",
+          "operationalAreaHa": 0.15385
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.36,
+          "widthM": 17,
+          "lengthM": 181,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0
+        },
+        {
+          "crop": "JENGKOL",
+          "spacingM2": 100,
+          "widthM": 17,
+          "lengthM": 90.5,
+          "vegetationCount": 15.385,
+          "ageMonths": 1,
+          "rotation": 1,
+          "plantingPeriod": "20 des 2025",
+          "operationalAreaHa": 0.15385,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0
+        }
+      ],
+      "sourceRows": [
+        50,
+        100,
+        137
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-D-01",
+      "block": "D",
+      "gawangan": 1,
+      "crops": [
+        {
+          "crop": "PETAI",
+          "spacingM2": 70,
+          "widthM": 28,
+          "lengthM": 68.5,
+          "vegetationCount": 27.4,
+          "ageMonths": 1,
+          "rotation": 1,
+          "plantingPeriod": "21 Des 2025",
+          "operationalAreaHa": 0.1918
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.36,
+          "widthM": 28,
+          "lengthM": 137,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0
+        },
+        {
+          "crop": "JENGKOL",
+          "spacingM2": 70,
+          "widthM": 28,
+          "lengthM": 68.5,
+          "vegetationCount": 27.4,
+          "ageMonths": 1,
+          "rotation": 1,
+          "plantingPeriod": "21 Des 2025",
+          "operationalAreaHa": 0.1918,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0
+        }
+      ],
+      "sourceRows": [
+        29,
+        101,
+        121
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-D-02",
+      "block": "D",
+      "gawangan": 2,
+      "crops": [
+        {
+          "crop": "PETAI",
+          "spacingM2": 70,
+          "widthM": 26,
+          "lengthM": 68.5,
+          "vegetationCount": 25.442857142857143,
+          "ageMonths": 1,
+          "rotation": 1,
+          "plantingPeriod": "21 Des 2025",
+          "operationalAreaHa": 0.1781
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.36,
+          "widthM": 26,
+          "lengthM": 137,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0
+        },
+        {
+          "crop": "JENGKOL",
+          "spacingM2": 70,
+          "widthM": 26,
+          "lengthM": 68.5,
+          "vegetationCount": 25.442857142857143,
+          "ageMonths": 1,
+          "rotation": 1,
+          "plantingPeriod": "21 Des 2025",
+          "operationalAreaHa": 0.1781,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0
+        }
+      ],
+      "sourceRows": [
+        33,
+        102,
+        122
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-D-03",
+      "block": "D",
+      "gawangan": 3,
+      "crops": [
+        {
+          "crop": "PETAI",
+          "spacingM2": 70,
+          "widthM": 15,
+          "lengthM": 68.5,
+          "vegetationCount": 14.678571428571429,
+          "ageMonths": 1,
+          "rotation": 1,
+          "plantingPeriod": "21 Des 2025",
+          "operationalAreaHa": 0.10275
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.36,
+          "widthM": 15,
+          "lengthM": 137,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0
+        },
+        {
+          "crop": "JENGKOL",
+          "spacingM2": 70,
+          "widthM": 15,
+          "lengthM": 68.5,
+          "vegetationCount": 14.678571428571429,
+          "ageMonths": 1,
+          "rotation": 1,
+          "plantingPeriod": "21 Des 2025",
+          "operationalAreaHa": 0.10275,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0
+        }
+      ],
+      "sourceRows": [
+        36,
+        103,
+        124
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-D-04",
+      "block": "D",
+      "gawangan": 4,
+      "crops": [
+        {
+          "crop": "PETAI",
+          "spacingM2": 70,
+          "widthM": 26,
+          "lengthM": 68.5,
+          "vegetationCount": 25.442857142857143,
+          "ageMonths": 1,
+          "rotation": 1,
+          "plantingPeriod": "21 Des 2025",
+          "operationalAreaHa": 0.1781
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.36,
+          "widthM": 26,
+          "lengthM": 137,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0
+        },
+        {
+          "crop": "JENGKOL",
+          "spacingM2": 70,
+          "widthM": 26,
+          "lengthM": 68.5,
+          "vegetationCount": 25.442857142857143,
+          "ageMonths": 1,
+          "rotation": 1,
+          "plantingPeriod": "21 Des 2025",
+          "operationalAreaHa": 0.1781,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0
+        }
+      ],
+      "sourceRows": [
+        39,
+        104,
+        126
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-D-05",
+      "block": "D",
+      "gawangan": 5,
+      "crops": [
+        {
+          "crop": "PETAI",
+          "spacingM2": 70,
+          "widthM": 19,
+          "lengthM": 68.5,
+          "vegetationCount": 18.59285714285714,
+          "ageMonths": 1,
+          "rotation": 1,
+          "plantingPeriod": "21 Des 2025",
+          "operationalAreaHa": 0.13015
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.36,
+          "widthM": 19,
+          "lengthM": 137,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0
+        },
+        {
+          "crop": "JENGKOL",
+          "spacingM2": 70,
+          "widthM": 19,
+          "lengthM": 68.5,
+          "vegetationCount": 18.59285714285714,
+          "ageMonths": 1,
+          "rotation": 1,
+          "plantingPeriod": "21 Des 2025",
+          "operationalAreaHa": 0.13015,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0
+        }
+      ],
+      "sourceRows": [
+        42,
+        105,
+        128
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-D-06",
+      "block": "D",
+      "gawangan": 6,
+      "crops": [
+        {
+          "crop": "PETAI",
+          "spacingM2": 70,
+          "widthM": 20,
+          "lengthM": 68.5,
+          "vegetationCount": 19.571428571428573,
+          "ageMonths": 1,
+          "rotation": 1,
+          "plantingPeriod": "21 Des 2025",
+          "operationalAreaHa": 0.137
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.36,
+          "widthM": 20,
+          "lengthM": 137,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0
+        },
+        {
+          "crop": "JENGKOL",
+          "spacingM2": 70,
+          "widthM": 20,
+          "lengthM": 68.5,
+          "vegetationCount": 19.571428571428573,
+          "ageMonths": 1,
+          "rotation": 1,
+          "plantingPeriod": "21 Des 2025",
+          "operationalAreaHa": 0.137,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0
+        }
+      ],
+      "sourceRows": [
+        44,
+        106,
+        130
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-D-07",
+      "block": "D",
+      "gawangan": 7,
+      "crops": [
+        {
+          "crop": "PETAI",
+          "spacingM2": 70,
+          "widthM": 19,
+          "lengthM": 173,
+          "vegetationCount": 46.957142857142856,
+          "ageMonths": 1,
+          "rotation": 1,
+          "plantingPeriod": "21 Des 2025",
+          "operationalAreaHa": 0.3287
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.36,
+          "widthM": 19,
+          "lengthM": 346,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0
+        },
+        {
+          "crop": "JENGKOL",
+          "spacingM2": 70,
+          "widthM": 19,
+          "lengthM": 173,
+          "vegetationCount": 46.957142857142856,
+          "ageMonths": 1,
+          "rotation": 1,
+          "plantingPeriod": "21 Des 2025",
+          "operationalAreaHa": 0.3287,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0
+        }
+      ],
+      "sourceRows": [
+        46,
+        107,
+        133
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-D-08",
+      "block": "D",
+      "gawangan": 8,
+      "crops": [
+        {
+          "crop": "PETAI",
+          "spacingM2": 70,
+          "widthM": 22,
+          "lengthM": 173,
+          "vegetationCount": 54.371428571428574,
+          "ageMonths": 1,
+          "rotation": 1,
+          "plantingPeriod": "21 Des 2025",
+          "operationalAreaHa": 0.3806
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.36,
+          "widthM": 22,
+          "lengthM": 346,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0
+        },
+        {
+          "crop": "JENGKOL",
+          "spacingM2": 70,
+          "widthM": 22,
+          "lengthM": 173,
+          "vegetationCount": 54.371428571428574,
+          "ageMonths": 1,
+          "rotation": 1,
+          "plantingPeriod": "21 Des 2025",
+          "operationalAreaHa": 0.3806,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0
+        }
+      ],
+      "sourceRows": [
+        48,
+        108,
+        135
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-E-01",
+      "block": "E",
+      "gawangan": 1,
+      "crops": [
+        {
+          "crop": "PETAI",
+          "spacingM2": 100,
+          "widthM": 24,
+          "lengthM": 346,
+          "vegetationCount": 83.04,
+          "ageMonths": 6,
+          "rotation": 1,
+          "plantingPeriod": "Jun 2025",
+          "operationalAreaHa": 0.8304
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.36,
+          "widthM": 24,
+          "lengthM": 346,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0
+        }
+      ],
+      "sourceRows": [
+        27,
+        109
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-E-02",
+      "block": "E",
+      "gawangan": 2,
+      "crops": [
+        {
+          "crop": "PETAI",
+          "spacingM2": 100,
+          "widthM": 24,
+          "lengthM": 346,
+          "vegetationCount": 83.04,
+          "ageMonths": 6,
+          "rotation": 1,
+          "plantingPeriod": "Jun 2025",
+          "operationalAreaHa": 0.8304
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.36,
+          "widthM": 24,
+          "lengthM": 346,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0
+        }
+      ],
+      "sourceRows": [
+        31,
+        110
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-E-03",
+      "block": "E",
+      "gawangan": 3,
+      "crops": [
+        {
+          "crop": "PETAI",
+          "spacingM2": 100,
+          "widthM": 8,
+          "lengthM": 346,
+          "vegetationCount": 27.68,
+          "ageMonths": 5,
+          "rotation": 1,
+          "plantingPeriod": "Agust 2025",
+          "operationalAreaHa": 0.2768
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.36,
+          "widthM": 8,
+          "lengthM": 346,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0
+        }
+      ],
+      "sourceRows": [
+        35,
+        111
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-E-04",
+      "block": "E",
+      "gawangan": 4,
+      "crops": [
+        {
+          "crop": "PETAI",
+          "spacingM2": 100,
+          "widthM": 24,
+          "lengthM": 346,
+          "vegetationCount": 83.04,
+          "ageMonths": 5,
+          "rotation": 1,
+          "plantingPeriod": "Agust 2025",
+          "operationalAreaHa": 0.8304
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.36,
+          "widthM": 24,
+          "lengthM": 346,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0
+        }
+      ],
+      "sourceRows": [
+        38,
+        112
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-E-05",
+      "block": "E",
+      "gawangan": 5,
+      "crops": [
+        {
+          "crop": "PETAI",
+          "spacingM2": 100,
+          "widthM": 22,
+          "lengthM": 346,
+          "vegetationCount": 76.12,
+          "ageMonths": 5,
+          "rotation": 1,
+          "plantingPeriod": "Agust 2025",
+          "operationalAreaHa": 0.7612
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.36,
+          "widthM": 22,
+          "lengthM": 346,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0
+        }
+      ],
+      "sourceRows": [
+        41,
+        113
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-F-01",
+      "block": "F",
+      "gawangan": 1,
+      "crops": [
+        {
+          "crop": "PETAI",
+          "spacingM2": 100,
+          "widthM": 15,
+          "lengthM": 346,
+          "vegetationCount": 51.9,
+          "ageMonths": 5,
+          "rotation": 1,
+          "plantingPeriod": "Agust 2025",
+          "operationalAreaHa": 0.519
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.36,
+          "widthM": 15,
+          "lengthM": 346,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0
+        }
+      ],
+      "sourceRows": [
+        28,
+        114
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-F-02",
+      "block": "F",
+      "gawangan": 2,
+      "crops": [
+        {
+          "crop": "PETAI",
+          "spacingM2": 100,
+          "widthM": 16,
+          "lengthM": 346,
+          "vegetationCount": 55.36,
+          "ageMonths": 5,
+          "rotation": 1,
+          "plantingPeriod": "Agust 2025",
+          "operationalAreaHa": 0.5536
+        },
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.36,
+          "widthM": 16,
+          "lengthM": 346,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0
+        }
+      ],
+      "sourceRows": [
+        32,
+        115
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-F-03",
+      "block": "F",
+      "gawangan": 3,
+      "crops": [
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.36,
+          "widthM": 21,
+          "lengthM": 346,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0
+        },
+        {
+          "crop": "JENGKOL",
+          "spacingM2": 100,
+          "widthM": 21,
+          "lengthM": 346,
+          "vegetationCount": 72.66,
+          "ageMonths": 5,
+          "rotation": 1,
+          "plantingPeriod": "Agust 2025",
+          "operationalAreaHa": 0.7266,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0
+        }
+      ],
+      "sourceRows": [
+        116,
+        123
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-F-04",
+      "block": "F",
+      "gawangan": 4,
+      "crops": [
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.36,
+          "widthM": 17,
+          "lengthM": 346,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0
+        },
+        {
+          "crop": "JENGKOL",
+          "spacingM2": 100,
+          "widthM": 17,
+          "lengthM": 346,
+          "vegetationCount": 58.82,
+          "ageMonths": 5,
+          "rotation": 1,
+          "plantingPeriod": "Agust 2025",
+          "operationalAreaHa": 0.5882,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0
+        }
+      ],
+      "sourceRows": [
+        117,
+        125
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-F-05",
+      "block": "F",
+      "gawangan": 5,
+      "crops": [
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.36,
+          "widthM": 14,
+          "lengthM": 346,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0
+        },
+        {
+          "crop": "JENGKOL",
+          "spacingM2": 100,
+          "widthM": 14,
+          "lengthM": 346,
+          "vegetationCount": 48.44,
+          "ageMonths": 5,
+          "rotation": 1,
+          "plantingPeriod": "Agust 2025",
+          "operationalAreaHa": 0.4844,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0
+        }
+      ],
+      "sourceRows": [
+        118,
+        127
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-F-06",
+      "block": "F",
+      "gawangan": 6,
+      "crops": [
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.36,
+          "widthM": 25,
+          "lengthM": 346,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0
+        },
+        {
+          "crop": "JENGKOL",
+          "spacingM2": 100,
+          "widthM": 25,
+          "lengthM": 346,
+          "vegetationCount": 86.5,
+          "ageMonths": 5,
+          "rotation": 1,
+          "plantingPeriod": "Agust 2025",
+          "operationalAreaHa": 0.865,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0
+        }
+      ],
+      "sourceRows": [
+        119,
+        129
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-F-07",
+      "block": "F",
+      "gawangan": 7,
+      "crops": [
+        {
+          "crop": "NANAS",
+          "spacingM2": 0.36,
+          "widthM": 17,
+          "lengthM": 346,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0
+        },
+        {
+          "crop": "JENGKOL",
+          "spacingM2": 100,
+          "widthM": 17,
+          "lengthM": 346,
+          "vegetationCount": 58.82,
+          "ageMonths": 5,
+          "rotation": 1,
+          "plantingPeriod": "Agust 2025",
+          "operationalAreaHa": 0.5882,
+          "pineappleHarvestTotal": 0,
+          "ethrelTotal": 0
+        }
+      ],
+      "sourceRows": [
+        120,
+        132
+      ]
+    }
+  ]
+}
