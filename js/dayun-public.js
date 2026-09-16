@@ -42,7 +42,7 @@
       data.layers.forEach(function(layer){groups[layer.id]=L.featureGroup();});
       contextGeojson.features.forEach(function(feature){var p=feature.properties||{},isVillage=p.contextId==='desa-dayun';var layer=L.geoJSON(feature,{style:isVillage?{color:'#49a7ff',weight:3,opacity:.95,fillColor:'#49a7ff',fillOpacity:.035,dashArray:'12 8'}:{color:'#ffe14f',weight:3,opacity:1,fillColor:'#ffe14f',fillOpacity:.07,dashArray:'7 5'},onEachFeature:function(f,l){l.bindPopup(isVillage?'<div class="dy-map-popup"><b>Desa Dayun</b><span>Wilayah pelaksanaan Program Dayun</span></div>':'<div class="dy-map-popup"><b>HKm Mandiri Sejahtera</b><span>Wilayah kelola masyarakat seluas '+Number(p.permitAreaHa||0).toLocaleString('id-ID')+' ha</span></div>');}});contextLayers[p.contextId]=layer;layer.addTo(map);});
       L.control.layers({'Satelit':satellite,'OpenStreetMap':osm},{'Batas Desa Dayun':contextLayers['desa-dayun'],'PS HKm Mandiri Sejahtera':contextLayers['ps-hkm']},{position:'topright'}).addTo(map);
-      function featureStyle(feature){var p=feature.properties||{};return p.line?{color:p.color||'#ef7d00',weight:3,opacity:.92,dashArray:'7 5'}:{color:'#173f32',weight:1.5,fillColor:p.color||'#6baa91',fillOpacity:.74};}
+      function featureStyle(feature){var p=feature.properties||{};return p.line?{color:p.color||'#ef7d00',weight:3,opacity:.92,dashArray:'7 5'}:{color:'#173f32',weight:1.5,opacity:.95,fillColor:p.color||'#6baa91',fillOpacity:.35};}
       L.geoJSON(geojson,{style:featureStyle,onEachFeature:function(feature,layer){
         var p=feature.properties||{},object=byId(data.objects,p.objectId);
         var areaText=p.areaHa==null?'Bagian dari kebun nanas seluas '+Number(p.parentAreaHa||0).toLocaleString('id-ID')+' ha':'Luas pada peta '+fmtArea(p.areaHa);
