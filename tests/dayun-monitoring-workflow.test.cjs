@@ -126,10 +126,13 @@ test('admin report inbox can preview a reporter and exposes permanent polygon id
   const script = read('js/admin-dashboard.js');
   assert.match(html, /id="report-inbox-reporter"/);
   assert.match(html, /id="report-inbox-reporter-summary"/);
+  assert.match(html, /id="report-polygon-audit"/);
   assert.match(script, /function reportTargetContext/);
+  assert.match(script, /function renderPolygonPublicationAudit/);
   assert.match(script, /polygon unik/);
   assert.match(script, /data-reporter-preview/);
   assert.match(script, /Potensi laporan berulang pada polygon dan tanggal yang sama/);
+  assert.match(script, /Terpublikasi ganda/);
 });
 
 test('monitoring and calculator use the same pineapple fertilizer SOP programs', () => {

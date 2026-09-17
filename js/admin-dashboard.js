@@ -266,6 +266,54 @@
     return String(report.name || '').trim().toLocaleLowerCase('id-ID');
   }
 
+  function reportDateKey(report) {
+    return String(report.activityDate || '').trim().slice(0, 10) || 'tanpa-tanggal';
+  }
+
+  function renderPolygonPublicationAudit(rows) {
+    var container = document.getElementById('report-polygon-audit');
+    var groups = {};
+    rows.forEach(function (report) {
+      var target = reportTargetContext(report);
+      if (!target.id) return;
+      if (!groups[target.id]) groups[target.id] = { target: target, reports: [], dates: {} };
+      groups[target.id].reports.push(report);
+      var dateKey = reportDateKey(report);
+      if (!groups[target.id].dates[dateKey]) groups[target.id].dates[dateKey] = [];
+      groups[target.id].dates[dateKey].push(report);
+    });
+    var polygons = Object.keys(groups).map(function (id) { return groups[id]; }).sort(function (a, b) {
+      return a.target.id.localeCompare(b.target.id, 'id');
+    });
+    if (!polygons.length) {
+      container.innerHTML = '';
+      return;
+    }
+    container.innerHTML = '<div class="report-polygon-audit-head"><strong>Pemeriksaan publikasi per polygon</strong><span>Publikasi pada polygon dan tanggal yang sama ditandai merah.</span></div>' +
+      '<div class="report-polygon-audit-grid">' + polygons.map(function (group) {
+        var published = group.reports.filter(function (report) { return report.status === 'Sudah Dipublikasikan'; });
+        var duplicatePublishedDates = Object.keys(group.dates).filter(function (dateKey) {
+          return group.dates[dateKey].filter(function (report) { return report.status === 'Sudah Dipublikasikan'; }).length > 1;
+        });
+        var repeatedDates = Object.keys(group.dates).filter(function (dateKey) {
+          return group.dates[dateKey].filter(function (report) {
+            return report.status !== 'Ditolak' && report.status !== 'Duplikat';
+          }).length > 1;
+        });
+        var state = duplicatePublishedDates.length ? 'danger' : (repeatedDates.length ? 'warning' : 'safe');
+        var label = duplicatePublishedDates.length
+          ? 'Terpublikasi ganda'
+          : (repeatedDates.length ? 'Perlu diperiksa' : (published.length ? 'Publikasi aman' : 'Belum dipublikasikan'));
+        var dates = duplicatePublishedDates.length ? duplicatePublishedDates : repeatedDates;
+        return '<article class="report-polygon-audit-card is-' + state + '">' +
+          '<div><span class="report-polygon-audit-state">' + esc(label) + '</span><strong>' + esc(group.target.name || 'Polygon monitoring') + '</strong>' +
+          '<code>' + esc(group.target.id) + '</code></div>' +
+          '<dl><div><dt>Laporan</dt><dd>' + group.reports.length + '</dd></div><div><dt>Dipublikasikan</dt><dd>' + published.length + '</dd></div></dl>' +
+          (dates.length ? '<small>Tanggal terindikasi: ' + esc(dates.join(', ')) + '</small>' : '<small>Setiap tanggal hanya memiliki satu publikasi.</small>') +
+          '</article>';
+      }).join('') + '</div>';
+  }
+
   function populateReporterFilter() {
     var select = document.getElementById('report-inbox-reporter');
     var current = select.value;
@@ -375,6 +423,7 @@
     });
     var reporterName = reporter === 'all' ? 'Semua pelapor' : ((rows[0] && rows[0].name) || document.getElementById('report-inbox-reporter').selectedOptions[0].text.split(' · ')[0]);
     document.getElementById('report-inbox-selection-summary').textContent = reporterName + ' · ' + rows.length.toLocaleString('id-ID') + ' laporan · ' + Object.keys(polygonIds).length.toLocaleString('id-ID') + ' polygon unik';
+    renderPolygonPublicationAudit(rows);
     Array.prototype.forEach.call(document.querySelectorAll('[data-reporter-preview]'), function (button) {
       button.classList.toggle('is-active', reporter !== 'all' && button.dataset.reporterPreview === reporter);
     });
