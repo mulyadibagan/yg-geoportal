@@ -44,6 +44,7 @@
   function today() { return new Date().toLocaleDateString('sv-SE', { timeZone: 'Asia/Jakarta' }); }
   function normalizeCrop(value) { return String(value || '').trim().toLocaleUpperCase('id-ID'); }
   function isNanasFertilizing() { return activity.value === 'Pemupukan' && normalizeCrop(crop.value) === 'NANAS'; }
+  function isNanasHarvest() { return activity.value === 'Panen' && normalizeCrop(crop.value) === 'NANAS'; }
   function isRiskWeather(value) { return ['Hujan lebat', 'Baru selesai hujan', 'Lahan tergenang', 'Angin kuat'].indexOf(value) >= 0; }
   function setFeedback(message, type) {
     feedback.textContent = message;
@@ -209,6 +210,20 @@
       field.required = Boolean(activePanelId && field.closest('#' + activePanelId));
     });
   }
+  function updateHarvestFields() {
+    var nanasHarvest = isNanasHarvest();
+    var mainCrop = nanasHarvest && $('dm-harvest-cycle').value === 'Panen utama';
+    var retained = mainCrop && $('dm-ratoon-status').value === 'Dipertahankan untuk ratoon';
+    $('dm-harvest-cycle-wrap').hidden = !nanasHarvest;
+    $('dm-ratoon-plan').hidden = !mainCrop;
+    $('dm-ratoon-fields').hidden = !retained;
+    $('dm-harvest-cycle').required = nanasHarvest;
+    $('dm-harvest-unit').disabled = nanasHarvest;
+    if (nanasHarvest) $('dm-harvest-unit').value = 'buah';
+    $('dm-ratoon-status').required = mainCrop;
+    ['dm-ratoon-mother-stands', 'dm-ratoon-shoot-count', 'dm-ratoon-start-date'].forEach(function (id) { $(id).required = retained; });
+    if (retained && !$('dm-ratoon-start-date').value) $('dm-ratoon-start-date').value = $('dm-date').value;
+  }
   function suggestTechnicalValues() {
     var record = selectedCropRecord();
     var vegetation = record && Number(record.vegetationCount) > 0 ? Math.round(Number(record.vegetationCount)) : '';
@@ -241,6 +256,7 @@
       $('dm-est-reason').required = insertion;
       if (!insertion) $('dm-planting-date').value = $('dm-date').value;
     }
+    updateHarvestFields();
     suggestTechnicalValues();
     if (nanasFertilizer) renderFertilizerMaterials(false);
   }
@@ -251,7 +267,7 @@
     if (name === 'Penyiangan') return { treatedAreaHa: numberValue('dm-weed-area'), method: $('dm-weed-method').value, weedCondition: $('dm-weed-level').value, workerCount: numberValue('dm-weed-workers') };
     if (name === 'Pengendalian HPT') return { affectedPlantCount: numberValue('dm-hpt-count'), severity: $('dm-hpt-severity').value, symptoms: $('dm-hpt-symptom').value.trim(), controlAction: $('dm-hpt-control').value.trim(), material: $('dm-hpt-material').value.trim() };
     if (name === 'Ethrel') { var ethrelWeather=$('dm-ethrel-weather').value; return { pineappleVariety: 'Queen', treatedPlantCount: numberValue('dm-ethrel-count'), solutionLiters: numberValue('dm-ethrel-solution'), ethrelProductMl: numberValue('dm-ethrel-product'), method: $('dm-ethrel-method').value, plantReadiness: $('dm-ethrel-readiness').value, weather: ethrelWeather, weatherSuitability: ethrelWeather === 'Cerah' || ethrelWeather === 'Berawan' ? 'Perlu konfirmasi tajuk kering dan prakiraan per jam' : 'Perlu pemeriksaan ketidaksesuaian cuaca', requiresTechnicalReview: true }; }
-    if (name === 'Panen') return { harvestCount: numberValue('dm-harvest-count'), unit: $('dm-harvest-unit').value, totalWeightKg: numberValue('dm-harvest-weight'), dominantGrade: $('dm-harvest-grade').value, destination: $('dm-harvest-destination').value.trim() };
+    if (name === 'Panen') { var retainedRatoon=isNanasHarvest()&&$('dm-harvest-cycle').value==='Panen utama'&&$('dm-ratoon-status').value==='Dipertahankan untuk ratoon'; return { harvestCycle: isNanasHarvest() ? $('dm-harvest-cycle').value : '', harvestCount: numberValue('dm-harvest-count'), unit: $('dm-harvest-unit').value, totalWeightKg: numberValue('dm-harvest-weight'), dominantGrade: $('dm-harvest-grade').value, destination: $('dm-harvest-destination').value.trim(), ratoonStatus: isNanasHarvest() && $('dm-harvest-cycle').value === 'Panen utama' ? $('dm-ratoon-status').value : '', ratoonMotherStands: retainedRatoon?numberValue('dm-ratoon-mother-stands'):null, ratoonShootCount: retainedRatoon?numberValue('dm-ratoon-shoot-count'):null, ratoonStartDate: retainedRatoon?$('dm-ratoon-start-date').value:'', ratoonDiscardedCount: retainedRatoon?numberValue('dm-ratoon-discarded-count'):null }; }
     if (name === 'Monitoring umum') return { observedPlantCount: numberValue('dm-observation-count'), condition: $('dm-observation-condition').value, focus: $('dm-observation-focus').value.trim() };
     if (name === 'Pemupukan' && !isNanasFertilizing()) return { treatedAreaHa: numberValue('dm-generic-fert-area'), targetPlantCount: numberValue('dm-generic-fert-count'), material: $('dm-generic-fert-material').value.trim(), method: $('dm-generic-fert-method').value, supervisor: $('dm-generic-fert-supervisor').value.trim() };
     return {};
@@ -285,6 +301,7 @@
       var medium = details.severity === 'Sedang';
       Object.assign(recommendation, { action: 'Evaluasi perkembangan serangan dan efektivitas tindakan pengendalian.', windowDaysMin: severe ? 2 : medium ? 5 : 7, windowDaysMax: severe ? 3 : medium ? 7 : 14 });
     } else if (name === 'Ethrel') Object.assign(recommendation, { action: 'Periksa keseragaman respons pembungaan setelah aplikasi ethrel.', windowDaysMin: 30, windowDaysMax: 45 });
+    else if (name === 'Panen' && details.ratoonStatus === 'Dipertahankan untuk ratoon') Object.assign(recommendation, { action: 'Periksa keberhasilan tumbuh tunas ratoon, pilih tunas produktif, dan perbarui populasinya.', windowDaysMin: 14, windowDaysMax: 21 });
     else if (name === 'Panen') Object.assign(recommendation, { action: 'Perbarui sisa buah siap panen dan rencana panen berikutnya.', windowDaysMin: 7, windowDaysMax: 14 });
     else Object.assign(recommendation, { action: 'Tinjau kembali temuan lapangan dan tentukan tindakan yang diperlukan.', windowDaysMin: 7, windowDaysMax: 14 });
     recommendation.windowStartDate = dateAfterDays(eventDate, recommendation.windowDaysMin);
@@ -326,6 +343,7 @@
   $('dm-date').value = currentDate;
   $('dm-date').max = currentDate;
   $('dm-planting-date').max = currentDate;
+  $('dm-ratoon-start-date').max = currentDate;
   Promise.all([
     fetch('data/dayun-map.geojson?v=20260916-objectid1').then(function (response) { if (!response.ok) throw Error('Peta gagal dimuat.'); return response.json(); }),
     fetch('data/dayun-gawangan-details.json?v=20260917-all-profiles2').then(function (response) { if (!response.ok) throw Error('Rincian gagal dimuat.'); return response.json(); })
@@ -352,9 +370,11 @@
   select.addEventListener('change', updateObject);
   crop.addEventListener('change', function () { clearTechnicalFields(); activity.value = ''; populateActivities(); });
   activity.addEventListener('change', syncActivityForm);
+  $('dm-harvest-cycle').addEventListener('change', updateHarvestFields);
+  $('dm-ratoon-status').addEventListener('change', updateHarvestFields);
   $('dm-fert-phase').addEventListener('change', function () { renderFertilizerMaterials(true); });
   ['dm-fert-population', 'dm-fert-ph', 'dm-fert-weather', 'dm-fert-method'].forEach(function (id) { $(id).addEventListener('input', updateFertilizerStatus); $(id).addEventListener('change', updateFertilizerStatus); });
-  $('dm-date').addEventListener('change', function () { if (activity.value === 'Penanaman') $('dm-planting-date').value = this.value; });
+  $('dm-date').addEventListener('change', function () { if (activity.value === 'Penanaman') $('dm-planting-date').value = this.value; if (isNanasHarvest() && $('dm-ratoon-status').value === 'Dipertahankan untuk ratoon') $('dm-ratoon-start-date').value = this.value; });
   photos.addEventListener('change', function () { var count = this.files.length; $('dm-photo-note').textContent = count > 3 ? 'Terlalu banyak foto. Pilih maksimal 3 foto.' : count ? count + ' foto dipilih dan akan dikompresi.' : 'Foto dikompresi sebelum dikirim.'; });
   form.addEventListener('reset', function () { setTimeout(function () { $('dm-date').value = today(); select.value = ''; currentArea = 0; populateCrops(); setFeedback('Form dibersihkan.'); }, 0); });
   form.addEventListener('submit', async function (event) {
@@ -389,7 +409,7 @@
       var compatible = compatibilityFields(details, fertilizer);
       var meta = ACTIVITY_META[activity.value] || {};
       var recommendation = followUpRecommendation(details, eventDate);
-      var info = { schemaVersion: 'dayun-monitoring-v5', monitoringType: 'Agroforestri Dayun', activityCluster: meta.cluster || '', activityType: activity.value, crop: crop.value, eventDate: eventDate, plantingDate: details.plantingDate || '', condition: compatible.condition, quantity: compatible.quantity, unit: compatible.unit, material: compatible.material, activityDetails: details, followUpRecommendation: recommendation, notes: $('dm-notes').value.trim(), fertilizer: fertilizer };
+      var info = { schemaVersion: 'dayun-monitoring-v6', monitoringType: 'Agroforestri Dayun', activityCluster: meta.cluster || '', activityType: activity.value, crop: crop.value, eventDate: eventDate, plantingDate: details.plantingDate || '', condition: compatible.condition, quantity: compatible.quantity, unit: compatible.unit, material: compatible.material, activityDetails: details, followUpRecommendation: recommendation, notes: $('dm-notes').value.trim(), fertilizer: fertilizer };
       var clientId = 'dayun-' + Date.now() + '-' + Math.floor(Math.random() * 100000);
       var payload = { clientSubmissionId: clientId, reportType: 'Monitoring', name: reporter, organization: organization, email: email, phone: phone, province: 'Riau', regency: 'Siak', district: 'Dayun', village: 'Dayun', locationName: 'Gawangan ' + id.replace('DAYUN-GT-', ''), title: activity.value + ' ' + info.crop + ' · ' + id.replace('DAYUN-GT-', ''), activityDate: eventDate, description: info.notes, oldInformation: JSON.stringify(detailsById[id] || {}), proposedInformation: JSON.stringify(info), geometryType: geometry.type, geometryGeoJSON: JSON.stringify(geometry), targetLayerId: 'dayun_gawangan', targetLayerLabel: 'Gawangan Agroforestri Dayun', targetSourceType: 'dayun_gawangan', targetObjectId: id, targetFeatureProperties: JSON.stringify(Object.assign({}, properties, { Object_ID: id, objectId: id })), proposedChanges: JSON.stringify({ monitoring: info }), images: images, documents: [] };
       await fetch(API, { method: 'POST', mode: 'no-cors', body: new URLSearchParams({ payload: JSON.stringify(payload) }) });

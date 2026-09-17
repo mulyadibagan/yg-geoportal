@@ -55,8 +55,15 @@ test('commodity and activity fields follow the selected gawangan and work type',
   assert.match(script, /field\.id === 'dm-ethrel-variety'\) field\.value = 'Queen'/);
   assert.match(script, /weatherSuitability/);
   assert.match(html, /id="dm-panel-harvest"/);
+  assert.match(html, /id="dm-harvest-cycle"/);
+  assert.match(html, /id="dm-ratoon-status"/);
+  assert.match(html, /id="dm-ratoon-shoot-count"/);
+  assert.match(html, /id="dm-ratoon-start-date"/);
+  assert.match(script, /harvestCycle: isNanasHarvest/);
+  assert.match(script, /ratoonStatus:/);
+  assert.match(script, /ratoonShootCount:/);
   assert.match(html, /id="dm-panel-observation"/);
-  assert.match(script, /schemaVersion: 'dayun-monitoring-v5'/);
+  assert.match(script, /schemaVersion: 'dayun-monitoring-v6'/);
   assert.match(script, /activityDetails: details/);
   assert.match(script, /document\.querySelectorAll\('\.dm-fert-actual'\)/);
   assert.match(script, /Pilih komoditas dan jenis kegiatan sebelum mengirim laporan/);
@@ -109,6 +116,8 @@ test('admin dashboard exposes the Dayun queue context without exposing drafts pu
   assert.match(script, /Kelompok kegiatan/);
   assert.match(script, /Tanaman diaplikasi/);
   assert.match(script, /Jumlah panen/);
+  assert.match(script, /Siklus panen/);
+  assert.match(script, /Tunas ratoon produktif/);
   assert.match(script, /Jendela pemeriksaan/);
 });
 

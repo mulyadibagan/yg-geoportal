@@ -81,11 +81,19 @@
           <section class="dm-activity-panel" id="dm-panel-harvest" hidden>
             <div class="dm-activity-head"><span>HASIL PRODUKSI</span><h3>Realisasi panen</h3></div>
             <div class="dm-activity-fields">
+              <label id="dm-harvest-cycle-wrap" hidden><span>Siklus panen nenas *</span><select id="dm-harvest-cycle" data-required="true"><option value="">Pilih siklus</option><option>Panen utama</option><option>Ratoon I</option><option>Ratoon II</option></select><small>Panen utama dan ratoon dihitung terpisah.</small></label>
               <label><span>Jumlah hasil panen *</span><input id="dm-harvest-count" type="number" min="1" step="1" inputmode="numeric" data-required="true"></label>
               <label><span>Satuan *</span><select id="dm-harvest-unit" data-required="true"><option value="">Pilih satuan</option><option>buah</option><option>kg</option><option>ikat</option></select></label>
               <label><span>Berat total (kg)</span><input id="dm-harvest-weight" type="number" min="0" step="0.01" inputmode="decimal"></label>
               <label><span>Mutu dominan</span><select id="dm-harvest-grade"><option value="">Belum dinilai</option><option>Baik/layak jual</option><option>Campuran</option><option>Rusak/afkir</option></select></label>
               <label class="dm-wide"><span>Tujuan hasil panen</span><input id="dm-harvest-destination" maxlength="160" placeholder="Contoh: dijual, konsumsi kelompok, atau bibit"></label>
+              <label class="dm-wide" id="dm-ratoon-plan" hidden><span>Status tanaman setelah panen utama *</span><select id="dm-ratoon-status" data-required="true"><option value="">Pilih status</option><option>Dipertahankan untuk ratoon</option><option>Tidak dipertahankan</option><option>Belum diputuskan</option></select><small>Catat hanya rumpun dan tunas yang benar-benar diperiksa di lapangan.</small></label>
+              <div class="dm-wide dm-activity-fields" id="dm-ratoon-fields" hidden>
+                <label><span>Rumpun induk dipertahankan *</span><input id="dm-ratoon-mother-stands" type="number" min="1" step="1" inputmode="numeric" data-required="true"></label>
+                <label><span>Tunas ratoon produktif *</span><input id="dm-ratoon-shoot-count" type="number" min="1" step="1" inputmode="numeric" data-required="true"></label>
+                <label><span>Tanggal mulai ratoon *</span><input id="dm-ratoon-start-date" type="date" data-required="true"></label>
+                <label><span>Tunas dibuang/afkir</span><input id="dm-ratoon-discarded-count" type="number" min="0" step="1" inputmode="numeric"></label>
+              </div>
             </div>
           </section>
           <section class="dm-activity-panel" id="dm-panel-observation" hidden>
@@ -136,6 +144,6 @@
     </section>
   </main>
   <script src="js/dayun-fertilizer-calculator.js?v=20260917-programs1"></script>
-  <script src="js/dayun-monitoring.js?v=20260918-queen-ethrel2"></script>
+  <script src="js/dayun-monitoring.js?v=20260917-cohort1"></script>
 </body>
 </html>

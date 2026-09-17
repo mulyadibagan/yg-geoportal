@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="css/style.css?v=20260723-revert-layout">
   <link rel="stylesheet" href="css/navigation-v2.css?v=20260807-mobile-submenu-links1">
   <link rel="stylesheet" href="css/dayun.css?v=20260917-crop-detail1">
-  <link rel="stylesheet" href="css/dayun-analisis-nanas.css?v=20260917-projection2">
+  <link rel="stylesheet" href="css/dayun-analisis-nanas.css?v=20260917-cohort1">
 </head>
 <body data-dayun-page="pineapple-analysis" data-dayun-mode="public">
   <header class="site-header">
@@ -32,7 +32,7 @@
     <div id="pa-status" class="dy-summary-loading" role="status">Menghitung analisis Nanas Queen dari data gawangan…</div>
     <div id="pa-content" hidden>
       <section class="dy-summary-kpis dy-pa-kpis" id="pa-kpis" aria-label="Ringkasan Nanas Queen"></section>
-      <p class="dy-pa-caveat">Jumlah “belum tercatat panen” adalah selisih administratif antara populasi dan buah panen yang tercatat. Angka ini bukan ramalan produksi dan perlu pemeriksaan kelompok tanaman di lapangan.</p>
+      <p class="dy-pa-caveat">Jumlah “belum panen utama” adalah selisih administratif antara populasi dan panen utama yang tercatat. Panen ratoon dipisahkan agar tidak mengurangi populasi plant crop dua kali.</p>
 
       <section class="dy-section">
         <div class="dy-section-head"><div><span>REKOMENDASI KEGIATAN</span><h2>Keputusan berbasis data dan verifikasi</h2></div><p>Sistem menunjukkan prioritas pemeriksaan. Dosis, jadwal aplikasi, dan keputusan panen tetap dikonfirmasi pendamping teknis.</p></div>
@@ -44,11 +44,12 @@
         <div class="dy-pa-weather" id="pa-projection-weather" aria-live="polite"><strong>Cuaca untuk kegiatan terdekat</strong><span>Memuat prakiraan hujan enam jam…</span></div>
         <div class="dy-pa-projection-stack">
           <article class="dy-pa-projection-card">
-            <header><div><span>PROYEKSI PANEN</span><h3>Skenario hasil dari bunga/buah tercatat</h3></div><b class="dy-pa-confidence" id="pa-harvest-confidence">Keyakinan —</b></header>
+            <header><div><span>PROYEKSI PANEN</span><h3>Potensi panen utama dan ratoon</h3></div><b class="dy-pa-confidence" id="pa-harvest-confidence">Keyakinan —</b></header>
             <div class="dy-pa-projection-summary" id="pa-harvest-projection-summary"></div>
+            <div class="dy-pa-harvest-components" id="pa-harvest-components"></div>
             <div class="dy-pa-range-legend"><span><i class="low"></i>Rendah</span><span><i class="base"></i>Dasar</span><span><i class="high"></i>Tinggi</span></div>
             <div class="dy-pa-projection-chart dy-pa-harvest-projection" id="pa-harvest-projection" role="img" aria-label="Grafik proyeksi panen Nanas Queen 12 bulan"></div>
-            <p class="dy-pa-projection-note">Skenario hanya menggunakan bunga/buah yang sudah tercatat dan rasio historis Dayun. Tanggal pengamatan bunga belum tersedia sehingga bulan panen harus diverifikasi.</p>
+            <p class="dy-pa-projection-note">Terkonfirmasi berasal dari bunga/buah tercatat. Potensi panen utama berasal dari tanaman belum panen menurut fase ethrel dan umur. Ratoon hanya dihitung dari tunas pascapanen yang telah diverifikasi; data tanpa tanggal tetap ditampilkan sebagai belum terjadwal.</p>
           </article>
           <article class="dy-pa-projection-card">
             <header><div><span>PROYEKSI ETHREL</span><h3>Jadwal pemeriksaan kelayakan</h3></div><b class="dy-pa-confidence" id="pa-ethrel-confidence">Keyakinan —</b></header>
@@ -84,7 +85,7 @@
   </main>
   <footer class="dy-footer">YG GeoPortal · Analisis Komoditas Nanas Queen Dayun</footer>
   <script src="js/navigation-v2.js?v=20260821-staff-name1"></script>
-  <script src="js/dayun-pineapple-analysis.js?v=20260917-projection2"></script>
-  <script src="js/dayun-analisis-nanas.js?v=20260917-projection2"></script>
+  <script src="js/dayun-pineapple-analysis.js?v=20260917-cohort1"></script>
+  <script src="js/dayun-analisis-nanas.js?v=20260917-cohort1"></script>
 </body>
 </html>
