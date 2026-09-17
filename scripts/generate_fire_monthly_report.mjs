@@ -1,7 +1,6 @@
 import { readFile, writeFile, mkdir, readdir } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import oilPalmReference from "../js/oil-palm-reference.js";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const MONTH = process.argv.includes("--month") ? process.argv[process.argv.indexOf("--month") + 1] : "2026-07";
@@ -20,7 +19,6 @@ const iso = (d) => d.toISOString().slice(0, 10);
 const outputDir = path.join(ROOT, "data", "fire-monthly");
 const province = JSON.parse(await readFile(path.join(ROOT, "data", "batas_provinsi_riau_dissolve.geojson"), "utf8"));
 const villages = JSON.parse(await readFile(path.join(ROOT, "data", "batas_administrasi_desa_riau.geojson"), "utf8"));
-const rspoReference = JSON.parse(await readFile(path.join(ROOT, "data", "PERUSAHAAN_SAWIT_RIAU_REFERENSI.geojson"), "utf8"));
 
 function csvRows(text) {
   const rows = [];
@@ -161,26 +159,15 @@ for (const item of detections) {
 const daily = [];
 for (let cursor = new Date(start); cursor <= end; cursor = new Date(cursor.getTime() + 86400000)) daily.push({ date: iso(cursor), hotspots: dailyMap.get(iso(cursor)) || 0 });
 const villageRows = [...villageMap.values()].map((x) => ({ ...x, detectionDays: x.dates.size, dates: undefined })).sort((a, b) => b.hotspots - a.hotspots || a.village.localeCompare(b.village));
-const rspoPoints = { type: "FeatureCollection", features: detections.map((item) => ({ type: "Feature", geometry: { type: "Point", coordinates: [item.longitude, item.latitude] }, properties: {} })) };
-oilPalmReference.attach(rspoPoints, rspoReference);
-const rspoMap = new Map();
-detections.forEach((item, index) => {
-  item.rspoAreas = rspoPoints.features[index].properties.oilPalmCompanyRef || [];
-  item.rspoAreas.forEach((area) => {
-    if (!rspoMap.has(area.id)) rspoMap.set(area.id, { id: area.id, name: area.name, group: area.group, supplyBase: area.supplyBase, regency: area.regency, hotspots: 0, dates: new Set(), villages: new Set() });
-    const target = rspoMap.get(area.id); target.hotspots++; target.dates.add(item.date); if (item.village) target.villages.add(item.village);
-  });
-});
-const rspoRows = [...rspoMap.values()].map((x) => ({ ...x, detectionDays: x.dates.size, villages: [...x.villages].sort(), dates: undefined })).sort((a, b) => b.hotspots - a.hotspots || a.name.localeCompare(b.name));
 const report = {
   schemaVersion: 2, month: MONTH, period: { start: iso(start), end: iso(end) }, province: "Riau",
   status: "final",
   generatedAt: new Date().toISOString(), source: "NASA FIRMS",
-  sources: [...new Set([...sourcesUsed, "GeoRSPO / RSPO"])],
-  methodology: "Deteksi kategori high confidence di dalam polygon Provinsi Riau; pencocokan desa dan area perkebunan anggota RSPO dilakukan secara spasial.",
-  disclaimer: "Irisan hotspot dengan batas desa atau area anggota RSPO bukan bukti penyebab kebakaran maupun tanggung jawab pihak tertentu.",
-  summary: { hotspots: detections.length, villages: villageRows.length, regencies: regencies.size, rspoAreas: rspoRows.length, rspoHotspots: detections.filter((x) => x.rspoAreas.length).length },
-  daily, villages: villageRows, rspoAreas: rspoRows, hotspots: detections
+  sources: [...new Set(sourcesUsed)],
+  methodology: "Deteksi kategori high confidence di dalam polygon Provinsi Riau; pencocokan batas administrasi desa dilakukan secara spasial.",
+  disclaimer: "Lokasi hotspot dan kecocokan batas administrasi bukan bukti penyebab kebakaran maupun tanggung jawab pihak tertentu.",
+  summary: { hotspots: detections.length, villages: villageRows.length, regencies: regencies.size },
+  daily, villages: villageRows, hotspots: detections
 };
 await mkdir(outputDir, { recursive: true });
 await writeFile(path.join(outputDir, `${MONTH}.json`), `${JSON.stringify(report, null, 2)}\n`, "utf8");
