@@ -87,7 +87,7 @@ test('public reporter records completed work while follow-up is proposed for adm
   assert.match(script, /Periksa keberhasilan hidup tanaman sisipan/);
   assert.match(script, /requiresAdminConfirmation: true/);
   assert.match(script, /followUpRecommendation: recommendation/);
-  assert.match(adminHtml, /admin atau pendamping mengonfirmasi keputusan dan jadwal/);
+  assert.match(adminHtml, /Admin memeriksa ID gawangan, hitungan faktual/);
   assert.match(adminScript, /Saran tindak lanjut sistem/);
   assert.match(adminScript, /Menunggu konfirmasi admin\/pendamping/);
 });
@@ -112,10 +112,18 @@ test('public gawangan profile reads only the published report endpoint and calcu
 test('admin dashboard exposes the Dayun queue context without exposing drafts publicly', () => {
   const html = read('admin-dashboard.html');
   const script = read('js/admin-dashboard.js');
+  const backend = read('apps-script/webgis-backend/Kode.js');
   assert.match(html, /Gawangan Dayun/);
   assert.match(html, /dayun-monitoring\.html/);
   assert.match(html, /Sudah Dipublikasikan/);
   assert.match(script, /function dayunMonitoringSummary/);
+  assert.match(script, /Sensus tanaman/);
+  assert.match(script, /Tanaman hidup/);
+  assert.match(script, /Bibit siap tanam/);
+  assert.match(script, /report-evidence-photo/);
+  assert.match(script, /reportDuplicateAuditKey/);
+  assert.match(backend, /function monitoringDuplicateKey_/);
+  assert.match(backend, /Agroforestri Dayun/);
   assert.match(script, /report\.targetLayerId !== 'dayun_gawangan'/);
   assert.match(script, /Kesesuaian SOP/);
   assert.match(script, /Realisasi pupuk/);
@@ -137,7 +145,7 @@ test('admin report inbox can preview a reporter and exposes permanent polygon id
   assert.match(script, /function renderPolygonPublicationAudit/);
   assert.match(script, /polygon unik/);
   assert.match(script, /data-reporter-preview/);
-  assert.match(script, /Potensi laporan berulang pada polygon dan tanggal yang sama/);
+  assert.match(script, /Potensi laporan berulang dengan gawangan, tanggal, kegiatan, dan komoditas yang sama/);
   assert.match(script, /Terpublikasi ganda/);
 });
 

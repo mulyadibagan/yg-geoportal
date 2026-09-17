@@ -270,6 +270,13 @@
     return String(report.activityDate || '').trim().slice(0, 10) || 'tanpa-tanggal';
   }
 
+  function reportDuplicateAuditKey(report) {
+    var dateKey=reportDateKey(report),info={};
+    try { info=JSON.parse(report.proposedInformation||'{}'); } catch (error) {}
+    if (info.monitoringType!=='Agroforestri Dayun') return dateKey;
+    return [dateKey,info.activityType||'tanpa-kegiatan',info.crop||'tanpa-komoditas'].join(' · ');
+  }
+
   function renderPolygonPublicationAudit(rows) {
     var container = document.getElementById('report-polygon-audit');
     var groups = {};
@@ -278,7 +285,7 @@
       if (!target.id) return;
       if (!groups[target.id]) groups[target.id] = { target: target, reports: [], dates: {} };
       groups[target.id].reports.push(report);
-      var dateKey = reportDateKey(report);
+      var dateKey = reportDuplicateAuditKey(report);
       if (!groups[target.id].dates[dateKey]) groups[target.id].dates[dateKey] = [];
       groups[target.id].dates[dateKey].push(report);
     });
@@ -289,7 +296,7 @@
       container.innerHTML = '';
       return;
     }
-    container.innerHTML = '<div class="report-polygon-audit-head"><strong>Pemeriksaan publikasi per polygon</strong><span>Publikasi pada polygon dan tanggal yang sama ditandai merah.</span></div>' +
+    container.innerHTML = '<div class="report-polygon-audit-head"><strong>Pemeriksaan publikasi per polygon</strong><span>Untuk Dayun, duplikat diperiksa dari gawangan, tanggal, kegiatan, dan komoditas yang sama.</span></div>' +
       '<div class="report-polygon-audit-grid">' + polygons.map(function (group) {
         var published = group.reports.filter(function (report) { return report.status === 'Sudah Dipublikasikan'; });
         var duplicatePublishedDates = Object.keys(group.dates).filter(function (dateKey) {
@@ -350,7 +357,26 @@
     var detail = info.activityDetails || {};
     var followUp = info.followUpRecommendation || null;
     var activityRows = [];
-    if (info.activityType === 'Penanaman' || info.activityType === 'Penyisipan') {
+    if (info.activityType === 'Sensus tanaman') {
+      activityRows = [
+        ['Tanaman hidup', detail.livingPlantCount != null ? detail.livingPlantCount + ' batang' : ''],
+        ['Tanaman mati', detail.deadPlantCount != null ? detail.deadPlantCount + ' batang' : ''],
+        ['Titik tanam kosong', detail.emptySpotCount != null ? detail.emptySpotCount + ' titik' : ''],
+        ['Metode sensus', detail.censusMethod],
+        ['Petugas penghitung', detail.counter],
+        ['Tanggal tanam terverifikasi', detail.plantingDate]
+      ];
+    } else if (info.activityType === 'Sensus bibit') {
+      activityRows = [
+        ['Bibit siap tanam', detail.readySeedlingCount != null ? detail.readySeedlingCount + ' bibit' : ''],
+        ['Bibit belum siap', detail.immatureSeedlingCount != null ? detail.immatureSeedlingCount + ' bibit' : ''],
+        ['Bibit rusak/afkir', detail.damagedSeedlingCount != null ? detail.damagedSeedlingCount + ' bibit' : ''],
+        ['Sudah dialokasikan', detail.allocatedSeedlingCount != null ? detail.allocatedSeedlingCount + ' bibit' : ''],
+        ['Sumber bibit', detail.seedlingSourceType]
+      ];
+    } else if (info.activityType === 'Pembaruan foto') {
+      activityRows = [['Kondisi umum', detail.condition], ['Fokus foto', detail.focus]];
+    } else if (info.activityType === 'Penanaman' || info.activityType === 'Penyisipan') {
       activityRows = [
         [info.activityType === 'Penyisipan' ? 'Jumlah disisipkan' : 'Jumlah ditanam', detail.plantCount != null ? detail.plantCount + ' batang' : ''],
         ['Jarak tanam', detail.spacing],
@@ -377,6 +403,7 @@
       : '';
     var values = [
       ['Gawangan', report.locationName || report.targetObjectId],
+      ['Kunci catatan', info.recordKey],
       ['Kelompok kegiatan', info.activityCluster],
       ['Kegiatan', info.activityType],
       ['Komoditas', info.crop],
@@ -442,7 +469,7 @@
       var targetFacts = [target.phase, target.area > 0 ? target.area.toLocaleString('id-ID', { maximumFractionDigits: 2 }) + ' ha' : ''].filter(Boolean).join(' · ');
       var duplicates = Array.isArray(report.monitoringDuplicates) ? report.monitoringDuplicates : [];
       var evidenceLinks = photos.map(function (url, index) {
-        return '<a href="' + esc(url) + '" target="_blank" rel="noopener noreferrer">Foto ' + (index + 1) + '</a>';
+        return '<a class="report-evidence-photo" href="' + esc(url) + '" target="_blank" rel="noopener noreferrer"><img src="' + esc(url) + '" alt="Bukti laporan ' + esc(report.id || '') + ' foto ' + (index + 1) + '" loading="lazy"><span>Foto ' + (index + 1) + ' ↗</span></a>';
       });
       if (documentUrl) evidenceLinks.push('<a href="' + esc(documentUrl) + '" target="_blank" rel="noopener noreferrer">Dokumen</a>');
 
@@ -455,7 +482,7 @@
         '<span><b>Lokasi</b>' + esc(location || report.locationName || '-') + '</span>' +
         '<span><b>Diterima</b>' + esc(report.receivedAt || '-') + '</span></div>' +
         (target.id ? '<div class="report-object-context"><strong>' + esc(target.name || report.locationName || 'Polygon monitoring') + (targetFacts ? ' · ' + esc(targetFacts) : '') + '</strong><code>' + esc(target.id) + '</code>' +
-          (duplicates.length ? '<div class="report-duplicate-warning">Potensi laporan berulang pada polygon dan tanggal yang sama: ' + esc(duplicates.map(function (item) { return item.reportId; }).join(', ')) + '</div>' : '') + '</div>' : '') +
+          (duplicates.length ? '<div class="report-duplicate-warning">Potensi laporan berulang dengan gawangan, tanggal, kegiatan, dan komoditas yang sama: ' + esc(duplicates.map(function (item) { return item.reportId; }).join(', ')) + '</div>' : '') + '</div>' : '') +
         dayunMonitoringSummary(report) +
         (report.description ? '<p>' + esc(report.description) + '</p>' : '') +
         (report.adminNote ? '<p><b>Catatan admin:</b> ' + esc(report.adminNote) + '</p>' : '') +

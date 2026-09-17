@@ -912,6 +912,21 @@ function monitoringDateKey_(value) {
   return text;
 }
 
+function monitoringDuplicateKey_(targetObjectId, activityDate, proposedInformation) {
+  const baseKey = clean_(targetObjectId) + '|' + monitoringDateKey_(activityDate);
+  if (!baseKey || baseKey === '|') return '';
+  let info = {};
+  try {
+    info = typeof proposedInformation === 'string'
+      ? JSON.parse(proposedInformation || '{}')
+      : (proposedInformation || {});
+  } catch (error) {}
+  if (clean_(info.monitoringType) !== 'Agroforestri Dayun') return baseKey;
+  const activityType = clean_(info.activityType).toLocaleLowerCase('id-ID');
+  const crop = clean_(info.crop).toLocaleUpperCase('id-ID');
+  return baseKey + '|dayun|' + activityType + '|' + crop;
+}
+
 function findSameDayMonitoringDuplicates_(sheet, data) {
   if (clean_(data.reportType) !== 'Monitoring') return [];
   const targetObjectId = monitoringPermanentObjectId_(
@@ -921,13 +936,14 @@ function findSameDayMonitoringDuplicates_(sheet, data) {
   );
   const activityDate = monitoringDateKey_(data.activityDate);
   if (!targetObjectId || !activityDate || sheet.getLastRow() < 2) return [];
+  const duplicateKey = monitoringDuplicateKey_(targetObjectId, activityDate, data.proposedInformation);
 
   return sheet.getRange(2, 1, sheet.getLastRow() - 1, 32).getValues()
     .filter(function(row) {
       if (clean_(row[1]) !== 'Monitoring') return false;
       if (['Duplikat', 'Ditolak'].indexOf(clean_(row[21])) !== -1) return false;
       const existingTarget = monitoringPermanentObjectId_(row[30], row[31], '');
-      return existingTarget === targetObjectId && monitoringDateKey_(row[13]) === activityDate;
+      return monitoringDuplicateKey_(existingTarget, row[13], row[18]) === duplicateKey;
     })
     .slice(-5)
     .map(function(row) {
@@ -955,6 +971,7 @@ function findSameDayMonitoringDuplicateRows_(sheet, rowNumber) {
   );
   const activityDate = monitoringDateKey_(current[13]);
   if (!targetObjectId || !activityDate) return [];
+  const duplicateKey = monitoringDuplicateKey_(targetObjectId, activityDate, current[18]);
 
   return rows.map(function(row, rowIndex) {
     return { row: row, rowNumber: rowIndex + 2 };
@@ -964,15 +981,19 @@ function findSameDayMonitoringDuplicateRows_(sheet, rowNumber) {
     if (['Duplikat', 'Ditolak'].indexOf(clean_(item.row[21])) !== -1) {
       return false;
     }
-    return monitoringPermanentObjectId_(item.row[30], item.row[31], '') === targetObjectId &&
-      monitoringDateKey_(item.row[13]) === activityDate;
+    return monitoringDuplicateKey_(
+      monitoringPermanentObjectId_(item.row[30], item.row[31], ''),
+      item.row[13],
+      item.row[18]
+    ) === duplicateKey;
   }).map(function(item) {
     return {
       rowNumber: item.rowNumber,
       reportId: clean_(item.row[0]),
       status: clean_(item.row[21]),
       targetObjectId: targetObjectId,
-      activityDate: activityDate
+      activityDate: activityDate,
+      duplicateKey: duplicateKey
     };
   });
 }
@@ -981,7 +1002,7 @@ function assertMonitoringPublicationIsUnique_(sheet, rowNumber) {
   const duplicates = findSameDayMonitoringDuplicateRows_(sheet, rowNumber);
   if (!duplicates.length) return true;
   throw new Error(
-    'Publikasi diblokir: ada laporan monitoring lain untuk Object_ID dan tanggal kegiatan yang sama (' +
+    'Publikasi diblokir: ada laporan monitoring lain dengan identitas objek dan kegiatan yang sama (' +
     duplicates.map(function(item) {
       return item.reportId + ' — ' + (item.status || 'tanpa status');
     }).join(', ') +
@@ -1199,7 +1220,7 @@ function buildReportDashboardData_() {
     const objectId = monitoringPermanentObjectId_(row[30], row[31], '');
     const activityDate = monitoringDateKey_(row[13]);
     if (!objectId || !activityDate) return;
-    const key = objectId + '|' + activityDate;
+    const key = monitoringDuplicateKey_(objectId, activityDate, row[18]);
     if (!monitoringDuplicateGroups[key]) monitoringDuplicateGroups[key] = [];
     monitoringDuplicateGroups[key].push({
       rowNumber: index + 2,
@@ -1214,7 +1235,7 @@ function buildReportDashboardData_() {
     const objectId = monitoringPermanentObjectId_(row[30], row[31], '');
     const activityDateKey = monitoringDateKey_(row[13]);
     const duplicateKey = objectId && activityDateKey
-      ? objectId + '|' + activityDateKey
+      ? monitoringDuplicateKey_(objectId, activityDateKey, row[18])
       : '';
     const duplicateCandidates = duplicateKey && monitoringDuplicateGroups[duplicateKey]
       ? monitoringDuplicateGroups[duplicateKey].filter(function(item) {
