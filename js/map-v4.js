@@ -389,6 +389,45 @@
     return vectorRendererFor(MAP_PANES.reference);
   }
 
+  function simplifyOverviewRing(ring, tolerance) {
+    if (!Array.isArray(ring) || ring.length < 6) return ring;
+    const first = ring[0];
+    const last = ring[ring.length - 1];
+    const closed = first && last && first[0] === last[0] && first[1] === last[1];
+    const source = closed ? ring.slice(0, -1) : ring.slice();
+    const points = source.map(coordinate =>
+      L.point(Number(coordinate[0]), Number(coordinate[1]))
+    );
+    const simplified = L.LineUtil.simplify(points, tolerance);
+    if (simplified.length < 3) return ring;
+    const result = simplified.map(point => [point.x, point.y]);
+    result.push(result[0].slice());
+    return result;
+  }
+
+  function simplifyInternalOverview(config, data) {
+    if (config.type !== "active_concession") return data;
+    const simplifyPolygon = polygon =>
+      polygon.map(ring => simplifyOverviewRing(ring, 0.00015));
+    return Object.assign({}, data, {
+      features: (data.features || []).map(feature => {
+        const geometry = feature && feature.geometry;
+        if (!geometry || !geometry.coordinates) return feature;
+        let coordinates = geometry.coordinates;
+        if (geometry.type === "Polygon") {
+          coordinates = simplifyPolygon(coordinates);
+        } else if (geometry.type === "MultiPolygon") {
+          coordinates = coordinates.map(simplifyPolygon);
+        } else {
+          return feature;
+        }
+        return Object.assign({}, feature, {
+          geometry: Object.assign({}, geometry, { coordinates })
+        });
+      })
+    });
+  }
+
 // Scale Bar
 L.control.scale({
     position: 'bottomleft',   // kiri bawah
@@ -2323,6 +2362,7 @@ L.control.scale({
     if (config.type === "social_forestry") {
       data = correctSocialForestryAttributes(data);
     }
+    data = simplifyInternalOverview(config, data);
 
     if (config.type === "social_forestry" && !socialForestryDocumentDetailsLoaded) {
       try {
