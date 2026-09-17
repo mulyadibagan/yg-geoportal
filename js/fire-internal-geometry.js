@@ -36,7 +36,10 @@
   const contains=(point,polys)=>polys.some(p=>ringContains(point,p[0])&&!p.slice(1).some(r=>ringContains(point,r)));
   function identity(p,kind){
     if(kind==='pbph')return {id:String(p.PBPH_ID||[p.NAMOBJ,p.NO_SK].filter(Boolean).join('|')),name:p.NAMOBJ,detail:p.NO_SK||'',level:'unit'};
-    return {id:String(p.COMPANY_ID||p.MemberNum||p.Parent||p.PO_COMPANY||''),name:p.PO_COMPANY||p.Parent||p.RSPO_GROUP,detail:[p.SUPPLY_BASE,p.RSPO_GROUP||p.MemberNum].filter(Boolean).join(' · '),level:p.PO_COMPANY?'unit':'group'};
+    // Exact parent-scoped alias verified in Permata Group's own announcement.
+    // Preserve the source abbreviation; never apply PHI to unrelated groups.
+    const phi=/^PT\.?\s+PHI$/i.test(p.PO_COMPANY||'') && (p.RSPO_GROUP||p.Parent)==='Permata Group Pte. Ltd.';
+    return {id:String(p.COMPANY_ID||p.MemberNum||p.Parent||p.PO_COMPANY||''),name:phi?'PT Permata Hijau Indonesia (PT PHI)':p.PO_COMPANY||p.Parent||p.RSPO_GROUP,detail:[p.SUPPLY_BASE,p.RSPO_GROUP||p.MemberNum].filter(Boolean).join(' · '),level:p.PO_COMPANY?'unit':'group',nameSource:phi?'https://www.linkedin.com/posts/permatagroup_two-of-permata-group-subsidiaries-pt-permata-activity-7053683515611086848-Z1zV':''};
   }
   function analyze(input){
     if(!Array.isArray(input.burned?.features))throw Error('Arsip estimasi belum tersedia.');
@@ -54,7 +57,7 @@
         for(const e of events){if(!overlaps(bounds,e.box))continue;const part=clip.intersection(boundary,e.geometry);if(part.length&&area(part)>1e-8){pieces.push(part);matches.set(e.id,{id:e.id,first:e.first,last:e.last});}}
         const burned=union(pieces),burnedHa=area(burned),boundaryHa=area(boundary),days=new Set();let hotspots=0;
         for(const h of input.report.hotspots||[]){const p=[Number(h.longitude),Number(h.latitude)];if(!p.every(Number.isFinite))continue;if(contains(p,boundary)){hotspots++;if(h.date)days.add(h.date);}}
-        if(burnedHa>0||hotspots>0)rows.push({id:g.id,name:g.name,detail:g.detail,level:g.level,hotspots:input.report.unavailable?null:hotspots,days:input.report.unavailable?null:days.size,boundaryHa,burnedHa,percent:boundaryHa?100*burnedHa/boundaryHa:null,events:Array.from(matches.values()),geometry:{type:'MultiPolygon',coordinates:burned},boundary:{type:'MultiPolygon',coordinates:boundary}});
+        if(burnedHa>0||hotspots>0)rows.push({id:g.id,name:g.name,nameSource:g.nameSource,detail:g.detail,level:g.level,hotspots:input.report.unavailable?null:hotspots,days:input.report.unavailable?null:days.size,boundaryHa,burnedHa,percent:boundaryHa?100*burnedHa/boundaryHa:null,events:Array.from(matches.values()),geometry:{type:'MultiPolygon',coordinates:burned},boundary:{type:'MultiPolygon',coordinates:boundary}});
         if(burned.length)categoryPieces.push(burned);
       }
       const merged=union(categoryPieces);if(merged.length)allPieces.push(merged);
