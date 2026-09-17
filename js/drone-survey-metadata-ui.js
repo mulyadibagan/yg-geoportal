@@ -3,7 +3,14 @@
 const legacyTitle=/^Survei drone\s+\d{1,2}[/-]\d{1,2}[/-]\d{4}$/i;
 const idDate=new Intl.DateTimeFormat('id-ID',{day:'numeric',month:'long',year:'numeric'});
 const idTime=new Intl.DateTimeFormat('id-ID',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
-let lastJob=null;
+
+function addStyles(){
+  if(document.getElementById('droneMetadataStyles'))return;
+  const style=document.createElement('style');
+  style.id='droneMetadataStyles';
+  style.textContent='.survey-metadata{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:12px 0 4px}.survey-metadata[hidden]{display:none}.survey-metadata>div:not(.survey-meta-note){padding:10px 12px;border:1px solid #dce8e2;border-radius:10px;background:#f8fbf9}.survey-metadata span{display:block;font-size:12px;color:#6b7c75;margin-bottom:3px}.survey-metadata strong{display:block;font-size:14px;color:#173a2d}.survey-meta-note{padding:10px 12px;border-radius:10px;background:#f5f8f6;color:#587067;font-size:13px;grid-column:1/-1}';
+  document.head.appendChild(style);
+}
 
 function cleanLegacyTitles(){
   document.querySelectorAll('#jobState strong,#missionArchive h3').forEach(el=>{
@@ -32,7 +39,6 @@ function ensureMetaBox(){
 
 function renderMetadata(job){
   if(!job)return;
-  lastJob=job;
   cleanLegacyTitles();
   const box=ensureMetaBox();
   if(!box)return;
@@ -76,7 +82,8 @@ document.addEventListener('click',e=>{
   if(input && !input.value.trim()) input.value='Survei drone';
 },true);
 
-const observer=new MutationObserver(()=>{cleanLegacyTitles(); if(lastJob) renderMetadata(lastJob);});
+addStyles();
+const observer=new MutationObserver(cleanLegacyTitles);
 observer.observe(document.documentElement,{subtree:true,childList:true,characterData:true});
 cleanLegacyTitles();
 })();
