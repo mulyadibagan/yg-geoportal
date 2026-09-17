@@ -65,8 +65,16 @@ jobs:
           ROOT="../../tmp/drone/$JOB_ID"
           mkdir -p "$ROOT/input" "$ROOT/output" "$ROOT/project/images" "$ROOT/rejected"
           npx wrangler r2 object get "yg-webgis-public-snapshots/drone/jobs/$JOB_ID.json" --remote --file "$ROOT/job.json"
+
+          publish_status() {
+            npx wrangler r2 object put "yg-webgis-public-snapshots/drone/jobs/$JOB_ID.json" --remote --file "$ROOT/job.json" --content-type application/json
+          }
+
           python ../../scripts/drone_job.py processing "$ROOT/job.json"
-          npx wrangler r2 object put "yg-webgis-public-snapshots/drone/jobs/$JOB_ID.json" --remote --file "$ROOT/job.json" --content-type application/json
+          publish_status
+
+          python ../../scripts/drone_job.py stage "$ROOT/job.json" downloading 15 "Mengambil foto"
+          publish_status
           SOURCE=$(jq -r '.sourceType' "$ROOT/job.json")
           if [ "$SOURCE" = "drive" ]; then
             DRIVE_URL=$(jq -r '.driveUrl' "$ROOT/job.json")
@@ -78,13 +86,23 @@ jobs:
               npx wrangler r2 object get "yg-webgis-public-snapshots/$KEY" --remote --file "$ROOT/input/$NAME"
             done
           fi
+
+          python ../../scripts/drone_job.py stage "$ROOT/job.json" checking 30 "Memeriksa kualitas foto"
+          publish_status
           python ../../scripts/drone_job.py qc "$ROOT/input" "$ROOT/rejected" "$ROOT/valid.txt" "$ROOT/qc.json"
           VALID=$(jq -r '.validPhotos' "$ROOT/qc.json")
+          REJECTED=$(jq -r '.excludedPhotos' "$ROOT/qc.json")
           if [ "$VALID" -lt 3 ]; then
             echo "Not enough valid nadir photos" >&2
             exit 22
           fi
+
+          python ../../scripts/drone_job.py stage "$ROOT/job.json" preparing 45 "Menyiapkan foto terpilih" --valid "$VALID" --excluded "$REJECTED"
+          publish_status
           while IFS= read -r IMG; do cp "$IMG" "$ROOT/project/images/"; done < "$ROOT/valid.txt"
+
+          python ../../scripts/drone_job.py stage "$ROOT/job.json" reconstructing 55 "Menyusun posisi dan kecocokan foto" --valid "$VALID" --excluded "$REJECTED"
+          publish_status
           docker pull opendronemap/odm:latest
           docker run --rm -v "$(realpath "$ROOT"):/datasets" opendronemap/odm:latest \
             --project-path /datasets project \
@@ -93,13 +111,25 @@ jobs:
             --pc-quality medium \
             --skip-3dmodel \
             --skip-report
+
           TIF="$ROOT/project/odm_orthophoto/odm_orthophoto.tif"
           [ -f "$TIF" ] || { echo "ODM did not create orthophoto" >&2; exit 23; }
+
+          python ../../scripts/drone_job.py stage "$ROOT/job.json" orthomosaic 80 "Membuat orthomosaic" --valid "$VALID" --excluded "$REJECTED"
+          publish_status
+
+          python ../../scripts/drone_job.py stage "$ROOT/job.json" optimizing 90 "Menyiapkan hasil untuk peta" --valid "$VALID" --excluded "$REJECTED"
+          publish_status
           gdal_translate "$TIF" "$ROOT/output/orthomosaic.cog.tif" -of COG -co COMPRESS=JPEG -co QUALITY=88 -co BIGTIFF=IF_SAFER -co OVERVIEWS=AUTO
           gdalinfo -json "$ROOT/output/orthomosaic.cog.tif" > "$ROOT/output/gdalinfo.json"
-          python ../../scripts/drone_job.py ready "$ROOT/job.json" "$ROOT/output/gdalinfo.json" "$ROOT/qc.json"
+
+          python ../../scripts/drone_job.py stage "$ROOT/job.json" saving 95 "Menyimpan hasil" --valid "$VALID" --excluded "$REJECTED"
+          publish_status
           npx wrangler r2 object put "yg-webgis-public-snapshots/drone/results/$JOB_ID/orthomosaic.cog.tif" --remote --file "$ROOT/output/orthomosaic.cog.tif" --content-type image/tiff
-          npx wrangler r2 object put "yg-webgis-public-snapshots/drone/jobs/$JOB_ID.json" --remote --file "$ROOT/job.json" --content-type application/json
+
+          python ../../scripts/drone_job.py ready "$ROOT/job.json" "$ROOT/output/gdalinfo.json" "$ROOT/qc.json"
+          publish_status
+
           jq --arg id "$JOB_ID" '.jobs = (.jobs | map(select(. != $id)))' ../../tmp/drone/pending.json > ../../tmp/drone/pending.next.json
           mv ../../tmp/drone/pending.next.json ../../tmp/drone/pending.json
           npx wrangler r2 object put "yg-webgis-public-snapshots/drone/queue/pending.json" --remote --file ../../tmp/drone/pending.json --content-type application/json
