@@ -1,6 +1,5 @@
 name: Process drone orthomosaic
 
-# Queue processor: push to this file can be used to start a pending job immediately.
 on:
   workflow_dispatch:
   schedule:
@@ -11,6 +10,7 @@ on:
     paths:
       - '.github/workflows/process-drone-orthomosaic.yml'
       - 'scripts/drone_job.py'
+      - 'scripts/download_drive_folder.py'
 
 permissions:
   contents: read
@@ -36,7 +36,7 @@ jobs:
       - name: Install tools
         run: |
           python -m pip install --upgrade pip
-          pip install 'gdown>=6.0.0'
+          pip install 'gdown>=6.3.0'
           sudo apt-get update
           sudo apt-get install -y libimage-exiftool-perl jq gdal-bin
       - name: Read pending queue
@@ -79,7 +79,10 @@ jobs:
           SOURCE=$(jq -r '.sourceType' "$ROOT/job.json")
           if [ "$SOURCE" = "drive" ]; then
             DRIVE_URL=$(jq -r '.driveUrl' "$ROOT/job.json")
-            gdown --folder "$DRIVE_URL" -O "$ROOT/input"
+            if ! python ../../scripts/download_drive_folder.py "$DRIVE_URL" "$ROOT/input" "$ROOT/drive-download.json" --passes 4 --retries 3 --timeout 60; then
+              echo "drive_download_incomplete" > "$ROOT/error_code"
+              exit 42
+            fi
           else
             jq -r '.files[]?.key' "$ROOT/job.json" | while read -r KEY; do
               [ -z "$KEY" ] && continue
@@ -96,7 +99,7 @@ jobs:
           VALID=$(jq -r '.validPhotos' "$ROOT/qc.json")
           REJECTED=$(jq -r '.excludedPhotos' "$ROOT/qc.json")
           if [ "$VALID" -lt 3 ]; then
-            echo "Not enough valid nadir photos" >&2
+            echo "insufficient_valid_photos" > "$ROOT/error_code"
             exit 22
           fi
 
@@ -107,16 +110,22 @@ jobs:
           python ../../scripts/drone_job.py stage "$ROOT/job.json" reconstructing 55 "Menyusun posisi dan kecocokan foto" --valid "$VALID" --excluded "$REJECTED"
           publish_status
           docker pull opendronemap/odm:latest
-          docker run --rm -v "$(realpath "$ROOT"):/datasets" opendronemap/odm:latest \
+          if ! docker run --rm -v "$(realpath "$ROOT"):/datasets" opendronemap/odm:latest \
             --project-path /datasets project \
             --orthophoto-resolution 3 \
             --feature-quality medium \
             --pc-quality medium \
             --skip-3dmodel \
-            --skip-report
+            --skip-report; then
+            echo "photogrammetry_failed" > "$ROOT/error_code"
+            exit 24
+          fi
 
           TIF="$ROOT/project/odm_orthophoto/odm_orthophoto.tif"
-          [ -f "$TIF" ] || { echo "ODM did not create orthophoto" >&2; exit 23; }
+          if [ ! -f "$TIF" ]; then
+            echo "orthomosaic_not_created" > "$ROOT/error_code"
+            exit 23
+          fi
 
           python ../../scripts/drone_job.py stage "$ROOT/job.json" orthomosaic 80 "Membuat orthomosaic" --valid "$VALID" --excluded "$REJECTED"
           publish_status
@@ -147,7 +156,9 @@ jobs:
         run: |
           ROOT="../../tmp/drone/$JOB_ID"
           if [ -f "$ROOT/job.json" ]; then
-            python ../../scripts/drone_job.py failed "$ROOT/job.json" --error processing_failed
+            ERROR_CODE="processing_failed"
+            [ -f "$ROOT/error_code" ] && ERROR_CODE=$(cat "$ROOT/error_code")
+            python ../../scripts/drone_job.py failed "$ROOT/job.json" --error "$ERROR_CODE"
             npx wrangler r2 object put "yg-webgis-public-snapshots/drone/jobs/$JOB_ID.json" --remote --file "$ROOT/job.json" --content-type application/json || true
           fi
           if [ -f ../../tmp/drone/pending.json ]; then
