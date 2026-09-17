@@ -3,7 +3,7 @@
   var page = document.body.getAttribute('data-dayun-page');
   var proposalMode = true; // Public information only; no local submission routes.
   function alignWithLiveShell() {
-    ['css/style.css?v=20260723-revert-layout','css/language-switcher.css?v=20260721-all-pages1','css/navigation-v2.css?v=20260807-mobile-submenu-links1','css/dayun.css?v=20260917-crop-detail1'].forEach(function(href){
+    ['css/style.css?v=20260723-revert-layout','css/language-switcher.css?v=20260721-all-pages1','css/navigation-v2.css?v=20260807-mobile-submenu-links1','css/dayun.css?v=20260917-analysis1'].forEach(function(href){
       if(!document.querySelector('link[href="'+href+'"]')){var link=document.createElement('link');link.rel='stylesheet';link.href=href;document.head.appendChild(link);}
     });
     var header=document.querySelector('.dy-header');
@@ -37,17 +37,30 @@
   }
 
   function renderAgroSummary(summary){
-    var target=document.getElementById('dayun-agro-summary'),overview=document.getElementById('dayun-block-overview');
+    var target=document.getElementById('dayun-agro-summary'),pineappleEntry=document.getElementById('dayun-pineapple-entry'),overview=document.getElementById('dayun-block-overview');
     if(!target||!overview)return;
     var mapLayout=document.querySelector('.dy-map-layout');if(mapLayout&&mapLayout.previousElementSibling!==target)mapLayout.parentNode.insertBefore(target,mapLayout);
     var all=summary.all;
-    target.innerHTML='<div class="dy-summary-head"><div><span>RINGKASAN TERINTEGRASI</span><h2>Seluruh Blok A–F</h2></div><p>Angka dihitung otomatis dari profil masing-masing gawangan. Jumlah tanaman ditampilkan sebagai bilangan bulat.</p></div><div class="dy-summary-kpis">'+[
+    target.innerHTML='<div class="dy-summary-head"><div><span>AGROFORESTRI DAYUN</span><h2>Ringkasan Seluruh Blok A–F</h2></div><p>Informasi dihitung dari data setiap gawangan pada Blok A–F. Jumlah tanaman ditampilkan sebagai bilangan bulat.</p></div><div class="dy-summary-kpis">'+[
       ['Luas seluruh blok',fmtArea(all.blockAreaHa)],['Luas gawangan tanam',fmtArea(all.gawanganAreaHa)],['Luas operasional tercatat',fmtArea(all.operationalAreaHa)],['Gawangan terpetakan',fmtInteger(all.mappedGawangan)],['Hortikultura',fmtInteger(all.horticulturePlants)+' tanaman · '+fmtInteger(all.horticultureTypes)+' jenis'],['Nanas tercatat',fmtInteger(all.pineapplePlants)+' tanaman'],['Buah dipanen',fmtInteger(all.pineappleHarvest)+' buah'],['Belum tercatat panen',fmtInteger(all.pineappleUnharvested)+' tanaman'],['MPTS',fmtInteger(all.mptsPlants)+' pohon · '+fmtInteger(all.mptsTypes)+' jenis']
     ].map(function(item){return '<article><small>'+item[0]+'</small><strong>'+item[1]+'</strong></article>';}).join('')+'</div><div class="dy-summary-foot"><span>'+fmtInteger(all.gawanganWithData)+' dari '+fmtInteger(all.mappedGawangan)+' gawangan memiliki informasi tanaman.</span><span>Catatan kegiatan terakhir: <b>'+fmtDate(all.latestRecordDate)+'</b></span>'+(all.missingGawangan.length?'<span class="is-warning">'+fmtInteger(all.missingGawangan.length)+' gawangan belum memiliki data tanaman.</span>':'')+'</div><div class="dy-crop-summary-groups">'+cropGroupHtml(all,window.DayunAgroSummary.MPTS,'MPTS','pohon')+cropGroupHtml(all,window.DayunAgroSummary.HORTICULTURE,'Hortikultura','tanaman')+'</div>';
+    if(pineappleEntry)pineappleEntry.innerHTML='<div class="dy-pineapple-entry-copy"><span>ANALISIS KOMODITAS</span><h2>Nanas Queen Dayun</h2><p>Buka analisis khusus untuk melihat populasi, luas operasional, pemupukan, ethrel, pembungaan, panen, HPT, serta prioritas pemeriksaan setiap gawangan.</p><div><small>POPULASI TERCATAT</small><strong>'+fmtInteger(all.pineapplePlants)+' tanaman</strong></div><div><small>BUAH DIPANEN</small><strong>'+fmtInteger(all.pineappleHarvest)+' buah</strong></div><div><small>AKTIVITAS TERAKHIR</small><strong>'+fmtDate(all.latestRecordDate)+'</strong></div></div><a class="dy-pineapple-entry-link" href="dayun-analisis-nanas.html">Buka Analisis Nanas →</a>';
     overview.innerHTML='<div class="dy-section-head"><div><span>RINGKASAN PER BLOK</span><h2>Perbandingan Blok A–F</h2></div><p>Pilih satu blok untuk melihat peta, komposisi tanaman, riwayat panen, dan daftar gawangan penyusunnya.</p></div><div class="dy-block-table-wrap"><table class="dy-block-table"><thead><tr><th>Blok</th><th>Gawangan</th><th>Luas blok</th><th>Luas gawangan</th><th>Hortikultura</th><th>Nanas</th><th>Dipanen</th><th>MPTS</th><th></th></tr></thead><tbody>'+summary.codes.map(function(code){var block=summary.blocks[code];return '<tr><th scope="row">'+block.name+'</th><td>'+fmtInteger(block.gawanganWithData)+' / '+fmtInteger(block.mappedGawangan)+'</td><td>'+fmtArea(block.blockAreaHa)+'</td><td>'+fmtArea(block.gawanganAreaHa)+'</td><td>'+fmtInteger(block.horticulturePlants)+' · '+fmtInteger(block.horticultureTypes)+' jenis</td><td>'+fmtInteger(block.pineapplePlants)+'</td><td>'+fmtInteger(block.pineappleHarvest)+'</td><td>'+fmtInteger(block.mptsPlants)+' · '+fmtInteger(block.mptsTypes)+' jenis</td><td><a href="dayun-blok.html?block='+code+'">Lihat detail →</a></td></tr>';}).join('')+'</tbody></table></div><p class="dy-summary-note">Luas operasional dihitung satu kali per gawangan dari luas operasional komoditas terbesar, sehingga komoditas yang berada pada ruang tanam yang sama tidak dijumlahkan ganda.</p>';
   }
 
-  function initDayunMap(data){
+  function loadDayunSpatialData(){
+    return Promise.all([
+      fetch('data/dayun-map.geojson?v=20260916-objectid1'),
+      fetch('data/dayun-context.geojson?v=20260908-1'),
+      fetch('data/dayun-gawangan-details.json?v=20260917-performance1'),
+      fetch('data/dayun-blocks.geojson?v=20260916-official1')
+    ]).then(function(responses){
+      if(responses.some(function(response){return !response.ok;}))throw new Error('Data peta atau rincian gawangan tidak dapat dimuat.');
+      return Promise.all(responses.map(function(response){return response.json();}));
+    });
+  }
+
+  function initDayunMap(data,spatialDataPromise){
     var mapEl=document.getElementById('dayun-map'),legendEl=document.getElementById('dayun-layers');
     if(!mapEl||!legendEl)return;
     var intro=document.querySelector('.dy-map-page-intro p');if(intro)intro.textContent='Klik polygon untuk melihat luas blok dan gawangan tanam, lalu buka profil lengkapnya pada halaman baru.';
@@ -55,11 +68,11 @@
     var loading=mapEl.querySelector('.dy-map-loading');if(loading)loading.remove();
     var satellite=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxNativeZoom:18,maxZoom:20,attribution:'Tiles &copy; Esri'});
     var osm=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxNativeZoom:19,maxZoom:20,attribution:'&copy; OpenStreetMap contributors'});
-    var map=L.map(mapEl,{zoomControl:true,layers:[satellite]}).setView([0.5844,102.009],17);
+    var map=L.map(mapEl,{zoomControl:true,layers:[satellite],preferCanvas:true}).setView([0.5844,102.009],17);
     var expandControl=L.control({position:'topleft'});
     expandControl.onAdd=function(){var button=L.DomUtil.create('button','dy-map-expand leaflet-bar');button.type='button';button.title='Buka peta layar penuh';button.setAttribute('aria-label','Buka peta layar penuh');button.innerHTML='⛶';L.DomEvent.disableClickPropagation(button);L.DomEvent.on(button,'click',function(){var expanded=mapEl.classList.toggle('is-fullscreen');document.body.classList.toggle('dy-map-open',expanded);button.innerHTML=expanded?'×':'⛶';button.title=expanded?'Tutup peta layar penuh':'Buka peta layar penuh';button.setAttribute('aria-label',button.title);setTimeout(function(){map.invalidateSize();},100);});return button;};
     expandControl.addTo(map);document.addEventListener('keydown',function(event){if(event.key==='Escape'&&mapEl.classList.contains('is-fullscreen')){mapEl.classList.remove('is-fullscreen');document.body.classList.remove('dy-map-open');var button=mapEl.querySelector('.dy-map-expand');if(button){button.innerHTML='⛶';button.title='Buka peta layar penuh';button.setAttribute('aria-label',button.title);}setTimeout(function(){map.invalidateSize();},100);}});
-    Promise.all([fetch('data/dayun-map.geojson?v=20260916-objectid1'),fetch('data/dayun-context.geojson?v=20260908-1'),fetch('data/dayun-gawangan-details.json?v=20260916-1'),fetch('data/dayun-blocks.geojson?v=20260916-official1')]).then(function(responses){if(responses.some(function(response){return !response.ok;}))throw new Error('Data peta atau rincian gawangan tidak dapat dimuat.');return Promise.all(responses.map(function(response){return response.json();}));}).then(function(results){
+    (spatialDataPromise||loadDayunSpatialData()).then(function(results){
       var geojson=results[0],contextGeojson=results[1],gawanganData=results[2],blockGeojson=results[3],agroSummary=window.DayunAgroSummary.build(gawanganData,geojson,blockGeojson),gawanganById={},blockByName={},gawanganAreaByBlock={},countedGawangan={},objectProperties={},groups={},featureLayers={},categoryBounds={},contextLayers={},active=data.layers[0].id;
       renderAgroSummary(agroSummary);
       (gawanganData.objects||[]).forEach(function(item){gawanganById[item.objectId]=item;});
@@ -184,5 +197,23 @@
     initDayunMap(data);
     initDayunWeather();
   }
-  fetch('data/dayun-program.json', {cache:'no-store'}).then(function(response){if(!response.ok)throw new Error('Informasi program belum dapat dimuat.');return response.json();}).then(function(data){data.objects=[];if(page==='map'){initDayunMap(data);initDayunWeather();initDayunRainHistory();}else initLanding(data);}).catch(function(error){console.error(error);toast(error.message);});
+  function initWhenNear(sectionId,callback){
+    var section=document.getElementById(sectionId),started=false;
+    if(!section)return;
+    function start(){if(started)return;started=true;callback();}
+    if(!('IntersectionObserver' in window)){setTimeout(start,1200);return;}
+    var observer=new IntersectionObserver(function(entries){
+      if(entries.some(function(entry){return entry.isIntersecting;})){observer.disconnect();start();}
+    },{rootMargin:'500px 0px'});
+    observer.observe(section);
+  }
+  var spatialDataPromise=page==='map'?loadDayunSpatialData():null;
+  fetch('data/dayun-program.json?v=20260917-performance1').then(function(response){if(!response.ok)throw new Error('Informasi program belum dapat dimuat.');return response.json();}).then(function(data){
+    data.objects=[];
+    if(page==='map'){
+      initDayunMap(data,spatialDataPromise);
+      initWhenNear('cuaca-kebun',initDayunWeather);
+      initWhenNear('riwayat-hujan',initDayunRainHistory);
+    }else initLanding(data);
+  }).catch(function(error){console.error(error);toast(error.message);});
 })();

@@ -14,7 +14,7 @@
   }
 
   function initMap(code,mapData,blockData){
-    var satellite=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxNativeZoom:18,maxZoom:20,attribution:'Tiles &copy; Esri'}),osm=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxNativeZoom:19,maxZoom:20,attribution:'&copy; OpenStreetMap contributors'}),map=L.map('db-map',{layers:[satellite]});
+    var satellite=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxNativeZoom:18,maxZoom:20,attribution:'Tiles &copy; Esri'}),osm=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxNativeZoom:19,maxZoom:20,attribution:'&copy; OpenStreetMap contributors'}),map=L.map('db-map',{layers:[satellite],preferCanvas:true});
     var selectedBlock=(blockData.features||[]).filter(function(feature){return feature.properties&&feature.properties.blockCode===code;});
     var boundary=L.geoJSON({type:'FeatureCollection',features:selectedBlock},{style:function(feature){var p=feature.properties||{};return{color:p.color||'#7c3aed',weight:5,opacity:1,fillColor:p.color||'#7c3aed',fillOpacity:.07};}}).addTo(map);
     var gawanganFeatures=(mapData.features||[]).filter(function(feature){var p=feature.properties||{};return p.category==='Gawangan Tanam'&&String(p.block||'').replace(/^Blok\s+/i,'')===code;});
@@ -51,7 +51,7 @@
   var code=String(new URLSearchParams(location.search).get('block')||'A').toUpperCase();
   if(!/^[A-F]$/.test(code)){document.getElementById('db-status').textContent='Kode blok tidak valid. Pilih Blok A sampai Blok F dari peta agroforestri.';return;}
   Promise.all([
-    fetch('data/dayun-gawangan-details.json?v=20260917-block-summary1',{cache:'no-store'}).then(function(response){if(!response.ok)throw Error('detail');return response.json();}),
+    fetch('data/dayun-gawangan-details.json?v=20260917-performance1').then(function(response){if(!response.ok)throw Error('detail');return response.json();}),
     fetch('data/dayun-map.geojson?v=20260916-objectid1').then(function(response){if(!response.ok)throw Error('map');return response.json();}),
     fetch('data/dayun-blocks.geojson?v=20260916-official1').then(function(response){if(!response.ok)throw Error('block');return response.json();})
   ]).then(function(results){render(code,window.DayunAgroSummary.build(results[0],results[1],results[2]),results[1],results[2]);}).catch(function(error){console.error(error);document.getElementById('db-status').textContent='Informasi blok belum dapat dimuat. Silakan kembali ke peta dan coba lagi.';});
