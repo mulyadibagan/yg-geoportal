@@ -54,7 +54,9 @@ async function serveCog(request,env,id,url){const job=await readJson(env,jobKey(
 export function isDroneRoute(pathname){return pathname==='/api/drone/jobs'||pathname.startsWith('/api/drone/jobs/')}
 export async function handleDroneRequest(request,env,url){
   if(request.method==='OPTIONS')return new Response(null,{status:204,headers:cors(request)});
-  const origin=request.headers.get('origin')||'';if(origin&&!ALLOWED_ORIGINS.has(origin))return reply(request,{ok:false,error:'origin_not_allowed'},403);
+  const origin=request.headers.get('origin')||'';
+  if(['POST','PUT'].includes(request.method)&&!ALLOWED_ORIGINS.has(origin))return reply(request,{ok:false,error:'origin_not_allowed'},403);
+  if(origin&&!ALLOWED_ORIGINS.has(origin))return reply(request,{ok:false,error:'origin_not_allowed'},403);
   const cogMatch=url.pathname.match(/^\/api\/drone\/jobs\/(drn-[a-zA-Z0-9-]+)\/cog$/);if(cogMatch&&(request.method==='GET'||request.method==='HEAD'))return serveCog(request,env,cogMatch[1],url);
   if(url.pathname==='/api/drone/jobs'&&request.method==='POST')return createJob(request,env);
   const fileMatch=url.pathname.match(/^\/api\/drone\/jobs\/(drn-[a-zA-Z0-9-]+)\/files\/(.+)$/);if(fileMatch&&request.method==='PUT')return uploadFile(request,env,fileMatch[1],fileMatch[2],url);
