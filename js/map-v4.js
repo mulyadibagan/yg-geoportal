@@ -409,8 +409,9 @@
     if (!["active_concession", "oil_palm_company"].includes(config.type)) {
       return data;
     }
+    const tolerance = config.type === "active_concession" ? 0.0005 : 0.00015;
     const simplifyPolygon = polygon =>
-      polygon.map(ring => simplifyOverviewRing(ring, 0.00015));
+      polygon.map(ring => simplifyOverviewRing(ring, tolerance));
     return Object.assign({}, data, {
       features: (data.features || []).map(feature => {
         const geometry = feature && feature.geometry;
