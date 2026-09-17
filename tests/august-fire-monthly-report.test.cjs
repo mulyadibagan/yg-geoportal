@@ -64,11 +64,15 @@ test("monthly report exposes RSPO analysis only to a staff session", () => {
   assert.match(html, /id="fm-ps-jump" href="#fm-internal-ps" hidden/);
   assert.match(internal, /for\(const kind of \['ps','pbph','rspo'\]\)/);
   assert.match(internal, /section\.id='fm-internal-'\+kind/);
-  assert.match(controller, /staffSession \? fetch\('data\/rspo-company-boundaries\.geojson'/);
-  assert.match(controller, /fetch\('data\/PERHUTANAN_SOSIAL_RIAU\.geojson'\)/);
+  assert.match(controller, /const publicFetch=window\.fetch\.bind\(window\)/);
+  assert.match(controller, /json\(publicFetch,'data\/fire-monthly\/index\.json\?v=5'/);
+  assert.match(controller, /safePrivate\(json\(staffFetch,'data\/rspo-company-boundaries\.geojson'/);
+  assert.match(controller, /safePrivate\(json\(staffFetch,'data\/PERHUTANAN_SOSIAL_RIAU\.geojson'/);
+  assert.match(controller, /function timed\(promise,label\)/);
+  assert.match(controller, /Promise\.all\(\[burnedPromise,privatePromise\]\)/);
   assert.match(controller, /renderMonthlyInternal\(map,month,d,geo,permitGeo,rspoGeo,psGeo,layerControl\)/);
   assert.match(controller, /if\(staffSession\)rspoTable/);
-  assert.match(controller, /if\(staffSession\)\{overlays\['PBPH Mei 2026'\]=permitLayer;overlays\['Area anggota RSPO'\]=rspoLayer;\}/);
+  assert.match(controller, /showInternalFailure\(errors\)/);
   assert.match(access, /'data\/PERUSAHAAN_SAWIT_RIAU_REFERENSI\.geojson': '\/api\/staff\/rspo-groups'/);
   assert.match(access, /'data\/PERHUTANAN_SOSIAL_RIAU\.geojson': '\/api\/staff\/social-forestry-riau'/);
 });
