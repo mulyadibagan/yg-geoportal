@@ -32,7 +32,30 @@ for (let offset = 0; ; offset += 2000) {
 await fs.writeFile(rawPath, JSON.stringify({ type: "FeatureCollection", features }));
 const companies = companyBoundaries(companySource);
 if (!companies.companyCount || companies.features.length !== companySource.length) throw new Error('Incomplete company boundaries');
-await fs.writeFile(path.join(tmp, 'rspo-riau-companies.geojson'), JSON.stringify(companies));
+const companyRawPath = path.join(tmp, 'rspo-riau-companies-raw.geojson');
+const companyPath = path.join(tmp, 'rspo-riau-companies.geojson');
+await fs.writeFile(companyRawPath, JSON.stringify(companies));
+// Dissolve once during publication, not on every staff device. Preserve full
+// geometry precision; unlike the overview, company boundaries are not simplified.
+await new Promise((resolve, reject) => {
+  const child = spawn(process.execPath, ['node_modules/mapshaper/bin/mapshaper', companyRawPath,
+    '-clean', '-dissolve', 'COMPANY_ID', '-o', companyPath, 'format=geojson', 'precision=0.000001'], { stdio: 'inherit' });
+  child.on('error', reject);
+  child.on('exit', code => code === 0 ? resolve() : reject(new Error(`Company dissolve exited ${code}`)));
+});
+const metadata = new Map(companies.features.map(f => [f.properties.COMPANY_ID, f.properties]));
+const dissolved = JSON.parse(await fs.readFile(companyPath, 'utf8'));
+if (!dissolved.features?.length) throw new Error('No dissolved company boundaries');
+for (const f of dissolved.features) {
+  const props = metadata.get(f.properties.COMPANY_ID);
+  if (!props) throw new Error('Company identity missing after dissolve');
+  f.properties = { ...props }; delete f.properties.SOURCE_FID;
+}
+Object.assign(dissolved, { visibility:'internal', generatedAt:companies.generatedAt,
+  source:companies.source, companyCount:dissolved.features.length, sourceFeatureCount:companies.features.length,
+  processing:'Cleaned and dissolved by company; no geometric simplification' });
+await fs.writeFile(companyPath, JSON.stringify(dissolved));
+console.log(JSON.stringify({companyFeatures:dissolved.features.length, sourceFeatures:companies.features.length}));
 
 await new Promise((resolve, reject) => {
   const child = spawn(process.execPath, ["node_modules/mapshaper/bin/mapshaper", rawPath,
