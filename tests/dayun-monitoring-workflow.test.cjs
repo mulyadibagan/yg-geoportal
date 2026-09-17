@@ -39,7 +39,7 @@ test('commodity and activity fields follow the selected gawangan and work type',
   assert.match(html, /<select id="dm-crop" required disabled>/);
   assert.doesNotMatch(html, /id="dm-crop"[^>]*list=/);
   assert.match(script, /function populateCrops/);
-  assert.match(script, /crops\.map/);
+  assert.match(script, /CENSUS_CROPS/);
   assert.match(script, /ACTIVITY_GROUPS/);
   assert.match(script, /Penanaman dan penyisipan/);
   assert.match(script, /Pemeliharaan tanaman/);
@@ -63,7 +63,13 @@ test('commodity and activity fields follow the selected gawangan and work type',
   assert.match(script, /ratoonStatus:/);
   assert.match(script, /ratoonShootCount:/);
   assert.match(html, /id="dm-panel-observation"/);
-  assert.match(script, /schemaVersion: 'dayun-monitoring-v6'/);
+  assert.match(script, /schemaVersion: 'dayun-monitoring-v7'/);
+  assert.match(html, /id="dm-panel-census"/);
+  assert.match(html, /id="dm-panel-seedling"/);
+  assert.match(html, /id="dm-panel-photo"/);
+  assert.match(script, /livingPlantCount/);
+  assert.match(script, /readySeedlingCount/);
+  assert.doesNotMatch(script, /dm-fert-population', 'dm-generic-fert-count', 'dm-observation-count/);
   assert.match(script, /activityDetails: details/);
   assert.match(script, /document\.querySelectorAll\('\.dm-fert-actual'\)/);
   assert.match(script, /Pilih komoditas dan jenis kegiatan sebelum mengirim laporan/);
@@ -96,7 +102,7 @@ test('public gawangan profile reads only the published report endpoint and calcu
   assert.match(script, /function ageNow/);
   assert.match(script, /agust:7/);
   assert.match(script, /sept:8/);
-  assert.match(script, /\(data terakhir\)/);
+  assert.match(script, /tanggal tanam lengkap diperlukan/);
   assert.match(script, /\\d\{1,2\}.*\\s\+\(\[a-z\]\+\).*\\d\{4\}/);
   assert.match(html, /RIWAYAT TERVERIFIKASI/);
   assert.match(backend, /if \(row\[21\] !== 'Sudah Dipublikasikan'\)/);

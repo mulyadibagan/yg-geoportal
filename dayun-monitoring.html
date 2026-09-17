@@ -47,6 +47,34 @@
               <label class="dm-wide" id="dm-est-reason-wrap" hidden><span>Alasan penyisipan *</span><textarea id="dm-est-reason" data-required="true" placeholder="Contoh: tanaman mati, pertumbuhan tidak normal, atau ruang tanam kosong."></textarea></label>
             </div>
           </section>
+          <section class="dm-activity-panel" id="dm-panel-census" hidden>
+            <div class="dm-activity-head"><span>SENSUS TANAMAN</span><h3>Hitungan faktual per gawangan</h3><p>Masukkan hasil penghitungan menyeluruh di lapangan. Kolom tidak diisi otomatis dari data lama.</p></div>
+            <div class="dm-activity-fields">
+              <label><span>Tanaman hidup *</span><input id="dm-census-living" type="number" min="0" step="1" inputmode="numeric" data-required="true"></label>
+              <label><span>Tanaman mati *</span><input id="dm-census-dead" type="number" min="0" step="1" inputmode="numeric" data-required="true"></label>
+              <label><span>Titik tanam kosong *</span><input id="dm-census-empty" type="number" min="0" step="1" inputmode="numeric" data-required="true"></label>
+              <label><span>Metode *</span><select id="dm-census-method" data-required="true"><option value="Penghitungan menyeluruh">Penghitungan menyeluruh</option><option value="Penghitungan baris per baris">Penghitungan baris per baris</option></select></label>
+              <label><span>Tanggal tanam terverifikasi</span><input id="dm-census-planting-date" type="date"><small>Kosongkan jika tanggal lengkap belum dapat dibuktikan.</small></label>
+              <label><span>Petugas penghitung *</span><input id="dm-census-counter" maxlength="120" data-required="true"></label>
+            </div>
+          </section>
+          <section class="dm-activity-panel" id="dm-panel-seedling" hidden>
+            <div class="dm-activity-head"><span>SENSUS BIBIT</span><h3>Ketersediaan bibit faktual</h3><p>Catat kondisi bibit yang benar-benar dihitung untuk menilai sumber daya ekspansi.</p></div>
+            <div class="dm-activity-fields">
+              <label><span>Bibit siap tanam *</span><input id="dm-seed-ready" type="number" min="0" step="1" inputmode="numeric" data-required="true"></label>
+              <label><span>Bibit belum siap *</span><input id="dm-seed-immature" type="number" min="0" step="1" inputmode="numeric" data-required="true"></label>
+              <label><span>Bibit rusak/afkir *</span><input id="dm-seed-damaged" type="number" min="0" step="1" inputmode="numeric" data-required="true"></label>
+              <label><span>Sudah dialokasikan *</span><input id="dm-seed-allocated" type="number" min="0" step="1" inputmode="numeric" data-required="true"></label>
+              <label class="dm-wide"><span>Jenis sumber bibit *</span><input id="dm-seed-source-type" maxlength="140" data-required="true" placeholder="Contoh: anakan, mahkota, tunas, persemaian"></label>
+            </div>
+          </section>
+          <section class="dm-activity-panel" id="dm-panel-photo" hidden>
+            <div class="dm-activity-head"><span>DOKUMENTASI BULANAN</span><h3>Pembaruan kondisi visual gawangan</h3></div>
+            <div class="dm-activity-fields">
+              <label><span>Kondisi umum *</span><select id="dm-photo-condition" data-required="true"><option value="">Pilih kondisi</option><option>Baik</option><option>Perlu perhatian</option><option>Perlu tindakan segera</option></select></label>
+              <label><span>Fokus foto *</span><input id="dm-photo-focus" maxlength="160" data-required="true" placeholder="Pertumbuhan, tajuk, buah, drainase, atau kondisi lain"></label>
+            </div>
+          </section>
           <section class="dm-activity-panel" id="dm-panel-weeding" hidden>
             <div class="dm-activity-head"><span>PEMELIHARAAN</span><h3>Realisasi penyiangan</h3></div>
             <div class="dm-activity-fields">
@@ -139,12 +167,12 @@
       <aside class="dm-side">
         <article><span>STATUS AWAL</span><h3>Menunggu Verifikasi</h3><p>Data yang baru dikirim tidak langsung muncul pada peta atau profil publik.</p></article>
         <article><span>KONFIRMASI ADMIN</span><h3>Pemeriksaan sebelum publikasi</h3><p>Admin memeriksa identitas gawangan, tanggal, isi kegiatan, dan bukti. Hanya status <b>Sudah Dipublikasikan</b> yang dibaca halaman publik.</p></article>
-        <article><span>PEMBARUAN OTOMATIS</span><h3>Umur dan jadwal</h3><p>Umur dihitung dari tanggal tanam. Hari sejak monitoring dan rencana kegiatan berikutnya dihitung ulang setiap halaman dibuka.</p></article>
+        <article><span>PEMBARUAN OTOMATIS</span><h3>Umur dari tanggal pasti</h3><p>Umur hanya dihitung jika tanggal tanam lengkap telah dicatat. Periode bulan atau angka lama tidak dipakai sebagai perkiraan.</p></article>
       </aside>
     </section>
   </main>
   <script src="js/dayun-data-source.js?v=20260917-cloudflare1"></script>
   <script src="js/dayun-fertilizer-calculator.js?v=20260917-programs1"></script>
-  <script src="js/dayun-monitoring.js?v=20260917-cloudflare1"></script>
+  <script src="js/dayun-monitoring.js?v=20260917-factual1"></script>
 </body>
 </html>

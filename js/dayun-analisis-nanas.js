@@ -25,7 +25,7 @@
   }
 
   function kpis(data) {
-    var items=[['Varietas','Queen'],['Gawangan aktif',integer(data.activeGawangan)+' gawangan'],['Populasi tercatat',integer(data.plants)+' tanaman'],['Luas operasional',area(data.areaHa)],['Tercatat dipupuk',integer(data.fertilized)+' tanaman'],['Tercatat ethrel',integer(data.ethrel)+' tanaman'],['Bunga/buah tercatat',integer(data.flowers)+' tanaman'],['Panen utama',integer(data.plantCropHarvest)+' buah'],['Belum panen utama',integer(data.remainingPlantCrop)+' tanaman'],['Panen ratoon',integer(data.ratoonHarvest)+' buah']];
+    var items=[['Varietas','Queen'],['Gawangan aktif',integer(data.activeGawangan)+' gawangan'],['Populasi tercatat',integer(data.plants)+' tanaman'],['Luas operasional',area(data.areaHa)],['Tercatat dipupuk',integer(data.fertilized)+' tanaman'],['Tercatat ethrel',integer(data.ethrel)+' tanaman'],['Bunga/buah tercatat',integer(data.flowers)+' tanaman'],['Panen utama',integer(data.plantCropHarvest)+' buah'],['Panen ratoon',integer(data.ratoonHarvest)+' buah']];
     $('pa-kpis').innerHTML=items.map(function(item){return '<article><small>'+esc(item[0])+'</small><strong>'+esc(item[1])+'</strong></article>';}).join('');
   }
 
@@ -43,50 +43,6 @@
     var target=$(id),key=String(label||'').toLowerCase();
     target.textContent='Keyakinan '+(label||'—');
     target.className='dy-pa-confidence '+(key==='tinggi'?'high':key==='sedang'?'medium':'low');
-  }
-
-  function projectionColumn(item,value,max,label,detail) {
-    var height=value>0?Math.max(4,Math.round(value/max*150)):2;
-    return '<div class="dy-pa-projection-month"><strong>'+esc(detail)+'</strong><div class="dy-pa-projection-bar'+(value?'':' is-empty')+'" style="height:'+height+'px"><span>'+esc(value?integer(value):'')+'</span></div><small>'+esc(month(item.period))+'<br>'+esc(label)+'</small></div>';
-  }
-
-  function renderProjection(rows) {
-    var projection=window.DayunPineappleAnalysis.buildProjection(rows,{horizonMonths:12}),months=projection.months,a=projection.assumptions;
-    var harvestTotals=months.reduce(function(result,item){result.low+=item.harvest.low;result.base+=item.harvest.base;result.high+=item.harvest.high;return result;},{low:0,base:0,high:0});
-    var componentTotals=months.reduce(function(result,item){['confirmed','mainCropPotential','ratoon','ratoonCandidate','ratoonVerified'].forEach(function(component){['low','base','high'].forEach(function(key){result[component][key]+=item.harvest[component][key];});});return result;},{confirmed:{low:0,base:0,high:0},mainCropPotential:{low:0,base:0,high:0},ratoon:{low:0,base:0,high:0},ratoonCandidate:{low:0,base:0,high:0},ratoonVerified:{low:0,base:0,high:0}});
-    var mainCropTotals={low:componentTotals.confirmed.low+componentTotals.mainCropPotential.low,base:componentTotals.confirmed.base+componentTotals.mainCropPotential.base,high:componentTotals.confirmed.high+componentTotals.mainCropPotential.high};
-    var harvestMax=Math.max.apply(null,months.map(function(item){return item.harvest.high;}).concat([1]));
-    confidence('pa-harvest-confidence',a.harvestConfidence);
-    $('pa-harvest-projection-summary').innerHTML='<span>Belum panen utama: <b>'+integer(a.remainingPlantCrop)+' tanaman</b></span><span>Skenario panen utama 12 bulan: <b>'+integer(mainCropTotals.low)+'–'+integer(mainCropTotals.high)+' buah</b></span><span>Calon ratoon dari panen pertama: <b>'+integer(a.ratoonCandidatePool)+' tanaman</b></span><span>Proyeksi ratoon 12 bulan: <b>'+integer(componentTotals.ratoon.low)+'–'+integer(componentTotals.ratoon.high)+' buah</b></span><span>Data kegiatan terakhir: <b>'+date(a.lastActivityDate)+'</b></span>';
-    $('pa-harvest-components').innerHTML='<article class="confirmed"><small>TERKONFIRMASI BUNGA/BUAH</small><strong>'+integer(componentTotals.confirmed.low)+'–'+integer(componentTotals.confirmed.high)+' buah</strong><span>'+integer(a.flowerCount)+' tanaman menjadi dasar panen terdekat.</span></article><article class="potential"><small>POTENSI PANEN UTAMA</small><strong>'+integer(componentTotals.mainCropPotential.low)+'–'+integer(componentTotals.mainCropPotential.high)+' buah</strong><span>'+integer(a.inducedPending)+' pasca-ethrel · '+integer(a.vegetativePending)+' belum masuk fase bunga.</span></article><article class="ratoon"><small>CALON &amp; PROYEKSI RATOON</small><strong>'+integer(a.ratoonCandidatePool)+' calon tanaman</strong><span>'+integer(a.unverifiedRatoonCandidates)+' belum diverifikasi · '+integer(a.verifiedRatoonShoots)+' tunas produktif terverifikasi · '+integer(a.excludedRatoonCandidates)+' tidak dipertahankan. Skenario produksi: '+integer(componentTotals.ratoon.low)+'–'+integer(componentTotals.ratoon.high)+' buah.</span></article>';
-    $('pa-harvest-projection').innerHTML=months.map(function(item){
-      var highHeight=item.harvest.high?Math.max(4,Math.round(item.harvest.high/harvestMax*150)):2,baseHeight=item.harvest.base?Math.max(3,Math.round(item.harvest.base/harvestMax*150)):0,lowHeight=item.harvest.low?Math.max(2,Math.round(item.harvest.low/harvestMax*150)):0;
-      return '<div class="dy-pa-projection-month"><strong>'+integer(item.harvest.low)+'–'+integer(item.harvest.high)+'</strong><div class="dy-pa-projection-bar'+(item.harvest.high?'':' is-empty')+'" style="height:'+highHeight+'px">'+(item.harvest.high?'<i style="height:'+baseHeight+'px"></i><b style="bottom:'+lowHeight+'px"></b>':'')+'</div><small>'+esc(month(item.period))+'<br>'+integer(item.harvest.base)+' dasar</small></div>';
-    }).join('');
-
-    var ethrelTotal=months.reduce(function(result,item){result.gawangan+=item.ethrel.gawangan;result.plants+=item.ethrel.plants;return result;},{gawangan:0,plants:0});
-    var ethrelMax=Math.max.apply(null,months.map(function(item){return item.ethrel.plants;}).concat([1]));
-    confidence('pa-ethrel-confidence',a.ethrelConfidence);
-    $('pa-ethrel-projection-summary').innerHTML='<span>Perlu pemeriksaan: <b>'+integer(ethrelTotal.gawangan)+' gawangan</b></span><span>Maksimum tanaman diperiksa: <b>'+integer(ethrelTotal.plants)+'</b></span><span>Ethrel bertanggal lengkap: <b>'+integer(a.datedEthrel)+'</b></span><span>Periode belum rinci: <b>'+integer(a.undatedEthrel)+'</b></span>';
-    $('pa-ethrel-projection').innerHTML=months.map(function(item){return projectionColumn(item,item.ethrel.plants,ethrelMax,item.ethrel.gawangan+' gawangan',integer(item.ethrel.plants)+' diperiksa');}).join('');
-
-    var fertTotal=months.reduce(function(result,item){result.gawangan+=item.fertilizer.gawangan;result.verification+=item.fertilizer.phases.verification;result.phase2+=item.fertilizer.phases.phase2;result.phase3+=item.fertilizer.phases.phase3;['urea','npk'].forEach(function(material){result[material].low+=item.fertilizer.materials[material].lowKg;result[material].high+=item.fertilizer.materials[material].highKg;});return result;},{gawangan:0,verification:0,phase2:0,phase3:0,urea:{low:0,high:0},npk:{low:0,high:0}});
-    var fertMax=Math.max.apply(null,months.map(function(item){return item.fertilizer.gawangan;}).concat([1]));
-    confidence('pa-fertilizer-confidence',a.fertilizerConfidence);
-    $('pa-fertilizer-projection-summary').innerHTML='<span>Perlu verifikasi riwayat: <b>'+integer(fertTotal.verification)+' gawangan</b></span><span>Fase II indikatif: <b>'+integer(fertTotal.phase2)+' gawangan</b></span><span>Fase III indikatif: <b>'+integer(fertTotal.phase3)+' gawangan</b></span>';
-    $('pa-fertilizer-projection').innerHTML=months.map(function(item){var phases=[];if(item.fertilizer.phases.verification)phases.push('verifikasi '+item.fertilizer.phases.verification);if(item.fertilizer.phases.phase2)phases.push('fase II '+item.fertilizer.phases.phase2);if(item.fertilizer.phases.phase3)phases.push('fase III '+item.fertilizer.phases.phase3);return projectionColumn(item,item.fertilizer.gawangan,fertMax,phases.join(' · ')||'belum ada',item.fertilizer.gawangan+' gawangan');}).join('');
-    $('pa-fertilizer-materials').innerHTML='<article><small>UREA · RENTANG INDIKATIF</small><strong>'+decimal(fertTotal.urea.low)+(fertTotal.urea.low===fertTotal.urea.high?'':'–'+decimal(fertTotal.urea.high))+' kg</strong><span>Hanya dari fase II yang masuk horizon proyeksi.</span></article><article><small>NPK 15-15-15 · RENTANG INDIKATIF</small><strong>'+decimal(fertTotal.npk.low)+(fertTotal.npk.low===fertTotal.npk.high?'':'–'+decimal(fertTotal.npk.high))+' kg</strong><span>Gabungan fase II dan III yang masuk horizon proyeksi.</span></article>';
-  }
-
-  function loadProjectionWeather() {
-    var target=$('pa-projection-weather');
-    fetch('https://api.open-meteo.com/v1/forecast?latitude=0.5844&longitude=102.009&current=precipitation,weather_code&hourly=precipitation_probability,precipitation&forecast_days=2&timezone=Asia%2FJakarta',{cache:'no-store'}).then(function(response){if(!response.ok)throw new Error('Cuaca tidak tersedia');return response.json();}).then(function(weather){
-      var current=weather.current||{},hourly=weather.hourly||{},times=hourly.time||[],start=times.findIndex(function(time){return !current.time||time>=current.time;});if(start<0)start=0;
-      var rain=Number(current.precipitation)||0,chance=0;
-      times.slice(start,start+6).forEach(function(_,offset){var index=start+offset;rain+=Number((hourly.precipitation||[])[index])||0;chance=Math.max(chance,Number((hourly.precipitation_probability||[])[index])||0);});
-      var blocked=rain>0;target.classList.add(blocked?'is-rain':'is-clear');
-      target.innerHTML='<strong>'+(blocked?'Tunda aplikasi · hujan terukur':'Periksa lapangan · tidak ada hujan terukur')+'</strong><span>'+(blocked?'Hujan saat ini atau enam jam ke depan terukur '+decimal(rain)+' mm. Periksa ulang prakiraan sebelum aplikasi.':'Prakiraan enam jam tidak menunjukkan hujan terukur; peluang maksimum '+integer(chance)+'%. Pastikan tajuk dan titik tumbuh kering.')+'</span>';
-    }).catch(function(){target.innerHTML='<strong>Cuaca belum tersedia</strong><span>Periksa prakiraan per jam dan kondisi aktual sebelum aplikasi ethrel atau pupuk.</span>';});
   }
 
   function chart(rows) {
@@ -114,7 +70,7 @@
     var rows=selectedRows(),data=aggregate(rows);
     $('pa-block').value=selected;
     $('pa-data-date').innerHTML='Wilayah: <strong>'+(selected==='ALL'?'Seluruh Blok A–F':'Blok '+esc(selected))+'</strong> · Aktivitas terakhir: <strong>'+date(data.latestActivityDate)+'</strong>';
-    kpis(data);recommendations(data);renderProjection(rows);chart(rows);blockTable();gawanganTable(rows);
+    kpis(data);recommendations(data);chart(rows);blockTable();gawanganTable(rows);
   }
 
   Promise.all([window.DayunDataSource.fetchJSON('data/dayun-gawangan-details.json?v=20260917-performance1'),jsonp(PUBLIC_REPORTS_API).catch(function(error){console.warn(error);return{features:[]};})]).then(function(results){
@@ -123,7 +79,7 @@
     analysis._detailsById={};
     (details.objects||[]).forEach(function(object){analysis._detailsById[object.objectId]=(object.crops||[]).find(function(crop){return String(crop.crop||'').toUpperCase()==='NANAS';})||null;});
     if(analysis.blockCodes.indexOf(selected)<0&&selected!=='ALL')selected='ALL';
-    $('pa-status').hidden=true;$('pa-content').hidden=false;render();loadProjectionWeather();
+    $('pa-status').hidden=true;$('pa-content').hidden=false;render();
   }).catch(function(error){$('pa-status').textContent='Analisis belum dapat dimuat: '+error.message;});
 
   $('pa-block').addEventListener('change',function(){selected=this.value;var url=new URL(location.href);if(selected==='ALL')url.searchParams.delete('block');else url.searchParams.set('block',selected);history.replaceState(null,'',url);render();});

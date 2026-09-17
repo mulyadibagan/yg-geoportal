@@ -71,25 +71,24 @@ test('each planting polygon popup shows block and gawangan areas with a profile 
   assert.match(script, /dy-gawangan-picker/);
   assert.match(profile, /id="dg-map"/);
   assert.match(profileScript, /data\/dayun-gawangan-details\.json/);
-  assert.match(profileScript, /fetchEthrelWeather/);
+  assert.doesNotMatch(profileScript, /fetchEthrelWeather|open-meteo/);
   assert.doesNotMatch(profileScript, /November|Desember/);
   assert.match(profileScript, /Ethrel terakhir tercatat/);
-  assert.match(profileScript, /Riwayat tanam menunjukkan/);
-  assert.match(profileScript, /Prakiraan cuaca aplikasi/);
-  assert.match(profileScript, /Selisih administrasi, bukan otomatis kandidat aplikasi/);
+  assert.match(profileScript, /STATUS DATA FAKTUAL/);
+  assert.match(profileScript, /tanggal tanam lengkap yang telah dicatat/);
+  assert.match(profileScript, /Selisih populasi, estimasi hasil, dan calon ratoon tidak dihitung/);
+  assert.match(profileScript, /Sensus terverifikasi/);
   assert.doesNotMatch(profile + profileScript, /DATA GAWANG|Sumber:/i);
 });
 
-test('gawangan core renders before optional reports and weather finish', () => {
+test('gawangan core renders before optional published reports finish', () => {
   const script = fs.readFileSync(path.join(root, 'js/dayun-gawangan.js'), 'utf8');
   const source = fs.readFileSync(path.join(root, 'js/dayun-data-source.js'), 'utf8');
   const html = fs.readFileSync(path.join(root, 'dayun-gawangan.html'), 'utf8');
-  const coreRender = script.indexOf('render(record,features,allIds,null,null)');
+  const coreRender = script.indexOf('render(record,features,allIds,null)');
   const reportLoad = script.indexOf('jsonp(PUBLIC_REPORTS_API)', coreRender);
-  const weatherLoad = script.indexOf('fetchEthrelWeather()', coreRender);
   assert.ok(coreRender > 0);
   assert.ok(reportLoad > coreRender);
-  assert.ok(weatherLoad > coreRender);
   assert.match(script, /DayunDataSource\.fetchJSON\('data\/dayun-gawangan-details\.json/);
   assert.match(source, /workers\.dev/);
   assert.match(source, /return local\(localUrl\)/);

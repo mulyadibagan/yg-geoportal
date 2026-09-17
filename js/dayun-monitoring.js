@@ -4,12 +4,16 @@
   var API = 'https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec';
   var PROGRAMS = window.YG_DAYUN_NANAS_FERTILIZER_PROGRAMS || {};
   var ACTIVITY_GROUPS = [
+    { label: 'Sensus dan dokumentasi', activities: ['Sensus tanaman', 'Sensus bibit', 'Pembaruan foto'] },
     { label: 'Penanaman dan penyisipan', activities: ['Penanaman', 'Penyisipan'] },
     { label: 'Pemeliharaan tanaman', activities: ['Pemupukan', 'Penyiangan', 'Pengendalian HPT'] },
     { label: 'Pembungaan dan produksi', activities: ['Ethrel', 'Panen'] },
     { label: 'Observasi lapangan', activities: ['Monitoring umum'] }
   ];
   var ACTIVITY_META = {
+    'Sensus tanaman': { cluster: 'Sensus dan dokumentasi', panel: 'dm-panel-census' },
+    'Sensus bibit': { cluster: 'Sensus dan dokumentasi', panel: 'dm-panel-seedling' },
+    'Pembaruan foto': { cluster: 'Sensus dan dokumentasi', panel: 'dm-panel-photo' },
     'Penanaman': { cluster: 'Penanaman dan penyisipan', panel: 'dm-panel-establishment' },
     'Penyisipan': { cluster: 'Penanaman dan penyisipan', panel: 'dm-panel-establishment' },
     'Pemupukan': { cluster: 'Pemeliharaan tanaman' },
@@ -30,6 +34,7 @@
   var featuresById = {};
   var detailsById = {};
   var currentArea = 0;
+  var CENSUS_CROPS = ['NANAS','RAMBUTAN','ASAM KANDIS','NANGKA','PETAI','JENGKOL','TERONG','CABAI','BALANGERAN'];
 
   function $(id) { return document.getElementById(id); }
   function esc(value) {
@@ -94,19 +99,11 @@
   function populateCrops() {
     var record = detailsById[select.value];
     var crops = record && record.crops || [];
-    crop.disabled = !crops.length;
-    if (!crops.length) {
-      crop.innerHTML = '<option value="">Data komoditas belum tersedia</option>';
-      $('dm-crop-note').textContent = 'Komoditas belum tercatat pada gawangan ini.';
-    } else {
-      crop.innerHTML = (crops.length > 1 ? '<option value="">Pilih komoditas pada gawangan</option>' : '') + crops.map(function (item) {
-        return '<option value="' + esc(item.crop) + '">' + esc(item.crop) + '</option>';
-      }).join('');
-      if (crops.length === 1) crop.value = crops[0].crop;
-      $('dm-crop-note').textContent = crops.length === 1
-        ? 'Terisi otomatis dari data gawangan.'
-        : crops.length + ' komoditas tercatat. Pilih komoditas yang sedang dikerjakan.';
-    }
+    var names=crops.map(function(item){return normalizeCrop(item.crop);});
+    CENSUS_CROPS.forEach(function(name){if(names.indexOf(name)<0)names.push(name);});
+    crop.disabled = !select.value;
+    crop.innerHTML = '<option value="">Pilih komoditas yang diperiksa</option>' + names.map(function (name) { return '<option value="' + esc(name) + '">' + esc(name) + (crops.some(function(item){return normalizeCrop(item.crop)===name;})?' · tercatat':' · belum tercatat') + '</option>'; }).join('');
+    $('dm-crop-note').textContent = 'Komoditas baru dapat dipilih untuk sensus; jumlah tidak pernah diisi otomatis.';
     populateActivities();
   }
   function activityAllowed(name) {
@@ -225,11 +222,8 @@
     if (retained && !$('dm-ratoon-start-date').value) $('dm-ratoon-start-date').value = $('dm-date').value;
   }
   function suggestTechnicalValues() {
-    var record = selectedCropRecord();
-    var vegetation = record && Number(record.vegetationCount) > 0 ? Math.round(Number(record.vegetationCount)) : '';
     if (!$('dm-weed-area').value && currentArea) $('dm-weed-area').value = Number(currentArea.toFixed(2));
     if (!$('dm-generic-fert-area').value && currentArea) $('dm-generic-fert-area').value = Number(currentArea.toFixed(2));
-    ['dm-fert-population', 'dm-generic-fert-count', 'dm-observation-count'].forEach(function (id) { if (!$(id).value && vegetation) $(id).value = vegetation; });
   }
   function syncActivityForm() {
     var name = activity.value;
@@ -243,7 +237,7 @@
     ['dm-fert-phase', 'dm-fert-population', 'dm-fert-weather', 'dm-fert-method', 'dm-fert-supervisor'].forEach(function (id) { $(id).required = nanasFertilizer; });
     Array.prototype.forEach.call(document.querySelectorAll('.dm-fert-actual'), function (field) { field.required = nanasFertilizer; });
     if (!nanasFertilizer) $('dm-fert-deviation').required = false;
-    var needsPhoto = ['Pemupukan', 'Pengendalian HPT', 'Ethrel', 'Panen'].indexOf(name) >= 0;
+    var needsPhoto = ['Sensus tanaman', 'Sensus bibit', 'Pembaruan foto', 'Pemupukan', 'Pengendalian HPT', 'Ethrel', 'Panen'].indexOf(name) >= 0;
     photos.required = needsPhoto;
     $('dm-photo-label').textContent = needsPhoto ? '(wajib untuk kegiatan ini, maksimal 3)' : '(opsional, maksimal 3)';
     $('dm-fert-area').value = currentArea ? fmt(currentArea, 2) + ' ha' : '—';
@@ -263,6 +257,9 @@
 
   function activitySnapshot() {
     var name = activity.value;
+    if (name === 'Sensus tanaman') return { livingPlantCount: numberValue('dm-census-living'), deadPlantCount: numberValue('dm-census-dead'), emptySpotCount: numberValue('dm-census-empty'), censusMethod: $('dm-census-method').value, plantingDate: $('dm-census-planting-date').value, counter: $('dm-census-counter').value.trim(), exactCount: true };
+    if (name === 'Sensus bibit') return { readySeedlingCount: numberValue('dm-seed-ready'), immatureSeedlingCount: numberValue('dm-seed-immature'), damagedSeedlingCount: numberValue('dm-seed-damaged'), allocatedSeedlingCount: numberValue('dm-seed-allocated'), seedlingSourceType: $('dm-seed-source-type').value.trim(), exactCount: true };
+    if (name === 'Pembaruan foto') return { condition: $('dm-photo-condition').value, focus: $('dm-photo-focus').value.trim() };
     if (name === 'Penanaman' || name === 'Penyisipan') return { plantingDate: $('dm-planting-date').value, plantCount: numberValue('dm-est-count'), spacing: $('dm-est-spacing').value.trim(), seedlingSource: $('dm-est-source').value.trim(), replacementReason: name === 'Penyisipan' ? $('dm-est-reason').value.trim() : '' };
     if (name === 'Penyiangan') return { treatedAreaHa: numberValue('dm-weed-area'), method: $('dm-weed-method').value, weedCondition: $('dm-weed-level').value, workerCount: numberValue('dm-weed-workers') };
     if (name === 'Pengendalian HPT') return { affectedPlantCount: numberValue('dm-hpt-count'), severity: $('dm-hpt-severity').value, symptoms: $('dm-hpt-symptom').value.trim(), controlAction: $('dm-hpt-control').value.trim(), material: $('dm-hpt-material').value.trim() };
@@ -275,6 +272,9 @@
   function compatibilityFields(details, fertilizer) {
     var name = activity.value;
     if (fertilizer) return { quantity: null, unit: '', material: fertilizer.materials.map(function (item) { return item.name + ' ' + fmt(item.actualKg, 2) + ' kg (' + item.status + ')'; }).join(' · '), condition: '' };
+    if (name === 'Sensus tanaman') return { quantity: details.livingPlantCount, unit: 'batang hidup', material: details.censusMethod, condition: 'Sensus terverifikasi admin' };
+    if (name === 'Sensus bibit') return { quantity: details.readySeedlingCount, unit: 'bibit siap tanam', material: details.seedlingSourceType, condition: 'Sensus bibit' };
+    if (name === 'Pembaruan foto') return { quantity: null, unit: '', material: details.focus, condition: details.condition };
     if (name === 'Penanaman' || name === 'Penyisipan') return { quantity: details.plantCount, unit: 'batang', material: details.seedlingSource, condition: '' };
     if (name === 'Penyiangan') return { quantity: details.treatedAreaHa, unit: 'ha', material: details.method, condition: details.weedCondition };
     if (name === 'Pengendalian HPT') return { quantity: details.affectedPlantCount, unit: 'batang', material: details.material || details.controlAction, condition: details.severity };
@@ -292,7 +292,10 @@
   function followUpRecommendation(details, eventDate) {
     var name = activity.value;
     var recommendation = { source: 'system', requiresAdminConfirmation: true, action: '', windowDaysMin: 0, windowDaysMax: 0 };
-    if (name === 'Penanaman') Object.assign(recommendation, { action: 'Periksa daya hidup dan kondisi awal tanaman baru.', windowDaysMin: 7, windowDaysMax: 14 });
+    if (name === 'Sensus tanaman') Object.assign(recommendation, { action: 'Admin memeriksa kesesuaian hitungan, identitas gawangan, dan foto bukti.', windowDaysMin: 0, windowDaysMax: 7 });
+    else if (name === 'Sensus bibit') Object.assign(recommendation, { action: 'Admin memeriksa klasifikasi bibit dan potensi alokasi faktual.', windowDaysMin: 0, windowDaysMax: 7 });
+    else if (name === 'Pembaruan foto') Object.assign(recommendation, { action: 'Bandingkan dokumentasi dengan pembaruan bulan berikutnya.', windowDaysMin: 25, windowDaysMax: 35 });
+    else if (name === 'Penanaman') Object.assign(recommendation, { action: 'Periksa daya hidup dan kondisi awal tanaman baru.', windowDaysMin: 7, windowDaysMax: 14 });
     else if (name === 'Penyisipan') Object.assign(recommendation, { action: 'Periksa keberhasilan hidup tanaman sisipan dan kebutuhan penyisipan ulang.', windowDaysMin: 7, windowDaysMax: 14 });
     else if (name === 'Pemupukan') Object.assign(recommendation, { action: 'Periksa respons tanaman serta gejala kekurangan atau kelebihan unsur.', windowDaysMin: 14, windowDaysMax: 21 });
     else if (name === 'Penyiangan') Object.assign(recommendation, { action: 'Nilai kembali pertumbuhan gulma dan kebutuhan pemeliharaan lanjutan.', windowDaysMin: 21, windowDaysMax: 30 });
@@ -409,7 +412,7 @@
       var compatible = compatibilityFields(details, fertilizer);
       var meta = ACTIVITY_META[activity.value] || {};
       var recommendation = followUpRecommendation(details, eventDate);
-      var info = { schemaVersion: 'dayun-monitoring-v6', monitoringType: 'Agroforestri Dayun', activityCluster: meta.cluster || '', activityType: activity.value, crop: crop.value, eventDate: eventDate, plantingDate: details.plantingDate || '', condition: compatible.condition, quantity: compatible.quantity, unit: compatible.unit, material: compatible.material, activityDetails: details, followUpRecommendation: recommendation, notes: $('dm-notes').value.trim(), fertilizer: fertilizer };
+      var info = { schemaVersion: 'dayun-monitoring-v7', monitoringType: 'Agroforestri Dayun', activityCluster: meta.cluster || '', activityType: activity.value, crop: crop.value, eventDate: eventDate, plantingDate: details.plantingDate || '', recordKey: [select.value,eventDate,activity.value,crop.value].join('|'), condition: compatible.condition, quantity: compatible.quantity, unit: compatible.unit, material: compatible.material, activityDetails: details, followUpRecommendation: recommendation, notes: $('dm-notes').value.trim(), fertilizer: fertilizer };
       var clientId = 'dayun-' + Date.now() + '-' + Math.floor(Math.random() * 100000);
       var payload = { clientSubmissionId: clientId, reportType: 'Monitoring', name: reporter, organization: organization, email: email, phone: phone, province: 'Riau', regency: 'Siak', district: 'Dayun', village: 'Dayun', locationName: 'Gawangan ' + id.replace('DAYUN-GT-', ''), title: activity.value + ' ' + info.crop + ' · ' + id.replace('DAYUN-GT-', ''), activityDate: eventDate, description: info.notes, oldInformation: JSON.stringify(detailsById[id] || {}), proposedInformation: JSON.stringify(info), geometryType: geometry.type, geometryGeoJSON: JSON.stringify(geometry), targetLayerId: 'dayun_gawangan', targetLayerLabel: 'Gawangan Agroforestri Dayun', targetSourceType: 'dayun_gawangan', targetObjectId: id, targetFeatureProperties: JSON.stringify(Object.assign({}, properties, { Object_ID: id, objectId: id })), proposedChanges: JSON.stringify({ monitoring: info }), images: images, documents: [] };
       await fetch(API, { method: 'POST', mode: 'no-cors', body: new URLSearchParams({ payload: JSON.stringify(payload) }) });

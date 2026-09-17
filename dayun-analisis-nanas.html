@@ -32,7 +32,7 @@
     <div id="pa-status" class="dy-summary-loading" role="status">Menghitung analisis Nanas Queen dari data gawangan…</div>
     <div id="pa-content" hidden>
       <section class="dy-summary-kpis dy-pa-kpis" id="pa-kpis" aria-label="Ringkasan Nanas Queen"></section>
-      <p class="dy-pa-caveat">Jumlah “belum panen utama” adalah selisih administratif antara populasi dan panen utama yang tercatat. Panen ratoon dipisahkan agar tidak mengurangi populasi plant crop dua kali.</p>
+      <p class="dy-pa-caveat">Angka pada halaman ini adalah data sumber awal dan realisasi kegiatan terverifikasi. Sistem tidak menghitung selisih populasi, potensi panen, atau jadwal aplikasi sebagai perkiraan.</p>
 
       <section class="dy-section">
         <div class="dy-section-head"><div><span>REKOMENDASI KEGIATAN</span><h2>Keputusan berbasis data dan verifikasi</h2></div><p>Sistem menunjukkan prioritas pemeriksaan. Dosis, jadwal aplikasi, dan keputusan panen tetap dikonfirmasi pendamping teknis.</p></div>
@@ -40,31 +40,8 @@
       </section>
 
       <section class="dy-section" id="pa-projection-section">
-        <div class="dy-section-head"><div><span>PROYEKSI KEGIATAN</span><h2>Panen, ethrel, dan pemupukan</h2></div><p>Proyeksi 12 bulan memperlihatkan skenario dan kebutuhan pemeriksaan. Angka proyeksi tidak digabungkan dengan realisasi.</p></div>
-        <div class="dy-pa-weather" id="pa-projection-weather" aria-live="polite"><strong>Cuaca untuk kegiatan terdekat</strong><span>Memuat prakiraan hujan enam jam…</span></div>
-        <div class="dy-pa-projection-stack">
-          <article class="dy-pa-projection-card">
-            <header><div><span>PROYEKSI PANEN</span><h3>Potensi panen utama dan ratoon</h3></div><b class="dy-pa-confidence" id="pa-harvest-confidence">Keyakinan —</b></header>
-            <div class="dy-pa-projection-summary" id="pa-harvest-projection-summary"></div>
-            <div class="dy-pa-harvest-components" id="pa-harvest-components"></div>
-            <div class="dy-pa-range-legend"><span><i class="low"></i>Rendah</span><span><i class="base"></i>Dasar</span><span><i class="high"></i>Tinggi</span></div>
-            <div class="dy-pa-projection-chart dy-pa-harvest-projection" id="pa-harvest-projection" role="img" aria-label="Grafik proyeksi panen Nanas Queen 12 bulan"></div>
-            <p class="dy-pa-projection-note">Terkonfirmasi berasal dari bunga/buah tercatat. Potensi panen utama berasal dari tanaman belum panen menurut fase ethrel dan umur. Setiap panen utama pertama otomatis menjadi calon ratoon; status dan jumlah tunas hasil monitoring menggantikan perkiraan awal. Rentang calon ratoon yang belum diverifikasi memakai skenario perencanaan 30%, 60%, dan 100%, bukan kepastian hasil.</p>
-          </article>
-          <article class="dy-pa-projection-card">
-            <header><div><span>PROYEKSI ETHREL</span><h3>Jadwal pemeriksaan kelayakan</h3></div><b class="dy-pa-confidence" id="pa-ethrel-confidence">Keyakinan —</b></header>
-            <div class="dy-pa-projection-summary" id="pa-ethrel-projection-summary"></div>
-            <div class="dy-pa-projection-chart" id="pa-ethrel-projection" role="img" aria-label="Grafik proyeksi pemeriksaan kelayakan ethrel 12 bulan"></div>
-            <p class="dy-pa-projection-note">Jumlah tanaman adalah selisih administratif yang perlu diperiksa. Aplikasi hanya dilakukan setelah kelompok tanaman, lebih dari 30 daun, kesehatan, tajuk, riwayat, dan cuaca dikonfirmasi.</p>
-          </article>
-          <article class="dy-pa-projection-card">
-            <header><div><span>PROYEKSI PEMUPUKAN</span><h3>Fase dan kebutuhan bahan indikatif</h3></div><b class="dy-pa-confidence" id="pa-fertilizer-confidence">Keyakinan —</b></header>
-            <div class="dy-pa-projection-summary" id="pa-fertilizer-projection-summary"></div>
-            <div class="dy-pa-projection-chart" id="pa-fertilizer-projection" role="img" aria-label="Grafik proyeksi pemupukan Nanas Queen 12 bulan"></div>
-            <div class="dy-pa-materials" id="pa-fertilizer-materials"></div>
-            <p class="dy-pa-projection-note">Rentang bahan mengikuti fase SOP dan luas operasional. Riwayat tanggal, bahan, dosis, pH, dan kondisi tanaman harus dilengkapi sebelum dosis kerja ditetapkan.</p>
-          </article>
-        </div>
+        <div class="dy-section-head"><div><span>KESIAPAN ANALISIS</span><h2>Proyeksi otomatis belum diaktifkan</h2></div><p>Proyeksi panen, ethrel, dan pemupukan baru dapat dibuat setelah data per gawangan memenuhi syarat faktual.</p></div>
+        <div class="dy-pa-projection-card"><header><div><span>DATA WAJIB</span><h3>Dasar analisis tanpa perkiraan</h3></div></header><div class="dy-pa-projection-summary"><span>Sensus populasi per gawangan</span><span>Tanggal tanam lengkap</span><span>Riwayat pupuk aktual</span><span>Realisasi ethrel dan panen</span><span>Jumlah ratoon hasil inspeksi</span></div><p class="dy-pa-projection-note">Gunakan formulir monitoring untuk memasukkan bukti lapangan. Data baru tampil setelah verifikasi dan publikasi admin.</p></div>
       </section>
 
       <section class="dy-section">
@@ -79,14 +56,14 @@
 
       <section class="dy-section">
         <div class="dy-section-head"><div><span>PRIORITAS GAWANGAN</span><h2>Daftar pemeriksaan lapangan</h2></div><p>Urutan mendahulukan gawangan dengan bunga/buah, riwayat ethrel, atau data yang perlu dilengkapi.</p></div>
-        <div class="dy-block-table-wrap"><table class="dy-block-table dy-pa-gawangan-table"><thead><tr><th>Gawangan</th><th>Umur perkiraan</th><th>Populasi</th><th>Ethrel</th><th>Bunga/buah</th><th>Panen</th><th>Prioritas</th><th></th></tr></thead><tbody id="pa-gawangan-table"></tbody></table></div>
+        <div class="dy-block-table-wrap"><table class="dy-block-table dy-pa-gawangan-table"><thead><tr><th>Gawangan</th><th>Umur terverifikasi</th><th>Populasi tercatat</th><th>Ethrel</th><th>Bunga/buah</th><th>Panen</th><th>Prioritas</th><th></th></tr></thead><tbody id="pa-gawangan-table"></tbody></table></div>
       </section>
     </div>
   </main>
   <footer class="dy-footer">YG GeoPortal · Analisis Komoditas Nanas Queen Dayun</footer>
   <script src="js/navigation-v2.js?v=20260821-staff-name1"></script>
   <script src="js/dayun-data-source.js?v=20260917-cloudflare1"></script>
-  <script src="js/dayun-pineapple-analysis.js?v=20260917-cohort2"></script>
-  <script src="js/dayun-analisis-nanas.js?v=20260917-cloudflare1"></script>
+  <script src="js/dayun-pineapple-analysis.js?v=20260917-factual1"></script>
+  <script src="js/dayun-analisis-nanas.js?v=20260917-factual1"></script>
 </body>
 </html>

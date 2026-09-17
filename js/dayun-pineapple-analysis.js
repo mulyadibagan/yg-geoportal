@@ -67,7 +67,8 @@
   }
 
   function ageMonths(period, asOf) {
-    var planted = parsePlantingPeriod(period);
+    var match=String(period||'').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    var planted=match?new Date(Number(match[1]),Number(match[2])-1,Number(match[3])):null;
     if (!planted) return null;
     var now = asOf instanceof Date ? asOf : new Date(asOf || Date.now());
     var months = (now.getFullYear() - planted.getFullYear()) * 12 + now.getMonth() - planted.getMonth();
@@ -100,7 +101,7 @@
 
   function recommendation(row) {
     if (row.plants <= 0) return {code:'data', label:'Lengkapi data', detail:'Populasi aktif dan luas operasional belum tercatat.'};
-    if (!row.plantingPeriod) return {code:'data', label:'Verifikasi umur', detail:'Periode tanam belum tersedia; umur dan fase tidak dapat ditentukan.'};
+    if (row.ageMonths == null) return {code:'data', label:'Verifikasi umur', detail:'Tanggal tanam lengkap belum tersedia; umur dan fase tidak dihitung.'};
     if (row.flowers > 0) return {code:'harvest', label:'Pantau kematangan', detail:'Bunga/buah tercatat; periksa warna kulit, bentuk mata, aroma, kondisi buah, dan kebutuhan pasar.'};
     if (row.ethrel > 0) return {code:'ethrel-followup', label:'Evaluasi hasil induksi', detail:'Ethrel pernah tercatat; verifikasi keseragaman bunga, buah, dan catatan panen pada kelompok yang sama.'};
     if (row.ageMonths != null && row.ageMonths >= 12) return {code:'ethrel-check', label:'Periksa kelayakan ethrel', detail:'Umur hanya saringan awal. Pastikan tanaman sehat, seragam, lebih dari 30 daun, tajuk membuka, dan cuaca sesuai.'};
