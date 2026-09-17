@@ -79,6 +79,7 @@ style.textContent=`
 .yg-progress-head strong{font-size:14px;color:#17332a}.yg-progress-head span{font-size:13px;font-weight:700;color:#08724a}
 .yg-progress-track{height:10px;border-radius:999px;background:#e8efeb;overflow:hidden}.yg-progress-track i{display:block;height:100%;border-radius:inherit;background:#08724a;transition:width .45s ease}
 .yg-progress-meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:9px;color:#667a72;font-size:12px}
+.yg-survey-meta{margin-top:11px;padding:10px 12px;border-radius:9px;background:#f5f9f7;color:#365d4e;font-size:12px;line-height:1.55}.yg-survey-meta strong{color:#17332a}
 .yg-progress-steps{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;margin-top:12px}.yg-progress-step{font-size:10px;line-height:1.25;text-align:center;color:#829189;padding-top:7px;border-top:3px solid #dde6e1}.yg-progress-step.done{color:#285747;border-color:#51a37d}.yg-progress-step.active{color:#08724a;font-weight:700;border-color:#08724a}
 @media(max-width:760px){.yg-progress-steps{grid-template-columns:repeat(3,1fr)}}`;
 document.head.appendChild(style);
@@ -104,6 +105,31 @@ const stepDefs=[
   ['orthomosaic','Orthomosaic'],
   ['saving','Menyiapkan hasil']
 ];
+
+function formatSurveyDate(value){
+  const m=String(value||'').match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if(!m) return '';
+  const months=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  return `${Number(m[3])} ${months[Number(m[2])-1]} ${m[1]}`;
+}
+function formatSurveyTime(value){
+  const m=String(value||'').match(/T(\d{2}):(\d{2})/);
+  return m?`${m[1]}:${m[2]}`:'';
+}
+function surveyMetaHtml(job){
+  if(!job.surveyDate){
+    if(job.status==='pending'||job.status==='uploading'||job.stage==='downloading') return '<div class="yg-survey-meta">Tanggal survei akan dibaca dari metadata foto setelah foto diperiksa.</div>';
+    return '';
+  }
+  const date=formatSurveyDate(job.surveyDate);
+  const start=formatSurveyTime(job.surveyStartAt), end=formatSurveyTime(job.surveyEndAt);
+  const time=start?(end&&end!==start?`${start}–${end}`:start):'';
+  const cameras=Array.isArray(job.cameraModels)?job.cameraModels.filter(Boolean).join(', '):'';
+  const parts=[`<strong>Tanggal survei:</strong> ${date}`];
+  if(time) parts.push(`<strong>Waktu:</strong> ${time}`);
+  if(cameras) parts.push(`<strong>Kamera:</strong> ${cameras}`);
+  return `<div class="yg-survey-meta">${parts.join(' · ')}</div>`;
+}
 
 function renderProgress(job){
   if(!job) return;
@@ -135,9 +161,18 @@ function renderProgress(job){
   if(job.validPhotos!=null) counts.push(`${job.validPhotos} foto digunakan`);
   if(job.excludedPhotos!=null) counts.push(`${job.excludedPhotos} foto tidak digunakan`);
   if(job.status==='pending'&&job.queuePosition) counts.push(`Antrean ${job.queuePosition}${job.queueSize?`/${job.queueSize}`:''}`);
-  box.innerHTML=`<div class="yg-progress-head"><strong>${cleanText(label||'Memproses orthomosaic')}</strong><span>${Math.round(progress)}%</span></div><div class="yg-progress-track"><i style="width:${Math.max(0,Math.min(100,progress))}%"></i></div>${counts.length?`<div class="yg-progress-meta">${counts.map(x=>`<span>${x}</span>`).join('')}</div>`:''}<div class="yg-progress-steps">${steps}</div>`;
+  box.innerHTML=`<div class="yg-progress-head"><strong>${cleanText(label||'Memproses orthomosaic')}</strong><span>${Math.round(progress)}%</span></div><div class="yg-progress-track"><i style="width:${Math.max(0,Math.min(100,progress))}%"></i></div>${counts.length?`<div class="yg-progress-meta">${counts.map(x=>`<span>${x}</span>`).join('')}</div>`:''}${surveyMetaHtml(job)}<div class="yg-progress-steps">${steps}</div>`;
   const action=document.getElementById('jobActions');
   if(action) action.hidden=job.status!=='ready';
+}
+
+// Jangan membuat tanggal survei dari tanggal saat pengguna menekan tombol proses.
+const startButton=document.getElementById('startOrthomosaic');
+if(startButton){
+  startButton.addEventListener('click',()=>{
+    const title=document.getElementById('processTitle');
+    if(title && !title.value.trim()) title.value='Survei drone';
+  },true);
 }
 
 const nativeFetch=window.fetch.bind(window);
