@@ -66,6 +66,7 @@ test("monthly report exposes RSPO analysis only to a staff session", () => {
   assert.match(internal, /section\.id='fm-internal-'\+kind/);
   assert.match(controller, /const publicFetch=window\.fetch\.bind\(window\)/);
   assert.match(controller, /json\(publicFetch,'data\/fire-monthly\/index\.json\?v=5'/);
+  assert.match(controller, /requestedMonth\?json\(publicFetch,'data\/fire-monthly\/'\+requestedMonth\+'\.json\?v=direct1'/);
   assert.match(controller, /safePrivate\(json\(staffFetch,'data\/rspo-company-boundaries\.geojson'/);
   assert.match(controller, /safePrivate\(json\(staffFetch,'data\/PERHUTANAN_SOSIAL_RIAU\.geojson'/);
   assert.match(controller, /function timed\(promise,label\)/);

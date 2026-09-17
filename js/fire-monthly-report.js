@@ -6,6 +6,7 @@
   const emptyGeo=()=>({type:'FeatureCollection',features:[]});
   var month=new URLSearchParams(location.search).get('month');
   if(!/^\d{4}-(0[1-9]|1[0-2])$/.test(month||''))month=null;
+  var requestedMonth=month;
   var map=L.map('monthly-fire-map',{preferCanvas:true}).fitBounds([[-1.3,100],[2.9,104.9]]);
   L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:19,attribution:'Tiles &copy; Esri'}).addTo(map);
 
@@ -32,13 +33,16 @@
 
   Promise.all([
     json(publicFetch,'data/fire-monthly/index.json?v=5','indeks laporan belum tersedia'),
-    json(publicFetch,'data/burned-area-monthly/index.json','archive').catch(function(){return {reports:[]}})
+    json(publicFetch,'data/burned-area-monthly/index.json','archive').catch(function(){return {reports:[]}}),
+    json(publicFetch,'data/batas_administrasi_desa_riau.geojson','batas desa belum tersedia'),
+    requestedMonth?json(publicFetch,'data/fire-monthly/'+requestedMonth+'.json?v=direct1','snapshot belum tersedia').catch(function(){return null}):Promise.resolve(null)
   ]).then(function(indexes){
     var index=indexes[0];
     (indexes[1].reports||[]).forEach(function(r){if(!index.reports.some(function(x){return x.month===r.month}))index.reports.push({month:r.month,status:'partial'})});
     index.reports.sort(function(a,b){return b.month.localeCompare(a.month)});
-    return index;
-  }).then(function(index){
+    return {index:index,villageGeo:indexes[2],preloaded:indexes[3]};
+  }).then(function(bundle){
+    var index=bundle.index;
     var reports=index.reports||[],selected=reports.find(function(x){return x.month===month})||reports[0];
     if(!selected)throw Error('belum ada laporan');
     month=selected.month;
@@ -47,10 +51,8 @@
     picker.onchange=function(){location.search='?month='+encodeURIComponent(picker.value)};
     history.replaceState(null,'','?month='+encodeURIComponent(month));
     var fallback={month:month,status:'partial',unavailable:true,period:{start:month+'-01',end:new Date(Date.UTC(Number(month.slice(0,4)),Number(month.slice(5)),0)).toISOString().slice(0,10)},summary:{},daily:[],villages:[],companies:[],rspoAreas:[],hotspots:[]};
-    return Promise.all([
-      selected.data?json(publicFetch,selected.data+'?v='+encodeURIComponent(selected.generatedAt||'1'),'snapshot belum tersedia'):Promise.resolve(fallback),
-      json(publicFetch,'data/batas_administrasi_desa_riau.geojson','batas desa belum tersedia')
-    ]);
+    var reportPromise=bundle.preloaded&&requestedMonth===selected.month?Promise.resolve(bundle.preloaded):(selected.data?json(publicFetch,selected.data+'?v='+encodeURIComponent(selected.generatedAt||'1'),'snapshot belum tersedia'):Promise.resolve(fallback));
+    return Promise.all([reportPromise,Promise.resolve(bundle.villageGeo)]);
   }).then(function(result){
     if(staffSession){
       document.getElementById('fm-companies').closest('article').hidden=false;
