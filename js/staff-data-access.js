@@ -19,6 +19,7 @@
   ]);
   const session = () => window.YG_AUTH && window.YG_AUTH.readStoredSession();
   let geometry;
+  const privateResponses = new Map();
   function route(url) {
     const parsed = new URL(url, location.href);
     if (parsed.origin !== location.origin) return null;
@@ -30,11 +31,19 @@
   async function privateFetch(url) {
     const target = route(url), current = session();
     if (!target || !current) throw Error('Login staf diperlukan untuk data internal.');
-    const response = await window.fetch(base + target, {
-      headers: { authorization: 'Bearer ' + current.token }, cache: 'no-store'
-    });
-    if (!response.ok) throw Error(response.status === 401 ? 'Sesi staf tidak valid. Silakan login kembali.' : 'Data internal belum dapat dimuat (' + response.status + ').');
-    return response;
+    const cacheKey = current.token + '|' + target;
+    if (!privateResponses.has(cacheKey)) {
+      privateResponses.set(cacheKey, window.fetch(base + target, {
+        headers: { authorization: 'Bearer ' + current.token }, cache: 'default'
+      }).then(response => {
+        if (!response.ok) throw Error(response.status === 401 ? 'Sesi staf tidak valid. Silakan login kembali.' : 'Data internal belum dapat dimuat (' + response.status + ').');
+        return response;
+      }).catch(error => {
+        privateResponses.delete(cacheKey);
+        throw error;
+      }));
+    }
+    return (await privateResponses.get(cacheKey)).clone();
   }
   async function pbph() {
     if (!geometry) geometry = privateFetch('data/PBPH_RIAU_052026.geojson').then(r => r.json()).catch(e => { geometry = null; throw e; });

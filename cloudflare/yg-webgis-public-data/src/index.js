@@ -142,18 +142,45 @@ async function donorAdminResultApi(request, env, url) {
     return console.error({ event: "donor_admin_result_api_failed", message: error.message }), staffJson({ ok: false, error: "upstream_unavailable" }, 502, { "retry-after": "30" });
   }
 }
+const staffTokenCache = new Map();
+const staffTokenChecks = new Map();
+const STAFF_TOKEN_CACHE_MS = 60 * 1000;
+const STAFF_TOKEN_CACHE_LIMIT = 256;
+function rememberValidStaffToken(token) {
+  if (!token) return;
+  const now = Date.now();
+  if (staffTokenCache.size >= STAFF_TOKEN_CACHE_LIMIT) {
+    for (const [key, expiresAt] of staffTokenCache) {
+      if (expiresAt <= now || staffTokenCache.size >= STAFF_TOKEN_CACHE_LIMIT) staffTokenCache.delete(key);
+    }
+  }
+  staffTokenCache.set(token, now + STAFF_TOKEN_CACHE_MS);
+}
 async function validStaffToken(token, env) {
   if (!token) return false;
-  const upstream = new URL(env.APPS_SCRIPT_BASE);
-  upstream.searchParams.set("page", "staff-reports"), upstream.searchParams.set("sessionToken", token);
-  try {
-    const response = await fetch(upstream.toString(), { headers: { accept: "application/json", "user-agent": "YG-GeoPortal-Cloudflare-RSPO/1.0" }, redirect: "follow" });
-    if (!response.ok) return false;
-    const data = normalizeJson(await response.json());
-    return Boolean(data) && true !== data.requiresLogin && false !== data.ok;
-  } catch {
-    return false;
-  }
+  const cachedUntil = staffTokenCache.get(token) || 0;
+  if (cachedUntil > Date.now()) return true;
+  staffTokenCache.delete(token);
+  if (staffTokenChecks.has(token)) return staffTokenChecks.get(token);
+
+  const check = (async () => {
+    const upstream = new URL(env.APPS_SCRIPT_BASE);
+    upstream.searchParams.set("page", "staff-reports"), upstream.searchParams.set("sessionToken", token);
+    try {
+      const response = await fetch(upstream.toString(), { headers: { accept: "application/json", "user-agent": "YG-GeoPortal-Cloudflare-RSPO/1.0" }, redirect: "follow" });
+      if (!response.ok) return false;
+      const data = normalizeJson(await response.json());
+      const valid = Boolean(data) && true !== data.requiresLogin && false !== data.ok;
+      if (valid) rememberValidStaffToken(token);
+      return valid;
+    } catch {
+      return false;
+    } finally {
+      staffTokenChecks.delete(token);
+    }
+  })();
+  staffTokenChecks.set(token, check);
+  return check;
 }
 async function rspoGroupsApi(request, env) {
   const token = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "").trim() || "";
@@ -162,7 +189,7 @@ async function rspoGroupsApi(request, env) {
     const object = await env.PUBLIC_SNAPSHOTS?.get("internal/rspo/riau-groups.geojson");
     if (!object) return staffJson({ ok: false, error: "overview_unavailable" }, 503, { "retry-after": "30" });
     const headers = new Headers();
-    return object.writeHttpMetadata(headers), Object.entries(STAFF_API_HEADERS).forEach(([k, v]) => headers.set(k, v)), headers.set("content-type", "application/geo+json; charset=utf-8"), headers.set("cache-control", "private, max-age=300"), headers.set("etag", object.httpEtag), headers.set("x-yg-data-source", "r2-private-route"), new Response("HEAD" === request.method ? null : object.body, { headers });
+    return object.writeHttpMetadata(headers), Object.entries(STAFF_API_HEADERS).forEach(([k, v]) => headers.set(k, v)), headers.set("content-type", "application/geo+json; charset=utf-8"), headers.set("cache-control", "private, max-age=300"), headers.set("vary", "Authorization"), headers.set("etag", object.httpEtag), headers.set("x-yg-data-source", "r2-private-route"), new Response("HEAD" === request.method ? null : object.body, { headers });
   } catch (error) {
     return console.error({ event: "rspo_groups_failed", message: error.message }), staffJson({ ok: false, error: "overview_unavailable" }, 503, { "retry-after": "30" });
   }
@@ -199,7 +226,8 @@ async function privateDataApi(request, env, url) {
     const headers = new Headers();
     Object.entries(STAFF_API_HEADERS).forEach(([k, v]) => headers.set(k, v));
     headers.set("content-type", route[1]);
-    headers.set("cache-control", "private, no-store");
+    headers.set("cache-control", "private, max-age=300");
+    headers.set("vary", "Authorization");
     headers.set("etag", object.httpEtag);
     headers.set("x-yg-data-source", "r2-private-route");
     return new Response("HEAD" === request.method ? null : object.body, { headers });

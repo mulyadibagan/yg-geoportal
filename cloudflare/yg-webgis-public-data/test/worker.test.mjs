@@ -150,9 +150,33 @@ test("PBPH reference and reports require a valid staff session", async () => {
       assert.equal(denied.status, 401, path);
       const allowed = await worker.fetch(new Request("https://data.test" + path, { headers: { authorization: "Bearer valid-session" } }), env);
       assert.equal(allowed.status, 200, path);
-      assert.equal(allowed.headers.get("cache-control"), "private, no-store");
+      assert.equal(allowed.headers.get("cache-control"), "private, max-age=300");
+      assert.equal(allowed.headers.get("vary"), "Authorization");
       assert.equal(allowed.headers.get("access-control-allow-origin"), "https://webgisyg.id");
     }
+  } finally { globalThis.fetch = originalFetch; }
+});
+
+
+test("parallel staff geometry requests share one Apps Script token check", async () => {
+  const originalFetch = globalThis.fetch;
+  let checks = 0;
+  globalThis.fetch = async url => {
+    checks += 1;
+    assert.match(String(url), /page=staff-reports/);
+    await new Promise(resolve => setTimeout(resolve, 10));
+    return new Response(JSON.stringify({ reports: [], stats: {} }), { headers: { "content-type": "application/json" } });
+  };
+  try {
+    const env = envWith({ type: "FeatureCollection", features: [] });
+    const headers = { authorization: "Bearer parallel-session" };
+    const [pbph, rspo] = await Promise.all([
+      worker.fetch(new Request("https://data.test/api/staff/pbph-riau", { headers }), env),
+      worker.fetch(new Request("https://data.test/api/staff/rspo-groups", { headers }), env)
+    ]);
+    assert.equal(pbph.status, 200);
+    assert.equal(rspo.status, 200);
+    assert.equal(checks, 1);
   } finally { globalThis.fetch = originalFetch; }
 });
 
