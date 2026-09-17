@@ -62,6 +62,17 @@
     if(event&&event.detail&&event.detail.language==='en')ensureAutoI18n();
   });
 
+  function ensureToolsMenu(nav){
+    if(!nav || nav.querySelector('[data-yg-tools-menu]')) return;
+    var reportLink=nav.querySelector('a[href="report.html"]');
+    var group=document.createElement('div');
+    group.className='yg-nav-group';
+    group.setAttribute('data-yg-tools-menu','');
+    group.innerHTML='<button class="yg-nav-trigger" type="button" aria-expanded="false">Tools</button><div class="yg-nav-menu"><a href="drone-survey.html">Drone Survey &amp; Mapping<small>Rencana misi, QC foto, dan orthomosaic</small></a></div>';
+    if(reportLink) nav.insertBefore(group,reportLink);
+    else nav.appendChild(group);
+  }
+
   function applyStaffAccount(nav,session){
     var link=nav.querySelector('a[href="staff-login.html"]');
     if(!link)return;
@@ -93,6 +104,7 @@
     applyStaffOnlyVisibility(session);
 
     document.querySelectorAll('[data-yg-navigation]').forEach(function(nav){
+      ensureToolsMenu(nav);
       applyStaffAccount(nav,session);
       var toggle = document.querySelector('[data-yg-nav-toggle="' + nav.id + '"]');
       if(toggle){
