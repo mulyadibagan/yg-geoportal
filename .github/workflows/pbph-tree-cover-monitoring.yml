@@ -1,0 +1,49 @@
+name: PBPH tree-cover monitoring
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "40 4 16 */3 *"
+  push:
+    paths:
+      - "scripts/build_pbph_tree_cover_monitoring.py"
+      - "scripts/build_forest_analytics.py"
+      - ".github/workflows/pbph-tree-cover-monitoring.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+      - run: pip install numpy pyproj rasterio shapely
+      - name: Download staff-only PBPH boundaries
+        working-directory: cloudflare/yg-webgis-public-data
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          mkdir -p ../../../tmp/pbph
+          npx wrangler r2 object get "yg-webgis-public-snapshots/internal/pbph/riau.geojson" --remote --file ../../../tmp/pbph/riau.geojson
+      - name: Calculate annual loss from 2001
+        env:
+          PBPH_FOREST_SOURCE: ${{ github.workspace }}/tmp/pbph/riau.geojson
+          PBPH_FOREST_OUTPUT: ${{ github.workspace }}/tmp/pbph/tree-cover-monitoring.json
+        run: python scripts/build_pbph_tree_cover_monitoring.py
+      - name: Validate result
+        run: |
+          node -e "const fs=require('fs');const d=JSON.parse(fs.readFileSync('tmp/pbph/tree-cover-monitoring.json'));const rows=Object.values(d.areas||{});if(!rows.length)throw Error('PBPH analytics empty');if(!rows.every(r=>Object.prototype.hasOwnProperty.call(r.annualLossHa||{},'2001')))throw Error('Annual series does not start in 2001');console.log('PBPH records:',rows.length)"
+      - name: Upload staff-only analytics
+        working-directory: cloudflare/yg-webgis-public-data
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          npx wrangler r2 object put "yg-webgis-public-snapshots-staging/internal/pbph/tree-cover-monitoring.json" --remote --file ../../../tmp/pbph/tree-cover-monitoring.json --content-type application/json
+          npx wrangler r2 object put "yg-webgis-public-snapshots/internal/pbph/tree-cover-monitoring.json" --remote --file ../../../tmp/pbph/tree-cover-monitoring.json --content-type application/json

@@ -23,6 +23,7 @@ GEOSTORE_URL = "https://production-api.globalforestwatch.org/geostore"
 ANALYSIS_URL = "https://production-api.globalforestwatch.org/umd-loss-gain"
 GFW_DATASET_URL = "https://data-api.globalforestwatch.org/dataset/umd_tree_cover_loss"
 LOSS_WINDOW_YEARS = 10
+LOSS_START_YEAR = None
 LOSS_DATASET_VERSION = None
 LOSS_END_YEAR = None
 HANSEN_TILE_FILES = {}
@@ -95,7 +96,7 @@ def pixel_area_ha(transform, row):
 
 def analyze_hansen_rasters(geometry):
     window_end_year = datetime.datetime.now(datetime.timezone.utc).year
-    loss_start_year = window_end_year - LOSS_WINDOW_YEARS + 1
+    loss_start_year = LOSS_START_YEAR or (window_end_year - LOSS_WINDOW_YEARS + 1)
     annual = {
         str(year): (0.0 if year <= LOSS_END_YEAR else None)
         for year in range(loss_start_year, window_end_year + 1)
@@ -354,10 +355,13 @@ def load_items():
 
 
 def main():
-    global LOSS_DATASET_VERSION, LOSS_END_YEAR
+    global LOSS_DATASET_VERSION, LOSS_END_YEAR, LOSS_START_YEAR
     LOSS_DATASET_VERSION, LOSS_END_YEAR = latest_loss_dataset()
     window_end_year = datetime.datetime.now(datetime.timezone.utc).year
-    loss_start_year = window_end_year - LOSS_WINDOW_YEARS + 1
+    configured_start = os.getenv("FOREST_LOSS_START_YEAR")
+    if configured_start:
+        LOSS_START_YEAR = max(2001, int(configured_start))
+    loss_start_year = LOSS_START_YEAR or (window_end_year - LOSS_WINDOW_YEARS + 1)
     print(
         f"GFW tree-cover loss {LOSS_DATASET_VERSION}; "
         f"rolling window {loss_start_year}-{window_end_year}; "
@@ -375,7 +379,8 @@ def main():
                 "forestDefinition": "Hansen tree cover extent with canopy density at or above 30 percent",
                 "baselineYear": 2000,
                 "lossPeriod": f"{loss_start_year}-{window_end_year}",
-                "lossWindowYears": LOSS_WINDOW_YEARS,
+                "lossWindowYears": window_end_year - loss_start_year + 1,
+                "lossStartYear": loss_start_year,
                 "lossWindowEndYear": window_end_year,
                 "lossDataThroughYear": LOSS_END_YEAR,
                 "lossDatasetVersion": f"umd_tree_cover_loss {LOSS_DATASET_VERSION}",

@@ -36,6 +36,26 @@ function renderSvlk(svlk){
 }
 function reportPermit(report,profile){return(report.companies||[]).find(function(row){return samePermit(row,{name:profile.NAMOBJ,sk:profile.NO_SK})})||null}
 function reportDetections(report,profile){return(report.hotspots||[]).filter(function(point){return(point.permits||[]).some(function(row){return samePermit(row,{name:profile.NAMOBJ,sk:profile.NO_SK})})})}
+function forestRecord(analytics,profile){
+  if(!analytics||!analytics.areas)return null;
+  if(analytics.areas[id])return analytics.areas[id];
+  var values=Object.keys(analytics.areas).map(function(key){return analytics.areas[key]});
+  return values.find(function(row){return samePermit(row,{name:profile.NAMOBJ,sk:profile.NO_SK})})||null;
+}
+function forestKpi(label,value){return'<div class="pbph-forest-kpi"><span>'+esc(label)+'</span><strong>'+esc(value)+'</strong></div>'}
+function renderForestLoss(analytics,profile){
+  var record=forestRecord(analytics,profile),chart=el("forest-loss-chart"),kpis=el("forest-loss-kpis"),insight=el("forest-loss-insight"),method=analytics&&analytics.method||{};
+  if(!record){kpis.innerHTML="";chart.innerHTML='<div class="pbph-loss-empty">Analisis kehilangan tutupan pohon untuk PBPH ini belum tersedia. Pemrosesan data internal dilakukan bertahap.</div>';insight.textContent="";return}
+  var through=Number(method.lossDataThroughYear)||2025,annual=record.annualLossHa||{},rows=[];
+  for(var year=2001;year<=through;year+=1)rows.push({year:year,value:number(annual[String(year)])||0});
+  var max=Math.max.apply(Math,[1].concat(rows.map(function(row){return row.value}))),total=number(record.totalLossHa)||0,baseline=number(record.baselineForestHa),current=number(record.currentForestHa),share=baseline&&baseline>0?total/baseline*100:null,peak=rows.reduce(function(best,row){return row.value>best.value?row:best},{year:2001,value:0});
+  el("forest-loss-period").textContent="2001–"+through+" · kanopi ≥30%";
+  kpis.innerHTML=[forestKpi("Tutupan pohon baseline 2000",baseline==null?"—":format(baseline,2)+" ha"),forestKpi("Kehilangan 2001–"+through,format(total,2)+" ha"),forestKpi("Proporsi terhadap baseline",share==null?"—":format(share,1)+"%"),forestKpi("Tutupan tersisa indikatif",current==null?"—":format(current,2)+" ha")].join("");
+  chart.innerHTML=rows.map(function(row){var height=row.value/max*185;return'<div class="pbph-loss-year" title="'+row.year+': '+format(row.value,2)+' ha" aria-label="'+row.year+', '+format(row.value,2)+' hektare"><span class="pbph-loss-value">'+(row.value?format(row.value,0):"0")+'</span><i class="pbph-loss-bar" style="height:'+height.toFixed(1)+'px"></i><span class="pbph-loss-label">'+row.year+'</span></div>'}).join("");
+  chart.setAttribute("aria-label","Grafik kehilangan tutupan pohon tahunan 2001 sampai "+through+" dalam "+(profile.NAMOBJ||"areal PBPH"));
+  insight.innerHTML='<strong>Tahun kehilangan tertinggi: '+peak.year+'</strong> · '+format(peak.value,2)+' ha. Total dihitung pada piksel yang memiliki tutupan tajuk sekurang-kurangnya 30% pada baseline tahun 2000.';
+  el("forest-loss-note").textContent="Sumber: Hansen/UMD/Google/USGS/NASA, "+(method.lossDatasetVersion||"UMD Tree Cover Loss")+". Kehilangan tutupan pohon tidak otomatis menunjukkan deforestasi ilegal, penyebab perubahan, atau tanggung jawab pemegang PBPH.";
+}
 function renderAnnualReports(reports,profile){
   var grouped={};reports.forEach(function(report){var year=String(report.month||"").slice(0,4),permit=reportPermit(report,profile),points=reportDetections(report,profile);if(!grouped[year])grouped[year]={hotspots:0,dates:new Set(),months:[]};grouped[year].hotspots+=permit?Number(permit.hotspots)||0:0;points.forEach(function(point){if(point.date)grouped[year].dates.add(point.date)});grouped[year].months.push(report.month)});
   var years=Object.keys(grouped).sort().reverse();el("annual-hotspots").innerHTML=years.map(function(year){var row=grouped[year],months=row.months.sort(),coverage=months.length?monthLabel(months[0])+(months.length>1?" – "+monthLabel(months[months.length-1]):""):"Belum ada bulan final";return'<div class="vp-annual-row"><strong>'+esc(year)+'</strong><span>'+format(row.hotspots,0)+' hotspot</span><span>'+format(row.dates.size,0)+' hari deteksi</span><small>'+esc(coverage)+' · '+months.length+' laporan bulanan final</small></div>'}).join("")||'<div class="pbph-empty">Rekap tahunan belum tersedia.</div>';
@@ -50,19 +70,19 @@ function renderReports(reports,profile){
   el("hotspot-empty").hidden=detections.length>0;el("hotspot-list").parentElement.parentElement.hidden=detections.length===0;
   return total;
 }
-function render(features,reports,registry){
+function render(features,reports,registry,forestAnalytics){
   var p=features[0].properties||{},area=number(p.LSSK),total=renderReports(reports,p),latest=reports[reports.length-1];
   document.title=(p.NAMOBJ||"PBPH")+" · Profil PBPH | Yayasan Gambut";el("area-name").textContent=p.NAMOBJ||"Profil PBPH";el("area-location").textContent=[p.JENIS,p.KEGIATAN].filter(Boolean).join(" · ");el("data-updated").textContent=latest?"Laporan terakhir "+monthLabel(latest.month):"Laporan bulanan belum tersedia";
   el("kpi-grid").innerHTML=[kpi("⌗","Luas SK akhir",area==null?"—":format(area,2)+" ha","atribut sumber PBPH"),kpi("◫","Bagian polygon",format(features.length,0),"digabung dalam profil"),kpi("▤","Laporan tersedia",format(reports.length,0),"mulai Juli 2026"),kpi("◉","Hotspot dalam laporan",format(total,0),"akumulasi laporan bulanan")].join("");
   el("identity-list").innerHTML=[item("Pemegang PBPH",p.NAMOBJ),item("PBPH ID",p.PBPH_ID),item("Nomor SK",p.NO_SK),item("Tanggal SK",dateValue(p.TGL_SK)),item("Luas SK akhir",area==null?"—":format(area,2)+" ha"),item("Jenis PBPH",p.JENIS),item("Kegiatan",p.KEGIATAN)].join("");
-  renderDocuments(registry,p);el("loading-state").hidden=true;el("profile-content").hidden=false;requestAnimationFrame(function(){renderMap(features,p.NAMOBJ||"PBPH")});
+  renderDocuments(registry,p);renderForestLoss(forestAnalytics,p);el("loading-state").hidden=true;el("profile-content").hidden=false;requestAnimationFrame(function(){renderMap(features,p.NAMOBJ||"PBPH")});
 }
 async function init(){
   if(!id){showError("Tautan PBPH tidak lengkap. Pilih areal melalui WebGIS.");return}
   try{
-    var base=await Promise.all([json("data/PBPH_RIAU_052026.geojson?v=20260831-profile1"),json("data/fire-monthly/index.json?v=20260831-profile1"),json("data/pbph-documents.json?v=20260831-profile1")]),geo=base[0],index=base[1],registry=base[2],features=(geo.features||[]).filter(function(feature){return profileId(feature)===id});
+    var base=await Promise.all([json("data/PBPH_RIAU_052026.geojson?v=20260831-profile1"),json("data/fire-monthly/index.json?v=20260831-profile1"),json("data/pbph-documents.json?v=20260831-profile1"),json("data/pbph-tree-cover-monitoring.json?v=20260917-forest-loss1").catch(function(){return null})]),geo=base[0],index=base[1],registry=base[2],forestAnalytics=base[3],features=(geo.features||[]).filter(function(feature){return profileId(feature)===id});
     if(!features.length)throw new Error("Areal PBPH tidak ditemukan pada snapshot Mei 2026.");
-    var entries=(index.reports||[]).filter(function(row){return row.month>=REPORT_START&&row.status==="final"}).sort(function(a,b){return a.month.localeCompare(b.month)}),reports=await Promise.all(entries.map(function(row){return json(row.data+"?v="+encodeURIComponent(row.generatedAt||"1"))}));render(features,reports,registry);
+    var entries=(index.reports||[]).filter(function(row){return row.month>=REPORT_START&&row.status==="final"}).sort(function(a,b){return a.month.localeCompare(b.month)}),reports=await Promise.all(entries.map(function(row){return json(row.data+"?v="+encodeURIComponent(row.generatedAt||"1"))}));render(features,reports,registry,forestAnalytics);
   }catch(e){console.error(e);showError(e.message||"Profil PBPH gagal dimuat.")}
 }
 el("print-profile").addEventListener("click",function(){window.print()});el("share-profile").addEventListener("click",async function(){try{if(navigator.share){await navigator.share({title:document.title,url:location.href});return}await navigator.clipboard.writeText(location.href);toast("Tautan profil disalin")}catch(e){if(e&&e.name!=="AbortError")toast("Tautan belum dapat disalin")}});init();

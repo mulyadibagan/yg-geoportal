@@ -4,6 +4,7 @@
   const routes = {
     'data/rspo-company-boundaries.geojson': '/api/staff/rspo-companies',
     'data/PBPH_RIAU_052026.geojson': '/api/staff/pbph-riau',
+    'data/pbph-tree-cover-monitoring.json': '/api/staff/pbph-tree-cover-monitoring',
     'data/PERHUTANAN_SOSIAL_RIAU.geojson': '/api/staff/social-forestry-riau',
     'data/faperta-ur.json': '/api/staff/faperta-ur-data',
     'data/faperta-ur-site.geojson': '/api/staff/faperta-ur-site',
@@ -97,4 +98,3 @@
   }
   window.YG_STAFF_DATA = { session, fetch: fetchData, privateFetch, pbph };
 })();
-

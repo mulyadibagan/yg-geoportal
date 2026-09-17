@@ -7,6 +7,7 @@ if(!session||!session.token){window.YG_PRIVATE_DATA={json:function(){return Prom
 function endpoint(url){
   var clean=String(url||"").split("?")[0],match;
   if(clean.endsWith("data/PBPH_RIAU_052026.geojson"))return worker+"/api/staff/pbph-riau";
+  if(clean.endsWith("data/pbph-tree-cover-monitoring.json"))return worker+"/api/staff/pbph-tree-cover-monitoring";
   if(clean.endsWith("data/pbph-documents.json"))return worker+"/api/staff/pbph-documents";
   if(clean.endsWith("data/fire-monthly/index.json"))return worker+"/api/staff/fire-monthly-index";
   if((match=clean.match(/data\/fire-monthly\/(20\d{2}-(?:0[1-9]|1[0-2]))\.json$/)))return worker+"/api/staff/fire-monthly-report?month="+match[1];
