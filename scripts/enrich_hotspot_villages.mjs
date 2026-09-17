@@ -7,6 +7,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const boundaryPath = path.join(ROOT, process.env.HOTSPOT_VILLAGE_BOUNDARY || "data/batas_administrasi_desa_riau.geojson");
 const hotspotPath = path.join(ROOT, process.env.HOTSPOT_POINTS_FILE || "data/hotspot-high-confidence.geojson");
 const oilPalmPath = path.join(ROOT, process.env.HOTSPOT_OIL_PALM_BOUNDARY || "data/PERUSAHAAN_SAWIT_RIAU_REFERENSI.geojson");
+const INCLUDE_OIL_PALM = process.env.HOTSPOT_INCLUDE_OIL_PALM !== "0";
 
 function ringContains(point, ring) {
   let inside = false;
@@ -43,7 +44,7 @@ function boundsOf(geometry) {
 const [boundary, hotspots, oilPalmGeo] = await Promise.all([
   readFile(boundaryPath, "utf8").then(JSON.parse),
   readFile(hotspotPath, "utf8").then(JSON.parse),
-  readFile(oilPalmPath, "utf8").then(JSON.parse)
+  INCLUDE_OIL_PALM ? readFile(oilPalmPath, "utf8").then(JSON.parse) : Promise.resolve(null)
 ]);
 const villages = (boundary.features || []).map((feature) => ({
   feature,
@@ -53,7 +54,7 @@ const villages = (boundary.features || []).map((feature) => ({
   regency: feature.properties?.WADMKK || ""
 }));
 let identified = 0;
-const insideOilPalm = oilPalmReference.attach(hotspots, oilPalmGeo);
+const insideOilPalm = INCLUDE_OIL_PALM ? oilPalmReference.attach(hotspots, oilPalmGeo) : 0;
 for (const feature of hotspots.features || []) {
   const point = feature.geometry?.type === "Point" ? feature.geometry.coordinates : null;
   if (!point) continue;
@@ -76,4 +77,6 @@ for (const feature of hotspots.features || []) {
 }
 await writeFile(hotspotPath, JSON.stringify(hotspots, null, 2) + "\n");
 console.log(`Identified ${identified} of ${(hotspots.features || []).length} hotspots in Riau villages.`);
-console.log(`Identified ${insideOilPalm} hotspots inside screened historical oil-palm reference polygons.`);
+console.log(INCLUDE_OIL_PALM
+  ? `Identified ${insideOilPalm} hotspots inside screened historical oil-palm reference polygons.`
+  : "Skipped internal oil-palm reference enrichment in the public hotspot pipeline.");

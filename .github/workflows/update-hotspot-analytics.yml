@@ -91,6 +91,8 @@ jobs:
           FIRMS_PS_GEOJSON: data/PERHUTANAN_SOSIAL_RIAU.geojson
           # Geometri mentah PS bersifat internal dan tidak tersedia di repositori publik.
           FIRMS_INCLUDE_SOCIAL_FORESTRY: "0"
+          # Referensi RSPO rinci juga internal; enrichment publik tetap fokus pada desa.
+          HOTSPOT_INCLUDE_OIL_PALM: "0"
         run: |
           if [ -z "$FIRMS_MAP_KEY" ]; then
             echo "FIRMS_MAP_KEY belum diset di GitHub Secrets."
