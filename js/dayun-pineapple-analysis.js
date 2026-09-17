@@ -149,7 +149,7 @@
   function buildProjection(rows, options) {
     options = options || {};
     var asOf = options.asOf instanceof Date ? options.asOf : new Date(options.asOf || Date.now());
-    var start = monthStart(asOf), horizon = Math.max(1, number(options.horizonMonths) || 6);
+    var start = monthStart(asOf), horizon = Math.max(1, number(options.horizonMonths) || 12);
     var months = Array.from({length:horizon}, function (_, index) {
       return {
         period:monthKey(addMonths(start, index)),
