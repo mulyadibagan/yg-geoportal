@@ -2,6 +2,7 @@
   'use strict';
   const base = 'https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev';
   const routes = {
+    'data/rspo-company-boundaries.geojson': '/api/staff/rspo-companies',
     'data/PBPH_RIAU_052026.geojson': '/api/staff/pbph-riau',
     'data/PERHUTANAN_SOSIAL_RIAU.geojson': '/api/staff/social-forestry-riau',
     'data/faperta-ur.json': '/api/staff/faperta-ur-data',
@@ -12,6 +13,7 @@
     'data/PERUSAHAAN_SAWIT_RIAU_REFERENSI.geojson': '/api/staff/rspo-groups'
   };
   const STAFF_ONLY_PUBLIC_PATHS = new Set([
+    '/data/rspo-company-boundaries.geojson',
     '/data/PERUSAHAAN_SAWIT_RIAU_REFERENSI.geojson'
   ]);
   const session = () => window.YG_AUTH && window.YG_AUTH.readStoredSession();
@@ -95,3 +97,4 @@
   }
   window.YG_STAFF_DATA = { session, fetch: fetchData, privateFetch, pbph };
 })();
+
