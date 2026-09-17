@@ -231,7 +231,49 @@
     };
   }
   const referenceLayerState = {};
+  const referenceDataPromises = {};
   let referenceCountsPreloaded = false;
+
+  function referenceDataUrl(config) {
+    return config.file + (config.file.includes("?") ? "&" : "?") +
+      "v=" + (config.version || "20260901-basilam-geniot1");
+  }
+
+  function fetchReferenceData(config) {
+    if (!referenceDataPromises[config.id]) {
+      referenceDataPromises[config.id] = fetch(referenceDataUrl(config), {
+        cache: "force-cache"
+      }).then(response => {
+        if (!response.ok) throw new Error("HTTP " + response.status);
+        return response.json();
+      }).catch(error => {
+        delete referenceDataPromises[config.id];
+        throw error;
+      });
+    }
+
+    return referenceDataPromises[config.id];
+  }
+
+  function preloadInternalReferenceData() {
+    if (!staffSession) return;
+
+    const preload = () => {
+      ["pbph_riau_052026", "perusahaan_sawit_riau"].forEach(layerId => {
+        const config = REFERENCE_LAYERS[layerId];
+        if (!config || referenceLayerObjects[layerId]) return;
+        fetchReferenceData(config).catch(error => {
+          console.warn("Pra-muat layer internal ditunda:", layerId, error);
+        });
+      });
+    };
+
+    if (typeof window.requestIdleCallback === "function") {
+      window.requestIdleCallback(preload, { timeout: 1800 });
+    } else {
+      window.setTimeout(preload, 900);
+    }
+  }
 
   async function preloadReferenceCounts() {
     if (referenceCountsPreloaded) return;
@@ -2232,19 +2274,13 @@ L.control.scale({
     referenceLayerState[layerId] = "loading";
     setStatus("Memuat " + config.label + "…", false);
 
-    const response = await fetch(
-      config.file + (config.file.includes("?") ? "&" : "?") + "v=" + (config.version || "20260901-basilam-geniot1"),
-      {
-        cache: "force-cache"
-      }
-    );
-
-    if (!response.ok) {
+    let data;
+    try {
+      data = await fetchReferenceData(config);
+    } catch (error) {
       referenceLayerState[layerId] = "error";
-      throw new Error("HTTP " + response.status);
+      throw error;
     }
-
-    let data = await response.json();
     data = await mergeReferenceSupplements(config, data);
     if (config.type === "social_forestry") {
       data = correctSocialForestryAttributes(data);
@@ -4752,5 +4788,6 @@ L.control.scale({
     }
   };
 
+  preloadInternalReferenceData();
   loadDatabase().finally(startPublishedSnapshotWatch);
 })();
