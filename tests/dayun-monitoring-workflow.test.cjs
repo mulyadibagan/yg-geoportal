@@ -52,10 +52,27 @@ test('commodity and activity fields follow the selected gawangan and work type',
   assert.match(html, /id="dm-panel-ethrel"/);
   assert.match(html, /id="dm-panel-harvest"/);
   assert.match(html, /id="dm-panel-observation"/);
-  assert.match(script, /schemaVersion: 'dayun-monitoring-v3'/);
+  assert.match(script, /schemaVersion: 'dayun-monitoring-v4'/);
   assert.match(script, /activityDetails: details/);
   assert.match(script, /document\.querySelectorAll\('\.dm-fert-actual'\)/);
   assert.match(script, /Pilih komoditas dan jenis kegiatan sebelum mengirim laporan/);
+});
+
+test('public reporter records completed work while follow-up is proposed for admin confirmation', () => {
+  const html = read('dayun-monitoring.html');
+  const script = read('js/dayun-monitoring.js');
+  const adminHtml = read('admin-dashboard.html');
+  const adminScript = read('js/admin-dashboard.js');
+  assert.doesNotMatch(html, /id="dm-next-action"/);
+  assert.doesNotMatch(html, /id="dm-next-date"/);
+  assert.doesNotMatch(script, /\$\('dm-next-action'\)|\$\('dm-next-date'\)/);
+  assert.match(script, /function followUpRecommendation/);
+  assert.match(script, /Periksa keberhasilan hidup tanaman sisipan/);
+  assert.match(script, /requiresAdminConfirmation: true/);
+  assert.match(script, /followUpRecommendation: recommendation/);
+  assert.match(adminHtml, /admin atau pendamping mengonfirmasi keputusan dan jadwal/);
+  assert.match(adminScript, /Saran tindak lanjut sistem/);
+  assert.match(adminScript, /Menunggu konfirmasi admin\/pendamping/);
 });
 
 test('public gawangan profile reads only the published report endpoint and calculates current age', () => {
@@ -88,6 +105,7 @@ test('admin dashboard exposes the Dayun queue context without exposing drafts pu
   assert.match(script, /Kelompok kegiatan/);
   assert.match(script, /Tanaman diaplikasi/);
   assert.match(script, /Jumlah panen/);
+  assert.match(script, /Jendela pemeriksaan/);
 });
 
 test('monitoring and calculator use the same pineapple fertilizer SOP programs', () => {

@@ -241,6 +241,7 @@
     if (info.monitoringType !== 'Agroforestri Dayun') return '';
     var fertilizer = info.fertilizer || null;
     var detail = info.activityDetails || {};
+    var followUp = info.followUpRecommendation || null;
     var activityRows = [];
     if (info.activityType === 'Penanaman' || info.activityType === 'Penyisipan') {
       activityRows = [
@@ -283,7 +284,10 @@
       ['Pendamping', fertilizer ? fertilizer.supervisor : ''],
       ['Alasan penyimpangan', fertilizer ? fertilizer.deviationReason : ''],
       ['Kondisi', info.condition],
-      ['Tindak lanjut', info.nextAction ? info.nextAction + (info.nextActionDate ? ' · ' + info.nextActionDate : '') : '']
+      ['Saran tindak lanjut sistem', followUp ? followUp.action : ''],
+      ['Jendela pemeriksaan', followUp ? [followUp.windowStartDate, followUp.windowEndDate].filter(Boolean).join(' s.d. ') : ''],
+      ['Status rencana', followUp && followUp.requiresAdminConfirmation ? 'Menunggu konfirmasi admin/pendamping' : ''],
+      ['Tindak lanjut lama', info.nextAction ? info.nextAction + (info.nextActionDate ? ' · ' + info.nextActionDate : '') : '']
     ].concat(activityRows).filter(function (item) { return item[1] != null && item[1] !== ''; });
     return '<div class="report-inbox-meta">' + values.map(function (item) {
       return '<span><b>' + esc(item[0]) + '</b>' + esc(item[1]) + '</span>';
