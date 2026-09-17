@@ -39,7 +39,7 @@ await fs.writeFile(companyRawPath, JSON.stringify(companies));
 // geometry precision; unlike the overview, company boundaries are not simplified.
 await new Promise((resolve, reject) => {
   const child = spawn(process.execPath, ['node_modules/mapshaper/bin/mapshaper', companyRawPath,
-    '-clean', '-dissolve', 'COMPANY_ID', '-o', companyPath, 'format=geojson', 'precision=0.000001'], { stdio: 'inherit' });
+    '-dissolve2', 'COMPANY_ID', 'allow-overlaps', '-o', companyPath, 'format=geojson', 'precision=0.000001'], { stdio: 'inherit' });
   child.on('error', reject);
   child.on('exit', code => code === 0 ? resolve() : reject(new Error(`Company dissolve exited ${code}`)));
 });
@@ -53,7 +53,7 @@ for (const f of dissolved.features) {
 }
 Object.assign(dissolved, { visibility:'internal', generatedAt:companies.generatedAt,
   source:companies.source, companyCount:dissolved.features.length, sourceFeatureCount:companies.features.length,
-  processing:'Cleaned and dissolved by company; no geometric simplification' });
+  processing:'Dissolved by company, preserving inter-company overlaps; no geometric simplification' });
 await fs.writeFile(companyPath, JSON.stringify(dissolved));
 console.log(JSON.stringify({companyFeatures:dissolved.features.length, sourceFeatures:companies.features.length}));
 
