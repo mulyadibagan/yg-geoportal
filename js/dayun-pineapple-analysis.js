@@ -41,6 +41,26 @@
     return values.filter(function (value) { return /^\d{4}-\d{2}-\d{2}$/.test(String(value || '')); }).sort().pop() || null;
   }
 
+  function monthStart(value) {
+    var match = String(value || '').match(/^(\d{4})-(\d{2})(?:-\d{2})?/);
+    var date = value instanceof Date ? value : match ? new Date(Number(match[1]), Number(match[2]) - 1, 1) : new Date(value || Date.now());
+    return new Date(date.getFullYear(), date.getMonth(), 1);
+  }
+
+  function monthKey(value) {
+    var date = monthStart(value);
+    return date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-01';
+  }
+
+  function addMonths(value, amount) {
+    var date = monthStart(value);
+    return new Date(date.getFullYear(), date.getMonth() + amount, 1);
+  }
+
+  function monthDistance(from, to) {
+    return (to.getFullYear() - from.getFullYear()) * 12 + to.getMonth() - from.getMonth();
+  }
+
   function recommendation(row) {
     if (row.plants <= 0) return {code:'data', label:'Lengkapi data', detail:'Populasi aktif dan luas operasional belum tercatat.'};
     if (!row.plantingPeriod) return {code:'data', label:'Verifikasi umur', detail:'Periode tanam belum tersedia; umur dan fase tidak dapat ditentukan.'};
@@ -95,6 +115,8 @@
           harvest: historyTotal(crop, 'pineappleHarvest', 'pineappleHarvestTotal'),
           ethrel: historyTotal(crop, 'ethrel', 'ethrelTotal'),
           flowers: number(crop.pineappleFlowerCount),
+          harvestHistory: (crop.pineappleHarvest || []).map(function (item) { return {period:item.period, count:number(item.count)}; }),
+          ethrelHistory: (crop.ethrel || []).map(function (item) { return {period:item.period, count:number(item.count)}; }),
           latestActivityDate: latestDate(dates)
         };
         row.estimatedNotHarvested = Math.max(0, row.plants - row.harvest);
@@ -124,5 +146,109 @@
     return {asOf:asOf.toISOString().slice(0, 10), all:all, blocks:blocks, rows:rows, blockCodes:BLOCKS.slice(), harvestHistory:harvestHistory};
   }
 
-  return {build:build, ageMonths:ageMonths, recommendation:recommendation, BLOCKS:BLOCKS.slice()};
+  function buildProjection(rows, options) {
+    options = options || {};
+    var asOf = options.asOf instanceof Date ? options.asOf : new Date(options.asOf || Date.now());
+    var start = monthStart(asOf), horizon = Math.max(1, number(options.horizonMonths) || 6);
+    var months = Array.from({length:horizon}, function (_, index) {
+      return {
+        period:monthKey(addMonths(start, index)),
+        harvest:{low:0, base:0, high:0},
+        ethrel:{gawangan:0, plants:0, objectIds:[]},
+        fertilizer:{gawangan:0, objectIds:[], phases:{verification:0, phase2:0, phase3:0}, materials:{urea:{lowKg:0,highKg:0},npk:{lowKg:0,highKg:0}}}
+      };
+    });
+    var byPeriod = {};
+    months.forEach(function (item) { byPeriod[item.period] = item; });
+    var totalEthrel = rows.reduce(function (sum, row) { return sum + row.ethrel; }, 0);
+    var totalHarvest = rows.reduce(function (sum, row) { return sum + row.harvest; }, 0);
+    var observedRate = totalEthrel > 0 ? Math.min(1, totalHarvest / totalEthrel) : null;
+    var baseRate = observedRate == null ? 0.6 : observedRate;
+    var lowRate = Math.max(0, baseRate * 0.8), highRate = Math.min(1, baseRate * 1.2);
+    var datedEthrel = 0, undatedEthrel = 0, flowerRows = 0, flowerCount = 0;
+
+    function addFertilizer(month, row, phase) {
+      if (!month || month.fertilizer.objectIds.indexOf(row.objectId) >= 0 && phase === 'verification') return;
+      if (month.fertilizer.objectIds.indexOf(row.objectId) < 0) {
+        month.fertilizer.objectIds.push(row.objectId);
+        month.fertilizer.gawangan += 1;
+      }
+      month.fertilizer.phases[phase] += 1;
+      if (phase === 'phase2') {
+        month.fertilizer.materials.urea.lowKg += row.areaHa * 300;
+        month.fertilizer.materials.urea.highKg += row.areaHa * 300;
+        month.fertilizer.materials.npk.lowKg += row.areaHa * 150;
+        month.fertilizer.materials.npk.highKg += row.areaHa * 200;
+      }
+      if (phase === 'phase3') {
+        month.fertilizer.materials.npk.lowKg += row.areaHa * 50;
+        month.fertilizer.materials.npk.highKg += row.areaHa * 150;
+      }
+    }
+
+    rows.forEach(function (row) {
+      if (row.plants <= 0 || !row.plantingPeriod) return;
+      var planted = parsePlantingPeriod(row.plantingPeriod);
+      var eligible = planted ? addMonths(planted, 12) : null;
+      var inspectionMonth = eligible && eligible > start ? eligible : start;
+      var remainingEthrel = Math.max(0, row.plants - row.ethrel);
+      if (remainingEthrel > 0 && row.flowers <= 0 && byPeriod[monthKey(inspectionMonth)]) {
+        var ethrelMonth = byPeriod[monthKey(inspectionMonth)];
+        ethrelMonth.ethrel.gawangan += 1;
+        ethrelMonth.ethrel.plants += remainingEthrel;
+        ethrelMonth.ethrel.objectIds.push(row.objectId);
+        if (eligible && eligible > start) addFertilizer(byPeriod[monthKey(addMonths(eligible, -1))], row, 'phase2');
+        else addFertilizer(byPeriod[monthKey(start)], row, 'verification');
+      }
+      if (row.flowers > 0) {
+        flowerRows += 1;
+        flowerCount += row.flowers;
+        addFertilizer(byPeriod[monthKey(start)], row, 'phase3');
+        [0.25,0.5,0.25].forEach(function (weight, index) {
+          var target = byPeriod[monthKey(addMonths(start, index + 1))];
+          if (!target) return;
+          target.harvest.low += row.flowers * lowRate * weight;
+          target.harvest.base += row.flowers * baseRate * weight;
+          target.harvest.high += row.flowers * highRate * weight;
+        });
+      }
+      (row.ethrelHistory || []).forEach(function (item) {
+        if (/^\d{4}-\d{2}-\d{2}$/.test(String(item.period || ''))) datedEthrel += item.count;
+        else undatedEthrel += item.count;
+      });
+    });
+
+    months.forEach(function (item) {
+      ['low','base','high'].forEach(function (key) { item.harvest[key] = Math.round(item.harvest[key]); });
+      item.ethrel.plants = Math.round(item.ethrel.plants);
+      ['urea','npk'].forEach(function (material) {
+        item.fertilizer.materials[material].lowKg = Math.round(item.fertilizer.materials[material].lowKg * 100) / 100;
+        item.fertilizer.materials[material].highKg = Math.round(item.fertilizer.materials[material].highKg * 100) / 100;
+      });
+    });
+
+    var lastActivity = latestDate(rows.map(function (row) { return row.latestActivityDate; }));
+    var stalenessMonths = lastActivity ? monthDistance(monthStart(lastActivity), start) : null;
+    return {
+      asOf:monthKey(start),
+      months:months,
+      assumptions:{
+        observedEthrelToHarvestRate:observedRate,
+        lowRate:lowRate,
+        baseRate:baseRate,
+        highRate:highRate,
+        flowerRows:flowerRows,
+        flowerCount:Math.round(flowerCount),
+        datedEthrel:Math.round(datedEthrel),
+        undatedEthrel:Math.round(undatedEthrel),
+        lastActivityDate:lastActivity,
+        stalenessMonths:stalenessMonths,
+        harvestConfidence:flowerCount > 0 && stalenessMonths != null && stalenessMonths <= 2 ? 'Sedang' : 'Rendah',
+        ethrelConfidence:'Rendah',
+        fertilizerConfidence:'Rendah'
+      }
+    };
+  }
+
+  return {build:build, buildProjection:buildProjection, ageMonths:ageMonths, recommendation:recommendation, BLOCKS:BLOCKS.slice()};
 });
