@@ -89,6 +89,8 @@ jobs:
           FIRMS_QUERY_BBOX: 94.50,-11.20,141.50,6.20
           FIRMS_VILLAGE_GEOJSON: data/desa_intervensi.geojson
           FIRMS_PS_GEOJSON: data/PERHUTANAN_SOSIAL_RIAU.geojson
+          # Geometri mentah PS bersifat internal dan tidak tersedia di repositori publik.
+          FIRMS_INCLUDE_SOCIAL_FORESTRY: "0"
         run: |
           if [ -z "$FIRMS_MAP_KEY" ]; then
             echo "FIRMS_MAP_KEY belum diset di GitHub Secrets."
