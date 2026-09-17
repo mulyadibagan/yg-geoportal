@@ -359,6 +359,7 @@
    * interaktif pada bentuk yang benar-benar tergambar.
    */
   const vectorRenderers = {};
+  let internalReferenceCanvasRenderer = null;
 
   function vectorRendererFor(pane) {
     if (!vectorRenderers[pane]) {
@@ -368,6 +369,24 @@
       });
     }
     return vectorRenderers[pane];
+  }
+
+  function referenceRendererFor(config) {
+    if (
+      config.type === "active_concession" ||
+      config.type === "oil_palm_company"
+    ) {
+      if (!internalReferenceCanvasRenderer) {
+        internalReferenceCanvasRenderer = L.canvas({
+          pane: MAP_PANES.reference,
+          padding: 0.5,
+          tolerance: 3
+        });
+      }
+      return internalReferenceCanvasRenderer;
+    }
+
+    return vectorRendererFor(MAP_PANES.reference);
   }
 
 // Scale Bar
@@ -2349,7 +2368,7 @@ L.control.scale({
 
     const layer = L.geoJSON(data, {
       pane: MAP_PANES.reference,
-      renderer: vectorRendererFor(MAP_PANES.reference),
+      renderer: referenceRendererFor(config),
       /*
        * Jangan memakai renderer Canvas bawaan map untuk layer referensi.
        * Elemen Canvas memenuhi seluruh peta dan dapat menahan klik yang

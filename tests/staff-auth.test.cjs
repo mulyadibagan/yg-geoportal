@@ -52,5 +52,5 @@ test("interactive map exposes the social forestry layer only to authenticated st
 
   assert.match(map, /\.\.\.\(staffSession \? \{ perhutanan_sosial_riau: \{/);
   assert.match(map, /label: "Perhutanan Sosial Riau · internal staf"/);
-  assert.match(page, /map-v4\.js\?v=20260917-internal-layer-preload2/);
+  assert.match(page, /map-v4\.js\?v=20260917-internal-layer-canvas3/);
 });
