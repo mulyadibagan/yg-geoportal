@@ -29,6 +29,12 @@ test('hotspots exclude holes and same-day detections count one day',()=>{
   assert.equal(r.pbph.rows[0].hotspots,2);assert.equal(r.pbph.rows[0].days,1);assert.equal(r.pbph.rows[0].burnedHa,0);
 });
 test('unavailable hotspot archive is not represented as zero',()=>{assert.equal(run([event],{report:{unavailable:true}}).pbph.rows[0].hotspots,null);});
+test('verified PHI alias applies only to the matching parent group',()=>{
+  const boundary=group=>fc([rectangle(101,1,.02,.02,{COMPANY_ID:'C1',PO_COMPANY:'PT PHI',RSPO_GROUP:group})]);
+  const verified=run([event],{rspo:boundary('Permata Group Pte. Ltd.')}).rspo.rows[0];
+  assert.equal(verified.name,'PT Permata Hijau Indonesia (PT PHI)');assert.match(verified.nameSource,/linkedin.com\/posts\/permatagroup/);
+  assert.equal(run([event],{rspo:boundary('Another Group')}).rspo.rows[0].name,'PT PHI');
+});
 test('missing boundaries and invalid geometry fail visibly',()=>{
   assert.throws(()=>run([event],{pbph:fc([])}),/belum tersedia/);
   assert.throws(()=>run([{geometry:{type:'Point',coordinates:[101,1]}}]),/poligon/);

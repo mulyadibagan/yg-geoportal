@@ -13,7 +13,7 @@
     if(!burned){status.textContent='Arsip estimasi belum tersedia. Luas tidak dapat dihitung; bukan berarti nol kebakaran.';return Promise.resolve();}
     let worker;
     return new Promise((resolve,reject)=>{
-      worker=new Worker('js/fire-internal-worker.js?v=20260917-companies2');
+      worker=new Worker('js/fire-internal-worker.js?v=20260917-companies3');
       worker.onmessage=e=>e.data.ok?resolve(e.data.result):reject(Error(e.data.error));
       worker.onerror=()=>reject(Error('Perhitungan belum dapat dijalankan. Silakan muat ulang laporan.'));
       worker.postMessage({burned,pbph,rspo,report:{hotspots:report.hotspots||[],unavailable:report.unavailable}});
@@ -35,7 +35,7 @@
           const key=kind+'-'+i;
           const link=kind==='pbph'?'<a target="_blank" rel="noopener noreferrer" href="pbph-profile.html?id='+encodeURIComponent(r.id)+'">'+esc(r.name)+'</a>':esc(r.name);
           selection.set(key,r);
-          return '<tr><td><strong>'+link+'</strong><br><small>'+esc(r.detail)+(r.level==='group'?' · Agregat grup':'')+'</small></td><td>'+(r.hotspots===null?'Belum tersedia':r.hotspots+' / '+r.days+' hari')+'</td><td>'+(r.burnedHa>0?ha(r.burnedHa):'Tidak ada irisan dalam arsip')+'</td><td>'+ha(r.boundaryHa)+'</td><td>'+number(r.percent||0)+'%</td><td><button type="button" data-fire-area="'+key+'">Lihat peta</button><details><summary>'+r.events.length+' kejadian beririsan</summary>'+r.events.map(e=>'<p><small>'+esc(e.id)+'<br>'+esc(e.first.slice(0,10))+' – '+esc(e.last.slice(0,10))+'</small></p>').join('')+'</details></td></tr>';
+          return '<tr><td><strong>'+link+'</strong>'+ (r.nameSource?'<br><a href="'+esc(r.nameSource)+'" target="_blank" rel="noopener noreferrer"><small>Sumber nama perusahaan</small></a>':'')+'<br><small>'+esc(r.detail)+(r.level==='group'?' · Agregat grup':'')+'</small></td><td>'+(r.hotspots===null?'Belum tersedia':r.hotspots+' / '+r.days+' hari')+'</td><td>'+(r.burnedHa>0?ha(r.burnedHa):'Tidak ada irisan dalam arsip')+'</td><td>'+ha(r.boundaryHa)+'</td><td>'+number(r.percent||0)+'%</td><td><button type="button" data-fire-area="'+key+'">Lihat peta</button><details><summary>'+r.events.length+' kejadian beririsan</summary>'+r.events.map(e=>'<p><small>'+esc(e.id)+'<br>'+esc(e.first.slice(0,10))+' – '+esc(e.last.slice(0,10))+'</small></p>').join('')+'</details></td></tr>';
         }).join('')+'</tbody></table></div>';
         if(!category.rows.length)section.querySelector('tbody').innerHTML='<tr><td colspan="6">Tidak ada irisan estimasi maupun hotspot pada batas yang tersedia. Arsip estimasi masih parsial.</td></tr>';
         panel.append(section);
