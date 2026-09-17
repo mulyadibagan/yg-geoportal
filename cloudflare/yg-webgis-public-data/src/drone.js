@@ -62,6 +62,28 @@ async function uploadFile(request,env,id,encodedName,url){
   return reply(request,{ok:true,id,file:{name,key},uploaded:files.length,totalBytes:job.totalBytes});
 }
 async function finalizeUpload(request,env,id,url){const job=await readJson(env,jobKey(id));if(!job)return reply(request,{ok:false,error:'job_not_found'},404);if(!authorizedJob(request,url,job))return reply(request,{ok:false,error:'unauthorized'},401);if(job.sourceType!=='upload')return reply(request,{ok:false,error:'not_upload_job'},409);if(!Array.isArray(job.files)||job.files.length<3)return reply(request,{ok:false,error:'minimum_three_photos'},400);if(await pendingCount(env)>=MAX_PENDING_JOBS)return reply(request,{ok:false,error:'queue_full'},429,{'retry-after':'300'});job.status='pending';job.queuedAt=new Date().toISOString();await writeJson(env,jobKey(id),job);await queueJob(env,id);return reply(request,{ok:true,job:publicJob(job)})}
+async function retryJob(request,env,id,url){
+  const job=await readJson(env,jobKey(id));
+  if(!job)return reply(request,{ok:false,error:'job_not_found'},404);
+  if(!authorizedJob(request,url,job))return reply(request,{ok:false,error:'unauthorized'},401);
+  if(job.status!=='failed')return reply(request,{ok:false,error:'retry_not_available'},409);
+  if(await pendingCount(env)>=MAX_PENDING_JOBS)return reply(request,{ok:false,error:'queue_full'},429,{'retry-after':'300'});
+  const now=new Date().toISOString();
+  job.status='pending';
+  job.stage='queued';
+  job.stageLabel='Menunggu giliran pemrosesan';
+  job.progress=0;
+  job.queuedAt=now;
+  job.updatedAt=now;
+  job.retryCount=Number(job.retryCount||0)+1;
+  job.lastError=job.error||null;
+  delete job.error;
+  delete job.failedAt;
+  delete job.processingStartedAt;
+  await writeJson(env,jobKey(id),job);
+  await queueJob(env,id);
+  return reply(request,{ok:true,job:publicJob(job)});
+}
 async function serveCog(request,env,id,url){const job=await readJson(env,jobKey(id));if(!job||job.status!=='ready'||!job.cogKey)return reply(request,{ok:false,error:'orthomosaic_not_ready'},404);if(!authorizedJob(request,url,job))return reply(request,{ok:false,error:'unauthorized'},401);const rangeHeader=request.headers.get('range');const object=await env.PUBLIC_SNAPSHOTS.get(job.cogKey,rangeHeader?{range:request.headers}:undefined);if(!object)return reply(request,{ok:false,error:'cog_missing'},404);const headers=new Headers(cors(request));object.writeHttpMetadata(headers);headers.set('etag',object.httpEtag);headers.set('accept-ranges','bytes');headers.set('cache-control','private, max-age=3600');if(object.range){const offset=object.range.offset||0;const length=object.range.length||object.size;headers.set('content-range',`bytes ${offset}-${offset+length-1}/${object.size}`)}return new Response(request.method==='HEAD'?null:object.body,{status:object.range?206:200,headers})}
 
 export function isDroneRoute(pathname){return pathname==='/api/drone/jobs'||pathname.startsWith('/api/drone/jobs/')}
@@ -74,6 +96,7 @@ export async function handleDroneRequest(request,env,url){
   if(url.pathname==='/api/drone/jobs'&&request.method==='POST')return createJob(request,env);
   const fileMatch=url.pathname.match(/^\/api\/drone\/jobs\/(drn-[a-zA-Z0-9-]+)\/files\/(.+)$/);if(fileMatch&&request.method==='PUT')return uploadFile(request,env,fileMatch[1],fileMatch[2],url);
   const finalMatch=url.pathname.match(/^\/api\/drone\/jobs\/(drn-[a-zA-Z0-9-]+)\/finalize$/);if(finalMatch&&request.method==='POST')return finalizeUpload(request,env,finalMatch[1],url);
+  const retryMatch=url.pathname.match(/^\/api\/drone\/jobs\/(drn-[a-zA-Z0-9-]+)\/retry$/);if(retryMatch&&request.method==='POST')return retryJob(request,env,retryMatch[1],url);
   const jobMatch=url.pathname.match(/^\/api\/drone\/jobs\/(drn-[a-zA-Z0-9-]+)$/);if(jobMatch&&request.method==='GET')return getJob(request,env,jobMatch[1],url);
   return reply(request,{ok:false,error:'not_found'},404);
 }
