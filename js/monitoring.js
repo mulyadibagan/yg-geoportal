@@ -27,6 +27,7 @@ var LEGACY_OBJECT_ALIASES={
     'YG-20260717-205241-378':{aliveCount:2730,deadOrDamagedCount:600,survivalPercent:82}
   };
   var records=[],groups=[],masterObjects=[];
+  var monitorMap=null,monitorMapLayer=null,presetApplied=false;
   var CLUSTER_MODES=['object','village','reporter','donor','phase'];
   var list=document.getElementById('monitor-list');
 
@@ -47,6 +48,17 @@ var LEGACY_OBJECT_ALIASES={
   }
   function recordOrderTime(record){
     return dateValue(record&&record.submittedAt||record&&record.date).getTime();
+  }
+  function submitDateKey(value){
+    var d=dateValue(value);
+    if(!d.getTime())return'';
+    var parts=new Intl.DateTimeFormat('en-CA',{year:'numeric',month:'2-digit',day:'2-digit',timeZone:'Asia/Jakarta'}).formatToParts(d);
+    var map={};parts.forEach(function(part){map[part.type]=part.value;});
+    return map.year+'-'+map.month+'-'+map.day;
+  }
+  function fmtSubmitDay(value){
+    var d=dateValue(value);
+    return d.getTime()?d.toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric',timeZone:'Asia/Jakarta'}):'—';
   }
   function has(v){return v!==undefined&&v!==null&&v!==''&&!(typeof v==='number'&&isNaN(v));}
   function toLowerText(v){
@@ -427,6 +439,7 @@ var LEGACY_OBJECT_ALIASES={
     var layerKey=keyText(p.targetLayerId||p.targetLayerLabel||m.monitoringType||'monitoring');
     var nameKey=keyText(p.targetObjectName||p.locationName||p.title||title);
     var targetProperties=parseJSON(p.targetFeatureProperties);
+    var sourceObjectId=String(targetProperties.Object_ID||targetProperties.OBJECT_ID||targetProperties.objectId||p.Object_ID||p.targetObjectId||'').trim();
     var rawArea=targetProperties.Luas_Ha||targetProperties.Luas||targetProperties.areaHa||targetProperties.luas_ha;
     var targetArea=parseAreaNumber(rawArea);
     if(targetArea!==null&&targetArea>0)m.monitoredAreaHa=targetArea;
@@ -453,6 +466,7 @@ var LEGACY_OBJECT_ALIASES={
     return{
       id:p.monitoringId||p.reportId||index,
       objectId:objectId,
+      sourceObjectId:sourceObjectId,
       masterObjectId:masterObjectId,
       legacyObjectId:p.targetObjectId||'',
       title:title,
@@ -472,6 +486,7 @@ var LEGACY_OBJECT_ALIASES={
       description:m.notes||p.description||'',
       recommendation:m.followUp||m.recommendation||p.recommendation||'',
       photos:cleanPhotos(p.photos),
+      geometry:feature&&feature.geometry||null,
       metrics:m,
       status:statusOf(p,m,type)
     };
@@ -558,12 +573,13 @@ var LEGACY_OBJECT_ALIASES={
     return hay.indexOf(q)>-1;
   }
 
-  function summaryRecords(mode,clusterValue,q,type,status,year){
+  function summaryRecords(mode,clusterValue,q,type,status,year,submitted){
     var targetYear=year?Number(year):null;
     var reporter=document.getElementById('monitor-reporter').value;
     return records.filter(function(r){
       if(!clusterMatchRecord(mode,clusterValue,r))return false;
       if(reporter&&r.reporterKey!==reporter)return false;
+      if(submitted&&submitDateKey(r.submittedAt)!==submitted)return false;
       if(type&&r.type!==type)return false;
       if(status&&r.status.key!==status)return false;
       if(targetYear){
@@ -573,6 +589,82 @@ var LEGACY_OBJECT_ALIASES={
       if(!summarySearchMatch(r,q))return false;
       return true;
     });
+  }
+
+  function geometryFingerprint(geometry){
+    if(!geometry||!geometry.type||!geometry.coordinates)return'';
+    function rounded(value){
+      if(Array.isArray(value))return value.map(rounded);
+      return typeof value==='number'?Number(value.toFixed(6)):value;
+    }
+    return geometry.type+'|'+JSON.stringify(rounded(geometry.coordinates));
+  }
+
+  function spatialReportGroups(items){
+    var map={};
+    items.forEach(function(record){
+      var key=geometryFingerprint(record.geometry);
+      if(!key)return;
+      if(!map[key])map[key]={geometry:record.geometry,records:[]};
+      map[key].records.push(record);
+    });
+    return Object.keys(map).map(function(key){return map[key];});
+  }
+
+  function monitoringMapPopup(cluster,index){
+    var objectIds={};
+    cluster.records.forEach(function(record){
+      var id=record.sourceObjectId||record.masterObjectId||record.objectId||'Tanpa ID';
+      objectIds[id]=1;
+    });
+    var ids=Object.keys(objectIds);
+    var overlap=ids.length>1?'<span>Klaster tumpang tindih · '+ids.length+' ID objek</span>':'<span>Polygon '+(index+1)+'</span>';
+    return'<div class="monitor-map-popup"><strong>'+esc(cluster.records[0].title||'Objek monitoring')+'</strong>'+overlap+
+      ids.map(function(id){return'<small>'+esc(id)+'</small>';}).join('')+
+      '<span>'+cluster.records.length+' laporan terpilih</span>'+cluster.records.map(function(record){
+        return'<small>'+esc(record.id)+' · '+esc(fmtSubmitDateTime(record.submittedAt))+'</small>';
+      }).join('')+'</div>';
+  }
+
+  function renderMonitoringMap(items){
+    var mapElement=document.getElementById('monitor-map');
+    var summary=document.getElementById('monitor-map-summary');
+    if(!mapElement||!summary)return;
+    var spatial=spatialReportGroups(items);
+    var overlapCount=spatial.filter(function(cluster){
+      var ids={};cluster.records.forEach(function(record){ids[record.sourceObjectId||record.masterObjectId||record.objectId||record.id]=1;});
+      return Object.keys(ids).length>1;
+    }).length;
+    summary.textContent=items.length+' laporan · '+spatial.length+' polygon spasial'+(overlapCount?' · '+overlapCount+' klaster tumpang tindih':'');
+    if(typeof L==='undefined'){
+      mapElement.innerHTML='<div class="empty">Peta belum dapat dimuat.</div>';
+      return;
+    }
+    if(!monitorMap){
+      monitorMap=L.map(mapElement,{scrollWheelZoom:false,zoomControl:true});
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:20,attribution:'Tiles © Esri'}).addTo(monitorMap);
+    }
+    if(monitorMapLayer)monitorMap.removeLayer(monitorMapLayer);
+    monitorMapLayer=L.featureGroup().addTo(monitorMap);
+    if(!spatial.length){
+      mapElement.classList.add('is-empty');
+      monitorMap.setView([0.88,102.1],7);
+      return;
+    }
+    mapElement.classList.remove('is-empty');
+    spatial.forEach(function(cluster,index){
+      var objectIds={};cluster.records.forEach(function(record){objectIds[record.sourceObjectId||record.masterObjectId||record.objectId||record.id]=1;});
+      var overlapping=Object.keys(objectIds).length>1;
+      var layer=L.geoJSON(cluster.geometry,{style:{color:overlapping?'#a5411f':'#087653',weight:overlapping?4:3,fillColor:overlapping?'#e97743':'#14a978',fillOpacity:.3}}).addTo(monitorMapLayer);
+      layer.bindPopup(monitoringMapPopup(cluster,index));
+      if(overlapping){
+        var center=layer.getBounds().getCenter();
+        L.marker(center,{icon:L.divIcon({className:'monitor-map-cluster-label',html:String(Object.keys(objectIds).length),iconSize:[28,28]})}).bindPopup(monitoringMapPopup(cluster,index)).addTo(monitorMapLayer);
+      }
+    });
+    var bounds=monitorMapLayer.getBounds();
+    if(bounds.isValid())monitorMap.fitBounds(bounds,{padding:[28,28],maxZoom:17});
+    window.setTimeout(function(){monitorMap.invalidateSize();},80);
   }
 
   function renderSummaryChart(recordsForSummary,cardType){
@@ -741,9 +833,11 @@ var LEGACY_OBJECT_ALIASES={
     var type=document.getElementById('monitor-type').value;
     var status=document.getElementById('monitor-status').value;
     var year=document.getElementById('monitor-year').value;
+    var submitted=document.getElementById('monitor-submit-date').value;
     var sort=document.getElementById('monitor-sort').value;
-    var summaryRows=summaryRecords(mode,clusterValue,q,type,status,year);
+    var summaryRows=summaryRecords(mode,clusterValue,q,type,status,year,submitted);
     renderSummaryChart(summaryRows);
+    renderMonitoringMap(summaryRows);
     var filtered=groupData(summaryRows);
     filtered.sort(function(a,b){
       if(sort==='name')return a.label.localeCompare(b.label);
@@ -814,6 +908,22 @@ var LEGACY_OBJECT_ALIASES={
       return'<option value="'+esc(key)+'">'+esc(reporters[key])+'</option>';
     }).join('');
     if(reporters[selectedReporter])reporterSelect.value=selectedReporter;
+    var submitSelect=document.getElementById('monitor-submit-date');
+    var selectedSubmit=submitSelect.value;
+    var submitDates={};
+    records.forEach(function(r){var key=submitDateKey(r.submittedAt);if(key)submitDates[key]=r.submittedAt;});
+    submitSelect.innerHTML='<option value="">Semua tanggal</option>'+Object.keys(submitDates).sort().reverse().map(function(key){
+      return'<option value="'+esc(key)+'">'+esc(fmtSubmitDay(submitDates[key]))+'</option>';
+    }).join('');
+    if(submitDates[selectedSubmit])submitSelect.value=selectedSubmit;
+    if(!presetApplied){
+      var params=new URLSearchParams(location.search);
+      var reporterPreset=keyText(params.get('reporter')||'');
+      var submittedPreset=params.get('submitted')||'';
+      if(reporters[reporterPreset])reporterSelect.value=reporterPreset;
+      if(submitDates[submittedPreset])submitSelect.value=submittedPreset;
+      presetApplied=true;
+    }
     renderClusterValues(getClusterMode());
   }
 
@@ -1015,7 +1125,7 @@ var LEGACY_OBJECT_ALIASES={
     loadReportsScript();
   };
 
-  ['monitor-search','monitor-type','monitor-status','monitor-reporter','monitor-sort','monitor-year'].forEach(function(id){
+  ['monitor-search','monitor-type','monitor-status','monitor-reporter','monitor-submit-date','monitor-sort','monitor-year'].forEach(function(id){
     document.getElementById(id).addEventListener(id==='monitor-search'?'input':'change',render);
   });
   document.getElementById('monitor-cluster').addEventListener('change',function(){

@@ -131,6 +131,9 @@ test("monitoring dashboard filters reporters and orders same-day reports by subm
   const detailHtml = read("monitoring-detail.html");
 
   assert.match(html, /id="monitor-reporter"/);
+  assert.match(html, /id="monitor-submit-date"/);
+  assert.match(html, /id="monitor-map"/);
+  assert.match(html, /leaflet@1\.9\.4/);
   assert.match(html, /Submit terbaru/);
   assert.match(source, /submittedAt:p\.receivedAt\|\|p\.submittedAt/);
   assert.match(source, /function fmtSubmitDateTime/);
@@ -138,6 +141,13 @@ test("monitoring dashboard filters reporters and orders same-day reports by subm
   assert.match(source, /function recordOrderTime/);
   assert.match(source, /g\.history=g\.history\.sort\(function\(a,b\)\{return recordOrderTime\(b\)-recordOrderTime\(a\);\}\)/);
   assert.match(source, /Monitoring '\+esc\(fmtDate\(r\.date\)\)\+' · Submit '/);
+  assert.match(source, /function submitDateKey/);
+  assert.match(source, /function spatialReportGroups/);
+  assert.match(source, /function geometryFingerprint/);
+  assert.match(source, /klaster tumpang tindih/);
+  assert.match(source, /renderMonitoringMap\(summaryRows\)/);
+  assert.match(source, /params\.get\('reporter'\)/);
+  assert.match(source, /params\.get\('submitted'\)/);
   assert.match(detailSource, /Tanggal submit terbaru/);
   assert.match(detailSource, /g\.history=g\.history\.sort\(function\(a,b\)\{return recordOrderTime\(b\)-recordOrderTime\(a\);\}\)/);
   assert.match(detailSource, /fmtSubmitDateTime\(r\.submittedAt\)/);
