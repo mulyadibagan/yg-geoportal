@@ -406,7 +406,9 @@
   }
 
   function simplifyInternalOverview(config, data) {
-    if (!["active_concession", "oil_palm_company"].includes(config.type)) {\n      return data;\n    }
+    if (!["active_concession", "oil_palm_company"].includes(config.type)) {
+      return data;
+    }
     const simplifyPolygon = polygon =>
       polygon.map(ring => simplifyOverviewRing(ring, 0.00015));
     return Object.assign({}, data, {
