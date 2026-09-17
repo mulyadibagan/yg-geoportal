@@ -28,7 +28,7 @@
     .compilation-toolbar input,.compilation-toolbar select{min-height:40px;border-color:#d3e1db;background:#f8fbf9}
     .cluster-map-panel{margin-top:12px;padding:16px;border:1px solid #d8e5df;border-radius:16px;background:#fff;box-shadow:0 8px 22px rgba(22,67,51,.06)}
     .cluster-map-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:12px}.cluster-map-head h2{margin:3px 0 2px;font-size:21px}.cluster-map-head p{margin:0;color:#667b73;font-size:11px}
-    .cluster-map-filters{display:grid;grid-template-columns:repeat(3,minmax(150px,1fr)) auto;gap:9px;align-items:end;margin-bottom:10px}.cluster-map-filters label{color:#667b73;font-size:10px;font-weight:800}.cluster-map-filters select{display:block;width:100%;min-height:40px;margin-top:5px;border:1px solid #d3e1db;border-radius:10px;background:#f8fbf9}.cluster-map-reset{min-height:40px;padding:0 15px;border:1px solid #9bc8b5;border-radius:10px;background:#eef8f3;color:var(--compilation-green);font-weight:850;cursor:pointer}
+    .cluster-map-filters{display:grid;grid-template-columns:repeat(5,minmax(135px,1fr)) auto;gap:9px;align-items:end;margin-bottom:10px}.cluster-map-filters label{color:#667b73;font-size:10px;font-weight:800}.cluster-map-filters select{display:block;width:100%;min-height:40px;margin-top:5px;border:1px solid #d3e1db;border-radius:10px;background:#f8fbf9}.cluster-map-reset{min-height:40px;padding:0 15px;border:1px solid #9bc8b5;border-radius:10px;background:#eef8f3;color:var(--compilation-green);font-weight:850;cursor:pointer}
     .cluster-map-chips{display:flex;gap:7px;padding:2px 0 11px;overflow-x:auto}.cluster-map-chip{flex:0 0 auto;padding:8px 10px;border:1px solid #d8e5df;border-radius:999px;background:#f8fbf9;color:var(--ink);font:inherit;font-size:10px;cursor:pointer}.cluster-map-chip:hover,.cluster-map-chip:focus-visible{border-color:#6cad91;background:#eaf6f0;outline:0}.cluster-map-chip b{color:var(--compilation-green)}
     .cluster-map-layout{display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:12px}.cluster-map-canvas{min-height:430px;border:1px solid #d8e5df;border-radius:13px;background:#dae8e2;overflow:hidden}.cluster-map-summary{padding:13px;border-radius:13px;background:#f6faf8}.cluster-map-summary strong{display:block;margin-bottom:6px;color:var(--compilation-green);font-size:16px}.cluster-map-summary p{margin:0 0 11px;color:#667b73;font-size:11px;line-height:1.5}.cluster-map-summary-list{display:grid;gap:7px}.cluster-map-summary-list a{display:block;padding:8px;border:1px solid #dce9e3;border-radius:9px;background:#fff;color:var(--ink);font-size:10px;text-decoration:none}.cluster-map-summary-list a b{display:block;margin-bottom:2px;color:var(--compilation-green);font-size:11px}
     .cluster-map-popup>strong{display:block;color:#086b4c;font-size:14px}.cluster-map-popup>p{margin:4px 0 8px;color:#60736c;line-height:1.4}.cluster-monitoring-result{margin:8px 0;padding:8px;border-radius:8px;background:#eef7f3}.cluster-monitoring-result>b{color:#086b4c}.cluster-monitoring-result table{width:100%;margin:5px 0;border-collapse:collapse;font-size:11px}.cluster-monitoring-result th,.cluster-monitoring-result td{padding:2px 0;border:0;text-align:left}.cluster-monitoring-result th{color:#596b64;font-weight:600}.cluster-monitoring-result td{text-align:right;font-weight:750}.cluster-monitoring-result small{color:#667b73}
@@ -131,8 +131,10 @@
       </label>
     </section>
     <section class="cluster-map-panel" id="cluster-map-panel" aria-labelledby="cluster-map-title">
-      <div class="cluster-map-head"><div><span class="eyebrow">PETA KLASTER PENANAMAN</span><h2 id="cluster-map-title">Polygon menurut donor, desa, dan fase</h2><p>Pilih tiga filter sekaligus atau klik kombinasi klaster untuk menampilkan polygon masing-masing.</p></div></div>
+      <div class="cluster-map-head"><div><span class="eyebrow">PETA KLASTER PENANAMAN</span><h2 id="cluster-map-title">Polygon menurut laporan dan program</h2><p>Saring pelapor dan tanggal submit untuk melihat footprint laporan. Polygon yang sama dari ID berbeda ditandai sebagai klaster tumpang tindih.</p></div></div>
       <div class="cluster-map-filters">
+        <label>Pelapor<select id="cluster-map-reporter"><option value="">Semua pelapor</option></select></label>
+        <label>Tanggal submit<select id="cluster-map-submitted"><option value="">Semua tanggal</option></select></label>
         <label>Donor<select id="cluster-map-donor"><option value="">Semua donor</option></select></label>
         <label>Desa<select id="cluster-map-village"><option value="">Semua desa</option></select></label>
         <label>Fase penanaman<select id="cluster-map-phase"><option value="">Semua fase</option></select></label>
@@ -160,7 +162,6 @@
     <section id="compilation-objects" class="compilation-objects"><div class="loading">Memuat hasil kompilasi…</div></section>
   </main>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-  <script src="js/monitoring-compilation.js?v=20260909-kelapa-pati-phase2-fix1"></script>
+  <script src="js/monitoring-compilation.js?v=20260917-report-cluster1"></script>
 </body>
 </html>
-

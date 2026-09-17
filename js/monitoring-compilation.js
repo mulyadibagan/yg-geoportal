@@ -9,6 +9,8 @@
   var clusterValue=document.getElementById('compilation-cluster-value');
   var search=document.getElementById('compilation-search');
   var villageChart=document.getElementById('compilation-village-chart');
+  var clusterMapReporter=document.getElementById('cluster-map-reporter');
+  var clusterMapSubmitted=document.getElementById('cluster-map-submitted');
   var clusterMapDonor=document.getElementById('cluster-map-donor');
   var clusterMapVillage=document.getElementById('cluster-map-village');
   var clusterMapPhase=document.getElementById('cluster-map-phase');
@@ -58,6 +60,9 @@
   }
   function dateValue(v){var text=String(v||'').trim();var local=text.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})/);var d=local?new Date(Date.UTC(Number(local[3]),Number(local[2])-1,Number(local[1]))):new Date(v||0);return isNaN(d.getTime())?new Date(0):d;}
   function fmtDate(v){var d=dateValue(v);return d.getTime()?d.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric',timeZone:'UTC'}):'—';}
+  function fmtSubmitDateTime(v){var d=dateValue(v);return d.getTime()?d.toLocaleString('id-ID',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'Asia/Jakarta'})+' WIB':'—';}
+  function submitDateKey(value){var d=dateValue(value);if(!d.getTime())return'';var parts=new Intl.DateTimeFormat('en-CA',{year:'numeric',month:'2-digit',day:'2-digit',timeZone:'Asia/Jakarta'}).formatToParts(d),map={};parts.forEach(function(part){map[part.type]=part.value;});return map.year+'-'+map.month+'-'+map.day;}
+  function fmtSubmitDay(value){var d=dateValue(value);return d.getTime()?d.toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric',timeZone:'Asia/Jakarta'}):'—';}
   function metricNumber(v){
     if(v===undefined||v===null||v==='')return null;
     if(typeof v==='number')return isFinite(v)?v:null;
@@ -191,7 +196,8 @@
     phase=REPORT_PHASE_OVERRIDES[String(p.reportId||p.Source_Report_ID||'').trim()]||phase;
     var condition=String(m.condition||p.condition||p.description||'').toLowerCase();
     var status=/rusak berat|hilang|kritis|tindak lanjut|kering parah|gagal/.test(condition)?{key:'masalah',label:'Perlu tindak lanjut'}:/sedang|rusak ringan|pantau|waspada|abrasi|hama/.test(condition)?{key:'waspada',label:'Perlu dipantau'}:{key:'baik',label:m.condition||p.condition||'Baik/normal'};
-    var objectCode=String(target.Object_ID||target.OBJECT_ID||target.objectId||p.Object_ID||p.targetObjectId||'').trim();
+    var sourceObjectId=String(target.Object_ID||target.OBJECT_ID||target.objectId||p.Object_ID||p.targetObjectId||'').trim();
+    var objectCode=sourceObjectId;
     objectCode=OBJECT_ALIASES[objectCode]||objectCode;
     if(!donor)donor=legacyMangroveDonor(objectCode);
     if(!phase&&donor==='Aramco Asia Singapore'&&dateValue(p.activityDate||p.publishedAt)>=dateValue('2025-07-01'))phase='Fase III';
@@ -199,8 +205,9 @@
     if(masterOverride){plantedCount=masterOverride.plantedCount;m.monitoredAreaHa=masterOverride.areaHa;}
     var objectKey=objectCode||[p.targetLayerId||p.targetLayerLabel||'monitoring',title,targetArea||''].map(keyText).join('|');
     return{
-      id:p.monitoringId||p.reportId||index,objectId:objectKey,masterObjectId:objectCode,
+      id:p.monitoringId||p.reportId||index,objectId:objectKey,sourceObjectId:sourceObjectId,masterObjectId:objectCode,
       title:title,type:reportType(p,m),date:p.activityDate||p.publishedAt||p.verifiedAt||p.receivedAt,
+      submittedAt:p.receivedAt||p.submittedAt||p.submitted_at||p.publishedAt||p.verifiedAt||p.activityDate,
       village:village,villageKey:keyText(village),location:[village,p.district,p.regency].filter(Boolean).join(', '),
       reporter:reporter,reporterKey:keyText(reporter),donor:donor,donorKey:keyText(donor),
       phase:phase,phaseKey:keyText(phase),plantedCount:plantedCount,metrics:m,status:status,geometry:feature&&feature.geometry||null
@@ -454,6 +461,21 @@
     for(var i=0;i<records.length;i+=1)if(records[i].geometry&&records[i].geometry.coordinates)return records[i].geometry;
     return null;
   }
+  function geometryFingerprint(geometry){
+    if(!geometry||!geometry.type||!geometry.coordinates)return'';
+    function rounded(value){if(Array.isArray(value))return value.map(rounded);return typeof value==='number'?Number(value.toFixed(6)):value;}
+    return geometry.type+'|'+JSON.stringify(rounded(geometry.coordinates));
+  }
+  function spatialReportGroups(records){
+    var map={};records.forEach(function(record){var key=geometryFingerprint(record.geometry);if(!key)return;if(!map[key])map[key]={geometry:record.geometry,records:[]};map[key].records.push(record);});return Object.keys(map).map(function(key){return map[key];});
+  }
+  function reportObjectIds(records){var ids={};records.forEach(function(record){ids[record.sourceObjectId||record.masterObjectId||record.objectId||record.id]=1;});return Object.keys(ids);}
+  function selectedReportRecords(data){
+    var reporter=clusterMapReporter&&clusterMapReporter.value||'',submitted=clusterMapSubmitted&&clusterMapSubmitted.value||'',donor=clusterMapDonor&&clusterMapDonor.value||'',village=clusterMapVillage&&clusterMapVillage.value||'',phase=clusterMapPhase&&clusterMapPhase.value||'',records=[];
+    (data&&data.groups||[]).forEach(function(group){(group.history||[]).forEach(function(record){if((!reporter||record.reporterKey===reporter)&&(!submitted||submitDateKey(record.submittedAt)===submitted)&&(!donor||record.donorKey===donor)&&(!village||record.villageKey===village)&&(!phase||record.phaseKey===phase))records.push(record);});});
+    return records;
+  }
+  function reportClusterPopup(item,index){var ids=reportObjectIds(item.records),overlap=ids.length>1?'<b>Klaster tumpang tindih · '+ids.length+' ID objek</b>':'<b>Polygon laporan '+(index+1)+'</b>';return'<div class="cluster-map-popup"><strong>'+esc(item.records[0].title||'Objek monitoring')+'</strong><div class="cluster-monitoring-result">'+overlap+'<br>'+ids.map(function(id){return'<small>'+esc(id)+'</small>';}).join('<br>')+'<p>'+item.records.length+' laporan terpilih</p>'+item.records.map(function(record){return'<small>'+esc(record.id)+' · '+esc(fmtSubmitDateTime(record.submittedAt))+'</small>';}).join('<br>')+'</div></div>';}
   function fillClusterMapSelect(select,values,allLabel){
     if(!select)return;
     var current=select.value;
@@ -486,14 +508,26 @@
     var panel=document.getElementById('cluster-map-panel');
     if(!panel)return;
     if(data&&data.type&&data.type!=='Penanaman Mangrove'){panel.hidden=true;return;}panel.hidden=false;
-    var groups=clusterMapGroups(data),donors={},villages={},phases={},combinations={};
+    var groups=clusterMapGroups(data),donors={},villages={},phases={},reporterValues={},submitValues={},combinations={};
+    (data&&data.groups||[]).forEach(function(group){(group.history||[]).forEach(function(record){if(record.reporterKey)reporterValues[record.reporterKey]=record.reporter||record.reporterKey;var day=submitDateKey(record.submittedAt);if(day)submitValues[day]=record.submittedAt;});});
     groups.forEach(function(group){var d=clusterDimensions(group);donors[d.donor.key]=d.donor.label;villages[d.village.key]=d.village.label;phases[d.phase.key]=d.phase.label;var key=[d.donor.key,d.village.key,d.phase.key].join('|');if(!combinations[key])combinations[key]={donor:d.donor,village:d.village,phase:d.phase,count:0};combinations[key].count+=1;});
-    fillClusterMapSelect(clusterMapDonor,donors,'Semua donor');fillClusterMapSelect(clusterMapVillage,villages,'Semua desa');fillClusterMapSelect(clusterMapPhase,phases,'Semua fase');
+    fillClusterMapSelect(clusterMapReporter,reporterValues,'Semua pelapor');fillClusterMapSelect(clusterMapDonor,donors,'Semua donor');fillClusterMapSelect(clusterMapVillage,villages,'Semua desa');fillClusterMapSelect(clusterMapPhase,phases,'Semua fase');
+    if(clusterMapSubmitted){var currentDate=clusterMapSubmitted.value;clusterMapSubmitted.innerHTML='<option value="">Semua tanggal</option>'+Object.keys(submitValues).sort().reverse().map(function(key){return'<option value="'+esc(key)+'">'+esc(fmtSubmitDay(submitValues[key]))+'</option>';}).join('');if(currentDate&&submitValues[currentDate])clusterMapSubmitted.value=currentDate;}
+    if(!renderClusterMap.presetApplied){var params=new URLSearchParams(location.search),reporterPreset=keyText(params.get('reporter')||''),submittedPreset=params.get('submitted')||'';if(reporterValues[reporterPreset])clusterMapReporter.value=reporterPreset;if(submitValues[submittedPreset])clusterMapSubmitted.value=submittedPreset;renderClusterMap.presetApplied=true;}
     if(clusterMapChips)clusterMapChips.innerHTML=Object.keys(combinations).sort(function(a,b){var x=combinations[a],y=combinations[b];return x.donor.label.localeCompare(y.donor.label,'id')||x.village.label.localeCompare(y.village.label,'id')||x.phase.label.localeCompare(y.phase.label,'id');}).map(function(key){var item=combinations[key];return'<button type="button" class="cluster-map-chip" data-map-donor="'+esc(item.donor.key)+'" data-map-village="'+esc(item.village.key)+'" data-map-phase="'+esc(item.phase.key)+'"><b>'+esc(item.donor.label)+'</b> · '+esc(item.village.label)+' · '+esc(item.phase.label)+' ('+item.count+')</button>';}).join('');
     updateClusterMap(data);
   }
   function updateClusterMap(data){
     ensureClusterMap();if(!clusterMapReady)return;
+    var reportMode=Boolean(clusterMapReporter&&clusterMapReporter.value||clusterMapSubmitted&&clusterMapSubmitted.value);
+    if(reportMode){
+      var reports=selectedReportRecords(data),spatial=spatialReportGroups(reports),overlaps=0,reportBounds=L.latLngBounds([]);clusterMapLayer.clearLayers();
+      spatial.forEach(function(item,index){var ids=reportObjectIds(item.records),overlapping=ids.length>1;if(overlapping)overlaps+=1;var layer=L.geoJSON({type:'Feature',geometry:item.geometry,properties:{}},{style:{color:overlapping?'#a5411f':'#087653',weight:overlapping?4:3,fillColor:overlapping?'#e97743':'#14a978',fillOpacity:.3}}).bindPopup(reportClusterPopup(item,index));layer.addTo(clusterMapLayer);var layerBounds=layer.getBounds();if(layerBounds.isValid())reportBounds.extend(layerBounds);if(overlapping){L.marker(layerBounds.getCenter(),{icon:L.divIcon({className:'monitor-map-cluster-label',html:String(ids.length),iconSize:[28,28]})}).bindPopup(reportClusterPopup(item,index)).addTo(clusterMapLayer);}});
+      if(reportBounds.isValid())clusterMap.fitBounds(reportBounds.pad(.12),{maxZoom:17});else clusterMap.setView([1.45,102.05],10);setTimeout(function(){clusterMap.invalidateSize();},0);
+      var labels=[clusterMapReporter,clusterMapSubmitted,clusterMapDonor,clusterMapVillage,clusterMapPhase].map(function(select){return select&&select.options[select.selectedIndex]&&select.options[select.selectedIndex].text||'';}).filter(function(label){return label&&!/^Semua /.test(label);});
+      if(clusterMapSummary)clusterMapSummary.innerHTML='<strong>'+reports.length+' laporan · '+spatial.length+' polygon spasial</strong><p>'+esc(labels.join(' · '))+(overlaps?'<br>'+overlaps+' klaster tumpang tindih':'')+'</p><div class="cluster-map-summary-list">'+spatial.map(function(item,index){var ids=reportObjectIds(item.records);return'<a href="#cluster-map"><b>'+(ids.length>1?'Klaster tumpang tindih':'Polygon '+(index+1))+'</b>'+esc(ids.join(' · '))+'<br>'+item.records.length+' laporan</a>';}).join('')+'</div>';
+      renderClusterResultSummary((data&&data.groups||[]).filter(function(group){return(group.history||[]).some(function(record){return reports.indexOf(record)>-1;});}),labels,0);return;
+    }
     var donor=clusterMapDonor&&clusterMapDonor.value||'',village=clusterMapVillage&&clusterMapVillage.value||'',phase=clusterMapPhase&&clusterMapPhase.value||'';
     var groups=clusterMapGroups(data).filter(function(group){var d=clusterDimensions(group);return(!donor||d.donor.key===donor)&&(!village||d.village.key===village)&&(!phase||d.phase.key===phase);});
     clusterMapLayer.clearLayers();var bounds=L.latLngBounds([]),mapped=0,monitored=0,pending=0,totalArea=0,totalPlanted=0;
@@ -576,8 +610,8 @@
   if(cluster)cluster.addEventListener('change',refreshClusterValues);
   if(clusterValue)clusterValue.addEventListener('change',function(){render(activeData);});
   if(search)search.addEventListener('input',function(){render(activeData);});
-  [clusterMapDonor,clusterMapVillage,clusterMapPhase].forEach(function(select){if(select)select.addEventListener('change',function(){updateClusterMap(activeData);});});
-  var clusterMapReset=document.getElementById('cluster-map-reset');if(clusterMapReset)clusterMapReset.addEventListener('click',function(){clusterMapDonor.value='';clusterMapVillage.value='';clusterMapPhase.value='';updateClusterMap(activeData);});
+  [clusterMapReporter,clusterMapSubmitted,clusterMapDonor,clusterMapVillage,clusterMapPhase].forEach(function(select){if(select)select.addEventListener('change',function(){updateClusterMap(activeData);});});
+  var clusterMapReset=document.getElementById('cluster-map-reset');if(clusterMapReset)clusterMapReset.addEventListener('click',function(){clusterMapReporter.value='';clusterMapSubmitted.value='';clusterMapDonor.value='';clusterMapVillage.value='';clusterMapPhase.value='';updateClusterMap(activeData);});
   if(clusterMapChips)clusterMapChips.addEventListener('click',function(event){var button=event.target.closest('[data-map-donor]');if(!button)return;clusterMapDonor.value=button.getAttribute('data-map-donor');clusterMapVillage.value=button.getAttribute('data-map-village');clusterMapPhase.value=button.getAttribute('data-map-phase');updateClusterMap(activeData);document.getElementById('cluster-map').scrollIntoView({behavior:'smooth',block:'center'});});
 
   if(villageChart)villageChart.addEventListener('click',function(event){
@@ -632,5 +666,3 @@
   loadPublished(requestedType,storageKey);
   loadMasterMangrove();
 })();
-
-

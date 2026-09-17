@@ -124,18 +124,19 @@ test("monitoring reporter chips filter historical reporters and remain keyboard 
   assert.match(html, /\.reporter-pill:focus-visible/);
 });
 
-test("monitoring dashboard filters reporters and orders same-day reports by submit time", () => {
+test("monitoring compilation filters report clusters by reporter and submit date", () => {
   const source = read("js/monitoring.js");
   const html = read("monitoring.html");
+  const compilation = read("js/monitoring-compilation.js");
+  const compilationHtml = read("monitoring-compilation.html");
   const detailSource = read("js/monitoring-detail.js");
   const detailHtml = read("monitoring-detail.html");
 
   assert.match(html, /id="monitor-reporter"/);
   assert.match(html, /id="monitor-submit-date"/);
-  assert.match(html, /id="monitor-map"/);
-  assert.doesNotMatch(html, /monitor-map-card monitoring-detail-only/);
-  assert.match(html, /class="toolbar monitor-filter-toolbar"/);
-  assert.match(html, /leaflet@1\.9\.4/);
+  assert.doesNotMatch(html, /id="monitor-map"/);
+  assert.match(html, /class="toolbar monitor-filter-toolbar monitoring-detail-only"/);
+  assert.doesNotMatch(html, /leaflet@1\.9\.4/);
   assert.match(html, /Submit terbaru/);
   assert.match(source, /submittedAt:p\.receivedAt\|\|p\.submittedAt/);
   assert.match(source, /function fmtSubmitDateTime/);
@@ -153,6 +154,13 @@ test("monitoring dashboard filters reporters and orders same-day reports by subm
   assert.match(source, /snapshots\/current\/dashboard\.json/);
   assert.match(source, /data&&data\.capacitySources&&data\.capacitySources\.reports\|\|data/);
   assert.doesNotMatch(source, /snapshots\/current\/objects\.json/);
+  assert.match(compilationHtml, /id="cluster-map-reporter"/);
+  assert.match(compilationHtml, /id="cluster-map-submitted"/);
+  assert.match(compilation, /function spatialReportGroups/);
+  assert.match(compilation, /function geometryFingerprint/);
+  assert.match(compilation, /params\.get\('reporter'\)/);
+  assert.match(compilation, /params\.get\('submitted'\)/);
+  assert.match(compilation, /klaster tumpang tindih/);
   assert.match(detailSource, /Tanggal submit terbaru/);
   assert.match(detailSource, /g\.history=g\.history\.sort\(function\(a,b\)\{return recordOrderTime\(b\)-recordOrderTime\(a\);\}\)/);
   assert.match(detailSource, /fmtSubmitDateTime\(r\.submittedAt\)/);
