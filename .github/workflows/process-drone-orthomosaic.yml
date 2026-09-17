@@ -88,9 +88,11 @@ jobs:
             done
           fi
 
-          python ../../scripts/drone_job.py stage "$ROOT/job.json" checking 30 "Memeriksa kualitas foto"
+          python ../../scripts/drone_job.py stage "$ROOT/job.json" checking 30 "Memeriksa kualitas dan metadata foto"
           publish_status
           python ../../scripts/drone_job.py qc "$ROOT/input" "$ROOT/rejected" "$ROOT/valid.txt" "$ROOT/qc.json"
+          python ../../scripts/drone_job.py metadata "$ROOT/job.json" "$ROOT/qc.json"
+          publish_status
           VALID=$(jq -r '.validPhotos' "$ROOT/qc.json")
           REJECTED=$(jq -r '.excludedPhotos' "$ROOT/qc.json")
           if [ "$VALID" -lt 3 ]; then
