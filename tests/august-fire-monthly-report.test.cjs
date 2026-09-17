@@ -59,10 +59,14 @@ test("monthly report exposes RSPO analysis only to a staff session", () => {
 
   assert.match(html, /id="fm-rspo-kpi" hidden aria-hidden="true"/);
   assert.match(html, /id="fm-rspo-panel" hidden aria-hidden="true"/);
+  assert.match(html, /id="fm-ps-kpi" hidden aria-hidden="true"/);
   assert.match(controller, /staffSession \? fetch\('data\/PERUSAHAAN_SAWIT_RIAU_REFERENSI\.geojson'/);
+  assert.match(controller, /staffSession \? fetch\('data\/PERHUTANAN_SOSIAL_RIAU\.geojson'/);
+  assert.match(controller, /renderMonthlyInternal\(map,month,d,geo,permitGeo,rspoGeo,psGeo,layerControl\)/);
   assert.match(controller, /if\(staffSession\)rspoTable/);
   assert.match(controller, /if\(staffSession\)\{overlays\['PBPH Mei 2026'\]=permitLayer;overlays\['Area anggota RSPO'\]=rspoLayer;\}/);
   assert.match(access, /'data\/PERUSAHAAN_SAWIT_RIAU_REFERENSI\.geojson': '\/api\/staff\/rspo-groups'/);
+  assert.match(access, /'data\/PERHUTANAN_SOSIAL_RIAU\.geojson': '\/api\/staff\/social-forestry-riau'/);
 });
 
 test("archive job preserves detections from finalized reports", () => {

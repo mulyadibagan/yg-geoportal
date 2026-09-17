@@ -36,6 +36,7 @@
   const contains=(point,polys)=>polys.some(p=>ringContains(point,p[0])&&!p.slice(1).some(r=>ringContains(point,r)));
   function identity(p,kind){
     if(kind==='pbph')return {id:String(p.PBPH_ID||[p.NAMOBJ,p.NO_SK].filter(Boolean).join('|')),name:p.NAMOBJ,detail:p.NO_SK||'',level:'unit'};
+    if(kind==='ps')return {id:String(p.PROFILE_KEY||p.NO_IUPHKM||p.SK||p.OBJECTID||p.ID||[p.NAMA_HKM,p.NAMA_DESA,p.NAMA_KAB].filter(Boolean).join('|')),name:p.NAMA_HKM||p.NAMA_DESA||'Wilayah Perhutanan Sosial',detail:[p.Ket,p.NO_IUPHKM||p.SK,p.NAMA_DESA,p.NAMA_KAB].filter(Boolean).join(' · '),level:'unit'};
     // Exact parent-scoped alias verified in Permata Group's own announcement.
     // Preserve the source abbreviation; never apply PHI to unrelated groups.
     const phi=/^PT\.?\s+PHI$/i.test(p.PO_COMPANY||'') && (p.RSPO_GROUP||p.Parent)==='Permata Group Pte. Ltd.';
@@ -46,9 +47,9 @@
     const events=input.burned.features.map((f,i)=>({geometry:polygon(f),id:String(f.properties?.archiveEventId||f.properties?.eventId||i),first:f.properties?.firstDetection||'',last:f.properties?.lastDetection||''}));
     events.forEach(e=>e.box=box(e.geometry));
     const results={};const allPieces=[];
-    for(const kind of ['pbph','rspo']){
+    for(const kind of ['pbph','rspo','ps']){
       const source=input[kind];
-      if(!source?.features?.length)throw Error('Batas '+(kind==='pbph'?'PBPH':'perkebunan RSPO')+' belum tersedia; luas tidak dapat dihitung.');
+      if(!source?.features?.length)throw Error('Batas '+(kind==='pbph'?'PBPH':kind==='ps'?'Perhutanan Sosial':'perkebunan RSPO')+' belum tersedia; luas tidak dapat dihitung.');
       const groups=new Map();
       for(const f of source.features){const id=identity(f.properties||{},kind);if(!id.id||!id.name)throw Error('Identitas batas '+kind+' belum lengkap.');if(!groups.has(id.id))groups.set(id.id,{...id,pieces:[]});groups.get(id.id).pieces.push(polygon(f));}
       const rows=[],categoryPieces=[];

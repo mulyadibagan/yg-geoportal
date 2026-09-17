@@ -6,8 +6,9 @@ const rectangle=(x,y,w,h,properties={})=>({type:'Feature',properties,geometry:{t
 const fc=features=>({type:'FeatureCollection',features});
 const pbph=fc([rectangle(101,1,.02,.02,{PBPH_ID:'P1',NAMOBJ:'Test PBPH'})]);
 const rspo=fc([rectangle(101,1,.02,.02,{Parent:'Test Group',MemberNum:'M1'})]);
+const ps=fc([rectangle(101,1,.02,.02,{PROFILE_KEY:'PS1',NAMA_HKM:'Test PS',NO_IUPHKM:'SK.1',Ket:'Hutan Desa'})]);
 const event=rectangle(101.002,1.002,.008,.008,{archiveEventId:'E1'});
-const run=(burned,other={})=>analyze({burned:fc(burned),pbph,rspo,report:{hotspots:[]},...other});
+const run=(burned,other={})=>analyze({burned:fc(burned),pbph,rspo,ps,report:{hotspots:[]},...other});
 test('UTM 47 matches reference projection and excludes holes',()=>{
   const [x,y]=project([101,1]);assert.ok(Math.abs(x-722561.73647886)<.002);assert.ok(Math.abs(y-110597.97252381)<.002);
   const outer=rectangle(101,1,.02,.02),hole=rectangle(101.005,1.005,.005,.005);
@@ -16,7 +17,7 @@ test('UTM 47 matches reference projection and excludes holes',()=>{
 test('duplicate events and overlapping categories do not double-count',()=>{
   const r=run([event,event]);const expected=area([event.geometry.coordinates]);
   assert.ok(Math.abs(r.pbph.uniqueHa-expected)<1e-7);assert.equal(r.pbph.rows[0].events.length,1);
-  assert.equal(r.combinedHa,r.pbph.uniqueHa);assert.equal(r.rspo.groupLevel,true);
+  assert.equal(r.combinedHa,r.pbph.uniqueHa);assert.equal(r.rspo.groupLevel,true);assert.equal(r.ps.groupLevel,false);assert.equal(r.ps.rows[0].name,'Test PS');
 });
 test('partial overlap is clipped and burned-only area appears',()=>{
   const r=run([rectangle(101.01,1.01,.02,.02)]);
@@ -37,6 +38,7 @@ test('verified PHI alias applies only to the matching parent group',()=>{
 });
 test('missing boundaries and invalid geometry fail visibly',()=>{
   assert.throws(()=>run([event],{pbph:fc([])}),/belum tersedia/);
+  assert.throws(()=>run([event],{ps:fc([])}),/Perhutanan Sosial belum tersedia/);
   assert.throws(()=>run([{geometry:{type:'Point',coordinates:[101,1]}}]),/poligon/);
 });
 test('multiple pieces for same identity merge and multipart works',()=>{
@@ -52,6 +54,6 @@ test('worker loads local dependencies and returns results without network',()=>{
   let result;const context={};context.self=context;context.postMessage=v=>result=v;
   vm.createContext(context);context.importScripts=(...urls)=>urls.forEach(url=>vm.runInContext(fs.readFileSync(path.join(__dirname,'../js',url.split('?')[0]),'utf8'),context));
   vm.runInContext(fs.readFileSync(path.join(__dirname,'../js/fire-internal-worker.js'),'utf8'),context);
-  context.onmessage({data:{burned:fc([event]),pbph,rspo,report:{hotspots:[]}}});
+  context.onmessage({data:{burned:fc([event]),pbph,rspo,ps,report:{hotspots:[]}}});
   assert.equal(result.ok,true);assert.ok(result.result.combinedHa>0);
 });
