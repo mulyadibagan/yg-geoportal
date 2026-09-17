@@ -104,6 +104,7 @@ test("Apps Script makes retries idempotent and flags same-day monitoring duplica
   assert.match(source, /function assertMonitoringPublicationIsUnique_\(sheet, rowNumber\)/);
   assert.match(source, /Publikasi diblokir: ada laporan monitoring lain/);
   assert.match(source, /Tandai laporan yang tidak dipakai sebagai Duplikat atau Ditolak/);
+  assert.match(source, /targetObjectId: objectId/);
   assert.match(source, /'Duplikat'/);
   assert.match(source, /Monitoring wajib terhubung ke satu objek WebGIS yang dipilih/);
   assert.match(admin, /Potensi laporan monitoring ganda/);

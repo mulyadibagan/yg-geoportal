@@ -16,3 +16,12 @@ test("Apps Script admin cards contain long content without horizontal overflow",
   assert.match(source, /class="action-buttons"/);
   assert.match(source, /\.action-buttons\{[^}]*flex-wrap:wrap/);
 });
+
+test("Apps Script admin filters reporters and audits permanent polygon IDs", () => {
+  assert.match(source, /id="reporter-filter"/);
+  assert.match(source, /function reportTargetContext\(report\)/);
+  assert.match(source, /function renderPolygonAudit\(selectedReporter\)/);
+  assert.match(source, /ID Polygon/);
+  assert.match(source, /polygon unik/);
+  assert.match(source, /Terpublikasi ganda/);
+});

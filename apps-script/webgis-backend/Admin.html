@@ -57,10 +57,13 @@
     .preview-photo{display:block;aspect-ratio:4/3;overflow:hidden;border:1px solid var(--border);border-radius:9px;background:#eef4f1}
     .preview-photo img{width:100%;height:100%;display:block;object-fit:cover}
     .duplicate-warning{margin:10px 0;padding:11px 13px;border:1px solid #e7a425;border-radius:10px;background:#fff6d9;color:#704d00;font-size:12px;line-height:1.5}.duplicate-warning strong{display:block;margin-bottom:3px}
+    .polygon-audit{margin:0 0 13px}.polygon-audit[hidden]{display:none}.polygon-audit-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:8px;color:var(--brown)}.polygon-audit-head strong{font-size:13px}.polygon-audit-head span{color:var(--muted);font-size:10px}
+    .polygon-audit-summary{margin-bottom:8px;padding:10px 12px;border-left:4px solid var(--blue-dark);border-radius:8px;background:#edf8fc;color:#214b5e;font-size:11px;font-weight:bold}.polygon-audit-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(225px,1fr));gap:8px}
+    .polygon-audit-card{padding:11px;border:1px solid var(--border);border-left:4px solid #1f8a52;border-radius:9px;background:#fff}.polygon-audit-card.warning{border-left-color:#d98a00;background:#fffaf0}.polygon-audit-card.danger{border-color:#efb9b9;border-left-color:#c43c3c;background:#fff5f4}.polygon-audit-card b,.polygon-audit-card code{display:block;overflow-wrap:anywhere}.polygon-audit-card b{margin-bottom:4px;font-size:11px}.polygon-audit-card code{color:#53645e;font-size:9px}.polygon-audit-card small{display:block;margin-top:6px;color:var(--muted);font-size:9px;line-height:1.4}.polygon-audit-card .audit-state{display:inline-block;margin-bottom:6px;padding:4px 7px;border-radius:999px;background:#e0f4e8;color:#176c45;font-size:8px;font-weight:bold;text-transform:uppercase}.polygon-audit-card.warning .audit-state{background:#fff0c7;color:#775600}.polygon-audit-card.danger .audit-state{background:#fde2df;color:#a42d24}
     .preview-no-map{height:100%;display:grid;place-items:center;padding:20px;text-align:center;color:var(--muted);font-size:13px}
     .preview-popup h3{margin:0 0 6px;color:var(--brown);font-size:14px}.preview-popup p{margin:3px 0;font-size:11px}
     @media(max-width:1000px){.stats{grid-template-columns:repeat(3,minmax(0,1fr))}.details{grid-template-columns:repeat(2,minmax(0,1fr))}}
-    @media(max-width:700px){body{padding:8px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.details{grid-template-columns:1fr}.toolbar{flex-direction:column}.actions{grid-template-columns:1fr}.actions textarea,.actions .layer-field,.action-buttons{grid-column:1}.action-buttons{justify-content:stretch}.action-buttons button{flex:1 1 calc(50% - 7px)}.preview-modal{padding:0}.preview-panel{width:100%;height:100%;max-height:none;border-radius:0}.preview-grid{grid-template-columns:1fr}#preview-map{height:48vh;min-height:320px}.preview-gallery{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:700px){body{padding:8px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.details{grid-template-columns:1fr}.toolbar,.polygon-audit-head{flex-direction:column}.actions{grid-template-columns:1fr}.actions textarea,.actions .layer-field,.action-buttons{grid-column:1}.action-buttons{justify-content:stretch}.action-buttons button{flex:1 1 calc(50% - 7px)}.preview-modal{padding:0}.preview-panel{width:100%;height:100%;max-height:none;border-radius:0}.preview-grid{grid-template-columns:1fr}#preview-map{height:48vh;min-height:320px}.preview-gallery{grid-template-columns:repeat(2,minmax(0,1fr))}}
   </style>
 </head>
 <body>
@@ -83,8 +86,13 @@
       <option value="Duplikat">Duplikat</option>
       <option value="Sudah Dipublikasikan">Sudah Dipublikasikan</option>
     </select>
+    <select id="reporter-filter" aria-label="Filter pelapor">
+      <option value="">Semua pelapor</option>
+    </select>
     <button class="refresh" type="button" onclick="loadData()">Muat Ulang</button>
   </div>
+
+  <section id="polygon-audit" class="polygon-audit" hidden></section>
 
   <div id="list" class="list">
     <div class="empty">Memuat laporan...</div>
@@ -150,6 +158,7 @@ function loadData(){
         : [];
       reportsByRow = {};
       for(var i=0;i<allReports.length;i++){reportsByRow[String(allReports[i].rowNumber)] = allReports[i];}
+      populateReporterFilter();
       renderStats(data && data.stats ? data.stats : {});
       renderReports();
     })
@@ -177,12 +186,16 @@ function renderStats(s){
 function renderReports(){
   var q = document.getElementById('search').value.toLowerCase().trim();
   var selectedStatus = document.getElementById('filter').value;
+  var selectedReporter = document.getElementById('reporter-filter').value;
   var filtered = [];
   for(var i=0;i<allReports.length;i++){
     var r = allReports[i];
-    var hay = [r.id,r.village,r.name,r.title,r.reportType,r.locationName].join(' ').toLowerCase();
-    if((!q || hay.indexOf(q)!==-1) && (!selectedStatus || r.status===selectedStatus)){filtered.push(r);}
+    var target = reportTargetContext(r);
+    var hay = [r.id,r.village,r.name,r.title,r.reportType,r.locationName,target.id].join(' ').toLowerCase();
+    if((!q || hay.indexOf(q)!==-1) && (!selectedStatus || r.status===selectedStatus) &&
+      (!selectedReporter || reporterKey(r)===selectedReporter)){filtered.push(r);}
   }
+  renderPolygonAudit(selectedReporter);
   if(!filtered.length){
     document.getElementById('list').innerHTML = '<div class="empty">Tidak ada laporan yang sesuai.</div>';
     return;
@@ -209,6 +222,7 @@ function renderReports(){
     html += infoBox('Lokasi',[report.village,report.district,report.regency].filter(Boolean).join(', ')||'-');
     html += infoBox('Koordinat',hasCoordinates(report)?report.latitude+', '+report.longitude:'Belum tersedia');
     html += infoBox('Nama Objek',report.locationName||'-');
+    html += infoBox('ID Polygon',reportTargetContext(report).id||'-');
     html += infoBox('Tanggal Kegiatan',report.activityDate||'-');
     html += infoBox('Kategori Ekosistem',ecosystemCategory||'-');
     html += infoBox('Program',ecosystemProgramme||'-');
@@ -259,6 +273,85 @@ function renderReports(){
     html += '</div></div></article>';
   }
   document.getElementById('list').innerHTML = html;
+}
+
+function reporterKey(report){
+  return String(report && report.name || '').trim().toLowerCase();
+}
+
+function canonicalPolygonId(value){
+  var id=String(value||'').trim();
+  var phaseThree=id.match(/^MANGROVE-BURUK-BAKUL-2025-(00[1-3])$/i);
+  if(phaseThree){return 'MANGROVE-BURUK-BAKUL-PHASE-III-2025-'+phaseThree[1];}
+  if(/^MANGROVE-BURUK-BAKUL-PHASE-II-001$/i.test(id)){
+    return 'MANGROVE-BURUK-BAKUL-PHASE-II-2024-001';
+  }
+  return id;
+}
+
+function reportTargetContext(report){
+  var target=parseJsonObject(report && report.targetFeatureProperties);
+  var changes=parseJsonObject(report && report.proposedChanges);
+  var id=canonicalPolygonId(
+    report && report.targetObjectId || target.Object_ID || target.OBJECT_ID || target.objectId ||
+    target.Target_Object_ID_Current || changes.Target_Object_ID_Current ||
+    changes.Target_Object_ID || changes.targetObjectId || ''
+  );
+  var name=String(target.Nama_Objek || target.Name || target.name || report && report.locationName || '').trim();
+  var phase=String(target.Fase || target.Phase || target.Ket || '').trim();
+  return{id:id,name:name,phase:phase};
+}
+
+function populateReporterFilter(){
+  var select=document.getElementById('reporter-filter');
+  var current=select.value;
+  var reporters={};
+  for(var i=0;i<allReports.length;i++){
+    var key=reporterKey(allReports[i]);
+    if(key && !reporters[key]){reporters[key]=String(allReports[i].name||'').trim();}
+  }
+  var keys=Object.keys(reporters).sort(function(a,b){return reporters[a].localeCompare(reporters[b],'id');});
+  select.innerHTML='<option value="">Semua pelapor</option>'+keys.map(function(key){
+    return '<option value="'+escapeHtml(key)+'">'+escapeHtml(reporters[key])+'</option>';
+  }).join('');
+  select.value=reporters[current]?current:'';
+}
+
+function renderPolygonAudit(selectedReporter){
+  var container=document.getElementById('polygon-audit');
+  if(!selectedReporter){container.hidden=true;container.innerHTML='';return;}
+  var rows=allReports.filter(function(report){return reporterKey(report)===selectedReporter && isMonitoringReport(report);});
+  var groups={};
+  for(var i=0;i<rows.length;i++){
+    var target=reportTargetContext(rows[i]);
+    if(!target.id) continue;
+    if(!groups[target.id]) groups[target.id]={target:target,reports:[],dates:{}};
+    groups[target.id].reports.push(rows[i]);
+    var date=String(rows[i].activityDate||'Tanpa tanggal').slice(0,10);
+    if(!groups[target.id].dates[date]) groups[target.id].dates[date]=[];
+    groups[target.id].dates[date].push(rows[i]);
+  }
+  var ids=Object.keys(groups).sort();
+  var reporterName=rows.length?String(rows[0].name||'Pelapor'):'Pelapor';
+  container.hidden=false;
+  container.innerHTML='<div class="polygon-audit-head"><strong>Pemeriksaan polygon unik — '+escapeHtml(reporterName)+'</strong><span>Merah berarti Object_ID dan tanggal yang sama dipublikasikan lebih dari sekali.</span></div>'+
+    '<div class="polygon-audit-summary">'+rows.length+' laporan monitoring · '+ids.length+' polygon unik</div>'+
+    '<div class="polygon-audit-grid">'+ids.map(function(id){
+      var group=groups[id];
+      var published=group.reports.filter(function(report){return report.status==='Sudah Dipublikasikan';});
+      var duplicateDates=Object.keys(group.dates).filter(function(date){
+        return group.dates[date].filter(function(report){return report.status==='Sudah Dipublikasikan';}).length>1;
+      });
+      var activeRepeatedDates=Object.keys(group.dates).filter(function(date){
+        return group.dates[date].filter(function(report){return report.status!=='Ditolak' && report.status!=='Duplikat';}).length>1;
+      });
+      var state=duplicateDates.length?'danger':(activeRepeatedDates.length?'warning':'safe');
+      var label=duplicateDates.length?'Terpublikasi ganda':(activeRepeatedDates.length?'Perlu diperiksa':(published.length?'Publikasi aman':'Belum dipublikasikan'));
+      var dates=duplicateDates.length?duplicateDates:activeRepeatedDates;
+      return '<article class="polygon-audit-card '+state+'"><span class="audit-state">'+label+'</span>'+
+        '<b>'+escapeHtml(group.target.name||'Polygon monitoring')+'</b><code>'+escapeHtml(id)+'</code>'+
+        '<small>'+group.reports.length+' laporan · '+published.length+' dipublikasikan'+(dates.length?' · tanggal terindikasi: '+escapeHtml(dates.join(', ')):'')+'</small></article>';
+    }).join('')+'</div>';
 }
 
 function buildTargetLayerOptions(report){
@@ -768,6 +861,7 @@ function escapeHtml(value){
 
 document.getElementById('search').addEventListener('input',renderReports);
 document.getElementById('filter').addEventListener('change',renderReports);
+document.getElementById('reporter-filter').addEventListener('change',renderReports);
 document.getElementById('preview-modal').addEventListener('click',function(event){
   if(event.target===this){closePreview();}
 });

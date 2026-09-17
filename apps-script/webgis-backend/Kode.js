@@ -1255,6 +1255,7 @@ function buildReportDashboardData_() {
       geometryGeoJSON: row[27],
       targetLayerId: row[28],
       targetLayerLabel: row[29],
+      targetObjectId: objectId,
       targetFeatureProperties: row[30],
       proposedChanges: row[31],
       monitoringDuplicates: duplicateCandidates
