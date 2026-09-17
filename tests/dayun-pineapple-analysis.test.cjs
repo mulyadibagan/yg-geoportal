@@ -50,6 +50,10 @@ test('twelve-month projections separate harvest scenarios from ethrel inspection
   assert.equal(projection.assumptions.remainingPlantCrop, 53400);
   assert.equal(projection.assumptions.inducedPending, 13502);
   assert.equal(projection.assumptions.vegetativePending, 37603);
+  assert.equal(projection.assumptions.ratoonCandidatePool, 14541);
+  assert.equal(projection.assumptions.unverifiedRatoonCandidates, 14541);
+  assert.equal(projection.assumptions.scheduledRatoonCandidates, 14541);
+  assert.equal(projection.assumptions.verifiedRatoonShoots, 0);
   assert.equal(projection.assumptions.datedEthrel, 21756);
   assert.equal(projection.assumptions.undatedEthrel, 3525);
   assert.equal(projection.assumptions.stalenessMonths, 3);
@@ -59,10 +63,11 @@ test('twelve-month projections separate harvest scenarios from ethrel inspection
     base: total.base + item.harvest.base,
     high: total.high + item.harvest.high
   }), {low:0, base:0, high:0});
-  assert.deepEqual(harvest, {low:24571, base:30715, high:36858});
+  assert.deepEqual(harvest, {low:28934, base:39438, high:51401});
   for (const item of projection.months) {
     for (const scenario of ['low', 'base', 'high']) {
       assert.equal(item.harvest[scenario], item.harvest.confirmed[scenario] + item.harvest.mainCropPotential[scenario] + item.harvest.ratoon[scenario]);
+      assert.equal(item.harvest.ratoon[scenario], item.harvest.ratoonCandidate[scenario] + item.harvest.ratoonVerified[scenario]);
     }
   }
   assert.equal(projection.months[0].ethrel.gawangan, 16);
@@ -83,6 +88,8 @@ test('published main-crop and ratoon monitoring are integrated without double co
   const projection = moduleApi.buildProjection(integrated.rows,{asOf:new Date('2026-09-17T00:00:00Z'),horizonMonths:13});
   assert.equal(projection.assumptions.verifiedRatoonShoots,20);
   assert.equal(projection.assumptions.scheduledRatoonShoots,20);
+  assert.equal(projection.assumptions.ratoonCandidatePool,30);
+  assert.equal(projection.assumptions.unverifiedRatoonCandidates,0);
   assert.ok(projection.months.some(item => item.harvest.ratoon.base > 0));
 });
 
@@ -101,6 +108,7 @@ test('analysis page and map expose the Queen commodity entry point and field saf
   const page = fs.readFileSync(path.join(root, 'dayun-analisis-nanas.html'), 'utf8');
   const script = fs.readFileSync(path.join(root, 'js/dayun-analisis-nanas.js'), 'utf8');
   const map = fs.readFileSync(path.join(root, 'dayun-map.html'), 'utf8');
+  const profile = fs.readFileSync(path.join(root, 'js/dayun-gawangan.js'), 'utf8');
   assert.match(page, /Nanas Queen Dayun/);
   assert.match(page, /id="pa-data-date"/);
   assert.match(page, /Nanas Madu belum dimasukkan/);
@@ -111,7 +119,9 @@ test('analysis page and map expose the Queen commodity entry point and field saf
   assert.match(page, /Potensi panen utama dan ratoon/);
   assert.match(script, /horizonMonths:12/);
   assert.match(script, /Belum panen utama/);
-  assert.match(script, /POTENSI RATOON TERVERIFIKASI/);
+  assert.match(script, /CALON &amp; PROYEKSI RATOON/);
+  assert.match(script, /ratoonCandidatePool/);
+  assert.match(profile, /Calon ratoon dari panen utama/);
   assert.match(script, /Verifikasi riwayat pupuk/);
   assert.match(script, /Ini daftar pemeriksaan, bukan perintah aplikasi/);
   assert.match(script, /dayun-hpt-nanas\.html/);
