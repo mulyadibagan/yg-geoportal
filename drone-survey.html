@@ -8,7 +8,7 @@
   <link rel="icon" href="assets/logo-yayasan-gambut.png">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
   <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css">
-  <link rel="stylesheet" href="css/drone-survey.css?v=20260918-2">
+  <link rel="stylesheet" href="css/drone-survey.css?v=20260918-3">
 </head>
 <body>
   <header class="drone-topbar">
@@ -21,7 +21,7 @@
       <div>
         <span class="eyebrow">TOOLS · DRONE SURVEY & MAPPING</span>
         <h1>Misi drone sampai orthomosaic dalam satu alur.</h1>
-        <p>Gunakan untuk agroforestri, mangrove, abrasi, restorasi, kebakaran, dan kebutuhan pemetaan lainnya.</p>
+        <p>Tools publik untuk agroforestri, mangrove, abrasi, restorasi, kebakaran, dan kebutuhan pemetaan lainnya.</p>
       </div>
       <div class="hero-actions"><button class="primary" data-tab-target="process">Buat orthomosaic</button><button data-tab-target="mission">Rencana misi</button></div>
     </section>
@@ -36,18 +36,19 @@
     <section class="panel active" id="panel-process">
       <div class="grid two source-grid">
         <article class="card">
-          <div class="card-head"><div><h2>1. Pilih sumber foto</h2><p>Cukup pilih salah satu cara di bawah.</p></div><span class="status neutral" id="authStatus">Memeriksa login…</span></div>
+          <div class="card-head"><div><h2>1. Pilih sumber foto</h2><p>Tidak perlu login. Pilih salah satu cara di bawah.</p></div><span class="status good" id="authStatus">Tools publik · tanpa login</span></div>
           <label class="wide-label">Nama survei / lokasi<input id="processTitle" type="text" placeholder="Contoh: Dayun Blok A - September 2026"></label>
           <div class="source-choice active" data-source-choice="drive">
             <label class="choice-head"><input type="radio" name="processSource" value="drive" checked><span><strong>Google Drive</strong><small>Tempel link folder yang berisi foto mentah drone.</small></span></label>
             <input id="driveFolderUrl" type="url" placeholder="https://drive.google.com/drive/folders/…">
-            <p class="microcopy">Untuk pemrosesan otomatis dari link, folder perlu dapat dibaca melalui link. Folder privat tetap bisa diproses dengan pilihan Upload Foto.</p>
+            <p class="microcopy">Folder harus dapat dibaca melalui link. Jika folder privat, gunakan pilihan Upload Foto.</p>
           </div>
           <div class="source-choice" data-source-choice="upload">
             <label class="choice-head"><input type="radio" name="processSource" value="upload"><span><strong>Upload foto</strong><small>Pilih semua JPG/JPEG hasil satu misi drone.</small></span></label>
             <input id="processPhotoInput" type="file" accept="image/jpeg" multiple disabled>
             <div id="selectedFilesText" class="microcopy">Belum ada foto dipilih.</div>
           </div>
+          <p class="microcopy">Batas saat ini: maksimum 800 foto, maksimum 40 MB per foto, total maksimum 8 GB per proses.</p>
           <div class="actions"><button id="startOrthomosaic" class="primary">Proses Orthomosaic</button></div>
           <div id="uploadProgress" class="progress-wrap" hidden><div class="progress"><span id="uploadProgressBar"></span></div><small id="uploadProgressText">Menyiapkan…</small></div>
         </article>
@@ -114,6 +115,6 @@
   <script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
   <script src="https://unpkg.com/georaster@1.6.0/dist/georaster.browser.bundle.min.js"></script>
   <script src="https://unpkg.com/georaster-layer-for-leaflet@3.10.0/dist/georaster-layer-for-leaflet.min.js"></script>
-  <script src="js/drone-survey.js?v=20260918-2"></script>
+  <script src="js/drone-survey.js?v=20260918-3"></script>
 </body>
 </html>
