@@ -78,32 +78,48 @@ jobs:
           publish_status
           SOURCE=$(jq -r '.sourceType' "$ROOT/job.json")
           if [ "$SOURCE" = "drive" ]; then
-            DRIVE_URL=$(jq -r '.driveUrl' "$ROOT/job.json")
-            python ../../scripts/download_drive_folder.py "$DRIVE_URL" "$ROOT/input" "$ROOT/drive-download.json" --passes 4 --retries 3 --timeout 60 --progress-interval 5 &
-            DOWNLOAD_PID=$!
-            LAST_COUNT=-1
-            while kill -0 "$DOWNLOAD_PID" 2>/dev/null; do
-              if [ -f "$ROOT/drive-download.json" ]; then
-                EXPECTED=$(jq -r '.expectedPhotos // 0' "$ROOT/drive-download.json")
-                DOWNLOADED=$(jq -r '.downloadedPhotos // 0' "$ROOT/drive-download.json")
-                if [ "$EXPECTED" -gt 0 ] && [ "$DOWNLOADED" -ne "$LAST_COUNT" ]; then
-                  PROGRESS=$((15 + (DOWNLOADED * 14 / EXPECTED)))
-                  [ "$PROGRESS" -gt 29 ] && PROGRESS=29
-                  python ../../scripts/drone_job.py stage "$ROOT/job.json" downloading "$PROGRESS" "Mengambil foto $DOWNLOADED/$EXPECTED" --downloaded "$DOWNLOADED" --expected "$EXPECTED"
-                  publish_status
-                  LAST_COUNT=$DOWNLOADED
+            CACHE_KEY="drone/cache/$JOB_ID/source.tar"
+            CACHE_FILE="$ROOT/source.tar"
+            if npx wrangler r2 object get "yg-webgis-public-snapshots/$CACHE_KEY" --remote --file "$CACHE_FILE" >/dev/null 2>&1; then
+              python ../../scripts/drone_job.py stage "$ROOT/job.json" downloading 27 "Memuat foto tersimpan"
+              publish_status
+              tar -xf "$CACHE_FILE" -C "$ROOT/input"
+              DOWNLOADED=$(find "$ROOT/input" -type f \( -iname '*.jpg' -o -iname '*.jpeg' \) | wc -l | tr -d ' ')
+              EXPECTED=$(jq -r '.expectedPhotos // .downloadedPhotos // 0' "$ROOT/job.json")
+              [ "$EXPECTED" -le 0 ] && EXPECTED="$DOWNLOADED"
+              python ../../scripts/drone_job.py stage "$ROOT/job.json" downloading 29 "Foto diterima $DOWNLOADED/$EXPECTED" --downloaded "$DOWNLOADED" --expected "$EXPECTED"
+              publish_status
+            else
+              DRIVE_URL=$(jq -r '.driveUrl' "$ROOT/job.json")
+              python ../../scripts/download_drive_folder.py "$DRIVE_URL" "$ROOT/input" "$ROOT/drive-download.json" --passes 4 --retries 3 --timeout 60 --progress-interval 5 &
+              DOWNLOAD_PID=$!
+              LAST_COUNT=-1
+              while kill -0 "$DOWNLOAD_PID" 2>/dev/null; do
+                if [ -f "$ROOT/drive-download.json" ]; then
+                  EXPECTED=$(jq -r '.expectedPhotos // 0' "$ROOT/drive-download.json")
+                  DOWNLOADED=$(jq -r '.downloadedPhotos // 0' "$ROOT/drive-download.json")
+                  if [ "$EXPECTED" -gt 0 ] && [ "$DOWNLOADED" -ne "$LAST_COUNT" ]; then
+                    PROGRESS=$((15 + (DOWNLOADED * 14 / EXPECTED)))
+                    [ "$PROGRESS" -gt 29 ] && PROGRESS=29
+                    python ../../scripts/drone_job.py stage "$ROOT/job.json" downloading "$PROGRESS" "Mengambil foto $DOWNLOADED/$EXPECTED" --downloaded "$DOWNLOADED" --expected "$EXPECTED"
+                    publish_status
+                    LAST_COUNT=$DOWNLOADED
+                  fi
                 fi
+                sleep 8
+              done
+              if ! wait "$DOWNLOAD_PID"; then
+                echo "drive_download_incomplete" > "$ROOT/error_code"
+                exit 42
               fi
-              sleep 8
-            done
-            if ! wait "$DOWNLOAD_PID"; then
-              echo "drive_download_incomplete" > "$ROOT/error_code"
-              exit 42
+              EXPECTED=$(jq -r '.expectedPhotos // 0' "$ROOT/drive-download.json")
+              DOWNLOADED=$(jq -r '.downloadedPhotos // 0' "$ROOT/drive-download.json")
+              python ../../scripts/drone_job.py stage "$ROOT/job.json" downloading 29 "Foto diterima $DOWNLOADED/$EXPECTED" --downloaded "$DOWNLOADED" --expected "$EXPECTED"
+              publish_status
+
+              tar -cf "$CACHE_FILE" -C "$ROOT/input" .
+              npx wrangler r2 object put "yg-webgis-public-snapshots/$CACHE_KEY" --remote --file "$CACHE_FILE" --content-type application/x-tar
             fi
-            EXPECTED=$(jq -r '.expectedPhotos // 0' "$ROOT/drive-download.json")
-            DOWNLOADED=$(jq -r '.downloadedPhotos // 0' "$ROOT/drive-download.json")
-            python ../../scripts/drone_job.py stage "$ROOT/job.json" downloading 29 "Foto diterima $DOWNLOADED/$EXPECTED" --downloaded "$DOWNLOADED" --expected "$EXPECTED"
-            publish_status
           else
             TOTAL=$(jq -r '.files | length' "$ROOT/job.json")
             INDEX=0
@@ -165,6 +181,10 @@ jobs:
 
           python ../../scripts/drone_job.py ready "$ROOT/job.json" "$ROOT/output/gdalinfo.json" "$ROOT/qc.json"
           publish_status
+
+          if [ "$SOURCE" = "drive" ]; then
+            npx wrangler r2 object delete "yg-webgis-public-snapshots/drone/cache/$JOB_ID/source.tar" --remote || true
+          fi
 
           jq --arg id "$JOB_ID" '.jobs = (.jobs | map(select(. != $id)))' ../../tmp/drone/pending.json > ../../tmp/drone/pending.next.json
           mv ../../tmp/drone/pending.next.json ../../tmp/drone/pending.json
