@@ -158,6 +158,7 @@ function renderProgress(job){
     return `<div class="yg-progress-step ${cls}">${text}</div>`;
   }).join('');
   const counts=[];
+  if(job.downloadedPhotos!=null && job.expectedPhotos) counts.push(`${job.downloadedPhotos}/${job.expectedPhotos} foto diterima`);
   if(job.validPhotos!=null) counts.push(`${job.validPhotos} foto digunakan`);
   if(job.excludedPhotos!=null) counts.push(`${job.excludedPhotos} foto tidak digunakan`);
   if(job.status==='pending'&&job.queuePosition) counts.push(`Antrean ${job.queuePosition}${job.queueSize?`/${job.queueSize}`:''}`);
@@ -166,7 +167,6 @@ function renderProgress(job){
   if(action) action.hidden=job.status!=='ready';
 }
 
-// Jangan membuat tanggal survei dari tanggal saat pengguna menekan tombol proses.
 const startButton=document.getElementById('startOrthomosaic');
 if(startButton){
   startButton.addEventListener('click',()=>{
