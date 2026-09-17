@@ -1,0 +1,150 @@
+name: Process drone orthomosaic
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '*/5 * * * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: yg-drone-orthomosaic-processor
+  cancel-in-progress: false
+
+jobs:
+  process:
+    runs-on: ubuntu-latest
+    environment: yg-webgis-staging
+    timeout-minutes: 330
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: cloudflare/yg-webgis-public-data/package-lock.json
+      - run: npm ci
+        working-directory: cloudflare/yg-webgis-public-data
+      - name: Install downloader and metadata tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install gdown
+          sudo apt-get update
+          sudo apt-get install -y exiftool jq gdal-bin
+      - name: Read pending queue
+        working-directory: cloudflare/yg-webgis-public-data
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          mkdir -p ../../tmp/drone
+          npx wrangler r2 object get "yg-webgis-public-snapshots/drone/queue/pending.json" --remote --file ../../tmp/drone/pending.json || echo '{"jobs":[]}' > ../../tmp/drone/pending.json
+          cat ../../tmp/drone/pending.json
+      - name: Process first pending job
+        shell: bash
+        working-directory: cloudflare/yg-webgis-public-data
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          JOB_ID=$(jq -r '.jobs[0] // empty' ../../tmp/drone/pending.json)
+          if [ -z "$JOB_ID" ]; then
+            echo "No pending drone jobs"
+            exit 0
+          fi
+          ROOT="../../tmp/drone/$JOB_ID"
+          mkdir -p "$ROOT/input" "$ROOT/output"
+          npx wrangler r2 object get "yg-webgis-public-snapshots/drone/jobs/$JOB_ID.json" --remote --file "$ROOT/job.json"
+          python - <<'PY' "$ROOT/job.json"
+import json,sys
+p=sys.argv[1]
+d=json.load(open(p))
+d['status']='processing'
+from datetime import datetime, timezone
+d['processingStartedAt']=datetime.now(timezone.utc).isoformat()
+json.dump(d,open(p,'w'),ensure_ascii=False,indent=2)
+PY
+          npx wrangler r2 object put "yg-webgis-public-snapshots/drone/jobs/$JOB_ID.json" --remote --file "$ROOT/job.json" --content-type application/json
+          SOURCE=$(jq -r '.sourceType' "$ROOT/job.json")
+          if [ "$SOURCE" = "drive" ]; then
+            DRIVE_URL=$(jq -r '.driveUrl' "$ROOT/job.json")
+            gdown --folder "$DRIVE_URL" -O "$ROOT/input" --remaining-ok
+          else
+            jq -r '.files[]?.key' "$ROOT/job.json" | while read -r KEY; do
+              [ -z "$KEY" ] && continue
+              NAME=$(basename "$KEY")
+              npx wrangler r2 object get "yg-webgis-public-snapshots/$KEY" --remote --file "$ROOT/input/$NAME"
+            done
+          fi
+          find "$ROOT/input" -type f \( -iname '*.jpg' -o -iname '*.jpeg' \) | sort > "$ROOT/all.txt"
+          if [ ! -s "$ROOT/all.txt" ]; then
+            echo "No JPEG photos found" >&2
+            exit 21
+          fi
+          mkdir -p "$ROOT/rejected"
+          : > "$ROOT/valid.txt"
+          while IFS= read -r IMG; do
+            PITCH=$(exiftool -s3 -GimbalPitchDegree "$IMG" 2>/dev/null | head -1 | tr -d ' ' || true)
+            if [ -n "$PITCH" ] && awk "BEGIN{exit !($PITCH > -85)}"; then
+              mv "$IMG" "$ROOT/rejected/$(basename "$IMG")"
+            else
+              echo "$IMG" >> "$ROOT/valid.txt"
+            fi
+          done < "$ROOT/all.txt"
+          VALID=$(wc -l < "$ROOT/valid.txt" | tr -d ' ')
+          REJECTED=$(find "$ROOT/rejected" -type f | wc -l | tr -d ' ')
+          if [ "$VALID" -lt 3 ]; then
+            echo "Not enough valid photos" >&2
+            exit 22
+          fi
+          mkdir -p "$ROOT/project/images"
+          while IFS= read -r IMG; do cp "$IMG" "$ROOT/project/images/"; done < "$ROOT/valid.txt"
+          docker pull opendronemap/odm:latest
+          docker run --rm -v "$(realpath "$ROOT"):/datasets" opendronemap/odm:latest \
+            --project-path /datasets project \
+            --orthophoto-resolution 3 \
+            --feature-quality medium \
+            --pc-quality medium \
+            --skip-3dmodel \
+            --skip-report
+          TIF="$ROOT/project/odm_orthophoto/odm_orthophoto.tif"
+          [ -f "$TIF" ] || { echo "ODM did not create orthophoto" >&2; exit 23; }
+          gdal_translate "$TIF" "$ROOT/output/orthomosaic.cog.tif" -of COG -co COMPRESS=JPEG -co QUALITY=88 -co BIGTIFF=IF_SAFER -co OVERVIEWS=AUTO
+          gdalinfo -json "$ROOT/output/orthomosaic.cog.tif" > "$ROOT/output/gdalinfo.json"
+          python - <<'PY' "$ROOT/job.json" "$ROOT/output/gdalinfo.json" "$VALID" "$REJECTED"
+import json,sys
+from datetime import datetime, timezone
+job=json.load(open(sys.argv[1])); info=json.load(open(sys.argv[2])); valid=int(sys.argv[3]); rejected=int(sys.argv[4])
+cc=info.get('cornerCoordinates') or {}
+pts=[cc.get(k) for k in ('lowerLeft','upperRight') if cc.get(k)]
+job.update({'status':'ready','completedAt':datetime.now(timezone.utc).isoformat(),'validPhotos':valid,'excludedPhotos':rejected,'cogKey':f"drone/results/{job['id']}/orthomosaic.cog.tif",'gdal':{'size':info.get('size'),'coordinateSystem':info.get('coordinateSystem'),'cornerCoordinates':cc}})
+json.dump(job,open(sys.argv[1],'w'),ensure_ascii=False,indent=2)
+PY
+          npx wrangler r2 object put "yg-webgis-public-snapshots/drone/results/$JOB_ID/orthomosaic.cog.tif" --remote --file "$ROOT/output/orthomosaic.cog.tif" --content-type image/tiff
+          npx wrangler r2 object put "yg-webgis-public-snapshots/drone/jobs/$JOB_ID.json" --remote --file "$ROOT/job.json" --content-type application/json
+          jq --arg id "$JOB_ID" '.jobs = (.jobs | map(select(. != $id)))' ../../tmp/drone/pending.json > ../../tmp/drone/pending.next.json
+          mv ../../tmp/drone/pending.next.json ../../tmp/drone/pending.json
+          npx wrangler r2 object put "yg-webgis-public-snapshots/drone/queue/pending.json" --remote --file ../../tmp/drone/pending.json --content-type application/json
+      - name: Mark failed job
+        if: failure()
+        shell: bash
+        working-directory: cloudflare/yg-webgis-public-data
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          JOB_ID=$(jq -r '.jobs[0] // empty' ../../tmp/drone/pending.json 2>/dev/null || true)
+          [ -z "$JOB_ID" ] && exit 0
+          ROOT="../../tmp/drone/$JOB_ID"
+          if [ -f "$ROOT/job.json" ]; then
+            python - <<'PY' "$ROOT/job.json"
+import json,sys
+from datetime import datetime, timezone
+p=sys.argv[1]; d=json.load(open(p)); d['status']='failed'; d['failedAt']=datetime.now(timezone.utc).isoformat(); d['error']='processing_failed'; json.dump(d,open(p,'w'),ensure_ascii=False,indent=2)
+PY
+            npx wrangler r2 object put "yg-webgis-public-snapshots/drone/jobs/$JOB_ID.json" --remote --file "$ROOT/job.json" --content-type application/json || true
+          fi
+          jq --arg id "$JOB_ID" '.jobs = (.jobs | map(select(. != $id)))' ../../tmp/drone/pending.json > ../../tmp/drone/pending.next.json || true
+          [ -f ../../tmp/drone/pending.next.json ] && npx wrangler r2 object put "yg-webgis-public-snapshots/drone/queue/pending.json" --remote --file ../../tmp/drone/pending.next.json --content-type application/json || true
