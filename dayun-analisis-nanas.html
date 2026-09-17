@@ -8,7 +8,7 @@
   <link rel="icon" href="assets/logo-yayasan-gambut.png">
   <link rel="stylesheet" href="css/style.css?v=20260723-revert-layout">
   <link rel="stylesheet" href="css/navigation-v2.css?v=20260807-mobile-submenu-links1">
-  <link rel="stylesheet" href="css/dayun.css?v=20260917-crop-detail1">
+  <link rel="stylesheet" href="css/dayun.css?v=20260917-public2">
   <link rel="stylesheet" href="css/dayun-analisis-nanas.css?v=20260917-cohort2">
 </head>
 <body data-dayun-page="pineapple-analysis" data-dayun-mode="public">
@@ -32,10 +32,10 @@
     <div id="pa-status" class="dy-summary-loading" role="status">Menghitung analisis Nanas Queen dari data gawangan…</div>
     <div id="pa-content" hidden>
       <section class="dy-summary-kpis dy-pa-kpis" id="pa-kpis" aria-label="Ringkasan Nanas Queen"></section>
-      <p class="dy-pa-caveat">Jumlah “belum panen utama” adalah selisih administratif antara populasi dan panen utama yang tercatat. Panen ratoon dipisahkan agar tidak mengurangi populasi plant crop dua kali.</p>
+      <p class="dy-pa-caveat">Jumlah “belum panen utama” merupakan perkiraan berdasarkan jumlah tanaman dan catatan panen utama. Panen lanjutan dari tunas (ratoon) ditampilkan terpisah.</p>
 
       <section class="dy-section">
-        <div class="dy-section-head"><div><span>REKOMENDASI KEGIATAN</span><h2>Keputusan berbasis data dan verifikasi</h2></div><p>Sistem menunjukkan prioritas pemeriksaan. Dosis, jadwal aplikasi, dan keputusan panen tetap dikonfirmasi pendamping teknis.</p></div>
+        <div class="dy-section-head"><div><span>REKOMENDASI KEGIATAN</span><h2>Prioritas kegiatan kebun</h2></div><p>Sistem menunjukkan prioritas pemeriksaan. Dosis, jadwal aplikasi, dan keputusan panen tetap dikonfirmasi pendamping teknis.</p></div>
         <div class="dy-pa-recommendations" id="pa-recommendations"></div>
       </section>
 
@@ -55,7 +55,7 @@
             <header><div><span>PROYEKSI ETHREL</span><h3>Jadwal pemeriksaan kelayakan</h3></div><b class="dy-pa-confidence" id="pa-ethrel-confidence">Keyakinan —</b></header>
             <div class="dy-pa-projection-summary" id="pa-ethrel-projection-summary"></div>
             <div class="dy-pa-projection-chart" id="pa-ethrel-projection" role="img" aria-label="Grafik proyeksi pemeriksaan kelayakan ethrel 12 bulan"></div>
-            <p class="dy-pa-projection-note">Jumlah tanaman adalah selisih administratif yang perlu diperiksa. Aplikasi hanya dilakukan setelah kelompok tanaman, lebih dari 30 daun, kesehatan, tajuk, riwayat, dan cuaca dikonfirmasi.</p>
+            <p class="dy-pa-projection-note">Perkiraan jumlah tanaman perlu dicocokkan dengan kondisi kebun. Aplikasi hanya dilakukan setelah kelompok tanaman, lebih dari 30 daun, kesehatan, tajuk, riwayat, dan cuaca dikonfirmasi.</p>
           </article>
           <article class="dy-pa-projection-card">
             <header><div><span>PROYEKSI PEMUPUKAN</span><h3>Fase dan kebutuhan bahan indikatif</h3></div><b class="dy-pa-confidence" id="pa-fertilizer-confidence">Keyakinan —</b></header>
@@ -82,11 +82,10 @@
         <div class="dy-block-table-wrap"><table class="dy-block-table dy-pa-gawangan-table"><thead><tr><th>Gawangan</th><th>Umur perkiraan</th><th>Populasi</th><th>Ethrel</th><th>Bunga/buah</th><th>Panen</th><th>Prioritas</th><th></th></tr></thead><tbody id="pa-gawangan-table"></tbody></table></div>
       </section>
     </div>
-  </main>
+  <p class="dy-data-freshness" data-dayun-freshness role="status"></p></main>
   <footer class="dy-footer">YG GeoPortal · Analisis Komoditas Nanas Queen Dayun</footer>
   <script src="js/navigation-v2.js?v=20260821-staff-name1"></script>
-  <script src="js/dayun-data-source.js?v=20260917-cloudflare1"></script>
   <script src="js/dayun-pineapple-analysis.js?v=20260917-cohort2"></script>
-  <script src="js/dayun-analisis-nanas.js?v=20260917-cloudflare1"></script>
+  <script src="js/dayun-data-source.js?v=20260917-cloudflare1"></script><script src="js/dayun-data.js?v=20260917-public2"></script><script src="js/dayun-analisis-nanas.js?v=20260917-public2"></script>
 </body>
 </html>

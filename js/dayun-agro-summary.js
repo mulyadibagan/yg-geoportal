@@ -60,6 +60,7 @@
       totalPlants: 0,
       pineapplePlants: 0,
       pineappleHarvest: 0,
+      pineappleMainHarvest: 0,
       pineappleUnharvested: 0,
       pineappleEthrel: 0,
       pineappleFlowers: 0,
@@ -102,6 +103,7 @@
         totalPlants: 0,
         pineapplePlants: 0,
         pineappleHarvest: 0,
+      pineappleMainHarvest: 0,
         pineappleUnharvested: 0,
         mptsPlants: 0,
         horticulturePlants: 0,
@@ -122,6 +124,7 @@
         var total = block.cropTotals[cropName] || emptyCrop(cropName);
         var plants = number(crop.vegetationCount), operational = number(crop.operationalAreaHa);
         var harvest = cropHistoryTotal(crop, 'pineappleHarvest', 'pineappleHarvestTotal');
+        var mainHarvest = Array.isArray(crop.pineappleHarvest) && crop.pineappleHarvest.length ? crop.pineappleHarvest.filter(function(row){return !/^ratoon/i.test(String(row.cycle||'').trim());}).reduce(function(sum,row){return sum+number(row.count);},0) : harvest;
         var ethrel = cropHistoryTotal(crop, 'ethrel', 'ethrelTotal');
         total.vegetationCount += plants;
         total.operationalAreaHa += operational;
@@ -149,6 +152,8 @@
         if (cropName === 'NANAS') {
           item.pineapplePlants += plants;
           item.pineappleHarvest += harvest;
+          item.pineappleMainHarvest += mainHarvest;
+          block.pineappleMainHarvest += mainHarvest;
           block.pineapplePlants += plants;
           block.pineappleHarvest += harvest;
           block.pineappleEthrel += ethrel;
@@ -163,7 +168,7 @@
         if (HORTICULTURE.indexOf(cropName) >= 0) item.horticulturePlants += plants;
       });
       item.operationalAreaHa = operationalAreas.length ? Math.max.apply(null, operationalAreas) : 0;
-      item.pineappleUnharvested = Math.max(0, item.pineapplePlants - item.pineappleHarvest);
+      item.pineappleUnharvested = Math.max(0, item.pineapplePlants - item.pineappleMainHarvest);
       item.latestRecordDate = latestDate(dateValues);
       block.operationalAreaHa += item.operationalAreaHa;
       block.gawangan.push(item);
@@ -174,7 +179,7 @@
       block.cropTypes = Object.keys(block.cropTotals).length;
       block.mptsTypes = MPTS.filter(function (name) { return block.cropTotals[name] && block.cropTotals[name].vegetationCount > 0; }).length;
       block.horticultureTypes = HORTICULTURE.filter(function (name) { return block.cropTotals[name] && block.cropTotals[name].vegetationCount > 0; }).length;
-      block.pineappleUnharvested = Math.max(0, block.pineapplePlants - block.pineappleHarvest);
+      block.pineappleUnharvested = Math.max(0, block.pineapplePlants - block.pineappleMainHarvest);
       block.latestRecordDate = latestDate(dates);
     });
 
@@ -183,7 +188,7 @@
     all.gawangan = [];
     codes.forEach(function (code) {
       var block = blockMap[code];
-      ['blockAreaHa', 'gawanganAreaHa', 'operationalAreaHa', 'mappedGawangan', 'gawanganWithData', 'totalPlants', 'pineapplePlants', 'pineappleHarvest', 'pineappleUnharvested', 'pineappleEthrel', 'pineappleFlowers', 'pineappleSeedlings', 'mptsPlants', 'horticulturePlants'].forEach(function (key) { all[key] += block[key]; });
+      ['blockAreaHa', 'gawanganAreaHa', 'operationalAreaHa', 'mappedGawangan', 'gawanganWithData', 'totalPlants', 'pineapplePlants', 'pineappleHarvest', 'pineappleMainHarvest', 'pineappleUnharvested', 'pineappleEthrel', 'pineappleFlowers', 'pineappleSeedlings', 'mptsPlants', 'horticulturePlants'].forEach(function (key) { all[key] += block[key]; });
       all.missingGawangan = all.missingGawangan.concat(block.missingGawangan);
       all.gawangan = all.gawangan.concat(block.gawangan);
       Object.keys(block.cropTotals).forEach(function (name) {
