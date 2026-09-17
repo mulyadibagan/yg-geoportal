@@ -5,7 +5,7 @@
   function key(a){return [a.regency,a.district,a.village].map(function(v){return String(v||'').trim().toLowerCase()}).join('|')}
   window.loadMonthlyBurned=function(map,month,d,control){
     var card=document.getElementById('fm-burned-area'),status=document.getElementById('fm-burned-status'),rows=document.getElementById('fm-area-rows');
-    fetch('data/burned-area-monthly/index.json?t='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw Error('archive');return r.json()}).then(function(index){
+    return fetch('data/burned-area-monthly/index.json?t='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw Error('archive');return r.json()}).then(function(index){
       var report=(index.reports||[]).find(function(x){return x.month===month});
       if(!report){card.textContent='Belum tersedia';status.textContent='Bulan ini belum memiliki hasil estimasi tersimpan.';rows.innerHTML='<tr><td colspan="3">Estimasi luas belum tersedia; bukan berarti tidak ada kebakaran.</td></tr>';return null}
       return fetch(report.data+'?t='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw Error('archive');return r.json()});
@@ -20,6 +20,8 @@
       rows.innerHTML=Array.from(regencies.values()).sort(function(a,b){return (b.area||0)-(a.area||0)}).map(function(r){return '<tr><td><details><summary>'+esc(r.name||'Kabupaten belum teridentifikasi')+'</summary><table class="fm-table"><thead><tr><th>Desa / kecamatan</th><th>Hotspot</th><th>Estimasi luas</th></tr></thead><tbody>'+r.villages.sort(function(a,b){return (b.area||0)-(a.area||0)}).map(function(v){return '<tr><td>'+esc(v.village)+'<br><small>'+esc(v.district)+'</small></td><td>'+(v.hotspots===null?'—':v.hotspots)+'</td><td>'+(v.area===null?'Belum tersedia':ha(v.area))+'</td></tr>'}).join('')+'</tbody></table></details></td><td>'+(r.hotspots===null?'—':r.hotspots)+'</td><td>'+(r.area===null?'Belum tersedia':ha(r.area))+'</td></tr>'}).join('')||'<tr><td colspan="3">Belum ada estimasi tersimpan.</td></tr>';
       var burned=L.geoJSON(geo,{style:{color:'#b43e22',weight:2,fillColor:'#f16a35',fillOpacity:.35},onEachFeature:function(f,l){var p=f.properties;l.bindPopup('<strong>Area terindikasi terbakar</strong><br>'+ha(p.estimatedAreaHa)+'<br>'+esc((p.villages||[]).join(', '))+'<br>Deteksi pertama: '+esc(p.firstDetection.slice(0,10))+'<br><small>Estimasi sementara; bukan verifikasi lapangan.</small>')}}).addTo(map);
       control.addOverlay(burned,'Area terindikasi terbakar');if(d.unavailable&&burned.getBounds().isValid())map.fitBounds(burned.getBounds().pad(.1));
+      return geo;
     }).catch(function(){card.textContent='Tidak tersedia';status.textContent='Arsip estimasi belum dapat dimuat. Silakan muat ulang halaman.';rows.innerHTML='<tr><td colspan="3">Arsip belum dapat dimuat.</td></tr>'});
   };
 }());
+
