@@ -258,20 +258,25 @@
   function preloadInternalReferenceData() {
     if (!staffSession) return;
 
-    const preload = () => {
-      ["pbph_riau_052026", "perusahaan_sawit_riau"].forEach(layerId => {
-        const config = REFERENCE_LAYERS[layerId];
-        if (!config || referenceLayerObjects[layerId]) return;
-        fetchReferenceData(config).catch(error => {
-          console.warn("Pra-muat layer internal ditunda:", layerId, error);
-        });
+    ["pbph_riau_052026", "perusahaan_sawit_riau"].forEach(layerId => {
+      const config = REFERENCE_LAYERS[layerId];
+      if (!config || referenceLayerObjects[layerId]) return;
+      fetchReferenceData(config).catch(error => {
+        console.warn("Pra-muat layer internal ditunda:", layerId, error);
       });
-    };
+    });
+  }
 
+  function prepareInternalReferenceLayers() {
+    if (!staffSession) return;
+
+    const prepare = () => Promise.allSettled(
+      ["pbph_riau_052026", "perusahaan_sawit_riau"].map(loadReferenceLayer)
+    );
     if (typeof window.requestIdleCallback === "function") {
-      window.requestIdleCallback(preload, { timeout: 1800 });
+      window.requestIdleCallback(prepare, { timeout: 1200 });
     } else {
-      window.setTimeout(preload, 900);
+      window.setTimeout(prepare, 350);
     }
   }
 
@@ -2268,7 +2273,21 @@ L.control.scale({
     }
 
     if (referenceLayerState[layerId] === "loading") {
-      return null;
+      return new Promise((resolve, reject) => {
+        const startedAt = Date.now();
+        const check = () => {
+          if (referenceLayerObjects[layerId]) {
+            resolve(referenceLayerObjects[layerId]);
+          } else if (referenceLayerState[layerId] === "error") {
+            reject(new Error(config.label + " gagal dimuat."));
+          } else if (Date.now() - startedAt > 30000) {
+            reject(new Error(config.label + " melewati batas waktu pemuatan."));
+          } else {
+            window.setTimeout(check, 50);
+          }
+        };
+        check();
+      });
     }
 
     referenceLayerState[layerId] = "loading";
@@ -3308,6 +3327,7 @@ L.control.scale({
 
     requestAnimationFrame(() => map.invalidateSize(true));
     setTimeout(() => map.invalidateSize(true), 400);
+    prepareInternalReferenceLayers();
   }
 
   function loadByJsonp() {
