@@ -266,6 +266,30 @@
     if (name === 'Monitoring umum') return { quantity: details.observedPlantCount, unit: 'batang', material: details.focus, condition: details.condition };
     return { quantity: details.targetPlantCount, unit: 'batang', material: details.material, condition: '' };
   }
+  function dateAfterDays(dateValue, days) {
+    var date = new Date(dateValue + 'T00:00:00Z');
+    if (Number.isNaN(date.getTime())) return '';
+    date.setUTCDate(date.getUTCDate() + days);
+    return date.toISOString().slice(0, 10);
+  }
+  function followUpRecommendation(details, eventDate) {
+    var name = activity.value;
+    var recommendation = { source: 'system', requiresAdminConfirmation: true, action: '', windowDaysMin: 0, windowDaysMax: 0 };
+    if (name === 'Penanaman') Object.assign(recommendation, { action: 'Periksa daya hidup dan kondisi awal tanaman baru.', windowDaysMin: 7, windowDaysMax: 14 });
+    else if (name === 'Penyisipan') Object.assign(recommendation, { action: 'Periksa keberhasilan hidup tanaman sisipan dan kebutuhan penyisipan ulang.', windowDaysMin: 7, windowDaysMax: 14 });
+    else if (name === 'Pemupukan') Object.assign(recommendation, { action: 'Periksa respons tanaman serta gejala kekurangan atau kelebihan unsur.', windowDaysMin: 14, windowDaysMax: 21 });
+    else if (name === 'Penyiangan') Object.assign(recommendation, { action: 'Nilai kembali pertumbuhan gulma dan kebutuhan pemeliharaan lanjutan.', windowDaysMin: 21, windowDaysMax: 30 });
+    else if (name === 'Pengendalian HPT') {
+      var severe = details.severity === 'Berat';
+      var medium = details.severity === 'Sedang';
+      Object.assign(recommendation, { action: 'Evaluasi perkembangan serangan dan efektivitas tindakan pengendalian.', windowDaysMin: severe ? 2 : medium ? 5 : 7, windowDaysMax: severe ? 3 : medium ? 7 : 14 });
+    } else if (name === 'Ethrel') Object.assign(recommendation, { action: 'Periksa keseragaman respons pembungaan setelah aplikasi ethrel.', windowDaysMin: 30, windowDaysMax: 45 });
+    else if (name === 'Panen') Object.assign(recommendation, { action: 'Perbarui sisa buah siap panen dan rencana panen berikutnya.', windowDaysMin: 7, windowDaysMax: 14 });
+    else Object.assign(recommendation, { action: 'Tinjau kembali temuan lapangan dan tentukan tindakan yang diperlukan.', windowDaysMin: 7, windowDaysMax: 14 });
+    recommendation.windowStartDate = dateAfterDays(eventDate, recommendation.windowDaysMin);
+    recommendation.windowEndDate = dateAfterDays(eventDate, recommendation.windowDaysMax);
+    return recommendation;
+  }
   function compressPhoto(file) {
     return new Promise(function (resolve, reject) {
       var reader = new FileReader();
@@ -329,7 +353,7 @@
   activity.addEventListener('change', syncActivityForm);
   $('dm-fert-phase').addEventListener('change', function () { renderFertilizerMaterials(true); });
   ['dm-fert-population', 'dm-fert-ph', 'dm-fert-weather', 'dm-fert-method'].forEach(function (id) { $(id).addEventListener('input', updateFertilizerStatus); $(id).addEventListener('change', updateFertilizerStatus); });
-  $('dm-date').addEventListener('change', function () { $('dm-next-date').min = this.value; if (activity.value === 'Penanaman') $('dm-planting-date').value = this.value; });
+  $('dm-date').addEventListener('change', function () { if (activity.value === 'Penanaman') $('dm-planting-date').value = this.value; });
   photos.addEventListener('change', function () { var count = this.files.length; $('dm-photo-note').textContent = count > 3 ? 'Terlalu banyak foto. Pilih maksimal 3 foto.' : count ? count + ' foto dipilih dan akan dikompresi.' : 'Foto dikompresi sebelum dikirim.'; });
   form.addEventListener('reset', function () { setTimeout(function () { $('dm-date').value = today(); select.value = ''; currentArea = 0; populateCrops(); setFeedback('Form dibersihkan.'); }, 0); });
   form.addEventListener('submit', async function (event) {
@@ -348,7 +372,6 @@
     if (phone && phone.replace(/\D/g, '').length < 8) { setFeedback('Periksa nomor WhatsApp. Gunakan minimal 8 angka.', 'error'); $('dm-phone').focus(); return; }
     var details = activitySnapshot();
     if (details.plantingDate && details.plantingDate > eventDate) { setFeedback('Tanggal tanam tidak boleh lebih baru daripada tanggal kegiatan.', 'error'); $('dm-planting-date').focus(); return; }
-    if ($('dm-next-date').value && $('dm-next-date').value < eventDate) { setFeedback('Rencana tanggal berikutnya tidak boleh sebelum tanggal kegiatan.', 'error'); $('dm-next-date').focus(); return; }
     if (photos.files.length > 3) { setFeedback('Pilih maksimal 3 foto kegiatan.', 'error'); photos.focus(); return; }
     if (photos.required && photos.files.length < 1) { setFeedback('Minimal satu foto wajib untuk verifikasi kegiatan ini.', 'error'); photos.focus(); return; }
     var targetFeatures = featuresById[id] || [];
@@ -364,7 +387,8 @@
       var fertilizer = isNanasFertilizing() ? fertilizerSnapshot() : null;
       var compatible = compatibilityFields(details, fertilizer);
       var meta = ACTIVITY_META[activity.value] || {};
-      var info = { schemaVersion: 'dayun-monitoring-v3', monitoringType: 'Agroforestri Dayun', activityCluster: meta.cluster || '', activityType: activity.value, crop: crop.value, eventDate: eventDate, plantingDate: details.plantingDate || '', condition: compatible.condition, quantity: compatible.quantity, unit: compatible.unit, material: compatible.material, activityDetails: details, nextAction: $('dm-next-action').value.trim(), nextActionDate: $('dm-next-date').value, notes: $('dm-notes').value.trim(), fertilizer: fertilizer };
+      var recommendation = followUpRecommendation(details, eventDate);
+      var info = { schemaVersion: 'dayun-monitoring-v4', monitoringType: 'Agroforestri Dayun', activityCluster: meta.cluster || '', activityType: activity.value, crop: crop.value, eventDate: eventDate, plantingDate: details.plantingDate || '', condition: compatible.condition, quantity: compatible.quantity, unit: compatible.unit, material: compatible.material, activityDetails: details, followUpRecommendation: recommendation, notes: $('dm-notes').value.trim(), fertilizer: fertilizer };
       var clientId = 'dayun-' + Date.now() + '-' + Math.floor(Math.random() * 100000);
       var payload = { clientSubmissionId: clientId, reportType: 'Monitoring', name: reporter, organization: organization, email: email, phone: phone, province: 'Riau', regency: 'Siak', district: 'Dayun', village: 'Dayun', locationName: 'Gawangan ' + id.replace('DAYUN-GT-', ''), title: activity.value + ' ' + info.crop + ' · ' + id.replace('DAYUN-GT-', ''), activityDate: eventDate, description: info.notes, oldInformation: JSON.stringify(detailsById[id] || {}), proposedInformation: JSON.stringify(info), geometryType: geometry.type, geometryGeoJSON: JSON.stringify(geometry), targetLayerId: 'dayun_gawangan', targetLayerLabel: 'Gawangan Agroforestri Dayun', targetSourceType: 'dayun_gawangan', targetObjectId: id, targetFeatureProperties: JSON.stringify(Object.assign({}, properties, { Object_ID: id, objectId: id })), proposedChanges: JSON.stringify({ monitoring: info }), images: images, documents: [] };
       await fetch(API, { method: 'POST', mode: 'no-cors', body: new URLSearchParams({ payload: JSON.stringify(payload) }) });
