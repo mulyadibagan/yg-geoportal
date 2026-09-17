@@ -148,6 +148,9 @@ test("monitoring dashboard filters reporters and orders same-day reports by subm
   assert.match(source, /renderMonitoringMap\(summaryRows\)/);
   assert.match(source, /params\.get\('reporter'\)/);
   assert.match(source, /params\.get\('submitted'\)/);
+  assert.match(source, /snapshots\/current\/dashboard\.json/);
+  assert.match(source, /data&&data\.capacitySources&&data\.capacitySources\.reports\|\|data/);
+  assert.doesNotMatch(source, /snapshots\/current\/objects\.json/);
   assert.match(detailSource, /Tanggal submit terbaru/);
   assert.match(detailSource, /g\.history=g\.history\.sort\(function\(a,b\)\{return recordOrderTime\(b\)-recordOrderTime\(a\);\}\)/);
   assert.match(detailSource, /fmtSubmitDateTime\(r\.submittedAt\)/);

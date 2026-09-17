@@ -4,7 +4,7 @@
   var BASE='https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec';
   var API=BASE+'?page=public-reports';
   var OBJECTS_API=BASE+'?page=objects';
-  var SNAPSHOT_URL='https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/snapshots/current/objects.json';
+  var SNAPSHOT_URL='https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/snapshots/current/dashboard.json';
   var CALLBACK='ygMonitoringDashboardCallback';
   var OBJECTS_CALLBACK='ygMonitoringObjectsCallback';
 var LEGACY_OBJECT_ALIASES={
@@ -1192,10 +1192,12 @@ var LEGACY_OBJECT_ALIASES={
         return response.json();
       })
       .then(function(data){
-        var features=data&&Array.isArray(data.features)?data.features:[];
+        var reports=data&&data.capacitySources&&data.capacitySources.reports||data;
+        var features=reports&&Array.isArray(reports.features)?reports.features:[];
         if(!features.length)return;
-        masterObjects=features.map(normalizeMaster).filter(Boolean);
-        applyData({type:'FeatureCollection',features:features});
+        var objectFeatures=data&&Array.isArray(data.features)?data.features:[];
+        masterObjects=objectFeatures.map(normalizeMaster).filter(Boolean);
+        applyData(reports);
       })
       .catch(function(error){
         console.warn('Snapshot monitoring tidak dapat dimuat:',error);
