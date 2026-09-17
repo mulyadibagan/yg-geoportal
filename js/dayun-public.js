@@ -52,6 +52,7 @@
     if(!mapEl||!legendEl)return;
     var intro=document.querySelector('.dy-map-page-intro p');if(intro)intro.textContent='Klik polygon untuk melihat luas blok dan gawangan tanam, lalu buka profil lengkapnya pada halaman baru.';
     if(typeof L==='undefined'){mapEl.innerHTML='<div class="dy-map-loading">Pustaka peta tidak dapat dimuat.</div>';return;}
+    var loading=mapEl.querySelector('.dy-map-loading');if(loading)loading.remove();
     var satellite=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxNativeZoom:18,maxZoom:20,attribution:'Tiles &copy; Esri'});
     var osm=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxNativeZoom:19,maxZoom:20,attribution:'&copy; OpenStreetMap contributors'});
     var map=L.map(mapEl,{zoomControl:true,layers:[satellite]}).setView([0.5844,102.009],17);
