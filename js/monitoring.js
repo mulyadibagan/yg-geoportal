@@ -34,13 +34,20 @@ var LEGACY_OBJECT_ALIASES={
   function parseJSON(v){if(!v)return{};if(typeof v==='object')return v;try{return JSON.parse(v);}catch(e){return{};}}
   function dateValue(v){
     var text=String(v||'').trim();
-    var dayFirst=text.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})/);
+    var dayFirst=text.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})(?:\s+(\d{1,2}):(\d{2})(?::(\d{2}))?)?/);
     var d=dayFirst
-      ? new Date(Date.UTC(Number(dayFirst[3]),Number(dayFirst[2])-1,Number(dayFirst[1])))
+      ? new Date(Date.UTC(Number(dayFirst[3]),Number(dayFirst[2])-1,Number(dayFirst[1]),Number(dayFirst[4]||0),Number(dayFirst[5]||0),Number(dayFirst[6]||0)))
       : new Date(v||0);
     return isNaN(d.getTime())?new Date(0):d;
   }
   function fmtDate(v){var d=dateValue(v);return d.getTime()?d.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric',timeZone:'UTC'}):'—';}
+  function fmtSubmitDateTime(v){
+    var d=dateValue(v);
+    return d.getTime()?d.toLocaleString('id-ID',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'Asia/Jakarta'})+' WIB':'—';
+  }
+  function recordOrderTime(record){
+    return dateValue(record&&record.submittedAt||record&&record.date).getTime();
+  }
   function has(v){return v!==undefined&&v!==null&&v!==''&&!(typeof v==='number'&&isNaN(v));}
   function toLowerText(v){
     return String(v==null?'':v).trim().toLowerCase();
@@ -451,6 +458,7 @@ var LEGACY_OBJECT_ALIASES={
       title:title,
       type:type,
       date:p.activityDate||p.publishedAt||p.verifiedAt||p.receivedAt,
+      submittedAt:p.receivedAt||p.submittedAt||p.submitted_at||p.publishedAt||p.verifiedAt||p.activityDate,
       village:village,
       villageKey:keyText(village),
       location:[village,p.district,p.regency].filter(Boolean).join(', '),
@@ -520,7 +528,7 @@ var LEGACY_OBJECT_ALIASES={
     });
     return Object.keys(map).map(function(k){
       var g=map[k];
-      g.history=g.history.sort(function(a,b){return dateValue(b.date)-dateValue(a.date);});
+      g.history=g.history.sort(function(a,b){return recordOrderTime(b)-recordOrderTime(a);});
       g.latest=g.history[0];
       g.objectCount=1;
       g.villageCount=Object.keys(g.villageKeys).length;
@@ -528,7 +536,7 @@ var LEGACY_OBJECT_ALIASES={
       g.donorCount=Object.keys(g.donorKeys).length;
       g.phaseCount=Object.keys(g.phaseKeys).length;
       return g;
-    }).sort(function(a,b){return dateValue(b.latest.date)-dateValue(a.latest.date);});
+    }).sort(function(a,b){return recordOrderTime(b.latest)-recordOrderTime(a.latest);});
   }
 
   function clusterMatchRecord(mode,value,record){
@@ -552,8 +560,10 @@ var LEGACY_OBJECT_ALIASES={
 
   function summaryRecords(mode,clusterValue,q,type,status,year){
     var targetYear=year?Number(year):null;
+    var reporter=document.getElementById('monitor-reporter').value;
     return records.filter(function(r){
       if(!clusterMatchRecord(mode,clusterValue,r))return false;
+      if(reporter&&r.reporterKey!==reporter)return false;
       if(type&&r.type!==type)return false;
       if(status&&r.status.key!==status)return false;
       if(targetYear){
@@ -734,22 +744,12 @@ var LEGACY_OBJECT_ALIASES={
     var sort=document.getElementById('monitor-sort').value;
     var summaryRows=summaryRecords(mode,clusterValue,q,type,status,year);
     renderSummaryChart(summaryRows);
-    var filtered=groups.filter(function(g){
-      var r=g.latest;
-      var hay=(g.label+' '+r.title+' '+r.location+' '+r.type+' '+(g.objectCode||'')+' '+r.village+' '+r.reporter).toLowerCase();
-      var matchCluster=true;
-      if(clusterValue){
-        if(mode==='village')matchCluster=!!g.villageKeys[clusterValue];
-        else if(mode==='reporter')matchCluster=!!g.reporterKeys[clusterValue];
-        else if(mode==='donor')matchCluster=!!g.donorKeys[clusterValue];
-        else if(mode==='phase')matchCluster=!!g.phaseKeys[clusterValue];
-      }
-      return matchCluster&&(!q||hay.indexOf(q)>-1)&&(!type||r.type===type)&&(!status||r.status.key===status)&&(!year||dateValue(r.date).getFullYear()===Number(year));
-    });
+    var filtered=groupData(summaryRows);
     filtered.sort(function(a,b){
       if(sort==='name')return a.label.localeCompare(b.label);
       if(sort==='risk'){var rank={masalah:0,waspada:1,baik:2};return rank[a.latest.status.key]-rank[b.latest.status.key];}
-      return dateValue(b.latest.date)-dateValue(a.latest.date);
+      if(sort==='activity')return dateValue(b.latest.date)-dateValue(a.latest.date)||recordOrderTime(b.latest)-recordOrderTime(a.latest);
+      return recordOrderTime(b.latest)-recordOrderTime(a.latest);
     });
     document.getElementById('result-count').textContent=filtered.length+' '+clusterResultSuffix(mode);
     if(!filtered.length){list.innerHTML='<div class="empty">Belum ada hasil monitoring terverifikasi yang sesuai filter.</div>';return;}
@@ -764,7 +764,7 @@ var LEGACY_OBJECT_ALIASES={
         '<a class="monitor-card-main monitoring-detail-link" href="'+detailHref+'" data-detail="'+esc(g.key)+'" aria-label="Buka laporan lengkap '+esc(title)+'">'+
           '<div class="card-top"><div><span class="type-label">'+esc(r.type.toUpperCase())+'</span><h3>'+esc(title)+'</h3>'+summary+'</div><span class="status '+r.status.key+'">'+esc(r.status.label)+'</span></div>'+
           '<div class="metric-grid">'+metrics+'</div>'+
-          '<div class="card-actions"><small>Terakhir '+esc(fmtDate(r.date))+' · '+g.history.length+' riwayat</small><span class="link">Buka laporan lengkap →</span></div>'+
+          '<div class="card-actions"><small>Monitoring '+esc(fmtDate(r.date))+' · Submit '+esc(fmtSubmitDateTime(r.submittedAt))+' · '+g.history.length+' riwayat</small><span class="link">Buka laporan lengkap →</span></div>'+
         '</a>'+
       '</article>';
     }).join('');
@@ -806,6 +806,14 @@ var LEGACY_OBJECT_ALIASES={
       return acc;
     },{})).map(Number).sort(function(a,b){return b-a;});
     document.getElementById('monitor-year').innerHTML='<option value="">Semua tahun</option>'+years.map(function(y){return'<option value="'+esc(y)+'">'+esc(y)+'</option>';}).join('');
+    var reporterSelect=document.getElementById('monitor-reporter');
+    var selectedReporter=reporterSelect.value;
+    var reporters={};
+    records.forEach(function(r){if(r.reporterKey)reporters[r.reporterKey]=r.reporter||'Pelapor tidak disebut';});
+    reporterSelect.innerHTML='<option value="">Semua pelapor</option>'+Object.keys(reporters).sort(function(a,b){return reporters[a].localeCompare(reporters[b],'id');}).map(function(key){
+      return'<option value="'+esc(key)+'">'+esc(reporters[key])+'</option>';
+    }).join('');
+    if(reporters[selectedReporter])reporterSelect.value=selectedReporter;
     renderClusterValues(getClusterMode());
   }
 
@@ -897,7 +905,7 @@ var LEGACY_OBJECT_ALIASES={
     return'<div class="timeline">'+g.history.map(function(r,index){
       var by=r.reporter?'<span class="timeline-reporter">👤 '+esc(r.reporter)+(r.organization?' · '+esc(r.organization):'')+'</span>':'';
       var photos=r.photos.length?'<button class="timeline-photo-count" data-tab-jump="photos" type="button">📷 '+r.photos.length+' foto</button>':'<span class="timeline-no-photo">Tanpa foto</span>';
-      return'<article class="timeline-item '+(index===0?'latest':'')+'"><time>'+esc(fmtDate(r.date))+'</time><div class="timeline-body">'+
+      return'<article class="timeline-item '+(index===0?'latest':'')+'"><time>'+esc(fmtDate(r.date))+'<small>Submit '+esc(fmtSubmitDateTime(r.submittedAt))+'</small></time><div class="timeline-body">'+
         '<div class="timeline-heading"><span class="status '+r.status.key+'">'+esc(r.status.label)+'</span>'+photos+'</div>'+
         historyMetricsHTML(r)+by+'<p>'+esc(r.description||'Tidak ada catatan temuan.')+'</p>'+
         (r.recommendation?'<div class="timeline-follow-up"><b>Tindak lanjut:</b> '+esc(r.recommendation)+'</div>':'')+
@@ -1007,7 +1015,7 @@ var LEGACY_OBJECT_ALIASES={
     loadReportsScript();
   };
 
-  ['monitor-search','monitor-type','monitor-status','monitor-sort','monitor-year'].forEach(function(id){
+  ['monitor-search','monitor-type','monitor-status','monitor-reporter','monitor-sort','monitor-year'].forEach(function(id){
     document.getElementById(id).addEventListener(id==='monitor-search'?'input':'change',render);
   });
   document.getElementById('monitor-cluster').addEventListener('change',function(){

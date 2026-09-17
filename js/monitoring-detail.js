@@ -121,15 +121,22 @@
   }
   function dateValue(v){
     var text=String(v||'').trim();
-    var dayFirst=text.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})/);
+    var dayFirst=text.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})(?:\s+(\d{1,2}):(\d{2})(?::(\d{2}))?)?/);
     var d=dayFirst
-      ? new Date(Date.UTC(Number(dayFirst[3]),Number(dayFirst[2])-1,Number(dayFirst[1])))
+      ? new Date(Date.UTC(Number(dayFirst[3]),Number(dayFirst[2])-1,Number(dayFirst[1]),Number(dayFirst[4]||0),Number(dayFirst[5]||0),Number(dayFirst[6]||0)))
       : new Date(v||0);
     return isNaN(d.getTime())?new Date(0):d;
   }
   function fmtDate(v){
     var d=dateValue(v);
     return d.getTime()?d.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric',timeZone:'UTC'}):'—';
+  }
+  function fmtSubmitDateTime(v){
+    var d=dateValue(v);
+    return d.getTime()?d.toLocaleString('id-ID',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'Asia/Jakarta'})+' WIB':'—';
+  }
+  function recordOrderTime(record){
+    return dateValue(record&&record.submittedAt||record&&record.date).getTime();
   }
   function has(v){
     return v!==undefined&&v!==null&&v!==''&&!(typeof v==='number'&&isNaN(v));
@@ -343,6 +350,7 @@
       title:title,
       type:type,
       date:p.activityDate||p.publishedAt||p.verifiedAt||p.receivedAt,
+      submittedAt:p.receivedAt||p.submittedAt||p.submitted_at||p.publishedAt||p.verifiedAt||p.activityDate,
       village:village,
       villageKey:keyText(village),
       location:[village,p.district||p.Kecamatan,p.regency||p.Kabupaten].filter(Boolean).join(', '),
@@ -400,7 +408,7 @@
     });
     return Object.keys(map).map(function(k){
       var g=map[k];
-      g.history=g.history.sort(function(a,b){return dateValue(b.date)-dateValue(a.date);});
+      g.history=g.history.sort(function(a,b){return recordOrderTime(b)-recordOrderTime(a);});
       g.latest=g.history[0];
       return g;
     });
@@ -632,6 +640,7 @@
       ['Nama objek',latest.title||group.label||'Objek monitoring'],
       ['Lokasi',latest.location||'Belum dicantumkan'],
       ['Monitoring terbaru',fmtDate(latest.date)+' · '+(latest.reporter||'Pelapor belum disebut')],
+      ['Tanggal submit terbaru',fmtSubmitDateTime(latest.submittedAt)],
       ['Organisasi pelapor',latest.organization||'—'],
       ['Jenis monitoring',latest.type||'—'],
       ['Basis objek',targetSeedlings!==null?numberFormat(targetSeedlings)+' bibit · '+areaFormat(targetArea)+' ha':'Belum tersedia','Jumlah bibit dan luas resmi mengikuti atribut polygon.'],
@@ -657,7 +666,7 @@
       var survival=total?alive/total*100:null;
       return'<div class="detail-timeline-item">'+
         '<div class="detail-timeline-meta"><span>'+esc(fmtDate(r.date))+'</span><span class="status '+esc(r.status.key||'baik')+'">'+esc(r.status.label||'')+'</span></div>'+
-        '<small style="display:block;margin-top:4px;color:var(--muted);">Pelapor: '+esc(r.reporter||'Belum disebut')+'</small>'+
+        '<small style="display:block;margin-top:4px;color:var(--muted);">Submit '+esc(fmtSubmitDateTime(r.submittedAt))+' · Pelapor: '+esc(r.reporter||'Belum disebut')+'</small>'+
         (total!==null?'<div class="history-metrics"><span>Total bibit<b>'+esc(numberFormat(total))+'</b></span><span>Hidup<b>'+esc(numberFormat(alive))+'</b></span><span>Mati/rusak<b>'+esc(numberFormat(dead))+'</b></span><span>Survival<b>'+esc(numberFormat(survival))+'%</b></span></div>':'')+
         '<p>'+esc(r.description||'Tidak ada catatan temuan.')+'</p>'+
         (r.recommendation?'<p><strong>Tindak lanjut:</strong> '+esc(r.recommendation)+'</p>':'')+
@@ -986,4 +995,3 @@
     }catch(error){}
   });
 })();
-

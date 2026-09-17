@@ -123,6 +123,26 @@ test("monitoring reporter chips filter historical reporters and remain keyboard 
   assert.match(html, /\.reporter-pill:focus-visible/);
 });
 
+test("monitoring dashboard filters reporters and orders same-day reports by submit time", () => {
+  const source = read("js/monitoring.js");
+  const html = read("monitoring.html");
+  const detailSource = read("js/monitoring-detail.js");
+  const detailHtml = read("monitoring-detail.html");
+
+  assert.match(html, /id="monitor-reporter"/);
+  assert.match(html, /Submit terbaru/);
+  assert.match(source, /submittedAt:p\.receivedAt\|\|p\.submittedAt/);
+  assert.match(source, /function fmtSubmitDateTime/);
+  assert.match(source, /timeZone:'Asia\/Jakarta'/);
+  assert.match(source, /function recordOrderTime/);
+  assert.match(source, /g\.history=g\.history\.sort\(function\(a,b\)\{return recordOrderTime\(b\)-recordOrderTime\(a\);\}\)/);
+  assert.match(source, /Monitoring '\+esc\(fmtDate\(r\.date\)\)\+' · Submit '/);
+  assert.match(detailSource, /Tanggal submit terbaru/);
+  assert.match(detailSource, /g\.history=g\.history\.sort\(function\(a,b\)\{return recordOrderTime\(b\)-recordOrderTime\(a\);\}\)/);
+  assert.match(detailSource, /fmtSubmitDateTime\(r\.submittedAt\)/);
+  assert.match(detailHtml, /monitoring-detail\.js\?v=20260917-submit-time1/);
+});
+
 test("monitoring pages prefer the fast public snapshot and keep the source API as fallback", () => {
   const detail = read("js/monitoring-detail.js");
   const compilation = read("js/monitoring-compilation.js");
