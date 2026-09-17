@@ -163,6 +163,7 @@ async function rspoGroupsApi(request, env) {
   }
 }
 const PRIVATE_DATA_ROUTES = {
+  "/api/staff/rspo-companies": ["internal/rspo/riau-companies.geojson", "application/geo+json; charset=utf-8"],
   "/api/staff/pbph-riau": ["internal/pbph/riau.geojson", "application/geo+json; charset=utf-8"],
   "/api/staff/social-forestry-riau": ["internal/social-forestry/riau.geojson", "application/geo+json; charset=utf-8"],
   "/api/staff/faperta-ur-data": ["internal/faperta/ur-data.json", "application/json; charset=utf-8"],
@@ -264,3 +265,4 @@ var index_default = { async fetch(request, env) {
 export {
   index_default as default
 };
+
