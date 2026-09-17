@@ -1,6 +1,6 @@
 (function(){'use strict';
 document.documentElement.style.visibility='hidden';
-var KEY='ygEditorSessionV1',WORKER='https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev',NEXT='js/rspo-riau-staff-dashboard.js?v=20260916-internal3';
+var KEY='ygEditorSessionV1',WORKER='https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev',NEXT='js/rspo-riau-staff-dashboard.js?v=20260917-staff-map1';
 function read(){try{var s=JSON.parse(localStorage.getItem(KEY)||sessionStorage.getItem(KEY)||'null');if(!s||!s.token||Number(s.expiresAt||0)<=Date.now())return null;return s}catch(e){return null}}
 function back(){return location.pathname.split('/').pop()+location.search+location.hash}
 function login(){location.replace('staff-login.html?return='+encodeURIComponent(back()))}
