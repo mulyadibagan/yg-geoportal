@@ -128,7 +128,7 @@ test("PBPH reference and reports require a valid staff session", async () => {
   };
   try {
     const env = envWith({ type: "FeatureCollection", features: [{ properties: { NAMOBJ: "internal" } }] });
-    for (const path of ["/api/staff/pbph-riau", "/api/staff/pbph-documents", "/api/staff/fire-monthly-index", "/api/staff/fire-monthly-report?month=2026-08", "/api/staff/phl-svlk-monthly-index", "/api/staff/phl-svlk-monthly-report?month=2026-08"]) {
+    for (const path of ["/api/staff/rspo-companies", "/api/staff/pbph-riau", "/api/staff/pbph-documents", "/api/staff/fire-monthly-index", "/api/staff/fire-monthly-report?month=2026-08", "/api/staff/phl-svlk-monthly-index", "/api/staff/phl-svlk-monthly-report?month=2026-08"]) {
       const denied = await worker.fetch(new Request("https://data.test" + path), env);
       assert.equal(denied.status, 401, path);
       const allowed = await worker.fetch(new Request("https://data.test" + path, { headers: { authorization: "Bearer valid-session" } }), env);
@@ -283,3 +283,4 @@ test("publication refresh requires its secret and atomically publishes a manifes
     assert.equal((await currentAgain.json()).features[0].properties._ygPhotos.length, 1);
   } finally { globalThis.fetch = originalFetch; }
 });
+

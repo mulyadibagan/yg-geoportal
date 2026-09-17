@@ -67,6 +67,8 @@ jobs:
           npx wrangler r2 object put "yg-webgis-public-snapshots/references/kph_2019_riau.geojson" --remote --file ../../data/kph_2019_riau.geojson --content-type application/geo+json
           npx wrangler r2 object put "yg-webgis-public-snapshots-staging/research/liberica-morphology-2026.json" --remote --file ../../data/liberica-morphology-2026.json --content-type application/json
           npx wrangler r2 object put "yg-webgis-public-snapshots/research/liberica-morphology-2026.json" --remote --file ../../data/liberica-morphology-2026.json --content-type application/json
+          npx wrangler r2 object put "yg-webgis-public-snapshots-staging/internal/rspo/riau-companies.geojson" --remote --file tmp/rspo-riau-companies.geojson --content-type application/geo+json
+          npx wrangler r2 object put "yg-webgis-public-snapshots/internal/rspo/riau-companies.geojson" --remote --file tmp/rspo-riau-companies.geojson --content-type application/geo+json
           npx wrangler r2 object put "yg-webgis-public-snapshots-staging/internal/rspo/riau-groups.geojson" --remote --file tmp/rspo-riau-groups.geojson --content-type application/geo+json
           npx wrangler r2 object put "yg-webgis-public-snapshots/internal/rspo/riau-groups.geojson" --remote --file tmp/rspo-riau-groups.geojson --content-type application/geo+json
           npx wrangler r2 object put "yg-webgis-public-snapshots-staging/references/rspo-riau-groups.geojson" --remote --file ../../data/PERUSAHAAN_SAWIT_RIAU_REFERENSI.geojson --content-type application/geo+json
@@ -98,3 +100,4 @@ jobs:
       - name: Smoke test staging gateway
         working-directory: cloudflare/yg-webgis-public-data
         run: npm run smoke:staging
+
