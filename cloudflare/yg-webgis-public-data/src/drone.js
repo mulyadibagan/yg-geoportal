@@ -13,30 +13,36 @@ function reply(value, status = 200, extra = {}) {
     headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store", ...DRONE_HEADERS, ...extra }
   });
 }
-
+function normalizeJson(value) {
+  let current=value;
+  for(let i=0;i<2&&typeof current==="string";i++){try{current=JSON.parse(current);}catch{return null;}}
+  return current&&typeof current==="object"?current:null;
+}
+async function validStaffToken(request, env) {
+  const token=request.headers.get("authorization")?.replace(/^Bearer\s+/i,"").trim()||"";
+  if(!token) return false;
+  const upstream=new URL(env.APPS_SCRIPT_BASE);
+  upstream.searchParams.set("page","staff-reports");
+  upstream.searchParams.set("sessionToken",token);
+  try{
+    const response=await fetch(upstream.toString(),{headers:{accept:"application/json","user-agent":"YG-GeoPortal-Drone-API/1.0"},redirect:"follow"});
+    if(!response.ok) return false;
+    const data=normalizeJson(await response.json());
+    return Boolean(data)&&data.requiresLogin!==true&&data.ok!==false;
+  }catch{return false;}
+}
 function safeName(value) {
   return String(value || "photo.jpg").replace(/[^a-zA-Z0-9._-]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 140) || "photo.jpg";
 }
-
 async function readJson(env, key, fallback = null) {
   const object = await env.PUBLIC_SNAPSHOTS?.get(key);
   if (!object) return fallback;
   try { return JSON.parse(await object.text()); } catch { return fallback; }
 }
-
 async function writeJson(env, key, value) {
-  await env.PUBLIC_SNAPSHOTS.put(key, JSON.stringify(value), {
-    httpMetadata: { contentType: "application/json; charset=utf-8", cacheControl: "no-store" }
-  });
+  await env.PUBLIC_SNAPSHOTS.put(key, JSON.stringify(value), { httpMetadata: { contentType: "application/json; charset=utf-8", cacheControl: "no-store" } });
 }
-
 function jobKey(id) { return `drone/jobs/${id}.json`; }
-
-async function requireStaff(request, env, validStaffToken) {
-  const token = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "").trim() || "";
-  return token && await validStaffToken(token, env);
-}
-
 async function queueJob(env, id) {
   const key = "drone/queue/pending.json";
   const queue = await readJson(env, key, { jobs: [] });
@@ -44,7 +50,6 @@ async function queueJob(env, id) {
   if (!jobs.includes(id)) jobs.push(id);
   await writeJson(env, key, { jobs, updatedAt: new Date().toISOString() });
 }
-
 function newJob(body = {}) {
   const id = `drn-${crypto.randomUUID()}`;
   return {
@@ -59,25 +64,18 @@ function newJob(body = {}) {
     accessToken: crypto.randomUUID().replace(/-/g, "")
   };
 }
-
 async function createJob(request, env) {
   const body = await request.json().catch(() => ({}));
   const job = newJob(body);
-  if (job.sourceType === "drive") {
-    if (!/^https:\/\/drive\.google\.com\/drive\/folders\/[a-zA-Z0-9_-]+/i.test(job.driveUrl || "")) {
-      return reply({ ok: false, error: "invalid_drive_folder_url" }, 400);
-    }
-  }
+  if (job.sourceType === "drive" && !/^https:\/\/drive\.google\.com\/drive\/folders\/[a-zA-Z0-9_-]+/i.test(job.driveUrl || "")) return reply({ ok: false, error: "invalid_drive_folder_url" }, 400);
   await writeJson(env, jobKey(job.id), job);
   if (job.status === "pending") await queueJob(env, job.id);
   return reply({ ok: true, job });
 }
-
 async function getJob(env, id) {
   const job = await readJson(env, jobKey(id));
   return job ? reply({ ok: true, job }) : reply({ ok: false, error: "job_not_found" }, 404);
 }
-
 async function uploadFile(request, env, id, encodedName) {
   const job = await readJson(env, jobKey(id));
   if (!job) return reply({ ok: false, error: "job_not_found" }, 404);
@@ -96,7 +94,6 @@ async function uploadFile(request, env, id, encodedName) {
   await writeJson(env, jobKey(id), job);
   return reply({ ok: true, id, file: { name, key }, uploaded: files.length });
 }
-
 async function finalizeUpload(env, id) {
   const job = await readJson(env, jobKey(id));
   if (!job) return reply({ ok: false, error: "job_not_found" }, 404);
@@ -108,7 +105,6 @@ async function finalizeUpload(env, id) {
   await queueJob(env, id);
   return reply({ ok: true, job });
 }
-
 async function serveCog(request, env, id, url) {
   const job = await readJson(env, jobKey(id));
   if (!job || job.status !== "ready" || !job.cogKey) return reply({ ok: false, error: "orthomosaic_not_ready" }, 404);
@@ -129,16 +125,12 @@ async function serveCog(request, env, id, url) {
   }
   return new Response(request.method === "HEAD" ? null : object.body, { status: object.range ? 206 : 200, headers });
 }
-
-export function isDroneRoute(pathname) {
-  return pathname === "/api/drone/jobs" || pathname.startsWith("/api/drone/jobs/");
-}
-
-export async function handleDroneRequest(request, env, url, validStaffToken) {
+export function isDroneRoute(pathname) { return pathname === "/api/drone/jobs" || pathname.startsWith("/api/drone/jobs/"); }
+export async function handleDroneRequest(request, env, url) {
   if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: DRONE_HEADERS });
   const cogMatch = url.pathname.match(/^\/api\/drone\/jobs\/(drn-[a-zA-Z0-9-]+)\/cog$/);
   if (cogMatch && (request.method === "GET" || request.method === "HEAD")) return serveCog(request, env, cogMatch[1], url);
-  if (!await requireStaff(request, env, validStaffToken)) return reply({ ok: false, error: "unauthorized" }, 401);
+  if (!await validStaffToken(request, env)) return reply({ ok: false, error: "unauthorized" }, 401);
   if (url.pathname === "/api/drone/jobs" && request.method === "POST") return createJob(request, env);
   const fileMatch = url.pathname.match(/^\/api\/drone\/jobs\/(drn-[a-zA-Z0-9-]+)\/files\/(.+)$/);
   if (fileMatch && request.method === "PUT") return uploadFile(request, env, fileMatch[1], fileMatch[2]);
