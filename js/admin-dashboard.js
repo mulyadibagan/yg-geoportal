@@ -234,6 +234,65 @@
     return /^https:\/\//i.test(url) ? url : '';
   }
 
+  function parseReportObject(value) {
+    if (!value) return {};
+    if (typeof value === 'object') return value;
+    try {
+      var parsed = JSON.parse(value);
+      return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
+    } catch (error) {
+      return {};
+    }
+  }
+
+  function reportTargetContext(report) {
+    var target = parseReportObject(report.targetFeatureProperties);
+    var changes = parseReportObject(report.proposedChanges);
+    var id = String(
+      target.Object_ID || target.OBJECT_ID || target.objectId ||
+      target.Target_Object_ID_Current || changes.Target_Object_ID_Current ||
+      changes.Target_Object_ID || changes.targetObjectId || report.targetObjectId || ''
+    ).trim();
+    var name = String(
+      target.Nama_Objek || target.Name || target.name || changes.targetObjectName ||
+      report.locationName || ''
+    ).trim();
+    var phase = String(target.Fase || target.Phase || target.Ket || '').trim();
+    var area = Number(target.Luas_Ha || target.areaHa || 0);
+    return { id: id, name: name, phase: phase, area: area };
+  }
+
+  function reporterKey(report) {
+    return String(report.name || '').trim().toLocaleLowerCase('id-ID');
+  }
+
+  function populateReporterFilter() {
+    var select = document.getElementById('report-inbox-reporter');
+    var current = select.value;
+    var reporters = {};
+    STAFF_REPORT_DATA.forEach(function (report) {
+      var key = reporterKey(report);
+      if (!key) return;
+      if (!reporters[key]) reporters[key] = { key: key, name: String(report.name).trim(), reports: [], polygons: {} };
+      reporters[key].reports.push(report);
+      var target = reportTargetContext(report);
+      if (target.id) reporters[key].polygons[target.id] = true;
+    });
+    var rows = Object.keys(reporters).map(function (key) { return reporters[key]; }).sort(function (a, b) {
+      return b.reports.length - a.reports.length || a.name.localeCompare(b.name, 'id');
+    });
+    select.innerHTML = '<option value="all">Semua pelapor</option>' + rows.map(function (row) {
+      return '<option value="' + esc(row.key) + '">' + esc(row.name + ' · ' + row.reports.length + ' laporan') + '</option>';
+    }).join('');
+    select.value = rows.some(function (row) { return row.key === current; }) ? current : 'all';
+    document.getElementById('report-inbox-reporter-summary').innerHTML = rows.slice(0, 12).map(function (row) {
+      var polygonCount = Object.keys(row.polygons).length;
+      return '<button type="button" data-reporter-preview="' + esc(row.key) + '">' +
+        esc(row.name + ' · ' + row.reports.length + ' laporan' + (polygonCount ? ' · ' + polygonCount + ' polygon' : '')) +
+        '</button>';
+    }).join('');
+  }
+
   function dayunMonitoringSummary(report) {
     if (report.targetLayerId !== 'dayun_gawangan') return '';
     var info = {};
@@ -297,8 +356,10 @@
   function renderStaffReportInbox() {
     var list = document.getElementById('report-inbox-list');
     var filter = document.getElementById('report-inbox-filter').value;
+    var reporter = document.getElementById('report-inbox-reporter').value;
     var rows = STAFF_REPORT_DATA.filter(function (report) {
-      return filter === 'all' || report.status === filter;
+      return (filter === 'all' || report.status === filter) &&
+        (reporter === 'all' || reporterKey(report) === reporter);
     });
     var stats = STAFF_REPORT_STATS || {};
 
@@ -306,6 +367,17 @@
     document.getElementById('report-stat-pending').textContent = Number(stats.pending || 0).toLocaleString('id-ID');
     document.getElementById('report-stat-revision').textContent = Number(stats.revision || 0).toLocaleString('id-ID');
     document.getElementById('report-stat-published').textContent = Number(stats.published || 0).toLocaleString('id-ID');
+
+    var polygonIds = {};
+    rows.forEach(function (report) {
+      var target = reportTargetContext(report);
+      if (target.id) polygonIds[target.id] = true;
+    });
+    var reporterName = reporter === 'all' ? 'Semua pelapor' : ((rows[0] && rows[0].name) || document.getElementById('report-inbox-reporter').selectedOptions[0].text.split(' · ')[0]);
+    document.getElementById('report-inbox-selection-summary').textContent = reporterName + ' · ' + rows.length.toLocaleString('id-ID') + ' laporan · ' + Object.keys(polygonIds).length.toLocaleString('id-ID') + ' polygon unik';
+    Array.prototype.forEach.call(document.querySelectorAll('[data-reporter-preview]'), function (button) {
+      button.classList.toggle('is-active', reporter !== 'all' && button.dataset.reporterPreview === reporter);
+    });
 
     if (!rows.length) {
       list.innerHTML = '<div class="assignment-empty">Tidak ada laporan untuk status yang dipilih.</div>';
@@ -317,6 +389,9 @@
       var reporter = [report.name, report.organization].filter(Boolean).join(' · ');
       var photos = (report.photos || []).map(safeReportUrl).filter(Boolean);
       var documentUrl = safeReportUrl(report.documentUrl);
+      var target = reportTargetContext(report);
+      var targetFacts = [target.phase, target.area > 0 ? target.area.toLocaleString('id-ID', { maximumFractionDigits: 2 }) + ' ha' : ''].filter(Boolean).join(' · ');
+      var duplicates = Array.isArray(report.monitoringDuplicates) ? report.monitoringDuplicates : [];
       var evidenceLinks = photos.map(function (url, index) {
         return '<a href="' + esc(url) + '" target="_blank" rel="noopener noreferrer">Foto ' + (index + 1) + '</a>';
       });
@@ -330,6 +405,8 @@
         '<span><b>Pelapor</b>' + esc(reporter || '-') + '</span>' +
         '<span><b>Lokasi</b>' + esc(location || report.locationName || '-') + '</span>' +
         '<span><b>Diterima</b>' + esc(report.receivedAt || '-') + '</span></div>' +
+        (target.id ? '<div class="report-object-context"><strong>' + esc(target.name || report.locationName || 'Polygon monitoring') + (targetFacts ? ' · ' + esc(targetFacts) : '') + '</strong><code>' + esc(target.id) + '</code>' +
+          (duplicates.length ? '<div class="report-duplicate-warning">Potensi laporan berulang pada polygon dan tanggal yang sama: ' + esc(duplicates.map(function (item) { return item.reportId; }).join(', ')) + '</div>' : '') + '</div>' : '') +
         dayunMonitoringSummary(report) +
         (report.description ? '<p>' + esc(report.description) + '</p>' : '') +
         (report.adminNote ? '<p><b>Catatan admin:</b> ' + esc(report.adminNote) + '</p>' : '') +
@@ -349,6 +426,7 @@
     }
     STAFF_REPORT_DATA = (data && data.reports) || [];
     STAFF_REPORT_STATS = (data && data.stats) || {};
+    populateReporterFilter();
     feedback.textContent = STAFF_REPORT_DATA.length
       ? STAFF_REPORT_DATA.length.toLocaleString('id-ID') + ' laporan berhasil dimuat dari server.'
       : 'Belum ada laporan tim pada server.';
@@ -1180,6 +1258,15 @@
   function bind() {
     document.getElementById('refresh-report-inbox').addEventListener('click', refreshStaffReportInbox);
     document.getElementById('report-inbox-filter').addEventListener('change', renderStaffReportInbox);
+    document.getElementById('report-inbox-reporter').addEventListener('change', renderStaffReportInbox);
+    document.getElementById('report-inbox-reporter-summary').addEventListener('click', function (event) {
+      var button = event.target.closest('[data-reporter-preview]');
+      if (!button) return;
+      document.getElementById('report-inbox-reporter').value = button.dataset.reporterPreview;
+      document.getElementById('report-inbox-filter').value = 'all';
+      renderStaffReportInbox();
+      document.getElementById('report-inbox-list').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
     document.getElementById('refresh-ps-inbox').addEventListener('click', loadPsInbox);
     document.getElementById('ps-inbox-list').addEventListener('click', async function (event) {
       var button = event.target.closest('[data-ps-review]');

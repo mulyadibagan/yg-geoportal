@@ -385,10 +385,15 @@ body{margin:0;background:#f4f7f5;color:#1f352d;font-family:Inter,ui-sans-serif,s
 .report-inbox-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
 .report-inbox-summary>span{display:flex;min-width:0;min-height:82px;flex-direction:column;justify-content:center;padding:14px;border:1px solid #dce8e2;border-radius:12px;background:#f7faf8;color:#61746c;font-size:11px;font-weight:750}
 .report-inbox-summary b{display:block;margin-bottom:3px;color:#087653;font-size:24px;line-height:1}
-.report-inbox-toolbar{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin:16px 0}
+.report-inbox-toolbar{display:flex;align-items:flex-end;gap:14px;margin:16px 0}
 .report-inbox-toolbar label{color:#5d7168;font-size:11px;font-weight:800}
 .report-inbox-toolbar select{display:block;min-width:220px;margin-top:6px;padding:9px 34px 9px 10px;border:1px solid #cadbd3;border-radius:9px;background:#fff;color:#263f35;font:inherit}
-#report-inbox-feedback{color:#60756c;font-size:12px;text-align:right}
+#report-inbox-feedback{margin-left:auto;color:#60756c;font-size:12px;text-align:right}
+.report-inbox-reporter-summary{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}
+.report-inbox-reporter-summary button{padding:8px 10px;border:1px solid #cfe1d8;border-radius:999px;background:#f5faf7;color:#315b4c;font-size:11px;font-weight:800;cursor:pointer}
+.report-inbox-reporter-summary button:hover,.report-inbox-reporter-summary button.is-active{border-color:#16815d;background:#e0f3eb;color:#08724f}
+.report-inbox-selection-summary{margin:0 0 12px;padding:10px 12px;border-left:4px solid #16815d;border-radius:8px;background:#f2f8f5;color:#35594b;font-size:12px;font-weight:750}
+.report-inbox-selection-summary:empty{display:none}
 .report-inbox-list{display:grid;gap:11px}
 .report-inbox-record{min-width:0;padding:16px;border:1px solid #dce8e2;border-radius:13px;background:#fff}
 .report-inbox-record header{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
@@ -399,6 +404,10 @@ body{margin:0;background:#f4f7f5;color:#1f352d;font-family:Inter,ui-sans-serif,s
 .report-inbox-meta{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:13px}
 .report-inbox-meta span{min-width:0;color:#50675e;font-size:11px;line-height:1.45;overflow-wrap:anywhere}.report-inbox-meta b{display:block;margin-bottom:2px;color:#789087;font-size:9px;letter-spacing:.06em;text-transform:uppercase}
 .report-inbox-record p{margin:13px 0 0;color:#40594f;font-size:12px;line-height:1.55}
+.report-object-context{margin-top:13px;padding:11px 12px;border:1px solid #cfe2d9;border-radius:10px;background:#f4faf7}
+.report-object-context strong{display:block;color:#184d3a;font-size:12px;line-height:1.4}
+.report-object-context code{display:block;margin-top:4px;color:#526b61;font:750 10px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace;overflow-wrap:anywhere}
+.report-duplicate-warning{margin-top:9px;padding:9px 10px;border-radius:8px;background:#fff1d6;color:#855300;font-size:11px;font-weight:750}
 .report-inbox-evidence{display:flex;flex-wrap:wrap;gap:7px;margin-top:13px}.report-inbox-evidence a{padding:6px 9px;border-radius:8px;background:#edf7f3;color:#087653;font-size:11px;font-weight:800;text-decoration:none}
 @media(max-width:800px){.report-inbox-meta{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:620px){.report-inbox-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.report-inbox-toolbar,.report-inbox-record header{align-items:stretch;flex-direction:column}.report-inbox-toolbar select{width:100%;min-width:0}#report-inbox-feedback{text-align:left}.report-status{width:max-content}.report-inbox-meta{grid-template-columns:1fr}}
+@media(max-width:620px){.report-inbox-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.report-inbox-toolbar,.report-inbox-record header{align-items:stretch;flex-direction:column}.report-inbox-toolbar select{width:100%;min-width:0}#report-inbox-feedback{margin-left:0;text-align:left}.report-status{width:max-content}.report-inbox-meta{grid-template-columns:1fr}}

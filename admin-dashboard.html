@@ -7,7 +7,7 @@
   <link rel="icon" href="assets/logo-yayasan-gambut.png"/>
   <link rel="stylesheet" href="css/site-brand.css?v=20260720-program-dashboard1"/>
   <link rel="stylesheet" href="css/dashboard-v3.css?v=20260722-funding-logo1"/>
-  <link rel="stylesheet" href="css/admin-dashboard.css?v=20260831-report-inbox1"/>
+  <link rel="stylesheet" href="css/admin-dashboard.css?v=20260917-reporter-preview1"/>
   <link rel="stylesheet" href="css/language-switcher.css?v=20260721-all-pages1"/>
   <meta name="theme-color" content="#079cde">
 </head>
@@ -90,8 +90,13 @@
             <label>Status laporan
               <select id="report-inbox-filter"><option value="all">Semua status</option><option value="Menunggu Verifikasi">Menunggu Verifikasi</option><option value="Perlu Perbaikan">Perlu Perbaikan</option><option value="Disetujui">Disetujui</option><option value="Sudah Dipublikasikan">Sudah Dipublikasikan</option><option value="Ditolak">Ditolak</option></select>
             </label>
+            <label>Pelapor
+              <select id="report-inbox-reporter"><option value="all">Semua pelapor</option></select>
+            </label>
             <span id="report-inbox-feedback" role="status">Masuk sebagai staf untuk memuat laporan tim.</span>
           </div>
+          <div id="report-inbox-reporter-summary" class="report-inbox-reporter-summary" aria-label="Ringkasan laporan per pelapor"></div>
+          <div id="report-inbox-selection-summary" class="report-inbox-selection-summary" role="status"></div>
           <div id="report-inbox-list" class="report-inbox-list"><div class="assignment-empty">Belum ada data laporan yang dimuat.</div></div>
         </div>
       </div>
@@ -354,6 +359,6 @@
 
   <script src="js/config.js?v=20260727-all-layers1"></script>
   <script src="js/auth.js?v=20260915-logout3"></script>
-  <script src="js/admin-dashboard.js?v=20260917-dayun-followup1"></script>
+  <script src="js/admin-dashboard.js?v=20260917-reporter-preview1"></script>
 </body>
 </html>

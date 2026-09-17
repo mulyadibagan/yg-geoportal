@@ -121,6 +121,17 @@ test('admin dashboard exposes the Dayun queue context without exposing drafts pu
   assert.match(script, /Jendela pemeriksaan/);
 });
 
+test('admin report inbox can preview a reporter and exposes permanent polygon identity', () => {
+  const html = read('admin-dashboard.html');
+  const script = read('js/admin-dashboard.js');
+  assert.match(html, /id="report-inbox-reporter"/);
+  assert.match(html, /id="report-inbox-reporter-summary"/);
+  assert.match(script, /function reportTargetContext/);
+  assert.match(script, /polygon unik/);
+  assert.match(script, /data-reporter-preview/);
+  assert.match(script, /Potensi laporan berulang pada polygon dan tanggal yang sama/);
+});
+
 test('monitoring and calculator use the same pineapple fertilizer SOP programs', () => {
   const calculator = read('js/dayun-fertilizer-calculator.js');
   const monitoring = read('js/dayun-monitoring.js');
