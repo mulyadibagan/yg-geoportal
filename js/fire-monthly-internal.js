@@ -28,9 +28,10 @@
       if(result.rspo.groupLevel){const p=document.createElement('p');p.textContent='Batas perkebunan yang tersedia mencakup agregat grup anggota RSPO; hasil berlabel grup tidak dapat diartikan sebagai luas per perusahaan atau unit kebun. Cakupan ini belum mewakili seluruh perkebunan sawit Riau.';panel.append(p);}
       if(!result.rspo.groupLevel){const p=document.createElement('p');p.textContent='Rincian perkebunan dihitung per perusahaan dari batas asli GeoRSPO. Nama grup dan estate ditampilkan sebagai keterangan. Nama perusahaan mengikuti atribut sumber; singkatan belum diperluas tanpa verifikasi.';panel.append(p);}
       const selection=new Map();
-      for(const kind of ['pbph','rspo','ps']){
+      for(const kind of ['ps','pbph','rspo']){
         const category=result[kind],title=kind==='pbph'?'PBPH':kind==='ps'?'Perhutanan Sosial':(category.groupLevel?'Perkebunan anggota RSPO · grup / unit':'Perkebunan anggota RSPO · perusahaan');
         const section=document.createElement('section');
+        section.id='fm-internal-'+kind;
         section.innerHTML='<h3>'+title+'</h3><p><strong>'+ha(category.uniqueHa)+'</strong> luas irisan unik · '+category.rows.filter(r=>r.burnedHa>0).length+' area dengan irisan · '+category.boundaryCount+' batas dianalisis</p><div class="fm-table-wrap"><table class="fm-table"><thead><tr><th>Nama / batas referensi</th><th>Hotspot / hari</th><th>Estimasi terbakar</th><th>Luas poligon</th><th>Persentase</th><th>Kejadian / peta</th></tr></thead><tbody>'+category.rows.map((r,i)=>{
           const key=kind+'-'+i;
           const link=kind==='pbph'?'<a target="_blank" rel="noopener noreferrer" href="pbph-profile.html?id='+encodeURIComponent(r.id)+'">'+esc(r.name)+'</a>':kind==='ps'?'<a target="_blank" rel="noopener noreferrer" href="social-forestry-profile.html?key='+encodeURIComponent(r.id)+'">'+esc(r.name)+'</a>':esc(r.name);
@@ -46,7 +47,7 @@
         const oldRows=document.getElementById(kind==='pbph'?'fm-company-rows':kind==='ps'?'fm-ps-rows':'fm-rspo-rows');if(oldRows)oldRows.closest('article').hidden=true;
         const card=document.getElementById(kind==='pbph'?'fm-companies':kind==='ps'?'fm-ps-areas':'fm-rspo-areas');if(card)card.textContent=report.unavailable?'—':category.rows.filter(r=>r.hotspots>0).length;
       }
-      document.getElementById('fm-rspo-hotspots').textContent=report.unavailable?'Arsip hotspot belum tersedia':'Area dengan hotspot · batas tersedia';document.getElementById('fm-ps-hotspots').textContent=report.unavailable?'Arsip hotspot belum tersedia':'Wilayah dengan hotspot · batas privat';
+      document.getElementById('fm-rspo-hotspots').textContent=report.unavailable?'Arsip hotspot belum tersedia':'Area dengan hotspot · batas tersedia';document.getElementById('fm-ps-hotspots').textContent=report.unavailable?'Arsip hotspot belum tersedia':'Wilayah dengan hotspot · batas privat';const psJump=document.getElementById('fm-ps-jump');if(psJump)psJump.hidden=false;
       // A single selection boundary keeps the map readable and includes areas
       // with burned-area intersections even when there are no hotspot points.
       let focus;

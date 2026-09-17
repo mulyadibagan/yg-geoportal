@@ -55,11 +55,15 @@ test("public July and August reports omit RSPO intersection data", () => {
 test("monthly report exposes RSPO analysis only to a staff session", () => {
   const html = fs.readFileSync(path.join(ROOT, "fire-monthly-report.html"), "utf8");
   const controller = fs.readFileSync(path.join(ROOT, "js", "fire-monthly-report.js"), "utf8");
+  const internal = fs.readFileSync(path.join(ROOT, "js", "fire-monthly-internal.js"), "utf8");
   const access = fs.readFileSync(path.join(ROOT, "js", "staff-data-access.js"), "utf8");
 
   assert.match(html, /id="fm-rspo-kpi" hidden aria-hidden="true"/);
   assert.match(html, /id="fm-rspo-panel" hidden aria-hidden="true"/);
   assert.match(html, /id="fm-ps-kpi" hidden aria-hidden="true"/);
+  assert.match(html, /id="fm-ps-jump" href="#fm-internal-ps" hidden/);
+  assert.match(internal, /for\(const kind of \['ps','pbph','rspo'\]\)/);
+  assert.match(internal, /section\.id='fm-internal-'\+kind/);
   assert.match(controller, /staffSession \? fetch\('data\/rspo-company-boundaries\.geojson'/);
   assert.match(controller, /fetch\('data\/PERHUTANAN_SOSIAL_RIAU\.geojson'\)/);
   assert.match(controller, /renderMonthlyInternal\(map,month,d,geo,permitGeo,rspoGeo,psGeo,layerControl\)/);
