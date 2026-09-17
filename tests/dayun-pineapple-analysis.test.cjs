@@ -38,10 +38,11 @@ test('recommendations never turn age alone into an automatic ethrel instruction'
   assert.doesNotMatch(ageOnly.detail, /aplikasikan|wajib/i);
 });
 
-test('six-month projections separate harvest scenarios from ethrel inspections', () => {
-  const projection = moduleApi.buildProjection(analysis.rows, {asOf:new Date('2026-09-17T00:00:00Z'), horizonMonths:6});
-  assert.equal(projection.months.length, 6);
+test('twelve-month projections separate harvest scenarios from ethrel inspections', () => {
+  const projection = moduleApi.buildProjection(analysis.rows, {asOf:new Date('2026-09-17T00:00:00Z')});
+  assert.equal(projection.months.length, 12);
   assert.equal(projection.months[0].period, '2026-09-01');
+  assert.equal(projection.months[11].period, '2027-08-01');
   assert.equal(projection.assumptions.flowerCount, 2685);
   assert.equal(projection.assumptions.datedEthrel, 21756);
   assert.equal(projection.assumptions.undatedEthrel, 3525);
@@ -60,7 +61,7 @@ test('six-month projections separate harvest scenarios from ethrel inspections',
 });
 
 test('fertilizer projection uses SOP phases but remains explicitly indicative', () => {
-  const projection = moduleApi.buildProjection(analysis.rows, {asOf:new Date('2026-09-17T00:00:00Z'), horizonMonths:6});
+  const projection = moduleApi.buildProjection(analysis.rows, {asOf:new Date('2026-09-17T00:00:00Z')});
   assert.equal(projection.months[0].fertilizer.phases.verification, 16);
   assert.equal(projection.months[0].fertilizer.phases.phase3, 14);
   assert.equal(projection.months[1].fertilizer.phases.phase2, 1);
@@ -80,6 +81,8 @@ test('analysis page and map expose the Queen commodity entry point and field saf
   assert.match(page, /PROYEKSI PANEN/);
   assert.match(page, /PROYEKSI ETHREL/);
   assert.match(page, /PROYEKSI PEMUPUKAN/);
+  assert.match(page, /Proyeksi 12 bulan/);
+  assert.match(script, /horizonMonths:12/);
   assert.match(script, /Verifikasi riwayat pupuk/);
   assert.match(script, /Ini daftar pemeriksaan, bukan perintah aplikasi/);
   assert.match(script, /dayun-hpt-nanas\.html/);

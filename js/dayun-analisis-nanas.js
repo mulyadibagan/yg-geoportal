@@ -49,11 +49,11 @@
   }
 
   function renderProjection(rows) {
-    var projection=window.DayunPineappleAnalysis.buildProjection(rows,{horizonMonths:6}),months=projection.months,a=projection.assumptions;
+    var projection=window.DayunPineappleAnalysis.buildProjection(rows,{horizonMonths:12}),months=projection.months,a=projection.assumptions;
     var harvestTotals=months.reduce(function(result,item){result.low+=item.harvest.low;result.base+=item.harvest.base;result.high+=item.harvest.high;return result;},{low:0,base:0,high:0});
     var harvestMax=Math.max.apply(null,months.map(function(item){return item.harvest.high;}).concat([1]));
     confidence('pa-harvest-confidence',a.harvestConfidence);
-    $('pa-harvest-projection-summary').innerHTML='<span>Bunga/buah menjadi dasar: <b>'+integer(a.flowerCount)+' tanaman</b></span><span>Skenario 6 bulan: <b>'+integer(harvestTotals.low)+'–'+integer(harvestTotals.high)+' buah</b></span><span>Dasar: <b>'+integer(harvestTotals.base)+' buah</b></span><span>Data kegiatan terakhir: <b>'+date(a.lastActivityDate)+'</b></span>';
+    $('pa-harvest-projection-summary').innerHTML='<span>Bunga/buah menjadi dasar: <b>'+integer(a.flowerCount)+' tanaman</b></span><span>Skenario 12 bulan: <b>'+integer(harvestTotals.low)+'–'+integer(harvestTotals.high)+' buah</b></span><span>Dasar: <b>'+integer(harvestTotals.base)+' buah</b></span><span>Data kegiatan terakhir: <b>'+date(a.lastActivityDate)+'</b></span>';
     $('pa-harvest-projection').innerHTML=months.map(function(item){
       var highHeight=item.harvest.high?Math.max(4,Math.round(item.harvest.high/harvestMax*150)):2,baseHeight=item.harvest.base?Math.max(3,Math.round(item.harvest.base/harvestMax*150)):0,lowHeight=item.harvest.low?Math.max(2,Math.round(item.harvest.low/harvestMax*150)):0;
       return '<div class="dy-pa-projection-month"><strong>'+integer(item.harvest.low)+'–'+integer(item.harvest.high)+'</strong><div class="dy-pa-projection-bar'+(item.harvest.high?'':' is-empty')+'" style="height:'+highHeight+'px">'+(item.harvest.high?'<i style="height:'+baseHeight+'px"></i><b style="bottom:'+lowHeight+'px"></b>':'')+'</div><small>'+esc(month(item.period))+'<br>'+integer(item.harvest.base)+' dasar</small></div>';
