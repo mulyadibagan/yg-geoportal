@@ -20,6 +20,43 @@
     return number(crop[fallback]);
   }
 
+  function isRatoonCycle(value) {
+    return /^ratoon/i.test(String(value || '').trim());
+  }
+
+  function applyPublishedMonitoring(details, payload) {
+    var merged = details ? JSON.parse(JSON.stringify(details)) : {objects:[]};
+    var byId = {};
+    (merged.objects || []).forEach(function (object) { byId[object.objectId] = object; });
+    (payload && payload.features || []).forEach(function (feature) {
+      var properties = feature.properties || {}, info = {};
+      if (properties.targetLayerId !== 'dayun_gawangan' || !byId[properties.targetObjectId]) return;
+      try { info = typeof properties.proposedInformation === 'string' ? JSON.parse(properties.proposedInformation) : properties.proposedInformation || {}; } catch (_) { return; }
+      if (info.monitoringType !== 'Agroforestri Dayun' || String(info.crop || '').trim().toUpperCase() !== 'NANAS') return;
+      var crop = (byId[properties.targetObjectId].crops || []).find(function (item) { return String(item.crop || '').trim().toUpperCase() === 'NANAS'; });
+      if (!crop) return;
+      var detail = info.activityDetails || {}, period = info.eventDate || properties.activityDate || '';
+      if (info.activityType === 'Panen' && detail.unit === 'buah' && number(detail.harvestCount) > 0 && period) {
+        crop.pineappleHarvest = crop.pineappleHarvest || [];
+        var harvest = {period:period, count:number(detail.harvestCount), cycle:detail.harvestCycle || 'Panen utama'};
+        var duplicate = crop.pineappleHarvest.some(function (item) { return item.period === harvest.period && number(item.count) === harvest.count && String(item.cycle || 'Panen utama') === harvest.cycle; });
+        if (!duplicate) crop.pineappleHarvest.push(harvest);
+      }
+      if (info.activityType === 'Panen' && detail.ratoonStatus) {
+        crop.ratoonMonitoring = crop.ratoonMonitoring || [];
+        var record = {period:period, status:detail.ratoonStatus, motherStands:number(detail.ratoonMotherStands), productiveShoots:number(detail.ratoonShootCount), discardedShoots:number(detail.ratoonDiscardedCount), startDate:detail.ratoonStartDate || ''};
+        var recordDuplicate = crop.ratoonMonitoring.some(function (item) { return item.period === record.period && item.status === record.status && number(item.productiveShoots) === record.productiveShoots; });
+        if (!recordDuplicate) crop.ratoonMonitoring.push(record);
+      }
+      if (info.activityType === 'Ethrel' && number(detail.treatedPlantCount) > 0 && period) {
+        crop.ethrel = crop.ethrel || [];
+        var ethrelDuplicate = crop.ethrel.some(function (item) { return item.period === period && number(item.count) === number(detail.treatedPlantCount); });
+        if (!ethrelDuplicate) crop.ethrel.push({period:period, count:number(detail.treatedPlantCount)});
+      }
+    });
+    return merged;
+  }
+
   function parsePlantingPeriod(value) {
     var text = String(value || '').trim().toLowerCase();
     var match = text.match(/([a-z]+)\s+(\d{4})/);
@@ -71,13 +108,13 @@
   }
 
   function emptyBlock(code) {
-    return {code:code, rows:0, activeGawangan:0, plants:0, areaHa:0, fertilized:0, harvest:0, ethrel:0, flowers:0, latestActivityDate:null};
+    return {code:code, rows:0, activeGawangan:0, plants:0, areaHa:0, fertilized:0, harvest:0, plantCropHarvest:0, ratoonHarvest:0, remainingPlantCrop:0, ratoonShoots:0, ethrel:0, flowers:0, latestActivityDate:null};
   }
 
   function add(target, row) {
     target.rows += 1;
     if (row.plants > 0) target.activeGawangan += 1;
-    ['plants','areaHa','fertilized','harvest','ethrel','flowers'].forEach(function (key) { target[key] += row[key]; });
+    ['plants','areaHa','fertilized','harvest','plantCropHarvest','ratoonHarvest','remainingPlantCrop','ratoonShoots','ethrel','flowers'].forEach(function (key) { target[key] += row[key]; });
   }
 
   function build(details, options) {
@@ -102,6 +139,12 @@
           dates.push(item.period);
           activityDates.push(item.period);
         });
+        var harvestRows = (crop.pineappleHarvest || []).map(function (item) { return {period:item.period, count:number(item.count), cycle:item.cycle || 'Panen utama'}; });
+        var fallbackHarvest = historyTotal(crop, 'pineappleHarvest', 'pineappleHarvestTotal');
+        var plantCropHarvest = harvestRows.length ? harvestRows.filter(function (item) { return !isRatoonCycle(item.cycle); }).reduce(function (sum, item) { return sum + item.count; }, 0) : fallbackHarvest;
+        var ratoonHarvest = harvestRows.filter(function (item) { return isRatoonCycle(item.cycle); }).reduce(function (sum, item) { return sum + item.count; }, 0);
+        var ratoonRecords = (crop.ratoonMonitoring || []).slice().sort(function (a, b) { return String(a.period || a.startDate || '').localeCompare(String(b.period || b.startDate || '')); });
+        var latestRatoon = ratoonRecords[ratoonRecords.length - 1] || null;
         var row = {
           objectId: object.objectId,
           shortId: String(object.objectId || '').replace('DAYUN-GT-', ''),
@@ -112,14 +155,21 @@
           plants: number(crop.vegetationCount),
           areaHa: number(crop.operationalAreaHa),
           fertilized: number(crop.fertilizedCount),
-          harvest: historyTotal(crop, 'pineappleHarvest', 'pineappleHarvestTotal'),
+          harvest: plantCropHarvest + ratoonHarvest,
+          plantCropHarvest: plantCropHarvest,
+          ratoonHarvest: ratoonHarvest,
           ethrel: historyTotal(crop, 'ethrel', 'ethrelTotal'),
           flowers: number(crop.pineappleFlowerCount),
-          harvestHistory: (crop.pineappleHarvest || []).map(function (item) { return {period:item.period, count:number(item.count)}; }),
+          harvestHistory: harvestRows,
           ethrelHistory: (crop.ethrel || []).map(function (item) { return {period:item.period, count:number(item.count)}; }),
+          ratoonVerified: Boolean(latestRatoon && latestRatoon.status === 'Dipertahankan untuk ratoon'),
+          ratoonMotherStands: latestRatoon ? number(latestRatoon.motherStands) : 0,
+          ratoonShoots: latestRatoon && latestRatoon.status === 'Dipertahankan untuk ratoon' ? Math.max(0, number(latestRatoon.productiveShoots) - ratoonHarvest) : 0,
+          ratoonStartDate: latestRatoon && latestRatoon.startDate || null,
           latestActivityDate: latestDate(dates)
         };
-        row.estimatedNotHarvested = Math.max(0, row.plants - row.harvest);
+        row.remainingPlantCrop = Math.max(0, row.plants - row.plantCropHarvest);
+        row.estimatedNotHarvested = row.remainingPlantCrop;
         row.recommendation = recommendation(row);
         rows.push(row);
         if (blocks[row.block]) {
@@ -136,7 +186,7 @@
       result[row.variety] = (result[row.variety] || 0) + 1;
       return result;
     }, {});
-    all.estimatedNotHarvested = Math.max(0, all.plants - all.harvest);
+    all.estimatedNotHarvested = all.remainingPlantCrop;
     all.missingPlantingPeriod = rows.filter(function (row) { return !row.plantingPeriod; }).length;
     all.fertilizerDetailAvailable = false;
     all.recommendationCounts = rows.reduce(function (result, row) {
@@ -153,7 +203,7 @@
     var months = Array.from({length:horizon}, function (_, index) {
       return {
         period:monthKey(addMonths(start, index)),
-        harvest:{low:0, base:0, high:0},
+        harvest:{low:0, base:0, high:0, confirmed:{low:0,base:0,high:0}, mainCropPotential:{low:0,base:0,high:0}, ratoon:{low:0,base:0,high:0}},
         ethrel:{gawangan:0, plants:0, objectIds:[]},
         fertilizer:{gawangan:0, objectIds:[], phases:{verification:0, phase2:0, phase3:0}, materials:{urea:{lowKg:0,highKg:0},npk:{lowKg:0,highKg:0}}}
       };
@@ -161,11 +211,22 @@
     var byPeriod = {};
     months.forEach(function (item) { byPeriod[item.period] = item; });
     var totalEthrel = rows.reduce(function (sum, row) { return sum + row.ethrel; }, 0);
-    var totalHarvest = rows.reduce(function (sum, row) { return sum + row.harvest; }, 0);
+    var totalHarvest = rows.reduce(function (sum, row) { return sum + row.plantCropHarvest; }, 0);
     var observedRate = totalEthrel > 0 ? Math.min(1, totalHarvest / totalEthrel) : null;
     var baseRate = observedRate == null ? 0.6 : observedRate;
     var lowRate = Math.max(0, baseRate * 0.8), highRate = Math.min(1, baseRate * 1.2);
-    var datedEthrel = 0, undatedEthrel = 0, flowerRows = 0, flowerCount = 0;
+    var datedEthrel = 0, undatedEthrel = 0, flowerRows = 0, flowerCount = 0, remainingPlantCrop = 0, inducedPending = 0, vegetativePending = 0, verifiedRatoonShoots = 0, scheduledRatoonShoots = 0, ratoonRows = 0;
+
+    function addHarvest(component, count, firstOffset) {
+      if (count <= 0) return;
+      [0.25,0.5,0.25].forEach(function (weight, index) {
+        var target = byPeriod[monthKey(addMonths(start, firstOffset + index))];
+        if (!target) return;
+        target.harvest[component].low += count * lowRate * weight;
+        target.harvest[component].base += count * baseRate * weight;
+        target.harvest[component].high += count * highRate * weight;
+      });
+    }
 
     function addFertilizer(month, row, phase) {
       if (!month || month.fertilizer.objectIds.indexOf(row.objectId) >= 0 && phase === 'verification') return;
@@ -191,7 +252,26 @@
       var planted = parsePlantingPeriod(row.plantingPeriod);
       var eligible = planted ? addMonths(planted, 12) : null;
       var inspectionMonth = eligible && eligible > start ? eligible : start;
-      var remainingEthrel = Math.max(0, row.plants - row.ethrel);
+      var remaining = Math.max(0, row.remainingPlantCrop);
+      var confirmedFlowers = Math.min(remaining, Math.max(0, row.flowers));
+      var induced = Math.min(Math.max(0, remaining - confirmedFlowers), Math.max(0, row.ethrel - row.plantCropHarvest - confirmedFlowers));
+      var vegetative = Math.max(0, remaining - confirmedFlowers - induced);
+      remainingPlantCrop += remaining;
+      inducedPending += induced;
+      vegetativePending += vegetative;
+      if (row.ratoonVerified) {
+        ratoonRows += 1;
+        verifiedRatoonShoots += row.ratoonShoots;
+        if (row.ratoonStartDate) {
+          var ratoonReady = addMonths(monthStart(row.ratoonStartDate), 12);
+          var ratoonOffset = monthDistance(start, ratoonReady);
+          if (ratoonOffset >= 0 && ratoonOffset < horizon) {
+            scheduledRatoonShoots += row.ratoonShoots;
+            addHarvest('ratoon', row.ratoonShoots, ratoonOffset);
+          }
+        }
+      }
+      var remainingEthrel = Math.max(0, vegetative);
       if (remainingEthrel > 0 && row.flowers <= 0 && byPeriod[monthKey(inspectionMonth)]) {
         var ethrelMonth = byPeriod[monthKey(inspectionMonth)];
         ethrelMonth.ethrel.gawangan += 1;
@@ -200,18 +280,15 @@
         if (eligible && eligible > start) addFertilizer(byPeriod[monthKey(addMonths(eligible, -1))], row, 'phase2');
         else addFertilizer(byPeriod[monthKey(start)], row, 'verification');
       }
-      if (row.flowers > 0) {
+      if (confirmedFlowers > 0) {
         flowerRows += 1;
-        flowerCount += row.flowers;
+        flowerCount += confirmedFlowers;
         addFertilizer(byPeriod[monthKey(start)], row, 'phase3');
-        [0.25,0.5,0.25].forEach(function (weight, index) {
-          var target = byPeriod[monthKey(addMonths(start, index + 1))];
-          if (!target) return;
-          target.harvest.low += row.flowers * lowRate * weight;
-          target.harvest.base += row.flowers * baseRate * weight;
-          target.harvest.high += row.flowers * highRate * weight;
-        });
+        addHarvest('confirmed', confirmedFlowers, 1);
       }
+      addHarvest('mainCropPotential', induced, 4);
+      var eligibilityOffset = eligible && eligible > start ? monthDistance(start, eligible) : 0;
+      addHarvest('mainCropPotential', vegetative, eligibilityOffset + 6);
       (row.ethrelHistory || []).forEach(function (item) {
         if (/^\d{4}-\d{2}-\d{2}$/.test(String(item.period || ''))) datedEthrel += item.count;
         else undatedEthrel += item.count;
@@ -219,7 +296,10 @@
     });
 
     months.forEach(function (item) {
-      ['low','base','high'].forEach(function (key) { item.harvest[key] = Math.round(item.harvest[key]); });
+      ['confirmed','mainCropPotential','ratoon'].forEach(function (component) {
+        ['low','base','high'].forEach(function (key) { item.harvest[component][key] = Math.round(item.harvest[component][key]); });
+      });
+      ['low','base','high'].forEach(function (key) { item.harvest[key] = item.harvest.confirmed[key] + item.harvest.mainCropPotential[key] + item.harvest.ratoon[key]; });
       item.ethrel.plants = Math.round(item.ethrel.plants);
       ['urea','npk'].forEach(function (material) {
         item.fertilizer.materials[material].lowKg = Math.round(item.fertilizer.materials[material].lowKg * 100) / 100;
@@ -239,6 +319,12 @@
         highRate:highRate,
         flowerRows:flowerRows,
         flowerCount:Math.round(flowerCount),
+        remainingPlantCrop:Math.round(remainingPlantCrop),
+        inducedPending:Math.round(inducedPending),
+        vegetativePending:Math.round(vegetativePending),
+        verifiedRatoonShoots:Math.round(verifiedRatoonShoots),
+        scheduledRatoonShoots:Math.round(scheduledRatoonShoots),
+        ratoonRows:ratoonRows,
         datedEthrel:Math.round(datedEthrel),
         undatedEthrel:Math.round(undatedEthrel),
         lastActivityDate:lastActivity,
@@ -250,5 +336,5 @@
     };
   }
 
-  return {build:build, buildProjection:buildProjection, ageMonths:ageMonths, recommendation:recommendation, BLOCKS:BLOCKS.slice()};
+  return {build:build, buildProjection:buildProjection, applyPublishedMonitoring:applyPublishedMonitoring, ageMonths:ageMonths, recommendation:recommendation, BLOCKS:BLOCKS.slice()};
 });
