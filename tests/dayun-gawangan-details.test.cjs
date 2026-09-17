@@ -72,7 +72,10 @@ test('each planting polygon popup shows block and gawangan areas with a profile 
   assert.match(profile, /id="dg-map"/);
   assert.match(profileScript, /data\/dayun-gawangan-details\.json/);
   assert.match(profileScript, /fetchEthrelWeather/);
-  assert.match(profileScript, /Bulan November–Desember bukan larangan otomatis/);
+  assert.doesNotMatch(profileScript, /November|Desember/);
+  assert.match(profileScript, /Ethrel terakhir tercatat/);
+  assert.match(profileScript, /Riwayat tanam menunjukkan/);
+  assert.match(profileScript, /Prakiraan cuaca aplikasi/);
   assert.match(profileScript, /Selisih administrasi, bukan otomatis kandidat aplikasi/);
   assert.doesNotMatch(profile + profileScript, /DATA GAWANG|Sumber:/i);
 });

@@ -13,6 +13,7 @@ test("SOP jump navigation scrolls with the page and cannot cover content", () =>
   assert.match(css, /\.dy-sop-jump\{position:relative;/);
   assert.doesNotMatch(css, /\.dy-sop-jump\{[^}]*position:sticky/);
   assert.match(html, /Budidaya nenas Queen/);
-  assert.match(html, /November–Desember bukan periode larangan otomatis/);
+  assert.doesNotMatch(html, /November|Desember/);
+  assert.match(html, /riwayat tanam, riwayat Ethrel kelompok tanaman/);
   assert.match(html, /bearing age<\/em> sekitar 12 bulan/);
 });
