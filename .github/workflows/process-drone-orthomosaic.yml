@@ -1,5 +1,6 @@
 name: Process drone orthomosaic
 
+# Queue processor: push to this file can be used to start a pending job immediately.
 on:
   workflow_dispatch:
   schedule:
