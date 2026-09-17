@@ -13,7 +13,7 @@
     if(!burned){status.textContent='Arsip estimasi belum tersedia. Luas tidak dapat dihitung; bukan berarti nol kebakaran.';return Promise.resolve();}
     let worker;
     return new Promise((resolve,reject)=>{
-      worker=new Worker('js/fire-internal-worker.js?v=20260917-companies3');
+      worker=new Worker('js/fire-internal-worker.js?v=20260917-ps2');
       worker.onmessage=e=>e.data.ok?resolve(e.data.result):reject(Error(e.data.error));
       worker.onerror=()=>reject(Error('Perhitungan belum dapat dijalankan. Silakan muat ulang laporan.'));
       worker.postMessage({burned,pbph,rspo,ps,report:{hotspots:report.hotspots||[],unavailable:report.unavailable}});
