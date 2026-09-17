@@ -26,7 +26,7 @@ test("PBPH staff surfaces load the shared authentication module", () => {
     "pbph-profile.html"
   ]) {
     const html = fs.readFileSync(path.join(ROOT, file), "utf8");
-    assert.match(html, /src="js\/auth\.js\?v=20260915-logout3"/, file);
+    assert.match(html, /src="js\/auth\.js\?v=20260917-session4"/, file);
   }
 });
 
