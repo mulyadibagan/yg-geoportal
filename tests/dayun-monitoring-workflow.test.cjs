@@ -50,9 +50,12 @@ test('commodity and activity fields follow the selected gawangan and work type',
   assert.match(html, /id="dm-panel-weeding"/);
   assert.match(html, /id="dm-panel-hpt"/);
   assert.match(html, /id="dm-panel-ethrel"/);
+  assert.match(html, /id="dm-ethrel-variety" value="Queen"/);
+  assert.match(script, /pineappleVariety: 'Queen'/);
+  assert.match(script, /weatherSuitability/);
   assert.match(html, /id="dm-panel-harvest"/);
   assert.match(html, /id="dm-panel-observation"/);
-  assert.match(script, /schemaVersion: 'dayun-monitoring-v4'/);
+  assert.match(script, /schemaVersion: 'dayun-monitoring-v5'/);
   assert.match(script, /activityDetails: details/);
   assert.match(script, /document\.querySelectorAll\('\.dm-fert-actual'\)/);
   assert.match(script, /Pilih komoditas dan jenis kegiatan sebelum mengirim laporan/);

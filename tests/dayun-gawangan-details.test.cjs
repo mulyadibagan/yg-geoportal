@@ -26,7 +26,7 @@ test('every published crop belongs to one gawangan and has a crop name', () => {
   for (const item of details.objects) {
     assert.match(item.objectId, /^DAYUN-GT-[A-F]-\d{2}$/);
     assert.ok(item.crops.length > 0, item.objectId);
-    for (const crop of item.crops) assert.ok(crop.crop, `${item.objectId} has an unnamed crop`);
+    for (const crop of item.crops) { assert.ok(crop.crop, `${item.objectId} has an unnamed crop`); if (crop.crop === 'NANAS') assert.equal(crop.variety, 'Queen', `${item.objectId} pineapple variety`); }
   }
 });
 
@@ -71,5 +71,8 @@ test('each planting polygon popup shows block and gawangan areas with a profile 
   assert.match(script, /dy-gawangan-picker/);
   assert.match(profile, /id="dg-map"/);
   assert.match(profileScript, /data\/dayun-gawangan-details\.json/);
+  assert.match(profileScript, /fetchEthrelWeather/);
+  assert.match(profileScript, /Bulan November–Desember bukan larangan otomatis/);
+  assert.match(profileScript, /Selisih administrasi, bukan otomatis kandidat aplikasi/);
   assert.doesNotMatch(profile + profileScript, /DATA GAWANG|Sumber:/i);
 });
