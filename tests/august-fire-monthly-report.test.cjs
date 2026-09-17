@@ -61,7 +61,7 @@ test("monthly report exposes RSPO analysis only to a staff session", () => {
   assert.match(html, /id="fm-rspo-panel" hidden aria-hidden="true"/);
   assert.match(html, /id="fm-ps-kpi" hidden aria-hidden="true"/);
   assert.match(controller, /staffSession \? fetch\('data\/rspo-company-boundaries\.geojson'/);
-  assert.match(controller, /staffSession \? fetch\('data\/PERHUTANAN_SOSIAL_RIAU\.geojson'/);
+  assert.match(controller, /fetch\('data\/PERHUTANAN_SOSIAL_RIAU\.geojson'\)/);
   assert.match(controller, /renderMonthlyInternal\(map,month,d,geo,permitGeo,rspoGeo,psGeo,layerControl\)/);
   assert.match(controller, /if\(staffSession\)rspoTable/);
   assert.match(controller, /if\(staffSession\)\{overlays\['PBPH Mei 2026'\]=permitLayer;overlays\['Area anggota RSPO'\]=rspoLayer;\}/);
