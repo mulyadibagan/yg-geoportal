@@ -3392,7 +3392,6 @@ L.control.scale({
 
     requestAnimationFrame(() => map.invalidateSize(true));
     setTimeout(() => map.invalidateSize(true), 400);
-    prepareInternalReferenceLayers();
   }
 
   function loadByJsonp() {
