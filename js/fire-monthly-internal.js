@@ -26,9 +26,10 @@
       status.textContent='Sementara · '+month+' · luas unik gabungan '+ha(result.combinedHa);
       const note=document.createElement('p');note.textContent='Luas dihitung dari irisan poligon estimasi dengan batas referensi yang tersedia, menggunakan UTM zona 47N. Poligon yang bertumpang tindih digabung sebelum luas dihitung. Luas mengikuti bulan deteksi pertama kejadian; hotspot mengikuti tanggal deteksi bulan laporan. Arsip masih parsial: tidak ada irisan belum berarti tidak ada kebakaran. Persentase menggunakan luas poligon referensi, bukan luas izin dalam SK.';panel.append(note);
       if(result.rspo.groupLevel){const p=document.createElement('p');p.textContent='Batas perkebunan yang tersedia mencakup agregat grup anggota RSPO; hasil berlabel grup tidak dapat diartikan sebagai luas per perusahaan atau unit kebun. Cakupan ini belum mewakili seluruh perkebunan sawit Riau.';panel.append(p);}
+      if(!result.rspo.groupLevel){const p=document.createElement('p');p.textContent='Rincian perkebunan dihitung per perusahaan dari batas asli GeoRSPO. Nama grup dan estate ditampilkan sebagai keterangan. Nama perusahaan mengikuti atribut sumber; singkatan belum diperluas tanpa verifikasi.';panel.append(p);}
       const selection=new Map();
       for(const kind of ['pbph','rspo']){
-        const category=result[kind],title=kind==='pbph'?'PBPH':(category.groupLevel?'Perkebunan anggota RSPO · grup / unit':'Perkebunan anggota RSPO');
+        const category=result[kind],title=kind==='pbph'?'PBPH':(category.groupLevel?'Perkebunan anggota RSPO · grup / unit':'Perkebunan anggota RSPO · perusahaan');
         const section=document.createElement('section');
         section.innerHTML='<h3>'+title+'</h3><p><strong>'+ha(category.uniqueHa)+'</strong> luas irisan unik · '+category.rows.filter(r=>r.burnedHa>0).length+' area dengan irisan · '+category.boundaryCount+' batas dianalisis</p><div class="fm-table-wrap"><table class="fm-table"><thead><tr><th>Nama / batas referensi</th><th>Hotspot / hari</th><th>Estimasi terbakar</th><th>Luas poligon</th><th>Persentase</th><th>Kejadian / peta</th></tr></thead><tbody>'+category.rows.map((r,i)=>{
           const key=kind+'-'+i;
