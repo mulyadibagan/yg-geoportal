@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Drone Survey & Mapping | YG GeoPortal</title>
-  <meta name="description" content="Perencanaan misi drone, pemeriksaan kualitas foto, pemrosesan orthomosaic, dan tampilan peta ringan untuk YG GeoPortal.">
+  <meta name="description" content="Perencanaan misi drone, pemeriksaan kualitas foto, pemrosesan orthomosaic, dan tampilan hasil pemetaan di YG GeoPortal.">
   <link rel="icon" href="assets/logo-yayasan-gambut.png">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
   <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css">
@@ -19,7 +19,7 @@
   <main class="drone-shell">
     <section class="hero">
       <div>
-        <span class="eyebrow">TOOLS · DRONE SURVEY & MAPPING</span>
+        <span class="eyebrow">DRONE SURVEY & MAPPING</span>
         <h1>Misi drone sampai orthomosaic dalam satu alur.</h1>
         <p>Gunakan untuk agroforestri, mangrove, abrasi, restorasi, kebakaran, dan kebutuhan pemetaan lainnya.</p>
       </div>
@@ -29,8 +29,8 @@
     <section class="tabs" aria-label="Navigasi modul drone">
       <button class="tab active" data-tab="process">Orthomosaic</button>
       <button class="tab" data-tab="mission">Rencana Misi</button>
-      <button class="tab" data-tab="qc">QC Foto</button>
-      <button class="tab" data-tab="archive">Arsip</button>
+      <button class="tab" data-tab="qc">Pemeriksaan Foto</button>
+      <button class="tab" data-tab="archive">Riwayat</button>
     </section>
 
     <section class="panel active" id="panel-process">
@@ -48,20 +48,20 @@
             <input id="processPhotoInput" type="file" accept="image/jpeg" multiple disabled>
             <div id="selectedFilesText" class="microcopy">Belum ada foto dipilih.</div>
           </div>
-          <p class="microcopy">Batas saat ini: maksimum 800 foto, maksimum 40 MB per foto, total maksimum 8 GB per proses.</p>
+          <p class="microcopy">Maksimum 800 foto, 40 MB per foto, dan total 8 GB untuk satu pemrosesan.</p>
           <div class="actions"><button id="startOrthomosaic" class="primary">Proses Orthomosaic</button></div>
           <div id="uploadProgress" class="progress-wrap" hidden><div class="progress"><span id="uploadProgressBar"></span></div><small id="uploadProgressText">Menyiapkan…</small></div>
         </article>
 
         <article class="card">
-          <div class="card-head"><div><h2>2. Status pemrosesan</h2><p>Foto non-nadir otomatis dikeluarkan dari proses tanpa menghapus file mentah.</p></div><button id="refreshJob" disabled>Muat ulang</button></div>
+          <div class="card-head"><div><h2>2. Status pemrosesan</h2><p>Foto yang tidak menghadap ke bawah dapat dikeluarkan otomatis dari pemrosesan tanpa menghapus file aslinya.</p></div><button id="refreshJob" disabled>Muat ulang</button></div>
           <div id="jobState" class="job-state empty">Belum ada proses aktif.</div>
           <div class="qc-summary" id="serverQcSummary" hidden></div>
           <div id="jobActions" class="actions" hidden><button id="showResult" class="primary">Tampilkan di peta</button></div>
         </article>
       </div>
       <article class="card result-map-card">
-        <div class="card-head"><div><h2>3. Hasil orthomosaic</h2><p>Yang dimuat ke browser adalah COG teroptimasi. Peta membaca hanya bagian raster yang sedang terlihat.</p></div><label class="opacity">Opacity <input id="resultOpacity" type="range" min="0" max="1" step="0.05" value="0.85"></label></div>
+        <div class="card-head"><div><h2>3. Hasil orthomosaic</h2><p>Peta menampilkan hasil sesuai area dan tingkat pembesaran yang sedang dilihat agar tetap ringan.</p></div><label class="opacity">Transparansi <input id="resultOpacity" type="range" min="0" max="1" step="0.05" value="0.85"></label></div>
         <div id="resultMap" class="map map-large"></div>
         <div class="map-footnote" id="resultInfo">Orthomosaic akan tampil di sini setelah proses selesai.</div>
       </article>
@@ -70,22 +70,22 @@
     <section class="panel" id="panel-mission">
       <div class="grid two">
         <article class="card">
-          <h2>Parameter misi</h2>
+          <h2>Pengaturan misi</h2>
           <div class="form-grid">
             <label>Jenis survei<select id="surveyType"><option>Sensus tanaman</option><option>Orthomosaic umum</option><option>Monitoring mangrove</option><option>Monitoring abrasi</option><option>Verifikasi kebakaran</option><option>Survei umum</option></select></label>
             <label>Drone<select id="droneModel"><option>DJI Air 3S</option><option>Drone lain</option></select></label>
-            <label>Ketinggian (m AGL)<input id="altitude" type="number" min="15" max="120" value="35"></label>
+            <label>Ketinggian terbang (m)<input id="altitude" type="number" min="15" max="120" value="35"></label>
             <label>Kecepatan (m/s)<input id="speed" type="number" min="1" max="15" step="0.5" value="4"></label>
-            <label>Overlap depan (%)<input id="frontOverlap" type="number" min="50" max="95" value="80"></label>
-            <label>Overlap samping (%)<input id="sideOverlap" type="number" min="50" max="95" value="80"></label>
-            <label>Gimbal pitch<input id="gimbal" type="number" min="-90" max="0" value="-90"></label>
-            <label>ID / nama area<input id="areaName" type="text" placeholder="Contoh: Dayun - Blok A"></label>
+            <label>Tumpang tindih depan (%)<input id="frontOverlap" type="number" min="50" max="95" value="80"></label>
+            <label>Tumpang tindih samping (%)<input id="sideOverlap" type="number" min="50" max="95" value="80"></label>
+            <label>Sudut kamera (°)<input id="gimbal" type="number" min="-90" max="0" value="-90"></label>
+            <label>Nama area<input id="areaName" type="text" placeholder="Contoh: Dayun - Blok A"></label>
           </div>
-          <p class="hint">Preset awal Air 3S untuk sensus tanaman: 35 m, overlap 80/80, gimbal -90°.</p>
-          <div class="actions"><button id="generateMission" class="primary">Generate Mission</button><button id="clearMission">Reset</button></div>
+          <p class="hint">Pengaturan awal DJI Air 3S untuk sensus tanaman: ketinggian 35 m, tumpang tindih 80/80, kamera menghadap ke bawah.</p>
+          <div class="actions"><button id="generateMission" class="primary">Buat Jalur Misi</button><button id="clearMission">Bersihkan</button></div>
         </article>
         <article class="card map-card">
-          <div class="card-head"><div><h2>Preview area & jalur</h2><p>Gambar polygon area survei pada peta. Grid otomatis akan dibuat di dalam area.</p></div><span class="status neutral" id="missionStatus">Belum dibuat</span></div>
+          <div class="card-head"><div><h2>Pratinjau area & jalur</h2><p>Gambar area survei pada peta. Jalur penerbangan akan dibuat otomatis di dalam area.</p></div><span class="status neutral" id="missionStatus">Belum dibuat</span></div>
           <div id="missionMap" class="map"></div>
         </article>
       </div>
@@ -94,20 +94,20 @@
     <section class="panel" id="panel-qc">
       <div class="grid two">
         <article class="card">
-          <h2>QC cepat sebelum upload</h2>
-          <p>Pemeriksaan dilakukan di browser. Foto tidak dikirim ke server pada tahap ini.</p>
-          <div class="dropzone" id="photoDropzone"><strong>Pilih foto untuk pemeriksaan lokal</strong><span>JPG/JPEG · metadata DJI dibaca langsung dari file.</span><input id="photoInput" type="file" accept="image/jpeg" multiple></div>
+          <h2>Pemeriksaan foto</h2>
+          <p>Periksa orientasi foto sebelum pemrosesan orthomosaic.</p>
+          <div class="dropzone" id="photoDropzone"><strong>Pilih foto untuk diperiksa</strong><span>JPG/JPEG · informasi kamera dibaca langsung dari file.</span><input id="photoInput" type="file" accept="image/jpeg" multiple></div>
           <div class="qc-summary" id="qcSummary" hidden></div>
         </article>
         <article class="card">
-          <div class="card-head"><div><h2>Hasil QC</h2><p>Valid · Warning · Excluded</p></div></div>
+          <div class="card-head"><div><h2>Hasil pemeriksaan</h2><p>Siap · Perlu diperiksa · Tidak digunakan</p></div></div>
           <div class="table-wrap"><table><thead><tr><th>Foto</th><th>Ukuran</th><th>Status</th><th>Catatan</th></tr></thead><tbody id="qcRows"><tr><td colspan="4" class="empty">Belum ada foto diperiksa.</td></tr></tbody></table></div>
         </article>
       </div>
     </section>
 
     <section class="panel" id="panel-archive">
-      <article class="card"><div class="card-head"><div><h2>Arsip pemrosesan pada perangkat ini</h2><p>Riwayat job yang pernah dibuat dari browser ini.</p></div><button id="refreshArchive">Muat ulang</button></div><div id="missionArchive" class="ortho-list empty">Belum ada arsip.</div></article>
+      <article class="card"><div class="card-head"><div><h2>Riwayat pemrosesan</h2><p>Menampilkan pemrosesan yang tersimpan pada perangkat ini.</p></div><button id="refreshArchive">Muat ulang</button></div><div id="missionArchive" class="ortho-list empty">Belum ada riwayat.</div></article>
     </section>
   </main>
 
@@ -116,5 +116,6 @@
   <script src="https://unpkg.com/georaster@1.6.0/dist/georaster.browser.bundle.min.js"></script>
   <script src="https://unpkg.com/georaster-layer-for-leaflet@3.10.0/dist/georaster-layer-for-leaflet.min.js"></script>
   <script src="js/drone-survey.js?v=20260918-3"></script>
+  <script src="js/drone-survey-public-copy.js?v=20260918-1"></script>
 </body>
 </html>
