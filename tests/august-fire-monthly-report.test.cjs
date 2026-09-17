@@ -35,36 +35,34 @@ test("monthly-report menu lists August as the latest report", () => {
   assert.ok(index.reports.some((report) => report.month === "2026-07"));
 });
 
-test("July and August final reports include RSPO intersection results", () => {
-  const july = JSON.parse(
-    fs.readFileSync(path.join(ROOT, "data", "fire-monthly", "2026-07.json"), "utf8")
-  );
-  const august = JSON.parse(
-    fs.readFileSync(path.join(ROOT, "data", "fire-monthly", "2026-08.json"), "utf8")
-  );
+test("public July and August reports omit RSPO intersection data", () => {
+  for (const month of ["2026-07", "2026-08"]) {
+    const raw = fs.readFileSync(
+      path.join(ROOT, "data", "fire-monthly", `${month}.json`),
+      "utf8"
+    );
+    const report = JSON.parse(raw);
 
-  assert.equal(july.schemaVersion, 2);
-  assert.equal(july.summary.rspoAreas, 0);
-  assert.equal(july.summary.rspoHotspots, 0);
-  assert.ok(july.hotspots.every((hotspot) => Array.isArray(hotspot.rspoAreas)));
-
-  assert.equal(august.schemaVersion, 2);
-  assert.equal(august.summary.rspoAreas, 1);
-  assert.equal(august.summary.rspoHotspots, 11);
-  assert.equal(august.rspoAreas[0].name, "PT Gandaerah Hendana");
-  assert.equal(august.rspoAreas[0].hotspots, 11);
-  assert.ok(august.hotspots.every((hotspot) => Array.isArray(hotspot.rspoAreas)));
+    assert.equal(report.schemaVersion, 2);
+    assert.equal(Object.hasOwn(report, "rspoAreas"), false);
+    assert.equal(Object.hasOwn(report.summary, "rspoAreas"), false);
+    assert.equal(Object.hasOwn(report.summary, "rspoHotspots"), false);
+    assert.ok(report.hotspots.every((hotspot) => !Object.hasOwn(hotspot, "rspoAreas")));
+    assert.doesNotMatch(raw, /rspo|georspo/i);
+  }
 });
 
-test("public monthly report renders RSPO metrics, table, and map layer", () => {
+test("monthly report exposes RSPO analysis only to a staff session", () => {
   const html = fs.readFileSync(path.join(ROOT, "fire-monthly-report.html"), "utf8");
   const controller = fs.readFileSync(path.join(ROOT, "js", "fire-monthly-report.js"), "utf8");
+  const access = fs.readFileSync(path.join(ROOT, "js", "staff-data-access.js"), "utf8");
 
-  assert.match(html, /id="fm-rspo-areas"/);
-  assert.match(html, /id="fm-rspo-rows"/);
-  assert.match(controller, /PERUSAHAAN_SAWIT_RIAU_REFERENSI\.geojson/);
-  assert.match(controller, /overlays\['Area anggota RSPO'\]=rspoLayer/);
-  assert.match(controller, /if\(staffSession\)overlays\['PBPH Mei 2026'\]=permitLayer/);
+  assert.match(html, /id="fm-rspo-kpi" hidden aria-hidden="true"/);
+  assert.match(html, /id="fm-rspo-panel" hidden aria-hidden="true"/);
+  assert.match(controller, /staffSession \? fetch\('data\/PERUSAHAAN_SAWIT_RIAU_REFERENSI\.geojson'/);
+  assert.match(controller, /if\(staffSession\)rspoTable/);
+  assert.match(controller, /if\(staffSession\)\{overlays\['PBPH Mei 2026'\]=permitLayer;overlays\['Area anggota RSPO'\]=rspoLayer;\}/);
+  assert.match(access, /'data\/PERUSAHAAN_SAWIT_RIAU_REFERENSI\.geojson': '\/api\/staff\/rspo-groups'/);
 });
 
 test("archive job preserves detections from finalized reports", () => {
