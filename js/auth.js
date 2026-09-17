@@ -123,13 +123,18 @@
     return postAuthRequest("staff-password-reset", { resetToken, password });
   }
 
-  function logout() {
+  function logout(expectedToken) {
     const session = readStoredSession();
+
+    // A timer from an older tab/session must never invalidate a newer login.
+    if (expectedToken && (!session || session.token !== expectedToken)) return false;
+
     sessionStorage.removeItem(SESSION_KEY);
     localStorage.removeItem(SESSION_KEY);
     if (session && session.token) {
       postAuthRequest("editor-logout", { sessionToken: session.token }).catch(console.warn);
     }
+    return true;
   }
 
   window.YG_AUTH = {
@@ -193,6 +198,12 @@
   const activeSession = readStoredSession();
   if (activeSession) {
     mountSessionControl(activeSession);
-    setTimeout(() => { logout(); location.reload(); }, Math.min(2147483647, Number(activeSession.expiresAt) - Date.now()));
+    const sessionTokenAtLoad = activeSession.token;
+    const expiresIn = Math.max(0, Number(activeSession.expiresAt) - Date.now());
+    setTimeout(() => {
+      // Only expire the session that scheduled this timer. If the user has
+      // logged in again, the newer token remains active across every tab.
+      if (logout(sessionTokenAtLoad)) location.reload();
+    }, Math.min(2147483647, expiresIn));
   }
 })();
