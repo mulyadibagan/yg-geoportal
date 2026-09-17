@@ -59,6 +59,12 @@
     return '<article class="dg-crop'+(isPineapple?' dg-crop-pineapple':'')+'"><header><h3>'+esc(cropName(crop.crop))+'</h3>'+(crop.notes?'<span class="dg-crop-badge">'+esc(crop.notes)+'</span>':'')+'</header>'+facts(cropFacts)+replant+(operations?'<div class="dg-operations">'+operations+'</div>':'')+(isPineapple?harvestChart(crop):history('Riwayat panen',crop.pineappleHarvest,'buah',true,true))+history('Riwayat ethrel',crop.ethrel,'tanaman',true,true)+(isPineapple?pineapplePlan(crop,weather):'')+guide+'</article>';
   }
   function showError(message){var status=document.getElementById('dg-status');status.textContent=message;status.classList.add('is-error');}
+  function renderDynamic(record,events,weather){
+    var crops=record&&record.crops||[];
+    document.getElementById('dg-crops').classList.add('is-detailed');
+    document.getElementById('dg-crops').innerHTML=crops.length?crops.map(function(crop){return cropCard(crop,record,weather);}).join(''):'<div class="dg-empty"><h2>Data tanaman belum tersedia</h2><p>Poligon gawangan telah terpetakan, tetapi informasi komoditas dan kegiatan belum tercatat.</p></div>';
+    document.getElementById('dg-events').innerHTML=events==null?'<div class="dg-empty"><h2>Memuat kegiatan terverifikasi…</h2><p>Profil gawangan tetap dapat digunakan sambil catatan publik diperiksa.</p></div>':eventCards(events);
+  }
   function polygonArea(features){var values=features.map(function(feature){var p=feature.properties||{};return Number(p.sourceGawanganAreaHa);}).filter(Number.isFinite);if(values.length)return values[0];return features.reduce(function(sum,feature){return sum+Number(feature.properties&&feature.properties.areaHa||0);},0)||null;}
   function initMap(features,singleLabel){
     var satellite=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxNativeZoom:18,maxZoom:20,attribution:'Tiles &copy; Esri'}),osm=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxNativeZoom:19,maxZoom:20,attribution:'&copy; OpenStreetMap contributors'}),map=L.map('dg-map',{layers:[satellite]});
@@ -69,8 +75,7 @@
     var blockCode=record?record.block:String(p.block||'').replace(/^Blok\s+/i,'');document.title='Gawangan '+shortId+' | YG GeoPortal';document.getElementById('dg-breadcrumb-id').textContent='Gawangan '+shortId;document.getElementById('dg-title').textContent='Gawangan '+shortId;document.getElementById('dg-meta').innerHTML=esc(currentObjectId)+' · Blok '+esc(blockCode||'-')+' · KUPS Rimba Sejahtera <a class="dg-block-link" href="dayun-blok.html?block='+encodeURIComponent(blockCode)+'">Lihat ringkasan blok →</a>';
     var kpis=[['Luas gawangan',area(areaHa)]].concat(crops.map(function(crop){return[cropName(crop.crop)+' tercatat',integer(crop.vegetationCount,cropUnit(crop.crop))];})).concat([['Bagian poligon',integer(features.length,'bagian')]]);
     document.getElementById('dg-kpis').innerHTML=kpis.map(function(item){return '<article><small>'+esc(item[0])+'</small><strong>'+esc(item[1])+'</strong></article>';}).join('');
-    document.getElementById('dg-crops').classList.add('is-detailed');document.getElementById('dg-crops').innerHTML=crops.length?crops.map(function(crop){return cropCard(crop,record,weather);}).join(''):'<div class="dg-empty"><h2>Data tanaman belum tersedia</h2><p>Poligon gawangan telah terpetakan, tetapi informasi komoditas dan kegiatan belum tercatat.</p></div>';
-    document.getElementById('dg-events').innerHTML=eventCards(events);
+    renderDynamic(record,events,weather);
     var select=document.getElementById('dg-object-select');select.innerHTML=allIds.map(function(id){return '<option value="'+esc(id)+'"'+(id===currentObjectId?' selected':'')+'>'+esc(id.replace('DAYUN-GT-',''))+'</option>';}).join('');select.addEventListener('change',function(){location.href='dayun-gawangan.html?object='+encodeURIComponent(select.value);});
     var prev=document.getElementById('dg-prev'),next=document.getElementById('dg-next');if(index>0)prev.href='dayun-gawangan.html?object='+encodeURIComponent(allIds[index-1]);else prev.hidden=true;if(index>=0&&index<allIds.length-1)next.href='dayun-gawangan.html?object='+encodeURIComponent(allIds[index+1]);else next.hidden=true;
     document.getElementById('dg-monitoring-action').href='dayun-monitoring.html?object='+encodeURIComponent(currentObjectId);
@@ -80,5 +85,19 @@
   }
   var objectId=new URLSearchParams(location.search).get('object')||'';
   if(!/^DAYUN-GT-[A-F]-\d{2}$/.test(objectId)){showError('ID gawangan tidak valid. Kembali ke peta dan pilih salah satu polygon gawangan tanam.');return;}
-  Promise.all([fetch('data/dayun-gawangan-details.json?v=20260917-all-profile1',{cache:'no-store'}).then(function(r){if(!r.ok)throw Error('detail');return r.json();}),fetch('data/dayun-map.geojson?v=20260916-objectid1').then(function(r){if(!r.ok)throw Error('map');return r.json();}),jsonp(PUBLIC_REPORTS_API).catch(function(error){console.warn(error);return{features:[]};}),fetchEthrelWeather().catch(function(error){console.warn(error);return null;})]).then(function(results){var details=results[0],geojson=results[1],events=publishedEvents(results[2],objectId),record=applyEvents((details.objects||[]).find(function(item){return item.objectId===objectId;})||null,events),features=(geojson.features||[]).filter(function(feature){return feature.properties&&feature.properties.objectId===objectId;});if(!features.length)throw Error('ID gawangan tidak ditemukan pada peta.');var allIds=Array.from(new Set((geojson.features||[]).filter(function(feature){return feature.properties&&feature.properties.category==='Gawangan Tanam';}).map(function(feature){return feature.properties.objectId;}))).sort(function(a,b){return a.localeCompare(b,'id',{numeric:true});});render(record,features,allIds,events,results[3]);}).catch(function(error){console.error(error);showError('Profil gawangan belum dapat dimuat. Silakan kembali ke peta dan coba lagi.');});
+  var profileState={baseRecord:null,events:null,weather:null,ready:false};
+  function refreshDynamicProfile(){if(!profileState.ready)return;renderDynamic(applyEvents(profileState.baseRecord,profileState.events||[]),profileState.events,profileState.weather);}
+  Promise.all([
+    fetch('data/dayun-gawangan-details.json?v=20260917-all-profile1',{cache:'force-cache'}).then(function(r){if(!r.ok)throw Error('detail');return r.json();}),
+    fetch('data/dayun-map.geojson?v=20260916-objectid1',{cache:'force-cache'}).then(function(r){if(!r.ok)throw Error('map');return r.json();})
+  ]).then(function(results){
+    var details=results[0],geojson=results[1],record=(details.objects||[]).find(function(item){return item.objectId===objectId;})||null,features=(geojson.features||[]).filter(function(feature){return feature.properties&&feature.properties.objectId===objectId;});
+    if(!features.length)throw Error('ID gawangan tidak ditemukan pada peta.');
+    var allIds=Array.from(new Set((geojson.features||[]).filter(function(feature){return feature.properties&&feature.properties.category==='Gawangan Tanam';}).map(function(feature){return feature.properties.objectId;}))).sort(function(a,b){return a.localeCompare(b,'id',{numeric:true});});
+    profileState.baseRecord=record;
+    profileState.ready=true;
+    render(record,features,allIds,null,null);
+    jsonp(PUBLIC_REPORTS_API).then(function(payload){profileState.events=publishedEvents(payload,objectId);refreshDynamicProfile();}).catch(function(error){console.warn(error);profileState.events=[];refreshDynamicProfile();});
+    fetchEthrelWeather().then(function(weather){profileState.weather=weather;refreshDynamicProfile();}).catch(function(error){console.warn(error);profileState.weather=null;refreshDynamicProfile();});
+  }).catch(function(error){console.error(error);showError('Profil gawangan belum dapat dimuat. Silakan kembali ke peta dan coba lagi.');});
 })();

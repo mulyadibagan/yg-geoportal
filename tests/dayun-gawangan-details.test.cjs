@@ -79,3 +79,16 @@ test('each planting polygon popup shows block and gawangan areas with a profile 
   assert.match(profileScript, /Selisih administrasi, bukan otomatis kandidat aplikasi/);
   assert.doesNotMatch(profile + profileScript, /DATA GAWANG|Sumber:/i);
 });
+
+test('gawangan core renders before optional reports and weather finish', () => {
+  const script = fs.readFileSync(path.join(root, 'js/dayun-gawangan.js'), 'utf8');
+  const coreRender = script.indexOf('render(record,features,allIds,null,null)');
+  const reportLoad = script.indexOf('jsonp(PUBLIC_REPORTS_API)', coreRender);
+  const weatherLoad = script.indexOf('fetchEthrelWeather()', coreRender);
+  assert.ok(coreRender > 0);
+  assert.ok(reportLoad > coreRender);
+  assert.ok(weatherLoad > coreRender);
+  assert.match(script, /dayun-gawangan-details\.json[^\n]+cache:'force-cache'/);
+  assert.match(script, /dayun-map\.geojson[^\n]+cache:'force-cache'/);
+  assert.doesNotMatch(script, /dayun-gawangan-details\.json[^\n]+cache:'no-store'/);
+});

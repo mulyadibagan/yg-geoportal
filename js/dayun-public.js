@@ -50,10 +50,10 @@
 
   function loadDayunSpatialData(){
     return Promise.all([
-      fetch('data/dayun-map.geojson?v=20260916-objectid1'),
-      fetch('data/dayun-context.geojson?v=20260908-1'),
-      fetch('data/dayun-gawangan-details.json?v=20260917-performance1'),
-      fetch('data/dayun-blocks.geojson?v=20260916-official1')
+      fetch('data/dayun-map.geojson?v=20260916-objectid1',{cache:'force-cache'}),
+      fetch('data/dayun-context.geojson?v=20260908-1',{cache:'force-cache'}),
+      fetch('data/dayun-gawangan-details.json?v=20260917-performance1',{cache:'force-cache'}),
+      fetch('data/dayun-blocks.geojson?v=20260916-official1',{cache:'force-cache'})
     ]).then(function(responses){
       if(responses.some(function(response){return !response.ok;}))throw new Error('Data peta atau rincian gawangan tidak dapat dimuat.');
       return Promise.all(responses.map(function(response){return response.json();}));
