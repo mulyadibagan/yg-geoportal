@@ -9,8 +9,9 @@
   <link rel="preconnect" href="https://unpkg.com" crossorigin>
   <link rel="preconnect" href="https://server.arcgisonline.com" crossorigin>
   <link rel="preconnect" href="https://api.open-meteo.com" crossorigin>
-  <link rel="preload" href="data/dayun-gawangan-details.json?v=20260917-all-profile1" as="fetch" crossorigin>
-  <link rel="preload" href="data/dayun-map.geojson?v=20260916-objectid1" as="fetch" crossorigin>
+  <link rel="preconnect" href="https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev" crossorigin>
+  <link rel="preload" href="https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/dayun/gawangan-details.json" as="fetch" crossorigin>
+  <link rel="preload" href="https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/dayun/map.geojson" as="fetch" crossorigin>
   <link rel="stylesheet" href="css/style.css?v=20260723-revert-layout">
   <link rel="stylesheet" href="css/navigation-v2.css?v=20260807-mobile-submenu-links1">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
@@ -51,6 +52,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="js/auth.js?v=20260915-logout3"></script>
   <script src="js/navigation-v2.js?v=20260821-staff-name1"></script>
-  <script src="js/dayun-gawangan.js?v=20260917-speed1"></script>
+  <script src="js/dayun-data-source.js?v=20260917-cloudflare1"></script>
+  <script src="js/dayun-gawangan.js?v=20260917-cloudflare1"></script>
 </body>
 </html>

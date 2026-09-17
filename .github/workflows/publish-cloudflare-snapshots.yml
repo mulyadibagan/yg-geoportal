@@ -10,6 +10,11 @@ on:
       - 'data/master-database-snapshot.json'
       - 'data/kph_2019_riau.geojson'
       - 'data/liberica-morphology-2026.json'
+      - 'data/dayun-program.json'
+      - 'data/dayun-map.geojson'
+      - 'data/dayun-context.geojson'
+      - 'data/dayun-gawangan-details.json'
+      - 'data/dayun-blocks.geojson'
       - 'cloudflare/yg-webgis-public-data/**'
       - '.github/workflows/publish-cloudflare-snapshots.yml'
   workflow_run:
@@ -73,6 +78,16 @@ jobs:
           npx wrangler r2 object put "yg-webgis-public-snapshots/internal/rspo/riau-groups.geojson" --remote --file tmp/rspo-riau-groups.geojson --content-type application/geo+json
           npx wrangler r2 object put "yg-webgis-public-snapshots-staging/references/rspo-riau-groups.geojson" --remote --file ../../data/PERUSAHAAN_SAWIT_RIAU_REFERENSI.geojson --content-type application/geo+json
           npx wrangler r2 object put "yg-webgis-public-snapshots/references/rspo-riau-groups.geojson" --remote --file ../../data/PERUSAHAAN_SAWIT_RIAU_REFERENSI.geojson --content-type application/geo+json
+          npx wrangler r2 object put "yg-webgis-public-snapshots-staging/dayun/program.json" --remote --file ../../data/dayun-program.json --content-type application/json
+          npx wrangler r2 object put "yg-webgis-public-snapshots-staging/dayun/map.geojson" --remote --file ../../data/dayun-map.geojson --content-type application/geo+json
+          npx wrangler r2 object put "yg-webgis-public-snapshots-staging/dayun/context.geojson" --remote --file ../../data/dayun-context.geojson --content-type application/geo+json
+          npx wrangler r2 object put "yg-webgis-public-snapshots-staging/dayun/gawangan-details.json" --remote --file ../../data/dayun-gawangan-details.json --content-type application/json
+          npx wrangler r2 object put "yg-webgis-public-snapshots-staging/dayun/blocks.geojson" --remote --file ../../data/dayun-blocks.geojson --content-type application/geo+json
+          npx wrangler r2 object put "yg-webgis-public-snapshots/dayun/program.json" --remote --file ../../data/dayun-program.json --content-type application/json
+          npx wrangler r2 object put "yg-webgis-public-snapshots/dayun/map.geojson" --remote --file ../../data/dayun-map.geojson --content-type application/geo+json
+          npx wrangler r2 object put "yg-webgis-public-snapshots/dayun/context.geojson" --remote --file ../../data/dayun-context.geojson --content-type application/geo+json
+          npx wrangler r2 object put "yg-webgis-public-snapshots/dayun/gawangan-details.json" --remote --file ../../data/dayun-gawangan-details.json --content-type application/json
+          npx wrangler r2 object put "yg-webgis-public-snapshots/dayun/blocks.geojson" --remote --file ../../data/dayun-blocks.geojson --content-type application/geo+json
       - name: Build and upload manifest last
         shell: bash
         working-directory: cloudflare/yg-webgis-public-data
@@ -100,4 +115,3 @@ jobs:
       - name: Smoke test staging gateway
         working-directory: cloudflare/yg-webgis-public-data
         run: npm run smoke:staging
-

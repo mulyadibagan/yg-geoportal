@@ -1,5 +1,10 @@
 const ROUTES = { "/snapshots/current/dashboard.json": { name: "dashboard", github: "/data/dashboard-summary-snapshot.json" }, "/snapshots/current/objects.json": { name: "objects", github: "/data/master-database-snapshot.json" }, "/research/liberica-morphology-2026.json": { key: "research/liberica-morphology-2026.json", github: "/data/liberica-morphology-2026.json" }, "/references/kph_2019_riau.geojson": { key: "references/kph_2019_riau.geojson" }, "/manifests/current.json": { key: "manifests/current.json" } }, PUBLIC_HEADERS = { "access-control-allow-origin": "*", "access-control-allow-methods": "GET, HEAD, OPTIONS", "access-control-max-age": "86400", "x-content-type-options": "nosniff" }, STAFF_API_HEADERS = { "access-control-allow-origin": "https://webgisyg.id", "access-control-allow-methods": "GET, HEAD, OPTIONS", "access-control-allow-headers": "authorization", "access-control-max-age": "3600", vary: "Origin", "x-content-type-options": "nosniff" }, META = { httpMetadata: { contentType: "application/json; charset=utf-8", cacheControl: "public, max-age=300" } };
 ROUTES["/references/rspo-riau-groups.geojson"] = { key: "references/rspo-riau-groups.geojson" };
+ROUTES["/dayun/program.json"] = { key: "dayun/program.json", github: "/data/dayun-program.json", cache: "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400" };
+ROUTES["/dayun/map.geojson"] = { key: "dayun/map.geojson", github: "/data/dayun-map.geojson", cache: "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400" };
+ROUTES["/dayun/context.geojson"] = { key: "dayun/context.geojson", github: "/data/dayun-context.geojson", cache: "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400" };
+ROUTES["/dayun/gawangan-details.json"] = { key: "dayun/gawangan-details.json", github: "/data/dayun-gawangan-details.json", cache: "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400" };
+ROUTES["/dayun/blocks.geojson"] = { key: "dayun/blocks.geojson", github: "/data/dayun-blocks.geojson", cache: "public, max-age=300, s-maxage=3600, stale-while-revalidate=86400" };
 // Faperta UR operational data is served only by authenticated staff routes below.
 function json(value, status = 200, headers = {}) {
   return new Response(JSON.stringify(value), { status, headers: { "content-type": "application/json; charset=utf-8", ...PUBLIC_HEADERS, ...headers } });
@@ -39,7 +44,7 @@ async function fromR2(request, env, route) {
   const object = await env.PUBLIC_SNAPSHOTS.get(await r2Key(env, route));
   if (!object) return null;
   const h = new Headers();
-  return object.writeHttpMetadata(h), h.set("etag", object.httpEtag), h.has("content-type") || h.set("content-type", "application/json; charset=utf-8"), publicResponse(new Response("HEAD" === request.method ? null : object.body, { headers: h }), "r2", "public, max-age=300, stale-while-revalidate=3600");
+  return object.writeHttpMetadata(h), h.set("etag", object.httpEtag), h.has("content-type") || h.set("content-type", "application/json; charset=utf-8"), publicResponse(new Response("HEAD" === request.method ? null : object.body, { headers: h }), "r2", route.cache || "public, max-age=300, stale-while-revalidate=3600");
 }
 async function fallback(request, env, route) {
   if (!route.github) return null;
@@ -265,4 +270,3 @@ var index_default = { async fetch(request, env) {
 export {
   index_default as default
 };
-

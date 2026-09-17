@@ -71,6 +71,23 @@ test("serves the Liberica research dataset from R2", async () => {
   assert.equal((await response.json()).observations.length, 60);
 });
 
+test("serves public Dayun datasets from R2 with edge cache headers", async () => {
+  const cases = [
+    ["/dayun/program.json", { layers: [] }],
+    ["/dayun/map.geojson", { type: "FeatureCollection", features: new Array(89).fill({}) }],
+    ["/dayun/context.geojson", { type: "FeatureCollection", features: new Array(2).fill({}) }],
+    ["/dayun/gawangan-details.json", { objects: new Array(59).fill({}) }],
+    ["/dayun/blocks.geojson", { type: "FeatureCollection", features: new Array(6).fill({}) }]
+  ];
+  for (const [path, payload] of cases) {
+    const response = await worker.fetch(new Request("https://data.test" + path), envWith(payload));
+    assert.equal(response.status, 200, path);
+    assert.equal(response.headers.get("x-yg-data-source"), "r2", path);
+    assert.match(response.headers.get("cache-control"), /s-maxage=3600/, path);
+    assert.deepEqual(await response.json(), payload, path);
+  }
+});
+
 test("falls back to GitHub Pages when an R2 object is unavailable", async () => {
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async url => {
@@ -283,4 +300,3 @@ test("publication refresh requires its secret and atomically publishes a manifes
     assert.equal((await currentAgain.json()).features[0].properties._ygPhotos.length, 1);
   } finally { globalThis.fetch = originalFetch; }
 });
-

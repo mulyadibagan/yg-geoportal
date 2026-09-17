@@ -302,5 +302,5 @@
     result.hidden=false;result.scrollIntoView({behavior:'smooth',block:'nearest'});
   });
   form.addEventListener('reset',function(){setTimeout(function(){dose.value='';reserve.value='0';pack.value='1';material.value='Pupuk organik';doseUnit.value='g';updateSelection();},0);});
-  fetch('data/dayun-gawangan-details.json?v=20260917-all-profile1',{cache:'force-cache'}).then(function(response){if(!response.ok)throw Error('Data tidak dapat dimuat.');return response.json();}).then(init).catch(function(error){console.error(error);gawangan.innerHTML='<option value="">Data belum dapat dimuat</option>';setError('Data gawangan belum dapat dimuat. Silakan coba lagi.');});
+  window.DayunDataSource.fetchJSON('data/dayun-gawangan-details.json?v=20260917-all-profile1').then(init).catch(function(error){console.error(error);gawangan.innerHTML='<option value="">Data belum dapat dimuat</option>';setError('Data gawangan belum dapat dimuat. Silakan coba lagi.');});
 })();

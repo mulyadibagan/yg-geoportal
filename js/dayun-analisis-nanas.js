@@ -117,7 +117,7 @@
     kpis(data);recommendations(data);renderProjection(rows);chart(rows);blockTable();gawanganTable(rows);
   }
 
-  Promise.all([fetch('data/dayun-gawangan-details.json?v=20260917-performance1').then(function(response){if(!response.ok)throw new Error('Data tidak dapat dimuat.');return response.json();}),jsonp(PUBLIC_REPORTS_API).catch(function(error){console.warn(error);return{features:[]};})]).then(function(results){
+  Promise.all([window.DayunDataSource.fetchJSON('data/dayun-gawangan-details.json?v=20260917-performance1'),jsonp(PUBLIC_REPORTS_API).catch(function(error){console.warn(error);return{features:[]};})]).then(function(results){
     var details=window.DayunPineappleAnalysis.applyPublishedMonitoring(results[0],results[1]);
     analysis=window.DayunPineappleAnalysis.build(details);
     analysis._detailsById={};

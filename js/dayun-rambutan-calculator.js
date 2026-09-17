@@ -78,5 +78,5 @@
     result.scrollIntoView({behavior:'smooth',block:'nearest'});
   });
   form.addEventListener('reset',function(){setTimeout(function(){dose.value='';reserve.value='0';pack.value='50';material.value='Pupuk organik';unit.value='g';updateSelection();},0);});
-  fetch('data/dayun-gawangan-details.json?v=20260917-all-profile1',{cache:'no-store'}).then(function(response){if(!response.ok)throw Error('Data tidak dapat dimuat.');return response.json();}).then(init).catch(function(err){console.error(err);gawangan.innerHTML='<option value="">Data rambutan belum dapat dimuat</option>';setError('Data gawangan rambutan belum dapat dimuat. Silakan coba lagi.');});
+  window.DayunDataSource.fetchJSON('data/dayun-gawangan-details.json?v=20260917-all-profile1').then(init).catch(function(err){console.error(err);gawangan.innerHTML='<option value="">Data rambutan belum dapat dimuat</option>';setError('Data gawangan rambutan belum dapat dimuat. Silakan coba lagi.');});
 })();

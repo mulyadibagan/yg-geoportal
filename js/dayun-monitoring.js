@@ -345,8 +345,8 @@
   $('dm-planting-date').max = currentDate;
   $('dm-ratoon-start-date').max = currentDate;
   Promise.all([
-    fetch('data/dayun-map.geojson?v=20260916-objectid1').then(function (response) { if (!response.ok) throw Error('Peta gagal dimuat.'); return response.json(); }),
-    fetch('data/dayun-gawangan-details.json?v=20260917-all-profiles2').then(function (response) { if (!response.ok) throw Error('Rincian gagal dimuat.'); return response.json(); })
+    window.DayunDataSource.fetchJSON('data/dayun-map.geojson?v=20260916-objectid1'),
+    window.DayunDataSource.fetchJSON('data/dayun-gawangan-details.json?v=20260917-all-profiles2')
   ]).then(function (results) {
     (results[0].features || []).forEach(function (feature) {
       var properties = feature.properties || {};

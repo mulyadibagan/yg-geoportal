@@ -51,8 +51,8 @@
   var code=String(new URLSearchParams(location.search).get('block')||'A').toUpperCase();
   if(!/^[A-F]$/.test(code)){document.getElementById('db-status').textContent='Kode blok tidak valid. Pilih Blok A sampai Blok F dari peta agroforestri.';return;}
   Promise.all([
-    fetch('data/dayun-gawangan-details.json?v=20260917-performance1').then(function(response){if(!response.ok)throw Error('detail');return response.json();}),
-    fetch('data/dayun-map.geojson?v=20260916-objectid1').then(function(response){if(!response.ok)throw Error('map');return response.json();}),
-    fetch('data/dayun-blocks.geojson?v=20260916-official1').then(function(response){if(!response.ok)throw Error('block');return response.json();})
+    window.DayunDataSource.fetchJSON('data/dayun-gawangan-details.json?v=20260917-performance1'),
+    window.DayunDataSource.fetchJSON('data/dayun-map.geojson?v=20260916-objectid1'),
+    window.DayunDataSource.fetchJSON('data/dayun-blocks.geojson?v=20260916-official1')
   ]).then(function(results){render(code,window.DayunAgroSummary.build(results[0],results[1],results[2]),results[1],results[2]);}).catch(function(error){console.error(error);document.getElementById('db-status').textContent='Informasi blok belum dapat dimuat. Silakan kembali ke peta dan coba lagi.';});
 })();

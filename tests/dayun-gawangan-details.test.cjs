@@ -82,13 +82,26 @@ test('each planting polygon popup shows block and gawangan areas with a profile 
 
 test('gawangan core renders before optional reports and weather finish', () => {
   const script = fs.readFileSync(path.join(root, 'js/dayun-gawangan.js'), 'utf8');
+  const source = fs.readFileSync(path.join(root, 'js/dayun-data-source.js'), 'utf8');
+  const html = fs.readFileSync(path.join(root, 'dayun-gawangan.html'), 'utf8');
   const coreRender = script.indexOf('render(record,features,allIds,null,null)');
   const reportLoad = script.indexOf('jsonp(PUBLIC_REPORTS_API)', coreRender);
   const weatherLoad = script.indexOf('fetchEthrelWeather()', coreRender);
   assert.ok(coreRender > 0);
   assert.ok(reportLoad > coreRender);
   assert.ok(weatherLoad > coreRender);
-  assert.match(script, /dayun-gawangan-details\.json[^\n]+cache:'force-cache'/);
-  assert.match(script, /dayun-map\.geojson[^\n]+cache:'force-cache'/);
-  assert.doesNotMatch(script, /dayun-gawangan-details\.json[^\n]+cache:'no-store'/);
+  assert.match(script, /DayunDataSource\.fetchJSON\('data\/dayun-gawangan-details\.json/);
+  assert.match(source, /workers\.dev/);
+  assert.match(source, /return local\(localUrl\)/);
+  assert.match(source, /AbortController/);
+  assert.ok(html.indexOf('dayun-data-source.js') < html.indexOf('dayun-gawangan.js'));
+});
+
+test('all public Dayun data consumers load the Cloudflare source with a local fallback', () => {
+  const pages = ['dayun-map.html','dayun-gawangan.html','dayun-blok.html','dayun-analisis-nanas.html','dayun-monitoring.html','dayun-sop-komoditas.html','dayun-sop-rambutan.html'];
+  for (const page of pages) assert.match(fs.readFileSync(path.join(root, page), 'utf8'), /js\/dayun-data-source\.js/, page);
+  const source = fs.readFileSync(path.join(root, 'js/dayun-data-source.js'), 'utf8');
+  for (const file of ['dayun-program.json','dayun-map.geojson','dayun-context.geojson','dayun-gawangan-details.json','dayun-blocks.geojson']) {
+    assert.match(source, new RegExp(file.replaceAll('.', '\\.')));
+  }
 });

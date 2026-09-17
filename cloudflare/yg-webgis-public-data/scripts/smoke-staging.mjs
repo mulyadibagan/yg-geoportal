@@ -62,6 +62,20 @@ if (!Array.isArray(kph.data?.features) || kph.data.features.length !== 1382) {
   throw new Error("KPH Riau reference feature count mismatch");
 }
 
+const dayunTargets = {
+  "/dayun/program.json": data => Array.isArray(data?.layers),
+  "/dayun/map.geojson": data => Array.isArray(data?.features) && data.features.length === 89,
+  "/dayun/context.geojson": data => Array.isArray(data?.features) && data.features.length === 2,
+  "/dayun/gawangan-details.json": data => Array.isArray(data?.objects) && data.objects.length === 59,
+  "/dayun/blocks.geojson": data => Array.isArray(data?.features) && data.features.length === 6
+};
+for (const [path, valid] of Object.entries(dayunTargets)) {
+  const result = await request(path);
+  if (result.response.status !== 200 || result.response.headers.get("x-yg-data-source") !== "r2" || !valid(result.data)) {
+    throw new Error(`Dayun dataset validation failed: ${path}`);
+  }
+}
+
 const head = await request("/snapshots/current/dashboard.json", { method: "HEAD" });
 if (head.response.status !== 200 || head.bytes.length !== 0) throw new Error("HEAD validation failed");
 const options = await request("/health", { method: "OPTIONS" });

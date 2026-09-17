@@ -88,8 +88,8 @@
   var profileState={baseRecord:null,events:null,weather:null,ready:false};
   function refreshDynamicProfile(){if(!profileState.ready)return;renderDynamic(applyEvents(profileState.baseRecord,profileState.events||[]),profileState.events,profileState.weather);}
   Promise.all([
-    fetch('data/dayun-gawangan-details.json?v=20260917-all-profile1',{cache:'force-cache'}).then(function(r){if(!r.ok)throw Error('detail');return r.json();}),
-    fetch('data/dayun-map.geojson?v=20260916-objectid1',{cache:'force-cache'}).then(function(r){if(!r.ok)throw Error('map');return r.json();})
+    window.DayunDataSource.fetchJSON('data/dayun-gawangan-details.json?v=20260917-all-profile1'),
+    window.DayunDataSource.fetchJSON('data/dayun-map.geojson?v=20260916-objectid1')
   ]).then(function(results){
     var details=results[0],geojson=results[1],record=(details.objects||[]).find(function(item){return item.objectId===objectId;})||null,features=(geojson.features||[]).filter(function(feature){return feature.properties&&feature.properties.objectId===objectId;});
     if(!features.length)throw Error('ID gawangan tidak ditemukan pada peta.');
