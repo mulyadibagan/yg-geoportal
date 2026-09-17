@@ -2471,11 +2471,6 @@ L.control.scale({
             const layer = await loadReferenceLayer(layerId);
 
             if (layer && checkbox.checked) {
-              layer.addTo(map);
-              if (config.type === "social_forestry") {
-                showSocialForestryDocumentLegend();
-              }
-
               /*
                * Layer PS mencakup seluruh Riau dan sering diaktifkan dari
                * panel yang menutupi peta pada layar sempit. Arahkan viewport
@@ -2490,7 +2485,8 @@ L.control.scale({
                 if (bounds && bounds.isValid()) {
                   map.fitBounds(bounds, {
                     padding: [20, 20],
-                    maxZoom: 11
+                    maxZoom: 11,
+                    animate: false
                   });
                 }
 
@@ -2503,6 +2499,16 @@ L.control.scale({
                 }
 
                 requestAnimationFrame(() => map.invalidateSize(false));
+              }
+
+              /*
+               * Gambar geometri setelah viewport berada pada tujuan. Jika
+               * ditambahkan sebelum fitBounds, Canvas harus merender polygon
+               * besar dua kali dan klik layer internal terasa tersendat.
+               */
+              layer.addTo(map);
+              if (config.type === "social_forestry") {
+                showSocialForestryDocumentLegend();
               }
             } else if (layer && map.hasLayer(layer)) {
               map.removeLayer(layer);
