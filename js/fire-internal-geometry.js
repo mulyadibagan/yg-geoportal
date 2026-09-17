@@ -23,7 +23,13 @@
     return Math.abs(sum)/2;
   }
   const area = polys => polys.reduce((sum,p)=>sum+Math.max(0,ringArea(p[0])-p.slice(1).reduce((s,r)=>s+ringArea(r),0)),0)/10000;
-  const union = pieces => pieces.length ? pieces.slice(1).reduce((a,b)=>clip.union(a,b),pieces[0]) : [];
+  const union = pieces => {
+    // Balanced merges avoid repeatedly reprocessing an ever-growing company
+    // boundary when GeoRSPO supplies thousands of parcel fragments.
+    let level=pieces.slice();
+    while(level.length>1){const next=[];for(let i=0;i<level.length;i+=2)next.push(i+1<level.length?clip.union(level[i],level[i+1]):level[i]);level=next;}
+    return level[0]||[];
+  };
   const box = polys => {const b=[Infinity,Infinity,-Infinity,-Infinity];polys.forEach(p=>p.forEach(r=>r.forEach(c=>{b[0]=Math.min(b[0],c[0]);b[1]=Math.min(b[1],c[1]);b[2]=Math.max(b[2],c[0]);b[3]=Math.max(b[3],c[1]);})));return b;};
   const overlaps = (a,b)=>a[0]<=b[2]&&a[2]>=b[0]&&a[1]<=b[3]&&a[3]>=b[1];
   function ringContains(p,r){let inside=false;for(let i=0,j=r.length-1;i<r.length;j=i++){const a=r[i],b=r[j];if(((a[1]>p[1])!==(b[1]>p[1]))&&p[0]<(b[0]-a[0])*(p[1]-a[1])/(b[1]-a[1])+a[0])inside=!inside;}return inside;}
