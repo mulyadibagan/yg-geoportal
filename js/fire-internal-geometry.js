@@ -50,19 +50,23 @@
     for(const kind of ['pbph','rspo','ps']){
       const source=input[kind];
       if(!source?.features?.length)throw Error('Batas '+(kind==='pbph'?'PBPH':kind==='ps'?'Perhutanan Sosial':'perkebunan RSPO')+' belum tersedia; luas tidak dapat dihitung.');
-      const groups=new Map();
-      for(const f of source.features){const id=identity(f.properties||{},kind);if(!id.id||!id.name)throw Error('Identitas batas '+kind+' belum lengkap.');if(!groups.has(id.id))groups.set(id.id,{...id,pieces:[]});groups.get(id.id).pieces.push(polygon(f));}
-      const rows=[],categoryPieces=[];
+      const groups=new Map(),invalidSourceUnits=[];
+      for(const f of source.features){const id=identity(f.properties||{},kind);if(!id.id||!id.name)throw Error('Identitas batas '+kind+' belum lengkap.');try{if(!groups.has(id.id))groups.set(id.id,{...id,pieces:[]});groups.get(id.id).pieces.push(polygon(f));}catch(error){groups.delete(id.id);invalidSourceUnits.push({id:id.id,name:id.name,error:String(error&&error.message||error)});}}
+      const rows=[],categoryPieces=[],skippedUnits=invalidSourceUnits.slice();
       for(const g of groups.values()){
-        const boundary=union(g.pieces),bounds=box(boundary),pieces=[],matches=new Map();
-        for(const e of events){if(!overlaps(bounds,e.box))continue;const part=clip.intersection(boundary,e.geometry);if(part.length&&area(part)>1e-8){pieces.push(part);matches.set(e.id,{id:e.id,first:e.first,last:e.last});}}
-        const burned=union(pieces),burnedHa=area(burned),boundaryHa=area(boundary),days=new Set();let hotspots=0;
-        for(const h of input.report.hotspots||[]){const p=[Number(h.longitude),Number(h.latitude)];if(!p.every(Number.isFinite))continue;if(contains(p,boundary)){hotspots++;if(h.date)days.add(h.date);}}
-        if(burnedHa>0||hotspots>0)rows.push({id:g.id,name:g.name,nameSource:g.nameSource,detail:g.detail,level:g.level,hotspots:input.report.unavailable?null:hotspots,days:input.report.unavailable?null:days.size,boundaryHa,burnedHa,percent:boundaryHa?100*burnedHa/boundaryHa:null,events:Array.from(matches.values()),geometry:{type:'MultiPolygon',coordinates:burned},boundary:{type:'MultiPolygon',coordinates:boundary}});
-        if(burned.length)categoryPieces.push(burned);
+        try{
+          const boundary=union(g.pieces),bounds=box(boundary),pieces=[],matches=new Map();
+          for(const e of events){if(!overlaps(bounds,e.box))continue;const part=clip.intersection(boundary,e.geometry);if(part.length&&area(part)>1e-8){pieces.push(part);matches.set(e.id,{id:e.id,first:e.first,last:e.last});}}
+          const burned=union(pieces),burnedHa=area(burned),boundaryHa=area(boundary),days=new Set();let hotspots=0;
+          for(const h of input.report.hotspots||[]){const p=[Number(h.longitude),Number(h.latitude)];if(!p.every(Number.isFinite))continue;if(contains(p,boundary)){hotspots++;if(h.date)days.add(h.date);}}
+          if(burnedHa>0||hotspots>0)rows.push({id:g.id,name:g.name,nameSource:g.nameSource,detail:g.detail,level:g.level,hotspots:input.report.unavailable?null:hotspots,days:input.report.unavailable?null:days.size,boundaryHa,burnedHa,percent:boundaryHa?100*burnedHa/boundaryHa:null,events:Array.from(matches.values()),geometry:{type:'MultiPolygon',coordinates:burned},boundary:{type:'MultiPolygon',coordinates:boundary}});
+          if(burned.length)categoryPieces.push(burned);
+        }catch(error){
+          skippedUnits.push({id:g.id,name:g.name,error:String(error&&error.message||error)});
+        }
       }
       const merged=union(categoryPieces);if(merged.length)allPieces.push(merged);
-      results[kind]={rows:rows.sort((a,b)=>b.burnedHa-a.burnedHa||(b.hotspots||0)-(a.hotspots||0)),uniqueHa:area(merged),boundaryCount:groups.size,groupLevel:Array.from(groups.values()).some(g=>g.level==='group')};
+      results[kind]={rows:rows.sort((a,b)=>b.burnedHa-a.burnedHa||(b.hotspots||0)-(a.hotspots||0)),uniqueHa:area(merged),boundaryCount:groups.size,groupLevel:Array.from(groups.values()).some(g=>g.level==='group'),skippedUnits};
     }
     results.combinedHa=area(union(allPieces));
     return results;

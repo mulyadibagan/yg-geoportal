@@ -45,6 +45,14 @@ test('multiple pieces for same identity merge and multipart works',()=>{
   const p=rectangle(101,1,.02,.02,{PBPH_ID:'P1',NAMOBJ:'Test'});p.geometry={type:'MultiPolygon',coordinates:[p.geometry.coordinates]};
   const r=run([event],{pbph:fc([p,p])});assert.equal(r.pbph.boundaryCount,1);assert.equal(r.pbph.rows.length,1);assert.equal(r.pbph.rows[0].boundaryHa,area(p.geometry.coordinates));
 });
+test('one malformed PS unit does not suppress valid internal categories',()=>{
+  const broken=rectangle(101,1,.02,.02,{PROFILE_KEY:'BROKEN',NAMA_HKM:'Broken PS'});
+  broken.geometry.coordinates[0][2]=[NaN,1.02];
+  const result=run([event],{ps:fc([broken])});
+  assert.equal(result.ps.skippedUnits.length,1);
+  assert.equal(result.ps.skippedUnits[0].name,'Broken PS');
+  assert.equal(result.pbph.rows.length,1);
+});
 test('public session never creates an internal panel or worker',async()=>{
   const context={window:{YG_STAFF_DATA:{session:()=>null}},document:new Proxy({},{get(){throw Error('Public DOM accessed');}}),Worker(){throw Error('Public worker started');}};
   vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../js/fire-monthly-internal.js'),'utf8'),context);

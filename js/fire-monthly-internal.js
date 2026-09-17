@@ -7,7 +7,7 @@
     const session=window.YG_STAFF_DATA.session();
     if(!session)return Promise.resolve();
     const panel=document.createElement('section');panel.className='fm-panel';panel.style.marginBottom='24px';panel.id='fm-internal-burned';
-    panel.innerHTML='<h2>Estimasi luas kebakaran dalam PBPH dan perkebunan</h2><p>Analisis internal · <span id="fm-internal-progress" role="status">Menghitung irisan poligon…</span></p>';
+    panel.innerHTML='<h2>Hotspot dan estimasi luas dalam PBPH, perkebunan, dan Perhutanan Sosial</h2><p>Analisis internal · <span id="fm-internal-progress" role="status">Menghitung irisan poligon…</span></p>';
     document.querySelector('.fm-tables').before(panel);
     const status=panel.querySelector('#fm-internal-progress');
     if(!burned){status.textContent='Arsip estimasi belum tersedia. Luas tidak dapat dihitung; bukan berarti nol kebakaran.';return Promise.resolve();}
@@ -37,6 +37,7 @@
           selection.set(key,r);
           return '<tr><td><strong>'+link+'</strong>'+ (r.nameSource?'<br><a href="'+esc(r.nameSource)+'" target="_blank" rel="noopener noreferrer"><small>Sumber nama perusahaan</small></a>':'')+'<br><small>'+esc(r.detail)+(r.level==='group'?' · Agregat grup':'')+'</small></td><td>'+(r.hotspots===null?'Belum tersedia':r.hotspots+' / '+r.days+' hari')+'</td><td>'+(r.burnedHa>0?ha(r.burnedHa):'Tidak ada irisan dalam arsip')+'</td><td>'+ha(r.boundaryHa)+'</td><td>'+number(r.percent||0)+'%</td><td><button type="button" data-fire-area="'+key+'">Lihat peta</button><details><summary>'+r.events.length+' kejadian beririsan</summary>'+r.events.map(e=>'<p><small>'+esc(e.id)+'<br>'+esc(e.first.slice(0,10))+' – '+esc(e.last.slice(0,10))+'</small></p>').join('')+'</details></td></tr>';
         }).join('')+'</tbody></table></div>';
+        if(category.skippedUnits&&category.skippedUnits.length){const warning=document.createElement('p');warning.textContent=category.skippedUnits.length+' batas tidak dapat diproses karena geometri sumber bermasalah; hasil kategori ini bersifat parsial.';section.append(warning);}
         if(!category.rows.length)section.querySelector('tbody').innerHTML='<tr><td colspan="6">Tidak ada irisan estimasi maupun hotspot pada batas yang tersedia. Arsip estimasi masih parsial.</td></tr>';
         panel.append(section);
         const features=category.rows.filter(r=>r.burnedHa>0).map(r=>({type:'Feature',geometry:r.geometry,properties:{name:r.name,area:r.burnedHa,percent:r.percent}}));
