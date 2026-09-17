@@ -15,11 +15,23 @@ function dateValue(value){if(value==null||value==="")return"—";var d=typeof va
 function monthLabel(value){var parts=String(value).split("-"),d=new Date(Number(parts[0]),Number(parts[1])-1,1);return d.toLocaleDateString("id-ID",{month:"long",year:"numeric"})}
 function profileId(feature){var p=feature&&feature.properties||{};return String(p.PBPH_ID||[p.NAMOBJ,p.NO_SK].filter(Boolean).join("|")).trim()}
 function samePermit(a,b){var pa=a||{},pb=b||{};return norm(pa.name||pa.NAMOBJ)===norm(pb.name||pb.NAMOBJ)&&(norm(pa.sk||pa.NO_SK)===norm(pb.sk||pb.NO_SK)||!pa.sk||!pb.sk)}
-function renderMap(features,name){
+function reportDetections(report,profile){return(report.hotspots||[]).filter(function(point){return(point.permits||[]).some(function(row){return samePermit(row,{name:profile.NAMOBJ,sk:profile.NO_SK})})})}
+function profileDetections(reports,profile){
+  var seen=new Set(),rows=[];
+  reports.forEach(function(report){reportDetections(report,profile).forEach(function(point){
+    var lat=number(point.latitude),lng=number(point.longitude);if(lat==null||lng==null)return;
+    var key=[point.date||"",point.time||"",lat.toFixed(5),lng.toFixed(5),point.satellite||""].join("|");if(seen.has(key))return;seen.add(key);rows.push({point:point,month:report.month,lat:lat,lng:lng});
+  })});return rows;
+}
+function renderMap(features,name,reports,profile){
   map=L.map("village-map",{zoomControl:true,scrollWheelZoom:false});
   L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{maxNativeZoom:17,maxZoom:20,attribution:"Tiles © Esri"}).addTo(map);
-  var layer=L.geoJSON({type:"FeatureCollection",features:features},{style:{color:"#c2410c",weight:3,opacity:1,fillColor:"#f97316",fillOpacity:.18}}).addTo(map),bounds=layer.getBounds();
-  if(bounds.isValid())map.fitBounds(bounds,{padding:[24,24],maxZoom:13});layer.bindTooltip(name,{direction:"center"});
+  var boundary=L.geoJSON({type:"FeatureCollection",features:features},{style:{color:"#ff7a18",weight:3,opacity:1,fillColor:"#f97316",fillOpacity:.12}}).addTo(map),bounds=boundary.getBounds();
+  var loss=L.tileLayer("https://tiles.globalforestwatch.org/umd_tree_cover_loss/latest/dynamic/{z}/{x}/{y}.png?render_type=true_color&tree_cover_density_threshold=30",{opacity:.76,maxZoom:18,attribution:"Global Forest Watch / UMD"});
+  var detections=profileDetections(reports,profile),hotspots=L.layerGroup(detections.map(function(row){var p=row.point,frp=number(p.frp),radius=Math.max(5,Math.min(11,5+(frp||0)/20));return L.circleMarker([row.lat,row.lng],{radius:radius,color:"#7f1d1d",weight:1.5,fillColor:"#ef4444",fillOpacity:.88}).bindPopup('<div class="pbph-map-popup"><strong>Hotspot '+esc(p.date||"—")+'</strong><span>'+esc(p.time?String(p.time)+" UTC":"Waktu tidak tersedia")+'</span><span>'+esc(p.satellite||"Satelit tidak tersedia")+' · FRP '+esc(frp==null?"—":format(frp,1)+" MW")+'</span><span>'+esc([p.village,p.regency].filter(Boolean).join(", ")||"Lokasi administratif tidak tersedia")+'</span><a href="fire-monthly-report.html?month='+encodeURIComponent(row.month)+'">Buka laporan '+esc(monthLabel(row.month))+' →</a></div>') }));
+  var overlays={'<span class="pbph-layer-key pbph-layer-key--boundary"></span>Batas PBPH':boundary,'<span class="pbph-layer-key pbph-layer-key--loss"></span>Kehilangan tutupan pohon':loss};overlays['<span class="pbph-layer-key pbph-layer-key--hotspot"></span>Hotspot laporan ('+detections.length+')']=hotspots;
+  L.control.layers(null,overlays,{collapsed:false,position:"topright"}).addTo(map);
+  if(bounds.isValid())map.fitBounds(bounds,{padding:[24,24],maxZoom:13});boundary.bindTooltip(name,{direction:"center"});
 }
 function renderDocuments(registry,profile){
   var entry=registry.profiles&&registry.profiles[id]||{},docs=Array.isArray(entry.documents)?entry.documents:[];
@@ -35,7 +47,6 @@ function renderSvlk(svlk){
   el("svlk-document-list").innerHTML=docs.map(function(doc){return'<a href="'+esc(doc.url)+'" target="_blank" rel="noopener noreferrer"><span>'+esc(doc.category||"Dokumen SVLK")+'</span><strong>'+esc(doc.label||"Buka dokumen")+'</strong><b aria-hidden="true">↗</b></a>'}).join("");
 }
 function reportPermit(report,profile){return(report.companies||[]).find(function(row){return samePermit(row,{name:profile.NAMOBJ,sk:profile.NO_SK})})||null}
-function reportDetections(report,profile){return(report.hotspots||[]).filter(function(point){return(point.permits||[]).some(function(row){return samePermit(row,{name:profile.NAMOBJ,sk:profile.NO_SK})})})}
 function forestRecord(analytics,profile){
   if(!analytics||!analytics.areas)return null;
   if(analytics.areas[id])return analytics.areas[id];
@@ -75,7 +86,7 @@ function render(features,reports,registry,forestAnalytics){
   document.title=(p.NAMOBJ||"PBPH")+" · Profil PBPH | Yayasan Gambut";el("area-name").textContent=p.NAMOBJ||"Profil PBPH";el("area-location").textContent=[p.JENIS,p.KEGIATAN].filter(Boolean).join(" · ");el("data-updated").textContent=latest?"Laporan terakhir "+monthLabel(latest.month):"Laporan bulanan belum tersedia";
   el("kpi-grid").innerHTML=[kpi("⌗","Luas SK akhir",area==null?"—":format(area,2)+" ha","atribut sumber PBPH"),kpi("◫","Bagian polygon",format(features.length,0),"digabung dalam profil"),kpi("▤","Laporan tersedia",format(reports.length,0),"mulai Juli 2026"),kpi("◉","Hotspot dalam laporan",format(total,0),"akumulasi laporan bulanan")].join("");
   el("identity-list").innerHTML=[item("Pemegang PBPH",p.NAMOBJ),item("PBPH ID",p.PBPH_ID),item("Nomor SK",p.NO_SK),item("Tanggal SK",dateValue(p.TGL_SK)),item("Luas SK akhir",area==null?"—":format(area,2)+" ha"),item("Jenis PBPH",p.JENIS),item("Kegiatan",p.KEGIATAN)].join("");
-  renderDocuments(registry,p);renderForestLoss(forestAnalytics,p);el("loading-state").hidden=true;el("profile-content").hidden=false;requestAnimationFrame(function(){renderMap(features,p.NAMOBJ||"PBPH")});
+  renderDocuments(registry,p);renderForestLoss(forestAnalytics,p);el("loading-state").hidden=true;el("profile-content").hidden=false;requestAnimationFrame(function(){renderMap(features,p.NAMOBJ||"PBPH",reports,p)});
 }
 async function init(){
   if(!id){showError("Tautan PBPH tidak lengkap. Pilih areal melalui WebGIS.");return}
