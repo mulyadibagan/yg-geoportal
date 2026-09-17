@@ -36,7 +36,20 @@ async function createJob(request,env){
   if(job.status==='pending')await queueJob(env,job.id);
   return reply(request,{ok:true,job:publicJob(job),accessToken:job.accessToken,limits:{maxFiles:MAX_FILES,maxFileMB:40,maxTotalGB:8}});
 }
-async function getJob(request,env,id,url){const job=await readJson(env,jobKey(id));if(!job)return reply(request,{ok:false,error:'job_not_found'},404);if(!authorizedJob(request,url,job))return reply(request,{ok:false,error:'unauthorized'},401);return reply(request,{ok:true,job:publicJob(job)})}
+async function getJob(request,env,id,url){
+  const job=await readJson(env,jobKey(id));
+  if(!job)return reply(request,{ok:false,error:'job_not_found'},404);
+  if(!authorizedJob(request,url,job))return reply(request,{ok:false,error:'unauthorized'},401);
+  const safe=publicJob(job);
+  if(job.status==='pending'){
+    const queue=await readJson(env,'drone/queue/pending.json',{jobs:[]});
+    const jobs=Array.isArray(queue?.jobs)?queue.jobs.map(String):[];
+    const index=jobs.indexOf(id);
+    safe.queuePosition=index>=0?index+1:null;
+    safe.queueSize=jobs.length;
+  }
+  return reply(request,{ok:true,job:safe});
+}
 async function uploadFile(request,env,id,encodedName,url){
   const job=await readJson(env,jobKey(id));if(!job)return reply(request,{ok:false,error:'job_not_found'},404);if(!authorizedJob(request,url,job))return reply(request,{ok:false,error:'unauthorized'},401);
   if(job.sourceType!=='upload'||!['uploading','pending'].includes(job.status))return reply(request,{ok:false,error:'job_not_uploadable'},409);
