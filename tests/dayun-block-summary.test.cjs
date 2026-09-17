@@ -9,6 +9,15 @@ const map = JSON.parse(fs.readFileSync(path.join(root, 'data/dayun-map.geojson')
 const blocks = JSON.parse(fs.readFileSync(path.join(root, 'data/dayun-blocks.geojson'), 'utf8'));
 const summary = require(path.join(root, 'js/dayun-agro-summary.js')).build(details, map, blocks);
 
+test('ratoon harvest does not reduce the remaining main-crop population', () => {
+  const revised = structuredClone(details);
+  const crop = revised.objects.find(row => row.crops.some(crop => crop.crop === 'NANAS')).crops.find(crop => crop.crop === 'NANAS');
+  crop.pineappleHarvest = [...(crop.pineappleHarvest || []), {period:'2026-09-17', count:100, cycle:'Ratoon I'}];
+  const updated = require(path.join(root, 'js/dayun-agro-summary.js')).build(revised, map, blocks);
+  assert.equal(updated.all.pineappleHarvest, summary.all.pineappleHarvest + 100);
+  assert.equal(updated.all.pineappleUnharvested, summary.all.pineappleUnharvested);
+});
+
 test('estate summary is the sum of block summaries built from unique gawangan', () => {
   assert.deepEqual(summary.codes, ['A', 'B', 'C', 'D', 'E', 'F']);
   assert.equal(summary.all.mappedGawangan, 60);
