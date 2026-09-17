@@ -277,6 +277,44 @@
     return [dateKey,info.activityType||'tanpa-kegiatan',info.crop||'tanpa-komoditas'].join(' · ');
   }
 
+  function dayunReportInfo(report) {
+    if (!report || report.targetLayerId !== 'dayun_gawangan') return null;
+    var info = {};
+    try { info = JSON.parse(report.proposedInformation || '{}'); } catch (error) { return null; }
+    return info.monitoringType === 'Agroforestri Dayun' ? info : null;
+  }
+
+  function uniqueDayunTargets(rows, activityType, status) {
+    var targets = {};
+    rows.forEach(function (report) {
+      var info = dayunReportInfo(report);
+      if (!info || info.activityType !== activityType || report.status !== status) return;
+      var target = reportTargetContext(report);
+      if (target.id) targets[target.id] = true;
+    });
+    return Object.keys(targets).length;
+  }
+
+  function renderDayunCensusOverview() {
+    var target = document.getElementById('dayun-census-overview');
+    if (!target) return;
+    var rows = STAFF_REPORT_DATA.filter(function (report) { return Boolean(dayunReportInfo(report)); });
+    var pending = rows.filter(function (report) { return report.status === 'Menunggu Verifikasi'; }).length;
+    var revision = rows.filter(function (report) { return report.status === 'Perlu Perbaikan'; }).length;
+    var metrics = [
+      ['Menunggu verifikasi', pending, 'laporan'],
+      ['Perlu perbaikan', revision, 'laporan'],
+      ['Sensus tanaman terbit', uniqueDayunTargets(rows, 'Sensus tanaman', 'Sudah Dipublikasikan'), 'gawangan'],
+      ['Sensus bibit terbit', uniqueDayunTargets(rows, 'Sensus bibit', 'Sudah Dipublikasikan'), 'gawangan'],
+      ['Foto terbaru terbit', uniqueDayunTargets(rows, 'Pembaruan foto', 'Sudah Dipublikasikan'), 'gawangan']
+    ];
+    target.innerHTML = '<div class="dayun-census-overview-head"><div><span>STATUS DATA DAYUN</span><strong>Ringkasan laporan faktual</strong></div>' +
+      '<p>Dihitung dari laporan yang tersimpan di server, bukan perkiraan.</p></div>' +
+      '<dl>' + metrics.map(function (metric) {
+        return '<div><dt>' + esc(metric[0]) + '</dt><dd>' + Number(metric[1]).toLocaleString('id-ID') + '</dd><small>' + esc(metric[2]) + '</small></div>';
+      }).join('') + '</dl>';
+  }
+
   function renderPolygonPublicationAudit(rows) {
     var container = document.getElementById('report-polygon-audit');
     var groups = {};
@@ -430,13 +468,26 @@
 
   function renderStaffReportInbox() {
     var list = document.getElementById('report-inbox-list');
+    var scope = document.getElementById('report-inbox-scope').value;
+    var activity = document.getElementById('report-inbox-activity').value;
     var filter = document.getElementById('report-inbox-filter').value;
     var reporter = document.getElementById('report-inbox-reporter').value;
-    var rows = STAFF_REPORT_DATA.filter(function (report) {
+    var scopedRows = STAFF_REPORT_DATA.filter(function (report) {
+      var info = dayunReportInfo(report);
+      if (scope === 'dayun' && !info) return false;
+      if (scope === 'other' && info) return false;
+      return activity === 'all' || Boolean(info && info.activityType === activity);
+    });
+    var rows = scopedRows.filter(function (report) {
       return (filter === 'all' || report.status === filter) &&
         (reporter === 'all' || reporterKey(report) === reporter);
     });
-    var stats = STAFF_REPORT_STATS || {};
+    var stats = {
+      total: scopedRows.length,
+      pending: scopedRows.filter(function (report) { return report.status === 'Menunggu Verifikasi'; }).length,
+      revision: scopedRows.filter(function (report) { return report.status === 'Perlu Perbaikan'; }).length,
+      published: scopedRows.filter(function (report) { return report.status === 'Sudah Dipublikasikan'; }).length
+    };
 
     document.getElementById('report-stat-total').textContent = Number(stats.total || 0).toLocaleString('id-ID');
     document.getElementById('report-stat-pending').textContent = Number(stats.pending || 0).toLocaleString('id-ID');
@@ -449,7 +500,9 @@
       if (target.id) polygonIds[target.id] = true;
     });
     var reporterName = reporter === 'all' ? 'Semua pelapor' : ((rows[0] && rows[0].name) || document.getElementById('report-inbox-reporter').selectedOptions[0].text.split(' · ')[0]);
-    document.getElementById('report-inbox-selection-summary').textContent = reporterName + ' · ' + rows.length.toLocaleString('id-ID') + ' laporan · ' + Object.keys(polygonIds).length.toLocaleString('id-ID') + ' polygon unik';
+    var scopeName = scope === 'dayun' ? 'Dayun' : (scope === 'other' ? 'Selain Dayun' : 'Semua lingkup');
+    var activityName = activity === 'all' ? 'Semua kegiatan' : activity;
+    document.getElementById('report-inbox-selection-summary').textContent = scopeName + ' · ' + activityName + ' · ' + reporterName + ' · ' + rows.length.toLocaleString('id-ID') + ' laporan · ' + Object.keys(polygonIds).length.toLocaleString('id-ID') + ' polygon unik';
     renderPolygonPublicationAudit(rows);
     Array.prototype.forEach.call(document.querySelectorAll('[data-reporter-preview]'), function (button) {
       button.classList.toggle('is-active', reporter !== 'all' && button.dataset.reporterPreview === reporter);
@@ -497,12 +550,14 @@
       STAFF_REPORT_DATA = [];
       STAFF_REPORT_STATS = {};
       feedback.textContent = 'Masuk sebagai staf untuk memuat laporan tim.';
+      renderDayunCensusOverview();
       renderStaffReportInbox();
       return;
     }
     STAFF_REPORT_DATA = (data && data.reports) || [];
     STAFF_REPORT_STATS = (data && data.stats) || {};
     populateReporterFilter();
+    renderDayunCensusOverview();
     feedback.textContent = STAFF_REPORT_DATA.length
       ? STAFF_REPORT_DATA.length.toLocaleString('id-ID') + ' laporan berhasil dimuat dari server.'
       : 'Belum ada laporan tim pada server.';
@@ -1333,6 +1388,8 @@
 
   function bind() {
     document.getElementById('refresh-report-inbox').addEventListener('click', refreshStaffReportInbox);
+    document.getElementById('report-inbox-scope').addEventListener('change', renderStaffReportInbox);
+    document.getElementById('report-inbox-activity').addEventListener('change', renderStaffReportInbox);
     document.getElementById('report-inbox-filter').addEventListener('change', renderStaffReportInbox);
     document.getElementById('report-inbox-reporter').addEventListener('change', renderStaffReportInbox);
     document.getElementById('report-inbox-reporter-summary').addEventListener('click', function (event) {

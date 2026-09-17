@@ -7,7 +7,7 @@
   <link rel="icon" href="assets/logo-yayasan-gambut.png"/>
   <link rel="stylesheet" href="css/site-brand.css?v=20260720-program-dashboard1"/>
   <link rel="stylesheet" href="css/dashboard-v3.css?v=20260722-funding-logo1"/>
-  <link rel="stylesheet" href="css/admin-dashboard.css?v=20260918-dayun-census1"/>
+  <link rel="stylesheet" href="css/admin-dashboard.css?v=20260918-dayun-census2"/>
   <link rel="stylesheet" href="css/language-switcher.css?v=20260721-all-pages1"/>
   <meta name="theme-color" content="#079cde">
 </head>
@@ -86,7 +86,14 @@
             <span><b id="report-stat-revision">0</b>Perlu perbaikan</span>
             <span><b id="report-stat-published">0</b>Dipublikasikan</span>
           </div>
+          <div id="dayun-census-overview" class="dayun-census-overview" aria-label="Ringkasan sensus Dayun"></div>
           <div class="report-inbox-toolbar">
+            <label>Lingkup laporan
+              <select id="report-inbox-scope"><option value="all">Semua laporan</option><option value="dayun">Dayun saja</option><option value="other">Selain Dayun</option></select>
+            </label>
+            <label>Kegiatan Dayun
+              <select id="report-inbox-activity"><option value="all">Semua kegiatan</option><option>Sensus tanaman</option><option>Sensus bibit</option><option>Pembaruan foto</option><option>Pemupukan</option><option>Panen</option></select>
+            </label>
             <label>Status laporan
               <select id="report-inbox-filter"><option value="all">Semua status</option><option value="Menunggu Verifikasi">Menunggu Verifikasi</option><option value="Perlu Perbaikan">Perlu Perbaikan</option><option value="Disetujui">Disetujui</option><option value="Sudah Dipublikasikan">Sudah Dipublikasikan</option><option value="Ditolak">Ditolak</option></select>
             </label>
@@ -360,6 +367,6 @@
 
   <script src="js/config.js?v=20260727-all-layers1"></script>
   <script src="js/auth.js?v=20260917-session4"></script>
-  <script src="js/admin-dashboard.js?v=20260918-dayun-census1"></script>
+  <script src="js/admin-dashboard.js?v=20260918-dayun-census2"></script>
 </body>
 </html>

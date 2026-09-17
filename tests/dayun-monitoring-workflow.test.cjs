@@ -116,7 +116,14 @@ test('admin dashboard exposes the Dayun queue context without exposing drafts pu
   assert.match(html, /Gawangan Dayun/);
   assert.match(html, /dayun-monitoring\.html/);
   assert.match(html, /Sudah Dipublikasikan/);
+  assert.match(html, /id="dayun-census-overview"/);
+  assert.match(html, /id="report-inbox-scope"/);
+  assert.match(html, /id="report-inbox-activity"/);
   assert.match(script, /function dayunMonitoringSummary/);
+  assert.match(script, /function dayunReportInfo/);
+  assert.match(script, /function uniqueDayunTargets/);
+  assert.match(script, /function renderDayunCensusOverview/);
+  assert.match(script, /Dihitung dari laporan yang tersimpan di server, bukan perkiraan/);
   assert.match(script, /Sensus tanaman/);
   assert.match(script, /Tanaman hidup/);
   assert.match(script, /Bibit siap tanam/);
