@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Analisis Komoditas Nanas Queen Dayun | YG GeoPortal</title>
+  <meta name="description" content="Analisis terintegrasi komoditas Nanas Queen pada seluruh gawangan agroforestri Dayun.">
+  <link rel="icon" href="assets/logo-yayasan-gambut.png">
+  <link rel="stylesheet" href="css/style.css?v=20260723-revert-layout">
+  <link rel="stylesheet" href="css/navigation-v2.css?v=20260807-mobile-submenu-links1">
+  <link rel="stylesheet" href="css/dayun.css?v=20260917-crop-detail1">
+  <link rel="stylesheet" href="css/dayun-analisis-nanas.css?v=20260917-analysis1">
+</head>
+<body data-dayun-page="pineapple-analysis" data-dayun-mode="public">
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html"><img src="assets/logo-yayasan-gambut.png" alt="Logo Yayasan Gambut"><span><strong>YG GeoPortal</strong><span>WebGIS Yayasan Gambut</span></span></a>
+      <button class="yg-nav-toggle" type="button" aria-label="Buka menu" aria-expanded="false" data-yg-nav-toggle="main-navigation">☰</button>
+      <nav class="nav yg-nav-v2" id="main-navigation" aria-label="Navigasi utama" data-yg-navigation><a href="index.html">Beranda</a><a href="webgis.html">Peta Interaktif</a><a href="dayun.html">Program Dayun</a><a href="dayun-map.html">Peta Agroforestri</a><a href="staff-login.html">Login Staf</a></nav>
+    </div>
+  </header>
+  <main class="dy-shell dy-pa-page">
+    <nav class="dy-map-breadcrumb" aria-label="Navigasi halaman"><a class="dy-back-link" href="dayun-map.html">← Kembali ke peta agroforestri</a><span>Analisis komoditas</span></nav>
+    <section class="dy-pa-hero">
+      <div><span>ANALISIS KOMODITAS · NANAS</span><h1>Nanas Queen Dayun</h1><p>Analisis tanaman, pemupukan, ethrel, pembungaan, panen, dan HPT yang dapat ditelusuri sampai ke setiap gawangan.</p></div>
+      <aside><small>VARIETAS TERCATAT</small><strong>Queen</strong><span>Nanas Madu belum dimasukkan hingga data tanam dan SOP khusus tersedia.</span></aside>
+    </section>
+    <div class="dy-pa-toolbar">
+      <label for="pa-block">Tampilkan wilayah<select id="pa-block"><option value="ALL">Seluruh Blok A–F</option><option value="A">Blok A</option><option value="B">Blok B</option><option value="C">Blok C</option><option value="D">Blok D</option><option value="E">Blok E</option><option value="F">Blok F</option></select></label>
+      <p id="pa-data-date">Memuat tanggal data…</p>
+    </div>
+    <div id="pa-status" class="dy-summary-loading" role="status">Menghitung analisis Nanas Queen dari data gawangan…</div>
+    <div id="pa-content" hidden>
+      <section class="dy-summary-kpis dy-pa-kpis" id="pa-kpis" aria-label="Ringkasan Nanas Queen"></section>
+      <p class="dy-pa-caveat">Jumlah “belum tercatat panen” adalah selisih administratif antara populasi dan buah panen yang tercatat. Angka ini bukan ramalan produksi dan perlu pemeriksaan kelompok tanaman di lapangan.</p>
+
+      <section class="dy-section">
+        <div class="dy-section-head"><div><span>REKOMENDASI KEGIATAN</span><h2>Keputusan berbasis data dan verifikasi</h2></div><p>Sistem menunjukkan prioritas pemeriksaan. Dosis, jadwal aplikasi, dan keputusan panen tetap dikonfirmasi pendamping teknis.</p></div>
+        <div class="dy-pa-recommendations" id="pa-recommendations"></div>
+      </section>
+
+      <section class="dy-section">
+        <div class="dy-section-head"><div><span>RIWAYAT PRODUKSI</span><h2>Panen Nanas Queen menurut bulan</h2></div><p>Grafik merupakan penjumlahan catatan panen pada gawangan yang sedang dipilih.</p></div>
+        <div class="dy-pa-chart-card"><div class="dy-pa-chart-summary" id="pa-chart-summary"></div><div class="dy-pa-chart" id="pa-harvest-chart" role="img" aria-label="Grafik panen Nanas Queen menurut bulan"></div></div>
+      </section>
+
+      <section class="dy-section">
+        <div class="dy-section-head"><div><span>PERBANDINGAN BLOK</span><h2>Nanas Queen pada Blok A–F</h2></div><p>Blok dengan angka nol ditampilkan sebagai data yang belum lengkap, bukan disimpulkan tidak memiliki tanaman.</p></div>
+        <div class="dy-block-table-wrap"><table class="dy-block-table"><thead><tr><th>Blok</th><th>Gawangan aktif</th><th>Populasi</th><th>Luas operasional</th><th>Ethrel</th><th>Bunga/buah</th><th>Panen</th><th>Aktivitas terakhir</th></tr></thead><tbody id="pa-block-table"></tbody></table></div>
+      </section>
+
+      <section class="dy-section">
+        <div class="dy-section-head"><div><span>PRIORITAS GAWANGAN</span><h2>Daftar pemeriksaan lapangan</h2></div><p>Urutan mendahulukan gawangan dengan bunga/buah, riwayat ethrel, atau data yang perlu dilengkapi.</p></div>
+        <div class="dy-block-table-wrap"><table class="dy-block-table dy-pa-gawangan-table"><thead><tr><th>Gawangan</th><th>Umur perkiraan</th><th>Populasi</th><th>Ethrel</th><th>Bunga/buah</th><th>Panen</th><th>Prioritas</th><th></th></tr></thead><tbody id="pa-gawangan-table"></tbody></table></div>
+      </section>
+    </div>
+  </main>
+  <footer class="dy-footer">YG GeoPortal · Analisis Komoditas Nanas Queen Dayun</footer>
+  <script src="js/navigation-v2.js?v=20260821-staff-name1"></script>
+  <script src="js/dayun-pineapple-analysis.js?v=20260917-analysis1"></script>
+  <script src="js/dayun-analisis-nanas.js?v=20260917-analysis1"></script>
+</body>
+</html>
