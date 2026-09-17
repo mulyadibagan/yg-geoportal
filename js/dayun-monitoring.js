@@ -84,6 +84,7 @@
   function clearTechnicalFields() {
     Array.prototype.forEach.call(document.querySelectorAll('.dm-activity-panel input,.dm-activity-panel select,.dm-activity-panel textarea,.dm-sop-panel input,.dm-sop-panel select,.dm-sop-panel textarea'), function (field) {
       if (field.id === 'dm-fert-phase') field.value = 'base';
+      else if (field.id === 'dm-ethrel-variety') field.value = 'Queen';
       else field.value = '';
     });
     $('dm-fert-materials').innerHTML = '';

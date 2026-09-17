@@ -52,6 +52,7 @@ test('commodity and activity fields follow the selected gawangan and work type',
   assert.match(html, /id="dm-panel-ethrel"/);
   assert.match(html, /id="dm-ethrel-variety" value="Queen"/);
   assert.match(script, /pineappleVariety: 'Queen'/);
+  assert.match(script, /field\.id === 'dm-ethrel-variety'\) field\.value = 'Queen'/);
   assert.match(script, /weatherSuitability/);
   assert.match(html, /id="dm-panel-harvest"/);
   assert.match(html, /id="dm-panel-observation"/);
