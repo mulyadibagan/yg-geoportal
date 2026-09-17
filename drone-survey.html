@@ -4,10 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Drone Survey & Mapping | YG GeoPortal</title>
-  <meta name="description" content="Perencanaan misi drone, pemeriksaan kualitas foto, dan tampilan orthomosaic ringan untuk YG GeoPortal.">
+  <meta name="description" content="Perencanaan misi drone, pemeriksaan kualitas foto, pemrosesan orthomosaic, dan tampilan peta ringan untuk YG GeoPortal.">
   <link rel="icon" href="assets/logo-yayasan-gambut.png">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
-  <link rel="stylesheet" href="css/drone-survey.css?v=20260918-1">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css">
+  <link rel="stylesheet" href="css/drone-survey.css?v=20260918-2">
 </head>
 <body>
   <header class="drone-topbar">
@@ -19,23 +20,53 @@
     <section class="hero">
       <div>
         <span class="eyebrow">TOOLS · DRONE SURVEY & MAPPING</span>
-        <h1>Misi drone, QC foto, dan orthomosaic dalam satu alur.</h1>
-        <p>Modul umum untuk survei agroforestri, mangrove, abrasi, restorasi, kebakaran, dan kebutuhan pemetaan lainnya.</p>
+        <h1>Misi drone sampai orthomosaic dalam satu alur.</h1>
+        <p>Gunakan untuk agroforestri, mangrove, abrasi, restorasi, kebakaran, dan kebutuhan pemetaan lainnya.</p>
       </div>
-      <div class="hero-actions">
-        <button class="primary" data-tab-target="mission">Buat misi</button>
-        <button data-tab-target="orthomosaic">Lihat orthomosaic</button>
-      </div>
+      <div class="hero-actions"><button class="primary" data-tab-target="process">Buat orthomosaic</button><button data-tab-target="mission">Rencana misi</button></div>
     </section>
 
     <section class="tabs" aria-label="Navigasi modul drone">
-      <button class="tab active" data-tab="mission">Rencana Misi</button>
+      <button class="tab active" data-tab="process">Orthomosaic</button>
+      <button class="tab" data-tab="mission">Rencana Misi</button>
       <button class="tab" data-tab="qc">QC Foto</button>
-      <button class="tab" data-tab="orthomosaic">Orthomosaic</button>
       <button class="tab" data-tab="archive">Arsip</button>
     </section>
 
-    <section class="panel active" id="panel-mission">
+    <section class="panel active" id="panel-process">
+      <div class="grid two source-grid">
+        <article class="card">
+          <div class="card-head"><div><h2>1. Pilih sumber foto</h2><p>Cukup pilih salah satu cara di bawah.</p></div><span class="status neutral" id="authStatus">Memeriksa login…</span></div>
+          <label class="wide-label">Nama survei / lokasi<input id="processTitle" type="text" placeholder="Contoh: Dayun Blok A - September 2026"></label>
+          <div class="source-choice active" data-source-choice="drive">
+            <label class="choice-head"><input type="radio" name="processSource" value="drive" checked><span><strong>Google Drive</strong><small>Tempel link folder yang berisi foto mentah drone.</small></span></label>
+            <input id="driveFolderUrl" type="url" placeholder="https://drive.google.com/drive/folders/…">
+            <p class="microcopy">Untuk pemrosesan otomatis dari link, folder perlu dapat dibaca melalui link. Folder privat tetap bisa diproses dengan pilihan Upload Foto.</p>
+          </div>
+          <div class="source-choice" data-source-choice="upload">
+            <label class="choice-head"><input type="radio" name="processSource" value="upload"><span><strong>Upload foto</strong><small>Pilih semua JPG/JPEG hasil satu misi drone.</small></span></label>
+            <input id="processPhotoInput" type="file" accept="image/jpeg" multiple disabled>
+            <div id="selectedFilesText" class="microcopy">Belum ada foto dipilih.</div>
+          </div>
+          <div class="actions"><button id="startOrthomosaic" class="primary">Proses Orthomosaic</button></div>
+          <div id="uploadProgress" class="progress-wrap" hidden><div class="progress"><span id="uploadProgressBar"></span></div><small id="uploadProgressText">Menyiapkan…</small></div>
+        </article>
+
+        <article class="card">
+          <div class="card-head"><div><h2>2. Status pemrosesan</h2><p>Foto non-nadir otomatis dikeluarkan dari proses tanpa menghapus file mentah.</p></div><button id="refreshJob" disabled>Muat ulang</button></div>
+          <div id="jobState" class="job-state empty">Belum ada proses aktif.</div>
+          <div class="qc-summary" id="serverQcSummary" hidden></div>
+          <div id="jobActions" class="actions" hidden><button id="showResult" class="primary">Tampilkan di peta</button></div>
+        </article>
+      </div>
+      <article class="card result-map-card">
+        <div class="card-head"><div><h2>3. Hasil orthomosaic</h2><p>Yang dimuat ke browser adalah COG teroptimasi. Peta membaca hanya bagian raster yang sedang terlihat.</p></div><label class="opacity">Opacity <input id="resultOpacity" type="range" min="0" max="1" step="0.05" value="0.85"></label></div>
+        <div id="resultMap" class="map map-large"></div>
+        <div class="map-footnote" id="resultInfo">Orthomosaic akan tampil di sini setelah proses selesai.</div>
+      </article>
+    </section>
+
+    <section class="panel" id="panel-mission">
       <div class="grid two">
         <article class="card">
           <h2>Parameter misi</h2>
@@ -62,13 +93,9 @@
     <section class="panel" id="panel-qc">
       <div class="grid two">
         <article class="card">
-          <h2>Quality Check foto</h2>
-          <p>Foto mentah tetap disimpan. Foto non-nadir atau bermasalah hanya dikeluarkan dari proses orthomosaic.</p>
-          <div class="dropzone" id="photoDropzone">
-            <strong>Pilih foto untuk pemeriksaan lokal</strong>
-            <span>JPG/JPEG. Pemeriksaan ini tidak mengunggah file ke server.</span>
-            <input id="photoInput" type="file" accept="image/jpeg" multiple>
-          </div>
+          <h2>QC cepat sebelum upload</h2>
+          <p>Pemeriksaan dilakukan di browser. Foto tidak dikirim ke server pada tahap ini.</p>
+          <div class="dropzone" id="photoDropzone"><strong>Pilih foto untuk pemeriksaan lokal</strong><span>JPG/JPEG · metadata DJI dibaca langsung dari file.</span><input id="photoInput" type="file" accept="image/jpeg" multiple></div>
           <div class="qc-summary" id="qcSummary" hidden></div>
         </article>
         <article class="card">
@@ -78,28 +105,15 @@
       </div>
     </section>
 
-    <section class="panel" id="panel-orthomosaic">
-      <div class="grid map-layout">
-        <article class="card catalogue">
-          <div class="card-head"><div><h2>Orthomosaic</h2><p>Master tetap di Drive. Peta hanya memuat tiles saat layer dinyalakan.</p></div><button id="refreshCatalog">Muat ulang</button></div>
-          <div id="orthoList" class="ortho-list"><div class="empty">Memuat katalog…</div></div>
-        </article>
-        <article class="card map-card">
-          <div class="card-head"><div><h2>Peta orthomosaic</h2><p>Tile dimuat sesuai area layar dan level zoom, bukan seluruh GeoTIFF.</p></div><label class="opacity">Opacity <input id="orthoOpacity" type="range" min="0" max="1" step="0.05" value="0.85"></label></div>
-          <div id="orthoMap" class="map map-large"></div>
-          <div class="map-footnote" id="orthoInfo">Pilih orthomosaic dari katalog untuk menampilkannya.</div>
-        </article>
-      </div>
-    </section>
-
     <section class="panel" id="panel-archive">
-      <article class="card"><h2>Arsip misi</h2><p>Riwayat misi akan ditampilkan dari metadata ringan. Foto RAW, GeoTIFF master, DSM dan point cloud tetap berada di penyimpanan utama.</p><div id="missionArchive" class="empty">Belum ada arsip yang dipublikasikan ke katalog.</div></article>
+      <article class="card"><div class="card-head"><div><h2>Arsip pemrosesan pada perangkat ini</h2><p>Riwayat job yang pernah dibuat dari browser ini.</p></div><button id="refreshArchive">Muat ulang</button></div><div id="missionArchive" class="ortho-list empty">Belum ada arsip.</div></article>
     </section>
   </main>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
   <script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css">
-  <script src="js/drone-survey.js?v=20260918-1"></script>
+  <script src="https://unpkg.com/georaster@1.6.0/dist/georaster.browser.bundle.min.js"></script>
+  <script src="https://unpkg.com/georaster-layer-for-leaflet@3.10.0/dist/georaster-layer-for-leaflet.min.js"></script>
+  <script src="js/drone-survey.js?v=20260918-2"></script>
 </body>
 </html>
