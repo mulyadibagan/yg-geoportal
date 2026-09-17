@@ -11,8 +11,27 @@ def save(path, value):
     with open(path, 'w', encoding='utf-8') as f:
         json.dump(value, f, ensure_ascii=False, indent=2)
 
+def now_iso():
+    return datetime.now(timezone.utc).isoformat()
+
+def add_history(d, stage, progress, label):
+    history=d.get('stageHistory') if isinstance(d.get('stageHistory'), list) else []
+    history.append({'stage':stage,'progress':progress,'label':label,'at':now_iso()})
+    d['stageHistory']=history[-30:]
+
 def mark(path, status, **kwargs):
     d=load(path); d['status']=status; d.update(kwargs); save(path,d)
+
+def set_stage(path, stage, progress, label, **kwargs):
+    d=load(path)
+    d['status']='processing'
+    d['stage']=stage
+    d['progress']=max(0,min(100,int(progress)))
+    d['stageLabel']=label
+    d['stageUpdatedAt']=now_iso()
+    d.update(kwargs)
+    add_history(d,stage,d['progress'],label)
+    save(path,d)
 
 def qc(input_dir, rejected_dir, valid_list):
     os.makedirs(rejected_dir, exist_ok=True)
@@ -40,14 +59,22 @@ def qc(input_dir, rejected_dir, valid_list):
 def main():
     p=argparse.ArgumentParser(); sub=p.add_subparsers(dest='cmd',required=True)
     a=sub.add_parser('processing'); a.add_argument('job')
+    a=sub.add_parser('stage'); a.add_argument('job'); a.add_argument('stage'); a.add_argument('progress',type=int); a.add_argument('label'); a.add_argument('--valid',type=int); a.add_argument('--excluded',type=int)
     a=sub.add_parser('qc'); a.add_argument('input'); a.add_argument('rejected'); a.add_argument('valid_list'); a.add_argument('summary')
     a=sub.add_parser('ready'); a.add_argument('job'); a.add_argument('gdalinfo'); a.add_argument('summary')
     a=sub.add_parser('failed'); a.add_argument('job'); a.add_argument('--error',default='processing_failed')
-    args=p.parse_args(); now=datetime.now(timezone.utc).isoformat()
-    if args.cmd=='processing': mark(args.job,'processing',processingStartedAt=now)
+    args=p.parse_args(); now=now_iso()
+    if args.cmd=='processing':
+        d=load(args.job); d.update({'status':'processing','processingStartedAt':now,'stage':'starting','progress':5,'stageLabel':'Memulai pemrosesan','stageUpdatedAt':now}); add_history(d,'starting',5,'Memulai pemrosesan'); save(args.job,d)
+    elif args.cmd=='stage':
+        extra={}
+        if args.valid is not None: extra['validPhotos']=args.valid
+        if args.excluded is not None: extra['excludedPhotos']=args.excluded
+        set_stage(args.job,args.stage,args.progress,args.label,**extra)
     elif args.cmd=='qc':
         valid,rejected=qc(args.input,args.rejected,args.valid_list); save(args.summary,{'validPhotos':valid,'excludedPhotos':len(rejected),'excluded':rejected}); print(valid)
     elif args.cmd=='ready':
-        d=load(args.job); info=load(args.gdalinfo); q=load(args.summary); d.update({'status':'ready','completedAt':now,'validPhotos':q['validPhotos'],'excludedPhotos':q['excludedPhotos'],'excluded':q.get('excluded',[]),'cogKey':f"drone/results/{d['id']}/orthomosaic.cog.tif",'gdal':{'size':info.get('size'),'coordinateSystem':info.get('coordinateSystem'),'cornerCoordinates':info.get('cornerCoordinates') or {}}}); save(args.job,d)
-    elif args.cmd=='failed': mark(args.job,'failed',failedAt=now,error=args.error)
+        d=load(args.job); info=load(args.gdalinfo); q=load(args.summary); d.update({'status':'ready','stage':'complete','progress':100,'stageLabel':'Selesai','stageUpdatedAt':now,'completedAt':now,'validPhotos':q['validPhotos'],'excludedPhotos':q['excludedPhotos'],'excluded':q.get('excluded',[]),'cogKey':f"drone/results/{d['id']}/orthomosaic.cog.tif",'gdal':{'size':info.get('size'),'coordinateSystem':info.get('coordinateSystem'),'cornerCoordinates':info.get('cornerCoordinates') or {}}}); add_history(d,'complete',100,'Selesai'); save(args.job,d)
+    elif args.cmd=='failed':
+        d=load(args.job); d.update({'status':'failed','stage':'failed','stageLabel':'Pemrosesan terhenti','stageUpdatedAt':now,'failedAt':now,'error':args.error}); add_history(d,'failed',int(d.get('progress') or 0),'Pemrosesan terhenti'); save(args.job,d)
 if __name__=='__main__': main()
