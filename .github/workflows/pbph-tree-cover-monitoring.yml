@@ -30,8 +30,8 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
         run: |
-          mkdir -p ../../../tmp/pbph
-          npx wrangler r2 object get "yg-webgis-public-snapshots/internal/pbph/riau.geojson" --remote --file ../../../tmp/pbph/riau.geojson
+          mkdir -p ../../tmp/pbph
+          npx wrangler r2 object get "yg-webgis-public-snapshots/internal/pbph/riau.geojson" --remote --file ../../tmp/pbph/riau.geojson
       - name: Calculate annual loss from 2001
         env:
           PBPH_FOREST_SOURCE: ${{ github.workspace }}/tmp/pbph/riau.geojson
@@ -46,5 +46,5 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
         run: |
-          npx wrangler r2 object put "yg-webgis-public-snapshots-staging/internal/pbph/tree-cover-monitoring.json" --remote --file ../../../tmp/pbph/tree-cover-monitoring.json --content-type application/json
-          npx wrangler r2 object put "yg-webgis-public-snapshots/internal/pbph/tree-cover-monitoring.json" --remote --file ../../../tmp/pbph/tree-cover-monitoring.json --content-type application/json
+          npx wrangler r2 object put "yg-webgis-public-snapshots-staging/internal/pbph/tree-cover-monitoring.json" --remote --file ../../tmp/pbph/tree-cover-monitoring.json --content-type application/json
+          npx wrangler r2 object put "yg-webgis-public-snapshots/internal/pbph/tree-cover-monitoring.json" --remote --file ../../tmp/pbph/tree-cover-monitoring.json --content-type application/json
