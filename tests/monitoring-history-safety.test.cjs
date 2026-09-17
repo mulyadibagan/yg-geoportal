@@ -133,6 +133,8 @@ test("monitoring dashboard filters reporters and orders same-day reports by subm
   assert.match(html, /id="monitor-reporter"/);
   assert.match(html, /id="monitor-submit-date"/);
   assert.match(html, /id="monitor-map"/);
+  assert.doesNotMatch(html, /monitor-map-card monitoring-detail-only/);
+  assert.match(html, /class="toolbar monitor-filter-toolbar"/);
   assert.match(html, /leaflet@1\.9\.4/);
   assert.match(html, /Submit terbaru/);
   assert.match(source, /submittedAt:p\.receivedAt\|\|p\.submittedAt/);
