@@ -79,15 +79,39 @@ jobs:
           SOURCE=$(jq -r '.sourceType' "$ROOT/job.json")
           if [ "$SOURCE" = "drive" ]; then
             DRIVE_URL=$(jq -r '.driveUrl' "$ROOT/job.json")
-            if ! python ../../scripts/download_drive_folder.py "$DRIVE_URL" "$ROOT/input" "$ROOT/drive-download.json" --passes 4 --retries 3 --timeout 60; then
+            python ../../scripts/download_drive_folder.py "$DRIVE_URL" "$ROOT/input" "$ROOT/drive-download.json" --passes 4 --retries 3 --timeout 60 --progress-interval 5 &
+            DOWNLOAD_PID=$!
+            LAST_COUNT=-1
+            while kill -0 "$DOWNLOAD_PID" 2>/dev/null; do
+              if [ -f "$ROOT/drive-download.json" ]; then
+                EXPECTED=$(jq -r '.expectedPhotos // 0' "$ROOT/drive-download.json")
+                DOWNLOADED=$(jq -r '.downloadedPhotos // 0' "$ROOT/drive-download.json")
+                if [ "$EXPECTED" -gt 0 ] && [ "$DOWNLOADED" -ne "$LAST_COUNT" ]; then
+                  PROGRESS=$((15 + (DOWNLOADED * 14 / EXPECTED)))
+                  [ "$PROGRESS" -gt 29 ] && PROGRESS=29
+                  python ../../scripts/drone_job.py stage "$ROOT/job.json" downloading "$PROGRESS" "Mengambil foto $DOWNLOADED/$EXPECTED" --downloaded "$DOWNLOADED" --expected "$EXPECTED"
+                  publish_status
+                  LAST_COUNT=$DOWNLOADED
+                fi
+              fi
+              sleep 8
+            done
+            if ! wait "$DOWNLOAD_PID"; then
               echo "drive_download_incomplete" > "$ROOT/error_code"
               exit 42
             fi
+            EXPECTED=$(jq -r '.expectedPhotos // 0' "$ROOT/drive-download.json")
+            DOWNLOADED=$(jq -r '.downloadedPhotos // 0' "$ROOT/drive-download.json")
+            python ../../scripts/drone_job.py stage "$ROOT/job.json" downloading 29 "Foto diterima $DOWNLOADED/$EXPECTED" --downloaded "$DOWNLOADED" --expected "$EXPECTED"
+            publish_status
           else
+            TOTAL=$(jq -r '.files | length' "$ROOT/job.json")
+            INDEX=0
             jq -r '.files[]?.key' "$ROOT/job.json" | while read -r KEY; do
               [ -z "$KEY" ] && continue
               NAME=$(basename "$KEY")
               npx wrangler r2 object get "yg-webgis-public-snapshots/$KEY" --remote --file "$ROOT/input/$NAME"
+              INDEX=$((INDEX+1))
             done
           fi
 
