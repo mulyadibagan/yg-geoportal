@@ -925,6 +925,7 @@ function findSameDayMonitoringDuplicates_(sheet, data) {
   return sheet.getRange(2, 1, sheet.getLastRow() - 1, 32).getValues()
     .filter(function(row) {
       if (clean_(row[1]) !== 'Monitoring') return false;
+      if (['Duplikat', 'Ditolak'].indexOf(clean_(row[21])) !== -1) return false;
       const existingTarget = monitoringPermanentObjectId_(row[30], row[31], '');
       return existingTarget === targetObjectId && monitoringDateKey_(row[13]) === activityDate;
     })
@@ -937,6 +938,55 @@ function findSameDayMonitoringDuplicates_(sheet, data) {
         status: clean_(row[21])
       };
     });
+}
+
+function findSameDayMonitoringDuplicateRows_(sheet, rowNumber) {
+  if (!sheet || sheet.getLastRow() < 2) return [];
+  const rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, 32)
+    .getDisplayValues();
+  const index = Number(rowNumber) - 2;
+  const current = rows[index];
+  if (!current || clean_(current[1]) !== 'Monitoring') return [];
+
+  const targetObjectId = monitoringPermanentObjectId_(
+    current[30],
+    current[31],
+    ''
+  );
+  const activityDate = monitoringDateKey_(current[13]);
+  if (!targetObjectId || !activityDate) return [];
+
+  return rows.map(function(row, rowIndex) {
+    return { row: row, rowNumber: rowIndex + 2 };
+  }).filter(function(item) {
+    if (item.rowNumber === Number(rowNumber)) return false;
+    if (clean_(item.row[1]) !== 'Monitoring') return false;
+    if (['Duplikat', 'Ditolak'].indexOf(clean_(item.row[21])) !== -1) {
+      return false;
+    }
+    return monitoringPermanentObjectId_(item.row[30], item.row[31], '') === targetObjectId &&
+      monitoringDateKey_(item.row[13]) === activityDate;
+  }).map(function(item) {
+    return {
+      rowNumber: item.rowNumber,
+      reportId: clean_(item.row[0]),
+      status: clean_(item.row[21]),
+      targetObjectId: targetObjectId,
+      activityDate: activityDate
+    };
+  });
+}
+
+function assertMonitoringPublicationIsUnique_(sheet, rowNumber) {
+  const duplicates = findSameDayMonitoringDuplicateRows_(sheet, rowNumber);
+  if (!duplicates.length) return true;
+  throw new Error(
+    'Publikasi diblokir: ada laporan monitoring lain untuk Object_ID dan tanggal kegiatan yang sama (' +
+    duplicates.map(function(item) {
+      return item.reportId + ' — ' + (item.status || 'tanpa status');
+    }).join(', ') +
+    '). Tandai laporan yang tidak dipakai sebagai Duplikat atau Ditolak terlebih dahulu.'
+  );
 }
 
 function getPendingDuplicateCandidates_(requestedLayerId) {
@@ -1128,6 +1178,7 @@ function buildReportDashboardData_() {
         approved: 0,
         rejected: 0,
         revision: 0,
+        duplicate: 0,
         published: 0
       },
       reports: [],
@@ -1141,7 +1192,35 @@ function buildReportDashboardData_() {
     .getRange(2, 1, sheet.getLastRow() - 1, 32)
     .getDisplayValues();
 
+  const monitoringDuplicateGroups = {};
+  rows.forEach(function(row, index) {
+    if (clean_(row[1]) !== 'Monitoring') return;
+    if (['Duplikat', 'Ditolak'].indexOf(clean_(row[21])) !== -1) return;
+    const objectId = monitoringPermanentObjectId_(row[30], row[31], '');
+    const activityDate = monitoringDateKey_(row[13]);
+    if (!objectId || !activityDate) return;
+    const key = objectId + '|' + activityDate;
+    if (!monitoringDuplicateGroups[key]) monitoringDuplicateGroups[key] = [];
+    monitoringDuplicateGroups[key].push({
+      rowNumber: index + 2,
+      reportId: clean_(row[0]),
+      status: clean_(row[21]),
+      targetObjectId: objectId,
+      activityDate: activityDate
+    });
+  });
+
   const reports = rows.map(function(row, index) {
+    const objectId = monitoringPermanentObjectId_(row[30], row[31], '');
+    const activityDateKey = monitoringDateKey_(row[13]);
+    const duplicateKey = objectId && activityDateKey
+      ? objectId + '|' + activityDateKey
+      : '';
+    const duplicateCandidates = duplicateKey && monitoringDuplicateGroups[duplicateKey]
+      ? monitoringDuplicateGroups[duplicateKey].filter(function(item) {
+          return item.rowNumber !== index + 2;
+        })
+      : [];
     return {
       rowNumber: index + 2,
       id: row[0],
@@ -1177,7 +1256,8 @@ function buildReportDashboardData_() {
       targetLayerId: row[28],
       targetLayerLabel: row[29],
       targetFeatureProperties: row[30],
-      proposedChanges: row[31]
+      proposedChanges: row[31],
+      monitoringDuplicates: duplicateCandidates
     };
   }).reverse();
 
@@ -1188,6 +1268,7 @@ function buildReportDashboardData_() {
       approved: reports.filter(r => r.status === 'Disetujui').length,
       rejected: reports.filter(r => r.status === 'Ditolak').length,
       revision: reports.filter(r => r.status === 'Perlu Perbaikan').length,
+      duplicate: reports.filter(r => r.status === 'Duplikat').length,
       published: reports.filter(r => r.status === 'Sudah Dipublikasikan').length
     },
     reports: reports,
@@ -1262,6 +1343,7 @@ function updateReportStatus(token, rowNumber, newStatus, adminNote, targetLayerI
     'Perlu Perbaikan',
     'Disetujui',
     'Ditolak',
+    'Duplikat',
     'Sudah Dipublikasikan'
   ];
 
@@ -1346,6 +1428,7 @@ function updateReportStatus(token, rowNumber, newStatus, adminNote, targetLayerI
     'Perlu Perbaikan': '#ffe6bd',
     'Disetujui': '#dff4e7',
     'Ditolak': '#fde2e2',
+    'Duplikat': '#eee7ff',
     'Sudah Dipublikasikan': '#dceeff'
   };
 
@@ -1836,6 +1919,7 @@ function validateReportForPublication_(sheet, rowNumber) {
   }
 
   if (reportType === 'Monitoring') {
+    assertMonitoringPublicationIsUnique_(sheet, rowNumber);
     if (targetLayerId === 'area_mangrove') {
       let monitoring = {};
       let targetProperties = {};

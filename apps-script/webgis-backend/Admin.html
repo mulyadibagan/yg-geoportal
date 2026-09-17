@@ -13,13 +13,13 @@
     .wrap{width:100%;max-width:1320px;min-width:0;margin:auto}
     .hero{padding:24px;border-radius:16px;background:linear-gradient(135deg,var(--blue-dark),var(--blue));color:#fff}
     .hero h1{margin:0 0 5px}.hero p{margin:0;color:rgba(255,255,255,.9)}
-    .stats{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:9px;margin:13px 0}
+    .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:9px;margin:13px 0}
     .stat{padding:14px;border:1px solid var(--border);border-radius:11px;background:#fff}
     .stat strong{display:block;color:var(--blue-dark);font-size:23px}.stat span{font-size:10px;color:var(--muted)}
     .toolbar{display:flex;min-width:0;gap:9px;margin:13px 0}.toolbar input,.toolbar select{min-width:0;padding:10px;border:1px solid var(--border);border-radius:8px;background:#fff}.toolbar input{flex:1}
     button{border:0;border-radius:8px;padding:9px 11px;color:#fff;font-weight:bold;cursor:pointer}
     button:disabled{cursor:wait;opacity:.65}
-    .refresh{background:var(--blue)}.preview{background:#6f2dbd}.approve{background:#1f8a52}.publish{background:#076b9c}.revision{background:#d98a00}.reject{background:#c43c3c}
+    .refresh{background:var(--blue)}.preview{background:#6f2dbd}.approve{background:#1f8a52}.publish{background:#076b9c}.revision{background:#d98a00}.reject{background:#c43c3c}.duplicate{background:#6d4bb5}
     .list{display:grid;min-width:0;gap:10px}.item{min-width:0;max-width:100%;padding:15px;border:1px solid var(--border);border-radius:13px;background:#fff;overflow:hidden}
     .item-head{display:flex;min-width:0;justify-content:space-between;gap:10px}.item-head>div{min-width:0}.item h3{margin:0 0 4px;color:var(--brown);overflow-wrap:anywhere}
     .meta{font-size:10px;color:var(--muted);overflow-wrap:anywhere}.status{flex:0 0 auto;padding:5px 8px;border-radius:999px;background:#fff4cc;font-size:9px;font-weight:bold;white-space:nowrap}
@@ -80,6 +80,7 @@
       <option value="Perlu Perbaikan">Perlu Perbaikan</option>
       <option value="Disetujui">Disetujui</option>
       <option value="Ditolak">Ditolak</option>
+      <option value="Duplikat">Duplikat</option>
       <option value="Sudah Dipublikasikan">Sudah Dipublikasikan</option>
     </select>
     <button class="refresh" type="button" onclick="loadData()">Muat Ulang</button>
@@ -164,7 +165,7 @@ function loadData(){
 function renderStats(s){
   var values = [
     ['Total',s.total||0],['Menunggu',s.pending||0],['Perlu Perbaikan',s.revision||0],
-    ['Disetujui',s.approved||0],['Ditolak',s.rejected||0],['Dipublikasikan',s.published||0]
+    ['Disetujui',s.approved||0],['Ditolak',s.rejected||0],['Duplikat',s.duplicate||0],['Dipublikasikan',s.published||0]
   ];
   var html = '';
   for(var i=0;i<values.length;i++){
@@ -251,6 +252,9 @@ function renderReports(){
     html += '<button class="approve" type="button" onclick="changeStatus('+report.rowNumber+',&quot;Disetujui&quot;)">Setujui</button>';
     html += '<button class="publish" type="button" onclick="changeStatus('+report.rowNumber+',&quot;Sudah Dipublikasikan&quot;)">Publikasikan</button>';
     html += '<button class="revision" type="button" onclick="changeStatus('+report.rowNumber+',&quot;Perlu Perbaikan&quot;)">Perlu Perbaikan</button>';
+    if(isMonitoringReport(report) && monitoringDuplicate && monitoringDuplicate.candidates.length){
+      html += '<button class="duplicate" type="button" onclick="changeStatus('+report.rowNumber+',&quot;Duplikat&quot;)">Tandai Duplikat</button>';
+    }
     html += '<button class="reject" type="button" onclick="changeStatus('+report.rowNumber+',&quot;Ditolak&quot;)">Tolak</button>';
     html += '</div></div></article>';
   }
@@ -650,6 +654,14 @@ function parseJsonObject(value){
 }
 
 function extractMonitoringDuplicate(report){
+  if(report && Array.isArray(report.monitoringDuplicates)){
+    if(!report.monitoringDuplicates.length) return null;
+    return{
+      targetObjectId:String(report.monitoringDuplicates[0].targetObjectId || ''),
+      activityDate:String(report.monitoringDuplicates[0].activityDate || ''),
+      candidates:report.monitoringDuplicates
+    };
+  }
   var changes = parseJsonObject(report && report.proposedChanges);
   var warning = changes.Potensi_Duplikat_Monitoring;
   if(!warning || typeof warning !== 'object') return null;
@@ -721,8 +733,15 @@ function changeStatus(rowNumber,newStatus){
     if(targetLayerElement){targetLayerElement.focus();}
     return;
   }
+  if(newStatus === 'Duplikat' && !String(note||'').trim()){
+    note = 'Duplikat Object_ID dan tanggal kegiatan yang sama; tidak dipublikasikan.';
+    if(noteElement){noteElement.value = note;}
+  }
   var targetLayerLabel = targetLayerLabelById(targetLayerId);
-  if(!confirm('Ubah status laporan menjadi "'+newStatus+'"?')){return;}
+  var confirmation = newStatus === 'Duplikat'
+    ? 'Tandai laporan sebagai Duplikat? Laporan tidak akan masuk dashboard, grafik, atau peta publik.'
+    : 'Ubah status laporan menjadi "'+newStatus+'"?';
+  if(!confirm(confirmation)){return;}
   google.script.run
     .withSuccessHandler(function(result){
       if(newStatus === 'Sudah Dipublikasikan'){

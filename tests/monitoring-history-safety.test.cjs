@@ -14,9 +14,12 @@ test("monitoring detail keeps permanent object identity and renders time-series 
 
   assert.match(source, /targetProperties\.Object_ID\|\|targetProperties\.OBJECT_ID/);
   assert.match(source, /var objectId=permanentObjectId\|\|spatialObjectId/);
-  assert.match(source, /class="dumbbell-chart"/);
-  assert.doesNotMatch(source, /Grafik riwayat per indikator/);
-  assert.doesNotMatch(source, /function chartSVG\(/);
+  assert.match(source, /function monitoringSeriesChart\(definition,history,seriesIndex\)/);
+  assert.match(source, /Seluruh riwayat monitoring/);
+  assert.match(source, /Monitoring 1 sampai monitoring terbaru/);
+  assert.match(source, /points\.length\*112/);
+  assert.match(source, /history\.length.*periode/);
+  assert.doesNotMatch(source, /class="dumbbell-chart"/);
   assert.match(source, /Foto monitoring sebelumnya/);
   assert.match(source, /class="photo-archive"/);
 });
@@ -98,8 +101,14 @@ test("Apps Script makes retries idempotent and flags same-day monitoring duplica
   assert.match(source, /LockService\.getScriptLock\(\)/);
   assert.match(source, /findSameDayMonitoringDuplicates_\(sheet, data\)/);
   assert.match(source, /Potensi_Duplikat_Monitoring/);
+  assert.match(source, /function assertMonitoringPublicationIsUnique_\(sheet, rowNumber\)/);
+  assert.match(source, /Publikasi diblokir: ada laporan monitoring lain/);
+  assert.match(source, /Tandai laporan yang tidak dipakai sebagai Duplikat atau Ditolak/);
+  assert.match(source, /'Duplikat'/);
   assert.match(source, /Monitoring wajib terhubung ke satu objek WebGIS yang dipilih/);
   assert.match(admin, /Potensi laporan monitoring ganda/);
+  assert.match(admin, /Tandai Duplikat/);
+  assert.match(admin, /tidak akan masuk dashboard, grafik, atau peta publik/);
 });
 
 test("monitoring reporter chips filter historical reporters and remain keyboard accessible", () => {

@@ -508,15 +508,75 @@
     return formatted+(unit?' '+unit:'');
   }
 
+  function monitoringSeriesChart(definition,history,seriesIndex){
+    var chronological=history.slice().sort(function(a,b){return dateValue(a.date)-dateValue(b.date);});
+    var points=[];
+    chronological.forEach(function(record,index){
+      var value=metricNumber(record.metrics||{},[definition[0]]);
+      if(value===null)return;
+      points.push({
+        value:value,
+        date:record.date,
+        label:'Monitoring '+(index+1),
+        reportId:record.id||''
+      });
+    });
+    if(points.length<2)return'';
+
+    var width=Math.max(620,points.length*112),height=278;
+    var left=54,right=24,top=24,bottom=70;
+    var plotWidth=width-left-right,plotHeight=height-top-bottom;
+    var values=points.map(function(point){return point.value;});
+    var min=Math.min.apply(null,values),max=Math.max.apply(null,values);
+    var padding=max===min?(Math.abs(max)*.1||1):(max-min)*.12;
+    var yMin=min-padding,yMax=max+padding;
+    if(definition[0]==='survivalPercent'){
+      yMin=Math.max(0,yMin);yMax=Math.min(100,Math.max(yMax,yMin+1));
+    }else if(min>=0){
+      yMin=Math.max(0,yMin);
+    }
+    function x(index){
+      return left+(points.length===1?plotWidth/2:index*plotWidth/(points.length-1));
+    }
+    function y(value){
+      return top+(yMax-Number(value))*plotHeight/(yMax-yMin||1);
+    }
+    var grid='';
+    for(var tick=0;tick<=4;tick+=1){
+      var tickValue=yMin+(yMax-yMin)*tick/4;
+      var tickY=y(tickValue);
+      grid+='<line class="monitoring-series-grid" x1="'+left+'" y1="'+tickY+'" x2="'+(width-right)+'" y2="'+tickY+'"></line>'+
+        '<text class="monitoring-series-label" x="'+(left-8)+'" y="'+(tickY+4)+'" text-anchor="end">'+esc(numberFormat(tickValue))+'</text>';
+    }
+    var coordinates=points.map(function(point,index){return x(index)+','+y(point.value);}).join(' ');
+    var dots=points.map(function(point,index){
+      return'<g class="monitoring-series-point"><circle cx="'+x(index)+'" cy="'+y(point.value)+'" r="5">'+
+        '<title>'+esc(point.label+' · '+fmtDate(point.date)+' · '+formatChartMetric(point.value,definition[2]))+'</title></circle>'+
+        '<text class="monitoring-series-value" x="'+x(index)+'" y="'+(y(point.value)-11)+'" text-anchor="middle">'+esc(formatChartMetric(point.value,definition[2]))+'</text>'+
+        '<text class="monitoring-series-index" x="'+x(index)+'" y="'+(height-bottom+23)+'" text-anchor="middle">M'+(index+1)+'</text>'+
+        '<text class="monitoring-series-date" x="'+x(index)+'" y="'+(height-bottom+42)+'" text-anchor="middle">'+esc(fmtDate(point.date))+'</text></g>';
+    }).join('');
+    var latest=points[points.length-1];
+    return'<article class="chart-card monitoring-series tone-'+(seriesIndex%5)+'">'+
+      '<div class="chart-heading"><h3>'+esc(definition[1])+'</h3><strong>'+esc(formatChartMetric(latest.value,definition[2]))+'</strong></div>'+
+      '<p class="monitoring-series-caption">'+points.length+' hasil terpublikasi · seluruh riwayat objek</p>'+
+      '<div class="chart-wrap"><svg viewBox="0 0 '+width+' '+height+'" role="img" aria-label="'+esc('Grafik seluruh riwayat '+definition[1])+'">'+
+      grid+'<line class="monitoring-series-axis" x1="'+left+'" y1="'+top+'" x2="'+left+'" y2="'+(height-bottom)+'"></line>'+
+      '<line class="monitoring-series-axis" x1="'+left+'" y1="'+(height-bottom)+'" x2="'+(width-right)+'" y2="'+(height-bottom)+'"></line>'+
+      '<polyline class="monitoring-series-line" points="'+coordinates+'"></polyline>'+dots+
+      '</svg></div></article>';
+  }
+
   function chartsHTML(group){
     if(!group||!group.history||group.history.length<2)return'<div class="chart-empty">Grafik pertumbuhan tersedia setelah minimal dua kali monitoring.</div>';
-    var history=group.history;
+    var history=group.history.slice().sort(function(a,b){return dateValue(a.date)-dateValue(b.date);});
     var defs=metricDefs(group.latest.type||'').filter(function(def){
       if(group.latest.type==='Penanaman Mangrove'&&def[0]==='monitoredAreaHa')return false;
-      return metricNumber(history[0].metrics||{},[def[0]])!==null&&metricNumber(history[history.length-1].metrics||{},[def[0]])!==null;
+      return history.filter(function(record){
+        return metricNumber(record.metrics||{},[def[0]])!==null;
+      }).length>=2;
     });
-    var chronological=history.slice().sort(function(a,b){return dateValue(a.date)-dateValue(b.date);});
-    var first=chronological[0],latest=chronological[chronological.length-1];
+    var latest=history[history.length-1];
     var planted=metricNumber(group.latest.targetProperties||{},['Jumlah_Bib','Jumlah_Bibit','seedlings']);
     var alive=metricNumber(latest.metrics||{},['aliveCount','alive','jumlahHidup','tanamanHidup']);
     var dead=metricNumber(latest.metrics||{},['deadOrDamagedCount']);
@@ -525,16 +585,13 @@
     var monitoredTotal=alive+dead;
     var alivePct=monitoredTotal>0?alive/monitoredTotal*100:0;
     var deadPct=monitoredTotal>0?dead/monitoredTotal*100:0;
-    var rows=defs.map(function(definition){
-      var start=metricNumber(first.metrics||{},[definition[0]]),end=metricNumber(latest.metrics||{},[definition[0]]);
-      if(start===null||end===null)return'';
-      var delta=end-start,tone='neutral';
-      if(definition[0]==='deadOrDamagedCount')tone=delta<=0?'good':'bad';
-      else if(definition[0]!=='sedimentationCm')tone=delta>=0?'good':'bad';
-      return'<div class="dumbbell-row '+tone+'"><div class="dumbbell-label">'+esc(definition[1])+'</div><div class="dumbbell-track"><span class="dumbbell-line"></span><span class="dumbbell-dot first"></span><span class="dumbbell-value first">'+esc(formatChartMetric(start,definition[2]))+'</span><span class="dumbbell-value latest">'+esc(formatChartMetric(end,definition[2]))+'</span><span class="dumbbell-dot latest"></span></div><div class="dumbbell-delta '+tone+'">'+esc((delta>0?'+':'')+formatChartMetric(delta,definition[2]))+'</div></div>';
+    var charts=defs.map(function(definition,index){
+      return monitoringSeriesChart(definition,history,index);
     }).filter(Boolean).join('');
-    if(!rows)return'<div class="chart-empty">Belum ada indikator yang dapat dibandingkan.</div>';
-    return'<div class="condition-summary"><div class="condition-heading"><strong>Kondisi bibit terbaru</strong><span>'+esc(fmtDate(latest.date))+'</span></div><div class="condition-bar" aria-label="'+esc(numberFormat(alive))+' bibit hidup dan '+esc(numberFormat(dead))+' mati atau rusak"><div class="condition-part condition-alive" style="width:'+alivePct+'%"><span>'+esc(numberFormat(alive))+'<small>'+esc(numberFormat(alivePct))+'% hidup</small></span></div><div class="condition-part condition-dead" style="width:'+deadPct+'%"><span>'+esc(numberFormat(dead))+'<small>'+esc(numberFormat(deadPct))+'% mati/rusak</small></span></div></div><div class="condition-total"><span>Realisasi terkini · populasi dipantau '+esc(numberFormat(monitoredTotal))+'</span><strong>'+esc(numberFormat(planted))+' bibit pada Plot 1</strong></div></div><div class="dumbbell-chart"><div class="dumbbell-head"><strong>Indikator</strong><span><b>'+esc(fmtDate(first.date))+'</b><b>'+esc(fmtDate(latest.date))+'</b></span><strong>Perubahan</strong></div>'+rows+'</div>';
+    if(!charts)return'<div class="chart-empty">Belum ada indikator yang dapat dibandingkan.</div>';
+    return'<div class="condition-summary"><div class="condition-heading"><strong>Kondisi bibit terbaru</strong><span>'+esc(fmtDate(latest.date))+'</span></div><div class="condition-bar" aria-label="'+esc(numberFormat(alive))+' bibit hidup dan '+esc(numberFormat(dead))+' mati atau rusak"><div class="condition-part condition-alive" style="width:'+alivePct+'%"><span>'+esc(numberFormat(alive))+'<small>'+esc(numberFormat(alivePct))+'% hidup</small></span></div><div class="condition-part condition-dead" style="width:'+deadPct+'%"><span>'+esc(numberFormat(dead))+'<small>'+esc(numberFormat(deadPct))+'% mati/rusak</small></span></div></div><div class="condition-total"><span>Realisasi terkini · populasi dipantau '+esc(numberFormat(monitoredTotal))+'</span><strong>'+esc(numberFormat(planted))+' bibit pada objek</strong></div></div>'+
+      '<div class="monitoring-history-heading"><div><strong>Seluruh riwayat monitoring</strong><span>Monitoring 1 sampai monitoring terbaru</span></div><b>'+history.length+' periode</b></div>'+
+      '<div class="charts-grid trend-history">'+charts+'</div>';
   }
 
   function renderKpis(group){
@@ -929,5 +986,4 @@
     }catch(error){}
   });
 })();
-
 
