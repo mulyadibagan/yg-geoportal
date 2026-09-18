@@ -17,7 +17,9 @@ permissions:
 
 concurrency:
   group: yg-drone-orthomosaic-processor
-  cancel-in-progress: false
+  # A processor-code push must replace an older running implementation.
+  # Scheduled polling must never cancel a long photogrammetry job.
+  cancel-in-progress: ${{ github.event_name == 'push' }}
 
 jobs:
   process:
