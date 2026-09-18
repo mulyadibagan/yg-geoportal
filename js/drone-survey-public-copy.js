@@ -59,6 +59,9 @@ const errorCopy={
   unauthorized:'Akses hasil pemrosesan ini tidak tersedia pada perangkat ini.',
   job_not_found:'Riwayat pemrosesan tidak ditemukan.',
   orthomosaic_not_ready:'Orthomosaic masih diproses.',
+  publish_not_available:'Hasil belum siap untuk dipublikasikan.',
+  public_orthomosaic_not_found:'Layer publik tidak ditemukan atau publikasinya telah dibatalkan.',
+  cog_missing:'File orthomosaic belum tersedia di penyimpanan.',
   origin_not_allowed:'Permintaan hanya dapat dilakukan melalui YG GeoPortal.'
 };
 

@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
   <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css">
   <link rel="stylesheet" href="css/drone-survey.css?v=20260918-4">
+  <link rel="stylesheet" href="css/drone-survey-publication.css?v=20260918-public1">
 </head>
 <body>
   <header class="drone-topbar">
@@ -57,7 +58,8 @@
           <div class="card-head"><div><h2>2. Status pemrosesan</h2><p>Foto yang tidak menghadap ke bawah dapat dikeluarkan otomatis dari pemrosesan tanpa menghapus file aslinya.</p></div><button id="refreshJob" disabled>Muat ulang</button></div>
           <div id="jobState" class="job-state empty">Belum ada proses aktif.</div>
           <div class="qc-summary" id="serverQcSummary" hidden></div>
-          <div id="jobActions" class="actions" hidden><button id="showResult" class="primary">Tampilkan di peta</button></div>
+          <div id="jobActions" class="actions" hidden><button id="showResult" class="primary">Tampilkan di peta</button><button id="publishResult">Publikasikan ke Peta</button><button id="unpublishResult" hidden>Batalkan Publikasi</button></div>
+          <p id="publicationStatus" class="publication-status" hidden></p>
         </article>
       </div>
       <article class="card result-map-card">
@@ -107,7 +109,10 @@
     </section>
 
     <section class="panel" id="panel-archive">
-      <article class="card"><div class="card-head"><div><h2>Riwayat pemrosesan</h2><p>Menampilkan pemrosesan yang tersimpan pada perangkat ini.</p></div><button id="refreshArchive">Muat ulang</button></div><div id="missionArchive" class="ortho-list empty">Belum ada riwayat.</div></article>
+      <div class="grid two archive-grid">
+        <article class="card"><div class="card-head"><div><h2>Orthomosaic publik</h2><p>Dapat dibuka dari semua perangkat dan ditampilkan atau disembunyikan sebagai layer.</p></div><button id="refreshPublicCatalogue">Muat ulang</button></div><div id="publicOrthomosaicList" class="ortho-list empty">Memuat layer publik…</div></article>
+        <article class="card"><div class="card-head"><div><h2>Riwayat perangkat ini</h2><p>Pemrosesan privat yang token aksesnya tersimpan pada perangkat ini.</p></div><button id="refreshArchive">Muat ulang</button></div><div id="missionArchive" class="ortho-list empty">Belum ada riwayat.</div></article>
+      </div>
     </section>
   </main>
 
@@ -115,8 +120,8 @@
   <script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
   <script src="https://unpkg.com/georaster@1.6.0/dist/georaster.browser.bundle.min.js"></script>
   <script src="https://unpkg.com/georaster-layer-for-leaflet@3.10.0/dist/georaster-layer-for-leaflet.min.js"></script>
-  <script src="js/drone-survey.js?v=20260918-5"></script>
-  <script src="js/drone-survey-public-copy.js?v=20260918-5"></script>
+  <script src="js/drone-survey.js?v=20260918-public1"></script>
+  <script src="js/drone-survey-public-copy.js?v=20260918-public1"></script>
   <script src="js/drone-survey-retry.js?v=20260918-2"></script>
   <script src="js/drone-survey-metadata-ui.js?v=20260918-1"></script>
 </body>
