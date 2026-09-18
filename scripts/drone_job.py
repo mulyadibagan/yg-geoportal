@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import argparse, json, os, shutil, subprocess, re
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 
 def load(path):
@@ -98,10 +98,11 @@ def main():
     a=sub.add_parser('qc'); a.add_argument('input'); a.add_argument('rejected'); a.add_argument('valid_list'); a.add_argument('summary')
     a=sub.add_parser('metadata'); a.add_argument('job'); a.add_argument('summary')
     a=sub.add_parser('ready'); a.add_argument('job'); a.add_argument('gdalinfo'); a.add_argument('summary')
+    a=sub.add_parser('checkpoint'); a.add_argument('job'); a.add_argument('--downloaded',type=int,required=True); a.add_argument('--expected',type=int,required=True); a.add_argument('--retry-minutes',type=int,default=30)
     a=sub.add_parser('failed'); a.add_argument('job'); a.add_argument('--error',default='processing_failed')
     args=p.parse_args(); now=now_iso()
     if args.cmd=='processing':
-        d=load(args.job); d.update({'status':'processing','processingStartedAt':now,'stage':'starting','progress':5,'stageLabel':'Memulai pemrosesan','stageUpdatedAt':now}); add_history(d,'starting',5,'Memulai pemrosesan'); save(args.job,d)
+        d=load(args.job); d.update({'status':'processing','processingStartedAt':now,'stage':'starting','progress':5,'stageLabel':'Memulai pemrosesan','stageUpdatedAt':now}); d.pop('retryAfter',None); add_history(d,'starting',5,'Memulai pemrosesan'); save(args.job,d)
     elif args.cmd=='stage':
         extra={}
         if args.valid is not None: extra['validPhotos']=args.valid
@@ -112,6 +113,13 @@ def main():
     elif args.cmd=='qc':
         summary=qc(args.input,args.rejected,args.valid_list); save(args.summary,summary); print(summary['validPhotos'])
     elif args.cmd=='metadata': apply_metadata(args.job,args.summary)
+    elif args.cmd=='checkpoint':
+        d=load(args.job)
+        retry_after=(datetime.now(timezone.utc)+timedelta(minutes=max(1,args.retry_minutes))).isoformat()
+        progress=15 + (max(0,args.downloaded)*14//max(1,args.expected))
+        label=f"Foto tersimpan {args.downloaded}/{args.expected}; dilanjutkan otomatis"
+        d.update({'status':'pending','stage':'queued','progress':min(29,progress),'stageLabel':label,'stageUpdatedAt':now,'downloadedPhotos':args.downloaded,'expectedPhotos':args.expected,'retryAfter':retry_after})
+        add_history(d,'queued',d['progress'],label); save(args.job,d)
     elif args.cmd=='ready':
         d=load(args.job); info=load(args.gdalinfo); q=load(args.summary)
         d.update({'status':'ready','stage':'complete','progress':100,'stageLabel':'Selesai','stageUpdatedAt':now,'completedAt':now,'validPhotos':q['validPhotos'],'excludedPhotos':q['excludedPhotos'],'excluded':q.get('excluded',[]),'surveyDate':q.get('surveyDate'),'surveyStartAt':q.get('surveyStartAt'),'surveyEndAt':q.get('surveyEndAt'),'cameraModels':q.get('cameraModels',[]),'cameraMakes':q.get('cameraMakes',[]),'surveyDateSource':'photo_metadata' if q.get('surveyDate') else 'unavailable','cogKey':f"drone/results/{d['id']}/orthomosaic.cog.tif",'gdal':{'size':info.get('size'),'coordinateSystem':info.get('coordinateSystem'),'cornerCoordinates':info.get('cornerCoordinates') or {}}})
