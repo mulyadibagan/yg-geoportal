@@ -47,9 +47,44 @@ function renderFailure(job){
   if(info)info.textContent=userError(job.error);
   ensureRetryButton(job);
 }
+function ensureRefineButton(job){
+  let holder=$('#ygRefineActions');
+  if(!holder){
+    holder=document.createElement('div');
+    holder.id='ygRefineActions';
+    holder.className='actions';
+    const actions=$('#jobActions');
+    (actions||progressBox()||$('#jobState'))?.insertAdjacentElement('afterend',holder);
+  }
+  holder.innerHTML='';
+  if(job?.status!=='ready'){holder.hidden=true;return}
+  holder.hidden=false;
+  const btn=document.createElement('button');
+  btn.type='button';
+  btn.textContent='Rapikan hasil';
+  btn.addEventListener('click',()=>refine(job.id,btn));
+  holder.appendChild(btn);
+}
 function handleJob(job){
   if(!job)return;
   if(job.status==='failed')renderFailure(job);else ensureRetryButton(job);
+  ensureRefineButton(job);
+}
+async function refine(id,btn){
+  const token=accessFor(id);if(!token)return;
+  const old=btn.textContent;btn.disabled=true;btn.textContent='Menyiapkan…';
+  try{
+    const r=await fetch(API_BASE+'/api/drone/jobs/'+encodeURIComponent(id)+'/refine',{method:'POST',headers:{'x-job-token':token}});
+    const data=await r.json().catch(()=>({}));
+    if(!r.ok)throw new Error(data.error||'refine_failed');
+    ensureRefineButton(data.job);
+    const box=progressBox();
+    if(box)box.innerHTML='<div class="yg-progress-head"><strong>Menunggu perapian hasil</strong><span>0%</span></div><div class="yg-progress-track"><i style="width:0%"></i></div>';
+    $('#refreshJob')?.click();
+  }catch(e){
+    btn.disabled=false;btn.textContent=old;
+    alert('Belum dapat merapikan hasil. Silakan coba lagi sebentar lagi.');
+  }
 }
 async function retry(id,btn){
   const token=accessFor(id);if(!token)return;
