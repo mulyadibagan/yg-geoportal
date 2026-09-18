@@ -218,3 +218,4 @@ jobs:
             jq --arg id "$JOB_ID" '.jobs = (.jobs | map(select(. != $id)))' ../../tmp/drone/pending.json > ../../tmp/drone/pending.next.json || true
             [ -f ../../tmp/drone/pending.next.json ] && npx wrangler r2 object put "yg-webgis-public-snapshots/drone/queue/pending.json" --remote --file ../../tmp/drone/pending.next.json --content-type application/json || true
           fi
+# manual refinement trigger 2026-09-18
