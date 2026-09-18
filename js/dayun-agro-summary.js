@@ -199,7 +199,12 @@
     all.mptsTypes = MPTS.filter(function (name) { return all.cropTotals[name] && all.cropTotals[name].vegetationCount > 0; }).length;
     all.horticultureTypes = HORTICULTURE.filter(function (name) { return all.cropTotals[name] && all.cropTotals[name].vegetationCount > 0; }).length;
     all.latestRecordDate = latestDate(codes.map(function (code) { return blockMap[code].latestRecordDate; }));
-    return {all: all, blocks: blockMap, codes: codes};
+    return {
+      all: all,
+      blocks: blockMap,
+      codes: codes,
+      updatedAt: details && details.updatedAt ? details.updatedAt : null
+    };
   }
 
   return {build: build, MPTS: MPTS.slice(), HORTICULTURE: HORTICULTURE.slice()};

@@ -9,6 +9,10 @@ const map = JSON.parse(fs.readFileSync(path.join(root, 'data/dayun-map.geojson')
 const blocks = JSON.parse(fs.readFileSync(path.join(root, 'data/dayun-blocks.geojson'), 'utf8'));
 const summary = require(path.join(root, 'js/dayun-agro-summary.js')).build(details, map, blocks);
 
+test('carries the Dayun dataset update timestamp into the summary', () => {
+  assert.equal(summary.updatedAt, details.updatedAt);
+});
+
 test('estate summary is the sum of block summaries built from unique gawangan', () => {
   assert.deepEqual(summary.codes, ['A', 'B', 'C', 'D', 'E', 'F']);
   assert.equal(summary.all.mappedGawangan, 60);

@@ -33,6 +33,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
@@ -55,6 +57,8 @@ jobs:
             --exclude 'data/phl-svlk-monthly/' \
             --exclude '_site/' \
             ./ _site/
+          export DAYUN_UPDATED_AT="$(git log -1 --format=%cI -- data/dayun-gawangan-details.json)"
+          node -e "const fs=require('fs');const path='_site/data/dayun-gawangan-details.json';const data=JSON.parse(fs.readFileSync(path,'utf8'));data.updatedAt=process.env.DAYUN_UPDATED_AT;fs.writeFileSync(path,JSON.stringify(data,null,2)+'\\n');"
           node scripts/sanitize-public-pbph.mjs _site
           node scripts/assert-public-pbph-private.mjs _site
           node scripts/assert-repository-pbph-data-private.mjs

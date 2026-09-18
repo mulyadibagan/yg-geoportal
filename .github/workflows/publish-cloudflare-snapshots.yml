@@ -37,9 +37,16 @@ jobs:
     environment: yg-webgis-staging
     steps:
       - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
       - name: Resolve published snapshot version
         shell: bash
         run: echo "SNAPSHOT_VERSION=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+      - name: Stamp Dayun data update time
+        shell: bash
+        run: |
+          export DAYUN_UPDATED_AT="$(git log -1 --format=%cI -- data/dayun-gawangan-details.json)"
+          node -e "const fs=require('fs');const path='data/dayun-gawangan-details.json';const data=JSON.parse(fs.readFileSync(path,'utf8'));data.updatedAt=process.env.DAYUN_UPDATED_AT;fs.writeFileSync(path,JSON.stringify(data,null,2)+'\\n');"
       - uses: actions/setup-node@v5
         with:
           node-version: '22'
