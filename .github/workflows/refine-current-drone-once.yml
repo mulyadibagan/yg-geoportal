@@ -1,0 +1,65 @@
+name: Refine current drone orthomosaic once
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/refine-current-drone-once.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  enqueue:
+    runs-on: ubuntu-latest
+    environment: yg-webgis-staging
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: cloudflare/yg-webgis-public-data/package-lock.json
+      - run: npm ci
+        working-directory: cloudflare/yg-webgis-public-data
+      - name: Queue refinement
+        working-directory: cloudflare/yg-webgis-public-data
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          JOB_ID: drn-ea81d7d4-19be-4ee7-9e68-6f1306c7a302
+        run: |
+          set -euo pipefail
+          mkdir -p ../../tmp/drone
+          JOB="../../tmp/drone/job.json"
+          QUEUE="../../tmp/drone/pending.json"
+          npx wrangler r2 object get "yg-webgis-public-snapshots/drone/jobs/$JOB_ID.json" --remote --file "$JOB"
+          STATUS=$(jq -r '.status // empty' "$JOB")
+          if [ "$STATUS" != "ready" ]; then
+            echo "Current job is not ready (status=$STATUS); refusing to overwrite an active job."
+            exit 1
+          fi
+          NOW=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          jq --arg now "$NOW" '
+            .status="pending"
+            | .stage="queued"
+            | .stageLabel="Menunggu perapian hasil"
+            | .progress=0
+            | .queuedAt=$now
+            | .updatedAt=$now
+            | .refineRequestedAt=$now
+            | .refineCount=((.refineCount // 0)+1)
+            | del(.completedAt)
+          ' "$JOB" > "$JOB.next"
+          mv "$JOB.next" "$JOB"
+          npx wrangler r2 object put "yg-webgis-public-snapshots/drone/jobs/$JOB_ID.json" --remote --file "$JOB" --content-type application/json
+
+          npx wrangler r2 object get "yg-webgis-public-snapshots/drone/queue/pending.json" --remote --file "$QUEUE" || echo '{"jobs":[]}' > "$QUEUE"
+          jq --arg id "$JOB_ID" --arg now "$NOW" '
+            .jobs=((.jobs // []) + [$id] | unique)
+            | .updatedAt=$now
+          ' "$QUEUE" > "$QUEUE.next"
+          mv "$QUEUE.next" "$QUEUE"
+          npx wrangler r2 object put "yg-webgis-public-snapshots/drone/queue/pending.json" --remote --file "$QUEUE" --content-type application/json
+          echo "Queued refinement for $JOB_ID"
