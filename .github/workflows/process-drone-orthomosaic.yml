@@ -67,6 +67,12 @@ jobs:
           mkdir -p "$ROOT/input" "$ROOT/output" "$ROOT/project/images" "$ROOT/rejected"
           npx wrangler r2 object get "yg-webgis-public-snapshots/drone/jobs/$JOB_ID.json" --remote --file "$ROOT/job.json"
 
+          RETRY_AFTER=$(jq -r '.retryAfter // empty' "$ROOT/job.json")
+          if [ -n "$RETRY_AFTER" ] && [ "$(date -d "$RETRY_AFTER" +%s)" -gt "$(date -u +%s)" ]; then
+            echo "Drive checkpoint is cooling down until $RETRY_AFTER"
+            exit 0
+          fi
+
           publish_status() {
             npx wrangler r2 object put "yg-webgis-public-snapshots/drone/jobs/$JOB_ID.json" --remote --file "$ROOT/job.json" --content-type application/json
           }
@@ -81,45 +87,53 @@ jobs:
             CACHE_KEY="drone/cache/$JOB_ID/source.tar"
             CACHE_FILE="$ROOT/source.tar"
             if npx wrangler r2 object get "yg-webgis-public-snapshots/$CACHE_KEY" --remote --file "$CACHE_FILE" >/dev/null 2>&1; then
-              python ../../scripts/drone_job.py stage "$ROOT/job.json" downloading 27 "Memuat foto tersimpan"
+              python ../../scripts/drone_job.py stage "$ROOT/job.json" downloading 17 "Memuat checkpoint foto"
               publish_status
               tar -xf "$CACHE_FILE" -C "$ROOT/input"
               DOWNLOADED=$(find "$ROOT/input" -type f \( -iname '*.jpg' -o -iname '*.jpeg' \) | wc -l | tr -d ' ')
               EXPECTED=$(jq -r '.expectedPhotos // .downloadedPhotos // 0' "$ROOT/job.json")
               [ "$EXPECTED" -le 0 ] && EXPECTED="$DOWNLOADED"
-              python ../../scripts/drone_job.py stage "$ROOT/job.json" downloading 29 "Foto diterima $DOWNLOADED/$EXPECTED" --downloaded "$DOWNLOADED" --expected "$EXPECTED"
+              python ../../scripts/drone_job.py stage "$ROOT/job.json" downloading 18 "Melanjutkan foto $DOWNLOADED/$EXPECTED" --downloaded "$DOWNLOADED" --expected "$EXPECTED"
               publish_status
-            else
-              DRIVE_URL=$(jq -r '.driveUrl' "$ROOT/job.json")
-              python ../../scripts/download_drive_folder.py "$DRIVE_URL" "$ROOT/input" "$ROOT/drive-download.json" --passes 4 --retries 3 --timeout 60 --progress-interval 5 &
-              DOWNLOAD_PID=$!
-              LAST_COUNT=-1
-              while kill -0 "$DOWNLOAD_PID" 2>/dev/null; do
-                if [ -f "$ROOT/drive-download.json" ]; then
-                  EXPECTED=$(jq -r '.expectedPhotos // 0' "$ROOT/drive-download.json")
-                  DOWNLOADED=$(jq -r '.downloadedPhotos // 0' "$ROOT/drive-download.json")
-                  if [ "$EXPECTED" -gt 0 ] && [ "$DOWNLOADED" -ne "$LAST_COUNT" ]; then
-                    PROGRESS=$((15 + (DOWNLOADED * 14 / EXPECTED)))
-                    [ "$PROGRESS" -gt 29 ] && PROGRESS=29
-                    python ../../scripts/drone_job.py stage "$ROOT/job.json" downloading "$PROGRESS" "Mengambil foto $DOWNLOADED/$EXPECTED" --downloaded "$DOWNLOADED" --expected "$EXPECTED"
-                    publish_status
-                    LAST_COUNT=$DOWNLOADED
-                  fi
-                fi
-                sleep 8
-              done
-              if ! wait "$DOWNLOAD_PID"; then
-                echo "drive_download_incomplete" > "$ROOT/error_code"
-                exit 42
-              fi
-              EXPECTED=$(jq -r '.expectedPhotos // 0' "$ROOT/drive-download.json")
-              DOWNLOADED=$(jq -r '.downloadedPhotos // 0' "$ROOT/drive-download.json")
-              python ../../scripts/drone_job.py stage "$ROOT/job.json" downloading 29 "Foto diterima $DOWNLOADED/$EXPECTED" --downloaded "$DOWNLOADED" --expected "$EXPECTED"
-              publish_status
-
-              tar -cf "$CACHE_FILE" -C "$ROOT/input" .
-              npx wrangler r2 object put "yg-webgis-public-snapshots/$CACHE_KEY" --remote --file "$CACHE_FILE" --content-type application/x-tar
             fi
+
+            DRIVE_URL=$(jq -r '.driveUrl' "$ROOT/job.json")
+            set +e
+            python ../../scripts/download_drive_folder.py "$DRIVE_URL" "$ROOT/input" "$ROOT/drive-download.json" --passes 1 --retries 2 --timeout 60 --progress-interval 5 &
+            DOWNLOAD_PID=$!
+            LAST_COUNT=-1
+            while kill -0 "$DOWNLOAD_PID" 2>/dev/null; do
+              if [ -f "$ROOT/drive-download.json" ]; then
+                EXPECTED=$(jq -r '.expectedPhotos // 0' "$ROOT/drive-download.json")
+                DOWNLOADED=$(jq -r '.downloadedPhotos // 0' "$ROOT/drive-download.json")
+                if [ "$EXPECTED" -gt 0 ] && [ "$DOWNLOADED" -ne "$LAST_COUNT" ]; then
+                  PROGRESS=$((15 + (DOWNLOADED * 14 / EXPECTED)))
+                  [ "$PROGRESS" -gt 29 ] && PROGRESS=29
+                  python ../../scripts/drone_job.py stage "$ROOT/job.json" downloading "$PROGRESS" "Mengambil foto $DOWNLOADED/$EXPECTED" --downloaded "$DOWNLOADED" --expected "$EXPECTED"
+                  publish_status
+                  LAST_COUNT=$DOWNLOADED
+                fi
+              fi
+              sleep 8
+            done
+            wait "$DOWNLOAD_PID"
+            DOWNLOAD_RC=$?
+            set -e
+            EXPECTED=$(jq -r '.expectedPhotos // 0' "$ROOT/drive-download.json")
+            DOWNLOADED=$(jq -r '.downloadedPhotos // 0' "$ROOT/drive-download.json")
+
+            tar -cf "$CACHE_FILE" -C "$ROOT/input" .
+            npx wrangler r2 object put "yg-webgis-public-snapshots/$CACHE_KEY" --remote --file "$CACHE_FILE" --content-type application/x-tar
+
+            if [ "$DOWNLOAD_RC" -ne 0 ]; then
+              python ../../scripts/drone_job.py checkpoint "$ROOT/job.json" --downloaded "$DOWNLOADED" --expected "$EXPECTED" --retry-minutes 30
+              publish_status
+              echo "Saved Drive checkpoint $DOWNLOADED/$EXPECTED; keeping job queued"
+              exit 0
+            fi
+
+            python ../../scripts/drone_job.py stage "$ROOT/job.json" downloading 29 "Foto diterima $DOWNLOADED/$EXPECTED" --downloaded "$DOWNLOADED" --expected "$EXPECTED"
+            publish_status
           else
             TOTAL=$(jq -r '.files | length' "$ROOT/job.json")
             INDEX=0
