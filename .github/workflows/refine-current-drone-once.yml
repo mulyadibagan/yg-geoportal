@@ -36,8 +36,8 @@ jobs:
           QUEUE="../../tmp/drone/pending.json"
           npx wrangler r2 object get "yg-webgis-public-snapshots/drone/jobs/$JOB_ID.json" --remote --file "$JOB"
           STATUS=$(jq -r '.status // empty' "$JOB")
-          if [ "$STATUS" != "ready" ]; then
-            echo "Current job is not ready (status=$STATUS); refusing to overwrite an active job."
+          if [ "$STATUS" != "ready" ] && [ "$STATUS" != "failed" ]; then
+            echo "Current job is active (status=$STATUS); refusing to enqueue it twice."
             exit 1
           fi
           NOW=$(date -u +%Y-%m-%dT%H:%M:%SZ)
@@ -50,7 +50,7 @@ jobs:
             | .updatedAt=$now
             | .refineRequestedAt=$now
             | .refineCount=((.refineCount // 0)+1)
-            | del(.completedAt)
+            | del(.completedAt, .failedAt, .error, .retryAfter)
           ' "$JOB" > "$JOB.next"
           mv "$JOB.next" "$JOB"
           npx wrangler r2 object put "yg-webgis-public-snapshots/drone/jobs/$JOB_ID.json" --remote --file "$JOB" --content-type application/json
