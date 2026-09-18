@@ -53,7 +53,7 @@
     return Promise.all([
       window.DayunDataSource.fetchJSON('data/dayun-map.geojson?v=20260916-objectid1'),
       window.DayunDataSource.fetchJSON('data/dayun-context.geojson?v=20260908-1'),
-      window.DayunDataSource.fetchJSON('data/dayun-gawangan-details.json?v=20260917-performance1'),
+      window.DayunDataSource.fetchJSON('data/dayun-gawangan-details.json?v=20260918-data-updated1'),
       window.DayunDataSource.fetchJSON('data/dayun-blocks.geojson?v=20260916-official1')
     ]);
   }

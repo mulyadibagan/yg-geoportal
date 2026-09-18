@@ -46,6 +46,7 @@ test('MPTS and horticulture stay separate and trace back to gawangan profiles', 
 test('public map and block page use the shared aggregation source', () => {
   const mapHtml = fs.readFileSync(path.join(root, 'dayun-map.html'), 'utf8');
   const mapScript = fs.readFileSync(path.join(root, 'js/dayun-public.js'), 'utf8');
+  const dataSourceScript = fs.readFileSync(path.join(root, 'js/dayun-data-source.js'), 'utf8');
   const blockHtml = fs.readFileSync(path.join(root, 'dayun-blok.html'), 'utf8');
   const blockScript = fs.readFileSync(path.join(root, 'js/dayun-blok.js'), 'utf8');
   assert.match(mapHtml, /js\/dayun-agro-summary\.js/);
@@ -53,6 +54,7 @@ test('public map and block page use the shared aggregation source', () => {
   assert.match(mapScript, /dayun-blok\.html\?block=/);
   assert.match(mapScript, /HORTICULTURE/);
   assert.match(mapScript, /Periode tanam tercatat/);
+  assert.match(dataSourceScript, /WORKER\+route\+query/);
   assert.match(blockHtml, /id="db-gawangan"/);
   assert.match(blockScript, /DayunAgroSummary\.build/);
   assert.match(blockScript, /dayun-gawangan\.html\?object=/);
