@@ -2283,7 +2283,7 @@ L.control.scale({
           '<div class="yg-popup-actions yg-popup-profile-action">' +
             '<a class="yg-popup-monitoring-link yg-popup-profile-link" ' +
               'target="_blank" rel="noopener noreferrer" ' +
-              'href="rspo-area-profile.html?id=' +
+              'href="staff-rspo-area-profile.html?id=' +
                 encodeURIComponent(oilPalmProfileId) + '">' +
               'Buka Profil &amp; Analisis Area&nbsp; →' +
             '</a>' +
