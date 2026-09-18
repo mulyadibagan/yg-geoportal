@@ -63,3 +63,4 @@ jobs:
           mv "$QUEUE.next" "$QUEUE"
           npx wrangler r2 object put "yg-webgis-public-snapshots/drone/queue/pending.json" --remote --file "$QUEUE" --content-type application/json
           echo "Queued refinement for $JOB_ID"
+# Retry the failed Drive job after chunked checkpoint support is deployed.
