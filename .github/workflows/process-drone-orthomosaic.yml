@@ -155,6 +155,8 @@ jobs:
             --orthophoto-resolution 3 \
             --feature-quality medium \
             --pc-quality medium \
+            --crop 1 \
+            --orthophoto-cutline \
             --skip-3dmodel \
             --skip-report; then
             echo "photogrammetry_failed" > "$ROOT/error_code"
@@ -172,7 +174,14 @@ jobs:
 
           python ../../scripts/drone_job.py stage "$ROOT/job.json" optimizing 90 "Menyiapkan hasil untuk peta" --valid "$VALID" --excluded "$REJECTED"
           publish_status
-          gdal_translate "$TIF" "$ROOT/output/orthomosaic.cog.tif" -of COG -co COMPRESS=JPEG -co QUALITY=88 -co BIGTIFF=IF_SAFER -co OVERVIEWS=AUTO
+          # Rapikan tepi: ubah area hitam di luar hasil menjadi transparan.
+          # nearblack hanya membersihkan area gelap yang terhubung ke tepi raster.
+          nearblack -setalpha -near 12 -nb 3 -o "$ROOT/output/orthomosaic-clean.tif" "$TIF"
+
+          # Simpan RGB + alpha sebagai mask agar COG JPEG tetap ringan tetapi background transparan.
+          gdal_translate "$ROOT/output/orthomosaic-clean.tif" "$ROOT/output/orthomosaic.cog.tif" \
+            -b 1 -b 2 -b 3 -mask 4 \
+            -of COG -co COMPRESS=JPEG -co QUALITY=90 -co BIGTIFF=IF_SAFER -co OVERVIEWS=AUTO
           gdalinfo -json "$ROOT/output/orthomosaic.cog.tif" > "$ROOT/output/gdalinfo.json"
 
           python ../../scripts/drone_job.py stage "$ROOT/job.json" saving 95 "Menyimpan hasil" --valid "$VALID" --excluded "$REJECTED"
