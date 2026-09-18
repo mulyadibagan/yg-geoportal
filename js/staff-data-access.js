@@ -11,7 +11,7 @@
     'data/pbph-documents.json': '/api/staff/pbph-documents',
     'data/fire-monthly/index.json': '/api/staff/fire-monthly-index',
     'data/phl-svlk-monthly/index.json': '/api/staff/phl-svlk-monthly-index',
-    'data/PERUSAHAAN_SAWIT_RIAU_REFERENSI.geojson': '/api/staff/rspo-groups'
+    'data/PERUSAHAAN_SAWIT_RIAU_REFERENSI.geojson': '/api/staff/rspo-companies'
   };
   const STAFF_ONLY_PUBLIC_PATHS = new Set([
     '/data/rspo-company-boundaries.geojson',
