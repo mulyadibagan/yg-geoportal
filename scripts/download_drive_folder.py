@@ -72,6 +72,10 @@ def main():
     pass_history=[]
     initial=len(resolve_downloaded(output))
     write_summary(summary_path,expected_count,initial,0,pass_history)
+    if initial >= expected_count:
+        write_summary(summary_path,expected_count,initial,0,pass_history,ok=True,state="complete")
+        print(f"Drive cache complete: {initial}/{expected_count} photo files available",flush=True)
+        return 0
 
     for attempt in range(1,max(1,args.passes)+1):
         cmd=[
