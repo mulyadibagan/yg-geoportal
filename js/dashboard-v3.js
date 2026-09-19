@@ -25,7 +25,7 @@
   };
   const OFFICIAL_LAYERS = [
     { id: "desa_intervensi", url: "data/desa_intervensi.geojson?v=20260726-14desa" },
-    { id: "area_mangrove", url: "data/area_mangrove.geojson?v=20260903-ma-earth-1000-1" },
+    { id: "area_mangrove", url: "data/area_mangrove.geojson?v=20260919-ma-earth-teluk-piyai-1000-1" },
     { id: "mineral_land_restoration_area", url: "data/mineral_land_restoration_area.geojson?v=20260825-sync1" },
     { id: "area_kopi", url: "data/area_kopi.geojson?v=20260825-sync1" },
     { id: "kopi", url: "data/kopi.geojson?v=20260825-sync1" }
@@ -2025,7 +2025,7 @@
               '<i class="category-icon funding-card-logo" aria-hidden="true"><img src="assets/funding-ma-earth.svg?v=20260902-official1" alt="" loading="lazy"></i>' +
               '<span>' + escapeHtml(name) + '</span>' +
               '<strong>Agustus–Desember 2026</strong>' +
-              '<small>1.000/2.000 mangrove · 0/1.000 kopi · ' + formatNumber(count) + ' objek terpetakan</small>' +
+              '<small>2.000/2.000 mangrove · 0/1.000 kopi · ' + formatNumber(count) + ' objek terpetakan</small>' +
             '</button>';
           }
           if (name === "Pertamina Foundation") {

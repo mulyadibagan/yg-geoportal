@@ -4,7 +4,7 @@
   var BASE='https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec';
   var API=BASE+'?page=public-reports';
   var SNAPSHOT_URL='https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/snapshots/current/dashboard.json';
-  var OFFICIAL_MANGROVE='data/area_mangrove.geojson?v=20260903-ma-earth-1000-1';
+  var OFFICIAL_MANGROVE='data/area_mangrove.geojson?v=20260919-ma-earth-teluk-piyai-1000-1';
   var CALLBACK='ygMonitoringDetailCallback';
   var STORAGE_KEY='monitoring-detail';
   var DATA_CACHE_KEY='monitoring-detail-public-data-v1';

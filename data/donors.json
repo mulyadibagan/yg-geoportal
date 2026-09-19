@@ -1322,13 +1322,14 @@
     "period": "Agustus–Desember 2026",
     "focus": "Penanaman mangrove dan kopi agroforestri",
     "locations": [
-      "Sepahat, Kabupaten Bengkalis"
+      "Sepahat, Kabupaten Bengkalis",
+      "Teluk Piyai Pesisir, Kabupaten Rokan Hilir"
     ],
     "indicators": [
       {
         "label": "Bibit mangrove tertanam",
-        "value": "1.000 / 2.000",
-        "progress": 50
+        "value": "2.000 / 2.000",
+        "progress": 100
       },
       {
         "label": "Bibit kopi agroforestri tertanam",
@@ -1347,11 +1348,11 @@
           {
             "id": "OUT-MA-EARTH-MANGROVE",
             "name": "Penanaman mangrove",
-            "indicator": "Target 2.000 bibit; realisasi terpetakan 1.000 bibit (50%)",
+            "indicator": "Target 2.000 bibit; realisasi terpetakan 2.000 bibit (100%)",
             "target": 2000,
-            "realization": 1000,
+            "realization": 2000,
             "unit": "bibit",
-            "mapUrl": "webgis.html?object=MANGROVE-SEPAHAT-MA-EARTH-2026-001"
+            "mapUrl": "webgis.html?donor=MA+Earth&layer=area_mangrove"
           },
           {
             "id": "OUT-MA-EARTH-COFFEE",
@@ -1385,6 +1386,21 @@
         "activityDateLabel": "1 September 2026",
         "verificationBasis": "Polygon final dan dokumentasi lapangan MA Earth",
         "note": "Realisasi 1.000 bibit pada polygon seluas 0,40 ha dengan jarak tanam 2 × 2 meter.",
+        "access": "public",
+        "staffOnly": false
+      },
+      {
+        "evidenceId": "MANGROVE-TELUK-PIYAI-PESISIR-MA-EARTH-2026-001",
+        "donorName": "MA Earth",
+        "programmeId": "PRG-MA-EARTH-2026",
+        "indicatorId": "OUT-MA-EARTH-MANGROVE",
+        "indicatorLabel": "Penanaman mangrove",
+        "evidenceType": "Evidence Spasial",
+        "evidenceTitle": "Penanaman 1.000 bibit Rhizophora sp. · Teluk Piyai Pesisir",
+        "location": "Teluk Piyai Pesisir, Kubu, Rokan Hilir",
+        "activityDateLabel": "Tahun 2026",
+        "verificationBasis": "Polygon lokasi tanam KTH Makmur Pesisir dan informasi program MA Earth",
+        "note": "Realisasi 1.000 bibit pada polygon seluas 0,506211 ha. Tanggal penanaman belum tercatat pada berkas spasial.",
         "access": "public",
         "staffOnly": false
       }

@@ -18,13 +18,13 @@ test("MA Earth donor card exposes the approved programme outputs", () => {
   assert.match(html, /Agustus–Desember 2026/);
   assert.match(html, /<strong>2\.000<\/strong><span>Bibit Mangrove Tertanam<\/span>/);
   assert.match(html, /<strong>1\.000<\/strong><span>Bibit Kopi Agroforestri Tertanam<\/span>/);
-  assert.match(html, /1\.000 bibit terealisasi/);
-  assert.match(html, /aria-valuemax="2000" aria-valuenow="1000"/);
-  assert.match(html, /1\.000\/2\.000 mangrove · 0\/1\.000 kopi/);
+  assert.match(html, /2\.000 bibit terealisasi/);
+  assert.match(html, /aria-valuemax="2000" aria-valuenow="2000"/);
+  assert.match(html, /2\.000\/2\.000 mangrove · 0\/1\.000 kopi/);
   assert.match(dashboard, /if \(name === "MA Earth"\)/);
   assert.match(dashboard, /data-open-ma-earth/);
   assert.match(dashboard, /data-close-ma-earth/);
-  assert.match(html, /dashboard-v3\.js\?v=20260903-dashboard-live1/);
+  assert.match(html, /dashboard-v3\.js\?v=20260919-ma-earth-teluk-piyai1/);
   assert.doesNotMatch(html, /yg-home-fast-snapshot/);
   assert.match(dashboard, /fetch\(source\.url, \{ cache: "no-store" \}\)/);
   assert.ok(fs.existsSync(path.join(ROOT, "assets/funding-ma-earth.svg")));
@@ -46,17 +46,19 @@ test("MA Earth programme status is sourced from donors.json", () => {
   assert.equal(maEarth.period, "Agustus–Desember 2026");
   assert.equal(maEarth.programs.length, 1);
   assert.equal(maEarth.programs[0].status, "Aktif");
-  assert.equal(maEarth.indicators[0].progress, 50);
+  assert.equal(maEarth.indicators[0].progress, 100);
   assert.equal(maEarth.indicators[1].progress, 0);
   assert.deepEqual(
     maEarth.indicators.map(indicator => [indicator.label, indicator.value]),
     [
-      ["Bibit mangrove tertanam", "1.000 / 2.000"],
+      ["Bibit mangrove tertanam", "2.000 / 2.000"],
       ["Bibit kopi agroforestri tertanam", "0 / 1.000"]
     ]
   );
-  assert.equal(maEarth.verifiedEvidence.length, 1);
+  assert.equal(maEarth.verifiedEvidence.length, 2);
   assert.equal(maEarth.verifiedEvidence[0].evidenceId, "MANGROVE-SEPAHAT-MA-EARTH-2026-001");
+  assert.equal(maEarth.verifiedEvidence[1].evidenceId, "MANGROVE-TELUK-PIYAI-PESISIR-MA-EARTH-2026-001");
+  assert.equal(maEarth.verifiedEvidence[1].activityDate, undefined);
 
   const statusSource = read("js/donor-program-status.js");
   assert.match(statusSource, /'ma-earth': '\[data-open-ma-earth\]'/);
@@ -68,13 +70,24 @@ test("mapped MA Earth realization remains separate from programme output", () =>
     feature => feature.properties.Donor === "MA Earth"
   );
 
-  assert.equal(mapped.length, 1);
-  assert.equal(mapped[0].properties.Jumlah_Bib, 1000);
-  assert.equal(mapped[0].properties.Luas_Ha, 0.4);
-  assert.equal(mapped[0].properties.photos.length, 4);
-  assert.equal(mapped[0].properties.Attribute_Updated, "2026-09-03");
+  assert.equal(mapped.length, 2);
+  assert.equal(mapped.reduce((sum, feature) => sum + feature.properties.Jumlah_Bib, 0), 2000);
+  assert.ok(Math.abs(mapped.reduce((sum, feature) => sum + feature.properties.Luas_Ha, 0) - 0.906211) < 1e-9);
 
-  const ring = mapped[0].geometry.coordinates[0];
+  const sepahat = mapped.find(feature => feature.properties.Object_ID === "MANGROVE-SEPAHAT-MA-EARTH-2026-001");
+  const telukPiyai = mapped.find(feature => feature.properties.Object_ID === "MANGROVE-TELUK-PIYAI-PESISIR-MA-EARTH-2026-001");
+  assert.ok(sepahat);
+  assert.ok(telukPiyai);
+  assert.equal(sepahat.properties.photos.length, 4);
+  assert.equal(sepahat.properties.Attribute_Updated, "2026-09-03");
+  assert.equal(telukPiyai.properties.Jumlah_Bib, 1000);
+  assert.equal(telukPiyai.properties.Luas_Ha, 0.506211);
+  assert.equal(telukPiyai.properties.Jenis_Tanaman, "Rhizophora sp.");
+  assert.equal(telukPiyai.properties.Kelompok, "KTH Makmur Pesisir");
+  assert.equal(telukPiyai.properties.Attribute_Updated, "2026-09-19");
+  assert.match(telukPiyai.properties.Catatan_Data, /Tanggal penanaman belum tercatat/);
+
+  const ring = telukPiyai.geometry.coordinates[0];
   const latitude = ring.reduce((sum, point) => sum + point[1], 0) / ring.length;
   const metresPerDegreeX = 111320 * Math.cos(latitude * Math.PI / 180);
   const metresPerDegreeY = 110574;
@@ -88,19 +101,19 @@ test("mapped MA Earth realization remains separate from programme output", () =>
     return sum + point[0] * next[1] - next[0] * point[1];
   }, 0)) / 2;
 
-  assert.ok(areaSquareMetres > 3900 && areaSquareMetres < 4100);
+  assert.ok(areaSquareMetres > 5000 && areaSquareMetres < 5200);
 });
 
-test("MA Earth map link opens its exact polygon popup", () => {
+test("MA Earth map link opens both mangrove polygons", () => {
   const html = read("index.html");
   const mapHtml = read("webgis.html");
   const mapSource = read("js/map-v4.js");
 
   assert.match(
     html,
-    /webgis\.html\?object=MANGROVE-SEPAHAT-MA-EARTH-2026-001/
+    /webgis\.html\?donor=MA\+Earth&amp;layer=area_mangrove/
   );
-  assert.match(mapHtml, /map-v4\.js\?v=20260904-kelapa-object-separation1/);
+  assert.match(mapHtml, /map-v4\.js\?v=20260918-rspo-profile1/);
   assert.match(mapSource, /params\.get\("object"\)/);
   assert.match(mapSource, /normalizedMatchValue\(item\.objectId\) === normalizedObjectId/);
   assert.match(mapSource, /match && focusSearchItem\(match\)/);
