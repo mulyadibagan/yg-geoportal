@@ -28,7 +28,14 @@ for (const feature of data.features) {
 if (invalid) throw new Error(`RTRW contains ${invalid} invalid feature(s)`);
 if (outOfRange) throw new Error(`RTRW contains ${outOfRange} coordinate(s) outside broad Riau/WGS84 bounds; check CRS before ingest`);
 const metadata = data.metadata || {};
+const classes = new Set();
+for (const feature of data.features) {
+  const p = feature.properties || {};
+  const label = p.RENCANA || p.POLA_RUANG || p.KETERANGAN || p.KETERANG || p.NAMOBJ || p.FUNGSI || p.PERUNTUKAN || p.KAWASAN;
+  if (label) classes.add(String(label).trim());
+}
 if (!/10\s*Tahun\s*2018/i.test(String(metadata.legalBasis || ""))) {
   console.warn("WARNING: metadata.legalBasis does not identify Perda Provinsi Riau No. 10 Tahun 2018");
 }
-console.log(JSON.stringify({ok:true,features:data.features.length,status:metadata.status || "working_internal",legalBasis:metadata.legalBasis || null}, null, 2));
+if (!classes.size) console.warn("WARNING: no recognizable spatial-plan class attribute was found");
+console.log(JSON.stringify({ok:true,features:data.features.length,classes:classes.size,classSample:Array.from(classes).slice(0,40),status:metadata.status || "working_internal",legalBasis:metadata.legalBasis || null}, null, 2));
