@@ -40,7 +40,7 @@
 
 
   const REFERENCE_LAYERS = {
-    ...(staffSession ? { rtrw_riau_2018_2038: {
+    ...(staffSession && false ? { rtrw_riau_2018_2038: {
       id: "rtrw_riau_2018_2038",
       label: "RTRW Riau 2018–2038 · internal staf",
       file: "data/RTRW_RIAU_2018_2038.geojson",
