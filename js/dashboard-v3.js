@@ -24,7 +24,7 @@
     engagement: { value: 785, unit: "orang", label: "Orang terlibat" }
   };
   const OFFICIAL_LAYERS = [
-    { id: "desa_intervensi", url: "data/desa_intervensi.geojson?v=20260726-14desa" },
+    { id: "desa_intervensi", url: "data/desa_intervensi.geojson?v=20260919-15desa-teluk-piyai" },
     { id: "area_mangrove", url: "data/area_mangrove.geojson?v=20260919-ma-earth-teluk-piyai-1000-1" },
     { id: "mineral_land_restoration_area", url: "data/mineral_land_restoration_area.geojson?v=20260825-sync1" },
     { id: "area_kopi", url: "data/area_kopi.geojson?v=20260825-sync1" },

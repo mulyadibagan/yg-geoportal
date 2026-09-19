@@ -839,6 +839,61 @@
       "hotspot7d": 0,
       "hotspot30d": 0,
       "hotspot90d": null
+    },
+    "teluk piyai pesisir|kubu|rokan hilir": {
+      "name": "Teluk Piyai Pesisir",
+      "geostoreId": null,
+      "baselineForestHa": 11026.41,
+      "currentForestHa": 906.79,
+      "totalLossHa": 10119.62,
+      "gainHa": null,
+      "annualLossHa": {
+        "2017": 24.83,
+        "2018": 34.29,
+        "2019": 11.99,
+        "2020": 7.3,
+        "2021": 18.68,
+        "2022": 72.27,
+        "2023": 75.03,
+        "2024": 62.96,
+        "2025": 18.68,
+        "2026": null
+      },
+      "referenceAreasHa": {
+        "apl": 2028.23,
+        "productionForest": 10404.85,
+        "protectionForest": 0,
+        "conservation": 0,
+        "forestEstate": 10404.85,
+        "unclassifiedForestFunction": 0,
+        "peat": 11258.02,
+        "socialForestry": 263.23
+      },
+      "hotspotYearly5y": [
+        {
+          "year": "2022",
+          "count": 1
+        },
+        {
+          "year": "2023",
+          "count": 0
+        },
+        {
+          "year": "2024",
+          "count": 0
+        },
+        {
+          "year": "2025",
+          "count": 0
+        },
+        {
+          "year": "2026",
+          "count": 0
+        }
+      ],
+      "hotspot7d": 0,
+      "hotspot30d": 0,
+      "hotspot90d": null
     }
   },
   "socialForestry": {
@@ -8864,8 +8919,8 @@
       "VIIRS_NOAA20_NRT",
       "VIIRS_NOAA21_NRT"
     ],
-    "updatedAt": "2026-09-19T05:54:14.400Z",
-    "recentUpdatedAt": "2026-09-19T05:54:14.400Z",
+    "updatedAt": "2026-09-18T11:16:02.063Z",
+    "recentUpdatedAt": "2026-09-18T11:16:02.064Z",
     "historyUpdatedAt": "2026-08-01T05:04:04.349Z",
     "mode": "recent",
     "periodDays": [

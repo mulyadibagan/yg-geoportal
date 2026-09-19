@@ -616,9 +616,9 @@
     <button class="funding-close" type="button" data-close-village aria-label="Tutup">×</button>
     <header class="funding-hero">
       <span class="funding-badge">RINCIAN DESA</span>
-      <h2 id="village-title">14 Desa Cakupan</h2>
+      <h2 id="village-title">15 Desa Cakupan</h2>
       <div class="funding-meta">
-        <span><b>Total Desa</b><span id="village-total-count">14</span></span>
+        <span><b>Total Desa</b><span id="village-total-count">15</span></span>
         <span><b>Kabupaten</b><span id="village-total-regencies">-</span></span>
       </div>
     </header>
@@ -1173,9 +1173,9 @@
         if (!modal || !grid || !totalCount || !totalRegencies) return;
 
         const data = getVillageDetailData();
-        totalCount.textContent = String(data.villages.length || 14);
+        totalCount.textContent = String(data.villages.length || 15);
         const title = document.getElementById("village-title");
-        if (title) title.textContent = String(data.villages.length || 14) + " Desa Cakupan";
+        if (title) title.textContent = String(data.villages.length || 15) + " Desa Cakupan";
         totalRegencies.textContent = String(data.regencies || '-');
 
         if (!data.villages.length) {

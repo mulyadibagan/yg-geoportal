@@ -63,7 +63,7 @@
         var boundaries=Array.isArray(administrative.features)?administrative.features:[];
         return boundaries.find(function(feature){return featureKey(feature)===key||featureNameKey(feature)===key;})||null;
       }
-      var data=await loadJson("data/desa_intervensi.geojson?v=20260822-program-profile1");
+      var data=await loadJson("data/desa_intervensi.geojson?v=20260919-15desa-teluk-piyai");
       var features=Array.isArray(data.features)?data.features:[];
       var exact=features.find(function(feature){return featureKey(feature)===key;});
       if(exact){return exact;}
