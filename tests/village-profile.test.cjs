@@ -91,3 +91,21 @@ test('Basilam Baru and Sungai Geniot profiles use stable administrative codes', 
     assert.ok(records[code].baselineForestHa > 0);
   }
 });
+
+test('Teluk Piyai Pesisir profile joins source aliases, fresh mangrove data, and community records', () => {
+  const controller = read('js/village-profile.js');
+  const html = read('village-profile.html');
+  const groups = JSON.parse(read('data/community-groups.json')).groups;
+  const group = groups.find(item => item.id === 'kth-makmur-pesisir-teluk-piyai-pesisir');
+
+  assert.match(controller, /function analyticsKeyCandidates\(feature\)/);
+  assert.match(controller, /p\.Intervention_Source_Name/);
+  assert.match(controller, /data\/area_mangrove\.geojson\?v=20260919-ma-earth-teluk-piyai1/);
+  assert.match(controller, /programmeLayer\("area_mangrove","Area penanaman mangrove"/);
+  assert.match(controller, /normalized\(row\.village\)\.replace\(\/\\s\+\/g,""\)/);
+  assert.match(html, /village-profile\.js\?v=20260919-teluk-piyai-profile1/);
+  assert.ok(group);
+  assert.equal(group.membership.total, 15);
+  assert.equal(group.approvedAreaHa, 143);
+  assert.equal(group.documents.length, 3);
+});

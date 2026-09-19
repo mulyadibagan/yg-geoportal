@@ -26,6 +26,23 @@
     var p=feature&&feature.properties||{};
     return [p.WADMKD||p.Desa||p.NAMOBJ||p.Nama_Desa,p.WADMKC||p.Kecamatan,p.WADMKK||p.Kabupaten].filter(Boolean).join("|").trim().toLowerCase();
   }
+  function analyticsKeyCandidates(feature){
+    var p=feature&&feature.properties||{},keys=[featureKey(feature)],sourceName=p.Intervention_Source_Name;
+    if(sourceName){keys.push([sourceName,p.WADMKC||p.Kecamatan,p.WADMKK||p.Kabupaten].filter(Boolean).join("|").trim().toLowerCase());}
+    return keys.filter(function(value,index,all){return value&&all.indexOf(value)===index;});
+  }
+  function mergeFeatureCollections(primary,collections){
+    var merged=[],seen={};
+    [primary].concat(collections||[]).forEach(function(collection){
+      var features=Array.isArray(collection&&collection.features)?collection.features:[];
+      features.forEach(function(feature){
+        var p=feature&&feature.properties||{},id=String(p.Object_ID||p.Source_Object_ID||"").trim();
+        var dedupe=id?"id:"+id:[layerId(feature),p.Nama_Objek||p.title||"",JSON.stringify(feature&&feature.geometry||null)].join("|");
+        if(seen[dedupe]){return;}seen[dedupe]=true;merged.push(feature);
+      });
+    });
+    return merged;
+  }
   function layerId(feature){var p=feature&&feature.properties||{};return String(p.Layer_ID||p.Source_Layer||"").toLowerCase();}
   function sourceType(feature){var p=feature&&feature.properties||{};return String(p.Source_Type||"").toLowerCase();}
   function isActivityFeature(feature){
@@ -101,6 +118,7 @@
     }
     programmeLayer("fdrs","FDRS / TMA","vp-map-marker--fdrs","#ed6c19");
     programmeLayer("sekat_kanal","Sekat kanal","vp-map-marker--canal","#078a9b");
+    programmeLayer("area_mangrove","Area penanaman mangrove","vp-map-marker--mangrove","#00796b");
     monthlyHotspotLayer=L.layerGroup().addTo(map);overlays["Hotspot laporan final"]=monthlyHotspotLayer;
     L.control.layers(null,overlays,{collapsed:true,position:"topright"}).addTo(map);
     drawMonthlyHotspotPoints(monthlyHotspotPoints);
@@ -134,7 +152,7 @@
     el("reference-list").innerHTML=rows.map(function(item){var value=number(item[1]);var width=value!=null&&area?Math.min(100,value/area*100):0;return '<div class="vp-reference"><span>'+esc(item[0])+'</span><strong>'+esc(ha(value))+'</strong><div class="vp-reference__track"><div class="vp-reference__fill" style="width:'+width.toFixed(2)+'%"></div></div></div>';}).join("");
   }
   function samePlace(row,name,district,regency){
-    if(!row||normalized(row.village)!==normalized(name)){return false;}
+    if(!row||normalized(row.village).replace(/\s+/g,"")!==normalized(name).replace(/\s+/g,"")){return false;}
     if(row.district&&district&&normalized(row.district)!==normalized(district)){return false;}
     if(row.regency&&regency&&normalized(row.regency)!==normalized(regency)){return false;}
     return true;
@@ -532,8 +550,12 @@
           (membership.total!=null?'<div><dt>Anggota</dt><dd>'+format(membership.total,0)+(gender.length?'<small>'+esc(gender.join(" · "))+'</small>':'')+'</dd></div>':'')+
           (legal.number?'<div><dt>Legalitas</dt><dd>'+esc(legal.number)+(legal.date?'<small>'+esc(legal.date)+'</small>':'')+'</dd></div>':'')+
           (legal.validUntil?'<div><dt>Berlaku sampai</dt><dd>'+esc(legal.validUntil)+'</dd></div>':'')+
+          (group.scheme?'<div><dt>Skema</dt><dd>'+esc(group.scheme)+'</dd></div>':'')+
+          (group.approvedAreaHa!=null?'<div><dt>Luas persetujuan</dt><dd>'+ha(group.approvedAreaHa)+'</dd></div>':'')+
+          (group.forestManagementUnit?'<div><dt>KPH</dt><dd>'+esc(group.forestManagementUnit)+'</dd></div>':'')+
+          (group.rkpsStatus?'<div><dt>Status RKPS</dt><dd>'+esc(group.rkpsStatus)+'</dd></div>':'')+
         '</dl>'+
-        (legal.url?'<a class="vp-community-group__document" href="'+esc(legal.url)+'" target="_blank" rel="noopener noreferrer">Buka dokumen SK/legalitas ↗</a>':'')+
+        ((Array.isArray(group.documents)&&group.documents.length?group.documents:(legal.url?[{label:"SK/legalitas",url:legal.url}]:[])).map(function(document){return '<a class="vp-community-group__document" href="'+esc(document.url)+'" target="_blank" rel="noopener noreferrer">Buka '+esc(document.label||document.category||"dokumen")+' ↗</a>';}).join(""))+
       '</article>';
     }).join("");
   }
@@ -581,8 +603,8 @@
     el("map-layout-link").href="map-layout.html?source="+encodeURIComponent(source)+"&key="+encodeURIComponent(key);
     if(!key){showError("Tautan desa tidak lengkap. Silakan pilih desa melalui WebGIS.");return;}
     try{
-      var pair=await Promise.all([loadJson(MANIFEST_URL+"?v="+Date.now()),findFeature(),loadJson(SNAPSHOT_URL),loadJson("data/capacity-building.json?v=20260823-dayun-coffee"),loadJson("data/community-groups.json?v=20260825-village-profile1").catch(function(){return {groups:[]};})]);
-      var manifest=pair[0],feature=pair[1],snapshot=pair[2]||{},capacityRows=pair[3]||[],communityGroups=pair[4]&&pair[4].groups||[],snapshotFeatures=Array.isArray(snapshot.features)?snapshot.features:[],analyticsKey=feature?featureKey(feature):key,shard=manifest.index&&manifest.index[analyticsKey];
+      var pair=await Promise.all([loadJson(MANIFEST_URL+"?v="+Date.now()),findFeature(),loadJson(SNAPSHOT_URL),loadJson("data/capacity-building.json?v=20260823-dayun-coffee"),loadJson("data/community-groups.json?v=20260919-teluk-piyai1").catch(function(){return {groups:[]};}),loadJson("data/area_mangrove.geojson?v=20260919-ma-earth-teluk-piyai1").catch(function(){return {features:[]};})]);
+      var manifest=pair[0],feature=pair[1],snapshot=pair[2]||{},capacityRows=pair[3]||[],communityGroups=pair[4]&&pair[4].groups||[],snapshotFeatures=mergeFeatureCollections(snapshot,[pair[5]]),candidateKeys=feature?analyticsKeyCandidates(feature):[key],analyticsKey=candidateKeys.find(function(candidate){return manifest.index&&Object.prototype.hasOwnProperty.call(manifest.index,candidate);})||candidateKeys[0],shard=manifest.index&&manifest.index[analyticsKey];
       if(shard==null){
         el("profile-status").innerHTML="<i></i> Analisis utama belum tersedia";
         render({},manifest,feature,snapshotFeatures,capacityRows,communityGroups);
