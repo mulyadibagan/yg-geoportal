@@ -93,6 +93,7 @@ async function refineJob(request,env,id,url){
   if(!job)return reply(request,{ok:false,error:'job_not_found'},404);
   if(!authorizedJob(request,url,job))return reply(request,{ok:false,error:'unauthorized'},401);
   if(job.status!=='ready')return reply(request,{ok:false,error:'refine_not_available'},409);
+  if(job.sourceType==='upload'&&job.r2SourceRetained===false)return reply(request,{ok:false,error:'source_photos_expired'},409);
   if(await pendingCount(env)>=MAX_PENDING_JOBS)return reply(request,{ok:false,error:'queue_full'},429,{'retry-after':'300'});
   const now=new Date().toISOString();
   job.status='pending';
