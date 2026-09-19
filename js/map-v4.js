@@ -40,6 +40,20 @@
 
 
   const REFERENCE_LAYERS = {
+    ...(staffSession && false ? { rtrw_riau_2018_2038: {
+      id: "rtrw_riau_2018_2038",
+      label: "RTRW Riau 2018–2038 · internal staf",
+      file: "data/RTRW_RIAU_2018_2038.geojson",
+      version: "rtrw-riau-internal-v1",
+      color: "#5d4037",
+      count: null,
+      type: "spatial_plan",
+      focusOnEnable: true,
+      section: "spatial_planning",
+      sourceLabel: "Perda Provinsi Riau No. 10 Tahun 2018 · geometri kerja internal",
+      scale: "Acuan peta RTRW 1:250.000 · bukan penetapan batas hukum",
+      policyUrl: "https://jdih.riau.go.id/"
+    } } : {}),
     ...(staffSession ? { pbph_riau_052026: { id: "pbph_riau_052026", label: "PBPH Riau · internal staf", file: "data/PBPH_RIAU_052026.geojson", color: "#d84315", count: 56, type: "active_concession", focusOnEnable: true, sourceLabel: "Referensi internal PBPH Mei 2026", scale: "1:50.000" } } : {}),
     ...(staffSession ? { perusahaan_sawit_riau: {
       id: "perusahaan_sawit_riau",

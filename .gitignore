@@ -19,3 +19,8 @@ data/fire-archive/
 data/PBPH*.geojson
 data/pbph-documents.json
 data/phl-svlk-monthly/
+
+# Spatial-planning source/working datasets are internal and must never be committed.
+private-data/
+data/RTRW*.geojson
+data/RDTR*.geojson

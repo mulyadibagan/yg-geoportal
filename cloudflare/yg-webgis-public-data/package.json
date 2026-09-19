@@ -6,6 +6,7 @@
     "test": "node --test test/*.test.mjs",
     "validate:snapshots": "node scripts/validate-snapshots.mjs",
     "build:rspo-groups": "node scripts/build-rspo-groups.mjs",
+    "validate:rtrw": "node scripts/validate-rtrw.mjs",
     "check": "wrangler deploy --dry-run --env staging",
     "smoke:staging": "node scripts/smoke-staging.mjs"
   },
