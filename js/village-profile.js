@@ -553,7 +553,6 @@
           (group.scheme?'<div><dt>Skema</dt><dd>'+esc(group.scheme)+'</dd></div>':'')+
           (group.approvedAreaHa!=null?'<div><dt>Luas persetujuan</dt><dd>'+ha(group.approvedAreaHa)+'</dd></div>':'')+
           (group.forestManagementUnit?'<div><dt>KPH</dt><dd>'+esc(group.forestManagementUnit)+'</dd></div>':'')+
-          (group.rkpsStatus?'<div><dt>Status RKPS</dt><dd>'+esc(group.rkpsStatus)+'</dd></div>':'')+
         '</dl>'+
         ((Array.isArray(group.documents)&&group.documents.length?group.documents:(legal.url?[{label:"SK/legalitas",url:legal.url}]:[])).map(function(document){return '<a class="vp-community-group__document" href="'+esc(document.url)+'" target="_blank" rel="noopener noreferrer">Buka '+esc(document.label||document.category||"dokumen")+' ↗</a>';}).join(""))+
       '</article>';

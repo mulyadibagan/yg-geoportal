@@ -103,9 +103,23 @@ test('Teluk Piyai Pesisir profile joins source aliases, fresh mangrove data, and
   assert.match(controller, /data\/area_mangrove\.geojson\?v=20260919-ma-earth-teluk-piyai1/);
   assert.match(controller, /programmeLayer\("area_mangrove","Area penanaman mangrove"/);
   assert.match(controller, /normalized\(row\.village\)\.replace\(\/\\s\+\/g,""\)/);
-  assert.match(html, /village-profile\.js\?v=20260919-teluk-piyai-profile1/);
+  assert.match(html, /village-profile\.js\?v=20260919-rkps-internal1/);
   assert.ok(group);
   assert.equal(group.membership.total, 15);
   assert.equal(group.approvedAreaHa, 143);
-  assert.equal(group.documents.length, 3);
+  assert.equal(group.documents.length, 2);
+  assert.equal(group.rkpsStatus, undefined);
+  assert.ok(group.documents.every(document => !/rkps/i.test(document.label)));
+});
+
+test('RKPS information is excluded from public village and social-forestry profiles', () => {
+  const villageController = read('js/village-profile.js');
+  const socialController = read('js/social-forestry-profile.js');
+  const details = JSON.parse(read('data/social-forestry-details.json'));
+  const detail = details['sk.9863/menlhk-pskl/pkps/psl.0/9/2023'];
+
+  assert.doesNotMatch(villageController, /Status RKPS/);
+  assert.doesNotMatch(socialController, /item\("RKPS/);
+  assert.ok(detail.documents.every(document => !/rkps/i.test([document.category, document.label].join(' '))));
+  assert.equal(detail.management.rkpsStatus, undefined);
 });
