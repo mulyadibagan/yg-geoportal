@@ -114,15 +114,15 @@ test('Teluk Piyai Pesisir profile joins source aliases, fresh mangrove data, and
 
 test('RKPS information is excluded from public village and social-forestry profiles', () => {
   const villageController = read('js/village-profile.js');
-  const socialController = read('js/social-forestry-profile.js');
-  const directoryController = read('js/social-forestry-directory.js');
+  const socialController = read('js/social-forestry-profile-public.js');
+  const directoryController = read('js/social-forestry-directory-public.js');
   const directoryHtml = read('social-forestry-directory.html');
   const details = JSON.parse(read('data/social-forestry-details.json'));
   const detail = details['sk.9863/menlhk-pskl/pkps/psl.0/9/2023'];
 
   assert.doesNotMatch(villageController, /Status RKPS/);
-  assert.doesNotMatch(socialController, /item\("RKPS/);
-  assert.doesNotMatch(directoryController, /rkps:"RKPS"/);
+  assert.doesNotMatch(socialController, /management\.rkpsStatus/);
+  assert.doesNotMatch(directoryController, /rkpsStatus|available-rkps|missing-rkps/);
   assert.doesNotMatch(directoryHtml, /available-rkps|missing-rkps|stat-doc-rkps/);
   assert.ok(detail.documents.every(document => !/rkps/i.test([document.category, document.label].join(' '))));
   assert.equal(detail.management.rkpsStatus, undefined);

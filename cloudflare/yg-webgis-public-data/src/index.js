@@ -201,6 +201,7 @@ const PRIVATE_DATA_ROUTES = {
   "/api/staff/pbph-riau": ["internal/pbph/riau.geojson", "application/geo+json; charset=utf-8"],
   "/api/staff/pbph-tree-cover-monitoring": ["internal/pbph/tree-cover-monitoring.json", "application/json; charset=utf-8"],
   "/api/staff/social-forestry-riau": ["internal/social-forestry/riau.geojson", "application/geo+json; charset=utf-8"],
+  "/api/staff/social-forestry-details": ["internal/social-forestry/details.json", "application/json; charset=utf-8"],
   "/api/staff/faperta-ur-data": ["internal/faperta/ur-data.json", "application/json; charset=utf-8"],
   "/api/staff/faperta-ur-site": ["internal/faperta/ur-site.geojson", "application/geo+json; charset=utf-8"],
   "/api/staff/pbph-documents": ["internal/pbph/documents.json", "application/json; charset=utf-8"],

@@ -56,6 +56,11 @@ jobs:
             --exclude 'data/kph_2019_riau.geojson' \
             --exclude 'data/PBPH_RIAU_052026.geojson' \
             --exclude 'data/pbph-documents.json' \
+            --exclude 'data/PERHUTANAN_SOSIAL_RIAU.geojson' \
+            --exclude 'data/social-forestry-pkk-samj.geojson' \
+            --exclude 'data/social-forestry-kud-agro-lestari.geojson' \
+            --exclude 'data/social-forestry-derived-2025.geojson' \
+            --exclude 'data/social-forestry-official-2026.geojson' \
             --exclude 'data/phl-svlk-monthly/' \
             --exclude '_site/' \
             ./ _site/

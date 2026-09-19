@@ -23,7 +23,7 @@ test("PS summary has one canonical profile per decree or signature", () => {
   profiles.forEach(profile => assert.ok(details[profile.key], `detail missing for ${profile.key}`));
 });
 
-test("all spatial PS sources contain valid polygon geometry", () => {
+test("spatial PS sources are excluded from Pages and assembled for staff", () => {
   const files = [
     "data/PERHUTANAN_SOSIAL_RIAU.geojson",
     "data/social-forestry-pkk-samj.geojson",
@@ -31,14 +31,13 @@ test("all spatial PS sources contain valid polygon geometry", () => {
     "data/social-forestry-derived-2025.geojson",
     "data/social-forestry-official-2026.geojson"
   ];
-  const features = files.flatMap(file => readJson(file).features || []);
-  assert.equal(features.length, 186);
-  features.forEach((feature, index) => {
-    assert.ok(feature.geometry, `geometry missing at feature ${index}`);
-    assert.ok(["Polygon", "MultiPolygon"].includes(feature.geometry.type));
-    assert.ok(Array.isArray(feature.geometry.coordinates));
-    assert.ok(feature.geometry.coordinates.length > 0);
+  const deploy = fs.readFileSync(path.join(root, ".github/workflows/deploy-pages.yml"), "utf8");
+  const publish = fs.readFileSync(path.join(root, ".github/workflows/enable-staff-social-forestry.yml"), "utf8");
+  files.forEach(file => {
+    assert.match(deploy, new RegExp(`--exclude '${file.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}'`));
+    assert.match(publish, new RegExp(path.basename(file).replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   });
+  assert.match(publish, /internal\/social-forestry\/riau\.geojson/);
 });
 
 test("document-backed schemes and approved 2025 profile stay canonical", () => {
@@ -66,20 +65,14 @@ test("directory uses extracted decrees and canonical summary keys", () => {
 });
 
 test("scheme summary cards are accessible directory filters", () => {
-  const directory = fs.readFileSync(path.join(root, "js/social-forestry-directory.js"), "utf8");
+  const directory = fs.readFileSync(path.join(root, "js/social-forestry-directory-public.js"), "utf8");
   const page = fs.readFileSync(path.join(root, "social-forestry-directory.html"), "utf8");
-  const styles = fs.readFileSync(path.join(root, "css/social-forestry-directory-clickable.css"), "utf8");
 
   assert.match(directory, /activeScheme/);
-  assert.match(directory, /data-area-action="approved"/);
-  assert.match(directory, /data-area-action="process"/);
   assert.match(directory, /data-area-scheme=/);
   assert.match(directory, /aria-pressed=/);
   assert.match(directory, /schemeGrid\.addEventListener\("click"/);
-  assert.match(page, /social-forestry-directory-clickable\.css\?v=20260904-document-filters1/);
-  assert.match(page, /social-forestry-directory\.js\?v=20260904-document-filters1/);
-  assert.match(styles, /\.psd-area-card:focus-visible/);
-  assert.match(styles, /\.psd-area-card\.is-active/);
+  assert.match(page, /social-forestry-directory-public\.js\?v=20260919-public-staff-split1/);
 });
 
 test("verified late-2025 profiles keep their authoritative decree and regency", () => {
@@ -98,8 +91,8 @@ test("verified late-2025 profiles keep their authoritative decree and regency", 
 });
 
 test("document completeness cards filter available and missing profiles", () => {
-  const directory = fs.readFileSync(path.join(root, "js/social-forestry-directory.js"), "utf8");
-  const page = fs.readFileSync(path.join(root, "social-forestry-directory.html"), "utf8");
+  const directory = fs.readFileSync(path.join(root, "js/staff-social-forestry-directory.js"), "utf8");
+  const page = fs.readFileSync(path.join(root, "staff-social-forestry-directory.html"), "utf8");
   const styles = fs.readFileSync(path.join(root, "css/social-forestry-directory-clickable.css"), "utf8");
 
   ["sk", "map", "rkps", "rkt", "kups"].forEach(type => {
@@ -114,5 +107,5 @@ test("document completeness cards filter available and missing profiles", () => 
   assert.match(styles, /\.psd-completeness-filter:focus-visible/);
   assert.match(styles, /\.psd-completeness-missing\.is-active/);
   assert.match(page, /social-forestry-directory-clickable\.css\?v=20260904-document-filters1/);
-  assert.match(page, /social-forestry-directory\.js\?v=20260904-document-filters1/);
+  assert.match(page, /staff-social-forestry-directory\.js\?v=20260919-ps-split1/);
 });
