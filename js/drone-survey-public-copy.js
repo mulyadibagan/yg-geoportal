@@ -141,8 +141,8 @@ function renderProgress(job){
   let progress=Number(job.progress||0);
   let label=job.stageLabel||'';
   if(job.status==='pending'){
-    progress=0;
-    label=job.queuePosition?`Menunggu giliran · antrean ${job.queuePosition}${job.queueSize?` dari ${job.queueSize}`:''}`:'Menunggu giliran pemrosesan';
+    if(!Number(job.downloadedPhotos||0)) progress=0;
+    label=Number(job.downloadedPhotos||0)?(job.stageLabel||'Unduhan akan dilanjutkan otomatis'):(job.queuePosition?`Menunggu giliran · antrean ${job.queuePosition}${job.queueSize?` dari ${job.queueSize}`:''}`:'Menunggu giliran pemrosesan');
   }else if(job.status==='uploading'){
     progress=0; label='Menyiapkan foto';
   }else if(job.status==='ready'){

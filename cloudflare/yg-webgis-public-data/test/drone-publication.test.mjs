@@ -22,7 +22,10 @@ function droneEnv() {
           }
         };
       },
-      async put(key, value) { store.set(key, String(value)); }
+      async put(key, value) { store.set(key, String(value)); },
+      async list({ prefix = '' } = {}) {
+        return { objects: [...store.keys()].filter(key => key.startsWith(prefix)).map(key => ({ key })) };
+      }
     },
     store
   };
@@ -103,4 +106,33 @@ test('unpublishing removes catalogue access while preserving owner access', asyn
   assert.equal(publicCog.status, 404);
   const ownerCog = await worker.fetch(new Request(`https://data.test/api/drone/jobs/${id}/cog?access=${token}`), env);
   assert.equal(ownerCog.status, 200);
+});
+
+test('authenticated staff can list and inspect team orthomosaic jobs without owner tokens', async () => {
+  const env = droneEnv();
+  env.store.set(jobKey, JSON.stringify({ ...readyJob(), status: 'processing', progress: 55, stageLabel: 'Menyusun foto' }));
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async url => {
+    assert.match(String(url), /page=staff-reports/);
+    assert.match(String(url), /sessionToken=staff-session/);
+    return new Response(JSON.stringify({ reports: [], stats: {} }), { headers: { 'content-type': 'application/json' } });
+  };
+  try {
+    const denied = await worker.fetch(new Request('https://data.test/api/staff/drone/jobs'), env);
+    assert.equal(denied.status, 401);
+
+    const headers = { origin: 'https://webgisyg.id', authorization: 'Bearer staff-session' };
+    const catalogue = await worker.fetch(new Request('https://data.test/api/staff/drone/jobs', { headers }), env);
+    const data = await catalogue.json();
+    assert.equal(catalogue.status, 200);
+    assert.equal(data.jobs.length, 1);
+    assert.equal(data.jobs[0].id, id);
+    assert.equal(data.jobs[0].accessToken, undefined);
+
+    const detail = await worker.fetch(new Request(`https://data.test/api/drone/jobs/${id}`, { headers }), env);
+    assert.equal(detail.status, 200);
+    assert.equal((await detail.json()).job.stageLabel, 'Menyusun foto');
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
 });

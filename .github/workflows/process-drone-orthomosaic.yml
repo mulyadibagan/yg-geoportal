@@ -86,9 +86,26 @@ jobs:
           publish_status
           SOURCE=$(jq -r '.sourceType' "$ROOT/job.json")
           if [ "$SOURCE" = "drive" ]; then
-            CACHE_KEY="drone/cache/$JOB_ID/source.tar"
+            CACHE_PREFIX="drone/cache/$JOB_ID"
+            CACHE_KEY="$CACHE_PREFIX/source.tar"
+            CACHE_MANIFEST_KEY="$CACHE_PREFIX/manifest.json"
             CACHE_FILE="$ROOT/source.tar"
-            if npx wrangler r2 object get "yg-webgis-public-snapshots/$CACHE_KEY" --remote --file "$CACHE_FILE" >/dev/null 2>&1; then
+            CACHE_MANIFEST="$ROOT/cache-manifest.json"
+            if npx wrangler r2 object get "yg-webgis-public-snapshots/$CACHE_MANIFEST_KEY" --remote --file "$CACHE_MANIFEST" >/dev/null 2>&1; then
+              python ../../scripts/drone_job.py stage "$ROOT/job.json" downloading 17 "Memuat checkpoint foto"
+              publish_status
+              while IFS= read -r PART; do
+                [ -z "$PART" ] && continue
+                npx wrangler r2 object get "yg-webgis-public-snapshots/$CACHE_PREFIX/$PART" --remote --file "$ROOT/$PART"
+              done < <(jq -r '.parts[]' "$CACHE_MANIFEST")
+              cat "$ROOT"/source.tar.part-* > "$CACHE_FILE"
+              tar -xf "$CACHE_FILE" -C "$ROOT/input"
+              DOWNLOADED=$(find "$ROOT/input" -type f \( -iname '*.jpg' -o -iname '*.jpeg' \) | wc -l | tr -d ' ')
+              EXPECTED=$(jq -r '.expectedPhotos // .downloadedPhotos // 0' "$ROOT/job.json")
+              [ "$EXPECTED" -le 0 ] && EXPECTED="$DOWNLOADED"
+              python ../../scripts/drone_job.py stage "$ROOT/job.json" downloading 18 "Melanjutkan foto $DOWNLOADED/$EXPECTED" --downloaded "$DOWNLOADED" --expected "$EXPECTED"
+              publish_status
+            elif npx wrangler r2 object get "yg-webgis-public-snapshots/$CACHE_KEY" --remote --file "$CACHE_FILE" >/dev/null 2>&1; then
               python ../../scripts/drone_job.py stage "$ROOT/job.json" downloading 17 "Memuat checkpoint foto"
               publish_status
               tar -xf "$CACHE_FILE" -C "$ROOT/input"
@@ -125,7 +142,15 @@ jobs:
             DOWNLOADED=$(jq -r '.downloadedPhotos // 0' "$ROOT/drive-download.json")
 
             tar -cf "$CACHE_FILE" -C "$ROOT/input" .
-            npx wrangler r2 object put "yg-webgis-public-snapshots/$CACHE_KEY" --remote --file "$CACHE_FILE" --content-type application/x-tar
+            split -b 240M -d -a 3 "$CACHE_FILE" "$ROOT/source.tar.part-"
+            PARTS=$(find "$ROOT" -maxdepth 1 -type f -name 'source.tar.part-*' -printf '%f\n' | sort | jq -R . | jq -s .)
+            jq -n --argjson parts "$PARTS" --argjson downloaded "$DOWNLOADED" --argjson expected "$EXPECTED" --arg now "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+              '{version:1,parts:$parts,downloadedPhotos:$downloaded,expectedPhotos:$expected,updatedAt:$now}' > "$CACHE_MANIFEST"
+            while IFS= read -r PART; do
+              [ -z "$PART" ] && continue
+              npx wrangler r2 object put "yg-webgis-public-snapshots/$CACHE_PREFIX/$PART" --remote --file "$ROOT/$PART" --content-type application/octet-stream
+            done < <(jq -r '.parts[]' "$CACHE_MANIFEST")
+            npx wrangler r2 object put "yg-webgis-public-snapshots/$CACHE_MANIFEST_KEY" --remote --file "$CACHE_MANIFEST" --content-type application/json
 
             if [ "$DOWNLOAD_RC" -ne 0 ]; then
               python ../../scripts/drone_job.py checkpoint "$ROOT/job.json" --downloaded "$DOWNLOADED" --expected "$EXPECTED" --retry-minutes 30
@@ -208,6 +233,13 @@ jobs:
           publish_status
 
           if [ "$SOURCE" = "drive" ]; then
+            if [ -f "$ROOT/cache-manifest.json" ]; then
+              while IFS= read -r PART; do
+                [ -z "$PART" ] && continue
+                npx wrangler r2 object delete "yg-webgis-public-snapshots/drone/cache/$JOB_ID/$PART" --remote || true
+              done < <(jq -r '.parts[]' "$ROOT/cache-manifest.json")
+            fi
+            npx wrangler r2 object delete "yg-webgis-public-snapshots/drone/cache/$JOB_ID/manifest.json" --remote || true
             npx wrangler r2 object delete "yg-webgis-public-snapshots/drone/cache/$JOB_ID/source.tar" --remote || true
           fi
 
