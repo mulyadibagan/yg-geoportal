@@ -86,6 +86,13 @@ test("mapped MA Earth realization remains separate from programme output", () =>
   assert.equal(telukPiyai.properties.Kelompok, "KTH Makmur Pesisir");
   assert.equal(telukPiyai.properties.Attribute_Updated, "2026-09-19");
   assert.match(telukPiyai.properties.Catatan_Data, /Tanggal penanaman belum tercatat/);
+  assert.deepEqual(telukPiyai.properties.photos, [
+    "assets/program-photos/ma-earth-teluk-piyai-pesisir-2026-tanaman.jpg",
+    "assets/program-photos/ma-earth-teluk-piyai-pesisir-2026-tim.jpg"
+  ]);
+  telukPiyai.properties.photos.forEach(photo => {
+    assert.ok(fs.existsSync(path.join(ROOT, photo)));
+  });
 
   const ring = telukPiyai.geometry.coordinates[0];
   const latitude = ring.reduce((sum, point) => sum + point[1], 0) / ring.length;
