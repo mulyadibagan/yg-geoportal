@@ -22,7 +22,9 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
+  # A failed upstream workflow still emits workflow_run. Keep that skipped run
+  # from cancelling a valid push deployment already in progress.
+  group: pages-${{ github.event_name == 'workflow_run' && github.event.workflow_run.conclusion != 'success' && 'skipped' || 'deploy' }}
   cancel-in-progress: true
 
 jobs:
