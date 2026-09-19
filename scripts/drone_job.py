@@ -99,6 +99,8 @@ def main():
     a=sub.add_parser('metadata'); a.add_argument('job'); a.add_argument('summary')
     a=sub.add_parser('ready'); a.add_argument('job'); a.add_argument('gdalinfo'); a.add_argument('summary')
     a=sub.add_parser('checkpoint'); a.add_argument('job'); a.add_argument('--downloaded',type=int,required=True); a.add_argument('--expected',type=int,required=True); a.add_argument('--retry-minutes',type=int,default=30)
+    a=sub.add_parser('cleanup-scheduled'); a.add_argument('job'); a.add_argument('--days',type=int,default=7)
+    a=sub.add_parser('cleanup-complete'); a.add_argument('job')
     a=sub.add_parser('failed'); a.add_argument('job'); a.add_argument('--error',default='processing_failed')
     args=p.parse_args(); now=now_iso()
     if args.cmd=='processing':
@@ -124,6 +126,21 @@ def main():
         d=load(args.job); info=load(args.gdalinfo); q=load(args.summary)
         d.update({'status':'ready','stage':'complete','progress':100,'stageLabel':'Selesai','stageUpdatedAt':now,'completedAt':now,'validPhotos':q['validPhotos'],'excludedPhotos':q['excludedPhotos'],'excluded':q.get('excluded',[]),'surveyDate':q.get('surveyDate'),'surveyStartAt':q.get('surveyStartAt'),'surveyEndAt':q.get('surveyEndAt'),'cameraModels':q.get('cameraModels',[]),'cameraMakes':q.get('cameraMakes',[]),'surveyDateSource':'photo_metadata' if q.get('surveyDate') else 'unavailable','cogKey':f"drone/results/{d['id']}/orthomosaic.cog.tif",'gdal':{'size':info.get('size'),'coordinateSystem':info.get('coordinateSystem'),'cornerCoordinates':info.get('cornerCoordinates') or {}}})
         add_history(d,'complete',100,'Selesai'); save(args.job,d)
+    elif args.cmd=='cleanup-scheduled':
+        d=load(args.job)
+        if d.get('status')!='ready' or not d.get('cogKey'):
+            raise SystemExit('cleanup_requires_ready_result')
+        grace_days=max(1,args.days)
+        eligible=(datetime.now(timezone.utc)+timedelta(days=grace_days)).isoformat()
+        d.update({'r2CleanupStatus':'scheduled','r2CleanupEligibleAt':eligible,'r2CleanupPolicy':f'verified_result_with_{grace_days}_day_grace','r2SourceRetained':True,'updatedAt':now})
+        d.pop('r2CleanedAt',None)
+        save(args.job,d)
+    elif args.cmd=='cleanup-complete':
+        d=load(args.job)
+        if d.get('status')!='ready' or not d.get('cogKey'):
+            raise SystemExit('cleanup_requires_ready_result')
+        d.update({'r2CleanupStatus':'complete','r2CleanedAt':now,'r2SourceRetained':False,'updatedAt':now})
+        save(args.job,d)
     elif args.cmd=='failed':
         d=load(args.job); d.update({'status':'failed','stage':'failed','stageLabel':'Pemrosesan terhenti','stageUpdatedAt':now,'failedAt':now,'error':args.error}); add_history(d,'failed',int(d.get('progress') or 0),'Pemrosesan terhenti'); save(args.job,d)
 if __name__=='__main__': main()

@@ -136,3 +136,18 @@ test('authenticated staff can list and inspect team orthomosaic jobs without own
     globalThis.fetch = originalFetch;
   }
 });
+
+test('refinement is blocked after uploaded source photos are cleaned from R2', async () => {
+  const env = droneEnv();
+  env.store.set(jobKey, JSON.stringify({
+    ...readyJob(),
+    sourceType: 'upload',
+    r2CleanupStatus: 'complete',
+    r2SourceRetained: false,
+    r2CleanedAt: '2026-09-25T01:00:00.000Z'
+  }));
+
+  const response = await worker.fetch(ownerRequest(`/api/drone/jobs/${id}/refine`), env);
+  assert.equal(response.status, 409);
+  assert.equal((await response.json()).error, 'source_photos_expired');
+});

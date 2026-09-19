@@ -41,6 +41,104 @@ jobs:
           pip install 'gdown>=6.3.0'
           sudo apt-get update
           sudo apt-get install -y libimage-exiftool-perl jq gdal-bin
+      - name: Clean expired drone source files
+        shell: bash
+        working-directory: cloudflare/yg-webgis-public-data
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          DRONE_API_BASE: https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev
+        run: |
+          set -euo pipefail
+          CLEANUP_ROOT="../../tmp/drone-cleanup"
+          CLEANUP_QUEUE="$CLEANUP_ROOT/cleanup.json"
+          CLEANUP_NEXT="$CLEANUP_ROOT/cleanup.next.json"
+          mkdir -p "$CLEANUP_ROOT/jobs"
+          npx wrangler r2 object get "yg-webgis-public-snapshots/drone/queue/cleanup.json" --remote --file "$CLEANUP_QUEUE" || echo '{"jobs":[]}' > "$CLEANUP_QUEUE"
+          echo '{"jobs":[]}' > "$CLEANUP_NEXT"
+
+          keep_cleanup() {
+            local item="$1"
+            jq --argjson item "$item" '.jobs += [$item]' "$CLEANUP_NEXT" > "$CLEANUP_NEXT.tmp"
+            mv "$CLEANUP_NEXT.tmp" "$CLEANUP_NEXT"
+          }
+
+          while IFS= read -r ITEM; do
+            [ -z "$ITEM" ] && continue
+            JOB_ID=$(jq -r '.id // empty' <<< "$ITEM")
+            ELIGIBLE_AT=$(jq -r '.eligibleAt // empty' <<< "$ITEM")
+            if [ -z "$JOB_ID" ] || [ -z "$ELIGIBLE_AT" ]; then
+              continue
+            fi
+            if [ "$(date -d "$ELIGIBLE_AT" +%s)" -gt "$(date -u +%s)" ]; then
+              keep_cleanup "$ITEM"
+              continue
+            fi
+
+            JOB_FILE="$CLEANUP_ROOT/jobs/$JOB_ID.json"
+            if ! npx wrangler r2 object get "yg-webgis-public-snapshots/drone/jobs/$JOB_ID.json" --remote --file "$JOB_FILE"; then
+              keep_cleanup "$ITEM"
+              continue
+            fi
+            if [ "$(jq -r '.status // empty' "$JOB_FILE")" != "ready" ] || [ -z "$(jq -r '.cogKey // empty' "$JOB_FILE")" ]; then
+              keep_cleanup "$ITEM"
+              continue
+            fi
+            if [ "$(jq -r '.r2CleanupStatus // empty' "$JOB_FILE")" = "complete" ]; then
+              continue
+            fi
+
+            JOB_TOKEN=$(jq -r '.accessToken // empty' "$JOB_FILE")
+            if [ -z "$JOB_TOKEN" ] || ! curl --fail --silent --show-error --head \
+              -H "x-job-token: $JOB_TOKEN" \
+              "$DRONE_API_BASE/api/drone/jobs/$JOB_ID/cog" >/dev/null; then
+              echo "Keeping R2 source for $JOB_ID because the remote COG could not be verified"
+              keep_cleanup "$ITEM"
+              continue
+            fi
+
+            CLEANUP_FAILED=0
+            while IFS= read -r KEY; do
+              [ -z "$KEY" ] && continue
+              if [[ "$KEY" != "drone/uploads/$JOB_ID/"* ]]; then
+                echo "Skipping unexpected source key: $KEY"
+                continue
+              fi
+              if ! npx wrangler r2 object delete "yg-webgis-public-snapshots/$KEY" --remote; then
+                CLEANUP_FAILED=1
+              fi
+            done < <(jq -r '.files[]?.key // empty' "$JOB_FILE")
+
+            CACHE_PREFIX="drone/cache/$JOB_ID"
+            CACHE_MANIFEST="$CLEANUP_ROOT/jobs/$JOB_ID-cache.json"
+            if npx wrangler r2 object get "yg-webgis-public-snapshots/$CACHE_PREFIX/manifest.json" --remote --file "$CACHE_MANIFEST" >/dev/null 2>&1; then
+              while IFS= read -r PART; do
+                [ -z "$PART" ] && continue
+                if ! npx wrangler r2 object delete "yg-webgis-public-snapshots/$CACHE_PREFIX/$PART" --remote; then
+                  CLEANUP_FAILED=1
+                fi
+              done < <(jq -r '.parts[]? // empty' "$CACHE_MANIFEST")
+              if ! npx wrangler r2 object delete "yg-webgis-public-snapshots/$CACHE_PREFIX/manifest.json" --remote; then
+                CLEANUP_FAILED=1
+              fi
+            fi
+
+            if [ "$CLEANUP_FAILED" -ne 0 ]; then
+              echo "R2 source cleanup incomplete for $JOB_ID; retrying on the next schedule"
+              keep_cleanup "$ITEM"
+              continue
+            fi
+
+            python ../../scripts/drone_job.py cleanup-complete "$JOB_FILE"
+            npx wrangler r2 object put "yg-webgis-public-snapshots/drone/jobs/$JOB_ID.json" --remote --file "$JOB_FILE" --content-type application/json
+            echo "Cleaned temporary R2 source for verified result $JOB_ID"
+          done < <(jq -c '.jobs[]?' "$CLEANUP_QUEUE")
+
+          jq --arg now "$(date -u +%Y-%m-%dT%H:%M:%SZ)" '.updatedAt=$now' "$CLEANUP_NEXT" > "$CLEANUP_NEXT.tmp"
+          mv "$CLEANUP_NEXT.tmp" "$CLEANUP_NEXT"
+          if ! npx wrangler r2 object put "yg-webgis-public-snapshots/drone/queue/cleanup.json" --remote --file "$CLEANUP_NEXT" --content-type application/json; then
+            echo "Warning: cleanup queue could not be updated; source files will be preserved"
+          fi
       - name: Read pending queue
         working-directory: cloudflare/yg-webgis-public-data
         env:
@@ -230,17 +328,18 @@ jobs:
           npx wrangler r2 object put "yg-webgis-public-snapshots/drone/results/$JOB_ID/orthomosaic.cog.tif" --remote --file "$ROOT/output/orthomosaic.cog.tif" --content-type image/tiff
 
           python ../../scripts/drone_job.py ready "$ROOT/job.json" "$ROOT/output/gdalinfo.json" "$ROOT/qc.json"
+          python ../../scripts/drone_job.py cleanup-scheduled "$ROOT/job.json" --days 7
           publish_status
 
-          if [ "$SOURCE" = "drive" ]; then
-            if [ -f "$ROOT/cache-manifest.json" ]; then
-              while IFS= read -r PART; do
-                [ -z "$PART" ] && continue
-                npx wrangler r2 object delete "yg-webgis-public-snapshots/drone/cache/$JOB_ID/$PART" --remote || true
-              done < <(jq -r '.parts[]' "$ROOT/cache-manifest.json")
-            fi
-            npx wrangler r2 object delete "yg-webgis-public-snapshots/drone/cache/$JOB_ID/manifest.json" --remote || true
-            npx wrangler r2 object delete "yg-webgis-public-snapshots/drone/cache/$JOB_ID/source.tar" --remote || true
+          CLEANUP_QUEUE="$ROOT/cleanup.json"
+          CLEANUP_NEXT="$ROOT/cleanup.next.json"
+          npx wrangler r2 object get "yg-webgis-public-snapshots/drone/queue/cleanup.json" --remote --file "$CLEANUP_QUEUE" || echo '{"jobs":[]}' > "$CLEANUP_QUEUE"
+          CLEANUP_AT=$(jq -r '.r2CleanupEligibleAt' "$ROOT/job.json")
+          jq --arg id "$JOB_ID" --arg eligibleAt "$CLEANUP_AT" --arg now "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            '.jobs = ((.jobs // []) | map(select(.id != $id)) + [{id:$id,eligibleAt:$eligibleAt}]) | .updatedAt=$now' \
+            "$CLEANUP_QUEUE" > "$CLEANUP_NEXT"
+          if ! npx wrangler r2 object put "yg-webgis-public-snapshots/drone/queue/cleanup.json" --remote --file "$CLEANUP_NEXT" --content-type application/json; then
+            echo "Warning: cleanup scheduling failed; preserving the ready result and its source files"
           fi
 
           jq --arg id "$JOB_ID" '.jobs = (.jobs | map(select(. != $id)))' ../../tmp/drone/pending.json > ../../tmp/drone/pending.next.json
