@@ -9,7 +9,8 @@
   <link rel="icon" href="assets/logo-yayasan-gambut.png">
   <link rel="stylesheet" href="css/site-brand.css?v=20260720-program-dashboard1">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
-  <link rel="stylesheet" href="css/rdtr-bagansiapiapi.css?v=20260920-internal1">
+  <link rel="stylesheet" href="css/rdtr-bagansiapiapi.css?v=20260920-regulatory2">
+  <link rel="stylesheet" href="css/rdtr-bagansiapiapi-regulatory.css?v=20260920-regulatory2">
   <script src="js/auth.js?v=20260920-session5"></script>
   <script src="js/staff-data-access.js?v=20260920-rdtr-internal1"></script>
   <script src="js/staff-rdtr-gate.js?v=20260920-internal1"></script>
@@ -24,6 +25,8 @@
       <nav class="nav yg-page-nav" aria-label="Navigasi internal">
         <a href="admin-dashboard.html">Dashboard Staf</a>
         <a href="webgis.html?internal=spatial-planning">Peta Interaktif</a>
+        <a href="#analysis-regulasi">Analisis YG</a>
+        <a href="#regulations">Regulasi</a>
         <a href="#recommendations">Rekomendasi</a>
       </nav>
     </div>
@@ -38,6 +41,7 @@
         <p class="rdtr-hero-note">Baseline spasial dan matriks rekomendasi Yayasan Gambut untuk Konsultasi Publik I, 22 September 2026.</p>
       </div>
       <div class="rdtr-hero-actions">
+        <button id="rdtr-copy-analysis" class="rdtr-button" type="button">Salin posisi YG</button>
         <button id="rdtr-copy-points" class="rdtr-button" type="button">Salin poin konsultasi</button>
         <button id="rdtr-export-csv" class="rdtr-button rdtr-button--light" type="button">Unduh tabel CSV</button>
         <button id="rdtr-print" class="rdtr-button rdtr-button--light" type="button">Cetak / PDF</button>
@@ -81,6 +85,16 @@
       </aside>
     </section>
 
+    <section id="analysis-regulasi" class="rdtr-panel rdtr-position-panel" aria-labelledby="rdtr-position-title">
+      <div class="rdtr-panel-heading">
+        <div><span>ARGUMEN TANDING INTERNAL</span><h2 id="rdtr-position-title">Analisis Yayasan Gambut berbasis regulasi</h2></div>
+        <p>Temuan → kewajiban hukum → posisi YG → batas validasi</p>
+      </div>
+      <div id="rdtr-position" class="rdtr-position"></div>
+      <div id="rdtr-decision-classes" class="rdtr-decision-classes" aria-label="Kelas keputusan analisis"></div>
+      <div id="rdtr-regulatory-assessments" class="rdtr-assessment-list"></div>
+    </section>
+
     <section class="rdtr-panel" aria-labelledby="rdtr-village-title">
       <div class="rdtr-panel-heading">
         <div><span>11 WILAYAH PERENCANAAN</span><h2 id="rdtr-village-title">Temuan baseline per wilayah</h2></div>
@@ -88,11 +102,14 @@
       </div>
       <div class="rdtr-table-wrap">
         <table class="rdtr-table">
-          <thead><tr><th>Wilayah</th><th>Luas</th><th>Arahan RTRW terluas</th><th>Gambut</th><th>Kawasan hutan</th><th>Mangrove</th><th>Prioritas</th></tr></thead>
-          <tbody id="rdtr-village-body"><tr><td colspan="7">Memuat data internal…</td></tr></tbody>
+          <thead><tr><th>Wilayah</th><th>Luas</th><th>Arahan RTRW terluas</th><th>Gambut</th><th>Kawasan hutan</th><th>Mangrove</th><th>Posisi awal</th><th>Analisis</th></tr></thead>
+          <tbody id="rdtr-village-body"><tr><td colspan="8">Memuat data internal…</td></tr></tbody>
         </table>
       </div>
       <p class="rdtr-table-note">Luas kelas RTRW dapat saling bertumpang tindih karena layanan sumber memuat beberapa tema arahan ruang. Angka tidak boleh dijumlahkan sebagai pola ruang tunggal.</p>
+      <div id="rdtr-village-analysis" class="rdtr-village-analysis" aria-live="polite">
+        <p>Pilih “Buka analisis” pada salah satu wilayah untuk melihat temuan dan posisi YG yang dikaitkan langsung dengan regulasi.</p>
+      </div>
     </section>
 
     <section id="recommendations" class="rdtr-grid">
@@ -101,9 +118,25 @@
         <div id="rdtr-recommendations" class="rdtr-recommendations"></div>
       </article>
       <article class="rdtr-panel">
-        <div class="rdtr-panel-heading"><div><span>DASAR REGULASI</span><h2>Kerangka pemeriksaan</h2></div></div>
-        <div id="rdtr-legal" class="rdtr-legal"></div>
+        <div class="rdtr-panel-heading"><div><span>POSISI ANALISIS</span><h2>Aturan membaca kesimpulan</h2></div></div>
+        <div class="rdtr-reading-rule">
+          <p><strong>Tahan</strong> bukan berarti penolakan final. Artinya keputusan belum layak didukung karena bukti penting belum tersedia atau ada indikasi fungsi lindung/risiko tinggi.</p>
+          <p><strong>Revisi</strong> baru digunakan setelah geometri, aturan, dan dokumen resmi menunjukkan ketidaksesuaian yang dapat dibuktikan.</p>
+          <p>Setiap kesimpulan harus menyebut lokasi, luas, bukti, tingkat keyakinan, dasar regulasi, dan alternatif yang ditawarkan.</p>
+        </div>
       </article>
+    </section>
+
+    <section id="regulations" class="rdtr-panel" aria-labelledby="rdtr-regulation-title">
+      <div class="rdtr-panel-heading rdtr-panel-heading--filters">
+        <div><span>REGULASI TERAPAN</span><h2 id="rdtr-regulation-title">Ketentuan kunci dan cara YG mengujinya</h2></div>
+        <div class="rdtr-filter-row">
+          <label>Cari regulasi <input id="rdtr-regulation-search" type="search" placeholder="Nomor, tema, kewajiban"></label>
+          <label>Cakupan <select id="rdtr-regulation-scope"><option value="">Semua</option><option value="inti">Inti</option><option value="lokal">Lokal</option><option value="bersyarat">Bersyarat</option></select></label>
+        </div>
+      </div>
+      <div id="rdtr-regulation-register" class="rdtr-regulation-register"></div>
+      <p class="rdtr-table-note">Status regulasi diverifikasi per 20 September 2026. Naskah autentik dan status peraturan daerah tetap harus dikonfirmasi pada JDIH penerbit sebelum digunakan dalam dokumen resmi.</p>
     </section>
 
     <section class="rdtr-panel" aria-labelledby="rdtr-question-title">
@@ -127,6 +160,6 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
   <script src="https://cdn.jsdelivr.net/npm/@turf/turf@7/turf.min.js"></script>
   <script src="https://unpkg.com/shpjs@6.1.0/dist/shp.js"></script>
-  <script src="js/rdtr-bagansiapiapi.js?v=20260920-internal1"></script>
+  <script src="js/rdtr-bagansiapiapi.js?v=20260920-regulatory2"></script>
 </body>
 </html>

@@ -34,4 +34,10 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
   assert.ok(result.summary.forestAreaHa > 0);
   assert.equal(result.summary.mangroveAnalysedVillageCount, 1);
   assert.ok(result.consultationQuestions.length >= 6);
+  assert.equal(result.regulatoryAssessments.length, 10);
+  assert.ok(result.regulationRegister.length >= 18);
+  assert.equal(result.decisionClasses.length, 4);
+  assert.ok(result.villages.every(row => row.regulatoryAssessments.length >= 4));
+  assert.ok(result.regulatoryAssessments.some(row => row.theme === "Perlindungan ekosistem gambut" && row.decision === "hold"));
+  assert.ok(result.regulationRegister.some(row => row.code.includes("11/2021") && row.code.includes("6/2026")));
 });

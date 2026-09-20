@@ -28,6 +28,22 @@
     return '<span class="rdtr-badge rdtr-badge--' + esc(value) + '">' + esc(value) + "</span>";
   }
 
+  function decisionLabel(value) {
+    return { hold: "Tahan", verify: "Verifikasi", conditional: "Bersyarat", revise: "Revisi" }[value] || value || "Verifikasi";
+  }
+
+  function decisionBadge(value) {
+    var status = value || "verify";
+    return '<span class="rdtr-decision-badge is-' + esc(status) + '">' + esc(decisionLabel(status)) + "</span>";
+  }
+
+  function strictestDecision(rows) {
+    var rank = { revise: 4, hold: 3, conditional: 2, verify: 1 };
+    return (rows || []).reduce(function (best, row) {
+      return (rank[row.decision] || 0) > (rank[best] || 0) ? row.decision : best;
+    }, "verify");
+  }
+
   function topPriority(row) {
     return (row.recommendations || []).reduce(function (best, item) {
       return (priorityRank[item.priority] || 0) > (priorityRank[best] || 0) ? item.priority : best;
@@ -70,7 +86,8 @@
       "<td><strong>" + number(row.peatCoveragePct, 1) + "%</strong><small>" + number(row.peatAreaHa, 1) + " ha indikatif</small></td>" +
       "<td><strong>" + number(row.forestCoveragePct, 1) + "%</strong><small>" + number(row.forestAreaHa, 1) + " ha non-APL</small></td>" +
       "<td><strong>" + esc(mangroveText) + "</strong><small>" + esc(mangroveSmall) + "</small></td>" +
-      "<td>" + badge(topPriority(row)) + "</td></tr>";
+      "<td>" + decisionBadge(strictestDecision(row.regulatoryAssessments)) + "</td>" +
+      '<td><button class="rdtr-open-analysis" type="button" data-village-id="' + esc(row.id) + '">Buka analisis</button></td></tr>';
   }
 
   function renderVillages(rows) {
@@ -105,10 +122,70 @@
     }).join("");
   }
 
-  function renderLegal(rows) {
-    document.getElementById("rdtr-legal").innerHTML = (rows || []).map(function (row) {
-      return "<article><strong>" + esc(row.code) + "</strong><span>" + esc(row.theme) + "</span></article>";
+  function renderPosition(data) {
+    var position = data.analysisPosition || {};
+    document.getElementById("rdtr-position").innerHTML = "<h3>" + esc(position.title || "Posisi awal Yayasan Gambut") +
+      "</h3><p>" + esc(position.statement || "Analisis regulasi belum tersedia.") + "</p>" +
+      '<p class="rdtr-position-caveat"><strong>Batas kesimpulan.</strong> ' + esc(position.caveat || "Kesimpulan wajib diverifikasi dengan dokumen resmi.") + "</p>";
+    document.getElementById("rdtr-decision-classes").innerHTML = (data.decisionClasses || []).map(function (row) {
+      return '<article class="rdtr-decision-card is-' + esc(row.id) + '"><strong>' + esc(row.label) + "</strong><span>" +
+        esc(row.meaning) + "</span><span><b>Tindakan:</b> " + esc(row.action) + "</span></article>";
     }).join("");
+  }
+
+  function regulationChips(codes) {
+    return '<div class="rdtr-reg-links">' + (codes || []).map(function (code) {
+      return '<a class="rdtr-reg-link" href="#regulation-' + esc(code) + '">' + esc(code) + "</a>";
+    }).join("") + "</div>";
+  }
+
+  function renderRegulatoryAssessments(rows) {
+    document.getElementById("rdtr-regulatory-assessments").innerHTML = (rows || []).map(function (row) {
+      return '<article class="rdtr-assessment"><header><div><h3>' + esc(row.theme) +
+        '</h3><span class="rdtr-assessment-id">' + esc(row.id) + " · keyakinan " + esc(row.confidence) +
+        "</span></div>" + decisionBadge(row.decision) + '</header><div class="rdtr-assessment-body">' +
+        '<p><strong>Temuan YG.</strong> ' + esc(row.finding) + "</p>" + regulationChips(row.regulations) +
+        '<p><strong>Kewajiban regulasi.</strong> ' + esc(row.requirement) + "</p>" +
+        '<p><strong>Posisi YG.</strong> ' + esc(row.ygPosition) + "</p>" +
+        '<p><strong>Batas validasi.</strong> ' + esc(row.validation) + "</p></div></article>";
+    }).join("");
+  }
+
+  function renderVillageAnalysis(villageId) {
+    var row = (state.analysis.villages || []).find(function (item) { return item.id === villageId; });
+    if (!row) return;
+    var tests = row.regulatoryAssessments || [];
+    document.getElementById("rdtr-village-analysis").innerHTML =
+      '<div class="rdtr-village-analysis-heading"><div><h3>Analisis regulasi · ' + esc(row.name) +
+      "</h3><p>" + number(row.areaHa, 1) + " ha · " + tests.length + " uji tematik</p></div>" +
+      decisionBadge(strictestDecision(tests)) + '</div><div class="rdtr-village-analysis-grid">' +
+      tests.map(function (test) {
+        return '<article class="rdtr-village-test"><header><h4>' + esc(test.theme) + "</h4>" +
+          decisionBadge(test.decision) + "</header><p><strong>Temuan.</strong> " + esc(test.finding) + "</p>" +
+          regulationChips(test.regulations) + '<p><strong>Posisi YG.</strong> ' + esc(test.position) + "</p></article>";
+      }).join("") + "</div>";
+    document.getElementById("rdtr-village-analysis").scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
+  function regulationCard(row) {
+    var search = [row.code, row.title, row.status, row.obligation, row.ygTest].join(" ").toLowerCase();
+    return '<details id="regulation-' + esc(row.id) + '" class="rdtr-regulation-card" data-scope="' + esc(row.scope) + '" data-search="' + esc(search) + '"><summary><div><h3>' +
+      esc(row.code) + "<span>" + esc(row.title) + '</span></h3><div class="rdtr-regulation-meta"><span>' +
+      esc(row.scope) + "</span><span>" + esc(row.status) + '</span></div></div></summary><div class="rdtr-regulation-body"><p><strong>Kewajiban relevan.</strong> ' +
+      esc(row.obligation) + '</p><p><strong>Cara YG menguji.</strong> ' + esc(row.ygTest) + '</p><a href="' +
+      esc(row.officialUrl) + '" target="_blank" rel="noopener noreferrer">Buka sumber resmi ↗</a></div></details>';
+  }
+
+  function renderRegulationRegister(rows) {
+    document.getElementById("rdtr-regulation-register").innerHTML = (rows || []).map(regulationCard).join("");
+  }
+
+  function filterRegulations() {
+    var query = document.getElementById("rdtr-regulation-search").value.trim().toLowerCase();
+    var scope = document.getElementById("rdtr-regulation-scope").value;
+    document.querySelectorAll(".rdtr-regulation-card").forEach(function (card) {
+      card.hidden = Boolean((query && !String(card.dataset.search || "").includes(query)) || (scope && card.dataset.scope !== scope));
+    });
   }
 
   function renderQuestions(rows) {
@@ -298,13 +375,16 @@
   }
 
   function exportCsv() {
-    var header = ["Wilayah", "Luas_ha", "Arahan_RTRW_terluas", "RTRW_ha", "Gambut_ha", "Gambut_persen", "Kawasan_hutan_ha", "Kawasan_hutan_persen", "Mangrove_status", "Prioritas", "Rekomendasi"];
+    var header = ["Wilayah", "Luas_ha", "Arahan_RTRW_terluas", "RTRW_ha", "Gambut_ha", "Gambut_persen", "Kawasan_hutan_ha", "Kawasan_hutan_persen", "Mangrove_status", "Posisi_awal", "Uji_regulasi", "Rekomendasi"];
     var lines = [header.map(csvCell).join(",")];
     state.analysis.villages.forEach(function (row) {
       var top = (row.rtrwCoverage || [])[0] || {};
       lines.push([
         row.name, row.areaHa, top.name || "", top.areaHa || "", row.peatAreaHa, row.peatCoveragePct,
-        row.forestAreaHa, row.forestCoveragePct, row.mangrove.status, topPriority(row),
+        row.forestAreaHa, row.forestCoveragePct, row.mangrove.status, decisionLabel(strictestDecision(row.regulatoryAssessments)),
+        (row.regulatoryAssessments || []).map(function (item) {
+          return "[" + decisionLabel(item.decision) + "] " + item.theme + " — " + item.position + " (" + (item.regulations || []).join("; ") + ")";
+        }).join(" | "),
         (row.recommendations || []).map(function (item) { return item.theme + ": " + item.recommendation; }).join(" | ")
       ].map(csvCell).join(","));
     });
@@ -331,21 +411,51 @@
       "PERTANYAAN KUNCI:",
       state.analysis.consultationQuestions.map(function (row, index) { return (index + 1) + ". " + row; }).join("\n"),
       "",
+      "KESIMPULAN ANALISIS REGULASI:",
+      (state.analysis.regulatoryAssessments || []).map(function (row, index) {
+        return (index + 1) + ". [" + decisionLabel(row.decision) + "] " + row.theme + " — " + row.ygPosition;
+      }).join("\n"),
+      "",
       "Catatan: konflik zonasi belum dapat disimpulkan sebelum geometri dan aturan zonasi draf RDTR diterima."
     ].join("\n");
   }
 
+  function analysisText() {
+    var position = state.analysis.analysisPosition || {};
+    return [
+      "POSISI YAYASAN GAMBUT — ANALISIS PEMBANDING RDTR BAGANSIAPIAPI",
+      "Bahan internal · berbasis regulasi · 20 September 2026",
+      "",
+      position.statement || "",
+      "",
+      (state.analysis.regulatoryAssessments || []).map(function (row, index) {
+        return [
+          (index + 1) + ". " + row.theme + " — " + decisionLabel(row.decision),
+          "Temuan: " + row.finding,
+          "Dasar: " + (row.regulations || []).join(", "),
+          "Posisi YG: " + row.ygPosition,
+          "Validasi: " + row.validation
+        ].join("\n");
+      }).join("\n\n"),
+      "",
+      "Batas: " + (position.caveat || "Kesimpulan harus diverifikasi dengan dokumen resmi.")
+    ].join("\n");
+  }
+
+  async function copyText(button, text, original) {
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch (error) {
+      var field = document.createElement("textarea");
+      field.value = text; document.body.appendChild(field); field.select(); document.execCommand("copy"); field.remove();
+    }
+    button.textContent = "Sudah disalin";
+    setTimeout(function () { button.textContent = original; }, 2200);
+  }
+
   async function copyPoints() {
     var button = document.getElementById("rdtr-copy-points");
-    try {
-      await navigator.clipboard.writeText(consultationText());
-      button.textContent = "Poin sudah disalin";
-    } catch (error) {
-      var text = document.createElement("textarea");
-      text.value = consultationText(); document.body.appendChild(text); text.select(); document.execCommand("copy"); text.remove();
-      button.textContent = "Poin sudah disalin";
-    }
-    setTimeout(function () { button.textContent = "Salin poin konsultasi"; }, 2200);
+    await copyText(button, consultationText(), "Salin poin konsultasi");
   }
 
   function bind() {
@@ -361,6 +471,24 @@
     });
     document.getElementById("rdtr-export-csv").addEventListener("click", exportCsv);
     document.getElementById("rdtr-copy-points").addEventListener("click", copyPoints);
+    document.getElementById("rdtr-copy-analysis").addEventListener("click", function (event) {
+      copyText(event.currentTarget, analysisText(), "Salin posisi YG");
+    });
+    document.getElementById("rdtr-village-body").addEventListener("click", function (event) {
+      var button = event.target.closest("[data-village-id]");
+      if (button) renderVillageAnalysis(button.dataset.villageId);
+    });
+    document.getElementById("rdtr-regulation-search").addEventListener("input", filterRegulations);
+    document.getElementById("rdtr-regulation-scope").addEventListener("change", filterRegulations);
+    document.addEventListener("click", function (event) {
+      var link = event.target.closest(".rdtr-reg-link");
+      if (!link) return;
+      var target = document.querySelector(link.getAttribute("href"));
+      if (target) {
+        target.hidden = false;
+        target.open = true;
+      }
+    });
     document.getElementById("rdtr-print").addEventListener("click", function () { window.print(); });
   }
 
@@ -369,9 +497,11 @@
     state.analysis = bootstrap.analysis;
     renderSummary(state.analysis);
     renderReadiness(state.analysis.readiness);
+    renderPosition(state.analysis);
+    renderRegulatoryAssessments(state.analysis.regulatoryAssessments);
     renderVillages(state.analysis.villages);
     renderRecommendations(state.analysis.villages);
-    renderLegal(state.analysis.legalFramework);
+    renderRegulationRegister(state.analysis.regulationRegister);
     renderQuestions(state.analysis.consultationQuestions);
     initMap(state.analysis);
     bind();
