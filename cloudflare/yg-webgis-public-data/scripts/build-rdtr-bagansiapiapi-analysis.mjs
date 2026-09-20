@@ -2308,6 +2308,56 @@ function buildConsultationReadinessPack(argumentMatrix, geometryRegistry, eviden
   };
 }
 
+function buildRdtrCompletenessAudit({ ygPlan, candidateZones, structureDraft, mandatoryAnalyses, evidenceBoard, developmentReadiness, consultationMatrix }) {
+  const rows = [
+    ["AUD-YG-01", "Dasar dan delineasi WP", "process", "blocked_external_evidence", ["R02", "R03", "L02"], ["map.studyArea"], "Batas 11 wilayah tersedia sebagai unit kajian internal.", "Keputusan/dasar delineasi WP dan keterkaitan dengan RTRW kabupaten belum diterima.", "Dokumen penetapan/dasar WP, geometri resmi, dan uji konsistensi hierarki tervalidasi."],
+    ["AUD-YG-02", "Peta dasar skala 1:5.000", "geospatial", "blocked_external_evidence", ["R02", "R03", "R04", "R15"], ["map.studyArea"], "Layer penyaringan dan geometri kerja tersedia.", "Peta dasar terotorisasi, ketelitian posisi, serta rekomendasi/konfirmasi sumber belum tersedia.", "Peta dasar, CRS, ketelitian, metadata, dan berita acara/rekomendasi yang memenuhi ketentuan."],
+    ["AUD-YG-03", "Pengumpulan data dan basis data", "process", "partial_internal", ["R03", "R04", "R15"], ["geometryRegistry", "p0EvidenceBoard"], "Register geometri, bukti, sumber, keterbatasan, dan status tersedia.", "Penggunaan lahan, bangunan, penduduk, kapasitas layanan, bahaya, hak/izin, serta data sektoral belum lengkap.", "Seluruh dataset minimum diterima, divalidasi, dimetadata, dan memiliki wali data."],
+    ["AUD-YG-04", "Dua puluh satu analisis Pasal 24", "analysis", "partial_internal", ["R03"], ["mandatoryAnalysisMatrix", "analysisProgramme"], `${mandatoryAnalyses.length} kerangka analisis, pertanyaan, metode, keluaran, dan gap telah disusun.`, "Sebagian besar analisis masih kerangka atau penyaringan karena data pengunci belum lengkap.", "Setiap analisis memiliki input tervalidasi, metode terdokumentasi, hasil spasial/numerik, kesimpulan, dan jejak keputusan."],
+    ["AUD-YG-05", "Integrasi KLHS", "process", "blocked_external_evidence", ["R03", "R05", "R09", "R10"], ["consultationArgumentMatrix"], "Posisi YG dan standar matriks integrasi telah dirumuskan.", "Dokumen, peta kerja, alternatif, rekomendasi, penjaminan mutu, dan validasi KLHS belum diterima.", "Matriks rekomendasi KLHS sebelum–sesudah terlacak ke tujuan, struktur, pola, zonasi, dan program."],
+    ["AUD-YG-06", "Tujuan penataan WP", "mandatory_content", "partial_internal", ["R02", "R03", "R05"], ["ygPlan.planningObjective"], "Rumusan tujuan dan strategi YG tersedia.", "Indikator terukur, baseline, target, horizon, serta konsistensi RTRW/KLHS belum final.", "Tujuan disepakati, terukur, konsisten hierarki, dan memiliki indikator serta sumber data."],
+    ["AUD-YG-07", "Rencana struktur ruang", "mandatory_content", "partial_internal", ["R02", "R03", "R04"], ["map.ygStructureNodes", "map.ygStructureAxes", "map.ygRoadEvidence"], `${structureDraft.nodes.features.length} simpul dan ${structureDraft.axes.features.length} sumbu hubungan analitis tersedia.`, "Simpul bukan lokasi fasilitas, sumbu bukan trase, dan hierarki/kapasitas jaringan resmi belum ditetapkan.", "Lokasi/hierarki pusat dan jaringan tervalidasi pada peta 1:5.000 dengan kapasitas, kewenangan, serta keselamatan."],
+    ["AUD-YG-08", "Rencana pola ruang", "mandatory_content", "available_internal_provisional", ["R02", "R03", "R04", "R05"], ["map.ygCandidateZones"], `${candidateZones.features.length} geometri zona kandidat saling eksklusif dengan cakupan ${candidateZones.metadata.coveragePct}%.`, "Belum menjadi zona/subzona resmi; nomenklatur, batas, hak, risiko, KLHS, dan konsistensi RTRW belum final.", "Geometri zona/subzona 1:5.000 lulus topologi, hierarki, KLHS, sektoral, tenurial, dan konsultasi."],
+    ["AUD-YG-09", "Ketentuan pemanfaatan ruang", "mandatory_content", "partial_internal", ["R02", "R03", "R07"], ["ygPlan.programs"], `${ygPlan.programs.items.length} paket indikasi program dengan indikator dan tahapan relatif tersedia.`, "Lokasi, volume, target, biaya, sumber dana, pelaksana, dan komitmen belum ditetapkan.", "Program terlokasi, terukur, bertahap, berbiaya, memiliki sumber pembiayaan dan pelaksana berwenang."],
+    ["AUD-YG-10", "Peraturan zonasi dan ITBX", "mandatory_content", "partial_internal", ["R02", "R03", "R07", "R08"], ["ygPlan.zoningRules"], "Kamus subzona, 12 kelompok kegiatan, matriks I/T/B/X, dan ketentuan khusus kandidat tersedia.", "Geometri subzona dan angka KDB/KLB/KDH/ketinggian/kepadatan/sempadan belum ditetapkan.", "ITBX, intensitas, prasarana minimum, ketentuan khusus, variansi, insentif/disinsentif, dan sanksi berbasis bukti."],
+    ["AUD-YG-11", "Pengendalian risiko dan ketentuan khusus", "mandatory_content", "partial_internal", ["R05", "R08", "R10", "R11", "R12"], ["map.ygDevelopmentReadiness"], `${developmentReadiness.zones.features.length} zona memiliki evidence locks dan keputusan promosi.`, "Model multi-bahaya, batas overlay pengendalian, elevasi aman, evakuasi, dan risiko residual belum tersedia.", "Overlay bahaya tervalidasi diterjemahkan menjadi larangan, syarat, desain, monitoring, dan tindakan korektif."],
+    ["AUD-YG-12", "Album peta, metadata, dan topologi", "geospatial", "partial_internal", ["R04", "R15"], ["geometryRegistry", "map.ygCandidateZones"], "Layer, metadata internal, luas, sumber, status, dan aturan topologi zonasi tersedia.", "Belum ada album peta legal, layout baku, indeks lembar, audit ketelitian penuh, atau geodatabase resmi.", "Album dan basis data sesuai standar, identik dengan tabel/naskah, lulus QA, versioned, dan ditandatangani."],
+    ["AUD-YG-13", "Partisipasi dan matriks respons", "process", "available_internal_provisional", ["R01", "R03", "R06", "R09"], ["consultationArgumentMatrix", "consultationReadinessPack"], `${consultationMatrix.items.length} argumentasi dan template respons telah tersedia.`, "Belum ada respons, kesepakatan, penanggung jawab, tenggat, atau bukti perubahan hasil konsultasi nyata.", "Masukan peserta dan FPR tercatat, dijawab, serta terlacak ke perubahan atau penolakan beralasan."],
+    ["AUD-YG-14", "Indikasi program dan pembiayaan", "implementation", "partial_internal", ["R02", "R03", "R07"], ["ygPlan.programs"], "Portofolio, calon peran, indikator, dan urutan relatif tersedia tanpa klaim anggaran.", "Baseline, target, lokasi, volume, biaya, sumber dana, dan komitmen belum ada.", "Program sinkron dengan perencanaan pembangunan, fiskal, kewenangan, pengadaan, O&M, dan indikator."],
+    ["AUD-YG-15", "Rancangan perkada dan lampiran", "legal", "blocked_authority_process", ["R02", "R03"], ["ygDraftRdtr"], "Struktur teknis alternatif YG menyediakan bahan untuk menguji muatan.", "YG tidak memiliki kewenangan menyusun/menetapkan perkada dan naskah hukum resmi belum tersedia.", "Rancangan perkada oleh pihak berwenang konsisten dengan materi teknis, peta, basis data, dan hasil konsultasi."],
+    ["AUD-YG-16", "Forum Penataan Ruang dan persetujuan substansi", "legal", "blocked_authority_process", ["R02", "R03", "R06"], ["consultationArgumentMatrix"], "Daftar isu dan standar jawaban untuk forum/persetujuan telah disiapkan.", "Rekomendasi FPR, dokumen permohonan, hasil pembahasan, dan persetujuan substansi belum tersedia.", "Rekomendasi forum dan persetujuan substansi sah, lengkap, serta seluruh catatan ditindaklanjuti."],
+    ["AUD-YG-17", "Penetapan dan pengundangan", "legal", "blocked_authority_process", ["R01", "R02", "R03"], [], "Tidak ada klaim penetapan dalam rancangan YG.", "Belum ada perkada ditetapkan, diundangkan, atau bukti autentik lampiran peta/basis data.", "Perkada ditetapkan dan diundangkan oleh pejabat berwenang dengan lampiran konsisten dan dapat diakses."],
+    ["AUD-YG-18", "Kesiapan publikasi dan penggunaan", "governance", "blocked_internal_approval", ["R01", "R04", "R08", "R15"], ["ygDraftRdtr", "p0EvidenceBoard"], "Dashboard staf, noindex, disclaimer, ekspor, dan quality gates tersedia.", "Belum ada persetujuan final YG, audit kerahasiaan, paket sumber, verifikasi hukum, atau keputusan publikasi.", "Persetujuan final internal, audit data sensitif, QA teknis-hukum, paket sumber, changelog, dan rencana pembaruan selesai." ]
+  ].map(([id, component, category, status, regulationRefs, outputRefs, available, gap, completionGate]) => ({
+    id, component, category, status, regulationRefs, outputRefs, available, gap, completionGate,
+    legalCompleteness: "not_complete",
+    publicationEligible: false,
+    reviewedBy: null,
+    reviewDate: null
+  }));
+  const statusOrder = ["available_internal_provisional", "partial_internal", "blocked_external_evidence", "blocked_authority_process", "blocked_internal_approval"];
+  const statusSummary = statusOrder.map(status => ({ status, count: rows.filter(row => row.status === status).length }));
+  return {
+    id: "RDTR-YG-COMPLETENESS-AUDIT-V0.1",
+    version: "0.1.0-internal",
+    access: "staff_only",
+    status: "not_ready_for_legal_or_public_release",
+    internalWorkingStatus: "substantial_analytical_draft_with_material_evidence_gaps",
+    totalComponents: rows.length,
+    statusSummary,
+    items: rows,
+    releaseGates: [
+      { id: "REL-01", gate: "Persetujuan final internal YG", status: "not_completed" },
+      { id: "REL-02", gate: "Audit teknis geospasial dan konsistensi angka", status: "not_completed" },
+      { id: "REL-03", gate: "Audit hukum, sumber, lisensi, privasi, dan data sensitif", status: "not_completed" },
+      { id: "REL-04", gate: "Paket bukti, metadata, changelog, dan batas penggunaan", status: "not_completed" },
+      { id: "REL-05", gate: "Keputusan eksplisit merge, deploy, dan publikasi", status: "not_completed" }
+    ],
+    decisionRule: "Tidak ada komponen yang boleh disebut lengkap secara hukum atau layak publikasi hanya karena tersedia sebagai rancangan internal.",
+    disclaimer: "Audit ini menilai kelengkapan rancangan YG, bukan menyatakan proses atau dokumen RDTR pemerintah lengkap/tidak lengkap tanpa akses pada bukti resminya."
+  };
+}
+
 function villageRegulatoryAssessments(metrics) {
   const rows = [{
     theme: "Konsistensi RTR", decision: "verify", regulations: ["R01", "R02", "L01", "L02"],
@@ -2812,12 +2862,12 @@ function buildYgZoningCodebook(zoning) {
   };
 }
 
-function buildYgDraftRdtr(zoning, zoningCodebook, structureDraft, networkEvidence, serviceEvidence, serviceAccess, developmentReadiness, programmePortfolio, consultationMatrix, consultationReadinessPack) {
+function buildYgDraftRdtr(zoning, zoningCodebook, structureDraft, networkEvidence, serviceEvidence, serviceAccess, developmentReadiness, programmePortfolio, consultationMatrix, consultationReadinessPack, completenessAudit) {
   const metadata = zoning.metadata || {};
   return {
-    id: "RDTR-YG-BAGANSIAPIAPI-V0.11",
+    id: "RDTR-YG-BAGANSIAPIAPI-V0.12",
     title: "Rancangan RDTR Alternatif Bagansiapiapi versi Yayasan Gambut",
-    version: "0.11.0-internal",
+    version: "0.12.0-internal",
     sourceGeometryVersion: metadata.version || "0.2.0-internal",
     status: "provisional_internal_spatial_draft",
     legalCharacter: "Kajian dan rancangan teknis internal; tidak mempunyai akibat hukum dan tidak menggantikan kewenangan pemerintah daerah untuk menyusun serta menetapkan RDTR.",
@@ -2904,6 +2954,15 @@ function buildYgDraftRdtr(zoning, zoningCodebook, structureDraft, networkEvidenc
       evidenceChecklistCount: consultationReadinessPack.evidenceChecklist.length,
       teamRoleCount: consultationReadinessPack.teamRoles.length,
       disclaimer: consultationReadinessPack.disclaimer
+    },
+    completenessAudit: {
+      id: completenessAudit.id,
+      version: completenessAudit.version,
+      status: completenessAudit.status,
+      totalComponents: completenessAudit.totalComponents,
+      statusSummary: completenessAudit.statusSummary,
+      releaseGateCount: completenessAudit.releaseGates.length,
+      disclaimer: completenessAudit.disclaimer
     },
     components: [
       { id: "YG-RDTR-01", label: "Tujuan dan strategi WP", status: "provisional", outputRef: "ygPlan.planningObjective" },
@@ -3188,7 +3247,16 @@ export function buildAnalysis({ rtrw, administration, peat, forest, mangrove, ma
     hydrologyEvidenceCount: ygServiceHydrologyEvidence.hydrology.features.length
   });
   const consultationReadinessPack = buildConsultationReadinessPack(consultationArgumentMatrix, geometryRegistry, evidenceBoard);
-  const ygDraftRdtr = buildYgDraftRdtr(ygCandidateZones, zoningCodebook, ygStructureDraft, ygNetworkEvidence, ygServiceHydrologyEvidence, ygServiceAccessAnalysis, ygDevelopmentReadiness, ygPlan.programs, consultationArgumentMatrix, consultationReadinessPack);
+  const completenessAudit = buildRdtrCompletenessAudit({
+    ygPlan,
+    candidateZones: ygCandidateZones,
+    structureDraft: ygStructureDraft,
+    mandatoryAnalyses: mandatoryAnalysisMatrix,
+    evidenceBoard,
+    developmentReadiness: ygDevelopmentReadiness,
+    consultationMatrix: consultationArgumentMatrix
+  });
+  const ygDraftRdtr = buildYgDraftRdtr(ygCandidateZones, zoningCodebook, ygStructureDraft, ygNetworkEvidence, ygServiceHydrologyEvidence, ygServiceAccessAnalysis, ygDevelopmentReadiness, ygPlan.programs, consultationArgumentMatrix, consultationReadinessPack, completenessAudit);
 
   return {
     metadata: {
@@ -3233,6 +3301,7 @@ export function buildAnalysis({ rtrw, administration, peat, forest, mangrove, ma
     ygPlan,
     consultationArgumentMatrix,
     consultationReadinessPack,
+    completenessAudit,
     serviceAccessAnalysis: {
       id: ygServiceAccessAnalysis.id,
       version: ygServiceAccessAnalysis.version,

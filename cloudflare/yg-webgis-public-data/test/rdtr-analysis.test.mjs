@@ -208,7 +208,7 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
   assert.ok(result.map.ygPlanningUnits.metadata.geometryProcessing.includes("tolerance 0.00002"));
 
   assert.equal(result.ygDraftRdtr.status, "provisional_internal_spatial_draft");
-  assert.equal(result.ygDraftRdtr.version, "0.11.0-internal");
+  assert.equal(result.ygDraftRdtr.version, "0.12.0-internal");
   assert.equal(result.ygDraftRdtr.programmePortfolio.programmeCount, 8);
   assert.equal(result.ygDraftRdtr.programmePortfolio.indicatorCount, 16);
   assert.equal(result.consultationArgumentMatrix.items.length, 10);
@@ -239,6 +239,23 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
     row.questionAsked === false && row.respondentNameAndRole === null && row.responseVerbatimOrSummary === null &&
     row.responsibleParty === null && row.dueDate === null && row.followUpOwner === null && row.resolutionStatus === "not_started"
   ));
+  assert.equal(result.completenessAudit.totalComponents, 18);
+  assert.equal(result.completenessAudit.status, "not_ready_for_legal_or_public_release");
+  assert.equal(result.ygDraftRdtr.completenessAudit.totalComponents, 18);
+  assert.deepEqual(Object.fromEntries(result.completenessAudit.statusSummary.map(row => [row.status, row.count])), {
+    available_internal_provisional: 2,
+    partial_internal: 9,
+    blocked_external_evidence: 3,
+    blocked_authority_process: 3,
+    blocked_internal_approval: 1
+  });
+  assert.ok(result.completenessAudit.items.every(row =>
+    row.regulationRefs.length >= 1 && row.available && row.gap && row.completionGate &&
+    row.legalCompleteness === "not_complete" && row.publicationEligible === false &&
+    row.reviewedBy === null && row.reviewDate === null
+  ));
+  assert.equal(result.completenessAudit.releaseGates.length, 5);
+  assert.ok(result.completenessAudit.releaseGates.every(row => row.status === "not_completed"));
   assert.equal(result.ygDraftRdtr.zoningCodebook.version, "0.1.0-internal");
   assert.equal(result.ygDraftRdtr.structureDraft.status, "analytical_reference_geometry");
   assert.equal(result.ygDraftRdtr.structureDraft.nodeCount, 11);
@@ -352,6 +369,7 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
     row.legalBasisRefs.every(id => regulationIds.has(id)) &&
     row.evidenceRefs.every(id => evidenceIds.has(id))
   ));
+  assert.ok(result.completenessAudit.items.every(row => row.regulationRefs.every(id => regulationIds.has(id))));
   assert.ok(result.policyMapFramework.layers.every(row =>
     row.regulationRefs.every(id => regulationIds.has(id)) &&
     row.analysisRefs.every(id => analysisIds.has(id)) && geometryIds.has(row.sourceRef) &&

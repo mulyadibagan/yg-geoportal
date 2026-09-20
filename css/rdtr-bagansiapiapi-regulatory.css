@@ -315,6 +315,7 @@
 .rdtr-development-readiness { padding: 0 22px 18px; }
 .rdtr-consultation-matrix { padding: 0 22px 20px; }
 .rdtr-consultation-readiness { padding: 0 22px 22px; border-top: 1px solid var(--rdtr-line); }
+.rdtr-completeness-audit { padding: 0 22px 22px; }
 .rdtr-network-kpis { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; margin-bottom: 9px; }
 .rdtr-network-kpis span { padding: 10px; border-radius: 10px; background: #edf3f1; color: var(--rdtr-muted); font-size: .7rem; }
 .rdtr-network-kpis strong { display: block; color: var(--rdtr-ink); font-size: 1.05rem; }

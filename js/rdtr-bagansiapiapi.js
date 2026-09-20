@@ -706,6 +706,23 @@
       : '<p class="rdtr-component-note">Paket kesiapan konsultasi belum tersedia.</p>';
   }
 
+  function renderCompletenessAudit(audit) {
+    audit = audit || {};
+    var rows = audit.items || [];
+    var gates = audit.releaseGates || [];
+    document.getElementById("rdtr-completeness-audit").innerHTML = rows.length
+      ? '<div class="rdtr-program-status">' + statusBadge(audit.status) + '<p>' + esc(audit.decisionRule) + '</p></div>' +
+        '<div class="rdtr-network-kpis">' + (audit.statusSummary || []).map(function (row) { return '<span><strong>' + number(row.count, 0) +
+          '</strong>' + esc(statusLabel(row.status)) + '</span>'; }).join("") + '</div>' +
+        '<div class="rdtr-itbx-scroll"><table><thead><tr><th>ID</th><th>Komponen</th><th>Status</th><th>Yang tersedia</th><th>Kesenjangan</th><th>Gerbang penyelesaian</th></tr></thead><tbody>' +
+        rows.map(function (row) { return '<tr><td>' + esc(row.id) + '</td><td><strong>' + esc(row.component) + '</strong><br>' + esc(row.category) + '</td><td>' +
+          statusBadge(row.status) + '</td><td>' + esc(row.available) + '</td><td>' + esc(row.gap) + '</td><td>' + esc(row.completionGate) + '</td></tr>'; }).join("") +
+        '</tbody></table></div><div class="rdtr-plan-items">' + gates.map(function (gate) { return '<article class="rdtr-plan-item"><header><h4>' +
+          esc(gate.id + " · " + gate.gate) + '</h4>' + statusBadge(gate.status) + '</header></article>'; }).join("") +
+        '</div><p class="rdtr-component-note">' + esc(audit.disclaimer) + '</p>'
+      : '<p class="rdtr-component-note">Audit kelengkapan belum tersedia.</p>';
+  }
+
   function colorFrom(value) {
     var colors = ["#a25728", "#176c8c", "#4b7d49", "#8d546f", "#806523", "#5d59a1", "#338477"];
     var hash = 0, text = String(value || "");
@@ -1698,6 +1715,28 @@
     URL.revokeObjectURL(link.href);
   }
 
+  function exportCompletenessAuditCsv() {
+    var audit = state.analysis.completenessAudit || {};
+    var header = ["ID", "Komponen", "Kategori", "Status", "Referensi regulasi", "Referensi keluaran", "Yang tersedia", "Kesenjangan", "Gerbang penyelesaian", "Kelengkapan hukum", "Layak publikasi", "Reviewer", "Tanggal review"];
+    var lines = [header.map(csvCell).join(",")];
+    (audit.items || []).forEach(function (row) {
+      lines.push([row.id, row.component, row.category, row.status, (row.regulationRefs || []).join(" | "), (row.outputRefs || []).join(" | "),
+        row.available, row.gap, row.completionGate, row.legalCompleteness, row.publicationEligible, row.reviewedBy, row.reviewDate].map(csvCell).join(","));
+    });
+    var blob = new Blob(["\ufeff" + lines.join("\n")], { type: "text/csv;charset=utf-8" });
+    var link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "audit-kelengkapan-rdtr-yg-v0.12-internal.csv";
+    link.click();
+    URL.revokeObjectURL(link.href);
+  }
+
+  function exportCompletenessAuditJson() {
+    var audit = state.analysis.completenessAudit;
+    if (!audit) return;
+    downloadJson(audit, "audit-kelengkapan-rdtr-yg-v0.12-internal.json", "application/json;charset=utf-8");
+  }
+
   function exportPolicyMap() {
     var framework = state.analysis.policyMapFramework || {};
     var features = [];
@@ -1831,6 +1870,8 @@
     document.getElementById("rdtr-export-consultation").addEventListener("click", exportConsultationMatrixCsv);
     document.getElementById("rdtr-export-consultation-pack").addEventListener("click", exportConsultationReadinessPack);
     document.getElementById("rdtr-export-consultation-notes").addEventListener("click", exportConsultationNotesCsv);
+    document.getElementById("rdtr-export-completeness").addEventListener("click", exportCompletenessAuditCsv);
+    document.getElementById("rdtr-export-completeness-json").addEventListener("click", exportCompletenessAuditJson);
     document.getElementById("rdtr-export-policy-map").addEventListener("click", exportPolicyMap);
     document.getElementById("rdtr-export-draft-csv").addEventListener("click", exportDraftComparisonCsv);
     document.getElementById("rdtr-export-draft-geojson").addEventListener("click", exportDraftComparisonGeoJson);
@@ -1865,6 +1906,7 @@
     renderPlanComponents(state.analysis.ygPlan);
     renderConsultationMatrix(state.analysis.consultationArgumentMatrix);
     renderConsultationReadiness(state.analysis.consultationReadinessPack);
+    renderCompletenessAudit(state.analysis.completenessAudit);
     renderAnalysisProgramme(state.analysis.analysisProgramme, state.analysis.mandatoryAnalysisMatrix);
     renderAnalysisMatrix(state.analysis.mandatoryAnalysisMatrix);
     renderGeometryRegistry(state.analysis.geometryRegistry);
