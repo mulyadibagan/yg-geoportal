@@ -12,11 +12,14 @@ test('drone page exposes explicit publication and a public layer catalogue', () 
   assert.match(html, /id="publishResult"/);
   assert.match(html, /id="unpublishResult"/);
   assert.match(html, /id="publicOrthomosaicList"/);
+  assert.match(html, /id="publicLayerToggles"/);
   assert.match(script, /\/api\/drone\/public/);
   assert.match(script, /async function changePublication/);
   assert.match(script, /function renderPublicCatalogue/);
   assert.match(script, /Sembunyikan/);
   assert.match(script, /orthomosaic=/);
+  assert.match(script, /data-map-layer/);
+  assert.match(script, /function renderPublicLayerToggles/);
 });
 
 test('orthomosaic viewer converts JPEG YCbCr to natural RGB and hides only black no-data', () => {
