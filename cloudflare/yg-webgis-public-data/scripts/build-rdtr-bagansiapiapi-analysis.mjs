@@ -2956,14 +2956,19 @@ function rtrwZoneSpec(className, index) {
 
 function buildYgCandidateZoning({ studyArea, rtrwMap, peatMap, forestMap, mangroveCandidateMap }) {
   const zones = [];
-  let allocated = null;
   const studyAreaHa = areaHa(studyArea);
   const coastSource = requiredUnion(mangroveCandidateMap, "Kandidat pesisir");
   const peatSource = requiredUnion(peatMap, "Indikasi gambut");
   const forestSource = requiredUnion(forestMap, "Indikasi non-APL");
   function allocate(source, spec, sourceBasis, regulationRefs, accumulate = true) {
     if (!source?.geometry) return;
-    const available = allocated ? requiredDifference(source, allocated, spec.id) : source;
+    let available = source;
+    if (accumulate) {
+      for (const existingZone of zones) {
+        available = requiredDifference(available, existingZone, `${spec.id} minus ${existingZone.properties?.id || "zona sebelumnya"}`);
+        if (!available?.geometry || areaHa(available) < 0.01) return;
+      }
+    }
     if (!available?.geometry || areaHa(available) < 0.01) return;
     const hectares = areaHa(available);
     available.properties = {
@@ -2985,7 +2990,6 @@ function buildYgCandidateZoning({ studyArea, rtrwMap, peatMap, forestMap, mangro
       legalEffect: "none"
     };
     zones.push(available);
-    if (accumulate) allocated = requiredUnion([allocated, available], `Akumulasi ${spec.id}`);
   }
 
   allocate(coastSource, {
@@ -3018,7 +3022,11 @@ function buildYgCandidateZoning({ studyArea, rtrwMap, peatMap, forestMap, mangro
     allocate(source, spec, `RTRW Provinsi Riau: ${className}`, ["R01", "R02", "R03", "L01", "L02"]);
   });
 
-  const remainder = requiredDifference(studyArea, allocated, "Sisa wilayah kajian");
+  let remainder = studyArea;
+  for (const existingZone of zones) {
+    remainder = requiredDifference(remainder, existingZone, `Sisa wilayah kajian minus ${existingZone.properties?.id || "zona sebelumnya"}`);
+    if (!remainder?.geometry || areaHa(remainder) < 0.01) break;
+  }
   allocate(remainder, {
     id: "ZYG-VERIFY", code: "YG-ZV", name: "Verifikasi fungsi ruang dan kebutuhan layanan",
     zoneFamily: "function_pending_verification", patternCategory: "verification_candidate",
