@@ -817,6 +817,26 @@
       : '<p class="rdtr-component-note">Validator promosi v1 belum tersedia.</p>';
   }
 
+  function renderFieldVerificationPlan(plan) {
+    plan = plan || {}; var rows = plan.packages || [], themes = plan.themes || [];
+    document.getElementById("rdtr-field-plan").innerHTML = rows.length
+      ? '<div class="rdtr-program-status">' + statusBadge(plan.status) + '<p>' + esc(plan.minimumEvidenceRule) + '</p></div>' +
+        '<div class="rdtr-network-kpis"><span><strong>' + number(plan.totalVillages, 0) + '</strong>wilayah</span><span><strong>' +
+        number(themes.length, 0) + '</strong>tema verifikasi</span><span><strong>' + number(rows.filter(function (row) { return row.acceptedForAnalysis; }).length, 0) +
+        '</strong>paket diterima</span></div><div class="rdtr-plan-items">' + themes.map(function (theme) { return '<article class="rdtr-plan-item"><header><h4>' +
+        esc(theme.id + " · " + theme.theme) + '</h4></header><p>' + esc(theme.required) + '</p></article>'; }).join("") + '</div>' +
+        '<div class="rdtr-itbx-scroll"><table><thead><tr><th>ID/wilayah</th><th>Prioritas bukti</th><th>Konteks penyaringan</th><th>Lokasi/responden</th><th>Tim/jadwal</th><th>Status</th></tr></thead><tbody>' +
+        rows.map(function (row) { var c = row.screeningContext || {}; return '<tr><td><strong>' + esc(row.id) + '</strong><br>' + esc(row.village) +
+        '</td><td>' + priorityBadge(String(row.evidencePriority || "standard").toUpperCase().replace("STANDARD", "P2").replace("MEDIUM", "P1").replace("HIGH", "P0")) +
+        '</td><td>Fasilitas: ' + number(c.facilityFeatureCount, 0) + '<br>Jalan: ' + number(c.roadFeatureCount, 0) + '<br>Hidrologi: ' +
+        number(c.hydrologyFeatureCount, 0) + '<br><small>' + esc((c.priorityReasons || []).join(", ") || "tidak ada gap OSM utama") + '</small></td><td>Lokasi: ' +
+        number((row.plannedSurveySites || []).length, 0) + '<br>Kelompok responden: ' + number((row.respondentGroups || []).length, 0) + '</td><td>Petugas: ' +
+        number((row.assignedTeam || []).length, 0) + '<br>Tanggal: ' + esc(row.plannedDate || "belum ditetapkan") + '</td><td>' + statusBadge(row.fieldworkStatus) +
+        '<br><small>Persetujuan: ' + esc(row.consentProtocolConfirmed ? "terkonfirmasi" : "belum") + '</small></td></tr>'; }).join("") +
+        '</tbody></table></div><p class="rdtr-component-note">' + esc(plan.privacyRule) + '</p><p class="rdtr-component-note">' + esc(plan.geometryRule) + '</p>'
+      : '<p class="rdtr-component-note">Rencana verifikasi lapangan belum tersedia.</p>';
+  }
+
   function colorFrom(value) {
     var colors = ["#a25728", "#176c8c", "#4b7d49", "#8d546f", "#806523", "#5d59a1", "#338477"];
     var hash = 0, text = String(value || "");
@@ -1921,6 +1941,25 @@
     downloadJson(state.analysis.v1PromotionValidator, "validator-promosi-rdtr-yg-v1-internal.json", "application/json;charset=utf-8");
   }
 
+  function exportFieldPlanJson() {
+    if (!state.analysis.fieldVerificationPlan) return;
+    downloadJson(state.analysis.fieldVerificationPlan, "rencana-verifikasi-lapangan-rdtr-yg-v0.23-internal.json", "application/json;charset=utf-8");
+  }
+
+  function exportFieldPlanCsv() {
+    var plan = state.analysis.fieldVerificationPlan || {};
+    var header = ["ID", "Wilayah", "Prioritas bukti", "Jumlah fasilitas", "Fasilitas kritis", "Jumlah jalan", "Jumlah hidrologi", "Alasan prioritas", "Referensi tema", "Lokasi survei", "Lintasan", "Kelompok responden", "Tim", "Tanggal", "Protokol persetujuan", "Briefing keselamatan", "Status", "Jumlah bukti", "Reviewer", "Tanggal review", "Diterima untuk analisis"];
+    var lines = [header.map(csvCell).join(",")];
+    (plan.packages || []).forEach(function (row) { var c = row.screeningContext || {}; lines.push([row.id, row.village, row.evidencePriority,
+      c.facilityFeatureCount, c.criticalFacilityCount, c.roadFeatureCount, c.hydrologyFeatureCount, (c.priorityReasons || []).join(" | "),
+      (row.themeRefs || []).join(" | "), (row.plannedSurveySites || []).join(" | "), (row.plannedTransects || []).join(" | "),
+      (row.respondentGroups || []).join(" | "), (row.assignedTeam || []).join(" | "), row.plannedDate, row.consentProtocolConfirmed,
+      row.safetyBriefingConfirmed, row.fieldworkStatus, (row.evidenceReceived || []).length, row.reviewedBy, row.reviewDate,
+      row.acceptedForAnalysis].map(csvCell).join(",")); });
+    var blob = new Blob(["\ufeff" + lines.join("\n")], { type: "text/csv;charset=utf-8" }); var link = document.createElement("a");
+    link.href = URL.createObjectURL(blob); link.download = "paket-verifikasi-lapangan-rdtr-yg-v0.23-internal.csv"; link.click(); URL.revokeObjectURL(link.href);
+  }
+
   function exportPolicyMap() {
     var framework = state.analysis.policyMapFramework || {};
     var features = [];
@@ -2066,6 +2105,8 @@
     document.getElementById("rdtr-export-change-control").addEventListener("click", exportChangeControlJson);
     document.getElementById("rdtr-export-change-control-csv").addEventListener("click", exportChangeControlCsv);
     document.getElementById("rdtr-export-v1-validator").addEventListener("click", exportV1PromotionValidator);
+    document.getElementById("rdtr-export-field-plan").addEventListener("click", exportFieldPlanJson);
+    document.getElementById("rdtr-export-field-plan-csv").addEventListener("click", exportFieldPlanCsv);
     document.getElementById("rdtr-export-policy-map").addEventListener("click", exportPolicyMap);
     document.getElementById("rdtr-export-draft-csv").addEventListener("click", exportDraftComparisonCsv);
     document.getElementById("rdtr-export-draft-geojson").addEventListener("click", exportDraftComparisonGeoJson);
@@ -2107,6 +2148,7 @@
     renderEvidenceRequestBriefing(state.analysis.evidenceRequestBriefing);
     renderResponseChangeControl(state.analysis.responseChangeControlLedger);
     renderV1PromotionValidator(state.analysis.v1PromotionValidator);
+    renderFieldVerificationPlan(state.analysis.fieldVerificationPlan);
     renderAnalysisProgramme(state.analysis.analysisProgramme, state.analysis.mandatoryAnalysisMatrix);
     renderAnalysisMatrix(state.analysis.mandatoryAnalysisMatrix);
     renderGeometryRegistry(state.analysis.geometryRegistry);

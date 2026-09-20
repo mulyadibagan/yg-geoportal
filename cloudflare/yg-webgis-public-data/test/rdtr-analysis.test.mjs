@@ -208,7 +208,7 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
   assert.ok(result.map.ygPlanningUnits.metadata.geometryProcessing.includes("tolerance 0.00002"));
 
   assert.equal(result.ygDraftRdtr.status, "provisional_internal_spatial_draft");
-  assert.equal(result.ygDraftRdtr.version, "0.22.0-internal-release-candidate");
+  assert.equal(result.ygDraftRdtr.version, "0.23.0-internal-release-candidate");
   assert.equal(result.ygDraftRdtr.programmePortfolio.programmeCount, 8);
   assert.equal(result.ygDraftRdtr.programmePortfolio.indicatorCount, 16);
   assert.equal(result.consultationArgumentMatrix.items.length, 10);
@@ -305,6 +305,14 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
   assert.equal(result.v1PromotionValidator.blockers.length, 8);
   assert.equal(result.v1PromotionValidator.humanOverrideAllowed, false);
   assert.equal(result.ygDraftRdtr.v1PromotionValidator.promotionEligible, false);
+  assert.equal(result.fieldVerificationPlan.totalVillages, 11);
+  assert.equal(result.fieldVerificationPlan.themes.length, 10);
+  assert.equal(result.ygDraftRdtr.fieldVerificationPlan.totalVillages, 11);
+  assert.ok(result.fieldVerificationPlan.packages.every(row => row.village && row.themeRefs.length === 10 &&
+    row.plannedSurveySites.length === 0 && row.respondentGroups.length === 0 && row.assignedTeam.length === 0 &&
+    row.plannedDate === null && row.consentProtocolConfirmed === false && row.safetyBriefingConfirmed === false &&
+    row.fieldworkStatus === "not_planned" && row.evidenceReceived.length === 0 && row.reviewedBy === null &&
+    row.reviewDate === null && row.acceptedForAnalysis === false));
   assert.equal(result.ygDraftRdtr.zoningCodebook.version, "0.1.0-internal");
   assert.equal(result.ygDraftRdtr.structureDraft.status, "analytical_reference_geometry");
   assert.equal(result.ygDraftRdtr.structureDraft.nodeCount, 11);
