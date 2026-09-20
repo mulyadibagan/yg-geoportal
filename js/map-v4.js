@@ -54,18 +54,30 @@
       sourceLabel: "YG GeoPortal · wilayah program terverifikasi",
       scale: "Batas wilayah kelola PS; terpisah dari polygon kegiatan YG"
     },
-    ...(staffSession && false ? { rtrw_riau_2018_2038: {
+    ...(staffSession ? { rtrw_riau_2018_2038: {
       id: "rtrw_riau_2018_2038",
       label: "RTRW Riau 2018–2038 · internal staf",
       file: "data/RTRW_RIAU_2018_2038.geojson",
-      version: "rtrw-riau-internal-v1",
+      version: "20260920-ksp-big1",
       color: "#5d4037",
-      count: null,
+      count: 33,
+      countLabel: "23 kelas · 33 polygon",
       type: "spatial_plan",
       focusOnEnable: true,
       section: "spatial_planning",
-      sourceLabel: "Perda Provinsi Riau No. 10 Tahun 2018 · geometri kerja internal",
-      scale: "Acuan peta RTRW 1:250.000 · bukan penetapan batas hukum",
+      sourceLabel: "Kebijakan Satu Peta BIG · RTRWP Layer 14",
+      sourceUrl: "https://kspservices.big.go.id/satupeta/rest/services/PUBLIK/PERENCANAAN_RUANG/MapServer/14",
+      scale: "Acuan RTRW 1:250.000 · visualisasi disederhanakan untuk WebGIS",
+      legendItems: [
+        ["#14532d", "Lindung & konservasi"],
+        ["#4d7c0f", "Hutan produksi"],
+        ["#7c3f00", "Gambut & resapan air"],
+        ["#84cc16", "Perkebunan & pertanian"],
+        ["#f59e0b", "Permukiman & pelayanan"],
+        ["#7c3aed", "Industri, tambang & lainnya"],
+        ["#0284c7", "Perairan & pesisir"],
+        ["#db2777", "Pariwisata & budaya"]
+      ],
       policyUrl: "https://jdih.riau.go.id/"
     } } : {}),
     ...(staffSession ? { pbph_riau_052026: { id: "pbph_riau_052026", label: "PBPH Riau · internal staf", file: "data/PBPH_RIAU_052026.geojson", color: "#d84315", count: 56, type: "active_concession", focusOnEnable: true, sourceLabel: "Referensi internal PBPH Mei 2026", scale: "1:50.000" } } : {}),
@@ -215,6 +227,19 @@
 
   function referenceCountInfo(layerId, features) {
     const featureCount = Array.isArray(features) ? features.length : 0;
+    if (layerId === "rtrw_riau_2018_2038") {
+      const classes = new Set(features.map(feature => String(
+        feature?.properties?.RENCANA || feature?.properties?.rtrsys || ""
+      ).trim()).filter(Boolean));
+      return {
+        count: featureCount,
+        featureCount,
+        label: formatNumber(classes.size) + " kelas · " +
+          formatNumber(featureCount) + " polygon",
+        statusLabel: formatNumber(classes.size) + " kelas pola ruang · " +
+          formatNumber(featureCount) + " polygon"
+      };
+    }
     if (layerId === "pbph_riau_052026") {
       const permitIds = new Set(
         features.map((feature, index) => {
@@ -402,7 +427,8 @@
   function referenceRendererFor(config) {
     if (
       config.type === "active_concession" ||
-      config.type === "oil_palm_company"
+      config.type === "oil_palm_company" ||
+      config.type === "spatial_plan"
     ) {
       if (!internalReferenceCanvasRenderer) {
         internalReferenceCanvasRenderer = L.canvas({
@@ -1955,6 +1981,30 @@ L.control.scale({
   function referenceStyle(config, feature) {
     const props = feature.properties || {};
 
+    if (config.type === "spatial_plan") {
+      const name = String(
+        props.RENCANA || props.rtrsys || props.POLA_RUANG || props.rtrppr || ""
+      ).toLowerCase();
+      let color = "#7c3aed";
+      if (/tubuh air|pantai berhutan bakau/.test(name)) color = "#0284c7";
+      else if (/pariwisata|cagar budaya/.test(name)) color = "#db2777";
+      else if (/gambut|resapan air/.test(name)) color = "#7c3f00";
+      else if (/hutan produksi|hutan rakyat/.test(name)) color = "#4d7c0f";
+      else if (/cagar alam|suaka|taman nasional|taman hutan raya|hutan lindung/.test(name)) {
+        color = "#14532d";
+      } else if (/perkebunan|pertanian/.test(name)) color = "#84cc16";
+      else if (/permukiman|ruang terbuka hijau|umum dan sosial/.test(name)) {
+        color = "#f59e0b";
+      }
+      return {
+        color,
+        weight: 0.7,
+        opacity: 0.9,
+        fillColor: color,
+        fillOpacity: 0.28
+      };
+    }
+
     if (config.type === "social_forestry_intervention") {
       return {
         color: config.color,
@@ -2177,7 +2227,18 @@ L.control.scale({
           };
     }
 
-    if (config.type === "forest") {
+    if (config.type === "spatial_plan") {
+      rows += item("Kelas pola ruang", props.RENCANA || props.rtrsys);
+      rows += item("Peruntukan sumber", props.POLA_RUANG || props.rtrppr);
+      rows += item("Provinsi", props.PROVINSI || props.wadmpr);
+      rows += item("Dasar hukum", props.DASAR_HUKUM || props.nothpd);
+      rows += item("ID objek BIG", props.Source_Object_ID || props.objectid);
+      rows += item("Metadata sumber", props.metadata);
+      rows += item(
+        "Status penggunaan",
+        "Referensi analisis internal; bukan penetapan batas hukum"
+      );
+    } else if (config.type === "forest") {
       rows += item("Fungsi kawasan", props.fungsi || "Belum terisi");
       rows += item("Sumber", "Kawasan Hutan SK 903");
     } else if (config.type === "khg") {
@@ -2286,7 +2347,10 @@ L.control.scale({
       : "";
     const policyLink = showReferenceDetails && config.policyUrl
       ? '<a href="' + escapeHtml(config.policyUrl) +
-        '">Lihat keterkaitan RPPEG</a>'
+        '" target="_blank" rel="noopener noreferrer">' +
+        (config.type === "spatial_plan"
+          ? "Buka JDIH Riau"
+          : "Lihat keterkaitan RPPEG") + '</a>'
       : "";
     const referenceLinks = sourceLink || policyLink
       ? '<div class="popup-row popup-reference-links"><b>Referensi</b><span>' +
@@ -2464,7 +2528,8 @@ L.control.scale({
       config.type === "oil_palm_company" ||
       config.type === "concession" ||
       config.type === "kph" ||
-      config.type === "village_boundary";
+      config.type === "village_boundary" ||
+      config.type === "spatial_plan";
 
     const layer = L.geoJSON(data, {
       pane: MAP_PANES.reference,
@@ -2554,9 +2619,9 @@ L.control.scale({
           escapeHtml(config.label) + '</label>' +
         '<span class="count" data-reference-count-id="' +
           escapeHtml(layerId) + '">' +
-          (Number.isFinite(config.count)
+          (config.countLabel || (Number.isFinite(config.count)
             ? formatNumber(config.count)
-            : "—") +
+            : "—")) +
         '</span>';
 
       list.appendChild(row);
@@ -2671,14 +2736,18 @@ L.control.scale({
     const interventionLayerIds = Object.keys(REFERENCE_LAYERS).filter(layerId =>
       REFERENCE_LAYERS[layerId].section === "intervention"
     );
+    const spatialPlanningLayerIds = Object.keys(REFERENCE_LAYERS).filter(layerId =>
+      REFERENCE_LAYERS[layerId].section === "spatial_planning"
+    );
     const referenceLayerIds = Object.keys(REFERENCE_LAYERS).filter(layerId =>
-      !["administrative", "intervention", "partnership"].includes(
+      !["administrative", "intervention", "partnership", "spatial_planning"].includes(
         REFERENCE_LAYERS[layerId].section
       )
     );
 
     appendReferenceSection("BATAS ADMINISTRASI", administrativeLayerIds);
     appendReferenceSection("WILAYAH INTERVENSI YG", interventionLayerIds);
+    appendReferenceSection("TATA RUANG · INTERNAL STAF", spatialPlanningLayerIds);
     appendReferenceSection("DATA REFERENSI", referenceLayerIds);
     appendReferenceSection("KOLABORASI AKADEMIK", partnershipLayerIds);
 

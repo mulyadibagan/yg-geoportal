@@ -1,0 +1,133 @@
+name: Ingest internal RTRW Riau
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/ingest-internal-rtrw-riau.yml
+      - cloudflare/yg-webgis-public-data/package.json
+      - cloudflare/yg-webgis-public-data/package-lock.json
+      - cloudflare/yg-webgis-public-data/scripts/prepare-rtrw-riau.mjs
+      - cloudflare/yg-webgis-public-data/scripts/validate-rtrw.mjs
+      - cloudflare/yg-webgis-public-data/test/rtrw-ingest.test.mjs
+  workflow_dispatch:
+    inputs:
+      upload_production:
+        description: Upload the verified layer to the production R2 bucket
+        required: true
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: yg-webgis-rtrw-riau-ingest
+  cancel-in-progress: false
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    environment: yg-webgis-staging
+    env:
+      SOURCE_URL: https://kspservices.big.go.id/satupeta/rest/services/PUBLIK/PERENCANAAN_RUANG/MapServer/14
+      DISPLAY_KEY: internal/spatial-planning/rtrw-riau-2018-2038.geojson
+      RAW_KEY: internal/spatial-planning/source/rtrw-riau-2018-2038-raw.geojson
+      MANIFEST_KEY: internal/spatial-planning/rtrw-riau-2018-2038-manifest.json
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: cloudflare/yg-webgis-public-data/package-lock.json
+
+      - run: npm ci
+        working-directory: cloudflare/yg-webgis-public-data
+
+      - name: Download official KSP BIG geometry
+        shell: bash
+        run: |
+          curl --fail --show-error --silent --retry 3 \
+            --connect-timeout 30 --max-time 600 --get \
+            "${SOURCE_URL}/query" \
+            --data-urlencode "where=UPPER(wadmpr)='RIAU'" \
+            --data-urlencode "outFields=*" \
+            --data-urlencode "returnGeometry=true" \
+            --data-urlencode "outSR=4326" \
+            --data-urlencode "f=geojson" \
+            --output "${RUNNER_TEMP}/rtrw-riau-raw.geojson"
+
+      - name: Build verified display geometry
+        shell: bash
+        working-directory: cloudflare/yg-webgis-public-data
+        run: |
+          npx mapshaper-xl "${RUNNER_TEMP}/rtrw-riau-raw.geojson" \
+            -simplify weighted 5% keep-shapes \
+            -clean \
+            -o format=geojson precision=0.000001 \
+            "${RUNNER_TEMP}/rtrw-riau-simplified.geojson"
+          node scripts/prepare-rtrw-riau.mjs \
+            "${RUNNER_TEMP}/rtrw-riau-raw.geojson" \
+            "${RUNNER_TEMP}/rtrw-riau-simplified.geojson" \
+            "${RUNNER_TEMP}/rtrw-riau-display.geojson" \
+            "${RUNNER_TEMP}/rtrw-riau-manifest.json"
+          npm run validate:rtrw -- "${RUNNER_TEMP}/rtrw-riau-display.geojson"
+
+      - name: Run Worker and ingest tests
+        run: npm test
+        working-directory: cloudflare/yg-webgis-public-data
+
+      - name: Upload verified internal layer to staging R2
+        working-directory: cloudflare/yg-webgis-public-data
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          npx wrangler r2 object put \
+            "yg-webgis-public-snapshots-staging/${DISPLAY_KEY}" --remote \
+            --file "${RUNNER_TEMP}/rtrw-riau-display.geojson" \
+            --content-type application/geo+json
+          npx wrangler r2 object put \
+            "yg-webgis-public-snapshots-staging/${RAW_KEY}" --remote \
+            --file "${RUNNER_TEMP}/rtrw-riau-raw.geojson" \
+            --content-type application/geo+json
+          npx wrangler r2 object put \
+            "yg-webgis-public-snapshots-staging/${MANIFEST_KEY}" --remote \
+            --file "${RUNNER_TEMP}/rtrw-riau-manifest.json" \
+            --content-type application/json
+
+      - name: Upload verified internal layer to production R2
+        if: ${{ github.event_name == 'push' || inputs.upload_production }}
+        working-directory: cloudflare/yg-webgis-public-data
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          npx wrangler r2 object put \
+            "yg-webgis-public-snapshots/${DISPLAY_KEY}" --remote \
+            --file "${RUNNER_TEMP}/rtrw-riau-display.geojson" \
+            --content-type application/geo+json
+          npx wrangler r2 object put \
+            "yg-webgis-public-snapshots/${RAW_KEY}" --remote \
+            --file "${RUNNER_TEMP}/rtrw-riau-raw.geojson" \
+            --content-type application/geo+json
+          npx wrangler r2 object put \
+            "yg-webgis-public-snapshots/${MANIFEST_KEY}" --remote \
+            --file "${RUNNER_TEMP}/rtrw-riau-manifest.json" \
+            --content-type application/json
+
+      - name: Verify private gateway remains closed anonymously
+        shell: bash
+        run: |
+          for base in \
+            "https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev" \
+            "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev"
+          do
+            status="$(curl --show-error --silent --output /dev/null \
+              --write-out '%{http_code}' \
+              "${base}/api/staff/rtrw-riau-2018-2038")"
+            test "${status}" = "401"
+          done

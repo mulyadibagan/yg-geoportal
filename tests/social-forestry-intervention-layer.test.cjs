@@ -33,7 +33,7 @@ test("interactive map keeps PS intervention boundaries separate and off by defau
   assert.doesNotMatch(map, /data-reference-layer-id[^\n]+checked/);
   assert.match(map, /rows \+= item\("Intervensi YG", props\.Intervensi_YG\)/);
   assert.match(map, /Wilayah program YG · tidak menambah statistik kegiatan/);
-  assert.match(page, /map-v4\.js\?v=20260920-ps-intervention1/);
+  assert.match(page, /map-v4\.js\?v=20260920-rtrw-ksp-big1/);
 });
 
 test("public intervention layer does not expose internal PS documents", () => {
