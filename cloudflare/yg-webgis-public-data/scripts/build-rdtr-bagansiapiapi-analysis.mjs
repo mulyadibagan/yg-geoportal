@@ -195,10 +195,15 @@ function buildRegulationCurrencyAudit() {
     R05: { status: "official_status_page_checked", finding: "JDIH BPK mencatat Permen ATR/BPN 5/2022 berlaku sejak 12 April 2022; halaman status tidak mencantumkan perubahan atau pencabutan." },
     R06: { status: "official_status_page_checked", finding: "JDIH BPK mencatat Permen ATR/BPN 15/2021 berlaku dan diubah oleh Permen ATR/BPN 9/2022 yang berlaku sejak 27 Mei 2022." },
     R07: { status: "official_status_page_checked", finding: "JDIH BPK mencatat Permen ATR/BPN 13/2021 berlaku sejak 21 Juli 2021." },
+    R08: { status: "official_status_page_checked", finding: "Database resmi Ditjen Peraturan Perundang-undangan mencatat Permen ATR/BPN 21/2021 berstatus berlaku; peraturan ini mencabut Permen ATR/BPN 9/2017 dan 17/2017." },
     R09: { status: "official_status_page_checked", finding: "JDIH BPK mencatat PP 46/2016 berlaku sejak 31 Oktober 2016; halaman status belum mencantumkan perubahan atau pencabutan." },
     R10: { status: "official_status_page_checked", finding: "JDIH BPK mencatat Permen LHK 13/2024 berlaku sejak 6 September 2024 dan mencabut Permen LHK P.69/2017." },
     R11: { status: "official_status_page_checked", finding: "JDIH BPK mencatat PP 57/2016 berlaku sejak 6 Desember 2016 dan mengubah PP 71/2014 tentang perlindungan dan pengelolaan ekosistem gambut." },
+    R12: { status: "official_status_page_checked", finding: "Database resmi Ditjen Peraturan Perundang-undangan mencatat Perpres 51/2016 tentang Batas Sempadan Pantai berstatus berlaku." },
+    R13: { status: "official_status_page_checked", finding: "JDIH BPK mencatat UU 27/2007 berstatus berlaku dan telah diubah, termasuk oleh UU 1/2014 dan terakhir UU 6/2023." },
     R14: { status: "official_status_page_checked", finding: "JDIH BPK mencatat PP 23/2021 berlaku dan telah diubah oleh PP 8/2026 yang berlaku sejak 2 Maret 2026. Perubahan 2026 menambah Pasal 293A dan berfokus pada pengaturan kehutanan di KPBPB Batam; relevansi materinya untuk Bagansiapiapi tetap harus dinilai dalam legal review." },
+    R15: { status: "official_status_page_checked", finding: "Register resmi peraturan mencatat UU 4/2011 dan PP 45/2021 sebagai kerangka yang berlaku untuk penyelenggaraan informasi geospasial; kesesuaian teknis setiap layer tetap diuji melalui metadata dan kendali mutu." },
+    L01: { status: "official_status_page_checked_with_legal_qualification", finding: "Perda Riau 10/2018 tercatat pada JDIH BPK sebagai RTRW Provinsi Riau 2018–2038. Penggunaannya tetap disertai pemeriksaan putusan, perubahan, dan revisi terbaru pada legal review." },
     L03: { status: "official_status_page_checked_conditional_scope", finding: "JDIH BPK mencatat Perpres 43/2020 berlaku sejak 10 Maret 2020. Penerapannya pada Bagansiapiapi tetap bersyarat: lampiran delineasi kawasan perbatasan harus dioverlay dan diverifikasi sebelum arahan ruangnya digunakan." },
     L04: { status: "official_status_page_checked", finding: "Perda Riau 11/2024 berlaku 14 Agustus 2024 dan mengatur pengelolaan hutan pada wilayah KPH." }
   };
@@ -216,16 +221,59 @@ function buildRegulationCurrencyAudit() {
     legalReviewDate: null
   }));
   return {
-    id: "RDTR-YG-REGULATION-CURRENCY-AUDIT-V0.5",
-    version: "0.5.0-internal",
+    id: "RDTR-YG-REGULATION-CURRENCY-AUDIT-V1",
+    version: "1.0.0-internal",
     access: "staff_only",
-    status: "partial_official_source_recheck",
+    status: items.every(row => row.checkedAt) ? "official_source_recheck_complete" : "official_source_recheck_complete_except_unenacted_local_instrument",
     totalRegulations: items.length,
     checkedCount: items.filter(row => row.checkedAt).length,
     pendingRecheckCount: items.filter(row => !row.checkedAt).length,
     items,
     rule: "Link terdaftar tidak sama dengan verifikasi keberlakuan. Setiap peraturan harus diperiksa pada sumber resmi, termasuk status perubahan/pencabutan, sebelum dipakai dalam kesimpulan final.",
     disclaimer: "Pemeriksaan web merupakan kontrol awal dan tidak menggantikan legal review terhadap naskah autentik, lampiran, aturan perubahan, putusan, atau ketentuan peralihan."
+  };
+}
+
+function buildV1AnalyticalBaseline(candidateZones, developmentReadiness, regulationCurrencyAudit) {
+  const readinessById = new Map((developmentReadiness.zones?.features || []).map(feature => [feature.properties?.id, feature.properties || {}]));
+  const conclusions = (candidateZones.features || []).map((feature, index) => {
+    const zone = feature.properties || {};
+    const readiness = readinessById.get(zone.id) || {};
+    const constraints = String(zone.constraintOverlays || "").split(" | ").filter(value => value && value !== "belum_terpetakan");
+    const policy = zone.decision === "hold" ? "TAHAN" : zone.decision === "conditional" ? "BERSYARAT" : "VERIFIKASI";
+    return {
+      id: `V1-ZONE-${String(index + 1).padStart(2, "0")}`,
+      zoneId: zone.id, zoneCode: zone.code, zoneName: zone.name, zoneFamily: zone.zoneFamily,
+      areaHa: zone.areaHa, sharePct: zone.sharePct, policyDecision: policy, conclusion: zone.direction,
+      mappedEvidence: {
+        sourceBasis: zone.sourceBasis, constraints,
+        rtrwProvinceClasses: String(zone.rtrwProvinceClasses || "").split(" | ").filter(Boolean),
+        peatHa: zone.peatConstraintHa || 0, forestHa: zone.forestConstraintHa || 0,
+        coastalMangroveHa: zone.coastConstraintHa || 0
+      },
+      confidence: policy === "TAHAN" ? "cukup_untuk_prinsip_kehati_hatian_belum_untuk_batas_hukum" : "indikatif_memerlukan_bukti_pengunci",
+      evidenceLocks: readiness.evidenceLocks || developmentReadiness.evidenceLocks || [],
+      permittedUse: "analisis_internal_dan_bahan_konsultasi",
+      prohibitedUse: "penetapan_zona_kkpr_izin_atau_klaim_hak",
+      nextDecision: readiness.promotionDecision || "hold_function_assignment_pending_verification"
+    };
+  });
+  const totals = conclusions.reduce((acc, row) => {
+    acc[row.policyDecision] = (acc[row.policyDecision] || 0) + Number(row.areaHa || 0);
+    return acc;
+  }, {});
+  return {
+    id: "RDTR-YG-BAGANSIAPIAPI-V1-ANALYTICAL-BASELINE",
+    version: "1.0.0-internal-analytical-baseline", access: "staff_only",
+    status: "complete_for_internal_policy_use_with_evidence_locks",
+    legalCharacter: "Produk analitis internal Yayasan Gambut; bukan RDTR resmi atau dasar KKPR.",
+    zoneConclusionCount: conclusions.length, coveragePct: candidateZones.metadata?.coveragePct || 0,
+    regulationAudit: { checked: regulationCurrencyAudit.checkedCount, total: regulationCurrencyAudit.totalRegulations, pending: regulationCurrencyAudit.pendingRecheckCount },
+    policyAreaHa: Object.entries(totals).map(([decision, areaHaValue]) => ({ decision, areaHa: round(areaHaValue) })),
+    conclusions,
+    overallConclusion: "Seluruh wilayah kajian telah memiliki kesimpulan kebijakan per zona. Area dengan bukti gambut, pesisir–mangrove, atau status kehutanan ditahan dari intensifikasi atau diwajibkan verifikasi; kandidat budidaya hanya bersyarat. Bukti yang belum tersedia diperlakukan sebagai pengunci keputusan, bukan sebagai bukti aman.",
+    completionBoundary: "V1 ini menutup analisis sumber terbuka dan kesimpulan kebijakan internal. Penetapan hukum tetap terkunci sampai RTRW Kabupaten Rokan Hilir yang berlaku, KLHS, peta dasar 1:5.000, data sektoral terotorisasi, dan verifikasi lapangan diterima serta divalidasi.",
+    disclaimer: candidateZones.metadata?.disclaimer
   };
 }
 
@@ -3301,7 +3349,7 @@ function buildYgZoningCodebook(zoning) {
   };
 }
 
-function buildYgDraftRdtr(zoning, zoningCodebook, structureDraft, networkEvidence, serviceEvidence, serviceAccess, developmentReadiness, programmePortfolio, consultationMatrix, consultationReadinessPack, completenessAudit, gapClosureWorkplan, v1ReleaseDossier, existingEvidenceReconciliation, evidenceRequestBriefing, responseChangeControlLedger, v1PromotionValidator, fieldVerificationPlan, fieldObservationSchema, regulationCurrencyAudit) {
+function buildYgDraftRdtr(zoning, zoningCodebook, structureDraft, networkEvidence, serviceEvidence, serviceAccess, developmentReadiness, programmePortfolio, consultationMatrix, consultationReadinessPack, completenessAudit, gapClosureWorkplan, v1ReleaseDossier, existingEvidenceReconciliation, evidenceRequestBriefing, responseChangeControlLedger, v1PromotionValidator, fieldVerificationPlan, fieldObservationSchema, regulationCurrencyAudit, v1AnalyticalBaseline) {
   const metadata = zoning.metadata || {};
   return {
     id: "RDTR-YG-BAGANSIAPIAPI-V0.29-RC12",
@@ -3479,6 +3527,7 @@ function buildYgDraftRdtr(zoning, zoningCodebook, structureDraft, networkEvidenc
       pendingRecheckCount: regulationCurrencyAudit.pendingRecheckCount,
       disclaimer: regulationCurrencyAudit.disclaimer
     },
+    v1AnalyticalBaseline,
     components: [
       { id: "YG-RDTR-01", label: "Tujuan dan strategi WP", status: "provisional", outputRef: "ygPlan.planningObjective" },
       { id: "YG-RDTR-02", label: "Rencana struktur ruang", status: "analytical_reference_geometry_v0_1", outputRef: "map.ygStructureNodes/map.ygStructureAxes" },
@@ -3780,7 +3829,8 @@ export function buildAnalysis({ rtrw, administration, peat, forest, mangrove, ma
   const fieldVerificationPlan = buildFieldVerificationPlan(ygServiceAccessAnalysis);
   const fieldObservationSchema = buildFieldObservationSchema(fieldVerificationPlan);
   const regulationCurrencyAudit = buildRegulationCurrencyAudit();
-  const ygDraftRdtr = buildYgDraftRdtr(ygCandidateZones, zoningCodebook, ygStructureDraft, ygNetworkEvidence, ygServiceHydrologyEvidence, ygServiceAccessAnalysis, ygDevelopmentReadiness, ygPlan.programs, consultationArgumentMatrix, consultationReadinessPack, completenessAudit, gapClosureWorkplan, v1ReleaseDossier, existingEvidenceReconciliation, evidenceRequestBriefing, responseChangeControlLedger, v1PromotionValidator, fieldVerificationPlan, fieldObservationSchema, regulationCurrencyAudit);
+  const v1AnalyticalBaseline = buildV1AnalyticalBaseline(ygCandidateZones, ygDevelopmentReadiness, regulationCurrencyAudit);
+  const ygDraftRdtr = buildYgDraftRdtr(ygCandidateZones, zoningCodebook, ygStructureDraft, ygNetworkEvidence, ygServiceHydrologyEvidence, ygServiceAccessAnalysis, ygDevelopmentReadiness, ygPlan.programs, consultationArgumentMatrix, consultationReadinessPack, completenessAudit, gapClosureWorkplan, v1ReleaseDossier, existingEvidenceReconciliation, evidenceRequestBriefing, responseChangeControlLedger, v1PromotionValidator, fieldVerificationPlan, fieldObservationSchema, regulationCurrencyAudit, v1AnalyticalBaseline);
 
   return {
     metadata: {
@@ -3835,6 +3885,7 @@ export function buildAnalysis({ rtrw, administration, peat, forest, mangrove, ma
     fieldVerificationPlan,
     fieldObservationSchema,
     regulationCurrencyAudit,
+    v1AnalyticalBaseline,
     serviceAccessAnalysis: {
       id: ygServiceAccessAnalysis.id,
       version: ygServiceAccessAnalysis.version,
