@@ -3046,11 +3046,18 @@ function buildYgCandidateZoning({ studyArea, rtrwMap, peatMap, forestMap, mangro
     const peatConstraintHa = overlapHa(zone, peatSource, "Irisan gambut");
     const forestConstraintHa = overlapHa(zone, forestSource, "Irisan kawasan hutan");
     const coastConstraintHa = overlapHa(zone, coastSource, "Irisan pesisir–mangrove");
+    let rtrwOverlayFallback = false;
     const rtrwClasses = [...new Set((rtrwMap || []).filter(feature => {
+      if (!feature?.geometry || !boxesOverlap(bbox(zone), bbox(feature))) return false;
       try {
         return areaHa(intersect(featureCollection([zone, feature]))) >= 0.01;
       } catch (error) {
-        throw new Error(`Irisan RTRW gagal dihitung pada ${zone.properties?.id}: ${error.message}`);
+        rtrwOverlayFallback = true;
+        try {
+          return booleanIntersects(zone, feature);
+        } catch {
+          return false;
+        }
       }
     }).map(feature => feature.properties?.class).filter(Boolean))].sort();
     const constraintOverlays = [];
@@ -3063,7 +3070,8 @@ function buildYgCandidateZoning({ studyArea, rtrwMap, peatMap, forestMap, mangro
       forestConstraintHa: round(forestConstraintHa),
       coastConstraintHa: round(coastConstraintHa),
       constraintOverlays: constraintOverlays.join(" | ") || "belum_terpetakan",
-      rtrwProvinceClasses: rtrwClasses.join(" | ") || "belum_terbaca"
+      rtrwProvinceClasses: rtrwClasses.join(" | ") || "belum_terbaca",
+      rtrwOverlayMethod: rtrwOverlayFallback ? "boolean_intersection_fallback_geometry_needs_qa" : "area_intersection_minimum_0_01_ha"
     };
   });
 
