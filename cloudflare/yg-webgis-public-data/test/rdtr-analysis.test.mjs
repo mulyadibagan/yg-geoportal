@@ -396,7 +396,7 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
     feature.properties.code && feature.properties.direction &&
     feature.properties.maturity === "provisional_internal_zone_geometry" &&
     feature.properties.legalEffect === "none" && feature.properties.constraintOverlays &&
-    feature.properties.rtrwProvinceClasses
+    feature.properties.rtrwProvinceClasses && feature.properties.rtrwOverlayMethod
   ));
   assert.equal(result.map.ygDevelopmentReadiness.features.length, result.map.ygCandidateZones.features.length);
   assert.equal(result.developmentReadinessAnalysis.status, "development_readiness_not_determined");
