@@ -80,7 +80,7 @@
       ],
       policyUrl: "https://jdih.riau.go.id/"
     } } : {}),
-    ...(staffSession ? { pbph_riau_052026: { id: "pbph_riau_052026", label: "PBPH Riau · internal staf", file: "data/PBPH_RIAU_052026.geojson", color: "#d84315", count: 56, type: "active_concession", focusOnEnable: true, sourceLabel: "Referensi internal PBPH Mei 2026", scale: "1:50.000" } } : {}),
+    ...(staffSession ? { pbph_riau_052026: { id: "pbph_riau_052026", label: "PBPH Riau · internal staf", file: "data/PBPH_RIAU_052026.geojson", color: "#d84315", count: 56, type: "active_concession", focusOnEnable: true, section: "forest_governance", sourceLabel: "Referensi internal PBPH Mei 2026", scale: "1:50.000" } } : {}),
     ...(staffSession ? { perusahaan_sawit_riau: {
       id: "perusahaan_sawit_riau",
       label: "Area Perkebunan Anggota RSPO",
@@ -91,6 +91,7 @@
       countLabel: "8 grup · 58 area",
       type: "oil_palm_company",
       focusOnEnable: true,
+      section: "plantations",
       sourceLabel: "GeoRSPO / RSPO",
       sourceUrl: "https://rspo.org/as-an-organisation/tools/georspo/",
       scale: "Diperbarui 14 Juli 2026"
@@ -101,7 +102,8 @@
       file: "data/kawasan_hutan_sk_903.geojson",
       color: "#455a64",
       count: 4185,
-      type: "forest"
+      type: "forest",
+      section: "forest_governance"
     },
     gambut_bbsdlp_2019: {
       id: "gambut_bbsdlp_2019",
@@ -109,7 +111,8 @@
       file: "data/Gambut_BBSDLP_2019.geojson",
       color: "#6a4a3a",
       count: 736,
-      type: "peat"
+      type: "peat",
+      section: "peat_environment"
     },
     kph_2019_riau: {
       id: "kph_2019_riau",
@@ -118,6 +121,7 @@
       color: "#827717",
       count: 1382,
       type: "kph",
+      section: "forest_governance",
       sourceLabel: "Shapefile KPH 2019 Provinsi Riau",
       scale: "Sumber World Mercator; ditransformasikan ke WGS 84"
     },
@@ -134,7 +138,8 @@
       color: "#00897b",
       count: null,
       type: "social_forestry",
-      focusOnEnable: true
+      focusOnEnable: true,
+      section: "forest_governance"
     } } : {}),
     batas_administrasi_desa_riau: {
       id: "batas_administrasi_desa_riau",
@@ -2612,6 +2617,7 @@ L.control.scale({
       row.innerHTML =
         '<input id="layer-' + escapeHtml(layerId) +
         '" data-reference-layer-id="' + escapeHtml(layerId) +
+        '" data-reference-section="' + escapeHtml(config.section || "general") +
         '" type="checkbox">' +
         '<span class="swatch" style="background:' +
           escapeHtml(config.swatch || config.color) + '"></span>' +
