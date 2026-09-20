@@ -83,7 +83,7 @@ export const KNOWN_GEOMETRY_ANOMALIES = new Map([
 export const DISPLAY_PROFILES = new Map([
   [
     "208e230f-1cc5-4b52-85a4-52fc494af4e2",
-    { engine: "mapshaper", retainedPercentage: 5, label: "mapshaper_5_percent" }
+    { engine: "mapshaper", retainedPercentage: 1, label: "mapshaper_1_percent" }
   ],
   [
     "65c24420-a091-4dd5-a6e5-3936b0d82ac4",

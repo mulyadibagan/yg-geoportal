@@ -66,6 +66,10 @@ test("GDAL reads large GeoJSON objects with a finite 512 MiB object cap", async 
 
 test("large display profiles use bounded Mapshaper generalization", async () => {
   assert.equal(
+    DISPLAY_PROFILES.get("208e230f-1cc5-4b52-85a4-52fc494af4e2").retainedPercentage,
+    1
+  );
+  assert.equal(
     DISPLAY_PROFILES.get("65c24420-a091-4dd5-a6e5-3936b0d82ac4").retainedPercentage,
     1
   );
