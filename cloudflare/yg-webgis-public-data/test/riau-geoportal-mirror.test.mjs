@@ -64,10 +64,10 @@ test("GDAL reads large GeoJSON objects with a finite 512 MiB object cap", async 
   assert.equal(observed[1].options.env.OGR_GEOJSON_MAX_OBJ_SIZE, "512");
 });
 
-test("large display profiles generalize detail and dissolve flood polygons", async () => {
+test("large display profiles use bounded Mapshaper generalization", async () => {
   assert.equal(
-    DISPLAY_PROFILES.get("65c24420-a091-4dd5-a6e5-3936b0d82ac4").simplifyTolerance,
-    0.0005
+    DISPLAY_PROFILES.get("65c24420-a091-4dd5-a6e5-3936b0d82ac4").retainedPercentage,
+    1
   );
   const floodProfile = DISPLAY_PROFILES.get("f71d9e6b-0f04-4de6-a850-3c8f5e92976d");
   assert.equal(floodProfile.dissolveField, "dn");
@@ -81,9 +81,13 @@ test("large display profiles generalize detail and dissolve flood polygons", asy
       return { stdout: "", stderr: "" };
     }
   });
-  assert.equal(calls.length, 2);
-  assert.ok(calls[0].args.includes("GPKG"));
-  assert.match(calls[1].args[calls[1].args.indexOf("-sql") + 1], /ST_Union\(geom\).*GROUP BY "dn"/);
+  assert.equal(calls.length, 1);
+  assert.match(calls[0].command, /mapshaper$/);
+  assert.deepEqual(
+    calls[0].args.slice(calls[0].args.indexOf("-dissolve"), calls[0].args.indexOf("-dissolve") + 2),
+    ["-dissolve", "dn"]
+  );
+  assert.ok(calls[0].args.includes("5%"));
 });
 
 function featureCollection(name = "fixture") {
