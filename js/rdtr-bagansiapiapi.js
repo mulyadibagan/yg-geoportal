@@ -771,6 +771,21 @@
       : '<p class="rdtr-component-note">Rekonsiliasi bukti belum tersedia.</p>';
   }
 
+  function renderEvidenceRequestBriefing(briefing) {
+    briefing = briefing || {}; var rows = briefing.items || [];
+    document.getElementById("rdtr-evidence-briefing").innerHTML = rows.length
+      ? '<div class="rdtr-program-status">' + statusBadge(briefing.status) + '<p>' + esc(briefing.sendRule) + '</p></div>' +
+        '<div class="rdtr-network-kpis"><span><strong>' + number(briefing.totalBriefs, 0) + '</strong>draft permintaan</span><span><strong>' +
+        number(rows.filter(function (row) { return row.approvedAt; }).length, 0) + '</strong>disetujui</span><span><strong>' +
+        number(rows.filter(function (row) { return row.sentAt; }).length, 0) + '</strong>terkirim</span></div>' +
+        '<div class="rdtr-itbx-scroll"><table><thead><tr><th>ID</th><th>Subjek/pihak dituju</th><th>Bukti diminta</th><th>Pertanyaan konsultasi</th><th>Standar respons</th><th>Status</th></tr></thead><tbody>' +
+        rows.map(function (row) { return '<tr><td><strong>' + esc(row.id) + '</strong><br>' + esc(row.auditRef) + '</td><td><strong>' + esc(row.subject) +
+        '</strong><br>' + esc(row.recipientRole) + '</td><td>' + esc(row.requestedEvidence) + '<br>' + regulationChips(row.regulationRefs) + '</td><td>' +
+        esc(row.consultationQuestion) + '</td><td>' + esc(row.responseStandard) + '</td><td>' + statusBadge(row.status) + '<br><small>Penerima nyata: ' +
+        esc(row.recipientName || "belum ditetapkan") + '</small></td></tr>'; }).join("") + '</tbody></table></div><p class="rdtr-component-note">' + esc(briefing.disclaimer) + '</p>'
+      : '<p class="rdtr-component-note">Paket permintaan bukti belum tersedia.</p>';
+  }
+
   function colorFrom(value) {
     var colors = ["#a25728", "#176c8c", "#4b7d49", "#8d546f", "#806523", "#5d59a1", "#338477"];
     var hash = 0, text = String(value || "");
@@ -1834,6 +1849,23 @@
     link.download = "rekonsiliasi-bukti-rdtr-yg-v0.19-internal.csv"; link.click(); URL.revokeObjectURL(link.href);
   }
 
+  function exportEvidenceBriefingJson() {
+    if (!state.analysis.evidenceRequestBriefing) return;
+    downloadJson(state.analysis.evidenceRequestBriefing, "paket-permintaan-bukti-rdtr-yg-v0.20-internal.json", "application/json;charset=utf-8");
+  }
+
+  function exportEvidenceBriefingCsv() {
+    var briefing = state.analysis.evidenceRequestBriefing || {};
+    var header = ["ID", "Referensi audit", "Subjek", "Peran penerima", "Nama penerima", "Kontak", "Tujuan", "Konteks", "Bukti diminta", "Referensi regulasi", "Pertanyaan konsultasi", "Standar respons", "Sensitivitas", "Status", "Disetujui oleh", "Tanggal persetujuan", "Tanggal kirim", "Pengirim", "Referensi pengiriman"];
+    var lines = [header.map(csvCell).join(",")];
+    (briefing.items || []).forEach(function (row) { lines.push([row.id, row.auditRef, row.subject, row.recipientRole, row.recipientName,
+      row.recipientContact, row.purpose, row.context, row.requestedEvidence, (row.regulationRefs || []).join(" | "), row.consultationQuestion,
+      row.responseStandard, row.sensitivity, row.status, row.approvedBy, row.approvedAt, row.sentAt, row.sentBy, row.deliveryReference].map(csvCell).join(",")); });
+    var blob = new Blob(["\ufeff" + lines.join("\n")], { type: "text/csv;charset=utf-8" });
+    var link = document.createElement("a"); link.href = URL.createObjectURL(blob);
+    link.download = "daftar-permintaan-bukti-rdtr-yg-v0.20-internal.csv"; link.click(); URL.revokeObjectURL(link.href);
+  }
+
   function exportPolicyMap() {
     var framework = state.analysis.policyMapFramework || {};
     var features = [];
@@ -1974,6 +2006,8 @@
     document.getElementById("rdtr-export-v1-dossier").addEventListener("click", exportV1DossierJson);
     document.getElementById("rdtr-export-evidence-requests").addEventListener("click", exportEvidenceRequestsCsv);
     document.getElementById("rdtr-export-evidence-reconciliation").addEventListener("click", exportEvidenceReconciliationCsv);
+    document.getElementById("rdtr-export-evidence-briefing").addEventListener("click", exportEvidenceBriefingJson);
+    document.getElementById("rdtr-export-evidence-briefing-csv").addEventListener("click", exportEvidenceBriefingCsv);
     document.getElementById("rdtr-export-policy-map").addEventListener("click", exportPolicyMap);
     document.getElementById("rdtr-export-draft-csv").addEventListener("click", exportDraftComparisonCsv);
     document.getElementById("rdtr-export-draft-geojson").addEventListener("click", exportDraftComparisonGeoJson);
@@ -2012,6 +2046,7 @@
     renderGapClosureWorkplan(state.analysis.gapClosureWorkplan);
     renderV1ReleaseDossier(state.analysis.v1ReleaseDossier);
     renderEvidenceReconciliation(state.analysis.existingEvidenceReconciliation);
+    renderEvidenceRequestBriefing(state.analysis.evidenceRequestBriefing);
     renderAnalysisProgramme(state.analysis.analysisProgramme, state.analysis.mandatoryAnalysisMatrix);
     renderAnalysisMatrix(state.analysis.mandatoryAnalysisMatrix);
     renderGeometryRegistry(state.analysis.geometryRegistry);

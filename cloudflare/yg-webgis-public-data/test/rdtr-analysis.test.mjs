@@ -208,7 +208,7 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
   assert.ok(result.map.ygPlanningUnits.metadata.geometryProcessing.includes("tolerance 0.00002"));
 
   assert.equal(result.ygDraftRdtr.status, "provisional_internal_spatial_draft");
-  assert.equal(result.ygDraftRdtr.version, "0.19.0-internal-release-candidate");
+  assert.equal(result.ygDraftRdtr.version, "0.20.0-internal-release-candidate");
   assert.equal(result.ygDraftRdtr.programmePortfolio.programmeCount, 8);
   assert.equal(result.ygDraftRdtr.programmePortfolio.indicatorCount, 16);
   assert.equal(result.consultationArgumentMatrix.items.length, 10);
@@ -286,6 +286,11 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
   assert.ok(result.existingEvidenceReconciliation.items.every(row => row.legalCompletenessChanged === false &&
     row.publicationEligibilityChanged === false && row.humanReviewedBy === null && row.humanReviewDate === null));
   assert.equal(result.ygDraftRdtr.existingEvidenceReconciliation.legalPromotionCount, 0);
+  assert.equal(result.evidenceRequestBriefing.totalBriefs, 7);
+  assert.equal(result.ygDraftRdtr.evidenceRequestBriefing.totalBriefs, 7);
+  assert.ok(result.evidenceRequestBriefing.items.every(row => row.recipientRole && row.requestedEvidence && row.consultationQuestion &&
+    row.responseStandard && row.approvalBeforeSend === true && row.recipientName === null && row.approvedAt === null &&
+    row.sentAt === null && row.responseReceivedAt === null && row.status === "draft_not_sent"));
   assert.equal(result.ygDraftRdtr.zoningCodebook.version, "0.1.0-internal");
   assert.equal(result.ygDraftRdtr.structureDraft.status, "analytical_reference_geometry");
   assert.equal(result.ygDraftRdtr.structureDraft.nodeCount, 11);
