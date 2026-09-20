@@ -30,6 +30,11 @@ test('orthomosaic viewer converts JPEG YCbCr to natural RGB and hides only black
   assert.match(script, /v1-0\.34414\*\(v2-128\)-0\.71414\*\(v3-128\)/);
   assert.match(script, /v1\+1\.772\*\(v2-128\)/);
   assert.match(script, /pixelValuesToColorFn:values=>orthomosaicPixelColor\(values,isYCbCr\)/);
+  assert.match(script, /resolution:192/);
+  assert.match(script, /updateWhenZooming:false/);
+  assert.match(script, /updateWhenIdle:true/);
+  assert.match(script, /keepBuffer:1/);
+  assert.doesNotMatch(script, /values\.map\(Number\)/);
   assert.match(script, /r===0&&g===0&&b===0/);
   assert.doesNotMatch(script, /max<=20/);
   assert.match(script, /rgba\(0,0,0,0\)/);
