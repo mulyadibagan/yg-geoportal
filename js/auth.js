@@ -3,10 +3,13 @@
 
   const API = "https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec";
   const AUTH_RESULT_APIS = [
-    "https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/api/staff/auth-result",
-    "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/staff/auth-result"
+    "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/staff/auth-result",
+    "https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/api/staff/auth-result"
   ];
   const SESSION_KEY = "ygEditorSessionV1";
+  const AUTH_RESULT_DEADLINE_MS = 120000;
+  const AUTH_RESULT_REQUEST_TIMEOUT_MS = 30000;
+  const AUTH_POST_TIMEOUT_MS = 45000;
 
   function readStoredSession() {
     try {
@@ -27,14 +30,14 @@
     }
   }
 
-  function callbackLoad(url) {
+  function callbackLoad(url, timeoutMs = AUTH_RESULT_REQUEST_TIMEOUT_MS) {
     return new Promise((resolve, reject) => {
       const callback = "ygAuthCallback_" + Date.now() + "_" + Math.floor(Math.random() * 100000);
       const script = document.createElement("script");
       const timer = setTimeout(() => {
         cleanup();
         reject(new Error("Waktu koneksi habis."));
-      }, 10000);
+      }, timeoutMs);
 
       function cleanup() {
         clearTimeout(timer);
@@ -56,18 +59,35 @@
     });
   }
 
+  async function fetchWithTimeout(url, options, timeoutMs) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      return await fetch(url, { ...(options || {}), signal: controller.signal });
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
   async function postAuthRequest(action, fields) {
     const requestId = "yg-auth-" + Date.now() + "-" + Math.floor(Math.random() * 100000);
     const body = new URLSearchParams({ action, requestId, ...(fields || {}) });
-    await fetch(API, {
-      method: "POST",
-      mode: "no-cors",
-      body,
-      keepalive: action === "editor-logout"
-    });
+    let postError = null;
+    try {
+      await fetchWithTimeout(API, {
+        method: "POST",
+        mode: "no-cors",
+        body,
+        keepalive: action === "editor-logout"
+      }, AUTH_POST_TIMEOUT_MS);
+    } catch (error) {
+      // A no-cors request can be accepted upstream even when the browser does
+      // not receive its opaque response. Continue polling by request ID.
+      postError = error;
+    }
     if (action === "editor-logout") return { ok: true };
 
-    const deadline = Date.now() + 30000;
+    const deadline = Date.now() + AUTH_RESULT_DEADLINE_MS;
     let lastLoadError = null;
     while (Date.now() < deadline) {
       await new Promise(resolve => setTimeout(resolve, 700));
@@ -76,7 +96,11 @@
         let resultError = null;
         for (const endpoint of AUTH_RESULT_APIS) {
           try {
-            const response = await fetch(`${endpoint}?requestId=${encodeURIComponent(requestId)}&t=${Date.now()}`, { cache: "no-store" });
+            const response = await fetchWithTimeout(
+              `${endpoint}?requestId=${encodeURIComponent(requestId)}&t=${Date.now()}`,
+              { cache: "no-store" },
+              AUTH_RESULT_REQUEST_TIMEOUT_MS
+            );
             if (!response.ok) throw new Error("Hasil autentikasi belum dapat dimuat.");
             result = await response.json();
             resultError = null;
@@ -95,7 +119,7 @@
         lastLoadError = error;
       }
     }
-    if (lastLoadError) throw new Error("Hasil autentikasi belum dapat dimuat. Periksa koneksi lalu coba lagi.");
+    if (lastLoadError || postError) throw new Error("Hasil autentikasi belum dapat dimuat. Periksa koneksi lalu coba lagi.");
     throw new Error("Waktu koneksi autentikasi habis. Silakan coba lagi.");
   }
 
