@@ -4,6 +4,38 @@ import { pathToFileURL } from "node:url";
 
 export const DEFAULT_RIAU_GEOPORTAL_URL = "https://geoportal.riau.go.id";
 export const RIAU_GEOPORTAL_SCHEMA_VERSION = 1;
+
+// These two live records have been manually reconciled across the catalog,
+// exact UUID-bound detail/download routes, metadata identifier, mapset layer,
+// geometry type, and bbox.  Their only content conflict is the year embedded
+// in one title.  Keep the exception deliberately narrow: any upstream drift
+// sends the record back to metadata-only review.
+export const REVIEWED_METADATA_TITLE_CONFLICTS = new Map([
+  [
+    "cf774e6f-a3e0-4268-b604-4e5a168f4467",
+    {
+      datasetTitle: "KECAMATANPRIORITASRAWANPANGAN_AR_2026_10K",
+      metadataTitle: "KECAMATANPRIORITASRAWANPANGAN_AR_2025_10K",
+      datasetIdentifier: "KECAMATANRAWANPANGAN10KRIAU2025",
+      layerName: "zlayer_9czqali2vu9zjipq",
+      dataYear: 2025,
+      temporalStatus: "catalog_title_year_alias",
+      note: "Treat 2025 as the data vintage; preserve the 2026 catalog title as upstream provenance."
+    }
+  ],
+  [
+    "e8ba8cd3-4d3f-4f47-8fc7-319b45022995",
+    {
+      datasetTitle: "CUACAEKSTRIMPUTINGBELIUNGRIAU_PT_2025_250K",
+      metadataTitle: "CUACAEKSTRIMPUTINGBELIUNG250KRIAU2026",
+      datasetIdentifier: "LOKASICUACAEKSTRIM250KRIAU2025",
+      layerName: "zlayer_tjgkk3z8nmwrxmth",
+      dataYear: 2025,
+      temporalStatus: "year_conflict_unresolved",
+      note: "Exclude from year-sensitive analysis until the 2025/2026 title conflict is reconciled."
+    }
+  ]
+]);
 const REQUEST_TIMEOUT_MS = 60000;
 const MAX_INVENTORY_RESPONSE_BYTES = 5_000_000;
 const MAX_INVENTORY_REDIRECTS = 5;
@@ -1066,6 +1098,60 @@ function safeSlug(value) {
   return slug || "dataset";
 }
 
+export function reviewedMetadataTitleConflict(dataset) {
+  const expected = REVIEWED_METADATA_TITLE_CONFLICTS.get(dataset?.datasetUuid);
+  if (!expected) return null;
+  const conflicts = Array.isArray(dataset?.metadata?.conflicts)
+    ? dataset.metadata.conflicts
+    : [];
+  const allowedConflictTypes = new Set([
+    "metadata_route_identifier_mismatch",
+    "metadata_title_mismatch"
+  ]);
+  const titleConflicts = conflicts.filter(conflict =>
+    conflict?.type === "metadata_title_mismatch"
+  );
+  const exactTitleConflict = titleConflicts.length === 1 &&
+    titleConflicts[0].datasetTitle === expected.datasetTitle &&
+    titleConflicts[0].metadataTitle === expected.metadataTitle;
+  const extractionOk = ["datasetDetail", "metadataDetail", "metadataXml"].every(name =>
+    dataset?.extraction?.[name]?.status === "ok"
+  );
+  const exactIdentity =
+    dataset.title === expected.datasetTitle &&
+    dataset.metadata?.title === expected.metadataTitle &&
+    dataset.identifiers?.datasetIdentifier === expected.datasetIdentifier &&
+    dataset.metadata?.datasetIdentifier === expected.datasetIdentifier &&
+    dataset.metadata?.matchedBy === "dataset_uuid" &&
+    dataset.spatial?.layerName === expected.layerName &&
+    dataset.publicMapset?.present === true &&
+    dataset.publicMapset?.layerNameMatches === true &&
+    dataset.publicMapset?.layerName === expected.layerName &&
+    dataset.publicMapset?.qualifiedName === `geoportal:${expected.layerName}` &&
+    Number(dataset.dates?.dataYear) === expected.dataYear;
+  const exactAccess =
+    String(dataset.metadata?.distribution?.license || "").trim().toLowerCase() === "open data" &&
+    String(dataset.metadata?.distribution?.access || "").trim().toLowerCase() === "public" &&
+    String(dataset.workflow?.status || "").trim().toLowerCase() === "published" &&
+    String(dataset.workflow?.publication || "").trim().toLowerCase() === "success";
+  if (
+    !exactTitleConflict || !exactIdentity || !exactAccess || !extractionOk ||
+    conflicts.some(conflict => !allowedConflictTypes.has(conflict?.type))
+  ) {
+    return null;
+  }
+  return {
+    code: "reviewed_metadata_title_conflict",
+    datasetTitle: expected.datasetTitle,
+    metadataTitle: expected.metadataTitle,
+    datasetIdentifier: expected.datasetIdentifier,
+    layerName: expected.layerName,
+    dataYear: expected.dataYear,
+    temporalStatus: expected.temporalStatus,
+    note: expected.note
+  };
+}
+
 export function buildDownloadPlan(manifest) {
   const items = manifest.datasets.map(dataset => {
     const license = dataset.metadata.distribution?.license || null;
@@ -1093,11 +1179,12 @@ export function buildDownloadPlan(manifest) {
     if (/\b(?:data\s+terbatas|terbatas|restricted|confidential|rahasia)\b/i.test(restrictionText)) {
       blockers.push("restricted_license_or_constraints");
     }
+    const reviewedTitleConflict = reviewedMetadataTitleConflict(dataset);
     if (dataset.metadata.conflicts.some(conflict => [
       "ambiguous_metadata_match",
       "metadata_title_mismatch",
       "metadata_dataset_identifier_mismatch"
-    ].includes(conflict.type))) {
+    ].includes(conflict.type)) && !reviewedTitleConflict) {
       blockers.push("metadata_identity_conflict");
     }
     const baseKey = `internal/riau-geoportal/source/${dataset.datasetUuid}`;
@@ -1107,6 +1194,7 @@ export function buildDownloadPlan(manifest) {
       title: dataset.title,
       status: blockers.length === 0 ? "ready" : "review_required",
       blockers,
+      reviewedMetadataTitleConflict: reviewedTitleConflict,
       source: {
         url: dataset.access.downloadUrl,
         method: "GET",

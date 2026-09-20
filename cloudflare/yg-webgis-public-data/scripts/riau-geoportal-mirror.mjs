@@ -15,6 +15,8 @@ export const DEFAULT_DISPLAY_SOURCE_MAX_BYTES = 512 * 1024 * 1024;
 export const DEFAULT_DISPLAY_MAX_BYTES = 12 * 1024 * 1024;
 export const DEFAULT_DISPLAY_MAX_FEATURES = 25_000;
 export const DEFAULT_EXPECTED_DATASETS = 60;
+export const DEFAULT_WFS_PAGE_SIZE = 500;
+export const WFS_PAGE_MAX_BYTES = 256 * 1024 * 1024;
 
 const UUID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -774,7 +776,7 @@ export async function downloadWfsGeoJson({
   timeoutMs = 2 * 60 * 1000,
   retries = 3,
   retryDelayMs = 1000,
-  pageSize = 5000,
+  pageSize = DEFAULT_WFS_PAGE_SIZE,
   maxPages = 10_000
 }) {
   const uuid = safeUuid(datasetUuid);
@@ -813,7 +815,7 @@ export async function downloadWfsGeoJson({
         baseUrl,
         qualifiedName: layer.qualifiedName,
         datasetUuid: uuid,
-        maxBytes: Math.min(remaining, 256 * 1024 * 1024),
+        maxBytes: Math.min(remaining, WFS_PAGE_MAX_BYTES),
         timeoutMs,
         retries,
         retryDelayMs
@@ -1151,6 +1153,16 @@ async function mirrorOne({
 }) {
   const entry = baseCatalogEntry(dataset, planItem);
   const eligibilityResult = eligibility(entry);
+  const reviewedTitleConflict = planItem.reviewedMetadataTitleConflict;
+  if (reviewedTitleConflict && typeof reviewedTitleConflict === "object") {
+    entry.qaWarnings.push({
+      code: "reviewed_metadata_title_conflict",
+      severity: "warning",
+      datasetTitle: reviewedTitleConflict.datasetTitle ?? entry.title,
+      metadataTitle: reviewedTitleConflict.metadataTitle ?? null,
+      note: reviewedTitleConflict.note ?? null
+    });
+  }
 
   const knownAnomaly = KNOWN_GEOMETRY_ANOMALIES.get(entry.datasetUuid);
   if (knownAnomaly) {
@@ -1591,6 +1603,23 @@ async function readJson(filePath, label) {
   }
 }
 
+export function summarizeMirrorFailures(catalog) {
+  return (Array.isArray(catalog?.datasets) ? catalog.datasets : [])
+    .filter(dataset => dataset?.mirrorStatus === "failed")
+    .map(dataset => {
+      const errors = (Array.isArray(dataset.qaWarnings) ? dataset.qaWarnings : [])
+        .filter(warning => warning?.severity === "error");
+      const warning = errors.at(-1) || null;
+      return {
+        datasetUuid: dataset.datasetUuid || null,
+        title: dataset.title || null,
+        reason: warning
+          ? [warning.code, warning.message].filter(Boolean).join(": ")
+          : "mirror_failed"
+      };
+    });
+}
+
 async function runCli(argv) {
   const options = parseCliArguments(argv);
   if (!options.manifest || !options.plan || !options["output-dir"]) {
@@ -1631,15 +1660,19 @@ async function runCli(argv) {
       : DEFAULT_DISPLAY_MAX_FEATURES,
     force: options.force === true
   });
+  const failures = summarizeMirrorFailures(result.catalog);
   console.log(JSON.stringify({
     ok: result.catalog.totals.failed === 0,
     catalog: result.catalog.catalog,
     totals: result.catalog.totals,
+    failures,
     uploadPlan: result.uploadPlanPath
   }, null, 2));
   if (result.catalog.totals.failed > 0) {
+    const failedUuids = failures.map(failure => failure.datasetUuid).filter(Boolean).join(", ");
     throw new Error(
-      `Mirror incomplete: ${result.catalog.totals.failed} dataset(s) failed; catalog pointer must not advance`
+      `Mirror incomplete: ${result.catalog.totals.failed} dataset(s) failed` +
+      `${failedUuids ? ` (${failedUuids})` : ""}; catalog pointer must not advance`
     );
   }
 }

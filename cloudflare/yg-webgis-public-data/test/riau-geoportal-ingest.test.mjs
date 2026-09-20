@@ -6,6 +6,7 @@ import path from "node:path";
 import test from "node:test";
 
 import {
+  buildDownloadPlan,
   createFixtureFetch,
   discoverDataTableEndpoint,
   fetchDataTableAll,
@@ -13,7 +14,8 @@ import {
   normalizeMapsetPayload,
   parseDatasetDetailHtml,
   parseIso19139MetadataXml,
-  parseMetadataDetailHtml
+  parseMetadataDetailHtml,
+  reviewedMetadataTitleConflict
 } from "../scripts/riau-geoportal-ingest.mjs";
 
 const BASE_URL = "https://geoportal.example.test";
@@ -567,6 +569,107 @@ test("marks a download for review when current metadata identifies different con
   const restrictedPlanItem = downloadPlan.items.find(item => item.datasetUuid === DATASET_A);
   assert.equal(restrictedPlanItem.status, "review_required");
   assert.deepEqual(restrictedPlanItem.blockers, ["restricted_license_or_constraints"]);
+});
+
+test("allows only exact reviewed live metadata title conflicts", () => {
+  const reviewedCases = [
+    {
+      uuid: "cf774e6f-a3e0-4268-b604-4e5a168f4467",
+      datasetTitle: "KECAMATANPRIORITASRAWANPANGAN_AR_2026_10K",
+      metadataTitle: "KECAMATANPRIORITASRAWANPANGAN_AR_2025_10K",
+      datasetIdentifier: "KECAMATANRAWANPANGAN10KRIAU2025",
+      layerName: "zlayer_9czqali2vu9zjipq"
+    },
+    {
+      uuid: "e8ba8cd3-4d3f-4f47-8fc7-319b45022995",
+      datasetTitle: "CUACAEKSTRIMPUTINGBELIUNGRIAU_PT_2025_250K",
+      metadataTitle: "CUACAEKSTRIMPUTINGBELIUNG250KRIAU2026",
+      datasetIdentifier: "LOKASICUACAEKSTRIM250KRIAU2025",
+      layerName: "zlayer_tjgkk3z8nmwrxmth"
+    }
+  ];
+  const makeDataset = expected => ({
+    id: expected.uuid,
+    datasetUuid: expected.uuid,
+    title: expected.datasetTitle,
+    identifiers: { datasetIdentifier: expected.datasetIdentifier },
+    spatial: {
+      format: "SHP",
+      fileSizeBytes: 100,
+      geometryType: "MULTIPOINT",
+      srs: "EPSG:4326",
+      bbox: { minx: 100, miny: -1, maxx: 104, maxy: 3 },
+      layerName: expected.layerName
+    },
+    dates: { dataYear: 2025 },
+    workflow: { status: "published", publication: "success" },
+    publicMapset: {
+      present: true,
+      layerNameMatches: true,
+      workspace: "geoportal",
+      layerName: expected.layerName,
+      qualifiedName: `geoportal:${expected.layerName}`
+    },
+    metadata: {
+      matchedBy: "dataset_uuid",
+      title: expected.metadataTitle,
+      datasetIdentifier: expected.datasetIdentifier,
+      distribution: { license: "Open Data", access: "public", constraints: [] },
+      xmlDownloadUrl: `${BASE_URL}/metadata/${expected.uuid}/download`,
+      conflicts: [
+        { type: "metadata_route_identifier_mismatch" },
+        {
+          type: "metadata_title_mismatch",
+          datasetTitle: expected.datasetTitle,
+          metadataTitle: expected.metadataTitle
+        }
+      ]
+    },
+    extraction: {
+      datasetDetail: { status: "ok" },
+      metadataDetail: { status: "ok" },
+      metadataXml: { status: "ok" }
+    },
+    access: { downloadUrl: `${BASE_URL}/katalog/${expected.uuid}/download` }
+  });
+
+  for (const expected of reviewedCases) {
+    const dataset = makeDataset(expected);
+    const review = reviewedMetadataTitleConflict(dataset);
+    assert.equal(review?.code, "reviewed_metadata_title_conflict");
+    const plan = buildDownloadPlan({
+      id: "reviewed-title-conflicts",
+      generatedAt: "2026-09-20T09:00:00.000Z",
+      datasets: [dataset]
+    });
+    assert.equal(plan.items[0].status, "ready");
+    assert.deepEqual(plan.items[0].blockers, []);
+    assert.equal(
+      plan.items[0].reviewedMetadataTitleConflict?.datasetIdentifier,
+      expected.datasetIdentifier
+    );
+  }
+
+  const drifted = makeDataset(reviewedCases[0]);
+  drifted.publicMapset.layerName = "zlayer_upstream_changed";
+  assert.equal(reviewedMetadataTitleConflict(drifted), null);
+  assert.deepEqual(
+    buildDownloadPlan({ id: "drift", generatedAt: "2026-09-20T09:00:00.000Z", datasets: [drifted] })
+      .items[0].blockers,
+    ["metadata_identity_conflict"]
+  );
+
+  const newlyAmbiguous = makeDataset(reviewedCases[1]);
+  newlyAmbiguous.metadata.conflicts.push({ type: "ambiguous_metadata_match" });
+  assert.equal(reviewedMetadataTitleConflict(newlyAmbiguous), null);
+  assert.deepEqual(
+    buildDownloadPlan({
+      id: "new-ambiguity",
+      generatedAt: "2026-09-20T09:00:00.000Z",
+      datasets: [newlyAmbiguous]
+    }).items[0].blockers,
+    ["metadata_identity_conflict"]
+  );
 });
 
 test("requires exact catalog/mapset UUID set equality", async () => {

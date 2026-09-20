@@ -6,11 +6,15 @@ import path from "node:path";
 import test from "node:test";
 
 import {
+  DEFAULT_WFS_PAGE_SIZE,
+  WFS_PAGE_MAX_BYTES,
   assertGeoJsonEnvelope,
   assertSafeMetadataUrl,
   assertSafeDownloadUrl,
   downloadGeoJson,
-  mirrorRiauGeoportal
+  downloadWfsGeoJson,
+  mirrorRiauGeoportal,
+  summarizeMirrorFailures
 } from "../scripts/riau-geoportal-mirror.mjs";
 
 const BASE_URL = "https://geoportal.riau.example";
@@ -395,13 +399,19 @@ test("falls back to the exact public-mapset WFS layer when inferred download rou
     geometryTypes: ["Point"],
     bbox: [101, 1, 102, 1]
   };
+  const fallbackPlanItem = planItem(DATASET_NEW);
+  fallbackPlanItem.reviewedMetadataTitleConflict = {
+    datasetTitle: "WFS FALLBACK",
+    metadataTitle: "WFS FALLBACK 2025",
+    note: "Reviewed as the same maintained layer."
+  };
   const { catalog } = await mirrorRiauGeoportal({
     manifest: {
       id: "wfs-fixture",
       source: { baseUrl: BASE_URL },
       datasets: [sourceDataset]
     },
-    plan: { items: [planItem(DATASET_NEW)] },
+    plan: { items: [fallbackPlanItem] },
     outputDir,
     expectedCount: 1,
     fetchImpl,
@@ -420,8 +430,111 @@ test("falls back to the exact public-mapset WFS layer when inferred download rou
   assert.ok(entry.qaWarnings.some(warning =>
     warning.code === "direct_download_failed_wfs_fallback_used"
   ));
+  assert.deepEqual(
+    entry.qaWarnings.find(warning => warning.code === "reviewed_metadata_title_conflict"),
+    {
+      code: "reviewed_metadata_title_conflict",
+      severity: "warning",
+      datasetTitle: "WFS FALLBACK",
+      metadataTitle: "WFS FALLBACK 2025",
+      note: "Reviewed as the same maintained layer."
+    }
+  );
   assert.ok(calls.some(url => url.pathname.startsWith("/katalog/")));
   assert.ok(calls.some(url => url.pathname === "/wfs-proxy"));
+});
+
+test("default WFS paging safely fetches 13,063 features with stable cross-page dedupe", async () => {
+  assert.equal(DEFAULT_WFS_PAGE_SIZE, 500);
+  assert.equal(WFS_PAGE_MAX_BYTES, 256 * 1024 * 1024);
+  const directory = await fs.mkdtemp(path.join(os.tmpdir(), "riau-wfs-13063-test-"));
+  const destination = path.join(directory, "contours.geojson");
+  const sourceDataset = dataset(DATASET_NEW, "2026-09-20T00:00:00Z", "CONTOURS");
+  sourceDataset.publicMapset = {
+    present: true,
+    layerNameMatches: true,
+    workspace: "geoportal",
+    layerName: "contour_layer",
+    qualifiedName: "geoportal:contour_layer",
+    geometryType: "MULTILINESTRING"
+  };
+  const starts = [];
+  const fetchImpl = async input => {
+    const url = new URL(input);
+    const start = Number(url.searchParams.get("startIndex"));
+    const count = Number(url.searchParams.get("count"));
+    starts.push(start);
+    assert.equal(count, 500);
+    let ids;
+    if (start === 0) {
+      ids = Array.from({ length: 500 }, (_, index) => index);
+    } else if (start === 500) {
+      ids = [499, ...Array.from({ length: 499 }, (_, index) => 500 + index)];
+    } else {
+      const firstUnique = start - 1;
+      const remaining = 13_063 - firstUnique;
+      ids = Array.from({ length: Math.min(500, remaining) }, (_, index) => firstUnique + index);
+    }
+    const features = ids.map(id => ({
+      type: "Feature",
+      id: `contour_layer.${id}`,
+      properties: { objectid: id },
+      geometry: {
+        type: "MultiLineString",
+        coordinates: [[
+          [101 + (id % 10) * 0.001, 0.5],
+          [101.001 + (id % 10) * 0.001, 0.501]
+        ]]
+      }
+    }));
+    return new Response(JSON.stringify({
+      type: "FeatureCollection",
+      numberMatched: 13_063,
+      numberReturned: features.length,
+      features
+    }), { headers: { "content-type": "application/json" } });
+  };
+
+  const result = await downloadWfsGeoJson({
+    dataset: sourceDataset,
+    datasetUuid: DATASET_NEW,
+    baseUrl: BASE_URL,
+    destination,
+    fetchImpl,
+    maxBytes: 64 * 1024 * 1024,
+    timeoutMs: 1000,
+    retries: 1,
+    retryDelayMs: 0
+  });
+  const output = JSON.parse(await fs.readFile(destination, "utf8"));
+  const ids = output.features.map(feature => feature.id);
+  assert.equal(result.pageCount, 27);
+  assert.equal(result.featureCount, 13_063);
+  assert.equal(output.features.length, 13_063);
+  assert.equal(new Set(ids).size, 13_063);
+  assert.equal(ids[0], "contour_layer.0");
+  assert.equal(ids.at(-1), "contour_layer.13062");
+  assert.deepEqual(starts, Array.from({ length: 27 }, (_, index) => index * 500));
+});
+
+test("failure summaries expose canonical UUID, title, and terminal error", () => {
+  assert.deepEqual(summarizeMirrorFailures({
+    datasets: [{
+      datasetUuid: "65c24420-a091-4dd5-a6e5-3936b0d82ac4",
+      title: "PETADASARKONTURRIAU_AR_2026_250K",
+      mirrorStatus: "failed",
+      qaWarnings: [{
+        code: "source_mirror_failed",
+        severity: "error",
+        message: "Direct download returned HTTP 504; WFS page exceeded limit"
+      }]
+    }]
+  }), [{
+    datasetUuid: "65c24420-a091-4dd5-a6e5-3936b0d82ac4",
+    title: "PETADASARKONTURRIAU_AR_2026_250K",
+    reason:
+      "source_mirror_failed: Direct download returned HTTP 504; WFS page exceeded limit"
+  }]);
 });
 
 test("material coordinate anomalies preserve raw but quarantine derived display", async () => {
