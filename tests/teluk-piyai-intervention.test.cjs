@@ -59,5 +59,5 @@ test("WebGIS groups only PS and village boundaries as YG intervention areas", ()
   assert.match(map, /appendReferenceSection\("WILAYAH INTERVENSI YG", interventionLayerIds\)/);
   assert.match(map, /layerId === "desa_intervensi" && interventionReferenceRow/);
   assert.match(map, /interventionReferenceRow\.insertAdjacentElement\("afterend", row\)/);
-  assert.match(page, /map-v4\.js\?v=20260920-intervention-group1/);
+  assert.match(page, /map-v4\.js\?v=20260920-riau-reference1/);
 });

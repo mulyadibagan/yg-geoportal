@@ -8,9 +8,21 @@
     "social_forestry_intervention_yg"
   ]);
   const STAFF_ONLY_REFERENCE_IDS = new Set([
+    "rtrw_riau_2018_2038",
+    "pbph_riau_052026",
+    "perhutanan_sosial_riau",
     "perusahaan_sawit_riau",
     "upt_faperta_ur"
   ]);
+
+  const REFERENCE_SECTIONS = [
+    { id: "spatial_planning", title: "TATA RUANG · INTERNAL STAF", className: "yg-spatial-title", staffOnly: true },
+    { id: "forest_governance", title: "KEHUTANAN & KELOLA LAHAN", className: "yg-forest-title" },
+    { id: "peat_environment", title: "GAMBUT & LINGKUNGAN", className: "yg-peat-title" },
+    { id: "plantations", title: "PERKEBUNAN · INTERNAL STAF", className: "yg-plantation-title", staffOnly: true },
+    { id: "partnership", title: "KOLABORASI AKADEMIK", className: "yg-partnership-title", staffOnly: true },
+    { id: "general", title: "DATA REFERENSI", className: "yg-reference-title" }
+  ];
 
   function hasStaffSession() {
     return Boolean(window.YG_STAFF_DATA && window.YG_STAFF_DATA.session && window.YG_STAFF_DATA.session());
@@ -39,6 +51,11 @@
       ?.getAttribute("data-reference-layer-id") || "";
   }
 
+  function referenceSection(row) {
+    return row.querySelector("input[data-reference-layer-id]")
+      ?.getAttribute("data-reference-section") || "general";
+  }
+
   function makeTitle(text, className) {
     const title = document.createElement("div");
     title.className = "yg-layer-section-title " + (className || "");
@@ -65,10 +82,16 @@
     const interventionReferenceRows = sortRowsByVisibleLabel(referenceRows.filter(row => {
       return INTERVENTION_REFERENCE_IDS.has(referenceId(row));
     }));
-    const generalReferenceRows = sortRowsByVisibleLabel(referenceRows.filter(
-      row => !administrativeReferenceRows.includes(row) &&
-        !interventionReferenceRows.includes(row)
-    ));
+    const groupedReferenceRows = new Map();
+    REFERENCE_SECTIONS.forEach(section => groupedReferenceRows.set(section.id, []));
+    referenceRows.filter(row =>
+      !administrativeReferenceRows.includes(row) &&
+      !interventionReferenceRows.includes(row)
+    ).forEach(row => {
+      const section = referenceSection(row);
+      const key = groupedReferenceRows.has(section) ? section : "general";
+      groupedReferenceRows.get(key).push(row);
+    });
 
     if (!monitoring || !villageBoundary) return false;
 
@@ -100,10 +123,13 @@
       if (villageBoundary) list.appendChild(villageBoundary);
     }
 
-    if (generalReferenceRows.length) {
-      list.appendChild(makeTitle("DATA REFERENSI", "yg-reference-title"));
-      generalReferenceRows.forEach(row => list.appendChild(row));
-    }
+    REFERENCE_SECTIONS.forEach(section => {
+      if (section.staffOnly && !allowStaffOnly) return;
+      const rows = sortRowsByVisibleLabel(groupedReferenceRows.get(section.id) || []);
+      if (!rows.length) return;
+      list.appendChild(makeTitle(section.title, section.className));
+      rows.forEach(row => list.appendChild(row));
+    });
 
     if (administrativeReferenceRows.length) {
       list.appendChild(makeTitle("BATAS ADMINISTRASI", "yg-boundary-title"));
@@ -185,6 +211,25 @@
 
     .yg-layer-section-title.yg-reference-title {
       margin-top: 14px;
+    }
+
+    .yg-layer-section-title.yg-spatial-title,
+    .yg-layer-section-title.yg-plantation-title {
+      margin-top: 14px;
+      background: #fff4df;
+      color: #7a4a00;
+    }
+
+    .yg-layer-section-title.yg-forest-title {
+      margin-top: 14px;
+      background: #e9f5e9;
+      color: #285b31;
+    }
+
+    .yg-layer-section-title.yg-peat-title {
+      margin-top: 14px;
+      background: #f3ece6;
+      color: #684531;
     }
 
     .yg-layer-section-title.yg-intervention-title {
