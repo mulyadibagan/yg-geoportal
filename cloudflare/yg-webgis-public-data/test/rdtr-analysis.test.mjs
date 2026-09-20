@@ -208,7 +208,7 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
   assert.ok(result.map.ygPlanningUnits.metadata.geometryProcessing.includes("tolerance 0.00002"));
 
   assert.equal(result.ygDraftRdtr.status, "provisional_internal_spatial_draft");
-  assert.equal(result.ygDraftRdtr.version, "0.13.0-internal");
+  assert.equal(result.ygDraftRdtr.version, "0.18.0-internal-release-candidate");
   assert.equal(result.ygDraftRdtr.programmePortfolio.programmeCount, 8);
   assert.equal(result.ygDraftRdtr.programmePortfolio.indicatorCount, 16);
   assert.equal(result.consultationArgumentMatrix.items.length, 10);
@@ -266,6 +266,17 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
   const gapAuditRefs = new Set(result.gapClosureWorkplan.items.map(row => row.auditRef));
   assert.equal(gapAuditRefs.size, 18);
   assert.ok(result.gapClosureWorkplan.items.every(row => row.dependencies.every(id => gapAuditRefs.has(id))));
+  assert.equal(result.v1ReleaseDossier.targetVersion, "1.0.0");
+  assert.equal(result.v1ReleaseDossier.releaseDecision, "hold_not_ready_for_publication");
+  assert.equal(result.v1ReleaseDossier.publicationAuthorized, false);
+  assert.equal(result.v1ReleaseDossier.validationChecks.length, 6);
+  assert.equal(result.v1ReleaseDossier.evidenceRequests.length, 18);
+  assert.equal(result.v1ReleaseDossier.openWorkItemCount, 18);
+  assert.equal(result.v1ReleaseDossier.acceptedEvidenceCount, 0);
+  assert.ok(result.v1ReleaseDossier.evidenceRequests.every(row => row.requestSentAt === null && row.receivedAt === null &&
+    row.acceptedForUse === false && row.reviewer === null && row.reviewDate === null));
+  assert.ok(result.v1ReleaseDossier.releaseGates.every(row => row.status === "not_completed" && row.decision === "hold"));
+  assert.equal(result.ygDraftRdtr.v1ReleaseDossier.publicationAuthorized, false);
   assert.equal(result.ygDraftRdtr.zoningCodebook.version, "0.1.0-internal");
   assert.equal(result.ygDraftRdtr.structureDraft.status, "analytical_reference_geometry");
   assert.equal(result.ygDraftRdtr.structureDraft.nodeCount, 11);
