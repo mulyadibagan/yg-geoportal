@@ -4,6 +4,9 @@
   const ADMIN_REFERENCE_IDS = new Set([
     "batas_administrasi_desa_riau"
   ]);
+  const INTERVENTION_REFERENCE_IDS = new Set([
+    "social_forestry_intervention_yg"
+  ]);
   const STAFF_ONLY_REFERENCE_IDS = new Set([
     "perusahaan_sawit_riau",
     "upt_faperta_ur"
@@ -59,8 +62,12 @@
     const administrativeReferenceRows = sortRowsByVisibleLabel(referenceRows.filter(row => {
       return ADMIN_REFERENCE_IDS.has(referenceId(row));
     }));
+    const interventionReferenceRows = sortRowsByVisibleLabel(referenceRows.filter(row => {
+      return INTERVENTION_REFERENCE_IDS.has(referenceId(row));
+    }));
     const generalReferenceRows = sortRowsByVisibleLabel(referenceRows.filter(
-      row => !administrativeReferenceRows.includes(row)
+      row => !administrativeReferenceRows.includes(row) &&
+        !interventionReferenceRows.includes(row)
     ));
 
     if (!monitoring || !villageBoundary) return false;
@@ -86,6 +93,11 @@
     orderedRows.forEach(row => {
       if (row !== monitoring) list.appendChild(row);
     });
+
+    if (interventionReferenceRows.length) {
+      list.appendChild(makeTitle("WILAYAH INTERVENSI YG", "yg-intervention-title"));
+      interventionReferenceRows.forEach(row => list.appendChild(row));
+    }
 
     if (generalReferenceRows.length) {
       list.appendChild(makeTitle("DATA REFERENSI", "yg-reference-title"));
@@ -164,6 +176,12 @@
 
     .yg-layer-section-title.yg-reference-title {
       margin-top: 14px;
+    }
+
+    .yg-layer-section-title.yg-intervention-title {
+      margin-top: 14px;
+      background: #f1ebff;
+      color: #5b21b6;
     }
   `;
   document.head.appendChild(style);
