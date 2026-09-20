@@ -252,16 +252,69 @@
     }).join("");
   }
 
+  function analysisList(title, items) {
+    if (!items || !items.length) return "";
+    return '<section class="rdtr-analysis-block"><h4>' + esc(title) + "</h4><ul>" + items.map(function (item) {
+      return "<li>" + esc(item) + "</li>";
+    }).join("") + "</ul></section>";
+  }
+
+  function priorityBadge(value) {
+    var labels = { P0: "P0 · pengunci", P1: "P1 · pendukung", P2: "P2 · pemrograman" };
+    return '<span class="rdtr-priority-badge is-' + esc(String(value || "P1").toLowerCase()) + '">' + esc(labels[value] || value || "P1") + "</span>";
+  }
+
+  function renderAnalysisProgramme(programme, rows) {
+    programme = programme || {};
+    var statusCounts = (rows || []).reduce(function (counts, row) {
+      var key = String(row.status || "pending").indexOf("blocked") === 0 ? "blocked" : row.status;
+      counts[key] = (counts[key] || 0) + 1;
+      return counts;
+    }, {});
+    document.getElementById("rdtr-analysis-programme").innerHTML =
+      '<div class="rdtr-analysis-programme-copy"><strong>Urutan kerja analisis YG</strong><p>' + esc(programme.rule || "P0 mengunci geometri dan keputusan; P1 melengkapi analisis; P2 mematangkan program.") +
+      '</p><small><strong>Aturan kenaikan status:</strong> ' + esc(programme.promotionRule || "Keputusan tidak dinaikkan sebelum prasyarat buktinya terpenuhi.") + "</small></div>" +
+      '<div class="rdtr-analysis-counts">' + (programme.priorities || []).map(function (row) {
+        return '<span class="is-' + esc(String(row.priority).toLowerCase()) + '"><strong>' + esc(row.count) + "</strong> " + esc(row.priority) + "</span>";
+      }).join("") + '<span><strong>' + esc(statusCounts.blocked || 0) + "</strong> tertahan</span><span><strong>" +
+      esc((statusCounts.not_started || 0)) + "</strong> belum dimulai</span></div>" +
+      '<div class="rdtr-critical-path"><strong>Jalur kritis:</strong> ' + (programme.criticalPath || []).map(function (id) {
+        return '<a href="#analysis-' + esc(id) + '">' + esc(id) + "</a>";
+      }).join(" ") + "</div>";
+  }
+
+  function analysisMatches(row, query, priority, status) {
+    var text = [row.id, row.category, row.workstream, row.analysisQuestion, row.finding, row.nextStep]
+      .concat(row.requiredData || [], row.method || [], row.outputs || [], row.evidenceGaps || [])
+      .join(" ").toLowerCase();
+    var statusMatch = !status || (status === "blocked" ? String(row.status).indexOf("blocked") === 0 : row.status === status);
+    return (!query || text.indexOf(query) >= 0) && (!priority || row.priority === priority) && statusMatch;
+  }
+
   function renderAnalysisMatrix(rows) {
-    document.getElementById("rdtr-analysis-matrix").innerHTML = (rows || []).map(function (row) {
-      return '<details id="analysis-' + esc(row.id || row.letter || "") + '" class="rdtr-analysis-item"><summary><strong>' + esc(row.id || row.letter || "") + " · " +
-        esc(row.title || row.name || row.analysis || row.category) + "</strong>" + statusBadge(row.status) +
-        '</summary><div class="rdtr-analysis-item-body"><p><strong>Temuan awal.</strong> ' +
-        esc(row.finding || row.ygFinding || "Belum dianalisis.") + '</p><p><strong>Langkah berikut.</strong> ' +
-        esc(row.nextStep || row.gap || row.validation || "Tetapkan metode dan bukti.") + "</p>" +
+    var queryField = document.getElementById("rdtr-analysis-search");
+    var priorityField = document.getElementById("rdtr-analysis-priority");
+    var statusField = document.getElementById("rdtr-analysis-status");
+    var query = queryField ? queryField.value.trim().toLowerCase() : "";
+    var priority = priorityField ? priorityField.value : "";
+    var status = statusField ? statusField.value : "";
+    var filtered = (rows || []).filter(function (row) { return analysisMatches(row, query, priority, status); });
+    document.getElementById("rdtr-analysis-matrix").innerHTML = filtered.map(function (row) {
+      return '<details id="analysis-' + esc(row.id || row.letter || "") + '" class="rdtr-analysis-item"><summary><span><strong>' + esc(row.id || row.letter || "") + " · " +
+        esc(row.title || row.name || row.analysis || row.category) + '</strong><small>' + esc(row.workstream || "") + '</small></span><span class="rdtr-analysis-badges">' +
+        priorityBadge(row.priority) + statusBadge(row.status) + '</span></summary><div class="rdtr-analysis-item-body">' +
+        '<p class="rdtr-analysis-question"><strong>Pertanyaan analisis.</strong> ' + esc(row.analysisQuestion || "Belum dirumuskan.") + "</p>" +
+        '<p><strong>Temuan YG saat ini.</strong> ' + esc(row.finding || row.ygFinding || "Belum dianalisis.") + "</p>" +
+        '<div class="rdtr-analysis-columns">' + analysisList("Data minimum", row.requiredData) + analysisList("Metode", row.method) +
+        analysisList("Keluaran wajib", row.outputs) + analysisList("Bukti yang sudah tersedia", row.availableEvidence) +
+        analysisList("Kesenjangan bukti", row.evidenceGaps) + "</div>" +
+        '<div class="rdtr-analysis-decision"><p><strong>Kaitan geometri.</strong> ' + esc(row.geometryLink || "Belum dirumuskan.") +
+        '</p><p><strong>Penggunaan keputusan.</strong> ' + esc(row.decisionUse || "Belum dirumuskan.") + "</p></div>" +
+        '<p><strong>Langkah kerja YG.</strong> ' + esc(row.nextStep || row.gap || row.validation || "Tetapkan metode dan bukti.") + "</p>" +
+        '<p class="rdtr-consultation-prompt"><strong>Pertanyaan konsultasi.</strong> ' + esc(row.consultationPrompt || "Minta bukti dan metode yang dapat ditelusuri.") + "</p>" +
         (row.articleRef ? '<small class="rdtr-legal-ref"><strong>Dasar rinci:</strong> ' + esc(row.articleRef) + "</small>" : "") +
         regulationChips(row.regulationRefs || row.regulations) + "</div></details>";
-    }).join("");
+    }).join("") || '<p class="rdtr-analysis-empty">Tidak ada analisis yang cocok dengan penyaring.</p>';
   }
 
   function renderGeometryRegistry(rows) {
@@ -464,11 +517,17 @@
         },
         onEachFeature: function (feature, layer) {
           var priority = { high: "Tinggi", medium: "Menengah", review: "Perlu ditinjau" }[feature.properties.screeningPriority] || "Perlu ditinjau";
+          var constraint = { high: "Tinggi (penyaringan)", moderate: "Menengah (penyaringan)", evidence_gap: "Bukti belum cukup" }[feature.properties.knownConstraintBand] || "Belum dinilai";
           layer.bindPopup(popup("Unit penyaringan YG · bukan SWP/zona", {
             "Wilayah": feature.properties.name,
             "Prioritas penyaringan": priority,
+            "Kendala terpetakan": constraint,
+            "Dasar kendala": feature.properties.knownConstraintBasis,
+            "Risiko belum terselesaikan": feature.properties.unresolvedRisk,
+            "Kesesuaian pengembangan": "Belum ditentukan; menunggu analisis P0",
             "Arah sementara": feature.properties.direction,
             "Peran": roleLabel(feature.properties.role),
+            "Batas interpretasi": feature.properties.screeningInterpretation,
             "Batas penggunaan": feature.properties.disclaimer
           }));
         }
@@ -628,6 +687,25 @@
     setTimeout(function () { URL.revokeObjectURL(link.href); }, 1000);
   }
 
+  function exportAnalysisCsv() {
+    var header = ["ID", "Pasal", "Prioritas", "Alur_kerja", "Analisis", "Status", "Pertanyaan_analisis", "Data_minimum", "Metode", "Keluaran", "Bukti_tersedia", "Kesenjangan_bukti", "Kaitan_geometri", "Penggunaan_keputusan", "Langkah_YG", "Pertanyaan_konsultasi", "Referensi_regulasi"];
+    var lines = [header.map(csvCell).join(",")];
+    (state.analysis.mandatoryAnalysisMatrix || []).forEach(function (row) {
+      lines.push([
+        row.id, row.articleRef, row.priority, row.workstream, row.category, statusLabel(row.status), row.analysisQuestion,
+        (row.requiredData || []).join(" | "), (row.method || []).join(" | "), (row.outputs || []).join(" | "),
+        (row.availableEvidence || []).join(" | "), (row.evidenceGaps || []).join(" | "), row.geometryLink,
+        row.decisionUse, row.nextStep, row.consultationPrompt, (row.regulationRefs || []).join(" | ")
+      ].map(csvCell).join(","));
+    });
+    var blob = new Blob(["\ufeff" + lines.join("\n")], { type: "text/csv;charset=utf-8" });
+    var link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "matriks-21-analisis-rdtr-bagansiapiapi-internal.csv";
+    link.click();
+    setTimeout(function () { URL.revokeObjectURL(link.href); }, 1000);
+  }
+
   function consultationText() {
     var summary = state.analysis.summary;
     var recommendations = aggregateRecommendations(state.analysis.villages);
@@ -642,6 +720,11 @@
       "",
       "PERTANYAAN KUNCI:",
       state.analysis.consultationQuestions.map(function (row, index) { return (index + 1) + ". " + row; }).join("\n"),
+      "",
+      "PERTANYAAN ANALISIS P0:",
+      (state.analysis.mandatoryAnalysisMatrix || []).filter(function (row) { return row.priority === "P0"; }).map(function (row, index) {
+        return (index + 1) + ". [" + row.id + "] " + row.consultationPrompt;
+      }).join("\n"),
       "",
       "KESIMPULAN ANALISIS REGULASI:",
       (state.analysis.regulatoryAssessments || []).map(function (row, index) {
@@ -732,6 +815,7 @@
       planningWorkflow: state.analysis.planningWorkflow,
       crossCuttingGates: state.analysis.crossCuttingGates,
       mandatoryAnalysisMatrix: state.analysis.mandatoryAnalysisMatrix,
+      analysisProgramme: state.analysis.analysisProgramme,
       ygPlan: state.analysis.ygPlan,
       geometryRegistry: state.analysis.geometryRegistry
     }, "rancangan-analitis-rdtr-bagansiapiapi-versi-yg.json");
@@ -771,6 +855,13 @@
       event.target.value = "";
     });
     document.getElementById("rdtr-export-csv").addEventListener("click", exportCsv);
+    document.getElementById("rdtr-export-analysis-csv").addEventListener("click", exportAnalysisCsv);
+    ["rdtr-analysis-search", "rdtr-analysis-priority", "rdtr-analysis-status"].forEach(function (id) {
+      var field = document.getElementById(id);
+      field.addEventListener(id === "rdtr-analysis-search" ? "input" : "change", function () {
+        renderAnalysisMatrix(state.analysis.mandatoryAnalysisMatrix);
+      });
+    });
     document.getElementById("rdtr-copy-points").addEventListener("click", copyPoints);
     document.getElementById("rdtr-copy-analysis").addEventListener("click", function (event) {
       copyText(event.currentTarget, analysisText(), "Salin rancangan YG");
@@ -803,6 +894,7 @@
     renderYgPlan(state.analysis);
     renderPlanningWorkflow(state.analysis);
     renderPlanComponents(state.analysis.ygPlan);
+    renderAnalysisProgramme(state.analysis.analysisProgramme, state.analysis.mandatoryAnalysisMatrix);
     renderAnalysisMatrix(state.analysis.mandatoryAnalysisMatrix);
     renderGeometryRegistry(state.analysis.geometryRegistry);
     renderPosition(state.analysis);

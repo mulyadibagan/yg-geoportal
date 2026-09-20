@@ -40,7 +40,8 @@ test("internal workspace renders the regulation-based YG plan without claiming o
     "rdtr-planning-workflow", "rdtr-cross-cutting-gates", "rdtr-yg-objective",
     "rdtr-yg-alternatives", "rdtr-structure-plan", "rdtr-pattern-plan",
     "rdtr-zoning-rules", "rdtr-programs", "rdtr-plan-traceability",
-    "rdtr-analysis-matrix", "rdtr-geometry-registry"
+    "rdtr-analysis-programme", "rdtr-analysis-search", "rdtr-analysis-priority",
+    "rdtr-analysis-status", "rdtr-export-analysis-csv", "rdtr-analysis-matrix", "rdtr-geometry-registry"
   ]) assert.match(page, new RegExp(`id="${id}"`));
 
   assert.match(page, /RANCANGAN ANALITIS · BUKAN DOKUMEN PENETAPAN/);
@@ -48,6 +49,8 @@ test("internal workspace renders the regulation-based YG plan without claiming o
   assert.match(script, /Unit penyaringan YG · bukan SWP\/zona/);
   assert.match(script, /unit-penyaringan-analitis-yg-bukan-zonasi\.geojson/);
   assert.match(script, /Geometri analitis bukan batas WP, SWP, zona, atau subzona yang mengikat/);
+  assert.match(script, /matriks-21-analisis-rdtr-bagansiapiapi-internal\.csv/);
+  assert.match(script, /Pertanyaan konsultasi/);
 });
 
 test("the official consultation scope resolves to exactly 11 Bangko villages", () => {
