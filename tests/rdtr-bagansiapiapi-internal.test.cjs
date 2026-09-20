@@ -87,6 +87,10 @@ test("internal workspace renders the regulation-based YG plan without claiming o
   assert.match(script, /uji-revisi-geometri-rdtr-yg-internal\.geojson/);
   assert.match(script, /browser_local_only/);
   assert.match(script, /Pertanyaan konsultasi/);
+  assert.match(page, /id="rdtr-v1-baseline"/);
+  assert.match(page, /id="rdtr-export-v1-baseline"/);
+  assert.match(script, /renderV1AnalyticalBaseline/);
+  assert.match(script, /rdtr-yg-bagansiapiapi-v1-internal-analytical-baseline\.json/);
 });
 
 test("the official consultation scope resolves to exactly 11 Bangko villages", () => {
