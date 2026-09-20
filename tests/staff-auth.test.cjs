@@ -64,11 +64,23 @@ test("interactive map exposes the social forestry layer only to authenticated st
 
   assert.match(map, /\.\.\.\(staffSession \? \{ perhutanan_sosial_riau: \{/);
   assert.match(map, /label: "Perhutanan Sosial Riau · internal staf"/);
-  assert.match(page, /map-v4\.js\?v=20260920-feg1/);
-  assert.match(page, /staff-data-access\.js\?v=20260920-feg1/);
+  assert.match(page, /map-v4\.js\?v=20260920-pptpkh1/);
+  assert.match(page, /staff-data-access\.js\?v=20260920-pptpkh1/);
   assert.match(map, /href="staff-rspo-area-profile\.html\?id=/);
   const staffData = fs.readFileSync(path.join(ROOT, "js", "staff-data-access.js"), "utf8");
   assert.match(staffData, /'data\/PERUSAHAAN_SAWIT_RIAU_REFERENSI\.geojson': '\/api\/staff\/rspo-companies'/);
+});
+
+test("interactive map exposes indicative PPTPKH only through the protected staff route", () => {
+  const map = fs.readFileSync(path.join(ROOT, "js", "map-v4.js"), "utf8");
+  const staffData = fs.readFileSync(path.join(ROOT, "js", "staff-data-access.js"), "utf8");
+  const worker = fs.readFileSync(path.join(ROOT, "cloudflare", "yg-webgis-public-data", "src", "index.js"), "utf8");
+
+  assert.match(map, /\.\.\.\(staffSession \? \{ pptpkh_riau_2023: \{/);
+  assert.match(map, /PPTPKH Revisi II 2023 · indikatif internal/);
+  assert.match(map, /type: "land_reform"/);
+  assert.match(staffData, /'data\/PPTPKH_RIAU_2023\.geojson': '\/api\/staff\/pptpkh-riau-2023'/);
+  assert.match(worker, /"\/api\/staff\/pptpkh-riau-2023": \["internal\/land-reform\/pptpkh-riau-2023\.geojson"/);
 });
 
 test("interactive map exposes FEG SK.130 only through the protected staff route", () => {
