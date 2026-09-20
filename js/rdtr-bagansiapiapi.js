@@ -2007,7 +2007,7 @@
 
   function exportRegulationCurrencyAudit() {
     if (!state.analysis.regulationCurrencyAudit) return;
-    downloadJson(state.analysis.regulationCurrencyAudit, "audit-keberlakuan-regulasi-rdtr-yg-v0.26-internal.json", "application/json;charset=utf-8");
+    downloadJson(state.analysis.regulationCurrencyAudit, "audit-keberlakuan-regulasi-rdtr-yg-v0.27-internal.json", "application/json;charset=utf-8");
   }
 
   function exportPolicyMap() {
