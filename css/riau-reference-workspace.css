@@ -1,0 +1,26 @@
+.riau-reference-panel {
+  border: 1px solid rgba(31, 94, 79, .22);
+  background: linear-gradient(145deg, #f5fbf8, #edf6f2);
+}
+.riau-reference-panel[hidden] { display: none !important; }
+.riau-reference-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.riau-reference-head h2 { margin: 0; color: #174b3f; }
+.riau-reference-badge { flex: none; padding: 3px 6px; border-radius: 999px; background: #174b3f; color: #fff; font-size: 8px; font-weight: 900; letter-spacing: .06em; }
+.riau-reference-panel p { margin: 7px 0 10px; color: #526d64; font-size: 10px; line-height: 1.45; }
+.riau-reference-preset { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px; }
+.riau-reference-preset select { min-width: 0; padding: 8px; border: 1px solid #bfd2cb; border-radius: 8px; background: #fff; color: #173d35; font: 700 10px/1.2 system-ui, sans-serif; }
+.riau-reference-preset button { padding: 8px 10px; border: 0; border-radius: 8px; background: #08765f; color: #fff; font: 800 10px/1 system-ui, sans-serif; cursor: pointer; }
+.riau-reference-preset button:disabled { opacity: .58; cursor: wait; }
+.riau-reference-actions { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 7px; }
+.riau-reference-actions button,
+.riau-reference-actions a { padding: 6px 8px; border: 1px solid #bfd2cb; border-radius: 7px; background: #fff; color: #24564a; font: 800 9px/1.2 system-ui, sans-serif; text-decoration: none; cursor: pointer; }
+.riau-reference-status { display: block; min-height: 14px; margin-top: 7px; color: #48685e; font-size: 9px; line-height: 1.35; }
+.riau-reference-catalog { margin-top: 9px; border-top: 1px solid #d3e2dd; padding-top: 8px; }
+.riau-reference-catalog summary { color: #174b3f; font-size: 9px; font-weight: 900; cursor: pointer; }
+.riau-reference-catalog-grid { display: grid; gap: 6px; margin-top: 7px; }
+.riau-reference-catalog-grid article { padding: 7px; border-radius: 7px; background: rgba(255,255,255,.72); }
+.riau-reference-catalog-grid strong { display: block; color: #234d43; font-size: 9px; }
+.riau-reference-catalog-grid span { display: block; margin-top: 2px; color: #647970; font-size: 8px; line-height: 1.35; }
+.riau-reference-catalog-grid em { display: inline-block; margin-top: 4px; color: #08765f; font-size: 8px; font-style: normal; font-weight: 900; }
+.riau-reference-catalog-grid em.pending { color: #8a5b0b; }
+@media (max-width: 420px) { .riau-reference-preset { grid-template-columns: 1fr; } }
