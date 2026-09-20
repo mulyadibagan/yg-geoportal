@@ -351,12 +351,44 @@
       patternGroup("Calon zona verifikasi", verificationRows) +
       patternGroup("Klasifikasi menunggu verifikasi", uncategorizedRows);
     var zoning = plan.zoningRules || {};
-    var zoningRows = Array.isArray(zoning) ? zoning : (zoning.rules || []);
+    var zoningRows = Array.isArray(zoning) ? zoning : (zoning.rules || []).concat(zoning.specialProvisions || []);
     var numericPending = !Array.isArray(zoning) && zoning.numericIntensityParameters &&
       Object.keys(zoning.numericIntensityParameters).every(function (key) { return zoning.numericIntensityParameters[key] == null; });
     document.getElementById("rdtr-zoning-rules").innerHTML = (numericPending
       ? '<p class="rdtr-component-note"><strong>Angka intensitas belum ditetapkan.</strong> KDB, KLB, KDH, tinggi, kepadatan, dan sempadan menunggu bukti teknis.</p>'
       : "") + '<div class="rdtr-plan-items">' + zoningRows.map(planItem).join("") + "</div>";
+    var subzones = zoning.subzoneCandidates || [];
+    var legend = { I: "Diizinkan kandidat", T: "Terbatas", B: "Bersyarat", X: "Tidak direkomendasikan" };
+    document.getElementById("rdtr-subzone-codebook").innerHTML = subzones.length
+      ? '<div class="rdtr-subzone-grid">' + subzones.map(function (row) {
+        return '<article><span>' + esc(row.code) + '</span><h4>' + esc(row.name) + '</h4><p>Induk: ' +
+          esc(row.parentZoneCode) + '</p><small>' + esc(row.promotionGate) + '</small></article>';
+      }).join("") + '</div><p class="rdtr-component-note">' + esc(zoning.classificationRule || "") + "</p>"
+      : '<p class="rdtr-component-note">Kamus subzona belum tersedia.</p>';
+    var matrixRows = zoning.itbxMatrix || [];
+    var matrixZones = [];
+    matrixRows.forEach(function (row) {
+      if (!matrixZones.some(function (zone) { return zone.code === row.zoneCode; })) {
+        matrixZones.push({ code: row.zoneCode, family: row.zoneFamily });
+      }
+    });
+    var activities = zoning.activityCatalog || [];
+    function itbxValue(zoneCode, activityId) {
+      var row = matrixRows.find(function (item) { return item.zoneCode === zoneCode && item.activityId === activityId; });
+      return row ? row.classification : "—";
+    }
+    document.getElementById("rdtr-itbx-matrix").innerHTML = matrixRows.length
+      ? '<div class="rdtr-itbx-legend">' + Object.keys(legend).map(function (key) {
+        return '<span><strong class="is-' + key.toLowerCase() + '">' + key + '</strong> ' + esc(legend[key]) + '</span>';
+      }).join("") + '</div><div class="rdtr-itbx-scroll"><table><thead><tr><th>Kegiatan</th>' + matrixZones.map(function (zone) {
+        return '<th title="' + esc(zone.family) + '">' + esc(zone.code) + '</th>';
+      }).join("") + '</tr></thead><tbody>' + activities.map(function (activity) {
+        return '<tr><th><span>' + esc(activity.id) + '</span>' + esc(activity.name) + '</th>' + matrixZones.map(function (zone) {
+          var value = itbxValue(zone.code, activity.id);
+          return '<td><span class="rdtr-itbx-value is-' + esc(value.toLowerCase()) + '">' + esc(value) + '</span></td>';
+        }).join("") + '</tr>';
+      }).join("") + '</tbody></table></div>'
+      : '<p class="rdtr-component-note">Matriks kegiatan belum tersedia.</p>';
     var programs = plan.programs || {};
     var programRows = Array.isArray(programs) ? programs : (programs.items || []);
     document.getElementById("rdtr-programs").innerHTML = (!Array.isArray(programs)
@@ -1115,6 +1147,24 @@
     setTimeout(function () { URL.revokeObjectURL(link.href); }, 1000);
   }
 
+  function exportItbxCsv() {
+    var zoning = state.analysis.ygPlan && state.analysis.ygPlan.zoningRules || {};
+    var header = ["ID", "Zona_YG", "Keluarga_zona", "ID_kegiatan", "Kegiatan", "Klasifikasi", "Syarat_atau_alasan", "Status", "Pengunci_analisis", "Referensi_regulasi"];
+    var lines = [header.map(csvCell).join(",")];
+    (zoning.itbxMatrix || []).forEach(function (row) {
+      lines.push([
+        row.id, row.zoneCode, row.zoneFamily, row.activityId, row.activity, row.classification,
+        row.condition, row.status, (row.evidenceLocks || []).join(" | "), (row.regulationRefs || []).join(" | ")
+      ].map(csvCell).join(","));
+    });
+    var blob = new Blob(["\ufeff" + lines.join("\n")], { type: "text/csv;charset=utf-8" });
+    var link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "matriks-itbx-rdtr-yg-bagansiapiapi-v0.1-internal.csv";
+    link.click();
+    setTimeout(function () { URL.revokeObjectURL(link.href); }, 1000);
+  }
+
   function exportEvidenceCsv() {
     var header = ["ID", "Kategori", "Status", "Kelas_bukti", "Akses", "Judul", "Penerbit", "Nomor", "Tanggal", "Periode", "Fungsi_bukti", "Temuan", "Batas", "Tindak_lanjut", "Sumber_status", "Analisis", "Gerbang", "Tautan_resmi"];
     var lines = [header.map(csvCell).join(",")];
@@ -1401,6 +1451,7 @@
     });
     document.getElementById("rdtr-export-csv").addEventListener("click", exportCsv);
     document.getElementById("rdtr-export-analysis-csv").addEventListener("click", exportAnalysisCsv);
+    document.getElementById("rdtr-export-itbx-csv").addEventListener("click", exportItbxCsv);
     document.getElementById("rdtr-export-evidence-csv").addEventListener("click", exportEvidenceCsv);
     ["rdtr-analysis-search", "rdtr-analysis-priority", "rdtr-analysis-status"].forEach(function (id) {
       var field = document.getElementById(id);

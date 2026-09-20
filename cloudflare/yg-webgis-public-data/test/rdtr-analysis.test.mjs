@@ -143,6 +143,19 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
   assert.ok(!result.ygPlan.patternPlan.zones.some(row => row.id === "ZONE-YG-RISK"));
   assert.ok(result.ygPlan.zoningRules.rules.length > 0);
   assert.ok(result.ygPlan.zoningRules.rules.some(row => row.id === "ZR-YG-RISK"));
+  assert.equal(result.ygPlan.zoningRules.codebookVersion, "0.1.0-internal");
+  assert.equal(result.ygPlan.zoningRules.activityCatalog.length, 12);
+  assert.ok(result.ygPlan.zoningRules.subzoneCandidates.length >= result.map.ygCandidateZones.features.length);
+  assert.equal(result.ygPlan.zoningRules.itbxMatrix.length,
+    new Set(result.map.ygCandidateZones.features.map(feature => feature.properties.zoneFamily)).size * 12);
+  assert.deepEqual(new Set(result.ygPlan.zoningRules.itbxMatrix.map(row => row.classification)), new Set(["I", "T", "B", "X"]));
+  assert.ok(result.ygPlan.zoningRules.itbxMatrix.every(row =>
+    row.status === "candidate_internal_not_legal_rule" && row.condition &&
+    row.evidenceLocks.length >= 1 && row.regulationRefs.length >= 1
+  ));
+  assert.ok(result.ygPlan.zoningRules.intensityEnvelopes.every(row =>
+    row.status === "numeric_values_not_set" && Object.values(row.parameters).every(value => value === null)
+  ));
   assert.ok(Object.values(result.ygPlan.zoningRules.numericIntensityParameters).every(value => value === null));
   assert.ok(result.ygPlan.programs.items.length > 0);
   assert.ok(result.ygPlan.traceability.length > 0);
@@ -172,6 +185,8 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
   assert.ok(result.map.ygPlanningUnits.metadata.geometryProcessing.includes("tolerance 0.00002"));
 
   assert.equal(result.ygDraftRdtr.status, "provisional_internal_spatial_draft");
+  assert.equal(result.ygDraftRdtr.version, "0.3.0-internal");
+  assert.equal(result.ygDraftRdtr.zoningCodebook.version, "0.1.0-internal");
   assert.equal(result.map.ygCandidateZones.metadata.status, "provisional_internal_zone_geometry");
   assert.ok(result.map.ygCandidateZones.features.length >= 4);
   assert.ok(result.map.ygCandidateZones.features.some(feature => feature.properties.code === "YG-ZK"));
@@ -202,7 +217,8 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
     ...result.mandatoryAnalysisMatrix,
     result.ygPlan.planningObjective,
     ...result.ygPlan.strategies,
-    ...result.ygPlan.traceability
+    ...result.ygPlan.traceability,
+    ...result.ygPlan.zoningRules.itbxMatrix
   ];
   assert.ok(objectsWithRegulationRefs.every(row =>
     row.regulationRefs.every(id => regulationIds.has(id))

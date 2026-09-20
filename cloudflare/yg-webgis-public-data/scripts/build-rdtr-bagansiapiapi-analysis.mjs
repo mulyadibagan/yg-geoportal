@@ -1001,7 +1001,7 @@ function buildAnalysisProgramme(rows) {
   };
 }
 
-function buildYgPlan(ygCandidateZones = featureCollection([])) {
+function buildYgPlan(ygCandidateZones = featureCollection([]), zoningCodebook = {}) {
   const geometryDisclaimer = "Rancangan YG memiliki geometri zona internal untuk analisis dan konsultasi, tetapi tidak menetapkan batas WP, SWP, blok, subblok, zona, jaringan, atau lokasi program secara hukum. Pematangan wajib memakai peta dasar skala 1:5.000, survei, RTRW yang sah, KLHS, serta validasi lintas sektor dan masyarakat.";
   const zoneFeatures = ygCandidateZones.features || [];
   function zoneMetric(families) {
@@ -1198,7 +1198,14 @@ function buildYgPlan(ygCandidateZones = featureCollection([])) {
       ]
     },
     zoningRules: {
-      status: "framework_only_pending_internal_zone_detail",
+      status: "candidate_itbx_v0_1_pending_validation",
+      codebookVersion: zoningCodebook.version || "0.1.0-internal",
+      classificationRule: zoningCodebook.classificationRule || "ITBX kandidat belum tersedia.",
+      activityCatalog: zoningCodebook.activityCatalog || [],
+      subzoneCandidates: zoningCodebook.subzoneCandidates || [],
+      itbxMatrix: zoningCodebook.itbxMatrix || [],
+      specialProvisions: zoningCodebook.specialProvisions || [],
+      intensityEnvelopes: zoningCodebook.intensityEnvelopes || [],
       numericIntensityStatus: "not_set_pending_evidence",
       numericIntensityParameters: {
         kdb: null,
@@ -1876,12 +1883,146 @@ function buildYgCandidateZoning({ studyArea, rtrwMap, peatMap, forestMap, mangro
   return collection;
 }
 
-function buildYgDraftRdtr(zoning) {
+function buildYgZoningCodebook(zoning) {
+  const familySpecs = {
+    coastal_mangrove_protection: {
+      subzones: [
+        ["YG-LP-1", "Perlindungan mangrove dan konektivitas pasang-surut"],
+        ["YG-LP-2", "Sempadan pantai, sungai, dan muara"],
+        ["YG-PR-1", "Pemulihan ekosistem pesisir"]
+      ]
+    },
+    peat_hydrology_management: {
+      subzones: [
+        ["YG-PG-1", "Perlindungan hidrologi gambut"],
+        ["YG-PG-2", "Pemulihan gambut dan tata air"],
+        ["YG-PG-3", "Pemanfaatan eksisting terbatas pada gambut"]
+      ]
+    },
+    forest_status_alignment: {
+      subzones: [
+        ["YG-KH-1", "Penyelarasan fungsi kawasan hutan"],
+        ["YG-KH-2", "Antarmuka perhutanan sosial dan akses masyarakat"]
+      ]
+    },
+    safe_urban_consolidation: {
+      subzones: [
+        ["YG-PK-1", "Permukiman perkotaan terkonsolidasi"],
+        ["YG-PK-2", "Pelayanan umum dan sosial"],
+        ["YG-PK-3", "Perdagangan dan jasa perkotaan"]
+      ]
+    },
+    community_livelihood_and_production: {
+      subzones: [
+        ["YG-BD-1", "Penghidupan dan perikanan masyarakat"],
+        ["YG-BD-2", "Produksi lokal yang kompatibel"],
+        ["YG-BD-3", "Akses dan prasarana ekonomi masyarakat"]
+      ]
+    },
+    higher_plan_protection_alignment: {
+      subzones: [["YG-RL-1", "Penyelarasan perlindungan rencana lebih tinggi"]]
+    },
+    function_pending_verification: {
+      subzones: [["YG-VF-1", "Verifikasi fungsi ruang"]]
+    }
+  };
+  const activityCatalog = [
+    { id: "ACT-01", group: "perlindungan", name: "Perlindungan, penelitian, dan pemantauan ekosistem" },
+    { id: "ACT-02", group: "pemulihan", name: "Rehabilitasi mangrove, gambut, sungai, dan pesisir" },
+    { id: "ACT-03", group: "penghidupan", name: "Perikanan tangkap tradisional dan akses masyarakat" },
+    { id: "ACT-04", group: "permukiman", name: "Pemeliharaan bangunan dan permukiman eksisting" },
+    { id: "ACT-05", group: "permukiman", name: "Permukiman baru atau perluasan kawasan terbangun" },
+    { id: "ACT-06", group: "pelayanan", name: "Fasilitas pelayanan umum, sosial, dan kedaruratan" },
+    { id: "ACT-07", group: "ekonomi", name: "Perdagangan, jasa, dan usaha skala lingkungan" },
+    { id: "ACT-08", group: "ekonomi", name: "Industri, pergudangan, dan logistik berdampak menengah–tinggi" },
+    { id: "ACT-09", group: "prasarana", name: "Drainase, jalan, utilitas, dan perlindungan pantai" },
+    { id: "ACT-10", group: "larangan_dasar", name: "Pembukaan, penimbunan, kanal, atau pengeringan yang merusak fungsi ekosistem" },
+    { id: "ACT-11", group: "persampahan", name: "Pengolahan, penampungan, atau pembuangan limbah dan sampah" },
+    { id: "ACT-12", group: "perairan", name: "Pelabuhan, tambatan, dan infrastruktur tepi air" }
+  ];
+  const familyItbx = {
+    coastal_mangrove_protection: ["I", "I", "B", "B", "X", "B", "X", "X", "B", "X", "X", "B"],
+    peat_hydrology_management: ["I", "I", "B", "B", "X", "B", "X", "X", "B", "X", "X", "X"],
+    forest_status_alignment: ["B", "B", "B", "B", "X", "B", "X", "X", "B", "X", "X", "X"],
+    safe_urban_consolidation: ["B", "B", "T", "T", "B", "B", "B", "B", "B", "X", "B", "B"],
+    community_livelihood_and_production: ["B", "B", "I", "T", "B", "B", "T", "B", "B", "X", "B", "B"],
+    higher_plan_protection_alignment: ["B", "B", "B", "B", "X", "B", "X", "X", "B", "X", "X", "X"],
+    function_pending_verification: ["B", "B", "B", "B", "X", "B", "X", "X", "B", "X", "X", "X"]
+  };
+  const zoneFamilies = [...new Map((zoning.features || []).map(feature => [
+    feature.properties?.zoneFamily,
+    { zoneFamily: feature.properties?.zoneFamily, zoneCode: feature.properties?.code, zoneName: feature.properties?.name }
+  ])).values()].filter(row => row.zoneFamily);
+  const subzoneCandidates = zoneFamilies.flatMap(zone =>
+    (familySpecs[zone.zoneFamily]?.subzones || [["YG-VF-1", "Verifikasi fungsi ruang"]]).map(([code, name]) => ({
+      id: `${zone.zoneCode}-${code}`,
+      parentZoneCode: zone.zoneCode,
+      parentZoneFamily: zone.zoneFamily,
+      code,
+      name,
+      geometryStatus: "non_geometric_candidate_class",
+      promotionGate: "Peta dasar 1:5.000, penggunaan lahan, kondisi bangunan, risiko, kapasitas layanan, tenurial, KLHS, dan verifikasi lapangan."
+    }))
+  );
+  const itbxMatrix = zoneFamilies.flatMap(zone => {
+    const classifications = familyItbx[zone.zoneFamily] || familyItbx.function_pending_verification;
+    return activityCatalog.map((activity, index) => ({
+      id: `${zone.zoneCode}-${activity.id}`,
+      zoneCode: zone.zoneCode,
+      zoneFamily: zone.zoneFamily,
+      activityId: activity.id,
+      activity: activity.name,
+      classification: classifications[index],
+      status: "candidate_internal_not_legal_rule",
+      condition: classifications[index] === "I"
+        ? "Hanya pada lokasi yang fungsi dan dampaknya telah terverifikasi; tetap tunduk pada ketentuan sektoral."
+        : classifications[index] === "T"
+          ? "Dibatasi skala, lokasi, kapasitas, waktu, dan dampak kumulatif berdasarkan kajian teknis."
+          : classifications[index] === "B"
+            ? "Memerlukan bukti kesesuaian, persetujuan sektoral, mitigasi, indikator, pemantauan, dan mekanisme penghentian/koreksi."
+            : "Tidak direkomendasikan dalam rancangan YG karena berpotensi bertentangan dengan fungsi, keselamatan, atau pemulihan; perubahan hanya melalui revisi berbukti.",
+      evidenceLocks: ["A24-d", "A24-m", "A24-n", "A24-o", "A24-p", "A24-q", "A24-s", "A24-t", "A24-u"],
+      regulationRefs: ["R02", "R03", "R05", "R07", "R08"]
+    }));
+  });
+  return {
+    version: "0.1.0-internal",
+    status: "candidate_codebook_pending_spatial_and_legal_validation",
+    legend: {
+      I: "Diizinkan secara kandidat pada lokasi yang sudah terverifikasi",
+      T: "Diizinkan terbatas dengan batas skala/lokasi/kapasitas",
+      B: "Diizinkan bersyarat setelah bukti dan persetujuan terpenuhi",
+      X: "Tidak direkomendasikan dalam rancangan YG"
+    },
+    classificationRule: "Klasifikasi paling ketat berlaku apabila satu lokasi terkena lebih dari satu kendala. Status I/T/B/X ini adalah posisi teknis internal YG, bukan ketentuan zonasi yang berlaku dan bukan dasar perizinan.",
+    activityCatalog,
+    subzoneCandidates,
+    itbxMatrix,
+    intensityEnvelopes: zoneFamilies.map(zone => ({
+      zoneCode: zone.zoneCode,
+      zoneFamily: zone.zoneFamily,
+      status: "numeric_values_not_set",
+      parameters: { kdb: null, klb: null, kdh: null, height: null, density: null, setbacks: null },
+      requiredEvidence: "Tipologi bangunan/kavling, kapasitas jalan–air–sanitasi–drainase, elevasi dan bahaya, daya dukung, kebutuhan ruang, hak/persetujuan, serta standar sektoral."
+    })),
+    specialProvisions: [
+      { id: "KK-YG-01", theme: "Gambut dan tata air", rule: "Larangan pengeringan menjadi aturan minimum; tindakan tata air harus berbasis kesatuan hidrologis dan rencana pemulihan." },
+      { id: "KK-YG-02", theme: "Rob, banjir, abrasi, dan subsidensi", rule: "Kegiatan hanya dapat dipromosikan setelah tingkat bahaya, jalur evakuasi, elevasi aman, dan dampak kumulatif dipetakan." },
+      { id: "KK-YG-03", theme: "Mangrove, sungai, muara, dan pesisir", rule: "Jaga konektivitas pasang-surut, sempadan berbasis kajian, ruang perikanan, tambatan, dan akses masyarakat." },
+      { id: "KK-YG-04", theme: "Kawasan hutan dan tenurial", rule: "Zonasi YG tidak mengubah status/fungsi kawasan hutan, hak, persetujuan, atau kewenangan sektoral." },
+      { id: "KK-YG-05", theme: "Warisan dan ruang hidup", rule: "Lokasi bernilai budaya, sejarah, sosial, dan penghidupan tidak dialihkan sebelum identifikasi partisipatif dan perlindungan akses selesai." }
+    ],
+    disclaimer: "Kamus subzona dan ITBX awal untuk analisis internal; belum memiliki geometri subzona, angka intensitas, atau akibat hukum."
+  };
+}
+
+function buildYgDraftRdtr(zoning, zoningCodebook) {
   const metadata = zoning.metadata || {};
   return {
-    id: metadata.id || "RDTR-YG-BAGANSIAPIAPI-V0.2",
+    id: "RDTR-YG-BAGANSIAPIAPI-V0.3",
     title: "Rancangan RDTR Alternatif Bagansiapiapi versi Yayasan Gambut",
-    version: metadata.version || "0.2.0-internal",
+    version: "0.3.0-internal",
+    sourceGeometryVersion: metadata.version || "0.2.0-internal",
     status: "provisional_internal_spatial_draft",
     legalCharacter: "Kajian dan rancangan teknis internal; tidak mempunyai akibat hukum dan tidak menggantikan kewenangan pemerintah daerah untuk menyusun serta menetapkan RDTR.",
     scope: "Sebelas kelurahan/kepenghuluan di Kecamatan Bangko yang disebut dalam undangan Konsultasi Publik I.",
@@ -1892,12 +2033,13 @@ function buildYgDraftRdtr(zoning) {
       topologyRule: metadata.topologyRule,
       zones: zoning.features.map(feature => ({ ...feature.properties }))
     },
+    zoningCodebook,
     components: [
       { id: "YG-RDTR-01", label: "Tujuan dan strategi WP", status: "provisional", outputRef: "ygPlan.planningObjective" },
       { id: "YG-RDTR-02", label: "Rencana struktur ruang", status: "concept_only", outputRef: "ygPlan.structurePlan" },
       { id: "YG-RDTR-03", label: "Rencana pola ruang", status: "provisional_internal_zone_geometry", outputRef: "map.ygCandidateZones" },
       { id: "YG-RDTR-04", label: "Ketentuan pemanfaatan ruang", status: "candidate_only", outputRef: "ygPlan.programs" },
-      { id: "YG-RDTR-05", label: "Peraturan zonasi", status: "framework_only", outputRef: "ygPlan.zoningRules" }
+      { id: "YG-RDTR-05", label: "Peraturan zonasi", status: "candidate_itbx_v0_1", outputRef: "ygPlan.zoningRules" }
     ],
     remainingEvidence: [
       "Peta dasar dan survei skala 1:5.000",
@@ -2136,7 +2278,8 @@ export function buildAnalysis({ rtrw, administration, peat, forest, mangrove, ma
     forestMap,
     mangroveCandidateMap
   });
-  const ygDraftRdtr = buildYgDraftRdtr(ygCandidateZones);
+  const zoningCodebook = buildYgZoningCodebook(ygCandidateZones);
+  const ygDraftRdtr = buildYgDraftRdtr(ygCandidateZones, zoningCodebook);
   const policyMapFramework = buildPolicyMapFramework({
     summary,
     peatCount: peatMap.length,
@@ -2187,7 +2330,7 @@ export function buildAnalysis({ rtrw, administration, peat, forest, mangrove, ma
     crossCuttingGates: buildCrossCuttingGates(),
     mandatoryAnalysisMatrix,
     analysisProgramme,
-    ygPlan: buildYgPlan(ygCandidateZones),
+    ygPlan: buildYgPlan(ygCandidateZones, zoningCodebook),
     geometryRegistry: buildGeometryRegistry({
       villageCount: villages.length,
       rtrwCount: rtrwMap.length,
