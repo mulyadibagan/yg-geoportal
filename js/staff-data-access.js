@@ -39,7 +39,7 @@
     const cacheKey = current.token + '|' + target;
     if (!privateResponses.has(cacheKey)) {
       privateResponses.set(cacheKey, window.fetch(base + target, {
-        headers: { authorization: 'Bearer ' + current.token }, cache: 'default'
+        headers: { authorization: 'Bearer ' + current.token }, cache: 'no-store'
       }).then(response => {
         if (!response.ok) throw Error(response.status === 401 ? 'Sesi staf tidak valid. Silakan login kembali.' : 'Data internal belum dapat dimuat (' + response.status + ').');
         return response;
