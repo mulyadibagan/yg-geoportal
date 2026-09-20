@@ -127,9 +127,9 @@
   }
 
   function statusKind(item) {
-    if (item.mirrorError || item.conflicts.length || /fail|error|blocked/.test(item.mirrorStatus)) return "issue";
     if (item.displayAvailable) return "display";
     if (item.sourceAvailable) return "mirrored";
+    if (item.mirrorError || /fail|error|blocked/.test(item.mirrorStatus)) return "issue";
     return "issue";
   }
 
@@ -208,7 +208,7 @@
       return `<article class="rg-dataset-card${active ? " is-active" : ""}" data-uuid="${escapeHtml(item.uuid)}">
         <div class="rg-card-top"><h3>${escapeHtml(item.title)}</h3><span class="rg-badge ${badgeClass}">${statusLabel(item)}</span></div>
         <p>${escapeHtml(item.description)}</p>
-        <div class="rg-card-meta"><span>${escapeHtml(item.publisher)}</span><span>${escapeHtml(item.theme)}</span><span>${escapeHtml(item.geometryType)}</span><span>${formatBytes(item.sourceBytes)}</span></div>
+        <div class="rg-card-meta"><span>${escapeHtml(item.publisher)}</span><span>${escapeHtml(item.theme)}</span><span>${escapeHtml(item.geometryType)}</span><span>${formatBytes(item.sourceBytes)}</span>${item.conflicts.length ? `<span>${item.conflicts.length} catatan metadata</span>` : ""}</div>
         <div class="rg-card-actions"><button type="button" data-action="toggle"${!item.displayAvailable && !active ? " disabled" : ""} class="${active ? "is-remove" : ""}">${loadLabel}</button><button type="button" data-action="detail">Metadata</button></div>
       </article>`;
     }).join("");
