@@ -104,7 +104,7 @@ jobs:
             if ((data.map?.ygCandidateZones?.metadata?.coveragePct || 0) < 99) throw Error("YG candidate zones do not cover the study area");
             if (data.map?.ygStructureNodes?.features?.length !== 11) throw Error("Expected 11 YG analytical structure nodes");
             if (data.map?.ygStructureAxes?.features?.length !== 10) throw Error("Expected 10 YG analytical connectivity axes");
-            if (data.ygDraftRdtr?.version !== "0.9.0-internal") throw Error("Expected YG RDTR draft v0.9");
+            if (data.ygDraftRdtr?.version !== "0.10.0-internal") throw Error("Expected YG RDTR draft v0.10");
             if (!data.map?.ygRoadEvidence?.features?.length) throw Error("Expected intersecting OSM road evidence");
             if (data.ygDraftRdtr?.networkEvidence?.status !== "partial_open_road_evidence") throw Error("Expected partial open road evidence status");
             if (!data.map?.ygFacilityEvidence?.features?.length) throw Error("Expected intersecting OSM facility evidence");
@@ -116,6 +116,8 @@ jobs:
             if (data.map?.ygDevelopmentReadiness?.features?.some(feature => feature.properties?.developmentReadiness !== "not_determined" || feature.properties?.safeForIntensification !== "not_demonstrated")) throw Error("No zone may be promoted as safe without complete hazard evidence");
             if (data.ygPlan?.programs?.items?.length !== 8) throw Error("Expected eight candidate RDTR programme packages");
             if (data.ygPlan?.programs?.items?.some(row => row.financingStatus !== "not_costed_not_committed" || !row.indicators?.length || row.indicators.some(indicator => indicator.baseline !== null || indicator.target !== null))) throw Error("Programmes must not fabricate costs, baselines, or targets");
+            if (data.consultationArgumentMatrix?.items?.length !== 10) throw Error("Expected ten regulation-linked consultation arguments");
+            if (data.consultationArgumentMatrix?.items?.some(row => row.governmentResponse !== null || row.agreedChange !== null || row.responsibleParty !== null || row.dueDate !== null || row.resolutionStatus !== "not_started")) throw Error("Consultation outcomes must remain empty until evidence is received");
             if (data.policyMapFramework?.status !== "mapped_policy_synthesis_v0") throw Error("Policy synthesis map is missing");
             if (!data.map?.mangroveCandidates?.features?.length) throw Error("Expected mapped mangrove policy candidates");
           ' "${RUNNER_TEMP}/rdtr-bagansiapiapi-analysis.json"

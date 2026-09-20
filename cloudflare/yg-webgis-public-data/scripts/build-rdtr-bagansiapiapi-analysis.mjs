@@ -2104,6 +2104,112 @@ function regulatoryAssessments(summary) {
   ];
 }
 
+function buildConsultationArgumentMatrix(assessments, candidateZones, evidenceBoard) {
+  const templates = {
+    A01: {
+      question: "Apa dasar hukum dan analitis penetapan WP 11 wilayah, dan bagaimana konsistensinya dengan RTRW Kabupaten Rokan Hilir yang berlaku?",
+      requestedChange: "Buka keputusan/dasar delineasi WP, lampiran digital RTRW kabupaten yang berlaku, dan matriks konsistensi vertikal; revisi batas atau klasifikasi yang tidak dapat dijustifikasi.",
+      responseStandard: "Nomor dan status instrumen, geometri digital, metode perbandingan, daftar perbedaan, keputusan atas tiap perbedaan, dan penanggung jawab tindak lanjut.",
+      evidenceRefs: ["P0-E01", "P0-E02", "P0-E03"], zoneFamilies: []
+    },
+    A02: {
+      question: "Bagaimana zona dan intensitas diuji terhadap fungsi KHG, kubah, kedalaman gambut, muka air, subsidensi, kanal, dan risiko kebakaran?",
+      requestedChange: "Pertahankan zona perlindungan/pengelolaan gambut dan tahan intensifikasi sampai fungsi KHG serta dampak hidrologis tervalidasi; masukkan larangan pengeringan dan kewajiban pemulihan.",
+      responseStandard: "Peta KHG/fungsi resmi, metode overlay, luas per zona, model tata air, pilihan alternatif, perubahan geometri/aturan, dan alasan bila rekomendasi tidak diterima.",
+      evidenceRefs: ["P0-E04", "P0-E07"], zoneFamilies: ["peat_hydrology_management", "safe_urban_consolidation"]
+    },
+    A03: {
+      question: "Bagaimana status kawasan hutan, persetujuan sektoral, perhutanan sosial, serta riwayat perubahan kawasan direkonsiliasi dengan zona RDTR?",
+      requestedChange: "Tandai seluruh irisan non-APL sebagai ruang penyelarasan status dan jangan promosikan fungsi non-kehutanan sebelum status, fungsi, persetujuan, dan kewenangan dibuktikan.",
+      responseStandard: "SK dan lampiran termutakhir, riwayat perubahan, daftar persetujuan/hak, luas irisan per zona, keputusan rekonsiliasi, serta konfirmasi instansi berwenang.",
+      evidenceRefs: ["P0-E05", "P0-E07"], zoneFamilies: ["forest_status_alignment"]
+    },
+    A04: {
+      question: "Apa dasar geometri sempadan pantai, Sungai Rokan, anak sungai, muara, serta perlindungan mangrove dan akses masyarakat pesisir?",
+      requestedChange: "Pertahankan kandidat perlindungan pesisir–mangrove; matangkan batas dan aturan dari pasut, abrasi-akresi, hidrodinamika, ekosistem, ruang tangkap/tambat, dan akses publik.",
+      responseStandard: "Dataset dan periode pengamatan, metode penetapan sempadan, skenario perubahan garis pantai, peta akses/ruang hidup, hasil konsultasi masyarakat, dan perubahan zona/ketentuan khusus.",
+      evidenceRefs: ["P0-E06", "P0-E07"], zoneFamilies: ["coastal_mangrove_protection", "higher_plan_protection_alignment"]
+    },
+    A05: {
+      question: "Bagaimana setiap rekomendasi KLHS mengubah tujuan, struktur, pola ruang, intensitas, ketentuan khusus, dan program RDTR?",
+      requestedChange: "Sediakan matriks integrasi KLHS sebelum–sesudah dan tahan keputusan berdampak tinggi yang belum melewati alternatif, penjaminan mutu, serta validasi.",
+      responseStandard: "ID rekomendasi, isu/dampak, alternatif, keputusan, lokasi, perubahan geometri/pasal/program, alasan penolakan, status mutu, dan validasi.",
+      evidenceRefs: ["P0-E08"], zoneFamilies: []
+    },
+    A06: {
+      question: "Skenario rob, banjir, abrasi, subsidensi, kebakaran, drainase, kenaikan muka laut, dan iklim apa yang dipakai sampai akhir umur rencana?",
+      requestedChange: "Tahan peningkatan kepadatan dan aset kritis sampai model multi-bahaya, kapasitas drainase, elevasi aman, redundansi akses, dan evakuasi teruji serta diterjemahkan ke peta dan aturan.",
+      responseStandard: "Asumsi dan horizon skenario, resolusi/ketelitian data, validasi kejadian historis, populasi/aset terpapar, residual risk, perubahan zona/intensitas, dan rencana evakuasi.",
+      evidenceRefs: ["P0-E09"], zoneFamilies: ["safe_urban_consolidation", "peat_hydrology_management", "coastal_mangrove_protection"]
+    },
+    A07: {
+      question: "Apakah peta dasar, geometri, atribut, topologi, metadata, dan kesamaan luas tabel–peta telah memenuhi kebutuhan skala 1:5.000?",
+      requestedChange: "Audit seluruh geometri zona/subzona, gap, overlap, sliver, dangle, CRS, ketelitian, kamus data, metadata, dan changelog sebelum dipakai sebagai lampiran regulasi.",
+      responseStandard: "Rekomendasi peta dasar, laporan ketelitian, aturan topologi, daftar error dan koreksi, metadata, kamus atribut, versioning, dan hasil uji kesamaan luas.",
+      evidenceRefs: ["P0-E07", "P0-E10"], zoneFamilies: []
+    },
+    A08: {
+      question: "Bagaimana setiap masukan konsultasi diberi ID, dinilai, dijawab, dan ditelusuri ke perubahan peta, pasal, program, atau alasan penolakan?",
+      requestedChange: "Gunakan register tanggapan yang terbuka bagi peserta konsultasi dan pertahankan jejak keputusan sebelum–sesudah, termasuk perbedaan pendapat serta rekomendasi FPR.",
+      responseStandard: "ID masukan, pengusul/kelompok, tanggal, lokasi, substansi, bukti, respons, keputusan, perubahan, alasan, penanggung jawab, tenggat, dan status penyelesaian.",
+      evidenceRefs: ["P0-E01"], zoneFamilies: []
+    },
+    A09: {
+      question: "Bagaimana hak, KKPR/izin, perhutanan sosial, ruang hidup, akses nelayan, kelompok rentan, serta konflik direkonsiliasi tanpa membuka data pribadi?",
+      requestedChange: "Tambahkan peta agregat hak/izin dan ruang hidup, mekanisme perlindungan akses, penyelesaian konflik, persetujuan, serta aturan transisi sebelum perubahan fungsi ruang.",
+      responseStandard: "Sumber dan tanggal data, anonimisasi, daftar tumpang tindih, proses persetujuan, opsi penyelesaian, perlindungan kelompok rentan, keputusan per lokasi, dan mekanisme pengaduan.",
+      evidenceRefs: ["P0-E10"], zoneFamilies: ["community_livelihood_and_production", "coastal_mangrove_protection", "forest_status_alignment"]
+    },
+    A10: {
+      question: "Bagaimana aturan zonasi, program, indikator, pelaksana, pembiayaan, pengawasan, dan tindakan korektif dibuat operasional serta dapat diaudit?",
+      requestedChange: "Lengkapi ITBX, intensitas berbukti, prasarana minimum, ketentuan khusus, indikasi program, indikator, wali data, biaya, sumber dana, inspeksi, pengaduan, dan evaluasi.",
+      responseStandard: "Matriks zona–kegiatan–syarat, parameter dan dasar hitung, program berlokasi, indikator baseline/target, pelaksana berwenang, pembiayaan, jadwal, SOP pengawasan, dan konsekuensi korektif.",
+      evidenceRefs: ["P0-E07", "P0-E10"], zoneFamilies: []
+    }
+  };
+  const allZoneCodes = [...new Set((candidateZones.features || []).map(feature => feature.properties?.code).filter(Boolean))].sort();
+  const validEvidenceIds = new Set((evidenceBoard.items || []).map(row => row.id));
+  const items = assessments.map((assessment, index) => {
+    const template = templates[assessment.id];
+    const zoneCodes = template.zoneFamilies.length
+      ? [...new Set((candidateZones.features || []).filter(feature => template.zoneFamilies.includes(feature.properties?.zoneFamily)).map(feature => feature.properties?.code).filter(Boolean))].sort()
+      : allZoneCodes;
+    return {
+      id: `CONS-YG-${String(index + 1).padStart(2, "0")}`,
+      assessmentRef: assessment.id,
+      theme: assessment.theme,
+      priority: assessment.decision === "hold" ? "P0" : assessment.decision === "verify" ? "P1" : "P2",
+      status: "ready_internal_argument_pending_consultation",
+      consultationQuestion: template.question,
+      legalBasisRefs: assessment.regulations,
+      evidenceRefs: template.evidenceRefs.filter(id => validEvidenceIds.has(id)),
+      linkedZoneCodes: zoneCodes,
+      ygFinding: assessment.finding,
+      ygPosition: assessment.ygPosition,
+      requestedChange: template.requestedChange,
+      responseStandard: template.responseStandard,
+      requestedDisposition: "accept_or_reasoned_reject_with_evidence",
+      governmentResponse: null,
+      agreedChange: null,
+      mapChangeRef: null,
+      ruleChangeRef: null,
+      responsibleParty: null,
+      dueDate: null,
+      resolutionStatus: "not_started"
+    };
+  });
+  return {
+    id: "RDTR-YG-CONSULTATION-ARGUMENT-MATRIX-V0.1",
+    version: "0.1.0-internal",
+    access: "staff_only",
+    status: "internal_arguments_ready_responses_pending",
+    items,
+    responseRule: "Tidak diterima, diterima sebagian, atau ditolak harus disertai alasan, bukti, penanggung jawab, dan jejak perubahan peta/pasal/program.",
+    privacyRule: "Identitas pribadi dan data sensitif tenurial/konflik tidak dimasukkan ke keluaran konsultasi tanpa dasar dan persetujuan yang sesuai.",
+    disclaimer: "Matriks kerja internal YG untuk konsultasi; bukan catatan resmi pemerintah dan kolom respons tidak boleh diisi sebelum pernyataan atau dokumen diterima."
+  };
+}
+
 function villageRegulatoryAssessments(metrics) {
   const rows = [{
     theme: "Konsistensi RTR", decision: "verify", regulations: ["R01", "R02", "L01", "L02"],
@@ -2608,12 +2714,12 @@ function buildYgZoningCodebook(zoning) {
   };
 }
 
-function buildYgDraftRdtr(zoning, zoningCodebook, structureDraft, networkEvidence, serviceEvidence, serviceAccess, developmentReadiness, programmePortfolio) {
+function buildYgDraftRdtr(zoning, zoningCodebook, structureDraft, networkEvidence, serviceEvidence, serviceAccess, developmentReadiness, programmePortfolio, consultationMatrix) {
   const metadata = zoning.metadata || {};
   return {
-    id: "RDTR-YG-BAGANSIAPIAPI-V0.9",
+    id: "RDTR-YG-BAGANSIAPIAPI-V0.10",
     title: "Rancangan RDTR Alternatif Bagansiapiapi versi Yayasan Gambut",
-    version: "0.9.0-internal",
+    version: "0.10.0-internal",
     sourceGeometryVersion: metadata.version || "0.2.0-internal",
     status: "provisional_internal_spatial_draft",
     legalCharacter: "Kajian dan rancangan teknis internal; tidak mempunyai akibat hukum dan tidak menggantikan kewenangan pemerintah daerah untuk menyusun serta menetapkan RDTR.",
@@ -2682,6 +2788,14 @@ function buildYgDraftRdtr(zoning, zoningCodebook, structureDraft, networkEvidenc
       programmeCount: programmePortfolio.items.length,
       indicatorCount: programmePortfolio.items.reduce((sum, row) => sum + (row.indicators?.length || 0), 0),
       disclaimer: programmePortfolio.disclaimer
+    },
+    consultationArgumentMatrix: {
+      id: consultationMatrix.id,
+      version: consultationMatrix.version,
+      status: consultationMatrix.status,
+      argumentCount: consultationMatrix.items.length,
+      responseRule: consultationMatrix.responseRule,
+      disclaimer: consultationMatrix.disclaimer
     },
     components: [
       { id: "YG-RDTR-01", label: "Tujuan dan strategi WP", status: "provisional", outputRef: "ygPlan.planningObjective" },
@@ -2939,7 +3053,10 @@ export function buildAnalysis({ rtrw, administration, peat, forest, mangrove, ma
   });
   const zoningCodebook = buildYgZoningCodebook(ygCandidateZones);
   const ygPlan = buildYgPlan(ygCandidateZones, zoningCodebook, ygStructureDraft, ygNetworkEvidence, ygServiceHydrologyEvidence, ygServiceAccessAnalysis, ygDevelopmentReadiness);
-  const ygDraftRdtr = buildYgDraftRdtr(ygCandidateZones, zoningCodebook, ygStructureDraft, ygNetworkEvidence, ygServiceHydrologyEvidence, ygServiceAccessAnalysis, ygDevelopmentReadiness, ygPlan.programs);
+  const assessments = regulatoryAssessments(summary);
+  const evidenceBoard = buildP0EvidenceBoard(ygCandidateZones);
+  const consultationArgumentMatrix = buildConsultationArgumentMatrix(assessments, ygCandidateZones, evidenceBoard);
+  const ygDraftRdtr = buildYgDraftRdtr(ygCandidateZones, zoningCodebook, ygStructureDraft, ygNetworkEvidence, ygServiceHydrologyEvidence, ygServiceAccessAnalysis, ygDevelopmentReadiness, ygPlan.programs, consultationArgumentMatrix);
   const policyMapFramework = buildPolicyMapFramework({
     summary,
     peatCount: peatMap.length,
@@ -2980,10 +3097,10 @@ export function buildAnalysis({ rtrw, administration, peat, forest, mangrove, ma
       caveat: "Status Tahan, Verifikasi, dan Bersyarat adalah keputusan rancangan internal. Geometri zona YG dapat dipakai sebagai argumen teknis dan bahan konsultasi, tetapi tidak mempunyai akibat hukum, tidak menetapkan hak, dan tidak dapat digunakan sebagai dasar KKPR."
     },
     decisionClasses: DECISION_CLASSES,
-    regulatoryAssessments: regulatoryAssessments(summary),
+    regulatoryAssessments: assessments,
     regulationRegister: REGULATION_REGISTER,
     legalFramework: REGULATION_REGISTER.map(row => ({ code: row.code, theme: row.title })),
-    p0EvidenceBoard: buildP0EvidenceBoard(ygCandidateZones),
+    p0EvidenceBoard: evidenceBoard,
     policyMapFramework,
     ygDraftRdtr,
     planningWorkflow: buildPlanningWorkflow(),
@@ -2991,6 +3108,7 @@ export function buildAnalysis({ rtrw, administration, peat, forest, mangrove, ma
     mandatoryAnalysisMatrix,
     analysisProgramme,
     ygPlan,
+    consultationArgumentMatrix,
     serviceAccessAnalysis: {
       id: ygServiceAccessAnalysis.id,
       version: ygServiceAccessAnalysis.version,
@@ -3022,17 +3140,7 @@ export function buildAnalysis({ rtrw, administration, peat, forest, mangrove, ma
       facilityEvidenceCount: ygServiceHydrologyEvidence.facilities.features.length,
       hydrologyEvidenceCount: ygServiceHydrologyEvidence.hydrology.features.length
     }),
-    consultationQuestions: [
-      "Apa dasar hukum dan analitis penetapan WP yang mencakup 11 wilayah, serta bagaimana keterkaitannya dengan RTRW Kabupaten Rokan Hilir yang berlaku?",
-      "Bagaimana setiap perbedaan geometri atau klasifikasi terhadap RTRW Provinsi Riau dan RTRW Kabupaten Rokan Hilir dijelaskan serta didokumentasikan?",
-      "Bagaimana rekomendasi KLHS harus mengubah tujuan, struktur, pola, intensitas, ketentuan khusus, dan indikasi program dalam rancangan alternatif YG?",
-      "Bagaimana zona berintensitas tinggi diuji terhadap fungsi KHG, kedalaman gambut, muka air, subsidensi, rob, drainase, dan risiko kebakaran?",
-      "Bagaimana status kawasan hutan, PBPH/persetujuan, hak/izin eksisting, perhutanan sosial, dan konflik tenurial direkonsiliasi dengan zona RDTR?",
-      "Apa dasar penetapan sempadan pantai, Sungai Rokan, anak sungai, dan muara; apakah memakai data pasut, elevasi, gelombang, abrasi, rob, dan ekosistem?",
-      "Bagaimana perlindungan mangrove, konektivitas pasang-surut, perikanan tradisional, ruang tambat, dan akses masyarakat pesisir diterjemahkan menjadi geometri serta aturan zonasi?",
-      "Skenario penduduk, perubahan iklim, kenaikan muka laut, dan subsidensi apa yang dipakai sampai akhir umur rencana?",
-      "Bagaimana masukan konsultasi publik diberi ID, dijawab, dan ditelusuri ke perubahan peta, pasal, atau alasan penolakan?"
-    ],
+    consultationQuestions: consultationArgumentMatrix.items.map(row => row.consultationQuestion),
     villages: villageMetrics,
     map: {
       studyArea: featureCollection(villages),

@@ -670,6 +670,21 @@
     }).join("");
   }
 
+  function renderConsultationMatrix(matrix) {
+    matrix = matrix || {};
+    var rows = matrix.items || [];
+    document.getElementById("rdtr-consultation-matrix").innerHTML = rows.length
+      ? '<div class="rdtr-program-status">' + statusBadge(matrix.status) + '<p>' + esc(matrix.responseRule) + '</p></div>' +
+        '<div class="rdtr-itbx-scroll"><table><thead><tr><th>ID</th><th>Isu dan pertanyaan</th><th>Posisi YG</th><th>Perubahan diminta</th><th>Kaitan bukti</th><th>Respons/penyelesaian</th></tr></thead><tbody>' +
+        rows.map(function (row) { return '<tr><td><strong>' + esc(row.id) + '</strong><br>' + priorityBadge(row.priority) + '</td><td><strong>' + esc(row.theme) + '</strong><br>' +
+          esc(row.consultationQuestion) + '</td><td>' + esc(row.ygPosition) + '</td><td>' + esc(row.requestedChange) + '</td><td>Zona: ' +
+          esc((row.linkedZoneCodes || []).join(", ") || "seluruh WP") + '<br>Bukti: ' + esc((row.evidenceRefs || []).join(", ") || "belum tersedia") +
+          '<br>' + regulationChips(row.legalBasisRefs) + '</td><td>' + statusBadge(row.resolutionStatus) + '<br>Respons resmi: ' +
+          (row.governmentResponse == null ? "belum diterima" : esc(row.governmentResponse)) + '</td></tr>'; }).join("") +
+        '</tbody></table></div><p class="rdtr-component-note">' + esc(matrix.disclaimer) + '</p>'
+      : '<p class="rdtr-component-note">Matriks argumentasi konsultasi belum tersedia.</p>';
+  }
+
   function colorFrom(value) {
     var colors = ["#a25728", "#176c8c", "#4b7d49", "#8d546f", "#806523", "#5d59a1", "#338477"];
     var hash = 0, text = String(value || "");
@@ -1621,6 +1636,24 @@
     URL.revokeObjectURL(link.href);
   }
 
+  function exportConsultationMatrixCsv() {
+    var matrix = state.analysis.consultationArgumentMatrix || {};
+    var header = ["ID", "Tema", "Prioritas", "Status", "Pertanyaan konsultasi", "Dasar regulasi", "Referensi bukti", "Kode zona", "Temuan YG", "Posisi YG", "Perubahan diminta", "Standar jawaban", "Disposisi diminta", "Respons pemerintah", "Perubahan disepakati", "Referensi perubahan peta", "Referensi perubahan aturan", "Penanggung jawab", "Tenggat", "Status penyelesaian"];
+    var lines = [header.map(csvCell).join(",")];
+    (matrix.items || []).forEach(function (row) {
+      lines.push([row.id, row.theme, row.priority, row.status, row.consultationQuestion, (row.legalBasisRefs || []).join(" | "),
+        (row.evidenceRefs || []).join(" | "), (row.linkedZoneCodes || []).join(" | "), row.ygFinding, row.ygPosition,
+        row.requestedChange, row.responseStandard, row.requestedDisposition, row.governmentResponse, row.agreedChange,
+        row.mapChangeRef, row.ruleChangeRef, row.responsibleParty, row.dueDate, row.resolutionStatus].map(csvCell).join(","));
+    });
+    var blob = new Blob(["\ufeff" + lines.join("\n")], { type: "text/csv;charset=utf-8" });
+    var link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "matriks-argumentasi-konsultasi-rdtr-yg-v0.10-internal.csv";
+    link.click();
+    URL.revokeObjectURL(link.href);
+  }
+
   function exportPolicyMap() {
     var framework = state.analysis.policyMapFramework || {};
     var features = [];
@@ -1751,6 +1784,7 @@
     document.getElementById("rdtr-export-service-access").addEventListener("click", exportServiceAccessCsv);
     document.getElementById("rdtr-export-readiness").addEventListener("click", exportDevelopmentReadiness);
     document.getElementById("rdtr-export-programmes").addEventListener("click", exportProgrammePortfolioCsv);
+    document.getElementById("rdtr-export-consultation").addEventListener("click", exportConsultationMatrixCsv);
     document.getElementById("rdtr-export-policy-map").addEventListener("click", exportPolicyMap);
     document.getElementById("rdtr-export-draft-csv").addEventListener("click", exportDraftComparisonCsv);
     document.getElementById("rdtr-export-draft-geojson").addEventListener("click", exportDraftComparisonGeoJson);
@@ -1783,6 +1817,7 @@
     renderYgDraftRdtr(state.analysis.ygDraftRdtr);
     renderPolicyMapFramework(state.analysis.policyMapFramework);
     renderPlanComponents(state.analysis.ygPlan);
+    renderConsultationMatrix(state.analysis.consultationArgumentMatrix);
     renderAnalysisProgramme(state.analysis.analysisProgramme, state.analysis.mandatoryAnalysisMatrix);
     renderAnalysisMatrix(state.analysis.mandatoryAnalysisMatrix);
     renderGeometryRegistry(state.analysis.geometryRegistry);
