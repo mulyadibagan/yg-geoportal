@@ -98,6 +98,7 @@ def main():
     a=sub.add_parser('qc'); a.add_argument('input'); a.add_argument('rejected'); a.add_argument('valid_list'); a.add_argument('summary')
     a=sub.add_parser('metadata'); a.add_argument('job'); a.add_argument('summary')
     a=sub.add_parser('ready'); a.add_argument('job'); a.add_argument('gdalinfo'); a.add_argument('summary')
+    a=sub.add_parser('refine-ready'); a.add_argument('job'); a.add_argument('gdalinfo')
     a=sub.add_parser('checkpoint'); a.add_argument('job'); a.add_argument('--downloaded',type=int,required=True); a.add_argument('--expected',type=int,required=True); a.add_argument('--retry-minutes',type=int,default=30)
     a=sub.add_parser('cleanup-scheduled'); a.add_argument('job'); a.add_argument('--days',type=int,default=7)
     a=sub.add_parser('cleanup-complete'); a.add_argument('job')
@@ -126,6 +127,11 @@ def main():
         d=load(args.job); info=load(args.gdalinfo); q=load(args.summary)
         d.update({'status':'ready','stage':'complete','progress':100,'stageLabel':'Selesai','stageUpdatedAt':now,'completedAt':now,'validPhotos':q['validPhotos'],'excludedPhotos':q['excludedPhotos'],'excluded':q.get('excluded',[]),'surveyDate':q.get('surveyDate'),'surveyStartAt':q.get('surveyStartAt'),'surveyEndAt':q.get('surveyEndAt'),'cameraModels':q.get('cameraModels',[]),'cameraMakes':q.get('cameraMakes',[]),'surveyDateSource':'photo_metadata' if q.get('surveyDate') else 'unavailable','cogKey':f"drone/results/{d['id']}/orthomosaic.cog.tif",'gdal':{'size':info.get('size'),'coordinateSystem':info.get('coordinateSystem'),'cornerCoordinates':info.get('cornerCoordinates') or {}}})
         add_history(d,'complete',100,'Selesai'); save(args.job,d)
+    elif args.cmd=='refine-ready':
+        d=load(args.job); info=load(args.gdalinfo)
+        d.update({'status':'ready','stage':'complete','progress':100,'stageLabel':'Perapian selesai','stageUpdatedAt':now,'refineCompletedAt':now,'updatedAt':now,'gdal':{'size':info.get('size'),'coordinateSystem':info.get('coordinateSystem'),'cornerCoordinates':info.get('cornerCoordinates') or {}}})
+        d.pop('retryAfter',None)
+        add_history(d,'complete',100,'Perapian selesai'); save(args.job,d)
     elif args.cmd=='cleanup-scheduled':
         d=load(args.job)
         if d.get('status')!='ready' or not d.get('cogKey'):

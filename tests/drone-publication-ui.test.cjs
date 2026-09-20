@@ -18,3 +18,11 @@ test('drone page exposes explicit publication and a public layer catalogue', () 
   assert.match(script, /Sembunyikan/);
   assert.match(script, /orthomosaic=/);
 });
+
+test('orthomosaic viewer makes neutral black background transparent', () => {
+  const script = read('js/drone-survey.js');
+  assert.match(script, /function orthomosaicPixelColor/);
+  assert.match(script, /pixelValuesToColorFn:orthomosaicPixelColor/);
+  assert.match(script, /max<=20&&max-min<=8/);
+  assert.match(script, /rgba\(0,0,0,0\)/);
+});

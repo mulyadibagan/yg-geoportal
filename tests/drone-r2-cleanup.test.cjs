@@ -45,3 +45,36 @@ test('cleanup metadata uses a grace period and records completion', () => {
   assert.ok(job.r2CleanedAt);
 });
 
+test('refinement reuses the existing COG and completes the queued job', () => {
+  assert.match(workflow, /REFINE_REQUESTED=.*refineRequestedAt/);
+  assert.match(workflow, /object get "yg-webgis-public-snapshots\/\$COG_KEY"/);
+  assert.match(workflow, /nearblack -setalpha -near 20 -nb 5 -alg floodfill/);
+  assert.match(workflow, /refine-ready "\$ROOT\/job\.json"/);
+  const refineStart = workflow.indexOf('if [ -n "$REFINE_REQUESTED" ]');
+  const fullProcessing = workflow.indexOf('drone_job.py processing', refineStart);
+  assert.ok(refineStart >= 0 && fullProcessing > refineStart, 'fast refinement must run before full source processing');
+});
+
+test('refinement completion restores ready status', () => {
+  const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'drone-refine-'));
+  const jobPath = path.join(temp, 'job.json');
+  const infoPath = path.join(temp, 'gdalinfo.json');
+  fs.writeFileSync(jobPath, JSON.stringify({
+    id: 'drn-refine-test',
+    status: 'processing',
+    cogKey: 'drone/results/drn-refine-test/orthomosaic.cog.tif',
+    refineRequestedAt: '2026-09-20T00:00:00Z',
+    validPhotos: 183,
+    excludedPhotos: 6
+  }));
+  fs.writeFileSync(infoPath, JSON.stringify({size:[100,200],coordinateSystem:{},cornerCoordinates:{}}));
+
+  execFileSync('python', [path.join(root, 'scripts/drone_job.py'), 'refine-ready', jobPath, infoPath]);
+  const job = JSON.parse(fs.readFileSync(jobPath, 'utf8'));
+  assert.equal(job.status, 'ready');
+  assert.equal(job.progress, 100);
+  assert.equal(job.stageLabel, 'Perapian selesai');
+  assert.equal(job.validPhotos, 183);
+  assert.equal(job.excludedPhotos, 6);
+  assert.ok(job.refineCompletedAt);
+});

@@ -152,7 +152,7 @@ function renderProgress(job){
   }
   box.hidden=false;
   const stage=job.stage||'';
-  const stageOrder=['downloading','checking','preparing','reconstructing','orthomosaic','saving'];
+  const stageOrder=['downloading','checking','preparing','reconstructing','orthomosaic','optimizing','saving'];
   const currentIndex=stageOrder.indexOf(stage);
   const steps=stepDefs.map(([key,text],idx)=>{
     let cls='';
