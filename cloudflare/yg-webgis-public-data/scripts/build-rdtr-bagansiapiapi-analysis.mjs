@@ -366,6 +366,101 @@ function buildP0EvidenceBoard() {
   };
 }
 
+function buildPolicyMapFramework({ summary, peatCount, forestCount, mangroveCandidateCount, mangroveCandidateAreaHa }) {
+  const disclaimer = "Peta sintesis kebijakan internal untuk menyusun argumen dan prioritas verifikasi. Geometri berasal dari layer penyaringan yang tersedia; bukan peta pola ruang RDTR, bukan penetapan fungsi ekosistem gambut/kawasan hutan, bukan batas sempadan, dan bukan dasar KKPR.";
+  return {
+    id: "PM-YG-V0",
+    title: "Peta Sintesis Kebijakan RDTR Bagansiapiapi versi YG",
+    version: "v0.1",
+    legalCutoff: "2026-09-20",
+    status: "mapped_policy_synthesis_v0",
+    maturity: "analytical_argument_map_not_official_rdtr",
+    purpose: "Menerjemahkan kajian kebijakan menjadi geometri argumen yang dapat diperiksa sebelum penyusunan zona/subzona usulan YG.",
+    disclaimer,
+    readingRule: "Layer dapat bertumpang tindih dan luasnya tidak boleh dijumlahkan. Tumpang tindih memperkuat kebutuhan pemeriksaan, bukan membentuk kelas zona baru secara otomatis. Area tanpa indikasi pada ketiga layer ini juga belum dapat dinyatakan layak dikembangkan karena risiko, layanan, tenurial, RTRW kabupaten, dan KLHS belum lengkap.",
+    decisionRule: "Tahan digunakan untuk mencegah kenaikan intensitas sebelum bukti P0 tersedia; Verifikasi digunakan untuk status/kewenangan yang belum mutakhir; Bersyarat hanya dapat dipromosikan setelah syarat lokasi, ambang, indikator, dan pengawasan terbukti.",
+    mappedAreaReferenceHa: summary.areaHa,
+    layers: [
+      {
+        id: "PM-YG-PEAT",
+        title: "Tahan intensifikasi · indikasi gambut",
+        mapRef: "map.peat",
+        sourceRef: "GR-PEAT-INDICATIVE",
+        featureCount: peatCount,
+        grossAreaHa: summary.peatAreaHa,
+        decision: "hold",
+        confidence: "medium_screening",
+        patternHypothesis: "ZONE-YG-PEAT",
+        policyDirection: "Jangan menaikkan intensitas atau mengunci zona budidaya intensif sebelum fungsi KHG, kubah, kedalaman, hidrologi, muka air, subsidensi, kebakaran, dan kebutuhan pemulihan terverifikasi.",
+        promotionRequirements: ["Peta KHG dan fungsi ekosistem gambut resmi", "Kedalaman/kubah dan hidrologi", "KLHS dan alternatif", "Verifikasi lapangan"],
+        regulationRefs: ["R05", "R09", "R10", "R11"],
+        analysisRefs: ["A24-d", "A24-m", "A24-o", "A24-p", "A24-s"],
+        color: "#8b3a72"
+      },
+      {
+        id: "PM-YG-FOREST",
+        title: "Verifikasi status · indikasi non-APL",
+        mapRef: "map.forest",
+        sourceRef: "GR-FOREST-INDICATIVE",
+        featureCount: forestCount,
+        grossAreaHa: summary.forestAreaHa,
+        decision: "verify",
+        confidence: "medium_screening",
+        patternHypothesis: "ZONE-YG-FOREST",
+        policyDirection: "Pertahankan keterbacaan fungsi dan kewenangan kehutanan; zona RDTR tidak boleh dianggap mengubah status kawasan hutan, persetujuan penggunaan, pelepasan, atau hak yang berlaku.",
+        promotionRequirements: ["Peta kawasan hutan termutakhir", "Riwayat perubahan dan penetapan", "PBPH/persetujuan/pelepasan", "Rekonsiliasi RTRW kabupaten"],
+        regulationRefs: ["R01", "R02", "R14", "L02"],
+        analysisRefs: ["A24-c", "A24-d", "A24-o", "A24-s", "A24-u"],
+        color: "#287047"
+      },
+      {
+        id: "PM-YG-COAST",
+        title: "Tahan konversi · kandidat perlindungan/pemulihan pesisir",
+        mapRef: "map.mangroveCandidates",
+        sourceRef: "GR-MANGROVE-CANDIDATES",
+        featureCount: mangroveCandidateCount,
+        grossAreaHa: mangroveCandidateAreaHa,
+        decision: "hold",
+        confidence: "medium_to_high_remote_sensing",
+        patternHypothesis: "ZONE-YG-COAST",
+        policyDirection: "Pertahankan mangrove tersisa dan konektivitas pasang-surut; kandidat pemulihan tidak otomatis menjadi lokasi tanam dan harus diuji terhadap hidrodinamika, substrat, salinitas, abrasi/akresi, tenurial, penghidupan, dan persetujuan masyarakat.",
+        promotionRequirements: ["Garis pantai dan pasut", "Rob/banjir/abrasi", "Ground check mangrove", "Verifikasi hidrodinamika dan tenurial"],
+        regulationRefs: ["R05", "R09", "R10", "R12", "R13"],
+        analysisRefs: ["A24-d", "A24-e", "A24-o", "A24-p", "A24-s"],
+        color: "#176c8c"
+      }
+    ],
+    completionStages: [
+      {
+        id: "MAP-0",
+        title: "Sintesis kebijakan dan geometri bukti",
+        status: "complete_internal_v0",
+        output: "Tiga layer arahan YG yang dapat ditelusuri ke regulasi, analisis Pasal 24, sumber, luas, dan syarat promosi."
+      },
+      {
+        id: "MAP-1",
+        title: "Delineasi calon zona/subzona YG",
+        status: "blocked_missing_p0_evidence",
+        output: "Poligon yang saling eksklusif dengan kode zona, luas, tujuan, kegiatan, intensitas, dan ketentuan khusus.",
+        requirements: ["WP dan peta dasar 1:5.000", "RTRW Kabupaten Rokan Hilir yang berlaku", "KHG/fungsi gambut", "Bahaya pesisir-perkotaan", "Penggunaan lahan dan layanan"]
+      },
+      {
+        id: "MAP-2",
+        title: "Peta rancangan RDTR pembanding",
+        status: "blocked_missing_klhs_and_draft",
+        output: "Struktur ruang, pola ruang, ketentuan khusus, program, dan matriks peraturan zonasi versi YG.",
+        requirements: ["KLHS dan matriks integrasi", "Geometri/aturan draf pemerintah", "Skenario penduduk dan kegiatan", "Uji sosial-tenurial dan lapangan"]
+      },
+      {
+        id: "MAP-3",
+        title: "Peta rekomendasi konsultasi",
+        status: "pending_comparison_and_response",
+        output: "Peta per zona berisi posisi Tahan/Verifikasi/Bersyarat/Revisi, dasar hukum, bukti, luas, perubahan geometri/redaksi, dan respons pemerintah."
+      }
+    ]
+  };
+}
+
 const DECISION_CLASSES = [
   { id: "hold", label: "Tahan", meaning: "Bukti P0 belum tersedia atau ada indikasi fungsi lindung/risiko tinggi.", action: "Jangan mendukung intensifikasi; minta pembuktian dan alternatif." },
   { id: "verify", label: "Verifikasi", meaning: "Ada indikasi tumpang tindih atau kewajiban, tetapi bukti legal/spasial belum lengkap.", action: "Catat sebagai hipotesis dan konfirmasi dengan data resmi." },
@@ -1282,7 +1377,7 @@ function buildYgPlanningUnits(villages, villageMetrics) {
   return collection;
 }
 
-function buildGeometryRegistry({ villageCount, rtrwCount, peatCount, forestCount }) {
+function buildGeometryRegistry({ villageCount, rtrwCount, peatCount, forestCount, mangroveCandidateCount }) {
   return [
     {
       id: "GR-YG-STUDY-AREA",
@@ -1333,6 +1428,16 @@ function buildGeometryRegistry({ villageCount, rtrwCount, peatCount, forestCount
       source: "Kawasan hutan SK 903",
       permittedUse: "Menandai kebutuhan verifikasi status, fungsi, perubahan, dan persetujuan kehutanan.",
       limitation: "Versi/status resmi termutakhir dan riwayat perubahan harus dikonfirmasi; RDTR tidak mengubah status kawasan hutan."
+    },
+    {
+      id: "GR-MANGROVE-CANDIDATES",
+      mapRef: "map.mangroveCandidates",
+      status: "available_for_screening",
+      featureCount: mangroveCandidateCount,
+      role: "coastal_protection_restoration_candidates_not_rdtr_zone",
+      source: "Analisis prioritas rehabilitasi mangrove YG 2016–2025 v0.1",
+      permittedUse: "Menandai kandidat perlindungan/pemulihan dan kebutuhan verifikasi pesisir.",
+      limitation: "Bukan batas mangrove resmi, bukan penetapan lokasi tanam, dan bukan zona RDTR; wajib verifikasi hidrodinamika, substrat, salinitas, tenurial, penghidupan, dan persetujuan masyarakat."
     },
     {
       id: "GR-RDTR-OFFICIAL-DRAFT",
@@ -1600,7 +1705,7 @@ function recommendationRows(metrics) {
   return rows;
 }
 
-export function buildAnalysis({ rtrw, administration, peat, forest, mangrove }) {
+export function buildAnalysis({ rtrw, administration, peat, forest, mangrove, mangroveCandidates = featureCollection([]) }) {
   const warnings = new Set();
   const villages = (administration.features || []).filter(feature => {
     const props = feature.properties || {};
@@ -1720,6 +1825,30 @@ export function buildAnalysis({ rtrw, administration, peat, forest, mangrove }) 
     warnings,
     "Geometri kawasan hutan"
   );
+  const targetMangroveCandidates = (mangroveCandidates.features || []).filter(feature => {
+    const props = feature.properties || {};
+    return normalize(props.WADMKK || props.regency) === "rokan hilir" &&
+      normalize(props.WADMKC || props.district) === "bangko" &&
+      TARGET_VILLAGES.has(normalize(props.WADMKD || props.village));
+  });
+  const mangroveCandidateMap = clippedFeatures(
+    targetMangroveCandidates,
+    studyArea,
+    item => ({
+      polygonId: item.polygonId || item.id || "",
+      village: item.village || item.WADMKD || "",
+      priorityClass: item.priorityClass || "",
+      priorityLabel: item.priorityLabel || "Kandidat perlindungan/pemulihan",
+      priorityScore: item.priorityScore ?? null,
+      confidence: item.confidence || "perlu verifikasi",
+      recommendedAction: item.recommendedAction || "Verifikasi perlindungan/pemulihan pesisir",
+      methodVersion: item.methodVersion || "",
+      sourceAreaHa: item.areaHa ?? null
+    }),
+    warnings,
+    "Kandidat mangrove"
+  );
+  const mangroveCandidateAreaHa = round(mangroveCandidateMap.reduce((sum, feature) => sum + areaHa(feature), 0));
   const summary = {
     villageCount: villages.length,
     areaHa: round(totalAreaHa),
@@ -1728,11 +1857,20 @@ export function buildAnalysis({ rtrw, administration, peat, forest, mangrove }) 
     forestAreaHa: round(totalForestHa),
     forestCoveragePct: round(totalForestHa / totalAreaHa * 100, 1),
     rtrwClassCount: new Set(rtrwMap.map(feature => feature.properties.class)).size,
-    mangroveAnalysedVillageCount: villageMetrics.filter(row => row.mangrove.status === "analysed").length
+    mangroveAnalysedVillageCount: villageMetrics.filter(row => row.mangrove.status === "analysed").length,
+    mangroveCandidateCount: mangroveCandidateMap.length,
+    mangroveCandidateAreaHa
   };
   const mandatoryAnalysisMatrix = buildMandatoryAnalysisMatrix(summary);
   const analysisProgramme = buildAnalysisProgramme(mandatoryAnalysisMatrix);
   const ygPlanningUnits = buildYgPlanningUnits(villages, villageMetrics);
+  const policyMapFramework = buildPolicyMapFramework({
+    summary,
+    peatCount: peatMap.length,
+    forestCount: forestMap.length,
+    mangroveCandidateCount: mangroveCandidateMap.length,
+    mangroveCandidateAreaHa
+  });
 
   return {
     metadata: {
@@ -1767,6 +1905,7 @@ export function buildAnalysis({ rtrw, administration, peat, forest, mangrove }) 
     regulationRegister: REGULATION_REGISTER,
     legalFramework: REGULATION_REGISTER.map(row => ({ code: row.code, theme: row.title })),
     p0EvidenceBoard: buildP0EvidenceBoard(),
+    policyMapFramework,
     planningWorkflow: buildPlanningWorkflow(),
     crossCuttingGates: buildCrossCuttingGates(),
     mandatoryAnalysisMatrix,
@@ -1776,7 +1915,8 @@ export function buildAnalysis({ rtrw, administration, peat, forest, mangrove }) 
       villageCount: villages.length,
       rtrwCount: rtrwMap.length,
       peatCount: peatMap.length,
-      forestCount: forestMap.length
+      forestCount: forestMap.length,
+      mangroveCandidateCount: mangroveCandidateMap.length
     }),
     consultationQuestions: [
       "Apa dasar hukum dan analitis penetapan WP yang mencakup 11 wilayah, serta bagaimana keterkaitannya dengan RTRW Kabupaten Rokan Hilir yang berlaku?",
@@ -1795,7 +1935,8 @@ export function buildAnalysis({ rtrw, administration, peat, forest, mangrove }) 
       ygPlanningUnits,
       rtrw: featureCollection(rtrwMap),
       peat: featureCollection(peatMap),
-      forest: featureCollection(forestMap)
+      forest: featureCollection(forestMap),
+      mangroveCandidates: featureCollection(mangroveCandidateMap)
     },
     warnings: [...warnings].slice(0, 50)
   };
@@ -1812,7 +1953,8 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     administration: readJson(path.join(REPO_ROOT, "data/batas_administrasi_desa_riau.geojson"), "Batas administrasi"),
     peat: readJson(path.join(REPO_ROOT, "data/Gambut_BBSDLP_2019.geojson"), "Gambut BBSDLP"),
     forest: readJson(path.join(REPO_ROOT, "data/kawasan_hutan_sk_903.geojson"), "Kawasan hutan"),
-    mangrove: readJson(path.join(REPO_ROOT, "data/mangrove-priority-rokan-hilir-results.json"), "Analisis mangrove")
+    mangrove: readJson(path.join(REPO_ROOT, "data/mangrove-priority-rokan-hilir-results.json"), "Analisis mangrove"),
+    mangroveCandidates: readJson(path.join(REPO_ROOT, "data/mangrove-priority-rokan-hilir-candidates.geojson"), "Kandidat mangrove")
   });
   fs.writeFileSync(outputPath, JSON.stringify(analysis));
   console.log(JSON.stringify({

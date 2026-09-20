@@ -42,7 +42,9 @@ test("internal workspace renders the regulation-based YG plan without claiming o
     "rdtr-zoning-rules", "rdtr-programs", "rdtr-plan-traceability",
     "rdtr-analysis-programme", "rdtr-analysis-search", "rdtr-analysis-priority",
     "rdtr-analysis-status", "rdtr-export-analysis-csv", "rdtr-analysis-matrix", "rdtr-geometry-registry",
-    "rdtr-p0-evidence-summary", "rdtr-p0-evidence-truth", "rdtr-p0-evidence-register", "rdtr-export-evidence-csv"
+    "rdtr-p0-evidence-summary", "rdtr-p0-evidence-truth", "rdtr-p0-evidence-register", "rdtr-export-evidence-csv",
+    "policy-map", "rdtr-policy-map-header", "rdtr-policy-layer-summary", "rdtr-policy-map-rule",
+    "rdtr-policy-map-stages", "rdtr-export-policy-map", "rdtr-policy-inspector"
   ]) assert.match(page, new RegExp(`id="${id}"`));
 
   assert.match(page, /RANCANGAN ANALITIS · BUKAN DOKUMEN PENETAPAN/);
@@ -53,6 +55,12 @@ test("internal workspace renders the regulation-based YG plan without claiming o
   assert.match(script, /matriks-21-analisis-rdtr-bagansiapiapi-internal\.csv/);
   assert.match(script, /register-bukti-p0-rdtr-bagansiapiapi-internal\.csv/);
   assert.match(script, /renderP0EvidenceBoard/);
+  assert.match(script, /renderPolicyMapFramework/);
+  assert.match(script, /inspectPolicyLocation/);
+  assert.match(script, /booleanPointInPolygon/);
+  assert.match(script, /peta-sintesis-kebijakan-rdtr-bagansiapiapi-v0\.geojson/);
+  assert.match(script, /Arahan YG · tahan intensifikasi gambut/);
+  assert.match(script, /Arahan YG · perlindungan\/pemulihan pesisir/);
   assert.match(script, /Pertanyaan konsultasi/);
 });
 

@@ -24,7 +24,12 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
     rtrw: featureCollection([{ ...mask, properties: { RENCANA: "Kawasan Permukiman", DASAR_HUKUM: "Perda No.10 Tahun 2018" } }]),
     peat: featureCollection([{ ...mask, properties: { KELAS_GBT: "100-<200 cm", KETEBALAN: "Sedang" } }]),
     forest: featureCollection([{ ...mask, properties: { fungsi: "HP" } }]),
-    mangrove: { villages: [{ village: "Bagan Jawa Pesisir", status: "analysed", currentMangroveHa: 10, indicativeMangroveLossHa: 30 }] }
+    mangrove: { villages: [{ village: "Bagan Jawa Pesisir", status: "analysed", currentMangroveHa: 10, indicativeMangroveLossHa: 30 }] },
+    mangroveCandidates: featureCollection([square(100.06, {
+      regency: "Rokan Hilir", district: "Bangko", village: "Bagan Jawa Pesisir",
+      polygonId: "MPR-TEST-1", priorityClass: "P1", priorityLabel: "Perlindungan segera",
+      priorityScore: 80, confidence: "tinggi", recommendedAction: "perlindungan", methodVersion: "test-v1"
+    })])
   });
   assert.equal(result.metadata.access, "staff_only");
   assert.equal(result.metadata.officialDraftGeometryStatus, "not_received");
@@ -33,6 +38,8 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
   assert.ok(result.summary.peatAreaHa > 0);
   assert.ok(result.summary.forestAreaHa > 0);
   assert.equal(result.summary.mangroveAnalysedVillageCount, 1);
+  assert.equal(result.summary.mangroveCandidateCount, 1);
+  assert.ok(result.summary.mangroveCandidateAreaHa > 0);
   assert.ok(result.consultationQuestions.length >= 6);
   assert.equal(result.regulatoryAssessments.length, 10);
   assert.ok(result.regulationRegister.length >= 18);
@@ -85,6 +92,16 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
   assert.equal(currentRtrw.status, "not_verified");
   assert.match(currentRtrw.limitation, /bukan bukti bahwa instrumen tidak ada/);
 
+  assert.equal(result.policyMapFramework.status, "mapped_policy_synthesis_v0");
+  assert.equal(result.policyMapFramework.layers.length, 3);
+  assert.deepEqual(result.policyMapFramework.layers.map(row => row.id), [
+    "PM-YG-PEAT", "PM-YG-FOREST", "PM-YG-COAST"
+  ]);
+  assert.deepEqual(result.policyMapFramework.completionStages.map(row => row.id), ["MAP-0", "MAP-1", "MAP-2", "MAP-3"]);
+  assert.equal(result.policyMapFramework.completionStages[0].status, "complete_internal_v0");
+  assert.ok(result.policyMapFramework.completionStages.slice(1).every(row => row.status !== "complete_internal_v0"));
+  assert.match(result.policyMapFramework.readingRule, /tidak boleh dijumlahkan/);
+
   assert.equal(result.mandatoryAnalysisMatrix.length, 21);
   assert.equal(result.mandatoryAnalysisMatrix.map(row => row.letter).join(""), "abcdefghijklmnopqrstu");
   assert.ok(result.mandatoryAnalysisMatrix.every(row =>
@@ -124,6 +141,9 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
   assert.ok(result.ygPlan.traceability.length > 0);
 
   assert.ok(result.geometryRegistry.some(row => row.id === "GR-RDTR-OFFICIAL-DRAFT" && row.status === "not_received"));
+  assert.ok(result.geometryRegistry.some(row => row.id === "GR-MANGROVE-CANDIDATES" && row.featureCount === 1));
+  assert.equal(result.map.mangroveCandidates.features.length, 1);
+  assert.equal(result.map.mangroveCandidates.features[0].properties.polygonId, "MPR-TEST-1");
   assert.equal(result.map.ygPlanningUnits.features.length, 11);
   assert.ok(result.map.ygPlanningUnits.features.every(feature =>
     feature.properties.role === "analytical_unit_not_swp_or_zone" &&
@@ -146,6 +166,7 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
   const regulationIds = new Set(result.regulationRegister.map(row => row.id));
   const analysisIds = new Set(result.mandatoryAnalysisMatrix.map(row => row.id));
   const gateIds = new Set(result.crossCuttingGates.map(row => row.id));
+  const geometryIds = new Set(result.geometryRegistry.map(row => row.id));
   const objectsWithRegulationRefs = [
     ...result.planningWorkflow,
     ...result.crossCuttingGates,
@@ -163,5 +184,10 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
   assert.ok(result.p0EvidenceBoard.items.every(row =>
     row.evidenceClass === "EV-O" && row.analysisRefs.every(id => analysisIds.has(id)) &&
     row.gateRefs.every(id => gateIds.has(id)) && row.legalRole && row.finding && row.limitation && row.nextAction
+  ));
+  assert.ok(result.policyMapFramework.layers.every(row =>
+    row.regulationRefs.every(id => regulationIds.has(id)) &&
+    row.analysisRefs.every(id => analysisIds.has(id)) && geometryIds.has(row.sourceRef) &&
+    row.featureCount >= 1 && row.grossAreaHa > 0 && row.policyDirection && row.promotionRequirements.length
   ));
 });

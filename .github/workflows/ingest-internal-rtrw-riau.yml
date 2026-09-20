@@ -16,6 +16,7 @@ on:
       - data/Gambut_BBSDLP_2019.geojson
       - data/kawasan_hutan_sk_903.geojson
       - data/mangrove-priority-rokan-hilir-results.json
+      - data/mangrove-priority-rokan-hilir-candidates.geojson
   workflow_dispatch:
     inputs:
       upload_production:
@@ -94,6 +95,8 @@ jobs:
             if (data.metadata?.access !== "staff_only") throw Error("RDTR analysis must remain staff-only");
             if (data.summary?.villageCount !== 11) throw Error("Expected 11 planning-area villages");
             if (data.metadata?.officialDraftGeometryStatus !== "not_received") throw Error("Unexpected draft status");
+            if (data.policyMapFramework?.status !== "mapped_policy_synthesis_v0") throw Error("Policy synthesis map is missing");
+            if (!data.map?.mangroveCandidates?.features?.length) throw Error("Expected mapped mangrove policy candidates");
           ' "${RUNNER_TEMP}/rdtr-bagansiapiapi-analysis.json"
 
       - name: Run Worker and ingest tests

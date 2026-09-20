@@ -65,6 +65,11 @@
       verified_available: "Terverifikasi · tersedia",
       verified_process_evidence: "Terverifikasi · bukti proses",
       historical_expired_reference: "Arsip historis · periode berakhir",
+      mapped_policy_synthesis_v0: "Peta sintesis v0 terbangun",
+      complete_internal_v0: "Selesai · internal v0",
+      blocked_missing_p0_evidence: "Tertahan · bukti P0 belum lengkap",
+      blocked_missing_klhs_and_draft: "Tertahan · KLHS dan draf belum diterima",
+      pending_comparison_and_response: "Menunggu perbandingan dan respons",
       indicators_pending_complete_analysis_and_klhs: "Indikator dan sinkronisasi RTRW belum selesai",
       not_set_pending_plan_horizon_and_fiscal_analysis: "Penahapan menunggu horizon rencana dan analisis fiskal"
     }[value] || String(value || "Belum dinilai").replace(/_/g, " ");
@@ -134,6 +139,7 @@
       official_wp_swp_block_subblock_zone_and_network_geometry: "Geometri draf pemerintah terotorisasi: WP–SWP–blok–subblok–zona–jaringan",
       official_klhs_evidence: "Bukti dan peta kerja KLHS resmi",
       candidate_ecosystem_and_hazard_areas: "Area kandidat ekosistem dan bahaya",
+      coastal_protection_restoration_candidates_not_rdtr_zone: "Kandidat perlindungan/pemulihan pesisir · bukan zona RDTR",
       candidate_development_areas: "Area kandidat pengembangan",
       all_candidate_zones: "Semua calon zona",
       risk_management_special_provision: "Ketentuan khusus pengendalian risiko"
@@ -242,6 +248,40 @@
         (sources ? '<div class="rdtr-evidence-sources">' + sources + "</div>" : "") +
         '<div class="rdtr-evidence-refs"><span><strong>Analisis:</strong> ' + (analysisLinks || "—") +
         '</span><span><strong>Gerbang:</strong> ' + (gateLinks || "—") + "</span></div></div></article>";
+    }).join("");
+  }
+
+  function renderPolicyMapFramework(framework) {
+    framework = framework || {};
+    var layers = framework.layers || [];
+    document.getElementById("rdtr-policy-map-header").innerHTML =
+      '<div><h3>' + esc(framework.title || "Peta Sintesis Kebijakan") + '</h3><p>' +
+      esc(framework.purpose || "Geometri argumen internal berbasis kajian kebijakan.") +
+      '</p><small>' + esc(framework.disclaimer || "Bukan peta RDTR yang ditetapkan.") +
+      '</small></div><div class="rdtr-plan-meta"><span>' + esc(framework.version || "v0") +
+      '</span><span>' + esc(statusLabel(framework.status)) + '</span><span>Cut-off ' + esc(framework.legalCutoff || "—") + "</span></div>";
+    document.getElementById("rdtr-policy-layer-summary").innerHTML = layers.map(function (row) {
+      var analysisLinks = (row.analysisRefs || []).map(function (id) {
+        return '<a href="#analysis-' + esc(id) + '">' + esc(id) + "</a>";
+      }).join(" ");
+      return '<article class="rdtr-policy-layer-card" style="--policy-color:' + esc(row.color || "#176c8c") + '"><header><div><span>' +
+        esc(row.id) + '</span><h3>' + esc(row.title) + '</h3></div>' + decisionBadge(row.decision) +
+        '</header><div class="rdtr-policy-layer-metrics"><strong>' + number(row.grossAreaHa, 1) +
+        ' ha</strong><span>' + number(row.featureCount, 0) + ' geometri</span><span>Keyakinan: ' +
+        esc(String(row.confidence || "—").replace(/_/g, " ")) + '</span></div><p>' + esc(row.policyDirection) +
+        '</p><div class="rdtr-policy-requirements"><strong>Syarat promosi:</strong><ul>' +
+        (row.promotionRequirements || []).map(function (item) { return '<li>' + esc(item) + '</li>'; }).join("") +
+        '</ul></div><small class="rdtr-trace-links"><strong>Analisis:</strong> ' + (analysisLinks || "—") +
+        '</small>' + regulationChips(row.regulationRefs) + "</article>";
+    }).join("");
+    document.getElementById("rdtr-policy-map-rule").innerHTML =
+      '<p><strong>Cara membaca.</strong> ' + esc(framework.readingRule || "Layer dapat bertumpang tindih.") +
+      '</p><p><strong>Aturan keputusan.</strong> ' + esc(framework.decisionRule || "Setiap keputusan mengikuti kematangan bukti.") + "</p>";
+    document.getElementById("rdtr-policy-map-stages").innerHTML = (framework.completionStages || []).map(function (row, index) {
+      return '<article class="rdtr-policy-stage is-' + esc(row.status || "pending") + '"><header><span>' +
+        (index + 1) + '</span>' + statusBadge(row.status) + '</header><h4>' + esc(row.title) +
+        '</h4><p>' + esc(row.output || "") + '</p>' + ((row.requirements || []).length
+          ? '<small><strong>Pengunci:</strong> ' + esc(row.requirements.join("; ")) + '</small>' : "") + "</article>";
     }).join("");
   }
 
@@ -516,6 +556,98 @@
     }).map(function (row) { return esc(row[0]) + ": " + esc(row[1]); }).join("<br>");
   }
 
+  function policyLayer(framework, id) {
+    return ((framework && framework.layers) || []).find(function (row) { return row.id === id; }) || {};
+  }
+
+  function policyLayerPopup(title, sourceProperties, policy) {
+    return popup(title, Object.assign({}, sourceProperties, {
+      "Posisi YG": decisionLabel(policy.decision),
+      "Arahan kebijakan": policy.policyDirection,
+      "Syarat promosi": (policy.promotionRequirements || []).join("; "),
+      "Hipotesis pola ruang": policy.patternHypothesis,
+      "Keyakinan": String(policy.confidence || "—").replace(/_/g, " "),
+      "Batas penggunaan": "Geometri argumen internal; bukan zona/subzona RDTR dan bukan dasar KKPR."
+    }));
+  }
+
+  function featureContainsPoint(feature, point) {
+    try {
+      return Boolean(feature && feature.geometry && /Polygon/.test(feature.geometry.type) &&
+        turf.booleanPointInPolygon(point, feature));
+    } catch (error) {
+      return false;
+    }
+  }
+
+  function uniqueValues(values) {
+    return Array.from(new Set((values || []).filter(Boolean)));
+  }
+
+  function inspectPolicyLocation(data, latlng) {
+    var target = document.getElementById("rdtr-policy-inspector");
+    if (!target) return;
+    var point = turf.point([latlng.lng, latlng.lat]);
+    var studyFeature = ((data.map && data.map.studyArea && data.map.studyArea.features) || []).find(function (feature) {
+      return featureContainsPoint(feature, point);
+    });
+    var coordinate = Number(latlng.lat).toFixed(5) + ", " + Number(latlng.lng).toFixed(5);
+    if (!studyFeature) {
+      target.innerHTML = '<header><div><strong>Inspektur kebijakan lokasi</strong><small>' + esc(coordinate) +
+        '</small></div>' + decisionBadge("verify") + '</header><p><strong>Di luar 11 unit kajian YG.</strong> ' +
+        'Titik ini tidak dinilai oleh peta sintesis kebijakan Bagansiapiapi.</p>';
+      return;
+    }
+
+    var framework = data.policyMapFramework || {};
+    var policyHits = (framework.layers || []).filter(function (policy) {
+      var mapKey = String(policy.mapRef || "").split(".").pop();
+      var collection = data.map && data.map[mapKey];
+      return ((collection && collection.features) || []).some(function (feature) {
+        return featureContainsPoint(feature, point);
+      });
+    });
+    var rtrwClasses = uniqueValues(((data.map && data.map.rtrw && data.map.rtrw.features) || []).filter(function (feature) {
+      return featureContainsPoint(feature, point);
+    }).map(function (feature) {
+      return (feature.properties || {}).class;
+    }));
+    var draftZones = uniqueValues(((state.draft && state.draft.features) || []).filter(function (feature) {
+      return featureContainsPoint(feature, point);
+    }).map(function (feature) {
+      return (feature.properties || {})._ygZone;
+    }));
+    var requirements = uniqueValues(policyHits.reduce(function (items, policy) {
+      return items.concat(policy.promotionRequirements || []);
+    }, []));
+    var regulationRefs = uniqueValues(policyHits.reduce(function (items, policy) {
+      return items.concat(policy.regulationRefs || []);
+    }, []));
+    var props = studyFeature.properties || {};
+    var village = props.WADMKD || props.NAMOBJ || "Unit kajian YG";
+    var context = '<div class="rdtr-policy-inspector-context"><span><strong>Lokasi:</strong> ' + esc(village) +
+      '</span><span><strong>Koordinat:</strong> ' + esc(coordinate) + '</span><span><strong>RTRW Riau:</strong> ' +
+      esc(rtrwClasses.join(" · ") || "tidak terbaca pada titik") + '</span><span><strong>Zona draf lokal:</strong> ' +
+      esc(draftZones.join(" · ") || (state.draft ? "tidak beririsan" : "belum dimuat")) + '</span></div>';
+
+    if (!policyHits.length) {
+      target.innerHTML = '<header><div><strong>Inspektur kebijakan lokasi</strong><small>0 dari 3 layer arahan beririsan</small></div>' +
+        decisionBadge("verify") + '</header>' + context +
+        '<p><strong>Belum dapat dinyatakan layak dikembangkan.</strong> Tidak ada indikasi pada tiga layer kebijakan v0, tetapi ' +
+        'RTRW kabupaten, batas WP, KLHS, bahaya, layanan, penggunaan lahan, dan tenurial belum lengkap.</p>';
+      return;
+    }
+
+    target.innerHTML = '<header><div><strong>Inspektur kebijakan lokasi</strong><small>' + esc(policyHits.length) +
+      ' dari 3 layer arahan beririsan</small></div>' + decisionBadge(strictestDecision(policyHits)) + '</header>' + context +
+      '<div class="rdtr-policy-inspector-hits">' + policyHits.map(function (policy) {
+        return '<article><strong>' + esc(policy.title) + '</strong><p>' + esc(policy.policyDirection) + '</p></article>';
+      }).join("") + '</div><div class="rdtr-policy-inspector-gates"><strong>Pengunci sebelum status dapat dinaikkan:</strong><ul>' +
+      requirements.map(function (item) { return '<li>' + esc(item) + '</li>'; }).join("") + '</ul></div>' +
+      regulationChips(regulationRefs) +
+      '<small class="rdtr-policy-inspector-limit">Hasil titik adalah penyaringan internal, bukan penetapan zona/subzona atau dasar KKPR.</small>';
+  }
+
   function initMap(data) {
     var map = L.map("rdtr-map", { zoomControl: true, preferCanvas: true });
     state.map = map;
@@ -534,20 +666,42 @@
         "Dasar": feature.properties.legalBasis
       })); }
     }).addTo(map);
+    var peatPolicy = policyLayer(data.policyMapFramework, "PM-YG-PEAT");
+    var forestPolicy = policyLayer(data.policyMapFramework, "PM-YG-FOREST");
+    var coastPolicy = policyLayer(data.policyMapFramework, "PM-YG-COAST");
     state.layers.peat = L.geoJSON(data.map.peat, {
       renderer: L.canvas({ padding: .5 }),
-      style: { color: "#73508b", weight: 1.2, fillColor: "#9c78b1", fillOpacity: .24 },
-      onEachFeature: function (feature, layer) { layer.bindPopup(popup("Indikasi gambut", {
+      style: { color: peatPolicy.color || "#8b3a72", weight: 1.4, fillColor: peatPolicy.color || "#8b3a72", fillOpacity: .23 },
+      onEachFeature: function (feature, layer) { layer.bindPopup(policyLayerPopup("Arahan YG · indikasi gambut", {
         "Kelas": feature.properties.peatClass,
         "Ketebalan": feature.properties.thickness,
-        "Tahun": feature.properties.year
-      })); }
-    });
+        "Tahun sumber": feature.properties.year
+      }, peatPolicy)); }
+    }).addTo(map);
     state.layers.forest = L.geoJSON(data.map.forest, {
       renderer: L.canvas({ padding: .5 }),
-      style: { color: "#287047", weight: 1.3, fillColor: "#4d996b", fillOpacity: .22 },
-      onEachFeature: function (feature, layer) { layer.bindPopup(popup("Indikasi non-APL", { "Fungsi sumber": feature.properties.function })); }
-    });
+      style: { color: forestPolicy.color || "#287047", weight: 1.4, dashArray: "7 3", fillColor: forestPolicy.color || "#287047", fillOpacity: .18 },
+      onEachFeature: function (feature, layer) { layer.bindPopup(policyLayerPopup("Arahan YG · indikasi non-APL", {
+        "Fungsi sumber": feature.properties.function
+      }, forestPolicy)); }
+    }).addTo(map);
+    if (data.map.mangroveCandidates) {
+      state.layers.mangroveCandidates = L.geoJSON(data.map.mangroveCandidates, {
+        renderer: L.canvas({ padding: .5 }),
+        style: { color: coastPolicy.color || "#176c8c", weight: 1.6, fillColor: coastPolicy.color || "#176c8c", fillOpacity: .28 },
+        onEachFeature: function (feature, layer) {
+          var props = feature.properties || {};
+          layer.bindPopup(policyLayerPopup("Arahan YG · kandidat pesisir", {
+            "ID poligon": props.polygonId,
+            "Wilayah": props.village,
+            "Prioritas": [props.priorityClass, props.priorityLabel].filter(Boolean).join(" · "),
+            "Skor": props.priorityScore,
+            "Aksi analitis": props.recommendedAction,
+            "Metode": props.methodVersion
+          }, coastPolicy));
+        }
+      }).addTo(map);
+    }
     state.layers.study = L.geoJSON(data.map.studyArea, {
       style: { color: "#123f38", weight: 2.5, fillOpacity: .02 },
       onEachFeature: function (feature, layer) {
@@ -561,7 +715,7 @@
         style: function (feature) {
           var colors = { high: "#b43a32", medium: "#b87518", review: "#176c8c" };
           var color = colors[feature.properties.screeningPriority] || "#176c8c";
-          return { color: color, weight: 2, dashArray: "5 4", fillColor: color, fillOpacity: .09 };
+          return { color: color, weight: 2, dashArray: "5 4", fillColor: color, fillOpacity: .03 };
         },
         onEachFeature: function (feature, layer) {
           var priority = { high: "Tinggi", medium: "Menengah", review: "Perlu ditinjau" }[feature.properties.screeningPriority] || "Perlu ditinjau";
@@ -584,15 +738,17 @@
     var overlays = {
       "Batas 11 wilayah": state.layers.study,
       "RTRW Riau": state.layers.rtrw,
-      "Gambut BBSDLP 2019": state.layers.peat,
-      "Indikasi non-APL · penyaringan": state.layers.forest
+      "Arahan YG · tahan intensifikasi gambut": state.layers.peat,
+      "Arahan YG · verifikasi non-APL": state.layers.forest
     };
+    if (state.layers.mangroveCandidates) overlays["Arahan YG · perlindungan/pemulihan pesisir"] = state.layers.mangroveCandidates;
     if (state.layers.ygUnits) overlays["Unit penyaringan YG · bukan zonasi"] = state.layers.ygUnits;
     state.layerControl = L.control.layers({ "Peta jalan": road, "Citra satelit": satellite }, overlays, {
       collapsed: false
     }).addTo(map);
     map.fitBounds(state.layers.study.getBounds(), { padding: [18, 18] });
-    document.getElementById("rdtr-map-status").textContent = "Baseline privat siap · aktifkan layer untuk membandingkan";
+    map.on("click", function (event) { inspectPolicyLocation(data, event.latlng); });
+    document.getElementById("rdtr-map-status").textContent = "Peta sintesis kebijakan v0 siap · layer dapat bertumpang tindih";
   }
 
   function safeIntersect(left, right) {
@@ -863,6 +1019,12 @@
         return (index + 1) + ". [" + row.id + "] " + row.title + " — " + row.nextAction;
       }).join("\n") || "Tidak ada pengunci bukti tercatat."),
       "",
+      "PETA SINTESIS KEBIJAKAN",
+      ((state.analysis.policyMapFramework && state.analysis.policyMapFramework.layers) || []).map(function (row, index) {
+        return (index + 1) + ". [" + decisionLabel(row.decision) + "] " + row.title + " — " +
+          number(row.grossAreaHa, 1) + " ha (luas kotor; dapat bertumpang tindih). " + row.policyDirection;
+      }).join("\n") || "Belum tersedia.",
+      "",
       "UJI DAN JUSTIFIKASI REGULASI",
       "",
       (state.analysis.regulatoryAssessments || []).map(function (row, index) {
@@ -897,6 +1059,7 @@
       decisionClasses: state.analysis.decisionClasses,
       regulationRegister: state.analysis.regulationRegister,
       p0EvidenceBoard: state.analysis.p0EvidenceBoard,
+      policyMapFramework: state.analysis.policyMapFramework,
       planningWorkflow: state.analysis.planningWorkflow,
       crossCuttingGates: state.analysis.crossCuttingGates,
       mandatoryAnalysisMatrix: state.analysis.mandatoryAnalysisMatrix,
@@ -910,6 +1073,48 @@
     var collection = state.analysis.map && state.analysis.map.ygPlanningUnits;
     if (!collection) return;
     downloadJson(collection, "unit-penyaringan-analitis-yg-bukan-zonasi.geojson", "application/geo+json;charset=utf-8");
+  }
+
+  function exportPolicyMap() {
+    var framework = state.analysis.policyMapFramework || {};
+    var features = [];
+    (framework.layers || []).forEach(function (policy) {
+      var key = String(policy.mapRef || "").split(".").pop();
+      var collection = state.analysis.map && state.analysis.map[key];
+      (collection && collection.features || []).forEach(function (feature) {
+        features.push({
+          type: "Feature",
+          geometry: feature.geometry,
+          properties: Object.assign({}, feature.properties || {}, {
+            policyMapId: framework.id,
+            policyLayerId: policy.id,
+            policyLayerTitle: policy.title,
+            decision: policy.decision,
+            confidence: policy.confidence,
+            patternHypothesis: policy.patternHypothesis,
+            policyDirection: policy.policyDirection,
+            promotionRequirements: (policy.promotionRequirements || []).join(" | "),
+            regulationRefs: (policy.regulationRefs || []).join(" | "),
+            analysisRefs: (policy.analysisRefs || []).join(" | "),
+            geometryStatus: "analytical_argument_geometry_not_official_rdtr_zone"
+          })
+        });
+      });
+    });
+    downloadJson({
+      type: "FeatureCollection",
+      name: framework.title,
+      metadata: {
+        id: framework.id,
+        version: framework.version,
+        access: "staff_only",
+        status: framework.status,
+        legalCutoff: framework.legalCutoff,
+        disclaimer: framework.disclaimer,
+        readingRule: framework.readingRule
+      },
+      features: features
+    }, "peta-sintesis-kebijakan-rdtr-bagansiapiapi-v0.geojson", "application/geo+json;charset=utf-8");
   }
 
   async function copyText(button, text, original) {
@@ -954,6 +1159,7 @@
     });
     document.getElementById("rdtr-export-yg-json").addEventListener("click", exportYgJson);
     document.getElementById("rdtr-export-yg-geojson").addEventListener("click", exportYgGeoJson);
+    document.getElementById("rdtr-export-policy-map").addEventListener("click", exportPolicyMap);
     document.getElementById("rdtr-village-body").addEventListener("click", function (event) {
       var button = event.target.closest("[data-village-id]");
       if (button) renderVillageAnalysis(button.dataset.villageId);
@@ -980,6 +1186,7 @@
     renderYgPlan(state.analysis);
     renderPlanningWorkflow(state.analysis);
     renderP0EvidenceBoard(state.analysis.p0EvidenceBoard);
+    renderPolicyMapFramework(state.analysis.policyMapFramework);
     renderPlanComponents(state.analysis.ygPlan);
     renderAnalysisProgramme(state.analysis.analysisProgramme, state.analysis.mandatoryAnalysisMatrix);
     renderAnalysisMatrix(state.analysis.mandatoryAnalysisMatrix);
