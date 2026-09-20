@@ -212,30 +212,6 @@ const PRIVATE_DATA_ROUTES = {
   "/api/staff/fire-monthly-index": ["internal/fire-monthly/index.json", "application/json; charset=utf-8"],
   "/api/staff/phl-svlk-monthly-index": ["internal/phl-svlk-monthly/index.json", "application/json; charset=utf-8"]
 };
-const PPTPKH_INGEST_PATH = "/internal/ingest/pptpkh-riau-2023";
-const PPTPKH_OBJECT_KEY = "internal/land-reform/pptpkh-riau-2023.geojson";
-const PPTPKH_EXPECTED_SHA256 = "786d6f5331686984a7685429b2790d601bd96420f69450bef7cb0934eb95a55b";
-const PPTPKH_EXPECTED_BYTES = 16411507;
-async function ingestPptpkhRiau(request, env) {
-  const advertised = String(request.headers.get("x-content-sha256") || "").toLowerCase();
-  if (advertised !== PPTPKH_EXPECTED_SHA256) return json({ ok: false, error: "invalid_checksum" }, 403, { "cache-control": "no-store" });
-  const body = await request.arrayBuffer();
-  if (body.byteLength !== PPTPKH_EXPECTED_BYTES) return json({ ok: false, error: "invalid_size" }, 400, { "cache-control": "no-store" });
-  const actual = Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256", body)), byte => byte.toString(16).padStart(2, "0")).join("");
-  if (actual !== PPTPKH_EXPECTED_SHA256) return json({ ok: false, error: "checksum_mismatch" }, 400, { "cache-control": "no-store" });
-  let geojson;
-  try {
-    geojson = JSON.parse(new TextDecoder().decode(body));
-  } catch {
-    return json({ ok: false, error: "invalid_geojson" }, 400, { "cache-control": "no-store" });
-  }
-  if (geojson?.type !== "FeatureCollection" || !Array.isArray(geojson.features) || geojson.features.length !== 109 || geojson.metadata?.legal_basis !== "SK.903/MENLHK-PKTL/PPKH/PLA.2/2/2023, 27 Februari 2023") {
-    return json({ ok: false, error: "invalid_feature_collection" }, 400, { "cache-control": "no-store" });
-  }
-  if (!env.PUBLIC_SNAPSHOTS) return json({ ok: false, error: "r2_binding_missing" }, 503, { "cache-control": "no-store" });
-  await env.PUBLIC_SNAPSHOTS.put(PPTPKH_OBJECT_KEY, body, { httpMetadata: { contentType: "application/geo+json; charset=utf-8" }, customMetadata: { sha256: actual, access: "staff_only", features: "109", status: "indicative" } });
-  return json({ ok: true, key: PPTPKH_OBJECT_KEY, bytes: body.byteLength, sha256: actual, features: 109 }, 201, { "cache-control": "no-store" });
-}
 const RIAU_GEOPORTAL_API_PREFIX = "/api/staff/riau-geoportal/";
 const RIAU_GEOPORTAL_OBJECT_PREFIX = "internal/riau-geoportal/";
 const RIAU_GEOPORTAL_CATALOG_KEY = `${RIAU_GEOPORTAL_OBJECT_PREFIX}catalog/current.json`;
@@ -432,10 +408,6 @@ async function refresh(env, event) {
 var index_default = { async fetch(request, env) {
   const url = new URL(request.url), privateDataApiRoute = Boolean(PRIVATE_DATA_ROUTES[url.pathname]) || isRiauGeoportalApiPath(url.pathname) || "/api/staff/fire-monthly-report" === url.pathname || "/api/staff/phl-svlk-monthly-report" === url.pathname, staffApi = "/api/prepost/sessions" === url.pathname || "/api/prepost/session-detail" === url.pathname || "/api/staff/auth-result" === url.pathname || "/api/donor/programmes" === url.pathname || "/api/donor/admin-result" === url.pathname || "/api/staff/rspo-groups" === url.pathname || privateDataApiRoute;
   if ("OPTIONS" === request.method) return new Response(null, { status: 204, headers: staffApi ? STAFF_API_HEADERS : PUBLIC_HEADERS });
-  if (PPTPKH_INGEST_PATH === url.pathname) {
-    if ("PUT" !== request.method) return json({ ok: false, error: "method_not_allowed" }, 405, { allow: "PUT", "cache-control": "no-store" });
-    return ingestPptpkhRiau(request, env);
-  }
   if ("/internal/refresh" === url.pathname) {
     if ("POST" !== request.method) return json({ ok: false, error: "method_not_allowed" }, 405, { allow: "POST, OPTIONS" });
     if (!await authorized(request, env.REFRESH_TOKEN)) return json({ ok: false, error: "unauthorized" }, 401, { "cache-control": "no-store" });
