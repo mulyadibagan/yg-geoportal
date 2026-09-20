@@ -38,7 +38,8 @@ test("internal workspace renders the regulation-based YG plan without claiming o
 
   for (const id of [
     "rdtr-planning-workflow", "rdtr-cross-cutting-gates", "rdtr-yg-objective",
-    "rdtr-yg-alternatives", "rdtr-structure-summary", "rdtr-structure-plan", "rdtr-export-structure-geojson", "rdtr-pattern-plan",
+    "rdtr-yg-alternatives", "rdtr-structure-summary", "rdtr-structure-plan", "rdtr-export-structure-geojson",
+    "rdtr-export-road-evidence", "rdtr-network-evidence", "rdtr-network-gaps", "rdtr-pattern-plan",
     "rdtr-zoning-rules", "rdtr-programs", "rdtr-subzone-codebook", "rdtr-itbx-matrix",
     "rdtr-export-itbx-csv", "rdtr-plan-traceability",
     "rdtr-analysis-programme", "rdtr-analysis-search", "rdtr-analysis-priority",
@@ -71,6 +72,9 @@ test("internal workspace renders the regulation-based YG plan without claiming o
   assert.match(script, /rancangan-struktur-ruang-rdtr-yg-bagansiapiapi-v0\.1-internal\.geojson/);
   assert.match(script, /Sumbu hubungan struktur YG · bukan trase/);
   assert.match(script, /Simpul referensi struktur YG · bukan lokasi fasilitas/);
+  assert.match(script, /bukti-jaringan-jalan-osm-rdtr-yg-bagansiapiapi-v0\.1-internal\.geojson/);
+  assert.match(script, /Bukti jalan OSM · perlu verifikasi/);
+  assert.match(script, /Bukti jaringan jalan OSM · verifikasi/);
   assert.match(page, /Kamus subzona dan matriks kegiatan ITBX/);
   assert.match(script, /draftPolicyDecision/);
   assert.match(script, /validateDraftCollection/);

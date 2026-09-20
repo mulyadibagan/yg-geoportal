@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { area, featureCollection, intersect, polygon } from "@turf/turf";
+import { area, featureCollection, intersect, lineString, polygon } from "@turf/turf";
 import { buildAnalysis } from "../scripts/build-rdtr-bagansiapiapi-analysis.mjs";
 
 const names = [
@@ -31,7 +31,11 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
       regency: "Rokan Hilir", district: "Bangko", village: "Bagan Jawa Pesisir",
       polygonId: "MPR-TEST-1", priorityClass: "P1", priorityLabel: "Perlindungan segera",
       priorityScore: 80, confidence: "tinggi", recommendedAction: "perlindungan", methodVersion: "test-v1"
-    })])
+    })]),
+    roads: Object.assign(featureCollection([
+      lineString([[100.001, 2.005], [100.019, 2.005]], { osmId: 1, highway: "primary", name: "Jalan Uji Utama" }),
+      lineString([[100.061, 2.005], [100.069, 2.005]], { osmId: 2, highway: "residential", name: null })
+    ]), { source: "OpenStreetMap contributors via Overpass" })
   });
   assert.equal(result.metadata.access, "staff_only");
   assert.equal(result.metadata.ygDraftZoningStatus, "provisional_internal_zone_geometry");
@@ -163,6 +167,7 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
   assert.ok(result.geometryRegistry.some(row => row.id === "GR-YG-DRAFT-ZONES" && row.status === "provisional_internal_zone_geometry"));
   assert.ok(result.geometryRegistry.some(row => row.id === "GR-YG-STRUCTURE-NODES" && row.featureCount === 11));
   assert.ok(result.geometryRegistry.some(row => row.id === "GR-YG-STRUCTURE-AXES" && row.featureCount === 10));
+  assert.ok(result.geometryRegistry.some(row => row.id === "GR-YG-ROAD-EVIDENCE" && row.featureCount === 2));
   assert.ok(result.geometryRegistry.some(row => row.id === "GR-RTRW-ROHIL" && row.status === "not_verified"));
   assert.ok(result.geometryRegistry.some(row => row.id === "GR-MANGROVE-CANDIDATES" && row.featureCount === 1));
   assert.equal(result.map.mangroveCandidates.features.length, 1);
@@ -187,7 +192,7 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
   assert.ok(result.map.ygPlanningUnits.metadata.geometryProcessing.includes("tolerance 0.00002"));
 
   assert.equal(result.ygDraftRdtr.status, "provisional_internal_spatial_draft");
-  assert.equal(result.ygDraftRdtr.version, "0.4.0-internal");
+  assert.equal(result.ygDraftRdtr.version, "0.5.0-internal");
   assert.equal(result.ygDraftRdtr.zoningCodebook.version, "0.1.0-internal");
   assert.equal(result.ygDraftRdtr.structureDraft.status, "analytical_reference_geometry");
   assert.equal(result.ygDraftRdtr.structureDraft.nodeCount, 11);
@@ -207,6 +212,17 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
   assert.ok(result.map.ygStructureAxes.features.every(feature =>
     feature.geometry.type === "LineString" && feature.properties.legalEffect === "none" &&
     feature.properties.geometryStatus === "straight_line_connectivity_test_not_transport_route"
+  ));
+  assert.equal(result.ygDraftRdtr.networkEvidence.status, "partial_open_road_evidence");
+  assert.equal(result.map.ygRoadEvidence.features.length, 2);
+  assert.equal(result.map.ygRoadEvidence.metadata.namedFeatureCount, 1);
+  assert.ok(result.map.ygRoadEvidence.metadata.totalLengthKm > 0);
+  assert.deepEqual(new Set(result.ygPlan.structurePlan.roadClassSummary.map(row => row.highwayClass)),
+    new Set(["primary", "residential"]));
+  assert.equal(result.ygPlan.structurePlan.evidenceGaps.length, 6);
+  assert.ok(result.map.ygRoadEvidence.features.every(feature =>
+    feature.properties.evidenceStatus === "open_data_screening_not_official_road_network" &&
+    feature.properties.legalEffect === "none"
   ));
   assert.equal(result.map.ygCandidateZones.metadata.status, "provisional_internal_zone_geometry");
   assert.ok(result.map.ygCandidateZones.features.length >= 4);

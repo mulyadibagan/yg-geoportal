@@ -309,6 +309,18 @@
 .rdtr-structure-counts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; padding: 10px 12px; }
 .rdtr-structure-counts span { padding: 8px; border-radius: 9px; background: #edf3f1; color: #385a51; font-size: .69rem; }
 .rdtr-structure-counts strong { display: block; color: var(--rdtr-ink); font-size: 1.05rem; }
+.rdtr-network-evidence { padding: 14px 22px 5px; }
+.rdtr-network-kpis { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; margin-bottom: 9px; }
+.rdtr-network-kpis span { padding: 10px; border-radius: 10px; background: #edf3f1; color: var(--rdtr-muted); font-size: .7rem; }
+.rdtr-network-kpis strong { display: block; color: var(--rdtr-ink); font-size: 1.05rem; }
+.rdtr-road-classes { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.rdtr-road-classes span { padding: 5px 7px; border: 1px solid var(--rdtr-line); border-radius: 7px; color: #48635c; font-size: .66rem; }
+.rdtr-road-coverage { margin-bottom: 9px; padding: 9px 10px; border-left: 3px solid var(--rdtr-blue); background: #f1f7fb; color: #36586b; font-size: .72rem; line-height: 1.42; }
+.rdtr-network-gaps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; padding: 8px 22px 22px; }
+.rdtr-network-gaps article { padding: 11px; border: 1px solid var(--rdtr-line); border-radius: 10px; background: #fbfcfc; }
+.rdtr-network-gaps header { display: flex; justify-content: space-between; gap: 7px; }
+.rdtr-network-gaps h4 { margin: 7px 0 4px; font-size: .76rem; }
+.rdtr-network-gaps p { margin: 0; color: var(--rdtr-muted); font-size: .67rem; line-height: 1.4; }
 .rdtr-plan-traceability { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; padding: 13px 22px 22px; }
 .rdtr-trace-item { padding: 12px; border: 1px solid var(--rdtr-line); border-radius: 11px; background: #f9fbfa; }
 .rdtr-trace-item header { display: flex; align-items: flex-start; justify-content: space-between; gap: 7px; }
@@ -344,6 +356,7 @@
   .rdtr-evidence-summary { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .rdtr-policy-map-stages { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .rdtr-subzone-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .rdtr-network-gaps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 760px) {
   .rdtr-yg-plan-header, .rdtr-component-grid, .rdtr-analysis-programme, .rdtr-policy-map-header, .rdtr-policy-layer-summary, .rdtr-yg-zone-summary { grid-template-columns: 1fr; }
@@ -363,6 +376,7 @@
   .rdtr-draft-overlaps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .rdtr-draft-locks ul { columns: 1; }
   .rdtr-subzone-grid { grid-template-columns: 1fr; }
+  .rdtr-network-kpis, .rdtr-network-gaps { grid-template-columns: 1fr; }
 }
 @media print {
   .rdtr-planning-workflow, .rdtr-cross-cutting-gates, .rdtr-component-grid, .rdtr-plan-traceability, .rdtr-evidence-register, .rdtr-policy-layer-summary, .rdtr-yg-zone-summary, .rdtr-policy-map-stages { grid-template-columns: 1fr 1fr; }

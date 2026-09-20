@@ -338,6 +338,23 @@
       number(structure.referenceAxisCount, 0) + '</strong> sumbu hubungan</span></div><p class="rdtr-component-note">' +
       esc(structure.geometryRule || "Geometri struktur belum tersedia.") + '</p>';
     document.getElementById("rdtr-structure-plan").innerHTML = '<div class="rdtr-plan-items">' + structureItems.map(planItem).join("") + "</div>";
+    var roadEvidence = structure.roadEvidence || {};
+    var villageRoadCoverage = structure.villageRoadCoverage || [];
+    var missingRoadGeometry = villageRoadCoverage.filter(function (row) { return row.roadFeatureCount === 0; });
+    document.getElementById("rdtr-network-evidence").innerHTML = roadEvidence.selectedFeatureCount
+      ? '<div class="rdtr-network-kpis"><span><strong>' + number(roadEvidence.selectedFeatureCount, 0) + '</strong> ruas beririsan</span><span><strong>' +
+        number(roadEvidence.namedFeatureCount, 0) + '</strong> ruas bernama</span><span><strong>' + number(roadEvidence.totalLengthKm, 1) +
+        ' km</strong> panjang indikatif</span></div><div class="rdtr-road-classes">' + (structure.roadClassSummary || []).map(function (row) {
+          return '<span><strong>' + esc(row.highwayClass) + '</strong> ' + number(row.featureCount, 0) + ' ruas · ' + number(row.lengthKm, 1) + ' km</span>';
+        }).join("") + '</div><div class="rdtr-road-coverage"><strong>Cakupan 11 wilayah:</strong> ' +
+        esc(villageRoadCoverage.length - missingRoadGeometry.length) + ' memiliki geometri jalan OSM; ' + esc(missingRoadGeometry.length) +
+        ' belum ditemukan.' + (missingRoadGeometry.length ? ' Prioritas cek: ' + missingRoadGeometry.map(function (row) { return esc(row.village); }).join(", ") + '.' : '') +
+        '</div><p class="rdtr-component-note">' + esc(roadEvidence.disclaimer || "Data jalan terbuka untuk penyaringan internal.") + '</p>'
+      : '<p class="rdtr-component-note">Belum ada geometri jalan yang dapat dipakai untuk penyaringan.</p>';
+    document.getElementById("rdtr-network-gaps").innerHTML = (structure.evidenceGaps || []).map(function (row) {
+      return '<article><header><strong>' + esc(row.id) + '</strong>' + statusBadge(row.status) + '</header><h4>' +
+        esc(row.dataset) + '</h4><p>' + esc(row.requirement) + '</p></article>';
+    }).join("");
 
     var pattern = plan.patternPlan || {};
     var patternRows = pattern.zones || pattern.items || [];
@@ -854,6 +871,28 @@
         }
       }).addTo(map);
     }
+    if (data.map.ygRoadEvidence) {
+      state.layers.ygRoadEvidence = L.geoJSON(data.map.ygRoadEvidence, {
+        renderer: L.canvas({ padding: .5 }),
+        style: function (feature) {
+          var roadClass = (feature.properties || {}).highwayClass;
+          var major = ["primary", "primary_link", "secondary", "secondary_link"].includes(roadClass);
+          return { color: major ? "#c4512d" : "#68756f", weight: major ? 2.5 : 1.25, opacity: major ? .92 : .66 };
+        },
+        onEachFeature: function (feature, layer) {
+          var props = feature.properties || {};
+          layer.bindPopup(popup("Bukti jalan OSM · perlu verifikasi", {
+            "ID OSM": props.osmId,
+            "Nama": props.name,
+            "Kelas OSM": props.highwayClass,
+            "Panjang indikatif": number(props.lengthKm, 3) + " km",
+            "Penggunaan": props.permittedUse,
+            "Keterbatasan": props.limitation,
+            "Akibat hukum": "Tidak ada; bukti jaringan terbuka"
+          }));
+        }
+      });
+    }
     state.layers.study = L.geoJSON(data.map.studyArea, {
       style: { color: "#123f38", weight: 2.5, fillOpacity: .02 },
       onEachFeature: function (feature, layer) {
@@ -896,6 +935,7 @@
     if (state.layers.ygCandidateZones) overlays["Rancangan zonasi RDTR YG v0.2"] = state.layers.ygCandidateZones;
     if (state.layers.ygStructureAxes) overlays["Struktur YG · sumbu hubungan, bukan trase"] = state.layers.ygStructureAxes;
     if (state.layers.ygStructureNodes) overlays["Struktur YG · simpul referensi"] = state.layers.ygStructureNodes;
+    if (state.layers.ygRoadEvidence) overlays["Bukti jaringan jalan OSM · verifikasi"] = state.layers.ygRoadEvidence;
     if (state.layers.mangroveCandidates) overlays["Arahan YG · perlindungan/pemulihan pesisir"] = state.layers.mangroveCandidates;
     if (state.layers.ygUnits) overlays["Unit penyaringan YG · bukan zonasi"] = state.layers.ygUnits;
     state.layerControl = L.control.layers({ "Peta jalan": road, "Citra satelit": satellite }, overlays, {
@@ -1413,6 +1453,12 @@
     }, "rancangan-struktur-ruang-rdtr-yg-bagansiapiapi-v0.1-internal.geojson", "application/geo+json;charset=utf-8");
   }
 
+  function exportRoadEvidence() {
+    var collection = state.analysis.map && state.analysis.map.ygRoadEvidence;
+    if (!collection) return;
+    downloadJson(collection, "bukti-jaringan-jalan-osm-rdtr-yg-bagansiapiapi-v0.1-internal.geojson", "application/geo+json;charset=utf-8");
+  }
+
   function exportPolicyMap() {
     var framework = state.analysis.policyMapFramework || {};
     var features = [];
@@ -1538,6 +1584,7 @@
     document.getElementById("rdtr-export-yg-geojson").addEventListener("click", exportYgGeoJson);
     document.getElementById("rdtr-export-yg-zones").addEventListener("click", exportYgCandidateZones);
     document.getElementById("rdtr-export-structure-geojson").addEventListener("click", exportYgStructure);
+    document.getElementById("rdtr-export-road-evidence").addEventListener("click", exportRoadEvidence);
     document.getElementById("rdtr-export-policy-map").addEventListener("click", exportPolicyMap);
     document.getElementById("rdtr-export-draft-csv").addEventListener("click", exportDraftComparisonCsv);
     document.getElementById("rdtr-export-draft-geojson").addEventListener("click", exportDraftComparisonGeoJson);

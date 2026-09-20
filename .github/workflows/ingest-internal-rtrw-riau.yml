@@ -17,6 +17,7 @@ on:
       - data/kawasan_hutan_sk_903.geojson
       - data/mangrove-priority-rokan-hilir-results.json
       - data/mangrove-priority-rokan-hilir-candidates.geojson
+      - data/mangrove-priority-rokan-hilir-roads-osm.geojson
   workflow_dispatch:
     inputs:
       upload_production:
@@ -99,7 +100,9 @@ jobs:
             if ((data.map?.ygCandidateZones?.metadata?.coveragePct || 0) < 99) throw Error("YG candidate zones do not cover the study area");
             if (data.map?.ygStructureNodes?.features?.length !== 11) throw Error("Expected 11 YG analytical structure nodes");
             if (data.map?.ygStructureAxes?.features?.length !== 10) throw Error("Expected 10 YG analytical connectivity axes");
-            if (data.ygDraftRdtr?.version !== "0.4.0-internal") throw Error("Expected YG RDTR draft v0.4");
+            if (data.ygDraftRdtr?.version !== "0.5.0-internal") throw Error("Expected YG RDTR draft v0.5");
+            if (!data.map?.ygRoadEvidence?.features?.length) throw Error("Expected intersecting OSM road evidence");
+            if (data.ygDraftRdtr?.networkEvidence?.status !== "partial_open_road_evidence") throw Error("Expected partial open road evidence status");
             if (data.policyMapFramework?.status !== "mapped_policy_synthesis_v0") throw Error("Policy synthesis map is missing");
             if (!data.map?.mangroveCandidates?.features?.length) throw Error("Expected mapped mangrove policy candidates");
           ' "${RUNNER_TEMP}/rdtr-bagansiapiapi-analysis.json"

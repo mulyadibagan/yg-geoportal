@@ -4,10 +4,12 @@ import { fileURLToPath } from "node:url";
 import {
   area,
   bbox,
+  booleanIntersects,
   difference,
   featureCollection,
   intersect,
   lineString,
+  length as turfLength,
   pointOnFeature,
   simplify,
   union
@@ -1003,7 +1005,7 @@ function buildAnalysisProgramme(rows) {
   };
 }
 
-function buildYgPlan(ygCandidateZones = featureCollection([]), zoningCodebook = {}, structureDraft = {}) {
+function buildYgPlan(ygCandidateZones = featureCollection([]), zoningCodebook = {}, structureDraft = {}, networkEvidence = {}) {
   const geometryDisclaimer = "Rancangan YG memiliki geometri zona internal untuk analisis dan konsultasi, tetapi tidak menetapkan batas WP, SWP, blok, subblok, zona, jaringan, atau lokasi program secara hukum. Pematangan wajib memakai peta dasar skala 1:5.000, survei, RTRW yang sah, KLHS, serta validasi lintas sektor dan masyarakat.";
   const zoneFeatures = ygCandidateZones.features || [];
   function zoneMetric(families) {
@@ -1108,6 +1110,11 @@ function buildYgPlan(ygCandidateZones = featureCollection([]), zoningCodebook = 
       referenceAxisCount: structureDraft.axes?.features?.length || 0,
       geometryRule: structureDraft.geometryRule || "Belum tersedia.",
       networkSystems: structureDraft.networkSystems || [],
+      networkEvidenceStatus: networkEvidence.status || "not_available",
+      roadEvidence: networkEvidence.roads?.metadata || null,
+      roadClassSummary: networkEvidence.classSummary || [],
+      villageRoadCoverage: networkEvidence.villageCoverage || [],
+      evidenceGaps: networkEvidence.evidenceGaps || [],
       centres: [
         {
           id: "CTR-YG-1",
@@ -1505,7 +1512,87 @@ function buildYgStructureDraft(villages, villageMetrics) {
   };
 }
 
-function buildGeometryRegistry({ villageCount, rtrwCount, peatCount, forestCount, mangroveCandidateCount, ygZoneCount, structureNodeCount, structureAxisCount }) {
+function buildYgNetworkEvidence({ roads, studyArea, villages }) {
+  const sourceRoads = roads?.features || [];
+  const selected = sourceRoads.filter(feature => {
+    if (!feature?.geometry || !["LineString", "MultiLineString"].includes(feature.geometry.type)) return false;
+    try {
+      return booleanIntersects(feature, studyArea);
+    } catch {
+      return false;
+    }
+  }).map(feature => {
+    const display = simplify(feature, { tolerance: 0.00001, highQuality: false, mutate: false });
+    const props = feature.properties || {};
+    display.properties = {
+      id: `OSM-ROAD-${props.osmId || "UNKNOWN"}`,
+      osmId: props.osmId || null,
+      name: props.name || "Jalan tanpa nama pada OSM",
+      highwayClass: props.highway || "unknown",
+      source: roads.source || "OpenStreetMap contributors via Overpass",
+      evidenceStatus: "open_data_screening_not_official_road_network",
+      geometryStatus: "source_line_intersecting_study_area_not_boundary_clipped",
+      lengthKm: round(turfLength(feature, { units: "kilometers" }), 3),
+      permittedUse: "Penyaringan keterhubungan, kepadatan indikatif, prioritas verifikasi, dan pencocokan lapangan.",
+      limitation: "Nama, kelas, kelengkapan, kondisi, kewenangan, lebar, hak jalan, jembatan, dan keterhubungan harus diverifikasi; bukan dasar penetapan struktur ruang atau rute evakuasi.",
+      legalEffect: "none"
+    };
+    return display;
+  });
+  const classes = [...new Set(selected.map(feature => feature.properties.highwayClass))].sort();
+  const classSummary = classes.map(highwayClass => {
+    const features = selected.filter(feature => feature.properties.highwayClass === highwayClass);
+    return {
+      highwayClass,
+      featureCount: features.length,
+      lengthKm: round(features.reduce((sum, feature) => sum + feature.properties.lengthKm, 0), 2)
+    };
+  }).sort((a, b) => b.lengthKm - a.lengthKm);
+  const villageCoverage = villages.map(village => {
+    const name = village.properties?.WADMKD || village.properties?.NAMOBJ || "Wilayah";
+    const intersecting = selected.filter(feature => {
+      try { return booleanIntersects(feature, village); } catch { return false; }
+    });
+    return {
+      village: name,
+      roadFeatureCount: intersecting.length,
+      namedRoadFeatureCount: intersecting.filter(feature => feature.properties.name !== "Jalan tanpa nama pada OSM").length,
+      status: intersecting.length ? "open_data_present_needs_verification" : "no_road_geometry_found_needs_field_check"
+    };
+  });
+  const collection = featureCollection(selected);
+  collection.name = "Bukti jaringan jalan terbuka untuk analisis RDTR YG v0.5";
+  collection.metadata = {
+    access: "staff_only",
+    status: "open_data_screening_not_official_network",
+    source: roads?.source || "OpenStreetMap contributors via Overpass",
+    sourceFeatureCount: sourceRoads.length,
+    selectedFeatureCount: selected.length,
+    namedFeatureCount: selected.filter(feature => feature.properties.name !== "Jalan tanpa nama pada OSM").length,
+    totalLengthKm: round(selected.reduce((sum, feature) => sum + feature.properties.lengthKm, 0), 2),
+    geometryProcessing: "Filter boolean-intersects terhadap wilayah kajian; simplifikasi 0.00001 derajat; garis yang melintas batas tidak dipotong.",
+    disclaimer: "Data OSM untuk penyaringan internal; bukan jaringan jalan resmi, bukan penetapan fungsi/kelas/kewenangan, dan bukan rute evakuasi."
+  };
+  return {
+    id: "RDTR-YG-NETWORK-EVIDENCE-V0.1",
+    version: "0.1.0-internal",
+    status: selected.length ? "partial_open_road_evidence" : "road_evidence_missing",
+    roads: collection,
+    classSummary,
+    villageCoverage,
+    evidenceGaps: [
+      { id: "NET-GAP-01", dataset: "Jaringan jalan resmi", status: "not_received", requirement: "Ruas, kelas/status/kewenangan, lebar/RUMIJA, kondisi, jembatan, pembatasan kendaraan, rencana peningkatan, metadata dan tanggal." },
+      { id: "NET-GAP-02", dataset: "Sungai, kanal, drainase, retensi, pintu air dan pasut", status: "not_received", requirement: "Geometri, dimensi, arah aliran, kapasitas, kondisi, operasi, genangan, pasut, elevasi dan penanggung jawab." },
+      { id: "NET-GAP-03", dataset: "Fasilitas umum dan sosial", status: "not_received", requirement: "Koordinat, jenis, hierarki, kapasitas, kondisi, cakupan pelayanan, aksesibilitas, risiko dan kebutuhan pengembangan." },
+      { id: "NET-GAP-04", dataset: "Pelabuhan, dermaga, tambatan dan jaringan perairan", status: "not_received", requirement: "Lokasi, status, fungsi, pengguna, kapasitas, alur, keselamatan, pasut, sedimentasi dan akses masyarakat." },
+      { id: "NET-GAP-05", dataset: "Air minum, sanitasi, persampahan, energi dan telekomunikasi", status: "not_received", requirement: "Jaringan/fasilitas, kapasitas, cakupan, gap, kualitas, redundansi, risiko, O&M dan rencana investasi." },
+      { id: "NET-GAP-06", dataset: "Bahaya dan evakuasi", status: "not_received", requirement: "Rob, banjir, abrasi, kebakaran, subsidensi, skenario iklim, populasi terpapar, fasilitas kritis, titik/ruang evakuasi dan waktu tempuh." }
+    ],
+    disclaimer: collection.metadata.disclaimer
+  };
+}
+
+function buildGeometryRegistry({ villageCount, rtrwCount, peatCount, forestCount, mangroveCandidateCount, ygZoneCount, structureNodeCount, structureAxisCount, roadEvidenceCount }) {
   return [
     {
       id: "GR-YG-STUDY-AREA",
@@ -1546,6 +1633,16 @@ function buildGeometryRegistry({ villageCount, rtrwCount, peatCount, forestCount
       source: "Garis lurus analitis dari referensi Bagan Kota ke referensi wilayah lokal",
       permittedUse: "Menguji hubungan layanan, kebutuhan data jaringan, redundansi akses, dan evakuasi.",
       limitation: "Bukan trase jalan, drainase, utilitas, jalur evakuasi, atau dasar pengadaan tanah."
+    },
+    {
+      id: "GR-YG-ROAD-EVIDENCE",
+      mapRef: "map.ygRoadEvidence",
+      status: roadEvidenceCount ? "available_open_data_screening" : "not_available",
+      featureCount: roadEvidenceCount,
+      role: "open_road_evidence_not_official_network",
+      source: "OpenStreetMap contributors via Overpass; subset yang beririsan dengan wilayah kajian",
+      permittedUse: "Penyaringan keterhubungan dan prioritas verifikasi jaringan nyata.",
+      limitation: "Bukan jaringan jalan resmi; kelas, kewenangan, kondisi, lebar, jembatan dan keterhubungan harus diverifikasi."
     },
     {
       id: "GR-RTRW-PROVINCE",
@@ -2131,12 +2228,12 @@ function buildYgZoningCodebook(zoning) {
   };
 }
 
-function buildYgDraftRdtr(zoning, zoningCodebook, structureDraft) {
+function buildYgDraftRdtr(zoning, zoningCodebook, structureDraft, networkEvidence) {
   const metadata = zoning.metadata || {};
   return {
-    id: "RDTR-YG-BAGANSIAPIAPI-V0.4",
+    id: "RDTR-YG-BAGANSIAPIAPI-V0.5",
     title: "Rancangan RDTR Alternatif Bagansiapiapi versi Yayasan Gambut",
-    version: "0.4.0-internal",
+    version: "0.5.0-internal",
     sourceGeometryVersion: metadata.version || "0.2.0-internal",
     status: "provisional_internal_spatial_draft",
     legalCharacter: "Kajian dan rancangan teknis internal; tidak mempunyai akibat hukum dan tidak menggantikan kewenangan pemerintah daerah untuk menyusun serta menetapkan RDTR.",
@@ -2158,6 +2255,16 @@ function buildYgDraftRdtr(zoning, zoningCodebook, structureDraft) {
       axisCount: structureDraft.axes.features.length,
       networkSystems: structureDraft.networkSystems,
       disclaimer: structureDraft.disclaimer
+    },
+    networkEvidence: {
+      id: networkEvidence.id,
+      version: networkEvidence.version,
+      status: networkEvidence.status,
+      roadMetadata: networkEvidence.roads.metadata,
+      roadClassSummary: networkEvidence.classSummary,
+      villageRoadCoverage: networkEvidence.villageCoverage,
+      evidenceGaps: networkEvidence.evidenceGaps,
+      disclaimer: networkEvidence.disclaimer
     },
     components: [
       { id: "YG-RDTR-01", label: "Tujuan dan strategi WP", status: "provisional", outputRef: "ygPlan.planningObjective" },
@@ -2237,7 +2344,7 @@ function recommendationRows(metrics) {
   return rows;
 }
 
-export function buildAnalysis({ rtrw, administration, peat, forest, mangrove, mangroveCandidates = featureCollection([]) }) {
+export function buildAnalysis({ rtrw, administration, peat, forest, mangrove, mangroveCandidates = featureCollection([]), roads = featureCollection([]) }) {
   const warnings = new Set();
   const villages = (administration.features || []).filter(feature => {
     const props = feature.properties || {};
@@ -2397,6 +2504,7 @@ export function buildAnalysis({ rtrw, administration, peat, forest, mangrove, ma
   const analysisProgramme = buildAnalysisProgramme(mandatoryAnalysisMatrix);
   const ygPlanningUnits = buildYgPlanningUnits(villages, villageMetrics);
   const ygStructureDraft = buildYgStructureDraft(villages, villageMetrics);
+  const ygNetworkEvidence = buildYgNetworkEvidence({ roads, studyArea, villages });
   const ygCandidateZones = buildYgCandidateZoning({
     studyArea,
     rtrwMap,
@@ -2405,7 +2513,7 @@ export function buildAnalysis({ rtrw, administration, peat, forest, mangrove, ma
     mangroveCandidateMap
   });
   const zoningCodebook = buildYgZoningCodebook(ygCandidateZones);
-  const ygDraftRdtr = buildYgDraftRdtr(ygCandidateZones, zoningCodebook, ygStructureDraft);
+  const ygDraftRdtr = buildYgDraftRdtr(ygCandidateZones, zoningCodebook, ygStructureDraft, ygNetworkEvidence);
   const policyMapFramework = buildPolicyMapFramework({
     summary,
     peatCount: peatMap.length,
@@ -2456,7 +2564,7 @@ export function buildAnalysis({ rtrw, administration, peat, forest, mangrove, ma
     crossCuttingGates: buildCrossCuttingGates(),
     mandatoryAnalysisMatrix,
     analysisProgramme,
-    ygPlan: buildYgPlan(ygCandidateZones, zoningCodebook, ygStructureDraft),
+    ygPlan: buildYgPlan(ygCandidateZones, zoningCodebook, ygStructureDraft, ygNetworkEvidence),
     geometryRegistry: buildGeometryRegistry({
       villageCount: villages.length,
       rtrwCount: rtrwMap.length,
@@ -2465,7 +2573,8 @@ export function buildAnalysis({ rtrw, administration, peat, forest, mangrove, ma
       mangroveCandidateCount: mangroveCandidateMap.length,
       ygZoneCount: ygCandidateZones.features.length,
       structureNodeCount: ygStructureDraft.nodes.features.length,
-      structureAxisCount: ygStructureDraft.axes.features.length
+      structureAxisCount: ygStructureDraft.axes.features.length,
+      roadEvidenceCount: ygNetworkEvidence.roads.features.length
     }),
     consultationQuestions: [
       "Apa dasar hukum dan analitis penetapan WP yang mencakup 11 wilayah, serta bagaimana keterkaitannya dengan RTRW Kabupaten Rokan Hilir yang berlaku?",
@@ -2484,6 +2593,7 @@ export function buildAnalysis({ rtrw, administration, peat, forest, mangrove, ma
       ygPlanningUnits,
       ygStructureNodes: ygStructureDraft.nodes,
       ygStructureAxes: ygStructureDraft.axes,
+      ygRoadEvidence: ygNetworkEvidence.roads,
       rtrw: featureCollection(rtrwMap),
       peat: featureCollection(peatMap),
       forest: featureCollection(forestMap),
@@ -2506,7 +2616,8 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     peat: readJson(path.join(REPO_ROOT, "data/Gambut_BBSDLP_2019.geojson"), "Gambut BBSDLP"),
     forest: readJson(path.join(REPO_ROOT, "data/kawasan_hutan_sk_903.geojson"), "Kawasan hutan"),
     mangrove: readJson(path.join(REPO_ROOT, "data/mangrove-priority-rokan-hilir-results.json"), "Analisis mangrove"),
-    mangroveCandidates: readJson(path.join(REPO_ROOT, "data/mangrove-priority-rokan-hilir-candidates.geojson"), "Kandidat mangrove")
+    mangroveCandidates: readJson(path.join(REPO_ROOT, "data/mangrove-priority-rokan-hilir-candidates.geojson"), "Kandidat mangrove"),
+    roads: readJson(path.join(REPO_ROOT, "data/mangrove-priority-rokan-hilir-roads-osm.geojson"), "Jaringan jalan OSM Rokan Hilir")
   });
   fs.writeFileSync(outputPath, JSON.stringify(analysis));
   console.log(JSON.stringify({
