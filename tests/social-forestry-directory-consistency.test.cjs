@@ -72,7 +72,7 @@ test("scheme summary cards are accessible directory filters", () => {
   assert.match(directory, /data-area-scheme=/);
   assert.match(directory, /aria-pressed=/);
   assert.match(directory, /schemeGrid\.addEventListener\("click"/);
-  assert.match(page, /social-forestry-directory-public\.js\?v=20260919-public-staff-split1/);
+  assert.match(page, /social-forestry-directory-public\.js\?v=20260920-public-directory1/);
 });
 
 test("verified late-2025 profiles keep their authoritative decree and regency", () => {

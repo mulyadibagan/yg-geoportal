@@ -29,6 +29,21 @@ test("public PS pages do not load a map or staff data access", () => {
   });
 });
 
+test("public PS directory uses responsive cards and progressive loading", () => {
+  const page = read("social-forestry-directory.html");
+  const controller = read("js/social-forestry-directory-public.js");
+  const styles = read("css/social-forestry-directory-public.css");
+
+  assert.match(page, /social-forestry-regency\.css\?v=20260920-public-directory1/);
+  assert.match(page, /social-forestry-directory-public\.css\?v=20260920-public-directory1/);
+  assert.match(page, /id="load-more"/);
+  assert.match(controller, /var visibleLimit = 18/);
+  assert.match(controller, /shown\.slice\(0, visibleLimit\)/);
+  assert.match(controller, /visibleLimit \+= pageSize/);
+  assert.match(styles, /grid-template-columns:repeat\(5,minmax\(0,1fr\)\)/);
+  assert.match(styles, /\.psd-regency-grid\{grid-template-columns:1fr\}/);
+});
+
 test("public PS detail payload contains no RKPS fields or documents", () => {
   const details = JSON.parse(read("data/social-forestry-details.json"));
   visit(details, (key, value) => {
