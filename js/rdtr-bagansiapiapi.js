@@ -332,6 +332,11 @@
     var structureItems = [];
     (structure.centres || structure.centers || []).forEach(function (row) { structureItems.push(Object.assign({ type: "Pusat pelayanan" }, row)); });
     (structure.networks || []).forEach(function (row) { structureItems.push(Object.assign({ type: "Jaringan" }, row)); });
+    (structure.networkSystems || []).forEach(function (row) { structureItems.push(Object.assign({ type: "Sistem jaringan", direction: row.evidence }, row)); });
+    document.getElementById("rdtr-structure-summary").innerHTML =
+      '<div class="rdtr-structure-counts"><span><strong>' + number(structure.referenceNodeCount, 0) + '</strong> simpul referensi</span><span><strong>' +
+      number(structure.referenceAxisCount, 0) + '</strong> sumbu hubungan</span></div><p class="rdtr-component-note">' +
+      esc(structure.geometryRule || "Geometri struktur belum tersedia.") + '</p>';
     document.getElementById("rdtr-structure-plan").innerHTML = '<div class="rdtr-plan-items">' + structureItems.map(planItem).join("") + "</div>";
 
     var pattern = plan.patternPlan || {};
@@ -804,6 +809,51 @@
         }
       }).addTo(map);
     }
+    if (data.map.ygStructureAxes) {
+      state.layers.ygStructureAxes = L.geoJSON(data.map.ygStructureAxes, {
+        renderer: L.canvas({ padding: .5 }),
+        style: { color: "#493b85", weight: 2.2, dashArray: "8 6", opacity: .82 },
+        onEachFeature: function (feature, layer) {
+          var props = feature.properties || {};
+          layer.bindPopup(popup("Sumbu hubungan struktur YG · bukan trase", {
+            "ID": props.id,
+            "Hubungan": (props.fromName || "") + " — " + (props.toName || ""),
+            "Peran": roleLabel(props.role),
+            "Tujuan uji": props.purpose,
+            "Syarat pembentukan rute": props.routingRequirements,
+            "Status geometri": statusLabel(props.geometryStatus),
+            "Akibat hukum": "Tidak ada; hubungan analitis internal"
+          }));
+        }
+      }).addTo(map);
+    }
+    if (data.map.ygStructureNodes) {
+      state.layers.ygStructureNodes = L.geoJSON(data.map.ygStructureNodes, {
+        pointToLayer: function (feature, latlng) {
+          var primary = (feature.properties || {}).hierarchy === "primary_reference";
+          return L.circleMarker(latlng, {
+            radius: primary ? 8 : 6,
+            color: primary ? "#6a301a" : "#493b85",
+            weight: 2.5,
+            fillColor: primary ? "#f1a86f" : "#b9afe8",
+            fillOpacity: .92
+          });
+        },
+        onEachFeature: function (feature, layer) {
+          var props = feature.properties || {};
+          layer.bindPopup(popup("Simpul referensi struktur YG · bukan lokasi fasilitas", {
+            "ID": props.id,
+            "Wilayah": props.name,
+            "Hierarki uji": statusLabel(props.hierarchy),
+            "Peran": roleLabel(props.role),
+            "Tujuan uji": props.purpose,
+            "Data pengunci": props.requiredEvidence,
+            "Status geometri": statusLabel(props.geometryStatus),
+            "Akibat hukum": "Tidak ada; titik analitis internal"
+          }));
+        }
+      }).addTo(map);
+    }
     state.layers.study = L.geoJSON(data.map.studyArea, {
       style: { color: "#123f38", weight: 2.5, fillOpacity: .02 },
       onEachFeature: function (feature, layer) {
@@ -844,6 +894,8 @@
       "Arahan YG · verifikasi non-APL": state.layers.forest
     };
     if (state.layers.ygCandidateZones) overlays["Rancangan zonasi RDTR YG v0.2"] = state.layers.ygCandidateZones;
+    if (state.layers.ygStructureAxes) overlays["Struktur YG · sumbu hubungan, bukan trase"] = state.layers.ygStructureAxes;
+    if (state.layers.ygStructureNodes) overlays["Struktur YG · simpul referensi"] = state.layers.ygStructureNodes;
     if (state.layers.mangroveCandidates) overlays["Arahan YG · perlindungan/pemulihan pesisir"] = state.layers.mangroveCandidates;
     if (state.layers.ygUnits) overlays["Unit penyaringan YG · bukan zonasi"] = state.layers.ygUnits;
     state.layerControl = L.control.layers({ "Peta jalan": road, "Citra satelit": satellite }, overlays, {
@@ -1342,6 +1394,25 @@
     downloadJson(collection, "rancangan-zonasi-rdtr-yg-bagansiapiapi-v0.2.geojson", "application/geo+json;charset=utf-8");
   }
 
+  function exportYgStructure() {
+    var mapData = state.analysis.map || {};
+    var nodes = mapData.ygStructureNodes && mapData.ygStructureNodes.features || [];
+    var axes = mapData.ygStructureAxes && mapData.ygStructureAxes.features || [];
+    if (!nodes.length && !axes.length) return;
+    downloadJson({
+      type: "FeatureCollection",
+      name: "Rancangan struktur ruang analitis RDTR YG v0.4",
+      metadata: {
+        access: "staff_only",
+        version: "0.1.0-internal",
+        nodeCount: nodes.length,
+        axisCount: axes.length,
+        disclaimer: "Simpul bukan lokasi fasilitas dan sumbu bukan trase jalan, drainase, utilitas, atau jalur evakuasi. Seluruh geometri hanya hubungan analitis internal tanpa akibat hukum."
+      },
+      features: nodes.concat(axes)
+    }, "rancangan-struktur-ruang-rdtr-yg-bagansiapiapi-v0.1-internal.geojson", "application/geo+json;charset=utf-8");
+  }
+
   function exportPolicyMap() {
     var framework = state.analysis.policyMapFramework || {};
     var features = [];
@@ -1466,6 +1537,7 @@
     document.getElementById("rdtr-export-yg-json").addEventListener("click", exportYgJson);
     document.getElementById("rdtr-export-yg-geojson").addEventListener("click", exportYgGeoJson);
     document.getElementById("rdtr-export-yg-zones").addEventListener("click", exportYgCandidateZones);
+    document.getElementById("rdtr-export-structure-geojson").addEventListener("click", exportYgStructure);
     document.getElementById("rdtr-export-policy-map").addEventListener("click", exportPolicyMap);
     document.getElementById("rdtr-export-draft-csv").addEventListener("click", exportDraftComparisonCsv);
     document.getElementById("rdtr-export-draft-geojson").addEventListener("click", exportDraftComparisonGeoJson);

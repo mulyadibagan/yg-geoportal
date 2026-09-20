@@ -306,6 +306,9 @@
 .rdtr-geometry-row small { margin-top: 3px; color: var(--rdtr-muted); font-size: .67rem; line-height: 1.35; }
 .rdtr-legal-ref { display: block; margin-top: 7px; color: #5c6862; font-size: .7rem; line-height: 1.4; }
 .rdtr-component-note { margin: 0; padding: 10px 15px; border-left: 3px solid var(--rdtr-amber); background: #fff8e9; color: #514a38; font-size: .76rem; line-height: 1.45; }
+.rdtr-structure-counts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; padding: 10px 12px; }
+.rdtr-structure-counts span { padding: 8px; border-radius: 9px; background: #edf3f1; color: #385a51; font-size: .69rem; }
+.rdtr-structure-counts strong { display: block; color: var(--rdtr-ink); font-size: 1.05rem; }
 .rdtr-plan-traceability { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; padding: 13px 22px 22px; }
 .rdtr-trace-item { padding: 12px; border: 1px solid var(--rdtr-line); border-radius: 11px; background: #f9fbfa; }
 .rdtr-trace-item header { display: flex; align-items: flex-start; justify-content: space-between; gap: 7px; }

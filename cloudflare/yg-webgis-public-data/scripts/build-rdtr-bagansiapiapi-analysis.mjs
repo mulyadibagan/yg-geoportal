@@ -7,6 +7,8 @@ import {
   difference,
   featureCollection,
   intersect,
+  lineString,
+  pointOnFeature,
   simplify,
   union
 } from "@turf/turf";
@@ -1001,7 +1003,7 @@ function buildAnalysisProgramme(rows) {
   };
 }
 
-function buildYgPlan(ygCandidateZones = featureCollection([]), zoningCodebook = {}) {
+function buildYgPlan(ygCandidateZones = featureCollection([]), zoningCodebook = {}, structureDraft = {}) {
   const geometryDisclaimer = "Rancangan YG memiliki geometri zona internal untuk analisis dan konsultasi, tetapi tidak menetapkan batas WP, SWP, blok, subblok, zona, jaringan, atau lokasi program secara hukum. Pematangan wajib memakai peta dasar skala 1:5.000, survei, RTRW yang sah, KLHS, serta validasi lintas sektor dan masyarakat.";
   const zoneFeatures = ygCandidateZones.features || [];
   function zoneMetric(families) {
@@ -1100,8 +1102,12 @@ function buildYgPlan(ygCandidateZones = featureCollection([]), zoningCodebook = 
       reviewTrigger: "Tinjau ulang setelah RTRW kabupaten, data skala 1:5.000, KLHS, 21 analisis, verifikasi lapangan, dan matriks tanggapan konsultasi tersedia."
     },
     structurePlan: {
-      status: "conceptual_structure_geometry_pending",
+      status: "analytical_reference_geometry_v0_1",
       disclaimer: geometryDisclaimer,
+      referenceNodeCount: structureDraft.nodes?.features?.length || 0,
+      referenceAxisCount: structureDraft.axes?.features?.length || 0,
+      geometryRule: structureDraft.geometryRule || "Belum tersedia.",
+      networkSystems: structureDraft.networkSystems || [],
       centres: [
         {
           id: "CTR-YG-1",
@@ -1410,7 +1416,96 @@ function buildYgPlanningUnits(villages, villageMetrics) {
   return collection;
 }
 
-function buildGeometryRegistry({ villageCount, rtrwCount, peatCount, forestCount, mangroveCandidateCount, ygZoneCount }) {
+function buildYgStructureDraft(villages, villageMetrics) {
+  const metricsByName = new Map(villageMetrics.map(row => [normalize(row.name), row]));
+  const primaryName = "bagan kota";
+  const coastalNames = new Set(["bagan jawa pesisir", "bagan punak pesisir"]);
+  const nodeFeatures = villages.map((village, index) => {
+    const sourceName = village.properties?.WADMKD || village.properties?.NAMOBJ || `Wilayah ${index + 1}`;
+    const key = normalize(sourceName);
+    const metrics = metricsByName.get(key);
+    const node = pointOnFeature(village);
+    const role = key === primaryName
+      ? "primary_service_centre_study_reference"
+      : coastalNames.has(key)
+        ? "coastal_livelihood_and_evacuation_study_reference"
+        : "local_service_centre_study_reference";
+    node.properties = {
+      id: `STR-NODE-${String(index + 1).padStart(2, "0")}`,
+      villageId: metrics?.id || "",
+      name: metrics?.name || sourceName,
+      role,
+      hierarchy: key === primaryName ? "primary_reference" : "local_reference",
+      screeningPriority: metrics ? planningUnitScreeningPriority(metrics) : "review",
+      geometryStatus: "analytical_point_on_administrative_polygon_not_facility_location",
+      purpose: key === primaryName
+        ? "Titik referensi untuk menguji pusat pelayanan utama Bagansiapiapi, jangkauan layanan, kapasitas, keselamatan, dan hubungan antarpusat."
+        : coastalNames.has(key)
+          ? "Titik referensi untuk menguji layanan pesisir, penghidupan, tambatan, akses publik, dan evakuasi tanpa menetapkan lokasi fasilitas."
+          : "Titik referensi untuk menguji kebutuhan pusat pelayanan lokal, jangkauan layanan dasar, akses aman, dan evakuasi.",
+      requiredEvidence: "Inventaris fasilitas dan kapasitas; jaringan jalan/perairan; waktu tempuh; penduduk; bahaya; lahan; akses kelompok rentan; survei koordinat skala 1:5.000.",
+      legalEffect: "none"
+    };
+    return node;
+  });
+  const primary = nodeFeatures.find(feature => normalize(feature.properties?.name) === primaryName);
+  if (!primary) throw new Error("Bagan Kota tidak ditemukan untuk referensi struktur ruang YG");
+  const axisFeatures = nodeFeatures.filter(feature => feature !== primary).map((destination, index) => {
+    const coastal = destination.properties.role === "coastal_livelihood_and_evacuation_study_reference";
+    return lineString([primary.geometry.coordinates, destination.geometry.coordinates], {
+      id: `STR-AXIS-${String(index + 1).padStart(2, "0")}`,
+      fromNodeId: primary.properties.id,
+      fromName: primary.properties.name,
+      toNodeId: destination.properties.id,
+      toName: destination.properties.name,
+      role: coastal ? "coastal_access_and_evacuation_study_axis" : "service_and_evacuation_study_axis",
+      geometryStatus: "straight_line_connectivity_test_not_transport_route",
+      purpose: coastal
+        ? "Menguji kebutuhan konektivitas pusat–pesisir, layanan perairan, logistik masyarakat, serta evakuasi multi-moda."
+        : "Menguji hubungan pusat–wilayah, jangkauan layanan, redundansi akses, dan kebutuhan evakuasi.",
+      routingRequirements: "Jangan ditafsirkan sebagai trase. Rute harus dibentuk dari jaringan eksisting terverifikasi, kondisi jembatan, hak jalan, elevasi/genangan, keselamatan, biaya, dan dampak lingkungan-sosial.",
+      legalEffect: "none"
+    });
+  });
+  const disclaimer = "Titik dibuat dengan point-on-feature pada batas administrasi dan garis adalah hubungan lurus analitis. Keduanya bukan lokasi fasilitas, bukan trase jalan/drainase/utilitas, bukan usulan pembebasan lahan, dan bukan dasar KKPR.";
+  const nodes = featureCollection(nodeFeatures);
+  nodes.name = "Simpul referensi analitis struktur ruang RDTR YG v0.4";
+  nodes.metadata = {
+    access: "staff_only",
+    status: "analytical_reference_points",
+    version: "0.1.0-internal",
+    primaryNodeId: primary.properties.id,
+    featureCount: nodeFeatures.length,
+    disclaimer
+  };
+  const axes = featureCollection(axisFeatures);
+  axes.name = "Sumbu konektivitas analitis struktur ruang RDTR YG v0.4";
+  axes.metadata = {
+    access: "staff_only",
+    status: "analytical_straight_line_relationships",
+    version: "0.1.0-internal",
+    featureCount: axisFeatures.length,
+    disclaimer
+  };
+  return {
+    id: "RDTR-YG-BAGANSIAPIAPI-STRUCTURE-V0.1",
+    version: "0.1.0-internal",
+    status: "analytical_reference_geometry",
+    geometryRule: "Simpul memakai titik-dalam-poligon administrasi sebagai referensi kebutuhan; sumbu menghubungkan referensi utama Bagan Kota ke referensi lokal untuk menguji hubungan, bukan menggambar trase.",
+    nodes,
+    axes,
+    networkSystems: [
+      { id: "SYS-YG-01", name: "Mobilitas aman dan evakuasi", status: "routing_pending", evidence: "Jalan/perairan eksisting, kelas dan kondisi, jembatan, waktu tempuh, genangan, fasilitas kritis, titik evakuasi." },
+      { id: "SYS-YG-02", name: "Jaringan biru–hijau dan drainase", status: "geometry_pending", evidence: "Sungai, drainase, kanal, pasut, elevasi, retensi, pintu air, KHG, subsidensi, dan skenario iklim." },
+      { id: "SYS-YG-03", name: "Air minum dan sanitasi", status: "capacity_pending", evidence: "Sumber, jaringan, cakupan, kualitas, kapasitas, gap layanan, sistem setempat, dan risiko kontaminasi." },
+      { id: "SYS-YG-04", name: "Persampahan dan limbah", status: "capacity_pending", evidence: "Timbulan, pengumpulan, fasilitas, rute, kapasitas, penerima dampak, dan perlindungan air/pesisir." },
+      { id: "SYS-YG-05", name: "Energi, telekomunikasi, dan proteksi kebakaran", status: "resilience_pending", evidence: "Cakupan, kapasitas, redundansi, gangguan, akses pemadam, sumber air, dan fasilitas vital." }
+    ],
+    disclaimer
+  };
+}
+
+function buildGeometryRegistry({ villageCount, rtrwCount, peatCount, forestCount, mangroveCandidateCount, ygZoneCount, structureNodeCount, structureAxisCount }) {
   return [
     {
       id: "GR-YG-STUDY-AREA",
@@ -1431,6 +1526,26 @@ function buildGeometryRegistry({ villageCount, rtrwCount, peatCount, forestCount
       source: "Turunan sederhana batas administrasi untuk analisis YG",
       permittedUse: "Membaca keputusan awal dan arah analisis per kelurahan/kepenghuluan.",
       limitation: "Tidak memiliki akibat hukum zonasi dan tidak boleh digunakan untuk KKPR."
+    },
+    {
+      id: "GR-YG-STRUCTURE-NODES",
+      mapRef: "map.ygStructureNodes",
+      status: "analytical_reference_geometry",
+      featureCount: structureNodeCount,
+      role: "service_need_reference_not_facility_location",
+      source: "Titik-dalam-poligon dari 11 unit administrasi untuk uji jangkauan layanan YG",
+      permittedUse: "Menguji hierarki kebutuhan pusat, jangkauan layanan, prioritas survei, dan evakuasi.",
+      limitation: "Bukan lokasi fasilitas atau pusat pelayanan yang ditetapkan."
+    },
+    {
+      id: "GR-YG-STRUCTURE-AXES",
+      mapRef: "map.ygStructureAxes",
+      status: "analytical_reference_geometry",
+      featureCount: structureAxisCount,
+      role: "connectivity_relationship_not_route",
+      source: "Garis lurus analitis dari referensi Bagan Kota ke referensi wilayah lokal",
+      permittedUse: "Menguji hubungan layanan, kebutuhan data jaringan, redundansi akses, dan evakuasi.",
+      limitation: "Bukan trase jalan, drainase, utilitas, jalur evakuasi, atau dasar pengadaan tanah."
     },
     {
       id: "GR-RTRW-PROVINCE",
@@ -2016,12 +2131,12 @@ function buildYgZoningCodebook(zoning) {
   };
 }
 
-function buildYgDraftRdtr(zoning, zoningCodebook) {
+function buildYgDraftRdtr(zoning, zoningCodebook, structureDraft) {
   const metadata = zoning.metadata || {};
   return {
-    id: "RDTR-YG-BAGANSIAPIAPI-V0.3",
+    id: "RDTR-YG-BAGANSIAPIAPI-V0.4",
     title: "Rancangan RDTR Alternatif Bagansiapiapi versi Yayasan Gambut",
-    version: "0.3.0-internal",
+    version: "0.4.0-internal",
     sourceGeometryVersion: metadata.version || "0.2.0-internal",
     status: "provisional_internal_spatial_draft",
     legalCharacter: "Kajian dan rancangan teknis internal; tidak mempunyai akibat hukum dan tidak menggantikan kewenangan pemerintah daerah untuk menyusun serta menetapkan RDTR.",
@@ -2034,9 +2149,19 @@ function buildYgDraftRdtr(zoning, zoningCodebook) {
       zones: zoning.features.map(feature => ({ ...feature.properties }))
     },
     zoningCodebook,
+    structureDraft: {
+      id: structureDraft.id,
+      version: structureDraft.version,
+      status: structureDraft.status,
+      geometryRule: structureDraft.geometryRule,
+      nodeCount: structureDraft.nodes.features.length,
+      axisCount: structureDraft.axes.features.length,
+      networkSystems: structureDraft.networkSystems,
+      disclaimer: structureDraft.disclaimer
+    },
     components: [
       { id: "YG-RDTR-01", label: "Tujuan dan strategi WP", status: "provisional", outputRef: "ygPlan.planningObjective" },
-      { id: "YG-RDTR-02", label: "Rencana struktur ruang", status: "concept_only", outputRef: "ygPlan.structurePlan" },
+      { id: "YG-RDTR-02", label: "Rencana struktur ruang", status: "analytical_reference_geometry_v0_1", outputRef: "map.ygStructureNodes/map.ygStructureAxes" },
       { id: "YG-RDTR-03", label: "Rencana pola ruang", status: "provisional_internal_zone_geometry", outputRef: "map.ygCandidateZones" },
       { id: "YG-RDTR-04", label: "Ketentuan pemanfaatan ruang", status: "candidate_only", outputRef: "ygPlan.programs" },
       { id: "YG-RDTR-05", label: "Peraturan zonasi", status: "candidate_itbx_v0_1", outputRef: "ygPlan.zoningRules" }
@@ -2271,6 +2396,7 @@ export function buildAnalysis({ rtrw, administration, peat, forest, mangrove, ma
   const mandatoryAnalysisMatrix = buildMandatoryAnalysisMatrix(summary);
   const analysisProgramme = buildAnalysisProgramme(mandatoryAnalysisMatrix);
   const ygPlanningUnits = buildYgPlanningUnits(villages, villageMetrics);
+  const ygStructureDraft = buildYgStructureDraft(villages, villageMetrics);
   const ygCandidateZones = buildYgCandidateZoning({
     studyArea,
     rtrwMap,
@@ -2279,7 +2405,7 @@ export function buildAnalysis({ rtrw, administration, peat, forest, mangrove, ma
     mangroveCandidateMap
   });
   const zoningCodebook = buildYgZoningCodebook(ygCandidateZones);
-  const ygDraftRdtr = buildYgDraftRdtr(ygCandidateZones, zoningCodebook);
+  const ygDraftRdtr = buildYgDraftRdtr(ygCandidateZones, zoningCodebook, ygStructureDraft);
   const policyMapFramework = buildPolicyMapFramework({
     summary,
     peatCount: peatMap.length,
@@ -2330,14 +2456,16 @@ export function buildAnalysis({ rtrw, administration, peat, forest, mangrove, ma
     crossCuttingGates: buildCrossCuttingGates(),
     mandatoryAnalysisMatrix,
     analysisProgramme,
-    ygPlan: buildYgPlan(ygCandidateZones, zoningCodebook),
+    ygPlan: buildYgPlan(ygCandidateZones, zoningCodebook, ygStructureDraft),
     geometryRegistry: buildGeometryRegistry({
       villageCount: villages.length,
       rtrwCount: rtrwMap.length,
       peatCount: peatMap.length,
       forestCount: forestMap.length,
       mangroveCandidateCount: mangroveCandidateMap.length,
-      ygZoneCount: ygCandidateZones.features.length
+      ygZoneCount: ygCandidateZones.features.length,
+      structureNodeCount: ygStructureDraft.nodes.features.length,
+      structureAxisCount: ygStructureDraft.axes.features.length
     }),
     consultationQuestions: [
       "Apa dasar hukum dan analitis penetapan WP yang mencakup 11 wilayah, serta bagaimana keterkaitannya dengan RTRW Kabupaten Rokan Hilir yang berlaku?",
@@ -2354,6 +2482,8 @@ export function buildAnalysis({ rtrw, administration, peat, forest, mangrove, ma
     map: {
       studyArea: featureCollection(villages),
       ygPlanningUnits,
+      ygStructureNodes: ygStructureDraft.nodes,
+      ygStructureAxes: ygStructureDraft.axes,
       rtrw: featureCollection(rtrwMap),
       peat: featureCollection(peatMap),
       forest: featureCollection(forestMap),

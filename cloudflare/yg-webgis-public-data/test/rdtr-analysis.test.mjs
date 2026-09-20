@@ -161,6 +161,8 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
   assert.ok(result.ygPlan.traceability.length > 0);
 
   assert.ok(result.geometryRegistry.some(row => row.id === "GR-YG-DRAFT-ZONES" && row.status === "provisional_internal_zone_geometry"));
+  assert.ok(result.geometryRegistry.some(row => row.id === "GR-YG-STRUCTURE-NODES" && row.featureCount === 11));
+  assert.ok(result.geometryRegistry.some(row => row.id === "GR-YG-STRUCTURE-AXES" && row.featureCount === 10));
   assert.ok(result.geometryRegistry.some(row => row.id === "GR-RTRW-ROHIL" && row.status === "not_verified"));
   assert.ok(result.geometryRegistry.some(row => row.id === "GR-MANGROVE-CANDIDATES" && row.featureCount === 1));
   assert.equal(result.map.mangroveCandidates.features.length, 1);
@@ -185,8 +187,27 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
   assert.ok(result.map.ygPlanningUnits.metadata.geometryProcessing.includes("tolerance 0.00002"));
 
   assert.equal(result.ygDraftRdtr.status, "provisional_internal_spatial_draft");
-  assert.equal(result.ygDraftRdtr.version, "0.3.0-internal");
+  assert.equal(result.ygDraftRdtr.version, "0.4.0-internal");
   assert.equal(result.ygDraftRdtr.zoningCodebook.version, "0.1.0-internal");
+  assert.equal(result.ygDraftRdtr.structureDraft.status, "analytical_reference_geometry");
+  assert.equal(result.ygDraftRdtr.structureDraft.nodeCount, 11);
+  assert.equal(result.ygDraftRdtr.structureDraft.axisCount, 10);
+  assert.equal(result.ygPlan.structurePlan.status, "analytical_reference_geometry_v0_1");
+  assert.equal(result.ygPlan.structurePlan.referenceNodeCount, 11);
+  assert.equal(result.ygPlan.structurePlan.referenceAxisCount, 10);
+  assert.equal(result.ygPlan.structurePlan.networkSystems.length, 5);
+  assert.equal(result.map.ygStructureNodes.features.length, 11);
+  assert.equal(result.map.ygStructureAxes.features.length, 10);
+  assert.equal(result.map.ygStructureNodes.features.filter(feature =>
+    feature.properties.hierarchy === "primary_reference").length, 1);
+  assert.ok(result.map.ygStructureNodes.features.every(feature =>
+    feature.geometry.type === "Point" && feature.properties.legalEffect === "none" &&
+    feature.properties.geometryStatus.includes("not_facility_location")
+  ));
+  assert.ok(result.map.ygStructureAxes.features.every(feature =>
+    feature.geometry.type === "LineString" && feature.properties.legalEffect === "none" &&
+    feature.properties.geometryStatus === "straight_line_connectivity_test_not_transport_route"
+  ));
   assert.equal(result.map.ygCandidateZones.metadata.status, "provisional_internal_zone_geometry");
   assert.ok(result.map.ygCandidateZones.features.length >= 4);
   assert.ok(result.map.ygCandidateZones.features.some(feature => feature.properties.code === "YG-ZK"));
