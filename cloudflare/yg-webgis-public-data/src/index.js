@@ -198,6 +198,7 @@ async function rspoGroupsApi(request, env) {
 }
 const PRIVATE_DATA_ROUTES = {
   "/api/staff/rtrw-riau-2018-2038": ["internal/spatial-planning/rtrw-riau-2018-2038.geojson", "application/geo+json; charset=utf-8"],
+  "/api/staff/feg-sk130-riau": ["internal/peat/feg-sk130-riau.geojson", "application/geo+json; charset=utf-8"],
   "/api/staff/rdtr-bagansiapiapi-analysis": ["internal/spatial-planning/rdtr-bagansiapiapi-analysis.json", "application/json; charset=utf-8"],
   "/api/staff/rspo-companies": ["internal/rspo/riau-companies.geojson", "application/geo+json; charset=utf-8"],
   "/api/staff/pbph-riau": ["internal/pbph/riau.geojson", "application/geo+json; charset=utf-8"],

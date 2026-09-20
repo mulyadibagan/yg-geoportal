@@ -3,6 +3,7 @@
   const base = 'https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev';
   const routes = {
     'data/RTRW_RIAU_2018_2038.geojson': '/api/staff/rtrw-riau-2018-2038',
+    'data/FEG_SK130_RIAU.geojson': '/api/staff/feg-sk130-riau',
     'data/rdtr-bagansiapiapi-analysis.json': '/api/staff/rdtr-bagansiapiapi-analysis',
     'data/rspo-company-boundaries.geojson': '/api/staff/rspo-companies',
     'data/PBPH_RIAU_052026.geojson': '/api/staff/pbph-riau',
@@ -18,6 +19,7 @@
   };
   const STAFF_ONLY_PUBLIC_PATHS = new Set([
     '/data/RTRW_RIAU_2018_2038.geojson',
+    '/data/FEG_SK130_RIAU.geojson',
     '/data/rdtr-bagansiapiapi-analysis.json',
     '/data/rspo-company-boundaries.geojson',
     '/data/PERUSAHAAN_SAWIT_RIAU_REFERENSI.geojson'

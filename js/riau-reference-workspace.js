@@ -16,7 +16,7 @@
     },
     spatial_ecology: {
       label: "Tata ruang & ekologi",
-      layers: ["rtrw_riau_2018_2038", "kawasan_hutan_sk_903", "gambut_bbsdlp_2019"]
+      layers: ["rtrw_riau_2018_2038", "kawasan_hutan_sk_903", "gambut_bbsdlp_2019", "feg_sk130_riau"]
     },
     governance: {
       label: "Izin & wilayah kelola",
@@ -24,7 +24,7 @@
     },
     programme: {
       label: "Perencanaan program YG",
-      layers: ["social_forestry_intervention_yg", "perhutanan_sosial_riau", "gambut_bbsdlp_2019", "rtrw_riau_2018_2038"]
+      layers: ["social_forestry_intervention_yg", "perhutanan_sosial_riau", "gambut_bbsdlp_2019", "feg_sk130_riau", "rtrw_riau_2018_2038"]
     }
   };
 

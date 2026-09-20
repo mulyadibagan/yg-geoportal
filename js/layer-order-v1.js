@@ -12,6 +12,7 @@
     "pbph_riau_052026",
     "perhutanan_sosial_riau",
     "perusahaan_sawit_riau",
+    "feg_sk130_riau",
     "upt_faperta_ur"
   ]);
 
