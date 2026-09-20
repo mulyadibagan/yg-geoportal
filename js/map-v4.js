@@ -521,7 +521,7 @@ L.control.scale({
     )
   };
 
-  baseMaps.OpenStreetMap.addTo(map);
+  baseMaps.Satelit.addTo(map);
   L.control.layers(baseMaps, null, { position: "topright" }).addTo(map);
 
   const layerObjects = {};
