@@ -450,9 +450,13 @@
     var programRows = Array.isArray(programs) ? programs : (programs.items || []);
     document.getElementById("rdtr-programs").innerHTML = (!Array.isArray(programs)
       ? '<div class="rdtr-program-status">' + statusBadge(programs.status) + statusBadge(programs.phasingStatus) +
-        '<p>Program belum memiliki lokasi final, penahapan lima tahunan, pelaksana, pembiayaan, atau komitmen anggaran.</p></div>'
-      : "") + '<div class="rdtr-plan-items">' +
-      programRows.map(planItem).join("") + "</div>";
+        '<p>Program belum memiliki lokasi final, nama pelaksana final, biaya, sumber pembiayaan, baseline, target, atau komitmen anggaran.</p></div>'
+      : "") + '<div class="rdtr-plan-items">' + programRows.map(planItem).join("") + "</div>" +
+      (programRows.length ? '<div class="rdtr-itbx-scroll"><table><thead><tr><th>ID</th><th>Prioritas</th><th>Tahap relatif</th><th>Kaitan zona</th><th>Indikator</th><th>Pembiayaan</th></tr></thead><tbody>' +
+        programRows.map(function (row) { return '<tr><td>' + esc(row.id) + '</td><td>' + priorityBadge(row.priority || "P1") + '</td><td>' +
+          esc(statusLabel(row.relativePhase || "pending")) + '</td><td>' + esc((row.linkedZoneCodes || []).join(", ") || "lokasi belum ditentukan") + '</td><td>' +
+          number((row.indicators || []).length, 0) + ' indikator · baseline/target menunggu data</td><td>' + esc(statusLabel(row.financingStatus || "pending")) + '</td></tr>'; }).join("") +
+        '</tbody></table></div><p class="rdtr-component-note">' + esc(programs.disclaimer || "Portofolio indikatif; bukan komitmen proyek atau anggaran.") + '</p>' : "");
 
     document.getElementById("rdtr-plan-traceability").innerHTML = (plan.traceability || []).map(function (row) {
       return '<article class="rdtr-trace-item"><header><strong>' + esc(row.planComponentRef || row.id) + "</strong>" +
@@ -1597,6 +1601,26 @@
     downloadJson(collection, "uji-kesiapan-pengembangan-zona-rdtr-yg-v0.8-internal.geojson", "application/geo+json;charset=utf-8");
   }
 
+  function exportProgrammePortfolioCsv() {
+    var programmes = state.analysis.ygPlan && state.analysis.ygPlan.programs || {};
+    var header = ["ID program", "Program", "Prioritas", "Tahap relatif", "Status lokasi", "Kode zona terkait", "Arahan", "Calon peran utama", "Status pembiayaan", "Indikator", "Satuan", "Baseline", "Target", "Referensi analisis", "Referensi regulasi"];
+    var lines = [header.map(csvCell).join(",")];
+    (programmes.items || []).forEach(function (row) {
+      var indicators = row.indicators && row.indicators.length ? row.indicators : [{ name: "belum dirumuskan", unit: null, baseline: null, target: null }];
+      indicators.forEach(function (indicator) {
+        lines.push([row.id, row.title, row.priority, row.relativePhase, row.spatialStatus, (row.linkedZoneCodes || []).join(" | "), row.direction,
+          row.candidateLeadRole, row.financingStatus, indicator.name, indicator.unit, indicator.baseline, indicator.target,
+          (row.analysisRefs || []).join(" | "), (row.regulationRefs || []).join(" | ")].map(csvCell).join(","));
+      });
+    });
+    var blob = new Blob(["\ufeff" + lines.join("\n")], { type: "text/csv;charset=utf-8" });
+    var link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "paket-indikasi-program-rdtr-yg-v0.9-internal.csv";
+    link.click();
+    URL.revokeObjectURL(link.href);
+  }
+
   function exportPolicyMap() {
     var framework = state.analysis.policyMapFramework || {};
     var features = [];
@@ -1726,6 +1750,7 @@
     document.getElementById("rdtr-export-service-evidence").addEventListener("click", exportServiceEvidence);
     document.getElementById("rdtr-export-service-access").addEventListener("click", exportServiceAccessCsv);
     document.getElementById("rdtr-export-readiness").addEventListener("click", exportDevelopmentReadiness);
+    document.getElementById("rdtr-export-programmes").addEventListener("click", exportProgrammePortfolioCsv);
     document.getElementById("rdtr-export-policy-map").addEventListener("click", exportPolicyMap);
     document.getElementById("rdtr-export-draft-csv").addEventListener("click", exportDraftComparisonCsv);
     document.getElementById("rdtr-export-draft-geojson").addEventListener("click", exportDraftComparisonGeoJson);

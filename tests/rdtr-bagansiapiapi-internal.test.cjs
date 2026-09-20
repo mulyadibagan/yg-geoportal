@@ -39,7 +39,7 @@ test("internal workspace renders the regulation-based YG plan without claiming o
   for (const id of [
     "rdtr-planning-workflow", "rdtr-cross-cutting-gates", "rdtr-yg-objective",
     "rdtr-yg-alternatives", "rdtr-structure-summary", "rdtr-structure-plan", "rdtr-export-structure-geojson",
-    "rdtr-export-road-evidence", "rdtr-export-service-evidence", "rdtr-export-service-access", "rdtr-export-readiness", "rdtr-network-evidence", "rdtr-service-evidence", "rdtr-service-access", "rdtr-development-readiness", "rdtr-network-gaps", "rdtr-pattern-plan",
+    "rdtr-export-road-evidence", "rdtr-export-service-evidence", "rdtr-export-service-access", "rdtr-export-readiness", "rdtr-export-programmes", "rdtr-network-evidence", "rdtr-service-evidence", "rdtr-service-access", "rdtr-development-readiness", "rdtr-network-gaps", "rdtr-pattern-plan",
     "rdtr-zoning-rules", "rdtr-programs", "rdtr-subzone-codebook", "rdtr-itbx-matrix",
     "rdtr-export-itbx-csv", "rdtr-plan-traceability",
     "rdtr-analysis-programme", "rdtr-analysis-search", "rdtr-analysis-priority",

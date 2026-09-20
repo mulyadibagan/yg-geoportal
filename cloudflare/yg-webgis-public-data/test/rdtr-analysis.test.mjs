@@ -168,7 +168,14 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
     row.status === "numeric_values_not_set" && Object.values(row.parameters).every(value => value === null)
   ));
   assert.ok(Object.values(result.ygPlan.zoningRules.numericIntensityParameters).every(value => value === null));
-  assert.ok(result.ygPlan.programs.items.length > 0);
+  assert.equal(result.ygPlan.programs.items.length, 8);
+  assert.equal(result.ygPlan.programs.version, "0.1.0-internal");
+  assert.ok(result.ygPlan.programs.items.every(row =>
+    ["P0", "P1", "P2"].includes(row.priority) && row.relativePhase && row.spatialStatus &&
+    row.linkedZoneCodes.length >= 1 && row.analysisRefs.length >= 1 && row.regulationRefs.length >= 1 &&
+    row.candidateLeadRole && row.financingStatus === "not_costed_not_committed" && row.indicators.length >= 2 &&
+    row.indicators.every(indicator => indicator.baseline === null && indicator.target === null)
+  ));
   assert.ok(result.ygPlan.traceability.length > 0);
 
   assert.ok(result.geometryRegistry.some(row => row.id === "GR-YG-DRAFT-ZONES" && row.status === "provisional_internal_zone_geometry"));
@@ -201,7 +208,9 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
   assert.ok(result.map.ygPlanningUnits.metadata.geometryProcessing.includes("tolerance 0.00002"));
 
   assert.equal(result.ygDraftRdtr.status, "provisional_internal_spatial_draft");
-  assert.equal(result.ygDraftRdtr.version, "0.8.0-internal");
+  assert.equal(result.ygDraftRdtr.version, "0.9.0-internal");
+  assert.equal(result.ygDraftRdtr.programmePortfolio.programmeCount, 8);
+  assert.equal(result.ygDraftRdtr.programmePortfolio.indicatorCount, 16);
   assert.equal(result.ygDraftRdtr.zoningCodebook.version, "0.1.0-internal");
   assert.equal(result.ygDraftRdtr.structureDraft.status, "analytical_reference_geometry");
   assert.equal(result.ygDraftRdtr.structureDraft.nodeCount, 11);
@@ -296,6 +305,7 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
     ...result.mandatoryAnalysisMatrix,
     result.ygPlan.planningObjective,
     ...result.ygPlan.strategies,
+    ...result.ygPlan.programs.items,
     ...result.ygPlan.traceability,
     ...result.ygPlan.zoningRules.itbxMatrix
   ];

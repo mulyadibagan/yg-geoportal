@@ -1017,6 +1017,10 @@ function buildYgPlan(ygCandidateZones = featureCollection([]), zoningCodebook = 
       areaHa: round(selected.reduce((sum, feature) => sum + areaHa(feature), 0))
     };
   }
+  function zoneCodes(families) {
+    return [...new Set(zoneFeatures.filter(feature => families.includes(feature.properties?.zoneFamily))
+      .map(feature => feature.properties?.code).filter(Boolean))].sort();
+  }
   return {
     version: "0.1.0-internal",
     status: "provisional_analytical_draft",
@@ -1271,46 +1275,135 @@ function buildYgPlan(ygCandidateZones = featureCollection([]), zoningCodebook = 
       ]
     },
     programs: {
-      status: "candidate_portfolio_no_budget_or_commitment",
-      phasingStatus: "not_set_pending_plan_horizon_and_fiscal_analysis",
+      id: "RDTR-YG-PROGRAMME-PORTFOLIO-V0.1",
+      version: "0.1.0-internal",
+      status: "candidate_programme_portfolio_pending_authority_budget_and_location_validation",
+      phasingStatus: "relative_sequence_only_pending_plan_horizon_and_fiscal_analysis",
+      implementationRule: "Program hanya dapat dipromosikan setelah lokasi, kewenangan, keluaran, indikator, baseline, target, biaya, sumber pembiayaan, pelaksana, risiko, serta mekanisme pemantauan disepakati dan dapat ditelusuri ke zona serta analisis.",
+      indicatorRule: "Nilai baseline dan target tidak diisi dengan asumsi; keduanya tetap null sampai data resmi atau hasil survei tervalidasi.",
       items: [
         {
           id: "PRG-YG-1",
           title: "Penyelesaian dasar hukum, data, dan peta skala RDTR",
-          status: "candidate",
-          direction: "Peroleh RTRW kabupaten, peta dasar rekomendasi BIG, basis data 1:5.000, metadata, dan audit topologi; gunakan seluruhnya untuk mematangkan geometri zona YG v0.2."
+          status: "candidate_precondition",
+          priority: "P0", relativePhase: "precondition", spatialStatus: "whole_planning_area_location_pending",
+          direction: "Peroleh RTRW kabupaten, peta dasar rekomendasi BIG, basis data 1:5.000, metadata, dan audit topologi; gunakan seluruhnya untuk mematangkan geometri zona YG v0.2.",
+          linkedZoneCodes: zoneCodes([...new Set(zoneFeatures.map(feature => feature.properties?.zoneFamily).filter(Boolean))]),
+          analysisRefs: ["A24-k", "A24-l", "A24-m", "A24-t"], regulationRefs: ["R02", "R03", "R04", "R15", "L02"],
+          candidateLeadRole: "Pemerintah kabupaten bersama perangkat daerah penataan ruang dan simpul jaringan informasi geospasial; penetapan nama instansi menunggu verifikasi kewenangan.",
+          financingStatus: "not_costed_not_committed",
+          indicators: [
+            { name: "Persentase wilayah dengan peta dasar tervalidasi skala 1:5.000", unit: "percent", baseline: null, target: null },
+            { name: "Jumlah zona lulus audit topologi dan atribut", unit: "zone", baseline: null, target: null }
+          ]
         },
         {
           id: "PRG-YG-2",
           title: "KLHS, hidrologi gambut, dan pengurangan risiko terpadu",
-          status: "candidate",
-          direction: "Selesaikan KLHS, fungsi KHG, tata air, subsidensi, kebakaran, rob, banjir, abrasi, skenario iklim, serta pilihan perlindungan/pemulihan."
+          status: "candidate_precondition",
+          priority: "P0", relativePhase: "precondition", spatialStatus: "zone_and_hydrological_unit_location_pending",
+          direction: "Selesaikan KLHS, fungsi KHG, tata air, subsidensi, kebakaran, rob, banjir, abrasi, skenario iklim, serta pilihan perlindungan/pemulihan.",
+          linkedZoneCodes: zoneCodes(["peat_hydrology_management", "coastal_mangrove_protection", "safe_urban_consolidation"]),
+          analysisRefs: ["A24-d", "A24-p", "A24-s", "A24-t"], regulationRefs: ["R05", "R09", "R10", "R11", "R12"],
+          candidateLeadRole: "Perangkat daerah lingkungan hidup, kebencanaan, pekerjaan umum, dan penataan ruang bersama instansi sektoral; kewenangan final belum ditetapkan.",
+          financingStatus: "not_costed_not_committed",
+          indicators: [
+            { name: "Zona yang memiliki skenario multi-bahaya dan arahan pengendalian", unit: "zone", baseline: null, target: null },
+            { name: "Rekomendasi KLHS yang terlacak ke geometri, aturan, atau program", unit: "recommendation", baseline: null, target: null }
+          ]
         },
         {
           id: "PRG-YG-3",
           title: "Perlindungan pesisir, mangrove, sungai, dan akses masyarakat",
-          status: "candidate",
-          direction: "Lengkapi kajian hidro-oseanografi dan sosial-tenurial, lindungi konektivitas, pulihkan lokasi prioritas, dan jaga ruang tangkap, tambat, serta akses publik."
+          status: "candidate_program",
+          priority: "P1", relativePhase: "phase_1_after_preconditions", spatialStatus: "candidate_zone_not_project_site",
+          direction: "Lengkapi kajian hidro-oseanografi dan sosial-tenurial, lindungi konektivitas, pulihkan lokasi prioritas, dan jaga ruang tangkap, tambat, serta akses publik.",
+          linkedZoneCodes: zoneCodes(["coastal_mangrove_protection", "higher_plan_protection_alignment"]),
+          analysisRefs: ["A24-d", "A24-e", "A24-g", "A24-n", "A24-s"], regulationRefs: ["R05", "R10", "R12", "R13"],
+          candidateLeadRole: "Perangkat daerah pesisir, lingkungan hidup, perikanan, dan desa bersama masyarakat; lokasi dan pembagian kewenangan menunggu kajian.",
+          financingStatus: "not_costed_not_committed",
+          indicators: [
+            { name: "Panjang/luas ekosistem dan akses pesisir dengan kondisi awal tervalidasi", unit: "mixed_pending_design", baseline: null, target: null },
+            { name: "Lokasi prioritas dengan persetujuan masyarakat dan rencana pemeliharaan", unit: "site", baseline: null, target: null }
+          ]
         },
         {
           id: "PRG-YG-4",
           title: "Layanan dasar, drainase, mobilitas aman, dan evakuasi",
-          status: "candidate",
-          direction: "Prioritaskan gap layanan dan fasilitas kritis berdasarkan kebutuhan, eksposur, kelompok rentan, kapasitas, operasi-pemeliharaan, dan kelayakan pembiayaan."
+          status: "candidate_program",
+          priority: "P1", relativePhase: "phase_1_after_preconditions", spatialStatus: "service_gap_location_not_determined",
+          direction: "Prioritaskan gap layanan dan fasilitas kritis berdasarkan kebutuhan, eksposur, kelompok rentan, kapasitas, operasi-pemeliharaan, dan kelayakan pembiayaan.",
+          linkedZoneCodes: zoneCodes(["safe_urban_consolidation", "community_livelihood_and_production", "function_pending_verification"]),
+          analysisRefs: ["A24-a", "A24-h", "A24-i", "A24-j", "A24-q"], regulationRefs: ["R02", "R03", "R08", "R10"],
+          candidateLeadRole: "Perangkat daerah pelayanan dasar, pekerjaan umum, perhubungan, kebencanaan, dan penyedia layanan; belum menjadi penugasan.",
+          financingStatus: "not_costed_not_committed",
+          indicators: [
+            { name: "Penduduk dengan akses layanan sesuai standar dan waktu tempuh", unit: "people_or_percent_pending_standard", baseline: null, target: null },
+            { name: "Fasilitas kritis dengan akses aman dan rencana kontinuitas", unit: "facility", baseline: null, target: null }
+          ]
         },
         {
           id: "PRG-YG-5",
           title: "Pemetaan partisipatif, tenurial, dan penghidupan",
-          status: "candidate",
-          direction: "Dokumentasikan hak/persetujuan, perhutanan sosial, ruang hidup, ekonomi lokal, konflik, kebutuhan transisi, dan respons terhadap masukan secara aman serta terpilah."
+          status: "candidate_precondition_and_continuous",
+          priority: "P0", relativePhase: "precondition_and_continuous", spatialStatus: "participatory_locations_pending_consent",
+          direction: "Dokumentasikan hak/persetujuan, perhutanan sosial, ruang hidup, ekonomi lokal, konflik, kebutuhan transisi, dan respons terhadap masukan secara aman serta terpilah.",
+          linkedZoneCodes: zoneCodes([...new Set(zoneFeatures.map(feature => feature.properties?.zoneFamily).filter(Boolean))]),
+          analysisRefs: ["A24-e", "A24-g", "A24-n", "A24-u"], regulationRefs: ["R01", "R06", "R07", "R09", "R13", "R14"],
+          candidateLeadRole: "Pemerintah kabupaten dan desa bersama pemegang hak, kelompok masyarakat, perempuan, pemuda, nelayan, dan kelompok rentan; fasilitator belum ditetapkan.",
+          financingStatus: "not_costed_not_committed",
+          indicators: [
+            { name: "Masukan dengan ID, lokasi, respons, dan jejak perubahan", unit: "submission", baseline: null, target: null },
+            { name: "Konflik/akses penting dengan status verifikasi dan tindak lanjut", unit: "case", baseline: null, target: null }
+          ]
         },
         {
           id: "PRG-YG-6",
           title: "Sistem pengendalian, pemantauan, dan evaluasi",
-          status: "candidate",
-          direction: "Bangun indikator, wali data, inspeksi, pengaduan, pembaruan data, evaluasi lima tahunan, dan tindakan korektif yang terhubung ke aturan zonasi."
+          status: "candidate_continuous_program",
+          priority: "P1", relativePhase: "continuous_after_legal_adoption", spatialStatus: "whole_planning_area_system",
+          direction: "Bangun indikator, wali data, inspeksi, pengaduan, pembaruan data, evaluasi berkala, dan tindakan korektif yang terhubung ke aturan zonasi.",
+          linkedZoneCodes: zoneCodes([...new Set(zoneFeatures.map(feature => feature.properties?.zoneFamily).filter(Boolean))]),
+          analysisRefs: ["A24-k", "A24-l", "A24-m", "A24-o", "A24-t", "A24-u"], regulationRefs: ["R02", "R04", "R07", "R08", "R15"],
+          candidateLeadRole: "Pemerintah kabupaten melalui tata kelola lintas perangkat daerah dan wali data; struktur organisasi belum ditetapkan.",
+          financingStatus: "not_costed_not_committed",
+          indicators: [
+            { name: "Indikator RDTR dengan wali data dan frekuensi pembaruan", unit: "indicator", baseline: null, target: null },
+            { name: "Temuan pengendalian yang ditutup dengan tindakan korektif", unit: "percent", baseline: null, target: null }
+          ]
+        },
+        {
+          id: "PRG-YG-7",
+          title: "Konsolidasi kawasan terbangun dan peningkatan kualitas permukiman",
+          status: "candidate_program_pending_suitability",
+          priority: "P2", relativePhase: "phase_2_after_safety_and_capacity_proof", spatialStatus: "cultivation_candidate_not_investment_location",
+          direction: "Konsolidasikan kebutuhan hunian dan kegiatan perkotaan pada area yang telah terbukti aman, sesuai, dapat dilayani, serta tidak memperbesar risiko atau beban hidrologi.",
+          linkedZoneCodes: zoneCodes(["safe_urban_consolidation"]),
+          analysisRefs: ["A24-a", "A24-b", "A24-c", "A24-q", "A24-r", "A24-s"], regulationRefs: ["R01", "R02", "R03", "R05", "R08"],
+          candidateLeadRole: "Perangkat daerah perumahan, permukiman, pekerjaan umum, pelayanan dasar, dan penataan ruang; bukan komitmen proyek.",
+          financingStatus: "not_costed_not_committed",
+          indicators: [
+            { name: "Kawasan terbangun yang lulus uji bahaya, daya dukung, dan kapasitas layanan", unit: "hectare", baseline: null, target: null },
+            { name: "Rumah tangga penerima peningkatan kualitas tanpa relokasi paksa", unit: "household", baseline: null, target: null }
+          ]
+        },
+        {
+          id: "PRG-YG-8",
+          title: "Penguatan ekonomi lokal dan ruang penghidupan tahan risiko",
+          status: "candidate_program_pending_livelihood_assessment",
+          priority: "P2", relativePhase: "phase_2_after_rights_and_risk_verification", spatialStatus: "livelihood_candidate_not_project_location",
+          direction: "Perkuat perikanan, usaha lokal, produksi, pasar, dan konektivitas yang sesuai tanpa mengurangi fungsi ekosistem, keselamatan, hak, atau akses masyarakat.",
+          linkedZoneCodes: zoneCodes(["community_livelihood_and_production", "coastal_mangrove_protection"]),
+          analysisRefs: ["A24-c", "A24-e", "A24-g", "A24-n", "A24-r"], regulationRefs: ["R01", "R03", "R05", "R10", "R13"],
+          candidateLeadRole: "Perangkat daerah ekonomi, perikanan, koperasi/UMKM, desa, dan kelompok pelaku usaha; desain serta penerima manfaat belum ditetapkan.",
+          financingStatus: "not_costed_not_committed",
+          indicators: [
+            { name: "Kelompok penghidupan dengan akses ruang dan rantai nilai tervalidasi", unit: "group", baseline: null, target: null },
+            { name: "Kegiatan ekonomi yang memenuhi syarat lingkungan dan keselamatan", unit: "activity", baseline: null, target: null }
+          ]
         }
-      ]
+      ],
+      disclaimer: "Portofolio indikatif internal untuk menguji keterlaksanaan RDTR YG; bukan daftar proyek pemerintah, penugasan instansi, komitmen anggaran, lokasi investasi, atau dasar pengadaan tanah."
     },
     traceability: [
       {
@@ -2515,12 +2608,12 @@ function buildYgZoningCodebook(zoning) {
   };
 }
 
-function buildYgDraftRdtr(zoning, zoningCodebook, structureDraft, networkEvidence, serviceEvidence, serviceAccess, developmentReadiness) {
+function buildYgDraftRdtr(zoning, zoningCodebook, structureDraft, networkEvidence, serviceEvidence, serviceAccess, developmentReadiness, programmePortfolio) {
   const metadata = zoning.metadata || {};
   return {
-    id: "RDTR-YG-BAGANSIAPIAPI-V0.8",
+    id: "RDTR-YG-BAGANSIAPIAPI-V0.9",
     title: "Rancangan RDTR Alternatif Bagansiapiapi versi Yayasan Gambut",
-    version: "0.8.0-internal",
+    version: "0.9.0-internal",
     sourceGeometryVersion: metadata.version || "0.2.0-internal",
     status: "provisional_internal_spatial_draft",
     legalCharacter: "Kajian dan rancangan teknis internal; tidak mempunyai akibat hukum dan tidak menggantikan kewenangan pemerintah daerah untuk menyusun serta menetapkan RDTR.",
@@ -2580,6 +2673,15 @@ function buildYgDraftRdtr(zoning, zoningCodebook, structureDraft, networkEvidenc
       promotionSummary: developmentReadiness.promotionSummary,
       evidenceLocks: developmentReadiness.evidenceLocks,
       disclaimer: developmentReadiness.disclaimer
+    },
+    programmePortfolio: {
+      id: programmePortfolio.id,
+      version: programmePortfolio.version,
+      status: programmePortfolio.status,
+      phasingStatus: programmePortfolio.phasingStatus,
+      programmeCount: programmePortfolio.items.length,
+      indicatorCount: programmePortfolio.items.reduce((sum, row) => sum + (row.indicators?.length || 0), 0),
+      disclaimer: programmePortfolio.disclaimer
     },
     components: [
       { id: "YG-RDTR-01", label: "Tujuan dan strategi WP", status: "provisional", outputRef: "ygPlan.planningObjective" },
@@ -2836,7 +2938,8 @@ export function buildAnalysis({ rtrw, administration, peat, forest, mangrove, ma
     candidateZones: ygCandidateZones
   });
   const zoningCodebook = buildYgZoningCodebook(ygCandidateZones);
-  const ygDraftRdtr = buildYgDraftRdtr(ygCandidateZones, zoningCodebook, ygStructureDraft, ygNetworkEvidence, ygServiceHydrologyEvidence, ygServiceAccessAnalysis, ygDevelopmentReadiness);
+  const ygPlan = buildYgPlan(ygCandidateZones, zoningCodebook, ygStructureDraft, ygNetworkEvidence, ygServiceHydrologyEvidence, ygServiceAccessAnalysis, ygDevelopmentReadiness);
+  const ygDraftRdtr = buildYgDraftRdtr(ygCandidateZones, zoningCodebook, ygStructureDraft, ygNetworkEvidence, ygServiceHydrologyEvidence, ygServiceAccessAnalysis, ygDevelopmentReadiness, ygPlan.programs);
   const policyMapFramework = buildPolicyMapFramework({
     summary,
     peatCount: peatMap.length,
@@ -2887,7 +2990,7 @@ export function buildAnalysis({ rtrw, administration, peat, forest, mangrove, ma
     crossCuttingGates: buildCrossCuttingGates(),
     mandatoryAnalysisMatrix,
     analysisProgramme,
-    ygPlan: buildYgPlan(ygCandidateZones, zoningCodebook, ygStructureDraft, ygNetworkEvidence, ygServiceHydrologyEvidence, ygServiceAccessAnalysis, ygDevelopmentReadiness),
+    ygPlan,
     serviceAccessAnalysis: {
       id: ygServiceAccessAnalysis.id,
       version: ygServiceAccessAnalysis.version,
