@@ -10,7 +10,7 @@
   const DEFAULT_ZOOM = 9;
 
   const STYLE = {
-    desa_intervensi: { label: "Batas Desa Intervensi", color: "#2e7d32", visible: true },
+    desa_intervensi: { label: "Batas Administrasi Desa Intervensi", color: "#2e7d32", visible: true },
     apo: { label: "Alat Pemecah Ombak (APO)", color: "#d32f2f", visible: true },
     area_mangrove: { label: "Area Penanaman Mangrove", color: "#00796b", visible: true },
     mineral_land_restoration_area: { label: "Area Restorasi Lahan Mineral", color: "#558b2f", visible: true },
@@ -2772,6 +2772,13 @@ L.control.scale({
     appendReferenceControls(list, null);
     preloadReferenceCounts();
 
+    const interventionReferenceInput = list.querySelector(
+      '[data-reference-layer-id="social_forestry_intervention_yg"]'
+    );
+    const interventionReferenceRow = interventionReferenceInput
+      ? interventionReferenceInput.closest(".layer-row")
+      : null;
+
     Object.keys(groups)
       .sort((a, b) =>
         getLayerConfig(a, groups[a][0]).label.localeCompare(
@@ -2805,7 +2812,11 @@ L.control.scale({
           '<label for="layer-' + escapeHtml(layerId) + '">' + escapeHtml(config.label) + '</label>' +
           '<span class="count">' + countLabel + '</span>';
 
-        list.appendChild(row);
+        if (layerId === "desa_intervensi" && interventionReferenceRow) {
+          interventionReferenceRow.insertAdjacentElement("afterend", row);
+        } else {
+          list.appendChild(row);
+        }
 
         row.querySelector("input").addEventListener("change", event => {
           const layer = layerObjects[layerId];

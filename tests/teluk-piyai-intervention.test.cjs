@@ -48,3 +48,16 @@ test("Teluk Piyai Pesisir is published as the fifteenth intervention village", (
   assert.match(html, /id="village-total-count">15</);
   assert.match(dashboard, /20260919-15desa-teluk-piyai/);
 });
+
+test("WebGIS groups only PS and village boundaries as YG intervention areas", () => {
+  const map = read("js/map-v4.js");
+  const page = read("webgis.html");
+
+  assert.match(map, /label: "Perhutanan Sosial Intervensi YG"/);
+  assert.match(map, /desa_intervensi: \{ label: "Batas Administrasi Desa Intervensi"/);
+  assert.equal((map.match(/section: "intervention"/g) || []).length, 1);
+  assert.match(map, /appendReferenceSection\("WILAYAH INTERVENSI YG", interventionLayerIds\)/);
+  assert.match(map, /layerId === "desa_intervensi" && interventionReferenceRow/);
+  assert.match(map, /interventionReferenceRow\.insertAdjacentElement\("afterend", row\)/);
+  assert.match(page, /map-v4\.js\?v=20260920-intervention-group1/);
+});
