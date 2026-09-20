@@ -10,6 +10,7 @@ import {
   discoverDataTableEndpoint,
   fetchDataTableAll,
   inventoryRiauGeoportal,
+  normalizeMapsetPayload,
   parseDatasetDetailHtml,
   parseIso19139MetadataXml,
   parseMetadataDetailHtml
@@ -127,14 +128,36 @@ function mapsetLayer({ uuid, layerName, title = "DATA PESISIR" }) {
     workspace: "geoportal",
     layer_name: layerName,
     qualified_name: `geoportal:${layerName}`,
-    geom_type: "MULTIPOLYGON",
-    format: "vector",
+    geom_type: "multipolygon",
+    format: "SHP",
     opd: "Dinas Contoh",
     tema: "Hidrografi",
     bbox: { minx: 100, miny: 0, maxx: 103, maxy: 2 },
-    wfs_url: `${BASE_URL}/wfs-proxy?typeNames=geoportal:${layerName}`
+    wfs_url: `${BASE_URL}/wfs-proxy`
   };
 }
+
+test("mapset envelope accepts only the verified portal contract", () => {
+  const valid = {
+    status: "ok",
+    total: 1,
+    layers: [mapsetLayer({ uuid: DATASET_A, layerName: "zlayer_a" })]
+  };
+  assert.equal(normalizeMapsetPayload(valid, BASE_URL).layers.length, 1);
+  assert.equal(normalizeMapsetPayload({ ...valid, status: true }, BASE_URL).layers.length, 1);
+  for (const payload of [
+    { ...valid, status: "success" },
+    { ...valid, total: 2 },
+    { ...valid, layers: [{ ...valid.layers[0], workspace: "other" }] },
+    { ...valid, layers: [{ ...valid.layers[0], qualified_name: "geoportal:other" }] },
+    { ...valid, layers: [{ ...valid.layers[0], geom_type: "polygon" }] },
+    { ...valid, layers: [{ ...valid.layers[0], format: "GeoJSON" }] },
+    { ...valid, layers: [{ ...valid.layers[0], wfs_url: "https://example.test/wfs" }] },
+    { ...valid, layers: [{ ...valid.layers[0], bbox: { minx: 103, miny: 0, maxx: 100, maxy: 2 } }] }
+  ]) {
+    assert.throws(() => normalizeMapsetPayload(payload, BASE_URL));
+  }
+});
 
 function datasetDetail({ uuid, datasetIdentifier, embeddedMetadata, layerName }) {
   return `<!doctype html><html><body>
@@ -258,7 +281,7 @@ function buildFetchRouter() {
       datasetIdentifier: "DATASET-A-2026",
       recordUuid: RECORD_A,
       fileIdentifier: FILE_A,
-      layerName: "layer_a"
+      layerName: "zlayer_a"
     }),
     catalogRow({
       id: 2,
@@ -266,7 +289,7 @@ function buildFetchRouter() {
       datasetIdentifier: "DATASET-B-2026",
       recordUuid: RECORD_B,
       fileIdentifier: FILE_B,
-      layerName: "layer_b"
+      layerName: "zlayer_b"
     })
   ];
   // Intentionally reverse metadata rows: a duplicate title must never drive the join.
@@ -287,11 +310,11 @@ function buildFetchRouter() {
     })
   ];
   const mapset = {
-    status: true,
+    status: "ok",
     total: 2,
     layers: [
-      mapsetLayer({ uuid: DATASET_A, layerName: "layer_a" }),
-      mapsetLayer({ uuid: DATASET_B, layerName: "layer_b" })
+      mapsetLayer({ uuid: DATASET_A, layerName: "zlayer_a" }),
+      mapsetLayer({ uuid: DATASET_B, layerName: "zlayer_b" })
     ]
   };
   const calls = [];
@@ -311,7 +334,7 @@ function buildFetchRouter() {
         uuid: DATASET_A,
         datasetIdentifier: "DATASET-A-2026",
         embeddedMetadata: RECORD_A,
-        layerName: "layer_a"
+        layerName: "zlayer_a"
       }));
     }
     if (url.pathname === `/katalog/view/${DATASET_B}`) {
@@ -319,7 +342,7 @@ function buildFetchRouter() {
         uuid: DATASET_B,
         datasetIdentifier: "DATASET-B-2026",
         embeddedMetadata: FILE_B,
-        layerName: "layer_b"
+        layerName: "zlayer_b"
       }));
     }
     if (url.pathname === `/metadata/view/${FILE_A}`) {
@@ -423,11 +446,11 @@ test("parses dataset and ISO metadata details without trusting presentation mark
     uuid: DATASET_A,
     datasetIdentifier: "DATASET-A-2026",
     embeddedMetadata: RECORD_A,
-    layerName: "layer_a"
+    layerName: "zlayer_a"
   }), { baseUrl: BASE_URL });
   assert.equal(dataset.title, "DATA & PESISIR");
   assert.equal(dataset.datasetUuid, DATASET_A);
-  assert.equal(dataset.layerName, "layer_a");
+  assert.equal(dataset.layerName, "zlayer_a");
   assert.equal(dataset.spatialFormat, "SHP");
   assert.deepEqual(dataset.bbox, { minx: 100, miny: 0, maxx: 103, maxy: 2 });
   assert.deepEqual(dataset.tags, ["pesisir", "riau"]);
@@ -485,7 +508,7 @@ test("builds a canonical manifest and plan while preserving stale metadata-link 
     "metadata_route_identifier_mismatch"
   );
   assert.equal(datasetB.metadata.conflicts.length, 0);
-  assert.equal(datasetB.spatial.layerName, "layer_b");
+  assert.equal(datasetB.spatial.layerName, "zlayer_b");
   assert.equal(datasetB.publicMapset.layerNameMatches, true);
 
   assert.equal(downloadPlan.mode, "plan_only_no_download");
@@ -546,7 +569,7 @@ test("marks a download for review when current metadata identifies different con
   assert.deepEqual(restrictedPlanItem.blockers, ["restricted_license_or_constraints"]);
 });
 
-test("requires the exact public mapset UUID and layer_name allowlist", async () => {
+test("requires exact catalog/mapset UUID set equality", async () => {
   const router = buildFetchRouter();
   const fetchImpl = async input => {
     const url = new URL(input);
@@ -556,27 +579,22 @@ test("requires the exact public mapset UUID and layer_name allowlist", async () 
         status: true,
         total: 2,
         layers: [
-          mapsetLayer({ uuid: DATASET_A, layerName: "layer_a" }),
-          mapsetLayer({ uuid: ORPHAN_DATASET, layerName: "orphan_layer" })
+          mapsetLayer({ uuid: DATASET_A, layerName: "zlayer_a" }),
+          mapsetLayer({ uuid: ORPHAN_DATASET, layerName: "zlayer_orphan" })
         ]
       });
     }
     return router.fetchImpl(input);
   };
-  const { manifest, downloadPlan } = await inventoryRiauGeoportal({
-    baseUrl: BASE_URL,
-    fetchImpl,
-    pageSize: 2,
-    now: () => new Date("2026-09-20T08:00:00.000Z")
-  });
-  assert.equal(manifest.totals.mapsetLayersReported, 2);
-  assert.equal(manifest.totals.mapsetMatchedDatasets, 1);
-  assert.equal(manifest.totals.catalogMissingFromMapset, 1);
-  assert.equal(manifest.totals.mapsetWithoutCatalog, 1);
-  assert.equal(manifest.unmatchedMapset[0].datasetUuid, ORPHAN_DATASET);
-  const item = downloadPlan.items.find(planItem => planItem.datasetUuid === DATASET_B);
-  assert.equal(item.status, "review_required");
-  assert.ok(item.blockers.includes("not_in_public_mapset"));
+  await assert.rejects(
+    inventoryRiauGeoportal({
+      baseUrl: BASE_URL,
+      fetchImpl,
+      pageSize: 2,
+      now: () => new Date("2026-09-20T08:00:00.000Z")
+    }),
+    /Mapset UUID set differs from catalog \(missing=1, extra=1\)/
+  );
   assert.equal(router.calls.some(url => url.includes("/wfs-proxy")), false);
 });
 
@@ -597,7 +615,7 @@ test("fixture fetch and CLI dry-run generate inventory files without network acc
       datasetIdentifier: "DATASET-A-2026",
       recordUuid: RECORD_A,
       fileIdentifier: FILE_A,
-      layerName: "layer_a"
+      layerName: "zlayer_a"
     })
   ]));
   fs.writeFileSync(path.join(directory, "metadata.json"), JSON.stringify([
@@ -610,9 +628,9 @@ test("fixture fetch and CLI dry-run generate inventory files without network acc
     })
   ]));
   fs.writeFileSync(path.join(directory, "mapset.json"), JSON.stringify({
-    status: true,
+    status: "ok",
     total: 1,
-    layers: [mapsetLayer({ uuid: DATASET_A, layerName: "layer_a" })]
+    layers: [mapsetLayer({ uuid: DATASET_A, layerName: "zlayer_a" })]
   }));
   fs.writeFileSync(
     path.join(catalogDetails, `${DATASET_A}.html`),
@@ -620,7 +638,7 @@ test("fixture fetch and CLI dry-run generate inventory files without network acc
       uuid: DATASET_A,
       datasetIdentifier: "DATASET-A-2026",
       embeddedMetadata: RECORD_A,
-      layerName: "layer_a"
+      layerName: "zlayer_a"
     })
   );
   fs.writeFileSync(

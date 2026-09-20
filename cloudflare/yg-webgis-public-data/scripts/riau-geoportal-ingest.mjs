@@ -718,43 +718,72 @@ function normalizeMetadataRow(row, baseUrl) {
   };
 }
 
-function normalizeMapsetLayer(row) {
+function normalizeMapsetLayer(row, baseUrl) {
   const datasetUuid = textOrNull(firstDefined(row?.id, row?.uuid))?.toLowerCase() || null;
   if (!datasetUuid || !UUID_PATTERN.test(datasetUuid)) {
     throw new Error(`Mapset layer has invalid dataset UUID: ${row?.id ?? row?.uuid ?? "missing"}`);
   }
+  const title = textOrNull(row.title);
+  if (!title) throw new Error(`Mapset layer ${datasetUuid} is missing title`);
+  const workspace = textOrNull(row.workspace);
+  if (workspace !== "geoportal") {
+    throw new Error(`Mapset layer ${datasetUuid} has unexpected workspace`);
+  }
   const layerName = textOrNull(row.layer_name);
-  if (!layerName || !/^[a-z0-9_.-]+$/i.test(layerName)) {
+  if (!layerName || !/^zlayer_[a-z0-9]+$/.test(layerName)) {
     throw new Error(`Mapset layer ${datasetUuid} has invalid layer_name`);
+  }
+  const qualifiedName = textOrNull(row.qualified_name);
+  if (qualifiedName !== `${workspace}:${layerName}`) {
+    throw new Error(`Mapset layer ${datasetUuid} has inconsistent qualified_name`);
+  }
+  const geometryType = textOrNull(row.geom_type)?.toLowerCase() || null;
+  if (!new Set(["multipoint", "multilinestring", "multipolygon"]).has(geometryType)) {
+    throw new Error(`Mapset layer ${datasetUuid} has unexpected geom_type`);
+  }
+  const format = textOrNull(row.format);
+  if (format !== "SHP") throw new Error(`Mapset layer ${datasetUuid} has unexpected format`);
+  const publisher = textOrNull(
+    typeof row.opd === "object" ? firstDefined(row.opd?.nama_opd, row.opd?.name) :
+      firstDefined(row.opd, row.publisher)
+  );
+  const theme = textOrNull(
+    typeof row.tema === "object" ? firstDefined(row.tema?.nama, row.tema?.name) :
+      firstDefined(row.tema, row.theme)
+  );
+  if (!publisher || !theme) throw new Error(`Mapset layer ${datasetUuid} is missing publisher or theme`);
+  const bbox = normalizeBbox(row.bbox);
+  if (!bbox) throw new Error(`Mapset layer ${datasetUuid} has invalid bbox`);
+  const wfsUrl = textOrNull(row.wfs_url);
+  if (wfsUrl !== new URL("/wfs-proxy", baseUrl).href) {
+    throw new Error(`Mapset layer ${datasetUuid} has unexpected wfs_url`);
   }
   return {
     datasetUuid,
-    title: textOrNull(row.title),
+    title,
     description: textOrNull(row.description),
-    workspace: textOrNull(row.workspace),
+    workspace,
     layerName,
-    qualifiedName: textOrNull(row.qualified_name),
-    geometryType: textOrNull(row.geom_type),
-    format: textOrNull(row.format),
-    publisher: textOrNull(
-      typeof row.opd === "object" ? firstDefined(row.opd?.nama_opd, row.opd?.name) :
-        firstDefined(row.opd, row.publisher)
-    ),
-    theme: textOrNull(
-      typeof row.tema === "object" ? firstDefined(row.tema?.nama, row.tema?.name) :
-        firstDefined(row.tema, row.theme)
-    ),
-    bbox: normalizeBbox(row.bbox),
-    wfsUrl: textOrNull(row.wfs_url)
+    qualifiedName,
+    geometryType,
+    format,
+    publisher,
+    theme,
+    bbox,
+    wfsUrl
   };
 }
 
-function normalizeMapsetPayload(payload) {
-  if (!payload || !Array.isArray(payload.layers)) {
+export function normalizeMapsetPayload(payload, baseUrl) {
+  if (!payload || "object" !== typeof payload || Array.isArray(payload) || !Array.isArray(payload.layers)) {
     throw new Error("Mapset payload is missing layers[]");
   }
-  if (payload.status !== true) {
-    throw new Error("Mapset payload did not report status=true");
+  // The live portal currently reports `status: "ok"`; older fixtures and
+  // deployments used the boolean `true`. Accept only those two explicit
+  // success values so an absent, false, or otherwise malformed status still
+  // fails closed before any geometry is fetched.
+  if (payload.status !== true && payload.status !== "ok") {
+    throw new Error("Mapset payload did not report an accepted success status");
   }
   const reportedTotal = integerOrNull(firstDefined(payload.total, payload.layers.length));
   if (reportedTotal === null || reportedTotal < 0 || reportedTotal !== payload.layers.length) {
@@ -762,13 +791,17 @@ function normalizeMapsetPayload(payload) {
       `Mapset total ${payload.total ?? "missing"} does not match ${payload.layers.length} layers`
     );
   }
-  const layers = payload.layers.map(normalizeMapsetLayer);
-  const seen = new Set();
+  const layers = payload.layers.map(row => normalizeMapsetLayer(row, baseUrl));
+  const seen = new Set(), seenQualifiedNames = new Set();
   for (const layer of layers) {
     if (seen.has(layer.datasetUuid)) {
       throw new Error(`Mapset contains duplicate dataset UUID ${layer.datasetUuid}`);
     }
     seen.add(layer.datasetUuid);
+    if (seenQualifiedNames.has(layer.qualifiedName)) {
+      throw new Error(`Mapset contains duplicate qualified_name ${layer.qualifiedName}`);
+    }
+    seenQualifiedNames.add(layer.qualifiedName);
   }
   return { reportedTotal, layers };
 }
@@ -1176,7 +1209,7 @@ export async function inventoryRiauGeoportal({
     }),
     fetchJson(fetchImpl, mapsetEndpoint, normalizedBaseUrl)
   ]);
-  const mapset = normalizeMapsetPayload(mapsetPayload);
+  const mapset = normalizeMapsetPayload(mapsetPayload, normalizedBaseUrl);
   const mapsetByDatasetUuid = new Map(
     mapset.layers.map(layer => [layer.datasetUuid, layer])
   );
@@ -1196,6 +1229,15 @@ export async function inventoryRiauGeoportal({
     }
     seenDatasetUuids.set(normalized.canonicalId, normalized);
     catalogRows.push(normalized);
+  }
+  const catalogRowUuidSet = new Set(catalogRows.map(dataset => dataset.canonicalId));
+  const mapsetUuidSet = new Set(mapset.layers.map(layer => layer.datasetUuid));
+  const missingFromMapset = [...catalogRowUuidSet].filter(uuid => !mapsetUuidSet.has(uuid));
+  const extraInMapset = [...mapsetUuidSet].filter(uuid => !catalogRowUuidSet.has(uuid));
+  if (missingFromMapset.length || extraInMapset.length) {
+    throw new Error(
+      `Mapset UUID set differs from catalog (missing=${missingFromMapset.length}, extra=${extraInMapset.length})`
+    );
   }
   const metadataRows = metadataTable.rows.map(row => normalizeMetadataRow(row, normalizedBaseUrl));
   const reconciliation = reconcileMetadata(catalogRows, metadataRows);
