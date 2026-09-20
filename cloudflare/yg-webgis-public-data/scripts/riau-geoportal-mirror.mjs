@@ -86,11 +86,14 @@ function unique(values) {
 export function sanitizeDiagnosticMessage(value, maxLength = 512) {
   const limit = asPositiveInteger(maxLength, "diagnostic maxLength");
   const redacted = String(value || "diagnostic_unavailable")
-    .replace(/\bhttps?:\/\/[^\s<>"'`]+/gi, rawValue => {
+    .replace(/\b[a-z][a-z0-9+.-]*:[^\s<>"'`]+/gi, rawValue => {
       const trailing = rawValue.match(/[),.;!?]+$/)?.[0] || "";
       const candidate = trailing ? rawValue.slice(0, -trailing.length) : rawValue;
       try {
         const url = new URL(candidate);
+        if (url.protocol !== "http:" && url.protocol !== "https:") {
+          return `${url.protocol}[redacted]${trailing}`;
+        }
         url.username = "";
         url.password = "";
         url.search = "";

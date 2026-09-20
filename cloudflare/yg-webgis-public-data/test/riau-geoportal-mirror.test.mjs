@@ -628,6 +628,23 @@ test("diagnostics strip URL secrets and cap untrusted messages", () => {
   });
   assert.ok(summary[0].reason.length <= 512);
   assert.doesNotMatch(summary[0].reason, /password|X-Amz|super-secret|fragment/);
+
+  for (const unsafe of [
+    "ftp://user:password@outside.example/path?token=secret#fragment",
+    "file:///private/path/secret.geojson?token=secret",
+    `data:text/plain,${"secret".repeat(200)}`
+  ]) {
+    assert.throws(
+      () => assertSafeDownloadUrl(unsafe, { baseUrl: BASE_URL, datasetUuid: DATASET_NEW }),
+      error => {
+        const diagnostic = sanitizeDiagnosticMessage(error.message);
+        assert.match(diagnostic, /\[redacted\]/);
+        assert.doesNotMatch(diagnostic, /password|outside\.example|token|secret|private\/path/);
+        assert.ok(diagnostic.length <= 512);
+        return true;
+      }
+    );
+  }
 });
 
 test("failure summaries expose canonical UUID, title, and terminal error", () => {
