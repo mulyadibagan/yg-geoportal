@@ -42,7 +42,6 @@
   function renderAgroSummary(summary){
     var target=document.getElementById('dayun-agro-summary'),pineappleEntry=document.getElementById('dayun-pineapple-entry'),overview=document.getElementById('dayun-block-overview');
     if(!target||!overview)return;
-    var mapLayout=document.querySelector('.dy-map-layout');if(mapLayout&&mapLayout.previousElementSibling!==target)mapLayout.parentNode.insertBefore(target,mapLayout);
     var all=summary.all,dataUpdatedAt=summary.updatedAt;
     target.innerHTML='<div class="dy-summary-head"><div><span>AGROFORESTRI DAYUN</span><h2>Ringkasan Seluruh Blok A–F</h2></div><p>Informasi berasal dari data sumber awal dan kegiatan yang telah dipublikasikan. Status sensus terbaru ditampilkan pada setiap profil gawangan.</p></div><div class="dy-summary-kpis">'+[
       ['Luas seluruh blok',fmtArea(all.blockAreaHa)],['Luas gawangan tanam',fmtArea(all.gawanganAreaHa)],['Luas operasional tercatat',fmtArea(all.operationalAreaHa)],['Gawangan terpetakan',fmtInteger(all.mappedGawangan)],['Hortikultura',fmtInteger(all.horticulturePlants)+' tanaman · '+fmtInteger(all.horticultureTypes)+' jenis'],['Nanas tercatat',fmtInteger(all.pineapplePlants)+' tanaman'],['Buah dipanen',fmtInteger(all.pineappleHarvest)+' buah'],['MPTS',fmtInteger(all.mptsPlants)+' pohon · '+fmtInteger(all.mptsTypes)+' jenis']

@@ -24,7 +24,7 @@ test('Dayun map reports the user position against program boundaries', () => {
   const html = read('dayun-map.html');
   const script = read('js/dayun-public.js');
   assert.match(script, /css\/user-location-control\.css\?v=20260920-location1/);
-  assert.match(html, /js\/dayun-public\.js\?v=20260920-location1/);
+  assert.match(html, /js\/dayun-public\.js\?v=20260920-map-first1/);
   assert.match(script, /pointInGeometry/);
   assert.match(script, /Di luar Kampung Dayun/);
   assert.match(script, /Di dalam kawasan HKm Mandiri Sejahtera/);

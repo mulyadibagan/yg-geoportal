@@ -60,3 +60,13 @@ test('public map and block page use the shared aggregation source', () => {
   assert.match(blockScript, /dayun-gawangan\.html\?object=/);
   assert.match(blockScript, /dayun-sop-rambutan\.html/);
 });
+
+test('interactive map stays above the all-block summary', () => {
+  const mapHtml = fs.readFileSync(path.join(root, 'dayun-map.html'), 'utf8');
+  const mapScript = fs.readFileSync(path.join(root, 'js/dayun-public.js'), 'utf8');
+  assert.ok(
+    mapHtml.indexOf('class="dy-map-layout"') < mapHtml.indexOf('id="dayun-agro-summary"'),
+    'map layout must be placed before the all-block summary'
+  );
+  assert.doesNotMatch(mapScript, /insertBefore\(target,mapLayout\)/);
+});
