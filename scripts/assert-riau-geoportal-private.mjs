@@ -10,7 +10,7 @@ const forbiddenDirectories = [
   "data/riau-geoportal",
   "cloudflare/yg-webgis-public-data/tmp"
 ];
-const forbiddenFiles = /(?:^|\/)internal\/riau-geoportal\/(?:catalog|datasets|releases)(?:\/|$)|(?:^|\/)(?:source|display)\.(?:geojson|gpkg|fgb|parquet|pmtiles|zip|shp|dbf|shx|prj|xml)$|(?:^|\/)riau[-_]?geoportal[^/]*\.(?:geojson|gpkg|fgb|parquet|pmtiles|zip|shp|dbf|shx|prj|xml)$/i;
+const forbiddenFiles = /(?:^|\/)internal\/riau-geoportal\/(?:catalog|datasets|releases)(?:\/|$)|(?:^|\/)(?:source|display)\.(?:geojson|gpkg|fgb|parquet|pmtiles|zip|shp|dbf|shx|prj|xml)(?:\.gz)?$|(?:^|\/)riau[-_]?geoportal[^/]*\.(?:geojson|gpkg|fgb|parquet|pmtiles|zip|shp|dbf|shx|prj|xml)(?:\.gz)?$/i;
 const found = [];
 
 for (const relative of forbiddenDirectories) {

@@ -4,6 +4,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
+import { gunzipSync } from "node:zlib";
 
 import {
   DEFAULT_WFS_PAGE_SIZE,
@@ -388,6 +389,100 @@ test("mirrors ready UUIDs, reuses unchanged releases, and keeps review data meta
     createHash("sha256").update(sourceBody).digest("hex"),
     byUuid.get(DATASET_NEW).artifacts.source.sha256
   );
+});
+
+test("stores oversized raw GeoJSON as deterministic gzip with original provenance", async () => {
+  const sourceText = JSON.stringify(featureCollection("compressed-source"));
+  const sourceSha = createHash("sha256").update(sourceText).digest("hex");
+  async function runMirror(outputDir, previous = null, sourceAllowed = true) {
+    return mirrorRiauGeoportal({
+      manifest: {
+        id: "gzip-fixture",
+        source: { baseUrl: BASE_URL },
+        datasets: [dataset(DATASET_NEW, "2026-09-20T00:00:00Z")]
+      },
+      plan: { items: [planItem(DATASET_NEW)] },
+      previous,
+      outputDir,
+      expectedCount: 1,
+      fetchImpl: async input => {
+        const url = new URL(input);
+        if (url.pathname.startsWith("/metadata/")) {
+          return new Response(METADATA_XML, { headers: { "content-type": "application/xml" } });
+        }
+        if (!sourceAllowed) throw new Error("reused gzip source must not be fetched");
+        return new Response(sourceText, { headers: { "content-type": "application/geo+json" } });
+      },
+      inspector: async () => validInspection(),
+      displayBuilder: async (source, destination) => fs.copyFile(source, destination),
+      sourceCompressionThresholdBytes: 1,
+      singleUploadMaxBytes: 1024 * 1024,
+      retries: 1,
+      retryDelayMs: 0,
+      now: () => new Date("2026-09-20T00:00:00.000Z")
+    });
+  }
+
+  const firstOutput = await fs.mkdtemp(path.join(os.tmpdir(), "riau-gzip-first-"));
+  const secondOutput = await fs.mkdtemp(path.join(os.tmpdir(), "riau-gzip-second-"));
+  const reusedOutput = await fs.mkdtemp(path.join(os.tmpdir(), "riau-gzip-reused-"));
+  const first = await runMirror(firstOutput);
+  const second = await runMirror(secondOutput);
+  const reused = await runMirror(reusedOutput, first.catalog, false);
+  const artifact = first.catalog.datasets[0].artifacts.source;
+  const compressed = await fs.readFile(path.join(firstOutput, "objects", artifact.key));
+
+  assert.equal(artifact.compression, "gzip");
+  assert.equal(artifact.contentType, "application/gzip");
+  assert.equal(artifact.originalContentType, "application/geo+json");
+  assert.equal(artifact.originalSha256, sourceSha);
+  assert.equal(artifact.originalBytes, Buffer.byteLength(sourceText));
+  assert.match(artifact.key, new RegExp(`/releases/${artifact.sha256}/source\\.geojson\\.gz$`));
+  assert.equal(createHash("sha256").update(compressed).digest("hex"), artifact.sha256);
+  assert.equal(gunzipSync(compressed).toString("utf8"), sourceText);
+  assert.equal(second.catalog.datasets[0].artifacts.source.sha256, artifact.sha256);
+  assert.equal(reused.catalog.datasets[0].mirrorStatus, "reused");
+  assert.equal(reused.catalog.datasets[0].artifacts.source.sha256, artifact.sha256);
+  assert.ok(first.catalog.datasets[0].qaWarnings.some(warning => warning.code === "source_stored_gzip"));
+  assert.equal(
+    first.uploadPlan.objects.find(object => object.key === artifact.key).contentType,
+    "application/gzip"
+  );
+});
+
+test("fails closed before registering a gzip object above the safe upload cap", async () => {
+  const outputDir = await fs.mkdtemp(path.join(os.tmpdir(), "riau-gzip-cap-"));
+  const { catalog, uploadPlan } = await mirrorRiauGeoportal({
+    manifest: {
+      id: "gzip-cap-fixture",
+      source: { baseUrl: BASE_URL },
+      datasets: [dataset(DATASET_NEW, "2026-09-20T00:00:00Z")]
+    },
+    plan: { items: [planItem(DATASET_NEW)] },
+    outputDir,
+    expectedCount: 1,
+    fetchImpl: async input => {
+      const url = new URL(input);
+      return url.pathname.startsWith("/metadata/")
+        ? new Response(METADATA_XML, { headers: { "content-type": "application/xml" } })
+        : new Response(JSON.stringify(featureCollection("too-large")), {
+            headers: { "content-type": "application/geo+json" }
+          });
+    },
+    inspector: async () => validInspection(),
+    sourceCompressionThresholdBytes: 1,
+    singleUploadMaxBytes: 16,
+    retries: 1,
+    retryDelayMs: 0,
+    now: () => new Date("2026-09-20T00:00:00.000Z")
+  });
+  const entry = catalog.datasets[0];
+  assert.equal(entry.mirrorStatus, "failed");
+  assert.equal(entry.artifacts.source, null);
+  assert.ok(entry.qaWarnings.some(warning =>
+    warning.code === "source_mirror_failed" && /safe single-object upload limit/.test(warning.message)
+  ));
+  assert.ok(uploadPlan.objects.every(object => !/source\.geojson(?:\.gz)?$/.test(object.key)));
 });
 
 test("falls back to the exact public-mapset WFS layer when inferred download route fails", async () => {

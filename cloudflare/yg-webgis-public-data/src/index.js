@@ -215,6 +215,8 @@ const RIAU_GEOPORTAL_OBJECT_PREFIX = "internal/riau-geoportal/";
 const RIAU_GEOPORTAL_CATALOG_KEY = `${RIAU_GEOPORTAL_OBJECT_PREFIX}catalog/current.json`;
 const RIAU_GEOPORTAL_DISPLAY_MAX_BYTES = 12 * 1024 * 1024;
 const RIAU_GEOPORTAL_DISPLAY_MAX_FEATURES = 25000;
+const RIAU_GEOPORTAL_SOURCE_STORED_MAX_BYTES = 290 * 1024 * 1024;
+const RIAU_GEOPORTAL_SOURCE_ORIGINAL_MAX_BYTES = 5 * 1024 * 1024 * 1024;
 const DATASET_UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 function isRiauGeoportalApiPath(pathname) {
   return pathname.startsWith(RIAU_GEOPORTAL_API_PREFIX);
@@ -271,23 +273,40 @@ async function resolveRiauGeoportalObject(env, route) {
     };
   }
   const entry = dataset?.artifacts?.[route.kind], key = String(entry?.key || ""), sha256 = String(entry?.sha256 || "").toLowerCase();
-  const expectedFile = "display" === route.kind ? "display" : "source";
+  const compression = String(entry?.compression ?? "identity");
+  if (!new Set(["identity", "gzip"]).has(compression)) return null;
+  if ("display" === route.kind && compression !== "identity") return null;
+  const expectedFile = "display" === route.kind
+    ? "display.geojson"
+    : compression === "gzip" ? "source.geojson.gz" : "source.geojson";
   const bytes = Number(entry?.bytes), featureCount = Number(entry?.featureCount ?? 0);
   if (!/^[0-9a-f]{64}$/.test(sha256)) return null;
-  const expectedKey = `${RIAU_GEOPORTAL_OBJECT_PREFIX}datasets/${route.uuid}/releases/${sha256}/${expectedFile}.geojson`;
+  const expectedKey = `${RIAU_GEOPORTAL_OBJECT_PREFIX}datasets/${route.uuid}/releases/${sha256}/${expectedFile}`;
   if (entry?.available !== true || key !== expectedKey || entry?.kind && entry.kind !== route.kind) return null;
   if ("display" === route.kind && entry?.status !== "ready") return null;
   if (!Number.isSafeInteger(bytes) || bytes < 1) throw new Error("invalid_riau_geoportal_object_bytes");
+  if ("source" === route.kind && bytes > RIAU_GEOPORTAL_SOURCE_STORED_MAX_BYTES) {
+    throw new Error("riau_geoportal_source_object_too_large");
+  }
+  if (compression === "gzip") {
+    const originalBytes = Number(entry?.originalBytes);
+    if (entry?.contentType !== "application/gzip" || entry?.originalContentType !== "application/geo+json") return null;
+    if (!/^[0-9a-f]{64}$/.test(String(entry?.originalSha256 || ""))) return null;
+    if (!Number.isSafeInteger(originalBytes) || originalBytes < 1 || originalBytes > RIAU_GEOPORTAL_SOURCE_ORIGINAL_MAX_BYTES) {
+      throw new Error("invalid_riau_geoportal_original_object_bytes");
+    }
+  } else if (entry?.contentType && entry.contentType !== "application/geo+json") return null;
   if ("display" === route.kind && (!Number.isSafeInteger(featureCount) || featureCount < 0 || featureCount > RIAU_GEOPORTAL_DISPLAY_MAX_FEATURES)) {
     throw new Error("invalid_riau_geoportal_display_feature_count");
   }
   return {
     key,
-    contentType: "application/geo+json; charset=utf-8",
+    contentType: compression === "gzip" ? "application/gzip" : "application/geo+json; charset=utf-8",
     kind: route.kind,
     uuid: route.uuid,
     bytes,
-    featureCount
+    featureCount,
+    compression
   };
 }
 async function privateDataApi(request, env, url) {
@@ -345,7 +364,10 @@ async function privateDataApi(request, env, url) {
     headers.set("vary", "Authorization");
     headers.set("etag", object.httpEtag);
     headers.set("x-yg-data-source", "r2-private-route");
-    if ("source" === route[2]?.kind) headers.set("content-disposition", `attachment; filename="riau-geoportal-${route[2].uuid}.geojson"`);
+    if ("source" === route[2]?.kind) {
+      const suffix = route[2].compression === "gzip" ? ".geojson.gz" : ".geojson";
+      headers.set("content-disposition", `attachment; filename="riau-geoportal-${route[2].uuid}${suffix}"`);
+    }
     if (actualBytes > 0) headers.set("content-length", String(actualBytes));
     return new Response("HEAD" === request.method ? null : object.body, { headers });
   } catch (error) {

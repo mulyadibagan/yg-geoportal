@@ -7,6 +7,7 @@ import { pipeline } from "node:stream/promises";
 import { Transform } from "node:stream";
 import { promisify } from "node:util";
 import { pathToFileURL } from "node:url";
+import { createGzip } from "node:zlib";
 
 export const MIRROR_SCHEMA_VERSION = 1;
 export const DEFAULT_MAX_BYTES = 5 * 1024 * 1024 * 1024;
@@ -18,6 +19,8 @@ export const DEFAULT_EXPECTED_DATASETS = 60;
 export const DEFAULT_WFS_PAGE_SIZE = 500;
 export const WFS_PAGE_MAX_BYTES = 256 * 1024 * 1024;
 export const OGR_GEOJSON_MAX_OBJ_SIZE_MB = 512;
+export const DEFAULT_SOURCE_COMPRESSION_THRESHOLD_BYTES = 250 * 1024 * 1024;
+export const R2_SINGLE_UPLOAD_SAFE_MAX_BYTES = 290 * 1024 * 1024;
 
 const UUID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -179,6 +182,16 @@ async function hashFile(filePath) {
     hash.update(chunk);
   }
   return { sha256: hash.digest("hex"), bytes };
+}
+
+async function gzipFile(sourcePath, destinationPath) {
+  await fs.rm(destinationPath, { force: true });
+  await pipeline(
+    createReadStream(sourcePath),
+    createGzip({ level: 9, mtime: 0 }),
+    createWriteStream(destinationPath, { flags: "wx" })
+  );
+  return hashFile(destinationPath);
 }
 
 function expectedDownloadPath(datasetUuid) {
@@ -1008,6 +1021,26 @@ function safePreviousArtifact(uuid, artifact, filename, releaseSha = artifact?.s
   return { ...artifact, available: true, bytes, key: expectedKey };
 }
 
+function safePreviousSourceArtifact(uuid, artifact) {
+  const compression = artifact?.compression ?? "identity";
+  if (!new Set(["identity", "gzip"]).has(compression)) return null;
+  const filename = compression === "gzip" ? "source.geojson.gz" : "source.geojson";
+  const source = safePreviousArtifact(uuid, artifact, filename);
+  if (!source) return null;
+  if (source.bytes > R2_SINGLE_UPLOAD_SAFE_MAX_BYTES) return null;
+  if (compression === "gzip") {
+    const originalSha256 = String(artifact.originalSha256 || "");
+    const originalBytes = Number(artifact.originalBytes);
+    if (!SHA256_PATTERN.test(originalSha256)) return null;
+    if (!Number.isSafeInteger(originalBytes) || originalBytes < 1 || originalBytes > DEFAULT_MAX_BYTES) return null;
+    if (artifact.contentType !== "application/gzip") return null;
+    if (artifact.originalContentType !== "application/geo+json") return null;
+    return { ...source, compression, originalSha256, originalBytes };
+  }
+  if (artifact.contentType && artifact.contentType !== "application/geo+json") return null;
+  return { ...source, compression: "identity" };
+}
+
 function safePreviousMetadataArtifact(uuid, artifact) {
   if (!artifact || !SHA256_PATTERN.test(String(artifact.sha256 || ""))) return null;
   const expectedKey =
@@ -1023,7 +1056,7 @@ function reusablePreviousEntry(previousByUuid, dataset) {
   const updatedAt = dataset.dates?.updatedAt;
   if (!previous || !updatedAt || previous.source?.updatedAt !== updatedAt) return null;
   if (!new Set(["mirrored", "reused"]).has(previous.mirrorStatus)) return null;
-  const source = safePreviousArtifact(uuid, previous.artifacts?.source, "source.geojson");
+  const source = safePreviousSourceArtifact(uuid, previous.artifacts?.source);
   if (!source) return null;
   const display = safePreviousArtifact(
     uuid,
@@ -1207,6 +1240,8 @@ async function mirrorOne({
   displaySourceMaxBytes,
   displayMaxBytes,
   displayMaxFeatures,
+  sourceCompressionThresholdBytes,
+  singleUploadMaxBytes,
   force
 }) {
   const entry = baseCatalogEntry(dataset, planItem);
@@ -1307,6 +1342,7 @@ async function mirrorOne({
   const temporaryDirectory = path.resolve(outputDir, ".tmp");
   await fs.mkdir(temporaryDirectory, { recursive: true });
   const temporarySource = path.join(temporaryDirectory, `${entry.datasetUuid}-${Date.now()}-${Math.random().toString(16).slice(2)}.geojson`);
+  let temporaryCompressedSource = null;
   try {
     let streamed;
     try {
@@ -1359,23 +1395,64 @@ async function mirrorOne({
         action: "raw_preserved_display_quarantined"
       });
     }
-    const releasePrefix = `${R2_PREFIX}/datasets/${entry.datasetUuid}/releases/${streamed.sha256}`;
-    const sourceKey = `${releasePrefix}/source.geojson`;
+    let storedSource = streamed;
+    let sourceCompression = "identity";
+    let sourceFilename = "source.geojson";
+    let sourceContentType = "application/geo+json";
+    let displaySourcePath = temporarySource;
+    if (streamed.bytes > sourceCompressionThresholdBytes) {
+      temporaryCompressedSource = `${temporarySource}.gz`;
+      storedSource = await gzipFile(temporarySource, temporaryCompressedSource);
+      if (storedSource.bytes > singleUploadMaxBytes) {
+        throw new Error(
+          `Compressed source is ${storedSource.bytes} bytes; safe single-object upload limit is ${singleUploadMaxBytes}`
+        );
+      }
+      sourceCompression = "gzip";
+      sourceFilename = "source.geojson.gz";
+      sourceContentType = "application/gzip";
+    } else if (streamed.bytes > singleUploadMaxBytes) {
+      throw new Error(
+        `Source is ${streamed.bytes} bytes; safe single-object upload limit is ${singleUploadMaxBytes}`
+      );
+    }
+    const releasePrefix = `${R2_PREFIX}/datasets/${entry.datasetUuid}/releases/${storedSource.sha256}`;
+    const sourceKey = `${releasePrefix}/${sourceFilename}`;
     const sourcePath = toR2ObjectPath(outputDir, sourceKey);
     await fs.mkdir(path.dirname(sourcePath), { recursive: true });
     await fs.rm(sourcePath, { force: true });
-    await fs.rename(temporarySource, sourcePath);
+    if (sourceCompression === "gzip") {
+      await fs.rename(temporaryCompressedSource, sourcePath);
+      temporaryCompressedSource = null;
+    } else {
+      await fs.rename(temporarySource, sourcePath);
+      displaySourcePath = sourcePath;
+    }
     entry.artifacts.source = {
       available: true,
       key: sourceKey,
-      sha256: streamed.sha256,
-      bytes: streamed.bytes,
-      contentType: "application/geo+json",
+      sha256: storedSource.sha256,
+      bytes: storedSource.bytes,
+      contentType: sourceContentType,
+      compression: sourceCompression,
       finalUrl: streamed.finalUrl,
       acquisition: streamed.acquisition,
       pageCount: streamed.pageCount ?? null
     };
-    registerUpload(uploads, outputDir, sourceKey, sourcePath, "application/geo+json", "data", 10);
+    if (sourceCompression === "gzip") {
+      Object.assign(entry.artifacts.source, {
+        originalSha256: streamed.sha256,
+        originalBytes: streamed.bytes,
+        originalContentType: "application/geo+json"
+      });
+      entry.qaWarnings.push({
+        code: "source_stored_gzip",
+        severity: "info",
+        originalBytes: streamed.bytes,
+        storedBytes: storedSource.bytes
+      });
+    }
+    registerUpload(uploads, outputDir, sourceKey, sourcePath, sourceContentType, "data", 10);
 
     if (knownAnomaly || detectedQuarantine) {
       entry.artifacts.display = {
@@ -1412,7 +1489,7 @@ async function mirrorOne({
     } else {
       const temporaryDisplay = path.join(temporaryDirectory, `${entry.datasetUuid}-display-${Date.now()}.geojson`);
       try {
-        await displayBuilder(sourcePath, temporaryDisplay);
+        await displayBuilder(displaySourcePath, temporaryDisplay);
         await assertGeoJsonEnvelope(temporaryDisplay);
         const displayValidation = await inspector(temporaryDisplay);
         const displayHash = await hashFile(temporaryDisplay);
@@ -1471,11 +1548,13 @@ async function mirrorOne({
         });
       }
     }
+    await fs.rm(temporarySource, { force: true });
     entry.mirrorStatus = "mirrored";
     entry.retrievedAt = generatedAt;
     return entry;
   } catch (error) {
     await fs.rm(temporarySource, { force: true });
+    if (temporaryCompressedSource) await fs.rm(temporaryCompressedSource, { force: true });
     entry.mirrorStatus = "failed";
     entry.retrievedAt = generatedAt;
     entry.qaWarnings.push({
@@ -1506,6 +1585,8 @@ export async function mirrorRiauGeoportal({
   displayMaxBytes = DEFAULT_DISPLAY_MAX_BYTES,
   displayMaxFeatures = DEFAULT_DISPLAY_MAX_FEATURES,
   metadataMaxBytes = DEFAULT_METADATA_MAX_BYTES,
+  sourceCompressionThresholdBytes = DEFAULT_SOURCE_COMPRESSION_THRESHOLD_BYTES,
+  singleUploadMaxBytes = R2_SINGLE_UPLOAD_SAFE_MAX_BYTES,
   force = false
 } = {}) {
   if (!outputDir) throw new Error("outputDir is required");
@@ -1548,6 +1629,11 @@ export async function mirrorRiauGeoportal({
       displaySourceMaxBytes: asPositiveInteger(displaySourceMaxBytes, "displaySourceMaxBytes"),
       displayMaxBytes: asPositiveInteger(displayMaxBytes, "displayMaxBytes"),
       displayMaxFeatures: asPositiveInteger(displayMaxFeatures, "displayMaxFeatures"),
+      sourceCompressionThresholdBytes: asPositiveInteger(
+        sourceCompressionThresholdBytes,
+        "sourceCompressionThresholdBytes"
+      ),
+      singleUploadMaxBytes: asPositiveInteger(singleUploadMaxBytes, "singleUploadMaxBytes"),
       force: force === true
     })
   );

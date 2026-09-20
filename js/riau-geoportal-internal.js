@@ -100,8 +100,10 @@
       mirrorStatus,
       mirrorError: String(mirror.error || row.mirrorError || row.error || ""),
       sourceAvailable,
-      sourceBytes: Number(sourceObject.bytes || mirror.sourceBytes || row.sourceBytes || row.fileSize || row.file_size || spatial.fileSizeBytes || 0),
-      sourceSha: String(sourceObject.sha256 || mirror.sha256 || row.sha256 || ""),
+      sourceBytes: Number(sourceObject.originalBytes || sourceObject.bytes || mirror.sourceBytes || row.sourceBytes || row.fileSize || row.file_size || spatial.fileSizeBytes || 0),
+      sourceStoredBytes: Number(sourceObject.bytes || mirror.sourceBytes || row.sourceBytes || 0),
+      sourceSha: String(sourceObject.originalSha256 || sourceObject.sha256 || mirror.sha256 || row.sha256 || ""),
+      sourceCompression: String(sourceObject.compression ?? "identity"),
       displayAvailable,
       displayBytes: Number(displayObject.bytes || mirror.displayBytes || row.displayBytes || 0),
       featureCount: Number(displayObject.featureCount || mirror.featureCount || row.featureCount || 0),
@@ -309,6 +311,7 @@
       ["UUID dataset", item.uuid], ["Identifier", item.datasetIdentifier], ["Metadata", item.metadataIdentifier],
       ["Penerbit", item.publisher], ["Tema KUGI", item.theme], ["Tahun data", item.dataYear],
       ["Geometri", item.geometryType], ["Sistem referensi", item.epsg], ["Ukuran sumber", formatBytes(item.sourceBytes)],
+      ["Penyimpanan", item.sourceCompression === "gzip" ? "Gzip · " + formatBytes(item.sourceStoredBytes) : "GeoJSON"],
       ["Lisensi", item.license], ["Akses sumber", item.access], ["Hash SHA-256", item.sourceSha ? item.sourceSha.slice(0, 16) + "…" : "—"]
     ];
     el("rg-detail-grid").innerHTML = fields.map(([key, value]) => `<div><dt>${escapeHtml(key)}</dt><dd>${escapeHtml(value)}</dd></div>`).join("");
@@ -317,7 +320,9 @@
     el("rg-official-link").hidden = !official;
     if (official) el("rg-official-link").href = official;
     el("rg-download").disabled = !item.sourceAvailable;
-    el("rg-download").textContent = item.sourceAvailable ? "Unduh snapshot internal" : "Snapshot belum tersedia";
+    el("rg-download").textContent = item.sourceAvailable
+      ? "Unduh snapshot internal" + (item.sourceCompression === "gzip" ? " (.gz)" : "")
+      : "Snapshot belum tersedia";
     const notes = [];
     if (item.mirrorError) notes.push("Sinkronisasi: " + item.mirrorError);
     if (item.conflicts.length) notes.push(item.conflicts.length + " konflik metadata dipertahankan untuk pemeriksaan.");
@@ -327,9 +332,9 @@
     el("rg-detail").scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
 
-  function safeFileName(item) {
+  function safeFileName(item, compressed) {
     const stem = item.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 70) || "riau-geoportal";
-    return stem + "-" + item.uuid.slice(0, 8) + ".geojson";
+    return stem + "-" + item.uuid.slice(0, 8) + ".geojson" + (compressed ? ".gz" : "");
   }
 
   async function downloadSource() {
@@ -342,12 +347,20 @@
     try {
       const response = await api(`/api/staff/riau-geoportal/datasets/${encodeURIComponent(item.uuid)}/source`);
       if (!response.ok) throw new Error("Snapshot sumber belum dapat diunduh (" + response.status + ").");
-      const name = safeFileName(item);
+      const responseType = String(response.headers.get("content-type") || "").split(";", 1)[0].trim().toLowerCase();
+      if (!new Set(["application/gzip", "application/geo+json"]).has(responseType)) {
+        throw new Error("Format snapshot sumber tidak dikenali.");
+      }
+      const compressed = responseType === "application/gzip";
+      const name = safeFileName(item, compressed);
       const contentLength = response.headers.get("content-length");
       const bytes = Number(contentLength);
       if (!contentLength || !Number.isSafeInteger(bytes) || bytes < 1) throw new Error("Ukuran snapshot sumber tidak dapat diverifikasi.");
       if (window.showSaveFilePicker && response.body) {
-        const handle = await window.showSaveFilePicker({ suggestedName: name, types: [{ description: "GeoJSON", accept: { "application/geo+json": [".geojson"] } }] });
+        const types = compressed
+          ? [{ description: "GeoJSON terkompresi", accept: { "application/gzip": [".gz"] } }]
+          : [{ description: "GeoJSON", accept: { "application/geo+json": [".geojson"] } }];
+        const handle = await window.showSaveFilePicker({ suggestedName: name, types });
         const writable = await handle.createWritable();
         await response.body.pipeTo(writable);
       } else {
@@ -357,13 +370,14 @@
         anchor.href = href; anchor.download = name; anchor.click();
         setTimeout(() => URL.revokeObjectURL(href), 1000);
       }
-      note.textContent = "Snapshot internal selesai disimpan. Periksa checksum pada metadata bila dipakai untuk analisis lanjutan.";
+      note.textContent = "Snapshot internal selesai disimpan." +
+        (compressed ? " Ekstrak .gz untuk memperoleh GeoJSON mentah yang checksum-nya tercantum pada metadata." : " Periksa checksum pada metadata bila dipakai untuk analisis lanjutan.");
     } catch (error) {
       if (error && error.name === "AbortError") note.textContent = "Penyimpanan dibatalkan.";
       else note.textContent = error.message || "Unduhan gagal.";
     } finally {
       button.disabled = false;
-      button.textContent = "Unduh snapshot internal";
+      button.textContent = "Unduh snapshot internal" + (item.sourceCompression === "gzip" ? " (.gz)" : "");
     }
   }
 

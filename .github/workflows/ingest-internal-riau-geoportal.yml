@@ -197,6 +197,17 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           set -euo pipefail
+          max_upload_bytes=$((290 * 1024 * 1024))
+          jq -r '.objects[].file' "${WORK_ROOT}/mirror/upload-plan.json" |
+          while IFS= read -r file; do
+            object_path="${WORK_ROOT}/mirror/${file}"
+            test -f "${object_path}"
+            object_bytes="$(stat --format='%s' "${object_path}")"
+            if test "${object_bytes}" -gt "${max_upload_bytes}"; then
+              echo "Refusing object larger than the safe Wrangler upload limit: ${file} (${object_bytes} bytes)" >&2
+              exit 1
+            fi
+          done
           upload_range() {
             local bucket="$1"
             local minimum="$2"

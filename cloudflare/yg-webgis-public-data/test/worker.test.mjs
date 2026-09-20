@@ -251,6 +251,129 @@ test("Riau Geoportal catalog and dataset objects remain staff-only", async () =>
   }
 });
 
+test("serves validated gzip source objects as explicit staff-only downloads", async () => {
+  const originalFetch = globalThis.fetch;
+  const uuid = "1465e69b-4107-4862-bc66-d532e0fd5a21";
+  const storedSha = "c".repeat(64);
+  const originalSha = "d".repeat(64);
+  const key = `internal/riau-geoportal/datasets/${uuid}/releases/${storedSha}/source.geojson.gz`;
+  const body = new Uint8Array([31, 139, 8, 0, 0, 0, 0, 0, 2, 3]);
+  const catalog = {
+    schemaVersion: 1,
+    access: "staff_only",
+    canonicalDatasetKey: "datasetUuid",
+    datasets: [{
+      datasetUuid: uuid,
+      artifacts: {
+        source: {
+          available: true,
+          key,
+          sha256: storedSha,
+          bytes: body.byteLength,
+          contentType: "application/gzip",
+          compression: "gzip",
+          originalSha256: originalSha,
+          originalBytes: 632 * 1024 * 1024,
+          originalContentType: "application/geo+json"
+        }
+      }
+    }]
+  };
+  const env = {
+    ...envWith(null),
+    PUBLIC_SNAPSHOTS: {
+      async get(requestedKey) {
+        if (requestedKey === "internal/riau-geoportal/catalog/current.json") {
+          const value = JSON.stringify(catalog);
+          return { body: value, async text() { return value; }, size: value.length, httpEtag: '"catalog"', writeHttpMetadata() {} };
+        }
+        if (requestedKey === key) {
+          return { body, size: body.byteLength, httpEtag: '"gzip"', writeHttpMetadata() {} };
+        }
+        return null;
+      }
+    }
+  };
+  globalThis.fetch = async () => new Response(JSON.stringify(authenticatedStaffPayload()), {
+    headers: { "content-type": "application/json" }
+  });
+  try {
+    const headers = { authorization: "Bearer riau-gzip-source-session" };
+    const denied = await worker.fetch(new Request(`https://data.test/api/staff/riau-geoportal/datasets/${uuid}/source`), env);
+    assert.equal(denied.status, 401);
+    const response = await worker.fetch(new Request(`https://data.test/api/staff/riau-geoportal/datasets/${uuid}/source`, { headers }), env);
+    assert.equal(response.status, 200);
+    assert.equal(response.headers.get("content-type"), "application/gzip");
+    assert.equal(response.headers.get("content-encoding"), null);
+    assert.match(response.headers.get("content-disposition"), /\.geojson\.gz"$/);
+    assert.deepEqual(new Uint8Array(await response.arrayBuffer()), body);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test("rejects malformed or oversized compressed source manifests", async () => {
+  const originalFetch = globalThis.fetch;
+  const uuid = "1465e69b-4107-4862-bc66-d532e0fd5a21";
+  const storedSha = "e".repeat(64);
+  const baseKey = `internal/riau-geoportal/datasets/${uuid}/releases/${storedSha}/source.geojson.gz`;
+  const baseSource = {
+    available: true,
+    key: baseKey,
+    sha256: storedSha,
+    bytes: 100,
+    contentType: "application/gzip",
+    compression: "gzip",
+    originalSha256: "f".repeat(64),
+    originalBytes: 1000,
+    originalContentType: "application/geo+json"
+  };
+  function envFor(source) {
+    const catalog = JSON.stringify({
+      schemaVersion: 1,
+      access: "staff_only",
+      canonicalDatasetKey: "datasetUuid",
+      datasets: [{ datasetUuid: uuid, artifacts: { source } }]
+    });
+    return {
+      ...envWith(null),
+      PUBLIC_SNAPSHOTS: {
+        async get(key) {
+          if (key.endsWith("/catalog/current.json")) {
+            return { body: catalog, async text() { return catalog; }, size: catalog.length, httpEtag: '"catalog"', writeHttpMetadata() {} };
+          }
+          return { body: "x", size: 1, httpEtag: '"source"', writeHttpMetadata() {} };
+        }
+      }
+    };
+  }
+  globalThis.fetch = async () => new Response(JSON.stringify(authenticatedStaffPayload()), {
+    headers: { "content-type": "application/json" }
+  });
+  try {
+    const headers = { authorization: "Bearer riau-invalid-gzip-session" };
+    const cases = [
+      { ...baseSource, compression: "br" },
+      { ...baseSource, compression: "" },
+      { ...baseSource, compression: false },
+      { ...baseSource, originalSha256: undefined },
+      { ...baseSource, originalBytes: 5 * 1024 * 1024 * 1024 + 1 },
+      { ...baseSource, bytes: 290 * 1024 * 1024 + 1 },
+      { ...baseSource, key: baseKey.replace(/\.gz$/, "") },
+      { ...baseSource, contentType: "application/geo+json" }
+    ];
+    for (const source of cases) {
+      const response = await worker.fetch(new Request(
+        `https://data.test/api/staff/riau-geoportal/datasets/${uuid}/source`,
+        { headers }
+      ), envFor(source));
+      assert.equal(response.status, 503);
+    }
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
 test("Riau Geoportal dataset paths reject traversal and unadvertised objects", async () => {
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async () => new Response(JSON.stringify(authenticatedStaffPayload()), { headers: { "content-type": "application/json" } });
@@ -337,6 +460,7 @@ test("Riau Geoportal catalog cannot redirect reads or understate display size", 
       [{ ...base, datasets: [{ ...baseDataset, datasetUuid: "797ba768-2e6b-4cc8-ada9-6b4134baf518" }] }, {}, 503],
       [{ ...base, datasets: [{ ...baseDataset, artifacts: { display: { ...baseDataset.artifacts.display, key: `internal/riau-geoportal/datasets/${uuid}/releases/${release}/../source.geojson` } } }] }, {}, 503],
       [{ ...base, datasets: [{ ...baseDataset, artifacts: { display: { ...baseDataset.artifacts.display, kind: "source" } } }] }, {}, 503],
+      [{ ...base, datasets: [{ ...baseDataset, artifacts: { display: { ...baseDataset.artifacts.display, compression: "gzip" } } }] }, {}, 503],
       [{ ...base, datasets: [{ ...baseDataset, artifacts: { display: { ...baseDataset.artifacts.display, bytes: -1 } } }] }, {}, 503],
       [{ ...base, datasets: [baseDataset, structuredClone(baseDataset)] }, {}, 503],
       [base, { objectSize: 3 }, 503],

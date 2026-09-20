@@ -71,11 +71,13 @@ test("private Worker exposes only catalogued Riau Geoportal object kinds", () =>
 });
 
 test("Pages privacy guard rejects leaked source geometry", () => {
-  const directory = fs.mkdtempSync(path.join(os.tmpdir(), "yg-riau-pages-"));
-  fs.writeFileSync(path.join(directory, "source.geojson"), '{"type":"FeatureCollection","features":[]}');
-  const result = spawnSync(process.execPath, [path.join(ROOT, "scripts", "assert-riau-geoportal-private.mjs"), directory], { encoding: "utf8" });
-  assert.notEqual(result.status, 0);
-  assert.match(result.stderr, /private artifacts entered the Pages build/);
+  for (const filename of ["source.geojson", "source.geojson.gz"]) {
+    const directory = fs.mkdtempSync(path.join(os.tmpdir(), "yg-riau-pages-"));
+    fs.writeFileSync(path.join(directory, filename), "private");
+    const result = spawnSync(process.execPath, [path.join(ROOT, "scripts", "assert-riau-geoportal-private.mjs"), directory], { encoding: "utf8" });
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /private artifacts entered the Pages build/);
+  }
 });
 
 test("R2 ingest refuses buckets with direct public domains", () => {
