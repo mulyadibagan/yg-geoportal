@@ -804,6 +804,19 @@
       : '<p class="rdtr-component-note">Ledger kontrol perubahan belum tersedia.</p>';
   }
 
+  function renderV1PromotionValidator(validator) {
+    validator = validator || {}; var checks = validator.checks || [], blockers = validator.blockers || [];
+    document.getElementById("rdtr-v1-validator").innerHTML = checks.length
+      ? '<div class="rdtr-program-status">' + statusBadge(validator.decision) + '<p>' + esc(validator.rule) + '</p></div>' +
+        '<div class="rdtr-network-kpis"><span><strong>' + number(validator.passedCheckCount, 0) + '/' + number(validator.totalCheckCount, 0) +
+        '</strong>pemeriksaan lulus</span><span><strong>' + number(blockers.length, 0) + '</strong>blocker aktif</span><span><strong>' +
+        esc(validator.promotionEligible ? "YA" : "TIDAK") + '</strong>layak promosi v1</span></div>' +
+        '<div class="rdtr-plan-items">' + checks.map(function (check) { return '<article class="rdtr-plan-item"><header><h4>' +
+        esc(check.id + " · " + check.label) + '</h4>' + statusBadge(check.passed ? "passed" : "blocked") + '</header><p>Bukti saat ini: ' +
+        esc(check.evidence) + '</p></article>'; }).join("") + '</div><p class="rdtr-component-note">' + esc(validator.disclaimer) + '</p>'
+      : '<p class="rdtr-component-note">Validator promosi v1 belum tersedia.</p>';
+  }
+
   function colorFrom(value) {
     var colors = ["#a25728", "#176c8c", "#4b7d49", "#8d546f", "#806523", "#5d59a1", "#338477"];
     var hash = 0, text = String(value || "");
@@ -1903,6 +1916,11 @@
     link.href = URL.createObjectURL(blob); link.download = "ledger-kontrol-perubahan-rdtr-yg-v0.21-internal.csv"; link.click(); URL.revokeObjectURL(link.href);
   }
 
+  function exportV1PromotionValidator() {
+    if (!state.analysis.v1PromotionValidator) return;
+    downloadJson(state.analysis.v1PromotionValidator, "validator-promosi-rdtr-yg-v1-internal.json", "application/json;charset=utf-8");
+  }
+
   function exportPolicyMap() {
     var framework = state.analysis.policyMapFramework || {};
     var features = [];
@@ -2047,6 +2065,7 @@
     document.getElementById("rdtr-export-evidence-briefing-csv").addEventListener("click", exportEvidenceBriefingCsv);
     document.getElementById("rdtr-export-change-control").addEventListener("click", exportChangeControlJson);
     document.getElementById("rdtr-export-change-control-csv").addEventListener("click", exportChangeControlCsv);
+    document.getElementById("rdtr-export-v1-validator").addEventListener("click", exportV1PromotionValidator);
     document.getElementById("rdtr-export-policy-map").addEventListener("click", exportPolicyMap);
     document.getElementById("rdtr-export-draft-csv").addEventListener("click", exportDraftComparisonCsv);
     document.getElementById("rdtr-export-draft-geojson").addEventListener("click", exportDraftComparisonGeoJson);
@@ -2087,6 +2106,7 @@
     renderEvidenceReconciliation(state.analysis.existingEvidenceReconciliation);
     renderEvidenceRequestBriefing(state.analysis.evidenceRequestBriefing);
     renderResponseChangeControl(state.analysis.responseChangeControlLedger);
+    renderV1PromotionValidator(state.analysis.v1PromotionValidator);
     renderAnalysisProgramme(state.analysis.analysisProgramme, state.analysis.mandatoryAnalysisMatrix);
     renderAnalysisMatrix(state.analysis.mandatoryAnalysisMatrix);
     renderGeometryRegistry(state.analysis.geometryRegistry);

@@ -208,7 +208,7 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
   assert.ok(result.map.ygPlanningUnits.metadata.geometryProcessing.includes("tolerance 0.00002"));
 
   assert.equal(result.ygDraftRdtr.status, "provisional_internal_spatial_draft");
-  assert.equal(result.ygDraftRdtr.version, "0.21.0-internal-release-candidate");
+  assert.equal(result.ygDraftRdtr.version, "0.22.0-internal-release-candidate");
   assert.equal(result.ygDraftRdtr.programmePortfolio.programmeCount, 8);
   assert.equal(result.ygDraftRdtr.programmePortfolio.indicatorCount, 16);
   assert.equal(result.consultationArgumentMatrix.items.length, 10);
@@ -297,6 +297,14 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
     row.validationDecision === "not_reviewed" && row.proposedDisposition === null && row.technicalReviewer === null &&
     row.legalReviewer === null && row.approvedBy === null && row.implementationStatus === "not_started" && row.closedAt === null &&
     Object.entries(row.impactAssessment).every(([key, value]) => key === "impactNotes" ? value === null : value === false)));
+  assert.equal(result.v1PromotionValidator.targetVersion, "1.0.0");
+  assert.equal(result.v1PromotionValidator.promotionEligible, false);
+  assert.equal(result.v1PromotionValidator.decision, "blocked_fail_closed");
+  assert.equal(result.v1PromotionValidator.totalCheckCount, 8);
+  assert.equal(result.v1PromotionValidator.passedCheckCount, 0);
+  assert.equal(result.v1PromotionValidator.blockers.length, 8);
+  assert.equal(result.v1PromotionValidator.humanOverrideAllowed, false);
+  assert.equal(result.ygDraftRdtr.v1PromotionValidator.promotionEligible, false);
   assert.equal(result.ygDraftRdtr.zoningCodebook.version, "0.1.0-internal");
   assert.equal(result.ygDraftRdtr.structureDraft.status, "analytical_reference_geometry");
   assert.equal(result.ygDraftRdtr.structureDraft.nodeCount, 11);
