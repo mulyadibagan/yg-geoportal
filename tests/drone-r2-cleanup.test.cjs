@@ -14,11 +14,22 @@ test('R2 source cleanup keeps results and waits for remote COG verification', ()
   assert.match(workflow, /curl --fail --silent --show-error --head/);
   assert.match(workflow, /drone\/uploads/);
   assert.match(workflow, /drone\/cache\/\$JOB_ID/);
+  assert.match(workflow, /api\/drone\/public/);
+  assert.match(workflow, /Scheduled temporary R2 cleanup for existing result/);
   assert.doesNotMatch(workflow, /object delete "yg-webgis-public-snapshots\/drone\/results\//);
 
   const verifyIndex = workflow.indexOf('curl --fail --silent --show-error --head');
   const deleteIndex = workflow.indexOf('npx wrangler r2 object delete', verifyIndex);
   assert.ok(verifyIndex >= 0 && deleteIndex > verifyIndex, 'source deletion must happen after COG verification');
+});
+
+test('fast refinement also schedules temporary R2 source cleanup', () => {
+  const refineStart = workflow.indexOf('if [ -n "$REFINE_REQUESTED" ]');
+  const refineEnd = workflow.indexOf('exit 0', refineStart);
+  const refineBlock = workflow.slice(refineStart, refineEnd);
+  assert.match(refineBlock, /refine-ready "\$ROOT\/job\.json"/);
+  assert.match(refineBlock, /cleanup-scheduled "\$ROOT\/job\.json" --days 7/);
+  assert.match(refineBlock, /drone\/queue\/cleanup\.json/);
 });
 
 test('cleanup metadata uses a grace period and records completion', () => {

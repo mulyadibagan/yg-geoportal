@@ -55,6 +55,39 @@ jobs:
           CLEANUP_NEXT="$CLEANUP_ROOT/cleanup.next.json"
           mkdir -p "$CLEANUP_ROOT/jobs"
           npx wrangler r2 object get "yg-webgis-public-snapshots/drone/queue/cleanup.json" --remote --file "$CLEANUP_QUEUE" || echo '{"jobs":[]}' > "$CLEANUP_QUEUE"
+
+          # Reconcile published results created before cleanup scheduling existed.
+          # This only queues temporary R2 sources; Google Drive is never modified.
+          PUBLIC_CATALOG="$CLEANUP_ROOT/public.json"
+          curl --fail --silent --show-error "$DRONE_API_BASE/api/drone/public" > "$PUBLIC_CATALOG"
+          while IFS= read -r LEGACY_JOB_ID; do
+            [ -z "$LEGACY_JOB_ID" ] && continue
+            if jq -e --arg id "$LEGACY_JOB_ID" '.jobs[]? | select(.id == $id)' "$CLEANUP_QUEUE" >/dev/null; then
+              continue
+            fi
+            LEGACY_JOB_FILE="$CLEANUP_ROOT/jobs/$LEGACY_JOB_ID.json"
+            if ! npx wrangler r2 object get "yg-webgis-public-snapshots/drone/jobs/$LEGACY_JOB_ID.json" --remote --file "$LEGACY_JOB_FILE" >/dev/null 2>&1; then
+              continue
+            fi
+            LEGACY_STATUS=$(jq -r '.status // empty' "$LEGACY_JOB_FILE")
+            LEGACY_COG=$(jq -r '.cogKey // empty' "$LEGACY_JOB_FILE")
+            LEGACY_CLEANUP=$(jq -r '.r2CleanupStatus // empty' "$LEGACY_JOB_FILE")
+            if [ "$LEGACY_STATUS" != "ready" ] || [ -z "$LEGACY_COG" ] || [ "$LEGACY_CLEANUP" = "complete" ]; then
+              continue
+            fi
+            if [ "$LEGACY_CLEANUP" != "scheduled" ]; then
+              python ../../scripts/drone_job.py cleanup-scheduled "$LEGACY_JOB_FILE" --days 7
+              npx wrangler r2 object put "yg-webgis-public-snapshots/drone/jobs/$LEGACY_JOB_ID.json" --remote --file "$LEGACY_JOB_FILE" --content-type application/json
+            fi
+            LEGACY_ELIGIBLE=$(jq -r '.r2CleanupEligibleAt // empty' "$LEGACY_JOB_FILE")
+            [ -z "$LEGACY_ELIGIBLE" ] && continue
+            jq --arg id "$LEGACY_JOB_ID" --arg eligibleAt "$LEGACY_ELIGIBLE" \
+              '.jobs = ((.jobs // []) + [{id:$id,eligibleAt:$eligibleAt}] | unique_by(.id))' \
+              "$CLEANUP_QUEUE" > "$CLEANUP_QUEUE.tmp"
+            mv "$CLEANUP_QUEUE.tmp" "$CLEANUP_QUEUE"
+            echo "Scheduled temporary R2 cleanup for existing result $LEGACY_JOB_ID"
+          done < <(jq -r '.items[]?.id // empty' "$PUBLIC_CATALOG")
+
           echo '{"jobs":[]}' > "$CLEANUP_NEXT"
 
           keep_cleanup() {
@@ -196,7 +229,16 @@ jobs:
             npx wrangler r2 object put "yg-webgis-public-snapshots/$COG_KEY" --remote --file "$ROOT/output/orthomosaic.cog.tif" --content-type image/tiff
 
             python ../../scripts/drone_job.py refine-ready "$ROOT/job.json" "$ROOT/output/gdalinfo.json"
+            python ../../scripts/drone_job.py cleanup-scheduled "$ROOT/job.json" --days 7
             publish_status
+            CLEANUP_QUEUE="$ROOT/cleanup.json"
+            CLEANUP_NEXT="$ROOT/cleanup.next.json"
+            npx wrangler r2 object get "yg-webgis-public-snapshots/drone/queue/cleanup.json" --remote --file "$CLEANUP_QUEUE" || echo '{"jobs":[]}' > "$CLEANUP_QUEUE"
+            CLEANUP_AT=$(jq -r '.r2CleanupEligibleAt' "$ROOT/job.json")
+            jq --arg id "$JOB_ID" --arg eligibleAt "$CLEANUP_AT" --arg now "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+              '.jobs = ((.jobs // []) | map(select(.id != $id)) + [{id:$id,eligibleAt:$eligibleAt}]) | .updatedAt=$now' \
+              "$CLEANUP_QUEUE" > "$CLEANUP_NEXT"
+            npx wrangler r2 object put "yg-webgis-public-snapshots/drone/queue/cleanup.json" --remote --file "$CLEANUP_NEXT" --content-type application/json
             jq --arg id "$JOB_ID" '.jobs = (.jobs | map(select(. != $id)))' ../../tmp/drone/pending.json > ../../tmp/drone/pending.next.json
             mv ../../tmp/drone/pending.next.json ../../tmp/drone/pending.json
             npx wrangler r2 object put "yg-webgis-public-snapshots/drone/queue/pending.json" --remote --file ../../tmp/drone/pending.json --content-type application/json
