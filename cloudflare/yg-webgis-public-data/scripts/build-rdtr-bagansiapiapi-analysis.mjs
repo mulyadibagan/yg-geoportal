@@ -483,13 +483,223 @@ function buildMandatoryAnalysisMatrix(summary) {
       regulationRefs: ["R01", "R02", "R06", "R07", "R08", "R13", "R14", "R15"]
     }
   };
+  const workbench = {
+    a: {
+      priority: "P0", workstream: "Fondasi wilayah dan struktur", analysisQuestion: "Bagaimana susunan pusat pelayanan, SWP/blok, jaringan, dan hubungan fungsional internal WP seharusnya dibentuk?",
+      requiredData: ["Penetapan dan geometri WP resmi", "Sebaran layanan, fasilitas, permukiman, jaringan jalan dan pergerakan", "Jangkauan pelayanan, hambatan fisik, serta simpul ekonomi-pesisir"],
+      method: ["Analisis hierarki dan jangkauan pelayanan", "Analisis konektivitas serta aksesibilitas", "Perbandingan alternatif pembagian SWP/blok"],
+      outputs: ["Alternatif struktur internal WP", "Matriks pusat–jaringan–wilayah layanan dan alasan pemilihannya"],
+      availableEvidence: ["Batas 11 kelurahan/kepenghuluan sebagai unit penyaringan YG"], evidenceGaps: ["WP resmi", "Inventaris layanan dan pergerakan", "Geometri jaringan serta alternatif SWP/blok"],
+      geometryLink: "Menghasilkan kandidat pusat, jaringan, SWP, dan blok hanya setelah WP resmi serta bukti skala 1:5.000 tersedia.", decisionUse: "Menentukan rencana struktur ruang dan distribusi pelayanan; tidak boleh diturunkan hanya dari batas administrasi.",
+      consultationPrompt: "Tunjukkan dasar penetapan WP, hierarki pusat, jangkauan layanan, serta pembandingan alternatif SWP/blok."
+    },
+    b: {
+      priority: "P0", workstream: "Fondasi wilayah dan struktur", analysisQuestion: "Bagaimana penggunaan lahan eksisting, perubahan, penguasaan agregat, dan ketidaksesuaian pemanfaatan ruang tersebar?",
+      requiredData: ["Tutupan/penggunaan lahan termutakhir skala kerja RDTR", "Citra multitemporal dan hasil verifikasi lapangan", "Status penguasaan/perizinan agregat serta indikasi ketidaksesuaian"],
+      method: ["Klasifikasi penggunaan lahan", "Deteksi perubahan multitemporal", "Overlay penggunaan–izin–rencana dan uji lapangan"],
+      outputs: ["Peta penggunaan lahan eksisting dan perubahan", "Daftar lokasi konflik/ketidaksesuaian beserta tingkat keyakinan"],
+      availableEvidence: ["Arahan indikatif RTRW Provinsi Riau", "Batas unit kajian YG"], evidenceGaps: ["Peta penggunaan lahan 1:5.000", "Citra dan ground check", "Data penguasaan/perizinan terotorisasi"],
+      geometryLink: "Menjadi baseline calon zona, tetapi bukan geometri pola ruang sebelum verifikasi lapangan dan data legal.", decisionUse: "Menguji apakah pola ruang mengikuti kondisi, kebutuhan pemulihan, dan transisi kegiatan eksisting.",
+      consultationPrompt: "Minta peta penggunaan lahan, tahun citra, metode klasifikasi, hasil uji akurasi, dan perlakuan terhadap kegiatan eksisting yang tidak sesuai."
+    },
+    c: {
+      priority: "P0", workstream: "Fondasi wilayah dan struktur", analysisQuestion: "Apa peran Bagansiapiapi dalam sistem perkotaan, kabupaten, pesisir, DAS Rokan, dan jaringan regional?",
+      requiredData: ["RTRW kabupaten/provinsi beserta lampiran geospasial", "Arus orang-barang dan keterkaitan hinterland", "Peran pelabuhan, perikanan, perdagangan, pemerintahan, dan layanan regional"],
+      method: ["Analisis kebijakan dan hierarki pusat", "Analisis aliran serta keterkaitan wilayah", "Uji konsistensi struktur ruang lintas skala"],
+      outputs: ["Profil kedudukan dan fungsi regional", "Matriks konsistensi RTRW–RDTR"],
+      availableEvidence: ["Arahan RTRW Provinsi Riau untuk penyaringan"], evidenceGaps: ["RTRW Kabupaten Rokan Hilir yang berlaku", "Data aliran regional", "Geometri perbatasan/pesisir yang relevan"],
+      geometryLink: "Mengunci hubungan pusat dan jaringan RDTR dengan struktur ruang pada rencana lebih tinggi.", decisionUse: "Mencegah struktur RDTR yang terputus dari hierarki dan fungsi wilayah.",
+      consultationPrompt: "Minta matriks konsistensi tujuan, pusat, jaringan, dan program RDTR terhadap RTRW kabupaten serta provinsi."
+    },
+    d: {
+      priority: "P0", workstream: "Ekologi, fisik, dan risiko", analysisQuestion: "Bagian mana yang memiliki daya dukung terbatas, fungsi ekologis penting, atau paparan bahaya yang tidak layak diintensifkan?",
+      requiredData: ["KHG/fungsi gambut, kedalaman, muka air, drainase, subsidensi dan kebakaran", "DEM/elevasi, geologi, tanah, hidrologi, DAS, rob, banjir, abrasi dan iklim", "Mangrove, pesisir, biodiversitas, jasa ekosistem, daya dukung dan daya tampung"],
+      method: ["Overlay kendala dan sensitivitas", "Pemodelan multi-bahaya serta skenario iklim", "Analisis daya dukung-daya tampung dan jasa ekosistem"],
+      outputs: ["Peta sensitivitas/kendala pengembangan", "Ambang keputusan lindungi–pulihkan–batasi–dapat dipertimbangkan"],
+      availableEvidence: [`Indikasi gambut ${summary.peatAreaHa.toLocaleString("id-ID")} ha`, `Indikasi non-APL ${summary.forestAreaHa.toLocaleString("id-ID")} ha`, "Analisis mangrove parsial"], evidenceGaps: ["KHG/fungsi gambut resmi", "DEM dan model rob-banjir-subsidensi", "Daya dukung-daya tampung serta KLHS"],
+      geometryLink: "Membentuk overlay kendala dan ketentuan khusus risiko; bukan zona hukum tersendiri sebelum integrasi KLHS dan verifikasi resmi.", decisionUse: "Pengunci utama pola ruang, intensitas, ketentuan khusus, dan program perlindungan/pemulihan.",
+      consultationPrompt: "Minta model dan asumsi gambut, rob, banjir, abrasi, subsidensi, kebakaran, kenaikan muka laut, serta cara hasilnya mengubah zona dan intensitas."
+    },
+    e: {
+      priority: "P1", workstream: "Masyarakat, penduduk, dan ekonomi", analysisQuestion: "Ruang hidup, nilai budaya, kelompok rentan, kelembagaan lokal, konflik, dan aspirasi apa yang harus dilindungi atau diakomodasi?",
+      requiredData: ["Pemetaan sosial dan ruang hidup", "Situs/nilai budaya serta kelembagaan lokal", "Kelompok rentan, akses pesisir-sungai, konflik dan aspirasi"],
+      method: ["Pemetaan partisipatif berperlindungan data pribadi", "Wawancara/FGD terpilah", "Analisis akses, distribusi manfaat, dan potensi pemindahan"],
+      outputs: ["Peta nilai sosial-budaya dan akses masyarakat", "Daftar perlindungan, mitigasi sosial, dan indikator inklusi"],
+      availableEvidence: ["Daftar awal wilayah dan isu penghidupan pesisir"], evidenceGaps: ["Survei sosial", "Peta partisipatif", "Data kelompok rentan dan konflik terverifikasi"],
+      geometryLink: "Menandai koridor akses, ruang hidup, situs bernilai, serta area konflik secara terkontrol dan tidak memuat data pribadi.", decisionUse: "Menguji dampak distribusional pola ruang dan mencegah hilangnya akses masyarakat.",
+      consultationPrompt: "Siapa yang dilibatkan, ruang hidup apa yang dipetakan, dan bagaimana keberatan masyarakat mengubah peta atau norma?"
+    },
+    f: {
+      priority: "P1", workstream: "Masyarakat, penduduk, dan ekonomi", analysisQuestion: "Berapa penduduk saat ini dan mendatang, di mana tersebar, siapa yang rentan, serta bagaimana kebutuhan layanan dan paparan risikonya?",
+      requiredData: ["Penduduk per unit kecil menurut umur/jenis kelamin/kerentanan", "Migrasi, rumah tangga, kepadatan dan proyeksi multi-skenario", "Populasi terpapar bahaya dan akses layanan"],
+      method: ["Rekonsiliasi data BPS–administrasi", "Proyeksi kohor/komponen atau skenario yang dapat diaudit", "Overlay penduduk–layanan–bahaya"],
+      outputs: ["Baseline dan proyeksi penduduk", "Peta kepadatan, kebutuhan layanan, dan populasi terpapar"],
+      availableEvidence: ["Unit kajian administrasi tersedia"], evidenceGaps: ["Data penduduk terpilah", "Asumsi migrasi/proyeksi", "Data paparan per unit kecil"],
+      geometryLink: "Mengisi kebutuhan kapasitas per calon zona setelah geometri resmi tersedia; agregasi wajib menjaga privasi.", decisionUse: "Menentukan kebutuhan ruang, layanan, hunian, dan kapasitas evakuasi tanpa menggelembungkan proyeksi.",
+      consultationPrompt: "Minta tahun dasar, sumber, asumsi migrasi, skenario proyeksi, dan populasi terpapar per bahaya."
+    },
+    g: {
+      priority: "P1", workstream: "Masyarakat, penduduk, dan ekonomi", analysisQuestion: "Sektor dan rantai nilai apa yang menopang Bagansiapiapi, membutuhkan ruang, bergantung pada ekosistem, atau rentan terhadap perubahan ruang dan iklim?",
+      requiredData: ["PDRB/tenaga kerja/pendapatan dan usaha formal-informal", "Rantai nilai perikanan, perdagangan, jasa, perkebunan, dan UMKM", "Lokasi kegiatan, kebutuhan lahan/prasarana, ketergantungan ekosistem dan iklim"],
+      method: ["Analisis basis ekonomi dan rantai nilai", "Pemetaan klaster serta keterkaitan lokasi", "Analisis manfaat-biaya dan distribusi tiap alternatif"],
+      outputs: ["Peta sektor unggulan dan penghidupan", "Skenario kebutuhan ruang ekonomi yang kompatibel dengan daya dukung"],
+      availableEvidence: ["Hipotesis awal fungsi perikanan/pesisir dan perdagangan"], evidenceGaps: ["Data usaha dan tenaga kerja", "Rantai nilai", "Kerugian/manfaat spasial setiap alternatif"],
+      geometryLink: "Menunjukkan simpul, koridor, area produksi dan akses sumber daya; bukan pembenaran otomatis untuk intensifikasi.", decisionUse: "Menyusun zona penghidupan/produksi, jaringan pendukung, dan program ekonomi yang adil.",
+      consultationPrompt: "Minta bukti sektor unggulan, kebutuhan ruang, ketergantungan ekosistem, penerima manfaat, dan kelompok yang menanggung biaya."
+    },
+    h: {
+      priority: "P1", workstream: "Jaringan dan lingkungan binaan", analysisQuestion: "Bagaimana pergerakan orang-barang, akses layanan, keselamatan, logistik, dan evakuasi bekerja dalam kondisi normal maupun bencana?",
+      requiredData: ["Jaringan/hierarki/kondisi jalan dan angkutan", "Asal-tujuan, volume, simpul logistik, pelabuhan/dermaga dan titik konflik", "Genangan, akses layanan, keselamatan dan jalur evakuasi"],
+      method: ["Analisis jaringan, waktu tempuh, dan aksesibilitas", "Survei pergerakan dan keselamatan", "Uji keandalan jaringan pada skenario bencana"],
+      outputs: ["Hierarki jaringan dan simpul", "Kesenjangan akses, jalur aman, dan prioritas peningkatan"],
+      availableEvidence: ["Indikasi jaringan pada peta dasar/baseline"], evidenceGaps: ["Inventaris kondisi dan hierarki", "Survei pergerakan", "Model akses saat rob/banjir"],
+      geometryLink: "Menghasilkan kandidat jaringan struktur ruang dan koridor evakuasi dengan status kematangan jelas.", decisionUse: "Menguji lokasi pusat/zona dan prioritas jaringan agar tetap berfungsi saat bahaya.",
+      consultationPrompt: "Minta data pergerakan, standar pelayanan, lokasi kemacetan/kecelakaan, akses kelompok rentan, serta jaringan yang tetap berfungsi saat banjir/rob."
+    },
+    i: {
+      priority: "P1", workstream: "Jaringan dan lingkungan binaan", analysisQuestion: "Berapa kapasitas, cakupan, kondisi, dan kesenjangan prasarana serta fasilitas pelayanan pada kondisi sekarang dan proyeksi?",
+      requiredData: ["Air minum, air limbah, drainase, sampah, energi, telekomunikasi dan proteksi kebakaran", "Fasilitas pendidikan, kesehatan, pemerintahan, ruang publik dan layanan darurat", "Kapasitas, kondisi, wilayah layanan, rencana investasi dan ketergantungan sistem"],
+      method: ["Inventaris aset dan analisis cakupan", "Neraca kebutuhan–kapasitas", "Uji ketahanan serta ketergantungan antarsistem"],
+      outputs: ["Peta aset/cakupan/kesenjangan layanan", "Kebutuhan peningkatan, lokasi kritis, dan standar pelayanan"],
+      availableEvidence: ["Belum ada dataset terverifikasi dalam baseline YG"], evidenceGaps: ["Data aset utilitas", "Kapasitas dan kondisi", "Wilayah layanan dan rencana investasi"],
+      geometryLink: "Menghasilkan jaringan dan titik fasilitas kandidat; data sensitif utilitas tidak diekspos pada keluaran publik.", decisionUse: "Menahan pertumbuhan yang tidak dapat dilayani dan memprioritaskan layanan dasar tahan risiko.",
+      consultationPrompt: "Minta peta aset, kapasitas, wilayah layanan, standar, backlog, rencana investasi, dan skenario gangguan bencana."
+    },
+    j: {
+      priority: "P1", workstream: "Jaringan dan lingkungan binaan", analysisQuestion: "Bagaimana bentuk, kepadatan, kualitas, keamanan, dan paparan lingkungan binaan pada tingkat blok?",
+      requiredData: ["Tapak/massa bangunan, fungsi, tinggi, kepadatan dan kondisi", "Kualitas hunian, permukiman rentan, ruang terbuka, warisan dan akses darurat", "Paparan rob, banjir, kebakaran dan subsidensi pada bangunan/blok"],
+      method: ["Inventaris bangunan dan tipologi blok", "Analisis kepadatan/kualitas/ruang terbuka", "Overlay bangunan–bahaya–akses darurat"],
+      outputs: ["Atlas tipologi dan kualitas blok", "Area konsolidasi, peningkatan, perlindungan, atau pembatasan"],
+      availableEvidence: ["Batas unit kajian; kondisi blok belum dihimpun"], evidenceGaps: ["Basis bangunan", "Survei kualitas hunian", "Data paparan tingkat tapak/blok"],
+      geometryLink: "Menjadi dasar blok/subblok dan parameter zonasi setelah survei skala RDTR.", decisionUse: "Menentukan area peningkatan kualitas, konsolidasi aman, ruang terbuka, dan akses darurat.",
+      consultationPrompt: "Minta basis bangunan, definisi kepadatan/kekumuhan, kondisi blok, warisan, ruang terbuka, dan paparan bahaya."
+    },
+    k: {
+      priority: "P1", workstream: "Tata kelola dan pembiayaan", analysisQuestion: "Siapa berwenang, memiliki data, melaksanakan, mengawasi, menerima pengaduan, dan bertanggung jawab atas setiap keputusan RDTR?",
+      requiredData: ["Mandat dan struktur organisasi", "FPR/tim penyusun/pengelola data", "SOP perizinan, pengawasan, pengaduan, evaluasi dan koordinasi"],
+      method: ["Pemetaan pemangku kepentingan", "Matriks RACI", "Analisis kapasitas, celah mandat dan alur keputusan"],
+      outputs: ["Matriks kelembagaan/RACI", "Rencana penguatan kapasitas dan tata kelola data"],
+      availableEvidence: ["Kerangka kewenangan regulatif tingkat umum"], evidenceGaps: ["SK tim/FPR", "SOP dan kapasitas aktual", "Penanggung jawab data/pengawasan"],
+      geometryLink: "Mengaitkan tiap geometri, norma, program, dan indikator dengan wali data serta instansi pelaksana.", decisionUse: "Mencegah aturan tanpa pelaksana, data pemantauan, pengaduan, atau mekanisme penegakan.",
+      consultationPrompt: "Minta SK, komposisi FPR, matriks tanggung jawab, wali data, mekanisme pengaduan, dan kapasitas pengawasan."
+    },
+    l: {
+      priority: "P2", workstream: "Tata kelola dan pembiayaan", analysisQuestion: "Program mana yang layak dibiayai, kapan, oleh siapa, dari sumber apa, dan bagaimana operasi-pemeliharaannya?",
+      requiredData: ["Daftar program, volume dan biaya indikatif", "Kapasitas fiskal, APBD/APBN dan sumber pendanaan sah", "Biaya siklus hidup, operasi-pemeliharaan, tahapan dan penerima manfaat"],
+      method: ["Costing indikatif dan analisis fiskal", "Prioritisasi multi-kriteria", "Analisis siklus hidup, risiko pembiayaan dan distribusi manfaat"],
+      outputs: ["Matriks program–biaya–sumber–tahapan", "Daftar prioritas realistis dan kebutuhan O&M"],
+      availableEvidence: ["Portofolio program YG masih berupa kandidat"], evidenceGaps: ["Horizon dan volume program", "Data fiskal", "Komitmen pelaksana/sumber dana"],
+      geometryLink: "Lokasi program tidak difinalkan sebelum hasil analisis, kewenangan, lahan, dan pembiayaan jelas.", decisionUse: "Memisahkan aspirasi dari program yang implementabel dan terpelihara.",
+      consultationPrompt: "Minta biaya, sumber dana, penahapan, pelaksana, kebutuhan lahan, operasi-pemeliharaan, dan dasar prioritas setiap program."
+    },
+    m: {
+      priority: "P0", workstream: "Zonasi dan pengendalian", analysisQuestion: "Apa karakter, fungsi, kondisi, daya dukung, risiko, akses, dan kualitas yang diharapkan pada setiap zona/subzona?",
+      requiredData: ["Geometri dan nomenklatur zona draf terotorisasi", "Profil kondisi eksisting dan daya dukung tiap zona", "Risiko, akses, konflik, kegiatan dan target kualitas"],
+      method: ["Profil spasial per zona", "Statistik zonal dan uji homogenitas", "Perbandingan kondisi–fungsi–target"],
+      outputs: ["Lembar profil setiap zona/subzona", "Justifikasi batas, fungsi, dan target kualitas"],
+      availableEvidence: ["Keluarga calon zona versi YG tanpa geometri hukum"], evidenceGaps: ["Geometri zona resmi", "Nomenklatur dan versi draf", "Baseline terpilah per zona"],
+      geometryLink: "Wajib memakai geometri zona draf bernomor versi; unit administrasi YG tidak boleh dianggap zona.", decisionUse: "Menjadi dasar seluruh matriks kegiatan, intensitas, ketentuan khusus, dan evaluasi zona.",
+      consultationPrompt: "Minta geometri zona versi resmi dan profil yang membuktikan mengapa batas serta fungsi tiap zona dipilih."
+    },
+    n: {
+      priority: "P1", workstream: "Zonasi dan pengendalian", analysisQuestion: "Kegiatan apa yang eksisting, informal, musiman, terkait penghidupan, atau mungkin berkembang beserta skala dan dampaknya?",
+      requiredData: ["Inventaris kegiatan dan lokasi", "Skala, teknologi, jam operasi, kebutuhan prasarana dan tenaga kerja", "Dampak, keterkaitan ekonomi, risiko serta kecenderungan perkembangan"],
+      method: ["Survei kegiatan dan klasifikasi", "Analisis rantai nilai/lokasi", "Penyusunan skenario kegiatan masa depan"],
+      outputs: ["Katalog kegiatan spasial", "Profil karakteristik dan skenario perkembangan kegiatan"],
+      availableEvidence: ["Hipotesis sektor/penghidupan awal"], evidenceGaps: ["Inventaris kegiatan", "Skala dan karakter operasi", "Skenario perkembangan"],
+      geometryLink: "Menautkan kegiatan pada lokasi eksisting dan calon zona tanpa mengungkap data pribadi atau bisnis sensitif.", decisionUse: "Bahan baku matriks kegiatan dan mitigasi dampak; bukan daftar izin otomatis.",
+      consultationPrompt: "Minta katalog kegiatan termasuk informal/musiman, skala, dampak, kebutuhan prasarana, dan asumsi kegiatan masa depan."
+    },
+    o: {
+      priority: "P0", workstream: "Zonasi dan pengendalian", analysisQuestion: "Mengapa suatu kegiatan diizinkan, terbatas, bersyarat, atau dilarang pada setiap zona/subzona?",
+      requiredData: ["Geometri/profil zona", "Katalog kegiatan", "Kriteria kompatibilitas, daya dukung, risiko, standar dan kemampuan pengawasan"],
+      method: ["Matriks kompatibilitas kegiatan–zona", "Uji berbasis kriteria dan dampak", "Audit keterlaksanaan syarat serta pengawasan"],
+      outputs: ["Matriks ITBX/ketentuan kegiatan", "Justifikasi dan syarat terukur tiap pasangan kegiatan–zona"],
+      availableEvidence: ["Kerangka keputusan Tahan–Verifikasi–Bersyarat–Revisi"], evidenceGaps: ["Zona resmi", "Katalog kegiatan", "Kriteria dan ambang terukur"],
+      geometryLink: "Keputusan hanya sah untuk pasangan kegiatan–zona dengan geometri dan versi yang jelas.", decisionUse: "Inti peraturan zonasi dan pengendalian pemanfaatan ruang.",
+      consultationPrompt: "Minta alasan dan bukti untuk setiap klasifikasi kegiatan, termasuk syarat, indikator, instansi pengawas, dan konsekuensi pelanggaran."
+    },
+    p: {
+      priority: "P0", workstream: "Zonasi dan pengendalian", analysisQuestion: "Apa dampak langsung, tidak langsung, kumulatif, lintas batas, dan distribusional dari setiap skenario kegiatan?",
+      requiredData: ["Skenario lokasi, skala, teknologi dan tahap kegiatan", "Baseline hidrologi, ekologi, lalu lintas, layanan, emisi, kesehatan dan sosial", "Penerima dampak, ambang, mitigasi dan kapasitas pemantauan"],
+      method: ["Matriks jalur dampak", "Analisis kumulatif dan skenario", "Overlay penerima dampak serta uji mitigasi"],
+      outputs: ["Matriks dampak–lokasi–penerima", "Syarat penghindaran, mitigasi, pemulihan dan pemantauan"],
+      availableEvidence: ["Indikasi sensitivitas gambut, kawasan hutan, pesisir dan mangrove"], evidenceGaps: ["Skenario kegiatan", "Baseline lengkap", "Ambang dan model dampak kumulatif"],
+      geometryLink: "Dampak dianalisis pada sumber, jalur, penerima, dan wilayah fungsional—tidak berhenti di batas zona.", decisionUse: "Menentukan larangan/syarat, kapasitas, buffer berbasis bukti, serta program mitigasi.",
+      consultationPrompt: "Minta skenario dampak kumulatif terhadap hidrologi gambut, rob/banjir, mangrove, akses, kesehatan, penghidupan, dan kelompok rentan."
+    },
+    q: {
+      priority: "P1", workstream: "Zonasi dan pengendalian", analysisQuestion: "Berapa penduduk yang dapat dan diproyeksikan tinggal pada setiap zona dengan mempertimbangkan hunian, layanan, risiko, dan daya dukung?",
+      requiredData: ["Geometri zona", "Proyeksi penduduk dan rumah tangga", "Kapasitas hunian, layanan, akses, risiko dan daya dukung"],
+      method: ["Alokasi proyeksi berbasis skenario", "Analisis kapasitas hunian/layanan", "Uji sensitivitas terhadap migrasi dan bahaya"],
+      outputs: ["Proyeksi penduduk per zona", "Kebutuhan ruang/layanan dan batas kapasitas"],
+      availableEvidence: ["Belum tersedia untuk tingkat zona"], evidenceGaps: ["Zona resmi", "Proyeksi terpilah", "Kapasitas hunian dan layanan"],
+      geometryLink: "Tidak menghitung per zona sebelum geometri dan skenario penduduk tervalidasi.", decisionUse: "Menguji intensitas, layanan, dan tahapan pengembangan agar tidak melampaui kapasitas.",
+      consultationPrompt: "Minta metode alokasi penduduk per zona, kapasitas hunian/layanan, asumsi migrasi, dan batas daya dukung."
+    },
+    r: {
+      priority: "P1", workstream: "Zonasi dan pengendalian", analysisQuestion: "Seberapa besar selisih kondisi lapangan terhadap kualitas yang ditargetkan pada tiap zona, dan intervensi apa yang paling prioritas?",
+      requiredData: ["Indikator dan target kualitas per zona", "Baseline lapangan", "Standar pelayanan, risiko, kebutuhan masyarakat dan biaya intervensi"],
+      method: ["Gap analysis indikator–baseline", "Pembobotan prioritas", "Uji kelayakan dan distribusi manfaat"],
+      outputs: ["Skor gap kualitas per zona", "Prioritas peningkatan/pemulihan dan indikator monitoring"],
+      availableEvidence: ["Kerangka tujuan dan arah kualitas YG masih sementara"], evidenceGaps: ["Target terukur", "Baseline per zona", "Ambang prioritas"],
+      geometryLink: "Skor terikat pada zona/indikator/versi data; tidak diterapkan pada geometri penyaringan YG sebagai fakta final.", decisionUse: "Menentukan indikasi program, tahapan, target, dan evaluasi RDTR.",
+      consultationPrompt: "Minta indikator, nilai awal, target akhir, standar pembanding, lokasi gap, dan hubungan langsung dengan program."
+    },
+    s: {
+      priority: "P0", workstream: "Ekologi, fisik, dan risiko", analysisQuestion: "Karakter mikro apa yang membuat suatu lokasi memerlukan perlakuan berbeda dari zona di sekitarnya?",
+      requiredData: ["Elevasi mikro, hidrologi, pesisir, pasut, abrasi/akresi dan sejarah genangan", "Gambut, mangrove, kawasan hutan, tenurial dan akses", "Pengetahuan lokal serta verifikasi lapangan"],
+      method: ["Delineasi unit karakter", "Transek/survei lapangan", "Overlay multi-kriteria dan validasi partisipatif"],
+      outputs: ["Atlas karakter spesifik lokasi", "Ketentuan khusus atau koreksi batas zona"],
+      availableEvidence: ["Hipotesis spasial gambut, pesisir, Sungai Rokan, mangrove dan non-APL"], evidenceGaps: ["Survei skala mikro", "Elevasi/hidrologi/pesisir rinci", "Validasi tenurial dan pengetahuan lokal"],
+      geometryLink: "Menghasilkan unit karakter dan overlay ketentuan khusus; tidak otomatis menjadi zona baru.", decisionUse: "Mencegah generalisasi aturan pada lokasi dengan karakter ekologis, risiko, atau sosial yang berbeda.",
+      consultationPrompt: "Minta bukti karakter mikro dan tunjukkan lokasi yang menyebabkan batas zona atau ketentuan khusus berbeda."
+    },
+    t: {
+      priority: "P0", workstream: "Standar dan kewenangan", analysisQuestion: "Standar sektoral mana yang berlaku, mutakhir, relevan, dapat dipetakan, dan dapat diawasi untuk setiap komponen/zona?",
+      requiredData: ["Daftar peraturan/standar sektoral terkini", "Ruang lingkup, kewenangan, parameter dan satuan", "Penerapan spasial, pengecualian, versi serta mekanisme pengawasan"],
+      method: ["Register dan uji status hukum", "Crosswalk standar–zona–indikator", "Uji konsistensi serta keterlaksanaan"],
+      outputs: ["Matriks standar sektor per komponen/zona", "Daftar parameter yang masuk norma, peta, atau program"],
+      availableEvidence: ["Register awal regulasi penataan ruang, KLHS, gambut, pesisir, kehutanan dan geospasial"], evidenceGaps: ["Standar teknis lokal/terbaru", "Crosswalk per zona", "Konfirmasi instansi berwenang"],
+      geometryLink: "Setiap standar spasial harus menyebut objek, geometri, versi, skala, dan sumber yang sah.", decisionUse: "Mencegah salin-tempel standar yang tidak relevan serta menjamin norma dapat diukur.",
+      consultationPrompt: "Minta register regulasi dengan status berlaku, parameter, objek/zona penerapan, sumber geometri, dan instansi pengawas."
+    },
+    u: {
+      priority: "P0", workstream: "Standar dan kewenangan", analysisQuestion: "Tingkat pemerintahan dan instansi mana yang berwenang atas perencanaan, izin/persetujuan, program, data, pengawasan, sanksi, dan konflik?",
+      requiredData: ["Pembagian urusan dan kewenangan", "Matriks izin/persetujuan serta pengawasan", "Kewenangan data, program, sanksi dan penyelesaian konflik"],
+      method: ["Analisis yuridis kewenangan", "Matriks keputusan–instansi–proses", "Uji tumpang tindih dan kekosongan tanggung jawab"],
+      outputs: ["Matriks kewenangan per keputusan/program", "Daftar isu koordinasi dan jalur penyelesaiannya"],
+      availableEvidence: ["Kerangka kewenangan umum lintas penataan ruang, lingkungan, pesisir, kehutanan dan geospasial"], evidenceGaps: ["Pembagian per keputusan", "SOP lintas instansi", "Mekanisme konflik dan eskalasi"],
+      geometryLink: "Menetapkan siapa yang berwenang menghasilkan, menyetujui, menggunakan, dan mengawasi setiap geometri.", decisionUse: "Mencegah RDTR mengambil alih kewenangan sektoral atau membuat norma tanpa otoritas pelaksana.",
+      consultationPrompt: "Minta matriks kewenangan pusat–provinsi–kabupaten per zona, persetujuan, program, data, pengawasan, sanksi, dan konflik."
+    }
+  };
   return PASAL_24_CATEGORIES.map(([letter, category]) => ({
     id: `A24-${letter}`,
     letter,
     category,
     articleRef: `Permen ATR/BPN 11/2021, Pasal 24 huruf ${letter}`,
-    ...details[letter]
+    ...details[letter],
+    ...workbench[letter]
   }));
+}
+
+function buildAnalysisProgramme(rows) {
+  const priorities = ["P0", "P1", "P2"].map(priority => ({
+    priority,
+    count: rows.filter(row => row.priority === priority).length
+  }));
+  return {
+    status: "internal_working_programme",
+    rule: "P0 adalah pengunci geometri atau keputusan; P1 melengkapi kebutuhan, dampak, dan keterlaksanaan; P2 diselesaikan setelah program dan horizon rencana cukup matang.",
+    priorities,
+    workstreams: [...new Set(rows.map(row => row.workstream))].map(name => ({
+      name,
+      analyses: rows.filter(row => row.workstream === name).map(row => row.id)
+    })),
+    criticalPath: ["A24-c", "A24-a", "A24-b", "A24-d", "A24-s", "A24-m", "A24-n", "A24-p", "A24-o", "A24-t", "A24-u"],
+    promotionRule: "Rancangan zona, jaringan, intensitas, atau program tidak dinaikkan statusnya bila analisis P0 yang menjadi prasyaratnya belum memiliki data resmi, metode, hasil, metadata, dan jejak validasi."
+  };
 }
 
 function buildYgPlan() {
@@ -805,12 +1015,32 @@ function planningUnitDirection(metrics) {
   return directions.join("; ");
 }
 
+function planningUnitConstraintProfile(metrics) {
+  const flags = [];
+  if (metrics.peatCoveragePct >= 70) flags.push("dominasi indikasi gambut");
+  else if (metrics.peatCoveragePct > 0) flags.push("irisan indikasi gambut");
+  if (metrics.forestCoveragePct >= 40) flags.push("irisan indikasi non-APL tinggi");
+  else if (metrics.forestCoveragePct > 0) flags.push("irisan indikasi non-APL");
+  if (metrics.mangrove.status === "analysed" && metrics.mangrove.indicativeMangroveLossHa > 25) flags.push("kehilangan mangrove indikatif tinggi");
+  if (metrics.mangrove.status !== "analysed") flags.push("bukti mangrove/pesisir belum lengkap");
+  const high = metrics.peatCoveragePct >= 70 || metrics.forestCoveragePct >= 40 ||
+    (metrics.mangrove.status === "analysed" && metrics.mangrove.indicativeMangroveLossHa > 25);
+  return {
+    knownConstraintBand: high ? "high" : flags.length > 1 ? "moderate" : "evidence_gap",
+    knownConstraintBasis: flags.join("; ") || "belum ada kendala terpetakan pada layer yang tersedia",
+    unresolvedRisk: "rob, banjir, abrasi, subsidensi, kebakaran, elevasi, hidrologi, dan kapasitas evakuasi belum dimodelkan lengkap",
+    developmentSuitabilityStatus: "not_determined_pending_p0_analysis",
+    interpretation: "Kelas kendala adalah hasil overlay penyaringan, bukan kelas kesesuaian lahan, zona, atau keputusan boleh/tidak boleh."
+  };
+}
+
 function buildYgPlanningUnits(villages, villageMetrics) {
   const metricsByName = new Map(villageMetrics.map(row => [normalize(row.name), row]));
   const disclaimer = "Unit penyaringan analitis berbasis batas administrasi; bukan batas WP, SWP, blok, subblok, zona, atau keputusan kesesuaian ruang. Prioritas berlaku untuk verifikasi unit kajian, bukan vonis atas seluruh poligon atau setiap kegiatan di dalamnya.";
   const collection = featureCollection(villages.map(village => {
     const name = village.properties?.WADMKD || village.properties?.NAMOBJ;
     const metrics = metricsByName.get(normalize(name));
+    const constraint = planningUnitConstraintProfile(metrics);
     const display = simplify(village, {
       tolerance: 0.00002,
       highQuality: false,
@@ -821,6 +1051,11 @@ function buildYgPlanningUnits(villages, villageMetrics) {
       name: metrics.name,
       screeningPriority: planningUnitScreeningPriority(metrics),
       direction: planningUnitDirection(metrics),
+      knownConstraintBand: constraint.knownConstraintBand,
+      knownConstraintBasis: constraint.knownConstraintBasis,
+      unresolvedRisk: constraint.unresolvedRisk,
+      developmentSuitabilityStatus: constraint.developmentSuitabilityStatus,
+      screeningInterpretation: constraint.interpretation,
       role: "analytical_unit_not_swp_or_zone",
       evidenceClass: "EV-I",
       geometryStatus: "analytical_simplified_administrative_input",
@@ -1297,6 +1532,7 @@ export function buildAnalysis({ rtrw, administration, peat, forest, mangrove }) 
     mangroveAnalysedVillageCount: villageMetrics.filter(row => row.mangrove.status === "analysed").length
   };
   const mandatoryAnalysisMatrix = buildMandatoryAnalysisMatrix(summary);
+  const analysisProgramme = buildAnalysisProgramme(mandatoryAnalysisMatrix);
   const ygPlanningUnits = buildYgPlanningUnits(villages, villageMetrics);
 
   return {
@@ -1334,6 +1570,7 @@ export function buildAnalysis({ rtrw, administration, peat, forest, mangrove }) 
     planningWorkflow: buildPlanningWorkflow(),
     crossCuttingGates: buildCrossCuttingGates(),
     mandatoryAnalysisMatrix,
+    analysisProgramme,
     ygPlan: buildYgPlan(),
     geometryRegistry: buildGeometryRegistry({
       villageCount: villages.length,

@@ -65,6 +65,17 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
     row.id === `A24-${row.letter}` && row.articleRef.includes(`huruf ${row.letter}`) &&
     row.status && row.finding && row.nextStep
   ));
+  assert.ok(result.mandatoryAnalysisMatrix.every(row =>
+    ["P0", "P1", "P2"].includes(row.priority) && row.workstream && row.analysisQuestion &&
+    row.requiredData.length >= 3 && row.method.length >= 2 && row.outputs.length >= 2 &&
+    row.availableEvidence.length >= 1 && row.evidenceGaps.length >= 1 && row.geometryLink &&
+    row.decisionUse && row.consultationPrompt
+  ));
+  assert.equal(result.analysisProgramme.priorities.reduce((sum, row) => sum + row.count, 0), 21);
+  assert.ok(result.analysisProgramme.criticalPath.every(id =>
+    result.mandatoryAnalysisMatrix.some(row => row.id === id)
+  ));
+  assert.match(result.analysisProgramme.promotionRule, /tidak dinaikkan statusnya/);
 
   assert.equal(result.ygPlan.status, "provisional_analytical_draft");
   assert.equal(result.ygPlan.selectedAlternative.id, "ALT-YG-1");
@@ -91,6 +102,10 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
   assert.ok(result.map.ygPlanningUnits.features.every(feature =>
     feature.properties.role === "analytical_unit_not_swp_or_zone" &&
     feature.properties.screeningPriority && feature.properties.direction &&
+    ["high", "moderate", "evidence_gap"].includes(feature.properties.knownConstraintBand) &&
+    feature.properties.knownConstraintBasis && feature.properties.unresolvedRisk &&
+    feature.properties.developmentSuitabilityStatus === "not_determined_pending_p0_analysis" &&
+    feature.properties.screeningInterpretation.includes("bukan kelas kesesuaian lahan") &&
     feature.properties.disclaimer.includes("bukan batas WP")
   ));
   assert.ok(result.map.ygPlanningUnits.features.every(feature =>
