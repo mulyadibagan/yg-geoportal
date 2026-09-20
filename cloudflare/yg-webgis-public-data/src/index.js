@@ -211,6 +211,30 @@ const PRIVATE_DATA_ROUTES = {
   "/api/staff/fire-monthly-index": ["internal/fire-monthly/index.json", "application/json; charset=utf-8"],
   "/api/staff/phl-svlk-monthly-index": ["internal/phl-svlk-monthly/index.json", "application/json; charset=utf-8"]
 };
+const FEG_INGEST_PATH = "/internal/ingest/feg-sk130-riau";
+const FEG_OBJECT_KEY = "internal/peat/feg-sk130-riau.geojson";
+const FEG_EXPECTED_SHA256 = "bf15bfabfc650070c542809b7647ef366f33897ce0116902b4d2dcbcc923a970";
+const FEG_EXPECTED_BYTES = 3688836;
+async function ingestFegSk130(request, env) {
+  const advertised = String(request.headers.get("x-content-sha256") || "").toLowerCase();
+  if (advertised !== FEG_EXPECTED_SHA256) return json({ ok: false, error: "invalid_checksum" }, 403, { "cache-control": "no-store" });
+  const body = await request.arrayBuffer();
+  if (body.byteLength !== FEG_EXPECTED_BYTES) return json({ ok: false, error: "invalid_size" }, 400, { "cache-control": "no-store" });
+  const actual = Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256", body)), byte => byte.toString(16).padStart(2, "0")).join("");
+  if (actual !== FEG_EXPECTED_SHA256) return json({ ok: false, error: "checksum_mismatch" }, 400, { "cache-control": "no-store" });
+  let geojson;
+  try {
+    geojson = JSON.parse(new TextDecoder().decode(body));
+  } catch {
+    return json({ ok: false, error: "invalid_geojson" }, 400, { "cache-control": "no-store" });
+  }
+  if (geojson?.type !== "FeatureCollection" || !Array.isArray(geojson.features) || geojson.features.length !== 424) {
+    return json({ ok: false, error: "invalid_feature_collection" }, 400, { "cache-control": "no-store" });
+  }
+  if (!env.PUBLIC_SNAPSHOTS) return json({ ok: false, error: "r2_binding_missing" }, 503, { "cache-control": "no-store" });
+  await env.PUBLIC_SNAPSHOTS.put(FEG_OBJECT_KEY, body, { httpMetadata: { contentType: "application/geo+json; charset=utf-8" }, customMetadata: { sha256: actual, access: "staff_only", features: "424" } });
+  return json({ ok: true, key: FEG_OBJECT_KEY, bytes: body.byteLength, sha256: actual, features: 424 }, 201, { "cache-control": "no-store" });
+}
 const RIAU_GEOPORTAL_API_PREFIX = "/api/staff/riau-geoportal/";
 const RIAU_GEOPORTAL_OBJECT_PREFIX = "internal/riau-geoportal/";
 const RIAU_GEOPORTAL_CATALOG_KEY = `${RIAU_GEOPORTAL_OBJECT_PREFIX}catalog/current.json`;
@@ -407,6 +431,10 @@ async function refresh(env, event) {
 var index_default = { async fetch(request, env) {
   const url = new URL(request.url), privateDataApiRoute = Boolean(PRIVATE_DATA_ROUTES[url.pathname]) || isRiauGeoportalApiPath(url.pathname) || "/api/staff/fire-monthly-report" === url.pathname || "/api/staff/phl-svlk-monthly-report" === url.pathname, staffApi = "/api/prepost/sessions" === url.pathname || "/api/prepost/session-detail" === url.pathname || "/api/staff/auth-result" === url.pathname || "/api/donor/programmes" === url.pathname || "/api/donor/admin-result" === url.pathname || "/api/staff/rspo-groups" === url.pathname || privateDataApiRoute;
   if ("OPTIONS" === request.method) return new Response(null, { status: 204, headers: staffApi ? STAFF_API_HEADERS : PUBLIC_HEADERS });
+  if (FEG_INGEST_PATH === url.pathname) {
+    if ("PUT" !== request.method) return json({ ok: false, error: "method_not_allowed" }, 405, { allow: "PUT", "cache-control": "no-store" });
+    return ingestFegSk130(request, env);
+  }
   if ("/internal/refresh" === url.pathname) {
     if ("POST" !== request.method) return json({ ok: false, error: "method_not_allowed" }, 405, { allow: "POST, OPTIONS" });
     if (!await authorized(request, env.REFRESH_TOKEN)) return json({ ok: false, error: "unauthorized" }, 401, { "cache-control": "no-store" });

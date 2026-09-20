@@ -48,6 +48,24 @@ test("health is isolated and reports environment", async () => {
   assert.deepEqual(await response.json(), { ok: true, service: "yg-webgis-public-data", environment: "test" });
 });
 
+test("one-time FEG ingest rejects every payload except the validated artifact", async () => {
+  const env = writableEnv();
+  const missingChecksum = await worker.fetch(new Request("https://data.test/internal/ingest/feg-sk130-riau", {
+    method: "PUT",
+    body: "{}"
+  }), env);
+  assert.equal(missingChecksum.status, 403);
+  assert.equal(env.store.size, 0);
+
+  const wrongBody = await worker.fetch(new Request("https://data.test/internal/ingest/feg-sk130-riau", {
+    method: "PUT",
+    headers: { "x-content-sha256": "bf15bfabfc650070c542809b7647ef366f33897ce0116902b4d2dcbcc923a970" },
+    body: "{}"
+  }), env);
+  assert.equal(wrongBody.status, 400);
+  assert.equal(env.store.size, 0);
+});
+
 test("serves dashboard snapshot from R2 with public cache headers", async () => {
   const response = await worker.fetch(
     new Request("https://data.test/snapshots/current/dashboard.json"),
