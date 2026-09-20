@@ -177,6 +177,33 @@ jobs:
             npx wrangler r2 object put "yg-webgis-public-snapshots/drone/jobs/$JOB_ID.json" --remote --file "$ROOT/job.json" --content-type application/json
           }
 
+          # A refinement request only needs to clean the existing COG. Re-running
+          # the full photogrammetry pipeline would needlessly download/process all
+          # source photos again and can leave the UI waiting for hours.
+          REFINE_REQUESTED=$(jq -r '.refineRequestedAt // empty' "$ROOT/job.json")
+          COG_KEY=$(jq -r '.cogKey // empty' "$ROOT/job.json")
+          if [ -n "$REFINE_REQUESTED" ] && [ -n "$COG_KEY" ]; then
+            python ../../scripts/drone_job.py stage "$ROOT/job.json" optimizing 90 "Membersihkan latar hasil"
+            publish_status
+
+            npx wrangler r2 object get "yg-webgis-public-snapshots/$COG_KEY" --remote --file "$ROOT/output/orthomosaic-current.cog.tif"
+            nearblack -setalpha -near 20 -nb 5 -alg floodfill \
+              -o "$ROOT/output/orthomosaic-refined.tif" "$ROOT/output/orthomosaic-current.cog.tif"
+            gdal_translate "$ROOT/output/orthomosaic-refined.tif" "$ROOT/output/orthomosaic.cog.tif" \
+              -b 1 -b 2 -b 3 -mask 4 \
+              -of COG -co COMPRESS=JPEG -co QUALITY=90 -co BIGTIFF=IF_SAFER -co OVERVIEWS=AUTO
+            gdalinfo -json "$ROOT/output/orthomosaic.cog.tif" > "$ROOT/output/gdalinfo.json"
+            npx wrangler r2 object put "yg-webgis-public-snapshots/$COG_KEY" --remote --file "$ROOT/output/orthomosaic.cog.tif" --content-type image/tiff
+
+            python ../../scripts/drone_job.py refine-ready "$ROOT/job.json" "$ROOT/output/gdalinfo.json"
+            publish_status
+            jq --arg id "$JOB_ID" '.jobs = (.jobs | map(select(. != $id)))' ../../tmp/drone/pending.json > ../../tmp/drone/pending.next.json
+            mv ../../tmp/drone/pending.next.json ../../tmp/drone/pending.json
+            npx wrangler r2 object put "yg-webgis-public-snapshots/drone/queue/pending.json" --remote --file ../../tmp/drone/pending.json --content-type application/json
+            echo "Refined existing orthomosaic without rebuilding source photos"
+            exit 0
+          fi
+
           python ../../scripts/drone_job.py processing "$ROOT/job.json"
           publish_status
 
@@ -315,7 +342,7 @@ jobs:
           publish_status
           # Rapikan tepi: ubah area hitam di luar hasil menjadi transparan.
           # nearblack hanya membersihkan area gelap yang terhubung ke tepi raster.
-          nearblack -setalpha -near 12 -nb 3 -o "$ROOT/output/orthomosaic-clean.tif" "$TIF"
+          nearblack -setalpha -near 20 -nb 5 -alg floodfill -o "$ROOT/output/orthomosaic-clean.tif" "$TIF"
 
           # Simpan RGB + alpha sebagai mask agar COG JPEG tetap ringan tetapi background transparan.
           gdal_translate "$ROOT/output/orthomosaic-clean.tif" "$ROOT/output/orthomosaic.cog.tif" \
