@@ -14,6 +14,7 @@ import {
   downloadGeoJson,
   downloadWfsGeoJson,
   mirrorRiauGeoportal,
+  sanitizeDiagnosticMessage,
   summarizeMirrorFailures
 } from "../scripts/riau-geoportal-mirror.mjs";
 
@@ -515,6 +516,118 @@ test("default WFS paging safely fetches 13,063 features with stable cross-page d
   assert.equal(ids[0], "contour_layer.0");
   assert.equal(ids.at(-1), "contour_layer.13062");
   assert.deepEqual(starts, Array.from({ length: 27 }, (_, index) => index * 500));
+});
+
+test("unknown-total WFS paging continues past a server-side short-page cap", async () => {
+  const directory = await fs.mkdtemp(path.join(os.tmpdir(), "riau-wfs-unknown-total-test-"));
+  const destination = path.join(directory, "server-capped.geojson");
+  const sourceDataset = dataset(DATASET_NEW, "2026-09-20T00:00:00Z", "SERVER CAPPED");
+  sourceDataset.publicMapset = {
+    present: true,
+    layerNameMatches: true,
+    workspace: "geoportal",
+    layerName: "server_capped_layer",
+    qualifiedName: "geoportal:server_capped_layer",
+    geometryType: "POINT"
+  };
+  const starts = [];
+  const fetchImpl = async input => {
+    const url = new URL(input);
+    const start = Number(url.searchParams.get("startIndex"));
+    starts.push(start);
+    const length = Math.max(0, Math.min(100, 250 - start));
+    const features = Array.from({ length }, (_, index) => {
+      const id = start + index;
+      return {
+        type: "Feature",
+        id: `server_capped_layer.${id}`,
+        properties: { objectid: id },
+        geometry: { type: "Point", coordinates: [101, 0.5] }
+      };
+    });
+    return new Response(JSON.stringify({
+      type: "FeatureCollection",
+      numberMatched: "unknown",
+      numberReturned: features.length,
+      features
+    }), { headers: { "content-type": "application/json" } });
+  };
+
+  const result = await downloadWfsGeoJson({
+    dataset: sourceDataset,
+    datasetUuid: DATASET_NEW,
+    baseUrl: BASE_URL,
+    destination,
+    fetchImpl,
+    maxBytes: 4 * 1024 * 1024,
+    timeoutMs: 1000,
+    retries: 1,
+    retryDelayMs: 0
+  });
+  const output = JSON.parse(await fs.readFile(destination, "utf8"));
+  assert.equal(result.pageCount, 4);
+  assert.equal(result.featureCount, 250);
+  assert.equal(output.features.length, 250);
+  assert.deepEqual(starts, [0, 100, 200, 250]);
+});
+
+test("WFS paging rejects inconsistent numberReturned metadata", async () => {
+  const directory = await fs.mkdtemp(path.join(os.tmpdir(), "riau-wfs-count-mismatch-test-"));
+  const destination = path.join(directory, "count-mismatch.geojson");
+  const sourceDataset = dataset(DATASET_NEW, "2026-09-20T00:00:00Z", "COUNT MISMATCH");
+  sourceDataset.publicMapset = {
+    present: true,
+    layerNameMatches: true,
+    workspace: "geoportal",
+    layerName: "count_mismatch_layer",
+    qualifiedName: "geoportal:count_mismatch_layer",
+    geometryType: "POINT"
+  };
+  await assert.rejects(
+    downloadWfsGeoJson({
+      dataset: sourceDataset,
+      datasetUuid: DATASET_NEW,
+      baseUrl: BASE_URL,
+      destination,
+      fetchImpl: async () => new Response(JSON.stringify({
+        type: "FeatureCollection",
+        numberMatched: "unknown",
+        numberReturned: 2,
+        features: [{
+          type: "Feature",
+          id: "count_mismatch_layer.1",
+          properties: { objectid: 1 },
+          geometry: { type: "Point", coordinates: [101, 0.5] }
+        }]
+      }), { headers: { "content-type": "application/json" } }),
+      maxBytes: 1024 * 1024,
+      timeoutMs: 1000,
+      retries: 1,
+      retryDelayMs: 0
+    }),
+    /numberReturned 2 does not match 1 features/
+  );
+});
+
+test("diagnostics strip URL secrets and cap untrusted messages", () => {
+  const secretMessage =
+    "Redirect refused: https://user:password@outside.example/path/data.geojson" +
+    "?X-Amz-Signature=super-secret#fragment " + "x".repeat(2_000);
+  const sanitized = sanitizeDiagnosticMessage(secretMessage);
+  assert.ok(sanitized.length <= 512);
+  assert.match(sanitized, /https:\/\/outside\.example\/path\/data\.geojson/);
+  assert.doesNotMatch(sanitized, /user|password|X-Amz|super-secret|fragment/);
+
+  const summary = summarizeMirrorFailures({
+    datasets: [{
+      datasetUuid: DATASET_NEW,
+      title: "SIGNED REDIRECT",
+      mirrorStatus: "failed",
+      qaWarnings: [{ code: "source_mirror_failed", severity: "error", message: secretMessage }]
+    }]
+  });
+  assert.ok(summary[0].reason.length <= 512);
+  assert.doesNotMatch(summary[0].reason, /password|X-Amz|super-secret|fragment/);
 });
 
 test("failure summaries expose canonical UUID, title, and terminal error", () => {
