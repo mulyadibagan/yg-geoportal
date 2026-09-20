@@ -35,7 +35,7 @@ test("public PS directory uses responsive cards and progressive loading", () => 
   const styles = read("css/social-forestry-directory-public.css");
 
   assert.match(page, /social-forestry-regency\.css\?v=20260920-public-directory1/);
-  assert.match(page, /social-forestry-directory-public\.css\?v=20260920-public-directory1/);
+  assert.match(page, /social-forestry-directory-public\.css\?v=20260920-public-directory2/);
   assert.match(page, /id="load-more"/);
   assert.match(controller, /var visibleLimit = 18/);
   assert.match(controller, /shown\.slice\(0, visibleLimit\)/);
