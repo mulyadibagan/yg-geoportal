@@ -3287,7 +3287,7 @@ function buildYgZoningCodebook(zoning) {
 function buildYgDraftRdtr(zoning, zoningCodebook, structureDraft, networkEvidence, serviceEvidence, serviceAccess, developmentReadiness, programmePortfolio, consultationMatrix, consultationReadinessPack, completenessAudit, gapClosureWorkplan, v1ReleaseDossier, existingEvidenceReconciliation, evidenceRequestBriefing, responseChangeControlLedger, v1PromotionValidator, fieldVerificationPlan, fieldObservationSchema, regulationCurrencyAudit) {
   const metadata = zoning.metadata || {};
   return {
-    id: "RDTR-YG-BAGANSIAPIAPI-V0.27-RC10",
+    id: "RDTR-YG-BAGANSIAPIAPI-V0.28-RC11",
     title: "Rancangan RDTR Alternatif Bagansiapiapi versi Yayasan Gambut",
     version: "0.28.0-internal-release-candidate",
     sourceGeometryVersion: metadata.version || "0.2.0-internal",
