@@ -3,7 +3,7 @@
 
   const API = "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev";
   const CATALOG_PATH = "/api/staff/riau-geoportal/catalog";
-  const MAX_ACTIVE_LAYERS = 3;
+  const MAX_ACTIVE_LAYERS = 8;
   const MAX_DISPLAY_BYTES = 12 * 1024 * 1024;
   const MAX_DISPLAY_FEATURES = 25000;
   const CATALOG_CACHE_KEY = "ygRiauGeoportalCatalogV1";
@@ -350,7 +350,7 @@
     if (state.active.has(item.uuid)) return removeLayer(item.uuid);
     if (state.pending.has(item.uuid)) return;
     if (state.active.size + state.pending.size >= MAX_ACTIVE_LAYERS) {
-      el("rg-map-status").textContent = "Batas tiga layer tercapai. Hapus satu layer sebelum memuat yang lain.";
+      el("rg-map-status").textContent = "Batas delapan layer tercapai. Hapus satu layer sebelum memuat yang lain.";
       return;
     }
     state.pending.add(item.uuid);
