@@ -100,8 +100,11 @@
 .rdtr-status-badge { display: inline-flex; padding: 4px 7px; border-radius: 999px; background: #edf3f1; color: #4e6a62; font-size: .64rem; font-weight: 850; text-transform: uppercase; }
 .rdtr-status-badge.is-ready, .rdtr-status-badge.is-validated { background: #dff1e7; color: #246242; }
 .rdtr-status-badge.is-in_progress, .rdtr-status-badge.is-partial, .rdtr-status-badge.is-partial_high_priority { background: #e8f1fa; color: #1c6184; }
+.rdtr-status-badge.is-verified_available { background: #dff1e7; color: #246242; }
+.rdtr-status-badge.is-verified_process_evidence { background: #e8f1fa; color: #1c6184; }
+.rdtr-status-badge.is-historical_expired_reference { background: #f0ece5; color: #6c5a3d; }
 .rdtr-status-badge.is-yg_draft, .rdtr-status-badge.is-draft, .rdtr-status-badge.is-provisional_analytical_draft { background: #eee8f7; color: #694b82; }
-.rdtr-status-badge.is-blocked, .rdtr-status-badge.is-missing, .rdtr-status-badge.is-blocked_missing_official_evidence, .rdtr-status-badge.is-blocked_no_official_zone_geometry, .rdtr-status-badge.is-blocked_no_activity_scenarios, .rdtr-status-badge.is-blocked_no_zone_and_population_projection, .rdtr-status-badge.is-blocked_no_zone_quality_targets, .rdtr-status-badge.is-not_received { background: #fbe6e4; color: #9e2b24; }
+.rdtr-status-badge.is-blocked, .rdtr-status-badge.is-missing, .rdtr-status-badge.is-blocked_missing_official_evidence, .rdtr-status-badge.is-blocked_no_official_zone_geometry, .rdtr-status-badge.is-blocked_no_activity_scenarios, .rdtr-status-badge.is-blocked_no_zone_and_population_projection, .rdtr-status-badge.is-blocked_no_zone_quality_targets, .rdtr-status-badge.is-not_received, .rdtr-status-badge.is-not_verified { background: #fbe6e4; color: #9e2b24; }
 .rdtr-status-badge.is-concept_only, .rdtr-status-badge.is-pending, .rdtr-status-badge.is-pending_evidence, .rdtr-status-badge.is-provisional, .rdtr-status-badge.is-selected_provisional, .rdtr-status-badge.is-candidate, .rdtr-status-badge.is-candidate_only, .rdtr-status-badge.is-framework_only, .rdtr-status-badge.is-insufficient_for_geometry, .rdtr-status-badge.is-indicators_pending_complete_analysis_and_klhs, .rdtr-status-badge.is-candidate_portfolio_no_budget_or_commitment, .rdtr-status-badge.is-not_set_pending_plan_horizon_and_fiscal_analysis { background: #fff0d9; color: #8b5308; }
 .rdtr-subsection-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; padding: 4px 22px 0; }
 .rdtr-subsection-heading h3 { margin: 0; font-size: .94rem; }
@@ -112,6 +115,42 @@
 .rdtr-gate.is-ready { border-left-color: var(--rdtr-green); }
 .rdtr-gate h4 { margin: 8px 0 5px; font-size: .85rem; }
 .rdtr-gate p { margin: 0; color: #405e56; font-size: .76rem; line-height: 1.42; }
+.rdtr-evidence-panel { margin: 18px 0; }
+.rdtr-evidence-summary { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 9px; padding: 18px 22px 10px; }
+.rdtr-evidence-kpi { padding: 13px; border: 1px solid var(--rdtr-line); border-top: 4px solid #82968f; border-radius: 11px; background: #fff; }
+.rdtr-evidence-kpi strong, .rdtr-evidence-kpi span, .rdtr-evidence-kpi small { display: block; }
+.rdtr-evidence-kpi strong { font-size: 1.35rem; line-height: 1; }
+.rdtr-evidence-kpi span { margin-top: 7px; color: var(--rdtr-ink); font-size: .78rem; font-weight: 800; }
+.rdtr-evidence-kpi small { margin-top: 3px; color: var(--rdtr-muted); font-size: .66rem; }
+.rdtr-evidence-kpi.is-verified_available { border-top-color: var(--rdtr-green); }
+.rdtr-evidence-kpi.is-verified_process_evidence { border-top-color: var(--rdtr-blue); }
+.rdtr-evidence-kpi.is-historical_expired_reference { border-top-color: #8a7653; }
+.rdtr-evidence-kpi.is-not_verified, .rdtr-evidence-kpi.is-not_received { border-top-color: var(--rdtr-red); }
+.rdtr-evidence-truth { margin: 4px 22px 18px; padding: 13px 15px; border-left: 4px solid var(--rdtr-amber); background: #fff8e9; }
+.rdtr-evidence-truth p { margin: 0; color: #514a38; font-size: .82rem; line-height: 1.48; }
+.rdtr-evidence-truth p + p { margin-top: 8px; }
+.rdtr-evidence-truth small { display: block; margin-top: 8px; color: #756b55; font-size: .68rem; line-height: 1.4; }
+.rdtr-evidence-register { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 11px; padding: 13px 22px 22px; }
+.rdtr-evidence-card { border: 1px solid var(--rdtr-line); border-left: 4px solid #82968f; border-radius: 12px; background: #fff; overflow: hidden; }
+.rdtr-evidence-card.is-verified_available { border-left-color: var(--rdtr-green); }
+.rdtr-evidence-card.is-verified_process_evidence { border-left-color: var(--rdtr-blue); }
+.rdtr-evidence-card.is-historical_expired_reference { border-left-color: #8a7653; }
+.rdtr-evidence-card.is-not_verified, .rdtr-evidence-card.is-not_received { border-left-color: var(--rdtr-red); }
+.rdtr-evidence-card header { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; padding: 13px 14px; background: #f8faf9; }
+.rdtr-evidence-card h3 { margin: 4px 0 0; font-size: .88rem; line-height: 1.35; }
+.rdtr-evidence-id { color: var(--rdtr-muted); font-size: .66rem; font-weight: 850; text-transform: uppercase; letter-spacing: .025em; }
+.rdtr-evidence-body { padding: 13px 14px; }
+.rdtr-evidence-body p { margin: 0 0 9px; color: #405e56; font-size: .76rem; line-height: 1.45; }
+.rdtr-evidence-body p:last-of-type { margin-bottom: 8px; }
+.rdtr-evidence-body small { display: block; color: var(--rdtr-muted); font-size: .67rem; line-height: 1.42; }
+.rdtr-evidence-meta { padding-bottom: 8px; border-bottom: 1px solid #e9efed; color: #5b716a !important; font-size: .7rem !important; font-weight: 750; }
+.rdtr-evidence-limit { padding: 8px 9px; border-radius: 8px; background: #fff3f1; color: #70443f !important; }
+.rdtr-evidence-action { padding: 8px 9px; border-radius: 8px; background: #eef6f2; color: #315d51 !important; }
+.rdtr-evidence-sources { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 9px; }
+.rdtr-evidence-sources a, .rdtr-evidence-refs a { display: inline-flex; padding: 3px 6px; border-radius: 6px; background: #eaf2fa; color: #1c6184; font-size: .67rem; font-weight: 800; text-decoration: none; }
+.rdtr-evidence-sources a:hover, .rdtr-evidence-sources a:focus, .rdtr-evidence-refs a:hover, .rdtr-evidence-refs a:focus { text-decoration: underline; }
+.rdtr-evidence-refs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; margin-top: 10px; padding-top: 9px; border-top: 1px solid #e9efed; }
+.rdtr-evidence-refs span { color: var(--rdtr-muted); font-size: .67rem; line-height: 1.5; }
 .rdtr-grid--concept { margin: 18px 0; }
 .rdtr-yg-objective, .rdtr-yg-alternatives { padding: 18px 22px; }
 .rdtr-objective-statement { margin: 0 0 15px; padding: 14px 15px; border-left: 4px solid var(--rdtr-green); background: #f3f8f5; color: #294f45; font-size: .92rem; line-height: 1.55; }
@@ -204,6 +243,7 @@
   .rdtr-workflow-stage::after { display: none; }
   .rdtr-plan-traceability { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .rdtr-analysis-columns { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .rdtr-evidence-summary { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 @media (max-width: 760px) {
   .rdtr-yg-plan-header, .rdtr-component-grid, .rdtr-analysis-programme { grid-template-columns: 1fr; }
@@ -215,9 +255,10 @@
   .rdtr-analysis-badges { justify-content: flex-start; }
   .rdtr-subsection-heading { display: block; }
   .rdtr-subsection-heading p { margin-top: 4px; }
+  .rdtr-evidence-summary, .rdtr-evidence-register, .rdtr-evidence-refs { grid-template-columns: 1fr; }
 }
 @media print {
-  .rdtr-planning-workflow, .rdtr-cross-cutting-gates, .rdtr-component-grid, .rdtr-plan-traceability { grid-template-columns: 1fr 1fr; }
+  .rdtr-planning-workflow, .rdtr-cross-cutting-gates, .rdtr-component-grid, .rdtr-plan-traceability, .rdtr-evidence-register { grid-template-columns: 1fr 1fr; }
   .rdtr-analysis-toolbar { display: none; }
   .rdtr-analysis-matrix { grid-template-columns: 1fr; }
   .rdtr-analysis-item:not([open]) .rdtr-analysis-item-body, .rdtr-alternative:not([open]) .rdtr-alternative-body { display: block; }

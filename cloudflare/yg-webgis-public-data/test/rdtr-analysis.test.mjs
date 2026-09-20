@@ -59,6 +59,32 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
     "rtrw-sync", "klhs-integration", "participation-fpr", "map-scale-5000"
   ]);
 
+  assert.equal(result.p0EvidenceBoard.lastChecked, "2026-09-20");
+  assert.equal(result.p0EvidenceBoard.items.length, 10);
+  assert.deepEqual(result.p0EvidenceBoard.statusCounts, {
+    verified_available: 1,
+    not_verified: 1,
+    historical_expired_reference: 1,
+    verified_process_evidence: 1,
+    not_received: 6
+  });
+  assert.match(result.p0EvidenceBoard.legalTruth, /27\/2002.*2002–2012/);
+  assert.match(result.p0EvidenceBoard.promotionRule, /tidak boleh dinaikkan statusnya/);
+  const invitationEvidence = result.p0EvidenceBoard.items.find(row => row.id === "P0-E01");
+  assert.equal(invitationEvidence.status, "verified_available");
+  assert.equal(invitationEvidence.documentNumber, "600.3.2.2/TARU/2026/2");
+  assert.equal(invitationEvidence.documentDate, "2026-09-17");
+  assert.match(invitationEvidence.finding, /11 kelurahan\/kepenghuluan/);
+  assert.equal(invitationEvidence.access, "internal_only");
+  assert.equal(invitationEvidence.sourceLinks, undefined);
+  const historicalRtrw = result.p0EvidenceBoard.items.find(row => row.id === "P0-E03");
+  assert.equal(historicalRtrw.status, "historical_expired_reference");
+  assert.equal(historicalRtrw.planningPeriod, "2002–2012");
+  assert.match(historicalRtrw.legalRole, /bukan sebagai bukti otomatis RTRW yang berlaku/);
+  const currentRtrw = result.p0EvidenceBoard.items.find(row => row.id === "P0-E02");
+  assert.equal(currentRtrw.status, "not_verified");
+  assert.match(currentRtrw.limitation, /bukan bukti bahwa instrumen tidak ada/);
+
   assert.equal(result.mandatoryAnalysisMatrix.length, 21);
   assert.equal(result.mandatoryAnalysisMatrix.map(row => row.letter).join(""), "abcdefghijklmnopqrstu");
   assert.ok(result.mandatoryAnalysisMatrix.every(row =>
@@ -119,6 +145,7 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
 
   const regulationIds = new Set(result.regulationRegister.map(row => row.id));
   const analysisIds = new Set(result.mandatoryAnalysisMatrix.map(row => row.id));
+  const gateIds = new Set(result.crossCuttingGates.map(row => row.id));
   const objectsWithRegulationRefs = [
     ...result.planningWorkflow,
     ...result.crossCuttingGates,
@@ -132,5 +159,9 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
   ));
   assert.ok(result.ygPlan.traceability.every(row =>
     row.analysisRefs.every(id => analysisIds.has(id))
+  ));
+  assert.ok(result.p0EvidenceBoard.items.every(row =>
+    row.evidenceClass === "EV-O" && row.analysisRefs.every(id => analysisIds.has(id)) &&
+    row.gateRefs.every(id => gateIds.has(id)) && row.legalRole && row.finding && row.limitation && row.nextAction
   ));
 });

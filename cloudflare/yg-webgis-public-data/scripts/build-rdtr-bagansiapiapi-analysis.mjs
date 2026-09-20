@@ -154,10 +154,15 @@ const REGULATION_REGISTER = [
     ygTest: "Overlay zona RDTR dengan geometri RTRW provinsi yang sah dan dokumentasikan setiap perbedaan skala, klasifikasi, atau pembaruan."
   },
   {
-    id: "L02", scope: "lokal", code: "RTRW Kabupaten Rokan Hilir yang berlaku", title: "Rujukan Langsung RDTR",
-    status: "nomor dan status belum terverifikasi", officialUrl: "https://jdih.rohilkab.go.id/",
+    id: "L02", scope: "lokal", code: "RTRW Kabupaten Rokan Hilir — instrumen berlaku belum terverifikasi", title: "Rujukan Langsung RDTR",
+    status: "instrumen baru belum terverifikasi; Perda 27/2002 hanya arsip periode 2002–2012", officialUrl: "https://jdih.rohilkab.go.id/",
+    officialUrls: [
+      { label: "JDIH Rokan Hilir", url: "https://jdih.rohilkab.go.id/" },
+      { label: "Arsip Perda 27/2002 (BPK Riau)", url: "https://riau.bpk.go.id/perda-kabupaten-rokan-hilir-nomor-27-tahun-2002-tentang-rencana-tata-ruang-wilayah-kabupaten-rokan-hilir-tahun-2002-2012/" },
+      { label: "Bukti proses persetujuan substansi 29 Januari 2026", url: "https://mediacenter.rohilkab.go.id/view/percepat-persetujuan-substansi-rtrw-bupati-rohil-h-bistamam-temui-menteri-atr-bpn-di-jakarta" }
+    ],
     obligation: "RDTR merupakan rencana rinci yang harus konsisten dengan RTRW kabupaten yang sah.",
-    ygTest: "Kesimpulan konsistensi final ditahan sampai perda, lampiran peta digital, riwayat perubahan, dan status berlakunya diterima."
+    ygTest: "Kesimpulan konsistensi final ditahan sampai perda RTRW kabupaten yang berlaku, lampiran peta digital, riwayat perubahan, dan status hukumnya diterima. Perda 27/2002 tidak diperlakukan sebagai dasar berlaku karena periode rencananya 2002–2012."
   },
   {
     id: "L03", scope: "bersyarat", code: "Perpres 43/2020", title: "RTR Kawasan Perbatasan Negara Riau–Kepri",
@@ -166,6 +171,200 @@ const REGULATION_REGISTER = [
     ygTest: "Terapkan hanya setelah lampiran geometri dioverlay dengan WP atau wilayah fungsional; jangan menyimpulkan dari nama atau kedekatan wilayah."
   }
 ];
+
+function buildP0EvidenceBoard() {
+  const items = [
+    {
+      id: "P0-E01",
+      title: "Undangan resmi Konsultasi Publik I RDTR Bagansiapiapi",
+      category: "Proses dan partisipasi",
+      status: "verified_available",
+      evidenceClass: "EV-O",
+      access: "internal_only",
+      issuer: "Sekretariat Daerah Kabupaten Rokan Hilir",
+      documentNumber: "600.3.2.2/TARU/2026/2",
+      documentDate: "2026-09-17",
+      sourceNote: "Dokumen resmi diterima Yayasan Gambut; tidak ditautkan untuk publik.",
+      legalRole: "Membuktikan kegiatan penyusunan RDTR berada pada DPA Dinas PUPR Kabupaten Rokan Hilir Tahun Anggaran 2026 dan Konsultasi Publik I dijadwalkan pada 22 September 2026.",
+      finding: "Cakupan undangan menyebut 11 kelurahan/kepenghuluan di Kecamatan Bangko: Bagan Barat, Bagan Hulu, Bagan Kota, Bagan Punak, Bagan Timur, Bagan Jawa, Bagan Jawa Pesisir, Bagan Punak Meranti, Bagan Punak Pesisir, Labuhan Tangga Besar, dan Labuhan Tangga Hilir.",
+      limitation: "Undangan tidak membuktikan penetapan WP, metode analisis, status RTRW kabupaten, KLHS, geometri zona, atau muatan rancangan perkada.",
+      nextAction: "Gunakan sebagai dasar meminta materi, peta, metode, daftar hadir, notulen, dan matriks respons pada Konsultasi Publik I.",
+      analysisRefs: ["A24-a", "A24-e", "A24-k", "A24-u"],
+      gateRefs: ["participation-fpr"]
+    },
+    {
+      id: "P0-E02",
+      title: "Perda RTRW Kabupaten Rokan Hilir yang berlaku beserta lampiran peta",
+      category: "Hierarki rencana",
+      status: "not_verified",
+      evidenceClass: "EV-O",
+      access: "official_public_or_request",
+      issuer: "Pemerintah Kabupaten Rokan Hilir",
+      sourceNote: "Penelusuran sampai 20 September 2026 belum menemukan instrumen baru yang dapat diverifikasi sebagai RTRW kabupaten yang telah ditetapkan dan berlaku.",
+      sourceLinks: [
+        { label: "JDIH Rokan Hilir", url: "https://jdih.rohilkab.go.id/" }
+      ],
+      legalRole: "Menjadi rujukan langsung untuk uji konsistensi tujuan, struktur ruang, pola ruang, kawasan strategis, dan ketentuan pengendalian RDTR.",
+      finding: "Nomor perda, tanggal penetapan, status berlaku, naskah autentik, serta lampiran peta digital RTRW kabupaten mutakhir belum terverifikasi.",
+      limitation: "Ketidakditemukan dalam penelusuran bukan bukti bahwa instrumen tidak ada. Kesimpulan konsistensi final tetap ditahan.",
+      nextAction: "Minta naskah perda yang berlaku, lembaran daerah, seluruh lampiran peta, geodatabase terotorisasi, metadata, dan riwayat perubahan.",
+      analysisRefs: ["A24-a", "A24-c", "A24-o", "A24-u"],
+      gateRefs: ["rtrw-sync"]
+    },
+    {
+      id: "P0-E03",
+      title: "Perda Kabupaten Rokan Hilir 27/2002 tentang RTRW 2002–2012",
+      category: "Hierarki rencana",
+      status: "historical_expired_reference",
+      evidenceClass: "EV-O",
+      access: "official_public",
+      issuer: "Pemerintah Kabupaten Rokan Hilir",
+      documentNumber: "Perda 27 Tahun 2002",
+      planningPeriod: "2002–2012",
+      sourceNote: "Arsip resmi ditemukan, tetapi periode rencana yang tercantum telah berakhir.",
+      sourceLinks: [
+        { label: "Arsip BPK Riau", url: "https://riau.bpk.go.id/perda-kabupaten-rokan-hilir-nomor-27-tahun-2002-tentang-rencana-tata-ruang-wilayah-kabupaten-rokan-hilir-tahun-2002-2012/" },
+        { label: "JDIH Rokan Hilir", url: "https://jdih.rohilkab.go.id/download/peraturan/301/rencana-tata-ruang-wilayah-kabupaten-rokan-hilir-tahun-2002-2012.html" }
+      ],
+      legalRole: "Hanya dipakai untuk riwayat perubahan kebijakan ruang dan audit kontinuitas, bukan sebagai bukti otomatis RTRW yang berlaku saat ini.",
+      finding: "Judul dan periode rencana resmi adalah 2002–2012.",
+      limitation: "Label katalog JDIH tidak boleh mengalahkan periode rencana yang sudah berakhir atau menggantikan verifikasi status hukum mutakhir.",
+      nextAction: "Pisahkan sebagai arsip historis dan konfirmasi secara tertulis instrumen RTRW yang berlaku saat penyusunan RDTR 2026.",
+      analysisRefs: ["A24-c", "A24-u"],
+      gateRefs: ["rtrw-sync"]
+    },
+    {
+      id: "P0-E04",
+      title: "Bukti proses percepatan persetujuan substansi RTRW baru",
+      category: "Hierarki rencana",
+      status: "verified_process_evidence",
+      evidenceClass: "EV-O",
+      access: "official_public",
+      issuer: "Media Center Pemerintah Kabupaten Rokan Hilir",
+      documentDate: "2026-01-29",
+      sourceNote: "Sumber resmi pemerintah kabupaten memberitakan pertemuan dengan Menteri ATR/BPN untuk mempercepat persetujuan substansi RTRW.",
+      sourceLinks: [
+        { label: "Media Center Rokan Hilir", url: "https://mediacenter.rohilkab.go.id/view/percepat-persetujuan-substansi-rtrw-bupati-rohil-h-bistamam-temui-menteri-atr-bpn-di-jakarta" }
+      ],
+      legalRole: "Membuktikan adanya proses penyelesaian RTRW baru pada awal 2026, bukan penetapan atau keberlakuan perdanya.",
+      finding: "Pada 29 Januari 2026, pemerintah kabupaten masih menyebut percepatan persetujuan substansi RTRW.",
+      limitation: "Berita proses tidak dapat dipakai sebagai pengganti persetujuan substansi, perda, lembaran daerah, atau lampiran peta yang telah ditetapkan.",
+      nextAction: "Minta nomor/tanggal persetujuan substansi, status fasilitasi dan evaluasi, perda final, serta geometri lampirannya.",
+      analysisRefs: ["A24-c", "A24-u"],
+      gateRefs: ["rtrw-sync"]
+    },
+    {
+      id: "P0-E05",
+      title: "Keputusan kepala daerah tentang WP dan delineasi terotorisasi",
+      category: "Fondasi wilayah",
+      status: "not_received",
+      evidenceClass: "EV-O",
+      access: "official_request",
+      issuer: "Pemerintah Kabupaten Rokan Hilir",
+      sourceNote: "Belum diterima Yayasan Gambut sampai 20 September 2026.",
+      legalRole: "Mengunci wilayah perencanaan yang sah sebelum pembentukan SWP, blok, subblok, zona, dan jaringan.",
+      finding: "Sebelas wilayah dalam undangan baru dapat dipakai sebagai unit penyaringan YG, belum sebagai bukti batas WP resmi.",
+      limitation: "Daftar nama wilayah tanpa keputusan dan geometri tidak menetapkan garis batas WP.",
+      nextAction: "Minta keputusan penetapan WP, lampiran koordinat/geometri, berita acara delineasi, luas, CRS, dan metadata.",
+      analysisRefs: ["A24-a", "A24-s", "A24-u"],
+      gateRefs: ["map-scale-5000"]
+    },
+    {
+      id: "P0-E06",
+      title: "KAK, metodologi, rencana kerja, tim penyusun, dan FPR",
+      category: "Metode dan tata kelola",
+      status: "not_received",
+      evidenceClass: "EV-O",
+      access: "official_request",
+      issuer: "Dinas PUPR Kabupaten Rokan Hilir",
+      sourceNote: "Belum diterima Yayasan Gambut sampai 20 September 2026.",
+      legalRole: "Membuktikan tahapan, metode, pembagian peran, jadwal, survei, penjaminan mutu, dan forum lintas sektor yang digunakan penyusun.",
+      finding: "Undangan mengonfirmasi kegiatan dalam DPA 2026, tetapi tidak memuat metode atau perangkat pengambilan keputusan.",
+      limitation: "Status pekerjaan tidak dapat dinilai hanya dari undangan kegiatan.",
+      nextAction: "Minta KAK dan adendum, metodologi, rencana kerja, SK tim, SK/komposisi FPR, instrumen survei, dan protokol validasi.",
+      analysisRefs: ["A24-k", "A24-t", "A24-u"],
+      gateRefs: ["participation-fpr"]
+    },
+    {
+      id: "P0-E07",
+      title: "Draf RDTR terotorisasi: geometri, muatan rencana, dan aturan zonasi",
+      category: "Draf rencana",
+      status: "not_received",
+      evidenceClass: "EV-O",
+      access: "official_request",
+      issuer: "Dinas PUPR Kabupaten Rokan Hilir",
+      sourceNote: "Belum diterima Yayasan Gambut sampai 20 September 2026.",
+      legalRole: "Objek utama untuk menguji tujuan WP, struktur, pola, pemanfaatan ruang, zonasi, ketentuan khusus, dan indikasi program.",
+      finding: "Belum ada versi bertanggal dan bernomor yang dapat dibandingkan terhadap baseline serta rekomendasi YG.",
+      limitation: "Tanpa draf resmi, dashboard hanya dapat menyusun hipotesis dan alternatif; tidak dapat menyatakan konflik zona final.",
+      nextAction: "Minta geodatabase/GeoJSON/SHP terotorisasi, album peta, naskah teknis, rancangan perkada, tabel ITBX, ketentuan intensitas, ketentuan khusus, dan nomor versi.",
+      analysisRefs: ["A24-m", "A24-n", "A24-o", "A24-p", "A24-q", "A24-r", "A24-s"],
+      gateRefs: ["rtrw-sync", "klhs-integration", "map-scale-5000"]
+    },
+    {
+      id: "P0-E08",
+      title: "KLHS: dokumen kerja, peta, rekomendasi, integrasi, dan validasi",
+      category: "Lingkungan hidup",
+      status: "not_received",
+      evidenceClass: "EV-O",
+      access: "official_request",
+      issuer: "Pemerintah Kabupaten Rokan Hilir dan instansi lingkungan hidup berwenang",
+      sourceNote: "Belum diterima Yayasan Gambut sampai 20 September 2026.",
+      legalRole: "Menjadi dasar integrasi daya dukung-daya tampung, risiko lingkungan, alternatif, dan rekomendasi ke seluruh muatan RDTR.",
+      finding: "Baseline YG menunjukkan isu gambut, pesisir, mangrove, banjir/rob, dan non-APL, tetapi belum dapat menggantikan proses KLHS resmi.",
+      limitation: "Peta indikatif YG bukan rekomendasi atau bukti validasi KLHS.",
+      nextAction: "Minta dokumen KLHS lengkap, peta kerja, berita acara pelibatan, alternatif, rekomendasi, matriks integrasi sebelum-sesudah, penjaminan mutu, dan bukti validasi.",
+      analysisRefs: ["A24-d", "A24-p", "A24-r", "A24-s"],
+      gateRefs: ["klhs-integration"]
+    },
+    {
+      id: "P0-E09",
+      title: "Rekomendasi peta dasar BIG skala 1:5.000 dan kendali mutu geospasial",
+      category: "Geospasial",
+      status: "not_received",
+      evidenceClass: "EV-O",
+      access: "official_request",
+      issuer: "Badan Informasi Geospasial dan penyusun RDTR",
+      sourceNote: "Belum diterima Yayasan Gambut sampai 20 September 2026.",
+      legalRole: "Mengunci dasar posisi, skala, ketelitian, topologi, metadata, dan keterlacakan geometri RDTR.",
+      finding: "Layer penyaringan YG belum memenuhi fungsi peta dasar RDTR skala 1:5.000.",
+      limitation: "Geometri web dan data indikatif tidak boleh dipromosikan menjadi batas WP, SWP, blok, subblok, zona, atau subzona.",
+      nextAction: "Minta rekomendasi BIG, paket peta dasar, CRS/SRGI, laporan ketelitian, pemeriksaan topologi, metadata, kamus data, serta album peta.",
+      analysisRefs: ["A24-a", "A24-d", "A24-m", "A24-s", "A24-t"],
+      gateRefs: ["map-scale-5000"]
+    },
+    {
+      id: "P0-E10",
+      title: "Materi, daftar hadir, notulen, peta partisipatif, dan matriks respons Konsultasi Publik I",
+      category: "Proses dan partisipasi",
+      status: "not_received",
+      evidenceClass: "EV-O",
+      access: "official_request",
+      issuer: "Dinas PUPR Kabupaten Rokan Hilir",
+      sourceNote: "Kegiatan dijadwalkan 22 September 2026; keluaran konsultasi belum tersedia pada cut-off 20 September 2026.",
+      legalRole: "Membuktikan siapa yang dilibatkan, bukti yang dipresentasikan, masukan yang diterima, jawaban penyusun, dan perubahan rancangan yang dihasilkan.",
+      finding: "Jadwal diskusi dan masukan telah dibuktikan oleh undangan, tetapi jejak respons belum dapat ada sebelum kegiatan selesai.",
+      limitation: "Kehadiran atau penyampaian masukan saja tidak membuktikan bahwa rekomendasi diintegrasikan.",
+      nextAction: "Rekam setiap masukan dengan ID dan lokasi; minta matriks tanggapan yang menghubungkan masukan ke perubahan peta/pasal atau alasan penolakan.",
+      analysisRefs: ["A24-e", "A24-k", "A24-u"],
+      gateRefs: ["participation-fpr"]
+    }
+  ];
+  const statusCounts = items.reduce((counts, row) => {
+    counts[row.status] = (counts[row.status] || 0) + 1;
+    return counts;
+  }, {});
+  return {
+    title: "Papan Bukti P0 Penyusunan RDTR Bagansiapiapi",
+    lastChecked: "2026-09-20",
+    scopeNote: "Register internal ini membedakan bukti dokumen, bukti proses, arsip historis, dan kekosongan bukti. Status belum diterima atau belum terverifikasi tidak berarti dokumen tidak ada.",
+    legalTruth: "Perda Kabupaten Rokan Hilir 27/2002 ditemukan sebagai arsip RTRW periode 2002–2012 dan tidak dipakai sebagai RTRW kabupaten yang berlaku untuk uji konsistensi final. Sumber resmi pemerintah pada 29 Januari 2026 menunjukkan RTRW baru masih berada dalam proses percepatan persetujuan substansi; penetapan finalnya tetap harus dibuktikan.",
+    promotionRule: "Geometri atau keputusan rencana tidak boleh dinaikkan statusnya berdasarkan undangan, berita proses, atau arsip historis. Kenaikan status memerlukan dokumen resmi yang sesuai fungsi buktinya, versi yang jelas, geometri terotorisasi, dan jejak validasi.",
+    statusCounts,
+    blockingIds: items.filter(row => ["not_verified", "not_received"].includes(row.status)).map(row => row.id),
+    items
+  };
+}
 
 const DECISION_CLASSES = [
   { id: "hold", label: "Tahan", meaning: "Bukti P0 belum tersedia atau ada indikasi fungsi lindung/risiko tinggi.", action: "Jangan mendukung intensifikasi; minta pembuktian dan alternatif." },
@@ -1567,6 +1766,7 @@ export function buildAnalysis({ rtrw, administration, peat, forest, mangrove }) 
     regulatoryAssessments: regulatoryAssessments(summary),
     regulationRegister: REGULATION_REGISTER,
     legalFramework: REGULATION_REGISTER.map(row => ({ code: row.code, theme: row.title })),
+    p0EvidenceBoard: buildP0EvidenceBoard(),
     planningWorkflow: buildPlanningWorkflow(),
     crossCuttingGates: buildCrossCuttingGates(),
     mandatoryAnalysisMatrix,

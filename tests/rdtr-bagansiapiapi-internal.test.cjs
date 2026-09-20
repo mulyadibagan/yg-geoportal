@@ -41,7 +41,8 @@ test("internal workspace renders the regulation-based YG plan without claiming o
     "rdtr-yg-alternatives", "rdtr-structure-plan", "rdtr-pattern-plan",
     "rdtr-zoning-rules", "rdtr-programs", "rdtr-plan-traceability",
     "rdtr-analysis-programme", "rdtr-analysis-search", "rdtr-analysis-priority",
-    "rdtr-analysis-status", "rdtr-export-analysis-csv", "rdtr-analysis-matrix", "rdtr-geometry-registry"
+    "rdtr-analysis-status", "rdtr-export-analysis-csv", "rdtr-analysis-matrix", "rdtr-geometry-registry",
+    "rdtr-p0-evidence-summary", "rdtr-p0-evidence-truth", "rdtr-p0-evidence-register", "rdtr-export-evidence-csv"
   ]) assert.match(page, new RegExp(`id="${id}"`));
 
   assert.match(page, /RANCANGAN ANALITIS · BUKAN DOKUMEN PENETAPAN/);
@@ -50,6 +51,8 @@ test("internal workspace renders the regulation-based YG plan without claiming o
   assert.match(script, /unit-penyaringan-analitis-yg-bukan-zonasi\.geojson/);
   assert.match(script, /Geometri analitis bukan batas WP, SWP, zona, atau subzona yang mengikat/);
   assert.match(script, /matriks-21-analisis-rdtr-bagansiapiapi-internal\.csv/);
+  assert.match(script, /register-bukti-p0-rdtr-bagansiapiapi-internal\.csv/);
+  assert.match(script, /renderP0EvidenceBoard/);
   assert.match(script, /Pertanyaan konsultasi/);
 });
 

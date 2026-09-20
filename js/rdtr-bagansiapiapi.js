@@ -61,6 +61,10 @@
       insufficient_for_geometry: "Bukti belum cukup untuk geometri",
       framework_only: "Kerangka awal", candidate_only: "Kandidat",
       not_received: "Belum diterima",
+      not_verified: "Belum terverifikasi",
+      verified_available: "Terverifikasi · tersedia",
+      verified_process_evidence: "Terverifikasi · bukti proses",
+      historical_expired_reference: "Arsip historis · periode berakhir",
       indicators_pending_complete_analysis_and_klhs: "Indikator dan sinkronisasi RTRW belum selesai",
       not_set_pending_plan_horizon_and_fiscal_analysis: "Penahapan menunggu horizon rencana dan analisis fiskal"
     }[value] || String(value || "Belum dinilai").replace(/_/g, " ");
@@ -189,11 +193,55 @@
 
     var gates = data.crossCuttingGates || (data.ygPlan && data.ygPlan.crossCuttingGates) || [];
     document.getElementById("rdtr-cross-cutting-gates").innerHTML = gates.map(function (row) {
-      return '<article class="rdtr-gate is-' + esc(row.status || "pending") + '">' + statusBadge(row.status) + "<h4>" +
+      return '<article id="gate-' + esc(row.id || "") + '" class="rdtr-gate is-' + esc(row.status || "pending") + '">' + statusBadge(row.status) + "<h4>" +
         esc(row.title || row.name || row.label) + "</h4><p>" + esc(row.requirement || row.test || row.finding || row.gap || row.description || "") +
         "</p>" + (row.evidenceRequired ? "<small><strong>Bukti yang diperlukan:</strong> " + esc(row.evidenceRequired) + "</small>" : "") +
         (row.articleRef ? '<small class="rdtr-legal-ref"><strong>Dasar rinci:</strong> ' + esc(row.articleRef) + "</small>" : "") +
         regulationChips(row.regulationRefs || row.regulations) + "</article>";
+    }).join("");
+  }
+
+  function renderP0EvidenceBoard(board) {
+    board = board || {};
+    var items = board.items || [];
+    var counts = board.statusCounts || {};
+    var summaryRows = [
+      { status: "verified_available", label: "Dokumen tersedia", count: counts.verified_available || 0 },
+      { status: "verified_process_evidence", label: "Bukti proses", count: counts.verified_process_evidence || 0 },
+      { status: "historical_expired_reference", label: "Arsip historis", count: counts.historical_expired_reference || 0 },
+      { status: "not_verified", label: "Belum terverifikasi", count: counts.not_verified || 0 },
+      { status: "not_received", label: "Belum diterima", count: counts.not_received || 0 }
+    ];
+    document.getElementById("rdtr-p0-evidence-summary").innerHTML = summaryRows.map(function (row) {
+      return '<article class="rdtr-evidence-kpi is-' + esc(row.status) + '"><strong>' + esc(row.count) +
+        '</strong><span>' + esc(row.label) + '</span><small>' + esc(statusLabel(row.status)) + "</small></article>";
+    }).join("");
+    document.getElementById("rdtr-p0-evidence-truth").innerHTML =
+      '<p><strong>Kebenaran hukum sementara.</strong> ' + esc(board.legalTruth || "Belum dirumuskan.") +
+      '</p><p><strong>Aturan kenaikan status.</strong> ' + esc(board.promotionRule || "Bukti wajib diverifikasi sebelum keputusan dinaikkan statusnya.") +
+      '</p><small>Cut-off pemeriksaan: ' + esc(board.lastChecked || "—") + " · " + esc(board.scopeNote || "") + "</small>";
+    document.getElementById("rdtr-p0-evidence-register").innerHTML = items.map(function (row) {
+      var documentMeta = [row.issuer, row.documentNumber, row.documentDate, row.planningPeriod].filter(Boolean).join(" · ");
+      var sources = (row.sourceLinks || []).map(function (link) {
+        return '<a href="' + esc(link.url) + '" target="_blank" rel="noopener noreferrer">' + esc(link.label) + "</a>";
+      }).join("");
+      var analysisLinks = (row.analysisRefs || []).map(function (id) {
+        return '<a href="#analysis-' + esc(id) + '">' + esc(id) + "</a>";
+      }).join(" ");
+      var gateLinks = (row.gateRefs || []).map(function (id) {
+        return '<a href="#gate-' + esc(id) + '">' + esc(id) + "</a>";
+      }).join(" ");
+      return '<article id="evidence-' + esc(row.id) + '" class="rdtr-evidence-card is-' + esc(row.status || "pending") + '">' +
+        '<header><div><span class="rdtr-evidence-id">' + esc(row.id) + " · " + esc(row.category || "Bukti P0") + '</span><h3>' +
+        esc(row.title) + '</h3></div>' + statusBadge(row.status) + '</header><div class="rdtr-evidence-body">' +
+        (documentMeta ? '<p class="rdtr-evidence-meta">' + esc(documentMeta) + "</p>" : "") +
+        '<p><strong>Fungsi bukti.</strong> ' + esc(row.legalRole || "—") + '</p><p><strong>Temuan.</strong> ' + esc(row.finding || "—") +
+        '</p><p class="rdtr-evidence-limit"><strong>Batas.</strong> ' + esc(row.limitation || "—") +
+        '</p><p class="rdtr-evidence-action"><strong>Tindak lanjut.</strong> ' + esc(row.nextAction || "—") + "</p>" +
+        '<small><strong>Sumber/status:</strong> ' + esc(row.sourceNote || "—") + "</small>" +
+        (sources ? '<div class="rdtr-evidence-sources">' + sources + "</div>" : "") +
+        '<div class="rdtr-evidence-refs"><span><strong>Analisis:</strong> ' + (analysisLinks || "—") +
+        '</span><span><strong>Gerbang:</strong> ' + (gateLinks || "—") + "</span></div></div></article>";
     }).join("");
   }
 
@@ -706,6 +754,26 @@
     setTimeout(function () { URL.revokeObjectURL(link.href); }, 1000);
   }
 
+  function exportEvidenceCsv() {
+    var header = ["ID", "Kategori", "Status", "Kelas_bukti", "Akses", "Judul", "Penerbit", "Nomor", "Tanggal", "Periode", "Fungsi_bukti", "Temuan", "Batas", "Tindak_lanjut", "Sumber_status", "Analisis", "Gerbang", "Tautan_resmi"];
+    var lines = [header.map(csvCell).join(",")];
+    var board = state.analysis.p0EvidenceBoard || {};
+    (board.items || []).forEach(function (row) {
+      lines.push([
+        row.id, row.category, statusLabel(row.status), row.evidenceClass, row.access, row.title, row.issuer,
+        row.documentNumber, row.documentDate, row.planningPeriod, row.legalRole, row.finding, row.limitation,
+        row.nextAction, row.sourceNote, (row.analysisRefs || []).join(" | "), (row.gateRefs || []).join(" | "),
+        (row.sourceLinks || []).map(function (link) { return link.label + ": " + link.url; }).join(" | ")
+      ].map(csvCell).join(","));
+    });
+    var blob = new Blob(["\ufeff" + lines.join("\n")], { type: "text/csv;charset=utf-8" });
+    var link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "register-bukti-p0-rdtr-bagansiapiapi-internal.csv";
+    link.click();
+    setTimeout(function () { URL.revokeObjectURL(link.href); }, 1000);
+  }
+
   function consultationText() {
     var summary = state.analysis.summary;
     var recommendations = aggregateRecommendations(state.analysis.villages);
@@ -726,6 +794,13 @@
         return (index + 1) + ". [" + row.id + "] " + row.consultationPrompt;
       }).join("\n"),
       "",
+      "BUKTI P0 YANG BELUM DITERIMA/TERVERIFIKASI:",
+      ((state.analysis.p0EvidenceBoard && state.analysis.p0EvidenceBoard.items) || []).filter(function (row) {
+        return row.status === "not_received" || row.status === "not_verified";
+      }).map(function (row, index) {
+        return (index + 1) + ". [" + row.id + "] " + row.title + " — " + row.nextAction;
+      }).join("\n"),
+      "",
       "KESIMPULAN ANALISIS REGULASI:",
       (state.analysis.regulatoryAssessments || []).map(function (row, index) {
         return (index + 1) + ". [" + decisionLabel(row.decision) + "] " + row.theme + " — " + row.ygPosition;
@@ -738,6 +813,7 @@
   function analysisText() {
     var plan = state.analysis.ygPlan || {};
     var position = state.analysis.analysisPosition || {};
+    var evidenceBoard = state.analysis.p0EvidenceBoard || {};
     var objective = typeof plan.planningObjective === "string"
       ? plan.planningObjective
       : (plan.planningObjective && (plan.planningObjective.statement || plan.planningObjective.text)) || "Belum dirumuskan.";
@@ -779,6 +855,14 @@
       "PROGRAM PEMANFAATAN RUANG",
       numbered(Array.isArray(plan.programs) ? plan.programs : (plan.programs && plan.programs.items)) || "Belum dirumuskan.",
       "",
+      "KENDALI BUKTI P0",
+      evidenceBoard.legalTruth || "Status bukti P0 belum dirumuskan.",
+      ((evidenceBoard.items || []).filter(function (row) {
+        return row.status === "not_received" || row.status === "not_verified";
+      }).map(function (row, index) {
+        return (index + 1) + ". [" + row.id + "] " + row.title + " — " + row.nextAction;
+      }).join("\n") || "Tidak ada pengunci bukti tercatat."),
+      "",
       "UJI DAN JUSTIFIKASI REGULASI",
       "",
       (state.analysis.regulatoryAssessments || []).map(function (row, index) {
@@ -812,6 +896,7 @@
       analysisPosition: state.analysis.analysisPosition,
       decisionClasses: state.analysis.decisionClasses,
       regulationRegister: state.analysis.regulationRegister,
+      p0EvidenceBoard: state.analysis.p0EvidenceBoard,
       planningWorkflow: state.analysis.planningWorkflow,
       crossCuttingGates: state.analysis.crossCuttingGates,
       mandatoryAnalysisMatrix: state.analysis.mandatoryAnalysisMatrix,
@@ -856,6 +941,7 @@
     });
     document.getElementById("rdtr-export-csv").addEventListener("click", exportCsv);
     document.getElementById("rdtr-export-analysis-csv").addEventListener("click", exportAnalysisCsv);
+    document.getElementById("rdtr-export-evidence-csv").addEventListener("click", exportEvidenceCsv);
     ["rdtr-analysis-search", "rdtr-analysis-priority", "rdtr-analysis-status"].forEach(function (id) {
       var field = document.getElementById(id);
       field.addEventListener(id === "rdtr-analysis-search" ? "input" : "change", function () {
@@ -893,6 +979,7 @@
     renderReadiness(state.analysis.readiness);
     renderYgPlan(state.analysis);
     renderPlanningWorkflow(state.analysis);
+    renderP0EvidenceBoard(state.analysis.p0EvidenceBoard);
     renderPlanComponents(state.analysis.ygPlan);
     renderAnalysisProgramme(state.analysis.analysisProgramme, state.analysis.mandatoryAnalysisMatrix);
     renderAnalysisMatrix(state.analysis.mandatoryAnalysisMatrix);
