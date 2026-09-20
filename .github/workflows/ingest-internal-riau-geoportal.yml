@@ -41,7 +41,9 @@ jobs:
       EXPECTED_DATASETS: "60"
       MAX_SOURCE_BYTES: "5368709120"
       METADATA_MAX_BYTES: "16777216"
-      DISPLAY_SOURCE_MAX_BYTES: "536870912"
+      # The source is already bounded at 5 GiB. Large sources still need a
+      # lightweight derived display instead of being skipped outright.
+      DISPLAY_SOURCE_MAX_BYTES: "5368709120"
       DISPLAY_MAX_BYTES: "12582912"
       DISPLAY_MAX_FEATURES: "25000"
     steps:

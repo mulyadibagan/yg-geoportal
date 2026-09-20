@@ -8,6 +8,7 @@ import { gunzipSync } from "node:zlib";
 
 import {
   DEFAULT_WFS_PAGE_SIZE,
+  DISPLAY_PROFILES,
   OGR_GEOJSON_MAX_OBJ_SIZE_MB,
   WFS_PAGE_MAX_BYTES,
   assertGeoJsonEnvelope,
@@ -18,6 +19,7 @@ import {
   downloadWfsGeoJson,
   inspectGeoJsonWithGdal,
   mirrorRiauGeoportal,
+  repairKnownPointAnomalies,
   sanitizeDiagnosticMessage,
   summarizeMirrorFailures
 } from "../scripts/riau-geoportal-mirror.mjs";
@@ -60,6 +62,28 @@ test("GDAL reads large GeoJSON objects with a finite 512 MiB object cap", async 
   });
   assert.equal(observed[1].command, "ogr2ogr");
   assert.equal(observed[1].options.env.OGR_GEOJSON_MAX_OBJ_SIZE, "512");
+});
+
+test("large display profiles generalize detail and dissolve flood polygons", async () => {
+  assert.equal(
+    DISPLAY_PROFILES.get("65c24420-a091-4dd5-a6e5-3936b0d82ac4").simplifyTolerance,
+    0.0005
+  );
+  const floodProfile = DISPLAY_PROFILES.get("f71d9e6b-0f04-4de6-a850-3c8f5e92976d");
+  assert.equal(floodProfile.dissolveField, "dn");
+  assert.equal(floodProfile.allowFeatureCountReduction, true);
+  const directory = await fs.mkdtemp(path.join(os.tmpdir(), "riau-display-dissolve-test-"));
+  const calls = [];
+  await buildDisplayGeoJson("/tmp/flood.geojson", path.join(directory, "display.geojson"), {
+    ...floodProfile,
+    execFileImpl: async (command, args) => {
+      calls.push({ command, args });
+      return { stdout: "", stderr: "" };
+    }
+  });
+  assert.equal(calls.length, 2);
+  assert.ok(calls[0].args.includes("GPKG"));
+  assert.match(calls[1].args[calls[1].args.indexOf("-sql") + 1], /ST_Union\(geom\).*GROUP BY "dn"/);
 });
 
 function featureCollection(name = "fixture") {
@@ -216,6 +240,25 @@ test("GeoJSON envelope rejects HTML even when saved with a geojson extension", a
   await assert.rejects(assertGeoJsonEnvelope(filePath), /HTML/);
 });
 
+test("known point anomalies are repaired from valid x/y attributes or omitted from display", async () => {
+  const directory = await fs.mkdtemp(path.join(os.tmpdir(), "riau-point-repair-test-"));
+  const source = path.join(directory, "source.geojson");
+  const destination = path.join(directory, "display-source.geojson");
+  await fs.writeFile(source, JSON.stringify({
+    type: "FeatureCollection",
+    features: [
+      { type: "Feature", properties: { x: 101.49, y: 0.51 }, geometry: { type: "MultiPoint", coordinates: [[108.49, 0.51]] } },
+      { type: "Feature", properties: { x: 127.23, y: -0.5 }, geometry: { type: "MultiPoint", coordinates: [[127.23, -0.5]] } },
+      { type: "Feature", properties: { x: 102.1, y: 1.2 }, geometry: { type: "MultiPoint", coordinates: [[102.1, 1.2]] } }
+    ]
+  }));
+  const result = await repairKnownPointAnomalies(source, destination);
+  const repaired = JSON.parse(await fs.readFile(destination, "utf8"));
+  assert.deepEqual(result, { inputFeatures: 3, outputFeatures: 2, repaired: 1, omitted: 1 });
+  assert.deepEqual(repaired.features[0].geometry.coordinates, [[101.49, 0.51]]);
+  assert.deepEqual(repaired.features[1].geometry.coordinates, [[102.1, 1.2]]);
+});
+
 test("mirrors ready UUIDs, reuses unchanged releases, and keeps review data metadata-only", async () => {
   const outputDir = await fs.mkdtemp(path.join(os.tmpdir(), "riau-mirror-test-"));
   const manifest = {
@@ -328,12 +371,12 @@ test("mirrors ready UUIDs, reuses unchanged releases, and keeps review data meta
     reused: 1,
     reviewRequired: 1,
     failed: 0,
-    displayReady: 2,
-    displayQuarantined: 1,
+    displayReady: 3,
+    displayQuarantined: 0,
     displayUnavailable: 0
   });
   assert.equal(fetched.length, 6);
-  assert.equal(displayBuilds, 1);
+  assert.equal(displayBuilds, 2);
 
   const byUuid = new Map(catalog.datasets.map(entry => [entry.datasetUuid, entry]));
   assert.equal(byUuid.get(DATASET_RESTRICTED).mirrorStatus, "metadata_only_review_required");
@@ -341,9 +384,12 @@ test("mirrors ready UUIDs, reuses unchanged releases, and keeps review data meta
   assert.ok(byUuid.get(DATASET_RESTRICTED).blockers.includes("known_ambiguous_restricted_metadata"));
   assert.equal(byUuid.get(DATASET_REUSED).mirrorStatus, "reused");
   assert.equal(byUuid.get(DATASET_REUSED).artifacts.source.sha256, previousSha);
-  assert.equal(byUuid.get(DATASET_ANOMALY).artifacts.display.status, "quarantined");
+  assert.equal(byUuid.get(DATASET_ANOMALY).artifacts.display.status, "ready");
   assert.ok(byUuid.get(DATASET_ANOMALY).qaWarnings.some(warning =>
     warning.code === "known_coordinate_anomaly"
+  ));
+  assert.ok(byUuid.get(DATASET_ANOMALY).qaWarnings.some(warning =>
+    warning.code === "known_coordinate_anomaly_repaired_for_display"
   ));
   assert.match(
     byUuid.get(DATASET_NEW).artifacts.source.key,
@@ -358,7 +404,7 @@ test("mirrors ready UUIDs, reuses unchanged releases, and keeps review data meta
     byUuid.get(DATASET_NEW).artifacts.display.key,
     `internal/riau-geoportal/datasets/${DATASET_NEW}/releases/${byUuid.get(DATASET_NEW).artifacts.display.sha256}/display.geojson`
   );
-  assert.equal(uploadPlan.totals.dataObjects, 6);
+  assert.equal(uploadPlan.totals.dataObjects, 7);
   assert.equal(uploadPlan.totals.manifestObjects, 2);
   assert.ok(uploadPlan.objects.every(object => !/\/datasets\/[^/]+\/current\.json$/.test(object.key)));
 
