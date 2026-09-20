@@ -37,14 +37,14 @@ test("catalogue requests only authenticated private Worker routes", () => {
   assert.match(app, /datasets\/\$\{encodeURIComponent\(item\.uuid\)\}\/source/);
   assert.doesNotMatch(app, /sessionToken=/);
   assert.doesNotMatch(app, /geoportal\.riau\.go\.id\/(?:wfs|wms)-proxy/);
-  assert.match(app, /MAX_ACTIVE_LAYERS = 3/);
+  assert.match(app, /MAX_ACTIVE_LAYERS = 8/);
   assert.match(app, /MAX_DISPLAY_BYTES = 12 \* 1024 \* 1024/);
   assert.match(app, /MAX_DISPLAY_FEATURES = 25000/);
   assert.match(app, /readJsonWithinLimit\(response, MAX_DISPLAY_BYTES\)/);
   assert.match(app, /received > maxBytes/);
   assert.match(app, /geojson\.features\.length > MAX_DISPLAY_FEATURES/);
   assert.match(app, /state\.active\.size \+ state\.pending\.size >= MAX_ACTIVE_LAYERS/);
-  assert.match(app, /const streets = L\.tileLayer\([^\n]+\.addTo\(state\.map\)/);
+  assert.match(app, /const satellite = L\.tileLayer\([^\n]+\.addTo\(state\.map\)/);
   assert.match(app, /setMapExpanded/);
   assert.match(app, /state\.map\.invalidateSize\(\)/);
 });
@@ -63,7 +63,7 @@ test("catalogue preserves UUID identity and streams large source downloads safel
 test("metadata notes do not hide a display-ready dataset", () => {
   const page = read("staff-riau-reference.html");
   const app = read("js/riau-geoportal-internal.js");
-  assert.match(page, /riau-geoportal-internal\.js\?v=20260920-catalog4/);
+  assert.match(page, /riau-geoportal-internal\.js\?v=20260920-satellite1/);
   const displayCheck = app.indexOf('if (item.displayAvailable) return "display";');
   const issueCheck = app.indexOf('if (item.mirrorError || /fail|error|blocked/.test(item.mirrorStatus)) return "issue";');
   assert.ok(displayCheck > 0);
