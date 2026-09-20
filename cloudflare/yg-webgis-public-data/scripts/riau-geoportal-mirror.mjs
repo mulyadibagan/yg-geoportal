@@ -83,6 +83,33 @@ function unique(values) {
   return [...new Set(values.filter(Boolean))];
 }
 
+export function sanitizeDiagnosticMessage(value, maxLength = 512) {
+  const limit = asPositiveInteger(maxLength, "diagnostic maxLength");
+  const redacted = String(value || "diagnostic_unavailable")
+    .replace(/\b[a-z][a-z0-9+.-]*:[^\s<>"'`]+/gi, rawValue => {
+      const trailing = rawValue.match(/[),.;!?]+$/)?.[0] || "";
+      const candidate = trailing ? rawValue.slice(0, -trailing.length) : rawValue;
+      try {
+        const url = new URL(candidate);
+        if (url.protocol !== "http:" && url.protocol !== "https:") {
+          return `${url.protocol}[redacted]${trailing}`;
+        }
+        url.username = "";
+        url.password = "";
+        url.search = "";
+        url.hash = "";
+        return `${url.href}${trailing}`;
+      } catch {
+        return `[redacted-url]${trailing}`;
+      }
+    })
+    .replace(/\s+/g, " ")
+    .trim();
+  if (redacted.length <= limit) return redacted || "diagnostic_unavailable";
+  if (limit <= 3) return ".".repeat(limit);
+  return `${redacted.slice(0, limit - 3)}...`;
+}
+
 function normalizeText(value) {
   return String(value || "").trim().toLocaleLowerCase("id-ID");
 }
@@ -396,7 +423,9 @@ export async function inspectGeoJsonWithGdal(filePath, { execFileImpl = execFile
       { encoding: "utf8", maxBuffer: 16 * 1024 * 1024 }
     ));
   } catch (error) {
-    throw new Error(`ogrinfo could not read GeoJSON: ${error.stderr || error.message}`);
+    throw new Error(
+      `ogrinfo could not read GeoJSON: ${sanitizeDiagnosticMessage(error.stderr || error.message)}`
+    );
   }
   let report;
   try {
@@ -830,6 +859,18 @@ export async function downloadWfsGeoJson({
           throw new Error(`WFS numberMatched changed from ${expectedMatched} to ${reportedMatched}`);
         }
       }
+      const rawNumberReturned = payload.numberReturned;
+      if (rawNumberReturned !== undefined && rawNumberReturned !== null &&
+          String(rawNumberReturned).toLowerCase() !== "unknown") {
+        const reportedReturned = Number(rawNumberReturned);
+        if (!Number.isSafeInteger(reportedReturned) || reportedReturned < 0 ||
+            reportedReturned !== payload.features.length) {
+          throw new Error(
+            `WFS numberReturned ${rawNumberReturned} does not match ${payload.features.length} features`
+          );
+        }
+      }
+      const featureCountBeforePage = featureCount;
       for (const feature of payload.features) {
         if (feature?.type !== "Feature" || !("geometry" in feature)) {
           throw new Error("WFS fallback returned an invalid GeoJSON feature");
@@ -843,9 +884,12 @@ export async function downloadWfsGeoJson({
         if (outputBytes > byteLimit) throw new Error(`WFS fallback exceeded ${byteLimit} bytes`);
       }
       const returned = payload.features.length;
-      if (returned === 0 || returned < count) {
+      if (returned === 0) {
         complete = true;
         break;
+      }
+      if (featureCount === featureCountBeforePage) {
+        throw new Error("WFS page made no progress after stable-ID deduplication");
       }
       startIndex += returned;
       if (expectedMatched !== null && startIndex >= expectedMatched) {
@@ -903,7 +947,9 @@ export async function buildDisplayGeoJson(sourcePath, destination, {
     );
   } catch (error) {
     await fs.rm(destination, { force: true });
-    throw new Error(`ogr2ogr display build failed: ${error.stderr || error.message}`);
+    throw new Error(
+      `ogr2ogr display build failed: ${sanitizeDiagnosticMessage(error.stderr || error.message)}`
+    );
   }
 }
 
@@ -1196,7 +1242,7 @@ async function mirrorOne({
     entry.qaWarnings.push({
       code: "metadata_mirror_failed",
       severity: "error",
-      message: error.message
+      message: sanitizeDiagnosticMessage(error.message)
     });
     return entry;
   }
@@ -1280,7 +1326,7 @@ async function mirrorOne({
         entry.qaWarnings.push({
           code: "direct_download_failed_wfs_fallback_used",
           severity: "info",
-          message: directError.message,
+          message: sanitizeDiagnosticMessage(directError.message),
           pageCount: streamed.pageCount
         });
       } catch (wfsError) {
@@ -1409,7 +1455,7 @@ async function mirrorOne({
         entry.qaWarnings.push({
           code: "display_build_failed",
           severity: "warning",
-          message: error.message
+          message: sanitizeDiagnosticMessage(error.message)
         });
       }
     }
@@ -1423,7 +1469,7 @@ async function mirrorOne({
     entry.qaWarnings.push({
       code: "source_mirror_failed",
       severity: "error",
-      message: error.message
+      message: sanitizeDiagnosticMessage(error.message)
     });
     return entry;
   }
@@ -1614,7 +1660,9 @@ export function summarizeMirrorFailures(catalog) {
         datasetUuid: dataset.datasetUuid || null,
         title: dataset.title || null,
         reason: warning
-          ? [warning.code, warning.message].filter(Boolean).join(": ")
+          ? sanitizeDiagnosticMessage(
+              [warning.code, warning.message].filter(Boolean).join(": ")
+            )
           : "mirror_failed"
       };
     });
@@ -1680,7 +1728,7 @@ async function runCli(argv) {
 const invokedPath = process.argv[1] ? pathToFileURL(process.argv[1]).href : "";
 if (import.meta.url === invokedPath) {
   runCli(process.argv.slice(2)).catch(error => {
-    console.error(error.message);
+    console.error(sanitizeDiagnosticMessage(error.message));
     process.exitCode = 1;
   });
 }
