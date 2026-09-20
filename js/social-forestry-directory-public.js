@@ -1,4 +1,4 @@
-(function () {
+(function(){try{var raw=localStorage.getItem("ygEditorSessionV1")||sessionStorage.getItem("ygEditorSessionV1"),s=raw?JSON.parse(raw):null;if(s&&s.token&&Number(s.expiresAt||0)>Date.now()){location.replace("staff-social-forestry-directory.html"+location.search+location.hash);return}}catch(ignore){}})();(function () {
   "use strict";
 
   var rows = [];
