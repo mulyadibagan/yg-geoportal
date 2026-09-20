@@ -208,7 +208,7 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
   assert.ok(result.map.ygPlanningUnits.metadata.geometryProcessing.includes("tolerance 0.00002"));
 
   assert.equal(result.ygDraftRdtr.status, "provisional_internal_spatial_draft");
-  assert.equal(result.ygDraftRdtr.version, "0.25.0-internal-release-candidate");
+  assert.equal(result.ygDraftRdtr.version, "0.26.0-internal-release-candidate");
   assert.equal(result.ygDraftRdtr.programmePortfolio.programmeCount, 8);
   assert.equal(result.ygDraftRdtr.programmePortfolio.indicatorCount, 16);
   assert.equal(result.consultationArgumentMatrix.items.length, 10);
@@ -323,12 +323,12 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
   assert.equal(result.ygDraftRdtr.fieldObservationSchema.observationCount, 0);
   assert.equal(result.regulationRegister.length, 19);
   assert.equal(result.regulationCurrencyAudit.totalRegulations, 19);
-  assert.equal(result.regulationCurrencyAudit.checkedCount, 4);
-  assert.equal(result.regulationCurrencyAudit.pendingRecheckCount, 15);
+  assert.equal(result.regulationCurrencyAudit.checkedCount, 8);
+  assert.equal(result.regulationCurrencyAudit.pendingRecheckCount, 11);
   assert.equal(result.regulationRegister.find(row => row.id === "L04").code, "Perda Riau 11/2024");
   assert.ok(result.regulationCurrencyAudit.items.filter(row => row.checkedAt).every(row => row.checkedBy === "system_web_review"));
   assert.ok(result.regulationCurrencyAudit.items.every(row => row.legalReviewer === null && row.legalReviewDate === null));
-  assert.equal(result.ygDraftRdtr.regulationCurrencyAudit.checkedCount, 4);
+  assert.equal(result.ygDraftRdtr.regulationCurrencyAudit.checkedCount, 8);
   assert.equal(result.ygDraftRdtr.zoningCodebook.version, "0.1.0-internal");
   assert.equal(result.ygDraftRdtr.structureDraft.status, "analytical_reference_geometry");
   assert.equal(result.ygDraftRdtr.structureDraft.nodeCount, 11);
