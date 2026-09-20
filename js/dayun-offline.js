@@ -38,7 +38,8 @@
       statusBadge.textContent = online ? 'Offline siap' : 'Sedang offline';
       statusBadge.className = 'dy-offline-badge is-ready';
       statusText.textContent = (online ? 'Peta tersimpan di perangkat' : 'Peta dibuka dari penyimpanan perangkat') +
-        (packageMeta.savedAt ? ' · diperbarui ' + dateLabel(packageMeta.savedAt) : '') + '.';
+        (packageMeta.savedAt ? ' · diperbarui ' + dateLabel(packageMeta.savedAt) : '') + '.' +
+        (isStandalone() ? ' Saat tidak ada jaringan, buka kembali ikon PWA ini; Peta Dayun akan terbuka otomatis.' : ' Pasang ke layar utama agar dapat masuk kembali tanpa jaringan.');
       saveButton.textContent = 'Perbarui peta offline';
       saveButton.disabled = !online;
       installButton.hidden = isStandalone();
@@ -88,6 +89,22 @@
     function close() { overlay.remove(); }
     overlay.querySelector('[data-close]').addEventListener('click', close);
     overlay.addEventListener('click', function (event) { if (event.target === overlay) close(); });
+  }
+
+  function showInstallOffer() {
+    if (isStandalone()) return;
+    var old = document.getElementById('dayun-install-offer');
+    if (old) old.remove();
+    var overlay = document.createElement('div');
+    overlay.id = 'dayun-install-offer';
+    overlay.className = 'dy-install-guide dy-install-offer';
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.setAttribute('aria-labelledby', 'dayun-install-offer-title');
+    overlay.innerHTML = '<div><img src="assets/logo-yayasan-gambut-192.png" alt=""><span class="dy-offline-badge is-ready">Peta offline siap</span><h2 id="dayun-install-offer-title">Tambahkan pintasan untuk masuk tanpa internet</h2><p>Paket sudah tersimpan. Pasang Peta Dayun ke layar utama agar dapat dibuka kembali setelah browser ditutup atau mode pesawat diaktifkan.</p><div class="dy-install-offer-actions"><button type="button" data-later>Nanti</button><button type="button" data-install-now>Pasang sekarang</button></div></div>';
+    document.body.appendChild(overlay);
+    overlay.querySelector('[data-later]').addEventListener('click', function () { overlay.remove(); });
+    overlay.querySelector('[data-install-now]').addEventListener('click', function () { overlay.remove(); installButton.click(); });
   }
 
   async function downloadPackage() {
@@ -146,7 +163,7 @@
         statusText.textContent = 'Mengunduh paket peta… ' + percent + '%';
         if (progressBar) progressBar.style.width = percent + '%';
       }
-      if (data.type === 'DAYUN_OFFLINE_READY') renderStatus(data.meta);
+      if (data.type === 'DAYUN_OFFLINE_READY') { renderStatus(data.meta); showInstallOffer(); }
       if (data.type === 'DAYUN_OFFLINE_DELETED') renderStatus({ ready: false });
       if (data.type === 'DAYUN_OFFLINE_ERROR') {
         renderStatus(packageMeta);
@@ -158,7 +175,7 @@
 
     window.addEventListener('load', async function () {
       try {
-        registration = await navigator.serviceWorker.register('./service-worker.js?v=20260920-dayun-offline1', { updateViaCache: 'none' });
+        registration = await navigator.serviceWorker.register('./service-worker.js?v=20260920-dayun-entry1', { updateViaCache: 'none' });
         await registration.update();
         registration = await navigator.serviceWorker.ready;
         renderStatus(await askWorker('DAYUN_OFFLINE_STATUS'));
