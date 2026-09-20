@@ -260,8 +260,8 @@
     }
     state.map = L.map("rg-map", { preferCanvas: true, zoomControl: true, minZoom: 5 }).setView([0.55, 101.7], 7);
     const blank = L.layerGroup();
-    const streets = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "&copy; OpenStreetMap contributors" }).addTo(state.map);
-    const satellite = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", { maxZoom: 19, maxNativeZoom: 18, attribution: "Tiles &copy; Esri" });
+    const streets = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "&copy; OpenStreetMap contributors" });
+    const satellite = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", { maxZoom: 19, maxNativeZoom: 18, attribution: "Tiles &copy; Esri" }).addTo(state.map);
     L.control.layers({ "Peta jalan · eksternal": streets, "Citra satelit · eksternal": satellite, "Tanpa peta dasar": blank }, null, { collapsed: true }).addTo(state.map);
     return true;
   }
