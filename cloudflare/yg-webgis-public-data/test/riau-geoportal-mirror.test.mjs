@@ -7,12 +7,15 @@ import test from "node:test";
 
 import {
   DEFAULT_WFS_PAGE_SIZE,
+  OGR_GEOJSON_MAX_OBJ_SIZE_MB,
   WFS_PAGE_MAX_BYTES,
   assertGeoJsonEnvelope,
   assertSafeMetadataUrl,
   assertSafeDownloadUrl,
+  buildDisplayGeoJson,
   downloadGeoJson,
   downloadWfsGeoJson,
+  inspectGeoJsonWithGdal,
   mirrorRiauGeoportal,
   sanitizeDiagnosticMessage,
   summarizeMirrorFailures
@@ -25,6 +28,38 @@ const DATASET_RESTRICTED = "4982b10e-05d1-4495-9c84-b144d968163d";
 const DATASET_ANOMALY = "fed43cd7-01ca-4b03-a467-a8a162a459e4";
 const METADATA_XML =
   '<?xml version="1.0"?><gmd:MD_Metadata xmlns:gmd="http://www.isotc211.org/2005/gmd"></gmd:MD_Metadata>';
+
+test("GDAL reads large GeoJSON objects with a finite 512 MiB object cap", async () => {
+  assert.equal(OGR_GEOJSON_MAX_OBJ_SIZE_MB, 512);
+  const observed = [];
+  const inspection = await inspectGeoJsonWithGdal("/tmp/large-contour.geojson", {
+    execFileImpl: async (command, args, options) => {
+      observed.push({ command, args, options });
+      return {
+        stdout: JSON.stringify({
+          driverShortName: "GeoJSON",
+          layers: [{
+            geometryType: "MultiLineString",
+            featureCount: 13_063,
+            extent: [100, -1, 104, 3]
+          }]
+        })
+      };
+    }
+  });
+  assert.equal(inspection.featureCount, 13_063);
+  assert.equal(observed[0].options.env.OGR_GEOJSON_MAX_OBJ_SIZE, "512");
+
+  const directory = await fs.mkdtemp(path.join(os.tmpdir(), "riau-gdal-object-cap-test-"));
+  await buildDisplayGeoJson("/tmp/large-contour.geojson", path.join(directory, "display.geojson"), {
+    execFileImpl: async (command, args, options) => {
+      observed.push({ command, args, options });
+      return { stdout: "", stderr: "" };
+    }
+  });
+  assert.equal(observed[1].command, "ogr2ogr");
+  assert.equal(observed[1].options.env.OGR_GEOJSON_MAX_OBJ_SIZE, "512");
+});
 
 function featureCollection(name = "fixture") {
   return {

@@ -17,6 +17,7 @@ export const DEFAULT_DISPLAY_MAX_FEATURES = 25_000;
 export const DEFAULT_EXPECTED_DATASETS = 60;
 export const DEFAULT_WFS_PAGE_SIZE = 500;
 export const WFS_PAGE_MAX_BYTES = 256 * 1024 * 1024;
+export const OGR_GEOJSON_MAX_OBJ_SIZE_MB = 512;
 
 const UUID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -70,6 +71,17 @@ export const KNOWN_GEOMETRY_ANOMALIES = new Map([
 ]);
 
 const execFile = promisify(execFileCallback);
+
+function gdalExecOptions() {
+  return {
+    encoding: "utf8",
+    maxBuffer: 16 * 1024 * 1024,
+    env: {
+      ...process.env,
+      OGR_GEOJSON_MAX_OBJ_SIZE: String(OGR_GEOJSON_MAX_OBJ_SIZE_MB)
+    }
+  };
+}
 
 function asPositiveInteger(value, label, { allowZero = false } = {}) {
   const parsed = Number(value);
@@ -420,7 +432,7 @@ export async function inspectGeoJsonWithGdal(filePath, { execFileImpl = execFile
     ({ stdout } = await execFileImpl(
       "ogrinfo",
       ["-ro", "-so", "-al", "-json", filePath],
-      { encoding: "utf8", maxBuffer: 16 * 1024 * 1024 }
+      gdalExecOptions()
     ));
   } catch (error) {
     throw new Error(
@@ -943,7 +955,7 @@ export async function buildDisplayGeoJson(sourcePath, destination, {
         destination,
         sourcePath
       ],
-      { encoding: "utf8", maxBuffer: 16 * 1024 * 1024 }
+      gdalExecOptions()
     );
   } catch (error) {
     await fs.rm(destination, { force: true });
