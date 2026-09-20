@@ -4855,10 +4855,23 @@ L.control.scale({
   }
 
   const locateMe = document.getElementById("locate-me");
-  if (locateMe) {
-    locateMe.addEventListener("click", () =>
-      map.locate({ setView: true, maxZoom: 15 })
-    );
+  if (locateMe && window.YGUserLocation) {
+    window.YGUserLocation.create(map, {
+      button: locateMe,
+      startLabel: "Lokasi saya",
+      loadingLabel: "Mencari lokasi…",
+      stopLabel: "Hentikan lokasi",
+      maxZoom: 16,
+      onStatus(message, kind) {
+        const statusBox = document.getElementById("status-box");
+        const statusText = document.getElementById("status-text");
+        if (statusText) statusText.textContent = message;
+        if (statusBox) {
+          statusBox.classList.toggle("ok", kind === "ok");
+          statusBox.classList.toggle("error", kind === "error");
+        }
+      }
+    });
   }
 
   document.querySelectorAll("[data-focus-layer]").forEach(card => {
