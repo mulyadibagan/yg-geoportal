@@ -7,7 +7,7 @@
   const MAX_DISPLAY_BYTES = 12 * 1024 * 1024;
   const MAX_DISPLAY_FEATURES = 25000;
   const COLORS = ["#08765f", "#d97706", "#2563a8", "#9b3f73", "#65752b", "#7a4bb7"];
-  const state = { session: null, catalog: null, items: [], filtered: [], map: null, active: new Map(), pending: new Set(), currentDetail: null };
+  const state = { session: null, catalog: null, items: [], filtered: [], map: null, active: new Map(), pending: new Set(), currentDetail: null, mapExpanded: false };
 
   const el = id => document.getElementById(id);
   const escapeHtml = value => String(value == null ? "" : value)
@@ -215,12 +215,62 @@
   }
 
   function initializeMap() {
-    if (state.map || !window.L) return;
+    if (state.map) return true;
+    if (!window.L) {
+      el("rg-map-status").classList.add("is-error");
+      el("rg-map-status").textContent = "Mesin peta belum tersedia. Periksa koneksi lalu muat ulang halaman.";
+      return false;
+    }
     state.map = L.map("rg-map", { preferCanvas: true, zoomControl: true, minZoom: 5 }).setView([0.55, 101.7], 7);
-    const blank = L.layerGroup().addTo(state.map);
-    const streets = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "&copy; OpenStreetMap contributors" });
+    const blank = L.layerGroup();
+    const streets = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "&copy; OpenStreetMap contributors" }).addTo(state.map);
     const satellite = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", { maxZoom: 19, maxNativeZoom: 18, attribution: "Tiles &copy; Esri" });
-    L.control.layers({ "Tanpa peta dasar": blank, "Peta jalan · eksternal": streets, "Citra satelit · eksternal": satellite }, null, { collapsed: true }).addTo(state.map);
+    L.control.layers({ "Peta jalan · eksternal": streets, "Citra satelit · eksternal": satellite, "Tanpa peta dasar": blank }, null, { collapsed: true }).addTo(state.map);
+    return true;
+  }
+
+  async function readJsonWithinLimit(response, maxBytes) {
+    const statedLength = response.headers.get("content-length");
+    const statedBytes = Number(statedLength);
+    if (statedLength && (!Number.isSafeInteger(statedBytes) || statedBytes < 1)) throw new Error("Ukuran turunan peta tidak valid.");
+    if (statedLength && statedBytes > maxBytes) throw new Error("Turunan peta terlalu besar untuk browser. Gunakan snapshot sumber melalui alat GIS desktop.");
+    if (!response.body || !response.body.getReader) {
+      const text = await response.text();
+      if (new TextEncoder().encode(text).length > maxBytes) throw new Error("Turunan peta melampaui batas aman browser.");
+      return JSON.parse(text);
+    }
+    const reader = response.body.getReader(), chunks = [];
+    let received = 0;
+    while (true) {
+      const result = await reader.read();
+      if (result.done) break;
+      received += result.value.byteLength;
+      if (received > maxBytes) {
+        await reader.cancel();
+        throw new Error("Turunan peta melampaui batas aman browser.");
+      }
+      chunks.push(result.value);
+    }
+    if (!received) throw new Error("Turunan peta kosong.");
+    const bytes = new Uint8Array(received);
+    let offset = 0;
+    chunks.forEach(chunk => { bytes.set(chunk, offset); offset += chunk.byteLength; });
+    return JSON.parse(new TextDecoder().decode(bytes));
+  }
+
+  function setMapExpanded(expanded) {
+    state.mapExpanded = Boolean(expanded);
+    const panel = document.querySelector(".rg-map-panel"), button = el("rg-map-expand");
+    panel.classList.toggle("is-expanded", state.mapExpanded);
+    document.body.classList.toggle("rg-map-expanded", state.mapExpanded);
+    button.setAttribute("aria-pressed", String(state.mapExpanded));
+    button.textContent = state.mapExpanded ? "Kecilkan peta" : "Perbesar peta";
+    if (state.mapExpanded) panel.scrollIntoView({ block: "start" });
+    window.requestAnimationFrame(() => {
+      if (!state.map) return;
+      state.map.invalidateSize();
+      if (state.active.size) fitActive();
+    });
   }
 
   function propertyPopup(item, properties) {
@@ -273,13 +323,11 @@
     el("rg-map-status").classList.remove("is-error");
     el("rg-map-status").textContent = "Mengambil turunan peta privat untuk “" + item.title + "”…";
     try {
+      if (!initializeMap()) throw new Error("Peta belum dapat diinisialisasi.");
+      if (item.displayBytes > MAX_DISPLAY_BYTES) throw new Error("Turunan peta terlalu besar untuk browser. Gunakan snapshot sumber melalui alat GIS desktop.");
       const response = await api(`/api/staff/riau-geoportal/datasets/${encodeURIComponent(item.uuid)}/display`);
       if (!response.ok) throw new Error(response.status === 503 ? "Turunan peta belum tersedia; arsip sumber tetap tercatat." : "Data peta gagal dimuat (" + response.status + ").");
-      const contentLength = response.headers.get("content-length");
-      const bytes = Number(contentLength);
-      if (!contentLength || !Number.isSafeInteger(bytes) || bytes < 1) throw new Error("Ukuran turunan peta tidak dapat diverifikasi.");
-      if (bytes > MAX_DISPLAY_BYTES) throw new Error("Turunan peta terlalu besar untuk browser. Gunakan snapshot sumber melalui alat GIS desktop.");
-      const geojson = await response.json();
+      const geojson = await readJsonWithinLimit(response, MAX_DISPLAY_BYTES);
       if (!geojson || geojson.type !== "FeatureCollection" || !Array.isArray(geojson.features)) throw new Error("Format turunan peta tidak valid.");
       if (geojson.features.length > MAX_DISPLAY_FEATURES) throw new Error("Jumlah fitur melampaui batas aman tampilan browser.");
       const color = colorFor(item.uuid);
@@ -290,8 +338,12 @@
         onEachFeature(feature, featureLayer) { featureLayer.bindPopup(propertyPopup(item, feature && feature.properties), { maxWidth: 360 }); }
       }).addTo(state.map);
       state.active.set(item.uuid, { item, layer, color });
+      state.map.invalidateSize();
       updateActiveUi();
       fitActive();
+      if (window.matchMedia("(max-width: 1000px)").matches) {
+        document.querySelector(".rg-map-panel").scrollIntoView({ behavior: "smooth", block: "start" });
+      }
       el("rg-map-status").textContent = geojson.features.length.toLocaleString("id-ID") + " fitur ditampilkan dari snapshot internal “" + item.title + "”.";
     } catch (error) {
       el("rg-map-status").classList.add("is-error");
@@ -433,15 +485,19 @@
     });
     el("rg-clear").addEventListener("click", () => Array.from(state.active.keys()).forEach(removeLayer));
     el("rg-fit").addEventListener("click", fitActive);
+    el("rg-map-expand").addEventListener("click", () => setMapExpanded(!state.mapExpanded));
     el("rg-detail-close").addEventListener("click", () => { el("rg-detail").hidden = true; state.currentDetail = null; });
     el("rg-download").addEventListener("click", downloadSource);
     el("rg-logout").addEventListener("click", () => { if (window.YG_AUTH) window.YG_AUTH.logout(state.session.token); location.replace("staff-login.html?loggedOut=1"); });
+    document.addEventListener("keydown", event => { if (event.key === "Escape" && state.mapExpanded) setMapExpanded(false); });
+    window.addEventListener("resize", () => state.map && state.map.invalidateSize());
   }
 
   async function boot() {
     state.session = window.YG_AUTH && window.YG_AUTH.readStoredSession();
     if (!state.session) return returnToLogin();
     bindEvents();
+    initializeMap();
     await loadCatalog();
     setTimeout(() => state.map && state.map.invalidateSize(), 100);
   }

@@ -23,6 +23,7 @@ test("Riau Geoportal catalogue is a no-index staff surface", () => {
   assert.match(frameGuard, /display", "none", "important"/);
   assert.match(page, /integrity="sha256-20nQCchB9co0qIjJZRGuk2\/Z9VM\+kNiyxNV1lvTlZBo="/);
   assert.match(page, /Tidak ada geometri yang dimuat otomatis/);
+  assert.match(page, /id="rg-map-expand"/);
   assert.match(home, /data-staff-only-module hidden/);
   assert.match(home, /href="staff-riau-reference\.html"/);
 });
@@ -39,11 +40,13 @@ test("catalogue requests only authenticated private Worker routes", () => {
   assert.match(app, /MAX_ACTIVE_LAYERS = 3/);
   assert.match(app, /MAX_DISPLAY_BYTES = 12 \* 1024 \* 1024/);
   assert.match(app, /MAX_DISPLAY_FEATURES = 25000/);
-  assert.match(app, /!contentLength \|\| !Number\.isSafeInteger\(bytes\) \|\| bytes < 1/);
+  assert.match(app, /readJsonWithinLimit\(response, MAX_DISPLAY_BYTES\)/);
+  assert.match(app, /received > maxBytes/);
   assert.match(app, /geojson\.features\.length > MAX_DISPLAY_FEATURES/);
   assert.match(app, /state\.active\.size \+ state\.pending\.size >= MAX_ACTIVE_LAYERS/);
-  assert.match(app, /const blank = L\.layerGroup\(\)\.addTo\(state\.map\)/);
-  assert.doesNotMatch(app, /const streets = [^;]+\.addTo\(state\.map\)/);
+  assert.match(app, /const streets = L\.tileLayer\([^\n]+\.addTo\(state\.map\)/);
+  assert.match(app, /setMapExpanded/);
+  assert.match(app, /state\.map\.invalidateSize\(\)/);
 });
 
 test("catalogue preserves UUID identity and streams large source downloads safely", () => {
