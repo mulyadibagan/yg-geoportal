@@ -351,6 +351,17 @@
         ' belum ditemukan.' + (missingRoadGeometry.length ? ' Prioritas cek: ' + missingRoadGeometry.map(function (row) { return esc(row.village); }).join(", ") + '.' : '') +
         '</div><p class="rdtr-component-note">' + esc(roadEvidence.disclaimer || "Data jalan terbuka untuk penyaringan internal.") + '</p>'
       : '<p class="rdtr-component-note">Belum ada geometri jalan yang dapat dipakai untuk penyaringan.</p>';
+    var facilityMetadata = structure.facilityMetadata || {};
+    var hydrologyMetadata = structure.hydrologyMetadata || {};
+    document.getElementById("rdtr-service-evidence").innerHTML =
+      '<div class="rdtr-network-kpis"><span><strong>' + number(facilityMetadata.featureCount, 0) + '</strong> fasilitas OSM</span><span><strong>' +
+      number(facilityMetadata.criticalCount, 0) + '</strong> fasilitas kritis indikatif</span><span><strong>' +
+      number(hydrologyMetadata.featureCount, 0) + '</strong> alur hidrologi OSM</span></div>' +
+      '<div class="rdtr-road-classes">' + (structure.facilityCategories || []).map(function (row) {
+        return '<span><strong>' + esc(row.category) + '</strong> ' + number(row.featureCount, 0) + ' lokasi · ' + number(row.criticalCount, 0) + ' kritis</span>';
+      }).concat((structure.waterwayClasses || []).map(function (row) {
+        return '<span><strong>' + esc(row.waterwayClass) + '</strong> ' + number(row.featureCount, 0) + ' alur · ' + number(row.lengthKm, 1) + ' km</span>';
+      })).join("") + '</div><p class="rdtr-component-note">Bukti fasilitas dan hidrologi OSM hanya penyaringan awal. Kapasitas, kondisi, cakupan, dimensi, arah aliran, kewenangan, dan kebutuhan pengembangan belum dapat disimpulkan.</p>';
     document.getElementById("rdtr-network-gaps").innerHTML = (structure.evidenceGaps || []).map(function (row) {
       return '<article><header><strong>' + esc(row.id) + '</strong>' + statusBadge(row.status) + '</header><h4>' +
         esc(row.dataset) + '</h4><p>' + esc(row.requirement) + '</p></article>';
@@ -893,6 +904,41 @@
         }
       });
     }
+    if (data.map.ygHydrologyEvidence) {
+      state.layers.ygHydrologyEvidence = L.geoJSON(data.map.ygHydrologyEvidence, {
+        renderer: L.canvas({ padding: .5 }),
+        style: { color: "#247ca3", weight: 2, opacity: .82 },
+        onEachFeature: function (feature, layer) {
+          var props = feature.properties || {};
+          layer.bindPopup(popup("Bukti hidrologi OSM · perlu verifikasi", {
+            "Nama": props.name,
+            "Jenis": props.waterway || props.water || "belum terklasifikasi",
+            "Panjang indikatif": number(props.lengthKm, 3) + " km",
+            "Status": statusLabel(props.evidenceStatus),
+            "Batas penggunaan": "Bukan jaringan hidrologi resmi; dimensi, arah, kapasitas, kondisi, pasut dan kewenangan belum diverifikasi."
+          }));
+        }
+      });
+    }
+    if (data.map.ygFacilityEvidence) {
+      state.layers.ygFacilityEvidence = L.geoJSON(data.map.ygFacilityEvidence, {
+        pointToLayer: function (feature, latlng) {
+          var critical = Boolean((feature.properties || {}).critical);
+          return L.circleMarker(latlng, { radius: critical ? 6 : 4, color: critical ? "#a5362e" : "#2d6d58", weight: 2, fillColor: critical ? "#f0a69f" : "#9fd3c0", fillOpacity: .9 });
+        },
+        onEachFeature: function (feature, layer) {
+          var props = feature.properties || {};
+          layer.bindPopup(popup("Bukti fasilitas OSM · perlu verifikasi", {
+            "Nama": props.name,
+            "Kategori": props.category,
+            "Fasilitas kritis indikatif": props.critical ? "Ya" : "Tidak",
+            "Jenis OSM": props.amenity || props.healthcare || props.publicTransport || props.manMade || "belum terklasifikasi",
+            "Status": statusLabel(props.evidenceStatus),
+            "Batas penggunaan": "Jenis, status, kapasitas, kondisi, cakupan dan kewenangan belum diverifikasi."
+          }));
+        }
+      });
+    }
     state.layers.study = L.geoJSON(data.map.studyArea, {
       style: { color: "#123f38", weight: 2.5, fillOpacity: .02 },
       onEachFeature: function (feature, layer) {
@@ -936,6 +982,8 @@
     if (state.layers.ygStructureAxes) overlays["Struktur YG · sumbu hubungan, bukan trase"] = state.layers.ygStructureAxes;
     if (state.layers.ygStructureNodes) overlays["Struktur YG · simpul referensi"] = state.layers.ygStructureNodes;
     if (state.layers.ygRoadEvidence) overlays["Bukti jaringan jalan OSM · verifikasi"] = state.layers.ygRoadEvidence;
+    if (state.layers.ygHydrologyEvidence) overlays["Bukti hidrologi OSM · verifikasi"] = state.layers.ygHydrologyEvidence;
+    if (state.layers.ygFacilityEvidence) overlays["Bukti fasilitas OSM · verifikasi"] = state.layers.ygFacilityEvidence;
     if (state.layers.mangroveCandidates) overlays["Arahan YG · perlindungan/pemulihan pesisir"] = state.layers.mangroveCandidates;
     if (state.layers.ygUnits) overlays["Unit penyaringan YG · bukan zonasi"] = state.layers.ygUnits;
     state.layerControl = L.control.layers({ "Peta jalan": road, "Citra satelit": satellite }, overlays, {
@@ -1459,6 +1507,21 @@
     downloadJson(collection, "bukti-jaringan-jalan-osm-rdtr-yg-bagansiapiapi-v0.1-internal.geojson", "application/geo+json;charset=utf-8");
   }
 
+  function exportServiceEvidence() {
+    var mapData = state.analysis.map || {};
+    var facilities = mapData.ygFacilityEvidence && mapData.ygFacilityEvidence.features || [];
+    var hydrology = mapData.ygHydrologyEvidence && mapData.ygHydrologyEvidence.features || [];
+    downloadJson({
+      type: "FeatureCollection",
+      name: "Bukti fasilitas dan hidrologi OSM untuk RDTR YG v0.6",
+      metadata: {
+        access: "staff_only", version: "0.1.0-internal", facilityCount: facilities.length, hydrologyFeatureCount: hydrology.length,
+        disclaimer: "Bukti terbuka untuk penyaringan internal; bukan inventaris fasilitas atau jaringan hidrologi resmi."
+      },
+      features: facilities.concat(hydrology)
+    }, "bukti-fasilitas-hidrologi-osm-rdtr-yg-bagansiapiapi-v0.1-internal.geojson", "application/geo+json;charset=utf-8");
+  }
+
   function exportPolicyMap() {
     var framework = state.analysis.policyMapFramework || {};
     var features = [];
@@ -1585,6 +1648,7 @@
     document.getElementById("rdtr-export-yg-zones").addEventListener("click", exportYgCandidateZones);
     document.getElementById("rdtr-export-structure-geojson").addEventListener("click", exportYgStructure);
     document.getElementById("rdtr-export-road-evidence").addEventListener("click", exportRoadEvidence);
+    document.getElementById("rdtr-export-service-evidence").addEventListener("click", exportServiceEvidence);
     document.getElementById("rdtr-export-policy-map").addEventListener("click", exportPolicyMap);
     document.getElementById("rdtr-export-draft-csv").addEventListener("click", exportDraftComparisonCsv);
     document.getElementById("rdtr-export-draft-geojson").addEventListener("click", exportDraftComparisonGeoJson);

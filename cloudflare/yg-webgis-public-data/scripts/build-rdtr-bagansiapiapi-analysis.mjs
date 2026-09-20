@@ -1005,7 +1005,7 @@ function buildAnalysisProgramme(rows) {
   };
 }
 
-function buildYgPlan(ygCandidateZones = featureCollection([]), zoningCodebook = {}, structureDraft = {}, networkEvidence = {}) {
+function buildYgPlan(ygCandidateZones = featureCollection([]), zoningCodebook = {}, structureDraft = {}, networkEvidence = {}, serviceEvidence = {}) {
   const geometryDisclaimer = "Rancangan YG memiliki geometri zona internal untuk analisis dan konsultasi, tetapi tidak menetapkan batas WP, SWP, blok, subblok, zona, jaringan, atau lokasi program secara hukum. Pematangan wajib memakai peta dasar skala 1:5.000, survei, RTRW yang sah, KLHS, serta validasi lintas sektor dan masyarakat.";
   const zoneFeatures = ygCandidateZones.features || [];
   function zoneMetric(families) {
@@ -1115,6 +1115,12 @@ function buildYgPlan(ygCandidateZones = featureCollection([]), zoningCodebook = 
       roadClassSummary: networkEvidence.classSummary || [],
       villageRoadCoverage: networkEvidence.villageCoverage || [],
       evidenceGaps: networkEvidence.evidenceGaps || [],
+      serviceHydrologyStatus: serviceEvidence.status || "not_available",
+      facilityMetadata: serviceEvidence.facilities?.metadata || null,
+      hydrologyMetadata: serviceEvidence.hydrology?.metadata || null,
+      facilityCategories: serviceEvidence.facilityCategories || [],
+      waterwayClasses: serviceEvidence.waterwayClasses || [],
+      serviceHydrologyCoverage: serviceEvidence.villageCoverage || [],
       centres: [
         {
           id: "CTR-YG-1",
@@ -1592,7 +1598,72 @@ function buildYgNetworkEvidence({ roads, studyArea, villages }) {
   };
 }
 
-function buildGeometryRegistry({ villageCount, rtrwCount, peatCount, forestCount, mangroveCandidateCount, ygZoneCount, structureNodeCount, structureAxisCount, roadEvidenceCount }) {
+function buildYgFacilityHydrologyEvidence({ facilities, hydrology, studyArea, villages }) {
+  function inside(feature) {
+    if (!feature?.geometry) return false;
+    try { return booleanIntersects(feature, studyArea); } catch { return false; }
+  }
+  const facilityFeatures = (facilities?.features || []).filter(inside).map(feature => ({
+    ...feature,
+    properties: {
+      ...(feature.properties || {}),
+      evidenceStatus: "open_data_screening_needs_verification",
+      legalEffect: "none"
+    }
+  }));
+  const hydrologyFeatures = (hydrology?.features || []).filter(inside).map(feature => {
+    const display = simplify(feature, { tolerance: 0.00001, highQuality: false, mutate: false });
+    display.properties = {
+      ...(feature.properties || {}),
+      lengthKm: round(turfLength(feature, { units: "kilometers" }), 3),
+      evidenceStatus: "open_data_screening_needs_hydrological_verification",
+      legalEffect: "none"
+    };
+    return display;
+  });
+  const facilityCategories = [...new Set(facilityFeatures.map(feature => feature.properties.category || "other_public"))].sort().map(category => ({
+    category,
+    featureCount: facilityFeatures.filter(feature => (feature.properties.category || "other_public") === category).length,
+    criticalCount: facilityFeatures.filter(feature => (feature.properties.category || "other_public") === category && feature.properties.critical).length
+  }));
+  const waterwayClasses = [...new Set(hydrologyFeatures.map(feature => feature.properties.waterway || feature.properties.water || "unclassified"))].sort().map(waterwayClass => {
+    const selected = hydrologyFeatures.filter(feature => (feature.properties.waterway || feature.properties.water || "unclassified") === waterwayClass);
+    return { waterwayClass, featureCount: selected.length, lengthKm: round(selected.reduce((sum, feature) => sum + feature.properties.lengthKm, 0), 2) };
+  });
+  const villageCoverage = villages.map(village => {
+    const name = village.properties?.WADMKD || village.properties?.NAMOBJ || "Wilayah";
+    const facilityCount = facilityFeatures.filter(feature => { try { return booleanIntersects(feature, village); } catch { return false; } }).length;
+    const hydrologyCount = hydrologyFeatures.filter(feature => { try { return booleanIntersects(feature, village); } catch { return false; } }).length;
+    return { village: name, facilityCount, hydrologyFeatureCount: hydrologyCount, status: facilityCount || hydrologyCount ? "partial_open_evidence" : "no_open_geometry_found_needs_verification" };
+  });
+  const facilityCollection = featureCollection(facilityFeatures);
+  facilityCollection.name = facilities?.name || "Fasilitas OSM untuk analisis RDTR YG";
+  facilityCollection.metadata = {
+    ...(facilities?.metadata || {}), access: "staff_only", status: facilityFeatures.length ? "partial_open_facility_evidence" : "not_available",
+    featureCount: facilityFeatures.length, criticalCount: facilityFeatures.filter(feature => feature.properties.critical).length,
+    disclaimer: "Lokasi OSM untuk penyaringan internal; jenis, nama, status, kapasitas, kondisi, cakupan pelayanan dan kewenangan wajib diverifikasi."
+  };
+  const hydrologyCollection = featureCollection(hydrologyFeatures);
+  hydrologyCollection.name = hydrology?.name || "Hidrologi OSM untuk analisis RDTR YG";
+  hydrologyCollection.metadata = {
+    ...(hydrology?.metadata || {}), access: "staff_only", status: hydrologyFeatures.length ? "partial_open_hydrology_evidence" : "not_available",
+    featureCount: hydrologyFeatures.length, totalLengthKm: round(hydrologyFeatures.reduce((sum, feature) => sum + feature.properties.lengthKm, 0), 2),
+    disclaimer: "Alur OSM untuk penyaringan internal; bukan jaringan sungai/drainase resmi dan belum membuktikan dimensi, arah aliran, kapasitas, kondisi, pasut, genangan, atau kewenangan."
+  };
+  return {
+    id: "RDTR-YG-SERVICE-HYDROLOGY-EVIDENCE-V0.1",
+    version: "0.1.0-internal",
+    status: facilityFeatures.length || hydrologyFeatures.length ? "partial_open_evidence" : "not_available",
+    facilities: facilityCollection,
+    hydrology: hydrologyCollection,
+    facilityCategories,
+    waterwayClasses,
+    villageCoverage,
+    disclaimer: "Bukti OSM melengkapi penyaringan, tetapi tidak menggantikan data resmi, survei, kapasitas pelayanan, kajian hidrologi, atau validasi masyarakat."
+  };
+}
+
+function buildGeometryRegistry({ villageCount, rtrwCount, peatCount, forestCount, mangroveCandidateCount, ygZoneCount, structureNodeCount, structureAxisCount, roadEvidenceCount, facilityEvidenceCount, hydrologyEvidenceCount }) {
   return [
     {
       id: "GR-YG-STUDY-AREA",
@@ -1643,6 +1714,26 @@ function buildGeometryRegistry({ villageCount, rtrwCount, peatCount, forestCount
       source: "OpenStreetMap contributors via Overpass; subset yang beririsan dengan wilayah kajian",
       permittedUse: "Penyaringan keterhubungan dan prioritas verifikasi jaringan nyata.",
       limitation: "Bukan jaringan jalan resmi; kelas, kewenangan, kondisi, lebar, jembatan dan keterhubungan harus diverifikasi."
+    },
+    {
+      id: "GR-YG-FACILITY-EVIDENCE",
+      mapRef: "map.ygFacilityEvidence",
+      status: facilityEvidenceCount ? "available_open_data_screening" : "not_available",
+      featureCount: facilityEvidenceCount,
+      role: "open_facility_evidence_not_official_inventory",
+      source: "OpenStreetMap contributors via Overpass; titik yang beririsan dengan wilayah kajian",
+      permittedUse: "Penyaringan awal jenis fasilitas, fasilitas kritis, gap lokasi, dan kebutuhan verifikasi kapasitas.",
+      limitation: "Bukan inventaris resmi; nama, fungsi, status, kapasitas, kondisi, cakupan dan kewenangan harus diverifikasi."
+    },
+    {
+      id: "GR-YG-HYDROLOGY-EVIDENCE",
+      mapRef: "map.ygHydrologyEvidence",
+      status: hydrologyEvidenceCount ? "available_open_data_screening" : "not_available",
+      featureCount: hydrologyEvidenceCount,
+      role: "open_hydrology_evidence_not_official_network",
+      source: "OpenStreetMap contributors via Overpass; alur yang beririsan dengan wilayah kajian",
+      permittedUse: "Penyaringan awal konektivitas air, lokasi kajian drainase, sungai, kanal dan evakuasi perairan.",
+      limitation: "Bukan jaringan hidrologi resmi dan belum membuktikan dimensi, arah, kapasitas, kondisi, pasut, genangan atau kewenangan."
     },
     {
       id: "GR-RTRW-PROVINCE",
@@ -1849,6 +1940,10 @@ function readJson(file, label) {
   } catch (error) {
     throw new Error(`${label} tidak dapat dibaca: ${error.message}`);
   }
+}
+
+function readOptionalJson(file) {
+  return fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, "utf8")) : featureCollection([]);
 }
 
 function normalize(value) {
@@ -2228,12 +2323,12 @@ function buildYgZoningCodebook(zoning) {
   };
 }
 
-function buildYgDraftRdtr(zoning, zoningCodebook, structureDraft, networkEvidence) {
+function buildYgDraftRdtr(zoning, zoningCodebook, structureDraft, networkEvidence, serviceEvidence) {
   const metadata = zoning.metadata || {};
   return {
-    id: "RDTR-YG-BAGANSIAPIAPI-V0.5",
+    id: "RDTR-YG-BAGANSIAPIAPI-V0.6",
     title: "Rancangan RDTR Alternatif Bagansiapiapi versi Yayasan Gambut",
-    version: "0.5.0-internal",
+    version: "0.6.0-internal",
     sourceGeometryVersion: metadata.version || "0.2.0-internal",
     status: "provisional_internal_spatial_draft",
     legalCharacter: "Kajian dan rancangan teknis internal; tidak mempunyai akibat hukum dan tidak menggantikan kewenangan pemerintah daerah untuk menyusun serta menetapkan RDTR.",
@@ -2265,6 +2360,17 @@ function buildYgDraftRdtr(zoning, zoningCodebook, structureDraft, networkEvidenc
       villageRoadCoverage: networkEvidence.villageCoverage,
       evidenceGaps: networkEvidence.evidenceGaps,
       disclaimer: networkEvidence.disclaimer
+    },
+    serviceHydrologyEvidence: {
+      id: serviceEvidence.id,
+      version: serviceEvidence.version,
+      status: serviceEvidence.status,
+      facilityMetadata: serviceEvidence.facilities.metadata,
+      hydrologyMetadata: serviceEvidence.hydrology.metadata,
+      facilityCategories: serviceEvidence.facilityCategories,
+      waterwayClasses: serviceEvidence.waterwayClasses,
+      villageCoverage: serviceEvidence.villageCoverage,
+      disclaimer: serviceEvidence.disclaimer
     },
     components: [
       { id: "YG-RDTR-01", label: "Tujuan dan strategi WP", status: "provisional", outputRef: "ygPlan.planningObjective" },
@@ -2344,7 +2450,7 @@ function recommendationRows(metrics) {
   return rows;
 }
 
-export function buildAnalysis({ rtrw, administration, peat, forest, mangrove, mangroveCandidates = featureCollection([]), roads = featureCollection([]) }) {
+export function buildAnalysis({ rtrw, administration, peat, forest, mangrove, mangroveCandidates = featureCollection([]), roads = featureCollection([]), facilities = featureCollection([]), hydrology = featureCollection([]) }) {
   const warnings = new Set();
   const villages = (administration.features || []).filter(feature => {
     const props = feature.properties || {};
@@ -2505,6 +2611,7 @@ export function buildAnalysis({ rtrw, administration, peat, forest, mangrove, ma
   const ygPlanningUnits = buildYgPlanningUnits(villages, villageMetrics);
   const ygStructureDraft = buildYgStructureDraft(villages, villageMetrics);
   const ygNetworkEvidence = buildYgNetworkEvidence({ roads, studyArea, villages });
+  const ygServiceHydrologyEvidence = buildYgFacilityHydrologyEvidence({ facilities, hydrology, studyArea, villages });
   const ygCandidateZones = buildYgCandidateZoning({
     studyArea,
     rtrwMap,
@@ -2513,7 +2620,7 @@ export function buildAnalysis({ rtrw, administration, peat, forest, mangrove, ma
     mangroveCandidateMap
   });
   const zoningCodebook = buildYgZoningCodebook(ygCandidateZones);
-  const ygDraftRdtr = buildYgDraftRdtr(ygCandidateZones, zoningCodebook, ygStructureDraft, ygNetworkEvidence);
+  const ygDraftRdtr = buildYgDraftRdtr(ygCandidateZones, zoningCodebook, ygStructureDraft, ygNetworkEvidence, ygServiceHydrologyEvidence);
   const policyMapFramework = buildPolicyMapFramework({
     summary,
     peatCount: peatMap.length,
@@ -2564,7 +2671,7 @@ export function buildAnalysis({ rtrw, administration, peat, forest, mangrove, ma
     crossCuttingGates: buildCrossCuttingGates(),
     mandatoryAnalysisMatrix,
     analysisProgramme,
-    ygPlan: buildYgPlan(ygCandidateZones, zoningCodebook, ygStructureDraft, ygNetworkEvidence),
+    ygPlan: buildYgPlan(ygCandidateZones, zoningCodebook, ygStructureDraft, ygNetworkEvidence, ygServiceHydrologyEvidence),
     geometryRegistry: buildGeometryRegistry({
       villageCount: villages.length,
       rtrwCount: rtrwMap.length,
@@ -2574,7 +2681,9 @@ export function buildAnalysis({ rtrw, administration, peat, forest, mangrove, ma
       ygZoneCount: ygCandidateZones.features.length,
       structureNodeCount: ygStructureDraft.nodes.features.length,
       structureAxisCount: ygStructureDraft.axes.features.length,
-      roadEvidenceCount: ygNetworkEvidence.roads.features.length
+      roadEvidenceCount: ygNetworkEvidence.roads.features.length,
+      facilityEvidenceCount: ygServiceHydrologyEvidence.facilities.features.length,
+      hydrologyEvidenceCount: ygServiceHydrologyEvidence.hydrology.features.length
     }),
     consultationQuestions: [
       "Apa dasar hukum dan analitis penetapan WP yang mencakup 11 wilayah, serta bagaimana keterkaitannya dengan RTRW Kabupaten Rokan Hilir yang berlaku?",
@@ -2594,6 +2703,8 @@ export function buildAnalysis({ rtrw, administration, peat, forest, mangrove, ma
       ygStructureNodes: ygStructureDraft.nodes,
       ygStructureAxes: ygStructureDraft.axes,
       ygRoadEvidence: ygNetworkEvidence.roads,
+      ygFacilityEvidence: ygServiceHydrologyEvidence.facilities,
+      ygHydrologyEvidence: ygServiceHydrologyEvidence.hydrology,
       rtrw: featureCollection(rtrwMap),
       peat: featureCollection(peatMap),
       forest: featureCollection(forestMap),
@@ -2617,7 +2728,9 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     forest: readJson(path.join(REPO_ROOT, "data/kawasan_hutan_sk_903.geojson"), "Kawasan hutan"),
     mangrove: readJson(path.join(REPO_ROOT, "data/mangrove-priority-rokan-hilir-results.json"), "Analisis mangrove"),
     mangroveCandidates: readJson(path.join(REPO_ROOT, "data/mangrove-priority-rokan-hilir-candidates.geojson"), "Kandidat mangrove"),
-    roads: readJson(path.join(REPO_ROOT, "data/mangrove-priority-rokan-hilir-roads-osm.geojson"), "Jaringan jalan OSM Rokan Hilir")
+    roads: readJson(path.join(REPO_ROOT, "data/mangrove-priority-rokan-hilir-roads-osm.geojson"), "Jaringan jalan OSM Rokan Hilir"),
+    facilities: readOptionalJson(path.join(REPO_ROOT, "data/rdtr-bagansiapiapi-facilities-osm.geojson")),
+    hydrology: readOptionalJson(path.join(REPO_ROOT, "data/rdtr-bagansiapiapi-hydrology-osm.geojson"))
   });
   fs.writeFileSync(outputPath, JSON.stringify(analysis));
   console.log(JSON.stringify({

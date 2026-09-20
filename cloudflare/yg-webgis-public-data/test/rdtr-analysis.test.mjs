@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { area, featureCollection, intersect, lineString, polygon } from "@turf/turf";
+import { area, featureCollection, intersect, lineString, point, polygon } from "@turf/turf";
 import { buildAnalysis } from "../scripts/build-rdtr-bagansiapiapi-analysis.mjs";
 
 const names = [
@@ -35,7 +35,14 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
     roads: Object.assign(featureCollection([
       lineString([[100.001, 2.005], [100.019, 2.005]], { osmId: 1, highway: "primary", name: "Jalan Uji Utama" }),
       lineString([[100.061, 2.005], [100.069, 2.005]], { osmId: 2, highway: "residential", name: null })
-    ]), { source: "OpenStreetMap contributors via Overpass" })
+    ]), { source: "OpenStreetMap contributors via Overpass" }),
+    facilities: featureCollection([
+      point([100.005, 2.005], { id: "OSM-NODE-10", name: "Puskesmas Uji", category: "health", critical: true }),
+      point([100.015, 2.005], { id: "OSM-NODE-11", name: "Sekolah Uji", category: "education", critical: false })
+    ]),
+    hydrology: featureCollection([
+      lineString([[100.002, 2.002], [100.018, 2.008]], { id: "OSM-WAY-20", name: "Sungai Uji", waterway: "river" })
+    ])
   });
   assert.equal(result.metadata.access, "staff_only");
   assert.equal(result.metadata.ygDraftZoningStatus, "provisional_internal_zone_geometry");
@@ -168,6 +175,8 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
   assert.ok(result.geometryRegistry.some(row => row.id === "GR-YG-STRUCTURE-NODES" && row.featureCount === 11));
   assert.ok(result.geometryRegistry.some(row => row.id === "GR-YG-STRUCTURE-AXES" && row.featureCount === 10));
   assert.ok(result.geometryRegistry.some(row => row.id === "GR-YG-ROAD-EVIDENCE" && row.featureCount === 2));
+  assert.ok(result.geometryRegistry.some(row => row.id === "GR-YG-FACILITY-EVIDENCE" && row.featureCount === 2));
+  assert.ok(result.geometryRegistry.some(row => row.id === "GR-YG-HYDROLOGY-EVIDENCE" && row.featureCount === 1));
   assert.ok(result.geometryRegistry.some(row => row.id === "GR-RTRW-ROHIL" && row.status === "not_verified"));
   assert.ok(result.geometryRegistry.some(row => row.id === "GR-MANGROVE-CANDIDATES" && row.featureCount === 1));
   assert.equal(result.map.mangroveCandidates.features.length, 1);
@@ -192,7 +201,7 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
   assert.ok(result.map.ygPlanningUnits.metadata.geometryProcessing.includes("tolerance 0.00002"));
 
   assert.equal(result.ygDraftRdtr.status, "provisional_internal_spatial_draft");
-  assert.equal(result.ygDraftRdtr.version, "0.5.0-internal");
+  assert.equal(result.ygDraftRdtr.version, "0.6.0-internal");
   assert.equal(result.ygDraftRdtr.zoningCodebook.version, "0.1.0-internal");
   assert.equal(result.ygDraftRdtr.structureDraft.status, "analytical_reference_geometry");
   assert.equal(result.ygDraftRdtr.structureDraft.nodeCount, 11);
@@ -224,6 +233,13 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
     feature.properties.evidenceStatus === "open_data_screening_not_official_road_network" &&
     feature.properties.legalEffect === "none"
   ));
+  assert.equal(result.ygDraftRdtr.serviceHydrologyEvidence.status, "partial_open_evidence");
+  assert.equal(result.map.ygFacilityEvidence.features.length, 2);
+  assert.equal(result.map.ygHydrologyEvidence.features.length, 1);
+  assert.equal(result.map.ygFacilityEvidence.metadata.criticalCount, 1);
+  assert.ok(result.map.ygHydrologyEvidence.metadata.totalLengthKm > 0);
+  assert.deepEqual(new Set(result.ygPlan.structurePlan.facilityCategories.map(row => row.category)), new Set(["education", "health"]));
+  assert.equal(result.ygPlan.structurePlan.waterwayClasses[0].waterwayClass, "river");
   assert.equal(result.map.ygCandidateZones.metadata.status, "provisional_internal_zone_geometry");
   assert.ok(result.map.ygCandidateZones.features.length >= 4);
   assert.ok(result.map.ygCandidateZones.features.some(feature => feature.properties.code === "YG-ZK"));
