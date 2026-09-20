@@ -80,6 +80,8 @@ test("Pages privacy guard rejects leaked source geometry", () => {
 
 test("R2 ingest refuses buckets with direct public domains", () => {
   const workflow = read(".github/workflows/ingest-internal-riau-geoportal.yml");
+  assert.doesNotMatch(workflow, /WORK_ROOT:\s*\$\{\{\s*runner\.temp/);
+  assert.match(workflow, /WORK_ROOT=\$\{RUNNER_TEMP\}\/riau-geoportal/);
   assert.match(workflow, /Require private R2 bucket origins/);
   assert.match(workflow, /"\$\{api\}\/managed"/);
   assert.match(workflow, /"\$\{api\}\/custom"/);

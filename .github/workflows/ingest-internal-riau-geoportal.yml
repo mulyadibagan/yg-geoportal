@@ -44,9 +44,12 @@ jobs:
       DISPLAY_SOURCE_MAX_BYTES: "536870912"
       DISPLAY_MAX_BYTES: "12582912"
       DISPLAY_MAX_FEATURES: "25000"
-      WORK_ROOT: ${{ runner.temp }}/riau-geoportal
     steps:
       - uses: actions/checkout@v5
+
+      - name: Configure private work directory
+        shell: bash
+        run: echo "WORK_ROOT=${RUNNER_TEMP}/riau-geoportal" >> "${GITHUB_ENV}"
 
       - uses: actions/setup-node@v5
         with:
