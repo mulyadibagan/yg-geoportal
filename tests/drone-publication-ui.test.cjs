@@ -19,10 +19,14 @@ test('drone page exposes explicit publication and a public layer catalogue', () 
   assert.match(script, /orthomosaic=/);
 });
 
-test('orthomosaic viewer hides only the no-data background and preserves natural dark colors', () => {
+test('orthomosaic viewer converts JPEG YCbCr to natural RGB and hides only black no-data', () => {
   const script = read('js/drone-survey.js');
   assert.match(script, /function orthomosaicPixelColor/);
-  assert.match(script, /pixelValuesToColorFn:orthomosaicPixelColor/);
+  assert.match(script, /PhotometricInterpretation===6/);
+  assert.match(script, /v1\+1\.402\*\(v3-128\)/);
+  assert.match(script, /v1-0\.34414\*\(v2-128\)-0\.71414\*\(v3-128\)/);
+  assert.match(script, /v1\+1\.772\*\(v2-128\)/);
+  assert.match(script, /pixelValuesToColorFn:values=>orthomosaicPixelColor\(values,isYCbCr\)/);
   assert.match(script, /r===0&&g===0&&b===0/);
   assert.doesNotMatch(script, /max<=20/);
   assert.match(script, /rgba\(0,0,0,0\)/);
