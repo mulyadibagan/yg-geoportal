@@ -14,13 +14,14 @@ test("Riau reference workspace is staff-only and additive", () => {
   assert.match(home, /Peta Referensi Riau/);
   assert.match(home, /staff-riau-reference\.html/);
   assert.match(home, /data-staff-only-module hidden/);
-  assert.match(page, /riau-reference-workspace\.js\?v=20260920-internal2/);
+  assert.match(page, /riau-reference-workspace\.js\?v=20260920-bottom1/);
   assert.match(workspace, /if \(!session\(\)/);
   assert.match(workspace, /Layer program YG tidak diubah/);
   assert.match(workspace, /waitUntilSettled/);
   assert.match(workspace, /for \(const layerId of preset\.layers\)/);
   assert.match(workspace, /staff-riau-reference\.html/);
   assert.doesNotMatch(workspace, /\.click\(\)/);
+  assert.match(workspace, /layerPanel\.parentNode\.appendChild\(panel\)/);
 });
 
 test("Riau reference presets only name existing verified map layers", () => {
@@ -48,7 +49,7 @@ test("only staff-ready Geoportal derivatives enter the interactive map", () => {
   assert.match(workspace, /\/api\/staff\/riau-geoportal\/catalog/);
   assert.match(workspace, /datasets\/\$\{encodeURIComponent\(item\.uuid\)\}\/display/);
   assert.match(workspace, /item\.displayReady/);
-  assert.match(workspace, /MAX_ACTIVE_CATALOG_LAYERS = 3/);
+  assert.match(workspace, /MAX_ACTIVE_CATALOG_LAYERS = 8/);
   assert.match(workspace, /MAX_DISPLAY_BYTES = 12 \* 1024 \* 1024/);
   assert.match(workspace, /MAX_DISPLAY_FEATURES = 25000/);
   assert.match(workspace, /window\.YG_MAP/);
