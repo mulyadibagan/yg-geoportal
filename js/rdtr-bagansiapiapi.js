@@ -774,6 +774,29 @@
     return /permukiman|perumahan|perdagangan|jasa|industri|pelabuhan|perkantoran|pariwisata|transportasi|budidaya|campuran/i.test(name);
   }
 
+  function isProtectiveZone(name) {
+    return /lindung|sempadan|mangrove|konservasi|perlindungan|ruang terbuka hijau|\brth\b|ekosistem|resapan|rawan|sungai/i.test(name);
+  }
+
+  function draftPolicyDecision(comparison) {
+    if (comparison.intensive && (comparison.peatAreaHa > .1 || comparison.coastAreaHa > .1)) return "hold";
+    if (comparison.protective && comparison.policyLayerIds.length) return "conditional";
+    return "verify";
+  }
+
+  function draftPolicyPosition(comparison) {
+    if (comparison.decision === "hold") {
+      return "Tahan penguncian zona intensif. Minta alternatif atau perubahan geometri bila bukti resmi menegaskan fungsi lindung, risiko, atau kebutuhan pemulihan.";
+    }
+    if (comparison.decision === "conditional") {
+      return "Arah perlindungan berpotensi sejalan, tetapi batas, fungsi, kegiatan, indikator, dan pengawasannya harus dibuktikan dalam KLHS dan peraturan zonasi.";
+    }
+    if (comparison.policyLayerIds.length) {
+      return "Verifikasi status, fungsi, kewenangan, dan aturan zona sebelum menyatakan draf selaras atau bertentangan.";
+    }
+    return "Belum ada irisan pada tiga layer v0. Tetap verifikasi RTRW kabupaten, WP, KLHS, bahaya, layanan, penggunaan lahan, dan tenurial.";
+  }
+
   function flattenDraft(value) {
     var collections = Array.isArray(value) ? value : [value];
     var features = [];
@@ -786,25 +809,95 @@
     }));
   }
 
-  function analyseDraft(collection, fileName) {
+  function validateDraftCollection(collection) {
+    var features = collection.features || [];
+    if (features.length > 20000) throw new Error("Draf memuat lebih dari 20.000 polygon; pecah berkas per tema atau SWP agar pemeriksaan lokal tetap aman.");
+    var bounds = turf.bbox(collection);
+    if (bounds.some(function (value, index) { return !Number.isFinite(value) || Math.abs(value) > (index % 2 ? 90 : 180); })) {
+      throw new Error("Koordinat draf bukan bujur/lintang WGS84 yang dapat dibaca. Ekspor sebagai EPSG:4326; ZIP Shapefile wajib menyertakan berkas .prj.");
+    }
+    if (typeof turf.booleanValid === "function") {
+      var invalidCount = features.filter(function (feature) {
+        try { return !turf.booleanValid(feature); } catch (error) { return true; }
+      }).length;
+      if (invalidCount) throw new Error(invalidCount + " polygon memiliki geometri tidak valid. Perbaiki geometri sebelum uji kebijakan.");
+    }
+    return { inputFeatureCount: features.length, crs: "EPSG:4326", validGeometryCount: features.length };
+  }
+
+  function analyseDraft(collection, fileName, qa) {
     var studyUnion = turf.union(turf.featureCollection(state.analysis.map.studyArea.features));
-    var clipped = [];
-    (collection.features || []).forEach(function (feature) {
+    var clipped = [], comparisons = [];
+    var policyById = {};
+    ((state.analysis.policyMapFramework && state.analysis.policyMapFramework.layers) || []).forEach(function (policy) {
+      policyById[policy.id] = policy;
+    });
+    (collection.features || []).forEach(function (feature, index) {
       var overlap = safeIntersect(feature, studyUnion);
       if (!overlap || turf.area(overlap) < 100) return;
-      overlap.properties = Object.assign({}, feature.properties, { _ygZone: draftZoneName(feature) });
+      var name = draftZoneName(feature);
+      var hectares = turf.area(overlap) / 10000;
+      var comparison = {
+        id: "DR-" + String(index + 1).padStart(4, "0"),
+        zone: name,
+        areaHa: hectares,
+        intensive: isIntensiveZone(name),
+        protective: isProtectiveZone(name),
+        peatAreaHa: Math.min(hectares, intersectionAreaHa(overlap, state.analysis.map.peat.features)),
+        forestAreaHa: Math.min(hectares, intersectionAreaHa(overlap, state.analysis.map.forest.features)),
+        coastAreaHa: Math.min(hectares, intersectionAreaHa(overlap, (state.analysis.map.mangroveCandidates || {}).features || [])),
+        policyLayerIds: []
+      };
+      if (comparison.peatAreaHa > .1) comparison.policyLayerIds.push("PM-YG-PEAT");
+      if (comparison.forestAreaHa > .1) comparison.policyLayerIds.push("PM-YG-FOREST");
+      if (comparison.coastAreaHa > .1) comparison.policyLayerIds.push("PM-YG-COAST");
+      comparison.regulationRefs = uniqueValues(comparison.policyLayerIds.reduce(function (codes, id) {
+        return codes.concat((policyById[id] && policyById[id].regulationRefs) || []);
+      }, []));
+      comparison.evidenceLocks = uniqueValues(comparison.policyLayerIds.reduce(function (items, id) {
+        return items.concat((policyById[id] && policyById[id].promotionRequirements) || []);
+      }, []));
+      comparison.decision = draftPolicyDecision(comparison);
+      comparison.position = draftPolicyPosition(comparison);
+      overlap.properties = Object.assign({}, feature.properties, {
+        _ygReviewId: comparison.id,
+        _ygZone: name,
+        _ygDecision: comparison.decision,
+        _ygPosition: comparison.position,
+        _ygAreaHa: Number(hectares.toFixed(2)),
+        _ygPeatHa: Number(comparison.peatAreaHa.toFixed(2)),
+        _ygForestHa: Number(comparison.forestAreaHa.toFixed(2)),
+        _ygCoastHa: Number(comparison.coastAreaHa.toFixed(2)),
+        _ygPolicyLayerIds: comparison.policyLayerIds.join(" | "),
+        _ygRegulationRefs: comparison.regulationRefs.join(" | "),
+        _ygGeometryStatus: "local_draft_comparison_not_official_conclusion"
+      });
+      comparisons.push(comparison);
       clipped.push(overlap);
     });
     if (!clipped.length) throw new Error("Tidak ada polygon draf yang beririsan dengan 11 wilayah perencanaan.");
-    var zones = new Map(), findings = [];
-    clipped.forEach(function (feature) {
-      var name = feature.properties._ygZone;
-      var hectares = turf.area(feature) / 10000;
-      zones.set(name, (zones.get(name) || 0) + hectares);
-      if (!isIntensiveZone(name)) return;
-      var peatHa = intersectionAreaHa(feature, state.analysis.map.peat.features);
-      var forestHa = intersectionAreaHa(feature, state.analysis.map.forest.features);
-      if (peatHa > .1 || forestHa > .1) findings.push({ zone: name, areaHa: hectares, peatHa: peatHa, forestHa: forestHa });
+    var zones = new Map();
+    comparisons.forEach(function (row) {
+      var current = zones.get(row.zone) || {
+        zone: row.zone, featureCount: 0, areaHa: 0, peatAreaHa: 0, forestAreaHa: 0, coastAreaHa: 0,
+        intensive: false, protective: false, decision: "verify", policyLayerIds: [], regulationRefs: [], evidenceLocks: []
+      };
+      current.featureCount += 1;
+      current.areaHa += row.areaHa;
+      current.peatAreaHa += row.peatAreaHa;
+      current.forestAreaHa += row.forestAreaHa;
+      current.coastAreaHa += row.coastAreaHa;
+      current.intensive = current.intensive || row.intensive;
+      current.protective = current.protective || row.protective;
+      current.decision = strictestDecision([{ decision: current.decision }, { decision: row.decision }]);
+      current.policyLayerIds = uniqueValues(current.policyLayerIds.concat(row.policyLayerIds));
+      current.regulationRefs = uniqueValues(current.regulationRefs.concat(row.regulationRefs));
+      current.evidenceLocks = uniqueValues(current.evidenceLocks.concat(row.evidenceLocks));
+      zones.set(row.zone, current);
+    });
+    var zoneComparisons = Array.from(zones.values()).map(function (row) {
+      row.position = draftPolicyPosition(row);
+      return row;
     });
     if (state.layers.draft) {
       state.map.removeLayer(state.layers.draft);
@@ -813,39 +906,79 @@
     state.layers.draft = L.geoJSON(turf.featureCollection(clipped), {
       renderer: L.canvas({ padding: .5 }),
       style: function (feature) {
-        var intensive = isIntensiveZone(feature.properties._ygZone);
-        return { color: intensive ? "#b83d33" : "#245e9a", weight: 2, fillColor: intensive ? "#e36f62" : "#4b8ac3", fillOpacity: .28 };
+        var colors = { hold: "#b83d33", verify: "#245e9a", conditional: "#b87518", revise: "#73508b" };
+        var color = colors[feature.properties._ygDecision] || colors.verify;
+        return { color: color, weight: 2, fillColor: color, fillOpacity: .28 };
       },
       onEachFeature: function (feature, layer) {
-        layer.bindPopup(popup("Draf RDTR · lokal", { "Zona": feature.properties._ygZone, "Berkas": fileName }));
+        var props = feature.properties;
+        layer.bindPopup(popup("Draf RDTR · uji lokal YG", {
+          "ID uji": props._ygReviewId,
+          "Zona": props._ygZone,
+          "Posisi YG": decisionLabel(props._ygDecision),
+          "Luas": number(props._ygAreaHa, 2) + " ha",
+          "Irisan gambut": number(props._ygPeatHa, 2) + " ha",
+          "Irisan non-APL": number(props._ygForestHa, 2) + " ha",
+          "Irisan kandidat pesisir": number(props._ygCoastHa, 2) + " ha",
+          "Arahan": props._ygPosition,
+          "Berkas": fileName,
+          "Batas": "Diproses lokal; hasil penyaringan, bukan kesimpulan resmi."
+        }));
       }
     }).addTo(state.map);
-    state.layerControl.addOverlay(state.layers.draft, "Draf RDTR · lokal");
+    state.layerControl.addOverlay(state.layers.draft, "Draf RDTR · hasil uji lokal YG");
     state.map.fitBounds(state.layers.draft.getBounds(), { padding: [18, 18] });
-    state.draft = { fileName: fileName, features: clipped, zones: zones, findings: findings };
+    state.draft = {
+      fileName: fileName,
+      features: clipped,
+      comparisons: comparisons,
+      zones: zones,
+      zoneComparisons: zoneComparisons,
+      qa: Object.assign({}, qa, { clippedFeatureCount: clipped.length, outsideStudyCount: qa.inputFeatureCount - clipped.length })
+    };
     renderDraftFindings();
   }
 
   function renderDraftFindings() {
     var draft = state.draft;
     var totalArea = draft.features.reduce(function (sum, feature) { return sum + turf.area(feature) / 10000; }, 0);
-    var highest = Array.from(draft.zones.entries()).sort(function (a, b) { return b[1] - a[1]; });
+    var rank = { hold: 4, revise: 3, conditional: 2, verify: 1 };
+    var rows = draft.zoneComparisons.slice().sort(function (a, b) {
+      return (rank[b.decision] - rank[a.decision]) || ((b.peatAreaHa + b.forestAreaHa + b.coastAreaHa) - (a.peatAreaHa + a.forestAreaHa + a.coastAreaHa));
+    });
+    var counts = rows.reduce(function (result, row) {
+      result[row.decision] = (result[row.decision] || 0) + 1;
+      return result;
+    }, {});
     var html = '<div class="rdtr-draft-summary"><article><strong>' + number(draft.features.length, 0) +
       '</strong><span>polygon beririsan</span></article><article><strong>' + number(draft.zones.size, 0) +
       '</strong><span>zona teridentifikasi</span></article><article><strong>' + number(totalArea, 1) +
-      ' ha</strong><span>cakupan terbaca</span></article><article><strong>' + number(draft.findings.length, 0) +
-      '</strong><span>indikasi perlu klarifikasi</span></article></div>';
-    if (highest.length) html += "<p><strong>Zona terluas:</strong> " + esc(highest.slice(0, 5).map(function (row) {
-      return row[0] + " (" + number(row[1], 1) + " ha)";
-    }).join(" · ")) + "</p>";
-    if (!draft.findings.length) html += "<p>Belum ditemukan zona intensif yang beririsan dengan baseline gambut atau kawasan hutan. Tetap diperlukan pemeriksaan KLHS, sempadan, rob, banjir, abrasi, dan kondisi lapangan.</p>";
-    draft.findings.sort(function (a, b) { return (b.peatHa + b.forestHa) - (a.peatHa + a.forestHa); }).forEach(function (row) {
-      html += '<article class="rdtr-finding"><h3>' + esc(row.zone) + '</h3><p>Area draf: <strong>' + number(row.areaHa, 1) +
-        ' ha</strong> · irisan gambut: <strong>' + number(row.peatHa, 1) + ' ha</strong> · irisan kawasan hutan: <strong>' +
-        number(row.forestHa, 1) + ' ha</strong>.</p><p><strong>Usulan YG:</strong> minta justifikasi zonasi, uji daya dukung/KLHS, status kawasan, dan persyaratan pengendalian sebelum zona ditetapkan.</p></article>';
+      ' ha</strong><span>cakupan terbaca</span></article><article><strong>' + number(counts.hold || 0, 0) +
+      '</strong><span>zona berposisi Tahan</span></article></div>';
+    html += '<div class="rdtr-draft-decision-summary"><span>' + decisionBadge("hold") + ' ' + number(counts.hold || 0, 0) +
+      '</span><span>' + decisionBadge("verify") + ' ' + number(counts.verify || 0, 0) + '</span><span>' +
+      decisionBadge("conditional") + ' ' + number(counts.conditional || 0, 0) + '</span><span>' +
+      decisionBadge("revise") + ' ' + number(counts.revise || 0, 0) + '</span></div><p class="rdtr-draft-rule"><strong>Aturan keputusan.</strong> ' +
+      'Sistem tidak menetapkan Revisi secara otomatis dari layer indikatif. Status Revisi hanya layak setelah bukti resmi menunjukkan ketidaksesuaian; area tanpa irisan tetap berstatus Verifikasi.</p>';
+    rows.forEach(function (row) {
+      var refs = row.policyLayerIds.length ? row.policyLayerIds.join(" · ") : "tidak ada irisan pada tiga layer v0";
+      html += '<article class="rdtr-finding is-' + esc(row.decision) + '"><header><div><small>' +
+        number(row.featureCount, 0) + ' polygon · ' + esc(refs) + '</small><h3>' + esc(row.zone) + '</h3></div>' +
+        decisionBadge(row.decision) + '</header><div class="rdtr-draft-overlaps"><span><strong>' + number(row.areaHa, 1) +
+        ' ha</strong> area draf</span><span><strong>' + number(row.peatAreaHa, 1) + ' ha</strong> gambut</span><span><strong>' +
+        number(row.forestAreaHa, 1) + ' ha</strong> non-APL</span><span><strong>' + number(row.coastAreaHa, 1) +
+        ' ha</strong> kandidat pesisir</span></div><p><strong>Posisi YG.</strong> ' + esc(row.position) + '</p>' +
+        (row.evidenceLocks.length ? '<div class="rdtr-draft-locks"><strong>Pengunci bukti:</strong><ul>' + row.evidenceLocks.map(function (item) {
+          return '<li>' + esc(item) + '</li>';
+        }).join("") + '</ul></div>' : '') + regulationChips(row.regulationRefs) + '</article>';
     });
     document.getElementById("rdtr-draft-findings").innerHTML = html;
-    document.getElementById("rdtr-draft-status").textContent = "Draf lokal siap: " + draft.fileName + " · tidak diunggah ke server.";
+    document.getElementById("rdtr-export-draft-csv").disabled = false;
+    document.getElementById("rdtr-export-draft-geojson").disabled = false;
+    document.getElementById("rdtr-draft-status").textContent = "Draf lokal siap: " + draft.fileName + " · " +
+      draft.features.length + " dari " + draft.qa.inputFeatureCount + " polygon diuji" +
+      (draft.qa.outsideStudyCount ? " · " + draft.qa.outsideStudyCount + " di luar wilayah kajian" : "") +
+      " · tidak diunggah ke server.";
   }
 
   async function loadDraft(file) {
@@ -859,7 +992,8 @@
       } else value = JSON.parse(await file.text());
       var collection = flattenDraft(value);
       if (!collection.features.length) throw new Error("Berkas tidak memuat polygon GeoJSON yang dapat dianalisis.");
-      analyseDraft(collection, file.name);
+      var qa = validateDraftCollection(collection);
+      analyseDraft(collection, file.name, qa);
     } catch (error) {
       status.textContent = "Draf gagal dibaca: " + error.message;
     }
@@ -1117,6 +1251,44 @@
     }, "peta-sintesis-kebijakan-rdtr-bagansiapiapi-v0.geojson", "application/geo+json;charset=utf-8");
   }
 
+  function exportDraftComparisonCsv() {
+    if (!state.draft) return;
+    var header = ["Berkas", "Zona_draf", "Jumlah_polygon", "Luas_ha", "Gambut_ha", "Non_APL_ha", "Kandidat_pesisir_ha", "Posisi_YG", "Arahan_YG", "Layer_kebijakan", "Pengunci_bukti", "Referensi_regulasi", "Status_geometri"];
+    var lines = [header.map(csvCell).join(",")];
+    state.draft.zoneComparisons.forEach(function (row) {
+      lines.push([
+        state.draft.fileName, row.zone, row.featureCount, Number(row.areaHa.toFixed(2)), Number(row.peatAreaHa.toFixed(2)),
+        Number(row.forestAreaHa.toFixed(2)), Number(row.coastAreaHa.toFixed(2)),
+        decisionLabel(row.decision), row.position, row.policyLayerIds.join(" | "), row.evidenceLocks.join(" | "),
+        row.regulationRefs.join(" | "), "Hasil uji lokal; bukan kesimpulan resmi"
+      ].map(csvCell).join(","));
+    });
+    var blob = new Blob(["\ufeff" + lines.join("\n")], { type: "text/csv;charset=utf-8" });
+    var link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "uji-draf-rdtr-vs-kebijakan-yg-internal.csv";
+    link.click();
+    setTimeout(function () { URL.revokeObjectURL(link.href); }, 1000);
+  }
+
+  function exportDraftComparisonGeoJson() {
+    if (!state.draft) return;
+    downloadJson({
+      type: "FeatureCollection",
+      name: "Uji lokal draf RDTR terhadap Peta Sintesis Kebijakan YG",
+      metadata: {
+        access: "staff_only",
+        sourceFile: state.draft.fileName,
+        processing: "browser_local_only",
+        geometryQa: state.draft.qa,
+        policyMapId: (state.analysis.policyMapFramework || {}).id,
+        policyMapVersion: (state.analysis.policyMapFramework || {}).version,
+        disclaimer: "Hasil penyaringan internal; bukan kesimpulan hukum, penetapan zona/subzona, atau dasar KKPR."
+      },
+      features: state.draft.features
+    }, "uji-draf-rdtr-vs-kebijakan-yg-internal.geojson", "application/geo+json;charset=utf-8");
+  }
+
   async function copyText(button, text, original) {
     try {
       await navigator.clipboard.writeText(text);
@@ -1160,6 +1332,8 @@
     document.getElementById("rdtr-export-yg-json").addEventListener("click", exportYgJson);
     document.getElementById("rdtr-export-yg-geojson").addEventListener("click", exportYgGeoJson);
     document.getElementById("rdtr-export-policy-map").addEventListener("click", exportPolicyMap);
+    document.getElementById("rdtr-export-draft-csv").addEventListener("click", exportDraftComparisonCsv);
+    document.getElementById("rdtr-export-draft-geojson").addEventListener("click", exportDraftComparisonGeoJson);
     document.getElementById("rdtr-village-body").addEventListener("click", function (event) {
       var button = event.target.closest("[data-village-id]");
       if (button) renderVillageAnalysis(button.dataset.villageId);
