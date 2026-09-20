@@ -723,6 +723,23 @@
       : '<p class="rdtr-component-note">Audit kelengkapan belum tersedia.</p>';
   }
 
+  function renderGapClosureWorkplan(workplan) {
+    workplan = workplan || {};
+    var rows = workplan.items || [];
+    document.getElementById("rdtr-gap-workplan").innerHTML = rows.length
+      ? '<div class="rdtr-program-status">' + statusBadge(workplan.status) + '<p>' + esc(workplan.completionRule) + '</p></div>' +
+        '<div class="rdtr-network-kpis">' + (workplan.prioritySummary || []).map(function (row) { return '<span><strong>' + number(row.count, 0) +
+          '</strong>' + esc(row.priority) + ' pekerjaan</span>'; }).join("") + '</div>' +
+        '<div class="rdtr-itbx-scroll"><table><thead><tr><th>ID</th><th>Komponen</th><th>Prioritas/status</th><th>Tindakan dan kriteria penerimaan</th><th>Dependensi</th><th>Peran/penugasan</th><th>Bukti penerimaan</th></tr></thead><tbody>' +
+        rows.map(function (row) { var receipt = row.evidenceReceipt || {}; return '<tr><td><strong>' + esc(row.id) + '</strong><br>' + esc(row.auditRef) +
+          '</td><td>' + esc(row.component) + '</td><td>' + priorityBadge(row.priority) + '<br>' + statusBadge(row.status) + '</td><td>' + esc(row.action) +
+          '<br><small><strong>Terima bila:</strong> ' + esc(row.acceptanceCriteria) + '</small></td><td>' + esc((row.dependencies || []).join(", ") || "tidak ada") +
+          '</td><td>' + esc(row.ownerRole) + '<br><small>Nama: ' + esc(row.assignedTo || "belum ditetapkan") + '<br>Tenggat: ' + esc(row.dueDate || "belum ditetapkan") +
+          '</small></td><td>' + esc(receipt.fileRef || "belum diterima") + '<br><small>Keputusan: ' + esc(receipt.decision || "belum direview") + '</small></td></tr>'; }).join("") +
+        '</tbody></table></div><p class="rdtr-component-note">Jalur kritis: ' + esc((workplan.criticalPath || []).join(" → ")) + '</p><p class="rdtr-component-note">' + esc(workplan.disclaimer) + '</p>'
+      : '<p class="rdtr-component-note">Rencana penutupan gap belum tersedia.</p>';
+  }
+
   function colorFrom(value) {
     var colors = ["#a25728", "#176c8c", "#4b7d49", "#8d546f", "#806523", "#5d59a1", "#338477"];
     var hash = 0, text = String(value || "");
@@ -1737,6 +1754,25 @@
     downloadJson(audit, "audit-kelengkapan-rdtr-yg-v0.12-internal.json", "application/json;charset=utf-8");
   }
 
+  function exportGapClosureWorkplanCsv() {
+    var plan = state.analysis.gapClosureWorkplan || {};
+    var header = ["ID", "Referensi audit", "Komponen", "Kategori", "Prioritas", "Status", "Kesenjangan", "Tindakan", "Kriteria penerimaan", "Dependensi", "Peran pemilik", "Ditugaskan kepada", "Tenggat", "Bukti diterima pada", "Diterima dari", "Referensi berkas", "Checksum", "Reviewer", "Tanggal review", "Keputusan", "Catatan"];
+    var lines = [header.map(csvCell).join(",")];
+    (plan.items || []).forEach(function (row) { var receipt = row.evidenceReceipt || {}; lines.push([
+      row.id, row.auditRef, row.component, row.category, row.priority, row.status, row.gap, row.action, row.acceptanceCriteria,
+      (row.dependencies || []).join(" | "), row.ownerRole, row.assignedTo, row.dueDate, receipt.receivedAt, receipt.receivedFrom,
+      receipt.fileRef, receipt.checksum, receipt.reviewedBy, receipt.reviewDate, receipt.decision, receipt.notes
+    ].map(csvCell).join(",")); });
+    var blob = new Blob(["\ufeff" + lines.join("\n")], { type: "text/csv;charset=utf-8" });
+    var link = document.createElement("a"); link.href = URL.createObjectURL(blob);
+    link.download = "rencana-penutupan-gap-rdtr-yg-v0.13-internal.csv"; link.click(); URL.revokeObjectURL(link.href);
+  }
+
+  function exportGapClosureWorkplanJson() {
+    if (!state.analysis.gapClosureWorkplan) return;
+    downloadJson(state.analysis.gapClosureWorkplan, "rencana-penutupan-gap-rdtr-yg-v0.13-internal.json", "application/json;charset=utf-8");
+  }
+
   function exportPolicyMap() {
     var framework = state.analysis.policyMapFramework || {};
     var features = [];
@@ -1872,6 +1908,8 @@
     document.getElementById("rdtr-export-consultation-notes").addEventListener("click", exportConsultationNotesCsv);
     document.getElementById("rdtr-export-completeness").addEventListener("click", exportCompletenessAuditCsv);
     document.getElementById("rdtr-export-completeness-json").addEventListener("click", exportCompletenessAuditJson);
+    document.getElementById("rdtr-export-gap-workplan").addEventListener("click", exportGapClosureWorkplanCsv);
+    document.getElementById("rdtr-export-gap-workplan-json").addEventListener("click", exportGapClosureWorkplanJson);
     document.getElementById("rdtr-export-policy-map").addEventListener("click", exportPolicyMap);
     document.getElementById("rdtr-export-draft-csv").addEventListener("click", exportDraftComparisonCsv);
     document.getElementById("rdtr-export-draft-geojson").addEventListener("click", exportDraftComparisonGeoJson);
@@ -1907,6 +1945,7 @@
     renderConsultationMatrix(state.analysis.consultationArgumentMatrix);
     renderConsultationReadiness(state.analysis.consultationReadinessPack);
     renderCompletenessAudit(state.analysis.completenessAudit);
+    renderGapClosureWorkplan(state.analysis.gapClosureWorkplan);
     renderAnalysisProgramme(state.analysis.analysisProgramme, state.analysis.mandatoryAnalysisMatrix);
     renderAnalysisMatrix(state.analysis.mandatoryAnalysisMatrix);
     renderGeometryRegistry(state.analysis.geometryRegistry);

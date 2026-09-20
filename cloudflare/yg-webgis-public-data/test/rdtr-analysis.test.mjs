@@ -208,7 +208,7 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
   assert.ok(result.map.ygPlanningUnits.metadata.geometryProcessing.includes("tolerance 0.00002"));
 
   assert.equal(result.ygDraftRdtr.status, "provisional_internal_spatial_draft");
-  assert.equal(result.ygDraftRdtr.version, "0.12.0-internal");
+  assert.equal(result.ygDraftRdtr.version, "0.13.0-internal");
   assert.equal(result.ygDraftRdtr.programmePortfolio.programmeCount, 8);
   assert.equal(result.ygDraftRdtr.programmePortfolio.indicatorCount, 16);
   assert.equal(result.consultationArgumentMatrix.items.length, 10);
@@ -256,6 +256,16 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
   ));
   assert.equal(result.completenessAudit.releaseGates.length, 5);
   assert.ok(result.completenessAudit.releaseGates.every(row => row.status === "not_completed"));
+  assert.equal(result.gapClosureWorkplan.totalItems, 18);
+  assert.equal(result.ygDraftRdtr.gapClosureWorkplan.totalItems, 18);
+  assert.deepEqual(Object.fromEntries(result.gapClosureWorkplan.prioritySummary.map(row => [row.priority, row.count])), { P0: 7, P1: 9, P2: 2 });
+  assert.ok(result.gapClosureWorkplan.items.every(row =>
+    row.status === "not_started" && row.assignedTo === null && row.dueDate === null && row.ownerRole &&
+    row.acceptanceCriteria && Object.values(row.evidenceReceipt).every(value => value === null)
+  ));
+  const gapAuditRefs = new Set(result.gapClosureWorkplan.items.map(row => row.auditRef));
+  assert.equal(gapAuditRefs.size, 18);
+  assert.ok(result.gapClosureWorkplan.items.every(row => row.dependencies.every(id => gapAuditRefs.has(id))));
   assert.equal(result.ygDraftRdtr.zoningCodebook.version, "0.1.0-internal");
   assert.equal(result.ygDraftRdtr.structureDraft.status, "analytical_reference_geometry");
   assert.equal(result.ygDraftRdtr.structureDraft.nodeCount, 11);
