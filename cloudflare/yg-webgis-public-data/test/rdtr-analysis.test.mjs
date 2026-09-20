@@ -208,7 +208,7 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
   assert.ok(result.map.ygPlanningUnits.metadata.geometryProcessing.includes("tolerance 0.00002"));
 
   assert.equal(result.ygDraftRdtr.status, "provisional_internal_spatial_draft");
-  assert.equal(result.ygDraftRdtr.version, "0.23.0-internal-release-candidate");
+  assert.equal(result.ygDraftRdtr.version, "0.24.0-internal-release-candidate");
   assert.equal(result.ygDraftRdtr.programmePortfolio.programmeCount, 8);
   assert.equal(result.ygDraftRdtr.programmePortfolio.indicatorCount, 16);
   assert.equal(result.consultationArgumentMatrix.items.length, 10);
@@ -313,6 +313,14 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
     row.plannedDate === null && row.consentProtocolConfirmed === false && row.safetyBriefingConfirmed === false &&
     row.fieldworkStatus === "not_planned" && row.evidenceReceived.length === 0 && row.reviewedBy === null &&
     row.reviewDate === null && row.acceptedForAnalysis === false));
+  assert.equal(result.fieldObservationSchema.fields.length, 24);
+  assert.equal(result.fieldObservationSchema.surveyPackageRefs.length, 11);
+  assert.equal(result.fieldObservationSchema.themeRefs.length, 10);
+  assert.equal(result.fieldObservationSchema.emptyGeoJson.features.length, 0);
+  assert.equal(result.fieldObservationSchema.blankRecord.acceptedForAnalysis, false);
+  assert.equal(result.fieldObservationSchema.blankRecord.qaStatus, "not_reviewed");
+  assert.ok(result.fieldObservationSchema.fields.filter(row => row.required).length >= 10);
+  assert.equal(result.ygDraftRdtr.fieldObservationSchema.observationCount, 0);
   assert.equal(result.ygDraftRdtr.zoningCodebook.version, "0.1.0-internal");
   assert.equal(result.ygDraftRdtr.structureDraft.status, "analytical_reference_geometry");
   assert.equal(result.ygDraftRdtr.structureDraft.nodeCount, 11);
