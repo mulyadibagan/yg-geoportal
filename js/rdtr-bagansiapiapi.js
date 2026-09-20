@@ -362,6 +362,18 @@
       }).concat((structure.waterwayClasses || []).map(function (row) {
         return '<span><strong>' + esc(row.waterwayClass) + '</strong> ' + number(row.featureCount, 0) + ' alur · ' + number(row.lengthKm, 1) + ' km</span>';
       })).join("") + '</div><p class="rdtr-component-note">Bukti fasilitas dan hidrologi OSM hanya penyaringan awal. Kapasitas, kondisi, cakupan, dimensi, arah aliran, kewenangan, dan kebutuhan pengembangan belum dapat disimpulkan.</p>';
+    var accessMatrix = structure.serviceAccessVillageMatrix || [];
+    var accessPriority = structure.serviceAccessPrioritySummary || [];
+    document.getElementById("rdtr-service-access").innerHTML = accessMatrix.length
+      ? '<div class="rdtr-subsection-heading"><div><h3>Prioritas verifikasi akses pelayanan</h3><p>Bukan penilaian kecukupan pelayanan</p></div></div>' +
+        '<div class="rdtr-network-kpis">' + accessPriority.map(function (row) {
+          return '<span><strong>' + number(row.featureCount, 0) + '</strong> fasilitas · prioritas ' + esc(row.priority) + '</span>';
+        }).join("") + '</div><div class="rdtr-itbx-scroll"><table><thead><tr><th>Wilayah</th><th>Fasilitas</th><th>Kritis</th><th>Jalan</th><th>Hidrologi</th><th>Prioritas cek bukti</th><th>Alasan</th></tr></thead><tbody>' +
+        accessMatrix.map(function (row) { return '<tr><td>' + esc(row.village) + '</td><td>' + number(row.facilityFeatureCount, 0) + '</td><td>' +
+          number(row.criticalFacilityCount, 0) + '</td><td>' + number(row.roadFeatureCount, 0) + '</td><td>' + number(row.hydrologyFeatureCount, 0) +
+          '</td><td>' + statusBadge(row.evidenceCheckPriority) + '</td><td>' + esc((row.priorityReasons || []).join(", ") || "bukti terbuka tersedia") + '</td></tr>'; }).join("") +
+        '</tbody></table></div><p class="rdtr-component-note">' + esc(structure.serviceAccessLimitation || "Tidak menilai kecukupan layanan.") + '</p>'
+      : '<p class="rdtr-component-note">Analisis prioritas verifikasi akses belum tersedia.</p>';
     document.getElementById("rdtr-network-gaps").innerHTML = (structure.evidenceGaps || []).map(function (row) {
       return '<article><header><strong>' + esc(row.id) + '</strong>' + statusBadge(row.status) + '</header><h4>' +
         esc(row.dataset) + '</h4><p>' + esc(row.requirement) + '</p></article>';
@@ -932,6 +944,9 @@
             "Nama": props.name,
             "Kategori": props.category,
             "Fasilitas kritis indikatif": props.critical ? "Ya" : "Tidak",
+            "Zona kandidat YG": props.ygZoneCode || "belum terhubung",
+            "Jarak jalan OSM": props.nearestOsmRoadDistanceM == null ? "belum dapat dihitung" : number(props.nearestOsmRoadDistanceM, 1) + " m",
+            "Prioritas verifikasi": props.verificationPriority || "belum dinilai",
             "Jenis OSM": props.amenity || props.healthcare || props.publicTransport || props.manMade || "belum terklasifikasi",
             "Status": statusLabel(props.evidenceStatus),
             "Batas penggunaan": "Jenis, status, kapasitas, kondisi, cakupan dan kewenangan belum diverifikasi."
@@ -1513,13 +1528,29 @@
     var hydrology = mapData.ygHydrologyEvidence && mapData.ygHydrologyEvidence.features || [];
     downloadJson({
       type: "FeatureCollection",
-      name: "Bukti fasilitas dan hidrologi OSM untuk RDTR YG v0.6",
+      name: "Bukti fasilitas dan hidrologi OSM untuk RDTR YG v0.7",
       metadata: {
         access: "staff_only", version: "0.1.0-internal", facilityCount: facilities.length, hydrologyFeatureCount: hydrology.length,
         disclaimer: "Bukti terbuka untuk penyaringan internal; bukan inventaris fasilitas atau jaringan hidrologi resmi."
       },
       features: facilities.concat(hydrology)
     }, "bukti-fasilitas-hidrologi-osm-rdtr-yg-bagansiapiapi-v0.1-internal.geojson", "application/geo+json;charset=utf-8");
+  }
+
+  function exportServiceAccessCsv() {
+    var rows = state.analysis.serviceAccessAnalysis && state.analysis.serviceAccessAnalysis.villageMatrix || [];
+    var header = ["Wilayah", "Geometri fasilitas", "Fasilitas kritis indikatif", "Geometri jalan", "Geometri hidrologi", "Fasilitas prioritas tinggi", "Prioritas cek bukti", "Alasan", "Kesimpulan kecukupan"];
+    var lines = [header.map(csvCell).join(",")];
+    rows.forEach(function (row) {
+      lines.push([row.village, row.facilityFeatureCount, row.criticalFacilityCount, row.roadFeatureCount, row.hydrologyFeatureCount,
+        row.highPriorityFacilityCount, row.evidenceCheckPriority, (row.priorityReasons || []).join("; "), row.serviceAdequacy].map(csvCell).join(","));
+    });
+    var blob = new Blob(["\ufeff" + lines.join("\n")], { type: "text/csv;charset=utf-8" });
+    var link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "prioritas-verifikasi-akses-pelayanan-rdtr-yg-v0.7-internal.csv";
+    link.click();
+    URL.revokeObjectURL(link.href);
   }
 
   function exportPolicyMap() {
@@ -1649,6 +1680,7 @@
     document.getElementById("rdtr-export-structure-geojson").addEventListener("click", exportYgStructure);
     document.getElementById("rdtr-export-road-evidence").addEventListener("click", exportRoadEvidence);
     document.getElementById("rdtr-export-service-evidence").addEventListener("click", exportServiceEvidence);
+    document.getElementById("rdtr-export-service-access").addEventListener("click", exportServiceAccessCsv);
     document.getElementById("rdtr-export-policy-map").addEventListener("click", exportPolicyMap);
     document.getElementById("rdtr-export-draft-csv").addEventListener("click", exportDraftComparisonCsv);
     document.getElementById("rdtr-export-draft-geojson").addEventListener("click", exportDraftComparisonGeoJson);

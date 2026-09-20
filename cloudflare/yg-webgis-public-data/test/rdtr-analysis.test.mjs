@@ -201,7 +201,7 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
   assert.ok(result.map.ygPlanningUnits.metadata.geometryProcessing.includes("tolerance 0.00002"));
 
   assert.equal(result.ygDraftRdtr.status, "provisional_internal_spatial_draft");
-  assert.equal(result.ygDraftRdtr.version, "0.6.0-internal");
+  assert.equal(result.ygDraftRdtr.version, "0.7.0-internal");
   assert.equal(result.ygDraftRdtr.zoningCodebook.version, "0.1.0-internal");
   assert.equal(result.ygDraftRdtr.structureDraft.status, "analytical_reference_geometry");
   assert.equal(result.ygDraftRdtr.structureDraft.nodeCount, 11);
@@ -237,6 +237,19 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
   assert.equal(result.map.ygFacilityEvidence.features.length, 2);
   assert.equal(result.map.ygHydrologyEvidence.features.length, 1);
   assert.equal(result.map.ygFacilityEvidence.metadata.criticalCount, 1);
+  assert.equal(result.serviceAccessAnalysis.villageMatrix.length, 11);
+  assert.equal(result.ygDraftRdtr.serviceAccessAnalysis.status, "screening_analysis_available");
+  assert.equal(result.map.ygFacilityEvidence.features[0].properties.village, "Kelurahan Bagan Barat");
+  assert.ok(Number.isFinite(result.map.ygFacilityEvidence.features[0].properties.nearestOsmRoadDistanceM));
+  assert.equal(result.map.ygFacilityEvidence.features[0].properties.adequacyConclusion, "not_determined");
+  assert.ok(result.map.ygFacilityEvidence.features.every(feature =>
+    ["high", "medium", "standard"].includes(feature.properties.verificationPriority) &&
+    feature.properties.ygZoneCode && feature.properties.legalEffect === "none"
+  ));
+  assert.ok(result.serviceAccessAnalysis.villageMatrix.every(row =>
+    row.serviceAdequacy === "not_assessed_population_capacity_travel_time_missing"
+  ));
+  assert.ok(result.serviceAccessAnalysis.villageMatrix.some(row => row.evidenceCheckPriority === "high"));
   assert.ok(result.map.ygHydrologyEvidence.metadata.totalLengthKm > 0);
   assert.deepEqual(new Set(result.ygPlan.structurePlan.facilityCategories.map(row => row.category)), new Set(["education", "health"]));
   assert.equal(result.ygPlan.structurePlan.waterwayClasses[0].waterwayClass, "river");

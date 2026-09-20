@@ -104,12 +104,14 @@ jobs:
             if ((data.map?.ygCandidateZones?.metadata?.coveragePct || 0) < 99) throw Error("YG candidate zones do not cover the study area");
             if (data.map?.ygStructureNodes?.features?.length !== 11) throw Error("Expected 11 YG analytical structure nodes");
             if (data.map?.ygStructureAxes?.features?.length !== 10) throw Error("Expected 10 YG analytical connectivity axes");
-            if (data.ygDraftRdtr?.version !== "0.6.0-internal") throw Error("Expected YG RDTR draft v0.6");
+            if (data.ygDraftRdtr?.version !== "0.7.0-internal") throw Error("Expected YG RDTR draft v0.7");
             if (!data.map?.ygRoadEvidence?.features?.length) throw Error("Expected intersecting OSM road evidence");
             if (data.ygDraftRdtr?.networkEvidence?.status !== "partial_open_road_evidence") throw Error("Expected partial open road evidence status");
             if (!data.map?.ygFacilityEvidence?.features?.length) throw Error("Expected intersecting OSM facility evidence");
             if (!data.map?.ygHydrologyEvidence?.features?.length) throw Error("Expected intersecting OSM hydrology evidence");
             if (data.ygDraftRdtr?.serviceHydrologyEvidence?.status !== "partial_open_evidence") throw Error("Expected partial facility/hydrology evidence status");
+            if (data.serviceAccessAnalysis?.villageMatrix?.length !== 11) throw Error("Expected service-access evidence matrix for 11 villages");
+            if (data.serviceAccessAnalysis?.villageMatrix?.some(row => !String(row.serviceAdequacy || "").startsWith("not_assessed"))) throw Error("Service adequacy must remain unassessed without population and capacity evidence");
             if (data.policyMapFramework?.status !== "mapped_policy_synthesis_v0") throw Error("Policy synthesis map is missing");
             if (!data.map?.mangroveCandidates?.features?.length) throw Error("Expected mapped mangrove policy candidates");
           ' "${RUNNER_TEMP}/rdtr-bagansiapiapi-analysis.json"
