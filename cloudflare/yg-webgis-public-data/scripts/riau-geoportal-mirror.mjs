@@ -6,7 +6,7 @@ import path from "node:path";
 import { pipeline } from "node:stream/promises";
 import { Transform } from "node:stream";
 import { promisify } from "node:util";
-import { pathToFileURL } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import { createGzip } from "node:zlib";
 
 export const MIRROR_SCHEMA_VERSION = 1;
@@ -28,6 +28,10 @@ const SHA256_PATTERN = /^[0-9a-f]{64}$/;
 const REDIRECT_STATUSES = new Set([301, 302, 303, 307, 308]);
 const RETRYABLE_STATUSES = new Set([408, 425, 429, 500, 502, 503, 504]);
 const R2_PREFIX = "internal/riau-geoportal";
+const MAPSHAPER_CLI = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "../node_modules/mapshaper/bin/mapshaper"
+);
 
 // This record has conflicting public/restricted metadata. It remains visible in
 // the staff catalog, but automation must never fetch its geometry without a
@@ -79,16 +83,17 @@ export const KNOWN_GEOMETRY_ANOMALIES = new Map([
 export const DISPLAY_PROFILES = new Map([
   [
     "208e230f-1cc5-4b52-85a4-52fc494af4e2",
-    { simplifyTolerance: 0.0005, label: "adaptive_generalization" }
+    { engine: "mapshaper", retainedPercentage: 5, label: "mapshaper_5_percent" }
   ],
   [
     "65c24420-a091-4dd5-a6e5-3936b0d82ac4",
-    { simplifyTolerance: 0.0005, label: "adaptive_generalization" }
+    { engine: "mapshaper", retainedPercentage: 1, label: "mapshaper_1_percent" }
   ],
   [
     "f71d9e6b-0f04-4de6-a850-3c8f5e92976d",
     {
-      simplifyTolerance: 0.0005,
+      engine: "mapshaper",
+      retainedPercentage: 5,
       dissolveField: "dn",
       allowFeatureCountReduction: true,
       label: "dissolved_by_flood_class"
@@ -975,7 +980,9 @@ export async function downloadWfsGeoJson({
 export async function buildDisplayGeoJson(sourcePath, destination, {
   execFileImpl = execFile,
   simplifyTolerance = 0.00005,
-  dissolveField = null
+  dissolveField = null,
+  engine = "gdal",
+  retainedPercentage = null
 } = {}) {
   await fs.mkdir(path.dirname(destination), { recursive: true });
   await fs.rm(destination, { force: true });
@@ -983,6 +990,28 @@ export async function buildDisplayGeoJson(sourcePath, destination, {
   if (safeDissolveField && !/^[a-z][a-z0-9_]{0,62}$/i.test(safeDissolveField)) {
     throw new Error("Invalid display dissolve field");
   }
+  if (engine === "mapshaper") {
+    const percentage = Number(retainedPercentage);
+    if (!Number.isFinite(percentage) || percentage <= 0 || percentage > 100) {
+      throw new Error("Invalid Mapshaper retained percentage");
+    }
+    const args = [sourcePath];
+    if (safeDissolveField) args.push("-dissolve", safeDissolveField);
+    args.push(
+      "-simplify", `${percentage}%`, "keep-shapes",
+      "-o", "format=geojson", "precision=0.000001", destination
+    );
+    try {
+      await execFileImpl(MAPSHAPER_CLI, args, gdalExecOptions());
+      return;
+    } catch (error) {
+      await fs.rm(destination, { force: true });
+      throw new Error(
+        `Mapshaper display build failed: ${sanitizeDiagnosticMessage(error.stderr || error.message)}`
+      );
+    }
+  }
+  if (engine !== "gdal") throw new Error("Unsupported display build engine");
   const temporaryPackage = safeDissolveField ? `${destination}.gpkg` : null;
   try {
     if (safeDissolveField) {
