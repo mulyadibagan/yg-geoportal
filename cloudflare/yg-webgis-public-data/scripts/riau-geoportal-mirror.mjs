@@ -12,7 +12,7 @@ import { createGzip } from "node:zlib";
 export const MIRROR_SCHEMA_VERSION = 1;
 export const DEFAULT_MAX_BYTES = 5 * 1024 * 1024 * 1024;
 export const DEFAULT_METADATA_MAX_BYTES = 16 * 1024 * 1024;
-export const DEFAULT_DISPLAY_SOURCE_MAX_BYTES = 512 * 1024 * 1024;
+export const DEFAULT_DISPLAY_SOURCE_MAX_BYTES = DEFAULT_MAX_BYTES;
 export const DEFAULT_DISPLAY_MAX_BYTES = 12 * 1024 * 1024;
 export const DEFAULT_DISPLAY_MAX_FEATURES = 25_000;
 export const DEFAULT_EXPECTED_DATASETS = 60;
@@ -69,6 +69,29 @@ export const KNOWN_GEOMETRY_ANOMALIES = new Map([
       code: "known_coordinate_anomaly",
       title: "LOKASIPLTSRIAU_PT_2026_250K",
       detail: "One point longitude is 127.23, outside the expected Riau extent."
+    }
+  ]
+]);
+
+// A display derivative is allowed to be more generalized than the immutable
+// raw source. These profiles keep unusually detailed official layers usable in
+// a browser while preserving the original geometry separately for analysis.
+export const DISPLAY_PROFILES = new Map([
+  [
+    "208e230f-1cc5-4b52-85a4-52fc494af4e2",
+    { simplifyTolerance: 0.0005, label: "adaptive_generalization" }
+  ],
+  [
+    "65c24420-a091-4dd5-a6e5-3936b0d82ac4",
+    { simplifyTolerance: 0.0005, label: "adaptive_generalization" }
+  ],
+  [
+    "f71d9e6b-0f04-4de6-a850-3c8f5e92976d",
+    {
+      simplifyTolerance: 0.0005,
+      dissolveField: "dn",
+      allowFeatureCountReduction: true,
+      label: "dissolved_by_flood_class"
     }
   ]
 ]);
@@ -951,11 +974,48 @@ export async function downloadWfsGeoJson({
 
 export async function buildDisplayGeoJson(sourcePath, destination, {
   execFileImpl = execFile,
-  simplifyTolerance = 0.00005
+  simplifyTolerance = 0.00005,
+  dissolveField = null
 } = {}) {
   await fs.mkdir(path.dirname(destination), { recursive: true });
   await fs.rm(destination, { force: true });
+  const safeDissolveField = dissolveField === null ? null : String(dissolveField);
+  if (safeDissolveField && !/^[a-z][a-z0-9_]{0,62}$/i.test(safeDissolveField)) {
+    throw new Error("Invalid display dissolve field");
+  }
+  const temporaryPackage = safeDissolveField ? `${destination}.gpkg` : null;
   try {
+    if (safeDissolveField) {
+      await fs.rm(temporaryPackage, { force: true });
+      await execFileImpl(
+        "ogr2ogr",
+        [
+          "-f", "GPKG",
+          "-t_srs", "EPSG:4326",
+          "-makevalid",
+          "-nln", "source",
+          temporaryPackage,
+          sourcePath
+        ],
+        gdalExecOptions()
+      );
+      await execFileImpl(
+        "ogr2ogr",
+        [
+          "-f", "GeoJSON",
+          "-dialect", "SQLite",
+          "-sql", `SELECT ST_Union(geom) AS geom, "${safeDissolveField}" FROM source GROUP BY "${safeDissolveField}"`,
+          "-simplify", String(simplifyTolerance),
+          "-makevalid",
+          "-lco", "RFC7946=YES",
+          "-lco", "COORDINATE_PRECISION=6",
+          destination,
+          temporaryPackage
+        ],
+        gdalExecOptions()
+      );
+      return;
+    }
     await execFileImpl(
       "ogr2ogr",
       [
@@ -975,7 +1035,70 @@ export async function buildDisplayGeoJson(sourcePath, destination, {
     throw new Error(
       `ogr2ogr display build failed: ${sanitizeDiagnosticMessage(error.stderr || error.message)}`
     );
+  } finally {
+    if (temporaryPackage) await fs.rm(temporaryPackage, { force: true });
   }
+}
+
+function pointCoordinatePair(geometry) {
+  if (geometry?.type === "Point" && Array.isArray(geometry.coordinates)) {
+    return geometry.coordinates;
+  }
+  if (
+    geometry?.type === "MultiPoint" && Array.isArray(geometry.coordinates) &&
+    geometry.coordinates.length === 1 && Array.isArray(geometry.coordinates[0])
+  ) {
+    return geometry.coordinates[0];
+  }
+  return null;
+}
+
+function insideRiauGuardrail(longitude, latitude) {
+  return Number.isFinite(longitude) && Number.isFinite(latitude) &&
+    longitude >= 95 && longitude <= 110 && latitude >= -5 && latitude <= 8;
+}
+
+export async function repairKnownPointAnomalies(sourcePath, destination) {
+  const payload = JSON.parse(await fs.readFile(sourcePath, "utf8"));
+  if (payload?.type !== "FeatureCollection" || !Array.isArray(payload.features)) {
+    throw new Error("Known-anomaly repair requires a GeoJSON FeatureCollection");
+  }
+  let repaired = 0;
+  let omitted = 0;
+  const features = [];
+  for (const feature of payload.features) {
+    const coordinates = pointCoordinatePair(feature?.geometry);
+    if (!coordinates) {
+      features.push(feature);
+      continue;
+    }
+    const observedLongitude = Number(coordinates[0]);
+    const observedLatitude = Number(coordinates[1]);
+    const longitude = Number(feature?.properties?.x);
+    const latitude = Number(feature?.properties?.y);
+    const validObserved = insideRiauGuardrail(observedLongitude, observedLatitude);
+    const validAttributePair = insideRiauGuardrail(longitude, latitude);
+    const attributeMismatch = validAttributePair && (
+      Math.abs(observedLongitude - longitude) > 0.05 ||
+      Math.abs(observedLatitude - latitude) > 0.05
+    );
+    if (validObserved && !attributeMismatch) {
+      features.push(feature);
+      continue;
+    }
+    if (!validAttributePair) {
+      omitted += 1;
+      continue;
+    }
+    const geometry = feature.geometry.type === "MultiPoint"
+      ? { ...feature.geometry, coordinates: [[longitude, latitude]] }
+      : { ...feature.geometry, coordinates: [longitude, latitude] };
+    features.push({ ...feature, geometry });
+    repaired += 1;
+  }
+  if (!features.length) throw new Error("Known-anomaly repair removed every feature");
+  await fs.writeFile(destination, `${JSON.stringify({ ...payload, features })}\n`, { flag: "wx" });
+  return { inputFeatures: payload.features.length, outputFeatures: features.length, repaired, omitted };
 }
 
 function validateInputs(manifest, plan, expectedCount) {
@@ -1343,6 +1466,7 @@ async function mirrorOne({
   await fs.mkdir(temporaryDirectory, { recursive: true });
   const temporarySource = path.join(temporaryDirectory, `${entry.datasetUuid}-${Date.now()}-${Math.random().toString(16).slice(2)}.geojson`);
   let temporaryCompressedSource = null;
+  let repairedDisplaySource = null;
   try {
     let streamed;
     try {
@@ -1454,11 +1578,28 @@ async function mirrorOne({
     }
     registerUpload(uploads, outputDir, sourceKey, sourcePath, sourceContentType, "data", 10);
 
-    if (knownAnomaly || detectedQuarantine) {
+    if (knownAnomaly) {
+      repairedDisplaySource = path.join(
+        temporaryDirectory,
+        `${entry.datasetUuid}-display-repaired-${Date.now()}-${Math.random().toString(16).slice(2)}.geojson`
+      );
+      const repair = await repairKnownPointAnomalies(displaySourcePath, repairedDisplaySource);
+      displaySourcePath = repairedDisplaySource;
+      entry.qaWarnings.push({
+        code: "known_coordinate_anomaly_repaired_for_display",
+        severity: repair.omitted ? "warning" : "info",
+        message:
+          "Only the derived display was repaired; the immutable source remains unchanged.",
+        ...repair
+      });
+    }
+
+    const displayProfile = DISPLAY_PROFILES.get(entry.datasetUuid) || {};
+    if (!knownAnomaly && detectedQuarantine) {
       entry.artifacts.display = {
         available: false,
         status: "quarantined",
-        reason: knownAnomaly ? "known_coordinate_anomaly" : detectedQuarantine.code
+        reason: detectedQuarantine.code
       };
     } else if (streamed.bytes > displaySourceMaxBytes) {
       entry.artifacts.display = {
@@ -1473,6 +1614,7 @@ async function mirrorOne({
         limitBytes: displaySourceMaxBytes
       });
     } else if (
+      !displayProfile.allowFeatureCountReduction &&
       validation.featureCount !== null && validation.featureCount > displayMaxFeatures
     ) {
       entry.artifacts.display = {
@@ -1489,19 +1631,24 @@ async function mirrorOne({
     } else {
       const temporaryDisplay = path.join(temporaryDirectory, `${entry.datasetUuid}-display-${Date.now()}.geojson`);
       try {
-        await displayBuilder(displaySourcePath, temporaryDisplay);
+        await displayBuilder(displaySourcePath, temporaryDisplay, displayProfile);
         await assertGeoJsonEnvelope(temporaryDisplay);
         const displayValidation = await inspector(temporaryDisplay);
         const displayHash = await hashFile(temporaryDisplay);
         if (displayHash.bytes > displayMaxBytes) {
           throw new Error(`Derived display is ${displayHash.bytes} bytes; limit is ${displayMaxBytes}`);
         }
+        const allowFeatureCountReduction = Boolean(
+          displayProfile.allowFeatureCountReduction || knownAnomaly
+        );
         if (
           validation.featureCount !== null && displayValidation.featureCount !== null &&
-          validation.featureCount !== displayValidation.featureCount
+          (allowFeatureCountReduction
+            ? displayValidation.featureCount > validation.featureCount
+            : validation.featureCount !== displayValidation.featureCount)
         ) {
           throw new Error(
-            `Derived display feature count changed from ${validation.featureCount} to ${displayValidation.featureCount}`
+            `Derived display feature count is invalid: source=${validation.featureCount}, display=${displayValidation.featureCount}`
           );
         }
         if (!Number.isSafeInteger(displayValidation.featureCount) || displayValidation.featureCount < 0) {
@@ -1531,7 +1678,9 @@ async function mirrorOne({
           featureCount: displayValidation.featureCount,
           contentType: "application/geo+json",
           validation: displayValidation,
-          processing: "ogr2ogr EPSG:4326, simplify 0.00005, makevalid, RFC7946, precision 6"
+          processing: displayProfile.label || (knownAnomaly
+            ? "known_point_anomaly_repair_then_ogr2ogr"
+            : "ogr2ogr EPSG:4326, simplify 0.00005, makevalid, RFC7946, precision 6")
         };
         registerUpload(uploads, outputDir, displayKey, displayPath, "application/geo+json", "data", 10);
       } catch (error) {
@@ -1548,6 +1697,7 @@ async function mirrorOne({
         });
       }
     }
+    if (repairedDisplaySource) await fs.rm(repairedDisplaySource, { force: true });
     await fs.rm(temporarySource, { force: true });
     entry.mirrorStatus = "mirrored";
     entry.retrievedAt = generatedAt;
@@ -1555,6 +1705,7 @@ async function mirrorOne({
   } catch (error) {
     await fs.rm(temporarySource, { force: true });
     if (temporaryCompressedSource) await fs.rm(temporaryCompressedSource, { force: true });
+    if (repairedDisplaySource) await fs.rm(repairedDisplaySource, { force: true });
     entry.mirrorStatus = "failed";
     entry.retrievedAt = generatedAt;
     entry.qaWarnings.push({
@@ -1575,7 +1726,7 @@ export async function mirrorRiauGeoportal({
   fetchImpl = globalThis.fetch,
   now = () => new Date(),
   inspector = filePath => inspectGeoJsonWithGdal(filePath),
-  displayBuilder = (source, destination) => buildDisplayGeoJson(source, destination),
+  displayBuilder = (source, destination, options) => buildDisplayGeoJson(source, destination, options),
   maxBytes = DEFAULT_MAX_BYTES,
   timeoutMs = 15 * 60 * 1000,
   retries = 3,
