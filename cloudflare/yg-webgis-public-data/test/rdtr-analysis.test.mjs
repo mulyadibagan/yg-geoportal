@@ -208,7 +208,7 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
   assert.ok(result.map.ygPlanningUnits.metadata.geometryProcessing.includes("tolerance 0.00002"));
 
   assert.equal(result.ygDraftRdtr.status, "provisional_internal_spatial_draft");
-  assert.equal(result.ygDraftRdtr.version, "0.18.0-internal-release-candidate");
+  assert.equal(result.ygDraftRdtr.version, "0.19.0-internal-release-candidate");
   assert.equal(result.ygDraftRdtr.programmePortfolio.programmeCount, 8);
   assert.equal(result.ygDraftRdtr.programmePortfolio.indicatorCount, 16);
   assert.equal(result.consultationArgumentMatrix.items.length, 10);
@@ -277,6 +277,15 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
     row.acceptedForUse === false && row.reviewer === null && row.reviewDate === null));
   assert.ok(result.v1ReleaseDossier.releaseGates.every(row => row.status === "not_completed" && row.decision === "hold"));
   assert.equal(result.ygDraftRdtr.v1ReleaseDossier.publicationAuthorized, false);
+  assert.equal(result.existingEvidenceReconciliation.totalItems, 18);
+  assert.equal(result.existingEvidenceReconciliation.legalPromotionCount, 0);
+  assert.deepEqual(Object.fromEntries(result.existingEvidenceReconciliation.statusSummary.map(row => [row.status, row.count])), {
+    available_internal_screening: 2, partial_internal_screening: 9, official_or_external_evidence_missing: 3,
+    authority_process_evidence_missing: 3, internal_approval_missing: 1
+  });
+  assert.ok(result.existingEvidenceReconciliation.items.every(row => row.legalCompletenessChanged === false &&
+    row.publicationEligibilityChanged === false && row.humanReviewedBy === null && row.humanReviewDate === null));
+  assert.equal(result.ygDraftRdtr.existingEvidenceReconciliation.legalPromotionCount, 0);
   assert.equal(result.ygDraftRdtr.zoningCodebook.version, "0.1.0-internal");
   assert.equal(result.ygDraftRdtr.structureDraft.status, "analytical_reference_geometry");
   assert.equal(result.ygDraftRdtr.structureDraft.nodeCount, 11);

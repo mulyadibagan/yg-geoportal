@@ -757,6 +757,20 @@
       : '<p class="rdtr-component-note">Dossier rilis v1 belum tersedia.</p>';
   }
 
+  function renderEvidenceReconciliation(reconciliation) {
+    reconciliation = reconciliation || {}; var rows = reconciliation.items || [];
+    document.getElementById("rdtr-evidence-reconciliation").innerHTML = rows.length
+      ? '<div class="rdtr-program-status">' + statusBadge(reconciliation.status) + '<p>' + esc(reconciliation.rule) + '</p></div>' +
+        '<div class="rdtr-network-kpis"><span><strong>' + number(reconciliation.usableInternalArtifactCount, 0) + '</strong>komponen memiliki artefak internal</span><span><strong>' +
+        number(reconciliation.legalPromotionCount, 0) + '</strong>dipromosikan sebagai bukti legal</span><span><strong>' + number(reconciliation.totalItems, 0) + '</strong>komponen direkonsiliasi</span></div>' +
+        '<div class="rdtr-itbx-scroll"><table><thead><tr><th>Komponen</th><th>Status rekonsiliasi</th><th>Artefak tersedia</th><th>Penggunaan diizinkan</th><th>Belum dapat dibuktikan</th><th>Bukti penyelesaian</th></tr></thead><tbody>' +
+        rows.map(function (row) { return '<tr><td><strong>' + esc(row.auditRef) + '</strong><br>' + esc(row.component) + '</td><td>' + statusBadge(row.reconciliationStatus) +
+        '</td><td>' + esc((row.availableArtifactRefs || []).join(", ") || "tidak ada keluaran tercatat") + '<br><small>' + esc(row.availableStatement) + '</small></td><td>' +
+        esc(row.permittedUse) + '</td><td>' + esc(row.cannotProve) + '</td><td>' + esc(row.completionEvidenceRequired) + '</td></tr>'; }).join("") +
+        '</tbody></table></div><p class="rdtr-component-note">' + esc(reconciliation.disclaimer) + '</p>'
+      : '<p class="rdtr-component-note">Rekonsiliasi bukti belum tersedia.</p>';
+  }
+
   function colorFrom(value) {
     var colors = ["#a25728", "#176c8c", "#4b7d49", "#8d546f", "#806523", "#5d59a1", "#338477"];
     var hash = 0, text = String(value || "");
@@ -1807,6 +1821,19 @@
     link.download = "register-permintaan-bukti-rdtr-yg-v1-rc1-internal.csv"; link.click(); URL.revokeObjectURL(link.href);
   }
 
+  function exportEvidenceReconciliationCsv() {
+    var reconciliation = state.analysis.existingEvidenceReconciliation || {};
+    var header = ["ID", "Referensi audit", "Komponen", "Status rekonsiliasi", "Referensi artefak tersedia", "Pernyataan tersedia", "Penggunaan diizinkan", "Belum dapat dibuktikan", "Bukti penyelesaian diperlukan", "Kelengkapan hukum berubah", "Kelayakan publikasi berubah", "Reviewer manusia", "Tanggal review"];
+    var lines = [header.map(csvCell).join(",")];
+    (reconciliation.items || []).forEach(function (row) { lines.push([row.id, row.auditRef, row.component, row.reconciliationStatus,
+      (row.availableArtifactRefs || []).join(" | "), row.availableStatement, row.permittedUse, row.cannotProve,
+      row.completionEvidenceRequired, row.legalCompletenessChanged, row.publicationEligibilityChanged, row.humanReviewedBy,
+      row.humanReviewDate].map(csvCell).join(",")); });
+    var blob = new Blob(["\ufeff" + lines.join("\n")], { type: "text/csv;charset=utf-8" });
+    var link = document.createElement("a"); link.href = URL.createObjectURL(blob);
+    link.download = "rekonsiliasi-bukti-rdtr-yg-v0.19-internal.csv"; link.click(); URL.revokeObjectURL(link.href);
+  }
+
   function exportPolicyMap() {
     var framework = state.analysis.policyMapFramework || {};
     var features = [];
@@ -1946,6 +1973,7 @@
     document.getElementById("rdtr-export-gap-workplan-json").addEventListener("click", exportGapClosureWorkplanJson);
     document.getElementById("rdtr-export-v1-dossier").addEventListener("click", exportV1DossierJson);
     document.getElementById("rdtr-export-evidence-requests").addEventListener("click", exportEvidenceRequestsCsv);
+    document.getElementById("rdtr-export-evidence-reconciliation").addEventListener("click", exportEvidenceReconciliationCsv);
     document.getElementById("rdtr-export-policy-map").addEventListener("click", exportPolicyMap);
     document.getElementById("rdtr-export-draft-csv").addEventListener("click", exportDraftComparisonCsv);
     document.getElementById("rdtr-export-draft-geojson").addEventListener("click", exportDraftComparisonGeoJson);
@@ -1983,6 +2011,7 @@
     renderCompletenessAudit(state.analysis.completenessAudit);
     renderGapClosureWorkplan(state.analysis.gapClosureWorkplan);
     renderV1ReleaseDossier(state.analysis.v1ReleaseDossier);
+    renderEvidenceReconciliation(state.analysis.existingEvidenceReconciliation);
     renderAnalysisProgramme(state.analysis.analysisProgramme, state.analysis.mandatoryAnalysisMatrix);
     renderAnalysisMatrix(state.analysis.mandatoryAnalysisMatrix);
     renderGeometryRegistry(state.analysis.geometryRegistry);
