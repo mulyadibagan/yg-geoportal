@@ -44,3 +44,26 @@ test("public intervention layer does not expose internal PS documents", () => {
   assert.doesNotMatch(serialized, /rkps|rpha|rkt/);
   assert.doesNotMatch(serialized, /anggota|nik|alamat/);
 });
+
+
+test("layer ordering keeps intervention village boundaries in the YG intervention group", () => {
+  const order = read("js/layer-order-v1.js");
+  const page = read("webgis.html");
+
+  const interventionStart = order.indexOf(
+    'makeTitle("WILAYAH INTERVENSI YG", "yg-intervention-title")'
+  );
+  const villagePlacement = order.indexOf(
+    "if (villageBoundary) list.appendChild(villageBoundary);"
+  );
+  const administrationStart = order.indexOf(
+    'makeTitle("BATAS ADMINISTRASI", "yg-boundary-title")'
+  );
+
+  assert.ok(interventionStart >= 0);
+  assert.ok(villagePlacement > interventionStart);
+  assert.ok(administrationStart > villagePlacement);
+  assert.match(order, /yg-intervention-boundary-row/);
+  assert.doesNotMatch(order, /yg-bottom-boundary-row/);
+  assert.match(page, /layer-order-v1\.js\?v=20260920-intervention-group2/);
+});

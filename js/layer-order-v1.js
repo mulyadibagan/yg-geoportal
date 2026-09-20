@@ -94,9 +94,10 @@
       if (row !== monitoring) list.appendChild(row);
     });
 
-    if (interventionReferenceRows.length) {
+    if (interventionReferenceRows.length || villageBoundary) {
       list.appendChild(makeTitle("WILAYAH INTERVENSI YG", "yg-intervention-title"));
       interventionReferenceRows.forEach(row => list.appendChild(row));
+      if (villageBoundary) list.appendChild(villageBoundary);
     }
 
     if (generalReferenceRows.length) {
@@ -104,12 +105,13 @@
       generalReferenceRows.forEach(row => list.appendChild(row));
     }
 
-    list.appendChild(makeTitle("BATAS ADMINISTRASI", "yg-boundary-title"));
-    administrativeReferenceRows.forEach(row => list.appendChild(row));
-    list.appendChild(villageBoundary);
+    if (administrativeReferenceRows.length) {
+      list.appendChild(makeTitle("BATAS ADMINISTRASI", "yg-boundary-title"));
+      administrativeReferenceRows.forEach(row => list.appendChild(row));
+    }
 
     monitoring.classList.add("yg-priority-monitoring-row");
-    villageBoundary.classList.add("yg-bottom-boundary-row");
+    villageBoundary.classList.add("yg-intervention-boundary-row");
 
     return true;
   }
@@ -132,11 +134,18 @@
       /monitoring/i.test(item.textContent || "")
     );
     const villageBoundary = remainingItems.find(item =>
-      /batas desa intervensi/i.test(item.textContent || "")
+      /batas (?:administrasi )?desa intervensi/i.test(item.textContent || "")
     );
 
     if (monitoring) legend.prepend(monitoring);
-    if (villageBoundary) legend.appendChild(villageBoundary);
+    if (villageBoundary) {
+      const socialForestryIntervention = remainingItems.find(item =>
+        /perhutanan sosial intervensi yg/i.test(item.textContent || "")
+      );
+      if (socialForestryIntervention) {
+        socialForestryIntervention.insertAdjacentElement("afterend", villageBoundary);
+      }
+    }
   }
 
   function applyOrder() {
@@ -158,13 +167,13 @@
       color: #6f4b00;
     }
 
-    .yg-bottom-boundary-row {
-      border-top: 1px solid #dfe8e3;
-      background: #f7f9f8;
+    .yg-intervention-boundary-row {
+      border-top: 1px solid rgba(109, 40, 217, .16);
+      background: #faf7ff;
     }
 
-    .yg-bottom-boundary-row label {
-      color: #51615b;
+    .yg-intervention-boundary-row label {
+      color: #4c1d95;
       font-weight: 700;
     }
 
