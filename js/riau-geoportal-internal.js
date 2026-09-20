@@ -6,6 +6,8 @@
   const MAX_ACTIVE_LAYERS = 3;
   const MAX_DISPLAY_BYTES = 12 * 1024 * 1024;
   const MAX_DISPLAY_FEATURES = 25000;
+  const CATALOG_CACHE_KEY = "ygRiauGeoportalCatalogV1";
+  const CATALOG_CACHE_MAX_AGE_MS = 15 * 60 * 1000;
   const COLORS = ["#08765f", "#d97706", "#2563a8", "#9b3f73", "#65752b", "#7a4bb7"];
   const state = { session: null, catalog: null, items: [], filtered: [], map: null, active: new Map(), pending: new Set(), currentDetail: null, mapExpanded: false };
 
@@ -164,6 +166,41 @@
     if (Array.isArray(catalog.items)) return catalog.items;
     if (Array.isArray(catalog.records)) return catalog.records;
     return [];
+  }
+
+  function readCachedCatalog() {
+    try {
+      const cached = JSON.parse(sessionStorage.getItem(CATALOG_CACHE_KEY) || "null");
+      if (!cached || cached.username !== state.session.username || !cached.savedAt || !cached.catalog) return null;
+      if (Date.now() - Number(cached.savedAt) > CATALOG_CACHE_MAX_AGE_MS) return null;
+      return cached.catalog;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function cacheCatalog(catalog) {
+    try {
+      sessionStorage.setItem(CATALOG_CACHE_KEY, JSON.stringify({
+        username: state.session.username,
+        savedAt: Date.now(),
+        catalog
+      }));
+    } catch (_) {}
+  }
+
+  function useCatalog(catalog) {
+    const rows = catalogRows(catalog);
+    if (!rows.length) throw new Error("Katalog privat belum berisi dataset.");
+    const items = rows.map(normalizeItem).filter(item => /^[0-9a-f-]{36}$/.test(item.uuid));
+    if (!items.length) throw new Error("Katalog tidak memiliki UUID dataset yang valid.");
+    state.catalog = catalog;
+    state.items = items.sort((a, b) => a.title.localeCompare(b.title, "id"));
+    initializeMap();
+    fillSelect(el("rg-publisher"), Array.from(new Set(state.items.map(item => item.publisher))), "Semua penerbit");
+    fillSelect(el("rg-theme"), Array.from(new Set(state.items.map(item => item.theme))), "Semua tema");
+    renderSummary();
+    applyFilters();
   }
 
   function renderSummary() {
@@ -435,30 +472,36 @@
 
   async function loadCatalog() {
     const status = el("rg-catalog-status"), list = el("rg-dataset-list");
+    const cachedCatalog = readCachedCatalog();
     status.classList.remove("is-error");
-    status.textContent = "Memuat inventaris privat…";
-    list.innerHTML = "";
+    if (cachedCatalog) {
+      try {
+        useCatalog(cachedCatalog);
+        status.textContent = state.items.length.toLocaleString("id-ID") + " dataset siap. Memeriksa pembaruan…";
+      } catch (_) {
+        sessionStorage.removeItem(CATALOG_CACHE_KEY);
+      }
+    }
+    if (!state.catalog) {
+      status.textContent = "Memuat inventaris privat…";
+      list.innerHTML = "";
+    }
     el("rg-refresh").disabled = true;
     try {
       const response = await api(CATALOG_PATH);
       if (!response.ok) throw new Error(response.status === 503 ? "Sinkronisasi pertama belum selesai. Coba lagi setelah pipeline penyimpanan selesai." : "Katalog tidak dapat dimuat (" + response.status + ").");
       const catalog = await response.json();
-      const rows = catalogRows(catalog);
-      if (!rows.length) throw new Error("Katalog privat belum berisi dataset.");
-      const items = rows.map(normalizeItem).filter(item => /^[0-9a-f-]{36}$/.test(item.uuid));
-      if (!items.length) throw new Error("Katalog tidak memiliki UUID dataset yang valid.");
-      state.catalog = catalog;
-      state.items = items.sort((a, b) => a.title.localeCompare(b.title, "id"));
-      initializeMap();
-      fillSelect(el("rg-publisher"), Array.from(new Set(state.items.map(item => item.publisher))), "Semua penerbit");
-      fillSelect(el("rg-theme"), Array.from(new Set(state.items.map(item => item.theme))), "Semua tema");
-      renderSummary();
-      applyFilters();
+      useCatalog(catalog);
+      cacheCatalog(catalog);
       status.textContent = state.items.length.toLocaleString("id-ID") + " dataset terbaca. Geometri hanya dimuat setelah dipilih.";
     } catch (error) {
-      status.classList.add("is-error");
-      status.textContent = error.message || "Katalog belum dapat dimuat.";
-      list.innerHTML = '<p class="rg-status is-error">Tidak ada data lokal pengganti; sistem berhenti aman agar data privat tidak diambil dari jalur publik.</p>';
+      if (state.catalog) {
+        status.textContent = state.items.length.toLocaleString("id-ID") + " dataset dari cache sesi. Pembaruan belum dapat diperiksa.";
+      } else {
+        status.classList.add("is-error");
+        status.textContent = error.message || "Katalog belum dapat dimuat.";
+        list.innerHTML = '<p class="rg-status is-error">Tidak ada data lokal pengganti; sistem berhenti aman agar data privat tidak diambil dari jalur publik.</p>';
+      }
     } finally {
       document.documentElement.style.visibility = "visible";
       el("rg-refresh").disabled = false;
@@ -488,7 +531,11 @@
     el("rg-map-expand").addEventListener("click", () => setMapExpanded(!state.mapExpanded));
     el("rg-detail-close").addEventListener("click", () => { el("rg-detail").hidden = true; state.currentDetail = null; });
     el("rg-download").addEventListener("click", downloadSource);
-    el("rg-logout").addEventListener("click", () => { if (window.YG_AUTH) window.YG_AUTH.logout(state.session.token); location.replace("staff-login.html?loggedOut=1"); });
+    el("rg-logout").addEventListener("click", () => {
+      sessionStorage.removeItem(CATALOG_CACHE_KEY);
+      if (window.YG_AUTH) window.YG_AUTH.logout(state.session.token);
+      location.replace("staff-login.html?loggedOut=1");
+    });
     document.addEventListener("keydown", event => { if (event.key === "Escape" && state.mapExpanded) setMapExpanded(false); });
     window.addEventListener("resize", () => state.map && state.map.invalidateSize());
   }
