@@ -14,7 +14,7 @@ test("Riau reference workspace is staff-only and additive", () => {
   assert.match(home, /Peta Referensi Riau/);
   assert.match(home, /staff-riau-reference\.html/);
   assert.match(home, /data-staff-only-module hidden/);
-  assert.match(page, /riau-reference-workspace\.js\?v=20260920-feg1/);
+  assert.match(page, /riau-reference-workspace\.js\?v=20260920-pptpkh1/);
   assert.match(workspace, /if \(!session\(\)/);
   assert.match(workspace, /Layer program YG tidak diubah/);
   assert.match(workspace, /waitUntilSettled/);
@@ -33,6 +33,7 @@ test("Riau reference presets only name existing verified map layers", () => {
     "kawasan_hutan_sk_903",
     "gambut_bbsdlp_2019",
     "feg_sk130_riau",
+    "pptpkh_riau_2023",
     "pbph_riau_052026",
     "perusahaan_sawit_riau",
     "perhutanan_sosial_riau",

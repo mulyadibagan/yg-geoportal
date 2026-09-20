@@ -98,6 +98,27 @@
         ["#f2c94c", "Fungsi budidaya ekosistem gambut"]
       ]
     } } : {}),
+    ...(staffSession ? { pptpkh_riau_2023: {
+      id: "pptpkh_riau_2023",
+      label: "PPTPKH Revisi II 2023 · indikatif internal",
+      file: "data/PPTPKH_RIAU_2023.geojson",
+      version: "20260920-validated1",
+      color: "#b45309",
+      count: 109,
+      countLabel: "109 poligon · 5 kriteria",
+      type: "land_reform",
+      focusOnEnable: true,
+      section: "spatial_planning",
+      sourceLabel: "PPTPKH Revisi II · SK.903/MENLHK-PKTL/PPKH/PLA.2/2/2023",
+      sourceUrl: "https://www.arcgis.com/home/item.html?id=97c95eecfec14481ae94370fb9470640",
+      scale: "Salinan kerja internal · geometri diperiksa dan luas dihitung ulang",
+      legendItems: [
+        ["#9ca3af", "Belum proses"],
+        ["#f59e0b", "Proses TORA"],
+        ["#16a34a", "Realisasi TORA"],
+        ["#dc2626", "Inventarisasi tanpa rekomendasi PPTKH"]
+      ]
+    } } : {}),
     ...(staffSession ? { pbph_riau_052026: { id: "pbph_riau_052026", label: "PBPH Riau · internal staf", file: "data/PBPH_RIAU_052026.geojson", color: "#d84315", count: 56, type: "active_concession", focusOnEnable: true, section: "forest_governance", sourceLabel: "Referensi internal PBPH Mei 2026", scale: "1:50.000" } } : {}),
     ...(staffSession ? { perusahaan_sawit_riau: {
       id: "perusahaan_sawit_riau",
@@ -451,7 +472,8 @@
     if (
       config.type === "active_concession" ||
       config.type === "oil_palm_company" ||
-      config.type === "spatial_plan"
+      config.type === "spatial_plan" ||
+      config.type === "land_reform"
     ) {
       if (!internalReferenceCanvasRenderer) {
         internalReferenceCanvasRenderer = L.canvas({
@@ -2028,6 +2050,21 @@ L.control.scale({
       };
     }
 
+    if (config.type === "land_reform") {
+      const progress = String(props.progres_sumber || "").toLowerCase();
+      let color = "#9ca3af";
+      if (progress.includes("realisasi")) color = "#16a34a";
+      else if (progress.includes("tidak ada rekom")) color = "#dc2626";
+      else if (progress.includes("proses tora")) color = "#f59e0b";
+      return {
+        color,
+        weight: 1,
+        opacity: 0.95,
+        fillColor: color,
+        fillOpacity: 0.3
+      };
+    }
+
     if (config.type === "social_forestry_intervention") {
       return {
         color: config.color,
@@ -2261,6 +2298,16 @@ L.control.scale({
         "Status penggunaan",
         "Referensi analisis internal; bukan penetapan batas hukum"
       );
+    } else if (config.type === "land_reform") {
+      rows += item("Dataset", props.dataset);
+      rows += item("Kriteria PPTPKH", props.kriteria);
+      rows += item("Progres sumber", props.progres_sumber);
+      rows += item("Provinsi", props.provinsi);
+      rows += item("Luas sumber (ha)", areaValue(props.luas_sumber_ha));
+      rows += item("Luas hitung ulang (ha)", areaValue(props.luas_hitung_ha));
+      rows += item("Dasar", props.dasar);
+      rows += item("Status data", props.status_data);
+      rows += item("Catatan", props.catatan_sumber);
     } else if (config.type === "forest") {
       rows += item("Fungsi kawasan", props.fungsi || "Belum terisi");
       rows += item("Sumber", "Kawasan Hutan SK 903");
@@ -2552,7 +2599,8 @@ L.control.scale({
       config.type === "concession" ||
       config.type === "kph" ||
       config.type === "village_boundary" ||
-      config.type === "spatial_plan";
+      config.type === "spatial_plan" ||
+      config.type === "land_reform";
 
     const layer = L.geoJSON(data, {
       pane: MAP_PANES.reference,
