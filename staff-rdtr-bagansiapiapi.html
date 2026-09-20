@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="css/site-brand.css?v=20260720-program-dashboard1">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
   <link rel="stylesheet" href="css/rdtr-bagansiapiapi.css?v=20260920-regulatory2">
-  <link rel="stylesheet" href="css/rdtr-bagansiapiapi-regulatory.css?v=20260920-analysis4">
+  <link rel="stylesheet" href="css/rdtr-bagansiapiapi-regulatory.css?v=20260920-yg-rdtr11">
   <script src="js/auth.js?v=20260920-session5"></script>
   <script src="js/staff-data-access.js?v=20260920-rdtr-internal1"></script>
   <script src="js/staff-rdtr-gate.js?v=20260920-internal1"></script>
@@ -25,7 +25,9 @@
       <nav class="nav yg-page-nav" aria-label="Navigasi internal">
         <a href="admin-dashboard.html">Dashboard Staf</a>
         <a href="webgis.html?internal=spatial-planning">Peta Interaktif</a>
+        <a href="#policy-map">Peta Kebijakan</a>
         <a href="#yg-rdtr">Progres RDTR YG</a>
+        <a href="#p0-evidence">Bukti P0</a>
         <a href="#yg-components">Muatan RDTR</a>
         <a href="#analysis-regulasi">Uji Regulasi</a>
         <a href="#regulations">Regulasi</a>
@@ -53,7 +55,7 @@
 
     <aside class="rdtr-security-note">
       <strong>Analisis internal.</strong>
-      <span>Hasil dimuat melalui jalur staf dan tidak ditautkan pada dashboard publik. Draf RDTR yang dipilih dari perangkat hanya diproses di browser dan dihapus saat halaman ditutup atau dimuat ulang.</span>
+      <span>Hasil dimuat melalui jalur staf dan tidak ditautkan pada dashboard publik. Revisi geometri YG yang dipilih dari perangkat hanya diproses di browser dan dihapus saat halaman ditutup atau dimuat ulang.</span>
     </aside>
 
     <section class="rdtr-kpis" aria-label="Ringkasan baseline">
@@ -71,6 +73,10 @@
           <p id="rdtr-map-status" role="status">Memuat analisis privat…</p>
         </div>
         <div id="rdtr-map" role="application" aria-label="Peta analisis RDTR Bagansiapiapi"></div>
+        <div id="rdtr-policy-inspector" class="rdtr-policy-inspector" aria-live="polite">
+          <strong>Inspektur kebijakan lokasi</strong>
+          <span>Klik suatu lokasi pada peta untuk membaca gabungan arahan kebijakan dan pengunci buktinya.</span>
+        </div>
         <p class="rdtr-map-disclaimer">Batas dan luas bersifat analitis. Geometri RTRW disederhanakan untuk WebGIS dan bukan pengganti lampiran peraturan.</p>
       </article>
 
@@ -79,14 +85,32 @@
         <div id="rdtr-readiness" class="rdtr-readiness"></div>
         <div id="rdtr-geometry-registry" class="rdtr-geometry-registry"></div>
         <div class="rdtr-draft-box">
-          <span>DRAF PEMERINTAH · LOKAL SAJA</span>
-          <h3>Muat geometri draf RDTR</h3>
-          <p>GeoJSON/JSON dapat dianalisis langsung. ZIP Shapefile didukung tanpa mengunggah berkas ke server.</p>
+          <span>REVISI GEOMETRI YG · LOKAL SAJA</span>
+          <h3>Muat revisi zona YG</h3>
+          <p>GeoJSON/JSON hasil suntingan tim dapat diuji langsung. ZIP Shapefile didukung tanpa mengunggah berkas ke server.</p>
           <label class="rdtr-file-label" for="rdtr-draft-file">Pilih GeoJSON atau ZIP Shapefile</label>
           <input id="rdtr-draft-file" type="file" accept=".geojson,.json,.zip,application/geo+json,application/json,application/zip">
-          <p id="rdtr-draft-status" role="status">Belum ada draf RDTR yang dimuat.</p>
+          <p id="rdtr-draft-status" role="status">Belum ada revisi geometri YG yang dimuat.</p>
         </div>
       </aside>
+    </section>
+
+    <section id="policy-map" class="rdtr-panel rdtr-policy-map-panel" aria-labelledby="rdtr-policy-map-title">
+      <div class="rdtr-panel-heading">
+        <div><span>RANCANGAN ZONASI INTERNAL · BUKAN PETA PENETAPAN</span><h2 id="rdtr-policy-map-title">Rancangan Peta RDTR Alternatif YG</h2></div>
+        <div class="rdtr-draft-actions">
+          <button id="rdtr-export-yg-zones" class="rdtr-button" type="button">Unduh zona YG v0.2</button>
+          <button id="rdtr-export-policy-map" class="rdtr-button rdtr-button--light" type="button">Unduh layer bukti</button>
+        </div>
+      </div>
+      <div id="rdtr-yg-zone-header" class="rdtr-policy-map-header"></div>
+      <div id="rdtr-yg-zone-summary" class="rdtr-yg-zone-summary"></div>
+      <div class="rdtr-subsection-heading"><h3>Layer bukti pembentuk zona</h3><p>Layer sumber dapat bertumpang tindih; zona YG di atas sudah dialokasikan secara saling eksklusif</p></div>
+      <div id="rdtr-policy-map-header" class="rdtr-policy-map-header"></div>
+      <div id="rdtr-policy-layer-summary" class="rdtr-policy-layer-summary"></div>
+      <div id="rdtr-policy-map-rule" class="rdtr-policy-map-rule"></div>
+      <div class="rdtr-subsection-heading"><h3>Tahap pematangan peta RDTR YG</h3><p>Geometri dinaikkan kematangannya hanya setelah bukti penguncinya terpenuhi</p></div>
+      <div id="rdtr-policy-map-stages" class="rdtr-policy-map-stages"></div>
     </section>
 
     <section id="yg-rdtr" class="rdtr-panel rdtr-yg-plan-panel" aria-labelledby="rdtr-yg-plan-title">
@@ -100,6 +124,17 @@
       <div id="rdtr-cross-cutting-gates" class="rdtr-cross-cutting-gates"></div>
     </section>
 
+    <section id="p0-evidence" class="rdtr-panel rdtr-evidence-panel" aria-labelledby="rdtr-p0-evidence-title">
+      <div class="rdtr-panel-heading">
+        <div><span>KENDALI BUKTI · CUT-OFF 20 SEPTEMBER 2026</span><h2 id="rdtr-p0-evidence-title">Papan Bukti P0 Penyusunan RDTR</h2></div>
+        <button id="rdtr-export-evidence-csv" class="rdtr-button rdtr-button--light" type="button">Unduh register bukti P0</button>
+      </div>
+      <div id="rdtr-p0-evidence-summary" class="rdtr-evidence-summary" aria-label="Ringkasan status bukti P0"></div>
+      <div id="rdtr-p0-evidence-truth" class="rdtr-evidence-truth"></div>
+      <div class="rdtr-subsection-heading"><h3>Register dokumen dan tindak lanjut</h3><p>“Belum diterima” atau “belum terverifikasi” tidak berarti dokumen tidak ada</p></div>
+      <div id="rdtr-p0-evidence-register" class="rdtr-evidence-register"></div>
+    </section>
+
     <section id="yg-concept" class="rdtr-grid rdtr-grid--concept">
       <article class="rdtr-panel">
         <div class="rdtr-panel-heading"><div><span>TUJUAN PENATAAN WP</span><h2>Tujuan dan strategi YG</h2></div></div>
@@ -111,17 +146,118 @@
       </article>
     </section>
 
+    <section id="consultation-arguments" class="rdtr-panel" aria-labelledby="rdtr-consultation-title">
+      <div class="rdtr-panel-heading">
+        <div><span>ARGUMENTASI KONSULTASI PUBLIK</span><h2 id="rdtr-consultation-title">Matriks pertanyaan, posisi YG, dan perubahan yang diminta</h2></div>
+        <div class="rdtr-draft-actions"><button id="rdtr-export-consultation" class="rdtr-button rdtr-button--light" type="button">Unduh matriks konsultasi</button><button id="rdtr-export-consultation-pack" class="rdtr-button rdtr-button--light" type="button">Unduh paket kesiapan</button><button id="rdtr-export-consultation-notes" class="rdtr-button rdtr-button--light" type="button">Unduh lembar catatan</button></div>
+      </div>
+      <div id="rdtr-consultation-matrix" class="rdtr-consultation-matrix"></div>
+      <div id="rdtr-consultation-readiness" class="rdtr-consultation-readiness"></div>
+    </section>
+
+    <section id="completeness-audit" class="rdtr-panel" aria-labelledby="rdtr-completeness-title">
+      <div class="rdtr-panel-heading">
+        <div><span>AUDIT KELENGKAPAN AKHIR</span><h2 id="rdtr-completeness-title">Kesiapan proses, muatan, geospasial, hukum, dan publikasi</h2></div>
+        <div class="rdtr-draft-actions"><button id="rdtr-export-completeness" class="rdtr-button rdtr-button--light" type="button">Unduh audit CSV</button><button id="rdtr-export-completeness-json" class="rdtr-button rdtr-button--light" type="button">Unduh audit JSON</button></div>
+      </div>
+      <div id="rdtr-completeness-audit" class="rdtr-completeness-audit"></div>
+    </section>
+
+    <section id="gap-closure-workplan" class="rdtr-panel" aria-labelledby="rdtr-gap-workplan-title">
+      <div class="rdtr-panel-heading">
+        <div><span>RENCANA PENUTUPAN GAP</span><h2 id="rdtr-gap-workplan-title">Antrean kerja, dependensi, dan bukti penerimaan</h2></div>
+        <div class="rdtr-draft-actions"><button id="rdtr-export-gap-workplan" class="rdtr-button rdtr-button--light" type="button">Unduh rencana kerja CSV</button><button id="rdtr-export-gap-workplan-json" class="rdtr-button rdtr-button--light" type="button">Unduh rencana kerja JSON</button></div>
+      </div>
+      <div id="rdtr-gap-workplan" class="rdtr-gap-workplan"></div>
+    </section>
+
+    <section id="v1-release-dossier" class="rdtr-panel" aria-labelledby="rdtr-v1-dossier-title">
+      <div class="rdtr-panel-heading">
+        <div><span>KANDIDAT FINAL INTERNAL</span><h2 id="rdtr-v1-dossier-title">Dossier validasi dan gerbang rilis menuju v1.0</h2></div>
+        <div class="rdtr-draft-actions"><button id="rdtr-export-v1-dossier" class="rdtr-button rdtr-button--light" type="button">Unduh dossier JSON</button><button id="rdtr-export-evidence-requests" class="rdtr-button rdtr-button--light" type="button">Unduh permintaan bukti CSV</button></div>
+      </div>
+      <div id="rdtr-v1-dossier" class="rdtr-v1-dossier"></div>
+    </section>
+
+    <section id="existing-evidence-reconciliation" class="rdtr-panel" aria-labelledby="rdtr-evidence-reconciliation-title">
+      <div class="rdtr-panel-heading">
+        <div><span>REKONSILIASI BUKTI TERSEDIA</span><h2 id="rdtr-evidence-reconciliation-title">Keluaran internal versus bukti penyelesaian yang masih diperlukan</h2></div>
+        <div class="rdtr-draft-actions"><button id="rdtr-export-evidence-reconciliation" class="rdtr-button rdtr-button--light" type="button">Unduh rekonsiliasi CSV</button></div>
+      </div>
+      <div id="rdtr-evidence-reconciliation" class="rdtr-evidence-reconciliation"></div>
+    </section>
+
+    <section id="evidence-request-briefing" class="rdtr-panel" aria-labelledby="rdtr-evidence-briefing-title">
+      <div class="rdtr-panel-heading">
+        <div><span>PAKET PERMINTAAN BUKTI</span><h2 id="rdtr-evidence-briefing-title">Bahan konsultasi untuk tujuh blocker utama</h2></div>
+        <div class="rdtr-draft-actions"><button id="rdtr-export-evidence-briefing" class="rdtr-button rdtr-button--light" type="button">Unduh paket JSON</button><button id="rdtr-export-evidence-briefing-csv" class="rdtr-button rdtr-button--light" type="button">Unduh daftar CSV</button></div>
+      </div>
+      <div id="rdtr-evidence-briefing" class="rdtr-evidence-briefing"></div>
+    </section>
+
+    <section id="response-change-control" class="rdtr-panel" aria-labelledby="rdtr-change-control-title">
+      <div class="rdtr-panel-heading">
+        <div><span>KONTROL RESPONS DAN PERUBAHAN</span><h2 id="rdtr-change-control-title">Validasi jawaban sebelum perubahan geometri, aturan, atau program</h2></div>
+        <div class="rdtr-draft-actions"><button id="rdtr-export-change-control" class="rdtr-button rdtr-button--light" type="button">Unduh ledger JSON</button><button id="rdtr-export-change-control-csv" class="rdtr-button rdtr-button--light" type="button">Unduh ledger CSV</button></div>
+      </div>
+      <div id="rdtr-change-control" class="rdtr-change-control"></div>
+    </section>
+
+    <section id="v1-promotion-validator" class="rdtr-panel" aria-labelledby="rdtr-v1-validator-title">
+      <div class="rdtr-panel-heading">
+        <div><span>VALIDATOR PROMOSI V1</span><h2 id="rdtr-v1-validator-title">Pemeriksaan otomatis sebelum merge, deploy, atau publikasi</h2></div>
+        <div class="rdtr-draft-actions"><button id="rdtr-export-v1-validator" class="rdtr-button rdtr-button--light" type="button">Unduh hasil validator</button></div>
+      </div>
+      <div id="rdtr-v1-validator" class="rdtr-v1-validator"></div>
+    </section>
+
+    <section id="field-verification-plan" class="rdtr-panel" aria-labelledby="rdtr-field-plan-title">
+      <div class="rdtr-panel-heading">
+        <div><span>VERIFIKASI LAPANGAN</span><h2 id="rdtr-field-plan-title">Paket survei untuk 11 kelurahan dan kepenghuluan</h2></div>
+        <div class="rdtr-draft-actions"><button id="rdtr-export-field-plan" class="rdtr-button rdtr-button--light" type="button">Unduh rencana JSON</button><button id="rdtr-export-field-plan-csv" class="rdtr-button rdtr-button--light" type="button">Unduh paket CSV</button></div>
+      </div>
+      <div id="rdtr-field-plan" class="rdtr-field-plan"></div>
+    </section>
+
+    <section id="field-observation-schema" class="rdtr-panel" aria-labelledby="rdtr-field-schema-title">
+      <div class="rdtr-panel-heading">
+        <div><span>FORMAT DATA LAPANGAN</span><h2 id="rdtr-field-schema-title">Schema observasi dan template kosong yang dapat diaudit</h2></div>
+        <div class="rdtr-draft-actions"><button id="rdtr-export-field-schema" class="rdtr-button rdtr-button--light" type="button">Unduh schema JSON</button><button id="rdtr-export-field-template-csv" class="rdtr-button rdtr-button--light" type="button">Unduh template CSV</button><button id="rdtr-export-field-template-geojson" class="rdtr-button rdtr-button--light" type="button">Unduh template GeoJSON</button></div>
+      </div>
+      <div id="rdtr-field-schema" class="rdtr-field-schema"></div>
+    </section>
+
+    <section id="regulation-currency-audit" class="rdtr-panel" aria-labelledby="rdtr-regulation-audit-title">
+      <div class="rdtr-panel-heading">
+        <div><span>AUDIT KEBERLAKUAN REGULASI</span><h2 id="rdtr-regulation-audit-title">Pemeriksaan ulang sumber resmi dan perubahan peraturan</h2></div>
+        <div class="rdtr-draft-actions"><button id="rdtr-export-regulation-audit" class="rdtr-button rdtr-button--light" type="button">Unduh audit regulasi</button></div>
+      </div>
+      <div id="rdtr-regulation-audit" class="rdtr-regulation-audit"></div>
+    </section>
+
     <section id="yg-components" class="rdtr-panel" aria-labelledby="rdtr-components-title">
       <div class="rdtr-panel-heading">
         <div><span>MUATAN RDTR VERSI YG</span><h2 id="rdtr-components-title">Struktur, pola, pemanfaatan, dan zonasi</h2></div>
-        <p>Pasal 27–28 · geometri dan angka mengikuti tingkat kematangan bukti</p>
+        <div class="rdtr-draft-actions"><p>Pasal 27–28 · geometri dan angka mengikuti tingkat kematangan bukti</p><button id="rdtr-export-structure-geojson" class="rdtr-button rdtr-button--light" type="button">Unduh struktur YG v0.1</button><button id="rdtr-export-road-evidence" class="rdtr-button rdtr-button--light" type="button">Unduh bukti jalan</button><button id="rdtr-export-service-evidence" class="rdtr-button rdtr-button--light" type="button">Unduh fasilitas &amp; hidrologi</button><button id="rdtr-export-service-access" class="rdtr-button rdtr-button--light" type="button">Unduh prioritas verifikasi</button><button id="rdtr-export-readiness" class="rdtr-button rdtr-button--light" type="button">Unduh uji kesiapan zona</button><button id="rdtr-export-programmes" class="rdtr-button rdtr-button--light" type="button">Unduh paket program</button></div>
       </div>
       <div class="rdtr-component-grid">
-        <article><div class="rdtr-component-title"><span>01</span><h3>Rencana struktur ruang</h3></div><div id="rdtr-structure-plan"></div></article>
+        <article><div class="rdtr-component-title"><span>01</span><h3>Rencana struktur ruang</h3></div><div id="rdtr-structure-summary"></div><div id="rdtr-structure-plan"></div></article>
         <article><div class="rdtr-component-title"><span>02</span><h3>Rencana pola ruang</h3></div><div id="rdtr-pattern-plan"></div></article>
         <article><div class="rdtr-component-title"><span>03</span><h3>Ketentuan pemanfaatan ruang</h3></div><div id="rdtr-programs"></div></article>
         <article><div class="rdtr-component-title"><span>04</span><h3>Peraturan zonasi</h3></div><div id="rdtr-zoning-rules"></div></article>
       </div>
+      <div class="rdtr-subsection-heading"><h3>Bukti jaringan nyata dan kesenjangan data</h3><p>OSM hanya penyaringan awal; jaringan resmi dan kapasitas layanan tetap harus diverifikasi</p></div>
+      <div id="rdtr-network-evidence" class="rdtr-network-evidence"></div>
+      <div id="rdtr-service-evidence" class="rdtr-service-evidence"></div>
+      <div id="rdtr-service-access" class="rdtr-service-access"></div>
+      <div id="rdtr-development-readiness" class="rdtr-development-readiness"></div>
+      <div id="rdtr-network-gaps" class="rdtr-network-gaps"></div>
+      <div class="rdtr-subsection-heading">
+        <div><h3>Kamus subzona dan matriks kegiatan ITBX</h3><p>Klasifikasi awal YG; bukan ketentuan perizinan dan belum memiliki geometri subzona</p></div>
+        <button id="rdtr-export-itbx-csv" class="rdtr-button rdtr-button--light" type="button">Unduh matriks ITBX</button>
+      </div>
+      <div id="rdtr-subzone-codebook" class="rdtr-subzone-codebook"></div>
+      <div id="rdtr-itbx-matrix" class="rdtr-itbx-matrix"></div>
       <div class="rdtr-subsection-heading"><h3>Jejak keputusan rancangan</h3><p>Analisis dan pasal yang menopang tiap komponen</p></div>
       <div id="rdtr-plan-traceability" class="rdtr-plan-traceability"></div>
     </section>
@@ -177,7 +313,7 @@
         <div class="rdtr-panel-heading"><div><span>POSISI ANALISIS</span><h2>Aturan membaca kesimpulan</h2></div></div>
         <div class="rdtr-reading-rule">
           <p><strong>Tahan</strong> bukan berarti penolakan final. Artinya keputusan belum layak didukung karena bukti penting belum tersedia atau ada indikasi fungsi lindung/risiko tinggi.</p>
-          <p><strong>Revisi</strong> baru digunakan setelah geometri dan aturan draf pemerintah terotorisasi serta dokumen yang berlaku menunjukkan ketidaksesuaian yang dapat dibuktikan.</p>
+          <p><strong>Revisi</strong> digunakan untuk mengubah rancangan YG setelah analisis lintas bukti menunjukkan ketidaksesuaian yang dapat dibuktikan dan alasan perubahannya dicatat.</p>
           <p>Setiap kesimpulan harus menyebut lokasi, luas, bukti, tingkat keyakinan, dasar regulasi, dan alternatif yang ditawarkan.</p>
         </div>
       </article>
@@ -201,9 +337,14 @@
     </section>
 
     <section class="rdtr-panel" aria-labelledby="rdtr-draft-finding-title">
-      <div class="rdtr-panel-heading"><div><span>PEMERIKSAAN DRAF</span><h2 id="rdtr-draft-finding-title">Draf pemerintah vs baseline YG</h2></div></div>
+      <div class="rdtr-panel-heading"><div><span>UJI REVISI GEOMETRI YG · DIPROSES LOKAL</span><h2 id="rdtr-draft-finding-title">Revisi zona YG vs layer bukti kebijakan</h2></div>
+        <div class="rdtr-draft-actions">
+          <button id="rdtr-export-draft-csv" class="rdtr-button" type="button" disabled>Unduh matriks uji</button>
+          <button id="rdtr-export-draft-geojson" class="rdtr-button" type="button" disabled>Unduh GeoJSON hasil uji</button>
+        </div>
+      </div>
       <div id="rdtr-draft-findings" class="rdtr-draft-findings">
-        <p>Muat geometri draf RDTR untuk menghasilkan daftar zona, luas, irisan gambut/kawasan hutan, dan isu yang perlu diklarifikasi.</p>
+        <p>Muat revisi geometri zona YG untuk menguji setiap zona terhadap indikasi gambut, non-APL, kandidat perlindungan/pemulihan pesisir, dan dasar regulasinya. Berkas hanya diproses pada perangkat ini.</p>
       </div>
     </section>
 
@@ -216,6 +357,6 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
   <script src="https://cdn.jsdelivr.net/npm/@turf/turf@7/turf.min.js"></script>
   <script src="https://unpkg.com/shpjs@6.1.0/dist/shp.js"></script>
-  <script src="js/rdtr-bagansiapiapi.js?v=20260920-analysis4"></script>
+  <script src="js/rdtr-bagansiapiapi.js?v=20260920-yg-rdtr11"></script>
 </body>
 </html>

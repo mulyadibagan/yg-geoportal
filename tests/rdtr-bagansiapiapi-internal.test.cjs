@@ -38,18 +38,54 @@ test("internal workspace renders the regulation-based YG plan without claiming o
 
   for (const id of [
     "rdtr-planning-workflow", "rdtr-cross-cutting-gates", "rdtr-yg-objective",
-    "rdtr-yg-alternatives", "rdtr-structure-plan", "rdtr-pattern-plan",
-    "rdtr-zoning-rules", "rdtr-programs", "rdtr-plan-traceability",
+    "rdtr-yg-alternatives", "rdtr-structure-summary", "rdtr-structure-plan", "rdtr-export-structure-geojson",
+    "rdtr-export-road-evidence", "rdtr-export-service-evidence", "rdtr-export-service-access", "rdtr-export-readiness", "rdtr-export-programmes", "rdtr-export-consultation", "rdtr-export-consultation-pack", "rdtr-export-consultation-notes", "rdtr-consultation-matrix", "rdtr-consultation-readiness", "rdtr-export-completeness", "rdtr-export-completeness-json", "rdtr-completeness-audit", "rdtr-export-gap-workplan", "rdtr-export-gap-workplan-json", "rdtr-gap-workplan", "rdtr-export-v1-dossier", "rdtr-export-evidence-requests", "rdtr-v1-dossier", "rdtr-export-evidence-reconciliation", "rdtr-evidence-reconciliation", "rdtr-export-evidence-briefing", "rdtr-export-evidence-briefing-csv", "rdtr-evidence-briefing", "rdtr-export-change-control", "rdtr-export-change-control-csv", "rdtr-change-control", "rdtr-export-v1-validator", "rdtr-v1-validator", "rdtr-export-field-plan", "rdtr-export-field-plan-csv", "rdtr-field-plan", "rdtr-export-field-schema", "rdtr-export-field-template-csv", "rdtr-export-field-template-geojson", "rdtr-field-schema", "rdtr-export-regulation-audit", "rdtr-regulation-audit", "rdtr-network-evidence", "rdtr-service-evidence", "rdtr-service-access", "rdtr-development-readiness", "rdtr-network-gaps", "rdtr-pattern-plan",
+    "rdtr-zoning-rules", "rdtr-programs", "rdtr-subzone-codebook", "rdtr-itbx-matrix",
+    "rdtr-export-itbx-csv", "rdtr-plan-traceability",
     "rdtr-analysis-programme", "rdtr-analysis-search", "rdtr-analysis-priority",
-    "rdtr-analysis-status", "rdtr-export-analysis-csv", "rdtr-analysis-matrix", "rdtr-geometry-registry"
+    "rdtr-analysis-status", "rdtr-export-analysis-csv", "rdtr-analysis-matrix", "rdtr-geometry-registry",
+    "rdtr-p0-evidence-summary", "rdtr-p0-evidence-truth", "rdtr-p0-evidence-register", "rdtr-export-evidence-csv",
+    "policy-map", "rdtr-yg-zone-header", "rdtr-yg-zone-summary", "rdtr-export-yg-zones",
+    "rdtr-policy-map-header", "rdtr-policy-layer-summary", "rdtr-policy-map-rule",
+    "rdtr-policy-map-stages", "rdtr-export-policy-map", "rdtr-policy-inspector",
+    "rdtr-export-draft-csv", "rdtr-export-draft-geojson", "rdtr-draft-findings"
   ]) assert.match(page, new RegExp(`id="${id}"`));
 
   assert.match(page, /RANCANGAN ANALITIS · BUKAN DOKUMEN PENETAPAN/);
   assert.match(page, /21 analisis penyusunan RDTR/);
   assert.match(script, /Unit penyaringan YG · bukan SWP\/zona/);
   assert.match(script, /unit-penyaringan-analitis-yg-bukan-zonasi\.geojson/);
-  assert.match(script, /Geometri analitis bukan batas WP, SWP, zona, atau subzona yang mengikat/);
+  assert.match(script, /Geometri zonasi YG adalah rancangan teknis internal tanpa akibat hukum/);
   assert.match(script, /matriks-21-analisis-rdtr-bagansiapiapi-internal\.csv/);
+  assert.match(script, /register-bukti-p0-rdtr-bagansiapiapi-internal\.csv/);
+  assert.match(script, /renderP0EvidenceBoard/);
+  assert.match(script, /renderPolicyMapFramework/);
+  assert.match(script, /renderYgDraftRdtr/);
+  assert.match(script, /inspectPolicyLocation/);
+  assert.match(script, /booleanPointInPolygon/);
+  assert.match(script, /peta-sintesis-kebijakan-rdtr-bagansiapiapi-v0\.geojson/);
+  assert.match(script, /Arahan YG · tahan intensifikasi gambut/);
+  assert.match(script, /Arahan YG · perlindungan\/pemulihan pesisir/);
+  assert.match(script, /Rancangan zonasi RDTR YG v0\.2/);
+  assert.match(script, /rancangan-zonasi-rdtr-yg-bagansiapiapi-v0\.2\.geojson/);
+  assert.match(script, /matriks-itbx-rdtr-yg-bagansiapiapi-v0\.1-internal\.csv/);
+  assert.match(script, /rancangan-struktur-ruang-rdtr-yg-bagansiapiapi-v0\.1-internal\.geojson/);
+  assert.match(script, /Sumbu hubungan struktur YG · bukan trase/);
+  assert.match(script, /Simpul referensi struktur YG · bukan lokasi fasilitas/);
+  assert.match(script, /bukti-jaringan-jalan-osm-rdtr-yg-bagansiapiapi-v0\.1-internal\.geojson/);
+  assert.match(script, /Bukti jalan OSM · perlu verifikasi/);
+  assert.match(script, /Bukti jaringan jalan OSM · verifikasi/);
+  assert.match(script, /bukti-fasilitas-hidrologi-osm-rdtr-yg-bagansiapiapi-v0\.1-internal\.geojson/);
+  assert.match(script, /Bukti fasilitas OSM · perlu verifikasi/);
+  assert.match(script, /Bukti hidrologi OSM · perlu verifikasi/);
+  assert.match(page, /Kamus subzona dan matriks kegiatan ITBX/);
+  assert.match(script, /draftPolicyDecision/);
+  assert.match(script, /validateDraftCollection/);
+  assert.match(script, /20\.000 polygon/);
+  assert.match(script, /PM-YG-COAST/);
+  assert.match(script, /uji-revisi-geometri-rdtr-yg-internal\.csv/);
+  assert.match(script, /uji-revisi-geometri-rdtr-yg-internal\.geojson/);
+  assert.match(script, /browser_local_only/);
   assert.match(script, /Pertanyaan konsultasi/);
 });
 
