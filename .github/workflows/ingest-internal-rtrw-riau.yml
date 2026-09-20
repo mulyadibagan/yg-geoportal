@@ -9,8 +9,13 @@ on:
       - cloudflare/yg-webgis-public-data/package.json
       - cloudflare/yg-webgis-public-data/package-lock.json
       - cloudflare/yg-webgis-public-data/scripts/prepare-rtrw-riau.mjs
+      - cloudflare/yg-webgis-public-data/scripts/build-rdtr-bagansiapiapi-analysis.mjs
       - cloudflare/yg-webgis-public-data/scripts/validate-rtrw.mjs
       - cloudflare/yg-webgis-public-data/test/rtrw-ingest.test.mjs
+      - data/batas_administrasi_desa_riau.geojson
+      - data/Gambut_BBSDLP_2019.geojson
+      - data/kawasan_hutan_sk_903.geojson
+      - data/mangrove-priority-rokan-hilir-results.json
   workflow_dispatch:
     inputs:
       upload_production:
@@ -35,6 +40,7 @@ jobs:
       DISPLAY_KEY: internal/spatial-planning/rtrw-riau-2018-2038.geojson
       RAW_KEY: internal/spatial-planning/source/rtrw-riau-2018-2038-raw.geojson
       MANIFEST_KEY: internal/spatial-planning/rtrw-riau-2018-2038-manifest.json
+      RDTR_ANALYSIS_KEY: internal/spatial-planning/rdtr-bagansiapiapi-analysis.json
     steps:
       - uses: actions/checkout@v5
 
@@ -76,6 +82,20 @@ jobs:
             "${RUNNER_TEMP}/rtrw-riau-manifest.json"
           npm run validate:rtrw -- "${RUNNER_TEMP}/rtrw-riau-display.geojson"
 
+      - name: Build internal Bagansiapiapi RDTR baseline
+        shell: bash
+        working-directory: cloudflare/yg-webgis-public-data
+        run: |
+          node scripts/build-rdtr-bagansiapiapi-analysis.mjs \
+            "${RUNNER_TEMP}/rtrw-riau-display.geojson" \
+            "${RUNNER_TEMP}/rdtr-bagansiapiapi-analysis.json"
+          node -e '
+            const data = require(process.argv[1]);
+            if (data.metadata?.access !== "staff_only") throw Error("RDTR analysis must remain staff-only");
+            if (data.summary?.villageCount !== 11) throw Error("Expected 11 planning-area villages");
+            if (data.metadata?.officialDraftGeometryStatus !== "not_received") throw Error("Unexpected draft status");
+          ' "${RUNNER_TEMP}/rdtr-bagansiapiapi-analysis.json"
+
       - name: Run Worker and ingest tests
         run: npm test
         working-directory: cloudflare/yg-webgis-public-data
@@ -98,6 +118,10 @@ jobs:
             "yg-webgis-public-snapshots-staging/${MANIFEST_KEY}" --remote \
             --file "${RUNNER_TEMP}/rtrw-riau-manifest.json" \
             --content-type application/json
+          npx wrangler r2 object put \
+            "yg-webgis-public-snapshots-staging/${RDTR_ANALYSIS_KEY}" --remote \
+            --file "${RUNNER_TEMP}/rdtr-bagansiapiapi-analysis.json" \
+            --content-type application/json
 
       - name: Upload verified internal layer to production R2
         if: ${{ github.event_name == 'push' || inputs.upload_production }}
@@ -117,6 +141,10 @@ jobs:
           npx wrangler r2 object put \
             "yg-webgis-public-snapshots/${MANIFEST_KEY}" --remote \
             --file "${RUNNER_TEMP}/rtrw-riau-manifest.json" \
+            --content-type application/json
+          npx wrangler r2 object put \
+            "yg-webgis-public-snapshots/${RDTR_ANALYSIS_KEY}" --remote \
+            --file "${RUNNER_TEMP}/rdtr-bagansiapiapi-analysis.json" \
             --content-type application/json
 
       - name: Verify private gateway remains closed anonymously

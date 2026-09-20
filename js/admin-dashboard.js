@@ -599,6 +599,9 @@
 
   function renderAuthState(message) {
     ADMIN_SESSION = window.YG_AUTH && window.YG_AUTH.readStoredSession();
+    document.querySelectorAll('[data-staff-rdtr-card]').forEach(function (element) {
+      element.hidden = !(ADMIN_SESSION && ADMIN_SESSION.token);
+    });
     var status = document.getElementById('admin-auth-status');
     var form = document.getElementById('admin-auth-form');
     if (!REMOTE_AVAILABLE) {

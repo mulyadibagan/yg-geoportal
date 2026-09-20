@@ -1,0 +1,51 @@
+const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const path = require("node:path");
+const test = require("node:test");
+
+const ROOT = path.resolve(__dirname, "..");
+const read = (...parts) => fs.readFileSync(path.join(ROOT, ...parts), "utf8");
+
+test("RDTR Bagansiapiapi analysis is staff-only and absent from public navigation", () => {
+  const page = read("staff-rdtr-bagansiapiapi.html");
+  const gate = read("js", "staff-rdtr-gate.js");
+  const access = read("js", "staff-data-access.js");
+  const publicHome = read("index.html");
+  const publicNavigation = read("js", "navigation-v2.js");
+
+  assert.match(page, /noindex,nofollow,noarchive/);
+  assert.match(page, /style="visibility:hidden"/);
+  assert.match(page, /staff-rdtr-gate\.js/);
+  assert.match(page, /KHUSUS STAF · TIDAK UNTUK PUBLIKASI/);
+  assert.match(gate, /YG_STAFF_DATA\.fetch\("data\/rdtr-bagansiapiapi-analysis\.json"/);
+  assert.match(gate, /metadata\?\.access !== "staff_only"/);
+  assert.match(access, /'data\/rdtr-bagansiapiapi-analysis\.json': '\/api\/staff\/rdtr-bagansiapiapi-analysis'/);
+  assert.doesNotMatch(publicHome, /staff-rdtr-bagansiapiapi\.html/);
+  assert.doesNotMatch(publicNavigation, /staff-rdtr-bagansiapiapi\.html/);
+});
+
+test("admin dashboard reveals the RDTR entry only after a staff session", () => {
+  const html = read("admin-dashboard.html");
+  const script = read("js", "admin-dashboard.js");
+  assert.match(html, /href="staff-rdtr-bagansiapiapi\.html" data-staff-rdtr-card hidden/);
+  assert.match(script, /querySelectorAll\('\[data-staff-rdtr-card\]'\)/);
+  assert.match(script, /element\.hidden = !\(ADMIN_SESSION && ADMIN_SESSION\.token\)/);
+});
+
+test("the official consultation scope resolves to exactly 11 Bangko villages", () => {
+  const data = JSON.parse(read("data", "batas_administrasi_desa_riau.geojson"));
+  const normalize = value => String(value || "").toLowerCase()
+    .replace(/^(kelurahan|kepenghuluan|desa)\s+/, "").replace(/[^a-z0-9]+/g, " ").trim();
+  const target = new Set([
+    "bagan barat", "bagan hulu", "bagan kota", "bagan punak", "bagan timur",
+    "bagan jawa", "bagan jawa pesisir", "bagan punak meranti", "bagan punak pesisir",
+    "labuhan tangga besar", "labuhan tangga hilir"
+  ]);
+  const features = data.features.filter(feature => {
+    const props = feature.properties || {};
+    return normalize(props.WADMKK) === "rokan hilir" && normalize(props.WADMKC) === "bangko" &&
+      target.has(normalize(props.WADMKD || props.NAMOBJ));
+  });
+  assert.equal(features.length, 11);
+  assert.equal(new Set(features.map(feature => normalize(feature.properties.WADMKD || feature.properties.NAMOBJ))).size, 11);
+});
