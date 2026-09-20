@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { featureCollection, polygon } from "@turf/turf";
+import { area, featureCollection, intersect, polygon } from "@turf/turf";
 import { buildAnalysis } from "../scripts/build-rdtr-bagansiapiapi-analysis.mjs";
 
 const names = [
@@ -19,11 +19,13 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
     WADMKK: "Rokan Hilir", WADMKC: "Bangko", WADMKD: name
   })));
   const mask = polygon([[[99.9, 1.9], [100.2, 1.9], [100.2, 2.2], [99.9, 2.2], [99.9, 1.9]]]);
+  const peatMask = polygon([[[99.99, 1.99], [100.055, 1.99], [100.055, 2.02], [99.99, 2.02], [99.99, 1.99]]]);
+  const forestMask = polygon([[[100.04, 1.99], [100.085, 1.99], [100.085, 2.02], [100.04, 2.02], [100.04, 1.99]]]);
   const result = buildAnalysis({
     administration,
     rtrw: featureCollection([{ ...mask, properties: { RENCANA: "Kawasan Permukiman", DASAR_HUKUM: "Perda No.10 Tahun 2018" } }]),
-    peat: featureCollection([{ ...mask, properties: { KELAS_GBT: "100-<200 cm", KETEBALAN: "Sedang" } }]),
-    forest: featureCollection([{ ...mask, properties: { fungsi: "HP" } }]),
+    peat: featureCollection([{ ...peatMask, properties: { KELAS_GBT: "100-<200 cm", KETEBALAN: "Sedang" } }]),
+    forest: featureCollection([{ ...forestMask, properties: { fungsi: "HP" } }]),
     mangrove: { villages: [{ village: "Bagan Jawa Pesisir", status: "analysed", currentMangroveHa: 10, indicativeMangroveLossHa: 30 }] },
     mangroveCandidates: featureCollection([square(100.06, {
       regency: "Rokan Hilir", district: "Bangko", village: "Bagan Jawa Pesisir",
@@ -32,7 +34,7 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
     })])
   });
   assert.equal(result.metadata.access, "staff_only");
-  assert.equal(result.metadata.officialDraftGeometryStatus, "not_received");
+  assert.equal(result.metadata.ygDraftZoningStatus, "provisional_internal_zone_geometry");
   assert.equal(result.summary.villageCount, 11);
   assert.equal(result.villages.length, 11);
   assert.ok(result.summary.peatAreaHa > 0);
@@ -44,7 +46,7 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
   assert.equal(result.regulatoryAssessments.length, 10);
   assert.ok(result.regulationRegister.length >= 18);
   assert.equal(result.decisionClasses.length, 4);
-  assert.ok(result.villages.every(row => row.regulatoryAssessments.length >= 4));
+  assert.ok(result.villages.every(row => row.regulatoryAssessments.length >= 3));
   assert.ok(result.regulatoryAssessments.some(row => row.theme === "Perlindungan ekosistem gambut" && row.decision === "hold"));
   assert.ok(result.regulationRegister.some(row => row.code.includes("11/2021") && row.code.includes("6/2026")));
   assert.ok(result.regulationRegister.filter(row => row.code.includes("jo.")).every(row =>
@@ -73,7 +75,8 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
     not_verified: 1,
     historical_expired_reference: 1,
     verified_process_evidence: 1,
-    not_received: 6
+    available_internal_draft: 1,
+    not_received: 5
   });
   assert.match(result.p0EvidenceBoard.legalTruth, /27\/2002.*2002–2012/);
   assert.match(result.p0EvidenceBoard.promotionRule, /tidak boleh dinaikkan statusnya/);
@@ -91,6 +94,10 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
   const currentRtrw = result.p0EvidenceBoard.items.find(row => row.id === "P0-E02");
   assert.equal(currentRtrw.status, "not_verified");
   assert.match(currentRtrw.limitation, /bukan bukti bahwa instrumen tidak ada/);
+  const ygZoneEvidence = result.p0EvidenceBoard.items.find(row => row.id === "P0-E07");
+  assert.equal(ygZoneEvidence.status, "available_internal_draft");
+  assert.equal(ygZoneEvidence.evidenceClass, "EV-I");
+  assert.match(ygZoneEvidence.finding, /geometri zona kandidat saling eksklusif/);
 
   assert.equal(result.policyMapFramework.status, "mapped_policy_synthesis_v0");
   assert.equal(result.policyMapFramework.layers.length, 3);
@@ -123,16 +130,16 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
   assert.equal(result.ygPlan.status, "provisional_analytical_draft");
   assert.equal(result.ygPlan.selectedAlternative.id, "ALT-YG-1");
   assert.equal(result.ygPlan.selectedAlternative.status, "provisional");
-  assert.deepEqual(result.ygPlan.alternatives.map(row => row.id), ["ALT-0", "ALT-OFF", "ALT-YG-1"]);
+  assert.deepEqual(result.ygPlan.alternatives.map(row => row.id), ["ALT-0", "ALT-YG-2", "ALT-YG-1"]);
   assert.equal(result.ygPlan.alternatives.filter(row => row.selected).length, 1);
   assert.ok(result.ygPlan.planningObjective.statement);
-  assert.ok(result.ygPlan.planningObjective.qualification.includes("Rumusan tujuan masih sementara"));
+  assert.ok(result.ygPlan.planningObjective.qualification.includes("dasar rancangan alternatif YG"));
   assert.ok(result.ygPlan.strategies.length >= 5);
   assert.ok(result.ygPlan.structurePlan.centres.length > 0);
   assert.ok(result.ygPlan.structurePlan.networks.length > 0);
   assert.ok(result.ygPlan.patternPlan.zones.length > 0);
   assert.deepEqual(new Set(result.ygPlan.patternPlan.zones.map(row => row.patternCategory)),
-    new Set(["protected_candidate", "cultivation_candidate"]));
+    new Set(["protected_candidate", "cultivation_candidate", "verification_candidate"]));
   assert.ok(!result.ygPlan.patternPlan.zones.some(row => row.id === "ZONE-YG-RISK"));
   assert.ok(result.ygPlan.zoningRules.rules.length > 0);
   assert.ok(result.ygPlan.zoningRules.rules.some(row => row.id === "ZR-YG-RISK"));
@@ -140,7 +147,8 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
   assert.ok(result.ygPlan.programs.items.length > 0);
   assert.ok(result.ygPlan.traceability.length > 0);
 
-  assert.ok(result.geometryRegistry.some(row => row.id === "GR-RDTR-OFFICIAL-DRAFT" && row.status === "not_received"));
+  assert.ok(result.geometryRegistry.some(row => row.id === "GR-YG-DRAFT-ZONES" && row.status === "provisional_internal_zone_geometry"));
+  assert.ok(result.geometryRegistry.some(row => row.id === "GR-RTRW-ROHIL" && row.status === "not_verified"));
   assert.ok(result.geometryRegistry.some(row => row.id === "GR-MANGROVE-CANDIDATES" && row.featureCount === 1));
   assert.equal(result.map.mangroveCandidates.features.length, 1);
   assert.equal(result.map.mangroveCandidates.features[0].properties.polygonId, "MPR-TEST-1");
@@ -163,6 +171,27 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
   assert.equal(result.map.ygPlanningUnits.metadata.role, "analytical_unit_not_swp_or_zone");
   assert.ok(result.map.ygPlanningUnits.metadata.geometryProcessing.includes("tolerance 0.00002"));
 
+  assert.equal(result.ygDraftRdtr.status, "provisional_internal_spatial_draft");
+  assert.equal(result.map.ygCandidateZones.metadata.status, "provisional_internal_zone_geometry");
+  assert.ok(result.map.ygCandidateZones.features.length >= 4);
+  assert.ok(result.map.ygCandidateZones.features.some(feature => feature.properties.code === "YG-ZK"));
+  assert.ok(result.map.ygCandidateZones.metadata.coveragePct > 99.99);
+  assert.ok(Math.abs(area(result.map.ygCandidateZones) / 10000 - result.summary.areaHa) < 0.2);
+  assert.ok(result.map.ygCandidateZones.features.every(feature =>
+    feature.properties.code && feature.properties.direction &&
+    feature.properties.maturity === "provisional_internal_zone_geometry" &&
+    feature.properties.legalEffect === "none" && feature.properties.constraintOverlays &&
+    feature.properties.rtrwProvinceClasses
+  ));
+  for (let i = 0; i < result.map.ygCandidateZones.features.length; i += 1) {
+    for (let j = i + 1; j < result.map.ygCandidateZones.features.length; j += 1) {
+      const overlap = intersect(featureCollection([
+        result.map.ygCandidateZones.features[i], result.map.ygCandidateZones.features[j]
+      ]));
+      assert.ok(!overlap || area(overlap) / 10000 < 0.01, "YG zones must not overlap");
+    }
+  }
+
   const regulationIds = new Set(result.regulationRegister.map(row => row.id));
   const analysisIds = new Set(result.mandatoryAnalysisMatrix.map(row => row.id));
   const gateIds = new Set(result.crossCuttingGates.map(row => row.id));
@@ -182,7 +211,7 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
     row.analysisRefs.every(id => analysisIds.has(id))
   ));
   assert.ok(result.p0EvidenceBoard.items.every(row =>
-    row.evidenceClass === "EV-O" && row.analysisRefs.every(id => analysisIds.has(id)) &&
+    ["EV-O", "EV-I"].includes(row.evidenceClass) && row.analysisRefs.every(id => analysisIds.has(id)) &&
     row.gateRefs.every(id => gateIds.has(id)) && row.legalRole && row.finding && row.limitation && row.nextAction
   ));
   assert.ok(result.policyMapFramework.layers.every(row =>

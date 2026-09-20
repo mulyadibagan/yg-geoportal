@@ -44,19 +44,23 @@
       concept_only: "Konsep", pending: "Menunggu", indicative_geometry: "Geometri indikatif",
       not_started: "Belum dimulai", official: "Resmi", provisional: "Sementara",
       provisional_analytical_draft: "Rancangan analitis sementara",
-      selected_provisional: "Dipilih sementara", conceptual_no_official_geometry: "Konsep tanpa geometri terotorisasi",
+      provisional_internal_spatial_draft: "Rancangan ruang internal",
+      provisional_internal_zone_geometry: "Geometri zona internal v0.2",
+      provisional_internal_v0: "Tersedia · internal v0",
+      provisional_internal_analytical_plan: "Rancangan analitis internal",
+      selected_provisional: "Dipilih sementara", conceptual_structure_geometry_pending: "Konsep · geometri struktur belum dibentuk",
       not_delineated: "Belum didelineasi", candidate: "Kandidat",
       available_analytical_only: "Tersedia untuk analisis", available_for_screening: "Tersedia untuk penyaringan",
       blocked_missing_official_evidence: "Tertahan: bukti resmi belum tersedia", pending_evidence: "Menunggu bukti",
       partial_high_priority: "Sebagian · prioritas tinggi",
+      partial_provisional_zone_geometry: "Sebagian · geometri zona tersedia",
+      framework_only_pending_activity_matrix: "Kerangka awal · matriks kegiatan belum lengkap",
+      framework_only_pending_internal_zone_detail: "Kerangka awal · rincian zona belum lengkap",
       blocked_no_official_zone_geometry: "Tertahan: geometri zona resmi belum tersedia",
       blocked_no_activity_scenarios: "Tertahan: skenario kegiatan belum tersedia",
       blocked_no_zone_and_population_projection: "Tertahan: zona dan proyeksi belum tersedia",
       blocked_no_zone_quality_targets: "Tertahan: target kualitas zona belum tersedia",
       scenario_framework_incomplete: "Kerangka skenario belum lengkap",
-      unavailable_pending_official_draft: "Menunggu draf pemerintah terotorisasi",
-      candidate_zone_families_no_official_geometry: "Kandidat tanpa geometri terotorisasi",
-      framework_only_pending_official_zones: "Kerangka awal · menunggu zona resmi",
       candidate_portfolio_no_budget_or_commitment: "Portofolio kandidat · belum menjadi komitmen",
       insufficient_for_geometry: "Bukti belum cukup untuk geometri",
       framework_only: "Kerangka awal", candidate_only: "Kandidat",
@@ -65,8 +69,11 @@
       verified_available: "Terverifikasi · tersedia",
       verified_process_evidence: "Terverifikasi · bukti proses",
       historical_expired_reference: "Arsip historis · periode berakhir",
+      available_internal_draft: "Tersedia · rancangan internal",
       mapped_policy_synthesis_v0: "Peta sintesis v0 terbangun",
       complete_internal_v0: "Selesai · internal v0",
+      blocked_missing_supporting_analysis: "Tertahan · analisis pendukung belum lengkap",
+      pending_internal_validation: "Menunggu validasi internal",
       blocked_missing_p0_evidence: "Tertahan · bukti P0 belum lengkap",
       blocked_missing_klhs_and_draft: "Tertahan · KLHS dan draf belum diterima",
       pending_comparison_and_response: "Menunggu perbandingan dan respons",
@@ -105,7 +112,7 @@
   }
 
   function renderReadiness(rows) {
-    var label = { ready: "siap", screening: "siap untuk penyaringan analitis", partial: "sebagian", missing: "belum tersedia" };
+    var label = { ready: "siap", screening: "siap untuk penyaringan analitis", partial: "sebagian", missing: "belum tersedia", yg_draft: "rancangan internal tersedia" };
     document.getElementById("rdtr-readiness").innerHTML = (rows || []).map(function (row) {
       return '<div class="rdtr-readiness-row is-' + esc(row.status) + '"><i></i><span>' +
         esc(row.label) + "</span><small>" + esc(label[row.status] || row.status) + "</small></div>";
@@ -130,13 +137,14 @@
       candidate_forest_status_alignment: "Calon zona penyelarasan status kawasan hutan",
       candidate_safe_urban_consolidation: "Calon zona konsolidasi perkotaan aman",
       candidate_community_livelihood_and_production: "Calon zona penghidupan dan produksi masyarakat",
+      candidate_function_pending_verification: "Calon zona verifikasi fungsi ruang",
+      candidate_higher_plan_protection_alignment: "Calon zona penyelarasan lindung rencana lebih tinggi",
       candidate_risk_management_overlay: "Calon ketentuan khusus pengelolaan risiko",
       administrative_input_not_official_wp_geometry: "Masukan administrasi · bukan geometri WP resmi",
       analytical_unit_not_swp_or_zone: "Unit analitis · bukan SWP atau zona",
       higher_level_plan_screening_not_rdtr_zone: "Penyaringan rencana lebih tinggi · bukan zona RDTR",
       environmental_screening_not_legal_peat_function: "Penyaringan lingkungan · bukan fungsi gambut legal",
       forest_status_screening_not_rdtr_zone: "Penyaringan status kawasan hutan · bukan zona RDTR",
-      official_wp_swp_block_subblock_zone_and_network_geometry: "Geometri draf pemerintah terotorisasi: WP–SWP–blok–subblok–zona–jaringan",
       official_klhs_evidence: "Bukti dan peta kerja KLHS resmi",
       candidate_ecosystem_and_hazard_areas: "Area kandidat ekosistem dan bahaya",
       coastal_protection_restoration_candidates_not_rdtr_zone: "Kandidat perlindungan/pemulihan pesisir · bukan zona RDTR",
@@ -285,6 +293,28 @@
     }).join("");
   }
 
+  function renderYgDraftRdtr(draft) {
+    draft = draft || {};
+    var zoning = draft.zoning || {};
+    document.getElementById("rdtr-yg-zone-header").innerHTML =
+      '<div><h3>' + esc(draft.title || "Rancangan RDTR Alternatif YG") + '</h3><p>' +
+      esc(draft.legalCharacter || "Rancangan teknis internal tanpa akibat hukum.") +
+      '</p><small>' + esc(draft.disclaimer || "Bukan peta RDTR yang ditetapkan.") +
+      '</small></div><div class="rdtr-plan-meta"><span>Versi ' + esc(draft.version || "kerja") +
+      '</span>' + statusBadge(draft.status || "provisional_internal_spatial_draft") + '<span>' +
+      number(zoning.zoneCount, 0) + ' geometri · ' + number(zoning.coveragePct, 2) + '% cakupan</span></div>';
+    document.getElementById("rdtr-yg-zone-summary").innerHTML = (zoning.zones || []).map(function (row) {
+      return '<article class="rdtr-yg-zone-card" style="--zone-color:' + esc(row.color || "#637b73") +
+        '"><header><div><span>' + esc(row.code || row.id) + '</span><h3>' + esc(row.name || row.id) +
+        '</h3></div>' + decisionBadge(row.decision) + '</header><div class="rdtr-policy-layer-metrics"><strong>' +
+        number(row.areaHa, 1) + ' ha</strong><span>' + number(row.sharePct, 2) +
+        '% wilayah</span><span>' + esc(roleLabel(row.role)) + '</span></div><p>' + esc(row.direction || "") +
+        '</p><small><strong>Overlay kendala:</strong> ' + esc(String(row.constraintOverlays || "belum terpetakan").replace(/ \| /g, "; ")) +
+        '<br><strong>RTRW Riau:</strong> ' + esc(String(row.rtrwProvinceClasses || "belum terbaca").replace(/ \| /g, "; ")) +
+        '<br><strong>Dasar geometri:</strong> ' + esc(row.sourceBasis || "—") + '</small></article>';
+    }).join("") || "<p>Geometri zona YG belum tersedia.</p>";
+  }
+
   function planItem(row) {
     var code = row.id || row.code || "";
     var detail = row.proposal || row.description || row.function || row.direction || row.rule || row.action || row.rationale || "";
@@ -308,13 +338,17 @@
     var patternRows = pattern.zones || pattern.items || [];
     var protectedRows = patternRows.filter(function (row) { return row.patternCategory === "protected_candidate"; });
     var cultivationRows = patternRows.filter(function (row) { return row.patternCategory === "cultivation_candidate"; });
-    var uncategorizedRows = patternRows.filter(function (row) { return !row.patternCategory; });
+    var verificationRows = patternRows.filter(function (row) { return row.patternCategory === "verification_candidate"; });
+    var uncategorizedRows = patternRows.filter(function (row) {
+      return !["protected_candidate", "cultivation_candidate", "verification_candidate"].includes(row.patternCategory);
+    });
     function patternGroup(title, rows) {
       return rows.length ? '<section class="rdtr-plan-group"><h4 class="rdtr-plan-group-label">' + esc(title) +
         '</h4><div class="rdtr-plan-items">' + rows.map(planItem).join("") + "</div></section>" : "";
     }
     document.getElementById("rdtr-pattern-plan").innerHTML =
       patternGroup("Calon zona lindung", protectedRows) + patternGroup("Calon zona budi daya", cultivationRows) +
+      patternGroup("Calon zona verifikasi", verificationRows) +
       patternGroup("Klasifikasi menunggu verifikasi", uncategorizedRows);
     var zoning = plan.zoningRules || {};
     var zoningRows = Array.isArray(zoning) ? zoning : (zoning.rules || []);
@@ -612,7 +646,13 @@
     }).map(function (feature) {
       return (feature.properties || {}).class;
     }));
-    var draftZones = uniqueValues(((state.draft && state.draft.features) || []).filter(function (feature) {
+    var ygZones = uniqueValues((((data.map && data.map.ygCandidateZones) || {}).features || []).filter(function (feature) {
+      return featureContainsPoint(feature, point);
+    }).map(function (feature) {
+      var zone = feature.properties || {};
+      return [zone.code, zone.name].filter(Boolean).join(" · ");
+    }));
+    var revisionZones = uniqueValues(((state.draft && state.draft.features) || []).filter(function (feature) {
       return featureContainsPoint(feature, point);
     }).map(function (feature) {
       return (feature.properties || {})._ygZone;
@@ -627,8 +667,9 @@
     var village = props.WADMKD || props.NAMOBJ || "Unit kajian YG";
     var context = '<div class="rdtr-policy-inspector-context"><span><strong>Lokasi:</strong> ' + esc(village) +
       '</span><span><strong>Koordinat:</strong> ' + esc(coordinate) + '</span><span><strong>RTRW Riau:</strong> ' +
-      esc(rtrwClasses.join(" · ") || "tidak terbaca pada titik") + '</span><span><strong>Zona draf lokal:</strong> ' +
-      esc(draftZones.join(" · ") || (state.draft ? "tidak beririsan" : "belum dimuat")) + '</span></div>';
+      esc(rtrwClasses.join(" · ") || "tidak terbaca pada titik") + '</span><span><strong>Zona YG v0.2:</strong> ' +
+      esc(ygZones.join(" · ") || "perlu pemeriksaan topologi") + '</span><span><strong>Revisi lokal:</strong> ' +
+      esc(revisionZones.join(" · ") || (state.draft ? "tidak beririsan" : "belum dimuat")) + '</span></div>';
 
     if (!policyHits.length) {
       target.innerHTML = '<header><div><strong>Inspektur kebijakan lokasi</strong><small>0 dari 3 layer arahan beririsan</small></div>' +
@@ -702,6 +743,35 @@
         }
       }).addTo(map);
     }
+    if (data.map.ygCandidateZones) {
+      state.layers.ygCandidateZones = L.geoJSON(data.map.ygCandidateZones, {
+        renderer: L.canvas({ padding: .5 }),
+        style: function (feature) {
+          var color = (feature.properties || {}).color || "#176b55";
+          return { color: color, weight: 3, fillColor: color, fillOpacity: .1, opacity: .95 };
+        },
+        onEachFeature: function (feature, layer) {
+          var props = feature.properties || {};
+          layer.bindPopup(popup("Rancangan zona YG v0.2 · internal", {
+            "Kode": props.code,
+            "Zona": props.name,
+            "Peran": roleLabel(props.role),
+            "Posisi YG": decisionLabel(props.decision),
+            "Luas": number(props.areaHa, 2) + " ha",
+            "Bagian wilayah": number(props.sharePct, 2) + "%",
+            "Arah": props.direction,
+            "Overlay kendala": String(props.constraintOverlays || "belum terpetakan").replace(/ \| /g, "; "),
+            "Indikasi gambut": number(props.peatConstraintHa, 2) + " ha",
+            "Indikasi non-APL": number(props.forestConstraintHa, 2) + " ha",
+            "Kandidat pesisir": number(props.coastConstraintHa, 2) + " ha",
+            "RTRW Riau": String(props.rtrwProvinceClasses || "belum terbaca").replace(/ \| /g, "; "),
+            "Dasar geometri": props.sourceBasis,
+            "Status": statusLabel(props.maturity),
+            "Akibat hukum": props.legalEffect === "none" ? "Tidak ada; bahan analisis internal" : props.legalEffect
+          }));
+        }
+      }).addTo(map);
+    }
     state.layers.study = L.geoJSON(data.map.studyArea, {
       style: { color: "#123f38", weight: 2.5, fillOpacity: .02 },
       onEachFeature: function (feature, layer) {
@@ -741,6 +811,7 @@
       "Arahan YG · tahan intensifikasi gambut": state.layers.peat,
       "Arahan YG · verifikasi non-APL": state.layers.forest
     };
+    if (state.layers.ygCandidateZones) overlays["Rancangan zonasi RDTR YG v0.2"] = state.layers.ygCandidateZones;
     if (state.layers.mangroveCandidates) overlays["Arahan YG · perlindungan/pemulihan pesisir"] = state.layers.mangroveCandidates;
     if (state.layers.ygUnits) overlays["Unit penyaringan YG · bukan zonasi"] = state.layers.ygUnits;
     state.layerControl = L.control.layers({ "Peta jalan": road, "Citra satelit": satellite }, overlays, {
@@ -748,7 +819,7 @@
     }).addTo(map);
     map.fitBounds(state.layers.study.getBounds(), { padding: [18, 18] });
     map.on("click", function (event) { inspectPolicyLocation(data, event.latlng); });
-    document.getElementById("rdtr-map-status").textContent = "Peta sintesis kebijakan v0 siap · layer dapat bertumpang tindih";
+    document.getElementById("rdtr-map-status").textContent = "Rancangan zonasi YG v0.2 siap · zona saling eksklusif; layer bukti dapat bertumpang tindih";
   }
 
   function safeIntersect(left, right) {
@@ -786,13 +857,13 @@
 
   function draftPolicyPosition(comparison) {
     if (comparison.decision === "hold") {
-      return "Tahan penguncian zona intensif. Minta alternatif atau perubahan geometri bila bukti resmi menegaskan fungsi lindung, risiko, atau kebutuhan pemulihan.";
+      return "Tahan penguncian zona intensif. Ubah geometri rancangan YG bila analisis dan bukti resmi menegaskan fungsi lindung, risiko, atau kebutuhan pemulihan.";
     }
     if (comparison.decision === "conditional") {
       return "Arah perlindungan berpotensi sejalan, tetapi batas, fungsi, kegiatan, indikator, dan pengawasannya harus dibuktikan dalam KLHS dan peraturan zonasi.";
     }
     if (comparison.policyLayerIds.length) {
-      return "Verifikasi status, fungsi, kewenangan, dan aturan zona sebelum menyatakan draf selaras atau bertentangan.";
+      return "Verifikasi status, fungsi, kewenangan, dan aturan zona sebelum mempromosikan revisi rancangan YG.";
     }
     return "Belum ada irisan pada tiga layer v0. Tetap verifikasi RTRW kabupaten, WP, KLHS, bahaya, layanan, penggunaan lahan, dan tenurial.";
   }
@@ -811,10 +882,10 @@
 
   function validateDraftCollection(collection) {
     var features = collection.features || [];
-    if (features.length > 20000) throw new Error("Draf memuat lebih dari 20.000 polygon; pecah berkas per tema atau SWP agar pemeriksaan lokal tetap aman.");
+    if (features.length > 20000) throw new Error("Revisi memuat lebih dari 20.000 polygon; pecah berkas per tema atau zona agar pemeriksaan lokal tetap aman.");
     var bounds = turf.bbox(collection);
     if (bounds.some(function (value, index) { return !Number.isFinite(value) || Math.abs(value) > (index % 2 ? 90 : 180); })) {
-      throw new Error("Koordinat draf bukan bujur/lintang WGS84 yang dapat dibaca. Ekspor sebagai EPSG:4326; ZIP Shapefile wajib menyertakan berkas .prj.");
+      throw new Error("Koordinat revisi bukan bujur/lintang WGS84 yang dapat dibaca. Ekspor sebagai EPSG:4326; ZIP Shapefile wajib menyertakan berkas .prj.");
     }
     if (typeof turf.booleanValid === "function") {
       var invalidCount = features.filter(function (feature) {
@@ -870,12 +941,12 @@
         _ygCoastHa: Number(comparison.coastAreaHa.toFixed(2)),
         _ygPolicyLayerIds: comparison.policyLayerIds.join(" | "),
         _ygRegulationRefs: comparison.regulationRefs.join(" | "),
-        _ygGeometryStatus: "local_draft_comparison_not_official_conclusion"
+        _ygGeometryStatus: "local_yg_revision_screening_not_official_conclusion"
       });
       comparisons.push(comparison);
       clipped.push(overlap);
     });
-    if (!clipped.length) throw new Error("Tidak ada polygon draf yang beririsan dengan 11 wilayah perencanaan.");
+    if (!clipped.length) throw new Error("Tidak ada polygon revisi YG yang beririsan dengan 11 wilayah perencanaan.");
     var zones = new Map();
     comparisons.forEach(function (row) {
       var current = zones.get(row.zone) || {
@@ -912,7 +983,7 @@
       },
       onEachFeature: function (feature, layer) {
         var props = feature.properties;
-        layer.bindPopup(popup("Draf RDTR · uji lokal YG", {
+        layer.bindPopup(popup("Revisi geometri YG · uji lokal", {
           "ID uji": props._ygReviewId,
           "Zona": props._ygZone,
           "Posisi YG": decisionLabel(props._ygDecision),
@@ -926,7 +997,7 @@
         }));
       }
     }).addTo(state.map);
-    state.layerControl.addOverlay(state.layers.draft, "Draf RDTR · hasil uji lokal YG");
+    state.layerControl.addOverlay(state.layers.draft, "Revisi geometri YG · hasil uji lokal");
     state.map.fitBounds(state.layers.draft.getBounds(), { padding: [18, 18] });
     state.draft = {
       fileName: fileName,
@@ -952,20 +1023,20 @@
     }, {});
     var html = '<div class="rdtr-draft-summary"><article><strong>' + number(draft.features.length, 0) +
       '</strong><span>polygon beririsan</span></article><article><strong>' + number(draft.zones.size, 0) +
-      '</strong><span>zona teridentifikasi</span></article><article><strong>' + number(totalArea, 1) +
+      '</strong><span>zona revisi teridentifikasi</span></article><article><strong>' + number(totalArea, 1) +
       ' ha</strong><span>cakupan terbaca</span></article><article><strong>' + number(counts.hold || 0, 0) +
       '</strong><span>zona berposisi Tahan</span></article></div>';
     html += '<div class="rdtr-draft-decision-summary"><span>' + decisionBadge("hold") + ' ' + number(counts.hold || 0, 0) +
       '</span><span>' + decisionBadge("verify") + ' ' + number(counts.verify || 0, 0) + '</span><span>' +
       decisionBadge("conditional") + ' ' + number(counts.conditional || 0, 0) + '</span><span>' +
       decisionBadge("revise") + ' ' + number(counts.revise || 0, 0) + '</span></div><p class="rdtr-draft-rule"><strong>Aturan keputusan.</strong> ' +
-      'Sistem tidak menetapkan Revisi secara otomatis dari layer indikatif. Status Revisi hanya layak setelah bukti resmi menunjukkan ketidaksesuaian; area tanpa irisan tetap berstatus Verifikasi.</p>';
+      'Sistem tidak menetapkan Revisi secara otomatis dari satu layer indikatif. Status Revisi diputuskan setelah analisis lintas bukti dan alasan perubahan terdokumentasi; area tanpa irisan tetap berstatus Verifikasi.</p>';
     rows.forEach(function (row) {
       var refs = row.policyLayerIds.length ? row.policyLayerIds.join(" · ") : "tidak ada irisan pada tiga layer v0";
       html += '<article class="rdtr-finding is-' + esc(row.decision) + '"><header><div><small>' +
         number(row.featureCount, 0) + ' polygon · ' + esc(refs) + '</small><h3>' + esc(row.zone) + '</h3></div>' +
         decisionBadge(row.decision) + '</header><div class="rdtr-draft-overlaps"><span><strong>' + number(row.areaHa, 1) +
-        ' ha</strong> area draf</span><span><strong>' + number(row.peatAreaHa, 1) + ' ha</strong> gambut</span><span><strong>' +
+        ' ha</strong> area revisi</span><span><strong>' + number(row.peatAreaHa, 1) + ' ha</strong> gambut</span><span><strong>' +
         number(row.forestAreaHa, 1) + ' ha</strong> non-APL</span><span><strong>' + number(row.coastAreaHa, 1) +
         ' ha</strong> kandidat pesisir</span></div><p><strong>Posisi YG.</strong> ' + esc(row.position) + '</p>' +
         (row.evidenceLocks.length ? '<div class="rdtr-draft-locks"><strong>Pengunci bukti:</strong><ul>' + row.evidenceLocks.map(function (item) {
@@ -975,7 +1046,7 @@
     document.getElementById("rdtr-draft-findings").innerHTML = html;
     document.getElementById("rdtr-export-draft-csv").disabled = false;
     document.getElementById("rdtr-export-draft-geojson").disabled = false;
-    document.getElementById("rdtr-draft-status").textContent = "Draf lokal siap: " + draft.fileName + " · " +
+    document.getElementById("rdtr-draft-status").textContent = "Revisi lokal siap: " + draft.fileName + " · " +
       draft.features.length + " dari " + draft.qa.inputFeatureCount + " polygon diuji" +
       (draft.qa.outsideStudyCount ? " · " + draft.qa.outsideStudyCount + " di luar wilayah kajian" : "") +
       " · tidak diunggah ke server.";
@@ -983,7 +1054,7 @@
 
   async function loadDraft(file) {
     var status = document.getElementById("rdtr-draft-status");
-    status.textContent = "Membaca draf secara lokal…";
+    status.textContent = "Membaca revisi geometri YG secara lokal…";
     try {
       var value;
       if (/\.zip$/i.test(file.name)) {
@@ -991,11 +1062,11 @@
         value = await window.shp(await file.arrayBuffer());
       } else value = JSON.parse(await file.text());
       var collection = flattenDraft(value);
-      if (!collection.features.length) throw new Error("Berkas tidak memuat polygon GeoJSON yang dapat dianalisis.");
+      if (!collection.features.length) throw new Error("Berkas tidak memuat polygon GeoJSON revisi yang dapat dianalisis.");
       var qa = validateDraftCollection(collection);
       analyseDraft(collection, file.name, qa);
     } catch (error) {
-      status.textContent = "Draf gagal dibaca: " + error.message;
+      status.textContent = "Revisi gagal dibaca: " + error.message;
     }
   }
 
@@ -1066,12 +1137,15 @@
 
   function consultationText() {
     var summary = state.analysis.summary;
+    var ygDraft = state.analysis.ygDraftRdtr || {};
+    var ygZoning = ygDraft.zoning || {};
     var recommendations = aggregateRecommendations(state.analysis.villages);
     return [
       "POIN KONSULTASI PUBLIK RDTR KAWASAN PERKOTAAN BAGANSIAPIAPI",
       "Bahan internal Yayasan Gambut · 22 September 2026",
       "",
       "Baseline: " + summary.villageCount + " wilayah · " + number(summary.areaHa, 1) + " ha · indikasi gambut " + number(summary.peatCoveragePct, 1) + "% · indikasi non-APL " + number(summary.forestCoveragePct, 1) + "%.",
+      "Rancangan YG: " + number(ygZoning.zoneCount, 0) + " geometri zona · " + number(ygZoning.coveragePct, 2) + "% wilayah kajian · status " + statusLabel(ygDraft.status) + ".",
       "",
       "REKOMENDASI:",
       recommendations.map(function (row, index) { return (index + 1) + ". " + row.theme + " — " + row.recommendation; }).join("\n"),
@@ -1096,7 +1170,7 @@
         return (index + 1) + ". [" + decisionLabel(row.decision) + "] " + row.theme + " — " + row.ygPosition;
       }).join("\n"),
       "",
-      "Catatan: konflik zonasi belum dapat disimpulkan sebelum geometri dan aturan zonasi draf RDTR diterima."
+      "Catatan: zona YG merupakan rancangan alternatif internal tanpa akibat hukum. Setiap perubahan harus ditelusuri ke analisis, bukti, regulasi, dan hasil verifikasi."
     ].join("\n");
   }
 
@@ -1138,6 +1212,8 @@
       "",
       "RENCANA POLA RUANG",
       numbered(pattern.zones || pattern.items) || "Belum dirumuskan.",
+      "Geometri zona: " + number((state.analysis.ygDraftRdtr && state.analysis.ygDraftRdtr.zoning || {}).zoneCount, 0) +
+        " geometri · cakupan " + number((state.analysis.ygDraftRdtr && state.analysis.ygDraftRdtr.zoning || {}).coveragePct, 2) + "%.",
       "",
       "ARAHAN PERATURAN ZONASI",
       numbered(Array.isArray(plan.zoningRules) ? plan.zoningRules : (plan.zoningRules && plan.zoningRules.rules)) || "Belum dirumuskan.",
@@ -1172,7 +1248,7 @@
       }).join("\n\n"),
       "",
       "BATAS PENGGUNAAN",
-      position.caveat || "Geometri analitis bukan batas WP, SWP, zona, atau subzona yang mengikat. Kesimpulan harus diverifikasi dengan RTRW yang berlaku dan draf pemerintah terotorisasi, bernomor versi, serta bertanggal."
+      position.caveat || "Geometri zonasi YG adalah rancangan teknis internal tanpa akibat hukum. Kematangannya harus diuji dengan RTRW yang berlaku, KLHS, data skala 1:5.000, analisis sektoral, dan verifikasi lapangan."
     ].join("\n");
   }
 
@@ -1194,6 +1270,7 @@
       regulationRegister: state.analysis.regulationRegister,
       p0EvidenceBoard: state.analysis.p0EvidenceBoard,
       policyMapFramework: state.analysis.policyMapFramework,
+      ygDraftRdtr: state.analysis.ygDraftRdtr,
       planningWorkflow: state.analysis.planningWorkflow,
       crossCuttingGates: state.analysis.crossCuttingGates,
       mandatoryAnalysisMatrix: state.analysis.mandatoryAnalysisMatrix,
@@ -1207,6 +1284,12 @@
     var collection = state.analysis.map && state.analysis.map.ygPlanningUnits;
     if (!collection) return;
     downloadJson(collection, "unit-penyaringan-analitis-yg-bukan-zonasi.geojson", "application/geo+json;charset=utf-8");
+  }
+
+  function exportYgCandidateZones() {
+    var collection = state.analysis.map && state.analysis.map.ygCandidateZones;
+    if (!collection) return;
+    downloadJson(collection, "rancangan-zonasi-rdtr-yg-bagansiapiapi-v0.2.geojson", "application/geo+json;charset=utf-8");
   }
 
   function exportPolicyMap() {
@@ -1253,7 +1336,7 @@
 
   function exportDraftComparisonCsv() {
     if (!state.draft) return;
-    var header = ["Berkas", "Zona_draf", "Jumlah_polygon", "Luas_ha", "Gambut_ha", "Non_APL_ha", "Kandidat_pesisir_ha", "Posisi_YG", "Arahan_YG", "Layer_kebijakan", "Pengunci_bukti", "Referensi_regulasi", "Status_geometri"];
+    var header = ["Berkas", "Zona_revisi_YG", "Jumlah_polygon", "Luas_ha", "Gambut_ha", "Non_APL_ha", "Kandidat_pesisir_ha", "Posisi_YG", "Arahan_YG", "Layer_kebijakan", "Pengunci_bukti", "Referensi_regulasi", "Status_geometri"];
     var lines = [header.map(csvCell).join(",")];
     state.draft.zoneComparisons.forEach(function (row) {
       lines.push([
@@ -1266,7 +1349,7 @@
     var blob = new Blob(["\ufeff" + lines.join("\n")], { type: "text/csv;charset=utf-8" });
     var link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = "uji-draf-rdtr-vs-kebijakan-yg-internal.csv";
+    link.download = "uji-revisi-geometri-rdtr-yg-internal.csv";
     link.click();
     setTimeout(function () { URL.revokeObjectURL(link.href); }, 1000);
   }
@@ -1275,7 +1358,7 @@
     if (!state.draft) return;
     downloadJson({
       type: "FeatureCollection",
-      name: "Uji lokal draf RDTR terhadap Peta Sintesis Kebijakan YG",
+      name: "Uji lokal revisi geometri RDTR YG terhadap Peta Sintesis Kebijakan YG",
       metadata: {
         access: "staff_only",
         sourceFile: state.draft.fileName,
@@ -1286,7 +1369,7 @@
         disclaimer: "Hasil penyaringan internal; bukan kesimpulan hukum, penetapan zona/subzona, atau dasar KKPR."
       },
       features: state.draft.features
-    }, "uji-draf-rdtr-vs-kebijakan-yg-internal.geojson", "application/geo+json;charset=utf-8");
+    }, "uji-revisi-geometri-rdtr-yg-internal.geojson", "application/geo+json;charset=utf-8");
   }
 
   async function copyText(button, text, original) {
@@ -1331,6 +1414,7 @@
     });
     document.getElementById("rdtr-export-yg-json").addEventListener("click", exportYgJson);
     document.getElementById("rdtr-export-yg-geojson").addEventListener("click", exportYgGeoJson);
+    document.getElementById("rdtr-export-yg-zones").addEventListener("click", exportYgCandidateZones);
     document.getElementById("rdtr-export-policy-map").addEventListener("click", exportPolicyMap);
     document.getElementById("rdtr-export-draft-csv").addEventListener("click", exportDraftComparisonCsv);
     document.getElementById("rdtr-export-draft-geojson").addEventListener("click", exportDraftComparisonGeoJson);
@@ -1360,6 +1444,7 @@
     renderYgPlan(state.analysis);
     renderPlanningWorkflow(state.analysis);
     renderP0EvidenceBoard(state.analysis.p0EvidenceBoard);
+    renderYgDraftRdtr(state.analysis.ygDraftRdtr);
     renderPolicyMapFramework(state.analysis.policyMapFramework);
     renderPlanComponents(state.analysis.ygPlan);
     renderAnalysisProgramme(state.analysis.analysisProgramme, state.analysis.mandatoryAnalysisMatrix);

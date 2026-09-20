@@ -98,15 +98,16 @@
 .rdtr-workflow-stage p { margin: 6px 0; color: #405e56; font-size: .78rem; line-height: 1.43; }
 .rdtr-workflow-stage ul { margin: 8px 0 0; padding-left: 17px; color: var(--rdtr-muted); font-size: .74rem; line-height: 1.42; }
 .rdtr-status-badge { display: inline-flex; padding: 4px 7px; border-radius: 999px; background: #edf3f1; color: #4e6a62; font-size: .64rem; font-weight: 850; text-transform: uppercase; }
-.rdtr-status-badge.is-ready, .rdtr-status-badge.is-validated, .rdtr-status-badge.is-complete_internal_v0 { background: #dff1e7; color: #246242; }
-.rdtr-status-badge.is-in_progress, .rdtr-status-badge.is-partial, .rdtr-status-badge.is-partial_high_priority { background: #e8f1fa; color: #1c6184; }
+.rdtr-readiness-row.is-yg_draft i { background: var(--rdtr-purple); }
+.rdtr-status-badge.is-ready, .rdtr-status-badge.is-validated, .rdtr-status-badge.is-complete_internal_v0, .rdtr-status-badge.is-available_internal_draft, .rdtr-status-badge.is-provisional_internal_v0 { background: #dff1e7; color: #246242; }
+.rdtr-status-badge.is-in_progress, .rdtr-status-badge.is-partial, .rdtr-status-badge.is-partial_high_priority, .rdtr-status-badge.is-partial_provisional_zone_geometry { background: #e8f1fa; color: #1c6184; }
 .rdtr-status-badge.is-verified_available { background: #dff1e7; color: #246242; }
 .rdtr-status-badge.is-verified_process_evidence { background: #e8f1fa; color: #1c6184; }
 .rdtr-status-badge.is-historical_expired_reference { background: #f0ece5; color: #6c5a3d; }
-.rdtr-status-badge.is-yg_draft, .rdtr-status-badge.is-draft, .rdtr-status-badge.is-provisional_analytical_draft { background: #eee8f7; color: #694b82; }
-.rdtr-status-badge.is-blocked, .rdtr-status-badge.is-missing, .rdtr-status-badge.is-blocked_missing_official_evidence, .rdtr-status-badge.is-blocked_missing_p0_evidence, .rdtr-status-badge.is-blocked_missing_klhs_and_draft, .rdtr-status-badge.is-blocked_no_official_zone_geometry, .rdtr-status-badge.is-blocked_no_activity_scenarios, .rdtr-status-badge.is-blocked_no_zone_and_population_projection, .rdtr-status-badge.is-blocked_no_zone_quality_targets, .rdtr-status-badge.is-not_received, .rdtr-status-badge.is-not_verified { background: #fbe6e4; color: #9e2b24; }
+.rdtr-status-badge.is-yg_draft, .rdtr-status-badge.is-draft, .rdtr-status-badge.is-provisional_analytical_draft, .rdtr-status-badge.is-provisional_internal_spatial_draft, .rdtr-status-badge.is-provisional_internal_zone_geometry, .rdtr-status-badge.is-provisional_internal_analytical_plan { background: #eee8f7; color: #694b82; }
+.rdtr-status-badge.is-blocked, .rdtr-status-badge.is-missing, .rdtr-status-badge.is-blocked_missing_official_evidence, .rdtr-status-badge.is-blocked_missing_p0_evidence, .rdtr-status-badge.is-blocked_missing_supporting_analysis, .rdtr-status-badge.is-blocked_missing_klhs_and_draft, .rdtr-status-badge.is-blocked_no_official_zone_geometry, .rdtr-status-badge.is-blocked_no_activity_scenarios, .rdtr-status-badge.is-blocked_no_zone_and_population_projection, .rdtr-status-badge.is-blocked_no_zone_quality_targets, .rdtr-status-badge.is-not_received, .rdtr-status-badge.is-not_verified { background: #fbe6e4; color: #9e2b24; }
 .rdtr-status-badge.is-mapped_policy_synthesis_v0 { background: #eee8f7; color: #694b82; }
-.rdtr-status-badge.is-concept_only, .rdtr-status-badge.is-pending, .rdtr-status-badge.is-pending_evidence, .rdtr-status-badge.is-provisional, .rdtr-status-badge.is-selected_provisional, .rdtr-status-badge.is-candidate, .rdtr-status-badge.is-candidate_only, .rdtr-status-badge.is-framework_only, .rdtr-status-badge.is-insufficient_for_geometry, .rdtr-status-badge.is-indicators_pending_complete_analysis_and_klhs, .rdtr-status-badge.is-candidate_portfolio_no_budget_or_commitment, .rdtr-status-badge.is-not_set_pending_plan_horizon_and_fiscal_analysis { background: #fff0d9; color: #8b5308; }
+.rdtr-status-badge.is-concept_only, .rdtr-status-badge.is-conceptual_structure_geometry_pending, .rdtr-status-badge.is-pending, .rdtr-status-badge.is-pending_evidence, .rdtr-status-badge.is-pending_internal_validation, .rdtr-status-badge.is-provisional, .rdtr-status-badge.is-selected_provisional, .rdtr-status-badge.is-candidate, .rdtr-status-badge.is-candidate_only, .rdtr-status-badge.is-framework_only, .rdtr-status-badge.is-framework_only_pending_activity_matrix, .rdtr-status-badge.is-framework_only_pending_internal_zone_detail, .rdtr-status-badge.is-insufficient_for_geometry, .rdtr-status-badge.is-indicators_pending_complete_analysis_and_klhs, .rdtr-status-badge.is-candidate_portfolio_no_budget_or_commitment, .rdtr-status-badge.is-not_set_pending_plan_horizon_and_fiscal_analysis { background: #fff0d9; color: #8b5308; }
 .rdtr-subsection-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; padding: 4px 22px 0; }
 .rdtr-subsection-heading h3 { margin: 0; font-size: .94rem; }
 .rdtr-subsection-heading p { margin: 0; color: var(--rdtr-muted); font-size: .75rem; }
@@ -157,6 +158,13 @@
 .rdtr-policy-map-header h3 { margin: 0 0 6px; font-size: 1.02rem; }
 .rdtr-policy-map-header p { margin: 0; color: #405e56; font-size: .82rem; line-height: 1.5; }
 .rdtr-policy-map-header small { display: block; margin-top: 7px; max-width: 1040px; color: var(--rdtr-muted); font-size: .69rem; line-height: 1.42; }
+.rdtr-yg-zone-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 11px; padding: 18px 22px 22px; background: #f8fbfa; }
+.rdtr-yg-zone-card { border: 1px solid var(--rdtr-line); border-top: 5px solid var(--zone-color); border-radius: 12px; background: #fff; overflow: hidden; }
+.rdtr-yg-zone-card header { display: flex; align-items: flex-start; justify-content: space-between; gap: 9px; padding: 12px 13px; background: #f8faf9; }
+.rdtr-yg-zone-card header span { color: var(--rdtr-muted); font-size: .65rem; font-weight: 850; }
+.rdtr-yg-zone-card h3 { margin: 4px 0 0; font-size: .84rem; line-height: 1.35; }
+.rdtr-yg-zone-card > p { margin: 0; padding: 10px 13px; color: #405e56; font-size: .75rem; line-height: 1.46; }
+.rdtr-yg-zone-card > small { display: block; padding: 0 13px 12px; color: var(--rdtr-muted); font-size: .67rem; line-height: 1.4; }
 .rdtr-policy-layer-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 11px; padding: 18px 22px 12px; }
 .rdtr-policy-layer-card { border: 1px solid var(--rdtr-line); border-top: 5px solid var(--policy-color); border-radius: 12px; background: #fff; overflow: hidden; }
 .rdtr-policy-layer-card header { display: flex; align-items: flex-start; justify-content: space-between; gap: 9px; padding: 12px 13px; background: #f8faf9; }
@@ -177,7 +185,7 @@
 .rdtr-policy-map-stages { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 9px; padding: 13px 22px 22px; }
 .rdtr-policy-stage { padding: 12px; border: 1px solid var(--rdtr-line); border-left: 4px solid var(--rdtr-amber); border-radius: 10px; background: #fff; }
 .rdtr-policy-stage.is-complete_internal_v0 { border-left-color: var(--rdtr-green); }
-.rdtr-policy-stage.is-blocked_missing_p0_evidence, .rdtr-policy-stage.is-blocked_missing_klhs_and_draft { border-left-color: var(--rdtr-red); }
+.rdtr-policy-stage.is-blocked_missing_p0_evidence, .rdtr-policy-stage.is-blocked_missing_supporting_analysis, .rdtr-policy-stage.is-blocked_missing_klhs_and_draft { border-left-color: var(--rdtr-red); }
 .rdtr-policy-stage header { display: flex; align-items: flex-start; justify-content: space-between; gap: 7px; }
 .rdtr-policy-stage header > span { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: #e7f0ed; color: #285f51; font-size: .68rem; font-weight: 900; }
 .rdtr-policy-stage h4 { margin: 9px 0 5px; font-size: .81rem; }
@@ -315,7 +323,7 @@
   .rdtr-policy-map-stages { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 760px) {
-  .rdtr-yg-plan-header, .rdtr-component-grid, .rdtr-analysis-programme, .rdtr-policy-map-header, .rdtr-policy-layer-summary { grid-template-columns: 1fr; }
+  .rdtr-yg-plan-header, .rdtr-component-grid, .rdtr-analysis-programme, .rdtr-policy-map-header, .rdtr-policy-layer-summary, .rdtr-yg-zone-summary { grid-template-columns: 1fr; }
   .rdtr-plan-meta { justify-content: flex-start; }
   .rdtr-planning-workflow, .rdtr-cross-cutting-gates, .rdtr-plan-traceability, .rdtr-analysis-columns, .rdtr-analysis-decision { grid-template-columns: 1fr; }
   .rdtr-analysis-toolbar { align-items: stretch; flex-direction: column; }
@@ -333,7 +341,7 @@
   .rdtr-draft-locks ul { columns: 1; }
 }
 @media print {
-  .rdtr-planning-workflow, .rdtr-cross-cutting-gates, .rdtr-component-grid, .rdtr-plan-traceability, .rdtr-evidence-register, .rdtr-policy-layer-summary, .rdtr-policy-map-stages { grid-template-columns: 1fr 1fr; }
+  .rdtr-planning-workflow, .rdtr-cross-cutting-gates, .rdtr-component-grid, .rdtr-plan-traceability, .rdtr-evidence-register, .rdtr-policy-layer-summary, .rdtr-yg-zone-summary, .rdtr-policy-map-stages { grid-template-columns: 1fr 1fr; }
   .rdtr-analysis-toolbar { display: none; }
   .rdtr-analysis-matrix { grid-template-columns: 1fr; }
   .rdtr-analysis-item:not([open]) .rdtr-analysis-item-body, .rdtr-alternative:not([open]) .rdtr-alternative-body { display: block; }

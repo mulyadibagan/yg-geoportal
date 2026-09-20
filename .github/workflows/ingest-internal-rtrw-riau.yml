@@ -94,7 +94,9 @@ jobs:
             const data = require(process.argv[1]);
             if (data.metadata?.access !== "staff_only") throw Error("RDTR analysis must remain staff-only");
             if (data.summary?.villageCount !== 11) throw Error("Expected 11 planning-area villages");
-            if (data.metadata?.officialDraftGeometryStatus !== "not_received") throw Error("Unexpected draft status");
+            if (data.metadata?.ygDraftZoningStatus !== "provisional_internal_zone_geometry") throw Error("YG draft zoning is missing");
+            if (!data.map?.ygCandidateZones?.features?.length) throw Error("Expected YG candidate zone geometries");
+            if ((data.map?.ygCandidateZones?.metadata?.coveragePct || 0) < 99) throw Error("YG candidate zones do not cover the study area");
             if (data.policyMapFramework?.status !== "mapped_policy_synthesis_v0") throw Error("Policy synthesis map is missing");
             if (!data.map?.mangroveCandidates?.features?.length) throw Error("Expected mapped mangrove policy candidates");
           ' "${RUNNER_TEMP}/rdtr-bagansiapiapi-analysis.json"

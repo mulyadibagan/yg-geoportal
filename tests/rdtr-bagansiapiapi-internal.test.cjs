@@ -43,7 +43,8 @@ test("internal workspace renders the regulation-based YG plan without claiming o
     "rdtr-analysis-programme", "rdtr-analysis-search", "rdtr-analysis-priority",
     "rdtr-analysis-status", "rdtr-export-analysis-csv", "rdtr-analysis-matrix", "rdtr-geometry-registry",
     "rdtr-p0-evidence-summary", "rdtr-p0-evidence-truth", "rdtr-p0-evidence-register", "rdtr-export-evidence-csv",
-    "policy-map", "rdtr-policy-map-header", "rdtr-policy-layer-summary", "rdtr-policy-map-rule",
+    "policy-map", "rdtr-yg-zone-header", "rdtr-yg-zone-summary", "rdtr-export-yg-zones",
+    "rdtr-policy-map-header", "rdtr-policy-layer-summary", "rdtr-policy-map-rule",
     "rdtr-policy-map-stages", "rdtr-export-policy-map", "rdtr-policy-inspector",
     "rdtr-export-draft-csv", "rdtr-export-draft-geojson", "rdtr-draft-findings"
   ]) assert.match(page, new RegExp(`id="${id}"`));
@@ -52,22 +53,25 @@ test("internal workspace renders the regulation-based YG plan without claiming o
   assert.match(page, /21 analisis penyusunan RDTR/);
   assert.match(script, /Unit penyaringan YG · bukan SWP\/zona/);
   assert.match(script, /unit-penyaringan-analitis-yg-bukan-zonasi\.geojson/);
-  assert.match(script, /Geometri analitis bukan batas WP, SWP, zona, atau subzona yang mengikat/);
+  assert.match(script, /Geometri zonasi YG adalah rancangan teknis internal tanpa akibat hukum/);
   assert.match(script, /matriks-21-analisis-rdtr-bagansiapiapi-internal\.csv/);
   assert.match(script, /register-bukti-p0-rdtr-bagansiapiapi-internal\.csv/);
   assert.match(script, /renderP0EvidenceBoard/);
   assert.match(script, /renderPolicyMapFramework/);
+  assert.match(script, /renderYgDraftRdtr/);
   assert.match(script, /inspectPolicyLocation/);
   assert.match(script, /booleanPointInPolygon/);
   assert.match(script, /peta-sintesis-kebijakan-rdtr-bagansiapiapi-v0\.geojson/);
   assert.match(script, /Arahan YG · tahan intensifikasi gambut/);
   assert.match(script, /Arahan YG · perlindungan\/pemulihan pesisir/);
+  assert.match(script, /Rancangan zonasi RDTR YG v0\.2/);
+  assert.match(script, /rancangan-zonasi-rdtr-yg-bagansiapiapi-v0\.2\.geojson/);
   assert.match(script, /draftPolicyDecision/);
   assert.match(script, /validateDraftCollection/);
   assert.match(script, /20\.000 polygon/);
   assert.match(script, /PM-YG-COAST/);
-  assert.match(script, /uji-draf-rdtr-vs-kebijakan-yg-internal\.csv/);
-  assert.match(script, /uji-draf-rdtr-vs-kebijakan-yg-internal\.geojson/);
+  assert.match(script, /uji-revisi-geometri-rdtr-yg-internal\.csv/);
+  assert.match(script, /uji-revisi-geometri-rdtr-yg-internal\.geojson/);
   assert.match(script, /browser_local_only/);
   assert.match(script, /Pertanyaan konsultasi/);
 });

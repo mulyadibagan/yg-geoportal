@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 import {
   area,
   bbox,
+  difference,
   featureCollection,
   intersect,
   simplify,
@@ -172,7 +173,9 @@ const REGULATION_REGISTER = [
   }
 ];
 
-function buildP0EvidenceBoard() {
+function buildP0EvidenceBoard(ygCandidateZones) {
+  const ygZoneCount = ygCandidateZones?.features?.length || 0;
+  const ygZoneCoveragePct = ygCandidateZones?.metadata?.coveragePct || 0;
   const items = [
     {
       id: "P0-E01",
@@ -287,17 +290,17 @@ function buildP0EvidenceBoard() {
     },
     {
       id: "P0-E07",
-      title: "Draf RDTR terotorisasi: geometri, muatan rencana, dan aturan zonasi",
-      category: "Draf rencana",
-      status: "not_received",
-      evidenceClass: "EV-O",
-      access: "official_request",
-      issuer: "Dinas PUPR Kabupaten Rokan Hilir",
-      sourceNote: "Belum diterima Yayasan Gambut sampai 20 September 2026.",
-      legalRole: "Objek utama untuk menguji tujuan WP, struktur, pola, pemanfaatan ruang, zonasi, ketentuan khusus, dan indikasi program.",
-      finding: "Belum ada versi bertanggal dan bernomor yang dapat dibandingkan terhadap baseline serta rekomendasi YG.",
-      limitation: "Tanpa draf resmi, dashboard hanya dapat menyusun hipotesis dan alternatif; tidak dapat menyatakan konflik zona final.",
-      nextAction: "Minta geodatabase/GeoJSON/SHP terotorisasi, album peta, naskah teknis, rancangan perkada, tabel ITBX, ketentuan intensitas, ketentuan khusus, dan nomor versi.",
+      title: "Rancangan zonasi alternatif YG v0.2",
+      category: "Rancangan internal",
+      status: "available_internal_draft",
+      evidenceClass: "EV-I",
+      access: "internal_only",
+      issuer: "Yayasan Gambut",
+      sourceNote: "Dihasilkan secara mandiri dari kajian regulasi serta overlay baseline yang tersedia; hanya untuk analisis internal dan bahan konsultasi.",
+      legalRole: "Objek kerja internal untuk menyusun tujuan, pola ruang, arah pemanfaatan, kerangka zonasi, dan argumen teknis YG secara konsisten.",
+      finding: `${ygZoneCount} geometri zona kandidat saling eksklusif telah mencakup ${ygZoneCoveragePct}% wilayah kajian.`,
+      limitation: "Bukan RDTR yang ditetapkan, bukan peta dasar skala 1:5.000 terotorisasi, tidak menetapkan hak atau fungsi sektoral, dan tidak dapat menjadi dasar KKPR.",
+      nextAction: "Matangkan subzona, katalog kegiatan/ITBX, intensitas, struktur ruang, program, dan ketentuan khusus melalui data skala RDTR, KLHS, analisis sosial-ekonomi, serta verifikasi lapangan.",
       analysisRefs: ["A24-m", "A24-n", "A24-o", "A24-p", "A24-q", "A24-r", "A24-s"],
       gateRefs: ["rtrw-sync", "klhs-integration", "map-scale-5000"]
     },
@@ -366,7 +369,7 @@ function buildP0EvidenceBoard() {
   };
 }
 
-function buildPolicyMapFramework({ summary, peatCount, forestCount, mangroveCandidateCount, mangroveCandidateAreaHa }) {
+function buildPolicyMapFramework({ summary, peatCount, forestCount, mangroveCandidateCount, mangroveCandidateAreaHa, ygZoneCount, ygZoneCoveragePct }) {
   const disclaimer = "Peta sintesis kebijakan internal untuk menyusun argumen dan prioritas verifikasi. Geometri berasal dari layer penyaringan yang tersedia; bukan peta pola ruang RDTR, bukan penetapan fungsi ekosistem gambut/kawasan hutan, bukan batas sempadan, dan bukan dasar KKPR.";
   return {
     id: "PM-YG-V0",
@@ -440,22 +443,22 @@ function buildPolicyMapFramework({ summary, peatCount, forestCount, mangroveCand
       {
         id: "MAP-1",
         title: "Delineasi calon zona/subzona YG",
-        status: "blocked_missing_p0_evidence",
-        output: "Poligon yang saling eksklusif dengan kode zona, luas, tujuan, kegiatan, intensitas, dan ketentuan khusus.",
-        requirements: ["WP dan peta dasar 1:5.000", "RTRW Kabupaten Rokan Hilir yang berlaku", "KHG/fungsi gambut", "Bahaya pesisir-perkotaan", "Penggunaan lahan dan layanan"]
+        status: "provisional_internal_v0",
+        output: `${ygZoneCount} geometri zona internal saling eksklusif dengan cakupan ${ygZoneCoveragePct}% wilayah kajian; fungsi rinci, subzona, kegiatan, dan intensitas belum final.`,
+        requirements: ["Peta dasar 1:5.000", "Penggunaan lahan dan bangunan", "KHG/fungsi gambut", "Bahaya pesisir-perkotaan", "Data penduduk dan layanan"]
       },
       {
         id: "MAP-2",
-        title: "Peta rancangan RDTR pembanding",
-        status: "blocked_missing_klhs_and_draft",
-        output: "Struktur ruang, pola ruang, ketentuan khusus, program, dan matriks peraturan zonasi versi YG.",
-        requirements: ["KLHS dan matriks integrasi", "Geometri/aturan draf pemerintah", "Skenario penduduk dan kegiatan", "Uji sosial-tenurial dan lapangan"]
+        title: "Rancangan RDTR alternatif YG lengkap",
+        status: "blocked_missing_supporting_analysis",
+        output: "Struktur ruang, subzona, ketentuan khusus, intensitas, program, dan matriks peraturan zonasi versi YG.",
+        requirements: ["KLHS dan matriks integrasi", "Skenario penduduk dan kegiatan", "Analisis layanan dan jaringan", "Uji sosial-tenurial dan lapangan"]
       },
       {
         id: "MAP-3",
-        title: "Peta rekomendasi konsultasi",
-        status: "pending_comparison_and_response",
-        output: "Peta per zona berisi posisi Tahan/Verifikasi/Bersyarat/Revisi, dasar hukum, bukti, luas, perubahan geometri/redaksi, dan respons pemerintah."
+        title: "Paket konsultasi rancangan YG",
+        status: "pending_internal_validation",
+        output: "Peta zona, matriks kegiatan, dasar hukum, bukti, luas, usulan pasal, program, dan daftar isu yang siap dipertahankan dalam konsultasi."
       }
     ]
   };
@@ -549,12 +552,13 @@ function buildPlanningWorkflow() {
       ygWork: [
         "Menyediakan matriks 21 analisis wajib dengan status, temuan sementara, dan langkah berikutnya",
         "Menghitung indikasi cakupan gambut dan kawasan hutan per unit analitis desa",
-        "Menetapkan disiplin keputusan Tahan, Verifikasi, Bersyarat, dan Revisi"
+        "Menetapkan disiplin keputusan Tahan, Verifikasi, Bersyarat, dan Revisi",
+        "Menghasilkan geometri zonasi alternatif YG yang saling eksklusif sebagai hipotesis spasial awal"
       ],
       gaps: [
         "Sebagian besar analisis sosial, ekonomi, kependudukan, transportasi, prasarana, kelembagaan, dan pembiayaan belum dapat diselesaikan",
-        "Dokumen serta peta kerja KLHS dan geometri draf pemerintah/penyusun yang terotorisasi, bernomor versi, dan bertanggal belum diterima",
-        "Temuan baseline belum dapat menjadi penetapan zona atau intensitas pemanfaatan ruang"
+        "Dokumen serta peta kerja KLHS, data penggunaan lahan-bangunan, bahaya, penduduk, ekonomi, dan layanan belum lengkap",
+        "Geometri zonasi YG belum dapat menjadi penetapan zona atau intensitas pemanfaatan ruang yang berkekuatan hukum"
       ]
     },
     {
@@ -569,14 +573,14 @@ function buildPlanningWorkflow() {
         "Bukti bahwa rekomendasi KLHS memengaruhi pilihan konsep"
       ],
       ygWork: [
-        "Menyusun ALT-0, ALT-OFF, dan ALT-YG-1 untuk dibandingkan secara transparan",
+        "Menyusun ALT-0, ALT-YG-2, dan ALT-YG-1 untuk dibandingkan secara transparan",
         "Memilih ALT-YG-1 secara sementara sebagai konsep berbasis ekosistem, risiko, dan konsolidasi pertumbuhan",
-        "Menyiapkan kerangka tujuan, strategi, struktur, pola, aturan zonasi, dan program tanpa menetapkan geometri atau angka intensitas final"
+        "Menyiapkan tujuan, strategi, struktur, pola ruang bergambar, kerangka aturan zonasi, dan program tanpa menetapkan angka intensitas final"
       ],
       gaps: [
-        "ALT-OFF belum dapat dinilai karena konsep/geometri draf pemerintah atau penyusun yang terotorisasi, bernomor versi, dan bertanggal belum diterima",
+        "ALT-YG-2 masih perlu dinilai dengan proyeksi kebutuhan ruang, biaya layanan, dan paparan risiko yang sebanding",
         "Uji alternatif KLHS, proyeksi kebutuhan, analisis kelayakan, dan hasil partisipasi belum lengkap",
-        "Pilihan ALT-YG-1 masih dapat berubah setelah bukti resmi dan masukan konsultasi diuji"
+        "Pilihan ALT-YG-1 masih dapat berubah setelah bukti resmi, verifikasi lapangan, dan masukan konsultasi diuji"
       ]
     },
     {
@@ -592,10 +596,11 @@ function buildPlanningWorkflow() {
       ],
       ygWork: [
         "Menyiapkan kerangka keterlacakan dari analisis dan regulasi menuju komponen rancangan",
-        "Menandai klausul perlindungan dan pengendalian yang perlu diterjemahkan ke geometri, norma, indikator, dan program"
+        "Menandai klausul perlindungan dan pengendalian yang perlu diterjemahkan ke geometri, norma, indikator, dan program",
+        "Menyediakan geometri zonasi internal YG v0.2 sebagai dasar penyusunan lampiran peta alternatif"
       ],
       gaps: [
-        "Belum ada naskah rancangan perkada, matriks kegiatan, peta zonasi draf pemerintah terotorisasi, atau tabel intensitas yang dapat diuji",
+        "Belum ada naskah argumentasi pasal-per-pasal, matriks kegiatan/ITBX, ketentuan khusus, atau tabel intensitas usulan YG yang lengkap",
         "Belum ada konsistensi lintas dokumen yang dapat diperiksa antara batang tubuh, lampiran peta, tabel zonasi, dan basis data",
         "Rancangan YG tidak memiliki akibat hukum dan tidak dapat digunakan sebagai dasar KKPR; hanya RDTR yang telah ditetapkan pejabat berwenang yang dapat digunakan sesuai ketentuan"
       ]
@@ -613,7 +618,7 @@ function buildCrossCuttingGates() {
       articleRef: "Permen ATR/BPN 11/2021, Pasal 20 ayat (2)",
       test: "Setiap tujuan, pusat pelayanan, jaringan, zona, program, dan aturan zonasi harus dapat ditelusuri ke RTRW Kabupaten Rokan Hilir yang sah serta dibaca bersama RTRW Provinsi Riau.",
       evidenceRequired: "Perda RTRW Kabupaten Rokan Hilir yang berlaku, lampiran peta digital, status perubahan, dan matriks sinkronisasi.",
-      decisionRule: "Tidak menyatakan konsisten atau bertentangan sebelum RTRW yang berlaku dan draf pemerintah terotorisasi, bernomor versi, serta bertanggal diperoleh."
+      decisionRule: "Rancangan YG tetap dapat disusun sebagai alternatif internal, tetapi klaim konsistensi final ditahan sampai RTRW kabupaten yang berlaku beserta lampiran petanya dapat diuji."
     },
     {
       id: "klhs-integration",
@@ -723,9 +728,9 @@ function buildMandatoryAnalysisMatrix(summary) {
       regulationRefs: ["R02", "R03", "R07"]
     },
     m: {
-      status: "blocked_no_official_zone_geometry",
-      finding: "Karakteristik zona/subzona belum dapat dinilai karena geometri dan nomenklatur zonasi draf pemerintah terotorisasi, bernomor versi, dan bertanggal belum diterima.",
-      nextStep: "Setelah geometri diterima, susun profil tiap zona: fungsi, kondisi eksisting, daya dukung, risiko, akses, konflik, kegiatan, dan indikator kualitas yang diharapkan.",
+      status: "partial_provisional_zone_geometry",
+      finding: "Geometri dan nomenklatur zona kandidat YG v0.2 telah tersedia, tetapi profil kondisi eksisting, daya dukung, risiko, akses, konflik, dan indikator kualitas per zona belum lengkap.",
+      nextStep: "Susun profil setiap zona YG, pecah menjadi subzona berbasis bukti, lalu uji fungsi, kondisi eksisting, daya dukung, risiko, akses, konflik, kegiatan, dan target kualitas.",
       regulationRefs: ["R03", "R04", "R05", "R10"]
     },
     n: {
@@ -735,9 +740,9 @@ function buildMandatoryAnalysisMatrix(summary) {
       regulationRefs: ["R03", "R07", "R10", "R13"]
     },
     o: {
-      status: "blocked_no_official_zone_geometry",
-      finding: "Kesesuaian kegiatan terhadap zona/subzona tidak dapat diputuskan tanpa geometri dan nomenklatur draf pemerintah terotorisasi, matriks kegiatan, serta bukti kondisi eksisting yang sah.",
-      nextStep: "Uji tiap kegiatan sebagai diizinkan, terbatas, bersyarat, atau tidak diperbolehkan menggunakan kriteria yang eksplisit dan dapat diawasi setelah draf zona terotorisasi tersedia.",
+      status: "framework_only_pending_activity_matrix",
+      finding: "Zona kandidat YG tersedia, tetapi kesesuaian kegiatan belum dapat diputuskan tanpa katalog kegiatan, matriks ITBX, bukti kondisi eksisting, dan kriteria dampak yang dapat diawasi.",
+      nextStep: "Uji tiap kegiatan pada zona YG sebagai diizinkan, terbatas, bersyarat, atau tidak diperbolehkan menggunakan kriteria eksplisit, indikator, ambang, dan mekanisme pengawasan.",
       regulationRefs: ["R03", "R07", "R08"]
     },
     p: {
@@ -748,8 +753,8 @@ function buildMandatoryAnalysisMatrix(summary) {
     },
     q: {
       status: "blocked_no_zone_and_population_projection",
-      finding: "Pertumbuhan penduduk per zona belum dapat dihitung karena geometri zona draf pemerintah terotorisasi dan proyeksi penduduk terpilah belum tersedia.",
-      nextStep: "Setelah zona tersedia, distribusikan skenario penduduk dengan kapasitas hunian dan layanan, risiko, tren migrasi, serta batas daya dukung; hindari kepastian semu.",
+      finding: "Geometri zona kandidat YG tersedia, tetapi pertumbuhan penduduk per zona belum dapat dihitung karena proyeksi penduduk terpilah, kapasitas hunian, dan kapasitas layanan belum tersedia.",
+      nextStep: "Distribusikan skenario penduduk ke zona YG dengan kapasitas hunian dan layanan, risiko, tren migrasi, serta batas daya dukung; hindari kepastian semu.",
       regulationRefs: ["R03", "R05", "R10"]
     },
     r: {
@@ -829,7 +834,7 @@ function buildMandatoryAnalysisMatrix(summary) {
       method: ["Rekonsiliasi data BPS–administrasi", "Proyeksi kohor/komponen atau skenario yang dapat diaudit", "Overlay penduduk–layanan–bahaya"],
       outputs: ["Baseline dan proyeksi penduduk", "Peta kepadatan, kebutuhan layanan, dan populasi terpapar"],
       availableEvidence: ["Unit kajian administrasi tersedia"], evidenceGaps: ["Data penduduk terpilah", "Asumsi migrasi/proyeksi", "Data paparan per unit kecil"],
-      geometryLink: "Mengisi kebutuhan kapasitas per calon zona setelah geometri resmi tersedia; agregasi wajib menjaga privasi.", decisionUse: "Menentukan kebutuhan ruang, layanan, hunian, dan kapasitas evakuasi tanpa menggelembungkan proyeksi.",
+      geometryLink: "Mengisi kebutuhan kapasitas pada geometri zona YG v0.2; agregasi wajib menjaga privasi dan memakai skenario yang dapat diaudit.", decisionUse: "Menentukan kebutuhan ruang, layanan, hunian, dan kapasitas evakuasi tanpa menggelembungkan proyeksi.",
       consultationPrompt: "Minta tahun dasar, sumber, asumsi migrasi, skenario proyeksi, dan populasi terpapar per bahaya."
     },
     g: {
@@ -888,12 +893,12 @@ function buildMandatoryAnalysisMatrix(summary) {
     },
     m: {
       priority: "P0", workstream: "Zonasi dan pengendalian", analysisQuestion: "Apa karakter, fungsi, kondisi, daya dukung, risiko, akses, dan kualitas yang diharapkan pada setiap zona/subzona?",
-      requiredData: ["Geometri dan nomenklatur zona draf terotorisasi", "Profil kondisi eksisting dan daya dukung tiap zona", "Risiko, akses, konflik, kegiatan dan target kualitas"],
+      requiredData: ["Geometri dan nomenklatur zona YG bernomor versi", "Profil kondisi eksisting dan daya dukung tiap zona", "Risiko, akses, konflik, kegiatan dan target kualitas"],
       method: ["Profil spasial per zona", "Statistik zonal dan uji homogenitas", "Perbandingan kondisi–fungsi–target"],
       outputs: ["Lembar profil setiap zona/subzona", "Justifikasi batas, fungsi, dan target kualitas"],
-      availableEvidence: ["Keluarga calon zona versi YG tanpa geometri hukum"], evidenceGaps: ["Geometri zona resmi", "Nomenklatur dan versi draf", "Baseline terpilah per zona"],
-      geometryLink: "Wajib memakai geometri zona draf bernomor versi; unit administrasi YG tidak boleh dianggap zona.", decisionUse: "Menjadi dasar seluruh matriks kegiatan, intensitas, ketentuan khusus, dan evaluasi zona.",
-      consultationPrompt: "Minta geometri zona versi resmi dan profil yang membuktikan mengapa batas serta fungsi tiap zona dipilih."
+      availableEvidence: ["Geometri zona alternatif YG v0.2 saling eksklusif"], evidenceGaps: ["Peta dasar 1:5.000", "Profil kondisi dan target tiap zona", "Baseline terpilah per zona"],
+      geometryLink: "Gunakan geometri zona YG bernomor versi sebagai unit kerja internal; unit administrasi tetap hanya konteks analitis.", decisionUse: "Menjadi dasar seluruh matriks kegiatan, intensitas, ketentuan khusus, dan evaluasi zona.",
+      consultationPrompt: "Uji profil yang membuktikan mengapa batas serta fungsi tiap zona YG dipilih, lalu catat koreksi lokasi dan bukti pendukungnya."
     },
     n: {
       priority: "P1", workstream: "Zonasi dan pengendalian", analysisQuestion: "Kegiatan apa yang eksisting, informal, musiman, terkait penghidupan, atau mungkin berkembang beserta skala dan dampaknya?",
@@ -909,7 +914,7 @@ function buildMandatoryAnalysisMatrix(summary) {
       requiredData: ["Geometri/profil zona", "Katalog kegiatan", "Kriteria kompatibilitas, daya dukung, risiko, standar dan kemampuan pengawasan"],
       method: ["Matriks kompatibilitas kegiatan–zona", "Uji berbasis kriteria dan dampak", "Audit keterlaksanaan syarat serta pengawasan"],
       outputs: ["Matriks ITBX/ketentuan kegiatan", "Justifikasi dan syarat terukur tiap pasangan kegiatan–zona"],
-      availableEvidence: ["Kerangka keputusan Tahan–Verifikasi–Bersyarat–Revisi"], evidenceGaps: ["Zona resmi", "Katalog kegiatan", "Kriteria dan ambang terukur"],
+      availableEvidence: ["Kerangka keputusan Tahan–Verifikasi–Bersyarat–Revisi", "Geometri zona alternatif YG v0.2"], evidenceGaps: ["Katalog kegiatan", "Kriteria dan ambang terukur", "Kemampuan pengawasan"],
       geometryLink: "Keputusan hanya sah untuk pasangan kegiatan–zona dengan geometri dan versi yang jelas.", decisionUse: "Inti peraturan zonasi dan pengendalian pemanfaatan ruang.",
       consultationPrompt: "Minta alasan dan bukti untuk setiap klasifikasi kegiatan, termasuk syarat, indikator, instansi pengawas, dan konsekuensi pelanggaran."
     },
@@ -927,7 +932,7 @@ function buildMandatoryAnalysisMatrix(summary) {
       requiredData: ["Geometri zona", "Proyeksi penduduk dan rumah tangga", "Kapasitas hunian, layanan, akses, risiko dan daya dukung"],
       method: ["Alokasi proyeksi berbasis skenario", "Analisis kapasitas hunian/layanan", "Uji sensitivitas terhadap migrasi dan bahaya"],
       outputs: ["Proyeksi penduduk per zona", "Kebutuhan ruang/layanan dan batas kapasitas"],
-      availableEvidence: ["Belum tersedia untuk tingkat zona"], evidenceGaps: ["Zona resmi", "Proyeksi terpilah", "Kapasitas hunian dan layanan"],
+      availableEvidence: ["Geometri zona alternatif YG v0.2 tersedia"], evidenceGaps: ["Proyeksi terpilah", "Kapasitas hunian dan layanan", "Skenario migrasi serta bahaya"],
       geometryLink: "Tidak menghitung per zona sebelum geometri dan skenario penduduk tervalidasi.", decisionUse: "Menguji intensitas, layanan, dan tahapan pengembangan agar tidak melampaui kapasitas.",
       consultationPrompt: "Minta metode alokasi penduduk per zona, kapasitas hunian/layanan, asumsi migrasi, dan batas daya dukung."
     },
@@ -996,8 +1001,16 @@ function buildAnalysisProgramme(rows) {
   };
 }
 
-function buildYgPlan() {
-  const geometryDisclaimer = "Konsep ini tidak menetapkan batas WP, SWP, blok, subblok, zona, jaringan, atau lokasi program secara resmi. Semua geometri harus diturunkan dari peta dasar skala 1:5.000, survei, RTRW yang sah, KLHS, dan proses pemerintah.";
+function buildYgPlan(ygCandidateZones = featureCollection([])) {
+  const geometryDisclaimer = "Rancangan YG memiliki geometri zona internal untuk analisis dan konsultasi, tetapi tidak menetapkan batas WP, SWP, blok, subblok, zona, jaringan, atau lokasi program secara hukum. Pematangan wajib memakai peta dasar skala 1:5.000, survei, RTRW yang sah, KLHS, serta validasi lintas sektor dan masyarakat.";
+  const zoneFeatures = ygCandidateZones.features || [];
+  function zoneMetric(families) {
+    const selected = zoneFeatures.filter(feature => families.includes(feature.properties?.zoneFamily));
+    return {
+      featureCount: selected.length,
+      areaHa: round(selected.reduce((sum, feature) => sum + areaHa(feature), 0))
+    };
+  }
   return {
     version: "0.1.0-internal",
     status: "provisional_analytical_draft",
@@ -1008,7 +1021,7 @@ function buildYgPlan() {
       status: "provisional",
       statement: "Mengarahkan Kawasan Perkotaan Bagansiapiapi sebagai pusat pelayanan yang aman, inklusif, dan tangguh terhadap rob, banjir, abrasi, kebakaran, serta subsidensi; menjaga fungsi gambut, kawasan hutan, mangrove, sungai, dan pesisir; mempertahankan akses serta penghidupan masyarakat; dan mengonsolidasikan pertumbuhan pada lokasi yang terbukti sesuai dan dapat dilayani.",
       measurementStatus: "indicators_pending_complete_analysis_and_klhs",
-      qualification: "Rumusan tujuan masih sementara. Nilai/kualitas yang terukur dan kesesuaiannya dengan arahan RTRW Kabupaten Rokan Hilir belum dapat ditetapkan sampai RTRW yang berlaku, analisis lengkap, dan KLHS diterima serta diuji.",
+      qualification: "Rumusan tujuan menjadi dasar rancangan alternatif YG. Nilai/kualitas yang terukur dan kesesuaiannya dengan RTRW Kabupaten Rokan Hilir tetap harus diuji ketika instrumen yang berlaku, analisis lengkap, dan KLHS tersedia.",
       regulationRefs: ["R01", "R02", "R03", "R05", "R09", "R10", "R11", "R12", "R13", "R14"]
     },
     strategies: [
@@ -1065,12 +1078,12 @@ function buildYgPlan() {
         evaluation: "Belum dapat dikuantifikasi tanpa penggunaan lahan, proyeksi penduduk-ekonomi, kapasitas layanan, dan skenario bahaya."
       },
       {
-        id: "ALT-OFF",
-        label: "Konsep draf pemerintah/penyusun terotorisasi",
-        status: "unavailable_pending_official_draft",
+        id: "ALT-YG-2",
+        label: "Pertumbuhan tersebar berbasis arahan provinsi",
+        status: "scenario_framework_incomplete",
         selected: false,
-        concept: "Placeholder untuk tujuan, struktur, pola, aturan zonasi, dan program dari draf pemerintah/penyusun yang terotorisasi, bernomor versi, dan bertanggal agar dapat dibandingkan dengan kriteria yang sama.",
-        evaluation: "Belum dinilai karena konsep, geometri, aturan zonasi, dan matriks program dari draf terotorisasi belum diterima."
+        concept: "Menguji pembagian pertumbuhan mengikuti arahan pola ruang provinsi pada area di luar prioritas ekosistem dan status kehutanan.",
+        evaluation: "Tidak dipilih pada v0.2 karena penggunaan lahan, proyeksi penduduk, kapasitas layanan, bahaya, dan biaya penyediaan jaringan belum cukup untuk membuktikan keamanan pertumbuhan tersebar."
       },
       {
         id: "ALT-YG-1",
@@ -1078,16 +1091,16 @@ function buildYgPlan() {
         status: "selected_provisional",
         selected: true,
         concept: "Menyaring lokasi dengan fungsi ekosistem, status hukum, dan risiko terlebih dahulu; memperkuat pusat serta jaringan yang aman; melindungi ruang hidup; dan mengikat keputusan pada aturan serta program yang dapat diawasi.",
-        evaluation: "Dipilih sementara karena paling sesuai dengan indikasi gambut, kawasan hutan, dan pesisir yang tersedia; wajib diuji ulang melalui 21 analisis, KLHS, RTRW kabupaten, draf pemerintah terotorisasi, dan partisipasi."
+        evaluation: "Dipilih sebagai dasar rancangan YG v0.2 karena paling sesuai dengan indikasi gambut, kawasan hutan, dan pesisir yang tersedia; wajib dimatangkan melalui 21 analisis, KLHS, RTRW kabupaten, data skala 1:5.000, dan partisipasi."
       }
     ],
     selectedAlternative: {
       id: "ALT-YG-1",
       status: "provisional",
-      reviewTrigger: "Tinjau ulang setelah RTRW kabupaten, data skala 1:5.000, KLHS, 21 analisis, konsep draf pemerintah terotorisasi, dan matriks tanggapan konsultasi tersedia."
+      reviewTrigger: "Tinjau ulang setelah RTRW kabupaten, data skala 1:5.000, KLHS, 21 analisis, verifikasi lapangan, dan matriks tanggapan konsultasi tersedia."
     },
     structurePlan: {
-      status: "conceptual_no_official_geometry",
+      status: "conceptual_structure_geometry_pending",
       disclaimer: geometryDisclaimer,
       centres: [
         {
@@ -1131,48 +1144,61 @@ function buildYgPlan() {
       ]
     },
     patternPlan: {
-      status: "candidate_zone_families_no_official_geometry",
+      status: "provisional_internal_zone_geometry",
       disclaimer: geometryDisclaimer,
       zones: [
         {
           id: "ZONE-YG-PEAT",
           patternCategory: "protected_candidate",
           role: "candidate_peat_ecosystem_protection_or_management",
-          geometryStatus: "not_delineated",
+          geometryStatus: "provisional_internal_zone_geometry",
+          ...zoneMetric(["peat_hydrology_management"]),
           direction: "Pisahkan perlindungan dan pengelolaan gambut berdasarkan KHG/fungsi resmi, kubah, kedalaman, hidrologi, kerusakan, risiko kebakaran, dan kebutuhan pemulihan; bukan dari persentase WP."
         },
         {
           id: "ZONE-YG-COAST",
           patternCategory: "protected_candidate",
           role: "candidate_coastal_mangrove_river_protection",
-          geometryStatus: "not_delineated",
+          geometryStatus: "provisional_internal_zone_geometry",
+          ...zoneMetric(["coastal_mangrove_protection"]),
           direction: "Lindungi mangrove, sempadan pantai/sungai/muara, aliran pasang-surut, area abrasi-rob, akses masyarakat, serta ruang perikanan berdasarkan kajian lokasi."
         },
         {
           id: "ZONE-YG-FOREST",
           patternCategory: "protected_candidate",
           role: "candidate_forest_status_alignment",
-          geometryStatus: "not_delineated",
+          geometryStatus: "provisional_internal_zone_geometry",
+          ...zoneMetric(["forest_status_alignment"]),
           direction: "Pertahankan keterbacaan status/fungsi kawasan hutan dan jangan menganggap zonasi RDTR mengubah status, fungsi, atau kewenangan kehutanan."
         },
         {
           id: "ZONE-YG-URBAN",
           patternCategory: "cultivation_candidate",
           role: "candidate_safe_urban_consolidation",
-          geometryStatus: "not_delineated",
+          geometryStatus: "provisional_internal_zone_geometry",
+          ...zoneMetric(["safe_urban_consolidation"]),
           direction: "Arahkan hunian, pelayanan, dan kegiatan perkotaan ke kawasan terbangun yang terbukti sesuai, aman, dapat dilayani, serta tidak memperbesar beban hidrologi dan risiko."
         },
         {
           id: "ZONE-YG-LIVELIHOOD",
           patternCategory: "cultivation_candidate",
           role: "candidate_community_livelihood_and_production",
-          geometryStatus: "not_delineated",
+          geometryStatus: "provisional_internal_zone_geometry",
+          ...zoneMetric(["community_livelihood_and_production"]),
           direction: "Akui penghidupan lokal, perikanan, produksi yang sesuai, wilayah kelola, dan akses masyarakat dengan syarat lingkungan, tenurial, serta keselamatan yang dapat diawasi."
+        },
+        {
+          id: "ZONE-YG-VERIFY",
+          patternCategory: "verification_candidate",
+          role: "candidate_function_pending_verification",
+          geometryStatus: "provisional_internal_zone_geometry",
+          ...zoneMetric(["function_pending_verification", "higher_plan_protection_alignment"]),
+          direction: "Pertahankan sebagai ruang verifikasi sampai fungsi rinci, penggunaan lahan, kebutuhan, layanan, risiko, dan hierarki rencana dapat dibuktikan."
         }
       ]
     },
     zoningRules: {
-      status: "framework_only_pending_official_zones",
+      status: "framework_only_pending_internal_zone_detail",
       numericIntensityStatus: "not_set_pending_evidence",
       numericIntensityParameters: {
         kdb: null,
@@ -1186,7 +1212,7 @@ function buildYgPlan() {
         {
           id: "ZR-YG-1",
           scope: "candidate_ecosystem_and_hazard_areas",
-          direction: "Kegiatan yang mengeringkan gambut, memutus konektivitas pasang-surut, menghilangkan mangrove, mempersempit aliran, atau menambah risiko tidak dapat diasumsikan sesuai; klasifikasi kegiatan menunggu zona dan kajian resmi."
+          direction: "Kegiatan yang mengeringkan gambut, memutus konektivitas pasang-surut, menghilangkan mangrove, mempersempit aliran, atau menambah risiko tidak dapat diasumsikan sesuai; klasifikasi kegiatan rinci menunggu subzona dan analisis pendukung."
         },
         {
           id: "ZR-YG-2",
@@ -1213,7 +1239,7 @@ function buildYgPlan() {
           id: "PRG-YG-1",
           title: "Penyelesaian dasar hukum, data, dan peta skala RDTR",
           status: "candidate",
-          direction: "Peroleh RTRW kabupaten, penetapan WP, peta dasar rekomendasi BIG, basis data 1:5.000, geometri draf, metadata, dan audit topologi."
+          direction: "Peroleh RTRW kabupaten, peta dasar rekomendasi BIG, basis data 1:5.000, metadata, dan audit topologi; gunakan seluruhnya untuk mematangkan geometri zona YG v0.2."
         },
         {
           id: "PRG-YG-2",
@@ -1269,8 +1295,8 @@ function buildYgPlan() {
         planComponentRef: "patternPlan",
         analysisRefs: ["A24-b", "A24-d", "A24-m", "A24-n", "A24-o", "A24-p", "A24-s", "A24-t", "A24-u"],
         regulationRefs: ["R03", "R04", "R05", "R09", "R10", "R11", "R12", "R13", "R14", "R15"],
-        evidenceStatus: "insufficient_for_geometry",
-        decision: "Keluarga zona hanya menjadi hipotesis; batas dan nomenklatur harus mengikuti bukti resmi, analisis, KLHS, serta prosedur pemerintah."
+        evidenceStatus: "partial_high_priority",
+        decision: "Geometri zona internal v0.2 telah dibentuk tanpa tumpang tindih; batas dan nomenklatur harus dimatangkan dengan data skala 1:5.000, analisis, KLHS, serta validasi lintas sektor dan masyarakat."
       },
       {
         id: "TR-YG-ZONING",
@@ -1305,7 +1331,7 @@ function planningUnitDirection(metrics) {
   if (metrics.forestCoveragePct > 0) directions.push("selaraskan status dan fungsi kawasan hutan");
   if (metrics.mangrove.status === "analysed") directions.push("lindungi mangrove dan konektivitas pasang-surut");
   else directions.push("lengkapi kajian pesisir, mangrove, dan risiko");
-  directions.push("tetapkan arah ruang hanya setelah RTRW kabupaten, KLHS, dan draf pemerintah terotorisasi dengan nomor versi serta tanggal tersedia");
+  directions.push("matangkan arah ruang YG setelah uji RTRW kabupaten, KLHS, data skala 1:5.000, kebutuhan layanan, dan verifikasi lapangan");
   return directions.join("; ");
 }
 
@@ -1377,7 +1403,7 @@ function buildYgPlanningUnits(villages, villageMetrics) {
   return collection;
 }
 
-function buildGeometryRegistry({ villageCount, rtrwCount, peatCount, forestCount, mangroveCandidateCount }) {
+function buildGeometryRegistry({ villageCount, rtrwCount, peatCount, forestCount, mangroveCandidateCount, ygZoneCount }) {
   return [
     {
       id: "GR-YG-STUDY-AREA",
@@ -1440,14 +1466,24 @@ function buildGeometryRegistry({ villageCount, rtrwCount, peatCount, forestCount
       limitation: "Bukan batas mangrove resmi, bukan penetapan lokasi tanam, dan bukan zona RDTR; wajib verifikasi hidrodinamika, substrat, salinitas, tenurial, penghidupan, dan persetujuan masyarakat."
     },
     {
-      id: "GR-RDTR-OFFICIAL-DRAFT",
+      id: "GR-YG-DRAFT-ZONES",
+      mapRef: "map.ygCandidateZones",
+      status: "provisional_internal_zone_geometry",
+      featureCount: ygZoneCount,
+      role: "yg_alternative_rdtr_zone_geometry",
+      source: "Sintesis berurutan YG dari kandidat pesisir, gambut, non-APL, dan arahan RTRW Provinsi Riau",
+      permittedUse: "Menyusun rancangan RDTR alternatif YG, menghitung luas zona, menguji kebutuhan data, serta menyiapkan argumen konsultasi.",
+      limitation: "Bukan zonasi resmi, bukan peta dasar 1:5.000 terotorisasi, belum memuat subzona/intensitas final, dan tidak dapat digunakan untuk KKPR."
+    },
+    {
+      id: "GR-RTRW-ROHIL",
       mapRef: null,
-      status: "not_received",
+      status: "not_verified",
       featureCount: 0,
-      role: "official_wp_swp_block_subblock_zone_and_network_geometry",
-      source: "Pemerintah Kabupaten Rokan Hilir/penyusun RDTR",
-      permittedUse: "Belum ada.",
-      limitation: "Tanpa geometri ini, konflik zonasi, luas zona, intensitas, dan kesesuaian kegiatan tidak dapat diputuskan."
+      role: "higher_level_regency_plan_consistency_evidence",
+      source: "Pemerintah Kabupaten Rokan Hilir",
+      permittedUse: "Belum tersedia untuk uji konsistensi final.",
+      limitation: "Rancangan YG tetap dapat disusun, tetapi kesesuaian vertikal final harus diperiksa ketika RTRW kabupaten yang berlaku diperoleh."
     },
     {
       id: "GR-KLHS-WORKING-MAPS",
@@ -1501,7 +1537,7 @@ function regulatoryAssessments(summary) {
       finding: "Dokumen, peta kerja, alternatif, rekomendasi, matriks integrasi, penjaminan mutu, dan validasi KLHS belum diterima.",
       regulations: ["R05", "R09", "R10"],
       requirement: "KLHS harus menguji wilayah fungsional, isu strategis, D3TLH, jasa ekosistem, risiko, biodiversitas, iklim, penghidupan, alternatif, dan integrasinya ke keputusan ruang.",
-      ygPosition: "Pilihan zona, intensitas, dan program berdampak tinggi belum layak disepakati sebelum penyusun menunjukkan bagaimana KLHS mengubah draf, bukan sekadar menjadi lampiran.",
+      ygPosition: "Pilihan zona, intensitas, dan program berdampak tinggi belum layak dipromosikan sebelum proses KLHS menunjukkan bagaimana rekomendasinya mengubah rancangan YG, bukan sekadar menjadi lampiran.",
       validation: "KAK/metode, batas ekologis-sosial, isu, analisis dampak, alternatif, rekomendasi, perubahan sebelum-sesudah, partisipasi, mutu, dan validasi gubernur."
     },
     {
@@ -1514,19 +1550,19 @@ function regulatoryAssessments(summary) {
     },
     {
       id: "A07", theme: "Kualitas geometri dan basis data", decision: "verify", confidence: "tinggi",
-      finding: "Baseline YG merupakan alat penyaringan; geometri dan atribut draf RDTR pemerintah/penyusun yang terotorisasi pada skala 1:5.000 belum diterima.",
+      finding: "Geometri zonasi alternatif YG v0.2 telah dibentuk dari layer penyaringan, tetapi belum memakai peta dasar terotorisasi skala 1:5.000 dan atribut zona/subzona belum lengkap.",
       regulations: ["R04", "R15"],
       requirement: "Geometri, atribut, topologi, referensi, metadata, dan album peta RDTR harus lengkap, konsisten, dan dapat diuji.",
-      ygPosition: "YG tidak akan menyebut suatu zona salah sebelum geometri draf pemerintah yang terotorisasi, bernomor versi, dan bertanggal diuji. PDF/CAD saja tidak cukup untuk menghitung luas, irisan, gap, overlap, dan konsistensi atribut.",
+      ygPosition: "YG memperlakukan zona v0.2 sebagai hipotesis spasial yang harus melalui uji gap, overlap, sliver, ketelitian posisi, konsistensi atribut, dan verifikasi lapangan sebelum dipromosikan menjadi rekomendasi final.",
       validation: "GeoPackage/geodatabase atau SHP/GeoJSON, rekomendasi peta dasar BIG, CRS, ketelitian, metadata, kamus data, laporan topologi, dan changelog."
     },
     {
       id: "A08", theme: "Partisipasi dan jejak keputusan", decision: "conditional", confidence: "tinggi",
-      finding: "Konsultasi publik berlangsung, tetapi mekanisme respons dan keterlacakan perubahan draf belum tersedia pada baseline.",
+      finding: "Konsultasi publik berlangsung, tetapi mekanisme respons dan keterlacakan perubahan rancangan YG belum dioperasionalkan.",
       regulations: ["R01", "R03", "R06", "R09", "R10"],
       requirement: "Masukan masyarakat dan FPR harus didokumentasikan, dinilai, dijawab, serta dapat ditelusuri ke perubahan atau alasan penolakan.",
       ygPosition: "Setiap masukan perlu ID, pengusul, lokasi, substansi, bukti, respons, perubahan peta/pasal, penanggung jawab, dan status; ringkasan tanpa matriks respons tidak memadai.",
-      validation: "Undangan, daftar pihak, materi, notulen, peta partisipatif, matriks respons, rekomendasi FPR, dan draf sebelum-sesudah."
+      validation: "Undangan, daftar pihak, materi, notulen, peta partisipatif, matriks respons, rekomendasi FPR, dan rancangan YG sebelum-sesudah."
     },
     {
       id: "A09", theme: "Tenurial, KKPR dan ruang hidup", decision: "verify", confidence: "terbatas",
@@ -1538,7 +1574,7 @@ function regulatoryAssessments(summary) {
     },
     {
       id: "A10", theme: "Pengendalian dan implementasi", decision: "conditional", confidence: "menengah",
-      finding: "Aturan zonasi, indikator pengendalian, instansi pelaksana, program, waktu, dan pembiayaan draf belum diterima.",
+      finding: "Aturan zonasi, indikator pengendalian, instansi pelaksana, program, waktu, dan pembiayaan rancangan YG belum dirumuskan lengkap.",
       regulations: ["R02", "R07", "R08"],
       requirement: "RDTR harus dapat dilaksanakan dan diawasi melalui ketentuan kegiatan, intensitas, prasarana, ketentuan khusus, program, dan instrumen pengendalian.",
       ygPosition: "Rekomendasi perlindungan tidak cukup ditulis sebagai narasi; harus diterjemahkan menjadi geometri, aturan terukur, indikator, penanggung jawab, program, dan sumber pembiayaan.",
@@ -1645,6 +1681,235 @@ function clippedFeatures(features, mask, pickProperties, warnings, label) {
     clipped.push(display);
   }
   return clipped;
+}
+
+function requiredUnion(features, label) {
+  const usable = (features || []).filter(feature => feature?.geometry);
+  if (!usable.length) return null;
+  if (usable.length === 1) return JSON.parse(JSON.stringify(usable[0]));
+  try {
+    return union(featureCollection(usable));
+  } catch (error) {
+    throw new Error(`${label} gagal digabungkan: ${error.message}`);
+  }
+}
+
+function requiredDifference(left, right, label) {
+  if (!left?.geometry) return null;
+  if (!right?.geometry) return JSON.parse(JSON.stringify(left));
+  try {
+    return difference(featureCollection([left, right]));
+  } catch (error) {
+    throw new Error(`${label} gagal dipisahkan tanpa tumpang tindih: ${error.message}`);
+  }
+}
+
+function rtrwZoneSpec(className, index) {
+  const name = String(className || "Arahan belum terklasifikasi").trim();
+  if (/lindung|sempadan|suaka|konservasi|mangrove|hutan/i.test(name)) return {
+    id: `ZYG-RTRW-L-${index + 1}`,
+    code: "YG-ZL-RTRW",
+    name: `Penyelarasan kawasan lindung · ${name}`,
+    zoneFamily: "higher_plan_protection_alignment",
+    patternCategory: "protected_candidate",
+    role: "candidate_higher_plan_protection_alignment",
+    decision: "verify",
+    color: "#496d9e",
+    direction: "Pertahankan arahan perlindungan dari rencana tingkat provinsi sambil memverifikasi rincian fungsi, batas, dan hubungannya dengan RTRW Kabupaten Rokan Hilir."
+  };
+  if (/permukiman|perkotaan|perdagangan|jasa|industri|perkantoran|pariwisata/i.test(name)) return {
+    id: `ZYG-RTRW-U-${index + 1}`,
+    code: "YG-ZK",
+    name: `Konsolidasi perkotaan bersyarat · ${name}`,
+    zoneFamily: "safe_urban_consolidation",
+    patternCategory: "cultivation_candidate",
+    role: "candidate_safe_urban_consolidation",
+    decision: "conditional",
+    color: "#c56a24",
+    direction: "Konsolidasikan kegiatan perkotaan hanya pada lokasi yang terbukti aman, telah terbangun atau dibutuhkan, dapat dilayani, dan tidak menambah beban hidrologi maupun risiko."
+  };
+  if (/pertanian|perkebunan|perikanan|tambak|budidaya|produksi/i.test(name)) return {
+    id: `ZYG-RTRW-P-${index + 1}`,
+    code: "YG-ZP",
+    name: `Penghidupan dan produksi bersyarat · ${name}`,
+    zoneFamily: "community_livelihood_and_production",
+    patternCategory: "cultivation_candidate",
+    role: "candidate_community_livelihood_and_production",
+    decision: "conditional",
+    color: "#8c7a2e",
+    direction: "Pertahankan ruang penghidupan dan produksi yang sesuai dengan syarat perlindungan ekosistem, keselamatan, tenurial, akses masyarakat, serta kapasitas layanan."
+  };
+  return {
+    id: `ZYG-RTRW-V-${index + 1}`,
+    code: "YG-ZV",
+    name: `Verifikasi fungsi ruang · ${name}`,
+    zoneFamily: "function_pending_verification",
+    patternCategory: "verification_candidate",
+    role: "candidate_function_pending_verification",
+    decision: "verify",
+    color: "#637b73",
+    direction: "Tahan penetapan fungsi rinci sampai penggunaan lahan, kebutuhan ruang, layanan, bahaya, tenurial, dan arahan RTRW kabupaten dapat dibuktikan."
+  };
+}
+
+function buildYgCandidateZoning({ studyArea, rtrwMap, peatMap, forestMap, mangroveCandidateMap }) {
+  const zones = [];
+  let allocated = null;
+  const studyAreaHa = areaHa(studyArea);
+  const coastSource = requiredUnion(mangroveCandidateMap, "Kandidat pesisir");
+  const peatSource = requiredUnion(peatMap, "Indikasi gambut");
+  const forestSource = requiredUnion(forestMap, "Indikasi non-APL");
+  function allocate(source, spec, sourceBasis, regulationRefs, accumulate = true) {
+    if (!source?.geometry) return;
+    const available = allocated ? requiredDifference(source, allocated, spec.id) : source;
+    if (!available?.geometry || areaHa(available) < 0.01) return;
+    const hectares = areaHa(available);
+    available.properties = {
+      id: spec.id,
+      code: spec.code,
+      name: spec.name,
+      zoneFamily: spec.zoneFamily,
+      patternCategory: spec.patternCategory,
+      role: spec.role,
+      decision: spec.decision,
+      direction: spec.direction,
+      color: spec.color,
+      areaHa: round(hectares),
+      sharePct: round(hectares / studyAreaHa * 100, 2),
+      sourceBasis,
+      regulationRefs: regulationRefs.join(" | "),
+      maturity: "provisional_internal_zone_geometry",
+      geometryStatus: "yg_analytical_zoning_not_official_rdtr",
+      legalEffect: "none"
+    };
+    zones.push(available);
+    if (accumulate) allocated = requiredUnion([allocated, available], `Akumulasi ${spec.id}`);
+  }
+
+  allocate(coastSource, {
+    id: "ZYG-COAST", code: "YG-ZLP", name: "Perlindungan dan pemulihan pesisir–mangrove",
+    zoneFamily: "coastal_mangrove_protection", patternCategory: "protected_candidate",
+    role: "candidate_coastal_mangrove_river_protection", decision: "hold", color: "#176c8c",
+    direction: "Lindungi mangrove, konektivitas pasang-surut, akses masyarakat, dan kandidat pemulihan; lokasi tindakan tetap memerlukan verifikasi hidrodinamika, substrat, salinitas, tenurial, serta persetujuan masyarakat."
+  }, "Analisis prioritas rehabilitasi mangrove YG 2016–2025 v0.1", ["R05", "R09", "R10", "R12", "R13"]);
+
+  allocate(peatSource, {
+    id: "ZYG-PEAT", code: "YG-ZPG", name: "Pengelolaan dan perlindungan hidrologi gambut",
+    zoneFamily: "peat_hydrology_management", patternCategory: "protected_candidate",
+    role: "candidate_peat_ecosystem_protection_or_management", decision: "hold", color: "#8b3a72",
+    direction: "Tahan peningkatan intensitas dan pengeringan; bedakan perlindungan, pemulihan, dan pemanfaatan terbatas setelah fungsi KHG, kubah, kedalaman, hidrologi, subsidensi, serta kebakaran terverifikasi."
+  }, "Gambut BBSDLP 2019 sebagai indikasi penyaringan", ["R05", "R09", "R10", "R11"]);
+
+  allocate(forestSource, {
+    id: "ZYG-FOREST", code: "YG-ZKH", name: "Penyelarasan status dan fungsi kawasan hutan",
+    zoneFamily: "forest_status_alignment", patternCategory: "verification_candidate",
+    role: "candidate_forest_status_alignment", decision: "verify", color: "#287047",
+    direction: "Pertahankan keterbacaan status dan fungsi kawasan hutan; rancangan zona YG tidak mengubah status, fungsi, persetujuan penggunaan, pelepasan, atau hak yang berlaku."
+  }, "Kawasan hutan SK 903, non-APL, sebagai penyaringan status", ["R01", "R02", "R14", "L02"]);
+
+  const rtrwClasses = [...new Set((rtrwMap || []).map(feature => feature.properties?.class || "Arahan belum terklasifikasi"))].sort();
+  rtrwClasses.forEach((className, index) => {
+    const source = requiredUnion((rtrwMap || []).filter(feature =>
+      (feature.properties?.class || "Arahan belum terklasifikasi") === className
+    ), `RTRW provinsi ${className}`);
+    const spec = rtrwZoneSpec(className, index);
+    allocate(source, spec, `RTRW Provinsi Riau: ${className}`, ["R01", "R02", "R03", "L01", "L02"]);
+  });
+
+  const remainder = requiredDifference(studyArea, allocated, "Sisa wilayah kajian");
+  allocate(remainder, {
+    id: "ZYG-VERIFY", code: "YG-ZV", name: "Verifikasi fungsi ruang dan kebutuhan layanan",
+    zoneFamily: "function_pending_verification", patternCategory: "verification_candidate",
+    role: "candidate_function_pending_verification", decision: "verify", color: "#637b73",
+    direction: "Belum dialokasikan ke fungsi rinci. Lengkapi penggunaan lahan, kependudukan, ekonomi, layanan, bahaya, tenurial, dan survei skala 1:5.000 sebelum menetapkan subzona atau intensitas."
+  }, "Sisa wilayah setelah prioritas ekosistem, status kawasan hutan, dan arahan RTRW provinsi", ["R02", "R03", "R04", "R05", "R10", "R15", "L02"], false);
+
+  function overlapHa(zone, source, label) {
+    if (!source?.geometry) return 0;
+    try {
+      return areaHa(intersect(featureCollection([zone, source])));
+    } catch (error) {
+      throw new Error(`${label} gagal dihitung pada ${zone.properties?.id}: ${error.message}`);
+    }
+  }
+  zones.forEach(zone => {
+    const peatConstraintHa = overlapHa(zone, peatSource, "Irisan gambut");
+    const forestConstraintHa = overlapHa(zone, forestSource, "Irisan kawasan hutan");
+    const coastConstraintHa = overlapHa(zone, coastSource, "Irisan pesisir–mangrove");
+    const rtrwClasses = [...new Set((rtrwMap || []).filter(feature => {
+      try {
+        return areaHa(intersect(featureCollection([zone, feature]))) >= 0.01;
+      } catch (error) {
+        throw new Error(`Irisan RTRW gagal dihitung pada ${zone.properties?.id}: ${error.message}`);
+      }
+    }).map(feature => feature.properties?.class).filter(Boolean))].sort();
+    const constraintOverlays = [];
+    if (peatConstraintHa >= 0.01) constraintOverlays.push("indikasi_gambut");
+    if (forestConstraintHa >= 0.01) constraintOverlays.push("indikasi_non_apl");
+    if (coastConstraintHa >= 0.01) constraintOverlays.push("kandidat_pesisir_mangrove");
+    zone.properties = {
+      ...zone.properties,
+      peatConstraintHa: round(peatConstraintHa),
+      forestConstraintHa: round(forestConstraintHa),
+      coastConstraintHa: round(coastConstraintHa),
+      constraintOverlays: constraintOverlays.join(" | ") || "belum_terpetakan",
+      rtrwProvinceClasses: rtrwClasses.join(" | ") || "belum_terbaca"
+    };
+  });
+
+  const totalZoneAreaHa = zones.reduce((sum, feature) => sum + areaHa(feature), 0);
+  const collection = featureCollection(zones);
+  collection.name = "Rancangan zonasi RDTR alternatif YG — Bagansiapiapi v0.2";
+  collection.metadata = {
+    id: "RDTR-YG-BAGANSIAPIAPI-V0.2",
+    version: "0.2.0-internal",
+    access: "staff_only",
+    status: "provisional_internal_zone_geometry",
+    generatedAt: new Date().toISOString(),
+    zoneCount: zones.length,
+    studyAreaHa: round(studyAreaHa),
+    totalZoneAreaHa: round(totalZoneAreaHa),
+    coveragePct: round(totalZoneAreaHa / studyAreaHa * 100, 3),
+    topologyRule: "Zona dialokasikan berurutan dan saling dikurangkan: pesisir–mangrove, gambut, kawasan hutan, arahan RTRW provinsi, lalu sisa verifikasi.",
+    disclaimer: "Rancangan teknis alternatif internal YG; bukan RDTR yang ditetapkan, bukan peta dasar 1:5.000 terotorisasi, bukan penetapan fungsi sektoral, dan bukan dasar KKPR."
+  };
+  return collection;
+}
+
+function buildYgDraftRdtr(zoning) {
+  const metadata = zoning.metadata || {};
+  return {
+    id: metadata.id || "RDTR-YG-BAGANSIAPIAPI-V0.2",
+    title: "Rancangan RDTR Alternatif Bagansiapiapi versi Yayasan Gambut",
+    version: metadata.version || "0.2.0-internal",
+    status: "provisional_internal_spatial_draft",
+    legalCharacter: "Kajian dan rancangan teknis internal; tidak mempunyai akibat hukum dan tidak menggantikan kewenangan pemerintah daerah untuk menyusun serta menetapkan RDTR.",
+    scope: "Sebelas kelurahan/kepenghuluan di Kecamatan Bangko yang disebut dalam undangan Konsultasi Publik I.",
+    zoning: {
+      status: "provisional_internal_zone_geometry",
+      zoneCount: zoning.features.length,
+      coveragePct: metadata.coveragePct,
+      topologyRule: metadata.topologyRule,
+      zones: zoning.features.map(feature => ({ ...feature.properties }))
+    },
+    components: [
+      { id: "YG-RDTR-01", label: "Tujuan dan strategi WP", status: "provisional", outputRef: "ygPlan.planningObjective" },
+      { id: "YG-RDTR-02", label: "Rencana struktur ruang", status: "concept_only", outputRef: "ygPlan.structurePlan" },
+      { id: "YG-RDTR-03", label: "Rencana pola ruang", status: "provisional_internal_zone_geometry", outputRef: "map.ygCandidateZones" },
+      { id: "YG-RDTR-04", label: "Ketentuan pemanfaatan ruang", status: "candidate_only", outputRef: "ygPlan.programs" },
+      { id: "YG-RDTR-05", label: "Peraturan zonasi", status: "framework_only", outputRef: "ygPlan.zoningRules" }
+    ],
+    remainingEvidence: [
+      "Peta dasar dan survei skala 1:5.000",
+      "RTRW Kabupaten Rokan Hilir yang berlaku",
+      "KHG dan fungsi ekosistem gambut resmi",
+      "Penggunaan lahan dan bangunan eksisting",
+      "Penduduk, ekonomi, layanan, jaringan, dan kebutuhan ruang",
+      "Rob, banjir, abrasi, elevasi, subsidensi, kebakaran, dan evakuasi",
+      "KLHS, uji sosial-tenurial, dan verifikasi lapangan"
+    ],
+    disclaimer: metadata.disclaimer
+  };
 }
 
 function coverageByClass(village, features, className, warnings, label) {
@@ -1864,12 +2129,22 @@ export function buildAnalysis({ rtrw, administration, peat, forest, mangrove, ma
   const mandatoryAnalysisMatrix = buildMandatoryAnalysisMatrix(summary);
   const analysisProgramme = buildAnalysisProgramme(mandatoryAnalysisMatrix);
   const ygPlanningUnits = buildYgPlanningUnits(villages, villageMetrics);
+  const ygCandidateZones = buildYgCandidateZoning({
+    studyArea,
+    rtrwMap,
+    peatMap,
+    forestMap,
+    mangroveCandidateMap
+  });
+  const ygDraftRdtr = buildYgDraftRdtr(ygCandidateZones);
   const policyMapFramework = buildPolicyMapFramework({
     summary,
     peatCount: peatMap.length,
     forestCount: forestMap.length,
     mangroveCandidateCount: mangroveCandidateMap.length,
-    mangroveCandidateAreaHa
+    mangroveCandidateAreaHa,
+    ygZoneCount: ygCandidateZones.features.length,
+    ygZoneCoveragePct: ygCandidateZones.metadata.coveragePct
   });
 
   return {
@@ -1880,9 +2155,9 @@ export function buildAnalysis({ rtrw, administration, peat, forest, mangrove, ma
       status: "provisional_internal_analytical_plan",
       generatedAt: new Date().toISOString(),
       consultationDate: "2026-09-22",
-      officialDraftGeometryStatus: "not_received",
+      ygDraftZoningStatus: "provisional_internal_zone_geometry",
       limitation:
-        "Rancangan analitis internal untuk menyusun argumen dan alternatif YG sesuai tahapan regulasi. Dokumen ini bukan RDTR yang ditetapkan, naskah perkada, dasar KKPR, atau penetapan geometri/intensitas. Konflik zonasi dan angka intensitas baru dapat dinilai setelah RTRW kabupaten yang sah, KLHS, data skala 1:5.000, serta geometri dan aturan zonasi draf pemerintah terotorisasi diterima."
+        "Rancangan teknis RDTR alternatif YG disusun mandiri dari kajian kebijakan dan data yang tersedia. Dokumen ini bukan RDTR yang ditetapkan, naskah perkada, dasar KKPR, atau penetapan geometri/intensitas. Zona internal dapat dipakai untuk analisis dan konsultasi, tetapi subzona serta angka intensitas baru dapat dimatangkan setelah RTRW kabupaten yang sah, KLHS, data skala 1:5.000, penggunaan lahan, layanan, bahaya, dan verifikasi lapangan tersedia."
     },
     summary,
     readiness: [
@@ -1891,37 +2166,40 @@ export function buildAnalysis({ rtrw, administration, peat, forest, mangrove, ma
       { id: "peat", label: "Gambut BBSDLP 2019", status: "screening" },
       { id: "forest", label: "Indikasi non-APL dari kawasan hutan SK 903", status: "screening" },
       { id: "mangrove", label: "Analisis mangrove 2016–2025", status: "partial" },
-      { id: "rdtr-draft", label: "Geometri dan aturan zonasi draf RDTR", status: "missing" },
+      { id: "yg-zoning", label: "Rancangan zonasi alternatif YG v0.2", status: "yg_draft" },
       { id: "klhs", label: "Dokumen dan peta kerja KLHS", status: "missing" },
+      { id: "land-use", label: "Penggunaan lahan, bangunan, penduduk, dan layanan skala RDTR", status: "missing" },
       { id: "hazards", label: "Peta rob, banjir, abrasi, dan subsidensi", status: "missing" }
     ],
     analysisPosition: {
       title: "Posisi dan rancangan analitis Yayasan Gambut berbasis regulasi",
-      statement: "Baseline menunjukkan alasan kuat untuk menahan keputusan ruang berintensitas tinggi pada area gambut, non-APL, dan pesisir. YG menyusun alternatif sementara yang mengutamakan perlindungan ekosistem, pengurangan risiko, konsolidasi pertumbuhan aman, akses masyarakat, serta pengendalian yang terukur sambil menunggu pembuktian draf pemerintah terotorisasi dan KLHS.",
-      caveat: "Status Tahan, Verifikasi, dan Bersyarat adalah kesimpulan analitis internal. Rancangan YG tidak menetapkan geometri atau intensitas yang mengikat. Status Revisi hanya diberikan setelah geometri dan aturan draf pemerintah terotorisasi membuktikan ketidaksesuaian."
+      statement: "Baseline menunjukkan alasan kuat untuk menahan keputusan ruang berintensitas tinggi pada area gambut, non-APL, dan pesisir. YG telah membentuk rancangan zonasi internal yang saling eksklusif untuk mengutamakan perlindungan ekosistem, penyelarasan status, konsolidasi pertumbuhan aman, akses masyarakat, serta pengendalian yang terukur.",
+      caveat: "Status Tahan, Verifikasi, dan Bersyarat adalah keputusan rancangan internal. Geometri zona YG dapat dipakai sebagai argumen teknis dan bahan konsultasi, tetapi tidak mempunyai akibat hukum, tidak menetapkan hak, dan tidak dapat digunakan sebagai dasar KKPR."
     },
     decisionClasses: DECISION_CLASSES,
     regulatoryAssessments: regulatoryAssessments(summary),
     regulationRegister: REGULATION_REGISTER,
     legalFramework: REGULATION_REGISTER.map(row => ({ code: row.code, theme: row.title })),
-    p0EvidenceBoard: buildP0EvidenceBoard(),
+    p0EvidenceBoard: buildP0EvidenceBoard(ygCandidateZones),
     policyMapFramework,
+    ygDraftRdtr,
     planningWorkflow: buildPlanningWorkflow(),
     crossCuttingGates: buildCrossCuttingGates(),
     mandatoryAnalysisMatrix,
     analysisProgramme,
-    ygPlan: buildYgPlan(),
+    ygPlan: buildYgPlan(ygCandidateZones),
     geometryRegistry: buildGeometryRegistry({
       villageCount: villages.length,
       rtrwCount: rtrwMap.length,
       peatCount: peatMap.length,
       forestCount: forestMap.length,
-      mangroveCandidateCount: mangroveCandidateMap.length
+      mangroveCandidateCount: mangroveCandidateMap.length,
+      ygZoneCount: ygCandidateZones.features.length
     }),
     consultationQuestions: [
       "Apa dasar hukum dan analitis penetapan WP yang mencakup 11 wilayah, serta bagaimana keterkaitannya dengan RTRW Kabupaten Rokan Hilir yang berlaku?",
       "Bagaimana setiap perbedaan geometri atau klasifikasi terhadap RTRW Provinsi Riau dan RTRW Kabupaten Rokan Hilir dijelaskan serta didokumentasikan?",
-      "Bagaimana rekomendasi KLHS mengubah tujuan, struktur, pola, intensitas, ketentuan khusus, dan indikasi program dalam draf RDTR?",
+      "Bagaimana rekomendasi KLHS harus mengubah tujuan, struktur, pola, intensitas, ketentuan khusus, dan indikasi program dalam rancangan alternatif YG?",
       "Bagaimana zona berintensitas tinggi diuji terhadap fungsi KHG, kedalaman gambut, muka air, subsidensi, rob, drainase, dan risiko kebakaran?",
       "Bagaimana status kawasan hutan, PBPH/persetujuan, hak/izin eksisting, perhutanan sosial, dan konflik tenurial direkonsiliasi dengan zona RDTR?",
       "Apa dasar penetapan sempadan pantai, Sungai Rokan, anak sungai, dan muara; apakah memakai data pasut, elevasi, gelombang, abrasi, rob, dan ekosistem?",
@@ -1936,7 +2214,8 @@ export function buildAnalysis({ rtrw, administration, peat, forest, mangrove, ma
       rtrw: featureCollection(rtrwMap),
       peat: featureCollection(peatMap),
       forest: featureCollection(forestMap),
-      mangroveCandidates: featureCollection(mangroveCandidateMap)
+      mangroveCandidates: featureCollection(mangroveCandidateMap),
+      ygCandidateZones
     },
     warnings: [...warnings].slice(0, 50)
   };
