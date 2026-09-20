@@ -31,6 +31,9 @@ test('service worker downloads a bounded Dayun package without deleting it on ac
   assert.match(worker, /DAYUN_OFFLINE_DOWNLOAD/);
   assert.match(worker, /DAYUN_OFFLINE_STATUS/);
   assert.match(worker, /DAYUN_OFFLINE_DELETE/);
+  assert.match(worker, /async function offlineNavigationFallback/);
+  assert.match(worker, /opensGeneralPwa/);
+  assert.match(worker, /dayunCache\.match\(new URL\("\/dayun-map\.html"/);
   assert.match(worker, /\/data\/dayun-map\.geojson/);
   assert.match(worker, /\/data\/dayun-gawangan-details\.json/);
   assert.match(worker, /server\.arcgisonline\.com/);
@@ -52,4 +55,7 @@ test('offline client reports progress and preserves user control over stored dat
   assert.match(client, /confirm\('Hapus paket Peta Dayun/);
   assert.match(client, /beforeinstallprompt/);
   assert.match(client, /navigator\.onLine/);
+  assert.match(client, /function showInstallOffer/);
+  assert.match(client, /Tambahkan pintasan untuk masuk tanpa internet/);
+  assert.match(client, /Peta Dayun akan terbuka otomatis/);
 });

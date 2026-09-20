@@ -1,4 +1,4 @@
-const CACHE_NAME = "yg-geoportal-v26-20260920-dayun-offline";
+const CACHE_NAME = "yg-geoportal-v27-20260920-dayun-entry";
 const DAYUN_CACHE_NAME = "yg-dayun-offline-v1";
 const DAYUN_META_URL = "/__dayun_offline_meta__";
 
@@ -173,6 +173,22 @@ async function dayunStatus() {
   try { return await response.json(); } catch (_) { return { ready: false }; }
 }
 
+async function offlineNavigationFallback(request) {
+  const requestUrl = new URL(request.url);
+  const opensGeneralPwa = requestUrl.origin === self.location.origin &&
+    (requestUrl.pathname === "/" || requestUrl.pathname === "/index.html");
+  if (opensGeneralPwa) {
+    const meta = await dayunStatus();
+    if (meta.ready) {
+      const dayunCache = await caches.open(DAYUN_CACHE_NAME);
+      const dayunMap = await dayunCache.match(new URL("/dayun-map.html", self.location.origin).href, { ignoreSearch: true });
+      if (dayunMap) return dayunMap;
+    }
+  }
+  const cached = await caches.match(request, { ignoreSearch: true });
+  return cached || caches.match("./index.html");
+}
+
 self.addEventListener("message", event => {
   const data = event.data || {};
   if (data.type === "DAYUN_OFFLINE_DOWNLOAD") {
@@ -247,9 +263,7 @@ self.addEventListener("fetch", event => {
   if (isFreshnessCritical(request, url)) {
     event.respondWith(
       fetch(request, { cache: "no-store" }).catch(() => {
-        if (request.mode === "navigate") {
-          return caches.match(request, { ignoreSearch: true }).then(cached => cached || caches.match("./index.html"));
-        }
+        if (request.mode === "navigate") return offlineNavigationFallback(request);
         return caches.match(request, { ignoreSearch: true });
       })
     );
