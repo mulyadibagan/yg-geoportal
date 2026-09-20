@@ -27,7 +27,7 @@ permissions:
 
 concurrency:
   group: yg-webgis-riau-geoportal-ingest
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   ingest:
