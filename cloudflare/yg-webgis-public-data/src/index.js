@@ -170,7 +170,8 @@ async function validStaffToken(token, env) {
       const response = await fetch(upstream.toString(), { headers: { accept: "application/json", "user-agent": "YG-GeoPortal-Cloudflare-RSPO/1.0" }, redirect: "follow" });
       if (!response.ok) return false;
       const data = normalizeJson(await response.json());
-      const valid = Boolean(data) && true !== data.requiresLogin && false !== data.ok;
+      const viewer = data?.viewer;
+      const valid = Boolean(data) && true !== data.requiresLogin && false !== data.ok && !data.error && Array.isArray(data.reports) && Boolean(data.stats) && "object" == typeof data.stats && !Array.isArray(data.stats) && Boolean(viewer) && "object" == typeof viewer && !Array.isArray(viewer) && Boolean(String(viewer.username || "").trim()) && Boolean(String(viewer.role || "").trim());
       if (valid) rememberValidStaffToken(token);
       return valid;
     } catch {
@@ -209,10 +210,112 @@ const PRIVATE_DATA_ROUTES = {
   "/api/staff/fire-monthly-index": ["internal/fire-monthly/index.json", "application/json; charset=utf-8"],
   "/api/staff/phl-svlk-monthly-index": ["internal/phl-svlk-monthly/index.json", "application/json; charset=utf-8"]
 };
+const RIAU_GEOPORTAL_API_PREFIX = "/api/staff/riau-geoportal/";
+const RIAU_GEOPORTAL_OBJECT_PREFIX = "internal/riau-geoportal/";
+const RIAU_GEOPORTAL_CATALOG_KEY = `${RIAU_GEOPORTAL_OBJECT_PREFIX}catalog/current.json`;
+const RIAU_GEOPORTAL_DISPLAY_MAX_BYTES = 12 * 1024 * 1024;
+const RIAU_GEOPORTAL_DISPLAY_MAX_FEATURES = 25000;
+const DATASET_UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+function isRiauGeoportalApiPath(pathname) {
+  return pathname.startsWith(RIAU_GEOPORTAL_API_PREFIX);
+}
+function riauGeoportalRoute(url) {
+  if ("/api/staff/riau-geoportal/catalog" === url.pathname) {
+    return { key: RIAU_GEOPORTAL_CATALOG_KEY, contentType: "application/json; charset=utf-8", kind: "catalog" };
+  }
+  const prefix = "/api/staff/riau-geoportal/datasets/";
+  if (!url.pathname.startsWith(prefix)) return null;
+  const rest = url.pathname.slice(prefix.length).split("/");
+  if (2 !== rest.length || !DATASET_UUID_PATTERN.test(rest[0])) {
+    return { error: "invalid_dataset_path", status: 400 };
+  }
+  const uuid = rest[0].toLowerCase(), kind = rest[1];
+  if (!["manifest", "display", "source"].includes(kind)) return { error: "not_found", status: 404 };
+  return { catalogKey: RIAU_GEOPORTAL_CATALOG_KEY, kind, uuid };
+}
+async function resolveRiauGeoportalObject(env, route) {
+  if (route.key) return route;
+  const catalogObject = await env.PUBLIC_SNAPSHOTS?.get(route.catalogKey);
+  if (!catalogObject) return null;
+  let catalog;
+  try {
+    catalog = JSON.parse(await catalogObject.text());
+  } catch {
+    throw new Error("invalid_riau_geoportal_catalog");
+  }
+  if (catalog?.access !== "staff_only" || catalog?.canonicalDatasetKey !== "datasetUuid" || !Array.isArray(catalog?.datasets)) {
+    throw new Error("invalid_riau_geoportal_catalog");
+  }
+  const matches = catalog.datasets.filter(entry => String(entry?.datasetUuid || "").toLowerCase() === route.uuid);
+  if (matches.length > 1) throw new Error("duplicate_riau_geoportal_catalog_uuid");
+  if (matches.length !== 1) return null;
+  const dataset = matches[0];
+  if ("manifest" === route.kind) {
+    return {
+      contentType: "application/json; charset=utf-8",
+      kind: route.kind,
+      uuid: route.uuid,
+      inline: {
+        schemaVersion: catalog.schemaVersion,
+        access: catalog.access,
+        generatedAt: catalog.generatedAt,
+        catalogRelease: { id: catalog.id, key: catalog?.catalog?.releaseKey || null },
+        datasetUuid: route.uuid,
+        objects: {
+          source: dataset?.artifacts?.source?.available ? dataset.artifacts.source : null,
+          display: dataset?.artifacts?.display?.available && dataset.artifacts.display.status === "ready" ? dataset.artifacts.display : null,
+          metadata: dataset?.artifacts?.metadata?.available ? dataset.artifacts.metadata : null
+        },
+        dataset
+      }
+    };
+  }
+  const entry = dataset?.artifacts?.[route.kind], key = String(entry?.key || ""), sha256 = String(entry?.sha256 || "").toLowerCase();
+  const expectedFile = "display" === route.kind ? "display" : "source";
+  const bytes = Number(entry?.bytes), featureCount = Number(entry?.featureCount ?? 0);
+  if (!/^[0-9a-f]{64}$/.test(sha256)) return null;
+  const expectedKey = `${RIAU_GEOPORTAL_OBJECT_PREFIX}datasets/${route.uuid}/releases/${sha256}/${expectedFile}.geojson`;
+  if (entry?.available !== true || key !== expectedKey || entry?.kind && entry.kind !== route.kind) return null;
+  if ("display" === route.kind && entry?.status !== "ready") return null;
+  if (!Number.isSafeInteger(bytes) || bytes < 1) throw new Error("invalid_riau_geoportal_object_bytes");
+  if ("display" === route.kind && (!Number.isSafeInteger(featureCount) || featureCount < 0 || featureCount > RIAU_GEOPORTAL_DISPLAY_MAX_FEATURES)) {
+    throw new Error("invalid_riau_geoportal_display_feature_count");
+  }
+  return {
+    key,
+    contentType: "application/geo+json; charset=utf-8",
+    kind: route.kind,
+    uuid: route.uuid,
+    bytes,
+    featureCount
+  };
+}
 async function privateDataApi(request, env, url) {
   const token = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "").trim() || "";
   if (!await validStaffToken(token, env)) return staffJson({ ok: false, error: "unauthorized" }, 401);
   let route = PRIVATE_DATA_ROUTES[url.pathname];
+  if (!route && isRiauGeoportalApiPath(url.pathname)) {
+    const requested = riauGeoportalRoute(url);
+    if (!requested) return staffJson({ ok: false, error: "not_found" }, 404);
+    if (requested.error) return staffJson({ ok: false, error: requested.error }, requested.status);
+    try {
+      const resolved = await resolveRiauGeoportalObject(env, requested);
+      if (!resolved) return staffJson({ ok: false, error: "data_unavailable" }, 503, { "retry-after": "30" });
+      if (resolved.inline) {
+        const value = JSON.stringify(resolved.inline);
+        const headers = new Headers(STAFF_API_HEADERS);
+        headers.set("content-type", resolved.contentType);
+        headers.set("cache-control", "private, max-age=300");
+        headers.set("vary", "Authorization");
+        headers.set("content-length", String(new TextEncoder().encode(value).length));
+        headers.set("x-yg-data-source", "r2-private-catalog");
+        return new Response("HEAD" === request.method ? null : value, { headers });
+      }
+      route = [resolved.key, resolved.contentType, resolved];
+    } catch (error) {
+      return console.error({ event: "riau_geoportal_catalog_resolution_failed", message: error.message }), staffJson({ ok: false, error: "data_unavailable" }, 503, { "retry-after": "30" });
+    }
+  }
   if (!route && "/api/staff/fire-monthly-report" === url.pathname) {
     const month = String(url.searchParams.get("month") || "");
     if (!/^20\d{2}-(0[1-9]|1[0-2])$/.test(month)) return staffJson({ ok: false, error: "invalid_month" }, 400);
@@ -227,6 +330,14 @@ async function privateDataApi(request, env, url) {
   try {
     const object = await env.PUBLIC_SNAPSHOTS?.get(route[0]);
     if (!object) return staffJson({ ok: false, error: "data_unavailable" }, 503, { "retry-after": "30" });
+    const versionedDataObject = ["source", "display"].includes(route[2]?.kind);
+    const manifestBytes = Number(route[2]?.bytes || 0), actualBytes = Number(object.size);
+    if (versionedDataObject && (!Number.isSafeInteger(actualBytes) || actualBytes < 1 || manifestBytes !== actualBytes)) {
+      return staffJson({ ok: false, error: "data_integrity_error" }, 503, { "retry-after": "30" });
+    }
+    if ("display" === route[2]?.kind && actualBytes > RIAU_GEOPORTAL_DISPLAY_MAX_BYTES) {
+      return staffJson({ ok: false, error: "display_too_large" }, 413);
+    }
     const headers = new Headers();
     Object.entries(STAFF_API_HEADERS).forEach(([k, v]) => headers.set(k, v));
     headers.set("content-type", route[1]);
@@ -234,6 +345,8 @@ async function privateDataApi(request, env, url) {
     headers.set("vary", "Authorization");
     headers.set("etag", object.httpEtag);
     headers.set("x-yg-data-source", "r2-private-route");
+    if ("source" === route[2]?.kind) headers.set("content-disposition", `attachment; filename="riau-geoportal-${route[2].uuid}.geojson"`);
+    if (actualBytes > 0) headers.set("content-length", String(actualBytes));
     return new Response("HEAD" === request.method ? null : object.body, { headers });
   } catch (error) {
     return console.error({ event: "private_data_failed", message: error.message }), staffJson({ ok: false, error: "data_unavailable" }, 503, { "retry-after": "30" });
@@ -269,7 +382,7 @@ async function refresh(env, event) {
   return await env.PUBLIC_SNAPSHOTS.put("manifests/current.json", JSON.stringify(manifest), META), manifest;
 }
 var index_default = { async fetch(request, env) {
-  const url = new URL(request.url), privateDataApiRoute = Boolean(PRIVATE_DATA_ROUTES[url.pathname]) || "/api/staff/fire-monthly-report" === url.pathname || "/api/staff/phl-svlk-monthly-report" === url.pathname, staffApi = "/api/prepost/sessions" === url.pathname || "/api/prepost/session-detail" === url.pathname || "/api/staff/auth-result" === url.pathname || "/api/donor/programmes" === url.pathname || "/api/donor/admin-result" === url.pathname || "/api/staff/rspo-groups" === url.pathname || privateDataApiRoute;
+  const url = new URL(request.url), privateDataApiRoute = Boolean(PRIVATE_DATA_ROUTES[url.pathname]) || isRiauGeoportalApiPath(url.pathname) || "/api/staff/fire-monthly-report" === url.pathname || "/api/staff/phl-svlk-monthly-report" === url.pathname, staffApi = "/api/prepost/sessions" === url.pathname || "/api/prepost/session-detail" === url.pathname || "/api/staff/auth-result" === url.pathname || "/api/donor/programmes" === url.pathname || "/api/donor/admin-result" === url.pathname || "/api/staff/rspo-groups" === url.pathname || privateDataApiRoute;
   if ("OPTIONS" === request.method) return new Response(null, { status: 204, headers: staffApi ? STAFF_API_HEADERS : PUBLIC_HEADERS });
   if ("/internal/refresh" === url.pathname) {
     if ("POST" !== request.method) return json({ ok: false, error: "method_not_allowed" }, 405, { allow: "POST, OPTIONS" });

@@ -105,6 +105,7 @@
       </div>
       <div class="riau-reference-actions">
         <button type="button" data-riau-clear>Matikan referensi</button>
+        <a href="staff-riau-reference.html">Katalog Riau Geoportal →</a>
         <a href="staff-rdtr-bagansiapiapi.html">Kajian RDTR Bagansiapiapi →</a>
       </div>
       <small class="riau-reference-status" aria-live="polite">Pilih preset; tidak ada layer berat yang diaktifkan otomatis.</small>

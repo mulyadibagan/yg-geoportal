@@ -11,6 +11,7 @@ test("authenticated pages expose a shared staff logout control", () => {
   assert.match(auth, /control\.id = "yg-staff-session"/);
   assert.match(auth, /button\.textContent = "Keluar staf"/);
   assert.match(auth, /logout\(\);\s*location\.replace\("staff-login\.html\?loggedOut=1"\)/);
+  assert.match(auth, /keepalive: action === "editor-logout"/);
   assert.match(auth, /#logout-editor, #rspo-logout/);
 });
 
@@ -26,7 +27,7 @@ test("PBPH staff surfaces load the shared authentication module", () => {
     "pbph-profile.html"
   ]) {
     const html = fs.readFileSync(path.join(ROOT, file), "utf8");
-    assert.match(html, /src="js\/auth\.js\?v=20260917-session4"/, file);
+    assert.match(html, /src="js\/auth\.js\?v=20260920-session5"/, file);
   }
 });
 

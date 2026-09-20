@@ -59,7 +59,12 @@
   async function postAuthRequest(action, fields) {
     const requestId = "yg-auth-" + Date.now() + "-" + Math.floor(Math.random() * 100000);
     const body = new URLSearchParams({ action, requestId, ...(fields || {}) });
-    await fetch(API, { method: "POST", mode: "no-cors", body });
+    await fetch(API, {
+      method: "POST",
+      mode: "no-cors",
+      body,
+      keepalive: action === "editor-logout"
+    });
     if (action === "editor-logout") return { ok: true };
 
     const deadline = Date.now() + 30000;

@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test test/*.test.mjs",
+    "test": "node --test --test-concurrency=1 test/*.test.mjs",
     "validate:snapshots": "node scripts/validate-snapshots.mjs",
     "build:rspo-groups": "node scripts/build-rspo-groups.mjs",
     "prepare:rtrw": "node scripts/prepare-rtrw-riau.mjs",

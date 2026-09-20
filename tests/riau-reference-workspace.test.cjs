@@ -12,13 +12,14 @@ test("Riau reference workspace is staff-only and additive", () => {
   const workspace = read("js/riau-reference-workspace.js");
 
   assert.match(home, /Peta Referensi Riau/);
-  assert.match(home, /webgis\.html\?workspace=riau-reference/);
+  assert.match(home, /staff-riau-reference\.html/);
   assert.match(home, /data-staff-only-module hidden/);
   assert.match(page, /riau-reference-workspace\.js\?v=20260920-internal1/);
   assert.match(workspace, /if \(!session\(\)/);
   assert.match(workspace, /Layer program YG tidak diubah/);
   assert.match(workspace, /waitUntilSettled/);
   assert.match(workspace, /for \(const layerId of preset\.layers\)/);
+  assert.match(workspace, /staff-riau-reference\.html/);
   assert.doesNotMatch(workspace, /\.click\(\)/);
 });
 

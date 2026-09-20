@@ -1,0 +1,330 @@
+name: Ingest internal Riau Geoportal
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/ingest-internal-riau-geoportal.yml
+      - cloudflare/yg-webgis-public-data/package.json
+      - cloudflare/yg-webgis-public-data/package-lock.json
+      - cloudflare/yg-webgis-public-data/scripts/riau-geoportal-ingest.mjs
+      - cloudflare/yg-webgis-public-data/scripts/riau-geoportal-mirror.mjs
+      - cloudflare/yg-webgis-public-data/test/riau-geoportal-ingest.test.mjs
+      - cloudflare/yg-webgis-public-data/test/riau-geoportal-mirror.test.mjs
+  schedule:
+    - cron: "23 19 * * 1"
+  workflow_dispatch:
+    inputs:
+      upload_production:
+        description: Promote a complete verified release to production R2
+        required: true
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: yg-webgis-riau-geoportal-ingest
+  cancel-in-progress: false
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    environment: yg-webgis-staging
+    env:
+      STAGING_BUCKET: yg-webgis-public-snapshots-staging
+      PRODUCTION_BUCKET: yg-webgis-public-snapshots
+      CATALOG_KEY: internal/riau-geoportal/catalog/current.json
+      EXPECTED_DATASETS: "60"
+      MAX_SOURCE_BYTES: "5368709120"
+      METADATA_MAX_BYTES: "16777216"
+      DISPLAY_SOURCE_MAX_BYTES: "536870912"
+      DISPLAY_MAX_BYTES: "12582912"
+      DISPLAY_MAX_FEATURES: "25000"
+      WORK_ROOT: ${{ runner.temp }}/riau-geoportal
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: cloudflare/yg-webgis-public-data/package-lock.json
+
+      - name: Install Node and GDAL dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm ci
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends gdal-bin
+          ogrinfo --version
+        working-directory: cloudflare/yg-webgis-public-data
+
+      - name: Require private R2 bucket origins
+        shell: bash
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          R2_PRIVACY_ROOT="${RUNNER_TEMP}/r2-privacy"
+          mkdir -p "${R2_PRIVACY_ROOT}"
+          check_private_bucket() {
+            local bucket="$1"
+            local api="https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/r2/buckets/${bucket}/domains"
+            curl --fail --silent --show-error \
+              --header "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+              "${api}/managed" > "${R2_PRIVACY_ROOT}/${bucket}-managed.json"
+            curl --fail --silent --show-error \
+              --header "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+              "${api}/custom" > "${R2_PRIVACY_ROOT}/${bucket}-custom.json"
+            jq -e '.success == true and (.result | type == "object") and (.result.enabled == false)' \
+              "${R2_PRIVACY_ROOT}/${bucket}-managed.json" >/dev/null
+            jq -e '.success == true and (.result | type == "object") and (.result.domains | type == "array") and all(.result.domains[]; .enabled == false)' \
+              "${R2_PRIVACY_ROOT}/${bucket}-custom.json" >/dev/null
+          }
+          check_private_bucket "${STAGING_BUCKET}"
+          check_private_bucket "${PRODUCTION_BUCKET}"
+
+      - name: Inventory the live official catalog
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "${WORK_ROOT}"
+          node scripts/riau-geoportal-ingest.mjs \
+            --output "${WORK_ROOT}/inventory.json" \
+            --plan "${WORK_ROOT}/download-plan.json" \
+            --dry-run \
+            --page-size 250 \
+            --concurrency 4
+          test "$(jq '.datasets | length' "${WORK_ROOT}/inventory.json")" = "${EXPECTED_DATASETS}"
+          test "$(jq '.items | length' "${WORK_ROOT}/download-plan.json")" = "${EXPECTED_DATASETS}"
+        working-directory: cloudflare/yg-webgis-public-data
+
+      - name: Fetch the last complete staging catalog when present
+        shell: bash
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          if ! npx wrangler r2 object get \
+            "${STAGING_BUCKET}/${CATALOG_KEY}" \
+            --remote \
+            --file "${WORK_ROOT}/previous-catalog.json"
+          then
+            rm -f "${WORK_ROOT}/previous-catalog.json"
+          fi
+        working-directory: cloudflare/yg-webgis-public-data
+
+      - name: Mirror eligible datasets and build immutable release objects
+        shell: bash
+        env:
+          UPLOAD_PRODUCTION_REQUESTED: ${{ inputs.upload_production }}
+        run: |
+          set -euo pipefail
+          previous_args=()
+          force_args=()
+          if test -s "${WORK_ROOT}/previous-catalog.json"; then
+            previous_args=(--previous "${WORK_ROOT}/previous-catalog.json")
+          fi
+          if test "${GITHUB_EVENT_NAME}" = "push" || \
+             test "${GITHUB_EVENT_NAME}" = "schedule" || \
+             test "${UPLOAD_PRODUCTION_REQUESTED}" = "true"
+          then
+            # Production promotion must materialize every referenced object in
+            # this run; never rely on a staging-only previous release.
+            force_args=(--force)
+          fi
+          node scripts/riau-geoportal-mirror.mjs \
+            --manifest "${WORK_ROOT}/inventory.json" \
+            --plan "${WORK_ROOT}/download-plan.json" \
+            --output-dir "${WORK_ROOT}/mirror" \
+            --expected-count "${EXPECTED_DATASETS}" \
+            --max-bytes "${MAX_SOURCE_BYTES}" \
+            --metadata-max-bytes "${METADATA_MAX_BYTES}" \
+            --timeout-ms 900000 \
+            --retries 3 \
+            --concurrency 2 \
+            --display-source-max-bytes "${DISPLAY_SOURCE_MAX_BYTES}" \
+            --display-max-bytes "${DISPLAY_MAX_BYTES}" \
+            --display-max-features "${DISPLAY_MAX_FEATURES}" \
+            "${previous_args[@]}" \
+            "${force_args[@]}"
+        working-directory: cloudflare/yg-webgis-public-data
+
+      - name: Run inventory, mirror, and Worker tests
+        run: npm test
+        working-directory: cloudflare/yg-webgis-public-data
+
+      - name: Recheck private R2 bucket origins before staging upload
+        shell: bash
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          R2_PRIVACY_ROOT="${RUNNER_TEMP}/r2-privacy-pre-staging"
+          mkdir -p "${R2_PRIVACY_ROOT}"
+          check_private_bucket() {
+            local bucket="$1"
+            local api="https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/r2/buckets/${bucket}/domains"
+            curl --fail --silent --show-error \
+              --header "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+              "${api}/managed" > "${R2_PRIVACY_ROOT}/${bucket}-managed.json"
+            curl --fail --silent --show-error \
+              --header "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+              "${api}/custom" > "${R2_PRIVACY_ROOT}/${bucket}-custom.json"
+            jq -e '.success == true and (.result | type == "object") and (.result.enabled == false)' \
+              "${R2_PRIVACY_ROOT}/${bucket}-managed.json" >/dev/null
+            jq -e '.success == true and (.result | type == "object") and (.result.domains | type == "array") and all(.result.domains[]; .enabled == false)' \
+              "${R2_PRIVACY_ROOT}/${bucket}-custom.json" >/dev/null
+          }
+          check_private_bucket "${STAGING_BUCKET}"
+          check_private_bucket "${PRODUCTION_BUCKET}"
+
+      - name: Upload changed immutable data objects to staging
+        shell: bash
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          upload_range() {
+            local bucket="$1"
+            local minimum="$2"
+            local maximum="$3"
+            jq -r \
+              --argjson minimum "${minimum}" \
+              --argjson maximum "${maximum}" \
+              '.objects[] | select(.phaseOrder >= $minimum and .phaseOrder <= $maximum) | [.key, .file, .contentType] | @tsv' \
+              "${WORK_ROOT}/mirror/upload-plan.json" |
+            while IFS=$'\t' read -r key file content_type; do
+              case "${key}" in
+                internal/riau-geoportal/*) ;;
+                *) echo "Refusing unexpected R2 key: ${key}" >&2; exit 1 ;;
+              esac
+              test -f "${WORK_ROOT}/mirror/${file}"
+              npx wrangler r2 object put \
+                "${bucket}/${key}" \
+                --remote \
+                --file "${WORK_ROOT}/mirror/${file}" \
+                --content-type "${content_type}"
+            done
+          }
+          upload_range "${STAGING_BUCKET}" 10 10
+        working-directory: cloudflare/yg-webgis-public-data
+
+      - name: Require every eligible dataset before changing catalog pointers
+        shell: bash
+        run: |
+          set -euo pipefail
+          jq -e '
+            .totals.failed == 0 and
+            .totals.ready == (.totals.mirrored + .totals.reused) and
+            .totals.datasets == (env.EXPECTED_DATASETS | tonumber)
+          ' "${WORK_ROOT}/mirror/upload-plan.json"
+
+      - name: Publish staging manifests and catalog pointer last
+        shell: bash
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          for phase in 20 30 40; do
+            jq -r --argjson phase "${phase}" \
+              '.objects[] | select(.phaseOrder == $phase) | [.key, .file, .contentType] | @tsv' \
+              "${WORK_ROOT}/mirror/upload-plan.json" |
+            while IFS=$'\t' read -r key file content_type; do
+              case "${key}" in
+                internal/riau-geoportal/*) ;;
+                *) echo "Refusing unexpected R2 key: ${key}" >&2; exit 1 ;;
+              esac
+              npx wrangler r2 object put \
+                "${STAGING_BUCKET}/${key}" \
+                --remote \
+                --file "${WORK_ROOT}/mirror/${file}" \
+                --content-type "${content_type}"
+            done
+          done
+        working-directory: cloudflare/yg-webgis-public-data
+
+      - name: Recheck private production R2 bucket origin before promotion
+        if: ${{ github.event_name == 'push' || github.event_name == 'schedule' || inputs.upload_production }}
+        shell: bash
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          R2_PRIVACY_ROOT="${RUNNER_TEMP}/r2-privacy-pre-production"
+          mkdir -p "${R2_PRIVACY_ROOT}"
+          bucket="${PRODUCTION_BUCKET}"
+          api="https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/r2/buckets/${bucket}/domains"
+          curl --fail --silent --show-error \
+            --header "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+            "${api}/managed" > "${R2_PRIVACY_ROOT}/${bucket}-managed.json"
+          curl --fail --silent --show-error \
+            --header "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+            "${api}/custom" > "${R2_PRIVACY_ROOT}/${bucket}-custom.json"
+          jq -e '.success == true and (.result | type == "object") and (.result.enabled == false)' \
+            "${R2_PRIVACY_ROOT}/${bucket}-managed.json" >/dev/null
+          jq -e '.success == true and (.result | type == "object") and (.result.domains | type == "array") and all(.result.domains[]; .enabled == false)' \
+            "${R2_PRIVACY_ROOT}/${bucket}-custom.json" >/dev/null
+
+      - name: Promote the complete release to production in safe order
+        if: ${{ github.event_name == 'push' || github.event_name == 'schedule' || inputs.upload_production }}
+        shell: bash
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          for phase in 10 20 30 40; do
+            jq -r --argjson phase "${phase}" \
+              '.objects[] | select(.phaseOrder == $phase) | [.key, .file, .contentType] | @tsv' \
+              "${WORK_ROOT}/mirror/upload-plan.json" |
+            while IFS=$'\t' read -r key file content_type; do
+              case "${key}" in
+                internal/riau-geoportal/*) ;;
+                *) echo "Refusing unexpected R2 key: ${key}" >&2; exit 1 ;;
+              esac
+              npx wrangler r2 object put \
+                "${PRODUCTION_BUCKET}/${key}" \
+                --remote \
+                --file "${WORK_ROOT}/mirror/${file}" \
+                --content-type "${content_type}"
+            done
+          done
+        working-directory: cloudflare/yg-webgis-public-data
+
+      - name: Verify private APIs remain closed anonymously
+        shell: bash
+        run: |
+          set -euo pipefail
+          verify_unauthorized() {
+            local url="$1"
+            local status=""
+            for attempt in $(seq 1 20); do
+              status="$(curl --show-error --silent \
+                --max-time 20 \
+                --output /dev/null \
+                --write-out '%{http_code}' \
+                "${url}" || true)"
+              if test "${status}" = "401"; then
+                return 0
+              fi
+              sleep 15
+            done
+            echo "Expected 401 from ${url}; last status was ${status}" >&2
+            return 1
+          }
+          verify_unauthorized \
+            "https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/api/staff/riau-geoportal/catalog"
+          verify_unauthorized \
+            "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/staff/riau-geoportal/catalog"

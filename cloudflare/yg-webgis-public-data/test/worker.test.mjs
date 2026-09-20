@@ -2,6 +2,14 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import worker from "../src/index.js";
 
+function authenticatedStaffPayload() {
+  return {
+    reports: [],
+    stats: {},
+    viewer: { username: "test-staff", role: "editor" }
+  };
+}
+
 function envWith(value) {
   return {
     ENVIRONMENT: "test",
@@ -121,7 +129,7 @@ test("protects and serves the RSPO group overview from R2", async () => {
   globalThis.fetch = async url => {
     assert.match(String(url), /page=staff-reports/);
     assert.match(String(url), /sessionToken=valid-session/);
-    return new Response(JSON.stringify({ reports: [], stats: {} }), { headers: { "content-type": "application/json" } });
+    return new Response(JSON.stringify(authenticatedStaffPayload()), { headers: { "content-type": "application/json" } });
   };
   try {
     const env = envWith({ type: "FeatureCollection", features: new Array(23).fill({ type: "Feature" }) });
@@ -141,7 +149,7 @@ test("PBPH reference and reports require a valid staff session", async () => {
   globalThis.fetch = async url => {
     assert.match(String(url), /page=staff-reports/);
     assert.match(String(url), /sessionToken=valid-session/);
-    return new Response(JSON.stringify({ reports: [], stats: {} }), { headers: { "content-type": "application/json" } });
+    return new Response(JSON.stringify(authenticatedStaffPayload()), { headers: { "content-type": "application/json" } });
   };
   try {
     const env = envWith({ type: "FeatureCollection", features: [{ properties: { NAMOBJ: "internal" } }] });
@@ -157,6 +165,194 @@ test("PBPH reference and reports require a valid staff session", async () => {
   } finally { globalThis.fetch = originalFetch; }
 });
 
+test("Riau Geoportal catalog and dataset objects remain staff-only", async () => {
+  const originalFetch = globalThis.fetch;
+  const uuid = "1465e69b-4107-4862-bc66-d532e0fd5a21";
+  const release = "a".repeat(64);
+  const displayRelease = "b".repeat(64);
+  const prefix = `internal/riau-geoportal/datasets/${uuid}`;
+  const sourceKey = `${prefix}/releases/${release}/source.geojson`;
+  const displayKey = `${prefix}/releases/${displayRelease}/display.geojson`;
+  const sourceBody = JSON.stringify({ type: "FeatureCollection", features: [{ id: "source" }] });
+  const displayBody = JSON.stringify({ type: "FeatureCollection", features: [{ id: "display" }] });
+  const catalog = {
+    schemaVersion: 1,
+    id: "release-test",
+    generatedAt: "2026-09-20T00:00:00.000Z",
+    access: "staff_only",
+    canonicalDatasetKey: "datasetUuid",
+    datasetCount: 60,
+    catalog: { releaseKey: "internal/riau-geoportal/catalog/releases/release-test.json" },
+    datasets: [{
+      datasetUuid: uuid,
+      title: "Contoh",
+      artifacts: {
+        source: { available: true, key: sourceKey, bytes: Buffer.byteLength(sourceBody), sha256: release },
+        display: { available: true, status: "ready", key: displayKey, bytes: Buffer.byteLength(displayBody), sha256: displayRelease, featureCount: 1 }
+      }
+    }]
+  };
+  const objects = new Map([
+    ["internal/riau-geoportal/catalog/current.json", JSON.stringify(catalog)],
+    [sourceKey, sourceBody],
+    [displayKey, displayBody]
+  ]);
+  const seen = [];
+  const env = {
+    ...envWith(null),
+    PUBLIC_SNAPSHOTS: {
+      async get(key) {
+        seen.push(key);
+        const value = objects.get(key);
+        if (value == null) return null;
+        return {
+          body: value,
+          async text() { return value; },
+          size: Buffer.byteLength(value),
+          httpEtag: '"riau-test"',
+          writeHttpMetadata(headers) { headers.set("content-type", "application/json"); }
+        };
+      }
+    }
+  };
+  globalThis.fetch = async url => {
+    assert.match(String(url), /page=staff-reports/);
+    assert.match(String(url), /sessionToken=riau-geoportal-session/);
+    return new Response(JSON.stringify(authenticatedStaffPayload()), { headers: { "content-type": "application/json" } });
+  };
+  try {
+    const denied = await worker.fetch(new Request("https://data.test/api/staff/riau-geoportal/catalog"), env);
+    assert.equal(denied.status, 401);
+
+    const headers = { authorization: "Bearer riau-geoportal-session" };
+    const catalogResponse = await worker.fetch(new Request("https://data.test/api/staff/riau-geoportal/catalog", { headers }), env);
+    assert.equal(catalogResponse.status, 200);
+    assert.equal((await catalogResponse.json()).datasetCount, 60);
+    assert.equal(catalogResponse.headers.get("access-control-allow-origin"), "https://webgisyg.id");
+    assert.equal(catalogResponse.headers.get("vary"), "Authorization");
+
+    const manifestResponse = await worker.fetch(new Request(`https://data.test/api/staff/riau-geoportal/datasets/${uuid}/manifest`, { headers }), env);
+    assert.equal(manifestResponse.status, 200);
+    assert.equal((await manifestResponse.json()).dataset.datasetUuid, uuid);
+
+    const displayResponse = await worker.fetch(new Request(`https://data.test/api/staff/riau-geoportal/datasets/${uuid}/display`, { headers }), env);
+    assert.equal(displayResponse.status, 200);
+    assert.equal((await displayResponse.json()).features[0].id, "display");
+
+    const sourceResponse = await worker.fetch(new Request(`https://data.test/api/staff/riau-geoportal/datasets/${uuid}/source`, { headers }), env);
+    assert.equal(sourceResponse.status, 200);
+    assert.match(sourceResponse.headers.get("content-disposition"), new RegExp(uuid));
+    assert.equal((await sourceResponse.json()).features[0].id, "source");
+    assert.ok(seen.includes(sourceKey));
+    assert.ok(seen.includes(displayKey));
+    assert.ok(!seen.includes(`${prefix}/current.json`));
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test("Riau Geoportal dataset paths reject traversal and unadvertised objects", async () => {
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async () => new Response(JSON.stringify(authenticatedStaffPayload()), { headers: { "content-type": "application/json" } });
+  try {
+    const env = envWith(null);
+    const headers = { authorization: "Bearer riau-path-test-session" };
+    const invalid = await worker.fetch(new Request("https://data.test/api/staff/riau-geoportal/datasets/not-a-uuid/display", { headers }), env);
+    assert.equal(invalid.status, 400);
+    assert.equal((await invalid.json()).error, "invalid_dataset_path");
+    const raw = await worker.fetch(new Request("https://data.test/api/staff/riau-geoportal/datasets/1465e69b-4107-4862-bc66-d532e0fd5a21/raw", { headers }), env);
+    assert.equal(raw.status, 404);
+    const unknown = await worker.fetch(new Request("https://data.test/api/staff/riau-geoportal/private-object", { headers }), env);
+    assert.equal(unknown.status, 404);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test("staff token validation rejects malformed and error-shaped upstream payloads", async () => {
+  const originalFetch = globalThis.fetch;
+  try {
+    for (const [token, payload] of [
+      ["malformed-staff-session", {}],
+      ["error-staff-session", { error: "Sesi staf tidak valid." }],
+      ["missing-viewer-staff-session", { reports: [], stats: {} }],
+      ["empty-viewer-staff-session", { reports: [], stats: {}, viewer: { username: "", role: "" } }]
+    ]) {
+      globalThis.fetch = async url => {
+        assert.match(String(url), new RegExp(`sessionToken=${token}`));
+        return new Response(JSON.stringify(payload), { headers: { "content-type": "application/json" } });
+      };
+      const response = await worker.fetch(new Request("https://data.test/api/staff/riau-geoportal/catalog", {
+        headers: { authorization: `Bearer ${token}` }
+      }), envWith({ datasets: [] }));
+      assert.equal(response.status, 401, token);
+    }
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test("Riau Geoportal catalog cannot redirect reads or understate display size", async () => {
+  const originalFetch = globalThis.fetch;
+  const uuid = "1465e69b-4107-4862-bc66-d532e0fd5a21";
+  const release = "c".repeat(64);
+  const validKey = `internal/riau-geoportal/datasets/${uuid}/releases/${release}/display.geojson`;
+  const headers = { authorization: "Bearer riau-manifest-hardening-session" };
+  globalThis.fetch = async () => new Response(JSON.stringify(authenticatedStaffPayload()), { headers: { "content-type": "application/json" } });
+
+  function maliciousEnv(catalog, { objectSize = 2, objectKey = validKey, includeObjectSize = true } = {}) {
+    return {
+      ...envWith(null),
+      PUBLIC_SNAPSHOTS: {
+        async get(key) {
+          if (key.endsWith("/current.json")) {
+            const value = JSON.stringify(catalog);
+            return { body: value, async text() { return value; }, size: value.length, httpEtag: '"catalog"', writeHttpMetadata() {} };
+          }
+          if (key === objectKey) {
+            const object = { body: "{}", httpEtag: '"display"', writeHttpMetadata() {} };
+            if (includeObjectSize) object.size = objectSize;
+            return object;
+          }
+          return null;
+        }
+      }
+    };
+  }
+
+  const baseDataset = {
+    datasetUuid: uuid,
+    artifacts: {
+      display: { available: true, status: "ready", kind: "display", key: validKey, sha256: release, bytes: 2, featureCount: 1 }
+    }
+  };
+  const base = {
+    schemaVersion: 1,
+    access: "staff_only",
+    canonicalDatasetKey: "datasetUuid",
+    datasets: [baseDataset]
+  };
+  try {
+    const cases = [
+      [{ ...base, datasets: [{ ...baseDataset, datasetUuid: "797ba768-2e6b-4cc8-ada9-6b4134baf518" }] }, {}, 503],
+      [{ ...base, datasets: [{ ...baseDataset, artifacts: { display: { ...baseDataset.artifacts.display, key: `internal/riau-geoportal/datasets/${uuid}/releases/${release}/../source.geojson` } } }] }, {}, 503],
+      [{ ...base, datasets: [{ ...baseDataset, artifacts: { display: { ...baseDataset.artifacts.display, kind: "source" } } }] }, {}, 503],
+      [{ ...base, datasets: [{ ...baseDataset, artifacts: { display: { ...baseDataset.artifacts.display, bytes: -1 } } }] }, {}, 503],
+      [{ ...base, datasets: [baseDataset, structuredClone(baseDataset)] }, {}, 503],
+      [base, { objectSize: 3 }, 503],
+      [base, { includeObjectSize: false }, 503],
+      [{ ...base, datasets: [{ ...baseDataset, artifacts: { display: { ...baseDataset.artifacts.display, featureCount: 25_001 } } }] }, {}, 503],
+      [{ ...base, datasets: [{ ...baseDataset, artifacts: { display: { ...baseDataset.artifacts.display, bytes: 13 * 1024 * 1024 } } }] }, { objectSize: 13 * 1024 * 1024 }, 413]
+    ];
+    for (const [catalog, options, expectedStatus] of cases) {
+      const response = await worker.fetch(new Request(`https://data.test/api/staff/riau-geoportal/datasets/${uuid}/display`, { headers }), maliciousEnv(catalog, options));
+      assert.equal(response.status, expectedStatus);
+    }
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
 
 test("parallel staff geometry requests share one Apps Script token check", async () => {
   const originalFetch = globalThis.fetch;
@@ -165,7 +361,7 @@ test("parallel staff geometry requests share one Apps Script token check", async
     checks += 1;
     assert.match(String(url), /page=staff-reports/);
     await new Promise(resolve => setTimeout(resolve, 10));
-    return new Response(JSON.stringify({ reports: [], stats: {} }), { headers: { "content-type": "application/json" } });
+    return new Response(JSON.stringify(authenticatedStaffPayload()), { headers: { "content-type": "application/json" } });
   };
   try {
     const env = envWith({ type: "FeatureCollection", features: [] });

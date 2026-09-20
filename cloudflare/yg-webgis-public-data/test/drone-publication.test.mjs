@@ -115,7 +115,11 @@ test('authenticated staff can list and inspect team orthomosaic jobs without own
   globalThis.fetch = async url => {
     assert.match(String(url), /page=staff-reports/);
     assert.match(String(url), /sessionToken=staff-session/);
-    return new Response(JSON.stringify({ reports: [], stats: {} }), { headers: { 'content-type': 'application/json' } });
+    return new Response(JSON.stringify({
+      reports: [],
+      stats: {},
+      viewer: { username: 'test-staff', role: 'editor' }
+    }), { headers: { 'content-type': 'application/json' } });
   };
   try {
     const denied = await worker.fetch(new Request('https://data.test/api/staff/drone/jobs'), env);

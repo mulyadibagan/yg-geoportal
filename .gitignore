@@ -22,5 +22,9 @@ data/phl-svlk-monthly/
 
 # Spatial-planning source/working datasets are internal and must never be committed.
 private-data/
+internal-data/
+data/riau-geoportal/
+cloudflare/yg-webgis-public-data/tmp/riau-geoportal/
+.riau-geoportal-work/
 data/RTRW*.geojson
 data/RDTR*.geojson
