@@ -786,6 +786,24 @@
       : '<p class="rdtr-component-note">Paket permintaan bukti belum tersedia.</p>';
   }
 
+  function renderResponseChangeControl(ledger) {
+    ledger = ledger || {}; var rows = ledger.entries || [];
+    document.getElementById("rdtr-change-control").innerHTML = rows.length
+      ? '<div class="rdtr-program-status">' + statusBadge(ledger.status) + '<p>' + esc(ledger.decisionRule) + '</p></div>' +
+        '<div class="rdtr-network-kpis"><span><strong>' + number(ledger.totalEntries, 0) + '</strong>jalur respons</span><span><strong>' +
+        number(rows.filter(function (row) { return row.responseReceivedAt; }).length, 0) + '</strong>respons diterima</span><span><strong>' +
+        number(rows.filter(function (row) { return row.closedAt; }).length, 0) + '</strong>perubahan ditutup</span></div>' +
+        '<div class="rdtr-itbx-scroll"><table><thead><tr><th>ID</th><th>Respons</th><th>Validasi</th><th>Dampak</th><th>Disposisi</th><th>Review/persetujuan</th><th>Implementasi</th></tr></thead><tbody>' +
+        rows.map(function (row) { var impact = row.impactAssessment || {}; var impacted = Object.keys(impact).filter(function (key) { return key !== "impactNotes" && impact[key] === true; });
+          return '<tr><td><strong>' + esc(row.id) + '</strong><br>' + esc(row.briefingRef) + '</td><td>' + statusBadge(row.responseStatus) + '<br><small>' +
+          esc(row.respondentNameAndRole || "belum ada penjawab") + '</small></td><td>' + statusBadge(row.validationDecision) + '</td><td>' +
+          esc(impacted.join(", ") || "belum dinilai") + '</td><td>' + esc(row.proposedDisposition || "belum diusulkan") + '</td><td>Teknis: ' +
+          esc(row.technicalReviewer || "belum") + '<br>Hukum: ' + esc(row.legalReviewer || "belum") + '<br>Persetujuan: ' + esc(row.approvedBy || "belum") +
+          '</td><td>' + statusBadge(row.implementationStatus) + '<br>' + statusBadge(row.verificationStatus) + '</td></tr>'; }).join("") +
+        '</tbody></table></div><p class="rdtr-component-note">Urutan wajib: ' + esc((ledger.changeSequence || []).join(" → ")) + '</p><p class="rdtr-component-note">' + esc(ledger.geometryRule) + '</p>'
+      : '<p class="rdtr-component-note">Ledger kontrol perubahan belum tersedia.</p>';
+  }
+
   function colorFrom(value) {
     var colors = ["#a25728", "#176c8c", "#4b7d49", "#8d546f", "#806523", "#5d59a1", "#338477"];
     var hash = 0, text = String(value || "");
@@ -1866,6 +1884,25 @@
     link.download = "daftar-permintaan-bukti-rdtr-yg-v0.20-internal.csv"; link.click(); URL.revokeObjectURL(link.href);
   }
 
+  function exportChangeControlJson() {
+    if (!state.analysis.responseChangeControlLedger) return;
+    downloadJson(state.analysis.responseChangeControlLedger, "ledger-kontrol-perubahan-rdtr-yg-v0.21-internal.json", "application/json;charset=utf-8");
+  }
+
+  function exportChangeControlCsv() {
+    var ledger = state.analysis.responseChangeControlLedger || {};
+    var header = ["ID", "Referensi briefing", "Referensi audit", "Subjek", "Status respons", "Tanggal respons", "Penjawab", "Ringkasan", "Referensi bukti", "Keputusan validasi", "Catatan validasi", "Dampak tujuan", "Dampak struktur", "Dampak pola", "Dampak zonasi", "Dampak program", "Dampak geometri", "Dampak hukum", "Dampak posisi konsultasi", "Catatan dampak", "Disposisi", "Referensi perubahan", "Geometri sebelum", "Geometri sesudah", "Ringkasan selisih", "Reviewer teknis", "Reviewer hukum", "Disetujui oleh", "Tanggal persetujuan", "Status implementasi", "Commit", "Status verifikasi", "Tanggal tutup"];
+    var lines = [header.map(csvCell).join(",")];
+    (ledger.entries || []).forEach(function (row) { var i = row.impactAssessment || {}; lines.push([row.id, row.briefingRef, row.auditRef, row.subject,
+      row.responseStatus, row.responseReceivedAt, row.respondentNameAndRole, row.responseSummary, (row.evidenceRefs || []).join(" | "), row.validationDecision,
+      row.validationNotes, i.objective, i.structurePlan, i.spatialPattern, i.zoningRules, i.programme, i.mapGeometry, i.legalDraft,
+      i.consultationPosition, i.impactNotes, row.proposedDisposition, (row.proposedChangeRefs || []).join(" | "), row.geometryBeforeRef,
+      row.geometryAfterRef, row.numericDifferenceSummary, row.technicalReviewer, row.legalReviewer, row.approvedBy, row.approvedAt,
+      row.implementationStatus, row.implementationCommitRef, row.verificationStatus, row.closedAt].map(csvCell).join(",")); });
+    var blob = new Blob(["\ufeff" + lines.join("\n")], { type: "text/csv;charset=utf-8" }); var link = document.createElement("a");
+    link.href = URL.createObjectURL(blob); link.download = "ledger-kontrol-perubahan-rdtr-yg-v0.21-internal.csv"; link.click(); URL.revokeObjectURL(link.href);
+  }
+
   function exportPolicyMap() {
     var framework = state.analysis.policyMapFramework || {};
     var features = [];
@@ -2008,6 +2045,8 @@
     document.getElementById("rdtr-export-evidence-reconciliation").addEventListener("click", exportEvidenceReconciliationCsv);
     document.getElementById("rdtr-export-evidence-briefing").addEventListener("click", exportEvidenceBriefingJson);
     document.getElementById("rdtr-export-evidence-briefing-csv").addEventListener("click", exportEvidenceBriefingCsv);
+    document.getElementById("rdtr-export-change-control").addEventListener("click", exportChangeControlJson);
+    document.getElementById("rdtr-export-change-control-csv").addEventListener("click", exportChangeControlCsv);
     document.getElementById("rdtr-export-policy-map").addEventListener("click", exportPolicyMap);
     document.getElementById("rdtr-export-draft-csv").addEventListener("click", exportDraftComparisonCsv);
     document.getElementById("rdtr-export-draft-geojson").addEventListener("click", exportDraftComparisonGeoJson);
@@ -2047,6 +2086,7 @@
     renderV1ReleaseDossier(state.analysis.v1ReleaseDossier);
     renderEvidenceReconciliation(state.analysis.existingEvidenceReconciliation);
     renderEvidenceRequestBriefing(state.analysis.evidenceRequestBriefing);
+    renderResponseChangeControl(state.analysis.responseChangeControlLedger);
     renderAnalysisProgramme(state.analysis.analysisProgramme, state.analysis.mandatoryAnalysisMatrix);
     renderAnalysisMatrix(state.analysis.mandatoryAnalysisMatrix);
     renderGeometryRegistry(state.analysis.geometryRegistry);
