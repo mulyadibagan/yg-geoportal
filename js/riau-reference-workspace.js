@@ -3,7 +3,7 @@
 
   const API = "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev";
   const CATALOG_PATH = "/api/staff/riau-geoportal/catalog";
-  const MAX_ACTIVE_CATALOG_LAYERS = 3;
+  const MAX_ACTIVE_CATALOG_LAYERS = 8;
   const MAX_DISPLAY_BYTES = 12 * 1024 * 1024;
   const MAX_DISPLAY_FEATURES = 25000;
   const CATALOG_COLORS = ["#08765f", "#d97706", "#2563a8", "#9b3f73", "#65752b", "#7a4bb7"];
@@ -332,18 +332,18 @@
         <a href="staff-rdtr-bagansiapiapi.html">Kajian RDTR Bagansiapiapi →</a>
       </div>
       <small class="riau-reference-status" aria-live="polite">Pilih preset; tidak ada layer berat yang diaktifkan otomatis.</small>
-      <details class="riau-reference-catalog" open>
+      <details class="riau-reference-catalog">
         <summary>Layer Geoportal siap peta <span data-riau-ready-count>Memuat…</span></summary>
         <div class="riau-reference-catalog-tools">
           <input type="search" data-riau-catalog-search placeholder="Cari data, OPD, atau tema…" aria-label="Cari layer Geoportal Riau">
           <select data-riau-catalog-theme aria-label="Filter tema Geoportal Riau"><option value="">Semua tema</option></select>
         </div>
-        <div class="riau-reference-catalog-head"><strong data-riau-active-count>0/3 aktif</strong><div><button type="button" data-riau-catalog-refresh>Muat ulang</button><button type="button" data-riau-catalog-clear disabled>Matikan layer</button></div></div>
+        <div class="riau-reference-catalog-head"><strong data-riau-active-count>0/8 aktif</strong><div><button type="button" data-riau-catalog-refresh>Muat ulang</button><button type="button" data-riau-catalog-clear disabled>Matikan layer</button></div></div>
         <div class="riau-reference-layer-list" data-riau-catalog-list><small class="riau-reference-empty">Memuat katalog privat…</small></div>
         <small class="riau-reference-catalog-status" data-riau-catalog-status aria-live="polite">Memeriksa layer siap-peta…</small>
       </details>`;
 
-    layerPanel.parentNode.insertBefore(panel, layerPanel);
+    layerPanel.parentNode.appendChild(panel);
     const status = panel.querySelector(".riau-reference-status");
     panel.querySelector("[data-riau-apply]").addEventListener("click", event => {
       const button = event.currentTarget;
