@@ -104,7 +104,7 @@ jobs:
             if ((data.map?.ygCandidateZones?.metadata?.coveragePct || 0) < 99) throw Error("YG candidate zones do not cover the study area");
             if (data.map?.ygStructureNodes?.features?.length !== 11) throw Error("Expected 11 YG analytical structure nodes");
             if (data.map?.ygStructureAxes?.features?.length !== 10) throw Error("Expected 10 YG analytical connectivity axes");
-            if (data.ygDraftRdtr?.version !== "0.28.0-internal-release-candidate") throw Error("Expected YG RDTR draft v0.28");
+            if (data.ygDraftRdtr?.version !== "0.29.0-internal-release-candidate") throw Error("Expected YG RDTR draft v0.29");
             if (!data.map?.ygRoadEvidence?.features?.length) throw Error("Expected intersecting OSM road evidence");
             if (data.ygDraftRdtr?.networkEvidence?.status !== "partial_open_road_evidence") throw Error("Expected partial open road evidence status");
             if (!data.map?.ygFacilityEvidence?.features?.length) throw Error("Expected intersecting OSM facility evidence");

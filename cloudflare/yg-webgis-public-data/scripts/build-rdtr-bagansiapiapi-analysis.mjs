@@ -199,6 +199,7 @@ function buildRegulationCurrencyAudit() {
     R10: { status: "official_status_page_checked", finding: "JDIH BPK mencatat Permen LHK 13/2024 berlaku sejak 6 September 2024 dan mencabut Permen LHK P.69/2017." },
     R11: { status: "official_status_page_checked", finding: "JDIH BPK mencatat PP 57/2016 berlaku sejak 6 Desember 2016 dan mengubah PP 71/2014 tentang perlindungan dan pengelolaan ekosistem gambut." },
     R14: { status: "official_status_page_checked", finding: "JDIH BPK mencatat PP 23/2021 berlaku dan telah diubah oleh PP 8/2026 yang berlaku sejak 2 Maret 2026. Perubahan 2026 menambah Pasal 293A dan berfokus pada pengaturan kehutanan di KPBPB Batam; relevansi materinya untuk Bagansiapiapi tetap harus dinilai dalam legal review." },
+    L03: { status: "official_status_page_checked_conditional_scope", finding: "JDIH BPK mencatat Perpres 43/2020 berlaku sejak 10 Maret 2020. Penerapannya pada Bagansiapiapi tetap bersyarat: lampiran delineasi kawasan perbatasan harus dioverlay dan diverifikasi sebelum arahan ruangnya digunakan." },
     L04: { status: "official_status_page_checked", finding: "Perda Riau 11/2024 berlaku 14 Agustus 2024 dan mengatur pengelolaan hutan pada wilayah KPH." }
   };
   const items = REGULATION_REGISTER.map(row => ({
@@ -215,8 +216,8 @@ function buildRegulationCurrencyAudit() {
     legalReviewDate: null
   }));
   return {
-    id: "RDTR-YG-REGULATION-CURRENCY-AUDIT-V0.4",
-    version: "0.4.0-internal",
+    id: "RDTR-YG-REGULATION-CURRENCY-AUDIT-V0.5",
+    version: "0.5.0-internal",
     access: "staff_only",
     status: "partial_official_source_recheck",
     totalRegulations: items.length,
@@ -3287,9 +3288,9 @@ function buildYgZoningCodebook(zoning) {
 function buildYgDraftRdtr(zoning, zoningCodebook, structureDraft, networkEvidence, serviceEvidence, serviceAccess, developmentReadiness, programmePortfolio, consultationMatrix, consultationReadinessPack, completenessAudit, gapClosureWorkplan, v1ReleaseDossier, existingEvidenceReconciliation, evidenceRequestBriefing, responseChangeControlLedger, v1PromotionValidator, fieldVerificationPlan, fieldObservationSchema, regulationCurrencyAudit) {
   const metadata = zoning.metadata || {};
   return {
-    id: "RDTR-YG-BAGANSIAPIAPI-V0.28-RC11",
+    id: "RDTR-YG-BAGANSIAPIAPI-V0.29-RC12",
     title: "Rancangan RDTR Alternatif Bagansiapiapi versi Yayasan Gambut",
-    version: "0.28.0-internal-release-candidate",
+    version: "0.29.0-internal-release-candidate",
     sourceGeometryVersion: metadata.version || "0.2.0-internal",
     status: "provisional_internal_spatial_draft",
     legalCharacter: "Kajian dan rancangan teknis internal; tidak mempunyai akibat hukum dan tidak menggantikan kewenangan pemerintah daerah untuk menyusun serta menetapkan RDTR.",

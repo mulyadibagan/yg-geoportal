@@ -208,7 +208,7 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
   assert.ok(result.map.ygPlanningUnits.metadata.geometryProcessing.includes("tolerance 0.00002"));
 
   assert.equal(result.ygDraftRdtr.status, "provisional_internal_spatial_draft");
-  assert.equal(result.ygDraftRdtr.version, "0.28.0-internal-release-candidate");
+  assert.equal(result.ygDraftRdtr.version, "0.29.0-internal-release-candidate");
   assert.equal(result.ygDraftRdtr.programmePortfolio.programmeCount, 8);
   assert.equal(result.ygDraftRdtr.programmePortfolio.indicatorCount, 16);
   assert.equal(result.consultationArgumentMatrix.items.length, 10);
@@ -323,12 +323,15 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
   assert.equal(result.ygDraftRdtr.fieldObservationSchema.observationCount, 0);
   assert.equal(result.regulationRegister.length, 19);
   assert.equal(result.regulationCurrencyAudit.totalRegulations, 19);
-  assert.equal(result.regulationCurrencyAudit.checkedCount, 12);
-  assert.equal(result.regulationCurrencyAudit.pendingRecheckCount, 7);
+  assert.equal(result.regulationCurrencyAudit.checkedCount, 13);
+  assert.equal(result.regulationCurrencyAudit.pendingRecheckCount, 6);
   assert.equal(result.regulationRegister.find(row => row.id === "L04").code, "Perda Riau 11/2024");
   assert.ok(result.regulationCurrencyAudit.items.filter(row => row.checkedAt).every(row => row.checkedBy === "system_web_review"));
   assert.ok(result.regulationCurrencyAudit.items.every(row => row.legalReviewer === null && row.legalReviewDate === null));
-  assert.equal(result.ygDraftRdtr.regulationCurrencyAudit.checkedCount, 12);
+  assert.equal(result.ygDraftRdtr.regulationCurrencyAudit.checkedCount, 13);
+  const borderPlan = result.regulationCurrencyAudit.items.find(row => row.regulationRef === "L03");
+  assert.equal(borderPlan.verificationStatus, "official_status_page_checked_conditional_scope");
+  assert.match(borderPlan.finding, /lampiran delineasi/);
   const forestry = result.regulationRegister.find(row => row.id === "R14");
   assert.match(forestry.code, /PP 8\/2026/);
   assert.ok(forestry.officialUrls.some(row => row.url.includes("347927")));
