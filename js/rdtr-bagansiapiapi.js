@@ -771,6 +771,22 @@
       : '<p class="rdtr-component-note">Rekonsiliasi bukti belum tersedia.</p>';
   }
 
+  function renderV1AnalyticalBaseline(baseline) {
+    baseline = baseline || {}; var rows = baseline.conclusions || [];
+    document.getElementById("rdtr-v1-baseline").innerHTML = rows.length
+      ? '<div class="rdtr-program-status">' + statusBadge(baseline.status) + '<p>' + esc(baseline.overallConclusion) + '</p></div>' +
+        '<div class="rdtr-network-kpis"><span><strong>' + number(baseline.zoneConclusionCount, 0) + '</strong>kesimpulan zona</span><span><strong>' +
+        number(baseline.coveragePct, 2) + '%</strong>cakupan wilayah</span><span><strong>' + number((baseline.regulationAudit || {}).checked, 0) + '/' +
+        number((baseline.regulationAudit || {}).total, 0) + '</strong>regulasi diperiksa</span></div>' +
+        '<div class="rdtr-itbx-scroll"><table><thead><tr><th>Zona</th><th>Luas</th><th>Keputusan</th><th>Kesimpulan</th><th>Bukti terpetakan</th><th>Pengunci</th></tr></thead><tbody>' +
+        rows.map(function (row) { var evidence = row.mappedEvidence || {}; return '<tr><td><strong>' + esc(row.zoneCode) + '</strong><br>' + esc(row.zoneName) +
+        '</td><td>' + number(row.areaHa, 2) + ' ha<br><small>' + number(row.sharePct, 2) + '%</small></td><td>' + statusBadge(row.policyDecision) +
+        '<br><small>' + esc(row.confidence) + '</small></td><td>' + esc(row.conclusion) + '</td><td>' + esc((evidence.constraints || []).join(', ') || evidence.sourceBasis) +
+        '</td><td>' + esc((row.evidenceLocks || []).join(', ')) + '</td></tr>'; }).join('') + '</tbody></table></div><p class="rdtr-component-note">' +
+        esc(baseline.completionBoundary) + '</p><p class="rdtr-component-note">' + esc(baseline.legalCharacter) + '</p>'
+      : '<p class="rdtr-component-note">Baseline analitis v1 belum tersedia.</p>';
+  }
+
   function renderEvidenceRequestBriefing(briefing) {
     briefing = briefing || {}; var rows = briefing.items || [];
     document.getElementById("rdtr-evidence-briefing").innerHTML = rows.length
@@ -2148,6 +2164,7 @@
     document.getElementById("rdtr-export-gap-workplan").addEventListener("click", exportGapClosureWorkplanCsv);
     document.getElementById("rdtr-export-gap-workplan-json").addEventListener("click", exportGapClosureWorkplanJson);
     document.getElementById("rdtr-export-v1-dossier").addEventListener("click", exportV1DossierJson);
+    document.getElementById("rdtr-export-v1-baseline").addEventListener("click", function () { downloadJson(state.analysis.v1AnalyticalBaseline, "rdtr-yg-bagansiapiapi-v1-internal-analytical-baseline.json", "application/json;charset=utf-8"); });
     document.getElementById("rdtr-export-evidence-requests").addEventListener("click", exportEvidenceRequestsCsv);
     document.getElementById("rdtr-export-evidence-reconciliation").addEventListener("click", exportEvidenceReconciliationCsv);
     document.getElementById("rdtr-export-evidence-briefing").addEventListener("click", exportEvidenceBriefingJson);
@@ -2198,6 +2215,7 @@
     renderCompletenessAudit(state.analysis.completenessAudit);
     renderGapClosureWorkplan(state.analysis.gapClosureWorkplan);
     renderV1ReleaseDossier(state.analysis.v1ReleaseDossier);
+    renderV1AnalyticalBaseline(state.analysis.v1AnalyticalBaseline);
     renderEvidenceReconciliation(state.analysis.existingEvidenceReconciliation);
     renderEvidenceRequestBriefing(state.analysis.evidenceRequestBriefing);
     renderResponseChangeControl(state.analysis.responseChangeControlLedger);
