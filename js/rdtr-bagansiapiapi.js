@@ -374,6 +374,18 @@
           '</td><td>' + statusBadge(row.evidenceCheckPriority) + '</td><td>' + esc((row.priorityReasons || []).join(", ") || "bukti terbuka tersedia") + '</td></tr>'; }).join("") +
         '</tbody></table></div><p class="rdtr-component-note">' + esc(structure.serviceAccessLimitation || "Tidak menilai kecukupan layanan.") + '</p>'
       : '<p class="rdtr-component-note">Analisis prioritas verifikasi akses belum tersedia.</p>';
+    var readiness = plan.developmentReadiness || {};
+    var readinessZones = state.analysis && state.analysis.map && state.analysis.map.ygDevelopmentReadiness && state.analysis.map.ygDevelopmentReadiness.features || [];
+    document.getElementById("rdtr-development-readiness").innerHTML = readinessZones.length
+      ? '<div class="rdtr-subsection-heading"><div><h3>Uji kesiapan pengembangan geometri zona</h3><p>Tidak adanya data bahaya bukan bukti aman</p></div></div>' +
+        '<div class="rdtr-network-kpis">' + (readiness.prioritySummary || []).map(function (row) {
+          return '<span><strong>' + number(row.zoneCount, 0) + ' zona</strong>' + number(row.areaHa, 1) + ' ha · survei ' + esc(row.priority) + '</span>';
+        }).join("") + '</div><div class="rdtr-itbx-scroll"><table><thead><tr><th>Kode</th><th>Zona</th><th>Luas</th><th>Prioritas survei</th><th>Keputusan promosi</th><th>Bukti pengunci</th></tr></thead><tbody>' +
+        readinessZones.map(function (feature) { var row = feature.properties || {}; return '<tr><td>' + esc(row.code) + '</td><td>' + esc(row.name) + '</td><td>' +
+          number(row.areaHa, 1) + ' ha</td><td>' + statusBadge(row.surveyPriority) + '</td><td>' + esc(statusLabel(row.promotionDecision)) + '</td><td>' +
+          number(row.evidenceLockCount, 0) + ' item</td></tr>'; }).join("") + '</tbody></table></div><p class="rdtr-component-note">' +
+        esc(readiness.disclaimer || "Bukan penilaian kesesuaian lahan.") + '</p>'
+      : '<p class="rdtr-component-note">Uji kesiapan pengembangan zona belum tersedia.</p>';
     document.getElementById("rdtr-network-gaps").innerHTML = (structure.evidenceGaps || []).map(function (row) {
       return '<article><header><strong>' + esc(row.id) + '</strong>' + statusBadge(row.status) + '</header><h4>' +
         esc(row.dataset) + '</h4><p>' + esc(row.requirement) + '</p></article>';
@@ -849,6 +861,31 @@
         }
       }).addTo(map);
     }
+    if (data.map.ygDevelopmentReadiness) {
+      state.layers.ygDevelopmentReadiness = L.geoJSON(data.map.ygDevelopmentReadiness, {
+        renderer: L.canvas({ padding: .5 }),
+        style: function (feature) {
+          var priority = (feature.properties || {}).surveyPriority;
+          var color = priority === "high" ? "#b33b2e" : priority === "medium" ? "#c88924" : "#537a68";
+          return { color: color, weight: 3, dashArray: "7 5", fillColor: color, fillOpacity: .06, opacity: .95 };
+        },
+        onEachFeature: function (feature, layer) {
+          var props = feature.properties || {};
+          layer.bindPopup(popup("Uji kesiapan zona YG v0.8 · internal", {
+            "Kode": props.code,
+            "Zona": props.name,
+            "Kesiapan pengembangan": "Belum dapat ditentukan",
+            "Aman untuk intensifikasi": "Belum terbukti",
+            "Prioritas survei": props.surveyPriority,
+            "Keputusan promosi": statusLabel(props.promotionDecision),
+            "Kendala terpetakan": (props.knownConstraints || []).join("; ") || "belum terpetakan",
+            "Bukti pengunci": (props.evidenceLocks || []).join("; "),
+            "Status bahaya": statusLabel(props.hazardEvidenceStatus),
+            "Akibat hukum": "Tidak ada; alat kendali bukti internal"
+          }));
+        }
+      });
+    }
     if (data.map.ygStructureAxes) {
       state.layers.ygStructureAxes = L.geoJSON(data.map.ygStructureAxes, {
         renderer: L.canvas({ padding: .5 }),
@@ -994,6 +1031,7 @@
       "Arahan YG · verifikasi non-APL": state.layers.forest
     };
     if (state.layers.ygCandidateZones) overlays["Rancangan zonasi RDTR YG v0.2"] = state.layers.ygCandidateZones;
+    if (state.layers.ygDevelopmentReadiness) overlays["Uji kesiapan zona YG v0.8"] = state.layers.ygDevelopmentReadiness;
     if (state.layers.ygStructureAxes) overlays["Struktur YG · sumbu hubungan, bukan trase"] = state.layers.ygStructureAxes;
     if (state.layers.ygStructureNodes) overlays["Struktur YG · simpul referensi"] = state.layers.ygStructureNodes;
     if (state.layers.ygRoadEvidence) overlays["Bukti jaringan jalan OSM · verifikasi"] = state.layers.ygRoadEvidence;
@@ -1553,6 +1591,12 @@
     URL.revokeObjectURL(link.href);
   }
 
+  function exportDevelopmentReadiness() {
+    var collection = state.analysis.map && state.analysis.map.ygDevelopmentReadiness;
+    if (!collection) return;
+    downloadJson(collection, "uji-kesiapan-pengembangan-zona-rdtr-yg-v0.8-internal.geojson", "application/geo+json;charset=utf-8");
+  }
+
   function exportPolicyMap() {
     var framework = state.analysis.policyMapFramework || {};
     var features = [];
@@ -1681,6 +1725,7 @@
     document.getElementById("rdtr-export-road-evidence").addEventListener("click", exportRoadEvidence);
     document.getElementById("rdtr-export-service-evidence").addEventListener("click", exportServiceEvidence);
     document.getElementById("rdtr-export-service-access").addEventListener("click", exportServiceAccessCsv);
+    document.getElementById("rdtr-export-readiness").addEventListener("click", exportDevelopmentReadiness);
     document.getElementById("rdtr-export-policy-map").addEventListener("click", exportPolicyMap);
     document.getElementById("rdtr-export-draft-csv").addEventListener("click", exportDraftComparisonCsv);
     document.getElementById("rdtr-export-draft-geojson").addEventListener("click", exportDraftComparisonGeoJson);

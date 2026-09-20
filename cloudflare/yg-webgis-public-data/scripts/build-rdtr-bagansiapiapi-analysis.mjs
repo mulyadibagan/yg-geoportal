@@ -1007,7 +1007,7 @@ function buildAnalysisProgramme(rows) {
   };
 }
 
-function buildYgPlan(ygCandidateZones = featureCollection([]), zoningCodebook = {}, structureDraft = {}, networkEvidence = {}, serviceEvidence = {}, serviceAccess = {}) {
+function buildYgPlan(ygCandidateZones = featureCollection([]), zoningCodebook = {}, structureDraft = {}, networkEvidence = {}, serviceEvidence = {}, serviceAccess = {}, developmentReadiness = {}) {
   const geometryDisclaimer = "Rancangan YG memiliki geometri zona internal untuk analisis dan konsultasi, tetapi tidak menetapkan batas WP, SWP, blok, subblok, zona, jaringan, atau lokasi program secara hukum. Pematangan wajib memakai peta dasar skala 1:5.000, survei, RTRW yang sah, KLHS, serta validasi lintas sektor dan masyarakat.";
   const zoneFeatures = ygCandidateZones.features || [];
   function zoneMetric(families) {
@@ -1104,6 +1104,13 @@ function buildYgPlan(ygCandidateZones = featureCollection([]), zoningCodebook = 
       id: "ALT-YG-1",
       status: "provisional",
       reviewTrigger: "Tinjau ulang setelah RTRW kabupaten, data skala 1:5.000, KLHS, 21 analisis, verifikasi lapangan, dan matriks tanggapan konsultasi tersedia."
+    },
+    developmentReadiness: {
+      status: developmentReadiness.status || "not_available",
+      prioritySummary: developmentReadiness.prioritySummary || [],
+      promotionSummary: developmentReadiness.promotionSummary || [],
+      evidenceLocks: developmentReadiness.evidenceLocks || [],
+      disclaimer: developmentReadiness.disclaimer || "Belum tersedia."
     },
     structurePlan: {
       status: "analytical_reference_geometry_v0_1",
@@ -1764,7 +1771,7 @@ function buildYgServiceAccessAnalysis({ serviceEvidence, networkEvidence, villag
   };
 }
 
-function buildGeometryRegistry({ villageCount, rtrwCount, peatCount, forestCount, mangroveCandidateCount, ygZoneCount, structureNodeCount, structureAxisCount, roadEvidenceCount, facilityEvidenceCount, hydrologyEvidenceCount }) {
+function buildGeometryRegistry({ villageCount, rtrwCount, peatCount, forestCount, mangroveCandidateCount, ygZoneCount, developmentReadinessCount, structureNodeCount, structureAxisCount, roadEvidenceCount, facilityEvidenceCount, hydrologyEvidenceCount }) {
   return [
     {
       id: "GR-YG-STUDY-AREA",
@@ -1885,6 +1892,16 @@ function buildGeometryRegistry({ villageCount, rtrwCount, peatCount, forestCount
       source: "Sintesis berurutan YG dari kandidat pesisir, gambut, non-APL, dan arahan RTRW Provinsi Riau",
       permittedUse: "Menyusun rancangan RDTR alternatif YG, menghitung luas zona, menguji kebutuhan data, serta menyiapkan argumen konsultasi.",
       limitation: "Bukan zonasi resmi, bukan peta dasar 1:5.000 terotorisasi, belum memuat subzona/intensitas final, dan tidak dapat digunakan untuk KKPR."
+    },
+    {
+      id: "GR-YG-DEVELOPMENT-READINESS",
+      mapRef: "map.ygDevelopmentReadiness",
+      status: "development_readiness_not_determined",
+      featureCount: developmentReadinessCount,
+      role: "evidence_lock_and_survey_priority_not_land_suitability",
+      source: "Turunan zona kandidat YG dan register bukti pengunci v0.8",
+      permittedUse: "Mengurutkan survei dan menahan promosi geometri sampai bukti wajib tersedia.",
+      limitation: "Bukan kelas aman, kesesuaian lahan, kelayakan pembangunan, zonasi resmi, atau dasar KKPR."
     },
     {
       id: "GR-RTRW-ROHIL",
@@ -2291,6 +2308,80 @@ function buildYgCandidateZoning({ studyArea, rtrwMap, peatMap, forestMap, mangro
   return collection;
 }
 
+function buildYgDevelopmentReadiness(candidateZones) {
+  const universalEvidenceLocks = [
+    "peta_dasar_dan_survei_skala_1_5000",
+    "rtrw_kabupaten_rokan_hilir_berlaku",
+    "klhs_dan_matriks_integrasi",
+    "penggunaan_lahan_dan_bangunan",
+    "penduduk_kebutuhan_ruang_dan_kapasitas_layanan",
+    "rob_banjir_abrasi_subsidensi_elevasi_dan_kebakaran",
+    "hak_izin_tenurial_ruang_hidup_dan_konflik"
+  ];
+  const features = (candidateZones.features || []).map((zone, index) => {
+    const props = zone.properties || {};
+    const knownConstraints = String(props.constraintOverlays || "")
+      .split(" | ").filter(value => value && value !== "belum_terpetakan");
+    const zoneEvidenceLocks = [...universalEvidenceLocks];
+    if (props.zoneFamily === "peat_hydrology_management") zoneEvidenceLocks.push("khg_fungsi_kubah_kedalaman_hidrologi_dan_muka_air");
+    if (props.zoneFamily === "coastal_mangrove_protection") zoneEvidenceLocks.push("pasut_hidrodinamika_sempadan_mangrove_dan_akses_pesisir");
+    if (props.zoneFamily === "forest_status_alignment") zoneEvidenceLocks.push("status_fungsi_kawasan_hutan_dan_persetujuan_sektoral");
+    const cultivationCandidate = props.patternCategory === "cultivation_candidate";
+    const protectedCandidate = props.patternCategory === "protected_candidate";
+    const verificationCandidate = props.patternCategory === "verification_candidate";
+    const surveyPriority = cultivationCandidate || knownConstraints.length >= 2 ? "high" : protectedCandidate || verificationCandidate ? "medium" : "standard";
+    const promotionDecision = cultivationCandidate
+      ? "hold_development_promotion_pending_complete_evidence"
+      : protectedCandidate
+        ? "retain_protection_direction_and_verify_boundary_rules"
+        : "hold_function_assignment_pending_verification";
+    return {
+      ...zone,
+      properties: {
+        ...props,
+        readinessId: `DR-YG-${String(index + 1).padStart(3, "0")}`,
+        developmentReadiness: "not_determined",
+        safeForIntensification: "not_demonstrated",
+        promotionDecision,
+        surveyPriority,
+        knownConstraintCount: knownConstraints.length,
+        knownConstraints,
+        evidenceLockCount: zoneEvidenceLocks.length,
+        evidenceLocks: zoneEvidenceLocks,
+        hazardEvidenceStatus: "missing_integrated_multi_hazard_model",
+        legalEffect: "none"
+      }
+    };
+  });
+  const collection = featureCollection(features);
+  collection.name = "Uji kesiapan pengembangan zona RDTR YG v0.8";
+  collection.metadata = {
+    access: "staff_only",
+    status: "development_readiness_not_determined",
+    method: "Setiap zona diuji terhadap fungsi rancangan, kendala yang telah terpetakan, dan bukti pengunci minimum. Ketiadaan data bahaya tidak diperlakukan sebagai bukti aman.",
+    rule: "Tidak ada zona yang dapat dipromosikan menjadi aman atau siap intensifikasi sebelum seluruh bukti pengunci relevan selesai dan tervalidasi.",
+    disclaimer: "Prioritas survei mengatur urutan pengumpulan bukti; bukan kelas kesesuaian lahan, kelayakan pembangunan, penetapan zona, atau dasar KKPR."
+  };
+  return {
+    id: "RDTR-YG-DEVELOPMENT-READINESS-V0.1",
+    version: "0.1.0-internal",
+    status: collection.metadata.status,
+    zones: collection,
+    prioritySummary: ["high", "medium", "standard"].map(priority => ({
+      priority,
+      zoneCount: features.filter(feature => feature.properties.surveyPriority === priority).length,
+      areaHa: round(features.filter(feature => feature.properties.surveyPriority === priority).reduce((sum, feature) => sum + areaHa(feature), 0))
+    })),
+    promotionSummary: [...new Set(features.map(feature => feature.properties.promotionDecision))].map(decision => ({
+      decision,
+      zoneCount: features.filter(feature => feature.properties.promotionDecision === decision).length,
+      areaHa: round(features.filter(feature => feature.properties.promotionDecision === decision).reduce((sum, feature) => sum + areaHa(feature), 0))
+    })),
+    evidenceLocks: universalEvidenceLocks,
+    disclaimer: collection.metadata.disclaimer
+  };
+}
+
 function buildYgZoningCodebook(zoning) {
   const familySpecs = {
     coastal_mangrove_protection: {
@@ -2424,12 +2515,12 @@ function buildYgZoningCodebook(zoning) {
   };
 }
 
-function buildYgDraftRdtr(zoning, zoningCodebook, structureDraft, networkEvidence, serviceEvidence, serviceAccess) {
+function buildYgDraftRdtr(zoning, zoningCodebook, structureDraft, networkEvidence, serviceEvidence, serviceAccess, developmentReadiness) {
   const metadata = zoning.metadata || {};
   return {
-    id: "RDTR-YG-BAGANSIAPIAPI-V0.7",
+    id: "RDTR-YG-BAGANSIAPIAPI-V0.8",
     title: "Rancangan RDTR Alternatif Bagansiapiapi versi Yayasan Gambut",
-    version: "0.7.0-internal",
+    version: "0.8.0-internal",
     sourceGeometryVersion: metadata.version || "0.2.0-internal",
     status: "provisional_internal_spatial_draft",
     legalCharacter: "Kajian dan rancangan teknis internal; tidak mempunyai akibat hukum dan tidak menggantikan kewenangan pemerintah daerah untuk menyusun serta menetapkan RDTR.",
@@ -2480,6 +2571,15 @@ function buildYgDraftRdtr(zoning, zoningCodebook, structureDraft, networkEvidenc
       prioritySummary: serviceAccess.prioritySummary,
       villageMatrix: serviceAccess.villageMatrix,
       limitation: serviceAccess.limitation
+    },
+    developmentReadinessAnalysis: {
+      id: developmentReadiness.id,
+      version: developmentReadiness.version,
+      status: developmentReadiness.status,
+      prioritySummary: developmentReadiness.prioritySummary,
+      promotionSummary: developmentReadiness.promotionSummary,
+      evidenceLocks: developmentReadiness.evidenceLocks,
+      disclaimer: developmentReadiness.disclaimer
     },
     components: [
       { id: "YG-RDTR-01", label: "Tujuan dan strategi WP", status: "provisional", outputRef: "ygPlan.planningObjective" },
@@ -2728,6 +2828,7 @@ export function buildAnalysis({ rtrw, administration, peat, forest, mangrove, ma
     forestMap,
     mangroveCandidateMap
   });
+  const ygDevelopmentReadiness = buildYgDevelopmentReadiness(ygCandidateZones);
   const ygServiceAccessAnalysis = buildYgServiceAccessAnalysis({
     serviceEvidence: ygServiceHydrologyEvidence,
     networkEvidence: ygNetworkEvidence,
@@ -2735,7 +2836,7 @@ export function buildAnalysis({ rtrw, administration, peat, forest, mangrove, ma
     candidateZones: ygCandidateZones
   });
   const zoningCodebook = buildYgZoningCodebook(ygCandidateZones);
-  const ygDraftRdtr = buildYgDraftRdtr(ygCandidateZones, zoningCodebook, ygStructureDraft, ygNetworkEvidence, ygServiceHydrologyEvidence, ygServiceAccessAnalysis);
+  const ygDraftRdtr = buildYgDraftRdtr(ygCandidateZones, zoningCodebook, ygStructureDraft, ygNetworkEvidence, ygServiceHydrologyEvidence, ygServiceAccessAnalysis, ygDevelopmentReadiness);
   const policyMapFramework = buildPolicyMapFramework({
     summary,
     peatCount: peatMap.length,
@@ -2786,7 +2887,7 @@ export function buildAnalysis({ rtrw, administration, peat, forest, mangrove, ma
     crossCuttingGates: buildCrossCuttingGates(),
     mandatoryAnalysisMatrix,
     analysisProgramme,
-    ygPlan: buildYgPlan(ygCandidateZones, zoningCodebook, ygStructureDraft, ygNetworkEvidence, ygServiceHydrologyEvidence, ygServiceAccessAnalysis),
+    ygPlan: buildYgPlan(ygCandidateZones, zoningCodebook, ygStructureDraft, ygNetworkEvidence, ygServiceHydrologyEvidence, ygServiceAccessAnalysis, ygDevelopmentReadiness),
     serviceAccessAnalysis: {
       id: ygServiceAccessAnalysis.id,
       version: ygServiceAccessAnalysis.version,
@@ -2795,6 +2896,15 @@ export function buildAnalysis({ rtrw, administration, peat, forest, mangrove, ma
       villageMatrix: ygServiceAccessAnalysis.villageMatrix,
       limitation: ygServiceAccessAnalysis.limitation
     },
+    developmentReadinessAnalysis: {
+      id: ygDevelopmentReadiness.id,
+      version: ygDevelopmentReadiness.version,
+      status: ygDevelopmentReadiness.status,
+      prioritySummary: ygDevelopmentReadiness.prioritySummary,
+      promotionSummary: ygDevelopmentReadiness.promotionSummary,
+      evidenceLocks: ygDevelopmentReadiness.evidenceLocks,
+      disclaimer: ygDevelopmentReadiness.disclaimer
+    },
     geometryRegistry: buildGeometryRegistry({
       villageCount: villages.length,
       rtrwCount: rtrwMap.length,
@@ -2802,6 +2912,7 @@ export function buildAnalysis({ rtrw, administration, peat, forest, mangrove, ma
       forestCount: forestMap.length,
       mangroveCandidateCount: mangroveCandidateMap.length,
       ygZoneCount: ygCandidateZones.features.length,
+      developmentReadinessCount: ygDevelopmentReadiness.zones.features.length,
       structureNodeCount: ygStructureDraft.nodes.features.length,
       structureAxisCount: ygStructureDraft.axes.features.length,
       roadEvidenceCount: ygNetworkEvidence.roads.features.length,
@@ -2832,7 +2943,8 @@ export function buildAnalysis({ rtrw, administration, peat, forest, mangrove, ma
       peat: featureCollection(peatMap),
       forest: featureCollection(forestMap),
       mangroveCandidates: featureCollection(mangroveCandidateMap),
-      ygCandidateZones
+      ygCandidateZones,
+      ygDevelopmentReadiness: ygDevelopmentReadiness.zones
     },
     warnings: [...warnings].slice(0, 50)
   };

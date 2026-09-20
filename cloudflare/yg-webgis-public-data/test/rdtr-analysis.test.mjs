@@ -201,7 +201,7 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
   assert.ok(result.map.ygPlanningUnits.metadata.geometryProcessing.includes("tolerance 0.00002"));
 
   assert.equal(result.ygDraftRdtr.status, "provisional_internal_spatial_draft");
-  assert.equal(result.ygDraftRdtr.version, "0.7.0-internal");
+  assert.equal(result.ygDraftRdtr.version, "0.8.0-internal");
   assert.equal(result.ygDraftRdtr.zoningCodebook.version, "0.1.0-internal");
   assert.equal(result.ygDraftRdtr.structureDraft.status, "analytical_reference_geometry");
   assert.equal(result.ygDraftRdtr.structureDraft.nodeCount, 11);
@@ -264,6 +264,19 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
     feature.properties.legalEffect === "none" && feature.properties.constraintOverlays &&
     feature.properties.rtrwProvinceClasses
   ));
+  assert.equal(result.map.ygDevelopmentReadiness.features.length, result.map.ygCandidateZones.features.length);
+  assert.equal(result.developmentReadinessAnalysis.status, "development_readiness_not_determined");
+  assert.equal(result.ygDraftRdtr.developmentReadinessAnalysis.status, "development_readiness_not_determined");
+  assert.ok(result.map.ygDevelopmentReadiness.features.every(feature =>
+    feature.properties.developmentReadiness === "not_determined" &&
+    feature.properties.safeForIntensification === "not_demonstrated" &&
+    ["high", "medium", "standard"].includes(feature.properties.surveyPriority) &&
+    feature.properties.evidenceLockCount >= 7 && feature.properties.legalEffect === "none"
+  ));
+  assert.ok(result.map.ygDevelopmentReadiness.features.filter(feature => feature.properties.patternCategory === "cultivation_candidate")
+    .every(feature => feature.properties.promotionDecision === "hold_development_promotion_pending_complete_evidence"));
+  assert.ok(result.geometryRegistry.some(row => row.id === "GR-YG-DEVELOPMENT-READINESS" &&
+    row.featureCount === result.map.ygCandidateZones.features.length));
   for (let i = 0; i < result.map.ygCandidateZones.features.length; i += 1) {
     for (let j = i + 1; j < result.map.ygCandidateZones.features.length; j += 1) {
       const overlap = intersect(featureCollection([

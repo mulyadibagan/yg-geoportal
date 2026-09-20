@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="css/site-brand.css?v=20260720-program-dashboard1">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
   <link rel="stylesheet" href="css/rdtr-bagansiapiapi.css?v=20260920-regulatory2">
-  <link rel="stylesheet" href="css/rdtr-bagansiapiapi-regulatory.css?v=20260920-yg-rdtr6">
+  <link rel="stylesheet" href="css/rdtr-bagansiapiapi-regulatory.css?v=20260920-yg-rdtr7">
   <script src="js/auth.js?v=20260920-session5"></script>
   <script src="js/staff-data-access.js?v=20260920-rdtr-internal1"></script>
   <script src="js/staff-rdtr-gate.js?v=20260920-internal1"></script>
@@ -149,7 +149,7 @@
     <section id="yg-components" class="rdtr-panel" aria-labelledby="rdtr-components-title">
       <div class="rdtr-panel-heading">
         <div><span>MUATAN RDTR VERSI YG</span><h2 id="rdtr-components-title">Struktur, pola, pemanfaatan, dan zonasi</h2></div>
-        <div class="rdtr-draft-actions"><p>Pasal 27–28 · geometri dan angka mengikuti tingkat kematangan bukti</p><button id="rdtr-export-structure-geojson" class="rdtr-button rdtr-button--light" type="button">Unduh struktur YG v0.1</button><button id="rdtr-export-road-evidence" class="rdtr-button rdtr-button--light" type="button">Unduh bukti jalan</button><button id="rdtr-export-service-evidence" class="rdtr-button rdtr-button--light" type="button">Unduh fasilitas &amp; hidrologi</button><button id="rdtr-export-service-access" class="rdtr-button rdtr-button--light" type="button">Unduh prioritas verifikasi</button></div>
+        <div class="rdtr-draft-actions"><p>Pasal 27–28 · geometri dan angka mengikuti tingkat kematangan bukti</p><button id="rdtr-export-structure-geojson" class="rdtr-button rdtr-button--light" type="button">Unduh struktur YG v0.1</button><button id="rdtr-export-road-evidence" class="rdtr-button rdtr-button--light" type="button">Unduh bukti jalan</button><button id="rdtr-export-service-evidence" class="rdtr-button rdtr-button--light" type="button">Unduh fasilitas &amp; hidrologi</button><button id="rdtr-export-service-access" class="rdtr-button rdtr-button--light" type="button">Unduh prioritas verifikasi</button><button id="rdtr-export-readiness" class="rdtr-button rdtr-button--light" type="button">Unduh uji kesiapan zona</button></div>
       </div>
       <div class="rdtr-component-grid">
         <article><div class="rdtr-component-title"><span>01</span><h3>Rencana struktur ruang</h3></div><div id="rdtr-structure-summary"></div><div id="rdtr-structure-plan"></div></article>
@@ -161,6 +161,7 @@
       <div id="rdtr-network-evidence" class="rdtr-network-evidence"></div>
       <div id="rdtr-service-evidence" class="rdtr-service-evidence"></div>
       <div id="rdtr-service-access" class="rdtr-service-access"></div>
+      <div id="rdtr-development-readiness" class="rdtr-development-readiness"></div>
       <div id="rdtr-network-gaps" class="rdtr-network-gaps"></div>
       <div class="rdtr-subsection-heading">
         <div><h3>Kamus subzona dan matriks kegiatan ITBX</h3><p>Klasifikasi awal YG; bukan ketentuan perizinan dan belum memiliki geometri subzona</p></div>
@@ -267,6 +268,6 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
   <script src="https://cdn.jsdelivr.net/npm/@turf/turf@7/turf.min.js"></script>
   <script src="https://unpkg.com/shpjs@6.1.0/dist/shp.js"></script>
-  <script src="js/rdtr-bagansiapiapi.js?v=20260920-yg-rdtr6"></script>
+  <script src="js/rdtr-bagansiapiapi.js?v=20260920-yg-rdtr7"></script>
 </body>
 </html>
