@@ -4,13 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="robots" content="noindex,nofollow,noarchive">
-  <meta name="description" content="Ruang kerja internal Yayasan Gambut untuk kajian pembanding RDTR Kawasan Perkotaan Bagansiapiapi.">
-  <title>Analisis Internal RDTR Bagansiapiapi | YG GeoPortal</title>
+  <meta name="description" content="Ruang kerja internal Yayasan Gambut untuk menyusun rancangan analitis RDTR Kawasan Perkotaan Bagansiapiapi berbasis regulasi.">
+  <title>Rancangan Analitis RDTR Bagansiapiapi | YG GeoPortal</title>
   <link rel="icon" href="assets/logo-yayasan-gambut.png">
   <link rel="stylesheet" href="css/site-brand.css?v=20260720-program-dashboard1">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
   <link rel="stylesheet" href="css/rdtr-bagansiapiapi.css?v=20260920-regulatory2">
-  <link rel="stylesheet" href="css/rdtr-bagansiapiapi-regulatory.css?v=20260920-regulatory2">
+  <link rel="stylesheet" href="css/rdtr-bagansiapiapi-regulatory.css?v=20260920-ygplan3">
   <script src="js/auth.js?v=20260920-session5"></script>
   <script src="js/staff-data-access.js?v=20260920-rdtr-internal1"></script>
   <script src="js/staff-rdtr-gate.js?v=20260920-internal1"></script>
@@ -25,9 +25,10 @@
       <nav class="nav yg-page-nav" aria-label="Navigasi internal">
         <a href="admin-dashboard.html">Dashboard Staf</a>
         <a href="webgis.html?internal=spatial-planning">Peta Interaktif</a>
-        <a href="#analysis-regulasi">Analisis YG</a>
+        <a href="#yg-rdtr">Progres RDTR YG</a>
+        <a href="#yg-components">Muatan RDTR</a>
+        <a href="#analysis-regulasi">Uji Regulasi</a>
         <a href="#regulations">Regulasi</a>
-        <a href="#recommendations">Rekomendasi</a>
       </nav>
     </div>
   </header>
@@ -36,13 +37,15 @@
     <section class="rdtr-hero">
       <div>
         <span class="rdtr-kicker">KHUSUS STAF · TIDAK UNTUK PUBLIKASI</span>
-        <h1>Kajian Pembanding RDTR Bagansiapiapi</h1>
+        <h1>Ruang Kerja Penyusunan RDTR versi YG</h1>
         <p>Kawasan Perkotaan Bagansiapiapi · Kecamatan Bangko · Kabupaten Rokan Hilir</p>
-        <p class="rdtr-hero-note">Baseline spasial dan matriks rekomendasi Yayasan Gambut untuk Konsultasi Publik I, 22 September 2026.</p>
+        <p class="rdtr-hero-note">Rancangan analitis berbasis regulasi untuk menyusun tujuan WP, struktur ruang, pola ruang, ketentuan pemanfaatan ruang, dan peraturan zonasi sebagai bahan masukan konsultasi publik.</p>
       </div>
       <div class="rdtr-hero-actions">
-        <button id="rdtr-copy-analysis" class="rdtr-button" type="button">Salin posisi YG</button>
+        <button id="rdtr-copy-analysis" class="rdtr-button" type="button">Salin rancangan YG</button>
         <button id="rdtr-copy-points" class="rdtr-button" type="button">Salin poin konsultasi</button>
+        <button id="rdtr-export-yg-json" class="rdtr-button rdtr-button--light" type="button">Unduh rancangan JSON</button>
+        <button id="rdtr-export-yg-geojson" class="rdtr-button rdtr-button--light" type="button">Unduh geometri analitis</button>
         <button id="rdtr-export-csv" class="rdtr-button rdtr-button--light" type="button">Unduh tabel CSV</button>
         <button id="rdtr-print" class="rdtr-button rdtr-button--light" type="button">Cetak / PDF</button>
       </div>
@@ -54,10 +57,10 @@
     </aside>
 
     <section class="rdtr-kpis" aria-label="Ringkasan baseline">
-      <article><span>Wilayah perencanaan</span><strong id="rdtr-kpi-villages">—</strong><small>kelurahan/kepenghuluan</small></article>
+      <article><span>Unit kajian YG</span><strong id="rdtr-kpi-villages">—</strong><small>kelurahan/kepenghuluan</small></article>
       <article><span>Luas indikatif</span><strong id="rdtr-kpi-area">—</strong><small>hektare</small></article>
       <article><span>Indikasi gambut</span><strong id="rdtr-kpi-peat">—</strong><small>persentase wilayah</small></article>
-      <article><span>Kawasan hutan</span><strong id="rdtr-kpi-forest">—</strong><small>di luar APL</small></article>
+      <article><span>Indikasi non-APL</span><strong id="rdtr-kpi-forest">—</strong><small>perlu verifikasi kehutanan</small></article>
       <article><span>Kelas RTRW</span><strong id="rdtr-kpi-rtrw">—</strong><small>beririsan</small></article>
     </section>
 
@@ -72,8 +75,9 @@
       </article>
 
       <aside class="rdtr-panel rdtr-readiness-panel">
-        <div class="rdtr-panel-heading"><div><span>KESIAPAN BAHAN</span><h2>Data konsultasi publik</h2></div></div>
+        <div class="rdtr-panel-heading"><div><span>STATUS PENYUSUNAN</span><h2>Bahan dan geometri</h2></div></div>
         <div id="rdtr-readiness" class="rdtr-readiness"></div>
+        <div id="rdtr-geometry-registry" class="rdtr-geometry-registry"></div>
         <div class="rdtr-draft-box">
           <span>DRAF PEMERINTAH · LOKAL SAJA</span>
           <h3>Muat geometri draf RDTR</h3>
@@ -85,9 +89,54 @@
       </aside>
     </section>
 
+    <section id="yg-rdtr" class="rdtr-panel rdtr-yg-plan-panel" aria-labelledby="rdtr-yg-plan-title">
+      <div class="rdtr-panel-heading">
+        <div><span>RANCANGAN ANALITIS · BUKAN DOKUMEN PENETAPAN</span><h2 id="rdtr-yg-plan-title">Penyusunan RDTR versi Yayasan Gambut</h2></div>
+        <p>Proses penyusunan maks. 8 bulan (Permen ATR/BPN 11/2021 Pasal 20 ayat (3)) · penyusunan dan penetapan maks. 12 bulan (PP 21/2021 Pasal 24 ayat (3))</p>
+      </div>
+      <div id="rdtr-yg-plan-header" class="rdtr-yg-plan-header"></div>
+      <div id="rdtr-planning-workflow" class="rdtr-planning-workflow"></div>
+      <div class="rdtr-subsection-heading"><h3>Gerbang lintas tahap</h3><p>Syarat yang harus lolos sebelum rancangan dinaikkan statusnya</p></div>
+      <div id="rdtr-cross-cutting-gates" class="rdtr-cross-cutting-gates"></div>
+    </section>
+
+    <section id="yg-concept" class="rdtr-grid rdtr-grid--concept">
+      <article class="rdtr-panel">
+        <div class="rdtr-panel-heading"><div><span>TUJUAN PENATAAN WP</span><h2>Tujuan dan strategi YG</h2></div></div>
+        <div id="rdtr-yg-objective" class="rdtr-yg-objective"></div>
+      </article>
+      <article class="rdtr-panel">
+        <div class="rdtr-panel-heading"><div><span>PERUMUSAN KONSEPSI</span><h2>Alternatif konsep rencana</h2></div><p>Pasal 25</p></div>
+        <div id="rdtr-yg-alternatives" class="rdtr-yg-alternatives"></div>
+      </article>
+    </section>
+
+    <section id="yg-components" class="rdtr-panel" aria-labelledby="rdtr-components-title">
+      <div class="rdtr-panel-heading">
+        <div><span>MUATAN RDTR VERSI YG</span><h2 id="rdtr-components-title">Struktur, pola, pemanfaatan, dan zonasi</h2></div>
+        <p>Pasal 27–28 · geometri dan angka mengikuti tingkat kematangan bukti</p>
+      </div>
+      <div class="rdtr-component-grid">
+        <article><div class="rdtr-component-title"><span>01</span><h3>Rencana struktur ruang</h3></div><div id="rdtr-structure-plan"></div></article>
+        <article><div class="rdtr-component-title"><span>02</span><h3>Rencana pola ruang</h3></div><div id="rdtr-pattern-plan"></div></article>
+        <article><div class="rdtr-component-title"><span>03</span><h3>Ketentuan pemanfaatan ruang</h3></div><div id="rdtr-programs"></div></article>
+        <article><div class="rdtr-component-title"><span>04</span><h3>Peraturan zonasi</h3></div><div id="rdtr-zoning-rules"></div></article>
+      </div>
+      <div class="rdtr-subsection-heading"><h3>Jejak keputusan rancangan</h3><p>Analisis dan pasal yang menopang tiap komponen</p></div>
+      <div id="rdtr-plan-traceability" class="rdtr-plan-traceability"></div>
+    </section>
+
+    <section class="rdtr-panel" aria-labelledby="rdtr-analysis-matrix-title">
+      <div class="rdtr-panel-heading">
+        <div><span>CAKUPAN ANALISIS WAJIB</span><h2 id="rdtr-analysis-matrix-title">Matriks 21 analisis penyusunan RDTR</h2></div>
+        <p>Permen ATR/BPN 11/2021 · Pasal 24 huruf a–u</p>
+      </div>
+      <div id="rdtr-analysis-matrix" class="rdtr-analysis-matrix"></div>
+    </section>
+
     <section id="analysis-regulasi" class="rdtr-panel rdtr-position-panel" aria-labelledby="rdtr-position-title">
       <div class="rdtr-panel-heading">
-        <div><span>ARGUMEN TANDING INTERNAL</span><h2 id="rdtr-position-title">Analisis Yayasan Gambut berbasis regulasi</h2></div>
+        <div><span>UJI DAN JUSTIFIKASI REGULASI</span><h2 id="rdtr-position-title">Dasar setiap keputusan rancangan YG</h2></div>
         <p>Temuan → kewajiban hukum → posisi YG → batas validasi</p>
       </div>
       <div id="rdtr-position" class="rdtr-position"></div>
@@ -97,12 +146,12 @@
 
     <section class="rdtr-panel" aria-labelledby="rdtr-village-title">
       <div class="rdtr-panel-heading">
-        <div><span>11 WILAYAH PERENCANAAN</span><h2 id="rdtr-village-title">Temuan baseline per wilayah</h2></div>
+        <div><span>11 UNIT KAJIAN YG</span><h2 id="rdtr-village-title">Temuan baseline per wilayah</h2></div>
         <label class="rdtr-search">Cari wilayah <input id="rdtr-village-search" type="search" placeholder="Nama kelurahan atau kepenghuluan"></label>
       </div>
       <div class="rdtr-table-wrap">
         <table class="rdtr-table">
-          <thead><tr><th>Wilayah</th><th>Luas</th><th>Arahan RTRW terluas</th><th>Gambut</th><th>Kawasan hutan</th><th>Mangrove</th><th>Posisi awal</th><th>Analisis</th></tr></thead>
+          <thead><tr><th>Wilayah</th><th>Luas</th><th>Arahan RTRW terluas</th><th>Gambut</th><th>Indikasi non-APL</th><th>Mangrove</th><th>Posisi awal</th><th>Analisis</th></tr></thead>
           <tbody id="rdtr-village-body"><tr><td colspan="8">Memuat data internal…</td></tr></tbody>
         </table>
       </div>
@@ -114,14 +163,14 @@
 
     <section id="recommendations" class="rdtr-grid">
       <article class="rdtr-panel">
-        <div class="rdtr-panel-heading"><div><span>ARGUMEN YG</span><h2>Rekomendasi lintas wilayah</h2></div></div>
+        <div class="rdtr-panel-heading"><div><span>MASUKAN LINTAS KOMPONEN</span><h2>Rekomendasi lintas wilayah</h2></div></div>
         <div id="rdtr-recommendations" class="rdtr-recommendations"></div>
       </article>
       <article class="rdtr-panel">
         <div class="rdtr-panel-heading"><div><span>POSISI ANALISIS</span><h2>Aturan membaca kesimpulan</h2></div></div>
         <div class="rdtr-reading-rule">
           <p><strong>Tahan</strong> bukan berarti penolakan final. Artinya keputusan belum layak didukung karena bukti penting belum tersedia atau ada indikasi fungsi lindung/risiko tinggi.</p>
-          <p><strong>Revisi</strong> baru digunakan setelah geometri, aturan, dan dokumen resmi menunjukkan ketidaksesuaian yang dapat dibuktikan.</p>
+          <p><strong>Revisi</strong> baru digunakan setelah geometri dan aturan draf pemerintah terotorisasi serta dokumen yang berlaku menunjukkan ketidaksesuaian yang dapat dibuktikan.</p>
           <p>Setiap kesimpulan harus menyebut lokasi, luas, bukti, tingkat keyakinan, dasar regulasi, dan alternatif yang ditawarkan.</p>
         </div>
       </article>
@@ -140,7 +189,7 @@
     </section>
 
     <section class="rdtr-panel" aria-labelledby="rdtr-question-title">
-      <div class="rdtr-panel-heading"><div><span>BAHAN DISKUSI</span><h2 id="rdtr-question-title">Pertanyaan yang harus dijawab penyusun</h2></div></div>
+      <div class="rdtr-panel-heading"><div><span>BAHAN VALIDASI</span><h2 id="rdtr-question-title">Pertanyaan kepada penyusun pemerintah</h2></div></div>
       <ol id="rdtr-questions" class="rdtr-questions"></ol>
     </section>
 
@@ -160,6 +209,6 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
   <script src="https://cdn.jsdelivr.net/npm/@turf/turf@7/turf.min.js"></script>
   <script src="https://unpkg.com/shpjs@6.1.0/dist/shp.js"></script>
-  <script src="js/rdtr-bagansiapiapi.js?v=20260920-regulatory2"></script>
+  <script src="js/rdtr-bagansiapiapi.js?v=20260920-ygplan3"></script>
 </body>
 </html>

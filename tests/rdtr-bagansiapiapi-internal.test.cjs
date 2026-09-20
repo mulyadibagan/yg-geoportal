@@ -32,6 +32,24 @@ test("admin dashboard reveals the RDTR entry only after a staff session", () => 
   assert.match(script, /element\.hidden = !\(ADMIN_SESSION && ADMIN_SESSION\.token\)/);
 });
 
+test("internal workspace renders the regulation-based YG plan without claiming official zoning", () => {
+  const page = read("staff-rdtr-bagansiapiapi.html");
+  const script = read("js", "rdtr-bagansiapiapi.js");
+
+  for (const id of [
+    "rdtr-planning-workflow", "rdtr-cross-cutting-gates", "rdtr-yg-objective",
+    "rdtr-yg-alternatives", "rdtr-structure-plan", "rdtr-pattern-plan",
+    "rdtr-zoning-rules", "rdtr-programs", "rdtr-plan-traceability",
+    "rdtr-analysis-matrix", "rdtr-geometry-registry"
+  ]) assert.match(page, new RegExp(`id="${id}"`));
+
+  assert.match(page, /RANCANGAN ANALITIS · BUKAN DOKUMEN PENETAPAN/);
+  assert.match(page, /21 analisis penyusunan RDTR/);
+  assert.match(script, /Unit penyaringan YG · bukan SWP\/zona/);
+  assert.match(script, /unit-penyaringan-analitis-yg-bukan-zonasi\.geojson/);
+  assert.match(script, /Geometri analitis bukan batas WP, SWP, zona, atau subzona yang mengikat/);
+});
+
 test("the official consultation scope resolves to exactly 11 Bangko villages", () => {
   const data = JSON.parse(read("data", "batas_administrasi_desa_riau.geojson"));
   const normalize = value => String(value || "").toLowerCase()
