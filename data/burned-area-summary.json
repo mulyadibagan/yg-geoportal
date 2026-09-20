@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-19T08:19:56.339532+00:00",
+  "generatedAt": "2026-09-20T08:54:00.480365+00:00",
   "status": "ready",
-  "eventCount": 25,
-  "estimatedAreaHa": 4383.52,
-  "candidateEventCount": 38,
+  "eventCount": 24,
+  "estimatedAreaHa": 4212.08,
+  "candidateEventCount": 37,
   "processing": {
-    "waiting-post-image": 5,
-    "waiting-clear-image": 8,
-    "published": 25,
+    "waiting-post-image": 3,
+    "waiting-clear-image": 10,
+    "published": 24,
     "excludedByRiauBoundary": 0
   },
   "latestDetection": "2026-09-17T20:53:00+00:00",
@@ -19,7 +19,7 @@
   "villageSource": "data/batas_administrasi_desa_riau.geojson",
   "spatiallyClipped": true,
   "areaCrs": "EPSG:32647",
-  "administrativeUpdatedAt": "2026-09-19T08:19:57.345012+00:00",
+  "administrativeUpdatedAt": "2026-09-20T08:54:01.384864+00:00",
   "unassignedAreaHa": 0.0,
   "villageTotals": [
     {
@@ -283,20 +283,8 @@
     {
       "regency": "Kampar",
       "district": "Kampar Kiri",
-      "village": "Domo",
-      "areaHa": 61.22
-    },
-    {
-      "regency": "Kampar",
-      "district": "Kampar Kiri",
       "village": "Sungailiti",
-      "areaHa": 107.17
-    },
-    {
-      "regency": "Kampar",
-      "district": "Kampar Kiri Hulu",
-      "village": "Tanjung Belit",
-      "areaHa": 11.66
+      "areaHa": 16.2
     },
     {
       "regency": "Kepulauan Meranti",
@@ -326,13 +314,13 @@
       "regency": "Kuantan Singingi",
       "district": "Singingi Hilir",
       "village": "Koto Baru/Sungai Paku",
-      "areaHa": 47.14
+      "areaHa": 40.64
     },
     {
       "regency": "Kuantan Singingi",
       "district": "Singingi Hilir",
       "village": "Sungaipaku",
-      "areaHa": 103.46
+      "areaHa": 103.42
     },
     {
       "regency": "Pelalawan",
@@ -344,7 +332,7 @@
       "regency": "Pelalawan",
       "district": "Kerumutan",
       "village": "Kelurahan Kerumutan",
-      "areaHa": 603.57
+      "areaHa": 602.53
     },
     {
       "regency": "Pelalawan",
@@ -492,12 +480,7 @@
     {
       "regency": "Kampar",
       "district": "Kampar Kiri",
-      "areaHa": 168.4
-    },
-    {
-      "regency": "Kampar",
-      "district": "Kampar Kiri Hulu",
-      "areaHa": 11.66
+      "areaHa": 16.2
     },
     {
       "regency": "Kepulauan Meranti",
@@ -512,7 +495,7 @@
     {
       "regency": "Kuantan Singingi",
       "district": "Singingi Hilir",
-      "areaHa": 194.39
+      "areaHa": 187.84
     },
     {
       "regency": "Pelalawan",
@@ -522,7 +505,7 @@
     {
       "regency": "Pelalawan",
       "district": "Kerumutan",
-      "areaHa": 603.57
+      "areaHa": 602.53
     },
     {
       "regency": "Pelalawan",
@@ -560,7 +543,7 @@
     },
     {
       "regency": "Kampar",
-      "areaHa": 180.05
+      "areaHa": 16.2
     },
     {
       "regency": "Kepulauan Meranti",
@@ -572,11 +555,11 @@
     },
     {
       "regency": "Kuantan Singingi",
-      "areaHa": 194.39
+      "areaHa": 187.84
     },
     {
       "regency": "Pelalawan",
-      "areaHa": 1799.79
+      "areaHa": 1798.75
     },
     {
       "regency": "Siak",
