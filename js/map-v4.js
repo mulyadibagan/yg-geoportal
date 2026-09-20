@@ -40,6 +40,20 @@
 
 
   const REFERENCE_LAYERS = {
+    social_forestry_intervention_yg: {
+      id: "social_forestry_intervention_yg",
+      label: "Perhutanan Sosial Intervensi YG",
+      file: "data/social-forestry-intervention-yg.geojson",
+      version: "20260920-public-intervention1",
+      color: "#6d28d9",
+      count: 4,
+      countLabel: "4 wilayah",
+      type: "social_forestry_intervention",
+      focusOnEnable: true,
+      section: "intervention",
+      sourceLabel: "YG GeoPortal · wilayah program terverifikasi",
+      scale: "Batas wilayah kelola PS; terpisah dari polygon kegiatan YG"
+    },
     ...(staffSession && false ? { rtrw_riau_2018_2038: {
       id: "rtrw_riau_2018_2038",
       label: "RTRW Riau 2018–2038 · internal staf",
@@ -1941,6 +1955,17 @@ L.control.scale({
   function referenceStyle(config, feature) {
     const props = feature.properties || {};
 
+    if (config.type === "social_forestry_intervention") {
+      return {
+        color: config.color,
+        weight: 3,
+        opacity: 1,
+        dashArray: "8 4",
+        fillColor: config.color,
+        fillOpacity: 0.12
+      };
+    }
+
     if (config.type === "social_forestry") {
       const documentClass = socialForestryDocumentClass(feature);
       return {
@@ -2210,6 +2235,16 @@ L.control.scale({
       rows += item(concessionArea.label, concessionArea.value);
       rows += item("Kabupaten/Kota", props.KAB_KOTA);
       rows += item("Distrik", props.DISTRIK);
+    } else if (config.type === "social_forestry_intervention") {
+      rows += item("Nama PS", props.NAMA_HKM);
+      rows += item("Nama lokal", props.Nama_Lokal);
+      rows += item("Skema", props.Ket);
+      rows += item("Luas wilayah kelola (ha)", areaValue(props.L_IUPHKM));
+      rows += item("Desa", props.NAMA_DESA);
+      rows += item("Kecamatan", props.NAMA_KEC);
+      rows += item("Kabupaten", props.NAMA_KAB);
+      rows += item("Intervensi YG", props.Intervensi_YG);
+      rows += item("Status program", props.Status_Program);
     } else if (config.type === "social_forestry") {
       const documentClass = socialForestryDocumentClass(feature);
       rows += item("Kelompok/Hutan Desa", props.NAMA_HKM);
@@ -2259,7 +2294,10 @@ L.control.scale({
         '</span></div>'
       : "";
 
-    const socialForestryKey = config.type === "social_forestry"
+    const socialForestryKey = (
+      config.type === "social_forestry" ||
+      config.type === "social_forestry_intervention"
+    )
       ? socialForestryProfileKey(feature)
       : "";
     const socialForestryAction = socialForestryKey
@@ -2320,12 +2358,16 @@ L.control.scale({
         )
       : "";
 
+    const popupSubtitle = config.type === "social_forestry_intervention"
+      ? "Wilayah program YG · tidak menambah statistik kegiatan"
+      : "Layer referensi — tidak dihitung dalam dashboard";
+
     return (
       '<div class="popup-card">' +
         '<div class="popup-head" style="background:' +
           escapeHtml(config.color) + '">' +
           '<strong>' + escapeHtml(config.label) + '</strong>' +
-          '<span>Layer referensi — tidak dihitung dalam dashboard</span>' +
+          '<span>' + escapeHtml(popupSubtitle) + '</span>' +
         '</div>' +
         '<div class="popup-body">' + rows + sourceRows + referenceLinks +
           activeConcessionAction +
@@ -2417,6 +2459,7 @@ L.control.scale({
       config.type === "peat_function" ||
       config.type === "khg" ||
       config.type === "social_forestry" ||
+      config.type === "social_forestry_intervention" ||
       config.type === "active_concession" ||
       config.type === "oil_palm_company" ||
       config.type === "concession" ||
@@ -2625,11 +2668,17 @@ L.control.scale({
     const partnershipLayerIds = Object.keys(REFERENCE_LAYERS).filter(layerId =>
       REFERENCE_LAYERS[layerId].section === "partnership"
     );
+    const interventionLayerIds = Object.keys(REFERENCE_LAYERS).filter(layerId =>
+      REFERENCE_LAYERS[layerId].section === "intervention"
+    );
     const referenceLayerIds = Object.keys(REFERENCE_LAYERS).filter(layerId =>
-      !["administrative", "partnership"].includes(REFERENCE_LAYERS[layerId].section)
+      !["administrative", "intervention", "partnership"].includes(
+        REFERENCE_LAYERS[layerId].section
+      )
     );
 
     appendReferenceSection("BATAS ADMINISTRASI", administrativeLayerIds);
+    appendReferenceSection("WILAYAH INTERVENSI YG", interventionLayerIds);
     appendReferenceSection("DATA REFERENSI", referenceLayerIds);
     appendReferenceSection("KOLABORASI AKADEMIK", partnershipLayerIds);
 
