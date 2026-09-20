@@ -11,7 +11,7 @@
   <link rel="icon" href="assets/logo-yayasan-gambut.png">
   <link rel="stylesheet" href="css/site-brand.css?v=20260720-program-dashboard1">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous">
-  <link rel="stylesheet" href="css/riau-geoportal-internal.css?v=20260920-catalog1">
+  <link rel="stylesheet" href="css/riau-geoportal-internal.css?v=20260920-catalog2">
 </head>
 <body>
   <header class="site-header yg-page-header rg-header">
@@ -76,12 +76,12 @@
       <section class="rg-map-panel" aria-labelledby="rg-map-title">
         <div class="rg-panel-head rg-map-head">
           <div><span>PEMERIKSAAN SPASIAL</span><h2 id="rg-map-title">Peta perbandingan</h2></div>
-          <div class="rg-map-actions"><span id="rg-active-count">0/3 layer aktif</span><button id="rg-fit" type="button" disabled>Zoom layer</button><button id="rg-clear" type="button" disabled>Bersihkan</button></div>
+          <div class="rg-map-actions"><span id="rg-active-count">0/3 layer aktif</span><button id="rg-fit" type="button" disabled>Zoom layer</button><button id="rg-clear" type="button" disabled>Bersihkan</button><button id="rg-map-expand" class="rg-map-expand" type="button" aria-pressed="false">Perbesar peta</button></div>
         </div>
         <div id="rg-map" role="application" aria-label="Peta dataset Riau Geoportal"><div class="rg-map-empty">Pilih “Tampilkan” pada dataset. Tidak ada geometri yang dimuat otomatis.</div></div>
         <div class="rg-map-foot">
           <div id="rg-active-layers" class="rg-active-layers"><span>Belum ada layer aktif.</span></div>
-          <p id="rg-map-status" class="rg-status" role="status">Maksimal tiga layer ditampilkan bersamaan. Peta dasar eksternal hanya dimuat bila dipilih pada kontrol peta.</p>
+          <p id="rg-map-status" class="rg-status" role="status">Maksimal tiga layer ditampilkan bersamaan. Peta jalan aktif; citra satelit dapat dipilih melalui kontrol peta.</p>
         </div>
         <article id="rg-detail" class="rg-detail" hidden>
           <div class="rg-detail-head"><div><span>METADATA DATASET</span><h3 id="rg-detail-title"></h3></div><button id="rg-detail-close" type="button" aria-label="Tutup rincian">×</button></div>
@@ -97,6 +97,6 @@
   <footer class="rg-footer">YG GeoPortal · Katalog Riau Geoportal · Internal Yayasan Gambut</footer>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous"></script>
   <script src="js/auth.js?v=20260920-session5"></script>
-  <script src="js/riau-geoportal-internal.js?v=20260920-catalog2"></script>
+  <script src="js/riau-geoportal-internal.js?v=20260920-catalog3"></script>
 </body>
 </html>
