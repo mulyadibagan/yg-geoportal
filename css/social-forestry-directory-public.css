@@ -1,3 +1,4 @@
+.psd-public-page .header-inner{padding-right:105px}
 .psd-public-page .psd-hero{padding:38px 0 30px}
 .psd-public-page .psd-hero h1{max-width:1000px;margin:8px 0;font-size:clamp(38px,4.5vw,58px)}
 .psd-public-page .psd-hero>div>p{max-width:960px;margin:0;color:#d8eee7;font-size:16px;line-height:1.6}
@@ -13,7 +14,7 @@
 .psd-public-page .psd-stat-grid small{margin-top:6px}
 .psd-public-page .psd-regency{padding:32px 0 12px}
 .psd-public-page .psd-regency__head{margin-bottom:15px}
-.psd-public-page .psd-regency-card{min-height:82px}
+.psd-public-page .psd-regency-card{min-height:82px;appearance:none}
 .psd-public-page .psd-regency-card>span{display:block;min-width:0}
 .psd-public-page .psd-content{padding-top:18px}
 .psd-public-page .psd-toolbar{grid-template-columns:minmax(280px,1.45fr) repeat(2,minmax(180px,.65fr));position:sticky;top:72px;z-index:20;box-shadow:0 10px 26px rgba(12,72,61,.07)}
@@ -34,6 +35,10 @@
   .psd-public-page .psd-load-more{align-items:stretch;flex-direction:column;text-align:center}
 }
 @media(max-width:620px){
+  .psd-public-page .header-inner{gap:8px;padding-right:92px}
+  .psd-public-page .brand img{width:44px;height:44px}
+  .psd-public-page .brand strong{font-size:15px}
+  .psd-public-page .brand>span>span{display:none}
   .psd-public-page .psd-hero{padding:30px 0 24px}
   .psd-public-page .psd-hero h1{font-size:36px}
   .psd-access-note{align-items:flex-start;width:100%;border-radius:14px}
