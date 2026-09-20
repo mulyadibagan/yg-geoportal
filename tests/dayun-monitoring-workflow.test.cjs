@@ -102,7 +102,8 @@ test('public gawangan profile reads only the published report endpoint and calcu
   assert.match(script, /function ageNow/);
   assert.match(script, /agust:7/);
   assert.match(script, /sept:8/);
-  assert.match(script, /tanggal tanam lengkap diperlukan/);
+  assert.match(script, /periode tanam diperlukan/);
+  assert.match(script, /berdasarkan bulan tanam/);
   assert.match(script, /\\d\{1,2\}.*\\s\+\(\[a-z\]\+\).*\\d\{4\}/);
   assert.match(html, /RIWAYAT TERVERIFIKASI/);
   assert.match(backend, /if \(row\[21\] !== 'Sudah Dipublikasikan'\)/);

@@ -75,7 +75,8 @@ test('each planting polygon popup shows block and gawangan areas with a profile 
   assert.doesNotMatch(profileScript, /November|Desember/);
   assert.match(profileScript, /Ethrel terakhir tercatat/);
   assert.match(profileScript, /STATUS DATA FAKTUAL/);
-  assert.match(profileScript, /tanggal tanam lengkap yang telah dicatat/);
+  assert.match(profileScript, /berdasarkan bulan tanam/);
+  assert.match(profileScript, /Umur perkiraan/);
   assert.match(profileScript, /Selisih populasi, estimasi hasil, dan calon ratoon tidak dihitung/);
   assert.match(profileScript, /Sensus terverifikasi/);
   assert.doesNotMatch(profile + profileScript, /DATA GAWANG|Sumber:/i);
