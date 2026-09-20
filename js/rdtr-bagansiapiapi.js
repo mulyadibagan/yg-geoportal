@@ -685,6 +685,27 @@
       : '<p class="rdtr-component-note">Matriks argumentasi konsultasi belum tersedia.</p>';
   }
 
+  function renderConsultationReadiness(pack) {
+    pack = pack || {};
+    var agenda = pack.priorityAgenda || [];
+    var maps = pack.mapChecklist || [];
+    var roles = pack.teamRoles || [];
+    var mapsReady = maps.filter(function (row) { return row.status === "ready_internal"; }).length;
+    var assignedRoles = roles.filter(function (row) { return row.assignedTo; }).length;
+    document.getElementById("rdtr-consultation-readiness").innerHTML = agenda.length
+      ? '<div class="rdtr-subsection-heading"><div><h3>Paket kesiapan pelaksanaan konsultasi</h3><p>Bahan tersedia; penugasan dan pemeriksaan materi masih harus dilakukan</p></div></div>' +
+        '<div class="rdtr-network-kpis"><span><strong>' + number(agenda.length, 0) + '</strong> agenda argumentasi</span><span><strong>' +
+        number(mapsReady, 0) + '/' + number(maps.length, 0) + '</strong> paket peta tersedia internal</span><span><strong>' +
+        number(assignedRoles, 0) + '/' + number(roles.length, 0) + '</strong> peran tim ditetapkan</span></div>' +
+        '<div class="rdtr-itbx-scroll"><table><thead><tr><th>Urutan</th><th>Prioritas</th><th>Tema</th><th>Pertanyaan lisan</th><th>Hasil yang diminta</th><th>Waktu</th></tr></thead><tbody>' +
+        agenda.map(function (row) { return '<tr><td>' + number(row.order, 0) + '</td><td>' + priorityBadge(row.priority) + '</td><td>' + esc(row.theme) +
+          '</td><td>' + esc(row.oralQuestion) + '</td><td>' + esc(row.requestedOutcome) + '</td><td>' + number(row.timeAllocationMinutes, 0) + ' menit</td></tr>'; }).join("") +
+        '</tbody></table></div><div class="rdtr-plan-items">' + roles.map(function (row) { return '<article class="rdtr-plan-item"><header><h4>' + esc(row.role) +
+          '</h4>' + statusBadge(row.assignedTo ? "assigned" : "unassigned") + '</header><p>' + esc(row.responsibility) + '</p><small><strong>Ditugaskan:</strong> ' +
+          esc(row.assignedTo || "belum ditetapkan") + '</small></article>'; }).join("") + '</div><p class="rdtr-component-note">' + esc(pack.readinessRule) + '</p>'
+      : '<p class="rdtr-component-note">Paket kesiapan konsultasi belum tersedia.</p>';
+  }
+
   function colorFrom(value) {
     var colors = ["#a25728", "#176c8c", "#4b7d49", "#8d546f", "#806523", "#5d59a1", "#338477"];
     var hash = 0, text = String(value || "");
@@ -1654,6 +1675,29 @@
     URL.revokeObjectURL(link.href);
   }
 
+  function exportConsultationReadinessPack() {
+    var pack = state.analysis.consultationReadinessPack;
+    if (!pack) return;
+    downloadJson(pack, "paket-kesiapan-konsultasi-rdtr-yg-v0.11-internal.json", "application/json;charset=utf-8");
+  }
+
+  function exportConsultationNotesCsv() {
+    var pack = state.analysis.consultationReadinessPack || {};
+    var header = ["Referensi argumen", "Tema", "Pertanyaan diajukan", "Nama dan peran penjawab", "Jawaban verbatim/ringkas", "Bukti dijanjikan", "Disposisi", "Perubahan disepakati", "Referensi perubahan peta", "Referensi pasal/program", "Penanggung jawab", "Tenggat", "Pemilik tindak lanjut YG", "Status penyelesaian", "Catatan kerahasiaan"];
+    var lines = [header.map(csvCell).join(",")];
+    (pack.noteTemplate || []).forEach(function (row) {
+      lines.push([row.argumentRef, row.theme, row.questionAsked, row.respondentNameAndRole, row.responseVerbatimOrSummary,
+        row.evidencePromised, row.disposition, row.agreedChange, row.mapChangeRef, row.ruleOrProgrammeChangeRef,
+        row.responsibleParty, row.dueDate, row.followUpOwner, row.resolutionStatus, row.confidentialityNote].map(csvCell).join(","));
+    });
+    var blob = new Blob(["\ufeff" + lines.join("\n")], { type: "text/csv;charset=utf-8" });
+    var link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "lembar-pencatatan-konsultasi-rdtr-yg-v0.11-internal.csv";
+    link.click();
+    URL.revokeObjectURL(link.href);
+  }
+
   function exportPolicyMap() {
     var framework = state.analysis.policyMapFramework || {};
     var features = [];
@@ -1785,6 +1829,8 @@
     document.getElementById("rdtr-export-readiness").addEventListener("click", exportDevelopmentReadiness);
     document.getElementById("rdtr-export-programmes").addEventListener("click", exportProgrammePortfolioCsv);
     document.getElementById("rdtr-export-consultation").addEventListener("click", exportConsultationMatrixCsv);
+    document.getElementById("rdtr-export-consultation-pack").addEventListener("click", exportConsultationReadinessPack);
+    document.getElementById("rdtr-export-consultation-notes").addEventListener("click", exportConsultationNotesCsv);
     document.getElementById("rdtr-export-policy-map").addEventListener("click", exportPolicyMap);
     document.getElementById("rdtr-export-draft-csv").addEventListener("click", exportDraftComparisonCsv);
     document.getElementById("rdtr-export-draft-geojson").addEventListener("click", exportDraftComparisonGeoJson);
@@ -1818,6 +1864,7 @@
     renderPolicyMapFramework(state.analysis.policyMapFramework);
     renderPlanComponents(state.analysis.ygPlan);
     renderConsultationMatrix(state.analysis.consultationArgumentMatrix);
+    renderConsultationReadiness(state.analysis.consultationReadinessPack);
     renderAnalysisProgramme(state.analysis.analysisProgramme, state.analysis.mandatoryAnalysisMatrix);
     renderAnalysisMatrix(state.analysis.mandatoryAnalysisMatrix);
     renderGeometryRegistry(state.analysis.geometryRegistry);

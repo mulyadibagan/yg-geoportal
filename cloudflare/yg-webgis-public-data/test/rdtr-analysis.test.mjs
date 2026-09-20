@@ -208,7 +208,7 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
   assert.ok(result.map.ygPlanningUnits.metadata.geometryProcessing.includes("tolerance 0.00002"));
 
   assert.equal(result.ygDraftRdtr.status, "provisional_internal_spatial_draft");
-  assert.equal(result.ygDraftRdtr.version, "0.10.0-internal");
+  assert.equal(result.ygDraftRdtr.version, "0.11.0-internal");
   assert.equal(result.ygDraftRdtr.programmePortfolio.programmeCount, 8);
   assert.equal(result.ygDraftRdtr.programmePortfolio.indicatorCount, 16);
   assert.equal(result.consultationArgumentMatrix.items.length, 10);
@@ -222,6 +222,22 @@ test("builds an internal baseline for exactly the 11 invited planning-area villa
     row.governmentResponse === null && row.agreedChange === null && row.mapChangeRef === null &&
     row.ruleChangeRef === null && row.responsibleParty === null && row.dueDate === null &&
     row.resolutionStatus === "not_started"
+  ));
+  assert.equal(result.consultationReadinessPack.priorityAgenda.length, 10);
+  assert.equal(result.consultationReadinessPack.mapChecklist.length, 7);
+  assert.equal(result.consultationReadinessPack.teamRoles.length, 5);
+  assert.equal(result.consultationReadinessPack.noteTemplate.length, 10);
+  assert.equal(result.ygDraftRdtr.consultationReadinessPack.agendaCount, 10);
+  assert.ok(result.consultationReadinessPack.priorityAgenda.every((row, index) =>
+    row.order === index + 1 && row.argumentRef && row.oralQuestion && row.requestedOutcome && row.timeAllocationMinutes > 0
+  ));
+  assert.ok(result.consultationReadinessPack.teamRoles.every(row => row.assignedTo === null));
+  assert.ok(result.consultationReadinessPack.mapChecklist.every(row =>
+    row.exportOrPrintChecked === false && row.reviewedBy === null && row.reviewDate === null
+  ));
+  assert.ok(result.consultationReadinessPack.noteTemplate.every(row =>
+    row.questionAsked === false && row.respondentNameAndRole === null && row.responseVerbatimOrSummary === null &&
+    row.responsibleParty === null && row.dueDate === null && row.followUpOwner === null && row.resolutionStatus === "not_started"
   ));
   assert.equal(result.ygDraftRdtr.zoningCodebook.version, "0.1.0-internal");
   assert.equal(result.ygDraftRdtr.structureDraft.status, "analytical_reference_geometry");

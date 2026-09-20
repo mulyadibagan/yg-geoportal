@@ -2210,6 +2210,104 @@ function buildConsultationArgumentMatrix(assessments, candidateZones, evidenceBo
   };
 }
 
+function buildConsultationReadinessPack(argumentMatrix, geometryRegistry, evidenceBoard) {
+  const priorityOrder = { P0: 0, P1: 1, P2: 2 };
+  const priorityAgenda = [...argumentMatrix.items]
+    .sort((left, right) => priorityOrder[left.priority] - priorityOrder[right.priority] || left.id.localeCompare(right.id))
+    .map((row, index) => ({
+      order: index + 1,
+      argumentRef: row.id,
+      priority: row.priority,
+      theme: row.theme,
+      oralQuestion: row.consultationQuestion,
+      speakingPoint: row.ygPosition,
+      requestedOutcome: row.requestedChange,
+      responseStandard: row.responseStandard,
+      timeAllocationMinutes: row.priority === "P0" ? 4 : row.priority === "P1" ? 3 : 2,
+      status: "ready_for_internal_briefing"
+    }));
+  const mapSpecs = [
+    ["MAP-CONS-01", "Batas 11 wilayah dan unit kajian", "map.studyArea", "Menegaskan cakupan dan meminta dasar penetapan WP."],
+    ["MAP-CONS-02", "Peta sintesis kebijakan gambut, non-APL, dan pesisir", "policyMapFramework", "Menunjukkan kendala kebijakan yang tidak boleh diabaikan."],
+    ["MAP-CONS-03", "Rancangan zona alternatif YG", "map.ygCandidateZones", "Menyajikan argumen tanding spasial yang saling eksklusif."],
+    ["MAP-CONS-04", "Uji kesiapan pengembangan zona", "map.ygDevelopmentReadiness", "Menunjukkan bukti pengunci dan area yang belum terbukti aman."],
+    ["MAP-CONS-05", "Bukti jaringan jalan OSM", "map.ygRoadEvidence", "Menguji keterhubungan tanpa mengklaim jaringan resmi."],
+    ["MAP-CONS-06", "Bukti fasilitas dan hidrologi OSM", "map.ygFacilityEvidence/map.ygHydrologyEvidence", "Menguji kebutuhan inventaris, kapasitas layanan, dan kajian hidrologi."],
+    ["MAP-CONS-07", "Simpul dan sumbu struktur analitis", "map.ygStructureNodes/map.ygStructureAxes", "Membahas hubungan pelayanan tanpa menetapkan lokasi atau trase."]
+  ];
+  const geometryByRef = new Map((geometryRegistry || []).map(row => [row.mapRef, row]));
+  const mapChecklist = mapSpecs.map(([id, title, mapRef, consultationUse]) => {
+    const refs = mapRef.split("/");
+    const registryRows = refs.map(ref => geometryByRef.get(ref)).filter(Boolean);
+    const available = ref => ref === "policyMapFramework" || Boolean(geometryByRef.get(ref)?.featureCount);
+    return {
+      id, title, mapRef, consultationUse,
+      status: refs.every(available) ? "ready_internal" : "partial_or_missing",
+      limitations: registryRows.map(row => row.limitation),
+      exportOrPrintChecked: false,
+      reviewedBy: null,
+      reviewDate: null
+    };
+  });
+  const evidenceIds = [...new Set(argumentMatrix.items.flatMap(row => row.evidenceRefs))];
+  const evidenceById = new Map((evidenceBoard.items || []).map(row => [row.id, row]));
+  const evidenceChecklist = evidenceIds.map(id => {
+    const evidence = evidenceById.get(id);
+    return {
+      evidenceRef: id,
+      title: evidence?.title || id,
+      evidenceClass: evidence?.evidenceClass || null,
+      sourceStatus: evidence?.status || "not_received",
+      consultationCopyStatus: "not_checked",
+      fileOrLinkRef: null,
+      confidentialityChecked: false,
+      reviewedBy: null
+    };
+  });
+  const teamRoles = [
+    { id: "ROLE-YG-01", role: "Juru bicara utama", responsibility: "Menyampaikan posisi, meminta jawaban, dan menjaga fokus agenda.", assignedTo: null },
+    { id: "ROLE-YG-02", role: "Analis regulasi", responsibility: "Menunjukkan dasar pasal dan mencatat alasan hukum jawaban.", assignedTo: null },
+    { id: "ROLE-YG-03", role: "Analis GIS", responsibility: "Menampilkan peta, mencatat lokasi, dan mengunci referensi perubahan geometri.", assignedTo: null },
+    { id: "ROLE-YG-04", role: "Pencatat keputusan", responsibility: "Merekam jawaban, komitmen, penanggung jawab, tenggat, dan tindak lanjut.", assignedTo: null },
+    { id: "ROLE-YG-05", role: "Penghubung masyarakat", responsibility: "Menjaga keterwakilan isu ruang hidup, kelompok rentan, dan persetujuan yang sesuai.", assignedTo: null }
+  ];
+  const noteTemplate = argumentMatrix.items.map(row => ({
+    argumentRef: row.id,
+    theme: row.theme,
+    questionAsked: false,
+    respondentNameAndRole: null,
+    responseVerbatimOrSummary: null,
+    evidencePromised: null,
+    disposition: null,
+    agreedChange: null,
+    mapChangeRef: null,
+    ruleOrProgrammeChangeRef: null,
+    responsibleParty: null,
+    dueDate: null,
+    followUpOwner: null,
+    resolutionStatus: "not_started",
+    confidentialityNote: null
+  }));
+  return {
+    id: "RDTR-YG-CONSULTATION-READINESS-PACK-V0.1",
+    version: "0.1.0-internal",
+    access: "staff_only",
+    status: "internal_briefing_pack_ready_assignments_and_material_checks_pending",
+    priorityAgenda,
+    mapChecklist,
+    evidenceChecklist,
+    teamRoles,
+    sessionProtocol: {
+      before: ["Tetapkan peran tim", "Periksa versi peta dan bukti", "Tandai data sensitif", "Latih pertanyaan P0", "Siapkan cadangan offline"],
+      during: ["Sebut ID argumentasi", "Catat penjawab dan substansi", "Minta bukti serta tenggat", "Tautkan jawaban ke peta/pasal/program", "Jangan menyepakati data yang belum diverifikasi"],
+      after: ["Kunci catatan dan waktu", "Unggah bukti yang diterima", "Perbarui matriks respons", "Uji perubahan geometri/aturan", "Kirim konfirmasi tertulis atas komitmen"]
+    },
+    noteTemplate,
+    readinessRule: "Status siap konsultasi hanya berarti bahan internal tersedia; bukan berarti seluruh bukti, penugasan tim, atau materi yang akan dibagikan telah tervalidasi.",
+    disclaimer: "Paket internal YG. Nama peserta, jawaban, komitmen, dan tenggat harus dicatat dari kejadian nyata dan tidak boleh direkayasa sebelum atau sesudah konsultasi."
+  };
+}
+
 function villageRegulatoryAssessments(metrics) {
   const rows = [{
     theme: "Konsistensi RTR", decision: "verify", regulations: ["R01", "R02", "L01", "L02"],
@@ -2714,12 +2812,12 @@ function buildYgZoningCodebook(zoning) {
   };
 }
 
-function buildYgDraftRdtr(zoning, zoningCodebook, structureDraft, networkEvidence, serviceEvidence, serviceAccess, developmentReadiness, programmePortfolio, consultationMatrix) {
+function buildYgDraftRdtr(zoning, zoningCodebook, structureDraft, networkEvidence, serviceEvidence, serviceAccess, developmentReadiness, programmePortfolio, consultationMatrix, consultationReadinessPack) {
   const metadata = zoning.metadata || {};
   return {
-    id: "RDTR-YG-BAGANSIAPIAPI-V0.10",
+    id: "RDTR-YG-BAGANSIAPIAPI-V0.11",
     title: "Rancangan RDTR Alternatif Bagansiapiapi versi Yayasan Gambut",
-    version: "0.10.0-internal",
+    version: "0.11.0-internal",
     sourceGeometryVersion: metadata.version || "0.2.0-internal",
     status: "provisional_internal_spatial_draft",
     legalCharacter: "Kajian dan rancangan teknis internal; tidak mempunyai akibat hukum dan tidak menggantikan kewenangan pemerintah daerah untuk menyusun serta menetapkan RDTR.",
@@ -2796,6 +2894,16 @@ function buildYgDraftRdtr(zoning, zoningCodebook, structureDraft, networkEvidenc
       argumentCount: consultationMatrix.items.length,
       responseRule: consultationMatrix.responseRule,
       disclaimer: consultationMatrix.disclaimer
+    },
+    consultationReadinessPack: {
+      id: consultationReadinessPack.id,
+      version: consultationReadinessPack.version,
+      status: consultationReadinessPack.status,
+      agendaCount: consultationReadinessPack.priorityAgenda.length,
+      mapChecklistCount: consultationReadinessPack.mapChecklist.length,
+      evidenceChecklistCount: consultationReadinessPack.evidenceChecklist.length,
+      teamRoleCount: consultationReadinessPack.teamRoles.length,
+      disclaimer: consultationReadinessPack.disclaimer
     },
     components: [
       { id: "YG-RDTR-01", label: "Tujuan dan strategi WP", status: "provisional", outputRef: "ygPlan.planningObjective" },
@@ -3056,7 +3164,6 @@ export function buildAnalysis({ rtrw, administration, peat, forest, mangrove, ma
   const assessments = regulatoryAssessments(summary);
   const evidenceBoard = buildP0EvidenceBoard(ygCandidateZones);
   const consultationArgumentMatrix = buildConsultationArgumentMatrix(assessments, ygCandidateZones, evidenceBoard);
-  const ygDraftRdtr = buildYgDraftRdtr(ygCandidateZones, zoningCodebook, ygStructureDraft, ygNetworkEvidence, ygServiceHydrologyEvidence, ygServiceAccessAnalysis, ygDevelopmentReadiness, ygPlan.programs, consultationArgumentMatrix);
   const policyMapFramework = buildPolicyMapFramework({
     summary,
     peatCount: peatMap.length,
@@ -3066,6 +3173,22 @@ export function buildAnalysis({ rtrw, administration, peat, forest, mangrove, ma
     ygZoneCount: ygCandidateZones.features.length,
     ygZoneCoveragePct: ygCandidateZones.metadata.coveragePct
   });
+  const geometryRegistry = buildGeometryRegistry({
+    villageCount: villages.length,
+    rtrwCount: rtrwMap.length,
+    peatCount: peatMap.length,
+    forestCount: forestMap.length,
+    mangroveCandidateCount: mangroveCandidateMap.length,
+    ygZoneCount: ygCandidateZones.features.length,
+    developmentReadinessCount: ygDevelopmentReadiness.zones.features.length,
+    structureNodeCount: ygStructureDraft.nodes.features.length,
+    structureAxisCount: ygStructureDraft.axes.features.length,
+    roadEvidenceCount: ygNetworkEvidence.roads.features.length,
+    facilityEvidenceCount: ygServiceHydrologyEvidence.facilities.features.length,
+    hydrologyEvidenceCount: ygServiceHydrologyEvidence.hydrology.features.length
+  });
+  const consultationReadinessPack = buildConsultationReadinessPack(consultationArgumentMatrix, geometryRegistry, evidenceBoard);
+  const ygDraftRdtr = buildYgDraftRdtr(ygCandidateZones, zoningCodebook, ygStructureDraft, ygNetworkEvidence, ygServiceHydrologyEvidence, ygServiceAccessAnalysis, ygDevelopmentReadiness, ygPlan.programs, consultationArgumentMatrix, consultationReadinessPack);
 
   return {
     metadata: {
@@ -3109,6 +3232,7 @@ export function buildAnalysis({ rtrw, administration, peat, forest, mangrove, ma
     analysisProgramme,
     ygPlan,
     consultationArgumentMatrix,
+    consultationReadinessPack,
     serviceAccessAnalysis: {
       id: ygServiceAccessAnalysis.id,
       version: ygServiceAccessAnalysis.version,
@@ -3126,20 +3250,7 @@ export function buildAnalysis({ rtrw, administration, peat, forest, mangrove, ma
       evidenceLocks: ygDevelopmentReadiness.evidenceLocks,
       disclaimer: ygDevelopmentReadiness.disclaimer
     },
-    geometryRegistry: buildGeometryRegistry({
-      villageCount: villages.length,
-      rtrwCount: rtrwMap.length,
-      peatCount: peatMap.length,
-      forestCount: forestMap.length,
-      mangroveCandidateCount: mangroveCandidateMap.length,
-      ygZoneCount: ygCandidateZones.features.length,
-      developmentReadinessCount: ygDevelopmentReadiness.zones.features.length,
-      structureNodeCount: ygStructureDraft.nodes.features.length,
-      structureAxisCount: ygStructureDraft.axes.features.length,
-      roadEvidenceCount: ygNetworkEvidence.roads.features.length,
-      facilityEvidenceCount: ygServiceHydrologyEvidence.facilities.features.length,
-      hydrologyEvidenceCount: ygServiceHydrologyEvidence.hydrology.features.length
-    }),
+    geometryRegistry,
     consultationQuestions: consultationArgumentMatrix.items.map(row => row.consultationQuestion),
     villages: villageMetrics,
     map: {
