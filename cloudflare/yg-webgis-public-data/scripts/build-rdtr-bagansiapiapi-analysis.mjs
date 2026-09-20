@@ -134,12 +134,13 @@ const REGULATION_REGISTER = [
     ygTest: "Uji konektivitas pasang-surut, mangrove, muara, perikanan tradisional, jalur akses, ruang tambat, dan dampak pembangunan daratan terhadap perairan."
   },
   {
-    id: "R14", scope: "inti", code: "UU 41/1999 jo. UU 6/2023; PP 23/2021", title: "Kehutanan",
-    status: "berlaku dengan perubahan", officialUrl: "https://peraturan.bpk.go.id/Details/161853/pp-no-23-tahun-2021",
+    id: "R14", scope: "inti", code: "UU 41/1999 jo. UU 6/2023; PP 23/2021 jo. PP 8/2026", title: "Kehutanan",
+    status: "berlaku dengan perubahan; PP 8/2026 berlaku 2 Maret 2026", officialUrl: "https://peraturan.bpk.go.id/Details/161853/pp-no-23-tahun-2021",
     officialUrls: [
       { label: "UU 41/1999", url: "https://peraturan.go.id/id/uu-no-41-tahun-1999" },
       { label: "Perubahan terakhir UU 6/2023", url: "https://peraturan.bpk.go.id/Details/246523/uu-no-6-tahun-2023" },
-      { label: "PP 23/2021", url: "https://peraturan.bpk.go.id/Details/161853/pp-no-23-tahun-2021" }
+      { label: "PP 23/2021", url: "https://peraturan.bpk.go.id/Details/161853/pp-no-23-tahun-2021" },
+      { label: "Perubahan PP 8/2026", url: "https://peraturan.bpk.go.id/Details/347927/pp-no-8-tahun-2026" }
     ],
     obligation: "Status, fungsi, perubahan peruntukan/fungsi, penggunaan kawasan hutan, perizinan, dan pengelolaan kehutanan mengikuti kewenangan serta prosedur kehutanan.",
     ygTest: "RDTR tidak otomatis mengubah status kawasan hutan. Uji penunjukan/penetapan termutakhir, riwayat perubahan, PBPH/persetujuan, pelepasan, dan perhutanan sosial."
@@ -197,6 +198,7 @@ function buildRegulationCurrencyAudit() {
     R09: { status: "official_status_page_checked", finding: "JDIH BPK mencatat PP 46/2016 berlaku sejak 31 Oktober 2016; halaman status belum mencantumkan perubahan atau pencabutan." },
     R10: { status: "official_status_page_checked", finding: "JDIH BPK mencatat Permen LHK 13/2024 berlaku sejak 6 September 2024 dan mencabut Permen LHK P.69/2017." },
     R11: { status: "official_status_page_checked", finding: "JDIH BPK mencatat PP 57/2016 berlaku sejak 6 Desember 2016 dan mengubah PP 71/2014 tentang perlindungan dan pengelolaan ekosistem gambut." },
+    R14: { status: "official_status_page_checked", finding: "JDIH BPK mencatat PP 23/2021 berlaku dan telah diubah oleh PP 8/2026 yang berlaku sejak 2 Maret 2026. Perubahan 2026 menambah Pasal 293A dan berfokus pada pengaturan kehutanan di KPBPB Batam; relevansi materinya untuk Bagansiapiapi tetap harus dinilai dalam legal review." },
     L04: { status: "official_status_page_checked", finding: "Perda Riau 11/2024 berlaku 14 Agustus 2024 dan mengatur pengelolaan hutan pada wilayah KPH." }
   };
   const items = REGULATION_REGISTER.map(row => ({
@@ -213,8 +215,8 @@ function buildRegulationCurrencyAudit() {
     legalReviewDate: null
   }));
   return {
-    id: "RDTR-YG-REGULATION-CURRENCY-AUDIT-V0.3",
-    version: "0.3.0-internal",
+    id: "RDTR-YG-REGULATION-CURRENCY-AUDIT-V0.4",
+    version: "0.4.0-internal",
     access: "staff_only",
     status: "partial_official_source_recheck",
     totalRegulations: items.length,
@@ -3287,7 +3289,7 @@ function buildYgDraftRdtr(zoning, zoningCodebook, structureDraft, networkEvidenc
   return {
     id: "RDTR-YG-BAGANSIAPIAPI-V0.27-RC10",
     title: "Rancangan RDTR Alternatif Bagansiapiapi versi Yayasan Gambut",
-    version: "0.27.0-internal-release-candidate",
+    version: "0.28.0-internal-release-candidate",
     sourceGeometryVersion: metadata.version || "0.2.0-internal",
     status: "provisional_internal_spatial_draft",
     legalCharacter: "Kajian dan rancangan teknis internal; tidak mempunyai akibat hukum dan tidak menggantikan kewenangan pemerintah daerah untuk menyusun serta menetapkan RDTR.",
