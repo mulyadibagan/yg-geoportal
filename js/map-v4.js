@@ -80,6 +80,24 @@
       ],
       policyUrl: "https://jdih.riau.go.id/"
     } } : {}),
+    ...(staffSession ? { feg_sk130_riau: {
+      id: "feg_sk130_riau",
+      label: "Fungsi Ekosistem Gambut SK.130 · internal staf",
+      file: "data/FEG_SK130_RIAU.geojson",
+      version: "20260920-validated1",
+      color: "#238b45",
+      count: 424,
+      countLabel: "424 poligon",
+      type: "peat_function",
+      focusOnEnable: true,
+      section: "peat_environment",
+      sourceLabel: "SK.130/MENLHK/SETJEN/PKL.0/2/2017",
+      scale: "EPSG:4326 · geometri diperiksa · luas dihitung ulang",
+      legendItems: [
+        ["#238b45", "Fungsi lindung ekosistem gambut"],
+        ["#f2c94c", "Fungsi budidaya ekosistem gambut"]
+      ]
+    } } : {}),
     ...(staffSession ? { pbph_riau_052026: { id: "pbph_riau_052026", label: "PBPH Riau · internal staf", file: "data/PBPH_RIAU_052026.geojson", color: "#d84315", count: 56, type: "active_concession", focusOnEnable: true, section: "forest_governance", sourceLabel: "Referensi internal PBPH Mei 2026", scale: "1:50.000" } } : {}),
     ...(staffSession ? { perusahaan_sawit_riau: {
       id: "perusahaan_sawit_riau",
