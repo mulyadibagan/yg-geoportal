@@ -1712,7 +1712,8 @@ L.control.scale({
     refreshAreaMangrovePopups();
   }
 
-  function addLiveFeatures(layerId, features) {
+  function addLiveFeatures(layerId, features, options) {
+    const countLabel = options && String(options.countLabel || "").trim();
     const group = layerObjects[layerId];
     if (!Array.isArray(features) || !features.length) return 0;
     if (!group) {
@@ -1837,7 +1838,11 @@ L.control.scale({
         checkbox.closest(".layer-row").querySelector(".count")
       );
       if (countElement) {
-        countElement.textContent = formatNumber(uniqueFeatureIds.size);
+        countElement.textContent = countLabel || formatNumber(uniqueFeatureIds.size);
+        if (countLabel) {
+          countElement.title = countLabel;
+          countElement.setAttribute("aria-label", countLabel);
+        }
       }
     };
     updateCount();

@@ -203,11 +203,12 @@
     }
 
     const areaObjects = areaObjectIndex(api);
-    const features = (data && Array.isArray(data.features)
+    const verifiedMonitoringFeatures = (data && Array.isArray(data.features)
       ? data.features
       : [])
       .map(monitoringFeature)
-      .filter(Boolean)
+      .filter(Boolean);
+    const features = verifiedMonitoringFeatures
       .filter(feature => {
         const props = feature.properties || {};
         const reportId = String(
@@ -249,7 +250,12 @@
       })
       .filter(Boolean);
 
-    api.addLiveFeatures("monitoring_reports", latestPerObject(features));
+    const latestFeatures = latestPerObject(features);
+    const countLabel = latestFeatures.length + " lokasi · " +
+      verifiedMonitoringFeatures.length + " laporan";
+    api.addLiveFeatures("monitoring_reports", latestFeatures, {
+      countLabel: countLabel
+    });
     document.dispatchEvent(new CustomEvent("yg:monitoring-live-synced"));
     return true;
   }
