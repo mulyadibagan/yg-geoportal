@@ -12,6 +12,8 @@ on:
       - 'staff-social-forestry-directory.html'
       - 'staff-social-forestry-profile.html'
       - 'js/staff-social-forestry-*.js'
+      - 'css/staff-social-forestry-analysis.css'
+      - 'internal-data/social-forestry/makmur-pesisir-spatial-analysis.json'
 
 permissions:
   contents: read
@@ -37,6 +39,7 @@ jobs:
           for file in social-forestry-pkk-samj.geojson social-forestry-kud-agro-lestari.geojson social-forestry-derived-2025.geojson social-forestry-official-2026.geojson; do
             git show "${PS_DETAILS_SOURCE_COMMIT}:data/${file}" > "/tmp/yg-private/${file}"
           done
+          cp internal-data/social-forestry/makmur-pesisir-spatial-analysis.json /tmp/yg-private/makmur-pesisir-spatial-analysis.json
           node - <<'NODE'
           const fs=require('fs');
           const names=['social-forestry-base.geojson','social-forestry-pkk-samj.geojson','social-forestry-kud-agro-lestari.geojson','social-forestry-derived-2025.geojson','social-forestry-official-2026.geojson'];
@@ -45,17 +48,21 @@ jobs:
           fs.writeFileSync('/tmp/yg-private/social-forestry-riau.geojson',JSON.stringify({type:'FeatureCollection',features}));
           const details=JSON.parse(fs.readFileSync('/tmp/yg-private/social-forestry-details.json','utf8'));
           if(!Object.keys(details).length) throw new Error('PS private details are empty');
+          const analysis=JSON.parse(fs.readFileSync('/tmp/yg-private/makmur-pesisir-spatial-analysis.json','utf8'));
+          if(analysis.profileKey!=='sk.9863/menlhk-pskl/pkps/psl.0/9/2023') throw new Error('invalid Makmur Pesisir analysis profile');
           console.log('PS features:',features.length,'detail profiles:',Object.keys(details).length);
           NODE
       - name: Validate access wiring
         shell: bash
         run: |
           grep -q "/api/staff/social-forestry-details" js/staff-data-access.js
+          grep -q "/api/staff/social-forestry-makmur-pesisir-analysis" js/staff-data-access.js
           grep -q "internal/social-forestry/details.json" cloudflare/yg-webgis-public-data/src/index.js
           grep -q "staff-social-forestry-gate.js" staff-social-forestry-directory.html
           grep -q "staff-social-forestry-gate.js" staff-social-forestry-profile.html
           node --check js/staff-social-forestry-directory.js
           node --check js/staff-social-forestry-profile.js
+          node --check js/staff-social-forestry-analysis.js
           node --check cloudflare/yg-webgis-public-data/src/index.js
       - uses: actions/setup-node@v5
         with:
@@ -73,6 +80,7 @@ jobs:
           for bucket in yg-webgis-public-snapshots-staging yg-webgis-public-snapshots; do
             npx wrangler r2 object put "${bucket}/internal/social-forestry/riau.geojson" --remote --file /tmp/yg-private/social-forestry-riau.geojson --content-type application/geo+json
             npx wrangler r2 object put "${bucket}/internal/social-forestry/details.json" --remote --file /tmp/yg-private/social-forestry-details.json --content-type application/json
+            npx wrangler r2 object put "${bucket}/internal/social-forestry/makmur-pesisir-spatial-analysis.json" --remote --file /tmp/yg-private/makmur-pesisir-spatial-analysis.json --content-type application/json
           done
       - name: Deploy protected staff routes
         working-directory: cloudflare/yg-webgis-public-data
