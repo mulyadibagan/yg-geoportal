@@ -1,17 +1,17 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-20T08:54:00.480365+00:00",
+  "generatedAt": "2026-09-21T09:19:31.074051+00:00",
   "status": "ready",
-  "eventCount": 24,
-  "estimatedAreaHa": 4212.08,
-  "candidateEventCount": 37,
+  "eventCount": 21,
+  "estimatedAreaHa": 3921.4,
+  "candidateEventCount": 35,
   "processing": {
-    "waiting-post-image": 3,
-    "waiting-clear-image": 10,
-    "published": 24,
+    "waiting-post-image": 1,
+    "waiting-clear-image": 13,
+    "published": 21,
     "excludedByRiauBoundary": 0
   },
-  "latestDetection": "2026-09-17T20:53:00+00:00",
+  "latestDetection": "2026-09-20T18:53:00+00:00",
   "method": "Sentinel-2 dNBR/NBR with FIRMS candidate events",
   "disclaimer": "Estimasi berbasis citra satelit; bukan hasil pengukuran atau verifikasi lapangan.",
   "province": "Riau",
@@ -19,7 +19,7 @@
   "villageSource": "data/batas_administrasi_desa_riau.geojson",
   "spatiallyClipped": true,
   "areaCrs": "EPSG:32647",
-  "administrativeUpdatedAt": "2026-09-20T08:54:01.384864+00:00",
+  "administrativeUpdatedAt": "2026-09-21T09:19:31.847322+00:00",
   "unassignedAreaHa": 0.0,
   "villageTotals": [
     {
@@ -92,7 +92,7 @@
       "regency": "Indragiri Hilir",
       "district": "Gaung",
       "village": "Simpang Gaung",
-      "areaHa": 93.12
+      "areaHa": 91.48
     },
     {
       "regency": "Indragiri Hilir",
@@ -186,24 +186,6 @@
     },
     {
       "regency": "Indragiri Hilir",
-      "district": "Sungai Batang",
-      "village": "Benteng Utara",
-      "areaHa": 13.46
-    },
-    {
-      "regency": "Indragiri Hilir",
-      "district": "Sungai Batang",
-      "village": "Pasenggerahan",
-      "areaHa": 89.9
-    },
-    {
-      "regency": "Indragiri Hilir",
-      "district": "Tanah Merah",
-      "village": "Sungainyiur",
-      "areaHa": 12.92
-    },
-    {
-      "regency": "Indragiri Hilir",
       "district": "Tempuling",
       "village": "Karya Tunas Jaya",
       "areaHa": 1.08
@@ -224,37 +206,19 @@
       "regency": "Indragiri Hulu",
       "district": "Batang Cenaku",
       "village": "Punti Anai",
-      "areaHa": 19.48
+      "areaHa": 15.68
     },
     {
       "regency": "Indragiri Hulu",
       "district": "Batang Cenaku",
       "village": "Sipang",
-      "areaHa": 7.84
-    },
-    {
-      "regency": "Indragiri Hulu",
-      "district": "Batang Gangsal",
-      "village": "Area Tidakterdefinisi",
-      "areaHa": 8.52
-    },
-    {
-      "regency": "Indragiri Hulu",
-      "district": "Batang Gangsal",
-      "village": "Danau Rambai",
-      "areaHa": 0.24
-    },
-    {
-      "regency": "Indragiri Hulu",
-      "district": "Batang Gangsal",
-      "village": "Penyaguan",
-      "areaHa": 10.8
+      "areaHa": 6.56
     },
     {
       "regency": "Indragiri Hulu",
       "district": "Lirik",
       "village": "Redang Seko",
-      "areaHa": 53.53
+      "areaHa": 52.89
     },
     {
       "regency": "Indragiri Hulu",
@@ -332,7 +296,7 @@
       "regency": "Pelalawan",
       "district": "Kerumutan",
       "village": "Kelurahan Kerumutan",
-      "areaHa": 602.53
+      "areaHa": 599.89
     },
     {
       "regency": "Pelalawan",
@@ -351,12 +315,6 @@
       "district": "Pangkalan Kerinci",
       "village": "Rantau Baru",
       "areaHa": 1017.8
-    },
-    {
-      "regency": "Pelalawan",
-      "district": "Teluk Meranti",
-      "village": "Pulau Muda",
-      "areaHa": 144.84
     },
     {
       "regency": "Pelalawan",
@@ -400,7 +358,7 @@
     {
       "regency": "Indragiri Hilir",
       "district": "Gaung",
-      "areaHa": 237.48
+      "areaHa": 235.84
     },
     {
       "regency": "Indragiri Hilir",
@@ -434,16 +392,6 @@
     },
     {
       "regency": "Indragiri Hilir",
-      "district": "Sungai Batang",
-      "areaHa": 103.36
-    },
-    {
-      "regency": "Indragiri Hilir",
-      "district": "Tanah Merah",
-      "areaHa": 12.92
-    },
-    {
-      "regency": "Indragiri Hilir",
       "district": "Tempuling",
       "areaHa": 34.67
     },
@@ -455,17 +403,12 @@
     {
       "regency": "Indragiri Hulu",
       "district": "Batang Cenaku",
-      "areaHa": 27.32
-    },
-    {
-      "regency": "Indragiri Hulu",
-      "district": "Batang Gangsal",
-      "areaHa": 19.56
+      "areaHa": 22.24
     },
     {
       "regency": "Indragiri Hulu",
       "district": "Lirik",
-      "areaHa": 53.53
+      "areaHa": 52.89
     },
     {
       "regency": "Indragiri Hulu",
@@ -505,17 +448,12 @@
     {
       "regency": "Pelalawan",
       "district": "Kerumutan",
-      "areaHa": 602.53
+      "areaHa": 599.89
     },
     {
       "regency": "Pelalawan",
       "district": "Pangkalan Kerinci",
       "areaHa": 1047.28
-    },
-    {
-      "regency": "Pelalawan",
-      "district": "Teluk Meranti",
-      "areaHa": 144.84
     },
     {
       "regency": "Pelalawan",
@@ -535,11 +473,11 @@
     },
     {
       "regency": "Indragiri Hilir",
-      "areaHa": 757.96
+      "areaHa": 640.04
     },
     {
       "regency": "Indragiri Hulu",
-      "areaHa": 631.49
+      "areaHa": 606.21
     },
     {
       "regency": "Kampar",
@@ -559,7 +497,7 @@
     },
     {
       "regency": "Pelalawan",
-      "areaHa": 1798.75
+      "areaHa": 1651.27
     },
     {
       "regency": "Siak",
