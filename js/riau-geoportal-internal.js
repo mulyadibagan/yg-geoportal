@@ -197,8 +197,7 @@
     state.catalog = catalog;
     state.items = items.sort((a, b) => a.title.localeCompare(b.title, "id"));
     initializeMap();
-    fillSelect(el("rg-publisher"), Array.from(new Set(state.items.map(item => item.publisher))), "Semua penerbit");
-    fillSelect(el("rg-theme"), Array.from(new Set(state.items.map(item => item.theme))), "Semua tema");
+    fillSelect(el("rg-publisher"), Array.from(new Set(state.items.map(item => item.publisher))), "Semua OPD");
     renderSummary();
     applyFilters();
   }
@@ -221,12 +220,11 @@
   function applyFilters() {
     const query = el("rg-search").value.trim().toLocaleLowerCase("id");
     const publisher = el("rg-publisher").value;
-    const theme = el("rg-theme").value;
     const status = el("rg-status").value;
     state.filtered = state.items.filter(item => {
       const haystack = [item.title, item.description, item.publisher, item.theme, item.datasetIdentifier, item.uuid].join(" ").toLocaleLowerCase("id");
       return (!query || haystack.includes(query)) && (!publisher || item.publisher === publisher) &&
-        (!theme || item.theme === theme) && (!status || statusKind(item) === status);
+        (!status || statusKind(item) === status);
     });
     renderList();
   }
@@ -245,7 +243,7 @@
       return `<article class="rg-dataset-card${active ? " is-active" : ""}" data-uuid="${escapeHtml(item.uuid)}">
         <div class="rg-card-top"><h3>${escapeHtml(item.title)}</h3><span class="rg-badge ${badgeClass}">${statusLabel(item)}</span></div>
         <p>${escapeHtml(item.description)}</p>
-        <div class="rg-card-meta"><span>${escapeHtml(item.publisher)}</span><span>${escapeHtml(item.theme)}</span><span>${escapeHtml(item.geometryType)}</span><span>${formatBytes(item.sourceBytes)}</span>${item.conflicts.length ? `<span>${item.conflicts.length} catatan metadata</span>` : ""}</div>
+        <div class="rg-card-meta"><span>${escapeHtml(item.publisher)}</span><span>${escapeHtml(item.geometryType)}</span><span>${formatBytes(item.sourceBytes)}</span>${item.conflicts.length ? `<span>${item.conflicts.length} catatan metadata</span>` : ""}</div>
         <div class="rg-card-actions"><button type="button" data-action="toggle"${!item.displayAvailable && !active ? " disabled" : ""} class="${active ? "is-remove" : ""}">${loadLabel}</button><button type="button" data-action="detail">Metadata</button></div>
       </article>`;
     }).join("");
@@ -509,9 +507,9 @@
   }
 
   function bindEvents() {
-    ["rg-search", "rg-publisher", "rg-theme", "rg-status"].forEach(id => el(id).addEventListener(id === "rg-search" ? "input" : "change", applyFilters));
+    ["rg-search", "rg-publisher", "rg-status"].forEach(id => el(id).addEventListener(id === "rg-search" ? "input" : "change", applyFilters));
     el("rg-reset").addEventListener("click", () => {
-      el("rg-search").value = ""; el("rg-publisher").value = ""; el("rg-theme").value = ""; el("rg-status").value = ""; applyFilters();
+      el("rg-search").value = ""; el("rg-publisher").value = ""; el("rg-status").value = ""; applyFilters();
     });
     el("rg-refresh").addEventListener("click", loadCatalog);
     el("rg-dataset-list").addEventListener("click", event => {
