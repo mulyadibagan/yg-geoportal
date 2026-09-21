@@ -11,6 +11,7 @@
     'data/pbph-tree-cover-monitoring.json': '/api/staff/pbph-tree-cover-monitoring',
     'data/PERHUTANAN_SOSIAL_RIAU.geojson': '/api/staff/social-forestry-riau',
     'data/social-forestry-details.json': '/api/staff/social-forestry-details',
+    'internal-data/social-forestry/makmur-pesisir-spatial-analysis.json': '/api/staff/social-forestry-makmur-pesisir-analysis',
     'data/faperta-ur.json': '/api/staff/faperta-ur-data',
     'data/faperta-ur-site.geojson': '/api/staff/faperta-ur-site',
     'data/pbph-documents.json': '/api/staff/pbph-documents',
