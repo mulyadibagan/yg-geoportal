@@ -63,7 +63,7 @@ test("catalogue preserves UUID identity and streams large source downloads safel
 test("metadata notes do not hide a display-ready dataset", () => {
   const page = read("staff-riau-reference.html");
   const app = read("js/riau-geoportal-internal.js");
-  assert.match(page, /riau-geoportal-internal\.js\?v=20260920-satellite1/);
+  assert.match(page, /riau-geoportal-internal\.js\?v=20260921-opd1/);
   const displayCheck = app.indexOf('if (item.displayAvailable) return "display";');
   const issueCheck = app.indexOf('if (item.mirrorError || /fail|error|blocked/.test(item.mirrorStatus)) return "issue";');
   assert.ok(displayCheck > 0);

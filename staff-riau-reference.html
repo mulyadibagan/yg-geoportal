@@ -11,7 +11,7 @@
   <link rel="icon" href="assets/logo-yayasan-gambut.png">
   <link rel="stylesheet" href="css/site-brand.css?v=20260720-program-dashboard1">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous">
-  <link rel="stylesheet" href="css/riau-geoportal-internal.css?v=20260920-catalog2">
+  <link rel="stylesheet" href="css/riau-geoportal-internal.css?v=20260921-opd1">
 </head>
 <body>
   <header class="site-header yg-page-header rg-header">
@@ -60,12 +60,11 @@
           <div><span>KATALOG TERSINKRON</span><h2 id="rg-catalog-title">Pilih dataset</h2></div>
           <button id="rg-refresh" class="rg-icon-button" type="button" title="Muat ulang katalog" aria-label="Muat ulang katalog">↻</button>
         </div>
-        <label class="rg-search">Cari judul, deskripsi, atau penerbit
-          <input id="rg-search" type="search" placeholder="Contoh: banjir, batas desa, kebun…" autocomplete="off">
+        <label class="rg-search">Cari judul, deskripsi, atau OPD
+          <input id="rg-search" type="search" placeholder="Contoh: Dinas Kehutanan, batas desa…" autocomplete="off">
         </label>
         <div class="rg-filters">
-          <label>Penerbit<select id="rg-publisher"><option value="">Semua penerbit</option></select></label>
-          <label>Tema<select id="rg-theme"><option value="">Semua tema</option></select></label>
+          <label>OPD<select id="rg-publisher"><option value="">Semua OPD</option></select></label>
           <label>Status<select id="rg-status"><option value="">Semua status</option><option value="display">Siap peta</option><option value="mirrored">Arsip saja</option><option value="issue">Perlu tindak lanjut</option></select></label>
         </div>
         <div class="rg-catalog-meta"><strong id="rg-result-count">0 dataset</strong><button id="rg-reset" type="button">Reset filter</button></div>
@@ -97,6 +96,6 @@
   <footer class="rg-footer">YG GeoPortal · Katalog Riau Geoportal · Internal Yayasan Gambut</footer>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous"></script>
   <script src="js/auth.js?v=20260920-session5"></script>
-  <script src="js/riau-geoportal-internal.js?v=20260920-satellite1"></script>
+  <script src="js/riau-geoportal-internal.js?v=20260921-opd1"></script>
 </body>
 </html>

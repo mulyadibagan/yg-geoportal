@@ -42,7 +42,7 @@ button { cursor: pointer; }
 .rg-search input:focus, .rg-filters select:focus { border-color: var(--rg-green); box-shadow: 0 0 0 3px rgba(8,118,95,.12); }
 .rg-filters { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 10px; }
 .rg-filters label { display: grid; gap: 5px; color: var(--rg-muted); font-size: 10px; font-weight: 800; }
-.rg-filters label:last-child { grid-column: 1 / -1; }
+.rg-filters label:last-child { grid-column: auto; }
 .rg-filters select { padding: 9px; }
 .rg-catalog-meta { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 13px 0 5px; font-size: 11px; }
 .rg-catalog-meta button { border: 0; background: transparent; color: var(--rg-green); font-size: 11px; font-weight: 800; }

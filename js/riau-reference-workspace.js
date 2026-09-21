@@ -139,10 +139,10 @@
 
   function filteredCatalogItems(panel) {
     const query = panel.querySelector("[data-riau-catalog-search]").value.trim().toLocaleLowerCase("id");
-    const theme = panel.querySelector("[data-riau-catalog-theme]").value;
+    const publisher = panel.querySelector("[data-riau-catalog-opd]").value;
     return catalogState.items.filter(item => {
-      const haystack = [item.title, item.publisher, item.theme].join(" ").toLocaleLowerCase("id");
-      return (!query || haystack.includes(query)) && (!theme || item.theme === theme);
+      const haystack = [item.title, item.publisher].join(" ").toLocaleLowerCase("id");
+      return (!query || haystack.includes(query)) && (!publisher || item.publisher === publisher);
     });
   }
 
@@ -159,15 +159,15 @@
       return `<label class="riau-reference-layer${active ? " is-active" : ""}" data-riau-uuid="${escapeHtml(item.uuid)}">
         <input type="checkbox" data-riau-catalog-layer="${escapeHtml(item.uuid)}"${active ? " checked" : ""}${pending ? " disabled" : ""}>
         <i style="--riau-layer-color:${escapeHtml(color)}"></i>
-        <span><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.publisher)} · ${escapeHtml(item.theme)}</small>${item.warningCount ? `<em>${item.warningCount} catatan metadata</em>` : ""}</span>
+        <span><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.publisher)}</small>${item.warningCount ? `<em>${item.warningCount} catatan metadata</em>` : ""}</span>
       </label>`;
     }).join("");
   }
 
-  function fillCatalogThemes(panel) {
-    const select = panel.querySelector("[data-riau-catalog-theme]");
-    const themes = Array.from(new Set(catalogState.items.map(item => item.theme))).sort((a, b) => a.localeCompare(b, "id"));
-    select.innerHTML = '<option value="">Semua tema</option>' + themes.map(theme => `<option value="${escapeHtml(theme)}">${escapeHtml(theme)}</option>`).join("");
+  function fillCatalogOpds(panel) {
+    const select = panel.querySelector("[data-riau-catalog-opd]");
+    const publishers = Array.from(new Set(catalogState.items.map(item => item.publisher))).sort((a, b) => a.localeCompare(b, "id"));
+    select.innerHTML = '<option value="">Semua OPD</option>' + publishers.map(publisher => `<option value="${escapeHtml(publisher)}">${escapeHtml(publisher)}</option>`).join("");
   }
 
   async function loadCatalog(panel) {
@@ -181,7 +181,7 @@
       catalogState.items = rows.map(normalizeCatalogItem)
         .filter(item => item.displayReady && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(item.uuid))
         .sort((a, b) => a.title.localeCompare(b.title, "id"));
-      fillCatalogThemes(panel);
+      fillCatalogOpds(panel);
       renderCatalogItems(panel);
       status.textContent = catalogState.items.length.toLocaleString("id-ID") + " layer siap-peta tersedia. Data baru dimuat setelah dicentang.";
     } catch (error) {
@@ -335,8 +335,8 @@
       <details class="riau-reference-catalog">
         <summary>Layer Geoportal siap peta <span data-riau-ready-count>Memuat…</span></summary>
         <div class="riau-reference-catalog-tools">
-          <input type="search" data-riau-catalog-search placeholder="Cari data, OPD, atau tema…" aria-label="Cari layer Geoportal Riau">
-          <select data-riau-catalog-theme aria-label="Filter tema Geoportal Riau"><option value="">Semua tema</option></select>
+          <input type="search" data-riau-catalog-search placeholder="Cari data atau OPD…" aria-label="Cari layer Geoportal Riau">
+          <select data-riau-catalog-opd aria-label="Filter OPD Geoportal Riau"><option value="">Semua OPD</option></select>
         </div>
         <div class="riau-reference-catalog-head"><strong data-riau-active-count>0/8 aktif</strong><div><button type="button" data-riau-catalog-refresh>Muat ulang</button><button type="button" data-riau-catalog-clear disabled>Matikan layer</button></div></div>
         <div class="riau-reference-layer-list" data-riau-catalog-list><small class="riau-reference-empty">Memuat katalog privat…</small></div>
@@ -361,7 +361,7 @@
       clearCatalogLayers(panel);
     });
     panel.querySelector("[data-riau-catalog-search]").addEventListener("input", () => renderCatalogItems(panel));
-    panel.querySelector("[data-riau-catalog-theme]").addEventListener("change", () => renderCatalogItems(panel));
+    panel.querySelector("[data-riau-catalog-opd]").addEventListener("change", () => renderCatalogItems(panel));
     panel.querySelector("[data-riau-catalog-refresh]").addEventListener("click", () => loadCatalog(panel));
     panel.querySelector("[data-riau-catalog-clear]").addEventListener("click", () => clearCatalogLayers(panel));
     panel.querySelector("[data-riau-catalog-list]").addEventListener("change", event => {
