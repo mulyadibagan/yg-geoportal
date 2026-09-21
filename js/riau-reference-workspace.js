@@ -138,12 +138,8 @@
   }
 
   function filteredCatalogItems(panel) {
-    const query = panel.querySelector("[data-riau-catalog-search]").value.trim().toLocaleLowerCase("id");
     const publisher = panel.querySelector("[data-riau-catalog-opd]").value;
-    return catalogState.items.filter(item => {
-      const haystack = [item.title, item.publisher].join(" ").toLocaleLowerCase("id");
-      return (!query || haystack.includes(query)) && (!publisher || item.publisher === publisher);
-    });
+    return catalogState.items.filter(item => !publisher || item.publisher === publisher);
   }
 
   function renderCatalogItems(panel) {
@@ -335,7 +331,6 @@
       <details class="riau-reference-catalog">
         <summary>Layer Geoportal siap peta <span data-riau-ready-count>Memuat…</span></summary>
         <div class="riau-reference-catalog-tools">
-          <input type="search" data-riau-catalog-search placeholder="Cari data atau OPD…" aria-label="Cari layer Geoportal Riau">
           <select data-riau-catalog-opd aria-label="Filter OPD Geoportal Riau"><option value="">Semua OPD</option></select>
         </div>
         <div class="riau-reference-catalog-head"><strong data-riau-active-count>0/8 aktif</strong><div><button type="button" data-riau-catalog-refresh>Muat ulang</button><button type="button" data-riau-catalog-clear disabled>Matikan layer</button></div></div>
@@ -360,7 +355,6 @@
       clearReferenceLayers(status);
       clearCatalogLayers(panel);
     });
-    panel.querySelector("[data-riau-catalog-search]").addEventListener("input", () => renderCatalogItems(panel));
     panel.querySelector("[data-riau-catalog-opd]").addEventListener("change", () => renderCatalogItems(panel));
     panel.querySelector("[data-riau-catalog-refresh]").addEventListener("click", () => loadCatalog(panel));
     panel.querySelector("[data-riau-catalog-clear]").addEventListener("click", () => clearCatalogLayers(panel));

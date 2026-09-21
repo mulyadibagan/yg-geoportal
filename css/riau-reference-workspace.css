@@ -18,7 +18,7 @@
 .riau-reference-catalog { margin-top: 9px; border-top: 1px solid #d3e2dd; padding-top: 8px; }
 .riau-reference-catalog summary { display: flex; justify-content: space-between; gap: 8px; color: #174b3f; font-size: 9px; font-weight: 900; cursor: pointer; }
 .riau-reference-catalog summary span { color: #08765f; }
-.riau-reference-catalog-tools { display: grid; grid-template-columns: minmax(0, 1fr) minmax(92px, .65fr); gap: 5px; margin-top: 8px; }
+.riau-reference-catalog-tools { display: grid; grid-template-columns: 1fr; gap: 5px; margin-top: 8px; }
 .riau-reference-catalog-tools input,
 .riau-reference-catalog-tools select { min-width: 0; width: 100%; padding: 7px 8px; border: 1px solid #bfd2cb; border-radius: 7px; background: #fff; color: #173d35; font: 700 9px/1.2 system-ui, sans-serif; }
 .riau-reference-catalog-head { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-top: 6px; color: #42655a; font-size: 8px; }
