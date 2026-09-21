@@ -1,0 +1,43 @@
+{
+  "version": "0.1.0-internal-audit",
+  "profileKey": "sk.9863/menlhk-pskl/pkps/psl.0/9/2023",
+  "access": "staff_only",
+  "status": "framework_ready_geometry_incomplete",
+  "updatedAt": "2026-09-21",
+  "disclaimer": "Analisis internal Yayasan Gambut. Bukan penetapan atau perubahan resmi RKPS.",
+  "approvedAreaHa": 143,
+  "rkps": {
+    "forestFunction": "Hutan Produksi Terbatas (HPT)",
+    "protectionHa": 131,
+    "utilizationHa": 12,
+    "spaceGeometryStatus": "not_found_in_repository",
+    "landCoverReference": [
+      {"id":"mangrove_forest","label":"Hutan mangrove sekunder","areaHa":86,"classification":"Pertahankan — perlindungan"},
+      {"id":"secondary_vegetation","label":"Belukar/vegetasi sekunder","areaHa":25,"classification":"Perlu overlay dan verifikasi"},
+      {"id":"open_land","label":"Lahan terbuka","areaHa":28,"classification":"Perlu overlay dan verifikasi"},
+      {"id":"water","label":"Badan air","areaHa":4,"classification":"Pertahankan — perlindungan"}
+    ]
+  },
+  "actualManagement": {"reportedAreaHa":35,"geometryStatus":"not_found_in_repository","legalConclusion":"not_assessed"},
+  "datasets": [
+    {"id":"permit_boundary","label":"Batas HKm/SK","status":"available_private_route","source":"internal/social-forestry/riau.geojson"},
+    {"id":"rkps_protection","label":"Ruang Perlindungan RKPS","status":"geometry_missing"},
+    {"id":"rkps_utilization","label":"Ruang Pemanfaatan RKPS","status":"geometry_missing"},
+    {"id":"actual_management","label":"Areal Kelola Aktual","status":"geometry_missing"},
+    {"id":"member_parcels","label":"Andil/garapan anggota","status":"geometry_missing"},
+    {"id":"current_land_cover","label":"Tutupan lahan aktual","status":"geometry_missing"},
+    {"id":"ma_earth_planting","label":"Penanaman Ma Earth 1.000 mangrove","status":"available_public_program_layer","source":"data/area_mangrove.geojson","objectId":"MANGROVE-TELUK-PIYAI-PESISIR-MA-EARTH-2026-001"}
+  ],
+  "analysisClasses": [
+    {"id":"protect","label":"Pertahankan — perlindungan"},
+    {"id":"restore","label":"Pemulihan/restorasi"},
+    {"id":"rkps_use","label":"Pemanfaatan sesuai RKPS"},
+    {"id":"review","label":"Potensi penyesuaian ruang"},
+    {"id":"verify","label":"Perlu verifikasi lapangan"}
+  ],
+  "recommendations": [
+    {"unit":"Batas persetujuan HKm","area":"Dihitung dari geometri saat halaman dibuka","cover":"Belum dianalisis","rkpsSpace":"Geometri 131/12 ha belum tersedia","actualUse":"±35 ha dilaporkan; polygon belum tersedia","management":"Verifikasi sumber geometri RKPS dan areal kelola","verification":"Prioritas"},
+    {"unit":"Belukar + lahan terbuka RKPS","area":"53 ha (atribut RKPS)","cover":"Referensi RKPS; bukan tutupan aktual","rkpsSpace":"Belum dapat dioverlay","actualUse":"Belum dapat dioverlay","management":"Analisis citra dan verifikasi lapangan sebelum usulan apa pun","verification":"Wajib"},
+    {"unit":"Penanaman Ma Earth","area":"Dihitung dari geometri","cover":"Penanaman/restorasi mangrove","rkpsSpace":"Belum dapat ditentukan","actualUse":"Kegiatan restorasi YG","management":"Rehabilitasi/restorasi","verification":"Overlay ruang RKPS diperlukan"}
+  ]
+}
