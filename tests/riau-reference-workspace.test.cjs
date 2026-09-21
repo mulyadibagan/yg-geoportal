@@ -14,7 +14,7 @@ test("Riau reference workspace is staff-only and additive", () => {
   assert.match(home, /Peta Referensi Riau/);
   assert.match(home, /staff-riau-reference\.html/);
   assert.match(home, /data-staff-only-module hidden/);
-  assert.match(page, /riau-reference-workspace\.js\?v=20260921-opd1/);
+  assert.match(page, /riau-reference-workspace\.js\?v=20260921-opd2/);
   assert.match(workspace, /if \(!session\(\)/);
   assert.match(workspace, /Layer program YG tidak diubah/);
   assert.match(workspace, /waitUntilSettled/);
@@ -32,9 +32,12 @@ test("Geoportal layers are filtered by OPD rather than theme", () => {
   assert.match(workspace, /data-riau-catalog-opd/);
   assert.match(workspace, /Semua OPD/);
   assert.doesNotMatch(workspace, /data-riau-catalog-theme/);
+  assert.doesNotMatch(workspace, /data-riau-catalog-search/);
   assert.match(page, /<label>OPD<select id="rg-publisher">/);
   assert.doesNotMatch(page, /id="rg-theme"/);
+  assert.doesNotMatch(page, /id="rg-search"/);
   assert.doesNotMatch(catalog, /el\("rg-theme"\)/);
+  assert.doesNotMatch(catalog, /el\("rg-search"\)/);
 });
 
 test("Riau reference presets only name existing verified map layers", () => {

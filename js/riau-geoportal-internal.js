@@ -218,12 +218,10 @@
   }
 
   function applyFilters() {
-    const query = el("rg-search").value.trim().toLocaleLowerCase("id");
     const publisher = el("rg-publisher").value;
     const status = el("rg-status").value;
     state.filtered = state.items.filter(item => {
-      const haystack = [item.title, item.description, item.publisher, item.theme, item.datasetIdentifier, item.uuid].join(" ").toLocaleLowerCase("id");
-      return (!query || haystack.includes(query)) && (!publisher || item.publisher === publisher) &&
+      return (!publisher || item.publisher === publisher) &&
         (!status || statusKind(item) === status);
     });
     renderList();
@@ -507,9 +505,9 @@
   }
 
   function bindEvents() {
-    ["rg-search", "rg-publisher", "rg-status"].forEach(id => el(id).addEventListener(id === "rg-search" ? "input" : "change", applyFilters));
+    ["rg-publisher", "rg-status"].forEach(id => el(id).addEventListener("change", applyFilters));
     el("rg-reset").addEventListener("click", () => {
-      el("rg-search").value = ""; el("rg-publisher").value = ""; el("rg-status").value = ""; applyFilters();
+      el("rg-publisher").value = ""; el("rg-status").value = ""; applyFilters();
     });
     el("rg-refresh").addEventListener("click", loadCatalog);
     el("rg-dataset-list").addEventListener("click", event => {
