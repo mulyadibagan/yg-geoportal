@@ -1,0 +1,52 @@
+{
+  "generatedAt": "2026-09-22T09:03:33.132374+00:00",
+  "baseline": "2016",
+  "current": "2025",
+  "methodVersion": "s2-landmass-buffer-v2",
+  "source": "Copernicus Sentinel-2 Level-2A via Microsoft Planetary Computer STAC",
+  "disclaimer": "Bukan hasil survei garis pantai atau penetapan batas. Perubahan di bawah ketidakpastian posisi tidak boleh ditafsirkan sebagai abrasi pasti.",
+  "landmasses": [
+    {
+      "village": "Pulau Barkey/Berkey",
+      "district": "Bangko",
+      "regency": "Rokan Hilir",
+      "status": "analysed",
+      "baseline": "2016",
+      "current": "2025",
+      "coastlineLengthKm": 55.56,
+      "erosionAreaHa": 15.91,
+      "accretionAreaHa": 17.73,
+      "indicativeMeanRetreatM": 2.9,
+      "indicativeMeanAdvanceM": 3.2,
+      "netAreaChangeHa": 1.82,
+      "elapsedYears": 9,
+      "indicativeRetreatRateMPerYear": 0.32,
+      "indicativeAdvanceRateMPerYear": 0.35,
+      "clearCoveragePct": 100.0,
+      "baselineSceneCount": 3,
+      "currentSceneCount": 5,
+      "positionalUncertaintyM": 14.1,
+      "confidence": "rendah",
+      "baselineScenes": [
+        "S2A_MSIL2A_20160807T032542_R018_T47NPC_20210212T115101",
+        "S2A_MSIL2A_20160608T032542_R018_T47NPC_20210211T173026",
+        "S2A_MSIL2A_20160519T032542_R018_T47NPC_20210211T122530"
+      ],
+      "currentScenes": [
+        "S2A_MSIL2A_20250723T033201_R018_T47NPC_20250723T095014",
+        "S2A_MSIL2A_20250812T033151_R018_T47NPC_20250812T074213",
+        "S2C_MSIL2A_20250711T032601_R018_T47NPC_20250711T082105",
+        "S2B_MSIL2A_20250706T032519_R018_T47NPC_20250706T071937",
+        "S2B_MSIL2A_20250825T032519_R018_T47NPC_20250825T070656"
+      ],
+      "id": "rohil-bangko-pulau-barkey-berkey",
+      "intervention": false,
+      "programmeStatus": "regional",
+      "analysisUnit": "landmass",
+      "administrativeBoundaryUsedForAttribution": false,
+      "administrativeSeawardBoundaryUsedForClipping": false,
+      "boundarySource": "Garis darat–air Sentinel-2 2016 dan 2025",
+      "publicInterpretation": "Pertambahan dan kehilangan daratan sama-sama terdeteksi. Perubahan bersih positif, tetapi besar pergeseran rata-rata masih di bawah ketidakpastian posisi."
+    }
+  ]
+}
