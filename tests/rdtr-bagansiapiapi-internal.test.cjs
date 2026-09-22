@@ -93,6 +93,17 @@ test("internal workspace renders the regulation-based YG plan without claiming o
   assert.match(script, /rdtr-yg-bagansiapiapi-v1-internal-analytical-baseline\.json/);
 });
 
+test("RDTR internal page includes a flood hydrology management framework", () => {
+  const page = read("staff-rdtr-bagansiapiapi.html");
+  const script = read("js", "rdtr-bagansiapiapi.js");
+  assert.match(page, /id="flood-hydrology"/);
+  assert.match(page, /id="rdtr-export-hydrology"/);
+  assert.match(script, /Genangan hujan/);
+  assert.match(script, /Banjir gabungan/);
+  assert.match(script, /matriks-pengelolaan-banjir-hidrologi-bagansiapiapi-internal\.csv/);
+  assert.match(script, /renderHydrologyFramework\(\)/);
+});
+
 test("the official consultation scope resolves to exactly 11 Bangko villages", () => {
   const data = JSON.parse(read("data", "batas_administrasi_desa_riau.geojson"));
   const normalize = value => String(value || "").toLowerCase()
