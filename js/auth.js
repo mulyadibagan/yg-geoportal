@@ -7,7 +7,7 @@
     "https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/api/staff/auth-result"
   ];
   const SESSION_KEY = "ygEditorSessionV1";
-  const AUTH_RESULT_DEADLINE_MS = 30000;
+  const AUTH_RESULT_DEADLINE_MS = 120000;
   const AUTH_RESULT_REQUEST_TIMEOUT_MS = 7000;
   const AUTH_POST_TIMEOUT_MS = 12000;
 
