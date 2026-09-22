@@ -81,6 +81,8 @@
     );
   map.createPane("villageBoundaries");
   map.getPane("villageBoundaries").style.zIndex = 390;
+  map.createPane("coastalChange");
+  map.getPane("coastalChange").style.zIndex = 430;
   map.createPane("placeLabels");
   map.getPane("placeLabels").style.zIndex = 450;
   map.getPane("placeLabels").style.pointerEvents = "none";
@@ -267,10 +269,11 @@
     const erosion = f.properties.change === "erosion",
       intervention = f.properties.intervention;
     return {
+      pane: "coastalChange",
       color: intervention ? "#073f47" : erosion ? "#c9472f" : "#267aaa",
-      weight: intervention ? 3.5 : 1.5,
+      weight: intervention ? 3.8 : 2.2,
       fillColor: erosion ? "#e86b55" : "#5aa8d4",
-      fillOpacity: intervention ? 0.48 : 0.3,
+      fillOpacity: intervention ? 0.68 : 0.56,
     };
   }
   function boundaryStyle(feature) {
@@ -330,6 +333,7 @@
       },
     }).addTo(map);
     state.changeLayer = L.geoJSON(state.geo, {
+      pane: "coastalChange",
       filter: (feature) => analysedIds.has(feature.properties.id),
       style,
       onEachFeature: (feature, layer) => {
