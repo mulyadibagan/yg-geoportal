@@ -165,11 +165,11 @@
       { label: "Banjir gabungan", trigger: "Hujan tinggi bersamaan dengan pasang atau muka sungai tinggi", signal: "Air lambat surut dan terdorong kembali dari outlet", priority: "kritis" }
     ],
     management: [
-      { problem: "Genangan hujan", diagnose: "Delineasi cekungan, arah aliran, koefisien limpasan, dan kapasitas saluran per sub-tangkapan", actions: "Lindungi ruang resapan; bangun taman retensi, tampungan tapak, kolam detensi, dan saluran penghubung; batasi permukaan kedap", avoid: "Jangan hanya meninggikan jalan karena dapat memindahkan air ke rumah", indicator: "Luas, kedalaman, dan durasi genangan menurun pada hujan pembanding" },
-      { problem: "Luapan sungai", diagnose: "Petakan dataran banjir, penampang, elevasi tebing, penyempitan, sedimentasi, dan hambatan aliran", actions: "Pertahankan sempadan; pulihkan ruang sungai; kendalikan bangunan; normalisasi hanya setelah kajian sedimen; siapkan jalur evakuasi", avoid: "Jangan menutup dataran banjir atau membangun tanggul parsial yang memindahkan risiko", indicator: "Tidak ada kenaikan muka air atau risiko baru di hilir dan sisi berlawanan" },
-      { problem: "Rob/pasang", diagnose: "Pasangkan catatan waktu genangan dengan tinggi pasang dan elevasi outlet", actions: "Pintu klep satu arah, pintu air, tanggul/setback selektif, perlindungan mangrove, elevasi lantai adaptif, dan zona penyangga", avoid: "Pompa tanpa pengendali aliran balik tidak efektif saat pasang", indicator: "Frekuensi aliran balik dan durasi genangan pasang menurun" },
-      { problem: "Drainase", diagnose: "Inventarisasi hulu–hilir: dimensi, elevasi dasar, kondisi, sambungan, gorong-gorong, outlet, dan penanggung jawab", actions: "Pulihkan konektivitas; jadwal pembersihan; standar bukaan gorong-gorong; lindungi koridor; dashboard laporan sumbatan", avoid: "Jangan memperbesar satu ruas tanpa memeriksa kapasitas penerima di hilir", indicator: "Persentase jaringan tersambung dan berfungsi serta waktu surut pascahujan" },
-      { problem: "Banjir gabungan", diagnose: "Uji skenario hujan–pasang–muka sungai bersama, bukan peta bahaya tunggal", actions: "Polder terbatas bila layak; tampungan sementara; operasi pintu/pompa berbasis prakiraan; peringatan dan rute aman", avoid: "Jangan menetapkan kawasan aman hanya dari satu skenario", indicator: "Layanan vital tetap berfungsi pada skenario gabungan yang disepakati" }
+      { problem: "Outlet pasang–surut", location: "Bagan Barat, Bagan Hulu, Bagan Punak Pesisir dan seluruh saluran yang bermuara ke Sungai Rokan/laut", intervention: "Pasang atau rehabilitasi pintu klep satu arah pada tiap outlet; pintu air bermotor hanya pada outlet utama; sediakan bypass dan akses alat berat.", design: "Ukur invert saluran, muka air pasang tertinggi, debit hujan rencana, sedimentasi dan kondisi pintu. Kapasitas ditentukan per sub-tangkapan—bukan satu ukuran untuk semua outlet.", decision: "Prioritas 1: hentikan aliran balik sebelum menambah pompa atau meninggikan jalan.", indicator: "Tidak ada aliran balik saat pasang dan air mulai surut setelah pintu kembali dapat membuang." },
+      { problem: "Drainase primer–sekunder", location: "Jalan Pelabuhan Baru, Kampung Pelabuhan Lama dan koridor genangan berulang", intervention: "Pulihkan sambungan hulu–hilir; buka penyempitan; tambah gorong-gorong pada ruas yang memutus aliran; tetapkan koridor bebas bangunan untuk saluran primer.", design: "Survei penampang dan elevasi setiap perubahan dimensi, gorong-gorong dan pertemuan saluran; hitung kapasitas saluran penerima sebelum memperbesar ruas hulu.", decision: "Prioritas 2: perbaiki sistem sampai outlet, bukan pengerukan ruas secara terpisah.", indicator: "Tidak ada titik putus; kapasitas hilir tidak lebih kecil dari aliran yang diterima; waktu surut tercatat menurun." },
+      { problem: "Retensi dan polder", location: "Cekungan perkotaan yang tidak dapat mengalir gravitasi ketika pasang", intervention: "Cadangkan kolam retensi/ruang tampung; bentuk polder terbatas dengan pompa hanya bila outlet tertahan pasang dan lahan tampung tersedia.", design: "Volume tampung dihitung dari hujan rencana dikurangi kapasitas buang selama pintu tertutup; pompa wajib memiliki redundansi, listrik cadangan dan jalur limpasan darurat.", decision: "Prioritas 3: tetapkan tapak retensi dalam RDTR sebelum lahan rendah tertutup bangunan.", indicator: "Volume tampung memenuhi skenario desain dan fasilitas vital tetap dapat diakses saat hujan–pasang bersamaan." },
+      { problem: "Elevasi bangunan dan jalan", location: "Zona bahaya InaRISK dan lokasi genangan historis; terutama fasilitas vital dan permukiman baru", intervention: "Tetapkan elevasi lantai minimum terhadap benchmark lokal; gunakan rumah panggung/elevasi adaptif; pertahankan jalur aliran di bawah bangunan bila diperlukan.", design: "Angka elevasi belum boleh ditetapkan sebelum topografi RTK/GNSS, pasang tertinggi, tinggi genangan historis dan allowance perubahan iklim tersedia.", decision: "Pembangunan baru bersyarat; jangan menetapkan angka elevasi generik atau hanya meninggikan badan jalan.", indicator: "Lantai dan akses vital berada di atas elevasi desain tanpa meningkatkan genangan pada kavling tetangga." },
+      { problem: "Ruang air dan sempadan", location: "Sungai Rokan, anak sungai, kanal, rawa/tampungan dan koridor mangrove", intervention: "Larangan penimbunan badan air dan cekungan penting; lindungi sempadan serta akses pemeliharaan; pulihkan mangrove dan ruang limpasan pada lokasi yang sesuai.", design: "Delineasi memakai garis tepi air/pasang, fungsi saluran, elevasi dan konektivitas—bukan semata batas administrasi.", decision: "Masukkan sebagai jaringan biru–hijau dan ketentuan khusus dalam RDTR.", indicator: "Luas tampungan dan penampang efektif tidak berkurang; koridor air tetap tersambung ke penerima." }
     ],
     rdtrDirections: [
       { instrument: "Struktur ruang", direction: "Tetapkan jaringan biru–hijau, jalur utama pembuangan, tampungan, pintu air, pompa, dan jalur evakuasi sebagai satu sistem lintas batas WP.", owner: "PUPR/SDA, BPBD, Bappeda" },
@@ -202,8 +202,8 @@
       '<div class="rdtr-hydrology-reading"><p><b>Yang dapat dibaca:</b> lokasi awal sungai, kanal, parit, atau alur air yang tercatat.</p>' +
       '<p><b>Yang belum dapat dibaca:</b> arah dan kapasitas aliran, elevasi, kedalaman banjir, rob, saluran yang tidak tercatat, serta kondisi lapangan.</p></div>' +
       '<div class="rdtr-hydrology-priority"><strong>Prioritas YG</strong><ol><li>Audit konektivitas saluran hingga outlet.</li><li>Ukur elevasi dan muka air bersama pasang.</li><li>Lindungi tampungan, sempadan, dan koridor air sebelum pembangunan baru.</li></ol></div>';
-    document.getElementById("rdtr-hydrology-management").innerHTML = framework.management.map(function (row) {
-      return '<details class="rdtr-hydrology-action"><summary><strong>' + esc(row.problem) + '</strong><span>Lihat pengelolaan</span></summary><div><p><b>Diagnosis.</b> ' + esc(row.diagnose) + '</p><p><b>Tindakan.</b> ' + esc(row.actions) + '</p><p class="rdtr-hydrology-warning"><b>Hindari.</b> ' + esc(row.avoid) + '</p><p><b>Indikator.</b> ' + esc(row.indicator) + '</p></div></details>';
+    document.getElementById("rdtr-hydrology-management").innerHTML = framework.management.map(function (row, index) {
+      return '<details class="rdtr-hydrology-action"' + (index < 3 ? ' open' : '') + '><summary><strong>' + (index + 1) + '. ' + esc(row.problem) + '</strong><span>' + esc(row.decision) + '</span></summary><div><p><b>Lokasi penerapan.</b> ' + esc(row.location) + '</p><p><b>Intervensi fisik.</b> ' + esc(row.intervention) + '</p><p><b>Dasar desain yang wajib dihitung.</b> ' + esc(row.design) + '</p><p class="rdtr-hydrology-warning"><b>Keputusan RDTR.</b> ' + esc(row.decision) + '</p><p><b>Ukuran keberhasilan.</b> ' + esc(row.indicator) + '</p></div></details>';
     }).join("");
     document.getElementById("rdtr-hydrology-rdtr").innerHTML = framework.rdtrDirections.map(function (row) {
       return '<article><span>' + esc(row.instrument) + '</span><p>' + esc(row.direction) + '</p><small><strong>Koordinasi:</strong> ' + esc(row.owner) + '</small></article>';
@@ -224,6 +224,22 @@
       style: { color: "#304c45", weight: 2, dashArray: "6 4", fillColor: "#dfe9e5", fillOpacity: .08 },
       onEachFeature: function (feature, layer) { layer.bindTooltip((feature.properties || {}).WADMKD || (feature.properties || {}).NAMOBJ || "Wilayah kajian"); }
     }).addTo(map);
+    var hazardUrl = "https://gis.bnpb.go.id/server/rest/services/inarisk/layer_bahaya_banjir_30_sumatera/MapServer/export";
+    var hazardOverlay = null;
+    var studyBounds = study.getBounds();
+    if (studyBounds.isValid()) {
+      var west = studyBounds.getWest(), south = studyBounds.getSouth(), east = studyBounds.getEast(), north = studyBounds.getNorth();
+      var requestUrl = hazardUrl + "?bbox=" + [west, south, east, north].join(",") + "&bboxSR=4326&imageSR=4326&size=1200,1200&transparent=true&format=png32&f=image";
+      hazardOverlay = L.imageOverlay(requestUrl, [[south, west], [north, east]], { opacity: .62, interactive: false, attribution: "InaRISK BNPB" }).addTo(map);
+      hazardOverlay.on("load", function () {
+        var status = document.getElementById("rdtr-hydrology-map-status");
+        if (status) status.innerHTML = '<b>Peta terlihat:</b> warna kuning–merah adalah indeks bahaya banjir InaRISK BNPB; garis biru adalah alur air OSM. Ini peta penyaringan regional, bukan kedalaman genangan.';
+      });
+      hazardOverlay.on("error", function () {
+        var status = document.getElementById("rdtr-hydrology-map-status");
+        if (status) status.innerHTML = '<b>Layer BNPB gagal dimuat.</b> Periksa koneksi lalu muat ulang. Batas kajian dan alur air tetap dapat digunakan.';
+      });
+    }
     var waterways = L.geoJSON(mapData.ygHydrologyEvidence || { type: "FeatureCollection", features: [] }, {
       renderer: L.canvas({ padding: .5 }),
       style: function (feature) {
@@ -236,15 +252,19 @@
         layer.bindPopup(popup("Alur air indikatif · perlu verifikasi", { "Nama": props.name || "tidak bernama", "Jenis OSM": props.waterway || props.water || "belum terklasifikasi", "Panjang": number(props.lengthKm, 3) + " km", "Batas": "Belum membuktikan arah, kapasitas, dimensi, kondisi, pasang, atau bahaya banjir." }));
       }
     }).addTo(map);
-    L.control.layers(null, { "Batas 11 wilayah kajian": study, "Alur air indikatif OSM": waterways }, { collapsed: false }).addTo(map);
+    var overlays = { "Batas 11 wilayah kajian": study, "Alur air indikatif OSM": waterways };
+    if (hazardOverlay) overlays["Bahaya banjir InaRISK BNPB"] = hazardOverlay;
+    L.control.layers(null, overlays, { collapsed: false }).addTo(map);
+    study.bringToFront();
+    waterways.bringToFront();
     var bounds = study.getBounds();
     if (bounds.isValid()) map.fitBounds(bounds.pad(.04)); else map.setView([2.16, 100.8], 11);
     setTimeout(function () { map.invalidateSize(); }, 120);
   }
 
   function exportHydrologyCsv() {
-    var rows = [["Masalah", "Diagnosis", "Tindakan_pengelolaan", "Yang_harus_dihindari", "Indikator"]];
-    hydrologyFramework.management.forEach(function (row) { rows.push([row.problem, row.diagnose, row.actions, row.avoid, row.indicator]); });
+    var rows = [["Sistem", "Lokasi_penerapan", "Intervensi_fisik", "Dasar_desain_wajib", "Keputusan_RDTR", "Indikator"]];
+    hydrologyFramework.management.forEach(function (row) { rows.push([row.problem, row.location, row.intervention, row.design, row.decision, row.indicator]); });
     var body = rows.map(function (row) { return row.map(csvCell).join(","); }).join("\n");
     var blob = new Blob(["\ufeff" + body], { type: "text/csv;charset=utf-8" });
     var link = document.createElement("a");
