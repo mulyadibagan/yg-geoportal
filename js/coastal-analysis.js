@@ -311,6 +311,13 @@
     const erosion = feature.properties.change === "erosion";
     return `<div class="change-popup"><strong>${esc(row.village)}</strong><br><span>${esc(row.district)} · Rokan Hilir</span><hr><strong>${erosion ? "Daratan berkurang" : "Daratan bertambah"}</strong><br><span>${fmt(erosion ? row.erosionAreaHa : row.accretionAreaHa)} ha</span><br><small>Perbandingan ${esc(row.baseline || "2016")} dan ${esc(row.current || "2025")}</small></div>`;
   }
+  function boundaryPopup(feature) {
+    const row = state.rows.find((item) => item.id === feature.properties.id);
+    if (!row) return "";
+    if (row.status !== "analysed")
+      return `<div class="change-popup"><strong>${esc(row.village)}</strong><br><span>${esc(row.district)} · Rokan Hilir</span><hr><span>Batas desa ditampilkan sebagai konteks wilayah pesisir.</span><br><small>Belum ada poligon perubahan daratan pada lokasi ini.</small></div>`;
+    return `<div class="change-popup"><strong>${esc(row.village)}</strong><br><span>${esc(row.district)} · Rokan Hilir</span><hr><span>Daratan berkurang: <strong>${fmt(row.erosionAreaHa)} ha</strong></span><br><span>Daratan bertambah: <strong>${fmt(row.accretionAreaHa)} ha</strong></span><br><small>Perbandingan ${esc(row.baseline || "2016")} dan ${esc(row.current || "2025")}</small></div>`;
+  }
   function renderMap(rows) {
     const ids = new Set(rows.map((row) => row.id)),
       analysedIds = new Set(
@@ -331,6 +338,7 @@
           sticky: true,
           direction: "top",
         });
+        layer.bindPopup(boundaryPopup(feature), { maxWidth: 280 });
         layer.on({
           click: () => selectVillage(id),
           mouseover: () =>
@@ -457,7 +465,7 @@
       .join("");
   }
   async function init() {
-    let [s, g, b, o, og, rl, rlg] = await Promise.all([
+    let [s, g, b, o, og, rl, rlg, rb] = await Promise.all([
       fetch("data/coastal-analysis-regional.json?v=20260813").then((r) =>
         r.json(),
       ),
@@ -479,9 +487,15 @@
       fetch("data/rohil-village-change.geojson?v=20260922-village1").then(
         (r) => r.json(),
       ),
+      fetch("data/rohil-coastal-village-boundaries.geojson?v=20260923-boundaries1").then(
+        (r) => r.json(),
+      ),
     ]);
     [s, g] = applyVillageOverrides(s, g, o, og);
     [s, g] = applyVillageOverrides(s, g, rl, rlg);
+    b.features = b.features
+      .filter((feature) => (feature.properties.WADMKK || feature.properties.WIADKK) !== "Rokan Hilir")
+      .concat(rb.features);
     state.summary = s;
     state.geo = g;
     state.boundaries = prepareBoundaries(b);
