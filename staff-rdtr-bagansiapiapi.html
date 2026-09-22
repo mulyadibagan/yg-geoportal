@@ -26,6 +26,7 @@
         <a href="admin-dashboard.html">Dashboard Staf</a>
         <a href="webgis.html?internal=spatial-planning">Peta Interaktif</a>
         <a href="#policy-map">Peta Kebijakan</a>
+        <a href="#flood-hydrology">Banjir &amp; Hidrologi</a>
         <a href="#yg-rdtr">Progres RDTR YG</a>
         <a href="#p0-evidence">Bukti P0</a>
         <a href="#yg-components">Muatan RDTR</a>
@@ -93,6 +94,21 @@
           <p id="rdtr-draft-status" role="status">Belum ada revisi geometri YG yang dimuat.</p>
         </div>
       </aside>
+    </section>
+
+    <section id="flood-hydrology" class="rdtr-panel rdtr-hydrology-panel" aria-labelledby="rdtr-hydrology-title">
+      <div class="rdtr-panel-heading">
+        <div><span>ANALISIS INDIKATIF · SISTEM AIR MELAMPAUI BATAS WP</span><h2 id="rdtr-hydrology-title">Banjir dan hidrologi Bagansiapiapi</h2></div>
+        <div class="rdtr-draft-actions"><button id="rdtr-export-hydrology" class="rdtr-button rdtr-button--light" type="button">Unduh matriks pengelolaan</button></div>
+      </div>
+      <div class="rdtr-hydrology-notice"><strong>Bukan model hidraulik final.</strong><span>Diagnosis awal membedakan genangan hujan, luapan sungai, rob, hambatan drainase, dan kejadian gabungan. Kedalaman, durasi, serta kala ulang tidak boleh ditetapkan sebelum data elevasi saluran, muka air, pasang lokal, dan riwayat kejadian tervalidasi.</span></div>
+      <div id="rdtr-hydrology-summary" class="rdtr-hydrology-summary"></div>
+      <div class="rdtr-subsection-heading"><h3>Rantai masalah dan respons pengelolaan</h3><p>Utamakan retensi, konektivitas air, dan perlindungan ruang sebelum pompa atau peninggian jalan</p></div>
+      <div id="rdtr-hydrology-management" class="rdtr-hydrology-management"></div>
+      <div class="rdtr-subsection-heading"><h3>Arahan untuk RDTR dan program OPD</h3><p>Setiap arahan ditautkan dengan penanggung jawab, bukti, dan indikator hasil</p></div>
+      <div id="rdtr-hydrology-rdtr" class="rdtr-hydrology-rdtr"></div>
+      <div class="rdtr-subsection-heading"><h3>Data pengunci dan verifikasi lapangan</h3><p>Daerah tangkapan, saluran, dan pengaruh pasang dianalisis melampaui batas wilayah perencanaan</p></div>
+      <div id="rdtr-hydrology-evidence" class="rdtr-hydrology-evidence"></div>
     </section>
 
     <section id="policy-map" class="rdtr-panel rdtr-policy-map-panel" aria-labelledby="rdtr-policy-map-title">
@@ -365,6 +381,6 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
   <script src="https://cdn.jsdelivr.net/npm/@turf/turf@7/turf.min.js"></script>
   <script src="https://unpkg.com/shpjs@6.1.0/dist/shp.js"></script>
-  <script src="js/rdtr-bagansiapiapi.js?v=20260920-yg-rdtr12"></script>
+  <script src="js/rdtr-bagansiapiapi.js?v=20260922-hydrology1"></script>
 </body>
 </html>
