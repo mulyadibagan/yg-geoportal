@@ -105,6 +105,9 @@ test("RDTR internal page includes a flood hydrology management framework", () =>
   assert.match(script, /renderHydrologyFramework/);
   assert.match(script, /initHydrologyMap/);
   assert.match(script, /ygHydrologyEvidence/);
+  assert.match(script, /layer_bahaya_banjir_30_sumatera/);
+  assert.match(script, /Bahaya banjir InaRISK BNPB/);
+  assert.match(script, /Dasar desain yang wajib dihitung/);
 });
 
 test("the official consultation scope resolves to exactly 11 Bangko villages", () => {
