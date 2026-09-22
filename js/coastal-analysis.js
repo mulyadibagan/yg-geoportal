@@ -380,27 +380,13 @@
           : row.intervention
             ? '<span class="badge">DESA INTERVENSI YG</span>'
             : '<span class="badge">ANALISIS REGIONAL</span>',
-      periodNote = `Periode ${esc(row.baseline || "2016")}–${esc(row.current || "2025")}. Nilai bersifat indikatif.`,
-      coastlineNote = row.coastlineLengthMethod
-        ? " Panjang pantai dihitung dari cakupan pantai stabil dan polygon perubahan hasil citra, lalu dikalibrasi terhadap bentang citra 25,08 km."
-        : "",
-      imageCoastNote =
-        row.lockedInterVillageBoundary &&
-        row.administrativeSeawardBoundaryUsedForClipping === false
-          ? `<p><small>Garis batas bersama antar-kelurahan dikunci mengikuti ${esc(row.boundarySource)}. Garis darat–laut dan polygon perubahan berasal dari citra; sisi batas administrasi yang menghadap laut tidak digunakan sebagai masker.${coastlineNote} ${periodNote}</small></p>`
-          : "",
+      periodNote = `Perbandingan ${esc(row.baseline || "2016")} dan ${esc(row.current || "2025")}. Hasil masih sementara.`,
       sourceNote =
         row.analysisUnit === "landmass"
           ? `<p><small><strong>Catatan:</strong> ${esc(row.publicInterpretation || "Perubahan dibandingkan dari bentuk daratan pada 2016 dan 2025.")} Hasil ini masih sementara dan perlu diperiksa di lapangan.</small></p>`
           : row.status === "boundary-only"
-          ? `<p><small>Batas: ${esc(row.boundarySource)}. Nilai abrasi–akresi belum dihitung untuk kelurahan ini.</small></p>`
-          : imageCoastNote
-            ? imageCoastNote
-            : row.administrativeBoundaryUsedForAttribution
-              ? `<p><small>Polygon perubahan berasal dari citra, kemudian dipotong menggunakan ${esc(row.boundarySource)} untuk hasil per kelurahan.${coastlineNote} ${periodNote}</small></p>`
-              : row.boundarySource
-                ? `<p><small>Batas: ${esc(row.boundarySource)}. ${periodNote}</small></p>`
-                : `<p><small>${periodNote}</small></p>`;
+          ? `<p><small>Perubahan daratan belum dihitung untuk lokasi ini.</small></p>`
+          : `<p><small>${periodNote} Batas desa hanya digunakan untuk menunjukkan lokasi.</small></p>`;
     $("village-detail").innerHTML =
       `<p class="eyebrow">RINCIAN LOKASI</p><h2>${esc(row.village)}</h2><p>${esc(row.district)} · ${esc(row.regency)}</p>${badge}<div class="detail-grid"><div><small>Status</small><strong>${statusLabel(row)}</strong></div><div><small>Tingkat kepastian</small><strong>${esc(row.confidence || "—")}</strong></div><div><small>Daratan berkurang</small><strong>${analysed ? fmt(row.erosionAreaHa) + " ha" : "—"}</strong></div><div><small>Daratan bertambah</small><strong>${analysed ? fmt(row.accretionAreaHa) + " ha" : "—"}</strong></div><div><small>Perubahan rata-rata</small><strong>${analysed && meanRetreat !== null ? fmt(meanRetreat) + " m" : "—"}</strong></div><div><small>Perubahan per tahun</small><strong>${analysed && retreatRate !== null ? fmt(retreatRate) + " m/tahun" : "—"}</strong></div></div>${sourceNote}`;
     const group =
