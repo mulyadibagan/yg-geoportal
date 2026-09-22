@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-22T09:03:33.132374+00:00",
+  "generatedAt": "2026-09-22T14:45:30.485947+00:00",
   "baseline": "2016",
   "current": "2025",
   "methodVersion": "s2-landmass-buffer-v2",
@@ -7,22 +7,22 @@
   "disclaimer": "Bukan hasil survei garis pantai atau penetapan batas. Perubahan di bawah ketidakpastian posisi tidak boleh ditafsirkan sebagai abrasi pasti.",
   "landmasses": [
     {
-      "village": "Pulau Barkey/Berkey",
+      "village": "Pulau Berkey",
       "district": "Bangko",
       "regency": "Rokan Hilir",
       "status": "analysed",
       "baseline": "2016",
       "current": "2025",
-      "coastlineLengthKm": 55.56,
-      "erosionAreaHa": 15.91,
-      "accretionAreaHa": 17.73,
-      "indicativeMeanRetreatM": 2.9,
-      "indicativeMeanAdvanceM": 3.2,
-      "netAreaChangeHa": 1.82,
+      "coastlineLengthKm": 60.03,
+      "erosionAreaHa": 52.5,
+      "accretionAreaHa": 14.35,
+      "indicativeMeanRetreatM": 8.7,
+      "indicativeMeanAdvanceM": 2.4,
+      "netAreaChangeHa": -38.15,
       "elapsedYears": 9,
-      "indicativeRetreatRateMPerYear": 0.32,
-      "indicativeAdvanceRateMPerYear": 0.35,
-      "clearCoveragePct": 100,
+      "indicativeRetreatRateMPerYear": 0.97,
+      "indicativeAdvanceRateMPerYear": 0.27,
+      "clearCoveragePct": 99.9,
       "baselineSceneCount": 3,
       "currentSceneCount": 5,
       "positionalUncertaintyM": 14.1,
@@ -45,8 +45,8 @@
       "analysisUnit": "landmass",
       "administrativeBoundaryUsedForAttribution": false,
       "administrativeSeawardBoundaryUsedForClipping": false,
-      "boundarySource": "Garis darat–air Sentinel-2 2016 dan 2025",
-      "publicInterpretation": "Di bagian selatan, daratan berkurang sekitar 4,69 ha dan bertambah 0,33 ha. Di bagian tengah, daratan berkurang sekitar 3,57 ha dan hampir tidak ada pertambahan. Di bagian utara, daratan berkurang sekitar 7,65 ha, sementara pertambahan terutama membentuk satu jalur memanjang sekitar 16,90 ha. Pengurangan daratan tersebar di banyak sisi pulau, sedangkan pertambahan terkumpul pada satu bagian di utara."
+      "boundarySource": "Daratan yang terhubung ke titik Pulau Berkey pada citra Sentinel-2 2016 dan 2025",
+      "publicInterpretation": "Pada daratan Pulau Berkey yang terpisah dari Parit Aman, bagian yang berkurang terlihat lebih luas dan lebih tersebar daripada bagian yang bertambah. Indikasi pengurangan sekitar 52,50 ha dan pertambahan sekitar 14,35 ha antara 2016 dan 2025."
     }
   ]
 }
