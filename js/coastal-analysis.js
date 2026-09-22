@@ -448,7 +448,7 @@
       .join("");
   }
   async function init() {
-    let [s, g, b, o, og] = await Promise.all([
+    let [s, g, b, o, og, rl, rlg] = await Promise.all([
       fetch("data/coastal-analysis-regional.json?v=20260813").then((r) =>
         r.json(),
       ),
@@ -464,8 +464,21 @@
       fetch(
         "data/basilam-geniot-village-coastal-overrides.geojson?v=20260901-clip4",
       ).then((r) => r.json()),
+      fetch("data/rohil-landmass-summary.json?v=20260922-landmass2").then(
+        (r) => r.json(),
+      ),
+      fetch("data/rohil-landmass-change.geojson?v=20260922-landmass2").then(
+        (r) => r.json(),
+      ),
     ]);
     [s, g] = applyVillageOverrides(s, g, o, og);
+    const landmassIds = new Set(rl.landmasses.map((row) => row.id));
+    s.villages = s.villages
+      .filter((row) => !landmassIds.has(row.id))
+      .concat(rl.landmasses);
+    g.features = g.features
+      .filter((feature) => !landmassIds.has(feature.properties.id))
+      .concat(rlg.features);
     state.summary = s;
     state.geo = g;
     state.boundaries = prepareBoundaries(b);
