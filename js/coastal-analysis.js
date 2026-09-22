@@ -462,16 +462,8 @@
       const members = rows.filter((row) =>
           segment.districts.includes(row.district),
         ),
-        erosion = members.reduce(
-          (total, row) => total + (num(row.erosionAreaHa) || 0),
-          0,
-        ),
-        accretion = members.reduce(
-          (total, row) => total + (num(row.accretionAreaHa) || 0),
-          0,
-        ),
         low = members.filter((row) => row.confidence === "rendah").length;
-      return `<button class="process-card" type="button" data-segment="${segment.id}"><strong>${segment.name}</strong><span>${segment.note}</span><span class="process-numbers">${members.length} desa pelaporan · kehilangan ${fmt(erosion)} ha · pertambahan ${fmt(accretion)} ha</span><span>${low} hasil berkeyakinan rendah—perlu verifikasi.</span></button>`;
+      return `<button class="process-card" type="button" data-segment="${segment.id}"><strong>${segment.name}</strong><span>${segment.note}</span><span class="process-numbers">Perhitungan ulang tanpa batas administrasi sedang dilakukan</span><span>${members.length} wilayah referensi · ${low} hasil lama berkeyakinan rendah. Angka lama tidak digunakan sebagai total bentang.</span></button>`;
     }).join("");
   }
   async function init() {
