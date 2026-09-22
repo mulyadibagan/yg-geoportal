@@ -391,7 +391,7 @@
           : "",
       sourceNote =
         row.analysisUnit === "landmass"
-          ? `<p><small><strong>Analisis bentang daratan:</strong> ${esc(row.publicInterpretation || "Perubahan dihitung dari garis darat–air dua periode tanpa pemotongan batas desa.")} Ketidakpastian posisi ±${fmt(row.positionalUncertaintyM || 14.1)} m; hasil ini bersifat indikatif.</small></p>`
+          ? `<p><small><strong>Catatan:</strong> ${esc(row.publicInterpretation || "Perubahan dibandingkan dari bentuk daratan pada 2016 dan 2025.")} Hasil ini masih sementara dan perlu diperiksa di lapangan.</small></p>`
           : row.status === "boundary-only"
           ? `<p><small>Batas: ${esc(row.boundarySource)}. Nilai abrasi–akresi belum dihitung untuk kelurahan ini.</small></p>`
           : imageCoastNote
@@ -402,7 +402,7 @@
                 ? `<p><small>Batas: ${esc(row.boundarySource)}. ${periodNote}</small></p>`
                 : `<p><small>${periodNote}</small></p>`;
     $("village-detail").innerHTML =
-      `<p class="eyebrow">DETAIL DESA</p><h2>${esc(row.village)}</h2><p>${esc(row.district)} · ${esc(row.regency)}</p>${badge}<div class="detail-grid"><div><small>Status</small><strong>${statusLabel(row)}</strong></div><div><small>Keyakinan</small><strong>${esc(row.confidence || "—")}</strong></div><div><small>Indikasi kehilangan</small><strong>${analysed ? fmt(row.erosionAreaHa) + " ha" : "—"}</strong></div><div><small>Indikasi pertambahan</small><strong>${analysed ? fmt(row.accretionAreaHa) + " ha" : "—"}</strong></div><div><small>Kemunduran rata-rata (total)</small><strong>${analysed && meanRetreat !== null ? fmt(meanRetreat) + " m" : "—"}</strong></div><div><small>Laju kemunduran</small><strong>${analysed && retreatRate !== null ? fmt(retreatRate) + " m/tahun" : "—"}</strong></div><div><small>Ketidakpastian posisi</small><strong>${analysed ? "±" + fmt(row.positionalUncertaintyM || 14.1) + " m" : "—"}</strong></div></div>${sourceNote}`;
+      `<p class="eyebrow">RINCIAN LOKASI</p><h2>${esc(row.village)}</h2><p>${esc(row.district)} · ${esc(row.regency)}</p>${badge}<div class="detail-grid"><div><small>Status</small><strong>${statusLabel(row)}</strong></div><div><small>Tingkat kepastian</small><strong>${esc(row.confidence || "—")}</strong></div><div><small>Daratan berkurang</small><strong>${analysed ? fmt(row.erosionAreaHa) + " ha" : "—"}</strong></div><div><small>Daratan bertambah</small><strong>${analysed ? fmt(row.accretionAreaHa) + " ha" : "—"}</strong></div><div><small>Perubahan rata-rata</small><strong>${analysed && meanRetreat !== null ? fmt(meanRetreat) + " m" : "—"}</strong></div><div><small>Perubahan per tahun</small><strong>${analysed && retreatRate !== null ? fmt(retreatRate) + " m/tahun" : "—"}</strong></div></div>${sourceNote}`;
     const group =
       state.changeVillageLayers.get(id) || state.villageLayers.get(id);
     if (group && group.getBounds().isValid())
@@ -474,7 +474,7 @@
           segment.districts.includes(row.district),
         ),
         low = members.filter((row) => row.confidence === "rendah").length;
-      return `<button class="process-card" type="button" data-segment="${segment.id}"><strong>${segment.name}</strong><span>${segment.note}</span><span class="process-numbers">Perhitungan ulang tanpa batas administrasi sedang dilakukan</span><span>${members.length} wilayah referensi · ${low} hasil lama berkeyakinan rendah. Angka lama tidak digunakan sebagai total bentang.</span></button>`;
+      return `<button class="process-card" type="button" data-segment="${segment.id}"><strong>${segment.name}</strong><span>${segment.note}</span><span class="process-numbers">Pemeriksaan perubahan daratan sedang dilanjutkan</span><span>${members.length} lokasi tercatat · ${low} hasil masih perlu diperiksa kembali.</span></button>`;
     }).join("");
   }
   async function init() {
