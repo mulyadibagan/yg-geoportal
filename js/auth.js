@@ -7,9 +7,9 @@
     "https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/api/staff/auth-result"
   ];
   const SESSION_KEY = "ygEditorSessionV1";
-  const AUTH_RESULT_DEADLINE_MS = 120000;
-  const AUTH_RESULT_REQUEST_TIMEOUT_MS = 30000;
-  const AUTH_POST_TIMEOUT_MS = 45000;
+  const AUTH_RESULT_DEADLINE_MS = 30000;
+  const AUTH_RESULT_REQUEST_TIMEOUT_MS = 7000;
+  const AUTH_POST_TIMEOUT_MS = 12000;
 
   function readStoredSession() {
     try {
@@ -92,24 +92,21 @@
     while (Date.now() < deadline) {
       await new Promise(resolve => setTimeout(resolve, 700));
       try {
+        const attempts = AUTH_RESULT_APIS.map(async endpoint => {
+          const response = await fetchWithTimeout(
+            `${endpoint}?requestId=${encodeURIComponent(requestId)}&t=${Date.now()}`,
+            { cache: "no-store" },
+            AUTH_RESULT_REQUEST_TIMEOUT_MS
+          );
+          if (!response.ok) throw new Error("Hasil autentikasi belum dapat dimuat.");
+          return response.json();
+        });
         let result = null;
-        let resultError = null;
-        for (const endpoint of AUTH_RESULT_APIS) {
-          try {
-            const response = await fetchWithTimeout(
-              `${endpoint}?requestId=${encodeURIComponent(requestId)}&t=${Date.now()}`,
-              { cache: "no-store" },
-              AUTH_RESULT_REQUEST_TIMEOUT_MS
-            );
-            if (!response.ok) throw new Error("Hasil autentikasi belum dapat dimuat.");
-            result = await response.json();
-            resultError = null;
-            break;
-          } catch (error) {
-            resultError = error;
-          }
+        try {
+          result = await Promise.any(attempts);
+        } catch (error) {
+          throw new Error("Hasil autentikasi belum dapat dimuat.");
         }
-        if (!result) throw resultError || new Error("Hasil autentikasi belum dapat dimuat.");
         lastLoadError = null;
         if (result && result.pending) continue;
         if (result && result.ok) return result;
