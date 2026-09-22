@@ -48,7 +48,16 @@
     var mapData=data.map||{}, study=L.geoJSON(mapData.studyArea||{type:"FeatureCollection",features:[]},{style:{color:"#315b50",weight:2,dashArray:"7 5",fillOpacity:.03},onEachFeature:function(f,l){l.bindTooltip((f.properties||{}).WADMKD||(f.properties||{}).NAMOBJ||"Wilayah kajian")}}).addTo(map);
     var hydro=L.geoJSON(mapData.ygHydrologyEvidence||{type:"FeatureCollection",features:[]},{renderer:L.canvas(),style:function(f){var k=String((f.properties||{}).waterway||"");return{color:k==="river"?"#075d86":"#2d98bd",weight:k==="river"?3:1.4,opacity:.85}},onEachFeature:function(f,l){var p=f.properties||{};l.bindPopup("<b>Alur referensi OSM</b><br>"+esc(p.name||"Tanpa nama")+"<br>Jenis: "+esc(p.waterway||p.water||"belum diklasifikasi")+"<br><small>Belum menunjukkan arah, elevasi, atau kapasitas.</small>")}});
     document.getElementById("flood-waterway-count").textContent=((mapData.ygHydrologyEvidence||{}).features||[]).length;
-    var groups={"Batas wilayah kajian":study,"Alur air referensi OSM":hydro};
+    var spatialDecision=L.layerGroup().addTo(map);
+    function decisionMarker(latlng,label,color,html){
+      L.circleMarker(latlng,{radius:10,color:"#fff",weight:3,fillColor:color,fillOpacity:1}).bindTooltip(label,{permanent:true,direction:"right",className:"flood-decision-label"}).bindPopup(html).addTo(spatialDecision);
+    }
+    decisionMarker([2.1352818,100.7864141],"K-01 · kandidat sekat outlet", "#c84630", "<b>K-01 · Outlet barat-daya</b><br>Sekat pada penampang stabil terakhir sebelum perairan pasang.<br><b>Buang:</b> ke estuari sisi barat saat muka air luar lebih rendah.<br><small>Kandidat survei; bukan koordinat konstruksi.</small>");
+    L.polyline([[2.1352818,100.7864141],[2.1336,100.7816],[2.1328,100.7778]],{color:"#087ca7",weight:5,dashArray:"10 7"}).bindTooltip("ARAH BUANG K-01 → estuari",{permanent:true,direction:"bottom",className:"flood-flow-label"}).addTo(spatialDecision);
+    decisionMarker([2.1089820,100.8007140],"K-02 · cari outlet sebenarnya", "#df8b13", "<b>K-02 · Koridor outlet selatan</b><br>Koordinat ini hanya ujung alur OSM. Telusuri sampai badan penerima; pintu ditempatkan pada outlet sebenarnya.<br><b>Buang:</b> ke badan penerima selatan/Sungai Rokan setelah koneksi terbukti.");
+    L.polyline([[2.1089820,100.8007140],[2.1062,100.7973],[2.1037,100.7934]],{color:"#df8b13",weight:4,dashArray:"7 7"}).bindTooltip("KORIDOR TELUSUR K-02 → badan penerima",{permanent:true,direction:"bottom",className:"flood-flow-label"}).addTo(spatialDecision);
+    decisionMarker([2.1730194,100.8084177],"X · jangan sekat di sini", "#777", "<b>Bukan lokasi pintu.</b><br>Ujung kanal yang belum terbukti sebagai outlet. Pertahankan aliran dan telusuri koneksi hilirnya.");
+    var groups={"Batas wilayah kajian":study,"Rekomendasi sekat & arah buang":spatialDecision,"Alur air referensi OSM":hydro};
     var b=study.getBounds();if(b.isValid()){
       var url="https://gis.bnpb.go.id/server/rest/services/inarisk/layer_bahaya_banjir_30_sumatera/MapServer/export?bbox="+[b.getWest(),b.getSouth(),b.getEast(),b.getNorth()].join(",")+"&bboxSR=4326&imageSR=4326&size=1200,1200&transparent=true&format=png32&f=image";
       groups["InaRISK BNPB (penyaringan)"]=L.imageOverlay(url,[[b.getSouth(),b.getWest()],[b.getNorth(),b.getEast()]],{opacity:.58,attribution:"InaRISK BNPB"});map.fitBounds(b.pad(.03));

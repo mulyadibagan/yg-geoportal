@@ -115,6 +115,10 @@ test("RDTR internal page includes a flood hydrology management framework", () =>
   assert.match(script, /matriks-keputusan-teknis-banjir-bagansiapiapi\.csv/);
   assert.match(script, /Kandidat survei/);
   assert.match(script, /Terverifikasi teknis/);
+  assert.match(script, /K-01 · kandidat sekat outlet/);
+  assert.match(script, /ARAH BUANG K-01 → estuari/);
+  assert.match(script, /K-02 · cari outlet sebenarnya/);
+  assert.match(script, /jangan sekat di sini/);
   assert.match(script, /ygHydrologyEvidence/);
   assert.match(script, /layer_bahaya_banjir_30_sumatera/);
   assert.doesNotMatch(publicHome, /staff-flood-bagansiapiapi\.html/);
