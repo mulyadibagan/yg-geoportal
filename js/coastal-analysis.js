@@ -122,13 +122,22 @@
       const p = feature.properties || {},
         regency = p.WADMKK || p.WIADKK || "",
         district = p.WADMKC || "",
-        village = p.WADMKD || p.NAMOBJ || "",
+        isBarkey =
+          regency === "Rokan Hilir" &&
+          district === "Bangko" &&
+          searchText(p.NAMOBJ) === "area tidak terdefinisi",
+        village = isBarkey
+          ? "Pulau Barkey/Berkey"
+          : p.WADMKD || p.NAMOBJ || "",
         matchedId =
           exact.get(slug(`${regency}-${district}-${village}`)) ||
           compact.get(
             `${searchText(regency)}|${searchText(district)}|${compactSearch(village)}`,
           ),
-        id = matchedId || (p.KODE_DESA && `boundary-${p.KODE_DESA}`) || "",
+        id =
+          matchedId ||
+          (p.KODE_DESA && `boundary-${p.KODE_DESA}`) ||
+          (isBarkey ? "landmass-rohil-barkey" : ""),
         boundarySource = p.Boundary_Source || p.UUPP;
       feature.properties = { ...p, id, village, district, regency };
       if (matchedId && p.KODE_DESA) {
@@ -381,7 +390,9 @@
           ? `<p><small>Garis batas bersama antar-kelurahan dikunci mengikuti ${esc(row.boundarySource)}. Garis darat–laut dan polygon perubahan berasal dari citra; sisi batas administrasi yang menghadap laut tidak digunakan sebagai masker.${coastlineNote} ${periodNote}</small></p>`
           : "",
       sourceNote =
-        row.status === "boundary-only"
+        row.analysisUnit === "landmass"
+          ? `<p><small><strong>Analisis bentang daratan:</strong> ${esc(row.publicInterpretation || "Perubahan dihitung dari garis darat–air dua periode tanpa pemotongan batas desa.")} Ketidakpastian posisi ±${fmt(row.positionalUncertaintyM || 14.1)} m; hasil ini bersifat indikatif.</small></p>`
+          : row.status === "boundary-only"
           ? `<p><small>Batas: ${esc(row.boundarySource)}. Nilai abrasi–akresi belum dihitung untuk kelurahan ini.</small></p>`
           : imageCoastNote
             ? imageCoastNote
@@ -467,7 +478,7 @@
     }).join("");
   }
   async function init() {
-    let [s, g, b, o, og] = await Promise.all([
+    let [s, g, b, o, og, rl, rlg] = await Promise.all([
       fetch("data/coastal-analysis-regional.json?v=20260813").then((r) =>
         r.json(),
       ),
@@ -483,8 +494,21 @@
       fetch(
         "data/basilam-geniot-village-coastal-overrides.geojson?v=20260901-clip4",
       ).then((r) => r.json()),
+      fetch("data/rohil-landmass-summary.json?v=20260922-landmass1").then(
+        (r) => r.json(),
+      ),
+      fetch("data/rohil-landmass-change.geojson?v=20260922-landmass1").then(
+        (r) => r.json(),
+      ),
     ]);
     [s, g] = applyVillageOverrides(s, g, o, og);
+    const landmassIds = new Set(rl.landmasses.map((row) => row.id));
+    s.villages = s.villages
+      .filter((row) => !landmassIds.has(row.id))
+      .concat(rl.landmasses);
+    g.features = g.features
+      .filter((feature) => !landmassIds.has(feature.properties.id))
+      .concat(rlg.features);
     state.summary = s;
     state.geo = g;
     state.boundaries = prepareBoundaries(b);
