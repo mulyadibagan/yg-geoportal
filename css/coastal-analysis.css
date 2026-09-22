@@ -430,6 +430,9 @@ footer {
   gap: 12px;
   margin-top: 18px;
 }
+.landscape-section > .method-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
 .process-card,
 .method-grid article {
   border: 1px solid var(--line);
