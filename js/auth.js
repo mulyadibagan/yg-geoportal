@@ -8,8 +8,8 @@
   ];
   const SESSION_KEY = "ygEditorSessionV1";
   const AUTH_RESULT_DEADLINE_MS = 120000;
-  const AUTH_RESULT_REQUEST_TIMEOUT_MS = 7000;
-  const AUTH_POST_TIMEOUT_MS = 12000;
+  const AUTH_RESULT_REQUEST_TIMEOUT_MS = 30000;
+  const AUTH_POST_TIMEOUT_MS = 45000;
 
   function readStoredSession() {
     try {
