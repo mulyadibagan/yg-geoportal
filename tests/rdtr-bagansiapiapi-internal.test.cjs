@@ -95,19 +95,26 @@ test("internal workspace renders the regulation-based YG plan without claiming o
 
 test("RDTR internal page includes a flood hydrology management framework", () => {
   const page = read("staff-rdtr-bagansiapiapi.html");
-  const script = read("js", "rdtr-bagansiapiapi.js");
+  const floodPage = read("staff-flood-bagansiapiapi.html");
+  const script = read("js", "flood-bagansiapiapi.js");
+  const publicHome = read("index.html");
+  const publicNavigation = read("js", "navigation-v2.js");
   assert.match(page, /id="flood-hydrology"/);
-  assert.match(page, /id="rdtr-hydrology-map"/);
-  assert.match(page, /id="rdtr-export-hydrology"/);
-  assert.match(script, /Genangan hujan/);
-  assert.match(script, /Banjir gabungan/);
-  assert.match(script, /matriks-pengelolaan-banjir-hidrologi-bagansiapiapi-internal\.csv/);
-  assert.match(script, /renderHydrologyFramework/);
-  assert.match(script, /initHydrologyMap/);
+  assert.match(page, /href="staff-flood-bagansiapiapi\.html"/);
+  assert.match(floodPage, /noindex,nofollow,noarchive/);
+  assert.match(floodPage, /style="visibility:hidden"/);
+  assert.match(floodPage, /staff-rdtr-gate\.js/);
+  assert.match(floodPage, /id="flood-map"/);
+  assert.match(floodPage, /id="flood-register"/);
+  assert.match(floodPage, /tidak lagi menampilkan PA-01, PA-02, atau PA-03/);
+  assert.match(script, /register-survei-outlet-bagansiapiapi\.geojson/);
+  assert.match(script, /matriks-keputusan-teknis-banjir-bagansiapiapi\.csv/);
+  assert.match(script, /Kandidat survei/);
+  assert.match(script, /Terverifikasi teknis/);
   assert.match(script, /ygHydrologyEvidence/);
   assert.match(script, /layer_bahaya_banjir_30_sumatera/);
-  assert.match(script, /Bahaya banjir InaRISK BNPB/);
-  assert.match(script, /Dasar desain yang wajib dihitung/);
+  assert.doesNotMatch(publicHome, /staff-flood-bagansiapiapi\.html/);
+  assert.doesNotMatch(publicNavigation, /staff-flood-bagansiapiapi\.html/);
 });
 
 test("the official consultation scope resolves to exactly 11 Bangko villages", () => {

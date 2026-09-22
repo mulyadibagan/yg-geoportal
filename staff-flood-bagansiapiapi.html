@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="id" style="visibility:hidden">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>Analisis Banjir Bagansiapiapi | YG GeoPortal</title>
+  <link rel="icon" href="assets/logo-yayasan-gambut.png">
+  <link rel="stylesheet" href="css/site-brand.css?v=20260720-program-dashboard1">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+  <link rel="stylesheet" href="css/flood-bagansiapiapi.css?v=20260922-flood1">
+  <script src="js/auth.js?v=20260920-session5"></script>
+  <script src="js/staff-data-access.js?v=20260920-rdtr-internal1"></script>
+  <script src="js/staff-rdtr-gate.js?v=20260920-internal1"></script>
+</head>
+<body>
+  <header class="site-header yg-page-header flood-header">
+    <div class="header-inner yg-page-header__inner">
+      <a class="brand yg-page-brand" href="admin-dashboard.html"><img src="assets/logo-yayasan-gambut.png" alt="Logo Yayasan Gambut"><span><strong>YG GeoPortal</strong><span>Analisis Internal Banjir</span></span></a>
+      <nav class="nav yg-page-nav"><a href="admin-dashboard.html">Dashboard Staf</a><a href="staff-rdtr-bagansiapiapi.html">RDTR Bagansiapiapi</a><a href="#peta">Peta</a><a href="#keputusan">Keputusan Teknis</a><a href="#survei">Register Survei</a></nav>
+    </div>
+  </header>
+
+  <main class="flood-shell">
+    <section class="flood-hero">
+      <div><span>KHUSUS STAF · BELUM UNTUK PUBLIKASI</span><h1>Banjir dan Hidrologi Bagansiapiapi</h1><p>Ruang kerja untuk memisahkan fakta lapangan, data rujukan, analisis hidrologi, dan keputusan teknis pintu air.</p></div>
+      <div class="flood-hero-actions"><button id="flood-export-points" type="button">Unduh titik survei</button><button id="flood-export-matrix" class="secondary" type="button">Unduh matriks teknis</button></div>
+    </section>
+
+    <aside class="truth-note"><strong>Aturan membaca.</strong> InaRISK adalah penyaringan bahaya regional. Alur OpenStreetMap adalah referensi jaringan awal. Keduanya tidak membuktikan kedalaman, arah aliran, kapasitas saluran, ataupun lokasi pintu air. Simbol pintu hanya boleh muncul setelah titik dimasukkan ke register survei.</aside>
+
+    <section class="status-grid" aria-label="Status bukti">
+      <article><span>Alur referensi</span><strong id="flood-waterway-count">—</strong><small>belum terverifikasi</small></article>
+      <article><span>Titik survei</span><strong id="flood-point-count">0</strong><small>tersimpan di perangkat</small></article>
+      <article><span>Terverifikasi</span><strong id="flood-verified-count">0</strong><small>boleh masuk kajian teknis</small></article>
+      <article><span>Desain final</span><strong>0</strong><small>belum ada DED</small></article>
+    </section>
+
+    <section id="peta" class="flood-map-card">
+      <div class="section-heading"><div><span>PETA KERJA INTERNAL</span><h2>Jaringan air dan pemeriksaan outlet</h2></div><p id="flood-map-status">Memuat data internal…</p></div>
+      <div class="map-layout">
+        <div><div id="flood-map" role="application" aria-label="Peta kerja banjir Bagansiapiapi"></div><p class="map-note"><b>Default:</b> batas kajian dan peta dasar. Nyalakan layer InaRISK atau alur OSM secara terpisah. Klik “Tambah titik survei”, lalu klik lokasi pada peta untuk membuat kandidat—bukan rekomendasi konstruksi.</p></div>
+        <aside class="map-tools">
+          <h3>Tambah titik survei</h3>
+          <p>Titik baru berstatus <b>kandidat survei</b> sampai bukti elevasi dan aliran dilengkapi.</p>
+          <button id="flood-add-point" type="button">Aktifkan klik peta</button>
+          <button id="flood-cancel-point" class="secondary" type="button" hidden>Batal</button>
+          <div class="evidence-key"><h3>Status bukti</h3><p><i class="dot candidate"></i>Kandidat survei</p><p><i class="dot checked"></i>Survei awal lengkap</p><p><i class="dot verified"></i>Terverifikasi teknis</p><p><i class="dot rejected"></i>Ditolak / bukan outlet</p></div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="keputusan" class="flood-panel">
+      <div class="section-heading"><div><span>URUTAN PENANGANAN</span><h2>Perbaiki sistem hidrologi sebelum memasang struktur</h2></div></div>
+      <div id="flood-action-sequence" class="action-sequence"></div>
+      <div class="section-heading subsection"><div><span>LOGIKA PEMILIHAN</span><h2>Kapan pintu air dan pompa diperlukan?</h2></div></div>
+      <div id="flood-decision-matrix" class="decision-grid"></div>
+    </section>
+
+    <section id="survei" class="flood-panel">
+      <div class="section-heading"><div><span>REGISTER BERKOORDINAT</span><h2>Kandidat outlet dan pintu air</h2></div><button id="flood-clear-points" class="danger" type="button">Hapus semua titik lokal</button></div>
+      <div id="flood-register-empty" class="empty-state"><strong>Belum ada titik yang dapat direkomendasikan.</strong><p>Tambahkan lokasi hasil survei. Peta tidak lagi menampilkan PA-01, PA-02, atau PA-03 sebagai rekomendasi otomatis.</p></div>
+      <div class="table-wrap"><table id="flood-register" hidden><thead><tr><th>ID</th><th>Koordinat</th><th>Status</th><th>Bukti</th><th>Keputusan awal</th><th>Aksi</th></tr></thead><tbody></tbody></table></div>
+    </section>
+
+    <section class="flood-panel">
+      <div class="section-heading"><div><span>DATA MINIMUM</span><h2>Syarat sebelum desain pintu air</h2></div></div>
+      <div id="flood-evidence-checklist" class="checklist-grid"></div>
+    </section>
+  </main>
+
+  <dialog id="flood-point-dialog">
+    <form method="dialog" id="flood-point-form">
+      <div class="dialog-heading"><h2>Catat titik pemeriksaan</h2><button value="cancel" aria-label="Tutup">×</button></div>
+      <input id="point-lat" type="hidden"><input id="point-lng" type="hidden">
+      <label>ID titik<input id="point-id" required placeholder="OUT-001"></label>
+      <label>Nama/lokasi<input id="point-name" required placeholder="Nama saluran atau ruas jalan"></label>
+      <div class="form-grid"><label>Status<select id="point-status"><option value="candidate">Kandidat survei</option><option value="checked">Survei awal lengkap</option><option value="verified">Terverifikasi teknis</option><option value="rejected">Ditolak / bukan outlet</option></select></label><label>Jenis awal<select id="point-type"><option>Belum ditentukan</option><option>Outlet pasang-surut</option><option>Pertemuan saluran</option><option>Pintu eksisting</option><option>Gorong-gorong</option><option>Titik genangan</option></select></label></div>
+      <label>Bukti yang tersedia<textarea id="point-evidence" placeholder="Contoh: foto, elevasi invert, arah aliran, muka air hulu-hilir, kondisi pasang"></textarea></label>
+      <label>Keputusan awal<textarea id="point-decision" placeholder="Contoh: audit konektivitas; belum boleh didesain"></textarea></label>
+      <p id="point-coordinate"></p>
+      <div class="dialog-actions"><button value="cancel" class="secondary">Batal</button><button id="point-save" value="default">Simpan titik</button></div>
+    </form>
+  </dialog>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script src="js/flood-bagansiapiapi.js?v=20260922-flood1"></script>
+</body>
+</html>
