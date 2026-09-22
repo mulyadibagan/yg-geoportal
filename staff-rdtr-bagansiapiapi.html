@@ -101,14 +101,13 @@
         <div><span>ANALISIS INDIKATIF · SISTEM AIR MELAMPAUI BATAS WP</span><h2 id="rdtr-hydrology-title">Banjir dan hidrologi Bagansiapiapi</h2></div>
         <div class="rdtr-draft-actions"><button id="rdtr-export-hydrology" class="rdtr-button rdtr-button--light" type="button">Unduh matriks pengelolaan</button></div>
       </div>
-      <div class="rdtr-hydrology-notice"><strong>Bukan model hidraulik final.</strong><span>Diagnosis awal membedakan genangan hujan, luapan sungai, rob, hambatan drainase, dan kejadian gabungan. Kedalaman, durasi, serta kala ulang tidak boleh ditetapkan sebelum data elevasi saluran, muka air, pasang lokal, dan riwayat kejadian tervalidasi.</span></div>
-      <div id="rdtr-hydrology-summary" class="rdtr-hydrology-summary"></div>
-      <div class="rdtr-subsection-heading"><h3>Rantai masalah dan respons pengelolaan</h3><p>Utamakan retensi, konektivitas air, dan perlindungan ruang sebelum pompa atau peninggian jalan</p></div>
-      <div id="rdtr-hydrology-management" class="rdtr-hydrology-management"></div>
-      <div class="rdtr-subsection-heading"><h3>Arahan untuk RDTR dan program OPD</h3><p>Setiap arahan ditautkan dengan penanggung jawab, bukti, dan indikator hasil</p></div>
-      <div id="rdtr-hydrology-rdtr" class="rdtr-hydrology-rdtr"></div>
-      <div class="rdtr-subsection-heading"><h3>Data pengunci dan verifikasi lapangan</h3><p>Daerah tangkapan, saluran, dan pengaruh pasang dianalisis melampaui batas wilayah perencanaan</p></div>
-      <div id="rdtr-hydrology-evidence" class="rdtr-hydrology-evidence"></div>
+      <div class="rdtr-hydrology-map-layout">
+        <div><div id="rdtr-hydrology-map" role="application" aria-label="Peta alur air indikatif Bagansiapiapi"></div><p class="rdtr-hydrology-map-note">Garis biru adalah alur air dari OpenStreetMap untuk penyaringan awal—bukan jaringan drainase resmi dan bukan peta bahaya banjir.</p></div>
+        <aside><span class="rdtr-hydrology-side-kicker">KESIMPULAN SINGKAT</span><div id="rdtr-hydrology-summary" class="rdtr-hydrology-summary"></div></aside>
+      </div>
+      <details class="rdtr-hydrology-group" open><summary>Rekomendasi pengelolaan prioritas</summary><div id="rdtr-hydrology-management" class="rdtr-hydrology-management"></div></details>
+      <details class="rdtr-hydrology-group"><summary>Arahan untuk RDTR dan program OPD</summary><div id="rdtr-hydrology-rdtr" class="rdtr-hydrology-rdtr"></div></details>
+      <details class="rdtr-hydrology-group"><summary>Data yang masih harus dilengkapi</summary><div id="rdtr-hydrology-evidence" class="rdtr-hydrology-evidence"></div></details>
     </section>
 
     <section id="policy-map" class="rdtr-panel rdtr-policy-map-panel" aria-labelledby="rdtr-policy-map-title">
@@ -381,6 +380,6 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
   <script src="https://cdn.jsdelivr.net/npm/@turf/turf@7/turf.min.js"></script>
   <script src="https://unpkg.com/shpjs@6.1.0/dist/shp.js"></script>
-  <script src="js/rdtr-bagansiapiapi.js?v=20260922-hydrology1"></script>
+  <script src="js/rdtr-bagansiapiapi.js?v=20260922-hydrology-map2"></script>
 </body>
 </html>
