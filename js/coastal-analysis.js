@@ -122,13 +122,22 @@
       const p = feature.properties || {},
         regency = p.WADMKK || p.WIADKK || "",
         district = p.WADMKC || "",
-        village = p.WADMKD || p.NAMOBJ || "",
+        isBarkey =
+          regency === "Rokan Hilir" &&
+          district === "Bangko" &&
+          searchText(p.NAMOBJ) === "area tidak terdefinisi",
+        village = isBarkey
+          ? "Pulau Barkey/Berkey"
+          : p.WADMKD || p.NAMOBJ || "",
         matchedId =
           exact.get(slug(`${regency}-${district}-${village}`)) ||
           compact.get(
             `${searchText(regency)}|${searchText(district)}|${compactSearch(village)}`,
           ),
-        id = matchedId || (p.KODE_DESA && `boundary-${p.KODE_DESA}`) || "",
+        id =
+          matchedId ||
+          (p.KODE_DESA && `boundary-${p.KODE_DESA}`) ||
+          (isBarkey ? "landmass-rohil-barkey" : ""),
         boundarySource = p.Boundary_Source || p.UUPP;
       feature.properties = { ...p, id, village, district, regency };
       if (matchedId && p.KODE_DESA) {
