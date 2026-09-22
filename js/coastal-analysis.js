@@ -453,16 +453,6 @@
       )
       .join("");
   }
-  function renderRohilLandscape() {
-    const rows = state.rows.filter((row) => row.regency === "Rokan Hilir");
-    $("rohil-process-grid").innerHTML = ROHIL_SEGMENTS.map((segment) => {
-      const members = rows.filter((row) =>
-          segment.districts.includes(row.district),
-        ),
-        low = members.filter((row) => row.confidence === "rendah").length;
-      return `<button class="process-card" type="button" data-segment="${segment.id}"><strong>${segment.name}</strong><span>${segment.note}</span><span class="process-numbers">Pemeriksaan perubahan daratan sedang dilanjutkan</span><span>${members.length} lokasi tercatat · ${low} hasil masih perlu diperiksa kembali.</span></button>`;
-    }).join("");
-  }
   async function init() {
     let [s, g, b, o, og, rl, rlg] = await Promise.all([
       fetch("data/coastal-analysis-regional.json?v=20260813").then((r) =>
@@ -509,7 +499,6 @@
     );
     fillDistricts();
     renderRegencies();
-    renderRohilLandscape();
     render();
   }
   let searchTimer;
@@ -544,16 +533,6 @@
     if (!b) return;
     state.activeRohilSegment = null;
     $("filter-regency").value = b.dataset.regency;
-    fillDistricts();
-    render();
-    document.querySelector(".workspace").scrollIntoView({ behavior: "smooth" });
-  });
-  $("rohil-process-grid").addEventListener("click", (e) => {
-    const card = e.target.closest("[data-segment]");
-    if (!card) return;
-    state.activeRohilSegment = card.dataset.segment;
-    $("filter-regency").value = "Rokan Hilir";
-    $("filter-district").value = "";
     fillDistricts();
     render();
     document.querySelector(".workspace").scrollIntoView({ behavior: "smooth" });
