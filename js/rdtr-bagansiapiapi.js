@@ -155,6 +155,70 @@
     return labels[value] || String(value || "").replace(/_/g, " ");
   }
 
+  var hydrologyFramework = {
+    status: "Analisis penyaringan · bukti hidraulik belum lengkap",
+    systems: [
+      { label: "Genangan hujan", trigger: "Hujan lokal melampaui infiltrasi dan kapasitas drainase", signal: "Genangan muncul jauh dari tepi sungai atau laut", priority: "tinggi" },
+      { label: "Luapan sungai", trigger: "Muka air sungai melampaui tebing atau tanggul", signal: "Genangan mengikuti koridor sungai dan dataran banjir", priority: "kritis" },
+      { label: "Rob/pasang", trigger: "Pasang menahan pembuangan atau mendorong aliran balik", signal: "Genangan berkorelasi dengan jam dan tinggi pasang", priority: "kritis" },
+      { label: "Kegagalan drainase", trigger: "Saluran putus, dangkal, tersumbat, menyempit, atau kehilangan outlet", signal: "Genangan setempat bertahan setelah hujan berhenti", priority: "tinggi" },
+      { label: "Banjir gabungan", trigger: "Hujan tinggi bersamaan dengan pasang atau muka sungai tinggi", signal: "Air lambat surut dan terdorong kembali dari outlet", priority: "kritis" }
+    ],
+    management: [
+      { problem: "Genangan hujan", diagnose: "Delineasi cekungan, arah aliran, koefisien limpasan, dan kapasitas saluran per sub-tangkapan", actions: "Lindungi ruang resapan; bangun taman retensi, tampungan tapak, kolam detensi, dan saluran penghubung; batasi permukaan kedap", avoid: "Jangan hanya meninggikan jalan karena dapat memindahkan air ke rumah", indicator: "Luas, kedalaman, dan durasi genangan menurun pada hujan pembanding" },
+      { problem: "Luapan sungai", diagnose: "Petakan dataran banjir, penampang, elevasi tebing, penyempitan, sedimentasi, dan hambatan aliran", actions: "Pertahankan sempadan; pulihkan ruang sungai; kendalikan bangunan; normalisasi hanya setelah kajian sedimen; siapkan jalur evakuasi", avoid: "Jangan menutup dataran banjir atau membangun tanggul parsial yang memindahkan risiko", indicator: "Tidak ada kenaikan muka air atau risiko baru di hilir dan sisi berlawanan" },
+      { problem: "Rob/pasang", diagnose: "Pasangkan catatan waktu genangan dengan tinggi pasang dan elevasi outlet", actions: "Pintu klep satu arah, pintu air, tanggul/setback selektif, perlindungan mangrove, elevasi lantai adaptif, dan zona penyangga", avoid: "Pompa tanpa pengendali aliran balik tidak efektif saat pasang", indicator: "Frekuensi aliran balik dan durasi genangan pasang menurun" },
+      { problem: "Drainase", diagnose: "Inventarisasi hulu–hilir: dimensi, elevasi dasar, kondisi, sambungan, gorong-gorong, outlet, dan penanggung jawab", actions: "Pulihkan konektivitas; jadwal pembersihan; standar bukaan gorong-gorong; lindungi koridor; dashboard laporan sumbatan", avoid: "Jangan memperbesar satu ruas tanpa memeriksa kapasitas penerima di hilir", indicator: "Persentase jaringan tersambung dan berfungsi serta waktu surut pascahujan" },
+      { problem: "Banjir gabungan", diagnose: "Uji skenario hujan–pasang–muka sungai bersama, bukan peta bahaya tunggal", actions: "Polder terbatas bila layak; tampungan sementara; operasi pintu/pompa berbasis prakiraan; peringatan dan rute aman", avoid: "Jangan menetapkan kawasan aman hanya dari satu skenario", indicator: "Layanan vital tetap berfungsi pada skenario gabungan yang disepakati" }
+    ],
+    rdtrDirections: [
+      { instrument: "Struktur ruang", direction: "Tetapkan jaringan biru–hijau, jalur utama pembuangan, tampungan, pintu air, pompa, dan jalur evakuasi sebagai satu sistem lintas batas WP.", owner: "PUPR/SDA, BPBD, Bappeda" },
+      { instrument: "Pola ruang", direction: "Lindungi badan air, sempadan, mangrove, rawa/tampungan alami, cekungan penting, dan koridor drainase dari konversi yang menutup fungsi air.", owner: "ATR/BPN, PUPR, DLH" },
+      { instrument: "Peraturan zonasi", direction: "Atur elevasi lantai minimum berbasis datum, KDH/permeabilitas, tampungan tapak, larangan menutup saluran, akses pemeliharaan, dan kajian drainase untuk pembangunan besar.", owner: "PUPR, DPMPTSP, ATR/BPN" },
+      { instrument: "Ketentuan khusus risiko", direction: "Beri overlay rob, banjir sungai, genangan, dan banjir gabungan; pembangunan bersyarat sampai peta serta data elevasi tervalidasi.", owner: "BPBD, PUPR, ATR/BPN" },
+      { instrument: "Indikasi program", direction: "Prioritaskan survei topografi, audit drainase, pemulihan outlet, retensi berbasis alam, perlindungan mangrove, dan pemantauan hujan–pasang–muka air.", owner: "Bappeda dan OPD teknis" }
+    ],
+    evidence: [
+      { item: "DEMNAS/DEM terkoreksi dan benchmark elevasi", purpose: "Cekungan, arah aliran, dan datum bangunan", status: "Perlu validasi lapangan" },
+      { item: "Sungai, kanal, parit, gorong-gorong, pintu air, pompa, dan outlet", purpose: "Konektivitas serta kapasitas sistem", status: "Inventarisasi wajib" },
+      { item: "Penampang dan elevasi dasar saluran", purpose: "Kapasitas dan hambatan hidraulik", status: "Belum tersedia lengkap" },
+      { item: "Curah hujan jam-jaman dan kurva IDF", purpose: "Skenario hujan rencana", status: "Minta sumber resmi" },
+      { item: "Pasang surut lokal dan muka air sungai serentak", purpose: "Aliran balik dan banjir gabungan", status: "Pasang alat/ambil seri waktu" },
+      { item: "Jejak kejadian warga: lokasi, tanggal, kedalaman, durasi, foto", purpose: "Kalibrasi dan validasi model", status: "Survei partisipatif" },
+      { item: "Tutupan lahan dan permukaan kedap multiwaktu", purpose: "Perubahan limpasan akibat pembangunan", status: "Analisis citra" },
+      { item: "Fasilitas vital, jalan, permukiman, dan kelompok rentan", purpose: "Paparan, akses aman, dan prioritas intervensi", status: "Sinkronkan lintas OPD" },
+      { item: "Sentinel-1/InSAR dan benchmark berulang", purpose: "Penyaringan penurunan muka tanah", status: "Indikatif; perlu verifikasi geodesi" }
+    ]
+  };
+
+  function renderHydrologyFramework() {
+    var framework = hydrologyFramework;
+    document.getElementById("rdtr-hydrology-summary").innerHTML = '<div class="rdtr-hydrology-status"><span>STATUS</span><strong>' + esc(framework.status) + '</strong></div><div class="rdtr-hydrology-types">' + framework.systems.map(function (row) {
+      return '<article class="is-' + esc(row.priority) + '"><span>' + esc(row.label) + '</span><h3>' + esc(row.trigger) + '</h3><p><strong>Penanda:</strong> ' + esc(row.signal) + '</p></article>';
+    }).join("") + '</div>';
+    document.getElementById("rdtr-hydrology-management").innerHTML = framework.management.map(function (row, index) {
+      return '<details class="rdtr-hydrology-action"' + (index < 2 ? ' open' : '') + '><summary><strong>' + esc(row.problem) + '</strong><span>Lihat pengelolaan</span></summary><div><p><b>Diagnosis.</b> ' + esc(row.diagnose) + '</p><p><b>Tindakan.</b> ' + esc(row.actions) + '</p><p class="rdtr-hydrology-warning"><b>Hindari.</b> ' + esc(row.avoid) + '</p><p><b>Indikator.</b> ' + esc(row.indicator) + '</p></div></details>';
+    }).join("");
+    document.getElementById("rdtr-hydrology-rdtr").innerHTML = framework.rdtrDirections.map(function (row) {
+      return '<article><span>' + esc(row.instrument) + '</span><p>' + esc(row.direction) + '</p><small><strong>Koordinasi:</strong> ' + esc(row.owner) + '</small></article>';
+    }).join("");
+    document.getElementById("rdtr-hydrology-evidence").innerHTML = '<div class="rdtr-hydrology-evidence-table"><table><thead><tr><th>Data/bukti</th><th>Fungsi</th><th>Status tindak lanjut</th></tr></thead><tbody>' + framework.evidence.map(function (row) {
+      return '<tr><td>' + esc(row.item) + '</td><td>' + esc(row.purpose) + '</td><td>' + esc(row.status) + '</td></tr>';
+    }).join("") + '</tbody></table></div>';
+  }
+
+  function exportHydrologyCsv() {
+    var rows = [["Masalah", "Diagnosis", "Tindakan_pengelolaan", "Yang_harus_dihindari", "Indikator"]];
+    hydrologyFramework.management.forEach(function (row) { rows.push([row.problem, row.diagnose, row.actions, row.avoid, row.indicator]); });
+    var body = rows.map(function (row) { return row.map(csvCell).join(","); }).join("\n");
+    var blob = new Blob(["\ufeff" + body], { type: "text/csv;charset=utf-8" });
+    var link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "matriks-pengelolaan-banjir-hidrologi-bagansiapiapi-internal.csv";
+    link.click();
+    setTimeout(function () { URL.revokeObjectURL(link.href); }, 0);
+  }
+
   function renderYgPlan(data) {
     var plan = data.ygPlan || {};
     var objectiveObject = typeof plan.planningObjective === "object" && plan.planningObjective || {};
@@ -2123,6 +2187,7 @@
   }
 
   function bind() {
+    document.getElementById("rdtr-export-hydrology").addEventListener("click", exportHydrologyCsv);
     document.getElementById("rdtr-village-search").addEventListener("input", function (event) {
       var query = event.target.value.trim().toLowerCase();
       document.querySelectorAll("#rdtr-village-body tr").forEach(function (row) {
@@ -2204,6 +2269,7 @@
     state.analysis = bootstrap.analysis;
     renderSummary(state.analysis);
     renderReadiness(state.analysis.readiness);
+    renderHydrologyFramework();
     renderYgPlan(state.analysis);
     renderPlanningWorkflow(state.analysis);
     renderP0EvidenceBoard(state.analysis.p0EvidenceBoard);
