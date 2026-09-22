@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="css/site-brand.css?v=20260720-program-dashboard1">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
   <link rel="stylesheet" href="css/flood-bagansiapiapi.css?v=20260922-flood1">
+  <link rel="stylesheet" href="css/flood-bagansiapiapi-recommendation.css?v=20260922-recommendation1">
   <script src="js/auth.js?v=20260920-session5"></script>
   <script src="js/staff-data-access.js?v=20260920-rdtr-internal1"></script>
   <script src="js/staff-rdtr-gate.js?v=20260920-internal1"></script>
@@ -34,6 +35,18 @@
       <article><span>Titik survei</span><strong id="flood-point-count">0</strong><small>tersimpan di perangkat</small></article>
       <article><span>Terverifikasi</span><strong id="flood-verified-count">0</strong><small>boleh masuk kajian teknis</small></article>
       <article><span>Desain final</span><strong>0</strong><small>belum ada DED</small></article>
+    </section>
+
+    <section class="flood-panel recommendation-panel" aria-labelledby="flood-recommendation-title">
+      <div class="section-heading"><div><span>REKOMENDASI UTAMA YG</span><h2 id="flood-recommendation-title">Penanganan yang dapat langsung dijadikan agenda teknis</h2></div><b class="recommendation-status">Pradesain · menunggu survei</b></div>
+      <div class="recommendation-lead"><strong>Keputusan utama:</strong> jangan langsung membangun pintu air baru. Pulihkan konektivitas saluran sampai outlet, ukur pengaruh pasang, dan lindungi ruang tampung. Pintu air dipasang hanya pada outlet yang terbukti mengalami aliran balik.</div>
+      <div class="recommendation-grid">
+        <article><span>PRIORITAS 1 · 0–3 BULAN</span><h3>Audit tiga koridor genangan</h3><p><b>Bagan Barat–Jalan Pelabuhan Baru, Bagan Hulu–Kampung Pelabuhan Lama, dan Bagan Punak Pesisir.</b> Telusuri saluran dari genangan sampai badan penerima; ukur invert, penampang, sumbatan, gorong-gorong, pintu lama, sedimen, dan arah aliran saat pasang.</p><small>Keluaran: peta sub-tangkapan, daftar outlet resmi, profil memanjang, dan titik putus jaringan.</small></article>
+        <article><span>PRIORITAS 2 · PEKERJAAN TANPA PENYESALAN</span><h3>Pulihkan saluran dan tampungan</h3><p>Buka sumbatan dan penyempitan, perbaiki gorong-gorong yang lebih tinggi atau lebih kecil dari saluran, keruk berdasarkan profil desain, sediakan kantong sedimen, dan lindungi rawa/cekungan sebagai retensi.</p><small>Jangan meninggikan jalan atau memperbesar saluran hulu sebelum kapasitas hilir dibuktikan.</small></article>
+        <article><span>PRIORITAS 3 · SETELAH BACKFLOW TERBUKTI</span><h3>Pilih struktur sesuai fungsi outlet</h3><p><b>Outlet kecil:</b> dua flap gate modular. <b>Outlet primer:</b> pintu sorong dua sel dengan stoplog hulu–hilir, trash rack, apron, cutoff, dek kerja, dan AWLR dua sisi.</p><small>Lokasi dan ukuran bukaan ditetapkan dari survei; tidak menggunakan titik perkiraan PA-01/PA-02/PA-03.</small></article>
+        <article><span>PRIORITAS 4 · KONDISIONAL</span><h3>Pompa hanya jika retensi tidak cukup</h3><p>Tambahkan pompa apabila neraca volume membuktikan air harus dibuang ketika pintu tertutup pasang. Wajib ada kolam/polder, unit redundan, generator, wet well, bypass, dan organisasi operasi.</p><small>Kapasitas pompa tidak ditentukan hanya dari debit puncak hujan.</small></article>
+      </div>
+      <div class="recommendation-gates"><h3>Syarat sebelum DED pintu air</h3><ol><li>Koordinat outlet dan koneksi hilir terverifikasi.</li><li>Topografi dan invert memakai satu datum.</li><li>Hujan, pasang, dan muka air saluran direkam serentak.</li><li>Hidrograf, waktu pintu tertutup, dan volume retensi dihitung.</li><li>Geoteknik, gerusan, korosi air payau, utilitas, lahan, serta akses operasi dinilai.</li></ol></div>
     </section>
 
     <section id="peta" class="flood-map-card">

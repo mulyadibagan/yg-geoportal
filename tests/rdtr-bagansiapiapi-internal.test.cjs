@@ -106,6 +106,10 @@ test("RDTR internal page includes a flood hydrology management framework", () =>
   assert.match(floodPage, /staff-rdtr-gate\.js/);
   assert.match(floodPage, /id="flood-map"/);
   assert.match(floodPage, /id="flood-register"/);
+  assert.match(floodPage, /REKOMENDASI UTAMA YG/);
+  assert.match(floodPage, /Bagan Barat–Jalan Pelabuhan Baru/);
+  assert.match(floodPage, /pintu sorong dua sel/i);
+  assert.match(floodPage, /Syarat sebelum DED pintu air/);
   assert.match(floodPage, /tidak lagi menampilkan PA-01, PA-02, atau PA-03/);
   assert.match(script, /register-survei-outlet-bagansiapiapi\.geojson/);
   assert.match(script, /matriks-keputusan-teknis-banjir-bagansiapiapi\.csv/);
