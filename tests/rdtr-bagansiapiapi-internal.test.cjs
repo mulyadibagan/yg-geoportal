@@ -97,11 +97,14 @@ test("RDTR internal page includes a flood hydrology management framework", () =>
   const page = read("staff-rdtr-bagansiapiapi.html");
   const script = read("js", "rdtr-bagansiapiapi.js");
   assert.match(page, /id="flood-hydrology"/);
+  assert.match(page, /id="rdtr-hydrology-map"/);
   assert.match(page, /id="rdtr-export-hydrology"/);
   assert.match(script, /Genangan hujan/);
   assert.match(script, /Banjir gabungan/);
   assert.match(script, /matriks-pengelolaan-banjir-hidrologi-bagansiapiapi-internal\.csv/);
-  assert.match(script, /renderHydrologyFramework\(\)/);
+  assert.match(script, /renderHydrologyFramework/);
+  assert.match(script, /initHydrologyMap/);
+  assert.match(script, /ygHydrologyEvidence/);
 });
 
 test("the official consultation scope resolves to exactly 11 Bangko villages", () => {

@@ -1,6 +1,6 @@
 (function () {
   "use strict";
-  var state = { analysis: null, map: null, layers: {}, layerControl: null, draft: null };
+  var state = { analysis: null, map: null, hydrologyMap: null, layers: {}, layerControl: null, draft: null };
   var priorityRank = { kritis: 3, tinggi: 2, sedang: 1 };
 
   function esc(value) {
@@ -191,13 +191,19 @@
     ]
   };
 
-  function renderHydrologyFramework() {
+  function renderHydrologyFramework(data) {
     var framework = hydrologyFramework;
-    document.getElementById("rdtr-hydrology-summary").innerHTML = '<div class="rdtr-hydrology-status"><span>STATUS</span><strong>' + esc(framework.status) + '</strong></div><div class="rdtr-hydrology-types">' + framework.systems.map(function (row) {
-      return '<article class="is-' + esc(row.priority) + '"><span>' + esc(row.label) + '</span><h3>' + esc(row.trigger) + '</h3><p><strong>Penanda:</strong> ' + esc(row.signal) + '</p></article>';
-    }).join("") + '</div>';
-    document.getElementById("rdtr-hydrology-management").innerHTML = framework.management.map(function (row, index) {
-      return '<details class="rdtr-hydrology-action"' + (index < 2 ? ' open' : '') + '><summary><strong>' + esc(row.problem) + '</strong><span>Lihat pengelolaan</span></summary><div><p><b>Diagnosis.</b> ' + esc(row.diagnose) + '</p><p><b>Tindakan.</b> ' + esc(row.actions) + '</p><p class="rdtr-hydrology-warning"><b>Hindari.</b> ' + esc(row.avoid) + '</p><p><b>Indikator.</b> ' + esc(row.indicator) + '</p></div></details>';
+    var hydrology = data && data.map && data.map.ygHydrologyEvidence;
+    var count = hydrology && hydrology.features ? hydrology.features.length : 0;
+    var meta = hydrology && hydrology.metadata || {};
+    document.getElementById("rdtr-hydrology-summary").innerHTML =
+      '<article><strong>' + number(count, 0) + '</strong><span>alur air indikatif ditemukan</span></article>' +
+      '<article><strong>' + number(meta.totalLengthKm, 1) + ' km</strong><span>panjang alur terbaca</span></article>' +
+      '<div class="rdtr-hydrology-reading"><p><b>Yang dapat dibaca:</b> lokasi awal sungai, kanal, parit, atau alur air yang tercatat.</p>' +
+      '<p><b>Yang belum dapat dibaca:</b> arah dan kapasitas aliran, elevasi, kedalaman banjir, rob, saluran yang tidak tercatat, serta kondisi lapangan.</p></div>' +
+      '<div class="rdtr-hydrology-priority"><strong>Prioritas YG</strong><ol><li>Audit konektivitas saluran hingga outlet.</li><li>Ukur elevasi dan muka air bersama pasang.</li><li>Lindungi tampungan, sempadan, dan koridor air sebelum pembangunan baru.</li></ol></div>';
+    document.getElementById("rdtr-hydrology-management").innerHTML = framework.management.map(function (row) {
+      return '<details class="rdtr-hydrology-action"><summary><strong>' + esc(row.problem) + '</strong><span>Lihat pengelolaan</span></summary><div><p><b>Diagnosis.</b> ' + esc(row.diagnose) + '</p><p><b>Tindakan.</b> ' + esc(row.actions) + '</p><p class="rdtr-hydrology-warning"><b>Hindari.</b> ' + esc(row.avoid) + '</p><p><b>Indikator.</b> ' + esc(row.indicator) + '</p></div></details>';
     }).join("");
     document.getElementById("rdtr-hydrology-rdtr").innerHTML = framework.rdtrDirections.map(function (row) {
       return '<article><span>' + esc(row.instrument) + '</span><p>' + esc(row.direction) + '</p><small><strong>Koordinasi:</strong> ' + esc(row.owner) + '</small></article>';
@@ -205,6 +211,35 @@
     document.getElementById("rdtr-hydrology-evidence").innerHTML = '<div class="rdtr-hydrology-evidence-table"><table><thead><tr><th>Data/bukti</th><th>Fungsi</th><th>Status tindak lanjut</th></tr></thead><tbody>' + framework.evidence.map(function (row) {
       return '<tr><td>' + esc(row.item) + '</td><td>' + esc(row.purpose) + '</td><td>' + esc(row.status) + '</td></tr>';
     }).join("") + '</tbody></table></div>';
+  }
+
+  function initHydrologyMap(data) {
+    var target = document.getElementById("rdtr-hydrology-map");
+    if (!target || state.hydrologyMap || typeof L === "undefined") return;
+    var mapData = data.map || {};
+    var map = L.map(target, { zoomControl: true, preferCanvas: true });
+    state.hydrologyMap = map;
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "&copy; OpenStreetMap contributors" }).addTo(map);
+    var study = L.geoJSON(mapData.studyArea || { type: "FeatureCollection", features: [] }, {
+      style: { color: "#304c45", weight: 2, dashArray: "6 4", fillColor: "#dfe9e5", fillOpacity: .08 },
+      onEachFeature: function (feature, layer) { layer.bindTooltip((feature.properties || {}).WADMKD || (feature.properties || {}).NAMOBJ || "Wilayah kajian"); }
+    }).addTo(map);
+    var waterways = L.geoJSON(mapData.ygHydrologyEvidence || { type: "FeatureCollection", features: [] }, {
+      renderer: L.canvas({ padding: .5 }),
+      style: function (feature) {
+        var kind = String((feature.properties || {}).waterway || (feature.properties || {}).water || "").toLowerCase();
+        var major = kind === "river" || kind === "canal";
+        return { color: major ? "#075d86" : "#34a0c8", weight: major ? 3 : 1.8, opacity: .9 };
+      },
+      onEachFeature: function (feature, layer) {
+        var props = feature.properties || {};
+        layer.bindPopup(popup("Alur air indikatif · perlu verifikasi", { "Nama": props.name || "tidak bernama", "Jenis OSM": props.waterway || props.water || "belum terklasifikasi", "Panjang": number(props.lengthKm, 3) + " km", "Batas": "Belum membuktikan arah, kapasitas, dimensi, kondisi, pasang, atau bahaya banjir." }));
+      }
+    }).addTo(map);
+    L.control.layers(null, { "Batas 11 wilayah kajian": study, "Alur air indikatif OSM": waterways }, { collapsed: false }).addTo(map);
+    var bounds = study.getBounds();
+    if (bounds.isValid()) map.fitBounds(bounds.pad(.04)); else map.setView([2.16, 100.8], 11);
+    setTimeout(function () { map.invalidateSize(); }, 120);
   }
 
   function exportHydrologyCsv() {
@@ -2269,7 +2304,7 @@
     state.analysis = bootstrap.analysis;
     renderSummary(state.analysis);
     renderReadiness(state.analysis.readiness);
-    renderHydrologyFramework();
+    renderHydrologyFramework(state.analysis);
     renderYgPlan(state.analysis);
     renderPlanningWorkflow(state.analysis);
     renderP0EvidenceBoard(state.analysis.p0EvidenceBoard);
@@ -2299,6 +2334,7 @@
     renderRegulationRegister(state.analysis.regulationRegister);
     renderQuestions(state.analysis.consultationQuestions);
     initMap(state.analysis);
+    initHydrologyMap(state.analysis);
     bind();
   }
 
