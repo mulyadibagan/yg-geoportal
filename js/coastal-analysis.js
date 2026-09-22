@@ -205,7 +205,9 @@
   }
   function statusLabel(row) {
     return row.status === "analysed"
-      ? "Ada indikasi perubahan"
+      ? num(row.erosionAreaHa) > 0 || num(row.accretionAreaHa) > 0
+        ? "Perubahan daratan terlihat"
+        : "Belum terlihat perubahan yang cukup jelas"
       : row.status === "boundary-only"
         ? "Analisis belum tersedia"
         : "Tidak terpetakan sebagai pesisir";
@@ -464,10 +466,10 @@
       fetch(
         "data/basilam-geniot-village-coastal-overrides.geojson?v=20260901-clip4",
       ).then((r) => r.json()),
-      fetch("data/rohil-landmass-summary.json?v=20260922-landmass2").then(
+      fetch("data/rohil-village-summary.json?v=20260922-village1").then(
         (r) => r.json(),
       ),
-      fetch("data/rohil-landmass-change.geojson?v=20260922-landmass2").then(
+      fetch("data/rohil-village-change.geojson?v=20260922-village1").then(
         (r) => r.json(),
       ),
     ]);
