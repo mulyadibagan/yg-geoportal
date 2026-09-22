@@ -305,6 +305,12 @@
       state.changeVillageLayers.set(id, L.featureGroup());
     state.changeVillageLayers.get(id).addLayer(layer);
   }
+  function changePopup(feature) {
+    const row = state.rows.find((item) => item.id === feature.properties.id);
+    if (!row) return "";
+    const erosion = feature.properties.change === "erosion";
+    return `<div class="change-popup"><strong>${esc(row.village)}</strong><br><span>${esc(row.district)} · Rokan Hilir</span><hr><strong>${erosion ? "Daratan berkurang" : "Daratan bertambah"}</strong><br><span>${fmt(erosion ? row.erosionAreaHa : row.accretionAreaHa)} ha</span><br><small>Perbandingan ${esc(row.baseline || "2016")} dan ${esc(row.current || "2025")}</small></div>`;
+  }
   function renderMap(rows) {
     const ids = new Set(rows.map((row) => row.id)),
       analysedIds = new Set(
@@ -345,6 +351,7 @@
         const id = feature.properties.id;
         registerVillageLayer(id, layer);
         registerChangeVillageLayer(id, layer);
+        layer.bindPopup(changePopup(feature), { maxWidth: 280 });
         layer.on("click", () => selectVillage(id));
       },
     }).addTo(map);
@@ -474,13 +481,7 @@
       ),
     ]);
     [s, g] = applyVillageOverrides(s, g, o, og);
-    const landmassIds = new Set(rl.landmasses.map((row) => row.id));
-    s.villages = s.villages
-      .filter((row) => !landmassIds.has(row.id))
-      .concat(rl.landmasses);
-    g.features = g.features
-      .filter((feature) => !landmassIds.has(feature.properties.id))
-      .concat(rlg.features);
+    [s, g] = applyVillageOverrides(s, g, rl, rlg);
     state.summary = s;
     state.geo = g;
     state.boundaries = prepareBoundaries(b);
@@ -493,6 +494,7 @@
     unique(state.rows.map((r) => r.regency)).forEach((v) =>
       $("filter-regency").add(new Option(v, v)),
     );
+    $("filter-regency").value = "Rokan Hilir";
     fillDistricts();
     renderRegencies();
     render();
@@ -529,14 +531,6 @@
     if (!b) return;
     state.activeRohilSegment = null;
     $("filter-regency").value = b.dataset.regency;
-    fillDistricts();
-    render();
-    document.querySelector(".workspace").scrollIntoView({ behavior: "smooth" });
-  });
-  $("show-all-rohil").addEventListener("click", () => {
-    state.activeRohilSegment = null;
-    $("filter-regency").value = "Rokan Hilir";
-    $("filter-district").value = "";
     fillDistricts();
     render();
     document.querySelector(".workspace").scrollIntoView({ behavior: "smooth" });
