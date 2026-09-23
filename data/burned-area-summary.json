@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-22T08:50:38.148485+00:00",
+  "generatedAt": "2026-09-23T08:51:54.681476+00:00",
   "status": "ready",
   "eventCount": 21,
-  "estimatedAreaHa": 3921.82,
+  "estimatedAreaHa": 3922.98,
   "candidateEventCount": 33,
   "processing": {
     "waiting-post-image": 1,
@@ -19,7 +19,7 @@
   "villageSource": "data/batas_administrasi_desa_riau.geojson",
   "spatiallyClipped": true,
   "areaCrs": "EPSG:32647",
-  "administrativeUpdatedAt": "2026-09-22T08:50:38.886401+00:00",
+  "administrativeUpdatedAt": "2026-09-23T08:51:55.395888+00:00",
   "unassignedAreaHa": 0.44,
   "villageTotals": [
     {
@@ -92,25 +92,25 @@
       "regency": "Indragiri Hilir",
       "district": "Kemuning",
       "village": "Lubuk Besar",
-      "areaHa": 0.72
+      "areaHa": 0.52
     },
     {
       "regency": "Indragiri Hilir",
       "district": "Kemuning",
       "village": "Talang Jangkang",
-      "areaHa": 7.75
+      "areaHa": 5.55
     },
     {
       "regency": "Indragiri Hilir",
       "district": "Keritang",
       "village": "Kayu Raja",
-      "areaHa": 221.03
+      "areaHa": 249.18
     },
     {
       "regency": "Indragiri Hilir",
       "district": "Keritang",
       "village": "Kuala Keritang",
-      "areaHa": 13.95
+      "areaHa": 8.83
     },
     {
       "regency": "Indragiri Hilir",
@@ -128,7 +128,7 @@
       "regency": "Indragiri Hilir",
       "district": "Keritang",
       "village": "Pasar Kembang",
-      "areaHa": 31.27
+      "areaHa": 15.16
     },
     {
       "regency": "Indragiri Hilir",
@@ -284,7 +284,7 @@
       "regency": "Pelalawan",
       "district": "Pangkalan Kerinci",
       "village": "Kelurahan Pangkalan Kerinci Barat",
-      "areaHa": 24.44
+      "areaHa": 21.4
     },
     {
       "regency": "Pelalawan",
@@ -296,7 +296,7 @@
       "regency": "Pelalawan",
       "district": "Pangkalan Kerinci",
       "village": "Rantau Baru",
-      "areaHa": 1017.8
+      "areaHa": 1017.48
     },
     {
       "regency": "Pelalawan",
@@ -345,12 +345,12 @@
     {
       "regency": "Indragiri Hilir",
       "district": "Kemuning",
-      "areaHa": 8.47
+      "areaHa": 6.07
     },
     {
       "regency": "Indragiri Hilir",
       "district": "Keritang",
-      "areaHa": 298.85
+      "areaHa": 305.77
     },
     {
       "regency": "Indragiri Hilir",
@@ -430,7 +430,7 @@
     {
       "regency": "Pelalawan",
       "district": "Pangkalan Kerinci",
-      "areaHa": 1047.28
+      "areaHa": 1043.92
     },
     {
       "regency": "Pelalawan",
@@ -450,7 +450,7 @@
     },
     {
       "regency": "Indragiri Hilir",
-      "areaHa": 640.53
+      "areaHa": 645.05
     },
     {
       "regency": "Indragiri Hulu",
@@ -474,7 +474,7 @@
     },
     {
       "regency": "Pelalawan",
-      "areaHa": 1650.23
+      "areaHa": 1646.87
     },
     {
       "regency": "Siak",
