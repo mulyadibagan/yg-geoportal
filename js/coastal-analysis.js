@@ -309,7 +309,7 @@
     const row = state.rows.find((item) => item.id === feature.properties.id);
     if (!row) return "";
     const erosion = feature.properties.change === "erosion";
-    return `<div class="change-popup"><strong>${esc(row.village)}</strong><br><span>${esc(row.district)} · Rokan Hilir</span><hr><strong>${erosion ? "Daratan berkurang" : "Daratan bertambah"}</strong><br><span>${fmt(erosion ? row.erosionAreaHa : row.accretionAreaHa)} ha</span><br><small>Perbandingan ${esc(row.baseline || "2016")} dan ${esc(row.current || "2025")}</small></div>`;
+    return `<div class="change-popup"><strong>${esc(row.village)}</strong><br><span>${esc(row.district)} · Rokan Hilir</span><hr><strong>Poligon yang diklik: ${erosion ? "daratan berkurang" : "daratan bertambah"}</strong><br><span>Luas: ${fmt(erosion ? row.erosionAreaHa : row.accretionAreaHa)} ha</span><hr><span>Total berkurang: <strong>${fmt(row.erosionAreaHa)} ha</strong></span><br><span>Total bertambah: <strong>${fmt(row.accretionAreaHa)} ha</strong></span><br><small>Perbandingan ${esc(row.baseline || "2016")} dan ${esc(row.current || "2025")}</small></div>`;
   }
   function boundaryPopup(feature) {
     const row = state.rows.find((item) => item.id === feature.properties.id);
