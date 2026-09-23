@@ -201,7 +201,7 @@ main {
 }
 .analysis-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 340px;
+  grid-template-columns: minmax(0, 1fr);
 }
 .map-column {
   min-width: 0;
@@ -211,6 +211,7 @@ main {
   background: #d8e8e6;
 }
 .detail {
+  display: none;
   padding: 24px;
   border-left: 1px solid var(--line);
   overflow: auto;
