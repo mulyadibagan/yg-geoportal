@@ -5,7 +5,9 @@
     "slug": "april",
     "period": "Oktober 2026–September 2027",
     "focus": "Penguatan KUPS Rimba Sejahtera dan pengelolaan agroforestri berkelanjutan",
-    "locations": ["Kampung Dayun"],
+    "locations": [
+      "Kampung Dayun"
+    ],
     "indicators": [],
     "programs": [
       {
@@ -1323,7 +1325,8 @@
     "focus": "Penanaman mangrove dan kopi agroforestri",
     "locations": [
       "Sepahat, Kabupaten Bengkalis",
-      "Teluk Piyai Pesisir, Kabupaten Rokan Hilir"
+      "Teluk Piyai Pesisir, Kabupaten Rokan Hilir",
+      "HA Imbo Pomuan, Koto Perambahan, Kabupaten Kampar"
     ],
     "indicators": [
       {
@@ -1333,8 +1336,8 @@
       },
       {
         "label": "Bibit kopi agroforestri tertanam",
-        "value": "0 / 1.000",
-        "progress": 0
+        "value": "1.000 / 1.000",
+        "progress": 100
       }
     ],
     "programs": [
@@ -1357,10 +1360,11 @@
           {
             "id": "OUT-MA-EARTH-COFFEE",
             "name": "Penanaman kopi agroforestri",
-            "indicator": "Target 1.000 bibit; belum ada realisasi terpetakan",
+            "indicator": "Target 1.000 bibit; realisasi terpetakan 1.000 bibit (100%)",
             "target": 1000,
-            "realization": 0,
-            "unit": "bibit"
+            "realization": 1000,
+            "unit": "bibit",
+            "mapUrl": "webgis.html?object=KOPI-GHIMBO-POMUAN-MA-EARTH-2026-001"
           }
         ]
       }
@@ -1401,6 +1405,21 @@
         "activityDateLabel": "Tahun 2026",
         "verificationBasis": "Polygon lokasi tanam KTH Makmur Pesisir, dua foto kegiatan, dan informasi program MA Earth",
         "note": "Realisasi 1.000 bibit pada polygon seluas 0,506211 ha dengan dua foto kegiatan. Tanggal penanaman belum tercatat pada berkas spasial.",
+        "access": "public",
+        "staffOnly": false
+      },
+      {
+        "evidenceId": "KOPI-GHIMBO-POMUAN-MA-EARTH-2026-001",
+        "donorName": "MA Earth",
+        "programmeId": "PRG-MA-EARTH-2026",
+        "indicatorId": "OUT-MA-EARTH-COFFEE",
+        "indicatorLabel": "Penanaman kopi agroforestri",
+        "evidenceType": "Evidence Spasial",
+        "evidenceTitle": "Penanaman 1.000 bibit kopi liberika · HA Imbo Pomuan",
+        "location": "Koto Perambahan, Kampa, Kampar",
+        "activityDateLabel": "Tahun 2026 (tanggal penanaman belum dikonfirmasi)",
+        "verificationBasis": "Dua poligon lokasi tanam dalam KML, dua foto kegiatan, dan konfirmasi realisasi Yayasan Gambut",
+        "note": "1.000 bibit dihitung satu kali pada area utama; poligon rincian bertumpang tindih dan tidak menambah realisasi. Foto/KML bertanggal 24 September 2026.",
         "access": "public",
         "staffOnly": false
       }

@@ -1135,6 +1135,11 @@ L.control.scale({
         valueOf(["Jumlah_Bib", "Jumlah_Bibit", "Jumlah_Tanam"])
       );
 
+      if (config.id === "area_kopi" && props.Jumlah_Bibit_Kegiatan) {
+        rows += row("Bibit pada kegiatan induk (tidak dijumlah ulang)",
+          valueOf(["Jumlah_Bibit_Kegiatan"]));
+      }
+
       rows += row(
         "Deskripsi",
         valueOf(["description"])
@@ -1193,6 +1198,11 @@ L.control.scale({
         valueOf(["Luas_Ha"]),
         "ha"
       );
+
+      if (config.id === "area_kopi" && props.Luas_Poligon_Ha) {
+        rows += row("Luas poligon rincian (bertumpang tindih)",
+          valueOf(["Luas_Poligon_Ha"]), "ha");
+      }
 
       rows += row(
         "Jumlah bibit",

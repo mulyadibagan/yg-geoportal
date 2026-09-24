@@ -4,7 +4,7 @@
   const API = "https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec?page=objects";
   const DASHBOARD_SNAPSHOT_URL = "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/snapshots/current/dashboard.json";
   const CALLBACK = "ygDashboardV3Callback";
-  const DASHBOARD_CACHE_KEY = "ygDashboardV3Cache_v5_20260920_dynamic_mangrove_villages1";
+  const DASHBOARD_CACHE_KEY = "ygDashboardV3Cache_v5_20260924_ma_earth_coffee1";
   const DASHBOARD_CACHE_MAX_AGE_MS = 1000 * 60 * 60 * 24 * 7;
   const DASHBOARD_REQUEST_TIMEOUT_MS = 18000;
   const DASHBOARD_REQUEST_MAX_ATTEMPTS = 3;
@@ -27,7 +27,7 @@
     { id: "desa_intervensi", url: "data/desa_intervensi.geojson?v=20260919-15desa-teluk-piyai" },
     { id: "area_mangrove", url: "data/area_mangrove.geojson?v=20260919-ma-earth-teluk-piyai-1000-1" },
     { id: "mineral_land_restoration_area", url: "data/mineral_land_restoration_area.geojson?v=20260825-sync1" },
-    { id: "area_kopi", url: "data/area_kopi.geojson?v=20260825-sync1" },
+    { id: "area_kopi", url: "data/area_kopi.geojson?v=20260924-ma-earth-coffee1" },
     { id: "kopi", url: "data/kopi.geojson?v=20260825-sync1" }
   ];
 
@@ -1214,9 +1214,13 @@
         layerId === "apo" || layerId === "nursery_mangrove" ||
         layerId === "persemaian_mangrove" || text.includes("mangrove") ||
         (isNursery && !/kopi|coffee|ktwmj/.test(text));
-      const isPeat = ["area_kopi", "kopi", "nursery_kopi", "sekat_kanal", "fdrs"]
-        .includes(layerId) || /gambut|peat|agroforestri|kopi/.test(text);
-      const isMineral = /hutan adat|hutan desa|imbo putui|lahan mineral|plot ukur permanen|\bpup\b/.test(text);
+      // Lokasi Imbo Pomuan sudah terpetakan, tetapi klasifikasi ekosistem
+      // lokasi tanam belum dikonfirmasi. Jangan masukkan ke capaian gambut
+      // maupun rehabilitasi lahan mineral karena nama layer/HA saja.
+      const ecosystemUnverified = props.Ecosystem_Metrics === "pending_classification";
+      const isPeat = !ecosystemUnverified && (["area_kopi", "kopi", "nursery_kopi", "sekat_kanal", "fdrs"]
+        .includes(layerId) || /gambut|peat|agroforestri|kopi/.test(text));
+      const isMineral = !ecosystemUnverified && /hutan adat|hutan desa|imbo putui|lahan mineral|plot ukur permanen|\bpup\b/.test(text);
       const isCapacity = !isPlantingEngagement &&
         (/pelatihan|peningkatan kapasitas|workshop|sosialisasi|pendampingan/.test(text) || participants > 0);
       const isAdministrative = ["desa_intervensi"].includes(layerId);
@@ -2029,7 +2033,7 @@
               '<i class="category-icon funding-card-logo" aria-hidden="true"><img src="assets/funding-ma-earth.svg?v=20260902-official1" alt="" loading="lazy"></i>' +
               '<span>' + escapeHtml(name) + '</span>' +
               '<strong>Agustus–Desember 2026</strong>' +
-              '<small>2.000/2.000 mangrove · 0/1.000 kopi · ' + formatNumber(count) + ' objek terpetakan</small>' +
+              '<small>2.000/2.000 mangrove · 1.000/1.000 kopi · 4 objek terpetakan (3 kegiatan)</small>' +
             '</button>';
           }
           if (name === "Pertamina Foundation") {
