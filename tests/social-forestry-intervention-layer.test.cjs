@@ -46,7 +46,7 @@ test("interactive map displays PS intervention boundaries by default", () => {
   assert.match(map, /map\.removeLayer\(earlyInterventionVillageLayer\)/);
   assert.match(map, /rows \+= item\("Intervensi YG", props\.Intervensi_YG\)/);
   assert.match(map, /Wilayah program YG · tidak menambah statistik kegiatan/);
-  assert.match(page, /map-v4\.js\?v=20260924-ghimbo-visible4/);
+  assert.match(page, /map-v4\.js\?v=20260924-ghimbo-clean5/);
 });
 
 test("public intervention layer does not expose internal PS documents", () => {
@@ -56,6 +56,16 @@ test("public intervention layer does not expose internal PS documents", () => {
   assert.doesNotMatch(serialized, /drive\.google\.com/);
   assert.doesNotMatch(serialized, /rkps|rpha|rkt/);
   assert.doesNotMatch(serialized, /anggota|nik|alamat/);
+});
+
+test("coffee detail hides contextual forest and village overlays and their list", () => {
+  const map = read("js/map-v4.js");
+  assert.match(map, /const isGhimboCoffeeView = \/\^KOPI-GHIMBO-POMUAN-MA-EARTH-2026-/);
+  assert.match(map, /visible: !isGhimboCoffeeView/);
+  assert.match(map, /if \(!isGhimboCoffeeView\) fetch\("data\/desa_intervensi\.geojson"\)/);
+  assert.match(map, /if \(!isGhimboCoffeeView\) loadReferenceLayer\("social_forestry_intervention_yg"\)/);
+  assert.doesNotMatch(map, /L\.control\.layers\(null, overlays/);
+  assert.doesNotMatch(map, /Hutan adat dan batas desa<\/strong>/);
 });
 
 test("MA Earth coffee planting lies inside public Pomuan and Tanjungbungo polygons", () => {
