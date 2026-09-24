@@ -5244,5 +5244,14 @@ L.control.scale({
     }
   };
 
+  // Batas PS publik tetap terlihat saat Master Database masih dimuat.
+  loadReferenceLayer("social_forestry_intervention_yg").then(layer => {
+    const checkbox = document.querySelector(
+      '[data-reference-layer-id="social_forestry_intervention_yg"]'
+    );
+    if ((!checkbox || checkbox.checked) && !map.hasLayer(layer)) layer.addTo(map);
+  }).catch(error => {
+    console.warn("Batas PS intervensi publik belum dapat dimuat", error);
+  });
   loadDatabase().finally(startPublishedSnapshotWatch);
 })();
