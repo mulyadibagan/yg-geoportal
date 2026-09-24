@@ -1613,6 +1613,11 @@ L.control.scale({
           });
 
           layer.on("popupopen", event => {
+            if (/^KOPI-GHIMBO-POMUAN-MA-EARTH-2026-/i.test(
+              String(featureProps.Object_ID || "")
+            )) {
+              showImboPomuanContext(false);
+            }
             if (!isPupMonitoringPopup) return;
             const popupElement = event && event.popup && event.popup.getElement();
             if (!popupElement) return;
@@ -3041,7 +3046,118 @@ L.control.scale({
     }
 
     item.layer.openPopup();
+    if (/^KOPI-GHIMBO-POMUAN-MA-EARTH-2026-/i.test(String(item.objectId || ""))) {
+      showImboPomuanContext(true);
+    }
     return true;
+  }
+
+  let imboPomuanContextPromise = null;
+
+  function showImboPomuanContext(fitToForest) {
+    if (!imboPomuanContextPromise) {
+      imboPomuanContextPromise = Promise.all([
+        staffSession && window.YG_STAFF_DATA
+          ? window.YG_STAFF_DATA.fetch("data/PERHUTANAN_SOSIAL_RIAU.geojson?v=20260924-ha-context3")
+            .then(response => { if (!response.ok) throw new Error("Batas hutan adat internal tidak tersedia"); return response.json(); })
+          : Promise.resolve(null),
+        fetch("data/batas-desa-context-imbo-pomuan.geojson?v=20260924-ha-context3", { cache: "no-store" })
+          .then(response => { if (!response.ok) throw new Error("Batas desa tidak tersedia"); return response.json(); })
+      ]).then(([forest, villages]) => {
+        if (!villages.features || villages.features.length !== 2) {
+          throw new Error("Data batas Imbo Pomuan belum lengkap");
+        }
+
+        const contextPane = map.createPane("imbo-pomuan-context");
+        contextPane.style.zIndex = "405"; // Di bawah polygon penanaman kopi.
+        const villageLayers = {};
+        villages.features.forEach(feature => {
+          const name = String(feature.properties && feature.properties.Desa || "");
+          const color = name.toLowerCase() === "tanjungbungo" ? "#d97706" : "#365dd5";
+          villageLayers[name] = L.geoJSON(feature, {
+            pane: "imbo-pomuan-context",
+            style: { color, weight: 2.5, dashArray: "7 5", fill: false }
+          }).bindPopup("<strong>Batas Desa " + escapeHtml(name) +
+            "</strong><br>Data GeoPortal · hasil delineasi 2018; batas indikatif.").addTo(map);
+        });
+        const forestLayers = {};
+        const plantingPoint = L.latLng(0.3335, 101.216);
+        const candidates = forest && Array.isArray(forest.features) ? forest.features.filter(feature => {
+          const props = feature.properties || {};
+          const identity = [props.NO_IUPHKM, props.NOMOR_SK, props.NO_SK, props.SK,
+            props.NAMA_HKM, props.NAMA_DESA, props.Nama_Objek, props.NAMOBJ].join(" ").toLowerCase();
+          return /7504\/menlhk|ghimbo.*(pomuan|bonca)|imbo.*(pomuan|bonca)/i.test(identity);
+        }) : [];
+        const parts = [];
+        candidates.forEach(feature => {
+          const geometry = feature.geometry || {};
+          if (geometry.type === "Polygon") parts.push({ type: "Feature", properties: feature.properties, geometry });
+          if (geometry.type === "MultiPolygon") geometry.coordinates.forEach(coordinates =>
+            parts.push({ type: "Feature", properties: feature.properties,
+              geometry: { type: "Polygon", coordinates } }));
+        });
+        if (forest && parts.length !== 2) {
+          console.warn("Dua bagian poligon hutan adat belum dapat dikenali dari data internal", parts.length);
+        }
+        if (parts.length === 2) {
+          parts.sort((a, b) => {
+            const da = L.geoJSON(a).getBounds().getCenter().distanceTo(plantingPoint);
+            const db = L.geoJSON(b).getBounds().getCenter().distanceTo(plantingPoint);
+            return da - db;
+          });
+          ["Pomuan", "Bonca Lida"].forEach((label, index) => {
+            const feature = parts[index];
+            const isPomuan = index === 0;
+            forestLayers[label] = L.geoJSON(feature, {
+            pane: "imbo-pomuan-context",
+            style: { color: isPomuan ? "#087c78" : "#bf8900", weight: 3.5,
+              fillColor: isPomuan ? "#09a894" : "#efc534", fillOpacity: 0.12 }
+          }).bindPopup(
+            "<strong>Hutan Adat Ghimbo " + label + "</strong><br>" +
+            (isPomuan ? "56" : "100,8") + " ha menurut SK Bupati Kampar. " +
+            "Poligon dari data perhutanan sosial internal YG. " +
+            "<a target='_blank' rel='noopener noreferrer' href='https://drive.google.com/file/d/1dXEBQDiSdYN5n5atuPWTtHGQfIj2DoNw/view'>Buka peta sumber ↗</a>"
+          ).addTo(map);
+          });
+        }
+        const overlays = Object.assign({}, forestLayers.Pomuan ? {
+          "Hutan Adat Ghimbo Pomuan · internal": forestLayers.Pomuan,
+          "Hutan Adat Ghimbo Bonca Lida · internal": forestLayers["Bonca Lida"]
+        } : {}, {
+          "Batas Desa Tanjungbungo": villageLayers.Tanjungbungo,
+          "Batas Desa Koto Perambahan": villageLayers["Koto Perambahan"]
+        });
+        L.control.layers(null, overlays, {
+          position: "topright", collapsed: window.innerWidth < 720
+        }).addTo(map);
+
+        const note = L.control({ position: "bottomleft" });
+        note.onAdd = () => {
+          const node = L.DomUtil.create("div", "leaflet-bar");
+          node.style.cssText = "max-width:230px;padding:7px 9px;background:#fff;color:#173d35;font:12px/1.35 sans-serif;box-shadow:0 1px 5px #0003";
+          node.innerHTML = "<strong>Hutan adat dan batas desa</strong><br>Garis putus: batas desa 2018<br>" +
+            (forestLayers.Pomuan ? "Hijau: Pomuan · Kuning: Bonca Lida<br>" +
+              "<button type='button' style='margin-top:5px;cursor:pointer'>Lihat kedua hutan adat</button>" :
+              "Masuk sebagai staf untuk melihat poligon hutan adat.");
+          L.DomEvent.disableClickPropagation(node);
+          if (forestLayers.Pomuan) node.querySelector("button").addEventListener("click", () => {
+            map.fitBounds(forestLayers.Pomuan.getBounds().extend(forestLayers["Bonca Lida"].getBounds()),
+              { padding: [36, 36], maxZoom: 15 });
+          });
+          return node;
+        };
+        note.addTo(map);
+        return forestLayers.Pomuan ? forestLayers.Pomuan.getBounds() : null;
+      }).catch(error => {
+        imboPomuanContextPromise = null;
+        console.warn("Konteks Hutan Adat Imbo Pomuan gagal dimuat", error);
+      });
+    }
+    imboPomuanContextPromise.then(bounds => {
+      if (fitToForest && bounds && bounds.isValid()) {
+        map.fitBounds(bounds, { padding: [36, 36], maxZoom: 15 });
+      }
+    });
   }
 
   function setStatus(message, error) {
