@@ -1,14 +1,14 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-23T08:51:54.681476+00:00",
+  "generatedAt": "2026-09-24T08:51:51.060412+00:00",
   "status": "ready",
-  "eventCount": 21,
-  "estimatedAreaHa": 3922.98,
-  "candidateEventCount": 33,
+  "eventCount": 30,
+  "estimatedAreaHa": 10004.22,
+  "candidateEventCount": 32,
   "processing": {
-    "waiting-post-image": 1,
-    "waiting-clear-image": 11,
-    "published": 21,
+    "published": 30,
+    "waiting-clear-image": 1,
+    "no-publishable-indication": 1,
     "excludedByRiauBoundary": 0
   },
   "latestDetection": "2026-09-20T18:53:00+00:00",
@@ -19,27 +19,9 @@
   "villageSource": "data/batas_administrasi_desa_riau.geojson",
   "spatiallyClipped": true,
   "areaCrs": "EPSG:32647",
-  "administrativeUpdatedAt": "2026-09-23T08:51:55.395888+00:00",
-  "unassignedAreaHa": 0.44,
+  "administrativeUpdatedAt": "2026-09-24T08:51:52.934613+00:00",
+  "unassignedAreaHa": 20.59,
   "villageTotals": [
-    {
-      "regency": "Bengkalis",
-      "district": "Bathin Solapan",
-      "village": "Buluhmanis",
-      "areaHa": 3.17
-    },
-    {
-      "regency": "Bengkalis",
-      "district": "Mandau",
-      "village": "Kelurahan Pematang Pudu",
-      "areaHa": 23.24
-    },
-    {
-      "regency": "Bengkalis",
-      "district": "Pinggir",
-      "village": "Buluh Apo",
-      "areaHa": 359.63
-    },
     {
       "regency": "Bengkalis",
       "district": "Pinggir",
@@ -68,13 +50,19 @@
       "regency": "Indragiri Hilir",
       "district": "",
       "village": "Area Saling Klaim",
-      "areaHa": 0.48
+      "areaHa": 19.58
+    },
+    {
+      "regency": "Indragiri Hilir",
+      "district": "Batang Tuaka",
+      "village": "Sungaijunjangan",
+      "areaHa": 128.36
     },
     {
       "regency": "Indragiri Hilir",
       "district": "Gaung",
       "village": "Belantaraya",
-      "areaHa": 50.72
+      "areaHa": 53.28
     },
     {
       "regency": "Indragiri Hilir",
@@ -86,37 +74,79 @@
       "regency": "Indragiri Hilir",
       "district": "Gaung",
       "village": "Lahang Hulu",
-      "areaHa": 173.18
+      "areaHa": 180.52
+    },
+    {
+      "regency": "Indragiri Hilir",
+      "district": "Gaung",
+      "village": "Pungkat",
+      "areaHa": 5.16
+    },
+    {
+      "regency": "Indragiri Hilir",
+      "district": "Gaung",
+      "village": "Semambu Kuning",
+      "areaHa": 6.68
+    },
+    {
+      "regency": "Indragiri Hilir",
+      "district": "Gaung",
+      "village": "Telukkabung",
+      "areaHa": 7.04
+    },
+    {
+      "regency": "Indragiri Hilir",
+      "district": "Gaung Anak Serka",
+      "village": "Kelumpang",
+      "areaHa": 0.88
+    },
+    {
+      "regency": "Indragiri Hilir",
+      "district": "Gaung Anak Serka",
+      "village": "Rambaian",
+      "areaHa": 7.56
+    },
+    {
+      "regency": "Indragiri Hilir",
+      "district": "Kempas",
+      "village": "Sungairabit",
+      "areaHa": 29.22
     },
     {
       "regency": "Indragiri Hilir",
       "district": "Kemuning",
       "village": "Lubuk Besar",
-      "areaHa": 0.52
+      "areaHa": 0.92
     },
     {
       "regency": "Indragiri Hilir",
       "district": "Kemuning",
       "village": "Talang Jangkang",
-      "areaHa": 5.55
+      "areaHa": 12.62
     },
     {
       "regency": "Indragiri Hilir",
       "district": "Keritang",
       "village": "Kayu Raja",
-      "areaHa": 249.18
+      "areaHa": 833.32
+    },
+    {
+      "regency": "Indragiri Hilir",
+      "district": "Keritang",
+      "village": "Kota Baru Seberida",
+      "areaHa": 0.04
     },
     {
       "regency": "Indragiri Hilir",
       "district": "Keritang",
       "village": "Kuala Keritang",
-      "areaHa": 8.83
+      "areaHa": 53.53
     },
     {
       "regency": "Indragiri Hilir",
       "district": "Keritang",
       "village": "Kuala Lemang",
-      "areaHa": 10.62
+      "areaHa": 25.23
     },
     {
       "regency": "Indragiri Hilir",
@@ -127,92 +157,236 @@
     {
       "regency": "Indragiri Hilir",
       "district": "Keritang",
+      "village": "Pancur",
+      "areaHa": 3.75
+    },
+    {
+      "regency": "Indragiri Hilir",
+      "district": "Keritang",
       "village": "Pasar Kembang",
-      "areaHa": 15.16
+      "areaHa": 53.57
     },
     {
       "regency": "Indragiri Hilir",
       "district": "Keritang",
       "village": "Pengalihan",
-      "areaHa": 0.68
+      "areaHa": 1.47
     },
     {
       "regency": "Indragiri Hilir",
       "district": "Keritang",
       "village": "Telukkelasa",
-      "areaHa": 20.26
+      "areaHa": 48.45
+    },
+    {
+      "regency": "Indragiri Hilir",
+      "district": "Mandah",
+      "village": "Bantayan",
+      "areaHa": 4.61
     },
     {
       "regency": "Indragiri Hilir",
       "district": "Mandah",
       "village": "Pelanduk",
-      "areaHa": 28.92
+      "areaHa": 31.71
     },
     {
       "regency": "Indragiri Hilir",
       "district": "Pelangiran",
       "village": "Tanjungsimpang",
-      "areaHa": 40.85
+      "areaHa": 146.64
     },
     {
       "regency": "Indragiri Hilir",
       "district": "Reteh",
       "village": "Metro",
-      "areaHa": 33.65
+      "areaHa": 216.58
     },
     {
       "regency": "Indragiri Hilir",
       "district": "Reteh",
       "village": "Pulaukijang",
-      "areaHa": 2.13
+      "areaHa": 8.74
+    },
+    {
+      "regency": "Indragiri Hilir",
+      "district": "Reteh",
+      "village": "Sungaiundan",
+      "areaHa": 2.64
     },
     {
       "regency": "Indragiri Hulu",
       "district": "",
       "village": "Sungai Guntung Tengah / Sungai Guntung Hilir",
-      "areaHa": 95.22
+      "areaHa": 117.57
+    },
+    {
+      "regency": "Indragiri Hulu",
+      "district": "Batang Cenaku",
+      "village": "Alim",
+      "areaHa": 15.48
+    },
+    {
+      "regency": "Indragiri Hulu",
+      "district": "Batang Cenaku",
+      "village": "Anak Talang",
+      "areaHa": 6.97
+    },
+    {
+      "regency": "Indragiri Hulu",
+      "district": "Batang Cenaku",
+      "village": "Area Tidak Terdefinisi",
+      "areaHa": 0.04
+    },
+    {
+      "regency": "Indragiri Hulu",
+      "district": "Batang Cenaku",
+      "village": "Kepayang Sari",
+      "areaHa": 13.56
     },
     {
       "regency": "Indragiri Hulu",
       "district": "Batang Cenaku",
       "village": "Punti Anai",
-      "areaHa": 15.68
+      "areaHa": 164.42
+    },
+    {
+      "regency": "Indragiri Hulu",
+      "district": "Batang Cenaku",
+      "village": "Sanglap",
+      "areaHa": 94.02
     },
     {
       "regency": "Indragiri Hulu",
       "district": "Batang Cenaku",
       "village": "Sipang",
-      "areaHa": 6.56
+      "areaHa": 234.41
+    },
+    {
+      "regency": "Indragiri Hulu",
+      "district": "Batang Cenaku/Batang Gangsal",
+      "village": "Punti Anai/Siambul",
+      "areaHa": 0.64
+    },
+    {
+      "regency": "Indragiri Hulu",
+      "district": "Batang Gangsal",
+      "village": "Area Tidakterdefinisi",
+      "areaHa": 31.41
+    },
+    {
+      "regency": "Indragiri Hulu",
+      "district": "Batang Gangsal",
+      "village": "Danau Rambai",
+      "areaHa": 0.36
+    },
+    {
+      "regency": "Indragiri Hulu",
+      "district": "Batang Gangsal",
+      "village": "Penyaguan",
+      "areaHa": 71.84
+    },
+    {
+      "regency": "Indragiri Hulu",
+      "district": "Batang Gangsal",
+      "village": "Rantai Langsat",
+      "areaHa": 105.84
+    },
+    {
+      "regency": "Indragiri Hulu",
+      "district": "Batang Gangsal",
+      "village": "Siambul",
+      "areaHa": 8.88
+    },
+    {
+      "regency": "Indragiri Hulu",
+      "district": "Batang Gangsal/Kuala Cenaku",
+      "village": "Penyaguan/Kuala Mulia",
+      "areaHa": 5.56
+    },
+    {
+      "regency": "Indragiri Hulu",
+      "district": "Kuala Cenaku",
+      "village": "Pulau Gelang",
+      "areaHa": 0.06
+    },
+    {
+      "regency": "Indragiri Hulu",
+      "district": "Kuala Cenaku",
+      "village": "Pulau Jum'At",
+      "areaHa": 28.51
+    },
+    {
+      "regency": "Indragiri Hulu",
+      "district": "Kuala Cenaku",
+      "village": "Suka Jadi",
+      "areaHa": 22.59
+    },
+    {
+      "regency": "Indragiri Hulu",
+      "district": "Kuala Cenaku",
+      "village": "Tanjung Sari",
+      "areaHa": 4.64
+    },
+    {
+      "regency": "Indragiri Hulu",
+      "district": "Kuala Cenaku",
+      "village": "Teluk Sungkai",
+      "areaHa": 4.1
     },
     {
       "regency": "Indragiri Hulu",
       "district": "Lirik",
       "village": "Redang Seko",
-      "areaHa": 45.53
+      "areaHa": 23.09
+    },
+    {
+      "regency": "Indragiri Hulu",
+      "district": "Peranap",
+      "village": "Semelinang Tebing/Pauh Ranap",
+      "areaHa": 117.5
+    },
+    {
+      "regency": "Indragiri Hulu",
+      "district": "Peranap/Batang Cenaku",
+      "village": "Semelinang Tebing/Anak Talang",
+      "areaHa": 1911.18
+    },
+    {
+      "regency": "Indragiri Hulu",
+      "district": "Peranap/Batang Peranap",
+      "village": "Semelinang Tebing/Pauh Ranap/Pesajian",
+      "areaHa": 1476.54
     },
     {
       "regency": "Indragiri Hulu",
       "district": "Rengat",
       "village": "Kampung Pulau",
-      "areaHa": 6.76
+      "areaHa": 15.49
     },
     {
       "regency": "Indragiri Hulu",
       "district": "Rengat",
       "village": "Kuantan Baru",
-      "areaHa": 30.05
+      "areaHa": 32.46
     },
     {
       "regency": "Indragiri Hulu",
       "district": "Rengat",
       "village": "Sungai Guntung Tengah",
-      "areaHa": 72.21
+      "areaHa": 81.11
     },
     {
       "regency": "Indragiri Hulu",
       "district": "Siberida",
       "village": "Paya Rumbai",
-      "areaHa": 326.84
+      "areaHa": 409.12
+    },
+    {
+      "regency": "Indragiri Hulu / Indragiri Hilir",
+      "district": "Kuala Cenaku / Kempas",
+      "village": "Tanjung Sari / Sungairabit",
+      "areaHa": 339.03
     },
     {
       "regency": "Kampar",
@@ -223,20 +397,38 @@
     {
       "regency": "Kepulauan Meranti",
       "district": "Merbau",
+      "village": "Kelurahan Teluk Belitung / Mekar Sari",
+      "areaHa": 2.76
+    },
+    {
+      "regency": "Kepulauan Meranti",
+      "district": "Merbau",
+      "village": "Mekar Sari",
+      "areaHa": 25.72
+    },
+    {
+      "regency": "Kepulauan Meranti",
+      "district": "Merbau",
       "village": "Pelantai",
-      "areaHa": 4.6
+      "areaHa": 120.38
     },
     {
       "regency": "Kepulauan Meranti",
       "district": "Merbau",
       "village": "Sungai Anak Kamal",
-      "areaHa": 1.4
+      "areaHa": 17.5
+    },
+    {
+      "regency": "Kepulauan Meranti",
+      "district": "Merbau",
+      "village": "Sungai Tengah",
+      "areaHa": 3.68
     },
     {
       "regency": "Kepulauan Meranti",
       "district": "Rangsang",
       "village": "Gemala Sari",
-      "areaHa": 84.4
+      "areaHa": 80.36
     },
     {
       "regency": "Kota Dumai",
@@ -272,37 +464,43 @@
       "regency": "Pelalawan",
       "district": "Bandar Sei Kijang",
       "village": "Lubuk Ogung",
-      "areaHa": 1.4
+      "areaHa": 4.76
     },
     {
       "regency": "Pelalawan",
       "district": "Kerumutan",
       "village": "Kelurahan Kerumutan",
-      "areaHa": 598.85
+      "areaHa": 506.7
     },
     {
       "regency": "Pelalawan",
       "district": "Pangkalan Kerinci",
       "village": "Kelurahan Pangkalan Kerinci Barat",
-      "areaHa": 21.4
+      "areaHa": 73.9
     },
     {
       "regency": "Pelalawan",
       "district": "Pangkalan Kerinci",
       "village": "Kuala Terusan",
-      "areaHa": 5.04
+      "areaHa": 20.43
     },
     {
       "regency": "Pelalawan",
       "district": "Pangkalan Kerinci",
       "village": "Rantau Baru",
-      "areaHa": 1017.48
+      "areaHa": 1081.35
     },
     {
       "regency": "Pelalawan",
       "district": "Ukui",
       "village": "Ukui Dua",
-      "areaHa": 2.7
+      "areaHa": 1.53
+    },
+    {
+      "regency": "Siak",
+      "district": "Siak",
+      "village": "Dayun",
+      "areaHa": 266.4
     },
     {
       "regency": "Siak",
@@ -314,18 +512,8 @@
   "districtTotals": [
     {
       "regency": "Bengkalis",
-      "district": "Bathin Solapan",
-      "areaHa": 3.17
-    },
-    {
-      "regency": "Bengkalis",
-      "district": "Mandau",
-      "areaHa": 23.24
-    },
-    {
-      "regency": "Bengkalis",
       "district": "Pinggir",
-      "areaHa": 404.55
+      "areaHa": 44.92
     },
     {
       "regency": "Bengkalis",
@@ -335,62 +523,117 @@
     {
       "regency": "Indragiri Hilir",
       "district": "",
-      "areaHa": 0.48
+      "areaHa": 19.58
+    },
+    {
+      "regency": "Indragiri Hilir",
+      "district": "Batang Tuaka",
+      "areaHa": 128.36
     },
     {
       "regency": "Indragiri Hilir",
       "district": "Gaung",
-      "areaHa": 227.19
+      "areaHa": 255.97
+    },
+    {
+      "regency": "Indragiri Hilir",
+      "district": "Gaung Anak Serka",
+      "areaHa": 8.44
+    },
+    {
+      "regency": "Indragiri Hilir",
+      "district": "Kempas",
+      "areaHa": 29.22
     },
     {
       "regency": "Indragiri Hilir",
       "district": "Kemuning",
-      "areaHa": 6.07
+      "areaHa": 13.54
     },
     {
       "regency": "Indragiri Hilir",
       "district": "Keritang",
-      "areaHa": 305.77
+      "areaHa": 1020.41
     },
     {
       "regency": "Indragiri Hilir",
       "district": "Mandah",
-      "areaHa": 28.92
+      "areaHa": 36.31
     },
     {
       "regency": "Indragiri Hilir",
       "district": "Pelangiran",
-      "areaHa": 40.85
+      "areaHa": 146.64
     },
     {
       "regency": "Indragiri Hilir",
       "district": "Reteh",
-      "areaHa": 35.77
+      "areaHa": 227.96
     },
     {
       "regency": "Indragiri Hulu",
       "district": "",
-      "areaHa": 95.22
+      "areaHa": 117.57
     },
     {
       "regency": "Indragiri Hulu",
       "district": "Batang Cenaku",
-      "areaHa": 22.24
+      "areaHa": 528.89
+    },
+    {
+      "regency": "Indragiri Hulu",
+      "district": "Batang Cenaku/Batang Gangsal",
+      "areaHa": 0.64
+    },
+    {
+      "regency": "Indragiri Hulu",
+      "district": "Batang Gangsal",
+      "areaHa": 218.33
+    },
+    {
+      "regency": "Indragiri Hulu",
+      "district": "Batang Gangsal/Kuala Cenaku",
+      "areaHa": 5.56
+    },
+    {
+      "regency": "Indragiri Hulu",
+      "district": "Kuala Cenaku",
+      "areaHa": 59.9
     },
     {
       "regency": "Indragiri Hulu",
       "district": "Lirik",
-      "areaHa": 45.53
+      "areaHa": 23.09
+    },
+    {
+      "regency": "Indragiri Hulu",
+      "district": "Peranap",
+      "areaHa": 117.5
+    },
+    {
+      "regency": "Indragiri Hulu",
+      "district": "Peranap/Batang Cenaku",
+      "areaHa": 1911.18
+    },
+    {
+      "regency": "Indragiri Hulu",
+      "district": "Peranap/Batang Peranap",
+      "areaHa": 1476.54
     },
     {
       "regency": "Indragiri Hulu",
       "district": "Rengat",
-      "areaHa": 109.02
+      "areaHa": 129.07
     },
     {
       "regency": "Indragiri Hulu",
       "district": "Siberida",
-      "areaHa": 326.84
+      "areaHa": 409.12
+    },
+    {
+      "regency": "Indragiri Hulu / Indragiri Hilir",
+      "district": "Kuala Cenaku / Kempas",
+      "areaHa": 339.03
     },
     {
       "regency": "Kampar",
@@ -400,12 +643,12 @@
     {
       "regency": "Kepulauan Meranti",
       "district": "Merbau",
-      "areaHa": 6.0
+      "areaHa": 170.04
     },
     {
       "regency": "Kepulauan Meranti",
       "district": "Rangsang",
-      "areaHa": 84.4
+      "areaHa": 80.36
     },
     {
       "regency": "Kota Dumai",
@@ -420,22 +663,27 @@
     {
       "regency": "Pelalawan",
       "district": "Bandar Sei Kijang",
-      "areaHa": 1.4
+      "areaHa": 4.76
     },
     {
       "regency": "Pelalawan",
       "district": "Kerumutan",
-      "areaHa": 598.85
+      "areaHa": 506.7
     },
     {
       "regency": "Pelalawan",
       "district": "Pangkalan Kerinci",
-      "areaHa": 1043.92
+      "areaHa": 1175.68
     },
     {
       "regency": "Pelalawan",
       "district": "Ukui",
-      "areaHa": 2.7
+      "areaHa": 1.53
+    },
+    {
+      "regency": "Siak",
+      "district": "Siak",
+      "areaHa": 266.4
     },
     {
       "regency": "Siak",
@@ -446,15 +694,19 @@
   "regencyTotals": [
     {
       "regency": "Bengkalis",
-      "areaHa": 643.44
+      "areaHa": 257.4
     },
     {
       "regency": "Indragiri Hilir",
-      "areaHa": 645.05
+      "areaHa": 1886.42
     },
     {
       "regency": "Indragiri Hulu",
-      "areaHa": 598.85
+      "areaHa": 4997.39
+    },
+    {
+      "regency": "Indragiri Hulu / Indragiri Hilir",
+      "areaHa": 339.03
     },
     {
       "regency": "Kampar",
@@ -462,7 +714,7 @@
     },
     {
       "regency": "Kepulauan Meranti",
-      "areaHa": 90.4
+      "areaHa": 250.4
     },
     {
       "regency": "Kota Dumai",
@@ -474,11 +726,11 @@
     },
     {
       "regency": "Pelalawan",
-      "areaHa": 1646.87
+      "areaHa": 1688.67
     },
     {
       "regency": "Siak",
-      "areaHa": 23.2
+      "areaHa": 289.6
     }
   ]
 }
