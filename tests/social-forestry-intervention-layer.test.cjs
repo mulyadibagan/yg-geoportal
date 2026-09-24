@@ -38,9 +38,11 @@ test("interactive map displays PS intervention boundaries by default", () => {
   assert.match(map, /appendReferenceSection\("WILAYAH INTERVENSI YG", interventionLayerIds\)/);
   assert.match(map, /layerId === "social_forestry_intervention_yg" \? ' checked' : ''/);
   assert.match(map, /loadReferenceLayer\("social_forestry_intervention_yg"\)\.then/);
+  assert.ok(map.lastIndexOf('loadReferenceLayer("social_forestry_intervention_yg")') <
+    map.lastIndexOf("loadDatabase().finally(startPublishedSnapshotWatch)"));
   assert.match(map, /rows \+= item\("Intervensi YG", props\.Intervensi_YG\)/);
   assert.match(map, /Wilayah program YG · tidak menambah statistik kegiatan/);
-  assert.match(page, /map-v4\.js\?v=20260924-ghimbo-visible2/);
+  assert.match(page, /map-v4\.js\?v=20260924-ghimbo-visible3/);
 });
 
 test("public intervention layer does not expose internal PS documents", () => {
