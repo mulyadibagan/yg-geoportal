@@ -73,19 +73,20 @@
     const requestId = "yg-auth-" + Date.now() + "-" + Math.floor(Math.random() * 100000);
     const body = new URLSearchParams({ action, requestId, ...(fields || {}) });
     let postError = null;
-    try {
-      await fetchWithTimeout(API, {
-        method: "POST",
-        mode: "no-cors",
-        body,
-        keepalive: action === "editor-logout"
-      }, AUTH_POST_TIMEOUT_MS);
-    } catch (error) {
+    const postPromise = fetchWithTimeout(API, {
+      method: "POST",
+      mode: "no-cors",
+      body,
+      keepalive: action === "editor-logout"
+    }, AUTH_POST_TIMEOUT_MS).catch(error => {
       // A no-cors request can be accepted upstream even when the browser does
       // not receive its opaque response. Continue polling by request ID.
       postError = error;
+    });
+    if (action === "editor-logout") {
+      postPromise.catch(() => {});
+      return { ok: true };
     }
-    if (action === "editor-logout") return { ok: true };
 
     const deadline = Date.now() + AUTH_RESULT_DEADLINE_MS;
     let lastLoadError = null;
