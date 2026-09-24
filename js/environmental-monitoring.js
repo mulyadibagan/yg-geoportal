@@ -899,7 +899,9 @@
       });
       return;
     }
-    var open=function(){showAnalysis(layer.feature,layerId);};
+    var open=function(){
+      ensureAnalytics().finally(function(){showAnalysis(layer.feature,layerId);});
+    };
     layer.on("click",open);
     layer.on("popupopen",open);
   }
@@ -982,7 +984,21 @@
       .catch(function(error){console.warn("Gagal memuat hotspot 30 hari:",error);});
   }
 
-  function environmentalControl(map,layers){
+  var analyticsPromise=null;
+  function ensureAnalytics(){
+    if(analyticsPromise){return analyticsPromise;}
+    analyticsPromise=fetch("data/village-forest-analytics.json?v=20260924-lazy1",{cache:"force-cache"})
+      .then(function(response){return response.ok?response.json():analytics;})
+      .then(function(data){analytics=data;return data;})
+      .catch(function(error){
+        analyticsPromise=null;
+        console.warn("Analitik areal belum tersedia",error);
+        return analytics;
+      });
+    return analyticsPromise;
+  }
+
+  function environmentalControl(map,layers,ensureEnvironmentReady){
     var list=document.getElementById("layer-list");
     if(!list){return;}
     var definitions=[
@@ -1001,10 +1017,22 @@
         row.innerHTML='<input id="environment-layer-'+id+'" type="checkbox" data-env="'+id+'">'+
           '<span class="swatch area" style="--yg-swatch-color:'+color+'"></span>'+
           '<label for="environment-layer-'+id+'">'+esc(label)+'</label>';
-        row.querySelector("input").addEventListener("change",function(event){
-          var layer=layers[event.target.getAttribute("data-env")];
+        row.querySelector("input").addEventListener("change",async function(event){
+          var input=event.target;
+          var id=input.getAttribute("data-env");
+          var layer=layers[id];
           if(!layer){return;}
-          event.target.checked?layer.addTo(map):map.removeLayer(layer);
+          if(!input.checked){map.removeLayer(layer);return;}
+          input.disabled=true;
+          try{
+            await ensureEnvironmentReady(id,layer);
+            if(input.checked){layer.addTo(map);}
+          }catch(error){
+            input.checked=false;
+            console.warn("Layer lingkungan belum dapat dimuat:",id,error);
+          }finally{
+            input.disabled=false;
+          }
         });
         list.appendChild(row);
       });
@@ -1093,35 +1121,38 @@
     environmentPane.style.zIndex="385";
     environmentPane.style.width="100%";
     environmentPane.style.height="100%";
-    indonesiaClip(map,environmentPane);
     GRID_OPTIONS.pane="yg-indonesia-environment-pane";
     map.on("layeradd",function(event){attachDiscovered(event.layer);});
     map.eachLayer(function(layer){attachDiscovered(layer);});
     var viirs=L.layerGroup();
-    loadSharedHotspots(viirs);
+    var clipPromise=null,hotspotPromise=null;
+    function ensureEnvironmentReady(id,layer){
+      if(!clipPromise){clipPromise=indonesiaClip(map,environmentPane);}
+      if(id==="hotspot"&&!hotspotPromise){
+        hotspotPromise=loadSharedHotspots(layer).catch(function(error){
+          hotspotPromise=null;
+          throw error;
+        });
+      }
+      return Promise.all([clipPromise,id==="hotspot"?hotspotPromise:Promise.resolve()]);
+    }
     environmentalControl(map,{
       hotspot:viirs,
       cover:L.tileLayer(GFW.cover,Object.assign({},GRID_OPTIONS,{opacity:.55,maxZoom:18,attribution:"Global Forest Watch"})),
       loss:L.tileLayer(GFW.loss,Object.assign({},GRID_OPTIONS,{opacity:.7,maxZoom:18,attribution:"Global Forest Watch / UMD"})),
       alerts:L.tileLayer(GFW.alerts,Object.assign({},GRID_OPTIONS,{opacity:.75,maxZoom:18,attribution:"Global Forest Watch"}))
-    });
+    },ensureEnvironmentReady);
     window.YG_ENVIRONMENTAL_MONITORING={
       map:map,
       refreshBindings:attachAll
     };
-    fetch("data/village-forest-analytics.json?v="+Date.now())
-      .then(function(response){return response.ok?response.json():analytics;})
-      .then(function(data){analytics=data;})
-      .catch(function(error){console.warn("Analitik areal belum tersedia",error);})
-      .finally(function(){
-        attachAll();
-        var attempts=0;
-        var timer=setInterval(function(){
-          attempts+=1;
-          attachAll();
-          if(attempts>2400){clearInterval(timer);}
-        },250);
-      });
+    attachAll();
+    var attempts=0;
+    var timer=setInterval(function(){
+      attempts+=1;
+      attachAll();
+      if(attempts>2400){clearInterval(timer);}
+    },250);
   }
 
   init();
