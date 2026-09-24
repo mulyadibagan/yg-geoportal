@@ -3735,6 +3735,11 @@ L.control.scale({
     });
 
     renderLayerControls(groups);
+    if (earlyInterventionVillageLayer && layerObjects.desa_intervensi &&
+        map.hasLayer(layerObjects.desa_intervensi)) {
+      map.removeLayer(earlyInterventionVillageLayer);
+      earlyInterventionVillageLayer = null;
+    }
 
     if (allBounds.isValid()) {
       map.fitBounds(allBounds, { padding: [24, 24], maxZoom: 13 });
@@ -5243,6 +5248,30 @@ L.control.scale({
       return rawFeatures;
     }
   };
+
+  let earlyInterventionVillageLayer = null;
+  // Batas desa publik tampil langsung, meskipun Master Database masih dimuat.
+  fetch("data/desa_intervensi.geojson")
+    .then(response => {
+      if (!response.ok) throw new Error("HTTP " + response.status);
+      return response.json();
+    })
+    .then(collection => {
+      if (layerObjects.desa_intervensi) return;
+      const config = getLayerConfig("desa_intervensi", collection.features[0]);
+      earlyInterventionVillageLayer = L.geoJSON(collection, {
+        pane: MAP_PANES.boundary,
+        renderer: vectorRendererFor(MAP_PANES.boundary),
+        style: () => styleFor(config),
+        onEachFeature: (feature, layer) => {
+          const props = feature.properties || {};
+          layer.bindPopup("<strong>" + escapeHtml(props.WADMKD || props.NAMOBJ || "Desa intervensi") +
+            "</strong><br>" + escapeHtml(props.WADMKC || "") +
+            ", " + escapeHtml(props.WADMKK || ""));
+        }
+      }).addTo(map);
+    })
+    .catch(error => console.warn("Batas desa intervensi publik belum dapat dimuat", error));
 
   // Batas PS publik tetap terlihat saat Master Database masih dimuat.
   loadReferenceLayer("social_forestry_intervention_yg").then(layer => {
