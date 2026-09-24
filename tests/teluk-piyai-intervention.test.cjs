@@ -23,7 +23,7 @@ test("Teluk Piyai Pesisir is published as the fifteenth intervention village", (
   const villages = JSON.parse(read("data/desa_intervensi.geojson"));
   const feature = villages.features.find(item => item.properties.NAMOBJ === "Teluk Piyai Pesisir");
 
-  assert.equal(villages.features.length, 16);
+  assert.equal(villages.features.length, 17);
   assert.ok(feature);
   assert.equal(feature.properties.Intervention_Source_Name, "Telukpiyai Pesisir");
   assert.equal(feature.properties.WADMKC, "Kubu");
@@ -44,9 +44,9 @@ test("Teluk Piyai Pesisir is published as the fifteenth intervention village", (
 
   const html = read("index.html");
   const dashboard = read("js/dashboard-v3.js");
-  assert.match(html, /15 Desa Cakupan/);
-  assert.match(html, /id="village-total-count">15</);
-  assert.match(dashboard, /20260919-15desa-teluk-piyai/);
+  assert.match(html, /17 Desa Cakupan/);
+  assert.match(html, /id="village-total-count">17</);
+  assert.match(dashboard, /20260924-17desa-ghimbo/);
 });
 
 test("WebGIS groups only PS and village boundaries as YG intervention areas", () => {
@@ -59,5 +59,5 @@ test("WebGIS groups only PS and village boundaries as YG intervention areas", ()
   assert.match(map, /appendReferenceSection\("WILAYAH INTERVENSI YG", interventionLayerIds\)/);
   assert.match(map, /layerId === "desa_intervensi" && interventionReferenceRow/);
   assert.match(map, /interventionReferenceRow\.insertAdjacentElement\("afterend", row\)/);
-  assert.match(page, /map-v4\.js\?v=20260924-ghimbo-public1/);
+  assert.match(page, /map-v4\.js\?v=20260924-ghimbo-visible2/);
 });

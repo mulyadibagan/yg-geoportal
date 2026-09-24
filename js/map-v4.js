@@ -2709,7 +2709,8 @@ L.control.scale({
         '<input id="layer-' + escapeHtml(layerId) +
         '" data-reference-layer-id="' + escapeHtml(layerId) +
         '" data-reference-section="' + escapeHtml(config.section || "general") +
-        '" type="checkbox">' +
+        '" type="checkbox"' +
+        (layerId === "social_forestry_intervention_yg" ? ' checked' : '') + '>' +
         '<span class="swatch" style="background:' +
           escapeHtml(config.swatch || config.color) + '"></span>' +
         '<label for="layer-' + escapeHtml(layerId) + '">' +
@@ -2867,6 +2868,19 @@ L.control.scale({
     }
 
     appendReferenceControls(list, null);
+
+    // Tampilkan batas PS intervensi publik sejak peta dibuka, tanpa mengubah viewport.
+    const publicPsCheckbox = list.querySelector(
+      '[data-reference-layer-id="social_forestry_intervention_yg"]'
+    );
+    loadReferenceLayer("social_forestry_intervention_yg").then(layer => {
+      if (publicPsCheckbox && publicPsCheckbox.checked && !map.hasLayer(layer)) {
+        layer.addTo(map);
+      }
+    }).catch(error => {
+      if (publicPsCheckbox) publicPsCheckbox.checked = false;
+      console.warn("Batas PS intervensi publik belum dapat dimuat", error);
+    });
 
     const interventionReferenceInput = list.querySelector(
       '[data-reference-layer-id="social_forestry_intervention_yg"]'

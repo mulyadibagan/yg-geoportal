@@ -28,7 +28,7 @@ test("public map exposes five YG social forestry intervention areas in six polyg
   assert.ok(collection.features.every(feature => feature.properties.Intervensi_YG));
 });
 
-test("interactive map keeps PS intervention boundaries separate and off by default", () => {
+test("interactive map displays PS intervention boundaries by default", () => {
   const map = read("js/map-v4.js");
   const page = read("webgis.html");
 
@@ -36,10 +36,11 @@ test("interactive map keeps PS intervention boundaries separate and off by defau
   assert.match(map, /file: "data\/social-forestry-intervention-yg\.geojson"/);
   assert.match(map, /type: "social_forestry_intervention"/);
   assert.match(map, /appendReferenceSection\("WILAYAH INTERVENSI YG", interventionLayerIds\)/);
-  assert.doesNotMatch(map, /data-reference-layer-id[^\n]+checked/);
+  assert.match(map, /layerId === "social_forestry_intervention_yg" \? ' checked' : ''/);
+  assert.match(map, /loadReferenceLayer\("social_forestry_intervention_yg"\)\.then/);
   assert.match(map, /rows \+= item\("Intervensi YG", props\.Intervensi_YG\)/);
   assert.match(map, /Wilayah program YG · tidak menambah statistik kegiatan/);
-  assert.match(page, /map-v4\.js\?v=20260924-ghimbo-public1/);
+  assert.match(page, /map-v4\.js\?v=20260924-ghimbo-visible2/);
 });
 
 test("public intervention layer does not expose internal PS documents", () => {
@@ -59,7 +60,10 @@ test("MA Earth coffee planting lies inside public Pomuan and Tanjungbungo polygo
   const pomuan = ps.features.find(feature => feature.properties.YG_PS_ID === "YG-PS-GHIMBO-POMUAN");
   const bonca = ps.features.find(feature => feature.properties.YG_PS_ID === "YG-PS-GHIMBO-BONCA-LIDA");
   const village = villages.features.find(feature => feature.properties.WADMKD === "Tanjungbungo");
-  assert.ok(coffee && pomuan && bonca && village);
+  const neighboringVillage = villages.features.find(feature =>
+    feature.properties.WADMKD === "Koto Perambahan" &&
+    feature.properties.WADMKK === "Kampar");
+  assert.ok(coffee && pomuan && bonca && village && neighboringVillage);
   const inside = (point, ring) => {
     let result = false;
     for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
