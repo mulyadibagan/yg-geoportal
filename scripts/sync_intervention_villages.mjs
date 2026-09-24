@@ -22,7 +22,8 @@ const features = manifest.villages.map((item) => {
     WADMKC: item.district,
     WADMKK: item.regency,
     Intervention_Source_Name: item.sourceName || item.name,
-    Intervention_Aliases: item.aliases || []
+    Intervention_Aliases: item.aliases || [],
+    ...(item.publicProperties || {})
   });
   return feature;
 });

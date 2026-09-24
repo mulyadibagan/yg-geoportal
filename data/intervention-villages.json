@@ -15,6 +15,8 @@
     { "name": "Merempan", "sourceName": "Merempan Hulu", "district": "Siak", "regency": "Siak" },
     { "name": "Petapahan", "district": "Tapung", "regency": "Kampar" },
     { "name": "Siarang-Arang", "district": "Pujud", "regency": "Rokan Hilir" },
-    { "name": "Teluk Piyai Pesisir", "sourceName": "Telukpiyai Pesisir", "district": "Kubu", "regency": "Rokan Hilir" }
+    { "name": "Teluk Piyai Pesisir", "sourceName": "Telukpiyai Pesisir", "district": "Kubu", "regency": "Rokan Hilir" },
+    { "name": "Tanjungbungo", "district": "Kampa", "regency": "Kampar", "publicProperties": { "Intervensi": "Penanaman 1.000 bibit kopi liberika MA Earth di Hutan Adat Ghimbo Pomuan", "Status_Data": "Sudah tertanam", "Geometry_Source": "batas_administrasi_desa_riau" } },
+    { "name": "Koto Perambahan", "district": "Kampa", "regency": "Kampar", "publicProperties": { "Intervensi": "Desa terkait wilayah Hutan Adat Ghimbo Bonca Lida dan Ghimbo Pomuan; konteks penanaman kopi MA Earth", "Status_Data": "Konteks wilayah intervensi", "Geometry_Source": "batas_administrasi_desa_riau" } }
   ]
 }
