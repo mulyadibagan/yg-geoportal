@@ -8,9 +8,12 @@
   const PUBLIC_OBJECTS_MANIFEST_URL = "https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/manifests/current.json";
   const DEFAULT_VIEW = [1.25, 102.05];
   const DEFAULT_ZOOM = 9;
+  const isGhimboCoffeeView = /^KOPI-GHIMBO-POMUAN-MA-EARTH-2026-/i.test(
+    new URLSearchParams(window.location.search).get("object") || ""
+  );
 
   const STYLE = {
-    desa_intervensi: { label: "Batas Administrasi Desa Intervensi", color: "#2e7d32", visible: true },
+    desa_intervensi: { label: "Batas Administrasi Desa Intervensi", color: "#2e7d32", visible: !isGhimboCoffeeView },
     apo: { label: "Alat Pemecah Ombak (APO)", color: "#d32f2f", visible: true },
     area_mangrove: { label: "Area Penanaman Mangrove", color: "#00796b", visible: true },
     mineral_land_restoration_area: { label: "Area Restorasi Lahan Mineral", color: "#558b2f", visible: true },
@@ -36,7 +39,9 @@
     "#ef6c00", "#6a1b9a", "#00897b", "#37474f"
   ];
 
-  const HIDDEN_LAYER_IDS = new Set(["titik_desa"]);
+  const HIDDEN_LAYER_IDS = new Set([
+    "titik_desa", ...(isGhimboCoffeeView ? ["desa_intervensi"] : [])
+  ]);
 
 
   const REFERENCE_LAYERS = {
@@ -1613,11 +1618,6 @@ L.control.scale({
           });
 
           layer.on("popupopen", event => {
-            if (/^KOPI-GHIMBO-POMUAN-MA-EARTH-2026-/i.test(
-              String(featureProps.Object_ID || "")
-            )) {
-              showImboPomuanContext(false);
-            }
             if (!isPupMonitoringPopup) return;
             const popupElement = event && event.popup && event.popup.getElement();
             if (!popupElement) return;
@@ -2832,7 +2832,8 @@ L.control.scale({
       REFERENCE_LAYERS[layerId].section === "partnership"
     );
     const interventionLayerIds = Object.keys(REFERENCE_LAYERS).filter(layerId =>
-      REFERENCE_LAYERS[layerId].section === "intervention"
+      REFERENCE_LAYERS[layerId].section === "intervention" &&
+      !(isGhimboCoffeeView && layerId === "social_forestry_intervention_yg")
     );
     const spatialPlanningLayerIds = Object.keys(REFERENCE_LAYERS).filter(layerId =>
       REFERENCE_LAYERS[layerId].section === "spatial_planning"
@@ -2873,7 +2874,7 @@ L.control.scale({
     const publicPsCheckbox = list.querySelector(
       '[data-reference-layer-id="social_forestry_intervention_yg"]'
     );
-    loadReferenceLayer("social_forestry_intervention_yg").then(layer => {
+    if (!isGhimboCoffeeView) loadReferenceLayer("social_forestry_intervention_yg").then(layer => {
       if (publicPsCheckbox && publicPsCheckbox.checked && !map.hasLayer(layer)) {
         layer.addTo(map);
       }
@@ -3064,110 +3065,7 @@ L.control.scale({
     }
 
     item.layer.openPopup();
-    if (/^KOPI-GHIMBO-POMUAN-MA-EARTH-2026-/i.test(String(item.objectId || ""))) {
-      showImboPomuanContext(true);
-    }
     return true;
-  }
-
-  let imboPomuanContextPromise = null;
-  function loadGhimboForestParts() {
-    return fetchReferenceData(REFERENCE_LAYERS.social_forestry_intervention_yg)
-      .then(data => {
-        const parts = (data.features || []).filter(feature =>
-          /^YG-PS-GHIMBO-(POMUAN|BONCA-LIDA)$/.test(
-            String(feature.properties && feature.properties.YG_PS_ID || "")
-          )
-        );
-        if (parts.length !== 2) throw new Error("Dua bagian hutan adat belum tersedia");
-        return parts.sort((a, b) =>
-          String(a.properties.YG_PS_ID).includes("POMUAN") ? -1 :
-            String(b.properties.YG_PS_ID).includes("POMUAN") ? 1 : 0
-        );
-      });
-  }
-
-  function showImboPomuanContext(fitToForest) {
-    if (!imboPomuanContextPromise) {
-      imboPomuanContextPromise = Promise.all([
-        loadGhimboForestParts().catch(error => {
-          console.warn("Batas hutan adat belum dapat dimuat", error);
-          return [];
-        }),
-        fetch("data/batas-desa-context-imbo-pomuan.geojson?v=20260924-ha-context3", { cache: "no-store" })
-          .then(response => { if (!response.ok) throw new Error("Batas desa tidak tersedia"); return response.json(); })
-      ]).then(([parts, villages]) => {
-        if (!villages.features || villages.features.length !== 2) {
-          throw new Error("Data batas Imbo Pomuan belum lengkap");
-        }
-
-        const contextPane = map.createPane("imbo-pomuan-context");
-        contextPane.style.zIndex = "405"; // Di bawah polygon penanaman kopi.
-        const villageLayers = {};
-        villages.features.forEach(feature => {
-          const name = String(feature.properties && feature.properties.Desa || "");
-          const color = name.toLowerCase() === "tanjungbungo" ? "#d97706" : "#365dd5";
-          villageLayers[name] = L.geoJSON(feature, {
-            pane: "imbo-pomuan-context",
-            style: { color, weight: 2.5, dashArray: "7 5", fill: false }
-          }).bindPopup("<strong>Batas Desa " + escapeHtml(name) +
-            "</strong><br>Data GeoPortal · hasil delineasi 2018; batas indikatif.").addTo(map);
-        });
-        const forestLayers = {};
-        if (parts.length === 2) {
-          ["Pomuan", "Bonca Lida"].forEach((label, index) => {
-            const feature = parts[index];
-            const isPomuan = index === 0;
-            forestLayers[label] = L.geoJSON(feature, {
-            pane: "imbo-pomuan-context",
-            style: { color: isPomuan ? "#087c78" : "#bf8900", weight: 3.5,
-              fillColor: isPomuan ? "#09a894" : "#efc534", fillOpacity: 0.12 }
-          }).bindPopup(
-            "<strong>Hutan Adat Ghimbo " + label + "</strong><br>" +
-            (isPomuan ? "56" : "100,8") + " ha menurut SK Bupati Kampar. " +
-            "Poligon wilayah PS Intervensi YG. " +
-            "<a target='_blank' rel='noopener noreferrer' href='https://drive.google.com/file/d/1dXEBQDiSdYN5n5atuPWTtHGQfIj2DoNw/view'>Buka peta sumber ↗</a>"
-          ).addTo(map);
-          });
-        }
-        const overlays = Object.assign({}, forestLayers.Pomuan ? {
-          "Hutan Adat Ghimbo Pomuan": forestLayers.Pomuan,
-          "Hutan Adat Ghimbo Bonca Lida": forestLayers["Bonca Lida"]
-        } : {}, {
-          "Batas Desa Tanjungbungo": villageLayers.Tanjungbungo,
-          "Batas Desa Koto Perambahan": villageLayers["Koto Perambahan"]
-        });
-        L.control.layers(null, overlays, {
-          position: "topright", collapsed: window.innerWidth < 720
-        }).addTo(map);
-
-        const note = L.control({ position: "bottomleft" });
-        note.onAdd = () => {
-          const node = L.DomUtil.create("div", "leaflet-bar");
-          node.style.cssText = "max-width:230px;padding:7px 9px;background:#fff;color:#173d35;font:12px/1.35 sans-serif;box-shadow:0 1px 5px #0003";
-          node.innerHTML = "<strong>Hutan adat dan batas desa</strong><br>Garis putus: batas desa 2018<br>" +
-            (forestLayers.Pomuan ? "Hijau: Pomuan · Kuning: Bonca Lida<br>" +
-              "<button type='button' style='margin-top:5px;cursor:pointer'>Lihat kedua hutan adat</button>" :
-              "Poligon hutan adat belum dapat dimuat.");
-          L.DomEvent.disableClickPropagation(node);
-          if (forestLayers.Pomuan) node.querySelector("button").addEventListener("click", () => {
-            map.fitBounds(forestLayers.Pomuan.getBounds().extend(forestLayers["Bonca Lida"].getBounds()),
-              { padding: [36, 36], maxZoom: 15 });
-          });
-          return node;
-        };
-        note.addTo(map);
-        return forestLayers.Pomuan ? forestLayers.Pomuan.getBounds() : null;
-      }).catch(error => {
-        imboPomuanContextPromise = null;
-        console.warn("Konteks Hutan Adat Imbo Pomuan gagal dimuat", error);
-      });
-    }
-    imboPomuanContextPromise.then(bounds => {
-      if (fitToForest && bounds && bounds.isValid()) {
-        map.fitBounds(bounds, { padding: [36, 36], maxZoom: 15 });
-      }
-    });
   }
 
   function setStatus(message, error) {
@@ -5251,7 +5149,7 @@ L.control.scale({
 
   let earlyInterventionVillageLayer = null;
   // Batas desa publik tampil langsung, meskipun Master Database masih dimuat.
-  fetch("data/desa_intervensi.geojson")
+  if (!isGhimboCoffeeView) fetch("data/desa_intervensi.geojson")
     .then(response => {
       if (!response.ok) throw new Error("HTTP " + response.status);
       return response.json();
@@ -5274,7 +5172,7 @@ L.control.scale({
     .catch(error => console.warn("Batas desa intervensi publik belum dapat dimuat", error));
 
   // Batas PS publik tetap terlihat saat Master Database masih dimuat.
-  loadReferenceLayer("social_forestry_intervention_yg").then(layer => {
+  if (!isGhimboCoffeeView) loadReferenceLayer("social_forestry_intervention_yg").then(layer => {
     const checkbox = document.querySelector(
       '[data-reference-layer-id="social_forestry_intervention_yg"]'
     );

@@ -64,7 +64,7 @@ test("interactive map exposes the social forestry layer only to authenticated st
 
   assert.match(map, /\.\.\.\(staffSession \? \{ perhutanan_sosial_riau: \{/);
   assert.match(map, /label: "Perhutanan Sosial Riau · internal staf"/);
-  assert.match(page, /map-v4\.js\?v=20260924-ghimbo-visible4/);
+  assert.match(page, /map-v4\.js\?v=20260924-ghimbo-clean5/);
   assert.match(page, /staff-data-access\.js\?v=20260920-pptpkh1/);
   assert.match(map, /href="staff-rspo-area-profile\.html\?id=/);
   const staffData = fs.readFileSync(path.join(ROOT, "js", "staff-data-access.js"), "utf8");
