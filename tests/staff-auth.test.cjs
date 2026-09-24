@@ -23,7 +23,7 @@ test("staff login tolerates slow Apps Script authentication without hanging", ()
   assert.match(auth, /AUTH_POST_TIMEOUT_MS = 45000/);
   assert.match(auth, /fetchWithTimeout/);
   assert.match(auth, /Continue polling by request ID/);
-  assert.match(login, /js\/auth\.js\?v=20260920-session6/);
+  assert.match(login, /js\/auth\.js\?v=20260924-session7/);
 });
 
 test("PBPH staff surfaces load the shared authentication module", () => {
