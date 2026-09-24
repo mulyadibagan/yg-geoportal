@@ -44,10 +44,10 @@
       id: "social_forestry_intervention_yg",
       label: "Perhutanan Sosial Intervensi YG",
       file: "data/social-forestry-intervention-yg.geojson",
-      version: "20260920-public-intervention1",
+      version: "20260924-ghimbo-public1",
       color: "#6d28d9",
-      count: 4,
-      countLabel: "4 wilayah",
+      count: 5,
+      countLabel: "5 wilayah · 6 bagian",
       type: "social_forestry_intervention",
       focusOnEnable: true,
       section: "intervention",
@@ -2654,7 +2654,12 @@ L.control.scale({
 
     referenceLayerObjects[layerId] = layer;
     referenceLayerState[layerId] = "ready";
-    const countInfo = referenceCountInfo(layerId, data.features);
+    const countInfo = layerId === "social_forestry_intervention_yg"
+      ? { count: 5,
+          featureCount: data.features.length,
+          label: "5 wilayah · 6 bagian",
+          statusLabel: data.features.length + " bagian geometri" }
+      : referenceCountInfo(layerId, data.features);
     config.count = countInfo.count;
     config.featureCount = countInfo.featureCount;
     config.countLabel = countInfo.label;
@@ -3053,17 +3058,32 @@ L.control.scale({
   }
 
   let imboPomuanContextPromise = null;
+  function loadGhimboForestParts() {
+    return fetchReferenceData(REFERENCE_LAYERS.social_forestry_intervention_yg)
+      .then(data => {
+        const parts = (data.features || []).filter(feature =>
+          /^YG-PS-GHIMBO-(POMUAN|BONCA-LIDA)$/.test(
+            String(feature.properties && feature.properties.YG_PS_ID || "")
+          )
+        );
+        if (parts.length !== 2) throw new Error("Dua bagian hutan adat belum tersedia");
+        return parts.sort((a, b) =>
+          String(a.properties.YG_PS_ID).includes("POMUAN") ? -1 :
+            String(b.properties.YG_PS_ID).includes("POMUAN") ? 1 : 0
+        );
+      });
+  }
 
   function showImboPomuanContext(fitToForest) {
     if (!imboPomuanContextPromise) {
       imboPomuanContextPromise = Promise.all([
-        staffSession && window.YG_STAFF_DATA
-          ? window.YG_STAFF_DATA.fetch("data/PERHUTANAN_SOSIAL_RIAU.geojson?v=20260924-ha-context3")
-            .then(response => { if (!response.ok) throw new Error("Batas hutan adat internal tidak tersedia"); return response.json(); })
-          : Promise.resolve(null),
+        loadGhimboForestParts().catch(error => {
+          console.warn("Batas hutan adat belum dapat dimuat", error);
+          return [];
+        }),
         fetch("data/batas-desa-context-imbo-pomuan.geojson?v=20260924-ha-context3", { cache: "no-store" })
           .then(response => { if (!response.ok) throw new Error("Batas desa tidak tersedia"); return response.json(); })
-      ]).then(([forest, villages]) => {
+      ]).then(([parts, villages]) => {
         if (!villages.features || villages.features.length !== 2) {
           throw new Error("Data batas Imbo Pomuan belum lengkap");
         }
@@ -3081,30 +3101,7 @@ L.control.scale({
             "</strong><br>Data GeoPortal · hasil delineasi 2018; batas indikatif.").addTo(map);
         });
         const forestLayers = {};
-        const plantingPoint = L.latLng(0.3335, 101.216);
-        const candidates = forest && Array.isArray(forest.features) ? forest.features.filter(feature => {
-          const props = feature.properties || {};
-          const identity = [props.NO_IUPHKM, props.NOMOR_SK, props.NO_SK, props.SK,
-            props.NAMA_HKM, props.NAMA_DESA, props.Nama_Objek, props.NAMOBJ].join(" ").toLowerCase();
-          return /7504\/menlhk|ghimbo.*(pomuan|bonca)|imbo.*(pomuan|bonca)/i.test(identity);
-        }) : [];
-        const parts = [];
-        candidates.forEach(feature => {
-          const geometry = feature.geometry || {};
-          if (geometry.type === "Polygon") parts.push({ type: "Feature", properties: feature.properties, geometry });
-          if (geometry.type === "MultiPolygon") geometry.coordinates.forEach(coordinates =>
-            parts.push({ type: "Feature", properties: feature.properties,
-              geometry: { type: "Polygon", coordinates } }));
-        });
-        if (forest && parts.length !== 2) {
-          console.warn("Dua bagian poligon hutan adat belum dapat dikenali dari data internal", parts.length);
-        }
         if (parts.length === 2) {
-          parts.sort((a, b) => {
-            const da = L.geoJSON(a).getBounds().getCenter().distanceTo(plantingPoint);
-            const db = L.geoJSON(b).getBounds().getCenter().distanceTo(plantingPoint);
-            return da - db;
-          });
           ["Pomuan", "Bonca Lida"].forEach((label, index) => {
             const feature = parts[index];
             const isPomuan = index === 0;
@@ -3115,14 +3112,14 @@ L.control.scale({
           }).bindPopup(
             "<strong>Hutan Adat Ghimbo " + label + "</strong><br>" +
             (isPomuan ? "56" : "100,8") + " ha menurut SK Bupati Kampar. " +
-            "Poligon dari data perhutanan sosial internal YG. " +
+            "Poligon wilayah PS Intervensi YG. " +
             "<a target='_blank' rel='noopener noreferrer' href='https://drive.google.com/file/d/1dXEBQDiSdYN5n5atuPWTtHGQfIj2DoNw/view'>Buka peta sumber ↗</a>"
           ).addTo(map);
           });
         }
         const overlays = Object.assign({}, forestLayers.Pomuan ? {
-          "Hutan Adat Ghimbo Pomuan · internal": forestLayers.Pomuan,
-          "Hutan Adat Ghimbo Bonca Lida · internal": forestLayers["Bonca Lida"]
+          "Hutan Adat Ghimbo Pomuan": forestLayers.Pomuan,
+          "Hutan Adat Ghimbo Bonca Lida": forestLayers["Bonca Lida"]
         } : {}, {
           "Batas Desa Tanjungbungo": villageLayers.Tanjungbungo,
           "Batas Desa Koto Perambahan": villageLayers["Koto Perambahan"]
@@ -3138,7 +3135,7 @@ L.control.scale({
           node.innerHTML = "<strong>Hutan adat dan batas desa</strong><br>Garis putus: batas desa 2018<br>" +
             (forestLayers.Pomuan ? "Hijau: Pomuan · Kuning: Bonca Lida<br>" +
               "<button type='button' style='margin-top:5px;cursor:pointer'>Lihat kedua hutan adat</button>" :
-              "Masuk sebagai staf untuk melihat poligon hutan adat.");
+              "Poligon hutan adat belum dapat dimuat.");
           L.DomEvent.disableClickPropagation(node);
           if (forestLayers.Pomuan) node.querySelector("button").addEventListener("click", () => {
             map.fitBounds(forestLayers.Pomuan.getBounds().extend(forestLayers["Bonca Lida"].getBounds()),
