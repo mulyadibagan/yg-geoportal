@@ -23,7 +23,7 @@ test("Teluk Piyai Pesisir is published as the fifteenth intervention village", (
   const villages = JSON.parse(read("data/desa_intervensi.geojson"));
   const feature = villages.features.find(item => item.properties.NAMOBJ === "Teluk Piyai Pesisir");
 
-  assert.equal(villages.features.length, 15);
+  assert.equal(villages.features.length, 16);
   assert.ok(feature);
   assert.equal(feature.properties.Intervention_Source_Name, "Telukpiyai Pesisir");
   assert.equal(feature.properties.WADMKC, "Kubu");
@@ -59,5 +59,5 @@ test("WebGIS groups only PS and village boundaries as YG intervention areas", ()
   assert.match(map, /appendReferenceSection\("WILAYAH INTERVENSI YG", interventionLayerIds\)/);
   assert.match(map, /layerId === "desa_intervensi" && interventionReferenceRow/);
   assert.match(map, /interventionReferenceRow\.insertAdjacentElement\("afterend", row\)/);
-  assert.match(page, /map-v4\.js\?v=20260920-riau-reference1/);
+  assert.match(page, /map-v4\.js\?v=20260924-ghimbo-public1/);
 });
