@@ -8919,8 +8919,8 @@
       "VIIRS_NOAA20_NRT",
       "VIIRS_NOAA21_NRT"
     ],
-    "updatedAt": "2026-09-24T15:28:28.852Z",
-    "recentUpdatedAt": "2026-09-24T15:28:28.852Z",
+    "updatedAt": "2026-09-24T16:31:08.672Z",
+    "recentUpdatedAt": "2026-09-24T16:31:08.672Z",
     "historyUpdatedAt": "2026-08-01T05:04:04.349Z",
     "mode": "recent",
     "periodDays": [
@@ -8931,10 +8931,10 @@
     "status": "complete",
     "skippedChunks": [],
     "units": {
-      "villages": 15,
+      "villages": 17,
       "socialForestryFeatures": 0,
       "socialForestryUnits": 0,
-      "updated": 15
+      "updated": 17
     },
     "notes": "Counts include only high-confidence vegetation-fire or unclassified FIRMS detections. Exact duplicate records are removed before point-in-polygon analysis.",
     "historyStartYear": 2021,
