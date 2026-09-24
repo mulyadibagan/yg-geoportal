@@ -87,6 +87,14 @@ test("MA Earth coffee planting lies inside public Pomuan and Tanjungbungo polygo
   });
 });
 
+test("village sync retains both Ghimbo villages in its source manifest", () => {
+  const manifest = JSON.parse(read("data/intervention-villages.json"));
+  const names = manifest.villages.map(item => item.name);
+  assert.ok(names.includes("Tanjungbungo"));
+  assert.ok(names.includes("Koto Perambahan"));
+  assert.match(read("scripts/sync_intervention_villages.mjs"), /item\.publicProperties/);
+});
+
 
 test("layer ordering keeps intervention village boundaries in the YG intervention group", () => {
   const order = read("js/layer-order-v1.js");
