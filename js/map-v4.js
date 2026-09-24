@@ -2718,7 +2718,7 @@ L.control.scale({
           escapeHtml(layerId) + '">' +
           (config.countLabel || (Number.isFinite(config.count)
             ? formatNumber(config.count)
-            : "—")) +
+            : "saat dipilih")) +
         '</span>';
 
       list.appendChild(row);
@@ -2867,7 +2867,6 @@ L.control.scale({
     }
 
     appendReferenceControls(list, null);
-    preloadReferenceCounts();
 
     const interventionReferenceInput = list.querySelector(
       '[data-reference-layer-id="social_forestry_intervention_yg"]'
@@ -5231,6 +5230,5 @@ L.control.scale({
     }
   };
 
-  preloadInternalReferenceData();
   loadDatabase().finally(startPublishedSnapshotWatch);
 })();
