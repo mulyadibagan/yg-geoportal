@@ -4797,36 +4797,45 @@ L.control.scale({
   }
 
   async function enrichDatabaseData(data) {
+    // Optional GeoJSON and photo sources must not keep the Master Database
+    // snapshot in a loading state indefinitely. Start them together and
+    // retain the snapshot when an enrichment is slow or unavailable.
     const tasks = [
       [loadOfficialMangrove, mergeOfficialMangroveData, "area_mangrove.geojson"],
       [loadOfficialCoffeeAreas, mergeOfficialCoffeeAreas, "area_kopi.geojson"],
       [loadOfficialCoffeePoints, mergeOfficialCoffeePoints, "kopi.geojson"],
-      [loadOfficialFdrsPoints, mergeOfficialFdrsPoints, "fdrs.geojson"]
+      [loadOfficialFdrsPoints, mergeOfficialFdrsPoints, "fdrs.geojson"],
+      [async () => {
+        await mergeProgramPhotoIndex(data);
+        return null;
+      }, null, "Indeks foto program"],
+      [loadOfficialInterventionVillages, (target, villages) => {
+        mergeOfficialInterventionVillages(target, villages[0], villages[1]);
+      }, "Batas desa intervensi"]
     ];
-    const settled = await Promise.allSettled(tasks.map(task => task[0]()));
+    const settled = await Promise.allSettled(tasks.map(async task => {
+      let timer;
+      try {
+        return await Promise.race([
+          task[0](),
+          new Promise((_, reject) => {
+            timer = window.setTimeout(
+              () => reject(new Error("waktu tunggu 8 detik terlampaui")),
+              8000
+            );
+          })
+        ]);
+      } finally {
+        window.clearTimeout(timer);
+      }
+    }));
     settled.forEach((result, index) => {
-      if (result.status === "fulfilled") {
-        tasks[index][1](data, result.value);
-      } else {
+      if (result.status === "rejected") {
         console.warn(tasks[index][2] + " tidak dapat dimuat", result.reason);
+      } else if (tasks[index][1]) {
+        tasks[index][1](data, result.value);
       }
     });
-    try {
-      await mergeProgramPhotoIndex(data);
-    } catch (error) {
-      console.warn("Indeks foto program tidak dapat dimuat", error);
-    }
-    try {
-      const [interventionVillages, administrativeVillages] =
-        await loadOfficialInterventionVillages();
-      mergeOfficialInterventionVillages(
-        data,
-        interventionVillages,
-        administrativeVillages
-      );
-    } catch (error) {
-      console.warn("Batas desa intervensi tidak dapat dimuat", error);
-    }
     return data;
   }
 
@@ -4884,52 +4893,7 @@ L.control.scale({
       window.clearTimeout(fetchTimeout);
     }
 
-    // 2. Selaraskan geometri laporan dengan SHP mangrove resmi terbaru.
-    try {
-      const mangrove = await loadOfficialMangrove();
-      mergeOfficialMangroveData(data, mangrove);
-    } catch (mangroveError) {
-      console.warn("area_mangrove.geojson tidak dapat dimuat", mangroveError);
-    }
-
-    try {
-      const coffeeAreas = await loadOfficialCoffeeAreas();
-      mergeOfficialCoffeeAreas(data, coffeeAreas);
-    } catch (coffeeAreaError) {
-      console.warn("area_kopi.geojson tidak dapat dimuat", coffeeAreaError);
-    }
-
-    try {
-      const coffeePoints = await loadOfficialCoffeePoints();
-      mergeOfficialCoffeePoints(data, coffeePoints);
-    } catch (coffeePointError) {
-      console.warn("kopi.geojson tidak dapat dimuat", coffeePointError);
-    }
-
-    try {
-      const fdrsPoints = await loadOfficialFdrsPoints();
-      mergeOfficialFdrsPoints(data, fdrsPoints);
-    } catch (fdrsPointError) {
-      console.warn("fdrs.geojson tidak dapat dimuat", fdrsPointError);
-    }
-
-    try {
-      const [interventionVillages, administrativeVillages] =
-        await loadOfficialInterventionVillages();
-      mergeOfficialInterventionVillages(
-        data,
-        interventionVillages,
-        administrativeVillages
-      );
-    } catch (villageError) {
-      console.warn("Batas desa intervensi tidak dapat dimuat", villageError);
-    }
-
-    try {
-      await mergeProgramPhotoIndex(data);
-    } catch (photoIndexError) {
-      console.warn("Indeks foto program tidak dapat dimuat", photoIndexError);
-    }
+    await enrichDatabaseData(data);
 
     initialize(data);
     return;
@@ -4940,64 +4904,7 @@ L.control.scale({
 
     try {
       const data = await loadByJsonp();
-      try {
-        const mangrove = await loadOfficialMangrove();
-        mergeOfficialMangroveData(data, mangrove);
-      } catch (mangroveError) {
-        console.warn(
-          "area_mangrove.geojson tidak dapat dimuat melalui jalur cadangan",
-          mangroveError
-        );
-      }
-      try {
-        const coffeeAreas = await loadOfficialCoffeeAreas();
-        mergeOfficialCoffeeAreas(data, coffeeAreas);
-      } catch (coffeeAreaError) {
-        console.warn(
-          "area_kopi.geojson tidak dapat dimuat melalui jalur cadangan",
-          coffeeAreaError
-        );
-      }
-      try {
-        const coffeePoints = await loadOfficialCoffeePoints();
-        mergeOfficialCoffeePoints(data, coffeePoints);
-      } catch (coffeePointError) {
-        console.warn(
-          "kopi.geojson tidak dapat dimuat melalui jalur cadangan",
-          coffeePointError
-        );
-      }
-      try {
-        const fdrsPoints = await loadOfficialFdrsPoints();
-        mergeOfficialFdrsPoints(data, fdrsPoints);
-      } catch (fdrsPointError) {
-        console.warn(
-          "fdrs.geojson tidak dapat dimuat melalui jalur cadangan",
-          fdrsPointError
-        );
-      }
-      try {
-        const [interventionVillages, administrativeVillages] =
-          await loadOfficialInterventionVillages();
-        mergeOfficialInterventionVillages(
-          data,
-          interventionVillages,
-          administrativeVillages
-        );
-      } catch (villageError) {
-        console.warn(
-          "Batas desa intervensi tidak dapat dimuat melalui jalur cadangan",
-          villageError
-        );
-      }
-      try {
-        await mergeProgramPhotoIndex(data);
-      } catch (photoIndexError) {
-        console.warn(
-          "Indeks foto program tidak dapat dimuat melalui jalur cadangan",
-          photoIndexError
-        );
-      }
+      await enrichDatabaseData(data);
       initialize(data);
     } catch (jsonpError) {
       console.warn(
