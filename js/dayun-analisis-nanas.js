@@ -32,10 +32,10 @@
   }
 
   function recommendations(data) {
-    var ethrelChecks=(data.recommendationCounts['ethrel-check']||0), harvestChecks=(data.recommendationCounts.harvest||0), hptChecks=data.activeGawangan;
+    var ethrelChecks=window.DayunHarvestEstimate.ethrelPriorities(selectedRows(),analysis.asOf).filter(function(i){return i.group==='priority';}).length, harvestChecks=(data.recommendationCounts.harvest||0), hptChecks=data.activeGawangan;
     $('pa-recommendations').innerHTML=[
       ['PEMUPUKAN','Verifikasi riwayat pupuk','Belum tersedia','Data saat ini hanya memuat jumlah tanaman yang pernah dipupuk; tanggal, bahan, dosis, pH, dan kondisi tanaman belum lengkap.','dayun-sop-nanas.html#program-pupuk','Buka SOP dan kalkulator →'],
-      ['ETHREL','Periksa kelayakan induksi',integer(ethrelChecks)+' gawangan','Ini daftar pemeriksaan, bukan perintah aplikasi. Pastikan tanaman sehat dan seragam, >30 daun, tajuk membuka, cuaca sesuai, serta riwayat kelompok tanam jelas.','dayun-sop-nanas.html#induksi-bunga','Buka SOP ethrel →'],
+      ['ETHREL','Periksa kelayakan induksi',integer(ethrelChecks)+' gawangan','Ini daftar pemeriksaan, bukan perintah aplikasi. Pastikan tanaman sehat dan seragam, >30 daun, tajuk membuka, cuaca sesuai, serta riwayat kelompok tanam jelas.','#pa-ethrel-section','Lihat gawangan prioritas ↓'],
       ['PANEN','Pantau kematangan',integer(harvestChecks)+' gawangan','Periksa warna kulit, bentuk mata, aroma, kondisi buah, dan tujuan pasar. Sistem tidak menetapkan tanggal panen hanya dari umur atau ethrel.','#pa-gawangan-table','Lihat gawangan prioritas ↓'],
       ['HPT','Monitoring rutin',integer(hptChecks)+' gawangan aktif','Data agregat HPT belum tersedia. Lakukan observasi gejala, hitung tanaman terdampak, dokumentasikan foto, lalu verifikasi diagnosis sebelum tindakan.','dayun-hpt-nanas.html','Buka panduan HPT →']
     ].map(function(item){return '<article class="dy-pa-action"><span>'+item[0]+'</span><h3>'+item[1]+'</h3><strong>'+item[2]+'</strong><p>'+item[3]+'</p><a href="'+item[4]+'">'+item[5]+'</a></article>';}).join('');
@@ -68,6 +68,18 @@
     $('pa-gawangan-table').innerHTML=rows.map(function(row){return '<tr><th scope="row">'+esc(row.shortId)+'</th><td>'+(row.ageMonths==null?'Belum tersedia':integer(row.ageMonths)+' bulan')+'</td><td>'+integer(row.plants)+'</td><td>'+integer(row.ethrel)+'</td><td>'+integer(row.flowers)+'</td><td>'+integer(row.harvest)+'</td><td><span class="dy-pa-status '+esc(row.recommendation.code)+'">'+esc(row.recommendation.label)+'</span><small>'+esc(row.recommendation.detail)+'</small></td><td><a href="dayun-gawangan.html?object='+encodeURIComponent(row.objectId)+'">Detail →</a></td></tr>';}).join('');
   }
 
+  function ethrelGawangan(rows) {
+    var items=window.DayunHarvestEstimate.ethrelPriorities(rows,analysis.asOf);
+    var groups=[['priority','Prioritas pemeriksaan ethrel'],['partial','Periksa kelompok yang belum berbunga'],['maintenance','Pemeliharaan dan evaluasi pertumbuhan'],['followup','Evaluasi ethrel terdahulu'],['verify','Lengkapi data umur']];
+    $('pa-ethrel-list').innerHTML=groups.map(function(group){
+      var members=items.filter(function(i){return i.group===group[0];});
+      if(!members.length)return '';
+      return '<details class="dy-pa-projection-card"'+(group[0]==='priority'||group[0]==='partial'?' open':'')+'><summary>'+group[1]+' · '+members.length+' gawangan</summary><div class="dy-block-table-wrap"><table class="dy-block-table"><thead><tr><th>Gawangan</th><th>Bulan tanam</th><th>Alasan dan tindak lanjut</th></tr></thead><tbody>'+members.map(function(i){return '<tr><th scope="row"><a href="dayun-gawangan.html?object='+encodeURIComponent(i.row.objectId)+'">'+esc(i.row.shortId)+'</a></th><td>'+esc(i.row.plantingPeriod||'Belum tersedia')+'</td><td>'+esc(i.reason)+'</td></tr>';}).join('')+'</tbody></table></div></details>';
+    }).join('')||'<p>Belum ada populasi nanas tercatat untuk blok ini.</p>';
+    var priorities=items.filter(function(i){return i.group==='priority';}).map(function(i){return i.row.shortId;});
+    $('pa-ethrel-summary').textContent=priorities.length?'Prioritas pemeriksaan: '+priorities.join(', ')+'.':'Belum ada gawangan yang memenuhi saringan awal prioritas dari data yang tersedia; lihat kelompok pemeriksaan di bawah.';
+  }
+
   function monthlyChart(result) {
     if(!forecastMode)forecastMode=result.upcoming.some(function(i){return i.pool!==null;})?'upcoming':result.overdue.some(function(i){return i.pool!==null;})?'recorded':'upcoming';
     $('pa-forecast-period').value=forecastMode;
@@ -96,7 +108,7 @@
     var rows=selectedRows(),data=aggregate(rows);
     $('pa-block').value=selected;
     $('pa-data-date').innerHTML='Wilayah: <strong>'+(selected==='ALL'?'Seluruh Blok A–F':'Blok '+esc(selected))+'</strong> · Aktivitas terakhir: <strong>'+date(data.latestActivityDate)+'</strong>';
-    kpis(data);recommendations(data);harvestEstimate(rows);chart(rows);blockTable();gawanganTable(rows);
+    kpis(data);recommendations(data);ethrelGawangan(rows);harvestEstimate(rows);chart(rows);blockTable();gawanganTable(rows);
   }
 
   Promise.all([window.DayunDataSource.fetchJSON('data/dayun-gawangan-details.json?v=20260917-performance1'),jsonp(PUBLIC_REPORTS_API).catch(function(error){console.warn(error);monitoringAvailable=false;return{features:[]};})]).then(function(results){
