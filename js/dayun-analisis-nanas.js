@@ -3,6 +3,8 @@
   var analysis;
   var monitoringAvailable = true;
   var forecastMode = null;
+  var monitoringSource = '';
+  var planBlock = null;
   var PUBLIC_REPORTS_API='https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec?page=public-reports';
   var selected = new URLSearchParams(location.search).get('block') || 'ALL';
   var $ = function (id) { return document.getElementById(id); };
@@ -14,6 +16,20 @@
   function date(value) { return value ? new Date(value + 'T00:00:00').toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'}) : 'Belum tersedia'; }
   function month(value) { if(/^\d{4}$/.test(String(value||'')))return String(value);return new Date(value + 'T00:00:00').toLocaleDateString('id-ID',{month:'short',year:'2-digit'}); }
   function jsonp(url){return new Promise(function(resolve,reject){var callback='ygDayunAnalysis_'+Date.now()+'_'+Math.floor(Math.random()*100000),script=document.createElement('script'),timer=setTimeout(function(){cleanup();reject(Error('Data monitoring belum dapat dimuat.'));},9000);function cleanup(){clearTimeout(timer);script.remove();try{delete window[callback];}catch(_){}}window[callback]=function(data){cleanup();resolve(data);};script.onerror=function(){cleanup();reject(Error('Data monitoring belum dapat dimuat.'));};script.src=url+'&callback='+encodeURIComponent(callback)+'&t='+Date.now();document.head.appendChild(script);});}
+  function snapshotReports(url) {
+    var controller=new AbortController(),timer=setTimeout(function(){controller.abort();},5000);
+    return fetch(url,{cache:'no-cache',signal:controller.signal}).then(function(r){if(!r.ok)throw Error('HTTP '+r.status);return r.json();}).then(function(data){
+      var reports=data.capacitySources&&data.capacitySources.reports;
+      if(!reports||!Array.isArray(reports.features))throw Error('Snapshot laporan belum tersedia.');
+      monitoringSource='Snapshot publik'+(data.snapshotGeneratedAt||data.generatedAt?' · '+String(data.snapshotGeneratedAt||data.generatedAt):' · tanggal belum tersedia');return reports;
+    }).finally(function(){clearTimeout(timer);});
+  }
+  function loadMonitoring() {
+    return jsonp(PUBLIC_REPORTS_API).then(function(data){if(!data||!Array.isArray(data.features))throw Error('Format laporan tidak valid.');monitoringSource='Laporan monitoring langsung';return data;})
+      .catch(function(){return snapshotReports('https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/snapshots/current/dashboard.json');})
+      .catch(function(){return snapshotReports('data/dashboard-summary-snapshot.json');})
+      .catch(function(error){console.warn(error);monitoringAvailable=false;return {features:[]};});
+  }
   function selectedRows() { return selected === 'ALL' ? analysis.rows.slice() : analysis.rows.filter(function (row) { return row.block === selected; }); }
   function aggregate(rows) {
     return rows.reduce(function (a,row) {
@@ -81,22 +97,35 @@
   }
 
   function monthlyChart(result) {
-    if(!forecastMode)forecastMode=result.upcoming.some(function(i){return i.pool!==null;})?'upcoming':result.overdue.some(function(i){return i.pool!==null;})?'recorded':'upcoming';
+    var candidates=window.DayunHarvestEstimate.ethrelPriorities(selectedRows(),analysis.asOf).filter(function(i){return i.group==='priority';});
+    if(!forecastMode)forecastMode=result.upcoming.some(function(i){return i.pool!==null;})?'upcoming':candidates.length?'planning':result.overdue.some(function(i){return i.pool!==null;})?'recorded':'upcoming';
     $('pa-forecast-period').value=forecastMode;
-    var projection=window.DayunHarvestEstimate.monthly(result,forecastMode), months=projection.months;
+    var plan=null;
+    $('pa-plan-controls').hidden=forecastMode!=='planning';
+    if(forecastMode==='planning'){
+      var capacity=candidates.reduce(function(sum,i){return sum+Math.floor(i.row.plants);},0);
+      if(!$('pa-plan-month').value){var d=new Date(analysis.asOf+'T00:00:00Z');d.setUTCMonth(d.getUTCMonth()+1,1);$('pa-plan-month').value=d.toISOString().slice(0,7);}
+      $('pa-plan-month').min=analysis.asOf.slice(0,7);
+      if(planBlock!==selected){$('pa-plan-count').value=capacity;planBlock=selected;}
+      $('pa-plan-count').max=capacity;
+      plan=window.DayunHarvestEstimate.plan(selectedRows(),analysis.asOf,$('pa-plan-month').value,Number($('pa-plan-count').value));
+      $('pa-plan-context').textContent='Gawangan kandidat: '+(plan.candidates.join(', ')||'belum tersedia')+'. Batas populasi sumber: '+integer(capacity)+' tanaman (dibulatkan ke bawah per gawangan, belum sensus tanaman layak). Ubah jumlah sesuai pemeriksaan lapangan. Tidak disimpan sebagai kegiatan aktual.';
+    }
+    var projection=window.DayunHarvestEstimate.monthly(plan?plan.result:result,forecastMode==='planning'?'upcoming':forecastMode), months=projection.months;
     var max=Math.max.apply(null,months.map(function(m){return m.high;}).concat([1]));
     var hasEstimate=months.some(function(m){return m.gawangan>0;});
     $('pa-forecast-note').textContent=(forecastMode==='recorded'?'Grafik mengikuti periode catatan ethrel. Bulan bertanda “Lampau” perlu pembaruan lapangan. ':'Grafik 12 bulan mulai bulan ini. ')+(hasEstimate?'Batang menunjukkan skenario jumlah buah, bukan realisasi panen. ':'Belum ada estimasi yang dapat dihitung untuk periode ini. Lengkapi bulan ethrel, jumlah tanaman, dan realisasi panen per gawangan. ')+projection.unquantified+' gawangan belum memiliki dasar lengkap untuk menghitung jumlah.';
-    $('pa-forecast-chart').innerHTML=months.map(function(m){return '<div class="dy-forecast-month"><strong>'+(m.gawangan?integer(m.base):'—')+'</strong><div class="dy-forecast-bars">'+['low','base','high'].map(function(k){return '<span class="'+k+'" style="height:'+(m.gawangan?Math.max(1,m[k]/max*160):0)+'px" title="'+esc(month(m.period))+' · '+({low:'60%',base:'80%',high:'100%'})[k]+': '+(m.gawangan?integer(m[k])+' buah':'Belum ada estimasi')+'"></span>';}).join('')+'</div><small>'+esc(month(m.period))+'</small><small>'+(m.past?'Lampau':m.gawangan?'Estimasi':'Belum ada estimasi')+'</small></div>';}).join('');
+    if(plan)$('pa-forecast-note').textContent=plan.error||'SIMULASI RENCANA · Jika '+integer(Number($('pa-plan-count').value))+' tanaman diethrel pada '+month($('pa-plan-month').value+'-01')+', jendela panen diperkirakan '+month(plan.result.items[0].start)+'–'+month(plan.result.items[0].end)+'. Skenario 80%: '+integer(plan.result.items[0].base)+' buah untuk seluruh jendela panen. Grafik menampilkan bagian yang masuk 12 bulan ke depan; asumsi ini belum merupakan hasil terverifikasi.';
+    $('pa-forecast-chart').innerHTML=months.map(function(m){return '<div class="dy-forecast-month"><strong>'+(m.gawangan?integer(m.base):'—')+'</strong><div class="dy-forecast-bars">'+['low','base','high'].map(function(k){return '<span class="'+k+'" style="height:'+(m.gawangan?Math.max(1,m[k]/max*160):0)+'px" title="'+esc(month(m.period))+' · '+({low:'60%',base:'80%',high:'100%'})[k]+': '+(m.gawangan?integer(m[k])+' buah':'Belum ada estimasi')+'"></span>';}).join('')+'</div><small>'+esc(month(m.period))+'</small><small>'+(m.past?'Lampau':m.gawangan?(plan?'Simulasi':'Estimasi'):'Belum ada estimasi')+'</small></div>';}).join('');
     $('pa-forecast-chart').setAttribute('aria-label','Proyeksi panen bulanan. '+months.map(function(m){return month(m.period)+': '+(m.gawangan?integer(m.base)+' buah pada skenario 80 persen':'belum ada estimasi')+(m.past?', periode lampau':'');}).join('; '));
-    $('pa-forecast-months').innerHTML=months.map(function(m){return '<tr><th scope="row">'+esc(month(m.period))+(m.past?' · lampau':'')+'</th>'+['low','base','high'].map(function(k){return '<td>'+(m.gawangan?integer(m[k])+' buah':'Belum ada estimasi')+'</td>';}).join('')+'<td>'+integer(m.gawangan)+'</td></tr>';}).join('');
+    $('pa-forecast-months').innerHTML=months.map(function(m){return '<tr><th scope="row">'+esc(month(m.period))+(m.past?' · lampau':'')+'</th>'+['low','base','high'].map(function(k){return '<td>'+(m.gawangan?integer(m[k])+' buah':'Belum ada estimasi')+'</td>';}).join('')+'<td>'+(plan?(m.gawangan?plan.candidates.length:'—'):integer(m.gawangan))+'</td></tr>';}).join('');
   }
 
   function harvestEstimate(rows) {
     var result=window.DayunHarvestEstimate.build(rows);
     monthlyChart(result);
     $('pa-estimate-summary').textContent=result.upcoming.length+' gawangan dengan periode mendatang/berjalan · '+result.overdue.length+' periode sudah lewat · '+result.missing.length+' perlu data ethrel';
-    $('pa-estimate-sync').textContent=monitoringAvailable?'Estimasi mengikuti data sumber dan laporan monitoring yang berhasil dimuat. Angka merupakan skenario; periksa tanggal aktivitas terakhir.':'Laporan monitoring terbaru belum dapat dimuat. Estimasi sementara hanya memakai data sumber; muat ulang untuk mencoba kembali.';
+    $('pa-estimate-sync').textContent=monitoringAvailable?monitoringSource+'. Angka merupakan skenario; periksa tanggal aktivitas terakhir. Snapshot dapat tertinggal dari laporan terbaru.':'Laporan monitoring terbaru belum dapat dimuat. Estimasi sementara hanya memakai data sumber; muat ulang untuk mencoba kembali.';
     $('pa-estimate-table').innerHTML=result.items.map(function(item){
       var amount=item.pool==null?'Belum dapat dihitung':integer(item.low)+'–'+integer(item.high)+' buah<small>Skenario 80%: '+integer(item.base)+' buah'+(item.status==='overdue'?' · periode lampau':'')+'</small>';
       var label=item.status==='overdue'?'Perlu pembaruan lapangan':item.status==='estimated'?'Estimasi bersyarat':'Data belum cukup';
@@ -111,7 +140,7 @@
     kpis(data);recommendations(data);ethrelGawangan(rows);harvestEstimate(rows);chart(rows);blockTable();gawanganTable(rows);
   }
 
-  Promise.all([window.DayunDataSource.fetchJSON('data/dayun-gawangan-details.json?v=20260917-performance1'),jsonp(PUBLIC_REPORTS_API).catch(function(error){console.warn(error);monitoringAvailable=false;return{features:[]};})]).then(function(results){
+  Promise.all([window.DayunDataSource.fetchJSON('data/dayun-gawangan-details.json?v=20260917-performance1'),loadMonitoring()]).then(function(results){
     var details=window.DayunPineappleAnalysis.applyPublishedMonitoring(results[0],results[1]);
     analysis=window.DayunPineappleAnalysis.build(details);
     analysis._detailsById={};
@@ -120,6 +149,7 @@
     $('pa-status').hidden=true;$('pa-content').hidden=false;render();
   }).catch(function(error){$('pa-status').textContent='Analisis belum dapat dimuat: '+error.message;});
 
+  $('pa-plan-calculate').addEventListener('click',function(){if(analysis)harvestEstimate(selectedRows());});
   $('pa-forecast-period').addEventListener('change',function(){forecastMode=this.value;if(analysis)harvestEstimate(selectedRows());});
   $('pa-block').addEventListener('change',function(){selected=this.value;var url=new URL(location.href);if(selected==='ALL')url.searchParams.delete('block');else url.searchParams.set('block',selected);history.replaceState(null,'',url);render();});
 })();

@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="css/style.css?v=20260723-revert-layout">
   <link rel="stylesheet" href="css/navigation-v2.css?v=20260807-mobile-submenu-links1">
   <link rel="stylesheet" href="css/dayun.css?v=20260917-crop-detail1">
-  <link rel="stylesheet" href="css/dayun-analisis-nanas.css?v=20260928-ethrel1">
+  <link rel="stylesheet" href="css/dayun-analisis-nanas.css?v=20260928-plan1">
 </head>
 <body data-dayun-page="pineapple-analysis" data-dayun-mode="public">
   <header class="site-header">
@@ -52,7 +52,12 @@
         <div id="pa-estimate-summary" class="dy-pa-projection-summary" aria-live="polite"></div>
         <p id="pa-estimate-sync" class="dy-pa-caveat"></p>
         <div class="dy-pa-projection-card">
-          <div class="dy-section-head"><div><h3>Proyeksi panen bulanan</h3><p>Jumlah buah per bulan · skenario 60%, 80%, dan 100%</p></div><label for="pa-forecast-period">Periode grafik <select id="pa-forecast-period"><option value="upcoming">12 bulan ke depan</option><option value="recorded">Periode berdasarkan catatan ethrel</option></select></label></div>
+          <div class="dy-section-head"><div><h3>Proyeksi panen bulanan</h3><p>Jumlah buah per bulan · skenario 60%, 80%, dan 100%</p></div><label for="pa-forecast-period">Periode grafik <select id="pa-forecast-period"><option value="planning">Simulasi rencana ethrel</option><option value="upcoming">12 bulan · ethrel tercatat</option><option value="recorded">Periode berdasarkan catatan ethrel</option></select></label></div>
+          <div id="pa-plan-controls" hidden>
+            <p><strong>Simulasi jika gawangan prioritas diethrel sesuai rencana.</strong> Bulan dan jumlah di bawah adalah asumsi perencanaan, belum merupakan realisasi atau jadwal aplikasi yang disetujui.</p>
+            <div class="dy-plan-fields"><label>Bulan rencana ethrel<input id="pa-plan-month" type="month"></label><label>Tanaman sasaran (batang)<input id="pa-plan-count" type="number" min="1" step="1"></label><button type="button" id="pa-plan-calculate">Hitung simulasi</button></div>
+            <p id="pa-plan-context"></p>
+          </div>
           <p id="pa-forecast-note" class="dy-pa-caveat" aria-live="polite"></p>
           <div class="dy-forecast-legend"><span><i class="low"></i>60%</span><span><i class="base"></i>80%</span><span><i class="high"></i>100%</span></div>
           <div id="pa-forecast-chart" class="dy-forecast-chart" role="img" aria-label="Grafik proyeksi jumlah buah nanas per bulan"></div>
@@ -83,7 +88,7 @@
   <script src="js/navigation-v2.js?v=20260821-staff-name1"></script>
   <script src="js/dayun-data-source.js?v=20260917-cloudflare1"></script>
   <script src="js/dayun-pineapple-analysis.js?v=20260917-factual1"></script>
-  <script src="js/dayun-harvest-estimate.js?v=20260928-ethrel1"></script>
-  <script src="js/dayun-analisis-nanas.js?v=20260928-ethrel1"></script>
+  <script src="js/dayun-harvest-estimate.js?v=20260928-plan1"></script>
+  <script src="js/dayun-analisis-nanas.js?v=20260928-plan1"></script>
 </body>
 </html>
