@@ -51,5 +51,21 @@
     });
     return {asOf:now, items:items, upcoming:items.filter(function (i) { return i.status==='estimated'; }), overdue:items.filter(function (i) { return i.status==='overdue'; }), missing:items.filter(function (i) { return i.status==='missing'; })};
   }
-  return {build:build};
+  function monthly(result, mode) {
+    var current=period(result.asOf), eligible=result.items.filter(function(i){return i.pool!==null&&i.start&&i.end;});
+    var start=current;
+    if(mode==='recorded' && eligible.length) start=Math.min.apply(null,eligible.map(function(i){return period(i.start);}));
+    var horizon=mode==='recorded'&&eligible.length?Math.max(12,Math.max.apply(null,eligible.map(function(i){return period(i.end);}))-start+1):12;
+    var months=Array.from({length:horizon},function(_,n){return {period:key(start+n),low:0,base:0,high:0,gawangan:0,past:start+n<current};});
+    eligible.forEach(function(item){
+      var first=period(item.start),last=period(item.end),length=last-first+1;
+      for(var n=first;n<=last;n++){
+        var target=months[n-start];if(!target)continue;
+        target.gawangan++;
+        ['low','base','high'].forEach(function(k){target[k]+=Math.floor(item[k]/length)+(n-first<item[k]%length?1:0);});
+      }
+    });
+    return {months:months,unquantified:result.items.length-eligible.length,eligible:eligible.length};
+  }
+  return {build:build,monthly:monthly};
 });
