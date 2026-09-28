@@ -67,5 +67,19 @@
     });
     return {months:months,unquantified:result.items.length-eligible.length,eligible:eligible.length};
   }
-  return {build:build,monthly:monthly};
+  function ethrelPriorities(rows, asOf) {
+    var today=period(asOf), names={jan:1,feb:2,mar:3,apr:4,mei:5,jun:6,jul:7,agu:8,sep:9,okt:10,nov:11,des:12};
+    return rows.filter(function(r){return r.plants>0;}).map(function(row){
+      var planted=period(row.plantingPeriod),match=String(row.plantingPeriod||'').toLowerCase().match(/^([a-z]+)\s+(\d{4})$/);
+      if(planted===null&&match&&names[match[1].slice(0,3)])planted=Number(match[2])*12+names[match[1].slice(0,3)]-1;
+      var age=planted!==null&&today!==null&&planted<=today?today-planted:null;
+      var item={row:row,age:age,group:'verify',label:'Lengkapi data umur',reason:'Bulan tanam belum tersedia atau tidak valid; verifikasi umur dan kondisi tanaman.'};
+      if(row.ethrel>0){item.group='followup';item.label='Evaluasi ethrel terdahulu';item.reason='Sudah ada catatan ethrel. Cocokkan kelompok tanaman, keberhasilan berbunga, dan panen; jangan menjadikan seluruh gawangan sasaran aplikasi ulang.';}
+      else if(row.flowers>0||row.harvest>0||row.ratoonVerified){item.group='partial';item.label='Periksa kelompok belum berbunga';item.reason='Ethrel belum tercatat, tetapi ada bunga, panen, atau ratoon. Pisahkan tanaman belum berbunga dan lengkapi riwayat sebelum menetapkan sasaran.';}
+      else if(age!==null&&age>=12){item.group='priority';item.label='Prioritas pemeriksaan ethrel';item.reason='Umur kalender sekitar '+age+' bulan; belum ada ethrel, bunga, atau panen tercatat. Periksa kesiapan dan hitung tanaman yang benar-benar layak di lapangan.';}
+      else if(age!==null){item.group='maintenance';item.label='Evaluasi pertumbuhan';item.reason='Umur kalender sekitar '+age+' bulan. Lanjutkan pemeliharaan dan pemeriksaan pertumbuhan; umur saja belum menetapkan kelayakan aplikasi.';}
+      return item;
+    });
+  }
+  return {build:build,monthly:monthly,ethrelPriorities:ethrelPriorities};
 });
