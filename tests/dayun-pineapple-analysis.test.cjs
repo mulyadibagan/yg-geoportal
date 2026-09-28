@@ -112,9 +112,9 @@ test('analysis page and map expose the Queen commodity entry point and field saf
   assert.match(page, /Nanas Queen Dayun/);
   assert.match(page, /id="pa-data-date"/);
   assert.match(page, /Nanas Madu belum dimasukkan/);
-  assert.match(page, /Proyeksi otomatis belum diaktifkan/);
-  assert.match(page, /Sensus populasi per gawangan/);
-  assert.match(page, /Tanggal tanam lengkap/);
+  assert.match(page, /Estimasi panen per gawangan/);
+  assert.match(page, /sensus hidup dan kelompok tanaman/);
+  assert.match(page, /Periode lewat tidak digeser otomatis/);
   assert.doesNotMatch(script, /renderProjection/);
   assert.doesNotMatch(script, /Belum panen utama/);
   assert.doesNotMatch(profile, /Calon ratoon dari panen utama/);
