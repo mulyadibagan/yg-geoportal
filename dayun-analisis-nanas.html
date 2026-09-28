@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="css/style.css?v=20260723-revert-layout">
   <link rel="stylesheet" href="css/navigation-v2.css?v=20260807-mobile-submenu-links1">
   <link rel="stylesheet" href="css/dayun.css?v=20260917-crop-detail1">
-  <link rel="stylesheet" href="css/dayun-analisis-nanas.css?v=20260917-cohort2">
+  <link rel="stylesheet" href="css/dayun-analisis-nanas.css?v=20260928-estimate1">
 </head>
 <body data-dayun-page="pineapple-analysis" data-dayun-mode="public">
   <header class="site-header">
@@ -32,7 +32,7 @@
     <div id="pa-status" class="dy-summary-loading" role="status">Menghitung analisis Nanas Queen dari data gawangan…</div>
     <div id="pa-content" hidden>
       <section class="dy-summary-kpis dy-pa-kpis" id="pa-kpis" aria-label="Ringkasan Nanas Queen"></section>
-      <p class="dy-pa-caveat">Angka pada halaman ini adalah data sumber awal dan realisasi kegiatan terverifikasi. Sistem tidak menghitung selisih populasi, potensi panen, atau jadwal aplikasi sebagai perkiraan.</p>
+      <p class="dy-pa-caveat">Populasi dan realisasi mengikuti data tercatat. Estimasi panen disajikan terpisah sebagai skenario perencanaan, bukan hasil panen terverifikasi.</p>
 
       <section class="dy-section">
         <div class="dy-section-head"><div><span>REKOMENDASI KEGIATAN</span><h2>Keputusan berbasis data dan verifikasi</h2></div><p>Sistem menunjukkan prioritas pemeriksaan. Dosis, jadwal aplikasi, dan keputusan panen tetap dikonfirmasi pendamping teknis.</p></div>
@@ -40,8 +40,11 @@
       </section>
 
       <section class="dy-section" id="pa-projection-section">
-        <div class="dy-section-head"><div><span>KESIAPAN ANALISIS</span><h2>Proyeksi otomatis belum diaktifkan</h2></div><p>Proyeksi panen, ethrel, dan pemupukan baru dapat dibuat setelah data per gawangan memenuhi syarat faktual.</p></div>
-        <div class="dy-pa-projection-card"><header><div><span>DATA WAJIB</span><h3>Dasar analisis tanpa perkiraan</h3></div></header><div class="dy-pa-projection-summary"><span>Sensus populasi per gawangan</span><span>Tanggal tanam lengkap</span><span>Riwayat pupuk aktual</span><span>Realisasi ethrel dan panen</span><span>Jumlah ratoon hasil inspeksi</span></div><p class="dy-pa-projection-note">Gunakan formulir monitoring untuk memasukkan bukti lapangan. Data baru tampil setelah verifikasi dan publikasi admin.</p></div>
+        <div class="dy-section-head"><div><span>PERENCANAAN PANEN</span><h2>Estimasi panen per gawangan</h2></div><p>Periode mengikuti bulan ethrel yang tercatat dan filter blok. Jadwal yang sudah lewat tetap ditampilkan untuk tindak lanjut.</p></div>
+        <div id="pa-estimate-summary" class="dy-pa-projection-summary" aria-live="polite"></div>
+        <p id="pa-estimate-sync" class="dy-pa-caveat"></p>
+        <div class="dy-block-table-wrap"><table class="dy-block-table"><thead><tr><th>Gawangan</th><th>Perkiraan periode panen</th><th>Skenario jumlah buah (60–100%)</th><th>Status dan dasar estimasi</th></tr></thead><tbody id="pa-estimate-table"></tbody></table></div>
+        <details class="dy-pa-projection-card"><summary>Asumsi dan cara membaca estimasi</summary><p>Jendela perencanaan adalah bulan ethrel +5 sampai +6 bulan. Acuan sekitar 5 bulan setelah forcing berasal dari <a href="https://hortikultura.pertanian.go.id/nenas-madu-pemalang-makin-manis-di-tengah-pandemi-covid-19-sukses-tembus-timur-tengah/" target="_blank" rel="noopener">Ditjen Hortikultura, nanas Queen Pemalang</a>; tambahan satu bulan merupakan toleransi perencanaan, belum dikalibrasi untuk Dayun. Tanggal dalam data sumber dibaca pada tingkat bulan.</p><p>Jumlah memakai skenario keberhasilan 60%, 80%, dan 100% dari sisa kelompok ethrel. Persentase ini asumsi perencanaan, bukan tingkat keberhasilan terukur atau rentang statistik. Panen sejak bulan ethrel diasumsikan berasal dari kelompok yang sama. Angka populasi tercatat menjadi batas atas; hasil perlu dicocokkan dengan sensus hidup dan kelompok tanaman.</p><p>Catatan ethrel beberapa bulan, tanggal tidak lengkap, serta campuran tanaman utama dan ratoon memerlukan rincian kelompok sebelum jumlah dihitung. Bunga/buah tanpa tanggal tidak digunakan untuk membuat jadwal. Data yang belum cukup ditandai per gawangan dan tidak menghalangi gawangan lain. Periode lewat tidak digeser otomatis ke masa depan. Kematangan aktual tetap diperiksa di lapangan.</p></details>
       </section>
 
       <section class="dy-section">
@@ -64,6 +67,7 @@
   <script src="js/navigation-v2.js?v=20260821-staff-name1"></script>
   <script src="js/dayun-data-source.js?v=20260917-cloudflare1"></script>
   <script src="js/dayun-pineapple-analysis.js?v=20260917-factual1"></script>
-  <script src="js/dayun-analisis-nanas.js?v=20260917-factual1"></script>
+  <script src="js/dayun-harvest-estimate.js?v=20260928-estimate1"></script>
+  <script src="js/dayun-analisis-nanas.js?v=20260928-estimate1"></script>
 </body>
 </html>

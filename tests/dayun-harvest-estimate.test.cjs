@@ -1,0 +1,15 @@
+const {test}=require('node:test');
+const assert=require('node:assert/strict');
+const estimator=require('../js/dayun-harvest-estimate.js');
+const analysis=require('../js/dayun-pineapple-analysis.js');
+const details=require('../data/dayun-gawangan-details.json');
+const base={objectId:'DAYUN-GT-A-01',shortId:'A-01',plants:1000,ethrel:500,ethrelHistory:[{period:'2026-06-01',count:500}],plantCropHarvest:100,harvestHistory:[{period:'2026-08-01',count:100}]};
+const run=(row,asOf='2026-09-28')=>estimator.build([row],{asOf}).items[0];
+test('dates remain anchored to ethrel, with explicit scenario arithmetic',()=>{const r=run(base);assert.equal(r.start,'2026-11-01');assert.equal(r.end,'2026-12-01');assert.equal(r.pool,400);assert.equal(r.base,320);assert.equal(r.low,240);assert.equal(r.high,400);assert.equal(run(base,'2026-10-28').start,r.start);});
+test('past windows do not become upcoming',()=>{const r=estimator.build([base],{asOf:'2027-01-01'});assert.equal(r.upcoming.length,0);assert.equal(r.overdue.length,1);});
+test('harvest before the ethrel cohort is not subtracted',()=>{const r=run({...base,harvestHistory:[{period:'2026-05-01',count:100}]});assert.equal(r.pool,500);});
+test('undated, future, and invalid ethrel do not fabricate a date',()=>{for(const p of ['2025','2026-13-01','2026-02-30','2027-01-01'])assert.equal(run({...base,ethrelHistory:[{period:p,count:500}]}).status,'missing');});
+test('multiple cohorts, mixed dates, ratoon and incomplete harvest suppress quantities',()=>{for(const row of [{...base,ethrelHistory:[...base.ethrelHistory,{period:'2026-07-01',count:100}]},{...base,ethrelHistory:[...base.ethrelHistory,{period:'2025',count:100}]},{...base,ratoonVerified:true},{...base,harvestHistory:[]},{...base,harvestHistory:[{period:'2026',count:100}]}])assert.equal(run(row).pool,null);});
+test('population cap and nonnegative integer quantities',()=>{assert.equal(run({...base,plants:25.5}).high,25);assert.equal(run({...base,plantCropHarvest:900,harvestHistory:[{period:'2026-08-01',count:900}]}).pool,0);});
+test('real data produces dated historical windows and missing-data rows',()=>{const rows=analysis.build(details,{asOf:'2026-09-28'}).rows;const r=estimator.build(rows,{asOf:'2026-09-28'});assert.equal(r.items.length,rows.length);assert.ok(r.overdue.length>0);assert.ok(r.missing.length>0);assert.equal(r.upcoming.length,0);console.log(JSON.stringify({gawangan:r.items.length,past:r.overdue.length,missing:r.missing.length}));});
+test('empty selection has no invented estimates',()=>assert.equal(estimator.build([],{asOf:'2026-09-28'}).items.length,0));
