@@ -81,5 +81,13 @@
       return item;
     });
   }
-  return {build:build,monthly:monthly,ethrelPriorities:ethrelPriorities};
+  function plan(rows, asOf, plannedMonth, targetCount) {
+    var candidates=ethrelPriorities(rows,asOf).filter(function(i){return i.group==='priority';});
+    var capacity=candidates.reduce(function(sum,i){return sum+count(i.row.plants);},0);
+    var planned=period(plannedMonth),current=period(asOf),target=Number(targetCount);
+    var error=planned===null||planned<current?'Pilih bulan rencana mulai bulan ini.':!Number.isInteger(target)||target<1||target>capacity?'Isi jumlah tanaman sasaran 1–'+capacity+'.':'';
+    var items=error?[]:[{start:key(planned+5),end:key(planned+6),pool:target,low:Math.floor(target*0.6),base:Math.floor(target*0.8),high:target}];
+    return {error:error,capacity:capacity,candidates:candidates.map(function(i){return i.row.shortId;}),result:{asOf:asOf,items:items}};
+  }
+  return {build:build,monthly:monthly,ethrelPriorities:ethrelPriorities,plan:plan};
 });
