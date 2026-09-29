@@ -111,7 +111,7 @@ test('analysis page and map expose the Queen commodity entry point and field saf
   const profile = fs.readFileSync(path.join(root, 'js/dayun-gawangan.js'), 'utf8');
   assert.match(page, /Nanas Queen Dayun/);
   assert.match(page, /id="pa-data-date"/);
-  assert.match(page, /Riwayat panen aktual/);
+  assert.match(page, /Realisasi per bulan/);
   assert.match(page, /dy-compact-panel/);
   assert.match(page, /Estimasi panen per gawangan/);
   assert.match(page, /sensus hidup dan kelompok tanaman/);
@@ -119,9 +119,9 @@ test('analysis page and map expose the Queen commodity entry point and field saf
   assert.doesNotMatch(script, /renderProjection/);
   assert.doesNotMatch(script, /Belum panen utama/);
   assert.doesNotMatch(profile, /Calon ratoon dari panen utama/);
-  assert.match(script, /Verifikasi riwayat pupuk/);
-  assert.match(script, /Ini daftar pemeriksaan, bukan perintah aplikasi/);
-  assert.match(script, /dayun-hpt-nanas\.html/);
+  assert.match(page, /tanggal serta kondisi terbaru per gawangan belum cukup/);
+  assert.match(page, /kelayakan tindakan dikonfirmasi di lapangan/);
+  assert.match(page, /dayun-hpt-nanas\.html/);
   assert.match(script, /dayun-gawangan\.html\?object=/);
   assert.doesNotMatch(script, /buildProjection/);
   assert.doesNotMatch(script, /open-meteo\.com/);
