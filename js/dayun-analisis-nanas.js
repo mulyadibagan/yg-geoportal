@@ -95,12 +95,33 @@
     }).join('')||'<tr><td colspan="4">Belum ada data nanas pada blok ini.</td></tr>';
   }
 
+  function ethrelPeriod(value) {
+    var text=String(value||'');
+    if (/^\d{4}$/.test(text)) return text+' · bulan belum tercatat';
+    if (/^\d{4}-(0[1-9]|1[0-2])(?:-\d{2})?$/.test(text)) return new Date(text.slice(0,7)+'-01T00:00:00').toLocaleDateString('id-ID',{month:'long',year:'numeric'});
+    return text||'Periode belum tercatat';
+  }
+  function ethrelEntries(row) {
+    return (row.ethrelHistory||[]).slice().sort(function(a,b){return String(b.period||'').localeCompare(String(a.period||''));});
+  }
+  function ethrelLatest(row) {
+    var entries=ethrelEntries(row);
+    if(!entries.length)return row.ethrel>0?'Periode belum tercatat<small>'+integer(row.ethrel)+' tanaman tercatat</small>':'Belum tercatat';
+    var latest=entries[0],count=entries.filter(function(e){return e.period===latest.period;}).reduce(function(sum,e){return sum+(Number(e.count)||0);},0);
+    return esc(ethrelPeriod(latest.period))+'<small>'+integer(count)+' tanaman</small>';
+  }
+  function ethrelHistory(rows) {
+    var treated=rows.filter(function(row){return row.ethrel>0||(row.ethrelHistory||[]).length;}).sort(function(a,b){return a.shortId.localeCompare(b.shortId,'id',{numeric:true});});
+    $('pa-ethrel-history-summary').textContent='Riwayat Ethrel · '+treated.length+' gawangan';
+    $('pa-ethrel-history-table').innerHTML=treated.map(function(row){var entries=ethrelEntries(row);if(!entries.length)entries=[{period:null,count:row.ethrel}];return entries.map(function(entry){return '<tr><th scope="row"><a href="dayun-gawangan.html?object='+encodeURIComponent(row.objectId)+'">'+esc(row.shortId)+'</a></th><td>'+esc(ethrelPeriod(entry.period))+'</td><td>'+integer(entry.count)+' tanaman</td></tr>';}).join('');}).join('')||'<tr><td colspan="3">Belum ada riwayat Ethrel pada wilayah ini.</td></tr>';
+  }
+
   var showAllWork=false;
   function workPriorities(rows) {
     var order={priority:0,partial:1,followup:2,maintenance:3,verify:4};
     var items=window.DayunHarvestEstimate.ethrelPriorities(rows,analysis.asOf).sort(function(a,b){return order[a.group]-order[b.group]||a.row.shortId.localeCompare(b.row.shortId,'id',{numeric:true});});
     var actions={priority:['Periksa kesiapan ethrel','Belum ada ethrel, bunga, atau panen tercatat; umur kalender memenuhi saringan awal.'],partial:['Pisahkan tanaman belum berbunga','Sudah ada bunga/panen tetapi ethrel belum tercatat. Periksa kelompok tanaman.'],followup:['Evaluasi hasil ethrel','Ethrel sudah tercatat; cocokkan bunga dan realisasi panen sebelum tindakan berikutnya.'],maintenance:['Periksa pertumbuhan','Belum masuk saringan umur awal. Periksa kondisi, nutrisi, dan pertumbuhan.'],verify:['Lengkapi umur dan kondisi','Bulan tanam belum cukup jelas untuk menentukan tindak lanjut.']};
-    $('pa-work-table').innerHTML=items.map(function(item,index){var action=actions[item.group];return '<tr'+(index>=7&&!showAllWork?' hidden':'')+'><th scope="row"><a href="dayun-gawangan.html?object='+encodeURIComponent(item.row.objectId)+'">'+esc(item.row.shortId)+'</a></th><td>'+action[0]+'</td><td>'+action[1]+'</td></tr>';}).join('')||'<tr><td colspan="3">Belum ada populasi nanas tercatat untuk blok ini.</td></tr>';
+    $('pa-work-table').innerHTML=items.map(function(item,index){var action=actions[item.group];return '<tr'+(index>=7&&!showAllWork?' hidden':'')+'><th scope="row"><a href="dayun-gawangan.html?object='+encodeURIComponent(item.row.objectId)+'">'+esc(item.row.shortId)+'</a></th><td>'+ethrelLatest(item.row)+'</td><td>'+action[0]+'</td><td>'+action[1]+'</td></tr>';}).join('')||'<tr><td colspan="4">Belum ada populasi nanas tercatat untuk blok ini.</td></tr>';
     $('pa-work-more').hidden=items.length<=7;
     $('pa-work-more').textContent=showAllWork?'Ringkas daftar':'Lihat semua '+items.length+' gawangan';
     $('pa-work-more').setAttribute('aria-expanded',String(showAllWork));
@@ -114,7 +135,7 @@
     var rows=selectedRows(),data=aggregate(rows);
     $('pa-block').value=selected;
     $('pa-data-date').innerHTML='Wilayah: <strong>'+(selected==='ALL'?'Seluruh Blok A–F':'Blok '+esc(selected))+'</strong> · Aktivitas terakhir: <strong>'+date(data.latestActivityDate)+'</strong>';
-    kpis(data);workPriorities(rows);chart(rows);nextHarvest(rows);harvestEstimate(rows);$('pa-condition-source').textContent=$('pa-estimate-sync').textContent;
+    kpis(data);workPriorities(rows);ethrelHistory(rows);chart(rows);nextHarvest(rows);harvestEstimate(rows);$('pa-condition-source').textContent=$('pa-estimate-sync').textContent;
   }
 
   Promise.all([window.DayunDataSource.fetchJSON('data/dayun-gawangan-details.json?v=20260917-performance1'),loadMonitoring()]).then(function(results){

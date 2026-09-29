@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="css/style.css?v=20260723-revert-layout">
   <link rel="stylesheet" href="css/navigation-v2.css?v=20260807-mobile-submenu-links1">
   <link rel="stylesheet" href="css/dayun.css?v=20260917-crop-detail1">
-  <link rel="stylesheet" href="css/dayun-analisis-nanas.css?v=20260929-decision1">
+  <link rel="stylesheet" href="css/dayun-analisis-nanas.css?v=20260929-ethrel-history1">
 </head>
 <body data-dayun-page="pineapple-analysis" data-dayun-mode="public">
   <header class="site-header">
@@ -37,8 +37,13 @@
       <section class="dy-section dy-decision-section" id="pa-ethrel-section">
         <div class="dy-section-head"><h2>2. Pekerjaan prioritas</h2><a href="dayun-sop-nanas.html#induksi-bunga">SOP lapangan →</a></div>
         <p class="dy-compact-note">Daftar pemeriksaan berdasarkan data tercatat; kelayakan tindakan dikonfirmasi di lapangan.</p>
-        <div class="dy-block-table-wrap"><table class="dy-block-table"><thead><tr><th>Gawangan</th><th>Tindakan</th><th>Alasan</th></tr></thead><tbody id="pa-work-table"></tbody></table></div>
+        <div class="dy-block-table-wrap"><table class="dy-block-table"><thead><tr><th>Gawangan</th><th>Ethrel terakhir</th><th>Tindakan</th><th>Alasan</th></tr></thead><tbody id="pa-work-table"></tbody></table></div>
         <button type="button" id="pa-work-more" class="dy-work-more" aria-expanded="false">Lihat semua gawangan</button>
+        <details id="pa-ethrel-history" class="dy-compact-detail">
+          <summary id="pa-ethrel-history-summary">Riwayat Ethrel per gawangan</summary>
+          <p class="dy-compact-note">Seluruh catatan Ethrel pada blok yang dipilih. Periode ditampilkan sampai bulan karena tanggal harian belum terverifikasi. Catatan tahun saja tetap ditampilkan. Jumlah setiap catatan dapat mencakup tanaman yang sama; bukan jumlah tanaman unik.</p>
+          <div class="dy-block-table-wrap"><table class="dy-block-table"><thead><tr><th>Gawangan</th><th>Periode Ethrel</th><th>Jumlah tercatat</th></tr></thead><tbody id="pa-ethrel-history-table"></tbody></table></div>
+        </details>
         <p class="dy-compact-note">Pupuk, gulma, dan HPT: tanggal serta kondisi terbaru per gawangan belum cukup untuk menentukan prioritas. Lengkapi melalui monitoring. <a href="dayun-hpt-nanas.html">Panduan HPT →</a></p>
       </section>
       <section class="dy-section dy-decision-section" id="pa-harvest-section">
@@ -78,7 +83,7 @@
   <script src="js/navigation-v2.js?v=20260821-staff-name1"></script>
   <script src="js/dayun-data-source.js?v=20260917-cloudflare1"></script>
   <script src="js/dayun-pineapple-analysis.js?v=20260917-factual1"></script>
-  <script src="js/dayun-harvest-estimate.js?v=20260929-decision1"></script>
-  <script src="js/dayun-analisis-nanas.js?v=20260929-decision1"></script>
+  <script src="js/dayun-harvest-estimate.js?v=20260929-ethrel-history1"></script>
+  <script src="js/dayun-analisis-nanas.js?v=20260929-ethrel-history1"></script>
 </body>
 </html>
