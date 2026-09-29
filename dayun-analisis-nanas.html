@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="css/style.css?v=20260723-revert-layout">
   <link rel="stylesheet" href="css/navigation-v2.css?v=20260807-mobile-submenu-links1">
   <link rel="stylesheet" href="css/dayun.css?v=20260917-crop-detail1">
-  <link rel="stylesheet" href="css/dayun-analisis-nanas.css?v=20260929-ethrel-history1">
+  <link rel="stylesheet" href="css/dayun-analisis-nanas.css?v=20260929-ethrel-chart1">
 </head>
 <body data-dayun-page="pineapple-analysis" data-dayun-mode="public">
   <header class="site-header">
@@ -39,6 +39,10 @@
         <p class="dy-compact-note">Daftar pemeriksaan berdasarkan data tercatat; kelayakan tindakan dikonfirmasi di lapangan.</p>
         <div class="dy-block-table-wrap"><table class="dy-block-table"><thead><tr><th>Gawangan</th><th>Ethrel terakhir</th><th>Tindakan</th><th>Alasan</th></tr></thead><tbody id="pa-work-table"></tbody></table></div>
         <button type="button" id="pa-work-more" class="dy-work-more" aria-expanded="false">Lihat semua gawangan</button>
+        <h3>Riwayat Ethrel per bulan</h3>
+        <p class="dy-compact-note">Jumlah tanaman yang mendapat perlakuan · mengikuti pilihan blok.</p>
+        <div id="pa-ethrel-chart" class="dy-ethrel-chart" aria-label="Grafik riwayat Ethrel per bulan"></div>
+        <p id="pa-ethrel-undated" class="dy-compact-note"></p>
         <details id="pa-ethrel-history" class="dy-compact-detail">
           <summary id="pa-ethrel-history-summary">Riwayat Ethrel per gawangan</summary>
           <p class="dy-compact-note">Seluruh catatan Ethrel pada blok yang dipilih. Periode ditampilkan sampai bulan karena tanggal harian belum terverifikasi. Catatan tahun saja tetap ditampilkan. Jumlah setiap catatan dapat mencakup tanaman yang sama; bukan jumlah tanaman unik.</p>
@@ -83,7 +87,7 @@
   <script src="js/navigation-v2.js?v=20260821-staff-name1"></script>
   <script src="js/dayun-data-source.js?v=20260917-cloudflare1"></script>
   <script src="js/dayun-pineapple-analysis.js?v=20260917-factual1"></script>
-  <script src="js/dayun-harvest-estimate.js?v=20260929-ethrel-history1"></script>
-  <script src="js/dayun-analisis-nanas.js?v=20260929-ethrel-history1"></script>
+  <script src="js/dayun-harvest-estimate.js?v=20260929-ethrel-chart1"></script>
+  <script src="js/dayun-analisis-nanas.js?v=20260929-ethrel-chart1"></script>
 </body>
 </html>
