@@ -110,7 +110,25 @@
     var latest=entries[0],count=entries.filter(function(e){return e.period===latest.period;}).reduce(function(sum,e){return sum+(Number(e.count)||0);},0);
     return esc(ethrelPeriod(latest.period))+'<small>'+integer(count)+' tanaman</small>';
   }
+  function ethrelChart(rows) {
+    var months={},undated={};
+    rows.forEach(function(row){
+      var entries=ethrelEntries(row);
+      if(!entries.length&&row.ethrel>0)entries=[{period:null,count:row.ethrel}];
+      entries.forEach(function(entry){
+        var period=String(entry.period||''),dated=/^\d{4}-(0[1-9]|1[0-2])(?:-\d{2})?$/.test(period),key=dated?period.slice(0,7):ethrelPeriod(period),groups=dated?months:undated;
+        if(!groups[key])groups[key]={count:0,ids:{}};
+        groups[key].count+=Math.max(0,Number(entry.count)||0);groups[key].ids[row.objectId]=row.shortId;
+      });
+    });
+    var periods=Object.keys(months).sort(),max=Math.max.apply(null,periods.map(function(p){return months[p].count;}).concat([1]));
+    $('pa-ethrel-chart').innerHTML=periods.map(function(p){var item=months[p],ids=Object.keys(item.ids),label=ethrelPeriod(p);return '<div class="dy-ethrel-bar-row"><span>'+esc(label)+'</span><div class="dy-ethrel-bar-track" aria-hidden="true"><span style="width:'+(item.count/max*100)+'%"></span></div><strong>'+integer(item.count)+' tanaman<small>'+ids.length+' gawangan</small></strong></div>';}).join('')||'<p class="dy-empty-message">Belum ada catatan Ethrel dengan bulan yang tersedia.</p>';
+    var incomplete=Object.keys(undated).sort().map(function(p){return p+': '+integer(undated[p].count)+' tanaman ('+Object.keys(undated[p].ids).length+' gawangan)';});
+    $('pa-ethrel-undated').textContent=(incomplete.length?'Di luar grafik bulanan — '+incomplete.join('; ')+'. ':'')+'Hanya bulan yang memiliki catatan ditampilkan. Jumlah perlakuan bukan jumlah tanaman unik; rincian gawangan tersedia di bawah.';
+  }
+
   function ethrelHistory(rows) {
+    ethrelChart(rows);
     var treated=rows.filter(function(row){return row.ethrel>0||(row.ethrelHistory||[]).length;}).sort(function(a,b){return a.shortId.localeCompare(b.shortId,'id',{numeric:true});});
     $('pa-ethrel-history-summary').textContent='Riwayat Ethrel · '+treated.length+' gawangan';
     $('pa-ethrel-history-table').innerHTML=treated.map(function(row){var entries=ethrelEntries(row);if(!entries.length)entries=[{period:null,count:row.ethrel}];return entries.map(function(entry){return '<tr><th scope="row"><a href="dayun-gawangan.html?object='+encodeURIComponent(row.objectId)+'">'+esc(row.shortId)+'</a></th><td>'+esc(ethrelPeriod(entry.period))+'</td><td>'+integer(entry.count)+' tanaman</td></tr>';}).join('');}).join('')||'<tr><td colspan="3">Belum ada riwayat Ethrel pada wilayah ini.</td></tr>';
