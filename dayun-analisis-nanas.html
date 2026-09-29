@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="css/style.css?v=20260723-revert-layout">
   <link rel="stylesheet" href="css/navigation-v2.css?v=20260807-mobile-submenu-links1">
   <link rel="stylesheet" href="css/dayun.css?v=20260917-crop-detail1">
-  <link rel="stylesheet" href="css/dayun-analisis-nanas.css?v=20260928-plan1">
+  <link rel="stylesheet" href="css/dayun-analisis-nanas.css?v=20260929-compact1">
 </head>
 <body data-dayun-page="pineapple-analysis" data-dayun-mode="public">
   <header class="site-header">
@@ -21,10 +21,7 @@
   </header>
   <main class="dy-shell dy-pa-page">
     <nav class="dy-map-breadcrumb" aria-label="Navigasi halaman"><a class="dy-back-link" href="dayun-map.html">← Kembali ke peta agroforestri</a><span>Analisis komoditas</span></nav>
-    <section class="dy-pa-hero">
-      <div><span>ANALISIS KOMODITAS · NANAS</span><h1>Nanas Queen Dayun</h1><p>Analisis tanaman, pemupukan, ethrel, pembungaan, panen, dan HPT yang dapat ditelusuri sampai ke setiap gawangan.</p></div>
-      <aside><small>VARIETAS TERCATAT</small><strong>Queen</strong><span>Nanas Madu belum dimasukkan hingga data tanam dan SOP khusus tersedia.</span></aside>
-    </section>
+    <section class="dy-pa-hero"><div><h1>Nanas Queen Dayun</h1><p>Proyeksi panen dan prioritas kegiatan per gawangan.</p></div></section>
     <div class="dy-pa-toolbar">
       <label for="pa-block">Tampilkan wilayah<select id="pa-block"><option value="ALL">Seluruh Blok A–F</option><option value="A">Blok A</option><option value="B">Blok B</option><option value="C">Blok C</option><option value="D">Blok D</option><option value="E">Blok E</option><option value="F">Blok F</option></select></label>
       <p id="pa-data-date">Memuat tanggal data…</p>
@@ -32,63 +29,58 @@
     <div id="pa-status" class="dy-summary-loading" role="status">Menghitung analisis Nanas Queen dari data gawangan…</div>
     <div id="pa-content" hidden>
       <section class="dy-summary-kpis dy-pa-kpis" id="pa-kpis" aria-label="Ringkasan Nanas Queen"></section>
-      <p class="dy-pa-caveat">Populasi dan realisasi mengikuti data tercatat. Estimasi panen disajikan terpisah sebagai skenario perencanaan, bukan hasil panen terverifikasi.</p>
 
-      <section class="dy-section">
-        <div class="dy-section-head"><div><span>REKOMENDASI KEGIATAN</span><h2>Keputusan berbasis data dan verifikasi</h2></div><p>Sistem menunjukkan prioritas pemeriksaan. Dosis, jadwal aplikasi, dan keputusan panen tetap dikonfirmasi pendamping teknis.</p></div>
-        <div class="dy-pa-recommendations" id="pa-recommendations"></div>
-      </section>
-
-      <section class="dy-section" id="pa-ethrel-section">
-        <div class="dy-section-head"><div><span>REKOMENDASI ETHREL</span><h2>Gawangan yang perlu diperiksa</h2></div><p>Daftar mengikuti filter blok dan catatan tanaman yang tersedia.</p></div>
-        <p id="pa-ethrel-summary" class="dy-pa-caveat" aria-live="polite"></p>
-        <p>Prioritas merupakan saringan pemeriksaan, bukan perintah aplikasi. Catatan kosong tidak memastikan tanaman belum pernah diethrel. Umur dihitung secara perkiraan dari bulan tanam; pastikan tanaman sehat, seragam, belum berbunga, serta jumlah sasaran dan riwayat kelompoknya jelas.</p>
-        <div id="pa-ethrel-list"></div>
-        <p><a href="dayun-sop-nanas.html#induksi-bunga">Buka SOP ethrel dan pemeriksaan kesiapan →</a></p>
-      </section>
 
       <section class="dy-section" id="pa-projection-section">
-        <div class="dy-section-head"><div><span>PERENCANAAN PANEN</span><h2>Estimasi panen per gawangan</h2></div><p>Periode mengikuti bulan ethrel yang tercatat dan filter blok. Jadwal yang sudah lewat tetap ditampilkan untuk tindak lanjut.</p></div>
-        <div id="pa-estimate-summary" class="dy-pa-projection-summary" aria-live="polite"></div>
-        <p id="pa-estimate-sync" class="dy-pa-caveat"></p>
+
+
+
         <div class="dy-pa-projection-card">
-          <div class="dy-section-head"><div><h3>Proyeksi panen bulanan</h3><p>Jumlah buah per bulan · skenario 60%, 80%, dan 100%</p></div><label for="pa-forecast-period">Periode grafik <select id="pa-forecast-period"><option value="planning">Simulasi rencana ethrel</option><option value="upcoming">12 bulan · ethrel tercatat</option><option value="recorded">Periode berdasarkan catatan ethrel</option></select></label></div>
+          <div class="dy-section-head"><div><h2>Proyeksi panen bulanan</h2><p>Jumlah buah per bulan · skenario 60%, 80%, dan 100%</p></div><label for="pa-forecast-period">Periode grafik <select id="pa-forecast-period"><option value="planning">Simulasi rencana ethrel</option><option value="upcoming">12 bulan · ethrel tercatat</option><option value="recorded">Periode berdasarkan catatan ethrel</option></select></label></div>
           <div id="pa-plan-controls" hidden>
-            <p><strong>Simulasi jika gawangan prioritas diethrel sesuai rencana.</strong> Bulan dan jumlah di bawah adalah asumsi perencanaan, belum merupakan realisasi atau jadwal aplikasi yang disetujui.</p>
+            <p class="dy-compact-note">Simulasi rencana ethrel · belum merupakan kegiatan aktual.</p>
             <div class="dy-plan-fields"><label>Bulan rencana ethrel<input id="pa-plan-month" type="month"></label><label>Tanaman sasaran (batang)<input id="pa-plan-count" type="number" min="1" step="1"></label><button type="button" id="pa-plan-calculate">Hitung simulasi</button></div>
-            <p id="pa-plan-context"></p>
+            <details class="dy-compact-detail"><summary>Gawangan sasaran dan dasar jumlah</summary><p id="pa-plan-context"></p></details>
           </div>
           <p id="pa-forecast-note" class="dy-pa-caveat" aria-live="polite"></p>
           <div class="dy-forecast-legend"><span><i class="low"></i>60%</span><span><i class="base"></i>80%</span><span><i class="high"></i>100%</span></div>
           <div id="pa-forecast-chart" class="dy-forecast-chart" role="img" aria-label="Grafik proyeksi jumlah buah nanas per bulan"></div>
           <details><summary>Lihat angka per bulan</summary><div class="dy-block-table-wrap"><table class="dy-block-table"><thead><tr><th>Bulan</th><th>Skenario 60%</th><th>Skenario 80%</th><th>Skenario 100%</th><th>Gawangan dengan estimasi</th></tr></thead><tbody id="pa-forecast-months"></tbody></table></div></details>
-          <p class="dy-pa-projection-note">Skenario jumlah buah dibagi merata ke bulan dalam jendela panen setiap gawangan; pembagian ini asumsi perencanaan, bukan pola panen terukur. Bulan tanpa estimasi ditandai “Belum ada estimasi”, bukan panen nol. Periode lampau ditampilkan sebagai acuan lama dan tidak dijumlahkan sebagai panen mendatang.</p>
+          <details class="dy-compact-detail"><summary>Cara membaca grafik</summary><p class="dy-pa-projection-note">Skenario jumlah buah dibagi merata ke bulan dalam jendela panen setiap gawangan; pembagian ini asumsi perencanaan, bukan pola panen terukur. Bulan tanpa estimasi ditandai “Belum ada estimasi”, bukan panen nol. Periode lampau ditampilkan sebagai acuan lama dan tidak dijumlahkan sebagai panen mendatang.</p></details>
         </div>
-        <div class="dy-block-table-wrap"><table class="dy-block-table"><thead><tr><th>Gawangan</th><th>Perkiraan periode panen</th><th>Skenario jumlah buah (60–100%)</th><th>Status dan dasar estimasi</th></tr></thead><tbody id="pa-estimate-table"></tbody></table></div>
+        <details class="dy-compact-detail"><summary>Estimasi panen per gawangan</summary><div id="pa-estimate-summary" class="dy-pa-projection-summary" aria-live="polite"></div><div class="dy-block-table-wrap"><table class="dy-block-table"><thead><tr><th>Gawangan</th><th>Perkiraan periode panen</th><th>Skenario jumlah buah (60–100%)</th><th>Status dan dasar estimasi</th></tr></thead><tbody id="pa-estimate-table"></tbody></table></div></details>
         <details class="dy-pa-projection-card"><summary>Asumsi dan cara membaca estimasi</summary><p>Jendela perencanaan adalah bulan ethrel +5 sampai +6 bulan. Acuan sekitar 5 bulan setelah forcing berasal dari <a href="https://hortikultura.pertanian.go.id/nenas-madu-pemalang-makin-manis-di-tengah-pandemi-covid-19-sukses-tembus-timur-tengah/" target="_blank" rel="noopener">Ditjen Hortikultura, nanas Queen Pemalang</a>; tambahan satu bulan merupakan toleransi perencanaan, belum dikalibrasi untuk Dayun. Tanggal dalam data sumber dibaca pada tingkat bulan.</p><p>Jumlah memakai skenario keberhasilan 60%, 80%, dan 100% dari sisa kelompok ethrel. Persentase ini asumsi perencanaan, bukan tingkat keberhasilan terukur atau rentang statistik. Panen sejak bulan ethrel diasumsikan berasal dari kelompok yang sama. Angka populasi tercatat menjadi batas atas; hasil perlu dicocokkan dengan sensus hidup dan kelompok tanaman.</p><p>Catatan ethrel beberapa bulan, tanggal tidak lengkap, serta campuran tanaman utama dan ratoon memerlukan rincian kelompok sebelum jumlah dihitung. Bunga/buah tanpa tanggal tidak digunakan untuk membuat jadwal. Data yang belum cukup ditandai per gawangan dan tidak menghalangi gawangan lain. Periode lewat tidak digeser otomatis ke masa depan. Kematangan aktual tetap diperiksa di lapangan.</p></details>
-      </section>
+      <p id="pa-estimate-sync" class="dy-compact-source"></p></section>
+<section class="dy-section" id="pa-ethrel-section">
+        <div class="dy-section-head"><h2>Prioritas ethrel</h2><a href="dayun-sop-nanas.html#induksi-bunga">SOP ethrel →</a></div>
+        <p id="pa-ethrel-summary" class="dy-pa-caveat" aria-live="polite"></p>
+        <p class="dy-compact-note">Periksa kesiapan tanaman di lapangan sebelum aplikasi.</p>
+        <details class="dy-compact-detail"><summary>Semua gawangan dan alasan rekomendasi</summary><div id="pa-ethrel-list"></div></details>
 
-      <section class="dy-section">
+      </section>
+<details class="dy-compact-detail dy-compact-panel"><summary>Riwayat panen aktual</summary><section class="dy-section">
         <div class="dy-section-head"><div><span>RIWAYAT PRODUKSI</span><h2>Panen Nanas Queen menurut bulan</h2></div><p>Grafik merupakan penjumlahan catatan panen pada gawangan yang sedang dipilih.</p></div>
         <div class="dy-pa-chart-card"><div class="dy-pa-chart-summary" id="pa-chart-summary"></div><div class="dy-pa-chart" id="pa-harvest-chart" role="img" aria-label="Grafik panen Nanas Queen menurut bulan"></div></div>
-      </section>
-
-      <section class="dy-section">
+      </section></details>
+<details class="dy-compact-detail dy-compact-panel"><summary>Perbandingan Blok A–F</summary><section class="dy-section">
         <div class="dy-section-head"><div><span>PERBANDINGAN BLOK</span><h2>Nanas Queen pada Blok A–F</h2></div><p>Blok dengan angka nol ditampilkan sebagai data yang belum lengkap, bukan disimpulkan tidak memiliki tanaman.</p></div>
         <div class="dy-block-table-wrap"><table class="dy-block-table"><thead><tr><th>Blok</th><th>Gawangan aktif</th><th>Populasi</th><th>Luas operasional</th><th>Ethrel</th><th>Bunga/buah</th><th>Panen</th><th>Aktivitas terakhir</th></tr></thead><tbody id="pa-block-table"></tbody></table></div>
-      </section>
-
-      <section class="dy-section">
+      </section></details>
+<details class="dy-compact-detail dy-compact-panel"><summary>Data dan pemeriksaan seluruh gawangan</summary><section class="dy-section">
         <div class="dy-section-head"><div><span>PRIORITAS GAWANGAN</span><h2>Daftar pemeriksaan lapangan</h2></div><p>Urutan mendahulukan gawangan dengan bunga/buah, riwayat ethrel, atau data yang perlu dilengkapi.</p></div>
         <div class="dy-block-table-wrap"><table class="dy-block-table dy-pa-gawangan-table"><thead><tr><th>Gawangan</th><th>Umur terverifikasi</th><th>Populasi tercatat</th><th>Ethrel</th><th>Bunga/buah</th><th>Panen</th><th>Prioritas</th><th></th></tr></thead><tbody id="pa-gawangan-table"></tbody></table></div>
-      </section>
+      </section></details>
+<details class="dy-compact-detail dy-compact-panel"><summary>Panduan pemupukan, panen, dan HPT</summary><section class="dy-section">
+        <div class="dy-section-head"><div><span>REKOMENDASI KEGIATAN</span><h2>Keputusan berbasis data dan verifikasi</h2></div><p>Sistem menunjukkan prioritas pemeriksaan. Dosis, jadwal aplikasi, dan keputusan panen tetap dikonfirmasi pendamping teknis.</p></div>
+        <div class="dy-pa-recommendations" id="pa-recommendations"></div>
+      </section></details>
     </div>
   </main>
   <footer class="dy-footer">YG GeoPortal · Analisis Komoditas Nanas Queen Dayun</footer>
   <script src="js/navigation-v2.js?v=20260821-staff-name1"></script>
   <script src="js/dayun-data-source.js?v=20260917-cloudflare1"></script>
   <script src="js/dayun-pineapple-analysis.js?v=20260917-factual1"></script>
-  <script src="js/dayun-harvest-estimate.js?v=20260928-plan1"></script>
-  <script src="js/dayun-analisis-nanas.js?v=20260928-plan1"></script>
+  <script src="js/dayun-harvest-estimate.js?v=20260929-compact1"></script>
+  <script src="js/dayun-analisis-nanas.js?v=20260929-compact1"></script>
 </body>
 </html>

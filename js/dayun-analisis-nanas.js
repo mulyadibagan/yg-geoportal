@@ -43,7 +43,7 @@
   }
 
   function kpis(data) {
-    var items=[['Varietas','Queen'],['Gawangan aktif',integer(data.activeGawangan)+' gawangan'],['Populasi tercatat',integer(data.plants)+' tanaman'],['Luas operasional',area(data.areaHa)],['Tercatat dipupuk',integer(data.fertilized)+' tanaman'],['Tercatat ethrel',integer(data.ethrel)+' tanaman'],['Bunga/buah tercatat',integer(data.flowers)+' tanaman'],['Panen utama',integer(data.plantCropHarvest)+' buah'],['Panen ratoon',integer(data.ratoonHarvest)+' buah']];
+    var items=[['Populasi tercatat',integer(data.plants)+' tanaman'],['Panen tercatat',integer(data.harvest)+' buah'],['Gawangan aktif',integer(data.activeGawangan)],['Prioritas cek ethrel',integer(window.DayunHarvestEstimate.ethrelPriorities(selectedRows(),analysis.asOf).filter(function(i){return i.group==='priority';}).length)+' gawangan']];
     $('pa-kpis').innerHTML=items.map(function(item){return '<article><small>'+esc(item[0])+'</small><strong>'+esc(item[1])+'</strong></article>';}).join('');
   }
 
@@ -93,7 +93,7 @@
       return '<details class="dy-pa-projection-card"'+(group[0]==='priority'||group[0]==='partial'?' open':'')+'><summary>'+group[1]+' · '+members.length+' gawangan</summary><div class="dy-block-table-wrap"><table class="dy-block-table"><thead><tr><th>Gawangan</th><th>Bulan tanam</th><th>Alasan dan tindak lanjut</th></tr></thead><tbody>'+members.map(function(i){return '<tr><th scope="row"><a href="dayun-gawangan.html?object='+encodeURIComponent(i.row.objectId)+'">'+esc(i.row.shortId)+'</a></th><td>'+esc(i.row.plantingPeriod||'Belum tersedia')+'</td><td>'+esc(i.reason)+'</td></tr>';}).join('')+'</tbody></table></div></details>';
     }).join('')||'<p>Belum ada populasi nanas tercatat untuk blok ini.</p>';
     var priorities=items.filter(function(i){return i.group==='priority';}).map(function(i){return i.row.shortId;});
-    $('pa-ethrel-summary').textContent=priorities.length?'Prioritas pemeriksaan: '+priorities.join(', ')+'.':'Belum ada gawangan yang memenuhi saringan awal prioritas dari data yang tersedia; lihat kelompok pemeriksaan di bawah.';
+    $('pa-ethrel-summary').innerHTML=priorities.length?priorities.map(function(id){return '<a class="dy-priority-chip" href="dayun-gawangan.html?object=DAYUN-GT-'+encodeURIComponent(id)+'">'+esc(id)+' →</a>';}).join(''):'Belum ada prioritas dari data tersedia. Buka daftar gawangan untuk tindak lanjut.';
   }
 
   function monthlyChart(result) {
@@ -115,7 +115,7 @@
     var max=Math.max.apply(null,months.map(function(m){return m.high;}).concat([1]));
     var hasEstimate=months.some(function(m){return m.gawangan>0;});
     $('pa-forecast-note').textContent=(forecastMode==='recorded'?'Grafik mengikuti periode catatan ethrel. Bulan bertanda “Lampau” perlu pembaruan lapangan. ':'Grafik 12 bulan mulai bulan ini. ')+(hasEstimate?'Batang menunjukkan skenario jumlah buah, bukan realisasi panen. ':'Belum ada estimasi yang dapat dihitung untuk periode ini. Lengkapi bulan ethrel, jumlah tanaman, dan realisasi panen per gawangan. ')+projection.unquantified+' gawangan belum memiliki dasar lengkap untuk menghitung jumlah.';
-    if(plan)$('pa-forecast-note').textContent=plan.error||'SIMULASI RENCANA · Jika '+integer(Number($('pa-plan-count').value))+' tanaman diethrel pada '+month($('pa-plan-month').value+'-01')+', jendela panen diperkirakan '+month(plan.result.items[0].start)+'–'+month(plan.result.items[0].end)+'. Skenario 80%: '+integer(plan.result.items[0].base)+' buah untuk seluruh jendela panen. Grafik menampilkan bagian yang masuk 12 bulan ke depan; asumsi ini belum merupakan hasil terverifikasi.';
+    if(plan)$('pa-forecast-note').textContent=plan.error||'Simulasi: panen '+month(plan.result.items[0].start)+'–'+month(plan.result.items[0].end)+' · '+integer(plan.result.items[0].base)+' buah (skenario 80%, total periode). Belum terverifikasi.';
     $('pa-forecast-chart').innerHTML=months.map(function(m){return '<div class="dy-forecast-month"><strong>'+(m.gawangan?integer(m.base):'—')+'</strong><div class="dy-forecast-bars">'+['low','base','high'].map(function(k){return '<span class="'+k+'" style="height:'+(m.gawangan?Math.max(1,m[k]/max*160):0)+'px" title="'+esc(month(m.period))+' · '+({low:'60%',base:'80%',high:'100%'})[k]+': '+(m.gawangan?integer(m[k])+' buah':'Belum ada estimasi')+'"></span>';}).join('')+'</div><small>'+esc(month(m.period))+'</small><small>'+(m.past?'Lampau':m.gawangan?(plan?'Simulasi':'Estimasi'):'Belum ada estimasi')+'</small></div>';}).join('');
     $('pa-forecast-chart').setAttribute('aria-label','Proyeksi panen bulanan. '+months.map(function(m){return month(m.period)+': '+(m.gawangan?integer(m.base)+' buah pada skenario 80 persen':'belum ada estimasi')+(m.past?', periode lampau':'');}).join('; '));
     $('pa-forecast-months').innerHTML=months.map(function(m){return '<tr><th scope="row">'+esc(month(m.period))+(m.past?' · lampau':'')+'</th>'+['low','base','high'].map(function(k){return '<td>'+(m.gawangan?integer(m[k])+' buah':'Belum ada estimasi')+'</td>';}).join('')+'<td>'+(plan?(m.gawangan?plan.candidates.length:'—'):integer(m.gawangan))+'</td></tr>';}).join('');
@@ -125,7 +125,7 @@
     var result=window.DayunHarvestEstimate.build(rows);
     monthlyChart(result);
     $('pa-estimate-summary').textContent=result.upcoming.length+' gawangan dengan periode mendatang/berjalan · '+result.overdue.length+' periode sudah lewat · '+result.missing.length+' perlu data ethrel';
-    $('pa-estimate-sync').textContent=monitoringAvailable?monitoringSource+'. Angka merupakan skenario; periksa tanggal aktivitas terakhir. Snapshot dapat tertinggal dari laporan terbaru.':'Laporan monitoring terbaru belum dapat dimuat. Estimasi sementara hanya memakai data sumber; muat ulang untuk mencoba kembali.';
+    $('pa-estimate-sync').textContent=monitoringAvailable?monitoringSource+'. Snapshot dapat tertinggal dari laporan terbaru.':'Laporan monitoring terbaru belum dapat dimuat. Estimasi sementara hanya memakai data sumber; muat ulang untuk mencoba kembali.';
     $('pa-estimate-table').innerHTML=result.items.map(function(item){
       var amount=item.pool==null?'Belum dapat dihitung':integer(item.low)+'–'+integer(item.high)+' buah<small>Skenario 80%: '+integer(item.base)+' buah'+(item.status==='overdue'?' · periode lampau':'')+'</small>';
       var label=item.status==='overdue'?'Perlu pembaruan lapangan':item.status==='estimated'?'Estimasi bersyarat':'Data belum cukup';
@@ -146,9 +146,18 @@
     analysis._detailsById={};
     (details.objects||[]).forEach(function(object){analysis._detailsById[object.objectId]=(object.crops||[]).find(function(crop){return String(crop.crop||'').toUpperCase()==='NANAS';})||null;});
     if(analysis.blockCodes.indexOf(selected)<0&&selected!=='ALL')selected='ALL';
-    $('pa-status').hidden=true;$('pa-content').hidden=false;render();
+    $('pa-status').hidden=true;$('pa-content').hidden=false;render();if(location.hash)revealTarget(location.hash);
   }).catch(function(error){$('pa-status').textContent='Analisis belum dapat dimuat: '+error.message;});
 
+  function revealTarget(hash) {
+    var id;try{id=decodeURIComponent((hash||'').slice(1));}catch(_){return;}
+    var target=document.getElementById(id);if(!target)return;
+    var parent=target.parentElement;
+    while(parent){if(parent.tagName==='DETAILS')parent.open=true;parent=parent.parentElement;}
+    target.scrollIntoView({block:'start'});
+  }
+  document.addEventListener('click',function(event){var link=event.target.closest('a[href^="#"]');if(link)revealTarget(link.getAttribute('href'));});
+  window.addEventListener('hashchange',function(){revealTarget(location.hash);});
   $('pa-plan-calculate').addEventListener('click',function(){if(analysis)harvestEstimate(selectedRows());});
   $('pa-forecast-period').addEventListener('change',function(){forecastMode=this.value;if(analysis)harvestEstimate(selectedRows());});
   $('pa-block').addEventListener('change',function(){selected=this.value;var url=new URL(location.href);if(selected==='ALL')url.searchParams.delete('block');else url.searchParams.set('block',selected);history.replaceState(null,'',url);render();});

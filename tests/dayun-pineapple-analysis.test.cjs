@@ -111,7 +111,8 @@ test('analysis page and map expose the Queen commodity entry point and field saf
   const profile = fs.readFileSync(path.join(root, 'js/dayun-gawangan.js'), 'utf8');
   assert.match(page, /Nanas Queen Dayun/);
   assert.match(page, /id="pa-data-date"/);
-  assert.match(page, /Nanas Madu belum dimasukkan/);
+  assert.match(page, /Riwayat panen aktual/);
+  assert.match(page, /dy-compact-panel/);
   assert.match(page, /Estimasi panen per gawangan/);
   assert.match(page, /sensus hidup dan kelompok tanaman/);
   assert.match(page, /Periode lewat tidak digeser otomatis/);
