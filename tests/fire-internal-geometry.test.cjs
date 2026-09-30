@@ -37,8 +37,8 @@ test('verified PHI alias applies only to the matching parent group',()=>{
   assert.equal(run([event],{rspo:boundary('Another Group')}).rspo.rows[0].name,'PT PHI');
 });
 test('missing boundaries and invalid geometry fail visibly',()=>{
-  assert.throws(()=>run([event],{pbph:fc([])}),/belum tersedia/);
-  assert.throws(()=>run([event],{ps:fc([])}),/Perhutanan Sosial belum tersedia/);
+  assert.match(run([event],{pbph:fc([])}).pbph.error,/belum tersedia/);
+  const result=run([event],{ps:fc([])});assert.match(result.ps.error,/Perhutanan Sosial belum tersedia/);assert.ok(result.pbph.uniqueHa>0);assert.ok(result.rspo.uniqueHa>0);
   assert.throws(()=>run([{geometry:{type:'Point',coordinates:[101,1]}}]),/poligon/);
 });
 test('multiple pieces for same identity merge and multipart works',()=>{
@@ -65,3 +65,5 @@ test('worker loads local dependencies and returns results without network',()=>{
   context.onmessage({data:{burned:fc([event]),pbph,rspo,ps,report:{hotspots:[]}}});
   assert.equal(result.ok,true);assert.ok(result.result.combinedHa>0);
 });
+
+test('all reference units remain available without hotspot or burned overlap',()=>{const result=run([]);for(const kind of ['pbph','rspo','ps']){assert.equal(result[kind].rows.length,1);assert.equal(result[kind].rows[0].burnedHa,0);assert.equal(result[kind].rows[0].hotspots,0);assert.ok(result[kind].rows[0].boundary.coordinates.length);}});
