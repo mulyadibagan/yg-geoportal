@@ -66,4 +66,8 @@ test('worker loads local dependencies and returns results without network',()=>{
   assert.equal(result.ok,true);assert.ok(result.result.combinedHa>0);
 });
 
-test('all reference units remain available without hotspot or burned overlap',()=>{const result=run([]);for(const kind of ['pbph','rspo','ps']){assert.equal(result[kind].rows.length,1);assert.equal(result[kind].rows[0].burnedHa,0);assert.equal(result[kind].rows[0].hotspots,0);assert.ok(result[kind].rows[0].boundary.coordinates.length);}});
+test('exclude unaffected units but retain hotspot-only and burned-only units',()=>{
+ const boundaries=fc([rectangle(101,1,.02,.02,{PBPH_ID:'burned',NAMOBJ:'Burned only'}),rectangle(102,1,.02,.02,{PBPH_ID:'hotspot',NAMOBJ:'Hotspot only'}),rectangle(103,1,.02,.02,{PBPH_ID:'none',NAMOBJ:'Unaffected'})]);
+ const result=run([event],{pbph:boundaries,report:{hotspots:[{longitude:102.01,latitude:1.01,date:'2026-08-01'}]}});
+ assert.deepEqual(result.pbph.rows.map(r=>r.id).sort(),['burned','hotspot']);assert.equal(result.pbph.boundaryCount,3);assert.equal(run([]).pbph.rows.length,0);
+});

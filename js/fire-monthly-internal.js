@@ -13,8 +13,8 @@
     if(!burned){status.textContent='Arsip estimasi belum tersedia. Luas tidak dapat dihitung; bukan berarti nol kebakaran.';return Promise.resolve();}
     let worker,deadline;
     return new Promise((resolve,reject)=>{
-      worker=new Worker('js/fire-internal-worker.js?v=20260930-all-boundaries1');
-      deadline=setTimeout(()=>{worker.terminate();reject(Error('Perhitungan melebihi 60 detik. Batas referensi tetap dapat dilihat pada peta.'));},60000);
+      worker=new Worker('js/fire-internal-worker.js?v=20260930-affected-boundaries2');
+      deadline=setTimeout(()=>{worker.terminate();reject(Error('Perhitungan melebihi 60 detik. Silakan muat ulang laporan untuk mencoba kembali.'));},60000);
       worker.onmessage=e=>e.data.ok?resolve(e.data.result):reject(Error(e.data.error));
       worker.onerror=()=>reject(Error('Perhitungan belum dapat dijalankan. Silakan muat ulang laporan.'));
       worker.postMessage({burned,pbph,rspo,ps,report:{hotspots:report.hotspots||[],unavailable:report.unavailable}});
@@ -25,7 +25,7 @@
       const timer=setInterval(()=>{if(window.YG_STAFF_DATA.session()?.token!==session.token){clearInterval(timer);cleanup();}},2000);
       window.addEventListener('pagehide',()=>{clearInterval(timer);cleanup();},{once:true});
       status.textContent='Sementara · '+month+' · luas unik gabungan kategori tersedia '+ha(result.combinedHa);
-      const note=document.createElement('p');note.textContent='Luas dihitung dari irisan poligon estimasi dengan batas referensi yang tersedia, menggunakan UTM zona 47N. Poligon yang bertumpang tindih digabung sebelum luas dihitung. Luas mengikuti bulan deteksi pertama kejadian; hotspot mengikuti tanggal deteksi bulan laporan. Arsip masih parsial: tidak ada irisan belum berarti tidak ada kebakaran. Persentase menggunakan luas poligon referensi, bukan luas izin dalam SK.';panel.append(note);
+      const note=document.createElement('p');note.textContent='Luas dihitung dari irisan poligon estimasi dengan batas referensi yang tersedia, menggunakan UTM zona 47N. Poligon yang bertumpang tindih digabung sebelum luas dihitung. Luas mengikuti bulan deteksi pertama kejadian; hotspot mengikuti tanggal deteksi bulan laporan. Peta dan tabel hanya menampilkan batas dengan hotspot atau irisan estimasi terbakar pada periode laporan. Arsip masih parsial: tidak ada irisan belum berarti tidak ada kebakaran. Persentase menggunakan luas poligon referensi, bukan luas izin dalam SK.';panel.append(note);
       if(result.rspo.groupLevel){const p=document.createElement('p');p.textContent='Batas perkebunan yang tersedia mencakup agregat grup anggota RSPO; hasil berlabel grup tidak dapat diartikan sebagai luas per perusahaan atau unit kebun. Cakupan ini belum mewakili seluruh perkebunan sawit Riau.';panel.append(p);}
       if(!result.rspo.groupLevel){const p=document.createElement('p');p.textContent='Rincian perkebunan dihitung per perusahaan dari batas asli GeoRSPO. Nama grup dan estate ditampilkan sebagai keterangan. Nama perusahaan mengikuti atribut sumber; singkatan belum diperluas tanpa verifikasi.';panel.append(p);}
       const selection=new Map();
@@ -43,6 +43,9 @@
         if(category.skippedUnits&&category.skippedUnits.length){const warning=document.createElement('p');warning.textContent=category.skippedUnits.length+' batas tidak dapat diproses karena geometri sumber bermasalah; hasil kategori ini bersifat parsial.';section.append(warning);}
         if(!category.rows.length)section.querySelector('tbody').innerHTML='<tr><td colspan="6">Tidak ada irisan estimasi maupun hotspot pada batas yang tersedia. Arsip estimasi masih parsial.</td></tr>';
         panel.append(section);
+        const boundaries=category.rows.map(r=>({type:'Feature',geometry:r.boundary,properties:{name:r.name,hotspots:r.hotspots,area:r.burnedHa}}));
+        const boundaryLayer=L.geoJSON({type:'FeatureCollection',features:boundaries},{style:{color:kind==='pbph'?'#ffc247':kind==='ps'?'#007f73':'#8fd14f',weight:2,dashArray:'6 4',fillOpacity:.04},onEachFeature:(f,l)=>l.bindPopup('<strong>'+esc(f.properties.name)+'</strong><br>Hotspot: '+(f.properties.hotspots===null?'Belum tersedia':f.properties.hotspots)+'<br>Estimasi irisan: '+(f.properties.area>0?ha(f.properties.area):'Tidak ada irisan dalam arsip')+'<br><small>'+esc(month)+'</small>')}).addTo(map);
+        layers.push(boundaryLayer);control.addOverlay(boundaryLayer,'Batas dengan hotspot / irisan terbakar · '+title);
         const features=category.rows.filter(r=>r.burnedHa>0).map(r=>({type:'Feature',geometry:r.geometry,properties:{name:r.name,area:r.burnedHa,percent:r.percent}}));
         const layer=L.geoJSON({type:'FeatureCollection',features},{style:{color:kind==='pbph'?'#b66100':kind==='ps'?'#007f73':'#237b39',weight:2.5,fillOpacity:.6},onEachFeature:(f,l)=>l.bindPopup('<strong>'+esc(f.properties.name)+'</strong><br>Estimasi irisan: '+ha(f.properties.area)+'<br>'+number(f.properties.percent)+'% dari poligon referensi<br><small>Sementara · '+esc(month)+'</small>')}).addTo(map);
         layers.push(layer);control.addOverlay(layer,'Irisan terbakar · '+title);
