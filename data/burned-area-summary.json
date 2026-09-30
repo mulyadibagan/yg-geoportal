@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-29T03:53:37.985804+00:00",
+  "generatedAt": "2026-09-30T03:55:13.690353+00:00",
   "status": "ready",
   "eventCount": 28,
-  "estimatedAreaHa": 9405.01,
+  "estimatedAreaHa": 9498.93,
   "candidateEventCount": 29,
   "processing": {
     "published": 28,
@@ -18,20 +18,20 @@
   "villageSource": "data/batas_administrasi_desa_riau.geojson",
   "spatiallyClipped": true,
   "areaCrs": "EPSG:32647",
-  "administrativeUpdatedAt": "2026-09-29T03:53:40.049177+00:00",
+  "administrativeUpdatedAt": "2026-09-30T03:55:15.454045+00:00",
   "unassignedAreaHa": 17.56,
   "villageTotals": [
     {
       "regency": "Bengkalis",
       "district": "Pinggir",
       "village": "Pangkalan Libut",
-      "areaHa": 13.24
+      "areaHa": 14.12
     },
     {
       "regency": "Bengkalis",
       "district": "Pinggir",
       "village": "Sungaimeranti",
-      "areaHa": 31.68
+      "areaHa": 34.56
     },
     {
       "regency": "Bengkalis",
@@ -403,13 +403,13 @@
       "regency": "Kota Dumai",
       "district": "Sungai Sembilan",
       "village": "Kelurahan Bangsal Aceh",
-      "areaHa": 64.64
+      "areaHa": 141.64
     },
     {
       "regency": "Kota Dumai",
       "district": "Sungai Sembilan",
       "village": "Kelurahan Lubuk Gaung",
-      "areaHa": 6.04
+      "areaHa": 19.2
     },
     {
       "regency": "Kuantan Singingi",
@@ -464,7 +464,7 @@
     {
       "regency": "Bengkalis",
       "district": "Pinggir",
-      "areaHa": 44.92
+      "areaHa": 48.68
     },
     {
       "regency": "Bengkalis",
@@ -604,7 +604,7 @@
     {
       "regency": "Kota Dumai",
       "district": "Sungai Sembilan",
-      "areaHa": 70.68
+      "areaHa": 160.84
     },
     {
       "regency": "Kuantan Singingi",
@@ -640,7 +640,7 @@
   "regencyTotals": [
     {
       "regency": "Bengkalis",
-      "areaHa": 187.64
+      "areaHa": 191.4
     },
     {
       "regency": "Indragiri Hilir",
@@ -664,7 +664,7 @@
     },
     {
       "regency": "Kota Dumai",
-      "areaHa": 70.68
+      "areaHa": 160.84
     },
     {
       "regency": "Kuantan Singingi",
