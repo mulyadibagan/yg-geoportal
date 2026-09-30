@@ -75,7 +75,7 @@
       var period = card.querySelector(':scope > strong');
       var description = card.querySelector(':scope > small');
       if (period) period.textContent = donor.period || 'Oktober 2026–September 2027';
-      if (description) description.textContent = 'Program Dayun · KUPS Rimba Sejahtera';
+      if (description) description.textContent = 'Dayun · KPI Gold, Business Plan, kebun nanas dan usaha KUPS';
     }
   }
 

@@ -1987,7 +1987,7 @@
     document.getElementById("donor-grid").innerHTML = donorEntries.length
       ? donorEntries.map(([name, count]) => {
           const programCount = Object.keys(donorPrograms[name] || {}).length;
-          if (name === aprilName) return '<a class="category-card dashboard-link funding-card funding-card-april" href="dayun.html"><i class="category-icon funding-card-logo funding-card-logo-april" aria-hidden="true"><img src="assets/funding-april.png" alt="" loading="lazy"></i><span>APRIL Group</span><strong>Program Dayun</strong><small>KUPS Rimba Sejahtera · buka program</small></a>';
+          if (name === aprilName) return '<a class="category-card dashboard-link funding-card funding-card-april" href="dayun.html"><i class="category-icon funding-card-logo funding-card-logo-april" aria-hidden="true"><img src="assets/funding-april.png" alt="" loading="lazy"></i><span>APRIL Group</span><strong>Program Dayun</strong><small>Dayun · KPI Gold, Business Plan, kebun nanas dan usaha KUPS</small></a>';
           if (name === "Pan Pacific Conservation Foundation (PPCF)") {
             return '<button class="category-card dashboard-link funding-card" type="button" data-open-ppcf>' +
               '<i class="category-icon funding-card-logo" aria-hidden="true"><img src="assets/funding-ppcf.jpeg" alt="" loading="lazy"></i>' +
