@@ -41,6 +41,31 @@ jobs:
           pip install 'gdown>=6.3.0'
           sudo apt-get update
           sudo apt-get install -y libimage-exiftool-perl jq gdal-bin
+      - name: Recover Garuda Sakti after Drive error handling fix
+        if: github.event_name == 'push'
+        working-directory: cloudflare/yg-webgis-public-data
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          mkdir -p ../../tmp/drone-recovery
+          JOB_ID=drn-14fc5b18-7a1d-4069-9a9a-56554abe1670
+          JOB=../../tmp/drone-recovery/job.json
+          npx wrangler r2 object get "yg-webgis-public-snapshots/drone/jobs/$JOB_ID.json" --remote --file "$JOB"
+          # Retry only the observed old failure, never a ready or active job.
+          if jq -e '.status == "failed" and .error == "processing_failed" and ((.failedAt // "9999") < "2026-09-30T12:02:00Z")' "$JOB" >/dev/null; then
+            JOB_TOKEN=$(jq -r '.accessToken // empty' "$JOB")
+            test -n "$JOB_TOKEN"
+            echo "::add-mask::$JOB_TOKEN"
+            curl --fail --silent --show-error -X POST \
+              -H 'Origin: https://webgisyg.id' -H "x-job-token: $JOB_TOKEN" \
+              "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/drone/jobs/$JOB_ID/retry" \
+              -o ../../tmp/drone-recovery/retry.json
+            jq '{ok, job: (.job | {id, status, stage, progress})}' ../../tmp/drone-recovery/retry.json
+          else
+            echo "Recovery already attempted or job no longer matches the old failure."
+          fi
       - name: Clean expired drone source files
         shell: bash
         working-directory: cloudflare/yg-webgis-public-data
@@ -305,6 +330,15 @@ jobs:
             wait "$DOWNLOAD_PID"
             DOWNLOAD_RC=$?
             set -e
+            if [ ! -s "$ROOT/drive-download.json" ]; then
+              echo "drive_manifest_failed" > "$ROOT/error_code"
+              exit 43
+            fi
+            DOWNLOAD_ERROR=$(jq -r '.error // empty' "$ROOT/drive-download.json")
+            if [ -n "$DOWNLOAD_ERROR" ]; then
+              printf '%s\n' "$DOWNLOAD_ERROR" > "$ROOT/error_code"
+              exit 43
+            fi
             EXPECTED=$(jq -r '.expectedPhotos // 0' "$ROOT/drive-download.json")
             DOWNLOADED=$(jq -r '.downloadedPhotos // 0' "$ROOT/drive-download.json")
 

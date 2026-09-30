@@ -9,6 +9,11 @@ function accessFor(id){
 function currentId(){return localStorage.getItem('ygDroneCurrentJob')||''}
 function userError(code){
   return ({
+    drive_access_denied:'Google Drive menolak akses ke folder foto. Pastikan folder dapat dibaca oleh siapa saja yang memiliki link, lalu klik Coba lagi. Anda juga dapat menggunakan Upload foto.',
+    drive_rate_limited:'Google Drive sedang membatasi pengambilan foto. Tunggu beberapa saat, lalu klik Coba lagi. Foto asli tetap aman.',
+    drive_manifest_failed:'Daftar foto dari Google Drive belum dapat dibaca. Coba lagi setelah koneksi pulih, atau gunakan Upload foto.',
+    drive_manifest_invalid:'Format daftar foto Google Drive belum dapat dibaca oleh pemroses. Gunakan Upload foto sementara masalah ini diperiksa.',
+    drive_insufficient_photos:'Folder harus berisi minimal tiga foto JPG/JPEG yang dapat dibaca. Periksa isi folder, lalu klik Coba lagi.',
     drive_download_incomplete:'Sebagian foto dari Google Drive belum berhasil diambil. Foto yang sudah tersedia tetap aman dan proses dapat dicoba kembali.',
     insufficient_valid_photos:'Foto yang dapat digunakan belum cukup untuk membuat orthomosaic.',
     photogrammetry_failed:'Penyusunan foto belum berhasil. Periksa kualitas dan tumpang tindih foto, lalu coba kembali.',
@@ -116,18 +121,8 @@ if(refresh){
   },true);
 }
 
-// Observe API responses after the existing page logic has processed them.
-const previousFetch=window.fetch.bind(window);
-window.fetch=async function(input,init){
-  const response=await previousFetch(input,init);
-  try{
-    const url=typeof input==='string'?input:(input&&input.url)||'';
-    if(/\/api\/drone\/jobs\/drn-[A-Za-z0-9-]+(?:\?|$)/.test(url)){
-      response.clone().json().then(data=>handleJob(data?.job)).catch(()=>{});
-    }
-  }catch{}
-  return response;
-};
+// Render after the core status and progress panel, without racing response clones.
+window.addEventListener('yg:drone-job',event=>handleJob(event.detail));
 
 // If the page has an active process, force one fresh status read on load.
 setTimeout(()=>{if(currentId()&&accessFor(currentId()))$('#refreshJob')?.click();},700);
