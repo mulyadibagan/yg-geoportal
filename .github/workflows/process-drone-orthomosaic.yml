@@ -54,7 +54,7 @@ jobs:
           JOB=../../tmp/drone-recovery/job.json
           npx wrangler r2 object get "yg-webgis-public-snapshots/drone/jobs/$JOB_ID.json" --remote --file "$JOB"
           # Retry only the observed old failure, never a ready or active job.
-          if jq -e '.status == "failed" and .error == "processing_failed" and ((.failedAt // "9999") < "2026-09-30")' "$JOB" >/dev/null; then
+          if jq -e '.status == "failed" and .error == "processing_failed" and ((.failedAt // "9999") < "2026-09-30T12:02:00Z")' "$JOB" >/dev/null; then
             JOB_TOKEN=$(jq -r '.accessToken // empty' "$JOB")
             test -n "$JOB_TOKEN"
             echo "::add-mask::$JOB_TOKEN"
