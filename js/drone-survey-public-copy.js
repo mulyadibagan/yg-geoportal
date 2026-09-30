@@ -178,18 +178,7 @@ if(startButton){
   },true);
 }
 
-const nativeFetch=window.fetch.bind(window);
-window.fetch=async function(input,init){
-  const response=await nativeFetch(input,init);
-  try{
-    const url=typeof input==='string'?input:(input&&input.url)||'';
-    if(/\/api\/drone\/jobs(?:\/drn-[A-Za-z0-9-]+)?(?:\?|$)/.test(url)){
-      const clone=response.clone();
-      clone.json().then(data=>{if(data&&data.job) renderProgress(data.job)}).catch(()=>{});
-    }
-  }catch{}
-  return response;
-};
+window.addEventListener('yg:drone-job',event=>renderProgress(event.detail));
 
 normalizeNode();
 progressBox();
@@ -200,3 +189,4 @@ new MutationObserver(records=>{
   }
 }).observe(document.body,{subtree:true,childList:true,characterData:true});
 })();
+

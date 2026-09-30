@@ -7,31 +7,47 @@ real progress instead of leaving the user at a fixed percentage.
 """
 import argparse
 import json
+import re
 from pathlib import Path
 import subprocess
 import sys
 import time
 
 
+class DriveError(RuntimeError):
+    def __init__(self, code, message):
+        super().__init__(message)
+        self.code = code
+
+
 def run(cmd, capture=False):
-    return subprocess.run(cmd, text=True, capture_output=capture)
+    return subprocess.run(cmd, text=True, capture_output=capture, timeout=120)
 
 
 def list_manifest(url: str):
     proc = run(["gdown", "--json", url], capture=True)
     if proc.returncode != 0:
-        raise RuntimeError(proc.stderr.strip() or "Folder Google Drive tidak dapat dibaca")
+        detail = (proc.stderr or '').lower()
+        if re.search(r'(?:status code|http)\D*(401|403)\b', detail):
+            code = 'drive_access_denied'
+        elif '429' in detail or 'quota' in detail or 'too many' in detail:
+            code = 'drive_rate_limited'
+        else:
+            code = 'drive_manifest_failed'
+        raise DriveError(code, "Folder Google Drive belum dapat dibaca")
     try:
         entries = json.loads(proc.stdout)
     except Exception as exc:
-        raise RuntimeError("Daftar foto Google Drive tidak dapat dibaca") from exc
+        raise DriveError('drive_manifest_invalid', "Daftar foto Google Drive tidak dapat dibaca") from exc
+    if not isinstance(entries, list) or any(not isinstance(item, dict) for item in entries):
+        raise DriveError('drive_manifest_invalid', "Format daftar foto Google Drive tidak dikenal")
     photos=[]
     for item in entries if isinstance(entries,list) else []:
         path=str(item.get("path") or "")
         if path.lower().endswith((".jpg",".jpeg")):
             photos.append(path)
     if len(photos) < 3:
-        raise RuntimeError("Folder tidak berisi cukup foto JPG/JPEG")
+        raise DriveError('drive_insufficient_photos', "Folder tidak berisi cukup foto JPG/JPEG")
     return photos
 
 
@@ -39,7 +55,7 @@ def resolve_downloaded(output: Path):
     return [p for p in output.rglob("*") if p.is_file() and p.suffix.lower() in (".jpg",".jpeg") and p.stat().st_size > 0]
 
 
-def write_summary(path: Path, expected: int, downloaded: int, attempt: int, history, ok=False, state="downloading"):
+def write_summary(path: Path, expected: int, downloaded: int, attempt: int, history, ok=False, state="downloading", error=None):
     payload={
         "ok": bool(ok),
         "state": state,
@@ -50,7 +66,12 @@ def write_summary(path: Path, expected: int, downloaded: int, attempt: int, hist
         "history": history,
         "updatedAt": time.time(),
     }
-    path.write_text(json.dumps(payload,ensure_ascii=False,indent=2),encoding="utf-8")
+    if error:
+        payload['error'] = error
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_name(path.name + '.tmp')
+    temporary.write_text(json.dumps(payload,ensure_ascii=False,indent=2),encoding="utf-8")
+    temporary.replace(path)
 
 
 def main():
@@ -67,10 +88,18 @@ def main():
     output=Path(args.output)
     output.mkdir(parents=True,exist_ok=True)
     summary_path=Path(args.summary)
-    expected=list_manifest(args.url)
-    expected_count=len(expected)
     pass_history=[]
     initial=len(resolve_downloaded(output))
+    # Publish a valid summary before any network access. The workflow polls it.
+    write_summary(summary_path,0,initial,0,pass_history,state='listing')
+    try:
+        expected=list_manifest(args.url)
+    except (DriveError, subprocess.TimeoutExpired, OSError) as exc:
+        code = exc.code if isinstance(exc, DriveError) else 'drive_manifest_failed'
+        write_summary(summary_path,0,initial,0,pass_history,state='failed',error=code)
+        print(code, file=sys.stderr)
+        return 43
+    expected_count=len(expected)
     write_summary(summary_path,expected_count,initial,0,pass_history)
     if initial >= expected_count:
         write_summary(summary_path,expected_count,initial,0,pass_history,ok=True,state="complete")
