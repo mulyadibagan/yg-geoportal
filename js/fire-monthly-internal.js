@@ -11,9 +11,10 @@
     document.querySelector('.fm-tables').before(panel);
     const status=panel.querySelector('#fm-internal-progress');
     if(!burned){status.textContent='Arsip estimasi belum tersedia. Luas tidak dapat dihitung; bukan berarti nol kebakaran.';return Promise.resolve();}
-    let worker;
+    let worker,deadline;
     return new Promise((resolve,reject)=>{
-      worker=new Worker('js/fire-internal-worker.js?v=20260917-ps2');
+      worker=new Worker('js/fire-internal-worker.js?v=20260930-all-boundaries1');
+      deadline=setTimeout(()=>{worker.terminate();reject(Error('Perhitungan melebihi 60 detik. Batas referensi tetap dapat dilihat pada peta.'));},60000);
       worker.onmessage=e=>e.data.ok?resolve(e.data.result):reject(Error(e.data.error));
       worker.onerror=()=>reject(Error('Perhitungan belum dapat dijalankan. Silakan muat ulang laporan.'));
       worker.postMessage({burned,pbph,rspo,ps,report:{hotspots:report.hotspots||[],unavailable:report.unavailable}});
@@ -23,7 +24,7 @@
       const cleanup=()=>{layers.forEach(l=>{map.removeLayer(l);control.removeLayer(l);});panel.remove();};
       const timer=setInterval(()=>{if(window.YG_STAFF_DATA.session()?.token!==session.token){clearInterval(timer);cleanup();}},2000);
       window.addEventListener('pagehide',()=>{clearInterval(timer);cleanup();},{once:true});
-      status.textContent='Sementara · '+month+' · luas unik gabungan '+ha(result.combinedHa);
+      status.textContent='Sementara · '+month+' · luas unik gabungan kategori tersedia '+ha(result.combinedHa);
       const note=document.createElement('p');note.textContent='Luas dihitung dari irisan poligon estimasi dengan batas referensi yang tersedia, menggunakan UTM zona 47N. Poligon yang bertumpang tindih digabung sebelum luas dihitung. Luas mengikuti bulan deteksi pertama kejadian; hotspot mengikuti tanggal deteksi bulan laporan. Arsip masih parsial: tidak ada irisan belum berarti tidak ada kebakaran. Persentase menggunakan luas poligon referensi, bukan luas izin dalam SK.';panel.append(note);
       if(result.rspo.groupLevel){const p=document.createElement('p');p.textContent='Batas perkebunan yang tersedia mencakup agregat grup anggota RSPO; hasil berlabel grup tidak dapat diartikan sebagai luas per perusahaan atau unit kebun. Cakupan ini belum mewakili seluruh perkebunan sawit Riau.';panel.append(p);}
       if(!result.rspo.groupLevel){const p=document.createElement('p');p.textContent='Rincian perkebunan dihitung per perusahaan dari batas asli GeoRSPO. Nama grup dan estate ditampilkan sebagai keterangan. Nama perusahaan mengikuti atribut sumber; singkatan belum diperluas tanpa verifikasi.';panel.append(p);}
@@ -31,6 +32,7 @@
       for(const kind of ['ps','pbph','rspo']){
         const category=result[kind],title=kind==='pbph'?'PBPH':kind==='ps'?'Perhutanan Sosial':(category.groupLevel?'Perkebunan anggota RSPO · grup / unit':'Perkebunan anggota RSPO · perusahaan');
         const section=document.createElement('section');
+        if(category.error){section.innerHTML='<h3>'+title+'</h3><p>'+esc(category.error)+'</p>';panel.append(section);const card=document.getElementById(kind==='pbph'?'fm-companies':kind==='ps'?'fm-ps-areas':'fm-rspo-areas');if(card)card.textContent='—';continue;}
         section.id='fm-internal-'+kind;
         section.innerHTML='<h3>'+title+'</h3><p><strong>'+ha(category.uniqueHa)+'</strong> luas irisan unik · '+category.rows.filter(r=>r.burnedHa>0).length+' area dengan irisan · '+category.boundaryCount+' batas dianalisis</p><div class="fm-table-wrap"><table class="fm-table"><thead><tr><th>Nama / batas referensi</th><th>Hotspot / hari</th><th>Estimasi terbakar</th><th>Luas poligon</th><th>Persentase</th><th>Kejadian / peta</th></tr></thead><tbody>'+category.rows.map((r,i)=>{
           const key=kind+'-'+i;
@@ -60,6 +62,6 @@
         document.getElementById('monthly-fire-map').scrollIntoView({behavior:'smooth',block:'center'});
       });
       const foot=document.createElement('p');foot.textContent='Total tiap kategori dan gabungan dihitung sebagai luas unik. Penjumlahan baris dapat lebih besar jika batas referensi saling tumpang tindih. Hasil menunjukkan lokasi irisan, bukan penyebab kebakaran atau tanggung jawab pihak tertentu.';panel.append(foot);
-    }).catch(error=>{status.textContent='Analisis luas belum tersedia: '+error.message;}).finally(()=>{if(worker)worker.terminate();});
+    }).catch(error=>{status.textContent='Analisis luas belum tersedia: '+error.message;}).finally(()=>{clearTimeout(deadline);if(worker)worker.terminate();});
   };
 })();

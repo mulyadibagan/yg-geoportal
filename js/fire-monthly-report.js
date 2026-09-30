@@ -77,12 +77,9 @@
     table('fm-company-rows',d.companies||[],true,{});
     if(staffSession)rspoTable(d.rspoAreas||[]);
     var villageNames=new Set((d.villages||[]).map(function(x){return String(x.village||'').toLowerCase()}));
-    var companyNames=new Set((d.companies||[]).map(function(x){return String(x.name||'').toLowerCase()}));
-    var rspoIds=new Set((d.rspoAreas||[]).map(function(x){return String(x.id||'')}));
-    var rspoNames=new Set((d.rspoAreas||[]).map(function(x){return String(x.name||'').toLowerCase().replace(/^pt\.\s*/, 'pt ')}));
     var villageLayer=L.geoJSON(villageGeo,{filter:function(f){return villageNames.has(String((f.properties||{}).WADMKD||'').toLowerCase())},style:{color:'#40d9e8',weight:2,fillColor:'#20b7c7',fillOpacity:.13},onEachFeature:function(f,l){var p=f.properties||{};l.bindTooltip('<strong>Desa '+esc(p.WADMKD||'')+'</strong><br>'+esc([p.WADMKC,p.WADMKK].filter(Boolean).join(', ')))}}).addTo(map);
-    var permitLayer=L.geoJSON(permitGeo,{filter:function(f){return companyNames.has(String((f.properties||{}).NAMOBJ||'').toLowerCase())},style:{color:'#ffc247',weight:2.2,dashArray:'7 5',fillColor:'#ef9f24',fillOpacity:.12},onEachFeature:function(f,l){var p=f.properties||{},profileId=String(p.PBPH_ID||[p.NAMOBJ,p.NO_SK].filter(Boolean).join('|')).trim();l.bindPopup('<strong>'+esc(p.NAMOBJ||'Pemegang PBPH')+'</strong><br>'+esc(p.NO_SK||'')+'<br><a href="pbph-profile.html?id='+encodeURIComponent(profileId)+'" target="_blank" rel="noopener noreferrer">Buka profil PHL &amp; SVLK →</a>')}});
-    var rspoLayer=L.geoJSON(rspoGeo,{filter:function(f){return rspoIds.has(String((f.properties||{}).COMPANY_ID||''))||rspoNames.has(String((f.properties||{}).PO_COMPANY||'').toLowerCase().replace(/^pt\.\s*/, 'pt '))},style:{color:'#8fd14f',weight:2.4,fillColor:'#3c9f57',fillOpacity:.2},onEachFeature:function(f,l){var p=f.properties||{};l.bindTooltip('<strong>'+esc(p.PO_COMPANY||'Area anggota RSPO')+'</strong><br>'+esc(p.RSPO_GROUP||'')+(p.SUPPLY_BASE?'<br><small>'+esc(p.SUPPLY_BASE)+'</small>':'') )}});
+    var permitLayer=L.geoJSON(permitGeo,{style:{color:'#ffc247',weight:2.2,dashArray:'7 5',fillColor:'#ef9f24',fillOpacity:.12},onEachFeature:function(f,l){var p=f.properties||{},profileId=String(p.PBPH_ID||[p.NAMOBJ,p.NO_SK].filter(Boolean).join('|')).trim();l.bindPopup('<strong>'+esc(p.NAMOBJ||'Pemegang PBPH')+'</strong><br>'+esc(p.NO_SK||'')+'<br><a href="pbph-profile.html?id='+encodeURIComponent(profileId)+'" target="_blank" rel="noopener noreferrer">Buka profil PHL &amp; SVLK →</a>')}});
+    var rspoLayer=L.geoJSON(rspoGeo,{style:{color:'#8fd14f',weight:2.4,fillColor:'#3c9f57',fillOpacity:.2},onEachFeature:function(f,l){var p=f.properties||{};l.bindPopup('<strong>'+esc(p.PO_COMPANY||'Area anggota RSPO')+'</strong><br>'+esc(p.RSPO_GROUP||'')+(p.SUPPLY_BASE?'<br><small>'+esc(p.SUPPLY_BASE)+'</small>':'') )}});
     var points=L.featureGroup();
     (d.hotspots||[]).forEach(function(x){var popup='<strong>Hotspot high confidence</strong><br>'+esc(x.date)+' '+esc(x.time)+'<br>'+esc([x.village,x.district,x.regency].filter(Boolean).join(', ')||'Lokasi administrasi tidak teridentifikasi');L.circleMarker([x.latitude,x.longitude],{radius:5,color:'#fff',weight:1.5,fillColor:'#ef382f',fillOpacity:.95}).bindPopup(popup).addTo(points)});
     points.addTo(map);
@@ -94,11 +91,17 @@
     var burnedPromise=window.loadMonthlyBurned(map,month,d,layerControl);
     if(!staffSession)return burnedPromise;
     return Promise.all([burnedPromise,privatePromise]).then(function(all){
+      if(window.YG_STAFF_DATA.session()?.token!==staffSession.token)return;
       var geo=all[0],privateRows=all[1],errors=privateRows.map(function(x){return x.error}).filter(Boolean);
       permitGeo=privateRows[0].geo;rspoGeo=privateRows[1].geo;var psGeo=privateRows[2].geo;
-      if(permitGeo.features.length){permitLayer.addData(permitGeo).addTo(map);layerControl.addOverlay(permitLayer,'PBPH Mei 2026');var profileIds={};permitGeo.features.forEach(function(f){var p=f.properties||{},key=String(p.NAMOBJ||'').toLowerCase();if(key&&!profileIds[key])profileIds[key]=String(p.PBPH_ID||[p.NAMOBJ,p.NO_SK].filter(Boolean).join('|')).trim()});table('fm-company-rows',d.companies||[],true,profileIds)}
-      if(rspoGeo.features.length){rspoLayer.addData(rspoGeo).addTo(map);layerControl.addOverlay(rspoLayer,'Area anggota RSPO')}
-      if(errors.length){showInternalFailure(errors);return}
+      if(permitGeo.features.length){permitLayer.addData(permitGeo).addTo(map);layerControl.addOverlay(permitLayer,'Semua batas PBPH Mei 2026');var profileIds={};permitGeo.features.forEach(function(f){var p=f.properties||{},key=String(p.NAMOBJ||'').toLowerCase();if(key&&!profileIds[key])profileIds[key]=String(p.PBPH_ID||[p.NAMOBJ,p.NO_SK].filter(Boolean).join('|')).trim()});table('fm-company-rows',d.companies||[],true,profileIds)}
+      if(rspoGeo.features.length){rspoLayer.addData(rspoGeo).addTo(map);layerControl.addOverlay(rspoLayer,'Semua batas kebun anggota RSPO')}
+      var psLayer=L.geoJSON(psGeo,{style:{color:'#007f73',weight:1.5,fillOpacity:.04},onEachFeature:function(f,l){var p=f.properties||{};l.bindPopup('<strong>'+esc(p.NAMA_HKM||p.NAMA_DESA||'Perhutanan Sosial')+'</strong>')}}).addTo(map);
+      if(psGeo.features.length)layerControl.addOverlay(psLayer,'Semua batas Perhutanan Sosial');
+      var boundaryLayers=[permitLayer,rspoLayer,psLayer];
+      var clearBoundaries=function(){boundaryLayers.forEach(function(l){map.removeLayer(l);layerControl.removeLayer(l)});};
+      var sessionWatch=setInterval(function(){if(window.YG_STAFF_DATA.session()?.token!==staffSession.token){clearInterval(sessionWatch);clearBoundaries()}},1000);
+      window.addEventListener('pagehide',function(){clearInterval(sessionWatch);clearBoundaries()},{once:true});
       return window.renderMonthlyInternal(map,month,d,geo,permitGeo,rspoGeo,psGeo,layerControl);
     });
   }).catch(function(e){document.getElementById('fm-status').textContent='Laporan belum tersedia: '+e.message;document.getElementById('fm-status').style.color='#a33'});
