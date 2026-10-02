@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-01T03:57:38.044597+00:00",
+  "generatedAt": "2026-10-02T03:55:20.803970+00:00",
   "status": "ready",
   "eventCount": 28,
-  "estimatedAreaHa": 9498.93,
+  "estimatedAreaHa": 9658.65,
   "candidateEventCount": 29,
   "processing": {
     "published": 28,
@@ -18,7 +18,7 @@
   "villageSource": "data/batas_administrasi_desa_riau.geojson",
   "spatiallyClipped": true,
   "areaCrs": "EPSG:32647",
-  "administrativeUpdatedAt": "2026-10-01T03:57:39.409440+00:00",
+  "administrativeUpdatedAt": "2026-10-02T03:55:22.728466+00:00",
   "unassignedAreaHa": 17.56,
   "villageTotals": [
     {
@@ -187,7 +187,7 @@
       "regency": "Indragiri Hilir",
       "district": "Pelangiran",
       "village": "Tanjungsimpang",
-      "areaHa": 155.08
+      "areaHa": 155.32
     },
     {
       "regency": "Indragiri Hilir",
@@ -313,7 +313,7 @@
       "regency": "Indragiri Hulu",
       "district": "Lirik",
       "village": "Redang Seko",
-      "areaHa": 23.09
+      "areaHa": 6.68
     },
     {
       "regency": "Indragiri Hulu",
@@ -373,31 +373,31 @@
       "regency": "Kepulauan Meranti",
       "district": "Merbau",
       "village": "Kelurahan Teluk Belitung / Mekar Sari",
-      "areaHa": 2.6
+      "areaHa": 3.12
     },
     {
       "regency": "Kepulauan Meranti",
       "district": "Merbau",
       "village": "Mekar Sari",
-      "areaHa": 26.41
+      "areaHa": 34.45
     },
     {
       "regency": "Kepulauan Meranti",
       "district": "Merbau",
       "village": "Pelantai",
-      "areaHa": 118.04
+      "areaHa": 122.52
     },
     {
       "regency": "Kepulauan Meranti",
       "district": "Merbau",
       "village": "Sungai Anak Kamal",
-      "areaHa": 15.95
+      "areaHa": 20.87
     },
     {
       "regency": "Kepulauan Meranti",
       "district": "Rangsang",
       "village": "Gemala Sari",
-      "areaHa": 108.52
+      "areaHa": 106.28
     },
     {
       "regency": "Kota Dumai",
@@ -433,31 +433,25 @@
       "regency": "Pelalawan",
       "district": "Bandar Sei Kijang",
       "village": "Lubuk Ogung",
-      "areaHa": 1.72
+      "areaHa": 1.0
     },
     {
       "regency": "Pelalawan",
       "district": "Kerumutan",
       "village": "Kelurahan Kerumutan",
-      "areaHa": 506.7
+      "areaHa": 498.68
     },
     {
       "regency": "Pelalawan",
       "district": "Pangkalan Kerinci",
       "village": "Rantau Baru",
-      "areaHa": 1010.56
-    },
-    {
-      "regency": "Pelalawan",
-      "district": "Ukui",
-      "village": "Ukui Dua",
-      "areaHa": 1.53
+      "areaHa": 941.88
     },
     {
       "regency": "Siak",
       "district": "Siak",
       "village": "Dayun",
-      "areaHa": 242.2
+      "areaHa": 481.32
     }
   ],
   "districtTotals": [
@@ -514,7 +508,7 @@
     {
       "regency": "Indragiri Hilir",
       "district": "Pelangiran",
-      "areaHa": 155.08
+      "areaHa": 155.32
     },
     {
       "regency": "Indragiri Hilir",
@@ -549,7 +543,7 @@
     {
       "regency": "Indragiri Hulu",
       "district": "Lirik",
-      "areaHa": 23.09
+      "areaHa": 6.68
     },
     {
       "regency": "Indragiri Hulu",
@@ -594,12 +588,12 @@
     {
       "regency": "Kepulauan Meranti",
       "district": "Merbau",
-      "areaHa": 163.0
+      "areaHa": 180.96
     },
     {
       "regency": "Kepulauan Meranti",
       "district": "Rangsang",
-      "areaHa": 108.52
+      "areaHa": 106.28
     },
     {
       "regency": "Kota Dumai",
@@ -614,27 +608,22 @@
     {
       "regency": "Pelalawan",
       "district": "Bandar Sei Kijang",
-      "areaHa": 1.72
+      "areaHa": 1.0
     },
     {
       "regency": "Pelalawan",
       "district": "Kerumutan",
-      "areaHa": 506.7
+      "areaHa": 498.68
     },
     {
       "regency": "Pelalawan",
       "district": "Pangkalan Kerinci",
-      "areaHa": 1010.56
-    },
-    {
-      "regency": "Pelalawan",
-      "district": "Ukui",
-      "areaHa": 1.53
+      "areaHa": 941.88
     },
     {
       "regency": "Siak",
       "district": "Siak",
-      "areaHa": 242.2
+      "areaHa": 481.32
     }
   ],
   "regencyTotals": [
@@ -644,11 +633,11 @@
     },
     {
       "regency": "Indragiri Hilir",
-      "areaHa": 1756.38
+      "areaHa": 1756.62
     },
     {
       "regency": "Indragiri Hulu",
-      "areaHa": 4586.37
+      "areaHa": 4569.95
     },
     {
       "regency": "Indragiri Hulu / Indragiri Hilir",
@@ -660,7 +649,7 @@
     },
     {
       "regency": "Kepulauan Meranti",
-      "areaHa": 271.52
+      "areaHa": 287.24
     },
     {
       "regency": "Kota Dumai",
@@ -672,11 +661,11 @@
     },
     {
       "regency": "Pelalawan",
-      "areaHa": 1520.51
+      "areaHa": 1441.56
     },
     {
       "regency": "Siak",
-      "areaHa": 242.2
+      "areaHa": 481.32
     }
   ]
 }
