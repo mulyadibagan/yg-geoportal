@@ -798,6 +798,14 @@
 
   function renderTrees(group){
     if(!treesCard||!treesElement)return;
+    var latestMetrics=group.latest&&group.latest.metrics||{};
+    if(latestMetrics.treeIdentityUnverified&&Array.isArray(latestMetrics.treeRecords)){
+      treesCard.hidden=false;
+      treesElement.innerHTML='<p>Pengukuran Tahap III — '+esc(fmtDate(group.latest.date))+'. Nomor baris adalah referensi lembar lapangan, bukan kode pohon baru. Identitas pohon perlu diverifikasi sebelum menghitung pertumbuhan antarperiode.</p>'+
+        '<div style="overflow-x:auto"><table class="detail-tree-table"><thead><tr><th>Baris</th><th>Kode sumber</th><th>Jenis</th><th>Tinggi (cm)</th><th>Diameter (cm)</th><th>Kondisi</th></tr></thead><tbody>'+
+        latestMetrics.treeRecords.map(function(t){return '<tr><td>'+esc(t.sourceRow)+'</td><td>'+esc(t.treeId||'Belum diisi')+'</td><td>'+esc(t.species)+'</td><td>'+esc(t.heightCm==null?'—':t.heightCm)+'</td><td>'+esc(t.diameterCm==null?'—':t.diameterCm)+'</td><td>'+esc(t.notes||t.status)+'</td></tr>';}).join('')+'</tbody></table></div>';
+      return;
+    }
     var reports=group.history.slice().sort(function(a,b){return dateValue(a.date)-dateValue(b.date);});
     var stages=[],rows={};
     reports.forEach(function(report){

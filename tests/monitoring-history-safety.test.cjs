@@ -164,7 +164,7 @@ test("monitoring compilation filters report clusters by reporter and submit date
   assert.match(detailSource, /Tanggal submit terbaru/);
   assert.match(detailSource, /g\.history=g\.history\.sort\(function\(a,b\)\{return recordOrderTime\(b\)-recordOrderTime\(a\);\}\)/);
   assert.match(detailSource, /fmtSubmitDateTime\(r\.submittedAt\)/);
-  assert.match(detailHtml, /monitoring-detail\.js\?v=20260917-submit-time1/);
+  assert.match(detailHtml, /monitoring-detail\.js\?v=20261002-imbo-iii/);
 });
 
 test("monitoring pages prefer the fast public snapshot and keep the source API as fallback", () => {

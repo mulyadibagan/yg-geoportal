@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Refresh cacheable public snapshots for WebGIS and the Home dashboard."""
+from monitoring_supplemental import merge_monitoring_supplemental
 import argparse
 import json
 import urllib.request
@@ -213,6 +214,10 @@ if public_reports:
                 properties[key]=report[key]
 attach_public_update_photos(data,public_updates)
 capacity_sources=load_capacity_sources(args.source,public_reports)
+merge_monitoring_supplemental(data, ROOT)
+merge_monitoring_supplemental(capacity_sources['reports'], ROOT)
+if public_reports is not None:
+    merge_monitoring_supplemental(public_reports, ROOT)
 data['snapshotGeneratedAt']=snapshot_generated_at
 master_target=ROOT/'data'/'master-database-snapshot.json'
 master_changed=write_if_changed(master_target,data,('snapshotGeneratedAt',))
