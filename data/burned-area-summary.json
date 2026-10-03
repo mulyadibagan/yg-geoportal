@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-02T03:55:20.803970+00:00",
+  "generatedAt": "2026-10-03T04:04:58.587585+00:00",
   "status": "ready",
   "eventCount": 28,
-  "estimatedAreaHa": 9658.65,
+  "estimatedAreaHa": 9647.69,
   "candidateEventCount": 29,
   "processing": {
     "published": 28,
@@ -18,7 +18,7 @@
   "villageSource": "data/batas_administrasi_desa_riau.geojson",
   "spatiallyClipped": true,
   "areaCrs": "EPSG:32647",
-  "administrativeUpdatedAt": "2026-10-02T03:55:22.728466+00:00",
+  "administrativeUpdatedAt": "2026-10-03T04:05:00.953116+00:00",
   "unassignedAreaHa": 17.56,
   "villageTotals": [
     {
@@ -133,7 +133,7 @@
       "regency": "Indragiri Hilir",
       "district": "Keritang",
       "village": "Kuala Keritang",
-      "areaHa": 53.53
+      "areaHa": 49.57
     },
     {
       "regency": "Indragiri Hilir",
@@ -157,7 +157,7 @@
       "regency": "Indragiri Hilir",
       "district": "Keritang",
       "village": "Pasar Kembang",
-      "areaHa": 53.57
+      "areaHa": 47.05
     },
     {
       "regency": "Indragiri Hilir",
@@ -397,7 +397,7 @@
       "regency": "Kepulauan Meranti",
       "district": "Rangsang",
       "village": "Gemala Sari",
-      "areaHa": 106.28
+      "areaHa": 105.8
     },
     {
       "regency": "Kota Dumai",
@@ -498,7 +498,7 @@
     {
       "regency": "Indragiri Hilir",
       "district": "Keritang",
-      "areaHa": 1020.41
+      "areaHa": 1009.93
     },
     {
       "regency": "Indragiri Hilir",
@@ -593,7 +593,7 @@
     {
       "regency": "Kepulauan Meranti",
       "district": "Rangsang",
-      "areaHa": 106.28
+      "areaHa": 105.8
     },
     {
       "regency": "Kota Dumai",
@@ -633,7 +633,7 @@
     },
     {
       "regency": "Indragiri Hilir",
-      "areaHa": 1756.62
+      "areaHa": 1746.14
     },
     {
       "regency": "Indragiri Hulu",
@@ -649,7 +649,7 @@
     },
     {
       "regency": "Kepulauan Meranti",
-      "areaHa": 287.24
+      "areaHa": 286.76
     },
     {
       "regency": "Kota Dumai",
