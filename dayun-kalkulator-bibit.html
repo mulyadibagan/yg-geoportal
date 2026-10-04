@@ -4,6 +4,7 @@
 <link rel="icon" href="assets/logo-yayasan-gambut.png">
 <style>
 [hidden]{display:none!important}*{box-sizing:border-box}body{margin:0;background:#f4f7f3;color:#20382c;font:16px/1.6 system-ui,sans-serif}main{max-width:1050px;margin:auto;padding:28px 20px}a{color:#216743}h1{font-size:clamp(25px,4vw,36px);line-height:1.2}h2{font-size:24px}form,section{background:white;border:1px solid #dce5dc;border-radius:14px;padding:24px;margin:22px 0}.fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:20px}label{display:block;font-weight:600}input,select{display:block;width:100%;padding:11px;border:1px solid #a9bbaa;border-radius:7px;font:inherit;background:white;color:inherit}input[type=checkbox]{display:inline;width:auto;margin-right:8px}input:disabled{background:#edf0ed;color:#737d75}small{display:block;font-weight:400;color:#54675a}table{border-collapse:collapse;width:100%;white-space:nowrap}th,td{text-align:right;padding:12px;border-bottom:1px solid #e2e8e1}th:first-child,td:first-child{text-align:left}.table-scroll{overflow:auto}summary{cursor:pointer;font-weight:600}.note{color:#536658}a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #c5922b}
+#seed-layout{width:100%;height:520px;display:block;touch-action:none;border:1px solid #c7d6c7;border-radius:8px}button{padding:9px 16px;margin:4px;border:1px solid #92ac96;background:white;border-radius:6px;cursor:pointer} @media(max-width:600px){#seed-layout{height:400px}}
 </style></head><body><main>
 <a href="dayun-analisis-nanas.html">← Analisis nenas Dayun</a>
 <h1>Kalkulator kebutuhan bibit nenas</h1>
@@ -15,6 +16,8 @@
 <label id="seed-gawangan-field">Gawangan<select name="gawangan"><option value="ALL">Memuat gawangan…</option></select></label>
 <label>Jenis dan jarak tanam<select name="variety"><option value="0.8">Queen · 80 × 80 cm</option><option value="1.2">Madu · 1,2 × 1,2 m</option></select></label>
 <label>Area lain tidak ditanami (%)<input name="excluded" type="number" min="0" max="100" step="0.1" value="0" required><small>Ruang pohon, parit, atau hambatan di dalam gawangan. Nilai awal 0% belum memperhitungkannya.</small></label>
+<label>Arah barisan (° dari utara)<input name="angle" type="number" min="0" max="179" step="1" value="0" required><small>0° utara–selatan; 90° timur–barat.</small></label>
+<label>Jarak minimum dari tepi (m)<input name="margin" type="number" min="0" max="20" step="0.1" value="0.4" required></label>
 <label>Cadangan sulaman (%)<input name="reserve" type="number" min="0" max="100" step="0.1" value="10" required><small>Asumsi awal 10%; dapat diubah.</small></label>
 </div>
 <p><label><input name="lanes" type="checkbox">Perhitungkan jalur panen di dalam gawangan</label></p>
@@ -24,12 +27,12 @@
 </div>
 <p class="note">Ukuran jalur belum tercatat. Jika diaktifkan, 4 baris dan 1,2 m adalah contoh simulasi; sesuaikan dengan rencana lapangan.</p>
 </form>
+<section aria-labelledby="layout-title"><h2 id="layout-title">Layout rencana tanam</h2><p>Utara ↑ · geser peta dan gunakan tombol zoom untuk melihat titik tanaman.</p><div><button type="button" id="layout-in" aria-label="Perbesar">+</button><button type="button" id="layout-out" aria-label="Perkecil">−</button><button type="button" id="layout-fit">Lihat seluruh area</button></div><canvas id="seed-layout" aria-label="Layout polygon gawangan, titik tanaman dan jalur panen">Layout rencana tanam. Jumlah titik tersedia pada tabel hasil.</canvas><p><strong style="color:#17653e">■ Hijau: titik tanam</strong> · <span style="color:#a57316">━ Emas: sumbu jalur panen</span> · Abu-abu: titik dikeluarkan dari rencana.</p><p class="note">Posisi titik abu-abu merupakan simulasi persentase area lain, dikeluarkan berurutan dari sisi barisan. Belum menunjukkan posisi pohon, parit, atau hambatan sebenarnya. Jalur ditampilkan sebagai garis tengah; jarak antartanaman melintasi jalur mengikuti input.</p></section>
 <section id="seed-output" aria-live="polite">Memuat luas gawangan…</section>
 <details><summary>Dasar perhitungan</summary>
 <p>Jarak tanam mengikuti arahan pengelola: Queen 0,8 × 0,8 m; Madu 1,2 × 1,2 m. Perhitungan memakai luas gawangan tanam, bukan luas keseluruhan blok. Gawangan mati dan infrastruktur tidak dimasukkan.</p>
-<p>Jumlah tanam = luas setelah pengurangan area lain × jumlah baris ÷ [jarak dalam baris × ((jumlah baris − 1) × jarak antarbaris + jarak melintasi jalur)]. Tanpa jalur, jumlah tanam = luas efektif ÷ luas per tanaman. Hasil dibulatkan ke bawah per gawangan; sulaman dibulatkan ke atas per gawangan. Pada mode per blok, hasil tiap gawangan dijumlahkan ke bloknya. Total kebutuhan bibit mengikuti wilayah dan mode yang dipilih.</p>
-<p>Jalur dihitung pada area tersisa setelah pengurangan area lain. Jangan masukkan area jalur lagi ke persentase area lain. Luas efektif merupakan padanan luas tanam setelah pengurangan, bukan polygon baru.</p>
-<p>Estimasi belum memperhitungkan bentuk batas dan ujung baris. Hasil ini untuk perencanaan pengadaan; tidak mengubah catatan populasi atau realisasi penanaman.</p>
+<p>Jumlah tanam dihitung dari titik grid yang berada di dalam polygon dan memenuhi jarak minimum dari tepi. Barisan dikelompokkan sesuai jumlah baris, lalu diberi jarak jalur panen. Arah barisan berlaku untuk semua gawangan terpilih.</p><p>Persentase area lain mengeluarkan sejumlah titik dari rencana (dibulatkan ke atas), ditampilkan abu-abu. Cadangan sulaman ditambahkan terpisah dan tidak digambar sebagai titik tanam. Kolom efektif merupakan padanan jumlah titik × luas per tanaman, bukan pengukuran polygon baru.</p><p>Mode per blok menjumlahkan hasil tiap gawangan. Proyeksi metrik lokal merupakan pendekatan skala kebun. Layout ini rencana awal untuk diverifikasi di lapangan, bukan koordinat patok survei. Batas, ruang tajuk pohon, akses, dan hambatan perlu dikonfirmasi sebelum penanaman.</p>
 </details></main>
 <script src="js/dayun-data-source.js?v=20260917-cloudflare1"></script>
-<script src="js/dayun-seed-calculator.js?v=20261004-mode4"></script></body></html>
+<script src="js/dayun-planting-layout.js?v=20261004-layout1"></script>
+<script src="js/dayun-seed-calculator.js?v=20261004-layout1"></script></body></html>
