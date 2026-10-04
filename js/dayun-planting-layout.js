@@ -85,16 +85,23 @@ function mptsCorridors(p,trees,radius,width){
  const ux=u[0]-origin[0],uy=u[1]-origin[1],vx=v[0]-origin[0],vy=v[1]-origin[1],det=ux*vy-uy*vx;
  const local=trees.map(ll=>{const x=ll[0]-origin[0],y=ll[1]-origin[1];return [(x*vy-y*vx)/det,(ux*y-uy*x)/det];});
  const rows=[];local.sort((a,b)=>a[1]-b[1]).forEach(t=>{let r=rows.find(r=>Math.abs(r.y-t[1])<.1);if(!r){r={y:t[1],trees:[]};rows.push(r);}r.trees.push(t);});
- const lines=[],clearance=(radius+width/2)*1.04+.25;
+ const lines=[],clearance=radius+width/2+.1;
  rows.forEach(row=>{
- const sign=row.y<(p.minY+p.maxY)/2?1:-1,line=[];
- for(let x=p.minX;x<=p.maxX+.25;x+=.25){
- const xx=Math.min(x,p.maxX);let y=row.y;
- // Smooth side-step alongside trunks; retain the tree-row corridor between trees.
- for(const t of row.trees){const d=Math.abs(xx-t[0]);if(d<clearance*2){const offset=clearance*(1+Math.cos(Math.PI*d/(clearance*2)))/2;y=sign>0?Math.max(y,row.y+offset):Math.min(y,row.y-offset);}}
- line.push([xx,y]);
+ // Choose one constant offset for the whole corridor; never bend around trunks.
+ const candidates=[row.y+clearance,row.y-clearance];
+ const score=y=>{
+ let n=0;
+ for(let x=p.minX;x<=p.maxX;x+=1){
+ if(p.polys.some(poly=>inPoly([x,y],poly))&&
+ !local.some(t=>Math.hypot(x-t[0],y-t[1])<radius+width/2))n++;
  }
- lines.push(line);
+ return n;
+ };
+ const y=score(candidates[0])>=score(candidates[1])?candidates[0]:candidates[1];
+ if(lines.some(line=>Math.abs(line[0][1]-y)<.1))return;
+ const line=[];
+ for(let x=p.minX;x<p.maxX;x+=.25)line.push([x,y]);
+ line.push([p.maxX,y]);lines.push(line);
  });
  let interrupted=0;
  const segments=lines.flatMap(line=>line.slice(1).map((q,i)=>[line[i],q])).filter(([a,b])=>{
