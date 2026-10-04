@@ -1860,7 +1860,7 @@
     ];
     // Share only the four public aggregates with the official foundation website.
     // Keep calculation here so both sites use the same dashboard rules.
-    if (window.parent !== window && new URLSearchParams(location.search).get("impact-feed") === "1") {
+    if (data.features.length > 0 && window.parent !== window && new URLSearchParams(location.search).get("impact-feed") === "1") {
       const payload = {
         type: "yg-public-impact", version: 1,
         updatedAt: data.generatedAt || null,
