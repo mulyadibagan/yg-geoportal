@@ -48,17 +48,23 @@ function render(){
  const results=selected.map(g=>{
  const api=window.DayunPlantingLayout,estimate=api.estimateMpts(g.geometries,(details.get(g.id)||{}).crops||[]);
  const rec=api.recommend(spacing,estimate,Number(v.treeRadius.value)),auto=v.recommend.checked;
- const angle=auto?rec.angle:Number(v.angle.value),usedRows=auto?rec.rows:rows,usedGap=auto?rec.gap:gap;
+ const angle=auto?rec.angle:Number(v.angle.value),usedRows=auto?1:rows,usedGap=auto?spacing:gap;
  const trees=estimate.trees.map(t=>t.point),radius=Number(v.treeRadius.value);
- const p=api.plan(g.geometries,spacing,usedRows,usedGap,angle,Number(v.excluded.value),Number(v.margin.value),{trees,radius});
- const lanes=api.laneSegments(p,trees,radius+Math.max(0,usedGap-spacing)/2);
- g.planning={estimate,rec,angle,rows:usedRows,gap:usedGap,interrupted:lanes.interrupted};
+ const p=api.plan(g.geometries,spacing,usedRows,usedGap,angle,auto?0:Number(v.excluded.value),Number(v.margin.value),{trees,radius});
+ let lanes;
+ if(auto){
+ const corridor=api.mptsCorridors(p,trees,radius,Number(v.pathWidth.value));
+ const n=Math.ceil(corridor.active.length*Number(v.excluded.value)/100);
+ p.active=corridor.active.slice(0,corridor.active.length-n);p.removed=corridor.active.slice(corridor.active.length-n);
+ lanes={segments:corridor.segments,interrupted:corridor.interrupted,count:corridor.count};
+ }else lanes=api.laneSegments(p,trees,radius+Math.max(0,usedGap-spacing)/2);
+ g.planning={auto,pathWidth:Number(v.pathWidth.value),corridors:lanes.count,estimate,rec,angle,rows:usedRows,gap:usedGap,interrupted:lanes.interrupted};
  // Common local metric frame keeps separate gawangan in their geographic positions.
  const world=q=>{const ll=p.unproject(q);return [(ll[0]-102)*111320*Math.cos(.5*Math.PI/180),(ll[1]-.5)*111320];};
  const polys=p.polys.map(poly=>poly.map(r=>r.map(world))),vertices=polys.flat(2);
  let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
  vertices.forEach(q=>{minX=Math.min(minX,q[0]);maxX=Math.max(maxX,q[0]);minY=Math.min(minY,q[1]);maxY=Math.max(maxY,q[1]);});
- layouts.push({label:g.label,polys,active:p.active.map(world),removed:p.removed.map(world),lanes:lanes.segments.map(line=>line.map(world)),trees:estimate.trees.map(t=>({point:world((()=>{const ll=t.point;const a=p.unproject([0,0]),b=p.unproject([1,0]),c=p.unproject([0,1]);const dx=ll[0]-a[0],dy=ll[1]-a[1],ux=b[0]-a[0],uy=b[1]-a[1],vx=c[0]-a[0],vy=c[1]-a[1],det=ux*vy-uy*vx;return [(dx*vy-dy*vx)/det,(ux*dy-uy*dx)/det];})()),crop:t.crop})),radius,minX,minY,maxX,maxY});
+ layouts.push({corridorWidth:auto?Number(v.pathWidth.value):0,label:g.label,polys,active:p.active.map(world),removed:p.removed.map(world),lanes:lanes.segments.map(line=>line.map(world)),trees:estimate.trees.map(t=>({point:world((()=>{const ll=t.point;const a=p.unproject([0,0]),b=p.unproject([1,0]),c=p.unproject([0,1]);const dx=ll[0]-a[0],dy=ll[1]-a[1],ux=b[0]-a[0],uy=b[1]-a[1],vx=c[0]-a[0],vy=c[1]-a[1],det=ux*vy-uy*vx;return [(dx*vy-dy*vx)/det,(ux*dy-uy*dx)/det];})()),crop:t.crop})),radius,minX,minY,maxX,maxY});
  const plants=p.active.length,spare=Math.ceil(plants*Number(v.reserve.value)/100);
  return {...g,plants,spare,total:plants+spare,effectiveHa:plants*spacing*spacing/10000};
  });
@@ -66,7 +72,7 @@ function render(){
  document.getElementById('seed-mpts').innerHTML='<h3>Dasar MPTS dan usulan jalur per gawangan</h3><div class="table-scroll"><table><thead><tr><th>Gawangan</th><th>MPTS: sumber → estimasi layout</th><th>Usulan jalur yang diterapkan</th></tr></thead><tbody>'+selected.map(g=>{
  const p=g.planning;
  const text=p.estimate.summary.map(c=>c.missing?esc(c.crop)+': jarak belum tersedia':esc(c.crop)+' · '+fmt(c.spacing,2)+' × '+fmt(c.spacing,2)+' m (asumsi persegi); sumber '+(c.sourceCount===null?'belum ada jumlah':fmt(c.sourceCount,2))+' → '+c.placed+' titik'+(c.shortfall?' · selisih '+c.shortfall+' dari pembulatan sumber':'')).join('<br>')||'Data MPTS belum tersedia; ruang pohon belum diperhitungkan.';
- return '<tr><td>'+g.label+'</td><td style="white-space:normal;text-align:left;min-width:250px">'+text+'</td><td style="white-space:normal;text-align:left;min-width:230px">'+p.angle+'° · setiap '+p.rows+' baris · jarak melintasi jalur '+fmt(p.gap,2)+' m'+(p.interrupted?'<br>Jalur terputus di ruang MPTS: perlu sambungan/penyesuaian lapangan.':'<br>Verifikasi sambungan ke akses kebun di lapangan.')+'</td></tr>';
+ return '<tr><td>'+g.label+'</td><td style="white-space:normal;text-align:left;min-width:250px">'+text+'</td><td style="white-space:normal;text-align:left;min-width:230px">'+(p.auto?p.angle+'° · '+p.corridors+' koridor mengikuti barisan MPTS · lebar '+fmt(p.pathWidth,2)+' m':p.angle+'° · setiap '+p.rows+' baris · jarak melintasi jalur '+fmt(p.gap,2)+' m')+(p.interrupted?'<br>Jalur terputus di ruang MPTS: perlu sambungan/penyesuaian lapangan.':'<br>Verifikasi sambungan ke akses kebun di lapangan.')+'</td></tr>';
  }).join('')+'</tbody></table></div>';
  const total=results.reduce((a,r)=>a+r.total,0);
  function row(label,r){return '<tr><td>'+label+'</td><td>'+fmt(r.area,4)+'</td><td>'+fmt(r.effectiveHa,4)+'</td><td>'+fmt(r.plants)+'</td><td>'+fmt(r.spare)+'</td><td>'+fmt(r.total)+'</td></tr>';}
