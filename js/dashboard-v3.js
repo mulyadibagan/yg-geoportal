@@ -1858,6 +1858,21 @@
         ]
       }
     ];
+    // Share only the four public aggregates with the official foundation website.
+    // Keep calculation here so both sites use the same dashboard rules.
+    if (window.parent !== window && new URLSearchParams(location.search).get("impact-feed") === "1") {
+      const payload = {
+        type: "yg-public-impact", version: 1,
+        updatedAt: data.generatedAt || null,
+        cards: programmeCards.map(card => ({
+          key: card.key, current: card.current,
+          rows: card.rows.map(row => ({ label: row[0], value: row[1], unit: row[2] || "", digits: row[3] || 0 }))
+        }))
+      };
+      ["https://yayasangambut.org", "https://www.yayasangambut.org"].forEach(origin => {
+        window.parent.postMessage(payload, origin);
+      });
+    }
     if (false) document.getElementById("category-grid").innerHTML = programmeCards.map(card =>
       '<a class="programme-card dashboard-link" href="' + escapeHtml(card.url) + '">' +
         '<header><i aria-hidden="true">' + card.icon + '</i><h3>' +
