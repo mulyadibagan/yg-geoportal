@@ -85,20 +85,10 @@ function mptsCorridors(p,trees,radius,width){
  const ux=u[0]-origin[0],uy=u[1]-origin[1],vx=v[0]-origin[0],vy=v[1]-origin[1],det=ux*vy-uy*vx;
  const local=trees.map(ll=>{const x=ll[0]-origin[0],y=ll[1]-origin[1];return [(x*vy-y*vx)/det,(ux*y-uy*x)/det];});
  const rows=[];local.sort((a,b)=>a[1]-b[1]).forEach(t=>{let r=rows.find(r=>Math.abs(r.y-t[1])<.1);if(!r){r={y:t[1],trees:[]};rows.push(r);}r.trees.push(t);});
- const lines=[],clearance=radius+width/2+.1;
- rows.forEach(row=>{
- // Choose one constant offset for the whole corridor; never bend around trunks.
- const candidates=[row.y+clearance,row.y-clearance];
- const score=y=>{
- let n=0;
- for(let x=p.minX;x<=p.maxX;x+=1){
- if(p.polys.some(poly=>inPoly([x,y],poly))&&
- !local.some(t=>Math.hypot(x-t[0],y-t[1])<radius+width/2))n++;
- }
- return n;
- };
- const y=score(candidates[0])>=score(candidates[1])?candidates[0]:candidates[1];
- if(lines.some(line=>Math.abs(line[0][1]-y)<.1))return;
+ const lines=[];
+ // Place a straight empty harvest corridor midway between consecutive MPTS rows.
+ rows.slice(1).forEach((row,i)=>{
+ const y=(rows[i].y+row.y)/2;
  const line=[];
  for(let x=p.minX;x<p.maxX;x+=.25)line.push([x,y]);
  line.push([p.maxX,y]);lines.push(line);
@@ -112,7 +102,7 @@ function mptsCorridors(p,trees,radius,width){
  segments.forEach(seg=>{const [a,b]=seg;for(let x=Math.floor((Math.min(a[0],b[0])-half)/cell);x<=Math.floor((Math.max(a[0],b[0])+half)/cell);x++)for(let y=Math.floor((Math.min(a[1],b[1])-half)/cell);y<=Math.floor((Math.max(a[1],b[1])+half)/cell);y++){const key=x+','+y;if(!bins.has(key))bins.set(key,[]);bins.get(key).push(seg);}});
  function onPath(q){return (bins.get(Math.floor(q[0]/cell)+','+Math.floor(q[1]/cell))||[]).some(([a,b])=>{const dx=b[0]-a[0],dy=b[1]-a[1],d=dx*dx+dy*dy,t=d?Math.max(0,Math.min(1,((q[0]-a[0])*dx+(q[1]-a[1])*dy)/d)):0;return Math.hypot(q[0]-a[0]-t*dx,q[1]-a[1]-t*dy)<=half;});}
  const active=p.active.filter(q=>!onPath(q));
- return {segments,active,count:rows.length,onPath,interrupted};
+ return {segments,active,count:lines.length,onPath,interrupted};
 }
 
 function mount(id){
