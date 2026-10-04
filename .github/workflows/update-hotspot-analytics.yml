@@ -25,6 +25,7 @@ jobs:
   update:
     name: Refresh VIIRS analytics data
     runs-on: ubuntu-latest
+    environment: yg-webgis-staging
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -65,7 +66,7 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
         run: |
-          mkdir -p ../../../data/fire-archive
+          mkdir -p ../../data/fire-archive
           if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
             echo "R2 archive credentials are not configured; starting without a remote archive restore."
             exit 0
@@ -74,7 +75,7 @@ jobs:
           previous_month=$(date -u -d "$(date -u +%Y-%m-01) -1 day" +%Y-%m)
           for month in "$previous_month" "$current_month"; do
             npx wrangler r2 object get "yg-webgis-public-snapshots/fire-archive/${month}.geojson" \
-              --file="../../../data/fire-archive/${month}.geojson" --remote || true
+              --file="../../data/fire-archive/${month}.geojson" --remote || true
           done
 
       - name: Install WorldCover reader
@@ -114,7 +115,7 @@ jobs:
             echo "R2 archive credentials are not configured; skipping the optional archive upload."
             exit 0
           fi
-          for file in ../../../data/fire-archive/*.geojson; do
+          for file in ../../data/fire-archive/*.geojson; do
             [ -e "$file" ] || continue
             name=$(basename "$file")
             npx wrangler r2 object put "yg-webgis-public-snapshots/fire-archive/${name}" \

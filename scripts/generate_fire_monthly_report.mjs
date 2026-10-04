@@ -82,10 +82,12 @@ async function fetchChunk(source, chunkStart, days) {
   return rows;
 }
 
+let archiveCoverage = null;
 const raw = [];
 const sourcesUsed = [];
 if (GEOJSON_ARCHIVE) {
   const archive = JSON.parse(await readFile(path.resolve(ROOT, GEOJSON_ARCHIVE), "utf8"));
+  archiveCoverage = { start: archive.coverageStart || null, end: archive.coverageEnd || null, sourceStatus: archive.sourceStatus || "unknown", provenance: archive.provenance || [] };
   for (const feature of archive.features || []) {
     const p = feature.properties || {}, coordinates = feature.geometry?.coordinates || [];
     raw.push({ ...p, longitude: coordinates[0], latitude: coordinates[1], source: p.source || p.satellite || "NASA FIRMS daily archive" });
@@ -115,7 +117,7 @@ if (GEOJSON_ARCHIVE) {
     sourcesUsed.push(source);
   }
 }
-if (!raw.length) throw new Error("NASA FIRMS tidak mengembalikan baris data untuk Juli 2026; snapshot kosong tidak diterbitkan.");
+if (!raw.length) throw new Error("NASA FIRMS tidak mengembalikan baris data untuk bulan yang diminta; snapshot kosong tidak diterbitkan.");
 
 const provinceGeometry = province.features[0].geometry;
 const villageIndex = indexed(villages.features || []);
@@ -162,6 +164,7 @@ const villageRows = [...villageMap.values()].map((x) => ({ ...x, detectionDays: 
 const report = {
   schemaVersion: 2, month: MONTH, period: { start: iso(start), end: iso(end) }, province: "Riau",
   status: "final",
+  coverage: archiveCoverage,
   generatedAt: new Date().toISOString(), source: "NASA FIRMS",
   sources: [...new Set(sourcesUsed)],
   methodology: "Deteksi kategori high confidence di dalam polygon Provinsi Riau; pencocokan batas administrasi desa dilakukan secara spasial.",

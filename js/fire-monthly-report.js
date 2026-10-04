@@ -68,8 +68,8 @@
     document.getElementById('fm-hotspots').textContent=Number(s.hotspots||0).toLocaleString('id-ID');
     document.getElementById('fm-villages').textContent=Number(s.villages||0).toLocaleString('id-ID');
     document.getElementById('fm-regencies').textContent=Number(s.regencies||0).toLocaleString('id-ID');
-    document.getElementById('fm-companies').textContent=Number(s.companies||0).toLocaleString('id-ID');
-    if(staffSession){document.getElementById('fm-rspo-areas').textContent=Number(s.rspoAreas||0).toLocaleString('id-ID');document.getElementById('fm-rspo-hotspots').textContent=Number(s.rspoHotspots||0).toLocaleString('id-ID')+' hotspot'}
+    document.getElementById('fm-companies').textContent=staffSession?'…':'—';
+    if(staffSession){document.getElementById('fm-rspo-areas').textContent='…';document.getElementById('fm-rspo-hotspots').textContent='Menyiapkan analisis internal…'}
     document.getElementById('fm-status').textContent=(d.status==='final'?'Laporan final':'Data sementara')+' · '+d.period.start+' sampai '+d.period.end+' · diperbarui '+new Date(d.generatedAt).toLocaleString('id-ID',{timeZone:'Asia/Jakarta'})+' WIB';
     var max=Math.max.apply(null,d.daily.map(function(x){return x.hotspots}).concat([1]));
     document.getElementById('fm-daily').innerHTML=d.daily.map(function(x,i){return '<div class="fm-bar-slot '+(x.hotspots?'has-value':'')+'"><div class="fm-bar" style="height:'+Math.max(3,x.hotspots/max*150)+'px">'+(x.hotspots?'<span>'+x.hotspots+'</span>':'')+'</div><small>'+String(i+1).padStart(2,'0')+'</small></div>'}).join('');
@@ -91,6 +91,7 @@
     return Promise.all([burnedPromise,privatePromise]).then(function(all){
       if(window.YG_STAFF_DATA.session()?.token!==staffSession.token)return;
       var geo=all[0],privateRows=all[1],errors=privateRows.map(function(x){return x.error}).filter(Boolean);
+      if(errors.length){showInternalFailure(errors);['fm-companies','fm-rspo-areas','fm-ps-areas'].forEach(function(id){var el=document.getElementById(id);if(el)el.textContent='—'});return;}
       permitGeo=privateRows[0].geo;rspoGeo=privateRows[1].geo;var psGeo=privateRows[2].geo;
       return window.renderMonthlyInternal(map,month,d,geo,permitGeo,rspoGeo,psGeo,layerControl);
     });

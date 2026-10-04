@@ -24,19 +24,19 @@ test("August 2026 final report includes the backfilled 1 August detection", () =
   )));
 });
 
-test("monthly-report menu lists August as the latest report", () => {
+test("monthly-report menu lists newest available report and preserves August", () => {
   const index = JSON.parse(
     fs.readFileSync(path.join(ROOT, "data", "fire-monthly", "index.json"), "utf8")
   );
 
-  assert.equal(index.latest, "2026-08");
-  assert.equal(index.reports[0].month, "2026-08");
-  assert.equal(index.reports[0].summary.hotspots, 312);
+  assert.equal(index.latest, index.reports.map(r => r.month).sort().at(-1));
+  assert.equal(index.reports[0].month, index.latest);
+  assert.equal(index.reports.find(r => r.month === "2026-08").summary.hotspots, 312);
   assert.ok(index.reports.some((report) => report.month === "2026-07"));
 });
 
 test("public July and August reports omit RSPO intersection data", () => {
-  for (const month of ["2026-07", "2026-08"]) {
+  for (const month of ["2026-07", "2026-08", "2026-09"]) {
     const raw = fs.readFileSync(
       path.join(ROOT, "data", "fire-monthly", `${month}.json`),
       "utf8"
@@ -74,7 +74,7 @@ test("monthly report exposes RSPO analysis only to a staff session", () => {
   assert.match(controller, /renderMonthlyInternal\(map,month,d,geo,permitGeo,rspoGeo,psGeo,layerControl\)/);
   assert.match(controller, /if\(staffSession\)rspoTable/);
   assert.match(controller, /showInternalFailure\(errors\)/);
-  assert.match(access, /'data\/PERUSAHAAN_SAWIT_RIAU_REFERENSI\.geojson': '\/api\/staff\/rspo-groups'/);
+  assert.match(access, /'data\/rspo-company-boundaries\.geojson': '\/api\/staff\/rspo-companies'/);
   assert.match(access, /'data\/PERHUTANAN_SOSIAL_RIAU\.geojson': '\/api\/staff\/social-forestry-riau'/);
 });
 

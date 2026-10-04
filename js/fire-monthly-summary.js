@@ -7,8 +7,8 @@
     if(!Number(s.hotspots))throw Error('empty report');
     card.querySelector('[data-monthly-hotspots]').textContent=Number(s.hotspots||0).toLocaleString('id-ID');
     card.querySelector('[data-monthly-villages]').textContent=Number(s.villages||0).toLocaleString('id-ID');
-    card.querySelector('[data-monthly-companies]').textContent=Number(s.companies||0).toLocaleString('id-ID');
+    card.querySelector('[data-monthly-companies]').textContent='Internal';
     card.querySelector('h2').textContent=monthLabel(data.month)+' · Provinsi Riau';
     card.querySelector('[data-monthly-status]').textContent=(data.status==='final'?'Laporan final':'Data sementara')+' '+data.period.start+'–'+data.period.end+' · NASA FIRMS high confidence';
-  }).catch(function(){card.querySelector('[data-monthly-status]').textContent='Snapshot Juli sedang disiapkan';});
+  }).catch(function(){card.querySelector('[data-monthly-status]').textContent='Laporan bulanan belum dapat dimuat';});
 }());
