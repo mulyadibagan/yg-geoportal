@@ -36,23 +36,26 @@ function render(){
  if(!form.checkValidity()){output.textContent='Lengkapi pengaturan dengan angka yang valid.';return;}
  const v=form.elements, spacing=Number(v.variety.value), rows=Number(v.rows.value);
  const gap=v.lanes.checked?Number(v.gap.value):spacing;
- const selected=features.filter(g=>(v.block.value==='ALL'||g.block===v.block.value)&&(v.gawangan.value==='ALL'||g.id===v.gawangan.value));
+ const perBlock=v.mode.value==='block';
+ const selected=features.filter(g=>(v.block.value==='ALL'||g.block===v.block.value)&&(perBlock||v.gawangan.value==='ALL'||g.id===v.gawangan.value));
  const results=selected.map(g=>({...g,...calculate(g.area,spacing,rows,gap,Number(v.excluded.value),Number(v.reserve.value))}));
  const total=results.reduce((a,r)=>a+r.total,0);
  function row(label,r){return '<tr><td>'+label+'</td><td>'+fmt(r.area,4)+'</td><td>'+fmt(r.effectiveHa,4)+'</td><td>'+fmt(r.plants)+'</td><td>'+fmt(r.spare)+'</td><td>'+fmt(r.total)+'</td></tr>';}
- const lines=results.map(r=>row(r.label,r));
- const blockLines=['D','E','F'].filter(b=>results.some(r=>r.block===b)).map(b=>{
- const sum=results.filter(r=>r.block===b).reduce((a,r)=>{['area','effectiveHa','plants','spare','total'].forEach(k=>a[k]+=r[k]);return a;},{area:0,effectiveHa:0,plants:0,spare:0,total:0});
- return row('Blok '+b,sum);
- });
+ const displayRows=perBlock?['D','E','F'].filter(b=>results.some(r=>r.block===b)).map(b=>{
+ const sum=results.filter(r=>r.block===b).reduce((a,r)=>{['area','effectiveHa','plants','spare','total'].forEach(k=>a[k]+=r[k]);return a;},{label:'Blok '+b,area:0,effectiveHa:0,plants:0,spare:0,total:0});
+ return sum;
+ }):results;
+ const lines=displayRows.map(r=>row(r.label,r));
  function table(label,lines){return '<div class="table-scroll"><table><thead><tr><th>'+label+'</th><th>Luas (ha)</th><th>Efektif (ha)</th><th>Tanam</th><th>Sulaman</th><th>Total bibit</th></tr></thead><tbody>'+lines.join('')+'</tbody></table></div>';}
- output.innerHTML='<h2>Kebutuhan: '+fmt(total)+' bibit</h2><p>'+results.length+' gawangan · '+(spacing===0.8?'Queen · 80 × 80 cm':'Madu · 1,2 × 1,2 m')+'. Pengaturan berlaku untuk semua gawangan yang ditampilkan.</p><h3>Rincian per gawangan</h3>'+table('Gawangan',lines)+'<h3>Total per blok terpilih</h3>'+table('Blok',blockLines);
+ output.innerHTML='<h2>Kebutuhan: '+fmt(total)+' bibit</h2><p>'+results.length+' gawangan · '+(spacing===0.8?'Queen · 80 × 80 cm':'Madu · 1,2 × 1,2 m')+'. Pengaturan berlaku untuk semua gawangan yang ditampilkan.</p><h3>Rincian per '+(perBlock?'blok':'gawangan')+'</h3>'+table(perBlock?'Blok':'Gawangan',lines);
 
  }catch(e){output.textContent=e.message;}
 }
 form.addEventListener('input',(event)=>{
  const v=form.elements;
  if(event.target===v.block)choices();
+ v.gawangan.disabled=v.mode.value==='block';
+ document.getElementById('seed-gawangan-field').hidden=v.mode.value==='block';
  v.rows.disabled=v.gap.disabled=!v.lanes.checked;
  v.gap.min=v.variety.value;
  if(Number(v.gap.value)<Number(v.variety.value))v.gap.value=v.variety.value;
