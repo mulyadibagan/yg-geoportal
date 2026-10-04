@@ -79,6 +79,35 @@ function laneSegments(p,treePoints,radius){
  return {segments,interrupted};
 }
 
+
+function mptsCorridors(p,trees,radius,width){
+ const origin=p.unproject([0,0]),u=p.unproject([1,0]),v=p.unproject([0,1]);
+ const ux=u[0]-origin[0],uy=u[1]-origin[1],vx=v[0]-origin[0],vy=v[1]-origin[1],det=ux*vy-uy*vx;
+ const local=trees.map(ll=>{const x=ll[0]-origin[0],y=ll[1]-origin[1];return [(x*vy-y*vx)/det,(ux*y-uy*x)/det];});
+ const rows=[];local.sort((a,b)=>a[1]-b[1]).forEach(t=>{let r=rows.find(r=>Math.abs(r.y-t[1])<.1);if(!r){r={y:t[1],trees:[]};rows.push(r);}r.trees.push(t);});
+ const lines=[],clearance=(radius+width/2)*1.04+.25;
+ rows.forEach(row=>{
+ const sign=row.y<(p.minY+p.maxY)/2?1:-1,line=[];
+ for(let x=p.minX;x<=p.maxX+.25;x+=.25){
+ const xx=Math.min(x,p.maxX);let y=row.y;
+ // Smooth side-step alongside trunks; retain the tree-row corridor between trees.
+ for(const t of row.trees){const d=Math.abs(xx-t[0]);if(d<clearance*2){const offset=clearance*(1+Math.cos(Math.PI*d/(clearance*2)))/2;y=sign>0?Math.max(y,row.y+offset):Math.min(y,row.y-offset);}}
+ line.push([xx,y]);
+ }
+ lines.push(line);
+ });
+ let interrupted=0;
+ const segments=lines.flatMap(line=>line.slice(1).map((q,i)=>[line[i],q])).filter(([a,b])=>{
+ const blocked=local.some(t=>{const dx=b[0]-a[0],dy=b[1]-a[1],d=dx*dx+dy*dy,k=d?Math.max(0,Math.min(1,((t[0]-a[0])*dx+(t[1]-a[1])*dy)/d)):0;return Math.hypot(t[0]-a[0]-k*dx,t[1]-a[1]-k*dy)<radius+width/2;});
+ if(blocked)interrupted++;return !blocked;
+ });
+ const bins=new Map(),cell=4,half=width/2;
+ segments.forEach(seg=>{const [a,b]=seg;for(let x=Math.floor((Math.min(a[0],b[0])-half)/cell);x<=Math.floor((Math.max(a[0],b[0])+half)/cell);x++)for(let y=Math.floor((Math.min(a[1],b[1])-half)/cell);y<=Math.floor((Math.max(a[1],b[1])+half)/cell);y++){const key=x+','+y;if(!bins.has(key))bins.set(key,[]);bins.get(key).push(seg);}});
+ function onPath(q){return (bins.get(Math.floor(q[0]/cell)+','+Math.floor(q[1]/cell))||[]).some(([a,b])=>{const dx=b[0]-a[0],dy=b[1]-a[1],d=dx*dx+dy*dy,t=d?Math.max(0,Math.min(1,((q[0]-a[0])*dx+(q[1]-a[1])*dy)/d)):0;return Math.hypot(q[0]-a[0]-t*dx,q[1]-a[1]-t*dy)<=half;});}
+ const active=p.active.filter(q=>!onPath(q));
+ return {segments,active,count:rows.length,onPath,interrupted};
+}
+
 function mount(id){
  const canvas=document.getElementById(id),ctx=canvas.getContext('2d');let layouts=[],scale=1,ox=0,oy=0,drag=null;
  function draw(){
@@ -87,7 +116,8 @@ function mount(id){
  layouts.forEach(g=>{
  ctx.beginPath();g.polys.forEach(poly=>poly.forEach(r=>{r.forEach((p,i)=>{const a=xy(p);i?ctx.lineTo(...a):ctx.moveTo(...a)});ctx.closePath();}));
  ctx.fillStyle='#e1ecd8';ctx.fill('evenodd');ctx.strokeStyle='#315f42';ctx.lineWidth=1.5;ctx.stroke();
- ctx.save();ctx.clip('evenodd');ctx.strokeStyle='#ce9b3a';ctx.lineWidth=3;
+ ctx.save();ctx.clip('evenodd');ctx.strokeStyle='#ce9b3a';ctx.lineWidth=g.corridorWidth?Math.max(1,g.corridorWidth*scale):3;
+ ctx.lineCap='round';ctx.lineJoin='round';
  g.lanes.forEach(line=>{ctx.beginPath();ctx.moveTo(...xy(line[0]));ctx.lineTo(...xy(line[1]));ctx.stroke();});ctx.restore();
  [[g.active,'#17653e'],[g.removed,'#9ba39b']].forEach(([pts,color])=>{ctx.fillStyle=color;const r=Math.max(.65,Math.min(3,scale*.13));pts.forEach(p=>{const a=xy(p);if(a[0]<0||a[0]>w||a[1]<0||a[1]>h)return;ctx.fillRect(a[0]-r,a[1]-r,r*2,r*2);});});
  (g.trees||[]).forEach(t=>{const a=xy(t.point);ctx.beginPath();ctx.arc(a[0],a[1],g.radius*scale,0,Math.PI*2);ctx.fillStyle='rgba(118,65,144,.12)';ctx.fill();ctx.strokeStyle='#79478f';ctx.lineWidth=1;ctx.stroke();ctx.beginPath();ctx.arc(a[0],a[1],Math.max(2,Math.min(5,scale*.4)),0,Math.PI*2);ctx.fillStyle='#79478f';ctx.fill();});
@@ -104,5 +134,5 @@ function mount(id){
  new ResizeObserver(()=>fit()).observe(canvas);
  return {show(items){layouts=items;fit();},zoom,fit,clear(){layouts=[];draw();}};
 }
-const api={plan,inside,inPoly,mount,direction,estimateMpts,recommend,laneSegments};if(typeof module!=='undefined')module.exports=api;else root.DayunPlantingLayout=api;
+const api={plan,inside,inPoly,mount,direction,estimateMpts,recommend,laneSegments,mptsCorridors};if(typeof module!=='undefined')module.exports=api;else root.DayunPlantingLayout=api;
 })(typeof window==='undefined'?globalThis:window);
