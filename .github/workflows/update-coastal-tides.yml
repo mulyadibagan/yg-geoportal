@@ -1,0 +1,38 @@
+name: Update Coastal Tide Archive
+on:
+  push:
+    branches: [main]
+    paths:
+      - scripts/build-coastal-tides.py
+      - .github/workflows/update-coastal-tides.yml
+  schedule:
+    - cron: "25 0 * * *"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: coastal-tide-archive
+  cancel-in-progress: false
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Retrieve and validate archived model sea levels
+        run: python scripts/build-coastal-tides.py
+      - name: Save validated snapshots
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/coastal-tides/
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Update coastal tide archive"
+          git pull --rebase origin main
+          git push origin HEAD:main

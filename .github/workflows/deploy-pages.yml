@@ -8,6 +8,7 @@ on:
   workflow_dispatch:
   workflow_run:
     workflows:
+      - Update Coastal Tide Archive
       - Update GEFS transport cache
       - Update Hotspot Analytics
       - Update Hotspot History
