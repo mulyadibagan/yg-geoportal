@@ -4,20 +4,28 @@
  const fmt=(v,d=2)=>Number.isFinite(v)?v.toLocaleString('id-ID',{maximumFractionDigits:d}):'—';
  const date=t=>t?new Date(t+'+07:00').toLocaleString('id-ID',{timeZone:'Asia/Jakarta',day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})+' WIB':'—';
  const month=t=>new Date(t+'-01T00:00:00+07:00').toLocaleDateString('id-ID',{month:'long',year:'numeric',timeZone:'Asia/Jakarta'});
+ function openMonth(value){
+  $('annual-month').value=value;$('annual-resolution').value='daily';
+  $('annual-detail').open=true;draw();
+  $('annual-detail').scrollIntoView({behavior:'smooth',block:'start'});
+ }
  function drawMonthly(){
   const months=data.monthly,complete=m=>m.calendarComplete!==false&&m.hours===m.expectedHours;
   if(monthlyChart)monthlyChart.destroy();
-  monthlyChart=new Chart($('annual-monthly-chart'),{type:'bar',data:{labels:months.map(m=>month(m.month)),datasets:[{label:'Muka laut tertinggi (m)',data:months.map(m=>m.max),backgroundColor:months.map(m=>m.hours<m.expectedHours?'#cb862b':complete(m)?'#087d75':'#87969d'),borderRadius:5,maxBarThickness:48}]},options:{responsive:true,maintainAspectRatio:false,scales:{x:{ticks:{autoSkip:false,maxRotation:45,minRotation:0,callback:function(v){const m=months[v].month;return new Date(m+'-01T00:00:00+07:00').toLocaleDateString('id-ID',{month:'short',timeZone:'Asia/Jakarta'})+' '+m.slice(2,4)}}},y:{beginAtZero:true,title:{display:true,text:'Meter terhadap acuan muka laut (MSL)'}}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>fmt(c.raw)+' m terhadap MSL',afterLabel:c=>{const m=months[c.dataIndex];return [date(m.maxTime),'Data: '+fmt(m.hours/m.expectedHours*100,1)+'% dari periode tersedia',m.calendarComplete===false?'Sebagian bulan; bukan satu bulan penuh':m.hours<m.expectedHours?'Ada data kosong; puncak lain mungkin tidak tercatat':'Bulan penuh, data lengkap']}}}}}});
+  monthlyChart=new Chart($('annual-monthly-chart'),{type:'bar',data:{labels:months.map(m=>month(m.month)),datasets:[{label:'Muka laut tertinggi (m)',data:months.map(m=>m.max),backgroundColor:months.map(m=>m.hours<m.expectedHours?'#cb862b':complete(m)?'#087d75':'#87969d'),borderRadius:5,maxBarThickness:48}]},options:{responsive:true,maintainAspectRatio:false,onClick:(event,items)=>{if(items.length)openMonth(months[items[0].index].month)},onHover:(event,items)=>{event.native.target.style.cursor=items.length?'pointer':'default'},scales:{x:{ticks:{autoSkip:false,maxRotation:45,minRotation:0,callback:function(v){const m=months[v].month;return new Date(m+'-01T00:00:00+07:00').toLocaleDateString('id-ID',{month:'short',timeZone:'Asia/Jakarta'})+' '+m.slice(2,4)}}},y:{beginAtZero:true,title:{display:true,text:'Meter terhadap acuan muka laut (MSL)'}}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>fmt(c.raw)+' m terhadap MSL',afterLabel:c=>{const m=months[c.dataIndex];return [date(m.maxTime),'Data: '+fmt(m.hours/m.expectedHours*100,1)+'% dari periode tersedia',m.calendarComplete===false?'Sebagian bulan; bukan satu bulan penuh':m.hours<m.expectedHours?'Ada data kosong; puncak lain mungkin tidak tercatat':'Bulan penuh, data lengkap']}}}}}});
  }
  function draw(){
   if(!data||!$('annual-detail').open)return;const selected=$('annual-month').value;let labels,sets;
-  if(!selected){labels=data.daily.map(d=>d.date);sets=[{label:'Tertinggi harian',data:data.daily.map(d=>d.max),borderColor:'#087d75'},{label:'Terendah harian',data:data.daily.map(d=>d.min),borderColor:'#3182bd'}]}
+  const days=data.daily.filter(d=>!selected||d.date.startsWith(selected));const hourly=$('annual-resolution').value==='hourly'&&selected;
+  if(!hourly){labels=days.map(d=>d.date);sets=[{label:'Tertinggi harian',data:days.map(d=>d.max),borderColor:'#087d75'},{label:'Terendah harian',data:days.map(d=>d.min),borderColor:'#3182bd'}]}
   else{const start=new Date(data.hourly.start+'+07:00').getTime();labels=[];const values=[];data.hourly.values.forEach((v,i)=>{const t=new Date(start+i*3600000+7*3600000).toISOString().slice(0,16);if(t.startsWith(selected)){labels.push(t.replace('T',' '));values.push(v)}});sets=[{label:'Muka laut per jam',data:values,borderColor:'#087d75'}]}
   if(chart)chart.destroy();chart=new Chart($('annual-tide-chart'),{type:'line',data:{labels,datasets:sets.map(s=>({...s,pointRadius:0,borderWidth:1.5,tension:0,spanGaps:false}))},options:{responsive:true,maintainAspectRatio:false,interaction:{intersect:false,mode:'index'},scales:{x:{ticks:{maxTicksLimit:8,maxRotation:0}},y:{title:{display:true,text:'Meter terhadap MSL model'}}},plugins:{legend:{position:'bottom'}}}});
-  $('annual-chart-caption').textContent=selected?'Detail per jam · '+month(selected)+' · WIB':'Tertinggi dan terendah setiap hari · '+data.startDate+'–'+data.endDate+'. Hari dengan data kurang dari 24 jam ditampilkan sebagai celah.';
+  $('annual-chart-caption').textContent=(hourly?'Detail per jam · ':'Tertinggi dan terendah harian · ')+(selected?month(selected):data.startDate+'–'+data.endDate)+' · WIB. Data kosong ditampilkan sebagai celah.';
+  $('annual-detail-title').textContent=selected?'Data harian · '+month(selected):'Lihat detail harian dan per jam';
+  $('annual-table').innerHTML=days.map(d=>'<tr><th scope="row">'+new Date(d.date+'T00:00:00+07:00').toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric',timeZone:'Asia/Jakarta'})+'</th><td>'+fmt(d.max)+'</td><td>'+fmt(d.min)+'</td><td>'+fmt(d.mean)+'</td><td>'+d.hours+'/24 jam</td></tr>').join('');
  }
  function render(d){
-  data=d;const s=d.summary;$('annual-detail').open=false;$('annual-title').textContent='Pasang surut tahunan · '+d.location.name;
+  data=d;const s=d.summary;$('annual-detail').open=false;$('annual-detail-title').textContent='Lihat detail harian dan per jam';$('annual-resolution').value='daily';$('annual-title').textContent='Pasang surut tahunan · '+d.location.name;
   $('annual-source').textContent=(d.regionalFallback?'REFERENSI LAUT REGIONAL — titik desa tidak memiliki data. ':'')+d.dataKind+'. Periode '+d.startDate+'–'+d.endDate+' (WIB). Sumber: '+d.source+'. Data diambil '+d.retrievedAt.slice(0,10)+'.';
   $('annual-grid').textContent='Titik desa '+d.location.lat.toFixed(6)+', '+d.location.lon.toFixed(6)+' · grid laut '+d.grid.lat.toFixed(4)+', '+d.grid.lon.toFixed(4)+' · jarak '+fmt(d.grid.distanceKm,1)+' km. Desa berdekatan dapat menggunakan grid yang sama. Datum: MSL global.';
   $('annual-coverage').textContent=fmt(s.validHours,0)+' / '+fmt(s.expectedHours,0)+' jam ('+fmt(s.validHours/s.expectedHours*100,1)+'%)';
@@ -36,6 +44,7 @@
  }
  async function load(id){currentId=id;const period=$('annual-period').value,key=period+'/'+id;const token=++request;data=null;if(monthlyChart){monthlyChart.destroy();monthlyChart=null}if(chart){chart.destroy();chart=null}$('annual-content').hidden=true;$('annual-status').hidden=false;$('annual-status').textContent='Memuat arsip tahunan…';try{if(!cache.has(key))cache.set(key,fetch('data/coastal-tides/'+(period==='rolling'?'':period+'/')+encodeURIComponent(id)+'.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error();return r.json()}));const d=await cache.get(key);if(token===request)render(d)}catch(_){cache.delete(key);if(token===request)$('annual-status').textContent='Arsip tahunan belum dapat dimuat untuk desa ini. Muat ulang halaman untuk mencoba kembali.'}}
  $('annual-month').addEventListener('change',draw);
+ $('annual-resolution').addEventListener('change',draw);
  $('annual-detail').addEventListener('toggle',()=>{if($('annual-detail').open)draw()});
  $('annual-download').addEventListener('click',()=>{if(!data)return;const rows=['tanggal_wib,terendah_m_msl,tertinggi_m_msl,rata_rata_m_msl,jam_valid'];data.daily.forEach(d=>rows.push([d.date,d.min??'',d.max??'',d.mean??'',d.hours].join(',')));const url=URL.createObjectURL(new Blob(['\uFEFF'+rows.join('\r\n')],{type:'text/csv;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='pasang-surut-'+data.location.id+'-'+data.startDate+'-'+data.endDate+'.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)});
  document.addEventListener('coastal-location-selected',e=>load(e.detail.id));
