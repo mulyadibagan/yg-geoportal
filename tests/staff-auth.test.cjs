@@ -18,12 +18,12 @@ test("authenticated pages expose a shared staff logout control", () => {
 test("staff login tolerates slow Apps Script authentication without hanging", () => {
   const auth = fs.readFileSync(path.join(ROOT, "js", "auth.js"), "utf8");
   const login = fs.readFileSync(path.join(ROOT, "staff-login.html"), "utf8");
-  assert.match(auth, /AUTH_RESULT_DEADLINE_MS = 120000/);
+  assert.match(auth, /AUTH_RESULT_DEADLINE_MS = 45000/);
   assert.match(auth, /AUTH_RESULT_REQUEST_TIMEOUT_MS = 30000/);
   assert.match(auth, /AUTH_POST_TIMEOUT_MS = 45000/);
   assert.match(auth, /fetchWithTimeout/);
   assert.match(auth, /Continue polling by request ID/);
-  assert.match(login, /js\/auth\.js\?v=20261005-login-recovery1/);
+  assert.match(login, /js\/auth\.js\?v=20261005-login-fast1/);
 });
 
 test("PBPH staff surfaces load the shared authentication module", () => {
