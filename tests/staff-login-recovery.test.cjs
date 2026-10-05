@@ -7,7 +7,9 @@ function setup(read, fastReply, timers={}){
  const stored=new Map(),calls=[];let active=0,maxActive=0;
  const storage={getItem:key=>stored.get(key)||null,setItem:(key,value)=>stored.set(key,value),removeItem:key=>stored.delete(key)};
  const context={window:{addEventListener(){}},document:{readyState:'loading',addEventListener(){}},localStorage:storage,sessionStorage:{getItem:()=>null,removeItem(){}},crypto:require('node:crypto').webcrypto,URLSearchParams,AbortController,Date,Math,console,setTimeout:(fn,ms)=>setTimeout(fn,ms<=1500?0:ms),clearTimeout,setInterval:timers.setInterval||setInterval,clearInterval:timers.clearInterval||clearInterval,
- fetch:async(url,options)=>{if(url.endsWith('/api/staff/login'))return fastReply || {status:404};calls.push({url,method:options.method});if(options.method==='POST')return{};active++;maxActive=Math.max(maxActive,active);try{return await read(url,calls.filter(c=>c.method!=='POST').length)}finally{active--}}};
+ fetch:async(url,options)=>{if(url.endsWith('/api/staff/login')){if(options.method==='HEAD'){if(timers.gatewayError)throw TypeError('Failed to fetch');return{status:405}}if(timers.postError)throw TypeError('Failed to fetch');return fastReply || {status:404}}calls.push({url,method:options.method});if(options.method==='POST')return{};active++;maxActive=Math.max(maxActive,active);try{return await read(url,calls.filter(c=>c.method!=='POST').length)}finally{active--}}};
+ context.document.createElement=()=>({remove(){}});
+ context.document.head={appendChild(script){calls.push({url:script.src,method:'JSONP'});const callback=new URL(script.src).searchParams.get('callback');queueMicrotask(()=>context.window[callback](success()))}};
  vm.runInNewContext(authCode,context);
  return{auth:context.window.YG_AUTH,calls,stored,maxActive:()=>maxActive};
 }
@@ -66,4 +68,17 @@ test('progress continues while the server response is pending and timer stops af
  const login=s.auth.login('fixture','fixture-password',text=>progress.push(text));
  tick();tick();assert.equal(progress.length,3);assert.equal(cleared,false);
  finish(success());await login;assert.equal(cleared,true);
+});
+test('unreachable gateway uses one direct credential POST and a single Google result reader',async()=>{
+ const s=setup(async()=>{throw Error('must not read workers')},null,{gatewayError:true});
+ await s.auth.login('fixture','fixture-password');
+ assert.equal(s.calls.filter(c=>c.method==='POST').length,1);
+ assert.equal(s.calls.filter(c=>c.method==='JSONP').length,1);
+ assert.ok(s.calls.every(c=>c.url.startsWith('https://script.google.com/')));
+ assert.equal(JSON.parse(s.stored.get('ygEditorSessionV1')).token,'fixture-token');
+});
+test('lost gateway credential response never replays credentials and reports a useful message',async()=>{
+ const s=setup(async()=>{throw Error('must not replay')},null,{postError:true});
+ await assert.rejects(s.auth.login('fixture','fixture-password'),/Koneksi layanan login terputus/);
+ assert.equal(s.calls.length,0);assert.equal(s.stored.size,0);
 });

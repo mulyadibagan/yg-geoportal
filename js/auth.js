@@ -69,7 +69,7 @@
     }
   }
 
-  async function postAuthRequest(action, fields, onProgress) {
+  async function postAuthRequest(action, fields, onProgress, directResult = false) {
     const requestId = "yg-auth-" + crypto.randomUUID();
     const startedAt = Date.now();
     if (onProgress) onProgress("Mengirim permintaan login…");
@@ -109,12 +109,16 @@
         ));
         let result;
         try {
-          const response = await fetch(
-            `${endpoint}?requestId=${encodeURIComponent(requestId)}&t=${Date.now()}`,
-            { cache: "no-store", signal: controller.signal }
-          );
-          if (!response.ok) throw new Error("Hasil autentikasi belum dapat dimuat.");
-          result = await response.json();
+          if (directResult) {
+            result = await callbackLoad(`${API}?page=editor-auth-result&requestId=${encodeURIComponent(requestId)}`, Math.min(AUTH_RESULT_REQUEST_TIMEOUT_MS, Math.max(1, deadline - Date.now())));
+          } else {
+            const response = await fetch(
+              `${endpoint}?requestId=${encodeURIComponent(requestId)}&t=${Date.now()}`,
+              { cache: "no-store", signal: controller.signal }
+            );
+            if (!response.ok) throw new Error("Hasil autentikasi belum dapat dimuat.");
+            result = await response.json();
+          }
           if (!result || typeof result !== "object" ||
               (result.pending !== true && typeof result.ok !== "boolean")) {
             throw new Error("Hasil autentikasi belum dapat dimuat.");
@@ -146,19 +150,36 @@
     const progressTimer = setInterval(progress, 1000);
     let result;
     try {
-      const response = await fetchWithTimeout(
-        "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/staff/login",
-        { method: "POST", headers: { "content-type": "application/json" }, cache: "no-store", body: JSON.stringify({ username, password }) },
-        75000
-      );
-      // Compatibility while the gateway rollout is still pending.
-      // Do not replay a possibly accepted credential request on transport errors.
-      if ([404, 405, 501].includes(response.status)) {
-        result = await postAuthRequest("editor-login", { username, password });
+      const gateway = "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/staff/login";
+      let gatewayReachable = false;
+      try {
+        // Check connectivity before sending credentials, so fallback never
+        // replays a potentially accepted login request.
+        await fetchWithTimeout(gateway, { method: "HEAD", cache: "no-store" }, 4000);
+        gatewayReachable = true;
+      } catch (_) {}
+      if (!gatewayReachable) {
+        result = await postAuthRequest("editor-login", { username, password }, null, true);
       } else {
-        result = await response.json();
-        if (!response.ok || result?.ok !== true) throw new Error(result?.message || "Login belum dapat diproses. Silakan coba lagi.");
+        const response = await fetchWithTimeout(
+          gateway,
+          { method: "POST", headers: { "content-type": "text/plain;charset=UTF-8" }, cache: "no-store", body: JSON.stringify({ username, password }) },
+          75000
+        );
+        // Compatibility while the gateway rollout is still pending.
+        // Do not replay a possibly accepted credential request on transport errors.
+        if ([404, 405, 501].includes(response.status)) {
+          result = await postAuthRequest("editor-login", { username, password });
+        } else {
+          result = await response.json();
+          if (!response.ok || result?.ok !== true) throw new Error(result?.message || "Login belum dapat diproses. Silakan coba lagi.");
+        }
       }
+    } catch (error) {
+      if (error?.name === "TypeError" || error?.name === "AbortError") {
+        throw new Error("Koneksi layanan login terputus. Muat ulang halaman dan coba lagi.");
+      }
+      throw error;
     } finally { clearInterval(progressTimer); }
 
     if (!result.sessionToken || !result.username || !Number.isFinite(Number(result.expiresAt)) || Number(result.expiresAt) <= Date.now()) {
