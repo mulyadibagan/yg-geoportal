@@ -10,7 +10,8 @@ function cors(request){
   return {
     'access-control-allow-origin': ALLOWED_ORIGINS.has(origin)?origin:'https://webgisyg.id',
     'access-control-allow-methods':'GET, HEAD, POST, PUT, OPTIONS',
-    'access-control-allow-headers':'content-type, x-file-name, x-job-token, authorization',
+    'access-control-allow-headers':'content-type, x-file-name, x-job-token, authorization, range',
+    'access-control-expose-headers':'content-range, content-length, accept-ranges, etag',
     'access-control-max-age':'3600',
     vary:'Origin',
     'x-content-type-options':'nosniff'
@@ -109,7 +110,7 @@ async function refineJob(request,env,id,url){
   await queueJob(env,id);
   return reply(request,{ok:true,job:publicJob(job)});
 }
-async function serveCog(request,env,id,url,verifyStaffToken){const job=await readJson(env,jobKey(id));if(!job||job.status!=='ready'||!job.cogKey)return reply(request,{ok:false,error:'orthomosaic_not_ready'},404);if(!authorizedJob(request,url,job)&&!await authorizedStaff(request,env,verifyStaffToken))return reply(request,{ok:false,error:'unauthorized'},401);const rangeHeader=request.headers.get('range');const object=await env.PUBLIC_SNAPSHOTS.get(job.cogKey,rangeHeader?{range:request.headers}:undefined);if(!object)return reply(request,{ok:false,error:'cog_missing'},404);const headers=new Headers(cors(request));object.writeHttpMetadata(headers);headers.set('etag',object.httpEtag);headers.set('accept-ranges','bytes');headers.set('cache-control','private, max-age=3600');if(object.range){const offset=object.range.offset||0;const length=object.range.length||object.size;headers.set('content-range',`bytes ${offset}-${offset+length-1}/${object.size}`)}return new Response(request.method==='HEAD'?null:object.body,{status:object.range?206:200,headers})}
+async function serveCog(request,env,id,url,verifyStaffToken){const job=await readJson(env,jobKey(id));if(!job||job.status!=='ready'||!job.cogKey)return reply(request,{ok:false,error:'orthomosaic_not_ready'},404);if(!authorizedJob(request,url,job)&&!await authorizedStaff(request,env,verifyStaffToken))return reply(request,{ok:false,error:'unauthorized'},401);const rangeHeader=request.headers.get('range');const object=await env.PUBLIC_SNAPSHOTS.get(job.cogKey,rangeHeader?{range:request.headers}:undefined);if(!object)return reply(request,{ok:false,error:'cog_missing'},404);const headers=new Headers(cors(request));object.writeHttpMetadata(headers);headers.set('etag',object.httpEtag);headers.set('accept-ranges','bytes');headers.set('content-length',String(object.range?.length ?? object.size));headers.set('cache-control','private, max-age=3600');if(object.range){const offset=object.range.offset||0;const length=object.range.length||object.size;headers.set('content-range',`bytes ${offset}-${offset+length-1}/${object.size}`)}return new Response(request.method==='HEAD'?null:object.body,{status:object.range?206:200,headers})}
 
 async function listStaffJobs(request,env,verifyStaffToken){
   if(!await authorizedStaff(request,env,verifyStaffToken))return reply(request,{ok:false,error:'unauthorized'},401);
@@ -173,7 +174,7 @@ async function servePublicCog(request,env,id){
   const headers=new Headers(cors(request));
   object.writeHttpMetadata(headers);
   headers.set('etag',object.httpEtag);
-  headers.set('accept-ranges','bytes');
+  headers.set('accept-ranges','bytes');headers.set('content-length',String(object.range?.length ?? object.size));
   headers.set('cache-control','public, max-age=3600, s-maxage=86400');
   if(object.range){const offset=object.range.offset||0;const length=object.range.length||object.size;headers.set('content-range',`bytes ${offset}-${offset+length-1}/${object.size}`)}
   return new Response(request.method==='HEAD'?null:object.body,{status:object.range?206:200,headers});
