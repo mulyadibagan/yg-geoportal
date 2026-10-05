@@ -140,7 +140,27 @@
   }
 
   async function login(username, password, onProgress) {
-    const result = await postAuthRequest("editor-login", { username, password }, onProgress);
+    const startedAt = Date.now();
+    const progress = () => { if (onProgress) onProgress("Memverifikasi akun… " + Math.floor((Date.now() - startedAt) / 1000) + " detik"); };
+    progress();
+    const progressTimer = setInterval(progress, 1000);
+    let result;
+    try {
+      const response = await fetchWithTimeout(
+        "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/staff/login",
+        { method: "POST", headers: { "content-type": "application/json" }, cache: "no-store", body: JSON.stringify({ username, password }) },
+        75000
+      );
+      // Compatibility while the gateway rollout is still pending.
+      // Do not replay a possibly accepted credential request on transport errors.
+      if ([404, 405, 501].includes(response.status)) {
+        result = await postAuthRequest("editor-login", { username, password });
+      } else {
+        result = await response.json();
+        if (!response.ok || result?.ok !== true) throw new Error(result?.message || "Login belum dapat diproses. Silakan coba lagi.");
+      }
+    } finally { clearInterval(progressTimer); }
+
     if (!result.sessionToken || !result.username || !Number.isFinite(Number(result.expiresAt)) || Number(result.expiresAt) <= Date.now()) {
       throw new Error("Data sesi login tidak lengkap. Silakan login kembali.");
     }
