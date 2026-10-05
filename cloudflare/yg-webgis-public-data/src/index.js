@@ -183,7 +183,7 @@ async function validStaffToken(token, env) {
   staffTokenChecks.set(token, check);
   return check;
 }
-export { validStaffToken };
+export { validStaffToken, rememberValidStaffToken };
 async function rspoGroupsApi(request, env) {
   const token = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "").trim() || "";
   if (!await validStaffToken(token, env)) return staffJson({ ok: false, error: "unauthorized" }, 401);
