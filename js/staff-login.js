@@ -11,7 +11,11 @@
   function returnTarget() {
     const value = new URLSearchParams(window.location.search).get("return") || "";
     if (!value || /^(?:[a-z]+:|\/\/)/i.test(value) || value.includes("..")) return "admin-dashboard.html";
-    return value;
+    try {
+      const target = new URL(value, window.location.href);
+      if (target.origin !== window.location.origin) return "admin-dashboard.html";
+      return target.pathname + target.search + target.hash;
+    } catch { return "admin-dashboard.html"; }
   }
 
   function updateStatus(node, message, isError) {
@@ -58,7 +62,8 @@
     try {
       await window.YG_AUTH.login(
         document.getElementById("staff-username").value.trim().toLowerCase(),
-        document.getElementById("staff-password").value
+        document.getElementById("staff-password").value,
+        message => updateStatus(status, message, false)
       );
       window.location.replace(returnTarget());
     } catch (error) {
@@ -166,6 +171,10 @@
   } else if (activationToken) {
     activateAccount(activationToken);
   } else if (storedSession) {
-    window.location.replace(returnTarget());
+    // A locally unexpired token may already be rejected by the server.
+    // Keep the login form available instead of redirecting in a loop.
+    const notice = document.getElementById("staff-existing-session");
+    notice.hidden = false;
+    document.getElementById("staff-continue-session").href = returnTarget();
   }
 })();
