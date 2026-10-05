@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-04T05:15:36.585132+00:00",
+  "generatedAt": "2026-10-05T04:00:52.439503+00:00",
   "status": "ready",
-  "eventCount": 23,
-  "estimatedAreaHa": 7117.72,
-  "candidateEventCount": 28,
+  "eventCount": 20,
+  "estimatedAreaHa": 6583.88,
+  "candidateEventCount": 25,
   "processing": {
     "waiting-post-image": 4,
-    "published": 23,
+    "published": 20,
     "no-publishable-indication": 1,
     "excludedByRiauBoundary": 0
   },
@@ -19,7 +19,7 @@
   "villageSource": "data/batas_administrasi_desa_riau.geojson",
   "spatiallyClipped": true,
   "areaCrs": "EPSG:32647",
-  "administrativeUpdatedAt": "2026-10-04T05:15:38.040959+00:00",
+  "administrativeUpdatedAt": "2026-10-05T04:00:53.731822+00:00",
   "unassignedAreaHa": 16.86,
   "villageTotals": [
     {
@@ -39,12 +39,6 @@
       "district": "",
       "village": "Area Saling Klaim",
       "areaHa": 19.1
-    },
-    {
-      "regency": "Indragiri Hilir",
-      "district": "Batang Tuaka",
-      "village": "Sungaijunjangan",
-      "areaHa": 128.36
     },
     {
       "regency": "Indragiri Hilir",
@@ -69,12 +63,6 @@
       "district": "Gaung Anak Serka",
       "village": "Kelumpang",
       "areaHa": 0.88
-    },
-    {
-      "regency": "Indragiri Hilir",
-      "district": "Gaung Anak Serka",
-      "village": "Rambaian",
-      "areaHa": 7.56
     },
     {
       "regency": "Indragiri Hilir",
@@ -311,24 +299,6 @@
       "areaHa": 19.2
     },
     {
-      "regency": "Kuantan Singingi",
-      "district": "Singingi Hilir",
-      "village": "Koto Baru",
-      "areaHa": 38.01
-    },
-    {
-      "regency": "Kuantan Singingi",
-      "district": "Singingi Hilir",
-      "village": "Koto Baru/Sungai Paku",
-      "areaHa": 24.18
-    },
-    {
-      "regency": "Kuantan Singingi",
-      "district": "Singingi Hilir",
-      "village": "Sungaipaku",
-      "areaHa": 24.53
-    },
-    {
       "regency": "Pelalawan",
       "district": "Bandar Sei Kijang",
       "village": "Lubuk Ogung",
@@ -345,12 +315,6 @@
       "district": "Pangkalan Kerinci",
       "village": "Rantau Baru",
       "areaHa": 941.88
-    },
-    {
-      "regency": "Siak",
-      "district": "Siak",
-      "village": "Dayun",
-      "areaHa": 311.2
     }
   ],
   "districtTotals": [
@@ -366,18 +330,13 @@
     },
     {
       "regency": "Indragiri Hilir",
-      "district": "Batang Tuaka",
-      "areaHa": 128.36
-    },
-    {
-      "regency": "Indragiri Hilir",
       "district": "Gaung",
       "areaHa": 18.88
     },
     {
       "regency": "Indragiri Hilir",
       "district": "Gaung Anak Serka",
-      "areaHa": 8.44
+      "areaHa": 0.88
     },
     {
       "regency": "Indragiri Hilir",
@@ -470,11 +429,6 @@
       "areaHa": 160.84
     },
     {
-      "regency": "Kuantan Singingi",
-      "district": "Singingi Hilir",
-      "areaHa": 86.72
-    },
-    {
       "regency": "Pelalawan",
       "district": "Bandar Sei Kijang",
       "areaHa": 1.0
@@ -488,11 +442,6 @@
       "regency": "Pelalawan",
       "district": "Pangkalan Kerinci",
       "areaHa": 941.88
-    },
-    {
-      "regency": "Siak",
-      "district": "Siak",
-      "areaHa": 311.2
     }
   ],
   "regencyTotals": [
@@ -502,7 +451,7 @@
     },
     {
       "regency": "Indragiri Hilir",
-      "areaHa": 283.94
+      "areaHa": 148.02
     },
     {
       "regency": "Indragiri Hulu",
@@ -525,16 +474,8 @@
       "areaHa": 160.84
     },
     {
-      "regency": "Kuantan Singingi",
-      "areaHa": 86.72
-    },
-    {
       "regency": "Pelalawan",
       "areaHa": 1021.44
-    },
-    {
-      "regency": "Siak",
-      "areaHa": 311.2
     }
   ]
 }
