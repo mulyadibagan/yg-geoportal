@@ -15,7 +15,7 @@
     try {
       const stored = JSON.parse(localStorage.getItem(SESSION_KEY) || sessionStorage.getItem(SESSION_KEY) || "null");
       if (!stored || !stored.token || !stored.username || !stored.expiresAt) return null;
-      if (Number(stored.expiresAt) <= Date.now()) {
+      if (!Number.isFinite(Number(stored.expiresAt)) || Number(stored.expiresAt) <= Date.now()) {
         sessionStorage.removeItem(SESSION_KEY);
         localStorage.removeItem(SESSION_KEY);
         return null;
@@ -69,8 +69,10 @@
     }
   }
 
-  async function postAuthRequest(action, fields) {
-    const requestId = "yg-auth-" + Date.now() + "-" + Math.floor(Math.random() * 100000);
+  async function postAuthRequest(action, fields, onProgress) {
+    const requestId = "yg-auth-" + crypto.randomUUID();
+    const startedAt = Date.now();
+    if (onProgress) onProgress("Mengirim permintaan login…");
     const body = new URLSearchParams({ action, requestId, ...(fields || {}) });
     let postError = null;
     const postPromise = fetchWithTimeout(API, {
@@ -90,23 +92,36 @@
 
     const deadline = Date.now() + AUTH_RESULT_DEADLINE_MS;
     let lastLoadError = null;
+    let endpointIndex = 0;
     while (Date.now() < deadline) {
-      await new Promise(resolve => setTimeout(resolve, 700));
+      await new Promise(resolve => setTimeout(resolve, 1200));
+      if (onProgress) onProgress("Menunggu verifikasi akun… " + Math.floor((Date.now() - startedAt) / 1000) + " detik");
       try {
-        const attempts = AUTH_RESULT_APIS.map(async endpoint => {
-          const response = await fetchWithTimeout(
+        // Apps Script consumes each result once. Never race two readers:
+        // a fast pending response could discard the only successful result.
+        const endpoint = AUTH_RESULT_APIS[endpointIndex];
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), Math.min(
+          AUTH_RESULT_REQUEST_TIMEOUT_MS, Math.max(1, deadline - Date.now())
+        ));
+        let result;
+        try {
+          const response = await fetch(
             `${endpoint}?requestId=${encodeURIComponent(requestId)}&t=${Date.now()}`,
-            { cache: "no-store" },
-            AUTH_RESULT_REQUEST_TIMEOUT_MS
+            { cache: "no-store", signal: controller.signal }
           );
           if (!response.ok) throw new Error("Hasil autentikasi belum dapat dimuat.");
-          return response.json();
-        });
-        let result = null;
-        try {
-          result = await Promise.any(attempts);
+          result = await response.json();
+          if (!result || typeof result !== "object" ||
+              (result.pending !== true && typeof result.ok !== "boolean")) {
+            throw new Error("Hasil autentikasi belum dapat dimuat.");
+          }
         } catch (error) {
+          // Fail over only after the previous read has settled or been aborted.
+          endpointIndex = (endpointIndex + 1) % AUTH_RESULT_APIS.length;
           throw new Error("Hasil autentikasi belum dapat dimuat.");
+        } finally {
+          clearTimeout(timer);
         }
         lastLoadError = null;
         if (result && result.pending) continue;
@@ -121,8 +136,11 @@
     throw new Error("Waktu koneksi autentikasi habis. Silakan coba lagi.");
   }
 
-  async function login(username, password) {
-    const result = await postAuthRequest("editor-login", { username, password });
+  async function login(username, password, onProgress) {
+    const result = await postAuthRequest("editor-login", { username, password }, onProgress);
+    if (!result.sessionToken || !result.username || !Number.isFinite(Number(result.expiresAt)) || Number(result.expiresAt) <= Date.now()) {
+      throw new Error("Data sesi login tidak lengkap. Silakan login kembali.");
+    }
     const session = {
       token: result.sessionToken,
       username: result.username,
