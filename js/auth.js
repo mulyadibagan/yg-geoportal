@@ -7,7 +7,7 @@
     "https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/api/staff/auth-result"
   ];
   const SESSION_KEY = "ygEditorSessionV1";
-  const AUTH_RESULT_DEADLINE_MS = 120000;
+  const AUTH_RESULT_DEADLINE_MS = 45000;
   const AUTH_RESULT_REQUEST_TIMEOUT_MS = 30000;
   const AUTH_POST_TIMEOUT_MS = 45000;
 
@@ -90,11 +90,14 @@
       return { ok: true };
     }
 
-    const deadline = Date.now() + AUTH_RESULT_DEADLINE_MS;
+    const deadline = startedAt + AUTH_RESULT_DEADLINE_MS;
     let lastLoadError = null;
     let endpointIndex = 0;
+    let nextPollDelay = 0;
     while (Date.now() < deadline) {
-      await new Promise(resolve => setTimeout(resolve, 1200));
+      if (nextPollDelay) await new Promise(resolve => setTimeout(resolve, Math.min(nextPollDelay, Math.max(0, deadline - Date.now()))));
+      if (Date.now() >= deadline) break;
+      nextPollDelay = 600;
       if (onProgress) onProgress("Menunggu verifikasi akun… " + Math.floor((Date.now() - startedAt) / 1000) + " detik");
       try {
         // Apps Script consumes each result once. Never race two readers:
@@ -132,8 +135,8 @@
         lastLoadError = error;
       }
     }
-    if (lastLoadError || postError) throw new Error("Hasil autentikasi belum dapat dimuat. Periksa koneksi lalu coba lagi.");
-    throw new Error("Waktu koneksi autentikasi habis. Silakan coba lagi.");
+    if (lastLoadError || postError) throw new Error("Layanan login belum merespons. Periksa koneksi dan coba lagi; akun belum diverifikasi.");
+    throw new Error("Verifikasi belum selesai dalam 45 detik. Silakan coba lagi; akun belum diverifikasi.");
   }
 
   async function login(username, password, onProgress) {

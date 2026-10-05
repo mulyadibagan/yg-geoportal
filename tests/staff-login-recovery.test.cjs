@@ -13,6 +13,14 @@ function setup(read){
 }
 const response=data=>({ok:true,json:async()=>data});
 const success=()=>({ok:true,sessionToken:'fixture-token',username:'fixture',expiresAt:Date.now()+60000});
+
+test('login starts reading results immediately without an initial polling sleep',async()=>{
+ const s=setup(async()=>response(success()));
+ const promise=s.auth.login('fixture','fixture-password');
+ assert.equal(s.calls.length,2,'POST and first result request begin in the same turn');
+ await promise;
+ assert.equal(s.maxActive(),1);
+});
 test('consume-on-read login keeps a single reader and does not lose a ready result to pending',async()=>{
  const s=setup(async(url,n)=>{await new Promise(r=>setTimeout(r,3));return response(n===1?{pending:true}:success())});
  const progress=[];await s.auth.login('fixture','fixture-password',text=>progress.push(text));
