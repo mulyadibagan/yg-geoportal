@@ -9,6 +9,9 @@ SOURCE = 'https://petadasar.meritech.cloud/tile/{z}/{x}/{y}.jpg'
 STEP = 0.18  # ~20 km near the equator; exact angular grid, clipped to Riau.
 ZOOM = 17
 _local = threading.local()
+# Reference locations discovered during source verification; all are still probed.
+REFERENCE_POINTS = [(102.12,1.48),(101.4478,.5071),(101.4476,1.6666),(102.047,.793),
+                    (100.817,2.157),(101.025,.338),(101.858,.396),(103.15,-.325)]
 
 def tile(lon, lat):
     n = 2 ** ZOOM
@@ -52,7 +55,8 @@ def cells(boundary):
             geom = boundary.intersection(box(ix * STEP, iy * STEP, (ix + 1) * STEP, (iy + 1) * STEP))
             if geom.is_empty or geom.area < 1e-9:
                 continue
-            candidates = [geom.representative_point()]
+            candidates = [Point(x,y) for x,y in REFERENCE_POINTS if geom.covers(Point(x,y))]
+            candidates.append(geom.representative_point())
             for fx, fy in [(0.25,0.25),(0.75,0.25),(0.25,0.75),(0.75,0.75)]:
                 p = Point((ix + fx)*STEP, (iy + fy)*STEP)
                 if geom.covers(p):
