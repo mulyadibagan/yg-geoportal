@@ -71,3 +71,34 @@
 .riau-reference-layer strong{font-size:12px;font-weight:750;line-height:1.35;color:#40504a}
 .riau-reference-layer em{font-size:9px}
 .riau-reference-empty,.riau-reference-catalog-status{font-size:10px;line-height:1.5}
+
+/* Meritech controls share the sidebar's layer-row hierarchy. */
+.meritech-panel{margin-top:14px;padding-top:12px}
+.meritech-panel>.meritech-heading{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:10px;background:#edf4f1;color:#285b4e;font:850 11px/1.4 system-ui,sans-serif;letter-spacing:.04em;text-transform:uppercase;list-style:none}
+.meritech-heading::-webkit-details-marker{display:none}
+.meritech-panel>.meritech-heading::before{content:"›";font-size:17px;line-height:1}
+.meritech-panel[open]>.meritech-heading::before{transform:rotate(90deg)}
+.meritech-panel>.meritech-heading>span{color:inherit}
+.meritech-heading>small{margin-left:auto;flex:none;color:#61776f;font-size:9px;font-weight:600;letter-spacing:0;text-transform:none}
+.meritech-body{display:grid;gap:10px;margin-top:10px;min-width:0}
+.meritech-layer:has(input:checked){border-color:#91c9b6;background:#f0f9f5}
+.meritech-layer small{display:block;margin-top:3px;font-size:10px;line-height:1.4;color:#687b73}
+.meritech-layer>.meritech-grid-icon{background:repeating-linear-gradient(0deg,transparent 0 4px,#0284c7 4px 5px),repeating-linear-gradient(90deg,transparent 0 4px,#0284c7 4px 5px);border:1px solid #0284c7}
+.meritech-layer>.meritech-image-icon{background:#08765f}
+.meritech-info{display:grid;gap:9px;padding:0 3px 6px;min-width:0}
+.meritech-status{display:block;color:#596e65;font-size:11px;line-height:1.5;overflow-wrap:anywhere}
+.meritech-legend{display:flex;flex-wrap:wrap;gap:6px 12px;padding:8px 9px;border-radius:8px;background:#f5f8f6}
+.meritech-legend>span{display:inline-flex;align-items:center;gap:5px;color:#53685e;font-size:10px;line-height:1.5}
+.meritech-legend i{display:block;flex:none;width:8px;height:8px;border-radius:2px}
+.meritech-legend .is-found{background:#0284c7}
+.meritech-legend .is-empty{background:#64748b}
+.meritech-legend .is-retry{background:#d97706}
+.meritech-actions{display:flex;flex-wrap:wrap;gap:6px}
+.meritech-panel .meritech-actions button{min-height:32px;padding:7px 10px;border:1px solid #c8dbd2;border-radius:8px;background:#fff;color:#285b4e;font:700 10px/1.3 system-ui,sans-serif;cursor:pointer}
+.meritech-panel .meritech-actions button:hover{background:#edf7f1;border-color:#85b5a2}
+.meritech-panel button:focus-visible,.meritech-panel summary:focus-visible,.meritech-panel input:focus-visible{outline:2px solid #0284c7;outline-offset:3px}
+.meritech-help>summary{display:list-item;color:#536e61;font:650 10px/1.5 system-ui,sans-serif;cursor:pointer}
+.meritech-panel .meritech-help p{font-size:10px;line-height:1.6;margin:7px 0;color:#61776f}
+.meritech-opacity{display:flex;align-items:center;gap:12px;color:#53685e;font-size:11px;line-height:1.4}
+.meritech-opacity input{flex:1;min-width:0;width:100%;height:18px;margin:0;accent-color:#08765f}
+.meritech-source{padding-top:9px;border-top:1px solid #e5ede8;color:#74867c;font-size:9px;line-height:1.6;overflow-wrap:anywhere}
