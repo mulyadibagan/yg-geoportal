@@ -7,7 +7,7 @@
   const MAX_DISPLAY_BYTES = 12 * 1024 * 1024;
   const MAX_DISPLAY_FEATURES = 25000;
   const CATALOG_COLORS = ["#08765f", "#d97706", "#2563a8", "#9b3f73", "#65752b", "#7a4bb7"];
-  const catalogState = { items: [], active: new Map(), pending: new Set() };
+  const catalogState = { items: [], active: new Map(), pending: new Set(), loading: false };
 
   const PRESETS = {
     baseline: {
@@ -43,16 +43,29 @@
     return {};
   }
 
-  async function staffApi(path) {
+  async function staffApi(path, signal) {
     const current = session();
     if (!current || !current.token) throw new Error("Login staf diperlukan.");
     const response = await fetch(API + path, {
       headers: { authorization: "Bearer " + current.token },
       cache: "no-store",
-      credentials: "omit"
+      credentials: "omit", signal
     });
     if (response.status === 401 || response.status === 403) throw new Error("Sesi staf berakhir. Silakan login kembali.");
     return response;
+  }
+
+  async function boundedRequest(action) {
+    const controller = new AbortController();
+    let timer;
+    try {
+      return await Promise.race([action(controller.signal), new Promise((_, reject) => {
+        timer = setTimeout(() => {
+          reject(new Error("Koneksi katalog melewati 20 detik. Klik Muat ulang untuk mencoba lagi."));
+          controller.abort();
+        }, 20000);
+      })]);
+    } finally { clearTimeout(timer); }
   }
 
   function catalogRows(catalog) {
@@ -74,7 +87,8 @@
     ];
     const uuid = String(row.datasetUuid || row.uuid || row.id || "").toLowerCase();
     const displayReady = display.available === true && String(display.status || "").toLowerCase() === "ready";
-    const publisher = row.publisher || row.organization || (row.opd && (row.opd.nama_opd || row.opd.name)) || row.opd;
+    const publisherValue = row.opd || row.publisher || row.organization;
+    const publisher = publisherValue && typeof publisherValue === "object" ? publisherValue.nama_opd || publisherValue.name || publisherValue.title : publisherValue;
     const theme = (row.theme && typeof row.theme === "object" ? row.theme.name || row.theme.code : row.theme) || row.kugiTheme || row.topicCategory;
     return {
       uuid,
@@ -137,52 +151,58 @@
     panel.querySelector("[data-riau-catalog-clear]").disabled = activeCount === 0;
   }
 
-  function filteredCatalogItems(panel) {
-    const publisher = panel.querySelector("[data-riau-catalog-opd]").value;
-    return catalogState.items.filter(item => !publisher || item.publisher === publisher);
-  }
-
   function renderCatalogItems(panel) {
     const list = panel.querySelector("[data-riau-catalog-list]");
-    const rows = filteredCatalogItems(panel);
+    const rows = catalogState.items;
+    const opened = new Set(Array.from(list.querySelectorAll("details[open]")).map(el => el.dataset.opd));
     updateCatalogSummary(panel);
     if (!rows.length) {
       list.innerHTML = '<small class="riau-reference-empty">Tidak ada layer siap-peta yang cocok.</small>';
       return;
     }
-    list.innerHTML = rows.map(item => {
+    const groups = new Map();
+    rows.forEach(item => { if (!groups.has(item.publisher)) groups.set(item.publisher, []); groups.get(item.publisher).push(item); });
+    list.innerHTML = Array.from(groups).sort(([a], [b]) => a.localeCompare(b, "id")).map(([publisher, items]) => `<details class="riau-reference-opd" data-opd="${escapeHtml(publisher)}"${opened.has(publisher) ? " open" : ""}><summary>${escapeHtml(publisher)}<span>${items.length} layer</span></summary><div>${items.map(item => {
       const active = catalogState.active.has(item.uuid), pending = catalogState.pending.has(item.uuid), color = colorFor(item.uuid);
       return `<label class="riau-reference-layer${active ? " is-active" : ""}" data-riau-uuid="${escapeHtml(item.uuid)}">
         <input type="checkbox" data-riau-catalog-layer="${escapeHtml(item.uuid)}"${active ? " checked" : ""}${pending ? " disabled" : ""}>
         <i style="--riau-layer-color:${escapeHtml(color)}"></i>
         <span><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.publisher)}</small>${item.warningCount ? `<em>${item.warningCount} catatan metadata</em>` : ""}</span>
       </label>`;
-    }).join("");
-  }
-
-  function fillCatalogOpds(panel) {
-    const select = panel.querySelector("[data-riau-catalog-opd]");
-    const publishers = Array.from(new Set(catalogState.items.map(item => item.publisher))).sort((a, b) => a.localeCompare(b, "id"));
-    select.innerHTML = '<option value="">Semua OPD</option>' + publishers.map(publisher => `<option value="${escapeHtml(publisher)}">${escapeHtml(publisher)}</option>`).join("");
+    }).join("")}</div></details>`).join("");
   }
 
   async function loadCatalog(panel) {
+    if (catalogState.loading) return;
+    catalogState.loading = true;
+    const refresh = panel.querySelector("[data-riau-catalog-refresh]");
+    refresh.disabled = true;
+    const token = session()?.token;
     const status = panel.querySelector("[data-riau-catalog-status]");
+    panel.querySelector("[data-riau-ready-count]").textContent = "Memuat…";
     status.classList.remove("is-error");
     status.textContent = "Memuat katalog privat…";
     try {
-      const response = await staffApi(CATALOG_PATH);
-      if (!response.ok) throw new Error("Katalog Geoportal belum dapat dimuat (" + response.status + ").");
-      const rows = catalogRows(await response.json());
+      const data = await boundedRequest(async signal => {
+        const response = await staffApi(CATALOG_PATH, signal);
+        if (!response.ok) throw new Error("Katalog Geoportal belum dapat dimuat (" + response.status + ").");
+        return response.json();
+      });
+      if (!token || session()?.token !== token) throw new Error("Sesi staf berubah. Silakan buka ulang peta setelah login.");
+      const rows = catalogRows(data);
       catalogState.items = rows.map(normalizeCatalogItem)
         .filter(item => item.displayReady && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(item.uuid))
         .sort((a, b) => a.title.localeCompare(b.title, "id"));
-      fillCatalogOpds(panel);
       renderCatalogItems(panel);
       status.textContent = catalogState.items.length.toLocaleString("id-ID") + " layer siap-peta tersedia. Data baru dimuat setelah dicentang.";
     } catch (error) {
       status.classList.add("is-error");
       status.textContent = error.message || "Katalog Geoportal belum dapat dimuat.";
+      panel.querySelector("[data-riau-ready-count]").textContent = catalogState.items.length ? "Pembaruan gagal" : "Belum tersedia";
+      if (!catalogState.items.length) panel.querySelector("[data-riau-catalog-list]").innerHTML = '<small class="riau-reference-empty">Katalog belum tersedia. Gunakan tombol Muat ulang.</small>';
+    } finally {
+      catalogState.loading = false;
+      refresh.disabled = false;
     }
   }
 
@@ -208,7 +228,7 @@
     }
     if (catalogState.active.size + catalogState.pending.size >= MAX_ACTIVE_CATALOG_LAYERS) {
       status.classList.add("is-error");
-      status.textContent = "Maksimal tiga layer Geoportal aktif. Matikan satu layer terlebih dahulu.";
+      status.textContent = "Maksimal delapan layer Geoportal aktif. Matikan satu layer terlebih dahulu.";
       return renderCatalogItems(panel);
     }
     catalogState.pending.add(item.uuid);
@@ -414,24 +434,15 @@
         <h2 class="panel-title">Peta Referensi Riau <small>analisis lintas sektor</small></h2>
         <span class="riau-reference-badge">INTERNAL STAF</span>
       </div>
-      <p>Gabungkan layer yang sudah tervalidasi. Preset tidak mengubah data program dan tidak mempublikasikan data privat.</p>
-      <div class="riau-reference-preset">
-        <select aria-label="Preset analisis Peta Referensi Riau">
-          ${Object.entries(PRESETS).map(([id, row]) => `<option value="${id}">${row.label}</option>`).join("")}
-        </select>
-        <button type="button" data-riau-apply>Terapkan</button>
-      </div>
+      <p>Buka OPD untuk melihat data yang tersedia, lalu centang layer yang ingin ditampilkan.</p>
       <div class="riau-reference-actions">
         <button type="button" data-riau-clear>Matikan referensi</button>
         <a href="staff-riau-reference.html">Katalog Riau Geoportal →</a>
         <a href="staff-rdtr-bagansiapiapi.html">Kajian RDTR Bagansiapiapi →</a>
       </div>
-      <small class="riau-reference-status" aria-live="polite">Pilih preset; tidak ada layer berat yang diaktifkan otomatis.</small>
-      <details class="riau-reference-catalog">
-        <summary>Layer Geoportal siap peta <span data-riau-ready-count>Memuat…</span></summary>
-        <div class="riau-reference-catalog-tools">
-          <select data-riau-catalog-opd aria-label="Filter OPD Geoportal Riau"><option value="">Semua OPD</option></select>
-        </div>
+      <small class="riau-reference-status" aria-live="polite">Layer dimuat setelah dipilih.</small>
+      <details class="riau-reference-catalog" open>
+        <summary>Data berdasarkan OPD <span data-riau-ready-count>Memuat…</span></summary>
         <div class="riau-reference-catalog-head"><strong data-riau-active-count>0/8 aktif</strong><div><button type="button" data-riau-catalog-refresh>Muat ulang</button><button type="button" data-riau-catalog-clear disabled>Matikan layer</button></div></div>
         <div class="riau-reference-layer-list" data-riau-catalog-list><small class="riau-reference-empty">Memuat katalog privat…</small></div>
         <small class="riau-reference-catalog-status" data-riau-catalog-status aria-live="polite">Memeriksa layer siap-peta…</small>
@@ -439,22 +450,10 @@
 
     layerPanel.parentNode.appendChild(panel);
     const status = panel.querySelector(".riau-reference-status");
-    panel.querySelector("[data-riau-apply]").addEventListener("click", event => {
-      const button = event.currentTarget;
-      button.disabled = true;
-      whenReferenceInputsReady(
-        () => applyPreset(panel.querySelector("select").value, status)
-          .finally(() => { button.disabled = false; }),
-        status,
-        20,
-        () => { button.disabled = false; }
-      );
-    });
     panel.querySelector("[data-riau-clear]").addEventListener("click", () => {
       clearReferenceLayers(status);
       clearCatalogLayers(panel);
     });
-    panel.querySelector("[data-riau-catalog-opd]").addEventListener("change", () => renderCatalogItems(panel));
     panel.querySelector("[data-riau-catalog-refresh]").addEventListener("click", () => loadCatalog(panel));
     panel.querySelector("[data-riau-catalog-clear]").addEventListener("click", () => clearCatalogLayers(panel));
     panel.querySelector("[data-riau-catalog-list]").addEventListener("change", event => {
@@ -469,11 +468,7 @@
     const params = new URLSearchParams(location.search);
     if (params.get("workspace") === "riau-reference") {
       panel.scrollIntoView({ block: "start" });
-      const requested = params.get("preset");
-      if (requested && PRESETS[requested]) {
-        panel.querySelector("select").value = requested;
-        whenReferenceInputsReady(() => applyPreset(requested, status), status, 20);
-      }
+
     }
   }
 

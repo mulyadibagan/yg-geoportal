@@ -14,7 +14,7 @@ test("Riau reference workspace is staff-only and additive", () => {
   assert.match(home, /Peta Referensi Riau/);
   assert.match(home, /staff-riau-reference\.html/);
   assert.match(home, /data-staff-only-module hidden/);
-  assert.match(page, /riau-reference-workspace\.js\?v=20261006-meritech5/);
+  assert.match(page, /riau-reference-workspace\.js\?v=20261006-opd-groups/);
   assert.match(workspace, /if \(!session\(\)/);
   assert.match(workspace, /Layer program YG tidak diubah/);
   assert.match(workspace, /waitUntilSettled/);
@@ -29,8 +29,9 @@ test("Geoportal layers are filtered by OPD rather than theme", () => {
   const workspace = read("js/riau-reference-workspace.js");
   const catalog = read("js/riau-geoportal-internal.js");
 
-  assert.match(workspace, /data-riau-catalog-opd/);
-  assert.match(workspace, /Semua OPD/);
+  assert.match(workspace, /data-opd/);
+  assert.match(workspace, /Data berdasarkan OPD/);
+  assert.doesNotMatch(workspace, /data-riau-apply/);
   assert.doesNotMatch(workspace, /data-riau-catalog-theme/);
   assert.doesNotMatch(workspace, /data-riau-catalog-search/);
   assert.match(page, /<label>OPD<select id="rg-publisher">/);

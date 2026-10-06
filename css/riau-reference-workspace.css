@@ -38,3 +38,8 @@
 .riau-reference-catalog-status { display: block; padding: 7px 0; color: #61776f; font-size: 8px; line-height: 1.35; }
 .riau-reference-catalog-status.is-error { color: #a33a32; }
 @media (max-width: 420px) { .riau-reference-preset { grid-template-columns: 1fr; } }
+
+.riau-reference-opd{border:1px solid #bfd2cb;border-radius:8px;background:#fff;padding:9px}
+.riau-reference-opd>summary{font-size:10px;line-height:1.4;align-items:center}
+.riau-reference-opd>summary span{white-space:nowrap;font-size:9px}
+.riau-reference-opd>div{display:grid;gap:5px;margin-top:8px}
