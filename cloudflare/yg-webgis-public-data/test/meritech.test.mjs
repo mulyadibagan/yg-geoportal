@@ -17,7 +17,7 @@ test('fixed Meritech origin, manual redirects, staff CORS and no token forwardin
  const result=await meritechTile(request(),{},async()=>true,async(target,options)=>{
   assert.equal(target,'https://petadasar.meritech.cloud/tile/17/102023/65224.jpg');
   assert.equal(options.redirect,'manual');assert.equal(options.headers,undefined);
-  return new Response(new Uint8Array([255,216,255]),{headers:{'content-type':'image/jpeg'}});
+  return new Response(new Uint8Array([255,216,255]),{headers:{'content-type':'Image/jpg'}});
  });
  assert.equal(result.status,200);assert.equal(result.headers.get('access-control-allow-origin'),'https://webgisyg.id');assert.equal((await result.arrayBuffer()).byteLength,3);
 });
