@@ -21,6 +21,8 @@ def main():
     ap.add_argument('--seed',default='data/meritech-riau-index.json')
     ap.add_argument('--output',default='data/meritech-riau-tiles.json')
     ap.add_argument('--workers',type=int,default=8)
+    ap.add_argument('--radius',type=int,default=4)
+    ap.add_argument('--cached-only',action='store_true',help='Export only previously decoded imagery; never probe or infer missing tiles')
     a=ap.parse_args()
     seeds=json.load(open(a.seed))
     boundary=unary_union([shape(f['geometry']) for f in json.load(open('data/batas_provinsi_riau_dissolve.geojson'))['features']])
@@ -30,17 +32,17 @@ def main():
         if p['state']!='imagery':continue
         sample=next(s for s in p['samples'] if s['state']=='imagery')
         z,x,y=sample['tile'];locations[p['id']]={'id':p['id'],'target':p['target']}
-        for dx in [-1,0,1]:
-            for dy in [-1,0,1]:
+        for dx in range(-a.radius,a.radius+1):
+            for dy in range(-a.radius,a.radius+1):
                 xx,yy=x+dx,y+dy
                 if not boundary.intersects(box(*bounds(z,xx,yy))):continue
                 jobs.setdefault(f'{z}/{xx}/{yy}',{'tile':[z,xx,yy],'locationId':p['id']})
     results={}
     checkpoint=a.output+'.checkpoint.json'
-    if os.path.exists(checkpoint):results=json.load(open(checkpoint))
+    if os.path.exists(checkpoint):results={k:v for k,v in json.load(open(checkpoint)).items() if k in jobs}
     def probe(item):
         key,row=item;lon,lat=center(*row['tile']);return key,{**row,**scanner.probe(lon,lat)}
-    pending=[(k,v) for k,v in jobs.items() if k not in results or results[k]['state']=='error']
+    pending=[] if a.cached_only else [(k,v) for k,v in jobs.items() if k not in results or results[k]['state']=='error']
     def save():
         with open(checkpoint+'.tmp','w') as f:json.dump(results,f)
         os.replace(checkpoint+'.tmp',checkpoint)
@@ -66,8 +68,8 @@ def main():
         markers.append({'id':key,'target':target,'tileCount':len(points)})
     data={'type':'FeatureCollection','metadata':{'kind':'verified-xyz-tiles','updatedAt':datetime.datetime.now(datetime.timezone.utc).isoformat(),
           'source':scanner.SOURCE,'zoom':17,'tileWidthApproxM':306,'seedLocations':len(locations),'locations':markers,
-          'counts':{'checked':len(results),'total':len(jobs),**{k:sum(r['state']==k for r in results.values()) for k in ['imagery','blank','missing','error']}},
-          'method':'Recheck seed tile and its eight immediate neighbours. Polygon is the exact XYZ tile extent with nonblank imagery, not an official survey footprint. Coverage outside these neighbourhoods is not assessed.'},'features':features}
+          'counts':{'checked':len(results),'total':len(jobs),'pending':len(jobs)-len(results),**{k:sum(r['state']==k for r in results.values()) for k in ['imagery','blank','missing','error']}},
+          'radius':a.radius,'method':'Check a square neighbourhood around each known imagery seed. Polygon is the exact XYZ tile extent with nonblank imagery, not an official survey footprint. Coverage outside the checked neighbourhoods is not assessed.'},'features':features}
     with open(a.output,'w') as f:json.dump(data,f,separators=(',',':'))
     print('Saved',len(features),'verified tile extents and',len(markers),'locators.',flush=True)
 
