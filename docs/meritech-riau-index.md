@@ -1,9 +1,13 @@
-# Meritech Riau discovery grid
+# Meritech verified tile navigation
 
-This is a sampled navigation index, not the provider's official imagery footprint. The angular grid is 0.18 degrees (about 20 km in Riau), clipped to the repository's province boundary. Each cell is checked at up to nine zoom-17 tile samples, stopping at the first decoded nonuniform image. A positive cell means at least one tested tile contains image content; it does not imply continuous coverage throughout the cell or verify the acquisition method/date. Clicking a positive cell uses its actual successful sample coordinate.
+The map displays `data/meritech-riau-tiles.json`, never the earlier 20 km discovery cells. Each feature is the exact extent of one zoom-17 XYZ tile (about 306 m per side in Riau) whose decoded image is nonblank. Tile boundaries are not official survey footprints; a tile can contain a partly blank margin. No interpolation fills the gaps between verified tiles.
 
-States: `imagery` = nonblank sample; `not_detected` = all sampled tiles blank or missing; `error` = unresolved network/HTTP/decode failure and no hit; `pending` = not examined. Negative samples never establish full absence of coverage. Small unsampled image patches may be missed. Bounds and sample details are saved in the JSON.
+Below zoom 15 the map shows location markers. At zoom 15 and above it shows unfilled tile outlines. Clicking a marker or outline zooms to a verified tile at zoom 17. The boundary overlay and imagery overlay are independently opt-in; no index, tile boundary or source imagery loads on page opening. Clicking a marker never enables imagery by itself.
 
-Both the index overlay and the image overlay are opt-in. No Meritech image request or index fetch occurs on page load. Navigating to a cell does not enable imagery. The page fetches the saved index only; it does not scan Meritech.
+The initial verification checks the previously discovered image-positive seed tile and its eight immediate neighbours, restricted to tiles intersecting Riau. This is a verified subset, not exhaustive Meritech coverage. Regions without outlines must not be interpreted as having no imagery.
 
-To rebuild (Python 3): install requests, Pillow and shapely; run `python scripts/build-meritech-index.py --workers 8`. Existing completed cells are retained and failed/pending cells are retried. To resurvey completed cells, remove the existing output in an isolated checkout first. Validate with `python -m unittest discover -s tests -p test_meritech_index.py` and `node --test tests/meritech-ui.test.cjs`. Publish the refreshed `data/meritech-riau-index.json` through the normal review/deployment process.
+The older `data/meritech-riau-index.json` remains an input discovery survey (276 cells at 0.18 degrees, about 20 km), but its coarse polygons are no longer rendered. Its positive cells only identified sample coordinates.
+
+Rebuild using Python 3 with requests, Pillow and shapely: `python scripts/build-meritech-tiles.py --workers 8`. It resumes from `data/meritech-riau-tiles.json.checkpoint.json`; remove that local checkpoint to reverify completed tiles. The checkpoint contains probe results, including blank/missing/errors; publish only the final verified output through review. Failed probes are never promoted to imagery or absence of coverage.
+
+Validate imagery classification with `python -m unittest discover -s tests -p test_meritech_index.py` and UI behavior with `node --test tests/meritech-ui.test.cjs`. Source acquisition dates, resolution and capture method remain unverified.
