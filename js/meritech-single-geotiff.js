@@ -40,7 +40,7 @@
    const offsetBytes=new Uint8Array(h.offsets.buffer);
    if(stream){await stream.write({type:'write',position:h.offsetsPosition,data:offsetBytes});await stream.close();}
    else{memory[0].set(offsetBytes,h.offsetsPosition);const url=URL.createObjectURL(new Blob(memory,{type:'image/tiff'}));const a=document.createElement('a');a.href=url;a.download=p.filename;a.click();setTimeout(()=>URL.revokeObjectURL(url),60000);}
-   status.textContent=`Satu GeoTIFF selesai: seluruh desa + buffer 1 km, ${p.width} × ${p.height} piksel, EPSG:3857. ${missing} tile tidak tersedia. Bagian di luar buffer transparan.`;
+   status.textContent=`Satu GeoTIFF selesai: seluruh desa + buffer 500 meter, ${p.width} × ${p.height} piksel, EPSG:3857. ${missing} tile tidak tersedia. Bagian di luar buffer transparan.`;
   }catch(e){if(stream)await stream.abort().catch(()=>{});throw e;}
  }
  window.YG_MERITECH_SINGLE={header,download};
