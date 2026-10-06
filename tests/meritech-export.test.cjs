@@ -43,20 +43,20 @@ test('polygon mask preserves holes using even-odd alpha clipping and metadata re
  const source=JSON.parse(m.GeoAsciiParams.slice(0,-1));assert.equal(source.bufferKm,1);assert.equal(source.part,2);assert.equal(source.totalParts,3);assert.equal(source.missingTiles,1);assert.deepEqual(source.clipBounds,p.clipBounds);assert.equal(source.maskApplied,true);
 });
 
-test('preview shows selected masked raster and download reuses identical pixels without refetch',async()=>{
- const nodes=new Map();const node=k=>{if(!nodes.has(k))nodes.set(k,{value:k.includes('mode')?'village':'17',handlers:{},addEventListener(t,f){this.handlers[t]=f;},disabled:false,hidden:false,textContent:''});return nodes.get(k);};
+test('viewport preview and download reuse identical pixels without refetch',async()=>{
+ const nodes=new Map();const node=k=>{if(!nodes.has(k))nodes.set(k,{value:k.includes('mode')?'viewport':'17',handlers:{},addEventListener(t,f){this.handlers[t]=f;},disabled:false,hidden:false,textContent:''});return nodes.get(k);};
  let fetched=0,drawn=0,masked=0,removed=0,clicked=0,written;
  const pixels=new Uint8Array([11,22,33,255]),ctx={drawImage(){drawn++;},getImageData(){return {data:pixels};}};
  const canvas={getContext:()=>ctx,toBlob(cb){cb(new Blob(['png']));}};
  const box={querySelector:node,querySelectorAll(){return [node('[data-export-mode]'),node('[data-export-part]')];},remove(){}};
  const p={zoom:17,left:0,top:0,width:1,height:1,tiles:[{x:102716,y:64997}],resolution:1,xmin:0,ymax:0,bounds:[102,1,102.01,1.01],part:1,totalParts:2,bufferKm:1,village:'Test',clip:{type:'Polygon',coordinates:[]}};
- const activeMap={fitBounds(){},removeLayer(){removed++;}};
+ const activeMap={getBounds:()=>bounds(102.12,1.48,102.12001,1.48001),fitBounds(){},removeLayer(){removed++;}};
  const writer=(data)=>{written=data;return new ArrayBuffer(4);};
- const c={window:{GeoTIFF:{writeArrayBuffer:writer},YG_MERITECH_VILLAGE:{mount(){return {getPlan:()=>p,busy(){},dispose(){}};},mask(){masked++;}},addEventListener(){}},GeoTIFF:{writeArrayBuffer:writer},document:{createElement(tag){if(tag==='canvas')return canvas;if(tag==='a')return {click(){clicked++;}};return box;}},L:{imageOverlay(){return {addTo(){return this;}};}},fetch:async()=>{fetched++;return {ok:true,status:200,blob:async()=>new Blob(['tile'])};},createImageBitmap:async()=>({width:256,height:256,close(){}}),AbortController,Blob,URL:{createObjectURL:()=> 'blob:test',revokeObjectURL(){}},setInterval:()=>1,clearInterval(){},setTimeout:()=>1,clearTimeout(){}};
+ const c={window:{GeoTIFF:{writeArrayBuffer:writer},YG_MERITECH_VILLAGE:{mount(){return {getPlan:()=>null,busy(){},dispose(){}};},mask(){masked++;}},addEventListener(){}},GeoTIFF:{writeArrayBuffer:writer},document:{createElement(tag){if(tag==='canvas')return canvas;if(tag==='a')return {click(){clicked++;}};return box;}},L:{imageOverlay(){return {addTo(){return this;}};}},fetch:async()=>{fetched++;return {ok:true,status:200,blob:async()=>new Blob(['tile'])};},createImageBitmap:async()=>({width:256,height:256,close(){}}),AbortController,Blob,URL:{createObjectURL:()=> 'blob:test',revokeObjectURL(){}},setInterval:()=>1,clearInterval(){},setTimeout:()=>1,clearTimeout(){}};
  vm.runInNewContext(fs.readFileSync('js/meritech-export.js','utf8'),c);
  const dispose=c.window.YG_MERITECH_EXPORT.mount({appendChild(){}},()=>activeMap,()=>({token:'test'}));
  await node('[data-export-preview]').onclick();
- assert.equal(fetched,1);assert.equal(drawn,1);assert.equal(masked,1);assert.equal(clicked,0);assert.match(node('[data-export-status]').textContent,/Pratinjau citra bagian 1\/2/);
+ assert.equal(fetched,1);assert.equal(drawn,1);assert.equal(masked,1);assert.equal(clicked,0);assert.match(node('[data-export-status]').textContent,/Pratinjau citra area ini/);
  await node('[data-export-start]').onclick();
  assert.equal(fetched,1);assert.equal(written,pixels);assert.equal(clicked,1);
  node('[data-export-part]').handlers.change();assert.equal(removed,1);

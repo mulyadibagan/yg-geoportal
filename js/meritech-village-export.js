@@ -46,12 +46,12 @@
       try{selection=partsFor(feature,Number(zoom.value),window.turf);for(const p of selection.parts){const o=document.createElement('option');o.value=String(p.part-1);o.textContent=`Bagian ${p.part}/${p.totalParts} · ${p.tiles.length} tile`;part.appendChild(o);}
         preview=L.featureGroup([L.geoJSON(feature,{style:{color:'#007bff',weight:2,fill:false}}),L.geoJSON(selection.clip,{style:{color:'#e67700',weight:2,dashArray:'6 4',fillOpacity:.06}})]).addTo(getMap());
         getMap().fitBounds(preview.getBounds(),{padding:[20,20]});
-        status.textContent=`Batas desa biru; buffer 1 km oranye. ${selection.parts.length} bagian, ${selection.totalTiles} tile. Perkiraan GeoTIFF total ${(selection.totalBytes/1048576).toFixed(0)} MB (tanpa kompresi). Unduh satu bagian lalu pilih bagian berikutnya. Ketersediaan citra diperiksa saat unduh.`;
+        status.textContent=`Batas desa biru; buffer 1 km oranye. ${selection.parts.length} bagian, ${selection.totalTiles} tile. Perkiraan GeoTIFF total ${(selection.totalBytes/1048576).toFixed(0)} MB (tanpa kompresi). Unduhan menghasilkan satu GeoTIFF untuk seluruh area. Ketersediaan citra diperiksa saat unduh.`;
       }catch(e){status.textContent=e.message;}
     }
     function filter(){const q=search.value.trim().toLocaleLowerCase('id');select.replaceChildren();const placeholder=document.createElement('option');placeholder.value='';placeholder.textContent='Pilih desa';select.appendChild(placeholder);collection.features.forEach((f,i)=>{const name=villageName(f);if(q&&!name.toLocaleLowerCase('id').includes(q))return;const o=document.createElement('option');o.value=String(i);o.textContent=name;select.appendChild(o);});reset();}
     mode.addEventListener('change',async()=>{
-      ++generation;load?.abort();box.querySelector('[data-export-start]').textContent=mode.value==='village'?'Unduh GeoTIFF bagian terpilih':'Unduh GeoTIFF area ini';controls.hidden=mode.value!=='village';reset();if(mode.value!=='village')return;
+      ++generation;load?.abort();box.querySelector('[data-export-start]').textContent=mode.value==='village'?'Unduh satu GeoTIFF seluruh desa':'Unduh GeoTIFF area ini';controls.hidden=mode.value!=='village';reset();if(mode.value!=='village')return;
       const id=generation;if(!readSession()?.token)return;
       status.textContent='Memuat batas desa Riau…';
       try{if(!window.turf?.buffer)throw Error('Pustaka buffer belum siap. Muat ulang halaman.');if(!collection){load?.abort();load=new AbortController();const activeLoad=load;const timeout=setTimeout(()=>activeLoad.abort(),45000);try{const r=await fetch('data/batas_administrasi_desa_riau.geojson',{signal:activeLoad.signal});if(!r.ok)throw Error('Batas desa gagal dimuat.');const d=await r.json();if(!Array.isArray(d.features))throw Error('Data desa tidak valid.');collection={features:d.features.filter(f=>['Polygon','MultiPolygon'].includes(f.geometry?.type)).sort((a,b)=>villageName(a).localeCompare(villageName(b),'id'))};}finally{clearTimeout(timeout);}}
@@ -59,7 +59,7 @@
       }catch(e){if(!disposed&&id===generation)status.textContent=e.name==='AbortError'?'Batas desa belum merespons. Pilih mode desa kembali untuk mencoba ulang.':e.message;}
     });
     search.addEventListener('input',()=>{if(collection)filter();});select.addEventListener('change',()=>{if(select.value!=='')update();else reset();});zoom.addEventListener('change',update);
-    return {getPlan(){if(mode.value!=='village')return null;if(!selection||select.value==='')throw Error('Pilih desa dan tunggu pratinjau area.');return selection.parts[Number(part.value)];},busy(value){for(const el of [mode,select,search,part])el.disabled=value;},dispose(){disposed=true;++generation;load?.abort();reset();}};
+    return {getWholePlan(){if(!selection||select.value==='')throw Error('Pilih desa terlebih dahulu.');const parts=selection.parts,first=parts[0],left=Math.min(...parts.map(p=>p.left)),top=Math.min(...parts.map(p=>p.top)),right=Math.max(...parts.map(p=>p.left+p.width)),bottom=Math.max(...parts.map(p=>p.top+p.height));return {...first,left,top,width:right-left,height:bottom-top,xmin:first.xmin+(left-first.left)*first.resolution,ymax:first.ymax-(top-first.top)*first.resolution,tiles:parts.flatMap(p=>p.tiles),part:1,totalParts:1};},getPlan(){if(mode.value!=='village')return null;if(!selection||select.value==='')throw Error('Pilih desa dan tunggu pratinjau area.');return selection.parts[Number(part.value)];},busy(value){for(const el of [mode,select,search,part])el.disabled=value;},dispose(){disposed=true;++generation;load?.abort();reset();}};
   }
   window.YG_MERITECH_VILLAGE={project,polygonBounds,buffered,partsFor,mask,mount,villageName};
 })();
