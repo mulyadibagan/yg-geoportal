@@ -3,6 +3,7 @@
   const API = 'https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev';
   const $ = id => document.getElementById(id);
   let session, map, areas, rasterLayer, rasterBounds, tileLayer, jobs = [], source = null, sequence = 0;
+  let disposeMeritechExport = null;
   let activeController = null, downloadController = null;
   const number = (v, digits = 2) => Number(v).toLocaleString('id-ID', {maximumFractionDigits: digits});
   function validSession() {
@@ -11,6 +12,7 @@
   }
   function lock(message) {
     sequence++;
+    disposeMeritechExport?.(); disposeMeritechExport = null;
     activeController?.abort(); downloadController?.abort();
     $('workspace').hidden = true;
     $('gate').hidden = false;
@@ -61,6 +63,7 @@
     map.on('draw:edited draw:deleted', updateMeasurements);
     map.on('mousemove', event => { $('coordinate').textContent = `${event.latlng.lat.toFixed(6)}, ${event.latlng.lng.toFixed(6)}`; });
     $('meritech').checked = false;
+    disposeMeritechExport = window.YG_MERITECH_EXPORT?.mount($('meritechDownload'), map, () => validSession() ? session : null);
   }
   function features() {
     return areas.getLayers().map((layer,index) => {
@@ -167,3 +170,4 @@
   window.addEventListener('beforeunload',event=>{if(areas?.getLayers().length){event.preventDefault();event.returnValue='';}});
   authorize();
 })();
+
