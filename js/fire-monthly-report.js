@@ -73,7 +73,6 @@
     document.getElementById('fm-status').textContent=(d.status==='final'?'Laporan final':'Data sementara')+' · '+d.period.start+' sampai '+d.period.end+' · diperbarui '+new Date(d.generatedAt).toLocaleString('id-ID',{timeZone:'Asia/Jakarta'})+' WIB';
     var max=Math.max.apply(null,d.daily.map(function(x){return x.hotspots}).concat([1]));
     document.getElementById('fm-daily').innerHTML=d.daily.map(function(x,i){return '<div class="fm-bar-slot '+(x.hotspots?'has-value':'')+'"><div class="fm-bar" style="height:'+Math.max(3,x.hotspots/max*150)+'px">'+(x.hotspots?'<span>'+x.hotspots+'</span>':'')+'</div><small>'+String(i+1).padStart(2,'0')+'</small></div>'}).join('');
-    table('fm-village-rows',d.villages||[],false);
     table('fm-company-rows',d.companies||[],true,{});
     if(staffSession)rspoTable(d.rspoAreas||[]);
     var villageNames=new Set((d.villages||[]).map(function(x){return String(x.village||'').toLowerCase()}));
@@ -83,7 +82,7 @@
     points.addTo(map);
     var layerControl=L.control.layers(null,{'Hotspot':points,'Desa terdeteksi':villageLayer},{collapsed:false,position:'bottomright'}).addTo(map);
     var bounds=L.featureGroup([villageLayer,points]).getBounds();if(bounds.isValid())map.fitBounds(bounds.pad(.08));
-    if(d.unavailable){['fm-hotspots','fm-villages','fm-regencies','fm-companies','fm-rspo-areas','fm-rspo-hotspots'].forEach(function(id){document.getElementById(id).textContent='—'});document.getElementById('fm-status').textContent='Arsip hotspot bulan ini belum tersedia. Estimasi luas ditampilkan terpisah di laporan ini.';document.getElementById('fm-daily').textContent='Data hotspot bulanan belum tersedia';['fm-village-rows','fm-company-rows','fm-rspo-rows'].forEach(function(id){document.getElementById(id).innerHTML='<tr><td colspan="4">Data hotspot belum tersedia.</td></tr>'})}
+    if(d.unavailable){['fm-hotspots','fm-villages','fm-regencies','fm-companies','fm-rspo-areas','fm-rspo-hotspots'].forEach(function(id){document.getElementById(id).textContent='—'});document.getElementById('fm-status').textContent='Arsip hotspot bulan ini belum tersedia. Estimasi luas ditampilkan terpisah di laporan ini.';document.getElementById('fm-daily').textContent='Data hotspot bulanan belum tersedia';['fm-company-rows','fm-rspo-rows'].forEach(function(id){document.getElementById(id).innerHTML='<tr><td colspan="4">Data hotspot belum tersedia.</td></tr>'})}
     else document.getElementById('fm-status').textContent=document.getElementById('fm-status').textContent.replace('Laporan final','Hotspot: final');
 
     var burnedPromise=window.loadMonthlyBurned(map,month,d,layerControl);
