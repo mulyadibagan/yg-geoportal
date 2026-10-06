@@ -14,7 +14,7 @@ test("Riau reference workspace is staff-only and additive", () => {
   assert.match(home, /Peta Referensi Riau/);
   assert.match(home, /staff-riau-reference\.html/);
   assert.match(home, /data-staff-only-module hidden/);
-  assert.match(page, /riau-reference-workspace\.js\?v=20261006-meritech4/);
+  assert.match(page, /riau-reference-workspace\.js\?v=20261006-meritech5/);
   assert.match(workspace, /if \(!session\(\)/);
   assert.match(workspace, /Layer program YG tidak diubah/);
   assert.match(workspace, /waitUntilSettled/);
