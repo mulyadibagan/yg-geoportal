@@ -335,7 +335,7 @@
   function addMeritech(panel) {
     const box=document.createElement('details');
     box.className='riau-reference-catalog meritech-panel';
-    box.innerHTML='<summary class="meritech-heading"><span>Citra Meritech</span><small>Lokasi &amp; citra</small></summary><div class="meritech-body"><label class="riau-reference-layer meritech-layer"><input type="checkbox" data-meritech-coverage><i class="meritech-grid-icon"></i><span><strong>Batas tile citra terverifikasi</strong><small>Klik penanda untuk menuju citra</small></span></label><div class="meritech-info"><small data-meritech-coverage-count class="meritech-status" aria-live="polite">Centang untuk melihat lokasi dan batas tile citra.</small><div class="meritech-legend" aria-label="Legenda citra"><span><i class="is-found"></i>Penanda lokasi</span><span><i style="border:1px solid #0284c7;background:transparent"></i>Batas tile terverifikasi</span></div><div class="meritech-actions"><button type="button" data-meritech-index-fit>Lihat semua lokasi</button><button type="button" data-meritech-index-retry>Muat ulang</button></div><details class="meritech-help"><summary>Tentang batas citra</summary><p>Garis biru mengikuti batas tile citra yang sudah diperiksa, sekitar 300 × 300 meter per tile. Pada skala provinsi, penanda menunjukkan lokasi yang bisa diklik untuk memperbesar.</p><p>Setiap tile memiliki citra, tetapi bagian tepinya dapat kosong. Pemeriksaan mencakup titik yang ditemukan beserta delapan tile di sekelilingnya. Area tanpa kotak belum dipastikan; ini bukan batas survei resmi atau cakupan lengkap Meritech.</p></details></div><label class="riau-reference-layer meritech-layer"><input type="checkbox" data-meritech-toggle><i class="meritech-image-icon"></i><span><strong>Tampilkan citra Meritech</strong><small>Citra detail mulai zoom 17</small></span></label><div class="meritech-info"><label class="meritech-opacity"><span>Transparansi</span><input type="range" min="0" max="1" step="0.05" value="0.85" data-meritech-opacity aria-label="Transparansi citra Meritech"></label><div class="meritech-actions"><button type="button" data-meritech-zoom>Perbesar lokasi</button><button type="button" data-meritech-retry>Muat ulang citra</button></div><small data-meritech-status class="meritech-status" aria-live="polite">Klik penanda biru, lalu centang citra.</small></div><footer class="meritech-source">Sumber: petadasar.meritech.cloud<br>Tanggal perekaman dan resolusi belum terverifikasi.</footer></div>';
+    box.innerHTML='<summary class="meritech-heading"><span>Citra Meritech</span><small>Lokasi &amp; citra</small></summary><div class="meritech-body"><label class="riau-reference-layer meritech-layer"><input type="checkbox" data-meritech-coverage><i class="meritech-grid-icon"></i><span><strong>Grid cakupan citra</strong><small>Kotak biru · klik untuk memperbesar</small></span></label><div class="meritech-info"><small data-meritech-coverage-count class="meritech-status" aria-live="polite">Centang untuk melihat grid citra.</small><div class="meritech-legend" aria-label="Legenda citra"><span><i style="border:1px solid #0284c7;background:transparent"></i>Grid tile citra</span></div><div class="meritech-actions"><button type="button" data-meritech-index-fit>Lihat semua lokasi</button><button type="button" data-meritech-index-retry>Muat ulang</button></div><details class="meritech-help"><summary>Tentang batas citra</summary><p>Garis biru mengikuti batas tile citra yang sudah diperiksa, sekitar 300 × 300 meter per tile. Grid tetap terlihat saat peta diperkecil. Klik kotak untuk menuju citra detail.</p><p>Setiap tile memiliki citra, tetapi bagian tepinya dapat kosong. Pemeriksaan diperluas ke tile sekitar lokasi yang ditemukan. Area tanpa kotak belum dipastikan; ini bukan batas survei resmi atau cakupan lengkap Meritech.</p></details></div><label class="riau-reference-layer meritech-layer"><input type="checkbox" data-meritech-toggle><i class="meritech-image-icon"></i><span><strong>Tampilkan citra Meritech</strong><small>Citra detail mulai zoom 17</small></span></label><div class="meritech-info"><label class="meritech-opacity"><span>Transparansi</span><input type="range" min="0" max="1" step="0.05" value="0.85" data-meritech-opacity aria-label="Transparansi citra Meritech"></label><div class="meritech-actions"><button type="button" data-meritech-zoom>Perbesar lokasi</button><button type="button" data-meritech-retry>Muat ulang citra</button></div><small data-meritech-status class="meritech-status" aria-live="polite">Klik kotak biru, lalu centang citra.</small></div><footer class="meritech-source">Sumber: petadasar.meritech.cloud<br>Tanggal perekaman dan resolusi belum terverifikasi.</footer></div>';
     panel.appendChild(box);
     const toggle=box.querySelector('[data-meritech-toggle]');
     const coverageToggle=box.querySelector('[data-meritech-coverage]');
@@ -355,17 +355,16 @@
       if(window.matchMedia('(max-width: 760px)').matches)window.YG_UI?.closeMobileSidebar?.();
     }
     function syncIndexLayers(){
-      if(!coverageToggle.checked||!session()||!map||!coverage||!locators)return;
-      const detailed=map.getZoom()>=15;
-      const shown=detailed?coverage:locators, hidden=detailed?locators:coverage;
-      if(map.hasLayer(hidden))map.removeLayer(hidden);
-      if(!map.hasLayer(shown))shown.addTo(map);
+      if(!coverageToggle.checked||!session()||!map||!coverage)return;
+      if(locators&&map.hasLayer(locators))map.removeLayer(locators);
+      if(!map.hasLayer(coverage))coverage.addTo(map);
     }
     function showIndex(){
       if(!coverageToggle.checked||!ready()||!indexData)return;
       if(!coverage){
         coverage=L.geoJSON(indexData,{
-          style:{color:'#0284c7',weight:2,fill:false},
+          renderer:L.canvas({padding:.5}),
+          style:{color:'#007bff',weight:1,opacity:1,fill:false},
           onEachFeature(feature, polygon){
             const p=feature.properties;
             polygon.bindTooltip('Tile citra terverifikasi · '+escapeHtml(p.id));
@@ -395,7 +394,7 @@
       const timeout=setTimeout(()=>current.abort(),20000);
       indexStatus.textContent='Memuat batas tile terverifikasi…';
       try{
-        const response=await fetch('data/meritech-riau-tiles.json?v=20261006',{signal:current.signal,cache:force?'reload':'default'});
+        const response=await fetch('data/meritech-riau-tiles.json?v=20261006-grid2',{signal:current.signal,cache:force?'reload':'default'});
         if(!response.ok)throw new Error('Indeks belum tersedia ('+response.status+').');
         const data=await response.json();
         if(data.type!=='FeatureCollection'||data.metadata?.kind!=='verified-xyz-tiles'||!data.metadata?.counts||!Array.isArray(data.metadata.locations)||!Array.isArray(data.features))throw new Error('Format indeks tidak valid.');
@@ -421,7 +420,7 @@
     }
     coverageToggle.addEventListener('change',()=>coverageToggle.checked?loadIndex(false):clearCoverage());
     box.querySelector('[data-meritech-index-retry]').addEventListener('click',()=>{
-      if(!coverageToggle.checked){indexStatus.textContent='Centang Batas tile citra terverifikasi terlebih dahulu.';return;}
+      if(!coverageToggle.checked){indexStatus.textContent='Centang Grid cakupan citra terlebih dahulu.';return;}
       loadIndex(true);
     });
     box.querySelector('[data-meritech-index-fit]').addEventListener('click',()=>{
@@ -431,7 +430,7 @@
     function zoomHint(){
       if(toggle.checked&&map&&map.getZoom()<17){
         clearTimeout(loadTimer);
-        status.textContent='Klik penanda biru untuk menuju citra detail, atau perbesar peta ke zoom 17.';
+        status.textContent='Klik kotak biru untuk menuju citra detail, atau perbesar peta ke zoom 17.';
       }
     }
     function remove(){
