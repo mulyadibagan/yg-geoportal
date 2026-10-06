@@ -20,7 +20,7 @@
     return {zoom,left,top,width,height,tiles,resolution,xmin:left*resolution-WORLD/2,ymax:WORLD/2-top*resolution,bounds:[west,south,east,north]};
   }
   function encode(pixels, p, writer, retrievedAt) {
-    const citation=JSON.stringify({source:'https://petadasar.meritech.cloud/tile/{z}/{x}/{y}.jpg',product:'Mosaik tile JPG Meritech',retrievedAt,acquisitionDate:null,zoom:p.zoom,tileCount:p.tiles.length,requestedBounds:p.bounds,village:p.village||null,bufferKm:p.bufferKm||0,clipGeometry:p.clip||null,part:p.part||1,totalParts:p.totalParts||1,missingTiles:p.missingTiles||0,crs:'EPSG:3857',note:'Bukan GeoTIFF asli. Tanggal perekaman, cakupan dan resolusi sumber belum terverifikasi. Bagian kosong dari sumber tetap dipertahankan.'})+'|';
+    const citation=JSON.stringify({source:'https://petadasar.meritech.cloud/tile/{z}/{x}/{y}.jpg',product:'Mosaik tile JPG Meritech',retrievedAt,acquisitionDate:null,zoom:p.zoom,tileCount:p.tiles.length,requestedBounds:p.bounds,village:p.village||null,bufferKm:p.bufferKm||0,clipBounds:p.clipBounds||null,maskApplied:!!p.clip,part:p.part||1,totalParts:p.totalParts||1,missingTiles:p.missingTiles||0,crs:'EPSG:3857',note:'Bukan GeoTIFF asli. Tanggal perekaman, cakupan dan resolusi sumber belum terverifikasi. Bagian kosong dari sumber tetap dipertahankan.'})+'|';
     return writer(pixels, {width:p.width,height:p.height,PhotometricInterpretation:2,SamplesPerPixel:4,BitsPerSample:[8,8,8,8],ExtraSamples:[2],ProjectedCSTypeGeoKey:3857,GTModelTypeGeoKey:1,GTRasterTypeGeoKey:1,ModelPixelScale:[p.resolution,p.resolution,0],ModelTiepoint:[0,0,0,p.xmin,p.ymax,0],GeoAsciiParams:citation,GeoKeyDirectory:[1,1,0,4,1024,0,1,1,1025,0,1,1,3072,0,1,3857,3073,34737,citation.length,0]});
   }
   function mount(container, map, readSession) {
@@ -41,6 +41,7 @@
         if(!window.GeoTIFF?.writeArrayBuffer) throw Error('Pustaka GeoTIFF belum termuat. Muat ulang halaman.');
         const activeMap=typeof map==='function' ? map() : map;
         if(!activeMap) throw Error('Peta belum siap. Tunggu lalu coba kembali.');
+        if(box.querySelector('[data-export-mode]').value==='village'&&!village)throw Error('Pilihan desa belum siap. Muat ulang halaman.');
         const p=village?.getPlan()||plan(activeMap.getBounds(),Number(zoom.value));
         p.missingTiles=0;
         controller=new AbortController(); const signal=controller.signal;
