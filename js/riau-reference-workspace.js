@@ -307,10 +307,64 @@
   function addMeritech(panel) {
     const box=document.createElement('div');
     box.className='riau-reference-catalog';
-    box.innerHTML='<h3>Citra drone · Meritech</h3><label><input type="checkbox" data-meritech-toggle> Tampilkan layer Meritech</label><label style="display:block;margin-top:10px">Transparansi <input type="range" min="0" max="1" step="0.05" value="0.85" data-meritech-opacity aria-label="Transparansi citra Meritech"></label><p><button type="button" data-meritech-zoom>Perbesar lokasi ini</button> <button type="button" data-meritech-example>Lihat contoh Bengkalis</button></p><button type="button" data-meritech-retry style="display:block;margin:8px 0">Muat ulang citra</button><small data-meritech-status aria-live="polite">Citra detail ditampilkan mulai zoom 17. Klik Perbesar lokasi ini atau Lihat contoh Bengkalis.</small><p><small>Sumber: petadasar.meritech.cloud. Tanggal perekaman, resolusi, dan cakupan lengkap belum terverifikasi.</small></p>';
+    box.innerHTML='<h3>Citra drone · Meritech</h3><label><input type="checkbox" data-meritech-toggle> Tampilkan layer Meritech</label><label style="display:block;margin-top:10px"><input type="checkbox" data-meritech-coverage checked> Garis area citra terdeteksi</label><small style="display:block">Garis biru: batas tile yang berhasil dimuat, bukan batas survei resmi. Klik garis atau penanda untuk membuka citra. Area tanpa garis belum dipastikan; kegagalan koneksi tidak dianggap tanpa citra.</small><small data-meritech-coverage-count style="display:block" aria-live="polite"></small><label style="display:block;margin-top:10px">Transparansi <input type="range" min="0" max="1" step="0.05" value="0.85" data-meritech-opacity aria-label="Transparansi citra Meritech"></label><p><button type="button" data-meritech-zoom>Perbesar lokasi ini</button> <button type="button" data-meritech-example>Lihat contoh Bengkalis</button></p><button type="button" data-meritech-retry style="display:block;margin:8px 0">Muat ulang citra</button><small data-meritech-status aria-live="polite">Citra detail ditampilkan mulai zoom 17. Klik Perbesar lokasi ini atau Lihat contoh Bengkalis.</small><p><small>Sumber: petadasar.meritech.cloud. Tanggal perekaman, resolusi, dan cakupan lengkap belum terverifikasi.</small></p>';
     panel.appendChild(box);
     const toggle=box.querySelector('[data-meritech-toggle]'), opacity=box.querySelector('[data-meritech-opacity]'), status=box.querySelector('[data-meritech-status]');
     let layer=null, map=null, loaded=0, failed=0, loadTimer=null;
+    
+    const coverageToggle=box.querySelector('[data-meritech-coverage]');
+    const footprints=new Map();
+    let coverage=null, coverageMap=null, coverageWait=null;
+    function tileBounds(c){
+      const n=Math.pow(2,c.z);
+      const latitude=y=>Math.atan(Math.sinh(Math.PI*(1-2*y/n)))*180/Math.PI;
+      return [[latitude(c.y+1),c.x/n*360-180],[latitude(c.y),(c.x+1)/n*360-180]];
+    }
+    function openFootprint(bounds){
+      if(!session()||!coverageMap)return;
+      coverageMap.setView(L.latLngBounds(bounds).getCenter(),17);
+      if(!toggle.checked){toggle.checked=true;toggle.dispatchEvent(new Event('change'));}
+    }
+    function rememberTile(c){
+      if(!session()||!coverage||!c)return;
+      const key=c.z+'/'+c.x+'/'+c.y;
+      if(footprints.has(key)||footprints.size>=2000)return;
+      const bounds=tileBounds(c);
+      const outline=L.rectangle(bounds,{color:'#38bdf8',weight:2,fillOpacity:0.035,dashArray:'5 3'});
+      outline.bindTooltip('Citra Meritech terdeteksi · klik untuk memperbesar');
+      outline.on('click',()=>openFootprint(bounds));
+      coverage.addLayer(outline);
+      footprints.set(key,outline);
+      box.querySelector('[data-meritech-coverage-count]').textContent=footprints.size+' tile terdeteksi. Indeks belum lengkap; bertambah saat citra dibuka (maks. 2.000 tile per sesi).';
+    }
+    function initCoverage(attempts){
+      if(!session())return;
+      coverageMap=window.YG_MAP?.map;
+      if(!coverageMap||!window.L){
+        if(attempts>0)coverageWait=setTimeout(()=>initCoverage(attempts-1),500);
+        return;
+      }
+      if(coverage)return;
+      coverage=L.featureGroup();
+      if(coverageToggle.checked)coverage.addTo(coverageMap);
+      // XYZ tile visually verified on 2026-10-06; this is a tile extent, not a survey footprint.
+      rememberTile({z:17,x:102716,y:64997});
+      L.circleMarker([1.48,102.12],{radius:6,color:'#fff',weight:2,fillColor:'#0284c7',fillOpacity:1})
+        .bindTooltip('Citra Meritech terverifikasi · Bengkalis')
+        .on('click',()=>openFootprint(tileBounds({z:17,x:102716,y:64997}))).addTo(coverage);
+    }
+    coverageToggle.addEventListener('change',()=>{
+      initCoverage(0);
+      if(!coverageMap||!coverage)return;
+      if(coverageToggle.checked)coverage.addTo(coverageMap);else coverageMap.removeLayer(coverage);
+    });
+    function clearCoverage(){
+      clearTimeout(coverageWait);
+      if(coverage&&coverageMap)coverageMap.removeLayer(coverage);
+      coverageToggle.checked=false;
+    }
+    initCoverage(40);
+
     function zoomHint(){if(toggle.checked&&map&&map.getZoom()<17){clearTimeout(loadTimer);status.textContent='Peta masih terlalu jauh. Klik Perbesar lokasi ini atau Lihat contoh Bengkalis untuk membuka citra pada zoom 17.';}}
     function remove(){clearTimeout(loadTimer);if(map)map.off('zoomend',zoomHint);if(layer&&map)map.removeLayer(layer);layer=null;toggle.checked=false;}
     toggle.addEventListener('change',()=>{
@@ -326,7 +380,7 @@
         attribution:'Citra: Meritech · tanggal belum terverifikasi'
       });
       layer.on('loading',()=>{loaded=failed=0;clearTimeout(loadTimer);status.textContent='Memuat citra Meritech pada area tampilan…';loadTimer=setTimeout(()=>{status.textContent='Layanan Meritech belum merespons setelah 30 detik. Klik Muat ulang citra untuk mencoba lagi.';},30000);});
-      layer.on('tileload',()=>loaded++);
+      layer.on('tileload',event=>{loaded++;rememberTile(event.coords);});
       layer.on('tileerror',()=>failed++);
       layer.on('load',()=>{clearTimeout(loadTimer);status.textContent=loaded
         ?'Citra Meritech berhasil dimuat.'+(failed?' Sebagian tile tidak tersedia pada area ini.':'')
@@ -344,8 +398,8 @@
     box.querySelector('[data-meritech-example]').addEventListener('click',()=>focusImagery(true));
     box.querySelector('[data-meritech-retry]').addEventListener('click',()=>{remove();toggle.checked=true;toggle.dispatchEvent(new Event('change'));});
     opacity.addEventListener('input',()=>layer?.setOpacity(Number(opacity.value)));
-    panel.querySelector('[data-riau-clear]').addEventListener('click',()=>{remove();status.textContent='Layer Meritech dinonaktifkan.';});
-    const timer=setInterval(()=>{if(!session()){remove();box.remove();clearInterval(timer);}},15000);
+    panel.querySelector('[data-riau-clear]').addEventListener('click',()=>{remove();clearCoverage();status.textContent='Layer Meritech dinonaktifkan.';});
+    const timer=setInterval(()=>{if(!session()){remove();clearCoverage();box.remove();clearInterval(timer);}},15000);
   }
 
   function createPanel() {
