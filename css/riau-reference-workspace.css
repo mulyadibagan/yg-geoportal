@@ -43,3 +43,31 @@
 .riau-reference-opd>summary{font-size:10px;line-height:1.4;align-items:center}
 .riau-reference-opd>summary span{white-space:nowrap;font-size:9px}
 .riau-reference-opd>div{display:grid;gap:5px;margin-top:8px}
+
+/* Match the main sidebar's layer rows and section headings. */
+.riau-reference-panel{background:#fff;border:1px solid var(--border,#dce6e1)}
+.riau-reference-head{align-items:center;gap:8px;flex-wrap:wrap}
+.riau-reference-head .panel-title{font-size:13px;line-height:1.35;letter-spacing:.02em}
+.riau-reference-badge{font-size:8px;padding:4px 7px}
+.riau-reference-panel>p{font-size:11px;line-height:1.5;margin:8px 0 12px}
+.riau-reference-actions{gap:6px}
+.riau-reference-actions button,.riau-reference-actions a{padding:8px;font-size:10px}
+.riau-reference-catalog{margin-top:14px;padding-top:12px}
+.riau-reference-catalog>summary{font-size:11px;line-height:1.4;align-items:center}
+.riau-reference-catalog-head{font-size:10px;flex-wrap:wrap;gap:8px;margin:10px 0}
+.riau-reference-catalog-head button{font-size:10px;padding:7px 8px}
+.riau-reference-layer-list{display:grid;gap:14px;max-height:none;overflow:visible;padding:0;margin-top:12px}
+.riau-reference-opd{border:0;background:transparent;padding:0;min-width:0}
+.riau-reference-opd>summary{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:10px;background:#edf4f1;color:#285b4e;font-size:11px;font-weight:850;letter-spacing:.04em;text-transform:uppercase;list-style:none}
+.riau-reference-opd>summary::-webkit-details-marker{display:none}
+.riau-reference-opd>summary::before{content:"›";font-size:17px;line-height:1;flex:none}
+.riau-reference-opd[open]>summary::before{transform:rotate(90deg)}
+.riau-reference-opd>summary span{margin-left:auto;flex:none;font-size:9px;font-weight:600;letter-spacing:0;text-transform:none}
+.riau-reference-opd>div{gap:8px;margin-top:8px}
+.riau-reference-layer{grid-template-columns:17px 12px minmax(0,1fr);align-items:center;gap:9px;min-height:43px;padding:9px 10px;border:1px solid var(--border,#dce6e1);border-radius:10px;background:#fff}
+.riau-reference-layer:hover{border-color:#bcd9cc;background:#fbfdfc}
+.riau-reference-layer input{width:17px;height:17px;margin:0;accent-color:var(--blue,#079ed2)}
+.riau-reference-layer>i{width:12px;height:12px;border-radius:0;box-shadow:none;margin:0}
+.riau-reference-layer strong{font-size:12px;font-weight:750;line-height:1.35;color:#40504a}
+.riau-reference-layer em{font-size:9px}
+.riau-reference-empty,.riau-reference-catalog-status{font-size:10px;line-height:1.5}

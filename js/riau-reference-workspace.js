@@ -167,7 +167,7 @@
       return `<label class="riau-reference-layer${active ? " is-active" : ""}" data-riau-uuid="${escapeHtml(item.uuid)}">
         <input type="checkbox" data-riau-catalog-layer="${escapeHtml(item.uuid)}"${active ? " checked" : ""}${pending ? " disabled" : ""}>
         <i style="--riau-layer-color:${escapeHtml(color)}"></i>
-        <span><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.publisher)}</small>${item.warningCount ? `<em>${item.warningCount} catatan metadata</em>` : ""}</span>
+        <span><strong>${escapeHtml(item.title)}</strong>${item.warningCount ? `<em>${item.warningCount} catatan metadata</em>` : ""}</span>
       </label>`;
     }).join("")}</div></details>`).join("");
   }
@@ -431,7 +431,7 @@
     panel.className = "panel riau-reference-panel";
     panel.innerHTML = `
       <div class="riau-reference-head">
-        <h2 class="panel-title">Peta Referensi Riau <small>analisis lintas sektor</small></h2>
+        <h2 class="panel-title">Peta Referensi Riau</h2>
         <span class="riau-reference-badge">INTERNAL STAF</span>
       </div>
       <p>Buka OPD untuk melihat data yang tersedia, lalu centang layer yang ingin ditampilkan.</p>
