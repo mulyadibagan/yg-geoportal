@@ -83,8 +83,8 @@
 .meritech-body{display:grid;gap:10px;margin-top:10px;min-width:0}
 .meritech-layer:has(input:checked){border-color:#91c9b6;background:#f0f9f5}
 .meritech-layer small{display:block;margin-top:3px;font-size:10px;line-height:1.4;color:#687b73}
-.meritech-grid-icon{background:repeating-linear-gradient(0deg,transparent 0 4px,#0284c7 4px 5px),repeating-linear-gradient(90deg,transparent 0 4px,#0284c7 4px 5px);border:1px solid #0284c7}
-.meritech-image-icon{background:#08765f}
+.meritech-layer>.meritech-grid-icon{background:repeating-linear-gradient(0deg,transparent 0 4px,#0284c7 4px 5px),repeating-linear-gradient(90deg,transparent 0 4px,#0284c7 4px 5px);border:1px solid #0284c7}
+.meritech-layer>.meritech-image-icon{background:#08765f}
 .meritech-info{display:grid;gap:9px;padding:0 3px 6px;min-width:0}
 .meritech-status{display:block;color:#596e65;font-size:11px;line-height:1.5;overflow-wrap:anywhere}
 .meritech-legend{display:flex;flex-wrap:wrap;gap:6px 12px;padding:8px 9px;border-radius:8px;background:#f5f8f6}
