@@ -13,9 +13,10 @@
     <a class="ml-brand" href="webgis.html"><img src="assets/logo-yayasan-gambut.png" alt=""><span><strong>Generator Layout Peta</strong><small>Yayasan Gambut</small></span></a>
     <div class="ml-toolbar__actions">
       <span id="layout-status">Menyiapkan data desa…</span>
-      <button type="button" id="fit-village">Fokus desa</button>
-      <button type="button" id="export-png">Unduh PNG</button>
-      <button type="button" id="export-pdf" class="primary">Unduh PDF</button>
+      <button type="button" id="retry-layout" hidden>Coba lagi</button>
+      <button type="button" id="fit-village" disabled>Fokus desa</button>
+      <button type="button" id="export-png" disabled>Unduh PNG</button>
+      <button type="button" id="export-pdf" disabled class="primary">Unduh PDF</button>
     </div>
   </header>
 
@@ -90,6 +91,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-  <script src="js/auth.js?v=20260915-logout3"></script><script src="js/staff-data-access.js?v=20260915-shared2"></script><script src="js/map-layout.js?v=20260915-shared2"></script>
+  <script src="js/auth.js?v=20261006-api-domain1"></script><script src="js/staff-data-access.js?v=20261006-api-domain1"></script><script src="js/map-layout.js?v=20261006-load-recovery1"></script>
 </body>
 </html>
+
