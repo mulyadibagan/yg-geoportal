@@ -1,14 +1,15 @@
 (function(){
 "use strict";
-  const fetch = window.YG_STAFF_DATA.fetch;
-  const staffSession = window.YG_STAFF_DATA.session();
-var SNAPSHOT="https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/snapshots/current/objects.json";
+  const fetch = window.YG_STAFF_DATA ? window.YG_STAFF_DATA.fetch : window.fetch.bind(window);
+  const staffSession = window.YG_STAFF_DATA ? window.YG_STAFF_DATA.session() : null;
+var SNAPSHOT="https://webgis-api.yayasangambut.org/snapshots/current/objects.json";
 var params=new URLSearchParams(location.search);
 var key=String(params.get("key")||"").trim().toLowerCase();
 var source=String(params.get("source")||"intervention").trim().toLowerCase();
 var map,localInset,riauInset,villageFeature,villageBounds,snapshotData,baseLayer;
+if(!window.L){el("map-loading").textContent="Pustaka peta belum termuat. Klik Coba lagi.";status("Peta belum siap");el("retry-layout").hidden=false;el("retry-layout").addEventListener("click",function(){location.reload()});return}
 var RIAU_FRAME=L.latLngBounds([[-1.25,99.85],[2.85,104.25]]);
-var active={},customCount=0;
+var active={},customCount=0,ready=false,loading=false,dataNotice="",programAvailable=true;
 var defs={
   ...(staffSession ? {concession:{label:"PBPH · internal staf",color:"#d84315",fill:"rgba(216,67,21,.11)",url:"data/PBPH_RIAU_052026.geojson",source:"Referensi internal PBPH"}} : {}),
   village:{label:"Batas desa",color:"#d7df00",fill:"rgba(215,223,0,.04)",locked:true,source:"Master Database Yayasan Gambut"},
@@ -30,7 +31,27 @@ function lid(f){var p=f&&f.properties||{};return String(p.Layer_ID||p.Source_Lay
 function fkey(f){var p=f&&f.properties||{};return[p.WADMKD||p.Desa||p.NAMOBJ||p.Nama_Desa,p.WADMKC||p.Kecamatan,p.WADMKK||p.Kabupaten].filter(Boolean).join("|").trim().toLowerCase()}
 function nameOf(f){var p=f&&f.properties||{};return p.Nama_Objek||p.title||p.WADMKD||p.Desa||p.NAMOBJ||""}
 function toast(t){var n=el("toast");n.textContent=t;n.classList.add("show");setTimeout(function(){n.classList.remove("show")},2200)}
-async function json(url){var r=await fetch(url,{cache:"no-store"});if(!r.ok)throw new Error("HTTP "+r.status);return r.json()}
+async function json(url){
+  var controller=new AbortController(),timeout=setTimeout(function(){controller.abort()},15000);
+  try{var r=await fetch(url,{cache:"no-store",signal:controller.signal});if(!r.ok)throw new Error("HTTP "+r.status);return await r.json()}
+  finally{clearTimeout(timeout)}
+}
+function collection(data){if(!data||!Array.isArray(data.features))throw new Error("Format data peta tidak valid");return data}
+async function loadSnapshot(){
+  try{return collection(await json(SNAPSHOT))}
+  catch(error){
+    var cached=collection(await json("data/master-database-snapshot.json"));
+    dataNotice=" · menggunakan cadangan data situs";return cached;
+  }
+}
+function setReady(value){
+  ready=value;["fit-village","export-png","export-pdf","basemap-select","custom-geojson"].forEach(function(id){el(id).disabled=!value});
+}
+function findVillage(features){
+  var match=features.find(function(f){return fkey(f)===key});if(match)return match;
+  var parts=key.split("|").map(norm),matches=features.filter(function(f){var actual=fkey(f).split("|").map(norm);return parts.length===actual.length&&parts.every(function(value,i){return value===actual[i]})});
+  return matches.length===1?matches[0]:null;
+}
 function tile(kind){
   if(kind==="clean")return null;
   var url=kind==="satellite"?"https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}":"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
@@ -108,7 +129,7 @@ function removeLayer(id){if(!active[id]||defs[id].locked)return;map.removeLayer(
 function setToggleLoading(id,on){var row=document.querySelector('[data-layer="'+id+'"]');if(row)row.classList.toggle("is-loading",on)}
 function status(t){el("layout-status").textContent=t}
 function controls(){
-  el("layer-options").innerHTML=order.map(function(id){var d=defs[id];return'<label class="ml-layer-toggle" data-layer="'+id+'" style="--swatch:'+d.color+';--fill:'+d.fill+'"><input type="checkbox" '+(id==="village"?"checked disabled":"")+'><i></i><span>'+esc(d.label)+'</span></label>'}).join("");
+  el("layer-options").innerHTML=order.map(function(id){var d=defs[id];return'<label class="ml-layer-toggle" data-layer="'+id+'" style="--swatch:'+d.color+';--fill:'+d.fill+'"><input type="checkbox" '+(id==="village"?"checked disabled":(d.program&&!programAvailable?"disabled":""))+'><i></i><span>'+esc(d.label)+'</span></label>'}).join("");
   document.querySelectorAll(".ml-layer-toggle input").forEach(function(input){input.addEventListener("change",function(){var id=input.parentNode.dataset.layer;if(input.checked)addLayer(id);else removeLayer(id)})});
 }
 function fitRiauInset(){
@@ -139,21 +160,37 @@ function titleSetup(){
 function initMap(){
   map=L.map("print-map",{zoomControl:true,preferCanvas:true}).setView([1.2,102],9);setBasemap("road");L.control.scale({imperial:false,maxWidth:160,position:"bottomleft"}).addTo(map);
   var village=geoLayer("village",villageFeature).addTo(map);active.village=village;villageBounds=village.getBounds();map.fitBounds(villageBounds.pad(.08));map.on("moveend zoomend",grid);
-  controls();legend();titleSetup();initInsets();grid();el("map-loading").hidden=true;status("Layout siap");setTimeout(function(){map.invalidateSize();localInset.invalidateSize();fitRiauInset();map.fitBounds(villageBounds.pad(.08));grid()},100);
+  controls();legend();titleSetup();initInsets();grid();el("map-loading").hidden=true;setReady(true);status("Layout siap"+dataNotice);setTimeout(function(){map.invalidateSize();localInset.invalidateSize();fitRiauInset();map.fitBounds(villageBounds.pad(.08));grid()},100);
+}
+async function waitForTiles(){
+  var deadline=Date.now()+10000;
+  while(true){
+    var pending=false;[map,localInset,riauInset].forEach(function(value){value.eachLayer(function(layer){if(layer.isLoading&&layer.isLoading())pending=true})});
+    if(!pending)return;
+    if(Date.now()>deadline)throw new Error("Peta dasar belum selesai dimuat. Tunggu lalu coba kembali, atau pilih Tanpa peta dasar.");
+    await new Promise(function(resolve){setTimeout(resolve,100)});
+  }
+}
+function saveBlob(blob,filename){
+  var url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url)},60000);
 }
 async function capture(){
-  status("Menyiapkan gambar resolusi tinggi…");map.invalidateSize();localInset.invalidateSize();fitRiauInset();await new Promise(function(r){setTimeout(r,500)});
+  status("Menyiapkan gambar resolusi tinggi…");map.invalidateSize();localInset.invalidateSize();fitRiauInset();await new Promise(function(r){setTimeout(r,100)});await waitForTiles();
   return html2canvas(el("map-sheet"),{scale:2,useCORS:true,allowTaint:false,backgroundColor:"#ffffff",logging:false});
 }
 async function download(kind){
+  if(!ready){toast("Tunggu sampai peta siap sebelum mengunduh");return}
   var buttons=[el("export-png"),el("export-pdf")];buttons.forEach(function(b){b.disabled=true});
   try{
     var canvas=await capture(),filename=(el("sheet-title").textContent||"layout-peta").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
-    if(kind==="png"){var a=document.createElement("a");a.download=filename+".png";a.href=canvas.toDataURL("image/png");a.click()}
+    if(kind==="png"){
+      var blob=await new Promise(function(resolve,reject){canvas.toBlob(function(value){value?resolve(value):reject(new Error("PNG tidak dapat dibuat"))},"image/png")});
+      saveBlob(blob,filename+".png");
+    }
     else{var size=el("paper-size").value,pdf=new window.jspdf.jsPDF({orientation:"landscape",unit:"mm",format:size}),w=pdf.internal.pageSize.getWidth(),h=pdf.internal.pageSize.getHeight();pdf.addImage(canvas.toDataURL("image/jpeg",.94),"JPEG",0,0,w,h);pdf.save(filename+".pdf")}
     status("Layout berhasil dibuat");toast((kind==="png"?"PNG":"PDF")+" berhasil diunduh");
-  }catch(e){console.error(e);status("Ekspor gagal");toast("Ekspor gagal. Coba peta dasar tanpa citra atau gunakan cetak browser.")}
-  finally{buttons.forEach(function(b){b.disabled=false})}
+  }catch(e){console.error(e);status("Ekspor gagal");toast(e.message||"Ekspor gagal. Coba peta dasar tanpa citra atau gunakan cetak browser.")}
+  finally{buttons.forEach(function(b){b.disabled=!ready})}
 }
 function customFile(file){
   if(!file)return;var reader=new FileReader();reader.onload=function(){
@@ -163,26 +200,33 @@ function customFile(file){
   };reader.readAsText(file);
 }
 async function init(){
-  if(!key){el("map-loading").textContent="Kunci desa tidak tersedia";status("Pilih desa dari WebGIS");return}
+  if(loading||ready)return;loading=true;setReady(false);dataNotice="";programAvailable=true;
+  el("retry-layout").hidden=true;el("map-loading").hidden=false;el("map-loading").textContent="Memuat batas desa…";status("Memuat data desa…");
   try{
+    if(!key)throw new Error("Kunci desa tidak tersedia. Buka layout dari profil desa.");
+    try{snapshotData=await loadSnapshot()}
+    catch(error){snapshotData={type:"FeatureCollection",features:[]};programAvailable=false;dataNotice=" · data kegiatan belum tersedia";}
     if(source==="administrative"){
-      var pair=await Promise.all([json("data/batas_administrasi_desa_riau.geojson?v=20260822-admin-layout1"),json(SNAPSHOT)]);
-      snapshotData=pair[1];
-      var boundaries=pair[0].features||[];
-      villageFeature=boundaries.find(function(f){return fkey(f)===key});
+      var boundaries=collection(await json("data/batas_administrasi_desa_riau.geojson?v=20260822-admin-layout1"));
+      villageFeature=findVillage(boundaries.features);
     }else{
-      snapshotData=await json(SNAPSHOT);
-      var features=snapshotData.features||[];
-      villageFeature=features.find(function(f){return lid(f)==="desa_intervensi"&&fkey(f)===key});
+      villageFeature=findVillage(snapshotData.features.filter(function(f){return lid(f)==="desa_intervensi"}));
       if(!villageFeature){
-        var n=norm(key.split("|")[0]);
-        villageFeature=features.find(function(f){return lid(f)==="desa_intervensi"&&norm((f.properties||{}).WADMKD||(f.properties||{}).Desa)===n});
+        var fallback=collection(await json("data/desa_intervensi.geojson"));
+        villageFeature=findVillage(fallback.features);
       }
     }
-    if(!villageFeature||!villageFeature.geometry)throw new Error("Batas desa tidak ditemukan");
+    if(!villageFeature||!villageFeature.geometry||!["Polygon","MultiPolygon"].includes(villageFeature.geometry.type))throw new Error("Batas desa yang dipilih tidak ditemukan");
+    var bounds=L.geoJSON(villageFeature).getBounds();if(!bounds.isValid())throw new Error("Geometri batas desa tidak valid");
     initMap();
-  }catch(e){console.error(e);el("map-loading").textContent="Batas desa gagal dimuat";status(e.message)}
+  }catch(e){
+    console.error(e);setReady(false);
+    [map,localInset,riauInset].forEach(function(value){if(value)value.remove()});map=localInset=riauInset=null;active={};
+    el("map-loading").hidden=false;el("map-loading").textContent="Peta belum dapat dimuat. Klik Coba lagi.";
+    status(e.name==="AbortError"?"Koneksi data melewati batas waktu":e.message);el("retry-layout").hidden=false;
+  }finally{loading=false}
 }
+el("retry-layout").addEventListener("click",init);
 el("basemap-select").addEventListener("change",function(){setBasemap(this.value)});
 el("fit-village").addEventListener("click",function(){if(villageBounds)map.fitBounds(villageBounds.pad(.08))});
 el("export-png").addEventListener("click",function(){download("png")});
@@ -191,3 +235,4 @@ el("custom-geojson").addEventListener("change",function(){customFile(this.files&
 el("created-date").textContent=new Date().toLocaleDateString("id-ID",{day:"numeric",month:"long",year:"numeric"});
 init();
 })();
+
