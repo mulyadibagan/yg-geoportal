@@ -19,7 +19,7 @@
 <aside>
 <section class="card"><h2>Sumber orthomosaic</h2><label for="job">Hasil pemrosesan tim</label><select id="job"><option value="">Pilih hasil yang sudah selesai</option></select><div class="actions"><button id="openJob" type="button" disabled>Buka hasil</button><button id="refreshJobs" type="button">Muat ulang</button></div><p id="catalogStatus" class="note" role="status"></p><hr><label for="localTiff">Buka GeoTIFF dari perangkat</label><input id="localTiff" type="file" accept=".tif,.tiff"><p class="note">File dibaca di perangkat ini dan tidak diunggah.</p></section>
 <section class="card"><h2>Informasi citra</h2><dl id="metadata"><dt>Sumber</dt><dd>Belum dipilih</dd></dl><label for="opacity">Kepekatan citra</label><input id="opacity" type="range" min="0" max="1" step="0.05" value="1"><div class="actions"><button id="fitRaster" disabled>Ke lokasi citra</button><button id="downloadTiff" disabled>Unduh GeoTIFF sumber</button></div><p class="note">Unduhan adalah GeoTIFF hasil pemrosesan yang tersimpan, bukan foto mentah.</p></section>
-<section class="card"><h2>Referensi Pulau Bengkalis</h2><button id="bengkalis">Ke Pulau Bengkalis</button><label class="check"><input id="meritech" type="checkbox">Tampilkan tile Meritech</label><p id="tileStatus" class="note" role="status">Cakupan, tanggal, dan resolusi sumber belum terverifikasi. Tile JPG bukan GeoTIFF asli drone.</p></section>
+<section class="card"><h2>Referensi Pulau Bengkalis</h2><button id="bengkalis">Ke Pulau Bengkalis</button><label class="check"><input id="meritech" type="checkbox">Tampilkan tile Meritech</label><p id="tileStatus" class="note" role="status">Cakupan, tanggal, dan resolusi sumber belum terverifikasi. Tile JPG bukan GeoTIFF asli drone.</p><div id="meritechDownload"></div></section>
 </aside>
 <section class="card map-card"><div class="map-heading"><h2>Peta analisis</h2><span id="coordinate" class="note"></span></div><div id="map" aria-label="Peta analisis orthomosaic"></div><p id="mapStatus" role="status">Pilih orthomosaic untuk memulai.</p><p class="note">Gambar polygon atau garis menggunakan alat di kiri peta. Luas dan panjang mengikuti geometri yang digambar; ketelitiannya bergantung pada citra dan digitasi.</p><div class="actions"><button id="exportAreas" disabled>Ekspor GeoJSON analisis</button><button id="clearAreas" disabled>Hapus geometri</button></div><div class="table-wrap"><table><thead><tr><th>Objek</th><th>Hasil pengukuran</th></tr></thead><tbody id="measurements"><tr><td colspan="2">Belum ada geometri analisis.</td></tr></tbody></table></div><p class="note">Geometri belum disimpan di server. Ekspor sebelum menutup halaman. Citra RGB tidak menghasilkan NDVI atau data elevasi tanpa band dan dataset yang sesuai.</p></section>
 </div>
@@ -31,5 +31,7 @@
 <script src="https://unpkg.com/geotiff@2.1.3/dist-browser/geotiff.js"></script>
 <script src="https://unpkg.com/georaster-layer-for-leaflet@3.10.0/dist/georaster-layer-for-leaflet.min.js"></script>
 <script src="https://unpkg.com/@turf/turf@6.5.0/turf.min.js"></script>
-<script src="js/orthomosaic-internal.js?v=20261005-1"></script>
+<script src="js/meritech-export.js?v=20261006-export1"></script>
+<script src="js/orthomosaic-internal.js?v=20261006-export1"></script>
 </body></html>
+

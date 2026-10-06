@@ -474,7 +474,8 @@
     });
     opacity.addEventListener('input',()=>layer?.setOpacity(Number(opacity.value)));
     panel.querySelector('[data-riau-clear]').addEventListener('click',()=>{remove();clearCoverage();});
-    const timer=setInterval(()=>{if(!session()){remove();clearCoverage();box.remove();clearInterval(timer);}},15000);
+    const disposeExport=window.YG_MERITECH_EXPORT?.mount(box.querySelector('.meritech-body'),()=>window.YG_MAP?.map,session);
+    const timer=setInterval(()=>{if(!session()){disposeExport?.();remove();clearCoverage();box.remove();clearInterval(timer);}},15000);
   }
 
   function createPanel() {
@@ -533,3 +534,4 @@
     window.setTimeout(createPanel, 100);
   }
 })();
+
