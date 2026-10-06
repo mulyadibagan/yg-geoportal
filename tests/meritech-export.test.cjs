@@ -37,8 +37,8 @@ test('village export requests a 5 km outward buffer and splits into unique bound
 test('polygon mask preserves holes using even-odd alpha clipping and metadata records area provenance',()=>{
  let rule,operation;
  const ctx={save(){},restore(){},beginPath(){operation=this.globalCompositeOperation;},moveTo(){},lineTo(){},closePath(){},fill(v){rule=v;}};
- const p={zoom:17,left:0,top:0,width:1,height:1,resolution:1,xmin:0,ymax:0,tiles:[],bounds:[],clip:{type:'Polygon',coordinates:[[[102,1],[102.1,1],[102,1.1],[102,1]],[[102.01,1.01],[102.02,1.01],[102.01,1.02],[102.01,1.01]]]},village:'Test',bufferKm:5,part:2,totalParts:3,missingTiles:1};
+ const p={zoom:17,left:0,top:0,width:1,height:1,resolution:1,xmin:0,ymax:0,tiles:[],bounds:[],clip:{type:'Polygon',coordinates:[[[102,1],[102.1,1],[102,1.1],[102,1]],[[102.01,1.01],[102.02,1.01],[102.01,1.02],[102.01,1.01]]]},village:'Test',bufferKm:5,clipBounds:[102,1,102.1,1.1],part:2,totalParts:3,missingTiles:1};
  helper.mask(ctx,p);assert.equal(rule,'evenodd');assert.equal(operation,'destination-in');
  let m;encode(new Uint8Array(4),p,(pixels,metadata)=>{m=metadata},'2026-10-06');
- const source=JSON.parse(m.GeoAsciiParams.slice(0,-1));assert.equal(source.bufferKm,5);assert.equal(source.part,2);assert.equal(source.totalParts,3);assert.equal(source.missingTiles,1);assert.deepEqual(source.clipGeometry,JSON.parse(JSON.stringify(p.clip)));
+ const source=JSON.parse(m.GeoAsciiParams.slice(0,-1));assert.equal(source.bufferKm,5);assert.equal(source.part,2);assert.equal(source.totalParts,3);assert.equal(source.missingTiles,1);assert.deepEqual(source.clipBounds,p.clipBounds);assert.equal(source.maskApplied,true);
 });
