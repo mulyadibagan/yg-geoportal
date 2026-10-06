@@ -48,12 +48,6 @@
           "binding": "PUBLIC_SNAPSHOTS",
           "bucket_name": "yg-webgis-public-snapshots"
         }
-      ],
-      "routes": [
-        {
-          "pattern": "api.webgisyg.id",
-          "custom_domain": true
-        }
       ]
     }
   }
