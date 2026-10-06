@@ -307,7 +307,7 @@
   function addMeritech(panel) {
     const box=document.createElement('div');
     box.className='riau-reference-catalog';
-    box.innerHTML='<h3>Citra drone · Meritech</h3><label><input type="checkbox" data-meritech-toggle> Tampilkan layer Meritech</label><label style="display:block;margin-top:10px"><input type="checkbox" data-meritech-coverage checked> Garis area citra terdeteksi</label><small style="display:block">Garis biru: batas tile yang berhasil dimuat, bukan batas survei resmi. Klik garis atau penanda untuk membuka citra. Area tanpa garis belum dipastikan; kegagalan koneksi tidak dianggap tanpa citra.</small><small data-meritech-coverage-count style="display:block" aria-live="polite"></small><label style="display:block;margin-top:10px">Transparansi <input type="range" min="0" max="1" step="0.05" value="0.85" data-meritech-opacity aria-label="Transparansi citra Meritech"></label><p><button type="button" data-meritech-zoom>Perbesar lokasi ini</button> <button type="button" data-meritech-example>Lihat contoh Bengkalis</button></p><button type="button" data-meritech-retry style="display:block;margin:8px 0">Muat ulang citra</button><small data-meritech-status aria-live="polite">Citra detail ditampilkan mulai zoom 17. Klik Perbesar lokasi ini atau Lihat contoh Bengkalis.</small><p><small>Sumber: petadasar.meritech.cloud. Tanggal perekaman, resolusi, dan cakupan lengkap belum terverifikasi.</small></p>';
+    box.innerHTML='<h3>Citra drone · Meritech</h3><label><input type="checkbox" data-meritech-toggle> Tampilkan layer Meritech</label><label style="display:block;margin-top:10px"><input type="checkbox" data-meritech-coverage> Garis area citra terdeteksi</label><small style="display:block">Garis biru: batas tile yang berhasil dimuat, bukan batas survei resmi. Klik garis atau penanda untuk membuka citra. Area tanpa garis belum dipastikan; kegagalan koneksi tidak dianggap tanpa citra.</small><small data-meritech-coverage-count style="display:block" aria-live="polite"></small><label style="display:block;margin-top:10px">Transparansi <input type="range" min="0" max="1" step="0.05" value="0.85" data-meritech-opacity aria-label="Transparansi citra Meritech"></label><p><button type="button" data-meritech-zoom>Perbesar lokasi ini</button> <button type="button" data-meritech-example>Lihat contoh Bengkalis</button></p><button type="button" data-meritech-retry style="display:block;margin:8px 0">Muat ulang citra</button><small data-meritech-status aria-live="polite">Citra detail ditampilkan mulai zoom 17. Klik Perbesar lokasi ini atau Lihat contoh Bengkalis.</small><p><small>Sumber: petadasar.meritech.cloud. Tanggal perekaman, resolusi, dan cakupan lengkap belum terverifikasi.</small></p>';
     panel.appendChild(box);
     const toggle=box.querySelector('[data-meritech-toggle]'), opacity=box.querySelector('[data-meritech-opacity]'), status=box.querySelector('[data-meritech-status]');
     let layer=null, map=null, loaded=0, failed=0, loadTimer=null;
@@ -323,10 +323,10 @@
     function openFootprint(bounds){
       if(!session()||!coverageMap)return;
       coverageMap.setView(L.latLngBounds(bounds).getCenter(),17);
-      if(!toggle.checked){toggle.checked=true;toggle.dispatchEvent(new Event('change'));}
+      if(!toggle.checked)status.textContent='Lokasi siap. Centang Tampilkan layer Meritech untuk memuat citra.';
     }
     function rememberTile(c){
-      if(!session()||!coverage||!c)return;
+      if(!session()||!coverageToggle.checked||!coverage||!c)return;
       const key=c.z+'/'+c.x+'/'+c.y;
       if(footprints.has(key)||footprints.size>=2000)return;
       const bounds=tileBounds(c);
@@ -338,7 +338,7 @@
       box.querySelector('[data-meritech-coverage-count]').textContent=footprints.size+' tile terdeteksi. Indeks belum lengkap; bertambah saat citra dibuka (maks. 2.000 tile per sesi).';
     }
     function initCoverage(attempts){
-      if(!session())return;
+      if(!session()||!coverageToggle.checked)return;
       coverageMap=window.YG_MAP?.map;
       if(!coverageMap||!window.L){
         if(attempts>0)coverageWait=setTimeout(()=>initCoverage(attempts-1),500);
@@ -363,7 +363,7 @@
       if(coverage&&coverageMap)coverageMap.removeLayer(coverage);
       coverageToggle.checked=false;
     }
-    initCoverage(40);
+    // Coverage is initialized only after its checkbox is selected.
 
     function zoomHint(){if(toggle.checked&&map&&map.getZoom()<17){clearTimeout(loadTimer);status.textContent='Peta masih terlalu jauh. Klik Perbesar lokasi ini atau Lihat contoh Bengkalis untuk membuka citra pada zoom 17.';}}
     function remove(){clearTimeout(loadTimer);if(map)map.off('zoomend',zoomHint);if(layer&&map)map.removeLayer(layer);layer=null;toggle.checked=false;}
@@ -392,11 +392,11 @@
       const targetMap=window.YG_MAP?.map;
       if(!session()||!targetMap){status.textContent='Peta atau sesi staf belum siap.';return;}
       targetMap.setView(example?[1.48,102.12]:targetMap.getCenter(),17);
-      if(!toggle.checked){toggle.checked=true;toggle.dispatchEvent(new Event('change'));}
+      if(!toggle.checked)status.textContent='Lokasi siap. Centang Tampilkan layer Meritech untuk memuat citra.';
     }
     box.querySelector('[data-meritech-zoom]').addEventListener('click',()=>focusImagery(false));
     box.querySelector('[data-meritech-example]').addEventListener('click',()=>focusImagery(true));
-    box.querySelector('[data-meritech-retry]').addEventListener('click',()=>{remove();toggle.checked=true;toggle.dispatchEvent(new Event('change'));});
+    box.querySelector('[data-meritech-retry]').addEventListener('click',()=>{if(!toggle.checked){status.textContent='Centang Tampilkan layer Meritech terlebih dahulu.';return;}remove();toggle.checked=true;toggle.dispatchEvent(new Event('change'));});
     opacity.addEventListener('input',()=>layer?.setOpacity(Number(opacity.value)));
     panel.querySelector('[data-riau-clear]').addEventListener('click',()=>{remove();clearCoverage();status.textContent='Layer Meritech dinonaktifkan.';});
     const timer=setInterval(()=>{if(!session()){remove();clearCoverage();box.remove();clearInterval(timer);}},15000);
