@@ -26,3 +26,16 @@ test('redirects, non-images and oversized streams fail without returning a parti
   assert.equal((await meritechTile(request(),{},async()=>true,async()=>response)).status,502);
  }
 });
+
+test('missing source tile returns 404 so export can preserve a transparent gap',async()=>{
+ let calls=0;const result=await meritechTile(request(),{},async()=>true,async()=>{calls++;return new Response(null,{status:404});});
+ assert.equal(result.status,404);assert.equal(calls,1);assert.equal((await result.json()).error,'source_tile_missing');
+});
+test('transient failures and timeouts are retried but never promoted to missing imagery',async()=>{
+ for(const failure of ['status','network']){
+  let calls=0;const result=await meritechTile(request(),{},async()=>true,async()=>{calls++;if(calls<3){if(failure==='network')throw Error('timeout');return new Response(null,{status:503});}return new Response(new Uint8Array([255,216,255]),{headers:{'content-type':'image/jpeg'}});});
+  assert.equal(result.status,200);assert.equal(calls,3);
+ }
+ let calls=0;const result=await meritechTile(request(),{},async()=>true,async()=>{calls++;return new Response(null,{status:502});});
+ assert.equal(result.status,502);assert.equal(calls,3);
+});
