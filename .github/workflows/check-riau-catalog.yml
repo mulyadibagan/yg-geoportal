@@ -1,0 +1,66 @@
+name: Check private Riau catalog delivery
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [.github/workflows/check-riau-catalog.yml]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: yg-webgis-staging
+    defaults:
+      run:
+        working-directory: cloudflare/yg-webgis-public-data
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: cloudflare/yg-webgis-public-data/package-lock.json
+      - run: npm ci
+      - name: Read production catalog without exporting private contents
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          npx wrangler r2 object get yg-webgis-public-snapshots/internal/riau-geoportal/catalog/current.json --remote --file "$RUNNER_TEMP/riau-catalog.json"
+          CATALOG_FILE="$RUNNER_TEMP/riau-catalog.json" node --input-type=module <<'JS'
+          import fs from 'node:fs';
+          const data=JSON.parse(fs.readFileSync(process.env.CATALOG_FILE,'utf8'));
+          const rows=data.datasets || data.items || data.records || [];
+          const ready=rows.filter(r=>r.artifacts?.display?.available===true && r.artifacts?.display?.status==='ready');
+          console.log(JSON.stringify({catalogPresent:true,bytes:fs.statSync(process.env.CATALOG_FILE).size,datasets:rows.length,displayReady:ready.length,withPublisher:ready.filter(r=>r.opd||r.publisher||r.organization).length}));
+          JS
+      - name: Check API connectivity and authentication service without credentials
+        run: |
+          node --input-type=module <<'JS'
+          import fs from 'node:fs';
+          const config=JSON.parse(fs.readFileSync('wrangler.jsonc','utf8'));
+          const upstream=new URL(config.env.production.vars.APPS_SCRIPT_BASE);
+          upstream.searchParams.set('page','staff-reports');
+          const base='https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev';
+          for (const [name,url,options] of [
+            ['health',base+'/health',{}],
+            ['catalog_anonymous',base+'/api/staff/riau-geoportal/catalog',{headers:{Origin:'https://webgisyg.id'}}],
+            ['catalog_preflight',base+'/api/staff/riau-geoportal/catalog',{method:'OPTIONS',headers:{Origin:'https://webgisyg.id','Access-Control-Request-Method':'GET','Access-Control-Request-Headers':'authorization'}}],
+            ['auth_upstream',upstream,{}]
+          ]) {
+            const started=Date.now();
+            try {
+              const response=await fetch(url,{...options,signal:AbortSignal.timeout(25000)});
+              const result={name,status:response.status,elapsedMs:Date.now()-started,cors:response.headers.get('access-control-allow-origin')};
+              if(name==='auth_upstream') {
+                let body=await response.json(); if(typeof body==='string')body=JSON.parse(body);
+                result.requiresLogin=body?.requiresLogin===true; result.rejected=body?.ok===false||Boolean(body?.error);
+              } else await response.body?.cancel();
+              console.log(JSON.stringify(result));
+            } catch(error) { console.log(JSON.stringify({name,elapsedMs:Date.now()-started,error:error.name})); }
+          }
+          JS
