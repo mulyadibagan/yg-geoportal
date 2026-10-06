@@ -6,7 +6,7 @@ function setup({responses={},source='intervention',key='sepahat|bandar laksamana
  const context={key,source,ready:false,loading:false,dataNotice:'',programAvailable:true,map:null,localInset:null,riauInset:null,active:{},SNAPSHOT:'https://webgis-api.yayasangambut.org/snapshots/current/objects.json',AbortController,setTimeout,clearTimeout,console:{error(){}},el,status:t=>{el('layout-status').textContent=t},L:{geoJSON:()=>({getBounds:()=>({isValid:()=>true})})},initMap:()=>{initialized=true;context.setReady(true)},fetch:async(url,options)=>{requests.push({url,options});const value=responses[url];if(value instanceof Error)throw value;return{ok:value!==undefined,status:value===undefined?503:200,json:async()=>value}}};
  const dataFunctions=code.slice(code.indexOf('function norm('),code.indexOf('function nameOf('));
  const loaderFunctions=code.slice(code.indexOf('async function json('),code.indexOf('function tile('));
- const init=code.slice(code.indexOf('async function init(){'),code.indexOf('el("retry-layout").addEventListener'));
+ const init=code.slice(code.indexOf('async function init(){'),code.indexOf('el("retry-layout").addEventListener',code.indexOf('async function init(){')));
  vm.createContext(context);vm.runInContext(dataFunctions+loaderFunctions+init,context);
  return {context,el,requests,initialized:()=>initialized};
 }
