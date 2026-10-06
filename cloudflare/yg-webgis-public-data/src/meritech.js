@@ -17,7 +17,7 @@ export async function meritechTile(request, env, verifyStaffToken, upstreamFetch
   try {
     const response = await upstreamFetch(`https://petadasar.meritech.cloud/tile/${z}/${x}/${y}.jpg`, {redirect: 'manual', signal: AbortSignal.timeout(15000)});
     if (!response.ok) return error('source_unavailable', 502);
-    if (!/^image\/jpeg(?:;|$)/i.test(response.headers.get('content-type') || '')) return error('invalid_source_image', 502);
+    if (!/^image\/(?:jpeg|jpg)(?:;|$)/i.test(response.headers.get('content-type') || '')) return error('invalid_source_image', 502);
     if (Number(response.headers.get('content-length')) > 1024 * 1024) return error('source_too_large', 502);
     const reader = response.body.getReader(), chunks = []; let bytes = 0;
     while (true) { const {done, value} = await reader.read(); if (done) break; bytes += value.byteLength; if (bytes > 1024 * 1024) { await reader.cancel(); return error('source_too_large', 502); } chunks.push(value); }
