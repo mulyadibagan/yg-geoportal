@@ -4,7 +4,7 @@
   function project(point,zoom){const size=TILE*2**zoom;return [(point[0]+180)/360*size,(1-Math.asinh(Math.tan(point[1]*Math.PI/180))/Math.PI)/2*size];}
   function villageName(f){const p=f.properties||{};return [p.WADMKD||p.Desa||p.NAMA_DESA||p.NAMOBJ||'Desa',p.WADMKC||p.Kecamatan||'',p.WADMKK||p.Kabupaten||''].filter(Boolean).join(' · ');}
   function polygonBounds(g){let w=Infinity,s=Infinity,e=-Infinity,n=-Infinity;const polygons=g.type==='Polygon'?[g.coordinates]:g.coordinates;for(const poly of polygons)for(const ring of poly)for(const [x,y] of ring){w=Math.min(w,x);e=Math.max(e,x);s=Math.min(s,y);n=Math.max(n,y);}return [w,s,e,n];}
-  function buffered(feature,turf){if(!['Polygon','MultiPolygon'].includes(feature?.geometry?.type))throw Error('Batas desa harus berupa poligon.');const result=turf.buffer(feature,5,{units:'kilometers',steps:16});if(!result?.geometry)throw Error('Buffer batas desa gagal dibuat.');return result;}
+  function buffered(feature,turf){if(!['Polygon','MultiPolygon'].includes(feature?.geometry?.type))throw Error('Batas desa harus berupa poligon.');const result=turf.buffer(feature,1,{units:'kilometers',steps:16});if(!result?.geometry)throw Error('Buffer batas desa gagal dibuat.');return result;}
   function partsFor(feature,zoom,turf){
     if(![17,18,19].includes(zoom))throw Error('Zoom tidak valid.');
     const clip=buffered(feature,turf),b=polygonBounds(clip.geometry);
@@ -21,7 +21,7 @@
       }
       if(!tiles.length)continue;
       const width=(ex-x)*TILE,height=(ey-y)*TILE;
-      parts.push({zoom,left:x*TILE,top:y*TILE,width,height,tiles,resolution,xmin:x*TILE*resolution-WORLD/2,ymax:WORLD/2-y*TILE*resolution,bounds,clip:clip.geometry,village:villageName(feature),bufferKm:5,clipBounds:b,part:parts.length+1});
+      parts.push({zoom,left:x*TILE,top:y*TILE,width,height,tiles,resolution,xmin:x*TILE*resolution-WORLD/2,ymax:WORLD/2-y*TILE*resolution,bounds,clip:clip.geometry,village:villageName(feature),bufferKm:1,clipBounds:b,part:parts.length+1});
       totalTiles+=tiles.length;totalBytes+=width*height*4;
     }
     if(!parts.length)throw Error('Tidak ada area unduhan.');
@@ -46,7 +46,7 @@
       try{selection=partsFor(feature,Number(zoom.value),window.turf);for(const p of selection.parts){const o=document.createElement('option');o.value=String(p.part-1);o.textContent=`Bagian ${p.part}/${p.totalParts} · ${p.tiles.length} tile`;part.appendChild(o);}
         preview=L.featureGroup([L.geoJSON(feature,{style:{color:'#007bff',weight:2,fill:false}}),L.geoJSON(selection.clip,{style:{color:'#e67700',weight:2,dashArray:'6 4',fillOpacity:.06}})]).addTo(getMap());
         getMap().fitBounds(preview.getBounds(),{padding:[20,20]});
-        status.textContent=`Batas desa biru; buffer 5 km oranye. ${selection.parts.length} bagian, ${selection.totalTiles} tile. Perkiraan GeoTIFF total ${(selection.totalBytes/1048576).toFixed(0)} MB (tanpa kompresi). Unduh satu bagian lalu pilih bagian berikutnya. Ketersediaan citra diperiksa saat unduh.`;
+        status.textContent=`Batas desa biru; buffer 1 km oranye. ${selection.parts.length} bagian, ${selection.totalTiles} tile. Perkiraan GeoTIFF total ${(selection.totalBytes/1048576).toFixed(0)} MB (tanpa kompresi). Unduh satu bagian lalu pilih bagian berikutnya. Ketersediaan citra diperiksa saat unduh.`;
       }catch(e){status.textContent=e.message;}
     }
     function filter(){const q=search.value.trim().toLocaleLowerCase('id');select.replaceChildren();const placeholder=document.createElement('option');placeholder.value='';placeholder.textContent='Pilih desa';select.appendChild(placeholder);collection.features.forEach((f,i)=>{const name=villageName(f);if(q&&!name.toLocaleLowerCase('id').includes(q))return;const o=document.createElement('option');o.value=String(i);o.textContent=name;select.appendChild(o);});reset();}
@@ -55,7 +55,7 @@
       const id=generation;if(!readSession()?.token)return;
       status.textContent='Memuat batas desa Riau…';
       try{if(!window.turf?.buffer)throw Error('Pustaka buffer belum siap. Muat ulang halaman.');if(!collection){load?.abort();load=new AbortController();const activeLoad=load;const timeout=setTimeout(()=>activeLoad.abort(),45000);try{const r=await fetch('data/batas_administrasi_desa_riau.geojson',{signal:activeLoad.signal});if(!r.ok)throw Error('Batas desa gagal dimuat.');const d=await r.json();if(!Array.isArray(d.features))throw Error('Data desa tidak valid.');collection={features:d.features.filter(f=>['Polygon','MultiPolygon'].includes(f.geometry?.type)).sort((a,b)=>villageName(a).localeCompare(villageName(b),'id'))};}finally{clearTimeout(timeout);}}
-        if(disposed||id!==generation||!readSession()?.token)return;filter();status.textContent='Cari dan pilih desa. Buffer 5 km dihitung dari seluruh batas desa.';
+        if(disposed||id!==generation||!readSession()?.token)return;filter();status.textContent='Cari dan pilih desa. Buffer 1 km dihitung dari seluruh batas desa.';
       }catch(e){if(!disposed&&id===generation)status.textContent=e.name==='AbortError'?'Batas desa belum merespons. Pilih mode desa kembali untuk mencoba ulang.':e.message;}
     });
     search.addEventListener('input',()=>{if(collection)filter();});select.addEventListener('change',()=>{if(select.value!=='')update();else reset();});zoom.addEventListener('change',update);

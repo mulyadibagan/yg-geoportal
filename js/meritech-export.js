@@ -26,31 +26,38 @@
   function mount(container, map, readSession) {
     if(!container) return;
     const box=document.createElement('div'); box.className='meritech-info meritech-export';
-    box.innerHTML='<hr><strong>Unduh citra Meritech</strong><label>Area unduhan <select data-export-mode><option value="viewport">Tampilan peta</option><option value="village">Batas desa + buffer 5 km</option></select></label><div data-export-village-controls hidden><label>Cari desa/kecamatan/kabupaten <input type="search" data-export-village-search placeholder="Nama desa"></label><label>Desa <select data-export-village><option value="">Pilih desa</option></select></label><label>Bagian unduhan <select data-export-part></select></label><p class="note">Unduh per bagian, lalu gabungkan di QGIS bila diperlukan. Piksel di luar batas desa + buffer 5 km dibuat transparan.</p></div><label>Zoom unduhan <select data-export-zoom><option value="17">17 · area lebih luas</option><option value="18">18 · lebih detail</option><option value="19">19 · paling detail tersedia</option></select></label><div class="meritech-actions actions"><button type="button" data-export-start>Unduh GeoTIFF area ini</button><button type="button" data-export-cancel hidden>Batalkan</button></div><p data-export-status class="note meritech-status" role="status">Mosaik JPG berkoordinat EPSG:3857, maksimal 64 tile. Bukan GeoTIFF asli; tanggal perekaman belum diketahui.</p>';
+    box.innerHTML='<hr><strong>Unduh citra Meritech</strong><label>Area unduhan <select data-export-mode><option value="viewport">Tampilan peta</option><option value="village">Batas desa + buffer 1 km</option></select></label><div data-export-village-controls hidden><label>Cari desa/kecamatan/kabupaten <input type="search" data-export-village-search placeholder="Nama desa"></label><label>Desa <select data-export-village><option value="">Pilih desa</option></select></label><label>Bagian unduhan <select data-export-part></select></label><p class="note">Unduh per bagian, lalu gabungkan di QGIS bila diperlukan. Piksel di luar batas desa + buffer 1 km dibuat transparan.</p></div><label>Zoom unduhan <select data-export-zoom><option value="17">17 · area lebih luas</option><option value="18">18 · lebih detail</option><option value="19">19 · paling detail tersedia</option></select></label><div class="meritech-actions actions"><button type="button" data-export-preview>Pratinjau citra</button><button type="button" data-export-start>Unduh GeoTIFF area ini</button><button type="button" data-export-cancel hidden>Batalkan</button></div><p data-export-status class="note meritech-status" role="status">Mosaik JPG berkoordinat EPSG:3857, maksimal 64 tile. Bukan GeoTIFF asli; tanggal perekaman belum diketahui.</p>';
     container.appendChild(box);
     const zoom=box.querySelector('[data-export-zoom]'), start=box.querySelector('[data-export-start]'), cancel=box.querySelector('[data-export-cancel]'), status=box.querySelector('[data-export-status]');
     const village=window.YG_MERITECH_VILLAGE?.mount(box,()=>typeof map==='function'?map():map,readSession);
-    let controller=null;
+    const previewButton=box.querySelector('[data-export-preview]');
+    let controller=null, imagePreview=null, previewUrl=null, cached=null;
+    function clearPreview(){if(imagePreview){(typeof map==='function'?map():map)?.removeLayer(imagePreview);imagePreview=null;}if(previewUrl){URL.revokeObjectURL(previewUrl);previewUrl=null;}cached=null;}
+    for(const field of box.querySelectorAll('select,input[type=search]'))field.addEventListener('change',clearPreview);
+    box.querySelector('[data-export-village-search]').addEventListener('input',clearPreview);
     cancel.onclick=()=>controller?.abort();
-    start.onclick=async()=>{
+    async function run(previewOnly){
       let expiryTimer, deadline;
       const current=readSession();
       const valid=()=>{const s=readSession();return s?.token && s.token===current?.token && (!s.expiresAt || Number(s.expiresAt)>Date.now());};
       try {
         if(!valid()) throw Error('Masuk sebagai staf untuk mengunduh.');
-        if(!window.GeoTIFF?.writeArrayBuffer) throw Error('Pustaka GeoTIFF belum termuat. Muat ulang halaman.');
+        if(!previewOnly&&!window.GeoTIFF?.writeArrayBuffer) throw Error('Pustaka GeoTIFF belum termuat. Muat ulang halaman.');
         const activeMap=typeof map==='function' ? map() : map;
         if(!activeMap) throw Error('Peta belum siap. Tunggu lalu coba kembali.');
         if(box.querySelector('[data-export-mode]').value==='village'&&!village)throw Error('Pilihan desa belum siap. Muat ulang halaman.');
-        const p=village?.getPlan()||plan(activeMap.getBounds(),Number(zoom.value));
+        const p=village?.getPlan()||(cached?.viewport?cached.p:plan(activeMap.getBounds(),Number(zoom.value)));
         p.missingTiles=0;
         controller=new AbortController(); const signal=controller.signal;
-        start.disabled=true; zoom.disabled=true; village?.busy(true); cancel.hidden=false;
+        start.disabled=true; previewButton.disabled=true; zoom.disabled=true; village?.busy(true); cancel.hidden=false;
         expiryTimer=setInterval(()=>{if(!valid())controller?.abort();},1000);
         deadline=setTimeout(()=>controller?.abort(),180000);
-        const canvas=document.createElement('canvas'); canvas.width=p.width; canvas.height=p.height;
+        const key=JSON.stringify([p.zoom,p.bounds,p.clip||null]);
+        const reused=cached?.key===key&&cached.token===current.token;
+        const canvas=reused?cached.canvas:document.createElement('canvas'); if(!reused){canvas.width=p.width;canvas.height=p.height;}
         const ctx=canvas.getContext('2d'); if(!ctx) throw Error('Perangkat tidak mendukung ekspor citra.');
         let next=0, done=0, received=0;
+        if(!reused){
         status.textContent=`Mengunduh 0/${p.tiles.length} tile…`;
         async function worker() {
           while(next<p.tiles.length) {
@@ -70,17 +77,35 @@
         if(!valid() || signal.aborted) throw Error('Unduhan dibatalkan atau sesi staf berakhir.');
         if(!received)throw Error('Tidak ada tile tersedia pada bagian ini. Pilih bagian lain.');
         window.YG_MERITECH_VILLAGE?.mask(ctx,p);
+        }
+        const retrievedAt=reused?cached.retrievedAt:new Date().toISOString();
+        if(reused)p.missingTiles=cached.missingTiles;
+        if(previewOnly){
+          clearPreview();cached={key,canvas,retrievedAt,p,token:current.token,viewport:box.querySelector('[data-export-mode]').value==='viewport',missingTiles:p.missingTiles};
+          const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));
+          if(!blob)throw Error('Pratinjau tidak dapat dibuat.');
+          if(!valid()||signal.aborted)throw Error('Pratinjau dibatalkan atau sesi staf berakhir.');
+          previewUrl=URL.createObjectURL(blob);
+          const b=[[p.bounds[1],p.bounds[0]],[p.bounds[3],p.bounds[2]]];
+          if(activeMap.getPane&&!activeMap.getPane('yg-meritech-preview')){const pane=activeMap.createPane('yg-meritech-preview');pane.style.zIndex='350';pane.style.pointerEvents='none';}
+          imagePreview=L.imageOverlay(previewUrl,b,{opacity:1,interactive:false,...(activeMap.getPane?{pane:'yg-meritech-preview'}:{})}).addTo(activeMap);
+          activeMap.fitBounds(b,{padding:[24,24],maxZoom:p.zoom});
+          status.textContent=`Pratinjau citra ${p.part?'bagian '+p.part+'/'+p.totalParts:'area ini'} ditampilkan pada peta. ${p.missingTiles?p.missingTiles+' tile tidak tersedia. ':''}GeoTIFF akan memakai citra dan potongan yang sama. Peta dasar di bagian transparan tidak ikut diunduh. Pilih bagian lain untuk mengganti pratinjau.`;
+          return;
+        }
         status.textContent='Menyusun GeoTIFF…';
-        const retrievedAt=new Date().toISOString();
+
         const buffer=encode(ctx.getImageData(0,0,p.width,p.height).data,p,GeoTIFF.writeArrayBuffer,retrievedAt);
         const url=URL.createObjectURL(new Blob([buffer],{type:'image/tiff'})), a=document.createElement('a');
-        a.href=url; a.download=`meritech-${p.village?String(p.village).replace(/[^a-z0-9]+/gi,'-').slice(0,80)+'-buffer5km-bagian'+p.part+'-dari'+p.totalParts+'-':''}z${p.zoom}-${retrievedAt.slice(0,10)}.tif`; a.click(); setTimeout(()=>URL.revokeObjectURL(url),60000);
+        a.href=url; a.download=`meritech-${p.village?String(p.village).replace(/[^a-z0-9]+/gi,'-').slice(0,80)+'-buffer1km-bagian'+p.part+'-dari'+p.totalParts+'-':''}z${p.zoom}-${retrievedAt.slice(0,10)}.tif`; a.click(); setTimeout(()=>URL.revokeObjectURL(url),60000);
         status.textContent=`GeoTIFF siap: ${p.width} × ${p.height} piksel, ${p.tiles.length} tile, EPSG:3857. ${p.part?'Bagian '+p.part+'/'+p.totalParts+'. ':''}${p.missingTiles?p.missingTiles+' tile tidak tersedia dibuat transparan. ':''}Bagian putih/kosong pada sumber tetap ada. Tanggal unduh bukan tanggal perekaman.`;
-      } catch(error) {status.textContent=error.name==='AbortError'?'Unduhan dibatalkan, sesi berakhir, atau waktu koneksi habis.':error.message;}
-      finally {clearInterval(expiryTimer);clearTimeout(deadline);controller=null;start.disabled=false;zoom.disabled=false;village?.busy(false);cancel.hidden=true;}
-    };
+      } catch(error) {if(previewOnly)clearPreview();status.textContent=error.name==='AbortError'?'Unduhan dibatalkan, sesi berakhir, atau waktu koneksi habis.':error.message;}
+      finally {clearInterval(expiryTimer);clearTimeout(deadline);controller=null;start.disabled=false;previewButton.disabled=false;zoom.disabled=false;village?.busy(false);cancel.hidden=true;}
+    }
+    start.onclick=()=>run(false);
+    previewButton.onclick=()=>run(true);
     window.addEventListener('pagehide',()=>controller?.abort(),{once:true});
-    return ()=>{controller?.abort();village?.dispose();box.remove();};
+    return ()=>{controller?.abort();clearPreview();village?.dispose();box.remove();};
   }
   window.YG_MERITECH_EXPORT={mount,plan,encode};
 })();
