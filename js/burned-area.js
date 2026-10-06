@@ -37,7 +37,8 @@
     var group=model.groups.find(function(g){return g.name===selected}),entries=group?group.events:model.events;
     if(!group)selected='';
     total.textContent=model.events.length?hectares(group?group.areaHa:model.areaHa):'Belum tersedia';
-    count.textContent=entries.length+' kejadian terindikasi · '+(group?group.name:model.groups.length+' kabupaten/kota');
+    var knownCount=model.groups.filter(function(g){return g.name!==YG_BURNED_GROUPS.unknown}).length;
+    count.textContent=entries.length+' kejadian terindikasi · '+(group?group.name:knownCount+' kabupaten/kota'+(knownCount<model.groups.length?' + bagian belum teridentifikasi':''));
     heading.textContent=group?group.name:'Ringkasan kabupaten/kota';
     hint.textContent=group?'Klik polygon untuk detail kejadian. Kejadian lintas kabupaten ditampilkan utuh; luas ringkasan mengikuti irisan administrasi.':'Klik kluster kabupaten/kota untuk membuka polygon dan detail kejadian.';
     list.replaceChildren();
@@ -72,7 +73,7 @@
   function loadPeriod(){
     var version=++requestVersion,report=reports[period.value],url=report?report.data:'data/burned-area-estimates.geojson';
     regency.disabled=true;allButton.disabled=true;list.textContent='Memuat lokasi…';
-    overviewMarkers=[];if(map){if(polygons)map.removeLayer(polygons);if(clusters)map.removeLayer(clusters);if(leaderLines)map.removeLayer(leaderLines)}
+    overviewMarkers=[];if(map){map.closePopup();if(polygons)map.removeLayer(polygons);if(clusters)map.removeLayer(clusters);if(leaderLines)map.removeLayer(leaderLines)}
     total.textContent='—';count.textContent='Memuat estimasi…';hint.textContent='Memuat peta untuk periode terpilih…';
     json(url).then(function(geo){
       if(version!==requestVersion)return;
