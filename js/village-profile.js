@@ -1,6 +1,6 @@
 (function(){
   "use strict";
-  var SNAPSHOT_URL="https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/snapshots/current/objects.json";
+  var SNAPSHOT_URL="https://webgis-api.yayasangambut.org/snapshots/current/objects.json";
   var MANIFEST_URL="data/administrative-village-analytics/manifest.json";
   var params=new URLSearchParams(window.location.search);
   var key=String(params.get("key")||"").trim().toLowerCase();
@@ -27,7 +27,7 @@
     return [p.WADMKD||p.Desa||p.NAMOBJ||p.Nama_Desa,p.WADMKC||p.Kecamatan,p.WADMKK||p.Kabupaten].filter(Boolean).join("|").trim().toLowerCase();
   }
   function analyticsKeyCandidates(feature){
-    var p=feature&&feature.properties||{},keys=[featureKey(feature)],sourceName=p.Intervention_Source_Name;
+    var p=feature&&feature.properties||{},keys=[featureKey(feature),featureNameKey(feature),key],sourceName=p.Intervention_Source_Name;
     if(sourceName){keys.push([sourceName,p.WADMKC||p.Kecamatan,p.WADMKK||p.Kabupaten].filter(Boolean).join("|").trim().toLowerCase());}
     return keys.filter(function(value,index,all){return value&&all.indexOf(value)===index;});
   }
@@ -72,7 +72,18 @@
   function showError(message){el("loading-state").hidden=true;el("error-message").textContent=message;el("error-state").hidden=false;}
   function toast(message){var node=el("toast");node.textContent=message;node.classList.add("is-visible");window.setTimeout(function(){node.classList.remove("is-visible");},2200);}
 
-  async function loadJson(url){var response=await fetch(url,{cache:"no-store"});if(!response.ok){throw new Error("HTTP "+response.status);}return response.json();}
+  async function loadJson(url){
+    var controller=new AbortController(),timer=window.setTimeout(function(){controller.abort();},15000);
+    try{var response=await fetch(url,{cache:"no-store",signal:controller.signal});if(!response.ok){throw new Error("HTTP "+response.status);}return await response.json();}
+    finally{window.clearTimeout(timer);}
+  }
+  var unavailableData=[];
+  function optionalJson(url,label,fallback){
+    return loadJson(url).catch(function(error){console.warn(label+" tidak dapat dimuat",error);unavailableData.push(label);return fallback;});
+  }
+  function showDataAvailability(){
+    if(unavailableData.length){var notice=document.createElement("p");notice.className="vp-muted";notice.textContent="Data tambahan belum dapat dimuat: "+unavailableData.join(", ")+". Analisis desa tetap ditampilkan; muat ulang untuk mencoba kembali.";el("profile-content").prepend(notice);}
+  }
   async function findFeature(){
     try{
       if(source==="administrative"){
@@ -602,7 +613,7 @@
     el("map-layout-link").href="map-layout.html?source="+encodeURIComponent(source)+"&key="+encodeURIComponent(key);
     if(!key){showError("Tautan desa tidak lengkap. Silakan pilih desa melalui WebGIS.");return;}
     try{
-      var pair=await Promise.all([loadJson(MANIFEST_URL+"?v="+Date.now()),findFeature(),loadJson(SNAPSHOT_URL),loadJson("data/capacity-building.json?v=20260823-dayun-coffee"),loadJson("data/community-groups.json?v=20260919-teluk-piyai1").catch(function(){return {groups:[]};}),loadJson("data/area_mangrove.geojson?v=20260919-ma-earth-teluk-piyai1").catch(function(){return {features:[]};})]);
+      var pair=await Promise.all([loadJson(MANIFEST_URL+"?v="+Date.now()),findFeature(),optionalJson(SNAPSHOT_URL,"kegiatan terbaru",{features:[]}),optionalJson("data/capacity-building.json?v=20260823-dayun-coffee","pelatihan",[]),loadJson("data/community-groups.json?v=20260919-teluk-piyai1").catch(function(){return {groups:[]};}),loadJson("data/area_mangrove.geojson?v=20260919-ma-earth-teluk-piyai1").catch(function(){return {features:[]};})]);
       var manifest=pair[0],feature=pair[1],snapshot=pair[2]||{},capacityRows=pair[3]||[],communityGroups=pair[4]&&pair[4].groups||[],snapshotFeatures=mergeFeatureCollections(snapshot,[pair[5]]),candidateKeys=feature?analyticsKeyCandidates(feature):[key],analyticsKey=candidateKeys.find(function(candidate){return manifest.index&&Object.prototype.hasOwnProperty.call(manifest.index,candidate);})||candidateKeys[0],shard=manifest.index&&manifest.index[analyticsKey];
       if(shard==null){
         el("profile-status").innerHTML="<i></i> Analisis utama belum tersedia";
@@ -616,7 +627,7 @@
         render({},manifest,feature,snapshotFeatures,capacityRows,communityGroups);
         return;
       }
-      render(record,manifest,feature,snapshotFeatures,capacityRows,communityGroups);
+      render(record,manifest,feature,snapshotFeatures,capacityRows,communityGroups);showDataAvailability();
     }catch(error){console.error(error);showError(error.message||"Terjadi gangguan ketika membaca data desa.");}
   }
   el("print-profile").addEventListener("click",function(){window.print();});
