@@ -14,7 +14,7 @@ test("Riau reference workspace is staff-only and additive", () => {
   assert.match(home, /Peta Referensi Riau/);
   assert.match(home, /staff-riau-reference\.html/);
   assert.match(home, /data-staff-only-module hidden/);
-  assert.match(page, /riau-reference-workspace\.js\?v=20261006-opd-layer-style/);
+  assert.match(page, /riau-reference-workspace\.js\?v=20261006-meritech-index1/);
   assert.match(workspace, /if \(!session\(\)/);
   assert.match(workspace, /Layer program YG tidak diubah/);
   assert.match(workspace, /waitUntilSettled/);
@@ -86,3 +86,5 @@ test("reference layer sections survive the final ordering pass", () => {
   assert.match(order, /GAMBUT & LINGKUNGAN/);
   assert.match(order, /PERKEBUNAN · INTERNAL STAF/);
 });
+
+require('./meritech-ui.test.cjs');
