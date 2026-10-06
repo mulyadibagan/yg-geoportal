@@ -3,8 +3,8 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const vm = require('node:vm');
 function setup(fetch) {
- const source=fs.readFileSync('js/riau-reference-workspace.js','utf8').replace(/\}\)\(\);\s*$/, 'window.testApi={loadCatalog,renderCatalogItems,catalogState};})();');
- const window={YG_STAFF_DATA:{session:()=>({token:'test-only'})}};
+ const source=fs.readFileSync('js/riau-reference-workspace.js','utf8').replace(/\}\)\(\);\s*$/, 'window.testApi={loadCatalog,renderCatalogItems,catalogState,toggleCatalogLayer};})();');
+ const window={YG_STAFF_DATA:{session:()=>({token:'test-only'})},YG_MAP:{map:{}},L:{}};
  const context={window,document:{readyState:'loading',addEventListener(){}},fetch,AbortController,setTimeout:fn=>setTimeout(fn,10),clearTimeout,TextEncoder,TextDecoder,URLSearchParams};
  vm.runInNewContext(source,context);
  const elements={};
@@ -19,6 +19,13 @@ test('stalled catalog body stops loading and enables retry', async()=>{
  assert.equal(elements['[data-riau-ready-count]'].textContent,'Belum tersedia');
  assert.match(elements['[data-riau-catalog-status]'].textContent,/20 detik/);
  assert.doesNotMatch(elements['[data-riau-catalog-list]'].innerHTML,/Memuat/);
+});
+test('stalled layer body releases its checkbox and adds no geometry', async()=>{
+ const {api,panel,elements}=setup(async()=>({ok:true,status:200,headers:{get:()=>null},text:()=>new Promise(()=>{})}));
+ await api.toggleCatalogLayer({uuid:'12345678-1234-4234-8234-123456789001',title:'Layer uji'},true,panel);
+ assert.equal(api.catalogState.pending.size,0);
+ assert.equal(api.catalogState.active.size,0);
+ assert.match(elements['[data-riau-catalog-status]'].textContent,/20 detik/);
 });
 test('catalog renders one expandable group per OPD and excludes unavailable geometry',async()=>{
  const row=(uuid,publisher,ready=true)=>({uuid,title:'Layer <uji>',opd:{nama_opd:publisher},artifacts:{display:{available:ready,status:'ready'}}});

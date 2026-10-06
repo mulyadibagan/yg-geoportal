@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  const API = "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev";
+  const API = "https://webgis-api.yayasangambut.org";
   const CATALOG_PATH = "/api/staff/riau-geoportal/catalog";
   const MAX_ACTIVE_CATALOG_LAYERS = 8;
   const MAX_DISPLAY_BYTES = 12 * 1024 * 1024;
@@ -46,11 +46,17 @@
   async function staffApi(path, signal) {
     const current = session();
     if (!current || !current.token) throw new Error("Login staf diperlukan.");
-    const response = await fetch(API + path, {
-      headers: { authorization: "Bearer " + current.token },
-      cache: "no-store",
-      credentials: "omit", signal
-    });
+    let response;
+    try {
+      response = await fetch(API + path, {
+        headers: { authorization: "Bearer " + current.token },
+        cache: "no-store",
+        credentials: "omit", signal
+      });
+    } catch (error) {
+      if (error.name === "TypeError") throw new Error("Tidak dapat terhubung ke server data. Klik Muat ulang untuk mencoba lagi.");
+      throw error;
+    }
     if (response.status === 401 || response.status === 403) throw new Error("Sesi staf berakhir. Silakan login kembali.");
     return response;
   }
@@ -61,7 +67,7 @@
     try {
       return await Promise.race([action(controller.signal), new Promise((_, reject) => {
         timer = setTimeout(() => {
-          reject(new Error("Koneksi katalog melewati 20 detik. Klik Muat ulang untuk mencoba lagi."));
+          reject(new Error("Permintaan data melewati 20 detik. Silakan coba lagi."));
           controller.abort();
         }, 20000);
       })]);
@@ -237,9 +243,11 @@
     status.textContent = "Memuat “" + item.title + "”…";
     try {
       if (item.displayBytes > MAX_DISPLAY_BYTES) throw new Error("Layer terlalu besar untuk tampilan browser.");
-      const response = await staffApi(`/api/staff/riau-geoportal/datasets/${encodeURIComponent(item.uuid)}/display`);
-      if (!response.ok) throw new Error("Layer belum tersedia (" + response.status + ").");
-      const geojson = await readJsonWithinLimit(response, MAX_DISPLAY_BYTES);
+      const geojson = await boundedRequest(async signal => {
+        const response = await staffApi(`/api/staff/riau-geoportal/datasets/${encodeURIComponent(item.uuid)}/display`, signal);
+        if (!response.ok) throw new Error("Layer belum tersedia (" + response.status + ").");
+        return readJsonWithinLimit(response, MAX_DISPLAY_BYTES);
+      });
       if (!geojson || geojson.type !== "FeatureCollection" || !Array.isArray(geojson.features)) throw new Error("Format GeoJSON tidak valid.");
       if (geojson.features.length > MAX_DISPLAY_FEATURES) throw new Error("Jumlah fitur melampaui batas aman peta.");
       const color = colorFor(item.uuid);

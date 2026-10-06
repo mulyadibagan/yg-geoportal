@@ -23,7 +23,7 @@ test("staff login tolerates slow Apps Script authentication without hanging", ()
   assert.match(auth, /AUTH_POST_TIMEOUT_MS = 45000/);
   assert.match(auth, /fetchWithTimeout/);
   assert.match(auth, /Continue polling by request ID/);
-  assert.match(login, /js\/auth\.js\?v=20261005-login-network1/);
+  assert.match(login, /js\/auth\.js\?v=20261006-api-domain1/);
 });
 
 test("PBPH staff surfaces load the shared authentication module", () => {
@@ -38,7 +38,7 @@ test("PBPH staff surfaces load the shared authentication module", () => {
     "pbph-profile.html"
   ]) {
     const html = fs.readFileSync(path.join(ROOT, file), "utf8");
-    assert.match(html, /src="js\/auth\.js\?v=20260920-session5"/, file);
+    assert.match(html, /src="js\/auth\.js\?v=(?:20260920-session5|20261006-api-domain1)"/, file);
   }
 });
 
@@ -65,7 +65,7 @@ test("interactive map exposes the social forestry layer only to authenticated st
   assert.match(map, /\.\.\.\(staffSession \? \{ perhutanan_sosial_riau: \{/);
   assert.match(map, /label: "Perhutanan Sosial Riau · internal staf"/);
   assert.match(page, /map-v4\.js\?v=20260924-ghimbo-clean5/);
-  assert.match(page, /staff-data-access\.js\?v=20260920-pptpkh1/);
+  assert.match(page, /staff-data-access\.js\?v=20261006-api-domain1/);
   assert.match(map, /href="staff-rspo-area-profile\.html\?id=/);
   const staffData = fs.readFileSync(path.join(ROOT, "js", "staff-data-access.js"), "utf8");
   assert.match(staffData, /'data\/PERUSAHAAN_SAWIT_RIAU_REFERENSI\.geojson': '\/api\/staff\/rspo-companies'/);

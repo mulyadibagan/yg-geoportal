@@ -3,7 +3,7 @@
 
   const API = "https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec";
   const AUTH_RESULT_APIS = [
-    "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/staff/auth-result",
+    "https://webgis-api.yayasangambut.org/api/staff/auth-result",
     "https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/api/staff/auth-result"
   ];
   const SESSION_KEY = "ygEditorSessionV1";
@@ -150,7 +150,7 @@
     const progressTimer = setInterval(progress, 1000);
     let result;
     try {
-      const gateway = "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/staff/login";
+      const gateway = "https://webgis-api.yayasangambut.org/api/staff/login";
       let gatewayReachable = false;
       try {
         // Check connectivity before sending credentials, so fallback never

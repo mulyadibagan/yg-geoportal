@@ -1,6 +1,6 @@
 (function () {
   'use strict';
-  const base = 'https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev';
+  const base = 'https://webgis-api.yayasangambut.org';
   const routes = {
     'data/RTRW_RIAU_2018_2038.geojson': '/api/staff/rtrw-riau-2018-2038',
     'data/FEG_SK130_RIAU.geojson': '/api/staff/feg-sk130-riau',
