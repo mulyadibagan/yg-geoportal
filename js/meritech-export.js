@@ -53,7 +53,7 @@
         expiryTimer=setInterval(()=>{if(!valid())controller?.abort();},1000);
         deadline=setTimeout(()=>controller?.abort(),180000);
         const key=JSON.stringify([p.zoom,p.bounds,p.clip||null]);
-        const reused=cached?.key===key;
+        const reused=cached?.key===key&&cached.token===current.token;
         const canvas=reused?cached.canvas:document.createElement('canvas'); if(!reused){canvas.width=p.width;canvas.height=p.height;}
         const ctx=canvas.getContext('2d'); if(!ctx) throw Error('Perangkat tidak mendukung ekspor citra.');
         let next=0, done=0, received=0;
@@ -81,13 +81,14 @@
         const retrievedAt=reused?cached.retrievedAt:new Date().toISOString();
         if(reused)p.missingTiles=cached.missingTiles;
         if(previewOnly){
-          clearPreview();cached={key,canvas,retrievedAt,p,viewport:box.querySelector('[data-export-mode]').value==='viewport',missingTiles:p.missingTiles};
+          clearPreview();cached={key,canvas,retrievedAt,p,token:current.token,viewport:box.querySelector('[data-export-mode]').value==='viewport',missingTiles:p.missingTiles};
           const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));
           if(!blob)throw Error('Pratinjau tidak dapat dibuat.');
           if(!valid()||signal.aborted)throw Error('Pratinjau dibatalkan atau sesi staf berakhir.');
           previewUrl=URL.createObjectURL(blob);
           const b=[[p.bounds[1],p.bounds[0]],[p.bounds[3],p.bounds[2]]];
-          imagePreview=L.imageOverlay(previewUrl,b,{opacity:1,interactive:false}).addTo(activeMap);
+          if(activeMap.getPane&&!activeMap.getPane('yg-meritech-preview')){const pane=activeMap.createPane('yg-meritech-preview');pane.style.zIndex='350';pane.style.pointerEvents='none';}
+          imagePreview=L.imageOverlay(previewUrl,b,{opacity:1,interactive:false,...(activeMap.getPane?{pane:'yg-meritech-preview'}:{})}).addTo(activeMap);
           activeMap.fitBounds(b,{padding:[24,24],maxZoom:p.zoom});
           status.textContent=`Pratinjau citra ${p.part?'bagian '+p.part+'/'+p.totalParts:'area ini'} ditampilkan pada peta. ${p.missingTiles?p.missingTiles+' tile tidak tersedia. ':''}GeoTIFF akan memakai citra dan potongan yang sama. Peta dasar di bagian transparan tidak ikut diunduh. Pilih bagian lain untuk mengganti pratinjau.`;
           return;
