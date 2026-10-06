@@ -307,30 +307,32 @@
   function addMeritech(panel) {
     const box=document.createElement('div');
     box.className='riau-reference-catalog';
-    box.innerHTML='<h3>Citra drone · Meritech</h3><label><input type="checkbox" data-meritech-toggle> Tampilkan layer Meritech</label><label style="display:block;margin-top:10px">Transparansi <input type="range" min="0" max="1" step="0.05" value="0.85" data-meritech-opacity aria-label="Transparansi citra Meritech"></label><small data-meritech-status aria-live="polite">Cakupan mengikuti layanan sumber. Geser peta ke lokasi yang ingin diperiksa.</small><p><small>Sumber: petadasar.meritech.cloud. Tanggal perekaman, resolusi, dan cakupan lengkap belum terverifikasi.</small></p>';
+    box.innerHTML='<h3>Citra drone · Meritech</h3><label><input type="checkbox" data-meritech-toggle> Tampilkan layer Meritech</label><label style="display:block;margin-top:10px">Transparansi <input type="range" min="0" max="1" step="0.05" value="0.85" data-meritech-opacity aria-label="Transparansi citra Meritech"></label><button type="button" data-meritech-retry style="display:block;margin:8px 0">Muat ulang citra</button><small data-meritech-status aria-live="polite">Cakupan mengikuti layanan sumber. Geser peta ke lokasi yang ingin diperiksa.</small><p><small>Sumber: petadasar.meritech.cloud. Tanggal perekaman, resolusi, dan cakupan lengkap belum terverifikasi.</small></p>';
     panel.appendChild(box);
     const toggle=box.querySelector('[data-meritech-toggle]'), opacity=box.querySelector('[data-meritech-opacity]'), status=box.querySelector('[data-meritech-status]');
-    let layer=null, map=null, loaded=0, failed=0;
-    function remove(){if(layer&&map)map.removeLayer(layer);layer=null;toggle.checked=false;}
+    let layer=null, map=null, loaded=0, failed=0, loadTimer=null;
+    function remove(){clearTimeout(loadTimer);if(layer&&map)map.removeLayer(layer);layer=null;toggle.checked=false;}
     toggle.addEventListener('change',()=>{
       if(!toggle.checked){remove();status.textContent='Layer Meritech dinonaktifkan.';return;}
       map=window.YG_MAP?.map;
       if(!session()||!map||!window.L){remove();status.textContent='Peta atau sesi staf belum siap. Silakan coba kembali.';return;}
       if(!map.getPane('yg-meritech-pane')){const pane=map.createPane('yg-meritech-pane');pane.style.zIndex='250';pane.style.pointerEvents='none';}
       loaded=failed=0;
-      layer=L.tileLayer('https://petadasar.meritech.cloud/tile/{z}/{x}/{y}.jpg',{
+      layer=L.tileLayer.wms('https://petadasar.meritech.cloud/wms',{
+        layers:'petadasar',styles:'default',version:'1.3.0',format:'image/png',transparent:true,
         pane:'yg-meritech-pane',maxZoom:22,maxNativeZoom:19,opacity:Number(opacity.value),
         updateWhenIdle:true,updateWhenZooming:false,keepBuffer:1,
         attribution:'Citra: Meritech · tanggal belum terverifikasi'
       });
-      layer.on('loading',()=>{loaded=failed=0;status.textContent='Memuat citra Meritech pada area tampilan…';});
+      layer.on('loading',()=>{loaded=failed=0;clearTimeout(loadTimer);status.textContent='Memuat citra Meritech pada area tampilan…';loadTimer=setTimeout(()=>{status.textContent='Layanan Meritech belum merespons setelah 30 detik. Klik Muat ulang citra untuk mencoba lagi.';},30000);});
       layer.on('tileload',()=>loaded++);
       layer.on('tileerror',()=>failed++);
-      layer.on('load',()=>{status.textContent=loaded
-        ?'Citra Meritech tampil.'+(failed?' Sebagian tile tidak tersedia pada area ini.':'')
+      layer.on('load',()=>{clearTimeout(loadTimer);status.textContent=loaded
+        ?'Respons Meritech diterima. Jika citra kosong, cakupan pada lokasi/zoom ini belum tersedia.'+(failed?' Sebagian tile tidak tersedia pada area ini.':'')
         :'Citra belum tersedia pada area/zoom ini atau layanan sumber tidak dapat dijangkau. Geser peta atau ubah zoom.';});
       layer.addTo(map);
     });
+    box.querySelector('[data-meritech-retry]').addEventListener('click',()=>{remove();toggle.checked=true;toggle.dispatchEvent(new Event('change'));});
     opacity.addEventListener('input',()=>layer?.setOpacity(Number(opacity.value)));
     panel.querySelector('[data-riau-clear]').addEventListener('click',()=>{remove();status.textContent='Layer Meritech dinonaktifkan.';});
     const timer=setInterval(()=>{if(!session()){remove();box.remove();clearInterval(timer);}},15000);
