@@ -2,7 +2,23 @@
 'use strict';
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const DEFAULT_CENTER=[0.72,101.45];
-const API_BASE='https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev';
+const API_BASES=['https://webgis-api.yayasangambut.org','https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev'];
+let API_BASE=API_BASES[0], connectionPromise=null;
+async function ensureDroneConnection(){
+  if(connectionPromise)return connectionPromise;
+  connectionPromise=(async()=>{
+    for(const base of API_BASES){
+      const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),8000);
+      try{
+        const response=await fetch(base+'/api/drone/public',{signal:controller.signal,cache:'no-store'});
+        const data=await response.json();
+        if(response.ok&&data.ok===true&&Array.isArray(data.items)){API_BASE=base;return base;}
+      }catch{}finally{clearTimeout(timer)}
+    }
+    throw new Error('Layanan drone belum dapat dijangkau melalui kedua alamat layanan. Coba kembali beberapa saat lagi.');
+  })();
+  try{return await connectionPromise}catch(error){connectionPromise=null;throw error}
+}
 const baseLayer=()=>L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:20,attribution:'&copy; OpenStreetMap'});
 let missionMap,resultMap,drawnItems,gridLayer,currentRasterLayer,currentJob=null,currentAccess='',pollTimer=null,activeRasterId='',publicItems=[];
 
@@ -12,7 +28,7 @@ function staffSession(){try{const s=window.YG_AUTH?.readStoredSession?.();return
 function staffToken(){return String(staffSession()?.token||'')}
 function saveJobAccess(id,token){const map=jobAccessMap();map[id]=token;localStorage.setItem('ygDroneJobAccess',JSON.stringify(map));currentAccess=token||''}
 function getJobAccess(id){return String(jobAccessMap()[id]||'')}
-async function api(path,options={}){const headers=new Headers(options.headers||{});const jobToken=options.jobToken||'';if(jobToken)headers.set('x-job-token',jobToken);else if((path.startsWith('/api/staff/')||/^\/api\/drone\/jobs\/drn-[a-zA-Z0-9-]+$/.test(path))&&staffToken())headers.set('authorization',`Bearer ${staffToken()}`);const clean={...options,headers};delete clean.jobToken;const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),options.body instanceof Blob?180000:30000);let r;try{r=await fetch(`${API_BASE}${path}`,{...clean,signal:controller.signal});}catch(e){throw new Error(e.name==='AbortError'?'Koneksi layanan melewati batas waktu. Periksa Riwayat sebelum mencoba ulang.':'Tidak dapat terhubung ke layanan drone. Periksa koneksi lalu muat ulang.');}finally{clearTimeout(timer)}let data={};try{data=await r.json()}catch{}if(!r.ok)throw new Error(data.error||`HTTP ${r.status}`);return data;}
+async function api(path,options={}){await ensureDroneConnection();const headers=new Headers(options.headers||{});const jobToken=options.jobToken||'';if(jobToken)headers.set('x-job-token',jobToken);else if((path.startsWith('/api/staff/')||/^\/api\/drone\/jobs\/drn-[a-zA-Z0-9-]+$/.test(path))&&staffToken())headers.set('authorization',`Bearer ${staffToken()}`);const clean={...options,headers};delete clean.jobToken;const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),options.body instanceof Blob?180000:30000);let r;try{r=await fetch(`${API_BASE}${path}`,{...clean,signal:controller.signal});}catch(e){throw new Error(e.name==='AbortError'?'Koneksi layanan melewati batas waktu. Periksa Riwayat sebelum mencoba ulang.':'Koneksi layanan terputus. Periksa Riwayat sebelum mencoba ulang agar proses tidak dibuat dua kali.');}finally{clearTimeout(timer)}let data={};try{data=await r.json()}catch{}if(!r.ok)throw new Error(({drone_service_unavailable:'Layanan penyimpanan drone sedang bermasalah. Coba kembali beberapa saat lagi.',queue_full:'Antrean pemrosesan penuh. Tunggu proses sebelumnya selesai.',unauthorized:'Akses tidak valid. Masuk kembali atau buka dari perangkat pembuat.'})[data.error]||data.error||`HTTP ${r.status}`);if(data.ok!==true)throw new Error('Respons layanan drone tidak valid. Periksa Riwayat sebelum mencoba ulang.');return data;}
 function activateTab(name){$$('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===name));$$('.panel').forEach(p=>p.classList.toggle('active',p.id===`panel-${name}`));setTimeout(()=>{missionMap?.invalidateSize();resultMap?.invalidateSize();},100)}
 $$('.tab').forEach(b=>b.addEventListener('click',()=>activateTab(b.dataset.tab)));$$('[data-tab-target]').forEach(b=>b.addEventListener('click',()=>activateTab(b.dataset.tabTarget)));
 function setPublicState(){const el=$('#authStatus');if(el){el.textContent='Tools publik · tanpa login';el.className='status good'}$('#startOrthomosaic').disabled=false;}
