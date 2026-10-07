@@ -181,7 +181,7 @@ async function servePublicCog(request,env,id){
 }
 
 export function isDroneRoute(pathname){return pathname==='/api/drone/jobs'||pathname.startsWith('/api/drone/jobs/')||pathname==='/api/drone/public'||pathname.startsWith('/api/drone/public/')||pathname==='/api/staff/drone/jobs'}
-export async function handleDroneRequest(request,env,url,verifyStaffToken=async()=>false){
+async function routeDroneRequest(request,env,url,verifyStaffToken=async()=>false){
   if(request.method==='OPTIONS')return new Response(null,{status:204,headers:cors(request)});
   const origin=request.headers.get('origin')||'';
   if(['POST','PUT'].includes(request.method)&&!ALLOWED_ORIGINS.has(origin))return reply(request,{ok:false,error:'origin_not_allowed'},403);
@@ -199,4 +199,13 @@ export async function handleDroneRequest(request,env,url,verifyStaffToken=async(
   const unpublishMatch=url.pathname.match(/^\/api\/drone\/jobs\/(drn-[a-zA-Z0-9-]+)\/unpublish$/);if(unpublishMatch&&request.method==='POST')return unpublishJob(request,env,unpublishMatch[1],url);
   const jobMatch=url.pathname.match(/^\/api\/drone\/jobs\/(drn-[a-zA-Z0-9-]+)$/);if(jobMatch&&request.method==='GET')return getJob(request,env,jobMatch[1],url,verifyStaffToken);
   return reply(request,{ok:false,error:'not_found'},404);
+}
+
+// Keep storage/runtime failures readable by browsers, including CORS headers.
+export async function handleDroneRequest(request,env,url,verifyStaffToken=async()=>false){
+  try{return await routeDroneRequest(request,env,url,verifyStaffToken)}
+  catch(error){
+    console.error('Drone service request failed',url.pathname,error?.name||'Error');
+    return reply(request,{ok:false,error:'drone_service_unavailable'},503,{'retry-after':'30'});
+  }
 }
