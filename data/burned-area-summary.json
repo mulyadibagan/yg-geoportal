@@ -1,13 +1,14 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-06T03:52:59.765983+00:00",
+  "generatedAt": "2026-10-07T03:54:15.354616+00:00",
   "status": "ready",
-  "eventCount": 17,
-  "estimatedAreaHa": 4204.04,
-  "candidateEventCount": 23,
+  "eventCount": 15,
+  "estimatedAreaHa": 3621.0,
+  "candidateEventCount": 21,
   "processing": {
-    "waiting-post-image": 5,
-    "published": 17,
+    "waiting-post-image": 1,
+    "waiting-clear-image": 4,
+    "published": 15,
     "no-publishable-indication": 1,
     "excludedByRiauBoundary": 0
   },
@@ -19,26 +20,14 @@
   "villageSource": "data/batas_administrasi_desa_riau.geojson",
   "spatiallyClipped": true,
   "areaCrs": "EPSG:32647",
-  "administrativeUpdatedAt": "2026-10-06T03:53:00.417734+00:00",
+  "administrativeUpdatedAt": "2026-10-07T03:54:16.311116+00:00",
   "unassignedAreaHa": 5.55,
   "villageTotals": [
-    {
-      "regency": "Bengkalis",
-      "district": "Talang Muandau",
-      "village": "Tasikserai Timur",
-      "areaHa": 96.54
-    },
-    {
-      "regency": "Bengkalis",
-      "district": "Talang Muandau",
-      "village": "Tasiktebingserai",
-      "areaHa": 46.18
-    },
     {
       "regency": "Indragiri Hilir",
       "district": "",
       "village": "Area Saling Klaim",
-      "areaHa": 19.1
+      "areaHa": 17.91
     },
     {
       "regency": "Indragiri Hilir",
@@ -68,7 +57,7 @@
       "regency": "Indragiri Hilir",
       "district": "Kempas",
       "village": "Sungairabit",
-      "areaHa": 29.22
+      "areaHa": 22.46
     },
     {
       "regency": "Indragiri Hilir",
@@ -182,25 +171,25 @@
       "regency": "Indragiri Hulu",
       "district": "Kuala Cenaku",
       "village": "Pulau Jum'At",
-      "areaHa": 28.51
+      "areaHa": 21.55
     },
     {
       "regency": "Indragiri Hulu",
       "district": "Kuala Cenaku",
       "village": "Suka Jadi",
-      "areaHa": 22.59
+      "areaHa": 13.23
     },
     {
       "regency": "Indragiri Hulu",
       "district": "Kuala Cenaku",
       "village": "Tanjung Sari",
-      "areaHa": 4.64
+      "areaHa": 2.73
     },
     {
       "regency": "Indragiri Hulu",
       "district": "Kuala Cenaku",
       "village": "Teluk Sungkai",
-      "areaHa": 4.1
+      "areaHa": 1.58
     },
     {
       "regency": "Indragiri Hulu",
@@ -239,16 +228,10 @@
       "areaHa": 26.34
     },
     {
-      "regency": "Indragiri Hulu",
-      "district": "Siberida",
-      "village": "Paya Rumbai",
-      "areaHa": 399.56
-    },
-    {
       "regency": "Indragiri Hulu / Indragiri Hilir",
       "district": "Kuala Cenaku / Kempas",
       "village": "Tanjung Sari / Sungairabit",
-      "areaHa": 339.03
+      "areaHa": 326.97
     },
     {
       "regency": "Kampar",
@@ -295,14 +278,9 @@
   ],
   "districtTotals": [
     {
-      "regency": "Bengkalis",
-      "district": "Talang Muandau",
-      "areaHa": 142.72
-    },
-    {
       "regency": "Indragiri Hilir",
       "district": "",
-      "areaHa": 19.1
+      "areaHa": 17.91
     },
     {
       "regency": "Indragiri Hilir",
@@ -317,7 +295,7 @@
     {
       "regency": "Indragiri Hilir",
       "district": "Kempas",
-      "areaHa": 29.22
+      "areaHa": 22.46
     },
     {
       "regency": "Indragiri Hilir",
@@ -347,7 +325,7 @@
     {
       "regency": "Indragiri Hulu",
       "district": "Kuala Cenaku",
-      "areaHa": 59.9
+      "areaHa": 39.14
     },
     {
       "regency": "Indragiri Hulu",
@@ -375,14 +353,9 @@
       "areaHa": 28.53
     },
     {
-      "regency": "Indragiri Hulu",
-      "district": "Siberida",
-      "areaHa": 399.56
-    },
-    {
       "regency": "Indragiri Hulu / Indragiri Hilir",
       "district": "Kuala Cenaku / Kempas",
-      "areaHa": 339.03
+      "areaHa": 326.97
     },
     {
       "regency": "Kampar",
@@ -407,20 +380,16 @@
   ],
   "regencyTotals": [
     {
-      "regency": "Bengkalis",
-      "areaHa": 142.72
-    },
-    {
       "regency": "Indragiri Hilir",
-      "areaHa": 148.02
+      "areaHa": 140.07
     },
     {
       "regency": "Indragiri Hulu",
-      "areaHa": 2982.8
+      "areaHa": 2562.49
     },
     {
       "regency": "Indragiri Hulu / Indragiri Hilir",
-      "areaHa": 339.03
+      "areaHa": 326.97
     },
     {
       "regency": "Kampar",
