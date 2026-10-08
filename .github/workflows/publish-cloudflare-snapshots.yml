@@ -35,6 +35,9 @@ jobs:
     if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     environment: yg-webgis-staging
+    concurrency:
+      group: yg-webgis-worker-deploy
+      cancel-in-progress: false
     steps:
       - uses: actions/checkout@v5
         with:
