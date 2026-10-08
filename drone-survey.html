@@ -76,6 +76,9 @@
       <div class="grid two">
         <article class="card">
           <h2>Pengaturan misi Dayun</h2>
+          <label>Rencana pada perangkat ini<select id="savedDroneMission"><option value="">Pilih rencana tersimpan</option></select></label>
+          <div class="actions"><button id="restoreDroneMission" disabled>Buka rencana</button></div>
+          <p class="microcopy">Buka kembali area, titik takeoff, rintangan dan pengaturan. Buat ulang jalur untuk meninjau estimasi terbaru.</p>
           <label>Area dari database WebGIS<select id="dayunMissionArea"><option value="manual">Gambar area manual</option></select></label>
           <p id="dayunMissionSource" class="microcopy">Memuat blok dan gawangan Dayun…</p>
           <div class="form-grid">
@@ -136,7 +139,8 @@
   <script src="https://unpkg.com/@turf/turf@7.2.0/turf.min.js"></script>
   <script src="js/dayun-data-source.js?v=20261008"></script>
   <script src="js/drone-mission-core.js?v=20261008-dayun1"></script>
-  <script src="js/drone-mission-ui.js?v=20261008-dayun1"></script>
+  <script src="js/drone-mission-store.js?v=20261008-resume1"></script>
+  <script src="js/drone-mission-ui.js?v=20261008-resume1"></script>
   <script src="js/drone-survey.js?v=20261008-dayun1"></script>
   <script src="js/drone-survey-public-copy.js?v=20261005-drone-public2"></script>
   <script src="js/drone-survey-retry.js?v=20261008-memory1"></script>
