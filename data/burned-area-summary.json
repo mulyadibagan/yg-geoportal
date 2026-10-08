@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-07T03:54:15.354616+00:00",
+  "generatedAt": "2026-10-08T03:54:34.044549+00:00",
   "status": "ready",
   "eventCount": 15,
-  "estimatedAreaHa": 3621.0,
+  "estimatedAreaHa": 3604.12,
   "candidateEventCount": 21,
   "processing": {
     "waiting-post-image": 1,
@@ -20,7 +20,7 @@
   "villageSource": "data/batas_administrasi_desa_riau.geojson",
   "spatiallyClipped": true,
   "areaCrs": "EPSG:32647",
-  "administrativeUpdatedAt": "2026-10-07T03:54:16.311116+00:00",
+  "administrativeUpdatedAt": "2026-10-08T03:54:34.702778+00:00",
   "unassignedAreaHa": 5.55,
   "villageTotals": [
     {
@@ -135,19 +135,13 @@
       "regency": "Indragiri Hulu",
       "district": "Batang Gangsal",
       "village": "Area Tidakterdefinisi",
-      "areaHa": 31.41
-    },
-    {
-      "regency": "Indragiri Hulu",
-      "district": "Batang Gangsal",
-      "village": "Danau Rambai",
-      "areaHa": 0.36
+      "areaHa": 27.73
     },
     {
       "regency": "Indragiri Hulu",
       "district": "Batang Gangsal",
       "village": "Penyaguan",
-      "areaHa": 71.84
+      "areaHa": 62.16
     },
     {
       "regency": "Indragiri Hulu",
@@ -164,32 +158,20 @@
     {
       "regency": "Indragiri Hulu",
       "district": "Kuala Cenaku",
-      "village": "Pulau Gelang",
-      "areaHa": 0.06
-    },
-    {
-      "regency": "Indragiri Hulu",
-      "district": "Kuala Cenaku",
       "village": "Pulau Jum'At",
-      "areaHa": 21.55
+      "areaHa": 21.83
     },
     {
       "regency": "Indragiri Hulu",
       "district": "Kuala Cenaku",
       "village": "Suka Jadi",
-      "areaHa": 13.23
+      "areaHa": 11.47
     },
     {
       "regency": "Indragiri Hulu",
       "district": "Kuala Cenaku",
       "village": "Tanjung Sari",
       "areaHa": 2.73
-    },
-    {
-      "regency": "Indragiri Hulu",
-      "district": "Kuala Cenaku",
-      "village": "Teluk Sungkai",
-      "areaHa": 1.58
     },
     {
       "regency": "Indragiri Hulu",
@@ -231,7 +213,7 @@
       "regency": "Indragiri Hulu / Indragiri Hilir",
       "district": "Kuala Cenaku / Kempas",
       "village": "Tanjung Sari / Sungairabit",
-      "areaHa": 326.97
+      "areaHa": 326.93
     },
     {
       "regency": "Kampar",
@@ -315,7 +297,7 @@
     {
       "regency": "Indragiri Hulu",
       "district": "Batang Gangsal",
-      "areaHa": 208.85
+      "areaHa": 195.13
     },
     {
       "regency": "Indragiri Hulu",
@@ -325,7 +307,7 @@
     {
       "regency": "Indragiri Hulu",
       "district": "Kuala Cenaku",
-      "areaHa": 39.14
+      "areaHa": 36.02
     },
     {
       "regency": "Indragiri Hulu",
@@ -355,7 +337,7 @@
     {
       "regency": "Indragiri Hulu / Indragiri Hilir",
       "district": "Kuala Cenaku / Kempas",
-      "areaHa": 326.97
+      "areaHa": 326.93
     },
     {
       "regency": "Kampar",
@@ -385,11 +367,11 @@
     },
     {
       "regency": "Indragiri Hulu",
-      "areaHa": 2562.49
+      "areaHa": 2545.65
     },
     {
       "regency": "Indragiri Hulu / Indragiri Hilir",
-      "areaHa": 326.97
+      "areaHa": 326.93
     },
     {
       "regency": "Kampar",
