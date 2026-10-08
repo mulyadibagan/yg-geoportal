@@ -77,7 +77,7 @@
         <article class="card">
           <h2>Pengaturan misi Dayun</h2>
           <label class="wide-label" for="savedDroneMission">Rencana pada perangkat ini<select id="savedDroneMission"><option value="">Pilih rencana tersimpan</option></select></label>
-          <div class="actions"><button id="restoreDroneMission" disabled>Buka rencana</button></div>
+          <div class="actions"><button id="restoreDroneMission" disabled>Buka rencana</button><button id="downloadSavedDroneMission" disabled>Unduh jalur tersimpan (KML)</button></div>
           <p class="microcopy">Buka kembali area, titik takeoff, rintangan dan pengaturan. Buat ulang jalur untuk meninjau estimasi terbaru.</p>
           <label class="wide-label" for="dayunMissionArea">Area dari database WebGIS<select id="dayunMissionArea"><option value="manual">Gambar area manual</option></select></label>
           <p id="dayunMissionSource" class="microcopy">Memuat blok dan gawangan Dayun…</p>
@@ -101,15 +101,15 @@
             <label>Nama area<input id="areaName" type="text" placeholder="Contoh: Dayun - Blok A"></label>
           </div>
           <p class="hint">Kamera wide 50 MP: 8192 × 6144, FOV 84°, interval foto minimal 5 detik. <a href="https://www.dji.com/global/air-3s/specs" target="_blank" rel="noopener">Spesifikasi DJI</a>. GSD memakai estimasi FOV diagonal; durasi lapangan 30 menit adalah asumsi yang dapat diubah.</p><p class="hint">Pengaturan awal DJI Air 3S untuk sensus tanaman: ketinggian 35 m, tumpang tindih 80/80, kamera menghadap ke bawah.</p>
-          <div class="actions"><button id="generateMission" class="primary">Buat Jalur Misi</button><button id="clearMission">Bersihkan</button></div>
+          <div class="actions"><button id="generateMission" class="primary">Buat Jalur Misi</button><button data-drone-export="kml" disabled>Unduh Jalur (KML)</button><button id="clearMission">Bersihkan</button></div>
           <div class="actions"><button id="pickDroneTakeoff">Pilih takeoff di peta</button><button id="drawDroneObstacle">Gambar rintangan</button><button id="clearDroneObstacles">Hapus rintangan</button></div><p id="droneTakeoffInfo" class="microcopy">Takeoff belum dipilih. Tandai rintangan yang telah diperiksa di lapangan.</p>
         </article>
         <article class="card map-card">
           <div class="card-head"><div><h2>Pratinjau area & jalur</h2><p>Pilih blok/gawangan Dayun atau gambar area. Biru: pemotretan; jingga: perjalanan dan belokan; hijau: cakupan foto; merah: rintangan.</p></div><span class="status neutral" id="missionStatus">Belum dibuat</span></div>
-          <div id="missionMap" class="map"></div><label><input id="showDroneFootprints" type="checkbox"> Tampilkan cakupan foto (maksimum 300 pada preview)</label>
+          <div id="missionMap" class="map"></div><div class="actions"><button data-drone-export="kml" class="primary" disabled>Unduh Jalur (KML)</button><button data-drone-export="csv" disabled>Unduh Waypoint (CSV)</button><button data-drone-export="geojson" disabled>Unduh GeoJSON</button></div><p id="droneDownloadStatus" class="microcopy" role="status" aria-live="polite">Pilih area, lalu klik Buat Jalur Misi untuk mengaktifkan unduhan.</p><label><input id="showDroneFootprints" type="checkbox"> Tampilkan cakupan foto (maksimum 300 pada preview)</label>
         </article>
       </div>
-      <article class="card"><h2>Ringkasan &amp; ekspor rencana</h2><div id="droneMissionSummary">Belum ada rencana.</div><div class="actions"><button data-drone-export="geojson" disabled>GeoJSON</button><button data-drone-export="kml" disabled>KML referensi</button><button data-drone-export="csv" disabled>CSV waypoint</button><button disabled title="Impor dan eksekusi di DJI Fly belum terverifikasi">KMZ DJI belum terverifikasi</button></div><p class="hint">Ekspor adalah rencana referensi, belum siap diterbangkan. Air 3S memiliki Waypoint Flight di DJI Fly; dokumentasi yang diperiksa belum mengonfirmasi impor KMZ pihak ketiga. Buat/tinjau waypoint di DJI Fly dan uji dengan perangkat sebelum terbang. Belokan DJI Fly dapat melengkung dan berbeda dari preview.</p><p><a href="https://dl.djicdn.com/downloads/DJI_Air_3S/UM/20260423/DJI_Air_3S_um_en1.pdf" target="_blank" rel="noopener">Manual DJI Air 3S, Waypoint Flight</a></p></article>
+      <article class="card"><h2>Ringkasan &amp; ekspor rencana</h2><div id="droneMissionSummary">Belum ada rencana.</div><div class="actions"><button data-drone-export="geojson" disabled>Unduh GeoJSON</button><button data-drone-export="kml" disabled>Unduh Jalur (KML)</button><button data-drone-export="csv" disabled>Unduh Waypoint (CSV)</button><button disabled title="Impor dan eksekusi di DJI Fly belum terverifikasi">KMZ DJI belum terverifikasi</button></div><p class="hint">Ekspor adalah rencana referensi, belum siap diterbangkan. Air 3S memiliki Waypoint Flight di DJI Fly; dokumentasi yang diperiksa belum mengonfirmasi impor KMZ pihak ketiga. Buat/tinjau waypoint di DJI Fly dan uji dengan perangkat sebelum terbang. Belokan DJI Fly dapat melengkung dan berbeda dari preview.</p><p><a href="https://dl.djicdn.com/downloads/DJI_Air_3S/UM/20260423/DJI_Air_3S_um_en1.pdf" target="_blank" rel="noopener">Manual DJI Air 3S, Waypoint Flight</a></p></article>
     </section>
 
     <section class="panel" id="panel-qc">
@@ -145,8 +145,8 @@
   <script src="js/dayun-data-source.js?v=20261008"></script>
   <script src="js/drone-mission-core.js?v=20261008-dayun1"></script>
   <script src="js/drone-mission-store.js?v=20261008-resume1"></script>
-  <script src="js/drone-mission-ui.js?v=20261008-rotate1"></script>
-  <script src="js/drone-survey.js?v=20261008-dayun1"></script>
+  <script src="js/drone-mission-ui.js?v=20261008-download1"></script>
+  <script src="js/drone-survey.js?v=20261008-download1"></script>
   <script src="js/drone-survey-public-copy.js?v=20261005-drone-public2"></script>
   <script src="js/drone-survey-retry.js?v=20261008-memory1"></script>
   <script src="js/drone-survey-metadata-ui.js?v=20260918-1"></script>
