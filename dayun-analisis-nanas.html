@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="css/style.css?v=20260723-revert-layout">
   <link rel="stylesheet" href="css/navigation-v2.css?v=20260807-mobile-submenu-links1">
   <link rel="stylesheet" href="css/dayun.css?v=20260917-crop-detail1">
-  <link rel="stylesheet" href="css/dayun-analisis-nanas.css?v=20260929-ethrel-chart1">
+  <link rel="stylesheet" href="css/dayun-analisis-nanas.css?v=20261008-layout2">
 </head>
 <body data-dayun-page="pineapple-analysis" data-dayun-mode="public">
   <header class="site-header">
@@ -22,11 +22,15 @@
   <main class="dy-shell dy-pa-page">
     <nav class="dy-map-breadcrumb" aria-label="Navigasi halaman"><a class="dy-back-link" href="dayun-map.html">← Kembali ke peta agroforestri</a><span>Analisis komoditas</span></nav>
     <section class="dy-pa-hero"><div><h1>Nanas Queen Dayun</h1><p>Kondisi kebun, pekerjaan prioritas, dan panen.</p></div></section>
-    <section class="dy-section"><h2>Rencana tanam dan kebutuhan bibit</h2><p>Masukkan jarak antartanaman, jarak antarbaris, jalur panen, dan cadangan sulaman. Lihat kebutuhan bibit serta layout pada polygon gawangan.</p><a id="pa-seed-link" href="dayun-kalkulator-bibit.html">Buka kalkulator bibit dan layout rencana tanam →</a></section>
+
     <div class="dy-pa-toolbar">
       <label for="pa-block">Tampilkan wilayah<select id="pa-block"><option value="ALL">Seluruh Blok A–F</option><option value="A">Blok A</option><option value="B">Blok B</option><option value="C">Blok C</option><option value="D">Blok D</option><option value="E">Blok E</option><option value="F">Blok F</option></select></label>
       <p id="pa-data-date">Memuat tanggal data…</p>
     </div>
+    <section class="dy-seed-entry" aria-labelledby="pa-seed-title">
+      <div class="dy-seed-copy"><span class="dy-seed-eyebrow">PERENCANAAN BLOK D–F</span><h2 id="pa-seed-title">Kebutuhan bibit &amp; rencana tanam</h2><p>Atur jarak tanam, jalur panen, dan sulaman. Lihat jumlah bibit serta layout tiap gawangan.</p></div>
+      <a id="pa-seed-link" class="dy-seed-button" href="dayun-kalkulator-bibit.html">Buka kalkulator <span aria-hidden="true">→</span></a>
+    </section>
     <div id="pa-status" class="dy-summary-loading" role="status">Menghitung analisis Nanas Queen dari data gawangan…</div>
     <div id="pa-content" hidden>
       <section class="dy-section dy-decision-section" id="pa-condition-section">
@@ -95,4 +99,5 @@
 </script>
 </body>
 </html>
+
 
