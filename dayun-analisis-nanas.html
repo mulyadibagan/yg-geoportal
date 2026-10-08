@@ -22,7 +22,7 @@
   <main class="dy-shell dy-pa-page">
     <nav class="dy-map-breadcrumb" aria-label="Navigasi halaman"><a class="dy-back-link" href="dayun-map.html">← Kembali ke peta agroforestri</a><span>Analisis komoditas</span></nav>
     <section class="dy-pa-hero"><div><h1>Nanas Queen Dayun</h1><p>Kondisi kebun, pekerjaan prioritas, dan panen.</p></div></section>
-    <p><a href="dayun-kalkulator-bibit.html">Kalkulator kebutuhan bibit · rencana tanam blok D–F →</a></p>
+    <section class="dy-section"><h2>Rencana tanam dan kebutuhan bibit</h2><p>Masukkan jarak antartanaman, jarak antarbaris, jalur panen, dan cadangan sulaman. Lihat kebutuhan bibit serta layout pada polygon gawangan.</p><a id="pa-seed-link" href="dayun-kalkulator-bibit.html">Buka kalkulator bibit dan layout rencana tanam →</a></section>
     <div class="dy-pa-toolbar">
       <label for="pa-block">Tampilkan wilayah<select id="pa-block"><option value="ALL">Seluruh Blok A–F</option><option value="A">Blok A</option><option value="B">Blok B</option><option value="C">Blok C</option><option value="D">Blok D</option><option value="E">Blok E</option><option value="F">Blok F</option></select></label>
       <p id="pa-data-date">Memuat tanggal data…</p>
@@ -90,5 +90,9 @@
   <script src="js/dayun-pineapple-analysis.js?v=20260917-factual1"></script>
   <script src="js/dayun-harvest-estimate.js?v=20260929-ethrel-chart1"></script>
   <script src="js/dayun-analisis-nanas.js?v=20260929-ethrel-chart1"></script>
+<script>
+(function(){var block=document.getElementById("pa-block"),link=document.getElementById("pa-seed-link");function sync(){var b=block.value;link.href="dayun-kalkulator-bibit.html"+(["D","E","F"].includes(b)?"?block="+b:"");}block.addEventListener("change",sync);var initial=new URLSearchParams(location.search).get("block");if(["D","E","F"].includes(initial))link.href="dayun-kalkulator-bibit.html?block="+initial;})();
+</script>
 </body>
 </html>
+
