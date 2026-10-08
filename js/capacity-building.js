@@ -9,6 +9,7 @@
   var prepostSummaryData = null;
   var prepostVisibleCount = 6;
   var sourceCounts = { baseline: 0, publishedTraining: 0, publishedEngagement: 0, latestPublished: '' };
+  var evidenceById = {};
 
   function text(v) { return v === null || v === undefined ? '' : String(v).trim(); }
   function num(v) { var n = Number(v); return isFinite(n) ? n : 0; }
@@ -46,7 +47,7 @@
       if (raw.charAt(0) === '[') {
         try { values = JSON.parse(raw); } catch (e) { values = []; }
       }
-      if (!values.length && raw) values = raw.split(/\r?\n|\s*,\s*/);
+      if (!values.length && raw) values = raw.split(/\r?\n|\s*,\s*|\s+(?=https?:\/\/)/);
     }
     var seen = {};
     return values.map(function (item) {
@@ -62,7 +63,9 @@
     return new Promise(function (resolve, reject) {
       var cb = 'ygCapacity' + Date.now() + Math.floor(Math.random() * 1000);
       var s = document.createElement('script');
+      var timer;
       window[cb] = function (data) {
+        clearTimeout(timer);
         delete window[cb];
         s.remove();
         if (typeof data === 'string') {
@@ -71,13 +74,14 @@
         resolve(data);
       };
       s.onerror = function () {
+        clearTimeout(timer);
         delete window[cb];
         s.remove();
         reject(new Error('API'));
       };
       s.src = url + (url.indexOf('?') > -1 ? '&' : '?') + 'callback=' + cb;
       document.head.appendChild(s);
-      setTimeout(function () {
+      timer = setTimeout(function () {
         if (window[cb]) {
           delete window[cb];
           s.remove();
@@ -142,18 +146,19 @@
     var p = feature.properties || {};
     var info = parse(p.proposedInformation);
     var changes = parse(p.proposedChanges);
-    var c = changes.capacityBuilding || info || {};
+    var c = capacityPayload(p);
     var administrativeLocation = [p.village, p.district, p.regency].map(text).filter(Boolean).join(', ');
     var metadata = p.targetFeatureProperties || {};
     return {
       kind: 'training',
-      id: text(p.reportId),
+      id: text(p.reportId || p.Source_Report_ID),
       name: text(p.title) || 'Kegiatan peningkatan kapasitas',
       date: text(p.activityDate) || text(p.publishedAt),
       location: text(p.locationName) || administrativeLocation,
       regency: text(p.regency),
       male: num(c.maleParticipants),
       female: num(c.femaleParticipants),
+      totalParticipants: num(c.totalParticipants) || undefined,
       youth: num(c.youthTotal),
       target: text(c.participantTarget),
       donor: text(c.donor || metadata.Donor || metadata.Donor_Cluster || metadata.Nama_Donor),
@@ -163,7 +168,7 @@
       supportSessionId: text(c.supportSessionId),
       supportTestSummary: c.supportTestSummary && typeof c.supportTestSummary === 'object'
         ? c.supportTestSummary : parse(c.supportTestSummary),
-      documents: documentUrls(p.documentUrls || p.documents || p.documentUrl || c.documentUrls || c.documentUrl),
+      documents: documentUrls(p.documentUrls).concat(documentUrls(p.documents), documentUrls(p.documentUrl), documentUrls(c.documentUrls), documentUrls(c.documentUrl)),
       photos: Array.isArray(p.photos) ? p.photos : []
     };
   }
@@ -226,7 +231,9 @@
 
   function isCapacityFeature(feature) {
     var p=feature&&feature.properties||{};
-    return text(p.reportType)==='Capacity Building'||Object.keys(capacityPayload(p)).length>0;
+    var status = text(p.status).toLowerCase();
+    if (status && !/^(sudah dipublikasikan|published)$/.test(status)) return false;
+    return /^(capacity building|pelatihan)$/i.test(text(p.reportType || p.Kategori))||Object.keys(capacityPayload(p)).length>0;
   }
 
   function activityEngagementRecord(feature) {
@@ -292,7 +299,7 @@
       return (!q || hay.indexOf(q) > -1) && (!year || yearOf(r.date) === year) && (!reg || r.regency === reg);
     });
 
-    var total = rows.reduce(function (n, r) { return n + num(r.male) + num(r.female); }, 0);
+    var total = rows.reduce(function (n, r) { return n + participantCount(r); }, 0);
     var women = rows.reduce(function (n, r) { return n + num(r.female); }, 0);
     var youth = rows.reduce(function (n, r) { return n + num(r.youth); }, 0);
 
@@ -311,7 +318,7 @@
         ? sourceCounts.publishedEngagement.toLocaleString('id-ID')+' laporan pelibatan terpublikasi'
         : sourceCounts.baseline.toLocaleString('id-ID')+' arsip tervalidasi + '+
           sourceCounts.publishedTraining.toLocaleString('id-ID')+' laporan pelatihan terpublikasi';
-      sourceNode.textContent='Sumber kanonik: '+sourceText+' · duplikat ID dihitung satu kali'+
+      sourceNode.textContent=sourceText+' · setiap kegiatan dihitung satu kali'+
         (sourceCounts.latestPublished?' · aktivitas terbaru '+formatDate(sourceCounts.latestPublished):'')+'.';
     }
 
@@ -330,8 +337,8 @@
         var photos = (r.photos || []).slice(0, 5).map(function (u) {
           return '<img src="' + esc(photoUrl(u)) + '" alt="Dokumentasi ' + esc(r.name) + '" loading="lazy">';
         }).join('');
-        var documents = documentUrls(r.documents || r.documentUrl).map(function (url, index) {
-          return '<a class="capacity-document" href="' + esc(url) + '" target="_blank" rel="noopener noreferrer">Materi ' + (index + 1) + '</a>';
+        var documents = evidenceLinks(r).map(function (item) {
+          return '<a class="capacity-document" href="' + esc(item.url) + '" target="_blank" rel="noopener noreferrer">' + esc(item.label) + '</a>';
         }).join('');
         var testSummary = r.supportTestSummary || {};
         var posttest = r.supportSessionId
@@ -348,12 +355,12 @@
           '<article class="capacity-card" data-capacity-report-id="' + esc(r.id || '') + '">' +
             '<div class="capacity-card__head">' +
               '<div><span class="type-label">' + (r.kind === 'activity-engagement' ? 'PELAPORAN PELIBATAN · ' + esc(r.activityType || 'KEGIATAN LAPANGAN') : 'PELATIHAN / CAPACITY BUILDING') + '</span><h3>' + esc(r.name) + '</h3><p class="capacity-card__location">Lokasi: ' + esc(r.location || '-') + '</p></div>' +
-              '<time>' + esc(formatDate(r.date)) + '</time>' +
+              '<time>' + esc(formatDate(r.date)) + (r.endDate ? ' – ' + esc(formatDate(r.endDate)) : '') + '</time>' +
             '</div>' +
             '<div class="capacity-card__metrics">' +
-              '<span>' + (num(r.male) + num(r.female)).toLocaleString('id-ID') + ' peserta</span>' +
-              '<span>' + num(r.male) + ' laki-laki</span>' +
-              '<span>' + num(r.female) + ' perempuan</span>' +
+              '<span>' + participantCount(r).toLocaleString('id-ID') + ' peserta</span>' +
+              (r.male !== undefined && r.male !== null ? '<span>' + num(r.male) + ' laki-laki</span>' : '') +
+              (r.female !== undefined && r.female !== null ? '<span>' + num(r.female) + ' perempuan</span>' : '') +
               (num(r.youth) ? '<span>' + num(r.youth) + ' pemuda</span>' : '') +
             '</div>' +
             '<div class="capacity-card__details">' +
@@ -363,6 +370,8 @@
               '<p><strong>Mitra/Narasumber</strong>' + esc(r.partner || '-') + '</p>' +
               '<p><strong>Topik/Materi</strong>' + esc(r.topic || '-') + '</p>' +
             '</div>' +
+            (r.summary ? '<p class="capacity-card__summary">' + esc(r.summary) + '</p>' : '') +
+            (r.evaluation ? '<p class="capacity-card__evaluation"><strong>Hasil evaluasi: </strong>' + esc(r.evaluation) + '</p>' : '') +
             (documents ? '<div class="capacity-documents">' + documents + '</div>' : '') +
             posttest +
             (photos ? '<div class="capacity-photos">' + photos + '</div>' : '') +
@@ -912,74 +921,154 @@
     }
   }
 
-  async function loadCapacity() {
-    var historical = [];
-    try {
-      historical = await fetch('data/capacity-building.json?v=20260722-3').then(function (r) {
-        return r.json();
-      }).then(function (rows) {
-        return rows.map(function (row) {
-          row.kind = 'training';
-          return row;
-        });
-      });
-    } catch (e) {}
-    sourceCounts.baseline=historical.length;
+  function participantCount(record) {
+    return num(record.totalParticipants) || num(record.male) + num(record.female);
+  }
 
-    function applyPublishedFeatures(features) {
-      features=Array.isArray(features)?features:[];
-      var live = features
-        .filter(isCapacityFeature)
-        .map(liveRecord);
-      sourceCounts.publishedTraining=live.length;
-      var engagement=features
-        .filter(function (f) {
-          var p = f.properties || {};
-          var metadata = p.targetFeatureProperties || {};
-          return !isCapacityFeature(f) &&
-            num(metadata.Jumlah_Peserta || metadata.Peserta || metadata.participants) > 0;
-        })
-        .map(activityEngagementRecord)
-        .filter(Boolean);
-      sourceCounts.publishedEngagement=engagement.length;
-      live=live.concat(engagement);
-      sourceCounts.latestPublished=live.map(function(row){return row.date;}).filter(Boolean).sort(function(a,b){
-        return (dateValue(b)||new Date(0))-(dateValue(a)||new Date(0));
-      })[0]||'';
-      var seen = {};
-      all = historical.concat(live).map(reconcileDonor).filter(function (r) {
-        var k = r.id || [r.name, r.date, r.location].join('|');
-        if (seen[k]) return false;
-        seen[k] = 1;
-        return true;
+  function evidenceLinks(record) {
+    var seen = {};
+    var links = (record.evidenceLinks || []).concat(documentUrls(record.documents).map(function (url, index) {
+      return { label: 'Materi ' + (index + 1), url: url };
+    }), documentUrls(record.documentUrl).map(function (url) {
+      return { label: 'Dokumen kegiatan', url: url };
+    }));
+    return links.filter(function (item) {
+      var url = safeUrl(item && item.url);
+      if (!url || seen[url]) return false;
+      seen[url] = true;
+      return true;
+    }).map(function (item) { return { label: text(item.label) || 'Dokumen kegiatan', url: safeUrl(item.url) }; });
+  }
+
+  function mergeCapacityRecords(records) {
+    var result = [], byId = {}, byEvent = {};
+    records.forEach(function (record) {
+      var row = Object.assign({}, record);
+      var id = text(row.id);
+      var eventKey = [text(row.name).toLowerCase(), dateValue(row.date) && dateValue(row.date).toISOString().slice(0, 10), text(row.location).toLowerCase()].join('|');
+      var index = id ? byId[id] : undefined;
+      if (index === undefined && row.name && row.date && row.location) index = byEvent[eventKey];
+      if (index !== undefined) {
+        var previous = result[index];
+        var merged = Object.assign({}, previous);
+        Object.keys(row).forEach(function (key) {
+          if (row[key] !== undefined && row[key] !== null && row[key] !== '') merged[key] = row[key];
+        });
+        merged.documents = documentUrls(previous.documents).concat(documentUrls(row.documents));
+        merged.evidenceLinks = (previous.evidenceLinks || []).concat(row.evidenceLinks || []);
+        merged.photos = Array.from(new Set((previous.photos || []).concat(row.photos || [])));
+        result[index] = merged;
+      } else {
+        index = result.length;
+        result.push(row);
+      }
+      if (id) byId[id] = index;
+      if (row.name && row.date && row.location) byEvent[eventKey] = index;
+    });
+    return result;
+  }
+
+  async function capacityJson(url) {
+    var controller = typeof AbortController === 'function' ? new AbortController() : null;
+    var timer = controller ? setTimeout(function () { controller.abort(); }, 10000) : null;
+    try {
+      var response = await fetch(url, { cache: 'no-store', signal: controller ? controller.signal : undefined });
+      if (!response.ok) throw new Error('HTTP ' + response.status);
+      return await response.json();
+    } finally {
+      if (timer) clearTimeout(timer);
+    }
+  }
+
+  function publishedFeatures(data) {
+    var reports = data && data.capacitySources && data.capacitySources.reports;
+    var features = reports ? reports.features : data && data.features;
+    if (!Array.isArray(features)) throw new Error('Format laporan tidak valid');
+    return features.filter(function (feature) {
+      var status = text(feature && feature.properties && feature.properties.status).toLowerCase();
+      return !status || /^(sudah dipublikasikan|published)$/.test(status);
+    });
+  }
+
+  async function loadCapacity() {
+    var historical = [], published = [];
+    function refreshCapacity() {
+      var live = published.filter(isCapacityFeature).map(liveRecord);
+      sourceCounts.baseline = historical.length;
+      sourceCounts.publishedTraining = live.length;
+      var engagement = published.filter(function (feature) {
+        var metadata = feature.properties && feature.properties.targetFeatureProperties || {};
+        return !isCapacityFeature(feature) && num(metadata.Jumlah_Peserta || metadata.Peserta || metadata.participants) > 0;
+      }).map(activityEngagementRecord).filter(Boolean);
+      sourceCounts.publishedEngagement = engagement.length;
+      all = mergeCapacityRecords(historical.concat(live, engagement)).map(function (row) {
+        var evidence = evidenceById[row.id] || {};
+        var enriched = Object.assign({}, row, evidence);
+        enriched.documents = documentUrls(row.documents).concat(documentUrls(evidence.documents));
+        enriched.evidenceLinks = (row.evidenceLinks || []).concat(evidence.evidenceLinks || []);
+        enriched.photos = Array.from(new Set((row.photos || []).concat(evidence.photos || [])));
+        return reconcileDonor(enriched);
       });
       var scope = text(document.body.getAttribute('data-capacity-scope')).toLowerCase();
-      if (scope === 'community') {
-        all = all.filter(function (r) { return r.kind === 'activity-engagement'; });
-      } else if (scope === 'training') {
-        all = all.filter(function (r) { return r.kind === 'training'; });
-      }
+      if (scope === 'community') all = all.filter(function (row) { return row.kind === 'activity-engagement'; });
+      if (scope === 'training') all = all.filter(function (row) { return row.kind === 'training'; });
+      sourceCounts.latestPublished = all.map(function (row) { return row.date; }).filter(Boolean).sort(function (a, b) {
+        return (dateValue(b) || new Date(0)) - (dateValue(a) || new Date(0));
+      })[0] || '';
+      var selections = {};
+      ['year', 'regency'].forEach(function (key) {
+        var node = document.getElementById('capacity-' + key);
+        if (node) selections[key] = node.value;
+      });
       populateFilters();
+      Object.keys(selections).forEach(function (key) {
+        var node = document.getElementById('capacity-' + key);
+        if (node && Array.prototype.some.call(node.options, function (option) { return option.value === selections[key]; })) node.value = selections[key];
+      });
       renderCapacity();
     }
-
-    var snapshotLoaded=false;
-    try {
-      var snapshot=await fetch(SNAPSHOT_URL,{cache:'no-store'}).then(function(response){
-        if(!response.ok)throw new Error('snapshot '+response.status);
-        return response.json();
+    function acceptReports(data) {
+      var incoming = publishedFeatures(data);
+      // Merge sources instead of replacing the archive with an empty or partial response.
+      var byId = {};
+      published.concat(incoming).forEach(function (feature) {
+        var p = feature.properties || {};
+        var id = text(p.reportId || p.Source_Report_ID);
+        if (!id) return;
+        var previous = byId[id];
+        byId[id] = previous ? Object.assign({}, previous, feature, {
+          properties: Object.assign({}, previous.properties, p, {
+            photos: Array.from(new Set((previous.properties.photos || []).concat(p.photos || []))),
+            documentUrls: documentUrls(previous.properties.documentUrls).concat(documentUrls(previous.properties.documentUrl), documentUrls(p.documentUrls), documentUrls(p.documentUrl))
+          })
+        }) : feature;
       });
-      applyPublishedFeatures(snapshot&&snapshot.capacitySources&&snapshot.capacitySources.reports&&
-        snapshot.capacitySources.reports.features||[]);
-      snapshotLoaded=true;
-    } catch (e) {
-      applyPublishedFeatures([]);
+      published = Object.keys(byId).map(function (id) { return byId[id]; });
+      refreshCapacity();
     }
-
-    if(!snapshotLoaded) try {
-      var data = await jsonp(API + '?page=public-reports&t=' + Date.now());
-      if(data&&Array.isArray(data.features)&&data.features.length)applyPublishedFeatures(data.features);
-    } catch (e) {}
+    await Promise.all([
+      capacityJson('data/capacity-building.json?v=20261008-restore1').then(function (rows) {
+        if (!Array.isArray(rows)) throw new Error('Format arsip tidak valid');
+        historical = rows.map(function (row) { return Object.assign({ kind: 'training' }, row); });
+        refreshCapacity();
+      }).catch(function () {}),
+      capacityJson('data/capacity-building-evidence.json?v=20261008-restore1').then(function (data) {
+        if (!data || typeof data !== 'object' || Array.isArray(data)) throw new Error('Format bukti tidak valid');
+        evidenceById = data;
+        refreshCapacity();
+      }).catch(function () {})
+    ]);
+    // The same-origin snapshot preserves published training when the external services are slow.
+    // Always check the live feed even if Cloudflare returns HTTP 200 with incomplete data.
+    await Promise.all([
+      capacityJson('data/dashboard-summary-snapshot.json').then(acceptReports).catch(function () {}),
+      capacityJson(SNAPSHOT_URL).then(acceptReports).catch(function () {}),
+      jsonp(API + '?page=public-reports&t=' + Date.now()).then(acceptReports).catch(function () {})
+    ]);
+    if (!all.length) {
+      var statusNode = document.getElementById('capacity-source-status');
+      if (statusNode) statusNode.textContent = 'Sumber kegiatan belum berhasil dimuat. Silakan muat ulang halaman.';
+    }
   }
 
   document.addEventListener('DOMContentLoaded', function () {
