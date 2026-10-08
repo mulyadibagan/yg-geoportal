@@ -16,6 +16,8 @@ function userError(code){
     drive_insufficient_photos:'Folder harus berisi minimal tiga foto JPG/JPEG yang dapat dibaca. Periksa isi folder, lalu klik Coba lagi.',
     drive_download_incomplete:'Sebagian foto dari Google Drive belum berhasil diambil. Foto yang sudah tersedia tetap aman dan proses dapat dicoba kembali.',
     insufficient_valid_photos:'Foto yang dapat digunakan belum cukup untuk membuat orthomosaic.',
+    photogrammetry_memory_limit:'Processor kehabisan RAM. Salinan foto kini dibatasi 4096 piksel dan 2 proses paralel. Periksa log; bagi dataset per sortie jika masih gagal.',
+    invalid_georeferenced_raster:'Hasil raster belum memiliki georeferensi RGB yang valid; hasil tidak dinyatakan selesai.',
     photogrammetry_failed:'Penyusunan foto belum berhasil. Periksa kualitas dan tumpang tindih foto, lalu coba kembali.',
     orthomosaic_not_created:'Penyusunan foto selesai, tetapi orthomosaic belum berhasil dibuat.',
     processing_failed:'Pemrosesan belum berhasil diselesaikan. Silakan coba kembali.',

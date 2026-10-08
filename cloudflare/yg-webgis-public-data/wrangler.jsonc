@@ -33,7 +33,15 @@
           "binding": "PUBLIC_SNAPSHOTS",
           "bucket_name": "yg-webgis-public-snapshots-staging"
         }
-      ]
+      ],
+      "durable_objects": {
+        "bindings": [
+          {
+            "name": "DRONE_QUEUE",
+            "class_name": "DroneQueue"
+          }
+        ]
+      }
     },
     "production": {
       "name": "yg-webgis-public-data",
@@ -54,7 +62,31 @@
           "pattern": "webgis-api.yayasangambut.org",
           "custom_domain": true
         }
+      ],
+      "durable_objects": {
+        "bindings": [
+          {
+            "name": "DRONE_QUEUE",
+            "class_name": "DroneQueue"
+          }
+        ]
+      }
+    }
+  },
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "DRONE_QUEUE",
+        "class_name": "DroneQueue"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "drone-queue-v1",
+      "new_sqlite_classes": [
+        "DroneQueue"
       ]
     }
-  }
+  ]
 }

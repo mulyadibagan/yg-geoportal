@@ -102,9 +102,15 @@ def main():
     a=sub.add_parser('checkpoint'); a.add_argument('job'); a.add_argument('--downloaded',type=int,required=True); a.add_argument('--expected',type=int,required=True); a.add_argument('--retry-minutes',type=int,default=30)
     a=sub.add_parser('cleanup-scheduled'); a.add_argument('job'); a.add_argument('--days',type=int,default=7)
     a=sub.add_parser('cleanup-complete'); a.add_argument('job')
-    a=sub.add_parser('failed'); a.add_argument('job'); a.add_argument('--error',default='processing_failed')
+    a=sub.add_parser('validate-raster'); a.add_argument('gdalinfo')
+    a=sub.add_parser('failed'); a.add_argument('job'); a.add_argument('--error',default='processing_failed'); a.add_argument('--log')
     args=p.parse_args(); now=now_iso()
-    if args.cmd=='processing':
+    if args.cmd=='validate-raster':
+        info=load(args.gdalinfo)
+        if not info.get('coordinateSystem',{}).get('wkt') or not info.get('geoTransform') or len(info.get('size',[]))!=2 or min(info['size'])<=0 or len(info.get('bands',[]))<3:
+            raise SystemExit('invalid_georeferenced_raster')
+        print('Georeferenced RGB GeoTIFF verified')
+    elif args.cmd=='processing':
         d=load(args.job); d.update({'status':'processing','processingStartedAt':now,'stage':'starting','progress':5,'stageLabel':'Memulai pemrosesan','stageUpdatedAt':now}); d.pop('retryAfter',None); add_history(d,'starting',5,'Memulai pemrosesan'); save(args.job,d)
     elif args.cmd=='stage':
         extra={}
@@ -148,5 +154,9 @@ def main():
         d.update({'r2CleanupStatus':'complete','r2CleanedAt':now,'r2SourceRetained':False,'updatedAt':now})
         save(args.job,d)
     elif args.cmd=='failed':
-        d=load(args.job); d.update({'status':'failed','stage':'failed','stageLabel':'Pemrosesan terhenti','stageUpdatedAt':now,'failedAt':now,'error':args.error}); add_history(d,'failed',int(d.get('progress') or 0),'Pemrosesan terhenti'); save(args.job,d)
+        d=load(args.job)
+        if args.log and os.path.isfile(args.log):
+            with open(args.log,errors='replace') as log: d['errorLogTail']=log.read()[-4000:]
+        d['processorRunUrl']='https://github.com/'+os.environ.get('GITHUB_REPOSITORY','mulyadibagan/yg-geoportal')+'/actions/runs/'+os.environ.get('GITHUB_RUN_ID','')
+        d.update({'status':'failed','stage':'failed','stageLabel':'Pemrosesan terhenti','stageUpdatedAt':now,'failedAt':now,'error':args.error}); add_history(d,'failed',int(d.get('progress') or 0),'Pemrosesan terhenti'); save(args.job,d)
 if __name__=='__main__': main()
