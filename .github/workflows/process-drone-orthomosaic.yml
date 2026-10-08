@@ -10,6 +10,7 @@ on:
     paths:
       - '.github/workflows/process-drone-orthomosaic.yml'
       - 'scripts/drone_job.py'
+      - 'scripts/prepare_drone_photos.py'
       - 'scripts/download_drive_folder.py'
 
 permissions:
@@ -19,11 +20,11 @@ concurrency:
   group: yg-drone-orthomosaic-processor
   # A processor-code push must replace an older running implementation.
   # Scheduled polling must never cancel a long photogrammetry job.
-  cancel-in-progress: ${{ github.event_name == 'push' }}
+  cancel-in-progress: false
 
 jobs:
   process:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     environment: yg-webgis-staging
     timeout-minutes: 330
     steps:
@@ -38,7 +39,7 @@ jobs:
       - name: Install tools
         run: |
           python -m pip install --upgrade pip
-          pip install 'gdown>=6.3.0'
+          pip install 'gdown>=6.3.0' 'Pillow>=11.0,<13'
           sudo apt-get update
           sudo apt-get install -y libimage-exiftool-perl jq gdal-bin
       - name: Recover Garuda Sakti after Drive error handling fix
@@ -197,6 +198,32 @@ jobs:
           if ! npx wrangler r2 object put "yg-webgis-public-snapshots/drone/queue/cleanup.json" --remote --file "$CLEANUP_NEXT" --content-type application/json; then
             echo "Warning: cleanup queue could not be updated; source files will be preserved"
           fi
+      - name: Recover observed memory failures with bounded processing
+        shell: bash
+        working-directory: cloudflare/yg-webgis-public-data
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          mkdir -p ../../tmp/drone-recovery
+          for JOB_ID in drn-3e691c12-eba2-43ce-a9a3-4ac6edbb797b drn-4061c04e-d43f-469b-aa48-504b7e5b28ad; do
+          JOB="../../tmp/drone-recovery/$JOB_ID-memory.json"
+          if npx wrangler r2 object get "yg-webgis-public-snapshots/drone/jobs/$JOB_ID.json" --remote --file "$JOB"; then
+            if jq -e '.status == "failed" and .error == "photogrammetry_failed" and (.processingProfile.maxImageDimension // 0) != 4096 and (.retryCount // 0) < 5' "$JOB" >/dev/null; then
+              JOB_TOKEN=$(jq -r '.accessToken // empty' "$JOB")
+              test -n "$JOB_TOKEN"
+              echo "::add-mask::$JOB_TOKEN"
+              curl --fail --silent --show-error -X POST \
+                -H 'Origin: https://webgisyg.id' -H "x-job-token: $JOB_TOKEN" \
+                "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/drone/jobs/$JOB_ID/retry" \
+                -o ../../tmp/drone-recovery/air3s-retry.json
+              jq '{ok,job:(.job|{id,status,stage,progress})}' ../../tmp/drone-recovery/air3s-retry.json
+            else
+              echo "Observed job is active, ready, already bounded, or no longer matches the old failure."
+            fi
+          fi
+          done
       - name: Read pending queue
         working-directory: cloudflare/yg-webgis-public-data
         env:
@@ -235,6 +262,23 @@ jobs:
             npx wrangler r2 object put "yg-webgis-public-snapshots/drone/jobs/$JOB_ID.json" --remote --file "$ROOT/job.json" --content-type application/json
           }
 
+          acknowledge_queue() {
+            local token
+            token=$(jq -r '.accessToken // empty' "$ROOT/job.json")
+            echo "::add-mask::$token"
+            if ! curl --fail --silent --show-error --retry 3 --retry-delay 5 \
+              -X POST -H 'Origin: https://webgisyg.id' -H "x-job-token: $token" \
+              "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/drone/jobs/$JOB_ID/queue-complete" \
+              -o "$ROOT/queue-complete.json"; then
+              echo "Queue acknowledgement deferred; terminal job will be acknowledged on the next poll."
+            fi
+          }
+          STATUS=$(jq -r '.status // empty' "$ROOT/job.json")
+          if [ "$STATUS" = "ready" ] || [ "$STATUS" = "failed" ]; then
+            acknowledge_queue
+            exit 0
+          fi
+
           # A refinement request only needs to clean the existing COG. Re-running
           # the full photogrammetry pipeline would needlessly download/process all
           # source photos again and can leave the UI waiting for hours.
@@ -251,6 +295,7 @@ jobs:
               -b 1 -b 2 -b 3 -mask 4 \
               -of COG -co COMPRESS=JPEG -co QUALITY=90 -co BIGTIFF=IF_SAFER -co OVERVIEWS=AUTO
             gdalinfo -json "$ROOT/output/orthomosaic.cog.tif" > "$ROOT/output/gdalinfo.json"
+            python ../../scripts/drone_job.py validate-raster "$ROOT/output/gdalinfo.json"
             npx wrangler r2 object put "yg-webgis-public-snapshots/$COG_KEY" --remote --file "$ROOT/output/orthomosaic.cog.tif" --content-type image/tiff
 
             python ../../scripts/drone_job.py refine-ready "$ROOT/job.json" "$ROOT/output/gdalinfo.json"
@@ -264,9 +309,7 @@ jobs:
               '.jobs = ((.jobs // []) | map(select(.id != $id)) + [{id:$id,eligibleAt:$eligibleAt}]) | .updatedAt=$now' \
               "$CLEANUP_QUEUE" > "$CLEANUP_NEXT"
             npx wrangler r2 object put "yg-webgis-public-snapshots/drone/queue/cleanup.json" --remote --file "$CLEANUP_NEXT" --content-type application/json
-            jq --arg id "$JOB_ID" '.jobs = (.jobs | map(select(. != $id)))' ../../tmp/drone/pending.json > ../../tmp/drone/pending.next.json
-            mv ../../tmp/drone/pending.next.json ../../tmp/drone/pending.json
-            npx wrangler r2 object put "yg-webgis-public-snapshots/drone/queue/pending.json" --remote --file ../../tmp/drone/pending.json --content-type application/json
+            acknowledge_queue
             echo "Refined existing orthomosaic without rebuilding source photos"
             exit 0
           fi
@@ -385,9 +428,18 @@ jobs:
             exit 22
           fi
 
+          GEOTAGGED=$(jq -r '.geotaggedPhotos // 0' "$ROOT/qc.json")
+          if [ "$GEOTAGGED" -lt 3 ]; then
+            echo "insufficient_geotagged_photos" > "$ROOT/error_code"
+            exit 25
+          fi
+
           python ../../scripts/drone_job.py stage "$ROOT/job.json" preparing 45 "Menyiapkan foto terpilih" --valid "$VALID" --excluded "$REJECTED"
           publish_status
-          while IFS= read -r IMG; do cp "$IMG" "$ROOT/project/images/"; done < "$ROOT/valid.txt"
+          python ../../scripts/prepare_drone_photos.py "$ROOT/valid.txt" "$ROOT/project/images" "$ROOT/processing-photos.json" --max-dimension 4096
+          jq '.processingProfile={maxImageDimension:4096,maxConcurrency:2,meshSize:100000,orthophotoResolutionCm:3,sourceOriginalsPreserved:true}' "$ROOT/job.json" > "$ROOT/job.next.json"
+          mv "$ROOT/job.next.json" "$ROOT/job.json"
+          publish_status
 
           python ../../scripts/drone_job.py stage "$ROOT/job.json" reconstructing 55 "Menyusun posisi dan kecocokan foto" --valid "$VALID" --excluded "$REJECTED"
           publish_status
@@ -397,11 +449,17 @@ jobs:
             --orthophoto-resolution 3 \
             --feature-quality medium \
             --pc-quality medium \
+            --max-concurrency 2 \
+            --mesh-size 100000 \
             --crop 1 \
             --orthophoto-cutline \
             --skip-3dmodel \
-            --skip-report; then
-            echo "photogrammetry_failed" > "$ROOT/error_code"
+            --skip-report 2>&1 | tee "$ROOT/photogrammetry.log"; then
+            if grep -q -E 'ran out of memory|Child returned 137|Out of memory' "$ROOT/photogrammetry.log"; then
+              echo "photogrammetry_memory_limit" > "$ROOT/error_code"
+            else
+              echo "photogrammetry_failed" > "$ROOT/error_code"
+            fi
             exit 24
           fi
 
@@ -428,6 +486,7 @@ jobs:
 
           python ../../scripts/drone_job.py stage "$ROOT/job.json" saving 95 "Menyimpan hasil" --valid "$VALID" --excluded "$REJECTED"
           publish_status
+          python ../../scripts/drone_job.py validate-raster "$ROOT/output/gdalinfo.json"
           npx wrangler r2 object put "yg-webgis-public-snapshots/drone/results/$JOB_ID/orthomosaic.cog.tif" --remote --file "$ROOT/output/orthomosaic.cog.tif" --content-type image/tiff
 
           python ../../scripts/drone_job.py ready "$ROOT/job.json" "$ROOT/output/gdalinfo.json" "$ROOT/qc.json"
@@ -445,9 +504,7 @@ jobs:
             echo "Warning: cleanup scheduling failed; preserving the ready result and its source files"
           fi
 
-          jq --arg id "$JOB_ID" '.jobs = (.jobs | map(select(. != $id)))' ../../tmp/drone/pending.json > ../../tmp/drone/pending.next.json
-          mv ../../tmp/drone/pending.next.json ../../tmp/drone/pending.json
-          npx wrangler r2 object put "yg-webgis-public-snapshots/drone/queue/pending.json" --remote --file ../../tmp/drone/pending.json --content-type application/json
+          acknowledge_queue
       - name: Mark failed job
         if: failure() && steps.process_job.outputs.job_id != ''
         shell: bash
@@ -461,11 +518,15 @@ jobs:
           if [ -f "$ROOT/job.json" ]; then
             ERROR_CODE="processing_failed"
             [ -f "$ROOT/error_code" ] && ERROR_CODE=$(cat "$ROOT/error_code")
-            python ../../scripts/drone_job.py failed "$ROOT/job.json" --error "$ERROR_CODE"
+            python ../../scripts/drone_job.py failed "$ROOT/job.json" --error "$ERROR_CODE" --log "$ROOT/photogrammetry.log"
             npx wrangler r2 object put "yg-webgis-public-snapshots/drone/jobs/$JOB_ID.json" --remote --file "$ROOT/job.json" --content-type application/json || true
           fi
-          if [ -f ../../tmp/drone/pending.json ]; then
-            jq --arg id "$JOB_ID" '.jobs = (.jobs | map(select(. != $id)))' ../../tmp/drone/pending.json > ../../tmp/drone/pending.next.json || true
-            [ -f ../../tmp/drone/pending.next.json ] && npx wrangler r2 object put "yg-webgis-public-snapshots/drone/queue/pending.json" --remote --file ../../tmp/drone/pending.next.json --content-type application/json || true
+          if [ -f "$ROOT/job.json" ]; then
+            JOB_TOKEN=$(jq -r '.accessToken // empty' "$ROOT/job.json")
+            echo "::add-mask::$JOB_TOKEN"
+            curl --fail --silent --show-error --retry 3 -X POST \
+              -H 'Origin: https://webgisyg.id' -H "x-job-token: $JOB_TOKEN" \
+              "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/drone/jobs/$JOB_ID/queue-complete" \
+              -o "$ROOT/queue-complete.json" || true
           fi
 # manual refinement trigger 2026-09-18

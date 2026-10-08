@@ -1,3 +1,4 @@
+export { DroneQueue } from './drone-queue.js';
 import { meritechTile } from './meritech.js';
 import baseWorker, { validStaffToken, rememberValidStaffToken } from './index.js';
 import { staffLogin } from './staff-login.js';

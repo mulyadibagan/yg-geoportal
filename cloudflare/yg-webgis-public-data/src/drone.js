@@ -23,22 +23,37 @@ async function readJson(env,key,fallback=null){const object=await env.PUBLIC_SNA
 async function writeJson(env,key,value){await env.PUBLIC_SNAPSHOTS.put(key,JSON.stringify(value),{httpMetadata:{contentType:'application/json; charset=utf-8',cacheControl:'no-store'}})}
 function jobKey(id){return `drone/jobs/${id}.json`}
 function publicJob(job){if(!job)return null;const {accessToken,...safe}=job;return safe}
-function publicCatalogItem(job){return{id:job.id,title:job.title||'Survei drone',project:job.project||'YG GeoPortal',surveyDate:job.surveyDate||null,surveyStartAt:job.surveyStartAt||null,surveyEndAt:job.surveyEndAt||null,completedAt:job.completedAt||null,publishedAt:job.publishedAt||null,validPhotos:Number(job.validPhotos||0),excludedPhotos:Number(job.excludedPhotos||0),cameraModels:Array.isArray(job.cameraModels)?job.cameraModels.filter(Boolean).slice(0,5):[]}}
+function publicCatalogItem(job){return{id:job.id,missionId:job.missionId||null,polygonIds:job.polygonIds||[],missionGeometry:job.missionGeometry||null,title:job.title||'Survei drone',project:job.project||'YG GeoPortal',surveyDate:job.surveyDate||null,surveyStartAt:job.surveyStartAt||null,surveyEndAt:job.surveyEndAt||null,completedAt:job.completedAt||null,publishedAt:job.publishedAt||null,validPhotos:Number(job.validPhotos||0),excludedPhotos:Number(job.excludedPhotos||0),cameraModels:Array.isArray(job.cameraModels)?job.cameraModels.filter(Boolean).slice(0,5):[]}}
 function suppliedJobToken(request,url){return String(request.headers.get('x-job-token')||url?.searchParams?.get('access')||'').trim()}
 function authorizedJob(request,url,job){const supplied=suppliedJobToken(request,url);return Boolean(supplied&&job?.accessToken&&supplied===job.accessToken)}
 function suppliedStaffToken(request){return String(request.headers.get('authorization')||'').replace(/^Bearer\s+/i,'').trim()}
 async function authorizedStaff(request,env,verifyStaffToken){const token=suppliedStaffToken(request);return Boolean(token&&await verifyStaffToken(token,env))}
-async function queueJob(env,id){const key='drone/queue/pending.json';const queue=await readJson(env,key,{jobs:[]});const jobs=Array.isArray(queue?.jobs)?queue.jobs.map(String):[];if(!jobs.includes(id))jobs.push(id);await writeJson(env,key,{jobs,updatedAt:new Date().toISOString()})}
-async function pendingCount(env){const queue=await readJson(env,'drone/queue/pending.json',{jobs:[]});return Array.isArray(queue?.jobs)?queue.jobs.length:0}
-function newJob(body={}){const id=`drn-${crypto.randomUUID()}`;return{id,title:String(body.title||body.area||'Survei drone').slice(0,160),project:String(body.project||'YG GeoPortal').slice(0,160),sourceType:body.sourceType==='drive'?'drive':'upload',driveUrl:body.sourceType==='drive'?String(body.driveUrl||'').trim():null,status:body.sourceType==='drive'?'pending':'uploading',files:[],totalBytes:0,createdAt:new Date().toISOString(),accessToken:crypto.randomUUID().replace(/-/g,'')}}
+async function queueState(env,action=null,id=null,job=null){
+  if(env.DRONE_QUEUE){const stub=env.DRONE_QUEUE.get(env.DRONE_QUEUE.idFromName('orthomosaic'));const response=await stub.fetch(new Request('https://queue.internal/',{method:action?'POST':'GET',...(action?{headers:{'content-type':'application/json'},body:JSON.stringify({action,id,job})}:{})}));if(!response.ok)throw Error(response.status===429?'queue_full':'queue_update_failed');return response.json();}
+  // Test/local compatibility. Production uses Durable Object serialization.
+  const key='drone/queue/pending.json',queue=await readJson(env,key,{jobs:[]});queue.jobs=Array.isArray(queue.jobs)?queue.jobs:[];
+  if(action==='add'&&!queue.jobs.includes(id)){if(job)await writeJson(env,jobKey(id),job);queue.jobs.push(id);}
+  if(action==='remove')queue.jobs=queue.jobs.filter(x=>x!==id);
+  if(action)await writeJson(env,key,{...queue,updatedAt:new Date().toISOString()});return queue;
+}
+async function queueJob(env,id,job=null){return queueState(env,'add',id,job)}
+async function pendingCount(env){return (await queueState(env)).jobs.length}
+function missionMetadata(body){
+  if(!body.missionId)return {};
+  if(!/^DRN-[a-zA-Z0-9-]{1,80}$/.test(body.missionId)||!Array.isArray(body.polygonIds)||body.polygonIds.length>100||body.polygonIds.some(id=>typeof id!=='string'||!/^DAYUN-[a-zA-Z0-9-]+$/.test(id)))throw Error('invalid_mission_metadata');
+  const g=body.missionGeometry,polys=g?.type==='Polygon'?[g.coordinates]:g?.type==='MultiPolygon'?g.coordinates:null;let count=0;
+  if(!Array.isArray(polys)||!polys.length||polys.length>100)throw Error('invalid_mission_geometry');
+  for(const poly of polys){if(!Array.isArray(poly)||!poly.length)throw Error('invalid_mission_geometry');for(const ring of poly){if(!Array.isArray(ring)||ring.length<4)throw Error('invalid_mission_geometry');for(const p of ring){if(!Array.isArray(p)||p.length<2||!Number.isFinite(p[0])||!Number.isFinite(p[1])||Math.abs(p[0])>180||Math.abs(p[1])>90||++count>30000)throw Error('invalid_mission_geometry');}if(ring[0][0]!==ring.at(-1)[0]||ring[0][1]!==ring.at(-1)[1])throw Error('invalid_mission_geometry');}}
+  return {missionId:body.missionId,polygonIds:body.polygonIds,missionGeometry:g,missionPlan:{camera:String(body.missionPlan?.camera?.model||'DJI Air 3S').slice(0,100),status:'draft',flightReady:false},missionLinkedAt:new Date().toISOString()};
+}
+function newJob(body={}){const id=`drn-${crypto.randomUUID()}`;return{id,...missionMetadata(body),title:String(body.title||body.area||'Survei drone').slice(0,160),project:String(body.project||'YG GeoPortal').slice(0,160),sourceType:body.sourceType==='drive'?'drive':'upload',driveUrl:body.sourceType==='drive'?String(body.driveUrl||'').trim():null,status:body.sourceType==='drive'?'pending':'uploading',files:[],totalBytes:0,createdAt:new Date().toISOString(),accessToken:crypto.randomUUID().replace(/-/g,'')}}
 
 async function createJob(request,env){
   if(await pendingCount(env)>=MAX_PENDING_JOBS)return reply(request,{ok:false,error:'queue_full'},429,{'retry-after':'300'});
   const body=await request.json().catch(()=>({}));
-  const job=newJob(body);
+  let job;try{job=newJob(body)}catch(e){return reply(request,{ok:false,error:e.message},400)}
   if(job.sourceType==='drive'&&!/^https:\/\/drive\.google\.com\/drive\/folders\/[a-zA-Z0-9_-]+/i.test(job.driveUrl||''))return reply(request,{ok:false,error:'invalid_drive_folder_url'},400);
-  await writeJson(env,jobKey(job.id),job);
-  if(job.status==='pending')await queueJob(env,job.id);
+  if(job.status==='pending'){try{await queueJob(env,job.id,job)}catch(e){if(e.message==='queue_full')return reply(request,{ok:false,error:'queue_full'},429);throw e}}else await writeJson(env,jobKey(job.id),job);
   return reply(request,{ok:true,job:publicJob(job),accessToken:job.accessToken,limits:{maxFiles:MAX_FILES,maxFileMB:40,maxTotalGB:8}});
 }
 async function getJob(request,env,id,url,verifyStaffToken){
@@ -47,7 +62,7 @@ async function getJob(request,env,id,url,verifyStaffToken){
   if(!authorizedJob(request,url,job)&&!await authorizedStaff(request,env,verifyStaffToken))return reply(request,{ok:false,error:'unauthorized'},401);
   const safe=publicJob(job);
   if(job.status==='pending'){
-    const queue=await readJson(env,'drone/queue/pending.json',{jobs:[]});
+    const queue=await queueState(env);
     const jobs=Array.isArray(queue?.jobs)?queue.jobs.map(String):[];
     const index=jobs.indexOf(id);
     safe.queuePosition=index>=0?index+1:null;
@@ -57,7 +72,7 @@ async function getJob(request,env,id,url,verifyStaffToken){
 }
 async function uploadFile(request,env,id,encodedName,url){
   const job=await readJson(env,jobKey(id));if(!job)return reply(request,{ok:false,error:'job_not_found'},404);if(!authorizedJob(request,url,job))return reply(request,{ok:false,error:'unauthorized'},401);
-  if(job.sourceType!=='upload'||!['uploading','pending'].includes(job.status))return reply(request,{ok:false,error:'job_not_uploadable'},409);
+  if(job.sourceType!=='upload'||job.status!=='uploading')return reply(request,{ok:false,error:'job_not_uploadable'},409);
   const name=safeName(decodeURIComponent(encodedName||'photo.jpg'));const type=request.headers.get('content-type')||'application/octet-stream';if(!/^image\/(jpeg|jpg)$/i.test(type)&&!/\.jpe?g$/i.test(name))return reply(request,{ok:false,error:'jpeg_only'},415);
   const size=Number(request.headers.get('content-length')||0);if(!size)return reply(request,{ok:false,error:'content_length_required'},411);if(size>MAX_FILE_BYTES)return reply(request,{ok:false,error:'file_too_large'},413);
   const oldFiles=Array.isArray(job.files)?job.files:[];const existing=oldFiles.find(f=>f?.name===name);const nextCount=existing?oldFiles.length:oldFiles.length+1;if(nextCount>MAX_FILES)return reply(request,{ok:false,error:'too_many_files'},413);
@@ -66,7 +81,7 @@ async function uploadFile(request,env,id,encodedName,url){
   const files=oldFiles.filter(f=>f?.key!==key&&f?.name!==name);files.push({name,key,bytes:size});job.files=files;job.totalBytes=oldBytes+size;job.updatedAt=new Date().toISOString();await writeJson(env,jobKey(id),job);
   return reply(request,{ok:true,id,file:{name,key},uploaded:files.length,totalBytes:job.totalBytes});
 }
-async function finalizeUpload(request,env,id,url){const job=await readJson(env,jobKey(id));if(!job)return reply(request,{ok:false,error:'job_not_found'},404);if(!authorizedJob(request,url,job))return reply(request,{ok:false,error:'unauthorized'},401);if(job.sourceType!=='upload')return reply(request,{ok:false,error:'not_upload_job'},409);if(!Array.isArray(job.files)||job.files.length<3)return reply(request,{ok:false,error:'minimum_three_photos'},400);if(await pendingCount(env)>=MAX_PENDING_JOBS)return reply(request,{ok:false,error:'queue_full'},429,{'retry-after':'300'});job.status='pending';job.queuedAt=new Date().toISOString();await writeJson(env,jobKey(id),job);await queueJob(env,id);return reply(request,{ok:true,job:publicJob(job)})}
+async function finalizeUpload(request,env,id,url){const job=await readJson(env,jobKey(id));if(!job)return reply(request,{ok:false,error:'job_not_found'},404);if(!authorizedJob(request,url,job))return reply(request,{ok:false,error:'unauthorized'},401);if(job.status==='pending')return reply(request,{ok:true,job:publicJob(job)});if(job.status!=='uploading')return reply(request,{ok:false,error:'job_not_uploadable'},409);if(job.sourceType!=='upload')return reply(request,{ok:false,error:'not_upload_job'},409);if(!Array.isArray(job.files)||job.files.length<3)return reply(request,{ok:false,error:'minimum_three_photos'},400);if(await pendingCount(env)>=MAX_PENDING_JOBS)return reply(request,{ok:false,error:'queue_full'},429,{'retry-after':'300'});job.status='pending';job.queuedAt=new Date().toISOString();await writeJson(env,jobKey(id),job);await queueJob(env,id);return reply(request,{ok:true,job:publicJob(job)})}
 async function retryJob(request,env,id,url){
   const job=await readJson(env,jobKey(id));
   if(!job)return reply(request,{ok:false,error:'job_not_found'},404);
@@ -116,7 +131,7 @@ async function listStaffJobs(request,env,verifyStaffToken){
   if(!await authorizedStaff(request,env,verifyStaffToken))return reply(request,{ok:false,error:'unauthorized'},401);
   const listing=await env.PUBLIC_SNAPSHOTS.list({prefix:'drone/jobs/',limit:1000});
   const jobs=(await Promise.all((listing?.objects||[]).map(async object=>publicJob(await readJson(env,object.key))))).filter(Boolean);
-  const queue=await readJson(env,'drone/queue/pending.json',{jobs:[]});
+  const queue=await queueState(env);
   const queued=Array.isArray(queue?.jobs)?queue.jobs.map(String):[];
   jobs.forEach(job=>{const index=queued.indexOf(job.id);if(index>=0){job.queuePosition=index+1;job.queueSize=queued.length}});
   jobs.sort((a,b)=>String(b.updatedAt||b.createdAt||'').localeCompare(String(a.updatedAt||a.createdAt||'')));
@@ -192,6 +207,8 @@ async function routeDroneRequest(request,env,url,verifyStaffToken=async()=>false
   const cogMatch=url.pathname.match(/^\/api\/drone\/jobs\/(drn-[a-zA-Z0-9-]+)\/cog$/);if(cogMatch&&(request.method==='GET'||request.method==='HEAD'))return serveCog(request,env,cogMatch[1],url,verifyStaffToken);
   if(url.pathname==='/api/drone/jobs'&&request.method==='POST')return createJob(request,env);
   const fileMatch=url.pathname.match(/^\/api\/drone\/jobs\/(drn-[a-zA-Z0-9-]+)\/files\/(.+)$/);if(fileMatch&&request.method==='PUT')return uploadFile(request,env,fileMatch[1],fileMatch[2],url);
+  const ackMatch=url.pathname.match(/^\/api\/drone\/jobs\/(drn-[a-zA-Z0-9-]+)\/queue-complete$/);
+  if(ackMatch&&request.method==='POST'){const job=await readJson(env,jobKey(ackMatch[1]));if(!job)return reply(request,{ok:false,error:'job_not_found'},404);if(!authorizedJob(request,url,job))return reply(request,{ok:false,error:'unauthorized'},401);if(!['ready','failed'].includes(job.status))return reply(request,{ok:false,error:'job_still_active'},409);await queueState(env,'remove',job.id);return reply(request,{ok:true});}
   const finalMatch=url.pathname.match(/^\/api\/drone\/jobs\/(drn-[a-zA-Z0-9-]+)\/finalize$/);if(finalMatch&&request.method==='POST')return finalizeUpload(request,env,finalMatch[1],url);
   const retryMatch=url.pathname.match(/^\/api\/drone\/jobs\/(drn-[a-zA-Z0-9-]+)\/retry$/);if(retryMatch&&request.method==='POST')return retryJob(request,env,retryMatch[1],url);
   const refineMatch=url.pathname.match(/^\/api\/drone\/jobs\/(drn-[a-zA-Z0-9-]+)\/refine$/);if(refineMatch&&request.method==='POST')return refineJob(request,env,refineMatch[1],url);

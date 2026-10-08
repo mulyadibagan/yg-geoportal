@@ -1,0 +1,52 @@
+/* Planning coordinates are local metres; exports remain WGS84. No DJI flight file. */
+(function(root){
+'use strict';
+const CAMERA={model:'DJI Air 3S — wide 50 MP',sensor:'1-inch CMOS',widthPx:8192,heightPx:6144,fovDeg:84,equivalentMm:24,minIntervalS:5,source:'https://www.dji.com/global/air-3s/specs',verifiedOn:'2026-10-08'};
+const EPS=1e-7,dist=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1]);
+function onEdge(p,a,b){return Math.abs((b[0]-a[0])*(p[1]-a[1])-(b[1]-a[1])*(p[0]-a[0]))<EPS&&p[0]>=Math.min(a[0],b[0])-EPS&&p[0]<=Math.max(a[0],b[0])+EPS&&p[1]>=Math.min(a[1],b[1])-EPS&&p[1]<=Math.max(a[1],b[1])+EPS}
+function inRing(p,r){let yes=false;for(let i=0,j=r.length-1;i<r.length;j=i++){const a=r[j],b=r[i];if(onEdge(p,a,b))return 2;if((a[1]>p[1])!==(b[1]>p[1])&&p[0]<(b[0]-a[0])*(p[1]-a[1])/(b[1]-a[1])+a[0])yes=!yes}return yes?1:0}
+function inside(p,rings){return inRing(p,rings[0])!==0&&!rings.slice(1).some(r=>inRing(p,r)===1)}
+function segmentInside(a,b,rings){if(!inside(a,rings)||!inside(b,rings))return false;const cuts=[0,1],v=[b[0]-a[0],b[1]-a[1]];for(const r of rings)for(let i=1;i<r.length;i++){const c=r[i-1],d=r[i],w=[d[0]-c[0],d[1]-c[1]],den=v[0]*w[1]-v[1]*w[0];if(Math.abs(den)<EPS)continue;const q=[c[0]-a[0],c[1]-a[1]],t=(q[0]*w[1]-q[1]*w[0])/den,u=(q[0]*v[1]-q[1]*v[0])/den;if(t>0&&t<1&&u>=0&&u<=1)cuts.push(t)}cuts.sort((x,y)=>x-y);for(let i=1;i<cuts.length;i++){const t=(cuts[i-1]+cuts[i])/2;if(!inside([a[0]+v[0]*t,a[1]+v[1]*t],rings))return false}return true}
+function pathInside(a,b,rings){if(segmentInside(a,b,rings))return[a,b];const nodes=[a,b,...rings.flatMap(r=>r.slice(0,-1))],cost=nodes.map(()=>Infinity),prev=[],done=new Set();cost[0]=0;while(done.size<nodes.length){let u=-1;for(let i=0;i<nodes.length;i++)if(!done.has(i)&&(u<0||cost[i]<cost[u]))u=i;if(u<0||!Number.isFinite(cost[u]))break;if(u===1){const path=[];for(let v=1;v!=null;v=prev[v])path.unshift(nodes[v]);return path}done.add(u);for(let v=0;v<nodes.length;v++)if(!done.has(v)&&cost[u]+dist(nodes[u],nodes[v])<cost[v]&&segmentInside(nodes[u],nodes[v],rings)){cost[v]=cost[u]+dist(nodes[u],nodes[v]);prev[v]=u}}throw Error('Tidak ada penghubung yang tetap di dalam batas area.')}
+function length(path){return path.slice(1).reduce((s,p,i)=>s+dist(path[i],p),0)}
+function generate(geometry,options={}){
+ const o={altitude:35,frontOverlap:80,sideOverlap:80,speed:4,heading:0,gimbal:-90,flightMinutes:30,reserve:30,turnSeconds:4,...options};
+ for(const key of ['altitude','frontOverlap','sideOverlap','speed','heading','gimbal','flightMinutes','reserve'])if(!Number.isFinite(Number(o[key])))throw Error('Parameter misi harus berupa angka.');
+ if(o.altitude<15||o.altitude>120||o.frontOverlap<50||o.frontOverlap>95||o.sideOverlap<50||o.sideOverlap>95||o.speed<0.1||o.speed>15||o.reserve<20||o.reserve>70||o.flightMinutes<5||o.flightMinutes>45)throw Error('Parameter di luar batas perencanaan.');
+ if(Number(o.gimbal)!==-90)throw Error('Grid pemetaan ini memerlukan kamera nadir -90°.');
+ const polygons=geometry?.type==='Polygon'?[geometry.coordinates]:geometry?.type==='MultiPolygon'?geometry.coordinates:null;if(!polygons?.length)throw Error('Pilih polygon area survei.');
+ const origin=polygons[0][0][0],cosLat=Math.cos(origin[1]*Math.PI/180),ang=o.heading*Math.PI/180,c=Math.cos(ang),s=Math.sin(ang);
+ const project=p=>{const e=(p[0]-origin[0])*111320*cosLat,n=(p[1]-origin[1])*111320;return[e*c-n*s,e*s+n*c]};
+ const unproject=p=>{const e=p[0]*c+p[1]*s,n=-p[0]*s+p[1]*c;return[origin[0]+e/(111320*cosLat),origin[1]+n/111320]};
+ // DJI publishes FOV, not calibrated focal/sensor dimensions. Use diagonal FOV and 4:3 as explicit estimate.
+ const diag=2*o.altitude*Math.tan(CAMERA.fovDeg*Math.PI/360),width=diag*4/5,height=diag*3/5,spacing=width*(1-o.sideOverlap/100),photoSpacing=height*(1-o.frontOverlap/100),speed=Math.min(o.speed,photoSpacing/CAMERA.minIntervalS),budget=o.flightMinutes*60*(1-o.reserve/100),warnings=['GSD dan cakupan adalah estimasi FOV diagonal 84°, medan datar, kamera nadir; bukan kalibrasi kamera.','Rintangan, elevasi medan, angin, izin terbang dan belokan DJI Fly memerlukan pemeriksaan pilot.'];
+ if(speed<o.speed)warnings.push('Kecepatan diturunkan agar interval foto 50 MP minimal 5 detik terpenuhi.');
+ const lines=[],photos=[],sorties=[],footprints=[];let area=0;
+ polygons.forEach((poly,component)=>{
+  const rings=poly.map(r=>r.map(project));if(rings[0].length<4)throw Error('Polygon tidak valid.');
+  area+=rings.reduce((sum,r,i)=>{const a=Math.abs(r.slice(1).reduce((v,p,k)=>v+r[k][0]*p[1]-p[0]*r[k][1],0)/2);return sum+(i?-a:a)},0);
+  const ys=rings[0].map(p=>p[1]),min=Math.min(...ys),max=Math.max(...ys),count=Math.max(1,Math.ceil((max-min)/spacing)),dy=(max-min)/count,componentLines=[];
+  if(count>5000)throw Error('Area terlalu besar untuk satu rencana. Pilih blok.');
+  for(let row=0;row<count;row++){
+   const y=min+(row+0.5)*dy,xs=[];for(const r of rings)for(let i=1;i<r.length;i++){const a=r[i-1],b=r[i];if((a[1]>y)!==(b[1]>y))xs.push(a[0]+(y-a[1])*(b[0]-a[0])/(b[1]-a[1]))}xs.sort((a,b)=>a-b);
+   let pieces=[];for(let k=0;k+1<xs.length;k+=2)if(xs[k+1]-xs[k]>0.05)pieces.push([[xs[k],y],[xs[k+1],y]]);if(row%2)pieces=pieces.reverse().map(p=>p.reverse());
+   for(const endpoints of pieces){const lineLength=dist(...endpoints),n=Math.floor(lineLength/photoSpacing),points=[];for(let k=0;k<=n;k++){const t=n?k*photoSpacing/lineLength:0.5,p=[endpoints[0][0]+t*(endpoints[1][0]-endpoints[0][0]),y];points.push(p);photos.push({coordinates:unproject(p),component,line:lines.length+1});footprints.push({type:'Feature',properties:{kind:'footprint',photo:photos.length},geometry:{type:'Polygon',coordinates:[[[-height/2,-width/2],[height/2,-width/2],[height/2,width/2],[-height/2,width/2],[-height/2,-width/2]].map(v=>unproject([p[0]+v[0],p[1]+v[1]]))]}})}const line={component,coordinates:endpoints.map(unproject),photoCount:points.length};lines.push(line);componentLines.push({endpoints,points,line:lines.length});}
+  }
+  if(!componentLines.length)return;
+  const central=componentLines[Math.floor(componentLines.length/2)].endpoints,provisional=[(central[0][0]+central[1][0])/2,(central[0][1]+central[1][1])/2];let home=o.takeoff?project(o.takeoff):provisional,homeVerified=!!o.takeoff&&inside(home,rings);if(!homeVerified){home=provisional;warnings.push(`Komponen ${component+1}: titik takeoff di dalam area belum dipilih. Titik tengah lintasan sementara dipakai; transit dari luar area belum direncanakan.`)}
+  let route=[home],members=[];
+  const finish=()=>{if(!members.length)return;const full=route.concat(pathInside(route.at(-1),home,rings).slice(1)),seconds=length(full)/speed+Math.max(0,full.length-2)*o.turnSeconds+120;sorties.push({number:sorties.length+1,component,homeVerified,coordinates:full.map(unproject),lineIds:members,seconds,distanceM:length(full),withinBudget:seconds<=budget});route=[home];members=[]};
+  const tasks=[];
+  const split=(line,depth=0)=>{const [a,b]=line.endpoints,approach=pathInside(home,a,rings),back=pathInside(b,home,rings),seconds=(length(approach)+dist(a,b)+length(back))/speed+(approach.length+back.length)*o.turnSeconds+120;if(seconds>budget&&depth<8&&dist(a,b)>photoSpacing*2){const mid=[(a[0]+b[0])/2,(a[1]+b[1])/2];split({...line,endpoints:[a,mid]},depth+1);split({...line,endpoints:[mid,b]},depth+1)}else tasks.push(line)};
+  componentLines.forEach(line=>split(line));
+  for(const line of tasks){let connector=pathInside(route.at(-1),line.endpoints[0],rings),candidate=route.concat(connector.slice(1),[line.endpoints[1]]),returnPath=pathInside(line.endpoints[1],home,rings),seconds=(length(candidate)+length(returnPath))/speed+(candidate.length+returnPath.length-3)*o.turnSeconds+120;if(members.length&&seconds>budget){finish();connector=pathInside(home,line.endpoints[0],rings);candidate=[home,...connector.slice(1),line.endpoints[1]]}route=candidate;members.push(line.line)}finish();
+ });
+ if(!lines.length)throw Error('Tidak ada jalur pada area ini.');if(photos.length>30000)throw Error('Terlalu banyak foto; pilih area lebih kecil.');
+ if(sorties.some(x=>!x.withinBudget))warnings.push('Ada lintasan yang melebihi cadangan baterai. Bagi polygon atau ubah titik takeoff.');
+ return{camera:CAMERA,options:o,geometry,areaHa:area/10000,footprint:{widthM:width,heightM:height},gsdCm:width/CAMERA.widthPx*100,lineSpacingM:spacing,photoSpacingM:photoSpacing,effectiveSpeed:speed,photoIntervalS:photoSpacing/speed,lines,photos,footprints,sorties,durationMinutes:sorties.reduce((a,b)=>a+b.seconds,0)/60,batteryCount:sorties.length,warnings,status:'draft',flightReady:false};
+}
+function geojson(m){return{type:'FeatureCollection',properties:{missionId:m.id,status:'draft',flightReady:false,camera:m.camera,options:m.options,polygonIds:m.polygonIds||[]},features:[{type:'Feature',properties:{kind:'area',missionId:m.id},geometry:m.geometry},...m.sorties.map(s=>({type:'Feature',properties:{kind:'route',missionId:m.id,sortie:s.number,durationSeconds:s.seconds,withinBudget:s.withinBudget},geometry:{type:'LineString',coordinates:s.coordinates}})),...m.sorties.flatMap(s=>s.coordinates.map((p,i)=>({type:'Feature',properties:{kind:'waypoint',missionId:m.id,sortie:s.number,sequence:i+1,altitudeM:m.options.altitude},geometry:{type:'Point',coordinates:p}}))),...m.photos.map((p,i)=>({type:'Feature',properties:{kind:'photo',sequence:i+1,line:p.line},geometry:{type:'Point',coordinates:p.coordinates}}))]}}
+function csv(m){return 'mission_id,sortie,waypoint,longitude,latitude,altitude_m,speed_m_s,status\r\n'+m.sorties.flatMap(s=>s.coordinates.map((p,i)=>[m.id,s.number,i+1,...p,m.options.altitude,m.effectiveSpeed,'draft'].join(','))).join('\r\n')}
+function kml(m){return '<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2"><Document><name>'+String(m.id).replace(/[^\w-]/g,'')+'</name><description>Planning reference only. DJI Fly import and execution NOT verified. Altitude above local ground is approximate.</description>'+m.sorties.map(s=>'<Placemark><name>Sortie '+s.number+'</name><LineString><altitudeMode>relativeToGround</altitudeMode><coordinates>'+s.coordinates.map(p=>p.concat(m.options.altitude).join(',')).join(' ')+'</coordinates></LineString></Placemark>').join('')+'</Document></kml>'}
+const api={CAMERA,generate,geojson,csv,kml,inside,segmentInside,pathInside};if(typeof module!=='undefined')module.exports=api;root.YGDroneMission=api;
+})(typeof window==='undefined'?globalThis:window);

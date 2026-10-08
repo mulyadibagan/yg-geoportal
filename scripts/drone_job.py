@@ -45,9 +45,9 @@ def parse_capture_time(value):
     return f"{m.group(1)}T{m.group(2)}{tz}"
 
 def inspect_exif(path):
-    tags=['-DateTimeOriginal','-CreateDate','-GPSDateTime','-Model','-Make','-GimbalPitchDegree','-GPSLatitude','-GPSLongitude','-RelativeAltitude']
+    tags=['-FileType','-ImageWidth','-ImageHeight','-DateTimeOriginal','-CreateDate','-GPSDateTime','-Model','-Make','-GimbalPitchDegree','-GPSLatitude','-GPSLongitude','-RelativeAltitude']
     try:
-        raw=subprocess.check_output(['exiftool','-j']+tags+[path], text=True, stderr=subprocess.DEVNULL)
+        raw=subprocess.check_output(['exiftool','-j','-n']+tags+[path], text=True, stderr=subprocess.DEVNULL)
         data=(json.loads(raw) or [{}])[0]
     except Exception:
         data={}
@@ -59,32 +59,34 @@ def inspect_exif(path):
     for key in ('DateTimeOriginal','CreateDate','GPSDateTime'):
         capture=parse_capture_time(data.get(key))
         if capture: capture_source=key; break
-    return {'pitch':pitch,'captureTime':capture,'captureTimeSource':capture_source,'cameraModel':str(data.get('Model') or '').strip(),'cameraMake':str(data.get('Make') or '').strip(),'gpsLatitude':data.get('GPSLatitude'),'gpsLongitude':data.get('GPSLongitude'),'relativeAltitude':data.get('RelativeAltitude')}
+    return {'readableJpeg':data.get('FileType')=='JPEG' and bool(data.get('ImageWidth')) and bool(data.get('ImageHeight')) and not data.get('Error'),'pitch':pitch,'captureTime':capture,'captureTimeSource':capture_source,'cameraModel':str(data.get('Model') or '').strip(),'cameraMake':str(data.get('Make') or '').strip(),'gpsLatitude':data.get('GPSLatitude'),'gpsLongitude':data.get('GPSLongitude'),'relativeAltitude':data.get('RelativeAltitude')}
 
 def qc(input_dir, rejected_dir, valid_list):
     os.makedirs(rejected_dir, exist_ok=True)
-    valid=[]; rejected=[]; metadata=[]
+    valid=[]; rejected=[]; metadata=[]; geotagged=0
     for root,_,files in os.walk(input_dir):
         for name in sorted(files):
             if not name.lower().endswith(('.jpg','.jpeg')): continue
             path=os.path.join(root,name); meta=inspect_exif(path); p=meta.get('pitch')
             metadata.append({'name':name, **meta})
-            if p is not None and p > -85:
+            if not meta.get('readableJpeg') or (p is not None and p > -85):
                 dst=os.path.join(rejected_dir,name); base,ext=os.path.splitext(dst); n=1
                 while os.path.exists(dst): dst=f'{base}-{n}{ext}'; n+=1
-                shutil.move(path,dst); rejected.append({'name':name,'pitch':p,'reason':'non_nadir'})
-            else: valid.append(path)
+                shutil.move(path,dst); rejected.append({'name':name,'pitch':p,'reason':'non_nadir' if meta.get('readableJpeg') else 'unreadable_jpeg'})
+            else:
+                valid.append(path)
+                if isinstance(meta.get('gpsLatitude'),(int,float)) and isinstance(meta.get('gpsLongitude'),(int,float)): geotagged+=1
     with open(valid_list,'w',encoding='utf-8') as f:
         for p in valid: f.write(p+'\n')
     capture_times=sorted([m['captureTime'] for m in metadata if m.get('captureTime')])
     camera_models=sorted(set([m['cameraModel'] for m in metadata if m.get('cameraModel')]))
     camera_makes=sorted(set([m['cameraMake'] for m in metadata if m.get('cameraMake')]))
     survey_start=capture_times[0] if capture_times else None; survey_end=capture_times[-1] if capture_times else None
-    return {'validPhotos':len(valid),'excludedPhotos':len(rejected),'excluded':rejected,'photoCount':len(metadata),'metadataPhotoCount':len(capture_times),'surveyDate':survey_start[:10] if survey_start else None,'surveyStartAt':survey_start,'surveyEndAt':survey_end,'cameraModels':camera_models,'cameraMakes':camera_makes,'metadata':metadata}
+    return {'geotaggedPhotos':geotagged,'validPhotos':len(valid),'excludedPhotos':len(rejected),'excluded':rejected,'photoCount':len(metadata),'metadataPhotoCount':len(capture_times),'surveyDate':survey_start[:10] if survey_start else None,'surveyStartAt':survey_start,'surveyEndAt':survey_end,'cameraModels':camera_models,'cameraMakes':camera_makes,'metadata':metadata}
 
 def apply_metadata(job_path, summary_path):
     d=load(job_path); q=load(summary_path)
-    for key in ('photoCount','metadataPhotoCount','surveyDate','surveyStartAt','surveyEndAt','cameraModels','cameraMakes','validPhotos','excludedPhotos'):
+    for key in ('geotaggedPhotos','photoCount','metadataPhotoCount','surveyDate','surveyStartAt','surveyEndAt','cameraModels','cameraMakes','validPhotos','excludedPhotos'):
         if key in q: d[key]=q.get(key)
     d['surveyDateSource']='photo_metadata' if q.get('surveyDate') else 'unavailable'; d['metadataUpdatedAt']=now_iso()
     title=str(d.get('title') or '').strip()
@@ -102,9 +104,15 @@ def main():
     a=sub.add_parser('checkpoint'); a.add_argument('job'); a.add_argument('--downloaded',type=int,required=True); a.add_argument('--expected',type=int,required=True); a.add_argument('--retry-minutes',type=int,default=30)
     a=sub.add_parser('cleanup-scheduled'); a.add_argument('job'); a.add_argument('--days',type=int,default=7)
     a=sub.add_parser('cleanup-complete'); a.add_argument('job')
-    a=sub.add_parser('failed'); a.add_argument('job'); a.add_argument('--error',default='processing_failed')
+    a=sub.add_parser('validate-raster'); a.add_argument('gdalinfo')
+    a=sub.add_parser('failed'); a.add_argument('job'); a.add_argument('--error',default='processing_failed'); a.add_argument('--log')
     args=p.parse_args(); now=now_iso()
-    if args.cmd=='processing':
+    if args.cmd=='validate-raster':
+        info=load(args.gdalinfo)
+        if not info.get('coordinateSystem',{}).get('wkt') or not info.get('geoTransform') or len(info.get('size',[]))!=2 or min(info['size'])<=0 or len(info.get('bands',[]))<3:
+            raise SystemExit('invalid_georeferenced_raster')
+        print('Georeferenced RGB GeoTIFF verified')
+    elif args.cmd=='processing':
         d=load(args.job); d.update({'status':'processing','processingStartedAt':now,'stage':'starting','progress':5,'stageLabel':'Memulai pemrosesan','stageUpdatedAt':now}); d.pop('retryAfter',None); add_history(d,'starting',5,'Memulai pemrosesan'); save(args.job,d)
     elif args.cmd=='stage':
         extra={}
@@ -148,5 +156,9 @@ def main():
         d.update({'r2CleanupStatus':'complete','r2CleanedAt':now,'r2SourceRetained':False,'updatedAt':now})
         save(args.job,d)
     elif args.cmd=='failed':
-        d=load(args.job); d.update({'status':'failed','stage':'failed','stageLabel':'Pemrosesan terhenti','stageUpdatedAt':now,'failedAt':now,'error':args.error}); add_history(d,'failed',int(d.get('progress') or 0),'Pemrosesan terhenti'); save(args.job,d)
+        d=load(args.job)
+        if args.log and os.path.isfile(args.log):
+            with open(args.log,errors='replace') as log: d['errorLogTail']=log.read()[-4000:]
+        d['processorRunUrl']='https://github.com/'+os.environ.get('GITHUB_REPOSITORY','mulyadibagan/yg-geoportal')+'/actions/runs/'+os.environ.get('GITHUB_RUN_ID','')
+        d.update({'status':'failed','stage':'failed','stageLabel':'Pemrosesan terhenti','stageUpdatedAt':now,'failedAt':now,'error':args.error}); add_history(d,'failed',int(d.get('progress') or 0),'Pemrosesan terhenti'); save(args.job,d)
 if __name__=='__main__': main()
