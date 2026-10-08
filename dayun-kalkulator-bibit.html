@@ -14,7 +14,9 @@
 <label>Hitung kebutuhan<select name="mode"><option value="gawangan">Per gawangan</option><option value="block">Per blok</option></select></label>
 <label>Wilayah<select name="block"><option value="ALL">Seluruh blok D–F</option><option>D</option><option>E</option><option>F</option></select></label>
 <label id="seed-gawangan-field">Gawangan<select name="gawangan"><option value="ALL">Memuat gawangan…</option></select></label>
-<label>Jenis dan jarak tanam<select name="variety"><option value="0.8">Queen · 80 × 80 cm</option><option value="1.2">Madu · 1,2 × 1,2 m</option></select></label>
+<label>Preset jarak tanam<select name="variety"><option value="0.8">Queen · 80 × 80 cm</option><option value="1.2">Madu · 1,2 × 1,2 m</option><option value="custom">Jarak khusus</option></select></label>
+<label>Jarak antartanaman dalam baris (m)<input name="plantSpacing" type="number" min="0.2" max="10" step="0.01" value="0.8" required><small>Dapat diubah sesuai rencana lapangan.</small></label>
+<label>Jarak antarbaris (m)<input name="rowSpacing" type="number" min="0.2" max="10" step="0.01" value="0.8" required></label>
 <label>Area lain tidak ditanami (%)<input name="excluded" type="number" min="0" max="100" step="0.1" value="0" required><small>Tambahan parit atau hambatan lain. Ruang MPTS sudah dikurangi otomatis; jangan dihitung dua kali.</small></label>
 <label>Lebar koridor panen (m)<input name="pathWidth" type="number" min="0.5" max="3" step="0.1" value="1.2" required><small>Asumsi awal 1,2 m; berlaku pada jalur kosong di antara barisan MPTS.</small></label>
 <label>Radius ruang bebas MPTS (m)<input name="treeRadius" type="number" min="0" max="10" step="0.1" value="1.5" required><small>Asumsi simulasi 1,5 m dari batang, bukan ukuran tajuk terukur.</small></label>
@@ -29,14 +31,17 @@
 <label>Jarak antarbaris melintasi jalur (m)<input name="gap" type="number" min="0.8" max="20" step="0.1" value="1.2" required disabled><small>Diukur dari pusat tanaman baris tepi ke pusat tanaman baris seberangnya, bukan lebar jalan bersih.</small></label>
 </div>
 <p class="note">Ukuran jalur belum tercatat. Jika diaktifkan, 4 baris dan 1,2 m adalah contoh simulasi; sesuaikan dengan rencana lapangan.</p>
+<p><button type="button" id="seed-calculate">Hitung bibit dan perbarui layout</button><small>Hasil juga diperbarui otomatis saat pengaturan berubah.</small></p>
 </form>
+<section id="seed-output" aria-live="polite">Memuat luas gawangan…</section>
 <section aria-labelledby="layout-title"><h2 id="layout-title">Layout rencana tanam</h2><p>Utara ↑ · geser peta dan gunakan tombol zoom untuk melihat titik tanaman.</p><div><button type="button" id="layout-in" aria-label="Perbesar">+</button><button type="button" id="layout-out" aria-label="Perkecil">−</button><button type="button" id="layout-fit">Lihat seluruh area</button></div><canvas id="seed-layout" aria-label="Layout polygon gawangan, titik tanaman dan jalur panen">Layout rencana tanam. Jumlah titik tersedia pada tabel hasil.</canvas><p><strong style="color:#17653e">■ Hijau: titik tanam</strong> · <span style="color:#a57316">━ Emas: koridor panen</span> · <span style="color:#79478f">● Ungu: estimasi MPTS dan ruang bebas</span> · Abu-abu: titik dikeluarkan dari rencana.</p><p class="note">Posisi titik abu-abu merupakan simulasi persentase area lain, dikeluarkan berurutan dari sisi barisan. Belum menunjukkan posisi pohon, parit, atau hambatan sebenarnya. Mode MPTS menampilkan lebar koridor; mode manual menampilkan garis tengah jalur.</p></section>
 <section id="seed-mpts" aria-live="polite"></section>
-<section id="seed-output" aria-live="polite">Memuat luas gawangan…</section>
+
 <details><summary>Dasar perhitungan</summary><p>Posisi MPTS diestimasi dari akar kuadrat luas per pohon (70 m² ≈ 8,37 × 8,37 m; 100 m² = 10 × 10 m). Grid mengikuti sisi terpanjang gawangan. Bila ada beberapa jenis, bagian memanjang dialokasikan menurut proporsi luas operasional; ini asumsi pembagian lokasi. Jumlah sumber yang pecahan dibulatkan hanya untuk pembanding, bukan sensus. Titik dibatasi jumlah sumber bila tersedia; selisih kapasitas polygon ditampilkan, tanpa memadatkan jarak untuk memaksakan jumlah.</p><p>Koridor lurus berada di tengah antara setiap dua estimasi barisan MPTS yang bersebelahan. Lebar jalur dikosongkan dari nenas; sisa ruang di luar jalur dan ruang bebas pohon dapat ditanami. Jika hanya ada satu barisan MPTS, jalur antarbarisan belum dapat dibentuk. Jalur tidak dibelokkan; bagian yang bertabrakan dengan ruang pohon lain dipotong dan perlu penyesuaian lapangan. Titik nenas dikeluarkan bila masuk ruang bebas pohon ATAU koridor; tumpang tindih tidak dikurangi dua kali. Garis emas mengikuti lebar koridor pada skala peta. Batas polygon memotong koridor; konektivitas penuh, ujung jalur, dan akses keluar tetap perlu verifikasi lapangan.</p>
 <p>Jarak tanam mengikuti arahan pengelola: Queen 0,8 × 0,8 m; Madu 1,2 × 1,2 m. Perhitungan memakai luas gawangan tanam, bukan luas keseluruhan blok. Gawangan mati dan infrastruktur tidak dimasukkan.</p>
 <p>Jumlah tanam dihitung dari titik grid yang berada di dalam polygon dan memenuhi jarak minimum dari tepi. Barisan dikelompokkan sesuai jumlah baris, lalu diberi jarak jalur panen. Arah barisan berlaku untuk semua gawangan terpilih.</p><p>Persentase area lain mengeluarkan sejumlah titik dari rencana (dibulatkan ke atas), ditampilkan abu-abu. Cadangan sulaman ditambahkan terpisah dan tidak digambar sebagai titik tanam. Kolom efektif merupakan padanan jumlah titik × luas per tanaman, bukan pengukuran polygon baru.</p><p>Mode per blok menjumlahkan hasil tiap gawangan. Proyeksi metrik lokal merupakan pendekatan skala kebun. Layout ini rencana awal untuk diverifikasi di lapangan, bukan koordinat patok survei. Batas, ruang tajuk pohon, akses, dan hambatan perlu dikonfirmasi sebelum penanaman.</p>
 </details></main>
 <script src="js/dayun-data-source.js?v=20260917-cloudflare1"></script>
-<script src="js/dayun-planting-layout.js?v=20261004-between-mpts1"></script>
-<script src="js/dayun-seed-calculator.js?v=20261004-between-mpts1"></script></body></html>
+<script src="js/dayun-planting-layout.js?v=20261008-custom-spacing1"></script>
+<script src="js/dayun-seed-calculator.js?v=20261008-custom-spacing1"></script></body></html>
+
