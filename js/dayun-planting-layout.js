@@ -13,11 +13,13 @@ function plan(geometries,spacing,rows,gap,angle,excluded,margin,options={}){
  let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
  verts.forEach(p=>{minX=Math.min(minX,p[0]);maxX=Math.max(maxX,p[0]);minY=Math.min(minY,p[1]);maxY=Math.max(maxY,p[1]);});
  function distance(p,a,b){const dx=b[0]-a[0],dy=b[1]-a[1],d=dx*dx+dy*dy;const t=d?Math.max(0,Math.min(1,((p[0]-a[0])*dx+(p[1]-a[1])*dy)/d)):0;return Math.hypot(p[0]-a[0]-t*dx,p[1]-a[1]-t*dy);}
- const period=(rows-1)*spacing+gap, points=[],lanes=[];
+ const rowSpacing=options.rowSpacing===undefined?spacing:Number(options.rowSpacing);
+ if(!Number.isFinite(spacing)||spacing<=0||!Number.isFinite(rowSpacing)||rowSpacing<=0||!Number.isInteger(rows)||rows<1||!Number.isFinite(gap)||gap<rowSpacing||!Number.isFinite(angle)||!Number.isFinite(excluded)||excluded<0||excluded>100||!Number.isFinite(margin)||margin<0)throw Error('Periksa jarak tanam, jalur, arah, dan persentase.');
+ const period=(rows-1)*rowSpacing+gap, points=[],lanes=[];
  const trees=(options.trees||[]).map(t=>project(t)),radius=options.radius||0;
  const phase=options.phase||0;
  let attempts=0;
- for(let k=0,y=minY+margin+phase;y<=maxY-margin;k++,y=minY+margin+phase+Math.floor(k/rows)*period+(k%rows)*spacing){
+ for(let k=0,y=minY+margin+phase;y<=maxY-margin;k++,y=minY+margin+phase+Math.floor(k/rows)*period+(k%rows)*rowSpacing){
  for(let x=minX+margin;x<=maxX-margin;x+=spacing){
  if(++attempts>3000000)throw Error('Layout terlalu besar. Pilih satu blok atau gawangan.');
  const p=[x,y];
@@ -26,7 +28,7 @@ function plan(geometries,spacing,rows,gap,angle,excluded,margin,options={}){
  if(trees.some(t=>Math.hypot(p[0]-t[0],p[1]-t[1])<radius))continue;
  points.push(p);
  }
- if(k%rows===rows-1&&gap>spacing)lanes.push(y+gap/2);
+ if(k%rows===rows-1&&gap>rowSpacing)lanes.push(y+gap/2);
  }
  const withheld=Math.ceil(points.length*excluded/100),active=points.slice(0,points.length-withheld),removed=points.slice(points.length-withheld);
  return {polys,active,removed,lanes,minX,minY,maxX,maxY,unproject};
