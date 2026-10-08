@@ -28,15 +28,15 @@ function suppliedJobToken(request,url){return String(request.headers.get('x-job-
 function authorizedJob(request,url,job){const supplied=suppliedJobToken(request,url);return Boolean(supplied&&job?.accessToken&&supplied===job.accessToken)}
 function suppliedStaffToken(request){return String(request.headers.get('authorization')||'').replace(/^Bearer\s+/i,'').trim()}
 async function authorizedStaff(request,env,verifyStaffToken){const token=suppliedStaffToken(request);return Boolean(token&&await verifyStaffToken(token,env))}
-async function queueState(env,action=null,id=null){
-  if(env.DRONE_QUEUE){const stub=env.DRONE_QUEUE.get(env.DRONE_QUEUE.idFromName('orthomosaic'));const response=await stub.fetch(new Request('https://queue.internal/',{method:action?'POST':'GET',...(action?{headers:{'content-type':'application/json'},body:JSON.stringify({action,id})}:{})}));if(!response.ok)throw Error('queue_update_failed');return response.json();}
+async function queueState(env,action=null,id=null,job=null){
+  if(env.DRONE_QUEUE){const stub=env.DRONE_QUEUE.get(env.DRONE_QUEUE.idFromName('orthomosaic'));const response=await stub.fetch(new Request('https://queue.internal/',{method:action?'POST':'GET',...(action?{headers:{'content-type':'application/json'},body:JSON.stringify({action,id,job})}:{})}));if(!response.ok)throw Error(response.status===429?'queue_full':'queue_update_failed');return response.json();}
   // Test/local compatibility. Production uses Durable Object serialization.
   const key='drone/queue/pending.json',queue=await readJson(env,key,{jobs:[]});queue.jobs=Array.isArray(queue.jobs)?queue.jobs:[];
-  if(action==='add'&&!queue.jobs.includes(id))queue.jobs.push(id);
+  if(action==='add'&&!queue.jobs.includes(id)){if(job)await writeJson(env,jobKey(id),job);queue.jobs.push(id);}
   if(action==='remove')queue.jobs=queue.jobs.filter(x=>x!==id);
   if(action)await writeJson(env,key,{...queue,updatedAt:new Date().toISOString()});return queue;
 }
-async function queueJob(env,id){return queueState(env,'add',id)}
+async function queueJob(env,id,job=null){return queueState(env,'add',id,job)}
 async function pendingCount(env){return (await queueState(env)).jobs.length}
 function missionMetadata(body){
   if(!body.missionId)return {};
@@ -53,8 +53,7 @@ async function createJob(request,env){
   const body=await request.json().catch(()=>({}));
   let job;try{job=newJob(body)}catch(e){return reply(request,{ok:false,error:e.message},400)}
   if(job.sourceType==='drive'&&!/^https:\/\/drive\.google\.com\/drive\/folders\/[a-zA-Z0-9_-]+/i.test(job.driveUrl||''))return reply(request,{ok:false,error:'invalid_drive_folder_url'},400);
-  await writeJson(env,jobKey(job.id),job);
-  if(job.status==='pending')await queueJob(env,job.id);
+  if(job.status==='pending'){try{await queueJob(env,job.id,job)}catch(e){if(e.message==='queue_full')return reply(request,{ok:false,error:'queue_full'},429);throw e}}else await writeJson(env,jobKey(job.id),job);
   return reply(request,{ok:true,job:publicJob(job),accessToken:job.accessToken,limits:{maxFiles:MAX_FILES,maxFileMB:40,maxTotalGB:8}});
 }
 async function getJob(request,env,id,url,verifyStaffToken){

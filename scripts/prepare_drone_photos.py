@@ -3,7 +3,7 @@ import argparse
 import json
 from pathlib import Path
 import subprocess
-from PIL import Image, ImageOps
+from PIL import Image
 
 def prepare(source_list, destination, max_dimension=4096):
     destination = Path(destination)
@@ -13,18 +13,18 @@ def prepare(source_list, destination, max_dimension=4096):
         source = Path(line)
         if not source.is_file():
             raise ValueError('source_photo_missing')
-        output = destination / source.name
+        output = destination / f"{len(summary):04d}-{source.name}"
         with Image.open(source) as image:
             image.load()
             old_size = image.size
-            image = ImageOps.exif_transpose(image).convert('RGB')
+            image = image.convert('RGB')
             image.thumbnail((max_dimension, max_dimension), Image.Resampling.LANCZOS)
             image.save(output, 'JPEG', quality=95, subsampling=0)
             width, height = image.size
         subprocess.run(['exiftool', '-overwrite_original', '-TagsFromFile', str(source),
                         '-all:all', '-ThumbnailImage=', '-PreviewImage=',
                         f'-EXIF:ExifImageWidth={width}', f'-EXIF:ExifImageHeight={height}',
-                        '-Orientation=1', str(output)], check=True, capture_output=True)
+                        str(output)], check=True, capture_output=True)
         # Native DJI calibration values are pixel-based; scale them with the image.
         values = json.loads(subprocess.check_output(['exiftool', '-j', '-n',
             '-CalibratedFocalLength', '-CalibratedOpticalCenterX', '-CalibratedOpticalCenterY', str(output)]))[0]

@@ -15,6 +15,7 @@ function userError(code){
     drive_manifest_invalid:'Format daftar foto Google Drive belum dapat dibaca oleh pemroses. Gunakan Upload foto sementara masalah ini diperiksa.',
     drive_insufficient_photos:'Folder harus berisi minimal tiga foto JPG/JPEG yang dapat dibaca. Periksa isi folder, lalu klik Coba lagi.',
     drive_download_incomplete:'Sebagian foto dari Google Drive belum berhasil diambil. Foto yang sudah tersedia tetap aman dan proses dapat dicoba kembali.',
+    insufficient_geotagged_photos:'Minimal tiga foto terpilih harus memiliki GPS untuk menghasilkan GeoTIFF bergeoreferensi. Gunakan foto drone asli yang belum dihapus metadatanya.',
     insufficient_valid_photos:'Foto yang dapat digunakan belum cukup untuk membuat orthomosaic.',
     photogrammetry_memory_limit:'Processor kehabisan RAM. Salinan foto kini dibatasi 4096 piksel dan 2 proses paralel. Periksa log; bagi dataset per sortie jika masih gagal.',
     invalid_georeferenced_raster:'Hasil raster belum memiliki georeferensi RGB yang valid; hasil tidak dinyatakan selesai.',

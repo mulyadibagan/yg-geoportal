@@ -428,6 +428,12 @@ jobs:
             exit 22
           fi
 
+          GEOTAGGED=$(jq -r '.geotaggedPhotos // 0' "$ROOT/qc.json")
+          if [ "$GEOTAGGED" -lt 3 ]; then
+            echo "insufficient_geotagged_photos" > "$ROOT/error_code"
+            exit 25
+          fi
+
           python ../../scripts/drone_job.py stage "$ROOT/job.json" preparing 45 "Menyiapkan foto terpilih" --valid "$VALID" --excluded "$REJECTED"
           publish_status
           python ../../scripts/prepare_drone_photos.py "$ROOT/valid.txt" "$ROOT/project/images" "$ROOT/processing-photos.json" --max-dimension 4096

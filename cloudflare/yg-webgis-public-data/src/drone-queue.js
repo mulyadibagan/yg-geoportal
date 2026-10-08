@@ -5,7 +5,7 @@ export class DroneQueue {
     let queue=await this.state.storage.get('queue');
     if(!queue){const object=await this.env.PUBLIC_SNAPSHOTS.get('drone/queue/pending.json');queue=object?JSON.parse(await object.text()):{jobs:[]};queue.jobs=Array.isArray(queue.jobs)?queue.jobs:[];}
     const body=request.method==='POST'?await request.json():{};
-    if(body.action==='add'&&!queue.jobs.includes(body.id)){if(queue.jobs.length>=20)return Response.json({error:'queue_full'},{status:429});queue.jobs.push(body.id);}
+    if(body.action==='add'&&!queue.jobs.includes(body.id)){if(queue.jobs.length>=20)return Response.json({error:'queue_full'},{status:429});if(body.job)await this.env.PUBLIC_SNAPSHOTS.put('drone/jobs/'+body.id+'.json',JSON.stringify(body.job),{httpMetadata:{contentType:'application/json'}});queue.jobs.push(body.id);}
     if(body.action==='remove')queue.jobs=queue.jobs.filter(id=>id!==body.id);
     queue.updatedAt=new Date().toISOString();
     await this.state.storage.put('queue',queue);

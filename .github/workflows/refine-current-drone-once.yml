@@ -1,11 +1,7 @@
 name: Refine current drone orthomosaic once
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - '.github/workflows/refine-current-drone-once.yml'
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -40,27 +36,13 @@ jobs:
             echo "Current job is active (status=$STATUS); refusing to enqueue it twice."
             exit 1
           fi
-          NOW=$(date -u +%Y-%m-%dT%H:%M:%SZ)
-          jq --arg now "$NOW" '
-            .status="pending"
-            | .stage="queued"
-            | .stageLabel="Menunggu perapian hasil"
-            | .progress=0
-            | .queuedAt=$now
-            | .updatedAt=$now
-            | .refineRequestedAt=$now
-            | .refineCount=((.refineCount // 0)+1)
-            | del(.completedAt, .failedAt, .error, .retryAfter)
-          ' "$JOB" > "$JOB.next"
-          mv "$JOB.next" "$JOB"
-          npx wrangler r2 object put "yg-webgis-public-snapshots/drone/jobs/$JOB_ID.json" --remote --file "$JOB" --content-type application/json
-
-          npx wrangler r2 object get "yg-webgis-public-snapshots/drone/queue/pending.json" --remote --file "$QUEUE" || echo '{"jobs":[]}' > "$QUEUE"
-          jq --arg id "$JOB_ID" --arg now "$NOW" '
-            .jobs=((.jobs // []) + [$id] | unique)
-            | .updatedAt=$now
-          ' "$QUEUE" > "$QUEUE.next"
-          mv "$QUEUE.next" "$QUEUE"
-          npx wrangler r2 object put "yg-webgis-public-snapshots/drone/queue/pending.json" --remote --file "$QUEUE" --content-type application/json
-          echo "Queued refinement for $JOB_ID"
-# Retry the failed Drive job after chunked checkpoint support is deployed.
+          JOB_TOKEN=$(jq -r '.accessToken // empty' "$JOB")
+          test -n "$JOB_TOKEN"
+          echo "::add-mask::$JOB_TOKEN"
+          ACTION=refine
+          [ "$STATUS" = "failed" ] && ACTION=retry
+          curl --fail --silent --show-error -X POST \
+            -H 'Origin: https://webgisyg.id' -H "x-job-token: $JOB_TOKEN" \
+            "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/drone/jobs/$JOB_ID/$ACTION" \
+            -o ../../tmp/drone/refine-response.json
+          jq '{ok,job:(.job|{id,status,stage,progress})}' ../../tmp/drone/refine-response.json
