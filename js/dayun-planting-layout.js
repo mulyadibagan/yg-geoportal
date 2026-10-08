@@ -2,6 +2,10 @@
 'use strict';
 function inside(p,ring){let c=false;for(let i=0,j=ring.length-1;i<ring.length;j=i++){const a=ring[i],b=ring[j];if(((a[1]>p[1])!==(b[1]>p[1]))&&(p[0]<(b[0]-a[0])*(p[1]-a[1])/(b[1]-a[1])+a[0]))c=!c;}return c;}
 function inPoly(p,poly){return inside(p,poly[0])&&!poly.slice(1).some(r=>inside(p,r));}
+function harvestGap(width,clearance,rowSpacing){
+ if(![width,clearance,rowSpacing].every(Number.isFinite)||width<=0||clearance<0||rowSpacing<=0)throw Error('Periksa lebar jalan, ruang daun, dan jarak antarbaris.');
+ return Math.max(rowSpacing,width+2*clearance);
+}
 function plan(geometries,spacing,rows,gap,angle,excluded,margin,options={}){
  const coords=geometries.flatMap(g=>g.type==='Polygon'?[g.coordinates]:g.type==='MultiPolygon'?g.coordinates:[]);
  if(!coords.length)throw Error('Polygon gawangan tidak tersedia.');
@@ -28,7 +32,7 @@ function plan(geometries,spacing,rows,gap,angle,excluded,margin,options={}){
  if(trees.some(t=>Math.hypot(p[0]-t[0],p[1]-t[1])<radius))continue;
  points.push(p);
  }
- if(k%rows===rows-1&&gap>rowSpacing)lanes.push(y+gap/2);
+ if(k%rows===rows-1&&(gap>rowSpacing||options.lanesEveryGroup)&&y+gap/2<maxY-margin)lanes.push(y+gap/2);
  }
  const withheld=Math.ceil(points.length*excluded/100),active=points.slice(0,points.length-withheld),removed=points.slice(points.length-withheld);
  return {polys,active,removed,lanes,minX,minY,maxX,maxY,unproject};
@@ -116,7 +120,7 @@ function mount(id){
  ctx.beginPath();g.polys.forEach(poly=>poly.forEach(r=>{r.forEach((p,i)=>{const a=xy(p);i?ctx.lineTo(...a):ctx.moveTo(...a)});ctx.closePath();}));
  ctx.fillStyle='#e1ecd8';ctx.fill('evenodd');ctx.strokeStyle='#315f42';ctx.lineWidth=1.5;ctx.stroke();
  ctx.save();ctx.clip('evenodd');ctx.strokeStyle='#ce9b3a';ctx.lineWidth=g.corridorWidth?Math.max(1,g.corridorWidth*scale):3;
- ctx.lineCap='round';ctx.lineJoin='round';
+ ctx.lineCap='butt';ctx.lineJoin='round';
  g.lanes.forEach(line=>{ctx.beginPath();ctx.moveTo(...xy(line[0]));ctx.lineTo(...xy(line[1]));ctx.stroke();});ctx.restore();
  [[g.active,'#17653e'],[g.removed,'#9ba39b']].forEach(([pts,color])=>{ctx.fillStyle=color;const r=Math.max(.65,Math.min(3,scale*.13));pts.forEach(p=>{const a=xy(p);if(a[0]<0||a[0]>w||a[1]<0||a[1]>h)return;ctx.fillRect(a[0]-r,a[1]-r,r*2,r*2);});});
  (g.trees||[]).forEach(t=>{const a=xy(t.point);ctx.beginPath();ctx.arc(a[0],a[1],g.radius*scale,0,Math.PI*2);ctx.fillStyle='rgba(118,65,144,.12)';ctx.fill();ctx.strokeStyle='#79478f';ctx.lineWidth=1;ctx.stroke();ctx.beginPath();ctx.arc(a[0],a[1],Math.max(2,Math.min(5,scale*.4)),0,Math.PI*2);ctx.fillStyle='#79478f';ctx.fill();});
@@ -133,5 +137,6 @@ function mount(id){
  new ResizeObserver(()=>fit()).observe(canvas);
  return {show(items){layouts=items;fit();},zoom,fit,clear(){layouts=[];draw();}};
 }
-const api={plan,inside,inPoly,mount,direction,estimateMpts,recommend,laneSegments,mptsCorridors};if(typeof module!=='undefined')module.exports=api;else root.DayunPlantingLayout=api;
+const api={harvestGap,plan,inside,inPoly,mount,direction,estimateMpts,recommend,laneSegments,mptsCorridors};if(typeof module!=='undefined')module.exports=api;else root.DayunPlantingLayout=api;
 })(typeof window==='undefined'?globalThis:window);
+
