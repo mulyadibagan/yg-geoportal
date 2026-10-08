@@ -8,7 +8,7 @@
   <link rel="icon" href="assets/logo-yayasan-gambut.png">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
   <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css">
-  <link rel="stylesheet" href="css/drone-survey.css?v=20260920-layer1">
+  <link rel="stylesheet" href="css/drone-survey.css?v=20261008-resume2">
   <link rel="stylesheet" href="css/drone-survey-publication.css?v=20260918-public1">
   <link rel="stylesheet" href="css/drone-survey-layers.css?v=20260920-layer1">
 </head>
@@ -76,10 +76,10 @@
       <div class="grid two">
         <article class="card">
           <h2>Pengaturan misi Dayun</h2>
-          <label>Rencana pada perangkat ini<select id="savedDroneMission"><option value="">Pilih rencana tersimpan</option></select></label>
+          <label class="wide-label" for="savedDroneMission">Rencana pada perangkat ini<select id="savedDroneMission"><option value="">Pilih rencana tersimpan</option></select></label>
           <div class="actions"><button id="restoreDroneMission" disabled>Buka rencana</button></div>
           <p class="microcopy">Buka kembali area, titik takeoff, rintangan dan pengaturan. Buat ulang jalur untuk meninjau estimasi terbaru.</p>
-          <label>Area dari database WebGIS<select id="dayunMissionArea"><option value="manual">Gambar area manual</option></select></label>
+          <label class="wide-label" for="dayunMissionArea">Area dari database WebGIS<select id="dayunMissionArea"><option value="manual">Gambar area manual</option></select></label>
           <p id="dayunMissionSource" class="microcopy">Memuat blok dan gawangan Dayun…</p>
           <div class="form-grid">
             <label>Jenis survei<select id="surveyType"><option>Sensus tanaman</option><option>Orthomosaic umum</option><option>Monitoring mangrove</option><option>Monitoring abrasi</option><option>Verifikasi kebakaran</option><option>Survei umum</option></select></label>
@@ -140,7 +140,7 @@
   <script src="js/dayun-data-source.js?v=20261008"></script>
   <script src="js/drone-mission-core.js?v=20261008-dayun1"></script>
   <script src="js/drone-mission-store.js?v=20261008-resume1"></script>
-  <script src="js/drone-mission-ui.js?v=20261008-resume1"></script>
+  <script src="js/drone-mission-ui.js?v=20261008-resume2"></script>
   <script src="js/drone-survey.js?v=20261008-dayun1"></script>
   <script src="js/drone-survey-public-copy.js?v=20261005-drone-public2"></script>
   <script src="js/drone-survey-retry.js?v=20261008-memory1"></script>
