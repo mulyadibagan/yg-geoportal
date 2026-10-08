@@ -20,3 +20,14 @@ test('disjoint polygons use independent sorties and no invented inter-component 
 test('Dayun database has six blocks, 28 ha and all multipart gawangan retained',()=>{const d=JSON.parse(fs.readFileSync('data/dayun-blocks.geojson'));assert.equal(d.features.length,6);assert.ok(Math.abs(d.features.reduce((s,f)=>s+f.properties.areaHa,0)-28.0638)<.001);const m=JSON.parse(fs.readFileSync('data/dayun-map.geojson'));assert.equal(new Set(m.features.filter(f=>f.properties.category==='Gawangan Tanam').map(f=>f.properties.objectId)).size,60);});
 
 test('actual Dayun full-block geometry generates six components within battery budget',()=>{const blocks=JSON.parse(fs.readFileSync('data/dayun-blocks.geojson'));const m=core.generate({type:'MultiPolygon',coordinates:blocks.features.map(f=>f.geometry.coordinates)});assert.equal(new Set(m.sorties.map(s=>s.component)).size,6);assert.ok(m.sorties.every(s=>s.withinBudget));assert.ok(m.photos.length>500);assert.ok(m.areaHa>27&&m.areaHa<29);});
+
+test('rotated grids change orientation while routes remain inside the polygon',()=>{
+ const g=poly([[0,0],[240,0],[240,90],[0,90],[0,0]]);
+ const scale=p=>[(p[0]-101)*111320*Math.cos(.7*Math.PI/180),(p[1]-.7)*111320],rings=g.coordinates.map(r=>r.map(scale));
+ for(const heading of [0,35,90,175,359]){
+  const m=core.generate(g,{heading});assert.equal(m.options.heading,heading);assert.ok(m.lines.length);
+  const line=m.lines[0].coordinates.map(scale),angle=Math.atan2(line[1][1]-line[0][1],line[1][0]-line[0][0])*180/Math.PI;
+  const delta=((angle+heading)%180+180)%180;assert.ok(Math.min(delta,180-delta)<.01);
+  for(const sortie of m.sorties)for(let i=1;i<sortie.coordinates.length;i++)assert.ok(core.segmentInside(scale(sortie.coordinates[i-1]),scale(sortie.coordinates[i]),rings));
+ }
+});
