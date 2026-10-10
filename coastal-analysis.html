@@ -14,7 +14,7 @@
     />
     <link
       rel="stylesheet"
-      href="css/coastal-analysis.css?v=20260923-public3"
+      href="css/coastal-analysis.css?v=20261010-detail1"
     />
   </head>
   <body>
@@ -127,11 +127,11 @@
               >
             </div>
           </div>
-          <aside class="detail" id="village-detail">
+          <aside class="detail" id="village-detail" tabindex="-1" aria-label="Rincian desa">
             <p class="eyebrow">DETAIL DESA</p>
-            <h2>Pilih desa pada peta</h2>
+            <h2>Pilih desa pada peta atau tabel</h2>
             <p>
-              Klik wilayah pada peta untuk melihat daratan yang berkurang dan
+              Klik wilayah pada peta atau tombol Detail desa pada tabel untuk melihat daratan yang berkurang dan
               bertambah.
             </p>
           </aside>
@@ -168,6 +168,7 @@
                 <th>Status</th>
                 <th>Kehilangan</th>
                 <th>Pertambahan</th>
+                <th>Rincian</th>
               </tr>
             </thead>
             <tbody id="village-table"></tbody>
@@ -182,6 +183,6 @@
       </footer>
     </main>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="js/coastal-analysis.js?v=20260923-public14"></script>
+  <script src="js/coastal-analysis.js?v=20261010-detail1"></script>
   </body>
 </html>
