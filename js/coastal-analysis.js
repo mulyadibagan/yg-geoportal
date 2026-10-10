@@ -309,14 +309,14 @@
     const row = state.rows.find((item) => item.id === feature.properties.id);
     if (!row) return "";
     const erosion = feature.properties.change === "erosion";
-    return `<div class="change-popup"><strong>${esc(row.village)}</strong><br><span>${esc(row.district)} · Rokan Hilir</span><hr><strong>Poligon yang diklik: ${erosion ? "daratan berkurang" : "daratan bertambah"}</strong><br><span>Luas: ${fmt(erosion ? row.erosionAreaHa : row.accretionAreaHa)} ha</span><hr><span>Total berkurang: <strong>${fmt(row.erosionAreaHa)} ha</strong></span><br><span>Total bertambah: <strong>${fmt(row.accretionAreaHa)} ha</strong></span><br><small>Perbandingan ${esc(row.baseline || "2016")} dan ${esc(row.current || "2025")}</small></div>`;
+    return `<div class="change-popup"><strong>${esc(row.village)}</strong><br><span>${esc(row.district)} · ${esc(row.regency)}</span><hr><strong>Poligon yang diklik: ${erosion ? "daratan berkurang" : "daratan bertambah"}</strong><br><span>Luas: ${fmt(erosion ? row.erosionAreaHa : row.accretionAreaHa)} ha</span><hr><span>Total berkurang: <strong>${fmt(row.erosionAreaHa)} ha</strong></span><br><span>Total bertambah: <strong>${fmt(row.accretionAreaHa)} ha</strong></span><br><small>Perbandingan ${esc(row.baseline || "2016")} dan ${esc(row.current || "2025")}</small></div>`;
   }
   function boundaryPopup(feature) {
     const row = state.rows.find((item) => item.id === feature.properties.id);
     if (!row) return "";
     if (row.status !== "analysed")
-      return `<div class="change-popup"><strong>${esc(row.village)}</strong><br><span>${esc(row.district)} · Rokan Hilir</span><hr><span>Batas desa ditampilkan sebagai konteks wilayah pesisir.</span><br><small>Belum ada poligon perubahan daratan pada lokasi ini.</small></div>`;
-    return `<div class="change-popup"><strong>${esc(row.village)}</strong><br><span>${esc(row.district)} · Rokan Hilir</span><hr><span>Daratan berkurang: <strong>${fmt(row.erosionAreaHa)} ha</strong></span><br><span>Daratan bertambah: <strong>${fmt(row.accretionAreaHa)} ha</strong></span><br><small>Perbandingan ${esc(row.baseline || "2016")} dan ${esc(row.current || "2025")}</small></div>`;
+      return `<div class="change-popup"><strong>${esc(row.village)}</strong><br><span>${esc(row.district)} · ${esc(row.regency)}</span><hr><span>Batas desa ditampilkan sebagai konteks wilayah pesisir.</span><br><small>Belum ada poligon perubahan daratan pada lokasi ini.</small></div>`;
+    return `<div class="change-popup"><strong>${esc(row.village)}</strong><br><span>${esc(row.district)} · ${esc(row.regency)}</span><hr><span>Daratan berkurang: <strong>${fmt(row.erosionAreaHa)} ha</strong></span><br><span>Daratan bertambah: <strong>${fmt(row.accretionAreaHa)} ha</strong></span><br><small>Perbandingan ${esc(row.baseline || "2016")} dan ${esc(row.current || "2025")}</small></div>`;
   }
   function renderMap(rows) {
     const ids = new Set(rows.map((row) => row.id)),
@@ -369,12 +369,13 @@
     if (bounds.isValid())
       map.fitBounds(bounds, { padding: [20, 20], maxZoom: 11 });
   }
-  function selectVillage(id) {
+  function selectVillage(id, reveal = false) {
     const row = state.rows.find((r) => r.id === id);
     if (!row) return;
     state.selectedId = id;
     if (state.boundaryLayer) state.boundaryLayer.setStyle(boundaryStyle);
     const analysed = row.status === "analysed",
+      netChange = num(row.erosionAreaHa) !== null && num(row.accretionAreaHa) !== null ? num(row.accretionAreaHa) - num(row.erosionAreaHa) : null,
       elapsedYears =
         num(row.elapsedYears) || num(row.current) - num(row.baseline),
       storedRate = num(row.indicativeRetreatRateMPerYear),
@@ -399,20 +400,25 @@
           ? `<p><small>Perubahan daratan belum dihitung untuk lokasi ini.</small></p>`
           : `<p><small>${periodNote} Batas desa hanya digunakan untuk menunjukkan lokasi.</small></p>`;
     $("village-detail").innerHTML =
-      `<p class="eyebrow">RINCIAN LOKASI</p><h2>${esc(row.village)}</h2><p>${esc(row.district)} · ${esc(row.regency)}</p>${badge}<div class="detail-grid"><div><small>Status</small><strong>${statusLabel(row)}</strong></div><div><small>Tingkat kepastian</small><strong>${esc(row.confidence || "—")}</strong></div><div><small>Daratan berkurang</small><strong>${analysed ? fmt(row.erosionAreaHa) + " ha" : "—"}</strong></div><div><small>Daratan bertambah</small><strong>${analysed ? fmt(row.accretionAreaHa) + " ha" : "—"}</strong></div><div><small>Perubahan rata-rata</small><strong>${analysed && meanRetreat !== null ? fmt(meanRetreat) + " m" : "—"}</strong></div><div><small>Perubahan per tahun</small><strong>${analysed && retreatRate !== null ? fmt(retreatRate) + " m/tahun" : "—"}</strong></div></div>${sourceNote}`;
+      `<p class="eyebrow">RINCIAN LOKASI</p><h2>${esc(row.village)}</h2><p>${esc(row.district)} · ${esc(row.regency)}</p>${badge}<div class="detail-grid"><div><small>Status</small><strong>${statusLabel(row)}</strong></div><div><small>Tingkat kepastian</small><strong>${esc(row.confidence || "—")}</strong></div><div><small>Daratan berkurang</small><strong>${analysed ? fmt(row.erosionAreaHa) + " ha" : "—"}</strong></div><div><small>Daratan bertambah</small><strong>${analysed ? fmt(row.accretionAreaHa) + " ha" : "—"}</strong></div><div><small>Perubahan rata-rata</small><strong>${analysed && meanRetreat !== null ? fmt(meanRetreat) + " m" : "—"}</strong></div><div><small>Perubahan per tahun</small><strong>${analysed && retreatRate !== null ? fmt(retreatRate) + " m/tahun" : "—"}</strong></div></div><div class="detail-grid"><div><small>Perubahan bersih (bertambah − berkurang)</small><strong>${analysed && netChange !== null ? (netChange > 0 ? "+" : "") + fmt(netChange) + " ha" : "—"}</strong></div><div><small>Periode perbandingan</small><strong>${analysed ? esc(row.baseline || "2016") + "–" + esc(row.current || "2025") : "Belum tersedia"}</strong></div></div>${sourceNote}<p><small><strong>Sumber citra:</strong> Copernicus Sentinel-2.<br><strong>Batas desa:</strong> ${esc(row.boundarySource || "WebGIS Yayasan Gambut")}.</small></p>`;
+    document.querySelectorAll("#village-table tr[data-id]").forEach((item) => item.classList.toggle("selected", item.dataset.id === id));
     const group =
       state.changeVillageLayers.get(id) || state.villageLayers.get(id);
     if (group && group.getBounds().isValid())
       map.fitBounds(group.getBounds(), { padding: [30, 30], maxZoom: 13 });
+    if (reveal) {
+      $("village-detail").scrollIntoView({ behavior: "smooth", block: "center" });
+      $("village-detail").focus({ preventScroll: true });
+    }
   }
   function renderTable(rows) {
     $("village-table").innerHTML =
       rows
         .map(
           (r) =>
-            `<tr data-id="${r.id}"><td><strong>${esc(r.village)}</strong>${r.intervention ? ' <span class="badge">YG</span>' : ""}</td><td>${esc(r.district)}</td><td>${esc(r.regency)}</td><td><i class="status-dot ${r.status === "analysed" ? "ok" : ""}"></i>${statusLabel(r)}</td><td>${r.status === "analysed" ? fmt(r.erosionAreaHa) + " ha" : "—"}</td><td>${r.status === "analysed" ? fmt(r.accretionAreaHa) + " ha" : "—"}</td></tr>`,
+            `<tr data-id="${esc(r.id)}"><td><strong>${esc(r.village)}</strong>${r.intervention ? ' <span class="badge">YG</span>' : ""}</td><td>${esc(r.district)}</td><td>${esc(r.regency)}</td><td><i class="status-dot ${r.status === "analysed" ? "ok" : ""}"></i>${statusLabel(r)}</td><td>${r.status === "analysed" ? fmt(r.erosionAreaHa) + " ha" : "—"}</td><td>${r.status === "analysed" ? fmt(r.accretionAreaHa) + " ha" : "—"}</td><td><button type="button" class="village-detail-button" aria-label="Detail desa ${esc(r.village)}">Detail desa</button></td></tr>`,
         )
-        .join("") || '<tr><td colspan="6">Tidak ada desa yang cocok.</td></tr>';
+        .join("") || '<tr><td colspan="7">Tidak ada desa yang cocok.</td></tr>';
   }
   function syncSearchDetail(rows) {
     const q = filters().query;
@@ -446,6 +452,10 @@
       : `${fmt(rows.length)} desa/kelurahan sesuai filter`;
     renderTable(rows);
     renderMap(rows);
+    if (state.selectedId && !rows.some((row) => row.id === state.selectedId)) {
+      state.selectedId = null;
+      $("village-detail").innerHTML = '<p class="eyebrow">DETAIL DESA</p><h2>Pilih desa pada peta atau tabel</h2><p>Klik tombol Detail desa untuk melihat rincian perubahan daratan.</p>';
+    }
     syncSearchDetail(rows);
     document
       .querySelectorAll(".process-card")
@@ -551,7 +561,7 @@
   });
   $("village-table").addEventListener("click", (e) => {
     const row = e.target.closest("tr[data-id]");
-    if (row) selectVillage(row.dataset.id);
+    if (row) selectVillage(row.dataset.id, true);
   });
   init().catch((e) => {
     $("result-count").textContent = "Data belum dapat dimuat";
