@@ -166,7 +166,7 @@ async function downloadDayunPackage() {
       return notifyDayunClients({ type: "DAYUN_OFFLINE_PROGRESS", completed, total: assets.length });
     })));
   }
-  const meta = { ready: true, savedAt: new Date().toISOString(), assetCount: assets.length, tileCount: DAYUN_TILE_ASSETS.length };
+  const meta = { ready: true, version: "20261012-compact2", savedAt: new Date().toISOString(), assetCount: assets.length, tileCount: DAYUN_TILE_ASSETS.length };
   await cache.put(DAYUN_META_URL, new Response(JSON.stringify(meta), { headers: { "Content-Type": "application/json" } }));
   await notifyDayunClients({ type: "DAYUN_OFFLINE_READY", meta });
   return meta;
