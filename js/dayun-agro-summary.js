@@ -40,6 +40,7 @@
     return {
       crop: name,
       vegetationCount: 0,
+      additionalPlantCount: 0,
       operationalAreaHa: 0,
       operationalAreaKnownCount: 0,
       harvestCount: 0,
@@ -137,6 +138,7 @@
         var harvest = cropHistoryTotal(crop, 'pineappleHarvest', 'pineappleHarvestTotal');
         var ethrel = cropHistoryTotal(crop, 'ethrel', 'ethrelTotal');
         total.vegetationCount += plants;
+        total.additionalPlantCount += population(crop).added;
         total.operationalAreaHa += operational;
         if (crop.operationalAreaHa != null && crop.operationalAreaHa !== '') total.operationalAreaKnownCount += 1;
         total.harvestCount += harvest;
@@ -206,7 +208,7 @@
       all.gawangan = all.gawangan.concat(block.gawangan);
       Object.keys(block.cropTotals).forEach(function (name) {
         var source = block.cropTotals[name], target = all.cropTotals[name] || emptyCrop(name);
-        ['vegetationCount', 'operationalAreaHa', 'operationalAreaKnownCount', 'harvestCount', 'ethrelCount', 'flowerCount', 'seedlingCount', 'gawanganCount'].forEach(function (key) { target[key] += source[key]; });
+        ['vegetationCount', 'additionalPlantCount', 'operationalAreaHa', 'operationalAreaKnownCount', 'harvestCount', 'ethrelCount', 'flowerCount', 'seedlingCount', 'gawanganCount'].forEach(function (key) { target[key] += source[key]; });
         source.gawanganIds.forEach(function (id) { if (target.gawanganIds.indexOf(id) < 0) target.gawanganIds.push(id); });
         source.plantingPeriods.forEach(function (period) { if (target.plantingPeriods.indexOf(period) < 0) target.plantingPeriods.push(period); });
         Object.keys(source.harvestHistory).forEach(function (period) { target.harvestHistory[period] = (target.harvestHistory[period] || 0) + source.harvestHistory[period]; });
