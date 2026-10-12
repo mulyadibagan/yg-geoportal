@@ -20,11 +20,24 @@
   function jsonp(url){return new Promise(function(resolve,reject){var callback='ygDayunPublic_'+Date.now()+'_'+Math.floor(Math.random()*100000),script=document.createElement('script'),timer=setTimeout(function(){cleanup();reject(Error('Data kegiatan belum dapat dimuat.'));},9000);function cleanup(){clearTimeout(timer);script.remove();try{delete window[callback];}catch(_){}}window[callback]=function(data){cleanup();resolve(data);};script.onerror=function(){cleanup();reject(Error('Data kegiatan belum dapat dimuat.'));};script.src=url+'&callback='+encodeURIComponent(callback)+'&t='+Date.now();document.head.appendChild(script);});}
 
   function count(value){return value!==null&&value!==undefined&&value!==""&&Number.isFinite(Number(value))&&Number(value)>=0?Math.round(Number(value)):null}
+  function selectedMembers(){
+    const id=$("fert-gawangan").value;
+    if(id==="ALL")return Object.values(gawangan);
+    if(id.startsWith("BLOCK:"))return Object.values(gawangan).filter(x=>x.block===id.slice(6));
+    return gawangan[id]?[gawangan[id]]:[];
+  }
   function syncPopulation(){
-    const item=populations[$("fert-gawangan").value];
-    $("fert-plant-count").value=item?item.count:"";
+    const members=selectedMembers(),aggregate=$("fert-gawangan").value==="ALL"||$("fert-gawangan").value.startsWith("BLOCK:");
+    if(aggregate){
+      const known=members.filter(x=>populations[x.id]),missing=members.filter(x=>!populations[x.id]);
+      $("fert-plant-count").value=known.length?known.reduce((sum,x)=>sum+populations[x.id].count,0):"";
+      populationNote.textContent=known.length+"/"+members.length+" gawangan memiliki data populasi"+(missing.length?" · Belum tersedia: "+missing.map(x=>x.label).join(", "):"")+" · Total berdasarkan data tersedia; periksa tanaman hidup dan sasaran aplikasi.";
+    }else{
+      const item=populations[$("fert-gawangan").value];
+      $("fert-plant-count").value=item?item.count:"";
+      populationNote.textContent=item?item.label+" · "+item.date:populationStatus;
+    }
     $("fert-plant-count").readOnly=false;
-    populationNote.textContent=item?item.label+" · "+item.date:populationStatus;
   }
   function refresh(){clearResult();if(selectedArea>0)calculate()}
   function loadPopulation(){
@@ -64,28 +77,28 @@
     refresh();
   }
   function syncGawangan(){
-    const item=gawangan[$("fert-gawangan").value];
-    selectedArea=item?item.areaHa:0;
-    $("fert-area").value=item?fmt(item.areaHa,4):"—";
+    const members=selectedMembers();
+    selectedArea=members.reduce((sum,x)=>sum+x.areaHa,0);
+    $("fert-area").value=members.length?fmt(selectedArea,4):"—";
     syncPopulation();refresh();
   }
   function loadGawangan(){
     fetch("data/dayun-map.geojson",{cache:"no-store"}).then(r=>{if(!r.ok)throw new Error("Data gawangan tidak dapat dimuat.");return r.json()}).then(data=>{
       const grouped={};
-      (data.features||[]).filter(f=>f.properties&&f.properties.category==="Gawangan Tanam"&&Number(f.properties.areaHa)>0).forEach(f=>{const p=f.properties,id=p.objectId;if(!grouped[id])grouped[id]={id:id,label:p.shortId||p.displayId||id,areaHa:0};grouped[id].areaHa=Number(p.sourceGawanganAreaHa||grouped[id].areaHa+Number(p.areaHa||0));});
+      (data.features||[]).filter(f=>f.properties&&f.properties.category==="Gawangan Tanam"&&Number(f.properties.areaHa)>0).forEach(f=>{const p=f.properties,id=p.objectId;if(!grouped[id])grouped[id]={id:id,label:p.shortId||p.displayId||id,areaHa:0,block:(String(p.shortId||p.displayId||id).match(/GT-([A-F])-/)||[])[1]||""};grouped[id].areaHa=Number(p.sourceGawanganAreaHa||grouped[id].areaHa+Number(p.areaHa||0));});
       const items=Object.values(grouped).sort((a,b)=>a.label.localeCompare(b.label,undefined,{numeric:true}));
       gawangan={};items.forEach(x=>gawangan[x.id]=x);
-      const select=$("fert-gawangan");select.innerHTML='<option value="">Pilih gawangan</option>'+items.map(x=>'<option value="'+x.id+'">'+x.label+' · '+fmt(x.areaHa,4)+' ha</option>').join("");
+      const select=$("fert-gawangan");select.innerHTML='<option value="">Pilih gawangan atau blok</option><optgroup label="Rekap blok"><option value="ALL">Seluruh blok A–F</option>'+['A','B','C','D','E','F'].map(b=>'<option value="BLOCK:'+b+'">Blok '+b+' · '+items.filter(x=>x.block===b).length+' gawangan</option>').join('')+'</optgroup><optgroup label="Per gawangan">'+items.map(x=>'<option value="'+x.id+'">'+x.label+' · '+fmt(x.areaHa,4)+' ha</option>').join("")+'</optgroup>';
       select.disabled=false;
       const requested=(new URLSearchParams(location.search).get("gawangan")||new URLSearchParams(location.search).get("object"));
-      if(requested&&gawangan[requested]){select.value=requested;syncGawangan()}
+      if(requested&&(gawangan[requested]||requested==="ALL"||/^BLOCK:[A-F]$/.test(requested))){select.value=requested;syncGawangan()}
     }).catch(()=>{
       $("fert-gawangan").innerHTML='<option value="">Data gawangan belum tersedia</option>';
       $("fert-error").textContent="Luas gawangan gagal dimuat. Muat ulang halaman atau buka kembali dari peta Dayun.";
       $("fert-error").hidden=false;
     });
   }
-  function clearResult(){$("fert-result").hidden=true;$("fert-error").hidden=true}
+  function clearResult(){$("fert-block-detail").hidden=true;$("fert-result").hidden=true;$("fert-error").hidden=true}
   $("fert-phase").addEventListener("change",syncPhase);
   $("fert-gawangan").addEventListener("change",syncGawangan);
   actualForm.addEventListener("input",refresh);
@@ -116,6 +129,7 @@
     const batches=plants/600,water=16*batches*applications;
     $("fert-material-results").innerHTML+='<article><header><span>Air · pemupukan</span><small>16 liter / 600 tanaman per aplikasi</small></header><strong>'+fmt(water,3)+' liter</strong><p>'+applications+' aplikasi pemupukan</p><dl><div><dt>Air per aplikasi</dt><dd>'+fmt(16*batches,3)+' liter</dd></div><div><dt>Setara tangki 16 liter</dt><dd>'+fmt(batches*applications,3)+' tangki; bagian akhir proporsional</dd></div><div><dt>Cadangan</dt><dd>Tidak menambah air atau dosis aplikasi</dd></div></dl></article>';
     $("fert-result-formula").textContent="Perhitungan: "+fmt(plants,0)+" tanaman ÷ 600 × bahan acuan"+(reserve?" × "+fmt(factor,3)+" untuk pengadaan dengan cadangan.":". Cadangan pengadaan tidak ditambahkan.")+" Campuran Ethrel tidak termasuk. Takaran SDM dan pengenceran perlu diverifikasi.";
+    renderBlockDetail();
     $("fert-result").hidden=false;error.hidden=true;
   }
   function calculateEthrel(plants,area,reserve,bag){
@@ -138,7 +152,25 @@
     ];
     $("fert-material-results").innerHTML=cards.map(m=>'<article><header><span>'+m.name+'</span><small>'+m.basis+'</small></header><strong>'+m.need+'</strong><p>Kebutuhan berdasarkan isian campuran</p><dl><div><dt>Acuan per tanaman</dt><dd>'+m.per+'</dd></div><div><dt>Pengadaan</dt><dd>'+m.prepared+'</dd></div><div><dt>Setara kemasan/campuran</dt><dd>'+m.packs+'</dd></div></dl></article>').join("");
     $("fert-result-formula").textContent="Perhitungan: "+fmt(plants,0)+" ÷ "+fmt(coverage,0)+" = "+fmt(batches,3)+" campuran setara. Ethrel = campuran × 2 × "+fmt(cap,3)+" ml; KCl = campuran × 0,5 kg; air = campuran × "+fmt(water,3)+" liter. Rasio isian Ethrel terhadap air: "+fmt(2*cap/water,3)+" ml/liter, bukan rekomendasi konsentrasi. Cadangan "+fmt(reserve,1)+"% hanya untuk pengadaan Ethrel dan KCl. KCl ini terpisah dari pemupukan bulan ke-8.";
+    renderBlockDetail();
     $("fert-result").hidden=false;$("fert-error").hidden=true;
+  }
+  function renderBlockDetail(){
+    const members=selectedMembers(),container=$("fert-block-detail");
+    if(members.length<=1){container.hidden=true;return;}
+    const ethrel=$("fert-phase").value==="ethrel",p=phase();
+    const cols=ethrel?["Ethrel (ml)","KCl (kg)","Air (liter)"]:p.materials.map(m=>m.name+" ("+m.unit+")").concat(["Air (liter)"]);
+    const coverage=ethrel?number("fert-batch-plants"):600;
+    const amounts=ethrel?[2*number("fert-cap-ml"),0.5,number("fert-batch-water")]:p.materials.map(m=>m.amount).concat([$("fert-phase").value==="cycle"?48:16]);
+    const known=members.filter(x=>populations[x.id]),sourceTotal=known.reduce((sum,x)=>sum+populations[x.id].count,0),missing=members.length-known.length;
+    const rows=members.map(x=>{
+      const item=populations[x.id];
+      const values=item?amounts.map(v=>'<td>'+fmt(item.count/coverage*v,3)+'</td>').join(""):cols.map(()=>'<td>—</td>').join("");
+      return '<tr><td>'+x.label+'</td><td>'+fmt(x.areaHa,4)+'</td><td>'+(item?fmt(item.count,0):'Belum tersedia')+'</td>'+values+'<td>'+(item?item.label+" · "+item.date:"Belum tersedia")+'</td></tr>';
+    }).join("");
+    const totals=amounts.map(v=>'<td>'+fmt(sourceTotal/coverage*v,3)+'</td>').join("");
+    container.innerHTML='<h3>Rincian per gawangan</h3><p>'+known.length+' dari '+members.length+' gawangan memiliki populasi.'+(missing?' Total sebagian; '+missing+' gawangan belum dihitung.':'')+' Rincian memakai populasi sumber tanpa cadangan. Untuk Ethrel, populasi ini belum memastikan semua tanaman siap induksi.'+(number("fert-plant-count")!==sourceTotal?' Jumlah sasaran pada kartu telah diubah; rincian berikut tetap memakai populasi sumber.':'')+'</p><div class="dy-table-wrap"><table class="dy-tech-table"><thead><tr><th>Gawangan</th><th>Luas (ha)</th><th>Tanaman</th>'+cols.map(x=>'<th>'+x+'</th>').join("")+'<th>Sumber populasi</th></tr></thead><tbody>'+rows+'<tr><td><strong>Total data tersedia</strong></td><td>'+fmt(selectedArea,4)+'</td><td>'+fmt(sourceTotal,0)+'</td>'+totals+'<td>'+known.length+'/'+members.length+' gawangan</td></tr></tbody></table></div>';
+    container.hidden=false;
   }
   syncPhase();
   loadGawangan();
