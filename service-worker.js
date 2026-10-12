@@ -1,4 +1,4 @@
-const CACHE_NAME = "yg-geoportal-v27-20260920-dayun-entry";
+const CACHE_NAME = "yg-geoportal-v28-20261012-ethrel";
 const DAYUN_CACHE_NAME = "yg-dayun-offline-v1";
 const DAYUN_META_URL = "/__dayun_offline_meta__";
 
@@ -24,6 +24,7 @@ const DAYUN_CORE_ASSETS = [
   "/css/navigation-v2.css",
   "/css/user-location-control.css",
   "/css/dayun.css",
+  "/css/dayun-ethrel.css",
   "/css/dayun-gawangan.css",
   "/css/dayun-analisis-nanas.css",
   "/js/auth.js",
@@ -32,12 +33,14 @@ const DAYUN_CORE_ASSETS = [
   "/js/dayun-data-source.js",
   "/js/dayun-agro-summary.js",
   "/js/dayun-public.js",
+  "/js/dayun-ethrel.js",
   "/js/dayun-offline.js",
   "/js/dayun-gawangan.js",
   "/js/dayun-blok.js",
   "/js/dayun-pineapple-analysis.js",
   "/js/dayun-analisis-nanas.js",
   "/data/dayun-program.json",
+  "/data/dashboard-summary-snapshot.json",
   "/data/dayun-map.geojson",
   "/data/dayun-context.geojson",
   "/data/dayun-gawangan-details.json",
@@ -281,3 +284,4 @@ self.addEventListener("fetch", event => {
     }))
   );
 });
+
