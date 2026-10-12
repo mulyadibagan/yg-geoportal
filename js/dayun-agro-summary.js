@@ -9,6 +9,14 @@
   var MPTS = ['RAMBUTAN', 'ASAM KANDIS', 'NANGKA', 'PETAI', 'JENGKOL'];
   var HORTICULTURE = ['NANAS', 'TERONG', 'CABAI'];
 
+  function population(crop) {
+    var initial=crop.sourcePopulationInitial!==undefined?crop.sourcePopulationInitial:crop.vegetationCount;
+    var baseline=initial!=null&&initial!==""&&Number.isFinite(Number(initial))?Math.max(0,Number(initial)):null;
+    var added=(crop.plantingCohorts||[]).reduce(function(sum,c){return sum+number(c.plantedCount);},0);
+    var census=crop.populationCensus,live=census&&census.livingPlantCount!=null&&Number.isFinite(Number(census.livingPlantCount))?Math.max(0,Number(census.livingPlantCount)):null;
+    var after=live===null?0:(crop.plantingCohorts||[]).filter(function(c){return String(c.period)>String(census.period||"").slice(0,7);}).reduce(function(sum,c){return sum+number(c.plantedCount);},0);
+    return {baseline:baseline,added:added,recorded:baseline===null?(added>0?added:null):baseline+added,living:live,planning:live===null?(baseline===null?(added>0?added:null):baseline+added):live+after,censusPeriod:census&&census.period};
+  }
   function number(value) {
     value = Number(value);
     return Number.isFinite(value) ? value : 0;
@@ -59,6 +67,11 @@
       cropTotals: {},
       totalPlants: 0,
       pineapplePlants: 0,
+      pineappleAdded: 0,
+      pineappleRecorded: 0,
+      pineappleCensusPlants: 0,
+      pineappleCensusGawangan: 0,
+      pineappleUnknown: 0,
       pineappleHarvest: 0,
       pineappleUnharvested: 0,
       pineappleEthrel: 0,
@@ -147,6 +160,11 @@
         block.totalPlants += plants;
         if (operational > 0) operationalAreas.push(operational);
         if (cropName === 'NANAS') {
+          var pop=population(crop);
+          block.pineappleAdded+=pop.added;
+          block.pineappleRecorded+=pop.recorded||0;
+          if(pop.living!==null){block.pineappleCensusPlants+=pop.living;block.pineappleCensusGawangan+=1;}
+          if(pop.recorded===null)block.pineappleUnknown+=1;
           item.pineapplePlants += plants;
           item.pineappleHarvest += harvest;
           block.pineapplePlants += plants;
@@ -183,7 +201,7 @@
     all.gawangan = [];
     codes.forEach(function (code) {
       var block = blockMap[code];
-      ['blockAreaHa', 'gawanganAreaHa', 'operationalAreaHa', 'mappedGawangan', 'gawanganWithData', 'totalPlants', 'pineapplePlants', 'pineappleHarvest', 'pineappleUnharvested', 'pineappleEthrel', 'pineappleFlowers', 'pineappleSeedlings', 'mptsPlants', 'horticulturePlants'].forEach(function (key) { all[key] += block[key]; });
+      ['blockAreaHa', 'gawanganAreaHa', 'operationalAreaHa', 'mappedGawangan', 'gawanganWithData', 'totalPlants', 'pineapplePlants', 'pineappleAdded', 'pineappleRecorded', 'pineappleCensusPlants', 'pineappleCensusGawangan', 'pineappleUnknown', 'pineappleHarvest', 'pineappleUnharvested', 'pineappleEthrel', 'pineappleFlowers', 'pineappleSeedlings', 'mptsPlants', 'horticulturePlants'].forEach(function (key) { all[key] += block[key]; });
       all.missingGawangan = all.missingGawangan.concat(block.missingGawangan);
       all.gawangan = all.gawangan.concat(block.gawangan);
       Object.keys(block.cropTotals).forEach(function (name) {
@@ -207,5 +225,5 @@
     };
   }
 
-  return {build: build, MPTS: MPTS.slice(), HORTICULTURE: HORTICULTURE.slice()};
+  return {build: build, population: population, MPTS: MPTS.slice(), HORTICULTURE: HORTICULTURE.slice()};
 });
