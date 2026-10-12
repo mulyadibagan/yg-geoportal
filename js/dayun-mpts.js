@@ -14,7 +14,7 @@
         if (!points) {
           panel.textContent = error ? 'Titik MPTS belum dapat dimuat. Muat ulang halaman untuk mencoba lagi.' : 'Memuat titik monitoring MPTS…';
         } else {
-          panel.innerHTML = '<b>Monitoring MPTS · ' + records.length + ' titik</b><p>Petai: 152 titik · Jengkol: 63 titik</p><label><input type="checkbox" ' + (visible ? 'checked' : '') + '> Tampilkan titik MPTS</label><p><span style="color:#16a34a">●</span> Petai tanpa label mati<br><span style="color:#7c3aed">●</span> Jengkol tanpa label mati<br><span style="color:#dc2626">●</span> Berlabel mati: 68 titik</p><button type="button" class="dy-btn ghost">Lihat seluruh titik MPTS</button><p><small>Sumber: C10-C8.kml. Nama foto memuat 9 Oktober 2026. Kondisi titik tanpa label mati dan tanggal pengamatan perlu dikonfirmasi.</small></p>';
+          panel.innerHTML = '<b>Monitoring MPTS · ' + records.length + ' titik</b><p>Petai: 152 titik · Jengkol: 63 titik</p><label><input type="checkbox" ' + (visible ? 'checked' : '') + '> Tampilkan titik MPTS</label><p><span style="color:#16a34a">●</span> Petai tanpa label mati<br><span style="color:#7c3aed">●</span> Jengkol tanpa label mati<br><span style="color:#dc2626">●</span> Berlabel mati: 68 titik</p><button type="button" class="dy-btn ghost">Lihat seluruh titik MPTS</button><p><small>Data diperbarui 8 Oktober 2026.</small></p>';
           panel.querySelector('input').addEventListener('change', function (event) {
             visible = event.target.checked;
             if (visible) points.addTo(map); else map.removeLayer(points);
@@ -24,10 +24,6 @@
             map.fitBounds(points.getBounds(), {padding:[30,30], maxZoom:19});
           });
           panel.querySelector('button').style.cssText = 'display:block;margin-top:12px;padding:10px;border:1px solid #087653;border-radius:8px;background:#edf8f3;color:#087653;font-weight:700;cursor:pointer';
-          var alignmentNote = document.createElement('small');
-          alignmentNote.textContent = 'Tampilan dirapikan menjadi 7 barisan lurus. Koordinat GPS asli tetap disimpan.';
-          alignmentNote.style.cssText = 'display:block;margin-top:10px;color:#50645b';
-          panel.appendChild(alignmentNote);
         }
         legend.prepend(panel);
       }
