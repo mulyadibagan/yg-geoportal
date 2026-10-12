@@ -1,10 +1,10 @@
 (function(){
   "use strict";
   const programs={
-    base:{name:"Pemupukan dasar",time:"7 hari sebelum tanam atau saat tanam",note:"Pupuk organik 5–10 ton/ha.",materials:[{id:"organic",name:"Pupuk organik",min:5000,max:10000}]},
-    phase1:{name:"Pemupukan I",time:"Akar mulai terlihat, sekitar 3 BST",note:"Urea 300–400 kg/ha dan NPK 15-15-15 100–200 kg/ha.",materials:[{id:"urea",name:"Urea",min:300,max:400},{id:"npk151515",name:"NPK 15-15-15",min:100,max:200}]},
-    phase2:{name:"Pemupukan II",time:"1 bulan sebelum induksi pembungaan",note:"Urea 300 kg/ha dan NPK 15-15-15 150–200 kg/ha.",materials:[{id:"urea",name:"Urea",min:300,max:300},{id:"npk151515",name:"NPK 15-15-15",min:150,max:200}]},
-    phase3:{name:"Pemupukan III",time:"Setelah bunga keluar",note:"NPK 15-15-15 50–150 kg/ha.",materials:[{id:"npk151515",name:"NPK 15-15-15",min:50,max:150}]}
+    phase1:{name:"Pemupukan I",time:"Bulan ke-3 setelah tanam",note:"Urea 3 kg + Cu/terusi 1 SDM per 600 tanaman.",materials:[{id:"urea",name:"Urea",amount:3,unit:"kg"},{id:"cu",name:"Cu/terusi",amount:1,unit:"SDM"}]},
+    phase2:{name:"Pemupukan II",time:"Bulan ke-6 setelah tanam",note:"Urea 3 kg + Cu/terusi 1 SDM per 600 tanaman.",materials:[{id:"urea",name:"Urea",amount:3,unit:"kg"},{id:"cu",name:"Cu/terusi",amount:1,unit:"SDM"}]},
+    phase3:{name:"Pemupukan III",time:"Bulan ke-8 setelah tanam",note:"Urea 2 kg + Cu/terusi 1 SDM + KCl 0,5 kg per 600 tanaman.",materials:[{id:"urea",name:"Urea",amount:2,unit:"kg"},{id:"cu",name:"Cu/terusi",amount:1,unit:"SDM"},{id:"kcl",name:"KCl",amount:0.5,unit:"kg"}]},
+    cycle:{name:"Total tiga aplikasi",time:"Bulan ke-3, ke-6, dan ke-8",note:"Urea 8 kg + Cu/terusi 3 SDM + KCl 0,5 kg per 600 tanaman. Tidak termasuk campuran Ethrel.",materials:[{id:"urea",name:"Urea",amount:8,unit:"kg"},{id:"cu",name:"Cu/terusi",amount:3,unit:"SDM"},{id:"kcl",name:"KCl",amount:0.5,unit:"kg"}]}
   };
   window.YG_DAYUN_NANAS_FERTILIZER_PROGRAMS=programs;
   const actualForm=document.getElementById("fertilizer-calculator");
@@ -23,7 +23,7 @@
   function syncPopulation(){
     const item=populations[$("fert-gawangan").value];
     $("fert-plant-count").value=item?item.count:"";
-    $("fert-plant-count").readOnly=!!item;
+    $("fert-plant-count").readOnly=false;
     populationNote.textContent=item?item.label+" · "+item.date:populationStatus;
   }
   function refresh(){clearResult();if(selectedArea>0)calculate()}
@@ -92,7 +92,7 @@
     const plantsRaw=String($("fert-plant-count").value??"").trim();
     const plants=plantsRaw?number("fert-plant-count"):null;
     const error=$("fert-error");
-    if(!Number.isFinite(area)||area<=0||!Number.isFinite(reserve)||reserve<0||reserve>25||!Number.isFinite(bag)||bag<=0||(plants!==null&&(!Number.isFinite(plants)||plants<0||!Number.isInteger(plants)))){
+    if(!Number.isFinite(area)||area<=0||!Number.isFinite(reserve)||reserve<0||reserve>25||!Number.isFinite(bag)||bag<=0||(plants===null||!Number.isFinite(plants)||plants<0||!Number.isInteger(plants))){
       error.textContent=area<=0?"Pilih gawangan tanam terlebih dahulu.":"Periksa populasi, cadangan, dan berat kemasan.";
       error.hidden=false;return;
     }
@@ -101,14 +101,12 @@
     $("fert-result-phase-label").textContent=p.time;
     $("fert-result-context").textContent=fmt(area,3)+" ha"+(plants?" · "+fmt(Math.floor(plants),0)+" tanaman acuan":"");
     $("fert-material-results").innerHTML=p.materials.map(m=>{
-      const low=m.min*area,high=m.max*area,prepLow=low*factor,prepHigh=high*factor;
-      const dose=plants?((low*1000/plants).toFixed(2)+(low===high?"":"–"+(high*1000/plants).toFixed(2))+" g/tanaman"):(plants===0?"Tidak ada tanaman sasaran":"Isi populasi untuk dosis/tanaman");
-      const packs=prepLow/bag===prepHigh/bag?fmt(prepLow/bag,2):fmt(prepLow/bag,2)+"–"+fmt(prepHigh/bag,2);
-      const need=low===high?fmt(low,2)+" kg":fmt(low,2)+"–"+fmt(high,2)+" kg";
-      const prepared=prepLow===prepHigh?fmt(prepLow,2)+" kg":fmt(prepLow,2)+"–"+fmt(prepHigh,2)+" kg";
-      return '<article><header><span>'+m.name+'</span><small>'+fmt(m.min,0)+(m.min===m.max?'':'–'+fmt(m.max,0))+' kg/ha</small></header><strong>'+need+'</strong><p>Kebutuhan sesuai luas</p><dl><div><dt>Per tanaman</dt><dd>'+dose+'</dd></div><div><dt>Dengan cadangan</dt><dd>'+prepared+'</dd></div><div><dt>Setara kemasan</dt><dd>'+packs+' kemasan</dd></div></dl></article>';
+      const need=m.amount*plants/600,prepared=need*factor;
+      const perPlant=m.unit==="kg"?fmt(m.amount*1000/600,3)+" g/tanaman":fmt(m.amount,0)+" SDM per 600 tanaman; berat gram belum diverifikasi";
+      const packs=m.unit==="kg"?fmt(prepared/bag,3)+" sak ("+fmt(bag,1)+" kg/sak)":"Belum dihitung; timbang SDM dalam gram";
+      return '<article><header><span>'+m.name+'</span><small>'+fmt(m.amount,2)+' '+m.unit+' / 600 tanaman</small></header><strong>'+fmt(need,3)+' '+m.unit+'</strong><p>Kebutuhan berdasarkan tanaman sasaran</p><dl><div><dt>Acuan bahan</dt><dd>'+perPlant+'</dd></div><div><dt>Dengan cadangan pengadaan</dt><dd>'+fmt(prepared,3)+' '+m.unit+'</dd></div><div><dt>Setara kemasan</dt><dd>'+packs+'</dd></div></dl></article>';
     }).join("");
-    $("fert-result-formula").textContent="Perhitungan: dosis SOP (kg/ha) × "+fmt(area,3)+" ha"+(reserve?" × "+fmt(factor,3)+" untuk pengadaan dengan cadangan.":". Cadangan pengadaan tidak ditambahkan.");
+    $("fert-result-formula").textContent="Perhitungan: "+fmt(plants,0)+" tanaman ÷ 600 × bahan acuan"+(reserve?" × "+fmt(factor,3)+" untuk pengadaan dengan cadangan.":". Cadangan pengadaan tidak ditambahkan.")+" Campuran Ethrel tidak termasuk. Takaran SDM dan pengenceran perlu diverifikasi.";
     $("fert-result").hidden=false;error.hidden=true;
   }
   syncPhase();
