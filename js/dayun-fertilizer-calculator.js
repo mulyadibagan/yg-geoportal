@@ -57,7 +57,12 @@
     });
   }
   function phase(){return programs[$("fert-phase").value]}
-  function syncPhase(){$("fert-phase-note").textContent=phase().note;refresh()}
+  function syncPhase(){
+    const ethrel=$("fert-phase").value==="ethrel";
+    $("fert-ethrel-fields").hidden=!ethrel;
+    $("fert-phase-note").textContent=ethrel?"Bulan ke-9 jika tanaman siap. Acuan campuran: 2 tutup Ethrel + KCl 0,5 kg; isi takaran dan cakupan campuran di bawah.":phase().note;
+    refresh();
+  }
   function syncGawangan(){
     const item=gawangan[$("fert-gawangan").value];
     selectedArea=item?item.areaHa:0;
@@ -96,6 +101,7 @@
       error.textContent=area<=0?"Pilih gawangan tanam terlebih dahulu.":"Periksa populasi, cadangan, dan berat kemasan.";
       error.hidden=false;return;
     }
+    if($("fert-phase").value==="ethrel"){calculateEthrel(plants,area,reserve,bag);return;}
     const p=phase(),factor=1+reserve/100;
     $("fert-result-phase").textContent=p.name;
     $("fert-result-phase-label").textContent=p.time;
@@ -108,6 +114,28 @@
     }).join("");
     $("fert-result-formula").textContent="Perhitungan: "+fmt(plants,0)+" tanaman ÷ 600 × bahan acuan"+(reserve?" × "+fmt(factor,3)+" untuk pengadaan dengan cadangan.":". Cadangan pengadaan tidak ditambahkan.")+" Campuran Ethrel tidak termasuk. Takaran SDM dan pengenceran perlu diverifikasi.";
     $("fert-result").hidden=false;error.hidden=true;
+  }
+  function calculateEthrel(plants,area,reserve,bag){
+    const cap=number("fert-cap-ml"),coverage=number("fert-batch-plants"),water=number("fert-batch-water"),bottle=number("fert-bottle-ml");
+    if(![cap,coverage,water,bottle].every(v=>Number.isFinite(v)&&v>0)||!Number.isInteger(coverage)){
+      $("fert-error").textContent="Isi volume satu tutup (ml), jumlah tanaman per campuran, air per campuran, dan isi botol Ethrel. Gunakan hasil pengukuran atau data lapangan terverifikasi.";
+      $("fert-error").hidden=false;return;
+    }
+    const batches=plants/coverage,ethrel=2*cap*batches,kcl=0.5*batches,air=water*batches,factor=1+reserve/100;
+    if(![batches,ethrel,kcl,air,ethrel*factor,kcl*factor].every(Number.isFinite)){
+      $("fert-error").textContent="Angka terlalu besar untuk dihitung; periksa parameter campuran."; $("fert-error").hidden=false;return;
+    }
+    $("fert-result-phase").textContent="Induksi bunga · Ethrel";
+    $("fert-result-phase-label").textContent="Bulan ke-9 setelah tanam · tanaman siap";
+    $("fert-result-context").textContent=fmt(area,3)+" ha · "+fmt(plants,0)+" tanaman sasaran";
+    const cards=[
+      {name:"Ethrel",basis:"2 tutup × "+fmt(cap,3)+" ml / "+fmt(coverage,0)+" tanaman",need:fmt(ethrel,3)+" ml",per:fmt(2*cap/coverage,4)+" ml/tanaman",prepared:fmt(ethrel*factor,3)+" ml",packs:fmt(ethrel*factor/bottle,3)+" botol setara; beli "+fmt(Math.ceil(ethrel*factor/bottle),0)+" botol ("+fmt(bottle,1)+" ml)"},
+      {name:"KCl · campuran Ethrel",basis:"0,5 kg / "+fmt(coverage,0)+" tanaman",need:fmt(kcl,3)+" kg",per:fmt(500/coverage,3)+" g/tanaman",prepared:fmt(kcl*factor,3)+" kg",packs:fmt(kcl*factor/bag,3)+" sak ("+fmt(bag,1)+" kg/sak)"},
+      {name:"Air · campuran Ethrel",basis:fmt(water,3)+" liter / "+fmt(coverage,0)+" tanaman",need:fmt(air,3)+" liter",per:fmt(water*1000/coverage,3)+" ml air/tanaman",prepared:fmt(air,3)+" liter (tanpa cadangan)",packs:fmt(batches,3)+" campuran setara; campuran terakhir dihitung proporsional"}
+    ];
+    $("fert-material-results").innerHTML=cards.map(m=>'<article><header><span>'+m.name+'</span><small>'+m.basis+'</small></header><strong>'+m.need+'</strong><p>Kebutuhan berdasarkan isian campuran</p><dl><div><dt>Acuan per tanaman</dt><dd>'+m.per+'</dd></div><div><dt>Pengadaan</dt><dd>'+m.prepared+'</dd></div><div><dt>Setara kemasan/campuran</dt><dd>'+m.packs+'</dd></div></dl></article>').join("");
+    $("fert-result-formula").textContent="Perhitungan: "+fmt(plants,0)+" ÷ "+fmt(coverage,0)+" = "+fmt(batches,3)+" campuran setara. Ethrel = campuran × 2 × "+fmt(cap,3)+" ml; KCl = campuran × 0,5 kg; air = campuran × "+fmt(water,3)+" liter. Rasio isian Ethrel terhadap air: "+fmt(2*cap/water,3)+" ml/liter, bukan rekomendasi konsentrasi. Cadangan "+fmt(reserve,1)+"% hanya untuk pengadaan Ethrel dan KCl. KCl ini terpisah dari pemupukan bulan ke-8.";
+    $("fert-result").hidden=false;$("fert-error").hidden=true;
   }
   syncPhase();
   loadGawangan();
