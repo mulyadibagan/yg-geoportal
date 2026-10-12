@@ -60,7 +60,7 @@
   function syncPhase(){
     const ethrel=$("fert-phase").value==="ethrel";
     $("fert-ethrel-fields").hidden=!ethrel;
-    $("fert-phase-note").textContent=ethrel?"Bulan ke-9 jika tanaman siap. Acuan campuran: 2 tutup Ethrel + KCl 0,5 kg; isi takaran dan cakupan campuran di bawah.":phase().note;
+    $("fert-phase-note").textContent=ethrel?"Bulan ke-9 jika tanaman siap. Ethrel 10 ml (2 tutup × 5 ml) + KCl 0,5 kg + air 16 liter per 600 tanaman.":phase().note;
     refresh();
   }
   function syncGawangan(){
@@ -112,6 +112,9 @@
       const packs=m.unit==="kg"?fmt(prepared/bag,3)+" sak ("+fmt(bag,1)+" kg/sak)":"Belum dihitung; timbang SDM dalam gram";
       return '<article><header><span>'+m.name+'</span><small>'+fmt(m.amount,2)+' '+m.unit+' / 600 tanaman</small></header><strong>'+fmt(need,3)+' '+m.unit+'</strong><p>Kebutuhan berdasarkan tanaman sasaran</p><dl><div><dt>Acuan bahan</dt><dd>'+perPlant+'</dd></div><div><dt>Dengan cadangan pengadaan</dt><dd>'+fmt(prepared,3)+' '+m.unit+'</dd></div><div><dt>Setara kemasan</dt><dd>'+packs+'</dd></div></dl></article>';
     }).join("");
+    const applications=$("fert-phase").value==="cycle"?3:1;
+    const batches=plants/600,water=16*batches*applications;
+    $("fert-material-results").innerHTML+='<article><header><span>Air · pemupukan</span><small>16 liter / 600 tanaman per aplikasi</small></header><strong>'+fmt(water,3)+' liter</strong><p>'+applications+' aplikasi pemupukan</p><dl><div><dt>Air per aplikasi</dt><dd>'+fmt(16*batches,3)+' liter</dd></div><div><dt>Setara tangki 16 liter</dt><dd>'+fmt(batches*applications,3)+' tangki; bagian akhir proporsional</dd></div><div><dt>Cadangan</dt><dd>Tidak menambah air atau dosis aplikasi</dd></div></dl></article>';
     $("fert-result-formula").textContent="Perhitungan: "+fmt(plants,0)+" tanaman ÷ 600 × bahan acuan"+(reserve?" × "+fmt(factor,3)+" untuk pengadaan dengan cadangan.":". Cadangan pengadaan tidak ditambahkan.")+" Campuran Ethrel tidak termasuk. Takaran SDM dan pengenceran perlu diverifikasi.";
     $("fert-result").hidden=false;error.hidden=true;
   }
