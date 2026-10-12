@@ -35,7 +35,7 @@
           <label><span>Gawangan *</span><select id="dm-object" required><option value="">Memuat gawangan…</option></select><small id="dm-object-note">Pilih polygon yang dikerjakan.</small></label>
           <label><span>Komoditas *</span><select id="dm-crop" required disabled><option value="">Pilih gawangan terlebih dahulu</option></select><small id="dm-crop-note">Komoditas diambil otomatis dari data gawangan.</small></label>
           <label><span>Jenis kegiatan *</span><select id="dm-activity" required disabled><option value="">Pilih komoditas terlebih dahulu</option></select><small id="dm-activity-note">Isian berikutnya akan menyesuaikan jenis kegiatan.</small></label>
-          <label><span>Tanggal kegiatan *</span><input id="dm-date" type="date" required></label>
+          <label><span>Kelompok bulan tanam</span><input id="dm-cohort" type="month"><small>Isi untuk kegiatan pada kelompok tanaman tertentu. Kosong berarti kelompok belum dipisahkan; tidak menandai jadwal kelompok baru selesai.</small></label><label><span>Tanggal kegiatan *</span><input id="dm-date" type="date" required></label>
           <div class="dm-activity-intro" id="dm-activity-intro"><strong>Pilih jenis kegiatan.</strong><span>Form teknis yang relevan akan muncul di bagian ini.</span></div>
           <section class="dm-activity-panel" id="dm-panel-establishment" hidden>
             <div class="dm-activity-head"><span>PENANAMAN & PENYISIPAN</span><h3 id="dm-establishment-title">Data tanaman</h3></div>
@@ -135,7 +135,7 @@
           <section class="dm-sop-panel" id="dm-fertilizer-panel" hidden aria-labelledby="dm-fertilizer-title">
             <div class="dm-sop-head"><div><span>SOP PEMUPUKAN NANAS</span><h3 id="dm-fertilizer-title">Realisasi pemupukan berbasis gawangan</h3><p>Dosis acuan diambil otomatis dari SOP. Pelapor mencatat jumlah yang benar-benar diaplikasikan; admin atau pendamping memeriksa kesesuaiannya sebelum publikasi.</p></div><a href="dayun-sop-nanas.html#kalkulator-pupuk" target="_blank" rel="noopener">Buka SOP dan kalkulator ↗</a></div>
             <div class="dm-sop-fields">
-              <label><span>Fase pemupukan *</span><select id="dm-fert-phase"><option value="base">Dasar · sebelum/saat tanam</option><option value="phase1">I · akar terlihat/sekitar 3 BST</option><option value="phase2">II · 1 bulan sebelum induksi</option><option value="phase3">III · setelah bunga keluar</option></select><small id="dm-fert-phase-note"></small></label>
+              <label><span>Fase pemupukan *</span><select id="dm-fert-phase"><option value="phase1">Bulan ke-3</option><option value="phase2">Bulan ke-6</option><option value="phase3">Bulan ke-8</option></select><small id="dm-fert-phase-note"></small></label>
               <label><span>Luas gawangan</span><input id="dm-fert-area" readonly aria-readonly="true"><small>Diambil otomatis dari polygon resmi.</small></label>
               <label><span>Tanaman nanas aktif *</span><input id="dm-fert-population" type="number" min="1" step="1" inputmode="numeric"><small>Jumlah tanaman hidup yang benar-benar menjadi sasaran.</small></label>
               <label><span>pH tanah aktual</span><input id="dm-fert-ph" type="number" min="0" max="14" step="0.1" inputmode="decimal" placeholder="Jika telah diukur"><small>Rentang acuan nanas 4,5–6,5; kosongkan bila belum diukur.</small></label>
@@ -172,7 +172,7 @@
     </section>
   </main>
   <script src="js/dayun-data-source.js?v=20260917-cloudflare1"></script>
-  <script src="js/dayun-fertilizer-calculator.js?v=20260917-programs1"></script>
-  <script src="js/dayun-monitoring.js?v=20260917-factual1"></script>
+  <script src="js/dayun-fertilizer-calculator.js?v=20261012-fieldwork1"></script>
+  <script src="js/dayun-monitoring.js?v=20261012-cohort1"></script>
 </body>
 </html>
