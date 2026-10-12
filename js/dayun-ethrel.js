@@ -11,11 +11,11 @@
     var result=JSON.parse(JSON.stringify(details||{objects:[]})),byId={};
     (result.objects||[]).forEach(function(o){byId[o.objectId]=o;});
     var events=(payload&&payload.features||[]).map(function(f){var p=f.properties||{},info;try{info=typeof p.proposedInformation==='string'?JSON.parse(p.proposedInformation):p.proposedInformation;}catch(_){return null;}
-      if(p.targetLayerId!=='dayun_gawangan'||!info||info.monitoringType!=='Agroforestri Dayun'||String(info.crop||'').toUpperCase()!=='NANAS')return null;
+      if(p.targetLayerId!=='dayun_gawangan'||!info||info.monitoringType!=='Agroforestri Dayun'||String(info.crop||'').trim().toUpperCase()!=='NANAS')return null;
       var date=info.eventDate||p.activityDate;if(!/^\d{4}-\d{2}-\d{2}$/.test(date||'')||date>asOf)return null;
       return {id:p.targetObjectId,info:info,date:date};
     }).filter(Boolean).sort(function(a,b){return a.date.localeCompare(b.date);});
-    events.forEach(function(e){var o=byId[e.id];if(!o)return;var c=(o.crops||[]).find(function(c){return String(c.crop).toUpperCase()==='NANAS';});if(!c){c={crop:'NANAS'};(o.crops=o.crops||[]).push(c);}
+    events.forEach(function(e){var o=byId[e.id];if(!o&&/^DAYUN-GT-[A-F]-\d{2}$/.test(e.id)){o={objectId:e.id,block:e.id.split('-')[2],crops:[]};byId[e.id]=o;result.objects.push(o);}if(!o)return;var c=(o.crops||[]).find(function(c){return String(c.crop).toUpperCase()==='NANAS';});if(!c){c={crop:'NANAS'};(o.crops=o.crops||[]).push(c);}
       var i=e.info,d=i.activityDetails||{};if(i.plantingDate)c.plantingDate=i.plantingDate;
       if(i.activityType==='Sensus tanaman'&&num(d.livingPlantCount)!==null&&Number.isInteger(Number(d.livingPlantCount))){c.vegetationCount=Number(d.livingPlantCount);c.populationCensus={period:e.date};}
       if(i.activityType==='Ethrel'&&num(d.treatedPlantCount)>0){c.ethrel=c.ethrel||[];if(!c.ethrel.some(function(h){return h.period===e.date&&Number(h.count)===Number(d.treatedPlantCount);})){c.ethrel.push({period:e.date,count:Number(d.treatedPlantCount)});}}

@@ -33,3 +33,7 @@ test('future reports and other layers do not affect current results',()=>{
 test('flower or harvest records require separating untreated plants even without Ethrel log',()=>{
  const r=row(details({pineappleFlowerCount:100,ethrelTotal:0}));assert.equal(r.group,'verify');assert.equal(r.label,'Pisahkan kelompok tanaman');
 });
+test('published census adds a mapped gawangan absent from initial crop data',()=>{
+ const e=event('Sensus tanaman',{livingPlantCount:350});e.properties.targetObjectId='DAYUN-GT-B-15';
+ const result=build({objects:[]},{features:[e]},{asOf:'2026-10-12'});assert.equal(result.rows.length,1);assert.equal(result.rows[0].id,'DAYUN-GT-B-15');assert.equal(result.rows[0].plants,350);
+});
