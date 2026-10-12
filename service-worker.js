@@ -1,4 +1,4 @@
-const CACHE_NAME = "yg-geoportal-v28-20261012-ethrel";
+const CACHE_NAME = "yg-geoportal-v29-20261012-compact";
 const DAYUN_CACHE_NAME = "yg-dayun-offline-v1";
 const DAYUN_META_URL = "/__dayun_offline_meta__";
 
@@ -15,6 +15,9 @@ const DAYUN_CORE_ASSETS = [
   "/dayun-blok.html",
   "/dayun-analisis-nanas.html",
   "/dayun-panduan-budidaya.html",
+  "/dayun-sop-nanas.html",
+  "/js/dayun-fertilizer-calculator.js",
+  "/js/dayun-field-work.js",
   "/manifest-dayun.webmanifest",
   "/assets/logo-yayasan-gambut.png",
   "/assets/logo-yayasan-gambut-192.png",
