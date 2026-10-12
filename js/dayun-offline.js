@@ -42,6 +42,7 @@
       statusBadge.className = 'dy-offline-badge is-ready';
       statusText.textContent = (online ? 'Peta tersimpan di perangkat' : 'Peta dibuka dari penyimpanan perangkat') +
         (packageMeta.savedAt ? ' · tersimpan ' + dateLabel(packageMeta.savedAt) : '') + (packageMeta.assetCount ? ' · '+packageMeta.assetCount+' berkas termasuk '+packageMeta.tileCount+' tile citra' : '') + '.' +
+        (packageMeta.version!=='20261012-compact2'?' Paket versi sebelumnya; perbarui saat online untuk menyimpan jadwal dan kalkulator terbaru.':'') +
         (isStandalone() ? ' Saat tidak ada jaringan, buka kembali ikon PWA ini; Peta Dayun akan terbuka otomatis.' : ' Pasang ke layar utama agar dapat masuk kembali tanpa jaringan.');
       saveButton.textContent = 'Perbarui peta offline';
       saveButton.disabled = !online;
