@@ -111,10 +111,10 @@
       }});
       function syncMapLabels(){var show=map.getZoom()>=18;mapEl.classList.toggle('dy-hide-gawangan-labels',!show);}
       map.on('zoomend',syncMapLabels);syncMapLabels();
-      if(window.DayunFieldWork&&page==='map')window.DayunFieldWork.create({details:gawanganData,map:map,layers:featureLayers});
+      var fieldWorkController=null;if(window.DayunFieldWork&&page==='map')fieldWorkController=window.DayunFieldWork.create({details:gawanganData,map:map,layers:featureLayers});
       if(window.DayunEthrel&&page==='map'){
         ethrelController=window.DayunEthrel.create({details:gawanganData,map:map,layers:featureLayers,style:featureStyle,showGawangan:function(){var feature=(geojson.features||[]).find(function(f){return (f.properties||{}).category==='Gawangan Tanam';});if(feature)switchLayer(feature.properties.layerId);}});
-        window.DayunEthrel.loadMonitoring().then(function(result){ethrelController.update(result.reports,result.label);}).catch(function(){ethrelController.update(null,'Laporan monitoring terbaru belum tersedia · data sumber awal saja');});
+        window.DayunEthrel.loadMonitoring().then(function(result){ethrelController.update(result.reports,result.label);if(fieldWorkController)fieldWorkController.update(result.reports);}).catch(function(){ethrelController.update(null,'Laporan monitoring terbaru belum tersedia · data sumber awal saja');});
       }
       function renderLegend(){
         var layer=data.layers.find(function(x){return x.id===active;}),items=layer.items||[];
