@@ -17,7 +17,7 @@
         if (!points) {
           panel.textContent = error ? 'Titik MPTS belum dapat dimuat. Muat ulang halaman untuk mencoba lagi.' : 'Memuat titik monitoring MPTS…';
         } else {
-          panel.innerHTML = '<b>Monitoring MPTS · ' + records.length + ' titik</b><p>Petai: 152 titik · Jengkol: 63 titik</p><label><input type="checkbox" ' + (visible ? 'checked' : '') + '> Tampilkan titik MPTS</label><p><span style="color:#16a34a">●</span> Petai tanpa label mati<br><span style="color:#7c3aed">●</span> Jengkol tanpa label mati<br><span style="color:#dc2626">●</span> Berlabel mati: 68 titik</p><button type="button" class="dy-btn ghost">Lihat seluruh titik MPTS</button><p><small>Data diperbarui 8 Oktober 2026.</small></p>';
+          panel.innerHTML = '<b>Monitoring MPTS · ' + records.length + ' titik</b><p>Petai: 152 titik · Jengkol: 63 titik</p><label><input type="checkbox" ' + (visible ? 'checked' : '') + '> Tampilkan titik MPTS</label><p><span style="color:#16a34a">●</span> Petai tanpa label mati<br><span style="color:#7c3aed">●</span> Jengkol tanpa label mati<br><span style="color:#dc2626">●</span> Petai mati: 55 titik<br><span style="color:#ea580c">●</span> Jengkol mati: 13 titik</p><button type="button" class="dy-btn ghost">Lihat seluruh titik MPTS</button><p><small>Data diperbarui 8 Oktober 2026.</small></p>';
           panel.querySelector('input').addEventListener('change', function (event) {
             visible = event.target.checked;
             if (visible) points.addTo(map); else map.removeLayer(points);
@@ -41,6 +41,11 @@
             });
           });
           panel.appendChild(details);
+          var summary = DayunMptsSummary.summarize(records), recap = document.createElement('details');
+          recap.innerHTML = '<summary style="cursor:pointer;font-weight:700;padding:10px 0">Rekap mati per gawangan</summary><table style="width:100%;font-size:12px;border-collapse:collapse"><thead><tr><th align="left">Gawangan</th><th>Petai</th><th>Jengkol</th><th>Total</th></tr></thead><tbody>' + summary.rows.map(function (row) {
+            return '<tr><td style="padding:8px 0"><a href="dayun-gawangan.html?object=' + encodeURIComponent(row.objectId) + '">' + esc(row.objectId.replace('DAYUN-GT-', '')) + '</a></td><td align="center" style="color:#dc2626">' + row.Petai + '</td><td align="center" style="color:#ea580c">' + row.Jengkol + '</td><td align="center">' + (row.Petai + row.Jengkol) + '</td></tr>';
+          }).join('') + '<tr><td>Di luar gawangan tanam</td><td align="center">' + summary.unassigned.Petai + '</td><td align="center">' + summary.unassigned.Jengkol + '</td><td align="center">' + (summary.unassigned.Petai + summary.unassigned.Jengkol) + '</td></tr><tr><th align="left">Total</th><th>' + summary.total.Petai + '</th><th>' + summary.total.Jengkol + '</th><th>' + (summary.total.Petai + summary.total.Jengkol) + '</th></tr></tbody></table><small>Jumlah mati pada titik monitoring yang tercatat, bukan sensus seluruh kebun.</small>';
+          panel.appendChild(recap);
         }
         legend.prepend(panel);
       }
@@ -56,7 +61,7 @@
             pointToLayer: function (feature, latlng) {
               var p = feature.properties;
               return L.circleMarker(latlng, {pane:'dayunMpts', renderer:pointRenderer, radius:5, color:'#ffffff', weight:1.3, fillOpacity:1,
-                fillColor:p.condition === 'Mati' ? '#dc2626' : p.species === 'Petai' ? '#16a34a' : '#7c3aed'});
+                fillColor:p.condition === 'Mati' ? (p.species === 'Petai' ? '#dc2626' : '#ea580c') : p.species === 'Petai' ? '#16a34a' : '#7c3aed'});
             },
             onEachFeature: function (feature, layer) {
               var p = feature.properties;

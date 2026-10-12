@@ -37,6 +37,8 @@ const DAYUN_CORE_ASSETS = [
   "/js/dayun-agro-summary.js",
   "/js/dayun-public.js",
   "/js/dayun-mpts.js",
+  "/js/dayun-mpts-summary.js",
+  "/js/dayun-mpts-profile.js",
   "/js/dayun-ethrel.js",
   "/js/dayun-offline.js",
   "/js/dayun-gawangan.js",
