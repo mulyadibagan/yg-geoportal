@@ -26,6 +26,10 @@
     if(id.startsWith("BLOCK:"))return Object.values(gawangan).filter(x=>x.block===id.slice(6));
     return gawangan[id]?[gawangan[id]]:[];
   }
+  const requestedParams=new URLSearchParams(location.search);
+  const requestedPlants=requestedParams.get("plants");
+  const requestedPhase=requestedParams.get("phase");
+  if(requestedPhase&&(programs[requestedPhase]||requestedPhase==="ethrel"))$("fert-phase").value=requestedPhase;
   function syncPopulation(){
     const members=selectedMembers(),aggregate=$("fert-gawangan").value==="ALL"||$("fert-gawangan").value.startsWith("BLOCK:");
     if(aggregate){
@@ -37,6 +41,9 @@
       $("fert-plant-count").value=item?item.count:"";
       populationNote.textContent=item?item.label+" · "+item.date:populationStatus;
     }
+    if(requestedPlants!==null&&requestedParams.get("gawangan")===$("fert-gawangan").value&&/^\d+$/.test(requestedPlants)){
+      $("fert-plant-count").value=Number(requestedPlants);populationNote.textContent="Kelompok tanam "+(requestedParams.get("cohort")||"pilihan")+" · jumlah sasaran dari jadwal; periksa tanaman hidup.";
+    }
     $("fert-plant-count").readOnly=false;
   }
   function refresh(){clearResult();if(selectedArea>0)calculate()}
@@ -47,8 +54,9 @@
         if(!crop)return;
         const census=crop.populationCensus;
         const verified=census&&count(census.livingPlantCount)!==null;
-        const value=count(verified?census.livingPlantCount:crop.vegetationCount);
-        if(value!==null)populations[record.objectId]={count:value,label:verified?"Sensus terpublikasi":"Data sementara",date:verified?census.period:(data.updatedAt||"").slice(0,10)};
+        const pop=window.DayunAgroSummary.population(crop);
+        const value=count(pop.planning);
+        if(value!==null)populations[record.objectId]={count:value,label:verified?"Sensus hidup + tambahan setelah sensus":"Total sumber awal + tambahan tanam (belum sensus hidup)",date:verified?census.period:(data.updatedAt||"").slice(0,10)};
       });
       populationStatus="Data nanas belum tersedia untuk gawangan ini; isi jumlah tanaman acuan.";
       syncPopulation();refresh();
