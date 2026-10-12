@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-09-18T14:33:16Z",
+  "updatedAt": "2026-10-12T14:08:36Z",
   "title": "Data gawangan agroforestri KUPS Rimba Sejahtera",
   "notes": [
     "Satu gawangan dapat memuat lebih dari satu komoditas.",
@@ -140,7 +140,16 @@
           "fruitAvailability27Dec2025": 39,
           "seedlingAvailability": 700,
           "notes": "layak ethrel",
-          "variety": "Queen"
+          "variety": "Queen",
+          "plantingCohorts": [
+            {
+              "period": "2026-08",
+              "plantedCount": 1029,
+              "datePrecision": "month",
+              "recordedAt": "2026-10-12",
+              "source": "Data penanaman disampaikan Mulyadi, 12 Oktober 2026"
+            }
+          ]
         }
       ]
     },
@@ -213,7 +222,16 @@
           "fruitAvailability27Dec2025": 30,
           "seedlingAvailability": 358,
           "notes": "layak ethrel",
-          "variety": "Queen"
+          "variety": "Queen",
+          "plantingCohorts": [
+            {
+              "period": "2026-08",
+              "plantedCount": 219,
+              "datePrecision": "month",
+              "recordedAt": "2026-10-12",
+              "source": "Data penanaman disampaikan Mulyadi, 12 Oktober 2026"
+            }
+          ]
         }
       ]
     },
@@ -272,7 +290,16 @@
           "pineappleFlowerCount": 348,
           "fruitAvailability27Dec2025": 5,
           "notes": "layak ethrel",
-          "variety": "Queen"
+          "variety": "Queen",
+          "plantingCohorts": [
+            {
+              "period": "2026-08",
+              "plantedCount": 272,
+              "datePrecision": "month",
+              "recordedAt": "2026-10-12",
+              "source": "Data penanaman disampaikan Mulyadi, 12 Oktober 2026"
+            }
+          ]
         }
       ]
     },
@@ -334,7 +361,16 @@
           "ethrelTotal": 591,
           "pineappleFlowerCount": 223,
           "notes": "layak ethrel",
-          "variety": "Queen"
+          "variety": "Queen",
+          "plantingCohorts": [
+            {
+              "period": "2026-08",
+              "plantedCount": 210,
+              "datePrecision": "month",
+              "recordedAt": "2026-10-12",
+              "source": "Data penanaman disampaikan Mulyadi, 12 Oktober 2026"
+            }
+          ]
         },
         {
           "crop": "CABAI",
@@ -427,7 +463,16 @@
           "pineappleFlowerCount": 513,
           "fruitAvailability27Dec2025": 7,
           "notes": "layak ethrel",
-          "variety": "Queen"
+          "variety": "Queen",
+          "plantingCohorts": [
+            {
+              "period": "2026-08",
+              "plantedCount": 547,
+              "datePrecision": "month",
+              "recordedAt": "2026-10-12",
+              "source": "Data penanaman disampaikan Mulyadi, 12 Oktober 2026"
+            }
+          ]
         },
         {
           "crop": "CABAI",
@@ -499,7 +544,16 @@
           "ethrelTotal": 750,
           "pineappleFlowerCount": 228,
           "notes": "layak ethrel",
-          "variety": "Queen"
+          "variety": "Queen",
+          "plantingCohorts": [
+            {
+              "period": "2026-08",
+              "plantedCount": 831,
+              "datePrecision": "month",
+              "recordedAt": "2026-10-12",
+              "source": "Data penanaman disampaikan Mulyadi, 12 Oktober 2026"
+            }
+          ]
         }
       ]
     },
@@ -607,7 +661,16 @@
           "ethrelTotal": 469,
           "fruitAvailability27Dec2025": 11,
           "notes": "layak ethrel",
-          "variety": "Queen"
+          "variety": "Queen",
+          "plantingCohorts": [
+            {
+              "period": "2026-08",
+              "plantedCount": 1718,
+              "datePrecision": "month",
+              "recordedAt": "2026-10-12",
+              "source": "Data penanaman disampaikan Mulyadi, 12 Oktober 2026"
+            }
+          ]
         }
       ]
     },
@@ -667,7 +730,16 @@
           "pineappleFlowerCount": 7,
           "fruitAvailability27Dec2025": 1,
           "notes": "layak ethrel",
-          "variety": "Queen"
+          "variety": "Queen",
+          "plantingCohorts": [
+            {
+              "period": "2026-08",
+              "plantedCount": 2619,
+              "datePrecision": "month",
+              "recordedAt": "2026-10-12",
+              "source": "Data penanaman disampaikan Mulyadi, 12 Oktober 2026"
+            }
+          ]
         }
       ]
     },
@@ -725,7 +797,16 @@
           ],
           "ethrelTotal": 416,
           "notes": "layak ethrel",
-          "variety": "Queen"
+          "variety": "Queen",
+          "plantingCohorts": [
+            {
+              "period": "2026-08",
+              "plantedCount": 1084,
+              "datePrecision": "month",
+              "recordedAt": "2026-10-12",
+              "source": "Data penanaman disampaikan Mulyadi, 12 Oktober 2026"
+            }
+          ]
         }
       ]
     },
@@ -790,7 +871,16 @@
           "fruitAvailability27Dec2025": 92,
           "seedlingAvailability": 496,
           "notes": "layak ethrel",
-          "variety": "Queen"
+          "variety": "Queen",
+          "plantingCohorts": [
+            {
+              "period": "2026-08",
+              "plantedCount": 1014,
+              "datePrecision": "month",
+              "recordedAt": "2026-10-12",
+              "source": "Data penanaman disampaikan Mulyadi, 12 Oktober 2026"
+            }
+          ]
         }
       ]
     },
@@ -1013,6 +1103,18 @@
           "ageMonths": 24,
           "rotation": 1,
           "plantingPeriod": "Jan 2024"
+        },
+        {
+          "crop": "NANAS",
+          "plantingCohorts": [
+            {
+              "period": "2026-08",
+              "plantedCount": 1366,
+              "datePrecision": "month",
+              "recordedAt": "2026-10-12",
+              "source": "Data penanaman disampaikan Mulyadi, 12 Oktober 2026"
+            }
+          ]
         }
       ]
     },
@@ -1051,7 +1153,16 @@
           ],
           "ethrelTotal": 94,
           "notes": "layak ethrel",
-          "variety": "Queen"
+          "variety": "Queen",
+          "plantingCohorts": [
+            {
+              "period": "2026-08",
+              "plantedCount": 1662,
+              "datePrecision": "month",
+              "recordedAt": "2026-10-12",
+              "source": "Data penanaman disampaikan Mulyadi, 12 Oktober 2026"
+            }
+          ]
         }
       ]
     },
@@ -1104,7 +1215,16 @@
           ],
           "ethrelTotal": 2578,
           "notes": "layak ethrel",
-          "variety": "Queen"
+          "variety": "Queen",
+          "plantingCohorts": [
+            {
+              "period": "2026-08",
+              "plantedCount": 2111,
+              "datePrecision": "month",
+              "recordedAt": "2026-10-12",
+              "source": "Data penanaman disampaikan Mulyadi, 12 Oktober 2026"
+            }
+          ]
         }
       ]
     },
@@ -2002,7 +2122,16 @@
           "lengthM": 181,
           "pineappleHarvestTotal": 0,
           "ethrelTotal": 0,
-          "variety": "Queen"
+          "variety": "Queen",
+          "plantingCohorts": [
+            {
+              "period": "2026-08",
+              "plantedCount": 4193,
+              "datePrecision": "month",
+              "recordedAt": "2026-10-12",
+              "source": "Data penanaman disampaikan Mulyadi, 12 Oktober 2026"
+            }
+          ]
         },
         {
           "crop": "JENGKOL",
@@ -2042,7 +2171,16 @@
           "lengthM": 181,
           "pineappleHarvestTotal": 0,
           "ethrelTotal": 0,
-          "variety": "Queen"
+          "variety": "Queen",
+          "plantingCohorts": [
+            {
+              "period": "2026-08",
+              "plantedCount": 5522,
+              "datePrecision": "month",
+              "recordedAt": "2026-10-12",
+              "source": "Data penanaman disampaikan Mulyadi, 12 Oktober 2026"
+            }
+          ]
         },
         {
           "crop": "JENGKOL",
@@ -2082,7 +2220,16 @@
           "lengthM": 181,
           "pineappleHarvestTotal": 0,
           "ethrelTotal": 0,
-          "variety": "Queen"
+          "variety": "Queen",
+          "plantingCohorts": [
+            {
+              "period": "2026-08",
+              "plantedCount": 4902,
+              "datePrecision": "month",
+              "recordedAt": "2026-10-12",
+              "source": "Data penanaman disampaikan Mulyadi, 12 Oktober 2026"
+            }
+          ]
         },
         {
           "crop": "JENGKOL",

@@ -4,6 +4,21 @@ const {build}=require('../js/dayun-ethrel.js');
 const details=c=>({objects:[{objectId:'DAYUN-GT-B-12',block:'B',crops:[{crop:'NANAS',vegetationCount:1000,plantingDate:'2026-01-01',...c}]}]});
 const event=(activityType,activityDetails,date='2026-10-01')=>({properties:{targetLayerId:'dayun_gawangan',targetObjectId:'DAYUN-GT-B-12',proposedInformation:JSON.stringify({monitoringType:'Agroforestri Dayun',crop:'NANAS',eventDate:date,activityType,activityDetails})}});
 const row=(d,p)=>build(d,p,{asOf:'2026-10-12'}).rows[0];
+test('August planting stays separate from old population and Ethrel history',()=>{
+ const d=details({ethrelTotal:900,plantingCohorts:[{period:'2026-08',plantedCount:1029}]}),r=build(d,null,{asOf:'2026-10-12'}).rows;
+ assert.equal(r.length,2);assert.equal(r[0].treated,900);assert.equal(r[0].plants,1000);
+ assert.equal(r[1].plants,1029);assert.equal(r[1].age,2);assert.equal(r[1].group,'maintenance');assert.equal(r[1].treated,null);assert.equal(r[1].remaining,null);assert.match(r[1].reason,/Mei 2027|mei 2027/);
+});
+test('new planting displays even when old population is absent',()=>{
+ const d=details({vegetationCount:null,plantingCohorts:[{period:'2026-08',plantedCount:4193}]}),r=build(d,null,{asOf:'2026-10-12'}).rows;
+ assert.equal(r.length,1);assert.equal(r[0].plants,4193);assert.equal(r[0].group,'maintenance');
+});
+test('new cohort reaches inspection age without being auto declared ready',()=>{
+ const d=details({vegetationCount:0,plantingCohorts:[{period:'2026-08',plantedCount:100}]}),r=build(d,null,{asOf:'2027-05-01'}).rows[0];assert.equal(r.age,9);assert.equal(r.group,'verify');assert.equal(r.treated,null);
+});
+test('supplied August counts reconcile to 16 gawangan and 29299 planted seedlings',()=>{
+ const d=require('../data/dayun-gawangan-details.json');const cohorts=d.objects.flatMap(o=>(o.crops||[]).flatMap(c=>(c.plantingCohorts||[]).filter(x=>x.period==='2026-08')));assert.equal(cohorts.length,16);assert.equal(cohorts.reduce((s,x)=>s+x.plantedCount,0),29299);
+});
 test('nine months triggers inspection, never automatic ready status',()=>{
  const r=row(details({ethrelTotal:0}));assert.equal(r.age,9);assert.equal(r.group,'verify');assert.equal(r.remaining,1000);assert.match(r.reason,/Periksa tanaman/);assert.doesNotMatch(r.label,/Siap/);
 });
@@ -37,3 +52,4 @@ test('published census adds a mapped gawangan absent from initial crop data',()=
  const e=event('Sensus tanaman',{livingPlantCount:350});e.properties.targetObjectId='DAYUN-GT-B-15';
  const result=build({objects:[]},{features:[e]},{asOf:'2026-10-12'});assert.equal(result.rows.length,1);assert.equal(result.rows[0].id,'DAYUN-GT-B-15');assert.equal(result.rows[0].plants,350);
 });
+
