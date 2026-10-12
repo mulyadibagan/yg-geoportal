@@ -1,0 +1,5 @@
+const {test}=require('node:test'),assert=require('node:assert/strict'),vm=require('node:vm'),fs=require('node:fs');
+const source=fs.readFileSync(require('node:path').join(__dirname,'../js/dayun-data-source.js'),'utf8');
+async function read(remote,local){const window={},calls=[];vm.runInNewContext(source,{window,navigator:{onLine:true},AbortController,setTimeout,clearTimeout,console,fetch:async url=>{calls.push(url);return {ok:true,json:async()=>url.startsWith('https:')?remote:local};}});return {result:await window.DayunDataSource.fetchJSON('data/dayun-gawangan-details.json'),calls};}
+test('recent planting data stays visible while remote publication is queued',async()=>{const r=await read({updatedAt:'2026-09-18',objects:[]},{updatedAt:'2026-10-12',objects:[{id:'new planting'}]});assert.equal(r.result.objects[0].id,'new planting');});
+test('newer gateway updates remain authoritative',async()=>{const r=await read({updatedAt:'2026-10-13',objects:[{id:'newer remote'}]},{updatedAt:'2026-10-12',objects:[]});assert.equal(r.result.objects[0].id,'newer remote');});
