@@ -14,6 +14,8 @@
   var deferredPrompt = null;
   var registration = null;
   var packageMeta = { ready: false };
+  var statusTimer=null;
+  function clearStatusTimer(){if(statusTimer)clearTimeout(statusTimer);statusTimer=null;}
 
   function isStandalone() {
     return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
@@ -30,6 +32,7 @@
   }
 
   function renderStatus(meta) {
+    clearStatusTimer();
     packageMeta = meta || { ready: false };
     var online = navigator.onLine !== false;
     panel.classList.toggle('is-ready', !!packageMeta.ready);
@@ -38,7 +41,7 @@
       statusBadge.textContent = online ? 'Offline siap' : 'Sedang offline';
       statusBadge.className = 'dy-offline-badge is-ready';
       statusText.textContent = (online ? 'Peta tersimpan di perangkat' : 'Peta dibuka dari penyimpanan perangkat') +
-        (packageMeta.savedAt ? ' · diperbarui ' + dateLabel(packageMeta.savedAt) : '') + '.' +
+        (packageMeta.savedAt ? ' · tersimpan ' + dateLabel(packageMeta.savedAt) : '') + (packageMeta.assetCount ? ' · '+packageMeta.assetCount+' berkas termasuk '+packageMeta.tileCount+' tile citra' : '') + '.' +
         (isStandalone() ? ' Saat tidak ada jaringan, buka kembali ikon PWA ini; Peta Dayun akan terbuka otomatis.' : ' Pasang ke layar utama agar dapat masuk kembali tanpa jaringan.');
       saveButton.textContent = 'Perbarui peta offline';
       saveButton.disabled = !online;
@@ -121,6 +124,7 @@
     if (navigator.storage && navigator.storage.persist) {
       try { await navigator.storage.persist(); } catch (_) {}
     }
+    clearStatusTimer();statusTimer=setTimeout(function(){renderStatus(packageMeta);statusBadge.textContent='Unduhan belum terkonfirmasi';statusText.textContent='Paket belum dikonfirmasi lengkap. Periksa jaringan sebelum mencoba lagi.';},45000);
     worker.postMessage({ type: 'DAYUN_OFFLINE_DOWNLOAD' });
   }
 
@@ -159,6 +163,7 @@
     navigator.serviceWorker.addEventListener('message', function (event) {
       var data = event.data || {};
       if (data.type === 'DAYUN_OFFLINE_PROGRESS') {
+        clearStatusTimer();statusTimer=setTimeout(function(){renderStatus(packageMeta);statusBadge.textContent='Unduhan terhenti';statusText.textContent='Tidak ada kemajuan unduhan. Periksa jaringan sebelum mencoba lagi.';},45000);
         var percent = Math.max(1, Math.round(data.completed / data.total * 100));
         statusText.textContent = 'Mengunduh paket peta… ' + percent + '%';
         if (progressBar) progressBar.style.width = percent + '%';
@@ -176,13 +181,13 @@
     window.addEventListener('load', async function () {
       try {
         registration = await navigator.serviceWorker.register('./service-worker.js?v=20260920-dayun-entry1', { updateViaCache: 'none' });
-        await registration.update();
-        registration = await navigator.serviceWorker.ready;
+        registration.update().catch(function(){});
+        registration = await Promise.race([navigator.serviceWorker.ready,new Promise(function(_,reject){setTimeout(function(){reject(new Error('Layanan offline belum aktif; muat ulang halaman.'));},12000);})]);
         renderStatus(await askWorker('DAYUN_OFFLINE_STATUS'));
       } catch (error) {
         statusBadge.textContent = 'Tidak didukung';
         statusBadge.className = 'dy-offline-badge is-error';
-        statusText.textContent = 'Browser ini belum dapat menyiapkan peta offline.';
+        statusText.textContent = 'Status offline belum dapat diperiksa. Muat ulang halaman dan coba kembali.';
         saveButton.disabled = true;
       }
     }, { once: true });
