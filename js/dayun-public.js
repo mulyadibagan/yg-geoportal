@@ -116,6 +116,7 @@
         ethrelController=window.DayunEthrel.create({details:gawanganData,map:map,layers:featureLayers,style:featureStyle,showGawangan:function(){var feature=(geojson.features||[]).find(function(f){return (f.properties||{}).category==='Gawangan Tanam';});if(feature)switchLayer(feature.properties.layerId);}});
         window.DayunEthrel.loadMonitoring().then(function(result){ethrelController.update(result.reports,result.label);if(fieldWorkController)fieldWorkController.update(result.reports);}).catch(function(){ethrelController.update(null,'Laporan monitoring terbaru belum tersedia · data sumber awal saja');});
       }
+      var renderMptsLegend = window.YGDayunMpts ? window.YGDayunMpts.attach(map, legendEl) : function () {};
       function renderLegend(){
         var layer=data.layers.find(function(x){return x.id===active;}),items=layer.items||[];
         var gawanganIds=Object.keys(objectProperties).filter(function(id){return /^DAYUN-GT-[A-F]-\d{2}$/.test(id);}).sort(function(a,b){return a.localeCompare(b,'id',{numeric:true});}),cropTypes={};(gawanganData.objects||[]).forEach(function(item){(item.crops||[]).forEach(function(crop){cropTypes[crop.crop]=true;});});
@@ -126,6 +127,7 @@
         legendEl.querySelectorAll('[data-map-layer]').forEach(function(btn){btn.addEventListener('click',function(){switchLayer(btn.getAttribute('data-map-layer'));});});
         legendEl.querySelectorAll('[data-category]').forEach(function(btn){btn.addEventListener('click',function(){var bounds=categoryBounds[btn.getAttribute('data-category')];if(!bounds||!bounds.isValid())return;map.fitBounds(bounds,{padding:[36,36],maxZoom:18});document.querySelectorAll('.dy-object-key').forEach(function(x){x.classList.toggle('active',x===btn);});});});
         legendEl.querySelectorAll('[data-context]').forEach(function(btn){btn.addEventListener('click',function(){var target=btn.getAttribute('data-context');if(target==='objects')map.fitBounds(groups[active].getBounds(),{padding:[24,24]});if(target==='blocks')map.fitBounds(contextLayers.blocks.getBounds(),{padding:[28,28]});if(target==='hkm')map.fitBounds(contextLayers['ps-hkm'].getBounds(),{padding:[28,28]});if(target==='village')map.fitBounds(contextLayers['desa-dayun'].getBounds(),{padding:[28,28]});});});
+        renderMptsLegend();
       }
       function switchLayer(id){if(!groups[id]||id===active)return;map.removeLayer(groups[active]);active=id;groups[active].addTo(map);renderLegend();map.fitBounds(groups[active].getBounds(),{padding:[24,24]});if(ethrelController)ethrelController.repaint();}
       groups[active].addTo(map);renderLegend();map.fitBounds(groups[active].getBounds(),{padding:[24,24]});setTimeout(function(){map.invalidateSize();map.fitBounds(groups[active].getBounds(),{padding:[24,24]});},120);

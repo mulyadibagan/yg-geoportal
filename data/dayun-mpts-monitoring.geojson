@@ -1,0 +1,6677 @@
+{
+  "type": "FeatureCollection",
+  "name": "Monitoring MPTS Dayun C10-C8",
+  "source": "C10-C8.kml",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009335,
+          0.583478055555556
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-001",
+        "sourceFid": "1",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "dayun_20261009_105026138.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.0093316417756,
+          0.5834724580045298
+        ],
+        "displayRow": "MPTS-R06",
+        "displayShiftMeters": 0.73
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009376388889,
+          0.583459722222222
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-002",
+        "sourceFid": "2",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "dayun_20261009_105142710.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00937016519747,
+          0.5834493484571129
+        ],
+        "displayRow": "MPTS-R06",
+        "displayShiftMeters": 1.35
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009443333333,
+          0.583408333333333
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-003",
+        "sourceFid": "3",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "dayun_20261009_105223104.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00944206399976,
+          0.583406217585011
+        ],
+        "displayRow": "MPTS-R06",
+        "displayShiftMeters": 0.27
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009495,
+          0.583378055555556
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-004",
+        "sourceFid": "4",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "dayun_20261009_105251920.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.0094934147101,
+          0.5833754131647768
+        ],
+        "displayRow": "MPTS-R06",
+        "displayShiftMeters": 0.34
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009659722222,
+          0.583288333333333
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-005",
+        "sourceFid": "5",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "dayun_20261009_105343204.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00965412588593,
+          0.5832790052560266
+        ],
+        "displayRow": "MPTS-R06",
+        "displayShiftMeters": 1.21
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009703333333,
+          0.583238333333333
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-006",
+        "sourceFid": "6",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "dayun_20261009_105400350.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00970825379069,
+          0.5832465348439687
+        ],
+        "displayRow": "MPTS-R06",
+        "displayShiftMeters": 1.06
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009621666667,
+          0.583039722222222
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-007",
+        "sourceFid": "7",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "dayun_20261009_105623553.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00962565884288,
+          0.5830463764554301
+        ],
+        "displayRow": "MPTS-R04",
+        "displayShiftMeters": 0.86
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009529722222,
+          0.583089722222222
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-008",
+        "sourceFid": "8",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "dayun_20261009_105659356.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00953598903033,
+          0.5831001678551999
+        ],
+        "displayRow": "MPTS-R04",
+        "displayShiftMeters": 1.36
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009458055556,
+          0.583151666666667
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-009",
+        "sourceFid": "9",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "dayun_20261009_105748151.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.0094559609522,
+          0.5831481753420015
+        ],
+        "displayRow": "MPTS-R04",
+        "displayShiftMeters": 0.45
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009371388889,
+          0.583198333333333
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-010",
+        "sourceFid": "10",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "dayun_20261009_105811445.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00937164271818,
+          0.5831987564205628
+        ],
+        "displayRow": "MPTS-R04",
+        "displayShiftMeters": 0.05
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009316388889,
+          0.583235
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-011",
+        "sourceFid": "11",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "dayun_20261009_105857371.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00931502225818,
+          0.5832327220742486
+        ],
+        "displayRow": "MPTS-R04",
+        "displayShiftMeters": 0.3
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009266666667,
+          0.583266666666667
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-012",
+        "sourceFid": "12",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "dayun_20261009_105930459.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00926448865945,
+          0.5832630363230767
+        ],
+        "displayRow": "MPTS-R04",
+        "displayShiftMeters": 0.47
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009216388889,
+          0.58329
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-013",
+        "sourceFid": "13",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "dayun_20261009_105944532.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00921722294653,
+          0.5832913902226428
+        ],
+        "displayRow": "MPTS-R04",
+        "displayShiftMeters": 0.18
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009155,
+          0.583326666666667
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-014",
+        "sourceFid": "14",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "dayun_20261009_110010677.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00915590441822,
+          0.5833281741678198
+        ],
+        "displayRow": "MPTS-R04",
+        "displayShiftMeters": 0.2
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009083055556,
+          0.583366666666667
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-015",
+        "sourceFid": "15",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "dayun_20261009_110031966.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00908535329907,
+          0.5833704965876628
+        ],
+        "displayRow": "MPTS-R04",
+        "displayShiftMeters": 0.5
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.00903,
+          0.583411388888889
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-016",
+        "sourceFid": "16",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "dayun_20261009_110052570.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00902660881891,
+          0.5834057364050161
+        ],
+        "displayRow": "MPTS-R04",
+        "displayShiftMeters": 0.73
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008988333333,
+          0.583421666666667
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-017",
+        "sourceFid": "17",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "dayun_20261009_110110538.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00899143499971,
+          0.5834268365826053
+        ],
+        "displayRow": "MPTS-R04",
+        "displayShiftMeters": 0.67
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008938055556,
+          0.583451666666667
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-018",
+        "sourceFid": "18",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "dayun_20261009_110201714.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.0089412281565,
+          0.5834569548163492
+        ],
+        "displayRow": "MPTS-R04",
+        "displayShiftMeters": 0.69
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008886388889,
+          0.583488333333333
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-019",
+        "sourceFid": "19",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "dayun_20261009_110226720.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00888705886226,
+          0.5834894500572637
+        ],
+        "displayRow": "MPTS-R04",
+        "displayShiftMeters": 0.14
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008806388889,
+          0.583531388888889
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-020",
+        "sourceFid": "20",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "dayun_20261009_110302345.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00880923607318,
+          0.5835361346285718
+        ],
+        "displayRow": "MPTS-R04",
+        "displayShiftMeters": 0.62
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008769722222,
+          0.583553333333333
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-021",
+        "sourceFid": "21",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "dayun_20261009_110357650.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00877259202372,
+          0.5835581167723622
+        ],
+        "displayRow": "MPTS-R04",
+        "displayShiftMeters": 0.62
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008735,
+          0.583585
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-022",
+        "sourceFid": "22",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "dayun_20261009_110413168.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.0087330886721,
+          0.5835818141630251
+        ],
+        "displayRow": "MPTS-R04",
+        "displayShiftMeters": 0.41
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008663333333,
+          0.583626666666667
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-023",
+        "sourceFid": "23",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "dayun_20261009_110430779.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00866200653347,
+          0.5836244551324544
+        ],
+        "displayRow": "MPTS-R04",
+        "displayShiftMeters": 0.29
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008593333333,
+          0.583651666666667
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-024",
+        "sourceFid": "24",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "dayun_20261009_110511245.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00859950280564,
+          0.5836619500587217
+        ],
+        "displayRow": "MPTS-R04",
+        "displayShiftMeters": 1.33
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008555,
+          0.583689722222222
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-025",
+        "sourceFid": "25",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "dayun_20261009_110531396.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00855452544035,
+          0.5836889312173501
+        ],
+        "displayRow": "MPTS-R04",
+        "displayShiftMeters": 0.1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008493055556,
+          0.583721388888889
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-026",
+        "sourceFid": "26",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "dayun_20261009_110547982.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00849500423305,
+          0.5837246369801378
+        ],
+        "displayRow": "MPTS-R04",
+        "displayShiftMeters": 0.42
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008446388889,
+          0.583748333333333
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-027",
+        "sourceFid": "27",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "dayun_20261009_110606575.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00844880083726,
+          0.5837523536136723
+        ],
+        "displayRow": "MPTS-R04",
+        "displayShiftMeters": 0.52
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.0084,
+          0.583783333333333
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-028",
+        "sourceFid": "28",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "dayun_20261009_110627628.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00839924783881,
+          0.5837820796170344
+        ],
+        "displayRow": "MPTS-R04",
+        "displayShiftMeters": 0.16
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008331666667,
+          0.58382
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-029",
+        "sourceFid": "29",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "dayun_20261009_110650552.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00833282271495,
+          0.5838219269222743
+        ],
+        "displayRow": "MPTS-R04",
+        "displayShiftMeters": 0.25
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.00828,
+          0.583866388888889
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-030",
+        "sourceFid": "30",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "dayun_20261009_110713419.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00827436427129,
+          0.5838569951511806
+        ],
+        "displayRow": "MPTS-R04",
+        "displayShiftMeters": 1.22
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008228333333,
+          0.583921388888889
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-031",
+        "sourceFid": "31",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "dayun_20261009_110736617.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00821210686672,
+          0.583894342312308
+        ],
+        "displayRow": "MPTS-R04",
+        "displayShiftMeters": 3.51
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008179722222,
+          0.583915
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-032",
+        "sourceFid": "32",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "dayun_20261009_110758532.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00817917927955,
+          0.5839140950134029
+        ],
+        "displayRow": "MPTS-R04",
+        "displayShiftMeters": 0.12
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008123055556,
+          0.583945
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-033",
+        "sourceFid": "33",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "dayun_20261009_110825988.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00812427436804,
+          0.583947031538638
+        ],
+        "displayRow": "MPTS-R04",
+        "displayShiftMeters": 0.26
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008075,
+          0.58398
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-034",
+        "sourceFid": "34",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "dayun_20261009_110847303.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00807349578633,
+          0.5839774927486051
+        ],
+        "displayRow": "MPTS-R04",
+        "displayShiftMeters": 0.33
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008033055556,
+          0.584013333333333
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-035",
+        "sourceFid": "35",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "dayun_20261009_110911085.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.0080279462924,
+          0.584004817117501
+        ],
+        "displayRow": "MPTS-R04",
+        "displayShiftMeters": 1.11
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.007964722222,
+          0.584046388888889
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-036",
+        "sourceFid": "36",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "dayun_20261009_110930958.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00796311428046,
+          0.5840437087419319
+        ],
+        "displayRow": "MPTS-R04",
+        "displayShiftMeters": 0.35
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.007918333333,
+          0.584078055555556
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-037",
+        "sourceFid": "37",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "dayun_20261009_110950872.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.0079150318475,
+          0.5840725525779827
+        ],
+        "displayRow": "MPTS-R04",
+        "displayShiftMeters": 0.71
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.00786,
+          0.584109722222222
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-038",
+        "sourceFid": "38",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "dayun_20261009_111015082.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00785816606998,
+          0.5841066653934845
+        ],
+        "displayRow": "MPTS-R04",
+        "displayShiftMeters": 0.4
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.007803055556,
+          0.584134722222222
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-039",
+        "sourceFid": "39",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "dayun_20261009_111036337.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00780526274275,
+          0.584138401202261
+        ],
+        "displayRow": "MPTS-R04",
+        "displayShiftMeters": 0.48
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.007751388889,
+          0.584155
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-040",
+        "sourceFid": "40",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "dayun_20261009_111104513.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-INFRASTRUKTUR"
+        ],
+        "displayCoordinates": [
+          102.00775832372896,
+          0.5841665591205549
+        ],
+        "displayRow": "MPTS-R04",
+        "displayShiftMeters": 1.5
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.007776666667,
+          0.584063055555556
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-041",
+        "sourceFid": "41",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "dayun_20261009_111335613.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GAWANGAN-MATI"
+        ],
+        "displayCoordinates": [
+          102.0077694521802,
+          0.5840510303144208
+        ],
+        "displayRow": "MPTS-R03",
+        "displayShiftMeters": 1.56
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.007824722222,
+          0.58401
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-042",
+        "sourceFid": "42",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "dayun_20261009_111350337.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00782819632437,
+          0.5840157906986223
+        ],
+        "displayRow": "MPTS-R03",
+        "displayShiftMeters": 0.75
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.007881666667,
+          0.583993333333333
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-043",
+        "sourceFid": "43",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "dayun_20261009_111405121.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GAWANGAN-MATI"
+        ],
+        "displayCoordinates": [
+          102.00787742323857,
+          0.5839862603076793
+        ],
+        "displayRow": "MPTS-R03",
+        "displayShiftMeters": 0.92
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.007923055556,
+          0.583983333333333
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-044",
+        "sourceFid": "44",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "dayun_20261009_111416398.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00791227024663,
+          0.5839653561785412
+        ],
+        "displayRow": "MPTS-R03",
+        "displayShiftMeters": 2.33
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.007953055556,
+          0.58392
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-045",
+        "sourceFid": "45",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "dayun_20261009_111430993.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.0079622714856,
+          0.5839353612833001
+        ],
+        "displayRow": "MPTS-R03",
+        "displayShiftMeters": 1.99
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.00803,
+          0.58391
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-046",
+        "sourceFid": "46",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "dayun_20261009_111446085.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00802326426415,
+          0.5838987727498715
+        ],
+        "displayRow": "MPTS-R03",
+        "displayShiftMeters": 1.46
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008131666667,
+          0.58383
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-047",
+        "sourceFid": "47",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "dayun_20261009_111513929.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GAWANGAN-MATI"
+        ],
+        "displayCoordinates": [
+          102.0081333184004,
+          0.5838327531400367
+        ],
+        "displayRow": "MPTS-R03",
+        "displayShiftMeters": 0.36
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008173333333,
+          0.583796388888889
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-048",
+        "sourceFid": "48",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "dayun_20261009_111530227.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GAWANGAN-MATI"
+        ],
+        "displayCoordinates": [
+          102.00817878617745,
+          0.5838054777917066
+        ],
+        "displayRow": "MPTS-R03",
+        "displayShiftMeters": 1.18
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008253055556,
+          0.583758333333333
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-049",
+        "sourceFid": "49",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "dayun_20261009_111545262.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.008254198855,
+          0.5837602390054352
+        ],
+        "displayRow": "MPTS-R03",
+        "displayShiftMeters": 0.25
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.00828,
+          0.583718055555556
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-050",
+        "sourceFid": "50",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "dayun_20261009_111558044.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GAWANGAN-MATI"
+        ],
+        "displayCoordinates": [
+          102.00829178177999,
+          0.5837376936461393
+        ],
+        "displayRow": "MPTS-R03",
+        "displayShiftMeters": 2.55
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008358333333,
+          0.583691666666667
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-051",
+        "sourceFid": "51",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "dayun_20261009_111612258.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00836102615824,
+          0.5836961551179932
+        ],
+        "displayRow": "MPTS-R03",
+        "displayShiftMeters": 0.58
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008413333333,
+          0.583661666666667
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-052",
+        "sourceFid": "52",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "dayun_20261009_111625696.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00841470548723,
+          0.5836639537989304
+        ],
+        "displayRow": "MPTS-R03",
+        "displayShiftMeters": 0.3
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008446388889,
+          0.58363
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-053",
+        "sourceFid": "53",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "dayun_20261009_111636822.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GAWANGAN-MATI"
+        ],
+        "displayCoordinates": [
+          102.00845298325633,
+          0.5836409916144336
+        ],
+        "displayRow": "MPTS-R03",
+        "displayShiftMeters": 1.43
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.00851,
+          0.583603333333333
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-054",
+        "sourceFid": "54",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "dayun_20261009_111653085.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00851152419861,
+          0.5836058738960019
+        ],
+        "displayRow": "MPTS-R03",
+        "displayShiftMeters": 0.33
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008568333333,
+          0.583583333333333
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-055",
+        "sourceFid": "55",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "dayun_20261009_111708360.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00856324299684,
+          0.5835748486660898
+        ],
+        "displayRow": "MPTS-R03",
+        "displayShiftMeters": 1.1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008624722222,
+          0.583526666666667
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-056",
+        "sourceFid": "56",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "dayun_20261009_111722134.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GAWANGAN-MATI"
+        ],
+        "displayCoordinates": [
+          102.0086297081692,
+          0.583534977336433
+        ],
+        "displayRow": "MPTS-R03",
+        "displayShiftMeters": 1.08
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008701666667,
+          0.583496388888889
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-057",
+        "sourceFid": "57",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "dayun_20261009_111737776.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.0086996468887,
+          0.5834930222847543
+        ],
+        "displayRow": "MPTS-R03",
+        "displayShiftMeters": 0.44
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008753055556,
+          0.583458333333333
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-058",
+        "sourceFid": "58",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "dayun_20261009_111750639.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GAWANGAN-MATI"
+        ],
+        "displayCoordinates": [
+          102.00875422465457,
+          0.5834602820086349
+        ],
+        "displayRow": "MPTS-R03",
+        "displayShiftMeters": 0.25
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008801388889,
+          0.58343
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-059",
+        "sourceFid": "59",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "dayun_20261009_111803273.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GAWANGAN-MATI"
+        ],
+        "displayCoordinates": [
+          102.00880226636852,
+          0.5834314625992211
+        ],
+        "displayRow": "MPTS-R03",
+        "displayShiftMeters": 0.19
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008866388889,
+          0.583403055555556
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-060",
+        "sourceFid": "60",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "dayun_20261009_111816210.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00886195117718,
+          0.5833956586947441
+        ],
+        "displayRow": "MPTS-R03",
+        "displayShiftMeters": 0.96
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008911388889,
+          0.583393333333333
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-061",
+        "sourceFid": "61",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "dayun_20261009_111828890.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.0088993310679,
+          0.5833732351322628
+        ],
+        "displayRow": "MPTS-R03",
+        "displayShiftMeters": 2.61
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008961666667,
+          0.583353333333333
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-062",
+        "sourceFid": "62",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "dayun_20261009_111857920.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.0089539496084,
+          0.5833404703961396
+        ],
+        "displayRow": "MPTS-R03",
+        "displayShiftMeters": 1.67
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009024722222,
+          0.583299722222222
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-063",
+        "sourceFid": "63",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "dayun_20261009_111911057.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GAWANGAN-MATI"
+        ],
+        "displayCoordinates": [
+          102.00902396909392,
+          0.5832984668942969
+        ],
+        "displayRow": "MPTS-R03",
+        "displayShiftMeters": 0.16
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009081666667,
+          0.583273333333333
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-064",
+        "sourceFid": "64",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "dayun_20261009_111922376.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00907748515752,
+          0.5832663635153623
+        ],
+        "displayRow": "MPTS-R03",
+        "displayShiftMeters": 0.9
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009144722222,
+          0.583251666666667
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-065",
+        "sourceFid": "65",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "dayun_20261009_111934225.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00913341172354,
+          0.5832328141169146
+        ],
+        "displayRow": "MPTS-R03",
+        "displayShiftMeters": 2.45
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009201666667,
+          0.583186666666667
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-066",
+        "sourceFid": "66",
+        "species": "Jengkol",
+        "condition": "Mati",
+        "sourceLabel": "Jengkol Mati",
+        "photoFilename": "dayun_20261009_111948559.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GAWANGAN-MATI"
+        ],
+        "displayCoordinates": [
+          102.00920396183768,
+          0.5831904922999624
+        ],
+        "displayRow": "MPTS-R03",
+        "displayShiftMeters": 0.5
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009231666667,
+          0.583158055555556
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-067",
+        "sourceFid": "67",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "dayun_20261009_112001699.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GAWANGAN-MATI"
+        ],
+        "displayCoordinates": [
+          102.00923864468588,
+          0.5831696866475423
+        ],
+        "displayRow": "MPTS-R03",
+        "displayShiftMeters": 1.51
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009291666667,
+          0.58312
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-068",
+        "sourceFid": "68",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "dayun_20261009_112015396.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GAWANGAN-MATI"
+        ],
+        "displayCoordinates": [
+          102.00929955463056,
+          0.5831331478047551
+        ],
+        "displayRow": "MPTS-R03",
+        "displayShiftMeters": 1.71
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009351666667,
+          0.583085
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-069",
+        "sourceFid": "69",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "dayun_20261009_112029588.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00935911655685,
+          0.5830974176153305
+        ],
+        "displayRow": "MPTS-R03",
+        "displayShiftMeters": 1.61
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009408333333,
+          0.583035
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-070",
+        "sourceFid": "70",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "dayun_20261009_112044830.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GAWANGAN-MATI"
+        ],
+        "displayCoordinates": [
+          102.0093981969346,
+          0.5830181044621253
+        ],
+        "displayRow": "MPTS-R02",
+        "displayShiftMeters": 2.19
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009451666667,
+          0.583003333333333
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-071",
+        "sourceFid": "71",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "dayun_20261009_112054691.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GAWANGAN-MATI"
+        ],
+        "displayCoordinates": [
+          102.00944403246577,
+          0.5829906085043435
+        ],
+        "displayRow": "MPTS-R02",
+        "displayShiftMeters": 1.65
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009504722222,
+          0.582963333333333
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-072",
+        "sourceFid": "72",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "dayun_20261009_112108802.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GAWANGAN-MATI"
+        ],
+        "displayCoordinates": [
+          102.00950069364404,
+          0.5829566184244596
+        ],
+        "displayRow": "MPTS-R02",
+        "displayShiftMeters": 0.87
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009555,
+          0.582926666666667
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-073",
+        "sourceFid": "73",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "dayun_20261009_112124503.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GAWANGAN-MATI"
+        ],
+        "displayCoordinates": [
+          102.00955384161902,
+          0.582924735855648
+        ],
+        "displayRow": "MPTS-R02",
+        "displayShiftMeters": 0.25
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009591666667,
+          0.582895
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-074",
+        "sourceFid": "74",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "dayun_20261009_112139495.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-INFRASTRUKTUR"
+        ],
+        "displayCoordinates": [
+          102.0095947748179,
+          0.5829001807238656
+        ],
+        "displayRow": "MPTS-R02",
+        "displayShiftMeters": 0.67
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009438333333,
+          0.582886388888889
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-075",
+        "sourceFid": "75",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "dayun_20261009_112404931.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00944798599765,
+          0.5829024781303366
+        ],
+        "displayRow": "MPTS-R01",
+        "displayShiftMeters": 2.09
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009405,
+          0.582978333333333
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-076",
+        "sourceFid": "76",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "dayun_20261009_112429824.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00942074538257,
+          0.5830045780306086
+        ],
+        "displayRow": "MPTS-R02",
+        "displayShiftMeters": 3.41
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009333055556,
+          0.582968055555556
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-077",
+        "sourceFid": "77",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "dayun_20261009_112448388.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.0093345411496,
+          0.5829705317706738
+        ],
+        "displayRow": "MPTS-R01",
+        "displayShiftMeters": 0.32
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009351666667,
+          0.58302
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-078",
+        "sourceFid": "78",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "dayun_20261009_112501816.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00936314465753,
+          0.5830391317286565
+        ],
+        "displayRow": "MPTS-R02",
+        "displayShiftMeters": 2.48
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.00927,
+          0.583079722222222
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-079",
+        "sourceFid": "79",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "dayun_20261009_112517310.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00927674345762,
+          0.5830909623431326
+        ],
+        "displayRow": "MPTS-R02",
+        "displayShiftMeters": 1.46
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009275,
+          0.583003333333333
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-080",
+        "sourceFid": "80",
+        "species": "Jengkol",
+        "condition": "Mati",
+        "sourceLabel": "Jengkol Mati",
+        "photoFilename": "dayun_20261009_112541056.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.0092762865227,
+          0.5830054777333602
+        ],
+        "displayRow": "MPTS-R01",
+        "displayShiftMeters": 0.28
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009245,
+          0.583086388888889
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-081",
+        "sourceFid": "81",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "dayun_20261009_112603165.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00925541858143,
+          0.5831037547746913
+        ],
+        "displayRow": "MPTS-R02",
+        "displayShiftMeters": 2.25
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009219722222,
+          0.583043333333333
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-082",
+        "sourceFid": "82",
+        "species": "Jengkol",
+        "condition": "Mati",
+        "sourceLabel": "Jengkol Mati",
+        "photoFilename": "dayun_20261009_112615675.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00921799123317,
+          0.5830404480888719
+        ],
+        "displayRow": "MPTS-R01",
+        "displayShiftMeters": 0.37
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009174722222,
+          0.583135
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-083",
+        "sourceFid": "83",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "dayun_20261009_112634345.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00918229408389,
+          0.5831476209205894
+        ],
+        "displayRow": "MPTS-R02",
+        "displayShiftMeters": 1.64
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009116666667,
+          0.583106666666667
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-084",
+        "sourceFid": "84",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "dayun_20261009_112657136.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00911426860596,
+          0.5831026695338137
+        ],
+        "displayRow": "MPTS-R01",
+        "displayShiftMeters": 0.52
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009138055556,
+          0.583171388888889
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-085",
+        "sourceFid": "85",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "dayun_20261009_112718142.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.0091392775846,
+          0.5831734257889574
+        ],
+        "displayRow": "MPTS-R02",
+        "displayShiftMeters": 0.26
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009071666667,
+          0.583133055555556
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-086",
+        "sourceFid": "86",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "dayun_20261009_112752756.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00906953588768,
+          0.5831295039328519
+        ],
+        "displayRow": "MPTS-R01",
+        "displayShiftMeters": 0.46
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009036388889,
+          0.583228055555556
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-087",
+        "sourceFid": "87",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "dayun_20261009_112822736.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00903951740695,
+          0.5832332702276123
+        ],
+        "displayRow": "MPTS-R02",
+        "displayShiftMeters": 0.68
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008986388889,
+          0.583264722222222
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-088",
+        "sourceFid": "88",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "dayun_20261009_112855479.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00898657369596,
+          0.5832650302619156
+        ],
+        "displayRow": "MPTS-R02",
+        "displayShiftMeters": 0.04
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008946666667,
+          0.583298333333333
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-089",
+        "sourceFid": "89",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "dayun_20261009_112915819.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00894253576543,
+          0.5832914478695651
+        ],
+        "displayRow": "MPTS-R02",
+        "displayShiftMeters": 0.89
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008888055556,
+          0.583336388888889
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-090",
+        "sourceFid": "90",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "dayun_20261009_112935216.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00888264714001,
+          0.5833273740402557
+        ],
+        "displayRow": "MPTS-R02",
+        "displayShiftMeters": 1.17
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008818333333,
+          0.58337
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-091",
+        "sourceFid": "91",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "dayun_20261009_113001379.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00881654871453,
+          0.5833670253646746
+        ],
+        "displayRow": "MPTS-R02",
+        "displayShiftMeters": 0.39
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008773333333,
+          0.583396388888889
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-092",
+        "sourceFid": "92",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "dayun_20261009_113019257.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00877181599625,
+          0.5833938597637128
+        ],
+        "displayRow": "MPTS-R02",
+        "displayShiftMeters": 0.33
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.00871,
+          0.583436388888889
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-093",
+        "sourceFid": "93",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "dayun_20261009_113035647.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00870759705592,
+          0.5834323836168818
+        ],
+        "displayRow": "MPTS-R02",
+        "displayShiftMeters": 0.52
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.00867,
+          0.583456666666667
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-094",
+        "sourceFid": "94",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "dayun_20261009_113053253.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00866923712344,
+          0.583455395089794
+        ],
+        "displayRow": "MPTS-R02",
+        "displayShiftMeters": 0.17
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008598333333,
+          0.583496388888889
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-095",
+        "sourceFid": "95",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "dayun_20261009_113106873.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00859901281468,
+          0.5834975214616248
+        ],
+        "displayRow": "MPTS-R02",
+        "displayShiftMeters": 0.15
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008555,
+          0.583523333333333
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-096",
+        "sourceFid": "96",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "dayun_20261009_113122255.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.0085552605854,
+          0.583523767681937
+        ],
+        "displayRow": "MPTS-R02",
+        "displayShiftMeters": 0.06
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008493055556,
+          0.583555
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-097",
+        "sourceFid": "97",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "dayun_20261009_113141568.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.0084957393781,
+          0.5835594734447247
+        ],
+        "displayRow": "MPTS-R02",
+        "displayShiftMeters": 0.58
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008435,
+          0.583589722222222
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-098",
+        "sourceFid": "98",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "dayun_20261009_113159897.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00843772984545,
+          0.583594272379526
+        ],
+        "displayRow": "MPTS-R02",
+        "displayShiftMeters": 0.59
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008379722222,
+          0.583626666666667
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-099",
+        "sourceFid": "99",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "dayun_20261009_113217358.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.0083807825743,
+          0.583628434081669
+        ],
+        "displayRow": "MPTS-R02",
+        "displayShiftMeters": 0.23
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008338333333,
+          0.583648333333333
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-100",
+        "sourceFid": "100",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "dayun_20261009_113232075.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00834078858695,
+          0.583652425796397
+        ],
+        "displayRow": "MPTS-R02",
+        "displayShiftMeters": 0.53
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008281666667,
+          0.583691666666667
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-101",
+        "sourceFid": "101",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "dayun_20261009_113249386.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00828000141338,
+          0.583688890990878
+        ],
+        "displayRow": "MPTS-R02",
+        "displayShiftMeters": 0.36
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008209722222,
+          0.58372
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-102",
+        "sourceFid": "102",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "dayun_20261009_113306061.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.0082145972728,
+          0.5837281258255698
+        ],
+        "displayRow": "MPTS-R02",
+        "displayShiftMeters": 1.05
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008153055556,
+          0.583746666666667
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-103",
+        "sourceFid": "103",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "dayun_20261009_113323101.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.0081611629268,
+          0.5837601801834998
+        ],
+        "displayRow": "MPTS-R02",
+        "displayShiftMeters": 1.75
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008126666667,
+          0.583791666666667
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-104",
+        "sourceFid": "104",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "dayun_20261009_113337337.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00812190522792,
+          0.5837837302112425
+        ],
+        "displayRow": "MPTS-R02",
+        "displayShiftMeters": 1.03
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008066388889,
+          0.58382
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-105",
+        "sourceFid": "105",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "dayun_20261009_113353245.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00806508016868,
+          0.5838178186005464
+        ],
+        "displayRow": "MPTS-R02",
+        "displayShiftMeters": 0.28
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008015,
+          0.583859722222222
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-106",
+        "sourceFid": "106",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "dayun_20261009_113408554.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00800976712004,
+          0.5838509999603214
+        ],
+        "displayRow": "MPTS-R02",
+        "displayShiftMeters": 1.13
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.007958333333,
+          0.583883333333333
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-107",
+        "sourceFid": "107",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "dayun_20261009_113422879.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00795768079169,
+          0.5838822456653214
+        ],
+        "displayRow": "MPTS-R02",
+        "displayShiftMeters": 0.14
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.007905,
+          0.583923333333333
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-108",
+        "sourceFid": "108",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "dayun_20261009_113438578.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00790081534942,
+          0.5839163582797136
+        ],
+        "displayRow": "MPTS-R02",
+        "displayShiftMeters": 0.91
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.007835,
+          0.583973333333333
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-109",
+        "sourceFid": "109",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "dayun_20261009_113454447.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00782728238025,
+          0.5839604694608101
+        ],
+        "displayRow": "MPTS-R02",
+        "displayShiftMeters": 1.67
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.007826666667,
+          0.583988055555556
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-110",
+        "sourceFid": "110",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "dayun_20261009_113507505.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00781465946775,
+          0.5839680417319347
+        ],
+        "displayRow": "MPTS-R02",
+        "displayShiftMeters": 2.6
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.007745,
+          0.584023333333333
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-111",
+        "sourceFid": "111",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "dayun_20261009_113522909.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00773904241494,
+          0.5840134031194604
+        ],
+        "displayRow": "MPTS-R02",
+        "displayShiftMeters": 1.29
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.007871388889,
+          0.58434
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-143",
+        "sourceFid": "143",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_101736077.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00787511189569,
+          0.5843462055769703
+        ],
+        "displayRow": "MPTS-R06",
+        "displayShiftMeters": 0.81
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.007906388889,
+          0.584306666666667
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-144",
+        "sourceFid": "144",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "Project 1_20261009_101810073.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00791555479405,
+          0.5843219445681436
+        ],
+        "displayRow": "MPTS-R06",
+        "displayShiftMeters": 1.98
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.007973333333,
+          0.584273055555556
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-145",
+        "sourceFid": "145",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_101854954.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00797961058028,
+          0.5842835185883692
+        ],
+        "displayRow": "MPTS-R06",
+        "displayShiftMeters": 1.36
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008021388889,
+          0.584353055555556
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-146",
+        "sourceFid": "146",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "Project 1_20261009_101927920.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00803437478982,
+          0.5843747006971796
+        ],
+        "displayRow": "MPTS-R07",
+        "displayShiftMeters": 2.81
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.00807,
+          0.584336666666667
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-147",
+        "sourceFid": "147",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_101958878.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00807735124133,
+          0.58434891985279
+        ],
+        "displayRow": "MPTS-R07",
+        "displayShiftMeters": 1.59
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.00803,
+          0.58424
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-148",
+        "sourceFid": "148",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_102036218.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00803586351091,
+          0.58424977340932
+        ],
+        "displayRow": "MPTS-R06",
+        "displayShiftMeters": 1.27
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008071388889,
+          0.584201666666667
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-149",
+        "sourceFid": "149",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_102111695.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GAWANGAN-MATI"
+        ],
+        "displayCoordinates": [
+          102.00808321032584,
+          0.5842213708580413
+        ],
+        "displayRow": "MPTS-R06",
+        "displayShiftMeters": 2.56
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008128055556,
+          0.584286666666667
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-150",
+        "sourceFid": "150",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_102153598.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00814210086591,
+          0.5843100776511447
+        ],
+        "displayRow": "MPTS-R07",
+        "displayShiftMeters": 3.04
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008184722222,
+          0.584266666666667
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-151",
+        "sourceFid": "151",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_102330729.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00819259408088,
+          0.5842797876278438
+        ],
+        "displayRow": "MPTS-R07",
+        "displayShiftMeters": 1.7
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008143333333,
+          0.584176666666667
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-152",
+        "sourceFid": "152",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "Project 1_20261009_102408436.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00814714390017,
+          0.5841830181910996
+        ],
+        "displayRow": "MPTS-R06",
+        "displayShiftMeters": 0.82
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008208055556,
+          0.584153055555556
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-153",
+        "sourceFid": "153",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_102522154.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00820515388007,
+          0.5841482189880034
+        ],
+        "displayRow": "MPTS-R06",
+        "displayShiftMeters": 0.63
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008239722222,
+          0.584243333333333
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-154",
+        "sourceFid": "154",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_102601633.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00824333227884,
+          0.5842493506433973
+        ],
+        "displayRow": "MPTS-R07",
+        "displayShiftMeters": 0.78
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008288333333,
+          0.584224722222222
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-155",
+        "sourceFid": "155",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_102638264.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00828728910737,
+          0.5842229816874669
+        ],
+        "displayRow": "MPTS-R07",
+        "displayShiftMeters": 0.23
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008246388889,
+          0.584116388888889
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-156",
+        "sourceFid": "156",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_102725000.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00824951850973,
+          0.5841216053990815
+        ],
+        "displayRow": "MPTS-R06",
+        "displayShiftMeters": 0.68
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008298333333,
+          0.584084722222222
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-157",
+        "sourceFid": "157",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_102756371.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00830168621897,
+          0.5840903108750707
+        ],
+        "displayRow": "MPTS-R06",
+        "displayShiftMeters": 0.73
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008358333333,
+          0.58418
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-158",
+        "sourceFid": "158",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_102958133.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00835849368114,
+          0.5841802672712739
+        ],
+        "displayRow": "MPTS-R07",
+        "displayShiftMeters": 0.03
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008406388889,
+          0.584145
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-159",
+        "sourceFid": "159",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_103040076.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00840927226285,
+          0.5841498060613067
+        ],
+        "displayRow": "MPTS-R07",
+        "displayShiftMeters": 0.62
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008355,
+          0.584055
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-160",
+        "sourceFid": "160",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_103134086.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00835646858408,
+          0.5840574478633395
+        ],
+        "displayRow": "MPTS-R06",
+        "displayShiftMeters": 0.32
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008403055556,
+          0.584023333333333
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-161",
+        "sourceFid": "161",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_103211393.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00840577660028,
+          0.5840278688206774
+        ],
+        "displayRow": "MPTS-R06",
+        "displayShiftMeters": 0.59
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008454722222,
+          0.584105
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-162",
+        "sourceFid": "162",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "Project 1_20261009_103254121.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.0084624609561,
+          0.5841178990663031
+        ],
+        "displayRow": "MPTS-R07",
+        "displayShiftMeters": 1.67
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008539722222,
+          0.584081666666667
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-163",
+        "sourceFid": "163",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "Project 1_20261009_103405834.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00853525964826,
+          0.5840742283655326
+        ],
+        "displayRow": "MPTS-R07",
+        "displayShiftMeters": 0.97
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008478333333,
+          0.58399
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-164",
+        "sourceFid": "164",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_103435285.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00847583775418,
+          0.5839858403226801
+        ],
+        "displayRow": "MPTS-R06",
+        "displayShiftMeters": 0.54
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008535,
+          0.583958333333333
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-165",
+        "sourceFid": "165",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_103501209.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00853147794918,
+          0.5839524627133503
+        ],
+        "displayRow": "MPTS-R06",
+        "displayShiftMeters": 0.76
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008583333333,
+          0.584071388888889
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-166",
+        "sourceFid": "166",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_103537593.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00857186331396,
+          0.584052270447269
+        ],
+        "displayRow": "MPTS-R07",
+        "displayShiftMeters": 2.48
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008624722222,
+          0.584034722222222
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-167",
+        "sourceFid": "167",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_103604966.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00861847484613,
+          0.5840243089796394
+        ],
+        "displayRow": "MPTS-R07",
+        "displayShiftMeters": 1.35
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008585,
+          0.583921388888889
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-168",
+        "sourceFid": "168",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_103637388.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.0085845442073,
+          0.5839206291651043
+        ],
+        "displayRow": "MPTS-R06",
+        "displayShiftMeters": 0.1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008611666667,
+          0.583905
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-169",
+        "sourceFid": "169",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_103703361.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00861138381615,
+          0.5839045285389428
+        ],
+        "displayRow": "MPTS-R06",
+        "displayShiftMeters": 0.06
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008683333333,
+          0.583983333333333
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-170",
+        "sourceFid": "170",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_103745490.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00868424573362,
+          0.5839848541397031
+        ],
+        "displayRow": "MPTS-R07",
+        "displayShiftMeters": 0.2
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008719722222,
+          0.583963055555556
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-171",
+        "sourceFid": "171",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_103833842.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00871995023631,
+          0.5839634356140768
+        ],
+        "displayRow": "MPTS-R07",
+        "displayShiftMeters": 0.05
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008689722222,
+          0.583878333333333
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-172",
+        "sourceFid": "172",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_103918213.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00868054647755,
+          0.5838630390313625
+        ],
+        "displayRow": "MPTS-R06",
+        "displayShiftMeters": 1.99
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008726666667,
+          0.583841666666667
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-173",
+        "sourceFid": "173",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_103950002.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00872388978868,
+          0.5838370381141049
+        ],
+        "displayRow": "MPTS-R06",
+        "displayShiftMeters": 0.6
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008798055556,
+          0.583926666666667
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-174",
+        "sourceFid": "174",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_104022259.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00879360631185,
+          0.5839192505835578
+        ],
+        "displayRow": "MPTS-R07",
+        "displayShiftMeters": 0.96
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008901666667,
+          0.583878333333333
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-175",
+        "sourceFid": "175",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "Project 1_20261009_104107152.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00889111992224,
+          0.5838607538225006
+        ],
+        "displayRow": "MPTS-R07",
+        "displayShiftMeters": 2.28
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008839722222,
+          0.583766666666667
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-176",
+        "sourceFid": "176",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_104202040.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00884011289325,
+          0.5837673178447964
+        ],
+        "displayRow": "MPTS-R06",
+        "displayShiftMeters": 0.08
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008994722222,
+          0.583798333333333
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-177",
+        "sourceFid": "177",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "Project 1_20261009_104336997.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00899484187896,
+          0.5837985327797787
+        ],
+        "displayRow": "MPTS-R07",
+        "displayShiftMeters": 0.03
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009061666667,
+          0.583775
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-178",
+        "sourceFid": "178",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "Project 1_20261009_104406511.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00905436342224,
+          0.5837628268154424
+        ],
+        "displayRow": "MPTS-R07",
+        "displayShiftMeters": 1.58
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009001666667,
+          0.58368
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-179",
+        "sourceFid": "179",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "Project 1_20261009_104437740.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00899743341293,
+          0.5836729439331757
+        ],
+        "displayRow": "MPTS-R06",
+        "displayShiftMeters": 0.92
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009048333333,
+          0.583653055555556
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-180",
+        "sourceFid": "180",
+        "species": "Jengkol",
+        "condition": "Mati",
+        "sourceLabel": "Jengkol Mati",
+        "photoFilename": "Project 1_20261009_104516476.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00904363680799,
+          0.5836452273000863
+        ],
+        "displayRow": "MPTS-R06",
+        "displayShiftMeters": 1.02
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009108055556,
+          0.583749722222222
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-181",
+        "sourceFid": "181",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "Project 1_20261009_104546969.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00909962727127,
+          0.5837356738000719
+        ],
+        "displayRow": "MPTS-R07",
+        "displayShiftMeters": 1.82
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009163333333,
+          0.583713055555556
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-182",
+        "sourceFid": "182",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "Project 1_20261009_104620264.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00915645199456,
+          0.5837015856123106
+        ],
+        "displayRow": "MPTS-R07",
+        "displayShiftMeters": 1.49
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009113333333,
+          0.583618055555556
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-183",
+        "sourceFid": "183",
+        "species": "Jengkol",
+        "condition": "Mati",
+        "sourceLabel": "Jengkol Mati",
+        "photoFilename": "Project 1_20261009_104650622.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00910687548331,
+          0.5836072914912733
+        ],
+        "displayRow": "MPTS-R06",
+        "displayShiftMeters": 1.4
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009143333333,
+          0.583596388888889
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-184",
+        "sourceFid": "184",
+        "species": "Jengkol",
+        "condition": "Mati",
+        "sourceLabel": "Jengkol Mati",
+        "photoFilename": "Project 1_20261009_104718125.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00913849465336,
+          0.5835883236874247
+        ],
+        "displayRow": "MPTS-R06",
+        "displayShiftMeters": 1.05
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009203055556,
+          0.583666666666667
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-185",
+        "sourceFid": "185",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "Project 1_20261009_104812219.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00920612709363,
+          0.5836717863628619
+        ],
+        "displayRow": "MPTS-R07",
+        "displayShiftMeters": 0.66
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009268333333,
+          0.583636666666667
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-186",
+        "sourceFid": "186",
+        "species": "Jengkol",
+        "condition": "Mati",
+        "sourceLabel": "Jengkol Mati",
+        "photoFilename": "Project 1_20261009_104835728.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00926736418394,
+          0.5836350512709526
+        ],
+        "displayRow": "MPTS-R07",
+        "displayShiftMeters": 0.21
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009218055556,
+          0.583538333333333
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-187",
+        "sourceFid": "187",
+        "species": "Jengkol",
+        "condition": "Mati",
+        "sourceLabel": "Jengkol Mati",
+        "photoFilename": "Project 1_20261009_104919693.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00921905397496,
+          0.583539997516667
+        ],
+        "displayRow": "MPTS-R06",
+        "displayShiftMeters": 0.22
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009266666667,
+          0.583506388888889
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-188",
+        "sourceFid": "188",
+        "species": "Jengkol",
+        "condition": "Mati",
+        "sourceLabel": "Jengkol Mati",
+        "photoFilename": "Project 1_20261009_104944386.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00926889306554,
+          0.5835100998914909
+        ],
+        "displayRow": "MPTS-R06",
+        "displayShiftMeters": 0.48
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009318333333,
+          0.583601666666667
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-189",
+        "sourceFid": "189",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "Project 1_20261009_105022295.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00931957261217,
+          0.5836037323203048
+        ],
+        "displayRow": "MPTS-R07",
+        "displayShiftMeters": 0.27
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009368055556,
+          0.583573333333333
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-190",
+        "sourceFid": "190",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_105054543.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00936863564611,
+          0.5835743002383493
+        ],
+        "displayRow": "MPTS-R07",
+        "displayShiftMeters": 0.13
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009479722222,
+          0.583514722222222
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-191",
+        "sourceFid": "191",
+        "species": "Jengkol",
+        "condition": "Mati",
+        "sourceLabel": "Jengkol Mati",
+        "photoFilename": "Project 1_20261009_105136581.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.00947660715097,
+          0.5835095299637582
+        ],
+        "displayRow": "MPTS-R07",
+        "displayShiftMeters": 0.67
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009751666667,
+          0.583339722222222
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-192",
+        "sourceFid": "192",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "Project 1_20261009_105339888.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-10"
+        ],
+        "displayCoordinates": [
+          102.0097537861355,
+          0.5833432549918524
+        ],
+        "displayRow": "MPTS-R07",
+        "displayShiftMeters": 0.46
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009691666667,
+          0.583149722222222
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-193",
+        "sourceFid": "193",
+        "species": "Jengkol",
+        "condition": "Mati",
+        "sourceLabel": "Jengkol Mati",
+        "photoFilename": "Project 1_20261009_105631253.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00968746085039,
+          0.5831427118886776
+        ],
+        "displayRow": "MPTS-R05",
+        "displayShiftMeters": 0.91
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009569722222,
+          0.583223333333333
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-194",
+        "sourceFid": "194",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "Project 1_20261009_105713477.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00956531403791,
+          0.5832159856898941
+        ],
+        "displayRow": "MPTS-R05",
+        "displayShiftMeters": 0.95
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009513055556,
+          0.583243055555556
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-195",
+        "sourceFid": "195",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_105739811.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00951494337006,
+          0.5832462021992526
+        ],
+        "displayRow": "MPTS-R05",
+        "displayShiftMeters": 0.41
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009433333333,
+          0.583285
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-196",
+        "sourceFid": "196",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "Project 1_20261009_105817254.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00943781503275,
+          0.5832924701807205
+        ],
+        "displayRow": "MPTS-R05",
+        "displayShiftMeters": 0.97
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009383055556,
+          0.583321666666667
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-197",
+        "sourceFid": "197",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "Project 1_20261009_105845797.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00938466705851,
+          0.5833243527490936
+        ],
+        "displayRow": "MPTS-R05",
+        "displayShiftMeters": 0.35
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009335,
+          0.583361666666667
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-198",
+        "sourceFid": "198",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai mati",
+        "photoFilename": "Project 1_20261009_105911018.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00933168262851,
+          0.5833561372100341
+        ],
+        "displayRow": "MPTS-R05",
+        "displayShiftMeters": 0.72
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009255,
+          0.583406388888889
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-199",
+        "sourceFid": "199",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "Project 1_20261009_105951652.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00925312455668,
+          0.5834032628649977
+        ],
+        "displayRow": "MPTS-R05",
+        "displayShiftMeters": 0.41
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.00919,
+          0.583426666666667
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-200",
+        "sourceFid": "200",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "Project 1_20261009_110048950.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00919638087905,
+          0.5834373024348457
+        ],
+        "displayRow": "MPTS-R05",
+        "displayShiftMeters": 1.38
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009143333333,
+          0.583464722222222
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-201",
+        "sourceFid": "201",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "Project 1_20261009_110113540.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.0091452755982,
+          0.5834679596260849
+        ],
+        "displayRow": "MPTS-R05",
+        "displayShiftMeters": 0.42
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.009088333333,
+          0.583496388888889
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-202",
+        "sourceFid": "202",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "Project 1_20261009_110143307.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00909086098646,
+          0.5835006020288098
+        ],
+        "displayRow": "MPTS-R05",
+        "displayShiftMeters": 0.55
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008998055556,
+          0.583564722222222
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-203",
+        "sourceFid": "203",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "Project 1_20261009_110242001.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00899432864756,
+          0.583558510141736
+        ],
+        "displayRow": "MPTS-R05",
+        "displayShiftMeters": 0.81
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008885,
+          0.583623333333333
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-204",
+        "sourceFid": "204",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_110322814.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00888533582271,
+          0.5836238930888688
+        ],
+        "displayRow": "MPTS-R05",
+        "displayShiftMeters": 0.07
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008765,
+          0.583693055555556
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-205",
+        "sourceFid": "205",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "Project 1_20261009_110416066.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00876633451723,
+          0.5836952799537756
+        ],
+        "displayRow": "MPTS-R05",
+        "displayShiftMeters": 0.29
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008675,
+          0.583758333333333
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-206",
+        "sourceFid": "206",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_110601504.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00867135445999,
+          0.5837522568792696
+        ],
+        "displayRow": "MPTS-R05",
+        "displayShiftMeters": 0.79
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008708055556,
+          0.583721388888889
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-207",
+        "sourceFid": "207",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "Project 1_20261009_110703016.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00871196062448,
+          0.5837278979298632
+        ],
+        "displayRow": "MPTS-R05",
+        "displayShiftMeters": 0.84
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.00862,
+          0.58378
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-208",
+        "sourceFid": "208",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_110735262.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00862135154479,
+          0.5837822527800602
+        ],
+        "displayRow": "MPTS-R05",
+        "displayShiftMeters": 0.29
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008588055556,
+          0.583805
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-209",
+        "sourceFid": "209",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "Project 1_20261009_110758540.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00858683196272,
+          0.5838029604918945
+        ],
+        "displayRow": "MPTS-R05",
+        "displayShiftMeters": 0.26
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008505,
+          0.583848333333333
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-210",
+        "sourceFid": "210",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "Project 1_20261009_110821862.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00850663972399,
+          0.5838510664558589
+        ],
+        "displayRow": "MPTS-R05",
+        "displayShiftMeters": 0.35
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008391666667,
+          0.583915
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-211",
+        "sourceFid": "211",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_110857479.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.0083938887692,
+          0.5839187038413973
+        ],
+        "displayRow": "MPTS-R05",
+        "displayShiftMeters": 0.48
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008338333333,
+          0.583955
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-212",
+        "sourceFid": "212",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_110929015.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00833702332619,
+          0.5839528164562282
+        ],
+        "displayRow": "MPTS-R05",
+        "displayShiftMeters": 0.28
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008296388889,
+          0.583978333333333
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-213",
+        "sourceFid": "213",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "Project 1_20261009_111038254.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00829588552881,
+          0.5839774943231899
+        ],
+        "displayRow": "MPTS-R05",
+        "displayShiftMeters": 0.11
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008241666667,
+          0.584011666666667
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-214",
+        "sourceFid": "214",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "Project 1_20261009_111110642.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00824093989831,
+          0.5840104552750559
+        ],
+        "displayRow": "MPTS-R05",
+        "displayShiftMeters": 0.16
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008184722222,
+          0.584051666666667
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-215",
+        "sourceFid": "215",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_111135634.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00818141902552,
+          0.5840461608371788
+        ],
+        "displayRow": "MPTS-R05",
+        "displayShiftMeters": 0.71
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008128055556,
+          0.584074722222222
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-216",
+        "sourceFid": "216",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_111207712.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00812957779216,
+          0.5840772595138484
+        ],
+        "displayRow": "MPTS-R05",
+        "displayShiftMeters": 0.33
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.00807,
+          0.584119722222222
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-217",
+        "sourceFid": "217",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_111230488.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00806703401585,
+          0.5841147784645265
+        ],
+        "displayRow": "MPTS-R05",
+        "displayShiftMeters": 0.64
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008011388889,
+          0.584146388888889
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-218",
+        "sourceFid": "218",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_111252681.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00801216982259,
+          0.5841476905635699
+        ],
+        "displayRow": "MPTS-R05",
+        "displayShiftMeters": 0.17
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.007964722222,
+          0.584178055555556
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-219",
+        "sourceFid": "219",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "Project 1_20261009_111314452.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00796388312565,
+          0.584176656934129
+        ],
+        "displayRow": "MPTS-R05",
+        "displayShiftMeters": 0.18
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.007921388889,
+          0.584205
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-220",
+        "sourceFid": "220",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "Project 1_20261009_111343558.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00792013089638,
+          0.5842029031544411
+        ],
+        "displayRow": "MPTS-R05",
+        "displayShiftMeters": 0.27
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.007853055556,
+          0.58424
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-221",
+        "sourceFid": "221",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_111410690.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-09"
+        ],
+        "displayCoordinates": [
+          102.00785444105527,
+          0.5842423093760315
+        ],
+        "displayRow": "MPTS-R05",
+        "displayShiftMeters": 0.3
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008981388889,
+          0.583176666666667
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-222",
+        "sourceFid": "222",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "Project 1_20261009_112854491.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00898391024228,
+          0.5831808693053303
+        ],
+        "displayRow": "MPTS-R01",
+        "displayShiftMeters": 0.55
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008943055556,
+          0.583206666666667
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-223",
+        "sourceFid": "223",
+        "species": "Jengkol",
+        "condition": "Mati",
+        "sourceLabel": "Jengkol Mati",
+        "photoFilename": "Project 1_20261009_112929594.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00894248674365,
+          0.5832057185596229
+        ],
+        "displayRow": "MPTS-R01",
+        "displayShiftMeters": 0.12
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008899722222,
+          0.583235
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-224",
+        "sourceFid": "224",
+        "species": "Jengkol",
+        "condition": "Mati",
+        "sourceLabel": "Jengkol Mati",
+        "photoFilename": "Project 1_20261009_112945170.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00889812177799,
+          0.5832323323500932
+        ],
+        "displayRow": "MPTS-R01",
+        "displayShiftMeters": 0.35
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008835,
+          0.583266666666667
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-225",
+        "sourceFid": "225",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "Project 1_20261009_113001181.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00883655793218,
+          0.5832692634570804
+        ],
+        "displayRow": "MPTS-R01",
+        "displayShiftMeters": 0.34
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008795,
+          0.583299722222222
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-226",
+        "sourceFid": "226",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "Project 1_20261009_113015964.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.0087925608319,
+          0.5832956565713528
+        ],
+        "displayRow": "MPTS-R01",
+        "displayShiftMeters": 0.53
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008741388889,
+          0.583328055555556
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-227",
+        "sourceFid": "227",
+        "species": "Jengkol",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Jengkol",
+        "photoFilename": "Project 1_20261009_113027687.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00874063810494,
+          0.5833268041346635
+        ],
+        "displayRow": "MPTS-R01",
+        "displayShiftMeters": 0.16
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008679722222,
+          0.58336
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-228",
+        "sourceFid": "228",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "Project 1_20261009_113045727.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00868119861377,
+          0.5833624608773305
+        ],
+        "displayRow": "MPTS-R01",
+        "displayShiftMeters": 0.32
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008624722222,
+          0.583403055555556
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-229",
+        "sourceFid": "229",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "Project 1_20261009_113059699.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00862175956985,
+          0.5833981173517027
+        ],
+        "displayRow": "MPTS-R01",
+        "displayShiftMeters": 0.64
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008578055556,
+          0.583418055555556
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-230",
+        "sourceFid": "230",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_113113597.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00858082570122,
+          0.5834226728852596
+        ],
+        "displayRow": "MPTS-R01",
+        "displayShiftMeters": 0.6
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008506388889,
+          0.58347
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-231",
+        "sourceFid": "231",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "Project 1_20261009_113129283.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00850520931891,
+          0.5834680338705656
+        ],
+        "displayRow": "MPTS-R01",
+        "displayShiftMeters": 0.26
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008448333333,
+          0.583493055555556
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-232",
+        "sourceFid": "232",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_113156350.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00845234676557,
+          0.583499745219777
+        ],
+        "displayRow": "MPTS-R01",
+        "displayShiftMeters": 0.87
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008413333333,
+          0.583521666666667
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-233",
+        "sourceFid": "233",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_113211902.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00841398716832,
+          0.5835227564915856
+        ],
+        "displayRow": "MPTS-R01",
+        "displayShiftMeters": 0.14
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008349722222,
+          0.58357
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-234",
+        "sourceFid": "234",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_113225258.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00834588755019,
+          0.5835636082975414
+        ],
+        "displayRow": "MPTS-R01",
+        "displayShiftMeters": 0.83
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008294722222,
+          0.583598333333333
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-235",
+        "sourceFid": "235",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "Project 1_20261009_113238599.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00829294350397,
+          0.5835953685329484
+        ],
+        "displayRow": "MPTS-R01",
+        "displayShiftMeters": 0.38
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008228333333,
+          0.583626666666667
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-236",
+        "sourceFid": "236",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_113251761.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.0082316246404,
+          0.5836321526792416
+        ],
+        "displayRow": "MPTS-R01",
+        "displayShiftMeters": 0.71
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008174722222,
+          0.583666666666667
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-237",
+        "sourceFid": "237",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_113306941.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00817455493413,
+          0.5836663878281421
+        ],
+        "displayRow": "MPTS-R01",
+        "displayShiftMeters": 0.04
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008126666667,
+          0.583686666666667
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-238",
+        "sourceFid": "238",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_113324432.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00813039389797,
+          0.583692879284769
+        ],
+        "displayRow": "MPTS-R01",
+        "displayShiftMeters": 0.81
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.008076666667,
+          0.58372
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-239",
+        "sourceFid": "239",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_113340940.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00807892075251,
+          0.583723757151761
+        ],
+        "displayRow": "MPTS-R01",
+        "displayShiftMeters": 0.49
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.00802,
+          0.583763055555556
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-240",
+        "sourceFid": "240",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_113359271.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00801825612534,
+          0.5837601488327381
+        ],
+        "displayRow": "MPTS-R01",
+        "displayShiftMeters": 0.38
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.007971666667,
+          0.583799722222222
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-241",
+        "sourceFid": "241",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_113418197.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.0079665379976,
+          0.5837911736604302
+        ],
+        "displayRow": "MPTS-R01",
+        "displayShiftMeters": 1.11
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.007913333333,
+          0.58383
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-242",
+        "sourceFid": "242",
+        "species": "Petai",
+        "condition": "Mati",
+        "sourceLabel": "Petai Mati",
+        "photoFilename": "Project 1_20261009_113432026.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00791028495497,
+          0.5838249189066643
+        ],
+        "displayRow": "MPTS-R01",
+        "displayShiftMeters": 0.66
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.007843055556,
+          0.583859722222222
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-243",
+        "sourceFid": "243",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_113447212.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00784549366274,
+          0.5838637861040192
+        ],
+        "displayRow": "MPTS-R01",
+        "displayShiftMeters": 0.53
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.007801666667,
+          0.583895
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-244",
+        "sourceFid": "244",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_113503829.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.0077994948662,
+          0.5838913800019294
+        ],
+        "displayRow": "MPTS-R01",
+        "displayShiftMeters": 0.47
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.007753333333,
+          0.583924722222222
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-245",
+        "sourceFid": "245",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_113521594.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.0077508404159,
+          0.5839205669815013
+        ],
+        "displayRow": "MPTS-R01",
+        "displayShiftMeters": 0.54
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          102.007691666667,
+          0.583958333333333
+        ]
+      },
+      "properties": {
+        "pointId": "DAYUN-MPTS-246",
+        "sourceFid": "246",
+        "species": "Petai",
+        "condition": "Belum dikonfirmasi",
+        "sourceLabel": "Petai",
+        "photoFilename": "Project 1_20261009_113549028.jpg",
+        "photoDate": "2026-10-09",
+        "observationDate": null,
+        "block": null,
+        "heightCm": null,
+        "spatialMatches": [
+          "DAYUN-GT-C-08"
+        ],
+        "displayCoordinates": [
+          102.00769066564271,
+          0.583956664807379
+        ],
+        "displayRow": "MPTS-R01",
+        "displayShiftMeters": 0.22
+      }
+    }
+  ],
+  "displayAlignment": {
+    "method": "Projection onto seven parallel planting rows inferred from GPS points",
+    "originalGeometryPreserved": true,
+    "rowCount": 7
+  }
+}
