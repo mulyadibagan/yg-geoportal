@@ -89,7 +89,7 @@
   }
   function clearTechnicalFields() {
     Array.prototype.forEach.call(document.querySelectorAll('.dm-activity-panel input,.dm-activity-panel select,.dm-activity-panel textarea,.dm-sop-panel input,.dm-sop-panel select,.dm-sop-panel textarea'), function (field) {
-      if (field.id === 'dm-fert-phase') field.value = 'base';
+      if (field.id === 'dm-fert-phase') field.value = 'phase1';
       else if (field.id === 'dm-ethrel-variety') field.value = 'Queen';
       else field.value = '';
     });
@@ -144,64 +144,30 @@
     populateCrops();
   }
 
-  function renderFertilizerMaterials(force) {
-    var phase = PROGRAMS[$('dm-fert-phase').value];
-    if (!phase) return;
-    if (!force && $('dm-fert-materials').children.length) return;
-    $('dm-fert-phase-note').textContent = phase.note + ' ' + phase.time + '.';
-    $('dm-fert-materials').innerHTML = phase.materials.map(function (material) {
-      var low = material.min * currentArea;
-      var high = material.max * currentArea;
-      var range = low === high ? fmt(low, 2) + ' kg' : fmt(low, 2) + '–' + fmt(high, 2) + ' kg';
-      return '<article class="dm-fert-material" data-material="' + esc(material.id) + '" data-min="' + material.min + '" data-max="' + material.max + '">' +
-        '<header><span>BAHAN SOP</span><strong>' + esc(material.name) + '</strong><small>' + fmt(material.min, 0) + (material.min === material.max ? '' : '–' + fmt(material.max, 0)) + ' kg/ha · kebutuhan gawangan ' + range + '</small></header>' +
-        '<label>Realisasi aplikasi (kg) *<input class="dm-fert-actual" type="number" min="0" step="0.01" inputmode="decimal" required></label>' +
-        '<label>Sisa bahan (kg)<input class="dm-fert-remaining" type="number" min="0" step="0.01" inputmode="decimal"></label>' +
-        '<p class="dm-fert-status">Isi realisasi untuk membandingkan dengan SOP.</p></article>';
-    }).join('');
-    Array.prototype.forEach.call(document.querySelectorAll('.dm-fert-actual,.dm-fert-remaining'), function (input) {
-      input.addEventListener('input', updateFertilizerStatus);
-    });
-    updateFertilizerStatus();
+  function renderFertilizerMaterials(force){
+    var phase=PROGRAMS[$('dm-fert-phase').value];if(!phase)return;
+    if(!force&&$('dm-fert-materials').children.length)return;
+    $('dm-fert-phase-note').textContent=phase.note+' '+phase.time+'.';
+    $('dm-fert-materials').innerHTML=phase.materials.map(function(m){return '<article class="dm-fert-material" data-material="'+esc(m.id)+'"><header><strong>'+esc(m.name)+'</strong><small>'+m.amount+' '+m.unit+' per 600 tanaman</small></header><label>Realisasi ('+m.unit+') *<input class="dm-fert-actual" type="number" min="0" step="any" required></label><label>Sisa bahan ('+m.unit+')<input class="dm-fert-remaining" type="number" min="0" step="any"></label><p class="dm-fert-status"></p></article>';}).join('');
+    document.querySelectorAll('.dm-fert-actual,.dm-fert-remaining').forEach(function(i){i.addEventListener('input',updateFertilizerStatus);});updateFertilizerStatus();
   }
-  function fertilizerSnapshot() {
-    var phaseId = $('dm-fert-phase').value;
-    var phase = PROGRAMS[phaseId];
-    var population = Number($('dm-fert-population').value || 0);
-    var materials = [];
-    Array.prototype.forEach.call(document.querySelectorAll('.dm-fert-material'), function (card) {
-      var actualInput = card.querySelector('.dm-fert-actual');
-      var remainingInput = card.querySelector('.dm-fert-remaining');
-      var actual = actualInput.value === '' ? null : Number(actualInput.value);
-      var min = Number(card.dataset.min);
-      var max = Number(card.dataset.max);
-      var actualKgHa = actual == null || !currentArea ? null : actual / currentArea;
-      var status = actualKgHa == null ? 'Belum diisi' : actualKgHa < min ? 'Di bawah SOP' : actualKgHa > max ? 'Di atas SOP' : 'Sesuai rentang SOP';
-      var material = (phase.materials || []).find(function (item) { return item.id === card.dataset.material; }) || {};
-      materials.push({ id: card.dataset.material, name: material.name || card.dataset.material, sopMinKgHa: min, sopMaxKgHa: max, sopMinTotalKg: min * currentArea, sopMaxTotalKg: max * currentArea, actualKg: actual, actualKgHa: actualKgHa, actualGramPerPlant: actual != null && population > 0 ? actual * 1000 / population : null, remainingKg: remainingInput.value === '' ? null : Number(remainingInput.value), status: status });
+  function fertilizerSnapshot(){
+    var phaseId=$('dm-fert-phase').value,phase=PROGRAMS[phaseId],population=Number($('dm-fert-population').value||0);
+    if(!phase)return {materials:[],deviation:false};
+    var materials=Array.from(document.querySelectorAll('.dm-fert-material')).map(function(card){
+      var m=phase.materials.find(function(m){return m.id===card.dataset.material;}),input=card.querySelector('.dm-fert-actual'),remaining=card.querySelector('.dm-fert-remaining'),actual=input.value===''?null:Number(input.value),expected=m.amount*population/600;
+      var status=actual===null?'Belum diisi':!population?'Populasi belum diisi':Math.abs(actual-expected)<=Math.max(.001,expected*.001)?'Sesuai acuan':'Berbeda dari acuan';
+      return {id:m.id,name:m.name,unit:m.unit,sopAmountPer600:m.amount,sopTotal:expected,actualAmount:actual,actualKg:m.unit==='kg'?actual:null,remainingAmount:remaining.value===''?null:Number(remaining.value),remainingKg:m.unit==='kg'&&remaining.value!==''?Number(remaining.value):null,actualGramPerPlant:m.unit==='kg'&&population&&actual!==null?actual*1000/population:null,status:status};
     });
-    var phValue = numberValue('dm-fert-ph');
-    var weather = $('dm-fert-weather').value;
-    var deviation = materials.some(function (item) { return item.actualKg != null && item.status !== 'Sesuai rentang SOP'; }) || isRiskWeather(weather) || phValue != null && (phValue < 4.5 || phValue > 6.5);
-    return { sopId: 'nanas-fertilizer-sop-2020-v1', phaseId: phaseId, phaseName: phase.name, phaseTime: phase.time, sopNote: phase.note, areaHa: currentArea, activePlantCount: population || null, soilPh: phValue, weather: weather, method: $('dm-fert-method').value, supervisor: $('dm-fert-supervisor').value.trim(), materials: materials, deviation: deviation, deviationReason: $('dm-fert-deviation').value.trim(), withinSop: !deviation };
+    var ph=numberValue('dm-fert-ph'),weather=$('dm-fert-weather').value,deviation=materials.some(function(m){return m.actualAmount!==null&&m.status!=='Sesuai acuan';})||isRiskWeather(weather)||ph!==null&&(ph<4.5||ph>6.5);
+    return {sopId:'nanas-dayun-20261012-per600',phaseId:phaseId,phaseName:phase.name,phaseTime:phase.time,sopNote:phase.note,areaHa:currentArea,activePlantCount:population||null,soilPh:ph,weather:weather,method:$('dm-fert-method').value,supervisor:$('dm-fert-supervisor').value.trim(),materials:materials,deviation:deviation,deviationReason:$('dm-fert-deviation').value.trim(),withinSop:!deviation};
   }
-  function updateFertilizerStatus() {
-    if (!isNanasFertilizing()) return;
-    var snapshot = fertilizerSnapshot();
-    snapshot.materials.forEach(function (item, index) {
-      var status = document.querySelectorAll('.dm-fert-status')[index];
-      if (!status) return;
-      if (item.actualKg == null) { status.textContent = 'Isi realisasi untuk membandingkan dengan SOP.'; status.className = 'dm-fert-status'; return; }
-      var perPlant = item.actualGramPerPlant == null ? 'populasi aktif belum diisi' : fmt(item.actualGramPerPlant, 2) + ' g/tanaman';
-      status.textContent = item.status + ' · ' + fmt(item.actualKgHa, 2) + ' kg/ha · ' + perPlant;
-      status.className = 'dm-fert-status ' + (item.status === 'Sesuai rentang SOP' ? 'is-ok' : 'is-warning');
-    });
-    $('dm-fert-deviation-wrap').hidden = !snapshot.deviation;
-    $('dm-fert-deviation').required = snapshot.deviation;
-    var completed = snapshot.materials.filter(function (item) { return item.actualKg != null; }).length;
-    $('dm-fert-summary').textContent = completed === snapshot.materials.length ? (snapshot.deviation ? 'Ada dosis/kondisi di luar acuan. Alasan dan arahan pendamping wajib dicatat.' : 'Seluruh realisasi berada dalam rentang SOP. Data tetap menunggu pemeriksaan admin.') : 'Lengkapi realisasi setiap bahan untuk melihat kesesuaiannya dengan SOP.';
+  function updateFertilizerStatus(){
+    if(!isNanasFertilizing())return;var snapshot=fertilizerSnapshot();
+    snapshot.materials.forEach(function(m,i){var el=document.querySelectorAll('.dm-fert-status')[i];if(el){el.textContent=m.status+' · kebutuhan acuan '+fmt(m.sopTotal,3)+' '+m.unit;el.className='dm-fert-status '+(m.status==='Sesuai acuan'?'is-ok':'is-warning');}});
+    $('dm-fert-deviation-wrap').hidden=!snapshot.deviation;$('dm-fert-deviation').required=snapshot.deviation;
+    $('dm-fert-summary').textContent='Catat realisasi sesuai satuan setiap bahan. Terusi dalam SDM belum dikonversi ke kg; data menunggu pemeriksaan admin.';
   }
-
   function setPanelRequired(activePanelId) {
     Array.prototype.forEach.call(document.querySelectorAll('[data-required="true"]'), function (field) {
       field.required = Boolean(activePanelId && field.closest('#' + activePanelId));
@@ -271,7 +237,7 @@
   }
   function compatibilityFields(details, fertilizer) {
     var name = activity.value;
-    if (fertilizer) return { quantity: null, unit: '', material: fertilizer.materials.map(function (item) { return item.name + ' ' + fmt(item.actualKg, 2) + ' kg (' + item.status + ')'; }).join(' · '), condition: '' };
+    if (fertilizer) return { quantity: null, unit: '', material: fertilizer.materials.map(function (item) { return item.name + ' ' + fmt(item.actualAmount, 3) + ' '+item.unit+' (' + item.status + ')'; }).join(' · '), condition: '' };
     if (name === 'Sensus tanaman') return { quantity: details.livingPlantCount, unit: 'batang hidup', material: details.censusMethod, condition: 'Sensus terverifikasi admin' };
     if (name === 'Sensus bibit') return { quantity: details.readySeedlingCount, unit: 'bibit siap tanam', material: details.seedlingSourceType, condition: 'Sensus bibit' };
     if (name === 'Pembaruan foto') return { quantity: null, unit: '', material: details.focus, condition: details.condition };
@@ -364,7 +330,11 @@
       return '<option value="' + esc(id) + '">' + esc(label + (record && record.crops.length ? ' · ' + record.crops.map(function (item) { return item.crop; }).join(', ') : ' · data belum tersedia')) + '</option>';
     }).join('');
     var requested = new URLSearchParams(location.search).get('object');
-    if (requested && featuresById[requested]) { select.value = requested; updateObject(); }
+    if (requested && featuresById[requested]) { select.value = requested; updateObject();
+      var params=new URLSearchParams(location.search),cohort=params.get('cohort'),phase=params.get('phase');
+      if(cohort&&/^\d{4}-\d{2}$/.test(cohort))$('dm-cohort').value=cohort;
+      if(phase&&['phase1','phase2','phase3','ethrel'].indexOf(phase)>=0){crop.value='NANAS';populateActivities();activity.value=phase==='ethrel'?'Ethrel':'Pemupukan';if(phase!=='ethrel')$('dm-fert-phase').value=phase;syncActivityForm();}
+    }
   }).catch(function (error) {
     select.innerHTML = '<option value="">Data gawangan gagal dimuat</option>';
     setFeedback(error.message, 'error');
@@ -394,6 +364,7 @@
     if (!form.reportValidity()) return;
     if (!phone && !email) { setFeedback('Isi email atau nomor WhatsApp agar admin dapat menghubungi pelapor untuk verifikasi.', 'error'); $('dm-phone').focus(); return; }
     if (phone && phone.replace(/\D/g, '').length < 8) { setFeedback('Periksa nomor WhatsApp. Gunakan minimal 8 angka.', 'error'); $('dm-phone').focus(); return; }
+    if($('dm-cohort').value&&$('dm-cohort').value>eventDate.slice(0,7)){setFeedback('Bulan tanam kelompok tidak boleh setelah tanggal kegiatan.','error');return;}
     var details = activitySnapshot();
     if (details.plantingDate && details.plantingDate > eventDate) { setFeedback('Tanggal tanam tidak boleh lebih baru daripada tanggal kegiatan.', 'error'); $('dm-planting-date').focus(); return; }
     if (photos.files.length > 3) { setFeedback('Pilih maksimal 3 foto kegiatan.', 'error'); photos.focus(); return; }
@@ -412,7 +383,7 @@
       var compatible = compatibilityFields(details, fertilizer);
       var meta = ACTIVITY_META[activity.value] || {};
       var recommendation = followUpRecommendation(details, eventDate);
-      var info = { schemaVersion: 'dayun-monitoring-v7', monitoringType: 'Agroforestri Dayun', activityCluster: meta.cluster || '', activityType: activity.value, crop: crop.value, eventDate: eventDate, plantingDate: details.plantingDate || '', recordKey: [select.value,eventDate,activity.value,crop.value].join('|'), condition: compatible.condition, quantity: compatible.quantity, unit: compatible.unit, material: compatible.material, activityDetails: details, followUpRecommendation: recommendation, notes: $('dm-notes').value.trim(), fertilizer: fertilizer };
+      var info = { schemaVersion: 'dayun-monitoring-v8', cohortPeriod: $('dm-cohort').value, monitoringType: 'Agroforestri Dayun', activityCluster: meta.cluster || '', activityType: activity.value, crop: crop.value, eventDate: eventDate, plantingDate: details.plantingDate || '', recordKey: [select.value,eventDate,activity.value,crop.value,$('dm-cohort').value,isNanasFertilizing()?$('dm-fert-phase').value:''].join('|'), condition: compatible.condition, quantity: compatible.quantity, unit: compatible.unit, material: compatible.material, activityDetails: details, followUpRecommendation: recommendation, notes: $('dm-notes').value.trim(), fertilizer: fertilizer };
       var clientId = 'dayun-' + Date.now() + '-' + Math.floor(Math.random() * 100000);
       var payload = { clientSubmissionId: clientId, reportType: 'Monitoring', name: reporter, organization: organization, email: email, phone: phone, province: 'Riau', regency: 'Siak', district: 'Dayun', village: 'Dayun', locationName: 'Gawangan ' + id.replace('DAYUN-GT-', ''), title: activity.value + ' ' + info.crop + ' · ' + id.replace('DAYUN-GT-', ''), activityDate: eventDate, description: info.notes, oldInformation: JSON.stringify(detailsById[id] || {}), proposedInformation: JSON.stringify(info), geometryType: geometry.type, geometryGeoJSON: JSON.stringify(geometry), targetLayerId: 'dayun_gawangan', targetLayerLabel: 'Gawangan Agroforestri Dayun', targetSourceType: 'dayun_gawangan', targetObjectId: id, targetFeatureProperties: JSON.stringify(Object.assign({}, properties, { Object_ID: id, objectId: id })), proposedChanges: JSON.stringify({ monitoring: info }), images: images, documents: [] };
       await fetch(API, { method: 'POST', mode: 'no-cors', body: new URLSearchParams({ payload: JSON.stringify(payload) }) });
