@@ -10,14 +10,22 @@
   function merge(details,payload,asOf){
     var result=JSON.parse(JSON.stringify(details||{objects:[]})),byId={};
     (result.objects||[]).forEach(function(o){byId[o.objectId]=o;});
+    var seen={};
     var events=(payload&&payload.features||[]).map(function(f){var p=f.properties||{},info;try{info=typeof p.proposedInformation==='string'?JSON.parse(p.proposedInformation):p.proposedInformation;}catch(_){return null;}
       if(p.targetLayerId!=='dayun_gawangan'||!info||info.monitoringType!=='Agroforestri Dayun'||String(info.crop||'').trim().toUpperCase()!=='NANAS')return null;
       var date=info.eventDate||p.activityDate;if(!/^\d{4}-\d{2}-\d{2}$/.test(date||'')||date>asOf)return null;
+      var key=p.reportId||p.id||info.recordKey||JSON.stringify([p.targetObjectId,date,info]);if(seen[key])return null;seen[key]=true;
       return {id:p.targetObjectId,info:info,date:date};
     }).filter(Boolean).sort(function(a,b){return a.date.localeCompare(b.date);});
     events.forEach(function(e){var o=byId[e.id];if(!o&&/^DAYUN-GT-[A-F]-\d{2}$/.test(e.id)){o={objectId:e.id,block:e.id.split('-')[2],crops:[]};byId[e.id]=o;result.objects.push(o);}if(!o)return;var c=(o.crops||[]).find(function(c){return String(c.crop).toUpperCase()==='NANAS';});if(!c){c={crop:'NANAS'};(o.crops=o.crops||[]).push(c);}
-      var i=e.info,d=i.activityDetails||{};if(i.plantingDate)c.plantingDate=i.plantingDate;
-      if(i.activityType==='Sensus tanaman'&&num(d.livingPlantCount)!==null&&Number.isInteger(Number(d.livingPlantCount))){c.vegetationCount=Number(d.livingPlantCount);c.populationCensus={period:e.date};}
+      var i=e.info,d=i.activityDetails||{},period=i.cohortPeriod;
+      if(period){var cohort=(c.plantingCohorts||[]).find(function(g){return g.period===period;});if(!cohort)return;
+        if(i.activityType==='Sensus tanaman'&&num(d.livingPlantCount)!==null){cohort.populationCensus={period:e.date,livingPlantCount:Number(d.livingPlantCount)};}
+        if(i.activityType==='Ethrel'&&num(d.treatedPlantCount)>0){cohort.ethrel=cohort.ethrel||[];if(!cohort.ethrel.some(function(h){return h.period===e.date&&Number(h.count)===Number(d.treatedPlantCount);})){cohort.ethrel.push({period:e.date,count:Number(d.treatedPlantCount)});}}
+        return;
+      }
+      if(i.plantingDate)c.plantingDate=i.plantingDate;
+      if(i.activityType==='Sensus tanaman'&&num(d.livingPlantCount)!==null&&Number.isInteger(Number(d.livingPlantCount))){if(c.sourcePopulationInitial===undefined)c.sourcePopulationInitial=c.vegetationCount==null?null:c.vegetationCount;c.vegetationCount=Number(d.livingPlantCount);c.populationCensus={period:e.date,livingPlantCount:Number(d.livingPlantCount)};}
       if(i.activityType==='Ethrel'&&num(d.treatedPlantCount)>0){c.ethrel=c.ethrel||[];if(!c.ethrel.some(function(h){return h.period===e.date&&Number(h.count)===Number(d.treatedPlantCount);})){c.ethrel.push({period:e.date,count:Number(d.treatedPlantCount)});}}
       if(i.activityType==='Panen'&&d.unit==='buah'&&num(d.harvestCount)>0){c.pineappleHarvest=c.pineappleHarvest||[];if(!c.pineappleHarvest.some(function(h){return h.period===e.date&&Number(h.count)===Number(d.harvestCount);})){c.pineappleHarvest.push({period:e.date,count:Number(d.harvestCount)});}}
     });return result;
@@ -44,7 +52,10 @@
     (data.objects||[]).forEach(function(o){var c=(o.crops||[]).find(function(c){return String(c.crop).toUpperCase()==='NANAS';});if(!c)return;
       (c.plantingCohorts||[]).forEach(function(cohort){var planted=month(cohort.period),count=num(cohort.plantedCount);if(!count||planted===null||planted>month(asOf))return;
         var age=month(asOf)-planted,label=age<9?'Pemeliharaan · tanam baru':'Periksa kelompok tanam baru';
-        rows.push({id:o.objectId,shortId:String(o.objectId).replace('DAYUN-GT-',''),block:o.block||String(o.objectId).split('-')[2],plants:count,age:age,treated:null,remaining:null,history:[],census:null,cohortPeriod:cohort.period,group:age<9?'maintenance':'verify',label:label,reason:'Kelompok penanaman '+periodLabel(cohort.period)+': '+integer(count)+' bibit. Riwayat Ethrel tanaman lama tidak diterapkan pada kelompok baru. '+(age<9?'Lanjutkan pemeliharaan; pemeriksaan umur 9 bulan sekitar '+periodLabel(Math.floor((planted+9)/12)+'-'+String((planted+9)%12+1).padStart(2,'0'))+'.':'Periksa kondisi dan lengkapi aplikasi Ethrel khusus kelompok ini.')});
+        var history=cohort.ethrel||[],treated=history.length?history.reduce(function(s,h){return s+num(h.count);},0):null,census=cohort.populationCensus;
+        if(census)count=Number(census.livingPlantCount);
+        var group=treated?'followup':age<9?'maintenance':'verify';if(treated)label='Ada aplikasi kelompok · periksa cakupan';
+        rows.push({id:o.objectId,shortId:String(o.objectId).replace('DAYUN-GT-',''),block:o.block||String(o.objectId).split('-')[2],plants:count,age:age,treated:treated,remaining:null,history:history,census:census&&census.period||null,cohortPeriod:cohort.period,group:group,label:label,reason:'Kelompok penanaman '+periodLabel(cohort.period)+': '+integer(count)+(census?' tanaman hidup menurut sensus. ':' bibit ditanam. ')+(treated?'Ada aplikasi '+integer(treated)+' tanaman khusus kelompok ini; verifikasi cakupan dan tanaman yang sama. ':'')+'Riwayat Ethrel tanaman lama tidak diterapkan pada kelompok baru. '+(age<9?'Lanjutkan pemeliharaan; pemeriksaan umur 9 bulan sekitar '+periodLabel(Math.floor((planted+9)/12)+'-'+String((planted+9)%12+1).padStart(2,'0'))+'.':'Periksa kondisi dan lengkapi aplikasi Ethrel khusus kelompok ini.')});
       });
     });rows.sort(function(a,b){return a.shortId.localeCompare(b.shortId,'id',{numeric:true})||String(a.cohortPeriod||'').localeCompare(String(b.cohortPeriod||''));});return {asOf:asOf,rows:rows};
   }
