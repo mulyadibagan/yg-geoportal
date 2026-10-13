@@ -22,7 +22,7 @@
         <p class="staff-login-eyebrow">AKSES INTERNAL</p>
         <h1 id="staff-login-title">Login Staf Yayasan Gambut</h1>
         <p class="staff-login-intro">Masuk untuk meninjau dan memperbarui capaian seluruh program donor.</p>
-        <div id="staff-existing-session" hidden><p>Sesi sebelumnya masih tersimpan. Lanjutkan sesi tersebut atau login ulang melalui formulir di bawah.</p><a id="staff-continue-session" class="staff-secondary-link" href="admin-dashboard.html">Lanjutkan sesi tersimpan</a></div>
+        <div id="staff-existing-session" hidden><p>Sesi sebelumnya masih tersimpan. Lanjutkan sesi tersebut atau masuk kembali dengan Google YG.</p><a id="staff-continue-session" class="staff-secondary-link" href="admin-dashboard.html">Lanjutkan sesi tersimpan</a></div>
         <button id="staff-google-login" type="button" style="width:100%;padding:14px;border:0;border-radius:10px;background:#087653;color:#fff;font-size:16px;font-weight:700;margin:12px 0">Masuk dengan Google YG</button><p>Gunakan akun Google Yayasan Gambut. Tidak perlu username atau password WebGIS tambahan.</p><details><summary>Login lama untuk masa transisi</summary><form id="staff-login-form">
           <label for="staff-username">Username</label>
           <input id="staff-username" name="username" autocomplete="username" required>
@@ -32,11 +32,12 @@
             <button class="password-toggle" type="button" data-password-toggle="staff-password" aria-label="Tampilkan password" aria-pressed="false">Lihat</button>
           </div>
           <button id="staff-login-submit" type="submit">Login</button>
-        </form></details>
-        <p id="staff-login-status" class="staff-login-status" role="status" aria-live="polite"></p>
+        </form>
         <button id="show-password-reset-request" class="staff-text-button" type="button">Lupa password?</button>
         <button id="show-registration" class="staff-text-button" type="button">Aktivasi akun staf pertama kali</button>
-        <p class="staff-login-note">Akun hanya dapat digunakan setelah email resmi Yayasan Gambut diverifikasi. Sesi admin berlaku 7 hari; sesi staf berlaku 24 jam.</p>
+        </details>
+        <p id="staff-login-status" class="staff-login-status" role="status" aria-live="polite"></p>
+        <p class="staff-login-note">Login Google menggunakan akun resmi @yayasangambut.org dengan sesi WebGIS selama 8 jam. Tidak perlu aktivasi akun WebGIS terpisah.</p>
       </div>
 
       <div id="staff-password-reset-request-panel" hidden>
