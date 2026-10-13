@@ -1,6 +1,6 @@
 # Google login activation for WebGIS
 
-Prepared branch: google-webgis-login-20261013 in both repositories.
+Merged on 13 October 2026: website PR #11 and WebGIS PR #367.
 
 ## Deployment order
 1. Website staff broker: deploy migration 0005 and Worker, keeping existing website login.
@@ -21,5 +21,11 @@ The current Google OAuth app admits YG Workspace accounts. External KUPS email l
 The finance application itself is not yet implemented. Do not grant kups-finance until its destination and API are ready.
 No financial records are published in GitHub.
 
-## Deployment blocker
-Repository updates do not deploy the existing Apps Script service. No Apps Script deployment tool is available in this session. The live login page remains unchanged until that service is updated and verified.
+## Activation evidence — 13 October 2026
+- Website staff broker and database migration deployed successfully.
+- Live Apps Script EditorAuthentication updated and active deployment advanced to version 172, preserving its endpoint URL.
+- WebGIS login page deployed with Google as the primary login.
+- An existing YG Google account completed login and reached the admin dashboard; server reports and donor data loaded.
+- WebGIS Cloudflare deployment run 38427819142 started after cancelling obsolete run 37519910554, which had blocked concurrency since 7 October. Final Worker smoke test is still pending.
+
+The acceptance list above defines required security behavior; only the explicitly recorded checks here are live verification evidence.
