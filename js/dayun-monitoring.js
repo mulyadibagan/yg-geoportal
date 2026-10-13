@@ -142,6 +142,7 @@
     $('dm-object-note').textContent = id ? block + ' · luas ' + fmt(currentArea, 2) + ' ha' : 'Pilih polygon yang dikerjakan.';
     clearTechnicalFields();
     populateCrops();
+    autoReference();
   }
 
   function renderFertilizerMaterials(force){
@@ -191,7 +192,15 @@
     if (!$('dm-weed-area').value && currentArea) $('dm-weed-area').value = Number(currentArea.toFixed(2));
     if (!$('dm-generic-fert-area').value && currentArea) $('dm-generic-fert-area').value = Number(currentArea.toFixed(2));
   }
-  function syncActivityForm() {
+  var selectedTree=null;
+function autoReference(){
+var record=detailsById[select.value],c=(record&&record.crops||[]).find(function(x){return normalizeCrop(x.crop)===normalizeCrop(crop.value);}),g=c&&($('dm-cohort').value?(c.plantingCohorts||[]).find(function(x){return x.period===$('dm-cohort').value;}):null);
+var n=g?g.plantedCount:c?(c.populationCensus&&c.populationCensus.livingPlantCount!=null?c.populationCensus.livingPlantCount:c.vegetationCount):null;
+var host=$('dm-auto-reference');if(!host)return;
+host.textContent=(selectedTree?'Pohon '+selectedTree.pointId+' · '+selectedTree.species+' · kondisi sebelumnya: '+selectedTree.condition+'. ':'')+(n!=null?'Populasi acuan '+fmt(n)+' tanaman'+(g?' · kelompok '+g.period:' · periksa tanggal sensus/sumber')+'. ':'Populasi acuan belum tersedia. ')+'Hasil pemeriksaan dan realisasi bahan diisi sesuai kegiatan terbaru.';
+if(isNanasFertilizing()&&$('dm-fert-population').value===''&&n!=null){$('dm-fert-population').value=n;updateFertilizerStatus();}
+}
+function syncActivityForm() {
     var name = activity.value;
     var meta = ACTIVITY_META[name] || {};
     var panelId = meta.panel || '';
@@ -219,6 +228,7 @@
     updateHarvestFields();
     suggestTechnicalValues();
     if (nanasFertilizer) renderFertilizerMaterials(false);
+    autoReference();
   }
 
   function activitySnapshot() {
@@ -332,6 +342,8 @@
     var requested = new URLSearchParams(location.search).get('object');
     if (requested && featuresById[requested]) { select.value = requested; updateObject();
       var params=new URLSearchParams(location.search),cohort=params.get('cohort'),phase=params.get('phase');
+      var point=params.get('point');
+      if(point)fetch('data/dayun-mpts-monitoring.geojson').then(function(r){return r.json();}).then(function(d){var f=(d.features||[]).find(function(f){return f.properties.pointId===point;});if(!f||!(f.properties.spatialMatches||[]).includes(select.value))return;selectedTree=f.properties;crop.value=normalizeCrop(selectedTree.species);populateActivities();activity.value=params.get('activity')==='Penyisipan'?'Penyisipan':'Monitoring umum';syncActivityForm();}).catch(function(){setFeedback('Data pohon belum dapat dimuat; periksa pilihan gawangan.','error');});
       if(cohort&&/^\d{4}-\d{2}$/.test(cohort))$('dm-cohort').value=cohort;
       if(phase&&['phase1','phase2','phase3','ethrel'].indexOf(phase)>=0){crop.value='NANAS';populateActivities();activity.value=phase==='ethrel'?'Ethrel':'Pemupukan';if(phase!=='ethrel')$('dm-fert-phase').value=phase;syncActivityForm();}
     }
@@ -340,8 +352,9 @@
     setFeedback(error.message, 'error');
   });
 
-  select.addEventListener('change', updateObject);
-  crop.addEventListener('change', function () { clearTechnicalFields(); activity.value = ''; populateActivities(); });
+  select.addEventListener('change', function(){selectedTree=null;updateObject();autoReference();});
+  $('dm-cohort').addEventListener('change',function(){$('dm-fert-population').value='';autoReference();});
+  crop.addEventListener('change', function () { clearTechnicalFields(); activity.value = ''; populateActivities(); autoReference(); });
   activity.addEventListener('change', syncActivityForm);
   $('dm-harvest-cycle').addEventListener('change', updateHarvestFields);
   $('dm-ratoon-status').addEventListener('change', updateHarvestFields);
@@ -383,7 +396,7 @@
       var compatible = compatibilityFields(details, fertilizer);
       var meta = ACTIVITY_META[activity.value] || {};
       var recommendation = followUpRecommendation(details, eventDate);
-      var info = { schemaVersion: 'dayun-monitoring-v8', cohortPeriod: $('dm-cohort').value, monitoringType: 'Agroforestri Dayun', activityCluster: meta.cluster || '', activityType: activity.value, crop: crop.value, eventDate: eventDate, plantingDate: details.plantingDate || '', recordKey: [select.value,eventDate,activity.value,crop.value,$('dm-cohort').value,isNanasFertilizing()?$('dm-fert-phase').value:''].join('|'), condition: compatible.condition, quantity: compatible.quantity, unit: compatible.unit, material: compatible.material, activityDetails: details, followUpRecommendation: recommendation, notes: $('dm-notes').value.trim(), fertilizer: fertilizer };
+      var info = { schemaVersion: 'dayun-monitoring-v8', pointId: selectedTree&&selectedTree.pointId||null, sourceTree: selectedTree, cohortPeriod: $('dm-cohort').value, monitoringType: 'Agroforestri Dayun', activityCluster: meta.cluster || '', activityType: activity.value, crop: crop.value, eventDate: eventDate, plantingDate: details.plantingDate || '', recordKey: [select.value,eventDate,activity.value,crop.value,$('dm-cohort').value,isNanasFertilizing()?$('dm-fert-phase').value:''].join('|'), condition: compatible.condition, quantity: compatible.quantity, unit: compatible.unit, material: compatible.material, activityDetails: details, followUpRecommendation: recommendation, notes: $('dm-notes').value.trim(), fertilizer: fertilizer };
       var clientId = 'dayun-' + Date.now() + '-' + Math.floor(Math.random() * 100000);
       var payload = { clientSubmissionId: clientId, reportType: 'Monitoring', name: reporter, organization: organization, email: email, phone: phone, province: 'Riau', regency: 'Siak', district: 'Dayun', village: 'Dayun', locationName: 'Gawangan ' + id.replace('DAYUN-GT-', ''), title: activity.value + ' ' + info.crop + ' · ' + id.replace('DAYUN-GT-', ''), activityDate: eventDate, description: info.notes, oldInformation: JSON.stringify(detailsById[id] || {}), proposedInformation: JSON.stringify(info), geometryType: geometry.type, geometryGeoJSON: JSON.stringify(geometry), targetLayerId: 'dayun_gawangan', targetLayerLabel: 'Gawangan Agroforestri Dayun', targetSourceType: 'dayun_gawangan', targetObjectId: id, targetFeatureProperties: JSON.stringify(Object.assign({}, properties, { Object_ID: id, objectId: id })), proposedChanges: JSON.stringify({ monitoring: info }), images: images, documents: [] };
       await fetch(API, { method: 'POST', mode: 'no-cors', body: new URLSearchParams({ payload: JSON.stringify(payload) }) });
