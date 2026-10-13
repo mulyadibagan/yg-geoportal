@@ -221,7 +221,8 @@
     sessionStorage.removeItem(SESSION_KEY);
     localStorage.removeItem(SESSION_KEY);
     if (session && session.token) {
-      postAuthRequest("editor-logout", { sessionToken: session.token }).catch(console.warn);
+      if(session.token.startsWith('yg-google-'))fetch('https://staff.yayasangambut.org/api/webgis/logout',{method:'POST',headers:{Authorization:'Bearer '+session.token}}).catch(console.warn);
+      else postAuthRequest("editor-logout", { sessionToken: session.token }).catch(console.warn);
     }
     return true;
   }
