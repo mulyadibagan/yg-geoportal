@@ -121,6 +121,12 @@
         ethrelController=window.DayunEthrel.create({details:gawanganData,map:map,layers:featureLayers,style:featureStyle,showGawangan:function(){var feature=(geojson.features||[]).find(function(f){return (f.properties||{}).category==='Gawangan Tanam';});if(feature)switchLayer(feature.properties.layerId);}});
         window.DayunEthrel.loadMonitoring().then(function(result){var merged=window.DayunEthrel.merge(gawanganData,result.reports,new Date().toLocaleDateString('sv-SE',{timeZone:'Asia/Jakarta'}));renderAgroSummary(window.DayunAgroSummary.build(merged,geojson,blockGeojson));ethrelController.update(result.reports,result.label);if(fieldWorkController)fieldWorkController.update(result.reports);}).catch(function(){ethrelController.update(null,'Laporan monitoring terbaru belum tersedia · data sumber awal saja');});
       }
+      // Sidebar styling travels with its renderer to support cached HTML versions.
+      if(!document.getElementById('dy-sidebar-renderer-style')){
+        var tabStyle=document.createElement('style');tabStyle.id='dy-sidebar-renderer-style';
+        tabStyle.textContent='#dayun-layers{display:flex!important;flex-direction:column;gap:12px}#dayun-layers>.dy-sidebar-tabs{order:-10;display:flex;gap:5px;padding:6px;border:1px solid #cbded4;border-radius:12px;background:#f7faf8;position:sticky;top:0;z-index:3}#dayun-layers>.dy-gawangan-picker{order:-9}#dayun-layers .dy-sidebar-tabs button{flex:1;min-height:44px;padding:10px 6px;border:0;border-radius:8px;background:transparent;color:#315145;font:700 13px inherit;cursor:pointer}#dayun-layers .dy-sidebar-tabs button[aria-pressed=true]{background:#087653;color:#fff}#dayun-layers .dy-sidebar-tabs button:focus-visible{outline:3px solid #dbb73d;outline-offset:2px}#dayun-layers[data-panel=gawangan]>.dy-mpts-panel,#dayun-layers[data-panel=gawangan]>.dy-ethrel-panel,#dayun-layers[data-panel=gawangan]>.dy-work-shortcut{display:none!important}#dayun-layers[data-panel=work]>:not(.dy-sidebar-tabs):not(.dy-gawangan-picker):not(.dy-ethrel-panel):not(.dy-work-shortcut){display:none!important}#dayun-layers[data-panel=mpts]>:not(.dy-sidebar-tabs):not(.dy-gawangan-picker):not(.dy-mpts-panel){display:none!important}';
+        document.head.appendChild(tabStyle);
+      }
       var sidebarTab='gawangan';
       var renderMptsLegend = window.YGDayunMpts ? window.YGDayunMpts.attach(map, legendEl) : function () {};
       function renderLegend(){
