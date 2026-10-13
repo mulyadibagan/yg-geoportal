@@ -68,6 +68,11 @@
     var satellite=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxNativeZoom:18,maxZoom:20,attribution:'Tiles &copy; Esri'});
     var osm=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxNativeZoom:19,maxZoom:20,attribution:'&copy; OpenStreetMap contributors'});
     var map=L.map(mapEl,{zoomControl:true,layers:[satellite],preferCanvas:true}).setView([0.5844,102.009],17);
+    // Keep Leaflet geometry aligned after browser zoom, responsive layout, and fullscreen changes.
+    var resizeFrame;
+    function syncMapSize(){cancelAnimationFrame(resizeFrame);resizeFrame=requestAnimationFrame(function(){map.invalidateSize({pan:false});});}
+    if(typeof ResizeObserver!=='undefined'){var mapResizeObserver=new ResizeObserver(syncMapSize);mapResizeObserver.observe(mapEl);}
+    window.addEventListener('resize',syncMapSize);
     var locationStatus=document.createElement('p');locationStatus.className='dy-location-status';locationStatus.textContent='Aktifkan lokasi untuk melihat posisi Anda terhadap Kampung Dayun, kawasan HKm, blok, dan gawangan.';legendEl.prepend(locationStatus);
     var locationButton=null,locationControl=L.control({position:'topleft'});
     locationControl.onAdd=function(){locationButton=L.DomUtil.create('button','dy-location-control yg-location-button leaflet-bar');locationButton.type='button';locationButton.setAttribute('aria-label','Tampilkan lokasi saya');locationButton.innerHTML='<span data-location-label>Lokasi saya</span>';L.DomEvent.disableClickPropagation(locationButton);return locationButton;};
