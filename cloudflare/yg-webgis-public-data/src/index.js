@@ -158,6 +158,7 @@ function rememberValidStaffToken(token) {
 }
 async function validStaffToken(token, env) {
   if (!token) return false;
+  if(token.startsWith('yg-google-')){try{const r=await fetch('https://staff.yayasangambut.org/api/webgis/introspect',{headers:{Authorization:'Bearer '+token},signal:AbortSignal.timeout(8000)});if(!r.ok)return false;const i=await r.json();return i.ok===true&&i.scope==='webgis-staff'&&Number(i.expiresAt)>Date.now();}catch{return false;}}
   const cachedUntil = staffTokenCache.get(token) || 0;
   if (cachedUntil > Date.now()) return true;
   staffTokenCache.delete(token);
