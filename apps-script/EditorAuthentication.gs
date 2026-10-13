@@ -136,6 +136,13 @@ function editorAuthResultKey_(requestId) {
 function assertEditorCredential_(credential) {
   const value = clean_(credential);
 
+  if (value.indexOf('yg-google-') === 0) {
+    const response = UrlFetchApp.fetch('https://staff.yayasangambut.org/api/webgis/introspect', {headers:{Authorization:'Bearer '+value},muteHttpExceptions:true});
+    if(response.getResponseCode()!==200)throw new Error('Sesi Google berakhir. Silakan masuk kembali.');
+    const identity=JSON.parse(response.getContentText());
+    if(identity.ok!==true||identity.scope!=='webgis-staff'||!identity.email||Number(identity.expiresAt)<=Date.now())throw new Error('Akses modul staf tidak diizinkan.');
+    return {username:identity.username,name:identity.name,email:identity.email,role:identity.role,expiresAt:identity.expiresAt};
+  }
   // Jalur pemulihan untuk dashboard admin lama.
   if (value && typeof ADMIN_TOKEN !== 'undefined' && value === ADMIN_TOKEN) {
     return {
