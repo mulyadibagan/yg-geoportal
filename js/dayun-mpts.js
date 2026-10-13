@@ -68,7 +68,7 @@
               markerById[p.pointId] = layer;
               layer.bindTooltip(esc(p.pointId + ' · ' + p.sourceLabel));
               var gawangan = p.spatialMatches.filter(function (id) { return /^DAYUN-GT-[A-F]-\d{2}$/.test(id); });
-              layer.bindPopup('<div class="dy-map-popup"><b>' + esc(p.species) + ' · ' + esc(p.pointId) + '</b><span>Kondisi tercatat: ' + esc(p.condition) + '</span><span>Gawangan: ' + esc(p.spatialMatches.join(', ')) + '</span><span>Tinggi: belum tersedia</span><small>Data diperbarui 8 Oktober 2026.</small><small>Foto dan penyebab kematian belum tersedia.</small>' + gawangan.map(function (id) { return '<a href="dayun-gawangan.html?object=' + encodeURIComponent(id) + '">Buka profil ' + esc(id.replace('DAYUN-', '')) + '</a>'; }).join('<br>') + '</div>');
+              layer.bindPopup('<div class="dy-map-popup"><b>' + esc(p.species) + ' · ' + esc(p.pointId) + '</b><span>Kondisi tercatat: ' + esc(p.condition) + '</span><span>Gawangan: ' + esc(p.spatialMatches.join(', ')) + '</span><span>Tinggi: belum tersedia</span><small>Data diperbarui 8 Oktober 2026.</small><small>Foto dan penyebab kematian belum tersedia.</small>' + gawangan.map(function (id) { return '<a href="dayun-monitoring.html?point='+encodeURIComponent(p.pointId)+'&object='+encodeURIComponent(id)+'">Catat pemeriksaan pohon →</a><br><a href="dayun-monitoring.html?point='+encodeURIComponent(p.pointId)+'&activity=Penyisipan&object='+encodeURIComponent(id)+'">Catat sulam →</a><br><a href="dayun-gawangan.html?object=' + encodeURIComponent(id) + '">Buka profil ' + esc(id.replace('DAYUN-', '')) + '</a>'; }).join('<br>') + '</div>');
             }
           }).addTo(map);
           render();
