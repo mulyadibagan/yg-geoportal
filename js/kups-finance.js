@@ -1,7 +1,7 @@
 (function(){
 'use strict';
 const base='https://staff.yayasangambut.org',key='ygEditorSessionV1';
-const $=id=>document.getElementById(id),form=$('transaction-form'),fmt=n=>n==null?'Belum ditetapkan':new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(n),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const $=id=>document.getElementById(id),form=$('transaction-form'),fmt=n=>n==null?'Belum ditetapkan':new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:2}).format(n),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const today=new Date().toLocaleDateString('en-CA',{timeZone:'Asia/Jakarta'});let session,data,editing=null,groups=[],admin=false,loadSerial=0,importRows=[],importReview=null;
 function status(message,error=false){$('status').textContent=message;$('status').classList.toggle('error',error);}
 function login(){const random=()=>Array.from(crypto.getRandomValues(new Uint8Array(32)),x=>x.toString(16).padStart(2,'0')).join('');return(async()=>{const verifier=random(),state=random();sessionStorage.setItem('ygGoogleRequest',JSON.stringify({verifier,state,created:Date.now(),target:'kups-finance.html'}));const hash=new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(verifier)));const challenge=btoa(String.fromCharCode(...hash)).replace(/=/g,'').replace(/\+/g,'-').replace(/\//g,'_');location.assign(base+'/auth/kups?'+new URLSearchParams({state,challenge}));})();}
