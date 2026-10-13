@@ -1,10 +1,10 @@
 (function(){
   "use strict";
   const programs={
-    phase1:{name:"Pemupukan I",time:"Bulan ke-3 setelah tanam",note:"Urea 3 kg + Cu/terusi 16 gram per 600 tanaman.",materials:[{id:"urea",name:"Urea",amount:3,unit:"kg"},{id:"cu",name:"Cu/terusi",amount:16,unit:"g"}]},
-    phase2:{name:"Pemupukan II",time:"Bulan ke-6 setelah tanam",note:"Urea 3 kg + Cu/terusi 16 gram per 600 tanaman.",materials:[{id:"urea",name:"Urea",amount:3,unit:"kg"},{id:"cu",name:"Cu/terusi",amount:16,unit:"g"}]},
-    phase3:{name:"Pemupukan III",time:"Bulan ke-8 setelah tanam",note:"Urea 2 kg + Cu/terusi 16 gram + KCl 0,5 kg per 600 tanaman.",materials:[{id:"urea",name:"Urea",amount:2,unit:"kg"},{id:"cu",name:"Cu/terusi",amount:16,unit:"g"},{id:"kcl",name:"KCl",amount:0.5,unit:"kg"}]},
-    cycle:{name:"Total tiga aplikasi",time:"Bulan ke-3, ke-6, dan ke-8",note:"Urea 8 kg + Cu/terusi 48 gram + KCl 0,5 kg per 600 tanaman. Tidak termasuk campuran Ethrel.",materials:[{id:"urea",name:"Urea",amount:8,unit:"kg"},{id:"cu",name:"Cu/terusi",amount:48,unit:"g"},{id:"kcl",name:"KCl",amount:0.5,unit:"kg"}]}
+    phase1:{name:"Pemupukan I",time:"Bulan ke-3 setelah tanam",note:"Urea 3 kg + Cu/terusi 1 SDM / 16 gram per 600 tanaman.",materials:[{id:"urea",name:"Urea",amount:3,unit:"kg"},{id:"cu",name:"Cu/terusi",amount:16,unit:"g"}]},
+    phase2:{name:"Pemupukan II",time:"Bulan ke-6 setelah tanam",note:"Urea 3 kg + Cu/terusi 1 SDM / 16 gram per 600 tanaman.",materials:[{id:"urea",name:"Urea",amount:3,unit:"kg"},{id:"cu",name:"Cu/terusi",amount:16,unit:"g"}]},
+    phase3:{name:"Pemupukan III",time:"Bulan ke-8 setelah tanam",note:"Urea 2 kg + Cu/terusi 1 SDM / 16 gram + KCl 0,5 kg per 600 tanaman.",materials:[{id:"urea",name:"Urea",amount:2,unit:"kg"},{id:"cu",name:"Cu/terusi",amount:16,unit:"g"},{id:"kcl",name:"KCl",amount:0.5,unit:"kg"}]},
+    cycle:{name:"Total tiga aplikasi",time:"Bulan ke-3, ke-6, dan ke-8",note:"Urea 8 kg + Cu/terusi 3 SDM / 48 gram + KCl 0,5 kg per 600 tanaman. Tidak termasuk campuran Ethrel.",materials:[{id:"urea",name:"Urea",amount:8,unit:"kg"},{id:"cu",name:"Cu/terusi",amount:48,unit:"g"},{id:"kcl",name:"KCl",amount:0.5,unit:"kg"}]}
   };
   window.YG_DAYUN_NANAS_FERTILIZER_PROGRAMS=programs;
   const actualForm=document.getElementById("fertilizer-calculator");
@@ -131,7 +131,7 @@
       const need=m.amount*plants/600,prepared=need*factor;
       const perPlant=m.unit==="kg"?fmt(m.amount*1000/600,3)+" g/tanaman":fmt(m.amount/600,3)+" g/tanaman";
       const packs=m.unit==="kg"?fmt(prepared/bag,3)+" sak ("+fmt(bag,1)+" kg/sak)":fmt(prepared/1000,3)+" kg terusi (1 SDM = 16 gram)";
-      return '<article><header><span>'+m.name+'</span><small>'+fmt(m.amount,2)+' '+m.unit+' / 600 tanaman</small></header><strong>'+fmt(need,3)+' '+m.unit+'</strong><p>Kebutuhan berdasarkan tanaman sasaran</p><dl><div><dt>Acuan bahan</dt><dd>'+perPlant+'</dd></div><div><dt>Dengan cadangan pengadaan</dt><dd>'+fmt(prepared,3)+' '+m.unit+'</dd></div><div><dt>Setara kemasan</dt><dd>'+packs+'</dd></div></dl></article>';
+      return '<article><header><span>'+m.name+'</span><small>'+(m.id==='cu'?fmt(m.amount/16,2)+' SDM / '+fmt(m.amount,2)+' gram':fmt(m.amount,2)+' '+m.unit)+' / 600 tanaman</small></header><strong>'+fmt(need,3)+' '+m.unit+'</strong><p>Kebutuhan berdasarkan tanaman sasaran</p><dl><div><dt>Acuan bahan</dt><dd>'+perPlant+'</dd></div><div><dt>Dengan cadangan pengadaan</dt><dd>'+fmt(prepared,3)+' '+m.unit+'</dd></div><div><dt>Setara kemasan</dt><dd>'+packs+'</dd></div></dl></article>';
     }).join("");
     const applications=$("fert-phase").value==="cycle"?3:1;
     const batches=plants/600,water=16*batches*applications;
