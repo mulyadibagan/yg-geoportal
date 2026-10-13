@@ -23,7 +23,7 @@
         <h1 id="staff-login-title">Login Staf Yayasan Gambut</h1>
         <p class="staff-login-intro">Masuk untuk meninjau dan memperbarui capaian seluruh program donor.</p>
         <div id="staff-existing-session" hidden><p>Sesi sebelumnya masih tersimpan. Lanjutkan sesi tersebut atau login ulang melalui formulir di bawah.</p><a id="staff-continue-session" class="staff-secondary-link" href="admin-dashboard.html">Lanjutkan sesi tersimpan</a></div>
-        <form id="staff-login-form">
+        <button id="staff-google-login" type="button" style="width:100%;padding:14px;border:0;border-radius:10px;background:#087653;color:#fff;font-size:16px;font-weight:700;margin:12px 0">Masuk dengan Google YG</button><p>Gunakan akun Google Yayasan Gambut. Tidak perlu username atau password WebGIS tambahan.</p><details><summary>Login lama untuk masa transisi</summary><form id="staff-login-form">
           <label for="staff-username">Username</label>
           <input id="staff-username" name="username" autocomplete="username" required>
           <label for="staff-password">Password</label>
@@ -32,7 +32,7 @@
             <button class="password-toggle" type="button" data-password-toggle="staff-password" aria-label="Tampilkan password" aria-pressed="false">Lihat</button>
           </div>
           <button id="staff-login-submit" type="submit">Login</button>
-        </form>
+        </form></details>
         <p id="staff-login-status" class="staff-login-status" role="status" aria-live="polite"></p>
         <button id="show-password-reset-request" class="staff-text-button" type="button">Lupa password?</button>
         <button id="show-registration" class="staff-text-button" type="button">Aktivasi akun staf pertama kali</button>
@@ -108,5 +108,5 @@
   </main>
   <script src="js/auth.js?v=20261006-api-domain1"></script>
   <script src="js/staff-login.js?v=20261005-login-network1"></script>
-</body>
+<script src="js/google-staff-login.js?v=20261013-sso1"></script></body>
 </html>
