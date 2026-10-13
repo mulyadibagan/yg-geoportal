@@ -1,10 +1,10 @@
 (function(){
   "use strict";
   const programs={
-    phase1:{name:"Pemupukan I",time:"Bulan ke-3 setelah tanam",note:"Urea 3 kg + Cu/terusi 1 SDM per 600 tanaman.",materials:[{id:"urea",name:"Urea",amount:3,unit:"kg"},{id:"cu",name:"Cu/terusi",amount:1,unit:"SDM"}]},
-    phase2:{name:"Pemupukan II",time:"Bulan ke-6 setelah tanam",note:"Urea 3 kg + Cu/terusi 1 SDM per 600 tanaman.",materials:[{id:"urea",name:"Urea",amount:3,unit:"kg"},{id:"cu",name:"Cu/terusi",amount:1,unit:"SDM"}]},
-    phase3:{name:"Pemupukan III",time:"Bulan ke-8 setelah tanam",note:"Urea 2 kg + Cu/terusi 1 SDM + KCl 0,5 kg per 600 tanaman.",materials:[{id:"urea",name:"Urea",amount:2,unit:"kg"},{id:"cu",name:"Cu/terusi",amount:1,unit:"SDM"},{id:"kcl",name:"KCl",amount:0.5,unit:"kg"}]},
-    cycle:{name:"Total tiga aplikasi",time:"Bulan ke-3, ke-6, dan ke-8",note:"Urea 8 kg + Cu/terusi 3 SDM + KCl 0,5 kg per 600 tanaman. Tidak termasuk campuran Ethrel.",materials:[{id:"urea",name:"Urea",amount:8,unit:"kg"},{id:"cu",name:"Cu/terusi",amount:3,unit:"SDM"},{id:"kcl",name:"KCl",amount:0.5,unit:"kg"}]}
+    phase1:{name:"Pemupukan I",time:"Bulan ke-3 setelah tanam",note:"Urea 3 kg + Cu/terusi 16 gram per 600 tanaman.",materials:[{id:"urea",name:"Urea",amount:3,unit:"kg"},{id:"cu",name:"Cu/terusi",amount:16,unit:"g"}]},
+    phase2:{name:"Pemupukan II",time:"Bulan ke-6 setelah tanam",note:"Urea 3 kg + Cu/terusi 16 gram per 600 tanaman.",materials:[{id:"urea",name:"Urea",amount:3,unit:"kg"},{id:"cu",name:"Cu/terusi",amount:16,unit:"g"}]},
+    phase3:{name:"Pemupukan III",time:"Bulan ke-8 setelah tanam",note:"Urea 2 kg + Cu/terusi 16 gram + KCl 0,5 kg per 600 tanaman.",materials:[{id:"urea",name:"Urea",amount:2,unit:"kg"},{id:"cu",name:"Cu/terusi",amount:16,unit:"g"},{id:"kcl",name:"KCl",amount:0.5,unit:"kg"}]},
+    cycle:{name:"Total tiga aplikasi",time:"Bulan ke-3, ke-6, dan ke-8",note:"Urea 8 kg + Cu/terusi 48 gram + KCl 0,5 kg per 600 tanaman. Tidak termasuk campuran Ethrel.",materials:[{id:"urea",name:"Urea",amount:8,unit:"kg"},{id:"cu",name:"Cu/terusi",amount:48,unit:"g"},{id:"kcl",name:"KCl",amount:0.5,unit:"kg"}]}
   };
   window.YG_DAYUN_NANAS_FERTILIZER_PROGRAMS=programs;
   const actualForm=document.getElementById("fertilizer-calculator");
@@ -129,14 +129,14 @@
     $("fert-result-context").textContent=fmt(area,3)+" ha"+(plants?" · "+fmt(Math.floor(plants),0)+" tanaman acuan":"");
     $("fert-material-results").innerHTML=p.materials.map(m=>{
       const need=m.amount*plants/600,prepared=need*factor;
-      const perPlant=m.unit==="kg"?fmt(m.amount*1000/600,3)+" g/tanaman":fmt(m.amount,0)+" SDM per 600 tanaman; berat gram belum diverifikasi";
-      const packs=m.unit==="kg"?fmt(prepared/bag,3)+" sak ("+fmt(bag,1)+" kg/sak)":"Belum dihitung; timbang SDM dalam gram";
+      const perPlant=m.unit==="kg"?fmt(m.amount*1000/600,3)+" g/tanaman":fmt(m.amount/600,3)+" g/tanaman";
+      const packs=m.unit==="kg"?fmt(prepared/bag,3)+" sak ("+fmt(bag,1)+" kg/sak)":fmt(prepared/1000,3)+" kg terusi (1 SDM = 16 gram)";
       return '<article><header><span>'+m.name+'</span><small>'+fmt(m.amount,2)+' '+m.unit+' / 600 tanaman</small></header><strong>'+fmt(need,3)+' '+m.unit+'</strong><p>Kebutuhan berdasarkan tanaman sasaran</p><dl><div><dt>Acuan bahan</dt><dd>'+perPlant+'</dd></div><div><dt>Dengan cadangan pengadaan</dt><dd>'+fmt(prepared,3)+' '+m.unit+'</dd></div><div><dt>Setara kemasan</dt><dd>'+packs+'</dd></div></dl></article>';
     }).join("");
     const applications=$("fert-phase").value==="cycle"?3:1;
     const batches=plants/600,water=16*batches*applications;
     $("fert-material-results").innerHTML+='<article><header><span>Air · pemupukan</span><small>16 liter / 600 tanaman per aplikasi</small></header><strong>'+fmt(water,3)+' liter</strong><p>'+applications+' aplikasi pemupukan</p><dl><div><dt>Air per aplikasi</dt><dd>'+fmt(16*batches,3)+' liter</dd></div><div><dt>Setara tangki 16 liter</dt><dd>'+fmt(batches*applications,3)+' tangki; bagian akhir proporsional</dd></div><div><dt>Cadangan</dt><dd>Tidak menambah air atau dosis aplikasi</dd></div></dl></article>';
-    $("fert-result-formula").textContent="Perhitungan: "+fmt(plants,0)+" tanaman ÷ 600 × bahan acuan"+(reserve?" × "+fmt(factor,3)+" untuk pengadaan dengan cadangan.":". Cadangan pengadaan tidak ditambahkan.")+" Campuran Ethrel tidak termasuk. Takaran SDM dan pengenceran perlu diverifikasi.";
+    $("fert-result-formula").textContent="Perhitungan: "+fmt(plants,0)+" tanaman ÷ 600 × bahan acuan"+(reserve?" × "+fmt(factor,3)+" untuk pengadaan dengan cadangan.":". Cadangan pengadaan tidak ditambahkan.")+" Campuran Ethrel tidak termasuk. Acuan terusi: 1 SDM = 16 gram. Pengenceran mengikuti arahan pendamping.";
     renderBlockDetail();
     $("fert-result").hidden=false;error.hidden=true;
   }
