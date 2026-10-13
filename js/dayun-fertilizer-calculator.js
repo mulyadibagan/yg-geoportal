@@ -183,4 +183,9 @@
   syncPhase();
   loadGawangan();
   loadPopulation();
+  function syncPhaseButtons(){document.querySelectorAll('[data-calc-phase]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.calcPhase===$('fert-phase').value)));}
+  document.querySelectorAll('[data-calc-phase]').forEach(b=>b.addEventListener('click',()=>{$('fert-phase').value=b.dataset.calcPhase;$('fert-phase').dispatchEvent(new Event('change',{bubbles:true}));syncPhaseButtons();}));
+  $('fert-phase').addEventListener('change',syncPhaseButtons);
+  actualForm.addEventListener('reset',()=>setTimeout(syncPhaseButtons,0));
+  syncPhaseButtons();
 })();
