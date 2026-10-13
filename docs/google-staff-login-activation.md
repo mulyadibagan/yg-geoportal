@@ -25,7 +25,8 @@ No financial records are published in GitHub.
 - Website staff broker and database migration deployed successfully.
 - Live Apps Script EditorAuthentication updated and active deployment advanced to version 172, preserving its endpoint URL.
 - WebGIS login page deployed with Google as the primary login.
-- An existing YG Google account completed login and reached the admin dashboard; server reports and donor data loaded.
-- WebGIS Cloudflare deployment run 38427819142 started after cancelling obsolete run 37519910554, which had blocked concurrency since 7 October. Final Worker smoke test is still pending.
+- An existing YG Google account completed login and reached the admin dashboard; 160 server reports and donor data loaded. Internal RSPO group polygons also loaded.
+- Logout returned the browser to the login page, and subsequent Google login reused the website session without another WebGIS password.
+- WebGIS Cloudflare deployment run 38427819142 started after cancelling obsolete run 37519910554, which had blocked concurrency since 7 October. Staging and production Workers deployed successfully; gateway smoke test passed.
 
 The acceptance list above defines required security behavior; only the explicitly recorded checks here are live verification evidence.
