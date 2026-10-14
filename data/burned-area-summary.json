@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-13T03:58:37.972718+00:00",
+  "generatedAt": "2026-10-14T03:49:47.783085+00:00",
   "status": "ready",
-  "eventCount": 16,
-  "estimatedAreaHa": 3380.87,
-  "candidateEventCount": 17,
+  "eventCount": 14,
+  "estimatedAreaHa": 3170.63,
+  "candidateEventCount": 15,
   "processing": {
-    "published": 16,
+    "published": 14,
     "excludedByRiauBoundary": 1
   },
   "latestDetection": "2026-10-05T06:31:00+00:00",
@@ -17,14 +17,14 @@
   "villageSource": "data/batas_administrasi_desa_riau.geojson",
   "spatiallyClipped": true,
   "areaCrs": "EPSG:32647",
-  "administrativeUpdatedAt": "2026-10-13T03:58:38.353342+00:00",
+  "administrativeUpdatedAt": "2026-10-14T03:49:48.169395+00:00",
   "unassignedAreaHa": 5.7,
   "villageTotals": [
     {
       "regency": "Indragiri Hilir",
       "district": "",
       "village": "Area Saling Klaim",
-      "areaHa": 17.59
+      "areaHa": 14.87
     },
     {
       "regency": "Indragiri Hilir",
@@ -77,32 +77,8 @@
     {
       "regency": "Indragiri Hilir",
       "district": "Keritang",
-      "village": "Kuala Lemang",
-      "areaHa": 25.23
-    },
-    {
-      "regency": "Indragiri Hilir",
-      "district": "Keritang",
-      "village": "Nyiur Permai",
-      "areaHa": 1.04
-    },
-    {
-      "regency": "Indragiri Hilir",
-      "district": "Keritang",
       "village": "Pancur",
       "areaHa": 3.75
-    },
-    {
-      "regency": "Indragiri Hilir",
-      "district": "Keritang",
-      "village": "Pengalihan",
-      "areaHa": 1.47
-    },
-    {
-      "regency": "Indragiri Hilir",
-      "district": "Keritang",
-      "village": "Telukkelasa",
-      "areaHa": 48.45
     },
     {
       "regency": "Indragiri Hilir",
@@ -131,20 +107,14 @@
     {
       "regency": "Indragiri Hulu",
       "district": "Batang Cenaku",
-      "village": "Punti Anai",
-      "areaHa": 0.88
-    },
-    {
-      "regency": "Indragiri Hulu",
-      "district": "Batang Cenaku",
       "village": "Sanglap",
-      "areaHa": 184.37
+      "areaHa": 182.21
     },
     {
       "regency": "Indragiri Hulu",
       "district": "Batang Cenaku",
       "village": "Sipang",
-      "areaHa": 126.66
+      "areaHa": 16.62
     },
     {
       "regency": "Indragiri Hulu",
@@ -186,19 +156,19 @@
       "regency": "Indragiri Hulu",
       "district": "Peranap",
       "village": "Semelinang Tebing/Pauh Ranap",
-      "areaHa": 64.96
+      "areaHa": 64.16
     },
     {
       "regency": "Indragiri Hulu",
       "district": "Peranap/Batang Cenaku",
       "village": "Semelinang Tebing/Anak Talang",
-      "areaHa": 1055.98
+      "areaHa": 1042.82
     },
     {
       "regency": "Indragiri Hulu",
       "district": "Peranap/Batang Peranap",
       "village": "Semelinang Tebing/Pauh Ranap/Pesajian",
-      "areaHa": 727.8
+      "areaHa": 723.52
     },
     {
       "regency": "Indragiri Hulu / Indragiri Hilir",
@@ -259,7 +229,7 @@
     {
       "regency": "Indragiri Hilir",
       "district": "",
-      "areaHa": 17.59
+      "areaHa": 14.87
     },
     {
       "regency": "Indragiri Hilir",
@@ -289,7 +259,7 @@
     {
       "regency": "Indragiri Hilir",
       "district": "Keritang",
-      "areaHa": 79.95
+      "areaHa": 3.75
     },
     {
       "regency": "Indragiri Hilir",
@@ -299,7 +269,7 @@
     {
       "regency": "Indragiri Hulu",
       "district": "Batang Cenaku",
-      "areaHa": 347.2
+      "areaHa": 234.12
     },
     {
       "regency": "Indragiri Hulu",
@@ -319,17 +289,17 @@
     {
       "regency": "Indragiri Hulu",
       "district": "Peranap",
-      "areaHa": 64.96
+      "areaHa": 64.16
     },
     {
       "regency": "Indragiri Hulu",
       "district": "Peranap/Batang Cenaku",
-      "areaHa": 1055.98
+      "areaHa": 1042.82
     },
     {
       "regency": "Indragiri Hulu",
       "district": "Peranap/Batang Peranap",
-      "areaHa": 727.8
+      "areaHa": 723.52
     },
     {
       "regency": "Indragiri Hulu / Indragiri Hilir",
@@ -360,11 +330,11 @@
   "regencyTotals": [
     {
       "regency": "Indragiri Hilir",
-      "areaHa": 206.64
+      "areaHa": 127.72
     },
     {
       "regency": "Indragiri Hulu",
-      "areaHa": 2409.42
+      "areaHa": 2278.1
     },
     {
       "regency": "Indragiri Hulu / Indragiri Hilir",
