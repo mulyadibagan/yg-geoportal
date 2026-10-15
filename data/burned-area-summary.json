@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-14T03:49:47.783085+00:00",
+  "generatedAt": "2026-10-15T03:49:44.222024+00:00",
   "status": "ready",
-  "eventCount": 14,
-  "estimatedAreaHa": 3170.63,
-  "candidateEventCount": 15,
+  "eventCount": 9,
+  "estimatedAreaHa": 1976.71,
+  "candidateEventCount": 10,
   "processing": {
-    "published": 14,
+    "published": 9,
     "excludedByRiauBoundary": 1
   },
   "latestDetection": "2026-10-05T06:31:00+00:00",
@@ -17,8 +17,8 @@
   "villageSource": "data/batas_administrasi_desa_riau.geojson",
   "spatiallyClipped": true,
   "areaCrs": "EPSG:32647",
-  "administrativeUpdatedAt": "2026-10-14T03:49:48.169395+00:00",
-  "unassignedAreaHa": 5.7,
+  "administrativeUpdatedAt": "2026-10-15T03:49:44.516671+00:00",
+  "unassignedAreaHa": 2.83,
   "villageTotals": [
     {
       "regency": "Indragiri Hilir",
@@ -88,36 +88,6 @@
     },
     {
       "regency": "Indragiri Hulu",
-      "district": "Batang Cenaku",
-      "village": "Alim",
-      "areaHa": 17.57
-    },
-    {
-      "regency": "Indragiri Hulu",
-      "district": "Batang Cenaku",
-      "village": "Anak Talang",
-      "areaHa": 4.16
-    },
-    {
-      "regency": "Indragiri Hulu",
-      "district": "Batang Cenaku",
-      "village": "Kepayang Sari",
-      "areaHa": 13.56
-    },
-    {
-      "regency": "Indragiri Hulu",
-      "district": "Batang Cenaku",
-      "village": "Sanglap",
-      "areaHa": 182.21
-    },
-    {
-      "regency": "Indragiri Hulu",
-      "district": "Batang Cenaku",
-      "village": "Sipang",
-      "areaHa": 16.62
-    },
-    {
-      "regency": "Indragiri Hulu",
       "district": "Batang Gangsal",
       "village": "Area Tidakterdefinisi",
       "areaHa": 27.73
@@ -127,12 +97,6 @@
       "district": "Batang Gangsal",
       "village": "Penyaguan",
       "areaHa": 62.16
-    },
-    {
-      "regency": "Indragiri Hulu",
-      "district": "Batang Gangsal",
-      "village": "Rantai Langsat",
-      "areaHa": 105.24
     },
     {
       "regency": "Indragiri Hulu",
@@ -156,19 +120,19 @@
       "regency": "Indragiri Hulu",
       "district": "Peranap",
       "village": "Semelinang Tebing/Pauh Ranap",
-      "areaHa": 64.16
+      "areaHa": 52.04
     },
     {
       "regency": "Indragiri Hulu",
       "district": "Peranap/Batang Cenaku",
       "village": "Semelinang Tebing/Anak Talang",
-      "areaHa": 1042.82
+      "areaHa": 284.08
     },
     {
       "regency": "Indragiri Hulu",
       "district": "Peranap/Batang Peranap",
       "village": "Semelinang Tebing/Pauh Ranap/Pesajian",
-      "areaHa": 723.52
+      "areaHa": 689.08
     },
     {
       "regency": "Indragiri Hulu / Indragiri Hilir",
@@ -180,13 +144,13 @@
       "regency": "Kampar",
       "district": "Kampar Kiri",
       "village": "Sungai Sarik",
-      "areaHa": 115.88
+      "areaHa": 70.76
     },
     {
       "regency": "Kampar",
       "district": "Xiii Koto Kampar",
       "village": "Balung",
-      "areaHa": 210.52
+      "areaHa": 209.24
     },
     {
       "regency": "Kampar",
@@ -268,13 +232,8 @@
     },
     {
       "regency": "Indragiri Hulu",
-      "district": "Batang Cenaku",
-      "areaHa": 234.12
-    },
-    {
-      "regency": "Indragiri Hulu",
       "district": "Batang Gangsal",
-      "areaHa": 195.13
+      "areaHa": 89.89
     },
     {
       "regency": "Indragiri Hulu",
@@ -289,17 +248,17 @@
     {
       "regency": "Indragiri Hulu",
       "district": "Peranap",
-      "areaHa": 64.16
+      "areaHa": 52.04
     },
     {
       "regency": "Indragiri Hulu",
       "district": "Peranap/Batang Cenaku",
-      "areaHa": 1042.82
+      "areaHa": 284.08
     },
     {
       "regency": "Indragiri Hulu",
       "district": "Peranap/Batang Peranap",
-      "areaHa": 723.52
+      "areaHa": 689.08
     },
     {
       "regency": "Indragiri Hulu / Indragiri Hilir",
@@ -309,12 +268,12 @@
     {
       "regency": "Kampar",
       "district": "Kampar Kiri",
-      "areaHa": 115.88
+      "areaHa": 70.76
     },
     {
       "regency": "Kampar",
       "district": "Xiii Koto Kampar",
-      "areaHa": 307.82
+      "areaHa": 306.54
     },
     {
       "regency": "Kampar/Rokan Hulu",
@@ -334,7 +293,7 @@
     },
     {
       "regency": "Indragiri Hulu",
-      "areaHa": 2278.1
+      "areaHa": 1133.45
     },
     {
       "regency": "Indragiri Hulu / Indragiri Hilir",
@@ -342,7 +301,7 @@
     },
     {
       "regency": "Kampar",
-      "areaHa": 423.7
+      "areaHa": 377.3
     },
     {
       "regency": "Kampar/Rokan Hulu",
