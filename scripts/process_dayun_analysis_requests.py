@@ -24,6 +24,7 @@ def process(label,run,mode='queued',work_root='.dayun-analysis-work'):
         found=transfer('get',key,record,required=False)
         job=json.loads(record.read_text()) if found else None
         expired=job and job.get('status')=='processing' and job.get('leaseExpiresAt','9999')<datetime.now(timezone.utc).isoformat()
+        if job and job.get('status')=='processing' and not expired:return
         if mode=='queued' and (not job or (job.get('status')!='pending' and not expired)):return
         if mode!='queued' and (not job or job.get('status') not in ('pending','processing')):
             job={'id':str(uuid.uuid4()),'label':label,'status':'pending','createdAt':datetime.now(timezone.utc).isoformat()}
@@ -57,7 +58,7 @@ def process(label,run,mode='queued',work_root='.dayun-analysis-work'):
             publish(label,out,run+'-'+job['id'])
             status('coverage_ready','coverage_ready',resultRun=run+'-'+job['id'],plantCountStatus='pending_original_sample_validation')
         except Exception as error:
-            code=error.code if isinstance(error,DownloadError) else 'analysis_processing_failed'
+            code=error.code if isinstance(error,DownloadError) else (str(error) if isinstance(error,RuntimeError) and str(error).startswith(('private_storage_','r2_')) else 'analysis_processing_failed')
             state='blocked' if code in ('drive_credentials_missing','drive_credentials_invalid','drive_authenticated_request_failed','drive_access_denied','drive_file_missing_or_not_shared','drive_scope_insufficient','drive_api_disabled','drive_download_disabled') else 'failed'
             (out/'download-status.json').write_text(json.dumps({'ok':source.exists(),'stage':'downloaded' if source.exists() else 'download_failed','error':code}))
             # Failure updates the request; it must not replace an older complete

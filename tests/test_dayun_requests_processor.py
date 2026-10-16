@@ -10,6 +10,12 @@ spec=importlib.util.spec_from_file_location('processor',Path(__file__).parents[1
 mod=importlib.util.module_from_spec(spec);spec.loader.exec_module(mod)
 
 class ProcessorTests(unittest.TestCase):
+    def test_manual_rerun_does_not_duplicate_an_active_source(self):
+        def transfer(action,key,path,required=True):
+            self.assertEqual(action,'get');Path(path).write_text('{"id":"active","label":"Agro_DEF","status":"processing","leaseExpiresAt":"9999"}');return True
+        with tempfile.TemporaryDirectory() as root,patch.object(mod,'transfer',side_effect=transfer),patch.object(mod,'check_access') as access:
+            mod.process('Agro_DEF','123',mode='both',work_root=root)
+        access.assert_not_called()
     def test_missing_drive_identity_is_blocked_not_finished(self):
         job={'id':'test','label':'Agro_ABC','status':'pending'};states=[]
         def transfer(action,key,path,required=True):

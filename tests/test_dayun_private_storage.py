@@ -3,12 +3,41 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
-from unittest.mock import patch
+import os
+from unittest.mock import patch,MagicMock
 
 spec=importlib.util.spec_from_file_location('storage',Path(__file__).parents[1]/'scripts/dayun_private_storage.py')
 mod=importlib.util.module_from_spec(spec);spec.loader.exec_module(mod)
 
 class StorageTests(unittest.TestCase):
+    def test_api_upload_retries_transient_failure_and_reopens_stream(self):
+        bodies=[]
+        def send(request,**kwargs):
+            self.assertEqual(request.method,'PUT');bodies.append(request.data.read())
+            if len(bodies)==1:raise mod.urllib.error.HTTPError(request.full_url,503,'temporary',{},None)
+            response=MagicMock();response.__enter__.return_value.read.return_value=b'{"success":true}'
+            return response
+        with tempfile.TemporaryDirectory() as root,patch.dict(os.environ,{'CLOUDFLARE_API_TOKEN':'test-only','CLOUDFLARE_ACCOUNT_ID':'test'}),patch.object(mod,'require_private_bucket'),patch.object(mod.urllib.request,'urlopen',side_effect=send),patch.object(mod.time,'sleep'):
+            path=Path(root)/'chunk';path.write_bytes(b'chunk')
+            self.assertTrue(mod.transfer('put','drone/analysis/dayun/test.bin',path))
+            self.assertEqual(bodies,[b'chunk',b'chunk'])
+    def test_interrupted_checkpoint_retains_a_restorable_prefix(self):
+        objects={};count=0
+        def transfer(action,key,path,required=True):
+            nonlocal count
+            if action=='put':
+                if key.endswith('.bin'):
+                    count+=1
+                    if count==2:raise RuntimeError('private_storage_transfer_failed')
+                objects[key]=Path(path).read_bytes();return True
+            if key not in objects:return False
+            Path(path).write_bytes(objects[key]);return True
+        with tempfile.TemporaryDirectory() as root,patch.object(mod,'transfer',side_effect=transfer),patch.object(mod,'CHUNK',4):
+            root=Path(root);source=root/'source.tif';source.with_suffix('.tif.part').write_bytes(b'II*\x00abcdefgh')
+            source.with_suffix('.tif.part.json').write_text('{"id":"test","size":"12"}')
+            with self.assertRaisesRegex(RuntimeError,'transfer_failed'):mod.checkpoint('Agro_DEF',source)
+            restored=root/'restored.tif';mod.restore('Agro_DEF',restored)
+            self.assertEqual(restored.with_suffix('.tif.part').read_bytes(),b'II*\x00')
     def test_only_missing_manifest_is_optional_not_permission_failure(self):
         for code in (404,403):
             with self.subTest(code=code),patch.object(mod,'require_private_bucket'),patch.object(mod.urllib.request,'urlopen',side_effect=mod.urllib.error.HTTPError('https://api.cloudflare.com',code,'test',{},None)):

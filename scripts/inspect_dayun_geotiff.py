@@ -11,6 +11,7 @@ from PIL import Image
 from shapely.geometry import shape, mapping, box
 from shapely.ops import unary_union
 from pyproj import CRS
+from dayun_geographic_metrics import apply_geographic_metrics
 
 def analyze(source, label, output, map_path):
     out = Path(output); out.mkdir(parents=True, exist_ok=True)
@@ -31,7 +32,7 @@ def analyze(source, label, output, map_path):
         meter_factor=crs.axis_info[0].unit_conversion_factor if crs.is_projected else None
         pixel_m2=determinant*meter_factor**2 if meter_factor else None
         summary={"schema":"dayun-ortho-v2","label":label,"width":ds.width,"height":ds.height,"bands":ds.count,
-          "crs":ds.crs.to_string(),"resolution_crs_units":list(ds.res),"bounds":list(ds.bounds),
+          "crs":ds.crs.to_string(),"resolution_crs_units":list(ds.res),"bounds":list(ds.bounds),"transform":list(ds.transform),
           "pixel_area_m2":pixel_m2,"tags":ds.tags(),
           "note":"Vegetation includes weeds and trees. No pineapple count or health diagnosis inferred.",
           "capture_date":None,"capture_date_status":"unverified",
@@ -112,12 +113,17 @@ def analyze(source, label, output, map_path):
             rows.append(row); summary["gawangan"].append(dict(row,tiles=parts))
             coverage_features.append({"type":"Feature","geometry":transform_geom(ds.crs,"EPSG:4326",mapping(geom)),"properties":row})
             # Per-gawangan results belong in the private output, not Actions logs.
+        if apply_geographic_metrics(summary,coverage_features):
+            # summary rows also retain tile lists; CSV rows receive metrics only.
+            measured={row['gawangan']:row for row in summary['gawangan']}
+            for row in rows:row.update({k:v for k,v in measured[row['gawangan']].items() if k!='tiles'})
         (out/"metadata.json").write_text(json.dumps(summary,indent=2))
         (out/"coverage.geojson").write_text(json.dumps({"type":"FeatureCollection","features":coverage_features}))
         (out/"review.json").write_text(json.dumps({"status":"pending_original_image_review","samples":[{"gawangan":g["gawangan"],"file":g["tiles"][0]["file"],"method":"manual native-resolution identification followed by independent count validation","count":None,"confidence":None} for g in summary["gawangan"] if g["tiles"]],"field_checks":[{"gawangan":r["gawangan"],"reason":"Missing coverage or nodata; verify source extent and field position","geometry_type":"whole_gawangan_not_a_detected_gap"} for r in rows if r["valid_coverage_percent"] is None or r["valid_coverage_percent"]<95]},indent=2))
         (out/"report.txt").write_text(
             f"Sumber: {label}\nCRS: {ds.crs}\nUkuran piksel dalam satuan CRS: {ds.res}\n"
             f"Gawangan unik: {len(rows)}\nTanggal penerbangan: belum terverifikasi. Tag waktu hanya bukti metadata, bukan tanggal penerbangan otomatis.\n"
+            f"Metode satuan meter: {summary.get('metric_method','CRS proyeksi dengan konversi satuan sumbu ke meter')}\n"
             "Metode: union polygon berdasarkan ID, mask piksel asli, potongan RGBA berkoordinat. Cakupan valid dibandingkan seluruh luas gawangan; area di luar raster dan nodata dipisahkan. Batas piksel memakai pusat piksel sehingga batas polygon memiliki toleransi satu piksel.\n"
             "Hasil otomatis baru cakupan dan proxy kehijauan. Luas tanam yang dapat dikenali, celah barisan, serta jumlah nanas belum dinilai.\n"
             "Pemeriksaan berikutnya: buka sampel pada review.json di resolusi asli, identifikasi mahkota nanas terhadap gulma/pohon/bayangan, bandingkan hitungan independen, lalu catat metode dan keyakinan. Jangan memakai luas hijau atau kapasitas jarak tanam sebagai jumlah aktual.\n"
