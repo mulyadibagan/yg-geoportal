@@ -20,9 +20,6 @@ on:
 permissions:
   contents: read
   id-token: write
-concurrency:
-  group: dayun-existing-geotiff-inspection
-  cancel-in-progress: false
 jobs:
   inspect:
     if: github.ref == 'refs/heads/main'
@@ -33,6 +30,9 @@ jobs:
       fail-fast: false
       matrix:
         label: [Agro_ABC, Agro_DEF]
+    concurrency:
+      group: dayun-source-${{ matrix.label }}
+      cancel-in-progress: false
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
