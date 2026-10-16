@@ -65,7 +65,7 @@
   }
   function initMap() {
     map = L.map('map', {preferCanvas: true}).setView([1.48,102.25], 10);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom: 22, maxNativeZoom: 19, attribution: '&copy; OpenStreetMap'}).addTo(map);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom: 22, maxNativeZoom: 19, referrerPolicy: 'origin', attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'}).addTo(map);
     areas = L.featureGroup().addTo(map);
     map.addControl(new L.Control.Draw({draw:{polygon:{allowIntersection:false},polyline:true,rectangle:true,circle:false,circlemarker:false,marker:false}, edit:{featureGroup:areas}}));
     map.on(L.Draw.Event.CREATED, event => { event.layer.feature={type:'Feature',properties:{source:source?.title || 'Peta referensi',sourceId:source?.id || null},geometry:event.layer.toGeoJSON().geometry}; areas.addLayer(event.layer); updateMeasurements(); });
@@ -141,6 +141,7 @@
   }
   $('retryGate').onclick=authorize;
   const analysisStages={pending:'Menunggu mesin',processing:'Sedang diproses',coverage_ready:'Cakupan dan potongan siap; hitungan nanas belum tervalidasi',blocked:'Terhambat akses atau konfigurasi mesin',failed:'Pemrosesan gagal'};
+  const analysisSteps={verifying_access:'Memeriksa izin baca Drive',restoring_source:'Memulihkan unduhan sebelumnya',downloading:'Mengunduh dan memverifikasi TIFF',checkpointing:'Unduhan terverifikasi; menyimpan sumber privat',cropping_and_measuring_coverage:'Memotong citra asli dan mengukur cakupan gawangan',saving_private_results:'Menyimpan potongan, peta, dan tabel privat'};
   const analysisErrors={drive_credentials_missing:'Sambungan Google Drive mesin belum aktif',drive_credentials_invalid:'Sambungan Google Drive perlu diperiksa admin',drive_authenticated_request_failed:'Mesin belum dapat mengakses Google Drive',drive_access_denied:'Akun mesin belum mendapat akses baca',drive_file_missing_or_not_shared:'Citra belum dibagikan kepada akun mesin',drive_api_disabled:'Layanan Drive mesin belum aktif',drive_scope_insufficient:'Izin baca Drive belum sesuai',insufficient_runner_disk:'Ruang pemrosesan tidak mencukupi'};
   async function refreshDayunRequests(){
     if(!validSession())return;
@@ -150,7 +151,7 @@
       $('dayunRequests').replaceChildren();
       for(const job of data.jobs||[]){
         if(!['Agro_ABC','Agro_DEF'].includes(job.label))continue;
-        const row=document.createElement('p');row.textContent=`${job.label}: ${analysisStages[job.status]||'Status belum tersedia'}${job.error?' — '+(analysisErrors[job.error]||'Admin perlu memeriksa proses ini'):''}`;
+        const row=document.createElement('p');row.textContent=`${job.label}: ${job.status==='processing'&&analysisSteps[job.stage]?analysisSteps[job.stage]:(analysisStages[job.status]||'Status belum tersedia')}${job.error?' — '+(analysisErrors[job.error]||'Admin perlu memeriksa proses ini'):''}`;
         $('dayunRequests').append(row);
         if(job.status==='coverage_ready'){
           const button=document.createElement('button');button.textContent=`Buka hasil ${job.label}`;
@@ -190,6 +191,7 @@
       const meta=await(await api(base+'/files/metadata.json')).json();
       if(!current())return;
       $('dayunStatus').textContent='Cakupan citra tersedia. Luas tanam, celah barisan, dan jumlah nanas masih memerlukan pemeriksaan visual. Tanggal penerbangan belum terverifikasi.';
+      const details=document.createElement('p');details.textContent=`CRS: ${meta.crs||'belum diketahui'}. Ukuran piksel: ${Array.isArray(meta.gsd_m)?meta.gsd_m.map(v=>number(v*100,2)).join(' × ')+' cm':'belum tersedia dalam meter'}. Tanggal penerbangan: ${meta.capture_date_status==='verified'&&meta.capture_date?meta.capture_date:'belum terverifikasi'}.`;$('dayunResults').append(details);
       const table=document.createElement('table'),head=document.createElement('tr');
       ['Gawangan','Cakupan seluruh polygon','Luas citra valid (ha)'].forEach(value=>{const th=document.createElement('th');th.textContent=value;head.append(th);});table.append(head);
       for(const row of meta.gawangan||[]){const tr=document.createElement('tr');[row.gawangan,row.valid_coverage_percent===null?'Belum tersedia':`${row.valid_coverage_percent}%`,row.valid_area_ha??'Belum tersedia'].forEach(value=>{const td=document.createElement('td');td.textContent=value;tr.append(td);});table.append(tr);}
@@ -209,7 +211,13 @@
       for(const file of manifest.files){select.add(new Option(file,file));}
       const button=document.createElement('button');button.textContent='Unduh hasil terpilih';
       button.onclick=async()=>{try{const response=await api(base+'/files/'+select.value);const blob=await response.blob();if(current())save(blob,select.value.split('/').pop());}catch(e){if(current())$('dayunStatus').textContent=e.message;}};
-      $('dayunResults').append(select);$('dayunResults').append(button);
+      const inspect=document.createElement('button');inspect.textContent='Buka potongan terpilih di peta';
+      inspect.onclick=async()=>{
+        const file=select.value;
+        if(!file.endsWith('.tif')){$('dayunStatus').textContent='Pilih potongan .tif untuk memeriksa citra berkoordinat di peta.';return;}
+        try{const blob=await(await api(base+'/files/'+file)).blob();if(current())await openRaster(blob,{title:`${selected} / ${file}`});}catch(e){if(current())$('dayunStatus').textContent=e.message;}
+      };
+      $('dayunResults').append(select);$('dayunResults').append(inspect);$('dayunResults').append(button);
     }catch(e){if(current())$('dayunStatus').textContent=`Hasil privat belum tersedia: ${e.message}`;}
   };
   $('refreshJobs').onclick=async()=>{try{jobs=(await (await api('/api/staff/drone/jobs')).json()).jobs || [];renderJobs();}catch(e){$('catalogStatus').textContent=e.message;}};
