@@ -1,6 +1,6 @@
 (() => {
   'use strict';
-  const API = 'https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev';
+  const API = 'https://webgis-api.yayasangambut.org';
   const $ = id => document.getElementById(id);
   let session, map, areas, rasterLayer, rasterBounds, tileLayer, jobs = [], source = null, sequence = 0;
   let disposeMeritechExport = null, dayunLayer = null, dayunUrls = [], dayunRequest=0;
