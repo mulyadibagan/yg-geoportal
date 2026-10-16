@@ -197,6 +197,27 @@ async function servePublicCog(request,env,id){
 
 async function dayunAnalysis(request,env,url,verifyStaffToken){
   if(!await authorizedStaff(request,env,verifyStaffToken))return reply(request,{ok:false,error:'unauthorized'},401);
+  if(url.pathname==='/api/staff/drone/analysis/requests'){
+    const root='drone/analysis/dayun/requests';
+    if(request.method==='GET'){
+      const jobs=(await Promise.all(['Agro_ABC','Agro_DEF'].map(label=>readJson(env,`${root}/${label}.json`)))).filter(Boolean);
+      return reply(request,{ok:true,jobs});
+    }
+    if(request.method!=='POST')return reply(request,{ok:false,error:'method_not_allowed'},405);
+    const body=await request.json().catch(()=>({}));
+    let drive;try{drive=new URL(body.driveUrl)}catch{return reply(request,{ok:false,error:'invalid_drive_file_url'},400)}
+    if(drive.protocol!=='https:'||drive.hostname!=='drive.google.com'||drive.port||drive.username||drive.password)return reply(request,{ok:false,error:'invalid_drive_file_url'},400);
+    const fileId=drive.pathname.match(/^\/file\/d\/([\w-]+)(?:\/view)?\/?$/)?.[1] || (drive.pathname==='/open'?drive.searchParams.get('id'):null);
+    const source={'11kWmzkdTWVuxrDJMOYk3JfN34xeoZNRx':['Agro_ABC',13677790714],'14d-Hui0iwSvHQtCbZJa3InBOlQ3OdGNo':['Agro_DEF',3432485808]}[fileId];
+    if(!source)return reply(request,{ok:false,error:'dayun_source_not_registered',message:'Gunakan link berkas Agro_ABC.tif atau Agro_DEF.tif untuk analisis Dayun.'},400);
+    if(!env.DRONE_QUEUE)return reply(request,{ok:false,error:'analysis_queue_unavailable'},503);
+    const now=new Date().toISOString(),job={id:crypto.randomUUID(),label:source[0],fileId,expectedBytes:source[1],status:'pending',stage:'queued',createdAt:now,updatedAt:now,plantCountStatus:'not_tested',censusChanged:false};
+    const stub=env.DRONE_QUEUE.get(env.DRONE_QUEUE.idFromName('dayun-analysis'));
+    const response=await stub.fetch(new Request('https://queue.internal/dayun',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({action:'submit',job})}));
+    if(!response.ok)return reply(request,{ok:false,error:'analysis_queue_unavailable'},503);
+    return reply(request,{ok:true,...await response.json()},202);
+  }
+  if(!['GET','HEAD'].includes(request.method))return reply(request,{ok:false,error:'method_not_allowed'},405);
   const match=url.pathname.match(/^\/api\/staff\/drone\/analysis\/(Agro_ABC|Agro_DEF)(?:\/files\/(.+))?$/);
   if(!match)return reply(request,{ok:false,error:'not_found'},404);
   const root=`drone/analysis/dayun/results/${match[1]}`;
@@ -216,7 +237,7 @@ async function routeDroneRequest(request,env,url,verifyStaffToken=async()=>false
   const origin=request.headers.get('origin')||'';
   if(['POST','PUT'].includes(request.method)&&!ALLOWED_ORIGINS.has(origin))return reply(request,{ok:false,error:'origin_not_allowed'},403);
   if(origin&&!ALLOWED_ORIGINS.has(origin))return reply(request,{ok:false,error:'origin_not_allowed'},403);
-  if(url.pathname.startsWith('/api/staff/drone/analysis/')&&['GET','HEAD'].includes(request.method))return dayunAnalysis(request,env,url,verifyStaffToken);
+  if(url.pathname.startsWith('/api/staff/drone/analysis/')&&['GET','HEAD','POST'].includes(request.method))return dayunAnalysis(request,env,url,verifyStaffToken);
   if(url.pathname==='/api/drone/public'&&(request.method==='GET'||request.method==='HEAD'))return listPublicJobs(request,env);
   if(url.pathname==='/api/staff/drone/jobs'&&request.method==='GET')return listStaffJobs(request,env,verifyStaffToken);
   const publicCogMatch=url.pathname.match(/^\/api\/drone\/public\/(drn-[a-zA-Z0-9-]+)\/cog$/);if(publicCogMatch&&(request.method==='GET'||request.method==='HEAD'))return servePublicCog(request,env,publicCogMatch[1]);

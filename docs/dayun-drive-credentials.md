@@ -1,5 +1,17 @@
 # Kredensial baca minimum untuk citra Dayun
 
+## Jalur yang disiapkan sekarang: federasi tanpa key
+
+Pembuatan JSON key ditolak oleh kebijakan organisasi `iam.disableServiceAccountKeyCreation`. Jangan menonaktifkan kebijakan itu atau mengulang pembuatan key. Service account `webgisyg-dayun-reader` sudah dibuat; izin Pelihat pada ABC/DEF diberikan melalui pemilik akun.
+
+Skrip admin [configure_dayun_workload_identity.sh](../scripts/configure_dayun_workload_identity.sh) menyiapkan federasi GitHub → Google → service account pembaca di proyek yang sudah ada. **Belum dijalankan.** Tinjau dan setujui sekali sebelum diterapkan: trust hanya repository ID `1297989887` milik owner ID `48111628`, branch `main`, workflow `inspect-dayun-geotiff.yml`, environment `yg-webgis-staging`. Role `roles/iam.workloadIdentityUser` hanya pada service account tersebut, bukan role proyek untuk mesin dan bukan domain-wide delegation. Ini menambahkan akses mesin yang memerlukan persetujuan pemilik/admin.
+
+Setelah admin menerapkannya, simpan nama provider yang dicetak sebagai environment **variable** `DAYUN_GOOGLE_WIF_PROVIDER` pada GitHub `yg-webgis-staging`. Google auth action menghasilkan credential sementara; downloader memakai ADC dengan scope `drive.readonly`. Tidak ada JSON key yang perlu diunduh atau ditempel. Token, refresh unduhan panjang dan izin runner tetap harus diuji pada citra asli sebelum dinyatakan operasional.
+
+Rujukan: [federasi pipeline Google](https://docs.cloud.google.com/iam/docs/workload-identity-federation-with-deployment-pipelines), [Google GitHub auth](https://github.com/google-github-actions/auth), [claim OIDC GitHub](https://docs.github.com/en/actions/reference/security/oidc).
+
+Instruksi JSON berikut adalah alternatif lama untuk organisasi yang mengizinkannya, bukan langkah yang perlu dilanjutkan di organisasi ini.
+
 Mesin yang dipakai tetap downloader dan modul orthomosaic WebGISYG. Secret yang dibaca: `DRIVE_CREDENTIALS_JSON` pada environment GitHub `yg-webgis-staging`.
 
 ## Pilih identitas yang sudah tersedia dahulu

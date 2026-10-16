@@ -18,6 +18,7 @@
   }
   function lock(message) {
     clearDayun();
+    $('dayunRequests').replaceChildren();
     sequence++;
     disposeMeritechExport?.(); disposeMeritechExport = null;
     activeController?.abort(); downloadController?.abort();
@@ -50,6 +51,7 @@
       $('gate').hidden = true; $('workspace').hidden = false;
       if (!map) initMap();
       renderJobs();
+      refreshDayunRequests();
     } catch (error) { $('gateStatus').textContent = `Analisis belum dapat dibuka: ${error.message}`; }
   }
   function renderJobs() {
@@ -138,6 +140,40 @@
     } catch(error) { if(request!==sequence)return;metadata([['Sumber',details.title],['Status','Gagal dibaca']]);$('mapStatus').textContent=`GeoTIFF belum dapat dibuka: ${error.message}`; }
   }
   $('retryGate').onclick=authorize;
+  const analysisStages={pending:'Menunggu mesin',processing:'Sedang diproses',coverage_ready:'Cakupan dan potongan siap; hitungan nanas belum tervalidasi',blocked:'Terhambat akses atau konfigurasi mesin',failed:'Pemrosesan gagal'};
+  const analysisErrors={drive_credentials_missing:'Sambungan Google Drive mesin belum aktif',drive_credentials_invalid:'Sambungan Google Drive perlu diperiksa admin',drive_authenticated_request_failed:'Mesin belum dapat mengakses Google Drive',drive_access_denied:'Akun mesin belum mendapat akses baca',drive_file_missing_or_not_shared:'Citra belum dibagikan kepada akun mesin',drive_api_disabled:'Layanan Drive mesin belum aktif',drive_scope_insufficient:'Izin baca Drive belum sesuai',insufficient_runner_disk:'Ruang pemrosesan tidak mencukupi'};
+  async function refreshDayunRequests(){
+    if(!validSession())return;
+    try{
+      const data=await(await api('/api/staff/drone/analysis/requests')).json();
+      if(!validSession())return;
+      $('dayunRequests').replaceChildren();
+      for(const job of data.jobs||[]){
+        if(!['Agro_ABC','Agro_DEF'].includes(job.label))continue;
+        const row=document.createElement('p');row.textContent=`${job.label}: ${analysisStages[job.status]||'Status belum tersedia'}${job.error?' — '+(analysisErrors[job.error]||'Admin perlu memeriksa proses ini'):''}`;
+        $('dayunRequests').append(row);
+        if(job.status==='coverage_ready'){
+          const button=document.createElement('button');button.textContent=`Buka hasil ${job.label}`;
+          button.onclick=()=>{$('dayunSource').value=job.label;$('openDayun').onclick();};$('dayunRequests').append(button);
+        }
+      }
+    }catch(error){$('dayunQueueStatus').textContent=`Status belum dapat dimuat: ${error.message}`;}
+  }
+  $('refreshDayunRequests').onclick=refreshDayunRequests;
+  $('submitDayun').onclick=async()=>{
+    if(!validSession())return;
+    const driveUrl=$('dayunDriveUrl').value.trim();
+    if(!driveUrl){$('dayunQueueStatus').textContent='Tempel link berkas GeoTIFF terlebih dahulu.';return;}
+    $('submitDayun').disabled=true;
+    try{
+      const data=await(await api('/api/staff/drone/analysis/requests',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({driveUrl})})).json();
+      if(!validSession())return;
+      $('dayunQueueStatus').textContent=`${data.job.label} ${data.reused?'sudah ada dalam proses':'masuk antrean'}. Mesin akan memeriksa akses dan mengunduh citra; analisis belum selesai.`;
+      await refreshDayunRequests();
+    }catch(error){$('dayunQueueStatus').textContent=`Permintaan belum berhasil: ${error.message}`;}
+    finally{$('submitDayun').disabled=false;}
+  };
+  setInterval(refreshDayunRequests,30000);
   $('openDayun').onclick=async()=>{
     clearDayun();
     const request=dayunRequest;

@@ -2,19 +2,29 @@
 
 Use `Inspect existing Dayun GeoTIFF` for the two existing Agro_ABC/Agro_DEF orthomosaics. Do not submit these TIFFs to the JPEG/OpenDroneMap reconstruction queue.
 
+## Staff workflow: paste a Drive link
+
+Staff paste an ABC/DEF file link in the existing `orthomosaic-internal.html` and select **Analisis citra**. A staff-authenticated POST to `/api/staff/drone/analysis/requests` validates the host/file ID against the two registered Dayun sources. Folder links, arbitrary hosts and unregistered images are rejected. The existing DroneQueue uses a separate instance/path for these requests; JPEG reconstruction and census data are untouched. Repeated clicks reuse an active request.
+
+The existing inspection workflow polls every five minutes. `process_dayun_analysis_requests.py` reads pending requests, calls the existing downloader/crop inspector/private R2 storage, and reports state to the existing UI. `coverage_ready` explicitly means coverage/crops are available, not validated pineapple counts. Access/configuration errors become `blocked`; processing/storage errors become `failed`. Expired processing leases can be retried. A previous complete result manifest is retained if a later run fails.
+
+The preferred machine connection is now WIF/ADC without a JSON key; organization key-creation policy stays enforced. See [credential setup](dayun-drive-credentials.md). This code and its setup script do not establish an operational Google connection by themselves. The WIF setup is prepared but has not been applied, the branch is not deployed, and original TIFF processing/count validation remains unverified.
+
+Only ABC/DEF are registered in this Dayun change. Public preview publication is not enabled yet; originals, detailed outputs and downloads remain staff-only. A reviewed low-resolution preview may be published separately later, without granting public original-image access.
+
 This job reads `data/dayun-map.geojson` and generates original-resolution, georeferenced crops per gawangan, overview images, metadata, a coverage CSV, and a machine-readable download status. It never writes census records, Google Drive permissions, or public map catalogs. `green_proxy_percent` includes weeds/trees and must not be interpreted as pineapple area, survival, or plant counts. The flight date remains unverified.
 
 ## Private Drive access
 
 The GitHub Actions environment `yg-webgis-staging` may provide the secret `DRIVE_CREDENTIALS_JSON`. Acceptable credential types are `service_account` or `authorized_user`; use an identity with read access to the selected files and Drive API enabled. The downloader requests only `drive.readonly`. Share source files/folders with that identity as Viewer, or use an already-authorized user identity. Never commit credentials, upload keys as artifacts, paste them into logs, or make private source files public to fix a download.
 
-The Dayun workflow passes `--require-auth` and fails with `drive_credentials_missing` before any public-link request when credentials are absent. The downloader retains its optional legacy public-link route for other callers. Access from the ChatGPT Drive connector does not grant access to the GitHub runner. A successful connector folder listing is not proof that an unauthenticated runner can download a file.
+The Dayun processor requires authenticated downloads and fails with `drive_credentials_missing` before any public-link request when neither federated runner credentials nor the legacy secret is available. The downloader retains its optional legacy public-link route for other callers. Connector access does not grant the GitHub runner access; a folder listing is not proof that a runner can download its files.
 
 Authenticated downloads use Drive API `files.get`, `alt=media`, and `supportsAllDrives=true`. Partial data is bound to the source ID, size, version and checksum; a server that ignores Range restarts the file rather than appending duplicate bytes. Before replacing the target, size, TIFF header and the provider MD5 (when available) are verified. Credentials and provider error bodies are never logged.
 
 ## Results and failures
 
-Only `download-status.json` is uploaded as an Actions artifact, retained for 30 days. This repository is public: private imagery and analytical outputs must not be placed in its Actions artifacts or committed. Access failures, quota/rate limits, changed source size, incomplete downloads and checksum failures have distinct error codes. A failed download is not a successful image analysis.
+The current request-driven workflow uploads no Actions artifacts. Request state, imagery and analytical outputs stay in private R2. This repository is public: private imagery and analytical outputs must not be placed in its Actions artifacts or committed. Access failures, quota/rate limits, changed source size, incomplete downloads and checksum failures have distinct error codes. A failed download is not a successful image analysis.
 
 The inspector produces a dissolved per-gawangan coverage GeoJSON, CSV, original-resolution georeferenced RGBA crops, overview, metadata, a short report and a review checklist. Coverage uses the **entire dissolved gawangan area** as denominator, including the portion outside the source. Nodata within raster and area outside raster are separate. Pixel-center rasterization has boundary uncertainty of about one pixel. Sources remain separate; do not sum overlapping ABC/DEF areas. Geographic CRS area/GSD in metres remains unavailable rather than treating degrees as metres.
 
@@ -38,7 +48,7 @@ The updated workflow verifies R2 privacy, verifies authenticated Drive metadata 
 - Actual GeoJSON: 87 gawangan features, 60 unique IDs, 23 multipart IDs, all six blocks. Census attributes were read only, never rewritten.
 - Local private-mode attempts for ABC and DEF stop with `drive_credentials_missing`. Neither source has been downloaded, cropped or visually analyzed in this task. CRS, GSD, flight date, actual nodata, row gaps and plant counts remain unknown.
 
-Account-owner setup is explained in [dayun-drive-credentials.md](dayun-drive-credentials.md). Prefer an existing dedicated reader; if none exists, a dedicated service account with Viewer access only to the two TIFFs bounds effective access. The downloader requests only `drive.readonly`. Enter the credential directly in the existing GitHub environment secret, never in chat or the repository. No public sharing, project-wide role, or domain-wide delegation is needed. Google Cloud Console currently asks the owner to reverify their account before existing project/credential configuration can be inspected further.
+On 17 October the owner completed Google verification and created `webgisyg-dayun-reader`; ABC/DEF Viewer access was saved, with general access restricted. Organization policy blocks service-account key creation. The connection therefore moves to WIF without changing that policy; setup has been prepared but not applied. The Console currently shows the WIF introductory page, with no existing pool displayed. See [setup](dayun-drive-credentials.md). No public sharing, project-wide machine role, or domain-wide delegation is needed.
 
 Validation: `python -m unittest discover -s tests -p test_drive_geotiff.py -v`. The raster inspector has also been exercised on a synthetic georeferenced RGBA raster to verify crop coordinates, original resolution, validity mask and area, and that no pineapple count is inferred.
 

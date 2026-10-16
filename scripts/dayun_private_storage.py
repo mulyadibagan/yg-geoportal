@@ -7,12 +7,16 @@ import argparse
 import hashlib
 import json
 import re
+import os
 import shutil
 from pathlib import Path
 import subprocess
 import tempfile
 import time
 import sys
+import urllib.request
+import urllib.error
+import urllib.parse
 
 sys.path.insert(0,str(Path(__file__).resolve().parent))
 from verify_dayun_r2_privacy import verify
@@ -33,6 +37,23 @@ def transfer(action,key,path,required=True):
     if not key.startswith(PREFIX+'/') or any(part in ('','..','.') for part in key.split('/')):
         raise RuntimeError('private_storage_invalid_key')
     require_private_bucket()
+    if action=='get' and not required:
+        # Optional reads are small manifests, not imagery. Only HTTP 404 means
+        # "no checkpoint/request"; permission/network errors must fail the run.
+        if not key.endswith('.json'):raise RuntimeError('optional_read_requires_manifest')
+        account=os.environ.get('CLOUDFLARE_ACCOUNT_ID','')
+        token=os.environ.get('CLOUDFLARE_API_TOKEN','')
+        request=urllib.request.Request(f'https://api.cloudflare.com/client/v4/accounts/{account}/r2/buckets/{BUCKET}/objects/{urllib.parse.quote(key,safe="/")}',headers={'Authorization':'Bearer '+token})
+        try:
+            with urllib.request.urlopen(request,timeout=30) as response:data=response.read(4*1024*1024+1)
+        except urllib.error.HTTPError as error:
+            if error.code==404:return False
+            raise RuntimeError('private_storage_read_denied') from None
+        except urllib.error.URLError:
+            raise RuntimeError('private_storage_read_unavailable') from None
+        if len(data)>4*1024*1024:raise RuntimeError('private_manifest_too_large')
+        Path(path).write_bytes(data)
+        return True
     node=shutil.which('node')
     if not node: raise RuntimeError('node_runtime_missing')
     command=[node,str(WRANGLER/'node_modules/wrangler/bin/wrangler.js'),'r2','object',action,f'{BUCKET}/{key}','--remote','--file',str(Path(path).resolve())]

@@ -25,6 +25,10 @@ class DriveGeoTIFFTests(unittest.TestCase):
     body=b'II*\x00'+b'example-raster-bytes'
     def metadata(self):
         return dict(id='example',size=str(len(self.body)),version='1',md5Checksum=hashlib.md5(self.body).hexdigest())
+    def test_federated_runner_credentials_use_readonly_scope_without_key_json(self):
+        with patch.dict(mod.os.environ,{'DRIVE_CREDENTIALS_JSON':'','GOOGLE_APPLICATION_CREDENTIALS':'runner-wif.json'}),patch('google.auth.load_credentials_from_file',return_value=(object(),None)) as load,patch('google.auth.transport.requests.AuthorizedSession',return_value='authorized'):
+            self.assertEqual(mod.authenticated_session(),'authorized')
+            load.assert_called_once_with('runner-wif.json',scopes=['https://www.googleapis.com/auth/drive.readonly'])
     def test_private_mode_never_falls_back_to_public_download(self):
         with tempfile.TemporaryDirectory() as root, patch.object(mod,'authenticated_session',return_value=None):
             with self.assertRaisesRegex(mod.DownloadError,'drive_credentials_missing'):

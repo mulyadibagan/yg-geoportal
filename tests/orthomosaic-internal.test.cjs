@@ -30,4 +30,11 @@ test('Dayun does not treat a partial inspector output as completed coverage',asy
  s.context.fetch=async()=>({ok:true,status:200,json:async()=>({download:{ok:true},analysis:{ok:false},files:['metadata.json']})});
  s.el('dayunSource').value='Agro_DEF';await s.el('openDayun').onclick();assert.match(s.el('dayunStatus').textContent,/belum lengkap/);
 });
+
+test('staff can paste a Drive link; queued is not displayed as completed analysis',async()=>{
+ const s=setup({session:{token:'staff',expiresAt:Date.now()+10000}});await s.settle();const calls=[];
+ s.context.fetch=async(url,options)=>{calls.push({url,options});return{ok:true,status:200,json:async()=>options.method==='POST'?{job:{label:'Agro_ABC'},reused:false}:{jobs:[{label:'Agro_ABC',status:'pending'}]}}};
+ s.el('dayunDriveUrl').value='https://drive.google.com/file/d/11kWmzkdTWVuxrDJMOYk3JfN34xeoZNRx/view';await s.el('submitDayun').onclick();
+ const call=calls.find(c=>c.options.method==='POST');assert.equal(call.options.headers.Authorization,'Bearer staff');assert.equal(JSON.parse(call.options.body).driveUrl,s.el('dayunDriveUrl').value);assert.match(s.el('dayunQueueStatus').textContent,/masuk antrean.*belum selesai/);assert.equal(s.el('submitDayun').disabled,false);
+});
 test('authorized COG uses bearer header, lazy reads, preserves valid dark pixels',async()=>{const s=setup({session:{token:'test-token',expiresAt:Date.now()+10000}});await s.settle();assert.equal(s.el('workspace').hidden,false);s.el('job').value='drn-test';s.el('openJob').onclick();await s.settle();assert.equal(s.layers.length,1);const request=s.calls.find(c=>c.url.endsWith('/cog'));assert.equal(request.options.headers.Authorization,'Bearer test-token');assert.ok(!request.url.includes('test-token'));assert.equal(request.options.allowFullFile,false);const layer=s.layers[0];assert.equal(layer.pixelValuesToColorFn([0,0,0]),'rgb(0,0,0)');assert.equal(layer.pixelValuesToColorFn([5,5,5]),'rgb(5,5,5)');const bands=await layer.georaster.getValues({left:0,top:0,right:2,bottom:2,width:2,height:2});assert.deepEqual(Array.from(bands[0][1]),[6,7]);assert.equal(s.el('downloadTiff').disabled,false)});

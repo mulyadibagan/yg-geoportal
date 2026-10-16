@@ -9,6 +9,12 @@ spec=importlib.util.spec_from_file_location('storage',Path(__file__).parents[1]/
 mod=importlib.util.module_from_spec(spec);spec.loader.exec_module(mod)
 
 class StorageTests(unittest.TestCase):
+    def test_only_missing_manifest_is_optional_not_permission_failure(self):
+        for code in (404,403):
+            with self.subTest(code=code),patch.object(mod,'require_private_bucket'),patch.object(mod.urllib.request,'urlopen',side_effect=mod.urllib.error.HTTPError('https://api.cloudflare.com',code,'test',{},None)):
+                if code==404:self.assertFalse(mod.transfer('get','drone/analysis/dayun/requests/Agro_ABC.json','unused',required=False))
+                else:
+                    with self.assertRaisesRegex(RuntimeError,'read_denied'):mod.transfer('get','drone/analysis/dayun/requests/Agro_ABC.json','unused',required=False)
     def test_public_bucket_rejected_before_wranger_runs(self):
         with patch.object(mod,'verify',side_effect=RuntimeError('r2_managed_public_access_enabled_or_unknown')),patch.object(mod,'_privacy_checked',0),patch.object(mod.subprocess,'run') as command:
             with self.assertRaisesRegex(RuntimeError,'public_access'):

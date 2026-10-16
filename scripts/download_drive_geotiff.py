@@ -18,16 +18,22 @@ class DownloadError(RuntimeError):
 
 def authenticated_session():
     raw = os.environ.get('DRIVE_CREDENTIALS_JSON', '').strip()
-    if not raw:
+    federated=os.environ.get('GOOGLE_APPLICATION_CREDENTIALS','').strip()
+    if not raw and not federated:
         return None
     try:
         import google.auth
         from google.auth.transport.requests import AuthorizedSession
-        info = json.loads(raw)
-        if info.get('type') not in ('service_account', 'authorized_user'):
-            raise ValueError('unsupported credential type')
-        credentials, _ = google.auth.load_credentials_from_dict(
-            info, scopes=['https://www.googleapis.com/auth/drive.readonly'])
+        scopes=['https://www.googleapis.com/auth/drive.readonly']
+        if raw:
+            info = json.loads(raw)
+            if info.get('type') not in ('service_account', 'authorized_user'):
+                raise ValueError('unsupported credential type')
+            credentials, _ = google.auth.load_credentials_from_dict(info,scopes=scopes)
+        else:
+            # The runner's Google auth action creates this short-lived WIF file.
+            # No exported service-account key is required or accepted from a job.
+            credentials, _ = google.auth.load_credentials_from_file(federated,scopes=scopes)
         return AuthorizedSession(credentials)
     except Exception:
         raise DownloadError('drive_credentials_invalid') from None
