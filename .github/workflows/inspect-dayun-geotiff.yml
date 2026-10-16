@@ -1,7 +1,7 @@
 name: Inspect existing Dayun GeoTIFF
 on:
   push:
-    branches: ['analysis/dayun-ortho-20261016']
+    branches: ['main', 'analysis/dayun-ortho-20261016']
     paths:
       - '.github/workflows/inspect-dayun-geotiff.yml'
       - 'scripts/inspect_dayun_geotiff.py'
