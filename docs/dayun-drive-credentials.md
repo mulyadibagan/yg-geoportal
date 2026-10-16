@@ -1,12 +1,12 @@
 # Kredensial baca minimum untuk citra Dayun
 
-## Jalur yang disiapkan sekarang: federasi tanpa key
+## Jalur sekarang: federasi tanpa key
 
 Pembuatan JSON key ditolak oleh kebijakan organisasi `iam.disableServiceAccountKeyCreation`. Jangan menonaktifkan kebijakan itu atau mengulang pembuatan key. Service account `webgisyg-dayun-reader` sudah dibuat; izin Pelihat pada ABC/DEF diberikan melalui pemilik akun.
 
-Skrip admin [configure_dayun_workload_identity.sh](../scripts/configure_dayun_workload_identity.sh) menyiapkan federasi GitHub → Google → service account pembaca di proyek yang sudah ada. **Belum dijalankan.** Tinjau dan setujui sekali sebelum diterapkan: trust hanya repository ID `1297989887` milik owner ID `48111628`, branch `main`, workflow `inspect-dayun-geotiff.yml`, environment `yg-webgis-staging`. Role `roles/iam.workloadIdentityUser` hanya pada service account tersebut, bukan role proyek untuk mesin dan bukan domain-wide delegation. Ini menambahkan akses mesin yang memerlukan persetujuan pemilik/admin.
+Pemilik menyetujui aktivasi pada 17 Oktober 2026. Konfigurasi setara skrip admin [configure_dayun_workload_identity.sh](../scripts/configure_dayun_workload_identity.sh) sudah disimpan melalui Google Cloud Console: pool `webgisyg-dayun`, provider `github-main`, proyek nomor `629330801102`. Trust hanya repository ID `1297989887` milik owner ID `48111628`, branch `main`, workflow `inspect-dayun-geotiff.yml`, environment `yg-webgis-staging`. Akses impersonasi service account pembaca dibatasi ke `attribute.repository_id="1297989887"`; konsol menampilkan "Policy updated" dan akun tersebut pada Connected service accounts. Tidak ada role proyek untuk mesin, domain-wide delegation, atau JSON key baru.
 
-Setelah admin menerapkannya, simpan nama provider yang dicetak sebagai environment **variable** `DAYUN_GOOGLE_WIF_PROVIDER` pada GitHub `yg-webgis-staging`. Google auth action menghasilkan credential sementara; downloader memakai ADC dengan scope `drive.readonly`. Tidak ada JSON key yang perlu diunduh atau ditempel. Token, refresh unduhan panjang dan izin runner tetap harus diuji pada citra asli sebelum dinyatakan operasional.
+Environment **variable** `DAYUN_GOOGLE_WIF_PROVIDER` sudah tersimpan pada GitHub `yg-webgis-staging` dengan nilai `projects/629330801102/locations/global/workloadIdentityPools/webgisyg-dayun/providers/github-main`. IAM Service Account Credentials API terverifikasi aktif. Google auth action menghasilkan credential sementara; downloader memakai ADC dengan scope `drive.readonly`. Tidak ada JSON key yang perlu diunduh atau ditempel. Token, refresh unduhan panjang dan izin runner tetap harus diuji pada citra asli sebelum dinyatakan operasional. PR #371 belum digabung atau dipasang; pemeriksaan persetujuan otomatis meminta izin eksplisit untuk merge dan deployment.
 
 Rujukan: [federasi pipeline Google](https://docs.cloud.google.com/iam/docs/workload-identity-federation-with-deployment-pipelines), [Google GitHub auth](https://github.com/google-github-actions/auth), [claim OIDC GitHub](https://docs.github.com/en/actions/reference/security/oidc).
 
