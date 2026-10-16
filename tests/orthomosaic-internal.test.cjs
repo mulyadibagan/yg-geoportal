@@ -38,3 +38,19 @@ test('staff can paste a Drive link; queued is not displayed as completed analysi
  const call=calls.find(c=>c.options.method==='POST');assert.equal(call.options.headers.Authorization,'Bearer staff');assert.equal(JSON.parse(call.options.body).driveUrl,s.el('dayunDriveUrl').value);assert.match(s.el('dayunQueueStatus').textContent,/masuk antrean.*belum selesai/);assert.equal(s.el('submitDayun').disabled,false);
 });
 test('authorized COG uses bearer header, lazy reads, preserves valid dark pixels',async()=>{const s=setup({session:{token:'test-token',expiresAt:Date.now()+10000}});await s.settle();assert.equal(s.el('workspace').hidden,false);s.el('job').value='drn-test';s.el('openJob').onclick();await s.settle();assert.equal(s.layers.length,1);const request=s.calls.find(c=>c.url.endsWith('/cog'));assert.equal(request.options.headers.Authorization,'Bearer test-token');assert.ok(!request.url.includes('test-token'));assert.equal(request.options.allowFullFile,false);const layer=s.layers[0];assert.equal(layer.pixelValuesToColorFn([0,0,0]),'rgb(0,0,0)');assert.equal(layer.pixelValuesToColorFn([5,5,5]),'rgb(5,5,5)');const bands=await layer.georaster.getValues({left:0,top:0,right:2,bottom:2,width:2,height:2});assert.deepEqual(Array.from(bands[0][1]),[6,7]);assert.equal(s.el('downloadTiff').disabled,false)});
+
+test('staff opens a manifest-listed native crop through the private API without a public image URL',async()=>{
+ const s=setup({session:{token:'staff',expiresAt:Date.now()+10000}});await s.settle();
+ s.context.document.createElement=tag=>({tag,children:[],value:'',append(...items){this.children.push(...items)},add(option){this.children.push(option)},click(){}});
+ let opened=false;const privateCalls=[];
+ s.context.GeoTIFF.fromBlob=async blob=>{assert.ok(blob instanceof Blob);opened=true;return{getImage:async()=>s.image}};
+ s.context.fetch=async(url,options)=>{
+   privateCalls.push(url);assert.equal(options.headers.Authorization,'Bearer staff');assert.ok(url.startsWith('https://webgis-api.yayasangambut.org/api/staff/drone/analysis/Agro_DEF'));
+   return{ok:true,status:200,json:async()=>url.endsWith('metadata.json')?{crs:'EPSG:32648',gsd_m:[.02,.02],gawangan:[]}:{download:{ok:true},analysis:{ok:true},files:['metadata.json','D1/sample.tif']},blob:async()=>new Blob(['native crop'])};
+ };
+ s.el('dayunSource').value='Agro_DEF';await s.el('openDayun').onclick();
+ const controls=s.el('dayunResults').children;
+ controls.find(el=>el.tag==='select').value='D1/sample.tif';
+ await controls.find(el=>el.textContent==='Buka potongan terpilih di peta').onclick();
+ assert.ok(opened);assert.equal(s.layers.length,1);assert.ok(privateCalls.some(url=>url.endsWith('/files/D1/sample.tif')));assert.match(s.el('dayunStatus').textContent,/jumlah nanas masih memerlukan/);
+});
