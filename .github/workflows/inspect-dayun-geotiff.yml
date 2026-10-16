@@ -5,6 +5,8 @@ on:
     paths:
       - '.github/workflows/inspect-dayun-geotiff.yml'
       - 'scripts/inspect_dayun_geotiff.py'
+      - 'scripts/download_drive_geotiff.py'
+      - 'tests/test_drive_geotiff.py'
   workflow_dispatch:
 permissions:
   contents: read
@@ -14,6 +16,7 @@ concurrency:
 jobs:
   inspect:
     runs-on: ubuntu-24.04
+    environment: yg-webgis-staging
     timeout-minutes: 180
     strategy:
       fail-fast: false
@@ -32,25 +35,24 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install raster tools
-        run: pip install 'gdown>=6.3.0' 'rasterio>=1.4,<2' 'Pillow>=11,<13' 'shapely>=2,<3' 'pyproj>=3,<4'
+        run: pip install 'gdown>=6.3.0' 'rasterio>=1.4,<2' 'Pillow>=11,<13' 'shapely>=2,<3' 'pyproj>=3,<4' 'google-auth[requests]>=2,<3'
+      - name: Verify downloader
+        run: python -m unittest discover -s tests -p test_drive_geotiff.py -v
       - name: Download existing orthomosaic from user-provided Drive file
         env:
           FILE_ID: ${{ matrix.file_id }}
           EXPECTED_BYTES: ${{ matrix.expected_bytes }}
+          DRIVE_CREDENTIALS_JSON: ${{ secrets.DRIVE_CREDENTIALS_JSON }}
         run: |
           mkdir -p work result
           python - <<'PY'
           import os, shutil
-          import gdown
           expected=int(os.environ["EXPECTED_BYTES"])
           free=shutil.disk_usage(".").free
           if free < expected+6_000_000_000:
               raise RuntimeError(f"Insufficient runner disk: {free}; source {expected} plus 6 GB required")
-          result=gdown.download(id=os.environ["FILE_ID"],output="work/source.tif",quiet=False,resume=True)
-          if not result: raise RuntimeError("Drive download failed; no data analyzed")
-          size=os.path.getsize(result)
-          if size != expected: raise RuntimeError(f"Incomplete or changed source: {size} != {expected}")
           PY
+          python scripts/download_drive_geotiff.py "$FILE_ID" work/source.tif --expected-bytes "$EXPECTED_BYTES" --status result/download-status.json
       - name: Inspect and crop at original resolution
         env:
           LABEL: ${{ matrix.label }}
