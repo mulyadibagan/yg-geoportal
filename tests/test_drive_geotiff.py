@@ -44,6 +44,19 @@ class DriveGeoTIFFTests(unittest.TestCase):
             mod.download('example',path,len(self.body),session)
             self.assertEqual(path.read_bytes(),self.body)
             self.assertFalse(path.with_suffix('.tif.part').exists())
+            self.assertEqual(json.loads(path.with_suffix('.tif.source.json').read_text()),self.metadata())
+    def test_access_preflight_reads_only_metadata(self):
+        session=Session([Response(self.metadata())])
+        self.assertEqual(mod.check_access('example',len(self.body),session),self.metadata())
+        self.assertEqual(len(session.calls),1)
+        self.assertNotIn('alt',session.calls[0]['params'])
+    def test_completed_verified_source_reused_without_media_request(self):
+        with tempfile.TemporaryDirectory() as root:
+            path=Path(root)/'source.tif';path.write_bytes(self.body)
+            session=Session([Response(self.metadata())])
+            mod.download('example',path,len(self.body),session)
+            self.assertEqual(len(session.calls),1)
+            self.assertEqual(path.read_bytes(),self.body)
     def test_ignored_range_restarts_instead_of_appending(self):
         with tempfile.TemporaryDirectory() as root:
             path=Path(root)/'source.tif'; path.with_suffix('.tif.part').write_bytes(self.body[:8])
@@ -75,5 +88,9 @@ class DriveGeoTIFFTests(unittest.TestCase):
         for response,code in [(Response(status=401),'drive_access_denied'),(Response(status=404),'drive_file_missing_or_not_shared'),(Response(data={'error':{'errors':[{'reason':'downloadQuotaExceeded'}]}},status=403),'drive_rate_limited')]:
             with self.subTest(code=code),self.assertRaisesRegex(mod.DownloadError,code):
                 mod.check_response(response)
+    def test_scope_and_api_configuration_errors_are_sanitized(self):
+        for reason,code in [('accessNotConfigured','drive_api_disabled'),('insufficientPermissions','drive_scope_insufficient')]:
+            with self.subTest(reason=reason),self.assertRaisesRegex(mod.DownloadError,code):
+                mod.check_response(Response(data={'error':{'errors':[{'reason':reason}]}},status=403))
 
 if __name__=='__main__': unittest.main()

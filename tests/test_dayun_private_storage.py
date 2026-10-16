@@ -9,6 +9,26 @@ spec=importlib.util.spec_from_file_location('storage',Path(__file__).parents[1]/
 mod=importlib.util.module_from_spec(spec);spec.loader.exec_module(mod)
 
 class StorageTests(unittest.TestCase):
+    def test_public_bucket_rejected_before_wranger_runs(self):
+        with patch.object(mod,'verify',side_effect=RuntimeError('r2_managed_public_access_enabled_or_unknown')),patch.object(mod,'_privacy_checked',0),patch.object(mod.subprocess,'run') as command:
+            with self.assertRaisesRegex(RuntimeError,'public_access'):
+                mod.transfer('put','drone/analysis/dayun/test.txt','unused')
+            command.assert_not_called()
+    def test_keys_outside_approved_prefix_rejected(self):
+        with patch.object(mod,'verify') as verify,patch.object(mod.subprocess,'run') as command:
+            with self.assertRaisesRegex(RuntimeError,'invalid_key'):mod.transfer('put','drone/jobs/test.json','unused')
+            verify.assert_not_called();command.assert_not_called()
+    def test_completed_source_is_checkpointed_for_processing_retry(self):
+        calls=[]
+        def transfer(action,key,path,required=True):
+            if action=='get':return False
+            calls.append((key,Path(path).read_bytes()));return True
+        with tempfile.TemporaryDirectory() as root,patch.object(mod,'transfer',side_effect=transfer):
+            source=Path(root)/'source.tif';source.write_bytes(b'II*\x00complete')
+            source.with_suffix('.tif.source.json').write_text('{"id":"test","size":"12"}')
+            mod.checkpoint('Agro_DEF',source)
+            self.assertEqual(calls[0][1],source.read_bytes())
+            manifest=json.loads(calls[-1][1]);self.assertEqual(manifest['identity']['id'],'test')
     def test_checkpoint_roundtrip_and_integrity_without_remote_io(self):
         objects={}
         def transfer(action,key,path,required=True):

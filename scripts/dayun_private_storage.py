@@ -7,17 +7,35 @@ import argparse
 import hashlib
 import json
 import re
+import shutil
 from pathlib import Path
 import subprocess
 import tempfile
+import time
+import sys
+
+sys.path.insert(0,str(Path(__file__).resolve().parent))
+from verify_dayun_r2_privacy import verify
 
 BUCKET='yg-webgis-public-snapshots'
 PREFIX='drone/analysis/dayun'
 CHUNK=128*1024*1024
 WRANGLER=Path(__file__).resolve().parents[1]/'cloudflare/yg-webgis-public-data'
+_privacy_checked=0
+
+def require_private_bucket():
+    global _privacy_checked
+    if time.monotonic()-_privacy_checked>60 or not _privacy_checked:
+        verify()
+        _privacy_checked=time.monotonic()
 
 def transfer(action,key,path,required=True):
-    command=['npx','--no-install','wrangler','r2','object',action,f'{BUCKET}/{key}','--remote','--file',str(Path(path).resolve())]
+    if not key.startswith(PREFIX+'/') or any(part in ('','..','.') for part in key.split('/')):
+        raise RuntimeError('private_storage_invalid_key')
+    require_private_bucket()
+    node=shutil.which('node')
+    if not node: raise RuntimeError('node_runtime_missing')
+    command=[node,str(WRANGLER/'node_modules/wrangler/bin/wrangler.js'),'r2','object',action,f'{BUCKET}/{key}','--remote','--file',str(Path(path).resolve())]
     if action=='put': command+=['--content-type','application/octet-stream']
     result=subprocess.run(command,cwd=WRANGLER,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
     if result.returncode and required: raise RuntimeError('private_storage_transfer_failed')
@@ -30,6 +48,8 @@ def read_remote(key,root):
 
 def checkpoint(label,source):
     source=Path(source); partial=source.with_suffix(source.suffix+'.part'); marker=source.with_suffix(source.suffix+'.part.json')
+    if source.exists() and source.with_suffix(source.suffix+'.source.json').exists():
+        partial=source;marker=source.with_suffix(source.suffix+'.source.json')
     if not partial.exists() or not marker.exists(): return
     prefix=f'{PREFIX}/checkpoints/{label}'
     with tempfile.TemporaryDirectory() as temp:

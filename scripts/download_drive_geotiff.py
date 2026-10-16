@@ -42,11 +42,29 @@ def check_response(response):
         pass
     if response.status_code == 429 or any(r in ('downloadQuotaExceeded', 'rateLimitExceeded', 'userRateLimitExceeded') for r in reasons):
         raise DownloadError('drive_rate_limited')
+    if any(r in ('accessNotConfigured','serviceDisabled') for r in reasons):
+        raise DownloadError('drive_api_disabled')
+    if 'insufficientPermissions' in reasons:
+        raise DownloadError('drive_scope_insufficient')
     if response.status_code in (401, 403):
         raise DownloadError('drive_access_denied')
     if response.status_code == 404:
         raise DownloadError('drive_file_missing_or_not_shared')
     raise DownloadError('drive_http_error')
+
+def check_access(file_id,expected,session=None):
+    if not re.fullmatch(r'[A-Za-z0-9_-]+',file_id): raise DownloadError('drive_invalid_file_id')
+    session=session or authenticated_session()
+    if session is None: raise DownloadError('drive_credentials_missing')
+    endpoint='https://www.googleapis.com/drive/v3/files/'+file_id
+    try:
+        response=session.get(endpoint,params={'supportsAllDrives':'true','fields':'id,size,md5Checksum,version,mimeType,capabilities(canDownload)'},timeout=30)
+    except Exception:
+        raise DownloadError('drive_authenticated_request_failed') from None
+    check_response(response);meta=response.json()
+    if not meta.get('capabilities',{}).get('canDownload',True): raise DownloadError('drive_download_disabled')
+    if int(meta.get('size',0))!=expected: raise DownloadError('drive_source_size_changed')
+    return meta
 
 def validate_file(path, expected, md5=None):
     if path.stat().st_size != expected:
@@ -90,12 +108,7 @@ def download(file_id, target, expected, session=None, require_auth=False):
         validate_file(partial, expected)
     else:
         endpoint='https://www.googleapis.com/drive/v3/files/'+file_id
-        meta_response=session.get(endpoint, params={'supportsAllDrives':'true','fields':'id,size,md5Checksum,version,mimeType,capabilities(canDownload)'}, timeout=30)
-        check_response(meta_response); meta=meta_response.json()
-        if not meta.get('capabilities', {}).get('canDownload', True):
-            raise DownloadError('drive_download_disabled')
-        if int(meta.get('size', 0)) != expected:
-            raise DownloadError('drive_source_size_changed')
+        meta=check_access(file_id,expected,session)
         identity={k:meta.get(k) for k in ('id','size','version','md5Checksum')}
         try:
             previous=json.loads(marker.read_text()) if marker.exists() else None
@@ -107,6 +120,7 @@ def download(file_id, target, expected, session=None, require_auth=False):
         if target.exists():
             try:
                 validate_file(target, expected, meta.get('md5Checksum'))
+                target.with_suffix(target.suffix+'.source.json').write_text(json.dumps(identity))
                 marker.unlink(missing_ok=True)
                 return target
             except DownloadError:
@@ -141,6 +155,7 @@ def download(file_id, target, expected, session=None, require_auth=False):
                     raise DownloadError('drive_network_error') from None
             time.sleep(attempt+1)
         validate_file(partial, expected, meta.get('md5Checksum'))
+        target.with_suffix(target.suffix+'.source.json').write_text(json.dumps(identity))
     partial.replace(target)
     marker.unlink(missing_ok=True)
     return target
@@ -149,10 +164,15 @@ def main():
     p=argparse.ArgumentParser(); p.add_argument('file_id'); p.add_argument('target')
     p.add_argument('--expected-bytes', type=int, required=True); p.add_argument('--status', required=True)
     p.add_argument('--require-auth', action='store_true')
+    p.add_argument('--check-access',action='store_true',help='Verify authenticated metadata access without downloading imagery')
     a=p.parse_args(); status=Path(a.status); status.parent.mkdir(parents=True, exist_ok=True)
     try:
-        download(a.file_id,a.target,a.expected_bytes,require_auth=a.require_auth)
-        result={'ok':True,'stage':'downloaded','bytes':a.expected_bytes}
+        if a.check_access:
+            check_access(a.file_id,a.expected_bytes)
+            result={'ok':True,'stage':'access_verified','bytes':a.expected_bytes}
+        else:
+            download(a.file_id,a.target,a.expected_bytes,require_auth=a.require_auth)
+            result={'ok':True,'stage':'downloaded','bytes':a.expected_bytes}
     except DownloadError as e:
         result={'ok':False,'stage':'download_failed','error':e.code}
     except Exception:
