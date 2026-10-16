@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 
 spec=importlib.util.spec_from_file_location('drive_geotiff',Path(__file__).parents[1]/'scripts/download_drive_geotiff.py')
 mod=importlib.util.module_from_spec(spec); spec.loader.exec_module(mod)
@@ -24,6 +25,18 @@ class DriveGeoTIFFTests(unittest.TestCase):
     body=b'II*\x00'+b'example-raster-bytes'
     def metadata(self):
         return dict(id='example',size=str(len(self.body)),version='1',md5Checksum=hashlib.md5(self.body).hexdigest())
+    def test_private_mode_never_falls_back_to_public_download(self):
+        with tempfile.TemporaryDirectory() as root, patch.object(mod,'authenticated_session',return_value=None):
+            with self.assertRaisesRegex(mod.DownloadError,'drive_credentials_missing'):
+                mod.download('example',Path(root)/'source',len(self.body),require_auth=True)
+    def test_wrong_range_total_rejected(self):
+        with tempfile.TemporaryDirectory() as root:
+            path=Path(root)/'source.tif'; path.with_suffix('.tif.part').write_bytes(self.body[:8])
+            path.with_suffix('.tif.part.json').write_text(json.dumps(self.metadata()))
+            session=Session([Response(self.metadata()),Response(body=self.body[8:],status=206,headers={'Content-Range':'bytes 8-22/999'})])
+            with self.assertRaisesRegex(mod.DownloadError,'drive_invalid_content_range'):
+                mod.download('example',path,len(self.body),session)
+            self.assertEqual(path.with_suffix('.tif.part').read_bytes(),self.body[:8])
     def test_full_download_verified(self):
         with tempfile.TemporaryDirectory() as root:
             path=Path(root)/'source.tif'

@@ -62,7 +62,7 @@ def validate_file(path, expected, md5=None):
     if md5 and digest.hexdigest() != md5:
         raise DownloadError('drive_checksum_mismatch')
 
-def download(file_id, target, expected, session=None):
+def download(file_id, target, expected, session=None, require_auth=False):
     if not re.fullmatch(r'[A-Za-z0-9_-]+', file_id):
         raise DownloadError('drive_invalid_file_id')
     target=Path(target); target.parent.mkdir(parents=True, exist_ok=True)
@@ -70,6 +70,8 @@ def download(file_id, target, expected, session=None):
     marker=target.with_suffix(target.suffix+'.part.json')
     if session is None:
         session=authenticated_session()
+    if session is None and require_auth:
+        raise DownloadError('drive_credentials_missing')
     if session is None:
         import requests
         # Diagnose sign-in before the public downloader obscures the HTTP error.
@@ -95,10 +97,20 @@ def download(file_id, target, expected, session=None):
         if int(meta.get('size', 0)) != expected:
             raise DownloadError('drive_source_size_changed')
         identity={k:meta.get(k) for k in ('id','size','version','md5Checksum')}
-        previous=json.loads(marker.read_text()) if marker.exists() else None
+        try:
+            previous=json.loads(marker.read_text()) if marker.exists() else None
+        except (ValueError, OSError):
+            previous=None
         if previous != identity and partial.exists():
             partial.unlink()
         marker.write_text(json.dumps(identity))
+        if target.exists():
+            try:
+                validate_file(target, expected, meta.get('md5Checksum'))
+                marker.unlink(missing_ok=True)
+                return target
+            except DownloadError:
+                pass
         for attempt in range(3):
             offset=partial.stat().st_size if partial.exists() else 0
             if offset == expected:
@@ -110,7 +122,8 @@ def download(file_id, target, expected, session=None):
                 with session.get(endpoint, params={'alt':'media','supportsAllDrives':'true'}, headers=headers, stream=True, timeout=(30,120)) as response:
                     check_response(response)
                     if offset and response.status_code == 206:
-                        if not response.headers.get('Content-Range', '').startswith(f'bytes {offset}-'):
+                        content_range=re.fullmatch(r'bytes (\d+)-(\d+)/(\d+)', response.headers.get('Content-Range', ''))
+                        if not content_range or tuple(map(int,content_range.groups())) != (offset,expected-1,expected):
                             raise DownloadError('drive_invalid_content_range')
                     elif offset and response.status_code == 200:
                         offset=0  # Range ignored: replace, never append duplicate bytes.
@@ -135,9 +148,10 @@ def download(file_id, target, expected, session=None):
 def main():
     p=argparse.ArgumentParser(); p.add_argument('file_id'); p.add_argument('target')
     p.add_argument('--expected-bytes', type=int, required=True); p.add_argument('--status', required=True)
+    p.add_argument('--require-auth', action='store_true')
     a=p.parse_args(); status=Path(a.status); status.parent.mkdir(parents=True, exist_ok=True)
     try:
-        download(a.file_id,a.target,a.expected_bytes)
+        download(a.file_id,a.target,a.expected_bytes,require_auth=a.require_auth)
         result={'ok':True,'stage':'downloaded','bytes':a.expected_bytes}
     except DownloadError as e:
         result={'ok':False,'stage':'download_failed','error':e.code}

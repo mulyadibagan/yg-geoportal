@@ -3,7 +3,13 @@
   const API = 'https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev';
   const $ = id => document.getElementById(id);
   let session, map, areas, rasterLayer, rasterBounds, tileLayer, jobs = [], source = null, sequence = 0;
-  let disposeMeritechExport = null;
+  let disposeMeritechExport = null, dayunLayer = null, dayunUrls = [], dayunRequest=0;
+  function clearDayun() {
+    dayunRequest++;
+    dayunUrls.forEach(url=>URL.revokeObjectURL(url)); dayunUrls=[];
+    if(dayunLayer && map)map.removeLayer(dayunLayer);dayunLayer=null;
+    $('dayunResults').replaceChildren();
+  }
   let activeController = null, downloadController = null;
   const number = (v, digits = 2) => Number(v).toLocaleString('id-ID', {maximumFractionDigits: digits});
   function validSession() {
@@ -11,6 +17,7 @@
     return current && current.token === session?.token && Number(current.expiresAt) > Date.now();
   }
   function lock(message) {
+    clearDayun();
     sequence++;
     disposeMeritechExport?.(); disposeMeritechExport = null;
     activeController?.abort(); downloadController?.abort();
@@ -131,6 +138,44 @@
     } catch(error) { if(request!==sequence)return;metadata([['Sumber',details.title],['Status','Gagal dibaca']]);$('mapStatus').textContent=`GeoTIFF belum dapat dibuka: ${error.message}`; }
   }
   $('retryGate').onclick=authorize;
+  $('openDayun').onclick=async()=>{
+    clearDayun();
+    const request=dayunRequest;
+    const current=()=>validSession() && request===dayunRequest;
+    const selected=$('dayunSource').value;
+    if(!['Agro_ABC','Agro_DEF'].includes(selected))return;
+    const base=`/api/staff/drone/analysis/${selected}`;
+    $('dayunStatus').textContent='Memeriksa hasil…';
+    try {
+      const manifest=await(await api(base)).json();
+      if(!current())return;
+      if(!manifest.download?.ok){$('dayunStatus').textContent=`Belum diunduh: ${manifest.download?.error||'status tidak tersedia'}`;return;}
+      if(!manifest.analysis?.ok || !manifest.files?.includes('metadata.json')){$('dayunStatus').textContent='Unduhan selesai; analisis belum tersedia atau belum lengkap.';return;}
+      const meta=await(await api(base+'/files/metadata.json')).json();
+      if(!current())return;
+      $('dayunStatus').textContent='Cakupan citra tersedia. Luas tanam, celah barisan, dan jumlah nanas masih memerlukan pemeriksaan visual. Tanggal penerbangan belum terverifikasi.';
+      const table=document.createElement('table'),head=document.createElement('tr');
+      ['Gawangan','Cakupan seluruh polygon','Luas citra valid (ha)'].forEach(value=>{const th=document.createElement('th');th.textContent=value;head.append(th);});table.append(head);
+      for(const row of meta.gawangan||[]){const tr=document.createElement('tr');[row.gawangan,row.valid_coverage_percent===null?'Belum tersedia':`${row.valid_coverage_percent}%`,row.valid_area_ha??'Belum tersedia'].forEach(value=>{const td=document.createElement('td');td.textContent=value;tr.append(td);});table.append(tr);}
+      $('dayunResults').append(table);
+      if(manifest.files.includes('coverage.geojson')){
+        const geo=await(await api(base+'/files/coverage.geojson')).json();
+        if(!current())return;
+        dayunLayer=L.geoJSON(geo,{style:f=>({color:(f.properties.valid_coverage_percent??0)<95?'#d97706':'#137f63',weight:2,fillOpacity:.12}),onEachFeature:(f,l)=>l.bindTooltip(String(f.properties.gawangan))}).addTo(map);
+        map.fitBounds(dayunLayer.getBounds());
+      }
+      if(manifest.files.includes('overview.jpg')){
+        const blob=await(await api(base+'/files/overview.jpg')).blob();if(!current())return;
+        const url=URL.createObjectURL(blob);dayunUrls.push(url);const img=document.createElement('img');img.src=url;img.alt='Pratinjau orthomosaic Dayun';img.style.width='100%';$('dayunResults').append(img);
+      }
+      const label=document.createElement('p');label.textContent='Unduh laporan, tabel, atau potongan asli:';$('dayunResults').append(label);
+      const select=document.createElement('select');
+      for(const file of manifest.files){select.add(new Option(file,file));}
+      const button=document.createElement('button');button.textContent='Unduh hasil terpilih';
+      button.onclick=async()=>{try{const response=await api(base+'/files/'+select.value);const blob=await response.blob();if(current())save(blob,select.value.split('/').pop());}catch(e){if(current())$('dayunStatus').textContent=e.message;}};
+      $('dayunResults').append(select);$('dayunResults').append(button);
+    }catch(e){if(current())$('dayunStatus').textContent=`Hasil privat belum tersedia: ${e.message}`;}
+  };
   $('refreshJobs').onclick=async()=>{try{jobs=(await (await api('/api/staff/drone/jobs')).json()).jobs || [];renderJobs();}catch(e){$('catalogStatus').textContent=e.message;}};
   $('job').onchange=()=>{$('openJob').disabled=!$('job').value;};
   $('openJob').onclick=()=>{const job=jobs.find(j=>j.id===$('job').value);if(job)openRaster(`${API}/api/drone/jobs/${encodeURIComponent(job.id)}/cog`,job);};

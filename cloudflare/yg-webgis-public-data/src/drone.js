@@ -195,12 +195,28 @@ async function servePublicCog(request,env,id){
   return new Response(request.method==='HEAD'?null:object.body,{status:object.range?206:200,headers});
 }
 
-export function isDroneRoute(pathname){return pathname==='/api/drone/jobs'||pathname.startsWith('/api/drone/jobs/')||pathname==='/api/drone/public'||pathname.startsWith('/api/drone/public/')||pathname==='/api/staff/drone/jobs'}
+async function dayunAnalysis(request,env,url,verifyStaffToken){
+  if(!await authorizedStaff(request,env,verifyStaffToken))return reply(request,{ok:false,error:'unauthorized'},401);
+  const match=url.pathname.match(/^\/api\/staff\/drone\/analysis\/(Agro_ABC|Agro_DEF)(?:\/files\/(.+))?$/);
+  if(!match)return reply(request,{ok:false,error:'not_found'},404);
+  const root=`drone/analysis/dayun/results/${match[1]}`;
+  const manifest=await readJson(env,`${root}/index.json`);
+  if(!manifest)return reply(request,{ok:false,error:'analysis_not_available'},404);
+  if(!match[2])return reply(request,manifest);
+  const file=match[2];
+  if(!Array.isArray(manifest.files)||!manifest.files.includes(file)||file.split('/').some(p=>!p||p==='.'||p==='..')||!manifest.prefix?.startsWith(root+'/'))return reply(request,{ok:false,error:'not_found'},404);
+  const object=await env.PUBLIC_SNAPSHOTS.get(`${manifest.prefix}/${file}`);
+  if(!object)return reply(request,{ok:false,error:'not_found'},404);
+  const types={json:'application/json',geojson:'application/geo+json',csv:'text/csv',jpg:'image/jpeg',tif:'image/tiff',txt:'text/plain'};
+  return new Response(request.method==='HEAD'?null:object.body,{headers:{...cors(request),'cache-control':'private, no-store','content-type':types[file.split('.').pop()]||'application/octet-stream','content-length':String(object.size)}});
+}
+export function isDroneRoute(pathname){return pathname==='/api/drone/jobs'||pathname.startsWith('/api/drone/jobs/')||pathname==='/api/drone/public'||pathname.startsWith('/api/drone/public/')||pathname==='/api/staff/drone/jobs'||pathname.startsWith('/api/staff/drone/analysis/')}
 async function routeDroneRequest(request,env,url,verifyStaffToken=async()=>false){
   if(request.method==='OPTIONS')return new Response(null,{status:204,headers:cors(request)});
   const origin=request.headers.get('origin')||'';
   if(['POST','PUT'].includes(request.method)&&!ALLOWED_ORIGINS.has(origin))return reply(request,{ok:false,error:'origin_not_allowed'},403);
   if(origin&&!ALLOWED_ORIGINS.has(origin))return reply(request,{ok:false,error:'origin_not_allowed'},403);
+  if(url.pathname.startsWith('/api/staff/drone/analysis/')&&['GET','HEAD'].includes(request.method))return dayunAnalysis(request,env,url,verifyStaffToken);
   if(url.pathname==='/api/drone/public'&&(request.method==='GET'||request.method==='HEAD'))return listPublicJobs(request,env);
   if(url.pathname==='/api/staff/drone/jobs'&&request.method==='GET')return listStaffJobs(request,env,verifyStaffToken);
   const publicCogMatch=url.pathname.match(/^\/api\/drone\/public\/(drn-[a-zA-Z0-9-]+)\/cog$/);if(publicCogMatch&&(request.method==='GET'||request.method==='HEAD'))return servePublicCog(request,env,publicCogMatch[1]);
