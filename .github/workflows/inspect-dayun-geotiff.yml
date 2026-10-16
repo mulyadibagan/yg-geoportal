@@ -1,0 +1,66 @@
+name: Inspect existing Dayun GeoTIFF
+on:
+  push:
+    branches: ['analysis/dayun-ortho-20261016']
+    paths:
+      - '.github/workflows/inspect-dayun-geotiff.yml'
+      - 'scripts/inspect_dayun_geotiff.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: dayun-existing-geotiff-inspection
+  cancel-in-progress: false
+jobs:
+  inspect:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        include:
+          - label: Agro_ABC
+            file_id: 11kWmzkdTWVuxrDJMOYk3JfN34xeoZNRx
+            expected_bytes: 13677790714
+          - label: Agro_DEF
+            file_id: 14d-Hui0iwSvHQtCbZJa3InBOlQ3OdGNo
+            expected_bytes: 3432485808
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install raster tools
+        run: pip install 'gdown>=6.3.0' 'rasterio>=1.4,<2' 'Pillow>=11,<13' 'shapely>=2,<3' 'pyproj>=3,<4'
+      - name: Download existing orthomosaic from user-provided Drive file
+        env:
+          FILE_ID: ${{ matrix.file_id }}
+          EXPECTED_BYTES: ${{ matrix.expected_bytes }}
+        run: |
+          mkdir -p work result
+          python - <<'PY'
+          import os, shutil
+          import gdown
+          expected=int(os.environ["EXPECTED_BYTES"])
+          free=shutil.disk_usage(".").free
+          if free < expected+6_000_000_000:
+              raise RuntimeError(f"Insufficient runner disk: {free}; source {expected} plus 6 GB required")
+          result=gdown.download(id=os.environ["FILE_ID"],output="work/source.tif",quiet=False,resume=True)
+          if not result: raise RuntimeError("Drive download failed; no data analyzed")
+          size=os.path.getsize(result)
+          if size != expected: raise RuntimeError(f"Incomplete or changed source: {size} != {expected}")
+          PY
+      - name: Inspect and crop at original resolution
+        env:
+          LABEL: ${{ matrix.label }}
+        run: python scripts/inspect_dayun_geotiff.py work/source.tif "$LABEL" result
+      - name: Save analysis artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dayun-ortho-${{ matrix.label }}
+          path: result/
+          if-no-files-found: warn
+          retention-days: 30
+          compression-level: 0
