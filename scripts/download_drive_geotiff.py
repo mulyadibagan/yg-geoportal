@@ -18,16 +18,22 @@ class DownloadError(RuntimeError):
 
 def authenticated_session():
     raw = os.environ.get('DRIVE_CREDENTIALS_JSON', '').strip()
-    if not raw:
+    federated=os.environ.get('GOOGLE_APPLICATION_CREDENTIALS','').strip()
+    if not raw and not federated:
         return None
     try:
         import google.auth
         from google.auth.transport.requests import AuthorizedSession
-        info = json.loads(raw)
-        if info.get('type') not in ('service_account', 'authorized_user'):
-            raise ValueError('unsupported credential type')
-        credentials, _ = google.auth.load_credentials_from_dict(
-            info, scopes=['https://www.googleapis.com/auth/drive.readonly'])
+        scopes=['https://www.googleapis.com/auth/drive.readonly']
+        if raw:
+            info = json.loads(raw)
+            if info.get('type') not in ('service_account', 'authorized_user'):
+                raise ValueError('unsupported credential type')
+            credentials, _ = google.auth.load_credentials_from_dict(info,scopes=scopes)
+        else:
+            # The runner's Google auth action creates this short-lived WIF file.
+            # No exported service-account key is required or accepted from a job.
+            credentials, _ = google.auth.load_credentials_from_file(federated,scopes=scopes)
         return AuthorizedSession(credentials)
     except Exception:
         raise DownloadError('drive_credentials_invalid') from None
@@ -42,11 +48,29 @@ def check_response(response):
         pass
     if response.status_code == 429 or any(r in ('downloadQuotaExceeded', 'rateLimitExceeded', 'userRateLimitExceeded') for r in reasons):
         raise DownloadError('drive_rate_limited')
+    if any(r in ('accessNotConfigured','serviceDisabled') for r in reasons):
+        raise DownloadError('drive_api_disabled')
+    if 'insufficientPermissions' in reasons:
+        raise DownloadError('drive_scope_insufficient')
     if response.status_code in (401, 403):
         raise DownloadError('drive_access_denied')
     if response.status_code == 404:
         raise DownloadError('drive_file_missing_or_not_shared')
     raise DownloadError('drive_http_error')
+
+def check_access(file_id,expected,session=None):
+    if not re.fullmatch(r'[A-Za-z0-9_-]+',file_id): raise DownloadError('drive_invalid_file_id')
+    session=session or authenticated_session()
+    if session is None: raise DownloadError('drive_credentials_missing')
+    endpoint='https://www.googleapis.com/drive/v3/files/'+file_id
+    try:
+        response=session.get(endpoint,params={'supportsAllDrives':'true','fields':'id,size,md5Checksum,version,mimeType,capabilities(canDownload)'},timeout=30)
+    except Exception:
+        raise DownloadError('drive_authenticated_request_failed') from None
+    check_response(response);meta=response.json()
+    if not meta.get('capabilities',{}).get('canDownload',True): raise DownloadError('drive_download_disabled')
+    if int(meta.get('size',0))!=expected: raise DownloadError('drive_source_size_changed')
+    return meta
 
 def validate_file(path, expected, md5=None):
     if path.stat().st_size != expected:
@@ -62,7 +86,7 @@ def validate_file(path, expected, md5=None):
     if md5 and digest.hexdigest() != md5:
         raise DownloadError('drive_checksum_mismatch')
 
-def download(file_id, target, expected, session=None):
+def download(file_id, target, expected, session=None, require_auth=False):
     if not re.fullmatch(r'[A-Za-z0-9_-]+', file_id):
         raise DownloadError('drive_invalid_file_id')
     target=Path(target); target.parent.mkdir(parents=True, exist_ok=True)
@@ -70,6 +94,8 @@ def download(file_id, target, expected, session=None):
     marker=target.with_suffix(target.suffix+'.part.json')
     if session is None:
         session=authenticated_session()
+    if session is None and require_auth:
+        raise DownloadError('drive_credentials_missing')
     if session is None:
         import requests
         # Diagnose sign-in before the public downloader obscures the HTTP error.
@@ -88,17 +114,23 @@ def download(file_id, target, expected, session=None):
         validate_file(partial, expected)
     else:
         endpoint='https://www.googleapis.com/drive/v3/files/'+file_id
-        meta_response=session.get(endpoint, params={'supportsAllDrives':'true','fields':'id,size,md5Checksum,version,mimeType,capabilities(canDownload)'}, timeout=30)
-        check_response(meta_response); meta=meta_response.json()
-        if not meta.get('capabilities', {}).get('canDownload', True):
-            raise DownloadError('drive_download_disabled')
-        if int(meta.get('size', 0)) != expected:
-            raise DownloadError('drive_source_size_changed')
+        meta=check_access(file_id,expected,session)
         identity={k:meta.get(k) for k in ('id','size','version','md5Checksum')}
-        previous=json.loads(marker.read_text()) if marker.exists() else None
+        try:
+            previous=json.loads(marker.read_text()) if marker.exists() else None
+        except (ValueError, OSError):
+            previous=None
         if previous != identity and partial.exists():
             partial.unlink()
         marker.write_text(json.dumps(identity))
+        if target.exists():
+            try:
+                validate_file(target, expected, meta.get('md5Checksum'))
+                target.with_suffix(target.suffix+'.source.json').write_text(json.dumps(identity))
+                marker.unlink(missing_ok=True)
+                return target
+            except DownloadError:
+                pass
         for attempt in range(3):
             offset=partial.stat().st_size if partial.exists() else 0
             if offset == expected:
@@ -110,7 +142,8 @@ def download(file_id, target, expected, session=None):
                 with session.get(endpoint, params={'alt':'media','supportsAllDrives':'true'}, headers=headers, stream=True, timeout=(30,120)) as response:
                     check_response(response)
                     if offset and response.status_code == 206:
-                        if not response.headers.get('Content-Range', '').startswith(f'bytes {offset}-'):
+                        content_range=re.fullmatch(r'bytes (\d+)-(\d+)/(\d+)', response.headers.get('Content-Range', ''))
+                        if not content_range or tuple(map(int,content_range.groups())) != (offset,expected-1,expected):
                             raise DownloadError('drive_invalid_content_range')
                     elif offset and response.status_code == 200:
                         offset=0  # Range ignored: replace, never append duplicate bytes.
@@ -128,6 +161,7 @@ def download(file_id, target, expected, session=None):
                     raise DownloadError('drive_network_error') from None
             time.sleep(attempt+1)
         validate_file(partial, expected, meta.get('md5Checksum'))
+        target.with_suffix(target.suffix+'.source.json').write_text(json.dumps(identity))
     partial.replace(target)
     marker.unlink(missing_ok=True)
     return target
@@ -135,10 +169,16 @@ def download(file_id, target, expected, session=None):
 def main():
     p=argparse.ArgumentParser(); p.add_argument('file_id'); p.add_argument('target')
     p.add_argument('--expected-bytes', type=int, required=True); p.add_argument('--status', required=True)
+    p.add_argument('--require-auth', action='store_true')
+    p.add_argument('--check-access',action='store_true',help='Verify authenticated metadata access without downloading imagery')
     a=p.parse_args(); status=Path(a.status); status.parent.mkdir(parents=True, exist_ok=True)
     try:
-        download(a.file_id,a.target,a.expected_bytes)
-        result={'ok':True,'stage':'downloaded','bytes':a.expected_bytes}
+        if a.check_access:
+            check_access(a.file_id,a.expected_bytes)
+            result={'ok':True,'stage':'access_verified','bytes':a.expected_bytes}
+        else:
+            download(a.file_id,a.target,a.expected_bytes,require_auth=a.require_auth)
+            result={'ok':True,'stage':'downloaded','bytes':a.expected_bytes}
     except DownloadError as e:
         result={'ok':False,'stage':'download_failed','error':e.code}
     except Exception:

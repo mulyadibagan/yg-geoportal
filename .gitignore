@@ -31,5 +31,9 @@ internal-data/social-forestry/*
 data/riau-geoportal/
 cloudflare/yg-webgis-public-data/tmp/riau-geoportal/
 .riau-geoportal-work/
+tmp/dayun-python/
+tmp/dayun-yaml/
+.dayun-analysis-work/
+gha-creds-*.json
 data/RTRW*.geojson
 data/RDTR*.geojson

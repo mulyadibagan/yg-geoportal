@@ -13,8 +13,28 @@ function setup({session=null,status=200}={}){
  const context={document:{getElementById:el,createElement:()=>({append(){},click(){}})},window:{YG_AUTH:{readStoredSession:()=>session},addEventListener(){}},Option:function(text,value){return{text,value}},L:{map:()=>map,tileLayer:()=>({addTo(){return this}}),featureGroup:()=>({addTo(){return this},getLayers:()=>[]}),Control:{Draw:function(){}},Draw:{Event:{CREATED:'created'}}},GeoTIFF:{fromUrl:async(url,options)=>{calls.push({url,options});return tiff}},GeoRasterLayer:function(options){layers.push(options);return{options:{},on(){},addTo(){},getBounds:()=>[[0,0],[1,1]]}},turf:{},fetch:async(url,options)=>{calls.push({url,options});return{status,ok:status===200,json:async()=>({jobs:[job]})}},Headers,AbortController,AbortSignal,Blob,URL,Date,setTimeout,clearTimeout,setInterval(){},confirm:()=>true};
  Object.assign(context.window,{L:context.L,GeoTIFF:context.GeoTIFF,GeoRasterLayer:context.GeoRasterLayer,turf:context.turf});
  vm.runInNewContext(code,context);
- return {el,calls,layers,image,settle:()=>new Promise(resolve=>setImmediate(resolve))};
+ return {el,calls,layers,image,context,settle:()=>new Promise(resolve=>setImmediate(resolve))};
 }
 test('anonymous visitor cannot initialize map or request private catalogue',async()=>{const s=setup();await s.settle();assert.equal(s.el('workspace').hidden,true);assert.equal(s.calls.length,0);assert.match(s.el('gateStatus').textContent,/Masuk sebagai staf/)});
 test('server rejection keeps internal workspace locked even with a stored session',async()=>{const s=setup({session:{token:'forged',expiresAt:Date.now()+10000},status:401});await s.settle();assert.equal(s.el('workspace').hidden,true);assert.match(s.el('gateStatus').textContent,/Akses ditolak/)});
+
+test('Dayun shows failed download as blocked and sends staff bearer header',async()=>{
+ const s=setup({session:{token:'staff',expiresAt:Date.now()+10000}});await s.settle();
+ s.context.fetch=async(url,options)=>{assert.ok(url.endsWith('/analysis/Agro_ABC'));assert.equal(options.headers.Authorization,'Bearer staff');return{ok:true,status:200,json:async()=>({download:{ok:false,error:'drive_credentials_missing'}})}};
+ s.el('dayunSource').value='Agro_ABC';await s.el('openDayun').onclick();
+ assert.match(s.el('dayunStatus').textContent,/Belum diunduh.*drive_credentials_missing/);assert.equal(s.el('dayunResults').children.length,0);
+});
+
+test('Dayun does not treat a partial inspector output as completed coverage',async()=>{
+ const s=setup({session:{token:'staff',expiresAt:Date.now()+10000}});await s.settle();
+ s.context.fetch=async()=>({ok:true,status:200,json:async()=>({download:{ok:true},analysis:{ok:false},files:['metadata.json']})});
+ s.el('dayunSource').value='Agro_DEF';await s.el('openDayun').onclick();assert.match(s.el('dayunStatus').textContent,/belum lengkap/);
+});
+
+test('staff can paste a Drive link; queued is not displayed as completed analysis',async()=>{
+ const s=setup({session:{token:'staff',expiresAt:Date.now()+10000}});await s.settle();const calls=[];
+ s.context.fetch=async(url,options)=>{calls.push({url,options});return{ok:true,status:200,json:async()=>options.method==='POST'?{job:{label:'Agro_ABC'},reused:false}:{jobs:[{label:'Agro_ABC',status:'pending'}]}}};
+ s.el('dayunDriveUrl').value='https://drive.google.com/file/d/11kWmzkdTWVuxrDJMOYk3JfN34xeoZNRx/view';await s.el('submitDayun').onclick();
+ const call=calls.find(c=>c.options.method==='POST');assert.equal(call.options.headers.Authorization,'Bearer staff');assert.equal(JSON.parse(call.options.body).driveUrl,s.el('dayunDriveUrl').value);assert.match(s.el('dayunQueueStatus').textContent,/masuk antrean.*belum selesai/);assert.equal(s.el('submitDayun').disabled,false);
+});
 test('authorized COG uses bearer header, lazy reads, preserves valid dark pixels',async()=>{const s=setup({session:{token:'test-token',expiresAt:Date.now()+10000}});await s.settle();assert.equal(s.el('workspace').hidden,false);s.el('job').value='drn-test';s.el('openJob').onclick();await s.settle();assert.equal(s.layers.length,1);const request=s.calls.find(c=>c.url.endsWith('/cog'));assert.equal(request.options.headers.Authorization,'Bearer test-token');assert.ok(!request.url.includes('test-token'));assert.equal(request.options.allowFullFile,false);const layer=s.layers[0];assert.equal(layer.pixelValuesToColorFn([0,0,0]),'rgb(0,0,0)');assert.equal(layer.pixelValuesToColorFn([5,5,5]),'rgb(5,5,5)');const bands=await layer.georaster.getValues({left:0,top:0,right:2,bottom:2,width:2,height:2});assert.deepEqual(Array.from(bands[0][1]),[6,7]);assert.equal(s.el('downloadTiff').disabled,false)});

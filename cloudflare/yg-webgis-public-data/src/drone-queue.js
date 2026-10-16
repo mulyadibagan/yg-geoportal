@@ -2,6 +2,15 @@
 export class DroneQueue {
   constructor(state,env){this.state=state;this.env=env;}
   async fetch(request){return this.state.blockConcurrencyWhile(async()=>{
+    if(new URL(request.url).pathname==='/dayun'){
+      const body=await request.json();
+      if(body.action!=='submit'||!['Agro_ABC','Agro_DEF'].includes(body.job?.label))return Response.json({error:'invalid_analysis'},{status:400});
+      const root='drone/analysis/dayun',key=`${root}/requests/${body.job.label}.json`;
+      const object=await this.env.PUBLIC_SNAPSHOTS.get(key),previous=object?JSON.parse(await object.text()):null;
+      if(previous?.status==='pending'||(previous?.status==='processing'&&(!previous.leaseExpiresAt||Date.parse(previous.leaseExpiresAt)>Date.now())))return Response.json({job:previous,reused:true});
+      await this.env.PUBLIC_SNAPSHOTS.put(key,JSON.stringify(body.job),{httpMetadata:{contentType:'application/json',cacheControl:'private, no-store'}});
+      return Response.json({job:body.job,reused:false});
+    }
     let queue=await this.state.storage.get('queue');
     if(!queue){const object=await this.env.PUBLIC_SNAPSHOTS.get('drone/queue/pending.json');queue=object?JSON.parse(await object.text()):{jobs:[]};queue.jobs=Array.isArray(queue.jobs)?queue.jobs:[];}
     const body=request.method==='POST'?await request.json():{};

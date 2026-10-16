@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 
 spec=importlib.util.spec_from_file_location('drive_geotiff',Path(__file__).parents[1]/'scripts/download_drive_geotiff.py')
 mod=importlib.util.module_from_spec(spec); spec.loader.exec_module(mod)
@@ -24,6 +25,22 @@ class DriveGeoTIFFTests(unittest.TestCase):
     body=b'II*\x00'+b'example-raster-bytes'
     def metadata(self):
         return dict(id='example',size=str(len(self.body)),version='1',md5Checksum=hashlib.md5(self.body).hexdigest())
+    def test_federated_runner_credentials_use_readonly_scope_without_key_json(self):
+        with patch.dict(mod.os.environ,{'DRIVE_CREDENTIALS_JSON':'','GOOGLE_APPLICATION_CREDENTIALS':'runner-wif.json'}),patch('google.auth.load_credentials_from_file',return_value=(object(),None)) as load,patch('google.auth.transport.requests.AuthorizedSession',return_value='authorized'):
+            self.assertEqual(mod.authenticated_session(),'authorized')
+            load.assert_called_once_with('runner-wif.json',scopes=['https://www.googleapis.com/auth/drive.readonly'])
+    def test_private_mode_never_falls_back_to_public_download(self):
+        with tempfile.TemporaryDirectory() as root, patch.object(mod,'authenticated_session',return_value=None):
+            with self.assertRaisesRegex(mod.DownloadError,'drive_credentials_missing'):
+                mod.download('example',Path(root)/'source',len(self.body),require_auth=True)
+    def test_wrong_range_total_rejected(self):
+        with tempfile.TemporaryDirectory() as root:
+            path=Path(root)/'source.tif'; path.with_suffix('.tif.part').write_bytes(self.body[:8])
+            path.with_suffix('.tif.part.json').write_text(json.dumps(self.metadata()))
+            session=Session([Response(self.metadata()),Response(body=self.body[8:],status=206,headers={'Content-Range':'bytes 8-22/999'})])
+            with self.assertRaisesRegex(mod.DownloadError,'drive_invalid_content_range'):
+                mod.download('example',path,len(self.body),session)
+            self.assertEqual(path.with_suffix('.tif.part').read_bytes(),self.body[:8])
     def test_full_download_verified(self):
         with tempfile.TemporaryDirectory() as root:
             path=Path(root)/'source.tif'
@@ -31,6 +48,19 @@ class DriveGeoTIFFTests(unittest.TestCase):
             mod.download('example',path,len(self.body),session)
             self.assertEqual(path.read_bytes(),self.body)
             self.assertFalse(path.with_suffix('.tif.part').exists())
+            self.assertEqual(json.loads(path.with_suffix('.tif.source.json').read_text()),self.metadata())
+    def test_access_preflight_reads_only_metadata(self):
+        session=Session([Response(self.metadata())])
+        self.assertEqual(mod.check_access('example',len(self.body),session),self.metadata())
+        self.assertEqual(len(session.calls),1)
+        self.assertNotIn('alt',session.calls[0]['params'])
+    def test_completed_verified_source_reused_without_media_request(self):
+        with tempfile.TemporaryDirectory() as root:
+            path=Path(root)/'source.tif';path.write_bytes(self.body)
+            session=Session([Response(self.metadata())])
+            mod.download('example',path,len(self.body),session)
+            self.assertEqual(len(session.calls),1)
+            self.assertEqual(path.read_bytes(),self.body)
     def test_ignored_range_restarts_instead_of_appending(self):
         with tempfile.TemporaryDirectory() as root:
             path=Path(root)/'source.tif'; path.with_suffix('.tif.part').write_bytes(self.body[:8])
@@ -62,5 +92,9 @@ class DriveGeoTIFFTests(unittest.TestCase):
         for response,code in [(Response(status=401),'drive_access_denied'),(Response(status=404),'drive_file_missing_or_not_shared'),(Response(data={'error':{'errors':[{'reason':'downloadQuotaExceeded'}]}},status=403),'drive_rate_limited')]:
             with self.subTest(code=code),self.assertRaisesRegex(mod.DownloadError,code):
                 mod.check_response(response)
+    def test_scope_and_api_configuration_errors_are_sanitized(self):
+        for reason,code in [('accessNotConfigured','drive_api_disabled'),('insufficientPermissions','drive_scope_insufficient')]:
+            with self.subTest(reason=reason),self.assertRaisesRegex(mod.DownloadError,code):
+                mod.check_response(Response(data={'error':{'errors':[{'reason':reason}]}},status=403))
 
 if __name__=='__main__': unittest.main()

@@ -3,7 +3,13 @@
   const API = 'https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev';
   const $ = id => document.getElementById(id);
   let session, map, areas, rasterLayer, rasterBounds, tileLayer, jobs = [], source = null, sequence = 0;
-  let disposeMeritechExport = null;
+  let disposeMeritechExport = null, dayunLayer = null, dayunUrls = [], dayunRequest=0;
+  function clearDayun() {
+    dayunRequest++;
+    dayunUrls.forEach(url=>URL.revokeObjectURL(url)); dayunUrls=[];
+    if(dayunLayer && map)map.removeLayer(dayunLayer);dayunLayer=null;
+    $('dayunResults').replaceChildren();
+  }
   let activeController = null, downloadController = null;
   const number = (v, digits = 2) => Number(v).toLocaleString('id-ID', {maximumFractionDigits: digits});
   function validSession() {
@@ -11,6 +17,8 @@
     return current && current.token === session?.token && Number(current.expiresAt) > Date.now();
   }
   function lock(message) {
+    clearDayun();
+    $('dayunRequests').replaceChildren();
     sequence++;
     disposeMeritechExport?.(); disposeMeritechExport = null;
     activeController?.abort(); downloadController?.abort();
@@ -43,6 +51,7 @@
       $('gate').hidden = true; $('workspace').hidden = false;
       if (!map) initMap();
       renderJobs();
+      refreshDayunRequests();
     } catch (error) { $('gateStatus').textContent = `Analisis belum dapat dibuka: ${error.message}`; }
   }
   function renderJobs() {
@@ -131,6 +140,78 @@
     } catch(error) { if(request!==sequence)return;metadata([['Sumber',details.title],['Status','Gagal dibaca']]);$('mapStatus').textContent=`GeoTIFF belum dapat dibuka: ${error.message}`; }
   }
   $('retryGate').onclick=authorize;
+  const analysisStages={pending:'Menunggu mesin',processing:'Sedang diproses',coverage_ready:'Cakupan dan potongan siap; hitungan nanas belum tervalidasi',blocked:'Terhambat akses atau konfigurasi mesin',failed:'Pemrosesan gagal'};
+  const analysisErrors={drive_credentials_missing:'Sambungan Google Drive mesin belum aktif',drive_credentials_invalid:'Sambungan Google Drive perlu diperiksa admin',drive_authenticated_request_failed:'Mesin belum dapat mengakses Google Drive',drive_access_denied:'Akun mesin belum mendapat akses baca',drive_file_missing_or_not_shared:'Citra belum dibagikan kepada akun mesin',drive_api_disabled:'Layanan Drive mesin belum aktif',drive_scope_insufficient:'Izin baca Drive belum sesuai',insufficient_runner_disk:'Ruang pemrosesan tidak mencukupi'};
+  async function refreshDayunRequests(){
+    if(!validSession())return;
+    try{
+      const data=await(await api('/api/staff/drone/analysis/requests')).json();
+      if(!validSession())return;
+      $('dayunRequests').replaceChildren();
+      for(const job of data.jobs||[]){
+        if(!['Agro_ABC','Agro_DEF'].includes(job.label))continue;
+        const row=document.createElement('p');row.textContent=`${job.label}: ${analysisStages[job.status]||'Status belum tersedia'}${job.error?' — '+(analysisErrors[job.error]||'Admin perlu memeriksa proses ini'):''}`;
+        $('dayunRequests').append(row);
+        if(job.status==='coverage_ready'){
+          const button=document.createElement('button');button.textContent=`Buka hasil ${job.label}`;
+          button.onclick=()=>{$('dayunSource').value=job.label;$('openDayun').onclick();};$('dayunRequests').append(button);
+        }
+      }
+    }catch(error){$('dayunQueueStatus').textContent=`Status belum dapat dimuat: ${error.message}`;}
+  }
+  $('refreshDayunRequests').onclick=refreshDayunRequests;
+  $('submitDayun').onclick=async()=>{
+    if(!validSession())return;
+    const driveUrl=$('dayunDriveUrl').value.trim();
+    if(!driveUrl){$('dayunQueueStatus').textContent='Tempel link berkas GeoTIFF terlebih dahulu.';return;}
+    $('submitDayun').disabled=true;
+    try{
+      const data=await(await api('/api/staff/drone/analysis/requests',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({driveUrl})})).json();
+      if(!validSession())return;
+      $('dayunQueueStatus').textContent=`${data.job.label} ${data.reused?'sudah ada dalam proses':'masuk antrean'}. Mesin akan memeriksa akses dan mengunduh citra; analisis belum selesai.`;
+      await refreshDayunRequests();
+    }catch(error){$('dayunQueueStatus').textContent=`Permintaan belum berhasil: ${error.message}`;}
+    finally{$('submitDayun').disabled=false;}
+  };
+  setInterval(refreshDayunRequests,30000);
+  $('openDayun').onclick=async()=>{
+    clearDayun();
+    const request=dayunRequest;
+    const current=()=>validSession() && request===dayunRequest;
+    const selected=$('dayunSource').value;
+    if(!['Agro_ABC','Agro_DEF'].includes(selected))return;
+    const base=`/api/staff/drone/analysis/${selected}`;
+    $('dayunStatus').textContent='Memeriksa hasil…';
+    try {
+      const manifest=await(await api(base)).json();
+      if(!current())return;
+      if(!manifest.download?.ok){$('dayunStatus').textContent=`Belum diunduh: ${manifest.download?.error||'status tidak tersedia'}`;return;}
+      if(!manifest.analysis?.ok || !manifest.files?.includes('metadata.json')){$('dayunStatus').textContent='Unduhan selesai; analisis belum tersedia atau belum lengkap.';return;}
+      const meta=await(await api(base+'/files/metadata.json')).json();
+      if(!current())return;
+      $('dayunStatus').textContent='Cakupan citra tersedia. Luas tanam, celah barisan, dan jumlah nanas masih memerlukan pemeriksaan visual. Tanggal penerbangan belum terverifikasi.';
+      const table=document.createElement('table'),head=document.createElement('tr');
+      ['Gawangan','Cakupan seluruh polygon','Luas citra valid (ha)'].forEach(value=>{const th=document.createElement('th');th.textContent=value;head.append(th);});table.append(head);
+      for(const row of meta.gawangan||[]){const tr=document.createElement('tr');[row.gawangan,row.valid_coverage_percent===null?'Belum tersedia':`${row.valid_coverage_percent}%`,row.valid_area_ha??'Belum tersedia'].forEach(value=>{const td=document.createElement('td');td.textContent=value;tr.append(td);});table.append(tr);}
+      $('dayunResults').append(table);
+      if(manifest.files.includes('coverage.geojson')){
+        const geo=await(await api(base+'/files/coverage.geojson')).json();
+        if(!current())return;
+        dayunLayer=L.geoJSON(geo,{style:f=>({color:(f.properties.valid_coverage_percent??0)<95?'#d97706':'#137f63',weight:2,fillOpacity:.12}),onEachFeature:(f,l)=>l.bindTooltip(String(f.properties.gawangan))}).addTo(map);
+        map.fitBounds(dayunLayer.getBounds());
+      }
+      if(manifest.files.includes('overview.jpg')){
+        const blob=await(await api(base+'/files/overview.jpg')).blob();if(!current())return;
+        const url=URL.createObjectURL(blob);dayunUrls.push(url);const img=document.createElement('img');img.src=url;img.alt='Pratinjau orthomosaic Dayun';img.style.width='100%';$('dayunResults').append(img);
+      }
+      const label=document.createElement('p');label.textContent='Unduh laporan, tabel, atau potongan asli:';$('dayunResults').append(label);
+      const select=document.createElement('select');
+      for(const file of manifest.files){select.add(new Option(file,file));}
+      const button=document.createElement('button');button.textContent='Unduh hasil terpilih';
+      button.onclick=async()=>{try{const response=await api(base+'/files/'+select.value);const blob=await response.blob();if(current())save(blob,select.value.split('/').pop());}catch(e){if(current())$('dayunStatus').textContent=e.message;}};
+      $('dayunResults').append(select);$('dayunResults').append(button);
+    }catch(e){if(current())$('dayunStatus').textContent=`Hasil privat belum tersedia: ${e.message}`;}
+  };
   $('refreshJobs').onclick=async()=>{try{jobs=(await (await api('/api/staff/drone/jobs')).json()).jobs || [];renderJobs();}catch(e){$('catalogStatus').textContent=e.message;}};
   $('job').onchange=()=>{$('openJob').disabled=!$('job').value;};
   $('openJob').onclick=()=>{const job=jobs.find(j=>j.id===$('job').value);if(job)openRaster(`${API}/api/drone/jobs/${encodeURIComponent(job.id)}/cog`,job);};

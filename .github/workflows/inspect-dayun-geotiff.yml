@@ -1,68 +1,74 @@
 name: Inspect existing Dayun GeoTIFF
 on:
+  schedule:
+    - cron: '*/5 * * * *'
   push:
-    branches: ['main', 'analysis/dayun-ortho-20261016']
+    branches: ['main']
     paths:
       - '.github/workflows/inspect-dayun-geotiff.yml'
-      - 'scripts/inspect_dayun_geotiff.py'
+      - 'scripts/*dayun*.py'
       - 'scripts/download_drive_geotiff.py'
+      - 'tests/test_dayun*.py'
       - 'tests/test_drive_geotiff.py'
   workflow_dispatch:
+    inputs:
+      source:
+        description: 'Process queued staff links or rerun an existing source'
+        type: choice
+        options: [queued, both, Agro_ABC, Agro_DEF]
+        default: queued
 permissions:
   contents: read
+  id-token: write
 concurrency:
   group: dayun-existing-geotiff-inspection
   cancel-in-progress: false
 jobs:
   inspect:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
     environment: yg-webgis-staging
     timeout-minutes: 180
     strategy:
       fail-fast: false
-      max-parallel: 2
       matrix:
-        include:
-          - label: Agro_ABC
-            file_id: 11kWmzkdTWVuxrDJMOYk3JfN34xeoZNRx
-            expected_bytes: 13677790714
-          - label: Agro_DEF
-            file_id: 14d-Hui0iwSvHQtCbZJa3InBOlQ3OdGNo
-            expected_bytes: 3432485808
+        label: [Agro_ABC, Agro_DEF]
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Install raster tools
-        run: pip install 'gdown>=6.3.0' 'rasterio>=1.4,<2' 'Pillow>=11,<13' 'shapely>=2,<3' 'pyproj>=3,<4' 'google-auth[requests]>=2,<3'
-      - name: Verify downloader
-        run: python -m unittest discover -s tests -p test_drive_geotiff.py -v
-      - name: Download existing orthomosaic from user-provided Drive file
-        env:
-          FILE_ID: ${{ matrix.file_id }}
-          EXPECTED_BYTES: ${{ matrix.expected_bytes }}
-          DRIVE_CREDENTIALS_JSON: ${{ secrets.DRIVE_CREDENTIALS_JSON }}
-        run: |
-          mkdir -p work result
-          python - <<'PY'
-          import os, shutil
-          expected=int(os.environ["EXPECTED_BYTES"])
-          free=shutil.disk_usage(".").free
-          if free < expected+6_000_000_000:
-              raise RuntimeError(f"Insufficient runner disk: {free}; source {expected} plus 6 GB required")
-          PY
-          python scripts/download_drive_geotiff.py "$FILE_ID" work/source.tif --expected-bytes "$EXPECTED_BYTES" --status result/download-status.json
-      - name: Inspect and crop at original resolution
-        env:
-          LABEL: ${{ matrix.label }}
-        run: python scripts/inspect_dayun_geotiff.py work/source.tif "$LABEL" result
-      - name: Save analysis artifacts
-        if: always()
-        uses: actions/upload-artifact@v4
+      - uses: actions/setup-node@v5
         with:
-          name: dayun-ortho-${{ matrix.label }}
-          path: result/
-          if-no-files-found: warn
-          retention-days: 30
-          compression-level: 0
+          node-version: '22'
+      - run: npm ci --ignore-scripts
+        working-directory: cloudflare/yg-webgis-public-data
+      - name: Install raster tools
+        run: pip install 'rasterio>=1.4,<2' 'Pillow>=11,<13' 'shapely>=2,<3' 'pyproj>=3,<4' 'google-auth[requests]>=2,<3'
+      - name: Verify engine
+        run: |
+          python -m unittest discover -s tests -p test_drive_geotiff.py -v
+          python -m unittest discover -s tests -p 'test_dayun*.py' -v
+      - name: Connect existing Drive reader without a JSON key
+        if: vars.DAYUN_GOOGLE_WIF_PROVIDER != ''
+        continue-on-error: true
+        uses: google-github-actions/auth@v3
+        with:
+          project_id: yg-staff-dashboard
+          workload_identity_provider: ${{ vars.DAYUN_GOOGLE_WIF_PROVIDER }}
+          service_account: webgisyg-dayun-reader@yg-staff-dashboard.iam.gserviceaccount.com
+          create_credentials_file: true
+          export_environment_variables: true
+      - name: Verify private R2
+        run: python scripts/verify_dayun_r2_privacy.py
+      - name: Process staff link requests with the existing engine
+        env:
+          DRIVE_CREDENTIALS_JSON: ${{ secrets.DRIVE_CREDENTIALS_JSON }}
+          SOURCE_LABEL: ${{ matrix.label }}
+          SOURCE_MODE: ${{ inputs.source || 'queued' }}
+          ANALYSIS_RUN: ${{ github.run_id }}-${{ github.run_attempt }}
+        run: python scripts/process_dayun_analysis_requests.py --label "$SOURCE_LABEL" --run "$ANALYSIS_RUN" --mode "$SOURCE_MODE"
+      # Imagery, crop tables, credentials and request records stay out of Actions artifacts.
