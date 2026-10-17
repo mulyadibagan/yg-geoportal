@@ -3,9 +3,10 @@
   const API = 'https://webgis-api.yayasangambut.org';
   const $ = id => document.getElementById(id);
   let session, map, areas, rasterLayer, rasterBounds, tileLayer, jobs = [], source = null, sequence = 0;
-  let disposeMeritechExport = null, dayunLayer = null, dayunUrls = [], dayunRequest=0;
+  let disposeMeritechExport = null, disposeCandidateReview=null, dayunLayer = null, dayunUrls = [], dayunRequest=0;
   function clearDayun() {
     dayunRequest++;
+    disposeCandidateReview?.();disposeCandidateReview=null;
     dayunUrls.forEach(url=>URL.revokeObjectURL(url)); dayunUrls=[];
     if(dayunLayer && map)map.removeLayer(dayunLayer);dayunLayer=null;
     $('dayunResults').replaceChildren();
@@ -218,6 +219,10 @@
         try{const blob=await(await api(base+'/files/'+file)).blob();if(current())await openRaster(blob,{title:`${selected} / ${file}`});}catch(e){if(current())$('dayunStatus').textContent=e.message;}
       };
       $('dayunResults').append(select);$('dayunResults').append(inspect);$('dayunResults').append(button);
+      if(window.YG_DAYUN_CANDIDATES){
+        try{const dispose=await window.YG_DAYUN_CANDIDATES.mount({host:$('candidateReview'),map,api,base,manifest,openRaster,save,current});if(current())disposeCandidateReview=dispose;else dispose();}
+        catch(error){if(current())$('dayunStatus').textContent+=' Uji kandidat belum dapat dimuat: '+error.message;}
+      }
     }catch(e){if(current())$('dayunStatus').textContent=`Hasil privat belum tersedia: ${e.message}`;}
   };
   $('refreshJobs').onclick=async()=>{try{jobs=(await (await api('/api/staff/drone/jobs')).json()).jobs || [];renderJobs();}catch(e){$('catalogStatus').textContent=e.message;}};
