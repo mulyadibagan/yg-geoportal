@@ -6,15 +6,16 @@ function bbox(geometry){const all=[];const walk=x=>{if(typeof x[0]==='number')al
 function locator(zones){const indexed=zones.features.map(f=>({f,b:bbox(f.geometry)}));return feature=>indexed.filter(z=>inside(feature.geometry.coordinates,z.b)&&booleanPointInPolygon(feature,z.f)).map(z=>z.f.properties.id);}
 
 export function normalizeBlockReview(review,{manifest,path,analysis,candidates,zones}){
-  if(review?.schema!=='dayun-block-corrections-v1'||review.source_run!==manifest.run||review.analysis_path!==path||review.block!=='A'||!Array.isArray(review.changes)||review.changes.length>30000)fail('block_review_source_mismatch');
+  const block=analysis.block;if(!['A','B'].includes(block))fail('invalid_block_source');
+  if(review?.schema!=='dayun-block-corrections-v1'||review.source_run!==manifest.run||review.analysis_path!==path||review.block!==block||!Array.isArray(review.changes)||review.changes.length>30000)fail('block_review_source_mismatch');
   const originals=new Map(candidates.features.map(f=>[f.properties.id,f])),seen=new Set(),locate=locator(zones);
   const changes=review.changes.map(f=>{
     const p=f?.properties,c=f?.geometry?.coordinates,id=p?.id;
     if(f?.type!=='Feature'||f.geometry?.type!=='Point'||!Array.isArray(c)||c.length!==2||!c.every(Number.isFinite)||!inside(c,analysis.bounds)||!analysis.native_tiles.some(t=>inside(c,t.bounds))||typeof id!=='string'||!/^[\w-]{1,100}$/.test(id)||seen.has(id)||!['candidate','accepted','rejected'].includes(p.status)||typeof p.note!=='string'||p.note.length>1000)fail('invalid_block_review_point');
-    const original=originals.get(id);if(!original&&!/^A-manual-[\w-]{8,80}$/.test(id))fail('unknown_block_candidate');seen.add(id);
+    const original=originals.get(id);if(!original&&!new RegExp('^'+block+'-manual-[\\w-]{8,80}$').test(id))fail('unknown_block_candidate');seen.add(id);
     return{type:'Feature',geometry:{type:'Point',coordinates:c},properties:{id,status:p.status,note:p.note,origin:original?'automated':'manual_addition',zones:locate(f),species_confirmed:false}};
   });
-  return{schema:'dayun-block-corrections-v1',source_run:manifest.run,analysis_path:path,block:'A',changes,census_changed:false};
+  return{schema:'dayun-block-corrections-v1',source_run:manifest.run,analysis_path:path,block,changes,census_changed:false};
 }
 
 export function blockReviewCounts(review,candidates,zones){
@@ -36,13 +37,14 @@ export function blockReviewCounts(review,candidates,zones){
 export function collaborativeHead(head,empty){const value=head||empty;return{...value,collaboration:'per-point-v1',point_versions:value.point_versions||Object.fromEntries((value.review?.changes||[]).map(f=>[f.properties.id,value.revision])),point_operations:value.point_operations||{}};}
 
 export function mergePointPatch(head,patch,context){
-  if(patch?.schema!=='dayun-block-point-patch-v1'||patch.source_run!==context.manifest.run||patch.analysis_path!==context.path||patch.block!=='A'||!Array.isArray(patch.operations)||!patch.operations.length||patch.operations.length>1000)fail('invalid_block_point_patch');
+  const block=context.analysis.block;
+  if(patch?.schema!=='dayun-block-point-patch-v1'||patch.source_run!==context.manifest.run||patch.analysis_path!==context.path||patch.block!==block||!Array.isArray(patch.operations)||!patch.operations.length||patch.operations.length>1000)fail('invalid_block_point_patch');
   const versions={...head.point_versions},operations={...head.point_operations},features=new Map((head.review?.changes||[]).map(f=>[f.properties.id,f])),seen=new Set(),conflicts=[];
   const incoming=patch.operations.map(op=>{
     if(!op||typeof op.id!=='string'||!/^[\w-]{1,100}$/.test(op.id)||seen.has(op.id)||!Number.isSafeInteger(op.expected_version)||op.expected_version<0||typeof op.operation_id!=='string'||!/^[\w-]{8,100}$/.test(op.operation_id))fail('invalid_block_point_operation');seen.add(op.id);
-    if(op.feature===null){if(!/^A-manual-[\w-]{8,80}$/.test(op.id))fail('only_manual_points_can_be_deleted');}
+    if(op.feature===null){if(!new RegExp('^'+block+'-manual-[\\w-]{8,80}$').test(op.id))fail('only_manual_points_can_be_deleted');}
     else if(op.feature?.properties?.id!==op.id)fail('block_point_identity_mismatch');
-    const feature=op.feature===null?null:normalizeBlockReview({schema:'dayun-block-corrections-v1',source_run:patch.source_run,analysis_path:patch.analysis_path,block:'A',changes:[op.feature]},context).changes[0];
+    const feature=op.feature===null?null:normalizeBlockReview({schema:'dayun-block-corrections-v1',source_run:patch.source_run,analysis_path:patch.analysis_path,block,changes:[op.feature]},context).changes[0];
     const duplicate=operations[op.id]===op.operation_id;
     if(!duplicate&&op.expected_version!==(versions[op.id]||0))conflicts.push({id:op.id,current_version:versions[op.id]||0});
     if(!duplicate&&feature===null&&!features.has(op.id)&&!(versions[op.id]>0))fail('manual_point_not_found');
@@ -51,24 +53,25 @@ export function mergePointPatch(head,patch,context){
   if(conflicts.length)fail('block_points_conflict',409,{conflicts});
   let applied=0;for(const op of incoming){if(op.duplicate)continue;if(op.feature===null)features.delete(op.id);else features.set(op.id,op.feature);versions[op.id]=(versions[op.id]||0)+1;operations[op.id]=op.operation_id;applied++;}
   if(features.size>30000)fail('block_review_too_many_points');
-  return{review:{schema:'dayun-block-corrections-v1',source_run:context.manifest.run,analysis_path:context.path,block:'A',changes:[...features.values()],census_changed:false},point_versions:versions,point_operations:operations,applied};
+  return{review:{schema:'dayun-block-corrections-v1',source_run:context.manifest.run,analysis_path:context.path,block,changes:[...features.values()],census_changed:false},point_versions:versions,point_operations:operations,applied};
 }
 
 export async function blockReviewOperation(env,body){
-  if(body.label!=='Agro_ABC'||body.block!=='A')fail('invalid_block_source');
+  if(body.label!=='Agro_ABC'||!['A','B'].includes(body.block))fail('invalid_block_source');
+  const block=body.block;
   const read=async key=>{const object=await env.PUBLIC_SNAPSHOTS.get(key);return object?JSON.parse(await object.text()):null};
-  const manifest=await read('drone/analysis/dayun/results/Agro_ABC/index.json'),path=manifest?.block_analyses?.A;
+  const manifest=await read('drone/analysis/dayun/results/Agro_ABC/index.json'),path=manifest?.block_analyses?.[block];
   if(!manifest||typeof path!=='string'||!manifest.files?.includes(path)||path.split('/').some(p=>!p||p==='.'||p==='..')||!manifest.prefix?.startsWith('drone/analysis/dayun/results/Agro_ABC/')||!/^[\w-]+$/.test(manifest.run))fail('block_analysis_unavailable',404);
   const folder=path.slice(0,path.lastIndexOf('/')+1);for(const file of ['zones.geojson','candidates.geojson'])if(!manifest.files.includes(folder+file))fail('block_assets_unavailable',404);
   const [analysis,candidates,zones]=await Promise.all([read(manifest.prefix+'/'+path),read(manifest.prefix+'/'+folder+'candidates.geojson'),read(manifest.prefix+'/'+folder+'zones.geojson')]);
-  if(analysis?.source_run!==manifest.run||analysis.block!=='A'||!candidates?.features||!zones?.features)fail('block_analysis_source_mismatch',409);
+  if(analysis?.source_run!==manifest.run||analysis.block!==block||!candidates?.features||!zones?.features)fail('block_analysis_source_mismatch',409);
   // A calibrated baseline keeps the existing private correction history. Reads
   // adapt its presentation/counts without rewriting any stored user revision.
-  const anchor=manifest.block_review_bases?.A||path;let knownCandidates=candidates;
-  if(anchor!==path){if(typeof anchor!=='string'||!manifest.files.includes(anchor)||anchor.split('/').some(p=>!p||p==='.'||p==='..'))fail('invalid_review_base');const previousFolder=anchor.slice(0,anchor.lastIndexOf('/')+1);if(!manifest.files.includes(previousFolder+'candidates.geojson'))fail('invalid_review_base');const [previous,original]=await Promise.all([read(manifest.prefix+'/'+anchor),read(manifest.prefix+'/'+previousFolder+'candidates.geojson')]);if(previous?.source_run!==manifest.run||previous.block!=='A'||!original?.features)fail('review_base_source_mismatch',409);knownCandidates={type:'FeatureCollection',features:[...new Map([...original.features,...candidates.features].map(f=>[f.properties.id,f])).values()]};}
+  const anchor=manifest.block_review_bases?.[block]||path;let knownCandidates=candidates;
+  if(anchor!==path){if(typeof anchor!=='string'||!manifest.files.includes(anchor)||anchor.split('/').some(p=>!p||p==='.'||p==='..'))fail('invalid_review_base');const previousFolder=anchor.slice(0,anchor.lastIndexOf('/')+1);if(!manifest.files.includes(previousFolder+'candidates.geojson'))fail('invalid_review_base');const [previous,original]=await Promise.all([read(manifest.prefix+'/'+anchor),read(manifest.prefix+'/'+previousFolder+'candidates.geojson')]);if(previous?.source_run!==manifest.run||previous.block!==block||!original?.features)fail('review_base_source_mismatch',409);knownCandidates={type:'FeatureCollection',features:[...new Map([...original.features,...candidates.features].map(f=>[f.properties.id,f])).values()]};}
   const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(anchor));const hash=Array.from(new Uint8Array(digest),b=>b.toString(16).padStart(2,'0')).join('');
   const root=`drone/analysis/dayun/block-reviews/Agro_ABC/${manifest.run}/${hash}`,stored=await read(root+'/head.json');
-  if(stored?.review){if(stored.review.source_run!==manifest.run)fail('review_base_source_mismatch',409);knownCandidates={type:'FeatureCollection',features:[...new Map([...knownCandidates.features,...stored.review.changes.filter(f=>f.properties.origin==='automated')].map(f=>[f.properties.id,f])).values()]};}
+  if(stored?.review){if(stored.review.source_run!==manifest.run||stored.review.block!==block)fail('review_base_source_mismatch',409);knownCandidates={type:'FeatureCollection',features:[...new Map([...knownCandidates.features,...stored.review.changes.filter(f=>f.properties.origin==='automated')].map(f=>[f.properties.id,f])).values()]};}
   const raw=collaborativeHead(stored,{ok:true,revision:0,review:null,counts:blockReviewCounts(null,candidates,zones),analysis_path:path});
   const head={...raw,analysis_path:path,review:raw.review?{...raw.review,analysis_path:path}:null,counts:blockReviewCounts(raw.review,candidates,zones),review_base_analysis_path:anchor};
   if(body.action==='load')return head;

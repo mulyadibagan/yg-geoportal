@@ -41,10 +41,18 @@ class WholeBlockTests(unittest.TestCase):
                 self.assertFalse(result['census_changed']);self.assertIsNone(result['pineapple_count_validated'])
                 points=json.loads((root/'out/candidates.geojson').read_text())['features']
                 self.assertEqual(sum(np.hypot(f['properties']['source_pixel'][0]-256,f['properties']['source_pixel'][1]-256)<12 for f in points),1)
+                self.assertTrue(all(f['properties']['id'].startswith('A-radial-') for f in points))
                 self.assertEqual(result['candidate_count'],len(points));self.assertEqual(len({f['properties']['id'] for f in points}),len(points))
                 resumed=count_block(root,root/'out',ds);self.assertEqual(result['candidate_count'],resumed['candidate_count'])
                 rejected=count_block(root,root/'rejected',ds,rejected=[list(trans*(256.5,256.5))]);self.assertGreaterEqual(rejected['full_block_count']['excluded_candidates'],1)
                 self.assertRaisesRegex(ValueError,'provenance_mismatch',count_block,root,root/'out',ds,threshold=.4)
+            b=json.loads((root/'analysis.json').read_text());b['block']='B';(root/'analysis.json').write_text(json.dumps(b))
+            with rasterio.open(source) as ds:
+                result_b=count_block(root,root/'out-B',ds)
+                points_b=json.loads((root/'out-B/candidates.geojson').read_text())['features']
+                self.assertTrue(all(f['properties']['id'].startswith('B-radial-') for f in points_b))
+                self.assertEqual(result_b['block'],'B')
+                self.assertFalse(result_b['census_changed'])
             self.assertEqual(source.read_bytes(),before)
 
 
