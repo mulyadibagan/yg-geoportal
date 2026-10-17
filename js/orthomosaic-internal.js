@@ -21,6 +21,7 @@
     dayunUrls.forEach(url=>URL.revokeObjectURL(url)); dayunUrls=[];
     if(dayunLayer && map)map.removeLayer(dayunLayer);dayunLayer=null;
     $('dayunResults').replaceChildren();
+    $('blockComparison').replaceChildren();$('blockComparison').hidden=true;
   }
   let activeController = null, downloadController = null;
   const number = (v, digits = 2) => Number(v).toLocaleString('id-ID', {maximumFractionDigits: digits});
@@ -157,7 +158,7 @@
       }});
       layer.options.updateWhenZooming=false;
       layer.on('tileerror',()=>{if(request===sequence)$('mapStatus').textContent='Sebagian citra gagal dibaca. Coba buka ulang hasil atau periksa koneksi.';});
-      layer.addTo(map);rasterLayer=layer;rasterBounds=layer.getBounds();map.fitBounds(rasterBounds);
+      layer.addTo(map);rasterLayer=layer;rasterBounds=layer.getBounds();if(!details.preserveView)map.fitBounds(rasterBounds);
       source={...details,input};$('fitRaster').disabled=false;$('downloadTiff').disabled=input instanceof Blob;
       metadata([['Sumber',details.title],['Tanggal survei',details.surveyDate || 'Belum tersedia'],['Sistem koordinat',`EPSG:${projection}`],['Dimensi',`${number(image.getWidth(),0)} × ${number(image.getHeight(),0)} piksel`],['Ukuran piksel (satuan CRS)',`${number(Math.abs(rx),8)} × ${number(Math.abs(ry),8)}`],['Foto digunakan',details.validPhotos ?? 'Tidak tersedia'],['Akses','Internal staf']]);
       $('mapStatus').textContent='Citra siap ditinjau. Pembacaan mengikuti area peta dan tingkat pembesaran.';
@@ -200,6 +201,7 @@
   };
   setInterval(refreshDayunRequests,30000);
   $('openDayun').onclick=async()=>{
+    if(disposeBlockReview?.canLeave&&!disposeBlockReview.canLeave()){$('dayunStatus').textContent='Simpan atau ekspor koreksi titik Blok A sebelum mengganti hasil.';return;}
     clearDayun();
     const request=dayunRequest;
     const current=()=>validSession() && request===dayunRequest;
@@ -245,7 +247,7 @@
       };
       $('dayunResults').append(select);$('dayunResults').append(inspect);$('dayunResults').append(button);
       if(!target&&window.YG_DAYUN_BLOCK){
-        try{const dispose=await window.YG_DAYUN_BLOCK.mount({host:$('blockReview'),map,api,base,manifest,openRaster,save,current,autoOpen:blockTarget,onAutoOpen:()=>{if(current()){const card=document.querySelector?.('.map-card');if(card&&!card.classList.contains('map-expanded'))$('focusMap').onclick?.();}}});if(current()){disposeBlockReview=dispose;if(manifest.block_analyses?.A)$('sampleReviewPanel').open=Boolean(manifest.preferred_candidate_trial)&&!blockTarget;}else dispose();}
+        try{const expand=()=>{if(current()){const card=document.querySelector?.('.map-card');if(card&&!card.classList.contains('map-expanded'))$('focusMap').onclick?.();}};const dispose=await window.YG_DAYUN_BLOCK.mount({host:$('blockReview'),comparisonHost:$('blockComparison'),map,api,base,manifest,openRaster,save,current,autoOpen:blockTarget,onAutoOpen:expand,onEditMap:expand,onShowComparison:()=>{const card=document.querySelector?.('.map-card');if(card?.classList.contains('map-expanded'))$('focusMap').onclick?.();}});if(current()){disposeBlockReview=dispose;if(manifest.block_analyses?.A)$('sampleReviewPanel').open=Boolean(manifest.preferred_candidate_trial)&&!blockTarget;}else dispose();}
         catch(error){if(current())$('dayunStatus').textContent+=' Analisis blok belum dapat dimuat: '+error.message;}
       }
       if(window.YG_DAYUN_CANDIDATES){

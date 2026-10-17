@@ -6,6 +6,7 @@ on:
     branches: [main]
     paths:
       - 'cloudflare/yg-webgis-public-data/src/drone*.js'
+      - 'cloudflare/yg-webgis-public-data/src/dayun-block-corrections.js'
       - '.github/workflows/deploy-drone-service.yml'
 
 permissions:
