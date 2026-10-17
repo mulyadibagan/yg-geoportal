@@ -1,7 +1,7 @@
 // Sparse, versioned staff map corrections only. No census or source-data writes.
 import {booleanPointInPolygon} from '@turf/turf';
 const fail=(message,status=400,details={})=>{throw Object.assign(Error(message),{status,...details})};
-const reviewLimit=block=>['B','C'].includes(block)?60000:30000;
+const reviewLimit=block=>['B','C','D','E','F'].includes(block)?60000:30000;
 const inside=(c,b)=>c[0]>=b[0]&&c[0]<=b[2]&&c[1]>=b[1]&&c[1]<=b[3];
 function bbox(geometry){const all=[];const walk=x=>{if(typeof x[0]==='number')all.push(x);else x.forEach(walk)};walk(geometry.coordinates);return all.reduce((b,p)=>[Math.min(b[0],p[0]),Math.min(b[1],p[1]),Math.max(b[2],p[0]),Math.max(b[3],p[1])],[Infinity,Infinity,-Infinity,-Infinity]);}
 function locator(zones){const indexed=zones.features.map(f=>({f,b:bbox(f.geometry)}));return feature=>indexed.filter(z=>inside(feature.geometry.coordinates,z.b)&&booleanPointInPolygon(feature,z.f)).map(z=>z.f.properties.id);}
@@ -9,10 +9,20 @@ function locator(zones){const indexed=zones.features.map(f=>({f,b:bbox(f.geometr
 // Derive membership from current boundaries without touching the saved revision.
 export function rebaseBlockReview(review,zones){if(!review)return null;const locate=locator(zones);return{...review,changes:review.changes.map(f=>({...f,properties:{...f.properties,zones:locate(f)}}))};}
 
+export function expandCandidateGrid(grid,analysis){
+  if(grid?.schema!=='dayun-review-grid-v1'||grid.source_run!==analysis.source_run||grid.block!==analysis.block||!Array.isArray(grid.transform)||grid.transform.length<6||!grid.transform.every(Number.isFinite)||!Array.isArray(grid.zones)||grid.zones.some(z=>typeof z!=='string')||!Array.isArray(grid.points)||grid.points.length>1000000||grid.points.length!==analysis.candidate_count||!Number.isInteger(grid.width)||!Number.isInteger(grid.height)||grid.width<1||grid.height<1)fail('invalid_candidate_review_grid',409);
+  const [a,b,c,d,e,f]=grid.transform;if(!(a>0&&e<0&&b===0&&d===0))fail('invalid_candidate_review_grid',409);
+  const ids=new Set(),features=grid.points.map(row=>{
+    if(!Array.isArray(row)||row.length!==3||!Number.isInteger(row[0])||!Number.isInteger(row[1])||row[0]<0||row[1]<0||row[0]>=grid.width||row[1]>=grid.height||!Array.isArray(row[2])||!row[2].length||row[2].some(i=>!Number.isInteger(i)||i<0||i>=grid.zones.length))fail('invalid_candidate_review_grid',409);
+    const [x,y,indices]=row,id=`${analysis.block}-radial-x${x}-y${y}`;if(ids.has(id))fail('invalid_candidate_review_grid',409);ids.add(id);
+    return{type:'Feature',geometry:{type:'Point',coordinates:[a*(x+.5)+c,e*(y+.5)+f]},properties:{id,zones:indices.map(i=>grid.zones[i]),status:'candidate'}};
+  });return{type:'FeatureCollection',features};
+}
+
 export function normalizeBlockReview(review,{manifest,path,analysis,candidates,zones}){
-  const block=analysis.block;if(!['A','B','C'].includes(block))fail('invalid_block_source');
+  const block=analysis.block;if(!['A','B','C','D','E','F'].includes(block))fail('invalid_block_source');
   if(review?.schema!=='dayun-block-corrections-v1'||review.source_run!==manifest.run||review.analysis_path!==path||review.block!==block||!Array.isArray(review.changes)||review.changes.length>reviewLimit(block))fail('block_review_source_mismatch');
-  const originals=new Map(candidates.features.map(f=>[f.properties.id,f])),seen=new Set(),locate=locator(zones);
+  const originals=candidates.byId||new Map(candidates.features.map(f=>[f.properties.id,f])),seen=new Set(),locate=locator(zones);
   const changes=review.changes.map(f=>{
     const p=f?.properties,c=f?.geometry?.coordinates,id=p?.id;
     if(f?.type!=='Feature'||f.geometry?.type!=='Point'||!Array.isArray(c)||c.length!==2||!c.every(Number.isFinite)||!inside(c,analysis.bounds)||!analysis.native_tiles.some(t=>inside(c,t.bounds))||typeof id!=='string'||!/^[\w-]{1,100}$/.test(id)||seen.has(id)||!['candidate','accepted','rejected'].includes(p.status)||typeof p.note!=='string'||p.note.length>1000)fail('invalid_block_review_point');
@@ -25,17 +35,17 @@ export function normalizeBlockReview(review,{manifest,path,analysis,candidates,z
 
 export function blockReviewCounts(review,candidates,zones){
   const changed=new Map((review?.changes||[]).map(f=>[f.properties.id,f]));
-  const effective=candidates.features.map(f=>changed.get(f.properties.id)||{...f,properties:{...f.properties,status:'candidate',origin:'automated'}});
+  const effective=candidates.features.map(f=>changed.get(f.properties.id)||f);
   const originalIds=new Set(candidates.features.map(f=>f.properties.id));
   for(const f of changed.values())if(!originalIds.has(f.properties.id))effective.push(f);
   const counts={automatic_original:candidates.features.length,manual_additions:0,rejected:0,accepted_by_staff:0,unreviewed:0,working_total:0,unassigned:0,census_changed:false,validated_pineapple_total:null};
   const rows=new Map(zones.features.map(f=>[f.properties.id,{zone_id:f.properties.id,automatic:0,manual_additions:0,rejected:0,accepted_by_staff:0,unreviewed:0,working_total:0}]));
   rows.set('UNASSIGNED',{zone_id:'UNASSIGNED',automatic:0,manual_additions:0,rejected:0,accepted_by_staff:0,unreviewed:0,working_total:0});
-  for(const f of effective){const p=f.properties,manual=p.origin==='manual_addition',rejected=p.status==='rejected',accepted=p.status==='accepted';
+  for(const f of effective){const p=f.properties,edited=changed.has(p.id),manual=edited&&p.origin==='manual_addition',rejected=edited&&p.status==='rejected',accepted=edited&&p.status==='accepted';
     if(manual)counts.manual_additions++;if(rejected)counts.rejected++;else{counts.working_total++;if(accepted)counts.accepted_by_staff++;else counts.unreviewed++;if(!p.zones?.length)counts.unassigned++;}
     for(const id of p.zones?.length?p.zones:['UNASSIGNED']){const r=rows.get(id);if(!r)continue;if(manual)r.manual_additions++;else r.automatic++;if(rejected)r.rejected++;else{r.working_total++;if(accepted)r.accepted_by_staff++;else r.unreviewed++;}}
   }
-  const training={positive:0,negative:0,rejected_without_species_label:0};for(const f of effective){const p=f.properties;if(p.status==='accepted')training.positive++;else if(p.status==='rejected'){if(p.rejection_reason==='not_pineapple')training.negative++;else training.rejected_without_species_label++;}}
+  const training={positive:0,negative:0,rejected_without_species_label:0};for(const f of changed.values()){const p=f.properties;if(p.status==='accepted')training.positive++;else if(p.status==='rejected'){if(p.rejection_reason==='not_pineapple')training.negative++;else training.rejected_without_species_label++;}}
   return{...counts,training_examples:training,zones:[...rows.values()]};
 }
 
@@ -63,26 +73,30 @@ export function mergePointPatch(head,patch,context){
 }
 
 export async function blockReviewOperation(env,body){
-  if(body.label!=='Agro_ABC'||!['A','B','C'].includes(body.block))fail('invalid_block_source');
+  if(!({Agro_ABC:['A','B','C'],Agro_DEF:['D','E','F']}[body.label]?.includes(body.block)))fail('invalid_block_source');
   const block=body.block;
   const read=async key=>{const object=await env.PUBLIC_SNAPSHOTS.get(key);return object?JSON.parse(await object.text()):null};
-  const manifest=await read('drone/analysis/dayun/results/Agro_ABC/index.json'),path=manifest?.block_analyses?.[block];
-  if(!manifest||typeof path!=='string'||!manifest.files?.includes(path)||path.split('/').some(p=>!p||p==='.'||p==='..')||!manifest.prefix?.startsWith('drone/analysis/dayun/results/Agro_ABC/')||!/^[\w-]+$/.test(manifest.run))fail('block_analysis_unavailable',404);
+  const manifest=await read('drone/analysis/dayun/results/'+body.label+'/index.json'),path=manifest?.block_analyses?.[block];
+  if(!manifest||typeof path!=='string'||!manifest.files?.includes(path)||path.split('/').some(p=>!p||p==='.'||p==='..')||!manifest.prefix?.startsWith('drone/analysis/dayun/results/'+body.label+'/')||!/^[\w-]+$/.test(manifest.run))fail('block_analysis_unavailable',404);
   const folder=path.slice(0,path.lastIndexOf('/')+1);for(const file of ['zones.geojson','candidates.geojson'])if(!manifest.files.includes(folder+file))fail('block_assets_unavailable',404);
-  const [analysis,candidates,zones]=await Promise.all([read(manifest.prefix+'/'+path),read(manifest.prefix+'/'+folder+'candidates.geojson'),read(manifest.prefix+'/'+folder+'zones.geojson')]);
+  const analysis=await read(manifest.prefix+'/'+path);
+  const readCandidates=async(a,dir)=>{if(a?.review_index){const file=dir+a.review_index;if(!/^[\w-]+\.json$/.test(a.review_index)||!manifest.files.includes(file))fail('invalid_candidate_review_grid',409);return expandCandidateGrid(await read(manifest.prefix+'/'+file),a);}return read(manifest.prefix+'/'+dir+'candidates.geojson');};
+  const [candidates,zones]=await Promise.all([readCandidates(analysis,folder),read(manifest.prefix+'/'+folder+'zones.geojson')]);
   if(analysis?.source_run!==manifest.run||analysis.block!==block||!candidates?.features||!zones?.features)fail('block_analysis_source_mismatch',409);
   // A calibrated baseline keeps the existing private correction history. Reads
   // adapt its presentation/counts without rewriting any stored user revision.
   const anchor=manifest.block_review_bases?.[block]||path;let knownCandidates=candidates;
-  if(anchor!==path){if(typeof anchor!=='string'||!manifest.files.includes(anchor)||anchor.split('/').some(p=>!p||p==='.'||p==='..'))fail('invalid_review_base');const previousFolder=anchor.slice(0,anchor.lastIndexOf('/')+1);if(!manifest.files.includes(previousFolder+'candidates.geojson'))fail('invalid_review_base');const [previous,original]=await Promise.all([read(manifest.prefix+'/'+anchor),read(manifest.prefix+'/'+previousFolder+'candidates.geojson')]);if(previous?.source_run!==manifest.run||previous.block!==block||!original?.features)fail('review_base_source_mismatch',409);knownCandidates={type:'FeatureCollection',features:[...new Map([...original.features,...candidates.features].map(f=>[f.properties.id,f])).values()]};}
+  if(anchor!==path&&(typeof anchor!=='string'||!manifest.files.includes(anchor)||anchor.split('/').some(p=>!p||p==='.'||p==='..')))fail('invalid_review_base');
+  if(body.action==='save'&&anchor!==path){if(typeof anchor!=='string'||!manifest.files.includes(anchor)||anchor.split('/').some(p=>!p||p==='.'||p==='..'))fail('invalid_review_base');const previousFolder=anchor.slice(0,anchor.lastIndexOf('/')+1);if(!manifest.files.includes(previousFolder+'candidates.geojson'))fail('invalid_review_base');const previous=await read(manifest.prefix+'/'+anchor),original=await readCandidates(previous,previousFolder);if(previous?.source_run!==manifest.run||previous.block!==block||!original?.features)fail('review_base_source_mismatch',409);knownCandidates={type:'FeatureCollection',features:[...new Map([...original.features,...candidates.features].map(f=>[f.properties.id,f])).values()]};}
   const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(anchor));const hash=Array.from(new Uint8Array(digest),b=>b.toString(16).padStart(2,'0')).join('');
-  const root=`drone/analysis/dayun/block-reviews/Agro_ABC/${manifest.run}/${hash}`,stored=await read(root+'/head.json');
+  const root=`drone/analysis/dayun/block-reviews/${body.label}/${manifest.run}/${hash}`,stored=await read(root+'/head.json');
   if(stored?.review){if(stored.review.source_run!==manifest.run||stored.review.block!==block)fail('review_base_source_mismatch',409);knownCandidates={type:'FeatureCollection',features:[...new Map([...knownCandidates.features,...stored.review.changes.filter(f=>f.properties.origin==='automated')].map(f=>[f.properties.id,f])).values()]};}
   const raw=collaborativeHead(stored,{ok:true,revision:0,review:null,counts:blockReviewCounts(null,candidates,zones),analysis_path:path});
   const currentReview=analysis.boundary_revision?rebaseBlockReview(raw.review,zones):raw.review;
   const head={...raw,feedback_schema:'dayun-rejection-reason-v1',analysis_path:path,review:currentReview?{...currentReview,analysis_path:path}:null,counts:blockReviewCounts(currentReview,candidates,zones),review_base_analysis_path:anchor};
   if(body.action==='load')return head;
   if(body.action!=='save')fail('invalid_block_review_action');
+  knownCandidates.byId=new Map(knownCandidates.features.map(f=>[f.properties.id,f]));
   const context={manifest,path,analysis,candidates:knownCandidates,zones};let merged;
   if(body.patch){merged=mergePointPatch(head,body.patch,context);if(!merged.applied)return head;}
   else{

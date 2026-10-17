@@ -59,11 +59,11 @@ def block_zones(features, block):
     return zones, audit
 
 
-def analyze(source, config_path, output, map_path, block='A', source_run=None, cache=None, prepare_only=False):
+def analyze(source, config_path, output, map_path, block='A', source_run=None, cache=None, prepare_only=False, source_label='Agro_ABC', checkpoint_index=None):
     out = Path(output)
     out.mkdir(parents=True, exist_ok=True)
     config = json.loads(Path(config_path).read_text())
-    provenance = {'block': block, 'source_run': config['source_run'], 'config_sha256': hashlib.sha256(Path(config_path).read_bytes()).hexdigest(), 'map_sha256': hashlib.sha256(Path(map_path).read_bytes()).hexdigest(), 'method': 'template-2x-threshold043-distance14-v1'}
+    provenance = {'block': block, 'source_run': config['source_run'], 'source_label': source_label, 'config_sha256': hashlib.sha256(Path(config_path).read_bytes()).hexdigest(), 'map_sha256': hashlib.sha256(Path(map_path).read_bytes()).hexdigest(), 'method': 'template-2x-threshold043-distance14-v1'}
     if prepare_only:provenance['method']='native-assets-only-v1'
     marker = out / 'provenance.json'
     if marker.exists() and json.loads(marker.read_text()) != provenance:
@@ -87,7 +87,7 @@ def analyze(source, config_path, output, map_path, block='A', source_run=None, c
     reader = None
     if source == 'checkpoint':
         from dayun_checkpoint_reader import CheckpointReader
-        reader = CheckpointReader('Agro_ABC', cache)
+        reader = CheckpointReader(source_label, cache, checkpoint_index)
         ds = rasterio.open('source.tif', opener=reader.opener)
     else:
         ds = rasterio.open(source)
@@ -224,5 +224,6 @@ if __name__ == '__main__':
     p.add_argument('--block', choices=list('ABCDEF'), default='A')
     p.add_argument('--cache', default='.dayun-analysis-work/block-cache')
     p.add_argument('--prepare-only',action='store_true')
+    p.add_argument('--source-label',choices=['Agro_ABC','Agro_DEF'],default='Agro_ABC')
     a = p.parse_args()
-    analyze(a.source, a.config, a.output, a.map, a.block, cache=a.cache, prepare_only=a.prepare_only)
+    analyze(a.source, a.config, a.output, a.map, a.block, cache=a.cache, prepare_only=a.prepare_only, source_label=a.source_label)

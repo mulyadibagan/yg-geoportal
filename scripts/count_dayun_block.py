@@ -29,7 +29,7 @@ def deduplicate(features, distance=65):
     return kept
 
 
-def count_block(directory,output,source,threshold=.30,rejected=None,source_identity=None,calibration=None):
+def count_block(directory,output,source,threshold=.30,rejected=None,source_identity=None,calibration=None,manual_points=None,review_version=None):
     root=Path(directory);out=Path(output);out.mkdir(parents=True,exist_ok=True)
     result=json.loads((root/'analysis.json').read_text())
     block=result['block']
@@ -39,10 +39,12 @@ def count_block(directory,output,source,threshold=.30,rejected=None,source_ident
     region=unary_union([g for _,g in zones])
     radii=tuple(calibration['radii_native_pixels']) if calibration else (40,55,75)
     distance=calibration['suppression_native_pixels'] if calibration else 65
+    tolerance=calibration.get('matching_tolerance_native_pixels',12) if calibration else 12
     if calibration:
         if calibration['source_run']!=result['source_run'] or calibration['schema']!='dayun-positive-radial-calibration-v1':raise ValueError('calibration_source_mismatch')
         threshold=calibration['threshold']
-    positives=[(~source.transform)*tuple(f['geometry']['coordinates']) for f in calibration['labels'] if region.covers(Point(f['geometry']['coordinates']))] if calibration else []
+    positive_features=manual_points if manual_points is not None else calibration['labels'] if calibration else []
+    positives=[(~source.transform)*tuple(f['geometry']['coordinates']) for f in positive_features if region.covers(Point(f['geometry']['coordinates']))]
     low=max(.10,round(threshold-.05,3));high=round(threshold+.05,3)
     provenance={'source_run':result['source_run'],'method':'native-radial-full-block-v1','threshold':threshold,
                 'radii_native_pixels':list(radii),'suppression_native_pixels':distance,'halo_native_pixels':160,
@@ -50,7 +52,9 @@ def count_block(directory,output,source,threshold=.30,rejected=None,source_ident
                 'source_identity':source_identity or str(source.tags().get('TIFFTAG_IMAGEDESCRIPTION','')),
                 'script_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
                 'detector_sha256':hashlib.sha256((Path(__file__).parent/'propose_dayun_candidates.py').read_bytes()).hexdigest(),
-                'rejected_locations':rejected or [],'source_grid':{'crs':str(source.crs),'transform':list(source.transform),'width':source.width,'height':source.height}}
+                'rejected_locations':rejected or [],'manual_exclusion_coordinates':[f['geometry']['coordinates'] for f in positive_features],
+                'review_version':review_version,'matching_tolerance_native_pixels':tolerance,
+                'source_grid':{'crs':str(source.crs),'transform':list(source.transform),'width':source.width,'height':source.height}}
     if calibration:provenance.update(method='native-owner-calibrated-radial-v1',model_signature=calibration['model_signature'],training_review_version=calibration['training_review_version'])
     marker=out/'count-provenance.json'
     if marker.exists() and json.loads(marker.read_text())!=provenance:raise ValueError('count_resume_provenance_mismatch')
@@ -78,12 +82,12 @@ def count_block(directory,output,source,threshold=.30,rejected=None,source_ident
             lon,lat=source.transform*(sx+.5,sy+.5);point=Point(lon,lat)
             matches=[key for key,g in zones if g.covers(point)]
             if not matches:continue
-            rejected_point=any((sx+.5-a)**2+(sy+.5-b)**2<=12**2 for a,b in rejected_pixels)
-            matched_positive=any((sx+.5-a)**2+(sy+.5-b)**2<=12**2 for a,b in positives)
+            rejected_point=any((sx+.5-a)**2+(sy+.5-b)**2<=tolerance**2 for a,b in rejected_pixels)
+            matched_positive=any((sx+.5-a)**2+(sy+.5-b)**2<=tolerance**2 for a,b in positives)
             found.append({'type':'Feature','geometry':{'type':'Point','coordinates':[lon,lat]},'properties':{
                 'id':f'{block}-radial-x{sx}-y{sy}','zones':matches,'boundary_conflict':len(matches)>1,
                 'similarity':round(score,5),'status':'unvalidated_crown_candidate','source_pixel':[sx,sy],
-                'native_tile':tile['file'],'excluded_by_owner_rejection':rejected_point,**({'represented_by_manual_point':matched_positive} if calibration else {})}})
+                'native_tile':tile['file'],'excluded_by_owner_rejection':rejected_point,'represented_by_manual_point':matched_positive}})
         checkpoint.write_text(json.dumps(found));candidates.extend(found)
         print(json.dumps({'processed_native_tiles':i,'total_native_tiles':len(result['native_tiles']),'raw_crown_proposals':len(candidates)}),flush=True)
     all_kept=deduplicate(candidates,distance)
