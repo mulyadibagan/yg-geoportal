@@ -14,7 +14,8 @@ export function normalizeBlockReview(review,{manifest,path,analysis,candidates,z
     const p=f?.properties,c=f?.geometry?.coordinates,id=p?.id;
     if(f?.type!=='Feature'||f.geometry?.type!=='Point'||!Array.isArray(c)||c.length!==2||!c.every(Number.isFinite)||!inside(c,analysis.bounds)||!analysis.native_tiles.some(t=>inside(c,t.bounds))||typeof id!=='string'||!/^[\w-]{1,100}$/.test(id)||seen.has(id)||!['candidate','accepted','rejected'].includes(p.status)||typeof p.note!=='string'||p.note.length>1000)fail('invalid_block_review_point');
     const original=originals.get(id);if(!original&&!new RegExp('^'+block+'-manual-[\\w-]{8,80}$').test(id))fail('unknown_block_candidate');seen.add(id);
-    return{type:'Feature',geometry:{type:'Point',coordinates:c},properties:{id,status:p.status,note:p.note,origin:original?'automated':'manual_addition',zones:locate(f),species_confirmed:false}};
+    const suppliedReason=p.rejection_reason??'unspecified';if(!['unspecified','not_pineapple','duplicate','misplaced','unclear'].includes(suppliedReason))fail('invalid_rejection_reason');const reason=p.status==='rejected'?suppliedReason:'unspecified';
+    return{type:'Feature',geometry:{type:'Point',coordinates:c},properties:{id,status:p.status,note:p.note,origin:original?'automated':'manual_addition',zones:locate(f),species_confirmed:false,rejection_reason:reason}};
   });
   return{schema:'dayun-block-corrections-v1',source_run:manifest.run,analysis_path:path,block,changes,census_changed:false};
 }
@@ -31,7 +32,8 @@ export function blockReviewCounts(review,candidates,zones){
     if(manual)counts.manual_additions++;if(rejected)counts.rejected++;else{counts.working_total++;if(accepted)counts.accepted_by_staff++;else counts.unreviewed++;if(!p.zones?.length)counts.unassigned++;}
     for(const id of p.zones?.length?p.zones:['UNASSIGNED']){const r=rows.get(id);if(!r)continue;if(manual)r.manual_additions++;else r.automatic++;if(rejected)r.rejected++;else{r.working_total++;if(accepted)r.accepted_by_staff++;else r.unreviewed++;}}
   }
-  return{...counts,zones:[...rows.values()]};
+  const training={positive:0,negative:0,rejected_without_species_label:0};for(const f of effective){const p=f.properties;if(p.status==='accepted')training.positive++;else if(p.status==='rejected'){if(p.rejection_reason==='not_pineapple')training.negative++;else training.rejected_without_species_label++;}}
+  return{...counts,training_examples:training,zones:[...rows.values()]};
 }
 
 // Legacy heads are upgraded in memory. Never rewrite stored user revisions on read.
@@ -74,7 +76,7 @@ export async function blockReviewOperation(env,body){
   const root=`drone/analysis/dayun/block-reviews/Agro_ABC/${manifest.run}/${hash}`,stored=await read(root+'/head.json');
   if(stored?.review){if(stored.review.source_run!==manifest.run||stored.review.block!==block)fail('review_base_source_mismatch',409);knownCandidates={type:'FeatureCollection',features:[...new Map([...knownCandidates.features,...stored.review.changes.filter(f=>f.properties.origin==='automated')].map(f=>[f.properties.id,f])).values()]};}
   const raw=collaborativeHead(stored,{ok:true,revision:0,review:null,counts:blockReviewCounts(null,candidates,zones),analysis_path:path});
-  const head={...raw,analysis_path:path,review:raw.review?{...raw.review,analysis_path:path}:null,counts:blockReviewCounts(raw.review,candidates,zones),review_base_analysis_path:anchor};
+  const head={...raw,feedback_schema:'dayun-rejection-reason-v1',analysis_path:path,review:raw.review?{...raw.review,analysis_path:path}:null,counts:blockReviewCounts(raw.review,candidates,zones),review_base_analysis_path:anchor};
   if(body.action==='load')return head;
   if(body.action!=='save')fail('invalid_block_review_action');
   const context={manifest,path,analysis,candidates:knownCandidates,zones};let merged;
@@ -87,7 +89,7 @@ export async function blockReviewOperation(env,body){
   }
   const {review,point_versions,point_operations}=merged,counts=blockReviewCounts(review,candidates,zones);
   const revision=(head?.revision||0)+1,version=`${root}/versions/${revision}-${crypto.randomUUID()}.json`;
-  const result={ok:true,revision,review,counts,analysis_path:path,review_base_analysis_path:anchor,collaboration:'per-point-v1',point_versions,point_operations,updated_at:new Date().toISOString(),previous_version:head?.version||null,version};
+  const result={ok:true,revision,review,counts,analysis_path:path,review_base_analysis_path:anchor,collaboration:'per-point-v1',feedback_schema:'dayun-rejection-reason-v1',point_versions,point_operations,updated_at:new Date().toISOString(),previous_version:head?.version||null,version};
   const options={httpMetadata:{contentType:'application/json',cacheControl:'private, no-store'}};
   await env.PUBLIC_SNAPSHOTS.put(version,JSON.stringify(result),options);await env.PUBLIC_SNAPSHOTS.put(root+'/head.json',JSON.stringify(result),options);return result;
 }

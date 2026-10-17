@@ -34,7 +34,7 @@
     const result=await(await api(base+'/files/'+path)).json();if(!current())return()=>{};
     if(result.schema!=='dayun-block-analysis-v1'||result.source_run!==manifest.run||result.block!==block)throw Error('Sumber analisis blok tidak sesuai.');
     if(result.asset_folder){if(!/^[\w-]+\/$/.test(result.asset_folder)||!manifest.files.includes(result.asset_folder+'analysis.json'))throw Error('Aset citra asli analisis tidak sesuai.');assetFolder=result.asset_folder;}
-    let disposed=false,detail=false,loading=false,url=null;
+    let disposed=false,detail=false,loading=false,url=null,qualityUrl=null;
     let geo=null,candidates=null,zonesData=null,editor=null,nativeBounds=null,nativeRequest=0,nativeFile=null,nativeBusy=0,autoTimer=null;
     let viewport=null;
     const nativeCache=new Map(),nativePending=new Map();let cacheBytes=0;
@@ -62,6 +62,17 @@
     const display=el('select');display.setAttribute('aria-label','Titik yang ditampilkan');display.add(new Option('Semua kandidat untuk koreksi','all'));display.add(new Option('Nanas yang diterima tim saja','accepted'));display.add(new Option('Citra saja tanpa penanda','imagery'));display.value='all';display.onchange=()=>{if(display.value==='imagery')editor?.setEditing(false);drawPoints();};
     const boundaryToggle=el('input');boundaryToggle.type='checkbox';const boundaryLabel=el('label');boundaryLabel.append(boundaryToggle,el('span',' Tampilkan batas gawangan dan konflik'));boundaryToggle.onchange=drawBoundaries;
     const displayStatus=el('p');displayStatus.setAttribute('role','status');host.insertBefore(display,title);host.insertBefore(boundaryLabel,title);host.append(displayStatus);
+    if(manifest.detector_quality_report){try{
+      const reportPath=manifest.detector_quality_report;if(!/^[\w-]+\/quality-trial\.json$/.test(reportPath)||!manifest.files.includes(reportPath))throw Error('Laporan uji belum terdaftar.');
+      const q=await(await api(base+'/files/'+reportPath)).json();if(!active())return()=>{};
+      if(q.schema!=='dayun-quality-trial-v1'||q.source_run!==manifest.run||!['A','B','C'].includes(q.block)||q.production_species_validated!==false)throw Error('Identitas uji detektor tidak sesuai.');
+      const panel=el('details'),caption=el('summary',`Uji perbaikan detektor — Blok ${q.block}`);panel.append(caption);
+      const p=q.metrics.spatial_holdout_positive,n=q.metrics.spatial_holdout_rejected_centres;
+      panel.append(el('p',`Uji lokal Blok ${q.block}, revisi ${q.review_revision}: ${p.labels} contoh nanas terpisah dari latih. Detektor lama menemukan ${p.baseline_proposed}, ambang peka ${p.sensitive_without_angular}, ambang peka + bentuk tajuk ${p.angular_proposed}. Pada ${n.labels} titik ditolak untuk uji, detektor lama masih mengusulkan ${n.baseline_proposed}, usulan baru ${n.angular_proposed}. Titik ditolak bukan otomatis contoh spesies bukan nanas.`),el('p',`Uji ini belum mengukur akurasi seluruh A–F. Hasil utama dan koreksi tim tidak diganti. ${block!==q.block?'Belum ada uji terpisah pada Blok '+block+'.':''}`));
+      const trialFolder=reportPath.slice(0,reportPath.lastIndexOf('/')+1),imagePath=trialFolder+q.preview;
+      if(q.preview==='quality-holdout-preview.png'&&manifest.files.includes(imagePath)){const view=el('button','Lihat citra uji terpisah'),image=el('img');image.alt=`Uji lokal bentuk tajuk Blok ${q.block}, bukan validasi seluruh blok`;image.style.width='100%';view.onclick=async()=>{try{const blob=await(await api(base+'/files/'+imagePath)).blob();if(!active())return;if(qualityUrl)URL.revokeObjectURL(qualityUrl);qualityUrl=URL.createObjectURL(blob);image.src=qualityUrl;}catch(error){if(active())status.textContent=error.message;}};panel.append(view,image);}
+      host.append(panel);
+    }catch(error){if(active())host.append(el('p','Uji detektor belum dapat dimuat: '+error.message));}}
     if(result.full_block_count){const count=result.full_block_count;details.open=false;
       const sensitivity=count.sensitivity_thresholds?count.sensitivity_thresholds.map(r=>`ambang ${r.threshold}: ${r.candidate_count.toLocaleString('id-ID')}`).join('; '):`ambang 0,25: ${count.threshold_025_count.toLocaleString('id-ID')}; ambang 0,40: ${count.threshold_040_count.toLocaleString('id-ID')}`;
       host.append(el('p',`Seluruh ${count.processed_tiles} potongan native selesai diproses. ${count.candidate_count.toLocaleString('id-ID')} kandidat pada ambang ${count.threshold}; keyakinan rendah. Uji sensitivitas ${sensitivity}. Ini bukan rentang jumlah tanaman atau selang kepercayaan.`));
@@ -157,7 +168,7 @@
     map.on('moveend zoomend',drawPoints);map.on('moveend zoomend',drawDiagnostics);map.on('moveend zoomend',scheduleNative);map.on('click',click);
     if(window.YG_DAYUN_BLOCK_EDIT&&active()){const editHost=el('section');editHost.className='block-editor';host.insertBefore(editHost,summary);editor=await window.YG_DAYUN_BLOCK_EDIT.mount({host:editHost,map,api,base,manifest,result,analysisPath:path,getCandidates:()=>candidates,getZones:()=>zonesData,onChanged:updateReview,preparePoint:async c=>{if(viewport){if(viewport.readyAt(c))return true;await inspectAt(c);return false;}if(nativeCurrent()&&contains(c,nativeBounds)){if(getRasterSource&&!getRasterSource()?.ready)throw Error('Piksel TIFF asli masih dimuat. Tunggu status TIFF asli siap sebelum menambah titik.');return true;}await inspectAt(c);return false;},onInspect:inspectAt,current:active,save});if(!active())editor.dispose();}
     if(autoOpen&&active()){onAutoOpen?.();await show();}
-    const dispose=()=>{disposed=true;nativeRequest++;viewport?.dispose();clearTimeout(autoTimer);nativeCache.clear();nativePending.clear();cacheBytes=0;editor?.dispose();map.off('moveend zoomend',drawPoints);map.off('moveend zoomend',drawDiagnostics);map.off('moveend zoomend',scheduleNative);map.off('click',click);map.removeLayer(group);map.removeLayer(boundaries);map.removeLayer(points);map.removeLayer(diagnostics);if(url)URL.revokeObjectURL(url);if(sheetUrl)URL.revokeObjectURL(sheetUrl);host.replaceChildren();host.hidden=true;if(comparisonHost!==host){comparisonHost.replaceChildren();comparisonHost.hidden=true;}};dispose.canLeave=()=>editor?.canLeave()??true;dispose.suspendNative=()=>viewport?.suspend();return dispose;
+    const dispose=()=>{disposed=true;nativeRequest++;viewport?.dispose();clearTimeout(autoTimer);nativeCache.clear();nativePending.clear();cacheBytes=0;editor?.dispose();map.off('moveend zoomend',drawPoints);map.off('moveend zoomend',drawDiagnostics);map.off('moveend zoomend',scheduleNative);map.off('click',click);map.removeLayer(group);map.removeLayer(boundaries);map.removeLayer(points);map.removeLayer(diagnostics);if(url)URL.revokeObjectURL(url);if(qualityUrl)URL.revokeObjectURL(qualityUrl);if(sheetUrl)URL.revokeObjectURL(sheetUrl);host.replaceChildren();host.hidden=true;if(comparisonHost!==host){comparisonHost.replaceChildren();comparisonHost.hidden=true;}};dispose.canLeave=()=>editor?.canLeave()??true;dispose.suspendNative=()=>viewport?.suspend();return dispose;
   }
   root.YG_DAYUN_BLOCK={mount,createNativeViewport};
 })(window);

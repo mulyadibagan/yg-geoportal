@@ -1,7 +1,7 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 const code=fs.readFileSync('js/dayun-block-review.js','utf8');
 function setup(){
- const element=tag=>({tag,children:[],value:'',hidden:true,textContent:'',append(...x){this.children.push(...x)},replaceChildren(...x){this.children=x},add(x){this.children.push(x)},setAttribute(){},showModal(){this.open=true},close(){this.open=false},insertBefore(x){this.children.unshift(x)}});
+ const element=tag=>({tag,children:[],value:'',hidden:true,textContent:'',style:{},append(...x){this.children.push(...x)},replaceChildren(...x){this.children=x},add(x){this.children.push(x)},setAttribute(){},showModal(){this.open=true},close(){this.open=false},insertBefore(x){this.children.unshift(x)}});
  const host=element('section'),requests=[],events={},layers=[],overlays=[];
  const layer={addTo(){return this},clearLayers(){},bindTooltip(){return this},on(){return this},getBounds(){return[[0,0],[1,1]]},getLayers(){return[]}};
  const context={window:{},document:{createElement:element},Option:function(text,value){return{text,value}},L:{layerGroup:()=>({...layer}),imageOverlay:(url,box,opts)=>{overlays.push(opts);return layer},geoJSON:()=>layer,featureGroup:()=>layer,circleMarker:(xy,opts)=>{const item={xy,opts,handlers:{}};layers.push(item);return{...layer,on(k,fn){item.handlers[k]=fn;return this}}}},URL:{createObjectURL:()=> 'blob:private',revokeObjectURL(){}},Promise,AbortController,setTimeout,clearTimeout};vm.runInNewContext(code,context);
@@ -146,4 +146,11 @@ test('clean overview avoids a carpet of candidates and an empty accepted view is
  const api=s.options.api;s.options.api=async(path,config)=>path.endsWith('candidates.geojson')?{json:async()=>({features:[{geometry:{coordinates:[.5,.5]},properties:{id:'auto',status:'candidate',zones:['GT-A-01']}}]})}:api(path,config);
  s.options.map.getZoom=()=>19;const dispose=await s.mount(s.options);await s.find('Buka seluruh Blok A').onclick();assert.equal(s.layers.length,0);mode.value='accepted';mode.onchange();assert.match(JSON.stringify(s.host.children),/bukan berarti tidak ada nanas/);assert.equal(s.layers.length,0);
  mode.value='all';s.options.map.getZoom=()=>24;mode.onchange();assert.equal(s.layers.length,1);assert.ok(s.requests.every(r=>!r.config));dispose();
+});
+
+test('private geometry trial keeps local holdout findings separate from whole-block species accuracy',async()=>{
+ const s=setup(),path='detector-test/quality-trial.json';s.options.manifest.detector_quality_report=path;s.options.manifest.files.push(path,'detector-test/quality-holdout-preview.png');const api=s.options.api;
+ const q={schema:'dayun-quality-trial-v1',source_run:'run',block:'A',production_species_validated:false,review_revision:13,preview:'quality-holdout-preview.png',metrics:{spatial_holdout_positive:{labels:7,baseline_proposed:3,sensitive_without_angular:6,angular_proposed:6},spatial_holdout_rejected_centres:{labels:2,baseline_proposed:2,angular_proposed:1}}};
+ s.options.api=async(p,config)=>p.endsWith(path)?{json:async()=>q}:api(p,config);const dispose=await s.mount(s.options);const text=JSON.stringify(s.host.children);assert.match(text,/belum mengukur akurasi seluruh A/);assert.match(text,/Titik ditolak bukan otomatis/);const all=n=>[n,...(n.children||[]).flatMap(all)];await all(s.host).find(n=>n.textContent==='Lihat citra uji terpisah').onclick();assert.ok(s.requests.some(r=>r.path.endsWith('detector-test/quality-holdout-preview.png')));assert.ok(s.requests.every(r=>!r.config));dispose();
+ q.source_run='other';const stop=await s.mount(s.options);assert.match(JSON.stringify(s.host.children),/Identitas uji detektor tidak sesuai/);stop();
 });
