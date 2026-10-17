@@ -69,3 +69,10 @@ test('radial trial uses a separate private review and switching protects unsaved
  await find('Simpan privat & perbarui hitungan').onclick();assert.equal(posts[0].key,'radial');assert.equal(posts[0].body.review.dataset_id,'run-radial');assert.equal(stores.old.revision,5);
  chooser.value='';await chooser.onchange();assert.ok(s.requests.at(-1).endsWith('/review'));assert.equal(stores.radial.revision,1);dispose();
 });
+
+test('direct sample opens its private raster and selects a point without saving decisions',async()=>{
+ const s=setup();s.options.manifest.candidate_trials={'radial':'radial/candidate-trial.json'};s.options.manifest.files.push('radial/candidate-trial.json');Object.assign(s.options,{trialKey:'radial',initialSample:'ABC-A-01',initialPoint:'ABC-A-01-001',autoOpen:true});
+ const requests=[];s.options.api=async(path,options={})=>{requests.push({path,options});return{json:async()=>path.includes('/review')?{revision:0,review:null,model:null}:trial(),blob:async()=>new Blob(['tif'])};};
+ const dispose=await mount(s.options);assert.equal(s.opened.length,1);assert.equal(s.markers.length,1);assert.equal(s.find('Terapkan keputusan').disabled,false);assert.ok(s.host.children.some(n=>n.textContent.includes('ABC-A-01-001')));assert.ok(requests.every(r=>!r.options.method));dispose();
+ s.options.initialSample='missing';await assert.rejects(()=>mount(s.options),/Sampel pada tautan/);
+});

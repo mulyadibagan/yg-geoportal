@@ -2,6 +2,15 @@
   'use strict';
   const API = 'https://webgis-api.yayasangambut.org';
   const $ = id => document.getElementById(id);
+  const requestedSample=(()=>{
+    if(typeof URLSearchParams==='undefined')return null;
+    const q=new URLSearchParams(window.location?.search||'');
+    const source=q.get('source'),trial=q.get('trial'),sample=q.get('sample'),point=q.get('point');
+    if(!['Agro_ABC','Agro_DEF'].includes(source)||!trial||!/^[\w-]{1,64}$/.test(trial)||!sample||!/^[\w-]{1,100}$/.test(sample)||(point&&!/^[\w-]{1,100}$/.test(point)))return null;
+    return{source,trial,sample,point};
+  })();
+  if(requestedSample){const q=new URLSearchParams({source:requestedSample.source,trial:requestedSample.trial,sample:requestedSample.sample});if(requestedSample.point)q.set('point',requestedSample.point);$('sampleLogin').href='staff-login.html?return='+encodeURIComponent('orthomosaic-internal.html?'+q.toString());}
+  let initialLinkOpened=false;
   let session, map, areas, rasterLayer, rasterBounds, tileLayer, jobs = [], source = null, sequence = 0;
   let disposeMeritechExport = null, disposeCandidateReview=null, disposeBlockReview=null, dayunLayer = null, dayunUrls = [], dayunRequest=0;
   function clearDayun() {
@@ -58,6 +67,7 @@
       if (!map) initMap();
       renderJobs();
       refreshDayunRequests();
+      if(requestedSample&&!initialLinkOpened){initialLinkOpened=true;$('dayunSource').value=requestedSample.source;await $('openDayun').onclick();}
     } catch (error) { $('gateStatus').textContent = `Analisis belum dapat dibuka: ${error.message}`; }
   }
   function renderJobs() {
@@ -193,6 +203,7 @@
     const request=dayunRequest;
     const current=()=>validSession() && request===dayunRequest;
     const selected=$('dayunSource').value;
+    const target=requestedSample?.source===selected?requestedSample:null;
     if(!['Agro_ABC','Agro_DEF'].includes(selected))return;
     const base=`/api/staff/drone/analysis/${selected}`;
     $('dayunStatus').textContent='Memeriksa hasil…';
@@ -209,13 +220,13 @@
       ['Gawangan','Cakupan seluruh polygon','Luas citra valid (ha)'].forEach(value=>{const th=document.createElement('th');th.textContent=value;head.append(th);});table.append(head);
       for(const row of meta.gawangan||[]){const tr=document.createElement('tr');[row.gawangan,row.valid_coverage_percent===null?'Belum tersedia':`${row.valid_coverage_percent}%`,row.valid_area_ha??'Belum tersedia'].forEach(value=>{const td=document.createElement('td');td.textContent=value;tr.append(td);});table.append(tr);}
       $('dayunResults').append(table);
-      if(manifest.files.includes('coverage.geojson')){
+      if(!target&&manifest.files.includes('coverage.geojson')){
         const geo=await(await api(base+'/files/coverage.geojson')).json();
         if(!current())return;
         dayunLayer=L.geoJSON(geo,{style:f=>({color:(f.properties.valid_coverage_percent??0)<95?'#d97706':'#137f63',weight:2,fillOpacity:.12}),onEachFeature:(f,l)=>l.bindTooltip(String(f.properties.gawangan))}).addTo(map);
         map.fitBounds(dayunLayer.getBounds());
       }
-      if(manifest.files.includes('overview.jpg')){
+      if(!target&&manifest.files.includes('overview.jpg')){
         const blob=await(await api(base+'/files/overview.jpg')).blob();if(!current())return;
         const url=URL.createObjectURL(blob);dayunUrls.push(url);const img=document.createElement('img');img.src=url;img.alt='Pratinjau orthomosaic Dayun';img.style.width='100%';$('dayunResults').append(img);
       }
@@ -231,12 +242,15 @@
         try{const blob=await(await api(base+'/files/'+file)).blob();if(current())await openRaster(blob,{title:`${selected} / ${file}`});}catch(e){if(current())$('dayunStatus').textContent=e.message;}
       };
       $('dayunResults').append(select);$('dayunResults').append(inspect);$('dayunResults').append(button);
-      if(window.YG_DAYUN_BLOCK){
+      if(!target&&window.YG_DAYUN_BLOCK){
         try{const dispose=await window.YG_DAYUN_BLOCK.mount({host:$('blockReview'),map,api,base,manifest,openRaster,save,current});if(current()){disposeBlockReview=dispose;if(manifest.block_analyses?.A)$('sampleReviewPanel').open=Boolean(manifest.preferred_candidate_trial);}else dispose();}
         catch(error){if(current())$('dayunStatus').textContent+=' Analisis blok belum dapat dimuat: '+error.message;}
       }
       if(window.YG_DAYUN_CANDIDATES){
-        try{const dispose=await window.YG_DAYUN_CANDIDATES.mount({host:$('candidateReview'),map,api,base,manifest,openRaster,save,current});if(current())disposeCandidateReview=dispose;else dispose();}
+        try{const dispose=await window.YG_DAYUN_CANDIDATES.mount({host:$('candidateReview'),map,api,base,manifest,openRaster,save,current,
+          initialTrial:target?.trial,initialSample:target?.sample,initialPoint:target?.point,autoOpen:Boolean(target),
+          onAutoOpen:()=>{if(current()){$('sampleReviewPanel').open=true;const card=document.querySelector?.('.map-card');if(card&&!card.classList.contains('map-expanded'))$('focusMap').onclick?.();}}
+        });if(current())disposeCandidateReview=dispose;else dispose();}
         catch(error){if(current())$('dayunStatus').textContent+=' Uji kandidat belum dapat dimuat: '+error.message;}
       }
     }catch(e){if(current())$('dayunStatus').textContent=`Hasil privat belum tersedia: ${e.message}`;}
