@@ -55,3 +55,25 @@ contain the complete analysis. Viewing or counting markers on screen is not
 a block count. Pilot block candidates are inspectable; the existing persisted
 accept/reject controls still apply only to their explicitly identified trial
 sample windows.
+
+## Read-only database comparator
+
+`js/dayun-ortho-comparison.js` joins source gawangan IDs exactly and uses the
+existing `DayunAgroSummary.population` semantics. It preserves fractional
+source populations, planted cohort additions and dates, published living
+censuses with their observation dates, seedling stock, and MPTS species/counts
+with their planting periods. Stock is never added to planted population.
+Values matching the source width × length / spacing are flagged as such,
+not promoted to independently observed plants. Missing data stays null.
+
+Database and monitoring snapshot timestamps are retained. The comparator
+reads published monitoring only, on a clone; it never writes source records.
+Dead-strip analysis IDs are not assigned census records through proximity.
+No survival percentage, actual-plant difference or age at flight is computed
+from unvalidated image candidates and an unknown flight date.
+
+Publish the comparison JSON/CSV under the private block result folder and
+allowlist both files. Set `block_comparisons.A` to the matching JSON path.
+The viewer verifies source-run identity before showing the comparator and
+offers a separate CSV download. Existing census and candidate corrections
+remain independent of this read-only snapshot.
