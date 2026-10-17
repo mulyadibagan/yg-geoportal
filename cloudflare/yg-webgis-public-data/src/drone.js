@@ -249,10 +249,22 @@ async function dayunAnalysis(request,env,url,verifyStaffToken){
   if(!match[2])return reply(request,manifest);
   const file=match[2];
   if(!Array.isArray(manifest.files)||!manifest.files.includes(file)||file.split('/').some(p=>!p||p==='.'||p==='..')||!manifest.prefix?.startsWith(root+'/'))return reply(request,{ok:false,error:'not_found'},404);
-  const object=await env.PUBLIC_SNAPSHOTS.get(`${manifest.prefix}/${file}`);
+  const key=`${manifest.prefix}/${file}`,range=request.headers.get('range');
+  let slice=null,total;
+  if(range){
+    const info=await env.PUBLIC_SNAPSHOTS.head(key);if(!info)return reply(request,{ok:false,error:'not_found'},404);total=info.size;
+    const match=range.match(/^bytes=(\d*)-(\d*)$/);
+    if(match&&(match[1]||match[2])&&match.slice(1).filter(Boolean).every(v=>Number.isSafeInteger(Number(v)))){
+      const start=match[1]?Number(match[1]):Math.max(0,total-Number(match[2]));
+      const end=match[1]?(match[2]?Math.min(Number(match[2]),total-1):total-1):total-1;
+      if(Number.isSafeInteger(start)&&Number.isSafeInteger(end)&&start>=0&&start<=end&&start<total&&(!match[1]?Number(match[2])>0:true))slice={offset:start,length:end-start+1};
+    }
+    if(!slice)return reply(request,{ok:false,error:'invalid_byte_range'},416,{'content-range':`bytes */${total}`,'cache-control':'private, no-store'});
+  }
+  const object=request.method==='HEAD'?await env.PUBLIC_SNAPSHOTS.head(key):await env.PUBLIC_SNAPSHOTS.get(key,slice?{range:slice}:undefined);
   if(!object)return reply(request,{ok:false,error:'not_found'},404);
   const types={json:'application/json',geojson:'application/geo+json',csv:'text/csv',jpg:'image/jpeg',tif:'image/tiff',txt:'text/plain'};
-  return new Response(request.method==='HEAD'?null:object.body,{headers:{...cors(request),'cache-control':'private, no-store','content-type':types[file.split('.').pop()]||'application/octet-stream','content-length':String(object.size)}});
+  return new Response(request.method==='HEAD'?null:object.body,{status:slice?206:200,headers:{...cors(request),'cache-control':'private, no-store','accept-ranges':'bytes',...(slice?{'content-range':`bytes ${slice.offset}-${slice.offset+slice.length-1}/${total}`} : {}),'content-type':types[file.split('.').pop()]||'application/octet-stream','content-length':String(slice?.length??object.size)}});
 }
 export function isDroneRoute(pathname){return pathname==='/api/drone/jobs'||pathname.startsWith('/api/drone/jobs/')||pathname==='/api/drone/public'||pathname.startsWith('/api/drone/public/')||pathname==='/api/staff/drone/jobs'||pathname.startsWith('/api/staff/drone/analysis/')}
 async function routeDroneRequest(request,env,url,verifyStaffToken=async()=>false){

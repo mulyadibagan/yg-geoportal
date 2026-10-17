@@ -14,8 +14,10 @@
   let initialLinkOpened=false;
   let session, map, areas, rasterLayer, rasterBounds, tileLayer, jobs = [], source = null, rasterContext = null, sequence = 0;
   let disposeMeritechExport = null, disposeCandidateReview=null, disposeBlockReview=null, dayunLayer = null, dayunUrls = [], dayunRequest=0;
+  const nativeRasters=new Set();
+  function clearNativeRasters(){for(const raster of [...nativeRasters])raster.dispose();}
   function clearDayun() {
-    dayunRequest++;
+    dayunRequest++;clearNativeRasters();
     if(rasterContext?.nativeReview||rasterContext?.dayunReview){sequence++;activeController?.abort();if(rasterLayer&&map)map.removeLayer(rasterLayer);rasterLayer=null;rasterBounds=null;source=null;rasterContext=null;$('metadata').replaceChildren();$('fitRaster').disabled=true;$('downloadTiff').disabled=true;}
     disposeCandidateReview?.();disposeCandidateReview=null;
     disposeBlockReview?.();disposeBlockReview=null;
@@ -126,16 +128,7 @@
     $('metadata').replaceChildren();
     for (const [label,value] of entries) { const dt=document.createElement('dt'), dd=document.createElement('dd');dt.textContent=label;dd.textContent=value;$('metadata').append(dt,dd); }
   }
-  async function openRaster(input, details) {
-    if (!validSession()) {lock('Sesi berakhir. Silakan masuk kembali.');return false;}
-    const request = ++sequence;
-    rasterContext=details;
-    activeController?.abort(); activeController = new AbortController();
-    const signal = activeController.signal;
-    if (rasterLayer) {map.removeLayer(rasterLayer);rasterLayer=null;}
-    source=null; $('downloadTiff').disabled=true; $('fitRaster').disabled=true;
-    $('mapStatus').textContent='Membaca metadata GeoTIFF…';metadata([['Sumber',details.title],['Status','Sedang dibaca']]);
-    try {
+  async function readRasterLayer(input,details,signal){
       const tiff = input instanceof Blob ? await GeoTIFF.fromBlob(input) : await GeoTIFF.fromUrl(input, {headers:{Authorization:`Bearer ${session.token}`}, allowFullFile:false, cacheSize:32}, signal);
       const image = await tiff.getImage(), keys=image.getGeoKeys(), directory=image.getFileDirectory();
       const projection=keys.ProjectedCSTypeGeoKey || keys.GeographicTypeGeoKey;
@@ -152,13 +145,52 @@
           const values=await tiff.readRasters({window:[left,top,right,bottom],width,height,resampleMethod:'nearest',signal});
           return Array.from(values,band=>Array.from({length:height},(_,row)=>band.subarray(row*width,(row+1)*width)));
         }};
-      if (request!==sequence || !validSession()) return false;
       const layer=new GeoRasterLayer({georaster,pane:'ortho-imagery',debugLevel:0,resolution:details.nativeReview?256:128,maxZoom:26,opacity:Number($('opacity').value),updateWhenZooming:false,updateWhenIdle:true,keepBuffer:1,pixelValuesToColorFn:values=>{
         if (!values.slice(0,3).every(Number.isFinite) || (hasAlpha && values[3]===0) || (noData!==null && values.slice(0,3).every(v=>v===noData))) return null;
         let [r,g,b]=values;
         if(ycbcr){r=values[0]+1.402*(values[2]-128);g=values[0]-.34414*(values[1]-128)-.71414*(values[2]-128);b=values[0]+1.772*(values[1]-128);}
         return `rgb(${[r,g,b].map(v=>Math.max(0,Math.min(255,Math.round(v)))).join(',')})`;
       }});
+      return {layer,image,projection,rx,ry};
+  }
+  async function openNativeRaster(input,details){
+    if(!validSession()||details.signal?.aborted)return false;
+    if(!source?.nativeViewport){sequence++;activeController?.abort();clearNativeRasters();if(rasterLayer&&map)map.removeLayer(rasterLayer);rasterLayer=null;}
+    const epoch=sequence,controller=new AbortController();
+    source={title:'Blok A / citra asli mengikuti peta',nativeViewport:true};rasterContext={dayunReview:true};
+    let layer;
+    const state={ready:false,error:null,disposed:false,dispose(){if(state.disposed)return;state.disposed=true;state.ready=false;controller.abort();if(layer&&map)map.removeLayer(layer);nativeRasters.delete(state);details.signal?.removeEventListener('abort',cancel);}};
+    const cancel=()=>state.dispose();
+    details.signal?.addEventListener('abort',cancel,{once:true});
+    nativeRasters.add(state);if(details.signal?.aborted)state.dispose();
+    const alive=()=>!state.disposed&&epoch===sequence&&validSession();
+    const changed=()=>{if(alive())details.onState?.(state);};
+    try{
+      const raster=await readRasterLayer(input.startsWith('/api/staff/drone/analysis/')?API+input:input,{...details,nativeReview:true},controller.signal);
+      if(!alive()){state.dispose();return false;}layer=raster.layer;
+      layer.on('loading',()=>{state.ready=false;state.error=null;changed();});
+      layer.on('tileerror',()=>{state.ready=false;state.error='Piksel TIFF gagal dimuat';changed();});
+      layer.on('load',()=>{state.ready=!state.error;changed();});
+      state.setOpacity=value=>layer.setOpacity(value);
+      layer.addTo(map);
+      rasterBounds=details.blockBounds||layer.getBounds();$('fitRaster').disabled=false;$('downloadTiff').disabled=true;
+      metadata([['Sumber','Blok A  -  citra asli mengikuti peta'],['Sistem koordinat',`EPSG:${raster.projection}`],['Ukuran piksel (satuan CRS)',`${number(Math.abs(raster.rx),8)}  x  ${number(Math.abs(raster.ry),8)}`],['Akses','Internal staf; pembacaan TIFF bertahap']]);
+      return state;
+    }catch(error){state.dispose();if(epoch===sequence&&validSession())throw error;return false;}
+  }
+  async function openRaster(input, details) {
+    if (!validSession()) {lock('Sesi berakhir. Silakan masuk kembali.');return false;}
+    disposeBlockReview?.suspendNative?.();
+    const request = ++sequence;clearNativeRasters();
+    rasterContext=details;
+    activeController?.abort(); activeController = new AbortController();
+    const signal = activeController.signal;
+    if (rasterLayer) {map.removeLayer(rasterLayer);rasterLayer=null;}
+    source=null; $('downloadTiff').disabled=true; $('fitRaster').disabled=true;
+    $('mapStatus').textContent='Membaca metadata GeoTIFF…';metadata([['Sumber',details.title],['Status','Sedang dibaca']]);
+    try {
+      const {layer,image,projection,rx,ry}=await readRasterLayer(input,details,signal);
+      if (request!==sequence || !validSession()) return false;
       layer.options.updateWhenZooming=false;
       let rendered=false,tileFailed=false;
       layer.on('loading',()=>{rendered=false;tileFailed=false;if(request===sequence){if(source){source.ready=false;source.renderError=false;}$('mapStatus').textContent=details.nativeReview?'Memuat piksel TIFF asli…':'Memuat piksel citra…';}});
@@ -254,7 +286,7 @@
       };
       $('dayunResults').append(select);$('dayunResults').append(inspect);$('dayunResults').append(button);
       if(!target&&window.YG_DAYUN_BLOCK){
-        try{const expand=()=>{if(current()){const card=document.querySelector?.('.map-card');if(card&&!card.classList.contains('map-expanded'))$('focusMap').onclick?.();}};const dispose=await window.YG_DAYUN_BLOCK.mount({host:$('blockReview'),comparisonHost:$('blockComparison'),map,api,base,manifest,openRaster,getRasterSource:()=>source,save,current,autoOpen:blockTarget,onAutoOpen:expand,onEditMap:expand,onShowComparison:()=>{const card=document.querySelector?.('.map-card');if(card?.classList.contains('map-expanded'))$('focusMap').onclick?.();}});if(current()){disposeBlockReview=dispose;if(manifest.block_analyses?.A)$('sampleReviewPanel').open=Boolean(manifest.preferred_candidate_trial)&&!blockTarget;}else dispose();}
+        try{const expand=()=>{if(current()){const card=document.querySelector?.('.map-card');if(card&&!card.classList.contains('map-expanded'))$('focusMap').onclick?.();}};const dispose=await window.YG_DAYUN_BLOCK.mount({host:$('blockReview'),comparisonHost:$('blockComparison'),map,api,base,manifest,openRaster,openNativeRaster,getRasterSource:()=>source||(rasterContext?{...rasterContext,pending:true}:null),onNativeStatus:text=>{$('mapStatus').textContent=text;},save,current,autoOpen:blockTarget,onAutoOpen:expand,onEditMap:expand,onShowComparison:()=>{const card=document.querySelector?.('.map-card');if(card?.classList.contains('map-expanded'))$('focusMap').onclick?.();}});if(current()){disposeBlockReview=dispose;if(manifest.block_analyses?.A)$('sampleReviewPanel').open=Boolean(manifest.preferred_candidate_trial)&&!blockTarget;}else dispose();}
         catch(error){if(current())$('dayunStatus').textContent+=' Analisis blok belum dapat dimuat: '+error.message;}
       }
       if(window.YG_DAYUN_CANDIDATES){
@@ -270,7 +302,7 @@
   $('job').onchange=()=>{$('openJob').disabled=!$('job').value;};
   $('openJob').onclick=()=>{const job=jobs.find(j=>j.id===$('job').value);if(job)openRaster(`${API}/api/drone/jobs/${encodeURIComponent(job.id)}/cog`,job);};
   $('localTiff').onchange=event=>{const file=event.target.files[0];if(file)openRaster(file,{title:file.name});};
-  $('opacity').oninput=()=>rasterLayer?.setOpacity(Number($('opacity').value));
+  $('opacity').oninput=()=>{const opacity=Number($('opacity').value);rasterLayer?.setOpacity(opacity);for(const raster of nativeRasters)raster.setOpacity?.(opacity);};
   $('fitRaster').onclick=()=>{if(rasterBounds)map.fitBounds(rasterBounds);};
   $('bengkalis').onclick=()=>map.fitBounds([[1.40,102.00],[1.65,102.52]]);
   $('meritech').onchange=()=>{

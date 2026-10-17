@@ -4,16 +4,16 @@ const vm=require('node:vm');
 const fs=require('node:fs');
 const code=fs.readFileSync('js/orthomosaic-internal.js','utf8');
 function setup({session=null,status=200,search='',fetcher,candidateMount}={}){
- const elements=new Map(),calls=[],layers=[];
+ const elements=new Map(),calls=[],layers=[],instances=[],removed=[];
  const el=id=>{if(!elements.has(id))elements.set(id,{hidden:id==='workspace',value:id==='opacity'?'1':'',disabled:false,textContent:'',children:[],replaceChildren(...children){this.children=children},append(x){this.children.push(x)},add(x){this.children.push(x)}});return elements.get(id)};
- const map={createPane(){return{style:{}}},setView(){return this},addControl(){},on(){},fitBounds(){},remove(){},removeLayer(){}};
+ const map={createPane(){return{style:{}}},setView(){return this},addControl(){},on(){},fitBounds(){},remove(){},removeLayer(layer){removed.push(layer)}};
  const job={id:'drn-test',title:'Test RGB',status:'ready',cogKey:'private.tif'};
  const image={getGeoKeys:()=>({ProjectedCSTypeGeoKey:32648}),getFileDirectory:()=>({PhotometricInterpretation:2,BitsPerSample:[8,8,8]}),getSamplesPerPixel:()=>3,getBoundingBox:()=>[0,0,100,100],getResolution:()=>[1,-1],getGDALNoData:()=>null,getWidth:()=>100,getHeight:()=>100};
  const tiff={getImage:async()=>image,readRasters:async()=>[new Uint8Array([4,5,6,7]),new Uint8Array(4),new Uint8Array(4)]};
- const context={document:{getElementById:el,createElement:()=>({children:[],append(...x){this.children.push(...x)},add(x){this.children.push(x)},click(){}})},window:{location:{search},YG_DAYUN_CANDIDATES:candidateMount?{mount:candidateMount}:undefined,YG_AUTH:{readStoredSession:()=>session},addEventListener(){}},Option:function(text,value){return{text,value}},L:{map:()=>map,tileLayer:()=>({addTo(){return this}}),featureGroup:()=>({addTo(){return this},getLayers:()=>[]}),Control:{Draw:function(){}},Draw:{Event:{CREATED:'created'}}},GeoTIFF:{fromUrl:async(url,options)=>{calls.push({url,options});return tiff}},GeoRasterLayer:function(options){layers.push(options);return{options:{},on(){},addTo(){},getBounds:()=>[[0,0],[1,1]]}},turf:{},fetch:async(url,options)=>{calls.push({url,options});if(fetcher)return fetcher(url,options);return{status,ok:status===200,json:async()=>({jobs:[job]})}},Headers,AbortController,AbortSignal,Blob,URL,URLSearchParams,Date,setTimeout,clearTimeout,setInterval(){},confirm:()=>true};
+ const context={document:{getElementById:el,createElement:()=>({children:[],append(...x){this.children.push(...x)},add(x){this.children.push(x)},click(){}})},window:{location:{search},YG_DAYUN_CANDIDATES:candidateMount?{mount:candidateMount}:undefined,YG_AUTH:{readStoredSession:()=>session},addEventListener(){}},Option:function(text,value){return{text,value}},L:{map:()=>map,tileLayer:()=>({addTo(){return this}}),featureGroup:()=>({addTo(){return this},getLayers:()=>[]}),Control:{Draw:function(){}},Draw:{Event:{CREATED:'created'}}},GeoTIFF:{fromUrl:async(url,options)=>{calls.push({url,options});return tiff}},GeoRasterLayer:function(options){layers.push(options);const layer={options:{},handlers:{},on(k,fn){this.handlers[k]=fn},addTo(){this.handlers.loading?.()},setOpacity(value){this.opacity=value},getBounds:()=>[[0,0],[1,1]]};instances.push(layer);return layer},turf:{},fetch:async(url,options)=>{calls.push({url,options});if(fetcher)return fetcher(url,options);return{status,ok:status===200,json:async()=>({jobs:[job]})}},Headers,AbortController,AbortSignal,Blob,URL,URLSearchParams,Date,setTimeout,clearTimeout,setInterval(){},confirm:()=>true};
  Object.assign(context.window,{L:context.L,GeoTIFF:context.GeoTIFF,GeoRasterLayer:context.GeoRasterLayer,turf:context.turf});
  vm.runInNewContext(code,context);
- return {el,calls,layers,image,context,settle:()=>new Promise(resolve=>setImmediate(resolve))};
+ return {el,calls,layers,instances,removed,image,context,settle:()=>new Promise(resolve=>setImmediate(resolve))};
 }
 test('anonymous visitor cannot initialize map or request private catalogue',async()=>{const s=setup();await s.settle();assert.equal(s.el('workspace').hidden,true);assert.equal(s.calls.length,0);assert.match(s.el('gateStatus').textContent,/Masuk sebagai staf/)});
 
@@ -71,4 +71,15 @@ test('staff opens a manifest-listed native crop through the private API without 
  controls.find(el=>el.tag==='select').value='D1/sample.tif';
  await controls.find(el=>el.textContent==='Buka potongan terpilih di peta').onclick();
  assert.ok(opened);assert.equal(s.layers.length,1);assert.ok(privateCalls.some(url=>url.endsWith('/files/D1/sample.tif')));assert.match(s.el('dayunStatus').textContent,/jumlah nanas masih memerlukan/);
+});
+
+
+test('concurrent native crops retain independent rendering, authenticated range clients and cancellation',async()=>{
+ let mounted;const s=setup({search:'?source=Agro_ABC&block=A',session:{token:'staff',expiresAt:Date.now()+10000},fetcher:async url=>({ok:true,status:200,json:async()=>url.endsWith('/analysis/Agro_ABC')?{download:{ok:true},analysis:{ok:true},files:['metadata.json']}:url.endsWith('metadata.json')?{gawangan:[]}:{jobs:[]}})});
+ s.context.window.YG_DAYUN_BLOCK={mount:async options=>{mounted=options;return()=>{}}};await s.settle();assert.ok(mounted.openNativeRaster);
+ const opts={title:'native',onState(){}};const [a,b]=await Promise.all([mounted.openNativeRaster('/api/staff/drone/analysis/Agro_ABC/files/a.tif',opts),mounted.openNativeRaster('/api/staff/drone/analysis/Agro_ABC/files/b.tif',opts)]);
+ assert.equal(s.instances.length,2);assert.equal(s.removed.length,0);assert.equal(a.ready,false);s.instances[0].handlers.load();assert.equal(a.ready,true);assert.equal(b.ready,false);s.instances[1].handlers.tileerror();s.instances[1].handlers.load();assert.equal(b.ready,false);assert.ok(b.error);
+ const calls=s.calls.filter(c=>c.url.endsWith('.tif'));assert.equal(calls.length,2);for(const c of calls){assert.equal(c.options.headers.Authorization,'Bearer staff');assert.equal(c.options.allowFullFile,false);assert.ok(!c.url.includes('Bearer'));}assert.ok(s.layers.every(o=>o.pane==='ortho-imagery'&&o.resolution===256));
+ a.dispose();assert.equal(s.removed.length,1);assert.equal(b.disposed,false);s.el('opacity').value='.5';s.el('opacity').oninput();assert.equal(s.instances[1].opacity,.5);
+ s.el('dayunSource').value='Agro_ABC';await s.el('openDayun').onclick();assert.equal(b.disposed,true);assert.equal(s.removed.length,2);
 });

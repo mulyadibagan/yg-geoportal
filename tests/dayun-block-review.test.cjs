@@ -4,7 +4,7 @@ function setup(){
  const element=tag=>({tag,children:[],value:'',hidden:true,textContent:'',append(...x){this.children.push(...x)},replaceChildren(...x){this.children=x},add(x){this.children.push(x)},setAttribute(){},showModal(){this.open=true},close(){this.open=false},insertBefore(x){this.children.unshift(x)}});
  const host=element('section'),requests=[],events={},layers=[],overlays=[];
  const layer={addTo(){return this},clearLayers(){},bindTooltip(){return this},on(){return this},getBounds(){return[[0,0],[1,1]]},getLayers(){return[]}};
- const context={window:{},document:{createElement:element},Option:function(text,value){return{text,value}},L:{layerGroup:()=>({...layer}),imageOverlay:(url,box,opts)=>{overlays.push(opts);return layer},geoJSON:()=>layer,featureGroup:()=>layer,circleMarker:(xy,opts)=>{const item={xy,opts,handlers:{}};layers.push(item);return{...layer,on(k,fn){item.handlers[k]=fn;return this}}}},URL:{createObjectURL:()=> 'blob:private',revokeObjectURL(){}},Promise,setTimeout,clearTimeout};vm.runInNewContext(code,context);
+ const context={window:{},document:{createElement:element},Option:function(text,value){return{text,value}},L:{layerGroup:()=>({...layer}),imageOverlay:(url,box,opts)=>{overlays.push(opts);return layer},geoJSON:()=>layer,featureGroup:()=>layer,circleMarker:(xy,opts)=>{const item={xy,opts,handlers:{}};layers.push(item);return{...layer,on(k,fn){item.handlers[k]=fn;return this}}}},URL:{createObjectURL:()=> 'blob:private',revokeObjectURL(){}},Promise,AbortController,setTimeout,clearTimeout};vm.runInNewContext(code,context);
  const result={schema:'dayun-block-analysis-v1',block:'A',source_run:'run',overview:'overview.jpg',bounds:[0,0,1,1],candidate_count:2,boundary_conflict_candidate_count:0,boundary_overlap_count:0,zones:[{id:'GT-A-01',kind:'active_source',candidate_crowns:2,boundary_conflict_candidates:0}],native_tiles:[{file:'native/one.tif',bounds:[0,0,1,1]}]};
  const options={host,map:{createPane(){return{style:{}}},getPane(){},setView(){},getCenter:()=>({lng:.5,lat:.5}),on(k,v){events[k]=v},off(k){delete events[k]},removeLayer(){},getZoom:()=>24,getBounds:()=>({contains:()=>true}),fitBounds(){}},manifest:{run:'run',block_analyses:{A:'block-A/analysis.json'},files:['analysis.json','zones.geojson','candidates.geojson','boundary-audit.geojson','overview.jpg','gawangan.csv','native/one.tif'].map(f=>'block-A/'+f)},base:'/api/staff/drone/analysis/Agro_ABC',api:async(path,config)=>{requests.push({path,config});return{json:async()=>path.endsWith('analysis.json')?result:{type:'FeatureCollection',features:[]},blob:async()=>new Blob(['image'])}},openRaster:async()=>{},save(){},current:()=>true};
  return{mount:context.window.YG_DAYUN_BLOCK.mount,options,host,requests,events,result,layers,overlays,context,find:text=>host.children.find(x=>x.textContent===text)};
@@ -85,4 +85,35 @@ test('same native crop is reused and failed opening never establishes a usable n
 test('adding a point waits for native pixels rather than accepting the underlying JPEG preview',async()=>{
  const s=setup();let edit,source;s.context.window.YG_DAYUN_BLOCK_EDIT={mount:async opts=>(edit=opts,{dispose(){}})};s.options.getRasterSource=()=>source;s.options.openRaster=async(blob,opts)=>{source={title:opts.title,ready:false};return true};const dispose=await s.mount(s.options);
  assert.equal(await edit.preparePoint([.5,.5]),false);await assert.rejects(()=>edit.preparePoint([.5,.5]),/masih dimuat/);source.ready=true;assert.equal(await edit.preparePoint([.5,.5]),true);dispose();
+});
+
+
+function viewportFixture({maxRetained=2,concurrency=2,open}={}){
+ const s=setup();let box=[0,0,2,1],zoom=24;const messages=[],opened=[];
+ const tiles=[0,1,2,3].map(x=>({file:'native/'+x+'.tif',bounds:[x,0,x+1,1]}));
+ const map={getZoom:()=>zoom,getCenter:()=>({lng:(box[0]+box[2])/2,lat:.5}),getBounds:()=>({getWest:()=>box[0],getEast:()=>box[2],getSouth:()=>box[1],getNorth:()=>box[3]})};
+ const create=s.context.window.YG_DAYUN_BLOCK.createNativeViewport;
+ const engine=create({map,tiles,maxRetained,concurrency,current:()=>true,onStatus:m=>messages.push(m),open:async(tile,changed,signal)=>{const h={ready:false,disposed:false,dispose(){this.disposed=true}};opened.push({tile,h,changed,signal});return open?open(tile,changed,signal,h):h;}});
+ return{engine,opened,messages,pan:b=>box=b,zoom:z=>zoom=z,settle:()=>new Promise(r=>setImmediate(r))};
+}
+
+test('all intersecting native crops load together; panning retains neighbours, reuses pixels and bounds cache memory',async()=>{
+ const s=viewportFixture();s.engine.refresh();await s.settle();assert.equal(s.opened.length,2);assert.equal(s.engine.readyAt([.5,.5]),false);
+ for(const o of s.opened){o.h.ready=true;o.changed();}assert.equal(s.engine.readyAt([.5,.5]),true);assert.equal(s.engine.readyAt([1.5,.5]),true);assert.match(s.messages.at(-1),/2\/2/);
+ s.pan([1,0,3,1]);s.engine.refresh();await s.settle();assert.equal(s.opened.length,3);assert.equal(s.opened[0].h.disposed,true);assert.equal(s.opened[1].h.disposed,false);s.engine.refresh();await s.settle();assert.equal(s.opened.length,3);s.engine.dispose();assert.ok(s.opened.every(o=>o.h.disposed));
+});
+
+test('quick pans cancel stale work, cap concurrent reads, and never attach a late crop after disposal',async()=>{
+ const pending=[];const s=viewportFixture({concurrency:1,open:(t,c,signal,h)=>new Promise(resolve=>pending.push(()=>resolve(h)))});
+ s.engine.refresh();await s.settle();assert.equal(s.opened.length,1);s.pan([2,0,4,1]);s.engine.refresh();assert.equal(s.opened[0].signal.aborted,true);pending.shift()();await s.settle();assert.equal(s.opened[0].h.disposed,true);assert.equal(s.opened.length,2);s.engine.dispose();pending.shift()();await s.settle();assert.ok(s.opened.every(o=>o.h.disposed));assert.equal(s.engine.readyAt([2.5,.5]),false);
+});
+
+test('native read failures stay unready and explicit inspection retries only the failed crop',async()=>{
+ let fail=true;const s=viewportFixture({open:async(t,c,signal,h)=>{if(t.file==='native/0.tif'&&fail)throw Error('offline');return h;}});
+ s.engine.refresh();await s.settle();assert.match(s.messages.at(-1),/gagal/);assert.equal(s.engine.readyAt([.5,.5]),false);fail=false;const h=await s.engine.ensure([.5,.5]);assert.equal(s.opened.length,3);h.ready=true;s.opened.at(-1).changed();assert.equal(s.engine.readyAt([.5,.5]),true);s.zoom(18);s.engine.refresh();assert.ok(s.opened.slice(1).every(o=>o.h.disposed));assert.match(s.messages.at(-1),/pratinjau/);s.engine.dispose();
+});
+
+
+test('suspending native imagery cancels queued requests before another raster can be overwritten',async()=>{
+ const s=viewportFixture({concurrency:1});s.engine.refresh();s.engine.suspend();await s.settle();assert.equal(s.opened.length,0);assert.equal(s.engine.readyAt([.5,.5]),false);s.engine.dispose();
 });
