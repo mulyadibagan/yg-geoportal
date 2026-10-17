@@ -6,7 +6,7 @@
     if(typeof URLSearchParams==='undefined')return null;
     const q=new URLSearchParams(window.location?.search||'');
     const source=q.get('source'),trial=q.get('trial'),sample=q.get('sample'),point=q.get('point');
-    if(source==='Agro_ABC'&&['A','B','C'].includes(q.get('block')))return{source,block:q.get('block')};
+    if(({Agro_ABC:['A','B','C'],Agro_DEF:['D','E','F']}[source]||[]).includes(q.get('block')))return{source,block:q.get('block')};
     if(!['Agro_ABC','Agro_DEF'].includes(source)||!trial||!/^[\w-]{1,64}$/.test(trial)||!sample||!/^[\w-]{1,100}$/.test(sample)||(point&&!/^[\w-]{1,100}$/.test(point)))return null;
     return{source,trial,sample,point};
   })();
@@ -239,8 +239,9 @@
     finally{$('submitDayun').disabled=false;}
   };
   setInterval(refreshDayunRequests,30000);
-  let displayedBlock='A';
-  $('dayunBlock').onchange=()=>{if(disposeBlockReview?.canLeave&&!disposeBlockReview.canLeave()){$('dayunBlock').value=displayedBlock;$('dayunStatus').textContent='Simpan atau ekspor koreksi sebelum mengganti blok.';return;}$('openDayun').onclick();};
+  let displayedBlock='A',displayedSource='Agro_ABC';
+  $('dayunBlock').onchange=()=>{if(disposeBlockReview?.canLeave&&!disposeBlockReview.canLeave()){$('dayunBlock').value=displayedBlock;$('dayunStatus').textContent='Simpan atau ekspor koreksi sebelum mengganti blok.';return;}$('dayunSource').value=['A','B','C'].includes($('dayunBlock').value)?'Agro_ABC':'Agro_DEF';$('openDayun').onclick();};
+  $('dayunSource').onchange=()=>{if(disposeBlockReview?.canLeave&&!disposeBlockReview.canLeave()){$('dayunSource').value=displayedSource;$('dayunStatus').textContent='Simpan atau ekspor koreksi sebelum mengganti citra.';return;}$('openDayun').onclick();};
   $('openDayun').onclick=async()=>{
     if(disposeBlockReview?.canLeave&&!disposeBlockReview.canLeave()){$('dayunStatus').textContent='Simpan atau ekspor koreksi titik sebelum mengganti hasil.';return;}
     clearDayun();
@@ -248,8 +249,9 @@
     const current=()=>validSession() && request===dayunRequest;
     const selected=$('dayunSource').value;
     const target=requestedSample?.source===selected&&requestedSample.sample?requestedSample:null;
-    const block=['A','B','C'].includes($('dayunBlock').value)?$('dayunBlock').value:'A';displayedBlock=block;
-    const blockTarget=selected==='Agro_ABC'&&!requestedSample?.sample;
+    const sourceBlocks={Agro_ABC:['A','B','C'],Agro_DEF:['D','E','F']};
+    const block=sourceBlocks[selected]?.includes($('dayunBlock').value)?$('dayunBlock').value:sourceBlocks[selected]?.[0]||'A';$('dayunBlock').value=block;displayedBlock=block;displayedSource=selected;
+    const blockTarget=!requestedSample?.sample;
     if(!['Agro_ABC','Agro_DEF'].includes(selected))return;
     const base=`/api/staff/drone/analysis/${selected}`;
     $('dayunStatus').textContent='Memeriksa hasil…';

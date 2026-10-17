@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {normalizeBlockReview,blockReviewCounts,mergePointPatch} from '../src/dayun-block-corrections.js';
+import {normalizeBlockReview,blockReviewCounts,mergePointPatch,expandCandidateGrid} from '../src/dayun-block-corrections.js';
 import {DroneQueue} from '../src/drone-queue.js';import {handleDroneRequest} from '../src/drone.js';
 const point=(id,xy,status='accepted')=>({type:'Feature',geometry:{type:'Point',coordinates:xy},properties:{id,status,note:'',origin:'forged',zones:['forged']}});
 function fixture(){const path='block-A/analysis.json',manifest={run:'run',prefix:'drone/analysis/dayun/results/Agro_ABC/run',block_analyses:{A:path},files:['analysis.json','zones.geojson','candidates.geojson'].map(n=>'block-A/'+n)};
@@ -7,7 +7,7 @@ function fixture(){const path='block-A/analysis.json',manifest={run:'run',prefix
  const zones={type:'FeatureCollection',features:[{type:'Feature',geometry:{type:'Polygon',coordinates:[[[0,0],[2,0],[2,2],[0,2],[0,0]]]},properties:{id:'GT-A-01'}}]},review={schema:'dayun-block-corrections-v1',source_run:'run',analysis_path:path,block:'A',changes:[point('auto-1',[.6,.6],'rejected'),point('A-manual-12345678',[1.5,1.5])]};return{path,manifest,analysis,candidates,zones,review};}
 function environment(){const f=fixture(),values=new Map([['drone/analysis/dayun/results/Agro_ABC/index.json',JSON.stringify(f.manifest)],...[['analysis.json',f.analysis],['zones.geojson',f.zones],['candidates.geojson',f.candidates]].map(([n,v])=>[f.manifest.prefix+'/block-A/'+n,JSON.stringify(v)])]),writes=[];
  const env={values,writes,PUBLIC_SNAPSHOTS:{async get(k){return values.has(k)?{text:async()=>values.get(k)}:null},async put(k,v,options){writes.push({k,options});values.set(k,v)}}};let serial=Promise.resolve();const q=new DroneQueue({blockConcurrencyWhile(fn){const n=serial.then(fn);serial=n.catch(()=>{});return n}},env);env.DRONE_QUEUE={idFromName:x=>x,get:()=>q};return env;}
-async function call(env,method='GET',body=null,staff=true,block='A'){const url=new URL('https://worker.test/api/staff/drone/analysis/Agro_ABC/block-review?block='+block);const r=await handleDroneRequest(new Request(url,{method,headers:{origin:'https://webgisyg.id',...(staff?{authorization:'Bearer staff'}:{}),'content-type':'application/json'},...(body?{body:JSON.stringify(body)}:{})}),env,url,async t=>t==='staff');return{status:r.status,headers:r.headers,body:await r.json()};}
+async function call(env,method='GET',body=null,staff=true,block='A',label='Agro_ABC'){const url=new URL('https://worker.test/api/staff/drone/analysis/'+label+'/block-review?block='+block);const r=await handleDroneRequest(new Request(url,{method,headers:{origin:'https://webgisyg.id',...(staff?{authorization:'Bearer staff'}:{}),'content-type':'application/json'},...(body?{body:JSON.stringify(body)}:{})}),env,url,async t=>t==='staff');return{status:r.status,headers:r.headers,body:await r.json()};}
 test('sparse corrections derive identity and zone server-side without mutating originals',()=>{const f=fixture(),before=JSON.stringify(f.candidates),r=normalizeBlockReview(f.review,f),c=blockReviewCounts(r,f.candidates,f.zones);assert.equal(JSON.stringify(f.candidates),before);assert.equal(r.changes[0].properties.origin,'automated');assert.deepEqual(r.changes[1].properties.zones,['GT-A-01']);assert.equal(r.changes[1].properties.origin,'manual_addition');assert.equal(c.automatic_original,2);assert.equal(c.manual_additions,1);assert.equal(c.rejected,1);assert.equal(c.working_total,2);assert.equal(c.accepted_by_staff,1);assert.equal(c.unreviewed,1);assert.equal(c.validated_pineapple_total,null);assert.equal(c.census_changed,false);});
 
 test('only explicit non-pineapple rejections are negative species examples; legacy decisions remain unclassified',()=>{
@@ -83,4 +83,35 @@ test('boundary revision reassigns legacy manual points on read without rewriting
  assert.deepEqual(response.body.review.changes.map(p=>p.geometry),f.review.changes.map(p=>p.geometry));assert.equal(response.body.review.changes[0].properties.status,'rejected');
  assert.equal(env.writes.length,writes);for(const [key,value]of before)if(key.includes('/block-reviews/'))assert.equal(env.values.get(key),value);
  assert.equal(response.body.point_versions['A-manual-12345678'],1);
+});
+
+test('DEF blocks have private independent correction heads and reject mismatched source/block pairs',async()=>{
+ const env=environment();await call(env,'POST',{expected_revision:0,review:fixture().review});const before=new Map(env.values);
+ for(const block of ['D','E','F']){
+  const f=fixture(),path='block-'+block+'/analysis.json',m={...f.manifest,run:'run-def',label:'Agro_DEF',prefix:'drone/analysis/dayun/results/Agro_DEF/run-def',block_analyses:{[block]:path},files:['analysis.json','zones.geojson','candidates.geojson'].map(n=>'block-'+block+'/'+n)};
+  const analysis={...f.analysis,source_run:m.run,block},zones=structuredClone(f.zones);zones.features[0].properties.id='GT-'+block+'-01';
+  env.values.set('drone/analysis/dayun/results/Agro_DEF/index.json',JSON.stringify(m));
+  for(const [name,value]of [['analysis.json',analysis],['zones.geojson',zones],['candidates.geojson',f.candidates]])env.values.set(m.prefix+'/block-'+block+'/'+name,JSON.stringify(value));
+  const id=block+'-manual-12345678',review={schema:'dayun-block-corrections-v1',source_run:m.run,analysis_path:path,block,changes:[point(id,[1.5,1.5])]};
+  const saved=await call(env,'POST',{expected_revision:0,review},true,block,'Agro_DEF');assert.equal(saved.status,200);assert.equal(saved.body.revision,1);assert.equal(saved.body.counts.manual_additions,1);assert.deepEqual(saved.body.review.changes[0].properties.zones,['GT-'+block+'-01']);
+  assert.equal((await call(env,'GET',null,false,block,'Agro_DEF')).status,401);
+  assert.equal((await call(env,'GET',null,true,block,'Agro_ABC')).status,400);
+ }
+ assert.equal((await call(env,'GET',null,true,'A','Agro_DEF')).status,400);
+ for(const [key,value]of before)if(key.includes('/block-reviews/Agro_ABC/'))assert.equal(env.values.get(key),value);
+ assert.ok(env.writes.some(w=>w.k.includes('/block-reviews/Agro_DEF/')));
+});
+
+test('compact native pixel grids preserve identity and coordinates and reject inconsistent source data',()=>{
+ const a={source_run:'run',block:'D',candidate_count:1},g={schema:'dayun-review-grid-v1',source_run:'run',block:'D',transform:[.001,0,102,0,-.001,.58],width:100,height:100,zones:['GT-D-01'],points:[[10,20,[0]]]};
+ const before=JSON.stringify(g),expanded=expandCandidateGrid(g,a);assert.equal(expanded.features[0].properties.id,'D-radial-x10-y20');assert.deepEqual(expanded.features[0].geometry.coordinates,[102.0105,.5595]);assert.equal(JSON.stringify(g),before);
+ for(const mutate of [x=>x.source_run='wrong',x=>x.points[0][0]=-1,x=>x.points[0][2]=[2],x=>x.transform[1]=.1,x=>x.width=0,x=>x.points.push(x.points[0])]){const bad=structuredClone(g);mutate(bad);assert.throws(()=>expandCandidateGrid(bad,a),/invalid_candidate_review_grid/);}
+});
+
+test('large compact reviews load and save without reading the heavy display GeoJSON',async()=>{
+ const env=environment(),f=fixture(),key=f.manifest.prefix+'/block-A/analysis.json',a=JSON.parse(env.values.get(key));a.candidate_count=120000;a.review_index='candidate-review-grid.json';env.values.set(key,JSON.stringify(a));const m=JSON.parse(env.values.get('drone/analysis/dayun/results/Agro_ABC/index.json'));m.files.push('block-A/candidate-review-grid.json');env.values.set('drone/analysis/dayun/results/Agro_ABC/index.json',JSON.stringify(m));
+ const g={schema:'dayun-review-grid-v1',source_run:'run',block:'A',transform:[.001,0,0,0,-.001,2],width:1000,height:1000,zones:['GT-A-01'],points:Array.from({length:120000},(_,i)=>[i%400,Math.floor(i/400),[0]])};env.values.set(f.manifest.prefix+'/block-A/candidate-review-grid.json',JSON.stringify(g));
+ const get=env.PUBLIC_SNAPSHOTS.get;env.PUBLIC_SNAPSHOTS.get=async k=>{assert.ok(!k.endsWith('/candidates.geojson'));return get(k);};
+ const loaded=await call(env);assert.equal(loaded.status,200);assert.equal(loaded.body.counts.automatic_original,120000);assert.equal(loaded.body.counts.working_total,120000);assert.equal(loaded.body.counts.validated_pineapple_total,null);
+ const id='A-manual-compact01',saved=await call(env,'POST',patch(operation(id,point(id,[.1,1.8]))));assert.equal(saved.status,200);assert.equal(saved.body.counts.manual_additions,1);assert.equal(saved.body.counts.working_total,120001);
 });

@@ -103,3 +103,10 @@ test('published block imagery does not inherit the source-wide coverage outlines
  let mounted;const s=setup({search:'?source=Agro_ABC&block=C',session:{token:'staff',expiresAt:Date.now()+10000},fetcher:async url=>({ok:true,status:200,json:async()=>url.endsWith('/analysis/Agro_ABC')?{download:{ok:true},analysis:{ok:true},block_analyses:{C:'block-C/analysis.json'},files:['metadata.json','coverage.geojson','block-C/analysis.json']}:url.endsWith('metadata.json')?{gawangan:[]}:{jobs:[]}})});
  s.context.window.YG_DAYUN_BLOCK={mount:async opts=>(mounted=opts,()=>{})};await s.settle();assert.equal(mounted.block,'C');assert.ok(!s.calls.some(c=>c.url.endsWith('coverage.geojson')));assert.ok(s.calls.every(c=>!c.options.method));
 });
+
+test('DEF block links and block/source switching select the matching private source without writes',async()=>{
+ let mounted;const s=setup({search:'?source=Agro_DEF&block=E',session:{token:'staff',expiresAt:Date.now()+10000},fetcher:async url=>({ok:true,status:200,json:async()=>url.includes('/analysis/')&&!url.includes('/files/')?{download:{ok:true},analysis:{ok:true},files:['metadata.json']}:url.endsWith('metadata.json')?{gawangan:[]}:{jobs:[]}})});
+ s.context.window.YG_DAYUN_BLOCK={mount:async opts=>(mounted=opts,()=>{})};await s.settle();assert.equal(s.el('dayunBlock').value,'E');assert.equal(mounted.block,'E');assert.equal(mounted.autoOpen,true);assert.equal(mounted.base,'/api/staff/drone/analysis/Agro_DEF');
+ s.el('dayunBlock').value='B';await s.el('dayunBlock').onchange();await s.settle();assert.equal(s.el('dayunSource').value,'Agro_ABC');assert.equal(mounted.block,'B');
+ s.el('dayunSource').value='Agro_DEF';await s.el('dayunSource').onchange();await s.settle();assert.equal(s.el('dayunBlock').value,'D');assert.equal(mounted.block,'D');assert.ok(s.calls.every(c=>!c.options.method));
+});

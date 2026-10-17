@@ -159,3 +159,8 @@ test('reassigned boundaries without a new detector run still mount the review an
  const s=setup();s.result.full_block_count=null;s.result.model_calibration={};s.result.boundary_revision={received_date:'2026-10-18'};s.result.boundary_rebase={warning:'Existing candidates reassigned; detector rerun pending.',newly_included_detection_area_m2:12};
  const dispose=await s.mount(s.options);assert.equal(s.host.hidden,false);await s.find('Buka seluruh Blok A').onclick();assert.ok(s.requests.some(r=>r.path.endsWith('/zones.geojson')));assert.ok(JSON.stringify(s.host.children).includes('Existing candidates reassigned'));dispose();
 });
+
+test('D E F native views use their own manifest and do not mount historical A-only calibration as current accuracy',async()=>{
+ for(const b of ['D','E','F']){const s=setup();s.result.block=b;s.result.full_block_count={processed_tiles:1,candidate_count:2,threshold:.393,threshold_025_count:3,threshold_040_count:1};s.result.boundary_revision={received_date:'2026-10-18'};s.result.model_calibration={historical_metrics_only:true};s.options.block=b;s.options.base='/api/staff/drone/analysis/Agro_DEF';s.options.manifest.block_analyses={[b]:'block-A/analysis.json'};
+ const dispose=await s.mount(s.options);await s.find('Buka seluruh Blok '+b).onclick();assert.ok(s.requests.every(r=>r.path.startsWith('/api/staff/drone/analysis/Agro_DEF/')));dispose();}
+});
