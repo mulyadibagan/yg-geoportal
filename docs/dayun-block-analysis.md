@@ -171,3 +171,42 @@ still apply. Authentication runs before all private reads, and the local login
 return preserves the sample selection. A valid link opens the native sample,
 numbered candidates and expanded map without fetching whole-block imagery.
 Opening a link performs no review POST, count change or census write.
+
+## Whole Blok A native count
+
+`scripts/count_dayun_block.py` reuses the existing checkpoint reader and radial
+detector over every native block core. A 160px halo comes from the original
+source rather than a resized overview or clipped neighbouring crop. Native grid
+checks reject a mismatched crop; half-open core assignment and global 65px
+suppression prevent seam duplicates. Provenance-gated per-core checkpoints allow
+interrupted counting to resume without reprocessing completed native cores.
+
+Outputs retain the existing block-analysis schema and include candidate points,
+per-zone CSV, whole-block report, method provenance and threshold .25/.40
+sensitivity counts. The primary threshold is .30 until usable stored calibration
+exists. Fixed mature-crown scales can miss small seedlings, and weeds/litter can
+look radial. The result is a low-confidence whole-block crown proposal count;
+no validated living pineapple total or confidence interval is claimed.
+Active/dead remains the original polygon category. Overlap memberships are
+reported per zone; global count assigns every proposal once.
+
+Keep the previous template analysis as private derivative history. Publish the
+new analysis, points, zone counts and CSV together within the existing private
+block folder, retaining native files and all saved review histories. Update only
+the image candidate fields in the private database comparator, never the source
+population, cohorts, planting dates, stock or monitoring. The viewer offers a
+full-point GeoJSON download and renders up to 3,000 viewport markers, with all
+results retained in CSV/downloads.
+
+Versioned full-count manifests may set `asset_folder` to the existing private
+block folder. The viewer resolves a derived file in the new result folder first,
+then an explicitly named original asset folder, and requires every resolved file
+in the same private manifest allowlist. This preserves the previous analysis and
+reuses all native TIFFs/overview without copying or changing their bytes. Invalid
+asset folder paths are rejected. Checkpoint counting requires an explicit expected
+source MD5; optional exclusion files must identify the matching source run and
+explicitly rejected coordinates. Saved trial histories remain independent.
+
+`orthomosaic-internal.html?source=Agro_ABC&block=A` opens the full block and enlarged
+map after staff login, with the sample panel collapsed. No sample review is
+required to view the whole-block result; opening the link performs no writes.

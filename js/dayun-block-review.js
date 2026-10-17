@@ -1,18 +1,21 @@
 (function(root){
   'use strict';
-  async function mount({host,map,api,base,manifest,openRaster,save,current}){
+  async function mount({host,map,api,base,manifest,openRaster,save,current,autoOpen=false,onAutoOpen}){
     const path=manifest.block_analyses?.A;
     if(!path||!manifest.files.includes(path))return()=>{};
     const folder=path.slice(0,path.lastIndexOf('/')+1);
-    const get=async name=>{const file=folder+name;if(!manifest.files.includes(file))throw Error('Berkas analisis blok belum tersedia.');return api(base+'/files/'+file);};
+    let assetFolder='';
+    const listed=name=>manifest.files.includes(folder+name)||(assetFolder&&manifest.files.includes(assetFolder+name));
+    const get=async name=>{const file=manifest.files.includes(folder+name)?folder+name:assetFolder+name;if(!manifest.files.includes(file))throw Error('Berkas analisis blok belum tersedia.');return api(base+'/files/'+file);};
     const result=await(await api(base+'/files/'+path)).json();if(!current())return()=>{};
     if(result.schema!=='dayun-block-analysis-v1'||result.source_run!==manifest.run||result.block!=='A')throw Error('Sumber analisis blok tidak sesuai.');
+    if(result.asset_folder){if(!/^[\w-]+\/$/.test(result.asset_folder)||!manifest.files.includes(result.asset_folder+'analysis.json'))throw Error('Aset citra asli analisis tidak sesuai.');assetFolder=result.asset_folder;}
     let disposed=false,detail=false,loading=false,url=null;
     const group=L.layerGroup().addTo(map),points=L.layerGroup().addTo(map),diagnostics=L.layerGroup().addTo(map);
     let diagnosticData=null,diagnosticCells=null,showDiagnostics=false,sheetUrl=null;
     const el=(tag,text)=>{const node=document.createElement(tag);if(text!==undefined)node.textContent=text;return node;};
     host.replaceChildren();host.hidden=false;
-    const title=el('h3','Blok A — kandidat & pemeriksaan batas');
+    const title=el('h3',result.full_block_count?'Hitungan otomatis seluruh Blok A':'Blok A — kandidat & pemeriksaan batas');
     const note=el('p','Aktif/mati mengikuti kategori polygon sumber, bukan diagnosis tanaman. Kandidat tajuk belum terkonfirmasi sebagai nanas. Batas sumber tidak diubah.');note.className='note';if(result.capture_date)note.textContent+=' Tanggal citra: '+result.capture_date+' (keterangan pemilik data).';if(Array.isArray(result.analysis_findings))note.textContent+=' '+result.analysis_findings.join(' ');
     const open=el('button','Buka seluruh Blok A'),native=el('button','Periksa citra asli di titik peta'),download=el('button','Unduh tabel Blok A'),auditDownload=el('button','Unduh lokasi pemeriksaan batas');
     const select=el('select');select.setAttribute('aria-label','Gawangan Blok A');select.add(new Option('Seluruh Blok A',''));
@@ -24,6 +27,11 @@
     result.zones.forEach(z=>{const row=el('tr');[z.id,z.kind==='active_source'?'Aktif':'Mati (sementara)',z.candidate_crowns,z.boundary_conflict_candidates].forEach(v=>row.append(el('td',String(v))));table.append(row);});
     const details=el('details'),caption=el('summary','Tabel per gawangan');details.append(caption,table);
     host.append(title,note,open,select,native,summary,info,download,auditDownload,details,status);
+    if(result.full_block_count){const count=result.full_block_count;details.open=true;
+      host.append(el('p',`Seluruh ${count.processed_tiles} potongan native selesai diproses. ${count.candidate_count.toLocaleString('id-ID')} kandidat pada ambang ${count.threshold}; keyakinan rendah. Uji sensitivitas ambang 0,25: ${count.threshold_025_count.toLocaleString('id-ID')}; ambang 0,40: ${count.threshold_040_count.toLocaleString('id-ID')}. Ini bukan rentang jumlah tanaman atau selang kepercayaan.`));
+      const pointsDownload=el('button','Unduh seluruh titik hasil Blok A');pointsDownload.onclick=async()=>{try{const blob=await(await get('candidates.geojson')).blob();if(active())save(blob,'dayun-blok-A-kandidat-seluruh-blok.geojson');}catch(error){if(active())status.textContent=error.message;}};host.append(pointsDownload);
+      info.textContent+=' Penanda maksimal 3.000 per tampilan; tabel dan unduhan memuat seluruh hasil.';
+    }
     const detailPath=manifest.block_details?.A;
     if(detailPath&&manifest.files.includes(detailPath)){
       const button=el('button','Analisis detail per gawangan'),panel=el('div');panel.hidden=true;host.append(button,panel);
@@ -42,12 +50,12 @@
             if(!dialog.open)dialog.showModal();select.value=row.zone_id;select.onchange();status.textContent='Sampel 512 piksel pada resolusi asli. Citra di sekitar petak dapat mencakup gawangan lain. Pemilihan berdasarkan vegetasi RGB; belum menjadi validasi hitung nanas.';}catch(error){if(active())status.textContent=error.message;}};cell.append(inspect);}tr.append(cell);table.append(tr);}
         const preview=el('img');preview.hidden=true;preview.setAttribute('style','max-width:100%;height:auto');
         const dialog=el('dialog'),close=el('button','Tutup sampel'),sampleActions=el('div');dialog.setAttribute('style','width:96vw;max-width:1600px;max-height:95vh;overflow:auto');close.onclick=()=>dialog.close();dialog.append(close,el('p','Sampel native: vegetasi RGB rendah / median / tinggi. Bukan klasifikasi nanas. Gunakan Buka TIFF untuk memeriksa detail berkoordinat.'),preview,sampleActions);panel.append(table,dialog);
-        for(const [file,label] of [['detail-gawangan.csv','Unduh tabel analisis detail'],['detail-trial.json','Unduh uji pola tajuk lokal']]){if(!manifest.files.includes(folder+file))continue;const download=el('button',label);download.onclick=async()=>{try{const blob=await(await get(file)).blob();if(active())save(blob,file);}catch(error){if(active())status.textContent=error.message;}};panel.append(download);}
+        for(const [file,label] of [['detail-gawangan.csv','Unduh tabel analisis detail'],['detail-trial.json','Unduh uji pola tajuk lokal']]){if(!listed(file))continue;const download=el('button',label);download.onclick=async()=>{try{const blob=await(await get(file)).blob();if(active())save(blob,file);}catch(error){if(active())status.textContent=error.message;}};panel.append(download);}
         data.limitations.forEach(v=>panel.append(el('p',v)));
       }catch(error){if(active())status.textContent=error.message;}finally{if(active())button.disabled=false;}};
     }
     for(const [file,label] of [[result.analysis_report,'Unduh laporan analisis'],[result.candidate_inspection,'Unduh lembar pemeriksaan kandidat']]){
-      if(file&&manifest.files.includes(folder+file)){const button=el('button',label);button.onclick=async()=>{try{const blob=await(await get(file)).blob();if(active())save(blob,file);}catch(error){if(active())status.textContent=error.message;}};host.append(button);}
+      if(file&&listed(file)){const button=el('button',label);button.onclick=async()=>{try{const blob=await(await get(file)).blob();if(active())save(blob,file);}catch(error){if(active())status.textContent=error.message;}};host.append(button);}
     }
     const referencePath=manifest.block_comparisons?.A;
     if(referencePath&&manifest.files.includes(referencePath)){
@@ -70,9 +78,9 @@
       const view=map.getBounds();const features=diagnosticCells.features.filter(f=>f.properties.flags.length&&(!select.value||f.properties.zone_id===select.value)&&L.geoJSON(f).getBounds().intersects(view)).slice(0,1000);
       L.geoJSON({type:'FeatureCollection',features},{style:f=>({color:f.properties.flags.includes('dark_pixels_review')?'#5e4aa3':'#dc702c',weight:1,fillOpacity:.12}),onEachFeature:(f,l)=>l.bindTooltip(f.properties.zone_id+' · '+f.properties.flags.join(', ')+' · perlu pemeriksaan; bukan diagnosis')}).addTo(diagnostics);
     }
-    function drawPoints(){points.clearLayers();if(!active()||!candidates||map.getZoom()<22)return;const b=map.getBounds();let count=0;
+    function drawPoints(){points.clearLayers();if(!active()||!candidates||map.getZoom()<(result.full_block_count?17:22))return;const b=map.getBounds();let count=0;
       for(const f of candidates.features){if(select.value&&!f.properties.zones.includes(select.value))continue;const [x,y]=f.geometry.coordinates;if(!b.contains([y,x]))continue;if(count++>=3000)break;
-        L.circleMarker([y,x],{radius:4,color:f.properties.boundary_conflict?'#c72d40':'#df8e00',weight:1,fillOpacity:.65}).bindTooltip(f.properties.id+' · kandidat belum tervalidasi').on('click',()=>{status.textContent=f.properties.id+' · kemiripan '+f.properties.similarity+' (bukan probabilitas nanas) · '+f.properties.zones.join(', ');}).addTo(points);
+        L.circleMarker([y,x],{radius:map.getZoom()<20?2:map.getZoom()<22?3:4,color:f.properties.boundary_conflict?'#c72d40':'#df8e00',weight:1,fillOpacity:.65}).bindTooltip(f.properties.id+' · kandidat belum tervalidasi').on('click',()=>{status.textContent=f.properties.id+' · skor '+f.properties.similarity+' (bukan probabilitas nanas) · '+f.properties.zones.join(', ');}).addTo(points);
       }
     }
     async function show(){if(!active()||loading)return;loading=true;open.disabled=true;status.textContent='Membuka citra Blok A dan audit batas privat…';
@@ -92,6 +100,7 @@
     download.onclick=async()=>{try{const blob=await(await get('gawangan.csv')).blob();if(active())save(blob,'dayun-blok-A-kandidat.csv');}catch(error){if(active())status.textContent=error.message;}};
     auditDownload.onclick=async()=>{try{const blob=await(await get('boundary-audit.geojson')).blob();if(active())save(blob,'dayun-blok-A-periksa-batas.geojson');}catch(error){if(active())status.textContent=error.message;}};
     map.on('moveend zoomend',drawPoints);map.on('moveend zoomend',drawDiagnostics);map.on('click',click);
+    if(autoOpen&&active()){onAutoOpen?.();await show();}
     return()=>{disposed=true;map.off('moveend zoomend',drawPoints);map.off('moveend zoomend',drawDiagnostics);map.off('click',click);map.removeLayer(group);map.removeLayer(points);map.removeLayer(diagnostics);if(url)URL.revokeObjectURL(url);if(sheetUrl)URL.revokeObjectURL(sheetUrl);host.replaceChildren();host.hidden=true;};
   }
   root.YG_DAYUN_BLOCK={mount};

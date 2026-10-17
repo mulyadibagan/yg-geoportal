@@ -28,6 +28,12 @@ test('authorized sample link forwards only validated IDs to the private read-onl
  await s.settle();assert.equal(mounted.length,1);assert.equal(mounted[0].initialTrial,'block-A-radial-v1');assert.equal(mounted[0].initialSample,'ABC-A01-R01');assert.equal(mounted[0].autoOpen,true);assert.ok(s.calls.every(c=>!c.options.method));
  const invalid=setup({search:'?source=Agro_ABC&trial=../../secrets&sample=ABC-A01-R01',session:{token:'staff',expiresAt:Date.now()+10000}});await invalid.settle();assert.ok(!invalid.calls.some(c=>c.url.endsWith('/analysis/Agro_ABC')));
 });
+
+test('whole Blok A link opens block results rather than a sample and remains staff gated',async()=>{
+ const anon=setup({search:'?source=Agro_ABC&block=A'});await anon.settle();assert.equal(anon.calls.length,0);assert.match(decodeURIComponent(anon.el('sampleLogin').href),/source=Agro_ABC&block=A/);
+ let opened;const s=setup({search:'?source=Agro_ABC&block=A',session:{token:'staff',expiresAt:Date.now()+10000},fetcher:async url=>({ok:true,status:200,json:async()=>url.endsWith('/analysis/Agro_ABC')?{download:{ok:true},analysis:{ok:true},files:['metadata.json']}:url.endsWith('metadata.json')?{gawangan:[]}:{jobs:[]}})});
+ s.context.window.YG_DAYUN_BLOCK={mount:async options=>{opened=options;return()=>{}}};await s.settle();assert.equal(opened.autoOpen,true);assert.ok(s.calls.every(c=>!c.options.method));
+});
 test('server rejection keeps internal workspace locked even with a stored session',async()=>{const s=setup({session:{token:'forged',expiresAt:Date.now()+10000},status:401});await s.settle();assert.equal(s.el('workspace').hidden,true);assert.match(s.el('gateStatus').textContent,/Akses ditolak/)});
 
 test('Dayun shows failed download as blocked and sends staff bearer header',async()=>{
