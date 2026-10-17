@@ -73,6 +73,21 @@
     else nav.appendChild(group);
   }
 
+  function syncOrthomosaicTool(){
+    var session=readSession();
+    document.querySelectorAll('[data-yg-tools-menu] .yg-nav-menu').forEach(function(menu){
+      var link=menu.querySelector('a[href="orthomosaic-internal.html"]');
+      if(!session){ if(link)link.remove(); return; }
+      if(link)return;
+      link=document.createElement('a');
+      link.href='orthomosaic-internal.html';
+      link.innerHTML='Analisis Orthomosaic<small>Citra drone, kandidat nanas, dan koreksi privat staf YG</small>';
+      menu.appendChild(link);
+    });
+  }
+  window.addEventListener('focus',syncOrthomosaicTool);
+  window.addEventListener('storage',syncOrthomosaicTool);
+
   function applyStaffAccount(nav,session){
     var link=nav.querySelector('a[href="staff-login.html"]');
     if(!link)return;
@@ -135,6 +150,7 @@
       });
     });
 
+    syncOrthomosaicTool();
     ensureAutoI18n();
 
     document.addEventListener('click',function(event){
