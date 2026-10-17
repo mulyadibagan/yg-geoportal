@@ -1,13 +1,13 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 const code=fs.readFileSync('js/dayun-block-review.js','utf8');
 function setup(){
- const element=tag=>({tag,children:[],value:'',hidden:true,textContent:'',append(...x){this.children.push(...x)},replaceChildren(...x){this.children=x},add(x){this.children.push(x)},setAttribute(){},showModal(){this.open=true},close(){this.open=false}});
- const host=element('section'),requests=[],events={},layers=[];
+ const element=tag=>({tag,children:[],value:'',hidden:true,textContent:'',append(...x){this.children.push(...x)},replaceChildren(...x){this.children=x},add(x){this.children.push(x)},setAttribute(){},showModal(){this.open=true},close(){this.open=false},insertBefore(x){this.children.unshift(x)}});
+ const host=element('section'),requests=[],events={},layers=[],overlays=[];
  const layer={addTo(){return this},clearLayers(){},bindTooltip(){return this},on(){return this},getBounds(){return[[0,0],[1,1]]},getLayers(){return[]}};
- const context={window:{},document:{createElement:element},Option:function(text,value){return{text,value}},L:{layerGroup:()=>({...layer}),imageOverlay:()=>layer,geoJSON:()=>layer,featureGroup:()=>layer,circleMarker:()=>{layers.push(1);return layer}},URL:{createObjectURL:()=> 'blob:private',revokeObjectURL(){}},Promise};vm.runInNewContext(code,context);
+ const context={window:{},document:{createElement:element},Option:function(text,value){return{text,value}},L:{layerGroup:()=>({...layer}),imageOverlay:(url,box,opts)=>{overlays.push(opts);return layer},geoJSON:()=>layer,featureGroup:()=>layer,circleMarker:(xy,opts)=>{const item={xy,opts,handlers:{}};layers.push(item);return{...layer,on(k,fn){item.handlers[k]=fn;return this}}}},URL:{createObjectURL:()=> 'blob:private',revokeObjectURL(){}},Promise,setTimeout,clearTimeout};vm.runInNewContext(code,context);
  const result={schema:'dayun-block-analysis-v1',block:'A',source_run:'run',overview:'overview.jpg',bounds:[0,0,1,1],candidate_count:2,boundary_conflict_candidate_count:0,boundary_overlap_count:0,zones:[{id:'GT-A-01',kind:'active_source',candidate_crowns:2,boundary_conflict_candidates:0}],native_tiles:[{file:'native/one.tif',bounds:[0,0,1,1]}]};
- const options={host,map:{on(k,v){events[k]=v},off(k){delete events[k]},removeLayer(){},getZoom:()=>24,getBounds:()=>({contains:()=>true}),fitBounds(){}},manifest:{run:'run',block_analyses:{A:'block-A/analysis.json'},files:['analysis.json','zones.geojson','candidates.geojson','boundary-audit.geojson','overview.jpg','gawangan.csv','native/one.tif'].map(f=>'block-A/'+f)},base:'/api/staff/drone/analysis/Agro_ABC',api:async(path,config)=>{requests.push({path,config});return{json:async()=>path.endsWith('analysis.json')?result:{type:'FeatureCollection',features:[]},blob:async()=>new Blob(['image'])}},openRaster:async()=>{},save(){},current:()=>true};
- return{mount:context.window.YG_DAYUN_BLOCK.mount,options,host,requests,events,result,find:text=>host.children.find(x=>x.textContent===text)};
+ const options={host,map:{createPane(){return{style:{}}},getPane(){},setView(){},getCenter:()=>({lng:.5,lat:.5}),on(k,v){events[k]=v},off(k){delete events[k]},removeLayer(){},getZoom:()=>24,getBounds:()=>({contains:()=>true}),fitBounds(){}},manifest:{run:'run',block_analyses:{A:'block-A/analysis.json'},files:['analysis.json','zones.geojson','candidates.geojson','boundary-audit.geojson','overview.jpg','gawangan.csv','native/one.tif'].map(f=>'block-A/'+f)},base:'/api/staff/drone/analysis/Agro_ABC',api:async(path,config)=>{requests.push({path,config});return{json:async()=>path.endsWith('analysis.json')?result:{type:'FeatureCollection',features:[]},blob:async()=>new Blob(['image'])}},openRaster:async()=>{},save(){},current:()=>true};
+ return{mount:context.window.YG_DAYUN_BLOCK.mount,options,host,requests,events,result,layers,overlays,context,find:text=>host.children.find(x=>x.textContent===text)};
 }
 test('block analysis uses only manifest-listed private read endpoints and cleans up',async()=>{
  const s=setup(),dispose=await s.mount(s.options);assert.equal(s.host.hidden,false);assert.ok(s.host.children.some(x=>x.textContent.includes('Bukan jumlah nanas')));await s.find('Buka seluruh Blok A').onclick();assert.ok(s.requests.every(r=>r.path.startsWith('/api/staff/drone/analysis/Agro_ABC/files/block-A/')&&!r.config));s.find('Periksa citra asli di titik peta').onclick();await s.events.click({latlng:{lng:.5,lat:.5}});assert.ok(s.requests.some(r=>r.path.endsWith('/native/one.tif')));dispose();assert.equal(s.host.hidden,true);assert.equal(s.events.click,undefined);
@@ -16,7 +16,7 @@ test('missing block analysis is skipped and wrong source run is refused before m
  const s=setup();s.options.manifest.block_analyses={};await s.mount(s.options);assert.equal(s.requests.length,0);s.options.manifest.block_analyses={A:'block-A/analysis.json'};s.result.source_run='other';await assert.rejects(()=>s.mount(s.options),/tidak sesuai/);assert.equal(s.host.hidden,true);
 });
 test('an unlisted native tile cannot be requested',async()=>{
- const s=setup(),dispose=await s.mount(s.options);s.options.manifest.files=s.options.manifest.files.filter(p=>!p.endsWith('.tif'));s.find('Periksa citra asli di titik peta').onclick();await s.events.click({latlng:{lng:.5,lat:.5}});assert.ok(!s.requests.some(r=>r.path.endsWith('.tif')));assert.ok(s.host.children.at(-1).textContent.includes('belum tersedia'));dispose();
+ const s=setup(),dispose=await s.mount(s.options);s.options.manifest.files=s.options.manifest.files.filter(p=>!p.endsWith('.tif'));s.find('Periksa citra asli di titik peta').onclick();await s.events.click({latlng:{lng:.5,lat:.5}});assert.ok(!s.requests.some(r=>r.path.endsWith('.tif')));assert.match(JSON.stringify(s.host.children),/belum tersedia/);dispose();
 });
 
 test('private database reference shows fractional values without claiming a validated image count',async()=>{
@@ -63,3 +63,26 @@ test('database comparison is below the map and row edit selects its zone in the 
 });
 
 test('owner-calibrated result separates positive recovery, sensitivity and manual examples from count accuracy',async()=>{const s=setup();s.result.full_block_count={processed_tiles:99,candidate_count:20,threshold:.39,threshold_025_count:200,threshold_040_count:18,sensitivity_thresholds:[{threshold:.34,candidate_count:40},{threshold:.39,candidate_count:20}],model_proposals_represented_by_manual:2,sensitive_diagnostic_threshold:.2,sensitive_diagnostic_candidates:300};s.result.model_calibration={label_count:30,label_gawangan:['GT-A-07'],review_revision:4,radii_native_pixels:[14,18,22],suppression_native_pixels:24,metrics:{training:{positive_labels:17},spatial_holdout:{positive_labels:7,baseline_matched_within_12px:0,calibrated_matched_within_12px:3,sensitive_matched_within_12px:6},guard_unused:{positive_labels:6}}};s.result.previous_automatic_candidate_count=10;const dispose=await s.mount(s.options),text=JSON.stringify(s.host.children);assert.match(text,/Detektor dari koreksi tim/);assert.match(text,/hasil utama 3\/7/);assert.match(text,/bukan akurasi jumlah/);assert.match(text,/Kenaikan kandidat bukan bukti kenaikan jumlah nanas/);assert.match(text,/tidak dipakai sebagai lapisan utama/);assert.match(text,/ambang 0.34: 40/);assert.ok(!s.requests.some(r=>r.config));dispose();});
+
+
+test('direct marker selection opens detail without writes; rejected points hide and can be restored to view',async()=>{
+ const s=setup(),old=s.options.api;let picks=0,expanded=0;s.options.onEditMap=()=>expanded++;
+ s.context.window.YG_DAYUN_BLOCK_EDIT={mount:async()=>({features:()=>[{geometry:{coordinates:[.5,.5]},properties:{id:'auto',status:'candidate',zones:[]}},{geometry:{coordinates:[.4,.4]},properties:{id:'bad',status:'rejected',zones:[]}}],pick:async()=>picks++,refresh(){},dispose(){}})};
+ s.options.api=async(path,c)=>path.endsWith('candidates.geojson')?{json:async()=>({features:[]})}:old(path,c);
+ const dispose=await s.mount(s.options);await s.find('Buka seluruh Blok A').onclick();assert.equal(s.layers.length,1);assert.equal(s.overlays[0].pane,'dayun-overview');assert.equal(s.layers[0].opts.bubblingMouseEvents,false);await s.layers[0].handlers.click();assert.equal(picks,1);assert.equal(expanded,1);assert.ok(s.requests.every(r=>!r.config));
+ const label=s.host.children.find(x=>x.children?.some(y=>y.tag==='input'&&y.type==='checkbox')),check=label.children[0];check.checked=true;check.onchange();assert.ok(s.layers.some(x=>x.opts.color==='#c72d40'));dispose();
+});
+
+test('same native crop is reused and failed opening never establishes a usable native extent',async()=>{
+ const s=setup();let opens=0,zoom=0;s.options.map.setView=(xy,z)=>zoom=z;s.options.openRaster=async()=>{opens++;return true};const dispose=await s.mount(s.options);
+ for(let i=0;i<2;i++){s.find('Periksa citra asli di titik peta').onclick();await s.events.click({latlng:{lng:.5,lat:.5}});}
+ assert.equal(opens,1);assert.equal(s.requests.filter(x=>x.path.endsWith('.tif')).length,1);assert.equal(zoom,24);dispose();
+ const failed=setup();let attempts=0;failed.options.openRaster=async()=>{attempts++;return false};const stop=await failed.mount(failed.options);
+ for(let i=0;i<2;i++){failed.find('Periksa citra asli di titik peta').onclick();await failed.events.click({latlng:{lng:.5,lat:.5}});}
+ assert.equal(attempts,2);assert.equal(failed.requests.filter(x=>x.path.endsWith('.tif')).length,1);assert.match(JSON.stringify(failed.host.children),/TIFF asli gagal dibuka/);stop();
+});
+
+test('adding a point waits for native pixels rather than accepting the underlying JPEG preview',async()=>{
+ const s=setup();let edit,source;s.context.window.YG_DAYUN_BLOCK_EDIT={mount:async opts=>(edit=opts,{dispose(){}})};s.options.getRasterSource=()=>source;s.options.openRaster=async(blob,opts)=>{source={title:opts.title,ready:false};return true};const dispose=await s.mount(s.options);
+ assert.equal(await edit.preparePoint([.5,.5]),false);await assert.rejects(()=>edit.preparePoint([.5,.5]),/masih dimuat/);source.ready=true;assert.equal(await edit.preparePoint([.5,.5]),true);dispose();
+});
