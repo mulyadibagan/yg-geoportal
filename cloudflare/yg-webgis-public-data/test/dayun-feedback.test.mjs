@@ -4,7 +4,38 @@ import {DroneQueue} from '../src/drone-queue.js';import {handleDroneRequest} fro
 const coords=p=>[(p[0]+.5)/512,1-(p[1]+.5)/512];
 function fixture(){const samples=['A','C'].map(id=>({id,gawangan:id,bounds:[0,0,1,1],features:[[20,20],[80,80],[140,140],[200,200]].map((p,i)=>({type:'Feature',geometry:{type:'Point',coordinates:coords(p)},properties:{id:id+'-'+i,sample_id:id,status:i<3?'accepted':'rejected',note:''}})),automated_pixel_proposals:[[.8,20,20],[.7,80,80],[.6,140,140],[.32,200,200]].map(([score,x,y])=>({score,pixel:[x,y]}))}));const trial={schema:'dayun-candidate-trial-v1',dataset_id:'trial',source_run:'run',threshold:.3,samples};return{trial,review:{schema:'dayun-candidate-corrections-v1',dataset_id:'trial',source_run:'run',samples:samples.map(s=>({id:s.id,complete:true,features:structuredClone(s.features)}))}};}
 function environment(){const {trial}=fixture(),values=new Map([['drone/analysis/dayun/results/Agro_ABC/index.json',JSON.stringify({run:'run',prefix:'drone/analysis/dayun/results/Agro_ABC/run',files:['candidate-trial.json']})],['drone/analysis/dayun/results/Agro_ABC/run/candidate-trial.json',JSON.stringify(trial)]]),writes=[];const env={values,writes,PUBLIC_SNAPSHOTS:{async get(k){return values.has(k)?{text:async()=>values.get(k)}:null},async put(k,v,options){writes.push({k,options});values.set(k,v)}}};let serial=Promise.resolve();const q=new DroneQueue({blockConcurrencyWhile(fn){const next=serial.then(fn);serial=next.catch(()=>{});return next}},env);env.DRONE_QUEUE={idFromName:x=>x,get:()=>q};return env;}
-async function call(env,method='GET',body=null,staff=true){const url=new URL('https://worker.test/api/staff/drone/analysis/Agro_ABC/review');const r=await handleDroneRequest(new Request(url,{method,headers:{origin:'https://webgisyg.id',...(staff?{authorization:'Bearer staff'}:{}),'content-type':'application/json'},...(body?{body:JSON.stringify(body)}:{})}),env,url,async t=>t==='staff');return{status:r.status,headers:r.headers,body:await r.json()};}
+async function call(env,method='GET',body=null,staff=true,trialId){const url=new URL('https://worker.test/api/staff/drone/analysis/Agro_ABC/review');if(trialId!==undefined)url.searchParams.set('trial',trialId);const r=await handleDroneRequest(new Request(url,{method,headers:{origin:'https://webgisyg.id',...(staff?{authorization:'Bearer staff'}:{}),'content-type':'application/json'},...(body?{body:JSON.stringify(body)}:{})}),env,url,async t=>t==='staff');return{status:r.status,headers:r.headers,body:await r.json()};}
+
+test('namespaced radial reviews preserve the legacy revision and reject arbitrary file selectors',async()=>{
+ const env=environment(),{trial,review}=fixture();assert.equal((await call(env,'POST',{expected_revision:0,review})).status,200);
+ const key='drone/analysis/dayun/results/Agro_ABC/index.json',manifest=JSON.parse(env.values.get(key));manifest.candidate_trials={'block-A-radial-v1':'radial-A/candidate-trial.json'};manifest.files.push('radial-A/candidate-trial.json');env.values.set(key,JSON.stringify(manifest));env.values.set(manifest.prefix+'/radial-A/candidate-trial.json',JSON.stringify({...trial,dataset_id:'radial-distinct'}));
+ const newReview={...review,dataset_id:'radial-distinct'};
+ assert.equal((await call(env,'GET',null,true,'block-A-radial-v1')).body.revision,0);
+ assert.equal((await call(env,'POST',{expected_revision:0,review:newReview},true,'block-A-radial-v1')).body.revision,1);
+ assert.equal((await call(env)).body.review.dataset_id,'trial');assert.equal((await call(env)).body.revision,1);
+ assert.equal((await call(env,'GET',null,true,'../../candidate-trial.json')).status,400);
+ assert.equal((await call(env,'GET',null,true,'unknown')).status,404);
+ const count=env.writes.length;assert.equal((await call(env,'POST',{expected_revision:1,review:newReview},false,'block-A-radial-v1')).status,401);assert.equal(env.writes.length,count);
+ assert.equal((await call(env,'POST',{expected_revision:0,review:newReview},true,'block-A-radial-v1')).status,409);
+});
+
+test('a dragged accepted crown does not resurrect its original automatic position',()=>{
+ const {trial,review}=fixture();review.samples.forEach(s=>s.complete=false);review.samples[0].features[0].geometry.coordinates=coords([45,45]);
+ const model=feedbackModel(normalizeReview(review,trial),trial),row=model.samples[0];
+ assert.equal(row.features.filter(f=>f.properties.feedback_origin==='reviewer_label').length,3);
+ assert.ok(!row.features.some(f=>f.properties.feedback_origin!=='reviewer_label'&&f.geometry.coordinates.every((v,i)=>Math.abs(v-coords([20,20])[i])<1e-9)));
+});
+
+test('radial feedback can calibrate within its stored lower-score proposal pool',()=>{
+ const {trial,review}=fixture();trial.threshold_grid=[.2,.25];trial.proposal_floor=.2;
+ trial.samples.forEach(s=>s.automated_pixel_proposals.forEach((p,i)=>p.score=i<3?.22:.21));
+ const model=feedbackModel(normalizeReview(review,trial),trial);assert.equal(model.threshold,.2);assert.equal(model.training_metrics.tp,3);assert.match(model.limitation,/down to 0.2/);
+});
+
+test('completed negative windows remain visible in held-out false positive evaluation',()=>{
+ const {trial,review}=fixture();review.samples[1].features.forEach(f=>f.properties.status='rejected');
+ const model=feedbackModel(normalizeReview(review,trial),trial);assert.equal(model.training_sample,'A');assert.equal(model.heldout.length,1);assert.equal(model.heldout[0].sample,'C');assert.equal(model.heldout[0].metrics.tp,0);assert.equal(model.heldout[0].metrics.fp,3);
+});
 test('feedback calibration separates training and held-out metrics; restored additions are reviewer labels',()=>{const {trial,review}=fixture(),clean=normalizeReview(review,trial),m=feedbackModel(clean,trial);assert.equal(m.threshold,.6);assert.equal(m.training_metrics.fp,0);assert.equal(m.heldout.length,1);assert.equal(m.heldout[0].sample,'C');assert.equal(m.samples[0].review_corrected_count,3);assert.equal(m.samples[0].pineapple_count_validated,null);assert.ok(m.limitation.includes('not proof'));});
 test('unreviewed samples never become training labels or completed counts',()=>{const {trial,review}=fixture();for(const s of review.samples){s.complete=false;for(const f of s.features)f.properties.status='candidate';}const m=feedbackModel(normalizeReview(review,trial),trial);assert.equal(m.status,'waiting_for_complete_review');assert.equal(m.training_metrics,null);assert.equal(m.samples[0].review_corrected_count,null);});
 test('a template pool that misses every accepted plant cannot claim successful calibration',()=>{const {trial,review}=fixture();for(const s of trial.samples)s.automated_pixel_proposals=[{score:.9,pixel:[400,400]}];const m=feedbackModel(normalizeReview(review,trial),trial);assert.equal(m.status,'insufficient_matching_proposals');assert.equal(m.threshold,.3);assert.equal(m.training_metrics.tp,0);});

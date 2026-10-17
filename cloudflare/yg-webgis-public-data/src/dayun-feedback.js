@@ -28,33 +28,37 @@ function evaluate(proposals,accepted,threshold){
   const fn=available.size;return{tp,fp,fn,precision:tp+fp?tp/(tp+fp):null,recall:tp+fn?tp/(tp+fn):null,f1:2*tp+fp+fn?2*tp/(2*tp+fp+fn):0};
 }
 export function feedbackModel(review,trial){
-  const completed=review.samples.filter(s=>s.complete&&s.features.filter(f=>f.properties.status==='accepted').length>=3).sort((a,b)=>a.id.localeCompare(b.id));
+  const allCompleted=review.samples.filter(s=>s.complete).sort((a,b)=>a.id.localeCompare(b.id));
+  const completed=allCompleted.filter(s=>s.features.filter(f=>f.properties.status==='accepted').length>=3);
   // One complete window trains the threshold; other windows are reported separately.
   const train=completed[0],training=train?trial.samples.find(s=>s.id===train.id):null;
   const positives=s=>s.features.filter(f=>f.properties.status==='accepted').map(f=>pixel(f.geometry.coordinates,trial.samples.find(t=>t.id===s.id).bounds));
   let threshold=trial.threshold||.3,trainingMetrics=null;
-  if(train){for(const t of [.3,.35,.4,.45,.5,.55,.6]){const m=evaluate(training.automated_pixel_proposals||[],positives(train),t);if(!trainingMetrics||m.f1>=trainingMetrics.f1){threshold=t;trainingMetrics=m;}}}
+  const grid=Array.isArray(trial.threshold_grid)&&trial.threshold_grid.length<=30&&trial.threshold_grid.every(t=>Number.isFinite(t)&&t>=0&&t<=1)?trial.threshold_grid:[.3,.35,.4,.45,.5,.55,.6];
+  if(train){for(const t of grid){const m=evaluate(training.automated_pixel_proposals||[],positives(train),t);if(!trainingMetrics||m.f1>=trainingMetrics.f1){threshold=t;trainingMetrics=m;}}}
   const calibrated=Boolean(train&&trainingMetrics?.tp>0);
   if(!calibrated)threshold=trial.threshold||.3;
   const samples=review.samples.map(row=>{
     const src=trial.samples.find(s=>s.id===row.id),accepted=row.features.filter(f=>f.properties.status==='accepted'),rejected=row.features.filter(f=>f.properties.status==='rejected');
     const proposals=(src.automated_pixel_proposals||[]).filter(p=>p.score>=threshold);
-    const remaining=proposals.filter(p=>![...accepted,...rejected].some(f=>distance(p.pixel,pixel(f.geometry.coordinates,src.bounds))<=12));
+    const remaining=proposals.filter(p=>![...accepted,...rejected].some(f=>{const original=src.features.find(x=>x.properties.id===f.properties.id);return distance(p.pixel,pixel(f.geometry.coordinates,src.bounds))<=12||(original&&distance(p.pixel,pixel(original.geometry.coordinates,src.bounds))<=12);}));
     const features=accepted.map(f=>({...f,properties:{...f.properties,feedback_origin:'reviewer_label'}}));
     // Complete review: don't resurrect unlabelled false positives in that window.
-    if(!row.complete)remaining.forEach((p,i)=>features.push({type:'Feature',geometry:{type:'Point',coordinates:point(p.pixel,src.bounds)},properties:{id:src.id+'-auto-'+i,sample_id:src.id,status:'candidate',similarity:p.score,feedback_origin:'thresholded_template_match'}}));
+    if(!row.complete)remaining.forEach((p,i)=>features.push({type:'Feature',geometry:{type:'Point',coordinates:point(p.pixel,src.bounds)},properties:{id:src.id+'-auto-'+i,sample_id:src.id,status:'candidate',similarity:p.score,feedback_origin:trial.method?.includes('annular')?'thresholded_radial_orientation':'thresholded_template_match'}}));
     return{id:row.id,complete:row.complete,accepted_by_reviewer:accepted.length,rejected_by_reviewer:rejected.length,automatic_count:proposals.length,feedback_candidate_count:features.length,review_corrected_count:row.complete?accepted.length:null,pineapple_count_validated:null,features};
   });
   return{schema:'dayun-feedback-model-v1',status:calibrated?'calibrated_trial_not_independently_validated':train?'insufficient_matching_proposals':'waiting_for_complete_review',threshold,matching_radius_native_pixels:12,training_sample:train?.id||null,training_metrics:trainingMetrics,
-    heldout:completed.slice(1).map(s=>({sample:s.id,metrics:evaluate(trial.samples.find(t=>t.id===s.id).automated_pixel_proposals||[],positives(s),threshold)})),samples,
-    limitation:'Threshold calibration uses stored template proposals >=0.30 only. Accepted additions restore missed crowns in reviewed windows; this is feedback reconciliation, not proof of model generalization. C contains template exemplars, so a held-out window is not an independent species/count validation. Never extrapolate to whole gawangan or census.'};
+    heldout:allCompleted.filter(s=>s.id!==train?.id).map(s=>({sample:s.id,metrics:evaluate(trial.samples.find(t=>t.id===s.id).automated_pixel_proposals||[],positives(s),threshold)})),samples,
+    limitation:'Threshold calibration uses stored proposals only, down to '+(trial.proposal_floor??.30)+'. Accepted additions restore missed crowns in reviewed windows; this is feedback reconciliation, not proof of generalization or independent species validation. Never extrapolate to whole gawangan or census.'};
 }
 export async function reviewOperation(env,body){
   if(!['Agro_ABC','Agro_DEF'].includes(body.label))fail('invalid_source');
   const read=async key=>{const o=await env.PUBLIC_SNAPSHOTS.get(key);return o?JSON.parse(await o.text()):null};
   const manifest=await read(`drone/analysis/dayun/results/${body.label}/index.json`);
-  if(!manifest||!/^[\w-]+$/.test(manifest.run)||!manifest.files?.includes('candidate-trial.json')||!manifest.prefix?.startsWith(`drone/analysis/dayun/results/${body.label}/`))fail('trial_not_available',404);
-  const trial=await read(manifest.prefix+'/candidate-trial.json');if(!trial||trial.source_run!==manifest.run)fail('trial_source_mismatch',409);
+  if(body.trial_id!==undefined&&(typeof body.trial_id!=='string'||!/^[\w-]{1,64}$/.test(body.trial_id)))fail('invalid_trial_selector');
+  const file=body.trial_id?manifest?.candidate_trials?.[body.trial_id]:'candidate-trial.json';
+  if(!manifest||!/^[\w-]+$/.test(manifest.run)||typeof file!=='string'||!manifest.files?.includes(file)||file.split('/').some(p=>!p||p==='.'||p==='..')||!manifest.prefix?.startsWith(`drone/analysis/dayun/results/${body.label}/`))fail('trial_not_available',404);
+  const trial=await read(manifest.prefix+'/'+file);if(!trial||trial.source_run!==manifest.run)fail('trial_source_mismatch',409);
   if(typeof trial.dataset_id!=='string'||!trial.dataset_id||trial.dataset_id.length>300)fail('invalid_trial_identity',409);
   const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(trial.dataset_id));
   const trialHash=Array.from(new Uint8Array(digest),b=>b.toString(16).padStart(2,'0')).join('');

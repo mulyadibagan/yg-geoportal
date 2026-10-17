@@ -128,3 +128,37 @@ The staff viewer validates the source run, offers per-zone diagnostics and
 CSV, a viewport-filtered review grid, enlarged sample sheets and native TIFF
 inspection. Files use the existing authenticated API and are removed from
 the UI on session disposal. No public imagery endpoint is added.
+
+## Correctable radial crown pilot
+
+`propose_dayun_candidates.radial_propose` adds an orientation response to the
+existing proposal engine. It measures tangential image gradients around candidate
+centres at native radii 40/55/75px, masks invalid annuli and zone centres, and
+suppresses peaks within 65px. It uses no copied exemplar pixels and no green-pixel
+count. Fixed mature-crown scales can miss small plants, while litter, overlapping
+leaves, weeds and pale crowns still produce false proposals and missed centres.
+Scores are shape agreement, not species probabilities.
+
+`scripts/propose_dayun_radial_trial.py` prepares six existing native 512px samples
+from the detail output, with unchanged RGB/alpha pixels and coordinate transforms.
+The A02 median window is the development visual screen. A01/A03 median, A02 low,
+A09 mixed vegetation and one inferred dead-strip window are unlabelled transfer
+checks. The pilot produces respectively 8/2/0/2/0/1 candidates at .30, versus
+3/0/0/0/0/0 for the former local pixel-template trial. More proposals do not prove
+better precision or recall; no independent user labels yet exist for these windows.
+Unlabelled zero-detection samples remain available to add missed plants.
+
+The review trial retains the existing schema, editing controls, optimistic
+revision checks, immutable private history and feedback calibration. A manifest
+`candidate_trials` map resolves a named trial to an allowlisted private JSON;
+`preferred_candidate_trial` selects it initially. Review GET/POST uses a validated
+`?trial=<name>` selector; raw paths are rejected. Dataset IDs include the method,
+configuration and source provenance signature, separating new labels from the
+legacy A/C review history. Switching trials requires saved or exported edits.
+Only the review namespace changes; no census writes are introduced.
+
+Stored proposals extend to .20 so completed user reviews can calibrate a threshold
+on that actual candidate pool. Accepted additions restore missed crowns within
+reviewed windows; moved accepted/rejected candidates suppress their original
+automatic positions to avoid resurrecting duplicates. Threshold adjustment is
+feedback reconciliation, not a trained species detector or validated block count.

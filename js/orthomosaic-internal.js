@@ -232,7 +232,7 @@
       };
       $('dayunResults').append(select);$('dayunResults').append(inspect);$('dayunResults').append(button);
       if(window.YG_DAYUN_BLOCK){
-        try{const dispose=await window.YG_DAYUN_BLOCK.mount({host:$('blockReview'),map,api,base,manifest,openRaster,save,current});if(current()){disposeBlockReview=dispose;if(manifest.block_analyses?.A)$('sampleReviewPanel').open=false;}else dispose();}
+        try{const dispose=await window.YG_DAYUN_BLOCK.mount({host:$('blockReview'),map,api,base,manifest,openRaster,save,current});if(current()){disposeBlockReview=dispose;if(manifest.block_analyses?.A)$('sampleReviewPanel').open=Boolean(manifest.preferred_candidate_trial);}else dispose();}
         catch(error){if(current())$('dayunStatus').textContent+=' Analisis blok belum dapat dimuat: '+error.message;}
       }
       if(window.YG_DAYUN_CANDIDATES){
