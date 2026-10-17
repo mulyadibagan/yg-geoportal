@@ -207,7 +207,8 @@ async function dayunAnalysis(request,env,url,verifyStaffToken){
       if(!body||typeof body!=='object'||Array.isArray(body))return reply(request,{ok:false,error:'invalid_review_json'},400);
     }
     const stub=env.DRONE_QUEUE.get(env.DRONE_QUEUE.idFromName('dayun-review-'+reviewMatch[1]));
-    const response=await stub.fetch(new Request('https://queue.internal/dayun-review',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({review:body.review,expected_revision:body.expected_revision,label:reviewMatch[1],action:request.method==='POST'?'save':'load'})}));
+    const trial_id=url.searchParams.has('trial')?url.searchParams.get('trial'):undefined;
+    const response=await stub.fetch(new Request('https://queue.internal/dayun-review',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({review:body.review,expected_revision:body.expected_revision,trial_id,label:reviewMatch[1],action:request.method==='POST'?'save':'load'})}));
     return reply(request,await response.json(),response.status,{'cache-control':'private, no-store'});
   }
   if(url.pathname==='/api/staff/drone/analysis/requests'){

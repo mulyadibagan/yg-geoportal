@@ -15,6 +15,40 @@ def suppress(points,distance=28,limit=60):
             if len(kept)>=limit:break
     return kept
 
+
+def radial_propose(rgb, valid, zone=None, threshold=.30, distance=65, radii=(40,55,75), limit=1000):
+    """Orientation-based crown proposals, independent of copied exemplar pixels.
+
+    Long leaf edges align away from a crown centre; their image gradients are
+    mostly tangential. Annular orientation agreement gives a shape score, not
+    species probability. Fixed mature-crown scales can miss small seedlings.
+    Every annulus must be covered by valid imagery; only centres use zone masks.
+    """
+    if rgb.ndim!=3 or rgb.shape[2]!=3 or valid.shape!=rgb.shape[:2] or not radii or any(r<3 for r in radii):
+        raise ValueError('invalid_radial_input')
+    gray=cv2.GaussianBlur(cv2.cvtColor(rgb,cv2.COLOR_RGB2GRAY).astype('float32'),(0,0),1)
+    gx=cv2.Sobel(gray,cv2.CV_32F,1,0);gy=cv2.Sobel(gray,cv2.CV_32F,0,1)
+    energy=gx*gx+gy*gy
+    scale=np.percentile(np.sqrt(energy)[valid],80) if valid.any() else 0
+    weight=np.minimum(np.sqrt(energy)/(scale+1e-6),1)
+    a=(gy*gy-gx*gx)/(energy+1e-6)*weight
+    b=(-2*gx*gy)/(energy+1e-6)*weight
+    scores=np.full(gray.shape,-1,dtype='float32')
+    for radius in radii:
+        y,x=np.mgrid[-radius:radius+1,-radius:radius+1]
+        r=np.hypot(x,y);theta=np.arctan2(y,x)
+        kernel=((r>=radius*.25)&(r<=radius)).astype('float32');kernel/=kernel.sum()
+        response=(cv2.filter2D(a,-1,(kernel*np.cos(2*theta)).astype('float32'))+
+                  cv2.filter2D(b,-1,(kernel*np.sin(2*theta)).astype('float32')))/(cv2.filter2D(weight,-1,kernel)+1e-6)
+        full=cv2.erode(valid.astype('uint8'),np.ones((2*radius+1,2*radius+1),'uint8'),borderType=cv2.BORDER_CONSTANT,borderValue=0)>0
+        np.maximum(scores,np.where(full,np.clip(response,0,1),-1),out=scores)
+    if zone is not None:
+        if zone.shape!=valid.shape:raise ValueError('invalid_radial_zone')
+        scores[~zone]=-1
+    local=cv2.dilate(scores,np.ones((15,15),'uint8'))
+    ys,xs=np.where((scores>=threshold)&(scores==local))
+    return suppress([(float(scores[y,x]),int(x),int(y)) for y,x in zip(ys,xs)],distance=distance,limit=limit)
+
 def propose(rgb,valid,templates,threshold=.43,distance=28,limit=60):
     gray=cv2.cvtColor(rgb,cv2.COLOR_RGB2GRAY);scores=np.full(gray.shape,-1,dtype=np.float32)
     for template in templates:

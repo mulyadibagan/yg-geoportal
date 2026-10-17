@@ -57,3 +57,15 @@ test('only added candidates can be deleted, undone and saved without a negative 
  assert.equal(stored.review.samples[0].features.length,1);assert.equal(stored.review.samples[0].features[0].properties.id,'ABC-A-01-001');assert.equal(stored.review.samples[0].features[0].properties.status,'candidate');assert.equal(stored.review.samples[0].complete,false);
  dispose();const restored=await mount(s.options);await s.find('Buka sampel dan penanda').onclick();assert.equal(s.markers.length,1);restored();
 });
+
+test('radial trial uses a separate private review and switching protects unsaved edits',async()=>{
+ const s=setup();s.options.manifest.candidate_trials={'block-A-radial-v1':'radial/candidate-trial.json'};s.options.manifest.preferred_candidate_trial='block-A-radial-v1';s.options.manifest.files.push('radial/candidate-trial.json');
+ const radial={...trial(),dataset_id:'run-radial'},stores={old:{revision:5,review:null,model:null},radial:{revision:0,review:null,model:null}},posts=[];
+ s.options.api=async(path,options={})=>{s.requests.push(path);if(path.includes('/review')){const key=path.includes('?trial=')?'radial':'old';if(options.method==='POST'){const body=JSON.parse(options.body);posts.push({key,body});assert.equal(body.expected_revision,stores[key].revision);stores[key]={revision:stores[key].revision+1,review:body.review,model:null};}return{json:async()=>structuredClone(stores[key])};}return{json:async()=>structuredClone(path.includes('/radial/')?radial:trial()),blob:async()=>new Blob(['tif'])};};
+ const all=n=>[n,...(n.children||[]).flatMap(all)],find=text=>all(s.host).find(x=>x.textContent===text);
+ const dispose=await mount(s.options);assert.ok(s.requests.some(p=>p.endsWith('/review?trial=block-A-radial-v1')));
+ await find('Buka sampel dan penanda').onclick();s.markers[0].handlers.click();all(s.host).find(x=>x.tag==='select'&&x.children.some(c=>c.value==='accepted')).value='accepted';find('Terapkan keputusan').onclick();
+ const chooser=s.host.children[0];chooser.value='';await chooser.onchange();assert.equal(chooser.value,'block-A-radial-v1');assert.match(s.host.children[1].textContent,/Simpan privat atau ekspor/);
+ await find('Simpan privat & perbarui hitungan').onclick();assert.equal(posts[0].key,'radial');assert.equal(posts[0].body.review.dataset_id,'run-radial');assert.equal(stores.old.revision,5);
+ chooser.value='';await chooser.onchange();assert.ok(s.requests.at(-1).endsWith('/review'));assert.equal(stores.radial.revision,1);dispose();
+});
