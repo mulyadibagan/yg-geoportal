@@ -197,6 +197,10 @@ def analyze(source, config_path, output, map_path, block='A', source_run=None, c
         writer.writeheader()
         writer.writerows(rows)
     (out / 'report.txt').write_text(f'Blok {block}: {len(kept)} kandidat tajuk belum tervalidasi; BUKAN jumlah nanas.\n' + '\n'.join(result['limitations']), encoding='utf-8')
+    from detail_dayun_block import detail
+    detail(out)
+    result['detail_analysis'] = 'detail-analysis.json'
+    write('analysis.json', result)
     print(json.dumps({k: result[k] for k in ['block', 'candidate_count', 'boundary_conflict_candidate_count', 'boundary_overlap_count', 'census_changed']}), flush=True)
     return result
 

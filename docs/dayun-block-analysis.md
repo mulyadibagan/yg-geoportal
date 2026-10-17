@@ -91,3 +91,40 @@ approximate months, not exact days.
 The dated report and native crown inspection sheet are private, manifest-listed
 downloads. A qualitative visual screen is not a labelled accuracy benchmark;
 it must not turn the 19 unvalidated proposals into a confirmed pineapple count.
+
+## Native diagnostics and local crown transfer test
+
+`scripts/detail_dayun_block.py --directory <private block folder>` reads each
+native RGBA tile, masks the dissolved zone polygons at pixel centres, and
+reports valid coverage, visible RGB vegetation and dark pixel fractions per
+zone. Areas use projected EPSG:32648 tile area per native pixel. Polygon area
+and rasterized area are retained separately. Zone overlaps are not a block
+area total. A fixed excess-green heuristic includes weeds and MPTS as well as
+pineapple; it is not planted area, species classification or plant health.
+
+Native 256px cells (about 2.36m for ABC, with smaller tile-edge cells) flag
+incomplete coverage, dark pixels and low visible vegetation for inspection.
+These flags do not diagnose missing plants, row gaps, or dead pineapple.
+Native 512px context samples select low/median/high vegetation strata within
+each zone; context may cross the zone boundary. Sampling is deterministic,
+not an independent accuracy benchmark. Native TIFF source hashes and polygon
+hashes are recorded; the source raster, polygons and census are never edited.
+The block analyzer generates these diagnostic outputs after its existing
+candidate pass, including resumed runs.
+
+`scripts/trial_dayun_block_samples.py --directory <folder> --config <private
+config>` reuses the existing template matcher with explicit local crown
+exemplars. Calibration tiles are marked, matching is masked to the selected
+zone, thresholds .43/.50/.60 are reported, and sample windows are never summed
+or extrapolated. In the Blok A pilot three visual A02 exemplars matched only
+their calibration sample; the remaining samples had no proposals at .43.
+This exposes poor transfer and missed visible crowns, not absence of plants.
+No precision, recall or pineapple total is reported without independent labels.
+
+Publish diagnostics, review cells, sample sheets, local trial and provenance
+through the existing private allowlisted source manifest. Set
+`block_details.A` to `detail-analysis.json` in that same block result folder.
+The staff viewer validates the source run, offers per-zone diagnostics and
+CSV, a viewport-filtered review grid, enlarged sample sheets and native TIFF
+inspection. Files use the existing authenticated API and are removed from
+the UI on session disposal. No public imagery endpoint is added.
