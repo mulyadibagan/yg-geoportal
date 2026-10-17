@@ -70,7 +70,7 @@ test('direct marker selection opens detail without writes; rejected points hide 
  s.context.window.YG_DAYUN_BLOCK_EDIT={mount:async()=>({features:()=>[{geometry:{coordinates:[.5,.5]},properties:{id:'auto',status:'candidate',zones:[]}},{geometry:{coordinates:[.4,.4]},properties:{id:'bad',status:'rejected',zones:[]}}],pick:async()=>picks++,refresh(){},dispose(){}})};
  s.options.api=async(path,c)=>path.endsWith('candidates.geojson')?{json:async()=>({features:[]})}:old(path,c);
  const dispose=await s.mount(s.options);await s.find('Buka seluruh Blok A').onclick();assert.equal(s.layers.length,1);assert.equal(s.overlays[0].pane,'dayun-overview');assert.equal(s.layers[0].opts.bubblingMouseEvents,false);await s.layers[0].handlers.click();assert.equal(picks,1);assert.equal(expanded,1);assert.ok(s.requests.every(r=>!r.config));
- const label=s.host.children.find(x=>x.children?.some(y=>y.tag==='input'&&y.type==='checkbox')),check=label.children[0];check.checked=true;check.onchange();assert.ok(s.layers.some(x=>x.opts.color==='#c72d40'));dispose();
+ const label=s.host.children.find(x=>x.children?.some(y=>y.textContent===' Tampilkan titik yang ditolak')),check=label.children[0];check.checked=true;check.onchange();assert.ok(s.layers.some(x=>x.opts.color==='#c72d40'));dispose();
 });
 
 test('same native crop is reused and failed opening never establishes a usable native extent',async()=>{
@@ -128,4 +128,22 @@ test('Blok B opens its own analysis, private native assets and database referenc
 test('Blok C opens its own analysis, private native assets and database reference without reading Blok A',async()=>{
  const s=setup();s.options.block='C';s.result.block='C';s.result.zones=[{id:'GT-C-01',kind:'active_source',candidate_crowns:2}];s.result.model_calibration={transferred_from_block:'A'};s.options.manifest.block_analyses={C:'block-C/analysis.json'};s.options.manifest.files=s.options.manifest.files.map(f=>f.replace('block-A/','block-C/'));s.options.manifest.block_comparisons={C:'block-C/database-comparison.json'};s.options.manifest.files.push('block-C/database-comparison.json');const old=s.options.api;s.options.api=async(path,config)=>path.endsWith('database-comparison.json')?{json:async()=>({schema:'dayun-ortho-database-comparison-v1',block:'C',source_run:'run',rows:[{gawangan:'GT-C-01',image_candidates:2}]})}:old(path,config);
  const dispose=await s.mount(s.options);assert.ok(s.find('Buka seluruh Blok C'));await s.find('Buka seluruh Blok C').onclick();assert.ok(s.requests.every(r=>r.path.includes('/files/block-C/')&&!r.config));assert.match(JSON.stringify(s.host.children),/Akurasi pada Blok C belum diukur/);assert.match(JSON.stringify(s.host.children),/Pembanding database per gawangan/);dispose();
+});
+
+test('clean display filters staff acceptance without changing baseline points or saving decisions',async()=>{
+ const s=setup();let attrs=new Map();const oldCreate=s.context.document.createElement;s.context.document.createElement=tag=>{const n=oldCreate(tag);n.setAttribute=(key,value)=>attrs.set(value,n);return n};
+ const features=[['auto-unreviewed','candidate'],['manual-accepted','accepted'],['auto-rejected','rejected']].map(([id,status],i)=>({type:'Feature',geometry:{type:'Point',coordinates:[.2+i*.1,.5]},properties:{id,status,zones:['GT-A-01'],origin:id==='manual-accepted'?'manual_addition':'automated'}}));
+ const before=JSON.stringify(features),api=s.options.api;s.options.api=async(path,config)=>path.endsWith('candidates.geojson')?{json:async()=>({features})}:api(path,config);
+ let editMode;s.context.window.YG_DAYUN_BLOCK_EDIT={mount:async()=>({features:()=>features,refresh(){},dispose(){},setEditing:value=>editMode=value})};
+ const dispose=await s.mount(s.options);await s.find('Buka seluruh Blok A').onclick();const mode=attrs.get('Titik yang ditampilkan');assert.ok(mode);assert.equal(s.layers.length,2);assert.ok(s.layers.every(l=>l.opts.radius===4&&l.opts.fillOpacity===0));
+ mode.value='accepted';mode.onchange();assert.equal(s.layers.length,3);assert.equal(s.layers.at(-1).opts.color,'#2563eb');assert.match(JSON.stringify(s.host.children),/1 titik diterima tim/);
+ mode.value='imagery';mode.onchange();assert.equal(editMode,false);assert.equal(s.layers.length,3);assert.match(JSON.stringify(s.host.children),/tanpa menghapus hasil/);
+ assert.equal(JSON.stringify(features),before);assert.ok(s.requests.every(r=>!r.config));dispose();
+});
+
+test('clean overview avoids a carpet of candidates and an empty accepted view is explicitly not plant absence',async()=>{
+ const s=setup();let mode;const create=s.context.document.createElement;s.context.document.createElement=tag=>{const n=create(tag);n.setAttribute=(key,value)=>{if(value==='Titik yang ditampilkan')mode=n};return n};
+ const api=s.options.api;s.options.api=async(path,config)=>path.endsWith('candidates.geojson')?{json:async()=>({features:[{geometry:{coordinates:[.5,.5]},properties:{id:'auto',status:'candidate',zones:['GT-A-01']}}]})}:api(path,config);
+ s.options.map.getZoom=()=>19;const dispose=await s.mount(s.options);await s.find('Buka seluruh Blok A').onclick();assert.equal(s.layers.length,0);mode.value='accepted';mode.onchange();assert.match(JSON.stringify(s.host.children),/bukan berarti tidak ada nanas/);assert.equal(s.layers.length,0);
+ mode.value='all';s.options.map.getZoom=()=>24;mode.onchange();assert.equal(s.layers.length,1);assert.ok(s.requests.every(r=>!r.config));dispose();
 });
