@@ -236,5 +236,16 @@
     return Object.assign({}, layer, {items: items, reportedTotalHa: blocks.totalAreaHa, boundaryReceivedDate: geojson.boundaryRevision.received_date});
   }
 
-  return {build: build, population: population, boundaryLegend: boundaryLegend, MPTS: MPTS.slice(), HORTICULTURE: HORTICULTURE.slice()};
+  // Display block perimeters only. Tiny interior seams from the union of source
+  // parcels are not block borders. Keep source geometry and area measurements.
+  function outerBlockBoundaries(collection) {
+    return Object.assign({}, collection, {features: collection.features.map(function (feature) {
+      var g = feature.geometry;
+      var geometry = g.type === 'Polygon' ? {type: 'Polygon', coordinates: [g.coordinates[0]]} :
+        g.type === 'MultiPolygon' ? {type: 'MultiPolygon', coordinates: g.coordinates.map(function (polygon) { return [polygon[0]]; })} : g;
+      return Object.assign({}, feature, {geometry: geometry});
+    })});
+  }
+
+  return {build: build, population: population, boundaryLegend: boundaryLegend, outerBlockBoundaries: outerBlockBoundaries, MPTS: MPTS.slice(), HORTICULTURE: HORTICULTURE.slice()};
 });

@@ -9,3 +9,21 @@ test('revised map legend derives geometry counts and areas without changing prog
  assert.equal(result.reportedTotalHa,blocks.totalAreaHa);assert.equal(result.boundaryReceivedDate,'2026-10-18');
  assert.notEqual(result.items[0].areaHa,layer.items[0].areaHa);
 });
+test('block display removes interior parcel seams while retaining every exterior and source measurement',()=>{
+ const blocks=JSON.parse(fs.readFileSync('data/dayun-blocks.geojson','utf8')),before=JSON.stringify(blocks);
+ const display=summary.outerBlockBoundaries(blocks);
+ assert.equal(JSON.stringify(blocks),before);
+ assert.ok(blocks.features.some(f=>f.geometry.coordinates.length>1));
+ display.features.forEach((f,i)=>{
+  assert.equal(f.geometry.type,'Polygon');assert.equal(f.geometry.coordinates.length,1);
+  assert.deepEqual(f.geometry.coordinates[0],blocks.features[i].geometry.coordinates[0]);
+  assert.deepEqual(f.properties,blocks.features[i].properties);
+ });
+ const multi={type:'FeatureCollection',features:[{type:'Feature',properties:{areaHa:10},geometry:{type:'MultiPolygon',coordinates:[blocks.features[0].geometry.coordinates,blocks.features[1].geometry.coordinates]}}]};
+ const result=summary.outerBlockBoundaries(multi);
+ assert.equal(result.features[0].geometry.coordinates.length,2);
+ assert.ok(result.features[0].geometry.coordinates.every(p=>p.length===1));
+ assert.deepEqual(result.features[0].geometry.coordinates[1][0],multi.features[0].geometry.coordinates[1][0]);
+ const script=fs.readFileSync('js/dayun-public.js','utf8');
+ assert.match(script,/blockHalo=L\.geoJSON\(blockDisplay/);assert.match(script,/blockLines=L\.geoJSON\(blockDisplay/);
+});
