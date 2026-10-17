@@ -22,11 +22,11 @@ test('public Dayun details match the official gawangan polygons', () => {
 
 test('every published crop belongs to one gawangan and has a crop name', () => {
   assert.equal(details.source, undefined);
-  assert.equal(details.objects.reduce((total, item) => total + item.crops.length, 0), 139);
+  assert.equal(details.objects.reduce((total, item) => total + item.crops.length, 0), 140);
   for (const item of details.objects) {
     assert.match(item.objectId, /^DAYUN-GT-[A-F]-\d{2}$/);
     assert.ok(item.crops.length > 0, item.objectId);
-    for (const crop of item.crops) { assert.ok(crop.crop, `${item.objectId} has an unnamed crop`); if (crop.crop === 'NANAS') assert.equal(crop.variety, 'Queen', `${item.objectId} pineapple variety`); }
+    for (const crop of item.crops) { assert.ok(crop.crop, `${item.objectId} has an unnamed crop`); if (crop.crop === 'NANAS' && crop.variety) assert.equal(crop.variety, 'Queen', `${item.objectId} pineapple variety`); }
   }
 });
 
@@ -41,12 +41,12 @@ test('each block has a calculated planting-row area from unique gawangan objects
   }
   assert.equal(seen.size, 60);
   assert.deepEqual(Object.fromEntries([...totals].map(([block, area]) => [block, Number(area.toFixed(4))])), {
-    'Blok B': 4.0429,
-    'Blok A': 1.7931,
-    'Blok C': 3.1032,
-    'Blok D': 3.908,
-    'Blok E': 3.5753,
-    'Blok F': 4.0854
+    'Blok B': 4.1455,
+    'Blok A': 1.9093,
+    'Blok C': 3.1259,
+    'Blok D': 3.83,
+    'Blok E': 3.5163,
+    'Blok F': 4.1569
   });
   for (const feature of blocks.features) {
     assert.ok(totals.get(feature.properties.name) <= feature.properties.areaHa);

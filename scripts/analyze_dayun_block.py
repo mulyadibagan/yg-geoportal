@@ -38,6 +38,11 @@ def block_zones(features, block):
     for f in features:
         if f['properties'].get('category') == 'Gawangan mati':
             geom = shape(f['geometry'])
+            p = f['properties']
+            if p.get('sourceZoneId'):
+                if p.get('block') == f'Blok {block}':
+                    zones.append({'id': p['sourceZoneId'], 'kind': 'dead_source', 'geometry': geom, 'assignment': 'source_block'})
+                continue
             dead.extend(list(geom.geoms) if geom.geom_type == 'MultiPolygon' else [geom])
     for i, geom in enumerate(dead, 1):
         projected = transform(project, geom)

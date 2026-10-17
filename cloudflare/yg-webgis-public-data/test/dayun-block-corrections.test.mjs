@@ -71,3 +71,16 @@ test('Blok B can review more than thirty thousand candidates without raising the
 test('Blok C can review more than thirty thousand candidates without raising the Blok A limit',()=>{
  const f=fixture();f.analysis.block='C';f.path='block-C/analysis.json';f.review.block='C';f.review.analysis_path=f.path;f.zones.features[0].properties.id='GT-C-01';f.review.changes=Array.from({length:30001},(_,i)=>point('C-manual-'+String(i).padStart(8,'0'),[1,1]));const before=JSON.stringify(f.candidates);const reviewed=normalizeBlockReview(f.review,f);assert.equal(reviewed.changes.length,30001);const patch={schema:'dayun-block-point-patch-v1',source_run:'run',analysis_path:f.path,block:'C',operations:[{id:'C-manual-next00001',expected_version:0,operation_id:'operation-capacity-C',feature:point('C-manual-next00001',[1,1])}]};const merged=mergePointPatch({review:reviewed,point_versions:{},point_operations:{}},patch,f);assert.equal(merged.review.changes.length,30002);assert.equal(JSON.stringify(f.candidates),before);f.analysis.block='A';f.review.block='A';assert.throws(()=>normalizeBlockReview(f.review,f),/block_review_source_mismatch/);
 });
+
+
+test('boundary revision reassigns legacy manual points on read without rewriting decisions or revisions',async()=>{
+ const env=environment(),f=fixture();await call(env,'POST',{expected_revision:0,review:f.review});
+ const before=new Map(env.values),writes=env.writes.length;
+ const path=f.manifest.prefix+'/block-A/analysis.json';const analysis=JSON.parse(env.values.get(path));analysis.boundary_revision={id:'revised'};env.values.set(path,JSON.stringify(analysis));
+ const key=f.manifest.prefix+'/block-A/zones.geojson',zones=JSON.parse(env.values.get(key));zones.features[0].properties.id='GT-A-02';zones.features[0].geometry.coordinates=[[[1,1],[2,1],[2,2],[1,2],[1,1]]];env.values.set(key,JSON.stringify(zones));
+ const response=await call(env);assert.equal(response.status,200);assert.equal(response.body.revision,1);
+ assert.deepEqual(response.body.review.changes[0].properties.zones,[]);assert.deepEqual(response.body.review.changes[1].properties.zones,['GT-A-02']);
+ assert.deepEqual(response.body.review.changes.map(p=>p.geometry),f.review.changes.map(p=>p.geometry));assert.equal(response.body.review.changes[0].properties.status,'rejected');
+ assert.equal(env.writes.length,writes);for(const [key,value]of before)if(key.includes('/block-reviews/'))assert.equal(env.values.get(key),value);
+ assert.equal(response.body.point_versions['A-manual-12345678'],1);
+});

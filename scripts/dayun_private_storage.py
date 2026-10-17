@@ -72,7 +72,8 @@ def api_transfer(action,key,path,required=True):
     if action not in ('get','put'):raise RuntimeError('private_storage_invalid_action')
     account=os.environ.get('CLOUDFLARE_ACCOUNT_ID','')
     url=f'https://api.cloudflare.com/client/v4/accounts/{account}/r2/buckets/{BUCKET}/objects/{urllib.parse.quote(key,safe="/")}'
-    headers={'Authorization':'Bearer '+os.environ['CLOUDFLARE_API_TOKEN']}
+    headers={'Authorization':'Bearer '+os.environ['CLOUDFLARE_API_TOKEN'],
+             'User-Agent':'WebGISYG-private-analysis','Accept-Encoding':'identity'}
     path=Path(path);receiving=path.with_name(path.name+'.receiving')
     for attempt in range(4):
         try:

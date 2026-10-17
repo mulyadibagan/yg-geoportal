@@ -6,6 +6,9 @@ const inside=(c,b)=>c[0]>=b[0]&&c[0]<=b[2]&&c[1]>=b[1]&&c[1]<=b[3];
 function bbox(geometry){const all=[];const walk=x=>{if(typeof x[0]==='number')all.push(x);else x.forEach(walk)};walk(geometry.coordinates);return all.reduce((b,p)=>[Math.min(b[0],p[0]),Math.min(b[1],p[1]),Math.max(b[2],p[0]),Math.max(b[3],p[1])],[Infinity,Infinity,-Infinity,-Infinity]);}
 function locator(zones){const indexed=zones.features.map(f=>({f,b:bbox(f.geometry)}));return feature=>indexed.filter(z=>inside(feature.geometry.coordinates,z.b)&&booleanPointInPolygon(feature,z.f)).map(z=>z.f.properties.id);}
 
+// Derive membership from current boundaries without touching the saved revision.
+export function rebaseBlockReview(review,zones){if(!review)return null;const locate=locator(zones);return{...review,changes:review.changes.map(f=>({...f,properties:{...f.properties,zones:locate(f)}}))};}
+
 export function normalizeBlockReview(review,{manifest,path,analysis,candidates,zones}){
   const block=analysis.block;if(!['A','B','C'].includes(block))fail('invalid_block_source');
   if(review?.schema!=='dayun-block-corrections-v1'||review.source_run!==manifest.run||review.analysis_path!==path||review.block!==block||!Array.isArray(review.changes)||review.changes.length>reviewLimit(block))fail('block_review_source_mismatch');
@@ -76,7 +79,8 @@ export async function blockReviewOperation(env,body){
   const root=`drone/analysis/dayun/block-reviews/Agro_ABC/${manifest.run}/${hash}`,stored=await read(root+'/head.json');
   if(stored?.review){if(stored.review.source_run!==manifest.run||stored.review.block!==block)fail('review_base_source_mismatch',409);knownCandidates={type:'FeatureCollection',features:[...new Map([...knownCandidates.features,...stored.review.changes.filter(f=>f.properties.origin==='automated')].map(f=>[f.properties.id,f])).values()]};}
   const raw=collaborativeHead(stored,{ok:true,revision:0,review:null,counts:blockReviewCounts(null,candidates,zones),analysis_path:path});
-  const head={...raw,feedback_schema:'dayun-rejection-reason-v1',analysis_path:path,review:raw.review?{...raw.review,analysis_path:path}:null,counts:blockReviewCounts(raw.review,candidates,zones),review_base_analysis_path:anchor};
+  const currentReview=analysis.boundary_revision?rebaseBlockReview(raw.review,zones):raw.review;
+  const head={...raw,feedback_schema:'dayun-rejection-reason-v1',analysis_path:path,review:currentReview?{...currentReview,analysis_path:path}:null,counts:blockReviewCounts(currentReview,candidates,zones),review_base_analysis_path:anchor};
   if(body.action==='load')return head;
   if(body.action!=='save')fail('invalid_block_review_action');
   const context={manifest,path,analysis,candidates:knownCandidates,zones};let merged;
