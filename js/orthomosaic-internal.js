@@ -6,7 +6,7 @@
     if(typeof URLSearchParams==='undefined')return null;
     const q=new URLSearchParams(window.location?.search||'');
     const source=q.get('source'),trial=q.get('trial'),sample=q.get('sample'),point=q.get('point');
-    if(source==='Agro_ABC'&&['A','B'].includes(q.get('block')))return{source,block:q.get('block')};
+    if(source==='Agro_ABC'&&['A','B','C'].includes(q.get('block')))return{source,block:q.get('block')};
     if(!['Agro_ABC','Agro_DEF'].includes(source)||!trial||!/^[\w-]{1,64}$/.test(trial)||!sample||!/^[\w-]{1,100}$/.test(sample)||(point&&!/^[\w-]{1,100}$/.test(point)))return null;
     return{source,trial,sample,point};
   })();
@@ -248,7 +248,7 @@
     const current=()=>validSession() && request===dayunRequest;
     const selected=$('dayunSource').value;
     const target=requestedSample?.source===selected&&requestedSample.sample?requestedSample:null;
-    const block=['A','B'].includes($('dayunBlock').value)?$('dayunBlock').value:'A';displayedBlock=block;
+    const block=['A','B','C'].includes($('dayunBlock').value)?$('dayunBlock').value:'A';displayedBlock=block;
     const blockTarget=selected==='Agro_ABC'&&!requestedSample?.sample;
     if(!['Agro_ABC','Agro_DEF'].includes(selected))return;
     const base=`/api/staff/drone/analysis/${selected}`;

@@ -5,7 +5,7 @@
     for(const f of features){const p=f.properties,m=p.origin==='manual_addition',r=p.status==='rejected',a=p.status==='accepted';if(m)sum.manual_additions++;if(r)sum.rejected++;else{sum.working_total++;if(a)sum.accepted_by_staff++;else sum.unreviewed++;if(!p.zones?.length)sum.unassigned++;}for(const id of p.zones?.length?p.zones:['UNASSIGNED']){const row=rows.get(id);if(!row)continue;if(m)row.manual_additions++;else row.automatic++;if(r)row.rejected++;else{row.working_total++;if(a)row.accepted_by_staff++;else row.unreviewed++;}}}return{...sum,zones:[...rows.values()]};}
   async function mount({host,map,api,base,manifest,result,analysisPath,getCandidates,getZones,onChanged,preparePoint,onInspect,current,save}){
     const make=(tag,text)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;return n;};
-    const block=result.block||'A';if(!['A','B'].includes(block))throw Error('Blok analisis tidak didukung.');
+    const block=result.block||'A';if(!['A','B','C'].includes(block))throw Error('Blok analisis tidak didukung.');
     const endpoint=base+'/block-review?block='+block;let disposed=false,ready=false,editing=false,adding=false,busy=false,pulling=false,revision=0,version=0,exported=-1,dirty=false,timer=null,poll=null,selected=null,changes=[],pointVersions={};
     const pending=new Map(),conflicts=new Set(),inFlight=new Set(),receipts=new Map();
     const layer=L.layerGroup().addTo(map),alive=()=>!disposed&&current();

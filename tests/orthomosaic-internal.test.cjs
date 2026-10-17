@@ -93,3 +93,8 @@ test('Blok B link selects its block and passes that identity to the existing pri
 test('unsaved block decisions prevent switching blocks and retain the displayed block',async()=>{
  const s=setup({search:'?source=Agro_ABC&block=A',session:{token:'staff',expiresAt:Date.now()+10000},fetcher:async url=>({ok:true,status:200,json:async()=>url.endsWith('/analysis/Agro_ABC')?{download:{ok:true},analysis:{ok:true},files:['metadata.json']}:url.endsWith('metadata.json')?{gawangan:[]}:{jobs:[]}})});let disposed=0;s.context.window.YG_DAYUN_BLOCK={mount:async()=>{const d=()=>disposed++;d.canLeave=()=>false;return d}};await s.settle();const reads=s.calls.length;s.el('dayunBlock').value='B';s.el('dayunBlock').onchange();assert.equal(s.el('dayunBlock').value,'A');assert.equal(s.calls.length,reads);assert.equal(disposed,0);assert.match(s.el('dayunStatus').textContent,/Simpan atau ekspor/);
 });
+
+
+test('Blok C link selects its block and passes that identity to the existing private viewer',async()=>{
+ let mounted;const s=setup({search:'?source=Agro_ABC&block=C',session:{token:'staff',expiresAt:Date.now()+10000},fetcher:async url=>({ok:true,status:200,json:async()=>url.endsWith('/analysis/Agro_ABC')?{download:{ok:true},analysis:{ok:true},files:['metadata.json']}:url.endsWith('metadata.json')?{gawangan:[]}:{jobs:[]}})});s.context.window.YG_DAYUN_BLOCK={mount:async opts=>(mounted=opts,()=>{})};await s.settle();assert.equal(s.el('dayunBlock').value,'C');assert.equal(mounted.block,'C');assert.equal(mounted.autoOpen,true);assert.ok(s.calls.every(c=>!c.options.method));
+});

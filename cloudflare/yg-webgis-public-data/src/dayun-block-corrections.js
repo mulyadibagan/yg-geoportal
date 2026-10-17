@@ -1,13 +1,13 @@
 // Sparse, versioned staff map corrections only. No census or source-data writes.
 import {booleanPointInPolygon} from '@turf/turf';
 const fail=(message,status=400,details={})=>{throw Object.assign(Error(message),{status,...details})};
-const reviewLimit=block=>block==='B'?60000:30000;
+const reviewLimit=block=>['B','C'].includes(block)?60000:30000;
 const inside=(c,b)=>c[0]>=b[0]&&c[0]<=b[2]&&c[1]>=b[1]&&c[1]<=b[3];
 function bbox(geometry){const all=[];const walk=x=>{if(typeof x[0]==='number')all.push(x);else x.forEach(walk)};walk(geometry.coordinates);return all.reduce((b,p)=>[Math.min(b[0],p[0]),Math.min(b[1],p[1]),Math.max(b[2],p[0]),Math.max(b[3],p[1])],[Infinity,Infinity,-Infinity,-Infinity]);}
 function locator(zones){const indexed=zones.features.map(f=>({f,b:bbox(f.geometry)}));return feature=>indexed.filter(z=>inside(feature.geometry.coordinates,z.b)&&booleanPointInPolygon(feature,z.f)).map(z=>z.f.properties.id);}
 
 export function normalizeBlockReview(review,{manifest,path,analysis,candidates,zones}){
-  const block=analysis.block;if(!['A','B'].includes(block))fail('invalid_block_source');
+  const block=analysis.block;if(!['A','B','C'].includes(block))fail('invalid_block_source');
   if(review?.schema!=='dayun-block-corrections-v1'||review.source_run!==manifest.run||review.analysis_path!==path||review.block!==block||!Array.isArray(review.changes)||review.changes.length>reviewLimit(block))fail('block_review_source_mismatch');
   const originals=new Map(candidates.features.map(f=>[f.properties.id,f])),seen=new Set(),locate=locator(zones);
   const changes=review.changes.map(f=>{
@@ -58,7 +58,7 @@ export function mergePointPatch(head,patch,context){
 }
 
 export async function blockReviewOperation(env,body){
-  if(body.label!=='Agro_ABC'||!['A','B'].includes(body.block))fail('invalid_block_source');
+  if(body.label!=='Agro_ABC'||!['A','B','C'].includes(body.block))fail('invalid_block_source');
   const block=body.block;
   const read=async key=>{const object=await env.PUBLIC_SNAPSHOTS.get(key);return object?JSON.parse(await object.text()):null};
   const manifest=await read('drone/analysis/dayun/results/Agro_ABC/index.json'),path=manifest?.block_analyses?.[block];
