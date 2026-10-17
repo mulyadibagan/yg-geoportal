@@ -45,7 +45,19 @@ jobs:
       - name: Resolve published snapshot version
         shell: bash
         run: echo "SNAPSHOT_VERSION=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+      - name: Detect a boundary-only data release
+        id: scope
+        if: github.event_name == 'push'
+        env:
+          BEFORE_SHA: ${{ github.event.before }}
+        shell: bash
+        run: |
+          git diff --name-only "$BEFORE_SHA" HEAD > /tmp/changed-files
+          if grep -Eq '^data/dayun-(map|blocks)\.geojson$' /tmp/changed-files && ! grep '^data/' /tmp/changed-files | grep -Ev '^data/dayun-(map|blocks)\.geojson$' >/dev/null; then
+            echo 'boundary_only=true' >> "$GITHUB_OUTPUT"
+          fi
       - name: Stamp Dayun data update time
+        if: steps.scope.outputs.boundary_only != 'true'
         shell: bash
         run: |
           export DAYUN_UPDATED_AT="$(git log -1 --format=%cI -- data/dayun-gawangan-details.json)"
@@ -66,9 +78,11 @@ jobs:
         run: npm run validate:rtrw -- ../../private-data/rtrw-riau-2018-2038.geojson
         working-directory: cloudflare/yg-webgis-public-data
       - name: Build private RSPO organisation overview
+        if: steps.scope.outputs.boundary_only != 'true'
         run: npm run build:rspo-groups
         working-directory: cloudflare/yg-webgis-public-data
       - name: Upload versioned and current snapshots
+        if: steps.scope.outputs.boundary_only != 'true'
         working-directory: cloudflare/yg-webgis-public-data
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -102,7 +116,20 @@ jobs:
           npx wrangler r2 object put "yg-webgis-public-snapshots/dayun/context.geojson" --remote --file ../../data/dayun-context.geojson --content-type application/geo+json
           npx wrangler r2 object put "yg-webgis-public-snapshots/dayun/gawangan-details.json" --remote --file ../../data/dayun-gawangan-details.json --content-type application/json
           npx wrangler r2 object put "yg-webgis-public-snapshots/dayun/blocks.geojson" --remote --file ../../data/dayun-blocks.geojson --content-type application/geo+json
+      - name: Publish revised map boundaries without rewriting census snapshots
+        if: steps.scope.outputs.boundary_only == 'true'
+        working-directory: cloudflare/yg-webgis-public-data
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        shell: bash
+        run: |
+          for bucket in yg-webgis-public-snapshots-staging yg-webgis-public-snapshots; do
+            npx wrangler r2 object put "$bucket/dayun/map.geojson" --remote --file ../../data/dayun-map.geojson --content-type application/geo+json
+            npx wrangler r2 object put "$bucket/dayun/blocks.geojson" --remote --file ../../data/dayun-blocks.geojson --content-type application/geo+json
+          done
       - name: Build and upload manifest last
+        if: steps.scope.outputs.boundary_only != 'true'
         shell: bash
         working-directory: cloudflare/yg-webgis-public-data
         env:

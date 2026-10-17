@@ -40,22 +40,23 @@
     const nativeCache=new Map(),nativePending=new Map();let cacheBytes=0;
     const active=()=>!disposed&&current();
     const reviewCells=new Map();let teamSummary=null;
-    function updateReview({counts}){drawPoints();if(teamSummary)teamSummary.textContent=`Koreksi tim: tambahan ${counts.manual_additions}, ditolak ${counts.rejected}, diterima ${counts.accepted_by_staff}, belum diperiksa ${counts.unreviewed}, hitungan kerja ${counts.working_total.toLocaleString('id-ID')}. Hitungan kerja mencakup kandidat yang belum diperiksa; bukan sensus hidup.`;for(const row of counts.zones||[]){const cells=reviewCells.get(row.zone_id);if(cells)[row.manual_additions,row.rejected,row.accepted_by_staff,row.working_total].forEach((n,i)=>cells[i].textContent=n.toLocaleString('id-ID'));}}
+    function updateReview({counts}){drawPoints();if(teamSummary)teamSummary.textContent=`Koreksi tim: tambahan ${counts.manual_additions}, ditolak ${counts.rejected}, diterima ${counts.accepted_by_staff}, belum diperiksa ${counts.unreviewed}, hitungan kerja ${counts.working_total.toLocaleString('id-ID')}. Di luar batas gawangan: ${counts.unassigned}. Hitungan kerja mencakup kandidat yang belum diperiksa; bukan sensus hidup.`;for(const row of counts.zones||[]){const cells=reviewCells.get(row.zone_id);if(cells)[row.manual_additions,row.rejected,row.accepted_by_staff,row.working_total].forEach((n,i)=>cells[i].textContent=n.toLocaleString('id-ID'));}}
     const group=L.layerGroup().addTo(map),boundaries=L.layerGroup().addTo(map),points=L.layerGroup().addTo(map),diagnostics=L.layerGroup().addTo(map);
     const overviewPane=map.getPane('dayun-overview')||map.createPane('dayun-overview');overviewPane.style.zIndex='250';overviewPane.style.pointerEvents='none';
     let diagnosticData=null,diagnosticCells=null,showDiagnostics=false,sheetUrl=null;
     const el=(tag,text)=>{const node=document.createElement(tag);if(text!==undefined)node.textContent=text;return node;};
     host.replaceChildren();host.hidden=false;
     const title=el('h3',result.full_block_count?`Hitungan otomatis seluruh Blok ${block}`:`Blok ${block} — kandidat & pemeriksaan batas`);
-    const note=el('p','Aktif/mati mengikuti kategori polygon sumber, bukan diagnosis tanaman. Kandidat tajuk belum terkonfirmasi sebagai nanas. Batas sumber tidak diubah.');note.className='note';if(result.capture_date)note.textContent+=' Tanggal citra: '+result.capture_date+' (keterangan pemilik data).';if(Array.isArray(result.analysis_findings))note.textContent+=' '+result.analysis_findings.join(' ');
+    const note=el('p','Aktif/mati mengikuti kategori polygon sumber, bukan diagnosis tanaman. Kandidat tajuk belum terkonfirmasi sebagai nanas. Batas mengikuti versi sumber yang tertera pada hasil analisis.');note.className='note';if(result.capture_date)note.textContent+=' Tanggal citra: '+result.capture_date+' (keterangan pemilik data).';if(Array.isArray(result.analysis_findings))note.textContent+=' '+result.analysis_findings.join(' ');
     const open=el('button',`Buka seluruh Blok ${block}`),native=el('button','Periksa citra asli di titik peta'),download=el('button',`Unduh tabel Blok ${block}`),auditDownload=el('button','Unduh lokasi pemeriksaan batas');
     const select=el('select');select.setAttribute('aria-label',`Gawangan Blok ${block}`);select.add(new Option(`Seluruh Blok ${block}`,''));
-    result.zones.forEach(z=>select.add(new Option(z.id+' · '+(z.kind==='active_source'?'aktif':'mati, asosiasi sementara')+' · '+z.candidate_crowns+' kandidat',z.id)));
+    result.zones.forEach(z=>select.add(new Option(z.id+' · '+(z.kind==='active_source'?'aktif':z.assignment==='source_block'?'mati, blok resmi':'mati, asosiasi sementara')+' · '+z.candidate_crowns+' kandidat',z.id)));
+    if(result.boundary_revision){select.add(new Option('Di luar batas revisi — perlu diperiksa','__UNASSIGNED__'));host.append(el('p','Batas revisi '+result.boundary_revision.received_date+'. '+result.boundary_rebase.warning+' Area baru '+result.boundary_rebase.newly_included_detection_area_m2.toFixed(1)+' m².'));}
     const status=el('p','Buka blok untuk melihat citra dan seluruh batas.');status.setAttribute('role','status');
     const summary=el('p',`${result.candidate_count.toLocaleString('id-ID')} kandidat tajuk; ${result.boundary_conflict_candidate_count} kandidat pada batas tumpang tindih; ${result.boundary_overlap_count} zona tumpang tindih. Bukan jumlah nanas.`);
     const info=el('p','Peta bersih menampilkan citra tanpa garis gawangan. Aktifkan batas bila perlu memeriksa lokasinya. Penanda jingga masih kandidat, bukan nanas terkonfirmasi.');info.className='note';
     const table=el('table'),head=el('tr');['Gawangan','Kategori sumber','Kandidat di luar konflik','Kandidat konflik batas'].forEach(s=>head.append(el('th',s)));table.append(head);
-    result.zones.forEach(z=>{const row=el('tr');[z.id,z.kind==='active_source'?'Aktif':'Mati (sementara)',z.candidate_crowns,z.boundary_conflict_candidates].forEach(v=>row.append(el('td',String(v))));table.append(row);});
+    result.zones.forEach(z=>{const row=el('tr');[z.id,z.kind==='active_source'?'Aktif':z.assignment==='source_block'?'Mati (blok resmi)':'Mati (sementara)',z.candidate_crowns,z.boundary_conflict_candidates].forEach(v=>row.append(el('td',String(v))));table.append(row);});
     const details=el('details'),caption=el('summary','Tabel per gawangan');details.append(caption,table);
     host.append(title,note,open,select,native,summary,info,download,auditDownload,details,status);
     const showRejected=el('input');showRejected.type='checkbox';const rejectedLabel=el('label');rejectedLabel.append(showRejected,el('span',' Tampilkan titik yang ditolak'));showRejected.onchange=drawPoints;host.append(rejectedLabel);
@@ -137,7 +138,7 @@
       if(geo?.audit)L.geoJSON(geo.audit,{style:{color:'#c72d40',weight:2,fillOpacity:.1}}).addTo(boundaries);
     }
     function drawPoints(){points.clearLayers();if(!active()||!candidates)return;
-      const features=(editor?editor.features():candidates.features).filter(f=>!select.value||f.properties.zones.includes(select.value)),accepted=features.filter(f=>f.properties.status==='accepted');
+      const features=(editor?editor.features():candidates.features).filter(f=>!select.value||(select.value==='__UNASSIGNED__'?!f.properties.zones.length:f.properties.zones.includes(select.value))),accepted=features.filter(f=>f.properties.status==='accepted');
       displayStatus.textContent=display.value==='accepted'?accepted.length?`${accepted.length} titik diterima tim. Keputusan tim, belum sensus terverifikasi.`:'Belum ada titik yang diterima tim pada pilihan ini. Kandidat otomatis disembunyikan; ini bukan berarti tidak ada nanas.':display.value==='imagery'?'Citra saja. Penanda disembunyikan tanpa menghapus hasil atau koreksi.':`${features.filter(f=>f.properties.status!=='rejected').length.toLocaleString('id-ID')} titik kerja, termasuk kandidat yang belum diperiksa. Perbesar ke zoom 22 untuk melihat penanda tanpa menutupi citra.`;
       if(display.value==='imagery'||map.getZoom()<22)return;const b=map.getBounds();let count=0;
       for(const f of features){if(display.value==='accepted'&&f.properties.status!=='accepted')continue;if(f.properties.status==='rejected'&&!showRejected.checked)continue;const [x,y]=f.geometry.coordinates;if(!b.contains([y,x]))continue;if(count++>=3000)break;
@@ -153,7 +154,7 @@
       }catch(error){if(active())status.textContent=error.message;}finally{loading=false;if(active())open.disabled=false;}
     }
     open.onclick=show;
-    select.onchange=()=>{if(!active()||!geo)return;const selected=geo.getLayers().filter(l=>!select.value||l.feature.properties.id===select.value);const layer=L.featureGroup(selected);map.fitBounds(layer.getBounds());drawPoints();drawDiagnostics();};
+    select.onchange=()=>{if(!active()||!geo)return;if(select.value==='__UNASSIGNED__'){drawPoints();return;}const selected=geo.getLayers().filter(l=>!select.value||l.feature.properties.id===select.value);const layer=L.featureGroup(selected);map.fitBounds(layer.getBounds());drawPoints();drawDiagnostics();};
     native.onclick=()=>{detail=!detail;native.textContent=detail?'Batal memilih detail citra':'Periksa citra asli di titik peta';status.textContent=detail?'Klik lokasi pada peta untuk membuka TIFF native di lokasi tersebut.':'Pemilihan detail dibatalkan.';};
     const contains=(c,b)=>b&&c[0]>=b[0]&&c[0]<=b[2]&&c[1]>=b[1]&&c[1]<=b[3];
     const nativeCurrent=()=>Boolean(nativeFile&&(!getRasterSource||getRasterSource()?.title===`Blok ${block} / `+nativeFile));

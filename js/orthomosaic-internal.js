@@ -258,16 +258,17 @@
       if(!current())return;
       if(!manifest.download?.ok){$('dayunStatus').textContent=`Belum diunduh: ${manifest.download?.error||'status tidak tersedia'}`;return;}
       if(!manifest.analysis?.ok || !manifest.files?.includes('metadata.json')){$('dayunStatus').textContent='Unduhan selesai; analisis belum tersedia atau belum lengkap.';return;}
-      const meta=await(await api(base+'/files/metadata.json')).json();
+      const metadataPath=manifest.boundary_revision_assets?.metadata||'metadata.json';if(!manifest.files.includes(metadataPath))throw Error('Metadata batas revisi belum tersedia.');
+      const meta=await(await api(base+'/files/'+metadataPath)).json();
       if(!current())return;
       $('dayunStatus').textContent='Cakupan citra tersedia. Luas tanam, celah barisan, dan jumlah nanas masih memerlukan pemeriksaan visual. Tanggal penerbangan belum terverifikasi.';
-      const details=document.createElement('p');details.textContent=`CRS: ${meta.crs||'belum diketahui'}. Ukuran piksel: ${Array.isArray(meta.gsd_m)?meta.gsd_m.map(v=>number(v*100,2)).join(' × ')+' cm':'belum tersedia dalam meter'}. Tanggal penerbangan: ${['verified','owner_reported'].includes(meta.capture_date_status)&&meta.capture_date?meta.capture_date+(meta.capture_date_status==='owner_reported'?' (keterangan pemilik data)':''):'belum terverifikasi'}.`;$('dayunResults').append(details);
+      const details=document.createElement('p');details.textContent=`CRS: ${meta.crs||'belum diketahui'}. Ukuran piksel: ${Array.isArray(meta.gsd_m)?meta.gsd_m.map(v=>number(v*100,2)).join(' × ')+' cm':'belum tersedia dalam meter'}. Tanggal penerbangan: ${['verified','owner_reported'].includes(meta.capture_date_status)&&meta.capture_date?meta.capture_date+(meta.capture_date_status==='owner_reported'?' (keterangan pemilik data)':''):'belum terverifikasi'}.`;$('dayunResults').append(details);if(meta.boundary_revision_notice){const revisionNote=document.createElement('p');revisionNote.textContent=meta.boundary_revision_notice;$('dayunResults').append(revisionNote);}
       const table=document.createElement('table'),head=document.createElement('tr');
       ['Gawangan','Cakupan seluruh polygon','Luas citra valid (ha)'].forEach(value=>{const th=document.createElement('th');th.textContent=value;head.append(th);});table.append(head);
       for(const row of meta.gawangan||[]){const tr=document.createElement('tr');[row.gawangan,row.valid_coverage_percent===null?'Belum tersedia':`${row.valid_coverage_percent}%`,row.valid_area_ha??'Belum tersedia'].forEach(value=>{const td=document.createElement('td');td.textContent=value;tr.append(td);});table.append(tr);}
       $('dayunResults').append(table);
-      if(!target&&!(blockTarget&&manifest.block_analyses?.[block])&&manifest.files.includes('coverage.geojson')){
-        const geo=await(await api(base+'/files/coverage.geojson')).json();
+      if(!target&&!(blockTarget&&manifest.block_analyses?.[block])&&manifest.files.includes(manifest.boundary_revision_assets?.coverage||'coverage.geojson')){
+        const geo=await(await api(base+'/files/'+(manifest.boundary_revision_assets?.coverage||'coverage.geojson'))).json();
         if(!current())return;
         dayunLayer=L.geoJSON(geo,{style:f=>({color:(f.properties.valid_coverage_percent??0)<95?'#d97706':'#137f63',weight:2,fillOpacity:.12}),onEachFeature:(f,l)=>l.bindTooltip(String(f.properties.gawangan))}).addTo(map);
         map.fitBounds(dayunLayer.getBounds());
