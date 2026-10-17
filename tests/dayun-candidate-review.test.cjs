@@ -42,3 +42,18 @@ test('clicking a blue automatic proposal adds one reviewable point, without dupl
  s.options.api=async path=>path.endsWith('/review')?{json:async()=>({ok:true,revision:1,review:null,model:{status:'waiting_for_complete_review',samples:[{id:'ABC-A-01',automatic_count:1,feedback_candidate_count:1,accepted_by_reviewer:0,features:[{geometry:{type:'Point',coordinates:[102.007,.584]},properties:{id:'auto-1',feedback_origin:'thresholded_template_match'}}]}]}})}:{json:async()=>trial(),blob:async()=>new Blob(['tif'])};
  const dispose=await mount(s.options);await s.find('Buka sampel dan penanda').onclick();const toggle=s.host.children.find(x=>x.tag==='label'&&x.textContent.includes('biru')).children[0];toggle.checked=true;toggle.onchange();circles[0].handlers.click();circles.at(-1).handlers.click();s.find('Ekspor koreksi').onclick();const result=JSON.parse(await s.saved[0].blob.text());assert.equal(result.samples[0].features.length,2);assert.equal(result.samples[0].features[1].properties.status,'candidate');dispose();
 });
+
+
+test('only added candidates can be deleted, undone and saved without a negative training label',async()=>{
+ const s=setup();let stored={revision:0,review:null,model:null};
+ s.options.api=async(path,options={})=>{if(path.endsWith('/review')){if(options.method==='POST'){const body=JSON.parse(options.body);stored={revision:stored.revision+1,review:body.review,model:null};}return{json:async()=>structuredClone(stored)}}return{json:async()=>trial(),blob:async()=>new Blob(['tif'])};};
+ const dispose=await mount(s.options);await s.find('Buka sampel dan penanda').onclick();
+ const remove=s.find('Hapus kandidat tambahan'),undo=s.find('Urungkan hapus kandidat');
+ s.markers[0].handlers.click();assert.equal(remove.disabled,true);remove.onclick();assert.equal(s.markers.length,1);
+ s.find('Tambah kandidat di peta').onclick();s.listeners.click({latlng:{lat:.584,lng:102.007}});assert.equal(remove.disabled,false);remove.onclick();assert.equal(s.markers.length,1);assert.equal(undo.disabled,false);
+ // Deleting stops add mode, so another map click cannot create a point.
+ s.listeners.click({latlng:{lat:.584,lng:102.007}});assert.equal(s.markers.length,1);
+ undo.onclick();assert.equal(s.markers.length,2);s.markers[1].handlers.click();remove.onclick();await s.find('Simpan privat & perbarui hitungan').onclick();
+ assert.equal(stored.review.samples[0].features.length,1);assert.equal(stored.review.samples[0].features[0].properties.id,'ABC-A-01-001');assert.equal(stored.review.samples[0].features[0].properties.status,'candidate');assert.equal(stored.review.samples[0].complete,false);
+ dispose();const restored=await mount(s.options);await s.find('Buka sampel dan penanda').onclick();assert.equal(s.markers.length,1);restored();
+});
