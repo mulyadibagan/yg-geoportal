@@ -330,3 +330,4 @@ body.webgis-page .app-shell{
 .yg-ps-document-legend strong{margin-bottom:2px;color:#0a2d33;font-size:12px}
 .yg-ps-document-legend span{display:flex;align-items:center;gap:8px}
 .yg-ps-document-legend i{display:inline-block;width:20px;height:9px;border:2px solid var(--yg-ps-color);border-radius:3px;background:var(--yg-ps-color)}
+#orthomosaic-entry[hidden]{display:none!important}.yg-orthomosaic-entry{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px;border-radius:8px;background:#176449;color:#fff;text-decoration:none;font-size:12px;font-weight:750}.yg-orthomosaic-entry:hover,.yg-orthomosaic-entry:focus-visible{background:#104d38;outline:3px solid #c8e5d6;outline-offset:2px}.yg-orthomosaic-entry-note{margin:7px 0 0;color:#60756a;font-size:10px;line-height:1.5}

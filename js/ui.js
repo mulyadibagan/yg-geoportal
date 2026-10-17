@@ -7,6 +7,16 @@
   const overlay = document.getElementById("overlay");
   const mapArea = document.getElementById("map-area");
 
+  function syncOrthomosaicEntry() {
+    const entry = document.getElementById("orthomosaic-entry");
+    if (!entry) return;
+    try { entry.hidden = !window.YG_AUTH?.readStoredSession(); }
+    catch { entry.hidden = true; }
+  }
+  syncOrthomosaicEntry();
+  window.addEventListener("focus", syncOrthomosaicEntry);
+  window.addEventListener("storage", syncOrthomosaicEntry);
+
   function openMobileSidebar() {
     sidebar.classList.add("open");
     overlay.classList.add("open");
