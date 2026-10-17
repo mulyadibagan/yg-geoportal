@@ -23,7 +23,7 @@
     return{refresh,ensure,suspend(){wanted=[];for(const file of [...entries.keys()])drop(file);},readyAt:c=>[...entries.values()].some(e=>contains(c,e.tile.bounds)&&e.handle?.ready&&!e.handle.error&&!e.handle.disposed),dispose(){disposed=true;wanted=[];for(const file of [...entries.keys()])drop(file);}};
   }
   async function mount({host,comparisonHost=host,map,api,base,manifest,openRaster,openNativeRaster,getRasterSource,onNativeStatus,save,current,autoOpen=false,onAutoOpen,onShowComparison,onEditMap,block='A'}){
-    if(!['A','B'].includes(block))throw Error('Blok analisis tidak didukung.');
+    if(!['A','B','C'].includes(block))throw Error('Blok analisis tidak didukung.');
     const path=manifest.block_analyses?.[block];
     if(!path||!manifest.files.includes(path))return()=>{};
     const folder=path.slice(0,path.lastIndexOf('/')+1);
