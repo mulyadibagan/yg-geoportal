@@ -227,5 +227,14 @@
     };
   }
 
-  return {build: build, population: population, MPTS: MPTS.slice(), HORTICULTURE: HORTICULTURE.slice()};
+  function boundaryLegend(layer, geojson, blocks) {
+    if (!geojson.boundaryRevision) return layer;
+    var items = (layer.items || []).map(function (item) {
+      var features = geojson.features.filter(function (f) { return f.properties.layerId === layer.id && f.properties.category === item.category; });
+      return Object.assign({}, item, {featureCount: features.length, areaHa: features.reduce(function (sum, f) { return sum + Number(f.properties.areaHa || 0); }, 0)});
+    });
+    return Object.assign({}, layer, {items: items, reportedTotalHa: blocks.totalAreaHa, boundaryReceivedDate: geojson.boundaryRevision.received_date});
+  }
+
+  return {build: build, population: population, boundaryLegend: boundaryLegend, MPTS: MPTS.slice(), HORTICULTURE: HORTICULTURE.slice()};
 });
