@@ -98,3 +98,8 @@ test('unsaved block decisions prevent switching blocks and retain the displayed 
 test('Blok C link selects its block and passes that identity to the existing private viewer',async()=>{
  let mounted;const s=setup({search:'?source=Agro_ABC&block=C',session:{token:'staff',expiresAt:Date.now()+10000},fetcher:async url=>({ok:true,status:200,json:async()=>url.endsWith('/analysis/Agro_ABC')?{download:{ok:true},analysis:{ok:true},files:['metadata.json']}:url.endsWith('metadata.json')?{gawangan:[]}:{jobs:[]}})});s.context.window.YG_DAYUN_BLOCK={mount:async opts=>(mounted=opts,()=>{})};await s.settle();assert.equal(s.el('dayunBlock').value,'C');assert.equal(mounted.block,'C');assert.equal(mounted.autoOpen,true);assert.ok(s.calls.every(c=>!c.options.method));
 });
+
+test('published block imagery does not inherit the source-wide coverage outlines',async()=>{
+ let mounted;const s=setup({search:'?source=Agro_ABC&block=C',session:{token:'staff',expiresAt:Date.now()+10000},fetcher:async url=>({ok:true,status:200,json:async()=>url.endsWith('/analysis/Agro_ABC')?{download:{ok:true},analysis:{ok:true},block_analyses:{C:'block-C/analysis.json'},files:['metadata.json','coverage.geojson','block-C/analysis.json']}:url.endsWith('metadata.json')?{gawangan:[]}:{jobs:[]}})});
+ s.context.window.YG_DAYUN_BLOCK={mount:async opts=>(mounted=opts,()=>{})};await s.settle();assert.equal(mounted.block,'C');assert.ok(!s.calls.some(c=>c.url.endsWith('coverage.geojson')));assert.ok(s.calls.every(c=>!c.options.method));
+});

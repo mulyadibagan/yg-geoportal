@@ -266,7 +266,7 @@
       ['Gawangan','Cakupan seluruh polygon','Luas citra valid (ha)'].forEach(value=>{const th=document.createElement('th');th.textContent=value;head.append(th);});table.append(head);
       for(const row of meta.gawangan||[]){const tr=document.createElement('tr');[row.gawangan,row.valid_coverage_percent===null?'Belum tersedia':`${row.valid_coverage_percent}%`,row.valid_area_ha??'Belum tersedia'].forEach(value=>{const td=document.createElement('td');td.textContent=value;tr.append(td);});table.append(tr);}
       $('dayunResults').append(table);
-      if(!target&&manifest.files.includes('coverage.geojson')){
+      if(!target&&!(blockTarget&&manifest.block_analyses?.[block])&&manifest.files.includes('coverage.geojson')){
         const geo=await(await api(base+'/files/coverage.geojson')).json();
         if(!current())return;
         dayunLayer=L.geoJSON(geo,{style:f=>({color:(f.properties.valid_coverage_percent??0)<95?'#d97706':'#137f63',weight:2,fillOpacity:.12}),onEachFeature:(f,l)=>l.bindTooltip(String(f.properties.gawangan))}).addTo(map);

@@ -41,7 +41,7 @@
     const active=()=>!disposed&&current();
     const reviewCells=new Map();let teamSummary=null;
     function updateReview({counts}){drawPoints();if(teamSummary)teamSummary.textContent=`Koreksi tim: tambahan ${counts.manual_additions}, ditolak ${counts.rejected}, diterima ${counts.accepted_by_staff}, belum diperiksa ${counts.unreviewed}, hitungan kerja ${counts.working_total.toLocaleString('id-ID')}. Hitungan kerja mencakup kandidat yang belum diperiksa; bukan sensus hidup.`;for(const row of counts.zones||[]){const cells=reviewCells.get(row.zone_id);if(cells)[row.manual_additions,row.rejected,row.accepted_by_staff,row.working_total].forEach((n,i)=>cells[i].textContent=n.toLocaleString('id-ID'));}}
-    const group=L.layerGroup().addTo(map),points=L.layerGroup().addTo(map),diagnostics=L.layerGroup().addTo(map);
+    const group=L.layerGroup().addTo(map),boundaries=L.layerGroup().addTo(map),points=L.layerGroup().addTo(map),diagnostics=L.layerGroup().addTo(map);
     const overviewPane=map.getPane('dayun-overview')||map.createPane('dayun-overview');overviewPane.style.zIndex='250';overviewPane.style.pointerEvents='none';
     let diagnosticData=null,diagnosticCells=null,showDiagnostics=false,sheetUrl=null;
     const el=(tag,text)=>{const node=document.createElement(tag);if(text!==undefined)node.textContent=text;return node;};
@@ -53,12 +53,15 @@
     result.zones.forEach(z=>select.add(new Option(z.id+' · '+(z.kind==='active_source'?'aktif':'mati, asosiasi sementara')+' · '+z.candidate_crowns+' kandidat',z.id)));
     const status=el('p','Buka blok untuk melihat citra dan seluruh batas.');status.setAttribute('role','status');
     const summary=el('p',`${result.candidate_count.toLocaleString('id-ID')} kandidat tajuk; ${result.boundary_conflict_candidate_count} kandidat pada batas tumpang tindih; ${result.boundary_overlap_count} zona tumpang tindih. Bukan jumlah nanas.`);
-    const info=el('p','Hijau: gawangan tanam; cokelat: gawangan mati; merah: batas tumpang tindih; jingga: kandidat. Perbesar peta untuk melihat titik.');info.className='note';
+    const info=el('p','Peta bersih menampilkan citra tanpa garis gawangan. Aktifkan batas bila perlu memeriksa lokasinya. Penanda jingga masih kandidat, bukan nanas terkonfirmasi.');info.className='note';
     const table=el('table'),head=el('tr');['Gawangan','Kategori sumber','Kandidat di luar konflik','Kandidat konflik batas'].forEach(s=>head.append(el('th',s)));table.append(head);
     result.zones.forEach(z=>{const row=el('tr');[z.id,z.kind==='active_source'?'Aktif':'Mati (sementara)',z.candidate_crowns,z.boundary_conflict_candidates].forEach(v=>row.append(el('td',String(v))));table.append(row);});
     const details=el('details'),caption=el('summary','Tabel per gawangan');details.append(caption,table);
     host.append(title,note,open,select,native,summary,info,download,auditDownload,details,status);
     const showRejected=el('input');showRejected.type='checkbox';const rejectedLabel=el('label');rejectedLabel.append(showRejected,el('span',' Tampilkan titik yang ditolak'));showRejected.onchange=drawPoints;host.append(rejectedLabel);
+    const display=el('select');display.setAttribute('aria-label','Titik yang ditampilkan');display.add(new Option('Semua kandidat untuk koreksi','all'));display.add(new Option('Nanas yang diterima tim saja','accepted'));display.add(new Option('Citra saja tanpa penanda','imagery'));display.value='all';display.onchange=()=>{if(display.value==='imagery')editor?.setEditing(false);drawPoints();};
+    const boundaryToggle=el('input');boundaryToggle.type='checkbox';const boundaryLabel=el('label');boundaryLabel.append(boundaryToggle,el('span',' Tampilkan batas gawangan dan konflik'));boundaryToggle.onchange=drawBoundaries;
+    const displayStatus=el('p');displayStatus.setAttribute('role','status');host.insertBefore(display,title);host.insertBefore(boundaryLabel,title);host.append(displayStatus);
     if(result.full_block_count){const count=result.full_block_count;details.open=false;
       const sensitivity=count.sensitivity_thresholds?count.sensitivity_thresholds.map(r=>`ambang ${r.threshold}: ${r.candidate_count.toLocaleString('id-ID')}`).join('; '):`ambang 0,25: ${count.threshold_025_count.toLocaleString('id-ID')}; ambang 0,40: ${count.threshold_040_count.toLocaleString('id-ID')}`;
       host.append(el('p',`Seluruh ${count.processed_tiles} potongan native selesai diproses. ${count.candidate_count.toLocaleString('id-ID')} kandidat pada ambang ${count.threshold}; keyakinan rendah. Uji sensitivitas ${sensitivity}. Ini bukan rentang jumlah tanaman atau selang kepercayaan.`));
@@ -118,18 +121,24 @@
       const view=map.getBounds();const features=diagnosticCells.features.filter(f=>f.properties.flags.length&&(!select.value||f.properties.zone_id===select.value)&&L.geoJSON(f).getBounds().intersects(view)).slice(0,1000);
       L.geoJSON({type:'FeatureCollection',features},{style:f=>({color:f.properties.flags.includes('dark_pixels_review')?'#5e4aa3':'#dc702c',weight:1,fillOpacity:.12}),onEachFeature:(f,l)=>l.bindTooltip(f.properties.zone_id+' · '+f.properties.flags.join(', ')+' · perlu pemeriksaan; bukan diagnosis')}).addTo(diagnostics);
     }
-    function drawPoints(){points.clearLayers();if(!active()||!candidates||map.getZoom()<(result.full_block_count?17:22))return;const b=map.getBounds();let count=0;
-      for(const f of editor?editor.features():candidates.features){if(f.properties.status==='rejected'&&!showRejected.checked)continue;if(select.value&&!f.properties.zones.includes(select.value))continue;const [x,y]=f.geometry.coordinates;if(!b.contains([y,x]))continue;if(count++>=3000)break;
+    function drawBoundaries(){boundaries.clearLayers();if(!active()||!boundaryToggle.checked||!zonesData)return;
+      L.geoJSON(zonesData,{style:f=>({color:f.properties.kind==='active_source'?'#137f63':'#ad6b32',weight:1,fillOpacity:0}),onEachFeature:(f,l)=>l.bindTooltip(f.properties.id+' · kategori sumber, bukan diagnosis tanaman')}).addTo(boundaries);
+      if(geo?.audit)L.geoJSON(geo.audit,{style:{color:'#c72d40',weight:2,fillOpacity:.1}}).addTo(boundaries);
+    }
+    function drawPoints(){points.clearLayers();if(!active()||!candidates)return;
+      const features=(editor?editor.features():candidates.features).filter(f=>!select.value||f.properties.zones.includes(select.value)),accepted=features.filter(f=>f.properties.status==='accepted');
+      displayStatus.textContent=display.value==='accepted'?accepted.length?`${accepted.length} titik diterima tim. Keputusan tim, belum sensus terverifikasi.`:'Belum ada titik yang diterima tim pada pilihan ini. Kandidat otomatis disembunyikan; ini bukan berarti tidak ada nanas.':display.value==='imagery'?'Citra saja. Penanda disembunyikan tanpa menghapus hasil atau koreksi.':`${features.filter(f=>f.properties.status!=='rejected').length.toLocaleString('id-ID')} titik kerja, termasuk kandidat yang belum diperiksa. Perbesar ke zoom 22 untuk melihat penanda tanpa menutupi citra.`;
+      if(display.value==='imagery'||map.getZoom()<22)return;const b=map.getBounds();let count=0;
+      for(const f of features){if(display.value==='accepted'&&f.properties.status!=='accepted')continue;if(f.properties.status==='rejected'&&!showRejected.checked)continue;const [x,y]=f.geometry.coordinates;if(!b.contains([y,x]))continue;if(count++>=3000)break;
         const p=f.properties,color=p.status==='rejected'?'#c72d40':p.origin==='manual_addition'?'#2563eb':p.status==='accepted'?'#137f63':'#df8e00';
-        L.circleMarker([y,x],{radius:map.getZoom()<20?3:map.getZoom()<22?4:6,color,weight:1.5,fillOpacity:.05,bubblingMouseEvents:false}).bindTooltip(p.id+' · '+(p.status||'belum diperiksa')+' · klik untuk citra asli dan koreksi').on('click',async()=>{onEditMap?.();if(editor)await editor.pick(f);else try{await inspectAt(f.geometry.coordinates);}catch(error){if(active())status.textContent=error.message;}}).addTo(points);
+        L.circleMarker([y,x],{radius:4,color,weight:1,fillOpacity:0,bubblingMouseEvents:false}).bindTooltip(p.id+' · '+(p.status||'belum diperiksa')+' · klik untuk citra asli dan koreksi').on('click',async()=>{onEditMap?.();if(editor)await editor.pick(f);else try{await inspectAt(f.geometry.coordinates);}catch(error){if(active())status.textContent=error.message;}}).addTo(points);
       }
     }
     async function show(){if(!active()||loading)return;loading=true;open.disabled=true;status.textContent=`Membuka citra Blok ${block} dan audit batas privat…`;
       try{const [zones,crown,audit,image]=await Promise.all([(await get('zones.geojson')).json(),(await get('candidates.geojson')).json(),(await get('boundary-audit.geojson')).json(),(await get(result.overview)).blob()]);if(!active())return;
         group.clearLayers();if(url)URL.revokeObjectURL(url);url=URL.createObjectURL(image);const b=result.bounds;L.imageOverlay(url,[[b[1],b[0]],[b[3],b[2]]],{pane:'dayun-overview',interactive:false}).addTo(group);
-        geo=L.geoJSON(zones,{style:f=>({color:f.properties.kind==='active_source'?'#137f63':'#ad6b32',weight:2,fillOpacity:.03}),onEachFeature:(f,l)=>l.bindTooltip(f.properties.id+' · '+f.properties.candidate_crowns+' kandidat belum tervalidasi')}).addTo(group);
-        L.geoJSON(audit,{style:{color:'#c72d40',weight:3,fillOpacity:.35},onEachFeature:(f,l)=>l.bindTooltip(f.properties.zone_a+' / '+f.properties.zone_b+' · periksa batas')}).addTo(group);
-        candidates=crown;zonesData=zones;map.fitBounds(geo.getBounds());editor?.refresh();drawPoints();scheduleNative();status.textContent='Tampilan seluruh blok adalah pratinjau. Klik kandidat untuk langsung membuka TIFF asli dan koreksi. Jingga: belum diperiksa, hijau: diterima, biru: tambahan tim. Titik yang ditolak disembunyikan; aktifkan Tampilkan titik yang ditolak untuk memulihkannya.';
+        geo=L.geoJSON(zones);geo.audit=audit;
+        candidates=crown;zonesData=zones;map.fitBounds(geo.getBounds());editor?.refresh();drawBoundaries();drawPoints();scheduleNative();status.textContent='Peta bersih: batas disembunyikan dan penanda tampil mulai zoom 22. Klik kandidat untuk membuka TIFF asli dan koreksi. Jingga: belum diperiksa, hijau: diterima, biru: tambahan tim. Filter tampilan tidak menghapus atau mengubah keputusan tim.';
       }catch(error){if(active())status.textContent=error.message;}finally{loading=false;if(active())open.disabled=false;}
     }
     open.onclick=show;
@@ -148,7 +157,7 @@
     map.on('moveend zoomend',drawPoints);map.on('moveend zoomend',drawDiagnostics);map.on('moveend zoomend',scheduleNative);map.on('click',click);
     if(window.YG_DAYUN_BLOCK_EDIT&&active()){const editHost=el('section');editHost.className='block-editor';host.insertBefore(editHost,summary);editor=await window.YG_DAYUN_BLOCK_EDIT.mount({host:editHost,map,api,base,manifest,result,analysisPath:path,getCandidates:()=>candidates,getZones:()=>zonesData,onChanged:updateReview,preparePoint:async c=>{if(viewport){if(viewport.readyAt(c))return true;await inspectAt(c);return false;}if(nativeCurrent()&&contains(c,nativeBounds)){if(getRasterSource&&!getRasterSource()?.ready)throw Error('Piksel TIFF asli masih dimuat. Tunggu status TIFF asli siap sebelum menambah titik.');return true;}await inspectAt(c);return false;},onInspect:inspectAt,current:active,save});if(!active())editor.dispose();}
     if(autoOpen&&active()){onAutoOpen?.();await show();}
-    const dispose=()=>{disposed=true;nativeRequest++;viewport?.dispose();clearTimeout(autoTimer);nativeCache.clear();nativePending.clear();cacheBytes=0;editor?.dispose();map.off('moveend zoomend',drawPoints);map.off('moveend zoomend',drawDiagnostics);map.off('moveend zoomend',scheduleNative);map.off('click',click);map.removeLayer(group);map.removeLayer(points);map.removeLayer(diagnostics);if(url)URL.revokeObjectURL(url);if(sheetUrl)URL.revokeObjectURL(sheetUrl);host.replaceChildren();host.hidden=true;if(comparisonHost!==host){comparisonHost.replaceChildren();comparisonHost.hidden=true;}};dispose.canLeave=()=>editor?.canLeave()??true;dispose.suspendNative=()=>viewport?.suspend();return dispose;
+    const dispose=()=>{disposed=true;nativeRequest++;viewport?.dispose();clearTimeout(autoTimer);nativeCache.clear();nativePending.clear();cacheBytes=0;editor?.dispose();map.off('moveend zoomend',drawPoints);map.off('moveend zoomend',drawDiagnostics);map.off('moveend zoomend',scheduleNative);map.off('click',click);map.removeLayer(group);map.removeLayer(boundaries);map.removeLayer(points);map.removeLayer(diagnostics);if(url)URL.revokeObjectURL(url);if(sheetUrl)URL.revokeObjectURL(sheetUrl);host.replaceChildren();host.hidden=true;if(comparisonHost!==host){comparisonHost.replaceChildren();comparisonHost.hidden=true;}};dispose.canLeave=()=>editor?.canLeave()??true;dispose.suspendNative=()=>viewport?.suspend();return dispose;
   }
   root.YG_DAYUN_BLOCK={mount,createNativeViewport};
 })(window);
