@@ -53,7 +53,7 @@
     if (!validSession()) { lock('Sesi berakhir. Silakan masuk kembali.'); throw Error('Sesi staf tidak aktif.'); }
     const response = await fetch(API + path, {...options, headers: {...options.headers, Authorization: `Bearer ${session.token}`}, cache: 'no-store', signal: options.signal || AbortSignal.timeout(30000)});
     if (response.status === 401 || response.status === 403) { lock('Akses staf tidak valid. Silakan masuk kembali.'); throw Error('Akses ditolak.'); }
-    if (!response.ok) throw Error(`Layanan mengembalikan HTTP ${response.status}.`);
+    if (!response.ok) {const error=Error(`Layanan mengembalikan HTTP ${response.status}.`);error.status=response.status;try{error.details=await response.json();}catch{}throw error;}
     return response;
   }
   async function authorize() {

@@ -6,7 +6,7 @@ export class DroneQueue {
   async fetch(request){return this.state.blockConcurrencyWhile(async()=>{
     if(new URL(request.url).pathname==='/dayun-block-review'){
       try{return Response.json(await blockReviewOperation(this.env,await request.json()));}
-      catch(error){return Response.json({ok:false,error:error.status?error.message:'private_block_review_storage_failed'},{status:error.status||503});}
+      catch(error){return Response.json({ok:false,error:error.status?error.message:'private_block_review_storage_failed',...(error.conflicts?{conflicts:error.conflicts}:{})},{status:error.status||503});}
     }
     if(new URL(request.url).pathname==='/dayun-review'){
       try{return Response.json(await reviewOperation(this.env,await request.json()));}

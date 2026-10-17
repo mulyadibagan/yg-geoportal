@@ -1,6 +1,6 @@
 // Sparse, versioned staff map corrections only. No census or source-data writes.
 import {booleanPointInPolygon} from '@turf/turf';
-const fail=(message,status=400)=>{throw Object.assign(Error(message),{status})};
+const fail=(message,status=400,details={})=>{throw Object.assign(Error(message),{status,...details})};
 const inside=(c,b)=>c[0]>=b[0]&&c[0]<=b[2]&&c[1]>=b[1]&&c[1]<=b[3];
 function bbox(geometry){const all=[];const walk=x=>{if(typeof x[0]==='number')all.push(x);else x.forEach(walk)};walk(geometry.coordinates);return all.reduce((b,p)=>[Math.min(b[0],p[0]),Math.min(b[1],p[1]),Math.max(b[2],p[0]),Math.max(b[3],p[1])],[Infinity,Infinity,-Infinity,-Infinity]);}
 function locator(zones){const indexed=zones.features.map(f=>({f,b:bbox(f.geometry)}));return feature=>indexed.filter(z=>inside(feature.geometry.coordinates,z.b)&&booleanPointInPolygon(feature,z.f)).map(z=>z.f.properties.id);}
@@ -32,6 +32,28 @@ export function blockReviewCounts(review,candidates,zones){
   return{...counts,zones:[...rows.values()]};
 }
 
+// Legacy heads are upgraded in memory. Never rewrite stored user revisions on read.
+export function collaborativeHead(head,empty){const value=head||empty;return{...value,collaboration:'per-point-v1',point_versions:value.point_versions||Object.fromEntries((value.review?.changes||[]).map(f=>[f.properties.id,value.revision])),point_operations:value.point_operations||{}};}
+
+export function mergePointPatch(head,patch,context){
+  if(patch?.schema!=='dayun-block-point-patch-v1'||patch.source_run!==context.manifest.run||patch.analysis_path!==context.path||patch.block!=='A'||!Array.isArray(patch.operations)||!patch.operations.length||patch.operations.length>1000)fail('invalid_block_point_patch');
+  const versions={...head.point_versions},operations={...head.point_operations},features=new Map((head.review?.changes||[]).map(f=>[f.properties.id,f])),seen=new Set(),conflicts=[];
+  const incoming=patch.operations.map(op=>{
+    if(!op||typeof op.id!=='string'||!/^[\w-]{1,100}$/.test(op.id)||seen.has(op.id)||!Number.isSafeInteger(op.expected_version)||op.expected_version<0||typeof op.operation_id!=='string'||!/^[\w-]{8,100}$/.test(op.operation_id))fail('invalid_block_point_operation');seen.add(op.id);
+    if(op.feature===null){if(!/^A-manual-[\w-]{8,80}$/.test(op.id))fail('only_manual_points_can_be_deleted');}
+    else if(op.feature?.properties?.id!==op.id)fail('block_point_identity_mismatch');
+    const feature=op.feature===null?null:normalizeBlockReview({schema:'dayun-block-corrections-v1',source_run:patch.source_run,analysis_path:patch.analysis_path,block:'A',changes:[op.feature]},context).changes[0];
+    const duplicate=operations[op.id]===op.operation_id;
+    if(!duplicate&&op.expected_version!==(versions[op.id]||0))conflicts.push({id:op.id,current_version:versions[op.id]||0});
+    if(!duplicate&&feature===null&&!features.has(op.id)&&!(versions[op.id]>0))fail('manual_point_not_found');
+    return{...op,feature,duplicate};
+  });
+  if(conflicts.length)fail('block_points_conflict',409,{conflicts});
+  let applied=0;for(const op of incoming){if(op.duplicate)continue;if(op.feature===null)features.delete(op.id);else features.set(op.id,op.feature);versions[op.id]=(versions[op.id]||0)+1;operations[op.id]=op.operation_id;applied++;}
+  if(features.size>30000)fail('block_review_too_many_points');
+  return{review:{schema:'dayun-block-corrections-v1',source_run:context.manifest.run,analysis_path:context.path,block:'A',changes:[...features.values()],census_changed:false},point_versions:versions,point_operations:operations,applied};
+}
+
 export async function blockReviewOperation(env,body){
   if(body.label!=='Agro_ABC'||body.block!=='A')fail('invalid_block_source');
   const read=async key=>{const object=await env.PUBLIC_SNAPSHOTS.get(key);return object?JSON.parse(await object.text()):null};
@@ -41,13 +63,21 @@ export async function blockReviewOperation(env,body){
   const [analysis,candidates,zones]=await Promise.all([read(manifest.prefix+'/'+path),read(manifest.prefix+'/'+folder+'candidates.geojson'),read(manifest.prefix+'/'+folder+'zones.geojson')]);
   if(analysis?.source_run!==manifest.run||analysis.block!=='A'||!candidates?.features||!zones?.features)fail('block_analysis_source_mismatch',409);
   const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(path));const hash=Array.from(new Uint8Array(digest),b=>b.toString(16).padStart(2,'0')).join('');
-  const root=`drone/analysis/dayun/block-reviews/Agro_ABC/${manifest.run}/${hash}`,head=await read(root+'/head.json');
-  if(body.action==='load')return head||{ok:true,revision:0,review:null,counts:blockReviewCounts(null,candidates,zones),analysis_path:path};
+  const root=`drone/analysis/dayun/block-reviews/Agro_ABC/${manifest.run}/${hash}`,stored=await read(root+'/head.json');
+  const head=collaborativeHead(stored,{ok:true,revision:0,review:null,counts:blockReviewCounts(null,candidates,zones),analysis_path:path});
+  if(body.action==='load')return head;
   if(body.action!=='save')fail('invalid_block_review_action');
-  if(!Number.isInteger(body.expected_revision)||body.expected_revision!==(head?.revision||0))fail('block_review_conflict_reload_before_saving',409);
-  const review=normalizeBlockReview(body.review,{manifest,path,analysis,candidates,zones}),counts=blockReviewCounts(review,candidates,zones);
+  const context={manifest,path,analysis,candidates,zones};let merged;
+  if(body.patch){merged=mergePointPatch(head,body.patch,context);if(!merged.applied)return head;}
+  else{
+    if(!Number.isInteger(body.expected_revision)||body.expected_revision!==head.revision)fail('block_review_conflict_reload_before_saving',409);
+    const review=normalizeBlockReview(body.review,context),before=new Map((head.review?.changes||[]).map(f=>[f.properties.id,f])),after=new Map(review.changes.map(f=>[f.properties.id,f]));
+    const point_versions={...head.point_versions},point_operations={...head.point_operations};for(const id of new Set([...before.keys(),...after.keys()])){if(JSON.stringify(before.get(id))!==JSON.stringify(after.get(id))){point_versions[id]=(point_versions[id]||0)+1;point_operations[id]='legacy-'+crypto.randomUUID();}}
+    merged={review,point_versions,point_operations};
+  }
+  const {review,point_versions,point_operations}=merged,counts=blockReviewCounts(review,candidates,zones);
   const revision=(head?.revision||0)+1,version=`${root}/versions/${revision}-${crypto.randomUUID()}.json`;
-  const result={ok:true,revision,review,counts,analysis_path:path,updated_at:new Date().toISOString(),previous_version:head?.version||null,version};
+  const result={ok:true,revision,review,counts,analysis_path:path,collaboration:'per-point-v1',point_versions,point_operations,updated_at:new Date().toISOString(),previous_version:head?.version||null,version};
   const options={httpMetadata:{contentType:'application/json',cacheControl:'private, no-store'}};
   await env.PUBLIC_SNAPSHOTS.put(version,JSON.stringify(result),options);await env.PUBLIC_SNAPSHOTS.put(root+'/head.json',JSON.stringify(result),options);return result;
 }
