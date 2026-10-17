@@ -1,13 +1,14 @@
 // Sparse, versioned staff map corrections only. No census or source-data writes.
 import {booleanPointInPolygon} from '@turf/turf';
 const fail=(message,status=400,details={})=>{throw Object.assign(Error(message),{status,...details})};
+const reviewLimit=block=>block==='B'?60000:30000;
 const inside=(c,b)=>c[0]>=b[0]&&c[0]<=b[2]&&c[1]>=b[1]&&c[1]<=b[3];
 function bbox(geometry){const all=[];const walk=x=>{if(typeof x[0]==='number')all.push(x);else x.forEach(walk)};walk(geometry.coordinates);return all.reduce((b,p)=>[Math.min(b[0],p[0]),Math.min(b[1],p[1]),Math.max(b[2],p[0]),Math.max(b[3],p[1])],[Infinity,Infinity,-Infinity,-Infinity]);}
 function locator(zones){const indexed=zones.features.map(f=>({f,b:bbox(f.geometry)}));return feature=>indexed.filter(z=>inside(feature.geometry.coordinates,z.b)&&booleanPointInPolygon(feature,z.f)).map(z=>z.f.properties.id);}
 
 export function normalizeBlockReview(review,{manifest,path,analysis,candidates,zones}){
   const block=analysis.block;if(!['A','B'].includes(block))fail('invalid_block_source');
-  if(review?.schema!=='dayun-block-corrections-v1'||review.source_run!==manifest.run||review.analysis_path!==path||review.block!==block||!Array.isArray(review.changes)||review.changes.length>30000)fail('block_review_source_mismatch');
+  if(review?.schema!=='dayun-block-corrections-v1'||review.source_run!==manifest.run||review.analysis_path!==path||review.block!==block||!Array.isArray(review.changes)||review.changes.length>reviewLimit(block))fail('block_review_source_mismatch');
   const originals=new Map(candidates.features.map(f=>[f.properties.id,f])),seen=new Set(),locate=locator(zones);
   const changes=review.changes.map(f=>{
     const p=f?.properties,c=f?.geometry?.coordinates,id=p?.id;
@@ -52,7 +53,7 @@ export function mergePointPatch(head,patch,context){
   });
   if(conflicts.length)fail('block_points_conflict',409,{conflicts});
   let applied=0;for(const op of incoming){if(op.duplicate)continue;if(op.feature===null)features.delete(op.id);else features.set(op.id,op.feature);versions[op.id]=(versions[op.id]||0)+1;operations[op.id]=op.operation_id;applied++;}
-  if(features.size>30000)fail('block_review_too_many_points');
+  if(features.size>reviewLimit(block))fail('block_review_too_many_points');
   return{review:{schema:'dayun-block-corrections-v1',source_run:context.manifest.run,analysis_path:context.path,block,changes:[...features.values()],census_changed:false},point_versions:versions,point_operations:operations,applied};
 }
 
