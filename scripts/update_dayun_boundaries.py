@@ -11,11 +11,21 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 from pyproj import Transformer
-from shapely.geometry import mapping, shape
+from shapely.geometry import Polygon, mapping, shape
 from shapely.ops import transform, unary_union
 
 
 PROJECT = Transformer.from_crs(4326, 32648, always_xy=True).transform
+UNPROJECT = Transformer.from_crs(32648, 4326, always_xy=True).transform
+
+
+def block_display_outline(geometry):
+    """Close sub-decimetre cracks for drawing only; never replace source geometry."""
+    projected = transform(PROJECT, geometry)
+    closed = projected.buffer(.05, join_style=2).buffer(-.05, join_style=2)
+    parts = list(closed.geoms) if closed.geom_type == 'MultiPolygon' else [closed]
+    outer = unary_union([Polygon(part.exterior) for part in parts])
+    return mapping(transform(UNPROJECT, outer))
 
 
 def revise(old, revised, blocks, provenance):
@@ -78,6 +88,7 @@ def revise(old, revised, blocks, provenance):
         p = feature['properties']
         union = unary_union([shape(f['geometry']) for f in result['features'] if f['properties']['block'] == p['name']])
         feature['geometry'] = mapping(union)
+        feature['displayGeometry'] = block_display_outline(union)
         p['areaHa'] = round(transform(PROJECT, union).area / 10000, 4)
     updated_blocks['totalAreaHa'] = round(sum(f['properties']['areaHa'] for f in updated_blocks['features']), 4)
     return result, updated_blocks, {'revision': provenance, 'gawangan': audit, 'census_join_ids_preserved': True, 'census_changed': False}

@@ -240,7 +240,7 @@
   // parcels are not block borders. Keep source geometry and area measurements.
   function outerBlockBoundaries(collection) {
     return Object.assign({}, collection, {features: collection.features.map(function (feature) {
-      var g = feature.geometry;
+      var g = feature.displayGeometry || feature.geometry;
       var geometry = g.type === 'Polygon' ? {type: 'Polygon', coordinates: [g.coordinates[0]]} :
         g.type === 'MultiPolygon' ? {type: 'MultiPolygon', coordinates: g.coordinates.map(function (polygon) { return [polygon[0]]; })} : g;
       return Object.assign({}, feature, {geometry: geometry});
