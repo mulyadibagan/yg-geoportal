@@ -154,3 +154,8 @@ test('private geometry trial keeps local holdout findings separate from whole-bl
  s.options.api=async(p,config)=>p.endsWith(path)?{json:async()=>q}:api(p,config);const dispose=await s.mount(s.options);const text=JSON.stringify(s.host.children);assert.match(text,/belum mengukur akurasi seluruh A/);assert.match(text,/Titik ditolak bukan otomatis/);const all=n=>[n,...(n.children||[]).flatMap(all)];await all(s.host).find(n=>n.textContent==='Lihat citra uji terpisah').onclick();assert.ok(s.requests.some(r=>r.path.endsWith('detector-test/quality-holdout-preview.png')));assert.ok(s.requests.every(r=>!r.config));dispose();
  q.source_run='other';const stop=await s.mount(s.options);assert.match(JSON.stringify(s.host.children),/Identitas uji detektor tidak sesuai/);stop();
 });
+
+test('reassigned boundaries without a new detector run still mount the review and native map',async()=>{
+ const s=setup();s.result.full_block_count=null;s.result.model_calibration={};s.result.boundary_revision={received_date:'2026-10-18'};s.result.boundary_rebase={warning:'Existing candidates reassigned; detector rerun pending.',newly_included_detection_area_m2:12};
+ const dispose=await s.mount(s.options);assert.equal(s.host.hidden,false);await s.find('Buka seluruh Blok A').onclick();assert.ok(s.requests.some(r=>r.path.endsWith('/zones.geojson')));assert.ok(JSON.stringify(s.host.children).includes('Existing candidates reassigned'));dispose();
+});
