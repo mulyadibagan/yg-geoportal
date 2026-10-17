@@ -10,7 +10,7 @@ test('revised map legend derives geometry counts and areas without changing prog
  assert.notEqual(result.items[0].areaHa,layer.items[0].areaHa);
 });
 test('block display removes interior parcel seams while retaining every exterior and source measurement',()=>{
- const blocks=JSON.parse(fs.readFileSync('data/dayun-blocks.geojson','utf8')),before=JSON.stringify(blocks);
+ const blocks=JSON.parse(fs.readFileSync('data/dayun-blocks.geojson','utf8'));blocks.features.forEach(f=>delete f.displayGeometry);const before=JSON.stringify(blocks);
  const display=summary.outerBlockBoundaries(blocks);
  assert.equal(JSON.stringify(blocks),before);
  assert.ok(blocks.features.some(f=>f.geometry.coordinates.length>1));
@@ -26,4 +26,10 @@ test('block display removes interior parcel seams while retaining every exterior
  assert.deepEqual(result.features[0].geometry.coordinates[1][0],multi.features[0].geometry.coordinates[1][0]);
  const script=fs.readFileSync('js/dayun-public.js','utf8');
  assert.match(script,/blockHalo=L\.geoJSON\(blockDisplay/);assert.match(script,/blockLines=L\.geoJSON\(blockDisplay/);
+});
+
+test('prepared display outlines override cracks while canonical geometry and measured area remain unchanged',()=>{
+ const blocks=JSON.parse(fs.readFileSync('data/dayun-blocks.geojson','utf8')),before=JSON.stringify(blocks),display=summary.outerBlockBoundaries(blocks);
+ for(let i=0;i<blocks.features.length;i++){assert.deepEqual(display.features[i].geometry,blocks.features[i].displayGeometry);assert.equal(display.features[i].properties.areaHa,blocks.features[i].properties.areaHa);}
+ assert.equal(JSON.stringify(blocks),before);
 });

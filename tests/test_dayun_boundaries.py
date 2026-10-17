@@ -6,8 +6,8 @@ import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts'))
 from shapely.geometry import box, mapping, shape
-from shapely.ops import unary_union
-from update_dayun_boundaries import revise
+from shapely.ops import unary_union, transform
+from update_dayun_boundaries import revise, block_display_outline, PROJECT, UNPROJECT
 from analyze_dayun_block import block_zones
 from rebase_dayun_analysis import rebase, coverage_metadata
 
@@ -64,6 +64,16 @@ class BoundaryTests(unittest.TestCase):
         for block in blocks['features']:
             actual = unary_union([shape(f['geometry']) for f in geo['features'] if f['properties']['block'] == block['properties']['name']])
             self.assertTrue(actual.equals(shape(block['geometry'])))
+
+    def test_display_closes_narrow_open_cracks_without_mutating_measurement_geometry(self):
+        measured = box(168000, 64000, 168100, 64100).difference(box(168049.99, 64050, 168050.01, 64101))
+        source = transform(UNPROJECT, measured)
+        before = source.wkb
+        display = transform(PROJECT, shape(block_display_outline(source)))
+        self.assertEqual(source.wkb, before)
+        self.assertEqual(len(display.interiors), 0)
+        self.assertLess(display.length, measured.length - 90)
+        self.assertLess(abs(display.area - measured.area), 2)
 
     def test_renumbering_fails_before_any_output_write(self):
         old = dict(features=[feature(box(102, .58, 102.001, .581), dict(category='Gawangan Tanam', sourceGawanganId='GT-A-01'))])

@@ -29,6 +29,12 @@ disajikan sebagai hasil batas baru; nilainya belum tersedia sampai diproses
 ulang. Cakupan geometris batas raster dipisahkan dari cakupan piksel valid.
 TIFF native yang sudah ada tetap berada pada koordinat dan resolusi aslinya.
 
+Untuk tampilan batas blok, `displayGeometry` menutup celah sambungan di bawah
+10 cm (buffer tutup 5 cm dalam UTM 48N), lalu mengambil cincin luar. Geometri
+ini hanya digunakan oleh garis dan halo blok pada peta Agro. `geometry` asli,
+luas pengukuran, batas gawangan dan seluruh analisis tetap memakai sumbernya;
+celah tipis tidak lagi digambar sebagai garis putih–ungu di dalam blok.
+
 Hasil revisi disimpan sebagai versi privat baru di prefix analisis yang sudah
 ada. Aktivasi mempertahankan `block_review_bases`, semua berkas lama dan
 identitas sumber asli. Head dan riwayat koreksi staf tidak ditulis ulang.
