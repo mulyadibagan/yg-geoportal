@@ -39,6 +39,6 @@ test('enlarged native sample opens privately and its TIFF is still manifest guar
  const data={schema:'dayun-block-detail-v1',source_run:'run',block:'A',cell_count:1,review_cell_count:1,zones:[{zone_id:'GT-A-01',polygon_area_m2:10,coverage_fraction:1,vegetation_proxy_fraction:.2,dark_fraction:0,review_cells:1,sample_sheet:'detail/GT-A-01.jpg'}],samples:[{zone_id:'GT-A-01',stratum:'low',native_tile:'native/not-allowed.tif'}],limitations:[]};
  s.options.api=async(path,config)=>path.endsWith('/detail-analysis.json')?{json:async()=>data}:old(path,config);
  const dispose=await s.mount(s.options);await s.find('Analisis detail per gawangan').onclick();
- const all=node=>[node,...node.children.flatMap(all)];await all(s.host).find(x=>x.textContent==='Lihat GT-A-01').onclick();const dialog=all(s.host).find(x=>x.tag==='dialog');assert.equal(dialog.open,true);assert.ok(s.requests.at(-1).path.endsWith('/files/block-A/detail/GT-A-01.jpg'));
+ const all=node=>[node,...(node.children||[]).flatMap(all)];await all(s.host).find(x=>x.textContent==='Lihat GT-A-01').onclick();const dialog=all(s.host).find(x=>x.tag==='dialog');assert.equal(dialog.open,true);assert.ok(s.requests.at(-1).path.endsWith('/files/block-A/detail/GT-A-01.jpg'));
  await all(dialog).find(x=>x.textContent==='Buka TIFF low').onclick();assert.ok(!s.requests.some(r=>r.path.endsWith('not-allowed.tif')));dispose();assert.equal(s.host.hidden,true);assert.equal(s.host.children.length,0);
 });
