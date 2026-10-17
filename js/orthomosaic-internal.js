@@ -65,8 +65,8 @@
     $('catalogStatus').textContent = `${ready.length} hasil siap dibuka dari ${jobs.length} proses terbaru. Proses yang gagal atau belum selesai dapat diperiksa di halaman Survei drone.`;
   }
   function initMap() {
-    map = L.map('map', {preferCanvas: true}).setView([1.48,102.25], 10);
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom: 22, maxNativeZoom: 19, referrerPolicy: 'origin', attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'}).addTo(map);
+    map = L.map('map', {preferCanvas: true,maxZoom:26}).setView([1.48,102.25], 10);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom: 26, maxNativeZoom: 19, referrerPolicy: 'origin', attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'}).addTo(map);
     areas = L.featureGroup().addTo(map);
     map.addControl(new L.Control.Draw({draw:{polygon:{allowIntersection:false},polyline:true,rectangle:true,circle:false,circlemarker:false,marker:false}, edit:{featureGroup:areas}}));
     map.on(L.Draw.Event.CREATED, event => { event.layer.feature={type:'Feature',properties:{source:source?.title || 'Peta referensi',sourceId:source?.id || null},geometry:event.layer.toGeoJSON().geometry}; areas.addLayer(event.layer); updateMeasurements(); });
@@ -126,7 +126,7 @@
           return Array.from(values,band=>Array.from({length:height},(_,row)=>band.subarray(row*width,(row+1)*width)));
         }};
       if (request!==sequence || !validSession()) return;
-      const layer=new GeoRasterLayer({georaster,debugLevel:0,resolution:128,opacity:Number($('opacity').value),updateWhenZooming:false,updateWhenIdle:true,keepBuffer:1,pixelValuesToColorFn:values=>{
+      const layer=new GeoRasterLayer({georaster,debugLevel:0,resolution:details.nativeReview?256:128,maxZoom:26,opacity:Number($('opacity').value),updateWhenZooming:false,updateWhenIdle:true,keepBuffer:1,pixelValuesToColorFn:values=>{
         if (!values.slice(0,3).every(Number.isFinite) || (hasAlpha && values[3]===0) || (noData!==null && values.slice(0,3).every(v=>v===noData))) return null;
         let [r,g,b]=values;
         if(ycbcr){r=values[0]+1.402*(values[2]-128);g=values[0]-.34414*(values[1]-128)-.71414*(values[2]-128);b=values[0]+1.772*(values[1]-128);}
