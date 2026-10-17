@@ -162,3 +162,12 @@ on that actual candidate pool. Accepted additions restore missed crowns within
 reviewed windows; moved accepted/rejected candidates suppress their original
 automatic positions to avoid resurrecting duplicates. Threshold adjustment is
 feedback reconciliation, not a trained species detector or validated block count.
+
+Staff can open one sample directly with the existing internal viewer:
+`orthomosaic-internal.html?source=Agro_ABC&trial=block-A-radial-v1&sample=ABC-A01-R01`.
+An optional `point` names a feature ID to select. Only validated source/trial/sample
+identifiers are accepted; the manifest allowlist and stored source-run checks
+still apply. Authentication runs before all private reads, and the local login
+return preserves the sample selection. A valid link opens the native sample,
+numbered candidates and expanded map without fetching whole-block imagery.
+Opening a link performs no review POST, count change or census write.

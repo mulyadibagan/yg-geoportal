@@ -3,19 +3,31 @@ const assert=require('node:assert/strict');
 const vm=require('node:vm');
 const fs=require('node:fs');
 const code=fs.readFileSync('js/orthomosaic-internal.js','utf8');
-function setup({session=null,status=200}={}){
+function setup({session=null,status=200,search='',fetcher,candidateMount}={}){
  const elements=new Map(),calls=[],layers=[];
  const el=id=>{if(!elements.has(id))elements.set(id,{hidden:id==='workspace',value:id==='opacity'?'1':'',disabled:false,textContent:'',children:[],replaceChildren(...children){this.children=children},append(x){this.children.push(x)},add(x){this.children.push(x)}});return elements.get(id)};
  const map={setView(){return this},addControl(){},on(){},fitBounds(){},remove(){},removeLayer(){}};
  const job={id:'drn-test',title:'Test RGB',status:'ready',cogKey:'private.tif'};
  const image={getGeoKeys:()=>({ProjectedCSTypeGeoKey:32648}),getFileDirectory:()=>({PhotometricInterpretation:2,BitsPerSample:[8,8,8]}),getSamplesPerPixel:()=>3,getBoundingBox:()=>[0,0,100,100],getResolution:()=>[1,-1],getGDALNoData:()=>null,getWidth:()=>100,getHeight:()=>100};
  const tiff={getImage:async()=>image,readRasters:async()=>[new Uint8Array([4,5,6,7]),new Uint8Array(4),new Uint8Array(4)]};
- const context={document:{getElementById:el,createElement:()=>({append(){},click(){}})},window:{YG_AUTH:{readStoredSession:()=>session},addEventListener(){}},Option:function(text,value){return{text,value}},L:{map:()=>map,tileLayer:()=>({addTo(){return this}}),featureGroup:()=>({addTo(){return this},getLayers:()=>[]}),Control:{Draw:function(){}},Draw:{Event:{CREATED:'created'}}},GeoTIFF:{fromUrl:async(url,options)=>{calls.push({url,options});return tiff}},GeoRasterLayer:function(options){layers.push(options);return{options:{},on(){},addTo(){},getBounds:()=>[[0,0],[1,1]]}},turf:{},fetch:async(url,options)=>{calls.push({url,options});return{status,ok:status===200,json:async()=>({jobs:[job]})}},Headers,AbortController,AbortSignal,Blob,URL,Date,setTimeout,clearTimeout,setInterval(){},confirm:()=>true};
+ const context={document:{getElementById:el,createElement:()=>({children:[],append(...x){this.children.push(...x)},add(x){this.children.push(x)},click(){}})},window:{location:{search},YG_DAYUN_CANDIDATES:candidateMount?{mount:candidateMount}:undefined,YG_AUTH:{readStoredSession:()=>session},addEventListener(){}},Option:function(text,value){return{text,value}},L:{map:()=>map,tileLayer:()=>({addTo(){return this}}),featureGroup:()=>({addTo(){return this},getLayers:()=>[]}),Control:{Draw:function(){}},Draw:{Event:{CREATED:'created'}}},GeoTIFF:{fromUrl:async(url,options)=>{calls.push({url,options});return tiff}},GeoRasterLayer:function(options){layers.push(options);return{options:{},on(){},addTo(){},getBounds:()=>[[0,0],[1,1]]}},turf:{},fetch:async(url,options)=>{calls.push({url,options});if(fetcher)return fetcher(url,options);return{status,ok:status===200,json:async()=>({jobs:[job]})}},Headers,AbortController,AbortSignal,Blob,URL,URLSearchParams,Date,setTimeout,clearTimeout,setInterval(){},confirm:()=>true};
  Object.assign(context.window,{L:context.L,GeoTIFF:context.GeoTIFF,GeoRasterLayer:context.GeoRasterLayer,turf:context.turf});
  vm.runInNewContext(code,context);
  return {el,calls,layers,image,context,settle:()=>new Promise(resolve=>setImmediate(resolve))};
 }
 test('anonymous visitor cannot initialize map or request private catalogue',async()=>{const s=setup();await s.settle();assert.equal(s.el('workspace').hidden,true);assert.equal(s.calls.length,0);assert.match(s.el('gateStatus').textContent,/Masuk sebagai staf/)});
+
+test('sample link preserves its local login return and never bypasses staff authorization',async()=>{
+ const search='?source=Agro_ABC&trial=block-A-radial-v1&sample=ABC-A01-R01&point=ABC-A01-R01-x121-y115';
+ const s=setup({search});await s.settle();assert.equal(s.calls.length,0);const target=new URLSearchParams(s.el('sampleLogin').href.split('?')[1]).get('return');assert.equal(target,'orthomosaic-internal.html'+search);
+ const denied=setup({search,session:{token:'forged',expiresAt:Date.now()+10000},status:401});await denied.settle();assert.ok(!denied.calls.some(c=>c.url.includes('/analysis/')));
+});
+
+test('authorized sample link forwards only validated IDs to the private read-only viewer',async()=>{
+ const mounted=[];const s=setup({search:'?source=Agro_ABC&trial=block-A-radial-v1&sample=ABC-A01-R01',session:{token:'staff',expiresAt:Date.now()+10000},candidateMount:async options=>{mounted.push(options);return()=>{}},fetcher:async url=>({ok:true,status:200,json:async()=>url.endsWith('/analysis/Agro_ABC')?{download:{ok:true},analysis:{ok:true},files:['metadata.json']}:url.endsWith('metadata.json')?{gawangan:[]}:{jobs:[]}})});
+ await s.settle();assert.equal(mounted.length,1);assert.equal(mounted[0].initialTrial,'block-A-radial-v1');assert.equal(mounted[0].initialSample,'ABC-A01-R01');assert.equal(mounted[0].autoOpen,true);assert.ok(s.calls.every(c=>!c.options.method));
+ const invalid=setup({search:'?source=Agro_ABC&trial=../../secrets&sample=ABC-A01-R01',session:{token:'staff',expiresAt:Date.now()+10000}});await invalid.settle();assert.ok(!invalid.calls.some(c=>c.url.endsWith('/analysis/Agro_ABC')));
+});
 test('server rejection keeps internal workspace locked even with a stored session',async()=>{const s=setup({session:{token:'forged',expiresAt:Date.now()+10000},status:401});await s.settle();assert.equal(s.el('workspace').hidden,true);assert.match(s.el('gateStatus').textContent,/Akses ditolak/)});
 
 test('Dayun shows failed download as blocked and sends staff bearer header',async()=>{

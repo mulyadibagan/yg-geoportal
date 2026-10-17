@@ -16,18 +16,19 @@
     }return value;
   }
   function counts(features){return Object.fromEntries(statuses.map(s=>[s,features.filter(f=>f.properties.status===s).length]));}
-  async function mountTrial({host,map,api,base,manifest,openRaster,save,current,trialKey}){
+  async function mountTrial({host,map,api,base,manifest,openRaster,save,current,trialKey,initialSample,initialPoint,autoOpen=false,onAutoOpen}){
     if(trialKey&&!/^[\w-]{1,64}$/.test(trialKey))throw Error('Pilihan uji tidak valid.');
     const trialFile=trialKey?manifest.candidate_trials?.[trialKey]:'candidate-trial.json';
     if(!trialFile||!manifest.files.includes(trialFile))return()=>{};
     const reviewUrl=base+'/review'+(trialKey?'?trial='+encodeURIComponent(trialKey):'');
     const trial=await(await api(base+'/files/'+trialFile)).json();if(!current())return()=>{};
     if(trial.schema!=='dayun-candidate-trial-v1'||trial.source_run!==manifest.run||trial.samples.some(s=>!manifest.files.includes(s.sourceCrop)))throw Error('Sumber uji kandidat tidak cocok dengan citra.');
+    if(initialSample&&!trial.samples.some(s=>s.id===initialSample))throw Error('Sampel pada tautan tidak tersedia dalam uji ini.');
     const original=JSON.parse(JSON.stringify(trial));
     const stored=await(await api(reviewUrl)).json();if(!current())return()=>{};
     let revision=stored.revision||0,model=stored.model||null,editVersion=0,exportedVersion=-1;
     if(stored.review){validateReview(stored.review,original);for(const row of stored.review.samples){const target=trial.samples.find(s=>s.id===row.id);target.features=row.features;target.complete=row.complete===true;}}
-    let sample=trial.samples[0],selected=null,adding=false,disposed=false,busy=false,loadSequence=0,dirty=false;
+    let sample=trial.samples.find(s=>s.id===initialSample)||trial.samples[0],selected=null,adding=false,disposed=false,busy=false,loadSequence=0,dirty=false;
     const alive=()=>!disposed&&current();const layers=L.layerGroup().addTo(map),feedbackLayer=L.layerGroup().addTo(map);host.hidden=false;host.replaceChildren();
     const make=(tag,text)=>{const el=document.createElement(tag);if(text!==undefined)el.textContent=text;return el;};
     const title=make('h3',trial.title||'Uji kandidat nanas — perlu koreksi');
@@ -56,7 +57,7 @@
     }
     async function show(){if(!alive()||busy)return;busy=true;open.disabled=true;const request=++loadSequence;const active=sample;status.textContent='Membuka TIFF privat dan penanda…';
       try{const blob=await(await api(base+'/files/'+active.sourceCrop)).blob();if(!alive()||request!==loadSequence)return;await openRaster(blob,{title:trial.label+' / '+active.sourceCrop,nativeReview:true});if(!alive()||request!==loadSequence)return;
-        render();const b=active.bounds;map.fitBounds([[b[1],b[0]],[b[3],b[2]]],{padding:[25,25]});status.textContent=dirty?'Ada koreksi belum disimpan.':'Kandidat dimuat. Revisi privat '+revision+'. Jingga belum diperiksa, hijau diterima, merah ditolak.';
+        render();const b=active.bounds;map.fitBounds([[b[1],b[0]],[b[3],b[2]]],{padding:[25,25]});status.textContent=dirty?'Ada koreksi belum disimpan.':'Kandidat dimuat. Revisi privat '+revision+'. Jingga belum diperiksa, hijau diterima, merah ditolak.';return true;
       }catch(error){if(alive())status.textContent='Sampel belum dapat dibuka: '+error.message;}finally{busy=false;if(alive())open.disabled=false;}
     }
     function showModel(){
@@ -102,17 +103,21 @@
     const beforeUnload=event=>{if(dirty){event.preventDefault();event.returnValue='';}};if(typeof window!=='undefined')window.addEventListener('beforeunload',beforeUnload);
     showModel();update();apply.disabled=true;remove.disabled=true;undoRemove.disabled=true;
     const dispose=()=>{if(typeof window!=='undefined')window.removeEventListener('beforeunload',beforeUnload);disposed=true;loadSequence++;map.off('click',onMapClick);map.removeLayer(layers);map.removeLayer(feedbackLayer);host.replaceChildren();host.hidden=true;};
-    dispose.canLeave=()=>!dirty||exportedVersion===editVersion;return dispose;
+    dispose.canLeave=()=>!dirty||exportedVersion===editVersion;
+    if(autoOpen&&alive()){onAutoOpen?.();if(await show()){const point=sample.features.find(f=>f.properties.id===initialPoint);if(point)pick(point);}}
+    return dispose;
   }
   async function mount(options){
+    if(options.initialTrial&&(!/^[\w-]{1,64}$/.test(options.initialTrial)||!options.manifest.files.includes(options.manifest.candidate_trials?.[options.initialTrial])))throw Error('Uji pada tautan tidak tersedia.');
     if(options.trialKey!==undefined||!Object.keys(options.manifest.candidate_trials||{}).length)return mountTrial(options);
     const {host,manifest,current}=options;host.replaceChildren();host.hidden=false;
     const select=document.createElement('select'),inner=document.createElement('section'),status=document.createElement('p');select.setAttribute('aria-label','Pilih uji kandidat');
     select.add(new Option('Sampel lama A/C — koreksi tersimpan',''));
     for(const key of Object.keys(manifest.candidate_trials)){if(/^[\w-]{1,64}$/.test(key)&&manifest.files.includes(manifest.candidate_trials[key]))select.add(new Option(key==='block-A-radial-v1'?'Blok A — tajuk radial, sampel jelas':key,key));}
-    let chosen=manifest.preferred_candidate_trial&&manifest.candidate_trials[manifest.preferred_candidate_trial]?manifest.preferred_candidate_trial:'';select.value=chosen;host.append(select,status,inner);
+    let chosen=options.initialTrial||(manifest.preferred_candidate_trial&&manifest.candidate_trials[manifest.preferred_candidate_trial]?manifest.preferred_candidate_trial:'');select.value=chosen;host.append(select,status,inner);
     let disposed=false,dispose=()=>{};
-    async function load(){select.disabled=true;try{const next=await mountTrial({...options,host:inner,trialKey:chosen||undefined,current:()=>!disposed&&current()});if(disposed||!current())next();else dispose=next;}catch(error){if(!disposed&&current())status.textContent=error.message;}finally{if(!disposed&&current())select.disabled=false;}}
+    let firstLoad=true;
+    async function load(){select.disabled=true;try{const next=await mountTrial({...options,initialSample:firstLoad?options.initialSample:undefined,initialPoint:firstLoad?options.initialPoint:undefined,autoOpen:firstLoad&&options.autoOpen,host:inner,trialKey:chosen||undefined,current:()=>!disposed&&current()});if(disposed||!current())next();else dispose=next;}catch(error){if(!disposed&&current())status.textContent=error.message;}finally{firstLoad=false;if(!disposed&&current())select.disabled=false;}}
     select.onchange=async()=>{if(disposed||!current())return;if(dispose.canLeave&&!dispose.canLeave()){select.value=chosen;status.textContent='Simpan privat atau ekspor koreksi sebelum berganti uji.';return;}dispose();chosen=select.value;status.textContent='';await load();};
     await load();return()=>{disposed=true;dispose();host.replaceChildren();host.hidden=true;};
   }
