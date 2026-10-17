@@ -54,11 +54,12 @@ def block_zones(features, block):
     return zones, audit
 
 
-def analyze(source, config_path, output, map_path, block='A', source_run=None, cache=None):
+def analyze(source, config_path, output, map_path, block='A', source_run=None, cache=None, prepare_only=False):
     out = Path(output)
     out.mkdir(parents=True, exist_ok=True)
     config = json.loads(Path(config_path).read_text())
     provenance = {'block': block, 'source_run': config['source_run'], 'config_sha256': hashlib.sha256(Path(config_path).read_bytes()).hexdigest(), 'map_sha256': hashlib.sha256(Path(map_path).read_bytes()).hexdigest(), 'method': 'template-2x-threshold043-distance14-v1'}
+    if prepare_only:provenance['method']='native-assets-only-v1'
     marker = out / 'provenance.json'
     if marker.exists() and json.loads(marker.read_text()) != provenance:
         raise ValueError('block_resume_provenance_mismatch')
@@ -68,7 +69,7 @@ def analyze(source, config_path, output, map_path, block='A', source_run=None, c
     zones, audit = block_zones(json.loads(Path(map_path).read_text())['features'], block)
     region = unary_union([z['geometry'] for z in zones])
     templates = []
-    for ref in config['templates']:
+    for ref in ([] if prepare_only else config['templates']):
         spec = next(s for s in config['samples'] if s['id'] == ref['sample'])
         with rasterio.open(spec['local_tif']) as ds:
             x, y = ref['center']
@@ -139,7 +140,7 @@ def analyze(source, config_path, output, map_path, block='A', source_run=None, c
                 rh, rw = data.shape[1] // 2, data.shape[2] // 2
                 small = cv2.resize(np.moveaxis(data, 0, -1), (rw, rh), interpolation=cv2.INTER_AREA)
                 smask = cv2.resize(mask.astype('uint8'), (rw, rh), interpolation=cv2.INTER_NEAREST) > 0
-                proposals = propose(small, smask, templates, threshold=.43, distance=14, limit=100000)
+                proposals = [] if prepare_only else propose(small, smask, templates, threshold=.43, distance=14, limit=100000)
                 found = []
                 for score, px, py in proposals:
                     sx, sy = halo.col_off + (px + .5) * halo.width / rw, halo.row_off + (py + .5) * halo.height / rh
@@ -197,9 +198,13 @@ def analyze(source, config_path, output, map_path, block='A', source_run=None, c
         writer.writeheader()
         writer.writerows(rows)
     (out / 'report.txt').write_text(f'Blok {block}: {len(kept)} kandidat tajuk belum tervalidasi; BUKAN jumlah nanas.\n' + '\n'.join(result['limitations']), encoding='utf-8')
-    from detail_dayun_block import detail
-    detail(out)
-    result['detail_analysis'] = 'detail-analysis.json'
+    if not prepare_only:
+        from detail_dayun_block import detail
+        detail(out)
+        result['detail_analysis'] = 'detail-analysis.json'
+    else:
+        result['method']='Native georeferenced assets prepared; detection not yet run'
+        result['count_reliability']='not_run'
     write('analysis.json', result)
     print(json.dumps({k: result[k] for k in ['block', 'candidate_count', 'boundary_conflict_candidate_count', 'boundary_overlap_count', 'census_changed']}), flush=True)
     return result
@@ -213,5 +218,6 @@ if __name__ == '__main__':
     p.add_argument('--map', default='data/dayun-map.geojson')
     p.add_argument('--block', choices=list('ABCDEF'), default='A')
     p.add_argument('--cache', default='.dayun-analysis-work/block-cache')
+    p.add_argument('--prepare-only',action='store_true')
     a = p.parse_args()
-    analyze(a.source, a.config, a.output, a.map, a.block, cache=a.cache)
+    analyze(a.source, a.config, a.output, a.map, a.block, cache=a.cache, prepare_only=a.prepare_only)

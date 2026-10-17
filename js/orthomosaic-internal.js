@@ -6,7 +6,7 @@
     if(typeof URLSearchParams==='undefined')return null;
     const q=new URLSearchParams(window.location?.search||'');
     const source=q.get('source'),trial=q.get('trial'),sample=q.get('sample'),point=q.get('point');
-    if(source==='Agro_ABC'&&q.get('block')==='A')return{source,block:'A'};
+    if(source==='Agro_ABC'&&['A','B'].includes(q.get('block')))return{source,block:q.get('block')};
     if(!['Agro_ABC','Agro_DEF'].includes(source)||!trial||!/^[\w-]{1,64}$/.test(trial)||!sample||!/^[\w-]{1,100}$/.test(sample)||(point&&!/^[\w-]{1,100}$/.test(point)))return null;
     return{source,trial,sample,point};
   })();
@@ -72,7 +72,7 @@
       if (!map) initMap();
       renderJobs();
       refreshDayunRequests();
-      if(requestedSample&&!initialLinkOpened){initialLinkOpened=true;$('dayunSource').value=requestedSample.source;await $('openDayun').onclick();}
+      if(requestedSample&&!initialLinkOpened){initialLinkOpened=true;$('dayunSource').value=requestedSample.source;if(requestedSample.block)$('dayunBlock').value=requestedSample.block;await $('openDayun').onclick();}
     } catch (error) { $('gateStatus').textContent = `Analisis belum dapat dibuka: ${error.message}`; }
   }
   function renderJobs() {
@@ -157,7 +157,7 @@
     if(!validSession()||details.signal?.aborted)return false;
     if(!source?.nativeViewport){sequence++;activeController?.abort();clearNativeRasters();if(rasterLayer&&map)map.removeLayer(rasterLayer);rasterLayer=null;}
     const epoch=sequence,controller=new AbortController();
-    source={title:'Blok A / citra asli mengikuti peta',nativeViewport:true};rasterContext={dayunReview:true};
+    source={title:details.title,nativeViewport:true};rasterContext={dayunReview:true};
     let layer;
     const state={ready:false,error:null,disposed:false,dispose(){if(state.disposed)return;state.disposed=true;state.ready=false;controller.abort();if(layer&&map)map.removeLayer(layer);nativeRasters.delete(state);details.signal?.removeEventListener('abort',cancel);}};
     const cancel=()=>state.dispose();
@@ -174,7 +174,7 @@
       state.setOpacity=value=>layer.setOpacity(value);
       layer.addTo(map);
       rasterBounds=details.blockBounds||layer.getBounds();$('fitRaster').disabled=false;$('downloadTiff').disabled=true;
-      metadata([['Sumber','Blok A  -  citra asli mengikuti peta'],['Sistem koordinat',`EPSG:${raster.projection}`],['Ukuran piksel (satuan CRS)',`${number(Math.abs(raster.rx),8)}  x  ${number(Math.abs(raster.ry),8)}`],['Akses','Internal staf; pembacaan TIFF bertahap']]);
+      metadata([['Sumber',details.title],['Sistem koordinat',`EPSG:${raster.projection}`],['Ukuran piksel (satuan CRS)',`${number(Math.abs(raster.rx),8)}  x  ${number(Math.abs(raster.ry),8)}`],['Akses','Internal staf; pembacaan TIFF bertahap']]);
       return state;
     }catch(error){state.dispose();if(epoch===sequence&&validSession())throw error;return false;}
   }
@@ -239,14 +239,17 @@
     finally{$('submitDayun').disabled=false;}
   };
   setInterval(refreshDayunRequests,30000);
+  let displayedBlock='A';
+  $('dayunBlock').onchange=()=>{if(disposeBlockReview?.canLeave&&!disposeBlockReview.canLeave()){$('dayunBlock').value=displayedBlock;$('dayunStatus').textContent='Simpan atau ekspor koreksi sebelum mengganti blok.';return;}$('openDayun').onclick();};
   $('openDayun').onclick=async()=>{
-    if(disposeBlockReview?.canLeave&&!disposeBlockReview.canLeave()){$('dayunStatus').textContent='Simpan atau ekspor koreksi titik Blok A sebelum mengganti hasil.';return;}
+    if(disposeBlockReview?.canLeave&&!disposeBlockReview.canLeave()){$('dayunStatus').textContent='Simpan atau ekspor koreksi titik sebelum mengganti hasil.';return;}
     clearDayun();
     const request=dayunRequest;
     const current=()=>validSession() && request===dayunRequest;
     const selected=$('dayunSource').value;
     const target=requestedSample?.source===selected&&requestedSample.sample?requestedSample:null;
-    const blockTarget=requestedSample?.source===selected&&requestedSample.block==='A';
+    const block=['A','B'].includes($('dayunBlock').value)?$('dayunBlock').value:'A';displayedBlock=block;
+    const blockTarget=selected==='Agro_ABC'&&!requestedSample?.sample;
     if(!['Agro_ABC','Agro_DEF'].includes(selected))return;
     const base=`/api/staff/drone/analysis/${selected}`;
     $('dayunStatus').textContent='Memeriksa hasil…';
@@ -286,7 +289,7 @@
       };
       $('dayunResults').append(select);$('dayunResults').append(inspect);$('dayunResults').append(button);
       if(!target&&window.YG_DAYUN_BLOCK){
-        try{const expand=()=>{if(current()){const card=document.querySelector?.('.map-card');if(card&&!card.classList.contains('map-expanded'))$('focusMap').onclick?.();}};const dispose=await window.YG_DAYUN_BLOCK.mount({host:$('blockReview'),comparisonHost:$('blockComparison'),map,api,base,manifest,openRaster,openNativeRaster,getRasterSource:()=>source||(rasterContext?{...rasterContext,pending:true}:null),onNativeStatus:text=>{$('mapStatus').textContent=text;},save,current,autoOpen:blockTarget,onAutoOpen:expand,onEditMap:expand,onShowComparison:()=>{const card=document.querySelector?.('.map-card');if(card?.classList.contains('map-expanded'))$('focusMap').onclick?.();}});if(current()){disposeBlockReview=dispose;if(manifest.block_analyses?.A)$('sampleReviewPanel').open=Boolean(manifest.preferred_candidate_trial)&&!blockTarget;}else dispose();}
+        try{const expand=()=>{if(current()){const card=document.querySelector?.('.map-card');if(card&&!card.classList.contains('map-expanded'))$('focusMap').onclick?.();}};const dispose=await window.YG_DAYUN_BLOCK.mount({host:$('blockReview'),comparisonHost:$('blockComparison'),map,api,base,manifest,block,openRaster,openNativeRaster,getRasterSource:()=>source||(rasterContext?{...rasterContext,pending:true}:null),onNativeStatus:text=>{$('mapStatus').textContent=text;},save,current,autoOpen:blockTarget,onAutoOpen:expand,onEditMap:expand,onShowComparison:()=>{const card=document.querySelector?.('.map-card');if(card?.classList.contains('map-expanded'))$('focusMap').onclick?.();}});if(current()){disposeBlockReview=dispose;if(manifest.block_analyses?.[block])$('sampleReviewPanel').open=Boolean(manifest.preferred_candidate_trial)&&!blockTarget;}else dispose();}
         catch(error){if(current())$('dayunStatus').textContent+=' Analisis blok belum dapat dimuat: '+error.message;}
       }
       if(window.YG_DAYUN_CANDIDATES){

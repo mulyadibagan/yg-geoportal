@@ -117,3 +117,9 @@ test('native read failures stay unready and explicit inspection retries only the
 test('suspending native imagery cancels queued requests before another raster can be overwritten',async()=>{
  const s=viewportFixture({concurrency:1});s.engine.refresh();s.engine.suspend();await s.settle();assert.equal(s.opened.length,0);assert.equal(s.engine.readyAt([.5,.5]),false);s.engine.dispose();
 });
+
+
+test('Blok B opens its own analysis, private native assets and database reference without reading Blok A',async()=>{
+ const s=setup();s.options.block='B';s.result.block='B';s.result.zones=[{id:'GT-B-01',kind:'active_source',candidate_crowns:2}];s.result.model_calibration={transferred_from_block:'A'};s.options.manifest.block_analyses={B:'block-B/analysis.json'};s.options.manifest.files=s.options.manifest.files.map(f=>f.replace('block-A/','block-B/'));s.options.manifest.block_comparisons={B:'block-B/database-comparison.json'};s.options.manifest.files.push('block-B/database-comparison.json');const old=s.options.api;s.options.api=async(path,config)=>path.endsWith('database-comparison.json')?{json:async()=>({schema:'dayun-ortho-database-comparison-v1',block:'B',source_run:'run',rows:[{gawangan:'GT-B-01',image_candidates:2}]})}:old(path,config);
+ const dispose=await s.mount(s.options);assert.ok(s.find('Buka seluruh Blok B'));await s.find('Buka seluruh Blok B').onclick();assert.ok(s.requests.every(r=>r.path.includes('/files/block-B/')&&!r.config));assert.match(JSON.stringify(s.host.children),/Akurasi pada Blok B belum diukur/);assert.match(JSON.stringify(s.host.children),/Pembanding database per gawangan/);dispose();
+});

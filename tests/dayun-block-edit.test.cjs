@@ -25,3 +25,8 @@ test('direct selection changes no decisions and delete excludes automatic points
  await e.pick(e.features().find(f=>f.properties.id==='auto-1'));s.button('Terima titik').onclick();assert.equal(s.counts().working_total,2);
  }finally{e.dispose();}
 });
+
+
+test('Blok B additions use an independent endpoint, block identity and manual-point prefix',async()=>{
+ const s=setup();s.options.result.block='B';s.options.analysisPath='block-B/analysis.json';const api=s.options.api;s.options.api=async(...args)=>{const response=await api(...args);return{json:async()=>{const value=await response.json();value.analysis_path=s.options.analysisPath;value.review.analysis_path=s.options.analysisPath;return value;}}};const e=await editor.mount(s.options);try{await add(s);const manual=e.features().find(f=>f.properties.origin==='manual_addition');assert.match(manual.properties.id,/^B-manual-/);await s.button('Simpan koreksi Blok B privat').onclick();const call=s.calls.find(c=>c.config);assert.match(call.path,/block=B$/);const patch=JSON.parse(call.config.body).patch;assert.equal(patch.block,'B');assert.equal(patch.analysis_path,'block-B/analysis.json');assert.equal(JSON.stringify(s.original),s.before);}finally{e.dispose();}
+});

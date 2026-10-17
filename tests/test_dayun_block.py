@@ -76,6 +76,10 @@ class BlockTests(unittest.TestCase):
             candidates = json.loads((out / 'candidates.geojson').read_text())['features']
             self.assertEqual(len(candidates), len({f['properties']['id'] for f in candidates}))
             self.assertEqual(analyze(source, config, out, geo)['candidate_count'], result['candidate_count'])
+            prepared=analyze(source,config,root/'prepare',geo,prepare_only=True)
+            self.assertEqual(prepared['count_reliability'],'not_run')
+            self.assertNotIn('detail_analysis',prepared)
+            self.assertEqual(len(prepared['native_tiles']),len(result['native_tiles']))
             config.write_text(config.read_text() + ' ')
             self.assertRaisesRegex(ValueError, 'provenance_mismatch', analyze, source, config, out, geo)
 

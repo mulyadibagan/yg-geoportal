@@ -32,6 +32,8 @@ def deduplicate(features, distance=65):
 def count_block(directory,output,source,threshold=.30,rejected=None,source_identity=None,calibration=None):
     root=Path(directory);out=Path(output);out.mkdir(parents=True,exist_ok=True)
     result=json.loads((root/'analysis.json').read_text())
+    block=result['block']
+    if block not in 'ABCDEF' or len(block)!=1:raise ValueError('invalid_block')
     geo=json.loads((root/'zones.geojson').read_text())
     zones=[(f['properties']['id'],shape(f['geometry'])) for f in geo['features']]
     region=unary_union([g for _,g in zones])
@@ -40,7 +42,7 @@ def count_block(directory,output,source,threshold=.30,rejected=None,source_ident
     if calibration:
         if calibration['source_run']!=result['source_run'] or calibration['schema']!='dayun-positive-radial-calibration-v1':raise ValueError('calibration_source_mismatch')
         threshold=calibration['threshold']
-    positives=[(~source.transform)*tuple(f['geometry']['coordinates']) for f in calibration['labels']] if calibration else []
+    positives=[(~source.transform)*tuple(f['geometry']['coordinates']) for f in calibration['labels'] if region.covers(Point(f['geometry']['coordinates']))] if calibration else []
     low=max(.10,round(threshold-.05,3));high=round(threshold+.05,3)
     provenance={'source_run':result['source_run'],'method':'native-radial-full-block-v1','threshold':threshold,
                 'radii_native_pixels':list(radii),'suppression_native_pixels':distance,'halo_native_pixels':160,
@@ -79,7 +81,7 @@ def count_block(directory,output,source,threshold=.30,rejected=None,source_ident
             rejected_point=any((sx+.5-a)**2+(sy+.5-b)**2<=12**2 for a,b in rejected_pixels)
             matched_positive=any((sx+.5-a)**2+(sy+.5-b)**2<=12**2 for a,b in positives)
             found.append({'type':'Feature','geometry':{'type':'Point','coordinates':[lon,lat]},'properties':{
-                'id':f'A-radial-x{sx}-y{sy}','zones':matches,'boundary_conflict':len(matches)>1,
+                'id':f'{block}-radial-x{sx}-y{sy}','zones':matches,'boundary_conflict':len(matches)>1,
                 'similarity':round(score,5),'status':'unvalidated_crown_candidate','source_pixel':[sx,sy],
                 'native_tile':tile['file'],'excluded_by_owner_rejection':rejected_point,**({'represented_by_manual_point':matched_positive} if calibration else {})}})
         checkpoint.write_text(json.dumps(found));candidates.extend(found)
@@ -99,15 +101,15 @@ def count_block(directory,output,source,threshold=.30,rejected=None,source_ident
         rows.append(row)
     total=lambda t:sum(f['properties']['similarity']>=t and eligible(f) for f in all_kept)
     result.update(candidate_count=len(kept),boundary_conflict_candidate_count=sum(f['properties']['boundary_conflict'] for f in kept),
-                  zones=rows,method='Full native-resolution radial leaf-edge orientation; all native Blok A cores with 160px source halos; global 65px suppression',
+                  zones=rows,method=f'Full native-resolution radial leaf-edge orientation; all native Blok {block} cores with 160px source halos; global suppression',
                   count_reliability='low_unvalidated_whole_block_estimate',pineapple_count_validated=None,census_changed=False,
                   full_block_count={'status':'processed_all_native_tiles','processed_tiles':len(result['native_tiles']),
                                     'threshold':threshold,'candidate_count':len(kept),'threshold_025_count':total(.25),'threshold_040_count':total(.40),
                                     'owner_rejected_locations':len(rejected_pixels),'excluded_candidates':sum(f['properties']['excluded_by_owner_rejection'] for f in all_kept),
                                     'confidence':'low','sensitivity_is_not_confidence_interval':True,'validated_pineapple_total':None})
-    result['analysis_findings']=[f'Hitungan otomatis seluruh Blok A: {len(kept):,} kandidat tajuk dari {len(result["native_tiles"])} potongan native; keyakinan rendah, belum jumlah nanas terkonfirmasi.',
+    result['analysis_findings']=[f'Hitungan otomatis seluruh Blok {block}: {len(kept):,} kandidat tajuk dari {len(result["native_tiles"])} potongan native; keyakinan rendah, belum jumlah nanas terkonfirmasi.',
                                  'Citra asli diproses dengan halo 160 piksel dan penyaringan duplikat lintas potongan. Semua ID gawangan sumber tetap digabung.',
-                                 'Koreksi tambahan pengguna belum ditemukan tersimpan pada server. Dua lokasi kandidat yang ditolak melalui chat diperiksa untuk pengecualian; ini bukan pelatihan klasifikasi jenis tanaman.']
+                                 'Koreksi tim tetap terpisah dari kandidat otomatis dan data sensus; jumlah kandidat belum tervalidasi sebagai jumlah tanaman.']
     result['limitations']=['Whole-block candidate count, not a confirmed living pineapple census. No measured precision or recall is available.',
                           'Radial crowns can include weeds and other species; small seedlings, overlapping or obscured leaves and pale plants can be missed.',
                           'Threshold .25/.40 counts are sensitivity checks, not lower/upper bounds or a confidence interval.',
