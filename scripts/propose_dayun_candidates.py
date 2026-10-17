@@ -48,7 +48,7 @@ def radial_scores(rgb, valid, radii=(40,55,75)):
     return scores
 
 
-def radial_propose(rgb, valid, zone=None, threshold=.30, distance=65, radii=(40,55,75), limit=1000,center_luma_min=None):
+def radial_propose(rgb, valid, zone=None, threshold=.30, distance=65, radii=(40,55,75), limit=1000,center_luma_min=None,angular_guard=None,gsd_m=None):
     scores=radial_scores(rgb,valid,radii)
     if center_luma_min is not None:
         light=cv2.GaussianBlur(cv2.cvtColor(rgb,cv2.COLOR_RGB2GRAY).astype('float32'),(9,9),0)
@@ -58,7 +58,12 @@ def radial_propose(rgb, valid, zone=None, threshold=.30, distance=65, radii=(40,
         scores[~zone]=-1
     local=cv2.dilate(scores,np.ones((15,15),'uint8'))
     ys,xs=np.where((scores>=threshold)&(scores==local))
-    return suppress([(float(scores[y,x]),int(x),int(y)) for y,x in zip(ys,xs)],distance=distance,limit=limit)
+    raw=[(float(scores[y,x]),int(x),int(y)) for y,x in zip(ys,xs)]
+    proposals=suppress(raw,distance=distance,limit=max(len(raw),limit) if angular_guard else limit)
+    if angular_guard:
+        from dayun_candidate_quality import filter_proposals
+        proposals=filter_proposals(rgb,valid,proposals,angular_guard,gsd_m)
+    return proposals[:limit]
 
 def template_scores(rgb,valid,templates):
     gray=cv2.cvtColor(rgb,cv2.COLOR_RGB2GRAY);scores=np.full(gray.shape,-1,dtype=np.float32)
