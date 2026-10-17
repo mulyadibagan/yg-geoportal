@@ -62,12 +62,18 @@ export async function blockReviewOperation(env,body){
   const folder=path.slice(0,path.lastIndexOf('/')+1);for(const file of ['zones.geojson','candidates.geojson'])if(!manifest.files.includes(folder+file))fail('block_assets_unavailable',404);
   const [analysis,candidates,zones]=await Promise.all([read(manifest.prefix+'/'+path),read(manifest.prefix+'/'+folder+'candidates.geojson'),read(manifest.prefix+'/'+folder+'zones.geojson')]);
   if(analysis?.source_run!==manifest.run||analysis.block!=='A'||!candidates?.features||!zones?.features)fail('block_analysis_source_mismatch',409);
-  const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(path));const hash=Array.from(new Uint8Array(digest),b=>b.toString(16).padStart(2,'0')).join('');
+  // A calibrated baseline keeps the existing private correction history. Reads
+  // adapt its presentation/counts without rewriting any stored user revision.
+  const anchor=manifest.block_review_bases?.A||path;let knownCandidates=candidates;
+  if(anchor!==path){if(typeof anchor!=='string'||!manifest.files.includes(anchor)||anchor.split('/').some(p=>!p||p==='.'||p==='..'))fail('invalid_review_base');const previousFolder=anchor.slice(0,anchor.lastIndexOf('/')+1);if(!manifest.files.includes(previousFolder+'candidates.geojson'))fail('invalid_review_base');const [previous,original]=await Promise.all([read(manifest.prefix+'/'+anchor),read(manifest.prefix+'/'+previousFolder+'candidates.geojson')]);if(previous?.source_run!==manifest.run||previous.block!=='A'||!original?.features)fail('review_base_source_mismatch',409);knownCandidates={type:'FeatureCollection',features:[...new Map([...original.features,...candidates.features].map(f=>[f.properties.id,f])).values()]};}
+  const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(anchor));const hash=Array.from(new Uint8Array(digest),b=>b.toString(16).padStart(2,'0')).join('');
   const root=`drone/analysis/dayun/block-reviews/Agro_ABC/${manifest.run}/${hash}`,stored=await read(root+'/head.json');
-  const head=collaborativeHead(stored,{ok:true,revision:0,review:null,counts:blockReviewCounts(null,candidates,zones),analysis_path:path});
+  if(stored?.review){if(stored.review.source_run!==manifest.run)fail('review_base_source_mismatch',409);knownCandidates={type:'FeatureCollection',features:[...new Map([...knownCandidates.features,...stored.review.changes.filter(f=>f.properties.origin==='automated')].map(f=>[f.properties.id,f])).values()]};}
+  const raw=collaborativeHead(stored,{ok:true,revision:0,review:null,counts:blockReviewCounts(null,candidates,zones),analysis_path:path});
+  const head={...raw,analysis_path:path,review:raw.review?{...raw.review,analysis_path:path}:null,counts:blockReviewCounts(raw.review,candidates,zones),review_base_analysis_path:anchor};
   if(body.action==='load')return head;
   if(body.action!=='save')fail('invalid_block_review_action');
-  const context={manifest,path,analysis,candidates,zones};let merged;
+  const context={manifest,path,analysis,candidates:knownCandidates,zones};let merged;
   if(body.patch){merged=mergePointPatch(head,body.patch,context);if(!merged.applied)return head;}
   else{
     if(!Number.isInteger(body.expected_revision)||body.expected_revision!==head.revision)fail('block_review_conflict_reload_before_saving',409);
@@ -77,7 +83,7 @@ export async function blockReviewOperation(env,body){
   }
   const {review,point_versions,point_operations}=merged,counts=blockReviewCounts(review,candidates,zones);
   const revision=(head?.revision||0)+1,version=`${root}/versions/${revision}-${crypto.randomUUID()}.json`;
-  const result={ok:true,revision,review,counts,analysis_path:path,collaboration:'per-point-v1',point_versions,point_operations,updated_at:new Date().toISOString(),previous_version:head?.version||null,version};
+  const result={ok:true,revision,review,counts,analysis_path:path,review_base_analysis_path:anchor,collaboration:'per-point-v1',point_versions,point_operations,updated_at:new Date().toISOString(),previous_version:head?.version||null,version};
   const options={httpMetadata:{contentType:'application/json',cacheControl:'private, no-store'}};
   await env.PUBLIC_SNAPSHOTS.put(version,JSON.stringify(result),options);await env.PUBLIC_SNAPSHOTS.put(root+'/head.json',JSON.stringify(result),options);return result;
 }
