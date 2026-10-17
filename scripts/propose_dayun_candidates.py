@@ -8,15 +8,18 @@ from rasterio.windows import Window,bounds
 from PIL import Image,ImageDraw
 
 def suppress(points,distance=28,limit=60):
-    kept=[]
+    kept=[];cells={}
     for score,x,y in sorted(points,reverse=True):
-        if all((x-a[1])**2+(y-a[2])**2>=distance**2 for a in kept):
+        cell=(int(x//distance),int(y//distance))
+        neighbors=[p for dx in (-1,0,1) for dy in (-1,0,1) for p in cells.get((cell[0]+dx,cell[1]+dy),[])]
+        if all((x-a)**2+(y-b)**2>=distance**2 for a,b in neighbors):
             kept.append((score,x,y))
+            cells.setdefault(cell,[]).append((x,y))
             if len(kept)>=limit:break
     return kept
 
 
-def radial_propose(rgb, valid, zone=None, threshold=.30, distance=65, radii=(40,55,75), limit=1000):
+def radial_scores(rgb, valid, radii=(40,55,75)):
     """Orientation-based crown proposals, independent of copied exemplar pixels.
 
     Long leaf edges align away from a crown centre; their image gradients are
@@ -42,6 +45,14 @@ def radial_propose(rgb, valid, zone=None, threshold=.30, distance=65, radii=(40,
                   cv2.filter2D(b,-1,(kernel*np.sin(2*theta)).astype('float32')))/(cv2.filter2D(weight,-1,kernel)+1e-6)
         full=cv2.erode(valid.astype('uint8'),np.ones((2*radius+1,2*radius+1),'uint8'),borderType=cv2.BORDER_CONSTANT,borderValue=0)>0
         np.maximum(scores,np.where(full,np.clip(response,0,1),-1),out=scores)
+    return scores
+
+
+def radial_propose(rgb, valid, zone=None, threshold=.30, distance=65, radii=(40,55,75), limit=1000,center_luma_min=None):
+    scores=radial_scores(rgb,valid,radii)
+    if center_luma_min is not None:
+        light=cv2.GaussianBlur(cv2.cvtColor(rgb,cv2.COLOR_RGB2GRAY).astype('float32'),(9,9),0)
+        scores[light<center_luma_min]=-1
     if zone is not None:
         if zone.shape!=valid.shape:raise ValueError('invalid_radial_zone')
         scores[~zone]=-1
@@ -49,7 +60,7 @@ def radial_propose(rgb, valid, zone=None, threshold=.30, distance=65, radii=(40,
     ys,xs=np.where((scores>=threshold)&(scores==local))
     return suppress([(float(scores[y,x]),int(x),int(y)) for y,x in zip(ys,xs)],distance=distance,limit=limit)
 
-def propose(rgb,valid,templates,threshold=.43,distance=28,limit=60):
+def template_scores(rgb,valid,templates):
     gray=cv2.cvtColor(rgb,cv2.COLOR_RGB2GRAY);scores=np.full(gray.shape,-1,dtype=np.float32)
     for template in templates:
         for scale in [.8,1.,1.2]:
@@ -63,6 +74,11 @@ def propose(rgb,valid,templates,threshold=.43,distance=28,limit=60):
                 full=cv2.erode(valid.astype('uint8'),np.ones((size,size),'uint8'),borderType=cv2.BORDER_CONSTANT,borderValue=0)
                 target=scores[half:half+result.shape[0],half:half+result.shape[1]]
                 np.maximum(target,np.where(full[half:half+result.shape[0],half:half+result.shape[1]]>0,result,-1),out=target)
+    return scores
+
+
+def propose(rgb,valid,templates,threshold=.43,distance=28,limit=60):
+    scores=template_scores(rgb,valid,templates)
     local=cv2.dilate(scores,np.ones((9,9),np.uint8));ys,xs=np.where((scores>=threshold)&(scores==local))
     return suppress([(float(scores[y,x]),int(x),int(y)) for y,x in zip(ys,xs)],distance=distance,limit=limit)
 
