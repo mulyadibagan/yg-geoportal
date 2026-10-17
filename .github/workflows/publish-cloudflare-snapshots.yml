@@ -53,7 +53,7 @@ jobs:
         shell: bash
         run: |
           git diff --name-only "$BEFORE_SHA" HEAD > /tmp/changed-files
-          if grep -Eq '^data/dayun-(map|blocks)\.geojson$' /tmp/changed-files && ! grep '^data/' /tmp/changed-files | grep -Ev '^data/dayun-(map|blocks)\.geojson$' >/dev/null; then
+          if ! grep '^data/' /tmp/changed-files | grep -Ev '^data/dayun-(map|blocks)\.geojson$' >/dev/null; then
             echo 'boundary_only=true' >> "$GITHUB_OUTPUT"
           fi
       - name: Stamp Dayun data update time

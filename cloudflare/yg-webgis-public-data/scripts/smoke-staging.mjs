@@ -1,4 +1,7 @@
 import { createHash } from "node:crypto";
+import { readFile } from "node:fs/promises";
+
+const expectedDayunMap = JSON.parse(await readFile(new URL("../../../data/dayun-map.geojson", import.meta.url), "utf8"));
 
 const base = process.env.YG_WEBGIS_STAGING_URL ||
   "https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev";
@@ -64,7 +67,7 @@ if (!Array.isArray(kph.data?.features) || kph.data.features.length !== 1382) {
 
 const dayunTargets = {
   "/dayun/program.json": data => Array.isArray(data?.layers),
-  "/dayun/map.geojson": data => Array.isArray(data?.features) && data.features.length === 89,
+  "/dayun/map.geojson": data => JSON.stringify(data) === JSON.stringify(expectedDayunMap),
   "/dayun/context.geojson": data => Array.isArray(data?.features) && data.features.length === 2,
   "/dayun/gawangan-details.json": data => Array.isArray(data?.objects) && data.objects.length === 59,
   "/dayun/blocks.geojson": data => Array.isArray(data?.features) && data.features.length === 6
