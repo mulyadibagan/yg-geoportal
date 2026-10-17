@@ -15,7 +15,7 @@ def suppress(points,distance=28,limit=60):
             if len(kept)>=limit:break
     return kept
 
-def propose(rgb,valid,templates,threshold=.43):
+def propose(rgb,valid,templates,threshold=.43,distance=28,limit=60):
     gray=cv2.cvtColor(rgb,cv2.COLOR_RGB2GRAY);scores=np.full(gray.shape,-1,dtype=np.float32)
     for template in templates:
         for scale in [.8,1.,1.2]:
@@ -30,7 +30,7 @@ def propose(rgb,valid,templates,threshold=.43):
                 target=scores[half:half+result.shape[0],half:half+result.shape[1]]
                 np.maximum(target,np.where(full[half:half+result.shape[0],half:half+result.shape[1]]>0,result,-1),out=target)
     local=cv2.dilate(scores,np.ones((9,9),np.uint8));ys,xs=np.where((scores>=threshold)&(scores==local))
-    return suppress([(float(scores[y,x]),int(x),int(y)) for y,x in zip(ys,xs)])
+    return suppress([(float(scores[y,x]),int(x),int(y)) for y,x in zip(ys,xs)],distance=distance,limit=limit)
 
 def run(config,output):
     config=json.loads(Path(config).read_text());output=Path(output);output.mkdir(parents=True,exist_ok=True)

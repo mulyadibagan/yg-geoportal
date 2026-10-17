@@ -47,7 +47,7 @@ jobs:
       - run: npm ci --ignore-scripts
         working-directory: cloudflare/yg-webgis-public-data
       - name: Install raster tools
-        run: pip install 'rasterio>=1.4,<2' 'Pillow>=11,<13' 'shapely>=2,<3' 'pyproj>=3,<4' 'google-auth[requests]>=2,<3'
+        run: pip install 'rasterio>=1.4,<2' 'Pillow>=11,<13' 'shapely>=2,<3' 'pyproj>=3,<4' 'google-auth[requests]>=2,<3' 'opencv-python-headless>=4.10,<6'
       - name: Verify engine
         run: |
           python -m unittest discover -s tests -p test_drive_geotiff.py -v
