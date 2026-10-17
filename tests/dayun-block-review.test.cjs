@@ -55,3 +55,9 @@ test('versioned block results reuse only allowlisted original native assets',asy
  let dispose=await s.mount(s.options);s.find('Periksa citra asli di titik peta').onclick();await s.events.click({latlng:{lng:.5,lat:.5}});assert.ok(s.requests.some(r=>r.path.endsWith('/files/original-A/native/one.tif')));dispose();
  s.result.asset_folder='../unlisted/';await assert.rejects(()=>s.mount(s.options),/Aset citra asli/);
 });
+
+test('database comparison is below the map and row edit selects its zone in the private editor',async()=>{
+ const s=setup(),old=s.options.api,comparison={children:[],hidden:true,replaceChildren(){this.children=[]},append(...xs){this.children.push(...xs)},scrollIntoView(){}};s.options.comparisonHost=comparison;let expanded=0;s.options.onEditMap=()=>expanded++;
+ s.options.manifest.block_comparisons={A:'block-A/database-comparison.json'};s.options.manifest.files.push('block-A/database-comparison.json');s.options.api=async(path,config)=>path.endsWith('database-comparison.json')?{json:async()=>({schema:'dayun-ortho-database-comparison-v1',block:'A',source_run:'run',rows:[{gawangan:'GT-A-01',database_match:true,pineapple_source_initial:1406.25,pineapple_added_planted:10,pineapple_total_recorded:1416.25,image_candidates:2}]})}:old(path,config);
+ const dispose=await s.mount(s.options),all=node=>[node,...(node.children||[]).flatMap(all)];assert.match(JSON.stringify(comparison),/Total tercatat awal/);assert.match(JSON.stringify(comparison),/1.416,25/);assert.ok(!JSON.stringify(s.host.children).includes('1.416,25'));await all(comparison).find(x=>x.textContent==='Edit titik GT-A-01').onclick();assert.equal(expanded,1);assert.equal(s.find('Gawangan Blok A'),undefined);assert.ok(s.requests.some(r=>r.path.endsWith('/zones.geojson')));dispose();assert.equal(comparison.hidden,true);assert.equal(comparison.children.length,0);
+});
