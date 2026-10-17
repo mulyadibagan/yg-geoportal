@@ -1,7 +1,7 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 const code=fs.readFileSync('js/dayun-block-review.js','utf8');
 function setup(){
- const element=tag=>({tag,children:[],value:'',hidden:true,textContent:'',append(...x){this.children.push(...x)},replaceChildren(...x){this.children=x},add(x){this.children.push(x)},setAttribute(){}});
+ const element=tag=>({tag,children:[],value:'',hidden:true,textContent:'',append(...x){this.children.push(...x)},replaceChildren(...x){this.children=x},add(x){this.children.push(x)},setAttribute(){},showModal(){this.open=true},close(){this.open=false}});
  const host=element('section'),requests=[],events={},layers=[];
  const layer={addTo(){return this},clearLayers(){},bindTooltip(){return this},on(){return this},getBounds(){return[[0,0],[1,1]]},getLayers(){return[]}};
  const context={window:{},document:{createElement:element},Option:function(text,value){return{text,value}},L:{layerGroup:()=>({...layer}),imageOverlay:()=>layer,geoJSON:()=>layer,featureGroup:()=>layer,circleMarker:()=>{layers.push(1);return layer}},URL:{createObjectURL:()=> 'blob:private',revokeObjectURL(){}},Promise};vm.runInNewContext(code,context);
@@ -24,3 +24,21 @@ test('private database reference shows fractional values without claiming a vali
 });
 
 test('dated report is downloadable only through its manifest-listed private file',async()=>{const s=setup(),saved=[];s.result.capture_date='2026-10-13';s.result.analysis_findings=['Detektor belum andal untuk jumlah nanas.'];s.result.analysis_report='analysis-20261013.txt';s.options.manifest.files.push('block-A/analysis-20261013.txt');s.options.save=(blob,name)=>saved.push(name);const dispose=await s.mount(s.options);assert.ok(s.host.children.some(x=>x.textContent.includes('2026-10-13 (keterangan pemilik data)')));await s.find('Unduh laporan analisis').onclick();assert.deepEqual(saved,['analysis-20261013.txt']);assert.ok(s.requests.at(-1).path.endsWith('/files/block-A/analysis-20261013.txt'));dispose();});
+
+test('detail diagnostics reject another source and use only allowlisted staff files',async()=>{
+ const s=setup(),old=s.options.api;s.options.manifest.block_details={A:'block-A/detail-analysis.json'};s.options.manifest.files.push('block-A/detail-analysis.json','block-A/detail-gawangan.csv');
+ const data={schema:'dayun-block-detail-v1',source_run:'other',block:'A',cell_count:4,review_cell_count:1,zones:[{zone_id:'GT-A-01',polygon_area_m2:10,coverage_fraction:1,vegetation_proxy_fraction:.4,dark_fraction:.1,review_cells:1}],limitations:['No pineapple census inferred.']};
+ s.options.api=async(path,config)=>{if(path.endsWith('/detail-analysis.json')){s.requests.push({path,config});return{json:async()=>data}}return old(path,config)};
+ const dispose=await s.mount(s.options);await s.find('Analisis detail per gawangan').onclick();assert.match(JSON.stringify(s.host.children),/Sumber analisis detail tidak sesuai/);
+ data.source_run='run';await s.find('Analisis detail per gawangan').onclick();assert.match(JSON.stringify(s.host.children),/Sedikit vegetasi bukan bukti nanas mati/);assert.match(JSON.stringify(s.host.children),/40.0%/);
+ const panel=s.host.children.find(x=>x.tag==='div');await panel.children.find(x=>x.textContent==='Unduh tabel analisis detail').onclick();assert.ok(s.requests.at(-1).path.endsWith('/files/block-A/detail-gawangan.csv'));assert.ok(s.requests.every(r=>!r.config));dispose();
+});
+
+test('enlarged native sample opens privately and its TIFF is still manifest guarded',async()=>{
+ const s=setup(),old=s.options.api;s.options.manifest.block_details={A:'block-A/detail-analysis.json'};s.options.manifest.files.push('block-A/detail-analysis.json','block-A/detail/GT-A-01.jpg');
+ const data={schema:'dayun-block-detail-v1',source_run:'run',block:'A',cell_count:1,review_cell_count:1,zones:[{zone_id:'GT-A-01',polygon_area_m2:10,coverage_fraction:1,vegetation_proxy_fraction:.2,dark_fraction:0,review_cells:1,sample_sheet:'detail/GT-A-01.jpg'}],samples:[{zone_id:'GT-A-01',stratum:'low',native_tile:'native/not-allowed.tif'}],limitations:[]};
+ s.options.api=async(path,config)=>path.endsWith('/detail-analysis.json')?{json:async()=>data}:old(path,config);
+ const dispose=await s.mount(s.options);await s.find('Analisis detail per gawangan').onclick();
+ const all=node=>[node,...(node.children||[]).flatMap(all)];await all(s.host).find(x=>x.textContent==='Lihat GT-A-01').onclick();const dialog=all(s.host).find(x=>x.tag==='dialog');assert.equal(dialog.open,true);assert.ok(s.requests.at(-1).path.endsWith('/files/block-A/detail/GT-A-01.jpg'));
+ await all(dialog).find(x=>x.textContent==='Buka TIFF low').onclick();assert.ok(!s.requests.some(r=>r.path.endsWith('not-allowed.tif')));dispose();assert.equal(s.host.hidden,true);assert.equal(s.host.children.length,0);
+});
