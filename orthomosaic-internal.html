@@ -7,7 +7,7 @@
 <link rel="icon" href="assets/logo-yayasan-gambut.png">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css">
-<link rel="stylesheet" href="css/orthomosaic-internal.css?v=20261005-1">
+<link rel="stylesheet" href="css/orthomosaic-internal.css?v=20261017-candidates1">
 </head>
 <body>
 <header><a href="webgis.html">YG GeoPortal</a><nav><a href="drone-survey.html">Survei drone</a><a href="staff-login.html">Akun staf</a></nav></header>
@@ -23,7 +23,7 @@
 <section class="card"><h2>Informasi citra</h2><dl id="metadata"><dt>Sumber</dt><dd>Belum dipilih</dd></dl><label for="opacity">Kepekatan citra</label><input id="opacity" type="range" min="0" max="1" step="0.05" value="1"><div class="actions"><button id="fitRaster" disabled>Ke lokasi citra</button><button id="downloadTiff" disabled>Unduh GeoTIFF sumber</button></div><p class="note">Unduhan adalah GeoTIFF hasil pemrosesan yang tersimpan, bukan foto mentah.</p></section>
 <section class="card"><h2>Referensi Pulau Bengkalis</h2><button id="bengkalis">Ke Pulau Bengkalis</button><label class="check"><input id="meritech" type="checkbox">Tampilkan tile Meritech</label><p id="tileStatus" class="note" role="status">Cakupan, tanggal, dan resolusi sumber belum terverifikasi. Tile JPG bukan GeoTIFF asli drone.</p><div id="meritechDownload"></div></section>
 </aside>
-<section class="card map-card"><div class="map-heading"><h2>Peta analisis</h2><span id="coordinate" class="note"></span></div><div id="map" aria-label="Peta analisis orthomosaic"></div><p id="mapStatus" role="status">Pilih orthomosaic untuk memulai.</p><p class="note">Gambar polygon atau garis menggunakan alat di kiri peta. Luas dan panjang mengikuti geometri yang digambar; ketelitiannya bergantung pada citra dan digitasi.</p><div class="actions"><button id="exportAreas" disabled>Ekspor GeoJSON analisis</button><button id="clearAreas" disabled>Hapus geometri</button></div><div class="table-wrap"><table><thead><tr><th>Objek</th><th>Hasil pengukuran</th></tr></thead><tbody id="measurements"><tr><td colspan="2">Belum ada geometri analisis.</td></tr></tbody></table></div><p class="note">Geometri belum disimpan di server. Ekspor sebelum menutup halaman. Citra RGB tidak menghasilkan NDVI atau data elevasi tanpa band dan dataset yang sesuai.</p></section>
+<section class="card map-card"><div class="map-heading"><h2>Peta analisis</h2><span id="coordinate" class="note"></span></div><section id="candidateReview" hidden aria-label="Koreksi kandidat nanas"></section><div id="map" aria-label="Peta analisis orthomosaic"></div><p id="mapStatus" role="status">Pilih orthomosaic untuk memulai.</p><p class="note">Gambar polygon atau garis menggunakan alat di kiri peta. Luas dan panjang mengikuti geometri yang digambar; ketelitiannya bergantung pada citra dan digitasi.</p><div class="actions"><button id="exportAreas" disabled>Ekspor GeoJSON analisis</button><button id="clearAreas" disabled>Hapus geometri</button></div><div class="table-wrap"><table><thead><tr><th>Objek</th><th>Hasil pengukuran</th></tr></thead><tbody id="measurements"><tr><td colspan="2">Belum ada geometri analisis.</td></tr></tbody></table></div><p class="note">Geometri belum disimpan di server. Ekspor sebelum menutup halaman. Citra RGB tidak menghasilkan NDVI atau data elevasi tanpa band dan dataset yang sesuai.</p></section>
 </div>
 </div>
 </main>
@@ -36,7 +36,5 @@
 <script src="js/meritech-village-export.js?v=20261006-village-reliable1"></script>
 <script src="js/meritech-single-geotiff.js?v=20261006-village-reliable1"></script>
 <script src="js/meritech-export.js?v=20261006-village-reliable1"></script>
-  <script src="js/orthomosaic-internal.js?v=20261017-drive-analysis3"></script>
+<script src="js/dayun-candidate-review.js?v=20261017-candidates1"></script><script src="js/orthomosaic-internal.js?v=20261017-candidates1"></script>
 </body></html>
-
-
