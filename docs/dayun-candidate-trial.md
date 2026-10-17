@@ -11,11 +11,33 @@ can be dragged; missing candidates can be added within the sample window.
 Counts describe that window only. Acceptance is a reviewer label, not an
 independently validated whole-gawangan estimate.
 
-Corrections stay in memory. Export JSON before closing, switching sources, or
-refreshing. The file can be loaded again for exactly the same trial/source run.
-Imports reject duplicate IDs, unknown statuses and coordinates outside the
-sample. Corrections do not write to a server or any census/monitoring endpoint.
-The page removes its marker layer on session lock or source change.
+Use **Simpan privat & perbarui hitungan** after editing. Staff-only GET/POST
+`/api/staff/drone/analysis/<label>/review` stores corrections under
+`drone/analysis/dayun/reviews/<label>/<source-run>/<trial-id-sha256>/`. The existing DroneQueue
+coordinator serializes each source's saves. Every save retains an immutable
+version and then updates the private head. A stale expected revision gets 409;
+failed saves preserve local edits. No census/monitoring endpoint is involved.
+Export remains available for backup and conflict recovery. Imports reject wrong
+source runs, duplicate IDs, unknown statuses and coordinates outside the sample.
+Original candidate IDs must remain; reject a candidate instead of deleting it.
+The page removes both review and feedback layers on session lock/source change.
+
+Mark a window fully reviewed only after deciding every candidate and adding
+missed plants. Completed windows with at least three accepted plants can
+calibrate a threshold on existing native-template proposals. The first completed
+window calibrates; other completed windows receive separate held-out metrics.
+The proposal pool starts at similarity 0.30; threshold tuning cannot learn new
+crown appearance or recover absent proposals. A zero-match calibration leaves
+the baseline threshold unchanged. Accepted additions restore missed crowns in
+reviewed windows, with their origin explicitly recorded as reviewer labels.
+The blue overlay shows provisional automatic proposals after feedback.
+
+Metrics match one-to-one within 12 native pixels. Labels are staff judgements,
+not independent field truth. C contains template exemplars: a held-out window
+does not establish independent species/count validation. Whole-gawangan census
+counts remain untouched and validated counts remain null. With no completed
+labels the status is waiting, never a claimed improvement. A new imagery run
+starts a separate review history; labels are not silently transferred.
 
 `scripts/propose_dayun_candidates.py --config <private-config.json> --output <private-directory>`
 uses native RGB, alpha masking, grayscale normalized template matching with

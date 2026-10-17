@@ -1,7 +1,12 @@
+import {reviewOperation} from './dayun-feedback.js';
 // One coordinator serializes queue changes; R2 mirror remains readable by the processor.
 export class DroneQueue {
   constructor(state,env){this.state=state;this.env=env;}
   async fetch(request){return this.state.blockConcurrencyWhile(async()=>{
+    if(new URL(request.url).pathname==='/dayun-review'){
+      try{return Response.json(await reviewOperation(this.env,await request.json()));}
+      catch(error){return Response.json({ok:false,error:error.status?error.message:'private_review_storage_failed'},{status:error.status||503});}
+    }
     if(new URL(request.url).pathname==='/dayun'){
       const body=await request.json();
       if(body.action!=='submit'||!['Agro_ABC','Agro_DEF'].includes(body.job?.label))return Response.json({error:'invalid_analysis'},{status:400});

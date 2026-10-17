@@ -9,7 +9,7 @@ test('corrections are bound to the exact imagery run, unique IDs, sample bounds 
  assert.deepEqual(counts([feature()]),{candidate:1,accepted:0,rejected:0});
 });
 function setup(){
- const element=tag=>({tag,children:[],value:'',hidden:true,disabled:false,textContent:'',files:[],append(...xs){this.children.push(...xs)},replaceChildren(...xs){this.children=xs},setAttribute(){},add(x){this.children.push(x)}});
+ const element=tag=>({tag,children:[],value:'',hidden:true,disabled:false,textContent:'',files:[],append(...xs){this.children.push(...xs)},prepend(...xs){this.children.unshift(...xs)},replaceChildren(...xs){this.children=xs},setAttribute(){},add(x){this.children.push(x)}});
  global.document={createElement:element};global.Option=function(text,value){return{text,value}};
  const markers=[],listeners={},group={addTo(){return this},clearLayers(){markers.length=0}},map={on(k,f){listeners[k]=f},off(k){delete listeners[k]},fitBounds(){},removeLayer(){}};
  global.L={layerGroup:()=>group,divIcon:o=>o,marker:(latlng,options)=>{const m={latlng,options,handlers:{},addTo(){markers.push(this);return this},bindTooltip(){},on(k,f){this.handlers[k]=f},getLatLng(){return{lat:this.latlng[0],lng:this.latlng[1]}},setLatLng(p){this.latlng=p}};return m}};
@@ -27,4 +27,18 @@ test('staff reviews, moves, adds and exports candidates without a census write; 
 test('expired sessions cannot open or export; loading another run cannot replace a review',async()=>{
  const s=setup(),dispose=await mount(s.options);const input=s.host.children.find(x=>x.type==='file');input.files=[{size:20,text:async()=>JSON.stringify({...review(),source_run:'other'})}];await input.onchange();assert.match(s.host.children.at(-1).textContent,/bukan untuk citra/);
  s.setActive(false);await s.find('Buka sampel dan penanda').onclick();s.find('Ekspor koreksi').onclick();assert.equal(s.opened.length,0);assert.equal(s.saved.length,0);dispose();
+});
+test('private save uses revision control; a new mount restores the saved decision',async()=>{
+ const s=setup();let stored={ok:true,revision:0,review:null,model:null};const posts=[];
+ s.options.api=async(path,options={})=>{if(path.endsWith('/review')){if(options.method==='POST'){const body=JSON.parse(options.body);posts.push(body);assert.equal(body.expected_revision,stored.revision);stored={ok:true,revision:stored.revision+1,review:body.review,model:{status:'waiting_for_complete_review',samples:[]}};}return{json:async()=>structuredClone(stored)}}return{json:async()=>trial(),blob:async()=>new Blob(['tif'])};};
+ let dispose=await mount(s.options);await s.find('Buka sampel dan penanda').onclick();s.markers[0].handlers.click();s.host.children.find(x=>x.tag==='select'&&x.children.some(c=>c.value==='accepted')).value='accepted';s.find('Terapkan keputusan').onclick();await s.find('Simpan privat & perbarui hitungan').onclick();assert.equal(posts.length,1);assert.equal(stored.review.samples[0].features[0].properties.status,'accepted');dispose();
+ dispose=await mount(s.options);await s.find('Buka sampel dan penanda').onclick();assert.ok(s.host.children.some(x=>x.textContent.includes('1 diterima pemeriksa')));assert.ok(s.host.children.some(x=>x.textContent.includes('Revisi privat 1')));dispose();
+});
+test('save conflicts preserve local decisions and cannot silently overwrite server labels',async()=>{
+ const s=setup();s.options.api=async(path,options={})=>{if(path.endsWith('/review')){if(options.method==='POST')throw Error('HTTP 409');return{json:async()=>({ok:true,revision:2,review:null,model:null})};}return{json:async()=>trial(),blob:async()=>new Blob(['tif'])};};const dispose=await mount(s.options);await s.find('Buka sampel dan penanda').onclick();s.markers[0].handlers.click();s.host.children.find(x=>x.tag==='select'&&x.children.some(c=>c.value==='accepted')).value='accepted';s.find('Terapkan keputusan').onclick();await s.find('Simpan privat & perbarui hitungan').onclick();assert.match(s.host.children.at(-1).textContent,/Konflik revisi/);s.find('Ekspor koreksi').onclick();const data=JSON.parse(await s.saved[0].blob.text());assert.equal(data.samples[0].features[0].properties.status,'accepted');dispose();
+});
+test('clicking a blue automatic proposal adds one reviewable point, without duplicates',async()=>{
+ const s=setup(),circles=[];global.L.circleMarker=()=>{const circle={handlers:{},bindTooltip(){return this},addTo(){circles.push(this);return this},on(k,f){this.handlers[k]=f;return this}};return circle;};
+ s.options.api=async path=>path.endsWith('/review')?{json:async()=>({ok:true,revision:1,review:null,model:{status:'waiting_for_complete_review',samples:[{id:'ABC-A-01',automatic_count:1,feedback_candidate_count:1,accepted_by_reviewer:0,features:[{geometry:{type:'Point',coordinates:[102.007,.584]},properties:{id:'auto-1',feedback_origin:'thresholded_template_match'}}]}]}})}:{json:async()=>trial(),blob:async()=>new Blob(['tif'])};
+ const dispose=await mount(s.options);await s.find('Buka sampel dan penanda').onclick();const toggle=s.host.children.find(x=>x.tag==='label'&&x.textContent.includes('biru')).children[0];toggle.checked=true;toggle.onchange();circles[0].handlers.click();circles.at(-1).handlers.click();s.find('Ekspor koreksi').onclick();const result=JSON.parse(await s.saved[0].blob.text());assert.equal(result.samples[0].features.length,2);assert.equal(result.samples[0].features[1].properties.status,'candidate');dispose();
 });

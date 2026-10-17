@@ -197,6 +197,19 @@ async function servePublicCog(request,env,id){
 
 async function dayunAnalysis(request,env,url,verifyStaffToken){
   if(!await authorizedStaff(request,env,verifyStaffToken))return reply(request,{ok:false,error:'unauthorized'},401);
+  const reviewMatch=url.pathname.match(/^\/api\/staff\/drone\/analysis\/(Agro_ABC|Agro_DEF)\/review$/);
+  if(reviewMatch){
+    if(!['GET','POST'].includes(request.method))return reply(request,{ok:false,error:'method_not_allowed'},405);
+    if(!env.DRONE_QUEUE)return reply(request,{ok:false,error:'review_storage_unavailable'},503);
+    let body={};if(request.method==='POST'){
+      const text=await request.text();if(text.length>2*1024*1024)return reply(request,{ok:false,error:'review_too_large'},413);
+      try{body=JSON.parse(text)}catch{return reply(request,{ok:false,error:'invalid_review_json'},400);}
+      if(!body||typeof body!=='object'||Array.isArray(body))return reply(request,{ok:false,error:'invalid_review_json'},400);
+    }
+    const stub=env.DRONE_QUEUE.get(env.DRONE_QUEUE.idFromName('dayun-review-'+reviewMatch[1]));
+    const response=await stub.fetch(new Request('https://queue.internal/dayun-review',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({review:body.review,expected_revision:body.expected_revision,label:reviewMatch[1],action:request.method==='POST'?'save':'load'})}));
+    return reply(request,await response.json(),response.status,{'cache-control':'private, no-store'});
+  }
   if(url.pathname==='/api/staff/drone/analysis/requests'){
     const root='drone/analysis/dayun/requests';
     if(request.method==='GET'){
