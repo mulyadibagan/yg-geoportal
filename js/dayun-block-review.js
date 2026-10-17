@@ -12,7 +12,7 @@
     const el=(tag,text)=>{const node=document.createElement(tag);if(text!==undefined)node.textContent=text;return node;};
     host.replaceChildren();host.hidden=false;
     const title=el('h3','Blok A — kandidat & pemeriksaan batas');
-    const note=el('p','Aktif/mati mengikuti kategori polygon sumber, bukan diagnosis tanaman. Kandidat tajuk belum terkonfirmasi sebagai nanas. Batas sumber tidak diubah.');note.className='note';
+    const note=el('p','Aktif/mati mengikuti kategori polygon sumber, bukan diagnosis tanaman. Kandidat tajuk belum terkonfirmasi sebagai nanas. Batas sumber tidak diubah.');note.className='note';if(result.capture_date)note.textContent+=' Tanggal citra: '+result.capture_date+' (keterangan pemilik data).';if(Array.isArray(result.analysis_findings))note.textContent+=' '+result.analysis_findings.join(' ');
     const open=el('button','Buka seluruh Blok A'),native=el('button','Periksa citra asli di titik peta'),download=el('button','Unduh tabel Blok A'),auditDownload=el('button','Unduh lokasi pemeriksaan batas');
     const select=el('select');select.setAttribute('aria-label','Gawangan Blok A');select.add(new Option('Seluruh Blok A',''));
     result.zones.forEach(z=>select.add(new Option(z.id+' · '+(z.kind==='active_source'?'aktif':'mati, asosiasi sementara')+' · '+z.candidate_crowns+' kandidat',z.id)));
@@ -23,17 +23,20 @@
     result.zones.forEach(z=>{const row=el('tr');[z.id,z.kind==='active_source'?'Aktif':'Mati (sementara)',z.candidate_crowns,z.boundary_conflict_candidates].forEach(v=>row.append(el('td',String(v))));table.append(row);});
     const details=el('details'),caption=el('summary','Tabel per gawangan');details.append(caption,table);
     host.append(title,note,open,select,native,summary,info,download,auditDownload,details,status);
+    for(const [file,label] of [[result.analysis_report,'Unduh laporan analisis'],[result.candidate_inspection,'Unduh lembar pemeriksaan kandidat']]){
+      if(file&&manifest.files.includes(folder+file)){const button=el('button',label);button.onclick=async()=>{try{const blob=await(await get(file)).blob();if(active())save(blob,file);}catch(error){if(active())status.textContent=error.message;}};host.append(button);}
+    }
     const referencePath=manifest.block_comparisons?.A;
     if(referencePath&&manifest.files.includes(referencePath)){
       try{
         const ref=await(await api(base+'/files/'+referencePath)).json();if(!current()){map.removeLayer(group);map.removeLayer(points);return()=>{};}
         if(ref.schema!=='dayun-ortho-database-comparison-v1'||ref.source_run!==manifest.run||ref.block!=='A')throw Error('Pembanding database bukan untuk citra ini.');
         const panel=el('details'),heading=el('summary','Pembanding database per gawangan');panel.append(heading);
-        panel.append(el('p','Data sumber: '+(ref.database_updated_at||'tanggal belum tersedia')+'. Monitoring: '+(ref.provenance?.monitoring_snapshot_at||'tanggal belum tersedia')+'. Angka sumber, tambahan ditanam, sensus hidup dan stok bibit berbeda. Pecahan dipertahankan; kandidat citra bukan jumlah nanas. Umur saat terbang belum dapat dihitung.'));
-        const comparison=el('table'),header=el('tr');['Gawangan','Tanam awal / tambahan','Nanas awal (sumber)','Tambahan ditanam','Sensus hidup terpublikasi','Stok bibit','MPTS: sumber & bulan tanam','Kandidat citra'].forEach(v=>header.append(el('th',v)));comparison.append(header);
+        panel.append(el('p','Data sumber: '+(ref.database_updated_at||'tanggal belum tersedia')+'. Monitoring: '+(ref.provenance?.monitoring_snapshot_at||'tanggal belum tersedia')+'. Angka sumber, tambahan ditanam, sensus hidup dan stok bibit berbeda. Pecahan dipertahankan; kandidat citra bukan jumlah nanas. '+(ref.flight_date?'Tanggal terbang '+ref.flight_date+' menurut pemilik; umur berbasis bulan tanam adalah perkiraan.':'Umur saat terbang belum dapat dihitung.')));
+        const comparison=el('table'),header=el('tr');['Gawangan','Tanam awal / tambahan','Umur awal saat terbang (±bulan)','Nanas awal (sumber)','Tambahan ditanam','Sensus hidup terpublikasi','Stok bibit','MPTS: sumber & bulan tanam','Kandidat citra'].forEach(v=>header.append(el('th',v)));comparison.append(header);
         const num=v=>v===null||v===undefined?'Belum tersedia':Number(v).toLocaleString('id-ID',{maximumFractionDigits:3});
-        for(const r of ref.rows){const row=el('tr');const periods=[r.pineapple_planting_period,...(r.pineapple_cohorts||[]).map(c=>c.period+': '+num(c.plantedCount))].filter(Boolean).join('; ');const trees=(r.mpts||[]).map(c=>c.species+': '+num(c.source_count)+' ('+(c.planting_period||'bulan belum tersedia')+')').join('; ');
-          [r.gawangan,r.database_match?(periods||'Belum tersedia'):'Tidak ada padanan ID database',num(r.pineapple_source_initial)+(r.source_matches_spacing_capacity?' · cocok kapasitas jarak tanam':''),num(r.pineapple_added_planted),num(r.pineapple_living_census)+(r.pineapple_census_period?' · '+r.pineapple_census_period:''),num(r.seedling_stock),trees||'Belum tersedia',num(r.image_candidates)].forEach(v=>row.append(el('td',v)));comparison.append(row);
+        for(const r of ref.rows){const row=el('tr');const periods=[r.pineapple_planting_period,...(r.pineapple_cohorts||[]).map(c=>c.period+': '+num(c.plantedCount)+(c.age_at_flight_months!=null?' (±'+c.age_at_flight_months+' bulan)':''))].filter(Boolean).join('; ');const trees=(r.mpts||[]).map(c=>c.species+': '+num(c.source_count)+' ('+(c.planting_period||'bulan belum tersedia')+')').join('; ');
+          [r.gawangan,r.database_match?(periods||'Belum tersedia'):'Tidak ada padanan ID database',num(r.age_at_flight_months),num(r.pineapple_source_initial)+(r.source_matches_spacing_capacity?' · cocok kapasitas jarak tanam':''),num(r.pineapple_added_planted),num(r.pineapple_living_census)+(r.pineapple_census_period?' · '+r.pineapple_census_period:''),num(r.seedling_stock),trees||'Belum tersedia',num(r.image_candidates)].forEach(v=>row.append(el('td',v)));comparison.append(row);
         }
         panel.append(comparison);const csv=referencePath.replace(/\.json$/,'.csv');if(manifest.files.includes(csv)){const button=el('button','Unduh pembanding database');button.onclick=async()=>{try{const blob=await(await api(base+'/files/'+csv)).blob();if(active())save(blob,'dayun-blok-A-pembanding-database.csv');}catch(error){if(active())status.textContent=error.message;}};panel.append(button);}host.append(panel);
       }catch(error){if(current())host.append(el('p','Pembanding belum dapat dimuat: '+error.message));}

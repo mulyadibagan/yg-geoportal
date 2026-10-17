@@ -77,3 +77,17 @@ allowlist both files. Set `block_comparisons.A` to the matching JSON path.
 The viewer verifies source-run identity before showing the comparator and
 offers a separate CSV download. Existing census and candidate corrections
 remain independent of this read-only snapshot.
+
+An optional owner-reported flight date can now provide approximate calendar
+ages for original planting periods, additional planting cohorts and MPTS.
+The owner stated on 17 October 2026 that the imagery was acquired four days
+earlier; the analysis records 13 October 2026 with `owner_reported` evidence,
+not as a metadata-verified timestamp or upload date. Monitoring observations
+after flight are excluded; raw source/cohort population figures remain reference
+records rather than reconstructed living populations at flight. Future cohorts
+are flagged and receive no age at flight. Month-only planting records yield
+approximate months, not exact days.
+
+The dated report and native crown inspection sheet are private, manifest-listed
+downloads. A qualitative visual screen is not a labelled accuracy benchmark;
+it must not turn the 19 unvalidated proposals into a confirmed pineapple count.

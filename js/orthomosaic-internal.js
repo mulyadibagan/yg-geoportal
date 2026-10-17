@@ -204,7 +204,7 @@
       const meta=await(await api(base+'/files/metadata.json')).json();
       if(!current())return;
       $('dayunStatus').textContent='Cakupan citra tersedia. Luas tanam, celah barisan, dan jumlah nanas masih memerlukan pemeriksaan visual. Tanggal penerbangan belum terverifikasi.';
-      const details=document.createElement('p');details.textContent=`CRS: ${meta.crs||'belum diketahui'}. Ukuran piksel: ${Array.isArray(meta.gsd_m)?meta.gsd_m.map(v=>number(v*100,2)).join(' × ')+' cm':'belum tersedia dalam meter'}. Tanggal penerbangan: ${meta.capture_date_status==='verified'&&meta.capture_date?meta.capture_date:'belum terverifikasi'}.`;$('dayunResults').append(details);
+      const details=document.createElement('p');details.textContent=`CRS: ${meta.crs||'belum diketahui'}. Ukuran piksel: ${Array.isArray(meta.gsd_m)?meta.gsd_m.map(v=>number(v*100,2)).join(' × ')+' cm':'belum tersedia dalam meter'}. Tanggal penerbangan: ${['verified','owner_reported'].includes(meta.capture_date_status)&&meta.capture_date?meta.capture_date+(meta.capture_date_status==='owner_reported'?' (keterangan pemilik data)':''):'belum terverifikasi'}.`;$('dayunResults').append(details);
       const table=document.createElement('table'),head=document.createElement('tr');
       ['Gawangan','Cakupan seluruh polygon','Luas citra valid (ha)'].forEach(value=>{const th=document.createElement('th');th.textContent=value;head.append(th);});table.append(head);
       for(const row of meta.gawangan||[]){const tr=document.createElement('tr');[row.gawangan,row.valid_coverage_percent===null?'Belum tersedia':`${row.valid_coverage_percent}%`,row.valid_area_ha??'Belum tersedia'].forEach(value=>{const td=document.createElement('td');td.textContent=value;tr.append(td);});table.append(tr);}
