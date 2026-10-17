@@ -6,10 +6,11 @@
     if(typeof URLSearchParams==='undefined')return null;
     const q=new URLSearchParams(window.location?.search||'');
     const source=q.get('source'),trial=q.get('trial'),sample=q.get('sample'),point=q.get('point');
+    if(source==='Agro_ABC'&&q.get('block')==='A')return{source,block:'A'};
     if(!['Agro_ABC','Agro_DEF'].includes(source)||!trial||!/^[\w-]{1,64}$/.test(trial)||!sample||!/^[\w-]{1,100}$/.test(sample)||(point&&!/^[\w-]{1,100}$/.test(point)))return null;
     return{source,trial,sample,point};
   })();
-  if(requestedSample){const q=new URLSearchParams({source:requestedSample.source,trial:requestedSample.trial,sample:requestedSample.sample});if(requestedSample.point)q.set('point',requestedSample.point);$('sampleLogin').href='staff-login.html?return='+encodeURIComponent('orthomosaic-internal.html?'+q.toString());}
+  if(requestedSample){const q=new URLSearchParams(requestedSample.block?{source:requestedSample.source,block:requestedSample.block}:{source:requestedSample.source,trial:requestedSample.trial,sample:requestedSample.sample});if(requestedSample.point)q.set('point',requestedSample.point);$('sampleLogin').href='staff-login.html?return='+encodeURIComponent('orthomosaic-internal.html?'+q.toString());}
   let initialLinkOpened=false;
   let session, map, areas, rasterLayer, rasterBounds, tileLayer, jobs = [], source = null, sequence = 0;
   let disposeMeritechExport = null, disposeCandidateReview=null, disposeBlockReview=null, dayunLayer = null, dayunUrls = [], dayunRequest=0;
@@ -203,7 +204,8 @@
     const request=dayunRequest;
     const current=()=>validSession() && request===dayunRequest;
     const selected=$('dayunSource').value;
-    const target=requestedSample?.source===selected?requestedSample:null;
+    const target=requestedSample?.source===selected&&requestedSample.sample?requestedSample:null;
+    const blockTarget=requestedSample?.source===selected&&requestedSample.block==='A';
     if(!['Agro_ABC','Agro_DEF'].includes(selected))return;
     const base=`/api/staff/drone/analysis/${selected}`;
     $('dayunStatus').textContent='Memeriksa hasil…';
@@ -243,7 +245,7 @@
       };
       $('dayunResults').append(select);$('dayunResults').append(inspect);$('dayunResults').append(button);
       if(!target&&window.YG_DAYUN_BLOCK){
-        try{const dispose=await window.YG_DAYUN_BLOCK.mount({host:$('blockReview'),map,api,base,manifest,openRaster,save,current});if(current()){disposeBlockReview=dispose;if(manifest.block_analyses?.A)$('sampleReviewPanel').open=Boolean(manifest.preferred_candidate_trial);}else dispose();}
+        try{const dispose=await window.YG_DAYUN_BLOCK.mount({host:$('blockReview'),map,api,base,manifest,openRaster,save,current,autoOpen:blockTarget,onAutoOpen:()=>{if(current()){const card=document.querySelector?.('.map-card');if(card&&!card.classList.contains('map-expanded'))$('focusMap').onclick?.();}}});if(current()){disposeBlockReview=dispose;if(manifest.block_analyses?.A)$('sampleReviewPanel').open=Boolean(manifest.preferred_candidate_trial)&&!blockTarget;}else dispose();}
         catch(error){if(current())$('dayunStatus').textContent+=' Analisis blok belum dapat dimuat: '+error.message;}
       }
       if(window.YG_DAYUN_CANDIDATES){

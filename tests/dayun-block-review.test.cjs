@@ -42,3 +42,16 @@ test('enlarged native sample opens privately and its TIFF is still manifest guar
  const all=node=>[node,...(node.children||[]).flatMap(all)];await all(s.host).find(x=>x.textContent==='Lihat GT-A-01').onclick();const dialog=all(s.host).find(x=>x.tag==='dialog');assert.equal(dialog.open,true);assert.ok(s.requests.at(-1).path.endsWith('/files/block-A/detail/GT-A-01.jpg'));
  await all(dialog).find(x=>x.textContent==='Buka TIFF low').onclick();assert.ok(!s.requests.some(r=>r.path.endsWith('not-allowed.tif')));dispose();assert.equal(s.host.hidden,true);assert.equal(s.host.children.length,0);
 });
+
+test('whole block count opens all-block layers and exports full points without review writes',async()=>{
+ const s=setup();s.result.full_block_count={processed_tiles:99,candidate_count:2400,threshold:.3,threshold_025_count:3100,threshold_040_count:1500};s.result.candidate_count=2400;s.options.autoOpen=true;let expanded=0;s.options.onAutoOpen=()=>expanded++;
+ const saved=[];s.options.save=(blob,name)=>saved.push(name);const dispose=await s.mount(s.options);
+ assert.equal(expanded,1);assert.match(JSON.stringify(s.host.children),/Seluruh 99 potongan native selesai/);assert.match(JSON.stringify(s.host.children),/bukan rentang jumlah tanaman/);
+ assert.ok(s.requests.some(r=>r.path.endsWith('/candidates.geojson')));await s.find('Unduh seluruh titik hasil Blok A').onclick();assert.deepEqual(saved,['dayun-blok-A-kandidat-seluruh-blok.geojson']);assert.ok(s.requests.every(r=>!r.config));dispose();
+});
+
+test('versioned block results reuse only allowlisted original native assets',async()=>{
+ const s=setup();s.result.asset_folder='original-A/';s.options.manifest.files.push('original-A/analysis.json','original-A/native/one.tif');s.options.manifest.files=s.options.manifest.files.filter(p=>p!=='block-A/native/one.tif');
+ let dispose=await s.mount(s.options);s.find('Periksa citra asli di titik peta').onclick();await s.events.click({latlng:{lng:.5,lat:.5}});assert.ok(s.requests.some(r=>r.path.endsWith('/files/original-A/native/one.tif')));dispose();
+ s.result.asset_folder='../unlisted/';await assert.rejects(()=>s.mount(s.options),/Aset citra asli/);
+});
