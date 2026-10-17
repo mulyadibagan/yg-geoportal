@@ -1,0 +1,20 @@
+const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
+const code=fs.readFileSync('js/dayun-block-review.js','utf8');
+function setup(){
+ const element=tag=>({tag,children:[],value:'',hidden:true,textContent:'',append(...x){this.children.push(...x)},replaceChildren(...x){this.children=x},add(x){this.children.push(x)},setAttribute(){}});
+ const host=element('section'),requests=[],events={},layers=[];
+ const layer={addTo(){return this},clearLayers(){},bindTooltip(){return this},on(){return this},getBounds(){return[[0,0],[1,1]]},getLayers(){return[]}};
+ const context={window:{},document:{createElement:element},Option:function(text,value){return{text,value}},L:{layerGroup:()=>({...layer}),imageOverlay:()=>layer,geoJSON:()=>layer,featureGroup:()=>layer,circleMarker:()=>{layers.push(1);return layer}},URL:{createObjectURL:()=> 'blob:private',revokeObjectURL(){}},Promise};vm.runInNewContext(code,context);
+ const result={schema:'dayun-block-analysis-v1',block:'A',source_run:'run',overview:'overview.jpg',bounds:[0,0,1,1],candidate_count:2,boundary_conflict_candidate_count:0,boundary_overlap_count:0,zones:[{id:'GT-A-01',kind:'active_source',candidate_crowns:2,boundary_conflict_candidates:0}],native_tiles:[{file:'native/one.tif',bounds:[0,0,1,1]}]};
+ const options={host,map:{on(k,v){events[k]=v},off(k){delete events[k]},removeLayer(){},getZoom:()=>24,getBounds:()=>({contains:()=>true}),fitBounds(){}},manifest:{run:'run',block_analyses:{A:'block-A/analysis.json'},files:['analysis.json','zones.geojson','candidates.geojson','boundary-audit.geojson','overview.jpg','gawangan.csv','native/one.tif'].map(f=>'block-A/'+f)},base:'/api/staff/drone/analysis/Agro_ABC',api:async(path,config)=>{requests.push({path,config});return{json:async()=>path.endsWith('analysis.json')?result:{type:'FeatureCollection',features:[]},blob:async()=>new Blob(['image'])}},openRaster:async()=>{},save(){},current:()=>true};
+ return{mount:context.window.YG_DAYUN_BLOCK.mount,options,host,requests,events,result,find:text=>host.children.find(x=>x.textContent===text)};
+}
+test('block analysis uses only manifest-listed private read endpoints and cleans up',async()=>{
+ const s=setup(),dispose=await s.mount(s.options);assert.equal(s.host.hidden,false);assert.ok(s.host.children.some(x=>x.textContent.includes('Bukan jumlah nanas')));await s.find('Buka seluruh Blok A').onclick();assert.ok(s.requests.every(r=>r.path.startsWith('/api/staff/drone/analysis/Agro_ABC/files/block-A/')&&!r.config));s.find('Periksa citra asli di titik peta').onclick();await s.events.click({latlng:{lng:.5,lat:.5}});assert.ok(s.requests.some(r=>r.path.endsWith('/native/one.tif')));dispose();assert.equal(s.host.hidden,true);assert.equal(s.events.click,undefined);
+});
+test('missing block analysis is skipped and wrong source run is refused before map access',async()=>{
+ const s=setup();s.options.manifest.block_analyses={};await s.mount(s.options);assert.equal(s.requests.length,0);s.options.manifest.block_analyses={A:'block-A/analysis.json'};s.result.source_run='other';await assert.rejects(()=>s.mount(s.options),/tidak sesuai/);assert.equal(s.host.hidden,true);
+});
+test('an unlisted native tile cannot be requested',async()=>{
+ const s=setup(),dispose=await s.mount(s.options);s.options.manifest.files=s.options.manifest.files.filter(p=>!p.endsWith('.tif'));s.find('Periksa citra asli di titik peta').onclick();await s.events.click({latlng:{lng:.5,lat:.5}});assert.ok(!s.requests.some(r=>r.path.endsWith('.tif')));assert.ok(s.host.children.at(-1).textContent.includes('belum tersedia'));dispose();
+});

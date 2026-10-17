@@ -3,10 +3,11 @@
   const API = 'https://webgis-api.yayasangambut.org';
   const $ = id => document.getElementById(id);
   let session, map, areas, rasterLayer, rasterBounds, tileLayer, jobs = [], source = null, sequence = 0;
-  let disposeMeritechExport = null, disposeCandidateReview=null, dayunLayer = null, dayunUrls = [], dayunRequest=0;
+  let disposeMeritechExport = null, disposeCandidateReview=null, disposeBlockReview=null, dayunLayer = null, dayunUrls = [], dayunRequest=0;
   function clearDayun() {
     dayunRequest++;
     disposeCandidateReview?.();disposeCandidateReview=null;
+    disposeBlockReview?.();disposeBlockReview=null;
     dayunUrls.forEach(url=>URL.revokeObjectURL(url)); dayunUrls=[];
     if(dayunLayer && map)map.removeLayer(dayunLayer);dayunLayer=null;
     $('dayunResults').replaceChildren();
@@ -18,6 +19,10 @@
     return current && current.token === session?.token && Number(current.expiresAt) > Date.now();
   }
   function lock(message) {
+    document.querySelector?.('.map-card')?.classList.remove('map-expanded');
+    document.body?.classList.remove('map-expanded-open');
+    $('focusMap').textContent='Perbesar ruang peta';
+    $('focusMap').setAttribute?.('aria-pressed','false');
     clearDayun();
     $('dayunRequests').replaceChildren();
     sequence++;
@@ -72,6 +77,13 @@
     map.on(L.Draw.Event.CREATED, event => { event.layer.feature={type:'Feature',properties:{source:source?.title || 'Peta referensi',sourceId:source?.id || null},geometry:event.layer.toGeoJSON().geometry}; areas.addLayer(event.layer); updateMeasurements(); });
     map.on('draw:edited draw:deleted', updateMeasurements);
     map.on('mousemove', event => { $('coordinate').textContent = `${event.latlng.lat.toFixed(6)}, ${event.latlng.lng.toFixed(6)}`; });
+    $('focusMap').onclick=()=>{
+      const card=document.querySelector('.map-card'),expanded=card.classList.toggle('map-expanded');
+      document.body.classList.toggle('map-expanded-open',expanded);
+      $('focusMap').textContent=expanded?'Kembali ke halaman':'Perbesar ruang peta';
+      $('focusMap').setAttribute('aria-pressed',String(expanded));
+      requestAnimationFrame(()=>map?.invalidateSize());
+    };
     $('meritech').checked = false;
     disposeMeritechExport = window.YG_MERITECH_EXPORT?.mount($('meritechDownload'), map, () => validSession() ? session : null);
   }
@@ -219,6 +231,10 @@
         try{const blob=await(await api(base+'/files/'+file)).blob();if(current())await openRaster(blob,{title:`${selected} / ${file}`});}catch(e){if(current())$('dayunStatus').textContent=e.message;}
       };
       $('dayunResults').append(select);$('dayunResults').append(inspect);$('dayunResults').append(button);
+      if(window.YG_DAYUN_BLOCK){
+        try{const dispose=await window.YG_DAYUN_BLOCK.mount({host:$('blockReview'),map,api,base,manifest,openRaster,save,current});if(current()){disposeBlockReview=dispose;if(manifest.block_analyses?.A)$('sampleReviewPanel').open=false;}else dispose();}
+        catch(error){if(current())$('dayunStatus').textContent+=' Analisis blok belum dapat dimuat: '+error.message;}
+      }
       if(window.YG_DAYUN_CANDIDATES){
         try{const dispose=await window.YG_DAYUN_CANDIDATES.mount({host:$('candidateReview'),map,api,base,manifest,openRaster,save,current});if(current())disposeCandidateReview=dispose;else dispose();}
         catch(error){if(current())$('dayunStatus').textContent+=' Uji kandidat belum dapat dimuat: '+error.message;}
@@ -261,6 +277,7 @@
   };
   setInterval(()=>{if(session && !validSession())lock('Sesi berakhir. Silakan masuk kembali.');},15000);
   window.addEventListener('pagehide',()=>activeController?.abort());
+  window.addEventListener('keydown',event=>{if(event.key==='Escape'&&document.querySelector?.('.map-expanded'))$('focusMap').onclick?.();});
   window.addEventListener('beforeunload',event=>{if(areas?.getLayers().length){event.preventDefault();event.returnValue='';}});
   authorize();
 })();
