@@ -8,6 +8,17 @@ function setup(shared=server()){const element=tag=>({tag,children:[],textContent
  const all=node=>[node,...(node.children||[]).flatMap(all)];return{host,events,calls,original,before,options,shared,button:text=>all(host).find(n=>n.textContent===text),counts:()=>counts,loseResponse:()=>failResponse=true,delay:p=>delay=p};}
 async function add(s){s.button('Tambah titik nanas').onclick();await s.events.click({latlng:{lng:1,lat:1}});await s.events.click({latlng:{lng:1,lat:1}});}
 
+test('passive sync reads once a minute, pauses hidden tabs and backs off failures without blocking saves',async()=>{
+ const originalInterval=global.setInterval,originalClear=global.clearInterval,originalNow=Date.now;let tick,now=100000,interval;
+ global.setInterval=(fn,ms)=>{tick=fn;interval=ms;return 1;};global.clearInterval=()=>{};Date.now=()=>now;
+ const s=setup();let fail=false;const api=s.options.api;s.options.api=async(...args)=>{if(fail&&!args[1])throw Error('HTTP 429');return api(...args);};let e;
+ try{e=await editor.mount(s.options);assert.equal(interval,60000);now+=60000;global.document.visibilityState='hidden';tick();await new Promise(r=>setImmediate(r));assert.equal(s.calls.length,1);
+ global.document.visibilityState='visible';fail=true;tick();await new Promise(r=>setImmediate(r));fail=false;now+=60000;tick();await new Promise(r=>setImmediate(r));assert.equal(s.calls.length,1);
+ await e.pick(e.features()[0]);s.button('Hapus dari hitungan').onclick();await s.button('Simpan koreksi Blok A privat').onclick();assert.equal(s.shared.snapshot().revision,1);assert.equal(e.canLeave(),true);
+ now+=240000;tick();await new Promise(r=>setImmediate(r));assert.equal(s.calls.filter(c=>!c.config).length,2);
+ }finally{e?.dispose();global.setInterval=originalInterval;global.clearInterval=originalClear;Date.now=originalNow;}
+});
+
 test('additional proposals stay outside counts until acceptance and use deterministic per-point collaboration',async()=>{
  const shared=server(),a=setup(shared),b=setup(shared),ea=await editor.mount(a.options),eb=await editor.mount(b.options),f=point('A-manual-suggest-x220-y220');f.geometry.coordinates=[2,2];f.properties.model_signature='trained';
  try{assert.equal(a.counts().working_total,2);assert.equal(await ea.reviewSuggestion(f,'accepted'),false);assert.equal(a.counts().working_total,2);assert.equal(await ea.reviewSuggestion(f,'accepted'),true);assert.equal(a.counts().working_total,3);await a.button('Simpan koreksi Blok A privat').onclick();assert.equal(ea.hasReviewedSuggestion(f.properties.id),true);assert.equal(await eb.reviewSuggestion(f,'accepted'),false);assert.equal(shared.snapshot().counts.working_total,3);assert.equal(shared.snapshot().counts.manual_additions,1);assert.equal(JSON.stringify(a.original),a.before);}finally{ea.dispose();eb.dispose()}
