@@ -23,6 +23,12 @@
     "staging": {
       "name": "yg-webgis-public-data-staging",
       "workers_dev": true,
+      "ratelimits": [
+        { "name": "DRONE_ASSET_LIMIT", "namespace_id": "26101811", "simple": { "limit": 20, "period": 60 } },
+        { "name": "DRONE_ANALYSIS_LIMIT", "namespace_id": "26101812", "simple": { "limit": 2, "period": 60 } },
+        { "name": "DRONE_LEGACY_LIMIT", "namespace_id": "26101813", "simple": { "limit": 120, "period": 60 } },
+        { "name": "DRONE_SUBMIT_LIMIT", "namespace_id": "26101814", "simple": { "limit": 8, "period": 60 } }
+      ],
       "vars": {
         "ENVIRONMENT": "staging",
         "DRONE_R2_ACCOUNT_ID": "f521af5ec1f2197e8f55d1e460c0296e",
@@ -48,6 +54,12 @@
     "production": {
       "name": "yg-webgis-public-data",
       "workers_dev": true,
+      "ratelimits": [
+        { "name": "DRONE_ASSET_LIMIT", "namespace_id": "26101821", "simple": { "limit": 20, "period": 60 } },
+        { "name": "DRONE_ANALYSIS_LIMIT", "namespace_id": "26101822", "simple": { "limit": 2, "period": 60 } },
+        { "name": "DRONE_LEGACY_LIMIT", "namespace_id": "26101823", "simple": { "limit": 120, "period": 60 } },
+        { "name": "DRONE_SUBMIT_LIMIT", "namespace_id": "26101824", "simple": { "limit": 8, "period": 60 } }
+      ],
       "vars": {
         "ENVIRONMENT": "production",
         "DRONE_R2_ACCOUNT_ID": "f521af5ec1f2197e8f55d1e460c0296e",

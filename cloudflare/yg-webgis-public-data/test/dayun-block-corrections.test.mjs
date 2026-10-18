@@ -9,7 +9,7 @@ function environment(){const f=fixture(),values=new Map([['drone/analysis/dayun/
  const env={values,writes,PUBLIC_SNAPSHOTS:{async get(k){return values.has(k)?{text:async()=>values.get(k)}:null},async put(k,v,options){writes.push({k,options});values.set(k,v)}}};let serial=Promise.resolve();const q=new DroneQueue({blockConcurrencyWhile(fn){const n=serial.then(fn);serial=n.catch(()=>{});return n}},env);env.DRONE_QUEUE={idFromName:x=>x,get:()=>q};return env;}
 
 test('four simultaneous staff additions survive together and a repeated save is idempotent',async()=>{
- const env=environment();const bodies=Array.from({length:4},(_,i)=>({patch:{schema:'dayun-block-point-patch-v1',source_run:'run',analysis_path:'block-A/analysis.json',block:'A',operations:[{id:'A-manual-staff000'+i,expected_version:0,operation_id:'staff-operation-000'+i,feature:point('A-manual-staff000'+i,[1+i*.1,1])}]}}));
+ const env=environment();env.ENVIRONMENT='production';env.DRONE_ASSET_LIMIT={limit(){throw Error('Point saves must never use the imagery budget');}};const bodies=Array.from({length:4},(_,i)=>({patch:{schema:'dayun-block-point-patch-v1',source_run:'run',analysis_path:'block-A/analysis.json',block:'A',operations:[{id:'A-manual-staff000'+i,expected_version:0,operation_id:'staff-operation-000'+i,feature:point('A-manual-staff000'+i,[1+i*.1,1])}]}}));
  const results=await Promise.all(bodies.map(body=>call(env,'POST',body)));assert.ok(results.every(r=>r.status===200));
  const saved=(await call(env)).body;assert.equal(saved.counts.manual_additions,4);assert.equal(saved.review.changes.length,4);
  const retry=await call(env,'POST',bodies[0]);assert.equal(retry.status,200);assert.equal(retry.body.counts.manual_additions,4);assert.equal(retry.body.revision,saved.revision);

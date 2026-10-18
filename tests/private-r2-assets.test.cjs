@@ -19,3 +19,18 @@ test('failed batch is retryable and never falls back to Worker image proxy',asyn
   let attempts=0;const client=create({current:()=>true,api:async()=>{attempts++;throw Error('signer unavailable');},fetcher:async()=>{throw Error('must not fetch')}});client.register(base,{assetDelivery:'r2-signed-v1',files:['one.tif']});
   await assert.rejects(client.get(base+'/files/one.tif'),/signer unavailable/);await assert.rejects(client.get(base+'/files/one.tif'),/signer unavailable/);assert.equal(attempts,2);
 });
+
+test('unchanged source manifests retain signed batches across reopening a block',async()=>{
+ const s=setup();await s.client.get(s.path(0));s.client.register(base,{assetDelivery:'r2-signed-v1',run:'one',files:Array.from({length:130},(_,i)=>`block-A/${i}.tif`)});await s.client.get(s.path(1));assert.equal(s.calls.length,1);
+});
+
+test('only two complete body transfers run concurrently; logout discards queued downloads',async()=>{
+ let current=true,running=0,peak=0;const release=[];const client=create({current:()=>current,api:async()=>({json:async()=>({ok:true,links:[0,1,2,3].map(i=>({file:i+'.tif',url:'https://'+'a'.repeat(32)+'.r2.cloudflarestorage.com/'+i+'?X-Amz-Signature=test',expiresAt:Date.now()+300000}))})}),fetcher:async()=>{running++;peak=Math.max(peak,running);return{status:200,ok:true,headers:new Headers(),blob:()=>new Promise(resolve=>release.push(()=>{running--;resolve(new Blob(['tiff']));}))};}});
+ client.register(base,{assetDelivery:'r2-signed-v1',files:[0,1,2,3].map(i=>i+'.tif')});const promises=[0,1,2,3].map(i=>client.get(base+'/files/'+i+'.tif'));const all=Promise.allSettled(promises);
+ await new Promise(resolve=>setImmediate(resolve));assert.equal(running,2);assert.equal(release.length,2);current=false;client.clear();release.splice(0).forEach(fn=>fn());const results=await all;assert.equal(peak,2);assert.ok(results.every(r=>r.status==='rejected'));assert.equal(running,0);
+});
+
+test('rate-limit cooldown stops automatic signer retries while another session remains independent',async()=>{
+ let calls=0,clock=0;const client=create({current:()=>true,now:()=>clock,api:async()=>{calls++;throw Object.assign(Error('Too fast'),{status:429,details:{retry_after:60}});}});client.register(base,{assetDelivery:'r2-signed-v1',files:['one.tif']});
+ await assert.rejects(client.get(base+'/files/one.tif'),/Too fast/);await assert.rejects(client.get(base+'/files/one.tif'),/dijeda/);assert.equal(calls,1);clock=61000;await assert.rejects(client.get(base+'/files/one.tif'),/Too fast/);assert.equal(calls,2);
+});

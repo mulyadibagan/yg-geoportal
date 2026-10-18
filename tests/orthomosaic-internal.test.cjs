@@ -21,7 +21,7 @@ test('anonymous visitor cannot initialize map or request private catalogue',asyn
 test('Dayun viewer routes manifest assets directly to private R2 while staff APIs keep bearer authentication',async()=>{
  const direct=[],worker=[];const files=['metadata.json','D1/sample.tif'];
  const s=setup({privateAssets:true,session:{token:'staff',expiresAt:Date.now()+100000},fetcher:async(url,options)=>{
-  if(url.includes('.r2.cloudflarestorage.com/')){direct.push({url,options});assert.equal(options.headers.has('authorization'),false);return{ok:true,status:200,json:async()=>({gawangan:[]}),blob:async()=>new Blob(['TIFF'])};}
+  if(url.includes('.r2.cloudflarestorage.com/')){direct.push({url,options});assert.equal(options.headers.has('authorization'),false);return new Response(JSON.stringify({gawangan:[]}));}
   worker.push(url);assert.equal(options.headers.Authorization,'Bearer staff');
   const data=url.endsWith('/asset-links')?{ok:true,links:JSON.parse(options.body).files.map(file=>({file,url:'https://'+'a'.repeat(32)+'.r2.cloudflarestorage.com/private/'+file+'?X-Amz-Signature=test',expiresAt:Date.now()+300000}))}:url.endsWith('/analysis/Agro_DEF')?{assetDelivery:'r2-signed-v1',run:'run',download:{ok:true},analysis:{ok:true},files}:{jobs:[]};return{ok:true,status:200,json:async()=>data};
  }});await s.settle();s.el('dayunSource').value='Agro_DEF';await s.el('openDayun').onclick();

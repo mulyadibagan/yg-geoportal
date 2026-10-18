@@ -1,9 +1,10 @@
 import {directAssetsEnabled, createPrivateAssetSigner} from './r2-private-assets.js';
+import {droneUsageGuard} from './drone-usage.js';
 const ALLOWED_ORIGINS = new Set(['https://webgisyg.id','https://www.webgisyg.id']);
 const MAX_FILES = 800;
 const MAX_FILE_BYTES = 40 * 1024 * 1024;
 const MAX_TOTAL_BYTES = 8 * 1024 * 1024 * 1024;
-const MAX_PENDING_JOBS = 20;
+const MAX_PENDING_JOBS = 4;
 const PUBLIC_CATALOG_KEY = 'drone/public/catalog.json';
 
 function cors(request){
@@ -198,6 +199,8 @@ async function servePublicCog(request,env,id){
 
 async function dayunAnalysis(request,env,url,verifyStaffToken){
   if(!await authorizedStaff(request,env,verifyStaffToken))return reply(request,{ok:false,error:'unauthorized'},401);
+  const scope=request.method==='POST'&&url.pathname.endsWith('/asset-links')?'assets':request.method==='POST'&&url.pathname.endsWith('/requests')?'analysis':['GET','HEAD'].includes(request.method)&&url.pathname.includes('/files/')?'legacy':null;
+  if(scope){const limited=await droneUsageGuard(request,env,scope,suppliedStaffToken(request));if(limited)return reply(request,limited.body,limited.status,{'retry-after':'60'});}
   const assets=url.pathname.match(/^\/api\/staff\/drone\/analysis\/(Agro_ABC|Agro_DEF)\/asset-links$/);
   if(assets){
     if(request.method!=='POST')return reply(request,{ok:false,error:'method_not_allowed'},405);
@@ -301,7 +304,11 @@ async function routeDroneRequest(request,env,url,verifyStaffToken=async()=>false
   if(url.pathname==='/api/staff/drone/jobs'&&request.method==='GET')return listStaffJobs(request,env,verifyStaffToken);
   const publicCogMatch=url.pathname.match(/^\/api\/drone\/public\/(drn-[a-zA-Z0-9-]+)\/cog$/);if(publicCogMatch&&(request.method==='GET'||request.method==='HEAD'))return servePublicCog(request,env,publicCogMatch[1]);
   const cogMatch=url.pathname.match(/^\/api\/drone\/jobs\/(drn-[a-zA-Z0-9-]+)\/cog$/);if(cogMatch&&(request.method==='GET'||request.method==='HEAD'))return serveCog(request,env,cogMatch[1],url,verifyStaffToken);
-  if(url.pathname==='/api/drone/jobs'&&request.method==='POST')return createJob(request,env);
+  if(url.pathname==='/api/drone/jobs'&&request.method==='POST'){
+    const limited=await droneUsageGuard(request,env,'submit',request.headers.get('cf-connecting-ip'));
+    if(limited)return reply(request,limited.body,limited.status,{'retry-after':'60'});
+    return createJob(request,env);
+  }
   const fileMatch=url.pathname.match(/^\/api\/drone\/jobs\/(drn-[a-zA-Z0-9-]+)\/files\/(.+)$/);if(fileMatch&&request.method==='PUT')return uploadFile(request,env,fileMatch[1],fileMatch[2],url);
   const ackMatch=url.pathname.match(/^\/api\/drone\/jobs\/(drn-[a-zA-Z0-9-]+)\/queue-complete$/);
   if(ackMatch&&request.method==='POST'){const job=await readJson(env,jobKey(ackMatch[1]));if(!job)return reply(request,{ok:false,error:'job_not_found'},404);if(!authorizedJob(request,url,job))return reply(request,{ok:false,error:'unauthorized'},401);if(!['ready','failed'].includes(job.status))return reply(request,{ok:false,error:'job_still_active'},409);await queueState(env,'remove',job.id);return reply(request,{ok:true});}
