@@ -154,7 +154,7 @@
           const values=await reader.readRasters({window:[left,top,right,bottom],width,height,resampleMethod:'nearest',signal});
           return Array.from(values,band=>Array.from({length:height},(_,row)=>band.subarray(row*width,(row+1)*width)));
         }};
-      const layer=new GeoRasterLayer({georaster,pane:'ortho-imagery',debugLevel:0,resolution:details.nativeReview?256:128,maxZoom:26,opacity:Number($('opacity').value),updateWhenZooming:false,updateWhenIdle:true,keepBuffer:1,pixelValuesToColorFn:values=>{
+      const layer=new GeoRasterLayer({georaster,pane:'ortho-imagery',debugLevel:0,resolution:256,maxZoom:26,opacity:Number($('opacity').value),updateWhenZooming:false,updateWhenIdle:true,keepBuffer:1,pixelValuesToColorFn:values=>{
         if (!values.slice(0,3).every(Number.isFinite) || (hasAlpha && values[3]===0) || (noData!==null && values.slice(0,3).every(v=>v===noData))) return null;
         let [r,g,b]=values;
         if(ycbcr){r=values[0]+1.402*(values[2]-128);g=values[0]-.34414*(values[1]-128)-.71414*(values[2]-128);b=values[0]+1.772*(values[1]-128);}

@@ -198,3 +198,14 @@ test('D E F native views use their own manifest and do not mount historical A-on
  for(const b of ['D','E','F']){const s=setup();s.result.block=b;s.result.full_block_count={processed_tiles:1,candidate_count:2,threshold:.393,threshold_025_count:3,threshold_040_count:1};s.result.boundary_revision={received_date:'2026-10-18'};s.result.model_calibration={historical_metrics_only:true};s.options.block=b;s.options.base='/api/staff/drone/analysis/Agro_DEF';s.options.manifest.block_analyses={[b]:'block-A/analysis.json'};
  const dispose=await s.mount(s.options);await s.find('Buka seluruh Blok '+b).onclick();assert.ok(s.requests.every(r=>r.path.startsWith('/api/staff/drone/analysis/Agro_DEF/')));dispose();}
 });
+
+test('every Dayun block opens native detail from its own private source when inspecting the zoomed map',async()=>{
+ for(const block of 'ABCDEF'){
+  const s=setup(),source='ABC'.includes(block)?'Agro_ABC':'Agro_DEF',opened=[];
+  s.result.block=block;s.options.block=block;s.options.base='/api/staff/drone/analysis/'+source;s.options.manifest.block_analyses={[block]:'block-A/analysis.json'};
+  s.options.map.getBounds=()=>({contains:()=>true,getWest:()=>0,getEast:()=>1,getSouth:()=>0,getNorth:()=>1});
+  s.options.openNativeRaster=async(path,options)=>{opened.push({path,options});return{ready:true,dispose(){}}};
+  const stop=await s.mount(s.options);await s.find('Buka seluruh Blok '+block).onclick();s.find('Periksa citra asli di titik peta').onclick();await s.events.click({latlng:{lng:.5,lat:.5}});
+  assert.equal(opened.length,1);assert.equal(opened[0].path,'/api/staff/drone/analysis/'+source+'/files/block-A/native/one.tif');assert.ok(opened[0].options.signal);assert.ok(s.requests.every(r=>!r.config));stop();
+ }
+});
