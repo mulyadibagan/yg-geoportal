@@ -25,11 +25,11 @@ export function normalizeBlockReview(review,{manifest,path,analysis,candidates,z
   if(review?.schema!=='dayun-block-corrections-v1'||review.source_run!==manifest.run||review.analysis_path!==path||review.block!==block||!Array.isArray(review.changes)||review.changes.length>reviewLimit(block))fail('block_review_source_mismatch');
   const originals=candidates.byId||new Map(candidates.features.map(f=>[f.properties.id,f])),seen=new Set(),locate=locator(zones);
   const changes=review.changes.map(f=>{
-    const p=f?.properties,c=f?.geometry?.coordinates,id=p?.id;
-    if(f?.type!=='Feature'||f.geometry?.type!=='Point'||!Array.isArray(c)||c.length!==2||!c.every(Number.isFinite)||!inside(c,analysis.bounds)||!analysis.native_tiles.some(t=>inside(c,t.bounds))||typeof id!=='string'||!/^[\w-]{1,100}$/.test(id)||seen.has(id)||!['candidate','accepted','rejected'].includes(p.status)||typeof p.note!=='string'||p.note.length>1000)fail('invalid_block_review_point');
+    const p=f?.properties,c=f?.geometry?.coordinates,id=p?.id,note=p?.note===undefined?'':p.note;
+    if(f?.type!=='Feature'||f.geometry?.type!=='Point'||!Array.isArray(c)||c.length!==2||!c.every(Number.isFinite)||!inside(c,analysis.bounds)||!analysis.native_tiles.some(t=>inside(c,t.bounds))||typeof id!=='string'||!/^[\w-]{1,100}$/.test(id)||seen.has(id)||!['candidate','accepted','rejected'].includes(p.status)||typeof note!=='string'||note.length>1000)fail('invalid_block_review_point');
     const original=originals.get(id);if(!original&&!new RegExp('^'+block+'-manual-[\\w-]{8,80}$').test(id))fail('unknown_block_candidate');seen.add(id);
     const suppliedReason=p.rejection_reason??'unspecified';if(!['unspecified','not_pineapple','duplicate','misplaced','unclear'].includes(suppliedReason))fail('invalid_rejection_reason');const reason=p.status==='rejected'?suppliedReason:'unspecified';
-    return{type:'Feature',geometry:{type:'Point',coordinates:c},properties:{id,status:p.status,note:p.note,origin:original?'automated':'manual_addition',zones:locate(f),species_confirmed:false,rejection_reason:reason}};
+    return{type:'Feature',geometry:{type:'Point',coordinates:c},properties:{id,status:p.status,note,origin:original?'automated':'manual_addition',zones:locate(f),species_confirmed:false,rejection_reason:reason}};
   });
   return{schema:'dayun-block-corrections-v1',source_run:manifest.run,analysis_path:path,block,changes,census_changed:false};
 }
