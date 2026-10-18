@@ -6,6 +6,8 @@ on:
     branches: [main]
     paths:
       - 'cloudflare/yg-webgis-public-data/src/drone*.js'
+      - 'cloudflare/yg-webgis-public-data/src/r2-private-assets.js'
+      - 'cloudflare/yg-webgis-public-data/scripts/configure-private-drone-r2.mjs'
       - 'cloudflare/yg-webgis-public-data/src/dayun-block-corrections.js'
       - 'cloudflare/yg-webgis-public-data/src/dayun-fruiting.js'
       - 'js/dayun-progress-counts.js'
@@ -38,6 +40,7 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
         run: |
+          node scripts/configure-private-drone-r2.mjs
           npx wrangler deploy --env staging
           npx wrangler deploy --env production
       - name: Check production service
