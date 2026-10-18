@@ -18,6 +18,18 @@ test('only explicit non-pineapple rejections are negative species examples; lega
 test('private per-point saves persist the rejection reason and preserve concurrent decisions',async()=>{
  const env=environment();const f=point('auto-1',[.5,.5],'rejected');f.properties.rejection_reason='not_pineapple';const saved=await call(env,'POST',patch(operation('auto-1',f)));assert.equal(saved.status,200);assert.equal(saved.body.counts.training_examples.negative,1);assert.equal((await call(env)).body.review.changes[0].properties.rejection_reason,'not_pineapple');assert.ok(env.writes.every(w=>w.k.startsWith('drone/analysis/dayun/block-reviews/')));
 });
+
+test('an older editor can save a moved detector point without a note alongside another staff correction',async()=>{
+ const env=environment(),baseline=new Map(env.values),moved=point('auto-1',[.8,.9],'candidate');delete moved.properties.note;
+ const result=await Promise.all([call(env,'POST',patch(operation('auto-1',moved))),call(env,'POST',patch(operation('auto-2',point('auto-2',[1,1],'rejected'))))]);assert.ok(result.every(r=>r.status===200));
+ const head=(await call(env)).body;assert.equal(head.revision,2);assert.equal(head.review.changes.length,2);const saved=head.review.changes.find(f=>f.properties.id==='auto-1');assert.equal(saved.properties.note,'');assert.deepEqual(saved.geometry.coordinates,[.8,.9]);assert.equal(saved.properties.status,'candidate');assert.equal(head.counts.working_total,1);assert.equal(head.counts.census_changed,false);assert.equal(moved.properties.note,undefined);
+ for(const [key,value]of baseline)assert.equal(env.values.get(key),value);assert.ok(env.writes.every(w=>w.k.startsWith('drone/analysis/dayun/block-reviews/')));
+});
+
+test('omitted notes are optional while malformed notes and invalid coordinates remain rejected',async()=>{
+ for(const note of [null,123,{},'x'.repeat(1001)]){const env=environment(),f=point('auto-1',[1,1]);f.properties.note=note;assert.equal((await call(env,'POST',patch(operation('auto-1',f)))).status,400);assert.equal(env.writes.length,0);}
+ const env=environment(),f=point('auto-1',[3.5,3.5]);delete f.properties.note;assert.equal((await call(env,'POST',patch(operation('auto-1',f)))).status,400);assert.equal(env.writes.length,0);
+});
 test('coverage, source identity, unknown IDs, duplicate IDs, status and notes are validated',()=>{for(const mutate of [r=>r.source_run='other',r=>r.analysis_path='old/analysis.json',r=>r.changes[0].geometry.coordinates=[3.5,3.5],r=>r.changes[0].geometry.coordinates=[NaN,1],r=>r.changes[0].properties.id='fake',r=>r.changes.push(r.changes[0]),r=>r.changes[0].properties.status='pineapple',r=>r.changes[0].properties.note='x'.repeat(1001)]){const f=fixture();mutate(f.review);assert.throws(()=>normalizeBlockReview(f.review,f));}});
 test('boundary review points are retained unassigned and manual deletion does not delete originals',()=>{const f=fixture();f.review.changes[1].geometry.coordinates=[2.5,2.5];let r=normalizeBlockReview(f.review,f),c=blockReviewCounts(r,f.candidates,f.zones);assert.equal(c.unassigned,1);assert.equal(c.zones.find(z=>z.zone_id==='UNASSIGNED').working_total,1);r.changes.pop();c=blockReviewCounts(r,f.candidates,f.zones);assert.equal(c.automatic_original,2);assert.equal(c.manual_additions,0);assert.equal(c.working_total,1);});
 test('anonymous requests fail before storage, and unsupported block is refused',async()=>{const env=environment();assert.equal((await call(env,'GET',null,false)).status,401);assert.equal((await call(env,'POST',{expected_revision:0,review:fixture().review},false)).status,401);assert.equal((await call(env,'GET',null,true,'D')).status,400);assert.equal(env.writes.length,0);});
