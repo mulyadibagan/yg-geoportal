@@ -41,6 +41,19 @@
       finally{sent.forEach(op=>inFlight.delete(op.id));busy=false;if(alive())store.disabled=false;reportSync();}
     }
     async function pick(f){if(!alive()||!ready||!getCandidates())return;if(!editing)setEditing(true);adding=false;add.textContent='Tambah titik nanas';selected=JSON.parse(JSON.stringify(f));note.value=selected.properties.note||'';drawSelected();selectedText.scrollIntoView?.({block:'nearest'});status.textContent='Titik dipilih. Membuka TIFF asli; pemilihan saja tidak mengubah atau menyimpan keputusan.';try{await onInspect?.(f.geometry.coordinates);}catch(error){if(alive())status.textContent=error.message;}}
+    async function reviewSuggestion(suggestion,statusValue){
+      if(!alive()||!ready||busy||!getCandidates()||!['accepted','rejected'].includes(statusValue))return false;
+      const id=suggestion?.properties?.id,c=suggestion?.geometry?.coordinates;
+      if(!new RegExp('^'+block+'-manual-suggest-x\\d+-y\\d+$').test(id)||!Array.isArray(c)||c.length!==2||!c.every(Number.isFinite))throw Error('Usulan nanas tidak valid.');
+      await load();if(!alive()||!ready||pointVersions[id]||pending.has(id))return false;
+      const near=features().find(f=>Math.hypot((c[0]-f.geometry.coordinates[0])*111320*Math.cos(c[1]*Math.PI/180),(c[1]-f.geometry.coordinates[1])*110574)<.22);
+      if(near){status.textContent='Lokasi sudah memiliki titik atau keputusan tim; usulan tidak ditambahkan.';return false;}
+      const b=result.bounds;if(c[0]<b[0]||c[0]>b[2]||c[1]<b[1]||c[1]>b[3]||!result.native_tiles.some(t=>c[0]>=t.bounds[0]&&c[0]<=t.bounds[2]&&c[1]>=t.bounds[1]&&c[1]<=t.bounds[3]))throw Error('Usulan di luar cakupan citra blok.');
+      if(map.getZoom()<22||preparePoint&&!await preparePoint(c)){status.textContent='Tunggu TIFF asli siap, kemudian periksa dan putuskan usulan lagi.';return false;}
+      if(!alive()||pointVersions[id]||pending.has(id))return false;
+      const f={type:'Feature',geometry:{type:'Point',coordinates:[...c]},properties:{id,status:statusValue,origin:'manual_addition',zones:[],species_confirmed:false,rejection_reason:'unspecified',note:'Usulan detektor ditinjau tim; model '+String(suggestion.properties.model_signature||'').slice(0,64)}};
+      f.properties.zones=locate(f);if(!f.properties.zones.length)throw Error('Usulan di luar batas gawangan.');changes.push(f);selected=statusValue==='accepted'?f:null;editing=false;adding=false;queue(f);drawSelected();return true;
+    }
     function setEditing(value){if(!ready||!getCandidates()){status.textContent=`Buka seluruh Blok ${block} dan muat koreksi privat sebelum mengedit.`;return;}editing=value;adding=false;add.textContent='Tambah titik nanas';toggle.textContent=editing?'Selesai mengedit titik':'Aktifkan edit titik';drawSelected();status.textContent=editing?'Klik titik untuk menerima/menolak atau geser penanda biru. Tambah titik memakai citra asli.':'Mode edit dimatikan.';}
     toggle.onclick=()=>{if(alive())setEditing(!editing);};
     add.onclick=()=>{if(!alive())return;if(!editing)setEditing(true);if(!editing)return;adding=!adding;add.textContent=adding?'Selesai menambah titik':'Tambah titik nanas';status.textContent=adding?'Klik lokasi; jika citra asli belum terbuka, klik sekali untuk membukanya, lalu klik pusat nanas untuk menambah titik.':'Mode tambah dimatikan.';};
@@ -59,7 +72,7 @@
     const beforeUnload=event=>{if(dirty){event.preventDefault();event.returnValue='';}};window.addEventListener('beforeunload',beforeUnload);
     try{await load();}catch(error){if(alive()){status.textContent='Koreksi tim belum dapat dimuat: '+error.message;toggle.disabled=add.disabled=store.disabled=true;}}
     if(alive())poll=setInterval(()=>{if(alive()&&!busy&&!pulling&&document.visibilityState!=='hidden')load().then(schedule).catch(()=>{});},15000);
-    return{pick,setEditing,isEditing:()=>editing,features,refresh:()=>{if(alive())announce(localCounts());},canLeave:()=>!dirty||exported===version,dispose:()=>{disposed=true;clearTimeout(timer);clearInterval(poll);window.removeEventListener('beforeunload',beforeUnload);map.off('click',click);map.removeLayer(layer);host.replaceChildren();host.hidden=true;}};
+    return{pick,reviewSuggestion,hasReviewedSuggestion:id=>!ready||Boolean(pointVersions[id]||pending.has(id)),setEditing,isEditing:()=>editing,features,refresh:()=>{if(alive())announce(localCounts());},canLeave:()=>!dirty||exported===version,dispose:()=>{disposed=true;clearTimeout(timer);clearInterval(poll);window.removeEventListener('beforeunload',beforeUnload);map.off('click',click);map.removeLayer(layer);host.replaceChildren();host.hidden=true;}};
   }
   return{effective,summarize,mount};
 });
