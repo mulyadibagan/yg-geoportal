@@ -1,3 +1,4 @@
+import {directAssetsEnabled, createPrivateAssetSigner} from './r2-private-assets.js';
 const ALLOWED_ORIGINS = new Set(['https://webgisyg.id','https://www.webgisyg.id']);
 const MAX_FILES = 800;
 const MAX_FILE_BYTES = 40 * 1024 * 1024;
@@ -197,6 +198,20 @@ async function servePublicCog(request,env,id){
 
 async function dayunAnalysis(request,env,url,verifyStaffToken){
   if(!await authorizedStaff(request,env,verifyStaffToken))return reply(request,{ok:false,error:'unauthorized'},401);
+  const assets=url.pathname.match(/^\/api\/staff\/drone\/analysis\/(Agro_ABC|Agro_DEF)\/asset-links$/);
+  if(assets){
+    if(request.method!=='POST')return reply(request,{ok:false,error:'method_not_allowed'},405);
+    if(!directAssetsEnabled(env))return reply(request,{ok:false,error:'private_asset_signer_unavailable'},503);
+    const text=await request.text();if(text.length>32768)return reply(request,{ok:false,error:'asset_batch_too_large'},413);
+    let body;try{body=JSON.parse(text)}catch{return reply(request,{ok:false,error:'invalid_asset_batch'},400);}
+    if(!Array.isArray(body?.files)||!body.files.length||body.files.length>64||body.files.some(file=>typeof file!=='string'||file.length>400||file.split('/').some(p=>!p||p==='.'||p==='..')))return reply(request,{ok:false,error:'invalid_asset_batch'},400);
+    const root=`drone/analysis/dayun/results/${assets[1]}`,manifest=await readJson(env,`${root}/index.json`);
+    if(!manifest||!Array.isArray(manifest.files)||!manifest.prefix?.startsWith(root+'/')||manifest.prefix.split('/').some(p=>!p||p==='.'||p==='..'))return reply(request,{ok:false,error:'analysis_not_available'},404);
+    if(body.files.some(file=>!manifest.files.includes(file)))return reply(request,{ok:false,error:'asset_not_found'},404);
+    const sign=await createPrivateAssetSigner(env);
+    const links=await Promise.all([...new Set(body.files)].map(async file=>({file,...await sign(`${manifest.prefix}/${file}`)})));
+    return reply(request,{ok:true,links});
+  }
   const fruiting=url.pathname.match(/^\/api\/staff\/drone\/analysis\/(Agro_ABC)\/fruiting-review$/);
   if(fruiting){
     if(!['GET','POST'].includes(request.method))return reply(request,{ok:false,error:'method_not_allowed'},405);
@@ -255,7 +270,7 @@ async function dayunAnalysis(request,env,url,verifyStaffToken){
   const root=`drone/analysis/dayun/results/${match[1]}`;
   const manifest=await readJson(env,`${root}/index.json`);
   if(!manifest)return reply(request,{ok:false,error:'analysis_not_available'},404);
-  if(!match[2])return reply(request,manifest);
+  if(!match[2])return reply(request,{...manifest,assetDelivery:directAssetsEnabled(env)?'r2-signed-v1':'worker'});
   const file=match[2];
   if(!Array.isArray(manifest.files)||!manifest.files.includes(file)||file.split('/').some(p=>!p||p==='.'||p==='..')||!manifest.prefix?.startsWith(root+'/'))return reply(request,{ok:false,error:'not_found'},404);
   const key=`${manifest.prefix}/${file}`,range=request.headers.get('range');

@@ -25,6 +25,8 @@
       "workers_dev": true,
       "vars": {
         "ENVIRONMENT": "staging",
+        "DRONE_R2_ACCOUNT_ID": "f521af5ec1f2197e8f55d1e460c0296e",
+        "DRONE_R2_BUCKET": "yg-webgis-public-snapshots-staging",
         "GITHUB_ORIGIN": "https://webgisyg.id",
         "APPS_SCRIPT_BASE": "https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec"
       },
@@ -48,6 +50,8 @@
       "workers_dev": true,
       "vars": {
         "ENVIRONMENT": "production",
+        "DRONE_R2_ACCOUNT_ID": "f521af5ec1f2197e8f55d1e460c0296e",
+        "DRONE_R2_BUCKET": "yg-webgis-public-snapshots",
         "GITHUB_ORIGIN": "https://webgisyg.id",
         "APPS_SCRIPT_BASE": "https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec"
       },

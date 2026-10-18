@@ -34,6 +34,7 @@
     return current && current.token === session?.token && Number(current.expiresAt) > Date.now();
   }
   function lock(message) {
+    privateAssets?.clear();
     document.querySelector?.('.map-card')?.classList.remove('map-expanded');
     document.body?.classList.remove('map-expanded-open');
     $('focusMap').textContent='Perbesar ruang peta';
@@ -53,7 +54,12 @@
     $('measurements').replaceChildren();
     $('localTiff').value = '';
   }
+  const privateAssets=window.YG_PRIVATE_R2?.create({api:workerApi,current:validSession});
   async function api(path, options = {}) {
+    if ((!options.method||options.method==='GET')&&privateAssets?.eligible(path))return privateAssets.get(path,options);
+    return workerApi(path,options);
+  }
+  async function workerApi(path, options = {}) {
     if (!validSession()) { lock('Sesi berakhir. Silakan masuk kembali.'); throw Error('Sesi staf tidak aktif.'); }
     const response = await fetch(API + path, {...options, headers: {...options.headers, Authorization: `Bearer ${session.token}`}, cache: 'no-store', signal: options.signal || AbortSignal.timeout(30000)});
     if (response.status === 401 || response.status === 403) { lock('Akses staf tidak valid. Silakan masuk kembali.'); throw Error('Akses ditolak.'); }
@@ -277,6 +283,7 @@
     try {
       const manifest=await(await api(base)).json();
       if(!current())return;
+      privateAssets?.register(base,manifest);
       if(!manifest.download?.ok){$('dayunStatus').textContent=`Belum diunduh: ${manifest.download?.error||'status tidak tersedia'}`;return;}
       if(!manifest.analysis?.ok || !manifest.files?.includes('metadata.json')){$('dayunStatus').textContent='Unduhan selesai; analisis belum tersedia atau belum lengkap.';return;}
       const metadataPath=manifest.boundary_revision_assets?.metadata||'metadata.json';if(!manifest.files.includes(metadataPath))throw Error('Metadata batas revisi belum tersedia.');
