@@ -207,7 +207,7 @@ test('every Dayun block opens native detail from its own private source when ins
   s.options.map.getBounds=()=>({contains:()=>true,getWest:()=>0,getEast:()=>1,getSouth:()=>0,getNorth:()=>1});
   s.options.openNativeRaster=async(path,options)=>{opened.push({path,options});return{ready:true,dispose(){}}};
   const stop=await s.mount(s.options);await s.find('Buka seluruh Blok '+block).onclick();s.find('Periksa citra asli di titik peta').onclick();await s.events.click({latlng:{lng:.5,lat:.5}});
-  assert.equal(opened.length,1);assert.equal(opened[0].path,'/api/staff/drone/analysis/'+source+'/files/block-A/native/one.tif');assert.ok(opened[0].options.signal);assert.ok(s.requests.every(r=>!r.config));stop();
+  assert.equal(opened.length,1);assert.ok(opened[0].path instanceof Blob);assert.equal(s.requests.filter(r=>r.path==='/api/staff/drone/analysis/'+source+'/files/block-A/native/one.tif').length,1);assert.ok(opened[0].options.signal);assert.ok(s.requests.every(r=>!r.config));stop();
  }
 });
 
@@ -220,4 +220,10 @@ test('combined workspace routes visible markers to their own tools and refuses t
  const node=el('section');s.context.window.YG_DAYUN_FRUITING={mount:async o=>{fruitOptions=o;return{element:node,setVisible(){},setControlsVisible(v){node.hidden=!v;return true},focus:async()=>fruitOptions.openBlock(),refresh(){},canLeave:()=>fruitClean,dispose(){}}}};
  const stop=await s.mount(s.options);try{assert.ok(s.layers.length);plantClean=false;assert.equal(await fruitOptions.onSelect(),false);assert.equal(node.hidden,true);plantClean=true;assert.equal(await fruitOptions.onSelect(),true);assert.equal(node.hidden,false);
  await fruitOptions.openBlock();assert.ok(s.layers.at(-1).handlers.click);fruitClean=false;await s.layers.at(-1).handlers.click();assert.equal(picked,0);assert.equal(node.hidden,false);fruitClean=true;await s.layers.at(-1).handlers.click();assert.equal(picked,1);assert.equal(node.hidden,true);assert.ok(s.requests.every(r=>!r.config));}finally{stop()}
+});
+
+
+test('quota failures stop native automatic retries but explicit retry works after recovery',async()=>{
+ const timers=[];let limited=true;const s=viewportFixture({schedule:fn=>(timers.push(fn),timers.length),cancel(){},open:async(tile,changed,signal,h)=>{if(limited)throw Object.assign(Error('HTTP 429'),{status:429});h.ready=true;return h;}});
+ try{s.engine.refresh();await s.settle();assert.equal(s.opened.length,2);assert.equal(timers.length,0);assert.match(s.messages.at(-1),/HTTP 429/);s.engine.refresh();await s.settle();assert.equal(s.opened.length,2);limited=false;s.engine.retry();await s.settle();assert.equal(s.opened.length,4);assert.equal(s.engine.readyAt([.5,.5]),true);}finally{s.engine.dispose();}
 });

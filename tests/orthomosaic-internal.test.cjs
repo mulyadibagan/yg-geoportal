@@ -124,3 +124,10 @@ test('queue polling stops for completed jobs, hidden pages and service failure; 
  assert.equal(reads(),1);s.context.document.visibilityState='hidden';poll.fn();await s.settle();assert.equal(reads(),1);s.context.document.visibilityState='visible';phase='coverage_ready';poll.fn();await s.settle();assert.equal(reads(),2);poll.fn();await s.settle();assert.equal(reads(),2);
  phase='processing';await s.el('refreshDayunRequests').onclick();phase='failed';poll.fn();await s.settle();const failed=reads();poll.fn();await s.settle();assert.equal(reads(),failed);phase='coverage_ready';await s.el('refreshDayunRequests').onclick();assert.equal(reads(),failed+1);
 });
+
+
+test('native viewport reads zoom windows from a private Blob with no URL range requests',async()=>{
+ let mounted,blobReads=0;const s=setup({session:{token:'staff',expiresAt:Date.now()+100000},search:'?source=Agro_ABC&block=A',fetcher:async url=>({ok:true,status:200,json:async()=>url.endsWith('/analysis/Agro_ABC')?{download:{ok:true},analysis:{ok:true},files:['metadata.json']}:url.endsWith('metadata.json')?{gawangan:[]}:{jobs:[]}})});
+ s.context.window.YG_DAYUN_BLOCK={mount:async o=>(mounted=o,()=>{})};s.context.GeoTIFF.fromBlob=async b=>{assert.ok(b instanceof Blob);blobReads++;return{getImage:async()=>s.image}};await s.settle();const start=s.calls.length;
+ const handle=await mounted.openNativeRaster(new Blob(['private core']),{title:'native core'});for(const left of [0,10,20])await s.layers[0].georaster.getValues({left,top:0,right:left+2,bottom:2,width:2,height:2});assert.equal(blobReads,1);assert.equal(s.calls.slice(start).filter(c=>c.url).length,0);assert.equal(s.calls.slice(start).filter(c=>c.reader==='native-image').length,3);handle.dispose();
+});
