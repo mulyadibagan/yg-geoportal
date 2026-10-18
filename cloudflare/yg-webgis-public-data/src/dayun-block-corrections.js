@@ -1,5 +1,6 @@
 // Sparse, versioned staff map corrections only. No census or source-data writes.
 import {booleanPointInPolygon} from '@turf/turf';
+import progressCounts from '../../../js/dayun-progress-counts.js';
 const fail=(message,status=400,details={})=>{throw Object.assign(Error(message),{status,...details})};
 const reviewLimit=block=>['B','C','D','E','F'].includes(block)?60000:30000;
 const inside=(c,b)=>c[0]>=b[0]&&c[0]<=b[2]&&c[1]>=b[1]&&c[1]<=b[3];
@@ -46,7 +47,7 @@ export function blockReviewCounts(review,candidates,zones){
     for(const id of p.zones?.length?p.zones:['UNASSIGNED']){const r=rows.get(id);if(!r)continue;if(manual)r.manual_additions++;else r.automatic++;if(rejected)r.rejected++;else{r.working_total++;if(accepted)r.accepted_by_staff++;else r.unreviewed++;}}
   }
   const training={positive:0,negative:0,rejected_without_species_label:0};for(const f of changed.values()){const p=f.properties;if(p.status==='accepted')training.positive++;else if(p.status==='rejected'){if(p.rejection_reason==='not_pineapple')training.negative++;else training.rejected_without_species_label++;}}
-  return{...counts,training_examples:training,zones:[...rows.values()]};
+  return{...counts,training_examples:training,zones:[...rows.values()],progress:progressCounts.compute(candidates.features,effective,[...rows.keys()])};
 }
 
 // Legacy heads are upgraded in memory. Never rewrite stored user revisions on read.
@@ -93,7 +94,7 @@ export async function blockReviewOperation(env,body){
   if(stored?.review){if(stored.review.source_run!==manifest.run||stored.review.block!==block)fail('review_base_source_mismatch',409);knownCandidates={type:'FeatureCollection',features:[...new Map([...knownCandidates.features,...stored.review.changes.filter(f=>f.properties.origin==='automated')].map(f=>[f.properties.id,f])).values()]};}
   const raw=collaborativeHead(stored,{ok:true,revision:0,review:null,counts:blockReviewCounts(null,candidates,zones),analysis_path:path});
   const currentReview=analysis.boundary_revision?rebaseBlockReview(raw.review,zones):raw.review;
-  const head={...raw,feedback_schema:'dayun-rejection-reason-v1',analysis_path:path,review:currentReview?{...currentReview,analysis_path:path}:null,counts:blockReviewCounts(currentReview,candidates,zones),review_base_analysis_path:anchor};
+  const head={...raw,source_run:manifest.run,block,feedback_schema:'dayun-rejection-reason-v1',analysis_path:path,review:currentReview?{...currentReview,analysis_path:path}:null,counts:blockReviewCounts(currentReview,candidates,zones),review_base_analysis_path:anchor};
   if(body.action==='load')return head;
   if(body.action!=='save')fail('invalid_block_review_action');
   knownCandidates.byId=new Map(knownCandidates.features.map(f=>[f.properties.id,f]));
@@ -109,5 +110,5 @@ export async function blockReviewOperation(env,body){
   const revision=(head?.revision||0)+1,version=`${root}/versions/${revision}-${crypto.randomUUID()}.json`;
   const result={ok:true,revision,review,counts,analysis_path:path,review_base_analysis_path:anchor,collaboration:'per-point-v1',feedback_schema:'dayun-rejection-reason-v1',point_versions,point_operations,updated_at:new Date().toISOString(),previous_version:head?.version||null,version};
   const options={httpMetadata:{contentType:'application/json',cacheControl:'private, no-store'}};
-  await env.PUBLIC_SNAPSHOTS.put(version,JSON.stringify(result),options);await env.PUBLIC_SNAPSHOTS.put(root+'/head.json',JSON.stringify(result),options);return result;
+  await env.PUBLIC_SNAPSHOTS.put(version,JSON.stringify(result),options);await env.PUBLIC_SNAPSHOTS.put(root+'/head.json',JSON.stringify(result),options);return{...result,source_run:manifest.run,block};
 }
