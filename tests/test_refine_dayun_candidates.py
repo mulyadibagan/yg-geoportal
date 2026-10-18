@@ -7,16 +7,16 @@ from refine_dayun_candidates import refine
 
 
 class RefineCandidatesTests(unittest.TestCase):
-    def test_unknown_context_is_retained_and_frozen_resume_cannot_mix_models(self):
+    def test_multiscale_rescues_larger_crown_and_retains_unknown_context_without_mixing_models(self):
         with tempfile.TemporaryDirectory() as temp:
             root=Path(temp);source=root/'source';source.mkdir();out=root/'out'
             a={'block':'A','source_label':'Agro_ABC','candidate_count':3,'native_tiles':[{'file':'native/x0_y0.tif'}],'zones':[{'id':'GT-A-01','kind':'active_source'}],'full_block_count':{'processed_tiles':1},'method':'radial','limitations':[]}
             features=[{'type':'Feature','geometry':{'type':'Point','coordinates':[102+i*.00001,.58]},'properties':{'id':f'A-radial-x{i}-y0','native_tile':'native/x0_y0.tif','source_pixel':[i,0],'zones':['GT-A-01']}} for i in range(3)]
             zones={'type':'FeatureCollection','features':[{'properties':{'id':'GT-A-01'}}]}
-            model={'threshold':4,'signature':'frozen','threshold_rule':'train_only','provenance':{},'evaluation':{'1_heldout':{'samples':7,'retained':7},'0_heldout':{'samples':600,'retained_fraction':.02}}}
+            model={'threshold':4,'signature':'frozen','threshold_rule':'train_only','inference_context_scales':[1.,2.,3.],'provenance':{},'evaluation':{'1_heldout':{'samples':7,'retained':7},'0_heldout':{'samples':600,'retained_fraction':.02}}}
             for name,value in [('analysis.json',a),('candidates.geojson',{'features':features}),('zones.geojson',zones)]: (source/name).write_text(json.dumps(value))
             mp=root/'model.json';mp.write_text(json.dumps(model));before={p.name:p.read_bytes() for p in source.iterdir()}
-            with patch('refine_dayun_candidates.NativePatches') as reader,patch('refine_dayun_candidates.descriptor',side_effect=[np.ones(35),np.ones(35),None]),patch('refine_dayun_candidates.score',side_effect=[5,3]):
+            with patch('refine_dayun_candidates.NativePatches') as reader,patch('refine_dayun_candidates.descriptor',side_effect=[np.ones(35)]*7+[None]),patch('refine_dayun_candidates.score',side_effect=[3,5,3,3,3,3,3]):
                 result=refine(source,source,mp,out,[.01,.01])
             actual=json.loads((out/'candidates.geojson').read_text())['features']
             self.assertEqual([f['properties']['id'] for f in actual],['A-radial-x0-y0','A-radial-x2-y0'])

@@ -41,3 +41,19 @@ to the actual upstream detections. Filtering cannot recover plants missed by
 the radial stage. No validated population, mortality or census update follows
 from a lower candidate count. Keep original candidates and filter decisions
 available privately for review and reversal.
+
+The single-size trial visibly removed larger radial crowns. Before activating
+results, use a frozen 1/2× context ensemble: retain a candidate if any complete
+scale passes, and preserve it for review if a requested context is unavailable.
+The fitted weights and training-only threshold do not change. Evaluate that
+protocol on fresh F sample centres separated by at least 3.5 metres from all
+previous single-scale F test centres. Previous F measurements become historical
+diagnostics, not the independent test for this protocol. Report positive-label
+recovery at the base scale only; larger contexts in the compact labelled area
+can overlap training plants and must not be called a new spatial holdout.
+
+The 3× trial retained about one third of the D/E false proposals and was
+rejected using training/validation data. Choose 1/2× before inspecting the fresh
+F outcome. Require at least 80% rejection on that fresh negative sample and
+preservation of the base-scale positive check. This is an explicit sensitivity /
+specificity compromise, not a claim of 80% precision on A–C.
