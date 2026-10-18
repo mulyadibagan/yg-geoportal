@@ -39,6 +39,10 @@ async function queueState(env,action=null,id=null,job=null){
   if(action)await writeJson(env,key,{...queue,updatedAt:new Date().toISOString()});return queue;
 }
 async function queueJob(env,id,job=null){return queueState(env,'add',id,job)}
+async function admitJob(request,env,job){
+  try{await queueJob(env,job.id,job);return null;}
+  catch(error){if(error.message==='queue_full')return reply(request,{ok:false,error:'queue_full'},429,{'retry-after':'300'});throw error;}
+}
 async function pendingCount(env){return (await queueState(env)).jobs.length}
 function missionMetadata(body){
   if(!body.missionId)return {};
@@ -83,7 +87,7 @@ async function uploadFile(request,env,id,encodedName,url){
   const files=oldFiles.filter(f=>f?.key!==key&&f?.name!==name);files.push({name,key,bytes:size});job.files=files;job.totalBytes=oldBytes+size;job.updatedAt=new Date().toISOString();await writeJson(env,jobKey(id),job);
   return reply(request,{ok:true,id,file:{name,key},uploaded:files.length,totalBytes:job.totalBytes});
 }
-async function finalizeUpload(request,env,id,url){const job=await readJson(env,jobKey(id));if(!job)return reply(request,{ok:false,error:'job_not_found'},404);if(!authorizedJob(request,url,job))return reply(request,{ok:false,error:'unauthorized'},401);if(job.status==='pending')return reply(request,{ok:true,job:publicJob(job)});if(job.status!=='uploading')return reply(request,{ok:false,error:'job_not_uploadable'},409);if(job.sourceType!=='upload')return reply(request,{ok:false,error:'not_upload_job'},409);if(!Array.isArray(job.files)||job.files.length<3)return reply(request,{ok:false,error:'minimum_three_photos'},400);if(await pendingCount(env)>=MAX_PENDING_JOBS)return reply(request,{ok:false,error:'queue_full'},429,{'retry-after':'300'});job.status='pending';job.queuedAt=new Date().toISOString();await writeJson(env,jobKey(id),job);await queueJob(env,id);return reply(request,{ok:true,job:publicJob(job)})}
+async function finalizeUpload(request,env,id,url){const job=await readJson(env,jobKey(id));if(!job)return reply(request,{ok:false,error:'job_not_found'},404);if(!authorizedJob(request,url,job))return reply(request,{ok:false,error:'unauthorized'},401);if(job.status==='pending')return reply(request,{ok:true,job:publicJob(job)});if(job.status!=='uploading')return reply(request,{ok:false,error:'job_not_uploadable'},409);if(job.sourceType!=='upload')return reply(request,{ok:false,error:'not_upload_job'},409);if(!Array.isArray(job.files)||job.files.length<3)return reply(request,{ok:false,error:'minimum_three_photos'},400);if(await pendingCount(env)>=MAX_PENDING_JOBS)return reply(request,{ok:false,error:'queue_full'},429,{'retry-after':'300'});job.status='pending';job.queuedAt=new Date().toISOString();const rejected=await admitJob(request,env,job);if(rejected)return rejected;return reply(request,{ok:true,job:publicJob(job)})}
 async function retryJob(request,env,id,url){
   const job=await readJson(env,jobKey(id));
   if(!job)return reply(request,{ok:false,error:'job_not_found'},404);
@@ -102,8 +106,7 @@ async function retryJob(request,env,id,url){
   delete job.error;
   delete job.failedAt;
   delete job.processingStartedAt;
-  await writeJson(env,jobKey(id),job);
-  await queueJob(env,id);
+  const rejected=await admitJob(request,env,job);if(rejected)return rejected;
   return reply(request,{ok:true,job:publicJob(job)});
 }
 async function refineJob(request,env,id,url){
@@ -123,8 +126,7 @@ async function refineJob(request,env,id,url){
   job.refineRequestedAt=now;
   job.refineCount=Number(job.refineCount||0)+1;
   delete job.completedAt;
-  await writeJson(env,jobKey(id),job);
-  await queueJob(env,id);
+  const rejected=await admitJob(request,env,job);if(rejected)return rejected;
   return reply(request,{ok:true,job:publicJob(job)});
 }
 async function serveCog(request,env,id,url,verifyStaffToken){const job=await readJson(env,jobKey(id));if(!job||job.status!=='ready'||!job.cogKey)return reply(request,{ok:false,error:'orthomosaic_not_ready'},404);if(!authorizedJob(request,url,job)&&!await authorizedStaff(request,env,verifyStaffToken))return reply(request,{ok:false,error:'unauthorized'},401);const rangeHeader=request.headers.get('range');const object=await env.PUBLIC_SNAPSHOTS.get(job.cogKey,rangeHeader?{range:request.headers}:undefined);if(!object)return reply(request,{ok:false,error:'cog_missing'},404);const headers=new Headers(cors(request));object.writeHttpMetadata(headers);headers.set('etag',object.httpEtag);headers.set('accept-ranges','bytes');headers.set('content-length',String(object.range?.length ?? object.size));headers.set('cache-control','private, max-age=3600');if(object.range){const offset=object.range.offset||0;const length=object.range.length||object.size;headers.set('content-range',`bytes ${offset}-${offset+length-1}/${object.size}`)}return new Response(request.method==='HEAD'?null:object.body,{status:object.range?206:200,headers})}

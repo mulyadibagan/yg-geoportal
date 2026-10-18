@@ -20,4 +20,12 @@ test('mission and polygon association survive upload, finalization and publicati
  assert.deepEqual(JSON.parse(env.values.get('drone/queue/pending.json')).jobs,[]);
 });
 test('invalid mission geometry rejected before storage',async()=>{const env=environment();const r=await call(env,request('/api/drone/jobs',{missionId:'DRN-unit-test',polygonIds:['DAYUN-BLOCK-A'],missionGeometry:{type:'Point',coordinates:[101,.7]}}));assert.equal(r.status,400);assert.equal(env.values.size,0)});
+
+test('a queue filling during admission leaves upload, retry and refinement states unchanged',async()=>{
+ for(const [action,status]of [['finalize','uploading'],['retry','failed'],['refine','ready']]){
+  const env=environment(),id='drn-race',key='drone/jobs/'+id+'.json',original=JSON.stringify({id,status,sourceType:'upload',accessToken:'owner',files:[{name:'a'},{name:'b'},{name:'c'}]});env.values.set(key,original);
+  env.DRONE_QUEUE={idFromName:x=>x,get:()=>({fetch:async r=>r.method==='GET'?Response.json({jobs:[]}):Response.json({error:'queue_full'},{status:429})})};
+  const response=await call(env,request('/api/drone/jobs/'+id+'/'+action,undefined,'owner'));assert.equal(response.status,429);assert.equal(env.values.get(key),original);
+ }
+});
 test('queue coordinator admits four concurrent jobs, rejects overflow and removes only the completed job',async()=>{const env=environment(),store=new Map();let serial=Promise.resolve();const state={storage:{get:async key=>structuredClone(store.get(key)),put:async(key,v)=>store.set(key,structuredClone(v))},blockConcurrencyWhile(fn){const next=serial.then(fn);serial=next.catch(()=>{});return next}};const q=new DroneQueue(state,env);const update=(action,id)=>q.fetch(request('/',{action,id}));const results=await Promise.all(Array.from({length:12},(_,i)=>update('add','drn-'+i)));assert.equal(results.filter(r=>r.status===200).length,4);assert.equal(results.filter(r=>r.status===429).length,8);await update('remove','drn-0');const data=await (await q.fetch(new Request('https://queue/'))).json();assert.equal(data.jobs.length,3);assert.ok(data.jobs.includes('drn-3'));assert.ok(!data.jobs.includes('drn-11'));assert.deepEqual(JSON.parse(env.values.get('drone/queue/pending.json')).jobs,data.jobs);});
