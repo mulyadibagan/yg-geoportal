@@ -33,7 +33,9 @@ const test=await fetch(url,{headers:{range:'bytes=0-15'},redirect:'error'});
 await test.body?.cancel();
 if(test.status!==206)throw Error(`Existing deployment identity cannot read R2 over S3 (HTTP ${test.status}); no credentials or CORS were changed`);
 const unsigned=await fetch(url.split('?')[0],{headers:{range:'bytes=0-15'},redirect:'error'});
-await unsigned.body?.cancel();if(![401,403].includes(unsigned.status))throw Error('Unsigned private R2 access must be denied');
+const denial=await unsigned.text();
+const missingAuthorization=unsigned.status===400&&/<Code>InvalidArgument<\/Code>/.test(denial)&&/<Message>Authorization<\/Message>/.test(denial);
+if(![401,403].includes(unsigned.status)&&!missingAuthorization)throw Error(`Unsigned private R2 access must be denied (HTTP ${unsigned.status})`);
 const previousCors=[];
 try{for(const [environment,name]of [['staging',bucket+'-staging'],['production',bucket]]){
   await requirePrivate(name);
