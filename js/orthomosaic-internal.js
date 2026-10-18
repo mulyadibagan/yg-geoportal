@@ -13,6 +13,7 @@
   if(requestedSample){const q=new URLSearchParams(requestedSample.block?{source:requestedSample.source,block:requestedSample.block}:{source:requestedSample.source,trial:requestedSample.trial,sample:requestedSample.sample});if(requestedSample.point)q.set('point',requestedSample.point);$('sampleLogin').href='staff-login.html?return='+encodeURIComponent('orthomosaic-internal.html?'+q.toString());}
   let initialLinkOpened=false;
   let session, map, areas, rasterLayer, rasterBounds, tileLayer, jobs = [], source = null, rasterContext = null, sequence = 0;
+  let teamProgress=null,nextZoneTarget=null;
   let disposeMeritechExport = null, disposeCandidateReview=null, disposeBlockReview=null, dayunLayer = null, dayunUrls = [], dayunRequest=0;
   const nativeRasters=new Set();
   function clearNativeRasters(){for(const raster of [...nativeRasters])raster.dispose();}
@@ -37,7 +38,7 @@
     document.body?.classList.remove('map-expanded-open');
     $('focusMap').textContent='Perbesar ruang peta';
     $('focusMap').setAttribute?.('aria-pressed','false');
-    clearDayun();
+    clearDayun();teamProgress?.dispose();teamProgress=null;
     $('dayunRequests').replaceChildren();
     sequence++;
     disposeMeritechExport?.(); disposeMeritechExport = null;
@@ -71,9 +72,15 @@
       $('gate').hidden = true; $('workspace').hidden = false;
       if (!map) initMap();
       renderJobs();
+      if(!teamProgress&&window.YG_DAYUN_TEAM_PROGRESS)teamProgress=window.YG_DAYUN_TEAM_PROGRESS.mount({host:$('teamProgress'),api,current:validSession,save,onNavigate:navigateWorkspace});
       refreshDayunRequests();
       if(requestedSample&&!initialLinkOpened){initialLinkOpened=true;$('dayunSource').value=requestedSample.source;if(requestedSample.block)$('dayunBlock').value=requestedSample.block;await $('openDayun').onclick();}
     } catch (error) { $('gateStatus').textContent = `Analisis belum dapat dibuka: ${error.message}`; }
+  }
+  function navigateWorkspace({block,zone}){
+    if(disposeBlockReview?.canLeave&&!disposeBlockReview.canLeave()){$('mapStatus').textContent='Tunggu perubahan tersimpan sebelum berpindah gawangan atau blok.';return false;}
+    if(displayedBlock===block&&zone&&disposeBlockReview?.focusZone){disposeBlockReview.focusZone(zone).catch(error=>{$('mapStatus').textContent=error.message;});return true;}
+    nextZoneTarget=zone?{block,zone}:null;$('dayunSource').value=['A','B','C'].includes(block)?'Agro_ABC':'Agro_DEF';$('dayunBlock').value=block;$('openDayun').onclick();return true;
   }
   function renderJobs() {
     const selected = $('job').value;
@@ -252,6 +259,7 @@
     const sourceBlocks={Agro_ABC:['A','B','C'],Agro_DEF:['D','E','F']};
     const block=sourceBlocks[selected]?.includes($('dayunBlock').value)?$('dayunBlock').value:sourceBlocks[selected]?.[0]||'A';$('dayunBlock').value=block;displayedBlock=block;displayedSource=selected;
     const blockTarget=!requestedSample?.sample;
+    const zoneTarget=nextZoneTarget?.block===block?nextZoneTarget.zone:null;nextZoneTarget=null;
     if(!['Agro_ABC','Agro_DEF'].includes(selected))return;
     const base=`/api/staff/drone/analysis/${selected}`;
     $('dayunStatus').textContent='Memeriksa hasil…';
@@ -292,7 +300,7 @@
       };
       $('dayunResults').append(select);$('dayunResults').append(inspect);$('dayunResults').append(button);
       if(!target&&window.YG_DAYUN_BLOCK){
-        try{const expand=()=>{if(current()){const card=document.querySelector?.('.map-card');if(card&&!card.classList.contains('map-expanded'))$('focusMap').onclick?.();}};const dispose=await window.YG_DAYUN_BLOCK.mount({host:$('blockReview'),comparisonHost:$('blockComparison'),countHost:$('blockLiveCounts'),map,api,base,manifest,block,openRaster,openNativeRaster,getRasterSource:()=>source||(rasterContext?{...rasterContext,pending:true}:null),onNativeStatus:text=>{$('mapStatus').textContent=text;},save,current,autoOpen:blockTarget,onAutoOpen:expand,onEditMap:expand,onShowComparison:()=>{const card=document.querySelector?.('.map-card');if(card?.classList.contains('map-expanded'))$('focusMap').onclick?.();}});if(current()){disposeBlockReview=dispose;if(manifest.block_analyses?.[block])$('sampleReviewPanel').open=Boolean(manifest.preferred_candidate_trial)&&!blockTarget;}else dispose();}
+        try{const expand=()=>{if(current()){const card=document.querySelector?.('.map-card');if(card&&!card.classList.contains('map-expanded'))$('focusMap').onclick?.();}};const dispose=await window.YG_DAYUN_BLOCK.mount({host:$('blockReview'),comparisonHost:$('blockComparison'),countHost:$('blockLiveCounts'),compact:true,initialZone:zoneTarget,onNavigate:navigateWorkspace,onTeamPlant:value=>teamProgress?.updatePlant(block,value),onTeamFruit:value=>teamProgress?.updateFruit(block,value),onLeaveBlock:owner=>teamProgress?.clearLocal(block,owner),onShowProgress:()=>{const card=document.querySelector?.('.map-card');if(card?.classList.contains('map-expanded'))$('focusMap').onclick?.();teamProgress?.focus();},map,api,base,manifest,block,openRaster,openNativeRaster,getRasterSource:()=>source||(rasterContext?{...rasterContext,pending:true}:null),onNativeStatus:text=>{$('mapStatus').textContent=text;},save,current,autoOpen:blockTarget,onAutoOpen:expand,onEditMap:expand,onShowComparison:()=>{const card=document.querySelector?.('.map-card');if(card?.classList.contains('map-expanded'))$('focusMap').onclick?.();}});if(current()){disposeBlockReview=dispose;if(manifest.block_analyses?.[block])$('sampleReviewPanel').open=Boolean(manifest.preferred_candidate_trial)&&!blockTarget;}else dispose();}
         catch(error){if(current())$('dayunStatus').textContent+=' Analisis blok belum dapat dimuat: '+error.message;}
       }
       if(window.YG_DAYUN_CANDIDATES){

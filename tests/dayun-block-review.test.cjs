@@ -1,5 +1,12 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 const code=fs.readFileSync('js/dayun-block-review.js','utf8');
+test('compact workspace keeps edit tools primary, hides technical detail and switches fruit mode without writes',async()=>{
+ const s=setup();s.options.compact=true;let fruitVisible=false,plantEditing=false,navigated,shown=0;const element=s.context.document.createElement;
+ s.options.manifest.block_fruiting={A:'fruit-A/fruiting.json'};s.options.manifest.files.push('fruit-A/fruiting.json');s.options.onNavigate=p=>navigated=p;s.options.onShowProgress=()=>shown++;
+ s.context.window.YG_DAYUN_BLOCK_EDIT={mount:async({host,compact})=>{assert.equal(compact,true);host.append(Object.assign(element('button'),{textContent:'Tambah titik nanas'}));return{setEditing:v=>plantEditing=v,isEditing:()=>plantEditing,canLeave:()=>true,features:()=>[],dispose(){}}}};
+ s.context.window.YG_DAYUN_FRUITING={mount:async({host,compact})=>{assert.equal(compact,true);const node=element('section');node.append(Object.assign(element('button'),{textContent:'Hapus titik buah'}));host.append(node);return{element:node,setVisible:v=>{fruitVisible=v;node.hidden=!v},focus(){fruitVisible=true},refresh(){},canLeave:()=>true,dispose(){}}}};
+ const stop=await s.mount(s.options),work=s.host.children[0],extra=s.host.children[1],all=n=>[n,...(n.children||[]).flatMap(all)];assert.equal(work.className,'team-workspace');assert.equal(extra.tag,'details');assert.ok(!extra.open);assert.ok(all(work).some(n=>n.textContent==='Tambah titik nanas'));assert.ok(all(extra).some(n=>n.textContent?.includes('Aktif/mati mengikuti kategori')));await all(work).find(n=>n.textContent==='Titik buah').onclick();assert.equal(fruitVisible,true);assert.equal(plantEditing,false);await all(work).find(n=>n.textContent==='Titik nanas').onclick();assert.equal(fruitVisible,false);all(work).find(n=>n.textContent==='Rekap tim A–C').onclick();assert.equal(shown,1);const select=all(work).find(n=>n.tag==='select'&&n!==s.host);select.value='B';select.onchange();assert.equal(navigated.block,'B');assert.ok(s.requests.every(r=>!r.config));stop();
+});
 test('fruit selection changes the zone filter without fitting distant bounds and focuses native pixels without animation',async()=>{
  const s=setup();let fruitOptions,fit=0,view,clean=false,disposed=false;
  s.options.manifest.block_fruiting={A:'fruit-A/fruiting.json'};s.options.manifest.files.push('fruit-A/fruiting.json');
