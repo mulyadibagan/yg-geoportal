@@ -71,7 +71,9 @@
     useMine.onclick=()=>{const id=conflictSelect.value,op=pending.get(id);if(!alive()||busy||!op||!conflicts.has(id))return;op.expected_version=pointVersions[id]||0;op.operation_id=crypto.randomUUID();conflicts.delete(id);version++;drawConflicts();status.textContent='Menyimpan versi Anda untuk titik terpilih; titik lain tetap dipertahankan.';schedule();};
     const beforeUnload=event=>{if(dirty){event.preventDefault();event.returnValue='';}};window.addEventListener('beforeunload',beforeUnload);
     try{await load();}catch(error){if(alive()){status.textContent='Koreksi tim belum dapat dimuat: '+error.message;toggle.disabled=add.disabled=store.disabled=true;}}
-    if(alive())poll=setInterval(()=>{if(alive()&&!busy&&!pulling&&document.visibilityState!=='hidden')load().then(schedule).catch(()=>{});},15000);
+    // Saving remains immediate; only passive reads back off on service errors.
+    let nextPollAt=syncError?Date.now()+300000:0;
+    if(alive())poll=setInterval(()=>{if(alive()&&!busy&&!pulling&&document.visibilityState!=='hidden'&&Date.now()>=nextPollAt){nextPollAt=Date.now()+60000;load().then(()=>{nextPollAt=Date.now()+60000;schedule();}).catch(()=>{nextPollAt=Date.now()+300000;});}},60000);
     return{pick,reviewSuggestion,hasReviewedSuggestion:id=>!ready||Boolean(pointVersions[id]||pending.has(id)),setEditing,isEditing:()=>editing,features,refresh:()=>{if(alive())announce(localCounts());},canLeave:()=>!dirty||exported===version,dispose:()=>{disposed=true;clearTimeout(timer);clearInterval(poll);window.removeEventListener('beforeunload',beforeUnload);map.off('click',click);map.removeLayer(layer);host.replaceChildren();host.hidden=true;}};
   }
   return{effective,summarize,mount};

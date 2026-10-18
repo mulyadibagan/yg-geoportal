@@ -48,7 +48,8 @@
     exportButton.onclick=()=>{if(!head)return;save(new Blob([JSON.stringify({...head,exported_at:new Date().toISOString()},null,2)],{type:'application/json'}),`dayun-blok-${block}-pemeriksaan-buah.json`);};
     const unload=event=>{if(dirty()){event.preventDefault();event.returnValue='';}};window.addEventListener('beforeunload',unload);map.on('moveend zoomend',draw);map.on('click',click);
     controls();try{await load();}catch(error){if(alive())status.textContent='Pemeriksaan buah belum dapat dimuat: '+error.message;}
-    if(alive())poll=setInterval(()=>{if(alive()&&!dirty()&&document.visibilityState!=='hidden')load().catch(()=>{});},15000);
+    let nextPollAt=lastError?Date.now()+300000:0,polling=false;
+    if(alive())poll=setInterval(()=>{if(alive()&&!dirty()&&!polling&&document.visibilityState!=='hidden'&&Date.now()>=nextPollAt){polling=true;nextPollAt=Date.now()+60000;load().then(()=>{nextPollAt=Date.now()+60000;}).catch(()=>{nextPollAt=Date.now()+300000;}).finally(()=>{polling=false;});}},60000);
     return{element:section,setControlsVisible(value){if(!value&&dirty())return false;section.hidden=!value;adding=false;add.textContent=addLabel;return true;},setVisible(value){if(!value&&dirty())return false;visible=value;section.hidden=!value;adding=false;add.textContent=addLabel;toggle.checked=value;draw();return true;},refresh:draw,focus:async()=>{visible=true;section.hidden=false;toggle.checked=true;stopPlantEditing?.();await openBlock();draw();section.scrollIntoView?.({behavior:'smooth',block:'nearest'});},canLeave:()=>!dirty(),dispose(){disposed=true;clearInterval(poll);window.removeEventListener('beforeunload',unload);map.off('moveend zoomend',draw);map.off('click',click);map.removeLayer(layer);section.remove();tablePanel.remove();}};
   }
   root.YG_DAYUN_FRUITING={mount};

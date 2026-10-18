@@ -220,11 +220,15 @@
   const analysisStages={pending:'Menunggu mesin',processing:'Sedang diproses',coverage_ready:'Cakupan dan potongan siap; hitungan nanas belum tervalidasi',blocked:'Terhambat akses atau konfigurasi mesin',failed:'Pemrosesan gagal'};
   const analysisSteps={verifying_access:'Memeriksa izin baca Drive',restoring_source:'Memulihkan unduhan sebelumnya',downloading:'Mengunduh dan memverifikasi TIFF',checkpointing:'Unduhan terverifikasi; menyimpan sumber privat',cropping_and_measuring_coverage:'Memotong citra asli dan mengukur cakupan gawangan',saving_private_results:'Menyimpan potongan, peta, dan tabel privat'};
   const analysisErrors={drive_credentials_missing:'Sambungan Google Drive mesin belum aktif',drive_credentials_invalid:'Sambungan Google Drive perlu diperiksa admin',drive_authenticated_request_failed:'Mesin belum dapat mengakses Google Drive',drive_access_denied:'Akun mesin belum mendapat akses baca',drive_file_missing_or_not_shared:'Citra belum dibagikan kepada akun mesin',drive_api_disabled:'Layanan Drive mesin belum aktif',drive_scope_insufficient:'Izin baca Drive belum sesuai',insufficient_runner_disk:'Ruang pemrosesan tidak mencukupi'};
+  let dayunQueueActive=false,dayunQueueLoading=false;
   async function refreshDayunRequests(){
     if(!validSession())return;
+    if(dayunQueueLoading)return;
+    dayunQueueLoading=true;
     try{
       const data=await(await api('/api/staff/drone/analysis/requests')).json();
       if(!validSession())return;
+      dayunQueueActive=(data.jobs||[]).some(job=>['Agro_ABC','Agro_DEF'].includes(job.label)&&['pending','processing'].includes(job.status));
       $('dayunRequests').replaceChildren();
       for(const job of data.jobs||[]){
         if(!['Agro_ABC','Agro_DEF'].includes(job.label))continue;
@@ -235,7 +239,8 @@
           button.onclick=()=>{$('dayunSource').value=job.label;$('openDayun').onclick();};$('dayunRequests').append(button);
         }
       }
-    }catch(error){$('dayunQueueStatus').textContent=`Status belum dapat dimuat: ${error.message}`;}
+    }catch(error){dayunQueueActive=false;$('dayunQueueStatus').textContent=`Status belum dapat dimuat: ${error.message}. Klik Perbarui status untuk mencoba kembali.`;}
+    finally{dayunQueueLoading=false;}
   }
   $('refreshDayunRequests').onclick=refreshDayunRequests;
   $('submitDayun').onclick=async()=>{
@@ -251,7 +256,7 @@
     }catch(error){$('dayunQueueStatus').textContent=`Permintaan belum berhasil: ${error.message}`;}
     finally{$('submitDayun').disabled=false;}
   };
-  setInterval(refreshDayunRequests,30000);
+  setInterval(()=>{if(dayunQueueActive&&document.visibilityState!=='hidden')refreshDayunRequests();},60000);
   let displayedBlock='A',displayedSource='Agro_ABC';
   $('dayunBlock').onchange=()=>{if(disposeBlockReview?.canLeave&&!disposeBlockReview.canLeave()){$('dayunBlock').value=displayedBlock;$('dayunStatus').textContent='Simpan atau ekspor koreksi sebelum mengganti blok.';return;}$('dayunSource').value=['A','B','C'].includes($('dayunBlock').value)?'Agro_ABC':'Agro_DEF';$('openDayun').onclick();};
   $('dayunSource').onchange=()=>{if(disposeBlockReview?.canLeave&&!disposeBlockReview.canLeave()){$('dayunSource').value=displayedSource;$('dayunStatus').textContent='Simpan atau ekspor koreksi sebelum mengganti citra.';return;}$('openDayun').onclick();};
