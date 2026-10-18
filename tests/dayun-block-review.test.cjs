@@ -1,5 +1,13 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 const code=fs.readFileSync('js/dayun-block-review.js','utf8');
+test('fruit selection changes the zone filter without fitting distant bounds and focuses native pixels without animation',async()=>{
+ const s=setup();let fruitOptions,fit=0,view,clean=false,disposed=false;
+ s.options.manifest.block_fruiting={A:'fruit-A/fruiting.json'};s.options.manifest.files.push('fruit-A/fruiting.json');
+ s.options.map.fitBounds=()=>fit++;s.options.map.setView=(xy,zoom,options)=>view={xy,zoom,options};
+ s.context.window.YG_DAYUN_FRUITING={mount:async options=>{fruitOptions=options;return{refresh(){},focus(){},canLeave:()=>clean,dispose(){disposed=true}}}};
+ const stop=await s.mount(s.options);fruitOptions.focusZone('GT-A-01');await fruitOptions.inspect([.5,.5]);
+ assert.equal(fit,0);assert.equal(view.zoom,24);assert.equal(view.options.animate,false);assert.equal(stop.canLeave(),false);clean=true;assert.equal(stop.canLeave(),true);stop();assert.equal(disposed,true);
+});
 function setup(){
  const element=tag=>({tag,children:[],value:'',hidden:true,textContent:'',style:{},append(...x){this.children.push(...x)},replaceChildren(...x){this.children=x},add(x){this.children.push(x)},setAttribute(){},showModal(){this.open=true},close(){this.open=false},insertBefore(x){this.children.unshift(x)}});
  const host=element('section'),requests=[],events={},layers=[],overlays=[];
