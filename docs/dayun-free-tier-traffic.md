@@ -20,6 +20,22 @@ bukan pengukuran seluruh trafik akun: pembacaan citra, tindakan staf, tab lain
 dan layanan lain tetap memakai kuota. Tidak menjamin batas gratis tidak tercapai.
 Kuota yang sudah habis tidak dipulihkan oleh perubahan kode ini.
 
+Peta detail mengambil setiap potongan native kecil sekali melalui API staf,
+lalu membaca jendela piksel/zoom dari Blob di memori. Ini memakai cache native
+yang sudah ada (maksimum tiga Blob/64 MiB), dua pembukaan bersamaan, dan batas
+layer viewport yang sudah ada; bukan mengunduh TIFF sumber berukuran gigabyte.
+Layer aktif juga memegang Blob masing-masing sampai dilepas oleh viewport.
+Blob tidak dimasukkan ke penyimpanan browser permanen atau cache publik.
+Pembatasan sesi, daftar berkas manifest, koordinat, dan resolusi asli tetap berlaku.
+
+Uji lokal GeoTIFF 2.1.3 pada potongan asli 12.857.299 byte, 16 jendela piksel,
+menghasilkan 33 permintaan HTTP dengan pembacaan URL bertahap dan satu permintaan
+dengan pembacaan Blob. Hash piksel seluruh jendela serta batas koordinat sama.
+Ini hasil satu uji, bukan persentase penghematan seluruh akun. Permintaan baru
+tetap diperlukan ketika tim berpindah ke potongan yang belum dimuat atau
+potongan sudah dilepas dari memori. Galat HTTP 429 menghentikan percobaan
+otomatis potongan itu; tombol Muat ulang citra tetap dapat dipakai setelah pulih.
+
 Tim dapat memuat koreksi/rekap melalui tombol perbarui jika memerlukan hasil
 terbaru segera. Saat layanan terputus, biarkan tab berisi perubahan belum
 tersimpan terbuka; jangan menganggap perubahan lokal sudah disimpan.

@@ -179,7 +179,7 @@
     const changed=()=>{if(alive())details.onState?.(state);};
     const watch=()=>{clearTimeout(deadline);deadline=setTimeout(()=>{if(!alive()||state.ready)return;state.error='Pembacaan TIFF melewati batas waktu';changed();controller.abort();},45000);};watch();
     try{
-      const raster=await readRasterLayer(input.startsWith('/api/staff/drone/analysis/')?API+input:input,{...details,nativeReview:true},controller.signal);
+      const raster=await readRasterLayer(typeof input==='string'&&input.startsWith('/api/staff/drone/analysis/')?API+input:input,{...details,nativeReview:true},controller.signal);
       if(!alive()){state.dispose();return false;}layer=raster.layer;
       layer.on('loading',()=>{state.ready=false;state.error=null;watch();changed();});
       layer.on('tileerror',()=>{clearTimeout(deadline);state.ready=false;state.error='Piksel TIFF gagal dimuat';changed();});
