@@ -7,6 +7,18 @@ from dayun_negative_filter import NativePatches,metric_patch,descriptor,fit,scor
 
 
 class NegativeComparisonTests(unittest.TestCase):
+    def test_batched_sector_means_match_the_original_descriptor_on_realistic_patches(self):
+        import inspect
+        source=inspect.getsource(descriptor)
+        source=source.replace('def descriptor(patch):','def reference(patch):')
+        source=source.replace("values=np.bincount(sector[ring],weights=(aligned[ring]*weight[ring]),minlength=12)/(np.bincount(sector[ring],weights=weight[ring],minlength=12)+1e-6)","values=np.array([np.sum(aligned[ring&(sector==s)]*weight[ring&(sector==s)])/(np.sum(weight[ring&(sector==s)])+1e-6) for s in range(12)])")
+        import dayun_negative_filter as module
+        namespace=dict(vars(module));exec(source,namespace)
+        rng=np.random.default_rng(27)
+        for _ in range(8):
+            patch=rng.integers(0,256,(57,57,3),dtype='uint8')
+            np.testing.assert_allclose(descriptor(patch),namespace['reference'](patch),atol=2e-7,rtol=2e-6)
+
     def test_physical_resampling_preserves_shape_between_source_grids(self):
         def scene(gsd):
             y,x=np.mgrid[:161,:161];r=np.hypot((x-80)*gsd,(y-80)*gsd);a=np.arctan2(y-80,x-80)

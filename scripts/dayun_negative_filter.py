@@ -5,6 +5,7 @@ species probabilities. Unavailable context stays unfiltered, not silently zero.
 """
 import hashlib
 import json
+from functools import lru_cache
 import cv2
 import numpy as np
 
@@ -73,6 +74,13 @@ def metric_patch(rgb, valid, x, y, gsd_m):
     return cv2.remap(local, mx-left, my-top, cv2.INTER_LINEAR)
 
 
+@lru_cache(maxsize=1)
+def descriptor_geometry():
+    yy,xx=np.mgrid[-HALF:HALF+1,-HALF:HALF+1];radius=np.hypot(xx,yy);theta=np.arctan2(yy,xx)
+    sector=np.floor((theta+np.pi)*12/(2*np.pi)).astype(int)%12
+    return radius,theta,sector,[(radius>=r*.25)&(radius<=r) for r in RADII]
+
+
 def descriptor(patch):
     if patch is None:
         return None
@@ -82,15 +90,15 @@ def descriptor(patch):
     gray=cv2.GaussianBlur(cv2.cvtColor(patch,cv2.COLOR_RGB2GRAY).astype('float32'),(0,0),1)
     gx=cv2.Sobel(gray,cv2.CV_32F,1,0);gy=cv2.Sobel(gray,cv2.CV_32F,0,1);energy=gx*gx+gy*gy
     magnitude=np.sqrt(energy);weight=np.minimum(magnitude/(np.percentile(magnitude,80)+1e-6),1)
-    yy,xx=np.mgrid[-HALF:HALF+1,-HALF:HALF+1];radius=np.hypot(xx,yy);theta=np.arctan2(yy,xx)
+    radius,theta,sector,rings=descriptor_geometry()
     aligned=((gy*gy-gx*gx)*np.cos(2*theta)-2*gx*gy*np.sin(2*theta))/(energy+1e-6)
-    sector=np.floor((theta+np.pi)*12/(2*np.pi)).astype(int)%12
     green=(2*rgb[:,:,1]-rgb[:,:,0]-rgb[:,:,2])/(rgb.sum(axis=2)+.05)
     saturation=(rgb.max(axis=2)-rgb.min(axis=2))/(rgb.max(axis=2)+.05)
     context=(radius>=20)&(radius<=27);features=[]
-    for r in RADII:
-        ring=(radius>=r*.25)&(radius<=r)
-        values=np.array([np.sum(aligned[ring&(sector==s)]*weight[ring&(sector==s)])/(np.sum(weight[ring&(sector==s)])+1e-6) for s in range(12)])
+    for ring in rings:
+        # Same twelve weighted sector means, with one reduction per ring.
+        # Geometry is fixed across all private training/inference patches.
+        values=np.bincount(sector[ring],weights=(aligned[ring]*weight[ring]),minlength=12)/(np.bincount(sector[ring],weights=weight[ring],minlength=12)+1e-6)
         # Orientation support plus local colour/texture contrast. No absolute
         # brightness or source identity feature can learn the flight directly.
         features.extend([values.mean(),np.quantile(values,.25),np.mean(values>.15),

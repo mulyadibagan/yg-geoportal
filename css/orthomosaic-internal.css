@@ -14,3 +14,7 @@
 .fruit-live-total{font-weight:700;color:#a21b60;margin:.4rem 0}
 
 .team-marker-legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin:8px 0;font-size:12px}.marker-key{display:inline-flex;align-items:center;gap:6px}.marker-key::before{content:"";display:inline-block;width:10px;height:10px;flex:none;border:2px solid #df8e00;border-radius:50%}.key-fruit-pending::before,.key-fruit-confirmed::before{border-color:#be185d;border-radius:0;transform:rotate(45deg)}.key-fruit-confirmed::before{background:#be185d}.dayun-fruit-marker{background:transparent;border:0}.dayun-fruit-marker svg{display:block;overflow:visible}.dayun-fruit-marker:focus-visible{outline:3px solid #2563eb;outline-offset:2px}
+
+.dayun-suggestions{border-top:1px solid #b7d0c0;margin-top:12px;padding-top:8px}.dayun-suggestions h3{color:#006779}.dayun-suggestion-marker{background:transparent;border:0}.dayun-suggestion-marker svg{display:block;overflow:visible}
+
+.dayun-suggestions label{display:flex;align-items:center;gap:8px}.dayun-suggestions input[type=checkbox]{width:auto;margin:0}
