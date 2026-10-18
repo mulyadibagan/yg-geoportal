@@ -100,8 +100,8 @@ def main():
             row['similarity'] = resemblance(rgb, template)
             if row['similarity'] >= .65:
                 eligible.append(row)
-        active_ids = [z['id'] for z in analysis['zones'] if z['kind'] == 'active_source']
-        chosen = shortlist(eligible, active_ids)
+        zone_ids = [z['id'] for z in analysis['zones']]
+        chosen = shortlist(eligible, zone_ids)
         if block == 'A' and not any(r['id'] == example_id for r in chosen):
             chosen.append({**example['properties'], 'coordinates': example['geometry']['coordinates'], 'similarity': 1.0})
         features = []
@@ -117,7 +117,7 @@ def main():
                 'confidence': 'unvalidated', 'note': '', 'origin': 'visual_shortlist'}})
         result = {'schema': 'dayun-fruiting-shortlist-v1', 'source_run': analysis['source_run'],
                   'block': block, 'boundary_revision': analysis.get('boundary_revision'),
-                  'method': 'native pale-centre screen + 13px single-example grayscale NCC with 4 rotations, >=0.65; top 5 per active gawangan, 55px separation',
+                  'method': 'native pale-centre screen + 13px single-example grayscale NCC with 4 rotations, >=0.65; top 5 per revised gawangan (active/dead source categories), 55px separation',
                   'reference_id': example_id, 'reference_sha256': hashlib.sha256(reference.tobytes()).hexdigest(),
                   'input_candidates': len(originals), 'pale_centres_screened': len(rows),
                   'eligible_similar_centres': len(eligible), 'maximum_per_zone': 5,
@@ -142,7 +142,7 @@ def main():
         sheet.save(out/'fruiting-preview.jpg', quality=92)
         with (out/'fruiting-gawangan.csv').open('w', encoding='utf-8', newline='') as file:
             writer = csv.writer(file); writer.writerow(['gawangan', 'usulan_awal_belum_dikonfirmasi', 'jumlah_berbuah_tervalidasi'])
-            for zone in sorted(set(active_ids)):
+            for zone in sorted(set(zone_ids)):
                 writer.writerow([zone, sum(zone in f['properties']['zones'] for f in features), 'belum tersedia'])
         outputs[block] = {'proposals': len(features), 'eligible': len(eligible)}
         print(json.dumps({block: outputs[block]}), flush=True)
