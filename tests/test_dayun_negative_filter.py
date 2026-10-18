@@ -44,6 +44,11 @@ class NegativeComparisonTests(unittest.TestCase):
             joined=NativePatches(root,[TARGET_GSD]*2).patch(2048,64)
             direct=metric_patch(rgb,np.ones(rgb.shape[:2],bool),2048,64,[TARGET_GSD]*2)
             self.assertIsNotNone(joined);np.testing.assert_array_equal(joined,direct)
+            doubled=NativePatches(root,[TARGET_GSD]*2).patch(2048,64,2.)
+            direct_double=metric_patch(rgb,np.ones(rgb.shape[:2],bool),2048,64,[TARGET_GSD/2]*2)
+            np.testing.assert_array_equal(doubled,direct_double)
+            self.assertIsNone(NativePatches(root,[TARGET_GSD]*2).patch(2048,64,3.))
+            self.assertRaises(ValueError,NativePatches(root,[TARGET_GSD]*2).patch,2048,64,4.)
 
 
 if __name__=='__main__':unittest.main()

@@ -34,12 +34,14 @@ class NativePatches:
         self.cache.move_to_end(tile)
         return self.cache[tile]
 
-    def patch(self, x, y):
-        pad=int(np.ceil(HALF*TARGET_GSD/min(self.gsd)))+5
+    def patch(self, x, y, context_scale=1.):
+        if context_scale not in (1.,2.,3.):raise ValueError('unsupported_crown_scale')
+        gsd=np.asarray(self.gsd)/context_scale
+        pad=int(np.ceil(HALF*TARGET_GSD/min(gsd)))+5
         nearby=[t for t in self.tiles if t[0]<=x+pad and t[0]+2048>x-pad and t[1]<=y+pad and t[1]+2048>y-pad]
         for sx,sy,file in nearby:
             if sx+pad<=x<sx+2048-pad and sy+pad<=y<sy+2048-pad:
-                rgb,valid=self.read(file);return metric_patch(rgb,valid,x-sx,y-sy,self.gsd)
+                rgb,valid=self.read(file);return metric_patch(rgb,valid,x-sx,y-sy,gsd)
         left,top=int(np.floor(x))-pad,int(np.floor(y))-pad;size=pad*2+2
         rgb=np.zeros((size,size,3),'uint8');valid=np.zeros((size,size),bool)
         for sx,sy,file in nearby:
@@ -48,7 +50,7 @@ class NativePatches:
             if r<=l or b<=t:continue
             rgb[t-top:b-top,l-left:r-left]=source[t-sy:b-sy,l-sx:r-sx]
             valid[t-top:b-top,l-left:r-left]=mask[t-sy:b-sy,l-sx:r-sx]
-        return metric_patch(rgb,valid,x-left,y-top,self.gsd)
+        return metric_patch(rgb,valid,x-left,y-top,gsd)
 
 
 def metric_patch(rgb, valid, x, y, gsd_m):
