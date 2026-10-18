@@ -7,6 +7,7 @@ on:
     paths:
       - 'cloudflare/yg-webgis-public-data/src/drone*.js'
       - 'cloudflare/yg-webgis-public-data/src/dayun-block-corrections.js'
+      - 'cloudflare/yg-webgis-public-data/src/dayun-fruiting.js'
       - '.github/workflows/deploy-drone-service.yml'
 
 permissions:
