@@ -108,12 +108,12 @@ test('adding a point waits for native pixels rather than accepting the underlyin
 });
 
 
-function viewportFixture({maxRetained=2,concurrency=2,open}={}){
+function viewportFixture({maxRetained=2,concurrency=2,open,...extra}={}){
  const s=setup();let box=[0,0,2,1],zoom=24;const messages=[],opened=[];
  const tiles=[0,1,2,3].map(x=>({file:'native/'+x+'.tif',bounds:[x,0,x+1,1]}));
  const map={getZoom:()=>zoom,getCenter:()=>({lng:(box[0]+box[2])/2,lat:.5}),getBounds:()=>({getWest:()=>box[0],getEast:()=>box[2],getSouth:()=>box[1],getNorth:()=>box[3]})};
  const create=s.context.window.YG_DAYUN_BLOCK.createNativeViewport;
- const engine=create({map,tiles,maxRetained,concurrency,current:()=>true,onStatus:m=>messages.push(m),open:async(tile,changed,signal)=>{const h={ready:false,disposed:false,dispose(){this.disposed=true}};opened.push({tile,h,changed,signal});return open?open(tile,changed,signal,h):h;}});
+ const engine=create({map,tiles,maxRetained,concurrency,current:()=>true,onStatus:m=>messages.push(m),...extra,open:async(tile,changed,signal)=>{const h={ready:false,disposed:false,dispose(){this.disposed=true}};opened.push({tile,h,changed,signal});return open?open(tile,changed,signal,h):h;}});
  return{engine,opened,messages,pan:b=>box=b,zoom:z=>zoom=z,settle:()=>new Promise(r=>setImmediate(r))};
 }
 
@@ -136,6 +136,20 @@ test('native read failures stay unready and explicit inspection retries only the
 
 test('suspending native imagery cancels queued requests before another raster can be overwritten',async()=>{
  const s=viewportFixture({concurrency:1});s.engine.refresh();s.engine.suspend();await s.settle();assert.equal(s.opened.length,0);assert.equal(s.engine.readyAt([.5,.5]),false);s.engine.dispose();
+});
+
+test('failed native rendering retries automatically with a bound and manual retry keeps ready neighbours',async()=>{
+ const timers=new Map();let id=0;const s=viewportFixture({retryDelays:[1,2],schedule:fn=>{timers.set(++id,fn);return id},cancel:k=>timers.delete(k)});
+ const tick=async()=>{const batch=[...timers.values()];timers.clear();batch.forEach(fn=>fn());await s.settle()};
+ s.engine.refresh();await s.settle();s.opened[1].h.ready=true;s.opened[1].changed();
+ for(let attempt=0;attempt<3;attempt++){const o=s.opened.filter(o=>o.tile.file==='native/0.tif').at(-1);o.h.error='network';o.changed();await tick();}
+ assert.equal(s.opened.filter(o=>o.tile.file==='native/0.tif').length,3);assert.equal(timers.size,0);assert.equal(s.opened[1].h.disposed,false);assert.equal(s.engine.readyAt([.5,.5]),false);
+ s.engine.retry();await s.settle();assert.equal(s.opened.length,5);const recovered=s.opened.at(-1);recovered.h.ready=true;recovered.changed();assert.equal(s.engine.readyAt([.5,.5]),true);assert.equal(s.opened[1].h.disposed,false);
+ recovered.h.error='offline';recovered.changed();assert.ok(timers.size);s.engine.dispose();assert.equal(timers.size,0);
+});
+
+test('panning away cancels delayed native retry instead of fetching an obsolete crop',async()=>{
+ const timers=new Map();let id=0;const s=viewportFixture({schedule:fn=>{timers.set(++id,fn);return id},cancel:k=>timers.delete(k)});s.engine.refresh();await s.settle();s.opened[0].h.error='offline';s.opened[0].changed();assert.equal(timers.size,1);s.pan([2,0,4,1]);s.engine.refresh();await s.settle();assert.equal(timers.size,0);s.engine.dispose();
 });
 
 

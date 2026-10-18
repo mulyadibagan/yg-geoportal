@@ -89,6 +89,13 @@ test('Blok B link selects its block and passes that identity to the existing pri
  let mounted;const s=setup({search:'?source=Agro_ABC&block=B',session:{token:'staff',expiresAt:Date.now()+10000},fetcher:async url=>({ok:true,status:200,json:async()=>url.endsWith('/analysis/Agro_ABC')?{download:{ok:true},analysis:{ok:true},files:['metadata.json']}:url.endsWith('metadata.json')?{gawangan:[]}:{jobs:[]}})});s.context.window.YG_DAYUN_BLOCK={mount:async opts=>(mounted=opts,()=>{})};await s.settle();assert.equal(s.el('dayunBlock').value,'B');assert.equal(mounted.block,'B');assert.equal(mounted.autoOpen,true);assert.ok(s.calls.every(c=>!c.options.method));
 });
 
+test('stalled native rendering reports timeout for viewport recovery and ready crops cancel the deadline',async()=>{
+ let mounted;const timers=new Map();let id=0;const s=setup({search:'?source=Agro_ABC&block=A',session:{token:'staff',expiresAt:Date.now()+10000},fetcher:async url=>({ok:true,status:200,json:async()=>url.endsWith('/analysis/Agro_ABC')?{download:{ok:true},analysis:{ok:true},files:['metadata.json']}:url.endsWith('metadata.json')?{gawangan:[]}:{jobs:[]}})});
+ s.context.window.YG_DAYUN_BLOCK={mount:async options=>(mounted=options,()=>{})};await s.settle();s.context.setTimeout=fn=>{timers.set(++id,fn);return id};s.context.clearTimeout=k=>timers.delete(k);
+ let reported;const a=await mounted.openNativeRaster('/api/staff/drone/analysis/Agro_ABC/files/a.tif',{title:'native',onState:x=>reported=x.error});assert.equal(timers.size,1);const callback=[...timers.values()][0];timers.clear();callback();assert.match(reported,/batas waktu/);assert.equal(a.ready,false);a.dispose();
+ const b=await mounted.openNativeRaster('/api/staff/drone/analysis/Agro_ABC/files/b.tif',{title:'native'});s.instances[1].handlers.load();assert.equal(b.ready,true);assert.equal(timers.size,0);b.dispose();
+});
+
 
 test('unsaved block decisions prevent switching blocks and retain the displayed block',async()=>{
  const s=setup({search:'?source=Agro_ABC&block=A',session:{token:'staff',expiresAt:Date.now()+10000},fetcher:async url=>({ok:true,status:200,json:async()=>url.endsWith('/analysis/Agro_ABC')?{download:{ok:true},analysis:{ok:true},files:['metadata.json']}:url.endsWith('metadata.json')?{gawangan:[]}:{jobs:[]}})});let disposed=0;s.context.window.YG_DAYUN_BLOCK={mount:async()=>{const d=()=>disposed++;d.canLeave=()=>false;return d}};await s.settle();const reads=s.calls.length;s.el('dayunBlock').value='B';s.el('dayunBlock').onchange();assert.equal(s.el('dayunBlock').value,'A');assert.equal(s.calls.length,reads);assert.equal(disposed,0);assert.match(s.el('dayunStatus').textContent,/Simpan atau ekspor/);

@@ -107,6 +107,7 @@
       $('focusMap').setAttribute('aria-pressed',String(expanded));
       requestAnimationFrame(()=>map?.invalidateSize());
     };
+    $('retryNative').onclick=()=>disposeBlockReview?.retryNative?.();
     $('meritech').checked = false;
     disposeMeritechExport = window.YG_MERITECH_EXPORT?.mount($('meritechDownload'), map, () => validSession() ? session : null);
   }
@@ -165,19 +166,20 @@
     if(!source?.nativeViewport){sequence++;activeController?.abort();clearNativeRasters();if(rasterLayer&&map)map.removeLayer(rasterLayer);rasterLayer=null;}
     const epoch=sequence,controller=new AbortController();
     source={title:details.title,nativeViewport:true};rasterContext={dayunReview:true};
-    let layer;
-    const state={ready:false,error:null,disposed:false,dispose(){if(state.disposed)return;state.disposed=true;state.ready=false;controller.abort();if(layer&&map)map.removeLayer(layer);nativeRasters.delete(state);details.signal?.removeEventListener('abort',cancel);}};
+    let layer,deadline;
+    const state={ready:false,error:null,disposed:false,dispose(){if(state.disposed)return;clearTimeout(deadline);state.disposed=true;state.ready=false;controller.abort();if(layer&&map)map.removeLayer(layer);nativeRasters.delete(state);details.signal?.removeEventListener('abort',cancel);}};
     const cancel=()=>state.dispose();
     details.signal?.addEventListener('abort',cancel,{once:true});
     nativeRasters.add(state);if(details.signal?.aborted)state.dispose();
     const alive=()=>!state.disposed&&epoch===sequence&&validSession();
     const changed=()=>{if(alive())details.onState?.(state);};
+    const watch=()=>{clearTimeout(deadline);deadline=setTimeout(()=>{if(!alive()||state.ready)return;state.error='Pembacaan TIFF melewati batas waktu';changed();controller.abort();},45000);};watch();
     try{
       const raster=await readRasterLayer(input.startsWith('/api/staff/drone/analysis/')?API+input:input,{...details,nativeReview:true},controller.signal);
       if(!alive()){state.dispose();return false;}layer=raster.layer;
-      layer.on('loading',()=>{state.ready=false;state.error=null;changed();});
-      layer.on('tileerror',()=>{state.ready=false;state.error='Piksel TIFF gagal dimuat';changed();});
-      layer.on('load',()=>{state.ready=!state.error;changed();});
+      layer.on('loading',()=>{state.ready=false;state.error=null;watch();changed();});
+      layer.on('tileerror',()=>{clearTimeout(deadline);state.ready=false;state.error='Piksel TIFF gagal dimuat';changed();});
+      layer.on('load',()=>{clearTimeout(deadline);state.ready=!state.error;changed();});
       state.setOpacity=value=>layer.setOpacity(value);
       layer.addTo(map);
       rasterBounds=details.blockBounds||layer.getBounds();$('fitRaster').disabled=false;$('downloadTiff').disabled=true;
@@ -300,7 +302,7 @@
       };
       $('dayunResults').append(select);$('dayunResults').append(inspect);$('dayunResults').append(button);
       if(!target&&window.YG_DAYUN_BLOCK){
-        try{const expand=()=>{if(current()){const card=document.querySelector?.('.map-card');if(card&&!card.classList.contains('map-expanded'))$('focusMap').onclick?.();}};const dispose=await window.YG_DAYUN_BLOCK.mount({host:$('blockReview'),comparisonHost:$('blockComparison'),countHost:$('blockLiveCounts'),compact:true,initialZone:zoneTarget,onNavigate:navigateWorkspace,onTeamPlant:value=>teamProgress?.updatePlant(block,value),onTeamFruit:value=>teamProgress?.updateFruit(block,value),onLeaveBlock:owner=>teamProgress?.clearLocal(block,owner),onShowProgress:()=>{const card=document.querySelector?.('.map-card');if(card?.classList.contains('map-expanded'))$('focusMap').onclick?.();teamProgress?.focus();},map,api,base,manifest,block,openRaster,openNativeRaster,getRasterSource:()=>source||(rasterContext?{...rasterContext,pending:true}:null),onNativeStatus:text=>{$('mapStatus').textContent=text;},save,current,autoOpen:blockTarget,onAutoOpen:expand,onEditMap:expand,onShowComparison:()=>{const card=document.querySelector?.('.map-card');if(card?.classList.contains('map-expanded'))$('focusMap').onclick?.();}});if(current()){disposeBlockReview=dispose;if(manifest.block_analyses?.[block])$('sampleReviewPanel').open=Boolean(manifest.preferred_candidate_trial)&&!blockTarget;}else dispose();}
+        try{const expand=()=>{if(current()){const card=document.querySelector?.('.map-card');if(card&&!card.classList.contains('map-expanded'))$('focusMap').onclick?.();}};const dispose=await window.YG_DAYUN_BLOCK.mount({host:$('blockReview'),comparisonHost:$('blockComparison'),countHost:$('blockLiveCounts'),compact:true,initialZone:zoneTarget,onNavigate:navigateWorkspace,onTeamPlant:value=>teamProgress?.updatePlant(block,value),onTeamFruit:value=>teamProgress?.updateFruit(block,value),onLeaveBlock:owner=>teamProgress?.clearLocal(block,owner),onShowProgress:()=>{const card=document.querySelector?.('.map-card');if(card?.classList.contains('map-expanded'))$('focusMap').onclick?.();teamProgress?.focus();},map,api,base,manifest,block,openRaster,openNativeRaster,getRasterSource:()=>source||(rasterContext?{...rasterContext,pending:true}:null),onNativeStatus:text=>{$('mapStatus').textContent=text;},save,current,autoOpen:blockTarget,onAutoOpen:expand,onEditMap:expand,onShowComparison:()=>{const card=document.querySelector?.('.map-card');if(card?.classList.contains('map-expanded'))$('focusMap').onclick?.();}});if(current()){disposeBlockReview=dispose;$('retryNative').disabled=!dispose.retryNative;if(manifest.block_analyses?.[block])$('sampleReviewPanel').open=Boolean(manifest.preferred_candidate_trial)&&!blockTarget;}else dispose();}
         catch(error){if(current())$('dayunStatus').textContent+=' Analisis blok belum dapat dimuat: '+error.message;}
       }
       if(window.YG_DAYUN_CANDIDATES){
