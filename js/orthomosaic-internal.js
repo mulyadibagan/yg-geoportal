@@ -150,7 +150,8 @@
       const georaster={projection,xmin,ymin,xmax,ymax,width:image.getWidth(),height:image.getHeight(),pixelWidth:Math.abs(rx),pixelHeight:Math.abs(ry),numberOfRasters:image.getSamplesPerPixel(),noDataValue:noData,sourceType:'url',rasterType:'geotiff',_geotiff:tiff,
         getValues: async ({left,top,right,bottom,width,height}) => {
           if (!validSession() || signal.aborted) throw Error('Sesi atau pembacaan telah berakhir.');
-          const values=await tiff.readRasters({window:[left,top,right,bottom],width,height,resampleMethod:'nearest',signal});
+          const reader=details.nativeReview?image:tiff;
+          const values=await reader.readRasters({window:[left,top,right,bottom],width,height,resampleMethod:'nearest',signal});
           return Array.from(values,band=>Array.from({length:height},(_,row)=>band.subarray(row*width,(row+1)*width)));
         }};
       const layer=new GeoRasterLayer({georaster,pane:'ortho-imagery',debugLevel:0,resolution:details.nativeReview?256:128,maxZoom:26,opacity:Number($('opacity').value),updateWhenZooming:false,updateWhenIdle:true,keepBuffer:1,pixelValuesToColorFn:values=>{
@@ -159,6 +160,9 @@
         if(ycbcr){r=values[0]+1.402*(values[2]-128);g=values[0]-.34414*(values[1]-128)-.71414*(values[2]-128);b=values[0]+1.772*(values[1]-128);}
         return `rgb(${[r,g,b].map(v=>Math.max(0,Math.min(255,Math.round(v)))).join(',')})`;
       }});
+      // The URL raster constructor overrides these options. Restore them before
+      // adding any layer so each native crop cannot retain a 16-tile buffer.
+      Object.assign(layer.options,{updateWhenZooming:false,updateWhenIdle:true,keepBuffer:1});
       return {layer,image,projection,rx,ry};
   }
   async function openNativeRaster(input,details){
