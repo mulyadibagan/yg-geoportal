@@ -69,6 +69,25 @@ def attach_public_update_photos(data,updates):
     }
     return data
 
+def merge_program_layer_supplements(data):
+    """Retain director-supplied program objects when the remote master refreshes."""
+    layer_path=ROOT/'data'/'sekat_kanal.geojson'
+    if not layer_path.exists():
+        return data
+    layer=json.loads(layer_path.read_text(encoding='utf-8'))
+    existing={str((f.get('properties') or {}).get('Object_ID') or '').strip().casefold()
+              for f in data.get('features',[])}
+    for feature in layer.get('features',[]):
+        props=feature.get('properties') or {}
+        object_id=str(props.get('Object_ID') or '').strip().casefold()
+        if props.get('Source_Type')!='program_supplement' or not object_id or object_id in existing:
+            continue
+        data['features'].append(json.loads(json.dumps(feature)))
+        existing.add(object_id)
+    if 'featureCount' in data:
+        data['featureCount']=len(data['features'])
+    return data
+
 def report_audit(data,reports,updates,snapshot_generated_at):
     report_features=(reports or {}).get('features') or []
     master_features=data.get('features') or []
@@ -212,6 +231,7 @@ if public_reports:
         for key in ('reporterName','organization','targetFeatureProperties'):
             if report.get(key) not in (None,''):
                 properties[key]=report[key]
+merge_program_layer_supplements(data)
 attach_public_update_photos(data,public_updates)
 capacity_sources=load_capacity_sources(args.source,public_reports)
 merge_monitoring_supplemental(data, ROOT)
