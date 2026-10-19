@@ -1500,7 +1500,7 @@ L.control.scale({
     const linkedReference = config.id === "sekat_kanal" &&
       Boolean(feature && feature.properties && feature.properties.Referensi_Object_ID);
     const referenceLeader = linkedReference
-      ? '<span aria-hidden="true" style="position:absolute;left:-12px;top:19px;width:32px;border-top:2px dashed #00838f;pointer-events:none"></span>'
+      ? '<span aria-hidden="true" style="position:absolute;left:20px;top:19px;width:32px;border-top:2px dashed #00838f;pointer-events:none"></span>'
       : "";
 
     /*
@@ -1524,8 +1524,8 @@ L.control.scale({
           escapeHtml(symbol) +
           '</span></span>',
         iconSize: [40, 40],
-        iconAnchor: linkedReference ? [-12, 20] : [20, 20],
-        popupAnchor: linkedReference ? [32, -16] : [0, -16]
+        iconAnchor: linkedReference ? [52, 20] : [20, 20],
+        popupAnchor: linkedReference ? [-32, -16] : [0, -16]
       })
     });
   }
