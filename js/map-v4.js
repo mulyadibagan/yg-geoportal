@@ -1493,9 +1493,15 @@ L.control.scale({
     return symbols[layerId] || "•";
   }
 
-  function pointFor(config, latlng, pane) {
+  function pointFor(config, latlng, pane, feature) {
     const visibleSize = config.id === "monitoring_reports" ? 18 : 14;
     const symbol = pointSymbolFor(config.id);
+    // Display linked canal markers beside their FDRS reference; never move geometry.
+    const linkedReference = config.id === "sekat_kanal" &&
+      Boolean(feature && feature.properties && feature.properties.Referensi_Object_ID);
+    const referenceLeader = linkedReference
+      ? '<span aria-hidden="true" style="position:absolute;left:-12px;top:19px;width:32px;border-top:2px dashed #00838f;pointer-events:none"></span>'
+      : "";
 
     /*
      * Marker HTML memberi setiap titik sasaran klik 40 x 40 piksel.
@@ -1504,21 +1510,22 @@ L.control.scale({
      */
     return L.marker(latlng, {
       pane: pane,
+      title: linkedReference ? "Sekat kanal — lokasi referensi FDRS; posisi tepat belum diukur" : config.label,
       interactive: true,
       bubblingMouseEvents: false,
       keyboard: true,
       icon: L.divIcon({
         className: "yg-point-hit-marker",
         html:
-          '<span class="yg-point-dot" style="--yg-point-color:' +
+          referenceLeader + '<span class="yg-point-dot" style="--yg-point-color:' +
           escapeHtml(config.color) +
           ";--yg-point-size:" + visibleSize +
           'px"><span class="yg-point-dot__symbol">' +
           escapeHtml(symbol) +
           '</span></span>',
         iconSize: [40, 40],
-        iconAnchor: [20, 20],
-        popupAnchor: [0, -16]
+        iconAnchor: linkedReference ? [-12, 20] : [20, 20],
+        popupAnchor: linkedReference ? [32, -16] : [0, -16]
       })
     });
   }
@@ -1595,7 +1602,7 @@ L.control.scale({
           interactive: true,
           bubblingMouseEvents: false,
           style: () => styleFor(config),
-          pointToLayer: (_feature, latlng) => pointFor(config, latlng, pane)
+          pointToLayer: (_feature, latlng) => pointFor(config, latlng, pane, _feature)
         });
         single.eachLayer(layer => {
           const reportId = String(
