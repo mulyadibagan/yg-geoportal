@@ -1,0 +1,67 @@
+name: Publish Dayun canal public snapshots
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/publish-dayun-canal-snapshots.yml']
+permissions:
+  contents: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: yg-webgis-staging
+    concurrency:
+      group: yg-webgis-worker-deploy
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: cloudflare/yg-webgis-public-data/package-lock.json
+      - run: npm ci
+        working-directory: cloudflare/yg-webgis-public-data
+      - name: Validate snapshot files and the Dayun record
+        working-directory: cloudflare/yg-webgis-public-data
+        run: |
+          npm run validate:snapshots
+          node --input-type=module - <<'JS'
+          import fs from 'node:fs';
+          for (const name of ['master-database-snapshot','dashboard-summary-snapshot']) {
+            const d=JSON.parse(fs.readFileSync('../../data/'+name+'.json','utf8'));
+            const rows=d.features.filter(f=>f.properties?.Object_ID==='SEKAT-DAYUN-2026-001');
+            if(rows.length!==1) throw new Error('Dayun object must appear exactly once');
+            if(rows[0].properties.Program!=='SPM-CLS') throw new Error('Wrong project');
+            if(rows[0].properties.Tanggal_Pembangunan!==null) throw new Error('Do not invent construction date');
+            if(name==='master-database-snapshot' && JSON.stringify(rows[0].geometry.coordinates)!=='[102.014302,0.660527]') throw new Error('Wrong coordinates');
+          }
+          JS
+      - name: Publish public objects and dashboard with manifest last
+        working-directory: cloudflare/yg-webgis-public-data
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION="$(git rev-parse HEAD)-dayun-canal"
+          node scripts/build-manifest.mjs "$VERSION"
+          for BUCKET in yg-webgis-public-snapshots-staging yg-webgis-public-snapshots; do
+            for NAME in dashboard objects; do
+              FILE=../../data/master-database-snapshot.json
+              if [ "$NAME" = dashboard ]; then FILE=../../data/dashboard-summary-snapshot.json; fi
+              npx wrangler r2 object put "$BUCKET/snapshots/$VERSION/$NAME.json" --remote --file "$FILE" --content-type application/json
+              npx wrangler r2 object put "$BUCKET/snapshots/current/$NAME.json" --remote --file "$FILE" --content-type application/json
+            done
+            npx wrangler r2 object put "$BUCKET/manifests/$VERSION.json" --remote --file tmp/current-manifest.json --content-type application/json
+            npx wrangler r2 object put "$BUCKET/manifests/current.json" --remote --file tmp/current-manifest.json --content-type application/json
+          done
+          npx wrangler r2 object get "yg-webgis-public-snapshots/snapshots/current/objects.json" --remote --file tmp/dayun-canal-readback.json
+          node --input-type=module - <<'JS'
+          import fs from 'node:fs';
+          const d=JSON.parse(fs.readFileSync('tmp/dayun-canal-readback.json','utf8'));
+          const f=d.features.filter(f=>f.properties?.Object_ID==='SEKAT-DAYUN-2026-001');
+          if(f.length!==1) throw new Error('Published Dayun record missing or duplicated');
+          console.log(JSON.stringify({objectId:f[0].properties.Object_ID,coordinates:f[0].geometry.coordinates,photos:f[0].properties._ygPhotos.length}));
+          JS
