@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ['.github/workflows/publish-programme-update-snapshots.yml']
+    paths: ['.github/workflows/publish-dayun-canal-snapshots.yml']
 permissions:
   contents: read
 jobs:
@@ -50,7 +50,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          VERSION="$(git rev-parse HEAD)-dayun-canal"
+          VERSION="$(git rev-parse HEAD)-programme-update"
           node scripts/build-manifest.mjs "$VERSION"
           for BUCKET in yg-webgis-public-snapshots-staging yg-webgis-public-snapshots; do
             for NAME in dashboard objects; do
