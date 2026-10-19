@@ -1,0 +1,46 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "Id": 0,
+        "Kabupaten": "Siak",
+        "Kecamatan": "Kandis",
+        "Desa": "Pencing Bekulo",
+        "X": 101.366706,
+        "Y": 0.959249,
+        "Tahun": "2025",
+        "Keterangan": "Perkembangan kopi Pencing Bekulo, dokumentasi 7 Oktober 2026: tanaman terlihat tumbuh di bawah tegakan sawit; beberapa cabang memperlihatkan buah muda. Sebagian daun berlubang dan gulma tumbuh di sekitar tanaman. Pengamatan visual empat foto, belum mewakili seluruh kebun atau memastikan penyebab kerusakan daun. Lokasi Pencing Bekulo dikonfirmasi Mulyadi; cap otomatis foto menyebut Belutu/Kandis dengan koordinat 0,976366 LU; 101,395799 BT, berbeda dari titik objek; perlu verifikasi GIS sebelum mengubah koordinat.",
+        "Object_ID": "KOPI-PENCING-BEKULO-2025-001",
+        "Nama_Objek": "Penanaman Kopi – Pencing Bekulo",
+        "Kategori": "Agroforestri/Kopi",
+        "Jenis_Pohon": "Kopi",
+        "Jumlah_Tanam": 4500,
+        "Riwayat_Penanaman": "Jul 2025: 1.000 bibit; Agu 2025: 1.500 bibit; Nov 2025: 2.000 bibit",
+        "Source_Layer": "kopi",
+        "Sumber_Data": "Rekap penanaman Yayasan Gambut",
+        "Status_Objek": "Aktif",
+        "Tanggal_Dokumentasi": "2026-10-07",
+        "Sumber_Tanggal": "Cap GPS Map Camera: Rabu, 07/10/2026 02:43 PM GMT +07:00 pada satu foto; tanggal tiga foto lainnya belum diverifikasi.",
+        "Tindak_Lanjut": "Penyiangan terarah di sekitar tanaman; periksa daun berlubang di lapangan dan pantau perkembangan buah. Verifikasi koordinat foto terhadap lokasi kebun.",
+        "_ygPhotos": [
+          "https://webgisyg.id/assets/monitoring/pencing-bekulo-2026-10/kopi-01.jpeg",
+          "https://webgisyg.id/assets/monitoring/pencing-bekulo-2026-10/kopi-02.jpeg",
+          "https://webgisyg.id/assets/monitoring/pencing-bekulo-2026-10/kopi-03.jpeg",
+          "https://webgisyg.id/assets/monitoring/pencing-bekulo-2026-10/kopi-04.jpeg"
+        ],
+        "Layer_ID": "kopi",
+        "Layer_Label": "Titik Tanam Kopi",
+        "Source_Type": "program_layer"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          101.36670626674736,
+          0.959249105275574
+        ]
+      }
+    }
+  ]
+}

@@ -1,9 +1,9 @@
-name: Publish Dayun canal public snapshots
+name: Publish reviewed programme public snapshots
 on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ['.github/workflows/publish-dayun-canal-snapshots.yml']
+    paths: ['.github/workflows/publish-programme-update-snapshots.yml']
 permissions:
   contents: read
 jobs:
@@ -35,6 +35,11 @@ jobs:
             if(rows[0].properties.Program!=='SPM-CLS') throw new Error('Wrong project');
             if(rows[0].properties.Tanggal_Pembangunan!==null) throw new Error('Do not invent construction date');
             if(name==='master-database-snapshot' && JSON.stringify(rows[0].geometry.coordinates)!=='[102.014302,0.660527]') throw new Error('Wrong coordinates');
+          }
+          for (const name of ['master-database-snapshot','dashboard-summary-snapshot']) {
+            const d=JSON.parse(fs.readFileSync('../../data/'+name+'.json','utf8'));
+            const coffee=d.features.filter(f=>f.properties?.Object_ID==='KOPI-PENCING-BEKULO-2025-001');
+            if(coffee.length!==1 || coffee[0].properties._ygPhotos.length!==4 || coffee[0].properties.Desa!=='Pencing Bekulo') throw new Error('Coffee update invalid');
           }
           JS
       - name: Publish public objects and dashboard with manifest last

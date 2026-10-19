@@ -232,6 +232,21 @@ if public_reports:
             if report.get(key) not in (None,''):
                 properties[key]=report[key]
 merge_program_layer_supplements(data)
+# Retain reviewed photo documentation by permanent ID across refreshes.
+update_path=ROOT/'data'/'program-object-updates.json'
+if update_path.exists():
+    by_id={f.get('properties',{}).get('Object_ID'):f for f in data['features']}
+    for update in json.loads(update_path.read_text(encoding='utf-8'))['features']:
+        source=update['properties']
+        existing=by_id.get(source['Object_ID'])
+        if existing is None:
+            data['features'].append(update)
+        else:
+            props=existing['properties']
+            for key in ('Tanggal_Dokumentasi','Sumber_Tanggal','Keterangan','Tindak_Lanjut'):
+                props[key]=source[key]
+            props['_ygPhotos']=list(dict.fromkeys((props.get('_ygPhotos') or [])+source['_ygPhotos']))
+    data['featureCount']=len(data['features'])
 attach_public_update_photos(data,public_updates)
 capacity_sources=load_capacity_sources(args.source,public_reports)
 merge_monitoring_supplemental(data, ROOT)
