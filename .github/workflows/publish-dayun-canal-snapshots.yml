@@ -41,6 +41,12 @@ jobs:
             const coffee=d.features.filter(f=>f.properties?.Object_ID==='KOPI-PENCING-BEKULO-2025-001');
             if(coffee.length!==1 || coffee[0].properties._ygPhotos.length!==4 || coffee[0].properties.Desa!=='Pencing Bekulo') throw new Error('Coffee update invalid');
           }
+          for (const name of ['master-database-snapshot','dashboard-summary-snapshot']) {
+            const d=JSON.parse(fs.readFileSync('../../data/'+name+'.json','utf8'));
+            const rows=d.features.filter(f=>f.properties?.Object_ID==='SEKAT-PEDEKIK-2026-001');
+            if(rows.length!==1 || rows[0].properties._ygPhotos.length!==2 || rows[0].properties.Status_Objek!=='Sedang dibangun') throw new Error('Pedekik update invalid');
+            if(rows[0].properties.Tanggal_Dokumentasi!=='2026-10-19' || rows[0].properties.Tanggal_Pembangunan!==null) throw new Error('Pedekik dates invalid');
+          }
           JS
       - name: Publish public objects and dashboard with manifest last
         working-directory: cloudflare/yg-webgis-public-data
