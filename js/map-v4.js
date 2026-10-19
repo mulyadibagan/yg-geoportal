@@ -428,6 +428,111 @@
     preferCanvas: true
   }).setView(DEFAULT_VIEW, DEFAULT_ZOOM);
 
+  // Coordinates are an inspection tool; selecting a location never edits objects.
+  function installCoordinatePicker(map) {
+    let picking = false;
+    let pressTimer = null;
+    let pressStart = null;
+    let suppressClickUntil = 0;
+    const container = map.getContainer();
+    const control = L.control({ position: "topright" });
+    let button;
+    function setPicking(value) {
+      picking = value;
+      button.setAttribute("aria-pressed", String(value));
+      button.textContent = value ? "Klik lokasi…" : "Koordinat";
+      container.style.cursor = value ? "crosshair" : "";
+    }
+    function showCoordinates(latlng) {
+      const lat = latlng.lat.toFixed(6);
+      const lng = latlng.lng.toFixed(6);
+      const content = document.createElement("div");
+      const heading = document.createElement("strong");
+      heading.textContent = "Koordinat lokasi";
+      const location = document.createElement("p");
+      location.textContent = "Lintang: " + lat + " · Bujur: " + lng;
+      const value = document.createElement("input");
+      value.readOnly = true;
+      value.value = lat + ", " + lng;
+      value.setAttribute("aria-label", "Koordinat lintang, bujur");
+      value.style.cssText = "width:100%;box-sizing:border-box;padding:8px;margin-bottom:8px";
+      const copy = document.createElement("button");
+      copy.type = "button";
+      copy.textContent = "Salin koordinat";
+      copy.style.cssText = "padding:10px;min-height:44px;cursor:pointer";
+      const status = document.createElement("p");
+      status.setAttribute("role", "status");
+      copy.addEventListener("click", async () => {
+        try {
+          if (!navigator.clipboard || !navigator.clipboard.writeText) throw new Error("clipboard");
+          await navigator.clipboard.writeText(value.value);
+          status.textContent = "Koordinat disalin.";
+        } catch (error) {
+          value.focus();
+          value.select();
+          status.textContent = "Pilih Salin pada angka yang disorot.";
+        }
+      });
+      content.append(heading, location, value, copy, status);
+      L.DomEvent.disableClickPropagation(content);
+      L.DomEvent.disableScrollPropagation(content);
+      setPicking(false);
+      L.popup({ maxWidth: 330 }).setLatLng(latlng).setContent(content).openOn(map);
+    }
+    control.onAdd = () => {
+      const box = L.DomUtil.create("div", "leaflet-bar");
+      button = document.createElement("button");
+      button.type = "button";
+      button.title = "Aktifkan lalu klik lokasi; atau klik kanan / tekan lama pada peta";
+      button.style.cssText = "background:white;color:#174b42;border:0;padding:10px;min-height:44px;cursor:pointer;font-weight:700";
+      box.appendChild(button);
+      L.DomEvent.disableClickPropagation(box);
+      L.DomEvent.disableScrollPropagation(box);
+      button.addEventListener("click", () => setPicking(!picking));
+      setPicking(false);
+      return box;
+    };
+    control.addTo(map);
+    map.on("click", event => { if (picking) showCoordinates(event.latlng); });
+    map.on("contextmenu", event => {
+      if (event.originalEvent) event.originalEvent.preventDefault();
+      showCoordinates(event.latlng);
+    });
+    function clearPress() {
+      window.clearTimeout(pressTimer);
+      pressTimer = null;
+      pressStart = null;
+    }
+    container.addEventListener("pointerdown", event => {
+      if (event.pointerType !== "touch" || !event.isPrimary ||
+          event.target.closest("button,a,input,.leaflet-control,.leaflet-popup")) return;
+      clearPress();
+      pressStart = { x: event.clientX, y: event.clientY };
+      pressTimer = window.setTimeout(() => {
+        const point = map.mouseEventToLatLng({ clientX: pressStart.x, clientY: pressStart.y });
+        suppressClickUntil = Date.now() + 700;
+        clearPress();
+        showCoordinates(point);
+      }, 650);
+    }, { passive: true });
+    container.addEventListener("pointermove", event => {
+      if (pressStart && Math.hypot(event.clientX - pressStart.x, event.clientY - pressStart.y) > 10) clearPress();
+    }, { passive: true });
+    ["pointerup", "pointercancel", "pointerleave"].forEach(name =>
+      container.addEventListener(name, clearPress, { passive: true }));
+    container.addEventListener("click", event => {
+      if (Date.now() < suppressClickUntil) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+    }, true);
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") { setPicking(false); clearPress(); }
+    });
+  }
+  installCoordinatePicker(map);
+
+
   /*
    * Urutan visual tidak boleh bergantung pada urutan data dari API.
    * Setiap keluarga layer mendapat pane sendiri agar batas administrasi
