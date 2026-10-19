@@ -77,5 +77,6 @@ jobs:
           const pedekik=d.features.filter(f=>f.properties?.Object_ID==='SEKAT-PEDEKIK-2026-001');
           if(pedekik.length!==1 || pedekik[0].properties._ygPhotos.length!==2 || pedekik[0].properties.Status_Objek!=='Sedang dibangun') throw new Error('Published Pedekik progress invalid');
           if(JSON.stringify(pedekik[0].geometry.coordinates)!=='[102.094672,1.52159]') throw new Error('Published Pedekik coordinates invalid');
+          if('Koordinat_Status' in pedekik[0].properties) throw new Error('Coordinate status should be removed');
           console.log(JSON.stringify({objectId:pedekik[0].properties.Object_ID,coordinates:pedekik[0].geometry.coordinates,photos:pedekik[0].properties._ygPhotos.length,status:pedekik[0].properties.Status_Objek}));
           JS
