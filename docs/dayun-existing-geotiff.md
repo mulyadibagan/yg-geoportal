@@ -53,3 +53,12 @@ On 17 October the owner completed Google verification and created `webgisyg-dayu
 Validation: `python -m unittest discover -s tests -p test_drive_geotiff.py -v`. The raster inspector has also been exercised on a synthetic georeferenced RGBA raster to verify crop coordinates, original resolution, validity mask and area, and that no pineapple count is inferred.
 
 References: https://developers.google.com/workspace/drive/api/guides/manage-downloads and https://developers.google.com/workspace/drive/api/reference/rest/v3/files/get
+
+
+## Reusing private image bytes while editing
+
+The internal viewer reuses complete TIFF/PNG/JPEG downloads in staff-session memory, keyed by the allowlisted image source. Repeated zooms, pans and reopening a block reuse these bytes without another Worker authorization batch or R2 transfer, even after the old signed link expires. Concurrent requests for the same image share one transfer. Range requests and JSON analysis/review records remain uncached. New imagery identities invalidate old bytes.
+
+Memory is bounded to 192 MiB / 128 image files with least-recently-used eviction. Ready native TIFF readers are also retained within the existing bounded viewport pool when zooming below zoom 22; native layers are hidden below that zoom and the overview cannot authorize point editing. Returning to the detail zoom reuses readers. A removed/failed layer can reopen from cached bytes.
+
+This cache exists only in the current page session. Logout/account changes, closing/reloading the page or eviction require a fresh authorized download. Imagery and signed links are never placed in browser persistent storage, shared HTTP caches or public routes. Staff edits still use their existing private revision API and are unaffected by image-cache eviction. Downloads for new areas and periodic team synchronization still consume requests; this does not promise zero Worker usage.
