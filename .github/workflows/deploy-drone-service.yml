@@ -11,6 +11,7 @@ on:
       - 'cloudflare/yg-webgis-public-data/scripts/configure-private-drone-r2.mjs'
       - 'cloudflare/yg-webgis-public-data/src/dayun-block-corrections.js'
       - 'cloudflare/yg-webgis-public-data/src/dayun-fruiting.js'
+      - 'cloudflare/yg-webgis-public-data/src/dayun-fruit-links.js'
       - 'js/dayun-progress-counts.js'
       - '.github/workflows/deploy-drone-service.yml'
 
