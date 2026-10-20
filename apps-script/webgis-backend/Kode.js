@@ -679,6 +679,17 @@ if (action === 'content-save') {
     } finally {
       reportWriteLock.releaseLock();
     }
+    // Confirm the committed photo before waiting for the external snapshot
+    // dispatch. A slow GitHub request must not leave a saved upload pending.
+    if (photoAdmin) {
+      storeReportSubmissionStatus_(clientSubmissionId, {
+        ok: true,
+        reportId: reportId,
+        status: 'Sudah Dipublikasikan',
+        emailSent: false,
+        message: 'Foto tersimpan dan dipublikasikan. Pembaruan peta sedang disinkronkan.'
+      });
+    }
     const publication = photoAdmin ? notifyCloudflarePublication_(reportId) : null;
 
     let emailSent = false;
