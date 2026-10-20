@@ -230,3 +230,11 @@ test('quota failures stop native automatic retries but explicit retry works afte
 
 
 test('repeated zoom out/in reuses ready TIFF readers without new opens and never permits edits on overview',async()=>{const s=viewportFixture();try{s.engine.refresh();await s.settle();for(const o of s.opened){o.h.ready=true;o.changed();}for(let i=0;i<20;i++){s.zoom(18);s.engine.refresh();assert.equal(s.engine.readyAt([.5,.5]),false);assert.ok(s.opened.every(o=>!o.h.disposed&&!o.signal.aborted));s.zoom(24);s.engine.refresh();await s.settle();assert.equal(s.engine.readyAt([.5,.5]),true);}assert.equal(s.opened.length,2);}finally{s.engine.dispose();}});
+
+
+test('a point placed across a zone boundary switches the display filter without moving the map or writing data',async()=>{
+ const s=setup();let editorOptions,select,display,fit=0;const create=s.context.document.createElement;s.context.document.createElement=tag=>{const n=create(tag);n.setAttribute=(key,value)=>{if(value==='Gawangan Blok A')select=n;if(value==='Titik yang ditampilkan')display=n;};return n;};s.options.map.fitBounds=()=>fit++;
+ s.context.window.YG_DAYUN_BLOCK_EDIT={mount:async o=>{editorOptions=o;return{features:()=>[],setEditing(){},refresh(){},dispose(){}}}};
+ const stop=await s.mount(s.options);try{assert.ok(editorOptions.onPointPlaced);select.value='GT-A-10';display.value='all';const f={type:'Feature',geometry:{type:'Point',coordinates:[.5,.5]},properties:{id:'A-manual-fixture',zones:['GT-A-09']}};const before=JSON.stringify(f),oldFit=fit;editorOptions.onPointPlaced(f);assert.equal(select.value,'GT-A-09');assert.equal(fit,oldFit);assert.equal(JSON.stringify(f),before);
+ select.value='GT-A-10';f.properties.zones=['GT-A-10','GT-A-09'];editorOptions.onPointPlaced(f);assert.equal(select.value,'GT-A-10');f.properties.zones=[];editorOptions.onPointPlaced(f);assert.equal(select.value,'__UNASSIGNED__');select.value='';display.value='imagery';editorOptions.onPointPlaced(f);assert.equal(select.value,'');assert.equal(display.value,'all');assert.equal(fit,oldFit);assert.ok(s.requests.every(r=>!r.config));}finally{stop();}
+});
