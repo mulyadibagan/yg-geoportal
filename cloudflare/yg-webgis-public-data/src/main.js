@@ -1,3 +1,4 @@
+import {runFruitLinkJob} from './dayun-fruit-link-job.js';
 export { DroneQueue } from './drone-queue.js';
 import { meritechTile } from './meritech.js';
 import baseWorker, { validStaffToken, rememberValidStaffToken } from './index.js';
@@ -5,6 +6,7 @@ import { staffLogin } from './staff-login.js';
 import { isDroneRoute, handleDroneRequest } from './drone.js';
 
 export default {
+  async scheduled(controller, env, ctx) { ctx.waitUntil(runFruitLinkJob(env)); },
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     if(url.pathname.startsWith('/api/staff/meritech/tile/')) return meritechTile(request, env, validStaffToken);

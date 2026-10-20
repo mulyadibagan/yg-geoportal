@@ -62,3 +62,22 @@ The internal viewer reuses complete TIFF/PNG/JPEG downloads in staff-session mem
 Memory is bounded to 192 MiB / 128 image files with least-recently-used eviction. Ready native TIFF readers are also retained within the existing bounded viewport pool when zooming below zoom 22; native layers are hidden below that zoom and the overview cannot authorize point editing. Returning to the detail zoom reuses readers. A removed/failed layer can reopen from cached bytes.
 
 This cache exists only in the current page session. Logout/account changes, closing/reloading the page or eviction require a fresh authorized download. Imagery and signed links are never placed in browser persistent storage, shared HTTP caches or public routes. Staff edits still use their existing private revision API and are unaffected by image-cache eviction. Downloads for new areas and periodic team synchronization still consume requests; this does not promise zero Worker usage.
+
+
+### Penyimpanan satu kali hubungan buah lama
+
+`dayun-fruit-link-job.js` memproses permintaan privat berisi tepat 21 pasangan
+melalui koordinator buah produksi yang sama dengan editor staf. Permintaan
+berada pada `drone/analysis/dayun/maintenance/fruit-links-21-20261020/request.json`;
+ID penanda dan pasangan tidak disimpan dalam repository. Tidak ada route HTTP
+baru, credential baru, atau perubahan akses bucket. Handler scheduled hanya
+aktif untuk environment produksi dan tidak melakukan apa pun tanpa permintaan.
+
+Setiap pasangan diperiksa kembali terhadap revisi terbaru dan harus masih
+merupakan pasangan spasial unik. Status, catatan, koordinat dan ID lama
+dipertahankan. Konflik versi gagal tanpa menimpa pekerjaan staf, sehingga
+pekerjaan dapat dicoba ulang. Pasangan yang sudah diubah tim atau tidak lagi
+jelas tetap utuh dan dilaporkan untuk pemeriksaan. Hasil privat disimpan pada
+`result.json`; hasil lengkap membuat pengulangan tidak menulis kembali.
+Jadwal sementara harus dikembalikan ke konfigurasi awal setelah hasil
+terverifikasi. Sensus dan koreksi titik nanas tidak ditulis oleh tugas ini.
