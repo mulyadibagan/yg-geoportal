@@ -170,7 +170,7 @@ test('clean display filters staff acceptance without changing baseline points or
  const features=[['auto-unreviewed','candidate'],['manual-accepted','accepted'],['auto-rejected','rejected']].map(([id,status],i)=>({type:'Feature',geometry:{type:'Point',coordinates:[.2+i*.1,.5]},properties:{id,status,zones:['GT-A-01'],origin:id==='manual-accepted'?'manual_addition':'automated'}}));
  const before=JSON.stringify(features),api=s.options.api;s.options.api=async(path,config)=>path.endsWith('candidates.geojson')?{json:async()=>({features})}:api(path,config);
  let editMode;s.context.window.YG_DAYUN_BLOCK_EDIT={mount:async()=>({features:()=>features,refresh(){},dispose(){},setEditing:value=>editMode=value})};
- const dispose=await s.mount(s.options);await s.find('Buka seluruh Blok A').onclick();const mode=attrs.get('Titik yang ditampilkan');assert.ok(mode);assert.equal(s.layers.length,2);assert.ok(s.layers.every(l=>l.opts.radius===4&&l.opts.fillOpacity===0));
+ const dispose=await s.mount(s.options);await s.find('Buka seluruh Blok A').onclick();const mode=attrs.get('Titik yang ditampilkan');assert.ok(mode);assert.equal(s.layers.length,2);assert.ok(s.layers.every(l=>l.opts.radius===5&&l.opts.weight===2&&l.opts.fillOpacity===0));
  mode.value='accepted';mode.onchange();assert.equal(s.layers.length,3);assert.equal(s.layers.at(-1).opts.color,'#2563eb');assert.match(JSON.stringify(s.host.children),/1 titik diterima tim/);
  mode.value='imagery';mode.onchange();assert.equal(editMode,false);assert.equal(s.layers.length,3);assert.match(JSON.stringify(s.host.children),/tanpa menghapus hasil/);
  assert.equal(JSON.stringify(features),before);assert.ok(s.requests.every(r=>!r.config));dispose();
