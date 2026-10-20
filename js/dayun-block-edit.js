@@ -18,7 +18,7 @@
     let compactExtra=null;
     if(compact){const extra=make('details'),caption=make('summary','Opsi koreksi'),actions=make('div');compactExtra=extra;extra.className='work-extras';actions.className='work-actions';extra.append(caption,toggle,note,accept,reason,reject,reload,download,totals,trainingStatus,conflictPanel);actions.append(add,remove);title.textContent='Titik nanas';host.replaceChildren(title,actions,selectedText,store,status,extra);}
     const box=make('button','Blok titik dengan mouse'),boxPanel=make('div'),boxText=make('p'),boxDelete=make('button','Hapus titik terpilih'),boxCancel=make('button','Batal pilih area');
-    boxPanel.className='plant-box-selection';boxPanel.hidden=true;boxDelete.disabled=true;boxText.setAttribute('role','status');boxPanel.append(boxText,boxDelete,boxCancel);host.append(box,boxPanel);
+    boxPanel.className='plant-box-selection';boxPanel.hidden=true;boxDelete.disabled=true;boxText.setAttribute('role','status');boxPanel.append(boxText,boxDelete,boxCancel);host.append(box,boxPanel,store,status);
     let boxDraw=null,boxLayer=null,boxPoints=[],boxBusy=false;
     const boxHighlights=L.layerGroup().addTo(map);
     function cancelBox(){boxDraw?.disable();boxDraw=null;if(boxLayer)map.removeLayer(boxLayer);boxLayer=null;boxHighlights.clearLayers();boxPoints=[];boxPanel.hidden=true;boxDelete.disabled=true;}
