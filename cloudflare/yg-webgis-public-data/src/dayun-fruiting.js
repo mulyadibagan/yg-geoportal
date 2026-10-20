@@ -41,25 +41,33 @@ export async function fruitingOperation(env,body){
       const moved=plantChanges.has(f.properties.id)?{...f,geometry:plantChanges.get(f.properties.id).geometry}:f;
       return{...moved,properties:{...moved.properties,zones:membership(moved,zones)}};
     });
-    return{...head,ok:true,schema:'dayun-fruiting-review-v1',source_run:manifest.run,block:body.block,proposal_path:path,features,rows:fruitingSummary(features,zones),suppressed_by_plant_rejection:all.length-features.length,census_changed:false,plant_corrections_changed:false};
+    return{...head,ok:true,schema:'dayun-fruiting-review-v1',supports_batch:true,source_run:manifest.run,block:body.block,proposal_path:path,features,rows:fruitingSummary(features,zones),suppressed_by_plant_rejection:all.length-features.length,census_changed:false,plant_corrections_changed:false};
   };
   if(body.action==='load')return response();
   if(body.action!=='save')fail('invalid_fruiting_action');
-  const op=body.operation;
   if(body.source_run!==manifest.run||body.proposal_path!==path)fail('fruiting_source_mismatch',409);
-  if(!op||typeof op.id!=='string'||!/^[\w-]{1,100}$/.test(op.id)||!Number.isSafeInteger(op.expected_version)||op.expected_version<0||typeof op.operation_id!=='string'||!/^[\w-]{8,100}$/.test(op.operation_id)||!statuses.includes(op.status)||typeof op.note!=='string'||op.note.length>1000)fail('invalid_fruiting_operation');
-  if(head.point_operations[op.id]===op.operation_id)return response();
-  if((head.point_versions[op.id]||0)!==op.expected_version)fail('fruiting_point_conflict_reload',409);
+  if(body.operation&&body.operations!==undefined)fail('invalid_fruiting_operation');
+  const operations=body.operations===undefined?[body.operation]:body.operations;
+  if(!Array.isArray(operations)||!operations.length||operations.length>250)fail('invalid_fruiting_batch');
   const originals=new Map(proposals.features.map(f=>[f.properties.id,f])),saved=new Map(head.changes.map(f=>[f.properties.id,f]));
-  const previous=saved.get(op.id)||originals.get(op.id);
-  if(plantChanges.get(op.id)?.properties.status==='rejected')fail('plant_candidate_rejected_by_team',409);
-  let coordinates=plantChanges.get(op.id)?.geometry.coordinates||previous?.geometry.coordinates;
-  if(!previous){if(!new RegExp('^'+body.block+'-fruit-manual-[\\w-]{8,70}$').test(op.id))fail('unknown_fruiting_candidate');coordinates=op.coordinates;}
-  if(!Array.isArray(coordinates)||coordinates.length!==2||!coordinates.every(Number.isFinite)||!inside(coordinates,analysis.bounds)||!analysis.native_tiles.some(t=>inside(coordinates,t.bounds)))fail('invalid_fruiting_location');
-  const feature={type:'Feature',geometry:{type:'Point',coordinates},properties:{id:op.id,status:op.status,note:op.note,origin:originals.has(op.id)?'visual_shortlist':previous?.properties.origin||'manual_fruiting_review',fruiting_validated:false,confirmation_scope:op.status==='confirmed'?'staff_visual_or_field_assessment':'unconfirmed'}};
-  saved.set(op.id,feature);if(saved.size>10000)fail('fruiting_review_limit');
+  const pointVersions={...head.point_versions},pointOperations={...head.point_operations},ids=new Set();let changed=0;
+  for(const op of operations){
+    if(!op||typeof op.id!=='string'||!/^[-\w]{1,100}$/.test(op.id)||!Number.isSafeInteger(op.expected_version)||op.expected_version<0||typeof op.operation_id!=='string'||!/^[-\w]{8,100}$/.test(op.operation_id)||!statuses.includes(op.status)||typeof op.note!=='string'||op.note.length>1000||ids.has(op.id))fail('invalid_fruiting_operation');
+    ids.add(op.id);
+    if(head.point_operations[op.id]===op.operation_id)continue;
+    if((head.point_versions[op.id]||0)!==op.expected_version)fail('fruiting_point_conflict_reload',409);
+    const previous=saved.get(op.id)||originals.get(op.id);
+    if(plantChanges.get(op.id)?.properties.status==='rejected')fail('plant_candidate_rejected_by_team',409);
+    let coordinates=plantChanges.get(op.id)?.geometry.coordinates||previous?.geometry.coordinates;
+    if(!previous){if(!new RegExp('^'+body.block+'-fruit-manual-[\\w-]{8,70}$').test(op.id))fail('unknown_fruiting_candidate');coordinates=op.coordinates;}
+    if(!Array.isArray(coordinates)||coordinates.length!==2||!coordinates.every(Number.isFinite)||!inside(coordinates,analysis.bounds)||!analysis.native_tiles.some(t=>inside(coordinates,t.bounds)))fail('invalid_fruiting_location');
+    const feature={type:'Feature',geometry:{type:'Point',coordinates},properties:{id:op.id,status:op.status,note:op.note,origin:originals.has(op.id)?'visual_shortlist':previous?.properties.origin||'manual_fruiting_review',fruiting_validated:false,confirmation_scope:op.status==='confirmed'?'staff_visual_or_field_assessment':'unconfirmed'}};
+    saved.set(op.id,feature);pointVersions[op.id]=(head.point_versions[op.id]||0)+1;pointOperations[op.id]=op.operation_id;changed++;
+  }
+  if(!changed)return response();
+  if(saved.size>10000)fail('fruiting_review_limit');
   const revision=head.revision+1,version=root+'/versions/'+revision+'-'+crypto.randomUUID()+'.json';
-  const next={schema:'dayun-fruiting-head-v1',source_run:manifest.run,block:body.block,revision,changes:[...saved.values()],point_versions:{...head.point_versions,[op.id]:(head.point_versions[op.id]||0)+1},point_operations:{...head.point_operations,[op.id]:op.operation_id},updated_at:new Date().toISOString(),previous_version:head.version||null,version,census_changed:false,plant_corrections_changed:false};
+  const next={schema:'dayun-fruiting-head-v1',source_run:manifest.run,block:body.block,revision,changes:[...saved.values()],point_versions:pointVersions,point_operations:pointOperations,updated_at:new Date().toISOString(),previous_version:head.version||null,version,census_changed:false,plant_corrections_changed:false};
   const options={httpMetadata:{contentType:'application/json',cacheControl:'private, no-store'}};
   await env.PUBLIC_SNAPSHOTS.put(version,JSON.stringify(next),options);
   await env.PUBLIC_SNAPSHOTS.put(root+'/head.json',JSON.stringify(next),options);

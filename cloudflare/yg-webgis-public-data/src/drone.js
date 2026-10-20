@@ -221,9 +221,9 @@ async function dayunAnalysis(request,env,url,verifyStaffToken){
   if(fruiting){
     if(!['GET','POST'].includes(request.method))return reply(request,{ok:false,error:'method_not_allowed'},405);
     if(!env.DRONE_QUEUE)return reply(request,{ok:false,error:'review_storage_unavailable'},503);
-    let body={};if(request.method==='POST'){const text=await request.text();if(text.length>8192)return reply(request,{ok:false,error:'fruiting_review_too_large'},413);try{body=JSON.parse(text)}catch{return reply(request,{ok:false,error:'invalid_fruiting_json'},400);}if(!body||typeof body!=='object'||Array.isArray(body))return reply(request,{ok:false,error:'invalid_fruiting_json'},400);}
+    let body={};if(request.method==='POST'){const text=await request.text();if(text.length>512*1024)return reply(request,{ok:false,error:'fruiting_review_too_large'},413);try{body=JSON.parse(text)}catch{return reply(request,{ok:false,error:'invalid_fruiting_json'},400);}if(!body||typeof body!=='object'||Array.isArray(body))return reply(request,{ok:false,error:'invalid_fruiting_json'},400);}
     const stub=env.DRONE_QUEUE.get(env.DRONE_QUEUE.idFromName('dayun-fruiting-review-Agro_ABC'));
-    const response=await stub.fetch(new Request('https://queue.internal/dayun-fruiting-review',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({label:'Agro_ABC',block:url.searchParams.get('block'),action:request.method==='POST'?'save':'load',source_run:body.source_run,proposal_path:body.proposal_path,operation:body.operation})}));
+    const response=await stub.fetch(new Request('https://queue.internal/dayun-fruiting-review',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({label:'Agro_ABC',block:url.searchParams.get('block'),action:request.method==='POST'?'save':'load',source_run:body.source_run,proposal_path:body.proposal_path,operation:body.operation,operations:body.operations})}));
     return reply(request,await response.json(),response.status,{'cache-control':'private, no-store'});
   }
   const blockReview=url.pathname.match(/^\/api\/staff\/drone\/analysis\/(Agro_ABC|Agro_DEF)\/block-review$/);
