@@ -43,3 +43,18 @@ test('batch with a lost head write can retry and concurrent single-point decisio
 test('250 manual fruit decisions with notes fit the guarded batch route and remain one revision',async()=>{
  const f=await fixture(),before=f.env.values.get(f.plantKey),operations=Array.from({length:250},(_,i)=>({id:'A-fruit-manual-largebatch-'+i,expected_version:0,operation_id:'large-batch-operation-'+i,status:'confirmed',coordinates:[.5,.5],note:'x'.repeat(1000)}));const r=await call(f,{source_run:'run',proposal_path:f.path,operations});assert.equal(r.status,200);assert.equal(r.body.rows[0].confirmed,250);assert.equal(r.body.supports_batch,true);assert.equal(r.body.revision,1);assert.equal(f.env.writes.length,2);assert.equal(f.env.values.get(f.plantKey),before);
 });
+
+test('rejecting a stale fruit proposal still works after the team rejected and moved its parent plant',async()=>{
+ const f=await fixture(),plant={revision:440,review:{changes:[{...p('auto-1',99),properties:{id:'auto-1',status:'rejected'}}]}},raw=JSON.stringify(plant);f.env.values.set(f.plantKey,raw);
+ const remove=decision('auto-1',0,'rejected','reject-stale-fruit-123');remove.operation.coordinates=[88,88];let r=await call(f,remove);assert.equal(r.status,200);assert.equal(r.body.revision,1);assert.equal(r.body.suppressed_by_plant_rejection,1);assert.equal(r.body.features.some(f=>f.properties.id==='auto-1'),false);
+ const head=JSON.parse([...f.env.values].find(([k])=>k.includes('/fruit-reviews/')&&k.endsWith('/head.json'))[1]);assert.equal(head.changes[0].properties.status,'rejected');assert.deepEqual(head.changes[0].geometry.coordinates,[.5,.5]);assert.equal(f.env.values.get(f.plantKey),raw);assert.equal((await call(f,remove)).body.revision,1);assert.equal(f.env.writes.length,2);
+ assert.equal((await call(f,decision('auto-1',1,'confirmed','still-no-confirm-123'))).status,409);assert.equal(f.env.values.get(f.plantKey),raw);
+});
+
+test('a box can reject a mixture of suppressed and visible fruit proposals in one atomic revision',async()=>{
+ const f=await fixture(),raw=JSON.stringify({revision:440,review:{changes:[{...p('auto-1'),properties:{id:'auto-1',status:'rejected'}}]}});f.env.values.set(f.plantKey,raw);const r=await call(f,batch());assert.equal(r.status,200);assert.equal(r.body.revision,1);assert.equal(r.body.rows[0].rejected,1);assert.equal(r.body.suppressed_by_plant_rejection,1);assert.equal(f.env.writes.length,2);assert.equal(f.env.values.get(f.plantKey),raw);
+});
+
+test('cleanup of stale fruit does not bypass real same-point version conflicts',async()=>{
+ const f=await fixture();await call(f,decision('auto-1',0,'unclear','another-staff-1234'));f.env.values.set(f.plantKey,JSON.stringify({revision:440,review:{changes:[{...p('auto-1'),properties:{id:'auto-1',status:'rejected'}}]}}));const before=new Map(f.env.values),writes=f.env.writes.length;const r=await call(f,decision('auto-1',0,'rejected','stale-fruit-op-123'));assert.equal(r.status,409);assert.equal(r.body.error,'fruiting_point_conflict_reload');assert.equal(f.env.writes.length,writes);for(const [k,v]of before)assert.equal(f.env.values.get(k),v);
+});

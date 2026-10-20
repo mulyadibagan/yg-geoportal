@@ -57,10 +57,12 @@ export async function fruitingOperation(env,body){
     if(head.point_operations[op.id]===op.operation_id)continue;
     if((head.point_versions[op.id]||0)!==op.expected_version)fail('fruiting_point_conflict_reload',409);
     const previous=saved.get(op.id)||originals.get(op.id);
-    if(plantChanges.get(op.id)?.properties.status==='rejected')fail('plant_candidate_rejected_by_team',409);
-    let coordinates=plantChanges.get(op.id)?.geometry.coordinates||previous?.geometry.coordinates;
+    // Removing known fruit evidence must still work after its plant was rejected or moved.
+    const removing=op.status==='rejected'&&Boolean(previous);
+    if(plantChanges.get(op.id)?.properties.status==='rejected'&&!removing)fail('plant_candidate_rejected_by_team',409);
+    let coordinates=removing?previous.geometry.coordinates:plantChanges.get(op.id)?.geometry.coordinates||previous?.geometry.coordinates;
     if(!previous){if(!new RegExp('^'+body.block+'-fruit-manual-[\\w-]{8,70}$').test(op.id))fail('unknown_fruiting_candidate');coordinates=op.coordinates;}
-    if(!Array.isArray(coordinates)||coordinates.length!==2||!coordinates.every(Number.isFinite)||!inside(coordinates,analysis.bounds)||!analysis.native_tiles.some(t=>inside(coordinates,t.bounds)))fail('invalid_fruiting_location');
+    if(!Array.isArray(coordinates)||coordinates.length!==2||!coordinates.every(Number.isFinite)||(!removing&&(!inside(coordinates,analysis.bounds)||!analysis.native_tiles.some(t=>inside(coordinates,t.bounds)))))fail('invalid_fruiting_location');
     const feature={type:'Feature',geometry:{type:'Point',coordinates},properties:{id:op.id,status:op.status,note:op.note,origin:originals.has(op.id)?'visual_shortlist':previous?.properties.origin||'manual_fruiting_review',fruiting_validated:false,confirmation_scope:op.status==='confirmed'?'staff_visual_or_field_assessment':'unconfirmed'}};
     saved.set(op.id,feature);pointVersions[op.id]=(head.point_versions[op.id]||0)+1;pointOperations[op.id]=op.operation_id;changed++;
   }
