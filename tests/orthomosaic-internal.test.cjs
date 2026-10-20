@@ -14,7 +14,7 @@ function setup({session=null,status=200,search='',fetcher,candidateMount,private
  if(privateAssets)context.window.YG_PRIVATE_R2={create:options=>require('../js/private-r2-assets.js').create({...options,fetcher:(...args)=>context.fetch(...args)})};
  Object.assign(context.window,{L:context.L,GeoTIFF:context.GeoTIFF,GeoRasterLayer:context.GeoRasterLayer,turf:context.turf});
  vm.runInNewContext(code,context);
- return {timers,el,calls,layers,instances,removed,image,context,settle:()=>new Promise(resolve=>setImmediate(resolve))};
+ return {timers,el,calls,layers,instances,removed,image,context,map,settle:()=>new Promise(resolve=>setImmediate(resolve))};
 }
 test('anonymous visitor cannot initialize map or request private catalogue',async()=>{const s=setup();await s.settle();assert.equal(s.el('workspace').hidden,true);assert.equal(s.calls.length,0);assert.match(s.el('gateStatus').textContent,/Masuk sebagai staf/)});
 
@@ -141,4 +141,21 @@ test('native viewport reads zoom windows from a private Blob with no URL range r
  let mounted,blobReads=0;const s=setup({session:{token:'staff',expiresAt:Date.now()+100000},search:'?source=Agro_ABC&block=A',fetcher:async url=>({ok:true,status:200,json:async()=>url.endsWith('/analysis/Agro_ABC')?{download:{ok:true},analysis:{ok:true},files:['metadata.json']}:url.endsWith('metadata.json')?{gawangan:[]}:{jobs:[]}})});
  s.context.window.YG_DAYUN_BLOCK={mount:async o=>(mounted=o,()=>{})};s.context.GeoTIFF.fromBlob=async b=>{assert.ok(b instanceof Blob);blobReads++;return{getImage:async()=>s.image}};await s.settle();const start=s.calls.length;
  const handle=await mounted.openNativeRaster(new Blob(['private core']),{title:'native core'});for(const left of [0,10,20])await s.layers[0].georaster.getValues({left,top:0,right:left+2,bottom:2,width:2,height:2});assert.equal(blobReads,1);assert.equal(s.calls.slice(start).filter(c=>c.url).length,0);assert.equal(s.calls.slice(start).filter(c=>c.reader==='native-image').length,3);handle.dispose();
+});
+
+
+test('visible native grid cells become ready without waiting for stale off-screen layer loads',async()=>{
+ let mounted,zoom=23,view={min:{x:0,y:0},max:{x:256,y:256}};
+ const s=setup({search:'?source=Agro_ABC&block=A',session:{token:'staff',expiresAt:Date.now()+100000},fetcher:async url=>({ok:true,status:200,json:async()=>url.endsWith('/analysis/Agro_ABC')?{download:{ok:true},analysis:{ok:true},files:['metadata.json']}:url.endsWith('metadata.json')?{gawangan:[]}:{jobs:[]}})});
+ s.context.window.YG_DAYUN_BLOCK={mount:async o=>{mounted=o;return()=>{}}};await s.settle();
+ s.map.getZoom=()=>zoom;s.map.getPixelBounds=()=>view;s.map.project=p=>p;
+ const state=await mounted.openNativeRaster('/api/staff/drone/analysis/Agro_ABC/files/a.tif',{title:'native'}),layer=s.instances[0];
+ layer.getBounds=()=>({getNorthWest:()=>({x:0,y:0}),getSouthEast:()=>({x:512,y:256})});layer.getTileSize=()=>({x:256,y:256});
+ const first={coords:{z:23,x:0,y:0}},second={coords:{z:23,x:1,y:0}},before=s.calls.length;
+ layer.handlers.tileloadstart(first);layer.handlers.tileloadstart(second);assert.equal(state.ready,false);
+ layer.handlers.tileload(first);assert.equal(state.ready,true);assert.equal(state.error,null);
+ view={min:{x:256,y:0},max:{x:512,y:256}};layer.handlers.loading();assert.equal(state.ready,false);layer.handlers.tileload(second);assert.equal(state.ready,true);
+ zoom=18;layer.handlers.loading();assert.equal(state.ready,true);zoom=23;layer.handlers.loading();assert.equal(state.ready,true);
+ layer.handlers.tileerror(second);assert.equal(state.ready,false);assert.match(state.error,/gagal/);layer.handlers.tileloadstart(second);layer.handlers.tileload(second);assert.equal(state.ready,true);assert.equal(state.error,null);
+ assert.equal(s.calls.length,before);state.dispose();assert.equal(state.disposed,true);
 });

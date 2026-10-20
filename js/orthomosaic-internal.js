@@ -179,20 +179,44 @@
     if(!source?.nativeViewport){sequence++;activeController?.abort();clearNativeRasters();if(rasterLayer&&map)map.removeLayer(rasterLayer);rasterLayer=null;}
     const epoch=sequence,controller=new AbortController();
     source={title:details.title,nativeViewport:true};rasterContext={dayunReview:true};
-    let layer,deadline;
-    const state={ready:false,error:null,disposed:false,dispose(){if(state.disposed)return;clearTimeout(deadline);state.disposed=true;state.ready=false;controller.abort();if(layer&&map)map.removeLayer(layer);nativeRasters.delete(state);details.signal?.removeEventListener('abort',cancel);}};
+    let layer,deadline;const rendered=new Map();
+    const state={ready:false,error:null,disposed:false,dispose(){if(state.disposed)return;clearTimeout(deadline);state.disposed=true;state.ready=false;controller.abort();map?.off?.('moveend',reconcile);map?.off?.('zoomend',reconcile);rendered.clear();if(layer&&map)map.removeLayer(layer);nativeRasters.delete(state);details.signal?.removeEventListener('abort',cancel);}};
     const cancel=()=>state.dispose();
     details.signal?.addEventListener('abort',cancel,{once:true});
     nativeRasters.add(state);if(details.signal?.aborted)state.dispose();
     const alive=()=>!state.disposed&&epoch===sequence&&validSession();
     const changed=()=>{if(alive())details.onState?.(state);};
     const watch=()=>{clearTimeout(deadline);deadline=setTimeout(()=>{if(!alive()||state.ready)return;state.error='Pembacaan TIFF melewati batas waktu';changed();controller.abort();},45000);};watch();
+    const tileKey=c=>c&&`${c.z}/${c.x}/${c.y}`;
+    // The layer-wide load event can wait for old/off-screen tiles after a zoom.
+    // Reconcile only the grid cells currently visible inside this TIFF, using
+    // public Leaflet geometry and tile lifecycle events (no extra image requests).
+    function reconcile(){
+      if(!alive()||controller.signal.aborted)return true;
+      const bounds=layer?.getBounds();
+      if(!map.getPixelBounds||!map.project||!layer?.getTileSize||!bounds?.getNorthWest)return false;
+      const zoom=Math.round(map.getZoom());
+      if(zoom<22){clearTimeout(deadline);return true;}
+      const view=map.getPixelBounds(),nw=map.project(bounds.getNorthWest(),zoom),se=map.project(bounds.getSouthEast(),zoom),size=layer.getTileSize();
+      const left=Math.max(view.min.x,nw.x),right=Math.min(view.max.x,se.x),top=Math.max(view.min.y,nw.y),bottom=Math.min(view.max.y,se.y);
+      if(left>=right||top>=bottom){clearTimeout(deadline);return true;}
+      let ready=true,failed=false;
+      for(let x=Math.floor(left/size.x);x<=Math.floor((right-1e-7)/size.x);x++)for(let y=Math.floor(top/size.y);y<=Math.floor((bottom-1e-7)/size.y);y++){
+        const value=rendered.get(`${zoom}/${x}/${y}`);if(value!=='ready')ready=false;if(value==='error')failed=true;
+      }
+      state.ready=ready;state.error=failed?'Piksel TIFF gagal dimuat':null;
+      if(ready||failed)clearTimeout(deadline);else watch();changed();return true;
+    }
     try{
       const raster=await readRasterLayer(typeof input==='string'&&input.startsWith('/api/staff/drone/analysis/')?API+input:input,{...details,nativeReview:true,nativeViewport:true},controller.signal);
       if(!alive()){state.dispose();return false;}layer=raster.layer;
-      layer.on('loading',()=>{state.ready=false;state.error=null;watch();changed();});
-      layer.on('tileerror',()=>{clearTimeout(deadline);state.ready=false;state.error='Piksel TIFF gagal dimuat';changed();});
-      layer.on('load',()=>{clearTimeout(deadline);state.ready=!state.error;changed();});
+      layer.on('loading',()=>{if(reconcile())return;state.ready=false;state.error=null;watch();changed();});
+      layer.on('tileloadstart',event=>{if(event.coords)rendered.set(tileKey(event.coords),'pending');reconcile();});
+      layer.on('tileload',event=>{if(event.coords)rendered.set(tileKey(event.coords),'ready');reconcile();});
+      layer.on('tileunload',event=>{if(event.coords)rendered.delete(tileKey(event.coords));reconcile();});
+      layer.on('tileerror',event=>{if(event?.coords)rendered.set(tileKey(event.coords),'error');if(reconcile())return;clearTimeout(deadline);state.ready=false;state.error='Piksel TIFF gagal dimuat';changed();});
+      layer.on('load',()=>{if(reconcile())return;clearTimeout(deadline);state.ready=!state.error;changed();});
+      map.on('moveend',reconcile);map.on('zoomend',reconcile);
       state.setOpacity=value=>layer.setOpacity(value);
       layer.addTo(map);
       rasterBounds=details.blockBounds||layer.getBounds();$('fitRaster').disabled=false;$('downloadTiff').disabled=true;
