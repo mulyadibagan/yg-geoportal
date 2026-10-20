@@ -41,7 +41,12 @@ function harness(role = 'admin', staticTarget = false) {
     saveCapacityDocuments_:()=>[],mergeDocumentUrls_:()=>[],parseDate_:()=>'',
     LockService:{getScriptLock:()=>({waitLock(){locked=true;},releaseLock(){locked=false;}})},
     SpreadsheetApp:{flush(){}},notifyAdmin_:()=>emails++,
-    notifyCloudflarePublication_:()=>{dispatches++;return {ok:true};},
+    notifyCloudflarePublication_:()=>{
+      const receipt = Array.from(results.values()).at(-1);
+      assert.equal(receipt.ok,true,'receipt is available before external dispatch');
+      assert.equal(receipt.status,'Sudah Dipublikasikan');
+      dispatches++;return {ok:true};
+    },
     reportSubmissionResponse_:r=>r
   });
   const payload = {reportType:'Tambah Foto Kegiatan',sessionToken:'valid-session',clientSubmissionId:'submission-unique-photo-001',

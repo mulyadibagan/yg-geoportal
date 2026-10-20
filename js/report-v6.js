@@ -89,6 +89,15 @@
   var submissionPollTimer = null;
   var submissionPollSequence = 0;
   var activeSubmissionId = '';
+  var pendingSubmissionKey = 'ygPendingReport:' + window.location.pathname + window.location.search;
+
+  function rememberSubmission(id){
+    try{ sessionStorage.setItem(pendingSubmissionKey,JSON.stringify({id:id,startedAt:Date.now()})); }catch(error){}
+  }
+
+  function forgetSubmission(){
+    try{ sessionStorage.removeItem(pendingSubmissionKey); }catch(error){}
+  }
   var correctionLayerGroup = null;
   var correctionFeatureLayer = null;
   var selectedCorrectionFeature = null;
@@ -121,7 +130,7 @@
       submitButton.textContent = message;
     } else if (!submissionStarted) {
       submitButton.disabled = false;
-      submitButton.textContent = 'Kirim Laporan';
+      submitButton.textContent = simplePhotoMode ? 'Simpan foto' : 'Kirim Laporan';
     }
   }
 
@@ -617,6 +626,7 @@
     submitButton.textContent = simplePhotoMode ? 'Simpan foto' : 'Kirim Laporan';
 
     if(response.ok && response.reportId){
+      forgetSubmission();
       successReportId.textContent = response.reportId;
       document.getElementById('success-status').textContent = response.status || 'Menunggu Verifikasi';
       successEmailStatus.textContent = response.status === 'Sudah Dipublikasikan'
@@ -632,21 +642,34 @@
     }
 
     success.hidden = true;
+    forgetSubmission();
     statusText.textContent =
       'Laporan belum tersimpan. ' +
       (response.message || 'Server tidak memberikan konfirmasi penyimpanan. Silakan coba lagi.');
     statusText.setAttribute('role','alert');
   }
 
+  async function readSubmissionStatus(clientSubmissionId){
+    var url = PREPOST_API + '?page=report-submission-status&clientSubmissionId=' +
+      encodeURIComponent(clientSubmissionId);
+    var controller = new AbortController();
+    var timer = setTimeout(function(){ controller.abort(); },12000);
+    try{
+      var response = await fetch(url,{cache:'no-store',redirect:'follow',signal:controller.signal});
+      if(!response.ok) throw new Error('HTTP ' + response.status);
+      return await response.json();
+    }catch(error){
+      return await jsonpRequest(url,'ygReportSubmissionStatus_');
+    }finally{
+      clearTimeout(timer);
+    }
+  }
+
   function scheduleSubmissionStatusPoll(clientSubmissionId, sequence, delay){
     clearTimeout(submissionPollTimer);
     submissionPollTimer = setTimeout(function(){
       if(!submissionStarted || sequence !== submissionPollSequence) return;
-      jsonpRequest(
-        PREPOST_API + '?page=report-submission-status&clientSubmissionId=' +
-          encodeURIComponent(clientSubmissionId),
-        'ygReportSubmissionStatus_'
-      ).then(function(result){
+      readSubmissionStatus(clientSubmissionId).then(function(result){
         if(!submissionStarted || sequence !== submissionPollSequence) return;
         if(result && result.pending === false && result.type === 'yg-report-submission-result'){
           handleSubmissionResponse(result);
@@ -3510,6 +3533,15 @@
   form.addEventListener('submit',async function(event){
     event.preventDefault();
 
+    // A delayed confirmation must never cause the same photos to be submitted
+    // again. Check the original request until the server confirms its result.
+    if(submissionStarted && activeSubmissionId){
+      submitButton.disabled = true;
+      statusText.textContent = 'Memeriksa hasil penyimpanan sebelumnya. Foto tidak dikirim ulang.';
+      scheduleSubmissionStatusPoll(activeSubmissionId,submissionPollSequence,1);
+      return;
+    }
+
     if(imagesProcessing || capacityDocumentsProcessing){
       alert('Foto atau PDF masih diproses. Tunggu sampai semua file siap dikirim.');
       (capacityDocumentsProcessing ? capacityDocumentInput : imageInput)
@@ -4075,16 +4107,14 @@
     statusText.textContent = 'Mohon tunggu. Data dan foto sedang dikirim.';
     stopSubmissionConfirmation();
     submissionStarted = true;
+    rememberSubmission(activeSubmissionId);
     var currentPollSequence = submissionPollSequence;
     submissionConfirmationTimer = setTimeout(function(){
       if(!submissionStarted) return;
-      clearTimeout(submissionPollTimer);
-      submissionPollSequence += 1;
-      submissionStarted = false;
       submitButton.disabled = false;
-      submitButton.textContent = 'Kirim Laporan';
+      submitButton.textContent = 'Periksa status penyimpanan';
       statusText.textContent =
-        'Status penyimpanan belum dapat dipastikan. Catat waktu pengiriman dan periksa Antrean Laporan Tim di dashboard admin sebelum mencoba lagi.';
+        'Konfirmasi masih tertunda. Pemeriksaan tetap berjalan; jangan kirim ulang foto. Klik untuk memeriksa status lagi.';
       statusText.setAttribute('role','alert');
     },120000);
     scheduleSubmissionStatusPoll(activeSubmissionId,currentPollSequence,700);
@@ -4116,6 +4146,34 @@
     if(!submissionStarted) return;
     statusText.textContent =
       'Menunggu konfirmasi penyimpanan dari server. Jangan tutup halaman ini.';
+    scheduleSubmissionStatusPoll(activeSubmissionId,submissionPollSequence,1);
+  });
+
+  function resumeSubmissionConfirmation(){
+    if(!submissionStarted){
+      try{
+        var pending = JSON.parse(sessionStorage.getItem(pendingSubmissionKey) || 'null');
+        if(!pending || !/^yg-[A-Za-z0-9_-]+$/.test(pending.id) || !Number.isFinite(pending.startedAt) || Date.now()-pending.startedAt > 21600000) return;
+        activeSubmissionId = pending.id;
+        submissionStarted = true;
+        statusText.textContent = 'Memeriksa hasil penyimpanan sebelumnya. Foto tidak dikirim ulang.';
+        submitButton.textContent = 'Periksa status penyimpanan';
+        submitButton.disabled = false;
+      }catch(error){ return; }
+    }
+    if(activeSubmissionId) scheduleSubmissionStatusPoll(activeSubmissionId,submissionPollSequence,1);
+  }
+  submitButton.addEventListener('click',function(event){
+    if(submissionStarted && activeSubmissionId){
+      event.preventDefault();
+      statusText.textContent = 'Memeriksa hasil penyimpanan sebelumnya. Foto tidak dikirim ulang.';
+      scheduleSubmissionStatusPoll(activeSubmissionId,submissionPollSequence,1);
+    }
+  });
+  window.addEventListener('focus',resumeSubmissionConfirmation);
+  window.addEventListener('pageshow',resumeSubmissionConfirmation);
+  document.addEventListener('visibilitychange',function(){
+    if(!document.hidden) resumeSubmissionConfirmation();
   });
 
   var requestedParams = new URLSearchParams(window.location.search);
