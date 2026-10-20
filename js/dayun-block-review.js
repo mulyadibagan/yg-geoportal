@@ -178,7 +178,7 @@
       if(display.value==='imagery'||map.getZoom()<22)return;const b=map.getBounds();let count=0;
       for(const f of features){if(display.value==='accepted'&&f.properties.status!=='accepted')continue;if(f.properties.status==='rejected'&&!showRejected.checked)continue;const [x,y]=f.geometry.coordinates;if(!b.contains([y,x]))continue;if(count++>=3000)break;
         const p=f.properties,color=p.status==='rejected'?'#c72d40':p.origin==='manual_addition'?'#2563eb':p.status==='accepted'?'#137f63':'#df8e00';
-        L.circleMarker([y,x],{radius:4,color,weight:1,fillOpacity:0,bubblingMouseEvents:false}).bindTooltip(p.id+' · '+(p.status||'belum diperiksa')+' · klik untuk citra asli dan koreksi').on('click',async()=>{if(setWorkMode&&await setWorkMode(false,false)===false)return;onEditMap?.();if(editor)await editor.pick(f);else try{await inspectAt(f.geometry.coordinates);}catch(error){if(active())status.textContent=error.message;}}).addTo(points);
+        L.circleMarker([y,x],{radius:5,color,weight:2,fillOpacity:0,bubblingMouseEvents:false}).bindTooltip(p.id+' · '+(p.status||'belum diperiksa')+' · klik untuk citra asli dan koreksi').on('click',async()=>{if(setWorkMode&&await setWorkMode(false,false)===false)return;onEditMap?.();if(editor)await editor.pick(f);else try{await inspectAt(f.geometry.coordinates);}catch(error){if(active())status.textContent=error.message;}}).addTo(points);
       }
     }
     async function show(){if(!active()||loading)return;loading=true;open.disabled=true;status.textContent=`Membuka citra Blok ${block} dan audit batas privat…`;
