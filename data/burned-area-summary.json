@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-19T03:51:27.241518+00:00",
+  "generatedAt": "2026-10-20T03:49:29.015980+00:00",
   "status": "ready",
-  "eventCount": 5,
-  "estimatedAreaHa": 275.35,
-  "candidateEventCount": 6,
+  "eventCount": 4,
+  "estimatedAreaHa": 169.63,
+  "candidateEventCount": 5,
   "processing": {
-    "published": 5,
+    "published": 4,
     "excludedByRiauBoundary": 1
   },
   "latestDetection": "2026-10-05T06:31:00+00:00",
@@ -17,7 +17,7 @@
   "villageSource": "data/batas_administrasi_desa_riau.geojson",
   "spatiallyClipped": true,
   "areaCrs": "EPSG:32647",
-  "administrativeUpdatedAt": "2026-10-19T03:51:27.358543+00:00",
+  "administrativeUpdatedAt": "2026-10-20T03:49:29.094292+00:00",
   "unassignedAreaHa": 0.15,
   "villageTotals": [
     {
@@ -40,69 +40,51 @@
     },
     {
       "regency": "Indragiri Hilir",
-      "district": "Keritang",
-      "village": "Pancur",
-      "areaHa": 3.75
-    },
-    {
-      "regency": "Indragiri Hilir",
       "district": "Kuala Indragiri",
       "village": "Sungaibela",
       "areaHa": 1.2
     },
     {
-      "regency": "Indragiri Hulu",
-      "district": "Batang Gangsal",
-      "village": "Area Tidakterdefinisi",
-      "areaHa": 27.73
-    },
-    {
-      "regency": "Indragiri Hulu",
-      "district": "Batang Gangsal",
-      "village": "Penyaguan",
-      "areaHa": 62.16
-    },
-    {
-      "regency": "Indragiri Hulu",
-      "district": "Batang Gangsal/Kuala Cenaku",
-      "village": "Penyaguan/Kuala Mulia",
-      "areaHa": 5.56
-    },
-    {
       "regency": "Kampar",
       "district": "Xiii Koto Kampar",
       "village": "Kelurahan Batu Bersurat",
-      "areaHa": 22.39
+      "areaHa": 27.67
     },
     {
       "regency": "Kampar",
       "district": "Xiii Koto Kampar",
       "village": "Lubuk Agung",
-      "areaHa": 1.64
+      "areaHa": 1.79
     },
     {
       "regency": "Kampar",
       "district": "Xiii Koto Kampar",
       "village": "Pongkai Istiqomah",
-      "areaHa": 41.25
+      "areaHa": 34.89
     },
     {
       "regency": "Kampar",
       "district": "Xiii Koto Kampar",
       "village": "Ranah Sungkai",
-      "areaHa": 32.02
+      "areaHa": 25.19
     },
     {
       "regency": "Kampar/Rokan Hulu",
       "district": "",
       "village": "Area Saling Klaim",
-      "areaHa": 10.3
+      "areaHa": 11.5
     },
     {
       "regency": "Pelalawan",
       "district": "Kuala Kampar",
       "village": "Sungai Upih",
       "areaHa": 1.48
+    },
+    {
+      "regency": "Rokan Hulu",
+      "district": "Kabun",
+      "village": "Koto Ranah",
+      "areaHa": 0.03
     }
   ],
   "districtTotals": [
@@ -118,60 +100,50 @@
     },
     {
       "regency": "Indragiri Hilir",
-      "district": "Keritang",
-      "areaHa": 3.75
-    },
-    {
-      "regency": "Indragiri Hilir",
       "district": "Kuala Indragiri",
       "areaHa": 1.2
     },
     {
-      "regency": "Indragiri Hulu",
-      "district": "Batang Gangsal",
-      "areaHa": 89.89
-    },
-    {
-      "regency": "Indragiri Hulu",
-      "district": "Batang Gangsal/Kuala Cenaku",
-      "areaHa": 5.56
-    },
-    {
       "regency": "Kampar",
       "district": "Xiii Koto Kampar",
-      "areaHa": 97.3
+      "areaHa": 89.54
     },
     {
       "regency": "Kampar/Rokan Hulu",
       "district": "",
-      "areaHa": 10.3
+      "areaHa": 11.5
     },
     {
       "regency": "Pelalawan",
       "district": "Kuala Kampar",
       "areaHa": 1.48
+    },
+    {
+      "regency": "Rokan Hulu",
+      "district": "Kabun",
+      "areaHa": 0.03
     }
   ],
   "regencyTotals": [
     {
       "regency": "Indragiri Hilir",
-      "areaHa": 70.67
-    },
-    {
-      "regency": "Indragiri Hulu",
-      "areaHa": 95.45
+      "areaHa": 66.92
     },
     {
       "regency": "Kampar",
-      "areaHa": 97.3
+      "areaHa": 89.54
     },
     {
       "regency": "Kampar/Rokan Hulu",
-      "areaHa": 10.3
+      "areaHa": 11.5
     },
     {
       "regency": "Pelalawan",
       "areaHa": 1.48
+    },
+    {
+      "regency": "Rokan Hulu",
+      "areaHa": 0.03
     }
   ]
 }
