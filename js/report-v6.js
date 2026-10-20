@@ -2,6 +2,47 @@
 (function(){
   'use strict';
 
+  var photoLinkParams = new URLSearchParams(window.location.search);
+  var simplePhotoMode = /^(photo|add-photo)$/i.test(photoLinkParams.get('type') || '') &&
+    Boolean(photoLinkParams.get('layer') && photoLinkParams.get('object'));
+  var photoSession = window.YG_AUTH && window.YG_AUTH.readStoredSession();
+
+  function configureSimplePhoto(){
+    if(!simplePhotoMode) return;
+    document.body.classList.add('simple-photo');
+    document.title = 'Tambah Foto | YG GeoPortal';
+    document.querySelector('.report-hero h1').textContent = 'Tambah foto';
+    document.querySelector('.report-hero p').textContent = 'Pilih foto untuk objek ini, lalu simpan.';
+    document.querySelector('.report-hero .badge').textContent = 'DOKUMENTASI OBJEK';
+    document.getElementById('title').required = false;
+    document.getElementById('description').required = false;
+    document.getElementById('description').closest('label').querySelector('span').textContent = 'Keterangan foto (opsional)';
+    document.getElementById('description').rows = 2;
+    document.getElementById('photo-section').querySelector('h2').textContent = 'Pilih foto';
+    document.getElementById('photo-section').querySelector('p').textContent = 'Tambahkan 1–5 foto. Foto akan diperkecil otomatis sebelum dikirim.';
+    document.getElementById('geometry-title').textContent = 'Objek tujuan';
+    document.getElementById('name').closest('section').querySelector('h2').textContent = 'Nama pengirim';
+    submitButton.textContent = 'Simpan foto';
+    if(photoSession){
+      document.getElementById('name').value = photoSession.name || photoSession.username;
+      document.body.classList.add('photo-staff-session');
+    }
+    document.querySelector('.notice strong').textContent = photoSession ? 'Sesi staf aktif' : 'Tambah dokumentasi';
+    document.querySelector('.notice span').textContent = photoSession
+      ? 'Jika sesi Anda terverifikasi sebagai admin, foto langsung dipublikasikan tanpa persetujuan email. Unggahan staf lainnya tetap diverifikasi.'
+      : 'Foto akan diperiksa admin sebelum tampil di WebGIS. ';
+    if(!photoSession && !document.getElementById('photo-login-link')){
+      var loginLink = document.createElement('a');
+      loginLink.id = 'photo-login-link';
+      loginLink.href = 'staff-login.html?return=' + encodeURIComponent('report.html' + window.location.search);
+      loginLink.textContent = 'Login admin untuk langsung menambah foto';
+      document.querySelector('.notice').appendChild(loginLink);
+    }
+    var note = document.getElementById('photo-target-note');
+    note.textContent = 'Foto akan ditambahkan ke objek yang dipilih di atas.';
+    document.getElementById('send-another').textContent = 'Tambah foto lagi';
+  }
+
   var COMMUNITY_LAYER_ID = 'community_reports';
   var COMMUNITY_LAYER_LABEL = 'Laporan Masyarakat Terverifikasi';
   var COMMUNITY_LAYER_COLOR = '#7b1fa2';
@@ -268,6 +309,7 @@
       prepareCorrectionSelector();
     }
 
+    configureSimplePhoto();
     setTimeout(function(){ map.invalidateSize(true); },150);
   }
 
@@ -572,11 +614,14 @@
     stopSubmissionConfirmation();
     submissionStarted = false;
     submitButton.disabled = false;
-    submitButton.textContent = 'Kirim Laporan';
+    submitButton.textContent = simplePhotoMode ? 'Simpan foto' : 'Kirim Laporan';
 
     if(response.ok && response.reportId){
       successReportId.textContent = response.reportId;
-      successEmailStatus.textContent = response.emailSent
+      document.getElementById('success-status').textContent = response.status || 'Menunggu Verifikasi';
+      successEmailStatus.textContent = response.status === 'Sudah Dipublikasikan'
+        ? 'Foto dipublikasikan oleh admin tanpa persetujuan email. Pembaruan peta sedang disinkronkan.'
+        : response.emailSent
         ? 'Notifikasi email berhasil dikirim.'
         : 'Data tersimpan, tetapi notifikasi email gagal. Admin tetap dapat memeriksa laporan melalui dashboard.';
       form.hidden = true;
@@ -3895,6 +3940,7 @@
     activeSubmissionId = createClientSubmissionId();
     var payload = {
       clientSubmissionId:activeSubmissionId,
+      sessionToken:selectedType === 'Tambah Foto Kegiatan' && photoSession ? photoSession.token : '',
       reportType:selectedType,
       name:value('name'),
       organization:value('organization'),
@@ -3907,9 +3953,9 @@
       locationName:value('location-name'),
       latitude:value('latitude'),
       longitude:value('longitude'),
-      title:value('title'),
+      title:value('title') || (simplePhotoMode ? 'Foto ' + value('location-name') : ''),
       activityDate:value('activity-date'),
-      description:value('description'),
+      description:value('description') || (simplePhotoMode ? 'Dokumentasi foto objek WebGIS.' : ''),
       oldInformation:value('old-information'),
       proposedInformation:selectedType === 'Monitoring'
         ? JSON.stringify(collectMonitoringData())
@@ -4119,6 +4165,7 @@
   }
 
   document.getElementById('send-another').addEventListener('click',function(){
+    if(simplePhotoMode){ window.location.reload(); return; }
     form.reset();
     selectedType = '';
     geometryType = '';

@@ -563,6 +563,7 @@ if (action === 'content-save') {
     if (previousSubmission) {
       return reportSubmissionResponse_(previousSubmission);
     }
+    const photoAdmin = prepareAdminPhotoSubmission_(data);
     validateIncomingPayload_(data);
     normalizeMangroveMonitoringTarget_(data);
 
@@ -611,6 +612,10 @@ if (action === 'content-save') {
       data.documentUrl,
       uploadedDocumentUrls
     );
+    const reportWriteLock = LockService.getScriptLock();
+    reportWriteLock.waitLock(30000);
+    let row;
+    try {
     sheet.appendRow([
       reportId,
       clean_(data.reportType),
@@ -646,7 +651,7 @@ if (action === 'content-save') {
       normalizedProposedChanges
     ]);
 
-    const row = sheet.getLastRow();
+    row = sheet.getLastRow();
     sheet.getRange(row, 1, 1, 32)
       .setVerticalAlignment('top')
       .setWrap(true);
@@ -661,10 +666,28 @@ if (action === 'content-save') {
       sheet.getRange(row, 16).setNumberFormat('0.0000000');
     }
 
-    let emailSent = true;
+    if (photoAdmin) {
+      validateReportForPublication_(sheet, row);
+      const now = new Date();
+      sheet.getRange(row, 22, 1, 5).setValues([[
+        'Sudah Dipublikasikan', 'Foto ditambahkan langsung oleh admin terverifikasi.',
+        clean_(photoAdmin.email || photoAdmin.username), now, now
+      ]]);
+      sheet.getRange(row, 22).setBackground('#dceeff');
+      SpreadsheetApp.flush();
+    }
+    } finally {
+      reportWriteLock.releaseLock();
+    }
+    const publication = photoAdmin ? notifyCloudflarePublication_(reportId) : null;
+
+    let emailSent = false;
     let emailError = '';
     try {
-      notifyAdmin_(reportId, data, photoUrls, geometry);
+      if (!photoAdmin) {
+        notifyAdmin_(reportId, data, photoUrls, geometry);
+        emailSent = true;
+      }
     } catch (notificationError) {
       emailSent = false;
       emailError = clean_(notificationError.message);
@@ -677,8 +700,12 @@ if (action === 'content-save') {
     const submissionResult = {
       ok: true,
       reportId: reportId,
+      status: photoAdmin ? 'Sudah Dipublikasikan' : 'Menunggu Verifikasi',
+      publication: publication,
       emailSent: emailSent,
-      message: emailSent
+      message: photoAdmin
+        ? 'Foto dipublikasikan oleh admin. Pembaruan peta sedang disinkronkan.'
+        : emailSent
         ? 'Laporan berhasil disimpan dan notifikasi email dikirim.'
         : 'Laporan berhasil disimpan, tetapi notifikasi email gagal.',
       emailError: emailError
@@ -699,6 +726,42 @@ if (action === 'content-save') {
 }
 
 const DATA_REQUEST_SHEET = 'DATA_REQUESTS';
+
+// The browser's stored role/name are display hints only. Authorize on the server
+// and replace client-supplied target attributes with the current official object.
+function prepareAdminPhotoSubmission_(data) {
+  if (data.reportType !== 'Tambah Foto Kegiatan' || !clean_(data.sessionToken)) return null;
+  const editor = assertEditorCredential_(data.sessionToken);
+  if (clean_(editor.role).toLowerCase() !== 'admin') return null;
+  const objectId = clean_(data.targetObjectId);
+  const layerId = clean_(data.targetLayerId);
+  const features = getObjectsFeatureCollection_().features || [];
+  function matchesTarget(feature) {
+    const p = feature.properties || {};
+    return clean_(p.Object_ID) === objectId && clean_(p.Layer_ID) === layerId;
+  }
+  let target = features.find(matchesTarget);
+  // Some operational objects are maintained in the official repository rather
+  // than OBJECTS. Fetch only a known layer from our own fixed public origin.
+  if (!target && getAdminTargetLayerOptions_().some(function(layer) { return layer.id === layerId; })) {
+    const response = UrlFetchApp.fetch('https://webgisyg.id/data/' + encodeURIComponent(layerId) + '.geojson', {muteHttpExceptions: true});
+    if (response.getResponseCode() === 200) {
+      const collection = JSON.parse(response.getContentText());
+      target = (collection.features || []).find(matchesTarget);
+    }
+  }
+  if (!target || !target.geometry) throw new Error('Objek tujuan tidak ditemukan. Buka kembali objek dari WebGIS.');
+  const p = target.properties;
+  data.name = clean_(editor.name || editor.username);
+  data.email = clean_(editor.email);
+  data.targetFeatureProperties = JSON.stringify(p);
+  data.geometryGeoJSON = JSON.stringify(target.geometry);
+  data.targetLayerLabel = clean_(p.Layer_Label || layerId);
+  data.targetSourceType = clean_(p.Source_Type || 'program_layer');
+  data.locationName = clean_(p.Nama_Objek || objectId);
+  data.proposedChanges = '';
+  return editor;
+}
 
 function handleDataRequestPost_(e) {
   const raw = e && e.parameter ? e.parameter.payload : '';
@@ -790,6 +853,7 @@ function reportSubmissionResponse_(result) {
     ok: result.ok === true,
     reportId: clean_(result.reportId),
     emailSent: result.emailSent === true,
+    status: clean_(result.status),
     message: clean_(result.message),
     emailError: clean_(result.emailError)
   };
