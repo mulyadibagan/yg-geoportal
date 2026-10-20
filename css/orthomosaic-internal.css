@@ -18,3 +18,5 @@
 .dayun-suggestions{border-top:1px solid #b7d0c0;margin-top:12px;padding-top:8px}.dayun-suggestions h3{color:#006779}.dayun-suggestion-marker{background:transparent;border:0}.dayun-suggestion-marker svg{display:block;overflow:visible}
 
 .dayun-suggestions label{display:flex;align-items:center;gap:8px}.dayun-suggestions input[type=checkbox]{width:auto;margin:0}
+
+.plant-box-selection{padding:8px;margin:6px 0;border:1px solid #2563eb;border-radius:6px;background:#eff6ff}.plant-box-selection p{margin:0 0 6px}.plant-box-selection button:first-of-type{background:#a52b29}
