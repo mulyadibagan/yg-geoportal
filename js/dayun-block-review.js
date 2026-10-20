@@ -169,7 +169,7 @@
       L.geoJSON({type:'FeatureCollection',features},{style:f=>({color:f.properties.flags.includes('dark_pixels_review')?'#5e4aa3':'#dc702c',weight:1,fillOpacity:.12}),onEachFeature:(f,l)=>l.bindTooltip(f.properties.zone_id+' · '+f.properties.flags.join(', ')+' · perlu pemeriksaan; bukan diagnosis')}).addTo(diagnostics);
     }
     function drawBoundaries(){boundaries.clearLayers();if(!active()||!boundaryToggle.checked||!zonesData)return;
-      L.geoJSON(zonesData,{style:f=>({color:f.properties.kind==='active_source'?'#137f63':'#ad6b32',weight:1,fillOpacity:0}),onEachFeature:(f,l)=>l.bindTooltip(f.properties.id+' · kategori sumber, bukan diagnosis tanaman')}).addTo(boundaries);
+      L.geoJSON(zonesData,{style:f=>({color:f.properties.kind==='active_source'?'#137f63':'#ad6b32',weight:3,opacity:1,fillOpacity:0}),onEachFeature:(f,l)=>l.bindTooltip(f.properties.id+' · kategori sumber, bukan diagnosis tanaman')}).addTo(boundaries);
       if(geo?.audit)L.geoJSON(geo.audit,{style:{color:'#c72d40',weight:2,fillOpacity:.1}}).addTo(boundaries);
     }
     function drawPoints(){points.clearLayers();if(!active()||!candidates)return;
