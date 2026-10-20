@@ -13,8 +13,8 @@ test('a delayed old block disposal cannot erase the newer block summary',()=>{co
 test('plant and fruit counts stay independent, deduplicate by ID and follow the same gawangan filter',()=>{
  const s=setup(),v=s.mount();v.counts(counts([feature('one'),feature('two')]));v.filter('GT-A-01');
  const fruit=(id,status,zones)=>({properties:{id,status,zones}}),head={block:'A',features:[fruit('f1','confirmed',['GT-A-01','GT-A-02']),fruit('f1','confirmed',['GT-A-01']),fruit('f2','pending',['GT-A-02']),fruit('f3','rejected',['GT-A-01'])]};
- v.fruits({head});assert.match(s.text(),/Blok A: 2 titik/);assert.match(s.text(),/Blok A: 1 buah tim · 1 dugaan \/ GT-A-01: 1 buah tim · 0 dugaan/);
- v.filter('GT-A-02');assert.match(s.text(),/GT-A-02: 1 buah tim · 1 dugaan/);v.fruits({head,dirty:true});assert.match(s.text(),/buah belum tersimpan/);
+ v.fruits({head});assert.match(s.text(),/Blok A: 2 titik/);assert.match(s.text(),/Blok A: 1 buah tim \/ GT-A-01: 1 buah tim/);
+ v.filter('GT-A-02');assert.match(s.text(),/GT-A-02: 1 buah tim/);v.fruits({head,dirty:true});assert.match(s.text(),/buah belum tersimpan/);
  v.fruits({head,error:'offline'});assert.match(s.text(),/gagal sinkron; data terakhir/);v.fruits({head:{block:'B',features:[]}});assert.match(s.text(),/1 buah tim/);
  v.fruits({head:null,error:'offline'});assert.match(s.text(),/Hitungan buah gagal dimuat/);assert.doesNotMatch(s.text(),/0 buah tim/);assert.match(s.text(),/Blok A: 2 titik/);v.dispose();
 });

@@ -35,13 +35,16 @@ export async function fruitingOperation(env,body){
   const root=`drone/analysis/dayun/fruit-reviews/Agro_ABC/${manifest.run}/${body.block}`;
   let head=await read(root+'/head.json')||{revision:0,changes:[],point_versions:{},point_operations:{}};
   if(head.source_run&&head.source_run!==manifest.run)fail('fruiting_source_mismatch',409);
+  // Fruit work is manual only. Immutable detector shortlists stay as historical
+  // evidence, but must never become visible/countable again after a new run.
+  const manual=f=>f.properties.origin==='manual_fruiting_review'&&new RegExp('^'+body.block+'-fruit-manual-[\\w-]{8,70}$').test(f.properties.id);
   const response=()=>{
-    const all=fruitingFeatures(proposals,head,zones);
+    const all=fruitingFeatures({features:[]},head,zones).filter(manual);
     const features=all.filter(f=>plantChanges.get(f.properties.id)?.properties.status!=='rejected').map(f=>{
       const moved=plantChanges.has(f.properties.id)?{...f,geometry:plantChanges.get(f.properties.id).geometry}:f;
       return{...moved,properties:{...moved.properties,zones:membership(moved,zones)}};
     });
-    return{...head,ok:true,schema:'dayun-fruiting-review-v1',supports_batch:true,source_run:manifest.run,block:body.block,proposal_path:path,features,rows:fruitingSummary(features,zones),suppressed_by_plant_rejection:all.length-features.length,census_changed:false,plant_corrections_changed:false};
+    return{...head,ok:true,schema:'dayun-fruiting-review-v1',manual_only:true,supports_batch:true,source_run:manifest.run,block:body.block,proposal_path:path,features,rows:fruitingSummary(features,zones),suppressed_by_plant_rejection:all.length-features.length,census_changed:false,plant_corrections_changed:false};
   };
   if(body.action==='load')return response();
   if(body.action!=='save')fail('invalid_fruiting_action');
@@ -57,6 +60,7 @@ export async function fruitingOperation(env,body){
     if(head.point_operations[op.id]===op.operation_id)continue;
     if((head.point_versions[op.id]||0)!==op.expected_version)fail('fruiting_point_conflict_reload',409);
     const previous=saved.get(op.id)||originals.get(op.id);
+    if((originals.has(op.id)||previous&&!manual(previous))&&op.status!=='rejected')fail('automatic_fruiting_disabled',409);
     // Removing known fruit evidence must still work after its plant was rejected or moved.
     const removing=op.status==='rejected'&&Boolean(previous);
     if(plantChanges.get(op.id)?.properties.status==='rejected'&&!removing)fail('plant_candidate_rejected_by_team',409);
