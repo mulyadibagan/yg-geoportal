@@ -67,7 +67,9 @@
     return response;
   }
   async function authorize() {
-    session = window.YG_AUTH?.readStoredSession();
+    const nextSession=window.YG_AUTH?.readStoredSession();
+    if(session?.token!==nextSession?.token)privateAssets?.clear();
+    session = nextSession;
     if (!session) { lock('Masuk sebagai staf untuk membuka analisis internal.'); return; }
     $('gateStatus').textContent = 'Memeriksa akses staf…';
     try {
@@ -169,6 +171,7 @@
       // The URL raster constructor overrides these options. Restore them before
       // adding any layer so each native crop cannot retain a 16-tile buffer.
       Object.assign(layer.options,{updateWhenZooming:false,updateWhenIdle:true,keepBuffer:1});
+      if(details.nativeViewport)layer.options.minZoom=22;
       return {layer,image,projection,rx,ry};
   }
   async function openNativeRaster(input,details){
@@ -185,7 +188,7 @@
     const changed=()=>{if(alive())details.onState?.(state);};
     const watch=()=>{clearTimeout(deadline);deadline=setTimeout(()=>{if(!alive()||state.ready)return;state.error='Pembacaan TIFF melewati batas waktu';changed();controller.abort();},45000);};watch();
     try{
-      const raster=await readRasterLayer(typeof input==='string'&&input.startsWith('/api/staff/drone/analysis/')?API+input:input,{...details,nativeReview:true},controller.signal);
+      const raster=await readRasterLayer(typeof input==='string'&&input.startsWith('/api/staff/drone/analysis/')?API+input:input,{...details,nativeReview:true,nativeViewport:true},controller.signal);
       if(!alive()){state.dispose();return false;}layer=raster.layer;
       layer.on('loading',()=>{state.ready=false;state.error=null;watch();changed();});
       layer.on('tileerror',()=>{clearTimeout(deadline);state.ready=false;state.error='Piksel TIFF gagal dimuat';changed();});

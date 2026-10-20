@@ -131,7 +131,7 @@ test('quick pans cancel stale work, cap concurrent reads, and never attach a lat
 
 test('native read failures stay unready and explicit inspection retries only the failed crop',async()=>{
  let fail=true;const s=viewportFixture({open:async(t,c,signal,h)=>{if(t.file==='native/0.tif'&&fail)throw Error('offline');return h;}});
- s.engine.refresh();await s.settle();assert.match(s.messages.at(-1),/gagal/);assert.equal(s.engine.readyAt([.5,.5]),false);fail=false;const h=await s.engine.ensure([.5,.5]);assert.equal(s.opened.length,3);h.ready=true;s.opened.at(-1).changed();assert.equal(s.engine.readyAt([.5,.5]),true);s.zoom(18);s.engine.refresh();assert.ok(s.opened.slice(1).every(o=>o.h.disposed));assert.match(s.messages.at(-1),/pratinjau/);s.engine.dispose();
+ s.engine.refresh();await s.settle();assert.match(s.messages.at(-1),/gagal/);assert.equal(s.engine.readyAt([.5,.5]),false);fail=false;const h=await s.engine.ensure([.5,.5]);assert.equal(s.opened.length,3);h.ready=true;s.opened.at(-1).changed();assert.equal(s.engine.readyAt([.5,.5]),true);s.zoom(18);s.engine.refresh();assert.equal(s.opened.at(-1).h.disposed,false);assert.equal(s.engine.readyAt([.5,.5]),false);assert.match(s.messages.at(-1),/pratinjau/);s.engine.dispose();
 });
 
 
@@ -227,3 +227,6 @@ test('quota failures stop native automatic retries but explicit retry works afte
  const timers=[];let limited=true;const s=viewportFixture({schedule:fn=>(timers.push(fn),timers.length),cancel(){},open:async(tile,changed,signal,h)=>{if(limited)throw Object.assign(Error('HTTP 429'),{status:429});h.ready=true;return h;}});
  try{s.engine.refresh();await s.settle();assert.equal(s.opened.length,2);assert.equal(timers.length,0);assert.match(s.messages.at(-1),/HTTP 429/);s.engine.refresh();await s.settle();assert.equal(s.opened.length,2);limited=false;s.engine.retry();await s.settle();assert.equal(s.opened.length,4);assert.equal(s.engine.readyAt([.5,.5]),true);}finally{s.engine.dispose();}
 });
+
+
+test('repeated zoom out/in reuses ready TIFF readers without new opens and never permits edits on overview',async()=>{const s=viewportFixture();try{s.engine.refresh();await s.settle();for(const o of s.opened){o.h.ready=true;o.changed();}for(let i=0;i<20;i++){s.zoom(18);s.engine.refresh();assert.equal(s.engine.readyAt([.5,.5]),false);assert.ok(s.opened.every(o=>!o.h.disposed&&!o.signal.aborted));s.zoom(24);s.engine.refresh();await s.settle();assert.equal(s.engine.readyAt([.5,.5]),true);}assert.equal(s.opened.length,2);}finally{s.engine.dispose();}});

@@ -1,8 +1,12 @@
 (function(root){
   'use strict';
-  function create({api,current,fetcher=fetch,now=Date.now}){
+  function create({api,current,fetcher=fetch,now=Date.now,maxCacheBytes=192*1024*1024,maxCacheFiles=128,cacheAgeMs=Infinity}){
     const manifests=new Map(),links=new Map(),pending=new Map(),downloadQueue=[];let generation=0,running=0,blockedUntil=0;
-    function clear(){generation++;manifests.clear();links.clear();pending.clear();blockedUntil=0;for(const item of downloadQueue.splice(0))item.reject(Error('Sesi staf tidak aktif.'));}
+    // Session memory only: never put staff imagery or signed URLs into a public
+    // HTTP cache, service worker, IndexedDB or localStorage.
+    const images=new Map(),imagePending=new Map(),imageControllers=new Map();let imageBytes=0;
+    function forget(path){const entry=images.get(path);if(entry){imageBytes-=entry.blob.size;images.delete(path);}}
+    function clear(){generation++;manifests.clear();links.clear();pending.clear();images.clear();imageBytes=0;for(const controller of imageControllers.values())controller.abort();imageControllers.clear();imagePending.clear();blockedUntil=0;for(const item of downloadQueue.splice(0))item.reject(Error('Sesi staf tidak aktif.'));}
     function pump(){
       while(running<2&&downloadQueue.length){
         const item=downloadQueue.shift();if(item.epoch!==generation||!current()){item.reject(Error('Sesi staf tidak aktif.'));continue;}
@@ -10,12 +14,18 @@
       }
     }
     function download(work){return new Promise((resolve,reject)=>{downloadQueue.push({work,resolve,reject,epoch:generation});pump();});}
-    function register(base,manifest){
-      if(manifest?.assetDelivery!=='r2-signed-v1')return;
-      const previous=manifests.get(base);if(previous&&previous.run===manifest.run&&previous.files.length===manifest.files.length&&previous.files.every((file,i)=>file===manifest.files[i]))return;
-      manifests.set(base,{files:[...manifest.files],run:manifest.run});
-      // A new analysis revision must not reuse URLs from the previous run.
+    function invalidate(base){
       for(const key of links.keys())if(key.startsWith(base+'/files/'))links.delete(key);
+      for(const key of images.keys())if(key.startsWith(base+'/files/'))forget(key);
+      for(const key of imagePending.keys())if(key.startsWith(base+'/files/')){imageControllers.get(key)?.abort();imageControllers.delete(key);imagePending.delete(key);}
+      for(const key of pending.keys())if(key.startsWith(base+':'))pending.delete(key);
+    }
+    function register(base,manifest){
+      if(manifest?.assetDelivery!=='r2-signed-v1'){manifests.delete(base);invalidate(base);return;}
+      const previous=manifests.get(base);if(previous&&previous.run===manifest.run&&previous.prefix===manifest.prefix&&previous.files.length===manifest.files.length&&previous.files.every((file,i)=>file===manifest.files[i]))return;
+      manifests.set(base,{files:[...manifest.files],run:manifest.run,prefix:manifest.prefix});
+      // A new analysis revision must not reuse URLs from the previous run.
+      invalidate(base);
     }
     function eligible(path){const match=path.match(/^(\/api\/staff\/drone\/analysis\/(?:Agro_ABC|Agro_DEF))\/files\/(.+)$/);return match&&manifests.has(match[1])?match:null;}
     function validate(link){
@@ -46,7 +56,7 @@
       if(!current()||epoch!==generation)throw Error('Sesi staf tidak aktif.');
       const link=links.get(path);if(!link||link.expiresAt<=now())throw Error('Tautan citra privat tidak tersedia.');return link.url;
     }
-    async function get(path,options={}){
+    async function transfer(path,options={}){
       return download(async()=>{
       for(let attempt=0;attempt<2;attempt++){
         if(options.signal?.aborted)throw options.signal.reason||Error('Pembacaan citra dibatalkan.');
@@ -64,6 +74,41 @@
         return new Response(blob,{status:response.status,headers:receivedHeaders});
       }
       });
+    }
+    function replay(entry){return new Response(entry.blob,{status:entry.status,headers:entry.headers});}
+    function waitFor(promise,signal){
+      if(!signal)return promise;
+      if(signal.aborted)return Promise.reject(signal.reason||Error('Pembacaan citra dibatalkan.'));
+      return new Promise((resolve,reject)=>{const abort=()=>reject(signal.reason||Error('Pembacaan citra dibatalkan.'));signal.addEventListener('abort',abort,{once:true});promise.then(resolve,reject).finally(()=>signal.removeEventListener('abort',abort));});
+    }
+    async function get(path,options={}){
+      if(!current())throw Error('Sesi staf tidak aktif.');
+      if(options.signal?.aborted)throw options.signal.reason||Error('Pembacaan citra dibatalkan.');
+      const match=eligible(path),manifest=match&&manifests.get(match[1]);
+      if(!match||!manifest.files.includes(match[2]))throw Error('Berkas citra tidak terdaftar.');
+      // JSON contains evolving analysis/review data; ranges must retain their
+      // exact status and content-range. Only complete immutable image files reuse bytes.
+      if(new Headers(options.headers).has('range')||! /\.(?:tiff?|png|jpe?g)$/i.test(match[2]))return transfer(path,options);
+      const cached=images.get(path);
+      if(cached&&cached.until>now()){images.delete(path);images.set(path,cached);return replay(cached);}
+      forget(path);
+      if(!imagePending.has(path)){
+        const epoch=generation,controller=new AbortController();imageControllers.set(path,controller);
+        // An individual pan/zoom cancellation stops its consumer, while one
+        // shared bounded transfer can finish for the next visit. Logout aborts it.
+        const promise=(async()=>{
+          const response=await transfer(path,{...options,signal:AbortSignal.any([controller.signal,AbortSignal.timeout(45000)])});
+          const blob=await response.blob();
+          if(epoch!==generation||!current()||manifests.get(match[1])!==manifest)throw Error('Sesi atau sumber citra sudah berubah.');
+          const entry={blob,status:response.status,headers:[...response.headers],until:now()+cacheAgeMs};
+          if(response.status===200&&blob.size<=maxCacheBytes&&maxCacheFiles>0){images.set(path,entry);imageBytes+=blob.size;while(images.size>maxCacheFiles||imageBytes>maxCacheBytes)forget(images.keys().next().value);}
+          return entry;
+        })();
+        imagePending.set(path,promise);promise.finally(()=>{if(imagePending.get(path)===promise){imagePending.delete(path);imageControllers.delete(path);}}).catch(()=>{});
+      }
+      const entry=await waitFor(imagePending.get(path),options.signal);
+      if(!current()||manifests.get(match[1])!==manifest)throw Error('Sesi atau sumber citra sudah berubah.');
+      return replay(entry);
     }
     return{register,eligible,get,resolve,clear};
   }
