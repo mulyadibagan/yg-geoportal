@@ -8,6 +8,32 @@ function setup(shared=server()){const element=tag=>({tag,children:[],textContent
  const all=node=>[node,...(node.children||[]).flatMap(all)];return{host,events,calls,original,before,options,shared,button:text=>all(host).find(n=>n.textContent===text),counts:()=>counts,loseResponse:()=>failResponse=true,delay:p=>delay=p};}
 async function add(s){s.button('Tambah titik nanas').onclick();await s.events.click({latlng:{lng:1,lat:1}});await s.events.click({latlng:{lng:1,lat:1}});}
 
+function boxFixture(s){let disabled=0,highlights=0;global.L.Draw={Rectangle:class{constructor(map,options){this.options=options;}enable(){}disable(){disabled++;}}};global.L.circleMarker=()=>({addTo(){highlights++;return this;}});return{draw:contains=>{s.button('Blok titik dengan mouse').onclick();s.events['draw:created']({layer:{options:{dayunPlantSelection:true},addTo(){return this;},getBounds:()=>({contains:contains||(()=>true)})}});},disabled:()=>disabled,highlights:()=>highlights};}
+
+test('box selection previews without writes; cancel leaves all points unchanged',async()=>{
+ const s=setup(),box=boxFixture(s),e=await editor.mount(s.options);try{box.draw();assert.equal(box.highlights(),2);assert.equal(s.counts().working_total,2);assert.equal(s.calls.filter(c=>c.config).length,0);assert.equal(e.canLeave(),true);s.button('Batal pilih area').onclick();assert.equal(s.button('Hapus titik terpilih').disabled,true);assert.equal(JSON.stringify(s.original),s.before);}finally{e.dispose();assert.equal(s.events['draw:created'],undefined);}
+});
+
+test('box delete removes manual points and reversibly rejects candidates in one private patch',async()=>{
+ const s=setup(),box=boxFixture(s);const e=await editor.mount(s.options);try{await add(s);s.options.preparePoint=async()=>true;await s.button('Simpan koreksi Blok A privat').onclick();const before=s.calls.filter(c=>c.config).length;box.draw();await s.button('Hapus titik terpilih').onclick();assert.equal(s.counts().working_total,0);assert.equal(s.counts().rejected,2);assert.equal(s.counts().training_examples.negative,0);assert.equal(e.canLeave(),false);await s.button('Simpan koreksi Blok A privat').onclick();assert.equal(s.calls.filter(c=>c.config).length,before+1);const ops=JSON.parse(s.calls.filter(c=>c.config).at(-1).config.body).patch.operations;assert.equal(ops.length,3);assert.equal(ops.filter(op=>op.feature===null).length,1);assert.equal(s.shared.snapshot().counts.working_total,0);assert.equal(JSON.stringify(s.original),s.before);assert.equal(e.canLeave(),true);}finally{e.dispose();}
+});
+
+test('box selection respects shown gawangan/filter and does not touch excluded points',async()=>{
+ const s=setup(),box=boxFixture(s);s.options.preparePoint=async()=>true;s.options.selectionFilter=f=>f.properties.id==='auto-1';const e=await editor.mount(s.options);try{box.draw();assert.equal(box.highlights(),1);await s.button('Hapus titik terpilih').onclick();assert.equal(s.counts().working_total,1);assert.equal(e.features().find(f=>f.properties.id==='auto-2').properties.status,'candidate');await s.button('Simpan koreksi Blok A privat').onclick();assert.equal(s.shared.snapshot().review.changes.length,1);}finally{e.dispose();}
+});
+
+test('box deletion requires native pixels and aborts a preview changed by another laptop',async()=>{
+ const s=setup(),box=boxFixture(s);let native=false;s.options.preparePoint=async()=>native;const e=await editor.mount(s.options);try{box.draw();await s.button('Hapus titik terpilih').onclick();assert.equal(e.canLeave(),true);assert.equal(s.counts().working_total,2);native=true;s.shared.remote(point('auto-1','accepted'));await s.button('Muat ulang koreksi tim').onclick();await s.button('Hapus titik terpilih').onclick();assert.equal(e.canLeave(),true);assert.equal(s.counts().working_total,2);assert.equal(s.calls.filter(c=>c.config).length,0);}finally{e.dispose();}
+});
+
+test('box deletion preserves unrelated remote additions and failed saves keep local decisions',async()=>{
+ const s=setup(),box=boxFixture(s);s.options.preparePoint=async()=>true;const e=await editor.mount(s.options);try{box.draw();s.shared.remote(point('A-manual-other-laptop','accepted'));await s.button('Hapus titik terpilih').onclick();s.loseResponse();await s.button('Simpan koreksi Blok A privat').onclick();assert.equal(e.canLeave(),false);await s.button('Simpan koreksi Blok A privat').onclick();assert.equal(e.canLeave(),true);assert.equal(s.shared.snapshot().counts.working_total,1);assert.equal(s.shared.snapshot().review.changes.find(f=>f.properties.id==='A-manual-other-laptop').properties.status,'accepted');}finally{e.dispose();}
+});
+
+test('box is bounded to 250 plants and zoom detail; cancelling during pixel preparation changes nothing',async()=>{
+ const s=setup(),box=boxFixture(s);let zoom=21;s.options.map.getZoom=()=>zoom;let release;s.options.preparePoint=()=>new Promise(r=>release=r);const e=await editor.mount(s.options);try{s.button('Blok titik dengan mouse').onclick();assert.equal(s.button('Hapus titik terpilih').disabled,true);zoom=24;box.draw();const waiting=s.button('Hapus titik terpilih').onclick();e.setEditing(false);release(true);await waiting;assert.equal(s.counts().working_total,2);assert.equal(e.canLeave(),true);s.original.features=Array.from({length:251},(_,i)=>point('many-'+i));box.draw();assert.equal(s.button('Hapus titik terpilih').disabled,true);assert.equal(s.calls.filter(c=>c.config).length,0);}finally{e.dispose();}
+});
+
 test('passive sync reads once a minute, pauses hidden tabs and backs off failures without blocking saves',async()=>{
  const originalInterval=global.setInterval,originalClear=global.clearInterval,originalNow=Date.now;let tick,now=100000,interval;
  global.setInterval=(fn,ms)=>{tick=fn;interval=ms;return 1;};global.clearInterval=()=>{};Date.now=()=>now;
