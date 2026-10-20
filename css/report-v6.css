@@ -536,3 +536,19 @@
   .mangrove-previous-metrics{grid-template-columns:1fr}
 }
 .pup-tree-table-wrap{overflow-x:auto;margin:12px 0}.pup-tree-table{width:100%;min-width:860px;border-collapse:collapse}.pup-tree-table th,.pup-tree-table td{padding:8px;border-bottom:1px solid #d8e6df;text-align:left}.pup-tree-table input,.pup-tree-table select{width:100%;min-width:90px}.pup-tree-table .pup-remove-tree{border:1px solid #c84c4c;background:#fff;color:#9d2929;border-radius:8px;padding:7px 10px;cursor:pointer}.secondary-button{border:1px solid #07835f;background:#fff;color:#076b50;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer}
+/* A photo deep link already identifies the object: keep the upload focused. */
+.simple-photo .report-shell{max-width:760px}
+.simple-photo #report-form > .card:first-child,
+.simple-photo #report-form > .card:nth-child(3),
+.simple-photo #geometry-section > :not(#geometry-title):not(#existing-feature-fields),
+.simple-photo #existing-feature-fields > :not(.correction-selector):not(#photo-target-note),
+.simple-photo .correction-selector > :not(#selected-feature-summary),
+.simple-photo #title,
+.simple-photo #report-form > .card:has(#description) > h2,
+.simple-photo #report-form > .card:has(#description) .field:has(#title),
+.simple-photo #report-form > .card:has(#description) .document-field,
+.simple-photo #report-form > .card:nth-child(2) .field:not(:has(#name)),
+.simple-photo.photo-staff-session #report-form > .card:nth-child(2){display:none}
+.simple-photo #report-form > .card:nth-child(2) h2{font-size:1rem}
+.simple-photo #geometry-section{display:block}
+.simple-photo #selected-feature-summary:empty::after{content:'Memuat objek tujuan…'}
