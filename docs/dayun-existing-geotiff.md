@@ -81,3 +81,23 @@ jelas tetap utuh dan dilaporkan untuk pemeriksaan. Hasil privat disimpan pada
 `result.json`; hasil lengkap membuat pengulangan tidak menulis kembali.
 Jadwal sementara harus dikembalikan ke konfigurasi awal setelah hasil
 terverifikasi. Sensus dan koreksi titik nanas tidak ditulis oleh tugas ini.
+
+
+### Batas analisis privat untuk tim
+
+Panel **Batas tim tersimpan** pada alat ukur menyimpan koleksi geometri dengan
+nama, ID, revisi dan riwayat versi. Staf lain dapat memilih **Buka batas tim**
+untuk membuka koordinat yang sama dan melihat m²/ha. Penyimpanan dilakukan
+secara eksplisit, tanpa polling atau simpan otomatis.
+
+`/api/staff/drone/analysis/areas` memerlukan sesi staf yang sama dengan analisis
+lainnya. Operasi diserialkan oleh koordinator yang sudah ada; revisi usang
+ditolak dan percobaan ulang memakai ID operasi yang sama. Arsip dan head berada
+di `drone/analysis/dayun/areas/`, di luar manifest unduhan citra maupun sensus.
+Daftar dibaca 20 dokumen per halaman agar tetap sesuai batas paket gratis.
+
+Simpan yang gagal tidak menghapus gambar lokal. Membuka dokumen lain meminta
+konfirmasi bila masih ada geometri lokal yang belum tersimpan; ekspor GeoJSON
+tetap tersedia sebagai salinan. Server memvalidasi geometri dan menghitung ulang
+luas dengan radius yang sama seperti Turf 6.5 pada viewer. Koordinat sumber,
+batas gawangan resmi, data sensus dan koreksi titik nanas/buah tidak ditulis.

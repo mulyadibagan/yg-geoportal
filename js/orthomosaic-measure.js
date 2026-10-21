@@ -31,7 +31,7 @@
     draw.onclick=()=>{if(!beforeDraw())return;handler?.disable();handler=new L.Draw.Polygon(map,{allowIntersection:false,showArea:true,shapeOptions:{color:'#2563eb',weight:3,fillOpacity:.08}});handler.enable();};
     details.ontoggle=async()=>{if(!details.open||boundaries)return;try{use.disabled=true;const data=await loadBoundaries();boundaries=groups(data);select.replaceChildren();select.append(new Option('Gabungan batas agro A–F','__ALL__'));for(const id of [...boundaries.keys()].sort())select.append(new Option(id,id));}catch(error){output.textContent=error.message;}finally{use.disabled=!boundaries;}};
     use.disabled=true;use.onclick=()=>{if(!boundaries||!beforeDraw())return;try{const id=select.value,all=id==='__ALL__',f=merge(all?[...boundaries.values()].flat():boundaries.get(id)||[],T);f.properties={name:all?'Gabungan batas agro A–F':id,method:'batas_gawangan_revisi',source:'data/dayun-map.geojson'};const layer=L.geoJSON(f,{style:{color:'#2563eb',weight:3,fillOpacity:.08}}).getLayers()[0];areas.addLayer(layer);onChanged();showFeature(f);map.fitBounds(layer.getBounds());}catch(error){output.textContent='Tidak dapat mengukur: '+error.message;}};
-    return{showFeature,clear:()=>{output.textContent='Luas: mulai gambar batas lahan.';},control};
+    return{element:host,showFeature,clear:()=>{output.textContent='Luas: mulai gambar batas lahan.';},control};
   }
   root.YG_ORTHO_MEASURE={format,merge,groups,mount};
 })(window);

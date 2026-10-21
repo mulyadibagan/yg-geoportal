@@ -1,3 +1,4 @@
+import {analysisAreasOperation} from './dayun-analysis-areas.js';
 import {reviewOperation} from './dayun-feedback.js';
 import {blockReviewOperation} from './dayun-block-corrections.js';
 import {fruitingOperation} from './dayun-fruiting.js';
@@ -5,6 +6,10 @@ import {fruitingOperation} from './dayun-fruiting.js';
 export class DroneQueue {
   constructor(state,env){this.state=state;this.env=env;}
   async fetch(request){return this.state.blockConcurrencyWhile(async()=>{
+    if(new URL(request.url).pathname==='/dayun-analysis-areas'){
+      try{return Response.json(await analysisAreasOperation(this.env,await request.json()));}
+      catch(error){return Response.json({ok:false,error:error.status?error.message:'private_area_storage_failed'},{status:error.status||503});}
+    }
     if(new URL(request.url).pathname==='/dayun-fruiting-review'){
       try{return Response.json(await fruitingOperation(this.env,await request.json()));}
       catch(error){return Response.json({ok:false,error:error.status?error.message:'private_fruiting_storage_failed',...(error.fruit_id?{fruit_id:error.fruit_id}:{})},{status:error.status||503});}
