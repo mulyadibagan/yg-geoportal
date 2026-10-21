@@ -46,6 +46,51 @@ test('503 after a committed save automatically retries the same operation withou
 
 function boxFixture(s){let disabled=0,highlights=0;global.L.Draw={Rectangle:class{constructor(map,options){this.options=options;}enable(){}disable(){disabled++;}}};global.L.circleMarker=()=>({addTo(){highlights++;return this;}});return{draw:contains=>{s.button('Blok titik dengan mouse').onclick();s.events['draw:created']({layer:{options:{dayunPlantSelection:true},addTo(){return this;},getBounds:()=>({contains:contains||(()=>true)})}});},disabled:()=>disabled,highlights:()=>highlights};}
 
+test('undo restores original candidates before and after saving and can undo successive deletes',async()=>{
+ const s=setup(),e=await editor.mount(s.options);try{
+  for(const id of ['auto-1','auto-2']){await e.pick(e.features().find(f=>f.properties.id===id));s.button('Hapus dari hitungan').onclick();}
+  assert.equal(s.counts().working_total,0);assert.equal(e.undoDelete(),true);assert.equal(s.counts().working_total,1);assert.equal(e.undoDelete(),true);assert.equal(s.counts().working_total,2);
+  await s.button('Simpan koreksi Blok A privat').onclick();assert.ok(e.features().every(f=>f.properties.status==='candidate'));
+  await e.pick(e.features()[0]);s.button('Hapus dari hitungan').onclick();await s.button('Simpan koreksi Blok A privat').onclick();assert.equal(e.undoDelete(),true);await s.button('Simpan koreksi Blok A privat').onclick();
+  assert.equal(s.shared.snapshot().counts.working_total,2);assert.equal(new Set(e.features().map(f=>f.properties.id)).size,2);assert.equal(e.undoDelete(),false);assert.equal(JSON.stringify(s.original),s.before);
+ }finally{e.dispose();}
+});
+
+test('one undo restores a saved batch of manual and automatic plants with their original IDs and positions',async()=>{
+ const s=setup(),box=boxFixture(s),e=await editor.mount(s.options);try{
+  await add(s);await s.button('Simpan koreksi Blok A privat').onclick();const before=e.features().map(f=>({id:f.properties.id,coordinates:f.geometry.coordinates,status:f.properties.status}));
+  s.options.preparePoint=async()=>true;box.draw();await s.button('Hapus titik terpilih').onclick();await s.button('Simpan koreksi Blok A privat').onclick();assert.equal(s.counts().working_total,0);
+  assert.equal(e.undoDelete(),true);await s.button('Simpan koreksi Blok A privat').onclick();assert.deepEqual(e.features().map(f=>({id:f.properties.id,coordinates:f.geometry.coordinates,status:f.properties.status})),before);assert.equal(s.shared.snapshot().counts.working_total,3);assert.equal(s.shared.snapshot().counts.manual_additions,1);
+ }finally{e.dispose();}
+});
+
+test('undo of a never-saved manual deletion queues the same plant once',async()=>{
+ const s=setup(),e=await editor.mount(s.options);try{await add(s);const id=e.features().find(f=>f.properties.origin==='manual_addition').properties.id;s.button('Hapus dari hitungan').onclick();assert.equal(s.counts().working_total,2);assert.equal(e.undoDelete(),true);await s.button('Simpan koreksi Blok A privat').onclick();assert.equal(e.features().filter(f=>f.properties.id===id).length,1);assert.equal(s.shared.snapshot().counts.manual_additions,1);}finally{e.dispose();}
+});
+
+test('undo during an in-flight delete preserves the acknowledged point version',async()=>{
+ const s=setup(),e=await editor.mount(s.options);let release;try{
+  await e.pick(e.features()[0]);s.button('Hapus dari hitungan').onclick();s.delay(new Promise(r=>release=r));const saving=s.button('Simpan koreksi Blok A privat').onclick();assert.equal(e.undoDelete(),true);release();await saving;s.delay(null);await s.button('Simpan koreksi Blok A privat').onclick();assert.equal(s.shared.snapshot().counts.working_total,2);assert.equal(e.canLeave(),true);
+ }finally{release?.();e.dispose();}
+});
+
+test('undo after a lost delete response retries safely without duplicate points',async()=>{
+ const s=setup(),e=await editor.mount(s.options);try{
+  await add(s);await s.button('Simpan koreksi Blok A privat').onclick();s.button('Hapus dari hitungan').onclick();s.loseResponse();await s.button('Simpan koreksi Blok A privat').onclick();
+  assert.equal(e.undoDelete(),true);await s.button('Simpan koreksi Blok A privat').onclick();await s.button('Simpan koreksi Blok A privat').onclick();
+  assert.equal(s.shared.snapshot().counts.manual_additions,1);assert.equal(s.shared.snapshot().counts.working_total,3);assert.equal(e.canLeave(),true);
+ }finally{e.dispose();}
+});
+
+test('undo refuses to overwrite a known newer team decision and version conflicts protect unseen changes',async()=>{
+ const s=setup(),e=await editor.mount(s.options);try{
+  await e.pick(e.features()[0]);s.button('Hapus dari hitungan').onclick();await s.button('Simpan koreksi Blok A privat').onclick();const remote=point('auto-1','accepted');remote.properties.note='Keputusan staf lain';s.shared.remote(remote);
+  await s.button('Muat ulang koreksi tim').onclick();assert.equal(e.undoDelete(),false);assert.equal(e.features().find(f=>f.properties.id==='auto-1').properties.note,'Keputusan staf lain');
+  await e.pick(e.features().find(f=>f.properties.id==='auto-2'));s.button('Hapus dari hitungan').onclick();await s.button('Simpan koreksi Blok A privat').onclick();const unseen=point('auto-2','accepted');unseen.properties.note='Baru dari laptop lain';s.shared.remote(unseen);
+  assert.equal(e.undoDelete(),true);await s.button('Simpan koreksi Blok A privat').onclick();assert.equal(e.canLeave(),false);assert.equal(s.shared.snapshot().review.changes.find(f=>f.properties.id==='auto-2').properties.note,'Baru dari laptop lain');
+ }finally{e.dispose();}
+});
+
 test('box selection previews without writes; cancel leaves all points unchanged',async()=>{
  const s=setup(),box=boxFixture(s),e=await editor.mount(s.options);try{box.draw();assert.equal(box.highlights(),2);assert.equal(s.counts().working_total,2);assert.equal(s.calls.filter(c=>c.config).length,0);assert.equal(e.canLeave(),true);s.button('Batal pilih area').onclick();assert.equal(s.button('Hapus titik terpilih').disabled,true);assert.equal(JSON.stringify(s.original),s.before);}finally{e.dispose();assert.equal(s.events['draw:created'],undefined);}
 });
