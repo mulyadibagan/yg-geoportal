@@ -13,7 +13,7 @@
   if(requestedSample){const q=new URLSearchParams(requestedSample.block?{source:requestedSample.source,block:requestedSample.block}:{source:requestedSample.source,trial:requestedSample.trial,sample:requestedSample.sample});if(requestedSample.point)q.set('point',requestedSample.point);$('sampleLogin').href='staff-login.html?return='+encodeURIComponent('orthomosaic-internal.html?'+q.toString());}
   let initialLinkOpened=false;
   let session, map, areas, rasterLayer, rasterBounds, tileLayer, jobs = [], source = null, rasterContext = null, sequence = 0;
-  let teamProgress=null,nextZoneTarget=null,areaMeter=null;
+  let teamProgress=null,nextZoneTarget=null,areaMeter=null,areaStore=null;
   let disposeMeritechExport = null, disposeCandidateReview=null, disposeBlockReview=null, dayunLayer = null, dayunUrls = [], dayunRequest=0;
   const nativeRasters=new Set();
   function clearNativeRasters(){for(const raster of [...nativeRasters])raster.dispose();}
@@ -47,6 +47,7 @@
     $('workspace').hidden = true;
     $('gate').hidden = false;
     $('gateStatus').textContent = message;
+    areaStore?.dispose();areaStore=null;
     if (map) { map.remove(); map = null; }
     rasterLayer = null; source = null; jobs = [];
     $('job').replaceChildren(new Option('Pilih hasil yang sudah selesai', ''));
@@ -108,6 +109,7 @@
     map.on(L.Draw.Event.CREATED, event => { if(event.layer.options?.dayunPlantSelection||event.layer.options?.dayunFruitSelection)return; event.layer.feature={type:'Feature',properties:{source:source?.title || 'Peta referensi',sourceId:source?.id || null},geometry:event.layer.toGeoJSON(false).geometry}; areas.addLayer(event.layer); updateMeasurements(); });
     map.on('draw:edited draw:deleted', updateMeasurements);
     areaMeter=window.YG_ORTHO_MEASURE?.mount({map,areas,onChanged:updateMeasurements,beforeDraw:()=>{if(disposeBlockReview?.canLeave?.()===false){$('mapStatus').textContent='Tunggu koreksi titik tersimpan sebelum mengukur.';return false;}return true;}});
+    if(areaMeter?.element&&window.YG_ORTHO_AREA_STORE)areaStore=window.YG_ORTHO_AREA_STORE.mount({host:areaMeter.element,api,current:validSession,getCollection:()=>({type:'FeatureCollection',features:features()}),showCollection:collection=>{areas.clearLayers();for(const f of collection.features){const layer=L.geoJSON(f,{style:{color:'#2563eb',weight:3,fillOpacity:.08}}).getLayers()[0];areas.addLayer(layer);}updateMeasurements();if(areas.getLayers().length)map.fitBounds(areas.getBounds());}});
     map.on('mousemove', event => { $('coordinate').textContent = `${event.latlng.lat.toFixed(6)}, ${event.latlng.lng.toFixed(6)}`; });
     $('focusMap').onclick=()=>{
       const card=document.querySelector('.map-card'),expanded=card.classList.toggle('map-expanded');
@@ -133,11 +135,12 @@
     list.forEach((feature,index) => {
       const p=feature.properties, result=p.areaHa !== undefined ? `${number(p.areaM2)} m² · ${number(p.areaHa,4)} ha` : `${number(p.lengthM)} m`;
       const tr=document.createElement('tr'); [p.name,result].forEach(value => {const td=document.createElement('td');td.textContent=value;tr.append(td);}); $('measurements').append(tr);
-      areas.getLayers()[index].bindTooltip(`${p.name}: ${result}`,{permanent:true,direction:'center'});
+      const label=document.createElement('span');label.textContent=`${p.name}: ${result}`;areas.getLayers()[index].bindTooltip(label,{permanent:true,direction:'center'});
     });
     if (!list.length) { const tr=document.createElement('tr'),td=document.createElement('td');td.colSpan=2;td.textContent='Belum ada geometri analisis.';tr.append(td);$('measurements').append(tr); }
     $('exportAreas').disabled = $('clearAreas').disabled = !list.length;
     if(list.length)areaMeter?.showFeature(list.at(-1));else areaMeter?.clear();
+    areaStore?.refresh();
   }
   function save(blob, name) {
     const url=URL.createObjectURL(blob), a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),60000);
