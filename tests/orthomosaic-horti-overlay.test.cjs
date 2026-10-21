@@ -3,7 +3,7 @@ function setup({active=true,paginated=false}={}){
  const requests=[],shapes=[],layer={shapes:[],addTo(){return this;},clearLayers(){this.shapes=[];}};
  const el=tag=>({tag,textContent:'',children:[],append(...n){this.children.push(...n)},prepend(n){this.children.unshift(n)},replaceChildren(...n){this.children=n},setAttribute(){}});
  const host=el('section'),pane={style:{}},map={createPane:()=>pane,removeLayer(){},fitBounds(){throw Error('Loading a boundary must not move the working map');},on(){throw Error('No zoom/pan polling');}};
- const record={name:'Batas lahan horti',collection:{type:'FeatureCollection',features:[{type:'Feature',properties:{name:'Horti'},geometry:{type:'Polygon',coordinates:[[[102.005226,.583024],[102.00562,.582788],[102.005892,.583212],[102.005226,.583024]]]}}]}};
+ const record={name:'Batas lahan horti',collection:{type:'FeatureCollection',features:[{type:'Feature',properties:{name:'Horti'},geometry:{type:'Polygon',coordinates:[[[102,.5],[102.001,.5],[102.001,.501],[102,.5]]]}}]}};
  let failure=false,hold=null;
  const api=async(url,options)=>{requests.push({url,options});if(hold)await hold;if(failure)throw Error('offline');return{json:async()=>url.includes('?id=')?{record}:url.includes('?cursor=')?{items:[{name:record.name,id:'area-horti'}],cursor:null}:{items:paginated?[{name:'Batas lain',id:'area-other'}]:[{name:record.name,id:'area-horti'}],cursor:paginated?'next-page':null}};};
  const context={window:{L:{layerGroup:()=>layer,geoJSON:(collection,options)=>{const shape={collection:structuredClone(collection),options,addTo(target){target.shapes.push(this);return this;}};shapes.push(shape);return shape;}}},document:{createElement:el}};
