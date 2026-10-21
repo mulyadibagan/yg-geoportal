@@ -13,7 +13,7 @@
   if(requestedSample){const q=new URLSearchParams(requestedSample.block?{source:requestedSample.source,block:requestedSample.block}:{source:requestedSample.source,trial:requestedSample.trial,sample:requestedSample.sample});if(requestedSample.point)q.set('point',requestedSample.point);$('sampleLogin').href='staff-login.html?return='+encodeURIComponent('orthomosaic-internal.html?'+q.toString());}
   let initialLinkOpened=false;
   let session, map, areas, rasterLayer, rasterBounds, tileLayer, jobs = [], source = null, rasterContext = null, sequence = 0;
-  let teamProgress=null,nextZoneTarget=null,areaMeter=null,areaStore=null;
+  let teamProgress=null,nextZoneTarget=null,areaMeter=null,areaStore=null,teamBoundaries=null;
   let disposeMeritechExport = null, disposeCandidateReview=null, disposeBlockReview=null, dayunLayer = null, dayunUrls = [], dayunRequest=0;
   const nativeRasters=new Set();
   function clearNativeRasters(){for(const raster of [...nativeRasters])raster.dispose();}
@@ -48,6 +48,7 @@
     $('gate').hidden = false;
     $('gateStatus').textContent = message;
     areaStore?.dispose();areaStore=null;
+    teamBoundaries?.dispose();teamBoundaries=null;
     if (map) { map.remove(); map = null; }
     rasterLayer = null; source = null; jobs = [];
     $('job').replaceChildren(new Option('Pilih hasil yang sudah selesai', ''));
@@ -113,8 +114,9 @@
     map.addControl(new L.Control.Draw({draw:{polygon:{allowIntersection:false,showArea:true},polyline:true,rectangle:true,circle:false,circlemarker:false,marker:false}, edit:{featureGroup:areas}}));
     map.on(L.Draw.Event.CREATED, event => { if(event.layer.options?.dayunPlantSelection||event.layer.options?.dayunFruitSelection)return; event.layer.feature={type:'Feature',properties:{source:source?.title || 'Peta referensi',sourceId:source?.id || null},geometry:event.layer.toGeoJSON(false).geometry}; areas.addLayer(event.layer); updateMeasurements(); });
     map.on('draw:edited draw:deleted', updateMeasurements);
-    areaMeter=window.YG_ORTHO_MEASURE?.mount({map,areas,onChanged:updateMeasurements,beforeDraw:()=>{if(disposeBlockReview?.canLeave?.()===false){$('mapStatus').textContent='Tunggu koreksi titik tersimpan sebelum mengukur.';return false;}return true;}});
-    if(areaMeter?.element&&window.YG_ORTHO_AREA_STORE)areaStore=window.YG_ORTHO_AREA_STORE.mount({host:areaMeter.element,api,current:validSession,getCollection:()=>({type:'FeatureCollection',features:features()}),showCollection:collection=>{areas.clearLayers();for(const f of collection.features){const layer=L.geoJSON(f,{style:{color:'#2563eb',weight:3,fillOpacity:.08}}).getLayers()[0];areas.addLayer(layer);}updateMeasurements();if(areas.getLayers().length)map.fitBounds(areas.getBounds());}});
+    areaMeter=window.YG_ORTHO_MEASURE?.mount({map,areas,container:$('measureTools'),onChanged:updateMeasurements,beforeDraw:()=>{if(disposeBlockReview?.canLeave?.()===false){$('mapStatus').textContent='Tunggu koreksi titik tersimpan sebelum mengukur.';return false;}return true;}});
+    teamBoundaries=window.YG_ORTHO_AREA_STORE?.mountOverlay?.({host:$('teamBoundaryTools'),map,api,current:validSession});
+    if(areaMeter?.element&&window.YG_ORTHO_AREA_STORE)areaStore=window.YG_ORTHO_AREA_STORE.mount({host:areaMeter.element,api,current:validSession,onSaved:()=>teamBoundaries?.refresh(),getCollection:()=>({type:'FeatureCollection',features:features()}),showCollection:collection=>{areas.clearLayers();for(const f of collection.features){const layer=L.geoJSON(f,{style:{color:'#2563eb',weight:3,fillOpacity:.08}}).getLayers()[0];areas.addLayer(layer);}updateMeasurements();if(areas.getLayers().length)map.fitBounds(areas.getBounds());}});
     map.on('mousemove', event => { $('coordinate').textContent = `${event.latlng.lat.toFixed(6)}, ${event.latlng.lng.toFixed(6)}`; });
     $('focusMap').onclick=()=>{
       const card=document.querySelector('.map-card'),expanded=card.classList.toggle('map-expanded');

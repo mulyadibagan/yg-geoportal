@@ -90,6 +90,15 @@ nama, ID, revisi dan riwayat versi. Staf lain dapat memilih **Buka batas tim**
 untuk membuka koordinat yang sama dan melihat m²/ha. Penyimpanan dilakukan
 secara eksplisit, tanpa polling atau simpan otomatis.
 
+Alat ukur berada dalam menu tertutup **Ukur luas & batas tim** di panel samping,
+agar tidak menutupi citra. Dokumen privat bernama horti otomatis ditampilkan
+sebagai garis ungu putus-putus bersama batas gawangan. Lapisan horti tidak
+mengisi polygon, menangkap klik titik, menggeser peta atau masuk ke koleksi
+geometri yang sedang diedit. Batas bersumber dari dokumen tim terbaru; tidak
+ada penyalinan koordinat ke data sensus atau perubahan pembagian hitungan
+gawangan. Daftar dibaca saat masuk, melalui **Perbarui batas**, atau setelah
+menyimpan batas; geser dan zoom tidak menambah permintaan batas.
+
 `/api/staff/drone/analysis/areas` memerlukan sesi staf yang sama dengan analisis
 lainnya. Operasi diserialkan oleh koordinator yang sudah ada; revisi usang
 ditolak dan percobaan ulang memakai ID operasi yang sama. Arsip dan head berada

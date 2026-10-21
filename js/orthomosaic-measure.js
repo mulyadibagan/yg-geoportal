@@ -12,11 +12,11 @@
       if(!id)continue;if(!out.has(id))out.set(id,[]);out.get(id).push(f);
     }return out;
   }
-  function mount({map,areas,onChanged,beforeDraw=()=>true,loadBoundaries=()=>fetch('data/dayun-map.geojson').then(r=>{if(!r.ok)throw Error('Batas gawangan gagal dimuat.');return r.json();})}){
+  function mount({map,areas,container,onChanged,beforeDraw=()=>true,loadBoundaries=()=>fetch('data/dayun-map.geojson').then(r=>{if(!r.ok)throw Error('Batas gawangan gagal dimuat.');return r.json();})}){
     const L=root.L,T=root.turf,el=(tag,text)=>{const e=document.createElement(tag);if(text)e.textContent=text;return e;};
-    const control=L.control({position:'topright'}),host=el('div'),output=el('output','Luas: mulai gambar batas lahan.'),draw=el('button','Ukur batas lahan'),details=el('details'),select=el('select'),use=el('button','Ukur batas terpilih');
-    host.className='ortho-measure leaflet-bar';output.setAttribute('aria-live','polite');output.setAttribute('aria-label','Luas pengukuran');draw.type=use.type='button';select.setAttribute('aria-label','Batas lahan atau gawangan untuk diukur');
-    details.append(el('summary','Batas agro / gawangan'),select,use,el('small','Gabungan polygon revisi; celah di luar polygon tidak termasuk.'));host.append(draw,output,details);L.DomEvent.disableClickPropagation(host);L.DomEvent.disableScrollPropagation(host);control.onAdd=()=>host;control.addTo(map);
+    const host=el('div'),output=el('output','Luas: mulai gambar batas lahan.'),draw=el('button','Ukur batas lahan'),details=el('details'),select=el('select'),use=el('button','Ukur batas terpilih');
+    host.className='ortho-measure';output.setAttribute('aria-live','polite');output.setAttribute('aria-label','Luas pengukuran');draw.type=use.type='button';select.setAttribute('aria-label','Batas lahan atau gawangan untuk diukur');
+    details.append(el('summary','Batas agro / gawangan'),select,use,el('small','Gabungan polygon revisi; celah di luar polygon tidak termasuk.'));host.append(draw,output,details);container?.append(host);
     let vertices=[],active=null,handler=null,boundaries=null,corner=null,completed=false;
     const showFeature=f=>{if(f&&/Polygon/.test(f.geometry?.type))output.textContent='Luas: '+format(T.area(f));};
     const preview=cursor=>{if(active!=='polygon')return;const pts=vertices.map(p=>[p.lng,p.lat]);if(cursor&&(pts.length===0||pts.at(-1)[0]!==cursor.lng||pts.at(-1)[1]!==cursor.lat))pts.push([cursor.lng,cursor.lat]);if(pts.length<3){output.textContent='Luas: tentukan minimal 3 sudut batas.';return;}try{showFeature(T.polygon([[...pts,pts[0]]]));}catch{output.textContent='Periksa kembali bentuk batas.';}};
@@ -31,7 +31,7 @@
     draw.onclick=()=>{if(!beforeDraw())return;handler?.disable();handler=new L.Draw.Polygon(map,{allowIntersection:false,showArea:true,shapeOptions:{color:'#2563eb',weight:3,fillOpacity:.08}});handler.enable();};
     details.ontoggle=async()=>{if(!details.open||boundaries)return;try{use.disabled=true;const data=await loadBoundaries();boundaries=groups(data);select.replaceChildren();select.append(new Option('Gabungan batas agro A–F','__ALL__'));for(const id of [...boundaries.keys()].sort())select.append(new Option(id,id));}catch(error){output.textContent=error.message;}finally{use.disabled=!boundaries;}};
     use.disabled=true;use.onclick=()=>{if(!boundaries||!beforeDraw())return;try{const id=select.value,all=id==='__ALL__',f=merge(all?[...boundaries.values()].flat():boundaries.get(id)||[],T);f.properties={name:all?'Gabungan batas agro A–F':id,method:'batas_gawangan_revisi',source:'data/dayun-map.geojson'};const layer=L.geoJSON(f,{style:{color:'#2563eb',weight:3,fillOpacity:.08}}).getLayers()[0];areas.addLayer(layer);onChanged();showFeature(f);map.fitBounds(layer.getBounds());}catch(error){output.textContent='Tidak dapat mengukur: '+error.message;}};
-    return{element:host,showFeature,clear:()=>{output.textContent='Luas: mulai gambar batas lahan.';},control};
+    return{element:host,showFeature,clear:()=>{output.textContent='Luas: mulai gambar batas lahan.';}};
   }
   root.YG_ORTHO_MEASURE={format,merge,groups,mount};
 })(window);
