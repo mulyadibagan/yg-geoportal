@@ -9,7 +9,7 @@
   const point=e=>map.mouseEventToLatLng(e);
   function finish(){if(drag?.wasDragging)map.dragging?.enable();drag=null;if(rectangle)map.removeLayer(rectangle);rectangle=null;}
   function down(e){
-   if(e.button!==0||e.sourceCapabilities?.firesTouchEvents||space||e.ctrlKey||e.metaKey||e.altKey||typing(e.target)||!enabled())return;
+   if(e.button!==0||e.sourceCapabilities?.firesTouchEvents||!space||e.ctrlKey||e.metaKey||e.altKey||typing(e.target)||!enabled())return;
    finish();drag={x:e.clientX,y:e.clientY,start:point(e),moved:false,wasDragging:map.dragging?.enabled?.()};
   }
   function move(e){
@@ -27,7 +27,9 @@
   }
   function click(e){if(Date.now()<suppressUntil){e.preventDefault();e.stopImmediatePropagation();}}
   function keydown(e){
-   if(typing(e.target)||!focused()||!enabled()||e.altKey)return;
+   if(typing(e.target)||!enabled()||e.altKey)return;
+   if((e.code==='Space'||e.key===' ')&&!e.ctrlKey&&!e.metaKey&&(focused()||container.matches?.(':hover'))){space=true;e.preventDefault();focus();return;}
+   if(!focused())return;
    if((e.ctrlKey||e.metaKey)&&!e.shiftKey&&e.key?.toLowerCase()==='z'){
     if(!e.repeat){e.preventDefault();undoDelete?.();}return;
    }
