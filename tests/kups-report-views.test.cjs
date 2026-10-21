@@ -1,6 +1,14 @@
 const test=require('node:test');
 const assert=require('node:assert/strict');
 const views=require('../js/kups-report-views.js');
+test('category drill-down matches chart totals and excludes other kinds, trash and transfers',()=>{
+ const rows=[{kind:'expense',category:'Alat & pemeliharaan',amount:95},{kind:'expense',category:'Alat & pemeliharaan',amount:450},{kind:'income',category:'Alat & pemeliharaan',amount:10},{kind:'expense',category:'Upah',amount:20},{kind:'expense',category:'Alat & pemeliharaan',amount:99,deleted_at:'deleted'},{kind:'expense',category:'Alat & pemeliharaan',amount:100,_transfer:true}];
+ const detail=views.categoryRows(rows,'expense','Alat & pemeliharaan'),chart=views.categories(rows).expense.find(r=>r.category==='Alat & pemeliharaan');
+ assert.equal(detail.length,chart.count);assert.equal(detail.reduce((n,r)=>n+r.amount,0),chart.amount);
+ assert.deepEqual(views.categoryRows(rows,'expense','Tidak ada'),[]);
+ const html=views.breakdown(rows,String,s=>String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;'));
+ assert.match(html,/button type="button" class="category-chart-row"/);assert.match(html,/data-category-kind="expense"/);assert.match(html,/data-category="Alat &amp; pemeliharaan"/);assert.match(html,/aria-haspopup="dialog"/);assert.match(html,/Lihat rincian/);
+});
 test('preview updates only the chosen account for income, expense, unpaid and unknown balances',()=>{
  const accounts=[{id:'cash',balance:13176516},{id:'bank',balance:9314784}];
  for(const kind of ['income','expense'])for(const selected of ['cash','bank']){
