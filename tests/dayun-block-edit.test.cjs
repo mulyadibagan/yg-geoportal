@@ -8,6 +8,35 @@ function setup(shared=server()){const element=tag=>({tag,children:[],textContent
  const all=node=>[node,...(node.children||[]).flatMap(all)];return{host,events,calls,original,before,options,shared,button:text=>all(host).find(n=>n.textContent===text),counts:()=>counts,loseResponse:()=>failResponse=true,delay:p=>delay=p};}
 async function add(s){s.button('Tambah titik nanas').onclick();await s.events.click({latlng:{lng:1,lat:1}});await s.events.click({latlng:{lng:1,lat:1}});}
 
+test('ready native pixels select and box-delete locally without repeated inspection or preparation',async()=>{
+ const s=setup();let inspected=0,prepared=0,bindings,focused=0;
+ s.options.isPointReady=()=>true;s.options.onInspect=async()=>inspected++;s.options.preparePoint=async()=>{prepared++;throw Error('Unexpected reload');};
+ global.window.YG_DAYUN_POINT_SHORTCUTS={mount:o=>{bindings=o;return{focus(){focused++},dispose(){}}}};
+ const e=await editor.mount(s.options);try{
+  await e.pick(e.features()[0]);assert.equal(inspected,0);assert.ok(focused>0);
+  s.options.map.orthoMeasuring=true;assert.equal(bindings.enabled(),false);s.options.map.orthoMeasuring=false;assert.equal(bindings.enabled(),true);
+  global.L.circleMarker=()=>({addTo(){return this}});
+  bindings.selectBounds({contains:()=>true});bindings.deleteSelection();
+  assert.equal(s.counts().working_total,0);assert.equal(prepared,0);assert.equal(s.calls.filter(c=>c.config).length,0);
+  await s.button('Simpan koreksi Blok A privat').onclick();assert.equal(s.shared.snapshot().counts.working_total,0);
+ }finally{e.dispose();}
+});
+
+test('unchanged team polling avoids redrawing counts while remote changes still update them',async()=>{
+ const s=setup();let draws=0;const changed=s.options.onChanged;s.options.onChanged=x=>{draws++;changed(x)};
+ const e=await editor.mount(s.options);try{const initial=draws;await s.button('Muat ulang koreksi tim').onclick();assert.equal(draws,initial);s.shared.remote(point('auto-1','rejected'));await s.button('Muat ulang koreksi tim').onclick();assert.equal(draws,initial+1);assert.equal(s.counts().working_total,1);}finally{e.dispose();}
+});
+
+test('four laptops keep independent additions and converge without duplicate plants',async()=>{
+ const shared=server(),sessions=Array.from({length:4},()=>setup(shared)),editors=[];
+ try{for(const s of sessions)editors.push(await editor.mount(s.options));for(const s of sessions)await add(s);
+  await Promise.all(sessions.map(s=>s.button('Simpan koreksi Blok A privat').onclick()));
+  await Promise.all(sessions.map(s=>s.button('Muat ulang koreksi tim').onclick()));
+  assert.equal(shared.snapshot().counts.working_total,6);assert.equal(shared.snapshot().counts.manual_additions,4);
+  for(const e of editors){assert.equal(e.features().length,6);assert.equal(new Set(e.features().map(f=>f.properties.id)).size,6);assert.equal(e.canLeave(),true);}
+ }finally{for(const e of editors)e.dispose();}
+});
+
 test('503 after a committed save automatically retries the same operation without duplicates or lost team points',async()=>{
  const retry=require('../js/dayun-save-retry.js'),s=setup(),api=s.options.api;let fail=true;const waits=[];
  s.shared.remote(point('A-manual-anotherstaff','accepted'));
