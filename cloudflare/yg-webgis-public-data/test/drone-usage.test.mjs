@@ -14,6 +14,7 @@ test('quota-exhausted imagery returns retry guidance after auth; anonymous reque
  let count=0;const env={ENVIRONMENT:'production',DRONE_ASSET_LIMIT:{async limit(){count++;return{success:false};}}},url=new URL(request.url);
  const denied=await handleDroneRequest(request.clone(),env,url,async()=>false);assert.equal(denied.status,401);assert.equal(count,0);
  const limited=await handleDroneRequest(request.clone(),env,url,async()=>true);assert.equal(limited.status,429);assert.equal(limited.headers.get('retry-after'),'60');assert.match(limited.headers.get('access-control-allow-origin'),/webgisyg/);assert.equal((await limited.json()).error,'drone_usage_limited');
+ assert.match(limited.headers.get('access-control-expose-headers'),/retry-after/);
 });
 test('expensive operations fail closed if their deployed limiter is missing',async()=>{
  assert.equal((await droneUsageGuard(request,{ENVIRONMENT:'production'},'assets','staff')).status,503);

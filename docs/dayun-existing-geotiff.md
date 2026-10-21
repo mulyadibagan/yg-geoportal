@@ -101,3 +101,26 @@ konfirmasi bila masih ada geometri lokal yang belum tersimpan; ekspor GeoJSON
 tetap tersedia sebagai salinan. Server memvalidasi geometri dan menghitung ulang
 luas dengan radius yang sama seperti Turf 6.5 pada viewer. Koordinat sumber,
 batas gawangan resmi, data sensus dan koreksi titik nanas/buah tidak ditulis.
+
+### Pemulihan penyimpanan titik (21 Oktober 2026)
+
+Log produksi pada 15.37–15.39 WIB mencatat reset koordinator:
+`A call to blockConcurrencyWhile() in a Durable Object waited for too long`.
+Reset tersebut membuat POST koreksi Blok A serta pembacaan koreksi A–C dan
+buah mengembalikan 503. Ini adalah batas waktu gate 30 detik, bukan bukti
+kuota harian habis. Log lama tidak merinci operasi R2 mana yang paling lambat.
+
+`DroneQueue` kini menyerialkan seluruh transaksi baca/merge/arsip/head melalui
+rantai promise per instance, tanpa gate inisialisasi 30 detik. Antrean tetap
+menunggu operasi R2 selesai, termasuk hasil tulis yang belum pasti; tidak ada
+timeout buatan yang melepaskan penguncian ketika tulis lama masih berjalan.
+Kegagalan satu permintaan tidak meracuni antrean berikutnya. Nama koordinator,
+prefix R2, pemeriksaan revisi/titik dan semua arsip koreksi tetap dipakai.
+
+Viewer mencoba ulang POST titik nanas/buah yang sudah memakai ID operasi
+sebanyak maksimal tiga kali (jeda 5/15/30 detik, jitter hingga 1 detik;
+`Retry-After` dihormati hingga 60 detik). Payload dan ID operasi tetap sama.
+Hanya galat jaringan/timeout, 429, 502, 503 dan 504 yang dicoba ulang; konflik,
+validasi dan penolakan akses tetap memerlukan penanganan yang sudah ada.
+Perubahan lokal tetap tertunda bila seluruh percobaan gagal; ekspor tersedia.
+Tidak ada polling tambahan, migrasi koreksi, perubahan paket atau data sensus.
